@@ -1,0 +1,173 @@
+Contents
+========
+ - Purpose
+ - Requirements
+ - Copyright
+ - Installation under Linux
+ - Installation under Windows
+ - Installation under MAC OS
+ - Getting started
+ - Release notes
+ - Legal stuff
+
+
+Purpose
+=======
+The mobility framework provides abstractions needed to develop network
+protocols for non-stationary wireless nodes. 
+
+
+Requirements
+============
+The current version of the Mobillity Framework requires OMNeT++ v3.2
+or higher.
+The only platform it has been tested on is Linux (2.4.xx kernel, 
+g++ 3.3.x & 2.6.xx kernel, g++ 4.0.x). Compilation has also been tested
+on windows XP, VC++ 8.0.
+
+
+COPYRIGHT
+=========
+Copyright (C) 2004  Telecommunication Networks Group at Technische
+Universitaet Berlin, Germany
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+Installation under Linux
+========================
+1. Unpack the archive (you have probably already done so)
+   tar xzf mobility-fw<VERSION>.tgz
+
+2. Update your LD_LIBRARY_PATH variable to include the 
+   "mobility-fw<VERSION>/core/lib" and 
+   "mobility-fw<VERSION>/contrib/lib" directories
+
+3. run the mkmk shell script
+   ./mkmk
+
+4. make the core and contrib library and all test networks 
+   make core && make contrib && make networks
+
+
+Installation under Windows
+==========================
+1. Unpack the archive
+
+2. modify the variable OMNETPP_ROOT in mkmk.cmd to point to your 
+   OMNeT++ installation directory.
+
+3. run the mkmk.cmd script
+   mkmk.cmd
+
+4. make the core and contrib library and all test networks
+   nmake /f Makefile.vc core_dir && nmake /f Makefile.vc contrib_dir && 
+   nmake /f Makefile.vc networks_dir
+
+
+Installation under MAC OS
+=========================
+There are two possibilities to install the MF under MAC OS, 
+one is with shared libraries, one without. We did not test
+compiling under MAC OS - any feedback wlecome!
+
+1. Unpack the archive (you have probably already done so)
+   tar xzf mobility-fw<VERSION>.tgz
+
+2. Modify the mkmk.mac script and choose shared libraries or not
+   (just comment out the corresponding lines in the script)
+
+3. If you go for shared libraries you need to update your 
+   DYLD_LIBRARY_PATH (NOT LD_LIBRARY!) variable to include the
+   "mobility-fw<VERSION>/core/lib" and
+   "mobility-fw<VERSION>/contrib/lib" directories
+
+4. run the mkmk.mac shell script
+   ./mkmk.mac
+
+4. make the core and contrib library and all test networks
+   make core && make contrib && make networks
+
+
+Getting started
+===============
+ 
+This will "install" the library in the lib directories and the
+include files in the include directories of the MF.
+
+It will also build all networks in the networks directory.
+
+To see if it runs, try the networks in the networks directory.
+
+Copy the template from the template directory to a directory of
+your choice -- it has its own INSTALL instructions to get you
+started quickly with your own simulation. NOTE: The template 
+directory is not fully adapted to MF 2.0. So not all the stuff
+will work!
+
+
+Release notes
+=============
+* 2.0p2:
+Preview no.2. Main enhancements (apart from some minor bug fixes) are:
+- windows make system should work know. See the install directions for 
+  details
+- MAC OS make system added. MF can be installed on MAC OS either with or 
+  without shared libraries. NOT TESTED!
+- 802.11 should work again - at least with the basic bitrate. However,
+  the automatic bitrate adaption still crashes.
+- We started to adapt the template folder to MF 2.0 - not finished yet!
+* 2.0p1:
+---------
+Preview of a MF with major restructuring and redesign. As with previews there
+may still be bugs and not everything has been thorouly tested yet. Especially 
+the 802.11 network still CRASHES! The manual has not been updated yet, please 
+use the doxygen documentation for detailed information.
+Key changes include:
+- enhanced efficiency of the code (speed and memory consumption), up to 
+  thousands of nodes can now be simulated on standard PCs
+  - added sendDirect option (less gates -> less memory)
+  - added grid to channel control to speed up connection management
+- more user implementation flexibility
+  - reduced core MF (only contains basic mobility, channel control and modules
+    up to the MAC)
+  - cleaner possibility to add / modify control infos to messages
+  - moved radio related stuff into a seperate radio module
+  - added arp functionality
+- completely redesigned blackboard
+  - only publisher can change published items
+  - items are identified by their class instead of strings (speed!)
+  - items can be subclassed and extended
+- better mobility support
+  - complete border handling implemented
+  - supported policies are: reflect, wrap, place randomly and raise error
+- bug fixes
+  - several bugs removed from aloha, csma and snr-eval modules
+  - started to debug 802.11 - NOT FINISHED yet!
+
+
+Legal Stuff
+===========
+The copying, modifications, redistribution and so on is covered by the
+GNU General Public License, see the file COPYING for details.
+
+The Telecommunication Networks Group at the Technische Universitaet
+Berlin does not provide any warranty for the Mobility Framework -- 
+you did not pay for it! Further details can be found in the file 
+COPYING.
+
+As a good practice, you should acknowledge the work done at the
+Telecommunication Networks Group at the Technische Universitaet
+Berlin, just as you do if you cite a scientific work.

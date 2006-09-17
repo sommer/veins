@@ -1,0 +1,5 @@
+This file contains the general installation hints to start using MiXiM. Any platform specific hints can be found in the various INSTALL.platform files.
+
+Requirements
+------------
+OMNeT++, at least version 3.2, downloadable at www.omnetpp.org

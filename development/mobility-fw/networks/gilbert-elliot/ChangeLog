@@ -1,0 +1,21 @@
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2005-01-18  ------ mobility-fw1_0a5 released ------
+
+2004-11-22  ------ mobility-fw1.0a4 released ------
+
+2004-11-05  ------ mobility-fw1.0a4 released ------
+
+2004-11-05	Marc Löbbers
+	* omnetpp.ini: commented 'random-seed' out due to new RNG 
+	architecture (OMNeT 3.0 alpha 9)
+
+2004-10-20  ------ mobility-fw1.0a3 released ------
+
+2004-09-30	Daniel Willkomm
+	* Makefile.vc: added windows makefile.
+
+2004-09-30	Marc Löbbers
+	* *: checked in

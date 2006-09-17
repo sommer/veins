@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  
+  <head>
+    <title>Module Groups</title>
+    <meta name="description" content="Mobility Framework for OMNeT++">
+    <meta name="keywords" content="mobility, wireless, omnet, omnet++, framework">
+    <meta name="author" content="Daniel Willkomm">
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" type="text/css" href="../api/doxygen.css">
+  </head>
+  
+  <body>
+    
+    <center>
+      <a href="./index.html">Home</a> &nbsp; 
+      <a href="http://sourceforge.net/projects/mobility-fw/">Project Page</a> &nbsp; 
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=109505">Download</a> &nbsp; 
+      <a href="../manual/index.html">Manual</a> &nbsp; 
+      <a href="../api/index.html">API Reference</a> &nbsp; 
+      <a href="../neddoc/index.html">Neddoc Reference</a> &nbsp; 
+      <a href="./support.html">Support</a> &nbsp; 
+    </center>
+    
+    <hr>
+
+    <div style="margin-left: 10%; margin-right: 10%">
+    
+      <div>
+	<img src="./network_label.png" alt="basic network" width="279px" style="width:279px; float:left; margin-left:-10%; margin-right:10px; margin-bottom:10px;">
+      </div>
+
+      <h2>Module Groups</h2>
+
+      <p>
+	In order to structure the API documentation of the MF we
+	defined several groups. You can view the different groups by
+	clicking on the 
+	<a href="../api/modules.html">modules link</a> 
+	at the top of the 
+	<a href="../api/index.html">API Reference page</a>.
+
+      <p>
+	All main classes should be placed in either of the following
+	groups. To do so please add a <i>@ingroup &lt;groupname&gt;</i>
+	within the detailed description of the class. For more details
+	concerning documentation please refer to the
+
+	<a href="docu.html#docu">Documentation Guidelines</a>.
+
+      <p>
+	All implemented modules are member in one of the following
+	groups, depending on their functionality. Additionally a
+	module may be member of other groups (see description below).
+
+
+      <ul>
+	<li>applLayer -- Application Layer Modules</li>
+	<li>netwLayer -- Network Layer Modules</li>
+	<li>nic -- network interface modules</li>
+	  <ul>
+	    <li>macLayer -- MAC Layer Modules</li>
+            <li>radios -- radio modules</li>
+	    <li>phyLayer -- physical layer modules</li>
+	      <ul>
+		<li>decider -- Decider Modules</li>
+		<li>snrEval -- Modules for Attenuation and Interference Calculation</li>
+	      </ul>
+	  </ul>
+	<li>mobility -- Modules handling the Mobility of the Hosts</li>
+      </ul>
+
+      <p>
+	All classes of the core MF can be found within the core
+	group. The group structure reflects the directory structure of
+	the core directory.
+
+      <ul>
+	<li>core -- modules of the core framework</li>
+	  <ul>
+	    <li>basicModules -- basic Module classes</li>
+	    <li>basicNetworks - basic network modules</li>
+	    <li>blackboard -- Blackboard related stuff</li>
+	    <li>channelControl -- handling of connection within the MF</li>
+	    <li>basicUtils -- utilities for the core MF</li>
+	  </ul>
+      </ul>
+
+    </div>
+    
+    <hr style="clear:both">
+
+  </body>
+</html>

@@ -1,0 +1,7 @@
+MOBFW = /home/koepke/projekte/mobility-fw/trunk
+
+all:
+	opp_makemake -f -b $(MOBFW) -c $(MOBFW)/omnetppconfig -L$(MOBFW)/core/lib -lmfcore -L$(MOBFW)/contrib/lib -lmfcontrib -x -I. -I$(MOBFW)/core/include -I$(MOBFW)/contrib/include -u Cmdenv
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

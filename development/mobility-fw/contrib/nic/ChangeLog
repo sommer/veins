@@ -1,0 +1,16 @@
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-07-28:	Daniel Willkomm
+	* SnrNic.ned: removed: was a dublicate of NicCsma.ned
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2006-06-09:	Daniel Willkomm
+	* BasicNic.ned: renamed to CoreTestNic.ned
+	* CoreTestNic.ned: used to test core MF functionality
+
+2005-10-20: Daniel Willkomm
+	* BasicNic.ned: added radioIn gate for sendDirect
+
+2005-10-18: Daniel Willkomm
+	* created: moved here from core/basicModules

@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  
+  <head>
+    <title>OMNeT++ Coding Conventions / Style Guide</title>
+    <meta name="description" content="Mobility Framework for OMNeT++">
+    <meta name="keywords" content="mobility, wireless, omnet, omnet++, framework">
+    <meta name="author" content="Daniel Willkomm">
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" type="text/css" href="../api/doxygen.css">
+  </head>
+  
+  <body>
+    
+    <center>
+      <a href="./index.html">Home</a> &nbsp; 
+      <a href="http://sourceforge.net/projects/mobility-fw/">Project Page</a> &nbsp; 
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=109505">Download</a> &nbsp; 
+      <a href="../manual/index.html">Manual</a> &nbsp; 
+      <a href="../api/index.html">API Reference</a> &nbsp; 
+      <a href="../neddoc/index.html">Neddoc Reference</a> &nbsp; 
+      <a href="./support.html">Support</a> &nbsp; 
+    </center>
+    
+    <hr>
+
+    <div style="margin-left: 10%; margin-right: 10%">
+    
+      <div>
+	<img src="./network_label.png" alt="basic network" width="279px" style="width:279px; float:left; margin-left:-10%; margin-right:10px; margin-bottom:10px;">
+      </div>
+
+      <h2>OMNeT++ Coding Conventions / Style Guide</h2>
+      <b>(last updated: Sept 17 1999)</b>
+
+      <p>
+	Here's a bunch of advice on how to write OMNeT++ models. Some
+	of them are "rules of thumb", saying if you program like that,
+	you're likely to have less trouble; other conventions are
+	aimed at making OMNeT++ models higher quality and more
+	consistent.
+
+      <h3>Source files</h3>
+
+      <p>
+	1. Put the NED description, the C++ class declaration and the
+	implementation of a simple module into three separate
+	files. Don't put two or more modules' code into the same file
+	unless they are build upon one another - do not be afraid of
+	small files! Thus, for a simple module called Foobar, you
+	should have Foobar.ned, Foobar.h and Foobar.cc. This reduces
+	coupling of module sources and makes your code more reusable.
+
+      <h3>C++ coding style</h3>
+
+      <p>
+	2. Write legible C++ code. Choose your favourite indentation
+	style and keep to it consistently. (I would prefer the style
+	in which the OMNeT++ sources are written.) Don't put more than
+	one statement on the same line. Always use blank lines to
+	break the code into not-very-long logical blocks; above each
+	block, put a comment of few-words what that block does. Always
+	put at least two blank lines between two (member)
+	functions. Remember: the structure of your code should be
+	obvious at the first glance!
+
+      <p>
+	3. Identifiers: Begin module type names with a capital letter,
+	and capitalize the beginning of each word, like in
+	TokenRingMAC. Do not use underscore `_` in module names. Use
+	the C++-style naming on member functions: beginning of each
+	word is capitalized (except for the first one) and no
+	underscores: sendUnnumberedFrame(). On parameter names, use
+	C++-style naming, e.g. windowSize.
+
+      <h3>Organizing simple modules</h3>
+
+      <p>
+	4. Put state variables into the class declaration as data
+	members instead of local variables to activity(). This enables
+	referencing them in finish() as well as splitting up
+	activity().
+
+      <p>
+	5. Objects like cQueues, cOutVectors, cStdDevs also go into
+	the class declaration. You can assign names to them with
+	setName() and otherwise initialize them at the top of the
+	activity() function. This way you can avoid having to write
+	the simple module constructor explicitly.
+
+      <p>
+	6. Avoid global variables (and what's the same, static class
+	members). They are not reset to their initial value (zero)
+	when you run the simulation, stop it and rebuild the
+	network. This can cause several problems when you use Cmdenv
+	to execute several runs one after another, or in Tkenv when
+	you rebuild the network from the menu.
+
+      <p>
+	7. Query the values of parameters into state variables
+	(--&gt;class members) of the same name at the top of the
+	activity() function. If you know the value of a parameter is a
+	random value (like uniform 0..10) or it can change during
+	simulation, then to avoid having to look it up by name each
+	time (like d=par("delay")) you may query its pointer into a
+	cPar* state variable with the same name prepended with 'p'
+	(like pDelay=&amp;par("delay")).
+
+      <h3>Constructors, destructors, initialize() and finish()</h3>
+
+      <p>
+	8. Never put code that's supposed to do simulation-related
+	things into the simple module destructor; put them into
+	finish() instead. In fact, you almost never need to write a
+	destructor since OMNeT++ keeps track of objects you create
+	(dynamically, as local variables or as class members) and
+	disposes of them automatically. However it cannot track
+	non-OMNeT++ objects so they may need to be deleted manually
+	from the destructor.
+
+      <p>
+	9. You need to write the simple module constructor exlicitly
+	if you have dynamic data structures in the class that need to
+	be freed by the destructor. Even in this case, make the
+	constructor as simple as possible (e.g. simply NULL out the
+	data structure pointers) and leave real work to the activity()
+	function.
+
+      <p>
+	10.Especially, do not put simulation-related code into the
+	simple module constructor. For example, modules often need to
+	investigate their surroundings (maybe the whole network) at
+	the beginning of the simulation and save the collected info
+	into internal tables. Code like that cannot be placed into the
+	constructor since the network is still being set up when the
+	constructor is called.
+
+      <h3>Make use of what C++ offers</h3>
+
+      <p>
+	11.Do not hesitate to split up the activity() function to
+	several member functions, as this generally improves code
+	readability. For example, if you're implementing a state
+	machine, you can put the general logic into activity() and the
+	code implementing the actual states into separate member
+	functions. As a rule of thumb, one member function shouldn't
+	be more than one screen page (about 25 lines) unless really
+	necessary.
+
+      <p>
+	12.Make the functions virtual. Maybe someone who reuses your
+	code will need a different behavior than what you thought of.
+
+      <p>
+	13.Use inheritance if you're writing a very complex simple
+	module: create a basic simple module class and build upon it
+	deriving new module classes. This will make your code more
+	readable and easier to manage/reuse. Unfortunately,
+	inheritance is not supported in NED so you actually have to
+	make distinct NED descriptions for each simple module
+	class. Even if you have an abstract classes, prepare a NED
+	desctiption for it: it is useful as a reference to others who
+	might derive a different simple module class from your
+	abstract class. Inheritance in NED is planned in later
+	releases of OMNeT++.
+	
+      <h3>For better performance</h3>
+
+      <p>
+	14.Consider using subclassing cMessage to add parameters to it
+	instead of using cPar parameters. Simulations using message
+	subclassing are reported to have 5..10 times (!) performance
+	advantage to those using cPar message parameters.
+
+      <p>
+	15.Reuse messages wherever possible, as this can result in a
+	tremendous gain in execution speed! For example, if you
+	implement timers, you can create a message once and then
+	schedule the same message again and again each time the timer
+	is restarted. Look at the Fifo example about how to do it.
+
+      <h3>Prepare for debugging</h3>
+
+      <p>
+	16.Use ev.printf() and ev&lt;&lt;... generously to print out
+	information on what the module is doing. Doing so will pay out
+	several times when it comes to debugging. Use a parameter and
+	a state variable called debug. Surround your debugging output
+	(ev&lt;&lt;... and ev.printf() calls) with if(debug). You may
+	introduce more specific debug switches (like debug_queuing
+	etc.)
+
+      <p>
+	17.Put a WATCH() on the state variables (including debug) at
+	the top of the activity function. They cause no run-time
+	overhead, consume little memory and can be invaluable during
+	debugging.
+
+    </div>
+    
+    <hr style="clear:both">
+
+  </body>
+</html>

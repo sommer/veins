@@ -1,0 +1,8 @@
+# Makefile for own simulations on windows
+
+MOBFW = c:\path\to\mobility-fw
+
+all:
+	opp_nmakemake -f -x -I$(MOBFW)\core\include -I$(MOBFW)\contrib\include $(MOBFW)\core\lib $(MOBFW)\contrib\lib
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

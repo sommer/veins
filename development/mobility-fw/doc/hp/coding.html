@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  
+  <head>
+    <title>Coding Guidelines</title>
+    <meta name="description" content="Mobility Framework for OMNeT++">
+    <meta name="keywords" content="mobility, wireless, omnet, omnet++, framework">
+    <meta name="author" content="Daniel Willkomm">
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" type="text/css" href="../api/doxygen.css">
+  </head>
+  
+  <body>
+    
+    <center>
+      <a href="./index.html">Home</a> &nbsp; 
+      <a href="http://sourceforge.net/projects/mobility-fw/">Project Page</a> &nbsp; 
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=109505">Download</a> &nbsp; 
+      <a href="../manual/index.html">Manual</a> &nbsp; 
+      <a href="../api/index.html">API Reference</a> &nbsp; 
+      <a href="../neddoc/index.html">Neddoc Reference</a> &nbsp; 
+      <a href="./support.html">Support</a> &nbsp; 
+    </center>
+    
+    <hr>
+
+    <div style="margin-left: 10%; margin-right: 10%">
+    
+      <div>
+	<img src="./network_label.png" alt="basic network" width="279px" style="width:279px; float:left; margin-left:-10%; margin-right:10px; margin-bottom:10px;">
+      </div>
+
+      <h2>Coding Guidelines</h2>
+
+      <p>
+	Everyone who works with the OMNeT++ Mobility Framework has to
+	accept the following coding style appointments, so that files,
+	classes, functions, etc. can immediately be recognized as
+	what they are.
+
+      <p>
+	(1) Name module-classes, classes, etc. in C++ style like:
+
+      <ul>
+	<li>RandomWaypointMobility
+	<li>TokenRingMAC
+	<li>ServDiscAppl
+      </ul>
+
+      <p>
+	(2) Variables and methods start with a small letter (no underscores), e.g.:
+
+      <ul>
+	<li>requestId
+	<li>getName()
+      </ul>
+
+      <p>
+	(4) If OMNeT parameters are read in and used in a .h or .cc
+	file, they have to have the same name like the variable used
+	in the source code!
+
+      <p>
+	(5) Files must have the same names like the classes!!!
+
+      <p>
+	(6) Every SimpleModule is described in a .ned, a .h, as well
+	as a .cc file, e.g. the SimpleModule TokenRing:
+
+      <ul>
+	<li>TokenRingMAC.ned
+	<li>TokenRingMAC.h
+	<li>TokenRingMAC.cc
+      </ul>
+
+      <p>
+	(6) The nicest option to build in debug messages is to define
+	a macro "print" at the beginning of each .cc file:
+
+      <div class="fragment">
+	<pre>
+#define print(text) ev &lt;&lt;"ID: "&lt;&lt;hostIndex()&lt;&lt;" ClassName: "&lt;&lt; text &lt;&lt; endl
+//#define print(text)
+	</pre>
+      </div>
+      <p>
+	Substitute "ClassName" with the name of your module,
+	e.g. "BasicNetwLayer". Then you can easily print debug
+	messages in the source code like this:
+
+      <div class="fragment">
+	<pre>
+print("packet received");
+print("packet received. msgId:"&lt;&lt;msgId);
+	</pre>
+      </div>
+
+    </div>
+
+    <hr style="clear:both">
+    
+  </body>
+</html>

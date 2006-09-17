@@ -1,0 +1,10 @@
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2006-06-29:	Daniel Willkomm
+	* omnetpp.ini: all runs work -> switched off debugging
+
+2006-06-27:	Daniel Willkomm
+	* created: network to test mobility modules. Originally from
+	Andras (INET); adapted to the MF by Daniel

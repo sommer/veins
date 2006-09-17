@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  
+  <head>
+    <title>Documentation Guidelines</title>
+    <meta name="description" content="Mobility Framework for OMNeT++">
+    <meta name="keywords" content="mobility, wireless, omnet, omnet++, framework">
+    <meta name="author" content="Daniel Willkomm">
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" type="text/css" href="../api/doxygen.css">
+  </head>
+  
+  <body>
+    
+    <center>
+      <a href="./index.html">Home</a> &nbsp; 
+      <a href="http://sourceforge.net/projects/mobility-fw/">Project Page</a> &nbsp; 
+      <a href="http://sourceforge.net/project/showfiles.php?group_id=109505">Download</a> &nbsp; 
+      <a href="../manual/index.html">Manual</a> &nbsp; 
+      <a href="../api/index.html">API Reference</a> &nbsp; 
+      <a href="../neddoc/index.html">Neddoc Reference</a> &nbsp; 
+      <a href="./support.html">Support</a> &nbsp; 
+    </center>
+    
+    <hr>
+
+    <div style="margin-left: 10%; margin-right: 10%">
+    
+      <div>
+	<img src="./network_label.png" alt="basic network" width="279px" style="width:279px; float:left; margin-left:-10%; margin-right:10px; margin-bottom:10px;">
+      </div>
+
+      <h2>Documentation Guidelines</h2>
+
+
+      <h3>General</h3>
+
+      <p>
+	This page gives a brief introduction for Doxygen and
+	Neddoc. We will focus on issues that are important for the
+	documentation of the framework. For a full documentation of
+	Doxygen please refer to 
+
+	<a href="http://www.doxygen.org/manual.html" target="_blank">doxygen manual</a>.
+
+	For more information on the Neddoc tool read chapter 11 of the
+	OMNeT++ manual v3.0 or higher.
+
+
+	<h3>Documenting the c++ code using doxygen</h3>
+
+      <p>
+	Doxygen can analyze the structure of a C++ project and extract
+	all comments in the source code and create an API reference
+	manual. All comments that should be included in the manual
+	have to have one of the following syntaxes:
+
+      <div class="fragment">
+	<pre>
+/**
+*
+*/
+	</pre>
+      </div> 
+      or 
+      <div class="fragment">
+	<pre>
+///
+///
+///
+	</pre>
+      </div>
+
+      <p>
+	The intermediate * is optional. All comments have to be in
+	front of the object you want to document.
+
+      <p>
+	If you want to place the comment after the object you have to
+	use the following syntax:
+
+      <div class="fragment">
+	<pre>
+int id;  /**&lt; host id */
+	</pre>
+      </div>
+
+      <p>
+	For me the easiest way to learn things is to see examples, so
+	here are is an example how to document a simple module.
+
+      <div class="fragment">
+	<pre>
+/**
+ * @brief general class for the network layer
+ * 
+ * This is the generic class for all network layer modules. If you
+ * want to implement your own network layer you have to subclass your
+ * module from this class.
+ *
+ * @param pmyhost pointer to parentmodule
+ * @see BlackboardAccess
+ *
+ * @ingroup netwLayer
+ * @author Daniel Willkomm
+ **/
+class NetwLayer : public BlackboardAccess
+{
+ protected:
+  /** @brief gate ids*/
+  /*@{*/
+  int uppergateIn;
+  int uppergateOut;
+  int lowergateIn;
+  int lowergateOut;
+  /*@}*/
+
+  /** @brief Total number of hosts in the network */
+  int numHosts;
+  ...
+
+ public:
+  Module_Class_Members( BasicNetwLayer , BlackboardAccess, 0 );
+
+  /** @brief Initialization of the module and some variables*/
+  virtual void initialize();
+
+  /** @brief Called every time a message arrives*/
+  void handleMessage(cMessage*);
+  ...
+	</pre>
+      </div>
+
+      <p>
+	All simple modules are documented in their corresponding .h
+	and .cc file. The first thing is a brief and a detailed
+	description of the module. The @param and @see tags can be
+	used to list important parameters in the description and to
+	offer the reader links with more information on the module
+	(e.g. a link to the parent module).
+
+      <p>
+	Every class has to have the @author tag set. Additionally you
+	should set the @ingroup tag so every class is at least member
+	of one group. The different groups are explained on the 
+	<a href="groups.html">Module Groups</a> page.
+
+      <p>
+	Additionally important parameters and methods should be
+	documented as well. The header file contains only the brief
+	description for methods. The detailed description should be in
+	the .cc files immediately above the method. A method should
+	have a @author tag if the author of that method is different
+	from the author of the module.
+
+      <p>
+	<b>Important doxygen commands overview</b>
+	<br>
+      <ul>
+	<li>@brief -- add a brief description</li>
+	<li>@param &lt;name&gt; -- specify a parameter in a detailed description</li>
+	<li>@return -- specify a functions return value in the detailed description</li>
+	<li>@author -- specify an author</li>
+	<li>@see or @sa &lt;name&gt; -- create a reference link</li>
+	<li>@ingroup &lt;name&gt; -- add a class to a group</li>
+	<li>@page &lt;name&gt; &lt;title&gt; -- create a c++ independent documentation</li>
+	<li>@ref &lt;name&gt; -- create a reference</li>
+	<li>@bug -- specify a bug</li>
+	<li>@todo -- specify a task for the todo list</li>
+      </ul>
+
+      <h3>Documenting the .ned and .msg files using opp_neddoc</h3>
+
+      <p>
+	As doxygen is not able to extract comments from .ned and .msg
+	files OMNeT++ offers a tool called <i>opp_neddoc</i> that
+	creates a documentation for OMNeT++ modules and messages. All
+	comments you want to go into the documentation have to be
+	marked with the following comment signs:
+
+      <div class="fragment">
+	<pre>
+// 
+// 
+// 
+	</pre>
+      </div>
+
+      <p>
+	Here is an example of a properly documented .ned file:
+
+      <div class="fragment">
+	<pre>
+// The nic (network interface card) is a compound module that contains the 
+// MAC and PHY of a host within the Mobility Framework
+//
+// The BasicNic is the most simple nic you can create for the MF
+//
+// IMPORTANT:&lt;br&gt; In order to work with the ChannelControl module the snrEval
+// module has to be called "snrEval" in the ned file.
+//
+// @sa BasicMacLayer, BasicDecider, BasicSnrEval
+//
+// @author Daniel Willkomm
+module BasicNic 
+    gates: 
+        in: uppergateIn; // to upper layers
+        out: uppergateOut; // from upper layers
+    submodules: 
+        mac: BasicMacLayer; 
+        decider: BasicDecider; 
+        snrEval: BasicSnrEval; 
+    connections: 
+        decider.uppergateOut --&gt; mac.lowergateIn display "m=m,50,50,75,0"; 
+        snrEval.uppergateIn &lt;-- mac.lowergateOut display "m=m,25,0,25,0"; 
+        snrEval.uppergateOut --&gt; decider.lowergateIn display "m=m,73,0,50,50"; 
+        mac.uppergateOut --&gt; uppergateOut; 
+        mac.uppergateIn &lt;-- uppergateIn; 
+endmodule 
+	</pre>
+      </div>
+      
+      <p>
+	It is very important that the documentaton that belongs to the
+	compound module defined in the .ned file is written directely
+	above the module definition without any blank line!! If
+	paramaters are to be documented, the comments can be written
+	directly after the parameter definition into the same
+	line. Alternatively the comment can also be written in an
+	extra line above the parameter.
+
+      <p>
+	It makes sense to document the simple modules with the same
+	comments as the corresponding class in the .h file. This way
+	it is possible to find out about the general functionality of
+	a module in the neddoc documentation and if further
+	information about the implementation is needed one can read
+	the corresponding documentation in the API Referance created
+	by doxygen.
+
+      <p>
+	.msg files are documented the same way as the .ned files Here
+	is an example for general documentation text for a message as
+	well as for documenting the 'fields' of a message
+	(parameters):
+
+      <div class="fragment">
+	<pre>
+// A basic MAC (Media Access Control) packet format definition
+// 
+// subclass if you want to create your own MAC layer message class
+//
+// The basic MAC message only provides source and destination address
+// and and the channel it should be send on
+//
+// @author Daniel Willkomm
+message MacPkt{
+    fields:
+  int destAddr=-1; // destination mac address
+  int srcAddr=-1; // source mac address
+  int channelId=1; // channel to send / receive on
+}
+	</pre>
+      </div>
+
+    </div>
+
+    <hr style="clear:both">
+    
+  </body>
+</html>

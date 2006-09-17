@@ -1,0 +1,117 @@
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-08-11:	Daniel Willkomm
+	* Version: update to 2.0p2
+	* README: added release notes for 2.0p2 and updated install instructions
+
+2006-07-28:	Daniel Willkomm
+	* README: updated windows installation and added MAC OS installation
+	instructions
+	* makemakefiles: removed snrTest network
+	* mkmk: copy linux lib makefrags before makeing makfiles
+
+2006-07-27:	Daniel Willkomm
+	* makemakefiles: linux and windows Makefile to create all makefiles for 
+	the MF -> no need to maintain two seperate files for windows and linux
+	* Makefile.linux Makefile.mac Makefile.win: OP specific Makefile setings to
+	create all makefiles for the MF
+	* mfconfig.vc: removed
+	* mkmk mkmk.cmd: reduced to calling of make command with the appropriate
+	Makefile.OP to create all makefiles for the MF
+	* mkmk.mac: added to create makefiles for MAC OS without shared libraries
+
+2006-07-21:	Daniel Willkomm
+	* mkmk.cmd: adapted windows make system to MF2.0
+	* mfconfig.vc: adapted windows make system to MF2.0
+	* makefrag.vc: added quotes to echo command
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2006-07-06:	Daniel Willkomm
+	* mkmk.cmd: adapted windows script to new MF - not tested!
+	* makefrag.vc: adapted to new MF - not tested!
+	* makefrag: added doxy and neddoc targets
+	* README: added release notes
+
+2006-07-05:	Daniel Willkomm
+	* mkmk: changed testSuite Makefiles to cmd mode, removed coreTest target
+
+2006-07-04:	Daniel Willkomm
+	* AUTHORS: updated author information
+	* README: updated install information
+
+2006-06-30:	Daniel Willkomm
+	* mkmk: added aloha network target
+
+2006-06-29:	Daniel Willkomm
+	* mkmk: removed development target, added top level networks target, added
+	snrTest and baseStationNet target
+
+2006-06-12:	Daniel Willkomm
+	* mkmk: added development/mobility to script
+
+2005-12-01 Daniel Willkomm
+	* mkmk: added devel target for the lib dir, changed network targets to also
+	include the devel lib, added development/netwLayer target
+	* makefrag: added devel_lib target
+
+2005-11-23: Daniel Willkomm
+	* mkmk: added contrib/utils target
+
+2005-10-19: Daniel Willkomm
+	* Makefile: removed; is created by mkmk
+	* makefrag: added for top level Makefile
+	* mkmk: updated to create top level Makefile and omnetppconfig
+
+2005-10-18: Daniel Willkomm
+	* mkmk: started to update to new structure - not finished yet!!!
+	* Makefile: changed to work with restructuring, core and contrib can be
+	successfully compiled again
+
+2005-01-18  ------ mobility-fw1_0a5 released ------
+
+2004-11-22  ------ mobility-fw1.0a4 released ------
+
+2004-11-05  ------ mobility-fw1.0a4 released ------
+
+2004-10-20  ------ mobility-fw1.0a3 released ------
+
+2004-10-12	Daniel Willkomm
+	* mkmk: added script to create all Makefiles
+	* mkmk.cmd: added -b and -x option to script. cleaning up.
+	* README: removed windows symlink stuff. Added mkmk.cmd advise for
+	windows users in case the MF does not compile
+	* Makefile: recreated all Makefiles
+
+2004-10-04	Daniel Willkomm
+	* Makefile: deleted the symlink stuff for the networks dirs, as it
+	is not needed anymore (since omnet++3.0a7).
+
+2004-09-13	Daniel Willkomm
+	* makefrag.vc, Makefile.vc: added line to copy BasicModule.h into
+	the include dir.
+	* README: updated windows install directions. nmake needs the '/f
+	Makefile.vc' option otherwise it uses the linux Makefile.
+
+2004-08-23	Daniel Willkomm
+	* mkmk.cmd: corrected the lib Makefile to also include the 'core'
+	dir.
+
+2004-08-18  ------ mobility-fw1.0a2 released ------
+
+2004-08-17	Daniel Willkomm
+	* README: added windows install directions
+	* Makefiles.vc: added windows Makefiles (Makefile.vc) to each
+	directory. Windows Makefiles were provided by Andras (thanks!)
+	* makefrag.vc: contains make stuff from linux Makefile to be
+	included into the top-level windows MAkefile.vc
+	* mkmk.cmd: script to recursively rebuild all Makefile.vc's
+
+2004-08-16	Daniel Willkomm
+	* Makefile: adjusted the Makefile to be somewhat similar to the
+	windows Makefile.vc. Removed obsolete targets. Simplified doxy
+	generation
+
+	* Makefiles: rebuild all Makefiles
+
+2004-07-23  ------ mobility-fw1.0a1 released ------

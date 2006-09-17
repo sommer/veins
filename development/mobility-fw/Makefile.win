@@ -1,0 +1,9 @@
+MAKEMAKE=opp_nmakemake
+
+OPTS=-f -b $(ROOT) -c $(OMNETPP_ROOT)/configuser.vc
+LIB_OPTS=-w
+
+CORE_LIB=$(ROOT)/core/lib
+CONTRIB_LIB=$(ROOT)/contrib/lib
+
+!include "makemakefiles"

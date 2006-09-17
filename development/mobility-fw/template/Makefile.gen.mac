@@ -1,0 +1,8 @@
+# Makefile for own simulations on MAC OS without shared libraries
+
+MOBFW = /path/to/mobility-fw
+
+all:
+	opp_makemake -f -x -I$(MOBFW)/core/include -I$(MOBFW)/contrib/include $(MOBFW)/core/lib $(MOBFW)/contrib/lib
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

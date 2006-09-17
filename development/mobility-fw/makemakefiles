@@ -1,0 +1,102 @@
+#
+# Makefile to create all other makefiles for the project.
+#
+# CAREFUL: This file has to remain portable across Unix make and
+# Windows nmake!
+#
+
+# The vars ROOT, MAKEMAKE, OPTS, LIB_OPTS and CORE_LIB and CONTRIB_LIB have to
+# be specified externally, in the OP specific makefiles
+
+#ROOT=`pwd`
+#MAKEMAKE=opp_makemake
+#OPTS=-f -b $(ROOT) -c $(ROOT)/omnetppconfig
+#LIB_OPTS=-w -o libmfcore -s 
+#CORE_LIB=-L$(ROOT)/core/lib -lmfcore
+#CONTRIB_LIB=-L$(ROOT)/contrib/lib -lmfcontrib
+
+#--------------------------------------
+ICORE=-I$(ROOT)/core/utils -I$(ROOT)/core/basicMessages -I$(ROOT)/core/blackboard -I$(ROOT)/core/channelControl -I$(ROOT)/core/basicModules
+ICONTRIB=-I$(ROOT)/contrib/utils -I$(ROOT)/contrib/messages -I$(ROOT)/contrib/nic -I$(ROOT)/contrib/nic/radios -I$(ROOT)/contrib/nic/phyLayer -I$(ROOT)/contrib/nic/macLayer -I$(ROOT)/contrib/mobility -I$(ROOT)/contrib/netwLayer -I$(ROOT)/contrib/applLayer 
+#--------------------------------------
+
+#--------------------------------------
+CORE_INCLUDE=-I$(ROOT)/core/include
+CONTRIB_INCLUDE=-I$(ROOT)/contrib/include
+
+NET_OPTS=$(CORE_INCLUDE) $(CONTRIB_INCLUDE) $(CORE_LIB) $(CONTRIB_LIB)
+
+
+all:
+	@echo $(ROOT)
+	@cd $(ROOT) && $(MAKEMAKE) $(OPTS) -r -n -Xadmin -Xbitmaps -Xdoc -Xtemplate
+
+	@echo $(ROOT)/core
+	@cd $(ROOT)/core && $(MAKEMAKE) $(OPTS) -r -n
+	@echo $(ROOT)/core/utils
+	@cd $(ROOT)/core/utils && $(MAKEMAKE) $(OPTS) -n
+	@echo $(ROOT)/core/blackboard
+	@cd $(ROOT)/core/blackboard && $(MAKEMAKE) $(OPTS) -n $(ICORE)
+	@echo $(ROOT)/core/channelControl
+	@cd $(ROOT)/core/channelControl && $(MAKEMAKE) $(OPTS) -n $(ICORE)
+	@echo $(ROOT)/core/basicMessages
+	@cd $(ROOT)/core/basicMessages && $(MAKEMAKE) $(OPTS) -n $(ICORE)
+	@echo $(ROOT)/core/basicModules
+	@cd $(ROOT)/core/basicModules && $(MAKEMAKE) $(OPTS) -n $(ICORE)
+	@echo $(ROOT)/core/include
+	@cd $(ROOT)/core/include && $(MAKEMAKE) $(OPTS) -n
+	@echo $(ROOT)/core/lib
+	@cd $(ROOT)/core/lib && $(MAKEMAKE) $(OPTS) $(LIB_OPTS) $(ICORE)
+
+	@echo $(ROOT)/contrib
+	@cd $(ROOT)/contrib && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -r -n
+	@echo $(ROOT)/contrib/utils
+	@cd $(ROOT)/contrib/utils && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -n
+	@echo $(ROOT)/contrib/messages
+	@cd $(ROOT)/contrib/messages && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -n
+	@echo $(ROOT)/contrib/nic
+	@cd $(ROOT)/contrib/nic && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -n -r
+	@echo $(ROOT)/contrib/nic/radios 
+	@cd $(ROOT)/contrib/nic/radios && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -n
+	@echo $(ROOT)/contrib/nic/phyLayer 
+	@cd $(ROOT)/contrib/nic/phyLayer && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -n 
+	@echo $(ROOT)/contrib/nic/macLayer 
+	@cd $(ROOT)/contrib/nic/macLayer && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -n 
+	@echo $(ROOT)/contrib/mobility 
+	@cd $(ROOT)/contrib/mobility && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -n 
+	@echo $(ROOT)/contrib/netwLayer 
+	@cd $(ROOT)/contrib/netwLayer && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -n 
+	@echo $(ROOT)/contrib/applLayer
+	@cd $(ROOT)/contrib/applLayer && $(MAKEMAKE) $(OPTS) $(CORE_INCLUDE) $(ICONTRIB) -n 
+	@echo $(ROOT)/contrib/include
+	@cd $(ROOT)/contrib/include && $(MAKEMAKE) $(OPTS) $(ICONTRIB) -n
+	@echo $(ROOT)/contrib/lib
+	@cd $(ROOT)/contrib/lib && $(MAKEMAKE) $(OPTS) -w -o libmfcontrib -s $(ICONTRIB)
+
+	@echo $(ROOT)/testSuite
+	@echo $(ROOT)/testSuite/blackboard
+	@cd $(ROOT)/testSuite/blackboard && $(MAKEMAKE) -u Cmdenv $(OPTS) $(CORE_INCLUDE) $(CORE_LIB)
+	@cd $(ROOT)/testSuite && $(MAKEMAKE) $(OPTS) -n -r
+	@echo $(ROOT)/testSuite/SingleChannelRadio
+	@cd $(ROOT)/testSuite/SingleChannelRadio && $(MAKEMAKE) -u Cmdenv $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/testSuite/test-cc-connections
+	@cd $(ROOT)/testSuite/test-cc-connections && $(MAKEMAKE) -u Cmdenv $(OPTS) $(NET_OPTS)
+
+	@echo $(ROOT)/networks
+	@cd $(ROOT)/networks && $(MAKEMAKE) $(OPTS) -r -n
+	@echo $(ROOT)/networks/aloha
+	@cd $(ROOT)/networks/aloha && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/networks/mobileNet
+	@cd $(ROOT)/networks/mobileNet && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/networks/p2p
+	@cd $(ROOT)/networks/p2p && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/networks/csma
+	@cd $(ROOT)/networks/csma && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/networks/gilbert-elliot
+	@cd $(ROOT)/networks/gilbert-elliot && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/networks/802.11
+	@cd $(ROOT)/networks/802.11 && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/networks/floodTest
+	@cd $(ROOT)/networks/floodTest && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/networks/baseStationNet
+	@cd $(ROOT)/networks/baseStationNet && $(MAKEMAKE) $(OPTS) $(NET_OPTS)

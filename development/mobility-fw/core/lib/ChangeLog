@@ -1,0 +1,14 @@
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-07-27:	Daniel Willkomm
+	* makefrag.linux makefrag-lib.mac makefrag-nolib.mac: added makefrag for 
+	MAC OS with and without shared libraries
+	* makefrag makefrag.vc: added comments
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2006-07-06:	Daniel Willkomm
+	* makefrag.vc: added makefrag.vc for windows Makefile - not tested!
+
+2006-06-06:	Daniel Willkomm
+	* create: directory for the core library

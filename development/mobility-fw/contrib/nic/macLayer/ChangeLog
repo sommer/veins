@@ -1,0 +1,29 @@
+2006-08-16:	Daniel Willkomm
+	* CSMAMacLayer.cc: cancel minorMsg and set macState=RX before scheduling
+	a backoff
+
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2006-07-05:	Daniel Willkomm
+	* AlohaMacLayer.cc:added debug messages, removed delete from handleLowerMsg,
+	only set macState to TX if radio switches successfully
+	* CSMAMacLayer.cc: added debug messages, removed delete from handleLowerMsg,
+	reschedule backoff if medium busy
+
+2006-06-08:	Daniel Willkomm
+	* SimpleMacLayer.*: moved to core/basicModules and renamed to 
+	BasicMacLayer
+	* AlohaMacLayer.*: adapted to new BasicMacLayer
+	* CSMAMacLayer.*: adapted to new BasicMacLayer
+
+2005-11-23: Daniel Willkomm
+	* BasicMacLayer.*: major cleanup; introduced new L2 address class
+
+2005-10-21: Daniel Willkomm
+	* BasicMacLayer.cc: copy kind and name from network message for
+	  visibility in tkenv
+
+2005-10-18: Daniel Willkomm
+	* BasicMacLayer.*: moved here from core/basicModules

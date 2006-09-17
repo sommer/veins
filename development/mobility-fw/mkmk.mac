@@ -1,0 +1,23 @@
+#!/bin/bash
+# 
+# script to recreate all makefiles
+
+# set root directory
+ROOT=`pwd`
+
+# make omnetppconfig
+opp_makemake -f --genconfig omnetppconfig
+
+
+# you can make the MF under MAC with or without shared libraries
+# Please choose and uncomment one
+
+# with shared libraries
+(cd $ROOT/core/lib && cp makefrag-lib.mac makefrag)
+(cd $ROOT/contrib/lib && cp makefrag-lib.mac makefrag)
+make ROOT=$ROOT -f Makefile.linux
+
+# without shared libraries
+#(cd $ROOT/core/lib && cp makefrag-nolib.mac makefrag)
+#(cd $ROOT/contrib/lib && cp makefrag-nolib.mac makefrag)
+#make ROOT=$ROOT -f Makefile.mac

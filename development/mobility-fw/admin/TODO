@@ -1,0 +1,4 @@
+test network for cc does not work anymore -> not included in first release
+test network for blackboard
+update manual
+ - add getSenderName(), getLogName()...

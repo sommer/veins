@@ -1,0 +1,15 @@
+#!/bin/bash
+# 
+# script to recreate all makefiles
+
+# set root directory
+ROOT=`pwd`
+
+# make omnetppconfig
+opp_makemake -f --genconfig omnetppconfig
+
+# copy lib makefrags for linux
+(cd $ROOT/core/lib && cp makefrag.linux makefrag)
+(cd $ROOT/contrib/lib && cp makefrag.linux makefrag)
+
+make ROOT=$ROOT -f Makefile.linux

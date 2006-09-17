@@ -1,0 +1,137 @@
+[General]
+ini-warnings = true
+network = ccSim
+sim-time-limit = 50s
+
+[Tkenv]
+bitmap-path="..\..\bitmaps"
+default-run=1
+use-mainwindow = yes
+print-banners = yes
+slowexec-delay = 300ms
+update-freq-fast = 10
+update-freq-express = 100
+breakpoints-enabled = yes
+
+[Cmdenv]
+runs-to-execute = 1
+event-banners = no
+module-messages = yes
+
+[DisplayStrings]
+
+
+[Run 1]
+ccSim.host[0].mobility.x = 1
+ccSim.host[0].mobility.y = 1
+
+ccSim.host[1].mobility.x = 869
+ccSim.host[1].mobility.y = 1
+
+ccSim.host[2].mobility.x = 869
+ccSim.host[2].mobility.y = 869
+
+ccSim.host[3].mobility.x = 1
+ccSim.host[3].mobility.y = 869
+
+ccSim.host[4].mobility.x = 1738
+ccSim.host[4].mobility.y = 1
+
+ccSim.host[5].mobility.x = 1738
+ccSim.host[5].mobility.y = 869
+
+ccSim.host[6].mobility.x = 2607
+ccSim.host[6].mobility.y = 1
+
+ccSim.host[7].mobility.x = 2607
+ccSim.host[7].mobility.y = 869
+
+ccSim.host[8].mobility.x = 3476
+ccSim.host[8].mobility.y = 1
+
+ccSim.host[9].mobility.x = 3476
+ccSim.host[9].mobility.y = 869
+
+[Run 2]
+ccSim.host[0].mobility.x = 1
+ccSim.host[0].mobility.y = 1
+
+ccSim.host[1].mobility.x = 869
+ccSim.host[1].mobility.y = 1
+
+ccSim.host[2].mobility.x = 869
+ccSim.host[2].mobility.y = 869
+
+ccSim.host[3].mobility.x = 1
+ccSim.host[3].mobility.y = 869
+
+ccSim.host[4].mobility.x = 1738
+ccSim.host[4].mobility.y = 1
+
+ccSim.host[5].mobility.x = 1738
+ccSim.host[5].mobility.y = 869
+
+ccSim.host[6].mobility.x = 2607
+ccSim.host[6].mobility.y = 1
+
+ccSim.host[7].mobility.x = 2607
+ccSim.host[7].mobility.y = 869
+
+ccSim.host[8].mobility.x = 3476
+ccSim.host[8].mobility.y = 1
+
+ccSim.host[9].mobility.x = 3476
+ccSim.host[9].mobility.y = 869
+
+ccSim.channelcontrol.useTorus = 1
+
+[Parameters]
+##############################################################################
+#       Parameters for the entire simulation                                 #
+##############################################################################
+ccSim.playgroundSizeX = 3500
+ccSim.playgroundSizeY = 1000
+ccSim.numHosts = 10
+ccSim.channelcontrol.alpha = 2
+ccSim.channelcontrol.useTorus = 0
+
+##############################################################################
+#       Parameters for the ChannelControl                                    #
+##############################################################################
+ccSim.channelcontrol.carrierFrequency = 868e+6
+
+# max transmission power [mW]
+ccSim.channelcontrol.pMax  = 1
+
+# signal attenuation threshold [dBm]
+ccSim.channelcontrol.sat   = -90
+
+ccSim.channelcontrol.coreDebug = 1
+ccSim.channelcontrol.sendDirect = 0
+
+
+##############################################################################
+#       Parameters for the Host                                              #
+##############################################################################
+ccSim.host[*].applLayer = "TestCCConnApplLayer"
+ccSim.host[*].appl.debug = 0
+
+##############################################################################
+#       Parameters for the Application Layer                                 #
+##############################################################################
+ccSim.host[*].appl.headerLength=12
+ccSim.host[*].net.headerLength=24
+ccSim.host[*].net.coreDebug=0
+ccSim.host[*].nic.mac.headerLength=10
+ccSim.host[*].blackboard.coreDebug=0
+ccSim.host[*].mobility.coreDebug=0
+
+##############################################################################
+#       Parameters for the Physical Layer                                    #
+##############################################################################
+ccSim.host[*].nic.snrEval.headerLength=16
+ccSim.host[*].nic.snrEval.bitrate=10000
+ccSim.host[*].nic.snrEval.transmitterPower=1; always in mW
+ccSim.host[*].nic.snrEval.coreDebug=0
+ccSim.host[*].nic.mac.coreDebug=0
+ccSim.host[*].nic.decider.coreDebug=0

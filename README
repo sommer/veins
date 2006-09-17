@@ -1,0 +1,23 @@
+MiXiM
+=====
+
+MiXiM is a simulator for wireless and mobile networks using the OMNeT++ simulation engine.
+
+
+
+
+How to install?
+---------------
+See the file INSTALL in the documentation directory.
+
+
+
+Documentation
+-------------
+All documentation can be found in the documentation subdirectory. If you still have questions after reading these, check out the website at http://mixim.sourceforge.net. There's also a forum there to discuss with other users and developers.
+
+
+
+--
+
+MiXiM is distrivuted under the GPL license, which can be found in the COPYING file.

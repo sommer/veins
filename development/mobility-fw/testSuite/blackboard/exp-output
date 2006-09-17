@@ -1,0 +1,47 @@
+OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2005 Andras Varga
+Release: 3.2, edition: Academic Public License.
+See the license for distribution terms and warranty disclaimer
+Setting up Cmdenv...
+
+Preparing for Run #1...
+Setting up network `sim'...
+Initializing...
+StateVisualize::receiveBBItem Host state changed to SLEEP
+StateView::receiveBBItem Host state changed to SLEEP
+TestStateSub::receiveBBItem test param changed to BLUE
+
+Running simulation...
+StateVisualize::receiveBBItem Host state changed to DEAD
+StateView::receiveBBItem Host state changed to DEAD
+TestStateSub::receiveBBItem test param changed to RED
+StateVisualize::receiveBBItem Host state changed to AWAKE
+StateView::receiveBBItem Host state changed to AWAKE
+TestStateSub::receiveBBItem test param changed to GREEN
+StateVisualize::receiveBBItem Host state changed to SLEEP
+StateView::receiveBBItem Host state changed to SLEEP
+TestStateSub::receiveBBItem test param changed to BLUE
+StateVisualize::receiveBBItem Host state changed to DEAD
+StateView::receiveBBItem Host state changed to DEAD
+TestStateSub::receiveBBItem test param changed to RED
+StateView::handleMessage unsubscribed HostState
+StateVisualize::receiveBBItem Host state changed to AWAKE
+StateView::receiveBBItem Host state changed to AWAKE
+TestStateSub::receiveBBItem test param changed to GREEN
+TestStatSub::handleMessage unsubscribed TestParam
+StateVisualize::receiveBBItem Host state changed to SLEEP
+StateView::receiveBBItem Host state changed to SLEEP
+StateVisualize::receiveBBItem Host state changed to DEAD
+StateView::receiveBBItem Host state changed to DEAD
+StateVisualize::receiveBBItem Host state changed to AWAKE
+StateView::receiveBBItem Host state changed to AWAKE
+StateVisualize::receiveBBItem Host state changed to SLEEP
+StateView::receiveBBItem Host state changed to SLEEP
+StateVisualize::receiveBBItem Host state changed to DEAD
+StateView::receiveBBItem Host state changed to DEAD
+
+<!> No more events -- simulation ended.
+
+
+Calling finish() at end of Run #1...
+
+End run of OMNeT++

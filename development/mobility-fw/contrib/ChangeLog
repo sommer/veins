@@ -1,0 +1,14 @@
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-07-21:	Daniel Willkomm
+	* makefrag.vc: added (copied from linux version and adapted)
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2005-11-23: Daniel Willkomm
+	* utils: added utils dir
+
+2005-10-18: Daniel Willkomm
+	* created: the contrib dir contains all concrete (mostly) stable
+	implementations for the MF
+

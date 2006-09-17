@@ -1,0 +1,31 @@
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2006-07-04:	Daniel Willkomm
+	* BaseStationHost.ned, ClientHost.ned: exchanged NicCSMA with CoreTestNic
+
+2006-07-03:	Daniel Willkomm
+	* BaseStationHost.ned, ClientHost.ned: adapted to new MF. baseStationNet 
+	contains csma and snr now
+	* omnetpp.ini: added all parameterneeded for the new MF
+
+2006-06-29:	Daniel Willkomm
+	* ClientHost.ned, BaseStationHost.ned: changed module names
+	(Basic -> SimpleNetwLAyer and Basic -> AlohaSnrNic) to compile
+	with new MF
+
+2005-01-18  ------ mobility-fw1_0a5 released ------
+
+2004-11-22  ------ mobility-fw1.0a4 released ------
+
+2004-11-05  ------ mobility-fw1.0a4 released ------
+
+2004-11-05	Marc Löbbers
+	* omnetpp.ini: commented 'random-seed' out due to new RNG 
+	architecture (OMNeT 3.0 alpha 9)
+
+2004-10-20  ------ mobility-fw1.0a3 released ------
+
+2004-09-30	Daniel Willkomm
+	* *: added baseStationNet network

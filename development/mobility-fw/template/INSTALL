@@ -1,0 +1,32 @@
+This directory provides a template for your own simulation. Copy it
+into a directory of your choice and start changing the
+files.
+
+You should then delete those files were one of the modules provided in
+the framework suffices (i.e. those files you did not touch) -- this is 
+a good moment to have a look at the documentation prepared for you in 
+the doc subdirectory of the MF. 
+
+Rename the remaining files into something useful (do not forget to
+update your .ned files and the include directives) and start entering
+your code at the places marked with
+
+// ENTER YOUR CODE HERE
+
+Edit the Makefile.gen (or the Makefile.gen.vc respectively) to tell it 
+where the MF resides. 
+
+Linux / MAC OS:
+ Call
+ $ make -f Makefile.gen
+ and then 
+ $ make 
+
+Windows:
+ Call
+ $ nmake /nologo /f Makefile.gen.vc
+ and then
+ $ nmake /nologo /f Makefile.vc
+
+Congratulations -- your simulation useing the MF is ready for 
+execution.

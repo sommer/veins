@@ -1,0 +1,13 @@
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-08-11:	Daniel Willkomm
+	* Host.ned: use TestApplLayer instead of BurstApllLayer
+	* omnetpp.ini: added applType (TestApplLayer)
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2006-07-03:	Daniel Willkomm
+	* *_n.cc: removed
+
+2006-06-30:	Daniel Willkomm
+	* created: aloha test network created

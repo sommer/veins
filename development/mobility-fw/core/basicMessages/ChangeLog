@@ -1,0 +1,36 @@
+2006-08-11  ------ mobility-fw2.0p2 released ------
+
+2006-07-06  ------ mobility-fw2.0p1 released ------
+
+2006-06-19:	Daniel Willkomm
+	* BorderMsg.msg: used as a self message for borderhandling within 
+	BasicMobility
+
+2006-06-08:	Daniel Willkomm
+	* MacPkt.msg: moved from contrib/messages
+
+2006-06-06:	Daniel Willkomm
+	* TransmComplete.msg: removed; is handled through type field now not with 
+	a separate message
+
+2005-10-18	Daniel Willkomm
+	* ApplPkt.msg: moved to contrib/messages
+	* MacPkt.msg: moved to contrib/messages
+	* NetwPkt.msg: moved to contrib/messages
+	* AirFrame.msg: removed id to get the senders position and inserted real
+	position instead, added senderDir and senderSpeed variables
+
+2005-01-18  ------ mobility-fw1_0a5 released ------
+
+2004-11-22  ------ mobility-fw1.0a4 released ------
+
+2004-11-05  ------ mobility-fw1.0a4 released ------
+
+2004-10-20  ------ mobility-fw1.0a3 released ------
+
+2004-08-18  ------ mobility-fw1.0a2 released ------
+
+2004-07-23  ------ mobility-fw1.0a1 released ------
+
+2004-07-22  ------ mobility-fw1.0a1 released ------
+
