@@ -48,6 +48,7 @@ class Guesswork : public ExOR
 	virtual void handleTimer(unsigned int idx);
 	virtual void rx(Packet *msg);
 	virtual void tx(Packet *msg);
+	virtual void txDone(Packet *msg);
 };
 
 Define_Module_Like(Guesswork, Routing);
@@ -369,4 +370,14 @@ void Guesswork::exor_func(exor *e, Packet *info, const ExORAction action)
 	printf(PRINT_ROUTING,"e->send = %d, e->metric=%d, e->send_as=%d",e->send,e->metric,e->send_as);
 	assert(e->metric<65536);
 }
+
+void Guesswork::txDone(Packet *msg)
+{
+	Header *h = (Header*)msg->getData(ROUTING_DATA);
+	if (h->type == MSG_SOURCE_XMIT)
+		sendToApp(msg);
+	else
+		delete msg;
+}
+
 

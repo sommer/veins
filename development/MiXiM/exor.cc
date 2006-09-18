@@ -182,17 +182,6 @@ ExOR::~ExOR()
 		delete waiting.inv;
 }
 
-void ExOR::txDone(Packet *msg)
-{
-	Header *h = (Header*)msg->getData(ROUTING_DATA);
-	if (h->type !=EXOR_REPLY)
-		sendToApp(msg);
-	else
-	{
-		delete msg;
-	}
-}
-
 void ExOR::rx(Packet * msg)	
 {
 	/*bool ret = PositifNode::handleMessage(msg,newNeighbour);
@@ -594,7 +583,8 @@ void ExOR::forceGrant(bool success)
 	if (!success)
 	{
 		printf(PRINT_CRIT,"forceGrant failure");
-		assert(0);
+		inv->setKind(TX_FAILED);
+		sendToApp(inv);
 		return;
 	}
 	//e->send = false;

@@ -108,7 +108,6 @@ class ExOR : public NeighbourRouting
 		virtual void initialize();
 		virtual void rx(Packet *msg);
 		virtual void tx(Packet *msg)=0;
-		virtual void txDone(Packet *msg);
 		virtual void forceGrant(bool success);
 
 		virtual unsigned int sendExOR(int dest, int sink_id, Packet *msg, unsigned int metric,const list<NeighbourInfo*> *neigh,bool invertlist=false,int nid=-1);
