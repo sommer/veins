@@ -1,0 +1,70 @@
+Scripts readme
+--------------
+The programs in the macsimulator-scripts directory are used to parse data
+from the MiXiM simulator logs into a variety of more usable formats. The
+scripts are ported from MiXiM's predecessor, the macsimulator, and as such
+only supports the ported traffic generators and not the new applications.
+This file describes the function of these different scripts, and also in a
+number of cases a particular script requires output from another script,
+and we will detail what combinations of scripts are used. In every case
+aside from collectstats.pl, the results of multiple simulation runs can be
+inputted and the scripts will sensibly merge runs with identical paramaters,
+and separate those with different parameters.
+
+List
+====
+
+collectstats.pl: Initial parsing script. Feed the output of a simulation
+run directly into this script. Output looks as follows [wrapped for
+readability]:
+
+time=30.260765 nodes=16 app_tx=36 app_rx=36 rt_tx=36 rt_rx=36
+rt_tx_drop=0 mac_tx=36 mac_rx=36 radio_sleep=450.7863 radio_tx=0.3855
+radio_rx=33.0005 radio_collision=0.0039 in_queue=0 mac_rx_data=0.144
+mac_rx_overhead=0.6419 mac_rx_overhear=1.3891 mac_rx_duplicate=0
+mac_tx_data=0.144 mac_tx_overhead=0.2329 own_sched=1 msglen=20
+msginterval=10 [scen.*=*] mac=TMac [mac.*=*]
+
+Meanings (all times/counts are totals over the entire network):
+time: elaspsed simulation time
+nodes: nodes in simulation
+app_tx/rx: messages sent/recieved at the application level
+rt_rx/tx/tx_drop: messages sent/recieved/dropped at the routing layer
+mac_tx/rx: messages sent/recieved at the MAC layer
+radio_sleep/tx/rx/collision: time spent with the radio in sleep/transmit/
+  recieve/collision state
+in_queue: messages in a transmit queue at the end of simulation
+mac_rx_data/overhead/overhear: time spent with the MAC layer recieving
+  useful/overhead/overheard data
+mac_tx_data/overhead: time spent with the MAC layer sending useful/
+  overhead data
+own_sched: number of nodes that created their own schedules rather than
+  adopting another node's schedule
+msglen/msginterval/[scen.*]: parameters from the .ini files
+  and scenario files
+mac/[mac.*]: Name of the mac class, and all parameters read by it
+
+parseenergy.pl: Generates energy consumption values over the whole network
+for a particular radio model.  Default model is an RFM1000 radio. To alter
+the power cost of sleep/tx/rx modes, change the values at the top of the
+script.  Input data should be the output from collectstats.pl. Creates
+files called "<mac><msglen>" (with "-oa"="overhearing avoidance",
+"-frts"="future-ready-to-send" and "-irts"="ignore-ready-to-send" added to
+the end when various TMAC variants are being used) which contain a series
+of lines of the form "<msginterval> <cost>". If the results from multiple
+simulation runs are input, then the output lines are an average over all
+runs with the same parameters. The data files that this script can be fed
+into gnuplot if you wish to generate graphs.
+
+esource.pl: Generates more detailed energy use information. Input is the
+results from collectstats.pl. Uses an internally specified energy model
+in the same way as parseenergy.pl (again, alter values at top of script to
+change radio model).  Output is similar to collectstats.pl, but with "ek"
+and "e" parameters added to the front of the list, for each one of various
+different states that the radio can be in. "ek" is "energy condition", and
+"e" is the total energy consumed in that mode over the entire network.
+
+parsedetailed.pl: Generates a CSV file with detailed energy use
+information. Input is the results from esource.pl. Output is a set of files
+called "<msglen>-<msginterval>.csv" which can be loaded in any spreadsheet
+program of your choice.

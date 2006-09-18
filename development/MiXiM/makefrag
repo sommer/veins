@@ -1,0 +1,19 @@
+CFLAGS:=$(filter-out -DNDEBUG=1,$(CFLAGS)) -Wall -O2
+LDFLAGS += -O2 -Wall
+
+all: $(TARGET)
+
+run: $(TARGET)
+	./$(TARGET)
+
+mapper: $(TARGET)
+	./$(TARGET) | grep MAPPER |../mapper/omnetevents.py
+
+debug: $(TARGET)
+	gdb $(TARGET)
+
+valgrind: $(TARGET)
+	valgrind --show-reachable=yes --log-fd=1 --leak-check=full ./$(TARGET) 2>&1 >valgrind.log
+	@#valgrind --show-reachable=yes --leak-check=full ./$(TARGET)
+	@#valgrind --tool=memcheck --db-attach=yes --suppressions=sup --gen-suppressions=yes ./$(TARGET)
+

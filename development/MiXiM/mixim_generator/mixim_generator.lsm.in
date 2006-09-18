@@ -1,0 +1,21 @@
+Begin3
+Title:		mixim_generator
+Version:	@VERSION@
+Entered-date:	@ISODATE@
+Description:	Generates config files for use with MiXiM
+		@configure_input@
+		Please edit mixim_generator.lsm.in to fix the Keywords and
+		Primary-site entries, add several more lines of
+		description here if appropriate, and to delete these
+		instructions.
+Keywords:	[substitute your keywords here]
+Author: 	o.w.visser@tudelft.nl (Otto Visser)
+Maintained-by:	o.w.visser@tudelft.nl (Otto Visser)
+Primary-site:	metlab.unc.edu pub/Linux/apps/some/directory
+		31k mixim_generator-@VERSION@.tar.gz
+		500  mixim_generator.lsm
+Alternate-site: 
+Original-site:  
+Platforms:      
+Copying-policy:	GNU copyleft
+End

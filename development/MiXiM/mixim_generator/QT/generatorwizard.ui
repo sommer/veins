@@ -1,0 +1,1265 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>generatorWizard</class>
+<widget class="QWizard">
+    <property name="name">
+        <cstring>generatorWizard</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>480</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>MiXiM config file generator</string>
+    </property>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>WizardPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>General settings</string>
+        </attribute>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>190</y>
+                    <width>570</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>40</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>89</x>
+                    <y>104</y>
+                    <width>40</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>12</y>
+                    <width>95</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Node count:</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel3</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>72</y>
+                    <width>72</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Radio chip:</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>40</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>89</x>
+                    <y>74</y>
+                    <width>40</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <spacer>
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>40</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>112</x>
+                    <y>14</y>
+                    <width>40</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel4</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>102</y>
+                    <width>72</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Mac layer:</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>132</y>
+                    <width>95</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Routing layer:</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>42</y>
+                    <width>72</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Node type:</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>40</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>89</x>
+                    <y>44</y>
+                    <width>40</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <spacer>
+            <property name="name">
+                <cstring>spacer17</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>30</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>112</x>
+                    <y>134</y>
+                    <width>30</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <spacer>
+            <property name="name">
+                <cstring>spacer6</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>100</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>188</x>
+                    <y>249</y>
+                    <width>100</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel7_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>294</x>
+                    <y>221</y>
+                    <width>50</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>days</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel7</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>277</y>
+                    <width>128</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Maximim CPU time:</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer8</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>275</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>221</y>
+                    <width>275</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel6</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>247</y>
+                    <width>169</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Maximum simulated time:</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer7</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>141</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>147</x>
+                    <y>279</y>
+                    <width>141</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel8</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>350</x>
+                    <y>221</y>
+                    <width>81</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>(hh:mm:ss)</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_3</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>450</x>
+                    <y>250</y>
+                    <width>119</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>(0 means no limit)</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_3_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>450</x>
+                    <y>280</y>
+                    <width>119</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>(0 means no limit)</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel5</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>350</y>
+                    <width>289</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Name of the application to run on the nodes:</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>40</width>
+                    <height>24</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>305</x>
+                    <y>350</y>
+                    <width>40</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>maxSimDaysSB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>294</x>
+                    <y>247</y>
+                    <width>50</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>maxCPUDaysSB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>294</x>
+                    <y>277</y>
+                    <width>50</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QTimeEdit">
+            <property name="name">
+                <cstring>maxCPUTime</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>350</x>
+                    <y>277</y>
+                    <width>81</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>320</y>
+                    <width>570</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QTimeEdit">
+            <property name="name">
+                <cstring>maxSimTime</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>350</x>
+                    <y>247</y>
+                    <width>81</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QComboBox">
+            <item>
+                <property name="text">
+                    <string>TNOde</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Mica2</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Mica2dot</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>nodeTypeCB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>158</x>
+                    <y>42</y>
+                    <width>98</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>nodeCountSB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>158</x>
+                    <y>12</y>
+                    <width>98</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="maxValue">
+                <number>65535</number>
+            </property>
+            <property name="minValue">
+                <number>1</number>
+            </property>
+        </widget>
+        <widget class="QComboBox">
+            <item>
+                <property name="text">
+                    <string>NoRouting</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>FloodRouting</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>routingCB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>146</x>
+                    <y>132</y>
+                    <width>110</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QComboBox">
+            <item>
+                <property name="text">
+                    <string>TMac</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>SMac</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>CSMA</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>macLayerCB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>135</x>
+                    <y>102</y>
+                    <width>121</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QComboBox">
+            <item>
+                <property name="text">
+                    <string>CC1000</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>RFM1001</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>radioChipCB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>135</x>
+                    <y>72</y>
+                    <width>121</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QComboBox">
+            <property name="name">
+                <cstring>applicationNameCB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>350</x>
+                    <y>350</y>
+                    <width>170</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="editable">
+                <bool>true</bool>
+            </property>
+        </widget>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>WizardPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>Layout settings</string>
+        </attribute>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>pixmapLabel3</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>182</x>
+                    <y>20</y>
+                    <width>100</width>
+                    <height>100</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="pixmap">
+                <pixmap>random.xpm</pixmap>
+            </property>
+            <property name="scaledContents">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>pixmapLabel2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>30</x>
+                    <y>20</y>
+                    <width>100</width>
+                    <height>100</height>
+                </rect>
+            </property>
+            <property name="pixmap">
+                <pixmap>grid.xpm</pixmap>
+            </property>
+            <property name="scaledContents">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer19</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>40</width>
+                    <height>86</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>176</x>
+                    <y>190</y>
+                    <width>40</width>
+                    <height>86</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel4_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>30</x>
+                    <y>170</y>
+                    <width>81</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Dimensions:</string>
+            </property>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line5_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>150</y>
+                    <width>580</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel6_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>31</x>
+                    <y>361</y>
+                    <width>16</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>ID</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel5_2_3</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>160</x>
+                    <y>221</y>
+                    <width>16</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>y</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel5_2_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>160</x>
+                    <y>251</y>
+                    <width>16</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>z</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel5_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>160</x>
+                    <y>191</y>
+                    <width>16</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>x</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel6_2_3</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>192</x>
+                    <y>360</y>
+                    <width>16</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Y</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel6_2_3_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>259</x>
+                    <y>360</y>
+                    <width>16</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Z</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel6_2_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>125</x>
+                    <y>360</y>
+                    <width>16</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>X</string>
+            </property>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line5</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>290</y>
+                    <width>580</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QRadioButton">
+            <property name="name">
+                <cstring>randomRB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>180</x>
+                    <y>130</y>
+                    <width>80</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Random</string>
+            </property>
+        </widget>
+        <widget class="QRadioButton">
+            <property name="name">
+                <cstring>regularGridRB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>30</x>
+                    <y>130</y>
+                    <width>108</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Regular grid</string>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>squareCB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>231</x>
+                    <y>211</y>
+                    <width>69</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>square</string>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>threeDCB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>231</x>
+                    <y>239</y>
+                    <width>69</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>3-D</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>dimXTB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>31</x>
+                    <y>191</y>
+                    <width>123</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>100</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>fixedAnchorCB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>30</x>
+                    <y>320</y>
+                    <width>180</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Fixed position for sink:</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>dimYTB</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>31</x>
+                    <y>221</y>
+                    <width>123</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>100</string>
+            </property>
+            <property name="readOnly">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>dimZTB</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>31</x>
+                    <y>251</y>
+                    <width>123</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>-</string>
+            </property>
+            <property name="readOnly">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>sinkIDTB</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>52</x>
+                    <y>361</y>
+                    <width>40</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>40</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>0</string>
+            </property>
+            <property name="readOnly">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>sinkXTB</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>146</x>
+                    <y>360</y>
+                    <width>40</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>40</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>0</string>
+            </property>
+            <property name="readOnly">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>sinkYTB</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>213</x>
+                    <y>360</y>
+                    <width>40</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>40</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>0</string>
+            </property>
+            <property name="readOnly">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>sinkZTB</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>280</x>
+                    <y>360</y>
+                    <width>40</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>40</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>0</string>
+            </property>
+            <property name="readOnly">
+                <bool>false</bool>
+            </property>
+        </widget>
+    </widget>
+</widget>
+<connections>
+    <connection>
+        <sender>regularGridRB</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>generatorWizard</receiver>
+        <slot>RegularGridToggled()</slot>
+    </connection>
+    <connection>
+        <sender>randomRB</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>generatorWizard</receiver>
+        <slot>randomToggled()</slot>
+    </connection>
+    <connection>
+        <sender>squareCB</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>generatorWizard</receiver>
+        <slot>squareToggled()</slot>
+    </connection>
+    <connection>
+        <sender>threeDCB</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>generatorWizard</receiver>
+        <slot>threeDToggled()</slot>
+    </connection>
+    <connection>
+        <sender>fixedAnchorCB</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>generatorWizard</receiver>
+        <slot>fixedAnchorToggle()</slot>
+    </connection>
+    <connection>
+        <sender>dimXTB</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>generatorWizard</receiver>
+        <slot>dimXChanged()</slot>
+    </connection>
+    <connection>
+        <sender>applicationNameCB</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>generatorWizard</receiver>
+        <slot>applicationNameChanged()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>nodeCountSB</tabstop>
+    <tabstop>nodeTypeCB</tabstop>
+    <tabstop>radioChipCB</tabstop>
+    <tabstop>macLayerCB</tabstop>
+    <tabstop>routingCB</tabstop>
+    <tabstop>maxSimDaysSB</tabstop>
+    <tabstop>maxSimTime</tabstop>
+    <tabstop>maxCPUDaysSB</tabstop>
+    <tabstop>maxCPUTime</tabstop>
+    <tabstop>regularGridRB</tabstop>
+    <tabstop>randomRB</tabstop>
+    <tabstop>dimXTB</tabstop>
+    <tabstop>dimYTB</tabstop>
+    <tabstop>dimZTB</tabstop>
+    <tabstop>squareCB</tabstop>
+    <tabstop>threeDCB</tabstop>
+    <tabstop>fixedAnchorCB</tabstop>
+    <tabstop>sinkIDTB</tabstop>
+    <tabstop>sinkXTB</tabstop>
+    <tabstop>sinkYTB</tabstop>
+    <tabstop>sinkZTB</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">generatorwizard.ui.h</include>
+</includes>
+<slots>
+    <slot>RegularGridToggled()</slot>
+    <slot>randomToggled()</slot>
+    <slot>squareToggled()</slot>
+    <slot>threeDToggled()</slot>
+    <slot>dimXChanged()</slot>
+    <slot>fixedAnchorToggle()</slot>
+    <slot>applicationNameChanged()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

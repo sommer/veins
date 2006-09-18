@@ -1,0 +1,41 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(mixim_generator.c)
+dnl Every other copy of the package version number gets its value from here
+AM_INIT_AUTOMAKE(mixim_generator, 0.1.0)
+
+dnl create a config.h file (Automake will add -DHAVE_CONFIG_H)
+AM_CONFIG_HEADER(config.h)
+
+AC_SUBST(VERSION)
+
+dnl ISODATE=`date +%Y-%m-%d`
+dnl AC_SUBST(ISODATE)
+
+dnl AC_CANONICAL_HOST
+
+dnl Checks for programs.
+AC_PROG_INSTALL
+AC_PROG_CC
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(unistd.h string.h dirent.h sys/ndir.h ndir.h)
+
+dnl jm_CHECK_TYPE_STRUCT_UTIMBUF
+AC_HEADER_MAJOR
+dnl AC_FUNC_ALLOCA
+dnl AC_STRUCT_TM
+dnl AC_STRUCT_ST_BLOCKS
+AC_FUNC_CLOSEDIR_VOID
+dnl AC_CHECK_FUNCS(mkfifo)
+dnl AC_CHECK_FUNC(mknod)
+AC_CHECK_HEADER(argp.h,,AC_MSG_ERROR(Cannot continue: argp.h not found))
+    
+dnl Checks for typedefs, structures, and compiler characteristics.
+
+dnl Checks for library functions.
+
+AC_OUTPUT(Makefile mixim_generator.lsm mixim_generator.spec)

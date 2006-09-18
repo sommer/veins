@@ -1,0 +1,126 @@
+#ifndef __CSMACAH__
+#define __CSMACAH__
+
+#include "mac.h"
+
+// protocol config
+#define RTS_CONTEND_TIME	100
+#define MAX_RTS_CONTEND_TIME	300
+#define CTS_CONTEND_TIME	5
+#define DATA_CONTEND_TIME	5
+#define ACK_CONTEND_TIME	5
+#define ALLOWED_DRIFT		30
+
+enum ProtoState {
+	PROTO_STATE_IDLE,
+	PROTO_STATE_CONTEND,
+	PROTO_STATE_WFCTS,
+	PROTO_STATE_WFDATA,
+	PROTO_STATE_SEND_RTS,
+	PROTO_STATE_SEND_CTS,
+	PROTO_STATE_SEND_DATA,
+	PROTO_STATE_WFACK,
+	PROTO_STATE_SEND_ACK	
+};
+enum NavState {
+	NAV_STATE_CLEAR,
+	NAV_STATE_BUSY
+};
+
+enum Timers {
+	TIMER_PROTOCOL,
+	TIMER_NAV
+};
+
+enum MessageKind {
+	KIND_DATA,
+	KIND_RTS,
+	KIND_CTS,
+	KIND_ACK
+};
+
+struct Header {
+	MessageKind kind;
+	ushort nav;
+};
+	
+#define FLENGTH(x)	((int)((frameTotalTime((x)+headerLength()))*32768.0)+1)
+#define CTS_FLENGTH	(FLENGTH(0))
+#define ACK_FLENGTH	(FLENGTH(0))
+
+#define TIMEOUT_WFCTS	(CTS_FLENGTH+CTS_CONTEND_TIME+10)
+#define TIMEOUT_WFDATA	(FLENGTH(0)+DATA_CONTEND_TIME)
+#define TIMEOUT_WFACK	(ACK_FLENGTH+ACK_CONTEND_TIME+10)
+
+#define NAV_RTS(x)	(CTS_CONTEND_TIME+CTS_FLENGTH+\
+				DATA_CONTEND_TIME+FLENGTH(x)+\
+				ACK_CONTEND_TIME+ACK_FLENGTH)
+
+#define NAV_ACK		(ACK_CONTEND_TIME+ACK_FLENGTH)
+
+
+//typedef unsigned short ushort;
+
+class CsmaCA: public Mac {
+
+	// contructor, destructor, module stuff
+	Module_Class_Members(CsmaCA, Mac, 0);
+	~CsmaCA();
+
+protected:
+	int flags;
+
+	int proto_state;
+	int proto_next_state;
+
+	int nav_state;
+	ushort nav_end_time;
+
+	Packet * tx_msg;
+
+	int rts_contend_time;
+	int cts_to;
+	ushort cts_nav_end;
+	ushort cts_nav_rcv;
+	ushort cts_nav_t;
+
+	int ack_to;
+
+	void evalState();	// check state, may start transmission
+	void startContending(int time);	// contend, ctime = <x>
+	void sendRts();
+	void sendCts();
+	void sendData();
+	void sendAck();
+	void receiveRts(Packet * msg);
+	void receiveCts(Packet * msg);
+	void receiveData(Packet * msg);
+	void receiveAck(Packet * msg);
+	void setIdle();
+	
+	void protocolTimeout();	
+	void navTimeout();	
+	void setProtocolTimeout(int t);
+	void setNavTimeout(int t);
+	void updateNav(ushort nav);
+	void txDone();
+
+	virtual int mustUseCA(Packet * msg);
+	virtual void incBackoff();
+	virtual void decBackoff();
+
+	virtual void initialize();
+	virtual void timeout(int which);
+	virtual void txPacket(Packet * msg);
+	virtual void rxFrame(Packet * msg);
+	virtual void transmitDone();
+	virtual void rxFailed();
+	virtual void rxStarted();
+public:
+	virtual int headerLength();
+	virtual void endForce(){}
+};
+
+
+
+#endif
