@@ -13,7 +13,7 @@ class TestApp: public Application {
 		virtual void initialize();
 		virtual void finish();
 		virtual void handleTimer(unsigned int count);
-		virtual void handleEvent(Packet *msg);
+		virtual void handleEvent(cMessage *msg);
 		virtual ~TestApp();
 };
 

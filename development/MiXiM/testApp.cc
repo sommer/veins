@@ -28,7 +28,7 @@ void TestApp::handleTimer(unsigned int idx) {
 	eatCycles(20);
 }
 
-void TestApp::handleEvent(Packet* msg) {
+void TestApp::handleEvent(cMessage* msg) {
 	switch(msg->kind()) {
 		case TX_DONE:
 			printf(PRINT_APP, "msg sent");
