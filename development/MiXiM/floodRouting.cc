@@ -5,7 +5,6 @@ Define_Module_Like(FloodRouting, Routing);
 void FloodRouting::initialize() {
 	Routing::initialize();
 	printfNoInfo(PRINT_INIT, "\t\tInitializing flood routing layer...");
-	serial = 0;
 }
 
 void FloodRouting::finish() {
@@ -22,7 +21,7 @@ void FloodRouting::rx(Packet *packet) {
 		return;
 	}
 
-	printf(PRINT_ROUTING, "Rebroadcasting (%d)", *(int*)packet->getData(ROUTING_DATA));
+	printf(PRINT_ROUTING, "Rebroadcasting packet with serial %d from node %d", packet->serial, packet->from);
 	packet->setKind(TX);
 	if (macBusy)
 		addToQueue(packet);

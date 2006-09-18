@@ -87,6 +87,7 @@ void Routing::sendToMac(Packet *msg) {
 			msg->serial = mySerial++;
 			msg->increaseLength(2);
 			msg->from = node->getNodeId();
+			registerSerial(msg->from, msg->serial);
 		}
 	}
 	send(msg, findGate("toMac"));

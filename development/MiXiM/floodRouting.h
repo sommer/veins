@@ -18,12 +18,6 @@ class FloodRouting : public Routing {
 		virtual void rx(Packet *msg);
 		virtual void tx(Packet *msg);
 		virtual void txDone(Packet *msg);
-
-	protected:
-		/** The serial we last used for sending a message. */
-		int serial;
-		/** Map with originator:serial mappings that we have seen. */
-		std::map<int, int> serials;
 };
 
 #endif
