@@ -1,0 +1,45 @@
+#
+# Makefile to create all other makefiles for the project.
+#
+# CAREFUL: This file has to remain portable across Unix make and
+# Windows nmake!
+#
+
+# The vars ROOT, MAKEMAKE, OPTS, LIB_OPTS and CORE_LIB and CONTRIB_LIB have to
+# be specified externally, in the OP specific makefiles
+
+#ROOT=`pwd`
+#MAKEMAKE=opp_makemake
+#OPTS=-f -b $(ROOT) -c $(ROOT)/omnetppconfig
+#LIB_OPTS=-w -o libmfcore -s 
+#CORE_LIB=-L$(ROOT)/core/lib -lmfcore
+#CONTRIB_LIB=-L$(ROOT)/contrib/lib -lmfcontrib
+
+#--------------------------------------
+IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/propagationModels -I$(ROOT)/base/modules
+
+NET_OPTS= $(IBASE) $(ROOT)/base/utils $(ROOT)/base/messages $(ROOT)/base/propagationModels $(ROOT)/base/modules
+#--------------------------------------
+
+
+all:
+	@echo $(ROOT)
+	@cd $(ROOT) && $(MAKEMAKE) $(OPTS) -r -n -Xdocumentation -Xconfigurator -Xdevelopment
+
+	@echo $(ROOT)/base
+	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -r -n
+	@echo $(ROOT)/base/utils
+	@cd $(ROOT)/base/utils && $(MAKEMAKE) $(OPTS) -n
+	@echo $(ROOT)/base/messages
+	@cd $(ROOT)/base/messages && $(MAKEMAKE) $(OPTS) -n $(IBASE)
+	@echo $(ROOT)/base/propagationModels
+	@cd $(ROOT)/base/propagationModels && $(MAKEMAKE) $(OPTS) -n $(IBASE)
+	@echo $(ROOT)/base/modules
+	@cd $(ROOT)/base/modules && $(MAKEMAKE) $(OPTS) -n $(IBASE)
+
+	@echo $(ROOT)/examples
+	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n
+	@echo $(ROOT)/examples/mfNetwork
+	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+
+

@@ -1,0 +1,13 @@
+#!/bin/bash
+# 
+# script to recreate all makefiles for MAC OS
+
+# set root directory
+ROOT=`pwd`
+
+# make omnetppconfig
+opp_makemake -f --genconfig omnetppconfig
+
+make ROOT=$ROOT -f Makefile.mac
+
+exit 0

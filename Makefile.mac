@@ -1,0 +1,5 @@
+MAKEMAKE=opp_makemake 
+
+OPTS=-f -b $(ROOT) -c $(ROOT)/omnetppconfig
+
+include makemakefiles
