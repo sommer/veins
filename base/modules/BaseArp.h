@@ -20,7 +20,6 @@
 #ifndef BASE_ARP_H
 #define BASE_ARP_H
 
-#include <omnetpp.h>
 #include <BaseModule.h>
 #include <ModuleAccess.h>
 

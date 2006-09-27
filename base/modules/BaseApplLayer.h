@@ -23,8 +23,6 @@
 #ifndef BASE_APPL_LAYER_H
 #define BASE_APPL_LAYER_H
 
-#include <omnetpp.h>
-
 #include "BaseModule.h"
 #include "ApplPkt_m.h"
 

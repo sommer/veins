@@ -30,7 +30,7 @@
 /**
  * @brief A very simple MAC module template which provides de- and
  * encapsulation of messages using the standard addresses and
- * MacControlInfo of the MF. It also provides basic handling of lower
+ * MacControlInfo of MiXiM. It also provides basic handling of lower
  * layer messages.
  *
  * @ingroup macLayer
@@ -79,14 +79,14 @@ public:
     virtual void handleLowerMsg(cMessage *msg);
 
     virtual void handleSelfMsg(cMessage* msg){
-	error("BaseMacLayer does not hanlde self messages");
+	error("BaseMacLayer does not handle self messages");
     };
     virtual void handleLowerControl(cMessage* msg){
-	ev << "BaseMacLayer does not hanlde control messages\n";
+	ev << "BaseMacLayer does not handle control messages\n";
     };
 
     virtual void handleUpperControl(cMessage* msg){
-	error("BaseMacLayer does not hanlde control messages");
+	error("BaseMacLayer does not handle control messages");
     };
 
 

@@ -23,8 +23,6 @@
 #ifndef SIMPLE_NETW_LAYER_H
 #define SIMPLE_NETW_LAYER_H
 
-#include <omnetpp.h>
-
 #include <BaseLayer.h>
 
 #include "BaseArp.h"

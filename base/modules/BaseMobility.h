@@ -23,8 +23,6 @@
 #ifndef BASE_MOBILITY_H
 #define BASE_MOBILITY_H
 
-#include <omnetpp.h>
-
 #include "BaseModule.h"
 #include "ChannelControl.h"
 #include "Coord.h"
