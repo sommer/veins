@@ -1,0 +1,428 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>generatorWizard</class>
+<widget class="QWizard">
+    <property name="name">
+        <cstring>generatorWizard</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>598</width>
+            <height>480</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>MiXiM config file generator</string>
+    </property>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>WizardPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>General settings</string>
+        </attribute>
+        <spacer>
+            <property name="name">
+                <cstring>spacer8</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>275</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>3</x>
+                    <y>311</y>
+                    <width>275</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel8</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>340</x>
+                    <y>311</y>
+                    <width>81</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>(hh:mm:ss)</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel6</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>3</x>
+                    <y>337</y>
+                    <width>169</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Maximum simulated time:</string>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>maxSimDaysSB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>284</x>
+                    <y>337</y>
+                    <width>50</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_3_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>440</x>
+                    <y>370</y>
+                    <width>119</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>(0 means no limit)</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer6</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>100</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>178</x>
+                    <y>339</y>
+                    <width>100</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_3</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>440</x>
+                    <y>340</y>
+                    <width>119</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>(0 means no limit)</string>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>maxCPUDaysSB</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>284</x>
+                    <y>367</y>
+                    <width>50</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel7_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>284</x>
+                    <y>311</y>
+                    <width>50</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>days</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel7</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>3</x>
+                    <y>367</y>
+                    <width>128</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Maximim CPU time:</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer7</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>141</width>
+                    <height>20</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>137</x>
+                    <y>369</y>
+                    <width>141</width>
+                    <height>20</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>290</y>
+                    <width>570</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>pushButton1_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>105</x>
+                    <y>261</y>
+                    <width>106</width>
+                    <height>26</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Add objects</string>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>pushButton1_4</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>217</x>
+                    <y>261</y>
+                    <width>86</width>
+                    <height>26</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Edit item</string>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>addNodesButton</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>1</x>
+                    <y>261</y>
+                    <width>98</width>
+                    <height>26</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Add nodes</string>
+            </property>
+        </widget>
+        <widget class="QTimeEdit">
+            <property name="name">
+                <cstring>maxSimTime</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>340</x>
+                    <y>337</y>
+                    <width>90</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QTimeEdit">
+            <property name="name">
+                <cstring>maxCPUTime</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>340</x>
+                    <y>367</y>
+                    <width>90</width>
+                    <height>24</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>deleteItemButton</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>309</x>
+                    <y>261</y>
+                    <width>102</width>
+                    <height>26</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>delete item</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>98</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>World contents</string>
+            </property>
+        </widget>
+        <widget class="QTable">
+            <column>
+                <property name="text">
+                    <string>Count</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Type</string>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Comment</string>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>objectTable</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>20</y>
+                    <width>580</width>
+                    <height>230</height>
+                </rect>
+            </property>
+            <property name="resizePolicy">
+                <enum>AutoOneFit</enum>
+            </property>
+            <property name="numRows">
+                <number>0</number>
+            </property>
+            <property name="numCols">
+                <number>3</number>
+            </property>
+            <property name="readOnly">
+                <bool>true</bool>
+            </property>
+            <property name="selectionMode">
+                <enum>SingleRow</enum>
+            </property>
+            <property name="focusStyle">
+                <enum>FollowStyle</enum>
+            </property>
+        </widget>
+    </widget>
+</widget>
+<connections>
+    <connection>
+        <sender>addNodesButton</sender>
+        <signal>clicked()</signal>
+        <receiver>generatorWizard</receiver>
+        <slot>addNodesButton_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>deleteItemButton</sender>
+        <signal>clicked()</signal>
+        <receiver>generatorWizard</receiver>
+        <slot>deleteItemButton_clicked()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>maxSimDaysSB</tabstop>
+    <tabstop>maxSimTime</tabstop>
+    <tabstop>maxCPUDaysSB</tabstop>
+    <tabstop>maxCPUTime</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">generatorwizard.ui.h</include>
+</includes>
+<slots>
+    <slot>addNodesButton_clicked()</slot>
+    <slot>deleteItemButton_clicked()</slot>
+    <slot>evaluateNextButtonState()</slot>
+</slots>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

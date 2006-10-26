@@ -6,18 +6,36 @@
 help:
 	@echo 
 	@echo "*******************************************************************"
-	@echo "    Targets are:"
-	@echo "    base_dir -- create base library"
-	@echo "    modules_dir -- create the modules library"
-	@echo "    tests_dir -- create tests "
-	@echo "    examples_dir -- create example networks "
-	@echo "    all -- well the name says it "
-	@echo "    docs -- create documentation "
+	@echo "	Targets are:"
+	@echo "	base		-- create base library"
+	@echo "	modules		-- create the modules library"
+	@echo "	tests		-- create tests "
+	@echo "	examples	-- create example networks "
+	@echo "	configurator	-- create the configuration tool "
+	@echo "	all		-- create all of the above "
+	@echo "	docs		-- create documentation "
+	@echo "	clean		-- clean  everything up "
+	@echo "	distclean	-- get back to pristine fresh state "
 	@echo "*******************************************************************"
 
 # make all
-all: base_dir modules_dir examples_dir tests_dir
+all: base_dir modules_dir examples_dir tests_dir configurator_dir
 
+configurator_dir:
+	@(cd configurator; ${MAKE})
+
+distclean: clean
+	@(cd configurator; ${MAKE} distclean)
+	@rm -f tests/Makefile
+	@rm -f modules/Makefile
+	@rm -f modules/mac/Makefile
+	@rm -f modules/phy/Makefile
+	@rm -f modules/application/Makefile
+	@rm -f modules/node/Makefile
+	@rm -f modules/object/Makefile
+	@rm -f modules/channel/Makefile
+	@rm -f modules/nic/Makefile
+	@rm -f examples/baseNetwork/Makefile
 
 # documentation
 #DOC_DIR=doc

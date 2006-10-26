@@ -18,7 +18,9 @@
 #--------------------------------------
 IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/propagationModels -I$(ROOT)/base/modules
 
-NET_OPTS= $(IBASE) $(ROOT)/base/utils $(ROOT)/base/messages $(ROOT)/base/propagationModels $(ROOT)/base/modules
+IMODULES=-I$(ROOT)/modules/nic
+
+NET_OPTS= $(IBASE) $(IMODULES)
 #--------------------------------------
 
 
@@ -37,9 +39,30 @@ all:
 	@echo $(ROOT)/base/modules
 	@cd $(ROOT)/base/modules && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 
+	@echo $(ROOT)/modules
+	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) -r -n
+	@echo $(ROOT)/modules/application
+	@cd $(ROOT)/modules/application && $(MAKEMAKE) $(OPTS) $(IBASE)
+	@echo $(ROOT)/modules/channel
+	@cd $(ROOT)/modules/channel && $(MAKEMAKE) $(OPTS) $(IBASE)
+	@echo $(ROOT)/modules/mac
+	@cd $(ROOT)/modules/mac && $(MAKEMAKE) $(OPTS) $(IBASE)
+	@echo $(ROOT)/modules/nic
+	@cd $(ROOT)/modules/nic && $(MAKEMAKE) $(OPTS) $(IBASE)
+	@echo $(ROOT)/modules/node
+	@cd $(ROOT)/modules/node && $(MAKEMAKE) $(OPTS) $(IBASE)
+	@echo $(ROOT)/modules/object
+	@cd $(ROOT)/modules/object && $(MAKEMAKE) $(OPTS) $(IBASE)
+	@echo $(ROOT)/modules/phy
+	@cd $(ROOT)/modules/phy && $(MAKEMAKE) $(OPTS) $(IBASE)
+
 	@echo $(ROOT)/examples
 	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n
+	@echo $(ROOT)/examples/baseNetwork
+	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/mfNetwork
 	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 
+	@echo $(ROOT)/tests
+	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
 

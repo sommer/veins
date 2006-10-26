@@ -1,0 +1,14 @@
+.PHONY: clean
+
+all: Makefile
+
+Makefile:
+	@qmake
+
+clean:
+	@rm -f Makefile
+	@rm -f mixim_generator_QT
+	@rm -rf .moc
+	@rm -rf .ui
+	@rm -rf .obj
+

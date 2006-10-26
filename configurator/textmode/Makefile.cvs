@@ -1,0 +1,19 @@
+.PHONY: clean
+
+all: aclocal.m4 Makefile.in configure
+
+aclocal.m4:
+	@aclocal
+
+Makefile.in: Makefile.am configure
+	@automake -a
+
+configure: configure.in
+	@autoconf
+
+clean:
+	@rm -rf aclocal.m4 config.h.in Makefile.in configure INSTALL missing \
+		COPYING compile depcomp texinfo.tex install-sh autom4te.cache \
+		config.status Makefile mixim_generator.lsm mixim_generator.spec \
+		config.h stamp-h1 config.log .deps
+
