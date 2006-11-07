@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 	char* sourceDirString = (char*)malloc(1024);
 	char* argvCpy = (char*)malloc(strlen(argv[0]) + 1);
 
-	if (input == NULL || path == NULL || sourceDirString == NULL || argvCpy) {
+	if (input == NULL || path == NULL || sourceDirString == NULL || argvCpy == NULL) {
 		printf("Out of memory!\n");
 		exit(EXIT_FAILURE);
 	}

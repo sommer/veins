@@ -78,6 +78,8 @@ int nedCheck(const struct dirent* entry) {
 	if (entry->d_type == DT_REG) {
 		char end[4];
 		unsigned length = strlen(entry->d_name);
+		if (length < 4)
+			return 0;
 		memcpy(&end, &(entry->d_name[length - 4]), 4);
 		if (strncmp(end, ".ned", 4) == 0) {
 			printf("found match: %s\n", entry->d_name);
