@@ -601,8 +601,6 @@ void SMac::calcSchedState() {
 	assert(left <= sleep_time);
 	printf(PRINT_MAC, "calc_sched: in no frame, left = %u", (unsigned) left);
 	setSchedTimeout(left);
-	if (getForce() != FORCE_NOSLEEP)
-		setRadioSleep();
 	return;
 }
 
