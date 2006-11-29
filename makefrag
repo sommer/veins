@@ -38,21 +38,19 @@ distclean: clean
 	@rm -f examples/baseNetwork/Makefile
 
 # documentation
-#DOC_DIR=doc
+DOC_DIR=doc
 
 # generate all docs (API and neddoc reference)
-#docs: doxy neddoc
+docs: doxy neddoc
 
 # generate doxygen API reference
-#doxy: $(DOC_DIR)/doxy.cfg
-#	doxygen $(DOC_DIR)/doxy.cfg
+doxy: $(DOC_DIR)/doxy.cfg
+	doxygen $(DOC_DIR)/doxy.cfg
 
 # generate neddoc documentation linked to doxygen API reference
-#neddoc:
-#	opp_neddoc -o $(DOC_DIR)/neddoc -t $(DOC_DIR)/mobfwtags.xml -d ../api core/basicMessages core/basicModules core/blackboard core/channelcontrol core/utils contrib/applLayer contrib/messages contrib/mobility contrib/netwLayer contrib/nic contrib/utils networks/ doc/
+neddoc:
+	opp_neddoc -o $(DOC_DIR)/neddoc -t $(DOC_DIR)/miximtags.xml -d ../api \
+	base/ examples/ modules/ doc/
 
-# generate neddoc without linking to doxygen API reference
-#neddoc-without-doxy:
-#	opp_neddoc -o $(DOC_DIR)/neddoc *.ned *.msg -d ../api core/basicMessages core/basicModules core/blackboard core/channelcontrol core/utils contrib/applLayer contrib/messages contrib/mobility contrib/netwLayer contrib/nic contrib/utils networks/ doc/
- 
-
+neddoc-without-doxy:
+	opp_neddoc -o $(DOC_DIR)/neddoc -d ../api base/ examples/ modules/ doc/
