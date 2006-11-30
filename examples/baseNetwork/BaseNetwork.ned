@@ -1,7 +1,8 @@
 import
     "BaseNode",
     "BaseObject",
-    "PropagationModel";
+    //"PropagationModel";
+    "ChannelControl";
 
 module BaseNetwork
     parameters:
@@ -11,7 +12,7 @@ module BaseNetwork
         numNodes: numeric const; // total number of hosts in the network
 
     submodules:
-        propagationmodel: PropagationModel;
+        propagationmodel: ChannelControl;
             parameters:
                 playgroundSizeX = playgroundSizeX,
                 playgroundSizeY = playgroundSizeY;

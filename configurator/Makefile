@@ -22,7 +22,7 @@ QtClean:
 	@(cd QT; ${MAKE} clean; rm -f mixim_generator_QT);
 
 textClean:
-	@(cd textmode; ${MAKE} clean);
+	@-(cd textmode; ${MAKE} clean);
 
 QtDistClean: QtClean
 	@(cd QT; ${MAKE} -f Makefile.cvs clean);

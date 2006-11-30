@@ -77,52 +77,10 @@ int main( int argc, char ** argv ) {
 		printf("Couldn't find base modules!\n");
 		exit(EXIT_FAILURE);
 	}
-	
-	// nodes
-	modIt = map.equal_range("NodeClass");
-	//w.nodeTypeCB->clear();
-
-	for (modules::iterator it = modIt.first; it != modIt.second; it++)
-	{
-		//w.nodeTypeCB->insertItem(it->second);
-	}
-	// macs
-	modIt = map.equal_range("MacClass");
-	//w.macLayerCB->clear();
-
-	for (modules::iterator it = modIt.first; it != modIt.second; it++)
-	{
-		//w.macLayerCB->insertItem(it->second);
-	}
-	// routing
-	modIt = map.equal_range("Routing");
-	//w.routingCB->clear();
-
-	for (modules::iterator it = modIt.first; it != modIt.second; it++)
-	{
-		//w.routingCB->insertItem(it->second);
-	}
-	// radios
-	modIt = map.equal_range("RadioClass");
-	//w.radioChipCB->clear();
-
-	for (modules::iterator it = modIt.first; it != modIt.second; it++)
-	{
-		//w.radioChipCB->insertItem(it->second);
-	}
-	// applications
-	modIt = map.equal_range("Application");
-//	w.applicationNameCB->clear();
-//	w.applicationNameCB->insertItem("");
-
-	for (modules::iterator it = modIt.first; it != modIt.second; it++)
-	{
-//		w.applicationNameCB->insertItem(it->second);
-	}
 
 skipComponentScan:
 	w.show();
-	a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
+	a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 	ret = a.exec();
 	
 	// write config file here
