@@ -28,4 +28,5 @@ message Mac80211Pkt extends MacPkt
        int fragmentation; //part of the Frame Control field
        int informationDS; //part of the Frame Control field
        int sequenceControl;
+       bool retry;
 };

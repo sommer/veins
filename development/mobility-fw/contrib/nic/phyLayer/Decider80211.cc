@@ -71,7 +71,7 @@ void Decider80211::handleLowerMsg(cMessage* m)
     //if snir is big enough so that packet can be recognized at all
     if((snirMin > snirThreshold) && (rxDuration > af->getDuration() - RED_PHY_HEADER_DURATION))
     {
-        if(packetOk(snirMin, af->length() - PHY_HEADER_LENGTH, af->getBitrate())) {
+        if(packetOk(snirMin, af->length() - (int)PHY_HEADER_LENGTH, af->getBitrate())) {
             EV << "packet was received correctly, it is now handed to upper layer...\n";
             mac = static_cast<Mac80211Pkt *>(af->decapsulate());
             mac->setControlInfo(new PhyControlInfo(af->getBitrate(), snirMin));
@@ -86,9 +86,9 @@ void Decider80211::handleLowerMsg(cMessage* m)
         }
     }
     else {
-        EV << "COLLISION! Packet got lost\n";
-        af->setName("COLLISION");
-        af->setKind(COLLISION);
+        EV << "Packet has ERRORS! It is lost!\n";
+        af->setName("ERROR");
+        af->setKind(BITERROR);
         sendControlUp(af);
     }
     delete cInfo;

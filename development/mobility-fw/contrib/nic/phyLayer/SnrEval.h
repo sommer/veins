@@ -26,6 +26,7 @@
 #include <BasicSnrEval.h>
 #include "RadioState.h"
 #include "RSSI.h"
+#include "MediumIndication.h"
 
 #include <list>
 /**
@@ -154,7 +155,11 @@ protected:
      *  Set it to false if you want a small speed up in the simulation. 
      */
     bool publishRSSIAlways;
-    
+
+    /** @brief track and publish current occupation state of medium */
+    MediumIndication indication;
+    int catIndication;
+
     /** @brief Cache the module ID of the NIC */
     int nicModuleId;
     

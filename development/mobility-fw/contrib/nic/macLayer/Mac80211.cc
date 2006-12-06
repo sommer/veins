@@ -22,7 +22,6 @@
 #include "MacControlInfo.h"
 #include "PhyControlInfo.h"
 #include "SimpleAddress.h"
-#include "RSSI.h"
 #include <FWMath.h>
 
 Define_Module(Mac80211);
@@ -34,21 +33,23 @@ void Mac80211::initialize(int stage)
 
     if (stage == 0)
     {
+        EV << "Initializing stage 0\n";
         myMacAddr = parentModule()->id();
 
-        EV << "Initializing stage 0\n";
+        switching = false;
+        fsc = intrand(0x7FFFFFFF);
+        if(fsc == 0) fsc = 1;
+        EV << " fsc: " << fsc << "\n";
+
         queueLength = hasPar("queueLength") ? par("queueLength") : 10;
 
-        busyRSSI = hasPar("busyRSSI") ? par("busyRSSI") : -90;
-
         radioState = RadioState::RECV;
-        rssi = 0;
         RadioState cs;
-        RSSI rs;
         Bitrate br;
+        MediumIndication ind;
         
         catRadioState = bb->subscribe(this, &cs, parentModule()->id());
-        catRSSI = bb->subscribe(this, &rs, parentModule()->id());
+        catMedium = bb->subscribe(this, &ind, parentModule()->id());
         
         // timers
         timeout = new cMessage("timeout", TIMEOUT);
@@ -61,7 +62,7 @@ void Mac80211::initialize(int stage)
         shortRetryCounter = 0;
         rtsCtsThreshold = hasPar("rtsCtsThreshold") ? par("rtsCtsThreshold") : 1;
         
-        autoBitrate = hasPar("autoBitrate") ? par("autoBitrate") : false;
+        autoBitrate = hasPar("autoBitrate") ? par("autoBitrate").boolValue() : false;
         
         delta = 1E-9;
         
@@ -76,7 +77,7 @@ void Mac80211::initialize(int stage)
         channel = hasPar("defaultChannel") ? par("defaultChannel") : 0;
         radio->setActiveChannel(channel);
 
-        bitrate = hasPar("bitrate") ? par("bitrate") : BITRATES_80211[0];
+        bitrate = hasPar("bitrate") ? par("bitrate").doubleValue() : BITRATES_80211[0];
         for(int i = 0; i < 4; i++) {
             if(bitrate == BITRATES_80211[i]) {
                 found = true;
@@ -87,9 +88,9 @@ void Mac80211::initialize(int stage)
         radio->setBitrate(bitrate);
         defaultBitrate = bitrate;
         
-        snrThresholds.push_back(hasPar("snr2Mbit") ? par("snr2Mbit") : 100);
-        snrThresholds.push_back(hasPar("snr5Mbit") ? par("snr5Mbit") : 100);
-        snrThresholds.push_back(hasPar("snr11Mbit") ? par("snr11Mbit") : 100);
+        snrThresholds.push_back(hasPar("snr2Mbit") ? par("snr2Mbit").doubleValue() : 100);
+        snrThresholds.push_back(hasPar("snr5Mbit") ? par("snr5Mbit").doubleValue() : 100);
+        snrThresholds.push_back(hasPar("snr11Mbit") ? par("snr11Mbit").doubleValue() : 100);
         snrThresholds.push_back(111111111); // sentinel
 
         neighborhoodCacheSize = hasPar("neighborhoodCacheSize") ? par("neighborhoodCacheSize") : 0;
@@ -98,7 +99,6 @@ void Mac80211::initialize(int stage)
         EV << " MAC Address: " << myMacAddr
            << " rtsCtsThreshold: " << rtsCtsThreshold
            << " bitrate: " << bitrate
-           << " busyRSSI  " << busyRSSI
            << " channel: " << channel
            << " autoBitrate: " << autoBitrate
            << " 2MBit: " << snrThresholds[0]
@@ -110,10 +110,10 @@ void Mac80211::initialize(int stage)
 
         for(int i = 0; i < 3; i++) {
             snrThresholds[i] = FWMath::dBm2mW(snrThresholds[i]);
-            EV << " after conversion to ratio: " << snrThresholds[i] << endl;
         }
-        busyRSSI = FWMath::dBm2mW(busyRSSI);
+        
         remainingBackoff = backoff();
+        scheduleAt(simTime() + remainingBackoff + DIFS, contention);
     }
 }
 
@@ -123,6 +123,7 @@ void Mac80211::initialize(int stage)
  */
 void Mac80211::handleUpperMsg(cMessage *msg)
 {
+    EV << "Mac80211::handleUpperMsg " << msg->name() << "\n";
     if (msg->length() > 18496)
         error("packet from higher layer (%s)%s is too long for 802.11b, %d bytes (fragmentation is not supported yet)",
               msg->className(), msg->name(), msg->length()/8);
@@ -157,8 +158,11 @@ Mac80211Pkt *Mac80211::encapsMsg(cMessage * netw)
 {
 
     Mac80211Pkt *pkt = new Mac80211Pkt(netw->name());
-    pkt->setLength(272);        // headerLength, including final CRC-field
-
+    pkt->setLength(MAC80211_HEADER_LENGTH);                  // headerLength, including final CRC-field
+    pkt->setRetry(false);                 // this is not a retry
+    pkt->setSequenceControl(fsc++);       // add a unique fsc to it
+    if(fsc <= 0) fsc = 1;
+    
     // copy dest address from the Control Info attached to the network
     // mesage by the network layer
     MacControlInfo* cInfo = static_cast<MacControlInfo*>(netw->removeControlInfo());
@@ -174,7 +178,7 @@ Mac80211Pkt *Mac80211::encapsMsg(cMessage * netw)
   
     //encapsulate the network packet
     pkt->encapsulate(netw);
-    EV <<"pkt encapsulated\n";
+    EV <<"pkt encapsulated, length: " << pkt->length() << "\n";
     
     return pkt;
 }
@@ -212,6 +216,7 @@ void Mac80211::handleLowerMsg(cMessage *msg)
 
 void Mac80211::handleLowerControl(cMessage *msg) 
 {
+    EV << "Mac80211::handleLowerControl " << msg->name() << "\n";
     switch(msg->kind()) {
     case COLLISION:
     case BITERROR:
@@ -233,6 +238,7 @@ void Mac80211::handleLowerControl(cMessage *msg)
  */
 void Mac80211::handleSelfMsg(cMessage * msg)
 {
+    EV << "Mac80211::handleSelfMsg " << msg->name() << "\n";
     switch (msg->kind())
     {
     case END_SIFS:
@@ -270,7 +276,7 @@ void Mac80211::handleSelfMsg(cMessage * msg)
  */
 void Mac80211::handleMsgNotForMe(cMessage *af, double duration)
 {
-    EV << "handle msg not for me\n";
+    EV << "handle msg not for me " << af->name() << "\n";
 
     // if the duration of the packet is null, then do nothing (to avoid
     // the unuseful scheduling of a self message)
@@ -291,11 +297,20 @@ void Mac80211::handleMsgNotForMe(cMessage *af, double duration)
         {
             // if the MAC wait for another frame, it can delete its time out
             // (exchange is aborted)
-            if (timeout->isScheduled())
+            if (timeout->isScheduled()) {
                 cancelEvent(timeout);
-
-            // is state == WFCTS or WFACK, the data transfer has failed ...
-
+                if(state == WFACK) {
+                    fromUpperLayer.front()->setRetry(true);
+                }
+                if((state == WFACK) || (state == WFCTS)) {
+                    if(rtsCts(fromUpperLayer.front())) {
+                        longRetryCounter++;
+                    }
+                    else {
+                        shortRetryCounter++;
+                    }
+                }
+            }
             // the node must defer for the time of the transmission
             scheduleAt(simTime() + duration, nav);
             EV << "NAV timer started, not QUIET: " << duration << endl;
@@ -324,7 +339,7 @@ void Mac80211::handleMsgNotForMe(cMessage *af, double duration)
  */
 void Mac80211::handleMsgForMe(Mac80211Pkt *af)
 {
-    EV << "handle msg for me\n";
+    EV << "handle msg for me " << af->name() << " in " <<  stateName(state) << "\n";
 
     switch (state)
     {
@@ -340,35 +355,40 @@ void Mac80211::handleMsgForMe(Mac80211Pkt *af)
             suspendContention();
             handleDATAframe(af);
         }
-        else
-            EV << "in handleMsgForMe() IDLE/CONTEND, strange message, darf das?\n";
+        else {
+            error("in handleMsgForMe() IDLE/CONTEND, strange message %s", af->name());
+        }
         break;
 
     case WFDATA:  // waiting for DATA
-        if (af->kind() == DATA)
+        if (af->kind() == DATA) {
             handleDATAframe(af);
-        else
-            EV << "in handleMsgForMe() WFDATA, strange message, darf das?\n";
+        }
+        else {
+            EV << "unexpected message -- probably a collision of RTSs\n";
+            delete af;
+        }
         break;
 
     case WFACK:  // waiting for ACK
-
-        if (af->kind() == ACK)
+        if (af->kind() == ACK) {
             handleACKframe(af);
-        else
-            EV << "in handleMsgForMe() WFACK, strange message, darf das?\n";
+        }
+        else {
+            error("in handleMsgForMe() WFACK, strange message %s", af->name());
+        }
         delete af;
         break;
 
     case WFCTS:  // The MAC is waiting for CTS
-
-        if (af->kind() == CTS)
+        if (af->kind() == CTS) {
             handleCTSframe(af);
-        else
-            EV << "in handleMsgForMe() WFCTS, strange message, darf das?\n";
+        }
+        else {
+            EV << "unexpected msg -- deleted \n";
+            delete af;
+        }
         break;
-
-
     case QUIET: // the node is currently deferring.
 
         // cannot handle any packet with its MAC adress
@@ -376,10 +396,15 @@ void Mac80211::handleMsgForMe(Mac80211Pkt *af)
         break;
 
     case BUSY: // currently transmitting an ACK or a BROADCAST packet
-        error("logic error: node is currently transmitting, can not receive "
-              "(does the physical layer do its job correctly?)");
+        if(switching) {
+            EV << "message received during radio state switchover\n";
+            delete af;
+        }
+        else {
+            error("logic error: node is currently transmitting, can not receive "
+                  "(does the physical layer do its job correctly?)");
+        }
         break;
-
     default:
         error("unknown state %d", state);
     }
@@ -391,6 +416,7 @@ void Mac80211::handleMsgForMe(Mac80211Pkt *af)
  */
 void Mac80211::handleRTSframe(Mac80211Pkt * af)
 {
+    if(endSifs->isScheduled()) error("Mac80211::handleRTSframe when SIFS scheduled");
     // wait a short interframe space
     endSifs->setContextPointer(af);
     scheduleAt(simTime() + SIFS, endSifs);
@@ -403,20 +429,28 @@ void Mac80211::handleRTSframe(Mac80211Pkt * af)
  */
 void Mac80211::handleDATAframe(Mac80211Pkt * af)
 {
-    if (rtsCts(af))
-        cancelEvent(timeout);  // cancel time-out event
-
-    // pass the packet to the upper layer
-    sendUp(decapsMsg(af));
+    NeighborList::iterator it;
+    if (rtsCts(af)) cancelEvent(timeout);  // cancel time-out event
+    it = findNeighbor(af->getSrcAddr());
+    if(it == neighbors.end()) error("Mac80211::handleDATAframe: neighbor not registered");
+    if(af->getRetry() && (it->fsc == af->getSequenceControl())) {
+        EV << "Mac80211::handleDATAframe suppressed duplicate message " << af
+           << " fsc: " << it->fsc << "\n";
+    }
+    else {
+        it->fsc = af->getSequenceControl();
+        // pass the packet to the upper layer
+        sendUp(decapsMsg(af));
+    }
     // wait a short interframe space
+    if(endSifs->isScheduled()) error("Mac80211::handleDATAframe when SIFS scheduled");
     endSifs->setContextPointer(af);
     scheduleAt(simTime() + SIFS, endSifs);
 }
 
 
 /**
- *  Handle a frame which is expected to be an ACK.Called by
- *  HandleMsgForMe(MAcawFrame* af)
+ *  Handle ACK and delete corresponding packet from queue
  */
 void Mac80211::handleACKframe(Mac80211Pkt * af)
 {
@@ -426,7 +460,7 @@ void Mac80211::handleACKframe(Mac80211Pkt * af)
     // the transmission is acknowledged : initialize long_retry_counter
     longRetryCounter = 0;
     shortRetryCounter = 0;
-    
+    remainingBackoff = backoff();
     // removes the acknowledged packet from the queue
     Mac80211Pkt *temp = fromUpperLayer.front();
     fromUpperLayer.pop_front();
@@ -444,8 +478,9 @@ void Mac80211::handleCTSframe(Mac80211Pkt * af)
 {
     // cancel time-out event
     cancelEvent(timeout);
-    
+    shortRetryCounter = 0;
     // wait a short interframe space
+    if(endSifs->isScheduled()) error("Mac80211::handleCTSframe when SIFS scheduled");
     endSifs->setContextPointer(af);
     scheduleAt(simTime() + SIFS, endSifs);
 }
@@ -459,10 +494,10 @@ void Mac80211::handleCTSframe(Mac80211Pkt * af)
 void Mac80211::handleBroadcastMsg(Mac80211Pkt *af)
 {
     EV << "handle broadcast\n";
-    if (state == BUSY)
+    if((state == BUSY) && (!switching)) {
         error("logic error: node is currently transmitting, can not receive "
               "(does the physical layer do its job correctly?)");
-
+    }
     sendUp(decapsMsg(af));
     delete af;
     if (state == CONTEND) beginNewCycle();
@@ -490,18 +525,13 @@ void Mac80211::handleEndContentionTimer()
             if(rtsCts(fromUpperLayer.front())) {
                 // send a RTS
                 sendRTSframe();
-                setState(WFCTS);
             }
             else { 
-                sendDATAframe();
-                setState(WFACK);
+                sendDATAframe(0);
             }
-
-            // broadcast packet
-        }
+        }// broadcast packet
         else {
             sendBROADCASTframe();
-
             // removes the packet from the queue without waiting for an acknowledgement
             Mac80211Pkt *temp = fromUpperLayer.front();
             fromUpperLayer.pop_front();
@@ -532,7 +562,22 @@ void Mac80211::handleNavTimer()
  */
 void Mac80211::handleTimeoutTimer()
 {
-    if((state == WFCTS) || (state == WFACK)) longRetryCounter++;
+    EV << "Mac80211::handleTimeoutTimer " << stateName(state) << "\n";
+    if(state == WFCTS) {
+        longRetryCounter++;
+        remainingBackoff = backoff();
+    }
+    else if(state == WFACK) {
+        if(rtsCts(fromUpperLayer.front())) {
+            longRetryCounter++;
+            fromUpperLayer.front()->setRetry(true);
+        }
+        else {
+            shortRetryCounter++;
+            fromUpperLayer.front()->setRetry(true);
+        }
+        remainingBackoff = backoff();
+    }
     // if there's a packet to send and if the channel is free then
     // start a new contention period
     if (state != QUIET)
@@ -554,7 +599,7 @@ void Mac80211::handleEndSifsTimer()
         sendCTSframe(frame);
         break;
     case CTS:
-        sendDATAframe();
+        sendDATAframe(frame);
         break;
     case DATA:
         sendACKframe(frame);
@@ -576,8 +621,11 @@ void Mac80211::handleEndTransmission()
 {
     EV << "transmission of packet is over\n";
     if(state == BUSY) {
-        suspendContention();
-        // if there's a packet to send and if the channel is free, then start a new contention period
+        if(nextIsBroadcast) {
+            shortRetryCounter = 0;
+            longRetryCounter = 0;
+            remainingBackoff = backoff();
+        }
         beginNewCycle();
     }
 }
@@ -586,19 +634,28 @@ void Mac80211::handleEndTransmission()
  *  Send a DATA frame. Called by HandleEndSifsTimer() or
  *  handleEndContentionTimer()
  */
-void Mac80211::sendDATAframe()
+void Mac80211::sendDATAframe(Mac80211Pkt *af)
 {
     Mac80211Pkt *frame = static_cast<Mac80211Pkt *>(fromUpperLayer.front()->dup());
-    double br = retrieveBitrate(frame->getDestAddr());
-    // build a copy of the frame in front of the queue'
-    PhyControlInfo *pco = new PhyControlInfo(br);
+    double br;
+    PhyControlInfo *pco;
     
+    if(af) {
+        pco = static_cast<PhyControlInfo*>(af->removeControlInfo());
+        br = pco->getBitrate();
+    }
+    else {
+       br  = retrieveBitrate(frame->getDestAddr());
+       pco = new PhyControlInfo(br);
+       if(shortRetryCounter) frame->setRetry(true);
+    }
+    // build a copy of the frame in front of the queue'
     frame->setControlInfo(pco);
     frame->setSrcAddr(myMacAddr);
     frame->setKind(DATA);
-    
+        
     radio->setBitrate(br);
-    
+
     if (rtsCts(frame)) {
         frame->setDuration(SIFS + packetDuration(LENGTH_ACK, br));
         frame->setKind(DATA);
@@ -623,15 +680,14 @@ void Mac80211::sendDATAframe()
  */
 void Mac80211::sendACKframe(Mac80211Pkt * af)
 {
-    // send ACK frame
-    double br = retrieveBitrate(af->getSrcAddr());
     Mac80211Pkt *frame = new Mac80211Pkt("wlan-ack");
 
-    PhyControlInfo *pco = new PhyControlInfo(br);
-    frame->setControlInfo(pco);
+    PhyControlInfo *pco = static_cast<PhyControlInfo*>(af->removeControlInfo());
+    double br = pco->getBitrate();
     
+    frame->setControlInfo(pco);
     frame->setKind(ACK);
-    frame->setLength(LENGTH_ACK);
+    frame->setLength((int)LENGTH_ACK);
 
     // the dest address must be the src adress of the RTS or the DATA
     // packet received. The src adress is the adress of the node
@@ -662,15 +718,15 @@ void Mac80211::sendRTSframe()
     frame->setControlInfo(pco);
 
     frame->setKind(RTS);
-    frame->setLength(LENGTH_RTS);
+    frame->setLength((int)LENGTH_RTS);
 
     // the src adress and dest address are copied in the frame in the queue (frame to be sent)
     frame->setSrcAddr(fromUpperLayer.front()->getSrcAddr());
     frame->setDestAddr(fromUpperLayer.front()->getDestAddr());
-    frame->setDuration(3 * SIFS + packetDuration(LENGTH_RTS, br) +
+    frame->setDuration(3 * SIFS + packetDuration(LENGTH_CTS, br) +
                        packetDuration(fromUpperLayer.front()->length(), br) +
                        packetDuration(LENGTH_ACK, br));
-
+    EV << " Mac80211::sendRTSframe duration: " <<  packetDuration(LENGTH_RTS, br) << " br: " << br << "\n";
     radio->setBitrate(br);
     
     // schedule time-out
@@ -689,15 +745,16 @@ void Mac80211::sendRTSframe()
  */
 void Mac80211::sendCTSframe(Mac80211Pkt * af)
 {
-    double br = retrieveBitrate(af->getSrcAddr());
+    double br;
     
     Mac80211Pkt *frame = new Mac80211Pkt("wlan-cts");
     
-    PhyControlInfo *pco = new PhyControlInfo(br);
+    PhyControlInfo *pco = static_cast<PhyControlInfo*>(af->removeControlInfo());
+    br = pco->getBitrate();
+    
     frame->setControlInfo(pco);
-
     frame->setKind(CTS);
-    frame->setLength(LENGTH_CTS);
+    frame->setLength((int)LENGTH_CTS);
 
     // the dest adress must be the src adress of the RTS received. The
     // src adress is the adress of the node
@@ -708,7 +765,7 @@ void Mac80211::sendCTSframe(Mac80211Pkt * af)
     radio->setBitrate(br);
     
     scheduleAt(simTime() + af->getDuration() - packetDuration(LENGTH_ACK, br) - 2 * SIFS + delta, timeout);
-
+    EV << " Mac80211::sendCTSframe duration: " <<  packetDuration(LENGTH_CTS, br) << " br: " << br << "\n";
     // send CTS frame
     sendDown(frame);
 
@@ -753,23 +810,16 @@ void Mac80211::beginNewCycle()
         // look if the next packet is unicast or broadcast
         nextIsBroadcast = (fromUpperLayer.front()->getDestAddr() == L2BROADCAST);
 
-        // print("next is broadcast = "<<nextIsBroadcast);
-
-        // if the channel is free then wait a random time and transmit
         setState(CONTEND);
         if(!contention->isScheduled()) {
-            if(rssi < busyRSSI) {
-                if(remainingBackoff < DIFS) remainingBackoff = DIFS;
-                scheduleAt(simTime() + remainingBackoff, contention);
-            }
-            else {
-                incrementShortRetry();
+            if(medium == MediumIndication::IDLE) {
+                scheduleAt(simTime() + DIFS + remainingBackoff, contention);
             }
         }
     }
     else {
         if(!contention->isScheduled()) {
-            scheduleAt(simTime() + remainingBackoff, contention);
+            scheduleAt(simTime() + DIFS + remainingBackoff, contention);
         }
         setState(IDLE);
     }
@@ -788,7 +838,7 @@ double Mac80211::backoff() {
  */
 int Mac80211::contentionWindow()
 {
-    int cw = CW_MIN << longRetryCounter;
+    unsigned cw = ((CW_MIN + 1) << longRetryCounter) - 1;
     if(cw > CW_MAX) cw = CW_MAX;
     return cw;
 }
@@ -799,8 +849,8 @@ int Mac80211::contentionWindow()
  */
 void Mac80211::testMaxAttempts()
 {
-    if (longRetryCounter > LONG_RETRY_LIMIT) {
-        EV << "long retry limit reached " << endl;
+    if ((longRetryCounter >= LONG_RETRY_LIMIT) || (shortRetryCounter >= SHORT_RETRY_LIMIT)) {
+        EV << "retry limit reached src: "<< shortRetryCounter << " lrc: " << longRetryCounter << endl;
         // initialize counter
         longRetryCounter = 0;
         shortRetryCounter = 0;
@@ -821,17 +871,33 @@ void Mac80211::receiveBBItem(int category, const BBItem *details, int scopeModul
 {
     Enter_Method_Silent();
     BasicLayer::receiveBBItem(category, details, scopeModuleId);
+    EV << "Mac80211::receiveBBItem " << details->info() << "\n";
     if(category == catRadioState) {
         radioState = static_cast<const RadioState *>(details)->getState();
+        switch(radioState)
+        {
+        case RadioState::SWITCH_TO_SLEEP:
+        case RadioState::SWITCH_TO_RECV:
+        case RadioState::SWITCH_TO_SEND:
+            switching = true;
+            break;
+        case RadioState::SLEEP:
+        case RadioState::RECV:
+        case RadioState::SEND:
+            switching = false;
+            break;
+        default:
+            error("Mac80211::receiveBBItem unknown radio state");
+            break;
+        }
     }
-    else if(category == catRSSI) {
-        // to do: restart state machine on this value
-        rssi = static_cast<const RSSI *>(details)->getRSSI();
+    else if(category == catMedium) {
+        medium = static_cast<const MediumIndication *>(details)->getState();
         // beginning of a reception
-        if(rssi > busyRSSI)
+        if(medium == MediumIndication::BUSY)
         {   
             EV << "medium busy" << endl;
-            suspendContention();
+            if(state != IDLE) suspendContention();
 
             // if there's a SIFS period
             if (endSifs->isScheduled())
@@ -868,9 +934,11 @@ double Mac80211::timeOut(frameType_802_11 type, double br)
     {
     case RTS:
         time_out = SIFS + packetDuration(LENGTH_RTS, br) + packetDuration(LENGTH_CTS, br) + delta;
+        EV << " Mac80211::timeOut RTS " << time_out << "\n";
         break;
     case DATA:
         time_out = SIFS + packetDuration(fromUpperLayer.front()->length(), br) + packetDuration(LENGTH_ACK, br) + delta;
+        EV << " Mac80211::timeOut DATA " << time_out << "\n";
         break;
     default:
         EV << "Unused frame type was given when calling timeOut(), this should not happen!\n";
@@ -883,7 +951,7 @@ double Mac80211::timeOut(frameType_802_11 type, double br)
  * physical channel. 'bits' should be the total length of the MAC
  * packet in bits.
  */
-double Mac80211::packetDuration(int bits, double br)
+double Mac80211::packetDuration(double bits, double br)
 {
     return bits / br + PHY_HEADER_LENGTH / BITRATE_HEADER;
 }
@@ -920,35 +988,34 @@ void Mac80211::suspendContention()  {
     if(contention->isScheduled()) {
         // update the backoff window in order to give higher priority in
         // the next battle
-        remainingBackoff = contention->arrivalTime() - simTime();
+        if(simTime() - contention->sendingTime() < DIFS) {
+            remainingBackoff = (contention->arrivalTime() - contention->sendingTime() - DIFS);
+        }
+        else {
+            remainingBackoff = ((int)((contention->arrivalTime() - simTime() - DIFS)/ST)) * ST;
+        }
         EV << "suspended backoff timer, remaining backoff time: " << remainingBackoff << endl;
         cancelEvent(contention);
     }
-    else if(remainingBackoff == 0) {
-        remainingBackoff = backoff();
-        EV << " some event happend that needs a new backoff: "  << remainingBackoff << endl;
+    else {
+        if(remainingBackoff == 0) {
+            remainingBackoff = backoff();
+            EV << " some event happend that needs a new backoff: "  << remainingBackoff << endl;
+        }
     }
 }
 
 double Mac80211::retrieveBitrate(int destAddress) {
     double bitrate = defaultBitrate;
     NeighborList::iterator it;
-    if(autoBitrate && (destAddress != L2BROADCAST)) {
+    if(autoBitrate && (destAddress != L2BROADCAST) &&
+       (longRetryCounter == 0) && (shortRetryCounter == 0)) {
         it = findNeighbor(destAddress);
         if((it != neighbors.end()) && (it->age > (simTime() - neighborhoodCacheMaxAge))) {
             bitrate = it->bitrate;
         }
     }
     return bitrate;
-}
-
-void Mac80211::incrementShortRetry() {
-    shortRetryCounter++;
-    if(shortRetryCounter >= SHORT_RETRY_LIMIT) {
-        EV << "short retry limit reached " << endl;
-        shortRetryCounter = 0;
-        longRetryCounter++;
-    }
 }
 
 void Mac80211::addNeighbor(Mac80211Pkt *af) {
@@ -971,6 +1038,7 @@ void Mac80211::addNeighbor(Mac80211Pkt *af) {
             entry.address = srcAddress;
             entry.age = simTime();
             entry.bitrate = bitrate;
+            entry.fsc = 0;
             neighbors.push_back(entry);
         }
         else {
@@ -979,6 +1047,7 @@ void Mac80211::addNeighbor(Mac80211Pkt *af) {
                 it->age = simTime();
                 it->bitrate = bitrate;
                 it->address = srcAddress;
+                it->fsc = 0;
             }
         }
     }

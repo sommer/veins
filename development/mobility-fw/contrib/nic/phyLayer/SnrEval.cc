@@ -40,7 +40,7 @@ void SnrEval::initialize(int stage)
   
     if(stage==0){
         
-        hasPar("thermalNoise") ? thermalNoise=FWMath::dBm2mW(par("thermalNoise")) :
+        hasPar("thermalNoise") ? thermalNoise=FWMath::dBm2mW(par("thermalNoise").doubleValue()) :
             thermalNoise=FWMath::dBm2mW(-100);
         
         useTorus = false;
@@ -56,14 +56,17 @@ void SnrEval::initialize(int stage)
         radioState = RadioState::RECV;
         rssi.setRSSI(thermalNoise);
 
+        indication.setState(MediumIndication::IDLE);
+        
         // subscribe for information about the radio
         RadioState cs;
         Bitrate br;
         
         catRadioState = bb->subscribe(this, &cs, parentModule()->id());
         catRSSI = bb->getCategory(&rssi);
-
         catBitrate = bb->subscribe(this, &br, parentModule()->id());        
+        catIndication = bb->getCategory(&indication);
+
     }
     else if(stage == 1) {
         waveLength = speedOfLight/carrierFrequency;
@@ -82,6 +85,7 @@ void SnrEval::initialize(int stage)
         noiseLevel = thermalNoise;
         
         bb->publishBBItem(catRSSI, &rssi, nicModuleId);
+        bb->publishBBItem(catIndication, &indication, nicModuleId);
 
         EV << "carrierFrequency: " << carrierFrequency
            << " waveLength: " << waveLength
@@ -127,11 +131,15 @@ void SnrEval::handleLowerMsgStart(AirFrame *frame)
             snrInfo.rcvdPower = rcvdPower;
             snrInfo.sList.clear();
     
-        // add initial snr value
+          // add initial snr value
             EV <<"first frame arrived!\n";
             addNewSnr();
             rssi.setRSSI(rssi.getRSSI() + rcvdPower);
-            if(radioState == RadioState::RECV) bb->publishBBItem(catRSSI, &rssi, nicModuleId);
+            indication.setState(MediumIndication::BUSY);
+            if(radioState == RadioState::RECV) {
+                bb->publishBBItem(catRSSI, &rssi, nicModuleId);
+                bb->publishBBItem(catIndication, &indication, nicModuleId);
+            }
         }
         else {
             //add receive power to the noise level
@@ -175,20 +183,15 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
     if(snrInfo.ptr == frame){    
         EV <<"first frame finished " << endl;
         rssi.setRSSI(noiseLevel);
-        
+        indication.setState(MediumIndication::IDLE);
         if(radioState == RadioState::RECV) {
             EV <<"receiving of frame is over, foward the frame to the decider\n";
             
             // foward the packet to an Deceider with the possibly new snr information
-            if(snrInfo.sList.front().time > recvTime) {	
-                EV<<" MessageSnr_time: "<<snrInfo.sList.front().time<<endl;
-                EV<<" recvtime: "<<recvTime<<endl;
-            } else {
-                EV<<"radio erst nach Frameanfang in RECV umgeschaltet!\n";
+            if(snrInfo.sList.front().time < recvTime) {
                 modifySnrList(snrInfo.sList);
-                EV<<snrInfo.sList.front().time<<endl;
-            }	         
-
+                EV<<"radio switched to RX after frame transmission started: " <<snrInfo.sList.front().time<<endl;
+            }
             recvBuff.erase(frame);
             sendUp(frame, snrInfo.sList);
             // delete the pointer to indicate that no message is currently
@@ -196,7 +199,7 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
             snrInfo.ptr = NULL;
             snrInfo.sList.clear();
             bb->publishBBItem(catRSSI, &rssi, nicModuleId);
-            EV <<"packet sent to the decider\n";      
+            bb->publishBBItem(catIndication, &indication, nicModuleId);
         }
         else{
             // delete the pointer to indicate that no message is currently
@@ -257,6 +260,7 @@ void SnrEval::receiveBBItem(int category, const BBItem *details, int scopeModule
             recvTime = simTime();
             EV <<"Radio switched to RECV at T= "<<recvTime<<endl;
             bb->publishBBItem(catRSSI, &rssi, nicModuleId);
+            bb->publishBBItem(catIndication, &indication, nicModuleId);
         }
     }
     else if(category == catBitrate) {
@@ -290,14 +294,19 @@ void SnrEval::addNewSnr()
  **/
 void SnrEval::modifySnrList(SnrList& list)
 {
-    for(SnrList::iterator iter=list.begin(); iter!=list.end();iter++) {
+    SnrList::iterator iter;
+    for(iter = list.begin(); iter != list.end(); iter++) {
         EV<<" MessageSnr_time: "<<iter->time<<endl;
         EV<<" recvtime: "<<recvTime<<endl;
-        if(iter->time>=recvTime) {
+        if(iter->time >= recvTime) {
             list.erase(list.begin(), iter);
             iter->time=recvTime;
             break;
         }
+    }
+    if(iter == list.end()) {
+        list.erase(list.begin(), --iter);
+        list.begin()->time = recvTime;
     }
 }
 

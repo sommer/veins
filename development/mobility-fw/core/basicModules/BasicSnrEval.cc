@@ -46,35 +46,35 @@ void BasicSnrEval::initialize(int stage)
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
         headerLength = par("headerLength");
 
-        hasPar("transmitterPower") ? transmitterPower=par("transmitterPower") :
+        hasPar("transmitterPower") ? transmitterPower=par("transmitterPower").doubleValue() :
             transmitterPower = static_cast<double>(cc->par("pMax"));
 
-        hasPar("sensitivity") ? sensitivity=FWMath::dBm2mW(par("sensitivity")) :
+        hasPar("sensitivity") ? sensitivity=FWMath::dBm2mW(par("sensitivity").doubleValue()) :
             sensitivity = FWMath::dBm2mW(static_cast<double>(cc->par("sat")));
 
-        hasPar("carrierFrequency") ? carrierFrequency=par("carrierFrequency") :
+        hasPar("carrierFrequency") ? carrierFrequency=par("carrierFrequency").doubleValue() :
             carrierFrequency = static_cast<double>(cc->par("carrierFrequency"));
 
-        hasPar("alpha") ? alpha=par("alpha") :
+        hasPar("alpha") ? alpha=par("alpha").doubleValue() :
             alpha = static_cast<double>(cc->par("alpha"));
         
 
         catActiveChannel = bb->subscribe(this, &channel, parentModule()->id());
     }
     else {
-        if(alpha < static_cast<double>(cc->par("alpha")))
+        if(alpha < cc->par("alpha").doubleValue())
             error("SnrEval::initialize() alpha can't be smaller than in \
                    ChannelControl. Please adjust your omnetpp.ini file accordingly");
         
-        if(transmitterPower > static_cast<double>(cc->par("pMax")))
+        if(transmitterPower > cc->par("pMax").doubleValue())
             error("SnrEval::initialize() tranmitterPower can't be bigger than \
                    pMax in ChannelControl! Please adjust your omnetpp.ini file accordingly");
         
-        if(sensitivity < FWMath::dBm2mW(static_cast<double>(cc->par("sat"))))
+        if(sensitivity < FWMath::dBm2mW(cc->par("sat").doubleValue()))
             error("SnrEval::initialize() sensitivity can't be smaller than the signal attentuation threshold (sat) in \
                    ChannelControl. Please adjust your omnetpp.ini file accordingly");
         
-        if(carrierFrequency < static_cast<double>(cc->par("carrierFrequency")))
+        if(carrierFrequency < cc->par("carrierFrequency").doubleValue())
             error("SnrEval::initialize() carrierFrequency can't be smaller than in \
                    ChannelControl. Please adjust your omnetpp.ini file accordingly");
         

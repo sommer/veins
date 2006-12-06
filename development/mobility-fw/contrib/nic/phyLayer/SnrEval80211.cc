@@ -76,5 +76,6 @@ AirFrame80211 *SnrEval80211::encapsMsg(cMessage *msg)
     frame->encapsulate(msg);
     frame->setDuration(calcDuration(frame));
     frame->setHostMove(hostMove);
+    EV << "SnrEval80211::encapsMsg duration: " <<  frame->getDuration() << "\n";
     return frame;
 }

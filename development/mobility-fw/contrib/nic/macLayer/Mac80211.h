@@ -29,6 +29,7 @@
 #include "Bitrate.h"
 #include <ActiveChannel.h>
 #include "SingleChannelRadio.h"
+#include <MediumIndication.h>
 
 /**
  * @brief An implementation of the 802.11b MAC.
@@ -64,6 +65,7 @@ protected:
 
     struct NeighborEntry {
         int address;
+        int fsc;
         simtime_t age;
         double bitrate;
     };
@@ -122,7 +124,7 @@ protected:
     void handleCTSframe(Mac80211Pkt*);
 
     /** @brief send data frame */
-    virtual void sendDATAframe();
+    virtual void sendDATAframe(Mac80211Pkt*);
 
     /** @brief send Acknoledgement */
     void sendACKframe(Mac80211Pkt*);
@@ -158,7 +160,7 @@ protected:
     double timeOut(frameType_802_11 type, double br);
 
     /** @brief computes the duration of a transmission over the physical channel, given a certain bitrate */
-    double packetDuration(int bits, double br);
+    double packetDuration(double bits, double br);
 
     /** @brief Produce a readable name of the given state */
     const char *stateName(State state);
@@ -168,7 +170,7 @@ protected:
 
     /** @brief Check whether the next packet should be send with RTS/CTS */
     bool rtsCts(Mac80211Pkt* m) {
-        return m->length() > rtsCtsThreshold;
+        return m->length() - MAC80211_HEADER_LENGTH > rtsCtsThreshold;
     }
 
     /** @brief suspend an ongoing contention, pick it up again when the channel becomes idle */
@@ -176,9 +178,6 @@ protected:
 
     /** @brief figure out at which bitrate to send to this particular destination */
     double retrieveBitrate(int destAddress);
-
-    /** @brief take care of short retry counter and its dependencies */
-    void incrementShortRetry();
 
     /** @brief add a new entry to the neighbor list */
     void addNeighbor(Mac80211Pkt *af);
@@ -236,14 +235,11 @@ protected:
     /** @brief category number given by bb for RadioState */
     int catRadioState;
     
-    /** @brief Last RSSI level */
-    double rssi;
+    /** @brief last medium state */
+    MediumIndication::States medium;
 
     /** @brief category number given by bb for RSSI */
-    int catRSSI;
-
-    /** @brief RSSI level where medium is considered busy */
-    double busyRSSI;
+    int catMedium;
 
     /** @brief Default bitrate
      *
@@ -280,10 +276,10 @@ protected:
      *  Incremented when the SHORT_RETRY_LIMIT is hit, or when an ACK
      *  or CTS is missing.
      */
-    int longRetryCounter;
+    unsigned longRetryCounter;
 
     /** @brief Number of frame transmission attempt*/
-    int shortRetryCounter;
+    unsigned shortRetryCounter;
     
     /** @brief remaining backoff time.
      * If the backoff timer is interrupted,
@@ -304,7 +300,12 @@ protected:
     simtime_t neighborhoodCacheMaxAge;
 
     NeighborList neighbors;
-    
+
+    /** take care of switchover times */
+    bool switching;
+
+    /** sequence control -- to detect duplicates*/
+    int fsc;
 };
 
 #endif

@@ -34,7 +34,6 @@ simple Mac80211
         queueLength: numeric const,
         rtsCtsThreshold: numeric const,
 
-	busyRSSI: numeric const, // minimum RSSI for busy medium
         bitrate: numeric const,
 	defaultChannel: numeric const, // minimum channel support
 
