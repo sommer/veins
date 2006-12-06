@@ -25,8 +25,8 @@ import
     "BaseNetwLayer",
     "MfNic",
     "BaseMobility",
-//    "Blackboard";
-    "BaseUtility";
+    "Blackboard";
+//    "BaseUtility";
 
 module Node
 
@@ -37,8 +37,8 @@ module Node
 	    in: radioIn; // gate for sendDirect
 
     submodules:
-        //blackboard: Blackboard;
-        blackboard: BaseUtility;
+        blackboard: Blackboard;
+        //blackboard: BaseUtility;
             display: "p=200,75;b=30,25";
 
         mobility: BaseMobility;
