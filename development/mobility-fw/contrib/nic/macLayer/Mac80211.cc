@@ -500,7 +500,10 @@ void Mac80211::handleBroadcastMsg(Mac80211Pkt *af)
     }
     sendUp(decapsMsg(af));
     delete af;
-    if (state == CONTEND) beginNewCycle();
+    if (state == CONTEND) {
+        suspendContention();
+        beginNewCycle();
+    }
 }
 
 
