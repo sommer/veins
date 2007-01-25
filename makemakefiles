@@ -62,6 +62,8 @@ all:
 	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -w
 	@echo $(ROOT)/examples/mfNetwork
 	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -w
+	@echo $(ROOT)/examples/locNetwork
+	@cd $(ROOT)/examples/locNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -w
 
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
