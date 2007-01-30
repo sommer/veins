@@ -18,8 +18,8 @@
  * description: - part of the documentation
  *              - mainpage for the doxygen documentation
  ***************************************************************************
- * changelog:   $Revision: 373 $
- *              last modified:   $Date: 2006-07-06 17:42:02 +0200 (Do, 06 Jul 2006) $
+ * changelog:   $Revision: 410 $
+ *              last modified:   $Date: 2007-01-12 08:28:55 +0100 (Fr, 12 Jan 2007) $
  *              by:              $Author: willkomm $
  ***************************************************************************/
 
@@ -45,6 +45,7 @@ The best place to get started with is <b>Modules</b> --> @ref core --> @ref basi
 Other placers to look at are:
 @htmlonly
   <ul>
+    <li><a href="../manual/index.html" target="_blank">MF Manual</a></li>
     <li><a href="../neddoc/index.html" target="_blank">MF Neddoc Reference</a></li>
     <li><a href="../hp/docu.html" target="_blank">Documenation Guidelines</a></li>
     <li><a href="../hp/groups.html" target="_blank">Module Groups</a></li>

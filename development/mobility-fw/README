@@ -81,7 +81,7 @@ Installation under MAC OS
 =========================
 There are two possibilities to install the MF under MAC OS, 
 one is with shared libraries, one without. We did not test
-compiling under MAC OS - any feedback wlecome!
+compiling under MAC OS - any feedback welcome!
 
 1. Unpack the archive (you have probably already done so)
    tar xzf mobility-fw<VERSION>.tgz
@@ -120,6 +120,9 @@ will work!
 
 Release notes
 =============
+* 2.0p3
+just another preview. Basically just contains several 802.11 bug fixes.
+Re-added old manual of MF v1
 * 2.0p2:
 Preview no.2. Main enhancements (apart from some minor bug fixes) are:
 - windows make system should work know. See the install directions for 
@@ -130,7 +133,6 @@ Preview no.2. Main enhancements (apart from some minor bug fixes) are:
   the automatic bitrate adaption still crashes.
 - We started to adapt the template folder to MF 2.0 - not finished yet!
 * 2.0p1:
----------
 Preview of a MF with major restructuring and redesign. As with previews there
 may still be bugs and not everything has been thorouly tested yet. Especially 
 the 802.11 network still CRASHES! The manual has not been updated yet, please 

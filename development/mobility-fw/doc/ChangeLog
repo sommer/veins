@@ -1,3 +1,10 @@
+2007-01-12  ------ mobility-fw2.0p3 released ------
+
+2007-01-12:	Daniel Willkomm
+	* doxy.cfg: updated version number to 2.0p3
+	* index.ned: updated version number to 2.0p3
+	* mainpage.h index.html index.ned: readded manual links
+
 2006-08-11  ------ mobility-fw2.0p2 released ------
 
 2006-08-11:	Daniel Willkomm

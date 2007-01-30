@@ -41,7 +41,7 @@ rm -r $relname/admin
 (cd $relname && opp_makemake -n -Xadmin -Xbitmaps -Xdoc -Xtemplate && make docs && rm Makefile)
 
 # tag the manual and add it to the module
-#(cd mf-manual/trunk && ../../mobility-fw/trunk/admin/makeManual.sh $relname $svntag)
+(cd mf-manual/trunk && ../../mobility-fw/trunk/admin/makeManual.sh $relname $svntag)
 
 # pack
 tar cvzf $relname.tgz $relname/

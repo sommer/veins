@@ -18,8 +18,8 @@
 // * description: - part of the documentation
 // *              - mainpage for the neddoc documentation
 // ***************************************************************************
-// * changelog:   $Revision: 389 $
-// *              last modified:   $Date: 2006-08-11 11:05:27 +0200 (Fr, 11 Aug 2006) $
+// * changelog:   $Revision: 409 $
+// *              last modified:   $Date: 2007-01-12 08:18:01 +0100 (Fr, 12 Jan 2007) $
 // *              by:              $Author: willkomm $
 // ***************************************************************************/
 
@@ -28,7 +28,7 @@
 //
 // <h1>Mobility Framework (MF) Neddoc Reference</h1>
 //
-// <center><h2>2.0p2</h2></center>
+// <center><h2>2.0p3</h2></center>
 //
 // The MF Neddoc Reference can be browsed in several ways 
 // (see links at the top left of this page):
@@ -53,6 +53,7 @@
 // Other placers to look at are:
 //
 //  <ul>
+//    <li><a href="../manual/index.html" target="_blank">MF Manual</a></li>
 //    <li><a href="../api/index.html" target="_blank">MF API Reference</a></li>
 //    <li><a href="../hp/docu.html" target="_blank">Documenation Guidelines</a></li>
 //    <li><a href="../hp/groups.html" target="_blank">Module Groups</a></li>

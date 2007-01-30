@@ -1,3 +1,5 @@
+2007-01-12  ------ mobility-fw2.0p3 released ------
+
 2006-08-16:	Daniel Willkomm
 	* CSMAMacLayer.cc: cancel minorMsg and set macState=RX before scheduling
 	a backoff

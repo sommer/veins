@@ -42,7 +42,7 @@ void TestApplLayer::initialize(int stage)
         delayTimer = new cMessage( "delay-timer", SEND_BROADCAST_TIMER );
     }
     else if(stage==1) {
-        scheduleAt(simTime() + findHost()->index() + 0.005, delayTimer);
+        scheduleAt(simTime() + dblrand()*10, delayTimer);
     }
 }
 
