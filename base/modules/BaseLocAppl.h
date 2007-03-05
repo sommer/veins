@@ -23,6 +23,7 @@
 
 #include <BaseModule.h>
 #include "ApplPkt_m.h"
+#include "LocFilter.h"
 
 /**
  * @brief Base class for a localization application module
@@ -48,20 +49,20 @@ class BaseLocAppl:public BaseModule {
 	void handleMessage(cMessage *);
       protected:
 	 virtual void handleSelfMsg(cMessage * msg) {
-		EV << "BaseLocAppl: handleSelfMsg not redefined; delete msg\n";
+		EV << "BaseLocAppl: handleSelfMsg not redefined; delete msg" << endl;
 		delete msg;
 	};
 	virtual void handleLowerMsg(cMessage * msg) {
-		EV << "BaseLocAppl: handleLowerMsg not redefined; delete msg\n";
+		EV << "BaseLocAppl: handleLowerMsg not redefined; delete msg" << endl;
 		delete msg;
 	};
 	virtual void handleLowerControl(cMessage * msg) {
 		EV <<
-		    "BaseLocAppl: handleLowerControl not redefined; delete msg\n";
+		    "BaseLocAppl: handleLowerControl not redefined; delete msg" << endl;
 		delete msg;
 	};
 	virtual void handleLocMsg(cMessage * msg) {
-		EV << "BaseLocAppl: handleLocMsg not redefined; delete msg\n";
+		EV << "BaseLocAppl: handleLocMsg not redefined; delete msg" << endl;
 		delete msg;
 	};
 
@@ -70,8 +71,12 @@ class BaseLocAppl:public BaseModule {
 	void sendControlDown(cMessage *);
 	void sendLoc(cMessage *);
 
+	const cModule * grandparentModule() {
+		return parentModule()->parentModule();
+	}
+
 	virtual const int myApplAddr() {
-		return parentModule()->index();
+		return grandparentModule()->index();;
 	};
 };
 

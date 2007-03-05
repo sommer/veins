@@ -23,6 +23,13 @@
 #include <BaseModule.h>
 
 /**
+ * Claim a port number for the localization module.
+ */
+enum {
+	LOCALIZATION_MSG = 127
+};
+
+/**
  * @brief Filter module for the BaseLocApplLayer.
  *
  * This module forwards messages from the BaseLocAppl and 

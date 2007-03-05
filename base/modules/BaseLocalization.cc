@@ -28,6 +28,7 @@ void BaseLocalization::initialize(int stage)
 
 	if (stage == 0) {
 		headerLength = par("headerLength");
+		isAnchor = par("isAnchor");
 		lowergateOut = findGate("lowergateOut");
 		lowergateIn = findGate("lowergateIn");
 		lowerControlIn = findGate("lowerControlIn");

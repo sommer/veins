@@ -22,6 +22,8 @@
 #define BASE_LOCALIZATION_H
 
 #include <BaseModule.h>
+#include "ApplPkt_m.h"
+#include "LocFilter.h"
 
 /**
  * @brief Base class for a localization module
@@ -41,25 +43,27 @@ protected:
 	int lowergateIn, lowergateOut, lowerControlIn, lowerControlOut, applgateIn, applgateOut;
 	/** @brief Length of the ApplPkt header. */
 	int headerLength;
+	/** @brief Specifies whether this node is an anchor node. */
+	bool isAnchor;
 public:
 	Module_Class_Members(BaseLocalization, BaseModule, 0);
 	virtual void initialize(int);
 	void handleMessage(cMessage *);
 protected:
 	virtual void handleSelfMsg(cMessage * msg) {
-		EV << "BaseLocalization: handleSelfMsg not redefined; delete msg\n";
+		EV << "BaseLocalization: handleSelfMsg not redefined; delete msg" << endl;
 		delete msg;
 	};
 	virtual void handleLowerMsg(cMessage * msg) {
-		EV << "BaseLocalization: handleLowerMsg not redefined; delete msg\n";
+		EV << "BaseLocalization: handleLowerMsg not redefined; delete msg" << endl;
 		delete msg;
 	};
 	virtual void handleLowerControl(cMessage * msg) {
-		EV << "BaseLocalization: handleLowerControl not redefined; delete msg\n";
+		EV << "BaseLocalization: handleLowerControl not redefined; delete msg" << endl;
 		delete msg;
 	};
 	virtual void handleApplMsg(cMessage * msg) {
-		EV << "BaseLocalization: handleApplMsg not redefined; delete msg\n";
+		EV << "BaseLocalization: handleApplMsg not redefined; delete msg" << endl;
 		delete msg;
 	};
 
@@ -67,6 +71,14 @@ protected:
 	void sendDelayedDown(cMessage *, double);
 	void sendControlDown(cMessage *);
 	void sendAppl(cMessage *);
+
+	const cModule * grandparentModule() {
+		return parentModule()->parentModule();
+	}
+
+	virtual const int myApplAddr() {
+		return grandparentModule()->index();;
+	};
 };
 
 #endif				/* BASE_LOCALIZATION_H */

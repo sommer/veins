@@ -4,8 +4,13 @@
 // algorithm.
 //
 // @author Peterpaul Klein Haneveld
+
+// changes PKH: Thu Feb  8 09:26:10 CET 2007
+// - added switch to specify a node as an anchor node
+
 simple BaseLocalization
     parameters:
+        isAnchor: bool,
         debug: bool, // debug switch
         headerLength: numeric const; // length of the application message header (in bits)
     gates:

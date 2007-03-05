@@ -18,6 +18,7 @@
  **************************************************************************/
 
 #include "LocFilter.h"
+#include "ApplPkt_m.h"
 
 Define_Module(LocFilter);
 
@@ -45,21 +46,22 @@ void LocFilter::initialize(int stage)
 void LocFilter::handleMessage(cMessage * msg)
 {
 	if (msg->arrivalGateId() == lowergateIn) {
+		EV << "handle lower message" << endl;
 		handleLowerMsg(msg);
 	} else if (msg->arrivalGateId() == lowerControlIn) {
 		EV << "handle lower control" << endl;
 		handleLowerControl(msg);
 	} else if (msg->arrivalGateId() == applgateIn) {
-		EV << "handle localization message" << endl;
+		EV << "handle application message" << endl;
 		handleApplMsg(msg);
 	} else if (msg->arrivalGateId() == applControlIn) {
-		EV << "handle lower control" << endl;
+		EV << "handle application control" << endl;
 		handleApplControl(msg);
 	} else if (msg->arrivalGateId() == locgateIn) {
 		EV << "handle localization message" << endl;
 		handleLocMsg(msg);
 	} else if (msg->arrivalGateId() == locControlIn) {
-		EV << "handle lower control" << endl;
+		EV << "handle localization control" << endl;
 		handleLocControl(msg);
 	} else {
 		handleSelfMsg(msg);
@@ -68,52 +70,62 @@ void LocFilter::handleMessage(cMessage * msg)
 
 void LocFilter::handleSelfMsg(cMessage * msg)
 {
-	EV << "BaseLoc: handleSelfMsg has no idea what to do; delete msg\n";
+	EV << "LocFilter: handleSelfMsg has no idea what to do; delete msg" << endl;
 	delete msg;
 }
 
 /**
  * @brief Check if message for appl or for loc.
- * Currently it forwards the message to both modules, so the modules
- * have to check themselves if the message was addressed to them.
- * @todo How to filter message?
  */
 void LocFilter::handleLowerMsg(cMessage * msg)
 {
-	cMessage *msg_clone = (cMessage *) msg->dup();
-	send(msg, applgateOut);
-	send(msg_clone, locgateOut);
+	if (msg->kind() == LOCALIZATION_MSG) {
+		send(msg, locgateOut);
+	} else {
+		send(msg, applgateOut);
+	}
 }
 
 /**
  * @brief Check if message for appl or for loc.
- * Currently it forwards the message to both modules, so the modules
- * have to check themselves if the message was addressed to them.
- * @todo How to filter message?
  */
 void LocFilter::handleLowerControl(cMessage * msg)
 {
-	cMessage *msg_clone = (cMessage *) msg->dup();
-	send(msg, applControlOut);
-	send(msg_clone, locControlOut);
+	if (msg->kind() == LOCALIZATION_MSG) {
+		send(msg, locControlOut);
+	} else {
+		send(msg, applControlOut);
+	}
 }
 
 void LocFilter::handleApplMsg(cMessage * msg)
 {
+	if (msg->kind() == LOCALIZATION_MSG)
+		EV << "LocFilter: Application sending a Localization message????" << endl;
+
 	send(msg, lowergateOut);
 }
 
 void LocFilter::handleApplControl(cMessage * msg)
 {
+	if (msg->kind() == LOCALIZATION_MSG)
+		EV << "LocFilter: Application sending a Localization control message????" << endl;
+
 	send(msg, lowerControlOut);
 }
 
 void LocFilter::handleLocMsg(cMessage * msg)
 {
+	if (msg->kind() != LOCALIZATION_MSG)
+		EV << "LocFilter: Localization module NOT sending a Localization message????" << endl;
+
 	send(msg, lowergateOut);
 }
 
 void LocFilter::handleLocControl(cMessage * msg)
 {
+	if (msg->kind() != LOCALIZATION_MSG)
+		EV << "LocFilter: Localization module NOT sending a Localization control????" << endl;
+
 	send(msg, lowerControlOut);
 }
