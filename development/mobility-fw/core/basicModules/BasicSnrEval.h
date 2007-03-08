@@ -1,7 +1,7 @@
 /* -*- mode:c++ -*- ********************************************************
  * file:        BasicSnrEval.h
  *
- * author:      Marc Loebbers
+ * author:      Marc Loebbers, Jochen Adamek
  *
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
@@ -133,7 +133,8 @@ protected:
      * 
      */
     enum BasicSnrMsgKinds {
-        RECEPTION_COMPLETE = 1350101811
+        RECEPTION_COMPLETE = 1350101811,
+        DELAY_OVER
     };
     
     
@@ -149,7 +150,7 @@ public:
 
     /** @brief Called by the Blackboard whenever a change occurs we're interested in */
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
-    
+  
 protected:
     /**
      * @name Handle Messages
@@ -177,6 +178,12 @@ protected:
         error("deleting msg");
         delete msg;
     };
+    
+        /** @brief do we send on the surface of a torus */
+    bool useTorus;
+    
+    /** @brief then we need to know the edges of the playground */
+    Coord playground;
 
     /** @brief Calculate Snr Information before buffering
      *
@@ -250,6 +257,12 @@ protected:
 
     /** @brief This function calculates the duration of the AirFrame */
     virtual double calcDuration(cMessage*) = 0;
+    
+    /** @brief This function calculates the distance between two hosts*/
+    virtual double calcSqrdistance(AirFrame *frame);
+    
+    /** @brief This functions calculates the delay of the AirFrame*/
+    virtual double calcDelay(AirFrame *frame);
 };
 
 #endif
