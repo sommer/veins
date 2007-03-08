@@ -1,7 +1,7 @@
 /***************************************************************************
  * file:        BasicSnrEval.cc
  *
- * author:      Marc Loebbers
+ * author:      Marc Loebbers, Jochen Adamek
  *
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
@@ -112,17 +112,31 @@ void BasicSnrEval::handleMessage(cMessage *msg)
             coreEV << "frame is completely received now\n";
             // unbuffer the message
             AirFrame *frame = unbufferMsg(msg);
-            handleLowerMsgEnd(frame);
+            handleLowerMsgEnd(frame);    
+            delete msg;
+        }
+        else if(msg->kind() == DELAY_OVER) {
+        	coreEV << "delay is finished\n";
+        	AirFrame *frame = static_cast<AirFrame *>(msg->contextPointer());
+        	//buffer the message
+        	bufferMsg(frame);
+        	handleLowerMsgStart(frame);
+        	//change the kind-field to RECEPTION_COMPLETE
+        	msg->setKind(RECEPTION_COMPLETE);        
+        	scheduleAt(simTime() + (frame->getDuration()), msg);	
         }
         else {
             handleSelfMsg(msg);
+            
         }
+        
     }
     else {
         // msg must come from channel
         AirFrame *frame = static_cast<AirFrame *>(msg);
-        handleLowerMsgStart(frame);
-        bufferMsg(frame);
+        cMessage *timer = new cMessage(NULL,DELAY_OVER);
+        timer->setContextPointer(frame);
+        scheduleAt(simTime() + calcDelay(frame), timer);
     }
 }
 
@@ -166,6 +180,7 @@ AirFrame *BasicSnrEval::encapsMsg(cMessage *msg)
     frame->encapsulate(msg);
     frame->setDuration(calcDuration(frame));
     frame->setHostMove(hostMove);
+    //frame->setDistance(sqrDistance);
     return frame;
 }
 
@@ -220,7 +235,7 @@ void BasicSnrEval::sendDown(AirFrame *msg)
  */
 void BasicSnrEval::handleUpperMsg(AirFrame * frame)
 {
-    scheduleAt(simTime() + frame->getDuration(), txOverTimer);
+    scheduleAt(simTime() + (frame->getDuration()), txOverTimer);
     sendDown(frame);
 }
 
@@ -229,7 +244,7 @@ void BasicSnrEval::handleUpperMsg(AirFrame * frame)
  * channel before they are forwarded to upper layers
  *
  * This function is called right before a packet is handed on to the
- * upper layer, i.e. right after unbufferMsg. Again you can caluculate
+ * upper layer, i.e. right after unbufferMsg. Again you can calculate
  * some more SNR information if you want.
  *
  * You have to copy / create the SnrList related to the message and
@@ -280,3 +295,35 @@ void BasicSnrEval::receiveBBItem(int category, const BBItem *details, int scopeM
         channel = *(static_cast<const ActiveChannel *>(details));
     }
 }
+//Neu
+double BasicSnrEval::calcDelay(AirFrame *frame){
+double delay = 0.0;
+double dist = frame->getDistance();
+//delay = calcSqrdistance(frame)/speedOfLight;
+delay = dist/speedOfLight;
+return delay;
+}
+
+double BasicSnrEval::calcSqrdistance(AirFrame *frame){
+	Coord myPos(hostMove.startPos);
+	HostMove rHm(frame->getHostMove());
+	Coord framePos(rHm.startPos);
+	double sqrdistance = 0.0;
+	
+	//calculate distance
+    if(useTorus) {
+        sqrdistance = myPos.sqrTorusDist(framePos, playground);
+        frame->setDistance(sqrdistance);
+    } else {
+        sqrdistance = myPos.sqrdist(framePos);
+        frame->setDistance(sqrdistance);
+    }
+       
+       
+    coreEV << " sqrdistance: "<< sqrt(sqrdistance) << " Torus: "<<useTorus<< endl;
+    
+    return sqrdistance;
+}
+
+    
+
