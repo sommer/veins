@@ -102,6 +102,7 @@ void BasicSnrEval::handleMessage(cMessage *msg)
     if (msg->arrivalGateId() == uppergateIn){
         AirFrame *frame = encapsMsg(msg);
         handleUpperMsg(frame);
+        //calcFading();
     }
     else if(msg == txOverTimer) {
         coreEV << "transmission over" << endl;
@@ -296,15 +297,17 @@ void BasicSnrEval::receiveBBItem(int category, const BBItem *details, int scopeM
     }
 }
 //Neu
-double BasicSnrEval::calcDelay(AirFrame *frame){
-double delay = 0.0;
-double dist = frame->getDistance();
-//delay = calcSqrdistance(frame)/speedOfLight;
-delay = dist/speedOfLight;
-return delay;
+double BasicSnrEval::calcDelay(AirFrame *frame)
+{
+	  double delay = 0.0;
+      double dist = frame->getDistance();
+      //delay = calcSqrdistance(frame)/speedOfLight;
+      delay = dist/speedOfLight;
+      return delay;
 }
 
-double BasicSnrEval::calcSqrdistance(AirFrame *frame){
+double BasicSnrEval::calcSqrdistance(AirFrame *frame)
+{
 	Coord myPos(hostMove.startPos);
 	HostMove rHm(frame->getHostMove());
 	Coord framePos(rHm.startPos);
@@ -325,5 +328,157 @@ double BasicSnrEval::calcSqrdistance(AirFrame *frame){
     return sqrdistance;
 }
 
-    
+double BasicSnrEval::calcFading(int sb, double frequency, AirFrame* frame)
+/**oder anstatt mobile_speed vielleicht bitrate??
+ *anstatt subbands vielleicht channelId bzw catRadioState??**/ 
+  {
+ int CORRELATED_SUBBANDS; 
+  double phi_d = 0;
+  double phi_i = 0;
+  double phi = 0;
+  double phi_sum = 0;
 
+  double re_h = 0;
+  double im_h = 0;
+  double mobile_speed = 0.0;
+  double x_res=0.0;
+  double y_res=0.0;
+  double y_resHostMove=0.0;
+  double x_resHostMove=0.0;
+  double x_resRHm=0.0;
+  double y_resRHm=0.0;
+  Coord speed_vHostMove;
+  Coord dir_einhHostMove;
+  Coord dir_einh;
+  Coord speed_v,v_ges;
+
+Coord myPos(hostMove.startPos);
+HostMove rHm(frame->getHostMove());
+
+/**
+if(hostMove.direction==rHm.direction){
+	mobile_speed = |hostMove.speed - rHm.speed|;
+}
+else{
+	mobile_speed = hostMove.speed + rHm.speed;
+}**/  
+// mobile_speed = (frequencyE/frequencyS -1)*speedOfLight;
+
+x_resHostMove = hostMove.direction.x;
+y_resHostMove = hostMove.direction.y;
+//x_resHostMove = target.x-startPos.x;
+//y_resHostMove = target.y-startPos.y;
+dir_einhHostMove = hostMove.direction/(sqrt((x_resHostMove*x_resHostMove) + (y_resHostMove*y_resHostMove)));
+speed_vHostMove = dir_einhHostMove*hostMove.speed;
+
+x_resRHm = rHm.direction.x;
+y_resRHm = rHm.direction.y;
+//x_resRHm = target.x-startPos.x;
+//y_resRHm = target.y-startPos.y;
+dir_einh = rHm.direction/(sqrt((x_resRHm*x_resRHm) + (y_resRHm*y_resRHm)));
+speed_v = dir_einh*rHm.speed; 
+v_ges = speed_vHostMove - speed_v;
+
+
+
+if (CORRELATED_SUBBANDS) sb = 0;  // sub bands are correleted -> same fading 'profile'
+
+double doppler_shift = mobile_speed * frequency/speedOfLight;
+
+for(int i = 0; i < FADING_PATHS; i++)
+  {
+    //some math for complex numbers:
+    //z = a + ib        cartesian form
+    //z = p * e ^ i(phi)    polar form
+    //a = p * cos(phi)
+    //b = p * sin(phi)
+    //z1 * z2 = p1 * p2 * e ^ i(phi1 + phi2)
+
+    phi_d = angle_of_arrival[sb][i] * doppler_shift;    // phase shift due to doppler => t-selectivity
+    phi_i = delay[sb][i] * frequency;                   // phase shift due to delay spread => f-selectivity
+
+    phi = 2.00 * M_PI * (phi_d * simTime() - phi_i);    // calculate resulting phase due to t-and f-selective fading
+
+    //one ring model/Clarke's model plus f-selectivity according to Cavers:
+    //due to isotropic antenna gain pattern on all paths only a^2 can be received on all paths
+    //since we are interested in attenuation a:=1, attenuation per path is then:
+    //double attenuation = (1.00/sqrt(FADING_PATHS)); //Neu Wird bereits berechnet!!
+
+    //convert to cartesian form and aggregate {Re, Im} over all fading paths
+    re_h = re_h + calcPathloss(frame) * cos(phi);
+    im_h = im_h - calcPathloss(frame) * sin(phi);
+  }
+  //output: |H_f|^2= absolute channel impulse response due to fading in dB
+  //note that this may be >0dB due to constructive interference
+  return 10 * log10(re_h * re_h + im_h * im_h);
+}
+
+void BasicSnrEval::initFading()
+{
+	AirFrame *frame;
+    angle_of_arrival = new double *[SUBBANDS];
+    for (int s = 0; s < SUBBANDS; s++)
+        angle_of_arrival[s]  = new double [FADING_PATHS];
+
+    delay = new double *[SUBBANDS];
+    for (int s = 0; s < SUBBANDS; s++)
+        delay[s]  = new double [FADING_PATHS];
+
+    for (int s = 0; s < SUBBANDS; s++) {
+        for (int i = 0; i < FADING_PATHS; ++i) {
+            //angle of arrival on path i, used for doppler_shift calculation
+            //might be also subband independent, i.e. per s
+            angle_of_arrival[s][i] = cos(uniform(0,M_PI));
+            //delay on path i
+            //might be also subband independent, i.e. per s
+            DELAY_RMS = calcDelay(frame);
+            delay[s][i] = (double)exponential(DELAY_RMS);
+        }
+    }
+}    
+
+double BasicSnrEval::calcPathloss(AirFrame *frame)
+                                 {
+        
+ double time;
+ double attenuation=0.0;
+ //double pRecv;
+ double pSend = frame->getPSend();
+ 
+ Coord myPos(hostMove.startPos);
+ HostMove rHm(frame->getHostMove());
+ Coord framePos(rHm.startPos);
+    
+    // Calculate the receive power of the message
+    // get my position
+    time = simTime() - hostMove.startTime;
+    if(hostMove.speed != 0) {
+        myPos.x += time*hostMove.speed*hostMove.direction.x;
+        myPos.y += time*hostMove.speed*hostMove.direction.y;
+    }
+    
+    //get Position of the sending node
+    time = simTime() - rHm.startTime;
+    
+    if(rHm.speed != 0) {
+        framePos.x += time*rHm.speed*rHm.direction.x;
+        framePos.y += time*rHm.speed*rHm.direction.y;
+    }
+    
+    //pRecv = (pSend*waveLength*waveLength /
+    //         (16.0*M_PI*M_PI*pow(calcSqrdistance(myPos, framePos),pathLossAlphaHalf)));
+                      
+    if(pSend==0){
+                 //cerr << pSend "pSend is 0\n";
+ 
+     }else if(calcSqrdistance(frame) > 1.0)
+     { attenuation = (16.0*M_PI*M_PI*pow(calcSqrdistance(frame),pathLossAlphaHalf));
+     }
+     //transmission delay in BasicSnrEval
+     else{
+          attenuation = 1.0;
+          }
+     
+     return attenuation;
+     
+}
