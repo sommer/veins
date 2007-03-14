@@ -126,7 +126,26 @@ protected:
     ActiveChannel channel;
     /** @brief category number given by bb for ActiveChannel */
     int catActiveChannel;
-
+    
+    int SUBBANDS;
+    
+    int FADING_PATHS;               // number of different simulated fading paths
+    
+        // describtion of the different fading paths
+    double **angle_of_arrival;
+    double **delay;
+    double DELAY_RMS;
+    /**
+     * @brief Path loss coefficient.
+     * 
+     * Can be specified in omnetpp.ini. If not it is read from the
+     * ChannelControl module. This value CANNOT be smaller than the
+     * one specified in the ChannelControl module. The simulation will
+     * exit with an error!  The stored value is smaller to enable
+     * faster calculation using the square of the distance.
+     * 
+     **/
+    double pathLossAlphaHalf;
     /** @brief The kind field of messages
      * 
      * that are used internally by this class have one of these values
@@ -263,6 +282,16 @@ protected:
     
     /** @brief This functions calculates the delay of the AirFrame*/
     virtual double calcDelay(AirFrame *frame);
+    
+    /** @brief This function calculates the fading*/
+    virtual double calcFading(int sb, double frequency, AirFrame* frame);
+    
+    /** @brief Initializing of the fading*/
+    void initFading();
+    
+        /** @brief Calculate the path loss.
+     */
+    double calcPathloss(AirFrame* frame);
 };
 
 #endif
