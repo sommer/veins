@@ -34,8 +34,10 @@ distclean: clean
 	@rm -f modules/node/Makefile
 	@rm -f modules/object/Makefile
 	@rm -f modules/channel/Makefile
+	@rm -f modules/mobility/Makefile
 	@rm -f modules/nic/Makefile
 	@rm -f examples/baseNetwork/Makefile
+	@rm -f examples/locNetwork/Makefile
 
 # documentation
 DOC_DIR=doc
