@@ -131,10 +131,19 @@ protected:
     
     int FADING_PATHS;               // number of different simulated fading paths
     
+    int CALCULATE_FADING;
+    int CALCULATE_PATHLOSS;
+    int CALCULATE_SHADOWING;
+    
         // describtion of the different fading paths
     double **angle_of_arrival;
     double **delay;
     double DELAY_RMS;
+    
+    	        // for shading loss
+    double MEAN;
+    double STD_DEV;
+    
     /**
      * @brief Path loss coefficient.
      * 
@@ -292,6 +301,8 @@ protected:
         /** @brief Calculate the path loss.
      */
     double calcPathloss(AirFrame* frame);
+    
+    double BasicSnrEval::calculateShadowing();
 };
 
 #endif

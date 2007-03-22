@@ -259,6 +259,11 @@ void BasicSnrEval::handleUpperMsg(AirFrame * frame)
  */
 void BasicSnrEval::handleLowerMsgEnd(AirFrame * frame)
 {
+	int sb;
+	double frequency;
+    double fadingLoss = 0.0;
+    double pathLoss = 0.0;
+    double shadowLoss = 0.0;
     coreEV << "in handleLowerMsgEnd\n";
 
     // We need to create a "dummy" snr list that we can pass together
@@ -274,6 +279,17 @@ void BasicSnrEval::handleLowerMsgEnd(AirFrame * frame)
     // 1. create a list entry and fill the fields
     SnrListEntry listEntry;
     listEntry.time = simTime();
+    //NEU
+    if(CALCULATE_FADING){
+        fadingLoss = calcFading(sb, frequency, frame);
+    }
+    if(CALCULATE_PATHLOSS){
+        pathLoss = calcPathloss(frame);
+    }
+    if(CALCULATE_SHADOWING){
+        shadowLoss = calculateShadowing();
+    }
+    //NEU
     listEntry.snr = 3;          //just a senseless example
 
     // 2. add an entry to the SnrList
@@ -328,9 +344,7 @@ double BasicSnrEval::calcSqrdistance(AirFrame *frame)
     return sqrdistance;
 }
 
-double BasicSnrEval::calcFading(int sb, double frequency, AirFrame* frame)
-/**oder anstatt mobile_speed vielleicht bitrate??
- *anstatt subbands vielleicht channelId bzw catRadioState??**/ 
+double BasicSnrEval::calcFading(int sb, double frequency, AirFrame* frame) 
   {
  int CORRELATED_SUBBANDS; 
   double phi_d = 0;
@@ -362,7 +376,7 @@ if(hostMove.direction==rHm.direction){
 else{
 	mobile_speed = hostMove.speed + rHm.speed;
 }**/  
-// mobile_speed = (frequencyE/frequencyS -1)*speedOfLight;
+
 
 x_resHostMove = hostMove.direction.x;
 y_resHostMove = hostMove.direction.y;
@@ -436,6 +450,13 @@ void BasicSnrEval::initFading()
         }
     }
 }    
+
+// calculates shadowling loss based on a normal gaussian function
+double BasicSnrEval::calculateShadowing()
+{
+    return -1 * normal(MEAN, STD_DEV);
+}
+
 
 double BasicSnrEval::calcPathloss(AirFrame *frame)
                                  {
