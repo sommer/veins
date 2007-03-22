@@ -1,7 +1,7 @@
 /* -*- mode:c++ -*- ********************************************************
  * file:        SnrEval.cc
  *
- * author:      Jamarin Phongcharoen, Andreas Koepke
+ * author:      Jamarin Phongcharoen, Andreas Koepke, Jochen Adamek
  *
  * copyright:   (C) 2006 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
@@ -25,7 +25,6 @@
 #include "Bitrate.h"
 #include <FWMath.h>
 #include "NicControlType.h"
-
 #include <ChannelControl.h>
 
 Define_Module(SnrEval);
@@ -35,9 +34,11 @@ Define_Module(SnrEval);
  * ChannelControl module or assigned default values.
  **/
 void SnrEval::initialize(int stage)
+
 {
+
     BasicSnrEval::initialize(stage);
-  
+
     if(stage==0){
         
         hasPar("thermalNoise") ? thermalNoise=FWMath::dBm2mW(par("thermalNoise").doubleValue()) :
@@ -54,21 +55,21 @@ void SnrEval::initialize(int stage)
             publishRSSIAlways = false;
         
         radioState = RadioState::RECV;
-        rssi.setRSSI(thermalNoise);
+        defaultChannel.rssi.setRSSI(thermalNoise);
 
-        indication.setState(MediumIndication::IDLE);
+        defaultChannel.indication.setState(MediumIndication::IDLE);
         
         // subscribe for information about the radio
         RadioState cs;
         Bitrate br;
         
         catRadioState = bb->subscribe(this, &cs, parentModule()->id());
-        catRSSI = bb->getCategory(&rssi);
+        catRSSI = bb->getCategory(&defaultChannel.rssi);
         catBitrate = bb->subscribe(this, &br, parentModule()->id());        
-        catIndication = bb->getCategory(&indication);
+        catIndication = bb->getCategory(&defaultChannel.indication);
 
     }
-    else if(stage == 1) {
+    else if(stage==1) {
         waveLength = speedOfLight/carrierFrequency;
         pathLossAlphaHalf = alpha/2.0;
 
@@ -80,12 +81,12 @@ void SnrEval::initialize(int stage)
         snrInfo.sList = SnrList();
         
         // initialize  the receive time with NULL 
-        recvTime = 0.0;
+        defaultChannel.recvTime = 0.0;
         nicModuleId = parentModule()->id();
-        noiseLevel = thermalNoise;
+        defaultChannel.noiseLevel = thermalNoise;
         
-        bb->publishBBItem(catRSSI, &rssi, nicModuleId);
-        bb->publishBBItem(catIndication, &indication, nicModuleId);
+        bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
+        bb->publishBBItem(catIndication, &defaultChannel.indication, nicModuleId);
 
         EV << "carrierFrequency: " << carrierFrequency
            << " waveLength: " << waveLength
@@ -93,10 +94,10 @@ void SnrEval::initialize(int stage)
            << " pathLossAlpha: " << alpha
            << " pathLossAlphaHalf: " << pathLossAlphaHalf
            << " publishRSSIAlways: " << publishRSSIAlways
-           << " noiseLevel: " << noiseLevel << endl;
+           << " noiseLevel: " << defaultChannel.noiseLevel << endl;
     }
 }
-
+   
 /**
  * This function is called right after a packet arrived, i.e. right
  * before it is buffered for 'transmission time'.
@@ -112,57 +113,65 @@ void SnrEval::initialize(int stage)
  * frame is added to the accumulated noise.
  *
  **/
-void SnrEval::handleLowerMsgStart(AirFrame *frame)
-{
+void SnrEval::handleLowerMsgStart(AirFrame *frame){
+   
     double rcvdPower = calcRcvdPower(frame);
+    defaultChannel.rcvdPower = rcvdPower;
+    unsigned channelID = frame->getChannelId();
+    
+    
+    while(channelID >= usedChannel.size()){
+                          EV << "vector size must be changed";
+                          usedChannel.push_back(defaultChannel);
+                           }
 
     // store the receive power in the recvBuff
-    recvBuff[frame] = rcvdPower;
+    recvBuff[frame] = defaultChannel.rcvdPower;
 
     // if receive power is bigger than sensitivity
     // and currently not receiving another message
 
     if(snrInfo.ptr == 0) {
-        if(rcvdPower >= sensitivity) {
-            EV <<"with rcvdPower: "<<rcvdPower<<" sensitivity: "<<sensitivity<<endl;
+        if(defaultChannel.rcvdPower >= sensitivity) {
+            EV <<"with rcvdPower: "<<defaultChannel.rcvdPower<<" sensitivity: "<<sensitivity<<endl;
 
            // Put frame and related SnrList in receive buffer
             snrInfo.ptr = frame;
-            snrInfo.rcvdPower = rcvdPower;
+            snrInfo.rcvdPower = defaultChannel.rcvdPower;
             snrInfo.sList.clear();
     
           // add initial snr value
             EV <<"first frame arrived!\n";
             addNewSnr();
-            rssi.setRSSI(rssi.getRSSI() + rcvdPower);
-            indication.setState(MediumIndication::BUSY);
+            defaultChannel.rssi.setRSSI(defaultChannel.rssi.getRSSI() + defaultChannel.rcvdPower);
+            defaultChannel.indication.setState(MediumIndication::BUSY);
             if(radioState == RadioState::RECV) {
-                bb->publishBBItem(catRSSI, &rssi, nicModuleId);
-                bb->publishBBItem(catIndication, &indication, nicModuleId);
+                bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
+                bb->publishBBItem(catIndication, &defaultChannel.indication, nicModuleId);
             }
         }
         else {
             //add receive power to the noise level
-            EV <<"frame discared -- just noise with rcvdPower: "<<rcvdPower<<" sensitivity: "<<sensitivity<<endl;
-            noiseLevel += rcvdPower;
-            rssi.setRSSI(rssi.getRSSI() + noiseLevel);
-            bb->publishBBItem(catRSSI, &rssi, nicModuleId);
+            EV <<"frame discared -- just noise with rcvdPower: "<<defaultChannel.rcvdPower<<" sensitivity: "<<sensitivity<<endl;
+            defaultChannel.noiseLevel += defaultChannel.rcvdPower;
+            defaultChannel.rssi.setRSSI(defaultChannel.rssi.getRSSI() + defaultChannel.noiseLevel);
+            bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
         }
     }
     // if a message is beeing received add a new snr value
     else {
         // update snr info for currently beeing received message
         EV <<"add new snr value to snr list of message beeing received\n";
-        noiseLevel += rcvdPower;
-        rssi.setRSSI(rssi.getRSSI() + noiseLevel);
+        defaultChannel.noiseLevel += defaultChannel.rcvdPower;
+        defaultChannel.rssi.setRSSI(defaultChannel.rssi.getRSSI() + defaultChannel.noiseLevel);
         addNewSnr();
         if(publishRSSIAlways && (radioState == RadioState::RECV)) {
-            bb->publishBBItem(catRSSI, &rssi, nicModuleId);
+            bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
         }
     }
-    EV <<"with rcvdPower: "<<rcvdPower<<endl;
-    EV<<" rssi: "<< rssi.getRSSI()<<endl;
-    EV<<" noiseLevel: "<< noiseLevel<<endl;
+    EV <<"with rcvdPower: "<<defaultChannel.rcvdPower<<endl;
+    EV<<" rssi: "<< defaultChannel.rssi.getRSSI()<<endl;
+    EV<<" noiseLevel: "<< defaultChannel.noiseLevel<<endl;
     EV<<"frame finished at"<<simTime()+frame->getDuration()<<endl;
 }
 
@@ -182,13 +191,13 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
 {
     if(snrInfo.ptr == frame){    
         EV <<"first frame finished " << endl;
-        rssi.setRSSI(noiseLevel);
-        indication.setState(MediumIndication::IDLE);
+        defaultChannel.rssi.setRSSI(defaultChannel.noiseLevel);
+        defaultChannel.indication.setState(MediumIndication::IDLE);
         if(radioState == RadioState::RECV) {
             EV <<"receiving of frame is over, foward the frame to the decider\n";
             
             // foward the packet to an Deceider with the possibly new snr information
-            if(snrInfo.sList.front().time < recvTime) {
+            if(snrInfo.sList.front().time < defaultChannel.recvTime) {
                 modifySnrList(snrInfo.sList);
                 EV<<"radio switched to RX after frame transmission started: " <<snrInfo.sList.front().time<<endl;
             }
@@ -198,8 +207,8 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
             // beeing received and clear the list
             snrInfo.ptr = NULL;
             snrInfo.sList.clear();
-            bb->publishBBItem(catRSSI, &rssi, nicModuleId);
-            bb->publishBBItem(catIndication, &indication, nicModuleId);
+            bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
+            bb->publishBBItem(catIndication, &defaultChannel.indication, nicModuleId);
         }
         else{
             // delete the pointer to indicate that no message is currently
@@ -220,8 +229,8 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
       
         // get the rcvdPower and subtract it from the noiseLevel
         cRecvBuff::iterator it = recvBuff.find(frame);
-        noiseLevel -= it->second;
-        rssi.setRSSI(noiseLevel);
+        defaultChannel.noiseLevel -= it->second;
+        defaultChannel.rssi.setRSSI(defaultChannel.noiseLevel);
         // delete message from the recvBuff
         recvBuff.erase(it);
 
@@ -232,18 +241,25 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
                << " radiostate = " << radioState << endl;
             
             if(publishRSSIAlways && (radioState == RadioState::RECV)) {
-                bb->publishBBItem(catRSSI, &rssi, nicModuleId);
+                bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
             }
         }
         else {
             EV << " end message, radio state: " << radioState << endl;
-            if(radioState == RadioState::RECV) bb->publishBBItem(catRSSI, &rssi, nicModuleId);            
+            if(radioState == RadioState::RECV) bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);            
         }
+        
+        //channelUsed[i].clear();
+        
+        /**for(size_t=usedChannel.size-1;i>1;i--){
+                 channelUsed[i].clear();
+                 
+        EV <<"channel deleted\n";**/                                      
         // message should be deleted
         delete frame;
         EV <<"message deleted\n";
     }
-    EV<<"noiseLevel "<<noiseLevel<<" rssi: "<<rssi.getRSSI()<<endl;
+    EV<<"noiseLevel "<<defaultChannel.noiseLevel<<" rssi: "<<defaultChannel.rssi.getRSSI()<<endl;
 }
 
 /**
@@ -257,10 +273,10 @@ void SnrEval::receiveBBItem(int category, const BBItem *details, int scopeModule
     if(category == catRadioState) {
         radioState = static_cast<const RadioState *>(details)->getState();
         if(radioState == RadioState::RECV) {
-            recvTime = simTime();
-            EV <<"Radio switched to RECV at T= "<<recvTime<<endl;
-            bb->publishBBItem(catRSSI, &rssi, nicModuleId);
-            bb->publishBBItem(catIndication, &indication, nicModuleId);
+            defaultChannel.recvTime = simTime();
+            EV <<"Radio switched to RECV at T= "<<defaultChannel.recvTime<<endl;
+            bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
+            bb->publishBBItem(catIndication, &defaultChannel.indication, nicModuleId);
         }
     }
     else if(category == catBitrate) {
@@ -277,7 +293,7 @@ void SnrEval::addNewSnr()
 
     snrInfo.sList.push_back(SnrListEntry());
     snrInfo.sList.back().time=simTime();
-    snrInfo.sList.back().snr=snrInfo.rcvdPower/noiseLevel;
+    snrInfo.sList.back().snr=snrInfo.rcvdPower/defaultChannel.noiseLevel;
     EV<<"New Snr added: "<<snrInfo.sList.back().snr
       <<" at time:"<<snrInfo.sList.back().time<<endl;
 }
@@ -297,16 +313,16 @@ void SnrEval::modifySnrList(SnrList& list)
     SnrList::iterator iter;
     for(iter = list.begin(); iter != list.end(); iter++) {
         EV<<" MessageSnr_time: "<<iter->time<<endl;
-        EV<<" recvtime: "<<recvTime<<endl;
-        if(iter->time >= recvTime) {
+        EV<<" recvtime: "<<defaultChannel.recvTime<<endl;
+        if(iter->time >= defaultChannel.recvTime) {
             list.erase(list.begin(), iter);
-            iter->time=recvTime;
+            iter->time=defaultChannel.recvTime;
             break;
         }
     }
     if(iter == list.end()) {
         list.erase(list.begin(), --iter);
-        list.begin()->time = recvTime;
+        list.begin()->time = defaultChannel.recvTime;
     }
 }
 
@@ -315,14 +331,19 @@ void SnrEval::modifySnrList(SnrList& list)
  * arrives "here". If a different way of computing the path loss is
  * required this function can be redefined.
  **/
-double SnrEval::calcPathloss(AirFrame* frame)
-{
-    double time;
-    double sqrdistance;
-    double pRecv;
-    double pSend = frame->getPSend();
-    
-    Coord myPos(hostMove.startPos);
+
+
+ const double SnrEval::speedOfLight = 300000000.0;
+
+ double SnrEval::calcPathloss(AirFrame *frame)
+                                 {
+        
+ double time;
+ double attenuation=0.0;
+ //double pRecv;
+ double pSend = frame->getPSend();
+ 
+ Coord myPos(hostMove.startPos);
     HostMove rHm(frame->getHostMove());
     Coord framePos(rHm.startPos);
     
@@ -341,24 +362,44 @@ double SnrEval::calcPathloss(AirFrame* frame)
         framePos.x += time*rHm.speed*rHm.direction.x;
         framePos.y += time*rHm.speed*rHm.direction.y;
     }
+    
+    //pRecv = (pSend*waveLength*waveLength /
+    //         (16.0*M_PI*M_PI*pow(calcSqrdistance(myPos, framePos),pathLossAlphaHalf)));
+                      
+    if(pSend==0){
+                 //cerr << pSend "pSend is 0\n";
+ 
+     }else if(calcSqrdistance(myPos, framePos) > 1.0)
+     { attenuation = (16.0*M_PI*M_PI*pow(calcSqrdistance(myPos, framePos),pathLossAlphaHalf));
+     }
+     //transmission delay in BasicSnrEval
+     else{
+          attenuation = 1.0;
+          }
+     
+     return attenuation;
+     
+}
 
-    //calculate distance and receive power
+double SnrEval::calcSqrdistance(const Coord &myPos,const Coord &framePos){
+       double sqrdistance = 0.0;
+       
+       //calculate distance
     if(useTorus) {
         sqrdistance = myPos.sqrTorusDist(framePos, playground);
     } else {
         sqrdistance = myPos.sqrdist(framePos);
     }
-
-    EV <<"receiving frame start pos x: "<<framePos.x
-       <<" y: "<<framePos.y
-       <<" myPos x: "<<myPos.x <<" y: "<< myPos.y
-       << " distance: "<< sqrt(sqrdistance) << " Torus: "<<useTorus<< endl;
-        
-    pRecv = (pSend*waveLength*waveLength /
-             (16.0*M_PI*M_PI*pow(sqrdistance,pathLossAlphaHalf)));
-    return (pRecv < pSend) ? pRecv : pSend;
+       
+       
+    EV << " sqrdistance: "<< sqrt(sqrdistance) << " Torus: "<<useTorus<< endl;
+    
+    return sqrdistance;
+    
 }
 
-const double SnrEval::speedOfLight = 300000000.0;
 
-
+void SnrEval::finish(){
+}
+     
+     

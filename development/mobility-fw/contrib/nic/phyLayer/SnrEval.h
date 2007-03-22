@@ -24,11 +24,13 @@
 #define SNR_EVAL_H
 
 #include <BasicSnrEval.h>
+#include "ActiveChannel.h"
 #include "RadioState.h"
 #include "RSSI.h"
 #include "MediumIndication.h"
 
 #include <list>
+#include <vector>
 /**
  * @brief Keeps track of the different snir levels when receiving a
  * packet
@@ -53,7 +55,7 @@
  * information can be accessed via the Blackboard by other modules,
  * e.g. a CSMAMacLayer.
  *
- * @author Marc Loebbers, Jamarin Phongcharoen, Andreas Koepke
+ * @author Marc Loebbers, Jamarin Phongcharoen, Andreas Koepke, Jochen Adamek
  * @ingroup snrEval
  **/
 
@@ -64,7 +66,9 @@ class SnrEval : public BasicSnrEval
 public:
     /** @brief Initialize variables and publish the radio status*/
     virtual void initialize(int);
-
+    
+    virtual void finish();
+    
     /** @brief Called by the Blackboard whenever a change occurs we're interested in */
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 
@@ -85,6 +89,9 @@ protected:
     virtual double calcRcvdPower(AirFrame* frame) {
         return calcPathloss(frame);
     }
+    
+    double calcSqrdistance(const Coord &myPos,const Coord &framePos);
+	
 
     /** @brief Calculate the path loss.
      */
@@ -104,7 +111,7 @@ protected:
 
     /** @brief Calculate duration of this message */
     virtual double calcDuration(cMessage* m) {
-        return static_cast<double>(m->length()) / bitrate;
+        return static_cast<double>(m->length()) / bitrate;  
     }
     
     
@@ -121,34 +128,53 @@ protected:
         /** @brief Snr list to store the SNR values*/
         SnrList sList;
     };
-
+    
     /**
      * @brief SnrInfo stores the snrList and the the recvdPower for the
      * message currently beeing received together with a pointer to the
      * message.
      **/
     SnrStruct snrInfo;
+    
+    struct Channel{
+           /** @brief Current state of active channel (radio), set using radio, updated via BB */
+    
+    /** @brief Last RSSI level */
+    RSSI rssi;
+    /** @brief category number given by bb for RSSI */
 
+    /** @brief track and publish current occupation state of medium */
+    MediumIndication indication;
+    
+    /** @brief The noise level of the channel.*/
+    double noiseLevel;
+    
+    double rcvdPower;
+
+    /** @brief Used to store the time a radio switched to recieve.*/
+    double recvTime;
+           };
+    Channel defaultChannel;
+    
     /**
      * @brief Typedef used to store received messages together with
      * receive power.
      **/
     typedef std::map<AirFrame*,double> cRecvBuff;
-
+    
+    
+    std::vector<Channel> usedChannel;
+    
     /**
      * @brief A buffer to store a pointer to a message and the related
      * receive power.
      **/
     cRecvBuff recvBuff;
-
-    /** @brief Current state of active channel (radio), set using radio, updated via BB */
+    
     RadioState::States radioState;
     /** @brief category number given by bb for RadioState */
     int catRadioState;
     
-    /** @brief Last RSSI level */
-    RSSI rssi;
-    /** @brief category number given by bb for RSSI */
     int catRSSI;
     /** @brief if false, the RSSI will not be published during the reception of a frame
      *
@@ -156,18 +182,10 @@ protected:
      */
     bool publishRSSIAlways;
 
-    /** @brief track and publish current occupation state of medium */
-    MediumIndication indication;
     int catIndication;
 
     /** @brief Cache the module ID of the NIC */
     int nicModuleId;
-    
-    /** @brief The noise level of the channel.*/
-    double noiseLevel;
-
-    /** @brief Used to store the time a radio switched to recieve.*/
-    double recvTime;
     
     /**
      * @brief The wavelength. Calculated from the carrier frequency specified in the omnetpp.ini
@@ -177,12 +195,6 @@ protected:
      **/
     double waveLength;
   
-    /** 
-     * @brief Thermal noise on the channel. Can be specified in
-     * omnetpp.ini. Default: -100 dBm
-     **/
-    double thermalNoise;
-
     /**
      * @brief Path loss coefficient.
      * 
@@ -203,11 +215,19 @@ protected:
     
     /** @brief then we need to know the edges of the playground */
     Coord playground;
-
+    
+    /** 
+     * @brief Thermal noise on the channel. Can be specified in
+     * omnetpp.ini. Default: -100 dBm
+     **/
+    double thermalNoise;
+           
     /** @brief keep bitrate to calculate duration */
     double bitrate;
     /** @brief BB category of bitrate */
     int catBitrate;
+    int channelID;
 };
 
 #endif
+
