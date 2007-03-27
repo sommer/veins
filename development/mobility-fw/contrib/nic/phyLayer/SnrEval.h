@@ -31,6 +31,8 @@
 
 #include <list>
 #include <vector>
+#include <map>
+
 /**
  * @brief Keeps track of the different snir levels when receiving a
  * packet
@@ -96,11 +98,30 @@ protected:
     /** @brief Calculate the path loss.
      */
     double calcPathloss(AirFrame* frame);
-
+    
+    /**
+     * @brief Typedef used to store received messages together with
+     * receive power.
+     **/
+    typedef std::map<AirFrame*,double> cRecvBuff;
+    
+    /** @brief Typedef used to store the time and the noiseLevel of a message*/
+    typedef std::map<double,double> levelMap;
+    
+    /** @brief adds the noiselevel of every message
+     * to calculate the snr
+     */
+    
+    //double addNoiseLevel(double mTime, std::map<double,double> &levelMap, AirFrame* frame);
+    double addNoiseLevel(double mTime,const levelMap &addMap, AirFrame* frame); 
     /** @brief updates the snr information of the relevant AirFrames
      *  called in handleLowerMsgStart(AirFrame*)
      */
-    void addNewSnr();
+    void addNewSnr(AirFrame* frame);
+
+    /** @brief if a message is to be ssnd, the noiseLevel and the time are stored in the map*/
+    void addNewMessage(AirFrame* frame, levelMap &addMap);
+    //void addNewMessage(AirFrame* frame, std::map<double,double> &levelMap);
 
     void handlePublish(RSSI *r);
   
@@ -135,14 +156,13 @@ protected:
      * message.
      **/
     SnrStruct snrInfo;
-    
+        
     struct Channel{
            /** @brief Current state of active channel (radio), set using radio, updated via BB */
     
     /** @brief Last RSSI level */
     RSSI rssi;
-    /** @brief category number given by bb for RSSI */
-
+    
     /** @brief track and publish current occupation state of medium */
     MediumIndication indication;
     
@@ -156,13 +176,7 @@ protected:
            };
     Channel defaultChannel;
     
-    /**
-     * @brief Typedef used to store received messages together with
-     * receive power.
-     **/
-    typedef std::map<AirFrame*,double> cRecvBuff;
-    
-    
+    /** @brief the channels, which are saved in a vector.*/
     std::vector<Channel> usedChannel;
     
     /**
@@ -175,6 +189,7 @@ protected:
     /** @brief category number given by bb for RadioState */
     int catRadioState;
     
+    /** @brief category number given by bb for RSSI */
     int catRSSI;
     /** @brief if false, the RSSI will not be published during the reception of a frame
      *
@@ -224,8 +239,11 @@ protected:
            
     /** @brief keep bitrate to calculate duration */
     double bitrate;
+    
     /** @brief BB category of bitrate */
     int catBitrate;
+    
+    /** @brief the ID of the channel */
     int channelID;
 };
 

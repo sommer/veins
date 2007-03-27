@@ -88,7 +88,7 @@ void SnrEval::initialize(int stage)
         bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
         bb->publishBBItem(catIndication, &defaultChannel.indication, nicModuleId);
 
-        EV << "carrierFrequency: " << carrierFrequency
+        EV << " carrierFrequency: " << carrierFrequency
            << " waveLength: " << waveLength
            << " sensitivity: "<<sensitivity
            << " pathLossAlpha: " << alpha
@@ -115,6 +115,7 @@ void SnrEval::initialize(int stage)
  **/
 void SnrEval::handleLowerMsgStart(AirFrame *frame){
    
+    levelMap addMap;
     double rcvdPower = calcRcvdPower(frame);
     defaultChannel.rcvdPower = rcvdPower;
     unsigned channelID = frame->getChannelId();
@@ -127,6 +128,7 @@ void SnrEval::handleLowerMsgStart(AirFrame *frame){
 
     // store the receive power in the recvBuff
     recvBuff[frame] = defaultChannel.rcvdPower;
+    
 
     // if receive power is bigger than sensitivity
     // and currently not receiving another message
@@ -142,7 +144,8 @@ void SnrEval::handleLowerMsgStart(AirFrame *frame){
     
           // add initial snr value
             EV <<"first frame arrived!\n";
-            addNewSnr();
+            addNewMessage(frame, addMap);
+            addNewSnr(frame);
             defaultChannel.rssi.setRSSI(defaultChannel.rssi.getRSSI() + defaultChannel.rcvdPower);
             defaultChannel.indication.setState(MediumIndication::BUSY);
             if(radioState == RadioState::RECV) {
@@ -153,6 +156,7 @@ void SnrEval::handleLowerMsgStart(AirFrame *frame){
         else {
             //add receive power to the noise level
             EV <<"frame discared -- just noise with rcvdPower: "<<defaultChannel.rcvdPower<<" sensitivity: "<<sensitivity<<endl;
+            //calcFading();
             defaultChannel.noiseLevel += defaultChannel.rcvdPower;
             defaultChannel.rssi.setRSSI(defaultChannel.rssi.getRSSI() + defaultChannel.noiseLevel);
             bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
@@ -162,17 +166,21 @@ void SnrEval::handleLowerMsgStart(AirFrame *frame){
     else {
         // update snr info for currently beeing received message
         EV <<"add new snr value to snr list of message beeing received\n";
+        //calcFading();
+        //defaultChannel.noiseLevel - calcFading() += defaultChannel.rcvdPower;
+        //defaultChannel.noiseLevel = addNoiseLevel(time, cLevel) + defaultChannel.rcvdPower;
         defaultChannel.noiseLevel += defaultChannel.rcvdPower;
         defaultChannel.rssi.setRSSI(defaultChannel.rssi.getRSSI() + defaultChannel.noiseLevel);
-        addNewSnr();
+        addNewMessage(frame, addMap);
+        addNewSnr(frame);
         if(publishRSSIAlways && (radioState == RadioState::RECV)) {
             bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);
         }
     }
-    EV <<"with rcvdPower: "<<defaultChannel.rcvdPower<<endl;
-    EV<<" rssi: "<< defaultChannel.rssi.getRSSI()<<endl;
-    EV<<" noiseLevel: "<< defaultChannel.noiseLevel<<endl;
-    EV<<"frame finished at"<<simTime()+frame->getDuration()<<endl;
+    EV <<" with rcvdPower: "<<defaultChannel.rcvdPower<<endl;
+    EV <<" rssi: "<< defaultChannel.rssi.getRSSI()<<endl;
+    EV <<" noiseLevel: "<< defaultChannel.noiseLevel<<endl;
+    EV <<"frame finished at"<<simTime()+frame->getDuration()<<endl;
 }
 
 
@@ -191,6 +199,7 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
 {
     if(snrInfo.ptr == frame){    
         EV <<"first frame finished " << endl;
+        //defaultChannel.rssi.setRSSI(defaultChannel.noiseLevel); // Gesamt-NoiseLevel
         defaultChannel.rssi.setRSSI(defaultChannel.noiseLevel);
         defaultChannel.indication.setState(MediumIndication::IDLE);
         if(radioState == RadioState::RECV) {
@@ -198,6 +207,7 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
             
             // foward the packet to an Deceider with the possibly new snr information
             if(snrInfo.sList.front().time < defaultChannel.recvTime) {
+            	snrInfo.sList.front().time += defaultChannel.recvTime; //NEU
                 modifySnrList(snrInfo.sList);
                 EV<<"radio switched to RX after frame transmission started: " <<snrInfo.sList.front().time<<endl;
             }
@@ -236,7 +246,7 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
 
         // update snr info for message currently being received if any
         if(snrInfo.ptr != NULL){
-            addNewSnr();
+            addNewSnr(frame);
             EV << " noise frame ended during a reception "
                << " radiostate = " << radioState << endl;
             
@@ -249,12 +259,7 @@ void SnrEval::handleLowerMsgEnd(AirFrame *frame)
             if(radioState == RadioState::RECV) bb->publishBBItem(catRSSI, &defaultChannel.rssi, nicModuleId);            
         }
         
-        //channelUsed[i].clear();
-        
-        /**for(size_t=usedChannel.size-1;i>1;i--){
-                 channelUsed[i].clear();
-                 
-        EV <<"channel deleted\n";**/                                      
+                                     
         // message should be deleted
         delete frame;
         EV <<"message deleted\n";
@@ -287,15 +292,32 @@ void SnrEval::receiveBBItem(int category, const BBItem *details, int scopeModule
 /**
  * The Snr information of the buffered message is updated....
  **/
-void SnrEval::addNewSnr()
+void SnrEval::addNewSnr(AirFrame* frame)
 {
+	double mTime;
+	levelMap addMap;
     //print("NoiseLevel: "<<noiseLevel<<" recvPower: "<<snrInfo.rcvdPower);
 
     snrInfo.sList.push_back(SnrListEntry());
     snrInfo.sList.back().time=simTime();
-    snrInfo.sList.back().snr=snrInfo.rcvdPower/defaultChannel.noiseLevel;
+    //snrInfo.sList.back().rxTime=defaultChannel.recvTime;
+    mTime=snrInfo.sList.back().time;
+    //snrInfo.sList.back().snr=snrInfo.rcvdPower/defaultChannel.noiseLevel;
+    snrInfo.sList.back().snr=snrInfo.rcvdPower/addNoiseLevel(mTime, addMap, frame);
     EV<<"New Snr added: "<<snrInfo.sList.back().snr
       <<" at time:"<<snrInfo.sList.back().time<<endl;
+}
+void SnrEval::addNewMessage(AirFrame* frame, levelMap& addMap)
+{
+	/**Initalize nLevel with the noiseLevel of the channel and
+	 * mTime with the time of sending the message*/
+	double nLevel = 0.0;
+	double mTime = 0.0;
+	nLevel = defaultChannel.noiseLevel;
+	mTime = simTime();
+	EV<<" noiseLevel: "<<nLevel<<endl;
+	EV<<" time: "<<mTime<<endl;
+	addMap.insert(std::make_pair(nLevel, mTime));
 }
 
 /**
@@ -344,8 +366,8 @@ void SnrEval::modifySnrList(SnrList& list)
  double pSend = frame->getPSend();
  
  Coord myPos(hostMove.startPos);
-    HostMove rHm(frame->getHostMove());
-    Coord framePos(rHm.startPos);
+ HostMove rHm(frame->getHostMove());
+ Coord framePos(rHm.startPos);
     
     // Calculate the receive power of the message
     // get my position
@@ -382,7 +404,7 @@ void SnrEval::modifySnrList(SnrList& list)
 }
 
 double SnrEval::calcSqrdistance(const Coord &myPos,const Coord &framePos){
-       double sqrdistance = 0.0;
+    double sqrdistance = 0.0;
        
        //calculate distance
     if(useTorus) {
@@ -398,6 +420,34 @@ double SnrEval::calcSqrdistance(const Coord &myPos,const Coord &framePos){
     
 }
 
+double SnrEval::addNoiseLevel(double mTime,const levelMap &addMap, AirFrame* frame)
+{
+    levelMap::const_iterator iter;
+    
+    double timer = 0.0;
+    double sumNoiseLevel = 0.0;
+
+    //Coord myPos(hostMove.startPos);
+    //HostMove rHm(frame->getHostMove());
+    //Coord framePos(rHm.startPos);
+  
+    for(timer=0.0; timer<=timer + simTime(); timer++){
+      for( iter = addMap.begin();iter != addMap.end();iter++){
+      	EV << (*iter).first << " => " << (*iter).second << endl;
+      	//if(timer==time) && (timer<=timer + simTime()){
+      	if(timer=mTime){
+        //if((timer==frame->getHostMove().startTime()){
+		//addition
+		   sumNoiseLevel += defaultChannel.noiseLevel;
+	}
+  }	
+ }
+
+
+EV << " sumNoiseLevel: "<< sumNoiseLevel<<endl;
+ 
+return sumNoiseLevel;
+}
 
 void SnrEval::finish(){
 }
