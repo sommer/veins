@@ -91,14 +91,7 @@ protected:
     virtual double calcRcvdPower(AirFrame* frame) {
         return calcPathloss(frame);
     }
-    
-    double calcSqrdistance(const Coord &myPos,const Coord &framePos);
-	
-
-    /** @brief Calculate the path loss.
-     */
-    double calcPathloss(AirFrame* frame);
-    
+       
     /**
      * @brief Typedef used to store received messages together with
      * receive power.

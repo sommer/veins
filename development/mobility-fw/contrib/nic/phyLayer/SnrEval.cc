@@ -357,68 +357,7 @@ void SnrEval::modifySnrList(SnrList& list)
 
  const double SnrEval::speedOfLight = 300000000.0;
 
- double SnrEval::calcPathloss(AirFrame *frame)
-                                 {
-        
- double time;
- double attenuation=0.0;
- //double pRecv;
- double pSend = frame->getPSend();
  
- Coord myPos(hostMove.startPos);
- HostMove rHm(frame->getHostMove());
- Coord framePos(rHm.startPos);
-    
-    // Calculate the receive power of the message
-    // get my position
-    time = simTime() - hostMove.startTime;
-    if(hostMove.speed != 0) {
-        myPos.x += time*hostMove.speed*hostMove.direction.x;
-        myPos.y += time*hostMove.speed*hostMove.direction.y;
-    }
-    
-    //get Position of the sending node
-    time = simTime() - rHm.startTime;
-    
-    if(rHm.speed != 0) {
-        framePos.x += time*rHm.speed*rHm.direction.x;
-        framePos.y += time*rHm.speed*rHm.direction.y;
-    }
-    
-    //pRecv = (pSend*waveLength*waveLength /
-    //         (16.0*M_PI*M_PI*pow(calcSqrdistance(myPos, framePos),pathLossAlphaHalf)));
-                      
-    if(pSend==0){
-                 //cerr << pSend "pSend is 0\n";
- 
-     }else if(calcSqrdistance(myPos, framePos) > 1.0)
-     { attenuation = (16.0*M_PI*M_PI*pow(calcSqrdistance(myPos, framePos),pathLossAlphaHalf));
-     }
-     //transmission delay in BasicSnrEval
-     else{
-          attenuation = 1.0;
-          }
-     
-     return attenuation;
-     
-}
-
-double SnrEval::calcSqrdistance(const Coord &myPos,const Coord &framePos){
-    double sqrdistance = 0.0;
-       
-       //calculate distance
-    if(useTorus) {
-        sqrdistance = myPos.sqrTorusDist(framePos, playground);
-    } else {
-        sqrdistance = myPos.sqrdist(framePos);
-    }
-       
-       
-    EV << " sqrdistance: "<< sqrt(sqrdistance) << " Torus: "<<useTorus<< endl;
-    
-    return sqrdistance;
-    
-}
 
 double SnrEval::addNoiseLevel(double mTime,const levelMap &addMap, AirFrame* frame)
 {
