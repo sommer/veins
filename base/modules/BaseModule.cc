@@ -32,7 +32,7 @@ void BaseModule::initialize(int stage)
     if (stage == 0) {        
         hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
         // get a pointer to the Blackboard module
-        bb = BlackboardAccess().get();
+        //bb = BlackboardAccess().get();
     }
 }
 

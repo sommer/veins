@@ -4,38 +4,40 @@
 
 # help output
 help:
-	@echo 
-	@echo "*******************************************************************"
-	@echo "	Targets are:"
-	@echo "	base		-- create base library"
-	@echo "	modules		-- create the modules library"
-	@echo "	tests		-- create tests "
-	@echo "	examples	-- create example networks "
-	@echo "	configurator	-- create the configuration tool "
-	@echo "	all		-- create all of the above "
-	@echo "	docs		-- create documentation "
-	@echo "	clean		-- clean  everything up "
-	@echo "	distclean	-- get back to pristine fresh state "
-	@echo "*******************************************************************"
+	@echo *******************************************************************
+	@echo 	Targets are:
+	@echo 	base_dir	-- create base library
+	@echo 	modules_dir	-- create the modules library
+	@echo 	tests_dir	-- create tests
+	@echo 	examples_dir	-- create example networks
+	@echo 	configurator_dir-- create the configuration tool
+	@echo 	all		-- create all of the above
+	@echo 	docs		-- create documentation
+	@echo 	clean		-- clean  everything up
+	@echo 	distclean	-- get back to pristine fresh state
+	@echo *******************************************************************
 
 # make all
 all: base_dir modules_dir examples_dir tests_dir configurator_dir
 
 configurator_dir:
-	@(cd configurator; ${MAKE})
+	@(cd configurator; $(MAKE))
 
 distclean: clean
-	@(cd configurator; ${MAKE} distclean)
-	@rm -f tests/Makefile
-	@rm -f modules/Makefile
-	@rm -f modules/mac/Makefile
-	@rm -f modules/phy/Makefile
-	@rm -f modules/application/Makefile
-	@rm -f modules/node/Makefile
-	@rm -f modules/object/Makefile
-	@rm -f modules/channel/Makefile
-	@rm -f modules/nic/Makefile
-	@rm -f examples/baseNetwork/Makefile
+	@del tests\Makefile.vc
+	@del modules\Makefile.vc
+	@del modules\mac\Makefile.vc
+	@del modules\phy\Makefile.vc
+	@del modules\application\Makefile.vc
+	@del modules\node\Makefile.vc
+	@del modules\object\Makefile.vc
+	@del modules\channel\Makefile.vc
+	@del modules\utility\Makefile.vc
+	@del modules\mobility\Makefile.vc
+	@del modules\nic\Makefile.vc
+	@del examples\baseNetwork\Makefile.vc
+	@del examples\locNetwork\Makefile.vc
+#	-@cd configurator && $(MAKE) distclean
 
 # documentation
 DOC_DIR=doc
@@ -54,3 +56,4 @@ neddoc:
 
 neddoc-without-doxy:
 	opp_neddoc -o $(DOC_DIR)/neddoc -d ../api base/ examples/ modules/ doc/
+

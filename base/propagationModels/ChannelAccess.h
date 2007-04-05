@@ -85,7 +85,7 @@ public:
     /**
      * called by Blackboard to inform of changes
      */
-    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+    //virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 };
 
 #endif

@@ -24,8 +24,8 @@ all: base modules examples tests configurator
 configurator:
 	@(cd configurator; ${MAKE})
 
-distclean: clean
-	@(cd configurator; ${MAKE} distclean)
+distclean:
+	-@$(MAKE) clean
 	@rm -f tests/Makefile
 	@rm -f modules/Makefile
 	@rm -f modules/mac/Makefile
@@ -35,9 +35,11 @@ distclean: clean
 	@rm -f modules/object/Makefile
 	@rm -f modules/channel/Makefile
 	@rm -f modules/mobility/Makefile
+	@rm -f modules/utility/Makefile
 	@rm -f modules/nic/Makefile
 	@rm -f examples/baseNetwork/Makefile
 	@rm -f examples/locNetwork/Makefile
+	@(cd configurator; ${MAKE} distclean)
 
 # documentation
 DOC_DIR=doc
@@ -56,3 +58,4 @@ neddoc:
 
 neddoc-without-doxy:
 	opp_neddoc -o $(DOC_DIR)/neddoc -d ../api base/ examples/ modules/ doc/
+

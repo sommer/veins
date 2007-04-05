@@ -152,7 +152,7 @@ public:
     void handleMessage( cMessage* );
 
     /** @brief Called by the Blackboard whenever a change occurs we're interested in */
-    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+    //virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
     
 protected:
     /**

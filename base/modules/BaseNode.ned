@@ -36,6 +36,6 @@ module BaseNode
         net.upperControlOut --> appl.lowerControlIn display "m=m,70,0,70,0;o=red";
         net.upperControlIn <-- appl.lowerControlOut display "m=m,70,0,70,0;o=red";
 
-    display: "p=10,10;b=180,200,rect;o=white";
+    display: "b=,,rect;o=white";
 endmodule
 

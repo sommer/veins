@@ -57,7 +57,7 @@ void BaseMobility::initialize(int stage)
         hasPar("updateInterval") ? updateInterval=par("updateInterval") :
             updateInterval = 0;
 
-        moveCategory = bb->getCategory(&move);
+        //moveCategory = bb->getCategory(&move);
 
         // reading the out from omnetpp.ini makes predefined scenarios a lot easier
         if (hasPar("x") && hasPar("y")){
@@ -202,7 +202,7 @@ void BaseMobility::updatePosition()
 {
     coreEV << "updatePosition: " << move.info() << endl;
     
-    bb->publishBBItem(moveCategory, &move, hostId);
+    //bb->publishBBItem(moveCategory, &move, hostId);
     char xStr[32], yStr[32];
     sprintf(xStr, "%d", FWMath::round(move.startPos.x));
     sprintf(yStr, "%d", FWMath::round(move.startPos.y));

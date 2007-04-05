@@ -21,10 +21,12 @@
 #define MOVE_H
 
 #include <string>
-#include "Coord.h"
-#include "Blackboard.h"
-#include <omnetpp.h>
 #include <cmath>
+
+#include <omnetpp.h>
+
+#include "Coord.h"
+#include "BaseUtility.h"
 
 /**
  * @brief Class to store object position and movement
@@ -35,9 +37,9 @@
  *
  * @author Andreas Koepke
  **/
-class Move : public BBItem 
-{
-    BBITEM_METAINFO(BBItem);
+//class Move : public BBItem {
+class Move {
+    //BBITEM_METAINFO(BBItem);
 
  public:
     /** @brief Start position of the host **/
@@ -76,3 +78,4 @@ public:
 };
 
 #endif
+

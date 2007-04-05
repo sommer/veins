@@ -24,7 +24,7 @@
 
 #include <sstream>
 #include <omnetpp.h>
-#include "Blackboard.h"
+//#include "BaseUtility.h"
 
 #ifndef EV
 #define EV (ev.disabled()||!debug) ? (std::ostream&)ev : ev << logName() << "::" << className() << ": "
@@ -57,11 +57,11 @@
  * @author Steffen Sroka
  * @author Andreas Koepke
  */
-class BaseModule: public cSimpleModule, public ImNotifiable
-{
+//class BaseModule: public cSimpleModule, public ImNotifiable {
+class BaseModule: public cSimpleModule {
   protected:
     /** @brief Cached pointer to the Blackboard module*/
-    Blackboard *bb;
+    //BaseUtility *baseUtil;
     
     /** @brief Debug switch for all other modules*/
     bool debug;
@@ -74,7 +74,7 @@ class BaseModule: public cSimpleModule, public ImNotifiable
     std::string getLogName(int);
 
   public:
-    Module_Class_Members( BaseModule, cSimpleModule, 0);
+    Module_Class_Members(BaseModule, cSimpleModule, 0);
 
     /** @brief Basic initialization for all modules */
     virtual void initialize(int);
@@ -114,13 +114,13 @@ class BaseModule: public cSimpleModule, public ImNotifiable
      * In this base class just handle the context switching and
      * some debug notifications
      */
-    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId) {
+    /*virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId) {
         if(debug) {
             Enter_Method("receiveBBItem(\"%s, %i\")", details->info().c_str(), scopeModuleId);
         } else {
             Enter_Method_Silent();
         }
-    }
+    }*/
 };
 
 #endif

@@ -1,5 +1,5 @@
 //***************************************************************************
-// * file:        Node.ned
+// * file:        testNode.ned
 // *
 // * author:      Marc Loebbers
 // *
@@ -24,12 +24,11 @@ import
     "BaseArp",
     "BaseNetwLayer",
     "MfNic",
-    "MassMobility",
-    //"BaseMobility",
-    "Blackboard";
-//    "BaseUtility";
+    "BaseMobility",
+//    "Blackboard";
+    "BaseUtility";
 
-module Node
+module testNode
 
     parameters:
         applType: string; //type of the application layer
@@ -38,12 +37,11 @@ module Node
 	    in: radioIn; // gate for sendDirect
 
     submodules:
-        blackboard: Blackboard;
-        //blackboard: BaseUtility;
+        //blackboard: Blackboard;
+        blackboard: BaseUtility;
             display: "p=200,75;b=30,25";
 
-        //mobility: BaseMobility;
-        mobility: MassMobility;
+        mobility: BaseMobility;
             display: "p=200,150;b=30,25";
 
         arp: BaseArp;

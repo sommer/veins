@@ -46,7 +46,7 @@ void ChannelAccess::initialize( int stage )
         if( cc == 0 ) error("Could not find channelcontrol module");
 
         // subscribe to position changes
-        catMove = bb->subscribe(this, &move, findHost()->id());
+        //catMove = bb->subscribe(this, &move, findHost()->id());
         isRegistered = false;
     }
 }
@@ -114,9 +114,9 @@ void ChannelAccess::sendToChannel(cMessage *msg, double delay)
  * ChannelAccess is subscribed to position changes and informs the
  * channelcontrol
  */
-void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scopeModuleId) 
+/*void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scopeModuleId) 
 {    
-    BaseModule::receiveBBItem(category, details, scopeModuleId);
+    //BaseModule::receiveBBItem(category, details, scopeModuleId);
     
     if(category == catMove)
     {
@@ -134,4 +134,5 @@ void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scope
         move = m;
         coreEV<<"new HostMove: "<<move.info()<<endl;
     }
-}
+}*/
+

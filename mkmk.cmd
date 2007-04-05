@@ -4,7 +4,7 @@ if exist ..\omnetpp\setenv-vc71.bat call ..\omnetpp\setenv-vc71.bat
 nmake /? >nul 2>nul || echo *** ERROR: nmake.exe is not in the PATH *** && goto end
 call opp_test >nul 2>nul || echo *** ERROR: OMNeT++/bin is not in the PATH *** && goto end
 
-set OMNETPP_ROOT=c:\home\omnetpp
+set OMNETPP_ROOT=c:\omnet++
 set ROOT=%~dp0
 
 echo "Generating makefiles..."

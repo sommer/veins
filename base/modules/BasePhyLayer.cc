@@ -63,7 +63,7 @@ void BasePhyLayer::initialize(int stage)
 
 	bitrate = par("bitrate");
         
-        catActiveChannel = bb->subscribe(this, &channel, parentModule()->id());
+        //catActiveChannel = bb->subscribe(this, &channel, parentModule()->id());
     }
     else {
         if(alpha < static_cast<double>(cc->par("alpha")))
@@ -326,10 +326,10 @@ void BasePhyLayer::finish()
     if(!txOverTimer->isScheduled()) delete txOverTimer;
 }
 
-void BasePhyLayer::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
+/*void BasePhyLayer::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
     ChannelAccess::receiveBBItem(category, details, scopeModuleId);
     if(category == catActiveChannel) {
         channel = *(static_cast<const ActiveChannel *>(details));
     }
-}
+}*/

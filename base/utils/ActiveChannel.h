@@ -20,9 +20,11 @@
 #ifndef ACTIVECHANNEL_H
 #define ACTIVECHANNEL_H
 
-#include <omnetpp.h>
-#include <Blackboard.h>
 #include <sstream>
+
+#include <omnetpp.h>
+
+#include <BaseUtility.h>
 
 /**
  * @brief Announce the current channel that we send on.
@@ -35,9 +37,9 @@
  * @sa Blackboard
  */
 
-class  ActiveChannel : public BBItem
-{
-    BBITEM_METAINFO(BBItem);
+//class  ActiveChannel : public BBItem {
+class  ActiveChannel {
+//    BBITEM_METAINFO(BBItem);
 
 protected:
     /** @brief id of currently active channel */
@@ -46,8 +48,8 @@ protected:
 public:
     
     /** @brief Constructor*/
-    ActiveChannel(unsigned c=0) : BBItem(), channel(c) {
-    };
+    //ActiveChannel(unsigned c=0) : BBItem(), channel(c) {};
+    ActiveChannel(unsigned c = 0) : channel(c) {};
 
     /** @brief get active channel */
     int getActiveChannel() const  {
@@ -68,3 +70,4 @@ public:
 };
 
 #endif
+

@@ -16,12 +16,15 @@ module BaseNetwork
             parameters:
                 playgroundSizeX = playgroundSizeX,
                 playgroundSizeY = playgroundSizeY;
-            display: "p=60,30;i=eye14";
+            display: "p=68,54;i=abstract/multicast";
         node: BaseNode[numNodes];
-            display: "p=50,50;i=laptop";
+            display: "p=170,50;i=device/wifilaptop";
         object: BaseObject[numObjects];
-            display: "b=40,24;p=100,50";
-    display: "p=10,10;b=$playgroundSizeX,$playgroundSizeY,rect;o=white";
+            display: "b=40,24;p=164,114";
+    connections nocheck:
+                         // all connections and gates are to be generated dynamically
+
+    display: "b=,,rect;o=white";
 endmodule
 
 
