@@ -51,10 +51,7 @@ void LMac::initialize() {
 	
 	header_length = 7 + (max_slot + 7) / 8;
 
-	//data_length = getLongParameter("dataLength", 64);
-	/*101 bytes makes frame length 1.595 seconds, which corresponds
-	 *to current (50ms * 32slots) 1.6 second frames */
-	data_length = getLongParameter("dataLength", 101);
+	data_length = getLongParameter("dataLength", 64);
 	use_tentative = getBoolParameter("useTentative", false);
 
 	ignore_failed = false;
