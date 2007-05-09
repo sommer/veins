@@ -72,13 +72,13 @@ protected:
 	void sendControlDown(cMessage *);
 	void sendAppl(cMessage *);
 
-	const cModule * grandparentModule() {
+	cModule * grandparentModule() const {
 		return parentModule()->parentModule();
 	}
 
 	virtual const int myApplAddr() {
-		return grandparentModule()->index();;
-	};
+		return grandparentModule()->index();
+	}
 };
 
 #endif				/* BASE_LOCALIZATION_H */
