@@ -42,11 +42,22 @@ void ChannelAccess::initialize( int stage )
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
-        cc = dynamic_cast<ChannelControl *>(simulation.moduleByPath("channelcontrol"));
+        cc = dynamic_cast<ChannelControl *>(getGlobalModule("ChannelControl"));
         if( cc == 0 ) error("Could not find channelcontrol module");
 
         // subscribe to position changes
         //catMove = bb->subscribe(this, &move, findHost()->id());
+		Coord where;
+        if (hasPar("x") && hasPar("y") && hasPar("z")){
+            where.x = par("x");
+            where.y = par("y");
+			where.z = par("z");
+        }
+        else{
+            // Start at a random position
+			where.x = where.y = where.z = -1;
+        }
+		cc->registerNic(parentModule(), &where);
         isRegistered = false;
     }
 }
@@ -62,13 +73,11 @@ void ChannelAccess::initialize( int stage )
  **/
 void ChannelAccess::sendToChannel(cMessage *msg, double delay)
 {
-    std::map<int, cGate*> gateList;
-    
-    gateList = cc->getGateList( parentModule()->id(), &move.startPos );
+    const NicEntry::GateList& gateList = cc->getGateList( parentModule()->id(), &move.startPos );
+    NicEntry::GateList::const_iterator i = gateList.begin();
         
     if(useSendDirect){
         // use Andras stuff
-        std::map<int, cGate*>::iterator i = gateList.begin();
         if( i != gateList.end() ){
             for(; i != --gateList.end(); ++i){
 
@@ -77,7 +86,6 @@ void ChannelAccess::sendToChannel(cMessage *msg, double delay)
                 for (int g = radioStart; g != radioEnd; ++g)
                     sendDirect(static_cast<cMessage*>(msg->dup()),
                                delay, i->second->ownerModule(), g);
-
             }
             int radioStart = i->second->id();
             int radioEnd = radioStart + i->second->size();
@@ -95,7 +103,6 @@ void ChannelAccess::sendToChannel(cMessage *msg, double delay)
     else{
         // use our stuff
         coreEV <<"sendToChannel: sending to gates\n";
-        std::map<int, cGate*>::iterator i = gateList.begin();
         if( i != gateList.end() ){
             for(; i != --gateList.end(); ++i){
                 sendDelayed( static_cast<cMessage*>(msg->dup()),

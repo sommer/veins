@@ -39,6 +39,7 @@ Define_Module(BaseMobility);
  * If the speed of the host is bigger than 0 a first MOVE_HOST self
  * message is scheduled in stage 1
  */
+
 void BaseMobility::initialize(int stage)
 {
     BaseModule::initialize(stage);
@@ -46,8 +47,8 @@ void BaseMobility::initialize(int stage)
     if (stage == 0){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
         coreEV << "initializing BaseMobility stage " << stage << endl;
-        cc = dynamic_cast<ChannelControl *>(simulation.moduleByPath("channelcontrol"));
-        if (cc == 0)
+		cc = (ChannelControl*)getGlobalModule("ChannelControl");
+        if (cc == NULL)
             error("Could not find channelcontrol module");
 
         //get a pointer to the host

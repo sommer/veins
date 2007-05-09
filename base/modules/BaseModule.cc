@@ -75,3 +75,17 @@ std::string BaseModule::getLogName(int id)
     }
     return lname;
 };
+
+cModule * BaseModule::getGlobalModule(const char* modname)
+{
+    cModuleType *modtype = findModuleType(modname);
+	cModule *system = simulation.systemModule();
+	for (cSubModIterator i(*system); !i.end(); i++)
+	{
+		cModule *submod = i();
+		if (submod->moduleType()==modtype)
+			return submod;
+	}
+	return NULL;
+} 
+

@@ -108,6 +108,18 @@ class BaseModule: public cSimpleModule {
         return ost.str();
     };
 
+	/** 
+	 * @brief Function to get a reference to a global singleton module
+	 *
+	 * Given the name of the module type, this function returns a reference
+	 * to a global singleton module. Lookups for non-singleton modules will 
+	 * return a random module of the specified type. NULL is returned on lookup
+	 * failure
+	 * @param modtype Module type name
+	 */
+	
+	cModule * getGlobalModule(const char* modtype);
+
     /**
      * @brief Called by the Blackboard whenever a change of a category occurs
      * to which we have subscribed. Redefined from ImNotifiable.

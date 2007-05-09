@@ -48,9 +48,9 @@ void ChannelControl::initialize()
         coreDebug = par("coreDebug").boolValue();
     else
         coreDebug = false;
-    NicEntries entries;
-    RowVector row;
-    row.push_back(entries);
+    NicEntries *entries = new NicEntries();
+    RowVector *row = new RowVector();
+    row->push_back(*entries);
     
   ccEV <<"initializing ChannelControl\n";
   //todo
@@ -90,13 +90,13 @@ void ChannelControl::initialize()
           findDistance = ceil(playgroundSize.x) + 1.0;
       }
       ccEV <<" using 1x1 grid"<<endl;
-      nics.push_back(row);
+      nics.push_back(*row);
   } else {
       for(unsigned i = 1; i < numY; ++i) {
-          row.push_back(entries);
+          row->push_back(*entries);
       }
       for(unsigned i = 0; i < numX; ++i) {
-          nics.push_back(row);
+          nics.push_back(*row);
       }
       ccEV <<" using "<<numX<<"x"<<numY<<" grid"<<endl;
   }
@@ -363,8 +363,12 @@ const NicEntry::GateList& ChannelControl::getGateList( int id, const Coord* pos 
 
     x = static_cast<unsigned>(pos->x/findDistance);
     y = static_cast<unsigned>(pos->y/findDistance);
-
-    return nics[x][y][id]->getGateList();
+	
+	if (nics[x][y].find(id)==nics[x][y].end())
+	{
+		opp_error("id not found in nics (id=%d)\n",id);
+	}
+	return nics[x][y][id]->getGateList();
 }
 
 /**

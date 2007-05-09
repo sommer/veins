@@ -1,5 +1,5 @@
-simple BaseChannel
+module BaseChannel
     parameters:
         debug: numeric const; // debug switch
-endsimple
+endmodule
 
