@@ -90,7 +90,9 @@ class BaseMobility : public BaseModule
         X_SMALLER, ///< x smaller than 0
 	X_BIGGER,  ///< x bigger than playground size
 	Y_SMALLER, ///< y smaller than 0
-	Y_BIGGER   ///< y bigger than playground size
+	Y_BIGGER,  ///< y bigger than playground size
+	Z_SMALLER, ///< z smaller than 0
+	Z_BIGGER   ///< z bigger than playground size
     };
 
   protected:
@@ -158,6 +160,9 @@ class BaseMobility : public BaseModule
 
     /** @brief Returns the height of the playground */
     double playgroundSizeY() const  {return cc->getPgs()->y;}
+
+    /** @brief Returns the height of the playground */
+    double playgroundSizeZ() const  {return cc->getPgs()->z;}
 
     /**
      * @name Border handling 

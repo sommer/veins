@@ -60,13 +60,14 @@ void BaseMobility::initialize(int stage)
         //moveCategory = bb->getCategory(&move);
 
         // reading the out from omnetpp.ini makes predefined scenarios a lot easier
-        if (hasPar("x") && hasPar("y")){
+        if (hasPar("x") && hasPar("y") && hasPar("z")){
             move.startPos.x = par("x");
             move.startPos.y = par("y");
+            move.startPos.z = par("z");
         }
         else{
             // Start at a random position
-	    move.startPos.x = move.startPos.y = -1;
+	    move.startPos.x = move.startPos.y = move.startPos.z = -1;
         }
 
 	coreEV << "move.startPos: " << move.startPos.info() << endl;
@@ -90,7 +91,8 @@ void BaseMobility::initialize(int stage)
 	    move.startPos = getRandomPosition();
 	//we do not have negative positions
 	//also checks whether position is within the playground
-	else if (move.startPos.x < 0 || move.startPos.y < 0 || move.startPos.x > pgs.x || move.startPos.y > pgs.y)
+	else if (	move.startPos.x < 0 || move.startPos.y < 0 || move.startPos.z < 0 ||
+			move.startPos.x > pgs.x || move.startPos.y > pgs.y || move.startPos.z > pgs.z)
 	    error("node position specified in omnetpp.ini exceeds playgroundsize");
 
         // print new host position on the screen and update bb info
@@ -198,16 +200,17 @@ void BaseMobility::handleBorderMsg(cMessage * msg)
  * This function has to be called every time the position of the host
  * changes!
  */
-void BaseMobility::updatePosition()
-{
+void BaseMobility::updatePosition() {
     coreEV << "updatePosition: " << move.info() << endl;
     
     //bb->publishBBItem(moveCategory, &move, hostId);
-    char xStr[32], yStr[32];
+    char xStr[32], yStr[32], zStr[32];
     sprintf(xStr, "%d", FWMath::round(move.startPos.x));
     sprintf(yStr, "%d", FWMath::round(move.startPos.y));
+    sprintf(zStr, "%d", FWMath::round(move.startPos.z));
     hostPtr->displayString().setTagArg("p", 0, xStr);
     hostPtr->displayString().setTagArg("p", 1, yStr);
+    //hostPtr->displayString().setTagArg("p", 2, zStr);
 }
 
 
@@ -215,11 +218,11 @@ void BaseMobility::updatePosition()
  * You can redefine this function if you want to use another
  * calculation
  */
-Coord BaseMobility::getRandomPosition()
-{
+Coord BaseMobility::getRandomPosition() {
     Coord p;
     p.x = genk_uniform(0, 0, cc->getPgs()->x);
     p.y = genk_uniform(0, 0, cc->getPgs()->y);
+    p.z = genk_uniform(0, 0, cc->getPgs()->z);
     return p;
 }
 
@@ -235,8 +238,7 @@ Coord BaseMobility::getRandomPosition()
  * @param step step size and direction of the host (for non atomic movements)
  * @param angle direction to which the host is moving
  **/
-void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget, Coord& targetPos, Coord& step, double& angle)
-{
+void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget, Coord& targetPos, Coord& step, double& angle) {
     switch( wo ){
     case X_SMALLER:
         targetPos.x = -targetPos.x;
@@ -262,6 +264,18 @@ void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget, Coord&
         step.y = -step.y;
 	angle = -angle;
 	break;
+    case Z_SMALLER:
+        targetPos.z = -targetPos.z;
+        stepTarget.z = -stepTarget.z;
+        step.z = -step.z;
+	angle = -angle;
+	break;
+    case Z_BIGGER:
+        targetPos.z = 2*playgroundSizeZ() - targetPos.z;
+        stepTarget.z = 2*playgroundSizeZ() - stepTarget.z;
+        step.z = -step.z;
+	angle = -angle;
+	break;
     case NOWHERE:
     default:
 	error("wrong border handling case!");
@@ -276,8 +290,7 @@ void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget, Coord&
  * @param stepTarget target position of the current step of the host
  * @param targetPos target position of the host (for non atomic movements)
  **/
-void BaseMobility::wrapIfOutside(BorderHandling wo, Coord& stepTarget, Coord& targetPos)
-{
+void BaseMobility::wrapIfOutside(BorderHandling wo, Coord& stepTarget, Coord& targetPos) {
     switch( wo ){
     case X_SMALLER:
         targetPos.x += playgroundSizeX();
@@ -294,6 +307,14 @@ void BaseMobility::wrapIfOutside(BorderHandling wo, Coord& stepTarget, Coord& ta
     case Y_BIGGER:
         targetPos.y -= playgroundSizeY();
         stepTarget.y -= playgroundSizeY();
+	break;
+    case Z_SMALLER:
+        targetPos.z += playgroundSizeZ();
+        stepTarget.z += playgroundSizeZ();
+	break;
+    case Z_BIGGER:
+        targetPos.z -= playgroundSizeZ();
+        stepTarget.z -= playgroundSizeZ();
 	break;
     case NOWHERE:
     default:
@@ -320,6 +341,7 @@ void BaseMobility::placeRandomlyIfOutside( Coord& targetPos )
  *
  * Additionally the calculation of the step to reach the border is
  * started.
+ * TODO fix for 3D
  **/
 BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coord& borderStep )
 {
@@ -357,6 +379,8 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coor
  * Calculate the step to reach the border. Additionally for the WRAP
  * policy the new start position after reaching the border is
  * calculated.
+ *
+ * TODO fix for 3D
  **/
 void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& borderStep, Coord& borderStart)
 {
@@ -437,9 +461,10 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
  * @param angle direction in which the host is moving
  *
  * @return true if host was outside, false otherwise.
+ *
+ * TODO fix for 3D
  **/
-bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord& targetPos, Coord& step, double& angle)
-{
+bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord& targetPos, Coord& step, double& angle) {
     // where did the host leave the playground?
     BorderHandling wo;
 
@@ -522,3 +547,4 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
 
     return true;
 }
+
