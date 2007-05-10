@@ -95,13 +95,17 @@ cModule * BaseModule::getGlobalModule(const char* modname)
 
 cModule * BaseModule::getNodeModule(const char* modname)
 {
-	cModuleType *node = findModuleType("BaseNode");
-	cModule *curr = parentModule();
-	while (curr->moduleType()!=node)
+	cModule *curr = this, *node = NULL;
+	while (node == NULL)
 	{
 		curr = curr->parentModule();
 		if (curr == NULL)
-			error("couldn't find BaseNode subclass");
+			error("couldn't find Node class (should contain a subclass of BaseUtility)");
+		node = getModule("BaseUtility",curr);
+		if (node == NULL)
+			node = submodule("utility"); // look for non-BaseNic subclasses called "utility"
 	}
-	return getModule(modname,curr);
+	node = node->parentModule();
+	EV << "module we think is Node is "<<node->name()<<endl;
+	return getModule(modname,node);
 }
