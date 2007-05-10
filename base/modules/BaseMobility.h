@@ -24,7 +24,7 @@
 #define BASE_MOBILITY_H
 
 #include "BaseModule.h"
-#include "ChannelControl.h"
+#include "BaseWorldUtility.h"
 #include "Coord.h"
 #include "Move.h"
 
@@ -39,7 +39,7 @@
  * Change notifications about position changes are also posted to the
  * Blackboard.
  *
- * Another service provided by BaseMobility is bordfer handling. If a
+ * Another service provided by BaseMobility is border handling. If a
  * host wants to move outside the playground, this situation has to be
  * handled somehow. BaseMobility provides handling for the 4 most
  * common ways for that: reflection, wrapping, random placement and
@@ -96,8 +96,8 @@ class BaseMobility : public BaseModule
     };
 
   protected:
-    /** @brief Pointer to ChannelControl -- these two must know each other */
-    ChannelControl *cc;
+    /** @brief Pointer to BaseWorldUtility -- these two must know each other */
+    BaseWorldUtility *world;
 
     /** @brief Pointer to host module, to speed up repeated access*/
     cModule* hostPtr;
@@ -149,20 +149,20 @@ class BaseMobility : public BaseModule
 	error("BaseMobility does not move the host");
     };
 
-    /** @brief Get a new random position for the host*/
-    virtual Coord getRandomPosition();
-
     /** @brief Update the position information for this node*/
     void updatePosition();
 
     /** @brief Returns the width of the playground */
-    double playgroundSizeX() const  {return cc->getPgs()->x;}
+    double playgroundSizeX() const  {return world->getPgs()->x;}
 
     /** @brief Returns the height of the playground */
-    double playgroundSizeY() const  {return cc->getPgs()->y;}
+    double playgroundSizeY() const  {return world->getPgs()->y;}
 
     /** @brief Returns the height of the playground */
-    double playgroundSizeZ() const  {return cc->getPgs()->z;}
+    double playgroundSizeZ() const  {return world->getPgs()->z;}
+
+	/* @brief Random position somewhere in the playground. DEPRECATED: Use BaseWorldUtility::getRandomPosition() instead */
+	Coord getRandomPosition() { return world->getRandomPosition();}
 
     /**
      * @name Border handling 

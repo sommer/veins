@@ -1,7 +1,6 @@
 import
     "BaseMacLayer",
-    "BasePhyLayer",
-    "BaseChannel";
+    "BasePhyLayer";
 
 module BaseNic
     gates:
@@ -9,12 +8,10 @@ module BaseNic
         out: uppergateOut; // from upper layers
         in: upperControlIn; // control to upper
         out: upperControlOut; // control from upper
-	in: radioIn; // radioIn gate for sendDirect
+	//in: radioIn; // radioIn gate for sendDirect
     submodules:
         mac: BaseMacLayer;
             display: "p=60,50;i=prot2";
-        chan: BaseChannel;
-            display: "p=68,100;i=box2_s;o=white";
         phy: BasePhyLayer;
             display: "p=60,150;i=prot3";
     connections:

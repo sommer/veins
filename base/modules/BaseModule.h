@@ -89,7 +89,7 @@ class BaseModule: public cSimpleModule {
      * when everyone interested in them has already subscribed.
      */
     virtual int numInitStages() const {
-      return 2;
+      return 3;
     }
 
     /**
@@ -109,7 +109,7 @@ class BaseModule: public cSimpleModule {
     };
 
 	/** 
-	 * @brief Function to get a reference to a global singleton module
+	 * @brief Get a reference to a global singleton module
 	 *
 	 * Given the name of the module type, this function returns a reference
 	 * to a global singleton module. Lookups for non-singleton modules will 
@@ -120,7 +120,19 @@ class BaseModule: public cSimpleModule {
 	
 	cModule * getGlobalModule(const char* modtype);
 
-    /**
+   	/** 
+	 * @brief Get a reference to a node-level module
+	 *
+	 * Given the name of the module type, this function returns a reference
+	 * to a node-level module. Lookups for modules with multiple instances of the
+	 * same type in a single module will return a random module of the specified 
+	 * type. NULL is returned on lookup failure
+	 * @param modtype Module type name
+	 */
+	
+	cModule * getNodeModule(const char* modtype);
+
+ /**
      * @brief Called by the Blackboard whenever a change of a category occurs
      * to which we have subscribed. Redefined from ImNotifiable.
      * In this base class just handle the context switching and

@@ -107,7 +107,7 @@ protected:
     double alpha;
 
     /** @brief Speed of light */
-    static const double speedOfLight;
+    //static const double speedOfLight;
 
     /** @brief gate id*/
     /*@{*/

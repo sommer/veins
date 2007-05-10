@@ -44,20 +44,12 @@ void ChannelAccess::initialize( int stage )
 
         cc = dynamic_cast<ChannelControl *>(getGlobalModule("ChannelControl"));
         if( cc == 0 ) error("Could not find channelcontrol module");
-
+	}
+	else if (stage == 1)
+	{
         // subscribe to position changes
         //catMove = bb->subscribe(this, &move, findHost()->id());
-		Coord where;
-        if (hasPar("x") && hasPar("y") && hasPar("z")){
-            where.x = par("x");
-            where.y = par("y");
-			where.z = par("z");
-        }
-        else{
-            // Start at a random position
-			where.x = where.y = where.z = -1;
-        }
-		cc->registerNic(parentModule(), &where);
+		cc->registerNic((BaseModule*)parentModule());
         isRegistered = false;
     }
 }

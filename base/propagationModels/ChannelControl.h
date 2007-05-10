@@ -26,6 +26,8 @@
 #include <list>
 #include <vector>
 
+#include "BaseModule.h"
+
 #include "Coord.h"
 #include "NicEntry.h"
 
@@ -41,8 +43,10 @@
  * @author Steffen Sroka, Daniel Willkomm
  * @sa ChannelAccess
  */
-class ChannelControl : public cSimpleModule
+class ChannelControl : public BaseModule
 {
+private:
+	const Coord* playgroundSize;
 protected:
     /** @brief Set debugging for the basic module*/
     bool coreDebug;
@@ -61,9 +65,7 @@ protected:
     /** @brief Does the ChannelControl use sendDirect or not?*/
     bool sendDirect;
 
-    /** @brief x and y size of the area the nodes are in (in meters)*/
-    Coord playgroundSize;
-    
+   
     /** @brief the biggest interference distance in the network.*/
     double maxInterferenceDistance;
 
@@ -145,34 +147,27 @@ public:
     /**
      * @brief Constructor
      **/
-    Module_Class_Members(ChannelControl, cSimpleModule, 0);
+    Module_Class_Members(ChannelControl, BaseModule, 0);
     
     /**
      * @brief Reads init parameters and calculates a maximal interfence
      * distance
      **/
-    virtual void initialize();
+    virtual void initialize(int stage);
     
     /** @brief Returns the x and y coordinates of the given nic. */
     // const Coord* getNicPos( int );
     
     /** @brief Registers a nic to have its connections managed by ChannelControl.*/
-    bool registerNic( cModule*, const Coord* );
+    bool registerNic( BaseModule*);
     
     /** @brief Updates the position information of a registered nic.*/
     void updateNicPos(int, const Coord* oldPos, const Coord* newPos);
     
-    /** @brief Returns the playgroundSize*/
-    const Coord* getPgs(){
-        return &playgroundSize;
-    };
     
     const NicEntry::GateList& getGateList( int, const Coord* );
 
     const cGate* getOutGateTo(int, int, const Coord*);
-  
-    /** @brief Speed of light */
-    static const double speedOfLight;
 
 protected:
     /** @brief Manages the connections of a registered nic. */ 

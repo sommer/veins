@@ -76,11 +76,10 @@ std::string BaseModule::getLogName(int id)
     return lname;
 };
 
-cModule * BaseModule::getGlobalModule(const char* modname)
+static cModule* getModule(const char* modname, cModule *top)
 {
     cModuleType *modtype = findModuleType(modname);
-	cModule *system = simulation.systemModule();
-	for (cSubModIterator i(*system); !i.end(); i++)
+	for (cSubModIterator i(*top); !i.end(); i++)
 	{
 		cModule *submod = i();
 		if (submod->moduleType()==modtype)
@@ -89,3 +88,20 @@ cModule * BaseModule::getGlobalModule(const char* modname)
 	return NULL;
 } 
 
+cModule * BaseModule::getGlobalModule(const char* modname)
+{
+	return getModule(modname,simulation.systemModule());
+}
+
+cModule * BaseModule::getNodeModule(const char* modname)
+{
+	cModuleType *node = findModuleType("BaseNode");
+	cModule *curr = parentModule();
+	while (curr->moduleType()!=node)
+	{
+		curr = curr->parentModule();
+		if (curr == NULL)
+			error("couldn't find BaseNode subclass");
+	}
+	return getModule(modname,curr);
+}

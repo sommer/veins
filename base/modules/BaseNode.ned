@@ -7,8 +7,6 @@ import
     "BaseBattery",
     "BaseUtility";
 
-
-
 module BaseNode
     submodules:
         utility: BaseUtility;

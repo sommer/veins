@@ -47,9 +47,9 @@ void BaseMobility::initialize(int stage)
     if (stage == 0){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
         coreEV << "initializing BaseMobility stage " << stage << endl;
-		cc = (ChannelControl*)getGlobalModule("ChannelControl");
-        if (cc == NULL)
-            error("Could not find channelcontrol module");
+		world = (BaseWorldUtility*)getGlobalModule("BaseWorldUtility");
+        if (world == NULL)
+            error("Could not find BaseWorldUtility module");
 
         //get a pointer to the host
         hostPtr = findHost();
@@ -60,20 +60,7 @@ void BaseMobility::initialize(int stage)
 
         //moveCategory = bb->getCategory(&move);
 
-        // reading the out from omnetpp.ini makes predefined scenarios a lot easier
-        if (hasPar("x") && hasPar("y") && hasPar("z")){
-            move.startPos.x = par("x");
-            move.startPos.y = par("y");
-            move.startPos.z = par("z");
-        }
-        else{
-            // Start at a random position
-	    move.startPos.x = move.startPos.y = move.startPos.z = -1;
-        }
-
-	coreEV << "move.startPos: " << move.startPos.info() << endl;
-
-	// initialize Move parameter
+		// initialize Move parameter
         move.speed = 0;
         move.startTime = simTime();
         move.direction = Coord(0,0);
@@ -83,19 +70,6 @@ void BaseMobility::initialize(int stage)
         coreEV << "initializing BaseMobility stage " << stage << endl;
         // playground size gets set up by ChannelControl in stage==0 (Andras)
         // read the playgroundsize from ChannelControl
-        Coord pgs =  cc->getPgs();
-
-	coreEV << "move.startPos: " << move.startPos.info() << endl;
-
-	// -1 indicates start at random position
-	if (move.startPos.x == -1 || move.startPos.y == -1)
-	    move.startPos = getRandomPosition();
-	//we do not have negative positions
-	//also checks whether position is within the playground
-	else if (	move.startPos.x < 0 || move.startPos.y < 0 || move.startPos.z < 0 ||
-			move.startPos.x > pgs.x || move.startPos.y > pgs.y || move.startPos.z > pgs.z)
-	    error("node position specified in omnetpp.ini exceeds playgroundsize");
-
         // print new host position on the screen and update bb info
         updatePosition();
 
@@ -214,20 +188,6 @@ void BaseMobility::updatePosition() {
     //hostPtr->displayString().setTagArg("p", 2, zStr);
 }
 
-
-/**
- * You can redefine this function if you want to use another
- * calculation
- */
-Coord BaseMobility::getRandomPosition() {
-    Coord p;
-    p.x = genk_uniform(0, 0, cc->getPgs()->x);
-    p.y = genk_uniform(0, 0, cc->getPgs()->y);
-    p.z = genk_uniform(0, 0, cc->getPgs()->z);
-    return p;
-}
-
-
 /**
  * Reflects the host from the playground border.
  *
@@ -332,7 +292,7 @@ void BaseMobility::wrapIfOutside(BorderHandling wo, Coord& stepTarget, Coord& ta
  **/
 void BaseMobility::placeRandomlyIfOutside( Coord& targetPos )
 {
-    targetPos = getRandomPosition();
+    targetPos = world->getRandomPosition();
 }
 
 

@@ -2,11 +2,16 @@
 #define BASE_UTILITY_H
 
 #include "BaseModule.h"
+#include "Coord.h"
 
 class BaseUtility : public BaseModule {
+private:
+	Coord pos;
+    bool coreDebug;
+protected:
 	Module_Class_Members(BaseUtility, BaseModule, 0);
 
-    public:
+public:
 	/** @brief This modules should only receive self-messages*/
 	void handleMessage(cMessage *msg);
 
@@ -15,6 +20,9 @@ class BaseUtility : public BaseModule {
 
 	/** @brief Delete dynamically allocated objects*/
 //	virtual void finish(){};
+
+	/** @brief Get current position */
+	const Coord* getPos() {return &pos;}
 };
 
 #endif

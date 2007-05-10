@@ -22,11 +22,9 @@
 
 #include "ChannelControl.h"
 
-const double BasePhyLayer::speedOfLight = ChannelControl::speedOfLight;
-
+//const double BasePhyLayer::speedOfLight = ChannelControl::speedOfLight;
 
 Define_Module(BasePhyLayer);
-
 
 /**
  * First we have to initialize the module from which we derived ours,
@@ -42,7 +40,7 @@ void BasePhyLayer::initialize(int stage)
 {
     ChannelAccess::initialize(stage);
 
-    if (stage == 0){
+    if (stage == 1){
         uppergateIn = findGate("uppergateIn");
         uppergateOut = findGate("uppergateOut");
         upperControlOut = findGate("upperControlOut");
@@ -61,11 +59,11 @@ void BasePhyLayer::initialize(int stage)
         hasPar("alpha") ? alpha=par("alpha") :
             alpha = static_cast<double>(cc->par("alpha"));
 
-	bitrate = par("bitrate");
+		bitrate = par("bitrate");
         
         //catActiveChannel = bb->subscribe(this, &channel, parentModule()->id());
     }
-    else {
+    else if (stage == 2){
         if(alpha < static_cast<double>(cc->par("alpha")))
             error("SnrEval::initialize() alpha can't be smaller than in \
                    ChannelControl. Please adjust your omnetpp.ini file accordingly");
@@ -263,7 +261,7 @@ void BasePhyLayer::handleUpperMsg(cMessage *msg)
 void BasePhyLayer::handleLowerMsgStart(cMessage *msg)
 {
 
-    AirFrame *frame = static_cast<AirFrame *>(msg);
+    //AirFrame *frame = static_cast<AirFrame *>(msg);
 
     coreEV <<"in handleLowerMsgStart"<<endl;
 

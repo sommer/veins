@@ -29,6 +29,8 @@
 #include "NicEntryDebug.h"
 #include "NicEntryDirect.h"
 
+#include "BaseWorldUtility.h"
+
 #ifndef ccEV
 #define ccEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << "ChannelControl: "
 #endif
@@ -41,70 +43,73 @@ Define_Module( ChannelControl );
  *
  * @ref calcInterfDist
  **/
-void ChannelControl::initialize()
+void ChannelControl::initialize(int stage)
 {
-    unsigned numX, numY;
-    if(hasPar("coreDebug"))
-        coreDebug = par("coreDebug").boolValue();
-    else
-        coreDebug = false;
-    NicEntries *entries = new NicEntries();
-    RowVector *row = new RowVector();
-    row->push_back(*entries);
-    
-  ccEV <<"initializing ChannelControl\n";
-  //todo
-  if(hasPar("sendDirect"))
-    sendDirect = par("sendDirect").boolValue();
-  else
-    sendDirect = false;
+    if (stage == 1)
+	{
+		unsigned numX, numY;
+		
+		playgroundSize = ((BaseWorldUtility*)getGlobalModule("BaseWorldUtility"))->getPgs();
 
-  if(hasPar("useTorus")) {
-      useTorus = par("useTorus").boolValue();
-  } else {
-      useTorus = false;
-  }
-  if(useTorus) {
-      ccEV<<"wrapping connections around playground edges"<<endl;
-  }
-  else {
-      ccEV<<"not wrapping connections around playground edges"<<endl;
-  }
-  playgroundSize.x = par("playgroundSizeX");
-  playgroundSize.y = par("playgroundSizeY");
-  
-  maxInterferenceDistance = calcInterfDist();
-  maxDistSquared = maxInterferenceDistance*maxInterferenceDistance;
+		if(hasPar("coreDebug"))
+			coreDebug = par("coreDebug").boolValue();
+		else
+			coreDebug = false;
+		NicEntries *entries = new NicEntries();
+		RowVector *row = new RowVector();
+		row->push_back(*entries);
+		
+	  ccEV <<"initializing ChannelControl\n";
+	  //todo
+	  if(hasPar("sendDirect"))
+		sendDirect = par("sendDirect").boolValue();
+	  else
+		sendDirect = false;
 
-  findDistance = ceil(maxInterferenceDistance);
-  if(ceil(maxInterferenceDistance) == maxInterferenceDistance) findDistance += EPSILON;
-  numX = static_cast<unsigned>(playgroundSize.x/maxInterferenceDistance)+1;
-  numY = static_cast<unsigned>(playgroundSize.y/maxInterferenceDistance)+1;
+	  if(hasPar("useTorus")) {
+		  useTorus = par("useTorus").boolValue();
+	  } else {
+		  useTorus = false;
+	  }
+	  if(useTorus) {
+		  ccEV<<"wrapping connections around playground edges"<<endl;
+	  }
+	  else {
+		  ccEV<<"not wrapping connections around playground edges"<<endl;
+	  }
+	  
+	  maxInterferenceDistance = calcInterfDist();
+	  maxDistSquared = maxInterferenceDistance*maxInterferenceDistance;
 
-  if((numX <= 3) && (numY <= 3))
-  {
-      if(playgroundSize.x < playgroundSize.y) {
-          findDistance = ceil(playgroundSize.y) + 1.0;
-      }
-      else {
-          findDistance = ceil(playgroundSize.x) + 1.0;
-      }
-      ccEV <<" using 1x1 grid"<<endl;
-      nics.push_back(*row);
-  } else {
-      for(unsigned i = 1; i < numY; ++i) {
-          row->push_back(*entries);
-      }
-      for(unsigned i = 0; i < numX; ++i) {
-          nics.push_back(*row);
-      }
-      ccEV <<" using "<<numX<<"x"<<numY<<" grid"<<endl;
-  }
-  maxX = nics.size()-1;
-  maxY = nics[0].size()-1;
+	  findDistance = ceil(maxInterferenceDistance);
+	  if(ceil(maxInterferenceDistance) == maxInterferenceDistance) findDistance += EPSILON;
+	  numX = static_cast<unsigned>(playgroundSize->x/maxInterferenceDistance)+1;
+	  numY = static_cast<unsigned>(playgroundSize->y/maxInterferenceDistance)+1;
+
+	  if((numX <= 3) && (numY <= 3))
+	  {
+		  if(playgroundSize->x < playgroundSize->y) {
+			  findDistance = ceil(playgroundSize->y) + 1.0;
+		  }
+		  else {
+			  findDistance = ceil(playgroundSize->x) + 1.0;
+		  }
+		  ccEV <<" using 1x1 grid"<<endl;
+		  nics.push_back(*row);
+	  } else {
+		  for(unsigned i = 1; i < numY; ++i) {
+			  row->push_back(*entries);
+		  }
+		  for(unsigned i = 0; i < numX; ++i) {
+			  nics.push_back(*row);
+		  }
+		  ccEV <<" using "<<numX<<"x"<<numY<<" grid"<<endl;
+	  }
+	  ccEV << "findDistance is "<<findDistance <<endl;
+	  maxX = nics.size()-1;
+	  maxY = nics[0].size()-1;
+	}
 }
-
-const double ChannelControl::speedOfLight = 300000000.0;
 
 /**
  * Calculation of the interference distance based on the transmitter
@@ -122,12 +127,14 @@ double ChannelControl::calcInterfDist()
   double carrierFrequency = par("carrierFrequency");
   //maximum transmission power possible
   double pMax             = par("pMax");
+  if (pMax <=0)
+  	error("Max transmission power is <=0!");
   //minimum signal attenuation threshold
   double sat              = par("sat");
   //minimum path loss coefficient
   double alpha            = par("alpha");
 
-  double waveLength     = (speedOfLight/carrierFrequency);
+  double waveLength     = (BaseWorldUtility::speedOfLight/carrierFrequency);
   //minimum power level to be able to physically receive a signal
   double minReceivePower = pow(10.0, sat/10.0);
   
@@ -150,7 +157,7 @@ double ChannelControl::calcInterfDist()
  *
  * @return Returns whether ChannelControl uses sendDirect or not
  **/
-bool ChannelControl::registerNic( cModule* ptr, const Coord* pos )
+bool ChannelControl::registerNic( BaseModule* ptr)
 {
   // register the nic
   assert(ptr != 0);
@@ -169,12 +176,13 @@ bool ChannelControl::registerNic( cModule* ptr, const Coord* pos )
   nic->hostId = ptr->parentModule()->id();
 
   // copy the position
-  nic->pos = *pos;
+  nic->pos = ((BaseUtility*)(ptr->getNodeModule("BaseUtility")))->getPos();
 
   unsigned x,y;
-  x = static_cast<unsigned>(pos->x/findDistance);
-  y = static_cast<unsigned>(pos->y/findDistance);
+  x = static_cast<unsigned>(nic->pos.x/findDistance);
+  y = static_cast<unsigned>(nic->pos.y/findDistance);
 
+  ccEV <<" registering nic at loc "<<x<<","<<y<<endl;
   // add to matrix
   nics[x][y][id] = nic;
   
@@ -197,14 +205,14 @@ bool ChannelControl::registerNic( cModule* ptr, const Coord* pos )
 void ChannelControl::updateNicPos(int id, const Coord* oldPos, const Coord* newPos)
 {
     unsigned oldX,oldY,newX,newY;
-    ccEV <<"nic #"<<id<<" moved from " << oldPos->info() << " to " << newPos->info() << " pgs: " << playgroundSize.info() << "\n";
+    ccEV <<"nic #"<<id<<" moved from " << oldPos->info() << " to " << newPos->info() << " pgs: " << playgroundSize->info() << "\n";
     oldX = static_cast<unsigned>(oldPos->x/findDistance);
     oldY = static_cast<unsigned>(oldPos->y/findDistance);
     newX = static_cast<unsigned>(newPos->x/findDistance);
     newY = static_cast<unsigned>(newPos->y/findDistance);
 
     nics[oldX][oldY][id]->pos = *newPos;
-//    ccEV <<"nic #"<<id<<" moved from " << oldPos->info() << " to " << newPos->info() << " pgs: " << playgroundSize.info() << " oldX: "<< oldX << " oldY: " << oldY << " newX: " << newX << " newY: " << newY << "\n";
+//    ccEV <<"nic #"<<id<<" moved from " << oldPos->info() << " to " << newPos->info() << " pgs: " << playgroundSize->info() << " oldX: "<< oldX << " oldY: " << oldY << " newX: " << newX << " newY: " << newY << "\n";
     // update all connections for this nic
     checkGrid(oldX, oldY, newX, newY, id );
 }
@@ -345,14 +353,14 @@ void ChannelControl::updateConnections(NicEntries& nmap, NicEntry* nic)
 bool ChannelControl::inRangeTorus(const Coord& a, const Coord& b) 
 {
     if(FWMath::torDist(a.x,                  b.x, a.y,                  b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x+playgroundSize.x, b.x, a.y,                  b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x-playgroundSize.x, b.x, a.y,                  b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x,                  b.x, a.y+playgroundSize.y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x,                  b.x, a.y-playgroundSize.y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x+playgroundSize.x, b.x, a.y+playgroundSize.y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x+playgroundSize.x, b.x, a.y-playgroundSize.y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x-playgroundSize.x, b.x, a.y+playgroundSize.y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x-playgroundSize.x, b.x, a.y-playgroundSize.y, b.y) < maxDistSquared) return true;
+    if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y,                  b.y) < maxDistSquared) return true;
+    if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y,                  b.y) < maxDistSquared) return true;
+    if(FWMath::torDist(a.x,                  b.x, a.y+playgroundSize->y, b.y) < maxDistSquared) return true;
+    if(FWMath::torDist(a.x,                  b.x, a.y-playgroundSize->y, b.y) < maxDistSquared) return true;
+    if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y+playgroundSize->y, b.y) < maxDistSquared) return true;
+    if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y-playgroundSize->y, b.y) < maxDistSquared) return true;
+    if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y+playgroundSize->y, b.y) < maxDistSquared) return true;
+    if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y-playgroundSize->y, b.y) < maxDistSquared) return true;
     return false;
 }
 
