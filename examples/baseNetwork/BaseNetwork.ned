@@ -1,7 +1,8 @@
 import
-    "Node",
+    "BaseNode",
     "BaseObject",
-    "ChannelControl";
+    "BaseWorldUtility",
+	"ChannelControl";
 
 module BaseNetwork
     parameters:
@@ -11,12 +12,12 @@ module BaseNetwork
         numNodes: numeric const; // total number of hosts in the network
 
     submodules:
-        propagationmodel: ChannelControl;
-            parameters:
+		propagationmodel: ChannelControl;
+		world: BaseWorldUtility;
+           parameters:
                 playgroundSizeX = playgroundSizeX,
                 playgroundSizeY = playgroundSizeY;
-            display: "p=68,54;i=abstract/multicast";
-        node: Node[numNodes];
+        node: BaseNode[numNodes];
             display: "p=170,50;i=device/wifilaptop";
         object: BaseObject[numObjects];
             display: "b=40,24;p=164,114";
