@@ -49,7 +49,7 @@ void ChannelAccess::initialize( int stage )
 	{
         // subscribe to position changes
         //catMove = bb->subscribe(this, &move, findHost()->id());
-		cc->registerNic((BaseModule*)parentModule());
+		useSendDirect = cc->registerNic((BaseModule*)parentModule());
         isRegistered = false;
     }
 }

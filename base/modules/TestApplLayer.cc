@@ -86,10 +86,11 @@ void TestApplLayer::handleSelfMsg(cMessage *msg) {
     switch( msg->kind() ){
     case SEND_BROADCAST_TIMER:
         sendBroadcast();
-	delete msg;
+		delete msg;
+		delayTimer = NULL;
 	break;
     default:
-    	EV << "Unkown selfmessage! -> delete, kind: "<<msg->kind() <<endl;
+    	EV << "Unknown selfmessage! -> delete, kind: "<<msg->kind() <<endl;
 	delete msg;
     }
 }
@@ -135,5 +136,6 @@ void TestApplLayer::sendReply(ApplPkt *msg)
 void TestApplLayer::finish() 
 {
     BaseApplLayer::finish();
-    if(!delayTimer->isScheduled()) delete delayTimer;
+	cancelAndDelete(delayTimer);
+	delayTimer = NULL;
 }
