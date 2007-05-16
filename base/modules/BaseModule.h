@@ -27,9 +27,11 @@
 //#include "BaseUtility.h"
 
 #ifndef EV
+//#define EV (ev.disabled()||!debug) ? (std::ostream&)ev : ev << simtimeToStr(simTime()) << ": "<< logName() << "::" << className()  << ": "
 #define EV (ev.disabled()||!debug) ? (std::ostream&)ev : ev << logName() << "::" << className() << ": "
 #endif
 #ifndef coreEV
+//#define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << simtimeToStr(simTime()) << ": "<< logName() << "::" << className() <<": "
 #define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << logName() << "::" << className() <<": "
 #endif
 
@@ -131,6 +133,12 @@ class BaseModule: public cSimpleModule {
 	 */
 	
 	cModule * getNodeModule(const char* modtype);
+
+	/**
+	 * @brief Get a reference to the local node module
+	 */
+
+	cModule * getNode();
 
  /**
      * @brief Called by the Blackboard whenever a change of a category occurs

@@ -93,7 +93,7 @@ cModule * BaseModule::getGlobalModule(const char* modname)
 	return getModule(modname,simulation.systemModule());
 }
 
-cModule * BaseModule::getNodeModule(const char* modname)
+cModule * BaseModule::getNode()
 {
 	cModule *curr = this, *node = NULL;
 	while (node == NULL)
@@ -106,6 +106,11 @@ cModule * BaseModule::getNodeModule(const char* modname)
 			node = submodule("utility"); // look for non-BaseNic subclasses called "utility"
 	}
 	node = node->parentModule();
-	EV << "module we think is Node is "<<node->name()<<endl;
-	return getModule(modname,node);
+	//EV << "module we think is Node is "<<node->name()<<endl;
+	return node;
+}
+
+cModule * BaseModule::getNodeModule(const char* modname)
+{
+	return getModule(modname,getNode());
 }
