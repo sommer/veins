@@ -45,8 +45,10 @@
 class BaseArp : public BaseModule
 {
     Module_Class_Members(BaseArp,BaseModule,0);
+	bool coreDebug;
 
 public:
+	virtual void initialize(int stage);
 
     /** @brief should not be called,
      *  instead direct calls to the radio methods should be used.

@@ -1,6 +1,6 @@
 simple BaseMacLayer
     parameters:
-        debug: numeric const, // debug switch
+        coreDebug: numeric const, // debug switch
         headerLength: numeric const; // length of the MAC packet header (in bits)
     gates:
         in: uppergateIn; // from the network layer
