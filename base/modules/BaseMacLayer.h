@@ -81,15 +81,11 @@ public:
     virtual void handleSelfMsg(cMessage* msg){
 	error("BaseMacLayer does not handle self messages");
     };
-    virtual void handleLowerControl(cMessage* msg){
-	ev << "BaseMacLayer does not handle control messages\n";
-    };
+    virtual void handleLowerControl(cMessage* msg);
 
     virtual void handleUpperControl(cMessage* msg){
-	error("BaseMacLayer does not handle control messages");
+	error("BaseMacLayer does not handle control messages from upper layers");
     };
-
-
 
 protected:
     /** @brief decapsulate the network message from the MacPkt */

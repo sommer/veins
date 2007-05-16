@@ -23,10 +23,9 @@
 #include "BaseMacLayer.h"
 #include "MacControlInfo.h"
 #include "SimpleAddress.h"
-
+#include "NicControlType.h"
 
 Define_Module(BaseMacLayer);
-
 
 /**
  * First we have to initialize the module from which we derived ours,
@@ -42,8 +41,7 @@ void BaseMacLayer::initialize(int stage)
 	// The nic id is used as MAC address
         myMacAddr = parentModule()->id();
 
-        hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : 
-	    coreDebug = false;
+        hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
     }
 }
 
@@ -118,8 +116,9 @@ void BaseMacLayer::handleLowerMsg(cMessage *msg)
     
     //only foward to upper layer if message is for me or broadcast
     if((dest == myMacAddr) || (dest == L2BROADCAST)) {
-	coreEV <<"msg from "<< src
-	       <<" broadcast or for me -> forward packet to upper layer\n";
+	coreEV << "message with mac addr " << src 
+	       << " for me (dest=" << dest
+	       << ") -> forward packet to upper layer\n";
 	sendUp(decapsMsg(mac));
     }
     else{
@@ -129,3 +128,18 @@ void BaseMacLayer::handleLowerMsg(cMessage *msg)
 	delete mac;
     }
 }
+
+void BaseMacLayer::handleLowerControl(cMessage* msg)
+{
+	switch (msg->kind())
+	{
+		case NicControlType::TRANSMISSION_OVER:
+			sendControlUp(msg);
+			break;
+		default:
+			coreEV << "BaseMacLayer does not handle control messages of this type (name was "<<msg->name()<<")\n";
+			delete msg;
+			break;
+	}
+}
+
