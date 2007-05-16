@@ -45,7 +45,8 @@ Define_Module( ChannelControl );
  **/
 void ChannelControl::initialize(int stage)
 {
-    if (stage == 1)
+    BaseModule::initialize(stage);
+	if (stage == 1)
 	{
 		unsigned numX, numY;
 		
@@ -55,9 +56,9 @@ void ChannelControl::initialize(int stage)
 			coreDebug = par("coreDebug").boolValue();
 		else
 			coreDebug = false;
-		NicEntries *entries = new NicEntries();
-		RowVector *row = new RowVector();
-		row->push_back(*entries);
+		NicEntries entries;
+		RowVector row;
+		row.push_back(entries);
 		
 	  ccEV <<"initializing ChannelControl\n";
 	  //todo
@@ -95,13 +96,13 @@ void ChannelControl::initialize(int stage)
 			  findDistance = ceil(playgroundSize->x) + 1.0;
 		  }
 		  ccEV <<" using 1x1 grid"<<endl;
-		  nics.push_back(*row);
+		  nics.push_back(row);
 	  } else {
 		  for(unsigned i = 1; i < numY; ++i) {
-			  row->push_back(*entries);
+			  row.push_back(entries);
 		  }
 		  for(unsigned i = 0; i < numX; ++i) {
-			  nics.push_back(*row);
+			  nics.push_back(row);
 		  }
 		  ccEV <<" using "<<numX<<"x"<<numY<<" grid"<<endl;
 	  }
@@ -176,7 +177,10 @@ bool ChannelControl::registerNic( BaseModule* ptr)
   nic->hostId = ptr->parentModule()->id();
 
   // copy the position
-  nic->pos = ((BaseUtility*)(ptr->getNodeModule("BaseUtility")))->getPos();
+  BaseUtility *bs = ((BaseUtility*)(ptr->getNodeModule("BaseUtility")));
+  if (bs == NULL)
+  	error("BaseUtility is NULL");
+  nic->pos = bs->getPos();
 
   unsigned x,y;
   x = static_cast<unsigned>(nic->pos.x/findDistance);
@@ -398,3 +402,16 @@ const cGate* ChannelControl::getOutGateTo(int from, int to, const Coord* pos)
     return nics[x][y][from]->getOutGateTo(to);
 }
 
+ChannelControl::~ChannelControl()
+{
+	for (unsigned int i=0;i<nics.size();i++)
+	{
+		for (unsigned int j=0;j<nics[i].size();j++)
+		{
+			for (NicEntries::iterator ne = nics[i][j].begin();ne!=nics[i][j].end();ne++)
+			{	
+				delete (*ne).second;
+			}
+		}
+	}
+}

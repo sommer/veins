@@ -154,6 +154,7 @@ public:
      * distance
      **/
     virtual void initialize(int stage);
+	virtual ~ChannelControl();
     
     /** @brief Returns the x and y coordinates of the given nic. */
     // const Coord* getNicPos( int );
