@@ -59,6 +59,8 @@ all:
 	@cd $(ROOT)/modules/phy && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 	@echo $(ROOT)/modules/mobility
 	@cd $(ROOT)/modules/mobility && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@echo $(ROOT)/modules/netw
+	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 
 	@echo $(ROOT)/examples
 	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n
