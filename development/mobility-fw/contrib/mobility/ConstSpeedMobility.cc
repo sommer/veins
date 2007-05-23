@@ -62,27 +62,28 @@ void ConstSpeedMobility::initialize(int stage)
  */
 void ConstSpeedMobility::setTargetPosition()
 {
-    EV << "start setTargetPosistion: " << move.info() << endl;
+    targetPos = getRandomPosition();
 
-    do{
-	targetPos = getRandomPosition();
+    //    targetPos.x += genk_uniform(0, -100, 100);
+    //    targetPos.y += genk_uniform(0, -100, 100);
 
-	double distance = move.startPos.distance(targetPos);
-	double totalTime = distance / move.speed;
-	numSteps = FWMath::round(totalTime / updateInterval);
 
-	EV << "new targetPos: " << targetPos.info() << " distance=" << distance 
-	   << " totalTime=" << totalTime << " numSteps=" << numSteps << endl;
-    }
-    while( numSteps == 0 );
+    EV << "start setTargetPosistion: " << move.info() 
+       << "\n new targetPos: " << targetPos.info() <<endl;
 
+    double distance = move.startPos.distance(targetPos);
+    double totalTime = distance / move.speed;
+    numSteps = FWMath::round(totalTime / updateInterval);
     stepSize = targetPos - move.startPos;
+
+    EV << "distance=" << distance << " totalTime=" << totalTime << " numSteps="
+       << numSteps << "stepSize: " << stepSize.info() << endl;
 
     stepSize = stepSize / numSteps;
 
     stepTarget = move.startPos + stepSize;
 
-    EV << "stepSize: " << stepSize.info() << " target: " << (stepSize*numSteps).info() << endl;
+    EV << "stepSize: " << stepSize.info() << "target: " << (stepSize*numSteps).info() << endl;
 
     step = 0;
     move.setDirection(targetPos);
