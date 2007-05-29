@@ -25,6 +25,7 @@
 
 import
     "Node",
+	"BaseWorldUtility",
     "ChannelControl";
 
 
@@ -32,16 +33,16 @@ module Sim
     parameters:
         // parametes for the framework
         playgroundSizeX : numeric const,
-	playgroundSizeY : numeric const,
+		playgroundSizeY : numeric const,
         numHosts : numeric const;
-        
 
     submodules:
         channelcontrol: ChannelControl;
+		world: BaseWorldUtility;
             parameters:
                 playgroundSizeX = playgroundSizeX,
-		playgroundSizeY = playgroundSizeY;
-            display: "p=50,25;i=eye14";
+			playgroundSizeY = playgroundSizeY;
+				display: "p=50,25;i=eye14";
         node: Node[numHosts];
             display: "p=50,50;i=node";
 

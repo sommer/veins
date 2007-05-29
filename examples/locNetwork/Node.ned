@@ -23,23 +23,21 @@ import
     "BaseApplLayer",
     "BaseArp",
     "BaseNetwLayer",
-    "MfNic",
+    "BaseNic",
     "BaseMobility",
-    "Blackboard";
-//    "BaseUtility";
+    "BaseUtility";
 
 module Node
 
     parameters:
         applType: string; //type of the application layer
 
-    gates:
-	    in: radioIn; // gate for sendDirect
+    //gates:
+	//    in: radioIn; // gate for sendDirect
 
     submodules:
-        blackboard: Blackboard;
-        //blackboard: BaseUtility;
-            display: "p=200,75;b=30,25";
+        utility: BaseUtility;
+            display: "p=130,38,rect;b=24,24;o=black";
 
         mobility: BaseMobility;
             display: "p=200,150;b=30,25";
@@ -53,7 +51,7 @@ module Node
         net: BaseNetwLayer;
             display: "p=90,100;b=100,20,rect";
 
-	nic: MfNic;
+	nic: BaseNic;
 	    display: "p=90,150;b=100,20,rect";
 
     connections:
@@ -67,7 +65,7 @@ module Node
 	net.upperControlOut --> appl.lowerControlIn;		
 	net.upperControlIn <-- appl.lowerControlOut;		
 
-	radioIn --> nic.radioIn;
+	//radioIn --> nic.radioIn;
 
     display: "p=10,10;b=250,250,rect;o=white";
 endmodule
