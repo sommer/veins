@@ -82,7 +82,8 @@ public:
 
     /** @brief Handle control messages from lower layer */
     virtual void handleLowerControl(cMessage* msg){
-        error("BaseNetwLayer does not handle control messages");
+        opp_warning("BaseNetwLayer does not handle control messages called %s",msg->name());
+		delete msg;
     };
 
     /** @brief Handle control messages from lower layer */
