@@ -1,0 +1,1 @@
+set args </dev/null

@@ -1,0 +1,31 @@
+CFLAGS:=$(filter-out -DNDEBUG=1,$(CFLAGS)) -Wall -O0 -Werror
+LDFLAGS += -O0 -Wall
+
+NEED = modules $(TARGET)
+all: $(NEED)
+
+rebuild:
+	(cd ../..;./mkmk foxtrot)
+	$(MAKE) re-makemake
+
+modules:
+	$(MAKE) -C ../../ modules
+
+base:
+	$(MAKE) -C ../../ base
+
+debug: $(NEED)
+	gdb $(TARGET)
+
+run: $(NEED)
+	./$(TARGET) 2>&1 > out.log
+	cat out.log | python split.py
+
+valgrind: $(NEED)
+	valgrind --show-reachable=yes --log-fd=1 --leak-check=full ./$(TARGET) 2>&1 >valgrind.log
+	
+#FoxtrotPacket_m.cc FoxtrotPacket_m.h: FoxtrotPacket.msg
+#	$(MSGC) $(MSGCOPTS) FoxtrotPacket.msg
+#	cat FoxtrotPacket_m.cc | sed 's/cException/cRuntimeError/' > FoxtrotPacket_m.cc2
+#	mv FoxtrotPacket_m.cc2 FoxtrotPacket_m.cc
+
