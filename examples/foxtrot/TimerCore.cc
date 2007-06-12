@@ -18,6 +18,15 @@ void TimerCore::init(Timer *owner)
 	timers = new std::map<unsigned int,cMessage *>();
 }
 
+unsigned int TimerCore::setTimer(double when)
+{
+	unsigned int key = timers->size();
+	while (timers->find(key)!=timers->end())
+		key++;
+	setTimer(key,when);
+	return key;
+}
+
 void TimerCore::setTimer(unsigned int index, double when)
 {
 	Enter_Method_Silent();

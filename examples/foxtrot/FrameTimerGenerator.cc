@@ -35,6 +35,15 @@ void FrameTimerGenerator::nextFrame(unsigned int index)
 	scheduleAt((count+1)*(*frames)[index],(*timers)[index]);
 }
 
+unsigned int FrameTimerGenerator::setFrameTimer(double period)
+{
+	unsigned int key = timers->size();
+	while (timers->find(key)!=timers->end())
+		key++;
+	setFrameTimer(key,period);
+	return key;
+}
+
 void FrameTimerGenerator::setFrameTimer(unsigned int index, double period)
 {
 	Enter_Method_Silent();
