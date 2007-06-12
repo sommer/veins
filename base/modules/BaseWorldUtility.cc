@@ -30,6 +30,7 @@ void BaseWorldUtility::initialize(int stage)
 	{
 		playgroundSize.x = par("playgroundSizeX");
 		playgroundSize.y = par("playgroundSizeY");
+		playgroundSize.z = par("playgroundSizeZ");
 	}
 }
 
