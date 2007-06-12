@@ -71,7 +71,7 @@ class BaseLocAppl:public BaseModule {
 	void sendControlDown(cMessage *);
 	void sendLoc(cMessage *);
 
-	const cModule * grandparentModule() {
+	cModule * grandparentModule() const {
 		return parentModule()->parentModule();
 	}
 
