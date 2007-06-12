@@ -39,7 +39,5 @@ simple ConstSpeedMobility
 	coreDebug : bool, // core debug switch
     debug : bool, // debug switch
         speed : numeric const, // spped of the host (in m/s)
-        updateInterval : numeric const, // time interval to update the hosts position
-        x: numeric const, // x starting point of the node (-1 = random)
-        y: numeric const; // y starting point of the node (-1 = random)
+        updateInterval : numeric const; // time interval to update the hosts position
 endsimple
