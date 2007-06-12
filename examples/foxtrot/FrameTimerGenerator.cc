@@ -18,61 +18,52 @@ void FrameTimerGenerator::init(FrameTimer *parent)
 	if (gt == NULL)
 		gt = dynamic_cast<GlobalTime*>(findModuleType(lookupname)->createScheduleInit(lookupname,parent->owner->getNode()));
 	free(lookupname);	
-	timer_count=0;
-	ev << "Frame timer path is "<<fullPath()<<endl;
+
+	frames = new std::map<unsigned int,double>;
+	timers = new std::map<unsigned int, cMessage*>;
 }
 
-void FrameTimerGenerator::initFrameTimers(unsigned int count)
-{
-	unsigned int i;
-	Enter_Method_Silent();
-	if (timer_count > 0)
-	{
-		delete[] timers;
-		delete[] frames;
-	}
-
-	timer_count = count;
-	timers = new cMessage[timer_count];
-	frames = new double[timer_count];
-	for (i = 0; i < count; i++)
-	{
-		char buffer[255];
-		sprintf(buffer,"frame timer %d",i);
-		timers[i].setKind(i);
-		timers[i].setName(buffer);
-		frames[i] = 0;
-	}
-}
 
 void FrameTimerGenerator::nextFrame(unsigned int index)
 {
 	simtime_t now = gt->currentGlobalTime();
-	if (frames[index] == 0)
+	if ((*frames)[index] == 0)
 		return;
-	double count = floor(now/frames[index]);
-	assert(index < timer_count);
-	assert(frames[index]>0);
-	ev <<"scheduling at "<<count<<"," <<((count+1)*frames[index])<<endl;
-	scheduleAt((count+1)*frames[index],&timers[index]);
+	assert(frames->find(index)!=frames->end());
+	double count = floor(now/(*frames)[index]);
+	ev <<"scheduling at "<<count<<"," <<((count+1)*(*frames)[index])<<endl;
+	scheduleAt((count+1)*(*frames)[index],(*timers)[index]);
 }
 
 void FrameTimerGenerator::setFrameTimer(unsigned int index, double period)
 {
 	Enter_Method_Silent();
-	cancelFrameTimer(index);
-	assert(index < timer_count);
-	frames[index] = period;
-	assert(frames[index]>0);
+	cMessage *timer;
+	assert(period>0);
+	if (timers->find(index)==timers->end())
+	{
+		char buffer[255];
+		sprintf(buffer,"frame timer %d",index);
+		timer = new cMessage();
+		timer->setKind(index);
+		timer->setName(buffer);
+		(*timers)[index] = timer;
+	}
+	else
+	{
+		timer = (*timers)[index];
+		cancelFrameTimer(index);
+	}
+	(*frames)[index] = period;
 	nextFrame(index);
 }
 
 void FrameTimerGenerator::cancelFrameTimer(unsigned int index)
 {
-	assert(index < timer_count);
-	if (timers[index].isScheduled())
-		cancelEvent(&timers[index]);
-	frames[index] = 0;
+	assert(frames->find(index)!=frames->end());
+	if ((*timers)[index]->isScheduled())
+		cancelEvent((*timers)[index]);
+	(*frames)[index] = 0;
 }
 
 void FrameTimerGenerator::handleMessage(cMessage* msg)
@@ -83,9 +74,12 @@ void FrameTimerGenerator::handleMessage(cMessage* msg)
 
 FrameTimerGenerator::~FrameTimerGenerator()
 {
-	for (unsigned int i=0;i<timer_count;i++)
-		cancelFrameTimer(i);
-	delete [] timers;
-	delete [] frames;
+	for (std::map<unsigned int,cMessage*>::const_iterator p=timers->begin();p!=timers->end();p++)
+	{
+		cancelFrameTimer(p->second->kind());
+		delete p->second;
+	}
+	delete timers;
+	delete  frames;
 }
 

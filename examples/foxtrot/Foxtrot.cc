@@ -48,8 +48,6 @@ void Foxtrot::initialize(int stage)
 		Timer::init(this);
 		wait_data = false;
 		maxLatency = par("maxLatency");
-		initTimers(2);
-		initFrameTimers(1);
 		setFrameTimer(0,10);
 		local = new FoxtrotPacket();
 	}

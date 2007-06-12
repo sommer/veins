@@ -19,9 +19,10 @@ class FrameTimer
 		FrameTimerGenerator *tg;
 		BaseModule *owner;
 	public:	
+		~FrameTimer(){delete tg;}
 		virtual void init(BaseModule *parent);
-		void initFrameTimers(unsigned int count){tg->initFrameTimers(count);}
 		void setFrameTimer(unsigned int index, double period) {tg->setFrameTimer(index,period);}
+		unsigned int setFrameTimer(double period) {return tg->setFrameTimer(period);}
 		void cancelFrameTimer(unsigned int index){tg->cancelFrameTimer(index);}
 		virtual void handleFrameTimer(unsigned int index)=0;
 };

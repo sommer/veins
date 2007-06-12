@@ -13,20 +13,23 @@ class Timer
 		cModule *owner;
 
 	public:
+		~Timer(){delete ct;}
 		virtual void init(cModule *parent);
 
-	/** Initialise a set of timers for this protocol layer
-		@param count Number of timers used by this layer
-	 */	
-	void initTimers(unsigned int count){ct->initTimers(count);}
-
-	/** Set one of the timers to fire at a point in the future.
-		If the timer has already been set then this discards the old information.
-		Must call @b initTimers() before using.
-		@param index Timer number to set. Must be between 0 and the value given to @b initTimers()
+	/** Set a timer to fire at a point in the future.
+		If the timer with that id has already been set then this discards the old information.
+		@param index Timer number to set.
 		@param when Time in seconds in the future to fire the timer
 	 */
 	void setTimer(unsigned int index, double when){ct->setTimer(index,when);}
+
+	/** Set a timer to fire at a point in the future.
+	    Auto-generates a timer id that's guaranteed not to have been used by anyone else.
+		If the timer with that id has already been set then this discards the old information.
+		@param when Time in seconds in the future to fire the timer
+		@return Timer id
+	 */
+	unsigned int setTimer(double when){return ct->setTimer(when);}
 
 	/** Cancel an existing timer set by @b setTimer()
 		If the timer has not been set, or has already fires, this does nothing

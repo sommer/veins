@@ -15,57 +15,55 @@ void TimerCore::handleMessage(cMessage* msg)
 void TimerCore::init(Timer *owner)
 {
 	timer = owner;
-	timer_count = 0;
-}
-
-void TimerCore::initTimers(unsigned int count)
-{	
-	unsigned int i;
-	Enter_Method_Silent();
-	if (timer_count > 0)
-		delete[] timers;
-
-	timer_count = count;
-	timers = new cMessage[timer_count];
-	for (i = 0; i < count; i++)
-		timers[i].setKind(i);
+	timers = new std::map<unsigned int,cMessage *>();
 }
 
 void TimerCore::setTimer(unsigned int index, double when)
 {
 	Enter_Method_Silent();
-	if (timer_count <= index)
-		error("setTimer: timer index %u out of range", index);
-	if (timers[index].isScheduled())
-		cancelEvent(&timers[index]);
+	cMessage *timer;
+	if (timers->find(index)==timers->end())
+	{
+		timer = new cMessage("timer");
+		timer->setKind(index);
+		(*timers)[index] = timer;
+	}
+	else
+	{
+		timer = (*timers)[index];
+		if (timer->isScheduled())
+			cancelEvent(timer);
+	}
 
-	scheduleAt(simTime() + when, &timers[index]);	
+	scheduleAt(simTime() + when, timer);	
 }
 
 void TimerCore::cancelTimer(unsigned int index)
 {
 	Enter_Method_Silent();
-	if (timer_count <= index)
-		error("cancelTimer: timer index %u out of range", index);
-	if (timers[index].isScheduled())
-		cancelEvent(&timers[index]);
+	if (timers->find(index)==timers->end())
+		error("cancelTimer: timer index %u doesn't exist", index);
+	if ((*timers)[index]->isScheduled())
+		cancelEvent((*timers)[index]);
 }
 
 float TimerCore::remainingTimer(unsigned int index)
 {
-	//Enter_Method_Silent();
-	if (timer_count <= index)
-		error("remainingTimer: timer index %u out of range", index);
-	if (timers[index].isScheduled())
-		return timers[index].arrivalTime()-simTime();
+	if (timers->find(index)==timers->end())
+		error("remainingTimer: timer index %u doesn't exist", index);
+	if ((*timers)[index]->isScheduled())
+		return (*timers)[index]->arrivalTime()-simTime();
 	else
 		return -1;
 }
 
 TimerCore::~TimerCore()
 {
-	for (unsigned int i=0;i<timer_count;i++)
-		cancelTimer(i);
-	delete [] timers;	
+	for (std::map<unsigned int,cMessage*>::const_iterator p=timers->begin();p!=timers->end();p++)
+	{
+		cancelTimer(p->second->kind());
+		delete p->second;
+	}
+	delete timers;	
 }
 

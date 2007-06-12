@@ -18,17 +18,16 @@ class FrameTimerGenerator: public cSimpleModule
 	protected:
 		FrameTimer *ft;
 		GlobalTime *gt;
-		unsigned int timer_count;
-		cMessage *timers;
-		double *frames;
+		std::map<unsigned int,cMessage *> *timers;
+		std::map<unsigned int,double> *frames;
 		void nextFrame(unsigned int index);
 		virtual void handleMessage(cMessage* msg);
 	public:	
 	    Module_Class_Members(FrameTimerGenerator, cSimpleModule, 0);
 		~FrameTimerGenerator();
 		virtual void init(FrameTimer *parent);
-		void initFrameTimers(unsigned int count);
 		void setFrameTimer(unsigned int index, double period);
+		unsigned int setFrameTimer(double period);
 		void cancelFrameTimer(unsigned int index);
 };
 
