@@ -23,6 +23,8 @@ public:
 
 	/** @brief Get current position */
 	const Coord* getPos() {return &pos;}
+
+	void setPos(Coord* newCoord);
 };
 
 #endif
