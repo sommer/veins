@@ -99,12 +99,16 @@ class BaseMobility : public BaseModule
     /** @brief Pointer to BaseWorldUtility -- these two must know each other */
     BaseWorldUtility *world;
 
+    /** @brief Pointer to BaseUtility -- these two must know each other (for node position) */
+    BaseUtility *baseUtility;
+
     /** @brief Pointer to host module, to speed up repeated access*/
     cModule* hostPtr;
     int hostId;
     
     /** @brief Stores the current position and move pattern of the host*/
     Move move;
+
     /** @brief Store the category of HostMove */
     int moveCategory;
     

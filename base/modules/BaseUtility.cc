@@ -40,6 +40,7 @@ void BaseUtility::handleMessage(cMessage *msg) {
 }
 
 void BaseUtility::setPos(Coord* newCoord) {
+  coreEV << "Setting position to pos: " << pos.info() << endl;
 	pos.x = newCoord->x;
 	pos.y = newCoord->y;
 	pos.z = newCoord->z;

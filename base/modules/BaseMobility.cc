@@ -51,6 +51,12 @@ void BaseMobility::initialize(int stage)
         if (world == NULL)
             error("Could not find BaseWorldUtility module");
 
+        coreEV << "initializing BaseUtility stage " << stage << endl; // for node position
+		baseUtility = (BaseUtility*)getNodeModule("BaseUtility");
+        if (baseUtility == NULL)
+            error("Could not find BaseUtility module");
+	move.startPos=baseUtility->getPos(); // Get the initial position from the BaseUtility module
+
         //get a pointer to the host
         hostPtr = findHost();
         hostId = hostPtr->id();
@@ -176,16 +182,17 @@ void BaseMobility::handleBorderMsg(cMessage * msg)
  * changes!
  */
 void BaseMobility::updatePosition() {
-    coreEV << "updatePosition: " << move.info() << endl;
+    EV << "updatePosition: " << move.info() << endl;
     
     //bb->publishBBItem(moveCategory, &move, hostId);
+    baseUtility->setPos(&move.startPos); // update the position in BaseUtility module
     char xStr[32], yStr[32], zStr[32];
     sprintf(xStr, "%d", FWMath::round(move.startPos.x));
     sprintf(yStr, "%d", FWMath::round(move.startPos.y));
     sprintf(zStr, "%d", FWMath::round(move.startPos.z));
     hostPtr->displayString().setTagArg("p", 0, xStr);
     hostPtr->displayString().setTagArg("p", 1, yStr);
-    //hostPtr->displayString().setTagArg("p", 2, zStr);
+    hostPtr->displayString().setTagArg("p", 2, zStr);
 }
 
 /**
