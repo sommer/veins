@@ -150,8 +150,9 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	PositionPkt* pkt;
 	LocPkt *p;
 	double x=0, y=0, z=0, xReal, yReal, zReal;
-	cModule *mobility=NULL;
+	/*cModule*/ BaseUtility *utility=NULL;
 	int id;
+	Coord pos;
 
 	id = grandparentModule()->par("id");
 	EV <<"handleSelfMsg - Node: "<<id<<" Name: "<<fullName()<< " Path: "<<fullPath()<<"\n";
@@ -164,8 +165,11 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	switch(p->getType()){
   	  case SEND_ANCHOR_POS_TIMER: // Anchor timer: send location
 	    if(/*id>=NBANCHORS*/ !isAnchor){EV << "Non anchor node got SEND_ANCHOR_POS_TIMER message (this should never happen)\n"; exit(-1);}
-	    if(mobility=(grandparentModule()->submodule("utility"))){x=mobility->par("x");y=mobility->par("y");y=mobility->par("z");}
-	    else{EV << "No submodule \"mobility\" found\n"; exit(-1);}
+	    if(utility=(BaseUtility *)(grandparentModule()->submodule("utility")))//{x=utility->par("x");y=utility->par("y");y=utility->par("z");}
+	      //if(utility=(BaseUtility *)(getNodeModule("utility")))
+	       //GET REAL LOC HERE! Don't read form omnet.ini!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		{pos=utility->getPos(); x=pos.x;y=pos.y;z=pos.z;}
+	    else{EV << "No submodule \"utility\" found\n"; exit(-1);}
 	    EV << "Timer rang: anchor sends its position"<<id<<"("<<x<<","<<y<<","<<z<<")\n";
 	    // do a broadcast
 	    pkt = new PositionPkt("ANCHOR_BROADCAST_MESSAGE", LOCALIZATION_MSG);
@@ -197,8 +201,10 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	      y /= nb_anchor_positions;
 	      z /= nb_anchor_positions;
 	      // Get real position (ground truth)
-	      if(mobility=grandparentModule()->submodule("utility"))
-		{xReal=mobility->par("x");yReal=mobility->par("y");zReal=mobility->par("z");}
+	      if(utility=(BaseUtility *)grandparentModule()->submodule("utility"))
+		//{xReal=utility->par("x");yReal=utility->par("y");zReal=utility->par("z");}
+		{pos=utility->getPos(); xReal=pos.x;yReal=pos.y;zReal=pos.z;}
+	      else{EV << "No submodule \"utility\" found\n"; exit(-1);}
 	      EV << "Node "<<id<<" estimated position is: ("<<x<<","<<y<<","<<z<<") with "<<nb_anchor_positions<<" anchors heard. True position is:  ("
 		 <<xReal<<","<<yReal<<","<<zReal<<")\n";
 	      // reset (will wait for new anchor positions)
