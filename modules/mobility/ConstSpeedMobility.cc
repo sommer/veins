@@ -44,11 +44,12 @@ void ConstSpeedMobility::initialize(int stage)
 
 	numSteps = 0;
 	step = -1;
-	stepSize = Coord(0,0);
+	stepSize = Coord(0,0,0);
 
-        EV << "move speed: " << move.speed << " (" << par("speed") << ")"
+        EV << "Initialize: move speed: " << move.speed << " (" << par("speed") << ")"
            << " pos.x: " << move.startPos.x
-           << " pos.y: " << move.startPos.y << endl;
+           << " pos.y: " << move.startPos.y
+           << " pos.z: " << move.startPos.z << endl;
     }
     else if( stage == 1 ){
 	stepTarget = move.startPos;
@@ -105,6 +106,7 @@ void ConstSpeedMobility::makeMove()
 	//stepSize.x = 
 	// step forward
 	move.startPos = stepTarget;
+	updatePosition();
 	move.startTime = simTime();
 
 	EV << "stepping forward. step #=" << step
@@ -119,6 +121,7 @@ void ConstSpeedMobility::makeMove()
     else if( step < numSteps ){
 	// step forward
 	move.startPos = stepTarget;
+	updatePosition();
 	stepTarget += stepSize;
 	move.startTime = simTime();
 
