@@ -25,6 +25,8 @@
 #include "ApplPkt_m.h"
 #include "LocFilter.h"
 
+#include "BaseLocalization.h"
+
 /**
  * @brief Base class for a localization application module
  *
@@ -43,6 +45,7 @@ class BaseLocAppl:public BaseModule {
 	int lowergateIn, lowergateOut, lowerControlIn, lowerControlOut, locgateIn, locgateOut;
 	/** @brief Length of the ApplPkt header. */
 	int headerLength;
+	BaseLocalization * loc;
       public:
 	 Module_Class_Members(BaseLocAppl, BaseModule, 0);
 	virtual void initialize(int);
@@ -78,6 +81,8 @@ class BaseLocAppl:public BaseModule {
 	virtual const int myApplAddr() {
 		return grandparentModule()->index();;
 	};
+	
+	BaseLocalization * getLocalizationModule();
 };
 
 #endif				/* BASE_LOC_APPL_H */

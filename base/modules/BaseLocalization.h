@@ -49,6 +49,9 @@ public:
 	Module_Class_Members(BaseLocalization, BaseModule, 0);
 	virtual void initialize(int);
 	void handleMessage(cMessage *);
+	virtual const int myApplAddr() {
+		return grandparentModule()->index();
+	}
 protected:
 	virtual void handleSelfMsg(cMessage * msg) {
 		EV << "BaseLocalization: handleSelfMsg not redefined; delete msg" << endl;
@@ -74,10 +77,6 @@ protected:
 
 	cModule * grandparentModule() const {
 		return parentModule()->parentModule();
-	}
-
-	virtual const int myApplAddr() {
-		return grandparentModule()->index();
 	}
 };
 

@@ -19,6 +19,7 @@
  **************************************************************************/
 
 #include "BaseLocAppl.h"
+#include <assert.h>
 
 Define_Module(BaseLocAppl);
 
@@ -34,6 +35,8 @@ void BaseLocAppl::initialize(int stage)
 		lowerControlOut = findGate("lowerControlOut");
 		locgateIn = findGate("locgateIn");
 		locgateOut = findGate("locgateOut");
+	} else if (stage == 1) {
+		loc = getLocalizationModule();
 	}
 }
 
@@ -70,4 +73,27 @@ void BaseLocAppl::sendControlDown(cMessage * msg)
 void BaseLocAppl::sendLoc(cMessage * msg)
 {
 	send(msg, locgateOut);
+}
+
+static cModule* getModule(const char* modname, cModule *top)
+{
+	for (cSubModIterator i(*top); !i.end(); i++) {
+		cModule *submod = i();
+		if (strcmp(submod->fullName(), modname) == 0)
+			return submod;
+	}
+	return NULL;
+}
+
+BaseLocalization * BaseLocAppl::getLocalizationModule() 
+{
+	cModule *host = findHost();
+	BaseLocAppl *layer = static_cast<BaseLocAppl *>(getModule("appl", host));
+	if (!layer)
+		error("getBaseLocApplLayer: no BaseLocApplLayer module found!");
+	BaseLocalization *loc = static_cast<BaseLocalization *>(getModule("loc", layer));
+	if (!loc)
+		error("getBaseLocalization: no BaseLocalization module found!");
+
+	return loc;
 }
