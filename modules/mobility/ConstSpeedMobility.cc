@@ -106,7 +106,6 @@ void ConstSpeedMobility::makeMove()
 	//stepSize.x = 
 	// step forward
 	move.startPos = stepTarget;
-	updatePosition();
 	move.startTime = simTime();
 
 	EV << "stepping forward. step #=" << step
@@ -121,7 +120,6 @@ void ConstSpeedMobility::makeMove()
     else if( step < numSteps ){
 	// step forward
 	move.startPos = stepTarget;
-	updatePosition();
 	stepTarget += stepSize;
 	move.startTime = simTime();
 
