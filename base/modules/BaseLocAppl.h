@@ -42,9 +42,10 @@
 class BaseLocAppl:public BaseModule {
       protected:
 	/** @brief The gates of this module. */
-	int lowergateIn, lowergateOut, lowerControlIn, lowerControlOut, locgateIn, locgateOut;
+	int lowergateIn, lowergateOut, lowerControlIn, lowerControlOut;
 	/** @brief Length of the ApplPkt header. */
 	int headerLength;
+	/** @brief The Localization module. */
 	BaseLocalization * loc;
       public:
 	 Module_Class_Members(BaseLocAppl, BaseModule, 0);
@@ -64,22 +65,13 @@ class BaseLocAppl:public BaseModule {
 		    "BaseLocAppl: handleLowerControl not redefined; delete msg" << endl;
 		delete msg;
 	};
-	virtual void handleLocMsg(cMessage * msg) {
-		EV << "BaseLocAppl: handleLocMsg not redefined; delete msg" << endl;
-		delete msg;
-	};
 
 	void sendDown(cMessage *);
 	void sendDelayedDown(cMessage *, double);
 	void sendControlDown(cMessage *);
-	void sendLoc(cMessage *);
-
-	cModule * grandparentModule() const {
-		return parentModule()->parentModule();
-	}
 
 	virtual const int myApplAddr() {
-		return grandparentModule()->index();;
+		return findHost()->index();;
 	};
 	
 	BaseLocalization * getLocalizationModule();

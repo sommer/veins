@@ -24,6 +24,7 @@
 #include <BaseModule.h>
 #include "ApplPkt_m.h"
 #include "LocFilter.h"
+#include "Coord.h"
 
 /**
  * @brief Base class for a localization module
@@ -40,18 +41,19 @@
 class BaseLocalization:public BaseModule {
 protected:
 	/** @brief The gates of this module. */
-	int lowergateIn, lowergateOut, lowerControlIn, lowerControlOut, applgateIn, applgateOut;
+	int lowergateIn, lowergateOut, lowerControlIn, lowerControlOut;
 	/** @brief Length of the ApplPkt header. */
 	int headerLength;
 	/** @brief Specifies whether this node is an anchor node. */
 	bool isAnchor;
+	/** @brief The latest location estimation. */
+	Coord * positionEstimation;
+	/** @brief The timestamp for the latest location estimation. */
+	simtime_t timestamp;
 public:
 	Module_Class_Members(BaseLocalization, BaseModule, 0);
 	virtual void initialize(int);
 	void handleMessage(cMessage *);
-	virtual const int myApplAddr() {
-		return grandparentModule()->index();
-	}
 protected:
 	virtual void handleSelfMsg(cMessage * msg) {
 		EV << "BaseLocalization: handleSelfMsg not redefined; delete msg" << endl;
@@ -65,19 +67,19 @@ protected:
 		EV << "BaseLocalization: handleLowerControl not redefined; delete msg" << endl;
 		delete msg;
 	};
-	virtual void handleApplMsg(cMessage * msg) {
-		EV << "BaseLocalization: handleApplMsg not redefined; delete msg" << endl;
-		delete msg;
-	};
 
 	void sendDown(cMessage *);
 	void sendDelayedDown(cMessage *, double);
 	void sendControlDown(cMessage *);
-	void sendAppl(cMessage *);
 
-	cModule * grandparentModule() const {
-		return parentModule()->parentModule();
+	virtual const int myApplAddr() {
+		return findHost()->index();
 	}
+	
+	void estimatePosition();
+
+	Coord * getPositionEstimation();
+	simtime_t getTimestamp();
 };
 
 #endif				/* BASE_LOCALIZATION_H */

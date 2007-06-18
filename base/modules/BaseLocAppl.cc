@@ -33,8 +33,6 @@ void BaseLocAppl::initialize(int stage)
 		lowergateIn = findGate("lowergateIn");
 		lowerControlIn = findGate("lowerControlIn");
 		lowerControlOut = findGate("lowerControlOut");
-		locgateIn = findGate("locgateIn");
-		locgateOut = findGate("locgateOut");
 	} else if (stage == 1) {
 		loc = getLocalizationModule();
 	}
@@ -47,9 +45,6 @@ void BaseLocAppl::handleMessage(cMessage * msg)
 	} else if (msg->arrivalGateId() == lowerControlIn) {
 		EV << "handle lower control" << endl;
 		handleLowerControl(msg);
-	} else if (msg->arrivalGateId() == locgateIn) {
-		EV << "handle localization message" << endl;
-		handleLocMsg(msg);
 	} else {
 		handleSelfMsg(msg);
 	}
@@ -68,11 +63,6 @@ void BaseLocAppl::sendDelayedDown(cMessage * msg, double delay)
 void BaseLocAppl::sendControlDown(cMessage * msg)
 {
 	send(msg, lowerControlOut);
-}
-
-void BaseLocAppl::sendLoc(cMessage * msg)
-{
-	send(msg, locgateOut);
 }
 
 static cModule* getModule(const char* modname, cModule *top)

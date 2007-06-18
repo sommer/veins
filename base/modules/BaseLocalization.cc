@@ -33,8 +33,6 @@ void BaseLocalization::initialize(int stage)
 		lowergateIn = findGate("lowergateIn");
 		lowerControlIn = findGate("lowerControlIn");
 		lowerControlOut = findGate("lowerControlOut");
-		applgateIn = findGate("applgateIn");
-		applgateOut = findGate("applgateOut");
 	}
 }
 
@@ -45,9 +43,6 @@ void BaseLocalization::handleMessage(cMessage * msg)
 	} else if (msg->arrivalGateId() == lowerControlIn) {
 		EV << "handle lower control" << endl;
 		handleLowerControl(msg);
-	} else if (msg->arrivalGateId() == applgateIn) {
-		EV << "handle localization message" << endl;
-		handleApplMsg(msg);
 	} else {
 		handleSelfMsg(msg);
 	}
@@ -66,9 +61,4 @@ void BaseLocalization::sendDelayedDown(cMessage * msg, double delay)
 void BaseLocalization::sendControlDown(cMessage * msg)
 {
 	send(msg, lowerControlOut);
-}
-
-void BaseLocalization::sendAppl(cMessage * msg)
-{
-	send(msg, applgateOut);
 }

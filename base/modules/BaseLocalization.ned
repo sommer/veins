@@ -18,7 +18,5 @@ simple BaseLocalization
         out: lowergateOut; // to network layer
         in: lowerControlIn; // control from network layer
         out: lowerControlOut; // control to network layer
-        in: applgateIn; // from application module
-        out: applgateOut; // to application module
 endsimple
 

@@ -13,7 +13,5 @@ simple BaseLocAppl
         out: lowergateOut; // to network layer
         in: lowerControlIn; // control from network layer
         out: lowerControlOut; // control to network layer
-        in: locgateIn; // from localization module
-        out: locgateOut; // to localization module
 endsimple
 

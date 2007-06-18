@@ -50,9 +50,5 @@ module BaseLocApplLayer
         filter.locgateIn <-- loc.lowergateOut;
         filter.locControlOut --> loc.lowerControlIn;
         filter.locControlIn <-- loc.lowerControlOut;
-        // connect loc to appl
-        loc.applgateOut --> appl.locgateIn;
-        loc.applgateIn <-- appl.locgateOut;
-
 endmodule
 
