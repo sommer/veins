@@ -21,7 +21,8 @@
  * Aline Baggio:
  **************************************************************************
  * This file is an adapted copy of locNetwork/TestLocAppl and 
- * implements a Centroid localization algorithm without mobility (yet)
+ * implements a Centroid localization algorithm (with moving anchors, 
+ * see omnetpp.ini file)
  **************************************************************************/
 
 #include "TestLocalization.h"
@@ -44,7 +45,7 @@ void TestLocalization::initialize(int stage)
 {
   int id;
     BaseLocalization::initialize(stage);
-    id = grandparentModule()->par("id");
+    id = findHost()->par("id");
     if(stage == 0) {
       EV <<"initialize - Stage 0, id: "<<id<<"\n";
       EV <<"initialize - Name: "<<fullName()<< " Path: "<<fullPath()<<"\n";
@@ -88,7 +89,7 @@ void TestLocalization::handleLowerMsg( cMessage* msg )
     int anchorId;
     double anchorX, anchorY, anchorZ;
 
-    id = grandparentModule()->par("id");
+    id = findHost()->par("id");
     EV <<"handleLowerMsg - Node: "<<id<<" Name: "<<fullName()<< " Path: "<<fullPath()<<"\n";
     pkt = static_cast<LocPkt *>(msg);  
 
@@ -154,7 +155,7 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	int id;
 	Coord pos;
 
-	id = grandparentModule()->par("id");
+	id = findHost()->par("id");
 	EV <<"handleSelfMsg - Node: "<<id<<" Name: "<<fullName()<< " Path: "<<fullPath()<<"\n";
 
 	EV<<"Msg kind: "<<msg->kind()<<"\n";
@@ -165,7 +166,7 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	switch(p->getType()){
   	  case SEND_ANCHOR_POS_TIMER: // Anchor timer: send location
 	    if(/*id>=NBANCHORS*/ !isAnchor){EV << "Non anchor node got SEND_ANCHOR_POS_TIMER message (this should never happen)\n"; exit(-1);}
-	    if(utility=(BaseUtility *)(grandparentModule()->submodule("utility")))//{x=utility->par("x");y=utility->par("y");y=utility->par("z");}
+	    if(utility=(BaseUtility *)(findHost()->submodule("utility")))//{x=utility->par("x");y=utility->par("y");y=utility->par("z");}
 	      //if(utility=(BaseUtility *)(getNodeModule("utility")))
 	       //GET REAL LOC HERE! Don't read form omnet.ini!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		{pos=utility->getPos(); x=pos.x;y=pos.y;z=pos.z;}
@@ -201,7 +202,7 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	      y /= nb_anchor_positions;
 	      z /= nb_anchor_positions;
 	      // Get real position (ground truth)
-	      if(utility=(BaseUtility *)grandparentModule()->submodule("utility"))
+	      if(utility=(BaseUtility *)findHost()->submodule("utility"))
 		//{xReal=utility->par("x");yReal=utility->par("y");zReal=utility->par("z");}
 		{pos=utility->getPos(); xReal=pos.x;yReal=pos.y;zReal=pos.z;}
 	      else{EV << "No submodule \"utility\" found\n"; exit(-1);}
@@ -240,7 +241,7 @@ void TestLocalization::sendBroadcast(PositionPkt *pkt)
 {
     pkt->setDestAddr(-1);
     // we use the host modules index() as a appl address
-    pkt->setSrcAddr(grandparentModule()->index()); // We use the node module index as address
+    pkt->setSrcAddr(findHost()->index()); // We use the node module index as address
     pkt->setLength(headerLength);
     
     // set the control info to tell the network layer the layer 3
@@ -261,6 +262,6 @@ void TestLocalization::finish()
 
 //Coord TestLocalization::getLoc()
 //{
-//  EV << "Providing position estimation: id:"<<grandparentModule()->par("id")<<"(x:"<<grandparentModule()->par("xEst")<<",y:"<<grandparentModule()->par("yEst")
-//     <<",z:"<<grandparentModule()->par("zEst")<<") ts:"<<grandparentModule()->par("ts")<<"\n";	
+//  EV << "Providing position estimation: id:"<<findHost()->par("id")<<"(x:"<<findHost()->par("xEst")<<",y:"<<findHost()->par("yEst")
+//     <<",z:"<<findHost()->par("zEst")<<") ts:"<<findHost()->par("ts")<<"\n";	
 //}

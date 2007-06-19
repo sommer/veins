@@ -55,7 +55,7 @@ void TestLocAppl::initialize(int stage)
 {
   int id;
     BaseLocAppl::initialize(stage);
-    id = grandparentModule()->par("id");
+    id = findHost()->par("id");
 
     EV <<"Initializing application\n";
     if(stage == 0) {
@@ -94,7 +94,7 @@ void TestLocAppl::handleLowerMsg( cMessage* msg )
  **/
 void TestLocAppl::handleSelfMsg(cMessage *msg) {
   int id;
-  id = grandparentModule()->par("id");
+  id = findHost()->par("id");
   EV <<"handleSelfMsg - application - Node: "<<id<<" Name: "<<fullName()<< " Path: "<<fullPath()<<"\n";
 
     switch( msg->kind() ){
