@@ -276,11 +276,13 @@ char* stripComments(char* line) {
  * returns the comments if any
  */
 char* getComments(char* line) {
+	char * comment;
 	if (line == NULL || strlen(line) == 0)
 		return NULL;
 	
 	// find start of comment
-	return stripComments(strstr(line, "//") + 2);
+	comment = strstr(line, "//");
+	return comment ? stripComments(comment + 2) : NULL;
 }
 
 /**
@@ -314,11 +316,17 @@ char* getParamName(char* line) {
  */
 paramType getParamType(char* line) {
 	char* type;
+	char* comment;
 
 	if (line == NULL || strlen(line) == 0)
 		return INVALID_PARAMTYPE;
 
-	type = stripComments(strstr(line, ":") + 1);
+	comment = strstr(line, ":");
+	if (!comment) {
+		printf("Expected ':' in \"%s\"\n", line);
+		return INVALID_PARAMTYPE;
+	}
+	type = stripComments(comment + 1);
 	if (strncmp(type, "numeric", 7) == 0)
 		return NUMERIC;
 	if (strncmp(type, "const numeric", 13) == 0)
