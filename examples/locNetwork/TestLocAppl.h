@@ -45,36 +45,11 @@
  * @ingroup applLayer
  * @author Daniel Willkomm
  **/
-class TestLocAppl : public BaseLocAppl
-{
-  public:
-    Module_Class_Members( TestLocAppl, BaseLocAppl, 0 );
+class TestLocAppl:public BaseLocAppl {
+      public:
+	Module_Class_Members(TestLocAppl, BaseLocAppl, 0);
 
-    /** @brief Initialization of the module and some variables*/
-    virtual void initialize(int);
-    virtual void finish();
-
-    enum APPL_MSG_TYPES{
-	SEND_BROADCAST_TIMER,
-	BROADCAST_MESSAGE,
-	BROADCAST_REPLY_MESSAGE
-    };
-
-protected:
-    cMessage *delayTimer;
-    
-protected:
-    /** @brief Handle self messages such as timer... */
-    virtual void handleSelfMsg(cMessage*);
-
-    /** @brief Handle messages from lower layer */
-    virtual void handleLowerMsg(cMessage*);
-  
-    /** @brief send a broadcast packet to all connected neighbors */
-    void sendBroadcast();
-
-    /** @brief send a reply to a broadcast message */
-    void sendReply(ApplPkt *msg);
+	virtual void initialize(int);
 };
 
 #endif
