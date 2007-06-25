@@ -37,6 +37,7 @@ distclean:
 	@rm -f modules/mobility/Makefile
 	@rm -f modules/utility/Makefile
 	@rm -f modules/nic/Makefile
+	@rm -f modules/localization/Makefile
 	@rm -f examples/baseNetwork/Makefile
 	@rm -f examples/locNetwork/Makefile
 	@(cd configurator; ${MAKE} distclean)

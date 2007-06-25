@@ -35,6 +35,7 @@ distclean: clean
 	@del modules\utility\Makefile.vc
 	@del modules\mobility\Makefile.vc
 	@del modules\nic\Makefile.vc
+	@del modules\localization\Makefile.vc
 	@del examples\baseNetwork\Makefile.vc
 	@del examples\locNetwork\Makefile.vc
 #	-@cd configurator && $(MAKE) distclean
