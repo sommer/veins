@@ -19,6 +19,8 @@
  **************************************************************************/
 
 #include "BaseLocAppl.h"
+#include "BaseLocalization.h"
+#include "BaseApplLayer.h"
 #include <assert.h>
 
 Define_Module(BaseLocAppl);
@@ -78,12 +80,12 @@ static cModule* getModule(const char* modname, cModule *top)
 BaseLocalization * BaseLocAppl::getLocalizationModule() 
 {
 	cModule *host = findHost();
-	BaseLocAppl *layer = static_cast<BaseLocAppl *>(getModule("appl", host));
+	BaseApplLayer *layer = static_cast<BaseApplLayer *>(getModule("appl", host));
 	if (!layer)
-		error("getBaseLocApplLayer: no BaseLocApplLayer module found!");
+		error("getLocalizationModule: no BaseApplLayer module found!");
 	BaseLocalization *loc = static_cast<BaseLocalization *>(getModule("loc", layer));
 	if (!loc)
-		error("getBaseLocalization: no BaseLocalization module found!");
+		error("getLocalizationModule: no BaseLocalization module found!");
 
 	return loc;
 }

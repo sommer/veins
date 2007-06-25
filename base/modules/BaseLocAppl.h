@@ -26,6 +26,7 @@
 #include "LocFilter.h"
 
 #include "BaseLocalization.h"
+// class BaseLocalization;
 
 /**
  * @brief Base class for a localization application module
@@ -40,18 +41,18 @@
  * @author Peterpaul Klein Haneveld
  */
 class BaseLocAppl:public BaseModule {
-      protected:
+protected:
 	/** @brief The gates of this module. */
 	int lowergateIn, lowergateOut, lowerControlIn, lowerControlOut;
 	/** @brief Length of the ApplPkt header. */
 	int headerLength;
 	/** @brief The Localization module. */
 	BaseLocalization * loc;
-      public:
-	 Module_Class_Members(BaseLocAppl, BaseModule, 0);
+public:
+	Module_Class_Members(BaseLocAppl, BaseModule, 0);
 	virtual void initialize(int);
 	void handleMessage(cMessage *);
-      protected:
+protected:
 	 virtual void handleSelfMsg(cMessage * msg) {
 		EV << "BaseLocAppl: handleSelfMsg not redefined; delete msg" << endl;
 		delete msg;

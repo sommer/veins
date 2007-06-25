@@ -26,6 +26,7 @@
 #include "LocFilter.h"
 #include "Coord.h"
 
+class BaseLocAppl;
 /**
  * @brief Base class for a localization module
  *
@@ -50,10 +51,15 @@ protected:
 	Coord * positionEstimation;
 	/** @brief The timestamp for the latest location estimation. */
 	simtime_t timestamp;
+	/** @brief The Application module. */
+	BaseLocAppl * appl;
 public:
 	Module_Class_Members(BaseLocalization, BaseModule, 0);
-	virtual void initialize(int);
 	void handleMessage(cMessage *);
+	virtual void initialize(int);
+	virtual void estimatePosition() {}
+	virtual Coord * getPositionEstimation() {}
+	virtual simtime_t getTimestamp() {}
 protected:
 	virtual void handleSelfMsg(cMessage * msg) {
 		EV << "BaseLocalization: handleSelfMsg not redefined; delete msg" << endl;
@@ -76,10 +82,10 @@ protected:
 		return findHost()->index();
 	}
 	
-	void estimatePosition();
-
-	Coord * getPositionEstimation();
-	simtime_t getTimestamp();
+	BaseLocAppl * getApplicationModule();
 };
 
+#include "BaseLocAppl.h"
+
 #endif				/* BASE_LOCALIZATION_H */
+
