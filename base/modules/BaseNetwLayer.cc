@@ -128,3 +128,26 @@ void BaseNetwLayer::handleUpperMsg(cMessage* msg)
     sendDown(encapsMsg(msg));
 }
 
+/**
+ * Redefine this function if you want to process control messages
+ * from lower layers. 
+ *
+ * This function currently handles one messagetype: TRANSMISSION_OVER.
+ * If such a message is received in the network layer it is deleted.
+ * This is done as this type of messages is passed on by the BaseMacLayer.
+ *
+ * It may be used by network protocols to determine when the lower layers
+ * are finished sending a message.
+ **/
+void BaseNetwLayer::handleLowerControl(cMessage* msg)
+{
+	switch (msg->kind())
+	{
+	case NicControlType::TRANSMISSION_OVER:
+		delete msg;
+		break;
+	default:
+		opp_warning("BaseNetwLayer does not handle control messages called %s",msg->name());
+		delete msg;
+	}
+}

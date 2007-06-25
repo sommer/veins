@@ -28,6 +28,7 @@
 #include "BaseArp.h"
 #include "NetwPkt_m.h"
 #include "SimpleAddress.h"
+#include "NicControlType.h"
 
 /**
  * @brief Base class for the network layer
@@ -81,10 +82,7 @@ public:
     };
 
     /** @brief Handle control messages from lower layer */
-    virtual void handleLowerControl(cMessage* msg){
-        opp_warning("BaseNetwLayer does not handle control messages called %s",msg->name());
-		delete msg;
-    };
+    virtual void handleLowerControl(cMessage* msg);
 
     /** @brief Handle control messages from lower layer */
     virtual void handleUpperControl(cMessage* msg){
