@@ -21,11 +21,7 @@
 /* ************************************************************************
  * Peterpaul Klein Haneveld:
  **************************************************************************
- * This file is essentially a copy of TestApplLayer with just the following
- * replacements:
- *
- * TestApplLayer        -> TestLocAppl
- * BaseApplLayer        -> BaseLocAppl
+ * This is a very basic application which only broadcasts its position.
  **************************************************************************/
 
 #include "TestLocAppl.h"
@@ -36,14 +32,34 @@ void TestLocAppl::initialize(int stage)
 {
 	BaseLocAppl::initialize(stage);
 	
-	if (stage == 1) {
-		if (loc != NULL) {
-			fprintf(stdout, 
-				"I Guess that i've found BaseLocalization for %d.\n",
-				myApplAddr());
-		} else {
-			fprintf (stdout, 
-				 "...\n");
-		}
+	switch (stage) {
+	case 0:
+		delayTimer = new cMessage("delay-timer", SEND_BROADCAST_TIMER);
+		break;
+	case 1:
+		scheduleAt(simTime() + findHost()->index() + 0.005, delayTimer);
+		break;
 	}
+}
+
+void TestLocAppl::handleSelfMsg(cMessage * msg)
+{
+	switch (msg->kind()) {
+	case SEND_BROADCAST_TIMER:
+		loc->estimatePosition();
+		delete msg;
+		break;
+	default:
+		EV << "Unkown selfmessage! -> delete, kind: " << msg->kind() << endl;
+		delete msg;
+	}
+}
+
+void TestLocAppl::finish()
+{
+	BaseLocAppl::finish();
+
+	if (!delayTimer->isScheduled())
+		delete delayTimer;
+
 }

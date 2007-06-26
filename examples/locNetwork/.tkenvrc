@@ -40,7 +40,7 @@ config editor-case-sensitive	{0}
 config editor-whole-words	{0}
 config filtobjlist-order	{Class}
 inspector "sim" "Sim" "2" "830x600+381+249"
-inspector "sim.node[9]" "Node" "2" "357x346+866+304"
 inspector "sim.node[9].appl" "BaseLocApplLayer" "2" "449x226+451+378"
+inspector "sim.node[9]" "Node" "2" "357x346+866+304"
 inspector "loc_sim" "LocSim" "2" "544x446+445+546"
 

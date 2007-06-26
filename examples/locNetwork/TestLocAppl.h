@@ -1,10 +1,10 @@
 /* -*- mode:c++ -*- ********************************************************
  * file:        TestLocAppl.h
  *
- * author:      Daniel Willkomm
+ * author:      Peterpaul Klein Haneveld
  *
- * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
- *              Technische Universitaet Berlin, Germany.
+ * copyright:   (C) 2007 Parallel and Distributed Systems Group (PDS) at
+ *              Technische Universiteit Delft, The Netherlands.
  *
  *              This program is free software; you can redistribute it 
  *              and/or modify it under the terms of the GNU General Public 
@@ -14,8 +14,8 @@
  *              For further information see file COPYING 
  *              in the top level directory
  ***************************************************************************
- * part of:     framework implementation developed by tkn
- * description: application layer: test class for the application layer
+ * description: basic localization application class
+ *              extend to create application for the BaseLocApplLayer
  **************************************************************************/
 
 /* ************************************************************************
@@ -39,17 +39,27 @@
  * @brief Test class for the application layer
  * 
  * In this implementation all nodes randomly send broadcast packets to
- * all connected neighbors. Every node who receives this packet will
+ * all connected neighbors. Every node that receives this packet will
  * send a reply to the originator node.
  *
  * @ingroup applLayer
  * @author Daniel Willkomm
  **/
 class TestLocAppl:public BaseLocAppl {
+      protected:
+	cMessage * delayTimer;
+
+	virtual void handleSelfMsg(cMessage *);
+
       public:
 	Module_Class_Members(TestLocAppl, BaseLocAppl, 0);
 
+	enum APPL_MSG_TYPES {
+		SEND_BROADCAST_TIMER
+	};
+
 	virtual void initialize(int);
+	virtual void finish();
 };
 
 #endif
