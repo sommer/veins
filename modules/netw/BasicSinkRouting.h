@@ -1,10 +1,10 @@
 /* -*- mode:c++ -*- ********************************************************
  * file:        BasicSinkRouting.h
  *
- * author:      Daniel Willkomm
+ * author:      Tom Parker
  *
- * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
- *              Technische Universitaet Berlin, Germany.
+ * copyright:   (C) 2006 Parallel and Distributed Systems Group (PDS) at
+ *              Technische Universiteit Delft, The Netherlands.
  *
  *              This program is free software; you can redistribute it 
  *              and/or modify it under the terms of the GNU General Public 
@@ -14,11 +14,9 @@
  *              For further information see file COPYING 
  *              in the top level directory
  ***************************************************************************
- * part of:     framework implementation developed by tkn
- * description: network layer: general class for the network layer
- *              subclass to create your own network layer
- **************************************************************************/
-
+ * part of:     wsn-specific modules
+ * description: network layer: basic source-to-sink routing
+ ***************************************************************************/
 
 #ifndef BASIC_SINK_LAYER_H
 #define BASIC_SINK_LAYER_H
@@ -30,14 +28,15 @@
 #include "NetwPkt_m.h"
 #include "SinkAddress.h"
 #include "SinkInfo_m.h"
+#include "Timer.h"
 
 /**
- * @brief Base class for the network layer
+ * @brief Basic source-to-sink routing
  * 
  * @ingroup netwLayer
- * @author Daniel Willkomm
+ * @author Tom Parker
  **/
-class BasicSinkRouting : public BaseNetwLayer
+class BasicSinkRouting : public BaseNetwLayer, public Timer
 {
 
   protected:
@@ -64,11 +63,6 @@ class BasicSinkRouting : public BaseNetwLayer
 
 	bool msgBusy;
 	bool isSink;
-
-	/** Number of timers. Initialised to 0. Set by @b init_timers() */
-	unsigned int timer_count;
-	/** Timer message array */
-	cMessage *timers;
 
 	void printSinks();
 	bool setNextHop(NetwPkt *pkt);
@@ -102,11 +96,6 @@ public:
     /** @brief Handle messages from lower layer */
     virtual void handleLowerMsg(cMessage* msg);
 
-    /** @brief Handle self messages */
-    virtual void handleSelfMsg(cMessage* msg)
-	{
-		handleTimer(msg->kind());
-	}
 
     /** @brief Handle control messages from lower layer */
     virtual void handleLowerControl(cMessage* msg);
@@ -127,37 +116,7 @@ public:
 	/** @brief Send packet to network */
 	void toNetwork(NetwPkt *out);
 
-	/* Begin Timers */
-
-	/** Initialise a set of timers for this protocol layer
-		@param count Number of timers used by this layer
-	 */	
-	void initTimers(unsigned int count);
-
-	/** Set one of the timers to fire at a point in the future.
-		If the timer has already been set then this discards the old information.
-		Must call @b initTimers() before using.
-		@param index Timer number to set. Must be between 0 and the value given to @b initTimers()
-		@param when Time in seconds in the future to fire the timer
-	 */
-	void setTimer(unsigned int index, double when);
-
-	/** Cancel an existing timer set by @b setTimer()
-		If the timer has not been set, or has already fires, this does nothing
-		Must call @b initTimers() before using.
-		@param index Timer to cancel. Must be between 0 and the value given to @b initTimers()
-	 */
-	void cancelTimer(unsigned int index);
-
-	/** Fires on expiration of a timer.
-		Fires after a call to @b setTimer(). Subclasses should override this.
-		@param index Timer number that fired. Will be between 0 and the value given to @b initTimers()
-	*/	
-
-	float remainingTimer(unsigned int index);
-
 	virtual void handleTimer(unsigned int count);
-	/* End Timers */
 
 };
 

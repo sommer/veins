@@ -1,10 +1,10 @@
-/***************************************************************************
+/* -*- mode:c++ -*- ********************************************************
  * file:        BasicSinkRouting.cc
  *
- * author:      Daniel Willkomm
+ * author:      Tom Parker
  *
- * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
- *              Technische Universitaet Berlin, Germany.
+ * copyright:   (C) 2006 Parallel and Distributed Systems Group (PDS) at
+ *              Technische Universiteit Delft, The Netherlands.
  *
  *              This program is free software; you can redistribute it 
  *              and/or modify it under the terms of the GNU General Public 
@@ -14,9 +14,8 @@
  *              For further information see file COPYING 
  *              in the top level directory
  ***************************************************************************
- * part of:     framework implementation developed by tkn
- * description: network layer: general class for the network layer
- *              subclass to create your own network layer
+ * part of:     wsn-specific modules
+ * description: network layer: basic source-to-sink routing
  ***************************************************************************/
 
 
@@ -27,29 +26,29 @@
 
 Define_Module(BasicSinkRouting);
 
-void BasicSinkRouting::toNetwork(NetwPkt *out)
+void BasicSinkRouting::toNetwork(NetwPkt * out)
 {
 	if (msgBusy)
 	{
 		msgQueue->push(out);
-		EV << "Local link is busy, queuing for future send"<<endl;
+		EV << "Local link is busy, queuing for future send" << endl;
 	}
-	else if (out->getDestAddr()==SINK_ADDRESS && !setNextHop(out))
+	else if (out->getDestAddr() == SINK_ADDRESS && !setNextHop(out))
 	{
 		msgQueue->push(out);
-		EV << "Msg for sink and we don't have any!"<<endl;
+		EV << "Msg for sink and we don't have any!" << endl;
 	}
 	else
 	{
 		msgBusy = true;
-		EV << "Pushing over local link"<<endl;
+		EV << "Pushing over local link" << endl;
 		sendDown(out);
 	}
 }
 
-NetwPkt * BasicSinkRouting::buildSink(SinkInfo *sink, int from)
+NetwPkt *BasicSinkRouting::buildSink(SinkInfo * sink, int from)
 {
-	NetwPkt *pkt = buildPkt(SINK_BCAST,L3BROADCAST,"sink");
+	NetwPkt *pkt = buildPkt(SINK_BCAST, L3BROADCAST, "sink");
 	if (sink == NULL)
 	{
 		sink = new SinkInfo();
@@ -59,8 +58,8 @@ NetwPkt * BasicSinkRouting::buildSink(SinkInfo *sink, int from)
 	}
 	else
 	{
-		sink = check_and_cast<SinkInfo*>(sink->dup());
-		sink->setCost(sink->getCost()+1);
+		sink = check_and_cast < SinkInfo * >(sink->dup());
+		sink->setCost(sink->getCost() + 1);
 		sink->setParent(from);
 	}
 	pkt->encapsulate(sink);
@@ -70,22 +69,21 @@ NetwPkt * BasicSinkRouting::buildSink(SinkInfo *sink, int from)
 void BasicSinkRouting::initialize(int stage)
 {
 	BaseLayer::initialize(stage);
+	Timer::init(this);
 
-	if (stage ==0)
+	if (stage == 0)
 	{
-        hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
+		hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
 	}
 	else if (stage == 1)
 	{
-		timer_count = 0;
 		headerLength = par("headerLength");
 		arp = BaseArpAccess().get();
 		myNetwAddr = id();
 		EV << " myNetwAddr " << myNetwAddr << endl;
-		msgQueue = new std::queue<NetwPkt*>();
-		sinks = new std::map<int,SinkInfo*>();
+		msgQueue = new std::queue < NetwPkt * >();
+		sinks = new std::map < int, SinkInfo * >();
 		msgBusy = false;
-		initTimers(1);
 	}
 	else if (stage == 2)
 	{
@@ -95,9 +93,9 @@ void BasicSinkRouting::initialize(int stage)
 			isSink = true;
 			EV << "Sink node, broadcasting\n";
 			NetwPkt *out = buildSink();
-			(*sinks)[myNetwAddr] = check_and_cast<SinkInfo*>(out->encapsulatedMsg()->dup());
+			(*sinks)[myNetwAddr] = check_and_cast < SinkInfo * >(out->encapsulatedMsg()->dup());
 			msgQueue->push(out);
-			setTimer(0,0.001);
+			setTimer(0, 0.001);
 		}
 		else
 			isSink = false;
@@ -107,19 +105,11 @@ void BasicSinkRouting::initialize(int stage)
 BasicSinkRouting::~BasicSinkRouting()
 {
 	delete msgQueue;
-	for (std::map<int,SinkInfo *>::iterator si = sinks->begin();si!=sinks->end();si++)
+	for (std::map < int, SinkInfo * >::iterator si = sinks->begin(); si != sinks->end(); si++)
 	{
-		delete (*si).second;
+		delete(*si).second;
 	}
 	delete sinks;
-	if (timer_count > 0)
-	{
-		unsigned int i;
-		for (i = 0; i < timer_count; i++)
-			cancelTimer(i);
-		delete[] timers;
-		timer_count = 0;
-	}
 }
 
 void BasicSinkRouting::finish()
@@ -129,10 +119,10 @@ void BasicSinkRouting::finish()
 
 void BasicSinkRouting::printSinks()
 {
-	for (std::map<int,SinkInfo *>::iterator si = sinks->begin();si!=sinks->end();si++)
+	for (std::map < int, SinkInfo * >::iterator si = sinks->begin(); si != sinks->end(); si++)
 	{
 		SinkInfo *s = (*si).second;
-		EV << "Sink "<< s->getSinkId() << " is findable via parent "<<s->getParent()<<" (macAddr = "<<(s->getParent()==-1?-1:arp->getMacAddr(s->getParent()))<<") with cost "<<s->getCost()<<endl;
+		EV << "Sink " << s->getSinkId() << " is findable via parent " << s->getParent() << " (macAddr = " << (s->getParent() == -1 ? -1 : arp->getMacAddr(s->getParent())) << ") with cost " << s->getCost() << endl;
 	}
 }
 
@@ -148,17 +138,17 @@ cMessage *BasicSinkRouting::decapsMsg(NetwPkt * msg)
 	return m;
 }
 
-bool BasicSinkRouting::setNextHop(NetwPkt *pkt)
+bool BasicSinkRouting::setNextHop(NetwPkt * pkt)
 {
 	int macAddr;
 	delete pkt->removeControlInfo();
-	if(pkt->getDestAddr()!=SINK_ADDRESS)
+	if (pkt->getDestAddr() != SINK_ADDRESS)
 		error("non-sink packet!");
 	if (sinks->size() > 0)
 	{
 		printSinks();
 		macAddr = arp->getMacAddr(sinks->begin()->second->getParent());
-		EV << "toNetwork: nHop=SINK_ADDRESS -> sending to sink via parent " <<macAddr << endl;
+		EV << "toNetwork: nHop=SINK_ADDRESS -> sending to sink via parent " << macAddr << endl;
 	}
 	else
 	{
@@ -167,10 +157,10 @@ bool BasicSinkRouting::setNextHop(NetwPkt *pkt)
 		macAddr = -2;
 	}
 	pkt->setControlInfo(new MacControlInfo(macAddr));
-	return macAddr!=-2;
+	return macAddr != -2;
 }
 
-NetwPkt *BasicSinkRouting::buildPkt(int kind, int netwAddr,const char* name)
+NetwPkt *BasicSinkRouting::buildPkt(int kind, int netwAddr, const char *name)
 {
 	int macAddr;
 	NetwPkt *pkt = new NetwPkt(name, kind);
@@ -195,7 +185,7 @@ NetwPkt *BasicSinkRouting::buildPkt(int kind, int netwAddr,const char* name)
 	}
 
 	pkt->setControlInfo(new MacControlInfo(macAddr));
-	
+
 	return pkt;
 }
 
@@ -207,13 +197,12 @@ NetwPkt *BasicSinkRouting::encapsMsg(cMessage * msg)
 {
 	EV << "in encaps...\n";
 	int netwAddr;
-	
+
 	NetwControlInfo *cInfo = dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());
 
 	if (cInfo == NULL)
 	{
-		EV << "warning: Application layer did not specifiy a destination L3 address" << endl;
-		EV << "using broadcast address instead"<<endl;
+		error("Application layer did not specify a destination L3 address");
 		netwAddr = L3BROADCAST;
 	}
 	else
@@ -224,7 +213,7 @@ NetwPkt *BasicSinkRouting::encapsMsg(cMessage * msg)
 	}
 
 	NetwPkt *pkt = buildPkt(UPPER_TYPE, netwAddr, msg->name());
-	
+
 	//encapsulate the application packet
 	pkt->encapsulate(msg);
 	EV << " pkt encapsulated\n";
@@ -241,59 +230,61 @@ NetwPkt *BasicSinkRouting::encapsMsg(cMessage * msg)
  **/
 void BasicSinkRouting::handleLowerMsg(cMessage * msg)
 {
-	NetwPkt *m = check_and_cast<NetwPkt * >(msg);
+	NetwPkt *m = check_and_cast < NetwPkt * >(msg);
 	EV << "handling packet from " << m->getSrcAddr() << endl;
-	EV << "Incoming type is "<< m->kind()<<endl;
-	switch(m->kind())
+	EV << "Incoming type is " << m->kind() << endl;
+	switch (m->kind())
 	{
 		case UPPER_TYPE:
-		{
-			if (m->getDestAddr()==SINK_ADDRESS && !isSink && (!hasPar("autoForward") || par("autoForward").boolValue()))
 			{
-				//printSinks();
-				EV << "Sink packet going through"<<endl;
-				toNetwork(m);
-			}
-			else
-				sendUp(decapsMsg(m));
-			break;
-		}
-		case SINK_BCAST:
-		{
-			int srcAddr = m->getSrcAddr();
-			SinkInfo *si = check_and_cast<SinkInfo*>(decapsMsg(m));
-			EV << "got new sink info "<<si->getSinkId()<<" from node "<<srcAddr<<" with cost "<<si->getCost()<<endl;
-			std::map<int,SinkInfo*>::iterator i = sinks->find(si->getSinkId());
-			if (i!=sinks->end())
-			{
-				SinkInfo *old = (*i).second;
-				if (old->getCost() <= si->getCost()+1)
+				if (m->getDestAddr() == SINK_ADDRESS && !isSink && (!hasPar("autoForward") || par("autoForward").boolValue()))
 				{
-					EV << "new sink is too expensive. Have "<<old->getParent()<<" with cost "<<old->getCost()<<endl;
-					delete si;
-					break;
+					//printSinks();
+					EV << "Sink packet going through" << endl;
+					toNetwork(m);
 				}
 				else
-				{
-					EV << "new sink is cheap! Have "<<old->getParent()<<" with cost "<<old->getCost()<<endl;
-					sinks->erase(i);
-					delete old;
-				}
+					sendUp(decapsMsg(m));
+				break;
 			}
-			NetwPkt *out = buildSink(si,srcAddr);
-			SinkInfo *ns = check_and_cast<SinkInfo*>(si->dup());
-			ns->setParent(srcAddr);
-			ns->setCost(ns->getCost()+1);
-			(*sinks)[ns->getSinkId()] = ns;
-			EV << "got new sink "<<ns->getSinkId()<<" and my parent node is "<<ns->getParent()<<endl;
+		case SINK_BCAST:
+			{
+				int srcAddr = m->getSrcAddr();
+				SinkInfo *si = check_and_cast < SinkInfo * >(decapsMsg(m));
+				EV << "got new sink info " << si->getSinkId() << " from node " << srcAddr << " with cost " << si->getCost() << endl;
+				std::map < int, SinkInfo * >::iterator i = sinks->find(si->getSinkId());
+				if (i != sinks->end())
+				{
+					SinkInfo *old = (*i).second;
+					if (old->getCost() <= si->getCost() + 1)
+					{
+						EV << "new sink is too expensive. Have " << old->getParent() << " with cost " << old->getCost() << endl;
+						delete si;
+						break;
+					}
+					else
+					{
+						EV << "new sink is cheap! Have " << old->getParent() << " with cost " << old->getCost() << endl;
+						sinks->erase(i);
+						delete old;
+					}
+				}
+				else
+					EV << "Brand new sink!" << endl;
+				NetwPkt *out = buildSink(si, srcAddr);
+				SinkInfo *ns = check_and_cast < SinkInfo * >(si->dup());
+				ns->setParent(srcAddr);
+				ns->setCost(ns->getCost() + 1);
+				(*sinks)[ns->getSinkId()] = ns;
+				EV << "got new sink " << ns->getSinkId() << " and my parent node is " << ns->getParent() << endl;
 
-			if (sinks->size()>1)
-				error("Panic! Got more than 1 sinks... we can't handle that yet");
+				if (sinks->size() > 1)
+					error("Panic! Got more than 1 sinks... we can't handle that yet");
 
-			toNetwork(out);
-			delete si;
-			break;	
-		}
+				toNetwork(out);
+				delete si;
+				break;
+			}
 
 		default:
 			error("one of mine, but not handling");
@@ -316,26 +307,29 @@ void BasicSinkRouting::handleUpperMsg(cMessage * msg)
 {
 	if (isSink)
 	{
-		EV << "D'oh. I'm the sink"<<endl;
+		EV << "D'oh. I'm the sink" << endl;
 		sendUp(msg);
 	}
 	else
+	{
+		EV << "Sending upper layer packet to sink" << endl;
 		toNetwork(encapsMsg(msg));
+	}
 }
 
 
-void BasicSinkRouting::handleLowerControl(cMessage* msg)
+void BasicSinkRouting::handleLowerControl(cMessage * msg)
 {
 	switch (msg->kind())
 	{
 		case NicControlType::TRANSMISSION_OVER:
-			EV << "Transmission complete"<<endl;
+			EV << "Transmission complete" << endl;
 			msgBusy = false;
 			sendQueued();
-			delete msg;	
+			delete msg;
 			break;
 		default:
-			EV << "BaseSinkRouting does not handle control messages of this type (name was "<<msg->name()<<")\n";
+			EV << "BaseSinkRouting does not handle control messages of this type (name was " << msg->name() << " kind was " << msg->kind() << ")" << endl;
 			delete msg;
 			break;
 	}
@@ -344,10 +338,10 @@ void BasicSinkRouting::handleLowerControl(cMessage* msg)
 void BasicSinkRouting::sendQueued()
 {
 	if (!msgQueue->empty())
-	{	
-		EV << "Sending queued msg"<<endl;
+	{
+		EV << "Sending queued msg" << endl;
 		NetwPkt *send = msgQueue->front();
-		msgQueue->pop(); // trash message
+		msgQueue->pop();		// trash message
 		toNetwork(send);
 	}
 }
@@ -356,47 +350,3 @@ void BasicSinkRouting::handleTimer(unsigned int count)
 {
 	sendQueued();
 }
-
-/* Begin Timers */
-
-void BasicSinkRouting::initTimers(unsigned int count)
-{	
-	unsigned int  i;
-	if (timer_count > 0)
-		delete[] timers;
-
-	timer_count = count;
-	timers = new cMessage[timer_count];
-	for (i = 0; i < count; i++)
-		timers[i].setKind(i);
-}
-
-void BasicSinkRouting::setTimer(unsigned int index, double when)
-{
-	if (timer_count <= index)
-		error("setTimer: timer index %u out of range", index);
-	if (timers[index].isScheduled())
-		cancelEvent(&timers[index]);
-
-	scheduleAt(simTime() + when, &timers[index]);	
-}
-
-void BasicSinkRouting::cancelTimer(unsigned int index)
-{
-	if (timer_count <= index)
-		error("cancelTimer: timer index %u out of range", index);
-	if (timers[index].isScheduled())
-		cancelEvent(&timers[index]);
-}
-
-float BasicSinkRouting::remainingTimer(unsigned int index)
-{
-	if (timer_count <= index)
-		error("remainingTimer: timer index %u out of range", index);
-	if (timers[index].isScheduled())
-		return timers[index].arrivalTime()-simTime();
-	else
-		return -1;
-}
-
-/* End Timers */
