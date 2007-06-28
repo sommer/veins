@@ -16,9 +16,9 @@
 #CONTRIB_LIB=-L$(ROOT)/contrib/lib -lmfcontrib
 
 #--------------------------------------
-IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/propagationModels -I$(ROOT)/base/modules
+IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/propagationModels -I$(ROOT)/base/modules -I$(ROOT)/base/timers
 
-IMODULES=-I$(ROOT)/modules/nic -I$(ROOT)/modules/mobility -I$(ROOT)/modules/utility -I$(ROOT)/modules/localization
+IMODULES=-I$(ROOT)/modules/nic -I$(ROOT)/modules/mobility -I$(ROOT)/modules/utility -I$(ROOT)/modules/localization -I$(ROOT)/modules/node -I$(ROOT)/modules/netw 
 
 I_ALL = $(IBASE) $(IMODULES)
 #--------------------------------------
@@ -38,6 +38,8 @@ all:
 	@cd $(ROOT)/base/propagationModels && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 	@echo $(ROOT)/base/modules
 	@cd $(ROOT)/base/modules && $(MAKEMAKE) $(OPTS) -n $(IBASE)
+	@echo $(ROOT)/base/timers
+	@cd $(ROOT)/base/timers && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 
 	@echo $(ROOT)/modules
 	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) -r -n
@@ -51,6 +53,8 @@ all:
 	@cd $(ROOT)/modules/mac && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 	@echo $(ROOT)/modules/nic
 	@cd $(ROOT)/modules/nic && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@echo $(ROOT)/modules/netw
+	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 	@echo $(ROOT)/modules/node
 	@cd $(ROOT)/modules/node && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 	@echo $(ROOT)/modules/object
@@ -79,4 +83,3 @@ all:
 
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
-
