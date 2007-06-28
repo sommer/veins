@@ -83,15 +83,15 @@ extern "C" {
 void init(const char* configPath, const char* sourcePath);
 void finish(void);
 
-void addConfig(char *option);
-void addConfigInt(char *option, int value);
-void addConfigString(char *option, const char *value);
+void addConfig(const char *option);
+void addConfigInt(const char *option, int value);
+void addConfigString(const char *option, const char *value);
 void stripNewline(char *line);
-bool checkTimeValue(char *line);
-void writeConfig(char *option, const char *value, bool quoted);
-bool empty(char *line);
-bool checkNumber(char *line);
-bool checkString(char *line);
+bool checkTimeValue(const char *line);
+void writeConfig(const char *option, const char *value, bool quoted);
+bool empty(const char *line);
+bool checkNumber(const char *line);
+bool checkString(const char *line);
 void writeNode(unsigned nodeID, double x, double y, double z);
 void startParameterSection(void);
 int nedCheck(const struct dirent* entry);

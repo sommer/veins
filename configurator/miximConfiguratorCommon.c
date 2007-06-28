@@ -89,7 +89,7 @@ int nedCheck(const struct dirent* entry) {
 	return 0;
 }
 
-void writeConfig(char *option, const char *value, bool quoted) {
+void writeConfig(const char *option, const char *value, bool quoted) {
 	if (value == NULL || strlen(value) == 0) {
 		sprintf(buffer, "%s\n%c", option, 0x00);
 	} else {
@@ -104,22 +104,22 @@ void writeConfig(char *option, const char *value, bool quoted) {
 		printf("An error occured while writing the config file\n");
 }
 
-void addConfigString(char *option, const char *value) {
+void addConfigString(const char *option, const char *value) {
 	writeConfig(option, value, true);
 }
 
-void addConfig(char *option) {
+void addConfig(const char *option) {
 	writeConfig(option, NULL, false);
 }
 
-void addConfigInt(char *option, int value) {
+void addConfigInt(const char *option, int value) {
 	char temp[64];
 
 	sprintf(temp, "%d", value);
 	writeConfig(option, temp, false);
 }
 
-void addConfigDouble(char *option, double value) {
+void addConfigDouble(const char *option, double value) {
 	char temp[64];
 
 	sprintf(temp, "%f", value);
@@ -134,7 +134,7 @@ void stripNewline(char *line) {
 		line[length - 1] = 0;
 }
 
-bool checkNumber(char *line) {
+bool checkNumber(const char *line) {
 	long value;
 	char *endptr;
 	size_t length;
@@ -163,7 +163,7 @@ bool checkNumber(char *line) {
 	return true;
 }
 
-bool checkTimeValue(char *line) {
+bool checkTimeValue(const char *line) {
 	long value;
 	char *endptr;
 	size_t length;
@@ -206,12 +206,12 @@ bool checkTimeValue(char *line) {
 	return true;
 }
 
-bool empty(char *line) {
+bool empty(const char *line) {
 	while (isspace(*line)) line++;
 	return *line == 0;
 }
 
-bool checkString(char *line) {
+bool checkString(const char *line) {
 	if (strchr(line, '"') != NULL) {
 		printf("Quotes are not allowed in strings\n");
 		return false;
@@ -499,7 +499,7 @@ Module* findModules(moduleType type) {
 			typeString = "node";
 			break;
 		case NETWORK:
-			typeString = "network";
+			typeString = "netw";
 			break;
 		case MAC:
 			typeString = "mac";
