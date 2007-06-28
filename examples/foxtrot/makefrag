@@ -1,8 +1,12 @@
 CFLAGS:=$(filter-out -DNDEBUG=1,$(CFLAGS)) -Wall -O0 -Werror
 LDFLAGS += -O0 -Wall
 
-NEED = modules $(TARGET)
+#NEED = modules $(TARGET)
+NEED = $(TARGET) omnetpp.ini
 all: $(NEED)
+
+omnetpp.ini: foxtrotgen.py
+	python foxtrotgen.py > omnetpp.ini
 
 rebuild:
 	(cd ../..;./mkmk foxtrot)

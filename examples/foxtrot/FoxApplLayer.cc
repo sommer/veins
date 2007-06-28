@@ -133,9 +133,9 @@ void FoxApplLayer::sendData()
 	pkt->setDestAddr(SINK_ADDRESS);
 	pkt->setLength(headerLength);
 	pkt->setDataArraySize(1);
-	pkt->setData(0,genk_uniform(0, 20, 21)); // FIXME: specify range in parameters
+	pkt->setData(0,uniform(20, 21)); // FIXME: specify range in parameters
 
-	EV << "Sending sink packet!\n";
+	EV << "Sending sink packet with data "<<pkt->getData(0)<<"\n";
 	sendDown(pkt);
 }
 

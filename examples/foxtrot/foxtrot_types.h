@@ -22,6 +22,7 @@ typedef struct
 	foxtrot_point y;
 } point_ft;
 
-#define PT(x) (x+3)
+#define AXES 3
+#define NO_TIME UINT_MAX
 
 #endif

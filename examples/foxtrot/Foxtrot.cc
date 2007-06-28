@@ -29,8 +29,8 @@
 
 Define_Module_Like(Foxtrot, BaseAggLayer);
 
-uint8_t Foxtrot::pts;
 seconds_t nextTimeout = 0;
+uint8_t Foxtrot::pts = 0;
 
 typedef enum {TIMER_SEND=0, TIMER_PROCESS} FoxtrotTimer;
 
@@ -46,11 +46,23 @@ void Foxtrot::initialize(int stage)
 	{
 		FrameTimer::init(this);
 		Timer::init(this);
+		items = 0;
+		pts = 1;
+		limits[0] = 1.0;
+
 		wait_data = false;
 		maxLatency = par("maxLatency");
-		setFrameTimer(0,10);
+		setFrameTimer(10);
 		local = new FoxtrotPacket();
+		local->setLocalPos(this);
 	}
+}
+
+Foxtrot::~Foxtrot()
+{
+	delete local;
+	for (unsigned int i=0;i<storage.size();i++)
+		delete storage[i];
 }
 
 /**
@@ -64,31 +76,15 @@ void Foxtrot::initialize(int stage)
 void Foxtrot::handleLowerMsg(cMessage * msg)
 {
 	FoxtrotPacket *m = check_and_cast < FoxtrotPacket * >(msg);
-	//EV << " handling packet ) << endl;
-	/*if (isSink)
-	{
-		m->setKind(0xDEAD);
-		sendUp(m);
-	}
-	else*/
-	{
-		try_merge(m, true);
-
-		//delete m->removeControlInfo();
-		//m->setControlInfo(new NetwControlInfo(SINK_ADDRESS));
-		/*pts = m->getDataArraySize();
-		foxtrot_point data[pts];
-		for (unsigned int i=0;i<pts;i++)
-			data[i] = m->getData(i);
-		newPoint(data);*/
-	}
+	try_merge(m, true);
+	delete m;
 }
 
 /**
  * Redefine this function if you want to process messages from upper
  * layers before they are send to lower layers.
  *
- * For the Foxtrot we just use the destAddr of the Aggork
+ * For the Foxtrot we just use the destAddr of the Aggpkt
  * message as a nextHop
  *
  * To forward the message to lower layers after processing it please
@@ -103,7 +99,7 @@ void Foxtrot::handleUpperMsg(cMessage * msg)
 	for (unsigned int i=0;i<pts;i++)
 		data[i] = m->getData(i);
 	newPoint(data);
-	//newPoint(sendDown(m);
+	delete m;
 }
 
 void Foxtrot::try_merge(FoxtrotPacket *newData, bool keep_new) /* keep_new indicates whether to keep new data if it doesn't merge */
@@ -131,6 +127,7 @@ void Foxtrot::try_merge(FoxtrotPacket *newData, bool keep_new) /* keep_new indic
 		if (!ret)
 		{
 			storage.push_back(new FoxtrotPacket(*newData));
+			storage[storage.size()-1]->setWhen(getGlobalSeconds());
 			keep_new = false;
 			mcount = mergeableSubset(&storage,subset);
 			DBG("Mcount = %d\n",mcount);
@@ -169,9 +166,10 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 	uint8_t i,j,l;
 	int k;
 	FoxtrotPacket *midrange = new FoxtrotPacket();
+	bool timeset = false;
 	const uint8_t count = storage.size();
 
-	midrange->setDataArraySize(PT(pts));
+	midrange->setDataArraySize(pts);
 
 	uint8_t most_inside = 0, in_boxes[1];
 
@@ -211,7 +209,7 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 			{
 				most_inside = inbox;
 				in_boxes[0] = temp[0];
-				midrange->setAllData(storage[i]);
+				midrange->setAllLoc(storage[i]);
 			}
 		}
 	}
@@ -222,38 +220,41 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 	}
 	else
 	{
-		for (j=0;j<PT(pts);j++)
+		for (j=0;j<AXES;j++)
 		{
-			foxtrot_point_int temp=0;
+			foxtrot_point temp=0;
 			uint8_t used = 0;
 			for (i=0;i<count;i++)
 			{
 				if (!ANY_CHK(i,subset))
 					continue;
-				temp+=(storage[i]->getData(j).min+storage[i]->getData(j).max);
+				temp+=(storage[i]->getLoc(j).min+storage[i]->getLoc(j).max);
 				used+=2;
 			}
-			midrange->setMinData(j,(foxtrot_point)(temp/(used*1.0)));
-			midrange->setMaxData(j,midrange->getData(j).min);
+			midrange->setMinLoc(j,(foxtrot_point)(temp/(used*1.0)));
+			midrange->setMaxLoc(j,midrange->getLoc(j).min);
 		}
 		print_data("midrange",midrange);
-		for (i=0;i<PT(pts)*2;i++) // pts axis * 2 directions (smaller and larger)
+		for (i=0;i<AXES*2;i++) // pts axis * 2 directions (smaller and larger)
 		{
 			uint8_t curr = 1<<(i/2);
 			foxtrot_point val[2];
 			uint8_t setval = 1;
 			val[0] = MAX_FOXTROT_VALUE;
 			val[1] = MAX_FOXTROT_VALUE;
-			DBG("i=%d\n",i);
+			DBG("i=%d, curr=%d\n",i,curr);
 
-			for (j=0;j<(1<<PT(pts));j++) // in a given direction, we're looking for 2^(pts-1) points that create a hypersurface. we also have the other 2^pts-2^(pts-1) points, but they get ignored
+			for (j=0;j<(1<<AXES);j++) // in a given direction, we're looking for 2^(pts-1) points that create a hypersurface. we also have the other 2^pts-2^(pts-1) points, but they get ignored
 			{
 				uint8_t better = 0;
 				if (curr & j) // don't handle the extra ones where the current tested direction being compared
+				{
+					DBG("Skipped %d\n",j);
 					continue;
+				}
 				if (setval==1)
 				{
-					val[0] = (i%2==0)?midrange->getData(i/2).min:midrange->getData(i/2).max;
+					val[0] = (i%2==0)?midrange->getLoc(i/2).min:midrange->getLoc(i/2).max;
 					val[1] = val[0];
 				}
 				setval = (setval==0)?1:0;	
@@ -261,7 +262,7 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 				{
 					if (!ANY_CHK(k,subset)) // only use the subset
 						continue;
-					for (l=0;l<PT(pts);l++) // for a particular box, does it have a better co-ordinate?
+					for (l=0;l<AXES;l++) // for a particular box, does it have a better co-ordinate?
 					{
 						bool max;
 						if (l==i/2)
@@ -270,29 +271,29 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 							max = (1<<l)&j;
 						if (max)
 						{
-							if (storage[k]->getData(l).max >= midrange->getData(l).max)
+							if (storage[k]->getLoc(l).max >= midrange->getLoc(l).max)
 							{
 								DBG("box %d exceeds max for pt %d\n",k,l);
 								continue;
 							}
-							DBG("box %d fails max limits (" FP_PRINTF " < " FP_PRINTF") on pt %d\n",k,storage[k]->getData(l).max,midrange->getData(l).max,l);
+							DBG("box %d fails max limits (" FP_PRINTF " < " FP_PRINTF") on pt %d\n",k,storage[k]->getLoc(l).max,midrange->getLoc(l).max,l);
 						}
 						else
 						{
-							if (storage[k]->getData(l).min <= midrange->getData(l).min)
+							if (storage[k]->getLoc(l).min <= midrange->getLoc(l).min)
 							{
 								DBG("box %d is smaller than min for pt %d\n",k,l);
 								continue;
 							}
-							DBG("box %d fails min limits (" FP_PRINTF " > " FP_PRINTF") on pt %d\n",k,storage[k]->getData(l).min,midrange->getData(l).min,l);
+							DBG("box %d fails min limits (" FP_PRINTF " > " FP_PRINTF") on pt %d\n",k,storage[k]->getLoc(l).min,midrange->getLoc(l).min,l);
 						}
 						break;
 					}
-					if (l==PT(pts))
+					if (l==AXES)
 					{
 						uint8_t m=0,jc=j;
 						DBG("box %d was good for axis %d and other locs",k,i/2);
-						for (m=0;m<PT(pts);m++)
+						for (m=0;m<AXES;m++)
 						{
 							if (m==i/2)
 							{
@@ -316,7 +317,7 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 				{
 					DBG("failed to find anything for coord %d in the %s direction\n",i,i%2==0?"negative":"positive");
 					delete midrange;
-					//assert(0)
+					assert(0);
 					return false;
 				}
 				DBG("better for axis %d in the %s direction is",i/2,i%2==0?"negative":"positive");
@@ -325,13 +326,13 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 					{
 						if (i%2==0)
 						{
-							if (val[setval]>storage[k]->getData(i/2).min)
-								val[setval] = storage[k]->getData(i/2).min;
+							if (val[setval]>storage[k]->getLoc(i/2).min)
+								val[setval] = storage[k]->getLoc(i/2).min;
 						}
 						else
 						{
-							if (val[setval]<storage[k]->getData(i/2).max)
-								val[setval] = storage[k]->getData(i/2).max;
+							if (val[setval]<storage[k]->getLoc(i/2).max)
+								val[setval] = storage[k]->getLoc(i/2).max;
 						}
 						DBG_clear(" %d",k);
 					}
@@ -339,9 +340,9 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 				if (setval==1)
 				{
 					if (i%2==0)
-						midrange->getData(i/2).min = MAX(val[0],val[1]);
+						midrange->getLoc(i/2).min = MAX(val[0],val[1]);
 					else	
-						midrange->getData(i/2).max = MIN(val[0],val[1]);
+						midrange->getLoc(i/2).max = MIN(val[0],val[1]);
 				}
 			}
 		}
@@ -369,28 +370,29 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 	{
 		EV << "wasn't able to get rid of any old data, so don't store\n";
 		delete midrange;
+		assert(0);
 		return false;
 	}
 	for (k=0;k<count;k++)
 	{
-		uint8_t diff= PT(pts);
+		uint8_t diff = AXES;
 		if (!ANY_CHK(k,subset) || ANY_CHK(k,remove))
 			continue;
-		for (i=0;i<PT(pts);i++)
+		for (i=0;i<AXES;i++)
 		{
-			if (!all_in_range(&midrange->getData(i),&storage[k]->getData(i)))
+			if (!all_in_range(&midrange->getLoc(i),&storage[k]->getLoc(i)))
 			{
-				if (diff!=PT(pts))
+				if (diff!=AXES)
 					break;
 				diff = i;
 			}	
 		}
-		if (i!=PT(pts)) /* either zero-overlap, or multiple non-intersecting. Either way, it's unusable */
+		if (i!=AXES) /* either zero-overlap, or multiple non-intersecting. Either way, it's unusable */
 			continue;
-		if (val_in_range(&midrange->getData(diff),storage[k]->getData(diff).min))
-			storage[k]->getData(diff).min = midrange->getData(diff).max;
-		else if (val_in_range(&midrange->getData(diff),storage[k]->getData(diff).max))
-			storage[k]->getData(diff).max = midrange->getData(diff).min;
+		if (val_in_range(&midrange->getLoc(diff),storage[k]->getLoc(diff).min))
+			storage[k]->getLoc(diff).min = midrange->getLoc(diff).max;
+		else if (val_in_range(&midrange->getLoc(diff),storage[k]->getLoc(diff).max))
+			storage[k]->getLoc(diff).max = midrange->getLoc(diff).min;
 		else /* not this block */
 			continue;
 		EV << "box "<<k<<"%d is partially inside\n";	
@@ -405,42 +407,42 @@ inline bool Foxtrot::merge(uint8_t *subset, uint8_t *delete_count)
 	}
 
 	assert(remove!=0);
-	/* where are we storing midrange? Assumption: remove!=0, so we've got an old block to wipe. Checked by earlier code + assert */
+	for (k=0;k<count;k++)
+	{
+		if (!ANY_CHK(k,change)) // only use changed blocks
+			continue; 
+		if (!timeset || storage[k]->getWhen()<midrange->getWhen())
+		{
+			midrange->setWhen(storage[k]->getWhen());
+			timeset = true;
+		}
+	}
 	for (k=count-1;k>=0;k--)
 	{
-		if (!ANY_CHK(k,remove))
+		if (ANY_CHK(k,remove))
 		{
 			EV << "deleting block "<<k<<"\n";
-			storage.erase(storage.begin()+k);
+			midrange->expandData(storage[k]);
+			if (!timeset || storage[k]->getWhen()<midrange->getWhen())
+			{
+				midrange->setWhen(storage[k]->getWhen());
+				timeset = true;
+			}
+			storage.erase(k);
 			(*delete_count)++;
 		}
 	}
 	EV << "Using new box to store data\n";
 	storage.push_back(midrange);
-	//m_index = storage.size()-1;
+	assert(midrange->getWhen()!=0);
+	assert(midrange->getData(0).min!=MAX_FOXTROT_VALUE);
 	DBG("wiped %d blocks\n",*delete_count);
-	/*for (i=0;i<*delete_count;i++)
-		ANY_CLR(count-(i+1),remove);
-
-	if (remove[0]!=0)
-	{
-		DBG("remove[0] = %d\n",remove[0]);
-		assert(remove[0]==0); // don't handle yet
-	}*/
-	for (k=0;k<count;k++)
-	{
-		if (!ANY_CHK(k,change)) // only use changed blocks
-			continue; 
-		if (storage[k]->getWhen()<midrange->getWhen())
-			midrange->setWhen(storage[k]->getWhen());
-	}
 	return (*delete_count)>1; /* if we used the last index, return false (as it's the new item) */
 }
 
 inline void Foxtrot::gen_data(foxtrot_data *d, const foxtrot_point *p)
 {
-	uint8_t i;
-	for (i=0;i<pts;i++)
+	for (uint8_t i=0;i<pts;i++)
 		d[i].min = d[i].max = p[i];
 }
 
@@ -450,6 +452,7 @@ void Foxtrot::newPoint(const foxtrot_point *data)
 	
 	gen_data(pkt,data);
 	newData(pkt);
+	free(pkt);
 }
 
 seconds_t Foxtrot::getGlobalSeconds()
@@ -466,6 +469,7 @@ void Foxtrot::handleTimer(unsigned int index)
 			FoxtrotPacket *sender = new FoxtrotPacket(*(storage[storage.size()-1]));
 			sender->setControlInfo(new NetwControlInfo(SINK_ADDRESS));
 			sender->setName("foxtrot packet");
+			sender->setWhen(getGlobalSeconds());
 			sendDown(sender);
 			break;
 		}
@@ -483,15 +487,15 @@ void Foxtrot::doSend()
 	{
 		// 512 == 1024 (1s) /2 i.e. 50% of the maxlatency
 		double rnd = genk_uniform(0,0,maxLatency/2.0);
-		storage[storage.size()-1]->setWhen(getGlobalSeconds());
+		//storage[storage.size()-1]->setWhen(getGlobalSeconds());
 		setTimer(TIMER_SEND,rnd);
 	}
 }
 
 void Foxtrot::newData(const foxtrot_data *data)
 {
-	local->setDataArraySize(PT(pts));
-	local->setWhen(getGlobalSeconds());
+	local->setDataArraySize(pts);
+	local->setWhen(NO_TIME);
 	//print_data("local before",local);
 	local->setAllData(this,data);
 	print_data("local",local);
@@ -508,10 +512,7 @@ void Foxtrot::newData(const foxtrot_data *data)
 }
 
 
-uint8_t pts =0;
-foxtrot_point limits[MAX_PTS];
-
-uint8_t Foxtrot::mergeableSubset(pkt_queue *list, uint8_t *subset)
+uint8_t Foxtrot::mergeableSubset(FoxtrotPacketStorage *list, uint8_t *subset)
 {
 	uint8_t i,j;
 	uint8_t best_count = 0;
@@ -553,7 +554,7 @@ uint8_t Foxtrot::mergeableSubset(pkt_queue *list, uint8_t *subset)
 
 	for (i=0;i<count;i++)
 	{
-	 	DBG("Data point (ms) %d: " FP_PRINTF " - " FP_PRINTF " (box " FP_PRINTF "-" FP_PRINTF "," FP_PRINTF "-" FP_PRINTF "). Time=%d\n",i, (*list)[i]->getData(PT(0)).min,(*list)[i]->getData(PT(0)).max,(*list)[i]->getData(X_DIR).min,(*list)[i]->getData(X_DIR).max,(*list)[i]->getData(Y_DIR).min,(*list)[i]->getData(Y_DIR).max,(*list)[i]->getWhen());
+	 	DBG("Data point (ms) %d: " FP_PRINTF " - " FP_PRINTF " (box " FP_PRINTF "-" FP_PRINTF "," FP_PRINTF "-" FP_PRINTF "). Time=%d\n",i, (*list)[i]->getData(0).min,(*list)[i]->getData(0).max,(*list)[i]->getLoc(X_DIR).min,(*list)[i]->getLoc(X_DIR).max,(*list)[i]->getLoc(Y_DIR).min,(*list)[i]->getLoc(Y_DIR).max,(*list)[i]->getWhen());
 	}
 	
 	/*for (i=0;i<pts;i++)
@@ -586,13 +587,13 @@ uint8_t Foxtrot::mergeableSubset(pkt_queue *list, uint8_t *subset)
 					upper = (((i/k)%2)==1);
 				if (upper)
 				{
-					check[k].max = MIN((*list)[j]->getData(PT(k)).max+limits[k],MAX_FOXTROT_VALUE);
-					check[k].min = (*list)[j]->getData(PT(k)).min;	
+					check[k].max = MIN((*list)[j]->getData(k).max+limits[k],MAX_FOXTROT_VALUE);
+					check[k].min = (*list)[j]->getData(k).min;	
 				}
 				else	
 				{
-					check[k].max = (*list)[j]->getData(PT(k)).max;
-					check[k].min = ((*list)[j]->getData(PT(k)).min<=limits[k])?0:(*list)[j]->getData(PT(k)).min-limits[k];	
+					check[k].max = (*list)[j]->getData(k).max;
+					check[k].min = ((*list)[j]->getData(k).min<=limits[k])?0:(*list)[j]->getData(k).min-limits[k];	
 				}
 				if (check[k].min == check[k].max)
 				{
@@ -620,7 +621,7 @@ uint8_t Foxtrot::mergeableSubset(pkt_queue *list, uint8_t *subset)
 					curr_count++;
 					continue;
 				}
-				if (abs((*list)[k]->getWhen()-(*list)[j]->getWhen())>MAX_SECS_DIFF)
+				if ((*list)[k]->getWhen()!=NO_TIME && (*list)[k]->getWhen()!=NO_TIME && abs((*list)[k]->getWhen()-(*list)[j]->getWhen())>MAX_SECS_DIFF)
 				{
 					DBG("Time diff is too big\n");
 					continue;
@@ -628,7 +629,7 @@ uint8_t Foxtrot::mergeableSubset(pkt_queue *list, uint8_t *subset)
 
 				for (l=0;l<pts;l++)
 				{
-					if ((*list)[k]->getData(PT(l)).min<check[l].min || (*list)[k]->getData(PT(l)).max>check[l].max)
+					if ((*list)[k]->getData(l).min<check[l].min || (*list)[k]->getData(l).max>check[l].max)
 					{
 						DBG("%d fails on pt %d against %d\n",k,l,j);
 						break;
@@ -664,15 +665,6 @@ uint8_t Foxtrot::mergeableSubset(pkt_queue *list, uint8_t *subset)
 	return best_count;
 }
 
-inline void Foxtrot::print_data(const char* beg, const foxtrot_data* packet, seconds_t when)
-{
-	uint8_t j;
-	EV << beg <<" (time="<<when<<"):";
-	for (j=0;j<PT(pts);j++)
-		EV << " ("<<packet[j].min<<"-"<<packet[j].max<<")";
-	EV << "\n";
-}
-
 void Foxtrot::processPackets()
 {
 	seconds_t now = getGlobalSeconds();
@@ -684,10 +676,11 @@ void Foxtrot::processPackets()
 		if (expire<=now)
 		{
 			FoxtrotPacket *sender = new FoxtrotPacket(*(storage[i]));
-			storage.erase(storage.begin()+i);
+			storage.erase(i);
 			i--;
 			DBG("expiry exceeded (now=%d, when=%d, maxlatency=%d)\n",now,sender->getWhen(),maxLatency);
 			sender->setKind(0xDEAD);
+			assert(isSink);
 			sendUp(sender);
 		}
 		else if (expire-now<when)
@@ -726,13 +719,11 @@ inline bool Foxtrot::all_in_range(const foxtrot_data *a, const foxtrot_data *b)
 inline bool Foxtrot::inside(const FoxtrotPacket *outer, const FoxtrotPacket *inner)
 {
 	uint8_t i;
-	for (i=0;i<PT(pts);i++)
-		if (outer->getData(i).min>inner->getData(i).min || outer->getData(i).max<inner->getData(i).max)
+	for (i=0;i<AXES;i++)
+		if (outer->getLoc(i).min>inner->getLoc(i).min || outer->getLoc(i).max<inner->getLoc(i).max)
 			return false;
 	return true;
 }
-
-uint8_t items = 0;
 
 void Foxtrot::handleFrameTimer(unsigned int index)
 {
@@ -743,6 +734,8 @@ void Foxtrot::handleFrameTimer(unsigned int index)
 		DBG("(foxtrot) not waiting for data, send now\n");
 		if (storage.size()>0 && !isSink)
 			doSend();
+		else
+			DBG("storage.size = %d, sink = %d\n",storage.size(),isSink);
 	}
 	else
 	{
@@ -750,6 +743,9 @@ void Foxtrot::handleFrameTimer(unsigned int index)
 		wait_data = false;
 	}
 	items++;
-	if (items>2)
+	if (items>1)
+	{
+		DBG("Cancelling frame timer\n");
 		cancelFrameTimer(0);
+	}
 }

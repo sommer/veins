@@ -30,6 +30,6 @@ message AggPkt
     fields:
 		int srcAddr; 		 // source addr. May be broadcast if this is built from many packets
         int destAddr;        // destination address
-		int data[]; 		 // raw data from app layer
+		double data[]; 		 // raw data from app layer
 }
 

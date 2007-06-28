@@ -1,11 +1,12 @@
 #ifndef TIMER_CORE_H
 #define TIMER_CORE_H 1
 
+#include "BaseModule.h"
 #include <omnetpp.h>
 
 class Timer;
 
-class TimerCore: public cSimpleModule
+class TimerCore: public BaseModule
 {
 	protected:
 		Timer *timer;
@@ -16,7 +17,7 @@ class TimerCore: public cSimpleModule
 		virtual void handleMessage(cMessage* msg);
 
 	public:
-	    Module_Class_Members(TimerCore, cSimpleModule, 0);
+	    Module_Class_Members(TimerCore, BaseModule, 0);
 		~TimerCore();
 
 		void init (Timer* t);

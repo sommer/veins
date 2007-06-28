@@ -12,5 +12,6 @@ message FoxtrotPacket extends BasePacket
 		customize = true;
 	fields:
 		unsigned int when;
+		foxtrot_data loc[AXES];
 		foxtrot_data data[];
 }

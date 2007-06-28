@@ -30,10 +30,9 @@
 #include "AggPkt_m.h"
 #include "SimpleAddress.h"
 #include "FoxtrotPacket.h"
+#include "FoxtrotPacketStorage.h"
 
 #include "foxtrot_types.h"
-
-typedef std::vector<FoxtrotPacket*> pkt_queue;
 
 #ifndef COMPILER_ASSERT
 #define COMPILER_ASSERT(expr, msg) typedef int ERROR_##msg[1][(expr) ? 1 : 0][(expr) ? 1 : -1];
@@ -73,10 +72,14 @@ class Foxtrot: public BaseAggLayer, public FrameTimer, public Timer
 
 	/** @brief Initialization of the module and some variables*/
 	virtual void initialize(int);
+	~Foxtrot();
 
   protected:
-	pkt_queue storage;
+	foxtrot_point limits[MAX_PTS];
+
+	FoxtrotPacketStorage storage;
 	FoxtrotPacket *local;
+	uint8_t items;
 	/** 
      * @name Handle Messages
      * @brief Functions to redefine by the programmer
@@ -111,8 +114,8 @@ class Foxtrot: public BaseAggLayer, public FrameTimer, public Timer
 	static inline void gen_data(foxtrot_data *d, const foxtrot_point *p);
 	void newPoint(const foxtrot_point *data);
 	void newData(const foxtrot_data *data);
-	uint8_t mergeableSubset(pkt_queue *list, uint8_t *subset);
-	inline void print_data(const char* beg, const foxtrot_data* packet, seconds_t when);
+	uint8_t mergeableSubset(FoxtrotPacketStorage *list, uint8_t *subset);
+	//inline void print_data(const char* beg, const foxtrot_data* packet, seconds_t when);
 	inline void print_data(const char* beg, const FoxtrotPacket* packet) const {packet->print(beg);} 
 	void processPackets();
 	static inline bool val_in_range(const foxtrot_data *a, const foxtrot_point pt);

@@ -1,3 +1,7 @@
+from sys import stdout
+
+out = stdout
+print >>out,"""
 [General]
 debug-on-errors=1
 ;ini-warnings = true
@@ -30,12 +34,6 @@ module-messages = yes
 
 
 
-##############################################################################
-#       Parameters for the entire simulation                                 #
-##############################################################################
-baseSim.playgroundSizeX = 500
-baseSim.playgroundSizeY = 350
-baseSim.numHosts = 10
 
 
 # uncomment to enable debug messages for all modules
@@ -55,7 +53,6 @@ baseSim.propagationmodel.alpha = 3.5
 baseSim.propagationmodel.sendDirect = 0
 baseSim.propagationmodel.useTorus = 0
 
-baseSim.numNodes = 10
 
 baseSim.node[*].applType = "FoxApplLayer"
 #baseSim.node[*].aggType = "BaseAggLayer"
@@ -69,44 +66,30 @@ baseSim.node[*].agg.debug = 1
 ##############################################################################
 # starting position for the nodes "-1" means random staring point
 
-baseSim.node[0].isSink = True
-baseSim.node[*].isSink = False
+##############################################################################
+#       Parameters for the entire simulation                                 #
+##############################################################################
+"""
 
-baseSim.node[0].utility.x = 30
-baseSim.node[0].utility.y = 75
+size = (500,350)
 
-baseSim.node[1].utility.x = 290
-baseSim.node[1].utility.y = 160
+print "baseSim.playgroundSizeX = %d"%size[0]
+print "baseSim.playgroundSizeY = %d"%size[1]
+print "baseSim.playgroundSizeZ = 0"
 
-baseSim.node[2].utility.x = 420
-baseSim.node[2].utility.y = 120
+count = 50
+print "baseSim.numNodes = %d"%count
 
-baseSim.node[3].utility.x = 380
-baseSim.node[3].utility.y = 30
+for i in range(count):
+	if i == 0:
+		print "baseSim.node[%d].isSink = True"%i
+	else:
+		print "baseSim.node[%d].isSink = False"%i
+	print "baseSim.node[%d].utility.x = %d"%(i,i*10)
+	print "baseSim.node[%d].utility.y = 0"%i
+	print "baseSim.node[%d].utility.z = 0"%i
 
-baseSim.node[4].utility.x = 220
-baseSim.node[4].utility.y = 60
-
-baseSim.node[5].utility.x = 450
-baseSim.node[5].utility.y = 320
-
-baseSim.node[6].utility.x = 150
-baseSim.node[6].utility.y = 155
-
-baseSim.node[7].utility.x = 330
-baseSim.node[7].utility.y = 280
-
-baseSim.node[8].utility.x = 70
-baseSim.node[8].utility.y = 257
-
-baseSim.node[9].utility.x = 150
-baseSim.node[9].utility.y = 300
-
-baseSim.node[*].utility.x=-1
-baseSim.node[*].utility.y=-1
-baseSim.node[*].utility.z=0
-
-
+print >>out,"""
 
 ##############################################################################
 #       Parameters for the Host                                              #
@@ -184,5 +167,4 @@ baseSim.node[*].nic.decider.snrThresholdLevel=10;[dB]
 baseSim.node[*].utility.baseDebug=0
 
 **.debug = 1
-**.coreDebug = 1
-
+**.coreDebug = 1"""

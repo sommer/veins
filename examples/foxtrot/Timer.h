@@ -25,7 +25,6 @@ class Timer
 
 	/** Set a timer to fire at a point in the future.
 	    Auto-generates a timer id that's guaranteed not to have been used by anyone else.
-		If the timer with that id has already been set then this discards the old information.
 		@param when Time in seconds in the future to fire the timer
 		@return Timer id
 	 */
