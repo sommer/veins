@@ -1,6 +1,7 @@
 simple BaseNetwLayer
     parameters:
         debug: numeric const, // debug switch
+        stats: bool, // stats switch
         headerLength: numeric const; // length of the network packet header (in bits)
     gates:
         in: uppergateIn; // from application layer

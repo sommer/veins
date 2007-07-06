@@ -35,7 +35,7 @@ simtime_t BasePacket::simTime () const
 
 cModule *BasePacket::findHost(void) const 
 {
-    cModule *mod=dynamic_cast<cModule*>(owner());
+	cModule *mod=dynamic_cast<cModule*>(owner());
 	if (!mod)
 		opp_error("findHost: no owner!");
     for (; mod != NULL; mod = mod->parentModule())

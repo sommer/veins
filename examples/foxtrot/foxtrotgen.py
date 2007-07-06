@@ -1,4 +1,5 @@
 from sys import stdout
+from random import uniform
 
 out = stdout
 print >>out,"""
@@ -56,6 +57,7 @@ baseSim.propagationmodel.useTorus = 0
 
 baseSim.node[*].applType = "FoxApplLayer"
 #baseSim.node[*].aggType = "BaseAggLayer"
+#baseSim.node[*].aggType = "FoxtrotPatterned"
 baseSim.node[*].aggType = "Foxtrot"
 baseSim.node[*].agg.headerLength=0
 baseSim.node[*].agg.maxLatency=5
@@ -77,7 +79,7 @@ print "baseSim.playgroundSizeX = %d"%size[0]
 print "baseSim.playgroundSizeY = %d"%size[1]
 print "baseSim.playgroundSizeZ = 0"
 
-count = 50
+count = 3
 print "baseSim.numNodes = %d"%count
 
 for i in range(count):
@@ -87,6 +89,8 @@ for i in range(count):
 		print "baseSim.node[%d].isSink = False"%i
 	print "baseSim.node[%d].utility.x = %d"%(i,i*10)
 	print "baseSim.node[%d].utility.y = 0"%i
+	#print "baseSim.node[%d].utility.x = %f"%(i,uniform(0,100))
+	#print "baseSim.node[%d].utility.y = %f"%(i,uniform(0,100))
 	print "baseSim.node[%d].utility.z = 0"%i
 
 print >>out,"""
@@ -110,6 +114,7 @@ baseSim.node[*].appl.burstSize=3
 ##############################################################################
 baseSim.node[*].net.headerLength=24
 baseSim.node[*].net.debug = 1
+baseSim.node[*].net.stats = 1
 baseSim.node[*].routingType = "BasicSinkRouting";
 baseSim.node[*].net.autoForward = false
 

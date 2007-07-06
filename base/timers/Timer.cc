@@ -4,6 +4,9 @@
 void Timer::init(cModule *parent)
 {
 	owner = parent;
-	ct = dynamic_cast<TimerCore*>(findModuleType("TimerCore")->createScheduleInit("TimerCore",owner));
-	ct->init(this);
+	if (ct==NULL)
+	{
+		ct = dynamic_cast<TimerCore*>(findModuleType("TimerCore")->createScheduleInit("TimerCore",owner));
+		ct->init(this);
+	}
 }

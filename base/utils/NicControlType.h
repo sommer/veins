@@ -37,7 +37,7 @@ class NicControlType : public cPolymorphic
 {    
  public:
     enum Types {
-        NOTHING, // we don't want to start at zero -- its is ambiguous
+        NOTHING=1, // we don't want to start at zero -- it is ambiguous
         TRANSMISSION_OVER,
         PACKET_DROPPED
     };

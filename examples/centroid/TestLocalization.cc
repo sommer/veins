@@ -166,7 +166,7 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	switch(p->getType()){
   	  case SEND_ANCHOR_POS_TIMER: // Anchor timer: send location
 	    if(/*id>=NBANCHORS*/ !isAnchor){EV << "Non anchor node got SEND_ANCHOR_POS_TIMER message (this should never happen)\n"; exit(-1);}
-	    if(utility=(BaseUtility *)(findHost()->submodule("utility")))//{x=utility->par("x");y=utility->par("y");y=utility->par("z");}
+	    if((utility=(BaseUtility *)(findHost()->submodule("utility"))))//{x=utility->par("x");y=utility->par("y");y=utility->par("z");}
 	      //if(utility=(BaseUtility *)(getNodeModule("utility")))
 	       //GET REAL LOC HERE! Don't read form omnet.ini!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		{pos=utility->getPos(); x=pos.x;y=pos.y;z=pos.z;}
@@ -202,7 +202,7 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	      y /= nb_anchor_positions;
 	      z /= nb_anchor_positions;
 	      // Get real position (ground truth)
-	      if(utility=(BaseUtility *)findHost()->submodule("utility"))
+	      if((utility=(BaseUtility *)findHost()->submodule("utility")))
 		//{xReal=utility->par("x");yReal=utility->par("y");zReal=utility->par("z");}
 		{pos=utility->getPos(); xReal=pos.x;yReal=pos.y;zReal=pos.z;}
 	      else{EV << "No submodule \"utility\" found\n"; exit(-1);}

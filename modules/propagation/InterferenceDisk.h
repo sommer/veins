@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        ChannelControl.h
+ * file:        InterferenceDisk.h
  *
  * author:      Steffen Sroka, Daniel Willkomm
  *
@@ -26,7 +26,7 @@
 #include <list>
 #include <vector>
 
-#include "BaseModule.h"
+#include "BasePropagation.h"
 
 #include "Coord.h"
 #include "NicEntry.h"
@@ -36,14 +36,14 @@
  * related stuff
  *
  * The central module that coordinates the connections between all
- * nodes, and handles dynamic gate creation. ChannelControl therefore
+ * nodes, and handles dynamic gate creation. InterferenceDisk therefore
  * periodically communicates with the ChannelAccess modules
  *       
  * @ingroup channelControl
  * @author Steffen Sroka, Daniel Willkomm
  * @sa ChannelAccess
  */
-class ChannelControl : public BaseModule
+class InterferenceDisk : public BasePropagation
 {
 private:
 	const Coord* playgroundSize;
@@ -62,8 +62,8 @@ protected:
     */
     NicMatrix nics;
 
-    /** @brief Does the ChannelControl use sendDirect or not?*/
-    bool sendDirect;
+    /** @brief Does the InterferenceDisk use sendDirect or not?*/
+    bool useSendDirect;
 
    
     /** @brief the biggest interference distance in the network.*/
@@ -147,20 +147,20 @@ public:
     /**
      * @brief Constructor
      **/
-    Module_Class_Members(ChannelControl, BaseModule, 0);
+    Module_Class_Members(InterferenceDisk, BasePropagation, 0);
     
     /**
      * @brief Reads init parameters and calculates a maximal interfence
      * distance
      **/
     virtual void initialize(int stage);
-	virtual ~ChannelControl();
+	virtual ~InterferenceDisk();
     
     /** @brief Returns the x and y coordinates of the given nic. */
     // const Coord* getNicPos( int );
     
-    /** @brief Registers a nic to have its connections managed by ChannelControl.*/
-    bool registerNic( BaseModule*);
+    /** @brief Registers a nic to have its connections managed by InterferenceDisk.*/
+    virtual void registerNic( BaseModule*);
     
     /** @brief Updates the position information of a registered nic.*/
     void updateNicPos(int, const Coord* oldPos, const Coord* newPos);
@@ -169,6 +169,8 @@ public:
     const NicEntry::GateList& getGateList( int, const Coord* );
 
     const cGate* getOutGateTo(int, int, const Coord*);
+	
+	virtual void sendToChannel(BaseModule *m,cMessage *msg, double delay);
 
 protected:
     /** @brief Manages the connections of a registered nic. */ 

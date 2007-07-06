@@ -80,4 +80,3 @@ void BaseAggLayer::handleUpperMsg(cMessage * msg)
 	m->setControlInfo(new NetwControlInfo(SINK_ADDRESS));
 	sendDown(m);
 }
-

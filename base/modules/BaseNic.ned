@@ -8,7 +8,6 @@ module BaseNic
         out: uppergateOut; // from upper layers
         in: upperControlIn; // control to upper
         out: upperControlOut; // control from upper
-	//in: radioIn; // radioIn gate for sendDirect
     submodules:
         mac: BaseMacLayer;
             display: "p=60,50;i=prot2";

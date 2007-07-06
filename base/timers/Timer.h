@@ -13,6 +13,7 @@ class Timer
 		cModule *owner;
 
 	public:
+	    Timer(){ct = NULL;owner=NULL;}
 		~Timer(){delete ct;}
 		virtual void init(cModule *parent);
 
@@ -45,6 +46,12 @@ class Timer
 	float remainingTimer(unsigned int index) {return ct->remainingTimer(index);}
 
 	virtual void handleTimer(unsigned int count)=0;
+
+	void setContextPointer(unsigned int index,void * data) {ct->setContextPointer(index,data);}
+	void * contextPointer(unsigned int index) {return ct->contextPointer(index);}
+
+	void allocateTimers(unsigned int count) {ct->allocateTimers(count);}
+	void deleteTimer(unsigned int index) {ct->deleteTimer(index);}
 };
 
 #endif

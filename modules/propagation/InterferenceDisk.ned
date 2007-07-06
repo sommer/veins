@@ -1,5 +1,5 @@
 //***************************************************************************
-// * file:        ChannelControl.ned
+// * file:        InterferenceDisk.ned
 // *
 // * author:      Steffen Sroka, Daniel Willkomm
 // *
@@ -22,23 +22,23 @@
 // related stuff
 //
 // The central module that coordinates the connections between all
-// nodes, and handles dynamic gate creation.  ChannelControl therefore
+// nodes, and handles dynamic gate creation.  InterferenceDisk therefore
 // periodically communicates with the mobility module and
 // ChannelAccess.
 //
 // The four parameters pMax, sat, alpha, and carrierFrequency are used
 // to calculate the interference distance between nodes. The values used
-// here in ChannelControl are used to calculate the upper bound,
+// here in InterferenceDisk are used to calculate the upper bound,
 // i.e. they can be redifined in the snrEval modules, but never such
 // that the maximal interference distance is exeeded.
 //       
 // @author Steffen Sroka, Daniel Willkomm
 // @see BasicMobility
 //
-simple ChannelControl
+simple InterferenceDisk
     parameters:
 	coreDebug		  : numeric const, // debug switch for core framework
-	sendDirect                : bool,          // define which ChannelControl module to use
+	sendDirect                : bool,          // define which InterferenceDisk module to use
 	useTorus                  : bool,          // wrap connections
 	pMax			  : numeric const, // maximum sending power used for this network (in mW)
 	sat			  : numeric const, // minimum signal attenuation threshold (in dBm)

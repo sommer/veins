@@ -49,7 +49,7 @@ class NicEntry : public cPolymorphic
     
     /** @brief Module id of the host module this nic belongs to*/
     int hostId;
-    
+
     /** @brief Geographic location of the nic*/
     Coord pos;
 

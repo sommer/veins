@@ -46,12 +46,12 @@ void FoxApplLayer::initialize(int stage)
 	if (stage == 0)
 	{
 		isSink = getNode()->par("isSink").boolValue();
-		EV << "myApplAddr = "<<myApplAddr()<<endl;
+		EV << "myApplAddr = " << myApplAddr() << endl;
 	}
 	else if (stage == 1)
 	{
 		delayTimer = new cMessage("delay-timer", SEND_DATA);
-		scheduleAt(simTime()+ 0.005, delayTimer);
+		scheduleAt(simTime() + 0.005, delayTimer);
 	}
 }
 
@@ -79,20 +79,20 @@ void FoxApplLayer::handleLowerMsg(cMessage * msg)
 			{
 				delete m->removeControlInfo();
 				m->setControlInfo(new NetwControlInfo(SINK_ADDRESS));
-				EV << "Forwarding sink packet from appl "<<m->getSrcAddr()<<endl;
+				EV << "Forwarding sink packet from appl " << m->getSrcAddr() << endl;
 				sendDown(m);
 			}
 			break;
 		case 0xDEAD:
-		{
-			FoxtrotPacket *f = check_and_cast <FoxtrotPacket*>(msg);
-			f->print("application");
-			delete f;
-			break;
-		}
+			{
+				FoxtrotPacket *f = check_and_cast < FoxtrotPacket * >(msg);
+				f->print("application");
+				delete f;
+				break;
+			}
 		default:
-			DBG("Error! got packet with unknown kind: %x\n",msg->kind());
-			if (msg->kind()==0)
+			DBG("Error! got packet with unknown kind: %x\n", msg->kind());
+			if (msg->kind() == 0)
 				error("blah");
 			delete msg;
 	}
@@ -111,7 +111,7 @@ void FoxApplLayer::handleSelfMsg(cMessage * msg)
 	switch (msg->kind())
 	{
 		case SEND_DATA:
-			EV << "Sending aggregated packet"<<endl;
+			EV << "Sending aggregated packet" << endl;
 			sendData();
 			delete msg;
 			delayTimer = NULL;
@@ -133,9 +133,9 @@ void FoxApplLayer::sendData()
 	pkt->setDestAddr(SINK_ADDRESS);
 	pkt->setLength(headerLength);
 	pkt->setDataArraySize(1);
-	pkt->setData(0,uniform(20, 21)); // FIXME: specify range in parameters
+	pkt->setData(0, uniform(20, 21));	// FIXME: specify range in parameters
 
-	EV << "Sending sink packet with data "<<pkt->getData(0)<<"\n";
+	EV << "Sending sink packet with data " << pkt->getData(0) << "\n";
 	sendDown(pkt);
 }
 

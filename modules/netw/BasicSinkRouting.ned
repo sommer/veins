@@ -1,6 +1,7 @@
 simple BasicSinkRouting
     parameters:
         debug: numeric const, // debug switch
+        stats: bool, // stats switch
         headerLength: numeric const, // length of the network packet header (in bits)
 		autoForward: bool; // automatic forwarding of packets to sink (default: on)
     gates:

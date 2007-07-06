@@ -21,7 +21,7 @@
 
 
 #include "NicEntryDebug.h"
-#include "ChannelAccess.h"
+#include "BasePhyLayer.h"
 
 #include <cassert>
 
@@ -124,13 +124,13 @@ cGate* NicEntryDebug::requestInGate(void)
     hostGate->connectTo(nicGate);
 
     // pointer to the phy module
-    ChannelAccess* phyModule;
+    BasePhyLayer* phyModule;
     // gate of the phy module
     cGate *phyGate;
 
     // if there is no snrEval module we should have a phy module (P2PPhyLayer)
-    if( (phyModule = static_cast<ChannelAccess *>(nicPtr->submodule("snrEval"))) == NULL )
-      phyModule = static_cast<ChannelAccess *>(nicPtr->submodule("phy"));
+    if( (phyModule = static_cast<BasePhyLayer *>(nicPtr->submodule("snrEval"))) == NULL )
+      phyModule = static_cast<BasePhyLayer *>(nicPtr->submodule("phy"));
     assert(phyModule != 0);
 
     // create a new gate for the phy module
@@ -179,13 +179,13 @@ cGate* NicEntryDebug::requestOutGate(void)
         nicGate->connectTo(hostGate);
         
         // pointer to the phy module
-        ChannelAccess* phyModule;
+        BasePhyLayer* phyModule;
         // gate of the phy module
         cGate *phyGate;
         
         // if there is no snrEval module we should have a phy module (P2PPhyLayer)
-        if( (phyModule = static_cast<ChannelAccess *>(nicPtr->submodule("snrEval"))) == NULL )
-            phyModule = static_cast<ChannelAccess *>(nicPtr->submodule("phy"));
+        if( (phyModule = static_cast<BasePhyLayer *>(nicPtr->submodule("snrEval"))) == NULL )
+            phyModule = static_cast<BasePhyLayer *>(nicPtr->submodule("phy"));
         assert(phyModule != 0);
         // create a new gate for the phy module
         phyGate = phyModule->addGate(gateName,'O');

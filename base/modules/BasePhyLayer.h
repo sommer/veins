@@ -21,15 +21,13 @@
 #ifndef BASE_PHY_LAYER_H
 #define BASE_PHY_LAYER_H
 
-#include <map>
-
-#include "ChannelAccess.h"
+#include "BaseLayer.h"
 #include "AirFrame_m.h"
-#include "NicControlType.h"
-#include "ActiveChannel.h"
+#include "Timer.h"
+#include "BasePropagation.h"
 
 /**
- * @brief The basic class for all snrEval modules
+ * @brief The basic class for all phy modules
  *
  * The BasePhyLayer module provides functionality like en- and
  * decapsulation of messages. If you use the standard message formats
@@ -52,108 +50,28 @@
  * @ingroup snrEval
  * @ingroup basicModules
  */
-class BasePhyLayer : public ChannelAccess
+class BasePhyLayer : public BaseLayer, public Timer
 {
 
 protected:
 
-    /** brief a parameter that has to be read in from omnetpp.ini*/
+    /** @brief a parameter that has to be read in from omnetpp.ini*/
     int headerLength;
-
-    /** 
-     * @brief power used to transmit messages 
-     *
-     * The transmission power is initially set to the maximal
-     * transmission power possible defined in the ChannelControl
-     * module.
-     *
-     * It can be changed by the user but NEVER to a bigger value than
-     * defined in ChannelControl.
-     **/
-    double transmitterPower;
-
-    /** 
-     * @brief carrier frequency used to send messages 
-     *
-     * The carrier frequency is initially set to the minimum carrier
-     * frequency defined in the ChannelControl module.
-     *
-     * It can be changed by the user but NEVER to a smaller value than
-     * defined in ChannelControl.
-     **/
-    double carrierFrequency;
-
-    /** 
-     * @brief signal attenuation threshold 
-     *
-     * The signal attenuation threshold is initially set to the
-     * minimum signal attenuation threshold possible defined in the
-     * ChannelControl module.
-     *
-     * It can be changed by the user but NEVER to a smaller value than
-     * defined in ChannelControl.
-     **/
-    double sensitivity;
-    
-    /**
-     * @brief path loss coefficient
-     *
-     * The path loss coefficient is initially set to the minimum path
-     * loss coefficient possible defined in the ChannelControl module.
-     *
-     * It can be changed by the user but NEVER to a smaller value than
-     * defined in ChannelControl.
-     **/
-    double alpha;
-
-    /** @brief Speed of light */
-    //static const double speedOfLight;
-
-    /** @brief gate id*/
-    /*@{*/
-    int uppergateOut;
-    int uppergateIn;
-    int upperControlOut;
-    int upperControlIn;
-    /*@}*/
 
     /** @brief debug this core module? */
     bool coreDebug;
 
-    /** @brief Timer to indicate the end of a transmission to a higher layer */
-    cMessage *txOverTimer;
-
-    /** @brief Currently active channel, set using radio, updated via BB */
-    ActiveChannel channel;
-    /** @brief category number given by bb for ActiveChannel */
-    int catActiveChannel;
-
-    /** @brief keep bitrate to calculate duration */
-    double bitrate;
-
-    /** @brief The kind field of messages
-     * 
-     * that are used internally by this class have one of these values
-     * 
-     */
-    enum BasicSnrMsgKinds {
-        RECEPTION_COMPLETE = 1350101811
-    };
-    
+	BasePropagation *pm;
     
 public:
-    Module_Class_Members( BasePhyLayer, ChannelAccess, 0 );
+    Module_Class_Members( BasePhyLayer, BaseLayer, 0 );
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
-    virtual void finish();
 
-    /** @brief Called every time a message arrives*/
-    void handleMessage( cMessage* );
+    void handleLowerMsg( cMessage* );
+	void handleTimer(unsigned int index);
 
-    /** @brief Called by the Blackboard whenever a change occurs we're interested in */
-    //virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
-    
 protected:
     /**
      * @name Handle Messages
@@ -171,6 +89,10 @@ protected:
      * @brief Fill the header fields, redefine for your own needs...
      */
     virtual void handleUpperMsg(cMessage*);
+    void handleLowerControl( cMessage* msg)
+	{
+		error("BasePhyLayer doesn't handle lower control messages\n");
+	}
 
     /**
      * @brief Handle self messages such as timer...
@@ -190,7 +112,7 @@ protected:
     };
 
 
-    /** @brief Calculate Snr Information before buffering
+    /** 
      *
      * This function is called right after a message is received,
      * i.e. right before it is buffered for 'transmission time'.
@@ -198,21 +120,6 @@ protected:
      * Here you should decide whether the message is "really" received
      * or whether it's receive power is so low that it is just treated
      * as noise.
-     *
-     * If the energy of the message is high enough to really receive
-     * it you should create an snr list (@ref SnrList) to be able to
-     * store sn(i)r information for that message. Every time a new
-     * message arrives you can add a new snr value together with a
-     * timestamp to that list. Make sure to store a pointer to the
-     * mesage together with the snr information to be able to retrieve
-     * it later.
-     *
-     * In this function also an initial SNR value can be calculated
-     * for this message.
-     *
-     * Please take a look at SnrEval to see a "real" example.
-     *
-     * @sa SnrList, SnrEval
      **/
     virtual void handleLowerMsgStart(cMessage*);
 
@@ -230,7 +137,7 @@ protected:
 
     /**
      * @name Convenience Functions
-     * @brief Functions for convenience - NOT to be modified
+     * @brief Functions for convenience
      *
      * These are functions taking care of message encapsulation and
      * message sending. Normally you should not need to alter these but
@@ -248,26 +155,18 @@ protected:
     cMessage* unbufferMsg(cMessage*);
 
     /** @brief Sends a message to the upper layer*/
-    void sendUp(cMessage*);
+    //void sendUp(cMessage*);
 
     /** @brief Sends a message to the channel*/
-    void sendDown(cMessage *msg);
-
-    /** @brief Sends a control message to the upper layer*/
-    void sendControlUp(cMessage *);
+    virtual void sendDown(cMessage *msg);
 
     /** @brief Encapsulates a MAC packet into an AirFrame*/
-    AirFrame* encapsMsg(cMessage *msg);
+    virtual AirFrame* encapsMsg(cMessage *msg);
 
     /** @brief Decapsulates the MAC packet from an AirFrame*/
     cMessage* decapsMsg(AirFrame* frame);
 
     /*@}*/
-
-    /** @brief Calculate duration of this message */
-    virtual double calcDuration(cMessage* m) {
-        return static_cast<double>(m->length()) / bitrate;
-    }
 };
 
 #endif

@@ -5,31 +5,68 @@
 
 class Foxtrot;
 
-class FoxtrotPacket : public FoxtrotPacket_Base
+typedef struct
+{
+	unsigned int top, left, right, bottom;
+} grid_region;
+
+typedef struct
+{
+	foxtrot_data x;
+	foxtrot_data y;
+} region_ft;
+
+class FoxtrotPacket:public FoxtrotPacket_Base
 {
   public:
-    FoxtrotPacket(const char *name=NULL, int kind=0);
-    FoxtrotPacket(const FoxtrotPacket& other) : FoxtrotPacket_Base(other.name()) {operator=(other);debug=true;}
-    FoxtrotPacket& operator=(const FoxtrotPacket& other) {FoxtrotPacket_Base::operator=(other); return *this;}
-    virtual cPolymorphic *dup() const {return new FoxtrotPacket(*this);}
-    // ADD CODE HERE to redefine and implement pure virtual functions from FoxtrotPacket_Base
-	
-    virtual void setDataArraySize(unsigned int size);
+	FoxtrotPacket(const char *name = NULL, int kind = 0);
+	 FoxtrotPacket(const FoxtrotPacket & other):FoxtrotPacket_Base(other.name())
+	{
+		operator=(other);
+		debug = true;
+	}
+	FoxtrotPacket & operator=(const FoxtrotPacket & other);
+	virtual cPolymorphic *dup() const
+	{
+		return new FoxtrotPacket(*this);
+	}
+	// ADD CODE HERE to redefine and implement pure virtual functions from FoxtrotPacket_Base
+
+	virtual void setDataArraySize(unsigned int size);
 	void setLocalPos(Foxtrot *);
-	void setAllLoc(const FoxtrotPacket *other);
-	void setAllData(const FoxtrotPacket *other);
-	void setAllData(Foxtrot *f, const foxtrot_data *other);
-	
-	bool isEqual(const FoxtrotPacket *compare);
+	void setAllLoc(const FoxtrotPacket * other);
+	void setAllData(const FoxtrotPacket * other);
+	void setAllData(Foxtrot * f, const foxtrot_data * other);
 
-	void setMinLoc(unsigned int index, foxtrot_point val) {loc_var[index].min = val;}
-	void setMaxLoc(unsigned int index, foxtrot_point val) {loc_var[index].max = val;}
+	bool isEqual(const FoxtrotPacket * compare);
 
-	void setMinData(unsigned int index, foxtrot_point val) {data_var[index].min = val;}
-	void setMaxData(unsigned int index, foxtrot_point val) {data_var[index].max = val;}
-	void print(const char* beg) const;
+	void setMinLoc(unsigned int index, foxtrot_point val)
+	{
+		loc_var[index].min = val;
+	}
+	void setMaxLoc(unsigned int index, foxtrot_point val)
+	{
+		loc_var[index].max = val;
+	}
 
-	void expandData(const FoxtrotPacket *other); // expand local data box such that it contains other's box
+	void setMinData(unsigned int index, foxtrot_point val)
+	{
+		data_var[index].min = val;
+	}
+	void setMaxData(unsigned int index, foxtrot_point val)
+	{
+		data_var[index].max = val;
+	}
+	void print(const char *beg) const;
+
+	void expandData(const FoxtrotPacket * other);	// expand local data box such that it contains other's box
+	void expandBox(const FoxtrotPacket * other);	// expand location box such that it contains other's box
+
+	region_ft *gridToReal(unsigned int x, unsigned int y);
+	grid_region *realToGrid(const region_ft *);
+	void print_grid(const char *);
+
+	NEW_GRID(grid);
 };
 
 #endif

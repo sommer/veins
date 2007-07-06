@@ -48,9 +48,10 @@ void TestLocAppl::handleSelfMsg(cMessage * msg)
 	case SEND_BROADCAST_TIMER:
 		loc->estimatePosition();
 		delete msg;
+		delayTimer = NULL;
 		break;
 	default:
-		EV << "Unkown selfmessage! -> delete, kind: " << msg->kind() << endl;
+		EV << "Unknown selfmessage! -> delete, kind: " << msg->kind() << endl;
 		delete msg;
 	}
 }
@@ -59,7 +60,7 @@ void TestLocAppl::finish()
 {
 	BaseLocAppl::finish();
 
-	if (!delayTimer->isScheduled())
-		delete delayTimer;
+	if (delayTimer)
+		cancelAndDelete(delayTimer);
 
 }

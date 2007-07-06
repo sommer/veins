@@ -107,7 +107,6 @@ NetwPkt* BaseNetwLayer::encapsMsg(cMessage *msg) {
  **/
 void BaseNetwLayer::handleLowerMsg(cMessage* msg)
 {
-
     NetwPkt *m = static_cast<NetwPkt *>(msg);
     EV << " handling packet from " << m->getSrcAddr() << endl;
     sendUp(decapsMsg(m));

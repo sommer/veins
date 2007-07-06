@@ -26,22 +26,24 @@
 import
     "Node",
     "BaseWorldUtility",
-    "ChannelControl";
+    "BasePropagation";
 
 module Sim
     parameters:
         // parameters for the framework
         playgroundSizeX : numeric const,
 		playgroundSizeY : numeric const,
+		playgroundSizeZ : numeric const,
         numHosts : numeric const;
 
     submodules:
-        channelcontrol: ChannelControl;
+        prop: BasePropagation;
             display: "p=50,25;i=eye14";
 		world: BaseWorldUtility;
             parameters:
                 playgroundSizeX = playgroundSizeX,
-				playgroundSizeY = playgroundSizeY;
+				playgroundSizeY = playgroundSizeY,
+				playgroundSizeZ = playgroundSizeZ;
         node: Node[numHosts];
             display: "p=50,50;i=node";
 

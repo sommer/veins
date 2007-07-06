@@ -55,7 +55,7 @@ void TestLocalization::handleSelfMsg(cMessage * msg)
 		delete msg;
 		break;
 	default:
-		EV << "Unkown selfmessage! -> delete, kind: " << msg->kind() << endl;
+		EV << "Unknown selfmessage! -> delete, kind: " << msg->kind() << endl;
 		delete msg;
 	}
 }

@@ -5,6 +5,12 @@
 
 Define_Module_Like(TimerCore,Trivial);
 
+void TimerCore::checkExists(unsigned int index)
+{
+	if (timers->find(index)==timers->end())
+		error(" timer index %u doesn't exist", index);
+}
+
 void TimerCore::handleMessage(cMessage* msg)
 {
 	assert(msg->isSelfMessage());
@@ -50,16 +56,14 @@ void TimerCore::setTimer(unsigned int index, double when)
 void TimerCore::cancelTimer(unsigned int index)
 {
 	Enter_Method_Silent();
-	if (timers->find(index)==timers->end())
-		error("cancelTimer: timer index %u doesn't exist", index);
+	checkExists(index);
 	if ((*timers)[index]->isScheduled())
 		cancelEvent((*timers)[index]);
 }
 
 float TimerCore::remainingTimer(unsigned int index)
 {
-	if (timers->find(index)==timers->end())
-		error("remainingTimer: timer index %u doesn't exist", index);
+	checkExists(index);
 	if ((*timers)[index]->isScheduled())
 		return (*timers)[index]->arrivalTime()-simTime();
 	else
@@ -74,5 +78,58 @@ TimerCore::~TimerCore()
 		delete p->second;
 	}
 	delete timers;	
+}
+
+/** Set a "context pointer" refering to some piece of opaque useful data
+ * @param index Timer number
+ * @param data Opaque pointer. Never free'd or dereferenced
+ */
+void TimerCore::setContextPointer(unsigned int index,void * data)
+{
+	checkExists(index);
+	(*timers)[index]->setContextPointer(data);
+}
+
+/** Retreive a "context pointer" refering to some piece of opaque useful data
+ * @param index Timer number
+ * @return Opaque pointer from @setContextPointer
+ */
+void * TimerCore::contextPointer(unsigned int index)
+{
+	checkExists(index);
+	return (*timers)[index]->contextPointer();
+}
+
+/* Mark the first @count pointer ids (from 0 to @count-1) as allocated, so they don't get
+ * auto-allocated by setTimer
+ * @param count Number of timers to allocate
+ */
+void TimerCore::allocateTimers(unsigned int count)
+{
+	Enter_Method_Silent();
+	for (unsigned int i=0;i<count;i++)
+	{
+		cMessage *timer;
+		if (timers->find(i)==timers->end())
+		{
+			timer = new cMessage("timer");
+			timer->setKind(i);
+			(*timers)[i] = timer;
+		}
+	}
+}
+
+/* Delete a timer. Useful for auto-allocated timers that you don't need any more to 
+ * reduce memory usage. Does nothing if the timer doesn't exist
+ * @param index Timer to wipe
+ */
+void TimerCore::deleteTimer(unsigned int index)
+{
+	if (timers->find(index)!=timers->end())
+	{
+		cancelTimer(index);
+		delete timers->find(index)->second;
+		timers->erase(timers->find(index));
+	}
 }
 

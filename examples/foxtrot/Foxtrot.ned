@@ -1,7 +1,7 @@
 import
     "Node",
     "BaseWorldUtility",
-    "ChannelControl";
+    "BasePropagation";
 
 module Network
     parameters:
@@ -11,7 +11,7 @@ module Network
         numNodes: numeric const; // total number of hosts in the network
 
     submodules:
-        propagationmodel: ChannelControl;
+        propagationmodel: BasePropagation;
 		world: BaseWorldUtility;
             parameters:
                 playgroundSizeX = playgroundSizeX,

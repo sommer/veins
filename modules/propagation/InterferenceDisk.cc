@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        ChannelControl.cc
+ * file:        InterferenceDisk.cc
  *
  * author:      Steffen Sroka, Daniel Willkomm
  *
@@ -20,9 +20,10 @@
  **************************************************************************/
 
 
-#include "ChannelControl.h"
-#include "ChannelAccess.h"
+#include "InterferenceDisk.h"
+#include "BaseUtility.h"
 #include "FWMath.h"
+#include "FindModule.h"
 #include <cassert>
 #include <set>
 
@@ -32,10 +33,10 @@
 #include "BaseWorldUtility.h"
 
 #ifndef ccEV
-#define ccEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << "ChannelControl: "
+#define ccEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << "InterferenceDisk: "
 #endif
 
-Define_Module( ChannelControl );
+Define_Module( InterferenceDisk );
 
 /**
  * Sets up the playgroundSize and calculates the
@@ -43,9 +44,9 @@ Define_Module( ChannelControl );
  *
  * @ref calcInterfDist
  **/
-void ChannelControl::initialize(int stage)
+void InterferenceDisk::initialize(int stage)
 {
-    BaseModule::initialize(stage);
+    BasePropagation::initialize(stage);
 	if (stage == 1)
 	{
 		unsigned numX, numY;
@@ -60,12 +61,12 @@ void ChannelControl::initialize(int stage)
 		RowVector row;
 		row.push_back(entries);
 		
-	  ccEV <<"initializing ChannelControl\n";
+	  ccEV <<"initializing InterferenceDisk\n";
 	  //todo
 	  if(hasPar("sendDirect"))
-		sendDirect = par("sendDirect").boolValue();
+		useSendDirect = par("sendDirect").boolValue();
 	  else
-		sendDirect = false;
+		useSendDirect = false;
 
 	  if(hasPar("useTorus")) {
 		  useTorus = par("useTorus").boolValue();
@@ -120,7 +121,7 @@ void ChannelControl::initialize(int stage)
  * You may want to overwrite this function in order to do your own
  * interference calculation
  **/
-double ChannelControl::calcInterfDist()
+double InterferenceDisk::calcInterfDist()
 {
   double interfDistance;
 
@@ -156,9 +157,9 @@ double ChannelControl::calcInterfDist()
  * @param ptr the module pointer of the registered nic 
  * @param pos Position of the nic
  *
- * @return Returns whether ChannelControl uses sendDirect or not
+ * @return Returns whether InterferenceDisk uses sendDirect or not
  **/
-bool ChannelControl::registerNic( BaseModule* ptr)
+void InterferenceDisk::registerNic( BaseModule* ptr)
 {
   // register the nic
   assert(ptr != 0);
@@ -167,7 +168,7 @@ bool ChannelControl::registerNic( BaseModule* ptr)
   int id = ptr->id();
   ccEV <<" registering nic #"<<id<<endl;
 
-  if(sendDirect)
+  if(useSendDirect)
       nic = new NicEntryDirect(coreDebug);
   else
       nic = new NicEntryDebug(coreDebug);
@@ -192,8 +193,6 @@ bool ChannelControl::registerNic( BaseModule* ptr)
   
   // update all connections for this nic
   checkGrid(x,y,x,y,id);
-
-  return sendDirect;
 }
 
 
@@ -206,7 +205,7 @@ bool ChannelControl::registerNic( BaseModule* ptr)
  * @param id the module id of the registered nic
  * @param pos the coordinates of the registered nic
  **/
-void ChannelControl::updateNicPos(int id, const Coord* oldPos, const Coord* newPos)
+void InterferenceDisk::updateNicPos(int id, const Coord* oldPos, const Coord* newPos)
 {
     unsigned oldX,oldY,newX,newY;
     ccEV <<"nic #"<<id<<" moved from " << oldPos->info() << " to " << newPos->info() << " pgs: " << playgroundSize->info() << "\n";
@@ -222,10 +221,10 @@ void ChannelControl::updateNicPos(int id, const Coord* oldPos, const Coord* newP
 }
 
 /**
- * Called by ChannelControl::updateNodePosition(...) when a nic has
+ * Called by InterferenceDisk::updateNodePosition(...) when a nic has
  * moved. 
  **/
-void ChannelControl::checkGrid(unsigned oldX, unsigned oldY,
+void InterferenceDisk::checkGrid(unsigned oldX, unsigned oldY,
                                unsigned newX, unsigned newY,
                                int id)
     
@@ -315,7 +314,7 @@ void ChannelControl::checkGrid(unsigned oldX, unsigned oldY,
 }
 
 /**
- * Called by ChannelControl::updateNodePosition(...) when a nic has
+ * Called by InterferenceDisk::updateNodePosition(...) when a nic has
  * moved. Sets up a new connection between two nics, if they are
  * within interference range. Accordingly tears down a connection,
  * if the nics move out of range.
@@ -323,7 +322,7 @@ void ChannelControl::checkGrid(unsigned oldX, unsigned oldY,
  * @param id Id of the nic that will have its' connections
  * updated
  **/
-void ChannelControl::updateConnections(NicEntries& nmap, NicEntry* nic)
+void InterferenceDisk::updateConnections(NicEntries& nmap, NicEntry* nic)
 {
     int id = nic->nicId;
     bool inRange;
@@ -354,7 +353,7 @@ void ChannelControl::updateConnections(NicEntries& nmap, NicEntry* nic)
     }
 }
 
-bool ChannelControl::inRangeTorus(const Coord& a, const Coord& b) 
+bool InterferenceDisk::inRangeTorus(const Coord& a, const Coord& b) 
 {
     if(FWMath::torDist(a.x,                  b.x, a.y,                  b.y) < maxDistSquared) return true;
     if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y,                  b.y) < maxDistSquared) return true;
@@ -369,7 +368,7 @@ bool ChannelControl::inRangeTorus(const Coord& a, const Coord& b)
 }
 
 
-const NicEntry::GateList& ChannelControl::getGateList( int id, const Coord* pos )
+const NicEntry::GateList& InterferenceDisk::getGateList( int id, const Coord* pos )
 {
     unsigned x,y;
 
@@ -378,6 +377,7 @@ const NicEntry::GateList& ChannelControl::getGateList( int id, const Coord* pos 
 	
 	if (nics[x][y].find(id)==nics[x][y].end())
 	{
+		
 		opp_error("id not found in nics (id=%d)\n",id);
 	}
 	return nics[x][y][id]->getGateList();
@@ -392,7 +392,7 @@ const NicEntry::GateList& ChannelControl::getGateList( int id, const Coord* pos 
  * @param from id of the nic from which the a packet is about to be sent
  * @param to id of the nic to which the packet is about to be sent
  */
-const cGate* ChannelControl::getOutGateTo(int from, int to, const Coord* pos)
+const cGate* InterferenceDisk::getOutGateTo(int from, int to, const Coord* pos)
 {
     unsigned x,y;
 
@@ -402,7 +402,7 @@ const cGate* ChannelControl::getOutGateTo(int from, int to, const Coord* pos)
     return nics[x][y][from]->getOutGateTo(to);
 }
 
-ChannelControl::~ChannelControl()
+InterferenceDisk::~InterferenceDisk()
 {
 	for (unsigned int i=0;i<nics.size();i++)
 	{
@@ -415,3 +415,56 @@ ChannelControl::~ChannelControl()
 		}
 	}
 }
+
+
+void InterferenceDisk::sendToChannel(BaseModule *m,cMessage *msg, double delay)
+{
+	Enter_Method_Silent();
+    BaseUtility *bu = FindModule<BaseUtility*>::findSubModule(m->parentModule());
+	assert(bu!=NULL);
+	const NicEntry::GateList& gateList = getGateList(m->id(), bu->getPos());
+    NicEntry::GateList::const_iterator i = gateList.begin();
+        
+    if(useSendDirect){
+        // use Andras stuff
+        if( i != gateList.end() ){
+            for(; i != --gateList.end(); ++i){
+
+                int radioStart = i->second->id();
+                int radioEnd = radioStart + i->second->size();
+                for (int g = radioStart; g != radioEnd; ++g)
+                    sendDirect(static_cast<cMessage*>(msg->dup()),
+                               delay, i->second->ownerModule(), g);
+            }
+            int radioStart = i->second->id();
+            int radioEnd = radioStart + i->second->size();
+            for (int g = radioStart; g != radioEnd; ++g)
+                sendDirect(static_cast<cMessage*>(msg->dup()),
+                           delay, i->second->ownerModule(), g);
+            
+        	delete msg;
+		}
+        else{
+            coreEV << "Nic is not connected to any gates!" << endl;
+            delete msg;
+        }
+    }
+    else{
+        // use our stuff
+        coreEV <<"sendToChannel: sending to gates - ";
+        if( i != gateList.end() ){
+            for(; i != gateList.end(); ++i){
+				coreEV_clear << i->second->name()<<" ";
+                sendDelayed( static_cast<cMessage*>(msg->dup()),
+                             delay, i->second );
+            }
+			coreEV_clear << endl;
+			delete msg;
+        }
+        else{
+            coreEV << "Nic is not connected to any gates!" << endl;
+            delete msg;
+        }
+    }
+}
+

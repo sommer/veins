@@ -8,6 +8,8 @@ import
     "BaseUtility";
 
 module BaseNode
+    parameters:
+        applType: string; //type of the application layer
     submodules:
         utility: BaseUtility;
             display: "p=130,38,rect;b=24,24;o=black";
@@ -17,7 +19,7 @@ module BaseNode
             display: "p=130,128,rect;b=24,24;o=red";
         mobility: BaseMobility;
             display: "p=130,172;i=cogwheel2";
-        appl: BaseApplLayer;
+        appl: applType like BaseApplLayer;
             display: "p=60,50;i=app";
         net: BaseNetwLayer;
             display: "p=60,108;i=prot1";

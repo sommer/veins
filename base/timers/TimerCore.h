@@ -9,6 +9,7 @@ class Timer;
 class TimerCore: public BaseModule
 {
 	protected:
+		void checkExists(unsigned int index);
 		Timer *timer;
 
 		std::map <unsigned int, cMessage *> *timers;
@@ -50,6 +51,30 @@ class TimerCore: public BaseModule
 		*/	
 
 		float remainingTimer(unsigned int index);
+
+		/** Set a "context pointer" refering to some piece of opaque useful data
+		 * @param index Timer number
+		 * @param data Opaque pointer. Never free'd or dereferenced
+		 */
+		void setContextPointer(unsigned int index,void * data);
+
+		/** Retreive a "context pointer" refering to some piece of opaque useful data
+		 * @param index Timer number
+		 * @return Opaque pointer from @setContextPointer
+		 */
+		void * contextPointer(unsigned int index);
+
+		/* Mark the first @count pointer ids (from 0 to @count-1) as allocated, so they don't get
+		 * auto-allocated by setTimer
+		 * @param count Number of timers to allocate
+		 */
+		void allocateTimers(unsigned int count);
+
+		/* Delete a timer. Useful for auto-allocated timers that you don't need any more to 
+		 * reduce memory usage. Does nothing if the timer doesn't exist
+		 * @param index Timer to wipe
+		 */
+		void deleteTimer(unsigned int index);
 };
 
 #endif

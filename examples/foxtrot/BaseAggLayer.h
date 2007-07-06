@@ -92,7 +92,10 @@ class BaseAggLayer:public BaseLayer
 		error("BaseAggLayer does not handle control messages");
 	};
 
-    virtual void handleSelfMsg(cMessage* msg) {error("BaseAggLayer doesn't have it's own self messages");}
+	virtual void handleSelfMsg(cMessage * msg)
+	{
+		error("BaseAggLayer doesn't have it's own self messages");
+	}
 	/*@} */
 
 	/** @brief decapsulate higher layer message from AggPkt */
@@ -100,9 +103,9 @@ class BaseAggLayer:public BaseLayer
 
 	/** @brief Encapsulate higher layer packet into an AggPkt*/
 	//virtual AggPkt *encapsMsg(cMessage *);
-	
 
-	
+
+
 };
 
 #endif

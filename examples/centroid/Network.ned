@@ -27,7 +27,7 @@ import
     "Node",
     "BaseObject",
     "BaseWorldUtility",
-    "ChannelControl";
+    "BasePropagation";
 
 module Sim
     parameters:
@@ -39,7 +39,7 @@ module Sim
         numObjects: numeric const; // total number of objects in the network
 
     submodules:
-        propagationmodel: ChannelControl;
+        propagationmodel: BasePropagation;
 	world: BaseWorldUtility;
             parameters:
                 playgroundSizeX = playgroundSizeX,

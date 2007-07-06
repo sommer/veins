@@ -78,6 +78,8 @@ std::string BaseModule::getLogName(int id)
 
 static cModule* getModule(const char* modname, cModule *top)
 {
+	if (top->submodule(modname)!=NULL)
+		return top->submodule(modname);
     cModuleType *modtype = findModuleType(modname);
 	for (cSubModIterator i(*top); !i.end(); i++)
 	{
@@ -114,3 +116,21 @@ cModule * BaseModule::getNodeModule(const char* modname)
 {
 	return getModule(modname,getNode());
 }
+
+std::string BaseModule::logName(void)
+{
+	std::ostringstream ost;
+	if (hasPar("logName")) // let modules override
+	{
+		ost << par("logName").stringValue() << "[" << index() << "]";
+	}
+	else
+	{
+		cModule *parent = findHost();
+		parent->hasPar("logName") ?
+			ost << parent->par("logName").stringValue() : ost << parent->name();
+		ost << "[" << parent->index() << "]";
+	}
+	return ost.str();
+}
+

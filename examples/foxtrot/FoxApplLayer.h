@@ -52,8 +52,8 @@ class FoxApplLayer:public BaseApplLayer
 
 
   protected:
-	 cMessage * delayTimer;
-	 bool isSink;
+	cMessage * delayTimer;
+	bool isSink;
 
   protected:
 	/** @brief Handle self messages such as timer... */

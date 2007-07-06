@@ -21,7 +21,7 @@
 
 
 #include "NicEntryDirect.h"
-#include "ChannelAccess.h"
+//#include "BasePhyLayer.h"
 
 #ifndef nicEV
 #define nicEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << "NicEntry: "

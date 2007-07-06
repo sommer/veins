@@ -57,9 +57,9 @@ public:
 	Module_Class_Members(BaseLocalization, BaseModule, 0);
 	void handleMessage(cMessage *);
 	virtual void initialize(int);
-	virtual void estimatePosition() {}
-	virtual Coord * getPositionEstimation() {}
-	virtual simtime_t getTimestamp() {}
+	virtual void estimatePosition() {} 
+	virtual Coord * getPositionEstimation(){return positionEstimation;}
+	virtual simtime_t getTimestamp() {return simTime();}
 protected:
 	virtual void handleSelfMsg(cMessage * msg) {
 		EV << "BaseLocalization: handleSelfMsg not redefined; delete msg" << endl;

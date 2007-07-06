@@ -68,14 +68,14 @@ NetwPkt *BasicSinkRouting::buildSink(SinkInfo * sink, int from)
 
 void BasicSinkRouting::initialize(int stage)
 {
-	BaseLayer::initialize(stage);
+	BaseNetwLayer::initialize(stage);
 	Timer::init(this);
 
-	if (stage == 0)
+	/*if (stage == 0)
 	{
 		hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
 	}
-	else if (stage == 1)
+	else */if (stage == 1)
 	{
 		headerLength = par("headerLength");
 		arp = BaseArpAccess().get();
@@ -114,6 +114,7 @@ BasicSinkRouting::~BasicSinkRouting()
 
 void BasicSinkRouting::finish()
 {
+	BaseNetwLayer::finish();
 	printSinks();
 }
 

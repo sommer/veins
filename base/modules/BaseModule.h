@@ -24,15 +24,16 @@
 
 #include <sstream>
 #include <omnetpp.h>
-//#include "BaseUtility.h"
 
 #ifndef EV
-//#define EV (ev.disabled()||!debug) ? (std::ostream&)ev : ev << simtimeToStr(simTime()) << ": "<< logName() << "::" << className()  << ": "
-#define EV (ev.disabled()||!debug) ? (std::ostream&)ev : ev << logName() << "::" << className() << ": "
+#define EV (ev.disabled()||!debug) ? ev : ev << simtimeToStr(simTime()) << ": "<< logName() << "::" << className()  << ": "
+#define EV_clear (ev.disabled()||!debug) ? ev : ev 
+//#define EV (ev.disabled()||!debug) ? (std::ostream&)ev : ev << logName() << "::" << className() << ": "
 #endif
 #ifndef coreEV
-//#define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << simtimeToStr(simTime()) << ": "<< logName() << "::" << className() <<": "
-#define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << logName() << "::" << className() <<": "
+#define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << simtimeToStr(simTime()) << ": "<< logName() << "::" << className() <<": "
+#define coreEV_clear (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev
+//#define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << logName() << "::" << className() <<": "
 #endif
 
 
@@ -101,14 +102,7 @@ class BaseModule: public cSimpleModule {
      * host ned variable loggingName is specified). It can be used for
      * logging messages to simplify debugging in TKEnv.
      */
-    std::string logName(void) const {
-        std::ostringstream ost;
-        cModule *parent = findHost();
-        parent->hasPar("logName") ?
-            ost << parent->par("logName").stringValue() : ost << parent->name();
-        ost << "[" << parent->index() << "]";
-        return ost.str();
-    };
+    std::string logName(void);
 
 	/** 
 	 * @brief Get a reference to a global singleton module
