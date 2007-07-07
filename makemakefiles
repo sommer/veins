@@ -18,7 +18,7 @@
 #--------------------------------------
 IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/propagationModels -I$(ROOT)/base/modules -I$(ROOT)/base/timers
 
-IMODULES=-I$(ROOT)/modules/nic -I$(ROOT)/modules/mobility -I$(ROOT)/modules/utility -I$(ROOT)/modules/localization -I$(ROOT)/modules/node -I$(ROOT)/modules/netw 
+IMODULES=-I$(ROOT)/modules/nic -I$(ROOT)/modules/mobility -I$(ROOT)/modules/utility -I$(ROOT)/modules/localization -I$(ROOT)/modules/node -I$(ROOT)/modules/netw -I$(ROOT)/modules/propagation -I$(ROOT)/modules/phy
 
 I_ALL = $(IBASE) $(IMODULES)
 #--------------------------------------
@@ -34,8 +34,6 @@ all:
 	@cd $(ROOT)/base/utils && $(MAKEMAKE) $(OPTS) -n
 	@echo $(ROOT)/base/messages
 	@cd $(ROOT)/base/messages && $(MAKEMAKE) $(OPTS) -n $(IBASE)
-	@echo $(ROOT)/base/propagationModels
-	@cd $(ROOT)/base/propagationModels && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 	@echo $(ROOT)/base/modules
 	@cd $(ROOT)/base/modules && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 	@echo $(ROOT)/base/timers
@@ -67,6 +65,8 @@ all:
 	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 	@echo $(ROOT)/modules/localization
 	@cd $(ROOT)/modules/localization && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@echo $(ROOT)/modules/propagation
+	@cd $(ROOT)/modules/propagation && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 
 	@echo $(ROOT)/examples
 	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n #-Xfoxtrot
