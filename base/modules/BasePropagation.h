@@ -22,10 +22,17 @@
 #define BASE_PROPAGATION 1
 
 #include "BaseModule.h"
+#include "AirFrame_m.h"
+
+#define INGATE "lowergateIn"
+class BasePhyLayer;
+
+typedef std::list<BaseModule*> NodeList;
+
 class BasePropagation : public BaseModule
 {
-private:
-    typedef std::list<BaseModule*> NodeList;
+public:
+protected:
 	NodeList *nodes;
 	bool coreDebug;
 
@@ -38,10 +45,10 @@ public:
 	virtual void initialize(int stage);
 	~BasePropagation();
 
-	virtual void sendToChannel(BaseModule *m,cMessage *msg, double delay);
+	virtual void sendToChannel(BasePhyLayer *,AirFrame *msg);
 
     /** @brief Registers a nic to have its connections managed by this module.*/
-    virtual void registerNic( BaseModule*);
+    virtual void registerNic( BasePhyLayer*);
 
 };
 #endif

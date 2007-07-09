@@ -37,50 +37,20 @@ void BasePhyLayer::initialize(int stage)
 
         headerLength = par("headerLength");
         
-		pm->registerNic((BaseModule*)parentModule());
+		pm->registerNic(this);
 		allocateTimers(1);
     }
 }
 
 void BasePhyLayer::handleLowerMsg(cMessage *msg)
 {
-	// msg must come from channel
-	handleLowerMsgStart(msg);
-	bufferMsg(msg);
+    sendUp( decapsMsg(dynamic_cast<AirFrame *>(msg)) );
 }
 
 void BasePhyLayer::handleTimer(unsigned int index)
 {
-	if (index == 0)
-	{
-		coreEV << "transmission over" << endl;
-        sendControlUp(new cMessage("TRANSMISSION_OVER", NicControlType::TRANSMISSION_OVER));
-	}
-	else
-	{
-		coreEV << "frame is completely received now\n";
-		// unbuffer the message
-	    cMessage *frame = static_cast<cMessage *>(contextPointer(index));
-		handleLowerMsgEnd(frame);
-		deleteTimer(index);
-	}
-}
-
-
-/**
- * The packet is put in a buffer for the time the transmission would
- * last in reality. A timer indicates when the transmission is
- * complete. So, look at unbufferMsg to see what happens when the
- * transmission is complete..
- */
-void BasePhyLayer::bufferMsg(cMessage *msg)
-{
-	AirFrame *frame = static_cast<AirFrame *>(msg);
-
-	// set timer to indicate transmission is complete
-	unsigned int timer = setTimer(frame->getDuration());
-	assert(msg->encapsulatedMsg()!=NULL);
-	setContextPointer(timer,msg);
+	coreEV << "transmission over" << endl;
+    sendControlUp(new cMessage("TRANSMISSION_OVER", NicControlType::TRANSMISSION_OVER));
 }
 
 /**
@@ -120,11 +90,11 @@ cMessage* BasePhyLayer::decapsMsg(AirFrame* frame)
  *
  * @sa sendToChannel
  */
-void BasePhyLayer::sendDown(cMessage *msg)
+void BasePhyLayer::sendDown(AirFrame *msg)
 {
     coreEV << "sending msg to channel with encapsulated "<<msg->encapsulatedMsg()<<endl;
 	assert(msg->encapsulatedMsg()!=NULL);
-	pm->sendToChannel((BaseModule*)parentModule(),msg, 0.0);
+	pm->sendToChannel(this,msg);
 }
 
 /**
@@ -139,34 +109,5 @@ void BasePhyLayer::handleUpperMsg(cMessage *msg)
     AirFrame *frame = encapsMsg(msg);
 
     setTimer(0,frame->getDuration());
-    sendDown(static_cast<cMessage *>(frame));
-}
-
-/**
- * Redefine this function if you want to process messages from the
- * channel before they are forwarded to upper layers
- *
- * This function is called right after a message is received,
- * i.e. right before it is buffered for 'transmission time'.
- *
- * Here you should decide whether the message is "really" received or
- * whether it's receive power is so low that it is just treated as
- * noise.
- *
- **/
-void BasePhyLayer::handleLowerMsgStart(cMessage *msg)
-{
-    coreEV <<"in handleLowerMsgStart"<<endl;
-}
-
-/**
- * Redefine this function if you want to process messages from the
- * channel before they are forwarded to upper layers
- *
- * Do not forget to send the message to the upper layer with sendUp()
- */
-void BasePhyLayer::handleLowerMsgEnd(cMessage *msg)
-{
-    coreEV << "in handleLowerMsgEnd\n";
-    sendUp( decapsMsg(static_cast<AirFrame *>(msg)) );
+    sendDown(frame);
 }

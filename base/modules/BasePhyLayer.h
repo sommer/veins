@@ -112,29 +112,6 @@ protected:
     };
 
 
-    /** 
-     *
-     * This function is called right after a message is received,
-     * i.e. right before it is buffered for 'transmission time'.
-     *
-     * Here you should decide whether the message is "really" received
-     * or whether it's receive power is so low that it is just treated
-     * as noise.
-     **/
-    virtual void handleLowerMsgStart(cMessage*);
-
-    /**
-     * @brief Calculate SnrInfo after buffering and add the PhySnrList
-     * to the message
-     *
-     * Redefine this function if you want to process messages from the
-     * channel before they are forwarded to upper layers
-     */
-    virtual void handleLowerMsgEnd(cMessage*);
-
-    /*@}*/
-
-
     /**
      * @name Convenience Functions
      * @brief Functions for convenience
@@ -148,17 +125,8 @@ protected:
      */
     /*@{*/
 
-    /** @brief Buffers message for 'transmission time'*/
-    void bufferMsg(cMessage*);
-
-    /** @brief Unbuffers a message after 'transmission time'*/
-    cMessage* unbufferMsg(cMessage*);
-
-    /** @brief Sends a message to the upper layer*/
-    //void sendUp(cMessage*);
-
     /** @brief Sends a message to the channel*/
-    virtual void sendDown(cMessage *msg);
+    virtual void sendDown(AirFrame *msg);
 
     /** @brief Encapsulates a MAC packet into an AirFrame*/
     virtual AirFrame* encapsMsg(cMessage *msg);

@@ -42,13 +42,10 @@ BasePropagation::~BasePropagation()
 	delete nodes;
 }
 
-#define INGATE "lowergateIn"
 
-void BasePropagation::sendToChannel(BaseModule *m,cMessage *msg, double delay)
+void BasePropagation::sendToChannel(BasePhyLayer *phy,AirFrame *msg)
 {
 	Enter_Method_Silent();
-	BasePhyLayer *phy = FindModule<BasePhyLayer*>::findSubModule(m);
-    assert(phy);
 	//coreEV << "node number "<<phy->getNode()->index()<<" sending a message"<<endl;
 	if (nodes->begin() == nodes->end())
 		error("No nodes to talk to!");
@@ -58,20 +55,18 @@ void BasePropagation::sendToChannel(BaseModule *m,cMessage *msg, double delay)
 			continue;
 		cMessage *n = static_cast<cMessage*>(msg->dup());
 		//coreEV << "sending message to "<<(*i)->getNode()->index()<<endl;
-		sendDirect(n,delay,*i,INGATE);
+		sendDirect(n,0.0,*i,INGATE);
 		//assert(0);
 	}
 	delete msg;
 }
 
-void BasePropagation::registerNic( BaseModule * m)
+void BasePropagation::registerNic( BasePhyLayer * phy)
 {
-    BasePhyLayer *phyModule = FindModule<BasePhyLayer*>::findSubModule(m->getNode());
-    assert(phyModule);
-	coreEV << "Registered nic for node "<<m->getNode()->index()<<endl;
+	coreEV << "Registered nic for node "<<phy->getNode()->index()<<endl;
 
     // create a new gate for the phy module
-    phyModule->addGate(INGATE,'I');
-	nodes->push_back(phyModule);
+    phy->addGate(INGATE,'I');
+	nodes->push_back(phy);
 }
 
