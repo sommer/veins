@@ -22,6 +22,7 @@ void TimerCore::init(Timer *owner)
 {
 	timer = owner;
 	timers = new std::map<unsigned int,cMessage *>();
+	destructors = new std::map<unsigned int,cleanup *>();
 }
 
 unsigned int TimerCore::setTimer(double when)
@@ -42,6 +43,7 @@ void TimerCore::setTimer(unsigned int index, double when)
 		timer = new cMessage("timer");
 		timer->setKind(index);
 		(*timers)[index] = timer;
+		(*destructors)[index] = NULL;
 	}
 	else
 	{
@@ -70,14 +72,28 @@ float TimerCore::remainingTimer(unsigned int index)
 		return -1;
 }
 
+void TimerCore::setContextDestructor(unsigned int index, cleanup *c)
+{
+	checkExists(index);
+	(*destructors)[index] = c;
+}
+
 TimerCore::~TimerCore()
 {
 	for (std::map<unsigned int,cMessage*>::const_iterator p=timers->begin();p!=timers->end();p++)
 	{
-		cancelTimer(p->second->kind());
+		unsigned int index = p->second->kind();
+		checkExists(index);
+		if ((*timers)[index]->isScheduled())
+		{
+			if ((*destructors)[index]!=NULL)
+				(*destructors)[index](contextPointer(index));
+			cancelEvent((*timers)[index]);
+		}
 		delete p->second;
 	}
-	delete timers;	
+	delete timers;
+	delete destructors;
 }
 
 /** Set a "context pointer" refering to some piece of opaque useful data

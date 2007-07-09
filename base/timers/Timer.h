@@ -47,11 +47,37 @@ class Timer
 
 	virtual void handleTimer(unsigned int count)=0;
 
+	/** Set a "context pointer" refering to some piece of opaque useful data
+	 * @param index Timer number
+	 * @param data Opaque pointer. Never free'd or dereferenced
+	 */
 	void setContextPointer(unsigned int index,void * data) {ct->setContextPointer(index,data);}
+
+	/** Retreive a "context pointer" refering to some piece of opaque useful data
+	 * @param index Timer number
+	 * @return Opaque pointer from @setContextPointer
+	 */
 	void * contextPointer(unsigned int index) {return ct->contextPointer(index);}
 
+	/** Provide a destructor function for a "context pointer" such that we can
+	 *  do complete cleanup even if there are still timers remaining at the end of a
+	 *  simulation. Called on end of sim for still scheduled timers.
+	 *  @param index Timer number
+	 */
+	void setContextDestructor(unsigned int index, void (*func)(void * data)){ct->setContextDestructor(index,func);}
+
+	/* Mark the first @count pointer ids (from 0 to @count-1) as allocated, so they don't get
+	 * auto-allocated by setTimer
+	 * @param count Number of timers to allocate
+	 */
 	void allocateTimers(unsigned int count) {ct->allocateTimers(count);}
+
+	/* Delete a timer. Useful for auto-allocated timers that you don't need any more to 
+	 * reduce memory usage. Does nothing if the timer doesn't exist
+	 * @param index Timer to wipe
+	 */
 	void deleteTimer(unsigned int index) {ct->deleteTimer(index);}
+
 };
 
 #endif

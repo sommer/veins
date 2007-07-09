@@ -8,17 +8,20 @@ class Timer;
 
 class TimerCore: public BaseModule
 {
+	public:
+		typedef void (cleanup)(void * data);
 	protected:
 		void checkExists(unsigned int index);
 		Timer *timer;
 
 		std::map <unsigned int, cMessage *> *timers;
+		std::map <unsigned int, cleanup*> *destructors;
 
 		/** @brief Handle self messages */
 		virtual void handleMessage(cMessage* msg);
 
 	public:
-	    Module_Class_Members(TimerCore, BaseModule, 0);
+		Module_Class_Members(TimerCore, BaseModule, 0);
 		~TimerCore();
 
 		void init (Timer* t);
@@ -63,6 +66,13 @@ class TimerCore: public BaseModule
 		 * @return Opaque pointer from @setContextPointer
 		 */
 		void * contextPointer(unsigned int index);
+
+		/** Provide a destructor function for a "context pointer" such that we can
+		 *  do complete cleanup even if there are still timers remaining at the end of a
+		 *  simulation. Called on end of sim for still scheduled timers.
+		 *  @param index Timer number
+		 */
+		void setContextDestructor(unsigned int index, cleanup *);
 
 		/* Mark the first @count pointer ids (from 0 to @count-1) as allocated, so they don't get
 		 * auto-allocated by setTimer
