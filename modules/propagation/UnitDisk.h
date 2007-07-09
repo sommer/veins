@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        CollisionsModel.h
+ * file:        UnitDisk.h
  *
  * author:      Tom Parker
  *
@@ -14,28 +14,22 @@
  *              For further information see file COPYING 
  *              in the top level directory
  ***************************************************************************
- * description: propagation layer: single cell with message-length delays and collisions
- *              Assumes propagation delay is *ZERO*
+ * description: propagation layer: unit disk model
  ***************************************************************************/
-#ifndef COLLISIONS_MODEL_H
-#define COLLISIONS_MODEL_H 1
+#ifndef UNIT_DISK_H
+#define UNIT_DISK_H 1
 
-#include "BasePropagation.h"
-#include "Timer.h"
-#include "BasePhyLayer.h"
+#include "CollisionsModel.h"
 
-class CollisionsModel: public BasePropagation, public Timer
+class UnitDisk: public CollisionsModel
 {
 	protected:
-		std::map<unsigned int,std::pair<int,AirFrame *>* > *active;
+		double radioRange;
 	public:
-	    Module_Class_Members(CollisionsModel, BasePropagation, 0);
+		Module_Class_Members(UnitDisk, CollisionsModel, 0);
 		void initialize(int stage);
-		~CollisionsModel();
-		virtual void sendToChannel(BasePhyLayer *m,AirFrame *msg);
-		virtual void handleTimer(unsigned int index);
-    	virtual void registerNic( BasePhyLayer*);
 		virtual NodeList * canHear(BasePhyLayer*);
 };
 
 #endif
+
