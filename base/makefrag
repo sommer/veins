@@ -6,4 +6,4 @@
 all: $(TARGET)
 
 # add dependencies
-modules: messages propagationModels
+modules: messages
