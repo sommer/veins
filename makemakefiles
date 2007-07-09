@@ -16,7 +16,7 @@
 #CONTRIB_LIB=-L$(ROOT)/contrib/lib -lmfcontrib
 
 #--------------------------------------
-IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/propagationModels -I$(ROOT)/base/modules -I$(ROOT)/base/timers
+IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/modules -I$(ROOT)/base/timers
 
 IMODULES=-I$(ROOT)/modules/nic -I$(ROOT)/modules/mobility -I$(ROOT)/modules/utility -I$(ROOT)/modules/localization -I$(ROOT)/modules/node -I$(ROOT)/modules/netw -I$(ROOT)/modules/propagation -I$(ROOT)/modules/phy
 
