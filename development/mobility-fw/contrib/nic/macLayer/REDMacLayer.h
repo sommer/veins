@@ -65,7 +65,7 @@ protected:
      *  STOP --
      */
      
-        enum States {
+  enum States {
         RX,
         RX_ACK, 
         CCA,
@@ -190,9 +190,7 @@ protected:
     REDMacControlInfo* cInfo;
     
     /** @brief track and publish current occupation state of medium */
-    MediumIndication indication;
-    
-    MediumIndication mediumState;
+    MediumIndication::States mediumState;
     
     int catIndication;
     
@@ -391,8 +389,6 @@ void congestionEvent(int level);
   
 /** @brief: method to change tic-values into seconds */  
 double startOneShot(int t);   
-
-double milliToDB(double db);
 
 REDMacPkt* encapsMsg(cMessage *msg);  
     	

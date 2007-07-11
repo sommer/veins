@@ -102,42 +102,31 @@ void SingleChannelRadio::handleMessage(cMessage* m)
 
 bool SingleChannelRadio::switchToSleep() 
 {
-    if(debug) {
-        Enter_Method("switchToSleep");
-    } else {
-        Enter_Method_Silent();
-    }
-    return switchTo(RadioState::SWITCH_TO_SLEEP, swSleep);
+  Enter_Method_Silent();
+  EV << "switchToSleep" << endl;
+  return switchTo(RadioState::SWITCH_TO_SLEEP, swSleep);
 }
 
 bool SingleChannelRadio::switchToSend() 
 {
-    if(debug) {
-        Enter_Method("switchToSend");
-    } else {
-        Enter_Method_Silent();
-    }
-    return switchTo(RadioState::SWITCH_TO_SEND, swSend);
+  Enter_Method_Silent();
+  EV << "switchToSend" << endl;
+  return switchTo(RadioState::SWITCH_TO_SEND, swSend);
 }
 
 
 bool SingleChannelRadio::switchToRecv()
 {
-    if(debug) {
-        Enter_Method("switchToRecv");
-    } else {
-        Enter_Method_Silent();
-    }
-    return switchTo(RadioState::SWITCH_TO_RECV, swRecv);
+  Enter_Method_Silent();
+  EV << "switchToRecv" << endl;
+  return switchTo(RadioState::SWITCH_TO_RECV, swRecv);
 }
 
 bool SingleChannelRadio::setActiveChannel(int c) 
 {
-    if(debug) {
-        Enter_Method("setActiveChannel %i", c);
-    } else {
-        Enter_Method_Silent();
-    }
+  Enter_Method_Silent();
+  EV << "setActiveChannel(" << c << ")";
+
     aChannel.setActiveChannel(c);
     bb->publishBBItem(aChannelCat, &aChannel, nicModuleId);
     return true;

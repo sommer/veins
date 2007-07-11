@@ -57,10 +57,7 @@ Blackboard::~Blackboard()
 
 void Blackboard::initialize()
 {
-    if(hasPar("coreDebug"))
-      coreDebug = par("coreDebug").boolValue();
-    else
-      coreDebug = false;
+  coreDebug = true;
 
     WATCH_VECTOR(clientVector);
     WATCH_VECTOR(categoryDescriptions);
@@ -134,12 +131,9 @@ void Blackboard::fillParentVector(const BBItem *category, int cat)
 
 int Blackboard::subscribe(ImNotifiable *client, int category, int scopeModuleId)
 {
-    if(coreDebug) {
-        Enter_Method("subscribe(%s, %i)", categoryName(category), scopeModuleId);
-    } else {
-        Enter_Method_Silent();
-    }
-    
+  Enter_Method_Silent();
+  coreEV << "subscribe(" << categoryName(category) <<", "  << scopeModuleId << ")" << endl;
+  
     // find or create entry for this category
     SubscriberVector& clients = clientVector[category];
     SubscriberVector::const_iterator it;
@@ -161,12 +155,9 @@ int Blackboard::subscribe(ImNotifiable *client, int category, int scopeModuleId)
 
 int Blackboard::subscribe(ImNotifiable *client, const BBItem *category, int scopeModuleId) 
 {
-    if(coreDebug) {
-        Enter_Method("subscribe(%s, %i)", category?category->className() : "n/a",
-                     scopeModuleId);
-    } else {
-        Enter_Method_Silent();
-    }
+  Enter_Method_Silent();  
+  coreEV << "subscribe(" << (category?category->className() : "n/a") << ", " << scopeModuleId << ")" << endl;
+  
     CategoryDescriptions::size_type it = 0;
     bool isNewEntry;
     
@@ -183,11 +174,9 @@ int Blackboard::subscribe(ImNotifiable *client, const BBItem *category, int scop
 
 void Blackboard::unsubscribe(ImNotifiable *client, int category)
 {
-    if(coreDebug) {
-        Enter_Method("unsubscribe(%s)", categoryName(category));
-    } else {
-        Enter_Method_Silent();
-    }
+  Enter_Method_Silent(); 
+  coreEV << "unsubscribe(" << categoryName(category) << ")"<< endl;
+
     // find (or create) entry for this category
     SubscriberVector& clients = clientVector[category];
 
@@ -201,13 +190,10 @@ void Blackboard::unsubscribe(ImNotifiable *client, int category)
 
 void Blackboard::publishBBItem(int category, const BBItem *details, int scopeModuleId)
 {
-    if(coreDebug) {
-        Enter_Method("publish(%s, %s, %i)", categoryName(category),
-                     details?details->info().c_str() : "n/a", scopeModuleId);
-    } else {
-        Enter_Method_Silent();
-    }
-    
+  Enter_Method_Silent();
+  coreEV << "publishBBItem(" << categoryName(category) << ", " 
+	 << (details?details->info().c_str() : "n/a")
+	 << ", " << scopeModuleId << ")" << endl;
     int pCat;
     if(clientVector.size() > 0) {
         SubscriberVector::const_iterator j;
@@ -225,11 +211,9 @@ void Blackboard::publishBBItem(int category, const BBItem *details, int scopeMod
 
 int Blackboard::getCategory(const BBItem *details) 
 {
-    if(coreDebug) {
-        Enter_Method("getCategory(%s)", details?details->className():"n/a");
-    } else {
-        Enter_Method_Silent();
-    }
+  Enter_Method_Silent();
+  coreEV << "getCategory(" << (details?details->className():"n/a") << ")" << endl;
+
     int category = -1;
     bool isNewEntry;
     
