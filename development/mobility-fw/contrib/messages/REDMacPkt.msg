@@ -22,10 +22,10 @@ class MacPkt;
 message REDMacPkt extends MacPkt
 {
    fields:
-       int length;
        int token;
        double time; //processing delay of message
-       double type;
+       int type;
        int repetitionCounter; // maximum number of following repetitions
        
 };
+
