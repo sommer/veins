@@ -160,7 +160,7 @@ public:
     // const Coord* getNicPos( int );
     
     /** @brief Registers a nic to have its connections managed by InterferenceDisk.*/
-    virtual void registerNic( BaseModule*);
+    virtual void registerNic( BasePhyLayer*);
     
     /** @brief Updates the position information of a registered nic.*/
     void updateNicPos(int, const Coord* oldPos, const Coord* newPos);
@@ -170,7 +170,7 @@ public:
 
     const cGate* getOutGateTo(int, int, const Coord*);
 	
-	virtual void sendToChannel(BaseModule *m,cMessage *msg, double delay);
+	virtual void sendToChannel(BasePhyLayer *phy,AirFrame *msg);
 
 protected:
     /** @brief Manages the connections of a registered nic. */ 

@@ -61,7 +61,7 @@ class NicEntryDebug: public NicEntry
     /** @brief Constrcutor, initializes all members 
      * @todo initialize position!
      */
-    NicEntryDebug(bool debug) : NicEntry(debug), inCnt(0), outCnt(0) {};
+    NicEntryDebug(bool debug, BasePhyLayer *ptr) : NicEntry(debug,ptr), inCnt(0), outCnt(0) {};
   
     /** 
      * @brief Destructor -- needs to be there...

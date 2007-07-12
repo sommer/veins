@@ -26,6 +26,7 @@
 #include <map>
 
 #include "Coord.h"
+#include "BasePhyLayer.h"
 
 
 /**
@@ -53,6 +54,8 @@ class NicEntry : public cPolymorphic
     /** @brief Geographic location of the nic*/
     Coord pos;
 
+	BasePhyLayer *phyModule;
+
   protected:
     /** @brief Debug output switch*/
     bool coreDebug;
@@ -72,7 +75,7 @@ class NicEntry : public cPolymorphic
      *
      * @todo initialize position!
      */
-    NicEntry(bool debug) : nicId(0), nicPtr(0), hostId(0){
+    NicEntry(bool debug, BasePhyLayer *ptr) : nicId(0), nicPtr(0), hostId(0), phyModule(ptr){
         coreDebug = debug;
     };
     

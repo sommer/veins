@@ -39,7 +39,7 @@ class NicEntryDirect: public NicEntry
     /** @brief Constrcutor, initializes all members 
      * @todo initialize position!
      */
-    NicEntryDirect(bool debug) : NicEntry(debug) {};
+    NicEntryDirect(bool debug, BasePhyLayer *ptr) : NicEntry(debug,ptr) {};
   
     /** 
      * @brief Destructor -- needs to be there...

@@ -123,14 +123,9 @@ cGate* NicEntryDebug::requestInGate(void)
     // connect the hist gate with the nic gate
     hostGate->connectTo(nicGate);
 
-    // pointer to the phy module
-    BasePhyLayer* phyModule;
     // gate of the phy module
     cGate *phyGate;
 
-    // if there is no snrEval module we should have a phy module (P2PPhyLayer)
-    if( (phyModule = static_cast<BasePhyLayer *>(nicPtr->submodule("snrEval"))) == NULL )
-      phyModule = static_cast<BasePhyLayer *>(nicPtr->submodule("phy"));
     assert(phyModule != 0);
 
     // create a new gate for the phy module
@@ -166,7 +161,6 @@ cGate* NicEntryDebug::requestOutGate(void)
         //get a unique name for the gate (composed of the nic module id and a counter)
         sprintf(gateName,"out%d-%d",nicId,outCnt);
         
-        
         // create a new gate for the host module
         hostGate = nicPtr->parentModule()->addGate(gateName, 'O');
         
@@ -178,14 +172,10 @@ cGate* NicEntryDebug::requestOutGate(void)
         // connect the hist gate with the nic gate
         nicGate->connectTo(hostGate);
         
-        // pointer to the phy module
-        BasePhyLayer* phyModule;
         // gate of the phy module
         cGate *phyGate;
         
         // if there is no snrEval module we should have a phy module (P2PPhyLayer)
-        if( (phyModule = static_cast<BasePhyLayer *>(nicPtr->submodule("snrEval"))) == NULL )
-            phyModule = static_cast<BasePhyLayer *>(nicPtr->submodule("phy"));
         assert(phyModule != 0);
         // create a new gate for the phy module
         phyGate = phyModule->addGate(gateName,'O');

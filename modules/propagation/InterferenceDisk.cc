@@ -24,6 +24,7 @@
 #include "BaseUtility.h"
 #include "FWMath.h"
 #include "FindModule.h"
+#include "BasePhyLayer.h"
 #include <cassert>
 #include <set>
 
@@ -159,7 +160,7 @@ double InterferenceDisk::calcInterfDist()
  *
  * @return Returns whether InterferenceDisk uses sendDirect or not
  **/
-void InterferenceDisk::registerNic( BaseModule* ptr)
+void InterferenceDisk::registerNic( BasePhyLayer* ptr)
 {
   // register the nic
   assert(ptr != 0);
@@ -169,11 +170,11 @@ void InterferenceDisk::registerNic( BaseModule* ptr)
   ccEV <<" registering nic #"<<id<<endl;
 
   if(useSendDirect)
-      nic = new NicEntryDirect(coreDebug);
+      nic = new NicEntryDirect(coreDebug,ptr);
   else
-      nic = new NicEntryDebug(coreDebug);
+      nic = new NicEntryDebug(coreDebug,ptr);
   
-  nic->nicPtr = ptr;
+  nic->nicPtr = ptr->parentModule();
   nic->nicId = id;
   nic->hostId = ptr->parentModule()->id();
 
@@ -416,11 +417,10 @@ InterferenceDisk::~InterferenceDisk()
 	}
 }
 
-
-void InterferenceDisk::sendToChannel(BaseModule *m,cMessage *msg, double delay)
+void InterferenceDisk::sendToChannel(BasePhyLayer *m,AirFrame *msg)
 {
 	Enter_Method_Silent();
-    BaseUtility *bu = FindModule<BaseUtility*>::findSubModule(m->parentModule());
+    BaseUtility *bu = FindModule<BaseUtility*>::findSubModule(m->getNode());
 	assert(bu!=NULL);
 	const NicEntry::GateList& gateList = getGateList(m->id(), bu->getPos());
     NicEntry::GateList::const_iterator i = gateList.begin();
@@ -434,13 +434,13 @@ void InterferenceDisk::sendToChannel(BaseModule *m,cMessage *msg, double delay)
                 int radioEnd = radioStart + i->second->size();
                 for (int g = radioStart; g != radioEnd; ++g)
                     sendDirect(static_cast<cMessage*>(msg->dup()),
-                               delay, i->second->ownerModule(), g);
+                               0.0, i->second->ownerModule(), g);
             }
             int radioStart = i->second->id();
             int radioEnd = radioStart + i->second->size();
             for (int g = radioStart; g != radioEnd; ++g)
                 sendDirect(static_cast<cMessage*>(msg->dup()),
-                           delay, i->second->ownerModule(), g);
+                           0.0, i->second->ownerModule(), g);
             
         	delete msg;
 		}
@@ -456,7 +456,7 @@ void InterferenceDisk::sendToChannel(BaseModule *m,cMessage *msg, double delay)
             for(; i != gateList.end(); ++i){
 				coreEV_clear << i->second->name()<<" ";
                 sendDelayed( static_cast<cMessage*>(msg->dup()),
-                             delay, i->second );
+                             0.0, i->second );
             }
 			coreEV_clear << endl;
 			delete msg;
