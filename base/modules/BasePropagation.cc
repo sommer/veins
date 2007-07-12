@@ -45,7 +45,7 @@ BasePropagation::~BasePropagation()
 
 void BasePropagation::sendToChannel(BasePhyLayer *phy,AirFrame *msg)
 {
-	Enter_Method_Silent();
+	//Enter_Method_Silent();
 	//coreEV << "node number "<<phy->getNode()->index()<<" sending a message"<<endl;
 	if (nodes->begin() == nodes->end())
 		error("No nodes to talk to!");
@@ -55,7 +55,7 @@ void BasePropagation::sendToChannel(BasePhyLayer *phy,AirFrame *msg)
 			continue;
 		cMessage *n = static_cast<cMessage*>(msg->dup());
 		//coreEV << "sending message to "<<(*i)->getNode()->index()<<endl;
-		sendDirect(n,0.0,*i,INGATE);
+		phy->sendDirect(n,0.0,*i,INGATE);
 		//assert(0);
 	}
 	delete msg;

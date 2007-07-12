@@ -43,7 +43,7 @@ void cleanup(void * data)
 
 void CollisionsModel::sendToChannel(BasePhyLayer *phy,AirFrame *msg)
 {
-	Enter_Method_Silent();
+	//Enter_Method_Silent();
 	coreEV << "node number "<<phy->getNode()->index()<<" sending a message in "<<msg->getDuration()<<" seconds"<<endl;
 	NodeList *hear = canHear(phy);
 	if (hear->begin() == hear->end())
@@ -63,7 +63,7 @@ void CollisionsModel::sendToChannel(BasePhyLayer *phy,AirFrame *msg)
 		{
 			coreEV << "Marking "<<index<<" as active"<<endl;
 			(*active)[index] = new std::pair<int,AirFrame *>(1,msg);
-			sendDirect(new StartMessage("Start"),0.0,*i,INGATE);
+			phy->sendDirect(new StartMessage("Start"),0.0,*i,INGATE);
 		}
 		else
 		{
@@ -78,6 +78,7 @@ void CollisionsModel::sendToChannel(BasePhyLayer *phy,AirFrame *msg)
 void CollisionsModel::handleTimer(unsigned int index)
 {
 	PropMsg *p = (PropMsg*)contextPointer(index);
+	simulation.setContextModule(p->phy);
 	AirFrame *msg = p->msg;
 	NodeList *hear = canHear(p->phy);
 	for (NodeList::iterator i = hear->begin();i!=hear->end();i++)
@@ -96,7 +97,7 @@ void CollisionsModel::handleTimer(unsigned int index)
 			coreEV << "Message to "<<index<<" blocked due to corruption! (count is "<<(*active)[index]->first<<")"<<endl;
 			n = new CorruptMessage("Corrupt data");
 		}
-		sendDirect(n,0.0,*i,INGATE);
+		p->phy->sendDirect(n,0.0,*i,INGATE);
 		(*active)[index]->first --;
 		if ((*active)[index]->first == 0)
 		{
