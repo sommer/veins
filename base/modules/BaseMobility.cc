@@ -192,7 +192,9 @@ void BaseMobility::updatePosition() {
     sprintf(zStr, "%d", FWMath::round(move.startPos.z));
     hostPtr->displayString().setTagArg("p", 0, xStr);
     hostPtr->displayString().setTagArg("p", 1, yStr);
-    hostPtr->displayString().setTagArg("p", 2, zStr);
+
+	/* p parameter *does not* accept z co-ordinates. Tk has a 2-d view */
+	//hostPtr->displayString().setTagArg("p", 2, zStr);
 }
 
 /**
