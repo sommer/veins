@@ -26,7 +26,7 @@
 import
     "Node",
     "BaseWorldUtility",
-    "BasePropagation";
+    "ChannelControl";
 
 module Sim
     parameters:
@@ -37,7 +37,7 @@ module Sim
         numHosts : numeric const;
 
     submodules:
-        prop: BasePropagation;
+        channelcontrol: ChannelControl;
             display: "p=50,25;i=eye14";
 		world: BaseWorldUtility;
             parameters:

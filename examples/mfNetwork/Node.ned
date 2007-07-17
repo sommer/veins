@@ -34,8 +34,8 @@ module Node
     parameters:
         applType: string; //type of the application layer
 
-    //gates:
-	//    in: radioIn; // gate for sendDirect
+    gates:
+	    in: radioIn; // gate for sendDirect
 
     submodules:
         utility: BaseUtility;
@@ -71,7 +71,7 @@ module Node
 	net.upperControlOut --> appl.lowerControlIn;		
 	net.upperControlIn <-- appl.lowerControlOut;		
 
-	//radioIn --> nic.radioIn;
+	radioIn --> nic.radioIn;
 
     display: "p=10,10;b=250,250,rect;o=white";
 endmodule
