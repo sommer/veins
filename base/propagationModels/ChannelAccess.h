@@ -77,6 +77,8 @@ protected:
      * @brief Is this module already registered with channelControl?
      */
     bool isRegistered;
+
+	BaseUtility *bu;
     
 public:
     /** @brief Register with ChannelControl and subscribe to hostPos*/

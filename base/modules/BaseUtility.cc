@@ -17,6 +17,7 @@ void BaseUtility::initialize(int stage) {
 			// Start at a random position
 			pos.x = pos.y = pos.z = -1;
 		}
+		coreEV << "pos: " << pos.info() << endl;
 	} else if (stage == 1) {
 		BaseWorldUtility *world = dynamic_cast<BaseWorldUtility*>(getGlobalModule("BaseWorldUtility"));
 		assert(world!=NULL);

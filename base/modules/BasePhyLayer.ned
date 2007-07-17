@@ -9,6 +9,6 @@ simple BasePhyLayer
         in: upperControlIn; // control from the MAC layer
         out: uppergateOut; // to the digital phy sub-module
         out: upperControlOut; // control to the digital phy sub-module
-	//in: radioIn; // for sendDirect
+	in: radioIn; // for sendDirect
 endsimple
 

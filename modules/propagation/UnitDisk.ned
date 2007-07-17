@@ -19,7 +19,13 @@
 
 simple UnitDisk
     parameters:
-		debug		  : numeric const, // debug switch
-		radioRange 	  : numeric const;
+		coreDebug		  : numeric const, // debug switch
+		radioRange 	  : numeric const,
+
+		// below are unused here, but needed for BasePhyLayer
+		pMax			  : numeric const, // maximum sending power used for this network (in mW)
+		sat			  : numeric const, // minimum signal attenuation threshold (in dBm)
+		alpha			  : numeric const, // minimum path loss coefficient
+		carrierFrequency	  : numeric const; // minimum carrier frequency of the channel (in Hz)
 endsimple
 

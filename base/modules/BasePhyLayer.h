@@ -172,6 +172,11 @@ protected:
      */
     virtual void handleUpperMsg(cMessage*);
 
+	/* 
+	 * @brief Handle completion of transmission
+	 */
+	virtual void handleTransmissionOver();
+
     /**
      * @brief Handle self messages such as timer...
      *

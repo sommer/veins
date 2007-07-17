@@ -122,7 +122,7 @@ std::string BaseModule::logName(void)
 	std::ostringstream ost;
 	if (hasPar("logName")) // let modules override
 	{
-		ost << par("logName").stringValue() << "[" << index() << "]";
+		ost << par("logName").stringValue();
 	}
 	else
 	{

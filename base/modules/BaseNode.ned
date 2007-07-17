@@ -10,6 +10,8 @@ import
 module BaseNode
     parameters:
         applType: string; //type of the application layer
+    gates:
+	    in: radioIn; // gate for sendDirect
     submodules:
         utility: BaseUtility;
             display: "p=130,38,rect;b=24,24;o=black";
@@ -35,6 +37,8 @@ module BaseNode
         net.uppergateIn <-- appl.lowergateOut;
         net.upperControlOut --> appl.lowerControlIn display "m=m,70,0,70,0;o=red";
         net.upperControlIn <-- appl.lowerControlOut display "m=m,70,0,70,0;o=red";
+
+	radioIn --> nic.radioIn;
 
     display: "b=,,rect;o=white";
 endmodule

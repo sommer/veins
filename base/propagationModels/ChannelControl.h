@@ -131,7 +131,7 @@ protected:
      * check whether nodes are connected in euclidean space
      */
     bool inRangeEuclid(const Coord& a, const Coord& b) {
-        return a.sqrdist(b) < maxDistSquared;
+        return a.sqrdist(b) <= maxDistSquared;
     }
 
     /**

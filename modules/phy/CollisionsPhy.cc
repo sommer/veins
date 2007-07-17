@@ -20,75 +20,62 @@
 #include "CollisionsPhy.h"
 #include <assert.h>
 
-Define_Module(CollisionsPhy);
+Define_Module_Like(CollisionsPhy, BasePhyLayer);
 
 void CollisionsPhy::initialize(int stage)
 {
 	BasePhyLayer::initialize(stage);
 	if (stage == 0)
-		bitrate = par("bitrate");
-}
-
-void CollisionsPhy::handleLowerMsg(cMessage *msg)
-{
-	StartMessage *sm = dynamic_cast<StartMessage*>(msg);
-	if (sm!=NULL)
 	{
-		handleLowerMsgStart(sm);
-		return;
+		messages = 0;
+		colliding = false;
 	}
-	CorruptMessage *c = dynamic_cast<CorruptMessage*>(msg);
-	if (c!=NULL)
-	{
-		handleCorruptMessage(c);
-		return;
-	}
-	// otherwise, should be an AirFrame
-	AirFrame *af = dynamic_cast<AirFrame*>(msg);
-	assert(af!=NULL);
-	handleLowerMsgEnd(af);
-}
-
-/**
- * Redefine this function if you want to process messages from the
- * channel before they are forwarded to upper layers
- *
- * This function is called right after a message is received,
- * i.e. right before it is buffered for 'transmission time'.
- *
- * Here you should decide whether the message is "really" received or
- * whether it's receive power is so low that it is just treated as
- * noise.
- *
- **/
-void CollisionsPhy::handleLowerMsgStart(StartMessage *msg)
-{
-    EV <<"in handleLowerMsgStart"<<endl;
-	delete msg;
-}
-
-/**
- * Redefine this function if you want to process messages from the
- * channel before they are forwarded to upper layers
- *
- * Do not forget to send the message to the upper layer with sendUp()
- */
-void CollisionsPhy::handleLowerMsgEnd(AirFrame *msg)
-{
-    EV << "in handleLowerMsgEnd\n";
-    sendUp( decapsMsg(msg) );
-}
-
-void CollisionsPhy::handleCorruptMessage(CorruptMessage* c)
-{
-	EV << "saw a corrupt message, dropping\n";
-	delete c;
 }
 
 void CollisionsPhy::handleUpperMsg(cMessage *msg)
 {
-    AirFrame *frame = encapsMsg(msg);
-	frame->setDuration(calcDuration(frame));
-    setTimer(0,frame->getDuration());
-    sendDown(frame);
+	increment();
+ 	EV << "in handleUpperMsg\n";
+	BasePhyLayer::handleUpperMsg(msg);
 }
+
+void CollisionsPhy::handleLowerMsgStart(cMessage *msg)
+{
+	increment();
+ 	EV << "in handleLowerMsgStart\n";
+	BasePhyLayer::handleLowerMsgStart(msg);
+}
+
+void CollisionsPhy::handleLowerMsgEnd(cMessage *msg)
+{
+	decrement(); 	
+ 	EV << "in handleLowerMsgEnd\n";
+
+	if (!colliding)
+    	sendUp( decapsMsg(static_cast<AirFrame *>(msg)) );
+	else
+		EV << "Collision! Dropped message\n";
+}
+
+void CollisionsPhy::handleTransmissionOver()
+{
+	decrement(); 	
+ 	EV << "in handleTransmissionOver\n";
+	BasePhyLayer::handleTransmissionOver();
+}
+
+void CollisionsPhy::increment()
+{
+	messages++;
+	if (messages>1)
+		colliding = true;
+}
+
+void CollisionsPhy::decrement()
+{
+	assert(messages>0);
+	messages--;
+	if (messages == 0)
+		colliding = false;
+}
+

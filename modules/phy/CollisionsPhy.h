@@ -20,24 +20,17 @@
 #define COLLISIONS_PHY_LAYER_H
 
 #include "BasePhyLayer.h"
-#include "StartMessage_m.h"
-#include "CorruptMessage_m.h"
 
 class CollisionsPhy : public BasePhyLayer
 {
-
 public:
     Module_Class_Members(CollisionsPhy, BasePhyLayer, 0 );
 
 	void initialize(int stage);
-    void handleLowerMsg( cMessage* );
 
 protected:
-
-    /** @brief keep bitrate to calculate duration */
-    double bitrate;
-
-	void handleUpperMsg(cMessage *msg);
+	unsigned int messages;
+	bool colliding;
 
     /** 
      *
@@ -48,7 +41,7 @@ protected:
      * or whether it's receive power is so low that it is just treated
      * as noise.
      **/
-    virtual void handleLowerMsgStart(StartMessage*);
+    virtual void handleLowerMsgStart(cMessage*);
 
     /**
      * @brief Calculate SnrInfo after buffering and add the PhySnrList
@@ -57,15 +50,13 @@ protected:
      * Redefine this function if you want to process messages from the
      * channel before they are forwarded to upper layers
      */
-    virtual void handleLowerMsgEnd(AirFrame*);
+    virtual void handleLowerMsgEnd(cMessage*);
 
-	virtual void handleCorruptMessage(CorruptMessage*);
-	
-	/** @brief Calculate duration of this message */
-    virtual double calcDuration(cMessage* m) {
-        return static_cast<double>(m->length()) / bitrate;
-    }
+    virtual void handleUpperMsg(cMessage*);
+	virtual void handleTransmissionOver();
 
+	virtual void increment();
+	virtual void decrement();
 };
 
 #endif

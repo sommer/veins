@@ -19,16 +19,16 @@
 #ifndef UNIT_DISK_H
 #define UNIT_DISK_H 1
 
-#include "CollisionsModel.h"
+#include "ChannelControl.h"
 
-class UnitDisk: public CollisionsModel
+class UnitDisk: public ChannelControl
 {
 	protected:
 		double radioRange;
 	public:
-		Module_Class_Members(UnitDisk, CollisionsModel, 0);
+		Module_Class_Members(UnitDisk, ChannelControl, 0);
 		void initialize(int stage);
-		virtual NodeList * canHear(BasePhyLayer*);
+    	virtual double calcInterfDist() {return radioRange;}
 };
 
 #endif

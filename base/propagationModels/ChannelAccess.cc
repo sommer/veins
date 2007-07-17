@@ -31,6 +31,8 @@
 #include "ChannelControl.h"
 #include "Move.h"
 
+#include "FindModule.h"
+
 /**
  * Upon initialization ChannelAccess registers the nic parent module
  * to have all its connections handeled by ChannelControl
@@ -42,8 +44,10 @@ void ChannelAccess::initialize( int stage )
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
-        cc = dynamic_cast<ChannelControl *>(getGlobalModule("ChannelControl"));
+        cc = FindModule<ChannelControl*>::findGlobalModule();
         if( cc == 0 ) error("Could not find channelcontrol module");
+		bu = FindModule<BaseUtility*>::findSubModule(getNode());
+		if (bu == 0) error("Could not find BaseUtility module");
 	}
 	else if (stage == 1)
 	{
@@ -65,7 +69,7 @@ void ChannelAccess::initialize( int stage )
  **/
 void ChannelAccess::sendToChannel(cMessage *msg, double delay)
 {
-    const NicEntry::GateList& gateList = cc->getGateList( parentModule()->id(), &move.startPos );
+    const NicEntry::GateList& gateList = cc->getGateList( parentModule()->id(), bu->getPos());
     NicEntry::GateList::const_iterator i = gateList.begin();
         
     if(useSendDirect){

@@ -46,16 +46,19 @@ Define_Module( ChannelControl );
 void ChannelControl::initialize(int stage)
 {
     BaseModule::initialize(stage);
-	if (stage == 1)
+	if (stage == 0)
+	{
+		if(hasPar("coreDebug"))
+			coreDebug = par("coreDebug").boolValue();
+		else
+			coreDebug = false;
+	}
+	else if (stage == 1)
 	{
 		unsigned numX, numY;
 		
 		playgroundSize = ((BaseWorldUtility*)getGlobalModule("BaseWorldUtility"))->getPgs();
 
-		if(hasPar("coreDebug"))
-			coreDebug = par("coreDebug").boolValue();
-		else
-			coreDebug = false;
 		NicEntries entries;
 		RowVector row;
 		row.push_back(entries);
@@ -356,15 +359,15 @@ void ChannelControl::updateConnections(NicEntries& nmap, NicEntry* nic)
 
 bool ChannelControl::inRangeTorus(const Coord& a, const Coord& b) 
 {
-    if(FWMath::torDist(a.x,                  b.x, a.y,                  b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y,                  b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y,                  b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x,                  b.x, a.y+playgroundSize->y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x,                  b.x, a.y-playgroundSize->y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y+playgroundSize->y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y-playgroundSize->y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y+playgroundSize->y, b.y) < maxDistSquared) return true;
-    if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y-playgroundSize->y, b.y) < maxDistSquared) return true;
+    if(FWMath::torDist(a.x,                  b.x, a.y,                  b.y) <= maxDistSquared) return true;
+    if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y,                  b.y) <= maxDistSquared) return true;
+    if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y,                  b.y) <= maxDistSquared) return true;
+    if(FWMath::torDist(a.x,                  b.x, a.y+playgroundSize->y, b.y) <= maxDistSquared) return true;
+    if(FWMath::torDist(a.x,                  b.x, a.y-playgroundSize->y, b.y) <= maxDistSquared) return true;
+    if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y+playgroundSize->y, b.y) <= maxDistSquared) return true;
+    if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y-playgroundSize->y, b.y) <= maxDistSquared) return true;
+    if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y+playgroundSize->y, b.y) <= maxDistSquared) return true;
+    if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y-playgroundSize->y, b.y) <= maxDistSquared) return true;
     return false;
 }
 

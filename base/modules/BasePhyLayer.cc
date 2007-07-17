@@ -68,8 +68,8 @@ void BasePhyLayer::initialize(int stage)
             error("SnrEval::initialize() alpha can't be smaller than in \
                    ChannelControl. Please adjust your omnetpp.ini file accordingly");
         if(transmitterPower > static_cast<double>(cc->par("pMax")))
-            error("SnrEval::initialize() tranmitterPower can't be bigger than \
-                   pMax in ChannelControl! Please adjust your omnetpp.ini file accordingly");
+            error("SnrEval::initialize() transmitterPower (%f) can't be bigger than \
+                   pMax (%f) in ChannelControl! Please adjust your omnetpp.ini file accordingly",transmitterPower);
         if(sensitivity < FWMath::dBm2mW(static_cast<double>(cc->par("sat"))))
             error("SnrEval::initialize() sensitivity can't be smaller than the signal attentuation threshold (sat) in \
                    ChannelControl. Please adjust your omnetpp.ini file accordingly");
@@ -103,7 +103,7 @@ void BasePhyLayer::handleMessage(cMessage *msg)
     }
     else if(msg == txOverTimer) {
         coreEV << "transmission over" << endl;
-        sendControlUp(new cMessage("TRANSMISSION_OVER", NicControlType::TRANSMISSION_OVER));
+		handleTransmissionOver();
     }
     else if (msg->isSelfMessage()) {
         if(msg->kind() == RECEPTION_COMPLETE) {
@@ -316,6 +316,16 @@ void BasePhyLayer::handleLowerMsgEnd(cMessage *msg)
 
     // 3. pass the message together with the list to the decider
     sendUp( decapsMsg(static_cast<AirFrame *>(msg)) );
+}
+
+/*
+ * Handle completion of transmission. Override if you want to do something different.
+ * Don't forget to send up the TRANSMISSION_OVER control message
+ */
+
+void BasePhyLayer::handleTransmissionOver()
+{
+	sendControlUp(new cMessage("TRANSMISSION_OVER", NicControlType::TRANSMISSION_OVER));
 }
 
 
