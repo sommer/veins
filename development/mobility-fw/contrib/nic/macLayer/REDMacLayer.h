@@ -131,15 +131,15 @@ protected:
     };
     	
    enum AckStatus {
-   	    ACK_REQUESTED,
         NO_ACK_REQUESTED,
         WAS_NOT_ACKED,
         WAS_ACKED,
+	ACK_REQUESTED = 128,
     };
    
    enum Addr {
-   	    AM_BROADCAST_ADDR,
-        RELIABLE_MCAST_MIN_ADDR,
+     AM_BROADCAST_ADDR = -1,
+     RELIABLE_MCAST_MIN_ADDR = 0xE000,
    };
     	
     Error_t error;	
@@ -400,7 +400,7 @@ virtual void initialize(int stage);
 
 virtual void handleUpperMsg(cMessage *msg);
 
-virtual void handleLowerMsg(REDMacPkt *pkt);
+virtual void handleLowerMsg(cMessage *msg);
 
 virtual void handleUpperControl(REDMacPkt *pkt);
 
