@@ -67,10 +67,9 @@ Define_Module( REDMacLayer )
     sim_time = 0.0;
     teamgeistType = 0;
     txBufPtr = NULL;
-    ackMsg = NULL;
+    ackMsg = new REDMacPkt("ackMsg");
     flags = 0;
-    	
-    	
+    		
         
     sleepTime = DEFAULT_SLEEP_TIME;
     for(unsigned i=0; i < MSG_TABLE_ENTRIES; i++){
@@ -107,12 +106,12 @@ void REDMacLayer::handleUpperMsg(cMessage *msg)
   macSend(msg,msg->byteLength());
 }
 
-void REDMacLayer::handleLowerMsg(REDMacPkt *pkt)	
+void REDMacLayer::handleLowerMsg(cMessage* msg)	
 {
   Error_t er = SUCCESS;
   //subrtract the size of the header
-  int len = (pkt->byteLength() - headerLength);
-  receiveDone(pkt,len,er); 
+  int len = (msg->byteLength() - headerLength);
+  receiveDone(static_cast<REDMacPkt*>(msg),len,er); 
 }
 
 void REDMacLayer::handleUpperControl(REDMacPkt *pkt){
@@ -134,7 +133,7 @@ void REDMacLayer::handleSelfMsg(cMessage *msg)
     rssiStable();	
   }
   else if(msg == timeOut){
-    //receiveDone(txBufPtr,len,FAIL);
+    receiveDone(0,0,FAIL);
   }
 }
 
@@ -142,7 +141,15 @@ void REDMacLayer::handleLowerControl(cMessage *msg)
 {
   if(msg->kind() == NicControlType::TRANSMISSION_OVER) {
     EV << " transmission over" << endl;
-    packetSendDone(txBufPtr,SUCCESS);
+    if(macState == TX) {
+      packetSendDone(txBufPtr,SUCCESS);
+    }
+    else if(macState == TX_ACK) {
+      packetSendDone(ackMsg,SUCCESS);
+    }
+    else {
+      EV << "ERROR: handleLowerControl TRANSMISSION_OVER with wrong type" << endl;
+    }
   }
   else {
     EV << "control message with wrong kind -- deleting\n";
@@ -181,8 +188,8 @@ REDMacPkt* REDMacLayer::receiveDone(REDMacPkt* pkt, int len, Error_t error){
   action = STOP;
   bool isCnt;
   double nav = 0;
-  cInfo = new REDMacControlInfo(); // TODO: nur dort allozieren wo angehängt 
-		        
+  
+  EV << "receiveDone called" << endl;	        
   if(macState == RX_P) {
     EV << " macState in RX_P-modus " << endl;
     if(error == SUCCESS) {
@@ -193,22 +200,18 @@ REDMacPkt* REDMacLayer::receiveDone(REDMacPkt* pkt, int len, Error_t error){
 	  EV << "" << endl;
 	  if(isNewMsg(pkt)) {
 	    EV << " new message arrived " << endl;
+	    REDMacControlInfo *cInfo = new REDMacControlInfo();
+	    pkt->setControlInfo(cInfo);
 	    if(isOwner()) {
 	      cInfo->setStrength(snr);
-	      pkt->setControlInfo(cInfo);
-	      cInfo = NULL;
 	    }
 	    else {
 	      cInfo->setStrength(1);
-	      pkt->setControlInfo(cInfo);
-	      cInfo = NULL;
 	    }
 	    pkt->setTime(calcGeneratedTime(pkt));
 	    cInfo->setAck(WAS_NOT_ACKED);
-	    pkt->setControlInfo(cInfo);
-	    //cInfo = NULL; 
+	    EV << "when newMesg then macReceiveDone" << endl; 
 	    macReceiveDone(pkt);
-	    cInfo = NULL;
 	    rememberMsg(pkt);
 	  }
 	  if((needsAckRx(pkt)) && (action != RX)) {
@@ -249,14 +252,12 @@ REDMacPkt* REDMacLayer::receiveDone(REDMacPkt* pkt, int len, Error_t error){
     if(error == SUCCESS) {
       if(ackIsForMe(pkt)) {
 	EV << " ack is for me " << endl;
+	REDMacControlInfo *cInfo = new REDMacControlInfo();
+	pkt->setControlInfo(cInfo);
 	cInfo->setStrength(FWMath::dBm2mW(rssi)); //TODO: dB umrechnen
 	cInfo->setAck(WAS_ACKED);
-	pkt->setControlInfo(cInfo);
-	cInfo = NULL;
 	if((isFlagSet(&flags, TEAMGEIST_ACTIVE)) && (pkt->getType() == teamgeistType)){
 	  gotAck(pkt, pkt->getSrcAddr(), cInfo->getStrength());
-	  if(cInfo==NULL) delete cInfo;
-
 	}
 	EV << " teamgeist not active " << endl;
 	signalSendDone(SUCCESS);
@@ -265,7 +266,10 @@ REDMacPkt* REDMacLayer::receiveDone(REDMacPkt* pkt, int len, Error_t error){
       }
       else {
 	updateLongRetryCounters();
-	action = RX;
+	macState = SLEEP;
+	setSleepMode();
+	action = INIT; // do nothing
+	EV << "ignore packet" << endl;
       }
     }
     else {
@@ -323,8 +327,8 @@ REDMacPkt* REDMacLayer::receiveDone(REDMacPkt* pkt, int len, Error_t error){
   else {
     EV << " another state " << endl;
   }
-       
-  delete pkt;
+  if(timeOut->isScheduled()) cancelEvent(timeOut);
+  if(error == SUCCESS) delete pkt;
   return NULL;
 }
     
@@ -336,6 +340,7 @@ void REDMacLayer::receiveDetected(){
   EV << "receiveDetected" << endl;
   if(macState <= CCA_ACK) {
     scheduleAt(simTime() + (startOneShot(BYTE_TIME) * maxPacketLength), timeOut); //50Byte
+    EV << "scheduled timeout for " << timeOut->arrivalTime();
     if(macState == CCA) computeBackoff();
     if(macState != RX_ACK) {
       macState = RX_P;
@@ -343,6 +348,7 @@ void REDMacLayer::receiveDetected(){
       macState = RX_ACK_P;
                 
     }
+    snr = rssi;
   }
   else if(macState == INIT) {
     EV << " INIT " << endl; 
@@ -469,13 +475,12 @@ void REDMacLayer::ageMsgsTask(){
 	
 
 void REDMacLayer::startDoneTask() {
-  REDMacPkt *pkt = new REDMacPkt();
   EV << " start the sampleTimer " << endl;
   scheduleAt(simTime() + startOneShot(sleepTime), sampleTimer);
   macState = SLEEP;
   setFlag(&flags, TEAMGEIST_ACTIVE);
-  teamgeistType = observedAMType(pkt);
-  //startDone(SUCCESS);        
+  // teamgeistType = observedAMType(pkt);
+  // startDone(SUCCESS);        
 }
 
 void REDMacLayer::stopDoneTask(){
@@ -507,9 +512,10 @@ REDMacLayer::Error_t REDMacLayer::splitControlStop() {
 void REDMacLayer::rssiStable(){
   setFlag(&flags, RSSI_STABLE);
   if((macState == RX) || (macState == CCA)) {
+    if(timer->isScheduled()) cancelEvent(timer);
     scheduleAt(simTime() + startOneShot(DATA_DETECT_TIME), timer);
     EV << " start of the timer " << endl;
-  }     
+  }    
   else if(macState == INIT) {
     EV << " INIT " << endl;
     updateNoiseFloor();
@@ -619,14 +625,13 @@ int REDMacLayer::backoff(int counter) {
 }
 
 bool REDMacLayer::needsAckTx(REDMacPkt *pkt){
-	 
-  cInfo = new REDMacControlInfo(); 
   bool rVal = false;
-  if(pkt->getDestAddr() < AM_BROADCAST_ADDR) {
-    if(cInfo->getAck() != NO_ACK_REQUESTED) {
+  if(static_cast<unsigned>(pkt->getDestAddr()) < 
+     static_cast<unsigned>(AM_BROADCAST_ADDR)) 
+    {
+      EV << "needsAckTx" << endl;
       rVal = true;
     }
-  }
   return rVal;	
 }
 
@@ -636,11 +641,17 @@ bool REDMacLayer::needsAckRx(REDMacPkt *pkt){
   int dest = pkt->getDestAddr();
   int token;
   double snr = 1;
-  if(dest < AM_BROADCAST_ADDR) {
+  if(static_cast<unsigned>(dest) < static_cast<unsigned>(AM_BROADCAST_ADDR)) {
+    EV << "not broadcast" << endl;
     if(dest < RELIABLE_MCAST_MIN_ADDR) {
+      EV << "not reliable mcast" << endl;
       token = pkt->getToken();
-      if(isFlagSet(&flags, ACK_REQUESTED)) { 
+      if(isFlagSet(&token, ACK_REQUESTED)) { 
+	EV << "ACK flag in token" << endl;
 	rVal = true;
+      }
+      else {
+	EV << "no ACK flag in token" << endl;
       }
     }
     else {
@@ -660,16 +671,21 @@ void REDMacLayer::prepareMsgTask(){
   int sT = sleepTime;
   REDMacPkt *pkt = txBufPtr;
   int dest = pkt->getDestAddr();
-    
+  int token = seqNo;
   pkt->setRepetitionCounter(sT/(length * BYTE_TIME + SUB_HEADER_TIME + SUB_FOOTER_TIME + TX_GAP_TIME) + 1);
+  EV << "prepare , rep: " << pkt->getRepetitionCounter() << " ";
   if((longRetryCounter > 1) &&
      (isFlagSet(&flags, TEAMGEIST_ACTIVE) &&
       (pkt->getType() == teamgeistType))) {
     dest = getDestination(pkt, longRetryCounter - 1);
   }
-  pkt->setToken(seqNo);
-  if(needsAckTx(pkt))
-    (pkt->setToken(pkt->getToken() | ACK_REQUESTED));  
+  
+  if(needsAckTx(pkt)) {
+    token |= ACK_REQUESTED;  
+    EV << " with ACK ";
+  }
+  pkt->setToken(token);
+  EV << pkt->getToken() << endl;
   setFlag(&flags, MESSAGE_PREPARED);
   if((macState == SLEEP) && (!timer->isScheduled()) && (!isFlagSet(&flags, RESUME_BACKOFF))) {   
     if((longRetryCounter == 1) &&
@@ -679,6 +695,7 @@ void REDMacLayer::prepareMsgTask(){
     else {
       scheduleAt(simTime() + startOneShot(backoff(longRetryCounter)), timer);
     }
+    EV << "scheduled timer" << endl;
   }
 }
 
@@ -698,7 +715,7 @@ bool REDMacLayer::prepareRepetition(){ //TODO
 
 void REDMacLayer::signalSendDone(Error_t error){
     
-  REDMacPkt *pkt = new REDMacPkt();
+  REDMacPkt *pkt = txBufPtr;
   cInfo = new REDMacControlInfo();
   EV << " signalSendDone " << endl;
   txBufPtr = NULL;
@@ -707,7 +724,6 @@ void REDMacLayer::signalSendDone(Error_t error){
     
   cInfo->setStrength(FWMath::dBm2mW(rssi));
   pkt->setControlInfo(cInfo);
-  delete cInfo;
 
   if(isFlagSet(&flags, CANCEL_SEND)) {       
     error = XCANCEL;
@@ -718,7 +734,6 @@ void REDMacLayer::signalSendDone(Error_t error){
   EV << "CANCEL_SEND:" << error << endl;
   EV << "CANCEL_SEND:" << pkt->getType() << endl;
   macSendDone(pkt, error);
-	
 }
 
 void REDMacLayer::updateRetryCounters(){
@@ -743,17 +758,17 @@ void REDMacLayer::updateLongRetryCounters(){
   } else {
     prepareMsgTask();
   }
-	
 }
 
 bool REDMacLayer::ackIsForMe(REDMacPkt *pkt){
 	
   int dest = pkt->getDestAddr();
   int localToken = seqNo;
-  setFlag(&flags, TOKEN_ACK_FLAG);
+  setFlag(&localToken, TOKEN_ACK_FLAG);
+  EV << "ack is for me" << endl;
   if((dest == myMacAddr) && (localToken == pkt->getToken())) return true;
+  EV << "oops not for me" << endl;
   return false;
-	
 }
 
 void REDMacLayer::interruptBackoffTimer() {
@@ -765,6 +780,7 @@ void REDMacLayer::interruptBackoffTimer() {
 }
 
 bool REDMacLayer::msgIsForMe(REDMacPkt *pkt){
+  EV << "msgIsForMe: pkt->getDestAddr()" << pkt->getDestAddr() << endl;
   if(pkt->getDestAddr() == AM_BROADCAST_ADDR) return true;
   if(pkt->getDestAddr() == myMacAddr) return true;
   if(pkt->getDestAddr() >= RELIABLE_MCAST_MIN_ADDR) return true;
@@ -790,9 +806,9 @@ bool REDMacLayer::isNewMsg(REDMacPkt *pkt){
 	
   bool rVal = true;
   for(unsigned int i=0;i < MSG_TABLE_ENTRIES; i++){
-    if((pkt->getSrcAddr() == knownMsgTable[i].src) &&
-       (((pkt->getToken()) & TOKEN_ACK_MASK) == knownMsgTable[i].token) &&
-       (knownMsgTable[i].age < MAX_AGE)) {
+    if((knownMsgTable[i].age < MAX_AGE) && 
+       (pkt->getSrcAddr() == knownMsgTable[i].src) &&
+       (((pkt->getToken()) & TOKEN_ACK_MASK) == knownMsgTable[i].token)) {
       knownMsgTable[i].age = 0;
       rVal = false;
       break;
@@ -824,18 +840,13 @@ void REDMacLayer::rememberMsg(REDMacPkt *pkt){
 }
 
 void REDMacLayer::prepareAck(REDMacPkt *pkt){
-	
-  REDMacPkt *ackMac = new REDMacPkt("ackMac");
-  int rToken = ackMac->getToken() & TOKEN_ACK_MASK;
-  setFlag(&flags, TOKEN_ACK_FLAG);
-  ackMac->setToken(rToken);
-  ackMac->setSrcAddr(myMacAddr);
-  ackMac->setDestAddr(pkt->getSrcAddr());
-  ackMac->setType(pkt->getType());
-
-  repCounter = pkt->getRepetitionCounter();
-  packetSend(ackMac); 
-	
+  int rToken = pkt->getToken() & TOKEN_ACK_MASK;
+  setFlag(&rToken, TOKEN_ACK_FLAG);
+  ackMsg->setToken(rToken);
+  ackMsg->setSrcAddr(myMacAddr);
+  ackMsg->setDestAddr(pkt->getSrcAddr());
+  ackMsg->setType(pkt->getType());
+  ackMsg->setRepetitionCounter(pkt->getRepetitionCounter());
 }
 
 double REDMacLayer::calcGeneratedTime(REDMacPkt *pkt){
@@ -981,13 +992,18 @@ void REDMacLayer::sampleTimerFired(){
 void REDMacLayer::macReceiveDone(REDMacPkt *pkt){
 	
   int dest = pkt->getDestAddr();
-  cInfo = new REDMacControlInfo();
+  cMessage *m;
+  cInfo = static_cast<REDMacControlInfo *>(pkt->removeControlInfo());
+  EV << "macReceiveDone" << endl;
   // decaps +  sendup, controlinfo ausfüllen + verschieben
   // KEIN delete 
   if(dest == myMacAddr || dest == L2BROADCAST){
     //pkt->setLength(headerLength/(8.0*1.5));
-    pkt->setControlInfo(new REDMacControlInfo(pkt->getSrcAddr()));
-    sendUp(decapsMsg(pkt));
+    cInfo->setNextHopMac(pkt->getSrcAddr());
+    m = pkt->decapsulate();
+    m->setControlInfo(cInfo);
+    sendUp(m);
+    EV << "macReceiveDone post sendUp" << endl;
   }
 }
 
@@ -1020,7 +1036,7 @@ double REDMacLayer::macSend(cMessage *msg, int len){
 }
 
 void REDMacLayer::macSendDone(REDMacPkt *pkt, Error_t error){
-	
+  delete pkt;
 }
 
 double REDMacLayer::macCancel(REDMacPkt *pkt){
@@ -1118,6 +1134,7 @@ void REDMacLayer::finish(){
   if (!sampleTimer->isScheduled()) delete sampleTimer;
   if (!rssiStableTimer->isScheduled()) delete rssiStableTimer;
   if (!timeOut->isScheduled()) delete timeOut;
+  delete ackMsg;
 }
 
 double REDMacLayer::startOneShot(int t){ //changes tic-values into seconds
@@ -1152,11 +1169,11 @@ REDMacPkt* REDMacLayer::encapsMsg(cMessage *msg)
   
   return pkt;
 }
-const int REDMacLayer::BYTE_TIME =  9;                // byte at 23405 kBit/s, 4b6b encoded, 0.00064087 s.
-const int REDMacLayer::PREAMBLE_BYTE_TIME = 6;        // byte at 23405 kBit/s, no coding, 0.00042725 s.
-const int REDMacLayer::PHY_HEADER_TIME = 36;           // 6 Phy Preamble at 23405 bits/s, 0.00256347 s.
+const int REDMacLayer::BYTE_TIME =  21;                // byte at 23405 kBit/s, 4b6b encoded, 0.00064087 s.
+const int REDMacLayer::PREAMBLE_BYTE_TIME = 14;        // byte at 23405 kBit/s, no coding, 0.00042725 s.
+const int REDMacLayer::PHY_HEADER_TIME = 84;           // 6 Phy Preamble at 23405 bits/s, 0.00256347 s.
 
-const int REDMacLayer::TIME_CORRECTION = 7;           // difference between txSFD andrxSFD: 475us, 0.00048828 s.
+const int REDMacLayer::TIME_CORRECTION = 16;           // difference between txSFD andrxSFD: 475us, 0.00048828 s.
 const int REDMacLayer::SUB_HEADER_TIME = PHY_HEADER_TIME + 7*BYTE_TIME;
 const int REDMacLayer::SUB_FOOTER_TIME = 2*BYTE_TIME;         // 2 bytes crc
 /*
@@ -1176,7 +1193,7 @@ const int REDMacLayer::RX_ACK_TIMEOUT = (RX_SETUP_TIME + PHY_HEADER_TIME + ADDED
 const int REDMacLayer::TX_GAP_TIME = (RX_ACK_TIMEOUT + TX_SETUP_TIME + 33);
 const int REDMacLayer::ACK_DURATION = (SUB_HEADER_TIME + SUB_FOOTER_TIME);
 const int REDMacLayer::MAX_SHORT_RETRY = 9;
-const int REDMacLayer::MAX_LONG_RETRY = 1;
+const int REDMacLayer::MAX_LONG_RETRY = 3;
 const unsigned int REDMacLayer::MAX_AGE = (2*MAX_LONG_RETRY*MAX_SHORT_RETRY);
 const unsigned int REDMacLayer::MSG_TABLE_ENTRIES = 20;
 const int REDMacLayer::TOKEN_ACK_FLAG = 64;
