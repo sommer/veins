@@ -76,7 +76,7 @@ void PositifLayer::initialize(int stage)
 		node[me].neighbors = new cLinkedList();
 		node[me].perf_data.bcast_total = new int[MAX_MSG_TYPES];
 		node[me].perf_data.bcast_unique = new int[MAX_MSG_TYPES];
-		for (int m = 0; m < nr_dims; m++)
+		for (unsigned int m = 0; m < nr_dims; m++)
 			node[me].perf_data.curr_pos[m] = 0.0;
 		node[me].perf_data.flops = 0;
 		node[me].perf_data.confidence = 0.0;
@@ -399,7 +399,7 @@ void PositifLayer::setGlobalVars(void)
 void PositifLayer::DoNeighbours()
 {
 	if (par("gen_points_only")) {
-		for (int d = 0; d < nr_dims; d++)
+		for (unsigned int d = 0; d < nr_dims; d++)
 			ev << "Range " << d << " , " << dim[d] << "\n";
 		ev << "Anchors " << num_anchors << "\n";
 		//Global::Activity();
@@ -443,13 +443,13 @@ FLOAT PositifLayer::distance(Position a, Position b)
 {
 	FLOAT sumsqr = 0;
 
-	for (int c = 0; c < nr_dims; c++) {
+	for (unsigned int c = 0; c < nr_dims; c++) {
 		sumsqr += (a[c] - b[c]) * (a[c] - b[c]);
 	}
 	return sqrt(sumsqr);
 }
 
-FLOAT PositifLayer::savvides_minmax(int n_pts, FLOAT ** positions,
+FLOAT PositifLayer::savvides_minmax(unsigned int n_pts, FLOAT ** positions,
 				   FLOAT * ranges, FLOAT * confs, int target)
 {
 	//
@@ -458,8 +458,8 @@ FLOAT PositifLayer::savvides_minmax(int n_pts, FLOAT ** positions,
 	Position min, max;
 
 	// Find the max-min and min-max in each dimension.
-	for (int i = 0; i < n_pts; i++)
-		for (int j = 0; j < nr_dims; j++) {
+	for (unsigned int i = 0; i < n_pts; i++)
+		for (unsigned int j = 0; j < nr_dims; j++) {
 			if (positions[i][j] - ranges[i] > min[j] || i == 0)
 				min[j] = positions[i][j] - ranges[i];
 			if (positions[i][j] + ranges[i] < max[j] || i == 0)
@@ -468,7 +468,7 @@ FLOAT PositifLayer::savvides_minmax(int n_pts, FLOAT ** positions,
 
 	//FLOAT area_size = 0;
 	// Store the result (avg of min and max)
-	for (int i = 0; i < nr_dims; i++) {
+	for (unsigned int i = 0; i < nr_dims; i++) {
 		positions[n_pts][i] = (min[i] + max[i]) / 2;
 
 		/*  if( i==0 )
@@ -479,7 +479,7 @@ FLOAT PositifLayer::savvides_minmax(int n_pts, FLOAT ** positions,
 
 	FLOAT residu = 0;
 	FLOAT sum_c = 0;
-	for (int j = 0; j < n_pts; j++) {
+	for (unsigned int j = 0; j < n_pts; j++) {
 		FLOAT c = (confs == NULL ? 1 : confs[j]);
 		residu +=
 		    c * fabs(ranges[j] -
@@ -491,7 +491,7 @@ FLOAT PositifLayer::savvides_minmax(int n_pts, FLOAT ** positions,
 	return residu;
 }
 
-FLOAT PositifLayer::triangulate(int n_pts, FLOAT ** positions,
+FLOAT PositifLayer::triangulate(unsigned int n_pts, FLOAT ** positions,
 			       FLOAT * ranges, FLOAT * confs, int target)
 {
 	FLOAT dop;
@@ -502,7 +502,7 @@ FLOAT PositifLayer::triangulate(int n_pts, FLOAT ** positions,
 #ifndef NDEBUG
 	if (confs != NULL) {
 		ev << "confs:";
-		for (int j = 0; j < n_pts; j++) {
+		for (unsigned int j = 0; j < n_pts; j++) {
 			ev << " " << confs[j];
 		}
 		ev << "\n";
@@ -531,7 +531,7 @@ FLOAT PositifLayer::triangulate(int n_pts, FLOAT ** positions,
 
 	FLOAT residu = 0;
 	FLOAT sum_c = 0;
-	for (int j = 0; j < n_pts; j++) {
+	for (unsigned int j = 0; j < n_pts; j++) {
 		FLOAT c = (confs == NULL ? 1 : confs[j]);
 		residu +=
 		    c * fabs(ranges[j] -
@@ -549,7 +549,7 @@ FLOAT PositifLayer::triangulate(int n_pts, FLOAT ** positions,
 }
 
 
-FLOAT PositifLayer::hoptriangulate(int n_pts, FLOAT ** positions,
+FLOAT PositifLayer::hoptriangulate(unsigned int n_pts, FLOAT ** positions,
 				  FLOAT * ranges, int target)
 {
 	FLOAT est_R;
@@ -572,7 +572,7 @@ FLOAT PositifLayer::hoptriangulate(int n_pts, FLOAT ** positions,
 #endif
 
 	// Run sanity check
-	for (int i = 0; i < n_pts; i++)
+	for (unsigned int i = 0; i < n_pts; i++)
 		ranges[i] *= est_R;
 	FLOAT correction;
 	::hoptriangulate(&::params, n_pts + 1, positions, ranges, NULL,

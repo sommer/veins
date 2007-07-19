@@ -31,6 +31,7 @@
 #include "main.h"
 #include "RepeatTimer.h"
 #include "cores.h"
+#include "Coord.h"
 
 #define LOGLENGTH 102400
 
@@ -187,11 +188,11 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 
 	void send(cMessage * msg);	// synchronous send
 	FLOAT distance(Position, Position);
-	FLOAT savvides_minmax(int n_pts, FLOAT ** positions,
+	FLOAT savvides_minmax(unsigned int n_pts, FLOAT ** positions,
 			      FLOAT * ranges, FLOAT * confs, int target);
-	FLOAT triangulate(int n_pts, FLOAT ** positions, FLOAT * ranges,
+	FLOAT triangulate(unsigned int n_pts, FLOAT ** positions, FLOAT * ranges,
 			  FLOAT * weights, int target);
-	FLOAT hoptriangulate(int n_pts, FLOAT ** positions, FLOAT * ranges,
+	FLOAT hoptriangulate(unsigned int n_pts, FLOAT ** positions, FLOAT * ranges,
 			     int target);
 
       protected:

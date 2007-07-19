@@ -299,7 +299,7 @@ double Node_Savvides::true_pos_triangulate(void)
 
 void Node_Savvides::do_triangulation(void *arg)
 {
-	int n = neighbors.length();
+	unsigned int n = neighbors.length();
 	assert(n > nr_dims);
 	FLOAT *pos_list[n + 1];
 	FLOAT range_list[n + 1];
@@ -480,7 +480,7 @@ bool Node_Savvides::new_anchor(cMessage * msg)
 void Node_Savvides::update_rectangle(anchor_info * anchor)
 {
 	// intersect anchor's "square" with existing convex rectangle
-	for (int d = 0; d < nr_dims; d++) {
+	for (unsigned int d = 0; d < nr_dims; d++) {
 		FLOAT left = anchor->position[d] - anchor->path_dst;
 		FLOAT right = anchor->position[d] + anchor->path_dst;
 
@@ -501,7 +501,7 @@ bool Node_Savvides::inside_rectangle(Position pos)
 	assert(valid_rectangle);
 
 	// Check if this position fits in the convex rectangle
-	for (int d = 0; d < nr_dims; d++) {
+	for (unsigned int d = 0; d < nr_dims; d++) {
 		if (pos[d] < rectangle.min[d] || pos[d] > rectangle.max[d]) {
 			return false;
 		}
@@ -658,7 +658,7 @@ void Node_Savvides::sendPosition(void *arg)
 			sound[((anchor_info *) iter())->last_hop_idx] = true;
 		}
 		
-		int cnt = 0;
+		unsigned int cnt = 0;
 		for (int n = 0; n < num_nodes; n++)
 			if (sound[n])
 				cnt++;
