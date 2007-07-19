@@ -18,6 +18,11 @@
 // *              - subclass to create your own localization messages
 // **************************************************************************/
 
+cplusplus {{
+#include "Location.h"
+}}
+
+class noncobject Location;
 
 // A basic localization message definition
 //
@@ -26,8 +31,7 @@
 // @author Peterpaul Klein Haneveld
 message LocPkt {
     fields:
-	int type;
 	int destAddr;
 	int srcAddr;
-	char data[];
+	Location pos;
 }

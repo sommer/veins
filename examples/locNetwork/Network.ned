@@ -25,42 +25,29 @@
 
 import
     "Node",
-	"BaseWorldUtility",
+    "BaseWorldUtility",
     "ChannelControl";
 
 module Sim
     parameters:
-        // parameters for the framework
-        playgroundSizeX : numeric const,
-		playgroundSizeY : numeric const,
-		playgroundSizeZ : numeric const,
-        numHosts : numeric const;
+	numHosts : numeric const;
 
     submodules:
-        prop: ChannelControl;
-		world: BaseWorldUtility;
-            parameters:
-                playgroundSizeX = playgroundSizeX,
-		playgroundSizeY = playgroundSizeY,
-		playgroundSizeZ = playgroundSizeZ;
+	channelcontrol: ChannelControl;
 		display: "p=50,25;i=eye14";
-        node: Node[numHosts];
-            display: "p=50,50;i=node";
+	world: BaseWorldUtility;
+	node: Node[numHosts];
+		display: "p=50,50;i=node";
 
     connections nocheck:
     // all connections and gates are to be generated dynamically
 
-    display: "p=0,0;b=$playgroundSizeX,$playgroundSizeY,rect;o=white";
+    display:
+	"p=0,0;o=white";
 endmodule
-
-
-
 
 network sim : Sim
     parameters:
-        playgroundSizeX = input(40,"playgroundSizeX"),
-	playgroundSizeY = input(40,"playgroundSizeY"),
-	playgroundSizeZ = input(40,"playgroundSizeZ"),
-        numHosts =input(2,"Number of hosts:");
+	numHosts =input(2,"Number of hosts:");
 
 endnetwork
