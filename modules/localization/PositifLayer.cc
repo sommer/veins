@@ -59,12 +59,12 @@ timer_info _timers[MAX_TIMERS];
 /*******************************************************************************
  * static functions
  ******************************************************************************/
-static char *status2string(int status)
+const static char *status2string(int status)
 {
-	static char *anchor = "ANCHOR";
-	static char *unknown = "UNKNOWN";
-	static char *positioned = "POSITIONED";
-	static char *bad = "BAD";
+	const static char *anchor = "ANCHOR";
+	const static char *unknown = "UNKNOWN";
+	const static char *positioned = "POSITIONED";
+	const static char *bad = "BAD";
 
 	if (status == STATUS_ANCHOR)
 		return anchor;
@@ -98,6 +98,7 @@ void PositifLayer::initialize(int stage)
 	case 0:
 		RepeatTimer::init(this);
 //              me = par("me");
+		start_timer = MAX_TIMERS;
 		me = findHost()->index();
 		/* clear arrays */
 		for (int i = 0; i < MAX_MSG_TYPES; i++) {
@@ -181,7 +182,7 @@ void PositifLayer::initialize(int stage)
 			/* init must reserve the number of used repeat timers for the application */
 			init();
 			/* create the start timer, one repeat */
-			start_timer = setRepeatTimer(1, 1);
+			setRepeatTimer(start_timer, 1, 1);
 			cMessage *msg = new cMessage("START", MSG_START);
 			msg->addPar("anchor") = node[me].anchor;
 			if (node[me].anchor) {
@@ -623,7 +624,7 @@ void PositifLayer::handleRepeatTimer(unsigned int index)
 			get_struct(msg, "position", position);
 			confidence = 1.0;
 		} else {
-			for (int i = 0; i < nr_dims; i++)
+			for (unsigned int i = 0; i < nr_dims; i++)
 				position[i] = 0.0;
 			confidence = 0.0;
 		}

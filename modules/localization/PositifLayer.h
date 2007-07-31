@@ -132,7 +132,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	// Count the number of operations
 	int flops;
 
-	int start_timer;
+	unsigned int start_timer;
 
 	static int num_nodes;
 	static int num_anchors;
