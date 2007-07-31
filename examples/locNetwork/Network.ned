@@ -30,10 +30,11 @@ import
 
 module Sim
     parameters:
+	channelcontrolType: string,
 	numHosts : numeric const;
 
     submodules:
-	channelcontrol: ChannelControl;
+	channelcontrol: channelcontrolType like ChannelControl;
 		display: "p=50,25;i=eye14";
 	world: BaseWorldUtility;
 	node: Node[numHosts];

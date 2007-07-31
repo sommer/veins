@@ -32,6 +32,7 @@ module Node
 
     parameters:
 	applType: string, //type of the application layer
+	netType: string, //type of the network layer
 	locType: string; //type of the localization layer
 
 	gates:
@@ -53,7 +54,7 @@ module Node
 	loc: locType like PositifLayer;
 	    display: "p=90,75;b=100,20,rect";
 
-	net: BaseNetwLayer;
+	net: netType like BaseNetwLayer;
 	    display: "p=90,100;b=100,20,rect";
 
 	nic: MfNic;
