@@ -46,15 +46,12 @@ void RepeatTimerCore::setRepeatTimer(unsigned int index, double when, int repeat
 {
 	Enter_Method_Silent();
 	cMessage *timer;
-	if (timer_map->find(index)==timer_map->end())
-	{
+	if (timer_map->find(index)==timer_map->end()) {
 		timer = new cMessage("timer");
 		timer->setKind(index);
 		(*timer_map)[index].timer = timer;
 		(*timer_map)[index].destructor = NULL;
-	}
-	else
-	{
+	} else {
 		timer = (*timer_map)[index].timer;
 		if (timer->isScheduled())
 			cancelEvent(timer);
@@ -90,12 +87,10 @@ void RepeatTimerCore::setContextDestructor(unsigned int index, cleanup *c)
 
 RepeatTimerCore::~RepeatTimerCore()
 {
-	for (std::map<unsigned int,TInfo>::const_iterator p=timer_map->begin();p!=timer_map->end();p++)
-	{
+	for (std::map<unsigned int,TInfo>::const_iterator p=timer_map->begin();p!=timer_map->end();p++) {
 		unsigned int index = p->second.timer->kind();
 		checkExists(index);
-		if ((*timer_map)[index].timer->isScheduled())
-		{
+		if ((*timer_map)[index].timer->isScheduled()) {
 			if ((*timer_map)[index].destructor!=NULL)
 				(*timer_map)[index].destructor(contextPointer(index));
 			cancelEvent((*timer_map)[index].timer);
@@ -134,11 +129,9 @@ void * RepeatTimerCore::contextPointer(unsigned int index)
 void RepeatTimerCore::allocateRepeatTimers(unsigned int count)
 {
 	Enter_Method_Silent();
-	for (unsigned int i=0;i<count;i++)
-	{
+	for (unsigned int i=0;i<count;i++) {
 		cMessage *timer;
-		if (timer_map->find(i)==timer_map->end())
-		{
+		if (timer_map->find(i)==timer_map->end()) {
 			timer = new cMessage("timer");
 			timer->setKind(i);
 			(*timer_map)[i].timer = timer;
@@ -152,12 +145,12 @@ void RepeatTimerCore::allocateRepeatTimers(unsigned int count)
  */
 void RepeatTimerCore::deleteRepeatTimer(unsigned int index)
 {
-	if (timer_map->find(index)!=timer_map->end())
-	{
-		cancelRepeatTimer(index);
-		delete timer_map->find(index)->second.timer;
-		timer_map->erase(timer_map->find(index));
-	}
+	checkExists(index);
+	cancelRepeatTimer(index);
+	if ((*timer_map)[index].destructor)
+		(*timer_map)[index].destructor(contextPointer(index));
+	delete timer_map->find(index)->second.timer;
+	timer_map->erase(timer_map->find(index));
 }
 
 void RepeatTimerCore::resetRepeatTimer(unsigned int index)
@@ -178,7 +171,6 @@ void RepeatTimerCore::resetAllRepeatTimers(void)
 {
 	std::map <unsigned int, TInfo>::const_iterator p;
 	for (p = timer_map->begin(); p != timer_map->end(); p++) {
-		
 		resetRepeatTimer(p->second.timer->kind());
 	}
 }
