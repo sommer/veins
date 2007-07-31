@@ -19,7 +19,7 @@
 
 simple UnitDisk
     parameters:
-		coreDebug		  : numeric const, // debug switch
+		debug		  : numeric const, // debug switch
 		radioRange 	  : numeric const,
 
 		// below are unused here, but needed for BasePhyLayer
