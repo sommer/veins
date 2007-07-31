@@ -3,15 +3,15 @@
 	Project:	pos_test
 	Author:		Chris Savarese
 	Date:		7/06/01
- ********************************/  
-    
+ ********************************/
+
 #ifndef __sim_control__h
 #define __sim_control__h
-    
+
 #include "main.h"
 // constants
 #define SIM_SUITE_SIZE 31	// number of elements in params->sim_suite array
-    
+
 // enumerated indicies for params->sim_suite array
 #define topology_trials 0	// number of trials to perform, where each trial has a new topology
 #define ranges_trials 1		// number of trials to perform, where each trial has new range estimates, but the same topology
@@ -44,23 +44,23 @@
 #define range_err_var_max 28
 #define range_err_var_step 29
 #define verbosity_code 30	// verbosity param for entire simulation suite.  note, independent of single simulation mode verbosity param
-    
+
 // data structures
-    
+
 // function declarations
 int perform_trial(int suppress_console_status, struct myParams *params,
 		  struct myScenario *scenario, float *avg_pos_err_start,
 		  float *avg_pos_err_ref);
 void run_single_simulation(struct myParams *params,
-			    struct myScenario *scenario);
+			   struct myScenario *scenario);
 void run_suite_simulation(const struct myParams *params);
 float compute_estimated_position_error(int i, struct myParams *params,
-					struct myScenario *scenario);
+				       struct myScenario *scenario);
 void gen_new_top(int suppress_console_status, struct myParams *params,
-		  struct myScenario *scenario);
+		 struct myScenario *scenario);
 void gen_new_range_ests(int suppress_console_status, struct myParams *params,
-			 struct myScenario *scenario);
+			struct myScenario *scenario);
 void assign_anchors(int suppress_console_status, struct myParams *params,
-		     struct myScenario *scenario);
+		    struct myScenario *scenario);
 
 #endif

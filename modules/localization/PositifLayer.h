@@ -33,35 +33,19 @@
 #include "cores.h"
 #include "Coord.h"
 
+#define TOPOLOGYTYPE_LENGTH 25
 #define LOGLENGTH 102400
+#define MAX_TIMERS 5
 
-/**
- * @brief Type used for positif timer stuff.
- */
-// typedef struct {
-//      int repeats, cnt;
-//      int handler;
-//      void *arg;
-// } timer_info;
+#define MAX(a,b) (((a)>(b))?(a):(b))
+#define MIN(a,b) (((a)<(b))?(a):(b))
 
-// #define SIM_SUITE_SIZE 31	// number of elements in params->sim_suite array
+typedef int timer_info;
 
-// extern struct myParams {
-// 	int dim;		// dimension of geographical space
-// 	int grid_bound;		// maximum coordinate value
-// 	int vis;		// radio visibility range
-// 	int alg_sel;		// algorithm selection: 0=traditional least squares, 1=qr-ls, 2=svd-ls, 3=MMSE
-// 	int start_alg;		// start-up algorithm selection: 0=terrain, 1=hop-terrain
-// 	int conf_mets;		// flag: 0=do not use confidence metrics in determining positions, 1=use them
-// 	int net_size;		// total number of nodes in network
-// 	int anch_size;		// number of anchor nodes in network
-// 	int ref_its;		// maximum number of refinement iterations to perform
-// 	int range_err_var;	// variance of noise in range measurements (normal distrubution)
-// 	int verbosity;		// controls level of detail in report log. 0=summaries only, 1=scenarios and summaries, 2=full detail
-// 	int sim_suite[SIM_SUITE_SIZE];	// array containing parameter ranges for simulation suite
-// 	FILE *logfile;		// pointer to log file
-// 	char filename[32];	// name of log file
-// } params;
+typedef struct {
+	int idx;
+	int seqno[MAX_MSG_TYPES];
+} seqno_info;
 
 typedef struct {
 	int idx;
@@ -106,6 +90,8 @@ typedef struct {
 	bool wants_token;
 } node_info;
 
+extern timer_info _timers[MAX_TIMERS];
+
 /**
  * @brief Base class for the localization layer
  * 
@@ -120,7 +106,6 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	 * Read from omnetpp.ini 
 	 **/
 	int headerLength;
-
 	NodeState status;
 
       public:
@@ -144,6 +129,10 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	int reps;
 	// Count how many refine messages were sent
 	int refine_count;
+	// Count the number of operations
+	int flops;
+
+	int start_timer;
 
 	static int num_nodes;
 	static int num_anchors;
@@ -155,6 +144,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	static FLOAT area;
 	static double *dim;
 	static double range_variance;
+	static double pos_variance;
 	static int flood_limit;
 	static int refine_limit;
 	static int tri_alg;
@@ -163,6 +153,10 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	// The number of anchors to do the initial estimate with
 	static int phase1_min_anchors;
 	static int phase1_max_anchors;
+	static char topology_type[TOPOLOGYTYPE_LENGTH];
+	static FLOAT var0;
+	static FLOAT var1;
+	static FLOAT var2;
 
 	/** @brief Initialization of the module and some variables*/
 	virtual void finish(void);
@@ -171,30 +165,32 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 
 	int logprintf(__const char *__restrict __format, ...);
 	char *pos2str(Position);	// WARNING: uses a static buffer
-	void setGlobalVars(void);
-	void DoNeighbours(void);
+	void setup_global_vars(void);
+	void setup_neighbors(void);
+	void setup_grid(void);
+
 
 	// Timer functions
-//      cLinkedList timeouts;
-//      timer_info *timer(int reps, int handler, void *arg = NULL);
-//      void addTimer(timer_info * e);
-//      void resetTimer(timer_info * e);
-//      cLinkedListIterator getTimers(void);
-//      void invokeTimer(timer_info * e);
-
-	unsigned int timer(int reps, int handler, void *arg = NULL);
-	void resetTimer(unsigned int index);
-
-
-	void send(cMessage * msg);	// synchronous send
+	timer_info *timer(int reps, int handler, void *arg = NULL);
+	void addTimer(timer_info * e);
+	void resetTimer(timer_info * e);
+	void cancelTimer(timer_info * e);
+	virtual void handleRepeatTimer(unsigned int index);
+	virtual void handleTimer(timer_info * handler) {
+		error
+		    ("Subclasses of PositifLayer should implement handleTimer()");
+	} void send(cMessage * msg);	// synchronous send
 	FLOAT distance(Position, Position);
 	FLOAT savvides_minmax(unsigned int n_pts, FLOAT ** positions,
 			      FLOAT * ranges, FLOAT * confs, int target);
-	FLOAT triangulate(unsigned int n_pts, FLOAT ** positions, FLOAT * ranges,
-			  FLOAT * weights, int target);
-	FLOAT hoptriangulate(unsigned int n_pts, FLOAT ** positions, FLOAT * ranges,
-			     int target);
+	FLOAT triangulate(unsigned int n_pts, FLOAT ** positions,
+			  FLOAT * ranges, FLOAT * weights, int target);
+	FLOAT hoptriangulate(unsigned int n_pts, FLOAT ** positions,
+			     FLOAT * ranges, int target);
 
+
+	void write_statistics();
+	void statistics(bool);
       protected:
 	/** 
 	 * @name Handle Messages
@@ -208,7 +204,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	/*@{ */
 
 	/** @brief Handle messages from upper layer */
-	 virtual void handleUpperMsg(cMessage * msg);
+	virtual void handleUpperMsg(cMessage * msg);
 
 	/** @brief Handle messages from lower layer */
 	virtual void handleLowerMsg(cMessage * msg);
@@ -243,7 +239,6 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	/*@{ */
 	virtual void init(void) {
 	}
-//      virtual void handleTimer(timer_info * timer) {}
 	virtual void handleStartMessage(cMessage * msg) {
 	}
 	virtual void handleMessage(cMessage * msg, bool newNeighbor) {
@@ -251,8 +246,13 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	virtual void handleStopMessage(cMessage * msg);
 	/*@} */
 
-	virtual void handleRepeatTimer(unsigned int index) {
-	}
+      private:
+	bool msg_buffering;
+	cQueue putAside;
+
+	void addNewNeighbor(int, double, double);
+	bool isNewNeighbor(int);
+	void update_perf_data();
 };
 
 #endif

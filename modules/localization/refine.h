@@ -31,13 +31,23 @@
 #define get_array(m,s,p,n)	memmove( (p), (m)->par(s), (n)*sizeof(*(p)))
 
 
-// message kind values (packet types):
-#define MSG_START     0
-#define MSG_STOP      1
-#define MSG_RETRY     2
-#define MSG_TIME_OUT  3
-#define MSG_DONE      4
-#define MSG_TYPE_BASE 5
+/* // message kind values (packet types): */
+/* #define MSG_START     0 */
+/* #define MSG_STOP      1 */
+/* #define MSG_RETRY     2 */
+/* #define MSG_TIME_OUT  3 */
+/* #define MSG_DONE      4 */
+/* #define MSG_TYPE_BASE 5 */
+
+enum {
+	MSG_START = 0,
+	MSG_STOP,
+	MSG_RETRY,
+	MSG_TIME_OUT,
+	MSG_DONE,
+	MSG_NEIGHBOR,
+	MSG_TYPE_BASE,
+};
 
 // MAX_MSG_TYPES is the maximum number of message
 // types a subclass of Node can use. So the integer

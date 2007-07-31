@@ -7,8 +7,7 @@
 
 #define msec		(1e-3)
 #define ACCEPT		0.1
-// #define POS_DELAY	9
-#define POS_DELAY	1
+#define POS_DELAY	9
 
 #define CONF_THR	(LOW_CONF*1.01)
 #define ZERO_CONF       0.01
@@ -18,6 +17,7 @@
 #define TIMER_SND_POS 0
 #define TIMER_SND_ANC 1
 #define TIMER_DO_TRI  2
+#define TIMER_COUNT 3
 
 // Define message types
 #define MSG_ANCHOR    MSG_TYPE_BASE+0
@@ -65,10 +65,10 @@ class Node_Savvides:public PositifLayer {
 	nghbor_info summary;
 	bool summary_update;
 
-// 	timer_info *bc_position;
+	timer_info *bc_position;
 	int bc_pos_delay;
-// 	timer_info *bc_anchor;
-// 	timer_info *comp_position;
+	timer_info *bc_anchor;
+	timer_info *comp_position;
 
 	void anchor(cMessage * msg);
 	void unknown(cMessage * msg);
@@ -89,11 +89,11 @@ class Node_Savvides:public PositifLayer {
 
 	double true_pos_triangulate(void);
 
-public:
-	Module_Class_Members(Node_Savvides, PositifLayer, 0)
-		// Implement Node's abstract functions.
-		virtual void init(void);
-	virtual void handleRepeatTimer(unsigned int index);
+      public:
+	 Module_Class_Members(Node_Savvides, PositifLayer, 0)
+	    // Implement Node's abstract functions.
+	virtual void init(void);
+	virtual void handleTimer(timer_info * timer);
 	virtual void handleStartMessage(cMessage * msg);
 	virtual void handleMessage(cMessage * msg, bool newNeighbor);
 	virtual void handleStopMessage(cMessage * msg);
@@ -105,27 +105,32 @@ void Node_Savvides::init(void)
 {
 	algorithm = 1;		// Output on raw data line only.
 	version = 8;
-	/* This is a hack. */
-	if (me == 0 || me == 3 || me == 5 || me == 8)
-		status = STATUS_ANCHOR;
+
+	if (MAX_TIMERS < TIMER_COUNT) {
+		error
+		    ("MAX_TIMERS < TIMER_COUNT: (%d < %d), increase MAX_TIMERS in PositifLayer.h\n",
+		     MAX_TIMERS, TIMER_COUNT);
+		abort();
+	} else {
+		/* allocate the needed timers */
+		allocateRepeatTimers(TIMER_COUNT);
+	}
 }
 
 // Dispatch this timer to the proper handler function.
-void Node_Savvides::handleRepeatTimer(unsigned int index)
+void Node_Savvides::handleTimer(timer_info * timer)
 {
-	Enter_Method_Silent();
-
-	switch (index) {
+	switch (*timer) {
 	case TIMER_SND_POS:
-		sendPosition(NULL);
+		sendPosition(contextPointer(*timer));
 		break;
 
 	case TIMER_SND_ANC:
-		sendAnchor(NULL);
+		sendAnchor(contextPointer(*timer));
 		break;
 
 	case TIMER_DO_TRI:
-		do_triangulation(NULL);
+		do_triangulation(contextPointer(*timer));
 		break;
 	}
 }
@@ -133,13 +138,13 @@ void Node_Savvides::handleRepeatTimer(unsigned int index)
 void Node_Savvides::handleMessage(cMessage * msg, bool newNeighbor)
 {
 	if (newNeighbor)
+		// Activate all timer routines when we meet a new neighbor
+//              for (cLinkedListIterator iter = getTimers(); !iter.end();
+//                   iter++) {
+//                      timer_info *ev = (timer_info *) iter();
+//                      resetTimer(ev);
+//              }
 		resetAllRepeatTimers();
-	// Activate all timer routines when we meet a new neighbor
-// 		for (cLinkedListIterator iter = getTimers(); !iter.end();
-// 		     iter++) {
-// 			timer_info *ev = (timer_info *) iter();
-// 			resetTimer(ev);
-// 		}
 	// Call appropriate handler function depending on whether this node is an
 	// anchor or a normal node.
 	if (status == STATUS_ANCHOR) {
@@ -156,7 +161,9 @@ void Node_Savvides::handleStartMessage(cMessage * msg)
 
 	residu = 10 * range;
 
-// 	comp_position = NULL;
+	comp_position = NULL;
+	bc_anchor = NULL;
+	bc_position = NULL;
 
 	valid_rectangle = false;
 
@@ -166,11 +173,10 @@ void Node_Savvides::handleStartMessage(cMessage * msg)
 	i_am_a_twin = false;
 	confidence = (status == STATUS_ANCHOR) ? 1 : ZERO_CONF;
 
-// 	bc_anchor = timer(reps, TIMER_SND_ANC, NULL);
-// 	bc_anchor->cnt = 0;
-// 	addTimer(bc_anchor);
-	setRepeatTimer(TIMER_SND_ANC, 1, reps);
-
+	bc_anchor = timer(reps, TIMER_SND_ANC, NULL);
+//      bc_anchor->cnt = 0;
+	cancelTimer(bc_anchor);
+	addTimer(bc_anchor);
 
 	// Is there an initialization (terrain) phase?
 	if (status == STATUS_ANCHOR) {
@@ -182,14 +188,12 @@ void Node_Savvides::handleStartMessage(cMessage * msg)
 		memcpy(ME->position, position, sizeof(position));
 		ME->cnt = reps;
 		ME->flood = true;
-// 		resetTimer(bc_anchor);
-		resetRepeatTimer(TIMER_SND_ANC);
+		resetTimer(bc_anchor);
 		anchors.insert(ME);
 
-// 		bc_position = timer(reps, TIMER_SND_POS);
+		bc_position = timer(reps, TIMER_SND_POS);
 		bc_pos_delay = 0;
-// 		addTimer(bc_position);
-		setRepeatTimer(TIMER_SND_POS, 1, reps);
+		addTimer(bc_position);
 	}
 }
 
@@ -240,8 +244,7 @@ void Node_Savvides::unknown(cMessage * msg)
 	case MSG_ANCHOR:
 		if (new_anchor(msg)) {
 			savvides();	// Will do the bounding box thing, or just return if too few anchors are known.
-// 			resetTimer(bc_position);
-			resetRepeatTimer(TIMER_SND_POS);
+			resetTimer(bc_position);
 			seqno[MSG_POSITION]++;
 		}
 		break;
@@ -255,15 +258,11 @@ void Node_Savvides::unknown(cMessage * msg)
 
 		if (neighbors.length() > nr_dims) {
 			// Don't perform triangulation yet, wait for other updates
-// 			if (comp_position == NULL) {
-// 				comp_position = timer(1, TIMER_DO_TRI);
-// 				addTimer(comp_position);
-// 			}
-			if (!timerExists(TIMER_DO_TRI)) {
-				setRepeatTimer(TIMER_DO_TRI, 1, 1);
+			if (comp_position == NULL) {
+				comp_position = timer(1, TIMER_DO_TRI);
+				addTimer(comp_position);
 			}
-// 			resetTimer(comp_position);
-			resetRepeatTimer(TIMER_DO_TRI);
+			resetTimer(comp_position);
 		}
 		break;
 
@@ -299,7 +298,7 @@ double Node_Savvides::true_pos_triangulate(void)
 
 void Node_Savvides::do_triangulation(void *arg)
 {
-	unsigned int n = neighbors.length();
+	int n = neighbors.length();
 	assert(n > nr_dims);
 	FLOAT *pos_list[n + 1];
 	FLOAT range_list[n + 1];
@@ -323,7 +322,7 @@ void Node_Savvides::do_triangulation(void *arg)
 #ifndef NDEBUG
 		ev << ' ' << node[neighbor->idx].ID << (neighbor->
 							twin ? "t" : "") << '@'
-		   << neighbor->distance;
+		    << neighbor->distance;
 #endif
 	}
 #ifndef NDEBUG
@@ -333,8 +332,7 @@ void Node_Savvides::do_triangulation(void *arg)
 	pos_list[i] = pos;
 	FLOAT res = triangulate(i, pos_list, range_list, weights, me);
 
-// PP: Cannot use wait() with handleMessage()
-// 	wait(i * nr_dims * nr_dims * msec);
+//      wait(i * nr_dims * nr_dims * msec);
 
 	// Filter out moves that violate the convex constraints imposed
 	// by (distant) anchors and neighbors
@@ -350,8 +348,7 @@ void Node_Savvides::do_triangulation(void *arg)
 			confidence = ZERO_CONF;
 			status = STATUS_BAD;
 
-// 			resetTimer(bc_position);
-			resetRepeatTimer(TIMER_SND_POS);
+			resetTimer(bc_position);
 			seqno[MSG_POSITION]++;
 		}
 	} else {
@@ -375,26 +372,26 @@ void Node_Savvides::do_triangulation(void *arg)
 #ifndef NDEBUG
 				if (res < residu) {
 					ev << node[me].
-						ID << ": UPDATE pos to " <<
-						pos2str(position) << " (" << 100 *
-						distance(position,
-							 node[me].true_pos) /
-						range << "% error)" << "\n";
+					    ID << ": UPDATE pos to " <<
+					    pos2str(position) << " (" << 100 *
+					    distance(position,
+						     node[me].true_pos) /
+					    range << "% error)" << "\n";
 				} else {
 					ev << node[me].
-						ID << ": ESCAPE pos to " <<
-						pos2str(position) << " (" << 100 *
-						distance(position,
-							 node[me].true_pos) /
-						range << "% error)" << "\n";
+					    ID << ": ESCAPE pos to " <<
+					    pos2str(position) << " (" << 100 *
+					    distance(position,
+						     node[me].true_pos) /
+					    range << "% error)" << "\n";
 				}
 #endif
 				significant = true;
 			} else {
 #ifndef NDEBUG
 				ev << node[me].
-					ID << ": REJECT move (" << res << " > " <<
-					residu << ")\n";
+				    ID << ": REJECT move (" << res << " > " <<
+				    residu << ")\n";
 #endif
 			}
 			// Go tell others. Don't send message out directly, but use
@@ -403,8 +400,7 @@ void Node_Savvides::do_triangulation(void *arg)
 			// then yield one outgoing msg.
 
 			if (significant) {
-// 				resetTimer(bc_position);
-				resetRepeatTimer(TIMER_SND_POS);
+				resetTimer(bc_position);
 				seqno[MSG_POSITION]++;
 			}
 		}
@@ -448,8 +444,7 @@ bool Node_Savvides::new_anchor(cMessage * msg)
 				anchor->flood = false;
 			anchor->last_hop_idx = msg->par("src");
 			anchor->cnt = reps;
-// 			resetTimer(bc_anchor);
-			resetRepeatTimer(TIMER_SND_ANC);
+			resetTimer(bc_anchor);
 			changed = true;
 			anchors.insert(anchor);
 			update_rectangle(anchor);
@@ -461,8 +456,7 @@ bool Node_Savvides::new_anchor(cMessage * msg)
 				old_anchor->path_dst = anchor->path_dst;
 				old_anchor->last_hop_idx = msg->par("src");
 				old_anchor->cnt = reps;
-// 				resetTimer(bc_anchor);
-				resetRepeatTimer(TIMER_SND_ANC);
+				resetTimer(bc_anchor);
 				changed = true;
 				update_rectangle(anchor);
 				logprintf("updated anchor(nr %d) %d from %d\n",
@@ -480,7 +474,7 @@ bool Node_Savvides::new_anchor(cMessage * msg)
 void Node_Savvides::update_rectangle(anchor_info * anchor)
 {
 	// intersect anchor's "square" with existing convex rectangle
-	for (unsigned int d = 0; d < nr_dims; d++) {
+	for (int d = 0; d < nr_dims; d++) {
 		FLOAT left = anchor->position[d] - anchor->path_dst;
 		FLOAT right = anchor->position[d] + anchor->path_dst;
 
@@ -501,7 +495,7 @@ bool Node_Savvides::inside_rectangle(Position pos)
 	assert(valid_rectangle);
 
 	// Check if this position fits in the convex rectangle
-	for (unsigned int d = 0; d < nr_dims; d++) {
+	for (int d = 0; d < nr_dims; d++) {
 		if (pos[d] < rectangle.min[d] || pos[d] > rectangle.max[d]) {
 			return false;
 		}
@@ -562,10 +556,8 @@ void Node_Savvides::update_neighbor(cMessage * msg)
 
 		// The summary is piggybacked on ordinary MSG_POSITION msgs, so
 		// reset the associated timer if that has already been activated
-// 		if (bc_position != NULL) {
-// 			resetTimer(bc_position);
-		if (timerExists(TIMER_SND_POS)) {
-			resetRepeatTimer(TIMER_SND_POS);
+		if (bc_position != NULL) {
+			resetTimer(bc_position);
 			seqno[MSG_POSITION]++;
 		}
 	}
@@ -633,50 +625,45 @@ void Node_Savvides::sendPosition(void *arg)
 	if (bc_pos_delay > 0) {
 		bc_pos_delay--;
 #else
-		if (simTime() < 99) {
+	if (simTime() < 99) {
 #endif
-// 		resetTimer(bc_position);
-			resetRepeatTimer(TIMER_SND_POS);
-			return;
-#if 1
-		}
-#else
+		resetTimer(bc_position);
+		return;
 	}
-#endif
 
 	if ((status != STATUS_ANCHOR) && neighbors.length() <= nr_dims) {
 		// Find out if I am a sound node
 		bool sound[num_nodes];
-		
+
 		for (int n = 0; n < num_nodes; n++)
 			sound[n] = false;
-		
+
 		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
 			sound[((nghbor_info *) iter())->idx] = true;
 		}
 		for (cLinkedListIterator iter(anchors); !iter.end(); iter++) {
 			sound[((anchor_info *) iter())->last_hop_idx] = true;
 		}
-		
-		unsigned int cnt = 0;
+
+		int cnt = 0;
 		for (int n = 0; n < num_nodes; n++)
 			if (sound[n])
 				cnt++;
-		
+
 		if (cnt <= nr_dims) {
 			return;
 		}
 	}
-	
+
 	if (refine_limit > -1 && refine_count >= refine_limit)
 		return;
-	
+
 	refine_count++;
-	
+
 	cMessage *msg = new cMessage("POSITION", MSG_POSITION);
 	msg->addPar("confidence") = confidence;
 	add_struct(msg, "pos", position);
-	
+
 	if (summary_update) {
 		msg->addPar("#neighbors") = summary.nr_nghbrs;
 		add_array(msg, "id", summary.nghbr_idx, summary.nr_nghbrs);
@@ -684,17 +671,17 @@ void Node_Savvides::sendPosition(void *arg)
 	} else {
 		msg->addPar("#neighbors") = 0;
 	}
-	
+
 	char tmp[100];
 	sprintf(tmp, "p=%d,%d;i=ball_vs",
 		(int) (100 * position[0] / sqrt(area)),
 		(int) (100 * position[1] / sqrt(area)));
 	setDisplayString(dispSUBMOD, (const char *) tmp, true);
-	
+
 	send(msg);
 }
-	
-	
+
+
 bool Node_Savvides::twins(nghbor_info * a, nghbor_info * b)
 {
 	bool nghbr_a[num_nodes];
@@ -764,7 +751,7 @@ void Node_Savvides::savvides(void)
 
 #ifndef NDEBUG
 		ev << node[me].
-			ID << ": savvides' phase2 initialization with anchors:";
+		    ID << ": savvides' phase2 initialization with anchors:";
 #endif
 
 		used_anchors = (n < phase1_max_anchors
@@ -808,8 +795,8 @@ void Node_Savvides::savvides(void)
 				pos_list[store_at] = anchor->position;
 				range_list[store_at] = range;
 				real_range_list[store_at] =
-					distance(node[me].true_pos,
-						 node[anchor->idx].true_pos);
+				    distance(node[me].true_pos,
+					     node[anchor->idx].true_pos);
 				idx_list[store_at] = anchor->idx;
 			}
 		}
@@ -819,63 +806,60 @@ void Node_Savvides::savvides(void)
 
 		// Calculate performance data for range error
 		FLOAT sum_err = 0, sum_rel_err = 0, sum_abs_err =
-			0, sum_abs_rel_err = 0, sum_range = 0;
+		    0, sum_abs_rel_err = 0, sum_range = 0;
 		for (i = 0; i < used_anchors; i++) {
 			sum_err += range_list[i] - real_range_list[i];
 			sum_rel_err +=
-				(range_list[i] -
-				 real_range_list[i]) / real_range_list[i];
+			    (range_list[i] -
+			     real_range_list[i]) / real_range_list[i];
 			sum_abs_err += fabs(range_list[i] - real_range_list[i]);
 			sum_abs_rel_err +=
-				fabs(range_list[i] -
-				     real_range_list[i]) / real_range_list[i];
+			    fabs(range_list[i] -
+				 real_range_list[i]) / real_range_list[i];
 			sum_range += range_list[i];
 		}
 		node[me].perf_data.anchor_range_error = sum_err / used_anchors;
 		node[me].perf_data.rel_anchor_range_error =
-			sum_rel_err / used_anchors;
+		    sum_rel_err / used_anchors;
 		node[me].perf_data.abs_anchor_range_error =
-			sum_abs_err / used_anchors;
+		    sum_abs_err / used_anchors;
 		node[me].perf_data.abs_rel_anchor_range_error =
-			sum_abs_rel_err / used_anchors;
+		    sum_abs_rel_err / used_anchors;
 		node[me].perf_data.anchor_range = sum_range / used_anchors;
 		node[me].perf_data.anchor_range_error_count = used_anchors;
 
 		FLOAT res;
 		if (tri_alg == 0)
 			res =
-				triangulate(used_anchors, pos_list, range_list,
-					    NULL, me);
+			    triangulate(used_anchors, pos_list, range_list,
+					NULL, me);
 		else
 			res =
-				savvides_minmax(used_anchors, pos_list, range_list,
-						NULL, me);
+			    savvides_minmax(used_anchors, pos_list, range_list,
+					    NULL, me);
 
 		logprintf(" %4.0f,%4.0f\n", next[0], next[1]);
 
-// PP: Cannot use wait() with handleMessage()
-// 		wait(n * nr_dims * nr_dims * msec);
+//              wait(n * nr_dims * nr_dims * msec);
 
 		if (0 <= res && res <= range) {
 			memmove(position, next, sizeof(Position));
 			node[me].perf_data.phase1_err =
-				distance(position, node[me].true_pos) / range;
+			    distance(position, node[me].true_pos) / range;
 
 			confidence = LOW_CONF;
 			status = STATUS_POSITIONED;	// After Savvides initialisation, a node is positioned regardless of its confidence.
 #ifndef NDEBUG
 			ev << node[me].
-				ID << ": UPDate pos to " << pos2str(position)
-			   << " (" << 100 *
-				node[me].perf_data.phase1_err << "% error)\n";
+			    ID << ": UPDate pos to " << pos2str(position)
+			    << " (" << 100 *
+			    node[me].perf_data.phase1_err << "% error)\n";
 #endif
 
-// 			if (bc_position == NULL) {
-// 				bc_position = timer(1, TIMER_SND_POS);
-			if (!timerExists(TIMER_SND_POS)) {
-				setRepeatTimer(TIMER_SND_POS, 1, 1);
+			if (bc_position == NULL) {
+				bc_position = timer(1, TIMER_SND_POS);
 				bc_pos_delay = POS_DELAY;
-// 				addTimer(bc_position);
+				addTimer(bc_position);
 			}
 		}
 
@@ -892,11 +876,11 @@ void Node_Savvides::savvides(void)
 				}
 			if (used)
 				logprintf
-					(" -->(%d:(%4.0f,%4.0f)@%4.0fd,%4.0fr)<-- ",
-					 anchor->idx, anchor->position[0],
-					 anchor->position[1], range_list[j],
-					 distance(node[me].true_pos,
-						  node[anchor->idx].true_pos));
+				    (" -->(%d:(%4.0f,%4.0f)@%4.0fd,%4.0fr)<-- ",
+				     anchor->idx, anchor->position[0],
+				     anchor->position[1], range_list[j],
+				     distance(node[me].true_pos,
+					      node[anchor->idx].true_pos));
 			else
 				logprintf(" (%d:(%4.0f,%4.0f@%4.0fr) ",
 					  anchor->idx, anchor->position[0],
@@ -906,5 +890,4 @@ void Node_Savvides::savvides(void)
 		}
 		logprintf("\n");
 	}
-
-}	
+}
