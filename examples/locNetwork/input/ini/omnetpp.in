@@ -1,0 +1,194 @@
+
+##############################################################################
+#       Parameters for the entire simulation                                 #
+##############################################################################
+
+#################################
+# Determined by PositifScenario #
+################################# 
+# sim.world.playgroundSizeX = 500 
+# sim.world.playgroundSizeY = 350
+# sim.world.playgroundSizeZ = 100
+# sim.numHosts = 10
+#################################
+
+# uncomment to enable debug messages for all modules
+**.debug = 0
+**.coreDebug = 0
+
+
+##############################################################################
+#       Parameters for the ChannelControl                                    #
+##############################################################################
+sim.channelcontrol.carrierFrequency = 868e+6
+
+# max transmission power [mW]
+sim.channelcontrol.pMax  = 3
+# signal attenuation threshold [dBm]
+sim.channelcontrol.sat   = -110
+# path loss coefficient alpha
+sim.channelcontrol.alpha = 3.5
+
+sim.channelcontrol.sendDirect = 0
+sim.channelcontrol.useTorus = 0
+
+#################################
+# Determined by PositifScenario #
+################################# 
+# sim.channelcontrol.radioRange = 220
+################################# 
+
+##############################################################################
+#       Parameters for the utility Module                                   #
+##############################################################################
+# starting position for the nodes "-1" means random staring point
+
+#################################
+# Determined by PositifScenario #
+################################# 
+# sim.node[0].utility.x = 30
+# sim.node[0].utility.y = 75
+
+# sim.node[1].utility.x = 290
+# sim.node[1].utility.y = 160
+
+# sim.node[2].utility.x = 420
+# sim.node[2].utility.y = 120
+
+# sim.node[3].utility.x = 380
+# sim.node[3].utility.y = 30
+
+# sim.node[4].utility.x = 220
+# sim.node[4].utility.y = 60
+
+# sim.node[5].utility.x = 450
+# sim.node[5].utility.y = 320
+
+# sim.node[6].utility.x = 150
+# sim.node[6].utility.y = 155
+
+# sim.node[7].utility.x = 330
+# sim.node[7].utility.y = 280
+
+# sim.node[8].utility.x = 70
+# sim.node[8].utility.y = 257
+
+# sim.node[9].utility.x = 150
+# sim.node[9].utility.y = 300
+################################# 
+
+sim.node[*].utility.x=-1
+sim.node[*].utility.y=-1
+sim.node[*].utility.z=0
+sim.node[*].loc.anchor = false
+
+##############################################################################
+#       Parameters for the Host                                              #
+##############################################################################
+
+##############################################################################
+#       Parameters for the Application Layer                                 #
+##############################################################################
+
+# debug switch
+sim.node[*].appl.debug = 1
+sim.node[*].appl.headerLength=12
+sim.node[*].appl.burstSize=3
+
+
+##############################################################################
+#       Parameters for the Localization Layer                                #
+##############################################################################
+sim.node[*].loc.headerLength=24
+sim.node[*].loc.debug = 1
+sim.node[*].loc.accuracy = 0.1
+sim.node[*].loc.anchor_frac = 0.5
+sim.node[*].loc.range_variance = 0.2
+sim.node[*].loc.pos_variance = 0.2
+sim.node[*].loc.do_2nd_phase = true
+sim.node[*].loc.phase1_min_anchors = 0
+sim.node[*].loc.phase1_max_anchors = -1
+sim.node[*].loc.flood_limit = 1
+sim.node[*].loc.refine_limit = 0
+sim.node[*].loc.tri_alg = 0
+sim.node[*].loc.var0 = 0
+sim.node[*].loc.var1 = 0
+sim.node[*].loc.var2 = 0
+sim.node[*].loc.repeats = 3
+sim.node[*].loc.use_log = true
+sim.node[*].loc.use_confs = true
+sim.node[*].loc.msg_buffering = false
+sim.node[*].loc.terrain = "simple R"
+sim.node[*].loc.multihop = true
+sim.node[*].loc.equal_pairs = true
+
+#################################
+# Determined by PositifScenario #
+################################# 
+# sim.node[*].loc.nr_dims = 2
+# sim.node[*].loc.x_dim = 500
+# sim.node[*].loc.y_dim = 350
+# sim.node[*].loc.z_dim = 100
+# sim.node[*].loc.range = 220
+################################# 
+
+##############################################################################
+#       Parameters for the Network Layer                                     #
+##############################################################################
+sim.node[*].net.headerLength=24
+sim.node[*].net.debug = 0
+sim.node[*].net.coreDebug = 0
+sim.node[*].net.stats = 0
+
+sim.node[*].net.autoForward = 0
+##############################################################################
+#       Parameters for ARP
+##############################################################################
+sim.node[*].arp.debug = 0
+
+
+##############################################################################
+#       Parameters for the MAC Layer                                         #
+##############################################################################
+
+sim.node[*].nic.mac.debug = 1
+sim.node[*].nic.mac.queueLength=5
+sim.node[*].nic.mac.headerLength=24
+sim.node[*].nic.mac.defaultChannel = 0
+sim.node[*].nic.mac.bitrate = 15360
+
+
+##############################################################################
+#       Parameters for the radio
+##############################################################################
+
+sim.node[*].nic.radio.swSleep = 0
+sim.node[*].nic.radio.swSend = 0.001
+sim.node[*].nic.radio.swRecv = 0.003
+sim.node[*].nic.radio.debug = 0
+
+
+##############################################################################
+#       Parameters for the Physical Layer                                    #
+##############################################################################
+
+# debug switch
+sim.node[*].nic.phy.debug = 1
+sim.node[*].nic.phy.publishRSSIAlways = 0
+sim.node[*].nic.phy.headerLength=16
+# transmission power [mW]
+sim.node[*].nic.phy.transmitterPower=3
+
+sim.node[*].nic.phy.carrierFrequency=868E+6
+sim.node[*].nic.phy.thermalNoise=-120
+sim.node[*].nic.phy.sensitivity=-110
+sim.node[*].nic.phy.pathLossAlpha=3.5
+sim.node[*].nic.phy.bitrate=1000
+
+sim.node[*].nic.decider.debug = 1
+sim.node[*].nic.decider.snrThresholdLevel=10;[dB]
+
+##############################################################################
+#       Parameters for the Channel Layer                                     #
+##############################################################################
+sim.node[*].nic.chan.debug = 0

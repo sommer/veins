@@ -1,0 +1,125 @@
+# Topology description:
+#   'nr-dimensions'     are we describing a 2-D or a 3-D topology?
+#   'grid-bound'        the network is contained in a box of size
+#                           [0:grid-bound] x [0:grid-bound] (x [0:grid-bound])
+#   'radio-range'       the maximum length of a connection between two nodes
+#   'connection'        a radio link between a source and destination node.
+#                           Note that connections are directed and there
+#                           need NOT be a reverse connection.
+#   'measured-range'    (noisy) distance estimate obtained by receiver on
+#                           a connection (same for each message).
+#   'nr-nodes'          the number of nodes in the network
+#   'nr-anchors'        the number of anchors in the network. An anchor is a
+#                           node that 'knows' its true position, others do not.
+#   'ID'                node identification (unsigned int), may be outside
+#                           range [0:'nr-nodes'-1]
+#   'position'          2 (or 3) floating point numbers
+
+# nr-dimensions grid-bound radio-range
+2 100 15
+
+# nr-nodes nr-anchors
+20 4
+
+# positions: 'nr-nodes' lines with <ID> <x-coord> <y-coord> [<z-coord>]
+0 0 0
+1 10 0
+2 10 10
+3 20 10
+4 20 20
+5 0 50
+6 0 40
+7 10 40
+8 10 30
+9 20 30
+10 50 50
+11 40 50
+12 40 40
+13 30 40
+14 30 30
+15 50 0
+16 50 10
+17 40 10
+18 40 20
+19 30 20
+
+# anchor-list: 'nr-anchor's IDs
+0 5 10 15
+
+# connections: src dst measured-range
+0 1 10
+1 0 10
+1 2 10
+2 1 10
+2 3 10
+3 2 10
+3 4 10
+4 3 10
+4 9 10
+4 19 10
+5 6 10
+6 5 10
+6 7 10
+7 6 10
+7 8 10
+8 7 10
+8 9 10
+9 4 10
+9 8 10
+9 14 10
+10 11 10
+11 10 10
+11 12 10
+12 11 10
+12 13 10
+13 12 10
+13 14 10
+14 9 10
+14 13 10
+14 19 10
+15 16 10
+16 15 10
+16 17 10
+17 16 10
+17 18 10
+18 17 10
+18 19 10
+19 4 10
+19 14 10
+19 18 10
+0 2 14.14
+2 0 14.14
+1 3 14.14
+3 1 14.14
+2 4 14.14
+4 2 14.14
+3 19 14.14
+19 3 14.14
+5 7 14.14
+7 5 14.14
+6 8 14.14
+8 6 14.14
+7 9 14.14
+9 7 14.14
+8 4 14.14
+4 8 14.14
+10 12 14.14
+12 10 14.14
+11 13 14.14
+13 11 14.14
+12 14 14.14
+14 12 14.14
+13 9 14.14
+9 13 14.14
+15 17 14.14
+17 15 14.14
+16 18 14.14
+18 16 14.14
+17 19 14.14
+19 17 14.14
+18 14 14.14
+14 18 14.14
+4 14 14.14
+14 4 14.14
+9 19 14.14
+19 9 14.14

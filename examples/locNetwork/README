@@ -1,0 +1,20 @@
+This application contains a test application with tools for running experiments
+similar to positif experiments.
+
+In order to setup an experiment, create an omnetpp.ini file:
+
+	./bin/positifgen.sh <SCENARIO> omnetpp.ini
+	WHERE:	<SCENARIO> is one of the scenarios from ./input/scenarios
+
+Run the experiment:
+
+	./locNetwork
+
+
+This is the directory structure given by: tree -d
+.
+|-- bin			: tools and scripts
+|-- input		: various configuration files
+|   |-- ini		: omnetpp '.ini' files
+|   `-- scenarios	: positif scenarios
+`-- src			: source for tools

@@ -1,0 +1,30 @@
+NEED = $(TARGET)
+all: $(NEED)
+
+#SCEN=wings
+#SCEN_DIR=input/scenarios/
+
+#omnetpp.ini: bin/positifgen.sh $(SCEN_DIR)$(SCEN) bin/PositifScenario
+#	bin/positifgen.sh $(SCEN) omnetpp.ini
+
+bin/PositifScenario: src/PositifScenario.cc
+	$(CXX) $(NEDCOPTS) $< -o $@
+
+rebuild:
+	(cd ../..;./mkmk locNetwork)
+	$(MAKE) re-makemake
+
+modules:
+	$(MAKE) -C ../../ modules
+
+base:
+	$(MAKE) -C ../../ base
+
+debug: $(NEED)
+	gdb $(TARGET)
+
+run: $(NEED)
+	./$(TARGET) 2>&1 > out.log
+
+valgrind: $(NEED)
+	valgrind --show-reachable=yes --log-fd=1 --leak-check=full ./$(TARGET) 2>&1 >valgrind.log

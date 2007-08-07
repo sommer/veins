@@ -1,0 +1,103 @@
+# Topology description:
+#   'nr-dimensions'     are we describing a 2-D or a 3-D topology?
+#   'grid-bound'        the network is contained in a box of size
+#                           [0:grid-bound] x [0:grid-bound] (x [0:grid-bound])
+#   'radio-range'       the maximum length of a connection between two nodes
+#   'connection'        a radio link between a source and destination node.
+#                           Note that connections are directed and there
+#                           need NOT be a reverse connection.
+#   'measured-range'    (noisy) distance estimate obtained by receiver on
+#                           a connection (same for each message).
+#   'nr-nodes'          the number of nodes in the network
+#   'nr-anchors'        the number of anchors in the network. An anchor is a
+#                           node that 'knows' its true position, others do not.
+#   'ID'                node identification (unsigned int), may be outside
+#                           range [0:'nr-nodes'-1]
+#   'position'          2 (or 3) floating point numbers
+
+# nr-dimensions grid-bound radio-range
+2 10 6
+
+# nr-nodes nr-anchors
+10 4
+
+# positions: 'nr-nodes' lines with <ID> <x-coord> <y-coord> [<z-coord>]
+0 7.82637e-05 2.18959
+1 3.83502 5.297
+2 4.17486 5.26929
+3 9.10321 3.28234
+4 2.47039 0.726859
+5 7.66495 1.66507
+6 9.04653 4.93977
+7 5.00707 4.64446
+8 8.27817 6.29543
+9 2.33195 8.45982
+
+# anchor-list: 'nr-anchor's IDs
+0 3 4 9
+
+# connections: src dst measured-range
+0 1 4.93587
+0 2 5.18781
+0 4 2.87089
+0 7 5.57641
+1 0 4.93587
+1 2 0.340967
+1 3 5.64027
+1 4 4.76953
+1 5 5.27819
+1 6 5.22374
+1 7 1.34146
+1 8 4.55395
+1 9 3.5018
+2 0 5.18781
+2 1 0.340967
+2 3 5.31381
+2 4 4.85169
+2 5 5.01708
+2 6 4.8828
+2 7 1.04067
+2 8 4.22968
+2 9 3.68453
+3 1 5.64027
+3 2 5.31381
+3 5 2.16429
+3 6 1.65839
+3 7 4.31668
+3 8 3.124
+4 0 2.87089
+4 1 4.76953
+4 2 4.85169
+4 5 5.27861
+4 7 4.66716
+5 1 5.27819
+5 2 5.01708
+5 3 2.16429
+5 4 5.27861
+5 6 3.55421
+5 7 3.99262
+5 8 4.67079
+6 1 5.22374
+6 2 4.8828
+6 3 1.65839
+6 5 3.55421
+6 7 4.05024
+6 8 1.55827
+7 0 5.57641
+7 1 1.34146
+7 2 1.04067
+7 3 4.31668
+7 4 4.66716
+7 5 3.99262
+7 6 4.05024
+7 8 3.66413
+7 9 4.65975
+8 1 4.55395
+8 2 4.22968
+8 3 3.124
+8 5 4.67079
+8 6 1.55827
+8 7 3.66413
+9 1 3.5018
+9 2 3.68453
+9 7 4.65975
