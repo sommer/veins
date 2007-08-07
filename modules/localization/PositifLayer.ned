@@ -37,6 +37,7 @@ simple PositifLayer
 	terrain: string,
 	multihop: bool,
 	equal_pairs: bool,
+	anchor: bool,
 	headerLength: numeric const; // length of the network packet header (in bits)
     gates:
 	in: uppergateIn; // from application layer

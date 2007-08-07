@@ -306,7 +306,7 @@ void Node_Savvides::do_triangulation(void *arg)
 	Position pos;
 
 #ifndef NDEBUG
-	ev << node[me].ID << ": triangulate with nodes (out of " << n << "):";
+	EV << node[me].ID << ": triangulate with nodes (out of " << n << "):";
 #endif
 	int i = 0;
 	FLOAT sum_conf = 0;
@@ -320,13 +320,13 @@ void Node_Savvides::do_triangulation(void *arg)
 		sum_conf += w;
 		i++;
 #ifndef NDEBUG
-		ev << ' ' << node[neighbor->idx].ID << (neighbor->
+		EV << ' ' << node[neighbor->idx].ID << (neighbor->
 							twin ? "t" : "") << '@'
 		    << neighbor->distance;
 #endif
 	}
 #ifndef NDEBUG
-	ev << "\n";
+	EV << "\n";
 #endif
 
 	pos_list[i] = pos;
@@ -371,14 +371,14 @@ void Node_Savvides::do_triangulation(void *arg)
 				residu = res;
 #ifndef NDEBUG
 				if (res < residu) {
-					ev << node[me].
+					EV << node[me].
 					    ID << ": UPDATE pos to " <<
 					    pos2str(position) << " (" << 100 *
 					    distance(position,
 						     node[me].true_pos) /
 					    range << "% error)" << "\n";
 				} else {
-					ev << node[me].
+					EV << node[me].
 					    ID << ": ESCAPE pos to " <<
 					    pos2str(position) << " (" << 100 *
 					    distance(position,
@@ -389,7 +389,7 @@ void Node_Savvides::do_triangulation(void *arg)
 				significant = true;
 			} else {
 #ifndef NDEBUG
-				ev << node[me].
+				EV << node[me].
 				    ID << ": REJECT move (" << res << " > " <<
 				    residu << ")\n";
 #endif
@@ -750,7 +750,7 @@ void Node_Savvides::savvides(void)
 	if (n >= phase1_min_anchors) {
 
 #ifndef NDEBUG
-		ev << node[me].
+		EV << node[me].
 		    ID << ": savvides' phase2 initialization with anchors:";
 #endif
 
@@ -773,7 +773,7 @@ void Node_Savvides::savvides(void)
 			FLOAT range = 0;
 
 #ifndef NDEBUG
-			ev << " " << node[anchor->idx].ID << "@" << anchor->cnt;
+			EV << " " << node[anchor->idx].ID << "@" << anchor->cnt;
 #endif
 			range = anchor->path_dst;
 
@@ -850,7 +850,7 @@ void Node_Savvides::savvides(void)
 			confidence = LOW_CONF;
 			status = STATUS_POSITIONED;	// After Savvides initialisation, a node is positioned regardless of its confidence.
 #ifndef NDEBUG
-			ev << node[me].
+			EV << node[me].
 			    ID << ": UPDate pos to " << pos2str(position)
 			    << " (" << 100 *
 			    node[me].perf_data.phase1_err << "% error)\n";

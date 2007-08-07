@@ -399,7 +399,7 @@ void Node_HTRefine_SEQ::do_triangulation(void *arg)
 	Position pos;
 
 #ifndef NDEBUG
-	ev << node[me].ID << ": triangulate with nodes (out of " << n << "):";
+	EV << node[me].ID << ": triangulate with nodes (out of " << n << "):";
 #endif
 	int i = 0;
 	FLOAT sum_conf = 0;
@@ -413,13 +413,13 @@ void Node_HTRefine_SEQ::do_triangulation(void *arg)
 		sum_conf += w;
 		i++;
 #ifndef NDEBUG
-		ev << ' ' << node[neighbor->idx].ID << (neighbor->
+		EV << ' ' << node[neighbor->idx].ID << (neighbor->
 							twin ? "t" : "") << '@'
 		    << neighbor->distance;
 #endif
 	}
 #ifndef NDEBUG
-	ev << "\n";
+	EV << "\n";
 #endif
 
 	pos_list[i] = pos;
@@ -464,14 +464,14 @@ void Node_HTRefine_SEQ::do_triangulation(void *arg)
 				residu = res;
 #ifndef NDEBUG
 				if (res < residu) {
-					ev << node[me].
+					EV << node[me].
 					    ID << ": UPDATE pos to " <<
 					    pos2str(position) << " (" << 100 *
 					    distance(position,
 						     node[me].true_pos) /
 					    range << "% error)" << "\n";
 				} else {
-					ev << node[me].
+					EV << node[me].
 					    ID << ": ESCAPE pos to " <<
 					    pos2str(position) << " (" << 100 *
 					    distance(position,
@@ -482,7 +482,7 @@ void Node_HTRefine_SEQ::do_triangulation(void *arg)
 				significant = true;
 			} else {
 #ifndef NDEBUG
-				ev << node[me].
+				EV << node[me].
 				    ID << ": REJECT move (" << res << " > " <<
 				    residu << ")\n";
 #endif
@@ -519,7 +519,7 @@ bool Node_HTRefine_SEQ::new_anchor(cMessage * msg)
 				anchor->last_hop_dst =
 				    (double) msg->par("distance");
 				anchor->last_hop_idx = msg->par("src");
-//ev << node[me].ID << ": update anchor, ID = " << node[idx].ID << " hop-cnt = " << hop_cnt << "\n";
+//EV << node[me].ID << ": update anchor, ID = " << node[idx].ID << " hop-cnt = " << hop_cnt << "\n";
 				// Flood update to others WHEN needed (bc_timer != NULL)
 				if (anchor->bc_timer != NULL)
 					resetTimer(anchor->bc_timer);
@@ -529,7 +529,7 @@ bool Node_HTRefine_SEQ::new_anchor(cMessage * msg)
 			return false;
 		}
 	}
-//ev << node[me].ID << ": new anchor, ID = " << node[idx].ID << " hop-cnt = " << hop_cnt << "\n";
+//EV << node[me].ID << ": new anchor, ID = " << node[idx].ID << " hop-cnt = " << hop_cnt << "\n";
 	anchor_info *anchor = new anchor_info;
 	anchor->idx = idx;
 	anchor->hop_cnt = hop_cnt;
@@ -700,7 +700,7 @@ void Node_HTRefine_SEQ::hop_based_triangulation(void)
 
 	if (n > nr_dims) {
 #ifndef NDEBUG
-		ev << node[me].ID << ": triangulate with anchors:";
+		EV << node[me].ID << ": triangulate with anchors:";
 #endif
 		FLOAT *pos_list[n + 1];
 		FLOAT range_list[n + 1];
@@ -711,7 +711,7 @@ void Node_HTRefine_SEQ::hop_based_triangulation(void)
 			anchor_info *anchor = (anchor_info *) iter();
 
 #ifndef NDEBUG
-			ev << " " << node[anchor->idx].ID << "@" << anchor->
+			EV << " " << node[anchor->idx].ID << "@" << anchor->
 			    hop_cnt;
 #endif
 			pos_list[i] = anchor->position;
@@ -752,7 +752,7 @@ void Node_HTRefine_SEQ::hop_based_triangulation(void)
 			node[me].perf_data.phase1_err =
 			    distance(position, node[me].true_pos) / range;
 #ifndef NDEBUG
-			ev << node[me].
+			EV << node[me].
 			    ID << ": UPDate pos to " << pos2str(position)
 			    << " (" << 100 *
 			    node[me].perf_data.phase1_err << "% error)\n";
@@ -780,7 +780,7 @@ void Node_HTRefine_SEQ::calibrate(void)
 		}
 		avg_hop_dist = dist_sum / hop_sum;
 #ifndef NDEBUG
-		ev << node[me].
+		EV << node[me].
 		    ID << ": CALIBRATE avg hop distance " << dist_sum /
 		    hop_sum << "\n";
 #endif

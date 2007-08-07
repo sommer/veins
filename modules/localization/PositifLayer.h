@@ -179,7 +179,8 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	virtual void handleTimer(timer_info * handler) {
 		error
 		    ("Subclasses of PositifLayer should implement handleTimer()");
-	} void send(cMessage * msg);	// synchronous send
+	}
+	void send(cMessage * msg);	// synchronous send
 	FLOAT distance(Position, Position);
 	FLOAT savvides_minmax(unsigned int n_pts, FLOAT ** positions,
 			      FLOAT * ranges, FLOAT * confs, int target);

@@ -1520,7 +1520,7 @@ void Node_EuclRefineCheat::do_triangulation(void *arg)
 	Position pos;
 
 #ifndef NDEBUG
-	ev << node[me].ID << ": triangulate with nodes (out of " << n << "):";
+	EV << node[me].ID << ": triangulate with nodes (out of " << n << "):";
 #endif
 	int i = 0;
 	FLOAT sum_conf = 0;
@@ -1534,13 +1534,13 @@ void Node_EuclRefineCheat::do_triangulation(void *arg)
 		sum_conf += w;
 		i++;
 #ifndef NDEBUG
-		ev << ' ' << node[neighbor->idx].ID << (neighbor->
+		EV << ' ' << node[neighbor->idx].ID << (neighbor->
 							twin ? "t" : "") << '@'
 		    << neighbor->distance;
 #endif
 	}
 #ifndef NDEBUG
-	ev << "\n";
+	EV << "\n";
 #endif
 
 	pos_list[i] = pos;
@@ -1588,14 +1588,14 @@ void Node_EuclRefineCheat::do_triangulation(void *arg)
 				residu = res;
 #ifndef NDEBUG
 				if (res < residu) {
-					ev << node[me].
+					EV << node[me].
 					    ID << ": UPDATE pos to " <<
 					    pos2str(position) << " (" << 100 *
 					    distance(position,
 						     node[me].true_pos) /
 					    range << "% error)" << "\n";
 				} else {
-					ev << node[me].
+					EV << node[me].
 					    ID << ": ESCAPE pos to " <<
 					    pos2str(position) << " (" << 100 *
 					    distance(position,
@@ -1606,7 +1606,7 @@ void Node_EuclRefineCheat::do_triangulation(void *arg)
 				significant = true;
 			} else {
 #ifndef NDEBUG
-				ev << node[me].
+				EV << node[me].
 				    ID << ": REJECT move (" << res << " > " <<
 				    residu << ")\n";
 #endif

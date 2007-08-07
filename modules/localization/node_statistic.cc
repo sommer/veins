@@ -99,12 +99,22 @@ void Node_Statistic::init(void)
 	algorithm = 1;		// Output on raw data line only.
 	version = 8;
 	point_dist = 1.0;
+
+	if (MAX_TIMERS < TIMER_COUNT) {
+		error
+		    ("MAX_TIMERS < TIMER_COUNT: (%d < %d), increase MAX_TIMERS in PositifLayer.h\n",
+		     MAX_TIMERS, TIMER_COUNT);
+		abort();
+	} else {
+		/* allocate the needed timers */
+		allocateRepeatTimers(TIMER_COUNT);
+	}
 }
 
 // Dispatch this timer to the proper handler function.
 void Node_Statistic::handleTimer(timer_info * timer)
 {
-	ev << "timer event\n";
+	EV << "timer event\n";
 	switch (*timer) {
 	case TIMER_SND_POS:
 		sendPosition(contextPointer(*timer));
@@ -153,7 +163,7 @@ void Node_Statistic::handleStartMessage(cMessage * msg)
 	domulti = par("multihop");
 	equal_pairs = par("equal_pairs");
 
-	ev << "Equal pairs: " << (equal_pairs ? "true" : "false") << "\n";
+	EV << "Equal pairs: " << (equal_pairs ? "true" : "false") << "\n";
 
 	comp_position = NULL;
 	bc_position = NULL;
@@ -163,7 +173,7 @@ void Node_Statistic::handleStartMessage(cMessage * msg)
 	summary.idx = me;
 	summary_update = false;
 
-	ev << "start msg " << status << "\n";
+	EV << "start msg " << status << "\n";
 	if (status == STATUS_ANCHOR) {
 		confidence = 1;
 		nghbor_info *ME = new nghbor_info;
@@ -173,7 +183,7 @@ void Node_Statistic::handleStartMessage(cMessage * msg)
 		memcpy(ME->poss[0].pos, position, sizeof(position));
 		memcpy(rectangle.min, position, sizeof(position));
 		memcpy(rectangle.max, position, sizeof(position));
-		ev << "anchor at " << pos2str(position) << "\n";
+		EV << "anchor at " << pos2str(position) << "\n";
 		valid_rectangle = true;
 
 		bc_position = timer(1, TIMER_SND_POS);
@@ -245,8 +255,8 @@ void Node_Statistic::update_rectangle(nghbor_info * anchor)
 		}
 	} else
 		osize = -1;
-	ev << node[me].ID << ": Updating from " << anchor->idx << "\n";
-	ev << node[me].ID << ": old size = " << osize << "\n";
+	EV << node[me].ID << ": Updating from " << anchor->idx << "\n";
+	EV << node[me].ID << ": old size = " << osize << "\n";
 	float size = 1;
 	for (int d = 0; d < nr_dims; d++) {
 		FLOAT left = floor(Max(0, anchor->tl[d] - range));
@@ -262,8 +272,8 @@ void Node_Statistic::update_rectangle(nghbor_info * anchor)
 		size *= (rectangle.max[d] - rectangle.min[d]);
 	}
 	valid_rectangle = true;
-	ev << node[me].ID << ": TL = " << pos2str(rectangle.min) << ",";
-	ev << "BR = " << pos2str(rectangle.max) << " size = " << size << "\n";
+	EV << node[me].ID << ": TL = " << pos2str(rectangle.min) << ",";
+	EV << "BR = " << pos2str(rectangle.max) << " size = " << size << "\n";
 }
 
 
@@ -333,7 +343,7 @@ void Node_Statistic::sendPosition(void *arg)
 	assert(valid_rectangle);
 	if (confidence <= ACCEPT && confidence2 <= ACCEPT
 	    && confidence1 <= ACCEPT) {
-		ev << node[me].
+		EV << node[me].
 		    ID << ": pos msg junked. New conf = " << confidence << "\n";
 		return;
 	}
@@ -357,7 +367,7 @@ void Node_Statistic::sendPosition(void *arg)
 		(int) (100 * position[1] / sqrt(area)));
 	//setDisplayString(dispSUBMOD, (const char *) tmp, true);
 
-	ev << node[me].ID << ": sending position\n";
+	EV << node[me].ID << ": sending position\n";
 
 	send(msg);
 }
@@ -378,7 +388,7 @@ void Node_Statistic::Statistic(void)
 
 	real_range_list = new FLOAT[n + 1];	// Used for debug output only
 
-	ev << node[me].ID << ": working with ";
+	EV << node[me].ID << ": working with ";
 	int i = 0;
 	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *anchor = (nghbor_info *) iter();
@@ -390,21 +400,21 @@ void Node_Statistic::Statistic(void)
 		real_range_list[i] =
 		    distance(node[me].true_pos, node[anchor->idx].true_pos);
 #ifndef NDEBUG
-		ev << " " << node[anchor->idx].ID << "@" << pos2str(anchor->
+		EV << " " << node[anchor->idx].ID << "@" << pos2str(anchor->
 								    poss[0].
 								    pos);
-		ev << "(tp " << pos2str(node[anchor->idx].
+		EV << "(tp " << pos2str(node[anchor->idx].
 					true_pos) << ", rr=" <<
 		    real_range_list[i] << ") (conf=" << anchor->poss[0].
 		    confidence << ")";
 		if (conf_list[(i * 2) + 1] > 0)
-			ev << " & " << pos2str(anchor->poss[1].
+			EV << " & " << pos2str(anchor->poss[1].
 					       pos) << " (conf=" << anchor->
 			    poss[1].confidence << ")";
 #endif
 		i++;
 	}
-	ev << "\n";
+	EV << "\n";
 
 	Position next, next2;
 	pos_list[n * 2] = &next;
@@ -436,9 +446,9 @@ void Node_Statistic::Statistic(void)
 	logprintf(" %4.0f,%4.0f\n", next[0], next[1]);
 
 #ifndef NDEBUG
-	ev << node[me].ID << ": True pos = " << pos2str(node[me].
+	EV << node[me].ID << ": True pos = " << pos2str(node[me].
 							true_pos) << "\n";
-	ev << node[me].
+	EV << node[me].
 	    ID << ": possible pos " << pos2str(next) << " (conf = " <<
 	    conf_list[n * 2] << ") err = " << distance(next,
 						       node[me].
@@ -446,7 +456,7 @@ void Node_Statistic::Statistic(void)
 #endif
 	if (conf_list[(n * 2) + 1] != 0) {
 #ifndef NDEBUG
-		ev << node[me].
+		EV << node[me].
 		    ID << ": possible pos " << pos2str(next2) << " (conf = " <<
 		    conf_list[(n * 2) + 1] << ") err = " << distance(next2,
 								     node[me].
@@ -462,7 +472,7 @@ void Node_Statistic::Statistic(void)
 		    2.0 * (1 -
 			   (fabs(conf_list[n * 2] - conf_list[(n * 2) + 1]) /
 			    conf_list[n * 2]));
-		ev << node[me].ID << ": mult factor = " << mult << "\n";
+		EV << node[me].ID << ": mult factor = " << mult << "\n";
 		confidence =
 		    (conf_list[n * 2] + conf_list[(n * 2) + 1]) / (2.0 + mult);
 	} else {
@@ -476,7 +486,7 @@ void Node_Statistic::Statistic(void)
 	memmove(position1, next, sizeof(Position));
 	memmove(position2, next2, sizeof(Position));
 #ifndef NDEBUG
-	ev << node[me].
+	EV << node[me].
 	    ID << ": UPDate pos to " << pos2str(position) << " (conf = " <<
 	    confidence << ") err = " << distance(position,
 						 node[me].true_pos) << "\n";
@@ -487,7 +497,7 @@ void Node_Statistic::Statistic(void)
 		node[me].perf_data.phase1_err =
 		    distance(position, node[me].true_pos) / range;
 #ifndef NDEBUG
-		ev << node[me].ID << ": ACCEPT transmit\n";
+		EV << node[me].ID << ": ACCEPT transmit\n";
 #endif
 		if (bc_position == NULL) {
 			bc_position = timer(1, TIMER_SND_POS);
@@ -498,7 +508,7 @@ void Node_Statistic::Statistic(void)
 	} else {
 		status = STATUS_BAD;
 #ifndef NDEBUG
-		ev << node[me].ID << ": REJECT transmit\n";
+		EV << node[me].ID << ": REJECT transmit\n";
 #endif
 	}
 //      wait(n * nr_dims * nr_dims * msec);
@@ -512,15 +522,15 @@ FLOAT Node_Statistic::resid(int n_pts, Position ** positions, FLOAT * ranges,
 {
 	FLOAT residu = 0;
 	FLOAT sum_c = 0;
-	//ev << node[me].ID << ": test = "<<pos2str(test)<<"\n";
+	//EV << node[me].ID << ": test = "<<pos2str(test)<<"\n";
 	for (int j = 0; j < n_pts * 2; j++) {
 		if (confs[j] == 0)
 			continue;
 		FLOAT c = use_confs ? confs[j] : 1;
-		//ev << node[me].ID << ": pos = "<<pos2str(*positions[j])<<", distance = "<<distance(test, *positions[j])<<"\n";
+		//EV << node[me].ID << ": pos = "<<pos2str(*positions[j])<<", distance = "<<distance(test, *positions[j])<<"\n";
 		residu +=
 		    c * fabs(ranges[(j / 2)] - distance(test, *positions[j]));
-		//ev << node[me].ID << ": residu = "<<residu<<"\n";
+		//EV << node[me].ID << ": residu = "<<residu<<"\n";
 		assert(!isnan(residu));
 		sum_c += c;
 	}
@@ -563,7 +573,7 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 
 	for (int i = 0; i < n_pts * 2; i++) {
 		if (confs[i] != 0) {
-			ev << node[me].
+			EV << node[me].
 			    ID << ": anchor is at " <<
 			    pos2str(*sub_pos(*positions[i], rectangle.min)) <<
 			    " range = " << ranges[i /
@@ -615,9 +625,9 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 		}
 	}
 
-	ev << node[me].ID << ": delta = " << pos2str(delta) << "\n";
+	EV << node[me].ID << ": delta = " << pos2str(delta) << "\n";
 
-	ev << node[me].
+	EV << node[me].
 	    ID << ": width= " << width << ", height=" << height << "\n";
 
 	for (int j = 0; j < width; j++) {
@@ -641,7 +651,7 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 							    (point_dist / 2.0),
 							    ranges[i],
 							    range * 0.2);
-				//ev << node[me].ID << ": Adding in "<<pos2str(*positions[i*2]) <<" with conf "<<val<<", range="<<dist<<"\n";
+				//EV << node[me].ID << ": Adding in "<<pos2str(*positions[i*2]) <<" with conf "<<val<<", range="<<dist<<"\n";
 				if (equal_pairs && confs[i * 2] != 1.0
 				    && confs[(i * 2) + 1] > 0) {
 					dist =
@@ -689,22 +699,22 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 	}
 
 	//memcpy(best, avg, sizeof(Position));
-	ev << node[me].
+	EV << node[me].
 	    ID << ": total = " << total << " n_pts = " << n_pts << "\n";
-	ev << node[me].
+	EV << node[me].
 	    ID << ": average = " << pos2str(avg) << " conf = " << POSCONF(avg)
 	    << "\n";
 
 	Position second;
 	second[0] = -1;
 
-	ev << node[me].
+	EV << node[me].
 	    ID << ": centre = " << pos2str(centre) << " conf = " <<
 	    POSCONF(centre) << "\n";
-	ev << node[me].
+	EV << node[me].
 	    ID << ": abs centre = " << pos2str(*add_pos(centre, rectangle.min))
 	    << "\n";
-	ev << node[me].
+	EV << node[me].
 	    ID << ": current guess = " << pos2str(best) << " conf = " <<
 	    POSCONF(best) << "\n";
 
@@ -725,7 +735,7 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 				best[j] = work[j] - signmod * a;
 				best[next] = work[next] + signmod * b;
 				//best[j] += (work[j]-best[j])*2;
-				//ev << "next="<<next<<" j="<<j<<"\n";
+				//EV << "next="<<next<<" j="<<j<<"\n";
 
 				int l = 0;
 				for (; l < nr_dims; l++)
@@ -735,7 +745,7 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 						break;
 				if (l != nr_dims)
 					continue;
-				ev << node[me].
+				EV << node[me].
 				    ID << ": Alternate = " << pos2str(best) <<
 				    " conf = " << POSCONF(best) <<
 				    " true pos dist= " << distance(rel_true_pos,
@@ -749,7 +759,7 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 				}
 			}
 	//second[0] = -1;
-	ev << node[me].
+	EV << node[me].
 	    ID << ": rel true pos = " << pos2str(rel_true_pos) << " conf = " <<
 	    POSCONF(rel_true_pos) << "\n";
 
@@ -771,18 +781,18 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 		float m = (range * range * 2) / (width * height);
 		m = 1 / m;
 		float s = fabs(width - height) / (range * 2);
-		ev << node[me].ID << ": mult factor = " << m << "\n";
-		ev << node[me].ID << ": squareness = " << s << "\n";
-		ev << node[me].ID << ": metric (m*s) = " << m *
+		EV << node[me].ID << ": mult factor = " << m << "\n";
+		EV << node[me].ID << ": squareness = " << s << "\n";
+		EV << node[me].ID << ": metric (m*s) = " << m *
 		    s << " or (m/s) = " << m / s << "\n";
-		ev << node[me].ID << ": metric total = " << (m * s) + (m / s) +
+		EV << node[me].ID << ": metric total = " << (m * s) + (m / s) +
 		    m + s << "\n";
 		float f_weight =
 		    resid(n_pts, positions, ranges, confs, best, true);
 		if (f_weight > range * 5) {
 			confs[(n_pts * 2)] = 0.99 * ACCEPT;
 		}
-		ev << node[me].
+		EV << node[me].
 		    ID << ": residue (first) weighted = " << f_weight <<
 		    " not = " << resid(n_pts, positions, ranges, confs, best,
 				       false) << "\n";
@@ -790,7 +800,7 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 			float s_weight =
 			    resid(n_pts, positions, ranges, confs, second,
 				  true);
-			ev << node[me].
+			EV << node[me].
 			    ID << ": residue (second) weighted = " << s_weight
 			    << " not = " << resid(n_pts, positions, ranges,
 						  confs, second, false) << "\n";
@@ -801,7 +811,7 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 
 	}
 
-	ev << node[me].
+	EV << node[me].
 	    ID << ": Best guess = " << pos2str(best) << " conf = " <<
 	    confs[n_pts * 2] << "\n";
 

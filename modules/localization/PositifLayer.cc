@@ -98,7 +98,6 @@ void PositifLayer::initialize(int stage)
 	case 0:
 		RepeatTimer::init(this);
 //              me = par("me");
-		start_timer = MAX_TIMERS;
 		me = findHost()->index();
 		/* clear arrays */
 		for (int i = 0; i < MAX_MSG_TYPES; i++) {
@@ -116,7 +115,7 @@ void PositifLayer::initialize(int stage)
 			headerLength = par("headerLength");
 
 			node[me].ID = me;
-			node[me].anchor = false;
+			node[me].anchor = par("anchor");
 			node[me].recv_cnt = 0;
 			/* initialize the node specific stuff */
 			node[me].neighbors = new cLinkedList();
@@ -170,10 +169,15 @@ void PositifLayer::initialize(int stage)
 			/* In positif this is done by an offset:
 			 * genk_normal(1, node[me].true_pos[i], range * pos_variance)
 			 */
-			for (int i = 0; i < 3; i++)
-				node[me].init_pos[i] =
-				    genk_normal(1, node[me].true_pos[i],
-						range * pos_variance);
+			if (node[me].anchor) {
+				for (int i = 0; i < 3; i++)
+					node[me].init_pos[i] = node[me].true_pos[i];
+			} else {
+				for (int i = 0; i < 3; i++)
+					node[me].init_pos[i] =
+						genk_normal(1, node[me].true_pos[i],
+							    range * pos_variance);
+			}
 		}
 		break;
 	case 2:
@@ -182,7 +186,7 @@ void PositifLayer::initialize(int stage)
 			/* init must reserve the number of used repeat timers for the application */
 			init();
 			/* create the start timer, one repeat */
-			setRepeatTimer(start_timer, 1, 1);
+			start_timer = setRepeatTimer(1, 1);
 			cMessage *msg = new cMessage("START", MSG_START);
 			msg->addPar("anchor") = node[me].anchor;
 			if (node[me].anchor) {
@@ -254,17 +258,18 @@ void PositifLayer::setup_grid()
 		pos_variance = par("pos_variance");
 
 		// Select random anchors
-		for (int i = 0; i < num_anchors; i++) {
-			int n;
+// 		for (int i = 0; i < num_anchors; i++) {
+// 			int n;
 
-			do {
-				n = (int) genk_uniform(1, 0, num_nodes - 1);
-			} while (node[n].anchor);
+			// Initialize random anchors
+// 			do {
+// 				n = (int) genk_uniform(1, 0, num_nodes - 1);
+// 			} while (node[n].anchor);
+// 			node[n].anchor = true;
 
-			node[n].anchor = true;
-			memcpy(node[n].init_pos, node[n].true_pos,
-			       sizeof(node[n].true_pos));
-		}
+// 			memcpy(node[n].init_pos, node[n].true_pos,
+// 			       sizeof(node[n].true_pos));
+// 		}
 	}
 }
 
@@ -611,7 +616,7 @@ void PositifLayer::handleRepeatTimer(unsigned int index)
 {
 	Enter_Method_Silent();
 
-	if (index < 0) {
+	if (index == UINT_MAX) {
 		error("Uninitialized timer called? aborting now...");
 		abort();
 	} else if (index == start_timer) {
@@ -638,7 +643,7 @@ void PositifLayer::handleRepeatTimer(unsigned int index)
 
 		handleStartMessage(msg);
 		deleteRepeatTimer(index);
-		start_timer = -1;
+		start_timer = UINT_MAX;
 
 		cMessage *neighborMsg =
 		    new cMessage("NEIGHBOR", MSG_NEIGHBOR);

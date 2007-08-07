@@ -382,7 +382,7 @@ void Node_HTRefine::do_triangulation(void *arg)
 	Position pos;
 
 #ifndef NDEBUG
-	ev << node[me].ID << ": triangulate with nodes (out of " << n << "):";
+	EV << node[me].ID << ": triangulate with nodes (out of " << n << "):";
 #endif
 	int i = 0;
 	FLOAT sum_conf = 0;
@@ -396,13 +396,13 @@ void Node_HTRefine::do_triangulation(void *arg)
 		sum_conf += w;
 		i++;
 #ifndef NDEBUG
-		ev << ' ' << node[neighbor->idx].ID << (neighbor->
+		EV << ' ' << node[neighbor->idx].ID << (neighbor->
 							twin ? "t" : "") << '@'
 		    << neighbor->distance;
 #endif
 	}
 #ifndef NDEBUG
-	ev << "\n";
+	EV << "\n";
 #endif
 
 	pos_list[i] = pos;
@@ -450,14 +450,14 @@ void Node_HTRefine::do_triangulation(void *arg)
 				residu = res;
 #ifndef NDEBUG
 				if (res < residu) {
-					ev << node[me].
+					EV << node[me].
 					    ID << ": UPDATE pos to " <<
 					    pos2str(position) << " (" << 100 *
 					    distance(position,
 						     node[me].true_pos) /
 					    range << "% error)" << "\n";
 				} else {
-					ev << node[me].
+					EV << node[me].
 					    ID << ": ESCAPE pos to " <<
 					    pos2str(position) << " (" << 100 *
 					    distance(position,
@@ -468,7 +468,7 @@ void Node_HTRefine::do_triangulation(void *arg)
 				significant = true;
 			} else {
 #ifndef NDEBUG
-				ev << node[me].
+				EV << node[me].
 				    ID << ": REJECT move (" << res << " > " <<
 				    residu << ")\n";
 #endif
@@ -700,7 +700,7 @@ void Node_HTRefine::hop_based_triangulation(void)
 
 	if (n >= phase1_min_anchors) {
 #ifndef NDEBUG
-		ev << node[me].ID << ": triangulate with anchors:";
+		EV << node[me].ID << ": triangulate with anchors:";
 #endif
 
 		used_anchors = (n < phase1_max_anchors
@@ -722,7 +722,7 @@ void Node_HTRefine::hop_based_triangulation(void)
 			FLOAT range = 0;
 
 #ifndef NDEBUG
-			ev << " " << node[anchor->idx].ID << "@" << anchor->
+			EV << " " << node[anchor->idx].ID << "@" << anchor->
 			    hop_cnt;
 #endif
 
@@ -817,7 +817,7 @@ void Node_HTRefine::hop_based_triangulation(void)
 			node[me].perf_data.phase1_err =
 			    distance(position, node[me].true_pos) / range;
 #ifndef NDEBUG
-			ev << node[me].
+			EV << node[me].
 			    ID << ": UPDate pos to " << pos2str(position) <<
 			    " (" << 100 *
 			    node[me].perf_data.phase1_err << "% error)\n";
@@ -882,7 +882,7 @@ void Node_HTRefine::calibrate(void)
 		}
 		avg_hop_dist = dist_sum / hop_sum;
 #ifndef NDEBUG
-		ev << node[me].
+		EV << node[me].
 		    ID << ": CALIBRATE avg hop distance " << dist_sum /
 		    hop_sum << "\n";
 #endif
