@@ -45,7 +45,7 @@ class Coord : public cPolymorphic
 
 
     /** Initializes coordinates.*/
-    Coord( const Coord& pos ) {
+    Coord( const Coord& pos ) : cPolymorphic() {
         x = pos.x;
         y = pos.y;
         z = pos.z;
