@@ -28,17 +28,17 @@ void BaseWorldUtility::initialize(int stage)
 {
 	if (stage == 0)
 	{
-		playgroundSize.x = par("playgroundSizeX");
-		playgroundSize.y = par("playgroundSizeY");
-		playgroundSize.z = par("playgroundSizeZ");
+		playgroundSize.setX(par("playgroundSizeX"));
+		playgroundSize.setY(par("playgroundSizeY"));
+		playgroundSize.setZ(par("playgroundSizeZ"));
 	}
 }
 
 Coord BaseWorldUtility::getRandomPosition() {
     Coord p;
-    p.x = genk_uniform(0, 0, playgroundSize.x);
-    p.y = genk_uniform(0, 0, playgroundSize.y);
-    p.z = genk_uniform(0, 0, playgroundSize.z);
+    p.setX() = genk_uniform(0, 0, playgroundSize.getX());
+    p.setY() = genk_uniform(0, 0, playgroundSize.getY());
+    p.setZ() = genk_uniform(0, 0, playgroundSize.getZ());
     return p;
 }
 

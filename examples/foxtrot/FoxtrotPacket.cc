@@ -38,10 +38,10 @@ void FoxtrotPacket::setLocalPos(Foxtrot * f)
 {
 	BaseUtility *bs = dynamic_cast < BaseUtility * >(f->getNodeModule("BaseUtility"));
 	const Coord *loc = bs->getPos();
-	foxtrot_data_uniset(&this->loc_var[0], loc->x);
-	foxtrot_data_uniset(&this->loc_var[1], loc->y);
+	foxtrot_data_uniset(&this->loc_var[0], loc->getX());
+	foxtrot_data_uniset(&this->loc_var[1], loc->getY());
 #if AXES == 3
-	foxtrot_data_uniset(&this->loc_var[2], loc->z);
+	foxtrot_data_uniset(&this->loc_var[2], loc->getZ());
 #endif
 }
 

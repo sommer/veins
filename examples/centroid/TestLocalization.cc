@@ -169,7 +169,7 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	    if((utility=(BaseUtility *)(findHost()->submodule("utility"))))//{x=utility->par("x");y=utility->par("y");y=utility->par("z");}
 	      //if(utility=(BaseUtility *)(getNodeModule("utility")))
 	       //GET REAL LOC HERE! Don't read form omnet.ini!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		{pos=utility->getPos(); x=pos.x;y=pos.y;z=pos.z;}
+		{pos=utility->getPos(); x=pos.getX();y=pos.getY();z=pos.getZ();}
 	    else{EV << "No submodule \"utility\" found\n"; exit(-1);}
 	    EV << "Timer rang: anchor sends its position"<<id<<"("<<x<<","<<y<<","<<z<<")\n";
 	    // do a broadcast
@@ -204,7 +204,7 @@ void TestLocalization::handleSelfMsg(cMessage *msg) {
 	      // Get real position (ground truth)
 	      if((utility=(BaseUtility *)findHost()->submodule("utility")))
 		//{xReal=utility->par("x");yReal=utility->par("y");zReal=utility->par("z");}
-		{pos=utility->getPos(); xReal=pos.x;yReal=pos.y;zReal=pos.z;}
+		{pos=utility->getPos(); xReal=pos.getX();yReal=pos.getY();zReal=pos.getZ();}
 	      else{EV << "No submodule \"utility\" found\n"; exit(-1);}
 	      EV << "Node "<<id<<" estimated position is: ("<<x<<","<<y<<","<<z<<") with "<<nb_anchor_positions<<" anchors heard. True position is:  ("
 		 <<xReal<<","<<yReal<<","<<zReal<<")\n";
