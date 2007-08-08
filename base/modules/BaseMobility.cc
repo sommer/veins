@@ -187,14 +187,48 @@ void BaseMobility::updatePosition() {
     //bb->publishBBItem(moveCategory, &move, hostId);
     baseUtility->setPos(&move.startPos); // update the position in BaseUtility module
     char xStr[32], yStr[32], zStr[32];
-    sprintf(xStr, "%d", FWMath::round(move.startPos.x));
-    sprintf(yStr, "%d", FWMath::round(move.startPos.y));
-    sprintf(zStr, "%d", FWMath::round(move.startPos.z));
+    sprintf(xStr, "%d", FWMath::round(move.startPos.getX()));
+    sprintf(yStr, "%d", FWMath::round(move.startPos.getY()));
+    sprintf(zStr, "%d", FWMath::round(move.startPos.getZ()));
     hostPtr->displayString().setTagArg("p", 0, xStr);
     hostPtr->displayString().setTagArg("p", 1, yStr);
 
 	/* p parameter *does not* accept z co-ordinates. Tk has a 2-d view */
 	//hostPtr->displayString().setTagArg("p", 2, zStr);
+}
+
+/**
+ * Helper function for BaseMobility::reflectIfOutside().
+ *
+ * Reflects a given coordinate according to the given
+ * BorderHandling.
+ *
+ */
+void BaseMobility::reflectCoordinate(BorderHandling border, Coord& c)
+{
+    switch( border ){
+    case X_SMALLER:
+        c.setX(-c.getX());
+	    break;
+    case X_BIGGER:
+        c.setX(2 * playgroundSizeX() - c.getX());
+	    break;
+    case Y_SMALLER:
+        c.setY(-c.getY());
+	    break;
+    case Y_BIGGER:
+        c.setY(2 * playgroundSizeY() - c.getY());
+        break;
+    case Z_SMALLER:
+        c.setZ(-c.getZ());
+        break;
+    case Z_BIGGER:
+        c.setZ(2 * playgroundSizeZ() - c.getZ());
+	    break;
+    case NOWHERE:
+    default:
+	    error("wrong border handling case!");
+    }
 }
 
 /**
@@ -209,46 +243,29 @@ void BaseMobility::updatePosition() {
  * @param angle direction to which the host is moving
  **/
 void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget, Coord& targetPos, Coord& step, double& angle) {
+
+    reflectCoordinate(wo, targetPos);
+    reflectCoordinate(wo, stepTarget);
+
     switch( wo ){
     case X_SMALLER:
-        targetPos.x = -targetPos.x;
-        stepTarget.x = -stepTarget.x;
-        step.x = -step.x;
-	angle = 180 - angle;
-	break;
     case X_BIGGER:
-        targetPos.x = 2*playgroundSizeX() - targetPos.x;
-        stepTarget.x = 2*playgroundSizeX() - stepTarget.x;
-        step.x = -step.x;
-	angle = 180 - angle;
-	break;
+        step.setX(-step.getX());
+	    angle = 180 - angle;
+	    break;
     case Y_SMALLER:
-        targetPos.y = -targetPos.y;
-        stepTarget.y = -stepTarget.y;
-        step.y = -step.y;
-	angle = -angle;
-	break;
     case Y_BIGGER:
-        targetPos.y = 2*playgroundSizeY() - targetPos.y;
-        stepTarget.y = 2*playgroundSizeY() - stepTarget.y;
-        step.y = -step.y;
-	angle = -angle;
-	break;
+        step.setY(-step.getY());
+	    angle = -angle;
+	    break;
     case Z_SMALLER:
-        targetPos.z = -targetPos.z;
-        stepTarget.z = -stepTarget.z;
-        step.z = -step.z;
-	angle = -angle;
-	break;
     case Z_BIGGER:
-        targetPos.z = 2*playgroundSizeZ() - targetPos.z;
-        stepTarget.z = 2*playgroundSizeZ() - stepTarget.z;
-        step.z = -step.z;
-	angle = -angle;
-	break;
+        step.setZ(-step.getZ());
+	    angle = -angle;
+	    break;
     case NOWHERE:
     default:
-	error("wrong border handling case!");
+	    error("wrong border handling case!");
     }
 }
 
@@ -263,32 +280,23 @@ void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget, Coord&
 void BaseMobility::wrapIfOutside(BorderHandling wo, Coord& stepTarget, Coord& targetPos) {
     switch( wo ){
     case X_SMALLER:
-        targetPos.x += playgroundSizeX();
-        stepTarget.x += playgroundSizeX();
-	break;
     case X_BIGGER:
-        targetPos.x -= playgroundSizeX();
-        stepTarget.x -= playgroundSizeX();
-	break;
+        targetPos.setX(fmod(targetPos.getX(), playgroundSizeX()));
+        stepTarget.setX(fmod(stepTarget.getX(), playgroundSizeX()));
+	    break;
     case Y_SMALLER:
-        targetPos.y += playgroundSizeY();
-        stepTarget.y += playgroundSizeY();
-	break;
     case Y_BIGGER:
-        targetPos.y -= playgroundSizeY();
-        stepTarget.y -= playgroundSizeY();
-	break;
+        targetPos.setY(fmod(targetPos.getY(), playgroundSizeY()));
+        stepTarget.setY(fmod(stepTarget.getY(), playgroundSizeY()));
+	    break;
     case Z_SMALLER:
-        targetPos.z += playgroundSizeZ();
-        stepTarget.z += playgroundSizeZ();
-	break;
     case Z_BIGGER:
-        targetPos.z -= playgroundSizeZ();
-        stepTarget.z -= playgroundSizeZ();
-	break;
+        targetPos.setZ(fmod(targetPos.getZ(), playgroundSizeZ()));
+        stepTarget.setZ(fmod(stepTarget.getZ(), playgroundSizeZ()));
+	    break;
     case NOWHERE:
     default:
-	error("wrong border handling case!");
+	    error("wrong border handling case!");
     }
 }
 
@@ -317,25 +325,25 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coor
 {
     BorderHandling outside = NOWHERE;
 
-    if (targetPos.x < 0){
-	borderStep.x = -move.startPos.x;
+    if (targetPos.getX() < 0){
+	borderStep.setX(-move.startPos.getX());
 	outside = X_SMALLER;
     }
-    else if (targetPos.x >= playgroundSizeX()){
-        borderStep.x = playgroundSizeX() - move.startPos.x;
+    else if (targetPos.getX() >= playgroundSizeX()){
+        borderStep.setX(playgroundSizeX() - move.startPos.getX());
 	outside = X_BIGGER;
     }
 
-    if (targetPos.y < 0){
-	borderStep.y = -move.startPos.y;
+    if (targetPos.getY() < 0){
+	borderStep.setY(-move.startPos.getY());
 
-	if( outside==NOWHERE || fabs(borderStep.x/move.direction.x) > fabs(borderStep.y/move.direction.y) )
+	if( outside==NOWHERE || fabs(borderStep.getX()/move.direction.getX()) > fabs(borderStep.getY()/move.direction.getY()) )
 	    outside = Y_SMALLER;
     }
-    else if (targetPos.y >= playgroundSizeY()){
-        borderStep.y = playgroundSizeY() - move.startPos.y;
+    else if (targetPos.getY() >= playgroundSizeY()){
+        borderStep.setY(playgroundSizeY() - move.startPos.getY());
 
-	if( outside==NOWHERE || fabs(borderStep.x/move.direction.x) > fabs(borderStep.y/move.direction.y) )
+	if( outside==NOWHERE || fabs(borderStep.getX()/move.direction.getX()) > fabs(borderStep.getY()/move.direction.getY()) )
 	    outside = Y_BIGGER;
     }
 
@@ -361,39 +369,39 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
 
     switch( wo ){
     case X_SMALLER:
-	factor = borderStep.x / move.direction.x;
-	borderStep.y = factor * move.direction.y;
+	factor = borderStep.getX() / move.direction.getX();
+	borderStep.setY(factor * move.direction.getY());
 
 	if( policy == WRAP ){
-	    borderStart.x = playgroundSizeX();
-	    borderStart.y = move.startPos.y + borderStep.y;
+	    borderStart.setX(playgroundSizeX());
+	    borderStart.setY(move.startPos.getY() + borderStep.getY());
 	}
 	break;
     case X_BIGGER:
-	factor = borderStep.x / move.direction.x;
-	borderStep.y = factor * move.direction.y;
+	factor = borderStep.getX() / move.direction.getX();
+	borderStep.setY(factor * move.direction.getY());
 
 	if( policy == WRAP ){
-	    borderStart.x = 0;
-	    borderStart.y = move.startPos.y + borderStep.y;
+	    borderStart.setX(0);
+	    borderStart.setY(move.startPos.getY() + borderStep.getY());
 	}
 	break;
     case Y_SMALLER:
-	factor = borderStep.y / move.direction.y;
-	borderStep.x = factor * move.direction.x;
+	factor = borderStep.getY() / move.direction.getY();
+	borderStep.setX(factor * move.direction.getX());
 
 	if( policy == WRAP ){
-	    borderStart.y = playgroundSizeY();
-	    borderStart.x = move.startPos.x + borderStep.x;
+	    borderStart.setY(playgroundSizeY());
+	    borderStart.setX(move.startPos.getX() + borderStep.getX());
 	}
 	break;
     case Y_BIGGER:
-	factor = borderStep.y / move.direction.y;
-	borderStep.x = factor * move.direction.x;
+	factor = borderStep.getY() / move.direction.getY();
+	borderStep.setX(factor * move.direction.getX());
 
 	if( policy == WRAP ){
-	    borderStart.y = 0;
-	    borderStart.x = move.startPos.x + borderStep.x;
+	    borderStart.setY(0);
+	    borderStart.setX(move.startPos.getX() + borderStep.getX());
 	}
 	break;
     default:
@@ -480,7 +488,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
     goToBorder(policy, wo, borderStep, borderStart);
 
     // calculate teh time to reach the border
-    borderInterval = sqrt(borderStep.x*borderStep.x + borderStep.y*borderStep.y) / move.speed;
+    borderInterval = sqrt(borderStep.getX()*borderStep.getX() + borderStep.getY()*borderStep.getY()) / move.speed;
 
     // calculate new start position
     // NOTE: for WRAP this is done in goToBorder
@@ -490,8 +498,8 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
 
 	borderStart = move.startPos + borderStep;
 	d = stepTarget.distance( borderStart );
-	borderDirection.x = (stepTarget.x - borderStart.x) / d;
-	borderDirection.y = (stepTarget.y - borderStart.y) / d;
+	borderDirection.setX((stepTarget.getX() - borderStart.getX()) / d);
+	borderDirection.setY((stepTarget.getY() - borderStart.getY()) / d);
 	break;
     case PLACERANDOMLY:
 	borderStart = targetPos;

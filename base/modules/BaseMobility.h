@@ -157,13 +157,13 @@ class BaseMobility : public BaseModule
     void updatePosition();
 
     /** @brief Returns the width of the playground */
-    double playgroundSizeX() const  {return world->getPgs()->x;}
+    double playgroundSizeX() const  {return world->getPgs()->getX();}
 
     /** @brief Returns the height of the playground */
-    double playgroundSizeY() const  {return world->getPgs()->y;}
+    double playgroundSizeY() const  {return world->getPgs()->getY();}
 
     /** @brief Returns the height of the playground */
-    double playgroundSizeZ() const  {return world->getPgs()->z;}
+    double playgroundSizeZ() const  {return world->getPgs()->getZ();}
 
 	/* @brief Random position somewhere in the playground. DEPRECATED: Use BaseWorldUtility::getRandomPosition() instead */
 	Coord getRandomPosition() { return world->getRandomPosition();}
@@ -205,6 +205,11 @@ class BaseMobility : public BaseModule
     /** @brief calculate the step to reach the border **/
     void goToBorder( BorderPolicy, BorderHandling, Coord&, Coord& );
 
+    /**
+     * @brief helperfunction for reflectIfOutside() to reflect
+     * a Coordinate at a given border
+     **/
+    void reflectCoordinate(BorderHandling border, Coord& c);
     /** 
      * @brief Utility function to reflect the node if it goes outside
      * the playground.
