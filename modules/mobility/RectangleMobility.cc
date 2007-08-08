@@ -100,26 +100,26 @@ void RectangleMobility::calculateXY()
     if (d < corner1)
     {
         // top side
-        targetPos.x = x1 + d;
-        targetPos.y = y1;
+        targetPos.setX(x1 + d);
+        targetPos.setY(y1);
     }
     else if (d < corner2)
     {
         // right side
-        targetPos.x = x2;
-        targetPos.y = y1 + d - corner1;
+        targetPos.setX(x2);
+        targetPos.setY(y1 + d - corner1);
     }
     else if (d < corner3)
     {
         // bottom side
-        targetPos.x = x2 - d + corner2;
-        targetPos.y = y2;
+        targetPos.setX(x2 - d + corner2);
+        targetPos.setY(y2);
     }
     else
     {
         // left side
-        targetPos.x = x1;
-        targetPos.y = y2 - d + corner3;
+        targetPos.setX(x1);
+        targetPos.setY(y2 - d + corner3);
     }
 
     move.setDirection(targetPos);

@@ -156,9 +156,9 @@ void PositifLayer::initialize(int stage)
 
 			Coord coord = getPosition();
 			/* convert from Coord to Position */
-			node[me].true_pos[0] = position[0] = coord.x;
-			node[me].true_pos[1] = position[1] = coord.y;
-			node[me].true_pos[2] = position[2] = coord.z;
+			node[me].true_pos[0] = position[0] = coord.getX();
+			node[me].true_pos[1] = position[1] = coord.getY();
+			node[me].true_pos[2] = position[2] = coord.getZ();
 
 #ifndef NDEBUG
 			ev << "node " << node[me].

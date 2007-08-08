@@ -61,8 +61,8 @@ void LinearMobility::makeMove()
     move.startPos = stepTarget;
     move.startTime = simTime();
 
-    stepTarget.x = move.startPos.x + move.speed * cos(PI * angle / 180) * updateInterval;
-    stepTarget.y = move.startPos.y + move.speed * sin(PI * angle / 180) * updateInterval;
+    stepTarget.setX(move.startPos.getX() + move.speed * cos(PI * angle / 180) * updateInterval);
+    stepTarget.setY(move.startPos.getY() + move.speed * sin(PI * angle / 180) * updateInterval);
 
     move.setDirection(stepTarget);
 

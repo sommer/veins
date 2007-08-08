@@ -42,14 +42,16 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
 
     if( move.speed <= 0 ){
         // end of movement
-        stepSize.x = stepSize.y = 0;
+        stepSize.setX(0);
+        stepSize.setY(0);
 	EV << "speed < 0; stop moving!\n";
         delete msg;
     }
     else if (targetPos==move.startPos){
         // no movement, just wait
 	EV << "warning, we are not moving!\n";
-	stepSize.x = stepSize.y = 0;
+        stepSize.setX(0);
+        stepSize.setY(0);
         scheduleAt(Max(targetTime,simTime()), msg);
     }
     else{
@@ -65,6 +67,7 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
         stepSize = (targetPos - move.startPos);
 
 	move.setDirection( targetPos );
+
 	move.startTime = simTime();
 
 	stepSize = stepSize / numIntervals;

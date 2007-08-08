@@ -106,8 +106,8 @@ void ANSimMobility::extractDataFrom(cXMLElement *node)
         error("no content in <end_time>, <destination>/<xpos> or <ypos> element at %s", node->getSourceLocation());
 
     targetTime = atof(endTimeStr);
-    targetPos.x = atof(xStr);
-    targetPos.y = atof(yStr);
+    targetPos.setX(atof(xStr));
+    targetPos.setY(atof(yStr));
 }
 
 void ANSimMobility::fixIfHostGetsOutside()

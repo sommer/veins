@@ -125,6 +125,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         }
         loopVars.push(n);
     }
+
     else if (!strcmp(tag,"set"))
     {
         const char *speedAttr = stmt->getAttribute("speed");
@@ -137,9 +138,9 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         if (angleAttr)
             angle = getValue(angleAttr);
         if (xAttr)
-            targetPos.x = getValue(xAttr);
+            targetPos.setX(getValue(xAttr));
         if (yAttr)
-            targetPos.y = getValue(yAttr);
+            targetPos.setY(getValue(yAttr));
         if (move.speed<=0)
             error("<set>: speed is negative or zero at %s", stmt->getSourceLocation());
         if (bpAttr)
@@ -150,6 +151,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
                 borderPolicy = WRAP;
             else if (!strcmp(bpAttr,"placerandomly"))
                 borderPolicy = PLACERANDOMLY;
+
             else if (!strcmp(bpAttr,"error"))
                 borderPolicy = RAISEERROR;
             else
@@ -188,8 +190,8 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         if (d<0)
             error("<forward>: distance (attribute d) is negative at %s", stmt->getSourceLocation());
         // FIXME handle zeros properly...
-        targetPos.x += d * cos(PI * angle / 180);
-        targetPos.y += d * sin(PI * angle / 180);
+        targetPos.setX(targetPos.getX() + d * cos(PI * angle / 180));
+        targetPos.setY(targetPos.getY() + d * sin(PI * angle / 180);
         targetTime += t;
     }
     else if (!strcmp(tag,"turn"))
@@ -215,9 +217,9 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         const char *yAttr = stmt->getAttribute("y");
         const char *tAttr = stmt->getAttribute("t");
         if (xAttr)
-            targetPos.x = getValue(xAttr);
+            targetPos.setX(getValue(xAttr));
         if (yAttr)
-            targetPos.y = getValue(yAttr);
+            targetPos.setY(getValue(yAttr));
         // travel to targetPos at current speed, or get there in time t (ignoring current speed then)
         double t = tAttr ? getValue(tAttr) : move.startPos.distance(targetPos)/move.speed;
         if (t<0)
@@ -230,9 +232,9 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         const char *yAttr = stmt->getAttribute("y");
         const char *tAttr = stmt->getAttribute("t");
         if (xAttr)
-            targetPos.x += getValue(xAttr);
+            targetPos.setX(targetPos.getX() + getValue(xAttr));
         if (yAttr)
-            targetPos.y += getValue(yAttr);
+            targetPos.setY(targetPos.getY() + getValue(yAttr));
         // travel to targetPos at current speed, or get there in time t (ignoring current speed then)
         double t = tAttr ? getValue(tAttr) : move.startPos.distance(targetPos)/move.speed;
         if (t<0)
@@ -306,6 +308,7 @@ void TurtleMobility::gotoNextStatement()
         }
     }
     else
+
     {
         // go to next statement (must exist -- see "if" above)
         nextStatement = nextStatement->getNextSibling();

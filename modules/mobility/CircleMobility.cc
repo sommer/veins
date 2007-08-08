@@ -30,11 +30,13 @@ void CircleMobility::initialize(int stage)
 
     EV << "initializing CircleMobility stage " << stage << endl;
 
+
+
     if (stage == 0)
     {
         // read parameters
-        center.x = par("cx");
-        center.y = par("cy");
+        center.setX("cx");
+        center.setY("cy");
         r = par("r");
         ASSERT(r>0);
         angle = par("startAngle").doubleValue()/180.0*PI;
@@ -42,8 +44,8 @@ void CircleMobility::initialize(int stage)
         omega = move.speed/r;
 
         // calculate initial position
-        move.startPos.x = center.x + r * cos(angle);
-        move.startPos.y = center.y + r * sin(angle);
+        move.startPos.setX(center.getX() + r * cos(angle));
+        move.startPos.setY(center.getY() + r * sin(angle));
 	targetPos = move.startPos;
     }
 }
@@ -54,8 +56,8 @@ void CircleMobility::makeMove()
     move.startPos = targetPos;
 
     angle += omega * updateInterval;
-    targetPos.x = center.x + r * cos(angle);
-    targetPos.y = center.y + r * sin(angle);
+    targetPos.setX(center.getX() + r * cos(angle));
+    targetPos.setY(center.getY() + r * sin(angle));
 
     move.setDirection(targetPos);
     move.startTime = simTime();

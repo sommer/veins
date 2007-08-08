@@ -47,8 +47,8 @@ void BonnMotionMobility::initialize(int stage)
         // obtain initial position
         const BonnMotionFile::Line& vec = *vecp;
         if (vec.size()>=3){
-            move.startPos.x = vec[1];
-            move.startPos.y = vec[2];
+            move.startPos.setX(vec[1]);
+            move.startPos.setY(vec[2]);
 
 	    move.startTime = vec[0];
 
@@ -81,11 +81,11 @@ void BonnMotionMobility::setTargetPosition()
     }
 
     targetTime = vec[vecpos];
-    targetPos.x = vec[vecpos+1];
-    targetPos.y = vec[vecpos+2];
+    targetPos.setX(vec[vecpos+1]);
+    targetPos.setY(vec[vecpos+2]);
     vecpos += 3;
 
-    EV << "TARGET: t=" << targetTime << " (" << targetPos.x << "," << targetPos.y << ")\n";
+    EV << "TARGET: t=" << targetTime << targetPos.info() << "\n";
 }
 
 void BonnMotionMobility::fixIfHostGetsOutside()

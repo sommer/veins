@@ -87,16 +87,16 @@ void ChannelControl::initialize(int stage)
 
 	  findDistance = ceil(maxInterferenceDistance);
 	  if(ceil(maxInterferenceDistance) == maxInterferenceDistance) findDistance += EPSILON;
-	  numX = static_cast<unsigned>(playgroundSize->x/maxInterferenceDistance)+1;
-	  numY = static_cast<unsigned>(playgroundSize->y/maxInterferenceDistance)+1;
+	  numX = static_cast<unsigned>(playgroundSize->getX()/maxInterferenceDistance)+1;
+	  numY = static_cast<unsigned>(playgroundSize->getY()/maxInterferenceDistance)+1;
 
 	  if((numX <= 3) && (numY <= 3))
 	  {
-		  if(playgroundSize->x < playgroundSize->y) {
-			  findDistance = ceil(playgroundSize->y) + 1.0;
+		  if(playgroundSize->getX() < playgroundSize->getY()) {
+			  findDistance = ceil(playgroundSize->getY()) + 1.0;
 		  }
 		  else {
-			  findDistance = ceil(playgroundSize->x) + 1.0;
+			  findDistance = ceil(playgroundSize->getX()) + 1.0;
 		  }
 		  ccEV <<" using 1x1 grid"<<endl;
 		  nics.push_back(row);
@@ -186,8 +186,8 @@ bool ChannelControl::registerNic( BaseModule* ptr)
   nic->pos = bs->getPos();
 
   unsigned x,y;
-  x = static_cast<unsigned>(nic->pos.x/findDistance);
-  y = static_cast<unsigned>(nic->pos.y/findDistance);
+  x = static_cast<unsigned>(nic->pos.getX()/findDistance);
+  y = static_cast<unsigned>(nic->pos.getY()/findDistance);
 
   ccEV <<" registering nic at loc "<<x<<","<<y<<endl;
   // add to matrix
@@ -213,10 +213,10 @@ void ChannelControl::updateNicPos(int id, const Coord* oldPos, const Coord* newP
 {
     unsigned oldX,oldY,newX,newY;
     ccEV <<"nic #"<<id<<" moved from " << oldPos->info() << " to " << newPos->info() << " pgs: " << playgroundSize->info() << "\n";
-    oldX = static_cast<unsigned>(oldPos->x/findDistance);
-    oldY = static_cast<unsigned>(oldPos->y/findDistance);
-    newX = static_cast<unsigned>(newPos->x/findDistance);
-    newY = static_cast<unsigned>(newPos->y/findDistance);
+    oldX = static_cast<unsigned>(oldPos->getX()/findDistance);
+    oldY = static_cast<unsigned>(oldPos->getY()/findDistance);
+    newX = static_cast<unsigned>(newPos->getX()/findDistance);
+    newY = static_cast<unsigned>(newPos->getY()/findDistance);
 
     nics[oldX][oldY][id]->pos = *newPos;
 //    ccEV <<"nic #"<<id<<" moved from " << oldPos->info() << " to " << newPos->info() << " pgs: " << playgroundSize->info() << " oldX: "<< oldX << " oldY: " << oldY << " newX: " << newX << " newY: " << newY << "\n";
@@ -359,6 +359,7 @@ void ChannelControl::updateConnections(NicEntries& nmap, NicEntry* nic)
 
 bool ChannelControl::inRangeTorus(const Coord& a, const Coord& b) 
 {
+    /*
     if(FWMath::torDist(a.x,                  b.x, a.y,                  b.y) <= maxDistSquared) return true;
     if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y,                  b.y) <= maxDistSquared) return true;
     if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y,                  b.y) <= maxDistSquared) return true;
@@ -368,7 +369,9 @@ bool ChannelControl::inRangeTorus(const Coord& a, const Coord& b)
     if(FWMath::torDist(a.x+playgroundSize->x, b.x, a.y-playgroundSize->y, b.y) <= maxDistSquared) return true;
     if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y+playgroundSize->y, b.y) <= maxDistSquared) return true;
     if(FWMath::torDist(a.x-playgroundSize->x, b.x, a.y-playgroundSize->y, b.y) <= maxDistSquared) return true;
-    return false;
+    return false; */
+
+    return (a.sqrTorusDist(b, *playgroundSize) <= maxDistSquared);
 }
 
 
@@ -376,8 +379,8 @@ const NicEntry::GateList& ChannelControl::getGateList( int id, const Coord* pos 
 {
     unsigned x,y;
 
-    x = static_cast<unsigned>(pos->x/findDistance);
-    y = static_cast<unsigned>(pos->y/findDistance);
+    x = static_cast<unsigned>(pos->getX()/findDistance);
+    y = static_cast<unsigned>(pos->getY()/findDistance);
 	
 	if (nics[x][y].find(id)==nics[x][y].end())
 	{
@@ -399,8 +402,8 @@ const cGate* ChannelControl::getOutGateTo(int from, int to, const Coord* pos)
 {
     unsigned x,y;
 
-    x = static_cast<unsigned>(pos->x/findDistance);
-    y = static_cast<unsigned>(pos->y/findDistance);
+    x = static_cast<unsigned>(pos->getX()/findDistance);
+    y = static_cast<unsigned>(pos->getY()/findDistance);
 
     return nics[x][y][from]->getOutGateTo(to);
 }

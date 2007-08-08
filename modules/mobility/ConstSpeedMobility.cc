@@ -47,9 +47,7 @@ void ConstSpeedMobility::initialize(int stage)
 	stepSize = Coord(0,0,0);
 
         EV << "Initialize: move speed: " << move.speed << " (" << par("speed") << ")"
-           << " pos.x: " << move.startPos.x
-           << " pos.y: " << move.startPos.y
-           << " pos.z: " << move.startPos.z << endl;
+           << " pos: " << move.info() << endl;
     }
     else if( stage == 1 ){
 	stepTarget = move.startPos;

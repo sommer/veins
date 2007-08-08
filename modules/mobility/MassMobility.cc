@@ -48,8 +48,8 @@ void MassMobility::initialize(int stage)
         move.speed = par("speed");
         currentAngle = uniform(0, 360);
 
-        step.x = move.speed * cos(PI * currentAngle / 180) * updateInterval;
-        step.y = move.speed * sin(PI * currentAngle / 180) * updateInterval;
+        step.setX(move.speed * cos(PI * currentAngle / 180) * updateInterval);
+        step.setY(move.speed * sin(PI * currentAngle / 180) * updateInterval);
 
     }
     else if( stage == 1 ){
@@ -78,8 +78,8 @@ void MassMobility::handleSelfMsg(cMessage * msg)
     case MK_CHANGE_DIR:
 	currentAngle += changeAngleBy->doubleValue();
 
-	step.x = move.speed * cos(PI * currentAngle / 180) * updateInterval;
-	step.y = move.speed * sin(PI * currentAngle / 180) * updateInterval;
+	step.setX(move.speed * cos(PI * currentAngle / 180) * updateInterval);
+	step.setY(move.speed * sin(PI * currentAngle / 180) * updateInterval);
 
 	move.setDirection(move.startPos+step);
 
