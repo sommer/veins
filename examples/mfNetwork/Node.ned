@@ -24,7 +24,7 @@ import
     "BaseArp",
     "BaseNetwLayer",
     "MfNic",
-    "MassMobility",
+    "ConstSpeedMobility",
     "BaseMobility",
     //"Blackboard",
     "BaseUtility";
@@ -44,7 +44,7 @@ module Node
         //blackboard: BaseUtility;
        //     display: "p=200,75;b=30,25";
 
-        mobility: BaseMobility;
+        mobility: ConstSpeedMobility;
         //mobility: MassMobility;
             display: "p=200,150;b=30,25";
 
