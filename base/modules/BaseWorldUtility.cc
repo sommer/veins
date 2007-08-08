@@ -36,9 +36,9 @@ void BaseWorldUtility::initialize(int stage)
 
 Coord BaseWorldUtility::getRandomPosition() {
     Coord p;
-    p.setX() = genk_uniform(0, 0, playgroundSize.getX());
-    p.setY() = genk_uniform(0, 0, playgroundSize.getY());
-    p.setZ() = genk_uniform(0, 0, playgroundSize.getZ());
+    p.setX(genk_uniform(0, 0, playgroundSize.getX()));
+    p.setY(genk_uniform(0, 0, playgroundSize.getY()));
+    p.setZ(genk_uniform(0, 0, playgroundSize.getZ()));
     return p;
 }
 

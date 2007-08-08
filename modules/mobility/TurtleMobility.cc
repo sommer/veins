@@ -126,6 +126,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         loopVars.push(n);
     }
 
+
     else if (!strcmp(tag,"set"))
     {
         const char *speedAttr = stmt->getAttribute("speed");
@@ -191,7 +192,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
             error("<forward>: distance (attribute d) is negative at %s", stmt->getSourceLocation());
         // FIXME handle zeros properly...
         targetPos.setX(targetPos.getX() + d * cos(PI * angle / 180));
-        targetPos.setY(targetPos.getY() + d * sin(PI * angle / 180);
+        targetPos.setY(targetPos.getY() + d * sin(PI * angle / 180));
         targetTime += t;
     }
     else if (!strcmp(tag,"turn"))
@@ -216,6 +217,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         const char *xAttr = stmt->getAttribute("x");
         const char *yAttr = stmt->getAttribute("y");
         const char *tAttr = stmt->getAttribute("t");
+
         if (xAttr)
             targetPos.setX(getValue(xAttr));
         if (yAttr)

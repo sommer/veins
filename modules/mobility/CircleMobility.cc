@@ -32,11 +32,12 @@ void CircleMobility::initialize(int stage)
 
 
 
+
     if (stage == 0)
     {
         // read parameters
-        center.setX("cx");
-        center.setY("cy");
+        center.setX(par("cx"));
+        center.setY(par("cy"));
         r = par("r");
         ASSERT(r>0);
         angle = par("startAngle").doubleValue()/180.0*PI;
