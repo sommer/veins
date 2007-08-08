@@ -24,7 +24,7 @@
 // Support functions for mathematical operations
 //
 
-#include <math.h>
+#include <cmath>
 
 
 /* windows math.h doesn't define the PI variable so we have to do it

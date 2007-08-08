@@ -54,9 +54,7 @@ class Move {
 public:
     void setDirection(const Coord& target) {
 	double d = startPos.distance( target );
-	direction.x = (target.x - startPos.x) / d;
-	direction.y = (target.y - startPos.y) / d;
-	direction.z = (target.z - startPos.z) / d;
+    direction = (target - startPos) / d;
 
         //double d = sqrt(dir.x*dir.x + dir.y*dir.y);
         //direction.x = dir.x/d;
@@ -68,12 +66,8 @@ public:
     std::string info() {
         std::ostringstream ost;
         ost << " HostMove "
-            << " startPos.x: "<<startPos.x
-            << " startPos.y: "<<startPos.y
-            << " startPos.z: "<<startPos.z
-            << " direction.x: "<< direction.x
-            << " direction.y: "<< direction.y
-            << " direction.z: "<< direction.z
+            << " startPos: " << startPos.info()
+            << " direction: " << direction.info()
             << " startTime: " << startTime
             << " speed: " << speed;
         return ost.str();

@@ -36,10 +36,11 @@
  */
 class Coord : public cPolymorphic
 {
- public:
+protected:
     /** @brief x and y coordinates of the position*/
     double x, y, z;
-
+    
+ public:    
     /** Initializes coordinates.*/
     Coord(double _x = 0, double _y = 0, double _z = 0) : x(_x), y(_y), z(_z) {};
 
@@ -66,12 +67,16 @@ class Coord : public cPolymorphic
 
     /** Adds two coordinate vectors.*/
     friend Coord operator+(const Coord& a, const Coord& b) {
-        return Coord(a.x + b.x, a.y + b.y, a.z + b.z);
+        Coord tmp = a;
+        tmp += b;
+        return tmp;
     }
 
     /** Subtracts two coordinate vectors.*/
     friend Coord operator-(const Coord& a, const Coord& b) {
-        return Coord(a.x - b.x, a.y - b.y, a.z - b.z);
+        Coord tmp = a;
+        tmp -= b;
+        return tmp;
     }
 
     /** Multiplies a coordinate vector by a real number.*/
@@ -130,7 +135,7 @@ class Coord : public cPolymorphic
      */
     double distance( const Coord& a ) const {
         Coord dist=*this-a;
-        return sqrt(dist.x*dist.x + dist.y*dist.y + dist.z*dist.z);
+        return dist.length();
     }
 
     /**
@@ -138,15 +143,15 @@ class Coord : public cPolymorphic
      */
     double sqrdist( const Coord& a ) const {
         Coord dist=*this-a;
-        return dist.x*dist.x + dist.y*dist.y + dist.z*dist.z;
+        return dist.squareLength();
     }
 
     /**
      * Returns the squared distance on a torus to Coord a (omits square root).
      * TODO make 3D
      */
-    double sqrTorusDist(const Coord& b, const Coord& playGround) const {
-        double minTorDist;
+    double sqrTorusDist(const Coord& b, const Coord& playgroundSize) const {
+        /*double minTorDist;
         double torDist;
 
         torDist = FWMath::torDist(this->x,              b.x, this->y,                  b.y);
@@ -167,8 +172,94 @@ class Coord : public cPolymorphic
         if(torDist < minTorDist) minTorDist = torDist;
         torDist = FWMath::torDist(this->x-playGround.x, b.x, this->y-playGround.y,     b.y);
         if(torDist < minTorDist) minTorDist = torDist;
-        return minTorDist;
+        return minTorDist; */
+
+        Coord dist = *this - b;
+
+        /*
+         * on a torus the end and the begin of the axes are connected so you
+         * get a circle. On a circle the distance between two points can't be greater
+         * than half of the circumference.
+         * If the normal distance between two points on one axis is bigger than
+         * half of the playground there must be a "shorter way" over the playground
+         * border on this axis
+         */
+        if(fabs(dist.x) > (playgroundSize.x * 0.5))
+        {
+            if(dist.x < 0.0) //check which point is nearer to the "end of the axis"
+            {
+                dist.x = playgroundSize.x - b.x + x; //coordinate distance over border is
+            } else {                                 //calced by:
+                dist.x = playgroundSize.x - x + b.x; //axis_end - bigger_coordinate + smaller_coordinate
+            }
+        }
+        //same for y- and z-coordinate
+        if(fabs(dist.y) > (playgroundSize.y * 0.5))
+        {
+            if(dist.y < 0.0) //check which point is nearer to the "end of the axis"
+            {
+                dist.y = playgroundSize.y - b.y + y; //coordinate distance over border is
+            } else {                                 //calced by:
+                dist.y = playgroundSize.y - y + b.y; //axis_end - bigger_coordinate + smaller_coordinate
+            }
+        }
+        if(fabs(dist.z) > (playgroundSize.z * 0.5))
+        {
+            if(dist.z < 0) //check which point is nearer to the "end of the axis"
+            {
+                dist.z = playgroundSize.z - b.z + z; //coordinate distance over border is
+            } else {                                 //calced by:
+                dist.z = playgroundSize.z - z + b.z; //axis_end - bigger_coordinate + smaller_coordinate
+            }
+        }
+        return dist.squareLength();
     }
+
+    /**
+     * Returns the square of the length of this coords position vector
+     */
+    double squareLength()
+    {
+        return x * x + y * y + z * z;
+    }
+
+    /**
+     * Returns the length of this coords position vector
+     */
+    double length()
+    {
+        return sqrt(squareLength());
+    }
+
+    /**
+     * Getter for the x coordinate
+     */
+    double getX() const{ return x; }
+
+    /**
+     * Setter for the x coordinate
+     */
+    void setX(double x){this->x = x;}
+
+    /**
+     * Getter for the y coordinate
+     */
+    double getY() const{ return y; }
+
+    /**
+     * Setter for the y coordinate
+     */
+    void setY(double y){this->y = y;}
+
+    /**
+     * Getter for the z coordinate
+     */
+    double getZ() const{ return z; }
+
+    /**
+     * Setter for the z coordinate
+     */
+    void setZ(double z){this->z = z;}
 };
 
 #endif
