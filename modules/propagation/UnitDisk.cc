@@ -4,7 +4,7 @@ Define_Module(UnitDisk);
 
 void UnitDisk::initialize(int stage)
 {
-	ChannelControl::initialize(stage);
+	ConnectionManager::initialize(stage);
 	if (stage == 0)
 	{
 		cPar *p = addPar("logName");

@@ -16,7 +16,7 @@
  ***************************************************************************
  * part of:     framework implementation developed by tkn
  * description: Class to store information about a nic for the 
- *              ChannelControl module
+ *              ConnectionManager module
  **************************************************************************/
 
 

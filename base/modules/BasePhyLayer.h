@@ -64,11 +64,11 @@ protected:
      * @brief power used to transmit messages 
      *
      * The transmission power is initially set to the maximal
-     * transmission power possible defined in the ChannelControl
+     * transmission power possible defined in the ConnectionManager
      * module.
      *
      * It can be changed by the user but NEVER to a bigger value than
-     * defined in ChannelControl.
+     * defined in ConnectionManager.
      **/
     double transmitterPower;
 
@@ -76,10 +76,10 @@ protected:
      * @brief carrier frequency used to send messages 
      *
      * The carrier frequency is initially set to the minimum carrier
-     * frequency defined in the ChannelControl module.
+     * frequency defined in the ConnectionManager module.
      *
      * It can be changed by the user but NEVER to a smaller value than
-     * defined in ChannelControl.
+     * defined in ConnectionManager.
      **/
     double carrierFrequency;
 
@@ -88,10 +88,10 @@ protected:
      *
      * The signal attenuation threshold is initially set to the
      * minimum signal attenuation threshold possible defined in the
-     * ChannelControl module.
+     * ConnectionManager module.
      *
      * It can be changed by the user but NEVER to a smaller value than
-     * defined in ChannelControl.
+     * defined in ConnectionManager.
      **/
     double sensitivity;
     
@@ -99,10 +99,10 @@ protected:
      * @brief path loss coefficient
      *
      * The path loss coefficient is initially set to the minimum path
-     * loss coefficient possible defined in the ChannelControl module.
+     * loss coefficient possible defined in the ConnectionManager module.
      *
      * It can be changed by the user but NEVER to a smaller value than
-     * defined in ChannelControl.
+     * defined in ConnectionManager.
      **/
     double alpha;
 

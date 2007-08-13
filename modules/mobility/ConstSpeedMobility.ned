@@ -31,7 +31,7 @@
 // position and updates the display. Once the target position is reached
 // ConstSpeedMobility calculates a new target position.
 //
-// @see ChannelControl
+// @see ConnectionManager
 // @author Steffen Sroka, Marc Loebbers, Daniel Willkomm
 //
 simple ConstSpeedMobility

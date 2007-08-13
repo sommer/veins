@@ -20,7 +20,6 @@
 
 #include "BasePhyLayer.h"
 
-#include "ChannelControl.h"
 
 //const double BasePhyLayer::speedOfLight = ChannelControl::speedOfLight;
 
@@ -66,16 +65,16 @@ void BasePhyLayer::initialize(int stage)
     else if (stage == 2){
         if(alpha < static_cast<double>(cc->par("alpha")))
             error("SnrEval::initialize() alpha can't be smaller than in \
-                   ChannelControl. Please adjust your omnetpp.ini file accordingly");
+                   ConnectionManager. Please adjust your omnetpp.ini file accordingly");
         if(transmitterPower > static_cast<double>(cc->par("pMax")))
             error("SnrEval::initialize() transmitterPower (%f) can't be bigger than \
-                   pMax (%f) in ChannelControl! Please adjust your omnetpp.ini file accordingly",transmitterPower);
+                   pMax (%f) in ConnectionManager! Please adjust your omnetpp.ini file accordingly",transmitterPower);
         if(sensitivity < FWMath::dBm2mW(static_cast<double>(cc->par("sat"))))
             error("SnrEval::initialize() sensitivity can't be smaller than the signal attentuation threshold (sat) in \
-                   ChannelControl. Please adjust your omnetpp.ini file accordingly");
+                   ConnectionManager. Please adjust your omnetpp.ini file accordingly");
         if(carrierFrequency < static_cast<double>(cc->par("carrierFrequency")))
             error("SnrEval::initialize() carrierFrequency can't be smaller than in \
-                   ChannelControl. Please adjust your omnetpp.ini file accordingly");
+                   ConnectionManager. Please adjust your omnetpp.ini file accordingly");
         
         txOverTimer = new cMessage("txOverTimer");
     }

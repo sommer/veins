@@ -16,7 +16,7 @@
  ***************************************************************************
  * part of:     framework implementation developed by tkn
  * description: Class to store information about a nic for the 
- *              ChannelControl module
+ *              ConnectionManager module
  **************************************************************************/
 
 
@@ -66,7 +66,7 @@ void NicEntryDebug::disconnectFrom(NicEntry* other)
         
     //search the connection in the outConns list
     std::map<int, cGate*>::iterator p = outConns.find(other->nicId);
-    //no need to check whether entry is valid; is already check by ChannelControl isConnected
+    //no need to check whether entry is valid; is already check by ConnectionManager isConnected
     //get the hostGate
     //order is phyGate->nicGate->hostGate
     cGate* hostGate = p->second->toGate()->toGate();

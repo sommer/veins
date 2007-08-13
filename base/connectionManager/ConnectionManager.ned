@@ -1,5 +1,5 @@
 //***************************************************************************
-// * file:        ChannelControl.ned
+// * file:        ConnectionManager.ned
 // *
 // * author:      Steffen Sroka, Daniel Willkomm
 // *
@@ -18,28 +18,26 @@
 // **************************************************************************/
 
 
-// Module to control the channel and handle all connection
-// related stuff
+// Module to control all connection related stuff
 //
 // The central module that coordinates the connections between all
-// nodes, and handles dynamic gate creation.  ChannelControl therefore
+// nodes, and handles dynamic gate creation.  ConnectionManager therefore
 // periodically communicates with the mobility module and
 // ChannelAccess.
 //
 // The four parameters pMax, sat, alpha, and carrierFrequency are used
 // to calculate the interference distance between nodes. The values used
-// here in ChannelControl are used to calculate the upper bound,
+// here in ConnectionManager are used to calculate the upper bound,
 // i.e. they can be redifined in the snrEval modules, but never such
 // that the maximal interference distance is exeeded.
 //       
 // @author Steffen Sroka, Daniel Willkomm
 // @see BasicMobility
 //
-simple ChannelControl
+simple ConnectionManager
     parameters:
 	coreDebug		  : numeric const, // debug switch for core framework
-	sendDirect                : bool,          // define which ChannelControl module to use
-	useTorus                  : bool,          // wrap connections
+	sendDirect                : bool,          // define which ConnectionManager module to use
 	pMax			  : numeric const, // maximum sending power used for this network (in mW)
 	sat			  : numeric const, // minimum signal attenuation threshold (in dBm)
 	alpha			  : numeric const, // minimum path loss coefficient

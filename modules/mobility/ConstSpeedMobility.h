@@ -34,7 +34,7 @@
  *
  * @ingroup mobility
  * @author Steffen Sroka, Marc Loebbers, Daniel Willkomm
- * @sa ChannelControl
+ * @sa ConnectionManager
  */
 class ConstSpeedMobility : public BaseMobility
 {

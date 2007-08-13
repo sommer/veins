@@ -30,13 +30,13 @@
 #include "BaseModule.h"
 #include "Move.h"
 
-class ChannelControl;
+#include "BaseConnectionManager.h"
 
 /**
  * @brief Basic class for all physical layers, please don't touch!!
  *
  * This class is not supposed to work on its own, but it contains
- * functions and lists that cooperate with ChannelControl to handle
+ * functions and lists that cooperate with ConnectionManager to handle
  * the dynamically created gates. This means EVERY SnrEval (the lowest
  * layer in a host) has to be derived from this class!!!! And please
  * follow the instructions on how to declare a physical layer in a
@@ -46,7 +46,7 @@ class ChannelControl;
  * Please don't touch this class.
  *
  * @author Marc Loebbers
- * @ingroup channelControl
+ * @ingroup connectionManager
  * @ingroup phyLayer
  * @ingroup basicModules
  **/
@@ -59,7 +59,7 @@ protected:
     bool useSendDirect;
 
     /** @brief Pointer to the PropagationModel module*/
-    ChannelControl* cc;
+    BaseConnectionManager* cc;
 
     /** @brief debug this core module? */
     bool coreDebug;
@@ -74,20 +74,20 @@ protected:
     int catMove;
 
     /**
-     * @brief Is this module already registered with channelControl?
+     * @brief Is this module already registered with ConnectionManager?
      */
     bool isRegistered;
 
 	BaseUtility *bu;
     
 public:
-    /** @brief Register with ChannelControl and subscribe to hostPos*/
+    /** @brief Register with ConnectionManager and subscribe to hostPos*/
     virtual void initialize(int stage);
     
     /**
      * called by Blackboard to inform of changes
      */
-    //virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 };
 
 #endif

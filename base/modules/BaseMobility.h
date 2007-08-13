@@ -35,7 +35,7 @@
  * it if you only want to simulate static networks.
  *
  * BaseMobility provides random placement of hosts and display
- * updates as well as registering with the ChannelControl module.
+ * updates.
  * Change notifications about position changes are also posted to the
  * Blackboard.
  *

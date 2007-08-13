@@ -22,7 +22,7 @@
 // Angle only changes when the mobile node hits a wall: then it reflects
 // off the wall at the same angle.
 //
-// @see ChannelControl
+// @see ConnectionManager
 // @author Emin Ilker Cetinbas
 //
 simple LinearMobility

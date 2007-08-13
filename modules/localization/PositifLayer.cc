@@ -24,7 +24,7 @@
 #include "BaseUtility.h"
 #include "FindModule.h"
 #include "ModuleAccess.h"
-#include "ChannelControl.h"
+//#include "ChannelControl.h"
 #include "NetwControlInfo.h"
 #include <SimpleAddress.h>
 

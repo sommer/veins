@@ -16,7 +16,7 @@
 #CONTRIB_LIB=-L$(ROOT)/contrib/lib -lmfcontrib
 
 #--------------------------------------
-IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/modules -I$(ROOT)/base/timers -I$(ROOT)/base/propagationModels -I$(ROOT)/base/localization
+IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/modules -I$(ROOT)/base/timers -I$(ROOT)/base/connectionManager -I$(ROOT)/base/localization
 
 IMODULES=-I$(ROOT)/modules/nic -I$(ROOT)/modules/mobility -I$(ROOT)/modules/utility -I$(ROOT)/modules/localization -I$(ROOT)/modules/node -I$(ROOT)/modules/netw -I$(ROOT)/modules/propagation -I$(ROOT)/modules/phy
 
@@ -38,8 +38,8 @@ all:
 	@cd $(ROOT)/base/modules && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 	@echo $(ROOT)/base/timers
 	@cd $(ROOT)/base/timers && $(MAKEMAKE) $(OPTS) -n $(IBASE)
-	@echo $(ROOT)/base/propagationModels
-	@cd $(ROOT)/base/propagationModels && $(MAKEMAKE) $(OPTS) -n $(IBASE)
+	@echo $(ROOT)/base/connectionManager
+	@cd $(ROOT)/base/connectionManager && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 	@echo $(ROOT)/base/localization
 	@cd $(ROOT)/base/localization && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 
@@ -73,7 +73,7 @@ all:
 	@cd $(ROOT)/modules/propagation && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 
 	@echo $(ROOT)/examples
-	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n #-Xfoxtrot
+	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -Xcentroid
 	@echo $(ROOT)/examples/baseNetwork
 	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 	@echo $(ROOT)/examples/mfNetwork
@@ -84,6 +84,8 @@ all:
 	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 #	@echo $(ROOT)/examples/centroid
 #	@cd $(ROOT)/examples/centroid && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@echo $(ROOT)/examples/multiChannel
+	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n

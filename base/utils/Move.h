@@ -27,6 +27,7 @@
 
 #include "Coord.h"
 #include "BaseUtility.h"
+#include "ImNotifiable.h"
 
 /**
  * @brief Class to store object position and movement
@@ -37,9 +38,9 @@
  *
  * @author Andreas Koepke
  **/
-//class Move : public BBItem {
-class Move {
-    //BBITEM_METAINFO(BBItem);
+class Move : public BBItem {
+//class Move {
+    BBITEM_METAINFO(BBItem);
 
  public:
     /** @brief Start position of the host **/

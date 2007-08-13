@@ -27,12 +27,12 @@
 Define_Module(BaseMobility);
 
 /**
- * Assigns a pointer to ChannelControl and gets a pointer to its host.
+ * Assigns a pointer to ConnectionManager and gets a pointer to its host.
  *
  * Creates a random position for a host if the position is not given
  * as a parameter in "omnetpp.ini".
  *
- * Additionally the registration with ChannelControl is done and it is
+ * Additionally the registration with ConnectionManager is done and it is
  * assured that the position display string tag (p) exists and contains
  * the exact (x) tag.
  *
@@ -64,7 +64,7 @@ void BaseMobility::initialize(int stage)
         hasPar("updateInterval") ? updateInterval=par("updateInterval") :
             updateInterval = 0;
 
-        //moveCategory = bb->getCategory(&move);
+        moveCategory = baseUtility->getCategory(&move);
 
 		// initialize Move parameter
         move.speed = 0;
@@ -74,8 +74,6 @@ void BaseMobility::initialize(int stage)
     }
     else if (stage == 1){
         coreEV << "initializing BaseMobility stage " << stage << endl;
-        // playground size gets set up by ChannelControl in stage==0 (Andras)
-        // read the playgroundsize from ChannelControl
         // print new host position on the screen and update bb info
         updatePosition();
 
@@ -184,7 +182,7 @@ void BaseMobility::handleBorderMsg(cMessage * msg)
 void BaseMobility::updatePosition() {
     EV << "updatePosition: " << move.info() << endl;
     
-    //bb->publishBBItem(moveCategory, &move, hostId);
+    baseUtility->publishBBItem(moveCategory, &move, hostId);
     baseUtility->setPos(&move.startPos); // update the position in BaseUtility module
     char xStr[32], yStr[32], zStr[32];
     sprintf(xStr, "%d", FWMath::round(move.startPos.getX()));

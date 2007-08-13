@@ -28,14 +28,15 @@
 
 #include "ChannelAccess.h"
 
-#include "ChannelControl.h"
 #include "Move.h"
 
 #include "FindModule.h"
 
+#include <cassert>
+
 /**
  * Upon initialization ChannelAccess registers the nic parent module
- * to have all its connections handeled by ChannelControl
+ * to have all its connections handeled by ConnectionManager
  **/
 void ChannelAccess::initialize( int stage )
 {
@@ -44,17 +45,25 @@ void ChannelAccess::initialize( int stage )
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
-        cc = FindModule<ChannelControl*>::findGlobalModule();
-        if( cc == 0 ) error("Could not find channelcontrol module");
+        if (hasPar("connectionManagerName")){        		
+			cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath(par("connectionManagerName").stringValue()));
+		} else {
+			
+			cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath("connectionManager"));
+		}
+		
+		if( cc == 0 ) error("Could not find connectionmanager module");
+        		
+        		
 		bu = FindModule<BaseUtility*>::findSubModule(getNode());
 		if (bu == 0) error("Could not find BaseUtility module");
 	}
 	else if (stage == 1)
 	{
         // subscribe to position changes
-        //catMove = bb->subscribe(this, &move, findHost()->id());
-		useSendDirect = cc->registerNic((BaseModule*)parentModule());
-        isRegistered = false;
+        catMove = bu->subscribe(this, &move, findHost()->id());
+		useSendDirect = cc->registerNic(parentModule(), bu->getPos());
+        isRegistered = true;
     }
 }
 
@@ -64,12 +73,12 @@ void ChannelAccess::initialize( int stage )
  * sent to the channel. Don't try to figure out what gates you have
  * and which ones are connected, this function does this for you!
  *
- * depending on which ChannelControl module is used, the messages are
+ * depending on which ConnectionManager module is used, the messages are
  * send via sendDirect() or to the respective gates.
  **/
 void ChannelAccess::sendToChannel(cMessage *msg, double delay)
 {
-    const NicEntry::GateList& gateList = cc->getGateList( parentModule()->id(), bu->getPos());
+    const NicEntry::GateList& gateList = cc->getGateList( parentModule()->id());
     NicEntry::GateList::const_iterator i = gateList.begin();
         
     if(useSendDirect){
@@ -115,27 +124,27 @@ void ChannelAccess::sendToChannel(cMessage *msg, double delay)
 
 /**
  * ChannelAccess is subscribed to position changes and informs the
- * channelcontrol
+ * ConnectionManager
  */
-/*void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scopeModuleId) 
+void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scopeModuleId) 
 {    
-    //BaseModule::receiveBBItem(category, details, scopeModuleId);
+    BaseModule::receiveBBItem(category, details, scopeModuleId);
     
     if(category == catMove)
     {
         Move m(*static_cast<const Move*>(details));
         
         if(isRegistered) {
-            cc->updateNicPos(parentModule()->id(), &move.startPos, &m.startPos);
+            cc->updateNicPos(parentModule()->id(), &m.startPos);
         }
         else {
-            // register the nic with ChannelControl
+            // register the nic with ConnectionManager
             // returns true, if sendDirect is used
-            useSendDirect = cc->registerNic(parentModule(), &m.startPos);
+            useSendDirect = cc->registerNic(parentModule(), bu->getPos());
             isRegistered = true;
         }
         move = m;
         coreEV<<"new HostMove: "<<move.info()<<endl;
     }
-}*/
+}
 

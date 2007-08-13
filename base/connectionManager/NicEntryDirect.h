@@ -16,7 +16,7 @@
  ***************************************************************************
  * part of:     framework implementation developed by tkn
  * description: Class to store information about a nic for the 
- *              ChannelControl module
+ *              ConnectionManager module
  **************************************************************************/
 
 #ifndef NICENTRYDIRECT_H
@@ -26,12 +26,12 @@
 
 
 /**
- * @brief NicEntry is used by ChannelControl to store the necessary
+ * @brief NicEntry is used by ConnectionManager to store the necessary
  * information for each nic
  *
- * @ingroup channelControl
+ * @ingroup connectionManager
  * @author Daniel Willkomm
- * @sa ChannelControl, NicEntry
+ * @sa ConnectionManager, NicEntry
  */
 class NicEntryDirect: public NicEntry
 {

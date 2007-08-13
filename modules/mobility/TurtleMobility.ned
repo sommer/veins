@@ -105,7 +105,7 @@
 //
 // You can find the DTD with the sources: TurtleMobility.dtd.
 //
-// @see ChannelControl
+// @see ConnectionManager
 // @author Andras Varga
 //
 simple TurtleMobility

@@ -45,7 +45,7 @@
 //    - changeAngleBy = normal(0, 30)
 //    - speed = normal(avgSpeed, 0.01)
 //
-// @see ChannelControl
+// @see ConnectionManager
 // @author Emin Ilker Cetinbas, Andras Varga
 //
 simple MassMobility

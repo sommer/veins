@@ -19,14 +19,14 @@
 #ifndef UNIT_DISK_H
 #define UNIT_DISK_H 1
 
-#include "ChannelControl.h"
+#include "ConnectionManager.h"
 
-class UnitDisk: public ChannelControl
+class UnitDisk: public ConnectionManager
 {
 	protected:
 		double radioRange;
 	public:
-		Module_Class_Members(UnitDisk, ChannelControl, 0);
+		Module_Class_Members(UnitDisk, ConnectionManager, 0);
 		void initialize(int stage);
     	virtual double calcInterfDist() {return radioRange;}
 };

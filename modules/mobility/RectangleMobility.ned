@@ -19,7 +19,7 @@
 //
 // Moves the node around a rectangle.
 //
-// @see ChannelControl
+// @see ConnectionManager
 // @author Andras Varga
 //
 simple RectangleMobility
