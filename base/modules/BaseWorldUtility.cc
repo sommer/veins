@@ -31,6 +31,8 @@ void BaseWorldUtility::initialize(int stage)
 		playgroundSize.setX(par("playgroundSizeX"));
 		playgroundSize.setY(par("playgroundSizeY"));
 		playgroundSize.setZ(par("playgroundSizeZ"));
+		
+		useTorusFlag = par("useTorus");
 	}
 }
 

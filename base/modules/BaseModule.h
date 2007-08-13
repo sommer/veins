@@ -25,6 +25,8 @@
 #include <sstream>
 #include <omnetpp.h>
 
+#include "ImNotifiable.h"
+
 #ifndef EV
 #define EV (ev.disabled()||!debug) ? ev : ev << simtimeToStr(simTime()) << ": "<< logName() << "::" << className()  << ": "
 #define EV_clear (ev.disabled()||!debug) ? ev : ev 
@@ -61,7 +63,7 @@
  * @author Andreas Koepke
  */
 //class BaseModule: public cSimpleModule, public ImNotifiable {
-class BaseModule: public cSimpleModule {
+class BaseModule: public cSimpleModule, public ImNotifiable {
   protected:
     /** @brief Cached pointer to the Blackboard module*/
     //BaseUtility *baseUtil;
@@ -124,8 +126,7 @@ class BaseModule: public cSimpleModule {
 	 * same type in a single module will return a random module of the specified 
 	 * type. NULL is returned on lookup failure
 	 * @param modtype Module type name
-	 */
-	
+	 */	
 	cModule * getNodeModule(const char* modtype);
 
 	/**
@@ -134,19 +135,20 @@ class BaseModule: public cSimpleModule {
 
 	cModule * getNode();
 
- /**
+
+	/**
      * @brief Called by the Blackboard whenever a change of a category occurs
      * to which we have subscribed. Redefined from ImNotifiable.
      * In this base class just handle the context switching and
      * some debug notifications
      */
-    /*virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId) {
+    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId) {
         if(debug) {
             Enter_Method("receiveBBItem(\"%s, %i\")", details->info().c_str(), scopeModuleId);
         } else {
             Enter_Method_Silent();
         }
-    }*/
+    }
 };
 
 #endif

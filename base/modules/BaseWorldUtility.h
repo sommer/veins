@@ -27,8 +27,11 @@
 class BaseWorldUtility : public BaseModule
 {
 protected:
-	/** @brief x and y size of the area the nodes are in (in meters)*/
+	/** @brief Size of the area the nodes are in (in meters)*/
     Coord playgroundSize;
+    
+    /** @brief Should the playground be treatend as a torus?*/
+    bool useTorusFlag;
 public:
 	Module_Class_Members(BaseWorldUtility,BaseModule,0);
 
@@ -37,6 +40,11 @@ public:
     /** @brief Returns the playgroundSize*/
     const Coord* getPgs(){
         return &playgroundSize;
+    };
+    
+    /** @brief Returns true if our playground represents a torus (borders are connected)*/
+    bool useTorus(){
+    	return useTorusFlag;
     };
 
 	/* @brief Random position somewhere in the playground */
