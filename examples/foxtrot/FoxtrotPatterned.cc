@@ -20,6 +20,7 @@
 
 #include "FoxtrotPatterned.h"
 #include <assert.h>
+#include "winmath.h"
 
 Define_Module_Like(FoxtrotPatterned, BaseAggLayer);
 

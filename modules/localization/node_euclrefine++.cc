@@ -1,5 +1,6 @@
 #include "PositifLayer.h"
 #include <string.h>
+#include "winmath.h"
 
 // Node subclass containing Niculescu's Euclidean method for
 // initialisation and Refine for refinement
@@ -758,14 +759,14 @@ void Node_EuclRefinePP::target_based_triangulation(void)
 		used_anchors = (n < phase1_max_anchors
 				|| phase1_max_anchors ==
 				-1) ? n : phase1_max_anchors;
-		FLOAT *pos_list[used_anchors + 1];
+		FLOAT** pos_list = new FLOAT*[used_anchors + 1];
 		if (range_list)
 			delete range_list;
 		range_list = new FLOAT[used_anchors + 1];
 		if (real_range_list)
 			delete real_range_list;
 		real_range_list = new FLOAT[used_anchors + 1];	// Used for debug output only
-		int idx_list[used_anchors];
+		int* idx_list = new int[used_anchors];
 
 		int i = 0;
 		for (cLinkedListIterator iter(targets); !iter.end(); iter++) {
@@ -887,6 +888,8 @@ void Node_EuclRefinePP::target_based_triangulation(void)
 						   true_pos));
 		}
 		logprintf("\n");
+		delete[] idx_list;
+		delete[] pos_list;		
 	}
 }
 
@@ -1789,9 +1792,9 @@ void Node_EuclRefinePP::do_triangulation(void *arg)
 	flops++;
 	int n = neighbors.length();
 	assert(n > nr_dims);
-	FLOAT *pos_list[n + 1];
-	FLOAT range_list[n + 1];
-	FLOAT weights[n];
+	FLOAT** pos_list = new FLOAT*[n + 1];
+	FLOAT* range_list = new FLOAT[n + 1];
+	FLOAT* weights = new FLOAT[n];
 	Position pos;
 
 #ifndef NDEBUG
@@ -1899,6 +1902,9 @@ void Node_EuclRefinePP::do_triangulation(void *arg)
 		confidence = (3 * confidence + conf) / 4;
 		status = confidence > CONF_THR ? STATUS_POSITIONED : STATUS_BAD;
 	}
+	delete[] pos_list;
+	delete[] range_list;
+	delete[] weights;	
 }
 
 void Node_EuclRefinePP::sendPosition(void *arg)
@@ -1923,7 +1929,7 @@ void Node_EuclRefinePP::sendPosition(void *arg)
 
 	if ((status != STATUS_ANCHOR) && neighbors.length() <= nr_dims) {
 		// Find out if I am a sound node
-		bool sound[num_nodes];
+		bool* sound = new bool[num_nodes];
 
 		for (int n = 0; n < num_nodes; n++)
 			sound[n] = false;
@@ -1943,6 +1949,7 @@ void Node_EuclRefinePP::sendPosition(void *arg)
 		//      if (cnt <= nr_dims) {
 		//  return;
 		//}
+		delete[] sound;
 	}
 	logprintf("REFINE: sending position maybe.\n");
 
@@ -2025,10 +2032,10 @@ bool Node_EuclRefinePP::inside_neighbors_range(Position pos)
 
 bool Node_EuclRefinePP::twins(nghbor_info * a, nghbor_info * b)
 {
-	bool nghbr_a[num_nodes];
-
 	if (a->nr_nghbrs != b->nr_nghbrs)
 		return false;
+
+	bool* nghbr_a = new bool[num_nodes];
 
 	for (int i = 0; i < num_nodes; i++) {
 		nghbr_a[i] = false;
@@ -2037,14 +2044,19 @@ bool Node_EuclRefinePP::twins(nghbor_info * a, nghbor_info * b)
 		nghbr_a[a->nghbr_idx[i]] = true;
 	}
 
-	if (!nghbr_a[b->idx])
+	if (!nghbr_a[b->idx]) {
+		delete[] nghbr_a;
 		return false;
+	}
 
 	for (int i = 0; i < b->nr_nghbrs; i++) {
 		int n = b->nghbr_idx[i];
 
-		if (n != a->idx && !nghbr_a[n])
+		if (n != a->idx && !nghbr_a[n]) {
+			delete[] nghbr_a;
 			return false;
+		}
 	}
+	delete[] nghbr_a;
 	return true;
 }

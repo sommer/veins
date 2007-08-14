@@ -150,9 +150,9 @@ void Node_AHLoSRefine::do_triangulation(void)
 	flops++;
 	int n = neighbors.length();
 	assert(n > nr_dims);
-	FLOAT *pos_list[n + 1];
-	FLOAT range_list[n + 1];
-	FLOAT weights[n];
+	FLOAT** pos_list = new FLOAT*[n + 1];
+	FLOAT* range_list = new FLOAT[n + 1];
+	FLOAT* weights = new FLOAT[n];
 	Position pos;
 
 	int i = 0;
@@ -222,6 +222,9 @@ void Node_AHLoSRefine::do_triangulation(void)
 		confidence = (3 * confidence + conf) / 4;
 		status = confidence > CONF_THR ? STATUS_POSITIONED : STATUS_BAD;
 	}
+	delete[] pos_list;
+	delete[] range_list;
+	delete[] weights;
 }
 
 

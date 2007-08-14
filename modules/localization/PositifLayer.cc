@@ -27,6 +27,7 @@
 //#include "ChannelControl.h"
 #include "NetwControlInfo.h"
 #include <SimpleAddress.h>
+#include "winsupport.h"
 
 Define_Module(PositifLayer);
 

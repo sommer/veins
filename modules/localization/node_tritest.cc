@@ -9,8 +9,6 @@
 // This is then multiplied by var1 to allow for a bias in the range result.
 // The var0 nearest anchors are used. ('nearest' determined by the calculated range, including the error)
 
-
-
 class Node_TriTest:public PositifLayer {
       public:
 	Module_Class_Members(Node_TriTest, PositifLayer, 0)
@@ -51,14 +49,14 @@ void Node_TriTest::handleMessage(cMessage * msg, bool newNeighbor)
 
 void Node_TriTest::handleStartMessage(cMessage * msg)
 {
-	int used_anchors = (int) var0;
-	FLOAT *pos_list[used_anchors + 1];
-	FLOAT range_list[used_anchors + 1];
-	FLOAT real_range_list[used_anchors + 1];	// Used for debug output only
-	int idx_list[used_anchors];
-
 	if (node[me].anchor)
 		return;
+
+	int used_anchors = (int) var0;
+	FLOAT** pos_list = new FLOAT*[used_anchors + 1];
+	FLOAT* range_list = new FLOAT[used_anchors + 1];
+	FLOAT* real_range_list = new FLOAT[used_anchors + 1];	// Used for debug output only
+	int* idx_list = new int[used_anchors];
 
 	int i = 0;
 	for (int j = 0; j < num_nodes; j++) {
@@ -144,6 +142,10 @@ void Node_TriTest::handleStartMessage(cMessage * msg)
 			  real_range_list[j]);
 	}
 	logprintf("\n");
+	delete[] idx_list;
+	delete[] real_range_list;
+	delete[] range_list;
+	delete[] pos_list;
 }
 
 void Node_TriTest::handleStopMessage(cMessage * msg)

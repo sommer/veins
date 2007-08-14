@@ -24,6 +24,7 @@
 #include "FoxtrotPacket.h"
 #include "NetwControlInfo.h"
 #include "AggPkt_m.h"
+#include "winsupport.h"
 
 #include <SinkAddress.h>
 

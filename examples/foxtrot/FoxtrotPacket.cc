@@ -4,6 +4,7 @@
 #include "Foxtrot.h"
 
 #include <assert.h>
+#include "winmath.h"
 
 Register_Class(FoxtrotPacket);
 

@@ -1,6 +1,7 @@
 #include <math.h>
 #include "PositifLayer.h"
 #include <string.h>
+#include "winmath.h"
 
 // Node subclass containing Statistic algorithm
 
@@ -224,8 +225,8 @@ void Node_Statistic::handleStopMessage(cMessage * msg)
 double Node_Statistic::true_pos_triangulate(void)
 {
 	int n = neighbors.length();
-	FLOAT *pos_list[n + 1];
-	FLOAT range_list[n + 1];
+	FLOAT** pos_list = new FLOAT*[n + 1];
+	FLOAT* range_list = new FLOAT[n + 1];
 	Position pos;
 
 	int i = 0;
@@ -240,8 +241,10 @@ double Node_Statistic::true_pos_triangulate(void)
 	pos_list[i] = pos;
 	FLOAT res = triangulate(i, pos_list, range_list, NULL, me);
 
-	return (res < 0
-		|| res > range ? -1 : distance(pos, node[me].true_pos) / range);
+	delete[] range_list;
+	delete[] pos_list;
+
+	return (res < 0 || res > range ? -1 : distance(pos, node[me].true_pos) / range);
 }
 
 void Node_Statistic::update_rectangle(nghbor_info * anchor)
@@ -378,7 +381,7 @@ void Node_Statistic::Statistic(void)
 		return;
 	int n = neighbors.length();
 
-	Position *pos_list[(n + 1) * 2];
+	Position** pos_list = new Position*[(n + 1) * 2];
 	if (range_list)
 		delete[]range_list;
 	range_list = new FLOAT[n + 1];
@@ -512,6 +515,7 @@ void Node_Statistic::Statistic(void)
 #endif
 	}
 //      wait(n * nr_dims * nr_dims * msec);
+	delete[] pos_list;
 }
 
 #define POSCONF(p) map[(int)p[0]][(int)p[1]]
@@ -562,7 +566,9 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 	assert(nr_dims == 2);	// can't cope with anything else *yet*
 	int width = (int) ceil(rectangle.max[0] - rectangle.min[0]), height =
 	    (int) ceil(rectangle.max[1] - rectangle.min[1]);
-	FLOAT map[width][height];
+	FLOAT** map = new FLOAT*[width];
+	for (int i = 0; i < width; i++)
+		map[i] = new FLOAT[height];
 
 	Position rel_true_pos;
 	memcpy(rel_true_pos, sub_pos(node[me].true_pos, rectangle.min),
@@ -780,7 +786,7 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 	{
 		float m = (range * range * 2) / (width * height);
 		m = 1 / m;
-		float s = fabs(width - height) / (range * 2);
+		float s = fabs(static_cast<float>(width - height)) / (range * 2);
 		EV << node[me].ID << ": mult factor = " << m << "\n";
 		EV << node[me].ID << ": squareness = " << s << "\n";
 		EV << node[me].ID << ": metric (m*s) = " << m *
@@ -848,6 +854,10 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 			confs[(n_pts * 2) + 1]);
 
 	fclose(dump);
+
+	for (int i = 0; i < width; i++)
+		delete[] map[i];
+	delete[] map;
 
 	return residu;
 }

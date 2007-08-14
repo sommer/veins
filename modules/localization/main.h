@@ -12,6 +12,7 @@
 struct myScenario;
 struct myParams;
 #include "sim_control.h"
+#include "winsupport.h"
 
 // constants
 /*static const char *alg_str[] = {

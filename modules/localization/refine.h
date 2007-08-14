@@ -2,7 +2,7 @@
 #define REFINE_H
 
 #include "omnetpp.h"
-#include <strings.h>
+#include <string.h>
 #include <assert.h>
 
 #define add_struct(m,s,v)						\

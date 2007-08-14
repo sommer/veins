@@ -26,7 +26,7 @@
 import
     "Node",
     "BaseWorldUtility",
-    "ChannelControl";
+    "ConnectionManager";
 
 module Sim
     parameters:
@@ -37,7 +37,7 @@ module Sim
         numHosts : numeric const;
 
     submodules:
-        channelcontrol: ChannelControl;
+        channelcontrol: ConnectionManager;
             display: "p=50,25;i=eye14";
 		world: BaseWorldUtility;
             parameters:

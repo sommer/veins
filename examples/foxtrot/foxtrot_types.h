@@ -1,6 +1,8 @@
 #ifndef FOXTROT_TYPES_H
 #define FOXTROT_TYPES_H
 
+#include "winsupport.h"
+
 typedef double foxtrot_point;
 #define FP_PRINTF "%lf"
 typedef uint32_t foxtrot_point_int;	// intermediary storage for manipulation (e.g addition) of many foxtrot_points

@@ -25,6 +25,7 @@
 
 #include <SinkAddress.h>
 #include "bits.h"
+#include "winmath.h"
 
 Define_Module_Like(Foxtrot, BaseAggLayer);
 
@@ -95,17 +96,18 @@ void Foxtrot::handleUpperMsg(cMessage * msg)
 	AggPkt *m = check_and_cast < AggPkt * >(msg);
 	//m->setControlInfo(new NetwControlInfo(SINK_ADDRESS));
 	pts = m->getDataArraySize();
-	foxtrot_point data[pts];
+	foxtrot_point* data = new foxtrot_point[pts];
 	for (unsigned int i = 0; i < pts; i++)
 		data[i] = m->getData(i);
 	newPoint(data);
+	delete[] data;
 	delete m;
 }
 
 void Foxtrot::try_merge(FoxtrotPacket * newData, bool keep_new)	/* keep_new indicates whether to keep new data if it doesn't merge */
 {
 	uint8_t mcount;
-	uint8_t subset[BYTES_USED(storage.size())];
+	uint8_t* subset = new uint8_t[BYTES_USED(storage.size())];
 
 	bool ret = false;
 
@@ -159,6 +161,7 @@ void Foxtrot::try_merge(FoxtrotPacket * newData, bool keep_new)	/* keep_new indi
 		print_data("Data Point (try)", storage[i]);
 	if (isSink)
 		processPackets();
+	delete[] subset;
 }
 
 bool Foxtrot::merge(uint8_t * subset, uint8_t * delete_count)
@@ -532,7 +535,7 @@ uint8_t Foxtrot::mergeableSubset(FoxtrotPacketStorage * list, uint8_t * subset)
 			memset(&curr, 0, FOX_QUEUE_LEN_BYTES);
 			for (j = 0; j < count; j++)
 			{
-				if (abs((*list)[j]->getWhen() - (*list)[i]->getWhen()) > MAX_SECS_DIFF)
+				if (abs(static_cast<float>((*list)[j]->getWhen() - (*list)[i]->getWhen())) > MAX_SECS_DIFF)
 					continue;
 				ANY_SET(j, curr);
 				curr_count++;
@@ -625,7 +628,7 @@ uint8_t Foxtrot::mergeableSubset(FoxtrotPacketStorage * list, uint8_t * subset)
 					curr_count++;
 					continue;
 				}
-				if ((*list)[k]->getWhen() != NO_TIME && (*list)[k]->getWhen() != NO_TIME && abs((*list)[k]->getWhen() - (*list)[j]->getWhen()) > MAX_SECS_DIFF)
+				if ((*list)[k]->getWhen() != NO_TIME && (*list)[k]->getWhen() != NO_TIME && abs(static_cast<float>((*list)[k]->getWhen() - (*list)[j]->getWhen())) > MAX_SECS_DIFF)
 				{
 					DBG("Time diff is too big\n");
 					continue;
