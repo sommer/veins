@@ -45,8 +45,9 @@ void ChannelAccess::initialize( int stage )
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
-        if (hasPar("connectionManagerName")){        		
-			cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath(par("connectionManagerName").stringValue()));
+        cModule* nic = parentModule();
+        if (nic->hasPar("connectionManagerName")){        		
+			cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath(nic->par("connectionManagerName").stringValue()));
 		} else {
 			
 			cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath("connectionManager"));

@@ -4,6 +4,8 @@ import
     "BaseChannel";
 
 module MfNic
+	parameters:
+	connectionManagerName: string; //name of the ConnectionManager module
     gates:
         in: uppergateIn; // to upper layers
         out: uppergateOut; // from upper layers
