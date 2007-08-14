@@ -64,6 +64,16 @@ void BaseUtility::initialize(int stage) {
 			pos.setZ(-1);
 		}
 		coreEV << "pos: " << pos.info() << endl;
+		
+//BB start
+		WATCH_VECTOR(clientVector);
+	    WATCH_VECTOR(categoryDescriptions);
+	    
+	    clientVector.clear();
+	    categoryDescriptions.clear();
+	    parentVector.clear();
+	    nextCategory = 0;	
+//BB end 
 	} else if (stage == 1) {
 		BaseWorldUtility *world = dynamic_cast<BaseWorldUtility*>(getGlobalModule("BaseWorldUtility"));
 		assert(world!=NULL);
@@ -82,17 +92,6 @@ void BaseUtility::initialize(int stage) {
 		else if (	pos.getX() < 0 || pos.getY() < 0 || pos.getZ() < 0 ||
 				pos.getX() > pgs.getX() || pos.getY() > pgs.getY() || pos.getZ() > pgs.getZ())
 			error("node position specified in omnetpp.ini exceeds playgroundsize");
-
-//BB start
-		WATCH_VECTOR(clientVector);
-	    WATCH_VECTOR(categoryDescriptions);
-	    
-	    clientVector.clear();
-	    categoryDescriptions.clear();
-	    parentVector.clear();
-	    nextCategory = 0;	
-//BB end 
-
 	}
 }
 

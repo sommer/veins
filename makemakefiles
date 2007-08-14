@@ -89,3 +89,7 @@ all:
 
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
+	@echo $(ROOT)/tests/test-cc-connections
+	@cd $(ROOT)/tests/test-cc-connections && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@echo $(ROOT)/tests/blackboard
+	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
