@@ -26,6 +26,9 @@ configurator:
 
 distclean:
 	-@$(MAKE) clean
+	@rm -f base/localization/Makefile
+	@rm -f tests/test-cc-connections/Makefile
+	@rm -f tests/blackboard/Makefile
 	@rm -f tests/Makefile
 	@rm -f modules/Makefile
 	@rm -f modules/mac/Makefile
@@ -40,6 +43,7 @@ distclean:
 	@rm -f modules/localization/Makefile
 	@rm -f examples/baseNetwork/Makefile
 	@rm -f examples/locNetwork/Makefile
+	@rm -f examples/multiChannel/Makefile
 	@(cd configurator; ${MAKE} distclean)
 
 # documentation
