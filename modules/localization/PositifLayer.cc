@@ -1169,7 +1169,7 @@ void PositifLayer::write_configuration(const char * filename)
 			bound = dim[d];
 	}
 
-        char *prelude[] = {
+        const char *prelude[] = {
                 "# Topology description:",
                 "#   'nr-dimensions'     are we describing a 2-D or a 3-D topology?",
                 "#   'grid-bound'        the network is contained in a box of size",
@@ -1225,7 +1225,7 @@ void PositifLayer::write_configuration(const char * filename)
                         int n_bad = 0;
                         int n_undetermined = 0;
                         for (cLinkedListIterator iter(*node[n].neighbors); !iter.end(); iter++) {
-                                int m = ((neighbor_info *) iter())->idx;
+//                                 int m = ((neighbor_info *) iter())->idx;
 
 //                                 if (skip[m])
 //                                         n_undetermined++;
