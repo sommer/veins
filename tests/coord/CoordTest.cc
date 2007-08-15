@@ -57,6 +57,28 @@ const double DISTANCE_3D = sqrt(SQUARE_DISTANCE_3D);
 const double SQUARE_DISTANCE_2D = DIFF_X * DIFF_X + DIFF_Y * DIFF_Y;
 const double DISTANCE_2D = sqrt(SQUARE_DISTANCE_2D);
 
+const double X1_IN_UPPER_LEFT_HALF = 0.4;
+const double Y1_IN_UPPER_LEFT_HALF = 1.0;
+const double Z1_IN_UPPER_LEFT_HALF = 1.2;
+
+const double X2_IN_UPPER_LEFT_HALF = 1.4;
+const double Y2_IN_UPPER_LEFT_HALF = 2.0;
+const double Z2_IN_UPPER_LEFT_HALF = 2.2;
+
+const double X1_IN_LOWER_RIGHT_HALF = 3.4;
+const double Y1_IN_LOWER_RIGHT_HALF = 4.0;
+const double Z1_IN_LOWER_RIGHT_HALF = 4.7;
+
+const double TORUS_SQUARE_DISTANCE1_3D = 1 + 1 + 1;
+const double TORUS_SQUARE_DISTANCE2_3D = 2.0 * 2.0 + 2.0 * 2.0 + 1.5 * 1.5;
+
+const double TORUS_SQUARE_DISTANCE1_2D = 1 + 1;
+const double TORUS_SQUARE_DISTANCE2_2D = 2.0 * 2.0 + 2.0 * 2.0;
+
+const double INSIDE = 2.0;
+const double BORDER = 0.0;
+const double SMALLER = -1.0;
+const double BIGGER = 7.0;
 
 
 void assertTrue(string msg, bool value) {
@@ -313,21 +335,105 @@ void testDistance() {
     Coord a(X, Y, Z);
     Coord b(X2, Y2, Z2);
 
+	assertEqual("3D: square distance a<->a", 0.0, a.sqrdist(a));
+    assertEqual("3D: distance a<->a", 0.0, a.distance(a));
     assertEqual("3D: square distance a<->b", SQUARE_DISTANCE_3D, a.sqrdist(b));
     assertEqual("3D: distance a<->b", DISTANCE_3D, a.distance(b));
 
-    //TODO: test torus distance
+	Coord ul1(X1_IN_UPPER_LEFT_HALF, Y1_IN_UPPER_LEFT_HALF, Z1_IN_UPPER_LEFT_HALF);
+    Coord ul2(X2_IN_UPPER_LEFT_HALF, Y2_IN_UPPER_LEFT_HALF, Z2_IN_UPPER_LEFT_HALF);
+
+	Coord lr1(X1_IN_LOWER_RIGHT_HALF, Y1_IN_LOWER_RIGHT_HALF, Z1_IN_LOWER_RIGHT_HALF);
+
+	Coord pg(PG_X, PG_Y, PG_Z);
+
+	assertEqual("3D: square torus distance ul1<->ul2", TORUS_SQUARE_DISTANCE1_3D, ul1.sqrTorusDist(ul2, pg));
+    assertEqual("3D: square torus distance ul1<->lr1", TORUS_SQUARE_DISTANCE2_3D, ul1.sqrTorusDist(lr1, pg));
 
     //2D
     a = Coord(X, Y);
     b = Coord(X2, Y2);
 
+	assertEqual("2D: square distance a<->a", 0.0, a.sqrdist(a));
+    assertEqual("2D: distance a<->a", 0.0, a.distance(a));
     assertEqual("2D: square distance a<->b", SQUARE_DISTANCE_2D, a.sqrdist(b));
     assertEqual("2D: distance a<->b", DISTANCE_2D, a.distance(b));
 
-    //TODO: test torus distance
+    ul1 = Coord(X1_IN_UPPER_LEFT_HALF, Y1_IN_UPPER_LEFT_HALF);
+    ul2 = Coord(X2_IN_UPPER_LEFT_HALF, Y2_IN_UPPER_LEFT_HALF);
+
+	lr1 = Coord(X1_IN_LOWER_RIGHT_HALF, Y1_IN_LOWER_RIGHT_HALF);
+
+	pg = Coord(PG_X, PG_Y);
+
+	assertEqual("2D: square torus distance ul1<->ul2", TORUS_SQUARE_DISTANCE1_2D, ul1.sqrTorusDist(ul2, pg));
+    assertEqual("2D: square torus distance ul1<->lr1", TORUS_SQUARE_DISTANCE2_2D, ul1.sqrTorusDist(lr1, pg));
     
     cout << "Distance methods test successful." << endl;
+}
+
+/**
+ * Unit test for isInRectangle method of class Coord
+ *
+ * - test at playground border(should be inside)
+ * - test outside playground
+ * - test inside playground
+ * - test 2D/3D
+ */
+void testIsInRectangle() {
+
+	//3D
+	Coord upperLeftPG;
+	Coord lowerRightPG(PG_X, PG_Y, PG_Z);
+
+	Coord inside(INSIDE, INSIDE, INSIDE);
+	assertTrue("3D: inside is inside of playground.", inside.isInRectangle(upperLeftPG, lowerRightPG));
+
+	Coord border(BORDER, INSIDE, INSIDE);
+	assertTrue("3D: border-x is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+	border = Coord(INSIDE, BORDER, INSIDE);
+	assertTrue("3D: border-y is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+	border = Coord(INSIDE, INSIDE, BORDER);
+	assertTrue("3D: border-z is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+
+	Coord outside(SMALLER, INSIDE, INSIDE);
+	assertFalse("3D: smaller-x is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	outside = Coord(INSIDE, SMALLER, INSIDE);
+	assertFalse("3D: smaller-y is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	outside = Coord(INSIDE, INSIDE, SMALLER);
+	assertFalse("3D: smaller-z is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+
+	outside = Coord(BIGGER, INSIDE, INSIDE);
+	assertFalse("3D: bigger-x is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	outside = Coord(INSIDE, BIGGER, INSIDE);
+	assertFalse("3D: bigger-y is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	outside = Coord(INSIDE, INSIDE, BIGGER);
+	assertFalse("3D: bigger-z is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+
+
+	//2D
+	upperLeftPG = Coord(true);
+	lowerRightPG = Coord(PG_X, PG_Y);
+
+	inside = Coord(INSIDE, INSIDE);
+	assertTrue("2D: inside is inside of playground.", inside.isInRectangle(upperLeftPG, lowerRightPG));
+
+	border = Coord(BORDER, INSIDE);
+	assertTrue("2D: border-x is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+	border = Coord(INSIDE, BORDER);
+	assertTrue("2D: border-y is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+	
+	outside = Coord(SMALLER, INSIDE);
+	assertFalse("2D: smaller-x is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	outside = Coord(INSIDE, SMALLER);
+	assertFalse("2D: smaller-y is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	
+	outside = Coord(BIGGER, INSIDE);
+	assertFalse("2D: bigger-x is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	outside = Coord(INSIDE, BIGGER);
+	assertFalse("2D: bigger-y is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));	
+
+	cout << "Is in rectangle test successful." << endl;
 }
 
 int main() {
@@ -336,6 +442,6 @@ int main() {
     testCompareOperators();
     testLength();
     testDistance();
-    
+    testIsInRectangle();
 }
 
