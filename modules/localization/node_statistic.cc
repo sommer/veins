@@ -139,8 +139,8 @@ void Node_Statistic::handleMessage(cMessage * msg, bool newNeighbor)
 		// Activate all timer routines when we meet a new neighbor
 //              for (cLinkedListIterator iter = getTimers(); !iter.end();
 //                   iter++) {
-//                      timer_info *ev = (timer_info *) iter();
-//                      resetTimer(ev);
+//                      timer_info *EV = (timer_info *) iter();
+//                      resetTimer(EV);
 //              }
 		resetAllRepeatTimers();
 	// Call appropriate handler function depending on whether this node is an
@@ -275,8 +275,8 @@ void Node_Statistic::update_rectangle(nghbor_info * anchor)
 		size *= (rectangle.max[d] - rectangle.min[d]);
 	}
 	valid_rectangle = true;
-	EV << node[me].ID << ": TL = " << pos2str(rectangle.min) << ",";
-	EV << "BR = " << pos2str(rectangle.max) << " size = " << size << "\n";
+	EV << node[me].ID << ": TL = " << pos2str(rectangle.min) << ", ";
+	EV_clear << "BR = " << pos2str(rectangle.max) << " size = " << size << "\n";
 }
 
 
