@@ -49,12 +49,10 @@ void ChannelAccess::initialize( int stage )
         if (nic->hasPar("connectionManagerName")){        		
 			cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath(nic->par("connectionManagerName").stringValue()));
 		} else {
-			
-			cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath("connectionManager"));
+			cc = FindModule<BaseConnectionManager *>::findGlobalModule();
 		}
 		
 		if( cc == 0 ) error("Could not find connectionmanager module");
-        		
         		
 		bu = FindModule<BaseUtility*>::findSubModule(getNode());
 		if (bu == 0) error("Could not find BaseUtility module");
