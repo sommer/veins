@@ -535,7 +535,7 @@ uint8_t Foxtrot::mergeableSubset(FoxtrotPacketStorage * list, uint8_t * subset)
 			memset(&curr, 0, FOX_QUEUE_LEN_BYTES);
 			for (j = 0; j < count; j++)
 			{
-				if (abs(static_cast<float>((*list)[j]->getWhen() - (*list)[i]->getWhen())) > MAX_SECS_DIFF)
+				if (fabs(static_cast<float>((*list)[j]->getWhen() - (*list)[i]->getWhen())) > MAX_SECS_DIFF)
 					continue;
 				ANY_SET(j, curr);
 				curr_count++;
@@ -628,7 +628,7 @@ uint8_t Foxtrot::mergeableSubset(FoxtrotPacketStorage * list, uint8_t * subset)
 					curr_count++;
 					continue;
 				}
-				if ((*list)[k]->getWhen() != NO_TIME && (*list)[k]->getWhen() != NO_TIME && abs(static_cast<float>((*list)[k]->getWhen() - (*list)[j]->getWhen())) > MAX_SECS_DIFF)
+				if ((*list)[k]->getWhen() != NO_TIME && (*list)[k]->getWhen() != NO_TIME && fabs(static_cast<float>((*list)[k]->getWhen() - (*list)[j]->getWhen())) > MAX_SECS_DIFF)
 				{
 					DBG("Time diff is too big\n");
 					continue;

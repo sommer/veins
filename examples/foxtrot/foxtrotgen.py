@@ -42,18 +42,17 @@ module-messages = yes
 ##############################################################################
 #       Parameters for the propagationmodel                                    #
 ##############################################################################
-baseSim.propagationmodel.carrierFrequency = 868e+6
+baseSim.prop = "UnitDisk"
+baseSim.propagationmodel.radioRange = 10
 
-# max transmission power [mW]
-baseSim.propagationmodel.pMax  = 3
-# signal attenuation threshold [dBm]
-baseSim.propagationmodel.sat   = -110
-# path loss coefficient alpha
-baseSim.propagationmodel.alpha = 3.5
+# junk numbers 
+baseSim.propagationmodel.pMax = 10
+baseSim.propagationmodel.sat = 10
+baseSim.propagationmodel.alpha = 10
+baseSim.propagationmodel.carrierFrequency = 10
 
-baseSim.propagationmodel.sendDirect = 0
-baseSim.propagationmodel.useTorus = 0
-
+baseSim.world.useTorus = 0
+baseSim.world.use2D = 1
 
 baseSim.node[*].applType = "FoxApplLayer"
 #baseSim.node[*].aggType = "BaseAggLayer"
@@ -87,11 +86,11 @@ for i in range(count):
 		print "baseSim.node[%d].isSink = True"%i
 	else:
 		print "baseSim.node[%d].isSink = False"%i
-	print "baseSim.node[%d].utility.x = %d"%(i,i*10)
-	print "baseSim.node[%d].utility.y = 0"%i
-	#print "baseSim.node[%d].utility.x = %f"%(i,uniform(0,100))
-	#print "baseSim.node[%d].utility.y = %f"%(i,uniform(0,100))
-	print "baseSim.node[%d].utility.z = 0"%i
+	print "baseSim.node[%d].mobility.x = %d"%(i,i*10)
+	print "baseSim.node[%d].mobility.y = 0"%i
+	#print "baseSim.node[%d].mobility.x = %f"%(i,uniform(0,100))
+	#print "baseSim.node[%d].mobility.y = %f"%(i,uniform(0,100))
+	print "baseSim.node[%d].mobility.z = 0"%i
 
 print >>out,"""
 
@@ -151,6 +150,7 @@ baseSim.node[*].nic.radio.debug = 0
 ##############################################################################
 
 # debug switch
+baseSim.node[*].nic.phyType = "CollisionsPhy"
 baseSim.node[*].nic.phy.debug = 1
 baseSim.node[*].nic.phy.publishRSSIAlways = 0
 baseSim.node[*].nic.phy.headerLength=16

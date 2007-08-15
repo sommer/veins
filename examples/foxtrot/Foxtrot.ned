@@ -8,10 +8,11 @@ module Network
         playgroundSizeX: numeric const, // x size of the area the nodes are in (in meters)
         playgroundSizeY: numeric const, // y size of the area the nodes are in (in meters)
         playgroundSizeZ: numeric const, // z size of the area the nodes are in (in meters)
-        numNodes: numeric const; // total number of hosts in the network
+        numNodes: numeric const, // total number of hosts in the network
+		prop: string;
 
     submodules:
-        propagationmodel: ConnectionManager;
+        propagationmodel: prop like ConnectionManager;
 		world: BaseWorldUtility;
             parameters:
                 playgroundSizeX = playgroundSizeX,

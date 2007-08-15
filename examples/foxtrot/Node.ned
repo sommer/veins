@@ -2,7 +2,7 @@ import
     "BaseApplLayer",
     "BaseAggLayer",
     "BaseNetwLayer",
-    "BaseNic",
+    "Nic",
     "BaseMobility",
     "BaseArp",
     "BaseBattery",
@@ -14,6 +14,8 @@ module Node
         routingType: string, //type of the network layer
         aggType: string, //type of the aggregation layer
         applType: string; //type of the application layer
+    gates:
+	    in: radioIn; // gate for sendDirect
     submodules:
         utility: BaseUtility;
             display: "p=130,38,rect;b=24,24;o=black";
@@ -29,7 +31,7 @@ module Node
             display: "p=60,50;i=agg";
         net: routingType like BaseNetwLayer;
             display: "p=60,108;i=prot1";
-        nic: BaseNic;
+        nic: Nic;
             display: "p=60,166;i=iface";
     connections:
         nic.uppergateOut --> net.lowergateIn;
@@ -46,6 +48,7 @@ module Node
         agg.uppergateIn <-- appl.lowergateOut;
         agg.upperControlOut --> appl.lowerControlIn display "m=m,70,0,70,0;o=red";
         agg.upperControlIn <-- appl.lowerControlOut display "m=m,70,0,70,0;o=red";
+	radioIn --> nic.radioIn;
     display: "b=,,rect;o=white";
 endmodule
 
