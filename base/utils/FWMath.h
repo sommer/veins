@@ -118,6 +118,11 @@ public:
     static double max(double a, double b) { return (a<b)? b : a; }
 
     /**
+     * @return smaller of the given parameters
+     */
+    static double min(double a, double b) { return (a>b)? b : a; }
+
+    /**
      * convert a dBm value into milli Watt
      */
     static double dBm2mW(double dBm){

@@ -93,3 +93,6 @@ all:
 	@cd $(ROOT)/tests/test-cc-connections && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 	@echo $(ROOT)/tests/blackboard
 	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@echo $(ROOT)/tests/coord
+	@cd $(ROOT)/tests/coord && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+    

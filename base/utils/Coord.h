@@ -49,6 +49,11 @@
  *
  * See the constructors for more details.
  *
+ * Most methods of Coord does not check for dimension compatibility.
+ * For example the overloaded "+"-operator does not check if both
+ * Coord are of the same dimension. The user has to assure the
+ * proper use of this methods!
+ *
  * @ingroup support
  * @author Christian Frank
  */
@@ -74,9 +79,9 @@ public:
     {
 
         if (use2D) {
-            x = UNDEFINED;
+            z = UNDEFINED;
         } else {
-            x = 0.0;
+            z = 0.0;
         }
     }
 
@@ -97,6 +102,7 @@ public:
     Coord( const Coord* pos )
         :x(pos->x), y(pos->y), z(pos->z), use2DFlag(pos->use2DFlag) {}
 
+    /** Returns a string with the value of the coordinate.*/
     std::string info() const {
         std::stringstream os;
         if (use2DFlag) {
@@ -107,14 +113,20 @@ public:
         return os.str();
     }
 
-    /** Adds two coordinate vectors.*/
+    /**
+     * Adds two coordinate vectors. Does not check for dimension
+     * compatibility!
+     */
     friend Coord operator+(const Coord& a, const Coord& b) {
         Coord tmp = a;
         tmp += b;
         return tmp;
     }
 
-    /** Subtracts two coordinate vectors.*/
+    /**
+     * Subtracts two coordinate vectors. Does not check for 
+     * dimension compatibility!
+     */
     friend Coord operator-(const Coord& a, const Coord& b) {
         Coord tmp = a;
         tmp -= b;
@@ -123,15 +135,42 @@ public:
 
     /** Multiplies a coordinate vector by a real number.*/
     friend Coord operator*(const Coord& a, double f) {
-        return Coord(a.x*f, a.y*f, a.z*f);
+		Coord tmp = a;
+		tmp *= f;
+        return tmp;
     }
 
     /** Divides a coordinate vector by a real number.*/
     friend Coord operator/(const Coord& a, double f) {
-        return Coord(a.x/f, a.y/f, a.z/f);
+		Coord tmp = a;
+		tmp /= f;
+        return tmp;
     }
 
-    /** Adds coordinate vector b to a.*/
+    /**
+     * Multiplies a coordinate vector by a real number.
+     */
+    Coord operator*=(double f) {
+        x *= f;
+        y *= f;
+        z *= f;
+        return *this;
+    }
+
+    /**
+     * Divides a coordinate vector by a real number.
+     */
+    Coord operator/=(double f) {
+        x /= f;
+        y /= f;
+        z /= f;
+        return *this;
+    }
+
+    /**
+     * Adds coordinate vector b to a.
+     * Does not check for dimension compatibility!
+     */
     Coord operator+=(const Coord& a) {
         x += a.x;
         y += a.y;
@@ -139,7 +178,10 @@ public:
         return *this;
     }
 
-    /** Assigns a this.*/
+    /**
+     * Assigns a this.
+     * This operator can change the dimension of the coordinate.
+     */
     Coord operator=(const Coord& a) {
         x = a.x;
         y = a.y;
@@ -148,11 +190,14 @@ public:
         return *this;
     }
 
-    /** Subtracts coordinate vector b from a.*/
+    /**
+     * Subtracts coordinate vector b from a.
+     * Does not check for dimension compatibility!
+     */
     Coord operator-=(const Coord& a) {
         x -= a.x;
         y -= a.y;
-	z -= a.z;
+        z -= a.z;
         return *this;
     }
 
@@ -160,6 +205,8 @@ public:
      * Tests whether two coordinate vectors are equal. Because
      * coordinates are of type double, this is done through the
      * FWMath::close function.
+     *
+     * Does not check for dimension compatibility!
      */
     friend bool operator==(const Coord& a, const Coord& b) {
         return FWMath::close(a.x, b.x) && FWMath::close(a.y, b.y) && FWMath::close(a.z, b.z);
@@ -168,13 +215,16 @@ public:
     /**
      * Tests whether two coordinate vectors are not equal. Negation of
      * the operator==.
+     *
+     * Does not check for dimension compatibility!
      */
     friend bool operator!=(const Coord& a, const Coord& b) {
         return !(a==b);
     }
 
     /**
-     * Returns the distance to Coord a
+     * Returns the distance to Coord a.
+     * Does not check for dimension compatibility!
      */
     double distance( const Coord& a ) const {
         Coord dist=*this-a;
@@ -183,6 +233,7 @@ public:
 
     /**
      * Returns distance^2 to Coord a (omits square root).
+     * Does not check for dimension compatibility!
      */
     double sqrdist( const Coord& a ) const {
         Coord dist=*this-a;
@@ -191,31 +242,10 @@ public:
 
     /**
      * Returns the squared distance on a torus to Coord a (omits square root).
-     * TODO make 3D
+     *
+     * Does not check for dimension compatibility!
      */
     double sqrTorusDist(const Coord& b, const Coord& playgroundSize) const {
-        /*double minTorDist;
-        double torDist;
-
-        torDist = FWMath::torDist(this->x,              b.x, this->y,                  b.y);
-        minTorDist = torDist;
-        torDist = FWMath::torDist(this->x+playGround.x, b.x, this->y,                  b.y);
-        if(torDist < minTorDist) minTorDist = torDist;
-        torDist = FWMath::torDist(this->x-playGround.x, b.x, this->y,                  b.y);
-        if(torDist < minTorDist) minTorDist = torDist;
-        torDist = FWMath::torDist(this->x,              b.x, this->y+playGround.y,     b.y);
-        if(torDist < minTorDist) minTorDist = torDist;
-        torDist = FWMath::torDist(this->x,              b.x, this->y-playGround.y,     b.y);
-        if(torDist < minTorDist) minTorDist = torDist;
-        torDist = FWMath::torDist(this->x+playGround.x, b.x, this->y+playGround.y,     b.y);
-        if(torDist < minTorDist) minTorDist = torDist;
-        torDist = FWMath::torDist(this->x+playGround.x, b.x, this->y-playGround.y,     b.y);
-        if(torDist < minTorDist) minTorDist = torDist;
-        torDist = FWMath::torDist(this->x-playGround.x, b.x, this->y+playGround.y,     b.y);
-        if(torDist < minTorDist) minTorDist = torDist;
-        torDist = FWMath::torDist(this->x-playGround.x, b.x, this->y-playGround.y,     b.y);
-        if(torDist < minTorDist) minTorDist = torDist;
-        return minTorDist; */
 
         Coord dist = *this - b;
 
@@ -295,30 +325,51 @@ public:
     void setY(double y){this->y = y;}
 
     /**
-     * Getter for the z coordinate
+     * Getter for the z coordinate.
+     *
+     * This method should return Coord::UNDEFINED if
+     * this is a two-dimensional coordinate. If not,
+     * the proper function of the Coord-methods
+     * can't be assured.
      */
     double getZ() const{ return z; }
 
     /**
-     * Setter for the z coordinate
+     * Setter for the z coordinate.
+     *
+     * This method does not check its dimension!
+     * So never call it if you are working with
+     * two-dimensional coordinates!
+     * A 2D-Coord looses its functionality if the
+     * z-value becomes another value than
+     * Coord::UNDEFINED
      */
     void setZ(double z){this->z = z;}
 
     /**
-     * Returns true if this coordinate is valid, this means
-     * x, y and z are unequal UNDEFINED.
+     * Returns true if this coordinate is valid.
+     * Valid means this Coord is 3-dimensional or
+     * this Coord is 2-Dimensional and the z-value
+     * i equal to Coord::UNDEFINED.
      */
-    /*bool isValid() {
-        return x != UNDEFINED && y != UNDEFINED && (z != UNDEFINED || is2DFlag);
-    }*/
+    bool isValid() {
+        return (z == UNDEFINED) || !use2DFlag;
+    }
 
     /**
-     * Returns true if this coordinate is two dimensional
+     * Returns true if this coordinate is two-dimensional
      */
     bool is2D() { return use2DFlag; }
 
     /**
+     * Returns true if this coordinate is three-dimensional
+     */
+    bool is3D() { return !use2DFlag; }
+
+    /**
      * Checks if this coordinate is inside a specified rectangle.
+     *
+     * Does not check for dimension compatibility!
      *
      * @param upperLeftCorner The upper left corner of the rectangle.
      * @param lowerRightCorner the lower right corner of the rectangle.
