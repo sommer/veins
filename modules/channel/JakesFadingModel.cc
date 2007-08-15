@@ -11,8 +11,7 @@
 
 #include "JakesFadingModel.h"
 #include "BaseWorldUtility.h"
-#include <math.h>
-#include "winmath.h"
+#include "FWMath.h"
 
 /**
  * Initialize fading for a particular subcarrier.
@@ -82,5 +81,5 @@ double JakesFadingModel::getChannelState(double d, double f, double v)
 
 	// Output: |H_f|^2 = absolute channel impulse response due to fading in dB.
 	// Note that this may be >0 dB due to constructive interference.
-	return 10.0 * log10(re_h * re_h + im_h * im_h);
+	return FWMath::mW2dBm(re_h * re_h + im_h * im_h);
 }

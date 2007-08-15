@@ -54,15 +54,15 @@
  */
 class Coord : public cPolymorphic
 {
-public: 
-	
-	static const double UNDEFINED = 0.0; 
+public:
+	static const double UNDEFINED;
+
 protected:
     /** @brief x and y coordinates of the position*/
     double x, y, z;
 
     bool use2DFlag;
-    
+
 public:
 
     /**
@@ -72,14 +72,14 @@ public:
     Coord(bool use2D = false)
         :x(0.0), y(0.0), use2DFlag(use2D)
     {
-        
+
         if (use2D) {
             x = UNDEFINED;
         } else {
             x = 0.0;
         }
     }
-    
+
     /** Initializes 3D coordinate.*/
     Coord(double _x, double _y, double _z)
         : x(_x), y(_y), z(_z) , use2DFlag(false) {}

@@ -17,20 +17,27 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
+/**
+ * @file FWMath.h
+ * @author Christian Frank
+ * @brief Support functions for mathematical operations.
+ **/
+
 #ifndef FWMATH_H
 #define FWMATH_H
 
-//
-// Support functions for mathematical operations
-//
-
 #include <cmath>
-
 
 /* windows math.h doesn't define the PI variable so we have to do it
    by hand*/
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
+#endif
+
+/* Windows math.h doesn't define sqrt(2) so we have to do it by
+   hand. */
+#ifndef M_SQRT2
+#define M_SQRT2 1.41421356237309504880
 #endif
 
 /* Constant for comparing doubles. Two doubles at most epsilon apart
@@ -39,6 +46,14 @@
 #define EPSILON 0.001
 #endif
 
+/* Provide function substitutes for Win32 architectures. */
+#ifdef _WIN32
+#include <float.h>
+#define finite	_finite
+#define isnan	_isnan
+#define erf(X)	FWMath::erf(X)
+#define erfc(X)	FWMath::erfc(X)
+#endif
 
 /**
  * @brief Support functions for mathematical operations.
@@ -49,8 +64,8 @@
  * @ingroup utils
  * @author Christian Frank
  */
-class FWMath {
-
+class FWMath
+{
 public:
 
     /**
@@ -110,12 +125,53 @@ public:
     }
 
     /**
+     * @brief Convert an mW value to dBm.
+     **/
+	static double mW2dBm(double mW) { return (10 * log10(mW)); }
+
+    /**
      * helper function, returns squared euclidean distance
      * makes code less messy
      */
-    static inline double torDist (double x1, double x2, double y1, double y2) {
+    static double torDist(double x1, double x2, double y1, double y2) {
         return (x1-x2) * (x1-x2) + (y1-y2) * (y1-y2);
     };
+
+	/**
+	 * @brief Complementary error function.
+	 **/
+	static double erfc(double x) {
+		double t, u, y;
+
+		if (x <= -6.0)
+			return 2.0;
+		if (x >= 6.0)
+			return 0.0;
+
+		t = 3.97886080735226 / (fabs(x) + 3.97886080735226);
+		u = t - 0.5;
+		y = (((((((((0.00127109764952614092 * u + 1.19314022838340944e-4) * u -
+			0.003963850973605135) * u - 8.70779635317295828e-4) * u +
+			0.00773672528313526668) * u + 0.00383335126264887303) * u -
+			0.0127223813782122755) * u - 0.0133823644533460069) * u +
+			0.0161315329733252248) * u + 0.0390976845588484035) * u +
+			0.00249367200053503304;
+		y = ((((((((((((y * u - 0.0838864557023001992) * u -
+			0.119463959964325415) * u + 0.0166207924969367356) * u +
+			0.357524274449531043) * u + 0.805276408752910567) * u +
+			1.18902982909273333) * u + 1.37040217682338167) * u +
+			1.31314653831023098) * u + 1.07925515155856677) * u +
+			0.774368199119538609) * u + 0.490165080585318424) * u +
+			0.275374741597376782) * t * exp(-x * x);
+
+		return x < 0.0 ? 2.0 - y : y;
+	}
+
+	/**
+	 * @brief Error function.
+	 **/
+	static double erf(double x) { return 1.0 - erfc(x); }
+
 };
 
 #endif

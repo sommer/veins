@@ -1,7 +1,7 @@
 #include <math.h>
 #include "PositifLayer.h"
 #include <string.h>
-#include "winmath.h"
+#include "FWMath.h"
 
 // Node subclass containing Statistic algorithm
 
