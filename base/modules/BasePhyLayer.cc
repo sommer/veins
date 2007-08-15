@@ -20,6 +20,7 @@
 
 #include "BasePhyLayer.h"
 
+#include <assert.h>
 
 //const double BasePhyLayer::speedOfLight = ChannelControl::speedOfLight;
 
@@ -228,6 +229,7 @@ void BasePhyLayer::handleUpperMsg(cMessage *msg)
 {
     AirFrame *frame = encapsMsg(msg);
 
+    assert (!txOverTimer->isScheduled());
     scheduleAt(simTime() + frame->getDuration(), txOverTimer);
     sendDown(static_cast<cMessage *>(frame));
 }
