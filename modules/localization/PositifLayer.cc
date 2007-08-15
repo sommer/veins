@@ -24,7 +24,7 @@
 #include "BaseUtility.h"
 #include "FindModule.h"
 #include "ModuleAccess.h"
-//#include "ChannelControl.h"
+#include "ConnectionManager.h"
 #include "NetwControlInfo.h"
 #include <SimpleAddress.h>
 #include "winsupport.h"
@@ -52,6 +52,7 @@ int PositifLayer::phase1_max_anchors;
 FLOAT PositifLayer::var0;
 FLOAT PositifLayer::var1;
 FLOAT PositifLayer::var2;
+BaseWorldUtility * PositifLayer::world;
 
 struct myParams params;
 
@@ -107,6 +108,10 @@ void PositifLayer::initialize(int stage)
 
 		/* only one node needs to initialize this */
 		if (me == 0) {
+			world = (BaseWorldUtility*)getGlobalModule("BaseWorldUtility");
+			if (world == NULL) {
+				error("Could not find BaseWorldUtility module");
+			}
 			setup_global_vars();
 			node = new node_info[num_nodes];
 		}
@@ -175,9 +180,10 @@ void PositifLayer::initialize(int stage)
 					node[me].init_pos[i] = node[me].true_pos[i];
 			} else {
 				for (int i = 0; i < 3; i++)
-					node[me].init_pos[i] =
-						genk_normal(1, node[me].true_pos[i],
-							    range * pos_variance);
+// 					node[me].init_pos[i] =
+// 						genk_normal(1, node[me].true_pos[i],
+// 							    range * pos_variance);
+					node[me].init_pos[i] = 0;
 			}
 		}
 		break;
@@ -217,18 +223,18 @@ void PositifLayer::setup_global_vars(void)
 	dim = new double[nr_dims];
 
 	switch (nr_dims) {
-	case 3:
-		dim[2] = par("z_dim");
-	case 2:
-		dim[1] = par("y_dim");
-	case 1:
-		dim[0] = par("x_dim");
+	case 3: dim[2] = world->getPgs()->getZ();
+	case 2: dim[1] = world->getPgs()->getY();
+	case 1: dim[0] = world->getPgs()->getX();
 		break;
-
 	default:
-		error("initialize() can't handle %d-dimensional space",
-		      nr_dims);
+		error("initialize() can't handle %d-dimensional space", nr_dims);
 		abort();
+	}
+
+	area = dim[0];
+	for (int d = 1; d < nr_dims; d++) {
+		area *= dim[d];
 	}
 
 //      num_nodes = par("num_nodes");
@@ -236,7 +242,8 @@ void PositifLayer::setup_global_vars(void)
 	fprintf(stdout, "numHosts = %d\n", num_nodes);
 	num_anchors =
 	    (int) Max(num_nodes * (double) par("anchor_frac"), nr_dims + 1);
-	range = (double) par("range");
+//	range = (double) par("range");
+	range = (double)getGlobalModule("channelcontrol")->par("radioRange");
 	do_2nd_phase = par("do_2nd_phase");	// Each node writes to these global variables, but this shouldn't cause any problems.
 
 	phase1_min_anchors = par("phase1_min_anchors");
@@ -281,6 +288,7 @@ void PositifLayer::finish()
 {
 	if (me == 0) {
 		write_statistics();
+		write_configuration("configuration.scen");
 	}
 	handleStopMessage(NULL);
 	delete node[me].neighbors;
@@ -1142,4 +1150,128 @@ void PositifLayer::statistics(bool heading)
 		fprintf(stderr, "conf: %1.3f +/- %1.3f\n", avg_conf.mean(),
 			avg_conf.stddev());
 	}
+}
+
+void PositifLayer::write_configuration(const char * filename)
+{
+	FLOAT bound;
+	FILE *fp = fopen(filename, "w");
+
+	if (fp == NULL) {
+		error("Can't open '%s'", filename);
+		return;
+	}
+
+	/* determine bound */
+	bound = dim[0];
+	for (int d = 1; d < nr_dims; d++) {
+		if (dim[d] > bound)
+			bound = dim[d];
+	}
+
+        char *prelude[] = {
+                "# Topology description:",
+                "#   'nr-dimensions'     are we describing a 2-D or a 3-D topology?",
+                "#   'grid-bound'        the network is contained in a box of size",
+                "#                           [0:grid-bound] x [0:grid-bound] (x [0:grid-bound])",
+                "#   'radio-range'       the maximum length of a connection between two nodes",
+                "#   'connection'        a radio link between a source and destination node.",
+                "#                           Note that connections are directed and there",
+                "#                           need NOT be a reverse connection.",
+                "#   'measured-range'    (noisy) distance estimate obtained by receiver on",
+                "#                           a connection (same for each message).",
+                "#   'nr-nodes'          the number of nodes in the network",
+                "#   'nr-anchors'        the number of anchors in the network. An anchor is a",
+                "#                           node that 'knows' its true position, others do not.",
+                "#   'ID'                node identification (unsigned int), may be outside",
+                "#                           range [0:'nr-nodes'-1]",
+                "#   'position'          2 (or 3) floating point numbers",
+                NULL
+        };
+
+	for (int i = 0; prelude[i] != NULL; i++) {
+		fprintf(fp, "%s\n", prelude[i]);
+	}
+	fprintf(fp, "\n");
+
+	fprintf(fp, "# nr-dimensions grid-bound radio-range\n%d %g %g\n\n", nr_dims, bound, range);
+	fprintf(fp, "# nr-nodes nr-anchors\n%d %d\n\n", num_nodes, num_anchors);
+	fprintf(fp, "# positions: 'nr-nodes' lines with <ID> <x-coord> <y-coord> [<z-coord>]\n");
+
+        // Positions
+        for (int n = 0; n < num_nodes; n++) {
+                fprintf(fp, "%d", node[n].ID);
+                if (node[n].anchor) {
+                        for (int d = 0; d < nr_dims; d++) {
+                                fprintf(fp, " %g", node[n].true_pos[d]);
+                        }
+                        fprintf(fp, " # ANCHOR");
+                } else {
+                        for (int d = 0; d < nr_dims; d++) {
+                                fprintf(fp, " %g", node[n].true_pos[d]);
+                        }
+//                         if (skip[n]) {
+//                                 fprintf(fp, " # UNDETERMINED");
+//                         } else
+// 			{
+//                                 if (ginfo[n].twin >= 0) {
+//                                         fprintf(fp, " # TWIN %d", node[ginfo[n].twin].ID);
+//                                 } else if (bad[n]) {
+//                                         fprintf(fp, " # DEPENDENT");
+//                                 }
+//                         }
+                        // Obtain stats about neighbors
+                        int n_ok = 0;
+                        int n_bad = 0;
+                        int n_undetermined = 0;
+                        for (cLinkedListIterator iter(*node[n].neighbors); !iter.end(); iter++) {
+                                int m = ((neighbor_info *) iter())->idx;
+
+//                                 if (skip[m])
+//                                         n_undetermined++;
+//                                 else if (bad[m])
+//                                         n_bad++;
+//                                 else
+                                        n_ok++;
+                        }
+                        if (n_ok <= nr_dims) {
+                                fprintf(fp, " (nghbrs:");
+                                if (n_ok > 0) {
+                                        fprintf(fp, " %d ok", n_ok);
+                                }
+                                if (n_bad > 0) {
+                                        fprintf(fp, " %d bad", n_bad);
+                                }
+                                if (n_undetermined > 0) {
+                                        fprintf(fp, " %d undetermined", n_undetermined);
+                                }
+                                fprintf(fp, ")");
+                        }
+                }
+                fprintf(fp, "\n");
+        }
+
+        fprintf(fp, "\n# anchor-list: 'nr-anchor's IDs\n");
+        bool first = true;
+        for (int n = 0; n < num_nodes; n++) {
+                if (node[n].anchor) {
+                        if (first) {
+                                first = false;
+                        } else {
+                                fprintf(fp, " ");
+                        }
+                        fprintf(fp, "%d", node[n].ID);
+                }
+        }
+        fprintf(fp, "\n");
+
+        fprintf(fp, "\n# connections: src dst measured-range\n");
+        for (int i = 0; i < num_nodes; i++) {
+                for (cLinkedListIterator iter(*node[i].neighbors); !iter.end(); iter++) {
+                        neighbor_info *n = (neighbor_info *) iter();
+
+                        fprintf(fp, "%d %d %g\n", node[i].ID, node[n->idx].ID, n->est_dist);
+                }
+        }
+	fclose(fp);
 }

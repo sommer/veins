@@ -32,6 +32,7 @@
 #include "RepeatTimer.h"
 #include "cores.h"
 #include "Coord.h"
+#include "BaseWorldUtility.h"
 
 #define TOPOLOGYTYPE_LENGTH 25
 #define LOGLENGTH 102400
@@ -191,6 +192,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 
 
 	void write_statistics();
+	void write_configuration(const char *);
 	void statistics(bool);
       protected:
 	/** 
@@ -250,6 +252,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
       private:
 	bool msg_buffering;
 	cQueue putAside;
+	static BaseWorldUtility * world;
 
 	void addNewNeighbor(int, double, double);
 	bool isNewNeighbor(int);
