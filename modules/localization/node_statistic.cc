@@ -829,31 +829,36 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 	char fname[256];
 	sprintf(fname, "output/%d.data", node[me].ID);
 	FILE *dump = fopen(fname, "w");
-	for (int j = 0; j < width; j++)
-		for (int k = 0; k < height; k++)
-			fprintf(dump, "d %d %d %f\n", j, k, map[j][k]);
-	fprintf(dump, "r %f %f %f %f\n", rectangle.min[0], rectangle.min[1],
-		rectangle.max[0], rectangle.max[1]);
-	for (int i = 0; i < n_pts; i++) {
-		if (confs[i * 2] == 1 || confs[(i * 2) + 1] < 0.00001)
-			fprintf(dump, "a %f %f %f %f\n", (*positions[i * 2])[0],
-				(*positions[i * 2])[1], confs[i * 2],
-				ranges[i]);
-		else
-			fprintf(dump, "i %f %f %f %f %f %f %f\n",
-				(*positions[i * 2])[0], (*positions[i * 2])[1],
-				confs[i * 2], (*positions[(i * 2) + 1])[0],
-				(*positions[(i * 2) + 1])[1],
-				confs[(i * 2) + 1], ranges[i]);
-	}
-	fprintf(dump, "t %f %f %f\n", rel_true_pos[0], rel_true_pos[1],
-		POSCONF(rel_true_pos));
-	fprintf(dump, "g %f %f %f\n", best[0], best[1], confs[n_pts * 2]);
-	if (confs[(n_pts * 2) + 1] > 0)
-		fprintf(dump, "g %f %f %f\n", second[0], second[1],
-			confs[(n_pts * 2) + 1]);
+	if (dump == NULL)
+		EV << "Can't open "<<fname<<" for output dumping\n";
+	else
+	{
+		for (int j = 0; j < width; j++)
+			for (int k = 0; k < height; k++)
+				fprintf(dump, "d %d %d %f\n", j, k, map[j][k]);
+		fprintf(dump, "r %f %f %f %f\n", rectangle.min[0], rectangle.min[1],
+			rectangle.max[0], rectangle.max[1]);
+		for (int i = 0; i < n_pts; i++) {
+			if (confs[i * 2] == 1 || confs[(i * 2) + 1] < 0.00001)
+				fprintf(dump, "a %f %f %f %f\n", (*positions[i * 2])[0],
+					(*positions[i * 2])[1], confs[i * 2],
+					ranges[i]);
+			else
+				fprintf(dump, "i %f %f %f %f %f %f %f\n",
+					(*positions[i * 2])[0], (*positions[i * 2])[1],
+					confs[i * 2], (*positions[(i * 2) + 1])[0],
+					(*positions[(i * 2) + 1])[1],
+					confs[(i * 2) + 1], ranges[i]);
+		}
+		fprintf(dump, "t %f %f %f\n", rel_true_pos[0], rel_true_pos[1],
+			POSCONF(rel_true_pos));
+		fprintf(dump, "g %f %f %f\n", best[0], best[1], confs[n_pts * 2]);
+		if (confs[(n_pts * 2) + 1] > 0)
+			fprintf(dump, "g %f %f %f\n", second[0], second[1],
+				confs[(n_pts * 2) + 1]);
 
-	fclose(dump);
+		fclose(dump);
+	}
 
 	for (int i = 0; i < width; i++)
 		delete[] map[i];
