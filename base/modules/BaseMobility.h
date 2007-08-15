@@ -96,6 +96,7 @@ class BaseMobility : public BaseModule
     };
 
   protected:
+	
     /** @brief Pointer to BaseWorldUtility -- these two must know each other */
     BaseWorldUtility *world;
 

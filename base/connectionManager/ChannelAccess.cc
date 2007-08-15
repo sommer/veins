@@ -56,14 +56,11 @@ void ChannelAccess::initialize( int stage )
         		
 		bu = FindModule<BaseUtility*>::findSubModule(getNode());
 		if (bu == 0) error("Could not find BaseUtility module");
-	}
-	else if (stage == 1)
-	{
+
         // subscribe to position changes
         catMove = bu->subscribe(this, &move, findHost()->id());
-		useSendDirect = cc->registerNic(parentModule(), bu->getPos());
-        isRegistered = true;
-    }
+        isRegistered = false;
+	}
 }
 
 
@@ -139,7 +136,7 @@ void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scope
         else {
             // register the nic with ConnectionManager
             // returns true, if sendDirect is used
-            useSendDirect = cc->registerNic(parentModule(), bu->getPos());
+            useSendDirect = cc->registerNic(parentModule(), &m.startPos);
             isRegistered = true;
         }
         move = m;

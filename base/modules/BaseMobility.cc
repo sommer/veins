@@ -46,7 +46,10 @@ void BaseMobility::initialize(int stage)
 
     if (stage == 0){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
+        
         coreEV << "initializing BaseMobility stage " << stage << endl;
+        
+        // get utility pointers (world and host)
 		world = (BaseWorldUtility*)getGlobalModule("BaseWorldUtility");
         if (world == NULL)
             error("Could not find BaseWorldUtility module");
@@ -55,21 +58,56 @@ void BaseMobility::initialize(int stage)
 		baseUtility = (BaseUtility*)getNodeModule("BaseUtility");
         if (baseUtility == NULL)
             error("Could not find BaseUtility module");
-	move.startPos=baseUtility->getPos(); // Get the initial position from the BaseUtility module
-
+        
         //get a pointer to the host
         hostPtr = findHost();
         hostId = hostPtr->id();
 
-        hasPar("updateInterval") ? updateInterval=par("updateInterval") :
+        
+        if (hasPar("updateInterval")) {
+        	updateInterval = par("updateInterval");
+        } else {
             updateInterval = 0;
-
-        moveCategory = baseUtility->getCategory(&move);
+        }        
 
 		// initialize Move parameter
+        bool use2D = world->use2D();
+        
+        double x = -1.0;
+        double y = -1.0;
+        double z = -1.0;
+        //read coordinates from parameters if available
+        if (hasPar("x") && hasPar("y") && (hasPar("z") || use2D)){ 
+            x = par("x");
+            y = par("y");
+            if(!use2D) {
+                z = par("z");
+            }      
+		} 
+
+        //a coordinate of -1.0 means random position
+        if (x == -1.0 || y == -1.0 || (z == -1.0 && !use2D)) {
+            move.startPos = world->getRandomPosition();
+        } else {
+            if (use2D) {
+                move.startPos = Coord(x, y);
+            } else {
+                move.startPos = Coord(x, y, z);
+            }
+            
+        }
+		coreEV << "start pos: " << move.startPos.info() << endl;
+        //check whether position is within the playground
+        if (!move.startPos.isInRectangle(Coord(use2D), world->getPgs())) {
+            error("node position specified in omnetpp.ini exceeds playgroundsize");    
+        }        
+            
         move.speed = 0;
         move.startTime = simTime();
-        move.direction = Coord(0,0);
+        move.direction = Coord(use2D);
+        
+        //get BBItem category for Move
+        moveCategory = baseUtility->getCategory(&move);
 
     }
     else if (stage == 1){
@@ -181,9 +219,10 @@ void BaseMobility::handleBorderMsg(cMessage * msg)
  */
 void BaseMobility::updatePosition() {
     EV << "updatePosition: " << move.info() << endl;
-    
+
+    //publish the the new move
     baseUtility->publishBBItem(moveCategory, &move, hostId);
-    baseUtility->setPos(&move.startPos); // update the position in BaseUtility module
+    
     char xStr[32], yStr[32], zStr[32];
     sprintf(xStr, "%d", FWMath::round(move.startPos.getX()));
     sprintf(yStr, "%d", FWMath::round(move.startPos.getY()));

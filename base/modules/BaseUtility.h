@@ -82,9 +82,13 @@
 class BaseUtility : public BaseModule {
 
 private:
-	Coord pos;
     bool coreDebug;
 
+    /**
+     * The position of the Host. This coordinate is
+     * synchronized with BaseMobility.
+     */
+    Coord pos;
 
 protected:
 	Module_Class_Members(BaseUtility, BaseModule, 0);
@@ -121,6 +125,9 @@ protected:
     friend std::ostream& operator<<(std::ostream&, const SubscriberVector&);
 //BB end
 
+    /** @brief BBItem category number of Move*/
+    int catMove;
+
 protected:
 
 //BB start
@@ -155,7 +162,13 @@ public:
 	/** @brief Get current position */
 	const Coord* getPos() {return &pos;}
 
-	void setPos(Coord* newCoord);
+    /**
+     * We want to receive Moves from BaseUtility to synchronize
+     * hostPosition with BaseMobility.
+     */
+    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+
+	//void setPos(Coord* newCoord);
 	
 //BB start
 	virtual ~BaseUtility();
