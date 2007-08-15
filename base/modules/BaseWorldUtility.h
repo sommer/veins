@@ -32,6 +32,9 @@ protected:
     
     /** @brief Should the playground be treatend as a torus?*/
     bool useTorusFlag;
+
+    /** @brief Should the world be 2-dimensional? */
+    bool use2DFlag;
 public:
 	Module_Class_Members(BaseWorldUtility,BaseModule,0);
 
@@ -52,6 +55,9 @@ public:
 
     /** @brief Speed of light */
     static const double speedOfLight;
+
+    /** @brief Returns true if the world is 2-dimensional */
+    bool use2D() { return use2DFlag; }
  };
 
 #endif

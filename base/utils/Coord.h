@@ -27,41 +27,83 @@
 /**
  * @brief Class for storing host positions
  *
- * Class for a double-tuple storing a position / two-dimensional
- * vector. Some comparison and basic arithmetic operators on Coord
+ * Class for a storing a position / vector.
+ * Some comparison and basic arithmetic operators on Coord
  * structures are implemented.
+ *
+ * Note:
+ * This class can work 2-dimensional or 3-dimensional.
+ * The dimension of a Coord can only be set at construction time.
+ * The only way to change it afterwards is by assigning Coord a
+ * new value with the overloaded "="-operator.
+ * So every time you create a new Coord variable you should make sure to
+ * use the proper constructor.
+ * Since most time you won't have own constructors in Omnet-modules every
+ * member variable of type Coord becomes 3D at the beginning (because
+ * the default-constructor creates a 3D-Coord).
+ * In this case you should give it the right dimension by assigning them
+ * a new value in the "initialize()"-Method by a line like this:
+ *
+ * coordMember = Coord(x, y);    <- 2D
+ * coordMember = Coord(x, y, z); <- 3D
+ *
+ * See the constructors for more details.
  *
  * @ingroup support
  * @author Christian Frank
  */
 class Coord : public cPolymorphic
 {
+public: 
+	
+	static const double UNDEFINED = 0.0; 
 protected:
     /** @brief x and y coordinates of the position*/
     double x, y, z;
+
+    bool use2DFlag;
     
- public:    
-    /** Initializes coordinates.*/
-    Coord(double _x = 0, double _y = 0, double _z = 0) : x(_x), y(_y), z(_z) {};
+public:
 
-
-    /** Initializes coordinates.*/
-    Coord( const Coord& pos ) : cPolymorphic() {
-        x = pos.x;
-        y = pos.y;
-        z = pos.z;
+    /**
+     * Initialize a 3d (default) or 2d coordinate
+     * with the origin
+     */
+    Coord(bool use2D = false)
+        :x(0.0), y(0.0), use2DFlag(use2D)
+    {
+        
+        if (use2D) {
+            x = UNDEFINED;
+        } else {
+            x = 0.0;
+        }
     }
+    
+    /** Initializes 3D coordinate.*/
+    Coord(double _x, double _y, double _z)
+        : x(_x), y(_y), z(_z) , use2DFlag(false) {}
 
-    /** Initializes coordinates.*/
-    Coord( const Coord* pos ) {
-        x = pos->x;
-        y = pos->y;
-        z = pos->z;
-    }
+    /** Initializes 2D coordinate.*/
+    Coord(double _x, double _y)
+        : x(_x), y(_y), z(UNDEFINED) , use2DFlag(true) {}
+
+
+    /** Initializes coordinate from other coordinate.*/
+    Coord( const Coord& pos )
+        :x(pos.x), y(pos.y), z(pos.z), use2DFlag(pos.use2DFlag) {}
+
+    /** Initializes coordinate from other coordinate.*/
+    Coord( const Coord* pos )
+        :x(pos->x), y(pos->y), z(pos->z), use2DFlag(pos->use2DFlag) {}
 
     std::string info() const {
         std::stringstream os;
-        os << "(" << x << "," << y << "," << z << ")";
+        if (use2DFlag) {
+            os << "(" << x << "," << y << ")";
+        } else {
+            os << "(" << x << "," << y << "," << z << ")";
+        }
         return os.str();
     }
 
@@ -102,6 +144,7 @@ protected:
         x = a.x;
         y = a.y;
         z = a.z;
+        use2DFlag = a.use2DFlag;
         return *this;
     }
 
@@ -260,6 +303,31 @@ protected:
      * Setter for the z coordinate
      */
     void setZ(double z){this->z = z;}
+
+    /**
+     * Returns true if this coordinate is valid, this means
+     * x, y and z are unequal UNDEFINED.
+     */
+    /*bool isValid() {
+        return x != UNDEFINED && y != UNDEFINED && (z != UNDEFINED || is2DFlag);
+    }*/
+
+    /**
+     * Returns true if this coordinate is two dimensional
+     */
+    bool is2D() { return use2DFlag; }
+
+    /**
+     * Checks if this coordinate is inside a specified rectangle.
+     *
+     * @param upperLeftCorner The upper left corner of the rectangle.
+     * @param lowerRightCorner the lower right corner of the rectangle.
+     */
+    bool isInRectangle(const Coord& upperLeftCorner, const Coord& lowerRightCorner) {
+        return  x >= upperLeftCorner.x && x <= lowerRightCorner.x &&
+                y >= upperLeftCorner.y && y <= lowerRightCorner.y &&
+                (use2DFlag || (z >= upperLeftCorner.z && z <= lowerRightCorner.z));
+    }
 };
 
 #endif

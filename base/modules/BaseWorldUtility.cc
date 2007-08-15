@@ -28,19 +28,30 @@ void BaseWorldUtility::initialize(int stage)
 {
 	if (stage == 0)
 	{
-		playgroundSize.setX(par("playgroundSizeX"));
-		playgroundSize.setY(par("playgroundSizeY"));
-		playgroundSize.setZ(par("playgroundSizeZ"));
+        use2DFlag = par("use2D");
+
+        if (use2DFlag) {
+            playgroundSize = Coord(par("playgroundSizeX"),
+                                   par("playgroundSizeY"));
+        } else {
+            playgroundSize = Coord(par("playgroundSizeX"),
+                                   par("playgroundSizeY"),
+                                   par("playgroundSizeZ"));
+        }
 
 		useTorusFlag = par("useTorus");
+       
 	}
 }
 
 Coord BaseWorldUtility::getRandomPosition()
 {
-    Coord p;
-    p.setX(genk_uniform(0, 0, playgroundSize.getX()));
-    p.setY(genk_uniform(0, 0, playgroundSize.getY()));
-    p.setZ(genk_uniform(0, 0, playgroundSize.getZ()));
-    return p;
+    if (use2DFlag) {
+        return Coord(genk_uniform(0, 0, playgroundSize.getX()),
+                     genk_uniform(0, 0, playgroundSize.getY()));
+    } else {
+        return Coord(genk_uniform(0, 0, playgroundSize.getX()),
+                     genk_uniform(0, 0, playgroundSize.getY()),
+                     genk_uniform(0, 0, playgroundSize.getZ()));
+    }
 }

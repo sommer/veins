@@ -4,6 +4,7 @@ simple BaseWorldUtility
         playgroundSizeX: numeric const, // x size of the area the nodes are in (in meters)
         playgroundSizeY: numeric const, // y size of the area the nodes are in (in meters)
         playgroundSizeZ: numeric const, // z size of the area the nodes are in (in meters)
-        useTorus:bool;                  // use the playground as torus?
+        useTorus:bool,                  // use the playground as torus?
+        use2D: bool;                    // use a 2-dimensional world?
 endsimple
 
