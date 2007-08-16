@@ -8,6 +8,8 @@ class FoxtrotPacketStorage:public std::vector < FoxtrotPacket * >
 {
   public:
 
+  	virtual ~FoxtrotPacketStorage(){}
+
 	virtual void erase(unsigned int k)
 	{
 		std::vector < FoxtrotPacket * >::iterator p = begin() + k;

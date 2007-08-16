@@ -73,15 +73,15 @@ all:
 	@cd $(ROOT)/modules/propagation && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 
 	@echo $(ROOT)/examples
-	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -Xcentroid -Xfoxtrot
+	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -Xcentroid 
 	@echo $(ROOT)/examples/baseNetwork
 	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 	@echo $(ROOT)/examples/mfNetwork
 	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 	@echo $(ROOT)/examples/locNetwork
 	@cd $(ROOT)/examples/locNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
-#	@echo $(ROOT)/examples/foxtrot
-#	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@echo $(ROOT)/examples/foxtrot
+	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 #	@echo $(ROOT)/examples/centroid
 #	@cd $(ROOT)/examples/centroid && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 	@echo $(ROOT)/examples/multiChannel

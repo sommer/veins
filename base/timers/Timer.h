@@ -14,7 +14,7 @@ class Timer
 
 	public:
 	    Timer(){ct = NULL;owner=NULL;}
-		~Timer(){delete ct;}
+		virtual ~Timer(){delete ct;}
 		virtual void init(cModule *parent);
 
 	/** Set a timer to fire at a point in the future.
