@@ -172,16 +172,16 @@ grid_region *FoxtrotPacket::realToGrid(const region_ft * rf)
 	/*print("curr is");
 	   DBG("scx = %lf, scy = %lf\n",scx,scy); */
 
-	ret->left = (rf->x.min - loc_var[0].min) / scx;
+	ret->left = (unsigned int)fabs((rf->x.min - loc_var[0].min) / scx);
 	if (ret->left == GRID_WIDTH)
 		ret->left = GRID_WIDTH - 1;
-	ret->right = GRID_WIDTH - ((loc_var[0].max - rf->x.max) / scx);
+	ret->right = GRID_WIDTH - (unsigned int)fabs((loc_var[0].max - rf->x.max) / scx);
 	if (ret->right == GRID_WIDTH)
 		ret->right = GRID_WIDTH - 1;
-	ret->top = (rf->y.min - loc_var[1].min) / scy;
+	ret->top = (unsigned int)fabs((rf->y.min - loc_var[1].min) / scy);
 	if (ret->top == GRID_WIDTH)
 		ret->top = GRID_WIDTH - 1;
-	ret->bottom = GRID_WIDTH - (scy > 0 ? ((loc_var[1].max - rf->y.max) / scy) : 0);
+	ret->bottom = GRID_WIDTH - (unsigned int)fabs(scy > 0 ? ((loc_var[1].max - rf->y.max) / scy) : 0);
 	if (ret->bottom == GRID_WIDTH)
 		ret->bottom = GRID_WIDTH - 1;
 
