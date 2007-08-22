@@ -23,6 +23,8 @@ public:
 	 **/
 	virtual double getChannelState(double, double, double);
 
+  PathLoss(cModule& m) : ChannelState(m) {}
+
 };
 
 #endif /* __PATHLOSS_H */

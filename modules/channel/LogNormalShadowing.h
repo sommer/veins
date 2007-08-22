@@ -23,6 +23,8 @@ public:
 	 **/
 	virtual double getChannelState(double, double, double);
 
+  LogNormalShadowing(cModule& m) : ChannelState(m) {}
+
 };
 
 #endif /* __LOGNORMALSHADOWING_H */
