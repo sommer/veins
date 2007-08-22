@@ -250,7 +250,7 @@ public:
     /**
      * Returns the square of the length of this coords position vector
      */
-    double squareLength()
+    double squareLength() const
     {
         return x * x + y * y + z * z;
     }
@@ -258,7 +258,7 @@ public:
     /**
      * Returns the length of this coords position vector
      */
-    double length()
+    double length() const
     {
         return sqrt(squareLength());
     }
@@ -311,19 +311,19 @@ public:
      * this Coord is 2-Dimensional and the z-value
      * i equal to Coord::UNDEFINED.
      */
-    bool isValid() {
+    bool isValid() const {
         return (z == UNDEFINED) || !use2DFlag;
     }
 
     /**
      * Returns true if this coordinate is two-dimensional
      */
-    bool is2D() { return use2DFlag; }
+    bool is2D() const { return use2DFlag; }
 
     /**
      * Returns true if this coordinate is three-dimensional
      */
-    bool is3D() { return !use2DFlag; }
+    bool is3D() const { return !use2DFlag; }
 
     /**
      * Checks if this coordinate is inside a specified rectangle.
@@ -333,7 +333,7 @@ public:
      * @param upperLeftCorner The upper left corner of the rectangle.
      * @param lowerRightCorner the lower right corner of the rectangle.
      */
-    bool isInRectangle(const Coord& upperLeftCorner, const Coord& lowerRightCorner) {
+    bool isInRectangle(const Coord& upperLeftCorner, const Coord& lowerRightCorner) const {
         return  x >= upperLeftCorner.x && x <= lowerRightCorner.x &&
                 y >= upperLeftCorner.y && y <= lowerRightCorner.y &&
                 (use2DFlag || (z >= upperLeftCorner.z && z <= lowerRightCorner.z));
