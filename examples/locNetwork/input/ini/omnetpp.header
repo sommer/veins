@@ -32,6 +32,8 @@ module-messages = no
 ##############################################################################
 #       Configurable modules                                                 #
 ##############################################################################
+sim.node[*].nic.connectionManagerName="channelcontrol"
+
 sim.channelcontrolType = "UnitDisk"
 #sim.channelcontrolType = "ChannelControl"
 
