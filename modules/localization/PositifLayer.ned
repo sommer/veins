@@ -12,7 +12,7 @@ simple PositifLayer
     parameters:
 	debug: numeric const, // debug switch
 	accuracy: numeric const,
-	nr_dims: numeric const,
+//	nr_dims: numeric const,
 //	x_dim: numeric const,
 //	y_dim: numeric const,
 //	z_dim: numeric const,

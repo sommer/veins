@@ -139,7 +139,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	static int num_anchors;
 	static int algorithm;
 	static int version;
-	static unsigned int nr_dims;
+	static int nr_dims;
 	static node_info *node;
 	static FLOAT range;
 	static FLOAT area;
@@ -183,11 +183,11 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	}
 	void send(cMessage * msg);	// synchronous send
 	FLOAT distance(Position, Position);
-	FLOAT savvides_minmax(unsigned int n_pts, FLOAT ** positions,
+	FLOAT savvides_minmax(int n_pts, FLOAT ** positions,
 			      FLOAT * ranges, FLOAT * confs, int target);
-	FLOAT triangulate(unsigned int n_pts, FLOAT ** positions,
+	FLOAT triangulate(int n_pts, FLOAT ** positions,
 			  FLOAT * ranges, FLOAT * weights, int target);
-	FLOAT hoptriangulate(unsigned int n_pts, FLOAT ** positions,
+	FLOAT hoptriangulate(int n_pts, FLOAT ** positions,
 			     FLOAT * ranges, int target);
 
 
