@@ -46,26 +46,22 @@ int write_configuration()
 	printf("sim.world.playgroundSizeY = %lg\n", bound * factor);
 	printf("sim.world.playgroundSizeZ = %lg\n", bound * factor);
 	printf("\n");
-	printf("sim.channelcontrol.radioRange = %lg\n", range * factor);
+	printf("sim.world.use2D = %s", (nr_dims == 2?"true":"false"));
 	printf("\n");
-	printf("sim.node[*].loc.nr_dims = %d\n", nr_dims);
-	printf("sim.node[*].loc.x_dim = %lg\n", bound * factor);
-	printf("sim.node[*].loc.y_dim = %lg\n", bound * factor);
-	printf("sim.node[*].loc.z_dim = %lg\n", bound * factor);
-	printf("sim.node[*].loc.range = %lg\n", range * factor);
+	printf("sim.channelcontrol.radioRange = %lg\n", range * factor);
 	printf("\n");
 
 	for (int n = 0; n < num_nodes; n++) {
 		for (unsigned int d = 0; d < nr_dims; d++) {
 			switch (d) {
 			case 0:
-				printf("sim.node[%d].utility.x = %lg\n", n, node[n].true_pos[d] * factor);
+				printf("sim.node[%d].mobility.x = %lg\n", n, node[n].true_pos[d] * factor);
 				break;
 			case 1:
-				printf("sim.node[%d].utility.y = %lg\n", n, node[n].true_pos[d] * factor);
+				printf("sim.node[%d].mobility.y = %lg\n", n, node[n].true_pos[d] * factor);
 				break;
 			case 2:
-				printf("sim.node[%d].utility.z = %lg\n", n, node[n].true_pos[d] * factor);
+				printf("sim.node[%d].mobility.z = %lg\n", n, node[n].true_pos[d] * factor);
 				break;
 			default:
 				error ("Invalid number of dimensions");

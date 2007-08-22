@@ -1,4 +1,4 @@
-NEED = $(TARGET)
+NEED = $(TARGET) bin/PositifScenario
 all: $(NEED)
 
 #SCEN=wings
