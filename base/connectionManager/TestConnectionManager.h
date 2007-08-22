@@ -144,10 +144,10 @@ protected:
 
 	public:
 		/**
-		 * Initializes the set (hastable) with the a specified size.
+		 * Initializes the set (hashtable) with the a specified size.
 		 */
-		CoordSet(unsigned size)
-			:maxSize(size), current(0), cols(0), size(0), sCols(0)
+		CoordSet(unsigned sz)
+			:maxSize(sz), size(0), current(0), cols(0), sCols(0)
 		{
 			data.resize(maxSize);
 		}
@@ -287,7 +287,7 @@ protected:
 	 * returns -1 if useTorus is false and the wrapped value if useTorus is true.
 	 * Otherwise its just returns the value unchanged.
 	 */
-    int wrapIfTorus(int value, unsigned max);
+    int wrapIfTorus(int value, int max);
 
 	/**
 	 * Adds every direct Neighbor of a GridCoord to a union of coords.

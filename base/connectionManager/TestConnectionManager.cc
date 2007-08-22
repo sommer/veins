@@ -193,7 +193,7 @@ void TestConnectionManager::checkGrid(TestConnectionManager::GridCoord& oldCell,
  * returns -1 if useTorus is false and the wrapped value if useTorus is true.
  * Otherwise its just returns the value unchanged.
  */
-int TestConnectionManager::wrapIfTorus(int value, unsigned max) {
+int TestConnectionManager::wrapIfTorus(int value, int max) {
 	if(value < 0) {
 		if(useTorus) {
 			return max + value;
@@ -215,7 +215,7 @@ int TestConnectionManager::wrapIfTorus(int value, unsigned max) {
  * Adds every direct Neighbor of a GridCoord to a union of coords.
  */
 void TestConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion, GridCoord cell) {
-	for(int iz = (int)cell.z - 1; iz <= (int)cell.z + 1; iz++) {
+	for(unsigned iz = cell.z - 1; iz <= cell.z + 1; iz++) {
 		if(iz != cell.z && cell.use2D) {
 			continue;
 		}
@@ -224,7 +224,7 @@ void TestConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion, GridCoor
 			continue;
 		}
 		for(int ix = (int)cell.x - 1; ix <= (int)cell.x + 1; ix++) {
-			unsigned cx = wrapIfTorus(ix, gridDim.x);
+			int cx = wrapIfTorus(ix, gridDim.x);
 			if(cx == -1) {
 				continue;
 			}
