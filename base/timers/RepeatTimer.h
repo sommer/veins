@@ -15,7 +15,7 @@ protected:
 	RepeatTimerCore * core;
 	BaseModule *owner;
 public:
-	~RepeatTimer() {
+	virtual ~RepeatTimer() {
 		delete core;
 	}
 	void setRepeatTimer(unsigned int index, double period, int repeats = 1) {
