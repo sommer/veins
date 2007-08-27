@@ -54,6 +54,8 @@ FLOAT PositifLayer::var0;
 FLOAT PositifLayer::var1;
 FLOAT PositifLayer::var2;
 BaseWorldUtility * PositifLayer::world;
+glob_info * PositifLayer::ginfo;
+FILE * PositifLayer::scenario;
 
 struct myParams params;
 
