@@ -14,6 +14,9 @@
 #define TIMER_DO_TRI  1
 #define TIMER_COUNT 2
 
+#ifdef ZERO_CONF
+#undef ZERO_CONF
+#endif
 #define ZERO_CONF       0.00
 
 // Define message types

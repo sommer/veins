@@ -38,6 +38,7 @@ simple PositifLayer
 	multihop: bool,
 	equal_pairs: bool,
 	anchor: bool,
+	outputfile: string,
 	headerLength: numeric const; // length of the network packet header (in bits)
     gates:
 	in: uppergateIn; // from application layer

@@ -34,6 +34,9 @@
 #include "Coord.h"
 #include "BaseWorldUtility.h"
 
+#define ZERO_CONF       0.01
+#define LOW_CONF        0.1
+
 #define TOPOLOGYTYPE_LENGTH 25
 #define LOGLENGTH 102400
 #define MAX_TIMERS 5
@@ -90,6 +93,25 @@ typedef struct {
 	bool token;
 	bool wants_token;
 } node_info;
+
+typedef enum { Anchor, Skip, Unknown, Stuck } node_t;
+
+typedef struct {
+	int idx;
+	node_t type;
+	int wave_cnt;
+	FLOAT gain;
+	FLOAT conf;
+	bool stuck;
+	bool bad;
+	int twin;
+	Position init_pos;
+	struct {
+		Position pos;
+		FLOAT err;
+		FLOAT conf;
+	} curr, next;
+} glob_info;
 
 extern timer_info _timers[MAX_TIMERS];
 
@@ -253,6 +275,20 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	bool msg_buffering;
 	cQueue putAside;
 	static BaseWorldUtility * world;
+
+	glob_info * ginfo;
+	FILE *scenario;
+
+	void glob_triangulate(glob_info * nd);
+	void stats(const char *str, bool details = true);
+	void run_algorithms(void);
+	void run_terrain(bool stats_only, bool * undetermined);
+	void prune_loose_nodes(bool * skip);
+	bool collapse_twins(bool * skip);
+	void topology_stats(bool * skip);
+	void find_bad_nodes(bool * bad);
+	void save_scenario(bool * skip, bool * bad);
+	void analyzeTopology(void);
 
 	void addNewNeighbor(int, double, double);
 	bool isNewNeighbor(int);
