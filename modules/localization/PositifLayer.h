@@ -276,8 +276,8 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	cQueue putAside;
 	static BaseWorldUtility * world;
 
-	glob_info * ginfo;
-	FILE *scenario;
+	static glob_info * ginfo;
+	static FILE *scenario;
 
 	void glob_triangulate(glob_info * nd);
 	void stats(const char *str, bool details = true);
