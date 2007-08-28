@@ -120,9 +120,10 @@ sim.node[*].loc.repeats = 3
 sim.node[*].loc.use_log = true
 sim.node[*].loc.use_confs = true
 sim.node[*].loc.msg_buffering = false
-sim.node[*].loc.terrain = "simple R"
+sim.node[*].loc.terrain = "simple avg"
 sim.node[*].loc.multihop = true
 sim.node[*].loc.equal_pairs = true
+sim.node[*].loc.outputfile = "test.log"
 
 #################################
 # Determined by PositifScenario #

@@ -24,7 +24,7 @@ debug: $(NEED)
 	gdb $(TARGET)
 
 run: $(NEED)
-	./$(TARGET) 2>&1 > out.log
+	./$(TARGET) > output.stdout.txt 2> output.stderr.txt
 
 valgrind: $(NEED)
 	valgrind --show-reachable=yes --log-fd=1 --leak-check=full ./$(TARGET) 2>&1 >valgrind.log

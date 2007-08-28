@@ -5,16 +5,25 @@
 # $2 = output scenario
 #set -x
 
-# Show how to use this script
+# get directory name of this script
+pushd $(dirname `which "$0"`) > /dev/null
+DIRNAME="$PWD"; 
+popd > /dev/null
+# include needed libraries
+. $DIRNAME/util.sh
+
+SCEN_DIR="$DIRNAME/../input/scenarios"
+
+# This function shows how to use this script
 function show_usage {
     echo "Usage: $0 <input scenario> <omnetpp initialization file>"
-}
-
-# Preprocess the scenario
-function preprocess_scenario {
-    sed '
-s/#.*//g; /./!d
-' $1 > $2
+    echo "where <input scenario> is one of:"
+    SCENS="$(ls $SCEN_DIR)"
+    for i in $SCENS ;
+    do
+      echo  "      $i"
+    done
+    echo "and <omnetpp initialization file> is probably 'omnetpp.ini'"
 }
 
 # check number of arguments
@@ -23,8 +32,7 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-SCEN_DIR="input/scenarios/"
-SCEN="$SCEN_DIR$1"
+SCEN="$SCEN_DIR/$1"
 # check first argument
 if ! [ -f $SCEN ]; then
     show_usage $0
