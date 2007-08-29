@@ -44,12 +44,14 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define MIN(a,b) (((a)<(b))?(a):(b))
 
+#define MSG_POSITION MSG_TYPE_BASE+1
+
 typedef int timer_info;
 
-typedef struct {
-	int idx;
-	int seqno[MAX_MSG_TYPES];
-} seqno_info;
+// typedef struct {
+// 	int idx;
+// 	int seqno[MAX_MSG_TYPES];
+// } seqno_info;
 
 typedef struct {
 	int idx;
@@ -214,7 +216,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 
 
 	void write_statistics();
-	void write_configuration(const char *);
+// 	void write_configuration(const char *);
 	void statistics(bool);
       protected:
 	/** 
@@ -290,7 +292,8 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	void save_scenario(bool * skip, bool * bad);
 	void analyzeTopology(void);
 
-	void addNewNeighbor(int, double, double);
+	neighbor_info * addNewNeighbor(int, double, double);
+	neighbor_info * findNeighbor(int);
 	bool isNewNeighbor(int);
 	void update_perf_data();
 };

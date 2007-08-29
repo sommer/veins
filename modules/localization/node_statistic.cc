@@ -20,7 +20,7 @@
 #define ZERO_CONF       0.00
 
 // Define message types
-#define MSG_POSITION  MSG_TYPE_BASE+0
+#define MSG_POSITION  MSG_TYPE_BASE+1
 
 typedef struct {
 	Position pos;
