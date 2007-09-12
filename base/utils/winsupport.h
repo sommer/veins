@@ -12,8 +12,6 @@
 
 #include <stdarg.h>
 
-#define BUF_SIZE 4096
-
 #define __const const
 
 typedef unsigned int uint32_t;

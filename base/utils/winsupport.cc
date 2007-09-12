@@ -14,11 +14,18 @@
 
 int _asprintf(char** buf, const char* format, ...)
 {
-	char* p = (char*)malloc(BUF_SIZE);
 	va_list ap;
+	int len;
+	int res;
+
 	va_start(ap, format);
-	int res = _vsprintf_p(p, BUF_SIZE, format, ap);
+	/* _vscprintf doesn't count the 
+	 * null terminating string so we add 1. */
+	len = _vscprintf_p( format, ap ) + 1
+	*buf = (char*)malloc(len*sizeof(char));
+	res = _vsprintf_p(*buf, len, format, ap);
 	va_end(ap);
+
 	return res;
 }
 
