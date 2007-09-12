@@ -21,6 +21,12 @@ help:
 # make all
 all: base modules examples tests configurator
 
+examples:modules
+
+modules:base
+
+tests:modules
+
 configurator:
 	@(cd configurator; ${MAKE})
 
