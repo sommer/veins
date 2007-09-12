@@ -28,6 +28,19 @@
 #include "BaseArp.h"
 #include "LocPkt_m.h"
 
+#include <list>
+
+class Node {
+public:
+	Node(int i, bool a, Location p):id(i), isAnchor(a), pos(p) {}
+
+	int id;
+	bool isAnchor;
+	Location pos;
+};
+
+using std::list;
+
 /**
  * @brief Base class for the localization layer
  * 
@@ -43,12 +56,25 @@ class BaseLocalization:public BaseLayer {
 	 **/
 	int headerLength;
 
+	/**
+	 * @brief Specifies weather this node is an anchor node or not.
+	 */
+	bool isAnchor;
+
+	int me;
+
+	list<Node *> neighbors;
+	list<Node *> anchors;
+
       public:
 	 Module_Class_Members(BaseLocalization, BaseLayer, 0);
 
 	/** @brief Initialization of the module and some variables*/
 	virtual void initialize(int);
+	virtual void finish();
+
 	Coord getPosition();
+	Location getLocation();
 
       protected:
 	/** 
@@ -88,6 +114,13 @@ class BaseLocalization:public BaseLayer {
 
 	/** @brief Encapsulate higher layer packet into an LocPkt*/
 	virtual LocPkt *encapsMsg(cMessage *);
+
+	bool newAnchor(Node *);
+	bool newNeighbor(Node *);
+
+	virtual void handleNewAnchor(Node *) {}
+	virtual void handleNewNeighbor(Node *) {}
+	virtual void handleMovedNeighbor(Node *) {}
 };
 
 #endif

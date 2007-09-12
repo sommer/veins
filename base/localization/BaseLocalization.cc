@@ -27,12 +27,48 @@
 
 Define_Module(BaseLocalization);
 
+/**
+ * 
+ */
 void BaseLocalization::initialize(int stage)
 {
 	BaseLayer::initialize(stage);
 
-	if (stage == 1) {
+	switch (stage) {
+	case 0:
+		me = findHost()->id();
 		headerLength = par("headerLength");
+		isAnchor = par("isAnchor");
+		break;
+	default: 
+		break;
+	}
+}
+
+void BaseLocalization::finish()
+{
+	list<Node *>::const_iterator current;
+
+	EV << "Anchor neighbors(" << anchors.size() <<
+		") of node " << me << ": " << endl;
+	for (current = anchors.begin();
+	     current != anchors.end();
+	     current++) {
+		EV_clear << "\t" << (*current)->id << " <" <<
+			(*current)->pos.getX() << "," <<
+			(*current)->pos.getY() << ">:" << 
+			(*current)->pos.getTimestamp() << endl;
+	}
+
+	EV << "Regular neighbors(" << neighbors.size() <<
+		") of node " << me << ": " << endl;
+	for (current = neighbors.begin();
+	     current != neighbors.end();
+	     current++) {
+		EV_clear << "\t" << (*current)->id << " <" <<
+			(*current)->pos.getX() << "," <<
+			(*current)->pos.getY() << ">:" << 
+			(*current)->pos.getTimestamp() << endl;
 	}
 }
 
@@ -43,18 +79,81 @@ Coord BaseLocalization::getPosition()
 	return *util->getPos();
 }
 
+Location BaseLocalization::getLocation()
+{
+	Location loc(getPosition(), simTime());
+	return loc;
+}
+
+bool BaseLocalization::newAnchor(Node * node) {
+	/* Check if this point already exists in the anchor
+	 * list. This check is made by position. */
+	bool newAnchor = true;
+	list<Node *>::const_iterator current;
+	for (current = anchors.begin(); 
+	     current != anchors.end();
+	     current ++) {
+		if (node->pos.equals((*current)->pos))
+			newAnchor = false;
+	}
+	/* Add new anchor to list. */
+	if (newAnchor) {
+		anchors.push_back(node);
+		handleNewAnchor(node);
+	}
+	return newAnchor;
+}
+
+bool BaseLocalization::newNeighbor(Node * node) {
+	/* Check if this node already exists in the neighbor
+	 * list. This check is made by id. */
+	bool newNeighbor = true;
+	bool updatedNeighbor = false;
+	list<Node *>::iterator current;
+	for (current = neighbors.begin();
+	     current != neighbors.end();
+	     current ++) {
+		if (node->id == (*current)->id) {
+			newNeighbor = false;
+			/* Update position information of this node. */
+			if (!node->pos.equals((*current)->pos))
+				updatedNeighbor = true;
+			(*current)->pos = node->pos;
+		}
+	}
+	if (newNeighbor) {
+		neighbors.push_back(node);
+		handleNewNeighbor(node);
+	}
+	if (updatedNeighbor)
+		handleMovedNeighbor(node);
+	return newNeighbor;
+}
+
 /**
  * Decapsulates the packet from the received Network packet 
  **/
 cMessage *BaseLocalization::decapsMsg(LocPkt * msg)
 {
 	cMessage *m = msg->decapsulate();
-//      Coord position = getPosition();
+	Node * node = new Node(msg->getId(),
+			       msg->getIsAnchor(),
+			       msg->getPos());
+	if (node->isAnchor) {
+		if (!newAnchor(node)) 
+			delete node;
+	} else {
+		if (!newNeighbor(node))
+			delete node;
+	}
+
+	NetwControlInfo *cInfo =
+	    dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());
+
+	if (cInfo != NULL)
+		m->setControlInfo(cInfo);
 
 	EV << " pkt decapsulated\n";
-
-	// pass some information up?
-//      m->setControlInfo(new LocControlInfo(position));
 
 	// delete the localization packet
 	delete msg;
@@ -70,13 +169,16 @@ LocPkt *BaseLocalization::encapsMsg(cMessage * msg)
 {
 	LocPkt *pkt = new LocPkt(msg->name(), msg->kind());
 	pkt->setLength(headerLength);
+	pkt->setId(me);
+	pkt->setIsAnchor(isAnchor);
+	pkt->setPos(getLocation());
 
 	NetwControlInfo *cInfo =
 	    dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());
 
-	if (cInfo != NULL) {
+	if (cInfo != NULL)
 		pkt->setControlInfo(cInfo);
-	}
+
 	//encapsulate the application packet
 	pkt->encapsulate(msg);
 
@@ -96,7 +198,7 @@ void BaseLocalization::handleLowerMsg(cMessage * msg)
 {
 
 	LocPkt *m = static_cast < LocPkt * >(msg);
-	EV << " handling packet from " << m->getSrcAddr() << endl;
+	EV << " handling packet from " << m->getId() << endl;
 	sendUp(decapsMsg(m));
 }
 

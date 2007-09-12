@@ -7,6 +7,7 @@
 simple BaseLocalization
     parameters:
         debug: numeric const, // debug switch
+	isAnchor: bool,
         headerLength: numeric const; // length of the network packet header (in bits)
     gates:
         in: uppergateIn; // from application layer

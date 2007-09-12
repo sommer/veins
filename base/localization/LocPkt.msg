@@ -31,7 +31,7 @@ class noncobject Location;
 // @author Peterpaul Klein Haneveld
 message LocPkt {
     fields:
-	int destAddr;
-	int srcAddr;
+	int id;
+	bool isAnchor;
 	Location pos;
 }
