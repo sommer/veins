@@ -38,11 +38,12 @@ Define_Module_Like(TestLocAppl, BaseApplLayer);
 void TestLocAppl::initialize(int stage)
 {
 	BaseApplLayer::initialize(stage);
-	if (stage == 0) {
-		delayTimer = new cMessage("delay-timer", SEND_BROADCAST_TIMER);
-	} else if (stage == 1) {
-		scheduleAt(simTime() + findHost()->index() + 0.005, delayTimer);
-	}
+	delayTimer = NULL;
+// 	if (stage == 0) {
+// 		delayTimer = new cMessage("delay-timer", SEND_BROADCAST_TIMER);
+// 	} else if (stage == 1) {
+// 		scheduleAt(simTime() + findHost()->index() + 0.005, delayTimer);
+// 	}
 }
 
 
@@ -140,6 +141,7 @@ void TestLocAppl::sendReply(ApplPkt * msg)
 void TestLocAppl::finish()
 {
 	BaseApplLayer::finish();
-	cancelAndDelete(delayTimer);
+	if (delayTimer)
+		cancelAndDelete(delayTimer);
 	delayTimer = NULL;
 }

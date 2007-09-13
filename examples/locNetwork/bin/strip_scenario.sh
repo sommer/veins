@@ -12,7 +12,7 @@ SCEN_DIR="$DIRNAME/../input/scenarios"
 
 # This function shows how to use this script
 function show_usage {
-    echo "Usage: $0 <input scenario>"
+    echo "Usage: $1 <input scenario>"
     echo "where <input scenario> is one of:"
     SCENS="$(ls $SCEN_DIR)"
     for i in $SCENS ;

@@ -25,20 +25,31 @@
 
 import
     "Node",
+    "BaseObject",
     "BaseWorldUtility",
     "ConnectionManager";
 
 module Sim
     parameters:
-	channelcontrolType: string,
-	numHosts : numeric const;
+        playgroundSizeX: numeric const, // x size of the area the nodes are in (in meters)
+        playgroundSizeY: numeric const, // y size of the area the nodes are in (in meters)
+        playgroundSizeZ: numeric const, // z size of the area the nodes are in (in meters)
+        numObjects: numeric const, // total number of objects in the network
+	numHosts : numeric const,
+	propagationType: string;
 
     submodules:
-	channelcontrol: channelcontrolType like ConnectionManager;
+	propagationmodel: propagationType like ConnectionManager;
 		display: "p=50,25;i=eye14";
 	world: BaseWorldUtility;
-	node: Node[numHosts];
+	    parameters:
+                playgroundSizeX = playgroundSizeX,
+                playgroundSizeY = playgroundSizeY,
+                playgroundSizeZ = playgroundSizeZ;
+	node: LocNode[numHosts];
 		display: "p=50,50;i=node";
+        object: BaseObject[numObjects];
+            display: "b=40,24;p=164,114";
 
     connections nocheck:
     // all connections and gates are to be generated dynamically
@@ -48,7 +59,4 @@ module Sim
 endmodule
 
 network sim : Sim
-    parameters:
-	numHosts =input(2,"Number of hosts:");
-
 endnetwork

@@ -18,65 +18,58 @@
 // * description: a host for the aloha test network
 // **************************************************************************/
 
-
 import
     "BaseApplLayer",
-    "BaseArp",
     "BaseNetwLayer",
-    "MfNic",
-    "BaseMobility",
     "PositifLayer",
+    "BaseNic",
+    "BaseMobility",
+    "BaseArp",
+    "BaseBattery",
     "BaseUtility";
 
-module Node
-
+module LocNode
     parameters:
-	applType: string, //type of the application layer
-	netType: string, //type of the network layer
-	locType: string; //type of the localization layer
-
-	gates:
-	in: radioIn;
-
+	netType: string,
+	locType: string,
+        applType: string; //type of the application layer
+    gates:
+	    in: radioIn; // gate for sendDirect
     submodules:
-	utility: BaseUtility;
-	    display: "p=130,38;b=24,24,rect;o=black";
-
-	mobility: BaseMobility;
-	    display: "p=200,150;b=30,25";
-
-	arp: BaseArp;
-	    display: "p=200,225;b=30,25";
-
-	appl: applType like BaseApplLayer;
-	    display: "p=90,50;b=100,20,rect";
-
+        utility: BaseUtility;
+            display: "p=130,38,rect;b=24,24;o=black";
+        arp: BaseArp;
+            display: "p=130,84,rect;b=24,24;o=blue";
+        battery: BaseBattery;
+            display: "p=130,128,rect;b=24,24;o=red";
+        mobility: BaseMobility;
+            display: "p=130,172;i=cogwheel2";
+        appl: applType like BaseApplLayer;
+            display: "p=60,50;i=app";
+        net: netType like BaseNetwLayer;
+            display: "p=60,108;i=prot1";
 	loc: locType like PositifLayer;
-	    display: "p=90,75;b=100,20,rect";
-
-	net: netType like BaseNetwLayer;
-	    display: "p=90,100;b=100,20,rect";
-
-	nic: MfNic;
-	    display: "p=90,150;b=100,20,rect";
-
+	    display: "p=60,137";
+        nic: BaseNic;
+            display: "p=60,166;i=iface";
     connections:
-	nic.uppergateOut --> net.lowergateIn;
-	nic.uppergateIn <-- net.lowergateOut;
-	nic.upperControlOut --> net.lowerControlIn;	
-	nic.upperControlIn <-- net.lowerControlOut;
+        nic.uppergateOut --> net.lowergateIn;
+        nic.uppergateIn <-- net.lowergateOut;
+        nic.upperControlOut --> net.lowerControlIn display "m=m,70,0,70,0;o=red";
+        nic.upperControlIn <-- net.lowerControlOut display "m=m,70,0,70,0;o=red";
 
-	net.uppergateOut --> loc.lowergateIn;
-	net.uppergateIn <-- loc.lowergateOut;
-	net.upperControlOut --> loc.lowerControlIn;		
-	net.upperControlIn <-- loc.lowerControlOut;		
+        net.uppergateOut --> loc.lowergateIn;
+        net.uppergateIn <-- loc.lowergateOut;
+        net.upperControlOut --> loc.lowerControlIn display "m=m,70,0,70,0;o=red";
+        net.upperControlIn <-- loc.lowerControlOut display "m=m,70,0,70,0;o=red";
 
-	loc.uppergateOut --> appl.lowergateIn;
-	loc.uppergateIn <-- appl.lowergateOut;
-	loc.upperControlOut --> appl.lowerControlIn;		
-	loc.upperControlIn <-- appl.lowerControlOut;		
+        loc.uppergateOut --> appl.lowergateIn;
+        loc.uppergateIn <-- appl.lowergateOut;
+        loc.upperControlOut --> appl.lowerControlIn display "m=m,70,0,70,0;o=red";
+        loc.upperControlIn <-- appl.lowerControlOut display "m=m,70,0,70,0;o=red";
 
 	radioIn --> nic.radioIn;
 
-    display: "p=10,10;b=250,250,rect;o=white";
+    display: "b=,,rect;o=white";
 endmodule
+

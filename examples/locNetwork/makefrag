@@ -1,11 +1,11 @@
 NEED = $(TARGET) bin/PositifScenario
 all: $(NEED)
 
-#SCEN=wings
-#SCEN_DIR=input/scenarios/
+SCEN=mfExample
+SCEN_DIR=input/scenarios
 
-#omnetpp.ini: bin/positifgen.sh $(SCEN_DIR)$(SCEN) bin/PositifScenario
-#	bin/positifgen.sh $(SCEN) omnetpp.ini
+omnetpp.ini: bin/positifgen.sh bin/util.sh $(SCEN_DIR)/$(SCEN) bin/PositifScenario input/ini/omnetpp.header input/ini/omnetpp.in
+	bin/positifgen.sh $(SCEN) omnetpp.ini
 
 bin/PositifScenario: src/PositifScenario.cc
 	$(CXX) $(NEDCOPTS) $< -o $@

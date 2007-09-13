@@ -42,13 +42,14 @@ int write_configuration()
 // 	FLOAT factor = 1;
 	printf("sim.numHosts = %d\n", num_nodes);
 	printf("\n");
-	printf("sim.world.playgroundSizeX = %lg\n", bound * factor);
-	printf("sim.world.playgroundSizeY = %lg\n", bound * factor);
-	printf("sim.world.playgroundSizeZ = %lg\n", bound * factor);
+	printf("sim.world.use2D = %s\n", (nr_dims == 2?"true":"false"));
+	printf("sim.playgroundSizeX = %lg\n", bound * factor);
+	printf("sim.playgroundSizeY = %lg\n", bound * factor);
+	printf("sim.playgroundSizeZ = %lg\n", bound * factor);
 	printf("\n");
-	printf("sim.world.use2D = %s", (nr_dims == 2?"true":"false"));
+	printf("sim.propagationmodel.radioRange = %lg\n", range * factor);
 	printf("\n");
-	printf("sim.channelcontrol.radioRange = %lg\n", range * factor);
+	printf("sim.node[*].loc.anchor_frac = %lg\n", num_anchors / (double)num_nodes);
 	printf("\n");
 
 	for (int n = 0; n < num_nodes; n++) {
@@ -69,9 +70,9 @@ int write_configuration()
 			}
 		}
 		if (node[n].anchor) {
-			printf("sim.node[%d].loc.anchor = true\n", n);
+			printf("sim.node[%d].loc.isAnchor = true\n", n);
 		} else {
-			printf("sim.node[%d].loc.anchor = false\n", n);
+			printf("sim.node[%d].loc.isAnchor = false\n", n);
 		}
 		printf("\n");
 	}
