@@ -36,7 +36,7 @@ void BaseLocalization::initialize(int stage)
 
 	switch (stage) {
 	case 0:
-		me = findHost()->id();
+		id = findHost()->id();
 		headerLength = par("headerLength");
 		isAnchor = par("isAnchor");
 		break;
@@ -50,7 +50,7 @@ void BaseLocalization::finish()
 	list<Node *>::const_iterator current;
 
 	EV << "Anchor neighbors(" << anchors.size() <<
-		") of node " << me << ": " << endl;
+		") of node " << id << ": " << endl;
 	for (current = anchors.begin();
 	     current != anchors.end();
 	     current++) {
@@ -61,7 +61,7 @@ void BaseLocalization::finish()
 	}
 
 	EV << "Regular neighbors(" << neighbors.size() <<
-		") of node " << me << ": " << endl;
+		") of node " << id << ": " << endl;
 	for (current = neighbors.begin();
 	     current != neighbors.end();
 	     current++) {
@@ -83,6 +83,11 @@ Location BaseLocalization::getLocation()
 {
 	Location loc(getPosition(), simTime());
 	return loc;
+}
+
+Location BaseLocalization::getLocationEstimation()
+{
+	return pos;
 }
 
 bool BaseLocalization::newAnchor(Node * node) {
@@ -140,7 +145,7 @@ cMessage *BaseLocalization::decapsMsg(LocPkt * msg)
 			       msg->getIsAnchor(),
 			       msg->getPos());
 	if (node->isAnchor) {
-		if (!newAnchor(node)) 
+		if (!newAnchor(node))
 			delete node;
 	} else {
 		if (!newNeighbor(node))
@@ -161,6 +166,8 @@ cMessage *BaseLocalization::decapsMsg(LocPkt * msg)
 }
 
 
+
+
 /**
  * Encapsulates the received ApplPkt into a LocPkt and set all needed
  * header fields.
@@ -169,9 +176,12 @@ LocPkt *BaseLocalization::encapsMsg(cMessage * msg)
 {
 	LocPkt *pkt = new LocPkt(msg->name(), msg->kind());
 	pkt->setLength(headerLength);
-	pkt->setId(me);
+	pkt->setId(id);
 	pkt->setIsAnchor(isAnchor);
-	pkt->setPos(getLocation());
+	if (isAnchor)
+		pkt->setPos(getLocation());
+	else 
+		pkt->setPos(getLocationEstimation());
 
 	NetwControlInfo *cInfo =
 	    dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());

@@ -61,10 +61,12 @@ class BaseLocalization:public BaseLayer {
 	 */
 	bool isAnchor;
 
-	int me;
+	int id;
 
 	list<Node *> neighbors;
 	list<Node *> anchors;
+
+	Location pos;
 
       public:
 	 Module_Class_Members(BaseLocalization, BaseLayer, 0);
@@ -73,8 +75,20 @@ class BaseLocalization:public BaseLayer {
 	virtual void initialize(int);
 	virtual void finish();
 
+	/**
+	 * @return The current MiXiM position of this node
+	 */
 	Coord getPosition();
+
+	/**
+	 * @return The current absolute location
+	 */
 	Location getLocation();
+
+	/**
+	 * @return The latest estimated location
+	 */
+	Location getLocationEstimation();
 
       protected:
 	/** 
@@ -115,8 +129,8 @@ class BaseLocalization:public BaseLayer {
 	/** @brief Encapsulate higher layer packet into an LocPkt*/
 	virtual LocPkt *encapsMsg(cMessage *);
 
-	bool newAnchor(Node *);
-	bool newNeighbor(Node *);
+	virtual bool newAnchor(Node *);
+	virtual bool newNeighbor(Node *);
 
 	virtual void handleNewAnchor(Node *) {}
 	virtual void handleNewNeighbor(Node *) {}
