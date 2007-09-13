@@ -129,7 +129,7 @@ void PositifLayer::initialize(int stage)
 		headerLength = par("headerLength");
 
 		node[me].ID = me;
-		node[me].anchor = par("anchor");
+		node[me].anchor = par("isAnchor");
 		node[me].recv_cnt = 0;
 		/* initialize the node specific stuff */
 		node[me].neighbors = new cLinkedList();
@@ -188,10 +188,10 @@ void PositifLayer::initialize(int stage)
 				node[me].init_pos[i] = node[me].true_pos[i];
 		} else {
 			for (int i = 0; i < 3; i++)
-// 				node[me].init_pos[i] =
-// 					genk_normal(1, node[me].true_pos[i],
-// 						    range * pos_variance);
-				node[me].init_pos[i] = 0;
+				node[me].init_pos[i] =
+					genk_normal(1, node[me].true_pos[i],
+						    range * pos_variance);
+// 				node[me].init_pos[i] = 0;
 		}
 	}
 	break;
@@ -249,7 +249,7 @@ void PositifLayer::setup_global_vars(void)
 	/** @TODO This might better be determined by examining the number of achors. */
 	num_anchors = (int) Max(num_nodes * (double) par("anchor_frac"), nr_dims + 1);
 //	range = (double) par("range");
-	range = (double)getGlobalModule("channelcontrol")->par("radioRange");
+	range = (double)getGlobalModule("propagationmodel")->par("radioRange");
 	do_2nd_phase = par("do_2nd_phase");	
 	// Each node writes to these global variables, but this shouldn't cause any problems.
 

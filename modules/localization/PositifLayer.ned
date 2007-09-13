@@ -11,6 +11,8 @@
 simple PositifLayer
     parameters:
 	debug: numeric const, // debug switch
+	isAnchor: bool,
+	headerLength: numeric const, // length of the network packet header (in bits)
 	accuracy: numeric const,
 //	nr_dims: numeric const,
 //	x_dim: numeric const,
@@ -37,9 +39,7 @@ simple PositifLayer
 	terrain: string,
 	multihop: bool,
 	equal_pairs: bool,
-	anchor: bool,
-	outputfile: string,
-	headerLength: numeric const; // length of the network packet header (in bits)
+	outputfile: string;
     gates:
 	in: uppergateIn; // from application layer
 	out: uppergateOut; // to application layer
