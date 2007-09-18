@@ -48,7 +48,7 @@ sim.node[*].appl.burstSize=3
 #       Parameters for the Localization Layer                                #
 ##############################################################################
 sim.node[*].loc.accuracy = 0.1
-sim.node[*].loc.anchor = false
+sim.node[*].loc.isAnchor = false
 sim.node[*].loc.debug = 1
 sim.node[*].loc.do_2nd_phase = true
 sim.node[*].loc.equal_pairs = true

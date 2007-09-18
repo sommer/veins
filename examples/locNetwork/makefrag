@@ -1,4 +1,4 @@
-NEED = $(TARGET) bin/PositifScenario
+NEED = $(TARGET) bin/PositifScenario bin/RandomScenario
 all: $(NEED)
 
 SCEN=mfExample
@@ -7,8 +7,14 @@ SCEN_DIR=input/scenarios
 omnetpp.ini: bin/positifgen.sh bin/util.sh $(SCEN_DIR)/$(SCEN) bin/PositifScenario input/ini/omnetpp.header input/ini/omnetpp.in
 	bin/positifgen.sh $(SCEN) omnetpp.ini
 
-bin/PositifScenario: src/PositifScenario.cc
-	$(CXX) $(NEDCOPTS) $< -o $@
+src/Scenario.o: src/Scenario.cc
+	$(CXX) $(NEDCOPTS) -c $< -o $@
+
+bin/PositifScenario: src/PositifScenario.cc src/Scenario.o
+	$(CXX) $(NEDCOPTS) src/Scenario.o src/PositifScenario.cc -o $@
+
+bin/RandomScenario: src/RandomScenario.cc src/Scenario.o
+	$(CXX) $(NEDCOPTS) src/Scenario.o src/RandomScenario.cc -o $@
 
 rebuild:
 	(cd ../..;./mkmk locNetwork)
