@@ -119,6 +119,7 @@ void TestConnectionManager::updateConnections(int nicID, const Coord* oldPos, co
 	GridCoord oldCell = getCellForCoordinate(*oldPos);
     GridCoord newCell = getCellForCoordinate(*newPos);
 	
+	ccEV << " updating nic at loc " << oldCell.info() << " to new loc " << newCell.info() << endl;
 	checkGrid(oldCell, newCell, nicID );
 }
 
@@ -183,13 +184,14 @@ void TestConnectionManager::checkGrid(TestConnectionManager::GridCoord& oldCell,
 
     GridCoord* c = gridUnion.next();
     while(c != 0) {
+		ccEV << "Update cons in [" << c->info() << "]" << endl;
 		updateNicConnections(getCellEntries(*c), nic);
 		c = gridUnion.next();
     }
 }
 
 /**
- * If the value is outside of its bounds (zero and max) this function
+ * If the value is outside of its bounds (zero <= x < max) this function
  * returns -1 if useTorus is false and the wrapped value if useTorus is true.
  * Otherwise its just returns the value unchanged.
  */
@@ -215,7 +217,7 @@ int TestConnectionManager::wrapIfTorus(int value, int max) {
  * Adds every direct Neighbor of a GridCoord to a union of coords.
  */
 void TestConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion, GridCoord cell) {
-	for(unsigned iz = cell.z - 1; iz <= cell.z + 1; iz++) {
+	for(int iz = (int)cell.z - 1; iz <= (int)cell.z + 1; iz++) {
 		if(iz != cell.z && cell.use2D) {
 			continue;
 		}
