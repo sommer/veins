@@ -8,78 +8,581 @@ Setting up network `ccSim'...
 Initializing...
 
 Running simulation...
-Sending broadcast packet!
-got broadcast message from 0
-got broadcast message from 0
-got broadcast message from 0
-Sending broadcast packet!
-got broadcast message from 1
-got broadcast message from 1
-got broadcast message from 1
+Connected BC-Node 0: Sending broadcast packet!
+Connected R-Node 1: got broadcast message from 0
+Connected R-Node 1: Sending answer packet!
+Connected R-Node 2: got broadcast message from 0
+Connected R-Node 2: Sending answer packet!
+Connected R-Node 4: got broadcast message from 0
+Connected R-Node 4: Sending answer packet!
+Connected R-Node 5: got broadcast message from 0
+Connected R-Node 5: Sending answer packet!
+Connected R-Node 7: got broadcast message from 0
+Connected R-Node 7: Sending answer packet!
+Connected R-Node 8: got broadcast message from 0
+Connected R-Node 8: Sending answer packet!
+Connected R-Node 10: got broadcast message from 0
+Connected R-Node 10: Sending answer packet!
+Connected R-Node 11: got broadcast message from 0
+Connected R-Node 11: Sending answer packet!
+Connected R-Node 13: got broadcast message from 0
+Connected R-Node 13: Sending answer packet!
+Connected R-Node 16: got broadcast message from 0
+Connected R-Node 16: Sending answer packet!
+Connected R-Node 17: got broadcast message from 0
+Connected R-Node 17: Sending answer packet!
+Connected R-Node 19: got broadcast message from 0
+Connected R-Node 19: Sending answer packet!
+Connected R-Node 20: got broadcast message from 0
+Connected R-Node 20: Sending answer packet!
+Connected R-Node 22: got broadcast message from 0
+Connected R-Node 22: Sending answer packet!
+Connected R-Node 23: got broadcast message from 0
+Connected R-Node 23: Sending answer packet!
+Connected BC-Node 0: got answer message from 1
+Connected BC-Node 0: got answer message from 2
+Connected BC-Node 0: got answer message from 4
+Connected BC-Node 0: got answer message from 5
+Connected BC-Node 0: got answer message from 7
+Connected BC-Node 0: got answer message from 8
+Connected BC-Node 0: got answer message from 10
+Connected BC-Node 0: got answer message from 11
+Connected BC-Node 0: got answer message from 13
+Connected BC-Node 0: got answer message from 16
+Connected BC-Node 0: got answer message from 17
+Connected BC-Node 0: got answer message from 19
+Connected BC-Node 0: got answer message from 20
+Connected BC-Node 0: got answer message from 22
+Connected BC-Node 0: got answer message from 23
+Not Connected BC-Node 25: Sending broadcast packet!
+Not Connected BC-Node 27: Sending broadcast packet!
+Not Connected BC-Node 29: Sending broadcast packet!
+Not Connected BC-Node 31: Sending broadcast packet!
 
 <!> No more events -- simulation ended.
 
 
 Calling finish() at end of Run #1...
+Passed: Test Node 0: Broadcast should be answered by at least one node.
+Passed: Test Node 1: Should have received at least one broadcast.
+Passed: Test Node 2: Should have received at least one broadcast.
+Passed: Test Node 3: Should have received no broadcast.
+Passed: Test Node 4: Should have received at least one broadcast.
+Passed: Test Node 5: Should have received at least one broadcast.
+Passed: Test Node 6: Should have received no broadcast.
+Passed: Test Node 7: Should have received at least one broadcast.
+Passed: Test Node 8: Should have received at least one broadcast.
+Passed: Test Node 9: Should have received no broadcast.
+Passed: Test Node 10: Should have received at least one broadcast.
+Passed: Test Node 11: Should have received at least one broadcast.
+Passed: Test Node 12: Should have received no broadcast.
+Passed: Test Node 13: Should have received at least one broadcast.
+Passed: Test Node 14: Should have received no broadcast.
+Passed: Test Node 15: Should have received no broadcast.
+Passed: Test Node 16: Should have received at least one broadcast.
+Passed: Test Node 17: Should have received at least one broadcast.
+Passed: Test Node 18: Should have received no broadcast.
+Passed: Test Node 19: Should have received at least one broadcast.
+Passed: Test Node 20: Should have received at least one broadcast.
+Passed: Test Node 21: Should have received no broadcast.
+Passed: Test Node 22: Should have received at least one broadcast.
+Passed: Test Node 23: Should have received at least one broadcast.
+Passed: Test Node 24: Should have received no broadcast.
+Passed: Test Node 25: Broadcast should not be answered by any node.
+Passed: Test Node 26: Should have received no broadcast.
+Passed: Test Node 27: Broadcast should not be answered by any node.
+Passed: Test Node 28: Should have received no broadcast.
+Passed: Test Node 29: Broadcast should not be answered by any node.
+Passed: Test Node 30: Should have received no broadcast.
+Passed: Test Node 31: Broadcast should not be answered by any node.
+Passed: Test Node 32: Should have received no broadcast.
 
 Preparing for Run #2...
 Setting up network `ccSim'...
 Initializing...
 
 Running simulation...
-Sending broadcast packet!
-got broadcast message from 0
-got broadcast message from 0
-Sending broadcast packet!
-got broadcast message from 1
-got broadcast message from 1
+Connected BC-Node 0: Sending broadcast packet!
+Connected BC-Node 25: Sending broadcast packet!
+Connected BC-Node 27: Sending broadcast packet!
+Connected BC-Node 29: Sending broadcast packet!
+Connected BC-Node 31: Sending broadcast packet!
+Connected R-Node 1: got broadcast message from 0
+Connected R-Node 1: Sending answer packet!
+Connected R-Node 2: got broadcast message from 0
+Connected R-Node 2: Sending answer packet!
+Connected R-Node 4: got broadcast message from 0
+Connected R-Node 4: Sending answer packet!
+Connected R-Node 5: got broadcast message from 0
+Connected R-Node 5: Sending answer packet!
+Connected R-Node 7: got broadcast message from 0
+Connected R-Node 7: Sending answer packet!
+Connected R-Node 8: got broadcast message from 0
+Connected R-Node 8: Sending answer packet!
+Connected R-Node 10: got broadcast message from 0
+Connected R-Node 10: Sending answer packet!
+Connected R-Node 11: got broadcast message from 0
+Connected R-Node 11: Sending answer packet!
+Connected R-Node 13: got broadcast message from 0
+Connected R-Node 13: Sending answer packet!
+Connected R-Node 16: got broadcast message from 0
+Connected R-Node 16: Sending answer packet!
+Connected R-Node 17: got broadcast message from 0
+Connected R-Node 17: Sending answer packet!
+Connected R-Node 19: got broadcast message from 0
+Connected R-Node 19: Sending answer packet!
+Connected R-Node 20: got broadcast message from 0
+Connected R-Node 20: Sending answer packet!
+Connected R-Node 22: got broadcast message from 0
+Connected R-Node 22: Sending answer packet!
+Connected R-Node 23: got broadcast message from 0
+Connected R-Node 23: Sending answer packet!
+Connected R-Node 26: got broadcast message from 25
+Connected R-Node 26: Sending answer packet!
+Connected R-Node 28: got broadcast message from 27
+Connected R-Node 28: Sending answer packet!
+Connected R-Node 30: got broadcast message from 29
+Connected R-Node 30: Sending answer packet!
+Connected R-Node 32: got broadcast message from 31
+Connected R-Node 32: Sending answer packet!
+Connected BC-Node 0: got answer message from 1
+Connected BC-Node 0: got answer message from 2
+Connected BC-Node 0: got answer message from 4
+Connected BC-Node 0: got answer message from 5
+Connected BC-Node 0: got answer message from 7
+Connected BC-Node 0: got answer message from 8
+Connected BC-Node 0: got answer message from 10
+Connected BC-Node 0: got answer message from 11
+Connected BC-Node 0: got answer message from 13
+Connected BC-Node 0: got answer message from 16
+Connected BC-Node 0: got answer message from 17
+Connected BC-Node 0: got answer message from 19
+Connected BC-Node 0: got answer message from 20
+Connected BC-Node 0: got answer message from 22
+Connected BC-Node 0: got answer message from 23
+Connected BC-Node 25: got answer message from 26
+Connected BC-Node 27: got answer message from 28
+Connected BC-Node 29: got answer message from 30
+Connected BC-Node 31: got answer message from 32
 
 <!> No more events -- simulation ended.
 
 
 Calling finish() at end of Run #2...
+Passed: Test Node 0: Broadcast should be answered by at least one node.
+Passed: Test Node 1: Should have received at least one broadcast.
+Passed: Test Node 2: Should have received at least one broadcast.
+Passed: Test Node 3: Should have received no broadcast.
+Passed: Test Node 4: Should have received at least one broadcast.
+Passed: Test Node 5: Should have received at least one broadcast.
+Passed: Test Node 6: Should have received no broadcast.
+Passed: Test Node 7: Should have received at least one broadcast.
+Passed: Test Node 8: Should have received at least one broadcast.
+Passed: Test Node 9: Should have received no broadcast.
+Passed: Test Node 10: Should have received at least one broadcast.
+Passed: Test Node 11: Should have received at least one broadcast.
+Passed: Test Node 12: Should have received no broadcast.
+Passed: Test Node 13: Should have received at least one broadcast.
+Passed: Test Node 14: Should have received no broadcast.
+Passed: Test Node 15: Should have received no broadcast.
+Passed: Test Node 16: Should have received at least one broadcast.
+Passed: Test Node 17: Should have received at least one broadcast.
+Passed: Test Node 18: Should have received no broadcast.
+Passed: Test Node 19: Should have received at least one broadcast.
+Passed: Test Node 20: Should have received at least one broadcast.
+Passed: Test Node 21: Should have received no broadcast.
+Passed: Test Node 22: Should have received at least one broadcast.
+Passed: Test Node 23: Should have received at least one broadcast.
+Passed: Test Node 24: Should have received no broadcast.
+Passed: Test Node 25: Broadcast should be answered by at least one node.
+Passed: Test Node 26: Should have received at least one broadcast.
+Passed: Test Node 27: Broadcast should be answered by at least one node.
+Passed: Test Node 28: Should have received at least one broadcast.
+Passed: Test Node 29: Broadcast should be answered by at least one node.
+Passed: Test Node 30: Should have received at least one broadcast.
+Passed: Test Node 31: Broadcast should be answered by at least one node.
+Passed: Test Node 32: Should have received at least one broadcast.
 
 Preparing for Run #3...
 Setting up network `ccSim'...
 Initializing...
 
 Running simulation...
-Sending broadcast packet!
-Sending broadcast packet!
+Connected BC-Node 0: Sending broadcast packet!
+Connected R-Node 1: got broadcast message from 0
+Connected R-Node 1: Sending answer packet!
+Connected R-Node 2: got broadcast message from 0
+Connected R-Node 2: Sending answer packet!
+Connected R-Node 3: got broadcast message from 0
+Connected R-Node 3: Sending answer packet!
+Connected R-Node 4: got broadcast message from 0
+Connected R-Node 4: Sending answer packet!
+Connected R-Node 5: got broadcast message from 0
+Connected R-Node 5: Sending answer packet!
+Connected R-Node 6: got broadcast message from 0
+Connected R-Node 6: Sending answer packet!
+Connected R-Node 7: got broadcast message from 0
+Connected R-Node 7: Sending answer packet!
+Connected R-Node 8: got broadcast message from 0
+Connected R-Node 8: Sending answer packet!
+Connected R-Node 9: got broadcast message from 0
+Connected R-Node 9: Sending answer packet!
+Connected R-Node 10: got broadcast message from 0
+Connected R-Node 10: Sending answer packet!
+Connected R-Node 11: got broadcast message from 0
+Connected R-Node 11: Sending answer packet!
+Connected R-Node 12: got broadcast message from 0
+Connected R-Node 12: Sending answer packet!
+Connected R-Node 13: got broadcast message from 0
+Connected R-Node 13: Sending answer packet!
+Connected R-Node 14: got broadcast message from 0
+Connected R-Node 14: Sending answer packet!
+Connected R-Node 15: got broadcast message from 0
+Connected R-Node 15: Sending answer packet!
+Connected R-Node 16: got broadcast message from 0
+Connected R-Node 16: Sending answer packet!
+Connected R-Node 17: got broadcast message from 0
+Connected R-Node 17: Sending answer packet!
+Connected R-Node 18: got broadcast message from 0
+Connected R-Node 18: Sending answer packet!
+Connected R-Node 19: got broadcast message from 0
+Connected R-Node 19: Sending answer packet!
+Connected R-Node 20: got broadcast message from 0
+Connected R-Node 20: Sending answer packet!
+Connected R-Node 21: got broadcast message from 0
+Connected R-Node 21: Sending answer packet!
+Connected R-Node 22: got broadcast message from 0
+Connected R-Node 22: Sending answer packet!
+Connected R-Node 23: got broadcast message from 0
+Connected R-Node 23: Sending answer packet!
+Connected R-Node 24: got broadcast message from 0
+Connected R-Node 24: Sending answer packet!
+Connected R-Node 25: got broadcast message from 0
+Connected R-Node 25: Sending answer packet!
+Connected R-Node 26: got broadcast message from 0
+Connected R-Node 26: Sending answer packet!
+Connected R-Node 27: got broadcast message from 0
+Connected R-Node 27: Sending answer packet!
+Connected R-Node 28: got broadcast message from 0
+Connected R-Node 28: Sending answer packet!
+Connected R-Node 29: got broadcast message from 0
+Connected R-Node 29: Sending answer packet!
+Connected R-Node 30: got broadcast message from 0
+Connected R-Node 30: Sending answer packet!
+Connected R-Node 31: got broadcast message from 0
+Connected R-Node 31: Sending answer packet!
+Connected R-Node 32: got broadcast message from 0
+Connected R-Node 32: Sending answer packet!
+Connected BC-Node 0: got answer message from 1
+Connected BC-Node 0: got answer message from 2
+Connected BC-Node 0: got answer message from 3
+Connected BC-Node 0: got answer message from 4
+Connected BC-Node 0: got answer message from 5
+Connected BC-Node 0: got answer message from 6
+Connected BC-Node 0: got answer message from 7
+Connected BC-Node 0: got answer message from 8
+Connected BC-Node 0: got answer message from 9
+Connected BC-Node 0: got answer message from 10
+Connected BC-Node 0: got answer message from 11
+Connected BC-Node 0: got answer message from 12
+Connected BC-Node 0: got answer message from 13
+Connected BC-Node 0: got answer message from 14
+Connected BC-Node 0: got answer message from 15
+Connected BC-Node 0: got answer message from 16
+Connected BC-Node 0: got answer message from 17
+Connected BC-Node 0: got answer message from 18
+Connected BC-Node 0: got answer message from 19
+Connected BC-Node 0: got answer message from 20
+Connected BC-Node 0: got answer message from 21
+Connected BC-Node 0: got answer message from 22
+Connected BC-Node 0: got answer message from 23
+Connected BC-Node 0: got answer message from 24
+Connected BC-Node 0: got answer message from 25
+Connected BC-Node 0: got answer message from 26
+Connected BC-Node 0: got answer message from 27
+Connected BC-Node 0: got answer message from 28
+Connected BC-Node 0: got answer message from 29
+Connected BC-Node 0: got answer message from 30
+Connected BC-Node 0: got answer message from 31
+Connected BC-Node 0: got answer message from 32
+Not Connected BC-Node 56: Sending broadcast packet!
+Not Connected BC-Node 58: Sending broadcast packet!
+Not Connected BC-Node 60: Sending broadcast packet!
+Not Connected BC-Node 62: Sending broadcast packet!
+Not Connected BC-Node 64: Sending broadcast packet!
+Not Connected BC-Node 66: Sending broadcast packet!
 
 <!> No more events -- simulation ended.
 
 
 Calling finish() at end of Run #3...
+Passed: Test Node 0: Broadcast should be answered by at least one node.
+Passed: Test Node 1: Should have received at least one broadcast.
+Passed: Test Node 2: Should have received at least one broadcast.
+Passed: Test Node 3: Should have received at least one broadcast.
+Passed: Test Node 4: Should have received at least one broadcast.
+Passed: Test Node 5: Should have received at least one broadcast.
+Passed: Test Node 6: Should have received at least one broadcast.
+Passed: Test Node 7: Should have received at least one broadcast.
+Passed: Test Node 8: Should have received at least one broadcast.
+Passed: Test Node 9: Should have received at least one broadcast.
+Passed: Test Node 10: Should have received at least one broadcast.
+Passed: Test Node 11: Should have received at least one broadcast.
+Passed: Test Node 12: Should have received at least one broadcast.
+Passed: Test Node 13: Should have received at least one broadcast.
+Passed: Test Node 14: Should have received at least one broadcast.
+Passed: Test Node 15: Should have received at least one broadcast.
+Passed: Test Node 16: Should have received at least one broadcast.
+Passed: Test Node 17: Should have received at least one broadcast.
+Passed: Test Node 18: Should have received at least one broadcast.
+Passed: Test Node 19: Should have received at least one broadcast.
+Passed: Test Node 20: Should have received at least one broadcast.
+Passed: Test Node 21: Should have received at least one broadcast.
+Passed: Test Node 22: Should have received at least one broadcast.
+Passed: Test Node 23: Should have received at least one broadcast.
+Passed: Test Node 24: Should have received at least one broadcast.
+Passed: Test Node 25: Should have received at least one broadcast.
+Passed: Test Node 26: Should have received at least one broadcast.
+Passed: Test Node 27: Should have received at least one broadcast.
+Passed: Test Node 28: Should have received at least one broadcast.
+Passed: Test Node 29: Should have received at least one broadcast.
+Passed: Test Node 30: Should have received at least one broadcast.
+Passed: Test Node 31: Should have received at least one broadcast.
+Passed: Test Node 32: Should have received at least one broadcast.
+Passed: Test Node 33: Should have received no broadcast.
+Passed: Test Node 34: Should have received no broadcast.
+Passed: Test Node 35: Should have received no broadcast.
+Passed: Test Node 36: Should have received no broadcast.
+Passed: Test Node 37: Should have received no broadcast.
+Passed: Test Node 38: Should have received no broadcast.
+Passed: Test Node 39: Should have received no broadcast.
+Passed: Test Node 40: Should have received no broadcast.
+Passed: Test Node 41: Should have received no broadcast.
+Passed: Test Node 42: Should have received no broadcast.
+Passed: Test Node 43: Should have received no broadcast.
+Passed: Test Node 44: Should have received no broadcast.
+Passed: Test Node 45: Should have received no broadcast.
+Passed: Test Node 46: Should have received no broadcast.
+Passed: Test Node 47: Should have received no broadcast.
+Passed: Test Node 48: Should have received no broadcast.
+Passed: Test Node 49: Should have received no broadcast.
+Passed: Test Node 50: Should have received no broadcast.
+Passed: Test Node 51: Should have received no broadcast.
+Passed: Test Node 52: Should have received no broadcast.
+Passed: Test Node 53: Should have received no broadcast.
+Passed: Test Node 54: Should have received no broadcast.
+Passed: Test Node 55: Should have received no broadcast.
+Passed: Test Node 56: Broadcast should not be answered by any node.
+Passed: Test Node 57: Should have received no broadcast.
+Passed: Test Node 58: Broadcast should not be answered by any node.
+Passed: Test Node 59: Should have received no broadcast.
+Passed: Test Node 60: Broadcast should not be answered by any node.
+Passed: Test Node 61: Should have received no broadcast.
+Passed: Test Node 62: Broadcast should not be answered by any node.
+Passed: Test Node 63: Should have received no broadcast.
+Passed: Test Node 64: Broadcast should not be answered by any node.
+Passed: Test Node 65: Should have received no broadcast.
+Passed: Test Node 66: Broadcast should not be answered by any node.
+Passed: Test Node 67: Should have received no broadcast.
 
 Preparing for Run #4...
 Setting up network `ccSim'...
 Initializing...
 
 Running simulation...
-Sending broadcast packet!
-Sending broadcast packet!
+Connected BC-Node 0: Sending broadcast packet!
+Connected BC-Node 56: Sending broadcast packet!
+Connected BC-Node 58: Sending broadcast packet!
+Connected BC-Node 60: Sending broadcast packet!
+Connected BC-Node 62: Sending broadcast packet!
+Connected BC-Node 64: Sending broadcast packet!
+Connected BC-Node 66: Sending broadcast packet!
+Connected R-Node 1: got broadcast message from 0
+Connected R-Node 1: Sending answer packet!
+Connected R-Node 2: got broadcast message from 0
+Connected R-Node 2: Sending answer packet!
+Connected R-Node 3: got broadcast message from 0
+Connected R-Node 3: Sending answer packet!
+Connected R-Node 4: got broadcast message from 0
+Connected R-Node 4: Sending answer packet!
+Connected R-Node 5: got broadcast message from 0
+Connected R-Node 5: Sending answer packet!
+Connected R-Node 6: got broadcast message from 0
+Connected R-Node 6: Sending answer packet!
+Connected R-Node 7: got broadcast message from 0
+Connected R-Node 7: Sending answer packet!
+Connected R-Node 8: got broadcast message from 0
+Connected R-Node 8: Sending answer packet!
+Connected R-Node 9: got broadcast message from 0
+Connected R-Node 9: Sending answer packet!
+Connected R-Node 10: got broadcast message from 0
+Connected R-Node 10: Sending answer packet!
+Connected R-Node 11: got broadcast message from 0
+Connected R-Node 11: Sending answer packet!
+Connected R-Node 12: got broadcast message from 0
+Connected R-Node 12: Sending answer packet!
+Connected R-Node 13: got broadcast message from 0
+Connected R-Node 13: Sending answer packet!
+Connected R-Node 14: got broadcast message from 0
+Connected R-Node 14: Sending answer packet!
+Connected R-Node 15: got broadcast message from 0
+Connected R-Node 15: Sending answer packet!
+Connected R-Node 16: got broadcast message from 0
+Connected R-Node 16: Sending answer packet!
+Connected R-Node 17: got broadcast message from 0
+Connected R-Node 17: Sending answer packet!
+Connected R-Node 18: got broadcast message from 0
+Connected R-Node 18: Sending answer packet!
+Connected R-Node 19: got broadcast message from 0
+Connected R-Node 19: Sending answer packet!
+Connected R-Node 20: got broadcast message from 0
+Connected R-Node 20: Sending answer packet!
+Connected R-Node 21: got broadcast message from 0
+Connected R-Node 21: Sending answer packet!
+Connected R-Node 22: got broadcast message from 0
+Connected R-Node 22: Sending answer packet!
+Connected R-Node 23: got broadcast message from 0
+Connected R-Node 23: Sending answer packet!
+Connected R-Node 24: got broadcast message from 0
+Connected R-Node 24: Sending answer packet!
+Connected R-Node 25: got broadcast message from 0
+Connected R-Node 25: Sending answer packet!
+Connected R-Node 26: got broadcast message from 0
+Connected R-Node 26: Sending answer packet!
+Connected R-Node 27: got broadcast message from 0
+Connected R-Node 27: Sending answer packet!
+Connected R-Node 28: got broadcast message from 0
+Connected R-Node 28: Sending answer packet!
+Connected R-Node 29: got broadcast message from 0
+Connected R-Node 29: Sending answer packet!
+Connected R-Node 30: got broadcast message from 0
+Connected R-Node 30: Sending answer packet!
+Connected R-Node 31: got broadcast message from 0
+Connected R-Node 31: Sending answer packet!
+Connected R-Node 32: got broadcast message from 0
+Connected R-Node 32: Sending answer packet!
+Connected R-Node 57: got broadcast message from 56
+Connected R-Node 57: Sending answer packet!
+Connected R-Node 59: got broadcast message from 58
+Connected R-Node 59: Sending answer packet!
+Connected R-Node 61: got broadcast message from 60
+Connected R-Node 61: Sending answer packet!
+Connected R-Node 63: got broadcast message from 62
+Connected R-Node 63: Sending answer packet!
+Connected R-Node 65: got broadcast message from 64
+Connected R-Node 65: Sending answer packet!
+Connected R-Node 67: got broadcast message from 66
+Connected R-Node 67: Sending answer packet!
+Connected BC-Node 0: got answer message from 1
+Connected BC-Node 0: got answer message from 2
+Connected BC-Node 0: got answer message from 3
+Connected BC-Node 0: got answer message from 4
+Connected BC-Node 0: got answer message from 5
+Connected BC-Node 0: got answer message from 6
+Connected BC-Node 0: got answer message from 7
+Connected BC-Node 0: got answer message from 8
+Connected BC-Node 0: got answer message from 9
+Connected BC-Node 0: got answer message from 10
+Connected BC-Node 0: got answer message from 11
+Connected BC-Node 0: got answer message from 12
+Connected BC-Node 0: got answer message from 13
+Connected BC-Node 0: got answer message from 14
+Connected BC-Node 0: got answer message from 15
+Connected BC-Node 0: got answer message from 16
+Connected BC-Node 0: got answer message from 17
+Connected BC-Node 0: got answer message from 18
+Connected BC-Node 0: got answer message from 19
+Connected BC-Node 0: got answer message from 20
+Connected BC-Node 0: got answer message from 21
+Connected BC-Node 0: got answer message from 22
+Connected BC-Node 0: got answer message from 23
+Connected BC-Node 0: got answer message from 24
+Connected BC-Node 0: got answer message from 25
+Connected BC-Node 0: got answer message from 26
+Connected BC-Node 0: got answer message from 27
+Connected BC-Node 0: got answer message from 28
+Connected BC-Node 0: got answer message from 29
+Connected BC-Node 0: got answer message from 30
+Connected BC-Node 0: got answer message from 31
+Connected BC-Node 0: got answer message from 32
+Connected BC-Node 56: got answer message from 57
+Connected BC-Node 58: got answer message from 59
+Connected BC-Node 60: got answer message from 61
+Connected BC-Node 62: got answer message from 63
+Connected BC-Node 64: got answer message from 65
+Connected BC-Node 66: got answer message from 67
 
 <!> No more events -- simulation ended.
 
 
 Calling finish() at end of Run #4...
-
-Preparing for Run #5...
-Setting up network `ccSim'...
-Initializing...
-
-Running simulation...
-Sending broadcast packet!
-got broadcast message from 0
-got broadcast message from 0
-Sending broadcast packet!
-got broadcast message from 1
-got broadcast message from 1
-
-<!> No more events -- simulation ended.
-
-
-Calling finish() at end of Run #5...
+Passed: Test Node 0: Broadcast should be answered by at least one node.
+Passed: Test Node 1: Should have received at least one broadcast.
+Passed: Test Node 2: Should have received at least one broadcast.
+Passed: Test Node 3: Should have received at least one broadcast.
+Passed: Test Node 4: Should have received at least one broadcast.
+Passed: Test Node 5: Should have received at least one broadcast.
+Passed: Test Node 6: Should have received at least one broadcast.
+Passed: Test Node 7: Should have received at least one broadcast.
+Passed: Test Node 8: Should have received at least one broadcast.
+Passed: Test Node 9: Should have received at least one broadcast.
+Passed: Test Node 10: Should have received at least one broadcast.
+Passed: Test Node 11: Should have received at least one broadcast.
+Passed: Test Node 12: Should have received at least one broadcast.
+Passed: Test Node 13: Should have received at least one broadcast.
+Passed: Test Node 14: Should have received at least one broadcast.
+Passed: Test Node 15: Should have received at least one broadcast.
+Passed: Test Node 16: Should have received at least one broadcast.
+Passed: Test Node 17: Should have received at least one broadcast.
+Passed: Test Node 18: Should have received at least one broadcast.
+Passed: Test Node 19: Should have received at least one broadcast.
+Passed: Test Node 20: Should have received at least one broadcast.
+Passed: Test Node 21: Should have received at least one broadcast.
+Passed: Test Node 22: Should have received at least one broadcast.
+Passed: Test Node 23: Should have received at least one broadcast.
+Passed: Test Node 24: Should have received at least one broadcast.
+Passed: Test Node 25: Should have received at least one broadcast.
+Passed: Test Node 26: Should have received at least one broadcast.
+Passed: Test Node 27: Should have received at least one broadcast.
+Passed: Test Node 28: Should have received at least one broadcast.
+Passed: Test Node 29: Should have received at least one broadcast.
+Passed: Test Node 30: Should have received at least one broadcast.
+Passed: Test Node 31: Should have received at least one broadcast.
+Passed: Test Node 32: Should have received at least one broadcast.
+Passed: Test Node 33: Should have received no broadcast.
+Passed: Test Node 34: Should have received no broadcast.
+Passed: Test Node 35: Should have received no broadcast.
+Passed: Test Node 36: Should have received no broadcast.
+Passed: Test Node 37: Should have received no broadcast.
+Passed: Test Node 38: Should have received no broadcast.
+Passed: Test Node 39: Should have received no broadcast.
+Passed: Test Node 40: Should have received no broadcast.
+Passed: Test Node 41: Should have received no broadcast.
+Passed: Test Node 42: Should have received no broadcast.
+Passed: Test Node 43: Should have received no broadcast.
+Passed: Test Node 44: Should have received no broadcast.
+Passed: Test Node 45: Should have received no broadcast.
+Passed: Test Node 46: Should have received no broadcast.
+Passed: Test Node 47: Should have received no broadcast.
+Passed: Test Node 48: Should have received no broadcast.
+Passed: Test Node 49: Should have received no broadcast.
+Passed: Test Node 50: Should have received no broadcast.
+Passed: Test Node 51: Should have received no broadcast.
+Passed: Test Node 52: Should have received no broadcast.
+Passed: Test Node 53: Should have received no broadcast.
+Passed: Test Node 54: Should have received no broadcast.
+Passed: Test Node 55: Should have received no broadcast.
+Passed: Test Node 56: Broadcast should be answered by at least one node.
+Passed: Test Node 57: Should have received at least one broadcast.
+Passed: Test Node 58: Broadcast should be answered by at least one node.
+Passed: Test Node 59: Should have received at least one broadcast.
+Passed: Test Node 60: Broadcast should be answered by at least one node.
+Passed: Test Node 61: Should have received at least one broadcast.
+Passed: Test Node 62: Broadcast should be answered by at least one node.
+Passed: Test Node 63: Should have received at least one broadcast.
+Passed: Test Node 64: Broadcast should be answered by at least one node.
+Passed: Test Node 65: Should have received at least one broadcast.
+Passed: Test Node 66: Broadcast should be answered by at least one node.
+Passed: Test Node 67: Should have received at least one broadcast.
 
 End run of OMNeT++

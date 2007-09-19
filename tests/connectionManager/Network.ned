@@ -25,7 +25,7 @@
 
 import  
     "BasicHost", 
-    "TestConnectionManager",
+    "ConnectionManager",
     "BaseWorldUtility"; 
  
 // @author Daniel Willkomm
@@ -42,7 +42,7 @@ module Network
                 playgroundSizeX = playgroundSizeX, 
                 playgroundSizeY = playgroundSizeY,
                 playgroundSizeZ = playgroundSizeZ;
-        channelcontrol: TestConnectionManager; 
+        channelcontrol: ConnectionManager; 
             
             display: "p=60,30;i=eye14";
         node: BasicHost[numHosts]; 

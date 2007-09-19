@@ -25,7 +25,7 @@ public:
 		TestPhyLayer::initialize(stage);
 		if(stage==0){
 			broadcastAnswered = false;
-			scheduleAt(simTime() + 1.0 + myAddr(), new cMessage(0,10));
+			scheduleAt(simTime() + 1.0 + (double)myAddr() * 0.1, new cMessage(0,10));
 		}
 	}
 
