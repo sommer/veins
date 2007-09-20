@@ -5,6 +5,37 @@
 
 #include "TimerCore.h"
 
+/* Usage:
+ * Your class needs to be a subclass of Timer (as well as BaseWhatever),
+ * call Timer::init(self) before doing anything, and override handleTimer()
+ * to do whatever things need doing when timers fire.
+ *
+ * The Timer module will also auto-cleanup all leftover timers at the end of 
+ * simulation, but deleteTimer can be used to reclaim memory.
+ *
+ * Example (for a localisation module extending BaseLocalisation):
+ *
+ * class MyClass: public BaseLocalisation, public Timer
+ * {
+ *     public:
+ *	    Module_Class_Members(MyClass, BaseLocalisation, 0)
+ *     	void initialize();
+ *     	void handleTimer(unsigned int index);
+ * }
+ *
+ * void MyClass::initialize()
+ * {
+ * 	    Timer::init(self);
+ * 	    setTimer(1.0);
+ * }
+ *
+ * void MyClass::handleTimer(unsigned int index)
+ * {
+ * 		// Do timer stuff, which will happen 
+ *      // 1.0s after startup (see the setTimer above)
+ * }
+ */
+
 class Timer
 {
 	friend class TimerCore;
@@ -47,10 +78,12 @@ class Timer
 		Fires after a call to @b setTimer(). Subclasses should override this.
 		@param index Timer number that fired. Will be between 0 and the value given to @b initTimers()
 	*/	
-
 	float remainingTimer(unsigned int index) {checkCT();return ct->remainingTimer(index);}
 
-	virtual void handleTimer(unsigned int count)=0;
+	/* Timer "fire" handler routine. Needs to be overriden by classes that want to use Timer
+	 * @param index The timer number for the timer that has just completed
+	 */
+	virtual void handleTimer(unsigned int index)=0;
 
 	/** Set a "context pointer" refering to some piece of opaque useful data
 	 * @param index Timer number
@@ -78,11 +111,19 @@ class Timer
 	void allocateTimers(unsigned int count) {checkCT();ct->allocateTimers(count);}
 
 	/* Delete a timer. Useful for auto-allocated timers that you don't need any more to 
-	 * reduce memory usage. Does nothing if the timer doesn't exist
+	 * reduce memory usage. Does nothing if the timer doesn't exist, and works even if 
+	 * a timer is still running.
+	 *
+	 * This does not need to be called for every timer, as the Timer module will automatically cleanup
+	 * all of the remaining timers at the end of the simulation. It is a tool for reclaiming memory 
+	 * early for simulations that might need many timers, and would otherwise fill up all the free 
+	 * memory with old timers.
 	 * @param index Timer to wipe
 	 */
 	void deleteTimer(unsigned int index) {checkCT();ct->deleteTimer(index);}
 
+private: 
+	/* checkCT is an internal check function to test if init() has been called */
 	void checkCT() 
 	{
 		if (ct == NULL)
