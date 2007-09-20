@@ -38,6 +38,7 @@ distclean: clean
 	@del modules\localization\Makefile.vc
 	@del examples\baseNetwork\Makefile.vc
 	@del examples\locNetwork\Makefile.vc
+	@del examples\positifNetwork\Makefile.vc
 #	-@cd configurator && $(MAKE) distclean
 
 # documentation
