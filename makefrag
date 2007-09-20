@@ -48,7 +48,7 @@ distclean:
 	@rm -f modules/nic/Makefile
 	@rm -f modules/localization/Makefile
 	@rm -f examples/baseNetwork/Makefile
-	@rm -f examples/locNetwork/Makefile
+	@rm -f examples/positifNetwork/Makefile
 	@rm -f examples/multiChannel/Makefile
 	@(cd configurator; ${MAKE} distclean)
 

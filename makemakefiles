@@ -78,8 +78,8 @@ all:
 	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 	@echo $(ROOT)/examples/mfNetwork
 	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
-	@echo $(ROOT)/examples/locNetwork
-	@cd $(ROOT)/examples/locNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@echo $(ROOT)/examples/positifNetwork
+	@cd $(ROOT)/examples/positifNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 	@echo $(ROOT)/examples/foxtrot
 	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 #	@echo $(ROOT)/examples/centroid
