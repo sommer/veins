@@ -167,7 +167,7 @@ void Node_Savvides_Mob::handleMessage(cMessage * msg, bool newNeighbor)
 //                      timer_info *ev = (timer_info *) iter();
 //                      resetTimer(ev);
 //              }
-		resetAllRepeatTimers();
+		resetAllTimers();
 	// Call appropriate handler function depending on whether this node is an
 	// anchor or a normal node.
 	if (status == STATUS_ANCHOR) {
@@ -364,7 +364,7 @@ void Node_Savvides_Mob::do_triangulation(void *arg)
 	data->neighbor_count = i;
 	for (int d = 0; d < nr_dims; d++)
 		data->pos[d] = pos[d];
-	timer_info timer = setRepeatTimer(i * nr_dims * nr_dims * msec);
+	timer_info timer = setRepeatTimer(i * nr_dims * nr_dims * msec, 1);
 	triangulation_timers.push_back(timer);
 	setContextPointer(timer, data);
 	setContextDestructor(timer, delete_tria_data);
@@ -457,11 +457,11 @@ void Node_Savvides_Mob::remove_triangulation_timer(timer_info timer) {
 		if (*current == timer) {
 			triangulation_timers.erase(current);
 			deleteRepeatTimer(timer);
-			error("Successfully removed %d", timer);
 			return;
 		}
 	}
 	error("Non-existing triangulation_timer %d", timer);
+	abort();
 }
 
 // typedef struct {FLOAT res; Position pos;} tria_data;
@@ -702,7 +702,7 @@ void Node_Savvides_Mob::update_neighbor(cMessage * msg)
 		// reset the associated timer if that has already been activated
 		if (bc_position != NULL) {
 			resetTimer(bc_position);
-			/* @todo */
+			/* @todo Zorgt dit voor teveel broadcast berichten? */
 			seqno[MSG_POSITION]++;
 		}
 	}

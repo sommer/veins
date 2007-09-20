@@ -199,6 +199,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	timer_info *timer(int reps, int handler, void *arg = NULL);
 	void addTimer(timer_info * e);
 	void resetTimer(timer_info * e);
+	void resetAllTimers(void);
 	void cancelTimer(timer_info * e);
 	virtual void handleRepeatTimer(unsigned int index);
 	virtual void handleTimer(timer_info * handler) {

@@ -164,7 +164,7 @@ void Node_HTRefine::handleMessage(cMessage * msg, bool newNeighbor)
 //                      timer_info *ev = (timer_info *) iter();
 //                      resetTimer(ev);
 //              }
-		resetAllRepeatTimers();
+		resetAllTimers();
 	// Call appropriate handler function depending on whether this node is an
 	// anchor or a normal node.
 	if (status == STATUS_ANCHOR) {

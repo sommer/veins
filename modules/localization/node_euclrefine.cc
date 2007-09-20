@@ -230,7 +230,7 @@ void Node_EuclRefine::handleMessage(cMessage * msg, bool newNeighbor)
 //                      timer_info *ev = (timer_info *) iter();
 //                      resetTimer(ev);
 //              }
-		resetAllRepeatTimers();
+		resetAllTimers();
 		// And be sure to resend all previously sent data
 		send_all_data = true;
 

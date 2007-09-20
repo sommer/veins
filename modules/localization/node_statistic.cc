@@ -145,7 +145,7 @@ void Node_Statistic::handleMessage(cMessage * msg, bool newNeighbor)
 //                      timer_info *EV = (timer_info *) iter();
 //                      resetTimer(EV);
 //              }
-		resetAllRepeatTimers();
+		resetAllTimers();
 	// Call appropriate handler function depending on whether this node is an
 	// anchor or a normal node.
 	update_neighbor(msg);
@@ -385,14 +385,16 @@ void Node_Statistic::Statistic(void)
 	int n = neighbors.length();
 
 	Position** pos_list = new Position*[(n + 1) * 2];
+
 	if (range_list)
 		delete[]range_list;
 	range_list = new FLOAT[n + 1];
+
 	if (real_range_list)
 		delete[]real_range_list;
-	FLOAT *conf_list = new FLOAT[(n + 1) * 2];
-
 	real_range_list = new FLOAT[n + 1];	// Used for debug output only
+
+	FLOAT *conf_list = new FLOAT[(n + 1) * 2];
 
 	EV << node[me].ID << ": working with ";
 	int i = 0;
@@ -641,11 +643,11 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 
 	for (int j = 0; j < width; j++) {
 		for (int k = 0; k < height; k++) {
-			map[j][k] = 1;
+			map[j][k] = 1.0;
 		}
 	}
 
-	double total = 1, newtotal;
+	double total = 1.0, newtotal;
 	for (int i = 0; i < n_pts; i++) {
 		newtotal = 0;
 		for (int j = 0; j < width; j++) {
@@ -653,43 +655,40 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 			for (int k = 0; k < height; k++) {
 				pos[1] = k + rectangle.min[1];
 				FLOAT dist = distance(*(positions[i * 2]), pos);
-				FLOAT val =
-				    confs[i * 2] * gaussian(dist -
-							    (point_dist / 2.0),
-							    dist +
-							    (point_dist / 2.0),
-							    ranges[i],
-							    range * 0.2);
+				FLOAT val = confs[i * 2] * gaussian
+					(dist - (point_dist / 2.0),
+					 dist + (point_dist / 2.0),
+					 ranges[i],
+					 range * 0.2);
 				//EV << node[me].ID << ": Adding in "<<pos2str(*positions[i*2]) <<" with conf "<<val<<", range="<<dist<<"\n";
 				if (equal_pairs && confs[i * 2] != 1.0
 				    && confs[(i * 2) + 1] > 0) {
-					dist =
-					    distance(*positions[(i * 2) + 1],
-						     pos);
-					val +=
-					    confs[(i * 2) + 1] * gaussian(dist -
-									  (point_dist
-									   /
-									   2.0),
-									  dist +
-									  (point_dist
-									   /
-									   2.0),
-									  ranges
-									  [i],
-									  range
-									  *
-									  0.2);
+					dist = distance(*(positions[(i * 2) + 1]), pos);
+					val += confs[(i * 2) + 1] * gaussian
+						(dist - (point_dist / 2.0),
+						 dist + (point_dist / 2.0),
+						 ranges[i],
+						 range * 0.2);
 					val /= 4.0;
 				}
 				map[j][k] *= val / total;
-				assert(!isnan(map[j][k]));
+				if (isnan(map[j][k])) {
+					EV << node[me].ID << ": Adding in " 
+					   << pos2str(*positions[i * 2])
+					   << " with conf " << val << ", range="
+					   << dist << " total=" << total
+					   << endl;
+					ev.flush();
+					error(0);
+					assert(0);
+				}
 				assert(map[j][k] >= 0);
 				newtotal += map[j][k];
 				assert(!isnan(newtotal));
 			}
 		}
-		total = newtotal;
+		if (newtotal != 0)
+			total = newtotal;
 	}
 
 	Position avg;
@@ -873,11 +872,11 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 FLOAT Node_Statistic::gaussian(FLOAT x1, FLOAT x2, FLOAT mu, FLOAT sigma)
 {
 	static FLOAT sq2 = M_SQRT2;
-	double z = (x1 - mu) / sigma;
-	double ret1 = 0.5 * (1.0 + erf(z / sq2));
+	double z = (x1 - mu) / (sigma * sq2);
+	double ret1 = 0.5 * (1.0 + erf(z));
 	assert(ret1 <= 1 && ret1 >= -1);
-	z = (x2 - mu) / sigma;
-	double ret2 = 0.5 * (1.0 + erf(z / sq2));
+	z = (x2 - mu) / (sigma * sq2);
+	double ret2 = 0.5 * (1.0 + erf(z));
 	assert(ret2 <= 1 && ret2 >= -1);
 	double ret = ret2 - ret1;
 	assert(ret <= 1 && ret >= 0);

@@ -577,6 +577,13 @@ void PositifLayer::resetTimer(timer_info * e)
 		resetRepeatTimer(*e);
 }
 
+void PositifLayer::resetAllTimers()
+{
+	for (int i = 0; i < MAX_TIMERS; i++) {
+		resetTimer(&_timers[i]);
+	}
+}
+
 // void PositifLayer::invokeTimer(timer_info * e)
 // {
 //      if (e) {
@@ -611,10 +618,10 @@ void PositifLayer::addTimer(timer_info * e)
 //      return cLinkedListIterator(timeouts);
 // }
 
-/* Normally all repeatTimers are handled by the algorithm, but there's
- * one special message -start_timer- that is needed to initialize the
- * network. Therefor all localization modules must call:
- * - PositifLayer::handleRepeatTimer on the default case. */
+/*
+ * This method handles all the timers, and forwards the necessary timers
+ * to upper layers through the handleTimer() method.
+ */
 void PositifLayer::handleRepeatTimer(unsigned int index)
 {
 	Enter_Method_Silent();
@@ -652,7 +659,8 @@ void PositifLayer::handleRepeatTimer(unsigned int index)
 			new cMessage("NEIGHBOR", MSG_NEIGHBOR);
 		send(neighborMsg);
 	} else {
-		assert(index < MAX_TIMERS);
+// 		assert(index < MAX_TIMERS);
+
 		/* analyzeTopology should be executed the first time */
 		{
 			static bool done = false;
@@ -662,7 +670,12 @@ void PositifLayer::handleRepeatTimer(unsigned int index)
 			}
 			done = true;
 		}
-		handleTimer(&_timers[index]);
+		if (index < MAX_TIMERS) {
+			handleTimer(&_timers[index]);
+		} else {
+			timer_info timer = index;
+			handleTimer(&timer);
+		}
 	}
 }
 
@@ -680,7 +693,7 @@ void PositifLayer::send(cMessage * msg)	// Synchronous send
 
 #ifndef NDEBUG
 	EV << node[me].ID << ": broadcast " << msg->name();
-	if (kind == MSG_POSITION) {
+	if (kind == MSG_POSITION && msg->hasPar("confidence")) {
 		EV << " confidence = " << msg->par("confidence");
 	}
 	EV << " seqno = " << seqno[kind] << "\n";
