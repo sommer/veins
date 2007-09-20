@@ -60,21 +60,16 @@ int write_configuration(int node_count)
 	printf("\n");
 
 	for (int n = 0; n < node_count; n++) {
-		for (unsigned int d = 0; d < nr_dims; d++) {
-			switch (d) {
-			case 0:
-				printf("sim.node[%d].mobility.x = %lg\n", n, node[n].true_pos[d] * factor);
-				break;
-			case 1:
-				printf("sim.node[%d].mobility.y = %lg\n", n, node[n].true_pos[d] * factor);
-				break;
-			case 2:
-				printf("sim.node[%d].mobility.z = %lg\n", n, node[n].true_pos[d] * factor);
-				break;
-			default:
-				error ("Invalid number of dimensions");
-				abort();
-			}
+		switch (nr_dims) {
+		case 2: printf("sim.node[%d].mobility.z = %lg\n", n, node[n].true_pos[2] * factor);
+			/* FALLTHROUGH */
+		case 1: printf("sim.node[%d].mobility.y = %lg\n", n, node[n].true_pos[1] * factor);
+			/* FALLTHROUGH */
+		case 0: printf("sim.node[%d].mobility.x = %lg\n", n, node[n].true_pos[0] * factor);
+			break;
+		default:
+			error("Invalid number of dimensions");
+			abort();
 		}
 		if (node[n].anchor) {
 			printf("sim.node[%d].loc.isAnchor = true\n", n);
