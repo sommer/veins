@@ -61,7 +61,8 @@ class Timer
 	void setTimer(unsigned int index, double when){checkCT();ct->setTimer(index,when);}
 
 	/** Set a timer to fire at a point in the future.
-	    Auto-generates a timer id that's guaranteed not to have been used by anyone else.
+	    Auto-generates a timer id. This will not be an id allocated to any other existing timer
+		(either running or finished) but may be an id from a timer deleted by deleteTimer.
 		@param when Time in seconds in the future to fire the timer
 		@return Timer id
 	 */
