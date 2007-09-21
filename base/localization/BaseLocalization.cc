@@ -90,28 +90,40 @@ Location BaseLocalization::getLocationEstimation()
 	return pos;
 }
 
-bool BaseLocalization::newAnchor(Node * node) {
+bool BaseLocalization::newAnchor(cMessage * msg) {
+	LocPkt * m = dynamic_cast<LocPkt *>(msg);
 	/* Check if this point already exists in the anchor
 	 * list. This check is made by position. */
+	Node * node = new Node(m->getId(),
+			       m->getIsAnchor(),
+			       m->getPos());
 	bool newAnchor = true;
 	list<Node *>::const_iterator current;
 	for (current = anchors.begin(); 
 	     current != anchors.end();
 	     current ++) {
-		if (node->pos.equals((*current)->pos))
+		if (node->pos.equals((*current)->pos)) {
 			newAnchor = false;
+			break;
+		}
 	}
 	/* Add new anchor to list. */
 	if (newAnchor) {
 		anchors.push_back(node);
 		handleNewAnchor(node);
+	} else {
+		delete node;
 	}
 	return newAnchor;
 }
 
-bool BaseLocalization::newNeighbor(Node * node) {
+bool BaseLocalization::newNeighbor(cMessage * msg) {
+	LocPkt * m = dynamic_cast<LocPkt *>(msg);
 	/* Check if this node already exists in the neighbor
 	 * list. This check is made by id. */
+	Node * node = new Node(m->getId(),
+			       m->getIsAnchor(),
+			       m->getPos());
 	bool newNeighbor = true;
 	bool updatedNeighbor = false;
 	list<Node *>::iterator current;
@@ -124,37 +136,37 @@ bool BaseLocalization::newNeighbor(Node * node) {
 			if (!node->pos.equals((*current)->pos))
 				updatedNeighbor = true;
 			(*current)->pos = node->pos;
+			break;
 		}
+	}
+	if (updatedNeighbor) {
+		handleMovedNeighbor(node);
 	}
 	if (newNeighbor) {
 		neighbors.push_back(node);
 		handleNewNeighbor(node);
+	} else {
+		delete node;
 	}
-	if (updatedNeighbor)
-		handleMovedNeighbor(node);
 	return newNeighbor;
 }
 
 /**
  * Decapsulates the packet from the received Network packet 
  **/
-cMessage *BaseLocalization::decapsMsg(LocPkt * msg)
+cMessage *BaseLocalization::decapsMsg(cMessage * msg)
 {
-	cMessage *m = msg->decapsulate();
-	Node * node = new Node(msg->getId(),
-			       msg->getIsAnchor(),
-			       msg->getPos());
-	if (node->isAnchor) {
-		if (!newAnchor(node))
-			delete node;
+	LocPkt * pkt = dynamic_cast<LocPkt *>(msg);
+	if (pkt->getIsAnchor()) {
+		newAnchor(msg);
 	} else {
-		if (!newNeighbor(node))
-			delete node;
+		newNeighbor(msg);
 	}
 
 	NetwControlInfo *cInfo =
 	    dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());
 
+	cMessage *m = msg->decapsulate();
 	if (cInfo != NULL)
 		m->setControlInfo(cInfo);
 
@@ -165,16 +177,13 @@ cMessage *BaseLocalization::decapsMsg(LocPkt * msg)
 	return m;
 }
 
-
-
-
 /**
  * Encapsulates the received ApplPkt into a LocPkt and set all needed
  * header fields.
  **/
-LocPkt *BaseLocalization::encapsMsg(cMessage * msg)
+LocPkt *BaseLocalization::encapsMsg(cMessage * msg, int kind)
 {
-	LocPkt *pkt = new LocPkt(msg->name(), msg->kind());
+	LocPkt *pkt = new LocPkt(msg->name(), kind);
 	pkt->setLength(headerLength);
 	pkt->setId(id);
 	pkt->setIsAnchor(isAnchor);
@@ -206,10 +215,18 @@ LocPkt *BaseLocalization::encapsMsg(cMessage * msg)
  **/
 void BaseLocalization::handleLowerMsg(cMessage * msg)
 {
+	if (msg->kind() == APPLICATION_MSG) {
+		EV << " handling application packet" << endl;
+		sendUp(decapsMsg(msg));
+	} else {
+		EV << " handling localization packet" << endl;
+		handleMsg(msg);
+	}
+}
 
-	LocPkt *m = static_cast < LocPkt * >(msg);
-	EV << " handling packet from " << m->getId() << endl;
-	sendUp(decapsMsg(m));
+void BaseLocalization::sendMsg(cMessage * msg)
+{
+	sendDown(msg);
 }
 
 /**
@@ -224,27 +241,5 @@ void BaseLocalization::handleLowerMsg(cMessage * msg)
  **/
 void BaseLocalization::handleUpperMsg(cMessage * msg)
 {
-	sendDown(encapsMsg(msg));
-}
-
-/**
- * Redefine this function if you want to process control messages
- * from lower layers. 
- *
- * This function currently handles one messagetype: TRANSMISSION_OVER.
- * If such a message is received in the network layer it is deleted.
- * This is done as this type of messages is passed on by the BaseMacLayer.
- *
- * It may be used by network protocols to determine when the lower layers
- * are finished sending a message.
- **/
-void BaseLocalization::handleLowerControl(cMessage * msg)
-{
-	switch (msg->kind()) {
-	default:
-		opp_warning
-		    ("BaseLocalization does not handle control messages called %s",
-		     msg->name());
-		delete msg;
-	}
+	sendDown(encapsMsg(msg, APPLICATION_MSG));
 }

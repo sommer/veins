@@ -50,6 +50,11 @@ using std::list;
 class BaseLocalization:public BaseLayer {
 
       protected:
+	enum {
+		APPLICATION_MSG = 0,
+		LOCALIZATION_MSG
+	};
+
 	/**
 	 * @brief Length of the LocPkt header 
 	 * Read from omnetpp.ini 
@@ -114,7 +119,9 @@ class BaseLocalization:public BaseLayer {
 	};
 
 	/** @brief Handle control messages from lower layer */
-	virtual void handleLowerControl(cMessage * msg);
+	virtual void handleLowerControl(cMessage * msg) {
+		error("BaseLocalization does not handle control messages");
+	};
 
 	/** @brief Handle control messages from lower layer */
 	virtual void handleUpperControl(cMessage * msg) {
@@ -123,14 +130,20 @@ class BaseLocalization:public BaseLayer {
 
 	/*@} */
 
+
+	void sendMsg(cMessage *);
+	virtual void handleMsg(cMessage *) {
+		error("Subclasses of BaseLocalization should implement handleMsg()!");
+	}
+
 	/** @brief decapsulate higher layer message from LocPkt */
-	virtual cMessage *decapsMsg(LocPkt *);
+	virtual cMessage *decapsMsg(cMessage *);
 
 	/** @brief Encapsulate higher layer packet into an LocPkt*/
-	virtual LocPkt *encapsMsg(cMessage *);
+	virtual LocPkt *encapsMsg(cMessage *, int);
 
-	virtual bool newAnchor(Node *);
-	virtual bool newNeighbor(Node *);
+	virtual bool newAnchor(cMessage *);
+	virtual bool newNeighbor(cMessage *);
 
 	virtual void handleNewAnchor(Node *) {}
 	virtual void handleNewNeighbor(Node *) {}
