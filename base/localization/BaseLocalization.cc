@@ -36,7 +36,7 @@ void BaseLocalization::initialize(int stage)
 
 	switch (stage) {
 	case 0:
-		id = findHost()->id();
+		id = findHost()->index();
 		headerLength = par("headerLength");
 		isAnchor = par("isAnchor");
 		break;
