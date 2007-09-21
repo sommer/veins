@@ -24,9 +24,9 @@ protected:
 	{
 	public:
 		static const int UNDEFINED = 0;
-		unsigned x;
-		unsigned y;
-		unsigned z;
+		int x;
+		int y;
+		int z;
 		bool use2D;
 
 
@@ -40,13 +40,13 @@ protected:
 		/**
 		 * Initialize a 2-dimensional GridCoord with x and y.
 		 */
-		GridCoord(unsigned x, unsigned y)
+		GridCoord(int x, int y)
 			:x(x), y(y), z(UNDEFINED), use2D(true) {};
 
 		/**
 		 * Initialize a 3-dimensional GridCoord with x, y and z.
 		 */
-		GridCoord(unsigned x, unsigned y, unsigned z)
+		GridCoord(int x, int y, int z)
 			:x(x), y(y), z(z), use2D(false) {};
 
 		/**
@@ -59,15 +59,15 @@ protected:
 			use2D = o.use2D;
         }
 
-		/**
+  /**
 		 * Creates a GridCoord from a given Coord by dividing the
 		 * x,y and z-values by "gridCellWidth".
 		 * The dimension of the GridCoord depends on the Coord.
 		 */
         GridCoord(const Coord& c, double gridCellWidth = 1.0) {
-            x = static_cast<unsigned>(c.getX() / gridCellWidth);
-            y = static_cast<unsigned>(c.getY() / gridCellWidth);
-            z = static_cast<unsigned>(c.getZ() / gridCellWidth);
+            x = static_cast<int>(c.getX() / gridCellWidth);
+            y = static_cast<int>(c.getY() / gridCellWidth);
+            z = static_cast<int>(c.getZ() / gridCellWidth);
             use2D = c.is2D();
         }
 
@@ -109,15 +109,6 @@ protected:
 		unsigned size;
 		unsigned current;
 
-	public:
-		/**
-		 * This values count the primary and secondary Collisions of the
-		 * hashtable.
-		 * This values are for performance testing and can be deleted 
-		 * at release versions.*/
-		unsigned cols;
-		unsigned sCols;
-
 	protected:
 
 		/**
@@ -127,16 +118,12 @@ protected:
 		 * a new Position to isnert end recursively call this Method again.
 		 * If the spot is empty the Coord is inserted.
 		 */
-		void insert(const GridCoord& c, unsigned pos, bool prim = false) {
+		void insert(const GridCoord& c, unsigned pos) {
 			if(data[pos] == 0) {
 				data[pos] = new GridCoord(c);
 				size++;
 			} else {
 				if(*data[pos] != c) {
-					if(prim)
-						cols++;
-					else
-						sCols++;
 					insert(c, (pos + 2) % maxSize);
 				}
 			}
@@ -147,7 +134,7 @@ protected:
 		 * Initializes the set (hashtable) with the a specified size.
 		 */
 		CoordSet(unsigned sz)
-			:maxSize(sz), size(0), current(0), cols(0), sCols(0)
+			:maxSize(sz), size(0), current(0)
 		{
 			data.resize(maxSize);
 		}
@@ -164,12 +151,12 @@ protected:
 		}
 
 		/**
-		 * Adds a GridCoord to the set. If the a GridCoord with the same
+		 * Adds a GridCoord to the set. If a GridCoord with the same
 		 * value already exists in the set nothing happens.
 		 */
 		void add(const GridCoord& c) {
 			unsigned hash = (c.x * 10000 + c.y * 100 + c.z) % maxSize;
-			insert(c, hash, true);
+			insert(c, hash);
 		}
 
 		/**
@@ -248,19 +235,7 @@ protected:
 	 * @param newPos the new position of the nic
 	 */
 	virtual void updateConnections(int nicID, const Coord* oldPos, const Coord* newPos);
-	
-	/**
-     * find the next larger coordinate in grid, return true if the
-     * connections in this position should be updated.
-     */
-	bool increment(unsigned max, unsigned src, unsigned* target);
-	
-	/**
-     * find the next smaller coordinate in grid, return true if the
-     * connections in this position should be updated.
-     */
-    bool decrement(unsigned max, unsigned src, unsigned* target);
-    
+	    
     /** @brief Manages the connections of a registered nic. */ 
     void updateNicConnections(NicEntries& nmap, NicEntry* nic);
 

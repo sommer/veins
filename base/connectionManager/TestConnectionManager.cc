@@ -38,13 +38,13 @@ void TestConnectionManager::initialize(int stage)
 		RowVector row;
 		NicMatrix matrix;
 
-		for (unsigned i = 0; i < gridDim.z; ++i) {
+		for (int i = 0; i < gridDim.z; ++i) {
 			row.push_back(entries);					//copy empty NicEntries to RowVector
 		}
-		for (unsigned i = 0; i < gridDim.y; ++i) {	//fill the ColVector with copies of 
+		for (int i = 0; i < gridDim.y; ++i) {	//fill the ColVector with copies of 
 			matrix.push_back(row);					//the RowVector.
 		}
-		for (unsigned i = 0; i < gridDim.x; ++i) {	//fill the grid with copies of
+		for (int i = 0; i < gridDim.x; ++i) {	//fill the grid with copies of
 			nicGrid.push_back(matrix);				//the matrix.
 		}											
 		ccEV << " using " << gridDim.x << "x" <<
@@ -119,7 +119,6 @@ void TestConnectionManager::updateConnections(int nicID, const Coord* oldPos, co
 	GridCoord oldCell = getCellForCoordinate(*oldPos);
     GridCoord newCell = getCellForCoordinate(*newPos);
 	
-	ccEV << " updating nic at loc " << oldCell.info() << " to new loc " << newCell.info() << endl;
 	checkGrid(oldCell, newCell, nicID );
 }
 
@@ -155,10 +154,10 @@ void TestConnectionManager::checkGrid(TestConnectionManager::GridCoord& oldCell,
 {
     
     // structure to find union of grid squares
-    CoordSet gridUnion(73);
+    CoordSet gridUnion(74);
     
     // find nic at old position
-    NicEntries oldCellEntries = getCellEntries(oldCell);
+    NicEntries& oldCellEntries = getCellEntries(oldCell);
     NicEntries::iterator it = oldCellEntries.find(id);
     NicEntry *nic = it->second;
 
@@ -257,14 +256,13 @@ void TestConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion, GridCoor
 void TestConnectionManager::updateNicConnections(NicEntries& nmap, NicEntry* nic)
 {
     int id = nic->nicId;
-    bool inRange;
 
     for(NicEntries::iterator i = nmap.begin(); i != nmap.end(); ++i)
     {
+		NicEntry* nic_i = i->second;
+		
         // no recursive connections
-        if ( i->second->nicId == id ) continue;
-
-        NicEntry* nic_i = i->second;
+        if ( nic_i->nicId == id ) continue;        
 
 		double distance;
 		
@@ -275,20 +273,21 @@ void TestConnectionManager::updateNicConnections(NicEntries& nmap, NicEntry* nic
         	distance = nic->pos.sqrdist(nic_i->pos);
         }
         
-        inRange = (distance <= maxDistSquared);
+        bool inRange = (distance <= maxDistSquared);
+        bool connected = nic->isConnected(nic_i);
         
         
-        if ( inRange && !nic->isConnected(nic_i) ){
+        if ( inRange && !connected ){
             // nodes within communication range: connect
             // nodes within communication range && not yet connected
-            ccEV <<"nic #"<<nic->nicId<<" and #"<<nic_i->nicId << " are in range"<<endl;
+            ccEV << "nic #" << id << " and #" << nic_i->nicId << " are in range" << endl;
             nic->connectTo( nic_i );
             nic_i->connectTo( nic );
         }
-        else if ( !inRange && nic->isConnected(nic_i) ){
+        else if ( !inRange && connected ){
             // out of range: disconnect
             // out of range, and still connected
-            ccEV <<"nic #"<<nic->nicId<<" and #"<<nic_i->nicId << " are NOT in range"<<endl;
+            ccEV << "nic #" << id << " and #" << nic_i->nicId << " are NOT in range" << endl;
             nic->disconnectFrom( nic_i );
             nic_i->disconnectFrom( nic );
         }
