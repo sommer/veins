@@ -10,8 +10,11 @@ const double Coord::UNDEFINED = 0.0;
  */
 double Coord::sqrTorusDist(const Coord& b, const Coord& playgroundSize) const {
 
-    Coord dist = *this - b;
+    double xDist = fabs(x - b.x);
+    double yDist = fabs(y - b.y);
+    double zDist = fabs(z - b.z);
 
+    
     /*
      * on a torus the end and the begin of the axes are connected so you
      * get a circle. On a circle the distance between two points can't be greater
@@ -20,33 +23,18 @@ double Coord::sqrTorusDist(const Coord& b, const Coord& playgroundSize) const {
      * half of the playground there must be a "shorter way" over the playground
      * border on this axis
      */
-    if(fabs(dist.x) > (playgroundSize.x * 0.5))
+    if(xDist * 2.0 > playgroundSize.x)
     {
-        if(dist.x < 0.0) //check which point is nearer to the "end of the axis"
-        {
-            dist.x = playgroundSize.x - b.x + x; //coordinate distance over border is
-        } else {                                 //calced by:
-            dist.x = playgroundSize.x - x + b.x; //axis_end - bigger_coordinate + smaller_coordinate
-        }
+        xDist = playgroundSize.x - xDist;
     }
     //same for y- and z-coordinate
-    if(fabs(dist.y) > (playgroundSize.y * 0.5))
+    if(yDist * 2.0 > playgroundSize.y)
     {
-        if(dist.y < 0.0) //check which point is nearer to the "end of the axis"
-        {
-            dist.y = playgroundSize.y - b.y + y; //coordinate distance over border is
-        } else {                                 //calced by:
-            dist.y = playgroundSize.y - y + b.y; //axis_end - bigger_coordinate + smaller_coordinate
-        }
+    	yDist = playgroundSize.y - yDist;
     }
-    if(fabs(dist.z) > (playgroundSize.z * 0.5))
+    if(zDist * 2.0 > playgroundSize.z)
     {
-        if(dist.z < 0) //check which point is nearer to the "end of the axis"
-        {
-            dist.z = playgroundSize.z - b.z + z; //coordinate distance over border is
-        } else {                                 //calced by:
-            dist.z = playgroundSize.z - z + b.z; //axis_end - bigger_coordinate + smaller_coordinate
-        }
+    	zDist = playgroundSize.z - zDist;
     }
-    return dist.squareLength();
+    return xDist * xDist + yDist * yDist + zDist * zDist;
 }
