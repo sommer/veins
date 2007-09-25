@@ -306,7 +306,8 @@ void BasicSinkRouting::handleLowerMsg(cMessage * msg)
 
 void BasicSinkRouting::handleUpperMsg(cMessage * msg)
 {
-	if (isSink)
+	NetwControlInfo *cInfo = dynamic_cast < NetwControlInfo * >(msg->controlInfo());
+	if (isSink && (cInfo==NULL || cInfo->getNetwAddr() != L3BROADCAST))
 	{
 		EV << "D'oh. I'm the sink" << endl;
 		sendUp(msg);
