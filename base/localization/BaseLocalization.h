@@ -49,7 +49,6 @@ public:
 	int id;
 	bool isAnchor;
 	Location pos;
-	double confidence;
 };
 
 using std::list;
@@ -85,9 +84,11 @@ class BaseLocalization:public BaseLayer {
 	bool isAnchor; /**< @brief Specifies weather this node is an anchor
 			* node or not */
 	int id; /**< @brief This node's number */
-	Location pos; /**< @brief The current estimated location of this node. */
-	double confidence; /**< @brief A value signalling the confidence in the
-			    * correctness of the current estimation */
+	Location pos; /**< @brief The current estimated location of this node.
+		       *
+		       * A location also contains the timestamp of calculation,
+		       * and a confidence value.
+		       */
 
 	list<NodeInfo *> neighbors; /**< @brief The neighbor list */
 	list<NodeInfo *> anchors; /**< @brief The anchor list */

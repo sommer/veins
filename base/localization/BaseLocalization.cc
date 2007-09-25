@@ -27,9 +27,6 @@
 
 Define_Module(BaseLocalization);
 
-/**
- * 
- */
 void BaseLocalization::initialize(int stage)
 {
 	BaseLayer::initialize(stage);
@@ -41,9 +38,6 @@ void BaseLocalization::initialize(int stage)
 		isAnchor = par("isAnchor");
 		if (isAnchor) {
 			pos = getLocation();
-			confidence = 1.0;
-		} else {
-			confidence = 0.0;
 		}
 		break;
 	default: 
@@ -91,7 +85,7 @@ Coord BaseLocalization::getPosition()
 
 Location BaseLocalization::getLocation()
 {
-	Location loc(getPosition(), simTime());
+	Location loc(getPosition(), simTime(), 1.0);
 	return loc;
 }
 

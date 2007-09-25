@@ -34,5 +34,4 @@ message LocPkt {
 	int id;
 	bool isAnchor;
 	Location pos;
-	double confidence;
 }
