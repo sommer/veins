@@ -30,13 +30,26 @@
 
 #include <list>
 
-class Node {
+/**
+ * @brief Base class for maintaining node information for the anchor and
+ * neighbor lists.
+ *
+ * @ingroup localization
+ * @author Peterpaul Klein Haneveld
+ *
+ * This class contains the same fields as the LocPkt message.
+ * In case one needs more information, one can extend this class or create
+ * a new class with node information. The corresponding methods in 
+ * BaseLocalization need to be overwritten.
+ */
+class NodeInfo {
 public:
-	Node(int i, bool a, Location p):id(i), isAnchor(a), pos(p) {}
+	NodeInfo(int i, bool a, Location p):id(i), isAnchor(a), pos(p) {}
 
 	int id;
 	bool isAnchor;
 	Location pos;
+	double confidence;
 };
 
 using std::list;
@@ -46,51 +59,68 @@ using std::list;
  * 
  * @ingroup localization
  * @author Peterpaul Klein Haneveld
- **/
+ */
 class BaseLocalization:public BaseLayer {
 
       protected:
-	enum {
+	/**
+	 * @brief Messagetypes used in the localization layer.
+	 *
+	 * Should one need more message types, implement this in
+	 * the subclass of BaseLocalization like this:
+	 *
+	 * <code>
+	 * enum {
+	 * 	LOCALIZATION_MSG = APPLICATION_MSG + 1,
+	 * 	...
+	 * };
+	 * </code>
+	 */ 
+	enum 
+	{
 		APPLICATION_MSG = 0,
-		LOCALIZATION_MSG
 	};
 
-	/**
-	 * @brief Length of the LocPkt header 
-	 * Read from omnetpp.ini 
-	 **/
-	int headerLength;
+	int headerLength; /**< @brief Length of the LocPkt header */
+	bool isAnchor; /**< @brief Specifies weather this node is an anchor
+			* node or not */
+	int id; /**< @brief This node's number */
+	Location pos; /**< @brief The current estimated location of this node. */
+	double confidence; /**< @brief A value signalling the confidence in the
+			    * correctness of the current estimation */
 
-	/**
-	 * @brief Specifies weather this node is an anchor node or not.
-	 */
-	bool isAnchor;
-
-	int id;
-
-	list<Node *> neighbors;
-	list<Node *> anchors;
-
-	Location pos;
+	list<NodeInfo *> neighbors; /**< @brief The neighbor list */
+	list<NodeInfo *> anchors; /**< @brief The anchor list */
 
       public:
 	 Module_Class_Members(BaseLocalization, BaseLayer, 0);
 
-	/** @brief Initialization of the module and some variables*/
-	virtual void initialize(int);
-	virtual void finish();
-
 	/**
-	 * @return The current MiXiM position of this node
+	 * @brief Initialization of the module and some variables
+	 */
+	virtual void initialize(int);
+	/**
+	 * @brief Finalization of the module
+	 */
+	virtual void finish();
+	/**
+	 * @brief Returns the actual coordinates of this node.
+	 *
+	 * In case one also needs the current timestamp, call
+	 * getLocation().
+	 * @return The current absolute position
 	 */
 	Coord getPosition();
-
 	/**
+	 * @brief Returns the current actual location of this node.
+	 *
+	 * The current simulation time is set as timestamp.
 	 * @return The current absolute location
 	 */
 	Location getLocation();
-
 	/**
+	 * @brief Returns the latest location estimation, with
+	 * the timestamp when this position was calculated.
 	 * @return The latest estimated location
 	 */
 	Location getLocationEstimation();
@@ -103,8 +133,7 @@ class BaseLocalization:public BaseLayer {
 	 * These are the functions provided to add own functionality to your
 	 * modules. These functions are called whenever a self message or a
 	 * data message from the upper or lower layer arrives respectively.
-	 *
-	 **/
+	 */
 	/*@{ */
 
 	/** @brief Handle messages from upper layer */
@@ -128,26 +157,71 @@ class BaseLocalization:public BaseLayer {
 		error("BaseLocalization does not handle control messages");
 	};
 
-	/*@} */
-
-
+	/** @brief Send a message to another node.
+	 *
+	 * Use this method in the implementation of a localization
+	 * algorithm to send messages. It can easily be overwritten
+	 * as it isn't used anywhere in the BaseLocalization class.
+	 */
 	void sendMsg(cMessage *);
+	
+	/** @brief Handle a message sent by the Localization layer.
+	 *
+	 * Overwrite this method in localization algorithms if you
+	 * use sendMsg() to send messages from the localization layer.
+	 * The received message is exactly the same as the one handed
+	 * to sendMsg().
+	 */
 	virtual void handleMsg(cMessage *) {
 		error("Subclasses of BaseLocalization should implement handleMsg()!");
 	}
+	/*@} */
 
-	/** @brief decapsulate higher layer message from LocPkt */
+	/**
+	 * @brief Decapsulates messages received from the network layer.
+	 */
 	virtual cMessage *decapsMsg(cMessage *);
 
-	/** @brief Encapsulate higher layer packet into an LocPkt*/
-	virtual LocPkt *encapsMsg(cMessage *, int);
+	/**
+	 * @brief Encapsulates application layer messages.
+	 */
+	virtual cMessage *encapsMsg(cMessage *, int);
 
-	virtual bool newAnchor(cMessage *);
-	virtual bool newNeighbor(cMessage *);
-
-	virtual void handleNewAnchor(Node *) {}
-	virtual void handleNewNeighbor(Node *) {}
-	virtual void handleMovedNeighbor(Node *) {}
+	/** @name Localization methods
+	 * @brief Localization functions that can be redefined by
+	 * the programmer.
+	 */
+	/*@{ */
+	/** @brief Check if the sender of this position exists in the
+	 * anchor list.
+	 *
+	 * This method is called in decapsMsg() when the sender of the
+	 * message is an anchor. If the anchor list doesn't already
+	 * have this point it is added to the anchor list and
+	 * handleNewAnchor() is called.
+	 * @param msg The received message (LocPkt)
+	 * @return true if this is a new anchor, false otherwise
+	 */
+	virtual bool newAnchor(cMessage * msg);
+	/** @brief Check if the sender of this message exists in the
+	 * neighbor list or if the neighbor has an updated position.
+	 *
+	 * This method is called in decapsMsg() when the sender of the
+	 * message is not an anchor. If the neighbor list doesn't contain
+	 * this node yet, it is added to the list and handleNewNeighbor()
+	 * is called, otherwise the positions are compared and if the
+	 * position is updated handleMovedNeighbor() is called.
+	 * @param msg The received message (LocPkt)
+	 * @return true if this is a new neighbor, false otherwise
+	 */
+	virtual bool newNeighbor(cMessage * msg);
+	/** @brief Perform actions on the updated anchor list */
+	virtual void handleNewAnchor(NodeInfo *) {}
+	/** @brief Perform actions on the updated neighbor list */ 
+	virtual void handleNewNeighbor(NodeInfo *) {}
+	/** @brief Perform actions on the updated neighbor list */
+	virtual void handleMovedNeighbor(NodeInfo *) {}
+	/*@} */
 };
 
 #endif

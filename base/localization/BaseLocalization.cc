@@ -39,6 +39,12 @@ void BaseLocalization::initialize(int stage)
 		id = findHost()->index();
 		headerLength = par("headerLength");
 		isAnchor = par("isAnchor");
+		if (isAnchor) {
+			pos = getLocation();
+			confidence = 1.0;
+		} else {
+			confidence = 0.0;
+		}
 		break;
 	default: 
 		break;
@@ -47,7 +53,7 @@ void BaseLocalization::initialize(int stage)
 
 void BaseLocalization::finish()
 {
-	list<Node *>::const_iterator current;
+	list<NodeInfo *>::iterator current;
 
 	EV << "Anchor neighbors(" << anchors.size() <<
 		") of node " << id << ": " << endl;
@@ -58,6 +64,8 @@ void BaseLocalization::finish()
 			(*current)->pos.getX() << "," <<
 			(*current)->pos.getY() << ">:" << 
 			(*current)->pos.getTimestamp() << endl;
+// 		anchors.erase(current);
+// 		delete (*current);
 	}
 
 	EV << "Regular neighbors(" << neighbors.size() <<
@@ -69,6 +77,8 @@ void BaseLocalization::finish()
 			(*current)->pos.getX() << "," <<
 			(*current)->pos.getY() << ">:" << 
 			(*current)->pos.getTimestamp() << endl;
+// 		neighbors.erase(current);
+// 		delete (*current);
 	}
 }
 
@@ -90,15 +100,20 @@ Location BaseLocalization::getLocationEstimation()
 	return pos;
 }
 
+void BaseLocalization::sendMsg(cMessage * msg)
+{
+	sendDown(msg);
+}
+
 bool BaseLocalization::newAnchor(cMessage * msg) {
 	LocPkt * m = dynamic_cast<LocPkt *>(msg);
+	NodeInfo * node = new NodeInfo(m->getId(),
+				       m->getIsAnchor(),
+				       m->getPos());
 	/* Check if this point already exists in the anchor
 	 * list. This check is made by position. */
-	Node * node = new Node(m->getId(),
-			       m->getIsAnchor(),
-			       m->getPos());
 	bool newAnchor = true;
-	list<Node *>::const_iterator current;
+	list<NodeInfo *>::const_iterator current;
 	for (current = anchors.begin(); 
 	     current != anchors.end();
 	     current ++) {
@@ -119,14 +134,14 @@ bool BaseLocalization::newAnchor(cMessage * msg) {
 
 bool BaseLocalization::newNeighbor(cMessage * msg) {
 	LocPkt * m = dynamic_cast<LocPkt *>(msg);
+	NodeInfo * node = new NodeInfo(m->getId(),
+				       m->getIsAnchor(),
+				       m->getPos());
 	/* Check if this node already exists in the neighbor
 	 * list. This check is made by id. */
-	Node * node = new Node(m->getId(),
-			       m->getIsAnchor(),
-			       m->getPos());
 	bool newNeighbor = true;
 	bool updatedNeighbor = false;
-	list<Node *>::iterator current;
+	list<NodeInfo *>::iterator current;
 	for (current = neighbors.begin();
 	     current != neighbors.end();
 	     current ++) {
@@ -151,9 +166,6 @@ bool BaseLocalization::newNeighbor(cMessage * msg) {
 	return newNeighbor;
 }
 
-/**
- * Decapsulates the packet from the received Network packet 
- **/
 cMessage *BaseLocalization::decapsMsg(cMessage * msg)
 {
 	LocPkt * pkt = dynamic_cast<LocPkt *>(msg);
@@ -172,16 +184,11 @@ cMessage *BaseLocalization::decapsMsg(cMessage * msg)
 
 	EV << " pkt decapsulated\n";
 
-	// delete the localization packet
 	delete msg;
 	return m;
 }
 
-/**
- * Encapsulates the received ApplPkt into a LocPkt and set all needed
- * header fields.
- **/
-LocPkt *BaseLocalization::encapsMsg(cMessage * msg, int kind)
+cMessage *BaseLocalization::encapsMsg(cMessage * msg, int kind)
 {
 	LocPkt *pkt = new LocPkt(msg->name(), kind);
 	pkt->setLength(headerLength);
@@ -205,14 +212,6 @@ LocPkt *BaseLocalization::encapsMsg(cMessage * msg, int kind)
 	return pkt;
 }
 
-/**
- * Redefine this function if you want to process messages from lower
- * layers before they are forwarded to upper layers
- *
- *
- * If you want to forward the message to upper layers please use
- * @ref sendUp which will take care of decapsulation and thelike
- **/
 void BaseLocalization::handleLowerMsg(cMessage * msg)
 {
 	if (msg->kind() == APPLICATION_MSG) {
@@ -224,21 +223,6 @@ void BaseLocalization::handleLowerMsg(cMessage * msg)
 	}
 }
 
-void BaseLocalization::sendMsg(cMessage * msg)
-{
-	sendDown(msg);
-}
-
-/**
- * Redefine this function if you want to process messages from upper
- * layers before they are send to lower layers.
- *
- * For the BaseLocalization we just use the destAddr of the network
- * message as a nextHop
- *
- * To forward the message to lower layers after processing it please
- * use @ref sendDown. It will take care of anything needed
- **/
 void BaseLocalization::handleUpperMsg(cMessage * msg)
 {
 	sendDown(encapsMsg(msg, APPLICATION_MSG));
