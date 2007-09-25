@@ -10,7 +10,8 @@ import
 
 module LocNode
     parameters:
-        applType: string; //type of the application layer
+        applType: string, // type of the application layer
+	locType: string; // type of the localization layer
     gates:
 	    in: radioIn; // gate for sendDirect
     submodules:
@@ -26,7 +27,7 @@ module LocNode
             display: "p=60,50;i=app";
         net: BaseNetwLayer;
             display: "p=60,108;i=prot1";
-	loc: BaseLocalization;
+	loc: locType like BaseLocalization;
 	    display: "p=60,137";
         nic: BaseNic;
             display: "p=60,166;i=iface";
