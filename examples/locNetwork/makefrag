@@ -1,0 +1,25 @@
+CFLAGS:=$(filter-out -DNDEBUG=1,$(CFLAGS)) -Wall -O0 -Werror
+LDFLAGS += -O0 -Wall
+
+NEED = modules $(TARGET)
+#NEED = $(TARGET) omnetpp.ini
+all: $(NEED)
+
+rebuild:
+	(cd ../..;./mkmk)
+	$(MAKE) re-makemake
+
+modules:
+	$(MAKE) -C ../../ modules
+
+base:
+	$(MAKE) -C ../../ base
+
+debug: $(NEED)
+	gdb $(TARGET)
+
+run: $(NEED)
+	./$(TARGET) 2>&1 > out.log
+
+valgrind: $(NEED)
+	valgrind --show-reachable=yes --log-fd=1 --leak-check=full ./$(TARGET) 2>&1 >valgrind.log

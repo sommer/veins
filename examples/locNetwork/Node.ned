@@ -1,9 +1,11 @@
 import
     "BaseApplLayer",
-    "BaseNetwLayer",
+//    "BaseNetwLayer",
+    "BasicSinkRouting",
     "BaseLocalization",
     "BaseNic",
-    "BaseMobility",
+//    "BaseMobility",
+    "ConstSpeedMobility",
     "BaseArp",
     "BaseBattery",
     "BaseUtility";
@@ -21,11 +23,11 @@ module LocNode
             display: "p=130,84,rect;b=24,24;o=blue";
         battery: BaseBattery;
             display: "p=130,128,rect;b=24,24;o=red";
-        mobility: BaseMobility;
+        mobility: ConstSpeedMobility;// BaseMobility;
             display: "p=130,172;i=cogwheel2";
         appl: applType like BaseApplLayer;
             display: "p=60,50;i=app";
-        net: BaseNetwLayer;
+        net: BasicSinkRouting;
             display: "p=60,108;i=prot1";
 	loc: locType like BaseLocalization;
 	    display: "p=60,137";
