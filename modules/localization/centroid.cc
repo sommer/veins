@@ -70,7 +70,6 @@ void Centroid::initialize(int stage)
 void Centroid::handleMsg( cMessage* msg )
 {
     LocPkt *m;
-    simtime_t ts = simTime();
     simtime_t receivedTs;
     int receivedId;
     double x, y, z;
@@ -122,7 +121,6 @@ void Centroid::handleMsg( cMessage* msg )
 void Centroid::handleSelfMsg(cMessage *msg) {}
 void Centroid::handleTimer(unsigned int index) {
 	LocPkt* pkt;
-	LocPkt *p;
 	double x=0, y=0, z=0, xReal, yReal, zReal;
 	BaseUtility *utility=NULL;
 	Coord pos;
@@ -139,7 +137,7 @@ void Centroid::handleTimer(unsigned int index) {
 	    EV << "Anchor "<<id<<" timer rang: anchor sends its position "<<id<<"("<<pos.getX()<<","<<pos.getY()<<","<<pos.getZ()<<")\n";
 	    // do a broadcast
 	    pkt = new LocPkt("ANCHOR_BROADCAST_MESSAGE", ANCHOR_BROADCAST_MESSAGE);
-	    loc = new Location(pos,simTime());
+	    loc = new Location(pos,simTime(),1.0);
 	    pkt->setPos(*loc);
 	    pkt->setId(id);
 	    pkt->setIsAnchor(true);
@@ -154,7 +152,7 @@ void Centroid::handleTimer(unsigned int index) {
 	    nb_anchor_positions=anchors.size();
 	    if(nb_anchor_positions>=MIN_ANCHOR_POSITIONS){
 	      EV << "Node "<<id<<" has heard enough anchors: "<<nb_anchor_positions<<"\n";
-	      list<Node *>::const_iterator current;
+	      list<NodeInfo *>::const_iterator current;
 	      EV << "Anchor neighbors(" << nb_anchor_positions <<") of node " << id << ": " << endl;
 	      // calculate position
 	      for (current = anchors.begin(); current != anchors.end(); current++) {
@@ -173,7 +171,7 @@ void Centroid::handleTimer(unsigned int index) {
 	      // do a broadcast
 	      pos = new Coord(x,y,z);
 	      pkt = new LocPkt("NODE_BROADCAST_MESSAGE", NODE_BROADCAST_MESSAGE);
-	      loc = new Location(pos,simTime());
+	      loc = new Location(pos,simTime(),0.0);
 	      pkt->setPos(*loc);
 	      pkt->setId(id);
 	      pkt->setIsAnchor(false);
