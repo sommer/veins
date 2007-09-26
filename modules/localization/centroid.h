@@ -61,7 +61,7 @@ protected:
     int nb_anchor_positions;
   //Location anchor_positions[NBANCHORS];
 
-  enum { ANCHOR_BROADCAST_MESSAGE = LOCALIZATION_MSG,
+  enum { ANCHOR_BROADCAST_MESSAGE = APPLICATION_MSG + 1,
 	 NODE_BROADCAST_MESSAGE};
 
 
