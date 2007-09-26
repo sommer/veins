@@ -1,34 +1,4 @@
-#include <math.h>
-#include <time.h>
-
-#include <qapplication.h>
-#include <qlineedit.h>
-#include <qdatetime.h>
-#include <qdatetimeedit.h>
-#include <qspinbox.h>
-#include <qcombobox.h>
-#include <qradiobutton.h>
-#include <qcheckbox.h>
-#include <qregexp.h>
-
-#include <dirent.h>
-#include <libgen.h>
-
-#include <map>
-
-#include "generatorwizard.h"
-#include "../miximConfiguratorCommon.h"
-
-using namespace std;
-
-struct ltstr {
-	bool operator()(const char* s1, const char* s2) const {
-		return strcmp(s1, s2) < 0;
-	}
-};
-
-typedef multimap<const char *, const char *, ltstr> modules;
-typedef QMap<QString, QString> ComponentMap;
+#include "main.h"
 
 int main( int argc, char ** argv ) {
 	int ret;
@@ -39,7 +9,7 @@ int main( int argc, char ** argv ) {
 	strcpy(argvCpy, argv[0]);
 
 	QApplication a(argc, argv);
-	generatorWizard w;
+	GeneratorWizard w;
 
 	// get dynamic parts here (if possible)
 	int result, i;
@@ -56,6 +26,8 @@ int main( int argc, char ** argv ) {
 	pair<modules::iterator, modules::iterator> modIt;
 	Module* baseModules;
 
+	// TODO FIXME TEMP
+	goto skipComponentScan;
 	if (sourceDirString == NULL 
 		|| fileString == NULL
 		|| argvCpy == NULL)
@@ -80,20 +52,20 @@ int main( int argc, char ** argv ) {
 
 skipComponentScan:
 	w.show();
-	a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
+//	a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 	ret = a.exec();
 	
 	// write config file here
 	
 	/* general part */
-	QTime maxSim = w.maxSimTime->time();
-	sprintf(input, "%dd%dh%dm%ds%c", w.maxSimDaysSB->value(), maxSim.hour(), maxSim.minute(), maxSim.second(), '\0');
+	/*QTime maxSim = ui.maxSimTime->time();
+	sprintf(input, "%dd%dh%dm%ds%c", ui.maxSimDaysSB->value(), maxSim.hour(), maxSim.minute(), maxSim.second(), '\0');
 	writeConfig("sim-time-limit", input, false);
-	QTime maxCPU = w.maxCPUTime->time();
-	sprintf(input, "%dd%dh%dm%ds%c", w.maxCPUDaysSB->value(), maxCPU.hour(), maxCPU.minute(), maxCPU.second(), '\0');
+	QTime maxCPU = ui.maxCPUTime->time();
+	sprintf(input, "%dd%dh%dm%ds%c", ui.maxCPUDaysSB->value(), maxCPU.hour(), maxCPU.minute(), maxCPU.second(), '\0');
 	writeConfig("cpu-time-limit", input, false);
 
-	startParameterSection();
+	startParameterSection();*/
 
 	//int nodeCount = w.nodeCountSB->value();
 	//addConfigInt("net.nodeCount", nodeCount);
@@ -249,3 +221,4 @@ skipComponentScan:
 	
 	return ret;
 }
+

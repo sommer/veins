@@ -1,16 +1,4 @@
-/****************************************************************************
-** ui.h extension file, included from the uic-generated form implementation.
-**
-** If you want to add, delete, or rename functions or slots, use
-** Qt Designer to update this file, preserving your code.
-**
-** You should not define a constructor or destructor in this file.
-** Instead, write your code in functions called init() and destroy().
-** These will automatically be called by the form's constructor and
-** destructor.
-*****************************************************************************/
-
-#include "../miximConfiguratorCommon.h"
+#include "Node.h"
 
 Module* macModules;
 Module* phyModules;
@@ -21,7 +9,9 @@ bool stopToggling = false;
 bool threeD = false;
 bool square = true;
 
-void Node::init() {
+Node::Node(Q3Wizard *parent): Q3Wizard(parent) {
+	setupUi(this);
+
 	Module* baseModules = findBaseModules();
 	Module* nodeModules = findModules(NODE);
 	Module* networkModules = findModules(NETWORK);
@@ -82,12 +72,8 @@ void Node::init() {
 	nicTable->insertRows(0);
 	// add default item
 	nicTable->setText(0, 0, "default");
-	nicTable->setItem(0, 1, new QComboTableItem(nicTable, macNames));
-	nicTable->setItem(0, 2, new QComboTableItem(nicTable, phyNames));
-}
-
-void Node::destroy() {
-	// transfer data to app?
+	nicTable->setItem(0, 1, new Q3ComboTableItem(nicTable, macNames));
+	nicTable->setItem(0, 2, new Q3ComboTableItem(nicTable, phyNames));
 }
 
 unsigned Node::getCount() {
@@ -106,15 +92,14 @@ QString Node::getApplicationName() {
 	return applicationNameCB->currentText();
 }
 
-void Node::addNICButton_clicked() {
+void Node::on_addNICButton_clicked() {
 	nicTable->insertRows(0);
 	nicTable->setText(0, 0, "new");
-	nicTable->setItem(0, 1, new QComboTableItem(nicTable, macNames));
-	nicTable->setItem(0, 2, new QComboTableItem(nicTable, phyNames));
+	nicTable->setItem(0, 1, new Q3ComboTableItem(nicTable, macNames));
+	nicTable->setItem(0, 2, new Q3ComboTableItem(nicTable, phyNames));
 }
 
-
-void Node::regularGridRB_toggled( bool ) {
+void Node::on_regularGridRB_toggled( bool ) {
 	if (stopToggling)
 		stopToggling = false;
 	else {
@@ -123,7 +108,7 @@ void Node::regularGridRB_toggled( bool ) {
 	}
 }
 
-void Node::randomRB_toggled( bool ) {
+void Node::on_randomRB_toggled( bool ) {
 	if (stopToggling)
 		stopToggling = false;
 	else {
@@ -132,8 +117,8 @@ void Node::randomRB_toggled( bool ) {
 	}
 }
 
-void Node::squareCB_toggled( bool ) {
-		square = !square;
+void Node::on_squareCB_toggled( bool ) {
+	square = !square;
 	dimYTB->setEnabled(!square);
 	if (threeD)
 		dimZTB->setEnabled(!square);
@@ -144,7 +129,7 @@ void Node::squareCB_toggled( bool ) {
 	}
 }
 
-void Node::threeDCB_toggled( bool ) {
+void Node::on_threeDCB_toggled( bool ) {
 	threeD = !threeD;
 	dimZTB->setEnabled(threeD && !square);
 	if (threeD)
@@ -153,7 +138,7 @@ void Node::threeDCB_toggled( bool ) {
 		dimZTB->setText("-");
 }
 
-void Node::dimXTB_textChanged( const QString & ) {
+void Node::on_dimXTB_textChanged( const QString & ) {
 	if (square) {
 		dimYTB->setText(dimXTB->text());
 		if (threeD)
@@ -161,10 +146,11 @@ void Node::dimXTB_textChanged( const QString & ) {
 	}
 }
 
-void Node::fixedAnchorCB_toggled( bool ) {
+void Node::on_fixedAnchorCB_toggled( bool ) {
 	bool enable = fixedAnchorCB->isChecked();
 	sinkIDTB->setEnabled(enable);
 	sinkXTB->setEnabled(enable);
 	sinkYTB->setEnabled(enable);
 	sinkZTB->setEnabled(enable);
 }
+

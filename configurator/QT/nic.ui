@@ -1,133 +1,144 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>NIC</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>NIC</cstring>
+<ui version="4.0" >
+ <class>NIC</class>
+ <widget class="QDialog" name="NIC" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>511</width>
+    <height>282</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>MyDialog</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="Layout1" >
+   <property name="geometry" >
+    <rect>
+     <x>20</x>
+     <y>240</y>
+     <width>476</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" >
+    <property name="spacing" >
+     <number>6</number>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>511</width>
-            <height>282</height>
-        </rect>
+    <property name="leftMargin" >
+     <number>0</number>
     </property>
-    <property name="caption">
-        <string>MyDialog</string>
+    <property name="topMargin" >
+     <number>0</number>
     </property>
-    <property name="sizeGripEnabled">
-        <bool>true</bool>
+    <property name="rightMargin" >
+     <number>0</number>
     </property>
-    <property name="modal">
-        <bool>true</bool>
+    <property name="bottomMargin" >
+     <number>0</number>
     </property>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>Layout1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>20</x>
-                <y>240</y>
-                <width>476</width>
-                <height>33</height>
-            </rect>
-        </property>
-        <hbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <property name="margin">
-                <number>0</number>
-            </property>
-            <property name="spacing">
-                <number>6</number>
-            </property>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>buttonHelp</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;Help</string>
-                </property>
-                <property name="accel">
-                    <string>F1</string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <spacer>
-                <property name="name">
-                    <cstring>Horizontal Spacing2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>20</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>buttonOk</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;OK</string>
-                </property>
-                <property name="accel">
-                    <string></string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-                <property name="default">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>buttonCancel</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;Cancel</string>
-                </property>
-                <property name="accel">
-                    <string></string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-            </widget>
-        </hbox>
-    </widget>
-</widget>
-<connections>
-    <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>NIC</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>buttonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>NIC</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">nic.ui.h</include>
-</includes>
-<slots>
-    <slot>pushButton19_clicked()</slot>
-</slots>
-<pixmapinproject/>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+    <item>
+     <widget class="QPushButton" name="buttonHelp" >
+      <property name="text" >
+       <string>&amp;Help</string>
+      </property>
+      <property name="shortcut" >
+       <string>F1</string>
+      </property>
+      <property name="autoDefault" >
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer>
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType" >
+       <enum>QSizePolicy::Expanding</enum>
+      </property>
+      <property name="sizeHint" >
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="buttonOk" >
+      <property name="text" >
+       <string>&amp;OK</string>
+      </property>
+      <property name="shortcut" >
+       <string/>
+      </property>
+      <property name="autoDefault" >
+       <bool>true</bool>
+      </property>
+      <property name="default" >
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="buttonCancel" >
+      <property name="text" >
+       <string>&amp;Cancel</string>
+      </property>
+      <property name="shortcut" >
+       <string/>
+      </property>
+      <property name="autoDefault" >
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonOk</sender>
+   <signal>clicked()</signal>
+   <receiver>NIC</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>NIC</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

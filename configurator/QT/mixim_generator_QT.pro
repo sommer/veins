@@ -3,11 +3,13 @@ LANGUAGE	= C++
 
 CONFIG	+= qt warn_on release
 
-SOURCES	+= main.cpp \
-	../miximConfiguratorCommon.c
-
 FORMS	= generatorwizard.ui \
 	node.ui
+
+HEADERS += main.h GeneratorWizard.h Node.h
+
+SOURCES	+= main.cpp GeneratorWizard.cpp Node.cpp \
+	../miximConfiguratorCommon.c
 
 IMAGES	= grid.xpm \
 	random.xpm
@@ -19,4 +21,7 @@ unix {
 }
 
 
+
+#The following line was inserted by qt3to4
+QT +=  qt3support 
 

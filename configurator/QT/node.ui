@@ -1,984 +1,725 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>Node</class>
-<widget class="QWizard">
-    <property name="name">
-        <cstring>Node</cstring>
+<ui version="4.0" >
+ <class>Node</class>
+ <widget class="Q3Wizard" name="Node" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>516</width>
+    <height>409</height>
+   </rect>
+  </property>
+  <property name="caption" stdset="0" >
+   <string>Node</string>
+  </property>
+  <widget class="QWidget" name="NodeWizardPage" >
+   <property name="geometry" >
+    <rect>
+     <x>6</x>
+     <y>36</y>
+     <width>504</width>
+     <height>328</height>
+    </rect>
+   </property>
+   <widget class="QPushButton" name="pushButton10" >
+    <property name="geometry" >
+     <rect>
+      <x>244</x>
+      <y>296</y>
+      <width>120</width>
+      <height>26</height>
+     </rect>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>516</width>
-            <height>409</height>
-        </rect>
+    <property name="text" >
+     <string>Delete NIC</string>
     </property>
-    <property name="caption">
-        <string>Node</string>
+   </widget>
+   <widget class="QPushButton" name="addNICButton" >
+    <property name="geometry" >
+     <rect>
+      <x>8</x>
+      <y>296</y>
+      <width>112</width>
+      <height>26</height>
+     </rect>
     </property>
-    <widget class="QWidget">
-        <property name="name">
-            <cstring>WizardPage</cstring>
-        </property>
-        <attribute name="title">
-            <string>Node setup</string>
-        </attribute>
-        <widget class="QPushButton">
-            <property name="name">
-                <cstring>pushButton10</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>244</x>
-                    <y>296</y>
-                    <width>120</width>
-                    <height>26</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Delete NIC</string>
-            </property>
-        </widget>
-        <widget class="QPushButton">
-            <property name="name">
-                <cstring>addNICButton</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>8</x>
-                    <y>296</y>
-                    <width>112</width>
-                    <height>26</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Add NIC</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel1_3</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>7</x>
-                    <y>145</y>
-                    <width>69</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>NICs</string>
-            </property>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>140</width>
-                    <height>20</height>
-                </size>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>117</x>
-                    <y>33</y>
-                    <width>140</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </spacer>
-        <widget class="QComboBox">
-            <item>
-                <property name="text">
-                    <string>BaseNetwLayer</string>
-                </property>
-            </item>
-            <property name="name">
-                <cstring>networkLayerCB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>263</x>
-                    <y>63</y>
-                    <width>132</width>
-                    <height>24</height>
-                </rect>
-            </property>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer17</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>140</width>
-                    <height>20</height>
-                </size>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>117</x>
-                    <y>65</y>
-                    <width>140</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </spacer>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel1_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>62</y>
-                    <width>101</width>
-                    <height>26</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Routing layer:</string>
-            </property>
-        </widget>
-        <widget class="QPushButton">
-            <property name="name">
-                <cstring>pushButton11</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>401</x>
-                    <y>62</y>
-                    <width>94</width>
-                    <height>26</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Options...</string>
-            </property>
-        </widget>
-        <widget class="QSpinBox">
-            <property name="name">
-                <cstring>nodeCountSB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>263</x>
-                    <y>0</y>
-                    <width>132</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="maxValue">
-                <number>65535</number>
-            </property>
-            <property name="minValue">
-                <number>1</number>
-            </property>
-        </widget>
-        <widget class="QPushButton">
-            <property name="name">
-                <cstring>pushButton9</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>126</x>
-                    <y>296</y>
-                    <width>112</width>
-                    <height>26</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Edit NIC</string>
-            </property>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>140</width>
-                    <height>20</height>
-                </size>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>117</x>
-                    <y>2</y>
-                    <width>140</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </spacer>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>30</y>
-                    <width>101</width>
-                    <height>26</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Node type:</string>
-            </property>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>line5</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>7</x>
-                    <y>125</y>
-                    <width>490</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel1</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>0</y>
-                    <width>101</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Node count:</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel5</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>94</y>
-                    <width>207</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Application to run on the nodes:</string>
-            </property>
-        </widget>
-        <widget class="QTable">
-            <column>
-                <property name="text">
-                    <string>Name</string>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Mac</string>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Physical</string>
-                </property>
-            </column>
-            <property name="name">
-                <cstring>nicTable</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>7</x>
-                    <y>175</y>
-                    <width>490</width>
-                    <height>110</height>
-                </rect>
-            </property>
-            <property name="numRows">
-                <number>0</number>
-            </property>
-            <property name="numCols">
-                <number>3</number>
-            </property>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer5</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>24</height>
-                </size>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>233</x>
-                    <y>94</y>
-                    <width>20</width>
-                    <height>24</height>
-                </rect>
-            </property>
-        </spacer>
-        <widget class="QComboBox">
-            <item>
-                <property name="text">
-                    <string>BaseNode</string>
-                </property>
-            </item>
-            <property name="name">
-                <cstring>nodeTypeCB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>263</x>
-                    <y>31</y>
-                    <width>132</width>
-                    <height>24</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="QPushButton">
-            <property name="name">
-                <cstring>pushButton12</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>401</x>
-                    <y>30</y>
-                    <width>94</width>
-                    <height>26</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Options...</string>
-            </property>
-        </widget>
-        <widget class="QComboBox">
-            <property name="name">
-                <cstring>applicationNameCB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>263</x>
-                    <y>94</y>
-                    <width>232</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="editable">
-                <bool>false</bool>
-            </property>
-        </widget>
-    </widget>
-    <widget class="QWidget">
-        <property name="name">
-            <cstring>WizardPage</cstring>
-        </property>
-        <attribute name="title">
-            <string>Layout settings</string>
-        </attribute>
-        <widget class="Line">
-            <property name="name">
-                <cstring>line5_2_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>0</x>
-                    <y>130</y>
-                    <width>580</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>line5_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>0</x>
-                    <y>260</y>
-                    <width>580</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel6_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>151</x>
-                    <y>276</y>
-                    <width>16</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>ID</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel6_2_3</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>332</x>
-                    <y>276</y>
-                    <width>16</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Y</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit">
-            <property name="name">
-                <cstring>sinkZTB</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>420</x>
-                    <y>276</y>
-                    <width>40</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>40</width>
-                    <height>32767</height>
-                </size>
-            </property>
-            <property name="text">
-                <string>0</string>
-            </property>
-            <property name="readOnly">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel6_2_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>265</x>
-                    <y>276</y>
-                    <width>16</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>X</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit">
-            <property name="name">
-                <cstring>sinkXTB</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>286</x>
-                    <y>276</y>
-                    <width>40</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>40</width>
-                    <height>32767</height>
-                </size>
-            </property>
-            <property name="text">
-                <string>0</string>
-            </property>
-            <property name="readOnly">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="QLineEdit">
-            <property name="name">
-                <cstring>sinkIDTB</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>192</x>
-                    <y>276</y>
-                    <width>40</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>40</width>
-                    <height>32767</height>
-                </size>
-            </property>
-            <property name="text">
-                <string>0</string>
-            </property>
-            <property name="readOnly">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="QLineEdit">
-            <property name="name">
-                <cstring>sinkYTB</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>353</x>
-                    <y>276</y>
-                    <width>40</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>40</width>
-                    <height>32767</height>
-                </size>
-            </property>
-            <property name="text">
-                <string>0</string>
-            </property>
-            <property name="readOnly">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel6_2_3_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>399</x>
-                    <y>276</y>
-                    <width>16</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Z</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel4_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>150</y>
-                    <width>81</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Dimensions:</string>
-            </property>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer19</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>40</width>
-                    <height>86</height>
-                </size>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>156</x>
-                    <y>170</y>
-                    <width>40</width>
-                    <height>86</height>
-                </rect>
-            </property>
-        </spacer>
-        <widget class="QLineEdit">
-            <property name="name">
-                <cstring>dimYTB</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>11</x>
-                    <y>201</y>
-                    <width>123</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>100</string>
-            </property>
-            <property name="readOnly">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="QLineEdit">
-            <property name="name">
-                <cstring>dimZTB</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>11</x>
-                    <y>231</y>
-                    <width>123</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>-</string>
-            </property>
-            <property name="readOnly">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel5_2_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>140</x>
-                    <y>231</y>
-                    <width>16</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>z</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel5_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>140</x>
-                    <y>171</y>
-                    <width>16</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>x</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel5_2_3</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>140</x>
-                    <y>201</y>
-                    <width>16</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>y</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>pixmapLabel3</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>162</x>
-                    <y>0</y>
-                    <width>100</width>
-                    <height>100</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string></string>
-            </property>
-            <property name="pixmap">
-                <pixmap>random.xpm</pixmap>
-            </property>
-            <property name="scaledContents">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>pixmapLabel2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>0</y>
-                    <width>100</width>
-                    <height>100</height>
-                </rect>
-            </property>
-            <property name="pixmap">
-                <pixmap>grid.xpm</pixmap>
-            </property>
-            <property name="scaledContents">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QRadioButton">
-            <property name="name">
-                <cstring>regularGridRB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>110</y>
-                    <width>108</width>
-                    <height>22</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Regular grid</string>
-            </property>
-            <property name="checked">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QRadioButton">
-            <property name="name">
-                <cstring>randomRB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>160</x>
-                    <y>110</y>
-                    <width>80</width>
-                    <height>22</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Random</string>
-            </property>
-        </widget>
-        <widget class="QCheckBox">
-            <property name="name">
-                <cstring>squareCB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>211</x>
-                    <y>191</y>
-                    <width>69</width>
-                    <height>22</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>square</string>
-            </property>
-            <property name="checked">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QCheckBox">
-            <property name="name">
-                <cstring>threeDCB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>211</x>
-                    <y>219</y>
-                    <width>69</width>
-                    <height>22</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>3-D</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit">
-            <property name="name">
-                <cstring>dimXTB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>11</x>
-                    <y>171</y>
-                    <width>123</width>
-                    <height>24</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>100</string>
-            </property>
-        </widget>
-        <widget class="QCheckBox">
-            <property name="name">
-                <cstring>fixedAnchorCB</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>278</y>
-                    <width>180</width>
-                    <height>22</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Fixed position for sink:</string>
-            </property>
-        </widget>
-    </widget>
-</widget>
-<connections>
-    <connection>
-        <sender>regularGridRB</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Node</receiver>
-        <slot>regularGridRB_toggled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>randomRB</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Node</receiver>
-        <slot>randomRB_toggled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>squareCB</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Node</receiver>
-        <slot>squareCB_toggled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>threeDCB</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Node</receiver>
-        <slot>threeDCB_toggled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>dimXTB</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>Node</receiver>
-        <slot>dimXTB_textChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>fixedAnchorCB</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Node</receiver>
-        <slot>fixedAnchorCB_toggled(bool)</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">node.ui.h</include>
-</includes>
-<slots>
-    <slot>addNICButton_clicked()</slot>
-    <slot>regularGridRB_toggled( bool )</slot>
-    <slot>randomRB_toggled( bool )</slot>
-    <slot>squareCB_toggled( bool )</slot>
-    <slot>threeDCB_toggled( bool )</slot>
-    <slot>dimXTB_textChanged( const QString &amp; )</slot>
-    <slot>fixedAnchorCB_toggled( bool )</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual">destroy()</function>
-    <function returnType="unsigned">getCount()</function>
-    <function returnType="QString">getType()</function>
-    <function returnType="QString">getNetworkLayer()</function>
-    <function returnType="QString">getApplicationName()</function>
-</functions>
-<pixmapinproject/>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+    <property name="text" >
+     <string>Add NIC</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel1_3" >
+    <property name="geometry" >
+     <rect>
+      <x>7</x>
+      <y>145</y>
+      <width>69</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>NICs</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="networkLayerCB" >
+    <property name="geometry" >
+     <rect>
+      <x>263</x>
+      <y>63</y>
+      <width>132</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text" >
+      <string>BaseNetwLayer</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="textLabel1_2" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>62</y>
+      <width>101</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Routing layer:</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton11" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>401</x>
+      <y>62</y>
+      <width>94</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Options...</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="nodeCountSB" >
+    <property name="geometry" >
+     <rect>
+      <x>263</x>
+      <y>0</y>
+      <width>132</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="minimum" >
+     <number>1</number>
+    </property>
+    <property name="maximum" >
+     <number>65535</number>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton9" >
+    <property name="geometry" >
+     <rect>
+      <x>126</x>
+      <y>296</y>
+      <width>112</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Edit NIC</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel2" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>101</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Node type:</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="Line" name="line5" >
+    <property name="geometry" >
+     <rect>
+      <x>7</x>
+      <y>125</y>
+      <width>490</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="frameShape" >
+     <enum>QFrame::HLine</enum>
+    </property>
+    <property name="frameShadow" >
+     <enum>QFrame::Sunken</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel1" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>101</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Node count:</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel5" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>94</y>
+      <width>207</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Application to run on the nodes:</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="Q3Table" name="nicTable" >
+    <property name="geometry" >
+     <rect>
+      <x>7</x>
+      <y>175</y>
+      <width>490</width>
+      <height>110</height>
+     </rect>
+    </property>
+    <property name="numRows" >
+     <number>0</number>
+    </property>
+    <property name="numCols" >
+     <number>3</number>
+    </property>
+    <column>
+     <property name="text" >
+      <string>Name</string>
+     </property>
+    </column>
+    <column>
+     <property name="text" >
+      <string>Mac</string>
+     </property>
+    </column>
+    <column>
+     <property name="text" >
+      <string>Physical</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QComboBox" name="nodeTypeCB" >
+    <property name="geometry" >
+     <rect>
+      <x>263</x>
+      <y>31</y>
+      <width>132</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text" >
+      <string>BaseNode</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="pushButton12" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>401</x>
+      <y>30</y>
+      <width>94</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Options...</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="applicationNameCB" >
+    <property name="geometry" >
+     <rect>
+      <x>263</x>
+      <y>94</y>
+      <width>232</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="editable" >
+     <bool>false</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="WizardPage" >
+   <widget class="Line" name="line5_2_2" >
+    <property name="geometry" >
+     <rect>
+      <x>0</x>
+      <y>130</y>
+      <width>580</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="frameShape" >
+     <enum>QFrame::HLine</enum>
+    </property>
+    <property name="frameShadow" >
+     <enum>QFrame::Sunken</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line5_2" >
+    <property name="geometry" >
+     <rect>
+      <x>0</x>
+      <y>260</y>
+      <width>580</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="frameShape" >
+     <enum>QFrame::HLine</enum>
+    </property>
+    <property name="frameShadow" >
+     <enum>QFrame::Sunken</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel6_2" >
+    <property name="geometry" >
+     <rect>
+      <x>188</x>
+      <y>291</y>
+      <width>16</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>ID</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel6_2_3" >
+    <property name="geometry" >
+     <rect>
+      <x>341</x>
+      <y>291</y>
+      <width>16</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Y</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="sinkZTB" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>434</x>
+      <y>291</y>
+      <width>40</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="maximumSize" >
+     <size>
+      <width>40</width>
+      <height>32767</height>
+     </size>
+    </property>
+    <property name="text" >
+     <string>0</string>
+    </property>
+    <property name="readOnly" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel6_2_2" >
+    <property name="geometry" >
+     <rect>
+      <x>267</x>
+      <y>291</y>
+      <width>16</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>X</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="sinkXTB" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>287</x>
+      <y>291</y>
+      <width>40</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="maximumSize" >
+     <size>
+      <width>40</width>
+      <height>32767</height>
+     </size>
+    </property>
+    <property name="text" >
+     <string>0</string>
+    </property>
+    <property name="readOnly" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="sinkIDTB" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>213</x>
+      <y>291</y>
+      <width>40</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="maximumSize" >
+     <size>
+      <width>40</width>
+      <height>32767</height>
+     </size>
+    </property>
+    <property name="text" >
+     <string>0</string>
+    </property>
+    <property name="readOnly" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="sinkYTB" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>360</x>
+      <y>291</y>
+      <width>40</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="maximumSize" >
+     <size>
+      <width>40</width>
+      <height>32767</height>
+     </size>
+    </property>
+    <property name="text" >
+     <string>0</string>
+    </property>
+    <property name="readOnly" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel6_2_3_2" >
+    <property name="geometry" >
+     <rect>
+      <x>414</x>
+      <y>291</y>
+      <width>16</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Z</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel4_2" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>150</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Dimensions:</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="dimYTB" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>201</y>
+      <width>123</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>100</string>
+    </property>
+    <property name="readOnly" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="dimZTB" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>231</y>
+      <width>123</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>-</string>
+    </property>
+    <property name="readOnly" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel5_2_2" >
+    <property name="geometry" >
+     <rect>
+      <x>140</x>
+      <y>231</y>
+      <width>16</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>z</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel5_2" >
+    <property name="geometry" >
+     <rect>
+      <x>140</x>
+      <y>171</y>
+      <width>16</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>x</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="textLabel5_2_3" >
+    <property name="geometry" >
+     <rect>
+      <x>140</x>
+      <y>201</y>
+      <width>16</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>y</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="pixmapLabel3" >
+    <property name="geometry" >
+     <rect>
+      <x>162</x>
+      <y>0</y>
+      <width>100</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string/>
+    </property>
+    <property name="pixmap" >
+     <pixmap>random.xpm</pixmap>
+    </property>
+    <property name="scaledContents" >
+     <bool>true</bool>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="pixmapLabel2" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>100</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="pixmap" >
+     <pixmap>grid.xpm</pixmap>
+    </property>
+    <property name="scaledContents" >
+     <bool>true</bool>
+    </property>
+    <property name="wordWrap" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="regularGridRB" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>108</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Regular grid</string>
+    </property>
+    <property name="checked" >
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="randomRB" >
+    <property name="geometry" >
+     <rect>
+      <x>160</x>
+      <y>110</y>
+      <width>80</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Random</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="squareCB" >
+    <property name="geometry" >
+     <rect>
+      <x>211</x>
+      <y>191</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>square</string>
+    </property>
+    <property name="checked" >
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="threeDCB" >
+    <property name="geometry" >
+     <rect>
+      <x>211</x>
+      <y>219</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>3-D</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="dimXTB" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>171</y>
+      <width>123</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>100</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="fixedAnchorCB" >
+    <property name="geometry" >
+     <rect>
+      <x>18</x>
+      <y>291</y>
+      <width>157</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Fixed position for sink:</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3Wizard</class>
+   <extends>QDialog</extends>
+   <header>q3wizard.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3Table</class>
+   <extends>Q3Frame</extends>
+   <header>q3table.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
