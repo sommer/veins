@@ -63,7 +63,7 @@ void Centroid::initialize(int stage)
  * There are two kinds of messages that can arrive at this module: The
  * first (kind = ANCHOR_BROADCAST_MESSAGE) is a broadcast packet from a
  * neighbor node to which we have to send a reply. The second (kind =
- * NODE_POSITION_MESSAGE) is a reply to a broadcast packet that we
+ * NODE_POSITION_MESSAGE (NODE_BROADCAST_MESSAGE in centroid.h)) is a reply to a broadcast packet that we
  * have send and just causes some output before it is deleted
  **/
 //void Centroid::handleLowerMsg( cMessage* msg )

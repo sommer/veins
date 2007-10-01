@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        Centroid.h
+ * file:        minmax.h
  *
  * author:      Aline Baggio
  *
@@ -14,36 +14,47 @@
  *              For further information see file COPYING 
  *              in the top level directory
  ***************************************************************************
- * description: centroid class for the localization module
+ * description: minmax class for the localization module
  **************************************************************************/
 
-#ifndef CENTROID_H
-#define CENTROID_H
+#ifndef minmax_H
+#define minmax_H
 
 #include "BaseLocalization.h"
 #include "Location.h"
 #include "LocPkt_m.h"
 #include "Coord.h"
 #include "Timer.h"
+#include "Position.h"
+#include "BaseWorldUtility.h"
 
 /* Should be in a network configuration file */
 #define ANCHOR_TIMER_INTERVAL	2.0
 #define NODE_TIMER_INTERVAL	4.0
 //#define NBANCHORS 5
-#define MIN_ANCHOR_POSITIONS 3 // 2D
-
+#define MIN_ANCHOR_POSITIONS 1 // 2D
+#define RADIO_RANGE		0
 
 typedef enum { SEND_ANCHOR_POS_TIMER = 0,
-	       SEND_NODE_LOC_TIMER } CentroidTimer;
+	       SEND_NODE_LOC_TIMER } minmaxTimer;
 
 /**
- * @brief Centroid class for the localization module
+ * @brief minmax class for the localization module
  *
  * @author Aline Baggio
  */
-class Centroid:public BaseLocalization, public Timer {
+
+struct bound_rect{
+	Position min,max;
+};
+
+int min(int a,int b){ if (a<b) return a; else return b; }
+
+int max(int a,int b){ if(a>b) return a; else return b; }
+
+class minmax:public BaseLocalization, public Timer {
       public:
-	Module_Class_Members(Centroid, BaseLocalization, 0);
+	Module_Class_Members(minmax, BaseLocalization, 0);
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
@@ -59,14 +70,21 @@ class Centroid:public BaseLocalization, public Timer {
 protected:
     LocPkt *anchorTimer;
     LocPkt *nodeTimer;
-    int nb_anchor_positions;
+    int nb_anchor_positions,nr_dims;
+    double *dim;
+    double radio_range;
+    BaseWorldUtility *world;
+
+    bound_rect rect;	
+	double final_x,final_y,final_z;
+
 
   //Location anchor_positions[NBANCHORS];
 
   enum { ANCHOR_BROADCAST_MESSAGE = APPLICATION_MSG + 1,
 	 NODE_BROADCAST_MESSAGE};
 
-
+ 
 protected:
     /** @brief Handle self messages such as timer... */
     virtual void handleSelfMsg(cMessage*);
@@ -74,6 +92,9 @@ protected:
     /** @brief Handle messages from lower layer */
     //virtual void handleLowerMsg(cMessage*);
   virtual void handleMsg(cMessage*);
+
+	void build_bounding_box(Location loc);
+	bool check_intersection_boxes(bound_rect &anchor_box);
   
     /** @brief send a broadcast packet to all connected neighbors */
     void sendBroadcast(LocPkt *pkt);
@@ -84,4 +105,4 @@ protected:
     virtual void handleTimer(unsigned int count);
 };
 
-#endif				/* CENTROID_H */
+#endif				/* minmax_H */
