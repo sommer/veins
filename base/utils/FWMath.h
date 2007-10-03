@@ -55,6 +55,10 @@
 #define erfc(X)	FWMath::erfc(X)
 #endif
 
+#ifdef __APPLE__
+#define isnan(x) ((x) != (x))
+#endif
+
 /**
  * @brief Support functions for mathematical operations.
  *
