@@ -1,7 +1,7 @@
 /** 
    mixim_generator - Generates config files for use with MiXiM
 
-   Copyright (C) 2006 Otto Visser
+   Copyright (C) 2006-2007 Otto Visser
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -364,6 +364,8 @@ Module* _findModules(char* dir) {
 
 	// looking for base modules
 	result = scandir(dir, &baseFiles, nedCheck, alphasort);
+	printf("Found %d files in %s\n", result, dir);
+
 	while (result-- > 0) {
 		//int searchRes;
 		bool foundParamSection = false;

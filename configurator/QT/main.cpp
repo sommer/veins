@@ -26,8 +26,6 @@ int main( int argc, char ** argv ) {
 	pair<modules::iterator, modules::iterator> modIt;
 	Module* baseModules;
 
-	// TODO FIXME TEMP
-	goto skipComponentScan;
 	if (sourceDirString == NULL 
 		|| fileString == NULL
 		|| argvCpy == NULL)
