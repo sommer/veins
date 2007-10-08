@@ -1,14 +1,49 @@
-This application contains a test application with tools for running experiments
-similar to positif experiments.
+This is an example of how to run experiments with the ported positif
+algorithms. It contains some additional scripts for setting up experiments
+and replaying previous scenarios.
 
-In order to setup an experiment, create an omnetpp.ini file:
+In order to setup an experiment, create an omnetpp.ini file. This example
+comes with three shell scripts that automatically generate 'omnetpp.ini'.
+(The scripts were written and tested on a GNU/Linux platform, for Windows
+you're on your own, but one might get them to work using Cygwin
+(www.cygwin.com)).
 
-	./bin/positifgen.sh <SCENARIO> omnetpp.ini
-	WHERE:	<SCENARIO> is one of the scenarios from ./input/scenarios
+	./bin/positifgen.sh <input scenario> omnetpp.ini
+	-------------------
+	This will take a scenario from ./input/scenarios and generate
+	omnetpp.ini from that scenario. PositifNetwork will generate such a
+	scenario file for each experiment as 'test.log'(*), storing that file
+	with a more descriptive name in ./input/scenarios will preserve it
+	for later reuse. Otherwise it will be overwritten the next time
+	positifNetwork is run.
+
+    (*) this name is configurable in the omnetpp.ini file, look for the line:
+	sim.node[*].loc.outputfile = "test.log"
+
+	./bin/randomgen.sh <node count> <anchor cols> <anchor rows> omnetpp.ini
+	------------------
+	This will generate a setup where the anchor nodes are placed on a
+	grid defined by <anchor cols> and <anchor rows>, all other nodes are
+	randomly placed within the boundaries of the experiment.
+
+	./bin/chaosgen.sh <node count> <anchor count>  omnetpp.ini
+	-----------------
+	This will generate a setup where all nodes, including the anchors
+	will be placed randomly.
+
+Edit the generated omnetpp.ini at will, for example selecting a different
+localization algorithm, or in-/decreasing the radiorange.
 
 Run the experiment:
 
-	./locNetwork
+	./positifNetwork
+
+
+General remarks:
+----------------
+- Don't use Node_Savvides_Mob, unless you know how to setup an experiment for
+  it. It uses mobile anchors instead of static anchors, but still needs work
+  before it will yield useful results.
 
 
 This is the directory structure given by: tree -d

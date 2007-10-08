@@ -40,6 +40,7 @@ sim.propagationType = "UnitDisk"
 #sim.node[*].applType = "TestApplLayer"
 sim.node[*].applType = "TestLocAppl"
 sim.node[*].netType = "BasicSinkRouting"
+sim.node[*].mobType = "BaseMobility"
 
 #sim.node[*].locType = "Node_AHLoSRefine"	# runs successfully, 
 #sim.node[*].locType = "Node_EuclRefineCheat"	# runs successfully,
@@ -48,8 +49,8 @@ sim.node[*].netType = "BasicSinkRouting"
 #sim.node[*].locType = "Node_Example"		# runs successfully,
 #sim.node[*].locType = "Node_HTRefine"		# runs successfully,
 #sim.node[*].locType = "Node_HTRefine_SEQ"	# runs successfully, but reaches timelimit
-#sim.node[*].locType = "Node_Savvides"		# runs successfully,
-sim.node[*].locType = "Node_Savvides_Mob"	# runs successfully,
+sim.node[*].locType = "Node_Savvides"		# runs successfully,
+#sim.node[*].locType = "Node_Savvides_Mob"	# runs successfully,
 #sim.node[*].locType = "Node_Statistic"		# runs successfully,
 #sim.node[*].locType = "Node_TriTest"		# runs successfully,
 
