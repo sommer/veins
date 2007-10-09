@@ -443,17 +443,25 @@ void PositifLayer::handleLowerMsg(cMessage * msg)
 	 * channel, i.e. ultrasone or RSSI. Currently the actual distance
 	 * between the nodes is used. */
 	int src = msg->par("src");
-	double distance =
-		sqrt(square(node[me].true_pos[0] - node[src].true_pos[0]) +
-		     square(node[me].true_pos[1] - node[src].true_pos[1]) +
-		     square(node[me].true_pos[2] - node[src].true_pos[2]));
+	double distance = 0.0;
+	switch (nr_dims) {
+	case 3:
+		distance += square(node[me].true_pos[2] - node[src].true_pos[2]);
+	case 2:
+		distance += square(node[me].true_pos[1] - node[src].true_pos[1]);
+	case 1:
+		distance += square(node[me].true_pos[0] - node[src].true_pos[0]);
+		distance = sqrt(distance);
+		break;
+	}
 	neighbor_info * nb = findNeighbor(src);
 	if (!nb) {
 		double est_d = genk_truncnormal(1, distance, range * range_variance);
 		nb = addNewNeighbor(src, distance, est_d);
 	}
-	msg->addPar("distance") = nb->true_dist;
+//	msg->addPar("distance") = nb->true_dist;
 // 	msg->addPar("distance") = nb->est_dist;
+	msg->addPar("distance") = distance;
 
 	node[me].recv_cnt++;
 	/* If we received a LocPkt, this was received from upper layers. */
@@ -558,7 +566,7 @@ void PositifLayer::handleStopMessage(cMessage * msg)
 timer_info *PositifLayer::timer(int reps, int handler, void *arg)
 {
 	assert(handler < MAX_TIMERS);
-	setRepeatTimer(handler, 1, reps);
+	setRepeatTimer(handler, 0.1, reps);
 	if (arg)
 		setContextPointer(handler, arg);
 	_timers[handler] = handler;
@@ -575,6 +583,9 @@ void PositifLayer::resetTimer(timer_info * e)
 {
 	if (e)
 		resetRepeatTimer(*e);
+// 	else {
+// 		error("Handing NULL pointer to resetTimer.");
+// 	}
 }
 
 void PositifLayer::resetAllTimers()

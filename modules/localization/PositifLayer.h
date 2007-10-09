@@ -291,7 +291,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	void topology_stats(bool * skip);
 	void find_bad_nodes(bool * bad);
 	void save_scenario(bool * skip, bool * bad);
-	void analyzeTopology(void);
+	virtual void analyzeTopology(void);
 
 	neighbor_info * addNewNeighbor(int, double, double);
 	neighbor_info * findNeighbor(int);
