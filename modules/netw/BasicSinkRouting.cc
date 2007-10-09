@@ -68,22 +68,12 @@ NetwPkt *BasicSinkRouting::buildSink(SinkInfo * sink, int from)
 
 void BasicSinkRouting::initialize(int stage)
 {
-	BaseNetwLayer::initialize(stage);
+	QueuedRouting::initialize(stage);
 	Timer::init(this);
 
-	/*if (stage == 0)
+	if (stage == 1)
 	{
-		hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
-	}
-	else */if (stage == 1)
-	{
-		headerLength = par("headerLength");
-		arp = BaseArpAccess().get();
-		myNetwAddr = id();
-		EV << " myNetwAddr " << myNetwAddr << endl;
-		msgQueue = new std::queue < NetwPkt * >();
 		sinks = new std::map < int, SinkInfo * >();
-		msgBusy = false;
 	}
 	else if (stage == 2)
 	{
@@ -104,7 +94,6 @@ void BasicSinkRouting::initialize(int stage)
 
 BasicSinkRouting::~BasicSinkRouting()
 {
-	delete msgQueue;
 	for (std::map < int, SinkInfo * >::iterator si = sinks->begin(); si != sinks->end(); si++)
 	{
 		delete(*si).second;
@@ -114,7 +103,7 @@ BasicSinkRouting::~BasicSinkRouting()
 
 void BasicSinkRouting::finish()
 {
-	BaseNetwLayer::finish();
+	QueuedRouting::finish();
 	printSinks();
 }
 
@@ -125,18 +114,6 @@ void BasicSinkRouting::printSinks()
 		SinkInfo *s = (*si).second;
 		EV << "Sink " << s->getSinkId() << " is findable via parent " << s->getParent() << " (macAddr = " << (s->getParent() == -1 ? -1 : arp->getMacAddr(s->getParent())) << ") with cost " << s->getCost() << endl;
 	}
-}
-
-/**
- * Decapsulates the packet from the received Network packet 
- **/
-cMessage *BasicSinkRouting::decapsMsg(NetwPkt * msg)
-{
-	cMessage *m = msg->decapsulate();
-	m->setControlInfo(new NetwControlInfo(msg->getSrcAddr()));
-	// delete the netw packet
-	delete msg;
-	return m;
 }
 
 bool BasicSinkRouting::setNextHop(NetwPkt * pkt)
@@ -159,66 +136,6 @@ bool BasicSinkRouting::setNextHop(NetwPkt * pkt)
 	}
 	pkt->setControlInfo(new MacControlInfo(macAddr));
 	return macAddr != -2;
-}
-
-NetwPkt *BasicSinkRouting::buildPkt(int kind, int netwAddr, const char *name)
-{
-	int macAddr;
-	NetwPkt *pkt = new NetwPkt(name, kind);
-	pkt->setLength(headerLength);
-	pkt->setSrcAddr(myNetwAddr);
-	pkt->setDestAddr(netwAddr);
-	EV << " netw " << myNetwAddr << " sending packet" << endl;
-	if (netwAddr == L3BROADCAST)
-	{
-		EV << "toNetwork: nHop=L3BROADCAST -> message has to be broadcasted" << " -> set destMac=L2BROADCAST\n";
-		macAddr = L2BROADCAST;
-	}
-	else if (netwAddr == SINK_ADDRESS)
-	{
-		//setNextHop(pkt);
-		return pkt;
-	}
-	else
-	{
-		EV << "toNetwork: get the MAC address\n";
-		macAddr = arp->getMacAddr(netwAddr);
-	}
-
-	pkt->setControlInfo(new MacControlInfo(macAddr));
-
-	return pkt;
-}
-
-/**
- * Encapsulates the received ApplPkt into a NetwPkt and set all needed
- * header fields.
- **/
-NetwPkt *BasicSinkRouting::encapsMsg(cMessage * msg)
-{
-	EV << "in encaps...\n";
-	int netwAddr;
-
-	NetwControlInfo *cInfo = dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());
-
-	if (cInfo == NULL)
-	{
-		error("Application layer did not specify a destination L3 address");
-		netwAddr = L3BROADCAST;
-	}
-	else
-	{
-		EV << "CInfo removed, netw addr=" << cInfo->getNetwAddr() << endl;
-		netwAddr = cInfo->getNetwAddr();
-		delete cInfo;
-	}
-
-	NetwPkt *pkt = buildPkt(UPPER_TYPE, netwAddr, msg->name());
-
-	//encapsulate the application packet
-	pkt->encapsulate(msg);
-	EV << " pkt encapsulated\n";
-	return pkt;
 }
 
 /**
@@ -319,34 +236,6 @@ void BasicSinkRouting::handleUpperMsg(cMessage * msg)
 	}
 }
 
-
-void BasicSinkRouting::handleLowerControl(cMessage * msg)
-{
-	switch (msg->kind())
-	{
-		case NicControlType::TRANSMISSION_OVER:
-			EV << "Transmission complete" << endl;
-			msgBusy = false;
-			sendQueued();
-			delete msg;
-			break;
-		default:
-			EV << "BaseSinkRouting does not handle control messages of this type (name was " << msg->name() << " kind was " << msg->kind() << ")" << endl;
-			delete msg;
-			break;
-	}
-}
-
-void BasicSinkRouting::sendQueued()
-{
-	if (!msgQueue->empty())
-	{
-		EV << "Sending queued msg" << endl;
-		NetwPkt *send = msgQueue->front();
-		msgQueue->pop();		// trash message
-		toNetwork(send);
-	}
-}
 
 void BasicSinkRouting::handleTimer(unsigned int count)
 {

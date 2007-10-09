@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        BasicSinkRouting.h
+ * file:        QueuedRouting.h
  *
  * author:      Tom Parker
  *
@@ -8,58 +8,51 @@
  *
  *              This program is free software; you can redistribute it 
  *              and/or modify it under the terms of the GNU General Public 
- *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
- *              version.
+ *              License as published by the Free Software Foundation; version 
+ *              2 of the License.
+ *
  *              For further information see file COPYING 
  *              in the top level directory
  ***************************************************************************
- * part of:     wsn-specific modules
- * description: network layer: basic source-to-sink routing
+ * part of:     routing modules
+ * description: network layer: basic routing with queues
  ***************************************************************************/
 
-#ifndef BASIC_SINK_LAYER_H
-#define BASIC_SINK_LAYER_H
+#ifndef QUEUED_ROUTINGLAYER_H
+#define QUEUED_ROUTINGLAYER_H
 
-#include "QueuedRouting.h"
+#include <BaseNetwLayer.h>
+#include <queue>
 
-#include "BaseArp.h"
 #include "NetwPkt_m.h"
-#include "SinkAddress.h"
-#include "SinkInfo_m.h"
-#include "Timer.h"
 
 /**
- * @brief Basic source-to-sink routing
+ * @brief Basic routing with queues
  * 
  * @ingroup netwLayer
  * @author Tom Parker
  **/
-class BasicSinkRouting : public QueuedRouting, public Timer
+class QueuedRouting : public BaseNetwLayer
 {
 
   protected:
-	typedef enum {SINK_BCAST=1, UPPER_TYPE} NetworkTypes;
-    
-	NetwPkt *buildSink(SinkInfo *sink=NULL, int from=-1);
+	virtual NetwPkt *buildPkt(int kind, int netwAddr,const char* name);
 
-	std::map<int,SinkInfo*> *sinks;
+	std::queue<NetwPkt*> *msgQueue;
 
-	bool isSink;
+	bool msgBusy;
 
-	void printSinks();
-	bool setNextHop(NetwPkt *pkt);
+	void sendQueued();
  
 public:
-    Module_Class_Members(BasicSinkRouting,QueuedRouting,0);
+    Module_Class_Members(QueuedRouting,BaseNetwLayer,0);
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int stage);
 
 	virtual void finish();
 
-	virtual ~BasicSinkRouting();
-	virtual int upperKind() {return UPPER_TYPE;}
+	virtual ~QueuedRouting();
     
   protected:
     /** 
@@ -72,19 +65,21 @@ public:
      *
      **/
     /*@{*/
+
+	
+	/** @brief Returns the 'kind' that messages from upper layers should have */
+	virtual int upperKind() {return 0;}
     
+	NetwPkt* encapsMsg(cMessage * msg);
+
     /** @brief Handle messages from upper layer */
     virtual void handleUpperMsg(cMessage* msg);
     
-    /** @brief Handle messages from lower layer */
-    virtual void handleLowerMsg(cMessage* msg);
-
-    /*@}*/
+    /** @brief Handle control messages from lower layer */
+    virtual void handleLowerControl(cMessage* msg);
 
 	/** @brief Send packet to network */
-	void toNetwork(NetwPkt *out);
-
-	virtual void handleTimer(unsigned int count);
+	virtual void toNetwork(NetwPkt *out);
 };
 
 #endif

@@ -1,7 +1,7 @@
 import
     "BaseApplLayer",
 //    "BaseNetwLayer",
-    "BasicSinkRouting",
+    "QueuedRouting",
     "BaseLocalization",
     "BaseNic",
 //    "BaseMobility",
@@ -27,7 +27,7 @@ module LocNode
             display: "p=130,172;i=cogwheel2";
         appl: applType like BaseApplLayer;
             display: "p=60,50;i=app";
-        net: BasicSinkRouting;
+        net: QueuedRouting;
             display: "p=60,108;i=prot1";
 	loc: locType like BaseLocalization;
 	    display: "p=60,137";
