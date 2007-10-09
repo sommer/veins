@@ -2133,7 +2133,7 @@ bool PositifLayer::collapse_twins(bool * skip)
 
 void PositifLayer::save_scenario(bool * skip, bool * bad)
 {
-	char *prelude[] = {
+	const char *prelude[] = {
 		"# Topology description:",
 		"#   'nr-dimensions'     are we describing a 2-D or a 3-D topology?",
 		"#   'grid-bound'        the network is contained in a box of size",
