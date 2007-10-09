@@ -73,7 +73,7 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
 
   protected:
     /** @brief Function to get a pointer to the host module*/
-    cModule *findHost(void) const;
+    cModule *findHost(void);
 
     /** @brief Function to get the logging name of id*/
     std::string getLogName(int);
@@ -116,7 +116,7 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
 	 * @param modtype Module type name
 	 */
 	
-	cModule * getGlobalModule(const char* modtype);
+	static cModule * getGlobalModule(const char* modtype);
 
    	/** 
 	 * @brief Get a reference to a node-level module

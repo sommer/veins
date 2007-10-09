@@ -36,14 +36,9 @@ void BaseModule::initialize(int stage)
     }
 }
 
-cModule *BaseModule::findHost(void) const 
+cModule *BaseModule::findHost(void)
 {
-    cModule *mod;
-    for (mod = parentModule(); mod != 0; mod = mod->parentModule())
-    {
-        if (strstr(mod->name(), "node") != NULL || strstr(mod->name(), "Node") != NULL)
-            break;
-    }
+    cModule *mod = getNode();
     if (!mod)
         error("findHost: no host module found!");
 
