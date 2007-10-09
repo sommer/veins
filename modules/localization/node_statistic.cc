@@ -367,11 +367,12 @@ void Node_Statistic::sendPosition(void *arg)
 	add_struct(msg, "tl", rectangle.min);
 	add_struct(msg, "br", rectangle.max);
 
-	char tmp[100];
-	sprintf(tmp, "p=%d,%d;i=ball_vs",
+	char *tmp;
+	asprintf(&tmp, "p=%d,%d;i=ball_vs",
 		(int) (100 * position[0] / sqrt(area)),
 		(int) (100 * position[1] / sqrt(area)));
 	//setDisplayString(dispSUBMOD, (const char *) tmp, true);
+	free(tmp);
 
 	EV << node[me].ID << ": sending position\n";
 
@@ -828,8 +829,8 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 		(*positions[(n_pts * 2) + 1])[i] = second[i] + rectangle.min[i];
 	}
 
-	char fname[256];
-	sprintf(fname, "output/%d.data", node[me].ID);
+	char *fname;
+	asprintf(&fname, "output/%d.data", node[me].ID);
 	FILE *dump = fopen(fname, "w");
 	if (dump == NULL)
 		EV << "Can't open "<<fname<<" for output dumping\n";
@@ -861,6 +862,7 @@ FLOAT Node_Statistic::minmax(int n_pts, Position ** positions, FLOAT * ranges,
 
 		fclose(dump);
 	}
+	free(fname);
 
 	for (int i = 0; i < width; i++)
 		delete[] map[i];
