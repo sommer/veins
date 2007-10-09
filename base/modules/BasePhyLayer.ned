@@ -1,6 +1,6 @@
 simple BasePhyLayer
     parameters:
-        debug: numeric const, // debug switch
+        coreDebug: numeric const, // debug switch
         transmitterPower: numeric, // power used for transmission of messages (in mW)
         bitrate: numeric, // bitrate (in bits/sec)
         headerLength: numeric const; // header length of the AirFrame (in bits)
