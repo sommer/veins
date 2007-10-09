@@ -111,7 +111,7 @@ bool BaseLocalization::newAnchor(cMessage * msg) {
 	for (current = anchors.begin(); 
 	     current != anchors.end();
 	     current ++) {
-		if (node->pos.equals((*current)->pos)) {
+		if (node->pos == (*current)->pos) {
 			newAnchor = false;
 			break;
 		}
@@ -142,7 +142,7 @@ bool BaseLocalization::newNeighbor(cMessage * msg) {
 		if (node->id == (*current)->id) {
 			newNeighbor = false;
 			/* Update position information of this node. */
-			if (!node->pos.equals((*current)->pos))
+			if (node->pos != (*current)->pos)
 				updatedNeighbor = true;
 			(*current)->pos = node->pos;
 			break;

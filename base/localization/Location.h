@@ -27,6 +27,15 @@
 #include "Coord.h"
 /**
  * @brief Base class with information for localization algorithms
+ *
+ * @ingroup localization
+ * @author Peterpaul Klein Haneveld
+ *
+ * Location holds a position, a timestamp and a confidence value.
+ * It can be used in localization algorithms, to document position
+ * information. For example, the timestamp could be the timestamp
+ * of the last estimation of the position, and the confidence value
+ * a measure of trust in this value.
  */
 class Location:public Coord {
 public:
@@ -35,11 +44,6 @@ public:
 		Coord(pos), 
 		timestamp(ts),
 		confidence(c) {}
-	bool equals(Coord other) {
-		return getX() == other.getX() 
-			&& getY() == other.getY() 
-			&& getZ() == other.getZ();
-	}
 	simtime_t getTimestamp() {
 		return timestamp;
 	}
