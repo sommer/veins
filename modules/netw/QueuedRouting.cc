@@ -139,7 +139,7 @@ void QueuedRouting::handleLowerControl(cMessage * msg)
 {
 	switch (msg->kind())
 	{
-		case NicControlType::TRANSMISSION_OVER:
+		case NicControlType::TX_END:
 			EV << "Transmission complete" << endl;
 			msgBusy = false;
 			sendQueued();

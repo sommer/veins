@@ -13,7 +13,8 @@
  *              version.
  *              For further information see file COPYING 
  *              in the top level directory
- * description: propagation layer - collisions/start msg capable
+ *
+ * description: phy layer - collisions/start msg capable
  ***************************************************************************/
 
 
@@ -35,32 +36,36 @@ void CollisionsPhy::initialize(int stage)
 void CollisionsPhy::handleUpperMsg(cMessage *msg)
 {
 	increment();
- 	EV << "in handleUpperMsg\n";
 	BasePhyLayer::handleUpperMsg(msg);
 }
 
 void CollisionsPhy::handleLowerMsgStart(cMessage *msg)
 {
 	increment();
- 	EV << "in handleLowerMsgStart\n";
-	BasePhyLayer::handleLowerMsgStart(msg);
+	if (colliding)
+		coreEV << "Collision in start\n";
+	else	
+		BasePhyLayer::handleLowerMsgStart(msg);
 }
 
 void CollisionsPhy::handleLowerMsgEnd(cMessage *msg)
 {
-	decrement(); 	
- 	EV << "in handleLowerMsgEnd\n";
-
 	if (!colliding)
+	{
+		//coreEV << "non-colliding message sent up\n";
     	sendUp( decapsMsg(static_cast<AirFrame *>(msg)) );
+	}
 	else
-		EV << "Collision! Dropped message\n";
+	{
+		coreEV << "Collision! Dropped message\n";
+		handleCollision(msg);
+	}
+	decrement(); 	
 }
 
 void CollisionsPhy::handleTransmissionOver()
 {
 	decrement(); 	
- 	EV << "in handleTransmissionOver\n";
 	BasePhyLayer::handleTransmissionOver();
 }
 

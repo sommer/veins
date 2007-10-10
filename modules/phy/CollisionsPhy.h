@@ -53,6 +53,7 @@ protected:
     virtual void handleLowerMsgEnd(cMessage*);
 
     virtual void handleUpperMsg(cMessage*);
+    virtual void handleCollision(cMessage *) {}
 	virtual void handleTransmissionOver();
 
 	virtual void increment();

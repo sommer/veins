@@ -38,8 +38,24 @@ class NicControlType : public cPolymorphic
  public:
     enum Types {
         NOTHING=1, // we don't want to start at zero -- it is ambiguous
-        TRANSMISSION_OVER,
-        PACKET_DROPPED
+
+		RX_START,
+		RX_HDR,
+		//RX_END,
+		RX_FAIL,
+
+		TX_START,
+		TX_END, // this is TRANSMISSION_OVER replacement
+		TX_FAIL,
+
+		SET_TRANSMIT,
+		SET_LISTEN,
+		SET_SLEEP,
+
+		SET_RSSI,
+		
+		SET_NORMAL_POWER,
+		SET_LOW_POWER,
     };
     
 
@@ -63,15 +79,56 @@ class NicControlType : public cPolymorphic
     
     std::string info() const {
         std::ostringstream ost;
-        if(type == NOTHING) {
-            ost<<"NOTHING";
-        }
-        else if(type == TRANSMISSION_OVER) {
-            ost<<"TRANSMISSION_OVER";
-        }
-        else {
-            ost<<"UNKNOWN TYPE";
-        }
+		switch(type)
+		{
+			case NOTHING:
+	        	ost<<"NOTHING";
+				break;
+
+    		case RX_START:
+    			ost<<"RX_START";
+				break;
+			case RX_HDR:
+				ost<<"RX_HDR";
+				break;
+			/*case RX_END:
+				ost<<"RX_END";*/
+				break;
+			case RX_FAIL:
+				ost<<"RX_FAIL";
+				break;
+
+			case TX_START:
+				ost<<"TX_START";
+				break;
+			case TX_END:
+				ost<<"TX_END";
+				break;
+			case TX_FAIL:
+				ost<<"TX_FAIL";
+				break;
+
+			case SET_TRANSMIT:
+				ost<<"SET_TRANSMIT";
+				break;
+			case SET_LISTEN:
+				ost<<"SET_LISTEN";
+				break;
+			case SET_SLEEP:
+				ost<<"SET_SLEEP";
+				break;
+
+			case SET_RSSI:
+				ost<<"SET_RSSI";
+				break;
+			
+			case SET_NORMAL_POWER:
+				ost<<"SET_NORMAL_POWER";
+				break;
+			case SET_LOW_POWER:
+				ost<<"SET_LOW_POWER";
+				break;
+		}
         return ost.str();
     }
     /* @} */

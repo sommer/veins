@@ -142,7 +142,7 @@ void BaseNetwLayer::handleLowerControl(cMessage* msg)
 {
 	switch (msg->kind())
 	{
-	case NicControlType::TRANSMISSION_OVER:
+	case NicControlType::TX_END:
 		delete msg;
 		break;
 	default:

@@ -101,6 +101,9 @@ void BasePhyLayer::handleMessage(cMessage *msg)
     if (msg->arrivalGateId() == uppergateIn){
         handleUpperMsg(msg);
     }
+    else if (msg->arrivalGateId() == upperControlIn){
+        handleUpperControl(msg);
+    }
     else if(msg == txOverTimer) {
         coreEV << "transmission over" << endl;
 		handleTransmissionOver();
@@ -131,7 +134,7 @@ void BasePhyLayer::handleMessage(cMessage *msg)
  */
 void BasePhyLayer::bufferMsg(cMessage *msg)
 {
-    AirFrame *frame = static_cast<AirFrame *>(msg);
+    AirFrame *frame = dynamic_cast<AirFrame *>(msg);
 
     // set timer to indicate transmission is complete
     cMessage *timer = new cMessage(NULL, RECEPTION_COMPLETE);
@@ -158,7 +161,7 @@ cMessage *BasePhyLayer::unbufferMsg(cMessage *msg)
  */
 AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
 {
-    AirFrame *frame = new AirFrame(msg->name(), msg->kind());
+    AirFrame *frame = new AirFrame("air frame", msg->kind());
     frame->setPSend(transmitterPower);
     frame->setLength(headerLength);
     frame->setChannelId(channel.getActiveChannel());
@@ -326,7 +329,7 @@ void BasePhyLayer::handleLowerMsgEnd(cMessage *msg)
 
 void BasePhyLayer::handleTransmissionOver()
 {
-	sendControlUp(new cMessage("TRANSMISSION_OVER", NicControlType::TRANSMISSION_OVER));
+	sendControlUp(new cMessage("TX_END", NicControlType::TX_END));
 }
 
 

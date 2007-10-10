@@ -133,7 +133,7 @@ void BaseMacLayer::handleLowerControl(cMessage* msg)
 {
 	switch (msg->kind())
 	{
-		case NicControlType::TRANSMISSION_OVER:
+		case NicControlType::TX_END:
 			sendControlUp(msg);
 			break;
 		default:
