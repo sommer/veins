@@ -18,7 +18,7 @@
 #include "csmaca.h"
 
 
-Define_Module_Like( CsmaCA, MacClass );
+Define_Module_Like( CsmaCA, EyesMacLayer );
 
 void CsmaCA::initialize(){
 	EyesMacLayer::initialize();

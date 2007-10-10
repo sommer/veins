@@ -1,19 +1,17 @@
-#ifndef __GMACF3_H__
-#define __GMACF3_H__
+#ifndef __CRANKSHAFTA_H__
+#define __CRANKSHAFTA_H__
 
-#include "gmac.h"
+#include "crankshaft-base.h"
 
-class GMacF3 : public GMac {
+class CrankshaftA : public CrankshaftBase {
 
 	// contructor, destructor, module stuff
-	Module_Class_Members(GMacF3, GMac, 0);
+	Module_Class_Members(CrankshaftA, CrankshaftBase, 0);
 
 private:
 	static bool parametersInitialised;
 
 protected:
-	static int slots, bcast_slots;
-	static bool slotted_bcast;
 
 	virtual void initialize();
 	virtual void finish();
@@ -37,7 +35,7 @@ protected:
 
 	virtual Header *newHeader(MsgType type) { return new HeaderF(type); }
 	virtual Header *newHeader(void *data) { return new HeaderF(data); }
-	virtual ~GMacF3();
+	virtual ~CrankshaftA();
 };
 
 

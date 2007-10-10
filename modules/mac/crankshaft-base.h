@@ -1,5 +1,5 @@
-#ifndef __GMAC_H__
-#define __GMAC_H__
+#ifndef __CRANKSHAFT_H__
+#define __CRANKSHAFT_H__
 
 #include "mac.h"
 #include <vector>
@@ -10,10 +10,10 @@
 #define ADDRESS_BYTES 2
 #define TYPE_BYTES 1
 
-class GMac: public EyesMacLayer {
+class CrankshaftBase: public EyesMacLayer {
 
 	// contructor, destructor, module stuff
-	Module_Class_Members(GMac, EyesMacLayer, 0);
+	Module_Class_Members(CrankshaftBase, EyesMacLayer, 0);
 
 private:
 	static bool parametersInitialised;
@@ -110,11 +110,11 @@ protected:
 	virtual Header *newHeader(MsgType type) = 0;
 	virtual Header *newHeader(void *data) = 0;
 
-	virtual ~GMac();
+	virtual ~CrankshaftBase();
 public:
 	virtual int headerLength();
 	virtual int firstToWake(std::vector<int> *nodes);
 };
 
 
-#endif // __GMAC_H__
+#endif // __CRANKSHAFT_H__

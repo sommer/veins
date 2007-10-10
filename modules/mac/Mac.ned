@@ -1,4 +1,4 @@
-simple TUMacLayer
+simple EyesMacLayer
     parameters:
         debug: numeric const, // debug switch
         headerLength: numeric const, // length of the MAC packet header (in bits)

@@ -1,21 +1,22 @@
-#ifndef __GMACT1_H__
-#define __GMACT1_H__
+#ifndef __CRANKSHAFTF1_H__
+#define __CRANKSHAFTF1_H__
 
-#include "gmac.h"
+#include "crankshaft-base.h"
 
-class GMacT1 : public GMac {
+class CrankshaftF1 : public CrankshaftBase {
 
 	// contructor, destructor, module stuff
-	Module_Class_Members(GMacT1, GMac, 0);
+	Module_Class_Members(CrankshaftF1, CrankshaftBase, 0);
 
 private:
 	static bool parametersInitialised;
 
 protected:
-	static unsigned int broadcastThreshold, threshold;
+	static int slots;
 
 	virtual void initialize();
 	virtual void finish();
+	virtual void txPacket(MacPacket * msg);
 	virtual void wrapSlotCounter();
 	virtual SlotState getCurrentSlotState();
 	virtual int slotsUntilWake(int destination);
@@ -36,7 +37,7 @@ protected:
 
 	virtual Header *newHeader(MsgType type) { return new HeaderF(type); }
 	virtual Header *newHeader(void *data) { return new HeaderF(data); }
-	virtual ~GMacT1();
+	virtual ~CrankshaftF1();
 };
 
 

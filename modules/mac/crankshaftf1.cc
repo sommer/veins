@@ -1,21 +1,21 @@
-/* G-MAC, fixed-sequence, neighbours with same slot assignment can't
+/* Crankshaft, fixed-sequence, neighbours with same slot assignment can't
    communicate.
 */
 
-#include "gmacf1.h"
+#include "crankshaftf1.h"
 
-Define_Module_Like( GMacF1, MacClass );
+Define_Module_Like( CrankshaftF1, EyesMacLayer );
 
-int GMacF1::slots;
-bool GMacF1::parametersInitialised = false;
+int CrankshaftF1::slots;
+bool CrankshaftF1::parametersInitialised = false;
 
-void GMacF1::initialize() {
+void CrankshaftF1::initialize() {
 	/* Max header contains from, type, to, and clock data */
 	max_header_length = ADDRESS_BYTES + TYPE_BYTES + ADDRESS_BYTES + CLOCK_BYTES;
 	/* Min header contains from, type, and clock data */
 	min_header_length = ADDRESS_BYTES + TYPE_BYTES + CLOCK_BYTES;
 	
-	GMac::initialize();
+	CrankshaftBase::initialize();
 
 	if (!parametersInitialised) {
 		parametersInitialised = true;
@@ -23,16 +23,16 @@ void GMacF1::initialize() {
 	}
 }
 
-void GMacF1::finish() {
-	GMac::finish();
+void CrankshaftF1::finish() {
+	CrankshaftBase::finish();
 }
 
-GMacF1::~GMacF1() {
+CrankshaftF1::~CrankshaftF1() {
 	parametersInitialised = false;
 }
 
-void GMacF1::txPacket(MacPacket * msg) {
-	GMac::txPacket(msg);
+void CrankshaftF1::txPacket(MacPacket * msg) {
+	CrankshaftBase::txPacket(msg);
 	
 	if ((msg->local_to % slots) == (macid() % slots)) {
 		printf(PRINT_ROUTING, "Can't send message, dropping");
@@ -43,13 +43,13 @@ void GMacF1::txPacket(MacPacket * msg) {
 	}
 }
 
-void GMacF1::wrapSlotCounter() {
+void CrankshaftF1::wrapSlotCounter() {
 	/* Default implementation for wrapSlotCounter. */
 	if (current_slot == slots + 1)
 		current_slot = 0;
 }
 
-GMac::SlotState GMacF1::getCurrentSlotState() {
+CrankshaftBase::SlotState CrankshaftF1::getCurrentSlotState() {
 	if (current_slot == (macid() % slots)) {
 		/* Listening in this slot. */
 		printf(PRINT_MAC, "listening");
@@ -81,7 +81,7 @@ GMac::SlotState GMacF1::getCurrentSlotState() {
 	return SSTATE_SLEEP;
 }
 
-int GMacF1::slotsUntilWake(int destination) {
+int CrankshaftF1::slotsUntilWake(int destination) {
 	int destinationSlot = destination % slots;
 	
 	if (destinationSlot == macid() % slots)

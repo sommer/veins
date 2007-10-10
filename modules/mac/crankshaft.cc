@@ -1,21 +1,25 @@
-/* G-MAC, fixed-sequence, using receive slots for sending to neighbours with
+/* Crankshaft, fixed-sequence, using receive slots for sending to neighbours with
    same slot assignment.
+
+   This is Crankshaft as defined in the original paper
+   "G.P. Halkes and K.G. Langendoen (2007). Crankshaft: An Energy-Efficient MAC-Protocol For 
+   Dense Wireless Sensor Networks. In Proceedings of the 4th European Conference on Wireless Sensor Networks (EWSN 2007)"
 */
 
-#include "gmacf2.h"
+#include "crankshaft.h"
 
-Define_Module_Like( GMacF2, EyesMacLayer );
+Define_Module_Like( Crankshaft, EyesMacLayer );
 
-int GMacF2::slots, GMacF2::bcast_slots;
-bool GMacF2::parametersInitialised = false, GMacF2::slotted_bcast;
+int Crankshaft::slots, Crankshaft::bcast_slots;
+bool Crankshaft::parametersInitialised = false, Crankshaft::slotted_bcast;
 
-void GMacF2::initialize() {
+void Crankshaft::initialize() {
 	/* Max header contains from, type, to, and clock data */
 	max_header_length = ADDRESS_BYTES + TYPE_BYTES + ADDRESS_BYTES + CLOCK_BYTES;
 	/* Min header contains from, type, and clock data */
 	min_header_length = ADDRESS_BYTES + TYPE_BYTES + CLOCK_BYTES;
 	
-	GMac::initialize();
+	CrankshaftBase::initialize();
 
 	if (!parametersInitialised) {
 		parametersInitialised = true;
@@ -25,21 +29,21 @@ void GMacF2::initialize() {
 	}
 }
 
-void GMacF2::finish() {
-	GMac::finish();
+void Crankshaft::finish() {
+	CrankshaftBase::finish();
 }
 
-GMacF2::~GMacF2() {
+Crankshaft::~Crankshaft() {
 	parametersInitialised = false;
 }
 
-void GMacF2::wrapSlotCounter() {
+void Crankshaft::wrapSlotCounter() {
 	/* Default implementation for wrapSlotCounter. */
 	if (current_slot == slots + bcast_slots)
 		current_slot = 0;
 }
 
-GMac::SlotState GMacF2::getCurrentSlotState() {
+Crankshaft::SlotState Crankshaft::getCurrentSlotState() {
 	if (current_slot == (macid() % slots)) {
 		/* Listening in this slot. */
 		if (tx_msg && (tx_msg->local_to % slots) == current_slot)
@@ -78,7 +82,7 @@ GMac::SlotState GMacF2::getCurrentSlotState() {
 	return SSTATE_SLEEP;
 }
 
-int GMacF2::slotsUntilWake(int destination) {
+int Crankshaft::slotsUntilWake(int destination) {
 	int destinationSlot = destination % slots;
 	
 	destinationSlot -= current_slot;

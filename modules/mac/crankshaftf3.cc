@@ -1,21 +1,21 @@
-/* G-MAC, fixed-sequence, using broadcast slots for sending to neighbours with
+/* Crankshaft, fixed-sequence, using broadcast slots for sending to neighbours with
    same slot assignment.
 */
 
-#include "gmacf3.h"
+#include "crankshaftf3.h"
 
-Define_Module_Like( GMacF3, MacClass );
+Define_Module_Like( CrankshaftF3, EyesMacLayer );
 
-int GMacF3::slots, GMacF3::bcast_slots;
-bool GMacF3::parametersInitialised = false, GMacF3::slotted_bcast;
+int CrankshaftF3::slots, CrankshaftF3::bcast_slots;
+bool CrankshaftF3::parametersInitialised = false, CrankshaftF3::slotted_bcast;
 
-void GMacF3::initialize() {
+void CrankshaftF3::initialize() {
 	/* Max header contains from, type, to, and clock data */
 	max_header_length = ADDRESS_BYTES + TYPE_BYTES + ADDRESS_BYTES + CLOCK_BYTES;
 	/* Min header contains from, type, and clock data */
 	min_header_length = ADDRESS_BYTES + TYPE_BYTES + CLOCK_BYTES;
 	
-	GMac::initialize();
+	CrankshaftBase::initialize();
 
 	if (!parametersInitialised) {
 		parametersInitialised = true;
@@ -25,21 +25,21 @@ void GMacF3::initialize() {
 	}
 }
 
-void GMacF3::finish() {
-	GMac::finish();
+void CrankshaftF3::finish() {
+	CrankshaftBase::finish();
 }
 
-GMacF3::~GMacF3() {
+CrankshaftF3::~CrankshaftF3() {
 	parametersInitialised = false;
 }
 
-void GMacF3::wrapSlotCounter() {
+void CrankshaftF3::wrapSlotCounter() {
 	/* Default implementation for wrapSlotCounter. */
 	if (current_slot == slots + bcast_slots)
 		current_slot = 0;
 }
 
-GMac::SlotState GMacF3::getCurrentSlotState() {
+CrankshaftBase::SlotState CrankshaftF3::getCurrentSlotState() {
 	if (current_slot == (macid() % slots)) {
 		/* Listening in this slot. */
 		printf(PRINT_MAC, "listening");
@@ -76,7 +76,7 @@ GMac::SlotState GMacF3::getCurrentSlotState() {
 	return SSTATE_SLEEP;
 }
 
-int GMacF3::slotsUntilWake(int destination) {
+int CrankshaftF3::slotsUntilWake(int destination) {
 	int destinationSlot = destination % slots;
 	
 	if (destinationSlot == macid() % slots)

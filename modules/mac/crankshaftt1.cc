@@ -1,4 +1,4 @@
-/* G-MAC, TDH
+/* Crankshaft, TDH
 
    TDH has one problem: sequentially numbered nodes will follow the same, but
    staggered schedule. This means that there will be periods where nodes all
@@ -6,9 +6,9 @@
    node ID, and use the hashed version and the slot number to assign slots.
 */
 
-#include "gmact1.h"
+#include "crankshaftt1.h"
 
-Define_Module_Like( GMacT1, MacClass );
+Define_Module_Like( CrankshaftT1, EyesMacLayer );
 
 static unsigned int hashLower[256] = {
 0x0000,0xBB43,0xA529,0x1E6A,0xC13C,0x7A7F,0x6415,0xDF56,0x6575,0xDE36,
@@ -70,16 +70,16 @@ static unsigned int hashUpper[256] = {
 
 #define HASH(x) (hashUpper[((x) >> 8) & 0xff] ^ hashLower[(x) & 0xff])
 
-unsigned int GMacT1::broadcastThreshold, GMacT1::threshold;
-bool GMacT1::parametersInitialised = false;
+unsigned int CrankshaftT1::broadcastThreshold, CrankshaftT1::threshold;
+bool CrankshaftT1::parametersInitialised = false;
 
-void GMacT1::initialize() {
+void CrankshaftT1::initialize() {
 	/* Max header contains from, type, to, and clock data */
 	max_header_length = ADDRESS_BYTES + TYPE_BYTES + ADDRESS_BYTES + CLOCK_BYTES;
 	/* Min header contains from, type, and clock data */
 	min_header_length = ADDRESS_BYTES + TYPE_BYTES + CLOCK_BYTES;
 	
-	GMac::initialize();
+	CrankshaftBase::initialize();
 
 	if (!parametersInitialised) {
 		parametersInitialised = true;
@@ -88,19 +88,19 @@ void GMacT1::initialize() {
 	}
 }
 
-void GMacT1::finish() {
-	GMac::finish();
+void CrankshaftT1::finish() {
+	CrankshaftBase::finish();
 }
 
-GMacT1::~GMacT1() {
+CrankshaftT1::~CrankshaftT1() {
 	parametersInitialised = false;
 }
 
-void GMacT1::wrapSlotCounter() {
+void CrankshaftT1::wrapSlotCounter() {
 	current_slot &= 0xffff;
 }
 
-GMac::SlotState GMacT1::getCurrentSlotState() {
+CrankshaftBase::SlotState CrankshaftT1::getCurrentSlotState() {
 	/* Check for broadcast slot. */
 	if (HASH(current_slot + 0xffff) > broadcastThreshold)
 		return tx_msg && tx_msg->local_to == BROADCAST ? SSTATE_SEND_RECEIVE : SSTATE_RECEIVE;
@@ -127,7 +127,7 @@ GMac::SlotState GMacT1::getCurrentSlotState() {
 	return SSTATE_SLEEP;
 }
 
-int GMacT1::slotsUntilWake(int destination) {
+int CrankshaftT1::slotsUntilWake(int destination) {
 	int myHash = HASH(macid());
 	int destinationHash = HASH(destination);
 	int i;

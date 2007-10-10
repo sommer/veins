@@ -1,9 +1,6 @@
 #ifndef __MAC_H__
 #define __MAC_H__
 
-//#include "software.h"
-//#include "node.h"
-//#include "radio.h"
 #include "message.h"
 
 #include "BaseMacLayer.h"

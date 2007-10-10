@@ -1,16 +1,16 @@
-/* G-MAC, fixed-sequence, using randomisation of node IDs to prevent the
+/* Crankshaft, fixed-sequence, using randomisation of node IDs to prevent the
    neighbours with same slot assignment problem.
 
    The implementation as given here is not very efficient. However a much more
    efficient implementation is possible that effectively does the same thing.
 */
 
-#include "gmacf4.h"
+#include "crankshaftf4.h"
 
-Define_Module_Like( GMacF4, MacClass );
+Define_Module_Like( CrankshaftF4, EyesMacLayer );
 
-int GMacF4::slots, GMacF4::frames, GMacF4::frameShift, GMacF4::bcast_slots;
-bool GMacF4::parametersInitialised = false, GMacF4::slotted_bcast;
+int CrankshaftF4::slots, CrankshaftF4::frames, CrankshaftF4::frameShift, CrankshaftF4::bcast_slots;
+bool CrankshaftF4::parametersInitialised = false, CrankshaftF4::slotted_bcast;
 
 static unsigned int hashLower[256] = {
 0x0000,0xBB43,0xA529,0x1E6A,0xC13C,0x7A7F,0x6415,0xDF56,0x6575,0xDE36,
@@ -72,13 +72,13 @@ static unsigned int hashUpper[256] = {
 
 #define IDHASH(x) (hashUpper[((x) >> 8) & 0xff] ^ hashLower[(x) & 0xff])
 
-void GMacF4::initialize() {
+void CrankshaftF4::initialize() {
 	/* Max header contains from, type, to, and clock data */
 	max_header_length = ADDRESS_BYTES + TYPE_BYTES + ADDRESS_BYTES + CLOCK_BYTES;
 	/* Min header contains from, type, and clock data */
 	min_header_length = ADDRESS_BYTES + TYPE_BYTES + CLOCK_BYTES;
 	
-	GMac::initialize();
+	CrankshaftBase::initialize();
 
 	if (!parametersInitialised) {
 		parametersInitialised = true;
@@ -95,15 +95,15 @@ void GMacF4::initialize() {
 	myHash = IDHASH(macid());
 }
 
-void GMacF4::finish() {
-	GMac::finish();
+void CrankshaftF4::finish() {
+	CrankshaftBase::finish();
 }
 
-GMacF4::~GMacF4() {
+CrankshaftF4::~CrankshaftF4() {
 	parametersInitialised = false;
 }
 
-void GMacF4::wrapSlotCounter() {
+void CrankshaftF4::wrapSlotCounter() {
 	/* Default implementation for wrapSlotCounter. */
 	if (current_slot == slots + bcast_slots) {
 		current_slot = 0;
@@ -114,7 +114,7 @@ void GMacF4::wrapSlotCounter() {
 	}
 }
 
-GMac::SlotState GMacF4::getCurrentSlotState() {
+CrankshaftBase::SlotState CrankshaftF4::getCurrentSlotState() {
 	int mySlotInFrame = (myHash >> (frameShift * current_frame)) % slots;
 	
 	if (current_slot == mySlotInFrame) {
@@ -151,7 +151,7 @@ GMac::SlotState GMacF4::getCurrentSlotState() {
 	return SSTATE_SLEEP;
 }
 
-int GMacF4::slotsUntilWake(int destination) {
+int CrankshaftF4::slotsUntilWake(int destination) {
 	int i, destinationSlot = 0, mySlot;
 
 	int destinationHash = IDHASH(destination);

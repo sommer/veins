@@ -1,19 +1,18 @@
-#ifndef __GMACF2_H__
-#define __GMACF2_H__
+#ifndef __CRANKSHAFTT1_H__
+#define __CRANKSHAFTT1_H__
 
-#include "gmac.h"
+#include "crankshaft-base.h"
 
-class GMacF2 : public GMac {
+class CrankshaftT1 : public CrankshaftBase {
 
 	// contructor, destructor, module stuff
-	Module_Class_Members(GMacF2, GMac, 0);
+	Module_Class_Members(CrankshaftT1, CrankshaftBase, 0);
 
 private:
 	static bool parametersInitialised;
 
 protected:
-	static int slots, bcast_slots;
-	static bool slotted_bcast;
+	static unsigned int broadcastThreshold, threshold;
 
 	virtual void initialize();
 	virtual void finish();
@@ -37,7 +36,7 @@ protected:
 
 	virtual Header *newHeader(MsgType type) { return new HeaderF(type); }
 	virtual Header *newHeader(void *data) { return new HeaderF(data); }
-	virtual ~GMacF2();
+	virtual ~CrankshaftT1();
 };
 
 

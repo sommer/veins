@@ -1,5 +1,5 @@
 /*
- * G-MAC
+ * CrankshaftBase
  *
  * A "reverse TDMA" mac protocol.
  * We cheat on the time synchronisation part, by having all nodes be in sync
@@ -11,7 +11,7 @@
 //#include "mixim.h"
 #include "message.h"
 
-#include "gmac.h"
+#include "crankshaft-base.h"
 
 #define CLOCK_SKEW_ALLOWANCE 2
 #define CONTEND_TIME 100
@@ -22,9 +22,9 @@
 	frameTotalTime(max_header_length) + 2 * EXTRA_TRANSMIT_TIME ) * 32768.0 + \
 	CLOCK_SKEW_ALLOWANCE + CONTEND_TIME + ACK_CONTEND_TIME)
 
-int GMac::data_length, GMac::backoff_max, GMac::max_retries;
-bool GMac::useScp, GMac::parametersInitialised = false, GMac::useSift, GMac::rerouteOnFail, GMac::quickAbort;
-double GMac::retryChance;
+int CrankshaftBase::data_length, CrankshaftBase::backoff_max, CrankshaftBase::max_retries;
+bool CrankshaftBase::useScp, CrankshaftBase::parametersInitialised = false, CrankshaftBase::useSift, CrankshaftBase::rerouteOnFail, CrankshaftBase::quickAbort;
+double CrankshaftBase::retryChance;
 
 /* FIXME:
 
@@ -44,9 +44,9 @@ double GMac::retryChance;
 			retries will be different anyway, so no need to do anything special]
 */
 
-void GMac::initialize() {
+void CrankshaftBase::initialize() {
 	EyesMacLayer::initialize();
-	printfNoInfo(PRINT_INIT, "\t\tGMAC initializing...");
+	printfNoInfo(PRINT_INIT, "\t\tCRANKSHAFT initializing...");
 	
 	tx_msg = NULL;
 	current_slot = -1;
@@ -77,18 +77,18 @@ void GMac::initialize() {
 	setRadioListen();
 }
 
-void GMac::finish() {
+void CrankshaftBase::finish() {
 	EyesMacLayer::finish();
-	printfNoInfo(PRINT_INIT, "\t\tGMAC ending...");
+	printfNoInfo(PRINT_INIT, "\t\tCRANKSHAFT ending...");
 }
 
-GMac::~GMac() {
+CrankshaftBase::~CrankshaftBase() {
 	parametersInitialised = false;
 	if (tx_msg)
 		delete tx_msg;
 }	
 
-void GMac::txPacket(MacPacket * msg){
+void CrankshaftBase::txPacket(MacPacket * msg){
 	assert(msg);
 	if(tx_msg) {
 		printf(PRINT_ROUTING, "MAC busy! dropping at tx_packet");
@@ -108,7 +108,7 @@ void GMac::txPacket(MacPacket * msg){
 	}
 }
 
-void GMac::rxFrame(MacPacket * msg) {
+void CrankshaftBase::rxFrame(MacPacket * msg) {
 	assert(msg);
 	Header *header = newHeader(msg->getData());
 	
@@ -176,13 +176,13 @@ void GMac::rxFrame(MacPacket * msg) {
 	delete header;
 }
 
-void GMac::rxFailed() {
+void CrankshaftBase::rxFailed() {
 	if (send_state == SEND_ACK)
 		return;
 	setRadioSleep();
 }
 
-void GMac::rxStarted() {
+void CrankshaftBase::rxStarted() {
 	if (initialized == INIT_NONE || send_state == SEND_ACK)
 		return;
 	cancelTimeout(MSG_TIMEOUT);
@@ -207,12 +207,12 @@ void GMac::rxStarted() {
 		send_state = SEND_NONE;
 }
 
-void GMac::rxHeader(MacPacket * msg) {
+void CrankshaftBase::rxHeader(MacPacket * msg) {
 	if (quickAbort && msg->local_to != macid() && msg->local_to != BROADCAST)
 		setRadioSleep();
 }
 
-void GMac::transmitDone() {
+void CrankshaftBase::transmitDone() {
 	switch (send_state) {
 		case SEND_NOTIFY:
 			assert(initialized == INIT_DO_NOTIFIY);
@@ -240,9 +240,9 @@ void GMac::transmitDone() {
 	setRadioSleep();
 }
 
-void GMac::wrapSlotCounter() {}
+void CrankshaftBase::wrapSlotCounter() {}
 
-void GMac::timeout(int which) {
+void CrankshaftBase::timeout(int which) {
 	
 	switch(which) {
 		case SLOT_TIMER:
@@ -430,11 +430,11 @@ void GMac::timeout(int which) {
 	}
 }
 
-int GMac::headerLength() {
+int CrankshaftBase::headerLength() {
 	return min_header_length;
 }
 
-void GMac::contend(void) {
+void CrankshaftBase::contend(void) {
 	int slots;
 
 
@@ -453,7 +453,7 @@ void GMac::contend(void) {
 	setTimeout(slots, CONTENTION_TIMER);
 }
 
-int GMac::firstToWake(std::vector<int> *nodes) {
+int CrankshaftBase::firstToWake(std::vector<int> *nodes) {
 	int i, currentLowest = INT_MAX, node = -1;
 
 	for (i = nodes->size() - 1; i >= 0; i--) {

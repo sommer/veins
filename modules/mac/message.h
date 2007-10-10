@@ -2,27 +2,14 @@
 #define __PACKETMESSAGE_H__
 
 #include <omnetpp.h>
-//#include "mixim.h"
+#include "NicControlType.h"
 
 /** Enum to hold all the known message types. */
 enum {
 	TX = 1,
 	RX,
-	PREFER_TX,
-	NEIGHBOUR_START,
-	NEIGHBOUR_STOP,
-	NEIGHBOUR_TX,
-	SET_RSSI,
-	BECOME_ACTIVE,
-	BECOME_IDLE,
-	GENERATE,
-	TX_EXTRA,
-	IDLE_PATTERNS,
-	ACTIVE_PATTERNS,
 	
-	SEND_LATENCY,
-	
-	/* G-MAC <-> routing interface. Message types for lost contention, for
+	/* Crankshaft <-> routing interface. Message types for lost contention, for
 	   no ACK received and for retries that were skipped. */
 	TX_CONTEND_LOSE,
 	TX_NO_ACK,
@@ -150,7 +137,7 @@ class RssiMessage : public cMessage {
 		    @param name Name used when printing information about the @b MacPacket.
 		    @param r RSSI value.
 		*/
-		RssiMessage(const char *name = 0, double r = 0.0) : cMessage(name, SET_RSSI) { rssi = r; }
+		RssiMessage(const char *name = 0, double r = 0.0) : cMessage(name, NicControlType::SET_RSSI) { rssi = r; }
 		/** Duplicate this @b RssiMessage.
 			@return A pointer to a copy of this @b RssiMessage.
 

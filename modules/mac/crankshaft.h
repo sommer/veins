@@ -1,22 +1,19 @@
-#ifndef __GMACF4_H__
-#define __GMACF4_H__
+#ifndef __CRANKSHAFTF2_H__
+#define __CRANKSHAFTF2_H__
 
-#include "gmac.h"
+#include "crankshaft-base.h"
 
-class GMacF4 : public GMac {
+class Crankshaft : public CrankshaftBase {
 
 	// contructor, destructor, module stuff
-	Module_Class_Members(GMacF4, GMac, 0);
+	Module_Class_Members(Crankshaft, CrankshaftBase, 0);
 
 private:
 	static bool parametersInitialised;
 
 protected:
-	static int slots, frames, frameShift, bcast_slots;
+	static int slots, bcast_slots;
 	static bool slotted_bcast;
-
-	int current_frame;
-	unsigned int myHash;
 
 	virtual void initialize();
 	virtual void finish();
@@ -40,7 +37,7 @@ protected:
 
 	virtual Header *newHeader(MsgType type) { return new HeaderF(type); }
 	virtual Header *newHeader(void *data) { return new HeaderF(data); }
-	virtual ~GMacF4();
+	virtual ~Crankshaft();
 };
 
 
