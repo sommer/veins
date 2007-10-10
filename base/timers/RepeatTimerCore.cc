@@ -28,8 +28,6 @@ void RepeatTimerCore::handleMessage(cMessage* msg)
 void RepeatTimerCore::init(RepeatTimer *owner)
 {
 	timer = owner;
-// 	timers = new std::map<unsigned int,cMessage *>();
-// 	destructors = new std::map<unsigned int,cleanup *>();
 	timer_map = new std::map<unsigned int,TInfo>();
 }
 
@@ -97,35 +95,21 @@ RepeatTimerCore::~RepeatTimerCore()
 		}
 		delete p->second.timer;
 	}
-// 	delete timers;
-// 	delete destructors;
 	delete timer_map;
 }
 
-/** Set a "context pointer" refering to some piece of opaque useful data
- * @param index RepeatTimer number
- * @param data Opaque pointer. Never free'd or dereferenced
- */
 void RepeatTimerCore::setContextPointer(unsigned int index,void * data)
 {
 	checkExists(index);
 	(*timer_map)[index].timer->setContextPointer(data);
 }
 
-/** Retreive a "context pointer" refering to some piece of opaque useful data
- * @param index RepeatTimer number
- * @return Opaque pointer from @setContextPointer
- */
 void * RepeatTimerCore::contextPointer(unsigned int index)
 {
 	checkExists(index);
 	return (*timer_map)[index].timer->contextPointer();
 }
 
-/* Mark the first @count pointer ids (from 0 to @count-1) as allocated, so they don't get
- * auto-allocated by setRepeatTimer
- * @param count Number of timers to allocate
- */
 void RepeatTimerCore::allocateRepeatTimers(unsigned int count)
 {
 	Enter_Method_Silent();
@@ -139,10 +123,6 @@ void RepeatTimerCore::allocateRepeatTimers(unsigned int count)
 	}
 }
 
-/* Delete a timer. Useful for auto-allocated timers that you don't need any more to 
- * reduce memory usage. Does nothing if the timer doesn't exist
- * @param index RepeatTimer to wipe
- */
 void RepeatTimerCore::deleteRepeatTimer(unsigned int index)
 {
 	checkExists(index);
@@ -156,15 +136,13 @@ void RepeatTimerCore::deleteRepeatTimer(unsigned int index)
 void RepeatTimerCore::resetRepeatTimer(unsigned int index)
 {
 	Enter_Method_Silent();
-	if (timerExists(index)) {
-		(*timer_map)[index].count = (*timer_map)[index].repeats;
-
-		cMessage *timer = (*timer_map)[index].timer;
-		if (timer->isScheduled())
-			cancelEvent(timer);
-		double when = (*timer_map)[index].when;
-		scheduleAt(simTime() + when, timer);
-	}
+	checkExists(index);
+	(*timer_map)[index].count = (*timer_map)[index].repeats;
+	cMessage *timer = (*timer_map)[index].timer;
+	if (timer->isScheduled())
+		cancelEvent(timer);
+	double when = (*timer_map)[index].when;
+	scheduleAt(simTime() + when, timer);
 }
 
 void RepeatTimerCore::resetAllRepeatTimers(void)
