@@ -190,19 +190,18 @@ protected:
 	ushort extra_sched[5];
 	int extra_sched_count;
 	int resync_counter;
-	int next_is_own;
-	int in_my_frame;
+	bool next_is_own;
+	bool in_my_frame;
 
 	ProtoState proto_state;
 	ProtoState proto_next_state;
 
 	NavState nav_state;
 	ushort nav_end_time;
-	int silent_for;
 
 	ActiveState active_state;
 
-	int must_send_sync;
+	bool must_send_sync;
 	MacPacket * tx_msg;
 
 	int rts_contend_time;
@@ -252,7 +251,7 @@ protected:
 	void updateNav(ushort nav);
 	void setMySchedule(ushort t);
 	void adoptSchedule(ushort s);
-	int isSameSchedule(ushort s1, ushort s2);
+	bool isSameSchedule(ushort s1, ushort s2);
 	void txDone(bool success);
 
 	void forceRequest();
@@ -263,7 +262,6 @@ protected:
 //	virtual void decBackoff();
 	virtual int mustUseCA(MacPacket * pkt);
 
-	//virtual void init();
 	virtual void timeout(int which);
 	virtual void rxFrame(MacPacket * msg);
 	virtual void transmitDone();

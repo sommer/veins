@@ -35,7 +35,7 @@ void CrankshaftF1::txPacket(MacPacket * msg) {
 	CrankshaftBase::txPacket(msg);
 	
 	if ((msg->local_to % slots) == (macid() % slots)) {
-		printf(PRINT_ROUTING, "Can't send message, dropping");
+		printf("Can't send message, dropping");
 		txPacketFail(msg);
 		++stat_tx_drop;
 		tx_msg = NULL;
@@ -52,7 +52,7 @@ void CrankshaftF1::wrapSlotCounter() {
 CrankshaftBase::SlotState CrankshaftF1::getCurrentSlotState() {
 	if (current_slot == (macid() % slots)) {
 		/* Listening in this slot. */
-		printf(PRINT_MAC, "listening");
+		printf("listening");
 		return SSTATE_RECEIVE;
 	} 
 

@@ -11,7 +11,7 @@ int TMac::flags, TMac::max_packet_retries;
 void TMac::initialize() {
 	// run baseclass initialize first:
 	EyesMacLayer::initialize();
-	printfNoInfo(PRINT_INIT, "\t\tTMAC initializing...");
+	printfNoInfo("\t\tTMAC initializing...");
 
 	// get params
 	if (!parametersInitialised) {
@@ -37,7 +37,6 @@ void TMac::initialize() {
 	tx_msg = NULL;
 	nav_state = NAV_STATE_CLEAR;
 	nav_end_time = 0;
-	silent_for = -1;
 	rts_contend_time = RTS_CONTEND_TIME;
 	active_state = ACTIVE_STATE_SLEEP;
 	resync_counter = 0;
@@ -58,7 +57,7 @@ void TMac::initialize() {
 
 void TMac::finish() {
 	EyesMacLayer::finish();
-	printfNoInfo(PRINT_INIT, "\t\tTMac ending...");
+	printfNoInfo("\t\tTMac ending...");
 }
 
 TMac::~TMac() {
@@ -68,13 +67,13 @@ TMac::~TMac() {
 }
 
 void TMac::txPacket(MacPacket *msg) {
-	printf(PRINT_MAC, "tmac: txpacket");
+	printf("tmac: txpacket");
 	assert(msg);
 	assert(msg->local_to != macid());
-	//~ printf(PRINT_MAC, "tmac: txpacket: got msg");
-	//~ printf(PRINT_MAC, "tmac: txpacket: local_to != node id");
+	//~ printf("tmac: txpacket: got msg");
+	//~ printf("tmac: txpacket: local_to != node id");
 	if(tx_msg) {
-		printf(PRINT_MAC, "got message while busy");
+		printf("got message while busy");
 		stat_tx_drop++;
 		delete msg;
 		return;
@@ -93,7 +92,7 @@ void TMac::setMySchedule(ushort time) {
 	must_send_sync = 1;
 	next_is_own = 1;
 	sched_state = SCHED_STATE_ACTIVE;
-	printf(PRINT_MAC, "schedule: %d", time_last_sched % frame_time);
+	printf("schedule: %d", time_last_sched % frame_time);
 	if(time > 0) {
 		setSchedTimeout(time);
 		resync_counter = uniform(0.0, 1.0) < .25 ? (int)intuniform(1, 2, RNG_MAC) : (int)intuniform(RESYNC_LOW, RESYNC_HIGH, RNG_MAC);
@@ -112,7 +111,7 @@ void TMac::setWait(int time) {
 	if(time == 0)
 		setIdle();
 	else {
-		printf(PRINT_MAC, "waiting");
+		printf("waiting");
 		proto_state = PROTO_STATE_WAIT;
 		setRadioListen();
 		setProtocolTimeout(time);
@@ -134,7 +133,7 @@ void TMac::evalState() {
 				&& sched_state == SCHED_STATE_ACTIVE) {
 			// listening / active state
 			if(must_send_sync) {
-				printf(PRINT_MAC, "preparing to send SYNC");
+				printf("preparing to send SYNC");
 				proto_next_state = PROTO_STATE_SEND_SYNC;
 				startContending(SYNC_CONTEND_TIME);
 				return;
@@ -142,15 +141,15 @@ void TMac::evalState() {
 			if(tx_msg && in_my_frame) { 
 				if(mustUseCA(tx_msg)) {
 					if (allowRetries) {
-						printf(PRINT_MAC, "preparing to send RTS");
+						printf("preparing to send RTS");
 						// start contending
 						proto_next_state = PROTO_STATE_SEND_RTS;
 						startContending(rts_contend_time);
 					} else {
-						printf(PRINT_MAC, "defering retry");
+						printf("defering retry");
 					}
 				} else {
-					printf(PRINT_MAC, "preparing to send data");
+					printf("preparing to send data");
 					proto_next_state = PROTO_STATE_SEND_DATA;
 					startContending(rts_contend_time);
 				}
@@ -158,21 +157,21 @@ void TMac::evalState() {
 			}
 			// nothing to do, listen
 			if(in_my_frame) 
-				printf(PRINT_MAC, "idle listening (my frame)");
+				printf("idle listening (my frame)");
 			else
-				printf(PRINT_MAC, "idle listening (foreign frame)");
+				printf("idle listening (foreign frame)");
 
 			setRadioListen();
 		} else if(sched_state == SCHED_STATE_STARTUP) {
 			// keep listening
-			printf(PRINT_MAC, "idle listening (startup)");
+			printf("idle listening (startup)");
 			setRadioListen();
 		} else if(nav_state == NAV_STATE_BUSY) {
 			if(flags & FLAG_USE_OVERHEARING_AVOIDANCE) {
-				printf(PRINT_MAC, "sleeping (avoid overhearing)");
+				printf("sleeping (avoid overhearing)");
 				setRadioSleep();
 			} else {
-				printf(PRINT_MAC, "idle listening (send prohibited)");
+				printf("idle listening (send prohibited)");
 				setRadioListen();
 			}
 		} else {
@@ -180,7 +179,7 @@ void TMac::evalState() {
 			assert(sched_state == SCHED_STATE_ACTIVE);
 			assert(nav_state == NAV_STATE_CLEAR);
 			// sleep state
-			printf(PRINT_MAC, "idle sleeping");
+			printf("idle sleeping");
 			in_my_frame = 0;
 			setRadioSleep();
 		}
@@ -197,13 +196,13 @@ void TMac::startContending(int time) {
 	assert(proto_next_state >= 0); // must have something todo
 	assert(time >= MIN_CONTEND_TIME); // otherwise problems with tx -> rx switching
 	if(nav_state == NAV_STATE_BUSY) {
-		printf(PRINT_MAC, "contend: skipping because nav is busy");
+		printf("contend: skipping because nav is busy");
 		proto_next_state = PROTO_STATE_INVALID;
 		gotoBackoff();
 	} else {
 		proto_state = PROTO_STATE_CONTEND;
 		int ctime = (int)intuniform(5, time, RNG_MAC);
-		printf(PRINT_MAC, "starting contention, will fire in %d", ctime);
+		printf("starting contention, will fire in %d", ctime);
 		setRadioListen(); 
 		setProtocolTimeout(ctime);
 	}
@@ -218,7 +217,7 @@ void TMac::rxFrame(MacPacket * msg){
 			(PKT_KIND(msg) != KIND_CTS 
 			 || msg->local_to != macid()))
 	{
-		printf(PRINT_MAC, "received packet, but not cts we want");
+		printf("received packet, but not cts we want");
 		cancelTimeout(TIMER_PROTOCOL);
 		proto_state = PROTO_STATE_IDLE;
 		packet_retries--;
@@ -229,7 +228,7 @@ void TMac::rxFrame(MacPacket * msg){
 			(PKT_KIND(msg) != KIND_ACK
 			 || msg->local_to != macid()))
 	{
-		printf(PRINT_MAC, "received packet, but not ack we want");
+		printf("received packet, but not ack we want");
 		cancelTimeout(TIMER_PROTOCOL);
 		proto_state = PROTO_STATE_IDLE;
 		packet_retries--;
@@ -238,7 +237,7 @@ void TMac::rxFrame(MacPacket * msg){
 	}
 			
 	assert (active_state != ACTIVE_STATE_SLEEP);
-	printf(PRINT_MAC, "got incoming...");
+	printf("got incoming...");
 	switch(PKT_KIND(msg)) {
 		case KIND_SYNC:
 			receiveSync(msg);
@@ -250,7 +249,7 @@ void TMac::rxFrame(MacPacket * msg){
 			receiveCts(msg);
 			break;
 		case KIND_DATA:
-			printf(PRINT_MAC, "got incoming data");
+			printf("got incoming data");
 			receiveData(msg);
 			break;
 		case KIND_ACK:
@@ -270,18 +269,18 @@ void TMac::rxFrame(MacPacket * msg){
 }
 
 void TMac::transmitDone(){
-	printf(PRINT_MAC, "transmitDone");
+	printf("transmitDone");
 	switch(proto_state) {
 		case PROTO_STATE_SEND_RTS:
 			proto_state = PROTO_STATE_WFCTS;
 			setProtocolTimeout(TIMEOUT_WFCTS);
 			setRadioListen();
 			if(getRssi()>0.5) {
-				printf(PRINT_MAC, "sensed comms after rts");
+				printf("sensed comms after rts");
 				kickFrameActive();
 			}
 			else if(rts_retries-- > 0) {
-				printf(PRINT_MAC, "rts retry (%d left)", rts_retries);
+				printf("rts retry (%d left)", rts_retries);
 				kickFrameActive2();
 			}
 			break;
@@ -347,7 +346,7 @@ void TMac::rxStarted() {
 	kickFrameActive();
 	// if we were contending, cancel it
 	if(proto_state == PROTO_STATE_CONTEND) {
-		printf(PRINT_MAC, "reception started, cancelling contention");
+		printf("reception started, cancelling contention");
 		cancelTimeout(TIMER_PROTOCOL);
 		proto_state = PROTO_STATE_IDLE;
 		if(proto_next_state == PROTO_STATE_SEND_RTS) {
@@ -358,7 +357,7 @@ void TMac::rxStarted() {
 		}
 		proto_next_state = PROTO_STATE_INVALID; // none
 	} else if(proto_state == PROTO_STATE_WFDATA) {
-		printf(PRINT_MAC, "received start of packet, cancelling wait-for-data");
+		printf("received start of packet, cancelling wait-for-data");
 		cancelTimeout(TIMER_PROTOCOL);
 		proto_state = PROTO_STATE_IDLE;
 	} else if(proto_state == PROTO_STATE_WAIT) {
@@ -377,7 +376,7 @@ void TMac::protocolTimeout() {
 			// make sure we sample the ether GPH
 			setRadioListen();
 			if(getRssi()>0.5) { // someone in the air, restart 
-				printf(PRINT_MAC, "sensed communication, cancelling");
+				printf("sensed communication, cancelling");
 				gotoBackoff();
 				return;
 			}
@@ -410,7 +409,7 @@ void TMac::protocolTimeout() {
 			}
 			break;
 		case PROTO_STATE_WFCTS:
-			printf(PRINT_MAC, "wait-for-cts timeout (%d)", tx_msg->local_to);
+			printf("wait-for-cts timeout (%d)", tx_msg->local_to);
 			packet_retries--;
 			if (packet_retries == 0) {
 				txDone(false);
@@ -421,11 +420,11 @@ void TMac::protocolTimeout() {
 			}
 			break;
 		case PROTO_STATE_WFDATA:
-			printf(PRINT_MAC, "wait-for-data timeout");
+			printf("wait-for-data timeout");
 			setIdle(); // not our data, so no backoff
 			break;
 		case PROTO_STATE_WFACK:
-			printf(PRINT_MAC, "wait-for-ack timeout (%d)", tx_msg->local_to);
+			printf("wait-for-ack timeout (%d)", tx_msg->local_to);
 			packet_retries--;
 			if (packet_retries == 0) {
 				txDone(false);
@@ -446,7 +445,7 @@ void TMac::protocolTimeout() {
 void TMac::sendSync() {
 	Header header;
 	
-	printf(PRINT_MAC, "sending sync");
+	printf("sending sync");
 	must_send_sync = 0;
 	proto_state = PROTO_STATE_SEND_SYNC;
 	MacPacket *msg = new MacPacket(this,"sync");
@@ -479,7 +478,7 @@ void TMac::sendRts() {
 	rts_sendfailed = 0;
 	assert(tx_msg);
 	assert(tx_msg->local_to != macid());
-	printf(PRINT_MAC, "sending rts -> %d", tx_msg->local_to);
+	printf("sending rts -> %d", tx_msg->local_to);
 	proto_state = PROTO_STATE_SEND_RTS;
 	MacPacket * msg = new MacPacket(this,"rts");
 	msg->local_from = macid();
@@ -497,7 +496,7 @@ void TMac::sendFRts() {
 	Header header;
 
 	assert(tx_msg);
-	printf(PRINT_MAC, "sending frts -> %d", tx_msg->local_to);
+	printf("sending frts -> %d", tx_msg->local_to);
 	proto_state = PROTO_STATE_SEND_FRTS;
 	MacPacket * msg = new MacPacket(this,"frts");
 	msg->local_from = macid();
@@ -515,7 +514,7 @@ void TMac::sendFRts() {
 void TMac::sendCts() {
 	Header header;
 
-	printf(PRINT_MAC, "sending cts");
+	printf("sending cts");
 	proto_state = PROTO_STATE_SEND_CTS;
 	MacPacket * msg = new MacPacket(this,"cts");
 	msg->local_from = macid();
@@ -534,7 +533,7 @@ void TMac::sendCts() {
 void TMac::sendDs() {
 	Header header;
 
-	printf(PRINT_MAC, "sending ds");
+	printf("sending ds");
 	proto_state = PROTO_STATE_SEND_DS;
 	MacPacket * msg = new MacPacket(this,"ds");
 	msg->local_from = macid();
@@ -551,7 +550,7 @@ void TMac::sendDs() {
 void TMac::sendData() {
 	Header header;
 
-	printf(PRINT_MAC, "sending data");
+	printf("sending data");
 	proto_state = PROTO_STATE_SEND_DATA;
 	assert(tx_msg);
 	assert(tx_msg->local_to != macid());
@@ -571,7 +570,7 @@ void TMac::sendData() {
 void TMac::sendAck() {
 	Header header;
 
-	printf(PRINT_MAC, "sending ack");
+	printf("sending ack");
 	proto_state = PROTO_STATE_SEND_ACK;
 	MacPacket * msg = new MacPacket(this,"ack");
 	msg->local_from = macid();
@@ -593,7 +592,7 @@ void TMac::receiveSync(MacPacket * msg) {
 	// first sched?
 	if(sched_state == SCHED_STATE_STARTUP) {
 		cancelTimeout(TIMER_SCHED);
-		printf(PRINT_MAC, "received SYNC, following");
+		printf("received SYNC, following");
 		setMySchedule(stime);
 		sched_state = SCHED_STATE_ACTIVE;
 		return;
@@ -606,14 +605,14 @@ void TMac::receiveSync(MacPacket * msg) {
 		ft -= frame_time;
 	assert(ft <= frame_time);
 	if(isSameSchedule(0, ft)) {
-		printf(PRINT_MAC, "received SYNC, my schedule");
+		printf("received SYNC, my schedule");
 		return;
 	}
 	// known sched?
 	int i;
 	for(i=0; i<extra_sched_count; i++) {
 		if(isSameSchedule(extra_sched[i], ft)) {
-			printf(PRINT_MAC, "received SYNC (known schedule)");
+			printf("received SYNC (known schedule)");
 			return;
 		}
 	}
@@ -625,14 +624,14 @@ void TMac::receiveSync(MacPacket * msg) {
 void TMac::adoptSchedule(unsigned short ft) {
 	assert(ft <= frame_time - ALLOWED_DRIFT);
 	assert(ft >= ALLOWED_DRIFT);
-	printf(PRINT_MAC, "adopting extra schedule %u", ft);
+	printf("adopting extra schedule %u", ft);
 	if(extra_sched_count == 5) // full
 		return;
 	extra_sched[extra_sched_count++] = ft;
 	must_send_sync = 1;
 }
 
-int TMac::isSameSchedule(unsigned short s1, unsigned short s2) {
+bool TMac::isSameSchedule(unsigned short s1, unsigned short s2) {
 	return abs((int)s1 - (int)s2) < ALLOWED_DRIFT
 		|| (s1 > s2 && abs((int)s1 - (int)s2 - (int)frame_time) < ALLOWED_DRIFT)
 		|| (s2 > s1 && abs((int)s1 - (int)s2 + (int)frame_time) < ALLOWED_DRIFT)
@@ -643,7 +642,7 @@ void TMac::receiveRts(MacPacket * msg) {
 	assert(msg->local_to != BROADCAST);
 	if(msg->local_to == macid()) { 
 		reg_rx_overhead(msg);
-		if(txPreferred()
+		/*if(txPreferred()
 			&& (flags & FLAG_USE_IGNORE_RTS)
 			&& tx_msg 
 			&& in_my_frame
@@ -652,11 +651,11 @@ void TMac::receiveRts(MacPacket * msg) {
 			&& uniform(0.0, 1.0, RNG_MAC)<.75) 
 		{
 			assert(tx_msg);
-			printf(PRINT_MAC, "received RTS, ignoring (prefer tx)");
+			printf("received RTS, ignoring (prefer tx)");
 			proto_next_state = PROTO_STATE_SEND_RTS;
 			startContending(5);
-		} else {
-			printf(PRINT_MAC, "received RTS, preparing for cts");
+		} else*/ {
+			printf("received RTS, preparing for cts");
 			cts_to = msg->local_from;
 			cts_nav_end = getCurrentTime() + (ushort)PKT_NAV(msg);
 			cts_nav_rcv = PKT_NAV(msg);
@@ -665,7 +664,7 @@ void TMac::receiveRts(MacPacket * msg) {
 			startContending(CTS_CONTEND_TIME);
 		}
 	} else {
-		printf(PRINT_MAC, "received RTS for %d (not for me)", msg->local_to);
+		printf("received RTS for %d (not for me)", msg->local_to);
 		reg_rx_overhear(msg);
 		if (flags & FLAG_USE_FRTS)
 			updateNav(NAV_CTS);
@@ -678,7 +677,7 @@ void TMac::receiveRts(MacPacket * msg) {
 void TMac::receiveFRts(MacPacket * msg) {
 	if(msg->local_to == macid()) {
 		reg_rx_overhead(msg);
-		printf(PRINT_MAC, "received FRTS from %d", msg->local_from);
+		printf("received FRTS from %d", msg->local_from);
 		ushort timer_val = time_next_sched == 0 ? 65535 : time_next_sched - getCurrentTime();
 		if(PKT_NAV(msg) < timer_val) {
 			// wake up earlier
@@ -687,7 +686,7 @@ void TMac::receiveFRts(MacPacket * msg) {
 			next_is_own = 0;
 		}
 	} else {
-		printf(PRINT_MAC, "overheard FRTS for %d", msg->local_to);
+		printf("overheard FRTS for %d", msg->local_to);
 		reg_rx_overhear(msg);
 	}
 	delete msg;
@@ -700,10 +699,10 @@ void TMac::receiveCts(MacPacket * msg) {
 		if(proto_state != PROTO_STATE_WFCTS
 				|| msg->local_from != tx_msg->local_to) 
 		{
-			printf(PRINT_MAC, "ignoring unsoll. cts");
+			printf("ignoring unsoll. cts");
 		} else {
 			cancelTimeout(TIMER_PROTOCOL);
-			printf(PRINT_MAC, "received CTS, preparing to send data");
+			printf("received CTS, preparing to send data");
 			if(flags & FLAG_USE_FRTS) 
 				proto_next_state = PROTO_STATE_SEND_DS;
 			else
@@ -711,7 +710,7 @@ void TMac::receiveCts(MacPacket * msg) {
 			startContending(DATA_CONTEND_TIME);
 		}
 	} else {
-		printf(PRINT_MAC, "received CTS for %d (not for me)", msg->local_to);
+		printf("received CTS for %d (not for me)", msg->local_to);
 		reg_rx_overhear(msg);
 		if(tx_msg 
 				&& in_my_frame
@@ -720,7 +719,7 @@ void TMac::receiveCts(MacPacket * msg) {
 				&& tx_msg->local_to != msg->local_to
 				&& tx_msg->local_to != msg->local_from) { 
 			// let, during DS frame, other node hear I'm there
-			printf(PRINT_MAC, "preparing to send frts");
+			printf("preparing to send frts");
 			proto_next_state = PROTO_STATE_SEND_FRTS;
 			startContending(DATA_CONTEND_TIME);
 		}
@@ -732,12 +731,12 @@ void TMac::receiveCts(MacPacket * msg) {
 
 void TMac::receiveDs(MacPacket * msg) {
 	if(msg->local_to == macid()) {
-		printf(PRINT_MAC, "received DS");
+		printf("received DS");
 		reg_rx_overhead(msg);
 		proto_state = PROTO_STATE_WFDATA;
 		setProtocolTimeout(TIMEOUT_WFDATA);
 	} else {
-		printf(PRINT_MAC, "overheard DS");
+		printf("overheard DS");
 		reg_rx_overhear(msg);
 		updateNav(PKT_NAV(msg));
 	}
@@ -751,15 +750,15 @@ void TMac::receiveAck(MacPacket * msg) {
 		if(proto_state != PROTO_STATE_WFACK
 				|| msg->local_from != tx_msg->local_to) 
 		{
-			printf(PRINT_MAC, "ignoring unsoll. ack");
+			printf("ignoring unsoll. ack");
 		} else {
 			cancelTimeout(TIMER_PROTOCOL);
-			printf(PRINT_MAC, "received ack");
+			printf("received ack");
 			txDone(true);
 			setWait(WAIT_TX_DONE);
 		}
 	} else {
-		printf(PRINT_MAC, "received ack for %d (not me)", msg->local_to);
+		printf("received ack for %d (not me)", msg->local_to);
 		reg_rx_overhear(msg);
 	}
 	delete msg;
@@ -767,7 +766,7 @@ void TMac::receiveAck(MacPacket * msg) {
 
 void TMac::receiveData(MacPacket * msg) {
 	if(msg->local_to == macid()) {
-		printf(PRINT_MAC, "received unicast packet, preparing to send ack");
+		printf("received unicast packet, preparing to send ack");
 		ack_to = msg->local_from;
 
 		reg_rx_data(msg);
@@ -778,12 +777,12 @@ void TMac::receiveData(MacPacket * msg) {
 		proto_next_state = PROTO_STATE_SEND_ACK;
 		startContending(ACK_CONTEND_TIME);
 	} else if(msg->local_to == BROADCAST) {
-		printf(PRINT_MAC, "received broadcast packet");
+		printf("received broadcast packet");
 		reg_rx_data(msg);
 		rxPacket(msg);
 		++stat_rx;
 	} else {
-		printf(PRINT_MAC, "overheard data packet");
+		printf("overheard data packet");
 		reg_rx_overhear(msg);
 		// keep silent until ack is sent
 		updateNav(NAV_ACK);
@@ -810,7 +809,7 @@ void TMac::updateNav(ushort t) {
 	ushort now = getCurrentTime();
 	ushort nav_left = nav_end_time - now;
 	if(nav_state ==  NAV_STATE_CLEAR || t > nav_left) {
-		printf(PRINT_MAC, "updating NAV, left = %u", (unsigned)t);
+		printf("updating NAV, left = %u", (unsigned)t);
 		setNavTimeout(t);
 		nav_state = NAV_STATE_BUSY;
 		nav_end_time = t + now;
@@ -818,7 +817,7 @@ void TMac::updateNav(ushort t) {
 }
 
 void TMac::navTimeout(){
-	printf(PRINT_MAC, "NAV timer, medium clear now");
+	printf("NAV timer, medium clear now");
 	nav_state = NAV_STATE_CLEAR;
 	kickFrameActive();
 	evalState();
@@ -827,14 +826,14 @@ void TMac::navTimeout(){
 void TMac::schedTimeout(){
 	switch(sched_state) {
 		case SCHED_STATE_STARTUP:
-			printf(PRINT_MAC, "no schedule heard, adopting my own");
-			printf(PRINT_STATS, "own sched");
+			printf("no schedule heard, adopting my own");
+			printf("own sched");
 			setMySchedule(0);
 			evalState();
 			break;
 		case SCHED_STATE_ACTIVE: {
 			if(next_is_own) {
-				printf(PRINT_MAC, "start of my frame");
+				printf("start of my frame");
 				allowRetries = true;
 				in_my_frame = 1;
 				time_last_sched = getCurrentTime();
@@ -843,7 +842,7 @@ void TMac::schedTimeout(){
 					resync_counter = (int)intuniform(RESYNC_LOW, RESYNC_HIGH, RNG_MAC);
 				}
 			} else {
-				printf(PRINT_MAC, "start of foreign frame");
+				printf("start of foreign frame");
 			}
 			// determine timer to next frame
 			ushort ft_current = getCurrentTime() - time_last_sched;
@@ -877,10 +876,10 @@ void TMac::schedTimeout(){
 void TMac::activeTimeout() {
 	// check rssi before going down
 	if(getRssi() > 0.5) {
-		printf(PRINT_MAC, "sensed communication at active timeout");
+		printf("sensed communication at active timeout");
 		kickFrameActive();
 	} else {
-		printf(PRINT_MAC, "active timeout, so set active_state SLEEP");
+		printf("active timeout, so set active_state SLEEP");
 		active_state = ACTIVE_STATE_SLEEP;
 	}
 	evalState();

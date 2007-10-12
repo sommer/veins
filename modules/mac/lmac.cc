@@ -38,7 +38,7 @@ enum {
 #define MERGE(a,b) do { int _i; for (_i = 0; _i < SLOT_WORDS; _i++) (a)[_i] |= (b)[_i]; } while(0)
 
 void LMac::initialize() {
-	printfNoInfo(PRINT_INIT, "\t\tLMAC initializing...");
+	printfNoInfo("\t\tLMAC initializing...");
 
 	tx_msg = NULL;
 	current_slot = -1;
@@ -79,7 +79,7 @@ void LMac::initialize() {
 
 void LMac::finish() {
 	EyesMacLayer::finish();
-	printfNoInfo(PRINT_INIT, "\t\tLMAC ending...");
+	printfNoInfo("\t\tLMAC ending...");
 	if (tx_msg)
 		delete tx_msg;
 }
@@ -87,7 +87,7 @@ void LMac::finish() {
 void LMac::txPacket(MacPacket * msg){
 	assert(msg);
 	if(tx_msg) {
-		printf(PRINT_ROUTING, "MAC busy! dropping at tx_packet");
+		printf("MAC busy! dropping at tx_packet");
 		++stat_tx_drop;
 		delete msg;
 		return;
@@ -98,17 +98,17 @@ void LMac::txPacket(MacPacket * msg){
 void LMac::rxFrame(MacPacket * msg) {
 	assert(msg);
 	if(msg->local_to == macid()) {
-		printf(PRINT_MAC, "unicast frame received");	
+		printf("unicast frame received");	
 		reg_rx_data(msg);
 		rxPacket(msg);
 		++stat_rx;
 	} else if(msg->local_to == BROADCAST) {
-		printf(PRINT_MAC, "local broadcast received");
+		printf("local broadcast received");
 		reg_rx_data(msg);
 		rxPacket(msg);
 		++stat_rx;
 	} else {
-		printf(PRINT_MAC, "overheard frame, not for me, but for %d",msg->local_to);
+		printf("overheard frame, not for me, but for %d",msg->local_to);
 		reg_rx_overhear(msg);
 		delete msg;
 	}
@@ -120,7 +120,7 @@ void LMac::rxHeader(MacPacket * msg) {
 	assert(msg);
 	Header *header;
 	
-	//~ printf(PRINT_MAC, "received header from %d", msg->local_from);
+	//~ printf("received header from %d", msg->local_from);
 	header = (Header *) msg->getData();
 	if (!initialized) {
 		current_slot = header->current_slot;
@@ -133,7 +133,7 @@ void LMac::rxHeader(MacPacket * msg) {
 		my_slot = -1;
 		memset(collision_slots, 0, sizeof(collision_slots));
 		backoff = (int) intuniform(macid() % max_slot, max_slot * 2, RNG_MAC);
-		printf(PRINT_MAC, "collision in my slot! [backing off for %d]", backoff);
+		printf("collision in my slot! [backing off for %d]", backoff);
 	} else if (header->collision_slot >= 0) {
 		UNSET(collision_slots, header->collision_slot);
 		neighbour_info[header->collision_slot].id = -1;
@@ -150,7 +150,7 @@ void LMac::rxHeader(MacPacket * msg) {
 		pickSlot();
 	
 	if (msg->local_to != macid() && msg->local_to != BROADCAST) {
-		//~ printf(PRINT_MAC, "MacPacket not meant for me but for node %d", msg->local_to);
+		//~ printf("MacPacket not meant for me but for node %d", msg->local_to);
 		setRadioSleep();
 		ignore_failed = true;
 	}
@@ -158,7 +158,7 @@ void LMac::rxHeader(MacPacket * msg) {
 
 void LMac::rxFailed() {
 	if (!ignore_failed && initialized) {
-		//~ printf(PRINT_MAC, "Reception failed!!!!!");
+		//~ printf("Reception failed!!!!!");
 		SET(collision_slots, current_slot);
 		neighbour_info[current_slot].id = -1;
 		memset(neighbour_info[current_slot].occupied_slots, 0, sizeof(neighbour_info[current_slot].occupied_slots));
@@ -173,7 +173,7 @@ void LMac::rxStarted() {
 }
 
 void LMac::transmitDone() {
-	//~ printf(PRINT_MAC, "transmit complete");
+	//~ printf("transmit complete");
 	// cleanup
 	if (tx_msg && sendingData) {
 		txPacketDone(tx_msg); // report success
@@ -204,7 +204,7 @@ void LMac::timeout(int which) {
 				if (verify_slot) {
 					verify_slot = false;
 					if (neighbour_info[current_slot].id >= 0) {
-						printf(PRINT_MAC, "other node got there first, choosing new slot");
+						printf("other node got there first, choosing new slot");
 						setTimeout(SHORT_WAIT, SHORT_TIMEOUT);
 						setRadioListen();
 						my_slot = -1;
@@ -213,7 +213,7 @@ void LMac::timeout(int which) {
 					}
 					for (int i = 0; i < max_slot; i++) {
 						if (neighbour_info[i].id >= 0 && ISSET(neighbour_info[i].occupied_slots, current_slot)) {
-							printf(PRINT_MAC, "other node got there first, choosing new slot");
+							printf("other node got there first, choosing new slot");
 							setTimeout(SHORT_WAIT, SHORT_TIMEOUT);
 							setRadioListen();
 							my_slot = -1;
@@ -223,11 +223,11 @@ void LMac::timeout(int which) {
 					}
 				}
 				
-				printf(PRINT_MAC, "=== Slot %d (owner %d) ===", current_slot, macid());
-				//~ printf(PRINT_MAC, "My slot %d", current_slot);
+				printf("=== Slot %d (owner %d) ===", current_slot, macid());
+				//~ printf("My slot %d", current_slot);
 				setTimeout(CLOCK_SKEW_ALLOWANCE, SEND_DELAY);
 			} else {
-				//~ printf(PRINT_MAC, "Not my slot %d", current_slot);
+				//~ printf("Not my slot %d", current_slot);
 				if (initialized)
 					setTimeout(SHORT_WAIT, SHORT_TIMEOUT);
 				setRadioListen();
@@ -237,19 +237,19 @@ void LMac::timeout(int which) {
 			//check for transmission
 			if (getRssi() < 0.5) {
 				//slot is free
-				//~ printf(PRINT_MAC, "channel clear");
+				//~ printf("channel clear");
 				neighbour_info[current_slot].id = -1;
 				memset(neighbour_info[current_slot].occupied_slots, 0, sizeof(neighbour_info[current_slot].occupied_slots));
 				setRadioSleep();
 			} else if (getRssi() < 0.6) {
 				//slot is free, but used far away
-				//~ printf(PRINT_MAC, "channel clear");
+				//~ printf("channel clear");
 				if (use_tentative)
 					SET(tentative_slots, current_slot);
 				setRadioSleep();
 			} else {
 				//someone is sending (but may be collision)
-				//~ printf(PRINT_MAC, "channel busy");
+				//~ printf("channel busy");
 				setTimeout((int)(frameTotalTime(0) * 32768.0), HEADER_TIMEOUT);
 			}
 			return;
@@ -272,7 +272,7 @@ void LMac::timeout(int which) {
 			if (macid() == 0) {
 				int i;
 				for (i = 0; i < SLOT_WORDS; i++)
-					printf(PRINT_MAC, "Collision slots: 0x%016" PRIX64, collision_slots[i]);
+					printf("Collision slots: 0x%016" PRIX64, collision_slots[i]);
 			}
 			for (int i = 0; i < max_slot; i++) {
 				if (ISSET(collision_slots, i)) {
@@ -283,13 +283,13 @@ void LMac::timeout(int which) {
 			}
 
 			//now do real send
-			//~ printf(PRINT_MAC, "Starting transmit");
+			//~ printf("Starting transmit");
 			setRadioTransmit();
 			if (tx_msg) {
 				sendingData = true;
 				reg_tx_data(tx_msg); // statistics
 				current_msg = (MacPacket *)tx_msg->dup();;
-				printf(PRINT_MAC, "Sending message to %d", tx_msg->local_to);
+				printf("Sending message to %d", tx_msg->local_to);
 			} else {
 				char buffer[100];
 				sprintf(buffer, "header only %d", macid());
@@ -305,7 +305,7 @@ void LMac::timeout(int which) {
 			return;
 		}
 		case HEADER_TIMEOUT: {
-			//~ printf(PRINT_MAC, "Should have received header by now");
+			//~ printf("Should have received header by now");
 			ignore_failed = true;
 			SET(collision_slots, current_slot);
 			neighbour_info[current_slot].id = -1;
@@ -334,7 +334,7 @@ void LMac::pickSlot() {
 /*		cancelTimeout(SLOT_TIMER);
 		cancelTimeout(SHORT_TIMEOUT);
 		setRadioSleep();
-		printf(PRINT_MAC, "No slots available, turning off");*/
+		printf("No slots available, turning off");*/
 		return;
 	}
 
@@ -345,11 +345,11 @@ void LMac::pickSlot() {
 		MERGE(occupied_slots, tentative_slots);
 	{ int i;
 		for (i = 0; i < SLOT_WORDS; i++)
-			printf(PRINT_MAC, "Occupied: %" PRIX64, occupied_slots[i]);
+			printf("Occupied: %" PRIX64, occupied_slots[i]);
 	}
 
 /* 	if ((occupied_slots & MASK) == MASK) {
-		printf(PRINT_MAC, "No unoccupied slots in my neighbourhood :-(");
+		printf("No unoccupied slots in my neighbourhood :-(");
 		no_slots++;
 		return;
 	} */
@@ -360,7 +360,7 @@ void LMac::pickSlot() {
 			unoccupied++;
 
 	if (unoccupied == 0) {
-		printf(PRINT_MAC, "No unoccupied slots in my neighbourhood :-(");
+		printf("No unoccupied slots in my neighbourhood :-(");
 		no_slots++;
 		return;
 	}
@@ -372,7 +372,7 @@ void LMac::pickSlot() {
 			if (unoccupied == slot) {
 				my_slot = i;
 				verify_slot = true;
-				printf(PRINT_MAC, "My slot %d", my_slot);
+				printf("My slot %d", my_slot);
 				break;
 			}
 			unoccupied++;

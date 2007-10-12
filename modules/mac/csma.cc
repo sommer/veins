@@ -30,7 +30,7 @@ Define_Module_Like( Csma, EyesMacLayer );
 #define RANDOM_DELAY	(33)
 	
 void Csma::initialize() {
-	printfNoInfo(PRINT_INIT, "\t\tCSMA initializing...");
+	printfNoInfo("\t\tCSMA initializing...");
 	tx_msg = NULL;
 	state = IDLE;
 	
@@ -39,7 +39,7 @@ void Csma::initialize() {
 
 void Csma::finish() {
 	EyesMacLayer::finish();
-	printfNoInfo(PRINT_INIT, "\t\tCSMA ending...");
+	printfNoInfo("\t\tCSMA ending...");
 }
 
 Csma::~Csma()
@@ -51,7 +51,7 @@ Csma::~Csma()
 void Csma::txPacket(MacPacket * msg){
 	assert(msg);
 	if(tx_msg) {
-		printf(PRINT_ROUTING, "MAC busy! dropping at tx_packet");
+		printf("MAC busy! dropping at tx_packet");
 		++stat_tx_drop;
 		delete msg;
 		return;
@@ -66,13 +66,13 @@ void Csma::gotoIdle() {
 	if(tx_msg && !isReceiving())
 		gotoSensing();
 	else {
-		printf(PRINT_MAC, "idle");
+		printf("idle");
 		setRadioListen();
 	}
 }
 
 void Csma::gotoSensing() {
-	printf(PRINT_MAC, "start sensing channel");
+	printf("start sensing channel");
 	state = SENSING;
 	// turn on the receiver, just long enough to 
 	// get a reliable rssi value
@@ -81,7 +81,7 @@ void Csma::gotoSensing() {
 }
 
 void Csma::gotoDelaying() {
-	printf(PRINT_MAC, "delaying");
+	printf("delaying");
 	state = DELAYING;
 	// wait for some time and try again
 	int delay_time = BASIC_DELAY + (int)intuniform(0, RANDOM_DELAY, RNG_MAC);
@@ -98,7 +98,7 @@ void Csma::gotoTransmit() {
 
 	msg->setLocalFrom(macid());
 	// local_to should be set by upper layer
-	printf(PRINT_MAC, "starting frame transmission->%d",msg->local_to);
+	printf("starting frame transmission->%d",msg->local_to);
 	// schedule transmission
 	reg_tx_data(msg); // statistics
 	msg->local_from = macid();
@@ -110,17 +110,17 @@ void Csma::gotoTransmit() {
 void Csma::rxFrame(MacPacket * msg) {
 	assert(msg);
 	if(msg->local_to == macid()) {
-		printf(PRINT_MAC, "unicast frame received");	
+		printf("unicast frame received");	
 		reg_rx_data(msg);
 		rxPacket(msg);
 		++stat_rx;
 	} else if(msg->local_to == BROADCAST) {
-		printf(PRINT_MAC, "local broadcast received");
+		printf("local broadcast received");
 		reg_rx_data(msg);
 		rxPacket(msg);
 		++stat_rx;
 	} else {
-		printf(PRINT_MAC, "overheard frame, not for me");
+		printf("overheard frame, not for me");
 		reg_rx_overhear(msg);
 		delete msg;
 	}
@@ -138,7 +138,7 @@ void Csma::rxEnd() {
 
 void Csma::transmitDone() {
 	assert(state == TRANSMIT);
-	printf(PRINT_MAC, "transmit complete");
+	printf("transmit complete");
 	// cleanup
 	assert(tx_msg);
 	txPacketDone(tx_msg); // report success
@@ -154,15 +154,15 @@ void Csma::timeout() {
 	switch(state) {
 		case SENSING:
 			if(getRssi() < 0.5) {
-				printf(PRINT_MAC, "channel clear");
+				printf("channel clear");
 				gotoTransmit();
 			} else {
-				printf(PRINT_MAC, "channel busy");
+				printf("channel busy");
 				gotoDelaying();
 			}
 			return;
 		case DELAYING:
-			printf(PRINT_MAC, "done delaying");
+			printf("done delaying");
 			if(tx_msg)
 				gotoSensing();
 			else

@@ -119,7 +119,7 @@ CrankshaftBase::SlotState CrankshaftF4::getCurrentSlotState() {
 	
 	if (current_slot == mySlotInFrame) {
 		/* Listening in this slot. */
-		printf(PRINT_MAC, "listening");
+		printf("listening");
 		return SSTATE_RECEIVE;
 	} 
 

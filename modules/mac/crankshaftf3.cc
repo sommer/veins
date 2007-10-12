@@ -42,7 +42,7 @@ void CrankshaftF3::wrapSlotCounter() {
 CrankshaftBase::SlotState CrankshaftF3::getCurrentSlotState() {
 	if (current_slot == (macid() % slots)) {
 		/* Listening in this slot. */
-		printf(PRINT_MAC, "listening");
+		printf("listening");
 		return SSTATE_RECEIVE;
 	} 
 

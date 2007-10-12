@@ -3,8 +3,6 @@ simple EyesMacLayer
         debug: numeric const, // debug switch
         headerLength: numeric const, // length of the MAC packet header (in bits)
 		lpl: bool,
-		//lpl_on: numeric,
-		//lpl_off: numeric,
 		siftNodes: numeric;
     gates:
         in: uppergateIn; // from the network layer

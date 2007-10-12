@@ -44,7 +44,7 @@ void CsmaAck::txPacket(MacPacket * msg) {
 	assert(msg);
 	assert(msg->local_to != macid());
 	if(tx_msg) {
-		printf(PRINT_MAC, "got message while busy");
+		printf("got message while busy");
 		++stat_tx_drop;
 		delete msg;
 		return;
@@ -65,7 +65,7 @@ void CsmaAck::evalState() {
 		if(nav_state == NAV_STATE_CLEAR) {
 			// listening / active state
 			if(tx_msg) {
-				printf(PRINT_MAC, 
+				printf(
 					"preparing to send data -> %d",
 					tx_msg->local_to);
 				proto_next_state = PROTO_STATE_SEND_DATA;
@@ -73,11 +73,11 @@ void CsmaAck::evalState() {
 				return;
 			}
 			// nothing to do, listen
-			printf(PRINT_MAC, "idle listening");
+			printf("idle listening");
 			setRadioListen();
 		} else {
 			// sleep state
-			printf(PRINT_MAC, "idle sleeping");
+			printf("idle sleeping");
 			setRadioSleep();
 		}
 	}
@@ -87,13 +87,13 @@ void CsmaAck::startContending(int time) {
 	assert(proto_next_state >= 0); // must have something todo
 	assert(time >= 5);
 	if(nav_state == NAV_STATE_BUSY) {
-		printf(PRINT_MAC, "contend: skipping because nav is busy");
+		printf("contend: skipping because nav is busy");
 		proto_next_state = PROTO_STATE_NONE;
 		setIdle();
 	} else {
 		proto_state = PROTO_STATE_CONTEND;
 		int ctime = (int)intuniform(5, time);
-		printf(PRINT_MAC, "starting contention, will fire in %d", ctime);
+		printf("starting contention, will fire in %d", ctime);
 		setRadioListen(); 
 		setProtocolTimeout(ctime);
 	}
@@ -106,7 +106,7 @@ void CsmaAck::rxFrame(MacPacket * msg){
 			(header->kind != KIND_ACK 
 			 || msg->local_to != macid()))
 	{
-		printf(PRINT_MAC, "received packet, but not ack we want");
+		printf("received packet, but not ack we want");
 		incBackoff();
 		cancelTimeout(TIMER_PROTOCOL);
 		proto_state = PROTO_STATE_IDLE;
@@ -126,7 +126,7 @@ void CsmaAck::rxFrame(MacPacket * msg){
 }
 
 void CsmaAck::transmitDone(){
-	printf(PRINT_MAC, "transmitDone");
+	printf("transmitDone");
 	switch(proto_state) {
 		case PROTO_STATE_SEND_ACK:
 			setIdle();
@@ -155,7 +155,7 @@ void CsmaAck::rxFailed() {
 void CsmaAck::rxStarted() {
 	// if we were contending, cancel it
 	if(proto_state == PROTO_STATE_CONTEND) {
-		printf(PRINT_MAC, "reception started, cancelling contention");
+		printf("reception started, cancelling contention");
 		cancelTimeout(TIMER_PROTOCOL);
 		proto_state = PROTO_STATE_IDLE;
 		proto_next_state = PROTO_STATE_NONE;
@@ -172,7 +172,7 @@ void CsmaAck::protocolTimeout() {
 			// take a rssi sample, to be sure
 			setRadioListen(); // make sure the sample is taken now (LPL)
 			if(getRssi()>0.5) { // someone in the air, restart 
-				printf(PRINT_MAC, 
+				printf(
 			"sensed communication, cancelling");
 				setIdle();
 				return;
@@ -191,7 +191,7 @@ void CsmaAck::protocolTimeout() {
 			}
 			break;
 		case PROTO_STATE_WFACK:
-			printf(PRINT_MAC, "wait-for-ack timeout <- %d", tx_msg->local_to);
+			printf("wait-for-ack timeout <- %d", tx_msg->local_to);
 			if (packet_retries-- == 0) {
 				++stat_tx_drop;
 				txPacketFail(tx_msg);
@@ -209,7 +209,7 @@ void CsmaAck::protocolTimeout() {
 
 void CsmaAck::sendAck() {
 	Header header;
-	printf(PRINT_MAC, "sending ack -> %d", ack_to);
+	printf("sending ack -> %d", ack_to);
 	proto_state = PROTO_STATE_SEND_ACK;
 	MacPacket * msg = new MacPacket(this,"ACK");
 	msg->local_from = macid();
@@ -225,7 +225,7 @@ void CsmaAck::sendAck() {
 
 void CsmaAck::sendData() {
 	Header header;
-	printf(PRINT_MAC, "sending data -> %d", tx_msg->local_to);
+	printf("sending data -> %d", tx_msg->local_to);
 	proto_state = PROTO_STATE_SEND_DATA;
 	assert(tx_msg);
 	assert(tx_msg->local_to != macid());
@@ -249,11 +249,11 @@ void CsmaAck::receiveAck(MacPacket * msg) {
 		if(proto_state != PROTO_STATE_WFACK
 				|| msg->local_from != tx_msg->local_to)
 		{
-			printf(PRINT_MAC, "ignoring unsoll. ack");
+			printf("ignoring unsoll. ack");
 		} else {
 			cancelTimeout(TIMER_PROTOCOL);
 			decBackoff();
-			printf(PRINT_MAC, "received ack <- %d",
+			printf("received ack <- %d",
 					msg->local_from);
 			// cleanup
 			assert(tx_msg);
@@ -263,7 +263,7 @@ void CsmaAck::receiveAck(MacPacket * msg) {
 			setIdle();
 		}
 	} else {
-		printf(PRINT_MAC, "received ack for %d (not me)",
+		printf("received ack for %d (not me)",
 				msg->local_to);
 		reg_rx_overhear(msg);
 	}
@@ -275,7 +275,7 @@ void CsmaAck::receiveData(MacPacket * msg) {
 		ack_to = msg->local_from;
 
 		// check if we already heard this one
-		printf(PRINT_MAC, "received unicast packet <- %d", msg->local_from);
+		printf("received unicast packet <- %d", msg->local_from);
 		reg_rx_data(msg);
 		rxPacket(msg);
 		++stat_rx;
@@ -284,14 +284,14 @@ void CsmaAck::receiveData(MacPacket * msg) {
 		startContending(ACK_CONTEND_TIME);
 	} else if(msg->local_to == BROADCAST) {
 		proto_state = proto_next_state = PROTO_STATE_IDLE;
-		printf(PRINT_MAC, "received broadcast packet <- %d", 
+		printf("received broadcast packet <- %d", 
 				msg->local_from);
 		reg_rx_data(msg);
 		rxPacket(msg);
 		++stat_rx;
 	} else {
 		proto_state = proto_next_state = PROTO_STATE_IDLE;
-		printf(PRINT_MAC, "overheard data packet");
+		printf("overheard data packet");
 		reg_rx_overhear(msg);
 		// give time to send ack
 		updateNav(NAV_ACK);
@@ -304,7 +304,7 @@ void CsmaAck::updateNav(ushort t) {
 	ushort now = getCurrentTime();
 	ushort nav_left = nav_end_time - now;
 	if(nav_state ==  NAV_STATE_CLEAR || t > nav_left) {
-		printf(PRINT_MAC, "updating NAV, left = %u", (unsigned)t);
+		printf("updating NAV, left = %u", (unsigned)t);
 		setNavTimeout(t);
 		nav_state = NAV_STATE_BUSY;
 		nav_end_time = t + now;
@@ -312,7 +312,7 @@ void CsmaAck::updateNav(ushort t) {
 }
 
 void CsmaAck::navTimeout(){
-	printf(PRINT_MAC, "NAV timer, medium clear now");
+	printf("NAV timer, medium clear now");
 	nav_state = NAV_STATE_CLEAR;
 	evalState();
 }

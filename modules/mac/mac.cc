@@ -20,7 +20,7 @@ void EyesMacLayer::initialize(int stage) {
 	if (stage!=3)
 		return;
 
-	printfNoInfo(PRINT_INIT, "\tMac super layer initializing...");
+	printfNoInfo("\tMac super layer initializing...");
 	//cModule* appContainer = parentModule();
 	node = (BaseModule*)(getNode());
 	radio = FindModule<BasePhyLayer*>::findSubModule(node);
@@ -68,15 +68,14 @@ void EyesMacLayer::initialize(int stage) {
 	recv_state = SENSE;
 	EV << "recv state "<<recv_state <<endl;
 	send_state = 0;
-	tx_preferred = 0;
 	force_sleep = false;
 	initialize();
 }
 
 void EyesMacLayer::finish() {
 	
-	printfNoInfo(PRINT_INIT, "\tMac super layer ending...");
-	printf(PRINT_STATS, "stats: rx=%u tx=%u tx_drop=%u "
+	printfNoInfo("\tMac super layer ending...");
+	printf("stats: rx=%u tx=%u tx_drop=%u "
 			"s_rx_data=%.4lf s_rx_overhead=%.4lf "
 			"s_rx_overhear=%.4lf "
 			"s_tx_data=%.4lf s_tx_overhead=%.4lf",
@@ -86,10 +85,10 @@ void EyesMacLayer::finish() {
 		stat_time_tx_data, stat_time_tx_overhead);
 
 	if (!parametersPrinted) {
-		printf_nr(PRINT_STATS, "mac=%s lpl=%s", className(), lpl ? "true" : "false");
+		printf_nr("mac=%s lpl=%s", className(), lpl ? "true" : "false");
 		for (vector<ParameterPair>::iterator iter = parameterList.begin(); iter != parameterList.end(); iter++)
-			printf_clr(PRINT_STATS, " %s=%s", iter->first, iter->second.c_str());
-		printf_clr(PRINT_STATS, "\n");
+			printf_clr(" %s=%s", iter->first, iter->second.c_str());
+		printf_clr("\n");
 		parametersPrinted = true;
 	}
 
@@ -138,24 +137,17 @@ void EyesMacLayer::startTransmit(MacPacket* msg) {
 }
 
 void EyesMacLayer::txPacketDone(MacPacket *msg) {
-	tx_preferred = 0;
 	msg->setKind(NicControlType::TX_END);
 	sendControlUp(msg);
 }
 
 void EyesMacLayer::txPacketFail(MacPacket *msg) {
-	tx_preferred = 0;
 	msg->setKind(NicControlType::TX_FAIL);
 	sendControlUp(msg);
 }
 
 void EyesMacLayer::reg_tx_data(MacPacket* p) {
 	stat_time_tx_data += frameTotalTime(p->length()+headerLength());
-}
-
-void EyesMacLayer::cancelTimeout(int which) {
-	assert(which >= 0 && which < TIMERS);
-	cancelTimer(which);
 }
 
 void EyesMacLayer::reg_rx_overhead(MacPacket* p) {
@@ -236,7 +228,7 @@ void EyesMacLayer::handleLowerControl(cMessage * msg)
 			delete msg;
 			break;
 		case NicControlType::RX_FAIL:
-			//~ printf(PRINT_MAC, "RX_FAIL");
+			//~ printf("RX_FAIL");
 			rxFail();
 			delete msg;
 			break;
@@ -261,7 +253,7 @@ void EyesMacLayer::handleLowerMsg(cMessage* msg)
 
 	assert(packet);
 	if (packet->serial != -1)
-		printf(PRINT_MAPPER, "MAPPER: RX, %d %f %d %d", macid(), simTime(), packet->serial, packet->local_from);
+		printf("MAPPER: RX, %d %f %d %d", macid(), simTime(), packet->serial, packet->local_from);
 	rx(packet);
 }
 
@@ -287,7 +279,7 @@ void EyesMacLayer::internalTimeout() {
 				setInternalTimeout(off_time);
 			} else {
 				// may have found a preamble
-				printf(PRINT_MAC, "channel busy, starting preamble search");
+				printf("channel busy, starting preamble search");
 				recv_state = PREAMBLE_DETECT;
 				EV << "recv state "<<recv_state <<endl;
 				setInternalTimeout((int) (off_time+on_time+ceil(PREAMBLE_TIME*32768.0)));
@@ -300,7 +292,7 @@ void EyesMacLayer::internalTimeout() {
 			break;
 		case PREAMBLE_DETECT:
 			// didn't find start symbol
-			printf(PRINT_MAC, "didn't find start symbol, going back to sleep");
+			printf("didn't find start symbol, going back to sleep");
 			// make sure we know we are not receiving anymore
 			rxFailed();     
 			setRadioSleepInternal();
@@ -431,10 +423,6 @@ void EyesMacLayer::reg_tx_overhead(MacPacket *p) {
 	stat_time_tx_overhead += frameTotalTime(p->length() + headerLength());
 }
 
-/*void EyesMacLayer::eatCycles(unsigned cycles) {
-	node->eatCycles(cycles);
-}*/
-
 int EyesMacLayer::siftSlot(int low, int high) {
 	int slots = high - low;
 	int i, distribution;
@@ -506,17 +494,6 @@ string EyesMacLayer::getParameter(const char *parameter) {
 	return result;
 }
 
-int EyesMacLayer::prints =
-	  PRINT_CRIT
-	| PRINT_STATS
-	| PRINT_PROP
-	| PRINT_MAC
-	| PRINT_RADIO
-	| PRINT_ROUTING
-	| PRINT_APP
-	| PRINT_INIT
-	;
-
 void EyesMacLayer::internal_printf(const char* fmt, va_list list, bool newline) {
 	char *pbuf = NULL;
 	vasprintf(&pbuf, fmt, list);
@@ -527,61 +504,51 @@ void EyesMacLayer::internal_printf(const char* fmt, va_list list, bool newline) 
 	free(pbuf);
 }
 
-void EyesMacLayer::printf_nr(int which, const char *fmt, ...) {
-	if(which & prints) {
-		va_list va;
-		va_start(va, fmt);
-		internal_printf(fmt, va, false);
-		va_end(va);
-	}
+void EyesMacLayer::printf_nr(const char *fmt, ...) {
+	va_list va;
+	va_start(va, fmt);
+	internal_printf(fmt, va, false);
+	va_end(va);
 }
 
-void EyesMacLayer::printf(int which, const char *fmt, ...) {
-	if(which & prints) {
-		va_list va;
-		va_start(va, fmt);
-		internal_printf(fmt, va, true);
-		va_end(va);
-	}
+void EyesMacLayer::printf(const char *fmt, ...) {
+	va_list va;
+	va_start(va, fmt);
+	internal_printf(fmt, va, true);
+	va_end(va);
 }
 
-void EyesMacLayer::printf_clr(int which, const char *fmt, ...) {
-	if(which & prints) {
-		va_list va;
-		char *pbuf=NULL;
-		va_start(va, fmt);
-		vasprintf(&pbuf, fmt, va);
-		va_end(va);
+void EyesMacLayer::printf_clr(const char *fmt, ...) {
+	va_list va;
+	char *pbuf=NULL;
+	va_start(va, fmt);
+	vasprintf(&pbuf, fmt, va);
+	va_end(va);
 
-		EV_clear << pbuf;
-		free(pbuf);
-	}
+	EV_clear << pbuf;
+	free(pbuf);
 }
 
-void EyesMacLayer::printfNoInfo(int which, const char *fmt, ...) {
-	if(which & prints) {
-		va_list va;
-		char *pbuf;
+void EyesMacLayer::printfNoInfo(const char *fmt, ...) {
+	va_list va;
+	char *pbuf;
 
-		va_start(va, fmt);
-		vasprintf(&pbuf, fmt, va);
-		EV << pbuf << endl;
-		va_end(va);
-		free(pbuf);
-	}
+	va_start(va, fmt);
+	vasprintf(&pbuf, fmt, va);
+	EV << pbuf << endl;
+	va_end(va);
+	free(pbuf);
 }
 
-void EyesMacLayer::printfNoInfo_nr(int which, const char *fmt, ...) {
-	if(which & prints) {
-		va_list va;
-		char *pbuf;
+void EyesMacLayer::printfNoInfo_nr(const char *fmt, ...) {
+	va_list va;
+	char *pbuf;
 
-		va_start(va, fmt);
-		vasprintf(&pbuf, fmt, va);
-		va_end(va);
-		EV << pbuf;
-		free(pbuf);
-	}
+	va_start(va, fmt);
+	vasprintf(&pbuf, fmt, va);
+	va_end(va);
+	EV << pbuf;
+	free(pbuf);
 }
 
 string EyesMacLayer::getStringParameter(const char *parameter, string defaultValue) {

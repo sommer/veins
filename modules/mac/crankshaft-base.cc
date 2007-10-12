@@ -46,7 +46,7 @@ double CrankshaftBase::retryChance;
 
 void CrankshaftBase::initialize() {
 	EyesMacLayer::initialize();
-	printfNoInfo(PRINT_INIT, "\t\tCRANKSHAFT initializing...");
+	printfNoInfo("\t\tCRANKSHAFT initializing...");
 	
 	tx_msg = NULL;
 	current_slot = -1;
@@ -79,7 +79,7 @@ void CrankshaftBase::initialize() {
 
 void CrankshaftBase::finish() {
 	EyesMacLayer::finish();
-	printfNoInfo(PRINT_INIT, "\t\tCRANKSHAFT ending...");
+	printfNoInfo("\t\tCRANKSHAFT ending...");
 }
 
 CrankshaftBase::~CrankshaftBase() {
@@ -91,7 +91,7 @@ CrankshaftBase::~CrankshaftBase() {
 void CrankshaftBase::txPacket(MacPacket * msg){
 	assert(msg);
 	if(tx_msg) {
-		printf(PRINT_ROUTING, "MAC busy! dropping at tx_packet");
+		printf("MAC busy! dropping at tx_packet");
 		++stat_tx_drop;
 		delete msg;
 		return;
@@ -120,12 +120,12 @@ void CrankshaftBase::rxFrame(MacPacket * msg) {
 	switch (header->getType()) {
 		case MSG_NOTIFY:
 			reg_rx_overhead(msg);
-			printf(PRINT_MAC, "notify received");
+			printf("notify received");
 			delete msg;
 			break;
 		case MSG_DATA:
 			if(msg->local_to == macid()) {
-				printf(PRINT_MAC, "unicast frame received");	
+				printf("unicast frame received");	
 				ack_to = msg->local_from;
 
 				reg_rx_data(msg);
@@ -141,14 +141,14 @@ void CrankshaftBase::rxFrame(MacPacket * msg) {
 
 				return;
 			} else {
-				printf(PRINT_MAC, "overheard frame, not for me");
+				printf("overheard frame, not for me");
 				reg_rx_overhear(msg);
 				send_state = SEND_NONE;
 				delete msg;
 			}
 			break;
 		case MSG_BCAST:
-			printf(PRINT_MAC, "local broadcast received");
+			printf("local broadcast received");
 			reg_rx_data(msg);
 			msg->discardData();
 			rxPacket(msg);
@@ -156,14 +156,14 @@ void CrankshaftBase::rxFrame(MacPacket * msg) {
 			break;
 		case MSG_ACK:
 			if (msg->local_to == macid() && send_state == SEND_WFACK && tx_msg->local_to == msg->local_from) {
-				printf(PRINT_MAC, "Received ack from %d", msg->local_from);
+				printf("Received ack from %d", msg->local_from);
 				txPacketDone(tx_msg); // report success
 				tx_msg = NULL;
 
 				++stat_tx;
 				reg_rx_overhead(msg);
 			} else {
-				printf(PRINT_MAC, "Received unexpected ack from %d", msg->local_from);
+				printf("Received unexpected ack from %d", msg->local_from);
 				reg_rx_overhear(msg);
 			}
 			delete msg;
@@ -197,7 +197,7 @@ void CrankshaftBase::rxStarted() {
 		setRadioSleep();
 
 	if (rerouteOnFail && send_state == SEND_DATA && tx_msg->local_to != BROADCAST) {
-		printf(PRINT_MAC, "Lost contention, returning message to routing");
+		printf("Lost contention, returning message to routing");
 		tx_msg->setKind(TX_CONTEND_LOSE);
 		txPacketDone(tx_msg);
 		tx_msg = NULL;
@@ -251,13 +251,13 @@ void CrankshaftBase::timeout(int which) {
 			wrapSlotCounter();
 
 			if (macid() == 0)
-				printf(PRINT_MAC, "==== Slot %d ====", current_slot);
+				printf("==== Slot %d ====", current_slot);
 
 			if (initialized == INIT_NONE)
 				break;
 
 			if (initialized == INIT_DO_NOTIFIY) {
-				printf(PRINT_MAC, "Will send notify in %d slots", backoff);
+				printf("Will send notify in %d slots", backoff);
 				if (backoff == 0) {
 					send_state = SEND_NOTIFY;
 					contend();
@@ -277,7 +277,7 @@ void CrankshaftBase::timeout(int which) {
 					(retries != 0 || (rerouteOnFail && ((MessageInfo *) tx_msg->getData())->last_failed)) &&
 					uniform(0, 1, RNG_MAC) > retryChance) {
 				if (rerouteOnFail) {
-					printf(PRINT_MAC, "retry skipped, returning message to routing");
+					printf("retry skipped, returning message to routing");
 					tx_msg->setKind(TX_RETRY_SKIPPED);
 					txPacketDone(tx_msg);
 					tx_msg = NULL;
@@ -332,7 +332,7 @@ void CrankshaftBase::timeout(int which) {
 			if (getRssi() > 0.5 && send_state != SEND_ACK) {
 				cancelTimeout(POLL_TIMER);
 				if (rerouteOnFail && send_state == SEND_DATA && tx_msg->local_to != BROADCAST) {
-					printf(PRINT_MAC, "Lost contention, returning message to routing");
+					printf("Lost contention, returning message to routing");
 					tx_msg->setKind(TX_CONTEND_LOSE);
 					txPacketDone(tx_msg);
 					tx_msg = NULL;
@@ -354,7 +354,7 @@ void CrankshaftBase::timeout(int which) {
 					packet->local_to = BROADCAST;
 					header = newHeader(MSG_NOTIFY);
 					reg_tx_overhead(packet);
-					printf(PRINT_MAC, "Sending notify now");
+					printf("Sending notify now");
 					break;
 				case SEND_DATA:
 					assert(tx_msg);
@@ -363,13 +363,13 @@ void CrankshaftBase::timeout(int which) {
 					//now do real send
 					reg_tx_data(tx_msg); // statistics
 					packet = (MacPacket *) tx_msg->dup();;
-					printf(PRINT_MAC, "Sending message to %d", tx_msg->local_to);
+					printf("Sending message to %d", tx_msg->local_to);
 					break;
 				case SEND_ACK:
 					packet = new MacPacket(this,"ack");
 					packet->local_to = ack_to;
 					header = newHeader(MSG_ACK);
-					printf(PRINT_MAC, "Sending ack to %d", ack_to);
+					printf("Sending ack to %d", ack_to);
 					reg_tx_overhead(packet);
 					break;
 				default:
@@ -386,21 +386,21 @@ void CrankshaftBase::timeout(int which) {
 		case MSG_TIMEOUT:
 			/* Check that there is no usable activity. */
 			if (msgTimeoutState == CHECK_ACTIVITY && getRssi() > 0.5) {
-				//~ printf(PRINT_MAC, "Detected activity, waiting for startsym");
+				//~ printf("Detected activity, waiting for startsym");
 				msgTimeoutState = CHECK_STARTSYM;
 				setTimeout((int)(frameTotalTime(0) * 32768.0), MSG_TIMEOUT);
 			} else {
 				/* No activity or no startsymbol received */
 				//~ if (msgTimeoutState == CHECK_STARTSYM)
-					//~ printf(PRINT_MAC, "No startsymbol, going to sleep");
+					//~ printf("No startsymbol, going to sleep");
 				setRadioSleep();
 			}
 			break;
 		case ACK_TIMEOUT:
-			printf(PRINT_MAC, "ack-timeout");
+			printf("ack-timeout");
 
 			if (rerouteOnFail) {
-				printf(PRINT_MAC, "No ack, returning message to routing");
+				printf("No ack, returning message to routing");
 				((MessageInfo *) tx_msg->getData())->last_failed = true;
 				tx_msg->setKind(TX_NO_ACK);
 				txPacketDone(tx_msg);
@@ -437,7 +437,6 @@ int CrankshaftBase::headerLength() {
 void CrankshaftBase::contend(void) {
 	int slots;
 
-
 	if (useSift)
 		slots = siftSlot(CLOCK_SKEW_ALLOWANCE/2, CONTEND_TIME - 10);
 	else
@@ -466,7 +465,7 @@ int CrankshaftBase::firstToWake(std::vector<int> *nodes) {
 #endif
 			slots = slotsUntilWake((*nodes)[i]);
 
-		printf(PRINT_MAC, "node %d @ %d", (*nodes)[i], slots);
+		printf("node %d @ %d", (*nodes)[i], slots);
 		
 		if (slots < currentLowest) {
 			node = (*nodes)[i];

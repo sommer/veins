@@ -47,16 +47,16 @@ Crankshaft::SlotState Crankshaft::getCurrentSlotState() {
 	if (current_slot == (macid() % slots)) {
 		/* Listening in this slot. */
 		if (tx_msg && (tx_msg->local_to % slots) == current_slot)
-			printf(PRINT_MAC, "contending/listening");
+			printf("contending/listening");
 		else
-			printf(PRINT_MAC, "listening");
+			printf("listening");
 		return tx_msg && (tx_msg->local_to % slots) == current_slot ? SSTATE_SEND_RECEIVE : SSTATE_RECEIVE;
 	} 
 
 	if (tx_msg) {
 		if (tx_msg->local_to == BROADCAST) {
 			if (current_slot >= slots)
-				printf(PRINT_MAC, "Broadcast to send. Will send = %d (%u)", macid() % bcast_slots == current_slot - slots, macid());
+				printf("Broadcast to send. Will send = %d (%u)", macid() % bcast_slots == current_slot - slots, macid());
 			
 			if (current_slot >= slots && (!slotted_bcast || macid() % bcast_slots == current_slot - slots))
 				return SSTATE_SEND_RECEIVE;

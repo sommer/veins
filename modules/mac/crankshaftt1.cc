@@ -108,7 +108,7 @@ CrankshaftBase::SlotState CrankshaftT1::getCurrentSlotState() {
 	/* Check if it is one of my slots. */
 	if (HASH(current_slot + HASH(macid())) > threshold) {
 		/* Listening in this slot. */
-		printf(PRINT_MAC, "listening");
+		printf("listening");
 		return SSTATE_RECEIVE;
 	}
 
