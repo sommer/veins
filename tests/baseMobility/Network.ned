@@ -32,7 +32,7 @@
 
 
 import  
-    "BasicHost",
+    "TestHost",
     "CrashHost", 
 //  "ConnectionManager",
     "BaseWorldUtility"; 
@@ -53,7 +53,7 @@ module Network
                 playgroundSizeZ = playgroundSizeZ;
 //      channelcontrol: ConnectionManager; 
 //            display: "p=60,30;i=eye14";
-        node: BasicHost[numHosts]; 
+        node: TestHost[numHosts]; 
             parameters: 
                 numHosts = numHosts; 
             display: "p=50,50;i=laptop";

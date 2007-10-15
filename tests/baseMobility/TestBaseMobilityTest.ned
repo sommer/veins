@@ -1,4 +1,4 @@
-simple TestHelperMethods
+simple TestBaseMobilityTest
 	
 	parameters:
 		borderPolicy: numeric const,	// border policy to use

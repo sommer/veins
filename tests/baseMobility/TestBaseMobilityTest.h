@@ -1,14 +1,16 @@
-#ifndef TEST_HELPER_METHODS_H_
-#define TEST_HELPER_METHODS_H_
+#ifndef TEST_BASEMOBILITY_TEST_H_
+#define TEST_BASEMOBILITY_TEST_H_
 
-#define note ev << "[" << id() << "]: "
+//#define note ev << "[" << id() << "]: "
 
 #include "TestBaseMobility.h"
 #include "Coord.h"
 
 
-class TestHelperMethods : public TestBaseMobility
+class TestBaseMobilityTest : public TestBaseMobility
 {
+	
+	
 	
 protected:
 	double xMax, yMax, zMax;
@@ -16,8 +18,10 @@ protected:
 	
 	bool use2D;
 	
+	bool allTestsPassed;
+	
 public:
-	Module_Class_Members( TestHelperMethods , TestBaseMobility , 0 );
+	Module_Class_Members( TestBaseMobilityTest , TestBaseMobility , 0 );
 	
 	virtual void initialize(int);
 	virtual void finish();
@@ -41,10 +45,27 @@ protected:
     void setBHandStr(std::string&, int);
 	void setBPolStr(std::string&, int);
 	
-	bool testCheckIfOutside();
-	bool testSimpleCIO();
-	bool testComplexCIO();
-	bool testBorderCIO();
+	void testCheckIfOutside();
+	void testSimpleCIO();
+	void testComplexCIO();
+	void testBorderCIO();
+	
+	void testInitialisation();
+	
+	Coord getCoord(double x, double y, double z);
+	
+	void assertTrue(std::string msg, bool value) {
+		if (!value) {
+			ev << "FAILED: ";
+			allTestsPassed = false;
+		} else {
+			ev << "Passed: ";
+		}
+		
+		ev << msg << std::endl;
+	}
+
+	void assertFalse(std::string msg, bool value) { assertTrue(msg, !value); }
 	
 };
 

@@ -17,7 +17,6 @@ module CrashHost
             display: "p=130,60;b=25,25;o=black";
         mobility: TestBMBaseMobility;
         	parameters:
-        		borderPolicy = borderPolicy;	
             display: "p=130,130;i=cogwheel2";        
 
 endmodule

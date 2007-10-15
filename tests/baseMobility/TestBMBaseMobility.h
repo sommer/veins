@@ -20,22 +20,31 @@ class TestBMBaseMobility : public TestBaseMobility
 protected:
 	// parameters to handle the movement of the host
     
-    // brief Size of a step
-    Coord stepSize;
-    // brief Total number of steps
-    int numSteps;
-    // Number of steps already moved
-    int step;
-    
-	// coordinate to hold the current target position of the host
-    Coord targetPos;
-    // coordinate to hold the destination of the current step
-    Coord stepTarget;
-    
+        
     // switches to false if a test failed
     bool testsPassed;
     
+    int testStage;
     
+    simtime_t expectedBorderTime;
+    Move expectedBorderMove;
+    
+    BorderPolicy policy;
+    Coord stepTarget;
+    Coord targetPos;
+    Coord step; 
+    double angle;
+    
+    Coord expStepTarget;
+    Coord expTargetPos;
+    Coord expStep; 
+    double expAngle;
+    
+    int ignoreNext;
+    
+    bool use2D;
+    
+    double pgsX, pgsY, pgsZ;
 
 
 public:	
@@ -49,16 +58,36 @@ public:
 	
 	
 protected:
-    /** @brief Calculate the target position to move to*/
-    virtual void setTargetPosition();
-
+	    
+    
     /** @brief Move the host*/
     virtual void makeMove();
 
     virtual void fixIfHostGetsOutside();
     
-    Coord getOutsidePosition();
+    void assertTrue(std::string msg, bool value) {
+		if (!value) {
+			ev << "FAILED: ";
+			testsPassed = false;
+		} else {
+			ev << "Passed: ";
+		}
+		
+		ev << msg << std::endl;
+	}
 
+	void assertFalse(std::string msg, bool value) { assertTrue(msg, !value); }
+	
+	void assertRightTime(simtime_t expected);
+	
+	void assertRightMove(Move& expected);
+	
+	void assertRightBorderHandling();
+	
+	void getNextTestMove();
+	Coord getCoord(double x, double y, double z);
+	
+	void calcTestReflection(Coord from, Coord collission, Coord reflected);
 
 };
 

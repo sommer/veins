@@ -31,13 +31,13 @@
 //***************************************************************************
 
 import
-    "TestHelperMethods",
+    "TestBaseMobilityTest",
     "BaseUtility";
 
 
 
 
-module BasicHost
+module TestHost
     
     parameters:
         numHosts : numeric const, 		// total number of hosts in the network
@@ -47,7 +47,7 @@ module BasicHost
     submodules:
         blackboard: BaseUtility;
             display: "p=130,60;b=25,25;o=black";
-        mobility: TestHelperMethods;
+        mobility: TestBaseMobilityTest;
         	parameters:
         		borderPolicy = borderPolicy;	
             display: "p=130,130;i=cogwheel2";        
