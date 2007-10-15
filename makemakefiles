@@ -99,4 +99,6 @@ all:
 	@cd $(ROOT)/tests/coord && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 	@echo $(ROOT)/tests/connectionManager
 	@cd $(ROOT)/tests/connectionManager && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@echo $(ROOT)/tests/baseMobility
+	@cd $(ROOT)/tests/baseMobility && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
     
