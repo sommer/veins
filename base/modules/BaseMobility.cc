@@ -50,12 +50,12 @@ void BaseMobility::initialize(int stage)
         coreEV << "initializing BaseMobility stage " << stage << endl;
         
         // get utility pointers (world and host)
-		world = (BaseWorldUtility*)getGlobalModule("BaseWorldUtility");
+	world = FindModule<BaseWorldUtility*>::findGlobalModule();
         if (world == NULL)
             error("Could not find BaseWorldUtility module");
 
         coreEV << "initializing BaseUtility stage " << stage << endl; // for node position
-		baseUtility = (BaseUtility*)getNodeModule("BaseUtility");
+	baseUtility = FindModule<BaseUtility*>::findSubModule(findHost());
         if (baseUtility == NULL)
             error("Could not find BaseUtility module");
         

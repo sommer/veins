@@ -26,7 +26,7 @@ void BaseConnectionManager::initialize(int stage)
 	{		
 		ccEV <<"initializing BaseConnectionManager\n";
 		
-		BaseWorldUtility* world = (BaseWorldUtility*)getGlobalModule("BaseWorldUtility");
+		BaseWorldUtility* world = FindModule<BaseWorldUtility*>::findGlobalModule();
 		
 		assert(world != 0);
 		
