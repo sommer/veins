@@ -100,9 +100,7 @@ void BaseLocalization::sendMsg(cMessage * msg)
 
 bool BaseLocalization::newAnchor(cMessage * msg) {
 	LocPkt * m = dynamic_cast<LocPkt *>(msg);
-	NodeInfo * node = new NodeInfo(m->getId(),
-				       m->getIsAnchor(),
-				       m->getPos());
+	NodeInfo * node = new NodeInfo(m, getPosition());
 	/* Check if this point already exists in the anchor
 	 * list. This check is made by position. */
 	bool newAnchor = true;
@@ -127,9 +125,7 @@ bool BaseLocalization::newAnchor(cMessage * msg) {
 
 bool BaseLocalization::newNeighbor(cMessage * msg) {
 	LocPkt * m = dynamic_cast<LocPkt *>(msg);
-	NodeInfo * node = new NodeInfo(m->getId(),
-				       m->getIsAnchor(),
-				       m->getPos());
+	NodeInfo * node = new NodeInfo(m, getPosition());
 	/* Check if this node already exists in the neighbor
 	 * list. This check is made by id. */
 	bool newNeighbor = true;
@@ -140,10 +136,11 @@ bool BaseLocalization::newNeighbor(cMessage * msg) {
 	     current ++) {
 		if (node->id == (*current)->id) {
 			newNeighbor = false;
-			/* Update position information of this node. */
-			if (node->pos != (*current)->pos)
+			if (node->pos != (*current)->pos) {
+				/* Update position information of this node. */
 				updatedNeighbor = true;
-			(*current)->pos = node->pos;
+				(*current)->pos = node->pos;
+			}
 			break;
 		}
 	}

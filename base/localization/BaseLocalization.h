@@ -44,11 +44,28 @@
  */
 class NodeInfo {
 public:
-	NodeInfo(int i, bool a, Location p):id(i), isAnchor(a), pos(p) {}
+	NodeInfo(LocPkt * pkt, Coord basePos) 
+		: id(pkt->getId()),
+		  isAnchor(pkt->getIsAnchor()),
+		  pos(pkt->getPos()),
+		  distance(basePos.distance(pkt->getPos())) {}
 
+	NodeInfo(int i, bool a, Location p, double d)
+		: id(i),
+		  isAnchor(a),
+		  pos(p),
+		  distance(d) {}
+	
+	/** Unique identifier of this node. */
 	int id;
+	/** Weather this node is an anchor node or not. */
 	bool isAnchor;
+	/** The (estimated) location of this node. */
 	Location pos;
+	/** The (estimated) distance between this node and the owner. 
+	 * @TODO This must be determined base on RSSI once that's added
+	 * to Mixim. */
+	double distance; 
 };
 
 using std::list;
