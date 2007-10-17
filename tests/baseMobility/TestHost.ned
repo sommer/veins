@@ -31,7 +31,7 @@
 //***************************************************************************
 
 import
-    "TestBaseMobilityTest",
+    "BaseMobilityTest",
     "BaseUtility";
 
 
@@ -47,7 +47,7 @@ module TestHost
     submodules:
         blackboard: BaseUtility;
             display: "p=130,60;b=25,25;o=black";
-        mobility: TestBaseMobilityTest;
+        mobility: BaseMobilityTest;
         	parameters:
         		borderPolicy = borderPolicy;	
             display: "p=130,130;i=cogwheel2";        

@@ -3,11 +3,11 @@
 
 //#define note ev << "[" << id() << "]: "
 
-#include "TestBaseMobility.h"
+#include "BaseMobility.h"
 #include "Coord.h"
 
 
-class TestBaseMobilityTest : public TestBaseMobility
+class BaseMobilityTest : public BaseMobility
 {
 	
 	
@@ -21,7 +21,7 @@ protected:
 	bool allTestsPassed;
 	
 public:
-	Module_Class_Members( TestBaseMobilityTest , TestBaseMobility , 0 );
+	Module_Class_Members( BaseMobilityTest , BaseMobility , 0 );
 	
 	virtual void initialize(int);
 	virtual void finish();

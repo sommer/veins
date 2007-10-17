@@ -50,12 +50,12 @@ void BaseMobility::initialize(int stage)
         coreEV << "initializing BaseMobility stage " << stage << endl;
         
         // get utility pointers (world and host)
-	world = FindModule<BaseWorldUtility*>::findGlobalModule();
+		world = FindModule<BaseWorldUtility*>::findGlobalModule();
         if (world == NULL)
             error("Could not find BaseWorldUtility module");
 
         coreEV << "initializing BaseUtility stage " << stage << endl; // for node position
-	baseUtility = FindModule<BaseUtility*>::findSubModule(findHost());
+		baseUtility = FindModule<BaseUtility*>::findSubModule(findHost());
         if (baseUtility == NULL)
             error("Could not find BaseUtility module");
         
@@ -362,6 +362,7 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coor
 {
     BorderHandling outside = NOWHERE;
 
+    // Testing x-value
     if (targetPos.getX() < 0){
 	borderStep.setX(-move.startPos.getX());
 	outside = X_SMALLER;
@@ -371,6 +372,7 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coor
 	outside = X_BIGGER;
     }
 
+    // Testing y-value
     if (targetPos.getY() < 0){
 	borderStep.setY(-move.startPos.getY());
 
@@ -382,6 +384,60 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coor
 
 	if( outside==NOWHERE || fabs(borderStep.getX()/move.direction.getX()) > fabs(borderStep.getY()/move.direction.getY()) )
 	    outside = Y_BIGGER;
+    }
+    
+    // Testing z-value
+    if (!world->use2D())
+    {
+	    // going to reach the lower z-border
+    	if (targetPos.getZ() < 0)
+	    {
+	    	borderStep.setZ(-move.startPos.getZ());
+	    	
+	    	// no border reached so far
+	    	if( outside==NOWHERE )
+	    	{
+	    		outside = Z_SMALLER;
+	    	}
+	    	// an y-border is reached earliest so far, test whether z-border is reached even earlier
+	    	else if( (outside==Y_SMALLER || outside==Y_BIGGER) && 
+	    			fabs(borderStep.getY()/move.direction.getY()) > fabs(borderStep.getZ()/move.direction.getZ()) )
+	    	{
+	    		outside = Z_SMALLER;
+	    	}
+	    	// an x-border is reached earliest so far, test whether z-border is reached even earlier
+	    	else if( (outside==X_SMALLER || outside==X_BIGGER) && 
+	    			fabs(borderStep.getX()/move.direction.getX()) > fabs(borderStep.getZ()/move.direction.getZ()) )
+	    	{
+	    		outside = Z_SMALLER;
+	    	}
+	    	
+	    }
+    	// going to reach the upper z-border
+	    else if (targetPos.getZ() >= playgroundSizeZ())
+	    {
+	        borderStep.setZ(playgroundSizeZ() - move.startPos.getZ());
+	        
+	        // no border reached so far
+	        if( outside==NOWHERE )
+	        {
+	        	outside = Z_BIGGER;
+	        }
+	        // an y-border is reached earliest so far, test whether z-border is reached even earlier
+	        else if( (outside==Y_SMALLER || outside==Y_BIGGER) && 
+	    			fabs(borderStep.getY()/move.direction.getY()) > fabs(borderStep.getZ()/move.direction.getZ()) )
+	    	{
+	    		outside = Z_BIGGER;
+	    	}
+	        // an x-border is reached earliest so far, test whether z-border is reached even earlier
+	    	else if( (outside==X_SMALLER || outside==X_BIGGER) && 
+	    			fabs(borderStep.getX()/move.direction.getX()) > fabs(borderStep.getZ()/move.direction.getZ()) )
+	    	{
+	    		outside = Z_BIGGER;
+	    	}
+	        
+	        
+	    }
     }
 
     coreEV << "checkIfOutside, outside="<<outside<<" borderStep: " << borderStep.info() << endl;
@@ -408,39 +464,96 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
     case X_SMALLER:
 	factor = borderStep.getX() / move.direction.getX();
 	borderStep.setY(factor * move.direction.getY());
+	if (!world->use2D())
+	{
+		borderStep.setZ(factor * move.direction.getZ()); // 3D case
+	}
+	
 
 	if( policy == WRAP ){
 	    borderStart.setX(playgroundSizeX());
 	    borderStart.setY(move.startPos.getY() + borderStep.getY());
+	    if (!world->use2D())
+	    {
+	    	borderStart.setZ(move.startPos.getZ() + borderStep.getZ()); // 3D case
+	    }
 	}
 	break;
     case X_BIGGER:
 	factor = borderStep.getX() / move.direction.getX();
 	borderStep.setY(factor * move.direction.getY());
+	if (!world->use2D())
+	{
+		borderStep.setZ(factor * move.direction.getZ()); // 3D case
+	}
 
 	if( policy == WRAP ){
 	    borderStart.setX(0);
 	    borderStart.setY(move.startPos.getY() + borderStep.getY());
+	    if (!world->use2D())
+	    {
+	    	borderStart.setZ(move.startPos.getZ() + borderStep.getZ()); // 3D case
+	    }
 	}
 	break;
     case Y_SMALLER:
 	factor = borderStep.getY() / move.direction.getY();
 	borderStep.setX(factor * move.direction.getX());
+	if (!world->use2D())
+	{
+		borderStep.setZ(factor * move.direction.getZ()); // 3D case
+	}
 
 	if( policy == WRAP ){
 	    borderStart.setY(playgroundSizeY());
 	    borderStart.setX(move.startPos.getX() + borderStep.getX());
+	    if (!world->use2D())
+	    {
+	    	borderStart.setZ(move.startPos.getZ() + borderStep.getZ()); // 3D case
+	    }
 	}
 	break;
     case Y_BIGGER:
 	factor = borderStep.getY() / move.direction.getY();
 	borderStep.setX(factor * move.direction.getX());
+	if (!world->use2D())
+	{
+		borderStep.setZ(factor * move.direction.getZ()); // 3D case
+	}
 
 	if( policy == WRAP ){
 	    borderStart.setY(0);
 	    borderStart.setX(move.startPos.getX() + borderStep.getX());
+	    if (!world->use2D())
+	    {
+	    	borderStart.setZ(move.startPos.getZ() + borderStep.getZ()); // 3D case
+	    }
 	}
 	break;
+    case Z_SMALLER: // here we are definitely in 3D
+	factor = borderStep.getZ() / move.direction.getZ();
+	borderStep.setX(factor * move.direction.getX());
+	borderStep.setY(factor * move.direction.getY());
+	
+	if( policy == WRAP )
+	{
+	    borderStart.setZ(playgroundSizeZ());
+	    borderStart.setX(move.startPos.getX() + borderStep.getX());
+	    borderStart.setY(move.startPos.getY() + borderStep.getY());
+	}
+    break;
+    case Z_BIGGER: // here we are definitely in 3D
+	factor = borderStep.getZ() / move.direction.getZ();
+	borderStep.setX(factor * move.direction.getX());
+	borderStep.setY(factor * move.direction.getY());
+    		
+	if( policy == WRAP )
+	{
+	    borderStart.setZ(0);
+	    borderStart.setX(move.startPos.getX() + borderStep.getX());
+	    borderStart.setY(move.startPos.getY() + borderStep.getY());
+	}		
+    break;
     default:
         factor = 0;
 	error("invalid state in goToBorder switch!");
@@ -494,7 +607,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
 
     coreEV << "handleIfOutside:stepTarget = " << stepTarget.info() << endl;
 
-    // new start position after the host reaches teh border
+    // new start position after the host reaches the border
     Coord borderStart;
     // new direction the host has to move to
     Coord borderDirection;
@@ -524,9 +637,10 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
     // calculate the step to reach the border
     goToBorder(policy, wo, borderStep, borderStart);
 
-    // calculate teh time to reach the border
-    borderInterval = sqrt(borderStep.getX()*borderStep.getX() + borderStep.getY()*borderStep.getY()) / move.speed;
-
+    // calculate the time to reach the border
+    //borderInterval = sqrt(borderStep.getX()*borderStep.getX() + borderStep.getY()*borderStep.getY()) / move.speed;
+    borderInterval = (borderStep.length()) / move.speed;
+    
     // calculate new start position
     // NOTE: for WRAP this is done in goToBorder
     switch( policy ){
@@ -535,8 +649,10 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
 
 	borderStart = move.startPos + borderStep;
 	d = stepTarget.distance( borderStart );
-	borderDirection.setX((stepTarget.getX() - borderStart.getX()) / d);
-	borderDirection.setY((stepTarget.getY() - borderStart.getY()) / d);
+	//borderDirection.setX((stepTarget.getX() - borderStart.getX()) / d);
+	//borderDirection.setY((stepTarget.getY() - borderStart.getY()) / d);
+	//borderDirection.setZ((stepTarget.getZ() - borderStart.getZ()) / d);
+	borderDirection = (stepTarget - borderStart) / d;
 	break;
     case PLACERANDOMLY:
 	borderStart = targetPos;

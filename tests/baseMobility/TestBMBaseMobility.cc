@@ -14,7 +14,7 @@ Define_Module(TestBMBaseMobility);
  */
 void TestBMBaseMobility::initialize(int stage){
 
-	TestBaseMobility::initialize(stage);
+	BaseMobility::initialize(stage);
 	
 	if (stage == 0) {
 		updateInterval = 0.1;

@@ -50,6 +50,8 @@
  * For most mobility modules the only two functions you need to
  * implement to define your own mobility module are makeMove and
  * fixIfHostGetsOutside..
+ * 
+ * This file contains 3D implementations from Michael Swigulski.
  *
  * @ingroup mobility
  * @ingroup basicModules

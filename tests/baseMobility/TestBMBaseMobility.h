@@ -1,12 +1,12 @@
 #ifndef TEST_BM_BASE_MOBILITY_H_
 #define TEST_BM_BASE_MOBILITY_H_
 
-#include "TestBaseMobility.h"
+#include "BaseMobility.h"
 
 
 /**
  * @brief This class is intended to test border-handling functionality
- * in TestBaseMobility in case of 2D and 3D playground.
+ * in BaseMobility in case of 2D and 3D playground.
  * 
  * Therefore the general behaviour of ConstSpeedMobility is used and
  * modified in order to test all possible cases of border-contact.
@@ -14,7 +14,7 @@
  * @author Michael Swigulski
  */
 
-class TestBMBaseMobility : public TestBaseMobility
+class TestBMBaseMobility : public BaseMobility
 {
 
 protected:
@@ -49,7 +49,7 @@ protected:
 
 public:	
 	
-	Module_Class_Members( TestBMBaseMobility , TestBaseMobility , 0 );
+	Module_Class_Members( TestBMBaseMobility , BaseMobility , 0 );
 	
 	/** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);

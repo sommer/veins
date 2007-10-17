@@ -1,4 +1,4 @@
-simple TestBaseMobilityTest
+simple BaseMobilityTest
 	
 	parameters:
 		borderPolicy: numeric const,	// border policy to use

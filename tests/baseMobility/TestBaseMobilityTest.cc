@@ -1,12 +1,12 @@
-#include "TestBaseMobilityTest.h"
+#include "BaseMobilityTest.h"
 #include <FWMath.h>
 
-Define_Module(TestBaseMobilityTest);
+Define_Module(BaseMobilityTest);
 
 
-void TestBaseMobilityTest::initialize(int stage)
+void BaseMobilityTest::initialize(int stage)
 {
-	TestBaseMobility::initialize(stage);
+	BaseMobility::initialize(stage);
 
 	
 	if (stage == 2)
@@ -96,7 +96,7 @@ void TestBaseMobilityTest::initialize(int stage)
 
 }
 
-void TestBaseMobilityTest::testInitialisation() {
+void BaseMobilityTest::testInitialisation() {
 	assertTrue("World pointer initialised.", world != 0);
 	assertTrue("Base utility pointer initialised.", baseUtility != 0);
 	
@@ -105,14 +105,14 @@ void TestBaseMobilityTest::testInitialisation() {
 }
 
 // handling incoming messages 
-void TestBaseMobilityTest::handleSelfMsg( cMessage* msg )
+void BaseMobilityTest::handleSelfMsg( cMessage* msg )
 {
 	delete msg;
 	//note << "Self-Message dropped. In case of static host you should not see me." << endl;
 	assertTrue("Should never receive self messages!", false);
 }
 
-void TestBaseMobilityTest::handleBorderMsg( cMessage* msg)
+void BaseMobilityTest::handleBorderMsg( cMessage* msg)
 {
 	delete msg;
 	//note << "Border-Message dropped. In case of static host you should not see me." << endl;
@@ -120,21 +120,21 @@ void TestBaseMobilityTest::handleBorderMsg( cMessage* msg)
 }
 
 // finish method
-void TestBaseMobilityTest::finish()
+void BaseMobilityTest::finish()
 {
 	assertTrue("Check if all tests passed.", allTestsPassed);
 	
 }
 
 // output for a bool
-void TestBaseMobilityTest::passed(bool b)
+void BaseMobilityTest::passed(bool b)
 {
 	if (b) { ev << "PASSED" << endl; }
 	else { ev << "FAILED" << endl; }	
 }
 
 // interprete int values for borderHandling and border Policy
-void TestBaseMobilityTest::setBHandStr(std::string& str, int i){
+void BaseMobilityTest::setBHandStr(std::string& str, int i){
 	
 	switch (i) {
 		case X_SMALLER:
@@ -164,7 +164,7 @@ void TestBaseMobilityTest::setBHandStr(std::string& str, int i){
 	
 }
 
-void TestBaseMobilityTest::setBPolStr(std::string& str, int i){
+void BaseMobilityTest::setBPolStr(std::string& str, int i){
 	
 	switch (i) {
 		case REFLECT:
@@ -186,14 +186,14 @@ void TestBaseMobilityTest::setBPolStr(std::string& str, int i){
 }
 
 // test checkIfOutside
-void TestBaseMobilityTest::testCheckIfOutside()
+void BaseMobilityTest::testCheckIfOutside()
 {
 	testSimpleCIO();
 	testComplexCIO();
 	testBorderCIO();
 }
 
-void TestBaseMobilityTest::testSimpleCIO()
+void BaseMobilityTest::testSimpleCIO()
 {
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
@@ -258,7 +258,7 @@ void TestBaseMobilityTest::testSimpleCIO()
 	}
 }
 
-void TestBaseMobilityTest::testComplexCIO()
+void BaseMobilityTest::testComplexCIO()
 {
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
@@ -358,7 +358,7 @@ void TestBaseMobilityTest::testComplexCIO()
 	}
 }
 
-Coord TestBaseMobilityTest::getCoord(double x, double y, double z) {
+Coord BaseMobilityTest::getCoord(double x, double y, double z) {
 	if(use2D) {
 		return Coord(x, y);
 	} else {
@@ -366,7 +366,7 @@ Coord TestBaseMobilityTest::getCoord(double x, double y, double z) {
 	}
 }
 
-void TestBaseMobilityTest::testBorderCIO()
+void BaseMobilityTest::testBorderCIO()
 {	
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
