@@ -36,7 +36,7 @@
 void BaseLayer::initialize(int stage)
 {
     BaseModule::initialize(stage);
-    if(stage==1){
+    if(stage==0){
 		if (hasPar("stats") && par("stats").boolValue())
 		{
 			incoming = new std::map<MsgType,std::map<int,std::pair<char *,int>*> *>();
@@ -45,9 +45,7 @@ void BaseLayer::initialize(int stage)
 		}
 		else
 			doStats = false;
-    }
-	else if (stage == 2) // coreDebug in 0, registerNic in 1, *then* this
-	{
+
         uppergateIn  = findGate("uppergateIn");
         uppergateOut = findGate("uppergateOut");
         lowergateIn  = findGate("lowergateIn");
@@ -56,7 +54,8 @@ void BaseLayer::initialize(int stage)
         upperControlOut = findGate("upperControlOut");
         lowerControlIn  = findGate("lowerControlIn");
         lowerControlOut = findGate("lowerControlOut");
-	}
+
+    }
 }
 
 
