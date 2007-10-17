@@ -32,18 +32,26 @@ void BaseModule::initialize(int stage)
     if (stage == 0) {        
         hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
         // get a pointer to the Blackboard module
+	// TODO: Blackboard
         //bb = BlackboardAccess().get();
     }
 }
 
+
 cModule *BaseModule::findHost(void)
 {
-    cModule *mod = getNode();
-    if (!mod)
-        error("findHost: no host module found!");
+    cModule *parent = parentModule();
+    cModule *node = this;
 
-    return mod;
+    // all nodes should be a sub module of the simulation which has no parent module!!!
+    while( parent->parentModule() != NULL ){
+	node = parent;
+	parent = node->parentModule();
+    }
+
+    return node;
 }
+
 
 /**
  * This function returns the logging name of the module with the
@@ -71,50 +79,10 @@ std::string BaseModule::getLogName(int id)
     return lname;
 };
 
-static cModule* getModule(const char* modname, cModule *top)
-{
-	if (top->submodule(modname)!=NULL)
-		return top->submodule(modname);
-    cModuleType *modtype = findModuleType(modname);
-	for (cSubModIterator i(*top); !i.end(); i++)
-	{
-		cModule *submod = i();
-		if (submod->moduleType()==modtype)
-			return submod;
-	}
-	return NULL;
-} 
-
-cModule * BaseModule::getGlobalModule(const char* modname)
-{
-	return getModule(modname,simulation.systemModule());
-}
-
-cModule * BaseModule::getNode()
-{
-	cModule *curr = this, *node = NULL;
-	while (node == NULL)
-	{
-		curr = curr->parentModule();
-		if (curr == NULL)
-			error("couldn't find Node class (should contain a subclass of BaseUtility)");
-		node = getModule("BaseUtility",curr);
-		if (node == NULL)
-			node = submodule("utility"); // look for non-BaseNic subclasses called "utility"
-	}
-	node = node->parentModule();
-	//EV << "module we think is Node is "<<node->name()<<endl;
-	return node;
-}
-
-cModule * BaseModule::getNodeModule(const char* modname)
-{
-	return getModule(modname,getNode());
-}
 
 std::string BaseModule::logName(void)
 {
-	std::ostringstream ost;
+        std::ostringstream ost;
 	if (hasPar("logName")) // let modules override
 	{
 		ost << par("logName").stringValue();

@@ -26,16 +26,15 @@
 #include <omnetpp.h>
 
 #include "ImNotifiable.h"
+#include "FindModule.h"
 
 #ifndef EV
-#define EV (ev.disabled()||!debug) ? ev : ev << simtimeToStr(simTime()) << ": "<< logName() << "::" << className()  << ": "
 #define EV_clear (ev.disabled()||!debug) ? ev : ev 
-//#define EV (ev.disabled()||!debug) ? (std::ostream&)ev : ev << logName() << "::" << className() << ": "
+#define EV (ev.disabled()||!debug) ? (std::ostream&)ev : ev << logName() << "::" << className() << ": "
 #endif
 #ifndef coreEV
-#define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << simtimeToStr(simTime()) << ": "<< logName() << "::" << className() <<": "
 #define coreEV_clear (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev
-//#define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << logName() << "::" << className() <<": "
+#define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << logName() << "::" << className() <<": "
 #endif
 
 
@@ -66,6 +65,7 @@
 class BaseModule: public cSimpleModule, public ImNotifiable {
   protected:
     /** @brief Cached pointer to the Blackboard module*/
+    // TODO: Blackboard
     //BaseUtility *baseUtil;
     
     /** @brief Debug switch for all other modules*/
@@ -94,7 +94,7 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
      * when everyone interested in them has already subscribed.
      */
     virtual int numInitStages() const {
-      return 3;
+      return 2;
     }
 
     /**
@@ -106,37 +106,14 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
      */
     std::string logName(void);
 
-	/** 
-	 * @brief Get a reference to a global singleton module
-	 *
-	 * Given the name of the module type, this function returns a reference
-	 * to a global singleton module. Lookups for non-singleton modules will 
-	 * return a random module of the specified type. NULL is returned on lookup
-	 * failure
-	 * @param modtype Module type name
-	 */
-	
-	static cModule * getGlobalModule(const char* modtype);
+    /**
+     * @brief Get a reference to the local node module
+     */
+    cModule * getNode(){
+	return findHost();
+    };
 
-   	/** 
-	 * @brief Get a reference to a node-level module
-	 *
-	 * Given the name of the module type, this function returns a reference
-	 * to a node-level module. Lookups for modules with multiple instances of the
-	 * same type in a single module will return a random module of the specified 
-	 * type. NULL is returned on lookup failure
-	 * @param modtype Module type name
-	 */	
-	cModule * getNodeModule(const char* modtype);
-
-	/**
-	 * @brief Get a reference to the local node module
-	 */
-
-	cModule * getNode();
-
-
-	/**
+    /**
      * @brief Called by the Blackboard whenever a change of a category occurs
      * to which we have subscribed. Redefined from ImNotifiable.
      * In this base class just handle the context switching and
