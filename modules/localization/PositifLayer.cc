@@ -111,7 +111,7 @@ void PositifLayer::initialize(int stage)
 
 		/* only one node needs to initialize this */
 		if (me == 0) {
-			world = (BaseWorldUtility*)getGlobalModule("BaseWorldUtility");
+			world = FindModule<BaseWorldUtility*>::findGlobalModule();
 			if (world == NULL) {
 				error("Could not find BaseWorldUtility module");
 			}
@@ -249,7 +249,7 @@ void PositifLayer::setup_global_vars(void)
 	/** @TODO This might better be determined by examining the number of achors. */
 	num_anchors = (int) Max(num_nodes * (double) par("anchor_frac"), nr_dims + 1);
 //	range = (double) par("range");
-	range = (double)getGlobalModule("propagationmodel")->par("radioRange");
+	range = (double)(FindModule<BaseConnectionManager*>::findGlobalModule())->par("radioRange");
 	do_2nd_phase = par("do_2nd_phase");	
 	// Each node writes to these global variables, but this shouldn't cause any problems.
 

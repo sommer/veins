@@ -147,12 +147,12 @@ void Node_Savvides_Mob::init(void)
 	version = 8;
 
         // get utility pointers (world and host)
-	world = (BaseWorldUtility*)getGlobalModule("BaseWorldUtility");
+	world = FindModule<BaseWorldUtility*>::findGlobalModule();
         if (world == NULL)
 		error("Could not find BaseWorldUtility module");
 	
         EV << "initializing node_savvides_mob" << endl; // for node position
-	baseUtility = (BaseUtility*)getNodeModule("BaseUtility");
+	baseUtility = FindModule<BaseUtility*>::findSubModule(findHost());
         if (baseUtility == NULL)
 		error("Could not find BaseUtility module");
 	// subscribe to move
