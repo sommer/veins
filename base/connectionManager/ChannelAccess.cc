@@ -30,8 +30,6 @@
 
 #include "Move.h"
 
-#include "FindModule.h"
-
 #include <cassert>
 
 /**
@@ -44,6 +42,12 @@ void ChannelAccess::initialize( int stage )
 
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
+
+	// the phy module has to be named phy otherwise it cannot be found
+	// TODO: maybe we can remove this
+        // we need to look at the functions in NicEntry* for this
+	if( strcmp( this->name(), "phy" )!=0 )
+	    error("phy module has to be named \"phy\"!");
 
         cModule* nic = parentModule();
         if (nic->hasPar("connectionManagerName")){        		
