@@ -267,8 +267,6 @@ void TestBaseMobilityTest::testComplexCIO()
 	
 	ev << "Testing complex checkIfOutside... " << endl;
 	
-	double m = move.startPos.getX();
-	
 	// test X
 	//note << endl;
 	//note << "Should cross X first." << endl; 
@@ -373,7 +371,6 @@ void TestBaseMobilityTest::testBorderCIO()
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
 	Coord stepTarget;
-	double dist = 30.0;
 	
 	double min = 0.0;
 	int bHandVal;
@@ -381,8 +378,6 @@ void TestBaseMobilityTest::testBorderCIO()
 	std::string debug = "";
 	
 	ev << "Testing border and edges checkIfOutside... " << endl;
-	
-	double m = move.startPos.getX();
 	
 	// testing origin
 	stepTarget = getCoord(min, min, min);

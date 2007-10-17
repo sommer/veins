@@ -37,7 +37,7 @@ void FoxtrotPacket::setAllData(const FoxtrotPacket * other)
 
 void FoxtrotPacket::setLocalPos(Foxtrot * f)
 {
-	BaseUtility *bs = dynamic_cast < BaseUtility * >(f->getNodeModule("BaseUtility"));
+	BaseUtility *bs = FindModule< BaseUtility * >::findSubModule(f);
 	const Coord *loc = bs->getPos();
 	foxtrot_data_uniset(&this->loc_var[0], loc->getX());
 	foxtrot_data_uniset(&this->loc_var[1], loc->getY());

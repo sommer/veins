@@ -34,9 +34,9 @@ void StateView::initialize(int stage)
     BaseModule::initialize(stage);
     if(stage == 0) {
         HostState s;
-        bu = (BaseUtility*)getNodeModule("BaseUtility");
-                if (bu == NULL)
-                	error("Could not find BaseUtility module");
+        bu = FindModule<BaseUtility*>::findSubModule(this);
+        if (bu == NULL)
+        	error("Could not find BaseUtility module");
         catHostState = bu->subscribe(this, &s, -1);
     } else if(stage == 1) {
         scheduleAt(simTime() + 5.0, new cMessage("unsubscribe memo"));

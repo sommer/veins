@@ -33,9 +33,9 @@ void TestStateSub::initialize(int stage)
     BaseModule::initialize(stage);
     if(stage == 0) {
         TestParam s;
-        bu = (BaseUtility*)getNodeModule("BaseUtility");
-                if (bu == NULL)
-                	error("Could not find BaseUtility module");
+        bu = FindModule<BaseUtility*>::findSubModule(this);
+        if (bu == NULL)
+       		error("Could not find BaseUtility module");
         catTestParam = bu->subscribe(this, &s);
     } else if(stage == 1) {
         scheduleAt(simTime() + 6.0, new cMessage("unsubscribe memo"));

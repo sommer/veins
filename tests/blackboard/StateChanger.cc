@@ -35,7 +35,7 @@ void StateChanger::initialize(int stage)
         change_timer = new cMessage("change_timer", 0);
         scheduleAt(simTime() + 1.0, change_timer);
         
-        bu = (BaseUtility*)getNodeModule("BaseUtility");
+        bu = FindModule<BaseUtility*>::findSubModule(this);
         if (bu == NULL)
         	error("Could not find BaseUtility module");
     } else if(stage == 1) {
