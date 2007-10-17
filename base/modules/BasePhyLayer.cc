@@ -40,7 +40,7 @@ void BasePhyLayer::initialize(int stage)
 {
     ChannelAccess::initialize(stage);
 
-    if (stage == 1){
+    if (stage == 0){
         uppergateIn = findGate("uppergateIn");
         uppergateOut = findGate("uppergateOut");
         upperControlOut = findGate("upperControlOut");
@@ -63,7 +63,7 @@ void BasePhyLayer::initialize(int stage)
         
         //catActiveChannel = bb->subscribe(this, &channel, parentModule()->id());
     }
-    else if (stage == 2){
+    else if (stage == 1){
         if(alpha < static_cast<double>(cc->par("alpha")))
             error("SnrEval::initialize() alpha can't be smaller than in \
                    ConnectionManager. Please adjust your omnetpp.ini file accordingly");

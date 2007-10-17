@@ -30,7 +30,7 @@ void BaseNetwLayer::initialize(int stage)
 {
     BaseLayer::initialize(stage);
 
-    if(stage==1){
+    if(stage==0){
         headerLength= par("headerLength");
         arp = BaseArpAccess().get();
         myNetwAddr = this->id();
