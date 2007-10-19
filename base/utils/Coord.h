@@ -96,11 +96,11 @@ public:
 
     /** Initializes coordinate from other coordinate.*/
     Coord( const Coord& pos )
-        :x(pos.x), y(pos.y), z(pos.z), use2DFlag(pos.use2DFlag) {}
+        : cPolymorphic(pos), x(pos.x), y(pos.y), z(pos.z), use2DFlag(pos.use2DFlag) {}
 
     /** Initializes coordinate from other coordinate.*/
     Coord( const Coord* pos )
-        :x(pos->x), y(pos->y), z(pos->z), use2DFlag(pos->use2DFlag) {}
+        : cPolymorphic(*pos), x(pos->x), y(pos->y), z(pos->z), use2DFlag(pos->use2DFlag) {}
 
     /** Returns a string with the value of the coordinate.*/
     std::string info() const {

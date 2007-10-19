@@ -9,7 +9,7 @@ bool stopToggling = false;
 bool threeD = false;
 bool square = true;
 
-Node::Node(Q3Wizard *parent): Q3Wizard(parent) {
+Node::Node(QDialog *parent): QDialog(parent) {
 	setupUi(this);
 
 	Module* baseModules = findBaseModules();
@@ -19,12 +19,13 @@ Node::Node(Q3Wizard *parent): Q3Wizard(parent) {
 	macModules = findModules(MAC);
 	phyModules = findModules(PHY);
 	
-	setFinishEnabled(page(1), true);
-	
+	secondPage->hide();
+	firstPage->setHidden(false);
+
 	if (nodeModules != NULL) {
 		Module* it = nodeModules;
 		while (it) {
-			nodeTypeCB->insertItem(it->name);
+			nodeTypeCB->insertItem(0, QString(it->name));
 			it = it->next;
 		}
 	}
@@ -32,7 +33,7 @@ Node::Node(Q3Wizard *parent): Q3Wizard(parent) {
 	if (networkModules != NULL) {
 		Module* it = networkModules;
 		while (it) {
-			networkLayerCB->insertItem(it->name);
+			networkLayerCB->insertItem(0, QString(it->name));
 			it = it->next;
 		}
 	}
@@ -40,7 +41,7 @@ Node::Node(Q3Wizard *parent): Q3Wizard(parent) {
 	if (appModules != NULL) {
 		Module* it = appModules;
 		while (it) {
-			applicationNameCB->insertItem(it->name);
+			applicationNameCB->insertItem(0, QString(it->name));
 			it = it->next;
 		}
 	}
@@ -48,7 +49,7 @@ Node::Node(Q3Wizard *parent): Q3Wizard(parent) {
 	if (!inited) {
 		macNames.append("BaseMAC");
 		phyNames.append("BasePHY");
-		applicationNameCB->insertItem("BaseApplication");
+		applicationNameCB->insertItem(0, QString("BaseApplication"));
 		inited = true;
 	}
 	
@@ -69,11 +70,11 @@ Node::Node(Q3Wizard *parent): Q3Wizard(parent) {
 		}
 	}
 	
-	nicTable->insertRows(0);
+	nicTable->insertRow(0);
 	// add default item
-	nicTable->setText(0, 0, "default");
-	nicTable->setItem(0, 1, new Q3ComboTableItem(nicTable, macNames));
-	nicTable->setItem(0, 2, new Q3ComboTableItem(nicTable, phyNames));
+	nicTable->setItem(0, 0, new QTableWidgetItem("default"));
+//	nicTable->setItem(0, 1, new Q3ComboTableItem(nicTable, macNames));
+//	nicTable->setItem(0, 2, new Q3ComboTableItem(nicTable, phyNames));
 }
 
 unsigned Node::getCount() {
@@ -93,10 +94,10 @@ QString Node::getApplicationName() {
 }
 
 void Node::on_addNICButton_clicked() {
-	nicTable->insertRows(0);
-	nicTable->setText(0, 0, "new");
-	nicTable->setItem(0, 1, new Q3ComboTableItem(nicTable, macNames));
-	nicTable->setItem(0, 2, new Q3ComboTableItem(nicTable, phyNames));
+	nicTable->insertRow(0);
+	nicTable->setItem(0, 0, new QTableWidgetItem("new"));
+//	nicTable->setItem(0, 1, new Q3ComboTableItem(nicTable, macNames));
+//	nicTable->setItem(0, 2, new Q3ComboTableItem(nicTable, phyNames));
 }
 
 void Node::on_regularGridRB_toggled( bool ) {
@@ -152,5 +153,20 @@ void Node::on_fixedAnchorCB_toggled( bool ) {
 	sinkXTB->setEnabled(enable);
 	sinkYTB->setEnabled(enable);
 	sinkZTB->setEnabled(enable);
+}
+
+void Node::on_nextButton_clicked() {
+	if (firstPage->isHidden()) {
+		accept();
+	} else {
+		firstPage->hide();
+		secondPage->setHidden(false);
+		secondPage->raise();
+		nextButton->setText("Finish");
+	}
+}
+
+void Node::on_cancelButton_clicked() {
+	reject();
 }
 

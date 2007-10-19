@@ -1,35 +1,47 @@
 #include "GeneratorWizard.h"
 #include "Node.h"
 
-GeneratorWizard::GeneratorWizard(Q3Wizard *parent) {
+GeneratorWizard::GeneratorWizard(QMainWindow *parent) {
 	setupUi(this);
 }
 
-void GeneratorWizard::evaluateNextButtonState() {
-	if (objectTable->numRows() > 0) {
-		setFinishEnabled(page(0), true);
+void GeneratorWizard::evaluateButtonsState() {
+	if (objectTable->rowCount() > 0) {
+		okButton->setEnabled(true);
+		editItemButton->setEnabled(true);
+		deleteItemButton->setEnabled(true);
 	} else {
-		setFinishEnabled(page(0), false);
+		okButton->setEnabled(false);
+		editItemButton->setEnabled(false);
+		deleteItemButton->setEnabled(false);
 	}
 }
 
-void GeneratorWizard::addNodesButton_clicked() {
+void GeneratorWizard::on_addNodesButton_clicked() {
 	printf("add button clicked\n");
 	Node nodeDialog;
 	if (nodeDialog.exec() == QDialog::Accepted) {
-		objectTable->insertRows(0);
-		objectTable->setText(0, 0, QString::number(nodeDialog.getCount()));
-		objectTable->setText(0, 1, nodeDialog.getType());
-		objectTable->setText(0, 2, nodeDialog.getApplicationName());
-		printf("User selected %d nodes type %s with %s running %s\n", nodeDialog.getCount(), nodeDialog.getType().latin1(), nodeDialog.getNetworkLayer().latin1(), nodeDialog.getApplicationName().latin1());
+		objectTable->insertRow(0);
+		objectTable->setItem(0, 0, new QTableWidgetItem(QString::number(nodeDialog.getCount())));
+		objectTable->setItem(0, 1, new QTableWidgetItem(nodeDialog.getType()));
+		objectTable->setItem(0, 2, new QTableWidgetItem(nodeDialog.getApplicationName()));
+		//printf("User selected %d nodes type %s with %s running %s\n", nodeDialog.getCount(), nodeDialog.getType().toLatin1(), nodeDialog.getNetworkLayer().toLatin1(), nodeDialog.getApplicationName().toLatin1());
         }
-	evaluateNextButtonState();
+	evaluateButtonsState();
 }
 
 void GeneratorWizard::on_deleteItemButton_clicked() {
 	int curRow = objectTable->currentRow();
 	printf("Row about to be deleted: %d\n", curRow);
 	objectTable->removeRow(curRow);
-	evaluateNextButtonState();
+	evaluateButtonsState();
+}
+
+void GeneratorWizard::on_cancelButton_clicked() {
+	exit(0);
+}
+
+void GeneratorWizard::on_okButton_clicked() {
+	close();
 }
 

@@ -1,16 +1,18 @@
 #include "ui_generatorwizard.h"
 
-class GeneratorWizard: public Q3Wizard, private Ui::GeneratorWizard {
+class GeneratorWizard: public QMainWindow, private Ui::GeneratorWizard {
 	Q_OBJECT
 
 	public:
-		GeneratorWizard(Q3Wizard *parent = NULL);
+		GeneratorWizard(QMainWindow *parent = NULL);
 
 	private:
-		void evaluateNextButtonState(void);
+		void evaluateButtonsState(void);
 
 	private slots:
-		void addNodesButton_clicked(void);
+		void on_addNodesButton_clicked(void);
 		void on_deleteItemButton_clicked(void);
+		void on_cancelButton_clicked(void);
+		void on_okButton_clicked(void);
 };
 

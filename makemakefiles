@@ -73,7 +73,7 @@ all:
 	@cd $(ROOT)/modules/propagation && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
 
 	@echo $(ROOT)/examples
-	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -Xcentroid 
+	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -Xcentroid
 	@echo $(ROOT)/examples/baseNetwork
 	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
 	@echo $(ROOT)/examples/mfNetwork

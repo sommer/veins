@@ -51,7 +51,13 @@ distclean:
 	@rm -f examples/locNetwork/Makefile
 	@rm -f examples/positifNetwork/Makefile
 	@rm -f examples/multiChannel/Makefile
+	@rm -f tests/baseMobility/Makefile
+	@rm -f tests/coord/Makefile
+	@rm -f tests/connectionManager/Makefile
 	@(cd configurator; ${MAKE} distclean)
+	@rm -rf doc/api
+	@rm -rf doc/neddoc
+	@rm -f doc/miximtags.xml
 
 # documentation
 DOC_DIR=doc

@@ -4,7 +4,6 @@
 #include <QApplication>
 #include <qlineedit.h>
 #include <qdatetime.h>
-#include <q3datetimeedit.h>
 #include <qspinbox.h>
 #include <qcombobox.h>
 #include <qradiobutton.h>

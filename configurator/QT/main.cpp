@@ -53,6 +53,8 @@ skipComponentScan:
 //	a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 	ret = a.exec();
 	
+	printf("Returned with value: %d", ret);
+	
 	// write config file here
 	
 	/* general part */

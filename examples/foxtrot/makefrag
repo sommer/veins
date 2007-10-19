@@ -1,4 +1,4 @@
-CFLAGS:=$(filter-out -DNDEBUG=1,$(CFLAGS)) -Wall -O0 -Werror
+CFLAGS:=$(filter-out -DNDEBUG=1,$(CFLAGS)) -Wall -O0 -Wextra -Wno-unused
 LDFLAGS += -O0 -Wall
 
 #NEED = modules $(TARGET)

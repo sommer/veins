@@ -1,11 +1,11 @@
 #include "ui_node.h"
 #include "../miximConfiguratorCommon.h"
 
-class Node: public Q3Wizard, private Ui::Node {
+class Node: public QDialog, private Ui::Node {
 	Q_OBJECT
 
 	public:
-		Node(Q3Wizard *parent = NULL);
+		Node(QDialog *parent = NULL);
 		unsigned getCount(void);
 		QString getType(void);
 		QString getNetworkLayer(void);
@@ -19,5 +19,7 @@ class Node: public Q3Wizard, private Ui::Node {
 		void on_threeDCB_toggled(bool);
 		void on_dimXTB_textChanged(const QString&);
 		void on_fixedAnchorCB_toggled(bool);
+		void on_nextButton_clicked(void);
+		void on_cancelButton_clicked(void);
 };
 

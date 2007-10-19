@@ -39,7 +39,14 @@ distclean: clean
 	@del examples\baseNetwork\Makefile.vc
 	@del examples\locNetwork\Makefile.vc
 	@del examples\positifNetwork\Makefile.vc
-#	-@cd configurator && $(MAKE) distclean
+	@del tests\baseMobility\Makefile.vc
+	@del tests\coord\Makefile.vc
+	@del tests\connectionManager\Makefile.vc
+
+	-@cd configurator && $(MAKE) distclean
+	@deltree doc/api
+	@deltree doc/neddoc
+	@del doc/miximtags.xml
 
 # documentation
 DOC_DIR=doc

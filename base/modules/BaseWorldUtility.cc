@@ -24,10 +24,8 @@ Define_Module(BaseWorldUtility);
 
 const double BaseWorldUtility::speedOfLight = 299792458.0;
 
-void BaseWorldUtility::initialize(int stage)
-{
-	if (stage == 0)
-	{
+void BaseWorldUtility::initialize(int stage) {
+	if (stage == 0) {
         use2DFlag = par("use2D");
 
         if (use2DFlag) {
@@ -55,3 +53,4 @@ Coord BaseWorldUtility::getRandomPosition()
                      genk_uniform(0, 0, playgroundSize.getZ()));
     }
 }
+

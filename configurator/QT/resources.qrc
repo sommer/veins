@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/new/prefix1" >
+        <file>grid.xpm</file>
+        <file>random.xpm</file>
+    </qresource>
+</RCC>

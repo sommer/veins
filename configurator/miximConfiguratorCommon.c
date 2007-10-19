@@ -456,6 +456,8 @@ Module* _findModules(char* dir) {
 			fclose(file);
 		}
 	}
+	// TODO 
+	// add the base module to this list
 	free(fileString);
 	return firstModule;
 }
