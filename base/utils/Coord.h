@@ -338,6 +338,50 @@ public:
                 y >= upperLeftCorner.y && y <= lowerRightCorner.y &&
                 (use2DFlag || (z >= upperLeftCorner.z && z <= lowerRightCorner.z));
     }
+
+    /**
+     * Returns the minimal coordinates.
+     */
+    Coord min(const Coord& a) {
+        Coord tmp = *this;
+	tmp.setX(this->x < a.x ? this->x : a.x);
+	tmp.setY(this->y < a.y ? this->y : a.y);
+	if (tmp.is3D())
+		tmp.setZ(this->z < a.z ? this->z : a.z);
+        return tmp;
+    }
+
+    /**
+     * Returns the maximal coordinates.
+     */
+    Coord max(const Coord& a) {
+        Coord tmp = *this;
+	tmp.setX(this->x > a.x ? this->x : a.x);
+	tmp.setY(this->y > a.y ? this->y : a.y);
+	if (tmp.is3D())
+		tmp.setZ(this->z > a.z ? this->z : a.z);
+        return tmp;
+    }
+
+    /**
+     * Tests whether this coordinate vector is strictly larger
+     * than another coordinate vector.
+     */
+    friend bool operator>(const Coord& a, const Coord& b) {
+	return (a.x > b.x && 
+		a.y > b.y && 
+		(a.is3D() ? a.z > b.z : true));
+    }
+
+    /**
+     * Tests whether this coordinate vector is strictly smaller
+     * than another coordinate vector.
+     */
+    friend bool operator<(const Coord& a, const Coord& b) {
+	return (a.x < b.x && 
+		a.y < b.y && 
+		(a.is3D() ? a.z < b.z : true));
+    }
 };
 
 #endif
