@@ -38,19 +38,19 @@ module Sim
 
     submodules:
         strongChannel: ConnectionManager;
-            display: "p=75,25;i=eye14";
+            display: "p=75,25;i=abstract/multicast";
         weakChannel: ConnectionManager;
-            display: "p=50,25;i=eye14";
+            display: "p=50,25;i=abstract/multicast";
 		world: BaseWorldUtility;
             parameters:
                 playgroundSizeX = playgroundSizeX,
 				playgroundSizeY = playgroundSizeY,
 				playgroundSizeZ = playgroundSizeZ;
         strongNodes: Node[numHosts];
-            display: "p=50,50;i=node";
+            display: "p=50,50;i=device/wifilaptop";
             
         weakNodes: Node[numHosts];
-            display: "p=75,50;i=node";
+            display: "p=75,50;i=device/palm";
 
     connections nocheck:
     // all connections and gates are to be generated dynamically

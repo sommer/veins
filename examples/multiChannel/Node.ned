@@ -39,7 +39,7 @@ module Node
 
     submodules:
         utility: BaseUtility;
-            display: "p=130,38,rect;b=24,24;o=black";
+            display: "b=130,38,rect;b=24,24;o=black";
         //blackboard: Blackboard;
         //blackboard: BaseUtility;
        //     display: "p=200,75;b=30,25";
