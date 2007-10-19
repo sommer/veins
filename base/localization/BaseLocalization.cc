@@ -46,33 +46,36 @@ void BaseLocalization::initialize(int stage)
 
 void BaseLocalization::finish()
 {
+	EV << "BaseLocalization::finish()" 
+	   << pos.info() 
+	   << getPosition().info()
+	   << endl;
+
 	list<NodeInfo *>::iterator current;
 
 	EV << "Anchor neighbors(" << anchors.size() <<
 		") of node " << id << ": " << endl;
-	for (current = anchors.begin();
-	     current != anchors.end();
-	     current++) {
-		EV_clear << "\t" << (*current)->id << " <" <<
-			(*current)->pos.getX() << "," <<
-			(*current)->pos.getY() << ">:" << 
-			(*current)->pos.getTimestamp() << endl;
-// 		anchors.erase(current);
-// 		delete (*current);
+	while (anchors.begin() != anchors.end()) {
+		NodeInfo * node = *anchors.begin();
+		EV_clear << "\t" << node->id <<
+			node->pos.info() <<
+			node->pos.getTimestamp() << endl;
+		anchors.erase(anchors.begin());
+		delete node;
 	}
 
 	EV << "Regular neighbors(" << neighbors.size() <<
 		") of node " << id << ": " << endl;
-	for (current = neighbors.begin();
-	     current != neighbors.end();
-	     current++) {
-		EV_clear << "\t" << (*current)->id << " <" <<
-			(*current)->pos.getX() << "," <<
-			(*current)->pos.getY() << ">:" << 
-			(*current)->pos.getTimestamp() << endl;
-// 		neighbors.erase(current);
-// 		delete (*current);
+	while (neighbors.begin() != neighbors.end()) {
+		NodeInfo * node = *neighbors.begin();
+		EV_clear << "\t" << node->id <<
+			node->pos.info() <<
+			node->pos.getTimestamp() << endl;
+		neighbors.erase(neighbors.begin());
+		delete node;
 	}
+
+	BaseLayer::finish();
 }
 
 Coord BaseLocalization::getPosition()

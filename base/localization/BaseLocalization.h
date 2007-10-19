@@ -29,7 +29,9 @@
 #include "LocPkt_m.h"
 
 #include <list>
+#include <string>
 
+using std::string;
 /**
  * @brief Base class for maintaining node information for the anchor and
  * neighbor lists.
@@ -55,6 +57,13 @@ public:
 		  isAnchor(a),
 		  pos(p),
 		  distance(d) {}
+
+	std::string info() const {
+		std::stringstream os;
+		os << id << pos.info() << "@" << distance;
+		return os.str();
+	}
+
 	
 	/** Unique identifier of this node. */
 	int id;
