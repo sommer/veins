@@ -2,4 +2,8 @@ MAKEMAKE=opp_makemake
 
 OPTS=-f -b $(ROOT) -c $(ROOT)/omnetppconfig
 
+LIB_OPTS=-w
+
+MIXIM_LIB=$(ROOT)/lib
+
 include makemakefiles

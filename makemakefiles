@@ -5,28 +5,31 @@
 # Windows nmake!
 #
 
-# The vars ROOT, MAKEMAKE, OPTS, LIB_OPTS and CORE_LIB and CONTRIB_LIB have to
+# The vars ROOT, MAKEMAKE, OPTS, LIB_OPTS and MIXIM_LIB have to
 # be specified externally, in the OP specific makefiles
 
 #ROOT=`pwd`
 #MAKEMAKE=opp_makemake
 #OPTS=-f -b $(ROOT) -c $(ROOT)/omnetppconfig
-#LIB_OPTS=-w -o libmfcore -s 
-#CORE_LIB=-L$(ROOT)/core/lib -lmfcore
-#CONTRIB_LIB=-L$(ROOT)/contrib/lib -lmfcontrib
+#LIB_OPTS=-w -o libmixim -s 
+#MIXIM_LIB=-L$(ROOT)/lib -lmixim
 
 #--------------------------------------
-IBASE=-I$(ROOT)/base/utils -I$(ROOT)/base/messages -I$(ROOT)/base/modules -I$(ROOT)/base/timers -I$(ROOT)/base/connectionManager -I$(ROOT)/base/localization
+BASE=$(ROOT)/base
+IBASE=-I$(BASE)/utils -I$(BASE)/messages -I$(BASE)/modules -I$(BASE)/timers -I$(BASE)/connectionManager -I$(BASE)/localization
 
-IMODULES=-I$(ROOT)/modules/nic -I$(ROOT)/modules/mobility -I$(ROOT)/modules/utility -I$(ROOT)/modules/localization -I$(ROOT)/modules/node -I$(ROOT)/modules/netw -I$(ROOT)/modules/propagation -I$(ROOT)/modules/phy -I$(ROOT)/modules/mac
+MODULES=$(ROOT)/modules
+IMODULES=-I$(MODULES)/nic -I$(MODULES)/mobility -I$(MODULES)/utility -I$(MODULES)/localization -I$(MODULES)/node -I$(MODULES)/netw -I$(MODULES)/propagation -I$(MODULES)/phy -I$(MODULES)/mac
 
-I_ALL = $(IBASE) $(IMODULES)
+MIXIM_INCLUDE=-I$(ROOT)/include
+
+NET_OPTS=$(MIXIM_INCLUDE) $(MIXIM_LIB)
 #--------------------------------------
 
 
 all:
 	@echo $(ROOT)
-	@cd $(ROOT) && $(MAKEMAKE) $(OPTS) -r -n -Xdocumentation -Xconfigurator -Xdevelopment
+	@cd $(ROOT) && $(MAKEMAKE) $(OPTS) -r -n -X documentation -X doc -X configurator -X development
 
 	@echo $(ROOT)/base
 	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -r -n
@@ -46,59 +49,65 @@ all:
 	@echo $(ROOT)/modules
 	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) -r -n
 	@echo $(ROOT)/modules/utility
-	@cd $(ROOT)/modules/utility && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/utility && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES)
 	@echo $(ROOT)/modules/application
-	@cd $(ROOT)/modules/application && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/application && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/channel
-	@cd $(ROOT)/modules/channel && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/channel && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/mac
-	@cd $(ROOT)/modules/mac && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/mac && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/nic
-	@cd $(ROOT)/modules/nic && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/nic && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/netw
-	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/node
-	@cd $(ROOT)/modules/node && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/node && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/object
-	@cd $(ROOT)/modules/object && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/object && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/phy
-	@cd $(ROOT)/modules/phy && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/phy && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/mobility
-	@cd $(ROOT)/modules/mobility && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/mobility && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/netw
-	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/localization
-	@cd $(ROOT)/modules/localization && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/localization && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/propagation
-	@cd $(ROOT)/modules/propagation && $(MAKEMAKE) $(OPTS) -n $(I_ALL)
+	@cd $(ROOT)/modules/propagation && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
+
+	@echo $(ROOT)/include
+	@cd $(ROOT)/include && $(MAKEMAKE) $(OPTS) -n 
+	@echo $(ROOT)/lib
+	@cd $(ROOT)/lib && $(MAKEMAKE) $(OPTS) $(LIB_OPTS) $(IBASE) $(IMODULES)
 
 	@echo $(ROOT)/examples
 	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -Xcentroid
 	@echo $(ROOT)/examples/baseNetwork
-	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/mfNetwork
-	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/locNetwork
-	@cd $(ROOT)/examples/locNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/examples/locNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/positifNetwork
-	@cd $(ROOT)/examples/positifNetwork && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/examples/positifNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/foxtrot
-	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 #	@echo $(ROOT)/examples/centroid
-#	@cd $(ROOT)/examples/centroid && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+#	@cd $(ROOT)/examples/centroid && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/multiChannel
-	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 
+# TODO: normally test cases should be run in cmdenv mode need to be adapted anyway
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
 	@echo $(ROOT)/tests/test-cc-connections
-	@cd $(ROOT)/tests/test-cc-connections && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/tests/test-cc-connections && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/blackboard
-	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/coord
-	@cd $(ROOT)/tests/coord && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/tests/coord && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/connectionManager
-	@cd $(ROOT)/tests/connectionManager && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/tests/connectionManager && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/baseMobility
-	@cd $(ROOT)/tests/baseMobility && $(MAKEMAKE) $(OPTS) $(I_ALL) -w
+	@cd $(ROOT)/tests/baseMobility && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
     

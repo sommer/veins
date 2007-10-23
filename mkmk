@@ -8,6 +8,9 @@ ROOT=`pwd`
 # make omnetppconfig
 opp_makemake -f --genconfig omnetppconfig
 
+# copy lib makefrag for linux
+(cd $ROOT/lib && cp makefrag.linux makefrag)
+
 make ROOT=$ROOT -f Makefile.linux
 
 exit 0

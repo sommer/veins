@@ -6,47 +6,35 @@
 help:
 	@echo *******************************************************************
 	@echo 	Targets are:
-	@echo 	base_dir	-- create base library
-	@echo 	modules_dir	-- create the modules library
-	@echo 	tests_dir	-- create tests
-	@echo 	examples_dir	-- create example networks
-	@echo 	configurator_dir-- create the configuration tool
-	@echo 	all		-- create all of the above
-	@echo 	docs		-- create documentation
-	@echo 	clean		-- clean  everything up
-	@echo 	distclean	-- get back to pristine fresh state
+	@echo 	base_dir         -- create base library
+	@echo 	modules_dir      -- create the modules library
+	@echo 	lib_dir          -- create mixim library
+	@echo 	tests_dir        -- create tests
+	@echo 	examples_dir     -- create example networks
+	@echo 	configurator_dir -- create the configuration tool
+	@echo 	all              -- create all of the above
+	@echo 	docs             -- create documentation
+	@echo 	clean            -- clean  everything up
+	@echo 	distclean        -- get back to pristine fresh state
 	@echo *******************************************************************
 
 # make all
-all: base_dir modules_dir examples_dir tests_dir configurator_dir
+all: base_dir modules_dir lib_dir examples_dir tests_dir configurator_dir
 
 configurator_dir:
 	@(cd configurator; $(MAKE))
 
 distclean: clean
-	@del tests\Makefile.vc
-	@del modules\Makefile.vc
-	@del modules\mac\Makefile.vc
-	@del modules\phy\Makefile.vc
-	@del modules\application\Makefile.vc
-	@del modules\node\Makefile.vc
-	@del modules\object\Makefile.vc
-	@del modules\channel\Makefile.vc
-	@del modules\utility\Makefile.vc
-	@del modules\mobility\Makefile.vc
-	@del modules\nic\Makefile.vc
-	@del modules\localization\Makefile.vc
-	@del examples\baseNetwork\Makefile.vc
-	@del examples\locNetwork\Makefile.vc
-	@del examples\positifNetwork\Makefile.vc
-	@del tests\baseMobility\Makefile.vc
-	@del tests\coord\Makefile.vc
-	@del tests\connectionManager\Makefile.vc
-
 	-@cd configurator && $(MAKE) distclean
 	@deltree doc/api
 	@deltree doc/neddoc
 	@del doc/miximtags.xml
+
+# add dependencies:
+modules_dir: base_dir
+lib_dir: modules_dir include_dir
+examples_dir: lib_dir
+tests_dir: lib_dir
 
 # documentation
 DOC_DIR=doc

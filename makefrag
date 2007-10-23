@@ -7,57 +7,35 @@ help:
 	@echo 
 	@echo "*******************************************************************"
 	@echo "	Targets are:"
-	@echo "	base		-- create base library"
-	@echo "	modules		-- create the modules library"
-	@echo "	tests		-- create tests "
-	@echo "	examples	-- create example networks "
-	@echo "	configurator	-- create the configuration tool "
-	@echo "	all		-- create all of the above "
-	@echo "	docs		-- create documentation "
-	@echo "	clean		-- clean  everything up "
-	@echo "	distclean	-- get back to pristine fresh state "
+	@echo "	base         -- create base"
+	@echo "	modules      -- create modules"
+	@echo "	lib          -- create mixim library"
+	@echo "	tests        -- create tests "
+	@echo "	examples     -- create example networks "
+	@echo "	configurator -- create the configuration tool "
+	@echo "	all          -- create all of the above "
+	@echo "	docs         -- create documentation "
+	@echo "	clean        -- clean  everything up "
+	@echo "	distclean    -- get back to pristine fresh state "
 	@echo "*******************************************************************"
 
 # make all
-all: base modules examples tests configurator
-
-examples:modules
-
-modules:base
-
-tests:modules
+all: base modules lib examples tests configurator
 
 configurator:
 	@(cd configurator; ${MAKE})
 
-distclean:
-	-@$(MAKE) clean
-	@rm -f base/localization/Makefile
-	@rm -f tests/test-cc-connections/Makefile
-	@rm -f tests/blackboard/Makefile
-	@rm -f tests/Makefile
-	@rm -f modules/Makefile
-	@rm -f modules/mac/Makefile
-	@rm -f modules/phy/Makefile
-	@rm -f modules/application/Makefile
-	@rm -f modules/node/Makefile
-	@rm -f modules/object/Makefile
-	@rm -f modules/channel/Makefile
-	@rm -f modules/mobility/Makefile
-	@rm -f modules/utility/Makefile
-	@rm -f modules/nic/Makefile
-	@rm -f modules/localization/Makefile
-	@rm -f examples/baseNetwork/Makefile
-	@rm -f examples/locNetwork/Makefile
-	@rm -f examples/positifNetwork/Makefile
-	@rm -f examples/multiChannel/Makefile
-	@rm -f tests/baseMobility/Makefile
-	@rm -f tests/coord/Makefile
-	@rm -f tests/connectionManager/Makefile
-	@(cd configurator; ${MAKE} distclean)
+distclean: clean
+	@cd configurator &&  $(MAKE) distclean
 	@rm -rf doc/api
 	@rm -rf doc/neddoc
 	@rm -f doc/miximtags.xml
+
+# add dependencies:
+modules: base
+lib: modules include
+examples: lib
+tests: lib
 
 # documentation
 DOC_DIR=doc
