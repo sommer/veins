@@ -1,0 +1,29 @@
+Some things in advance:
+
+Every class you create for one diagram is known in each other diagram of the same
+jude file. Actualy they appear below the diagrams in your jude files structure.
+From there you can drag and drop them to every other diagram.
+
+
+How to hide operations and attributes in class diagramm:
+
+Mark every class, right click and turn "operation compartment visibility" 
+and "attribute compartment visibility" off.
+
+
+How to export single class diagramm as image:
+
+Select the class diagramm, select the part you want to export as image 
+(or nothing if the whole diagramm should be exported) and choose 
+"Tool->Export image->save diagram as png" from the menue.
+
+
+How to export multiple class diagrams in the same jude file:
+
+Choose "Tool->export image->save multiple diagrams as png" from the menue.
+Mark the diagrams you want to export in the upcoming dialogue.
+After clicking "ok" choose the folder where to save the images. The images 
+will be saved as:
+
+<your choosed folder>/<name of the jude file>/<diagram name>.png
+
