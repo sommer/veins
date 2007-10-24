@@ -1,0 +1,84 @@
+This file contains the general installation hints 
+to compile and start using MiXiM.
+
+
+Requirements
+============
+- OMNeT++, at least version 3.2, 
+  downloadable at www.omnetpp.org
+  OMNeT++ must be compiled with dynamic NED loading enabled 
+  (WITH_NETBUILDER=yes setting)
+- make (or nmake)
+- C++ compiler
+
+
+Installation under Linux
+========================
+1. Unpack the archive (you have probably already done so)
+   tar xzf mixim<VERSION>.tgz
+
+2. Update your LD_LIBRARY_PATH variable to include the
+   "mixim<VERSION>/lib" directory
+
+3. Update your PATH variable to include the
+   "mixim<VERSION>/bin" directory
+
+4. run the mkmk shell script
+   ./mkmk
+
+5. type "make all" to make the mixim library and binary 
+   and to build the test networks
+
+TODO: we need to be more precise how to get started!!!
+
+Finally try the example networks in the example folder or
+build your own network using the configurator
+
+
+Installation under Windows
+==========================
+1. Unpack the archive
+
+2. modify the variable OMNETPP_ROOT in mkmk.cmd to point to your
+   OMNeT++ installation directory.
+
+3. Update your PATH variable to include the
+   "mixim<VERSION>/bin" directory
+
+4. run the mkmk.cmd script
+   mkmk.cmd
+
+5. type "nmake /f Makefile.vc all" to make the mxim library and
+   binary and to build the test networks
+
+Finally try the example networks in the example folder or
+build your own network using the configurator
+
+
+Installation under MAC OS
+=========================
+There are two possibilities to install mixim under MAC OS,
+one is with shared libraries, one without.
+
+1. Unpack the archive (you have probably already done so)
+   tar xzf mixim<VERSION>.tgz
+
+2. Modify the mkmk.mac script and choose shared libraries or not
+   (just comment out the corresponding lines in the script)
+
+3. If you go for shared libraries you need to update your
+   DYLD_LIBRARY_PATH (NOT LD_LIBRARY!) variable to include the
+   "mixim<VERSION>/lib" directory
+
+4. Update your PATH variable to include the
+   "mixim<VERSION>/bin" directory
+
+5. run the mkmk.mac shell script
+   ./mkmk.mac
+
+6. type "make all" to make the mixim library and binary
+   and to build the test networks
+
+Finally try the example networks in the example folder or
+build your own network using the configurator
+
