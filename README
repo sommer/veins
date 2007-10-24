@@ -1,23 +1,101 @@
-MiXiM
-=====
-
-MiXiM is a simulator for wireless and mobile networks using the OMNeT++ simulation engine.
-
+MiXiM http://mixim.sourceforge.net/
+-----------------------------------
+-----------------------------------
 
 
+Contents
+========
+ - Purpose and History
+ - Copyright
+ - Authors
+ - Installation
+ - Documentation
+ - Release notes
 
-How to install?
----------------
-See the file INSTALL in the documentation directory.
 
+Purpose and History
+===================
+MiXiM (mixed simulator) is a simulator for wireless and mobile networks 
+using the OMNeT++ simulation engine.
+MiXiM is available at http://mixim.sourceforge.net/
+
+MiXiM is the attempt to merge several OMNeT++ simulators written to support
+mobile and wireless simulations.
+
+Those prdecessors of MiXiM are:
+- ChSim
+  http://www.cs.uni-paderborn.de/en/fachgebiete/research-group-computer-networks/projects/chsim.html
+  (c) by Universitaet Paderborn
+- Mac Simulator
+  http://www.consensus.tudelft.nl/software.html
+  (c) by Technische Universiteit Delft
+- Mobility Framework
+  http://mobility-fw.sourceforge.net/
+  (c) by Technische Universitaet Berlin, Telecommunication Networks Group
+- Positif Framework
+  http://www.consensus.tudelft.nl/software.html
+  (c) by Technische Universiteit Delft
+
+
+Copyright
+=========
+Copyright (C) 2007
+- Technische Universitaet Berlin (TUB), Germany
+  Telecommunication Networks Group
+- Technische Universiteit Delft (TUD), Netherlands
+- Universitaet Paderborn (UPB), Germany
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    The TUB, TUD, and UPB do not provide any warranty for MiXiM --
+    you did not pay for it! Further details can be found in the file
+    COPYING.
+
+    As a good practice, you should acknowledge the work done in MiXiM
+    just as you do if you cite a scientific work.
+
+
+Authors
+=======
+The current authors and maintainers of MiXiM are
+- Andreas Koepke, TUB (koepke@tkn.tu-berlin.de)
+- Hermann S. Lichte, UPB (hermann.lichte@uni-paderborn.de)
+- Tom Parker, TUD (t.e.v.parker@tudelft.nl)
+- Michael Swigulski, TUB (swigulski@tkn.tu-berlin.de)
+- Stefan Valentin, UPB (stefan.valentin@upb.de)
+- Otto Visser, TUD (electro@otvi.nl)
+- Karl Wessel, TUB (wessel@tkn.tu-berlin.de)
+- Daniel Willkomm, TUB (willkomm@tkn.tu-berlin.de)
+
+
+Installation
+============
+For installation instructions please see the INSTALL file
 
 
 Documentation
--------------
-All documentation can be found in the documentation subdirectory. If you still have questions after reading these, check out the website at http://mixim.sourceforge.net. There's also a forum there to discuss with other users and developers.
+==============
+All documentation can be found in the doc directory. If you still have questions 
+after reading these, check out the website at http://mixim.sourceforge.net. 
+
+To send any kind of feedback, bug reports, feature requests etc. please use the 
+OMNeT++ mailing list omnetpp-l@omnetpp.org.
+You have to subscribe to it first,
+see http://www.omnetpp.org/external/maillist.php for details.
 
 
+Release Notes
+=============
 
---
-
-MiXiM is distrivuted under the GPL license, which can be found in the COPYING file.
