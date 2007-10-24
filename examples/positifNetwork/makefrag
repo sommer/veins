@@ -1,4 +1,4 @@
-NEED = $(TARGET) bin/PositifScenario bin/RandomScenario bin/ChaosScenario
+NEED = $(TARGET) bin/PositifScenario bin/RandomScenario bin/ChaosScenario bin/FarmerScenario
 all: $(NEED)
 
 SCEN=mfExample
@@ -19,8 +19,11 @@ bin/RandomScenario: src/RandomScenario.cc src/Scenario.o
 bin/ChaosScenario: src/ChaosScenario.cc src/Scenario.o
 	$(CXX) $(NEDCOPTS) src/Scenario.o src/ChaosScenario.cc -o $@
 
+bin/FarmerScenario: src/FarmerScenario.cc src/Scenario.o
+	$(CXX) $(NEDCOPTS) src/Scenario.o src/FarmerScenario.cc -o $@
+
 rebuild:
-	(cd ../..;./mkmk locNetwork)
+	(cd ../..;./mkmk positifNetwork)
 	$(MAKE) re-makemake
 
 modules:
