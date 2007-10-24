@@ -9,6 +9,7 @@ help:
 	@echo 	base_dir         -- create base library
 	@echo 	modules_dir      -- create the modules library
 	@echo 	lib_dir          -- create mixim library
+	@echo	bin_dir          -- create mixim binary
 	@echo 	tests_dir        -- create tests
 	@echo 	examples_dir     -- create example networks
 	@echo 	configurator_dir -- create the configuration tool
@@ -19,7 +20,7 @@ help:
 	@echo *******************************************************************
 
 # make all
-all: base_dir modules_dir lib_dir examples_dir tests_dir configurator_dir
+all: base_dir modules_dir lib_dir bin_dir examples_dir tests_dir configurator_dir
 
 configurator_dir:
 	@(cd configurator; $(MAKE))
@@ -33,6 +34,7 @@ distclean: clean
 # add dependencies:
 modules_dir: base_dir
 lib_dir: modules_dir include_dir
+bin_dir: lib_dir
 examples_dir: lib_dir
 tests_dir: lib_dir
 

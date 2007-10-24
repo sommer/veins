@@ -1,6 +1,6 @@
 MAKEMAKE=opp_nmakemake
 
-OPTS=-f -b $(ROOT) -c $(OMNETPP_ROOT)/configuser.vc
+OPTS=-f -N -b $(ROOT) -c $(OMNETPP_ROOT)/configuser.vc
 
 LIB_OPTS=-w
 

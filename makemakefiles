@@ -79,23 +79,25 @@ all:
 	@cd $(ROOT)/include && $(MAKEMAKE) $(OPTS) -n 
 	@echo $(ROOT)/lib
 	@cd $(ROOT)/lib && $(MAKEMAKE) $(OPTS) $(LIB_OPTS) $(IBASE) $(IMODULES)
+	@echo $(ROOT)/bin
+	@cd $(ROOT)/bin && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -o mixim
 
 	@echo $(ROOT)/examples
-	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -Xcentroid
-	@echo $(ROOT)/examples/baseNetwork
-	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-	@echo $(ROOT)/examples/mfNetwork
-	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-	@echo $(ROOT)/examples/locNetwork
-	@cd $(ROOT)/examples/locNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -X centroid -X baseNetwork -X mfNetwork -X locNetwork -X multiChannelNetwork
+#	@echo $(ROOT)/examples/baseNetwork
+#	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+#	@echo $(ROOT)/examples/mfNetwork
+#	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+#	@echo $(ROOT)/examples/locNetwork
+#	@cd $(ROOT)/examples/locNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/positifNetwork
 	@cd $(ROOT)/examples/positifNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/foxtrot
 	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 #	@echo $(ROOT)/examples/centroid
 #	@cd $(ROOT)/examples/centroid && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-	@echo $(ROOT)/examples/multiChannel
-	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+#	@echo $(ROOT)/examples/multiChannel
+#	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 
 # TODO: normally test cases should be run in cmdenv mode need to be adapted anyway
 	@echo $(ROOT)/tests

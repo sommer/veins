@@ -1,6 +1,6 @@
 MAKEMAKE=opp_makemake 
 
-OPTS=-f -b $(ROOT) -c $(ROOT)/omnetppconfig
+OPTS=-f -N -b $(ROOT) -c $(ROOT)/omnetppconfig
 
 LIB_OPTS=-w
 

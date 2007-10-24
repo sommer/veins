@@ -10,6 +10,7 @@ help:
 	@echo "	base         -- create base"
 	@echo "	modules      -- create modules"
 	@echo "	lib          -- create mixim library"
+	@echo "	bin          -- create mixim binary"
 	@echo "	tests        -- create tests "
 	@echo "	examples     -- create example networks "
 	@echo "	configurator -- create the configuration tool "
@@ -20,7 +21,7 @@ help:
 	@echo "*******************************************************************"
 
 # make all
-all: base modules lib examples tests configurator
+all: base modules lib bin examples tests configurator
 
 configurator:
 	@(cd configurator; ${MAKE})
@@ -34,6 +35,7 @@ distclean: clean
 # add dependencies:
 modules: base
 lib: modules include
+bin: lib
 examples: lib
 tests: lib
 
