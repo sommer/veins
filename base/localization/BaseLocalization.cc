@@ -101,62 +101,53 @@ void BaseLocalization::sendMsg(cMessage * msg)
 	sendDown(msg);
 }
 
-bool BaseLocalization::newAnchor(cMessage * msg) {
+void BaseLocalization::newAnchor(cMessage * msg) {
 	LocPkt * m = dynamic_cast<LocPkt *>(msg);
 	NodeInfo * node = new NodeInfo(m, getPosition());
 	/* Check if this point already exists in the anchor
 	 * list. This check is made by position. */
-	bool newAnchor = true;
 	list<NodeInfo *>::const_iterator current;
 	for (current = anchors.begin(); 
 	     current != anchors.end();
 	     current ++) {
 		if (node->pos == (*current)->pos) {
-			newAnchor = false;
-			break;
+			delete node;
+			return;
 		}
 	}
-	/* Add new anchor to list. */
-	if (newAnchor) {
+
+	/* We didn't return, therefore new anchor */
+	if (handleNewAnchor(node)) 
 		anchors.push_back(node);
-		handleNewAnchor(node);
-	} else {
+	else
 		delete node;
-	}
-	return newAnchor;
 }
 
-bool BaseLocalization::newNeighbor(cMessage * msg) {
+void BaseLocalization::newNeighbor(cMessage * msg) {
 	LocPkt * m = dynamic_cast<LocPkt *>(msg);
 	NodeInfo * node = new NodeInfo(m, getPosition());
 	/* Check if this node already exists in the neighbor
 	 * list. This check is made by id. */
-	bool newNeighbor = true;
-	bool updatedNeighbor = false;
 	list<NodeInfo *>::iterator current;
 	for (current = neighbors.begin();
 	     current != neighbors.end();
 	     current ++) {
 		if (node->id == (*current)->id) {
-			newNeighbor = false;
 			if (node->pos != (*current)->pos) {
 				/* Update position information of this node. */
-				updatedNeighbor = true;
+				handleMovedNeighbor(node);
 				(*current)->pos = node->pos;
 			}
-			break;
+			delete node;
+			return;
 		}
 	}
-	if (updatedNeighbor) {
-		handleMovedNeighbor(node);
-	}
-	if (newNeighbor) {
+
+	/* We didn't return, therefore new neighbor */
+	if (handleNewNeighbor(node))
 		neighbors.push_back(node);
-		handleNewNeighbor(node);
-	} else {
+	else
 		delete node;
-	}
-	return newNeighbor;
 }
 
 cMessage *BaseLocalization::decapsMsg(cMessage * msg)

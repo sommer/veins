@@ -93,15 +93,11 @@ void Centroid::handleMsg( cMessage* msg )
 	if(isAnchor){/* anchor only stuff */
 	  EV << "Anchor "<<id<<" got anchor position message with contents: "<<receivedId<<"("<<x<<","<<y<<","<<z<<") at "<<receivedTs<<" anchor:"<<receivedIsAnchor<<"\n";
 	}
-	else {/* node only stuff */
-	  newAnchor(msg); // This is the standard way to add an anchor to the list of anchors heard. Do we want to redefine that?
-	}
 	delete msg;
         break;
     case NODE_BROADCAST_MESSAGE:
 	EV << "Node/anchor "<<id<<" got node position message with contents: "<<m->getId()<<"("<<m->getPos().getX()<<","<<m->getPos().getY()<<","<<m->getPos().getZ()<<") at "
 	   <<m->getPos().getTimestamp()<<" anchor:"<<m->getIsAnchor()<<"\n";
-	newNeighbor(msg);
 	delete msg;
 	break;
     default:

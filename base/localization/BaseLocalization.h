@@ -218,6 +218,18 @@ class BaseLocalization:public BaseLayer {
 	 * @brief Localization functions that can be redefined by
 	 * the programmer.
 	 */
+
+	/** @brief Perform actions on the anchor list
+	 *  @return true if the new anchor should be stored */
+	virtual bool handleNewAnchor(NodeInfo *) { return true;}
+	/** @brief Perform actions on the neighbor list
+	 *  @return true if the new neighbor should be stored */
+	virtual bool handleNewNeighbor(NodeInfo *) { return true;}
+	/** @brief Perform actions on the updated neighbor list */
+	virtual void handleMovedNeighbor(NodeInfo *) {}
+	/*@} */
+
+private:
 	/*@{ */
 	/** @brief Check if the sender of this position exists in the
 	 * anchor list.
@@ -227,9 +239,8 @@ class BaseLocalization:public BaseLayer {
 	 * have this point it is added to the anchor list and
 	 * handleNewAnchor() is called.
 	 * @param msg The received message (LocPkt)
-	 * @return true if this is a new anchor, false otherwise
 	 */
-	virtual bool newAnchor(cMessage * msg);
+	virtual void newAnchor(cMessage * msg);
 	/** @brief Check if the sender of this message exists in the
 	 * neighbor list or if the neighbor has an updated position.
 	 *
@@ -239,16 +250,8 @@ class BaseLocalization:public BaseLayer {
 	 * is called, otherwise the positions are compared and if the
 	 * position is updated handleMovedNeighbor() is called.
 	 * @param msg The received message (LocPkt)
-	 * @return true if this is a new neighbor, false otherwise
 	 */
-	virtual bool newNeighbor(cMessage * msg);
-	/** @brief Perform actions on the updated anchor list */
-	virtual void handleNewAnchor(NodeInfo *) {}
-	/** @brief Perform actions on the updated neighbor list */ 
-	virtual void handleNewNeighbor(NodeInfo *) {}
-	/** @brief Perform actions on the updated neighbor list */
-	virtual void handleMovedNeighbor(NodeInfo *) {}
-	/*@} */
+	virtual void newNeighbor(cMessage * msg);
 };
 
 #endif

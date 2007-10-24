@@ -135,7 +135,6 @@ void minmax::handleMsg( cMessage* msg )
 			else
 			{
 				/* node only stuff */
-			  	newAnchor(msg); // This is the standard way to add an anchor to the list of anchors 						    // heard. want to redefine that?
 				build_bounding_box(loc);
 			}
 			delete msg;
