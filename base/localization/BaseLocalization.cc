@@ -117,10 +117,9 @@ void BaseLocalization::newAnchor(cMessage * msg) {
 	}
 
 	/* We didn't return, therefore new anchor */
-	if (handleNewAnchor(node)) 
-		anchors.push_back(node);
-	else
-		delete node;
+	NodeInfo * node_info = handleNewAnchor(node);
+	if (node_info) 
+		anchors.push_back(node_info);
 }
 
 void BaseLocalization::newNeighbor(cMessage * msg) {
@@ -144,10 +143,9 @@ void BaseLocalization::newNeighbor(cMessage * msg) {
 	}
 
 	/* We didn't return, therefore new neighbor */
-	if (handleNewNeighbor(node))
-		neighbors.push_back(node);
-	else
-		delete node;
+	NodeInfo * node_info = handleNewNeighbor(node);
+	if (node_info)
+		neighbors.push_back(node_info);
 }
 
 cMessage *BaseLocalization::decapsMsg(cMessage * msg)

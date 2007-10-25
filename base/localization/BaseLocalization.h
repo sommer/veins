@@ -220,11 +220,17 @@ class BaseLocalization:public BaseLayer {
 	 */
 
 	/** @brief Perform actions on the anchor list
-	 *  @return true if the new anchor should be stored */
-	virtual bool handleNewAnchor(NodeInfo *) { return true;}
+	 * 
+	 * When the anchor doesn't need to be stored, this function must
+	 * delete the node.
+	 *  @return the anchor if it should be stored, NULL otherwise */
+	virtual NodeInfo * handleNewAnchor(NodeInfo * node) { return node; }
 	/** @brief Perform actions on the neighbor list
-	 *  @return true if the new neighbor should be stored */
-	virtual bool handleNewNeighbor(NodeInfo *) { return true;}
+	 *
+	 * When the node doesn't need to be stored, this function must
+	 * delete the node.
+	 *  @return the node if the new neighbor should be stored, NULL otherwise */
+	virtual NodeInfo * handleNewNeighbor(NodeInfo * node) { return node; }
 	/** @brief Perform actions on the updated neighbor list */
 	virtual void handleMovedNeighbor(NodeInfo *) {}
 	/*@} */
