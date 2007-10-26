@@ -15,23 +15,26 @@ MODULESNEDS = $(foreach dir,$(MODULESDIRS),$(wildcard $(dir)/*.ned))
 
 
 # default target
-all: basestuff modulesstuff
+all:: .tstamp
+
+.tstamp: .basestuff_tstamp .modulesstuff_tstamp
+	 @echo > .tstamp
 
 # copy base header and ned files
-basestuff:
+.basestuff_tstamp: $(BASEHEADERS) $(BASENEDS)
 	@cp $(BASEHEADERS) .
 	@cp $(BASENEDS) .
-	@echo >.tstamp
+	@echo > .basestuff_tstamp
 
 # copy core header and ned files
-modulesstuff:
+.modulesstuff_tstamp: $(MODULESHEADERS) $(MODULESNEDS)
 	@cp $(MODULESHEADERS) .
 	@cp $(MODULESNEDS) .
-	@echo >.tstamp
+	@echo >.modulesstuff_tstamp
 
 # remove all header and ned files
 rm:
-	rm -f *.h *.ned
+	rm -f *.h *.ned .tstamp .basestuff_tstamp .modulesstuff_tstamp
 
 # make clean depends on rm
 clean: rm
