@@ -34,7 +34,8 @@ distclean: clean
 
 # add dependencies:
 modules: base
-lib: modules include
+include: modules
+lib: include
 bin: lib
 examples: lib
 tests: lib

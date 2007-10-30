@@ -33,7 +33,8 @@ distclean: clean
 
 # add dependencies:
 modules_dir: base_dir
-lib_dir: modules_dir include_dir
+include_dir: modules_dir
+lib_dir: include_dir
 bin_dir: lib_dir
 examples_dir: lib_dir
 tests_dir: lib_dir
