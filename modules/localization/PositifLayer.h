@@ -24,11 +24,11 @@
 #define BASELOC_H
 
 #include <BaseLayer.h>
-
+#include "PositifUtil.h"
 #include "Position.h"
 #include "LocPkt_m.h"
-#include "refine.h"
 #include "main.h"
+#include "refine.h"
 #include "RepeatTimer.h"
 #include "cores.h"
 #include "Coord.h"
@@ -43,6 +43,7 @@
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define MIN(a,b) (((a)<(b))?(a):(b))
+#define	ROUND(x) (int)((double)x+0.5)
 
 #define MSG_POSITION MSG_TYPE_BASE+1
 
@@ -123,7 +124,7 @@ extern timer_info _timers[MAX_TIMERS];
  * @ingroup localization
  * @author Peterpaul Klein Haneveld
  **/
-class PositifLayer:public BaseLayer, public RepeatTimer {
+class PositifLayer:public BaseLayer, public RepeatTimer, public PositifUtil {
 
       protected:
 	/**
@@ -163,7 +164,6 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 	static int num_anchors;
 	static int algorithm;
 	static int version;
-	static int nr_dims;
 	static node_info *node;
 	static FLOAT range;
 	static FLOAT area;
@@ -196,7 +196,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 
 
 	// Timer functions
-	timer_info *timer(int reps, int handler, void *arg = NULL);
+	timer_info *timer(int reps, int handler, void *arg = NULL, double period = 1.0);
 	void addTimer(timer_info * e);
 	void resetTimer(timer_info * e);
 	void resetAllTimers(void);
@@ -207,18 +207,23 @@ class PositifLayer:public BaseLayer, public RepeatTimer {
 		    ("Subclasses of PositifLayer should implement handleTimer()");
 	}
 	void send(cMessage * msg);	// synchronous send
-	FLOAT distance(Position, Position);
-	FLOAT savvides_minmax(int n_pts, FLOAT ** positions,
-			      FLOAT * ranges, FLOAT * confs, int target);
-	FLOAT triangulate(int n_pts, FLOAT ** positions,
-			  FLOAT * ranges, FLOAT * weights, int target);
-	FLOAT hoptriangulate(int n_pts, FLOAT ** positions,
-			     FLOAT * ranges, int target);
+// 	FLOAT distance(Position, Position);
+// 	FLOAT savvides_minmax(int n_pts, FLOAT ** positions,
+// 			      FLOAT * ranges, FLOAT * confs, int target);
+// 	FLOAT triangulate(int n_pts, FLOAT ** positions,
+// 			  FLOAT * ranges, FLOAT * weights, int target);
+// 	FLOAT hoptriangulate(int n_pts, FLOAT ** positions,
+// 			     FLOAT * ranges, int target);
 
 
 	void write_statistics();
 // 	void write_configuration(const char *);
 	void statistics(bool);
+
+	virtual int numInitStages() const {
+		return 3;
+	}
+
       protected:
 	/** 
 	 * @name Handle Messages

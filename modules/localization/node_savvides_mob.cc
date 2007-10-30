@@ -53,7 +53,6 @@ typedef struct {
 	bool twin;
 } nghbor_info;
 
-
 typedef struct {
 	FLOAT res; 
 	FLOAT sum_conf;
@@ -69,7 +68,7 @@ void delete_tria_data (void * _data) {
 
 using std::list;
 
-class Node_Savvides_Mob:public PositifLayer {
+class Node_Savvides_Mob: public PositifLayer {
 	double accuracy;
 
 	list<timer_info> triangulation_timers;
@@ -104,6 +103,7 @@ class Node_Savvides_Mob:public PositifLayer {
 	
 	void check_if_moved(void);
 	virtual void receiveBBItem(int, const BBItem*, int);
+	Coord startPosition;
 	/*@} */
 
 	void remove_triangulation_timer(timer_info timer);
@@ -129,9 +129,11 @@ class Node_Savvides_Mob:public PositifLayer {
 	double true_pos_triangulate(void);
 
       public:
-	 Module_Class_Members(Node_Savvides_Mob, PositifLayer, 0)
-	    // Implement Node's abstract functions.
-	virtual void analyzeTopology(void) {}
+	Module_Class_Members(Node_Savvides_Mob, PositifLayer, 0)
+
+// 	virtual void analyzeTopology(void) {}
+
+	// Implement Node's abstract functions.
 	virtual void init(void);
 	virtual void handleTimer(timer_info * timer);
 	virtual void handleStartMessage(cMessage * msg);
@@ -145,6 +147,8 @@ void Node_Savvides_Mob::init(void)
 {
 	algorithm = 1;		// Output on raw data line only.
 	version = 8;
+
+	startPosition = getPosition();
 
         // get utility pointers (world and host)
 	world = FindModule<BaseWorldUtility*>::findGlobalModule();
@@ -195,6 +199,8 @@ void Node_Savvides_Mob::receiveBBItem(int category,
 				      int scopeModuleId)
 {
 	BaseModule::receiveBBItem(category, details, scopeModuleId);
+	const Move * _move = dynamic_cast<const Move *>(details);
+	move = *_move;
 	check_if_moved();
 }
 
@@ -264,6 +270,16 @@ void Node_Savvides_Mob::check_if_moved(void)
 			/* Reschedule TIMER_SEND_ANCHOR */
 			resetTimer(bc_anchor);
 		}
+
+		fprintf (stdout, "speed: %g\n", move.speed);
+
+		double ddistance = startPosition.distance(pos);
+		if (ddistance < move.speed) {
+			memcpy(NULL, &move, sizeof(move));
+			write_statistics();
+		} else {
+			startPosition = pos;
+		}
 	} else {
 		EV_clear << "nope." << endl;
 	}
@@ -307,7 +323,7 @@ void Node_Savvides_Mob::handleStartMessage(cMessage * msg)
 	i_am_a_twin = false;
 	confidence = (status == STATUS_ANCHOR) ? 1 : ZERO_CONF;
 
-	bc_anchor = timer(reps, TIMER_SND_ANC, NULL);
+	bc_anchor = timer(reps, TIMER_SND_ANC, NULL, 0.5);
 //      bc_anchor->cnt = 0;
 	cancelTimer(bc_anchor);
 	addTimer(bc_anchor);
@@ -315,17 +331,17 @@ void Node_Savvides_Mob::handleStartMessage(cMessage * msg)
 	// Is there an initialization (terrain) phase?
 	if (status == STATUS_ANCHOR) {
 // 		// Anchor nodes know where they are, so initialization starts from here
-// 		anchor_info *ME = new anchor_info;
+		anchor_info *ME = new anchor_info;
 
-// 		ME->idx = me;
-// 		ME->path_dst = 0.0;
-// 		memcpy(ME->position, position, sizeof(position));
-// 		ME->cnt = reps;
-// 		ME->flood = true;
-// 		resetTimer(bc_anchor);
-// 		anchors.push_back(ME);
+		ME->idx = me;
+		ME->path_dst = 0.0;
+		memcpy(ME->position, position, sizeof(position));
+		ME->cnt = reps;
+		ME->flood = true;
+		resetTimer(bc_anchor);
+		anchors.push_back(ME);
 
-		bc_position = timer(reps, TIMER_SND_POS);
+		bc_position = timer(reps, TIMER_SND_POS, NULL, 0.5);
 		bc_pos_delay = 0;
 		addTimer(bc_position);
 	}
@@ -597,6 +613,7 @@ bool Node_Savvides_Mob::new_anchor(cMessage * msg)
 		anchor_info *anchor = new anchor_info;
 		get_struct2(msg, parname, anchor);
 		anchor->path_dst += distance;
+		anchor->last_hop_idx = msg->par("src");
 		
 		if (anchor->idx == me)
 			continue;
@@ -627,7 +644,6 @@ bool Node_Savvides_Mob::new_anchor(cMessage * msg)
 				anchor->flood = true;
 			else
 				anchor->flood = false;
-			anchor->last_hop_idx = msg->par("src");
 			anchor->cnt = reps;
 			resetTimer(bc_anchor);
 			changed = true;
@@ -640,6 +656,7 @@ bool Node_Savvides_Mob::new_anchor(cMessage * msg)
 			EV_clear << "no new anchor" << endl;
 			if (anchor->last_hop_idx != old_anchor->last_hop_idx
 			    && anchor->path_dst < old_anchor->path_dst) {	// Found it, but the new one has a shorter path.
+//			if (anchor->path_dst < old_anchor->path_dst) {	// Found it, but the new one has a shorter path.
 				old_anchor->path_dst = anchor->path_dst;
 				old_anchor->last_hop_idx = msg->par("src");
 				old_anchor->cnt = reps;

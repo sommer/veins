@@ -30,15 +30,7 @@
 #define get_struct2(m,s,p)	memmove( (p), (m)->par(s), sizeof(*(p)))
 #define get_array(m,s,p,n)	memmove( (p), (m)->par(s), (n)*sizeof(*(p)))
 
-
-/* // message kind values (packet types): */
-/* #define MSG_START     0 */
-/* #define MSG_STOP      1 */
-/* #define MSG_RETRY     2 */
-/* #define MSG_TIME_OUT  3 */
-/* #define MSG_DONE      4 */
-/* #define MSG_TYPE_BASE 5 */
-
+// message kind values (packet types):
 enum {
 	MSG_START = 0,
 	MSG_STOP,
@@ -60,8 +52,7 @@ enum {
 // Possible status of nodes:
 typedef enum {
 	STATUS_ANCHOR = 0 /* This node has a known position */ ,
-	STATUS_UNKNOWN =
-	    1 /* This node has not yet been able to estimate a position */ ,
+	STATUS_UNKNOWN = 1 /* This node has not yet been able to estimate a position */ ,
 	STATUS_POSITIONED = 2 /* This node has estimated its position */ ,
 	STATUS_BAD = 3		/* This is a bad node (meaning will depend on the algorithm) */
 } NodeState;

@@ -5,18 +5,13 @@
 	Date:		2/28/01
  ********************************/
 
-//#define DEBUG // causes compiler to include debug printfs to log file.  comment this line out to turn off debugging
-
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "main.h"
 #include "cores.h"
 #include "pos_tools.h"
 
-int triangulate(struct myParams *params, int neighbor_count, float **positions,
-		float *ranges, float *weights, float *new_loc, float *dop)
 // entry point.  performs triangulation using core algorithm and dimension specified by params.
 // neighbor_count specifies the number of nodes being used to triangulate the target
 // positions is a (neighbor_count x params->dim) matrix giving the x,y(,z) coordinates of the neighbors
@@ -27,10 +22,9 @@ int triangulate(struct myParams *params, int neighbor_count, float **positions,
 // new_loc must have been allocated externally.  only the pointer should be passed.
 // dop contains the dillution of precision measurement, to be used to define a confidence metric
 // returns 1 if successful triangulation, 0 if error
+int triangulate(struct myParams *params, int neighbor_count, float **positions,
+		float *ranges, float *weights, float *new_loc, float *dop)
 {
-#ifdef DEBUG
-	int debugi, debugj;
-#endif
 	float **a, *b;
 
 	a = matrix(0, neighbor_count - 2, 0, params->dim - 1);
@@ -39,22 +33,6 @@ int triangulate(struct myParams *params, int neighbor_count, float **positions,
 	switch (params->alg_sel)	// choose algorithm
 	{
 	case 0:		// Traditional least squares
-#ifdef DEBUG
-		openlog(params);
-		fprintf(params->logfile, "\n###### DEBUG INFO ######\n");
-		fprintf(params->logfile, "triangulate(), positions matrix:\n");
-		for (debugi = 0; debugi < neighbor_count; debugi++) {
-			for (debugj = 0; debugj < params->dim; debugj++)
-				fprintf(params->logfile, "%5.2f ",
-					positions[debugi][debugj]);
-			fprintf(params->logfile, "\n");
-		}
-		fprintf(params->logfile, "triangulate(), ranges vector:\n");
-		for (debugi = 0; debugi < neighbor_count; debugi++)
-			fprintf(params->logfile, "%5.2f\n", ranges[debugi]);
-		fprintf(params->logfile, "########################\n\n");
-		fclose(params->logfile);
-#endif
 		linearize_positions(params->dim, neighbor_count, positions,
 				    ranges, a, b);
 		*dop = compute_dop(a, b, neighbor_count - 1, params->dim);
@@ -103,14 +81,11 @@ int triangulate(struct myParams *params, int neighbor_count, float **positions,
 }
 
 
+// Koen: similar to triangulate but estimate hop distance too
 int hoptriangulate(struct myParams *params, int neighbor_count,
 		   float **positions, float *ranges, float *weights,
 		   float *new_loc, float *est_range)
-// Koen: similar to triangulate but estimate hop distance too
 {
-#ifdef DEBUG
-	int debugi, debugj;
-#endif
 	float **a, *b, *c;
 
 	if (neighbor_count < params->dim + 1)
@@ -123,22 +98,6 @@ int hoptriangulate(struct myParams *params, int neighbor_count,
 	switch (params->alg_sel)	// choose algorithm
 	{
 	case 0:		// Traditional least squares
-#ifdef DEBUG
-		openlog(params);
-		fprintf(params->logfile, "\n###### DEBUG INFO ######\n");
-		fprintf(params->logfile, "triangulate(), positions matrix:\n");
-		for (debugi = 0; debugi < neighbor_count; debugi++) {
-			for (debugj = 0; debugj < params->dim; debugj++)
-				fprintf(params->logfile, "%5.2f ",
-					positions[debugi][debugj]);
-			fprintf(params->logfile, "\n");
-		}
-		fprintf(params->logfile, "triangulate(), ranges vector:\n");
-		for (debugi = 0; debugi < neighbor_count; debugi++)
-			fprintf(params->logfile, "%5.2f\n", ranges[debugi]);
-		fprintf(params->logfile, "########################\n\n");
-		fclose(params->logfile);
-#endif
 		hoplinearize_positions(params->dim, neighbor_count, positions,
 				       ranges, a, b);
 		if (params->conf_mets)
@@ -185,8 +144,6 @@ int hoptriangulate(struct myParams *params, int neighbor_count,
 }
 
 
-void linearize_positions(int dim, int neighbor_count, float **positions,
-			 float *ranges, float **a, float *b)
 // linearizes scenario for solution by least squares
 // positions, ranges, a, and b data structures must be allocated externally.
 // results returned in a and b
@@ -194,6 +151,8 @@ void linearize_positions(int dim, int neighbor_count, float **positions,
 // ranges is a (neighbor_count x 1) vector
 // a is a (neighbor_count-1 x dim) matrix
 // b is a (neighbor_count-1 x 1) vector
+void linearize_positions(int dim, int neighbor_count, float **positions,
+			 float *ranges, float **a, float *b)
 {
 	int i, j;
 
@@ -222,8 +181,6 @@ void linearize_positions(int dim, int neighbor_count, float **positions,
 }
 
 
-void hoplinearize_positions(int dim, int neighbor_count, float **positions,
-			    float *ranges, float **a, float *b)
 // linearizes scenario for solution by least squares
 // positions, ranges, a, and b data structures must be allocated externally.
 // results returned in a and b
@@ -231,6 +188,8 @@ void hoplinearize_positions(int dim, int neighbor_count, float **positions,
 // ranges is a (neighbor_count x 1) vector
 // a is a (neighbor_count-1 x dim+1) matrix
 // b is a (neighbor_count-1 x 1) vector
+void hoplinearize_positions(int dim, int neighbor_count, float **positions,
+			    float *ranges, float **a, float *b)
 {
 	int i, j;
 
@@ -259,10 +218,10 @@ void hoplinearize_positions(int dim, int neighbor_count, float **positions,
 /********************************************************************************
  * Application of weights to position and range structures						*
  ********************************************************************************/
-void apply_weights(float **a, float *b, float *w, long m, long n)
 // applies the weights contained in w to a and b.
 // a is a (mxn) matrix.
 // b and w are (mx1) arrays.
+void apply_weights(float **a, float *b, float *w, long m, long n)
 {
 // be careful...  linearization screwed up the order...
 // for now, just assume linearize_positions() used the last node for linearization.  fix later to accomodate residue rotations
@@ -279,9 +238,9 @@ void apply_weights(float **a, float *b, float *w, long m, long n)
 /********************************************************************************
  * Dillution of Precision														*
  ********************************************************************************/
-float compute_dop(float **a, float *b, long m, long n)
 // a is the matrix to be operated on, and has dimensions (m x n).  returns DOP value.
 // a is not affected.
+float compute_dop(float **a, float *b, long m, long n)
 {
 	int i;
 	float **aT, **aTa, **aTainv;
@@ -313,11 +272,11 @@ float compute_dop(float **a, float *b, long m, long n)
 /********************************************************************************
  * Least Squares, traditional method: x = (A' * A)^-1 * A' * b					*
  ********************************************************************************/
-int ls_trad(float **a, float *b, long m, long n, float *new_loc)
 // traditional least squares solution to Ax=b, where dimensions of A are mxn, dimensions of b are mx1, and dimensions of new_loc are nx1
 // a and b should be constructed using linearize_positions()
 // new_loc must be allocated externally.
 // returns 1 if successful triangulation, 0 if error
+int ls_trad(float **a, float *b, long m, long n, float *new_loc)
 {
 	int i, j;
 	float **aT, **aTa, **aTainv, **aTaaT;
@@ -365,82 +324,69 @@ int ls_trad(float **a, float *b, long m, long n, float *new_loc)
 	 * THIS DOES NOT WORK YET *
 	 **************************/
 
-float *ls_qr(float **a, float *b, long m, long n)
 // QR least squares solution to Ax=b, where dimensions of A are mxn, dimensions of b are mx1, and dimensions of x are nx1
 // a and b should be constructed using linearize_scenario()
 // x allocated internally
-{
-/*	int i;
-	float **A, **Q, **R, *b, *x;
+// float *ls_qr(float **a, float *b, long m, long n)
+// {
+// 	int i;
+// 	float **A, **Q, **R, *b, *x;
 	
-	// allocate matricies
-//	A = matrix(0,params->net_size-3,0,params->dim-1);
-//	Q = matrix(0,params->net_size-3,0,params->dim-1);
-//	R = matrix(0,params->dim-1,0,params->dim-1);
-//	b = vector(0,params->net_size-3);
+// 	// allocate matricies
+// //	A = matrix(0,params->net_size-3,0,params->dim-1);
+// //	Q = matrix(0,params->net_size-3,0,params->dim-1);
+// //	R = matrix(0,params->dim-1,0,params->dim-1);
+// //	b = vector(0,params->net_size-3);
 
-	// allocate matricies
-	A = matrix(0,params->net_size-3,0,params->dim-1);
-	Q = matrix(0,params->net_size-3,0,params->net_size-3);
-	R = matrix(0,params->net_size-3,0,params->dim-1);
-	b = vector(0,params->net_size-3);
+// 	// allocate matricies
+// 	A = matrix(0,params->net_size-3,0,params->dim-1);
+// 	Q = matrix(0,params->net_size-3,0,params->net_size-3);
+// 	R = matrix(0,params->net_size-3,0,params->dim-1);
+// 	b = vector(0,params->net_size-3);
 
+// 	//QR decomposition of matrix A
+//   	qrdcmp(A,Q,R,params->net_size-2,params->dim);
 
-	//QR decomposition of matrix A
-  	qrdcmp(A,Q,R,params->net_size-2,params->dim);
+// 	//Solve x = inv(R)*trans(Q)*b
+// 	x = solveQRb(R,Q,b,params->net_size-2,params->dim);
 
-	//Solve x = inv(R)*trans(Q)*b
-	x = solveQRb(R,Q,b,params->net_size-2,params->dim);
+// 	// debug
+// 	printf("A:\n");
+// 	print_matrix(A,0,params->net_size-3,0,params->dim-1);
+// 	printf("\nb:\n");
+// 	for (i=0;i<params->net_size-2;i++)
+// 		printf("%f\n",b[i]);
+// //	printf("\nQ:\n");
+// //	print_matrix(Q,0,params->net_size-3,0,params->net_size-3);
+// //	printf("\nR:\n");
+// //	print_matrix(R,0,params->net_size-3,0,params->dim-1);
 
-
-
-
-
-	// debug
-	printf("A:\n");
-	print_matrix(A,0,params->net_size-3,0,params->dim-1);
-	printf("\nb:\n");
-	for (i=0;i<params->net_size-2;i++)
-		printf("%f\n",b[i]);
-//	printf("\nQ:\n");
-//	print_matrix(Q,0,params->net_size-3,0,params->net_size-3);
-//	printf("\nR:\n");
-//	print_matrix(R,0,params->net_size-3,0,params->dim-1);
-
-
-
-*/
-	return (0);
-}
-
+// 	return (0);
+// }
 
 
 /********************************************************************************
  * Least Squares using SVD														*
  ********************************************************************************/
-
-float *ls_svd(float **a, float *b, long m, long n)
 // SVD least squares solution to Ax=b, where dimensions of A are mxn, dimensions of b are mx1, and dimensions of x are nx1
 // a and b should be constructed using linearize_scenario()
 // x allocated internally
-{
-
-	return (0);
-}
-
+// float *ls_svd(float **a, float *b, long m, long n)
+// {
+// 	return (0);
+// }
 
 
 /********************************************************************************
  * MMSE																			*
  ********************************************************************************/
-float *mmse(struct myParams *params, struct myScenario *scenario, int target_id)
 // minimum mean square error triangulation solution
 // x allocated internally
-{
-	// shouldn't be passing params and scenario... set up externally, as in ls methods
-
-	return (0);
-}
+// float *mmse(struct myParams *params, struct myScenario *scenario, int target_id)
+// {
+// 	// shouldn't be passing params and scenario... set up externally, as in ls methods
+// 	return (0);
+// }
 
 
 /********************************************************************************
@@ -448,16 +394,4 @@ float *mmse(struct myParams *params, struct myScenario *scenario, int target_id)
  ********************************************************************************/
 void triang_err_msg(struct myParams *params)
 {
-#ifdef DEBUG
-	openlog(params);
-	fprintf(params->logfile,
-		"#####################################################################\n");
-	fprintf(params->logfile,
-		"# Triangulation failure due to numerical recipes run-time error.    #\n");
-	fprintf(params->logfile,
-		"# Aborting individual triangulation and continuing with simulation. #\n");
-	fprintf(params->logfile,
-		"#####################################################################\n\n");
-	fclose(params->logfile);
-#endif
 }				// triang_err_msg()

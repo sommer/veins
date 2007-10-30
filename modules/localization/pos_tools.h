@@ -8,11 +8,12 @@
 #ifndef __pos_tools__h
 #define __pos_tools__h
 
+#include <omnetpp.h>
+
 // constants
 #ifndef RAND_MAX
 #define RAND_MAX 0x7fff		// maximum return from rand()
 #endif
-#define PI 3.141592
 #define FREE_ARG char*
 #define NR_END 0
 #define TINY 1.0e-20

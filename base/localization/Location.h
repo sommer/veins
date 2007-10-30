@@ -63,6 +63,9 @@ public:
 		if (is3D())
 			setZ(c.getZ());
 	}
+	double getError(Coord c, double range) {
+		return 100 * distance(c) / range;
+	}
 private:
 	simtime_t timestamp;
 	double confidence;

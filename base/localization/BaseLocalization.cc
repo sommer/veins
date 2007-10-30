@@ -53,24 +53,38 @@ void BaseLocalization::finish()
 
 	list<NodeInfo *>::iterator current;
 
-	EV << "Anchor neighbors(" << anchors.size() <<
-		") of node " << id << ": " << endl;
+	EV << "Anchor neighbors("
+	   << anchors.size()
+	   << ") of node "
+	   << id
+	   << ": "
+	   << endl;
 	while (anchors.begin() != anchors.end()) {
 		NodeInfo * node = *anchors.begin();
-		EV_clear << "\t" << node->id <<
-			node->pos.info() <<
-			node->pos.getTimestamp() << endl;
+		EV_clear << "\t"
+			 << node->info()
+			 << " at "
+			 << node->pos.getTimestamp()
+			 << " s"
+			 << endl;
 		anchors.erase(anchors.begin());
 		delete node;
 	}
 
-	EV << "Regular neighbors(" << neighbors.size() <<
-		") of node " << id << ": " << endl;
+	EV << "Regular neighbors("
+	   << neighbors.size()
+	   << ") of node "
+	   << id
+	   << ": "
+	   << endl;
 	while (neighbors.begin() != neighbors.end()) {
 		NodeInfo * node = *neighbors.begin();
-		EV_clear << "\t" << node->id <<
-			node->pos.info() <<
-			node->pos.getTimestamp() << endl;
+		EV_clear << "\t"
+			 << node->pos.info()
+			 << " at "
+			 << node->pos.getTimestamp()
+			 << " s"
+			 << endl;
 		neighbors.erase(neighbors.begin());
 		delete node;
 	}

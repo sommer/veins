@@ -24,10 +24,10 @@ int hoptriangulate(struct myParams *params, int neighbor_count,
 void hoplinearize_positions(int dim, int neighbor_count, float **positions,
 			    float *ranges, float **a, float *b);
 int ls_trad(float **a, float *b, long m, long n, float *new_loc);
-float *ls_qr(float **a, float *b, long m, long n);
-float *ls_svd(float **a, float *b, long m, long n);
-float *mmse(struct myParams *params, struct myScenario *scenario,
-	    int target_id);
+/* float *ls_qr(float **a, float *b, long m, long n); */
+/* float *ls_svd(float **a, float *b, long m, long n); */
+/* float *mmse(struct myParams *params, struct myScenario *scenario, */
+/* 	    int target_id); */
 void apply_weights(float **a, float *b, float *w, long m, long n);
 float compute_dop(float **a, float *b, long m, long n);
 void triang_err_msg(struct myParams *params);

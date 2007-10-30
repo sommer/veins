@@ -58,9 +58,9 @@ public:
 		  pos(p),
 		  distance(d) {}
 
-	std::string info() const {
+	virtual std::string info() const {
 		std::stringstream os;
-		os << id << pos.info() << "@" << distance;
+		os << id << "@" << pos.info() << "@" << distance;
 		return os.str();
 	}
 
