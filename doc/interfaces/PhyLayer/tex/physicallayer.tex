@@ -1,15 +1,18 @@
 \documentclass[10pt, a4paper]{article}
 \usepackage[latin1]{inputenc}
 \usepackage{graphicx}
+\usepackage[pdftex, linkbordercolor={0 0 1}]{hyperref}
 \pagestyle{empty}
 
 \graphicspath{{images/}}
+
+\newcommand{\req}[1]{\textsuperscript{(req. \ref{#1})}}
 
 \begin{document}
 \title{MiXiM - Physical Layer}
 \author{Karl Wessel: wessel$@$tkn.tu-berlin.de\\
 Michael Swigulski: swigulski$@$tkn.tu-berlin.de}
-\date{21. October 2007}
+\date{31. October 2007}
 \maketitle
 \include{preamble/preamble}
 \include{req_spec/req_spec}

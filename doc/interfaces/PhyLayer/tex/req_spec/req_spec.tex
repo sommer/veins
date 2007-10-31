@@ -13,23 +13,18 @@
 
 \subsection{provide status information to MAC}
 
-In addition to received packets the physical layer has to provide some other information
-to the MAC layer.
-Some of this information has to be provided passively on demand (e.g. current mode) and some should
-be delivered actively to the MAC layer on certain events (e.g. transmission of a packet complete).
+In addition to received packets the physical layer has to provide some other information to the MAC layer.
+Some of this information has to be provided passively\req{provpassive} on demand (e.g. current mode) and some should be delivered actively\req{provactive} to the MAC layer on certain events (e.g. transmission of a packet complete).
 
 \noindent Information which has to be provided to MAC on demand:
 \begin{itemize}
- \item current signal strength or SNR information on channel
- \item current mode (RX, TX, SLEEP)
- \item current channel
- \item other?
+ \item channelstate: idle (boolean) or RSSI\req{channelstate}
+ \item current mode (RX, TX, SLEEP)\req{currentmode}
 \end{itemize}
 
 \noindent Information which has to be provided to MAC the moment it occurs:
 \begin{itemize}
- \item transmission over (send)
- \item other?
+ \item transmission over (send)\req{txover}
 \end{itemize}
 
 \pagebreak
@@ -38,10 +33,10 @@ be delivered actively to the MAC layer on certain events (e.g. transmission of a
 The physical layer has to be able to switch between the following things:
 
 \begin{itemize}
- \item current mode (RX, TX, SLEEP)
- \item current channel (1, 2, 3, ...)
- \item other?
+ \item current mode (RX, TX, SLEEP)\req{switchmode}
 \end{itemize}
+
+Switching from one mode to another may take some time. Whereas the switching time may depends to whitch mode we are switching.\req{switchtimes}
 
 \begin{figure}[t]
  \centering
@@ -61,9 +56,9 @@ Before we can send packets the following things have to be
 assured:
 \linebreak
 \begin{itemize}
- \item the radio has to be in TX mode
- \item we are not already sending
- \item the channel should be idle (maybe this is no hard requirement)
+ \item the radio has to be in TX mode\req{sendPreqMode}
+ \item we are not already sending\req{sendPreqSending}
+ \item the channel should be idle (this is no hard requirement)\req{sendPreqIdle}
 \end{itemize}
 
 The above items should be controlled by the MAC-Layer so the physical layer 
@@ -72,77 +67,77 @@ would only throw an error if they are not set.
 The sending process itself is made up of the following steps:
 
 \begin{enumerate}
- \item MAC layer gives packet and control info to physical layer
+ \item MAC layer gives packet and control info to physical layer\req{packetFromMac}
  \item check requirements for sending, throw error if they are not fulfilled
  \item add information needed by the receiving physical layer to packet (see below)
- \item packet is send to channel by physical layer
+ \item add signal function transmission power\footnote{The receiver converts the same signal to receiving power over time.} over time)\footnote{The signal function could be more dimensional. E.g.: receiving power over time and channel.} to packet\req{sendInfoTXPower}
+ \item packet is send to channel by physical layer\req{sendToChannel}
+ \item schedule transmission over message for MAC layer\req{txover}
 \end{enumerate}
 
 The following information is needed by the receiving physical layer:
 
 \begin{itemize}
-\item TX power
-\item position, move direction and speed of the sending host
-\item the channel
-\item size of packet
-\item the duration the signal would need to be transmitted
-\item the bitrate (payload and header)
-
+\item TX power (represented by the signal function)\req{sendInfoTXPower}
+\item position, move direction and speed of the sending host\req{sendInfoMove}
+\item the channel\req{sendInfoChannel}
+\item size of packet\req{sendInfoSize}
+\item the duration the signal would need to be transmitted\req{sendInfoDuration}
+\item the duration of the preamble\req{sendInfoPreambleDuration}
+\item the bitrate (payload and header)\req{sendInfoBitrate}
 \end{itemize}
 
 \subsection{receive packets}
 
-Following things have to be done with every received packet:
+Because the packets arrive immediatly at every receiving node we have to simulate the receiving process:
 
 \begin{enumerate}
- \item get transmission time of the packet and schedule transmission over event
- \item apply \textit{analog model} (simulate pathloss, shadowing, fading) to 
- 			 calculate signal strength over time 
+\item simulate propagation delay (if needed)\req{rcvSimDelay}
+\item simulate preamble duration\req{rcvSimPreamble}
+\item simulate payload duration\req{rcvSimDuration}
 \end{enumerate}
 
-Every packet has to be classified as 
-\textit{signal}\footnote{We have some name collision here. With signal 
-												 we mean every signal we receive over the channel. 
-												 With \textit{signal} we mean the signal we try to 
-												 receive as a packet.} 
-or \textit{noise}. The decision depends on one or more of the following 
-points.
+We also have to simulate the attenuation of the signal strength\req{rcvSimAttenuation}. This should be done by filtering the with the \textit{analogue models}.
+
+If the preamble is transmitted the packet has to be classified as \textit{signal} or \textit{noise}\req{rcvClassify}. The decision is made by the \textit{decider}. Therefore the preamble has to be filtered previously by the analogue models.\req{rcvFilterPreamble}
+
+If the transmission of a \textit{signal} is over we have to decide if it was received correctly.\req{rcvIsCorrect} This is also done by the \textit{decider} by evaluating the \textit{signal to noise ratio} short \textit{SNR}. Of course we have to apply the \textit{analogue model} to the signal and every noise interfering with the signal beforehand.\req{rcvFilterSignals} If the signal was received correctly we pass it to the MAC Layer.\req{rcvPassToMAC}
+
+\subsubsection{the analogue model}
+
+The \textit{analogue model} simulates the attenuation of the signal strength by filtering the receiving power function\req{analogueFilter}.
+
+There should be models to simulate the following things:
 
 \begin{itemize}
- \item signal strength (at signal start)
- \item are we already listening to a \textit{signal} (most time we won't be able to listen to more than one 
- 			 \textit{signal} at the same time, so every thing else is \textit{noise})
+ \item pathloss\req{analogueSimPathloss}
+ \item shadowing\req{analogueSimShadowing}
+ \item fading\req{analogueSimFading}
 \end{itemize}
 
-If the transmission of a \textit{signal} is over we have to decide if it was received correctly. This is
-done with a \textit{demodulation module} by evaluating the \textit{signal to noise ratio} short \textit{SNR}. If the signal was received correctly pass it (together with its SNR information) to the MAC Layer.
-
-\subsubsection{the analog model}
-
-The \textit{analog model} has to be able to simulate the following things:
+Further we set the following requirements to the \textit{analogue models}:
 
 \begin{itemize}
- \item pathloss
- \item shadowing
- \item fading
+ \item physical layer should be able to apply multiple \textit{analogue models} to a signal\req{analogueMulti}
+ \item you should be able to set the \textit{analogue models} independent from physical layer\req{analogueIndependent}
+ \item you should be able to add your own \textit{analogue models}\req{analogueExtensible}
 \end{itemize}
 
-Further we set the following requirements to the \textit{analog model}:
+\subsubsection{the decider}
+
+As mentioned already above the \textit{decider} has to decide the following things:
 
 \begin{itemize}
- \item physical layer should be able to apply multiple \textit{analog models} to a signal
- \item you should be able to set the \textit{analog models} independent from physical layer
- \item you should be able to add your own \textit{analog models}
+\item classify packet as signal or noise at base of the preamble\req{rcvClassify}
+\item decide if a packet was received correct at base of the signal at interfering noise\req{rcvIsCorrect}
 \end{itemize}
 
-\subsubsection{the demodulation module}
-
-We set the following requirements to the \textit{demodulation module}:
+We set the following requirements to the \textit{decider}:
 
 \begin{itemize}
- \item you should be able to set the \textit{demodulation module} independent from physical layer
- \item you should be able to add your own \textit{demodulation module}
- \item the \textit{analog model} should be able to return bitwise correctness of the signal (on demand)
+ \item you should be able to set the \textit{decider} independent from physical layer\req{deciderIndependent}
+ \item you should be able to add your own \textit{decider}\req{deciderExtensible}
+ \item the \textit{decider} should be able to return bitwise correctness of the \textit{signal} (on demand)\req{deciderBitwise}
 \end{itemize}
 
 
@@ -151,12 +146,11 @@ We set the following requirements to the \textit{demodulation module}:
 You should be able to get the following statistical information (the physical layer should not evaluate them but has to provide access to the according information):
 
 \begin{itemize}
- \item packet count
- \item received signal strength
- \item signal to noise ratio
- \item bit error ratio
- \item collisions
- \item other?
+\item packet count\req{statPackets}
+\item received signal strength\req{statRSS}
+\item signal to noise ratio\req{statSNR}
+\item bit error ratio\req{statBER}
+\item collisions\req{statColls}
 \end{itemize}
 
 \subsection{parameters}
@@ -164,13 +158,103 @@ You should be able to get the following statistical information (the physical la
 The following parameters of the physical layer should be freely configurable:
 
 \begin{itemize}
-\item simulate propagation delay? (boolean)
-\item which analog models should be used
-\item the parameters for the analog models
-\item which demodulation module should be used
-\item the parameters for the demodulation module
-\item thermal noise
-\item sensitivity
-\item maximum TX power
-\item switching times between modes (RX, TX, SLEEP)
+	\item simulate propagation delay? (boolean)\req{confDelay}
+	\item which analogue models should be used\req{confAnalogue}
+	\item the parameters for the analogue models\req{confAnalogueParam}
+	\item which decider should be used\req{confDecider}
+	\item the parameters for the decider\req{confDeciderParam}
+	\item thermal noise\req{confNoise}
+	\item sensitivity\req{confSens}
+	\item maximum TX power\req{confMaxTXPower}
+	\item switching times between modes (RX, TX, SLEEP)\req{confSwitchingTimes}
 \end{itemize}
+
+\subsection{list of requirements}
+
+\begin{enumerate}
+ \item provide status information to MAC
+	\begin{enumerate}
+	\item provide passive (on demand) \label{provpassive}
+	\item provide active (messages) \label{provactive}
+	\item channelstate: idle (boolean) or RSSI \label{channelstate}
+	\item current mode (RX, TX, SLEEP) \label{currentmode}
+	\item transmission over event (send) \label{txover}
+	\end{enumerate}
+ \item switch states (RX, TX, SLEEP)
+	\begin{enumerate}
+	\item current mode \label{switchmode}
+	\item switching times \label{switchtimes}
+	\end{enumerate}
+ \item send packets to air/channel
+	\begin{enumerate}
+	\item get packet from MAC layer\label{packetFromMac}
+	\item prerequirements
+		\begin{enumerate}
+		\item are in TX mode \label{sendPreqMode}
+		\item not already sending \label{sendPreqSending}
+		\item channel is idle \label{sendPreqIdle}		
+		\end{enumerate}
+	\item attach informations for receiver
+		\begin{enumerate}
+		\item attach transmission power over time function \label{sendInfoTXPower}
+		\item position, move direction and speed of the sending host \label{sendInfoMove}
+		\item channel \label{sendInfoChannel}
+		\item size of packet \label{sendInfoSize}
+		\item duration\label{sendInfoDuration}
+		\item duration of preamble \label{sendInfoPreambleDuration}
+		\item bitrate (payload and header)	\label{sendInfoBitrate}
+		\end{enumerate}	
+	\item send to channel \label{sendToChannel}
+	
+	\end{enumerate}
+ \item receive packets / listen for packets
+		\begin{enumerate}
+		\item simulate propagation delay \label{rcvSimDelay}
+		\item simulate preamble \label{rcvSimPreamble}
+		\item simulate transmission duration \label{rcvSimDuration}
+		\item simulate attenuation \label{rcvSimAttenuation}
+		\item filter preamble \label{rcvFilterPreamble}
+		\item filter signal and interfering noise \label{rcvFilterSignals}
+		\item pass correct packets to MAC \label{rcvPassToMAC}
+		\item analogue model
+			\begin{enumerate}
+			\item filter signal strength \label{analogueFilter}
+			\item simulate pathloss \label{analogueSimPathloss}
+			\item simulate shadowing \label{analogueSimShadowing}
+			\item simulate fading \label{analogueSimFading}
+			\item more than one analogue model per phy \label{analogueMulti}
+			\item can be set independent from phy \label{analogueIndependent}
+			\item can add own analogue models \label{analogueExtensible}
+			\end{enumerate}
+		\end{enumerate}
+		\item decider
+			\begin{enumerate}
+			\item classify preamble as noise or signal \label{rcvClassify}
+			\item decide if packet was received correct \label{rcvIsCorrect}
+			\item can be set independent from phy \label{deciderIndependent}
+			\item can add own decider \label{deciderExtensible}
+			\item return bitwise errors \label{deciderBitwise}
+			\end{enumerate}
+ \item provide hooks for statistical information
+	\begin{enumerate}
+	\item packet count \label{statPackets}
+	\item received signal strength \label{statRSS}
+	\item signal to noise ratio \label{statSNR}
+	\item bit error ratio \label{statBER}
+	\item collisions \label{statColls}
+	\end{enumerate}
+ \item configurable settings
+	\begin{enumerate}
+	\item simulate propagation delay? (boolean) \label{confDelay}
+	\item which analogue models should be used \label{confAnalogue}
+	\item the parameters for the analogue models \label{confAnalogueParam}
+	\item which decider should be used \label{confDecider}
+	\item the parameters for the decider \label{confDeciderParam}
+	\item thermal noise \label{confNoise}
+	\item sensitivity \label{confSens}
+	\item maximum TX power \label{confMaxTXPower}
+	\item switching times between modes (RX, TX, SLEEP) \label{confSwitchingTimes}
+	\end{enumerate}
+\end{enumerate}
+
+
