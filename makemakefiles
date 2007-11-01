@@ -12,6 +12,7 @@
 #MAKEMAKE=opp_makemake
 #OPTS=-f -b $(ROOT) -c $(ROOT)/omnetppconfig
 #LIB_OPTS=-w -o libmixim -s 
+#TEST_OPTS=-u cmdenv
 #MIXIM_LIB=-L$(ROOT)/lib -lmixim
 
 #--------------------------------------
@@ -96,14 +97,12 @@ all:
 	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 #	@echo $(ROOT)/examples/centroid
 #	@cd $(ROOT)/examples/centroid && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-#	@echo $(ROOT)/examples/multiChannel
-#	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/examples/multiChannel
+	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 
 # TODO: normally test cases should be run in cmdenv mode need to be adapted anyway
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
-	@echo $(ROOT)/tests/test-cc-connections
-	@cd $(ROOT)/tests/test-cc-connections && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/blackboard
 	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/coord

@@ -28,7 +28,7 @@ import
     "ConnectionManager",
     "BaseWorldUtility"; 
  
-// @author Daniel Willkomm
+// @author Karl Wessel
 module Network 
     parameters: 
         playgroundSizeX : numeric const, // x size of the area the nodes are in (in meters)
