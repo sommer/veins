@@ -22,27 +22,28 @@ We start with the classgraph for the OMNeT-module \h{\bp} that shows its
 \textsf{C++}-classes, relations to other OMNeT-modules (especially \h{\bm})
 and OMNeT-messages sent between them.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=400pt]{modelling/class_diagram.png}
  \caption{class graph}
  \label{fig: classgraph}
 \end{figure}
+\newpage
 
-\subsection{the \h{\bp} interface}
+\subsection{The \h{\bp} interface}
 
 In this section we focus on how one is able to communicate with the \h{\bp}, i.e. 
 especially the \h{\bm} which is connected via an OMNeT-channel, OMNeT-controlchannel and holds a reference to \h{\bp}.
 \h{\bm} can obtain information about the channelstate, i.e. idle (boolean) or RSSI by 
 a simple method call. Further it is able to set current mode in \h{\bp} via method call.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=340pt]{modelling/BasePhyLayer_members.png}
  \caption{BasePhyLayer interface}
  \label{fig: BasePhyLayer interface}
 \end{figure}
-
+\newpage
 
 
 \subsection{AnalogueModel and Signal}
@@ -50,13 +51,13 @@ a simple method call. Further it is able to set current mode in \h{\bp} via meth
 
 The Signal is designed one-dimensional (value-by-time) by default. The owner is able
 to add and request values at a specific time point.
-The Method getTimeIterator() return an appropriate SignalIterator.
+The Method getTimeIterator() return an appropriate SignalTimeIterator.
 \begin{quote}
 \emph{BEWARE: Anyone who subclasses Signal should make shure to have a properly
-working SignalIterator (subclassed) for it.}
+working SignalTimeIterator (subclassed) for it.}
 \end{quote}
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=340pt]{modelling/AnalogueModel_members.png}
  \caption{analogue model interface}
@@ -64,33 +65,33 @@ working SignalIterator (subclassed) for it.}
 \end{figure}
 
 The AnalogueModel offers functionality to filter a referenced signal in a specified
-interval and at a specific point in time. Therefore an appropriate SignalIterator is needed!
+interval and at a specific point in time. Therefore an appropriate SignalTimeIterator is needed!
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=300pt]{modelling/apply_analogue_modells_detail.png}
  \caption{application of analogue models}
  \label{fig: application analogue models}
 \end{figure}
+\newpage
 
-
-\subsection{AirFrame}
 
 
 \subsection{SNInfo and ChannelInfo}
 
-ChannelInfo keeps for all AirFrames on the channel. ChannelInfo does not differ between \textit{signal} and \textit{noise}. \h{\bp} is able to
-add and remove references to single AirFrames.
+ChannelInfo keeps track of all AirFrames on the channel. It does not differ between \textit{signal} and \textit{noise}. \h{\bp} is able to
+add and remove references to certain AirFrames.
 ChannelInfo is able to record the whole channel over time from a start to a stop signal and can return a vector of Signals (references) that intersect with a given time interval.\\
-SNInfo is created by \h{\bp} when a packet arrives to collect all signals from the channel that intersect with the reception time interval.
+SNInfo is created by \h{\bp} when a packet arrives to collect all signals from the channel that intersect with the reception time interval of the packet.
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=340pt]{modelling/ChannelInfo_members.png}
  \caption{channel details}
  \label{fig: channel details}
 \end{figure}
 
+\newpage
 
 
 \subsection{Decider}
@@ -103,45 +104,67 @@ The decider has two tasks:
 \end{enumerate}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=340pt]{modelling/DeciderModule_members.png}
  \caption{Decider interface}
  \label{fig: Decider interface}
 \end{figure}
-
+\newpage
 
 \subsection{AirFrame}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=300pt]{modelling/AirFrame_members.png}
  \caption{member arrangement in AirFrame and Signal}
  \label{fig: member AirFrame}
 \end{figure}
+\newpage
 
-\subsection{receiving an AirFrame}
 
+\subsection{Receiving and processing an AirFrame}
 
-\begin{figure}[h]
+The reception of an AirFrame is divided into:
+\begin{enumerate}
+	
+	\item optional propagation delay,
+	\item reception of the preamble,
+	\item application of AnalogueModels to the corresponding SNInfo,
+	\item decision whether packet is considered noise (Decider),
+	\item reception of the packet.
+\end{enumerate}
+
+Afterwards the packet is either dropped (if considered noise) or processed. 
+
+\begin{figure}[H]
  \centering
  \includegraphics[width=340pt]{modelling/onAirFrame.png}
  \caption{receiving process}
  \label{fig: receiving process}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=340pt]{modelling/receive_detail.png}
  \caption{receive detail}
  \label{fig: receive detail}
 \end{figure}
 
+\begin{figure}[H]
+ \centering
+ \includegraphics{modelling/end_preamble_detail.png}
+ \caption{end preamble detail}
+ \label{fig: end preamble detail}
+\end{figure}
+
+\newpage
+
 \subsection{receiving a MacPkt}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
  \centering
  \includegraphics[width=300pt]{modelling/onMACPkt.png}
  \caption{sending process}
