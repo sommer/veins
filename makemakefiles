@@ -12,7 +12,6 @@
 #MAKEMAKE=opp_makemake
 #OPTS=-f -b $(ROOT) -c $(ROOT)/omnetppconfig
 #LIB_OPTS=-w -o libmixim -s 
-#TEST_OPTS=-u cmdenv
 #MIXIM_LIB=-L$(ROOT)/lib -lmixim
 
 #--------------------------------------
@@ -25,6 +24,7 @@ IMODULES=-I$(MODULES)/nic -I$(MODULES)/mobility -I$(MODULES)/utility -I$(MODULES
 MIXIM_INCLUDE=-I$(ROOT)/include
 
 NET_OPTS=$(MIXIM_INCLUDE) $(MIXIM_LIB)
+TEST_OPTS=-u Cmdenv
 #--------------------------------------
 
 
@@ -100,15 +100,14 @@ all:
 	@echo $(ROOT)/examples/multiChannel
 	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 
-# TODO: normally test cases should be run in cmdenv mode need to be adapted anyway
 	@echo $(ROOT)/tests
-	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
+	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r
 	@echo $(ROOT)/tests/blackboard
-	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/coord
-	@cd $(ROOT)/tests/coord && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@cd $(ROOT)/tests/coord && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/connectionManager
-	@cd $(ROOT)/tests/connectionManager && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@cd $(ROOT)/tests/connectionManager && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/baseMobility
-	@cd $(ROOT)/tests/baseMobility && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@cd $(ROOT)/tests/baseMobility && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
     
