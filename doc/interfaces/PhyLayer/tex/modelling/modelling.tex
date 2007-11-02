@@ -29,19 +29,12 @@ and OMNeT-messages sent between them.
  \label{fig: classgraph}
 \end{figure}
 
+\subsection{the \h{\bp} interface}
 
-\subsection{provide status information to MAC}
-
-Passively provided information\req{provpassive}: \h{\bm} is equipped with a reference to \h{\bp} in order to obtain information
-about channelstate\req{channelstate} and current mode\req{currentmode} by
-simple method calls. \\
-Actively provided information\req{provactive}: A cMessage of the kind TX\_OVER
-is sent to MAC-Layer when a sending transmission is over\req{txover}, \saf{sending process}.
-
-\subsection{switch states}
-
-Furthermore the MAC-Layer is able to set the current mode (RX, TX, SLEEP)\req{switchmode} of the Phy-Layer by a simple method call.
-\h{\bp} will change to switching state and schedule itself the appropriate timer for the switching interval\req{switchtimes}, \saf{mode state machine}.
+In this section we focus on how one is able to communicate with the \h{\bp}, i.e. 
+especially the \h{\bm} which is connected via an OMNeT-channel, OMNeT-controlchannel and holds a reference to \h{\bp}.
+\h{\bm} can obtain information about the channelstate, i.e. idle (boolean) or RSSI by 
+a simple method call. Further it is able to set current mode in \h{\bp} via method call.
 
 \begin{figure}[h]
  \centering
@@ -50,23 +43,14 @@ Furthermore the MAC-Layer is able to set the current mode (RX, TX, SLEEP)\req{sw
  \label{fig: BasePhyLayer interface}
 \end{figure}
 
-\subsection{send packets}
-
-Since \h{\bm} has a reference to \h{\bp} it can obtain information about the mode the radio is is currently in\req{sendPreqMode}, it is not already sending to the channel on its own\req{sendPreqSending} and the channel is idle\req{sendPreqIdle} via method calls, \saf{BasePhyLayer interface}.
-
-The class MacToPhyControlInfo is designed as the container for control info\req{packetFromMac} the MAC-Layer
-wants to attach to the packet given down to Phy-Layer for sending.
-The packet itself is handed down as a MacPkt via OMNeT-channel. 
-
-\begin{figure}[h]
- \centering
- \includegraphics[width=340pt]{modelling/MacToPhyCtrlInfo_members.png}
- \caption{MacToPhyControlInfo interface}
- \label{fig: MacToPhyCtrlInfo interface}
-\end{figure}
+\subsection{the AnalogueModel and Signal}
 
 
-
+The Signal is designed one-dimensional (value-by-time) by default. The owner is able
+to add and request values at a specific time point.
+The Method getTimeIterator() return an appropriate SignalIterator.\\
+\emph{BEWARE: Anyone who subclasses Signal should make shure to have a properly
+working SignalIterator (subclassed) for it.}
 
 \begin{figure}[h]
  \centering
@@ -74,6 +58,53 @@ The packet itself is handed down as a MacPkt via OMNeT-channel.
  \caption{analogue model interface}
  \label{fig: analogue model interface}
 \end{figure}
+
+The AnalogueModel offers functionality to filter a referenced signal in a specified
+interval and at a specific point in time. Therefore an appropriate SignalIterator is needed!
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=300pt]{modelling/apply_analogue_modells_detail.png}
+ \caption{application of analogue models}
+ \label{fig: application analogue models}
+\end{figure}
+
+
+
+
+%\subsection{provide status information to MAC}
+
+%Passively provided information\req{provpassive}: \h{\bm} is equipped with a reference to \h{\bp} in order to obtain information
+%about channelstate\req{channelstate} and current mode\req{currentmode} by
+%simple method calls. \\
+%Actively provided information\req{provactive}: A cMessage of the kind TX\_OVER
+%is sent to MAC-Layer when a sending transmission is over\req{txover}, \saf{sending process}.
+
+%\subsection{switch states}
+
+%Furthermore the MAC-Layer is able to set the current mode (RX, TX, SLEEP)\req{switchmode} of the Phy-Layer by a simple method call.
+%\h{\bp} will change to switching state and schedule itself the appropriate timer for the switching interval\req{switchtimes}, \saf{mode state machine}.
+
+
+%\subsection{send packets}
+
+%Since \h{\bm} has a reference to \h{\bp} it can obtain information about the mode the radio is is currently in\req{sendPreqMode}, it is not already sending to the channel on its own\req{sendPreqSending} and the channel is idle\req{sendPreqIdle} via method calls, \saf{BasePhyLayer interface}.
+
+%The class MacToPhyControlInfo is designed as the container for control info\req{packetFromMac} the MAC-Layer
+%wants to attach to the packet given down to Phy-Layer for sending.
+%The packet itself is handed down as a MacPkt via OMNeT-channel. 
+
+%\begin{figure}[h]
+% \centering
+% \includegraphics[width=340pt]{modelling/MacToPhyCtrlInfo_members.png}
+% \caption{MacToPhyControlInfo interface}
+% \label{fig: MacToPhyCtrlInfo interface}
+%\end{figure}
+
+
+
+
+
 
 
 
@@ -119,10 +150,4 @@ The packet itself is handed down as a MacPkt via OMNeT-channel.
  \label{fig: member AirFrame}
 \end{figure}
 
-\begin{figure}[h]
- \centering
- \includegraphics[width=300pt]{modelling/apply_analogue_modells_detail.png}
- \caption{application of analogue models}
- \label{fig: application analogue models}
-\end{figure}
 
