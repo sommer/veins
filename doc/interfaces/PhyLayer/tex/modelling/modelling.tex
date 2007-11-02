@@ -43,14 +43,18 @@ a simple method call. Further it is able to set current mode in \h{\bp} via meth
  \label{fig: BasePhyLayer interface}
 \end{figure}
 
-\subsection{the AnalogueModel and Signal}
+
+
+\subsection{AnalogueModel and Signal}
 
 
 The Signal is designed one-dimensional (value-by-time) by default. The owner is able
 to add and request values at a specific time point.
-The Method getTimeIterator() return an appropriate SignalIterator.\\
+The Method getTimeIterator() return an appropriate SignalIterator.
+\begin{quote}
 \emph{BEWARE: Anyone who subclasses Signal should make shure to have a properly
 working SignalIterator (subclassed) for it.}
+\end{quote}
 
 \begin{figure}[h]
  \centering
@@ -70,6 +74,79 @@ interval and at a specific point in time. Therefore an appropriate SignalIterato
 \end{figure}
 
 
+\subsection{AirFrame}
+
+
+\subsection{SNInfo and ChannelInfo}
+
+ChannelInfo keeps for all AirFrames on the channel. ChannelInfo does not differ between \textit{signal} and \textit{noise}. \h{\bp} is able to
+add and remove references to single AirFrames.
+ChannelInfo is able to record the whole channel over time from a start to a stop signal and can return a vector of Signals (references) that intersect with a given time interval.\\
+SNInfo is created by \h{\bp} when a packet arrives to collect all signals from the channel that intersect with the reception time interval.
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=340pt]{modelling/ChannelInfo_members.png}
+ \caption{channel details}
+ \label{fig: channel details}
+\end{figure}
+
+
+
+\subsection{Decider}
+
+The decider has two tasks:
+\begin{enumerate}
+	\item It decides whether we are able to receive a certain packet by evaluting
+	the SNInfo for the packets preamble time interval, otherwise the packet will 	be considered noise
+	\item When a packet has been received as a \textit{signal} the Decider 	returns a DeciderResult for that packet, that only contains correct/not correct 	by default.
+\end{enumerate}
+
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=340pt]{modelling/DeciderModule_members.png}
+ \caption{Decider interface}
+ \label{fig: Decider interface}
+\end{figure}
+
+
+\subsection{AirFrame}
+
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=300pt]{modelling/AirFrame_members.png}
+ \caption{member arrangement in AirFrame and Signal}
+ \label{fig: member AirFrame}
+\end{figure}
+
+\subsection{receiving an AirFrame}
+
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=340pt]{modelling/onAirFrame.png}
+ \caption{receiving process}
+ \label{fig: receiving process}
+\end{figure}
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=340pt]{modelling/receive_detail.png}
+ \caption{receive detail}
+ \label{fig: receive detail}
+\end{figure}
+
+\subsection{receiving a MacPkt}
+
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=300pt]{modelling/onMACPkt.png}
+ \caption{sending process}
+ \label{fig: sending process}
+\end{figure}
 
 
 %\subsection{provide status information to MAC}
@@ -108,46 +185,8 @@ interval and at a specific point in time. Therefore an appropriate SignalIterato
 
 
 
-\begin{figure}[h]
- \centering
- \includegraphics[width=340pt]{modelling/DeciderModule_members.png}
- \caption{Decider interface}
- \label{fig: Decider interface}
-\end{figure}
 
-\begin{figure}[h]
- \centering
- \includegraphics[width=340pt]{modelling/ChannelInfo_members.png}
- \caption{channel details}
- \label{fig: channel details}
-\end{figure}
 
-\begin{figure}[h]
- \centering
- \includegraphics[width=340pt]{modelling/onAirFrame.png}
- \caption{receiving process}
- \label{fig: receiving process}
-\end{figure}
 
-\begin{figure}[h]
- \centering
- \includegraphics[width=340pt]{modelling/receive_detail.png}
- \caption{receive detail}
- \label{fig: receive detail}
-\end{figure}
-
-\begin{figure}[h]
- \centering
- \includegraphics[width=300pt]{modelling/onMACPkt.png}
- \caption{sending process}
- \label{fig: sending process}
-\end{figure}
-
-\begin{figure}[h]
- \centering
- \includegraphics[width=300pt]{modelling/AirFrame_members.png}
- \caption{member arrangement in AirFrame and Signal}
- \label{fig: member AirFrame}
-\end{figure}
 
 
