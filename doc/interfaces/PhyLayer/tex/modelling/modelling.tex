@@ -1,16 +1,16 @@
-\newcommand{\h}[1]{\underline{#1}}
-\newcommand{\bp}{BasePhyLayer}
-\newcommand{\bm}{BaseMacLayer}
+\newcommand{\h}[1]{\textbf{#1}}
+\newcommand{\basePhyLayer}{BasePhyLayer}
+\newcommand{\baseMacLayer}{BaseMacLayer}
 
 
 \section{modelling}
 
 \subsection{overview}
 
-Here we present the design- and interface details of the OMNeT-module \h{\bp} and go step-by-step through the requirement specification:
+Here we present the design- and interface details of the OMNeT-module \h{\basePhyLayer} and go step-by-step through the requirement specification:
 
 \begin{enumerate}
- \item internal class diagram of \h{\bp} and relation (pointers, references and OMNeT-gates) to \h{\bm}
+ \item internal class diagram of \h{\basePhyLayer} and relation (pointers, references and OMNeT-gates) to \h{\baseMacLayer}
  \item interface description for all involved \textsf{C++}-classes
  \item flow charts for reception of MacPacket from upper layer and AirFrame from the channel
  \item detailed flow chart for the receiving process
@@ -18,9 +18,11 @@ Here we present the design- and interface details of the OMNeT-module \h{\bp} an
 
 \subsection{classgraph}
 
-We start with the classgraph for the OMNeT-module \h{\bp} that shows its
-\textsf{C++}-classes, relations to other OMNeT-modules (especially \h{\bm})
+We start with the classgraph for the OMNeT-module \h{\basePhyLayer} that shows its
+\textsf{C++}-classes, relations to other OMNeT-modules (especially \h{\baseMacLayer})
 and OMNeT-messages sent between them.
+
+The \h{\basePhyLayer} hold a list\req{analogueMulti} of AnalogueModels and a pointer to a Decider. Thus the AnalogueModel and the Decider are submodules of \h{\basePhyLayer}. This way one is able to change\req{analogueExtensible}\req{deciderExtensible} and replace\req{analogueIndependent}\req{deciderIndependent} them independently from the \h{\basePhyLayer}.
 
 \begin{figure}[H]
  \centering
@@ -30,12 +32,14 @@ and OMNeT-messages sent between them.
 \end{figure}
 \newpage
 
-\subsection{The \h{\bp} interface}
+\subsection{The \h{\basePhyLayer} interface}
 
-In this section we focus on how one is able to communicate with the \h{\bp}, i.e. 
-especially the \h{\bm} which is connected via an OMNeT-channel, OMNeT-controlchannel and holds a reference to \h{\bp}.
-\h{\bm} can obtain information about the channelstate, i.e. idle (boolean) or RSSI by 
-a simple method call. Further it is able to set current mode in \h{\bp} via method call.
+In this section we focus on how one is able to communicate with the \h{\basePhyLayer}, i.e. 
+especially the \h{\baseMacLayer}. 
+The \h{\baseMacLayer} is connected by a control channel to the \h{\basePhyLayer}. Over this channel the 
+\h{\basePhyLayer} can inform the \h{\baseMacLayer} about specific events\req{provactive} (like the transmission over event).
+
+Additionaly \h{\baseMacLayer} holds a reference to the \h{\basePhyLayer}. With this reference \h{\baseMacLayer} can obtain information\req{provpassive} about the channelstate\req{channelstate} and the current mode\req{currentmode}. Further it is able to set current mode in \h{\basePhyLayer} via method call\req{switchmode}.
 
 \begin{figure}[H]
  \centering
@@ -48,14 +52,9 @@ a simple method call. Further it is able to set current mode in \h{\bp} via meth
 
 \subsection{AnalogueModel and Signal}
 
-
-The Signal is designed one-dimensional (value-by-time) by default. The owner is able
-to add and request values at a specific time point.
-The Method getTimeIterator() return an appropriate SignalTimeIterator.
-\begin{quote}
-\emph{BEWARE: Anyone who subclasses Signal should make shure to have a properly
-working SignalTimeIterator (subclassed) for it.}
-\end{quote}
+The Signal represents the function of signal strength over time of an AirFrame. 
+The AnalogueModel is designed as a filter which can be applied at a Signal\req{analogueFilter}.
+This way attenuation effects like pathloss\req{analogueSimPathloss}, shadowing\req{analogueSimShadowing} and fading\req{analogueSimFading} can be implemented as a concrete AnalogueModel which changes a given Signal appropriatly.
 
 \begin{figure}[H]
  \centering
@@ -64,8 +63,13 @@ working SignalTimeIterator (subclassed) for it.}
  \label{fig: analogue model interface}
 \end{figure}
 
-The AnalogueModel offers functionality to filter a referenced signal in a specified
-interval and at a specific point in time. Therefore an appropriate SignalTimeIterator is needed!
+To be able to filter a referenced signal in a specified interval or at a specific point in time, the AnalogueModel gets an iterator from the Signal.
+
+\begin{quote}
+\emph{BEWARE: Anyone who subclasses Signal should make shure to have a properly
+working SignalTimeIterator (subclassed) for it. The SignalTimeIterator should always
+iterate over \textit{every} timestamp in each dimension. This way simple filters can be reused for multidimensional Signals.}
+\end{quote}
 
 \begin{figure}[H]
  \centering
@@ -75,14 +79,30 @@ interval and at a specific point in time. Therefore an appropriate SignalTimeIte
 \end{figure}
 \newpage
 
+\subsection{Decider}
 
+The decider provides one method to decide wether a packet could be interpreted as Signal or it is only noise\req{rcvClassify}. And another method to decide if a packet was received correctly\req{rcvIsCorrect}.
+
+The deciders performs both tasks by evaluating the Signals and noise during a certain interval. This Signal and noise information is hold inside the SNInfo class (see  \ref{SNInfoModelling}).
+
+To be able to provide additional information (like bit wise errors\req{deciderBitwise}) besides the information if the packet is correct, the Decider returns a DeciderResult.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=340pt]{modelling/DeciderModule_members.png}
+ \caption{Decider interface}
+ \label{fig: Decider interface}
+\end{figure}
+\newpage
 
 \subsection{SNInfo and ChannelInfo}
+\label{SNInfoModelling}
 
-ChannelInfo keeps track of all AirFrames on the channel. It does not differ between \textit{signal} and \textit{noise}. \h{\bp} is able to
+ChannelInfo keeps track of all AirFrames on the channel. It does not differ between \textit{signal} and \textit{noise}. \h{\basePhyLayer} is able to
 add and remove references to certain AirFrames.
+
 ChannelInfo is able to record the whole channel over time from a start to a stop signal and can return a vector of Signals (references) that intersect with a given time interval.\\
-SNInfo is created by \h{\bp} when a packet arrives to collect all signals from the channel that intersect with the reception time interval of the packet.
+SNInfo is created by \h{\basePhyLayer} when a packet arrives to collect all signals from the channel that intersect with the reception time interval of the packet.
 
 \begin{figure}[H]
  \centering
@@ -91,25 +111,6 @@ SNInfo is created by \h{\bp} when a packet arrives to collect all signals from t
  \label{fig: channel details}
 \end{figure}
 
-\newpage
-
-
-\subsection{Decider}
-
-The decider has two tasks:
-\begin{enumerate}
-	\item It decides whether we are able to receive a certain packet by evaluting
-	the SNInfo for the packets preamble time interval, otherwise the packet will 	be considered noise
-	\item When a packet has been received as a \textit{signal} the Decider 	returns a DeciderResult for that packet, that only contains correct/not correct 	by default.
-\end{enumerate}
-
-
-\begin{figure}[H]
- \centering
- \includegraphics[width=340pt]{modelling/DeciderModule_members.png}
- \caption{Decider interface}
- \label{fig: Decider interface}
-\end{figure}
 \newpage
 
 \subsection{AirFrame}
@@ -123,20 +124,39 @@ The decider has two tasks:
 \end{figure}
 \newpage
 
+\subsection{receiving a MacPkt}
+
+The class MacToPhyControlInfo is designed as the container for control info\req{packetFromMac} the \h{\baseMacLayer} wants to attach to the packet given down to \h{\basePhyLayer} for sending.
+
+The packet itself is handed down as a MacPkt via OMNeT-channel. 
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=340pt]{modelling/MacToPhyCtrlInfo_members.png}
+ \caption{MacToPhyControlInfo interface}
+ \label{fig: MacToPhyCtrlInfo interface}
+\end{figure}
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=300pt]{modelling/onMACPkt.png}
+ \caption{sending process}
+ \label{fig: sending process}
+\end{figure}
 
 \subsection{Receiving and processing an AirFrame}
 
 The reception of an AirFrame is divided into:
 \begin{enumerate}
 	
-	\item optional propagation delay,
-	\item reception of the preamble,
-	\item application of AnalogueModels to the corresponding SNInfo,
+	\item optional propagation delay\req{rcvSimDelay},
+	\item reception of the preamble\req{rcvSimPreamble},
+	\item application of AnalogueModels to the corresponding SNInfo of the preamble\req{rcvFilterPreamble},
 	\item decision whether packet is considered noise (Decider),
-	\item reception of the packet.
+	\item reception of the packet\req{rcvSimDuration}.
 \end{enumerate}
 
-Afterwards the packet is either dropped (if considered noise) or processed. 
+Afterwards the packet is dropped if it was noise. Otherwise Signal and all interfering noise is collected within a SNInfo, filtered by the analogue models\req{rcvFilterSignals} and then proceeded to the Decider to decide if it was received correctly. If the result turns out positive, the MacPkt inside the AirFrame is decapsulated and send to the \h{\baseMacLayer}\req{rcvPassToMAC}.
 
 \begin{figure}[H]
  \centering
@@ -161,20 +181,9 @@ Afterwards the packet is either dropped (if considered noise) or processed.
 
 \newpage
 
-\subsection{receiving a MacPkt}
-
-
-\begin{figure}[H]
- \centering
- \includegraphics[width=300pt]{modelling/onMACPkt.png}
- \caption{sending process}
- \label{fig: sending process}
-\end{figure}
-
-
 %\subsection{provide status information to MAC}
 
-%Passively provided information\req{provpassive}: \h{\bm} is equipped with a reference to \h{\bp} in order to obtain information
+%Passively provided information\req{provpassive}: \h{\baseMacLayer} is equipped with a reference to \h{\basePhyLayer} in order to obtain information
 %about channelstate\req{channelstate} and current mode\req{currentmode} by
 %simple method calls. \\
 %Actively provided information\req{provactive}: A cMessage of the kind TX\_OVER
@@ -183,23 +192,13 @@ Afterwards the packet is either dropped (if considered noise) or processed.
 %\subsection{switch states}
 
 %Furthermore the MAC-Layer is able to set the current mode (RX, TX, SLEEP)\req{switchmode} of the Phy-Layer by a simple method call.
-%\h{\bp} will change to switching state and schedule itself the appropriate timer for the switching interval\req{switchtimes}, \saf{mode state machine}.
+%\h{\basePhyLayer} will change to switching state and schedule itself the appropriate timer for the switching interval\req{switchtimes}, \saf{mode state machine}.
 
 
 %\subsection{send packets}
 
-%Since \h{\bm} has a reference to \h{\bp} it can obtain information about the mode the radio is is currently in\req{sendPreqMode}, it is not already sending to the channel on its own\req{sendPreqSending} and the channel is idle\req{sendPreqIdle} via method calls, \saf{BasePhyLayer interface}.
+%Since \h{\baseMacLayer} has a reference to \h{\basePhyLayer} it can obtain information about the mode the radio is is currently in\req{sendPreqMode}, it is not already sending to the channel on its own\req{sendPreqSending} and the channel is idle\req{sendPreqIdle} via method calls, \saf{BasePhyLayer interface}.
 
-%The class MacToPhyControlInfo is designed as the container for control info\req{packetFromMac} the MAC-Layer
-%wants to attach to the packet given down to Phy-Layer for sending.
-%The packet itself is handed down as a MacPkt via OMNeT-channel. 
-
-%\begin{figure}[h]
-% \centering
-% \includegraphics[width=340pt]{modelling/MacToPhyCtrlInfo_members.png}
-% \caption{MacToPhyControlInfo interface}
-% \label{fig: MacToPhyCtrlInfo interface}
-%\end{figure}
 
 
 
