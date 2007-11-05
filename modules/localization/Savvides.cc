@@ -52,6 +52,23 @@ static bool AnchorSortPredicate(const AnchorInfo* a, const AnchorInfo* b)
 	return a->path_dst < b->path_dst;
 }
 
+const static char *status2string(int status)
+{
+	const static char *anchor = "ANCHOR";
+	const static char *unknown = "UNKNOWN";
+	const static char *positioned = "POSITIONED";
+	const static char *bad = "BAD";
+
+	if (status == STATUS_ANCHOR)
+		return anchor;
+	else if (status == STATUS_UNKNOWN)
+		return unknown;
+	else if (status == STATUS_POSITIONED)
+		return positioned;
+	else
+		return bad;
+}
+
 #define BRANCH_INIT(p) BRANCH_INIT2(p,p)
 #define BRANCH_INIT2(p,d) (hasPar(#p)?(EV << "using par: " << #p << " = " << par(#p) << endl, par(#p)):d)
 
@@ -196,18 +213,24 @@ void Savvides::sendPosition()
 
 void Savvides::finish()
 {
-	EV << "Savvides::finish()" << endl;
+	EV << "Savvides::finish()" 
+	   << status2string(status)
+	   << " pos "
+	   << pos.info()
+	   << " realpos "
+	   << getPosition().info()
+	   << endl;
 
 	EV << "Savvides ERROR: " << getLocationEstimation().getError(getPosition(), range) << " %" << endl;
 
 	while (anc.begin() != anc.end()) {
 		AnchorInfo *anchor = *anc.begin();
-		EV_clear << "\t" 
-			 << anchor->info()
-			 << " at "
-			 << anchor->pos.getTimestamp()
-			 << " s"
-			 << endl;
+// 		EV_clear << "\t" 
+// 			 << anchor->info()
+// 			 << " at "
+// 			 << anchor->pos.getTimestamp()
+// 			 << " s"
+// 			 << endl;
 		anc.erase(anc.begin());
 		delete anchor;
 	}
@@ -226,7 +249,9 @@ void Savvides::finish()
 	if (real_range_list)
 		delete real_range_list;
 
+	debug = false;
 	BaseLocalization::finish();
+	debug = true;
 }
 
 NodeInfo * Savvides::handleNewAnchor(NodeInfo * _anchor)
@@ -315,13 +340,13 @@ bool Savvides::checkAnchors(cMessage * msg, NodeInfo * node)
 				anchor->path_dst < old_anchor->path_dst
 				) 
 			{	// Found it, but the new one has a shorter path.
-				old_anchor->path_dst = anchor->path_dst;
-				old_anchor->last_hop_idx = node->id;
-				old_anchor->cnt = repeats;
-				EV << "anchor UPDATED: " << old_anchor->info() << endl;
-				setTimer(ANCHOR_TIMER, anchor_timer_interval);
-				changed = true;
-				update_rectangle(anchor);
+// 				old_anchor->path_dst = anchor->path_dst;
+// 				old_anchor->last_hop_idx = node->id;
+// 				old_anchor->cnt = repeats;
+// 				EV << "anchor UPDATED: " << old_anchor->info() << endl;
+// 				setTimer(ANCHOR_TIMER, anchor_timer_interval);
+// 				changed = true;
+// 				update_rectangle(anchor);
 			}
 			delete anchor;
 		}
