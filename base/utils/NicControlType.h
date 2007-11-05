@@ -41,10 +41,8 @@ class NicControlType : public cPolymorphic
 
 		RX_START,
 		RX_HDR,
-		//RX_END,
 		RX_FAIL,
 
-		TX_START,
 		TX_END, // this is TRANSMISSION_OVER replacement
 		TX_FAIL,
 
@@ -53,9 +51,6 @@ class NicControlType : public cPolymorphic
 		SET_SLEEP,
 
 		SET_RSSI,
-		
-		SET_NORMAL_POWER,
-		SET_LOW_POWER,
     };
     
 
@@ -91,16 +86,10 @@ class NicControlType : public cPolymorphic
 			case RX_HDR:
 				ost<<"RX_HDR";
 				break;
-			/*case RX_END:
-				ost<<"RX_END";*/
-				break;
 			case RX_FAIL:
 				ost<<"RX_FAIL";
 				break;
 
-			case TX_START:
-				ost<<"TX_START";
-				break;
 			case TX_END:
 				ost<<"TX_END";
 				break;
@@ -122,12 +111,6 @@ class NicControlType : public cPolymorphic
 				ost<<"SET_RSSI";
 				break;
 			
-			case SET_NORMAL_POWER:
-				ost<<"SET_NORMAL_POWER";
-				break;
-			case SET_LOW_POWER:
-				ost<<"SET_LOW_POWER";
-				break;
 		}
         return ost.str();
     }
