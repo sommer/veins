@@ -185,10 +185,9 @@ void Savvides::sendAnchors()
 
 void Savvides::sendPosition()
 {
-	if (!isAnchor && neighbors.size() <= nr_dims) {
-		int count_sound = 0;
+	if (!isAnchor && neighbors.size() <= (unsigned)nr_dims) {
 		/* check if i'm a sound node */
-		if (anc.size() + neighbors.size() <= nr_dims)
+		if (anc.size() + neighbors.size() <= (unsigned)nr_dims)
 			return;
 	}
 
@@ -263,7 +262,7 @@ NodeInfo * Savvides::handleNewAnchor(NodeInfo * _anchor)
 	anchor->flood = true;
 	PUSH_BACK(anc,anchor);
 	/* A new anchor is received, broadcast list of anchors. */
-	if (anc.size() < flood_limit || flood_limit == -1)
+	if ((int)anc.size() < flood_limit || flood_limit == -1)
 		anchor->flood = true;
 	else
 		anchor->flood = false;
@@ -318,7 +317,7 @@ bool Savvides::checkAnchors(cMessage * msg, NodeInfo * node)
 			}
 		}
 		if (!found) {
-			if (anc.size() < flood_limit || flood_limit == -1)
+			if ((int)anc.size() < flood_limit || flood_limit == -1)
 				anchor->flood = true;
 			else
 				anchor->flood = false;
@@ -389,7 +388,7 @@ void Savvides::handleMsg(cMessage * msg)
 		if (!isAnchor) {
 			checkNeighbors(m, node);
 
-			if (neighbors.size() > nr_dims) {
+			if (neighbors.size() > (unsigned)nr_dims) {
 				/* prospone triangulation to receive more neighbors */
 				setTimer(TRIANGULATION_TIMER, triangulation_timer_interval);
 			}
