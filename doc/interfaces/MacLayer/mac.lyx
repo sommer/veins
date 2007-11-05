@@ -1,0 +1,232 @@
+#LyX 1.5.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{a4}
+\date{}
+\end_preamble
+\language british
+\inputencoding auto
+\font_roman times
+\font_sans helvet
+\font_typewriter courier
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+MAC interface
+\end_layout
+
+\begin_layout Section
+Control Messages
+\end_layout
+
+\begin_layout Subsection
+PhyLayer -> MAC
+\end_layout
+
+\begin_layout Itemize
+RX_START
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Start of message indicator
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+RX_HDR
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Quotes eld
+\end_inset
+
+Headers complete
+\begin_inset Quotes erd
+\end_inset
+
+ indicator.
+ Should also provide a packet containing all of the data up to the end of
+ the MAC headers
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+RX_FAIL
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Message receive failure.
+ Occurs after a RX_START, if the message either fails CRC checks or collides
+ with something else.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+TX_END
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Message being transmitted has completed.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+TX_FAIL
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+End of transmit (like TX_END) but the message has failed to be transmitted.
+ For most radios, this should never happen (but there are valid cases for
+ packet-based radios e.g.\InsetSpace ~
+CC2420)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+SET_RSSI
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+RSSI data about current packet.
+ Should probably be folded into a MacPkt field.
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+MAC -> PhyLayer
+\end_layout
+
+\begin_layout Itemize
+SET_TRANSMIT
+\end_layout
+
+\begin_layout Itemize
+SET_LISTEN
+\end_layout
+
+\begin_layout Itemize
+SET_SLEEP
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Transition the PhyLayer into the given mode.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Standard
+
+
+\backslash
+newpage{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Data packets
+\end_layout
+
+\begin_layout Standard
+The MAC layer transfers messages to the Phy layer for transmission (TX packets)
+ and expects to receive message from the Phy layer when messages arrive
+ from other nodes (RX packets).
+ The diagrams below indicate the interaction between the packet types and
+ the control messages listed above.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename messages/RX.png
+	width 65col%
+	subcaption
+	subcaptionText "Receive"
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename messages/TX.png
+	width 65col%
+	subcaption
+	subcaptionText "Transmit"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+Message sequences
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
