@@ -1,0 +1,28 @@
+\documentclass{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage[american]{babel}
+\usepackage[pdftex]{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png}
+\graphicspath{{./src/}}
+
+\newcommand{\code}[1]{\textsf{#1}}
+\newcommand{\scalefactor}{0.5}
+
+% easy references
+\newcommand{\fref}[1]{Fig.~\ref{#1}}
+\newcommand{\sref}[1]{Section~\ref{#1}}
+\newcommand{\tref}[1]{Tab.~\ref{#1}}
+\newcommand{\eref}[1]{Eq.~\ref{#1}}
+\newcommand{\lref}[1]{Listing~\ref{#1}}
+
+\begin{document}
+
+\input{obstacles}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
