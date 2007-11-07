@@ -5,8 +5,8 @@
 
 \section{modelling}
 
-\emph{Note: }We denote a Layer in a general meaning by 'Phy-Layer' 
-or 'MAC-Layer' and our concrete C++ classes by \h{\bp} or \h{\bm}.
+\emph{Note: }We denote a Layer in a general meaning by 'physical layer' 
+or 'MAC layer' and our concrete C++ classes by \h{\bp} or \h{\bm}.
 
 
 \subsection{overview}
@@ -46,8 +46,8 @@ In this section we focus on how one is able to communicate with the
 in three ways:
 
 \begin{enumerate}
- \item OMNet-channel for data messages
- \item OMNet-channel for control messages
+ \item OMNeT-channel for data messages
+ \item OMNeT-channel for control messages
  \item a reference to \h{\bp}.
 \end{enumerate} 
 
@@ -57,8 +57,8 @@ The control channel is used by the \h{\bp} to inform the \h{\bm} about
 certain events\req{provactive}, like the TX\_OVER\req{txover} message 
 which indicates the end of a sending transmission.
 
-The reference provides a passive way\req{provpassive} for the  \h{\bm} to  get information about the current channel state\req{channelstate} and to get\req{currentmode} and set\req{switchmode} the current mode (RX, TX, SLEEP).
-Switching times\req{switchtimes} from one mode to another are controlled internaly by a state machine. \saf{mode state machine}.
+The reference provides a passive way\req{provpassive} for the  \h{\bm} to  get information about the current channel state\req{channelstate} and to get\req{currentmode} and set\req{switchmode} the current state (RX, TX, SLEEP).
+Switching times\req{switchtimes} from one radio state to another are controlled internaly by a state machine. \saf{mode state machine}.
 
 
 \begin{figure}[H]
@@ -73,30 +73,30 @@ Switching times\req{switchtimes} from one mode to another are controlled interna
 \subsection{AnalogueModel and Signal}
 \label{AM and Signal}
 
-The Signal is designed one-dimensional (power-over-time) by default with a specified time point for start and end of the Signal. The owner is able
-to add and request values at a specific time point\req{sendInfoTXPower}.
-The Method getTimeIterator() returns an appropriate SignalTimeIterator needed for applying AnalogueModels to the Signal.
+%The Signal is designed one-dimensional (power-over-time) by default with a specified time point for start and end of the Signal. The owner is able
+%to add and request values at a specific time point\req{sendInfoTXPower}.
+%The Method getTimeIterator() returns an appropriate SignalTimeIterator needed for applying AnalogueModels to the Signal.
 
-\begin{quote}
-\emph{NOTE: Anyone who subclasses Signal should make shure to have a properly
-working SignalTimeIterator (subclassed) for it. The SignalTimeIterator should always iterate over every time stamp in each dimension. This way simple AnalogueModels will be able to filter the Signal independent from its dimension.}
-\end{quote}
+%\begin{quote}
+%\emph{NOTE: Anyone who subclasses Signal should make shure to have a properly
+%working SignalTimeIterator (subclassed) for it. The SignalTimeIterator should always iterate over every time stamp in each dimension. This way simple AnalogueModels will be able to filter the Signal independent from its dimension.}
+%\end{quote}
 
-Further the Signal is set the packets header and payload bitrate\req{sendInfoBitrate},  the Move of the Host\req{sendInfoMove}, the size of the packet\req{sendInfoSize} and the channel to send the packet to\req{sendInfoChannel} by \h{\bp}.
-
-\emph{See also \ref{AirFrame and Signal}.}
-
+%Further the Signal is set the packets bitrate over time\req{sendInfoBitrate},  the Move of the Host\req{sendInfoMove}, the size of the packet\req{sendInfoSize} and the channel dimensions\req{sendInfoChannel} by \h{\bp}.
+%
+%\emph{See also \ref{AirFrame and Signal}.}
+ 
 \begin{figure}[H]
  \centering
  \includegraphics[width = \textwidth]{modelling/AnalogueModel_members.png}
  \caption{analogue model interface}
  \label{fig: analogue model interface}
 \end{figure}
+%
+%The AnalogueModel offers functionality to filter a referenced signal\req{analogueFilter} in a specified interval\req{rcvFilterSignals} (e.g. preamble\req{rcvFilterPreamble}) or at a single point in time.
 
-The AnalogueModel offers functionality to filter a referenced signal\req{analogueFilter} in a specified interval\req{rcvFilterSignals} (e.g. preamble\req{rcvFilterPreamble}) or at a single point in time.
-
-Three basic AnalogueModel classes are foreseen to be plugged into Phy-Layer to simulate pathloss\req{analogueSimPathloss}, shadowing\req{analogueSimShadowing} and fading\req{analogueSimFading}.\\
-\h{\bp} is designed to apply an arbitrary number of AnalogueModels to a Signal.
+%Three basic AnalogueModel classes are foreseen to be plugged into Phy-Layer to simulate pathloss\req{analogueSimPathloss}, shadowing\req{analogueSimShadowing} and fading\req{analogueSimFading}.\\
+%\h{\bp} is designed to apply an arbitrary number of AnalogueModels to a Signal.
 
 \begin{figure}[H]
  \centering
@@ -164,14 +164,14 @@ To be able to control the sending process\req{sendControl} of another AirFrame e
 
 \subsection{receiving a MacPkt}
 
-On reception of a MacPkt from the MAC-Layer, \h{\bp} checks if:
+On reception of a MacPkt from the MAC layer, \h{\bp} checks if:
 \begin{enumerate}
-	\item the radio is in TX mode\req{sendPreqMode},
+	\item the radio is in TX state\req{sendPreqMode},
 	\item it is not already sending a packet\req{sendPreqSending} and
-	\item the channel is idle\req{sendPreqIdle} (this is no hard requirement, \h{\bp} could send anyway).
+	%\item the channel is idle\req{sendPreqIdle} (this is no hard requirement, \h{\bp} could send anyway).
 \end{enumerate} 
 
-If condition 1 or 2 is not fulfilled it will throw an error.\\
+If one of conditions is not fulfilled it will throw an error.\\
 
 The MacToPhyControlInfo object attached to the MacPkt contains the information needed by \h{\bp} when constructing Signal and AirFrame to send to the channel. Right now it contains:
 
@@ -237,16 +237,16 @@ The receiving process is modelled internally by a state machine that schedules t
  \label{fig: receive detail}
 \end{figure}
 
-When the preamble of a packet is completely received, \h{\bp} constructs a SNInfo for the preamble, applies the AnalogueModels to it and passes it to the Decider to find out whether this packet is considered noise.
+%When the preamble of a packet is completely received, \h{\bp} constructs a SNInfo for the preamble, applies the AnalogueModels to it and passes it to the Decider to find out whether this packet is considered noise.
 
-\begin{figure}[H]
- \centering
- \includegraphics[width = 0.2\textwidth]{modelling/end_preamble_detail.png}
- \caption{end preamble detail}
- \label{fig: end preamble detail}
-\end{figure}
+%\begin{figure}[H]
+% \centering
+% \includegraphics[width = 0.2\textwidth]{modelling/end_preamble_detail.png}
+% \caption{end preamble detail}
+% \label{fig: end preamble detail}
+%\end{figure}
 
-In case a received packet is not \textit{noise} it is processed, i.e. \h{\bp} creates the corresponding SNInfo for the packet, applies AnalogueModels to it and passes the result to the Decider to check whether the packet was received correctly. If so, a MacPkt is created and handed up to Phy-Layer\req{rcvPassToMAC}.
+%In case a received packet is not \textit{noise} it is processed, i.e. \h{\bp} creates the corresponding SNInfo for the packet, applies AnalogueModels to it and passes the result to the Decider to check whether the packet was received correctly. If so, a MacPkt is created and handed up to Phy-Layer\req{rcvPassToMAC}.
 
 
 \subsection{the .ned-file}
@@ -265,23 +265,23 @@ The .ned-file of the \h{\bp} has the following parameters:
 \item switchTimeSleep as as \textit{numeric const}\req{confSwitchingTimes}
 \end{itemize}
 
-The parameters "analogueModels" and "decider" holds which analogueModels and decider to be used together with their parameters in XML formate. The exact formate still has to be declared!
+The parameters "analogueModels" and "decider" holds which AnalogueModels and Decider to be used together with their parameters in XML format. The exact format still has to be declared!
 
 %\subsection{provide status information to MAC}
 
 %Passively provided information\req{provpassive}: \h{\bm} is equipped with a reference to \h{\bp} in order to obtain information
-%about channelstate\req{channelstate} and current mode\req{currentmode} by
+%about channelstate\req{channelstate} and current radio state\req{currentmode} by
 %simple method calls. \\
 %Actively provided information\req{provactive}: A cMessage of the kind TX\_OVER
-%is sent to MAC-Layer when a sending transmission is over\req{txover}, \saf{sending process}.
+%is sent to MAC layer when a sending transmission is over\req{txover}, \saf{sending process}.
 
 
 
 %\subsection{send packets}
 
-%Since \h{\bm} has a reference to \h{\bp} it can obtain information about the mode the radio is is currently in\req{sendPreqMode}, it is not already sending to the channel on its own\req{sendPreqSending} and the channel is idle\req{sendPreqIdle} via method calls, \saf{BasePhyLayer interface}.
+%Since \h{\bm} has a reference to \h{\bp} it can obtain information about the state the radio is is currently in\req{sendPreqMode}, it is not already sending to the channel on its own\req{sendPreqSending} and the channel is idle\req{sendPreqIdle} via method calls, \saf{BasePhyLayer interface}.
 
-%The class MacToPhyControlInfo is designed as the container for control info\req{packetFromMac} the MAC-Layer
+%The class MacToPhyControlInfo is designed as the container for control info\req{packetFromMac} the MAC layer
 %wants to attach to the packet given down to Phy-Layer for sending.
 %The packet itself is handed down as a MacPkt via OMNeT-channel. 
 

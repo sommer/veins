@@ -6,7 +6,7 @@
 
 \begin{itemize}
  \item provide status information to MAC
- \item switch states (RX, TX, SLEEP)
+ \item switch radiostate (RX, TX, SLEEP)
  \item send packets to air/channel
  \item receive packets / listen for packets
  \item provide hooks for statistical information
@@ -17,12 +17,12 @@
 \label{stateInfo}
 
 In addition to received packets the physical layer has to provide some other information to the MAC layer.
-Some of this information has to be provided passively\reqdefLabel{defprovpassive} on demand (e.g. current mode) and some should be delivered actively\reqdefLabel{defprovactive} to the MAC layer on certain events (e.g. transmission of a packet complete).
+Some of this information has to be provided passively\reqdefLabel{defprovpassive} on demand (e.g. current channelstate) and some should be delivered actively\reqdefLabel{defprovactive} to the MAC layer on certain events (e.g. transmission of a packet complete).
 
 \noindent Information which has to be provided to MAC on demand:
 \begin{itemize}
- \item channelstate: idle (boolean) or RSSI\reqdefLabel{defchannelstate}
- \item current mode (RX, TX, SLEEP)\reqdefLabel{defcurrentmode}
+ \item channelstate: busy/idle (boolean) or RSSI\reqdefLabel{defchannelstate}
+ \item current radiostate (RX, TX, SLEEP)\reqdefLabel{defcurrentmode}
 \end{itemize}
 
 \noindent Information which has to be provided to MAC the moment it occurs:
@@ -31,22 +31,22 @@ Some of this information has to be provided passively\reqdefLabel{defprovpassive
 \end{itemize}
 
 \pagebreak
-\subsection{switch states}
+\subsection{switch radiostate}
 \label{switchstates}
 
 The physical layer has to be able to switch between the following things:
 
 \begin{itemize}
- \item current mode (RX, TX, SLEEP)\reqdefLabel{defswitchmode}
+ \item current radiostate (RX, TX, SLEEP)\reqdefLabel{defswitchmode}
 \end{itemize}
 
-Switching from one mode to another may take some time. Whereas the switching time may depends to whitch mode we are switching.\reqdefLabel{defswitchtimes}
+Switching from one state to another may take some time. Whereas the switching time may depends to whitch state we are switching.\reqdefLabel{defswitchtimes}
 
 \begin{figure}[t]
  \centering
  \includegraphics[width=240pt]{req_spec/stateMachineMode.png}
  % stateMachineMode.png: 1179666x1179666 pixel, 0dpi, infxinf cm, bb=
- \caption{State machine for current mode}
+ \caption{State machine for radiostate}
  \label{fig: mode state machine}
 \end{figure}
 
@@ -54,8 +54,7 @@ Switching from one mode to another may take some time. Whereas the switching tim
 \subsection{send packets}
 \label{subSendPackets}
 
-The physical layer has to be able to send packets from the MAC 
-Layer to the channel. 
+The physical layer has to be able to send packets from the MAC layer to the channel. 
 We also want to support the possibility to control
 the sending process after it has been started.\reqdefLabel{defsendControl}.
 
@@ -63,21 +62,24 @@ Before we can send packets the following things have to be
 assured:
 \linebreak
 \begin{itemize}
- \item the radio has to be in TX mode\reqdefLabel{defsendPreqMode}
+ \item the radio has to be in TX state\reqdefLabel{defsendPreqMode}
  \item we are not already sending\reqdefLabel{defsendPreqSending}
- \item the channel should be idle (this is no hard requirement)\reqdefLabel{defsendPreqIdle}
+% \item the channel should be idle (this is no hard requirement)\reqdefLabel{defsendPreqIdle}
 \end{itemize}
 
-The above items should be controlled by the MAC layer so the physical layer 
-would only throw an error if they are not set.
+The above items should be controlled by the MAC layer so the physical layer would only throw an error if they are not set.
 
 The following information has to be attached by the MAC layer to the packet:
 
 \begin{itemize}
- \item header bitrate\reqdefLabel{defsendCtrlHeaderBitrate}
- \item payload bitrate\reqdefLabel{defsendCtrlBitrate}
- \item channel\reqdefLabel{defsendCtrlChannel}
- \item TX power\reqdefLabel{defsendCtrlTXPower}
+
+ %\item channel\reqdefLabel{defsendCtrlChannel}
+ \item channel dimensions (frequency/space)\reqdefLabel{defsendCtrlChannel}
+ %\item header bitrate\reqdefLabel{defsendCtrlHeaderBitrate}
+ %\item payload bitrate\reqdefLabel{defsendCtrlBitrate}
+ \item bitrate (for all dimensions) over time\reqdefLabel{defsendCtrlHeaderBitrate}\reqdefLabel{defsendCtrlBitrate}
+ \item TX power for all dimensions over time\reqdefLabel{defsendCtrlTXPower}
+ 
  \item size of packet\reqdefLabel{defsendCtrlSize}
 \end{itemize}
 
@@ -88,7 +90,8 @@ The sending process itself is made up of the following steps:
  \item MAC layer gives packet and control info to physical layer
  \item check requirements for sending, throw error if they are not fulfilled
  \item add information needed by the receiving physical layer to packet (see below)
- \item add signal function transmission power\footnote{The receiver converts the same signal to receiving power over time.} over time)\footnote{The signal function could be more dimensional. E.g.: receiving power over time and channel.} to packet
+ %\item add signal function (transmission power\footnote{The receiver converts the same signal to receiving power over time.} over time)\footnote{The signal function could be more dimensional. E.g.: receiving power over time and channel.} to packet
+ \item add signal to packet
  \item packet is send to channel by physical layer
  \item schedule transmission over message for MAC layer
 \end{enumerate}
@@ -96,13 +99,17 @@ The sending process itself is made up of the following steps:
 The following information is needed by the receiving physical layer:
 
 \begin{itemize}
-\item TX power (represented by the signal function)
+\item signal
+	\begin{itemize}
+	\item TX power (for all dimensions) over time
+	\item the bitrate (for all dimensions) over time\reqdefLabel{defsendInfoBitrate}
+	\item the channel(dimensions)\reqdefLabel{defsendInfoChannel}
+	\item the duration the signal would need to be transmitted\reqdefLabel		{defsendInfoDuration}
+	\item the duration of the preamble\reqdefLabel{defsendInfoPreambleDuration}
+	
+	\end{itemize}
 \item position, move direction and speed of the sending host\reqdefLabel{defsendInfoMove}
-\item the channel\reqdefLabel{defsendInfoChannel}
 \item size of packet\reqdefLabel{defsendInfoSize}
-\item the duration the signal would need to be transmitted\reqdefLabel{defsendInfoDuration}
-\item the duration of the preamble\reqdefLabel{defsendInfoPreambleDuration}
-\item the bitrate (payload and header)\reqdefLabel{defsendInfoBitrate}
 \end{itemize}
 
 \subsection{receive packets}
@@ -116,11 +123,13 @@ Because the packets arrive immediatly at every receiving node we have to simulat
 \item simulate payload duration
 \end{enumerate}
 
-We also have to simulate the attenuation of the signal strength\reqdefLabel{defrcvSimAttenuation}. This should be done by filtering the with the \textit{analogue models}.
+We also have to simulate the attenuation of the signal strength\reqdefLabel{defrcvSimAttenuation}. This should be done by filtering the signal with the \textit{analogue models} directly after a message arrives (since we already have it then)\reqdefLabel{defrcvFilterPreamble}. The AnalogueModels will add an attenuation matrix to the Signal.
 
-If the preamble is transmitted the packet has to be classified as \textit{signal} or \textit{noise}\reqdefLabel{defrcvClassify}. The decision is made by the \textit{decider}. Therefore the preamble has to be filtered previously by the analogue models.\reqdefLabel{defrcvFilterPreamble}
+%If the preamble is transmitted the packet has to be classified as \textit{signal} or \textit{noise}\reqdefLabel{defrcvClassify}. The decision is made by the \textit{decider}. Therefore the preamble has to be filtered previously by the analogue models.\reqdefLabel{defrcvFilterPreamble}
 
-If the transmission of a \textit{signal} is over we have to decide if it was received correctly.\reqdefLabel{defrcvIsCorrect} This is also done by the \textit{decider} by evaluating the \textit{signal to noise ratio} short \textit{SNR}. Of course we have to apply the \textit{analogue model} to the signal and every noise interfering with the signal beforehand.\reqdefLabel{defrcvFilterSignals} If the signal was received correctly we pass it to the MAC Layer.\reqdefLabel{defrcvPassToMAC}
+The packet has to be classified as \textit{signal} or \textit{noise}\reqdefLabel{defrcvClassify}. The decision is made by the \textit{decider}.
+
+If the transmission of a \textit{signal} is over we have to decide if it was received correctly.\reqdefLabel{defrcvIsCorrect} This is also done by the \textit{decider} by evaluating the \textit{signal to noise ratio} short \textit{SNR}. Of course we have to apply the \textit{analogue model} to the signal and every noise interfering with the signal beforehand.\reqdefLabel{defrcvFilterSignals} If the signal was received correctly we pass it to the MAC layer.\reqdefLabel{defrcvPassToMAC} It is also possible to pass the signal to the MAC layer anyway, marked as biterror/collision.
 
 \subsubsection{the analogue model}
 \label{analogueModel}
@@ -189,7 +198,7 @@ The following parameters of the physical layer should be freely configurable:
 	\item thermal noise\reqdefLabel{defconfNoise}
 	\item sensitivity\reqdefLabel{defconfSens}
 	\item maximum TX power\reqdefLabel{defconfMaxTXPower}
-	\item switching times between modes (RX, TX, SLEEP)\reqdefLabel{defconfSwitchingTimes}
+	\item switching times between states (RX, TX, SLEEP)\reqdefLabel{defconfSwitchingTimes}
 \end{itemize}
 
 \subsection{list of requirements}
@@ -201,12 +210,12 @@ The following parameters of the physical layer should be freely configurable:
 	\item provide passive (on demand) \reqdef{defprovpassive}\label{provpassive}
 	\item provide active (messages) \reqdef{defprovactive}\label{provactive}
 	\item channelstate: idle (boolean) or RSSI \reqdef{defchannelstate}\label{channelstate}
-	\item current mode (RX, TX, SLEEP) \reqdef{defcurrentmode}\label{currentmode}
+	\item current state (RX, TX, SLEEP) \reqdef{defcurrentmode}\label{currentmode}
 	\item transmission over event (send) \reqdef{deftxover} and \reqdef{deftxover2}\label{txover}
 	\end{enumerate}
  \item switch states (RX, TX, SLEEP)
 	\begin{enumerate}
-	\item current mode \reqdef{defswitchmode}\label{switchmode}
+	\item current state \reqdef{defswitchmode}\label{switchmode}
 	\item switching times \reqdef{defswitchtimes}\label{switchtimes}
 	\end{enumerate}
  \item send packets to air/channel
@@ -223,15 +232,15 @@ The following parameters of the physical layer should be freely configurable:
 		\end{enumerate}
 	\item prerequirements
 		\begin{enumerate}
-		\item are in TX mode \reqdef{defsendPreqMode}\label{sendPreqMode}
+		\item are in TX state \reqdef{defsendPreqMode}\label{sendPreqMode}
 		\item not already sending \reqdef{defsendPreqSending}\label{sendPreqSending}
-		\item channel is idle \reqdef{defsendPreqIdle}\label{sendPreqIdle}		
+		%\item channel is idle \reqdef{defsendPreqIdle}\label{sendPreqIdle}		
 		\end{enumerate}
-	\item attach informations for receiver
+	\item attach information for receiver
 		\begin{enumerate}
 		\item attach transmission power over time function \reqdef{defsendInfoTXPower}\label{sendInfoTXPower}
 		\item position, move direction and speed of the sending host \reqdef{defsendInfoMove}\label{sendInfoMove}
-		\item channel \reqdef{defsendInfoChannel}\label{sendInfoChannel}
+		\item channel dimensions\reqdef{defsendInfoChannel}\label{sendInfoChannel}
 		\item size of packet \reqdef{defsendInfoSize}\label{sendInfoSize}
 		\item duration \reqdef{defsendInfoDuration}\label{sendInfoDuration}
 		\item duration of preamble \reqdef{defsendInfoPreambleDuration}\label{sendInfoPreambleDuration}
@@ -286,7 +295,7 @@ The following parameters of the physical layer should be freely configurable:
 	\item thermal noise \reqdef{defconfNoise}\label{confNoise}
 	\item sensitivity \reqdef{defconfSens}\label{confSens}
 	\item maximum TX power \reqdef{defconfMaxTXPower}\label{confMaxTXPower}
-	\item switching times between modes (RX, TX, SLEEP) \reqdef{defconfSwitchingTimes}\label{confSwitchingTimes}
+	\item switching times between states (RX, TX, SLEEP) \reqdef{defconfSwitchingTimes}\label{confSwitchingTimes}
 	\end{enumerate}
 \end{enumerate}
 
