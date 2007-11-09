@@ -8,7 +8,6 @@
 \emph{Note: }We denote a Layer in a general meaning by 'physical layer' 
 or 'MAC layer' and our concrete C++ classes by \h{\bp} or \h{\bm}.
 
-
 \subsection{overview}
 
 Here we present the design- and interface details of the OMNeT-module 
@@ -58,7 +57,7 @@ certain events\req{provactive}, like the TX\_OVER\req{txover} message
 which indicates the end of a sending transmission.
 
 The reference provides a passive way\req{provpassive} for the  \h{\bm} to  get information about the current channel state\req{channelstate} and to get\req{currentmode} and set\req{switchmode} the current state (RX, TX, SLEEP).
-Switching times\req{switchtimes} from one radio state to another are controlled internaly by a state machine. \saf{mode state machine}.
+Switching times\req{switchtimes} from one radio state to another are controlled internally by a state machine. \saf{mode state machine}.
 
 
 \begin{figure}[H]
@@ -70,8 +69,8 @@ Switching times\req{switchtimes} from one radio state to another are controlled 
 
 
 
-\subsection{AnalogueModel and Signal}
-\label{AM and Signal}
+\subsection{AnalogueModel}
+%\label{AM and Signal}
 
 %The Signal is designed one-dimensional (power-over-time) by default with a specified time point for start and end of the Signal. The owner is able
 %to add and request values at a specific time point\req{sendInfoTXPower}.
@@ -125,12 +124,12 @@ SNInfo is created by \h{\bp} when a packet arrives to collect all signals from t
 
 
 \subsection{Decider}
+\label{decider}
 
 The Decider has two tasks:
 \begin{enumerate}
-	\item It decides whether we are able to receive a certain packet by evaluting
-	the SNInfo for the packets preamble time interval, otherwise the packet will 	be considered noise\req{rcvClassify}
-	\item When a packet has been received and is not noise the Decider 	returns a DeciderResult for that packet, that only contains if the packet was received correct or not correct by default\req{rcvIsCorrect}.
+	\item It decides whether we are able to receive a certain packet as \textit{signal}, otherwise the packet will be considered \textit{noise}.\req{rcvClassify} The moment the AirFrame arrives, the Decider is asked for a time interval after that it wants to be handed the SNInfo again to make the decision.
+	\item When a packet has been received and is not \textit{noise} the Decider evaluates the SNInfo for that Signal and returns a DeciderResult that only contains if the packet was received correct or not correct by default\req{rcvIsCorrect}.
 \end{enumerate}
 
 A Decider that gives a richer DeciderResult (e.g. bitwise errors\req{deciderBitwise}) must be subclassed and implemented by the user.
@@ -143,11 +142,15 @@ A Decider that gives a richer DeciderResult (e.g. bitwise errors\req{deciderBitw
 \end{figure}
 
 
-\subsection{AirFrame}
+\subsection{AirFrame and the one-dimensional Signal}
 \label{AirFrame and Signal}
 
-AirFrame and Signal are both constructed by \h{\bp} with the help of MacToPhyControlInfo.
-It is shown below how nessecary information for sending/receiving is distributed. Signal is already discussed in \ref{AM and Signal}.
+AirFrame and Signal are both initialized by \h{\bp} with the help of MacToPhyControlInfo.
+It is shown below how nessecary information for sending/receiving is distributed.
+
+Here we focus on the basic, one-dimensional (time) Signal that stores entries for TX Power and attenuation over time. There are fix entries for header and payload bitrate. These assumptions are considered to cover most cases. 
+
+Further Signal stores the Move (move pattern of the sending host), the packets header length, the start time and length of the Signal.
 
 \h{\bp} calculates duration\req{sendInfoDuration} and preamble duration\req{sendInfoPreambleDuration} of the packet and adds it to the AirFrame. 
 To be able to control the sending process\req{sendControl} of another AirFrame every AirFrame has a unique id and a specific type which secifies if this is a normal AirFrame or a control-AirFrame.
@@ -171,7 +174,7 @@ On reception of a MacPkt from the MAC layer, \h{\bp} checks if:
 	%\item the channel is idle\req{sendPreqIdle} (this is no hard requirement, \h{\bp} could send anyway).
 \end{enumerate} 
 
-If one of conditions is not fulfilled it will throw an error.\\
+If one of these conditions is not fulfilled it will throw an error.\\
 
 The MacToPhyControlInfo object attached to the MacPkt contains the information needed by \h{\bp} when constructing Signal and AirFrame to send to the channel. Right now it contains:
 
@@ -192,8 +195,8 @@ The MacToPhyControlInfo object attached to the MacPkt contains the information n
  \label{fig: MacToPhyCtrlInfo interface}
 \end{figure}
 
-\h{\bp} is responsilbe for creating AirFrame and Signal and attaching information (parameters) to them. For detailed arrangement of information in Signal and AirFrame see \ref{AirFrame and Signal}.
-When the AirFrame is complete and sent, \h{\bp} schedules a TX\_OVER message to the \h{\bm}(via control-message).
+\h{\bp} is responsible for creating AirFrame and Signal and attaching information (parameters) to them. For detailed arrangement of information in Signal and AirFrame see \ref{AirFrame and Signal}.
+When the AirFrame is complete and sent, \h{\bp} schedules a TX\_OVER message to the \h{\bm} (via control-message).
 
 \begin{figure}[H]
  \centering
@@ -208,17 +211,15 @@ When the AirFrame is complete and sent, \h{\bp} schedules a TX\_OVER message to 
 
 \subsection{Receiving and processing an AirFrame}
 
-The reception of an AirFrame is divided into:
+On arrival of an AirFrame \h{\bp}:
 \begin{enumerate}
 	
-	\item optional propagation delay\req{rcvSimDelay},
-	\item reception of the preamble\req{rcvSimPreamble},
-	\item application of AnalogueModels to the corresponding SNInfo\req{rcvSimAttenuation},
-	\item decision whether packet is considered noise (Decider),
-	\item reception of the packet\req{rcvSimDuration}.
+	% \item optional propagation delay, \h{\bp} updates the starting time of the Signal\req{rcvSimDelay},
+	% \item reception of the preamble\req{rcvSimPreamble},
+	\item applies AnalogueModels to the corresponding SNInfo\req{rcvSimAttenuation},
+	% \item decision whether packet is considered noise (Decider),
+	\item receives the AirFrame\req{rcvSimDuration}.
 \end{enumerate}
-
-Afterwards the packet is either dropped (if considered noise) or processed. 
 
 \begin{figure}[H]
  \centering
@@ -227,8 +228,15 @@ Afterwards the packet is either dropped (if considered noise) or processed.
  \label{fig: receiving process}
 \end{figure}
 
-The receiving process is modelled internally by a state machine that schedules the AirFrame that is received (since we have a pointer to it from the beginning) everytime a delay/time interval shall be simulated. That saves us the creation of additional self-messages.
 
+The receiving process works as follows: In general time intervals during reception are simulated by scheduling the AirFrame accordingly.
+An optional propagation delay is simulated by updating the starting time of the Signal\req{rcvSimDelay} according to the delay and scheduling the AirFrame to the reception start point (\textit{stage 0}).\\
+
+On reception start the Decider is asked for the time point\reqdef{decider} the decision whether the signal is considered \textit{signal} or \textit{noise} is made. The AirFrame is scheduled to that time point (\textit{stage 1}).\\
+
+Next the Decider makes the decision (\textit{signal} / \textit{noise}) and the AirFrame is scheduled to the time point when the receiving process is over (\textit{stage 2}).\\
+
+Finally reception is over and the AirFrame is completely received in reality (\textit{stage 3}).
 
 \begin{figure}[H]
  \centering
@@ -236,6 +244,20 @@ The receiving process is modelled internally by a state machine that schedules t
  \caption{receive detail}
  \label{fig: receive detail}
 \end{figure}
+
+Right now the AirFrame is either dropped (if considered \textit{noise}) or processed.
+
+If processed, the corresponding SNInfo is given to the Decider to obtain a DecisionResult that contains at least whether the AirFrame was received correctly or not.
+
+If not it is dropped now, otherwise \h{\bp} creates an appropriate MacPkt and sends it up to MAC layer. Nevertheless we can also pass any signal received up to MAC layer.
+
+\textbf{Please note: 'dropped' in this context means that \h{\bp} doesn't want to treat the signal as \textit{signal}.}
+
+
+% The receiving process is modelled internally by a state machine that schedules the AirFrame that is received (since we have a pointer to it from the beginning) everytime a delay/time interval shall be simulated. That saves us the creation of additional self-messages.
+
+
+
 
 %When the preamble of a packet is completely received, \h{\bp} constructs a SNInfo for the preamble, applies the AnalogueModels to it and passes it to the Decider to find out whether this packet is considered noise.
 
