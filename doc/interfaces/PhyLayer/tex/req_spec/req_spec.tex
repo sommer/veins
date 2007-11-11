@@ -30,7 +30,7 @@ Some of this information has to be provided passively\reqdefLabel{defprovpassive
  \item transmission over (send)\reqdefLabel{deftxover}
 \end{itemize}
 
-\pagebreak
+
 \subsection{switch radiostate}
 \label{switchstates}
 
@@ -42,15 +42,15 @@ The physical layer has to be able to switch between the following things:
 
 Switching from one state to another may take some time. Whereas the switching time may depends to whitch state we are switching.\reqdefLabel{defswitchtimes}
 
-\begin{figure}[t]
+\begin{figure}[H]
  \centering
  \includegraphics[width=240pt]{req_spec/stateMachineMode.png}
  % stateMachineMode.png: 1179666x1179666 pixel, 0dpi, infxinf cm, bb=
  \caption{State machine for radiostate}
- \label{fig: mode state machine}
+ \label{fig:mode state machine}
 \end{figure}
 
-\pagebreak
+
 \subsection{send packets}
 \label{subSendPackets}
 
@@ -124,13 +124,14 @@ Because the packets arrive immediatly at every receiving node we have to simulat
 \item simulate payload duration
 \end{enumerate}
 
-We also have to simulate the attenuation of the signal strength\reqdefLabel{defrcvSimAttenuation}. This should be done by filtering the signal with the \textit{analogue models} directly after a message arrives (since we already have it then)\reqdefLabel{defrcvFilterPreamble}. The AnalogueModels will add an attenuation matrix to the Signal.
+We also have to simulate the attenuation of the signal strength\reqdefLabel{defrcvSimAttenuation}. This should be done by filtering the signal with the \textit{analogue models} directly after a message arrives (since we already have it then). The AnalogueModels will add an attenuation matrix to the Signal.\\
 
 %If the preamble is transmitted the packet has to be classified as \textit{signal} or \textit{noise}\reqdefLabel{defrcvClassify}. The decision is made by the \textit{decider}. Therefore the preamble has to be filtered previously by the analogue models.\reqdefLabel{defrcvFilterPreamble}
 
-The packet has to be classified as \textit{signal} or \textit{noise}\reqdefLabel{defrcvClassify}. The decision is made by the \textit{decider}.
+The packet has to be classified as \textit{signal} or \textit{noise}\reqdefLabel{defrcvClassify}. The decision is made by the \textit{decider}.\\
 
-If the transmission of a \textit{signal} is over we have to decide if it was received correctly.\reqdefLabel{defrcvIsCorrect} This is also done by the \textit{decider} by evaluating the \textit{signal to noise ratio} short \textit{SNR}. Of course we have to apply the \textit{analogue model} to the signal and every noise interfering with the signal beforehand.\reqdefLabel{defrcvFilterSignals} If the signal was received correctly we pass it to the MAC layer.\reqdefLabel{defrcvPassToMAC} It is also possible to pass the signal to the MAC layer anyway, marked as biterror/collision.
+If the transmission of a \textit{signal} is over we have to decide if it was received correctly.\reqdefLabel{defrcvIsCorrect} This is also done by the \textit{decider} by evaluating the \textit{signal to noise ratio} short \textit{SNR}. 
+If the signal was received correctly we pass it to the MAC layer.\reqdefLabel{defrcvPassToMAC} It is also possible to pass the signal to the MAC layer anyway, marked as biterror/collision.
 
 \subsubsection{the analogue model}
 \label{analogueModel}
@@ -256,8 +257,6 @@ The following parameters of the physical layer should be freely configurable:
 		\item simulate preamble \reqdef{defrcvSimPreamble}\label{rcvSimPreamble}
 		\item simulate transmission duration \reqdef{defrcvSimDuration}\label{rcvSimDuration}
 		\item simulate attenuation \reqdef{defrcvSimAttenuation}\label{rcvSimAttenuation}
-		\item filter preamble \reqdef{defrcvFilterPreamble}\label{rcvFilterPreamble}
-		\item filter signal and interfering noise \reqdef{defrcvFilterSignals}\label{rcvFilterSignals}
 		\item pass correct packets to MAC \reqdef{defrcvPassToMAC}\label{rcvPassToMAC}
 		\item analogue model
 			\begin{enumerate}

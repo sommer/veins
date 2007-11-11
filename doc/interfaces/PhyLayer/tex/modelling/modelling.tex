@@ -87,7 +87,7 @@ Switching times\req{switchtimes} from one radio state to another are controlled 
 
 The AnalogueModel is at least able to filter the basic, one-dimensional Signal from a start point to an end point in time.\\
 
-Information how it works on a more complex multi-dimensional Signal will be added.
+Information how it works on a more complex multi-dimensional Signal are explained at section \ref{sec:signaldetail}.
  
 \begin{figure}[H]
  \centering
@@ -114,7 +114,7 @@ Information how it works on a more complex multi-dimensional Signal will be adde
 
 ChannelInfo keeps track of all AirFrames on the channel. It does not differentiate between \textit{signal} and \textit{noise}. \h{\bp} is able to
 add and remove references to certain AirFrames to and from ChannelInfo.\\
-ChannelInfo is able to record the whole channel over time from a start to a stop signal and can return a vector of Signals (references) that intersect with a given time interval.\\
+ChannelInfo can return a vector of Signals (references) that intersect with a given time interval.\\
 SNInfo is created by \h{\bp} when a packet arrives to collect all signals from the channel that intersect with the reception time interval of the packet.
 
 \begin{figure}[H]
@@ -166,9 +166,9 @@ To be able to control the sending process\req{sendControl} of another AirFrame e
  \centering
  \includegraphics[width = \textwidth]{modelling/AirFrame_members.png}
  \caption{member arrangement in AirFrame and Signal}
- \label{fig: member AirFrame}
+ \label{fig:memberAirFrame}
 \end{figure}
-
+\newpage
 
 
 \subsection{receiving a MacPkt}
@@ -210,8 +210,7 @@ When the AirFrame is complete and sent, \h{\bp} schedules a TX\_OVER message to 
  \caption{sending process}
  \label{fig: sending process}
 \end{figure}
-
-
+\newpage
 
 
 
@@ -222,7 +221,7 @@ On arrival of an AirFrame \h{\bp}:
 	
 	% \item optional propagation delay, \h{\bp} updates the starting time of the Signal\req{rcvSimDelay},
 	% \item reception of the preamble\req{rcvSimPreamble},
-	\item applies AnalogueModels to the corresponding SNInfo\req{rcvSimAttenuation},
+	\item applies AnalogueModels to the corresponding Signal\req{rcvSimAttenuation},
 	% \item decision whether packet is considered noise (Decider),
 	\item receives the AirFrame\req{rcvSimDuration}.
 \end{enumerate}
