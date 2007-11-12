@@ -768,11 +768,14 @@ void PositifLayer::write_statistics()
 				node[src].perf_data.anchor_range_error_count;
 		}
 
-		char finalposstr[20];	// Should be enough
-		char trueposstr[20];	// Should be enough
-
-		strcpy(finalposstr, pos2str(node[src].perf_data.curr_pos));
-		strcpy(trueposstr, pos2str(node[src].true_pos));
+		char finalposstr[32];	// Should be enough
+		char trueposstr[32];	// Should be enough
+		// safe copy
+		strncpy(finalposstr, pos2str(node[src].perf_data.curr_pos), 31);
+		strncpy(trueposstr, pos2str(node[src].true_pos), 31);
+		// ensure that string is null terminated
+		finalposstr[31] = '\0';
+		trueposstr[31] = '\0';
 
 		fprintf(stderr,
 			"%3d: pos = %16s truepos = %16s %10s err = %6.2f%% (p1 %6.2f%% p2 %6.2f%%) conf = %.3f re= %3.1f %3.1f %3.1f\n",
