@@ -356,10 +356,10 @@ char *PositifLayer::pos2str(Position a)
 
 	switch (nr_dims) {
 	case 2:
-		sprintf(str, "<%.2f,%.2f>", a[0], a[1]);
+		snprintf(str, 100, "<%.2f,%.2f>", a[0], a[1]);
 		break;
 	case 3:
-		sprintf(str, "<%.2f,%.2f,%.2f>", a[0], a[1], a[2]);
+		snprintf(str, 100, "<%.2f,%.2f,%.2f>", a[0], a[1], a[2]);
 		break;
 	default:
 		abort();

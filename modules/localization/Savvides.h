@@ -23,8 +23,6 @@
 #include "BaseLocalization.h"
 #include "PositifUtil.h"
 #include "Timer.h"
-#include "BaseWorldUtility.h"
-#include "BaseUtility.h"
 #include "Move.h"
 
 #include <list>
@@ -168,8 +166,6 @@ protected:
 	 * @brief Members needed for interaction with mobility framework.
 	 */
 	/*@{ */
-	BaseWorldUtility *world;
-	BaseUtility *baseUtility;
 	Move move;
 	int moveCategory;
 	

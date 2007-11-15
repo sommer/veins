@@ -1,6 +1,4 @@
 #include "PositifLayer.h"
-#include "BaseWorldUtility.h"
-#include "BaseUtility.h"
 #include "Move.h"
 
 #include <string.h>
@@ -96,14 +94,11 @@ class Node_Savvides_Mob: public PositifLayer {
 	 * @brief Members needed for interaction with mobility framework.
 	 */
 	/*@{ */
-	BaseWorldUtility *world;
-	BaseUtility *baseUtility;
 	Move move;
 	int moveCategory;
 	
 	void check_if_moved(void);
 	virtual void receiveBBItem(int, const BBItem*, int);
-	Coord startPosition;
 	/*@} */
 
 	void remove_triangulation_timer(timer_info timer);
@@ -148,18 +143,11 @@ void Node_Savvides_Mob::init(void)
 	algorithm = 1;		// Output on raw data line only.
 	version = 8;
 
-	startPosition = getPosition();
-
-        // get utility pointers (world and host)
-	world = FindModule<BaseWorldUtility*>::findGlobalModule();
-        if (world == NULL)
-		error("Could not find BaseWorldUtility module");
-	
         EV << "initializing node_savvides_mob" << endl; // for node position
-	baseUtility = FindModule<BaseUtility*>::findSubModule(findHost());
-        if (baseUtility == NULL)
-		error("Could not find BaseUtility module");
 	// subscribe to move
+	BaseUtility * baseUtility = FindModule < BaseUtility * >::findSubModule(findHost());
+	if (baseUtility == NULL)
+		error("Could not find BaseUtility module");
         moveCategory = baseUtility->subscribe(this, &move);
 
 	if (MAX_TIMERS < TIMER_COUNT) {
@@ -269,16 +257,6 @@ void Node_Savvides_Mob::check_if_moved(void)
 			anchors.push_back(ME);
 			/* Reschedule TIMER_SEND_ANCHOR */
 			resetTimer(bc_anchor);
-		}
-
-		fprintf (stdout, "speed: %g\n", move.speed);
-
-		double ddistance = startPosition.distance(pos);
-		if (ddistance < move.speed) {
-			memcpy(NULL, &move, sizeof(move));
-			write_statistics();
-		} else {
-			startPosition = pos;
 		}
 	} else {
 		EV_clear << "nope." << endl;
@@ -640,7 +618,7 @@ bool Node_Savvides_Mob::new_anchor(cMessage * msg)
 
 		if (!found) {
 			EV_clear << "NEW ANCHOR!" << endl;
-			if (anchors.size() < flood_limit || flood_limit == -1)
+			if ((int)anchors.size() < flood_limit || flood_limit == -1)
 				anchor->flood = true;
 			else
 				anchor->flood = false;

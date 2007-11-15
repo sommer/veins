@@ -24,14 +24,17 @@
 #define BASELOC_H
 
 #include <BaseLayer.h>
+#include <BaseWorldUtility.h>
+#include <BaseUtility.h>
+// #include <BaseArp.h>
 
-#include "BaseArp.h"
 #include "LocPkt_m.h"
 
 #include <list>
 #include <string>
 
 using std::string;
+
 /**
  * @brief Base class for maintaining node information for the anchor and
  * neighbor lists.
@@ -118,6 +121,9 @@ class BaseLocalization:public BaseLayer {
 
 	list<NodeInfo *> neighbors; /**< @brief The neighbor list */
 	list<NodeInfo *> anchors; /**< @brief The anchor list */
+
+	BaseWorldUtility * worldUtility;
+	BaseUtility *baseUtility;
 
       public:
 	 Module_Class_Members(BaseLocalization, BaseLayer, 0);
@@ -218,7 +224,7 @@ class BaseLocalization:public BaseLayer {
 	 * @brief Localization functions that can be redefined by
 	 * the programmer.
 	 */
-
+	/*@{ */
 	/** @brief Perform actions on the anchor list
 	 * 
 	 * When the anchor doesn't need to be stored, this function must
@@ -236,7 +242,6 @@ class BaseLocalization:public BaseLayer {
 	/*@} */
 
 private:
-	/*@{ */
 	/** @brief Check if the sender of this position exists in the
 	 * anchor list.
 	 *

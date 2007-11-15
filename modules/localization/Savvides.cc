@@ -29,7 +29,6 @@
 
 #include <NetwControlInfo.h>
 #include <SimpleAddress.h>
-#include <BaseWorldUtility.h>
 #include <ConnectionManager.h>
 
 int Savvides::refine_limit = 0;
@@ -108,19 +107,11 @@ void Savvides::initialize(int stage)
 		real_range_list = NULL;
 		break;
 	case 1:
-		// get utility pointers (world and baseUtility)
-		world = FindModule<BaseWorldUtility*>::findGlobalModule();
-		if (world == NULL)
-			error("Could not find BaseWorldUtility module");
-		
-		baseUtility = FindModule<BaseUtility*>::findSubModule(findHost());
-		if (baseUtility == NULL)
-			error("Could not find BaseUtility module");
-
-		nr_dims = (world->use2D()?2:3);
+		nr_dims = (worldUtility->use2D()?2:3);
 		range = (double)(FindModule<BaseConnectionManager*>::findGlobalModule())->par("radioRange");
 
 		if (isAnchor) {
+			status = STATUS_ANCHOR;
 			AnchorInfo *anchor = new AnchorInfo(id, true, getLocation(), 0.0);
 			anchor->path_dst = 0.0;
 			anchor->cnt = repeats;
@@ -128,6 +119,8 @@ void Savvides::initialize(int stage)
 			anchor->last_hop_idx = 0;
 			PUSH_BACK(anc,anchor);
 			setTimer(ANCHOR_TIMER, anchor_timer_interval);
+		} else {
+			status = STATUS_UNKNOWN;
 		}
 
 		// subscribe to move
@@ -215,7 +208,7 @@ void Savvides::finish()
 	EV << "Savvides::finish()" 
 	   << status2string(status)
 	   << " pos "
-	   << pos.info()
+	   << getLocationEstimation().info()
 	   << " realpos "
 	   << getPosition().info()
 	   << endl;

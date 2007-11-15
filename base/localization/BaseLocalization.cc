@@ -21,8 +21,6 @@
 
 
 #include "BaseLocalization.h"
-#include "BaseUtility.h"
-#include "NetwControlInfo.h"
 
 Define_Module(BaseLocalization);
 
@@ -33,8 +31,18 @@ void BaseLocalization::initialize(int stage)
 	switch (stage) {
 	case 0:
 		id = findHost()->index();
+		worldUtility = FindModule<BaseWorldUtility*>::findGlobalModule();
+		if (worldUtility == NULL)
+			error("Could not find BaseWorldUtility module");
+
+		baseUtility = FindModule < BaseUtility * >::findSubModule(findHost());
+		if (baseUtility == NULL)
+			error("Could not find BaseUtility module");
+
 		headerLength = par("headerLength");
 		isAnchor = par("isAnchor");
+		break;
+	case 1:
 		if (isAnchor) {
 			pos = getLocation();
 		}
@@ -94,9 +102,7 @@ void BaseLocalization::finish()
 
 Coord BaseLocalization::getPosition()
 {
-	BaseUtility *util =
-	    FindModule < BaseUtility * >::findSubModule(findHost());
-	return *util->getPos();
+	return *baseUtility->getPos();
 }
 
 Location BaseLocalization::getLocation()
@@ -171,8 +177,7 @@ cMessage *BaseLocalization::decapsMsg(cMessage * msg)
 		newNeighbor(msg);
 	}
 
-	NetwControlInfo *cInfo =
-	    dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());
+	cPolymorphic *cInfo = msg->removeControlInfo();
 
 	cMessage *m = msg->decapsulate();
 	if (cInfo != NULL)
@@ -195,8 +200,7 @@ cMessage *BaseLocalization::encapsMsg(cMessage * msg, int kind)
 	else 
 		pkt->setPos(getLocationEstimation());
 
-	NetwControlInfo *cInfo =
-	    dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());
+	cPolymorphic *cInfo = msg->removeControlInfo();
 
 	if (cInfo != NULL)
 		pkt->setControlInfo(cInfo);
