@@ -49,20 +49,34 @@ in three ways:
  \item a reference to \h{\bp}.
 \end{enumerate} 
 
-The data channel is used to send and receive\req{packetFromMac} MacPkts to and
-from the \h{\bp}.
+The \underline{data channel} is used to send and receive\req{packetFromMac} MacPkts to and
+from the \h{\bp}. An appropriate ControlInfo is attached to the packet by the sending layer. \saf{MacToPhyCtrlInfo interface}\\
 
-The control channel is used by the \h{\bp} to inform the \h{\bm} about
+The \underline{control channel} is used by the \h{\bp} to inform the \h{\bm} about
 certain events\req{provactive}, like the TX\_OVER\req{txover} message 
 which indicates the end of a sending transmission.
 
+A ChannelSenseRequest can be sent over \underline{control channel} from \h{\bm} to \h{\bp}. It is handed to the Decider (several times) that attaches a ChannelState and finally sent back to \h{\bm}.
+\begin{figure}[H]
+ \centering
+ \includegraphics[width = 0.7\textwidth]{modelling/PhyMacMessages.png}
+ \caption{messages sent between \h{\bp} an \h{\bm}}
+ \label{fig: PhyMacMessages}
+\end{figure}
+
+
 The reference provides a passive way\req{provpassive} for the  \h{\bm} to  get
-information about the current channel state\req{channelstate} and to
+information about the current channel state\req{channelstate} (that is an alternative [immediate answer] to sending a ChannelSenseRequest) and to
 get\req{currentmode} and set\req{switchmode} the current radiostate (RX, TX,
 SLEEP).
 Switching times\req{switchtimes} from one radio state to another are controlled
-internally by a state machine. \saf{mode state machine}.
+internally by a state machine. \saf{mode state machine}
+\\
 
+The createSignal method returns \h{\bm} a reference to a Signal at a minimum of necessary parameters, it only has to pass txPower, headerBitrate and payloadBitrate. This is the key method for \h{\bm} in order to create MacToPhyControlInfo properly.
+
+% interface description here
+\label{SignalCreation}
 
 \begin{figure}[H]
  \centering
@@ -97,11 +111,10 @@ internally by a state machine. \saf{mode state machine}.
 %
 %\emph{See also \ref{AirFrame and Signal}.}
 
-The AnalogueModel is at least able to filter the basic, one-dimensional Signal
-from a start point to an end point in time.\\
+The AnalogueModel is at least able to filter the \emph{TX-Power over time}-Signal.\\
 
 Information how it works on a more complex multi-dimensional Signal are
-explained at section \ref{sec:signaldetail}.
+explained in section \ref{sec:signaldetail}.
  
 \begin{figure}[H]
  \centering
@@ -135,9 +148,7 @@ ChannelInfo keeps track of all AirFrames on the channel. It does not
 differentiate between \textit{signal} and \textit{noise}. \h{\bp} is able to
 add and remove references to certain AirFrames to and from ChannelInfo.\\
 ChannelInfo can return a vector of Signals (references) that intersect with a
-given time interval.\\
-SNInfo is created by \h{\bp} when a packet arrives to collect all signals from
-the channel that intersect with the reception time interval of the packet.
+given time interval.
 
 \begin{figure}[H]
  \centering
@@ -145,68 +156,3 @@ the channel that intersect with the reception time interval of the packet.
  \caption{channel details}
  \label{fig: channel details}
 \end{figure}
-
-
-
-
-\subsection{Decider and SNInfo}
-\label{decider}
-
-The Decider has two tasks:
-\begin{enumerate}
-	\item It decides whether we are able to receive a certain packet as
-\textit{signal}, otherwise the packet will be considered
-\textit{noise}.\req{rcvClassify} The moment the AirFrame arrives, the Decider is
-asked for a time interval after that it wants to be handed the SNInfo again to
-make the decision.
-	\item When a packet has been received and is not \textit{noise} the
-Decider evaluates the SNInfo for that Signal and returns a DeciderResult that
-only contains if the packet was received correct or not correct by
-default\req{rcvIsCorrect}.
-\end{enumerate}
-
-A Decider that gives a richer DeciderResult (e.g. bitwise
-errors\req{deciderBitwise}) must be subclassed and implemented by the user.
-
-\begin{figure}[H]
- \centering
- \includegraphics[width = \textwidth]{modelling/DeciderModule_members.png}
- \caption{Decider interface}
- \label{fig: Decider interface}
-\end{figure}
-
-
-\subsection{The one-dimensional Signal and AirFrame}
-\label{AirFrame and Signal}
-
-AirFrame and Signal are both initialized by \h{\bp} with information from
-MacToPhyControlInfo.
-It is shown below how nessecary information for sending/receiving is
-distributed.\\
-
-Here we focus on the basic, one-dimensional (time) Signal that stores entries
-for TX Power and attenuation over time. There are fix entries for header and
-payload bitrate. These assumptions are considered to cover most cases.
-It is possible to obtain a time iterator for this Signal to have access to
-entries at specific time points.
-Further Signal stores the Move (move pattern of the sending host), the packets
-header length, the start time and length of the Signal.\\
-
-\emph{Note: The multi-dimensional Signal is an instance of the same class but
-has more functionality. It is described in detail in a separate section.}\\
-
-\h{\bp} calculates duration\req{sendInfoDuration} and preamble
-duration\req{sendInfoPreambleDuration} of the packet and adds it to the
-AirFrame. 
-To be able to control the sending process\req{sendControl} of another AirFrame
-every AirFrame has a unique id and a specific type which secifies if this is a
-normal AirFrame or a control-AirFrame.
-
-
-\begin{figure}[H]
- \centering
- \includegraphics[width = \textwidth]{modelling/AirFrame_members.png}
- \caption{member arrangement in AirFrame and Signal}
- \label{fig:memberAirFrame}
-\end{figure}
-\newpage
