@@ -71,11 +71,11 @@ void BasicSinkRouting::initialize(int stage)
 	QueuedRouting::initialize(stage);
 	Timer::init(this);
 
-	if (stage == 1)
+	if (stage == 0)
 	{
 		sinks = new std::map < int, SinkInfo * >();
 	}
-	else if (stage == 2)
+	else if (stage == 1)
 	{
 		cModule *node = getNode();
 		if (node->hasPar("isSink") && node->par("isSink").boolValue())

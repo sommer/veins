@@ -44,10 +44,8 @@ void QueuedRouting::initialize(int stage)
 {
 	BaseNetwLayer::initialize(stage);
 
-	if (stage == 1)
+	if (stage == 0)
 	{
-		headerLength = par("headerLength");
-		arp = BaseArpAccess().get();
 		msgQueue = new std::queue < NetwPkt * >();
 		msgBusy = false;
 	}
