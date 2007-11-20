@@ -2,7 +2,7 @@
 \label{decider}
 
 The main task of the Decider is to decide which packets should be handed up to
-the MAC layer to achieve this the \h{\bp} hands every receiving AirFrame
+the MAC layer. To achieve this the \h{\bp} hands every receiving AirFrame
 several times to the ``processSignal()``- function of the Decider.
 
 \label{ProcessSignal}
@@ -10,13 +10,13 @@ The most common case how a Decider would process AirFrames would be the
 following:
 
 \begin{enumerate}
- \item If the Decider gets an AirFrame the first time, it determines the time
-point when it can decide if the packet is noise or not and returns the time
+ \item If the Decider gets an AirFrame for the first time, it determines the
+time point it can decide if the packet is noise or not and returns this time
 point to the \h{\bp}. The time point could be the preamble length, for example.
 
  \item The next time the Decider gets the packet it would internally decide if
-the packet has to be considered as noise or not. If the decision is noise the
-packet isn't interresting anymore for the Decider. If the packet is classified
+the packet has to be considered noise or not. If the decision is noise the
+packet isn't interesting anymore for the Decider. If the packet is classified
 as a signal the Decider would return the end of the signal to the \h{\bp}.
 
  \item When the receiving of the AirFrame is over and the AirFrame wasn't
@@ -39,14 +39,14 @@ Over the interface the Decider can do the following things:
  \item get the list of AirFrames which intersect which a specific interval (to
 calculate SNR)
  \item tell the \h{\bp} to hand an AirFrame up to the MAC layer
- \item tell the \h{\bp} to send an control message to the MAC layer
+ \item tell the \h{\bp} to send a control message to the MAC layer
 \end{itemize}
 
-With the last point the Decider is able to answer a ChannelSenseRequest of the
+Due to the last point the Decider is able to answer a ChannelSenseRequest of the
 MAC layer.\\
 
-A Decider that gives a richer DeciderResult (e.g. bitwise
-errors\req{deciderBitwise}) must be subclassed and implemented by the user.
+A Decider that gives a more detailed DeciderResult (e.g. bitwise
+errors\req{defdeciderBitwise}) must be subclassed and implemented by the user.
 
 \begin{figure}[H]
  \centering
@@ -60,9 +60,9 @@ errors\req{deciderBitwise}) must be subclassed and implemented by the user.
 \subsection{The one-dimensional Signal and AirFrame}
 \label{AirFrame and Signal}
 
-AirFrame and Signal both hold information about the packet to send.While the
-AirFrame is responsible for the omnet related data which is necessary to send
-omnet messages, the Signal holds the data which is necessary for the simulation
+AirFrame and Signal both hold information about the packet to send. While the
+AirFrame is responsible for the OMNeT related data which is necessary to send
+OMNeT messages, the Signal holds the data which is necessary for the simulation
 of the transmission process.\\
 
 Here we focus on the basic, one-dimensional (time) Signal that stores entries
@@ -78,9 +78,9 @@ header length, the start time and length of the Signal.\\
 \emph{Note: The multi-dimensional Signal is an instance of the same class but
 has more functionality. It is described in detail in a separate section.}\\
 
-To be able to control the sending process\req{sendControl} of another AirFrame
-every AirFrame has a unique id and a specific type which secifies if this is a
-normal AirFrame or a control-AirFrame. Further it holds the instance of Signal
+To be able to control the sending process\req{defsendControl} of an AirFrame
+every AirFrame has a unique id and a specific type which specifies if this is a
+normal AirFrame or a control-AirFrame. Further it holds an instance of Signal
 which represents the physical signal.
 
 
@@ -96,8 +96,8 @@ which represents the physical signal.
 
 On reception of a MacPkt from the MAC layer, \h{\bp} checks if:
 \begin{enumerate}
-	\item the radio is in TX state\req{sendPreqMode},
-	\item it is not already sending a packet\req{sendPreqSending} 
+	\item the radio is in TX state\req{defsendPreqMode},
+	\item it is not already sending a packet\req{defsendPreqSending} 
 \end{enumerate} 
 
 If one of these conditions is not fulfilled it will throw an error.\\
@@ -139,8 +139,8 @@ On arrival of an AirFrame \h{\bp}:
 \begin{enumerate}
 	
 	\item applies AnalogueModels to the corresponding
-Signal\req{rcvSimAttenuation},
-	\item receives the AirFrame\req{rcvSimDuration}.
+Signal\req{defrcvSimAttenuation},
+	\item receives the AirFrame\req{defrcvSimDuration}.
 \end{enumerate}
 
 \begin{figure}[H]
@@ -156,18 +156,19 @@ reception are simulated by scheduling the AirFrame accordingly.\\
 
 \textbf{stage 0:}\\
 An optional propagation delay is simulated by updating the starting time of the
-Signal\req{rcvSimDelay} according to the delay and scheduling the AirFrame to
+Signal\req{defrcvSimDelay} according to the delay and scheduling the AirFrame to
 the reception start point.\\
 
 \textbf{stage 1:}\\
 On reception start the Signal is given to the Decider for processing. The
-Decider returns a time point the Decider wants to process the Signal again.
-This time point has to be earlier than the end of the Signal otherwise an error
+Decider returns a time point it wants to process the Signal again.
+This time point has to be before the end of the Signal otherwise an error
 is thrown. \\
 
 \textbf{stage 2:}\\
-The AirFrame is scheduled arbitary times for the Decider processing method
-until either returns a negative time point or the time point of the end of the
+The AirFrame is scheduled arbitrary times for the Decider processing method
+until it either returns a negative time point or the time point of the end of
+the
 Signal. In both cases the state is increased by one before the AirFrame is
 scheduled to its end. See \ref{ProcessSignal} for more details on the Deciders
 Signal processing. \\
@@ -209,7 +210,7 @@ a MacPkt to the \h{\bm}.}
 %creates the corresponding SNInfo for the packet, applies AnalogueModels to it
 %and passes the result to the Decider to check whether the packet was received
 %correctly. If so, a MacPkt is created and handed up to
-%Phy-Layer\req{rcvPassToMAC}.
+%Phy-Layer\req{defrcvPassToMAC}.
 
 
 \subsection{the .ned-file}
@@ -217,30 +218,33 @@ a MacPkt to the \h{\bm}.}
 The .ned-file of the \h{\bp} has the following parameters:
 
 \begin{itemize}
-\item usePropagationDelay as \textit{boolean}\req{confDelay}
-\item analogueModels as \textit{XML}\req{confAnalogue}\req{confAnalogueParam}
-\item decider as \textit{XML}\req{confDecider}\req{confDeciderParam}
-\item thermalNoise as \textit{numeric const}\req{confNoise}
-\item sensitivity as \textit{numeric const}\req{confSens}
-\item maximal TX power as \textit{numeric const}\req{confMaxTXPower}
-\item switchTimeRX as \textit{numeric const}\req{confSwitchingTimes}
-\item switchTimeTX as \textit{numeric const}\req{confSwitchingTimes}
-\item switchTimeSleep as as \textit{numeric const}\req{confSwitchingTimes}
+\item usePropagationDelay as \textit{boolean}\req{defconfDelay}
+\item analogueModels as
+\textit{XML}\req{defconfAnalogue}\req{defconfAnalogueParam}
+\item decider as \textit{XML}\req{defconfDecider}\req{defconfDeciderParam}
+\item thermalNoise as \textit{numeric const}\req{defconfNoise}
+\item sensitivity as \textit{numeric const}\req{defconfSens}
+\item maximal TX power as \textit{numeric const}\req{defconfMaxTXPower}
+\item switchTimeRX as \textit{numeric const}\req{defconfSwitchingTimes}
+\item switchTimeTX as \textit{numeric const}\req{defconfSwitchingTimes}
+\item switchTimeSleep as as \textit{numeric const}\req{defconfSwitchingTimes}
 \end{itemize}
 
-The parameters "analogueModels" and "decider" holds which AnalogueModels and
-Decider to be used together with their parameters in XML format. The exact
-format still has to be declared!
+The parameters "analogueModels" and "decider" store which AnalogueModels and
+which Decider are to be used, together with their parameters in XML format. The
+exact format still has to be declared!
 
 %\subsection{provide status information to MAC}
 
-%Passively provided information\req{provpassive}: \h{\bm} is equipped with a
+%Passively provided information\req{defprovpassive}: \h{\bm} is equipped with a
 %reference to \h{\bp} in order to obtain information
-%about channelstate\req{channelstate} and current radio state\req{currentmode}
+%about channelstate\req{defchannelstate} and current radio
+%state\req{defcurrentmode}
 %by
 %simple method calls. \\
-%Actively provided information\req{provactive}: A cMessage of the kind TX\_OVER
-%is sent to MAC layer when a sending transmission is over\req{txover},
+%Actively provided information\req{defprovactive}: A cMessage of the kind
+%TX\_OVER
+%is sent to MAC layer when a sending transmission is over\req{deftxover},
 %\saf{sending process}.
 
 
@@ -248,11 +252,12 @@ format still has to be declared!
 %\subsection{send packets}
 
 %Since \h{\bm} has a reference to \h{\bp} it can obtain information about the
-%state the radio is is currently in\req{sendPreqMode}, it is not already sending
-%to the channel on its own\req{sendPreqSending} and the channel is
-%idle\req{sendPreqIdle} via method calls, \saf{BasePhyLayer interface}.
+%state the radio is is currently in\req{defsendPreqMode}, it is not already
+%sending
+%to the channel on its own\req{defsendPreqSending} and the channel is
+%idle\req{defsendPreqIdle} via method calls, \saf{BasePhyLayer interface}.
 
 %The class MacToPhyControlInfo is designed as the container for control
-%info\req{packetFromMac} the MAC layer
+%info\req{defpacketFromMac} the MAC layer
 %wants to attach to the packet given down to Phy-Layer for sending.
 %The packet itself is handed down as a MacPkt via OMNeT-channel. 

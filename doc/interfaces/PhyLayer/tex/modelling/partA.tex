@@ -23,10 +23,13 @@ We start with the classgraph for the OMNeT-module \h{\bp} that shows
 its C++ classes, relations to other OMNeT-modules (especially \h{\bm})
 and the OMNeT-messages sent between them.
 
-The \h{\bp} holds a list\req{analogueMulti} of AnalogueModels and a pointer to a
+The \h{\bp} holds a list\req{defanalogueMulti} of AnalogueModels and a pointer
+to a
 Decider. Thus the AnalogueModel and the Decider are submodules of \h{\bp}. This
-way one is able to change\req{analogueExtensible}\req{deciderExtensible} and
-replace\req{analogueIndependent}\req{deciderIndependent} them independently from
+way one is able to change\req{defanalogueExtensible}\req{defdeciderExtensible}
+and
+replace\req{defanalogueIndependent}\req{defdeciderIndependent} them
+independently from
 the \h{\bp}.
 
 \begin{landscape}
@@ -50,14 +53,19 @@ in three ways:
  \item a reference to \h{\bp}.
 \end{enumerate} 
 
-The \underline{data channel} is used to send and receive\req{packetFromMac} MacPkts to and
-from the \h{\bp}. An appropriate ControlInfo is attached to the packet by the sending layer. \saf{MacToPhyCtrlInfo interface}\\
+The \underline{data channel} is used to send and receive\req{defpacketFromMac}
+MacPkts to and
+from the \h{\bp}. An appropriate ControlInfo is attached to the packet by the
+sending layer. \saf{MacToPhyCtrlInfo interface}\\
 
-The \underline{control channel} is used by the \h{\bp} to inform the \h{\bm} about
-certain events\req{provactive}, like the TX\_OVER\req{txover} message 
+The \underline{control channel} is used by the \h{\bp} to inform the \h{\bm}
+about
+certain events\req{defprovactive}, like the TX\_OVER\req{deftxover} message 
 which indicates the end of a sending transmission.
 
-A ChannelSenseRequest can be sent over \underline{control channel} from \h{\bm} to \h{\bp}. It is handed to the Decider (several times) that attaches a ChannelState and finally sent back to \h{\bm}.
+A ChannelSenseRequest can be sent over \underline{control channel} from \h{\bm}
+to \h{\bp}. It is handed to the Decider (several times) that attaches a
+ChannelState and finally sent back to \h{\bm}.
 \begin{figure}[H]
  \centering
  \includegraphics[width = 0.7\textwidth]{modelling/PhyMacMessages.png}
@@ -66,15 +74,22 @@ A ChannelSenseRequest can be sent over \underline{control channel} from \h{\bm} 
 \end{figure}
 
 
-The reference provides a passive way\req{provpassive} for the  \h{\bm} to  get
-information about the current channel state\req{channelstate} (that is an alternative [immediate answer] to sending a ChannelSenseRequest) and to
-get\req{currentmode} and set\req{switchmode} the current radiostate (RX, TX,
+The reference provides a passive way\req{defprovpassive} for the  \h{\bm} to 
+get
+information about the current channel state\req{defchannelstate} (that is an
+alternative [immediate answer] to sending a ChannelSenseRequest) and to
+get\req{defcurrentmode} and set\req{defswitchmode} the current radiostate (RX,
+TX,
 SLEEP).
-Switching times\req{switchtimes} from one radio state to another are controlled
+Switching times\req{defswitchtimes} from one radio state to another are
+controlled
 internally by a state machine. \saf{mode state machine}
 \\
 
-The createSignal method returns \h{\bm} a reference to a Signal at a minimum of necessary parameters, it only has to pass txPower, headerBitrate and payloadBitrate. This is the key method for \h{\bm} in order to create MacToPhyControlInfo properly.
+The createSignal method returns \h{\bm} a reference to a Signal at a minimum of
+necessary parameters, it only has to pass txPower, headerBitrate and
+payloadBitrate. This is the key method for \h{\bm} in order to create
+MacToPhyControlInfo properly.
 
 % interface description here
 \label{SignalCreation}
@@ -93,7 +108,7 @@ The createSignal method returns \h{\bm} a reference to a Signal at a minimum of 
 
 %The Signal is designed one-dimensional (power-over-time) by default with a
 %specified time point for start and end of the Signal. The owner is able
-%to add and request values at a specific time point\req{sendInfoTXPower}.
+%to add and request values at a specific time point\req{defsendInfoTXPower}.
 %The Method getTimeIterator() returns an appropriate SignalTimeIterator needed
 %for applying AnalogueModels to the Signal.
 
@@ -105,14 +120,17 @@ The createSignal method returns \h{\bm} a reference to a Signal at a minimum of 
 %dimension.}
 %\end{quote}
 
-%Further the Signal is set the packets bitrate over time\req{sendInfoBitrate}, 
-%the Move of the Host\req{sendInfoMove}, the size of the
-%packet\req{sendInfoSize} and the channel dimensions\req{sendInfoChannel} by
+%Further the Signal is set the packets bitrate over
+%time\req{defsendInfoBitrate}, 
+%the Move of the Host\req{defsendInfoMove}, the size of the
+%packet\req{defsendInfoSize} and the channel dimensions\req{defsendInfoChannel}
+%by
 %\h{\bp}.
 %
 %\emph{See also \ref{AirFrame and Signal}.}
 
-The AnalogueModel is at least able to filter the \emph{TX-Power over time}-Signal.\\
+The AnalogueModel is at least able to filter the \emph{TX-Power over
+time}-Signal.\\
 
 Information how it works on a more complex multi-dimensional Signal are
 explained in section \ref{sec:signaldetail}.
@@ -125,12 +143,14 @@ explained in section \ref{sec:signaldetail}.
 \end{figure}
 %
 %The AnalogueModel offers functionality to filter a referenced
-%signal\req{analogueFilter} in a specified interval\req{rcvFilterSignals} (e.g.
-%preamble\req{rcvFilterPreamble}) or at a single point in time.
+%signal\req{defanalogueFilter} in a specified interval\req{defrcvFilterSignals}
+%(e.g.
+%preamble\req{defrcvFilterPreamble}) or at a single point in time.
 
 %Three basic AnalogueModel classes are foreseen to be plugged into Phy-Layer to
-%simulate pathloss\req{analogueSimPathloss}, shadowing\req{analogueSimShadowing}
-%and fading\req{analogueSimFading}.\\
+%simulate pathloss\req{defanalogueSimPathloss},
+%shadowing\req{defanalogueSimShadowing}
+%and fading\req{defanalogueSimFading}.\\
 %\h{\bp} is designed to apply an arbitrary number of AnalogueModels to a Signal.
 
 % \begin{figure}[H]

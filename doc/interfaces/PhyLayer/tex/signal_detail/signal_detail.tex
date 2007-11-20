@@ -11,15 +11,19 @@ The following section explains how we achieve this.
 
 Generally spoken a function can be implemented as a map from ``Argument`` to
 ''Value``. With inheritance we could basically use everything as a Value.
-If we assume that every Value of our Signals are in $\mathbb{R}^n$ we could
-implemented it as a vector of doubles of size \textit{n}.
+If we assume that every Value of our Signals is in $\mathbb{R}^n$ we could
+implement it as a vector of doubles of size \textit{n}.
 
 \subsubsection{multiple dimensions for arguments}
 
 While we could use basically everything as Value the Argument has to be
-distinguishable.Further a simple map with an Argument class as key would be hard to iterate reasonable and fast.
+distinguishable. Further a simple map with an Argument class as key would be
+hard to iterate reasonable and fast.
 
-So instead of using one map from Argument to Value we realize multiple dimensions by using sub signals (see figure \ref{fig:signalscheme}). We add a dimension of arguments by implementing a map from the argument value to another sub-signal. These structure has three advantages:
+So instead of using one map from Argument to Value we realize multiple
+dimensions by using sub signals (see figure \ref{fig:signalscheme}). We add a
+dimension of arguments by implementing a map from the argument value to another
+sub-signal. This structure has three advantages:
 
 \begin{enumerate}
 \item The Signal dimensions are easy to extend.
@@ -47,7 +51,10 @@ Three things have to be considered:
 
 We solve the first two problems by introducing a SignalPrototype class. If we want to create a new Signal type we create a new SignalPrototype with the parameters for the Signal type (which would be the dimensions). The SignalPrototype then is able to create the appropriate Signals, Arguments and Values. It is also used as Identifier for the Signal type.
 
-The last problem is solved by a simulation wide known SignalDatabase which maps  a Signal type name ("MIMO signal" for example) to the associated Prototype. Every new SignalPrototype has to be registered with a unique name at the SignalDatabase. 
+The last problem is solved by a simulation wide known SignalDatabase which maps 
+a Signal type name ("MIMO signal" for example) to the associated Prototype.
+Every new SignalPrototype has to be registered by a unique name with the
+SignalDatabase. 
 
 \subsubsection{detailed class diagram of Signal}
 
@@ -63,17 +70,30 @@ The above decisions lead to the following class diagram:
 \newpage
 \subsubsection{creation of new signal types}
 
-To assure that every new SignalPrototype is registered at the database we don't provide a public constructor for the SignalPrototype. If a physical layer wants to create a new prototype it has to ask the database if a prototype with the same name is already registered. If not it can ask the database to create a new one with the given name.\\
+To assure that every new SignalPrototype is registered with the database we
+don't provide a public constructor for the SignalPrototype. If a physical layer
+wants to create a new prototype it has to ask the database if a prototype with
+the same name is already registered. If not it can ask the database to create a
+new one with the given name.\\
 
-We assume that every Signal has at least the time as argument dimension and TX power and attenuation as value dimensions. So this dimensions are already inluded in every new prototype.
+We assume that every Signal has at least time as argument dimension and TX 
+power and attenuation as value dimensions. So these dimensions are already
+included in every new prototype.
 
-Additional dimensions have to be registered with a name at the prototype. The registration methods returns a unique sequential number for the registered dimension. This number is used later as a fast way to access the values of the dimension.
+Additional dimensions have to be registered by name with the prototype. The 
+registration methods returns a unique sequential number for the registered
+dimension. This number is used later as a fast way to access the values of the
+dimension.
 
-If every dimension is registered at the prototype one can create proper new Signals, Arguments and Values with this SignalPrototype.\\
+If every dimension is registered at the prototype one can create proper new 
+Signals, Arguments and Values with this SignalPrototype.\\
 
-\emph{Note: The first time the SignalPrototype is used to create a Signal, Argument or Value it is internally locked and no other dimensions can be registered.}\\
+\emph{Note: The first time the SignalPrototype is used to create a Signal, 
+Argument or Value it is internally locked and no other dimensions can be
+registered.}\\
 
-The "isPrototypeFor()" method can be used to check if a Signal was created by this Prototype.
+The "isPrototypeFor()" method can be used to check if a Signal was created by 
+this Prototype.
 
 \begin{figure}[H]
  \centering
@@ -84,7 +104,8 @@ The "isPrototypeFor()" method can be used to check if a Signal was created by th
 \newpage
 \subsubsection{accessing the Signal}
 
-The following class diagram shows the methods which the Signal provides \textbf{additionally} to these listed in figure \ref{fig:memberAirFrame}.
+The following class diagram shows the methods which the Signal provides
+\textbf{additionally} to those listed in figure \ref{fig:memberAirFrame}.
 
 \begin{figure}[H]
  \centering
@@ -93,11 +114,21 @@ The following class diagram shows the methods which the Signal provides \textbf{
  \label{fig: detailed signal members}
 \end{figure}
 
-The TimeIterator still iterates over every time stamp of the Signal, idependent from the dimension of the Signal. This way simple filters can be applied without knowledge of the exact type of the Signal.\\
+The TimeIterator still iterates over every time stamp of the Signal, independent
+from the dimension of the Signal. This way simple filters can be applied without
+knowledge of the exact type of the Signal.\\
 
-The easiest way to access a specific value of the Signal, is to create an instance of the apropriate Argument (and Value, if you want to change it), initialize its dimensions with the wanted values and then use the "getValueAt()" and "setValueAt()" methods. Here one has to know that an entry for the given Argument actually exists, otherwise the Signal would have to interpolate the Value.\\
+The easiest way to access a specific value of the Signal, is to create an 
+instance of the apropriate Argument (and Value, if you want to change it),
+initialize its dimensions with the wanted values and then use the "getValueAt()"
+and "setValueAt()" methods. Here one has to know that an entry for the given
+Argument actually exists, otherwise the Signal would have to interpolate the
+Value.\\
 
-The SubSignalIterator can be used to iterate recursively over every pair of value and its associated sub signal of the dimension this Signal represents. The deepest SubSignal will always be the time dimension which can be checked by "isTimeSignal()".
+The SubSignalIterator can be used to iterate recursively over every pair of 
+value and its associated sub signal of the dimension this Signal represents. The
+deepest SubSignal will always be the time dimension which can be checked by
+"isTimeSignal()".
 
 \begin{figure}[H]
  \centering
@@ -106,7 +137,10 @@ The SubSignalIterator can be used to iterate recursively over every pair of valu
  \label{fig: arg and val members}
 \end{figure}
 
-The SignalPrototype associates every argument dimension name with a unique sequential number. The same goes for the value dimensions.
-This numbers can be used to access the values in Argument or Value with the "get*WithNr()" methods.
+The SignalPrototype associates every argument dimension name with a unique 
+sequential number. The same holds for the value dimensions. These numbers can be
+used to access the values in Argument or Value with the 
+"get*WithNr()" methods.
 
-Because every Argument has a time dimension and every Value a TX power and an attenuation, the classes provide short cuts to these values.
+Because every Argument has a time dimension and every Value a TX power and an 
+attenuation, the classes provide short cuts to these values.
