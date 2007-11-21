@@ -35,7 +35,7 @@
 class QueuedRouting : public BaseNetwLayer
 {
 
-  protected:
+protected:
 	virtual NetwPkt *buildPkt(int kind, int netwAddr,const char* name);
 
 	std::queue<NetwPkt*> *msgQueue;
@@ -45,39 +45,40 @@ class QueuedRouting : public BaseNetwLayer
 	void sendQueued();
  
 public:
-    Module_Class_Members(QueuedRouting,BaseNetwLayer,0);
-
-    /** @brief Initialization of the module and some variables*/
-    virtual void initialize(int stage);
+	Module_Class_Members(QueuedRouting,BaseNetwLayer,0);
+	
+	/** @brief Initialization of the module and some variables*/
+	virtual void initialize(int stage);
 
 	virtual void finish();
 
 	virtual ~QueuedRouting();
     
-  protected:
-    /** 
-     * @name Handle Messages
-     * @brief Functions to redefine by the programmer
-     *
-     * These are the functions provided to add own functionality to your
-     * modules. These functions are called whenever a self message or a
-     * data message from the upper or lower layer arrives respectively.
-     *
-     **/
-    /*@{*/
-
+protected:
+	/** 
+	 * @name Handle Messages
+	 * @brief Functions to redefine by the programmer
+	 *
+	 * These are the functions provided to add own functionality to your
+	 * modules. These functions are called whenever a self message or a
+	 * data message from the upper or lower layer arrives respectively.
+	 *
+	 **/
+	/*@{*/
 	
+	virtual NetwPkt* encapsMsg(cMessage * msg);
+
+	/** @brief Handle messages from upper layer */
+	virtual void handleUpperMsg(cMessage* msg);
+    
+	/** @brief Handle control messages from lower layer */
+	virtual void handleLowerControl(cMessage* msg);
+
+	/*@}*/
+
 	/** @brief Returns the 'kind' that messages from upper layers should have */
 	virtual int upperKind() {return 0;}
     
-	NetwPkt* encapsMsg(cMessage * msg);
-
-    /** @brief Handle messages from upper layer */
-    virtual void handleUpperMsg(cMessage* msg);
-    
-    /** @brief Handle control messages from lower layer */
-    virtual void handleLowerControl(cMessage* msg);
-
 	/** @brief Send packet to network */
 	virtual void toNetwork(NetwPkt *out);
 };

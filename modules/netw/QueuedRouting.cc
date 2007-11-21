@@ -71,12 +71,12 @@ NetwPkt *QueuedRouting::buildPkt(int kind, int netwAddr, const char *name)
 	EV << " netw " << myNetwAddr << " sending packet" << endl;
 	if (netwAddr == L3BROADCAST)
 	{
-		EV << "toNetwork: nHop=L3BROADCAST -> message has to be broadcasted" << " -> set destMac=L2BROADCAST\n";
+		EV << "buildPkt: nHop=L3BROADCAST -> message has to be broadcasted" << " -> set destMac=L2BROADCAST\n";
 		macAddr = L2BROADCAST;
 	}
 	else
 	{
-		EV << "toNetwork: get the MAC address\n";
+		EV << "buildPkt: get the MAC address\n";
 		macAddr = arp->getMacAddr(netwAddr);
 	}
 

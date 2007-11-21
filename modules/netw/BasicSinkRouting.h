@@ -38,7 +38,7 @@
 class BasicSinkRouting : public QueuedRouting, public Timer
 {
 
-  protected:
+protected:
 	typedef enum {SINK_BCAST=1, UPPER_TYPE} NetworkTypes;
     
 	NetwPkt *buildSink(SinkInfo *sink=NULL, int from=-1);
@@ -50,39 +50,43 @@ class BasicSinkRouting : public QueuedRouting, public Timer
 	void printSinks();
 	bool setNextHop(NetwPkt *pkt);
  
-public:
-    Module_Class_Members(BasicSinkRouting,QueuedRouting,0);
+	virtual NetwPkt *buildPkt(int kind, int netwAddr,const char* name);
 
-    /** @brief Initialization of the module and some variables*/
-    virtual void initialize(int stage);
+public:
+	Module_Class_Members(BasicSinkRouting,QueuedRouting,0);
+
+	/** @brief Initialization of the module and some variables*/
+	virtual void initialize(int stage);
 
 	virtual void finish();
 
 	virtual ~BasicSinkRouting();
 	virtual int upperKind() {return UPPER_TYPE;}
     
-  protected:
-    /** 
-     * @name Handle Messages
-     * @brief Functions to redefine by the programmer
-     *
-     * These are the functions provided to add own functionality to your
-     * modules. These functions are called whenever a self message or a
-     * data message from the upper or lower layer arrives respectively.
-     *
-     **/
-    /*@{*/
+protected:
+	/** 
+	 * @name Handle Messages
+	 * @brief Functions to redefine by the programmer
+	 *
+	 * These are the functions provided to add own functionality to your
+	 * modules. These functions are called whenever a self message or a
+	 * data message from the upper or lower layer arrives respectively.
+	 *
+	 **/
+	/*@{*/
     
-    /** @brief Handle messages from upper layer */
-    virtual void handleUpperMsg(cMessage* msg);
+	/** @brief Handle messages from upper layer */
+	virtual void handleUpperMsg(cMessage* msg);
     
-    /** @brief Handle messages from lower layer */
-    virtual void handleLowerMsg(cMessage* msg);
+	/** @brief Handle messages from lower layer */
+	virtual void handleLowerMsg(cMessage* msg);
 
-    /*@}*/
+	virtual NetwPkt* encapsMsg(cMessage * msg);
+
+	/*@}*/
 
 	/** @brief Send packet to network */
-	void toNetwork(NetwPkt *out);
+	virtual void toNetwork(NetwPkt *out);
 
 	virtual void handleTimer(unsigned int count);
 };

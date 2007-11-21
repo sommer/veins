@@ -126,12 +126,12 @@ bool BasicSinkRouting::setNextHop(NetwPkt * pkt)
 	{
 		printSinks();
 		macAddr = arp->getMacAddr(sinks->begin()->second->getParent());
-		EV << "toNetwork: nHop=SINK_ADDRESS -> sending to sink via parent " << macAddr << endl;
+		EV << "setNextHop: nHop=SINK_ADDRESS -> sending to sink via parent " << macAddr << endl;
 	}
 	else
 	{
 		// don't know where to send this yet
-		EV << "toNetwork: nHop=SINK_ADDRESS -> need to find a sink to send this to" << endl;
+		EV << "setNextHop: nHop=SINK_ADDRESS -> need to find a sink to send this to" << endl;
 		macAddr = -2;
 	}
 	pkt->setControlInfo(new MacControlInfo(macAddr));
@@ -162,7 +162,12 @@ void BasicSinkRouting::handleLowerMsg(cMessage * msg)
 					toNetwork(m);
 				}
 				else
+				{
+					EV << "msg.destAddr = " << m->getDestAddr() 
+					   << " and isSink = " << isSink
+					   << ", so I'm sending up.\n";
 					sendUp(decapsMsg(m));
+				}
 				break;
 			}
 		case SINK_BCAST:
@@ -240,4 +245,66 @@ void BasicSinkRouting::handleUpperMsg(cMessage * msg)
 void BasicSinkRouting::handleTimer(unsigned int count)
 {
 	sendQueued();
+}
+
+NetwPkt *BasicSinkRouting::encapsMsg(cMessage * msg)
+{
+	EV << "in encaps...\n";
+	int netwAddr;
+
+	NetwControlInfo *cInfo = dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());
+
+	if (cInfo == NULL)
+	{
+		error("Application layer did not specify a destination L3 address");
+		netwAddr = L3BROADCAST;
+	}
+	else if (cInfo->getNetwAddr() == SINK_ADDRESS || cInfo->getNetwAddr() >= 0)
+	{
+		EV << "cInfo removed, netw addr=" << cInfo->getNetwAddr() << endl;
+		netwAddr = cInfo->getNetwAddr();
+		delete cInfo;
+	}
+	else
+	{
+		EV << "cInfo removed, but netwAddr is negative("<<cInfo->getNetwAddr()<<") and therefore is user-defined, so send to broadcast"<<endl;
+		netwAddr = L3BROADCAST;
+		delete cInfo;
+	}
+
+	NetwPkt *pkt = buildPkt(upperKind(), netwAddr, msg->name());
+
+	//encapsulate the application packet
+	pkt->encapsulate(msg);
+	EV << " pkt encapsulated\n";
+	return pkt;
+}	   
+
+NetwPkt *BasicSinkRouting::buildPkt(int kind, int netwAddr, const char *name)
+{
+	int macAddr;
+	NetwPkt *pkt = new NetwPkt(name, kind);
+	pkt->setLength(headerLength);
+	pkt->setSrcAddr(myNetwAddr);
+	pkt->setDestAddr(netwAddr);
+	EV << " netw " << myNetwAddr << " sending packet" << endl;
+	if (netwAddr == L3BROADCAST)
+	{
+		EV << "buildPkt: nHop=L3BROADCAST -> message has to be broadcasted" << " -> set destMac=L2BROADCAST\n";
+		macAddr = L2BROADCAST;
+	}
+	else if (netwAddr == SINK_ADDRESS)
+	{
+		EV << "buildPkt: get next hop MAC address\n";
+		macAddr = arp->getMacAddr(sinks->begin()->second->getParent());
+	}
+	else
+	{
+		EV << "buildPkt: get the MAC address\n";
+		macAddr = arp->getMacAddr(netwAddr);
+	}
+
+	pkt->setControlInfo(new MacControlInfo(macAddr));
+
+	return pkt;
 }
