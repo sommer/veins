@@ -25,7 +25,6 @@
 
 #include "BaseArp.h"
 #include "NetwPkt_m.h"
-#include "SinkAddress.h"
 #include "SinkInfo_m.h"
 #include "Timer.h"
 
@@ -50,8 +49,6 @@ protected:
 	void printSinks();
 	bool setNextHop(NetwPkt *pkt);
  
-	virtual NetwPkt *buildPkt(int kind, int netwAddr,const char* name);
-
 public:
 	Module_Class_Members(BasicSinkRouting,QueuedRouting,0);
 
@@ -81,14 +78,18 @@ protected:
 	/** @brief Handle messages from lower layer */
 	virtual void handleLowerMsg(cMessage* msg);
 
-	virtual NetwPkt* encapsMsg(cMessage * msg);
-
 	/*@}*/
 
 	/** @brief Send packet to network */
 	virtual void toNetwork(NetwPkt *out);
 
 	virtual void handleTimer(unsigned int count);
+
+	/** @brief Provide MAC address for 'special' network addresses (see SpecialAddresses.h) */
+	virtual int specialMACAddress(int netwAddr);
+
+	/** @brief Provide network address to use for 'special' network addresses (see SpecialAddresses.h) */
+	virtual int specialNetwAddress(int netwAddr);
 };
 
 #endif

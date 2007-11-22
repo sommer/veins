@@ -25,6 +25,7 @@
 #include <queue>
 
 #include "NetwPkt_m.h"
+#include "SpecialAddresses.h"
 
 /**
  * @brief Basic routing with queues
@@ -81,6 +82,11 @@ protected:
     
 	/** @brief Send packet to network */
 	virtual void toNetwork(NetwPkt *out);
+
+	/** @brief Provide MAC address for 'special' network addresses (see SpecialAddresses.h) */
+	virtual int specialMACAddress(int netwAddr) {opp_error("QueuedRouting doesn't handle special network addresses");return -1;}
+	/** @brief Provide network address to use for 'special' network addresses (see SpecialAddresses.h) */
+	virtual int specialNetwAddress(int netwAddr) {opp_error("QueuedRouting doesn't handle special network addresses");return -1;}
 };
 
 #endif

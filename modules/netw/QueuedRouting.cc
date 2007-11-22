@@ -74,6 +74,11 @@ NetwPkt *QueuedRouting::buildPkt(int kind, int netwAddr, const char *name)
 		EV << "buildPkt: nHop=L3BROADCAST -> message has to be broadcasted" << " -> set destMac=L2BROADCAST\n";
 		macAddr = L2BROADCAST;
 	}
+	else if (netwAddr < -1) // negative numbers are user-defined
+	{
+		EV << "buildPkt: getting MAC address for "<<netwAddr <<" user-defined address\n";
+		macAddr = specialMACAddress(netwAddr);
+	}
 	else
 	{
 		EV << "buildPkt: get the MAC address\n";
@@ -94,13 +99,19 @@ NetwPkt *QueuedRouting::encapsMsg(cMessage * msg)
 
 	if (cInfo == NULL)
 	{
-		error("Application layer did not specify a destination L3 address");
+		opp_error("Application layer did not specify a destination L3 address");
 		netwAddr = L3BROADCAST;
+	}
+	else if (cInfo->getNetwAddr() == L3BROADCAST)
+	{
+		EV << "cInfo removed, with broadcast netwAddr"<<endl;
+		netwAddr = L3BROADCAST;
+		delete cInfo;
 	}
 	else if (cInfo->getNetwAddr() < 0)
 	{
-		EV << "cInfo removed, but netwAddr is negative("<<cInfo->getNetwAddr()<<") and therefore is user-defined, so send to broadcast"<<endl;
-		netwAddr = L3BROADCAST;
+		EV << "cInfo removed, but netwAddr is negative("<<cInfo->getNetwAddr()<<") and therefore is user-defined"<<endl;
+		netwAddr = specialNetwAddress(cInfo->getNetwAddr());
 		delete cInfo;
 	}
 	else

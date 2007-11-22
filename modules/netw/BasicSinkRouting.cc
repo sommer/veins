@@ -121,7 +121,7 @@ bool BasicSinkRouting::setNextHop(NetwPkt * pkt)
 	int macAddr;
 	delete pkt->removeControlInfo();
 	if (pkt->getDestAddr() != SINK_ADDRESS)
-		error("non-sink packet!");
+		opp_error("non-sink packet!");
 	if (sinks->size() > 0)
 	{
 		printSinks();
@@ -202,7 +202,7 @@ void BasicSinkRouting::handleLowerMsg(cMessage * msg)
 				EV << "got new sink " << ns->getSinkId() << " and my parent node is " << ns->getParent() << endl;
 
 				if (sinks->size() > 1)
-					error("Panic! Got more than 1 sinks... we can't handle that yet");
+					opp_error("Panic! Got more than 1 sinks... we can't handle that yet");
 
 				toNetwork(out);
 				delete si;
@@ -210,7 +210,7 @@ void BasicSinkRouting::handleLowerMsg(cMessage * msg)
 			}
 
 		default:
-			error("one of mine, but not handling");
+			opp_error("one of mine, but not handling");
 			break;
 	}
 }
@@ -247,41 +247,22 @@ void BasicSinkRouting::handleTimer(unsigned int count)
 	sendQueued();
 }
 
-NetwPkt *BasicSinkRouting::encapsMsg(cMessage * msg)
+int BasicSinkRouting::specialNetwAddress(int netwAddr)
 {
-	NetwControlInfo *cInfo = dynamic_cast < NetwControlInfo * >(msg->controlInfo());
-	int netwAddr = cInfo->getNetwAddr();
-
 	if (netwAddr == SINK_ADDRESS) {
-		EV << "in encaps...\n";
-		EV << "cInfo removed, forwarding to SINK_ADDRESS" << endl;
-		delete msg->removeControlInfo();
-
-		NetwPkt *pkt = buildPkt(upperKind(), netwAddr, msg->name());
-		//encapsulate the application packet
-		pkt->encapsulate(msg);
-		EV << " pkt encapsulated\n";
-		return pkt;
+		return netwAddr;
 	} else {
-		return QueuedRouting::encapsMsg(msg);
+		opp_error("Don't know special address %d",netwAddr);
+		return -1;
 	}
 }	   
 
-NetwPkt *BasicSinkRouting::buildPkt(int kind, int netwAddr, const char *name)
+int BasicSinkRouting::specialMACAddress(int netwAddr)
 {
 	if (netwAddr == SINK_ADDRESS) {
-		NetwPkt *pkt = new NetwPkt(name, kind);
-		pkt->setLength(headerLength);
-		pkt->setSrcAddr(myNetwAddr);
-		pkt->setDestAddr(netwAddr);
-		EV << " netw " << myNetwAddr << " sending packet" << endl;
-		int macAddr = arp->getMacAddr(sinks->begin()->second->getParent());
-		EV << "buildPkt: nHop=SINK_ADDRESS -> forwarding to next hop MAC address = " << macAddr << endl;
-		pkt->setControlInfo(new MacControlInfo(macAddr));
-		
-		return pkt;
+		return arp->getMacAddr(sinks->begin()->second->getParent());
 	} else {
-		return QueuedRouting::buildPkt(kind, netwAddr, name);
+		opp_error("Don't know special address %d",netwAddr);
+		return -1;
 	}
-
 }
