@@ -1,4 +1,5 @@
 CFLAGS:=$(filter-out -DNDEBUG=1,$(CFLAGS)) -Wall -O0
+NEDCOPTS:=$(filter-out -Werror,$(NEDCOPTS))
 LDFLAGS += -O0 -Wall
 
 NEED = modules $(TARGET)
