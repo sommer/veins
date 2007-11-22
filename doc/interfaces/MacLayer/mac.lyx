@@ -66,25 +66,6 @@ Start of message indicator
 
 \end_deeper
 \begin_layout Itemize
-RX_HDR
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-\begin_inset Quotes eld
-\end_inset
-
-Headers complete
-\begin_inset Quotes erd
-\end_inset
-
- indicator.
- Should also provide a packet containing all of the data up to the end of
- the MAC headers
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
 RX_FAIL
 \end_layout
 
@@ -120,15 +101,30 @@ CC2420)
 
 \end_deeper
 \begin_layout Itemize
-SET_RSSI
+After a START_CARRIERSENSE, one of the following must be sent to the MAC
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-RSSI data about current packet.
- Should probably be folded into a MacPkt field.
+CHANNEL_IDLE
 \end_layout
 
+\begin_deeper
+\begin_layout Itemize
+If the specified 'length' has finished, with no 'busy' channel noticed.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+CHANNEL_BUSY
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+If the channel is 'busy'
+\end_layout
+
+\end_deeper
 \end_deeper
 \begin_layout Subsection
 MAC -> PhyLayer
@@ -149,7 +145,18 @@ SET_SLEEP
 \begin_deeper
 \begin_layout Itemize
 Transition the PhyLayer into the given mode.
- 
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+START_CARRIERSENSE
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Start doing carrier sense.
+ Has a 'length' parameter specifying the length of time/number of bytes
+ (FIXME: pick one) to do carrier sense for.
 \begin_inset ERT
 status open
 
@@ -226,6 +233,68 @@ Message sequences
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+PhyLayer -> MAC
+\end_layout
+
+\begin_layout Standard
+Packets from the PhyLayer should contain
+\end_layout
+
+\begin_layout Itemize
+RSSI
+\end_layout
+
+\begin_layout Itemize
+(Total reception time? i.e.
+ time required to physically send/receive this packet.
+ Or should this just be discoverable via length functions? See Section 3)
+\end_layout
+
+\begin_layout Subsection
+MAC -> PhyLayer
+\end_layout
+
+\begin_layout Standard
+Packets to the PhyLayer should contain
+\end_layout
+
+\begin_layout Itemize
+Preamble length
+\end_layout
+
+\begin_layout Itemize
+Other fields as required by the PhyLayer (bitrates, tx power,etc)
+\end_layout
+
+\begin_layout Section
+Functions
+\end_layout
+
+\begin_layout Itemize
+Packet time function - The MAC layer will need a function to be able to
+ determine the time necessary for transmitting a packet.
+ Technically this is just the packet length divided by bitrate, but as the
+ MAC doesn't know how much headers the PhyLayer wants to add, this is probably
+ a PhyLayer feature.
+ This is needed both for the MAC and for potential stuff with network time
+ synchronisation as well.
+\newline
+
+\newline
+Related item: telling the difference between data
+ stored in simulation packets vs.
+ length of 
+\begin_inset Quotes eld
+\end_inset
+
+real
+\begin_inset Quotes erd
+\end_inset
+
+ packets.
 \end_layout
 
 \end_body
