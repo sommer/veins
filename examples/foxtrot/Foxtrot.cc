@@ -23,7 +23,7 @@
 #include "NetwControlInfo.h"
 #include <assert.h>
 
-#include <SinkAddress.h>
+#include <SpecialAddresses.h>
 #include "bits.h"
 #include "FWMath.h"
 

@@ -24,7 +24,7 @@
 #include "NetwControlInfo.h"
 #include <assert.h>
 
-#include <SinkAddress.h>
+#include <SpecialAddresses.h>
 
 Define_Module(BaseAggLayer);
 

@@ -26,7 +26,7 @@
 #include "AggPkt_m.h"
 #include "winsupport.h"
 
-#include <SinkAddress.h>
+#include <SpecialAddresses.h>
 
 Define_Module_Like(FoxApplLayer, BaseApplLayer);
 
