@@ -249,62 +249,39 @@ void BasicSinkRouting::handleTimer(unsigned int count)
 
 NetwPkt *BasicSinkRouting::encapsMsg(cMessage * msg)
 {
-	EV << "in encaps...\n";
-	int netwAddr;
+	NetwControlInfo *cInfo = dynamic_cast < NetwControlInfo * >(msg->controlInfo());
+	int netwAddr = cInfo->getNetwAddr();
 
-	NetwControlInfo *cInfo = dynamic_cast < NetwControlInfo * >(msg->removeControlInfo());
+	if (netwAddr == SINK_ADDRESS) {
+		EV << "in encaps...\n";
+		EV << "cInfo removed, forwarding to SINK_ADDRESS" << endl;
+		delete msg->removeControlInfo();
 
-	if (cInfo == NULL)
-	{
-		error("Application layer did not specify a destination L3 address");
-		netwAddr = L3BROADCAST;
+		NetwPkt *pkt = buildPkt(upperKind(), netwAddr, msg->name());
+		//encapsulate the application packet
+		pkt->encapsulate(msg);
+		EV << " pkt encapsulated\n";
+		return pkt;
+	} else {
+		return QueuedRouting::encapsMsg(msg);
 	}
-	else if (cInfo->getNetwAddr() == SINK_ADDRESS || cInfo->getNetwAddr() >= 0)
-	{
-		EV << "cInfo removed, netw addr=" << cInfo->getNetwAddr() << endl;
-		netwAddr = cInfo->getNetwAddr();
-		delete cInfo;
-	}
-	else
-	{
-		EV << "cInfo removed, but netwAddr is negative("<<cInfo->getNetwAddr()<<") and therefore is user-defined, so send to broadcast"<<endl;
-		netwAddr = L3BROADCAST;
-		delete cInfo;
-	}
-
-	NetwPkt *pkt = buildPkt(upperKind(), netwAddr, msg->name());
-
-	//encapsulate the application packet
-	pkt->encapsulate(msg);
-	EV << " pkt encapsulated\n";
-	return pkt;
 }	   
 
 NetwPkt *BasicSinkRouting::buildPkt(int kind, int netwAddr, const char *name)
 {
-	int macAddr;
-	NetwPkt *pkt = new NetwPkt(name, kind);
-	pkt->setLength(headerLength);
-	pkt->setSrcAddr(myNetwAddr);
-	pkt->setDestAddr(netwAddr);
-	EV << " netw " << myNetwAddr << " sending packet" << endl;
-	if (netwAddr == L3BROADCAST)
-	{
-		EV << "buildPkt: nHop=L3BROADCAST -> message has to be broadcasted" << " -> set destMac=L2BROADCAST\n";
-		macAddr = L2BROADCAST;
-	}
-	else if (netwAddr == SINK_ADDRESS)
-	{
-		EV << "buildPkt: get next hop MAC address\n";
-		macAddr = arp->getMacAddr(sinks->begin()->second->getParent());
-	}
-	else
-	{
-		EV << "buildPkt: get the MAC address\n";
-		macAddr = arp->getMacAddr(netwAddr);
+	if (netwAddr == SINK_ADDRESS) {
+		NetwPkt *pkt = new NetwPkt(name, kind);
+		pkt->setLength(headerLength);
+		pkt->setSrcAddr(myNetwAddr);
+		pkt->setDestAddr(netwAddr);
+		EV << " netw " << myNetwAddr << " sending packet" << endl;
+		int macAddr = arp->getMacAddr(sinks->begin()->second->getParent());
+		EV << "buildPkt: nHop=SINK_ADDRESS -> forwarding to next hop MAC address = " << macAddr << endl;
+		pkt->setControlInfo(new MacControlInfo(macAddr));
+		
+		return pkt;
+	} else {
+		return QueuedRouting::buildPkt(kind, netwAddr, name);
 	}
 
-	pkt->setControlInfo(new MacControlInfo(macAddr));
-
-	return pkt;
 }
