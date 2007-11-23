@@ -1,0 +1,33 @@
+#!/bin/sh
+#set -x
+
+if [ $1 ]
+then
+	firstfile=$1
+	rm .$$pages 2>/dev/null
+	rm .$$sedscript 2>/dev/null
+
+	sed '1,/EndProlog/!d' $1
+
+	while [ $1 ]
+	do
+		sed '/Page:/,/Trailer/!d;/Trailer/d' $1 >> .$$pages
+		shift
+	done
+
+	num_pages=`grep %%Page: .$$pages | wc -l | sed 's/.$$pages//; s/\ //g'`
+
+	counter=1
+	for line in `sed '/Page:/=;d' .$$pages`
+	do
+		echo "$line c \\" >> .$$sedscript
+		echo "%%Page: $counter $counter" >> .$$sedscript
+		counter=$[$counter+1]
+	done
+	sed -f .$$sedscript .$$pages
+
+	sed '/Trailer/,$!d; s/%%Pages:\ [0-9]*/%%Pages: '$num_pages'/' $firstfile
+
+	rm .$$sedscript
+	rm .$$pages
+fi

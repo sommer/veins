@@ -1,0 +1,347 @@
+
+* Savvides vs Hop-TERRAIN (With Random setup of 200 nodes, range 10, 100x100 area)
+
+20020723 No big performance difference between Savvides and HT. With few anchors HT is slightlyq better, with many anchors Savvides is better.
+
+20020723 When measurement error is introduced to Savvides, the algorithm still performs quite well. (Tested up to .2 range error). This is probably due to the fact that the way the ranges are calculated already introduces a significant error so the measurement error are less significant.
+
+20020723 The previous point seems to be confirmed by the fact that when the anchor fraction increases, the range error becomes more important. But this effect is very small. The same thing happens when the number of nodes is increased. This is due to the fact that the path to the anchors becomes smaller, and therefore the error in the calculated path length becomes smaller as well since fewer hops are needed.
+
+
+20020802 (output/data/HopTERRAIN_vs_Savvides/data1 and 2)
+The graphs show the original HopTERRAIN (flooding new anchors when achor_count<=nr_dims (algversion3)), and Savvides (flooding when count<=phase1_anchors+1 (algversion2) and flooding when count<=phase1_anchors (algversion3)) All with nr_dims=2 and phase1_anchors=2.
+data1: 0 rangevar, data2: 0.1 rangevar
+
+-Why isn't the number of sent messages much larger? In a highly connected network such as this I would expect Savvides (who refloods an anchor distance if a smaller one is received) to reflood much more often than HT (which only refloods on a smaller hopcount).
+     Possible answer: because of the high connectivity, many anchors are at a single hop distance, therefore receiving a shorter path distance is unlikely for those anchors. If this were true, the difference between HT and Sav should be much larger for small anchor fractions, and almost gone for high error fractions. This is confirmed by the graph, but not as strongly as I'd expect.
+     TODO: compare reflooding rates for both algorithms
+
+-The difference in broadcast count between Sav version 2 and 3 is as expected. 3 transmits rougly 2/3rd the number of messages, which corresponds to the lower flooding condition.
+
+-When comparing data1 to data2: why does lowering the floodcount increase accuracy in high anchorfrac networks when there is a rangevariance? And why doesn't it when there isn't?
+
+-Constraining the reflooding in Savvides to cases with a large enough difference in range measurement may help reduce communication cost.
+
+-Some improvement could probably be made by considering the constellation in deciding whether to flood an anchor or not.
+
+-What causes the variance in Hop-TERRAIN performance for different range variance values??
+20020805 Answer below.
+
+-In the graphs HT performs better than Savvides at low anchor counts, and Savvides performs better at high anchor counts. Could it be that HT performs better because it does a check on the residu of the triangulation to determine the quality of the estimate? That way it's average error would not include the error made on particularly bad nodes, while Savvides has no way of detecting those and thus includes those errors.
+This seems to be confirmed in the highly connected graphs by the fact that when the unknown nodes graph reaches 0, Savvides has started to perform better. However the number of unknown nodes is rather small.
+(addition 20020805: Some preliminairy testing denies this. Although in all examined cases where HT discards nodes Savvides performed worse than HT and Savvides' performance was improved by removing those nodes, the effect was not large enough to make it perform better than HT)
+
+-TODO: measure the effect of increased anchor flooding
+
+
+
+
+* Refine with or without fixed sequence (With Random setup of 100 nodes, range 25, 100x100 area)
+
+20020725 Fixing the sequece with a simple token passing algorithm improved performance significantly when anchor_frac<=.15 However, this approach changes more than just the sequence in which triangulations are done. Both the error and the number of messages transmitted are reduced.
+Fixing the sequence by having a fixed period for the timer message (as opposed to some noise on the timer peroid) also fixes the sequence, but does not affect the performance.
+One side effect of the first method of fixing the sequence is that the periode between triangulations is increase. This results in node receiving position updates from more neighbours before updating their own position. This can also be achieved by using a longer timer period for the triangulation than for the position updata messages. When this was done (using a factor 10), a result comparable to the token approach was achieved.
+The effect of this is that each node wait for all neighbours who want to send a position message to do so. Effectively this means that they all do their itteration step simultaneously, using data from the previous step.
+
+20020730 The factor 10 on the triangulation timer proved to be poorly coded, so these experiments will have to be repeated.
+The count was implemented as static, which turned out to be static for all node instances (class variable).
+
+
+
+* Testing method
+
+20020802 It would be a good idea to have some code that generates initial estimates with some error. This could then be used to test the refinement methods and to see if different methods work better for certain levels of initial error.
+
+20020802 Examine whether the instability of the algorithms (high stddev on multiple runs with different random number seeds) is mainly due to the different characteristics of the generated, or in the algorithms themselves.
+(Note that the stddev on the connectivity of the topology is relatively low (0.380 on a mean of 6.08 for ht_vs_sav/data3 and 0.844 on a mean of 15.5 for ht_vs_sav/data1))
+
+
+
+* 20020805 Qs for 2day:
+  - 1 What causes the massive instability?
+  - 2 Why aren't the Hop-TERRAIN graphs identical for different rangevariances?
+  - 3 Why does lowering the floodcount in Savvides increase accuracy in high anchorfrac networks when there is a rangevariance? Why doesn't it when there isn't? And does this happen in Hop-TERRAIN as well?
+
+20020805 Answer to Q2:
+double truncnormal(double m, double d)
+{
+    double res;
+    do {
+         res = m + d *  sqrt(-2.0*log(dblrand()))*cos(PI*2*dblrand());
+    } while(res<0);
+
+    return res;
+}
+The way truncnormal is implemented means that if the result of the first pick is negative, another random number will be drawn, and so the sequence will shift by 1. (Following draws will a number which is 1 later than they would have).
+Note that this truncates the PDF for negative values. It does _not_ mean that 0 will be returned when a negative value was drawn.
+When the rangevariance increases, the probability of this also increases:
+	    FLOAT est_d = truncnormal( true_d, range*range_variance);
+(from rand_topology.cc)
+After such a draw, all following random draws will be different.
+
+Possible solution: use different randomnumber generator for rand_topology.
+Note that this will make following versions incompatible with the original code. Implemented anyway.
+
+Note also that turning on or off the do_2nd_phase parameter interfers with the results from the 1st phase as well because some nodes start drawing random numbers from the sequence before all nodes finished the first phase. Because the things the 2nd phase does _are_ influenced by the rangevariance, two runs with identical seed values, both with 2nd phase on, but with different rangevariance, may produce different results for the 1st phase error.
+This could be avoided by using seperate sequences for this as well, but this has not been implemented yet.
+
+
+20020806 The data in output/data/does_phase2_matter_for_phase1 suggests that, as expected, running phase2 has no influence on the result of phase1. In individual cases it might because both phases interfere through the random number generator (both draw from the same sequence), but on average the result is zero.
+There is still a bug in prun-suite to be explained, so this result is preliminairy.
+Averaging a large number of runs results in
+S/M/S for phase 1 error with 2nd phase=true :  89.442 / 44.209 / 36.182
+S/M/S for phase 1 error with 2nd phase=false:  89.480 / 44.202 / 36.108
+
+The bug in prun-suite turned out to be in seedtool, which would result in periods of 0s te be returned in the results if num_seeds*distance exceeded 2^31, which it did in the test run of 5000 runs with 1000000 distance between seeds.
+A fix has been applied to seedtool.
+
+20020806 On examining the cause of the instability, I found that a scenario generated by rand_topology and being fed back into the simulator using standard_format, produced different results. With the new seperate random number sequence in rand_topology, this was not the expected behaviour.
+The cause was that standard_topology checks for the radio range. While this may be useful in some cases, it make comparison with randomly generated topologies impossible for three reasons:
+    1: certain node pairs may no longer be able to communicate because their measured range is larger than the radio range
+    2: the resulting topologies cannot have a range larger than the radio range, which could happen in the rand_topology case
+    3: there may now be a case where a can communicate with b, but b can't communicate with a
+
+A new standard_format_blind was created which drops the range check.
+
+NOTE: runs done with rand_topology and then loaded again with standard-format-blind canNOT be compared when pos_variance!=0 because the init_pos isn't stored in the scenario file. Therefore the exact conditions cannot be restored.
+
+NOTE2: Even when a scenario with pos_variance==0 is loaded, very small rounding errors in the distance calculation ( < 0.01 percent, put some prints in Topology::distance to see) can make a huge difference in the resulting accuracy and number of messages sent.
+This says quite a lot about our stability... :-(
+
+
+
+20020807
+Created plotscenario.m and preprocess_scenario scripts to make plots of scenario files. Note that preprocess_scenario depends on the # ANCHOR tags to determine which nodes are anchors.
+Made list of parameters to examine (scenarios.txt), including ranges to achieve certain node count/connectivity combinations.
+
+20020808
+Created plotlogje.m and preprocess_logje scripts to make plots of the log files. Each node's original position is plotted along with a line to the calculated position. Colors and different shapes are used to illustrate bad, unknown and anchor nodes.
+
+The graphs produced by plotlogje are quite useful. In particular the ones in data/stability/data2 suggest (although there is hardly enough data to make any firm claim) that the massive instability seen in HTRefine, even when applied to the same topology, may be caused by the flipping of parts of the network. This case, the lower-right area was flipped horizontally for seed3601 and verticall for seed 73602. Seeds 100 and 601 got the orientation right.
+
+Plots of Hop-TERRAIN for the same random seed may also be useful. In the 3601 we can see what caused the flipping, but for the 73602 this is not clear.
+NOTE: also we must be careful when comparing these graphs since running Refine may influence Hop-TERRAIN.
+
+Maybe it would be a good idea to use different randomseeds for each node? This should reduce this effect. Using a seperate random seed for the network may be useful as well.
+
+
+20020809
+Stability:
+It is important to realise there are 2 ways in which an algorithm may be (un)stable:
+   1: For a given topology, does it always produce roughly the same results? (ie: regardless of randomseed)
+   2: In different, but comparable scenarios, does it always produce the same results?
+
+If an algorithm is stable in the first sense, it may be possible to predict te performance, given the network topology or certain characteristics. Ofcourse, that would be very valuable.
+To examine the 2nd type of stability, we first need to find out what scenarios are 'comparable'. Which measures are relevant? Should we generate topologies randomly?
+
+Side track:
+Data in stability/data3/100 and /100_metp1a3 suggests that increasing the number of anchors used isn't necessarily a good idea and may even seriously increase the error.
+
+
+20020818
+The RandomPA topology (placing anchors in a grid) gives some interesting results (output/data/placingAnchors/data1).
+
+    Alg	     Topology Err       Bcast	   std dev   stddev
+   0.00000   0.00000  41.34372  27.92250   8.87693   0.96012
+   0.00000   1.00000  32.27830  27.59750   4.59161   0.63381
+   1.00000   0.00000  47.80070  21.35650  12.22826   0.40668
+   1.00000   1.00000  18.11996  21.13364   1.90366   0.46875
+
+First, Savvides' algorithm benefits much more from the new placement of the anchors. This was to be expected, since it suffers more from the lack of anchors around the edges which draws the results inwards. More surprising is the fact the, in this small test run, Savvides performs significantly better than HT, both in accuracy as in stability.
+Q: does the increased stability mean that perhaps the placement of the anchors is the main cause for instability in the HT and Savvides algorithms as opposed to the general network topology or purely random behaviour?
+
+20020819
+Plots show that Savvides still suffers a bit from node positions along the edges being drawn inwards.
+
+20020827
+Two changes were made to Niculescu's algorithm:
+*In the if where the value for sidecn is determined, the test was replaced by one that determines the option that has the smallest error. (IMHO the last else clause was never reached anyway, and this will yield better results when n1, cn and n2 are colinear) (Room for improvement: ignore cn's that result in very large errors. Right now, we just use the first one that works)
+*The 2nd part of determining sidecn has been removed. In Niculescu's code this assumes that if we haven't heard from a neighbour, he doesn't exist within the radio range and therefore the largest of the two distances must be correct. However, this assumption cannot be made in our network with collisions. (A test showed a significant improvement in performance after this change)
+
+
+NOTE: phase1_anchors is not yet used to limit flooding in Node_EuclRefineX, but is used to limit the number of anchors that are used in the target_based_triangulation function. It will use the 'phase1_anchors' closest anchors/targets.
+
+20020828
+Niculescu performs very poorly in tests with parameters matching the ones mention in his paper. Suspected reason is that the random topology is too irregular and that Niculescu used a generator which produces better topologies.
+Most notable is the fact that when parts of the network are connected by only 1 or 2 nodes, the anchor information cannot be propagated because the algorithm requires quite a high connectivity.
+
+Niculescu implemented two methods for deciding which alternative to chose after a diagonalization: the first, common_nbr is the one used in his code, but the second one, nbr_vote requires slightly less connectivity. (More specific, it can do with n1-t n2-t s-n1 s-n2 n1-n2 cn-t s-cn cn-n1, while common_nbr also requires cn-n2.)
+An initial test (saved in /data/eucltest/paper) shows that when vote is turned on, a significantly higher number of nodes could be positioned (26/90 instead of 10/90). It also suggests there is no difference in the error made by these two methods (both the avg error and the frequency with which a particular method was closest to the actual distance are comparable)
+
+20020829
+The number of broadcasts in eucltest/paper/pv.5 is much lower than the number in Niculescu's paper, even though the number of nodes is equals. 2 possible explanations:
+    a) the topology with pv=.5 is still quite bad which results in nodes being left out (doesn't seem to explain the huge difference)
+    b) Niculescu floods immediately, while our code waits for a certain period during which more messages can be received. (but the relation between the broadcast count and the byte count graphs in the paper suggest Niculescu uses a similar waiting period...)
+
+When nodes are arranged in a grid (topology Grid or GridRand with pv=0.0), Niculescu doesn't achieve 0 error in many cases because of rounding errors. If a slight variation in the position is introduced, nodes are no longer colinear and the final error is again 0.
+This goes for the case when only the common_nbr estimate is used. The plots in eucltest/paper/pv.* 
+
+20020830
+A bug in Node_EuclRefine caused the vote code to never be used.
+Another bug caused vote to be triggered when there was only 1 vote -> bad results.
+Ignore all old Node_EuclRefine data because of this.
+
+20020904
+Changed phase1_anchors parameter into 3 seperate parameters: phase1_min_anchors, phase1_max_anchors, flood_limit.
+With high rv and a connectivity of 7.6 is seems unlikely that Niculescu can get a 70% coverage and 0.7 error as the graphs suggest, or maybe I'm misinterpreting $merror...
+Strangely enough, I now get better results than those shown in the graph with Node_EuclRefine.... (.4 instead of .5 error with .2 af and .2 rv)
+
+20020904
+The testdata in data/nearestAnchorSelection/data1 shows the error made by Hop-TERRAIN when selecting the nearest n anchors for various values of n. Some initial impressions:
+ * Chosing the right number of anchors can make a large difference. (order of 10 percent)
+ * For rv=0.1 and using the random topology there _appears_ to be a clear minimum when 6 anchors are used regardless of the anchor fraction. For the random topology with placed anchors this doesn't seem to be true. The GridRand topology doesn't seem to benefit at all from discarding anchors. Intuition (to be verified): this could be caused by the fact that in the GridRand case the paths from nodes to anchors are very regular, so Hop-TERRAIN will probably have a good range estimate to all anchors.
+ * We should figure out what the best criteria are for selecting anchors. Possible options for sorting the anchors in the Hop-TERRAIN case: number of hops (need to examine the error on the calculated distance for this, note also that nodes at hop distance 1 may have large errors, so those anchors may not be appropriate), the calculated range, distance to other anchors (in theory it should be possible to combine the range and position info from anchors to filter out bad anchors....)
+A criterium for determining the number of anchors to select could be the number that results in the minimal residu. Ofcourse we could also just take the selection of anchors that yields the lowest residu. Math intensive though.
+ * The optimal selection of nodes using any other strategy than just selecting the optimal combination based on the residu probably depends on the algorithm, and possibly on the topology as well. (data1 shows large differences for HT in different topologies)
+
+
+20020910
+*Data in output/data/Rand_or_RandPA_for_Euclidean show that in that specific setup, the Random topology performs better than the RandomPA topology, with slightly worse coverage. (avg of 250 runs)
+octave:2> groupby(data,[49],[10,41,42])
+ans =
+   0.00000  50.67515   9.68800  70.31200  12.62696   7.28140   7.28140
+   1.00000  64.26126   5.94400  74.05600  16.33326   5.23167   5.23167
+Is it those 4 nodes that weren't localised in the Random case that are responsible for a 14 percent increase in error??
+
+
+
+*The runs in /data/Rand_or_RandPA_for_Euclidean/single, specifically logjelimit-1 suggest that the Euclidean method suffers greatly from choosing the wrong side. Note that the version used for these runs only uses common_nbr method. TODO: verify the same problems persist when voting is used. (20020912 Did that. It does.)
+Two things were observed: First, when n1, n2 and cn are colinear, it is very hard to determine the proper side. When $merror is relatively small, the criterium in safe_diagonal loses strength and will not reject the common node. Second, if the wrong side is chosen for one node, the resulting incorrect distance may later be used as a common node or n1/n2 again, which will result in an incorrect distance for more nodes.
+Question: does a higher range variance, which leads to a stricter criterium in safe_diagonal, improve results because these colinear n1/n2/cn combinations are discarded?
+ A: the data in the subdirectory VaryingRVforGridRandLayout suggest this is not the case. This is probably because the higher rv also causes more wrong sides to be chosen. The speed at which the error increases with the rv value is extremely high.
+ Also note that the data in the two summaries indicate that selecting just the 4 closest anchors is _not_ a good idea in this case, in some cases doubling the error. Probably due to the fact that the few targets with incorrect ranges (too short ranges, see next point), are no longer compensated for by other anchors. (no effect on coverage of course)
+In a few tests in the 'single' subdirectory indicate that EuclRefine (still using only common_nbr) tends to underestimate the distance to an anchor. When rounded to integers the range calculated was underestimate in 62%, exact in 13% and overestimated in 25% of the cases. This again indicates that selecting the nearest anchors may not be appropriate.
+
+Question: does using nbr_vote improve things?
+
+
+Also, a lot of the plots of the logs in the single directory show the resulting positions being drawn inwards.. Why does this happen? One possibility is that the remote nodes are more suceptible to the underestimating of ranges mentioned above. Since the most remote nodes are on the other side of the grid (the effect is especially clear in the GridRand topology), the nodes would be drawn in that direction.
+
+
+*Another thing that was observed is that sometimes, probably due to network collisions, a neighbour target was determined with the euclidean method. It would most likely be better to replace that result if the target turns out to be a neighbour.
+
+
+
+
+20020911
+It was observed that the Euclidean method tends to underestimate the range to the targets. (data/EuclUnderestimate/single/data1) confirms this for one particular case.
+For the common_nbr method this can be explained: there are two possible mistakes: using the long distance instead of the short distance and using the short instead of the long. In the cases where the long distance could be selecting instead of the short one, the short one will in some cases be in the communication range of self, and therefor the anchor will be added as a neighbour anchor. In the other case where the long distance is correct, this cannot happen. So the number of cases where we can mistakenly select the short distance is larger than the number of cases were we can select the long distance.
+However, intuitively, this should not be the case for the nbr_vote method, but still the data shows that here we also underestimate the distance. Does this have another cause, or is the reason described above incorrect?
+After some additional runs and tracing some errors in the logs it seems that the nbr_vote can also select the wrong option when two node pairs have similar results. There are a number of possible constelations where this occurs. A possible improvement on the algorithm could be to reject votes when the standard deviation of both rows is similar.
+
+
+20020912
+data/paper/1stComparison
+When comparing the data from Random and RandomPA topologies, a few things are noticed:
+ * Savvides benefits a lot from the placement of anchors, especially at low range variance
+ * Placing anchors helps for HopTERRAIN, but doesn't do much. (especially at high af)
+ * Euclidean responds strangely to placing the anchors. At low af placing the anchors results in a low coverage, probably because only the few nodes that happen to be close to enough anchors get positioned, and there are fewer of these in the positioned case. As a result the error is smaller because only easy nodes get positioned. When we have a medium af (0.1), the coverage is about the same (placement is better for low rv, random for high rv, probably due to the same effect). As before this results in a higher error for placement at low rv because more nodes are positioned (the assumption here is that the extra nodes have large errors...), at high rv random has the higher coverage and also the higher error.
+At high af (0.25) the placement policy results in higher coverage and higher error.
+
+General point about Euclidean: when errors are introduced it's not so much the error in the calculated distances that causes problems, but the fact that these small error may result in selecting the wrong alternative. This explains why rv=0 results in practically 0 error, and rv=0.02 in up to 120% error.
+
+
+20020913
+Savvides' method completely breaks down when subjected to high rv. Especially in large network when, as described in the paper, we don't use a flood limit.
+What happens is that because the network is large, the nodes have loads of paths to remote anchors. The paths with the shortest distance is used, which results in a path which is _much_ too short.
+The result is that the avg of max-min and min-max will lie somewhere in the middle of the topology. (output/data/paper/SavvidesHighRV/nofl)
+(Note that Savvides' paper does not describe what to do when there's no proper bounding box because lowbound>highbound.)
+Using a simple flood limit solves this problem (output/data/paper/SavvidesHighRV/nofl)
+
+This also explains the relatively low improvement and high error when switching from Random to RandomPA in /data/paper/1stcomparison/flooding.
+
+
+
+20020916
+First impressions of the 1st optimization to nbr_vote. (adding criteria for stddev):
+ * With proper connectivity (11 in the case shown in Eucl++/Vote/data1) the error is significantly reduced, while coverage remains 100%
+ * With reduced connectivity and coverage <100% (Eucl++/Vote/data2), a lot of coverage is lost because of the extra constraints. However, the nodes that are lost usually had bad positions anyway. Error is again reduced significantly, not only by removing bad nodes, but nodes that initially had a bad position now have an accurate position.
+
+
+20020917
+Conclusions from Eucl++/Vote/data5:
+ - Max_anc hardly helps. Probably due to the fact that Euclidean underestimates distances and the anchors are chosen using the calculated distance.
+ - Limiting flooding helps a great deal. Out of node,4,5, and 6, 4 seems optimal.
+ - The ++ checks help even more. (An amazing improvement from 114 to 17 percent error in an extreme case) With low connectivity (range=9) the already bad coverage becomes even worse.
+ - Increasing connectivity decreases error.
+
+20020918
+When a node tries to triangulate using 3 colinear anchors, two possibilities remain. Can this be the cause of the flipping behaviour that we sometimes see? (Not very likely when 4 anchors are used though.)
+
+
+20020919
+Maybe remote anchors are more accurate for Hop-Terrain because the average hop distance then approaches the calibrated distance. For shorter paths, the chances of a large difference in avg hop dst is much larger...
+
+
+20020924
+output/data/8alg/data1/tri_mm.
+De data in het gnumeric sheet en het ps plaatje is gemiddeld over een groot aantal verschillende algoritmes, topologieen, af, rv, r en fl waardes.
+Volgens Gnumeric is de correlatie tussen de absolute range fout en de error veel groter bij triangulatie dan bij minmax. In het plaatje is de zien dat wanneer de fout in de range meting toeneemt, de fout in de positie bij triangulatie lineair toeneemt, en dat minmax ongeveer gelijk blijft (heel licht toeneemt). Bij een plaatje over de gehele range (0-45 range error) was dit nog duidelijker, maar omdat de gemiddelde fout lag op 7 is dat weggelaten.
+---> Bij hogere range error wordt minmax beter dan triangulatie?
+Q: waarom lijkt (niet_abs_err.ps) een onderschatting van de range minder erg dan een overschatting?? Vooral bij minmax zou ik verwachten dat onderschatten erger is omdat het de box teveel verkleint.
+
+
+20020925
+After replacing the old message sending policy with one similar to Euclidean, the number of anchor messages sent dropped by approx 80 percent in one examined case to a level similar to that of the calibration messages.
+The change in policy is that the anchor messages are now grouped, so several anchors are sent in one message. Possible calibration messages that are also queued at that time are still sent seperately.
+
+
+20020926
+The data in output/data/Eucl++/rangeerror logje{Medium|Strict}SafeDiagonal shows that a strict criterium in safe diagonal can improve both error and coverage.
+Problem: Niculescu's code doesn't show what he does in safe_diagonal when the triangle n1-n2-t is impossible. safe_diagonal will return 2, but this is no reason for nbr_vote or for common_nbr to discard the result.
+In our diagonal we need may to take the squareroot of a negative number in this case. Because we don't want to fail on taking the root of -0.000001, I put an fabs there. The result is that when for instance b=64,c=20,e=10, the resulting range will be huge because the b^2 will be used somewhere.
+Options:
+	* discard triangles also when safe_diagonal returns 2.
+	* discard on negative sqrt < 0.1	
+I chose the latter and implemented it in both Eucl and Eucl++
+When testing the effect of this, it was notice that in the single run in Eucl++/rangeerror both error and coverage increase significantly, while the huge range errors disappeared. At first this may go against our intuition since large range errors should result in large position errors. However, the ranges were so huge that every node which had one of these measurements couldn't triangulate because of the residu check.
+The increase in the error appears to be a case of bad luck as is demonstrated by the summary file compareDiagonalFixsummary which shows the error stays almost constant when the fix is applied while the coverage is increase dramatically.
+
+Having fixed this, the results from 20020924 become useless... 
+
+
+(NOTE: because of the way safe_diagonal is written, if both ade and bce are impossible, safe_diagonal will return 2 (err in bce), while 1 (err in ade) would have been a reason for both nbr_vote and common_nbr to reject!!)
+
+20020927
+Data in data_5 and _6 of 8alg confirms that Savvides underestimates distance with rv0.1 (but interesting change in all 4 re columns as af increases), and overestimates distance with rv0.02. (as expected) Euclidean constantly underestimates.
+
+Looking at data_6, we see that at af 0.025 Node_Eucl has an average range error of -11/-13 (why do these differ for Tri and MM???) and Node_Eucl++ has an average error of only -3.5/-4. Still for tri the error only goes from 130 to 82% and for MM it's even worse: 133 to 101. What's up with that?
+
+20020928
+Wrom geen reps, maar slechts 1 op bc_position in HTRefine??
+
+20020930
+In sendPosition bij het bepalen van de soundness, waarom zou het itereren over targets->last_hop_idx nog andere nodes opleveren dan de neighbours?
+Playing around with the accuracy parameters it seems that a lot of accuracy can be gained by setting it to a smaller value (for instance 0.00001 instead of 0.01) at the expense of a large increase in the number of messages sent.
+
+One striking thing that can be noticed from data/2alg/data1 is that if we look at the stability of the error (stddev column in the grouped data), the number of anchors used doesn't make much of a difference for Minmax, but it makes a huge difference for triangulation. For triangulation, 3 anchors is clearly not enough. The step from 5->8 is much smaller than the step from 3->5, but it is still significant.
+
+
+20021001
+In data/2alg/data1 when doing comparing groupby_cond(datagrp,[1,2,4,3],[6],"datarow(1)==1 && datarow(4)==1 && datarow(5)<0.2;") and groupby_cond(datagrp,[1,2,4,3],[6],"datarow(1)==1 && datarow(4)==0 && datarow(5)<0.2;") (grouping the results by the bias parameters) we notice: 1. triangulation is _much_ more sensitive to biases in the range measurement than mm. 2. A positive bias in the range measurement actually has a positive effect of the accuracy. (why??) Also, for triangulation a positive bias seems to be slightly worse than a negative bias.
+
+
+
+Changes to Euclidean:
+	* Flood limit
+	* Removed check which assumed all neighbours are known
+	* Added resending all data when a new neighbour is discovered
+
+Improvements (Euclidean++)
+	* Added extra criteria to nbr_vote to prevent it from selecting the incorrect distance
+	* Added averaging of distances if the path is known in both directions.
+
+
+2do:
+* kijken waar het verschil in message count tussen EuclRefine en de rest vandaan komt.
+* zorgen dat Eucl, HT en Sav hetzelfde zijn wat floodlimit en bcasts betreft.
+
+
+Possible improvements for Node_EuclRefine class (2be implemented in Node_EuclRefineX):
+ * Only use x nearest targets in triangulation (x=3?)
+   -> tried that. doesn't work very well. using the hopcount as selection criterium may be better because the algorithm tends to underestimate the distance, thus allowing nodes with large errors to be selected in the initial method.
+ * Limit flooding
+ * Use median in nbr_vote function instead of mean to filter out large errors.
+ * Have stricter criteria for the common node to prevent flipping
+ * Check if the stddev of the other option in nbr_vote is suffiently high to rule it out (to prevent flipping)
+ * neighbours voor eucl.

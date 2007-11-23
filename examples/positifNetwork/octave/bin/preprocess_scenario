@@ -1,0 +1,25 @@
+#!/bin/sh
+#set -x
+
+sed '
+s/#\ ANCHOR/ANCHOR/g
+/anchor-list/,/$/ d
+/anchor-list/ {
+N;d
+}
+s/#.*//g; /./!d
+/ANCHOR/!G;/ANCHOR/!s/\n/ 0/
+s/ANCHOR/1/g
+' $1 | sed '2d' > .$$$1
+numnodes=`sed '2!d;s/#//g;s/://g;s/nodes//g;' $1`
+
+rm $1
+
+rowcount=`wc .$$$1 -l | sed s/.$$$1// | sed s/\ //g`
+rowcount=$[$rowcount+1]
+
+cat header | sed s/ROWCOUNT/$rowcount/ | sed s/COLCOUNT/4/ > $1
+echo "$numnodes 0 0 0" >> $1
+cat .$$$1 >> $1
+rm .$$$1
+

@@ -1,0 +1,28 @@
+#!/bin/sh
+#set -x
+
+rm $$octavescript 2>/dev/null
+logfile=$1
+
+cp $1 $$scendata
+preprocess_scenario $$scendata
+
+echo "LOADPATH=[LOADPATH,\":`pwd`/octavecode//:\"]" > $$octavescript
+echo load $$scendata >> $$octavescript
+echo "plotscenariops(data)" >> $$octavescript
+octave -q $$octavescript
+
+rm $$octavescript
+rm $$scendata
+
+if [ -e scenario.ps ]; then
+    if [ $2 ]; then
+	mv scenario.ps $2
+    fi
+fi
+
+
+
+
+
+

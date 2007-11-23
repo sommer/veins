@@ -1,0 +1,118 @@
+#!/bin/sh
+#set -x
+
+rm $$octavescript 2>/dev/null
+logfile=$1
+
+cp $1 $$logdata
+preprocess_log $$logdata
+
+shift
+awkscript=""
+while [ $1 ]; do
+	case $1 in
+		1)
+ 			awkscript="$awkscript \"-seed0=\" ^$1"
+			;;
+		2)
+ 			awkscript="$awkscript \"-alg=\" ^$1"
+			;;
+		3)
+ 			awkscript="$awkscript \"-r=\" ^$1"
+			;;
+		4)
+ 			awkscript="$awkscript \"-rv=\" ^$1"
+			;;
+		5)
+ 			awkscript="$awkscript \"-af=\" ^$1"
+			;;
+		6)
+ 			awkscript="$awkscript \"-nn=\" ^$1"
+			;;
+		7)
+ 			awkscript="$awkscript \"-dens=\" ^$1"
+			;;
+		8)
+ 			awkscript="$awkscript \"-conn=\" ^$1"
+			;;
+ 		10)
+ 			awkscript="$awkscript \"-finalerr=\" ^$1"
+			;;
+ 		11)
+ 			awkscript="$awkscript \"-finalerr_s=\" ^$1"
+			;;
+ 		13)
+ 			awkscript="$awkscript \"-p1err=\" ^$1"
+			;;
+ 		14)
+ 			awkscript="$awkscript \"-p1err_s=\" ^$1"
+			;;
+ 		16)
+ 			awkscript="$awkscript \"-p2err=\" ^$1"
+			;;
+ 		17)
+ 			awkscript="$awkscript \"-p2err_s=\" ^$1"
+			;;
+ 		19)
+ 			awkscript="$awkscript \"-baderr=\" ^$1"
+			;;
+ 		20)
+ 			awkscript="$awkscript \"-baderr_s=\" ^$1"
+			;;
+ 		44)
+ 			awkscript="$awkscript \"-algver=\" ^$1"
+			;;
+ 		45)
+ 			awkscript="$awkscript \"-do_p2=\" ^$1"
+			;;
+ 		46)
+ 			awkscript="$awkscript \"-p1minanc=\" ^$1"
+			;;
+ 		47)
+ 			awkscript="$awkscript \"-p1maxanc=\" ^$1"
+			;;
+ 		48)
+ 			awkscript="$awkscript \"-fl=\" ^$1"
+			;;
+ 		49)
+ 			awkscript="$awkscript \"-top=\" ^$1"
+			;;
+ 		50)
+ 			awkscript="$awkscript \"-pv=\" ^$1"
+			;;
+ 		51)
+ 			awkscript="$awkscript \"-var0=\" ^$1"
+			;;
+ 		52)
+ 			awkscript="$awkscript \"-var1=\" ^$1"
+			;;
+ 		53)
+ 			awkscript="$awkscript \"-var2=\" ^$1"
+			;;
+ 		60)
+ 			awkscript="$awkscript \"-tri_alg=\" ^$1"
+			;;
+		*)
+ 			awkscript="$awkscript \"-COL$1=\" ^$1"
+			;;
+	esac
+	shift
+done
+
+
+echo "grep RAWDATA $logfile | sed 's/RAWDATA\ //' | awk '{ print $awkscript }' " | sed 's/\^/$/g' > $$awkscriptfile
+filename=`source $$awkscriptfile`
+filename=plot$filename
+size=`grep sim.playgroundSizeX ../omnetpp.ini | sed 's/sim.playgroundSizeX = //'`
+
+echo "LOADPATH=[LOADPATH,\"`pwd`/octavecode\"]" > $$octavescript
+echo load $$logdata >> $$octavescript
+echo "plotlogjeps(data,\"$filename\",$size)" >> $$octavescript
+octave -q $$octavescript | sed 1d
+
+rm $$awkscriptfile
+rm $$octavescript
+rm $$logdata
+
+cat plottitle.ps
+rm -f plottitle.ps

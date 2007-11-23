@@ -1,0 +1,56 @@
+#!/bin/sh
+#set -x
+
+echo $1
+
+
+grep used_anchor $1 | awk '{print $11}' > data$$re
+grep used_anchor $1 | awk '{if ($11<0) print -$11; else print $11}' > data$$absre
+
+grep -h re= $1 | grep POSITIONED | awk '{print $20/$22}' > data$$are
+grep -h re= $1 | grep POSITIONED | awk '{print $21/$22}' > data$$absare
+
+echo "load data$$re" > $$-octavescript
+echo "gset term postscript" >> $$-octavescript
+echo "gset output \"p$$lot-$2-re.ps\"" >> $$-octavescript
+echo "eval(sprintf(\"gset title \\\"$2 Range error. mean %f stddev %f\\\"\", mean(data$$re), std(data$$re)))" >> $$-octavescript
+echo "hist(data$$re,[-1.5:0.1:1.5])" >> $$-octavescript
+octave $$-octavescript
+
+echo "load data$$absre" > $$-octavescript
+echo "gset term postscript" >> $$-octavescript
+echo "gset output \"p$$lot-$2-absre.ps\"" >> $$-octavescript
+echo "eval(sprintf(\"gset title \\\"$2 Absolute range error. mean %f stddev %f\\\"\", mean(data$$absre), std(data$$absre)))" >> $$-octavescript
+echo "hist(data$$absre,[-1.5:0.1:1.5])" >> $$-octavescript
+octave $$-octavescript
+
+echo "load data$$are" > $$-octavescript
+echo "gset term postscript" >> $$-octavescript
+echo "gset output \"p$$lot-$2-are.ps\"" >> $$-octavescript
+echo "eval(sprintf(\"gset title \\\"$2 Average range error. mean %f stddev %f\\\"\", mean(data$$are), std(data$$are)))" >> $$-octavescript
+echo "hist(data$$are,[-1.5:0.1:1.5])" >> $$-octavescript
+octave $$-octavescript
+
+echo "load data$$absare" > $$-octavescript
+echo "gset term postscript" >> $$-octavescript
+echo "gset output \"p$$lot-$2-absare.ps\"" >> $$-octavescript
+echo "eval(sprintf(\"gset title \\\"$2 Absolute average range error. mean %f stddev %f\\\"\", mean(data$$absare), std(data$$absare)))" >> $$-octavescript
+echo "hist(data$$absare,[-1.5:0.1:1.5])" >> $$-octavescript
+octave $$-octavescript
+
+#rm data$$*
+rm $$-octavescript
+
+mergeps p$$lot*.ps > pagestmp.ps
+psnup -4 pagestmp.ps > plotpage-$2.ps
+rm pagestmp.ps
+
+mv p$$lot-$2-re.ps plot-$2-re.ps
+mv p$$lot-$2-absre.ps plot-$2-absre.ps
+mv p$$lot-$2-are.ps plot-$2-are.ps
+mv p$$lot-$2-absare.ps plot-$2-absare.ps
+
+rm data$$re
+rm data$$are
+rm data$$absre
+rm data$$absare

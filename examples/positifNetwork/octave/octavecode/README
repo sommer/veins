@@ -1,0 +1,21 @@
+Peterpaul Klein Haneveld <pp_kl_h@hotmail.com>
+
+I added two scripts to this folder:
+
+rewrite.sh
+----------
+This script saves all .m files to .m~ and replaces the following strings:
+ * gset		-> __gnuplot_set__
+ * gplot	-> __gnuplot_plot__
+
+In case one needs a backup of the original files, please be aware that
+running this script twice will destroy the original .m files. So it
+would be a good idea to do something like:
+
+mkdir backup
+mv *.m~ backup
+
+restore.sh
+----------
+This script restores all .m~ files to .m, thus undoing the changes of
+rewrite.sh.

@@ -1,0 +1,73 @@
+Anchorfractions:
+	0.01 0.025 0.05 0.075 0.1 0.15 0.25 0.35 0.5
+	0.025 0.1 0.25
+
+Range variance:
+	0 0.02 0.05 0.1 0.2 0.3 0.5
+	0 0.05 0.1 0.2 0.5
+
+Anchor position variance:
+	0
+	0
+
+Scenarios:
+	Connectivity:
+		5 10 15
+	Num nodes:
+		50 100 250
+	Area:
+		Constant 100x100
+
+
+
+Range	Connectivity (for 225 Random topology)
+   8.50000   4.67467   0.17249
+   9.00000   5.19911   0.26698
+   9.50000   5.75200   0.23512
+  10.00000   6.35200   0.27909
+  10.50000   6.98133   0.29609
+  11.00000   7.54756   0.30334
+  11.50000   8.13244   0.22853
+  12.00000   8.84978   0.21798
+  12.50000   9.59822   0.28836
+  13.00000  10.35822   0.24333
+  13.50000  11.16622   0.20833
+  14.00000  11.96000   0.28608
+  14.50000  12.82311   0.29890
+  15.00000  13.63733   0.35977
+  15.50000  14.45689   0.46866
+  16.00000  15.33689   0.51127
+
+
+Topology:
+	Random
+	RandomPA (placed anchors in grid-like fashion)
+	Grid	(anchors placed like RandomPA. (to be implemented, right now they're chosen randomly, but since for a grid the nodes are likely to be placed manually it's reasonable to assume we have control over which nodes are the anchors))
+
+
+
+
+
+Scenarios:
+
+Random, 100x100 area, 50 nodes, connectivity 5
+Random, 100x100 area, 200 nodes, connectivity 5
+Random, 100x100 area, 50 nodes, connectivity 15
+Random, 100x100 area, 200 nodes, connectivity 15
+
+
+
+Measures:
+
+Error:
+	Mean of average error
+	Mean of stddev of error
+	Std of average error
+Bcast:
+	Nr messages
+		Total
+		Per type
+Nr flops
+Nr positioned/bad/unknown nodes
+Average confidence
+(Speed of convergence?)

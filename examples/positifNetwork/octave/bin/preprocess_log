@@ -1,0 +1,12 @@
+#!/bin/sh
+#set -x
+
+grep ": pos =" $1 | sed "s/:\ pos\ =/\ /g; s/truepos\ =//g; s/</\ /g; s/,/\ /g; s/>/\ /g; s/ANCHOR/1/g; s/POSITIONED/0/g; s/UNKNOWN/2/g; s/BAD/3/g" | awk '{print $1,$2,$3,$4,$5,$6}' >> .$$$1
+rm $1
+
+rowcount=`wc .$$$1 -l | sed s/.$$$1// | sed s/\ //g`
+
+cat header | sed s/ROWCOUNT/$rowcount/ | sed s/COLCOUNT/6/ > $1
+cat .$$$1 >> $1
+
+rm .$$$1
