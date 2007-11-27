@@ -260,7 +260,12 @@ int BasicSinkRouting::specialNetwAddress(int netwAddr)
 int BasicSinkRouting::specialMACAddress(int netwAddr)
 {
 	if (netwAddr == SINK_ADDRESS) {
-		return arp->getMacAddr(sinks->begin()->second->getParent());
+		if (sinks->begin() != sinks->end()) {
+			return arp->getMacAddr(sinks->begin()->second->getParent());
+		} else {
+			EV << "Route not initialized (yet), send as L2BROADCAST" << endl;
+			return L2BROADCAST;
+		}
 	} else {
 		opp_error("Don't know special address %d",netwAddr);
 		return -1;
