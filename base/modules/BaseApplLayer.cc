@@ -22,72 +22,26 @@
 
 #include "BaseApplLayer.h"
 
-
-Define_Module(BaseApplLayer);
-
-
 /**
  * First we have to initialize the module from which we derived ours,
- * in this case BaseModule.
+ * in this case BaseLayer.
  *
  * Then we have to intialize the gates and - if necessary - some own
  * variables.
  **/
 void BaseApplLayer::initialize(int stage)
 {
-    BaseModule::initialize(stage);
+	BaseLayer::initialize(stage);
 
-    if(stage==0){
-	headerLength= par("headerLength");	
-	lowergateOut=findGate ("lowergateOut");
-	lowergateIn=findGate ("lowergateIn");
-        lowerControlIn  = findGate("lowerControlIn");
-        lowerControlOut  = findGate("lowerControlOut");
-    }
-}
-
-/**
- * The basic handle message function.
- *
- * Depending on the gate a message arrives handleMessage just calls
- * different handle message functions to further process the message.
- *
- * You should not make any changes in this function but implement all
- * your functionality into the handle*Msg functions called from here.
- *
- * @sa handleLowerMsg, handleSelfMsg
- **/
-void BaseApplLayer::handleMessage(cMessage *msg)
-{
-    if(msg->arrivalGateId()==lowergateIn){
-        handleLowerMsg(msg);
-    }
-    else if(msg->arrivalGateId()==lowerControlIn){
-        EV << "handle lower control" << endl;
-        handleLowerControl(msg);
-    }
-    else {
-        handleSelfMsg(msg);
-    }
-}
-
-/** 
- * Send message down to lower layer
- **/
-void BaseApplLayer::sendDown(cMessage *msg) {
-    send(msg, lowergateOut);
+	if(stage==0){
+		headerLength= par("headerLength");	
+	}
 }
 
 /** 
  * Send message down to lower layer
  **/
 void BaseApplLayer::sendDelayedDown(cMessage *msg, double delay) {
-    sendDelayed(msg, delay, lowergateOut);
-}
-
-/** 
- * Send message down to lower layer after delay seconds
- **/
-void BaseApplLayer::sendControlDown(cMessage *msg) {
-    send(msg, lowerControlOut);
+	recordOutgoingPacket(LOWER_DATA,msg);
+	sendDelayed(msg, delay, lowergateOut);
 }
