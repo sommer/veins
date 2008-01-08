@@ -1,0 +1,4 @@
+#ifndef ANALOGUEMODEL_
+#define ANALOGUEMODEL_
+
+#endif /*ANALOGUEMODEL_*/
