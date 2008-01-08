@@ -33,7 +33,7 @@ all:
 	@cd $(ROOT) && $(MAKEMAKE) $(OPTS) -r -n -X documentation -X doc -X configurator -X development
 
 	@echo $(ROOT)/base
-	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -r -n
+	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -r -n -X phyLayer
 	@echo $(ROOT)/base/utils
 	@cd $(ROOT)/base/utils && $(MAKEMAKE) $(OPTS) -n
 	@echo $(ROOT)/base/messages
