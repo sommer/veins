@@ -3,6 +3,7 @@
 
 #include "mac.h"
 #include <vector>
+#include <climits>
 
 #define SINK_ALWAYS_ON
 

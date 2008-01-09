@@ -22,6 +22,7 @@
 #include "Foxtrot.h"
 #include "NetwControlInfo.h"
 #include <assert.h>
+#include <climits>
 
 #include <SpecialAddresses.h>
 #include "bits.h"

@@ -19,6 +19,7 @@
  *              subclass to create your own localization layer
  ***************************************************************************/
 
+#include <climits>
 
 #include "PositifLayer.h"
 #include "BaseUtility.h"
