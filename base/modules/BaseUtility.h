@@ -12,7 +12,7 @@
 #ifndef BASE_UTILITY_H
 #define BASE_UTILITY_H
 
-#include "BaseModule.h"
+#include "Blackboard.h"
 #include "Coord.h"
 
 //BB start
@@ -79,7 +79,8 @@
  * @author Andras Varga
  * @author Andreas Koepke
  */
-class BaseUtility : public BaseModule {
+
+class BaseUtility : public Blackboard, public ImNotifiable {
 
 private:
     bool coreDebug;
