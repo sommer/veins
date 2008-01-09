@@ -551,8 +551,8 @@ uint8_t Foxtrot::mergeableSubset(FoxtrotPacketStorage * list, uint8_t * subset)
 					if (ANY_CHK(k, curr))
 						EV << k;
 				EV << "\n";
-				if (curr_count == best_count);
-				break;
+				if (curr_count == best_count)
+					break;
 			}
 		}
 		return best_count;

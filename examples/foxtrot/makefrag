@@ -1,8 +1,9 @@
 CFLAGS:=$(filter-out -DNDEBUG=1,$(CFLAGS)) -Wall -O0 -Wextra -Wno-unused
+NEDCOPTS:=$(filter-out -Werror,$(NEDCOPTS))
 LDFLAGS += -O0 -Wall
 
-#NEED = modules $(TARGET)
-NEED = $(TARGET) omnetpp.ini
+NEED = modules $(TARGET) omnetpp.ini
+#NEED = $(TARGET) omnetpp.ini
 all: $(NEED)
 
 omnetpp.ini: foxtrotgen.py
@@ -28,8 +29,3 @@ run: $(NEED)
 valgrind: $(NEED)
 	valgrind --show-reachable=yes --log-fd=1 --leak-check=full ./$(TARGET) 2>&1 >valgrind.log
 	
-#FoxtrotPacket_m.cc FoxtrotPacket_m.h: FoxtrotPacket.msg
-#	$(MSGC) $(MSGCOPTS) FoxtrotPacket.msg
-#	cat FoxtrotPacket_m.cc | sed 's/cException/cRuntimeError/' > FoxtrotPacket_m.cc2
-#	mv FoxtrotPacket_m.cc2 FoxtrotPacket_m.cc
-
