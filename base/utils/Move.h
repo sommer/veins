@@ -64,7 +64,7 @@ public:
     
 public:
     
-    std::string info() {
+    std::string info() const {
         std::ostringstream ost;
         ost << " HostMove "
             << " startPos: " << startPos.info()
