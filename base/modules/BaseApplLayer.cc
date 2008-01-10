@@ -21,6 +21,7 @@
 
 
 #include "BaseApplLayer.h"
+#include "PassedMessage.h"
 
 /**
  * First we have to initialize the module from which we derived ours,
@@ -31,17 +32,16 @@
  **/
 void BaseApplLayer::initialize(int stage)
 {
-	BaseLayer::initialize(stage);
-
-	if(stage==0){
-		headerLength= par("headerLength");	
-	}
+    BaseLayer::initialize(stage);
+    if(stage==0){
+        headerLength= par("headerLength");	
+    }
 }
 
 /** 
  * Send message down to lower layer
  **/
 void BaseApplLayer::sendDelayedDown(cMessage *msg, double delay) {
-	recordOutgoingPacket(LOWER_DATA,msg);
-	sendDelayed(msg, delay, lowergateOut);
+    recordPacket(PassedMessage::OUTGOING, PassedMessage::LOWER_DATA, msg);
+    sendDelayed(msg, delay, lowergateOut);
 }

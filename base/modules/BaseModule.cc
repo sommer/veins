@@ -28,14 +28,10 @@
  * NOTE: You have to call this in the initialize() function of the
  * inherited class!
  */
-void BaseModule::initialize(int stage)
-{    
+void BaseModule::initialize(int stage) {    
     if (stage == 0) {        
         hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
         utility = FindModule<BaseUtility*>::findSubModule(findHost());
-        if (utility == NULL) {
-            error("Could not find BaseUtility module");
-        }
     }
 }
 

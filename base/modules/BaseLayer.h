@@ -23,15 +23,8 @@
 #ifndef BASE_LAYER_H
 #define BASE_LAYER_H
 
-#include "BaseModule.h"
-
-typedef enum
-{
-	UPPER_DATA,
-	UPPER_CONTROL,
-	LOWER_DATA,
-	LOWER_CONTROL
-} MsgType;
+#include "BaseUtility.h"
+#include "PassedMessage.h"
 
 /**
  * @brief A very simple layer template
@@ -58,12 +51,12 @@ class BaseLayer : public BaseModule
     int lowerControlOut;
 
     /*@}*/  
-	
-	std::map<MsgType,std::map<int,std::pair<char*,int>*> *> *incoming;
-	std::map<MsgType,std::map<int,std::pair<char*,int> *> *> *outgoing;
-
-	bool doStats;
-
+    
+    bool doStats;
+    int  catPassedMsg;
+    PassedMessage *passedMsg;
+    int  hostId;
+    
 public:
     Module_Class_Members(BaseLayer, BaseModule, 0 );
 
@@ -147,13 +140,13 @@ protected:
     /** @brief Sends a control message to a lower layer */
     void sendControlDown(cMessage *msg);
 
-   	void recordIncomingPacket(MsgType type, const cMessage *m) {recordPacket(true,type,m);}
-   	void recordOutgoingPacket(MsgType type, const cMessage *m) {recordPacket(false,type,m);}
+    void recordPacket(PassedMessage::direction_t dir,
+                      PassedMessage::gates_t gate,
+                      const cMessage *m);
 
-private:
-   	void recordPacket(bool in, MsgType type, const cMessage *);
-	void printPackets(std::map<MsgType,std::map<int,std::pair<char *,int>* > *> *use, bool in);
-
+// private:
+//   	void recordPacket(bool in, MsgType type, const cMessage *);
+//	void printPackets(std::map<MsgType,std::map<int,std::pair<char *,int>* > *> *use, bool in);
     /*@}*/
 };
 
