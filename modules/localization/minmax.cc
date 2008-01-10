@@ -273,8 +273,8 @@ void minmax::handleTimer(unsigned int index) {
 	switch(index){
   	  case SEND_ANCHOR_POS_TIMER: // Anchor timer: send location
 	    if(/*id>=NBANCHORS*/ !isAnchor){EV << "Non anchor node got SEND_ANCHOR_POS_TIMER message (this should never happen)\n"; exit(-1);}
-	    if(baseUtility){pos=baseUtility->getPos();}
-	    else{EV << "No submodule \"baseUtility\" found\n"; exit(-1);}
+	    if(utility){pos=utility->getPos();}
+	    else{EV << "No submodule \"utility\" found\n"; exit(-1);}
 	    EV << "Anchor "<<id<<" timer rang: anchor sends its position "<<id<<"("<<pos.getX()<<","<<pos.getY()<<","<<pos.getZ()<<")\n";
 	    // do a broadcast
 	    pkt = new LocPkt("ANCHOR_BROADCAST_MESSAGE", ANCHOR_BROADCAST_MESSAGE);
@@ -320,8 +320,8 @@ void minmax::handleTimer(unsigned int index) {
 	      y /= nb_anchor_positions;
 	      z /= nb_anchor_positions; */
 	      // Get real position (ground truth)
-	      if(baseUtility){pos=baseUtility->getPos(); xReal=pos.getX();yReal=pos.getY();zReal=pos.getZ();}
-	      else{EV << "No submodule \"baseUtility\" found\n"; exit(-1);}
+	      if(utility){pos=utility->getPos(); xReal=pos.getX();yReal=pos.getY();zReal=pos.getZ();}
+	      else{EV << "No submodule \"utility\" found\n"; exit(-1);}
 	      EV << "Node "<<id<<" estimated position is: ("<<x<<","<<y<<","<<z<<") with "<<nb_anchor_positions<<" anchors heard. True position is:  ("<<xReal<<","<<yReal<<","<<zReal<<")\n";
 		
 	      // do a broadcast
@@ -365,12 +365,12 @@ void minmax::finish()
 	Coord pos;
 	Location *loc;
 	if (isAnchor == false){
-		if(baseUtility){
-				pos=baseUtility->getPos(); 
+		if(utility){
+				pos=utility->getPos(); 
 				xReal=pos.getX();yReal=pos.getY();zReal=pos.getZ();
 		}
 	      	else
-			EV << "No submodule \"baseUtility\" found\n"; exit(-1);
+			EV << "No submodule \"utility\" found\n"; exit(-1);
 		
 		double *position = new double[nr_dims];
 

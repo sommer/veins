@@ -124,7 +124,7 @@ void Savvides::initialize(int stage)
 		}
 
 		// subscribe to move
-		moveCategory = baseUtility->subscribe(this, &move);
+		moveCategory = utility->subscribe(this, &move);
 		break;
 	}
 }
@@ -813,6 +813,7 @@ void Savvides::receiveBBItem(int category,
 			     const BBItem *details,
 			     int scopeModuleId)
 {
+    	BaseModule::receiveBBItem(category, details, scopeModuleId);
 	if (category != moveCategory) 
 		return;
 
@@ -821,9 +822,8 @@ void Savvides::receiveBBItem(int category,
 #ifndef NDEBUG
 	EV << "receiveBBItem()" << endl;
 #endif
-	BaseModule::receiveBBItem(category, details, scopeModuleId);
-	const Move * _move = static_cast<const Move *>(details);
-	move = *_move;
+	move = *(static_cast<const Move *>(details));
+        
 	/* Add new position to anchor list */
 	AnchorInfo *anchor = new AnchorInfo(id, isAnchor, getLocation(), 0.0);
 	anchor->path_dst = 0.0;

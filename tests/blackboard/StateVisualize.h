@@ -26,13 +26,11 @@
 #ifndef STATE_VISUALIZE_H
 #define STATE_VISUALIZE_H
 
-#include <BaseModule.h>
 #include <BaseUtility.h>
 
 class StateVisualize : public BaseModule
 {
 private:
-	BaseUtility* bu;
     int catHostState;
     cModule *host;
 

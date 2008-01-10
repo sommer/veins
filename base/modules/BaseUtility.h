@@ -12,7 +12,6 @@
 #ifndef BASE_UTILITY_H
 #define BASE_UTILITY_H
 
-#include "Blackboard.h"
 #include "Coord.h"
 
 //BB start
@@ -23,16 +22,8 @@
 #include <omnetpp.h>
 #include <vector>
 #include <string>
-
-//#include "ModuleAccess.h"
-
-//class ImNotifiable;
-//class BBItem;
+#include "BaseModule.h"
 #include "ImNotifiable.h"
-//BB end
-
-
-
 /**
  * In protocol simulations, one often has to evaluate the performance
  * of a protocol. This implies that not only the protocol has to be
@@ -80,9 +71,9 @@
  * @author Andreas Koepke
  */
 
-class BaseUtility : public Blackboard, public ImNotifiable {
+class BaseUtility : public BaseModule {
 
-private:
+ private:
     bool coreDebug;
 
     /**
@@ -91,16 +82,15 @@ private:
      */
     Coord pos;
 
-protected:
-	Module_Class_Members(BaseUtility, BaseModule, 0);
+ protected:
+    Module_Class_Members(BaseUtility, BaseModule, 0);
 
 //BB start
-	class Subscriber 
-    {
+    class Subscriber {
     public:
         ImNotifiable *client;
         int scopeModuleId;
-    public:
+        public:
         Subscriber(ImNotifiable *c=0, int b=-1) :
             client(c), scopeModuleId(b) {};
     };
@@ -129,10 +119,10 @@ protected:
     /** @brief BBItem category number of Move*/
     int catMove;
 
-protected:
+ protected:
 
 //BB start
-	/**
+    /**
      * find the description of a category
      */
     const char* categoryName(int category);
@@ -150,18 +140,18 @@ protected:
     void fillParentVector(const BBItem *category, int cat);
 //BB end
 
-public:
-	/** @brief This modules should only receive self-messages*/
-	void handleMessage(cMessage *msg);
+ public:
+    /** @brief This modules should only receive self-messages*/
+    void handleMessage(cMessage *msg);
 
-	/** @brief Initializes mobility model parameters.*/
-	virtual void initialize(int);
+    /** @brief Initializes mobility model parameters.*/
+    virtual void initialize(int);
 
-	/** @brief Delete dynamically allocated objects*/
+    /** @brief Delete dynamically allocated objects*/
 //	virtual void finish(){};
 
-	/** @brief Get current position */
-	const Coord* getPos() {return &pos;}
+    /** @brief Get current position */
+    const Coord* getPos() {return &pos;}
 
     /**
      * We want to receive Moves from BaseUtility to synchronize
@@ -169,10 +159,10 @@ public:
      */
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 
-	//void setPos(Coord* newCoord);
+    //void setPos(Coord* newCoord);
 	
 //BB start
-	virtual ~BaseUtility();
+    virtual ~BaseUtility();
 
     
     /** @name Methods for consumers of change notifications */
@@ -240,24 +230,6 @@ public:
 //BB end
 	
 };
-
-
-
-//BB start
-
-
-/**
- * Gives access to the Blackboard instance within the host/router.
- *
- * @ingroup blackboard
- */
- /*
-class  BaseUtilityAccess : public ModuleAccess<BaseUtility>
-{
-    public:
-        BaseUtilityAccess() : ModuleAccess<BaseUtility>("baseutility") {}
-};*/
-
 
 #endif
 

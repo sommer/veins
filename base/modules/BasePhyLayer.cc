@@ -60,8 +60,6 @@ void BasePhyLayer::initialize(int stage)
             alpha = static_cast<double>(cc->par("alpha"));
 
 		bitrate = par("bitrate");
-        
-        //catActiveChannel = bb->subscribe(this, &channel, parentModule()->id());
     }
     else if (stage == 1){
         if(alpha < static_cast<double>(cc->par("alpha")))

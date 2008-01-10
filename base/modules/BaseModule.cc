@@ -19,6 +19,7 @@
  **************************************************************************/
 
 #include "BaseModule.h"
+#include "BaseUtility.h"
 
 /**
  * Subscription to Blackboard should be in stage==0, and firing
@@ -31,9 +32,10 @@ void BaseModule::initialize(int stage)
 {    
     if (stage == 0) {        
         hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
-        // get a pointer to the Blackboard module
-	// TODO: Blackboard
-        //bb = BlackboardAccess().get();
+        utility = FindModule<BaseUtility*>::findSubModule(findHost());
+        if (utility == NULL) {
+            error("Could not find BaseUtility module");
+        }
     }
 }
 

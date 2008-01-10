@@ -27,16 +27,14 @@
 #define STATE_CHANGER_H
 
 #include <omnetpp.h>
-#include <BaseModule.h>
+#include <BaseUtility.h>
 #include "HostState.h"
 #include "TestParam.h"
 #include "YetAnother.h"
-#include <BaseUtility.h>
 
 class StateChanger : public BaseModule
 {
 private:
-	BaseUtility* bu;
     cMessage *change_timer;
     unsigned int state_counter;
     HostState hs;

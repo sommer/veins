@@ -61,13 +61,14 @@
  * @author Steffen Sroka
  * @author Andreas Koepke
  */
-//class BaseModule: public cSimpleModule, public ImNotifiable {
+
+class BaseUtility;
+
 class BaseModule: public cSimpleModule, public ImNotifiable {
   protected:
-    /** @brief Cached pointer to the Blackboard module*/
-    // TODO: Blackboard
-    //BaseUtility *baseUtil;
-    
+    /** @brief Cached pointer to the utility module*/
+    BaseUtility *utility;
+
     /** @brief Debug switch for all other modules*/
     bool debug;
 
@@ -120,11 +121,7 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
      * some debug notifications
      */
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId) {
-        if(debug) {
-            Enter_Method("receiveBBItem(\"%s, %i\")", details->info().c_str(), scopeModuleId);
-        } else {
-            Enter_Method_Silent();
-        }
+        Enter_Method_Silent();
     }
 };
 

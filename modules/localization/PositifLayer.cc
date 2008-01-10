@@ -291,10 +291,7 @@ void PositifLayer::finish()
  ******************************************************************************/
 Coord PositifLayer::getPosition()
 {
-	BaseUtility *util =
-		FindModule < BaseUtility * >::findSubModule(findHost());
-	const Coord *coord = util->getPos();
-	return *coord;
+    return (*utility->getPos());
 }
 
 /* Check if this node exists in neighbor list. */

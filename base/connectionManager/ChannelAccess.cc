@@ -51,20 +51,16 @@ void ChannelAccess::initialize( int stage )
 
         cModule* nic = parentModule();
         if (nic->hasPar("connectionManagerName")){        		
-			cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath(nic->par("connectionManagerName").stringValue()));
-		} else {
-			cc = FindModule<BaseConnectionManager *>::findGlobalModule();
-		}
+            cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath(nic->par("connectionManagerName").stringValue()));
+        } else {
+            cc = FindModule<BaseConnectionManager *>::findGlobalModule();
+        }
 		
-		if( cc == 0 ) error("Could not find connectionmanager module");
-        		
-		bu = FindModule<BaseUtility*>::findSubModule(getNode());
-		if (bu == 0) error("Could not find BaseUtility module");
-
+        if( cc == 0 ) error("Could not find connectionmanager module");
         // subscribe to position changes
-        catMove = bu->subscribe(this, &move, findHost()->id());
+        catMove = utility->subscribe(this, &move, findHost()->id());
         isRegistered = false;
-	}
+    }
 }
 
 

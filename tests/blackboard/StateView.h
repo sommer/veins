@@ -26,13 +26,11 @@
 #ifndef STATE_VIEW_H
 #define STATE_VIEW_H
 
-#include <BaseModule.h>
 #include <BaseUtility.h>
 
 class StateView : public BaseModule
 {
 private:
-	BaseUtility* bu;
     int catHostState;
     cModule *host;
 

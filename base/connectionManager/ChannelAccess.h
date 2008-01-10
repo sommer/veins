@@ -77,8 +77,6 @@ protected:
      * @brief Is this module already registered with ConnectionManager?
      */
     bool isRegistered;
-
-	BaseUtility *bu;
     
 public:
     /** @brief Register with ConnectionManager and subscribe to hostPos*/

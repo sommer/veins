@@ -145,10 +145,7 @@ void Node_Savvides_Mob::init(void)
 
         EV << "initializing node_savvides_mob" << endl; // for node position
 	// subscribe to move
-	BaseUtility * baseUtility = FindModule < BaseUtility * >::findSubModule(findHost());
-	if (baseUtility == NULL)
-		error("Could not find BaseUtility module");
-        moveCategory = baseUtility->subscribe(this, &move);
+        moveCategory = utility->subscribe(this, &move);
 
 	if (MAX_TIMERS < TIMER_COUNT) {
 		error
@@ -187,9 +184,10 @@ void Node_Savvides_Mob::receiveBBItem(int category,
 				      int scopeModuleId)
 {
 	BaseModule::receiveBBItem(category, details, scopeModuleId);
-	const Move * _move = dynamic_cast<const Move *>(details);
-	move = *_move;
-	check_if_moved();
+        if(category == moveCategory) {
+            move = *(static_cast<const Move *>(details));
+            check_if_moved();
+        }
 }
 
 static bool AnchorSortPredicate(const anchor_info* a, const anchor_info* b)

@@ -55,10 +55,7 @@ void BaseMobility::initialize(int stage)
             error("Could not find BaseWorldUtility module");
 
         coreEV << "initializing BaseUtility stage " << stage << endl; // for node position
-		baseUtility = FindModule<BaseUtility*>::findSubModule(findHost());
-        if (baseUtility == NULL)
-            error("Could not find BaseUtility module");
-        
+
         //get a pointer to the host
         hostPtr = findHost();
         hostId = hostPtr->id();
@@ -107,7 +104,7 @@ void BaseMobility::initialize(int stage)
         move.direction = Coord(use2D);
         
         //get BBItem category for Move
-        moveCategory = baseUtility->getCategory(&move);
+        moveCategory = utility->getCategory(&move);
 
     }
     else if (stage == 1){
@@ -221,7 +218,7 @@ void BaseMobility::updatePosition() {
     EV << "updatePosition: " << move.info() << endl;
 
     //publish the the new move
-    baseUtility->publishBBItem(moveCategory, &move, hostId);
+    utility->publishBBItem(moveCategory, &move, hostId);
     
     char xStr[32], yStr[32], zStr[32];
     sprintf(xStr, "%d", FWMath::round(move.startPos.getX()));

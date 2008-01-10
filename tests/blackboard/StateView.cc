@@ -6,7 +6,7 @@
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
+ *              This program is free software; you can redistrbute it 
  *              and/or modify it under the terms of the GNU General Public 
  *              License as published by the Free Software Foundation; either
  *              version 2 of the License, or (at your option) any later 
@@ -34,10 +34,7 @@ void StateView::initialize(int stage)
     BaseModule::initialize(stage);
     if(stage == 0) {
         HostState s;
-        bu = FindModule<BaseUtility*>::findSubModule(this);
-        if (bu == NULL)
-        	error("Could not find BaseUtility module");
-        catHostState = bu->subscribe(this, &s, -1);
+        catHostState = utility->subscribe(this, &s, -1);
     } else if(stage == 1) {
         scheduleAt(simTime() + 5.0, new cMessage("unsubscribe memo"));
     }
@@ -46,10 +43,10 @@ void StateView::initialize(int stage)
 void StateView::handleMessage( cMessage* m)
 {
     TestParam h;
-    bu->unsubscribe(this, catHostState);
+    utility->unsubscribe(this, catHostState);
     ev << "StateView::handleMessage "
        << "unsubscribed HostState" << std::endl;
-    bu->unsubscribe(this, bu->getCategory(&h));
+    utility->unsubscribe(this, utility->getCategory(&h));
     delete m;
 }
 

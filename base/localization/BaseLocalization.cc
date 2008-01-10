@@ -35,10 +35,6 @@ void BaseLocalization::initialize(int stage)
 		if (worldUtility == NULL)
 			error("Could not find BaseWorldUtility module");
 
-		baseUtility = FindModule < BaseUtility * >::findSubModule(findHost());
-		if (baseUtility == NULL)
-			error("Could not find BaseUtility module");
-
 		headerLength = par("headerLength");
 		isAnchor = par("isAnchor");
 		break;
@@ -102,7 +98,7 @@ void BaseLocalization::finish()
 
 Coord BaseLocalization::getPosition()
 {
-	return *baseUtility->getPos();
+	return *utility->getPos();
 }
 
 Location BaseLocalization::getLocation()

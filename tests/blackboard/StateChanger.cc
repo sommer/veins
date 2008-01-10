@@ -34,17 +34,14 @@ void StateChanger::initialize(int stage)
         state_counter = 0;
         change_timer = new cMessage("change_timer", 0);
         scheduleAt(simTime() + 1.0, change_timer);
-        
-        bu = FindModule<BaseUtility*>::findSubModule(this);
-        if (bu == NULL)
-        	error("Could not find BaseUtility module");
-    } else if(stage == 1) {
-        catHostState = bu->getCategory(&hs);
-        catTestParam = bu->getCategory(&tp);
+    }
+    else if(stage == 1) {
+        catHostState = utility->getCategory(&hs);
+        catTestParam = utility->getCategory(&tp);
         hs.setState(HostState::SLEEP);
         tp.setState(TestParam::BLUE);
-        bu->publishBBItem(catHostState, &hs, parentModule()->id());
-        bu->publishBBItem(catTestParam, &tp, parentModule()->id());
+        utility->publishBBItem(catHostState, &hs, parentModule()->id());
+        utility->publishBBItem(catTestParam, &tp, parentModule()->id());
     }
 }
 
@@ -69,8 +66,8 @@ void StateChanger::handleMessage(cMessage* msg)
 		tp.setState(TestParam::GREEN);
 		break;
 	}
-        bu->publishBBItem(catHostState, &hs, parentModule()->id());
-        bu->publishBBItem(catTestParam, &tp, parentModule()->id());
+        utility->publishBBItem(catHostState, &hs, parentModule()->id());
+        utility->publishBBItem(catTestParam, &tp, parentModule()->id());
 	if(state_counter < 10) scheduleAt(simTime() + 1.0, change_timer);
     } else {
 	error(" StateChanger::handleMessage got wrong message");

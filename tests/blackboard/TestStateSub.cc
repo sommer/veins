@@ -33,10 +33,7 @@ void TestStateSub::initialize(int stage)
     BaseModule::initialize(stage);
     if(stage == 0) {
         TestParam s;
-        bu = FindModule<BaseUtility*>::findSubModule(this);
-        if (bu == NULL)
-       		error("Could not find BaseUtility module");
-        catTestParam = bu->subscribe(this, &s);
+        catTestParam = utility->subscribe(this, &s);
     } else if(stage == 1) {
         scheduleAt(simTime() + 6.0, new cMessage("unsubscribe memo"));
     }
@@ -44,7 +41,7 @@ void TestStateSub::initialize(int stage)
  
 void TestStateSub::handleMessage( cMessage* m)
 {
-    bu->unsubscribe(this, catTestParam);
+    utility->unsubscribe(this, catTestParam);
     ev << "TestStatSub::handleMessage "
        << "unsubscribed TestParam" << std::endl;
     delete m;

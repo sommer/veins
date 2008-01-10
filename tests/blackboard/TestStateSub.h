@@ -32,7 +32,6 @@
 class TestStateSub : public BaseModule
 {
 private:
-	BaseUtility* bu;
     int catTestParam;
     cModule *host;
 

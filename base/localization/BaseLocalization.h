@@ -61,7 +61,10 @@ public:
 		  pos(p),
 		  distance(d) {}
 
-	virtual std::string info() const {
+    virtual ~NodeInfo() {
+    }
+
+    virtual std::string info() const {
 		std::stringstream os;
 		os << id << "@" << pos.info() << "@" << distance;
 		return os.str();
@@ -77,7 +80,7 @@ public:
 	/** The (estimated) distance between this node and the owner. 
 	 * @TODO This must be determined base on RSSI once that's added
 	 * to Mixim. */
-	double distance; 
+	double distance;
 };
 
 using std::list;
@@ -88,7 +91,7 @@ using std::list;
  * @ingroup localization
  * @author Peterpaul Klein Haneveld
  */
-class BaseLocalization:public BaseLayer {
+class BaseLocalization : public BaseLayer {
 
       protected:
 	/**
@@ -123,7 +126,6 @@ class BaseLocalization:public BaseLayer {
 	list<NodeInfo *> anchors; /**< @brief The anchor list */
 
 	BaseWorldUtility * worldUtility;
-	BaseUtility *baseUtility;
 
       public:
 	 Module_Class_Members(BaseLocalization, BaseLayer, 0);
