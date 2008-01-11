@@ -51,7 +51,9 @@ void StatisticsUtility::finish() {
 }
 
 void  PacketStatistics::addMsg(const PassedMessage *pm) {
-    stats[pm->gateType][pm->kind][pm->name].value++;
+    const char *name = pm->name;
+    if(name == 0) name = "noName";
+    stats[pm->gateType][pm->kind][name].value++;
 }
 
 void  PacketStatistics::printStats(std::string& lineStart) const {
