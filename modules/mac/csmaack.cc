@@ -299,10 +299,10 @@ void CsmaAck::receiveData(MacPacket * msg) {
 	}
 }
 
-void CsmaAck::updateNav(ushort t) {
+void CsmaAck::updateNav(unsigned short t) {
 	assert(t>0);
-	ushort now = getCurrentTime();
-	ushort nav_left = nav_end_time - now;
+	unsigned short now = getCurrentTime();
+	unsigned short nav_left = nav_end_time - now;
 	if(nav_state ==  NAV_STATE_CLEAR || t > nav_left) {
 		printf("updating NAV, left = %u", (unsigned)t);
 		setNavTimeout(t);

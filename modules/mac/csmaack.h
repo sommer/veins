@@ -57,7 +57,7 @@ protected:
 	ProtoState proto_next_state;
 
 	NavState nav_state;
-	ushort nav_end_time;
+	unsigned short nav_end_time;
 
 	int max_packet_retries, packet_retries;
 
@@ -78,7 +78,7 @@ protected:
 	void navTimeout();	
 	void setProtocolTimeout(int t);
 	void setNavTimeout(int t);
-	void updateNav(ushort nav);
+	void updateNav(unsigned short nav);
 
 	virtual void incBackoff();
 	virtual void decBackoff();

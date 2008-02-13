@@ -289,7 +289,7 @@ void CsmaCA::sendCts() {
 	assert(cts_to >=0);
 	msg->local_to = cts_to;
 	header.kind = KIND_CTS;
-	header.nav = (ushort)(cts_nav_end - getCurrentTime());
+	header.nav = (unsigned short)(cts_nav_end - getCurrentTime());
 	msg->setData(&header, sizeof(header), 0);
 	msg->setLength(0);
 	setRadioTransmit();
@@ -335,7 +335,7 @@ void CsmaCA::receiveRts(MacPacket * msg) {
 		printf("received RTS, preparing for cts");
 		reg_rx_overhead(msg);
 		cts_to = msg->local_from;
-		cts_nav_end = getCurrentTime() + (ushort)header->nav;
+		cts_nav_end = getCurrentTime() + (unsigned short)header->nav;
 		cts_nav_rcv = header->nav;
 		cts_nav_t = getCurrentTime();
 		proto_next_state = PROTO_STATE_SEND_CTS;
@@ -417,10 +417,10 @@ void CsmaCA::receiveData(MacPacket * msg) {
 	}
 }
 
-void CsmaCA::updateNav(ushort t) {
+void CsmaCA::updateNav(unsigned short t) {
 	assert(t>0);
-	ushort now = getCurrentTime();
-	ushort nav_left = nav_end_time - now;
+	unsigned short now = getCurrentTime();
+	unsigned short nav_left = nav_end_time - now;
 	if(nav_state ==  NAV_STATE_CLEAR || t > nav_left) {
 		printf("updating NAV, left = %u", (unsigned)t);
 		setNavTimeout(t);

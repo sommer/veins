@@ -41,7 +41,7 @@ enum MessageKind {
 
 struct Header {
 	MessageKind kind;
-	ushort nav;
+	unsigned short nav;
 };
 	
 #define FLENGTH(x)	((int)((frameTotalTime((x)+headerLength()))*32768.0)+1)
@@ -59,7 +59,7 @@ struct Header {
 #define NAV_ACK		(ACK_CONTEND_TIME+ACK_FLENGTH)
 
 
-//typedef unsigned short ushort;
+//typedef unsigned short unsigned short;
 
 class CsmaCA: public EyesMacLayer {
 
@@ -74,15 +74,15 @@ protected:
 	int proto_next_state;
 
 	int nav_state;
-	ushort nav_end_time;
+	unsigned short nav_end_time;
 
 	MacPacket * tx_msg;
 
 	int rts_contend_time;
 	int cts_to;
-	ushort cts_nav_end;
-	ushort cts_nav_rcv;
-	ushort cts_nav_t;
+	unsigned short cts_nav_end;
+	unsigned short cts_nav_rcv;
+	unsigned short cts_nav_t;
 
 	int ack_to;
 
@@ -102,7 +102,7 @@ protected:
 	void navTimeout();	
 	void setProtocolTimeout(int t);
 	void setNavTimeout(int t);
-	void updateNav(ushort nav);
+	void updateNav(unsigned short nav);
 	void txDone();
 
 	virtual int mustUseCA(MacPacket * msg);

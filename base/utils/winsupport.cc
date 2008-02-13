@@ -21,7 +21,7 @@ int _asprintf(char** buf, const char* format, ...)
 	va_start(ap, format);
 	/* _vscprintf doesn't count the 
 	 * null terminating string so we add 1. */
-	len = _vscprintf_p( format, ap ) + 1
+	len = _vscprintf_p( format, ap ) + 1;
 	*buf = (char*)malloc(len*sizeof(char));
 	res = _vsprintf_p(*buf, len, format, ap);
 	va_end(ap);

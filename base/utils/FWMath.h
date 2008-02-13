@@ -117,6 +117,11 @@ public:
     static int round(double d) { return (int)(ceil(d-0.5)); }
 
     /**
+     * @return the to the nearest integer towards zero rounded parameter as double
+     */
+    static double floorToZero(double d) { return (d >= 0.0)? floor(d) : ceil(d); }
+
+    /**
      * @return greater of the given parameters
      */
     static double max(double a, double b) { return (a<b)? b : a; }
