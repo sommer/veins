@@ -93,11 +93,22 @@ void Centroid::handleMsg( cMessage* msg )
 	if(isAnchor){/* anchor only stuff */
 	  EV << "Anchor "<<id<<" got anchor position message with contents: "<<receivedId<<"("<<x<<","<<y<<","<<z<<") at "<<receivedTs<<" anchor:"<<receivedIsAnchor<<"\n";
 	}
+
+	else {/* node only stuff */
+	 // newAnchor(msg); // This is the standard way to add an anchor to the list of anchors heard. Do we want to redefine that?
+	;
+	}
+
+
 	delete msg;
         break;
     case NODE_BROADCAST_MESSAGE:
 	EV << "Node/anchor "<<id<<" got node position message with contents: "<<m->getId()<<"("<<m->getPos().getX()<<","<<m->getPos().getY()<<","<<m->getPos().getZ()<<") at "
 	   <<m->getPos().getTimestamp()<<" anchor:"<<m->getIsAnchor()<<"\n";
+
+	//newNeighbor(msg);
+
+
 	delete msg;
 	break;
     default:
@@ -127,7 +138,7 @@ void Centroid::handleTimer(unsigned int index) {
 	switch(index){
   	  case SEND_ANCHOR_POS_TIMER: // Anchor timer: send location
 	    if(/*id>=NBANCHORS*/ !isAnchor){EV << "Non anchor node got SEND_ANCHOR_POS_TIMER message (this should never happen)\n"; exit(-1);}
-	    if(utility){pos=utility->getPos();}
+	    //if(utility){pos=utility->getPos();}
 	    else{EV << "No submodule \"Utility\" found\n"; exit(-1);}
 	    EV << "Anchor "<<id<<" timer rang: anchor sends its position "<<id<<"("<<pos.getX()<<","<<pos.getY()<<","<<pos.getZ()<<")\n";
 	    // do a broadcast
@@ -160,8 +171,8 @@ void Centroid::handleTimer(unsigned int index) {
 	      y /= nb_anchor_positions;
 	      z /= nb_anchor_positions;
 	      // Get real position (ground truth)
-	      if(utility){pos=utility->getPos(); xReal=pos.getX();yReal=pos.getY();zReal=pos.getZ();}
-	      else{EV << "No submodule \"Utility\" found\n"; exit(-1);}
+	      //if(utility){pos=utility->getPos(); xReal=pos.getX();yReal=pos.getY();zReal=pos.getZ();}
+	      //else{EV << "No submodule \"Utility\" found\n"; exit(-1);}
 	      EV << "Node "<<id<<" estimated position is: ("<<x<<","<<y<<","<<z<<") with "<<nb_anchor_positions<<" anchors heard. True position is:  ("<<xReal<<","<<yReal<<","<<zReal<<")\n";
 	      // do a broadcast
 	      pos = new Coord(x,y,z);

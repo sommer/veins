@@ -29,6 +29,7 @@
 #define get_struct(m,s,p)	memmove( (p), (m)->par(s), sizeof(p))
 #define get_struct2(m,s,p)	memmove( (p), (m)->par(s), sizeof(*(p)))
 #define get_array(m,s,p,n)	memmove( (p), (m)->par(s), (n)*sizeof(*(p)))
+#define get_table(m,s1,p,n,size)	memmove( (p), (m)->par(s1), (n)*size )
 
 // message kind values (packet types):
 enum {
