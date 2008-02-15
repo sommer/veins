@@ -16,10 +16,7 @@
  ***************************************************************************/
 
 #include <Coord.h>
-#include <FWMath.h>
-#include <iostream>
-
-using namespace std;
+#include <asserts.h>
 
 const double X = 2.4;
 const double Y = 1.2;
@@ -80,24 +77,6 @@ const double BORDER = 0.0;
 const double SMALLER = -1.0;
 const double BIGGER = 7.0;
 
-
-void assertTrue(string msg, bool value) {
-    if (!value) {
-        cout << msg << " -- failed" << endl;
-        exit(1);
-    }
-}
-
-void assertFalse(string msg, bool value) { assertTrue(msg, !value); }
-
-void assertEqual(string msg, double target, double actual) {
-    if (!FWMath::close(target, actual)) {
-        cout << msg << " -- failed: value was "
-             << actual << " instead of " << target << endl;
-        exit(1);
-    }
-}
-
 /**
  * unit test for constructors of class Coord
  *
@@ -119,76 +98,76 @@ void testConstructors() {
     Coord testCoord;
     assertTrue("Default constructor creates 3D-Coord.", testCoord.is3D());
     assertFalse("Default constructor creates no 2D-Coord.", testCoord.is2D());
-    assertEqual("x-value of default coordinate.", 0.0, testCoord.getX());
-    assertEqual("y-value of default coordinate.", 0.0, testCoord.getY());
-    assertEqual("z-value of default coordinate.", 0.0, testCoord.getZ());
+    assertClose("x-value of default coordinate.", 0.0, testCoord.getX());
+    assertClose("y-value of default coordinate.", 0.0, testCoord.getY());
+    assertClose("z-value of default coordinate.", 0.0, testCoord.getZ());
 
     //test Coord(bool use2D)
     testCoord = Coord(false);
     assertTrue("Coord(false) constructor creates 3D-Coord.", testCoord.is3D());
     assertFalse("Coord(false) constructor creates no 2D-Coord.", testCoord.is2D());
-    assertEqual("x-value of Coord(false).", 0.0, testCoord.getX());
-    assertEqual("y-value of Coord(false).", 0.0, testCoord.getY());
-    assertEqual("z-value of Coord(false).", 0.0, testCoord.getZ());
+    assertClose("x-value of Coord(false).", 0.0, testCoord.getX());
+    assertClose("y-value of Coord(false).", 0.0, testCoord.getY());
+    assertClose("z-value of Coord(false).", 0.0, testCoord.getZ());
 
     testCoord = Coord(true);
     assertFalse("Coord(true) constructor creates no 3D-Coord.", testCoord.is3D());
     assertTrue("Coord(true) constructor creates 2D-Coord.", testCoord.is2D());
-    assertEqual("x-value of Coord(false).", 0.0, testCoord.getX());
-    assertEqual("y-value of Coord(false).", 0.0, testCoord.getY());
-    assertEqual("z-value of Coord(false).", Coord::UNDEFINED, testCoord.getZ());
+    assertClose("x-value of Coord(false).", 0.0, testCoord.getX());
+    assertClose("y-value of Coord(false).", 0.0, testCoord.getY());
+    assertClose("z-value of Coord(false).", Coord::UNDEFINED, testCoord.getZ());
     
     //test Coord(x, y)
     
     testCoord = Coord(X, Y);
     assertFalse("Coord(x, y) constructor creates no 3D-Coord.", testCoord.is3D());
     assertTrue("Coord(x, y) constructor creates 2D-Coord.", testCoord.is2D());
-    assertEqual("x-value of Coord(x, y).", X, testCoord.getX());
-    assertEqual("y-value of Coord(x, y).", Y, testCoord.getY());
-    assertEqual("z-value of Coord(x, y).", Coord::UNDEFINED, testCoord.getZ());
+    assertClose("x-value of Coord(x, y).", X, testCoord.getX());
+    assertClose("y-value of Coord(x, y).", Y, testCoord.getY());
+    assertClose("z-value of Coord(x, y).", Coord::UNDEFINED, testCoord.getZ());
     
     //test Coord(x, y, z)
     
     testCoord = Coord(X, Y, Z);
     assertTrue("Coord(x, y, z) constructor creates 3D-Coord.", testCoord.is3D());
     assertFalse("Coord(x, y, z) constructor creates no 2D-Coord.", testCoord.is2D());
-    assertEqual("x-value of Coord(x, y, z).", X, testCoord.getX());
-    assertEqual("y-value of Coord(x, y, z).", Y, testCoord.getY());
-    assertEqual("z-value of Coord(x, y, z).", Z, testCoord.getZ());
+    assertClose("x-value of Coord(x, y, z).", X, testCoord.getX());
+    assertClose("y-value of Coord(x, y, z).", Y, testCoord.getY());
+    assertClose("z-value of Coord(x, y, z).", Z, testCoord.getZ());
     
     //test Coord(Coord* other)
     //test Coord(Coord& other)
     Coord testCoord2(&testCoord);
     assertTrue("(3D)Coord(Coord* other) constructor same dimension as other.",
                 testCoord.is3D() == testCoord2.is3D());
-    assertEqual("x-value of (3D)Coord(Coord* other).", testCoord.getX(), testCoord2.getX());
-    assertEqual("y-value of (3D)Coord(Coord* other).", testCoord.getY(), testCoord2.getY());
-    assertEqual("z-value of (3D)Coord(Coord* other).", testCoord.getZ(), testCoord2.getZ());
+    assertClose("x-value of (3D)Coord(Coord* other).", testCoord.getX(), testCoord2.getX());
+    assertClose("y-value of (3D)Coord(Coord* other).", testCoord.getY(), testCoord2.getY());
+    assertClose("z-value of (3D)Coord(Coord* other).", testCoord.getZ(), testCoord2.getZ());
 
     testCoord2 = Coord(testCoord);
     assertTrue("Coord(Coord& other) constructor same dimension as other.",
                 testCoord.is3D() == testCoord2.is3D());
-    assertEqual("x-value of (3D)Coord(Coord& other).", testCoord.getX(), testCoord2.getX());
-    assertEqual("y-value of (3D)Coord(Coord& other).", testCoord.getY(), testCoord2.getY());
-    assertEqual("z-value of (3D)Coord(Coord& other).", testCoord.getZ(), testCoord2.getZ());
+    assertClose("x-value of (3D)Coord(Coord& other).", testCoord.getX(), testCoord2.getX());
+    assertClose("y-value of (3D)Coord(Coord& other).", testCoord.getY(), testCoord2.getY());
+    assertClose("z-value of (3D)Coord(Coord& other).", testCoord.getZ(), testCoord2.getZ());
 
     testCoord = Coord(X, Y);
     testCoord2 = Coord(&testCoord);
     assertTrue("(2D)Coord(Coord* other) constructor same dimension as other.",
                 testCoord.is3D() == testCoord2.is3D());
-    assertEqual("x-value of (2D)Coord(Coord* other).", testCoord.getX(), testCoord2.getX());
-    assertEqual("y-value of (2D)Coord(Coord* other).", testCoord.getY(), testCoord2.getY());
-    assertEqual("z-value of (2D)Coord(Coord* other).", testCoord.getZ(), testCoord2.getZ());
+    assertClose("x-value of (2D)Coord(Coord* other).", testCoord.getX(), testCoord2.getX());
+    assertClose("y-value of (2D)Coord(Coord* other).", testCoord.getY(), testCoord2.getY());
+    assertClose("z-value of (2D)Coord(Coord* other).", testCoord.getZ(), testCoord2.getZ());
 
     
     testCoord2 = Coord(testCoord);
     assertTrue("(2D)Coord(Coord& other) constructor same dimension as other.",
                 testCoord.is3D() == testCoord2.is3D());
-    assertEqual("x-value of (2D)Coord(Coord& other).", testCoord.getX(), testCoord2.getX());
-    assertEqual("y-value of (2D)Coord(Coord& other).", testCoord.getY(), testCoord2.getY());
-    assertEqual("z-value of (2D)Coord(Coord& other).", testCoord.getZ(), testCoord2.getZ());
+    assertClose("x-value of (2D)Coord(Coord& other).", testCoord.getX(), testCoord2.getX());
+    assertClose("y-value of (2D)Coord(Coord& other).", testCoord.getY(), testCoord2.getY());
+    assertClose("z-value of (2D)Coord(Coord& other).", testCoord.getZ(), testCoord2.getZ());
 
-    cout << "Constructor tests successful." << endl;
+    std::cout << "Constructor tests successful." << std::endl;
     
 }
 
@@ -207,27 +186,27 @@ void testOperators() {
 
 	Coord erg = a + b;
 	assertTrue("3D: Result of a + b is 3D", erg.is3D());
-	assertEqual("3D: x-value of a + b", SUM_X, erg.getX());
-	assertEqual("3D: y-value of a + b", SUM_Y, erg.getY());
-	assertEqual("3D: z-value of a + b", SUM_Z, erg.getZ());
+	assertClose("3D: x-value of a + b", SUM_X, erg.getX());
+	assertClose("3D: y-value of a + b", SUM_Y, erg.getY());
+	assertClose("3D: z-value of a + b", SUM_Z, erg.getZ());
 
 	erg = a - b;
 	assertTrue("3D: Result of a - b is 3D", erg.is3D());
-	assertEqual("3D: x-value of a - b", DIFF_X, erg.getX());
-	assertEqual("3D: y-value of a - b", DIFF_Y, erg.getY());
-	assertEqual("3D: z-value of a - b", DIFF_Z, erg.getZ());
+	assertClose("3D: x-value of a - b", DIFF_X, erg.getX());
+	assertClose("3D: y-value of a - b", DIFF_Y, erg.getY());
+	assertClose("3D: z-value of a - b", DIFF_Z, erg.getZ());
 
 	erg = a * FAKT;
 	assertTrue("3D: Result of a * faktor is 3D", erg.is3D());
-	assertEqual("3D: x-value of a * faktor", FAK_X, erg.getX());
-	assertEqual("3D: y-value of a * faktor", FAK_Y, erg.getY());
-	assertEqual("3D: z-value of a * faktor", FAK_Z, erg.getZ());
+	assertClose("3D: x-value of a * faktor", FAK_X, erg.getX());
+	assertClose("3D: y-value of a * faktor", FAK_Y, erg.getY());
+	assertClose("3D: z-value of a * faktor", FAK_Z, erg.getZ());
 
     erg = a / (1.0 / FAKT);
 	assertTrue("3D: Result of a / (1 / faktor) is 3D", erg.is3D());
-	assertEqual("3D: x-value of a / (1 / faktor)", FAK_X, erg.getX());
-	assertEqual("3D: y-value of a / (1 / faktor)", FAK_Y, erg.getY());
-	assertEqual("3D: z-value of a / (1 / faktor)", FAK_Z, erg.getZ());
+	assertClose("3D: x-value of a / (1 / faktor)", FAK_X, erg.getX());
+	assertClose("3D: y-value of a / (1 / faktor)", FAK_Y, erg.getY());
+	assertClose("3D: z-value of a / (1 / faktor)", FAK_Z, erg.getZ());
 
     //2D
 
@@ -236,29 +215,29 @@ void testOperators() {
 
     erg = a + b;
 	assertTrue("2D: Result of a + b is 2D", erg.is2D());
-	assertEqual("2D: x-value of a + b", SUM_X, erg.getX());
-	assertEqual("2D: y-value of a + b", SUM_Y, erg.getY());
-	assertEqual("2D: z-value UNDEFINED of a + b", Coord::UNDEFINED, erg.getZ());
+	assertClose("2D: x-value of a + b", SUM_X, erg.getX());
+	assertClose("2D: y-value of a + b", SUM_Y, erg.getY());
+	assertClose("2D: z-value UNDEFINED of a + b", Coord::UNDEFINED, erg.getZ());
 
 	erg = a - b;
 	assertTrue("2D: Result of a - b is 2D", erg.is2D());
-	assertEqual("2D: x-value of a - b", DIFF_X, erg.getX());
-	assertEqual("2D: y-value of a - b", DIFF_Y, erg.getY());
-	assertEqual("2D: z-value UNDEFINED of a - b", Coord::UNDEFINED, erg.getZ());
+	assertClose("2D: x-value of a - b", DIFF_X, erg.getX());
+	assertClose("2D: y-value of a - b", DIFF_Y, erg.getY());
+	assertClose("2D: z-value UNDEFINED of a - b", Coord::UNDEFINED, erg.getZ());
 
 	erg = a * FAKT;
 	assertTrue("2D: Result of a * faktor is 2D", erg.is2D());
-	assertEqual("2D: x-value of a * faktor", FAK_X, erg.getX());
-	assertEqual("2D: y-value of a * faktor", FAK_Y, erg.getY());
-	assertEqual("2D: z-value UNDEFINED of a * faktor", Coord::UNDEFINED, erg.getZ());
+	assertClose("2D: x-value of a * faktor", FAK_X, erg.getX());
+	assertClose("2D: y-value of a * faktor", FAK_Y, erg.getY());
+	assertClose("2D: z-value UNDEFINED of a * faktor", Coord::UNDEFINED, erg.getZ());
 
     erg = a / (1.0 / FAKT);
 	assertTrue("2D: Result of a / (1 / faktor) is 2D", erg.is2D());
-	assertEqual("2D: x-value of a / (1 / faktor)", FAK_X, erg.getX());
-	assertEqual("2D: y-value of a / (1 / faktor)", FAK_Y, erg.getY());
-	assertEqual("2D: z-value UNDEFINED of a / (1 / faktor)", Coord::UNDEFINED, erg.getZ());
+	assertClose("2D: x-value of a / (1 / faktor)", FAK_X, erg.getX());
+	assertClose("2D: y-value of a / (1 / faktor)", FAK_Y, erg.getY());
+	assertClose("2D: z-value UNDEFINED of a / (1 / faktor)", Coord::UNDEFINED, erg.getZ());
 
-	cout << "Operator tests successful." << endl;
+	std::cout << "Operator tests successful." << std::endl;
 }
 
 /**
@@ -290,7 +269,7 @@ void testCompareOperators() {
     assertTrue("2D: a == a + tolerance", a == aTol);
     assertFalse("2D: a != a + tolerance", a != aTol);
 
-    cout << "Compare operator test successful." << endl;
+    std::cout << "Compare operator test successful." << std::endl;
     
 }
 
@@ -304,23 +283,23 @@ void testLength() {
     Coord a;
 
     //3D
-    assertEqual("3D: length of origin-vector.", 0.0, a.length());
-    assertEqual("3D: square length of origin-vector.", 0.0, a.squareLength());
+    assertClose("3D: length of origin-vector.", 0.0, a.length());
+    assertClose("3D: square length of origin-vector.", 0.0, a.squareLength());
 
     a = Coord(X, Y, Z);
-    assertEqual("3D: length of (x, y, z)-vector.", XYZ_LENGTH, a.length());
-    assertEqual("3D: square length of (x, y, z)-vector.", XYZ_SQUARE_LENGTH, a.squareLength());
+    assertClose("3D: length of (x, y, z)-vector.", XYZ_LENGTH, a.length());
+    assertClose("3D: square length of (x, y, z)-vector.", XYZ_SQUARE_LENGTH, a.squareLength());
 
     //2D
     a = Coord(true);
-    assertEqual("2D: length of origin-vector.", 0.0, a.length());
-    assertEqual("2D: square length of origin-vector.", 0.0, a.squareLength());
+    assertClose("2D: length of origin-vector.", 0.0, a.length());
+    assertClose("2D: square length of origin-vector.", 0.0, a.squareLength());
 
     a = Coord(X, Y);
-    assertEqual("2D: length of (x, y, z)-vector.", XY_LENGTH, a.length());
-    assertEqual("2D: square length of (x, y, z)-vector.", XY_SQUARE_LENGTH, a.squareLength());
+    assertClose("2D: length of (x, y, z)-vector.", XY_LENGTH, a.length());
+    assertClose("2D: square length of (x, y, z)-vector.", XY_SQUARE_LENGTH, a.squareLength());
 
-    cout << "Length methods test successful." << endl;
+    std::cout << "Length methods test successful." << std::endl;
 }
 
 /**
@@ -335,10 +314,10 @@ void testDistance() {
     Coord a(X, Y, Z);
     Coord b(X2, Y2, Z2);
 
-	assertEqual("3D: square distance a<->a", 0.0, a.sqrdist(a));
-    assertEqual("3D: distance a<->a", 0.0, a.distance(a));
-    assertEqual("3D: square distance a<->b", SQUARE_DISTANCE_3D, a.sqrdist(b));
-    assertEqual("3D: distance a<->b", DISTANCE_3D, a.distance(b));
+	assertClose("3D: square distance a<->a", 0.0, a.sqrdist(a));
+    assertClose("3D: distance a<->a", 0.0, a.distance(a));
+    assertClose("3D: square distance a<->b", SQUARE_DISTANCE_3D, a.sqrdist(b));
+    assertClose("3D: distance a<->b", DISTANCE_3D, a.distance(b));
 
 	Coord ul1(X1_IN_UPPER_LEFT_HALF, Y1_IN_UPPER_LEFT_HALF, Z1_IN_UPPER_LEFT_HALF);
     Coord ul2(X2_IN_UPPER_LEFT_HALF, Y2_IN_UPPER_LEFT_HALF, Z2_IN_UPPER_LEFT_HALF);
@@ -347,17 +326,17 @@ void testDistance() {
 
 	Coord pg(PG_X, PG_Y, PG_Z);
 
-	assertEqual("3D: square torus distance ul1<->ul2", TORUS_SQUARE_DISTANCE1_3D, ul1.sqrTorusDist(ul2, pg));
-    assertEqual("3D: square torus distance ul1<->lr1", TORUS_SQUARE_DISTANCE2_3D, ul1.sqrTorusDist(lr1, pg));
+	assertClose("3D: square torus distance ul1<->ul2", TORUS_SQUARE_DISTANCE1_3D, ul1.sqrTorusDist(ul2, pg));
+    assertClose("3D: square torus distance ul1<->lr1", TORUS_SQUARE_DISTANCE2_3D, ul1.sqrTorusDist(lr1, pg));
 
     //2D
     a = Coord(X, Y);
     b = Coord(X2, Y2);
 
-	assertEqual("2D: square distance a<->a", 0.0, a.sqrdist(a));
-    assertEqual("2D: distance a<->a", 0.0, a.distance(a));
-    assertEqual("2D: square distance a<->b", SQUARE_DISTANCE_2D, a.sqrdist(b));
-    assertEqual("2D: distance a<->b", DISTANCE_2D, a.distance(b));
+	assertClose("2D: square distance a<->a", 0.0, a.sqrdist(a));
+    assertClose("2D: distance a<->a", 0.0, a.distance(a));
+    assertClose("2D: square distance a<->b", SQUARE_DISTANCE_2D, a.sqrdist(b));
+    assertClose("2D: distance a<->b", DISTANCE_2D, a.distance(b));
 
     ul1 = Coord(X1_IN_UPPER_LEFT_HALF, Y1_IN_UPPER_LEFT_HALF);
     ul2 = Coord(X2_IN_UPPER_LEFT_HALF, Y2_IN_UPPER_LEFT_HALF);
@@ -366,10 +345,10 @@ void testDistance() {
 
 	pg = Coord(PG_X, PG_Y);
 
-	assertEqual("2D: square torus distance ul1<->ul2", TORUS_SQUARE_DISTANCE1_2D, ul1.sqrTorusDist(ul2, pg));
-    assertEqual("2D: square torus distance ul1<->lr1", TORUS_SQUARE_DISTANCE2_2D, ul1.sqrTorusDist(lr1, pg));
+	assertClose("2D: square torus distance ul1<->ul2", TORUS_SQUARE_DISTANCE1_2D, ul1.sqrTorusDist(ul2, pg));
+    assertClose("2D: square torus distance ul1<->lr1", TORUS_SQUARE_DISTANCE2_2D, ul1.sqrTorusDist(lr1, pg));
     
-    cout << "Distance methods test successful." << endl;
+    std::cout << "Distance methods test successful." << std::endl;
 }
 
 /**
@@ -433,7 +412,7 @@ void testIsInRectangle() {
 	outside = Coord(INSIDE, BIGGER);
 	assertFalse("2D: bigger-y is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));	
 
-	cout << "Is in rectangle test successful." << endl;
+	std::cout << "Is in rectangle test successful." << std::endl;
 }
 
 int main() {

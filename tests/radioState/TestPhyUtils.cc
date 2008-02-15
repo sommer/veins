@@ -1,33 +1,6 @@
 #include "PhyUtils.h"
 
-#include <FWMath.h>
-#include <iostream>
-
-using namespace std;
-
-
-/**
- * assert helper functions
- * 
- */
-void assertTrue(string msg, bool value) {
-    if (!value) {
-        cout << msg << " -- failed" << endl;
-        exit(1);
-    }
-}
-
-void assertFalse(string msg, bool value) { assertTrue(msg, !value); }
-
-void assertEqual(string msg, double target, double actual) {
-    if (!FWMath::close(target, actual)) {
-        cout << msg << " -- failed: value was "
-             << actual << " instead of " << target << endl;
-        exit(1);
-    }
-}
-
-
+#include <asserts.h>
 
 // global variables needed for tests
 const Radio::RadioState initialState =  Radio::RX;

@@ -1,6 +1,124 @@
+Passed: Default constructor creates 3D-Coord.
+Passed: Default constructor creates no 2D-Coord.
+Passed: x-value of default coordinate.
+Passed: y-value of default coordinate.
+Passed: z-value of default coordinate.
+Passed: Coord(false) constructor creates 3D-Coord.
+Passed: Coord(false) constructor creates no 2D-Coord.
+Passed: x-value of Coord(false).
+Passed: y-value of Coord(false).
+Passed: z-value of Coord(false).
+Passed: Coord(true) constructor creates no 3D-Coord.
+Passed: Coord(true) constructor creates 2D-Coord.
+Passed: x-value of Coord(false).
+Passed: y-value of Coord(false).
+Passed: z-value of Coord(false).
+Passed: Coord(x, y) constructor creates no 3D-Coord.
+Passed: Coord(x, y) constructor creates 2D-Coord.
+Passed: x-value of Coord(x, y).
+Passed: y-value of Coord(x, y).
+Passed: z-value of Coord(x, y).
+Passed: Coord(x, y, z) constructor creates 3D-Coord.
+Passed: Coord(x, y, z) constructor creates no 2D-Coord.
+Passed: x-value of Coord(x, y, z).
+Passed: y-value of Coord(x, y, z).
+Passed: z-value of Coord(x, y, z).
+Passed: (3D)Coord(Coord* other) constructor same dimension as other.
+Passed: x-value of (3D)Coord(Coord* other).
+Passed: y-value of (3D)Coord(Coord* other).
+Passed: z-value of (3D)Coord(Coord* other).
+Passed: Coord(Coord& other) constructor same dimension as other.
+Passed: x-value of (3D)Coord(Coord& other).
+Passed: y-value of (3D)Coord(Coord& other).
+Passed: z-value of (3D)Coord(Coord& other).
+Passed: (2D)Coord(Coord* other) constructor same dimension as other.
+Passed: x-value of (2D)Coord(Coord* other).
+Passed: y-value of (2D)Coord(Coord* other).
+Passed: z-value of (2D)Coord(Coord* other).
+Passed: (2D)Coord(Coord& other) constructor same dimension as other.
+Passed: x-value of (2D)Coord(Coord& other).
+Passed: y-value of (2D)Coord(Coord& other).
+Passed: z-value of (2D)Coord(Coord& other).
 Constructor tests successful.
+Passed: 3D: Result of a + b is 3D
+Passed: 3D: x-value of a + b
+Passed: 3D: y-value of a + b
+Passed: 3D: z-value of a + b
+Passed: 3D: Result of a - b is 3D
+Passed: 3D: x-value of a - b
+Passed: 3D: y-value of a - b
+Passed: 3D: z-value of a - b
+Passed: 3D: Result of a * faktor is 3D
+Passed: 3D: x-value of a * faktor
+Passed: 3D: y-value of a * faktor
+Passed: 3D: z-value of a * faktor
+Passed: 3D: Result of a / (1 / faktor) is 3D
+Passed: 3D: x-value of a / (1 / faktor)
+Passed: 3D: y-value of a / (1 / faktor)
+Passed: 3D: z-value of a / (1 / faktor)
+Passed: 2D: Result of a + b is 2D
+Passed: 2D: x-value of a + b
+Passed: 2D: y-value of a + b
+Passed: 2D: z-value UNDEFINED of a + b
+Passed: 2D: Result of a - b is 2D
+Passed: 2D: x-value of a - b
+Passed: 2D: y-value of a - b
+Passed: 2D: z-value UNDEFINED of a - b
+Passed: 2D: Result of a * faktor is 2D
+Passed: 2D: x-value of a * faktor
+Passed: 2D: y-value of a * faktor
+Passed: 2D: z-value UNDEFINED of a * faktor
+Passed: 2D: Result of a / (1 / faktor) is 2D
+Passed: 2D: x-value of a / (1 / faktor)
+Passed: 2D: y-value of a / (1 / faktor)
+Passed: 2D: z-value UNDEFINED of a / (1 / faktor)
 Operator tests successful.
+Passed: 3D: a == b
+Passed: 3D: a != b
+Passed: 3D: a == a + tolerance
+Passed: 3D: a != a + tolerance
+Passed: 2D: a == b
+Passed: 2D: a != b
+Passed: 2D: a == a + tolerance
+Passed: 2D: a != a + tolerance
 Compare operator test successful.
+Passed: 3D: length of origin-vector.
+Passed: 3D: square length of origin-vector.
+Passed: 3D: length of (x, y, z)-vector.
+Passed: 3D: square length of (x, y, z)-vector.
+Passed: 2D: length of origin-vector.
+Passed: 2D: square length of origin-vector.
+Passed: 2D: length of (x, y, z)-vector.
+Passed: 2D: square length of (x, y, z)-vector.
 Length methods test successful.
+Passed: 3D: square distance a<->a
+Passed: 3D: distance a<->a
+Passed: 3D: square distance a<->b
+Passed: 3D: distance a<->b
+Passed: 3D: square torus distance ul1<->ul2
+Passed: 3D: square torus distance ul1<->lr1
+Passed: 2D: square distance a<->a
+Passed: 2D: distance a<->a
+Passed: 2D: square distance a<->b
+Passed: 2D: distance a<->b
+Passed: 2D: square torus distance ul1<->ul2
+Passed: 2D: square torus distance ul1<->lr1
 Distance methods test successful.
+Passed: 3D: inside is inside of playground.
+Passed: 3D: border-x is inside of playground.
+Passed: 3D: border-y is inside of playground.
+Passed: 3D: border-z is inside of playground.
+Passed: 3D: smaller-x is outside of playground.
+Passed: 3D: smaller-y is outside of playground.
+Passed: 3D: smaller-z is outside of playground.
+Passed: 3D: bigger-x is outside of playground.
+Passed: 3D: bigger-y is outside of playground.
+Passed: 3D: bigger-z is outside of playground.
+Passed: 2D: inside is inside of playground.
+Passed: 2D: border-x is inside of playground.
+Passed: 2D: border-y is inside of playground.
+Passed: 2D: smaller-x is outside of playground.
+Passed: 2D: smaller-y is outside of playground.
+Passed: 2D: bigger-x is outside of playground.
+Passed: 2D: bigger-y is outside of playground.
 Is in rectangle test successful.

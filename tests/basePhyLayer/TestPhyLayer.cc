@@ -1,14 +1,7 @@
 #include "TestPhyLayer.h"
+#include "../testUtils/asserts.h"
 
 Define_Module(TestPhyLayer);
-
-template<class T> std::string stringify(T x)
-{
-	std::ostringstream o;
-	o << x;
-	return o.str();
-}
-
 
 void TestPhyLayer::initialize(int stage) {
 	
@@ -16,7 +9,9 @@ void TestPhyLayer::initialize(int stage) {
 	BasePhyLayer::initialize(stage);
 	
 	//run basic tests
-	if(stage == 1) {
+	if(stage == 0) {
+		init("phy" + toString(index()));
+	} else if(stage == 1) {
 		testInitialisation();
 		testMacToPhyInterface();
 		testDeciderToPhyInterface();
@@ -25,30 +20,13 @@ void TestPhyLayer::initialize(int stage) {
 }
 
 void TestPhyLayer::handleMessage(cMessage* msg) {
+	announceMessage(msg);
 	
 	BasePhyLayer::handleMessage(msg);	
-	
-	simtime_t time = simTime();
-	MessageMap::iterator it = expectedMsgs.begin();
-	
-	while(it != expectedMsgs.lower_bound(time)) {
-		
-		fail("Expected message - \"" + it->second.second, it->first, time);
-		expectedMsgs.erase(it++);
-	}
-	bool expected;
-	while(it != expectedMsgs.upper_bound(time)) {
-		if(it->second.first == msg->kind()) {
-			pass("Expected message - \"" + it->second.second + "\" at " + stringify(time));
-			expectedMsgs.erase(it++);
-			expected = true;
-			break;
-		} else {
-			it++;
-		}
-	}
-	if(!expected)
-		fail("Got unexpected message with kind " + stringify(msg->kind()) + " at " + stringify(time));
+}
+
+void TestPhyLayer::finish() {
+	finalize();
 }
 
 void TestPhyLayer::testMacToPhyInterface() {
@@ -58,7 +36,8 @@ void TestPhyLayer::testMacToPhyInterface() {
 	assertEqual("Radio starts in SLEEP.", Radio::SLEEP, state);
 	simtime_t switchTime = setRadioState(Radio::RX);
 	assertEqual("Correct switch time to RX.", 3.0, switchTime);
-	assertMessage("Expect SWITCH_OVER to RX.", RADIO_SWITCHING_OVER, simTime() + switchTime);
+	assertMessage("SWITCH_OVER to RX.", RADIO_SWITCHING_OVER, simTime() + switchTime);
+	assertMessage("SWITCH_OVER to RX message at mac.", RADIO_SWITCHING_OVER, simTime() + switchTime, "mac" + toString(index()));
 	
 	switchTime = setRadioState(Radio::RX);
 	assertTrue("Invalid switchtime because already switching.", switchTime < 0.0);	
@@ -115,7 +94,7 @@ void TestPhyLayer::testInitialisation() {
 	TestDecider* dec = dynamic_cast<TestDecider*>(decider);
 	assertTrue("Decider is of type TestDecider.", dec != 0);
 	
-	assertEqual("Check size of AnalogueModel list.", 2, analogueModels.size());
+	assertEqual("Check size of AnalogueModel list.", (size_t)2, analogueModels.size());
 	double att1 = -1.0;
 	double att2 = -1.0;
 	for(AnalogueModelList::const_iterator it = analogueModels.begin();

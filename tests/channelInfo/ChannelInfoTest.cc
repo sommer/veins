@@ -17,41 +17,7 @@
 
 #include <omnetpp.h>
 #include <ChannelInfo.h>
-#include <iostream>
-
-using namespace std;
-
-
-
-void assertTrue(string msg, bool value) {
-    if (!value) {
-        cout << msg << " -- failed" << endl;
-        exit(1);
-    }
-}
-
-void assertFalse(string msg, bool value) { assertTrue(msg, !value); }
-
-void assertEqual(string msg, AirFrame* target, AirFrame* actual) {
-    if (target != actual) {
-        cout << msg << " -- failed: value was "
-             << actual << " instead of " << target << endl;
-        exit(1);
-    } else {
-    	cout << "PASSED: " << msg << endl;
-    }
-}
-
-void assertEqual(string msg, int target, int actual) {
-    if (target != actual) {
-        cout << msg << " -- failed: value was "
-             << actual << " instead of " << target << endl;
-        exit(1);
-    } else {
-    	cout << "PASSED: " << msg << endl;
-    }
-}
-
+#include <asserts.h>
 
 /**
  * Unit test for isInRectangle method of class Coord

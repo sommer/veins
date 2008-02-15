@@ -1,7 +1,8 @@
 import  
     "TestHost", 
     "ConnectionManager",
-    "BaseWorldUtility"; 
+    "BaseWorldUtility",
+    "TestManager"; 
  
 module Network 
     parameters: 
@@ -16,6 +17,8 @@ module Network
                 playgroundSizeX = playgroundSizeX, 
                 playgroundSizeY = playgroundSizeY,
                 playgroundSizeZ = playgroundSizeZ;
+                
+        testManager: TestManager;
                 
         channelcontrol: ConnectionManager;             
             display: "p=60,30;i=eye14";

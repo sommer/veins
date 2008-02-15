@@ -22,10 +22,12 @@ MODULES=$(ROOT)/modules
 # IMODULES=-I$(MODULES)/nic -I$(MODULES)/mobility -I$(MODULES)/utility -I$(MODULES)/localization -I$(MODULES)/node -I$(MODULES)/netw -I$(MODULES)/propagation -I$(MODULES)/phy -I$(MODULES)/mac
 IMODULES=-I$(MODULES)/nic -I$(MODULES)/mobility -I$(MODULES)/utility -I$(MODULES)/localization -I$(MODULES)/node -I$(MODULES)/netw -I$(MODULES)/propagation -I$(MODULES)/mac
 
+ITESTS=-I$(ROOT)/tests/testUtils
+
 MIXIM_INCLUDE=-I$(ROOT)/include
 
 NET_OPTS=$(MIXIM_INCLUDE) $(MIXIM_LIB)
-TEST_OPTS=-u Cmdenv
+TEST_OPTS=-u Cmdenv -w
 #--------------------------------------
 
 
@@ -105,19 +107,21 @@ all:
 
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
+	@echo $(ROOT)/tests/testUtils
+	@cd $(ROOT)/tests/testUtils && $(MAKEMAKE) $(OPTS) -n $(TEST_OPTS) $(NET_OPTS) 
 	@echo $(ROOT)/tests/blackboard
 	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/coord
-	@cd $(ROOT)/tests/coord && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
+	@cd $(ROOT)/tests/coord && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(ITESTS)
 	@echo $(ROOT)/tests/connectionManager
 	@cd $(ROOT)/tests/connectionManager && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/baseMobility
 	@cd $(ROOT)/tests/baseMobility && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
 	@echo $(ROOT)/tests/basePhyLayer
-	@cd $(ROOT)/tests/basePhyLayer && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
+	@cd $(ROOT)/tests/basePhyLayer && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(ITESTS)
 	@echo $(ROOT)/tests/channelInfo
-	@cd $(ROOT)/tests/channelInfo && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
+	@cd $(ROOT)/tests/channelInfo && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(ITESTS)
 	@echo $(ROOT)/tests/radioState
-	@cd $(ROOT)/tests/radioState && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS)
+	@cd $(ROOT)/tests/radioState && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(ITESTS)
 	
     

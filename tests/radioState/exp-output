@@ -1,0 +1,68 @@
+Passed: RadioState is correct
+Passed: RadioState is correct
+Constructor Test passed.
+Passed: RadioState is correct
+Passed: Radio does return a valid switch time
+Passed: Radio is now switching
+Passed: Radio has returned the correct switch time
+Passed: Radio is switching, error value awaited
+Passed: Radio has switched to correct state
+Passed: Switching test
+Passed: RadioState is correct
+Passed: Radio does return a valid switch time
+Passed: Radio is now switching
+Passed: Radio has returned the correct switch time
+Passed: Radio is switching, error value awaited
+Passed: Radio has switched to correct state
+Passed: Switching test
+Passed: RadioState is correct
+Passed: Radio does return a valid switch time
+Passed: Radio is now switching
+Passed: Radio has returned the correct switch time
+Passed: Radio is switching, error value awaited
+Passed: Radio has switched to correct state
+Passed: Switching test
+Passed: RadioState is correct
+Passed: Radio does return a valid switch time
+Passed: Radio is now switching
+Passed: Radio has returned the correct switch time
+Passed: Radio is switching, error value awaited
+Passed: Radio has switched to correct state
+Passed: Switching test
+Passed: RadioState is correct
+Passed: Radio does return a valid switch time
+Passed: Radio is now switching
+Passed: Radio has returned the correct switch time
+Passed: Radio is switching, error value awaited
+Passed: Radio has switched to correct state
+Passed: Switching test
+Passed: RadioState is correct
+Passed: Radio does return a valid switch time
+Passed: Radio is now switching
+Passed: Radio has returned the correct switch time
+Passed: Radio is switching, error value awaited
+Passed: Radio has switched to correct state
+Passed: Switching test
+Passed: RadioState is correct
+Passed: Radio does return a valid switch time
+Passed: Radio is now switching
+Passed: Radio has returned the correct switch time
+Passed: Radio is switching, error value awaited
+Passed: Radio has switched to correct state
+Passed: Switching test
+Passed: RadioState is correct
+Passed: Radio does return a valid switch time
+Passed: Radio is now switching
+Passed: Radio has returned the correct switch time
+Passed: Radio is switching, error value awaited
+Passed: Radio has switched to correct state
+Passed: Switching test
+Passed: RadioState is correct
+Passed: Radio does return a valid switch time
+Passed: Radio is now switching
+Passed: Radio has returned the correct switch time
+Passed: Radio is switching, error value awaited
+Passed: Radio has switched to correct state
+Passed: Switching test
+Passed: RadioState is correct
+SetSwitchTime test passed.
