@@ -12,7 +12,7 @@
 
 # preserve the default target!
 dylib: $(TARGET)
-	mv libmfcore.so libmfcore.dylib
+	mv libmixim.so libmixim.dylib
 
 # remove all shared libraries
 rm:
