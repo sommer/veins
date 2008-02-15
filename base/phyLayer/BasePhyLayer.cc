@@ -395,10 +395,10 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 	
 	//TODO: check implementation
-	Signal* signal = frame->getSignalPointer();
-	simtime_t nextHandleTime = decider->processSignal(signal);
+	Signal& signal = frame->getSignal();
+	simtime_t nextHandleTime = decider->processSignal(&signal);
 	
-	simtime_t signalEndTime = signal->getSignalStart() + frame->getDuration();
+	simtime_t signalEndTime = signal.getSignalStart() + frame->getDuration();
 	
 	//check if this is the end of the receiving process
 	if(simTime() >= signalEndTime) {
@@ -469,6 +469,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
  * This function encapsulates messages from the upper layer into an
  * AirFrame and sets all necessary attributes.
  * 
+ * The new AirFrame instance becomes owner of the Signal and MacPacket
  */
 AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
 {
@@ -482,10 +483,21 @@ AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
 	cPolymorphic* ctrlInfo = msg->removeControlInfo();
 	assert(ctrlInfo);
 	
-	// TODO: delete ControlInfo object in the end
 	MacToPhyControlInfo* macToPhyCI = static_cast<MacToPhyControlInfo*>(ctrlInfo);
 	
+	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
+	// We are now the new owner of this instance.
 	Signal* s = macToPhyCI->retrieveSignal();
+	
+	
+	// delete the Control info
+	delete macToPhyCI;
+	macToPhyCI = 0;
+	ctrlInfo = 0;
+	
+	// make sure we really obtained a pointer to an instance
+	// TODO: figure out what to do if we actually have NO Signal here
+	assert(s);
 	
 	// put host move pattern to Signal
 	s->setMove(move);
@@ -494,12 +506,21 @@ AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
 	AirFrame* frame = new AirFrame(0, AIR_FRAME);
 	
 	// set the members
-	frame->setSignal(s);
 	frame->setDuration(s->getSignalLength());
+	// copy the signal into the AirFrame
+	frame->setSignal(*s);
 	
-	// TODO: wie und woher bekommt man die Id, Id richtig setzen
+	// pointer and Signal not needed anymore
+	delete s;
+	s = 0;
+	
+	// TODO: where to get a unique id from?, set id properly
 	frame->setId(0);
 	frame->encapsulate(msg);
+	
+	// --- from here on, the AirFrame is the owner of the MacPacket ---
+	msg = 0;
+	
 	
 	return frame;
 }

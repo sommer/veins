@@ -14,7 +14,7 @@ protected:
 public:
 	/**
 	 * Initialize the MacToPhyControlInfo with the passed 
-	 * signal or null if signal is passed.
+	 * signal or null if signal is ommited.
 	 * 
 	 * NOTE: Once a signal is passed to the MacToPhyControlInfo,
 	 * 		 MacToPhyControlInfo takes the ownership of the Signal.
@@ -23,7 +23,7 @@ public:
 		signal(signal) {}
 	
 	/**
-	 * Delete the signal if it is still in out ownership.
+	 * Delete the signal if it is still in our ownership.
 	 */
 	~MacToPhyControlInfo() {
 		if(signal)

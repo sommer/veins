@@ -22,11 +22,13 @@ class noncobject Signal;
 //
 message AirFrame
 {
-	properties:
-		customize = true;
+//	properties:
+//		customize = true;
 		
     fields:
-        abstract Signal signal;    	// Contains the physical data of this AirFrame
+//      abstract Signal signal;    	// Contains the physical data of this AirFrame
+        
+        Signal signal;		// Contains the physical data of this AirFrame
         
         int state = 0; 		// state of the AirFrames, used by the physical layer
         					// as state machine for delay and transmission duration
