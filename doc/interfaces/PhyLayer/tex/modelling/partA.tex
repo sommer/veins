@@ -1,12 +1,12 @@
 \section{modelling}
 
-\emph{Note: }We denote a Layer in a general meaning by 'physical layer' 
-or 'MAC layer' and our concrete C++ classes by \h{\bp} or \h{\bm}.
 
 \subsection{overview}
 
 Here we present the design- and interface details of the OMNeT-module 
-\h{\bp} to meet the requirement specification. That includes:
+\h{\bp}\footnote{We denote a Layer in a general meaning by 'physical layer' or
+ 'MAC layer' and our concrete C++ classes
+by \h{\bp} or \h{\bm}.} to meet the requirement specification. That includes:
 
 \begin{enumerate}
  \item internal class diagram of \h{\bp} and relation to \h{\bm}
@@ -19,9 +19,9 @@ Here we present the design- and interface details of the OMNeT-module
 
 \subsection{classgraph}
 
-We start with the classgraph for the OMNeT-module \h{\bp} that shows 
-its C++ classes, relations to other OMNeT-modules (especially \h{\bm})
-and the OMNeT-messages sent between them.
+We start with the classgraph for the OMNeT-module \h{\bp} that shows its C++ classes,
+ relations to other OMNeT-modules (especially \h{\bm})
+and the OMNeT-messages sent between them.\\
 
 The \h{\bp} holds a list\req{defanalogueMulti} of AnalogueModels and a pointer
 to a
@@ -41,26 +41,28 @@ the \h{\bp}.
 \end{figure}
 \end{landscape} 
 
-\subsection{The \h{\bp} interface}
+\subsection{The \bp}
 
-In this section we focus on how one is able to communicate with the 
-\h{\bp}, i.e. especially the \h{\bm} which is connected to the \h{\bp}
+In this section we focus on the module \h{\bp} and how one is able to communicate with the 
+it, i.e. especially the \h{\bm} which is connected to the \h{\bp}
 in three ways:
 
 \begin{enumerate}
  \item OMNeT-channel for data messages
  \item OMNeT-channel for control messages
- \item a reference to \h{\bp}.
+ \item a reference to the \h{MacToPhyInterface}.
 \end{enumerate} 
 
 The \underline{data channel} is used to send and receive\req{defpacketFromMac}
 MacPkts to and
 from the \h{\bp}. An appropriate ControlInfo is attached to the packet by the
-sending layer. \saf{MacToPhyCtrlInfo interface}\\
+sending layer. The \h{MacToPhyControlInfo} is the carrier of the Signal from the
+MAC-Layer down to the Physical-Layer.
+\saf{MacToPhyCtrlInfo interface}\\
 
 The \underline{control channel} is used by the \h{\bp} to inform the \h{\bm}
 about
-certain events\req{defprovactive}, like the TX\_OVER\req{deftxover} message 
+certain events\req{defprovactive}, e.g. the TX\_OVER\req{deftxover} message 
 which indicates the end of a sending transmission.
 
 A ChannelSenseRequest can be sent over \underline{control channel} from \h{\bm}
@@ -83,14 +85,13 @@ TX,
 SLEEP).
 Switching times\req{defswitchtimes} from one radio state to another are
 controlled
-internally by a state machine. \saf{mode state machine}
+internally by a state machine. \saf{mode state machine} and \ref{radio}
+\\
+This functionality offered to \h{\bm} beside OMNeT is defined by the \h{MacToPhyInterface}.
 \\
 
-The createSignal method returns \h{\bm} a reference to a Signal at a minimum of
-necessary parameters, it only has to pass txPower, headerBitrate and
-payloadBitrate. This is the key method for \h{\bm} in order to create
-MacToPhyControlInfo properly.
-
+Further the \h{\bp} has an interface \h{DeciderToPhyInterface} that defines the functionality
+needed by the Decider. (see also \ref{decider})
 % interface description here
 \label{SignalCreation}
 
@@ -101,7 +102,25 @@ MacToPhyControlInfo properly.
  \label{fig: BasePhyLayer interface}
 \end{figure}
 
+\begin{figure}[H]
+ \centering
+ \includegraphics{modelling/MacToPhyInterface_members.png}
+ \caption{MacToPhy interface}
+ \label{fig: The MacToPhyInterface}
+\end{figure}
 
+\subsection{Radio}
+\label{radio}
+
+The Radio-class implements the radio of the host as a state machine under supervision
+of the \h{\bp}. Instructions from \h{\bm} concerning the radio are handled by \h{\bp}.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width = \textwidth]{modelling/Radio_members.png}
+ \caption{The Radio class}
+ \label{fig: radio}
+\end{figure}
 
 \subsection{AnalogueModel}
 %\label{AM and Signal}
@@ -168,8 +187,8 @@ explained in section \ref{sec:signaldetail}.
 ChannelInfo keeps track of all AirFrames on the channel. It does not
 differentiate between \textit{signal} and \textit{noise}. \h{\bp} is able to
 add and remove references to certain AirFrames to and from ChannelInfo.\\
-ChannelInfo can return a vector of Signals (references) that intersect with a
-given time interval.
+ChannelInfo can identify all AirFrames that intersect with a
+given time interval and write them to an output-vector.
 
 \begin{figure}[H]
  \centering
