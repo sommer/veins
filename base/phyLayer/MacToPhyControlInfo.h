@@ -25,7 +25,7 @@ public:
 	/**
 	 * Delete the signal if it is still in our ownership.
 	 */
-	~MacToPhyControlInfo() {
+	virtual ~MacToPhyControlInfo() {
 		if(signal)
 			delete signal;
 	}

@@ -10,12 +10,10 @@ void TestPhyLayer::initialize(int stage) {
 	
 	//run basic tests
 	if(stage == 0) {
-		init("phy" + toString(index()));
+		myIndex = findHost()->index();
+		init("phy" + toString(myIndex));
 	} else if(stage == 1) {
 		testInitialisation();
-		testMacToPhyInterface();
-		testDeciderToPhyInterface();
-		testHandleMessage();
 	}
 }
 
@@ -25,44 +23,28 @@ void TestPhyLayer::handleMessage(cMessage* msg) {
 	BasePhyLayer::handleMessage(msg);	
 }
 
-void TestPhyLayer::finish() {
+TestPhyLayer::~TestPhyLayer() {
 	finalize();
-}
-
-void TestPhyLayer::testMacToPhyInterface() {
-	
-	//get and set radiostate
-	Radio::RadioState state = getRadioState();
-	assertEqual("Radio starts in SLEEP.", Radio::SLEEP, state);
-	simtime_t switchTime = setRadioState(Radio::RX);
-	assertEqual("Correct switch time to RX.", 3.0, switchTime);
-	assertMessage("SWITCH_OVER to RX.", RADIO_SWITCHING_OVER, simTime() + switchTime);
-	assertMessage("SWITCH_OVER to RX message at mac.", RADIO_SWITCHING_OVER, simTime() + switchTime, "mac" + toString(index()));
-	
-	switchTime = setRadioState(Radio::RX);
-	assertTrue("Invalid switchtime because already switching.", switchTime < 0.0);	
-	
-	//getChannelState
-	//TODO: implement
-	
-}
-
-void TestPhyLayer::testDeciderToPhyInterface() {
-	//TODO: implement
-	
-}
-	
-void TestPhyLayer::testHandleMessage() {
-	//TODO implement
 }
 
 void TestPhyLayer::testInitialisation() {
 	
-	assertTrue("Check parameter \"usePropagationDelay\".", usePropagationDelay);
+	//run dependend tests
+	switch(simulation.runNumber()) {
+	default:
+		assertFalse("Check parameter \"usePropagationDelay\".", usePropagationDelay);
+		break;
+	}
+	
 		
 	assertEqual("Check parameter \"sensitivity\".", 2.0, sensitivity);
 	assertEqual("Check parameter \"maxTXPower\".", 10.0, maxTXPower);
 	assertEqual("Check parameter \"thermalNoise\".", 1.0, thermalNoise);
+	
+	assertTrue("Check upperGateIn ID.", upperGateIn != -1);
+	assertTrue("Check upperGateOut ID.", upperGateOut != -1);
+	assertTrue("Check upperControlIn ID.", upperControlIn != -1);
+	assertTrue("Check upperControlOut ID.", upperControlOut != -1);
 	
 	//test radio state switching times
 	radio.switchTo(Radio::SLEEP);

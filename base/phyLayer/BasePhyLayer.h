@@ -346,21 +346,6 @@ public:
 	 */
 	virtual ChannelState getChannelState();
 	
-	/**
-	 * Service method for the mac layer which creates and initializes
-	 * an appropriate Signal with the specified values.
-	 * 
-	 * Used by the mac layer before sending a mac packet to the phy layer 
-	 * to create an initial signal with some predefined values.
-	 * 
-	 * TODO: write more detailed axplanation as soon as modelation of
-	 * 		 Signal is final.
-	 */
-	virtual Signal createSignal(double txPower,
-								double headerBitrate,
-								double payloadBitrate,
-								simtime_t duration);
-	
 	//---------DeciderToPhyInterface implementation-----------
 	
 	/**

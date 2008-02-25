@@ -35,9 +35,15 @@ void TestModule::announceMessage(cMessage* msg) {
 		AssertMessage* exp = *it;
 		if(exp->isMessage(msg)) {
 			if(foundMessage) {
-				fail(log("Received message was expected mor then once!"));
+				fail(log("Received message was expected more then once!"));
 			} else {
 				pass(log("Expected " + toString(*exp)));
+				
+				TestModule* cont = exp->getContinueModule();
+				if(cont) {
+					cont->onAssertedMessage(exp->getContinueState(), msg);
+				}
+				
 				foundMessage = true;
 			}
 			delete exp;
@@ -77,23 +83,41 @@ std::string TestModule::log(std::string msg) {
 }	
 
 /**
- * Asserts the arrival of a message with the specified kind at the specified
- * time at this module.
+ * Proceeds the message assert to the correct destination.
  */
-void TestModule::assertMessage(std::string msg, int kind, simtime_t arrival) {
-	expectedMsgs.push_back(new AssertMsgKind(msg, kind, arrival));
+void TestModule::assertNewMessage(AssertMessage* assert, std::string destination) {
+	
+	if(destination == "") {
+		expectedMsgs.push_back(assert);
+	} else {
+		TestModule* dest = manager->getModule(destination);
+		if(!dest) {
+			fail(log("No test module with name \"" + destination + "\" found."));
+			return;
+		}
+		
+		dest->expectedMsgs.push_back(assert);
+	}
 }
 
 /**
  * Asserts the arrival of a message with the specified kind at the specified
  * time at module with the passed name.
  */
-void TestModule::assertMessage(std::string msg, int kind, simtime_t arrival, std::string destination) {
-	TestModule* dest = manager->getModule(destination);
-	if(!dest) {
-		fail(log("No test module with name \"" + destination + "\" found."));
-		return;
-	}
+void TestModule::assertMessage(	std::string msg, 
+								int kind, simtime_t arrival, 
+								std::string destination) {
 	
-	dest->assertMessage(msg, kind, arrival);
+	assertNewMessage(new AssertMsgKind(msg, kind, arrival), destination);
+}
+
+/**
+ * Does the same as "assertMessage" plus it calls the "continueTest()"-method
+ * with the passed state as argument when the message arrives.
+ */
+void TestModule::waitForMessage(int state, std::string msg, 
+								int kind, simtime_t arrival, 
+								std::string destination) {
+	
+	assertNewMessage(new AssertMsgKind(msg, kind, arrival, this, state), destination);
 }

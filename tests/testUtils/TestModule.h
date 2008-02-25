@@ -6,6 +6,8 @@
 #include <FindModule.h>
 #include <string>
 
+class TestModule;
+
 /**
  * Class representation of the "assertMessage()" command.
  * It describes the asserted message together with a description
@@ -15,9 +17,11 @@
 class AssertMessage {
 protected:
 	std::string msg;
+	int continueState;
+	TestModule* continueModule;
 public:
-	AssertMessage(std::string msg):
-		msg(msg) {}
+	AssertMessage(std::string msg, TestModule* cModule = 0, int cState = 0):
+		msg(msg), continueModule(cModule), continueState(cState) {}
 		
 	/**
 	 * Returns true if the passed message is the message
@@ -34,6 +38,22 @@ public:
 	virtual std::ostream& concat(std::ostream& o) const {
 		o << "\"" << msg << "\"";
 		return o;
+	}
+	
+	/**
+	 * Returns the module which waits for the message to 
+	 * continue.
+	 */
+	TestModule* getContinueModule() const {
+		return continueModule;
+	}
+	
+	/**
+	 * Returns the state of the module to be continued
+	 * when the asserted message arrives.
+	 */
+	int getContinueState() const {
+		return continueState;
 	}
 	
 	/**
@@ -55,8 +75,8 @@ protected:
 	int kind;
 	simtime_t arrival;
 public:
-	AssertMsgKind(std::string msg, int kind, simtime_t arrival):
-		AssertMessage(msg), kind(kind), arrival(arrival) {}
+	AssertMsgKind(std::string msg, int kind, simtime_t arrival, TestModule* cModule = 0, int cState = 0):
+		AssertMessage(msg, cModule, cState), kind(kind), arrival(arrival) {}
 		
 	/**
 	 * Returns true if the passed message has the kind and
@@ -103,6 +123,13 @@ protected:
 	
 	MessageDescList expectedMsgs;
 	
+private:
+	
+	/**
+	 * Proceeds the message assert to the correct destination.
+	 */
+	void assertNewMessage(AssertMessage* assert, std::string destination);
+	
 protected:
 	/**
 	 * This method has to be called by the subclassing Omnet module
@@ -135,18 +162,27 @@ protected:
 	 */
 	std::string log(std::string msg);
 	
-	/**
-	 * Asserts the arrival of a message with the specified kind at the specified
-	 * time at this module.
-	 */
-	void assertMessage(std::string msg, int kind, simtime_t arrival);
 	
 	/**
 	 * Asserts the arrival of a message with the specified kind at the specified
-	 * time at module with the passed name.
+	 * time at module with the passed name. If the module name is ommited the message is
+	 * expected at this module.
 	 */
-	void assertMessage(std::string msg, int kind, simtime_t arrival, std::string destination);
+	void assertMessage(std::string msg, int kind, simtime_t arrival, std::string destination = "");
 	
+	/**
+	 * Does the same as "assertMessage" plus it calls the "continueTest()"-method
+	 * with the passed state as argument when the message arrives.
+	 */
+	void waitForMessage(int state, std::string msg, int kind, simtime_t arrival, std::string destination = "");
+	
+	/**
+	 * This method is called when a message arrives which ahs been awaited
+	 * with the "waitForMessage()"-method.
+	 * This method should be implemented by every subclass which wants
+	 * to eb able to handle asserted messages.
+	 */
+	virtual void onAssertedMessage(int state, const cMessage* msg) {};
 };
 
 #endif /*TESTMODULE_H_*/

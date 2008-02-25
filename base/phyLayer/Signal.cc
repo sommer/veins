@@ -1,6 +1,12 @@
 #include "Signal_.h"
 
 /**
+ * Initializes a singal with the specified start and length.
+ */
+Signal::Signal(simtime_t start, simtime_t length):
+	signalStart(start), signalLength(length) {}
+
+/**
  * Returns the point in time when the receiving of the Signal started.
  */
 simtime_t Signal::getSignalStart() const {

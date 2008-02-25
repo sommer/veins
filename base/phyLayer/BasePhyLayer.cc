@@ -36,11 +36,11 @@ void BasePhyLayer::initialize(int stage) {
 	
 	if (stage == 0) {
 		
-		//TODO: stage 0 initialisation
+		//TODO: anything else to initialize?
 		
 		//get gate ids
-		upperGateIn = findGate("uppergateIn");
-        upperGateOut = findGate("uppergateOut");
+		upperGateIn = findGate("upperGateIn");
+        upperGateOut = findGate("upperGateOut");
         upperControlOut = findGate("upperControlOut");
         upperControlIn = findGate("upperControlIn");
 		
@@ -95,6 +95,7 @@ void BasePhyLayer::initialize(int stage) {
 		//TODO: stage 1 initialisation
 		
 		//initialise timer messages
+		//TOTEST: check initialisation of timers
 		radioSwitchingOverTimer = new cMessage(0, RADIO_SWITCHING_OVER);
 		txOverTimer = new cMessage(0, TX_OVER);
 	}
@@ -155,8 +156,6 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
  */
 void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	
-	//TODO: implement
-	
 	decider = 0;
 	
 	if(xmlConfig == 0) {
@@ -209,7 +208,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
  */
 Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 	
-	//TODO: implement
+	//TODO: add default decider(s) here
 	return 0;
 }
 
@@ -221,9 +220,6 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
  * passed XML-config data.
  */
 void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
-	
-	//TODO: implement
-	
 	
 	if(xmlConfig == 0) {
 		ev << "No analogue models configuration file specified." << endl;
@@ -284,7 +280,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
  */
 AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
 	
-	//TODO: implement
+	//TODO: add default analogue mdoels here
 	return 0;
 }
 
@@ -302,9 +298,9 @@ AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, Paramete
  * - self messages like TX_OVER and RADIO_SWITCHED
  */
 void BasePhyLayer::handleMessage(cMessage* msg) {
-	//TODO: check implementation
 	
 	//self messages	
+	//TOTEST: generell receiving and sending of self messages
 	if(msg->isSelfMessage()) {
 		handleSelfMessage(msg);
 	
@@ -332,9 +328,9 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
  */
 void BasePhyLayer::handleAirFrame(cMessage* msg) {
 	
-	//TODO: check implementation
 	AirFrame* frame = static_cast<AirFrame*>(msg);
 	
+	//TOTEST: check states of recceived AirFrames (not just the kind)
 	switch(frame->getState()) {
 	case FIRST_RECEIVE:
 		handleAirFrameFirstReceive(frame);
@@ -372,7 +368,7 @@ void BasePhyLayer::handleAirFrameFirstReceive(AirFrame* frame) {
 		frame->getSignal().setSignalStart(delayedStart);
 		//schedule delayed AirFrame
 		sendSelfMessage(frame, delayedStart);
-		
+		//TOTEST: check if correctly delayed (signal and scheduled message)
 	} else {
 		handleAirFrameStartReceive(frame);
 	}
@@ -382,10 +378,12 @@ void BasePhyLayer::handleAirFrameFirstReceive(AirFrame* frame) {
  * Handles incoming AirFrames with the state START_RECEIVE.
  */
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
+	//TOTEST: check channelinfo for new airframe
 	channelInfo.addAirFrame(frame, simTime());
 	frame->setState(RECEIVING);
 	
 	//pass the AirFrame the first time to the Decider
+	//TOTEST: check first arrival at decider
 	handleAirFrameReceiving(frame);
 }
 
@@ -394,11 +392,13 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
  */
 void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 	
-	//TODO: check implementation
 	Signal& signal = frame->getSignal();
+	//TOTEST: check arrival at decider
 	simtime_t nextHandleTime = decider->processSignal(&signal);
 	
 	simtime_t signalEndTime = signal.getSignalStart() + frame->getDuration();
+	
+	//TOTEST: check different possible return values of decider (x<0, x<simtime, x>end, x=end)
 	
 	//check if this is the end of the receiving process
 	if(simTime() >= signalEndTime) {
@@ -428,6 +428,7 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
 	channelInfo.removeAirFrame(frame);
 	//TODO: any other things to do?
+	//TOTEST: check removal of airframe from channelinfo
 }
 
 /**
@@ -437,30 +438,32 @@ void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
 void BasePhyLayer::handleUpperMessage(cMessage* msg){
 	
 	//TODO: check and test implementation
-	
 	// check if Radio is in TX state
 	if (radio.getCurrentState() != Radio::TX)
 	{
-		ev << "Error: message for sending received, but radio not in state TX" << endl;
-		// TODO: what to do here when this error occured?
+        delete msg;
+        msg = 0;
+		opp_error("Error: message for sending received, but radio not in state TX");
+		// TODO: opp_error correct handling?
 	}
 	
 	// check if not already sending
 	if(txOverTimer->isScheduled())
 	{
-		ev << "Error: message for sending received, but radio already sending" << endl;
-		// TODO: what to do here when this error occured?
+        delete msg;
+        msg = 0;
+		opp_error("Error: message for sending received, but radio already sending");
+		// TODO: opp_error correct handling?
 	}
 	
-	
+	//TOTEST: check for correct encapsulation (data and encapsualted message)
 	// build the AirFrame to send
 	AirFrame* frame = encapsMsg(msg);
 	
 	// make sure there is no self message of kind TX_OVER scheduled 
 	// and schedule the actual one
 	assert (!txOverTimer->isScheduled());
-	sendSelfMessage(txOverTimer, simTime() + frame->getDuration());
-	
+	sendSelfMessage(txOverTimer, simTime() + frame->getDuration());	
 		
 	sendMessageDown(frame);
 }
@@ -515,6 +518,7 @@ AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
 	s = 0;
 	
 	// TODO: where to get a unique id from?, set id properly
+	//TOTEST: check if id is really unique
 	frame->setId(0);
 	frame->encapsulate(msg);
 	
@@ -531,15 +535,17 @@ AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
  * returned by the decider.
  */
 void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
+	//TOTEST: test ChannelSenseRequest handling
 	ChannelSenseRequest* senseReq = static_cast<ChannelSenseRequest*>(msg);
 			
 	simtime_t nextHandleTime = decider->handleChannelSenseRequest(senseReq);
 	
+	//TOTEST: check returned times x<0, x<simtime
 	if(nextHandleTime >= simTime()) { //schedule request for next handling
 		sendSelfMessage(msg, nextHandleTime);
 		
 	} else if(nextHandleTime >= 0.0){
-		throw new cRuntimeError("Next handle time of ChannelSenseRequest returned by the Decider is small er then current simulation time: %.2f",
+		opp_error("Next handle time of ChannelSenseRequest returned by the Decider is small er then current simulation time: %.2f",
 								nextHandleTime);
 	}
 }
@@ -550,12 +556,16 @@ void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
  */
 void BasePhyLayer::handleUpperControlMessage(cMessage* msg){
 	
-	//TODO: check implementation
+	//TODO: we should propably process control messages independent from their 
+	//		kind because they are just passed to the decider anyway
 	switch(msg->kind()) {
 	case CHANNEL_SENSE_REQUEST:
 		handleChannelSenseRequest(msg);
-	}
-	
+		break;
+	default:
+		ev << "Received unknown control message from upper layer!" << endl;
+		break;
+	}	
 }
 
 /**
@@ -566,14 +576,12 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg) {
 	switch(msg->kind()) {
 	//transmission over
 	case TX_OVER:
-		//TODO: check implementation
 		assert(msg == txOverTimer);
 		sendControlMsg(new cMessage(0, TX_OVER));
 		break;
 		
 	//radio switch over
 	case RADIO_SWITCHING_OVER:
-		//TODO: check implementation
 		assert(msg == radioSwitchingOverTimer);
 		radio.endSwitch();
 		sendControlMsg(new cMessage(0, RADIO_SWITCHING_OVER));
@@ -600,7 +608,7 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg) {
  * Sends the passed control message to the upper layer.
  */
 void BasePhyLayer::sendControlMessageUp(cMessage* msg) {
-	
+	//TOTEST: send a test control message up
 	send(msg, upperControlOut);
 }
 
@@ -608,7 +616,7 @@ void BasePhyLayer::sendControlMessageUp(cMessage* msg) {
  * Sends the passed MacPkt to the upper layer.
  */
 void BasePhyLayer::sendMacPktUp(MacPkt* pkt) {
-	
+	//TOTEST: send a test MacPkt up
 	send(pkt, upperGateOut);
 }
 
@@ -625,7 +633,9 @@ void BasePhyLayer::sendMessageDown(AirFrame* msg) {
  * Schedule self message to passed point in time.
  */
 void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
-	
+	//TODO: maybe delete this method because it doesn't makes much sense,
+	//		or change it to "scheduleIn(msg, timeDelta)" which schedules
+	//		a message to +timeDelta from current time
 	scheduleAt(time, msg);
 }
 
@@ -636,10 +646,16 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
  */
 BasePhyLayer::~BasePhyLayer() {
 	//free timer messages
+	//TOPROFILE: check BasePhy destruction for memory leaks
 	if(txOverTimer) {
+        if(txOverTimer->isScheduled())
+            cancelEvent(txOverTimer);
 		delete txOverTimer;
 	}
 	if(radioSwitchingOverTimer) {
+        if(radioSwitchingOverTimer->isScheduled())
+            cancelEvent(radioSwitchingOverTimer);
+
 		delete radioSwitchingOverTimer;
 	}
 	
@@ -692,13 +708,13 @@ Radio::RadioState BasePhyLayer::getRadioState() {
  */
 simtime_t BasePhyLayer::setRadioState(Radio::RadioState rs) {
 	
-	//TODO: check implementation
+	//TOTEST: check radio switching at another time then 0.0
 	simtime_t switchTime = radio.switchTo(rs);
 	
 	if(switchTime < 0) //invalid switch time, we are propably already switching 
 		return switchTime;
 	
-	sendSelfMessage(radioSwitchingOverTimer, switchTime);
+	sendSelfMessage(radioSwitchingOverTimer, simTime() + switchTime);
 	
 	return switchTime;
 }
@@ -708,30 +724,9 @@ simtime_t BasePhyLayer::setRadioState(Radio::RadioState rs) {
  * for details.
  */
 ChannelState BasePhyLayer::getChannelState() {
+	//TOTEST: check correct passing of channelstate
 	return decider->getChannelState();
 }
-
-/**
- * Service method for the mac layer which creates and initializes
- * an appropriate Signal with the specified values.
- * 
- * Used by the mac layer before sending a mac packet to the phy layer 
- * to create an initial signal with some predefined values.
- * 
- * TODO: write more detailed axplanation as soon as modelation of
- * 		 Signal is final.
- */
-Signal BasePhyLayer::createSignal(	double txPower, 
-									double headerBitrate, 
-									double payloadBitrate, 
-									simtime_t duration) {
-	
-	//TODO: implement
-	Signal s;
-	return s;
-	
-}
-
 
 //--DeciderToPhyInterface implementation------------
 
@@ -740,7 +735,7 @@ Signal BasePhyLayer::createSignal(	double txPower,
  * with the time interval [from, to]
  */
 void BasePhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) {
-	
+	//TOTEST: check correct passing of the airframevector
 	channelInfo.getAirFrames(from, to, out);
 }
 
@@ -748,10 +743,9 @@ void BasePhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
  * @brief Called by the Decider to send a control message to the MACLayer
  * 
  * This function can be used to answer a ChannelSenseRequest to the MACLayer
- * 
  */
 void BasePhyLayer::sendControlMsg(cMessage* msg) {
-	
+	//TOTEST: check correct passing of controlmessage to mac
 	sendControlMessageUp(msg);
 }
 
@@ -759,19 +753,18 @@ void BasePhyLayer::sendControlMsg(cMessage* msg) {
  * @brief Called to send an AirFrame with DeciderResult to the MACLayer
  * 
  * When a packet is completely received and not noise, the Decider
- * call this function to send the packet together with
- * the corresponding DeciderResult up to MACLayer
- * 
+ * calls this function to send the packet together with
+ * the corresponding DeciderResult up to the MACLayer
  */
 void BasePhyLayer::sendUp(AirFrame* packet, DeciderResult result) {
 	
 	//TODO: implement
+	//TOTEST: check correct creation (decapsulation) of MacPkt
 	
 }
 
 /**
  * @brief Returns the current simulation time
- * 
  */
 simtime_t BasePhyLayer::getSimTime() {
 	

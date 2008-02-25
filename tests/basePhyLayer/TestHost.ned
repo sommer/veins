@@ -14,6 +14,8 @@ module TestHost
     submodules:
         utility: BaseUtility;
             display: "p=130,60;b=25,25;o=black";   
+        mobility: BaseMobility;
+            display: "p=130,130;i=cogwheel2";  
         nic: TestNic;
         parameters:			
             display: "b=32,30;p=60,166;i=iface";

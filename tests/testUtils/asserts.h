@@ -5,6 +5,9 @@
 #include <string>
 #include <sstream>
 
+extern bool haltOnFails;
+extern bool displayPassed;
+
 /**
  * Prints a expect-fail message with the passed text, the passed
  * expected value and the passed actual value.
@@ -52,6 +55,18 @@ template<class T> void assertClose(std::string msg, T target, T actual) {
  */
 template<class T, class T2> void assertEqual(std::string msg, T target, T2 actual) {
     if (target != actual) {
+    	fail(msg, target, actual);
+	} else {
+		pass(msg);
+	}
+}
+
+/**
+ * Asserts that the passed value is not equal to the passed expected
+ * value.
+ */
+template<class T, class T2> void assertNotEqual(std::string msg, T target, T2 actual) {
+    if (target == actual) {
     	fail(msg, target, actual);
 	} else {
 		pass(msg);

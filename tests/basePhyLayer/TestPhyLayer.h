@@ -23,23 +23,19 @@ private:
 		}
 	};
 protected:
+	int myIndex;
 	
 	virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);		
 		
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 	
 	void testInitialisation();
-	
-	void testMacToPhyInterface();
-	void testDeciderToPhyInterface();
-	
-	void testHandleMessage();
 public:
 	virtual void initialize(int stage);
 	
 	virtual void handleMessage(cMessage* msg);
 	
-	virtual void finish();
+	virtual ~TestPhyLayer();
 };
 
 #endif /*TESTPHYLAYER_H_*/

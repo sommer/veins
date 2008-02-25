@@ -19,6 +19,12 @@ protected:
 	
 	
 public:
+	
+	/**
+	 * Initializes a signal with the specified start and length.
+	 */
+	Signal(simtime_t start = -1.0, simtime_t length = -1.0);
+	
 	/**
 	 * Returns the point in time when the receiving of the Signal started.
 	 */
