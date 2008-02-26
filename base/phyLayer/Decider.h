@@ -29,13 +29,22 @@
  */
 class DeciderResult
 {
-	public:
-		
-		/**
-		 * @brief A Function that returns a very basic result about the Signal.
-		 * 
-		 */
-		 virtual bool isSignalCorrect();
+protected:
+	/** Stores if the AirFrame for this result was received correct.*/
+	bool isCorrect;
+public:
+	
+	/**
+	 * @brief Initializes the DeciderResult with the passed bool, or true
+	 * if ommited.
+	 */
+	DeciderResult(bool isCorrect = true):
+		isCorrect(isCorrect) {}
+	
+	/**
+	 * @brief A Function that returns a very basic result about the Signal.
+	 */
+	 virtual bool isSignalCorrect();
 	
 };
 
@@ -54,40 +63,45 @@ class DeciderResult
  */
 class Decider
 {
+protected:
+	/** A pointer to the physical layer of this Decider. */
+	DeciderToPhyInterface* phy;
 	
-	public:
-		
-		/**
-		 * @brief This function processes a Signal given by the PhyLayer and
-		 * returns the time point when Decider wants to be given the Signal again
-		 * 
-		 */
-		virtual simtime_t processSignal(Signal* s);
-		
-		/**
-		 * @brief A function that returns information about the channel state
-		 * 
-		 * It is an alternative for the MACLayer in order to obtain information
-		 * immediately (in contrast to sending a ChannelSenseRequest,
-		 * i.e. sending a cMessage over the OMNeT-control-channel)
-		 *
-		 */
-		virtual ChannelState getChannelState();
-		
-		/**
-		 * @brief This function is called by the PhyLayer to hand over a
-		 * ChannelSenseRequest.
-		 * 
-		 * The MACLayer is able to send a ChannelSenseRequest to the PhyLayer
-		 * that calls this funtion with it and is returned a time point when to
-		 * re-call this function with the specific ChannelSenseRequest.
-		 * 
-		 * The Decider puts the result (ChannelState) to the ChannelSenseRequest
-		 * and "answers" by calling the "sendControlMsg"-function on the
-		 * DeciderToPhyInterface, i.e. telling the PhyLayer to send it back.
-		 *
-		 */
-		virtual simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);	
+public:
+	
+	/**
+	 * @brief Initializes the Decider with a pointer to its PhyLayer
+	 */
+	Decider(DeciderToPhyInterface* phy);
+	
+	/**
+	 * @brief This function processes a AirFrame given by the PhyLayer and
+	 * returns the time point when Decider wants to be given the AirFrame again.
+	 */
+	virtual simtime_t processSignal(AirFrame* frame);
+	
+	/**
+	 * @brief A function that returns information about the channel state
+	 * 
+	 * It is an alternative for the MACLayer in order to obtain information
+	 * immediately (in contrast to sending a ChannelSenseRequest,
+	 * i.e. sending a cMessage over the OMNeT-control-channel)
+	 */
+	virtual ChannelState getChannelState();
+	
+	/**
+	 * @brief This function is called by the PhyLayer to hand over a
+	 * ChannelSenseRequest.
+	 * 
+	 * The MACLayer is able to send a ChannelSenseRequest to the PhyLayer
+	 * that calls this funtion with it and is returned a time point when to
+	 * re-call this function with the specific ChannelSenseRequest.
+	 * 
+	 * The Decider puts the result (ChannelState) to the ChannelSenseRequest
+	 * and "answers" by calling the "sendControlMsg"-function on the
+	 * DeciderToPhyInterface, i.e. telling the PhyLayer to send it back.
+	 */
+	virtual simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);	
 	
 };
 

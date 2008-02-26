@@ -8,7 +8,9 @@
 class TestPhyLayer:public BasePhyLayer, public TestModule {
 private:
 	class TestDecider:public Decider {
-		
+	public:
+		TestDecider(DeciderToPhyInterface* phy):
+			Decider::Decider(phy) {}
 	};
 	
 	class TestAnalogueModel:public AnalogueModel {
@@ -18,8 +20,8 @@ private:
 		TestAnalogueModel(double attenuation):
 			att(attenuation) {}
 		
-		Signal& filterSignal(Signal& s) {
-			return s;
+		void filterSignal(Signal& s) {
+			return;
 		}
 	};
 protected:

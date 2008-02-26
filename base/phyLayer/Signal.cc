@@ -22,7 +22,7 @@ void Signal::setSignalStart(simtime_t start) {
 	signalStart = start;
 }
 
-simtime_t Signal::getSignalLength() {
+simtime_t Signal::getSignalLength() const{
 	return signalLength;
 }
 
@@ -30,6 +30,6 @@ void Signal::setMove(Move& move) {
 	senderMovement = move;
 }
 
-Move Signal::getMove() {
+Move Signal::getMove() const{
 	return senderMovement;
 }

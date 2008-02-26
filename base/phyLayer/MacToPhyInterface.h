@@ -14,6 +14,17 @@
  */
 class MacToPhyInterface
 {
+public:
+	enum BasePhyMessageKinds {
+		/** Indicates the end of a send transmission. */
+		TX_OVER = 22000,
+		/** Indicates the end of a radio switch. */ 
+		RADIO_SWITCHING_OVER,
+		/** Channel sense control message between Mac and Phy.*/
+		CHANNEL_SENSE_REQUEST,
+		/** AirFrame kind */
+		AIR_FRAME
+	};
 	
 public:
 	

@@ -139,16 +139,7 @@ protected:
 	};
 	
 public:
-	enum BasePhyMessageKinds {
-		/** Indicates the end of a send transmission. */
-		TX_OVER = 22000,
-		/** Indicates the end of a radio switch. */ 
-		RADIO_SWITCHING_OVER,
-		/** Channel sense control message between Mac and Phy.*/
-		CHANNEL_SENSE_REQUEST,
-		/** AirFrame kind */
-		AIR_FRAME
-	};
+	
 	
 private:
 	
@@ -297,7 +288,7 @@ protected:
 	/**
 	 * Sends the passed MacPkt to the upper layer.
 	 */
-	void sendMacPktUp(MacPkt* pkt);
+	void sendMacPktUp(cMessage* pkt);
 
 	/**
 	 * Sends the passed AirFrame to the channel
@@ -314,6 +305,11 @@ protected:
 	 * AirFrame and sets all necessary attributes.
 	 */
 	AirFrame *encapsMsg(cMessage *msg);
+	
+	/**
+	 * Filters the passed Signal to every registered AnalogueModel.
+	 */ 
+	void filterSignal(Signal& s);
 	
 public:
 	

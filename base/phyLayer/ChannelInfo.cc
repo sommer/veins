@@ -49,17 +49,20 @@ void ChannelInfo::deleteAirFrame(AirFrameMatrix& airFrames,
 	AirFrameMatrix::iterator listIt = airFrames.find(endTime);
 	AirFrameTimeList* list = &listIt->second;
 	
-	for(AirFrameTimeList::iterator it = list->begin();
-		it != list->end(); it++) {
+	AirFrameTimeList::iterator it = list->begin();
+	
+	while(it != list->end()) {
 		
 		if(it->second == a) {
-			list->erase(it);
+			it = list->erase(it);
 			//std::cerr << "Erased AirFrame with start " << startTime << std::endl;
 			if(list->empty()) {
 				airFrames.erase(listIt);
 				//std::cerr << "Was last one in list." << std::endl;
 				return;
 			}
+		} else {
+			it++;
 		}
 	}
 }

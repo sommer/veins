@@ -1,6 +1,8 @@
 #include "BasePhyLayer.h"
+#include "BaseWorldUtility.h"
 
 #include "MacToPhyControlInfo.h"
+#include "PhyToMacControlInfo.h"
 
 //introduce BasePhyLayer as module to OMNet
 Define_Module(BasePhyLayer);
@@ -380,11 +382,25 @@ void BasePhyLayer::handleAirFrameFirstReceive(AirFrame* frame) {
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	//TOTEST: check channelinfo for new airframe
 	channelInfo.addAirFrame(frame, simTime());
-	frame->setState(RECEIVING);
 	
-	//pass the AirFrame the first time to the Decider
-	//TOTEST: check first arrival at decider
-	handleAirFrameReceiving(frame);
+	filterSignal(frame->getSignal());
+	
+	if(decider) {
+		frame->setState(RECEIVING);
+		
+		//pass the AirFrame the first time to the Decider
+		//TOTEST: check first arrival at decider
+		handleAirFrameReceiving(frame);
+		
+	//if no decider is defined we will schedule the message directly to its end
+	} else {
+		Signal& signal = frame->getSignal();
+		
+		simtime_t signalEndTime = signal.getSignalStart() + frame->getDuration();
+		frame->setState(END_RECEIVE);
+		
+		sendSelfMessage(frame, signalEndTime);
+	}
 }
 
 /**
@@ -394,7 +410,7 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 	
 	Signal& signal = frame->getSignal();
 	//TOTEST: check arrival at decider
-	simtime_t nextHandleTime = decider->processSignal(&signal);
+	simtime_t nextHandleTime = decider->processSignal(frame);
 	
 	simtime_t signalEndTime = signal.getSignalStart() + frame->getDuration();
 	
@@ -615,7 +631,7 @@ void BasePhyLayer::sendControlMessageUp(cMessage* msg) {
 /**
  * Sends the passed MacPkt to the upper layer.
  */
-void BasePhyLayer::sendMacPktUp(MacPkt* pkt) {
+void BasePhyLayer::sendMacPktUp(cMessage* pkt) {
 	//TOTEST: send a test MacPkt up
 	send(pkt, upperGateOut);
 }
@@ -639,6 +655,18 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
 	scheduleAt(time, msg);
 }
 
+
+/**
+ * Filters the passed Signal to every registered AnalogueModel.
+ */ 
+void BasePhyLayer::filterSignal(Signal& s) {
+	for(AnalogueModelList::const_iterator it = analogueModels.begin();
+		it != analogueModels.end(); it++) {
+		
+		AnalogueModel* tmp = *it;
+		tmp->filterSignal(s);
+	}
+}
 
 //--Destruction--------------------------------
 /**
@@ -682,8 +710,15 @@ BasePhyLayer::~BasePhyLayer() {
  */
 simtime_t BasePhyLayer::calculatePropagationDelay(AirFrame* frame) {
 	
-	//TODO: implement
-	return 0;
+	//TODO: implement correct calculation
+	const Signal& s = frame->getSignal();
+	Move senderPos = s.getMove();
+	
+	//very naiv and very wrong calculation, but for now sufficient
+	double distance = senderPos.startPos.distance(move.startPos);
+	
+	double delay = distance / BaseWorldUtility::speedOfLight;
+	return delay;
 }
 
 
@@ -708,6 +743,7 @@ Radio::RadioState BasePhyLayer::getRadioState() {
  */
 simtime_t BasePhyLayer::setRadioState(Radio::RadioState rs) {
 	
+	//TODO: what to do if we are currently transmitting a signal?
 	//TOTEST: check radio switching at another time then 0.0
 	simtime_t switchTime = radio.switchTo(rs);
 	
@@ -756,11 +792,20 @@ void BasePhyLayer::sendControlMsg(cMessage* msg) {
  * calls this function to send the packet together with
  * the corresponding DeciderResult up to the MACLayer
  */
-void BasePhyLayer::sendUp(AirFrame* packet, DeciderResult result) {
+void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult result) {
 	
 	//TODO: implement
 	//TOTEST: check correct creation (decapsulation) of MacPkt
 	
+	cMessage* packet = frame->decapsulate();
+	
+	assert(packet);
+	
+	PhyToMacControlInfo* ctrlInfo = new PhyToMacControlInfo(result);
+	
+	packet->setControlInfo(ctrlInfo);
+	
+	sendMacPktUp(packet);	
 }
 
 /**

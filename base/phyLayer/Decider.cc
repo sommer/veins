@@ -1,5 +1,7 @@
 #include "Decider.h"
 
+
+		
 /**
  * @brief A Function that returns a very basic result about the Signal.
  * 
@@ -7,16 +9,21 @@
 bool DeciderResult::isSignalCorrect() {
 	
 	//TODO: implement
-	return false;
+	return isCorrect;
 }
 
+/**
+ * @brief Initializes the Decider with a pointer to its PhyLayer
+ */
+Decider::Decider(DeciderToPhyInterface* phy):
+	phy(phy) {}
 
 /**
- * @brief This function processes a Signal given by the PhyLayer and
- * returns the time point when Decider wants to be given the Signal again
+ * @brief This function processes a AirFrame given by the PhyLayer and
+ * returns the time point when Decider wants to be given the AirFrame again
  * 
  */
-simtime_t Decider::processSignal(Signal* s) {
+simtime_t Decider::processSignal(AirFrame* s) {
 	
 	//TODO: implement
 	return -1;

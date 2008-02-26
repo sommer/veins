@@ -41,7 +41,7 @@ public:
 	/**
 	 * TODO: documentation
 	 */
-	Move getMove();
+	Move getMove() const;
 	
 	/**
 	 * TODO: documentation
@@ -51,7 +51,7 @@ public:
 	/**
 	 * TODO: documentation
 	 */
-	simtime_t getSignalLength();
+	simtime_t getSignalLength() const;
 	
 };
 

@@ -18,12 +18,8 @@ public:
 	 * 
 	 * Filters a specified Signal by adding an attenuation
 	 * over time to the Signal.
-	 * 
-	 * Returns a reference to the changed Signal. Normally 
-	 * this would be the same reference as the one given 
-	 * to the function previously. 
 	 */
-	virtual Signal& filterSignal(Signal& s) = 0;
+	virtual void filterSignal(Signal& s) = 0;
 };
 
 #endif /*ANALOGUEMODEL_*/
