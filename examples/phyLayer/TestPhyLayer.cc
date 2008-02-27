@@ -6,7 +6,7 @@ void TestPhyLayer::initialize(int stage) {
 	
 	//has to be done before decider and analogue models are initialized
 	if(stage == 0) 
-		myIndex = findHost()->index();
+		myIndex = parentModule()->par("id");
 	
 	//call BasePhy's initialize
 	BasePhyLayer::initialize(stage);

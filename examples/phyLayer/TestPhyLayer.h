@@ -28,21 +28,17 @@ private:
 				currentSignals[s] = HEADER_OVER;
 				
 				log("First processing of this signal. Scheduling it to end of header to decide if Signal should be received.");
-				return s->getSignalStart() + 0.15;
+				return s->getSignalStart() + 0.10 * s->getSignalLength();
 			}
 			
 			switch(it->second) {
 			case HEADER_OVER:
-				log("Second receive of a signal from Phy - Deciding if packet should be received...");
-				log("*decide decide decide*");
-				log("..receive it.");
+				log("Second receive of a signal from Phy - Deciding if packet should be received - Let's try to receive it.");
 				it->second = SIGNAL_OVER;
 				return s->getSignalStart() + s->getSignalLength();
 				
 			case SIGNAL_OVER:
-				log("Last receive of signal from Phy - Deciding if the packet could be received correctly...");
-				log("*decide decide decide*");
-				log("...is correct.");
+				log("Last receive of signal from Phy - Deciding if the packet could be received correctly - Let's say its correct.");
 				
 				
 				phy->sendUp(frame, DeciderResult(true));

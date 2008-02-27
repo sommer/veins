@@ -13,15 +13,15 @@ module PhyMacHost
 
     submodules:
         utility: BaseUtility;
-            display: "p=130,60;b=25,25;o=black";   
+            display: "p=130,60;i=block/blackboard";   
         mobility: BaseMobility;
-            display: "p=130,130;i=cogwheel2";  
-        nic: PhyMacNic;
+            display: "p=130,130;i=block/cogwheel";  
+        normalNic: PhyMacNic;
         parameters:			
-            display: "b=32,30;p=60,166;i=iface";
+            display: "b=32,30;p=60,166;i=block/ifcard";
     connections:
 
-		radioIn --> nic.radioIn;
+		radioIn --> normalNic.radioIn;
 
     display: "p=10,10;b=180,200,rect;o=white";
 endmodule

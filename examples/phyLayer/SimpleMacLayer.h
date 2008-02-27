@@ -17,6 +17,8 @@ protected:
 	int myIndex;
 	int hostCount;
 	
+	int nextReceiver;
+	
 	enum {
 		TEST_MACPKT = 12121
 	};

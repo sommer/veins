@@ -8,8 +8,7 @@ void SimpleMacLayer::initialize(int stage) {
 	BaseModule::initialize(stage);
 	
 	if(stage == 0) {
-		hostCount = simulation.systemModule()->par("numHosts");
-		myIndex = findHost()->index();
+		myIndex = parentModule()->par("id");
 		
 		dataOut = findGate("lowerGateOut");
 		dataIn = findGate("lowerGateIn");
@@ -17,8 +16,9 @@ void SimpleMacLayer::initialize(int stage) {
 		phy = FindModule<MacToPhyInterface*>::findSubModule(this->parentModule());
 		
 	} else if(stage == 1) {
-		if(myIndex == 0){
+		if(myIndex == 0 || myIndex == 10){
 			log("Switching radio to TX...");
+			nextReceiver = myIndex + 1;
 			phy->setRadioState(Radio::TX);
 		}else{
 			log("Switching radio to RX...");
@@ -56,8 +56,13 @@ void SimpleMacLayer::handleTXOver() {
 
 void SimpleMacLayer::handleMacPkt(MacPkt* pkt) {
 	//TODO: do things
-	if(pkt->getDestAddr() == myIndex){
+	if(myIndex == 255) {
+		log("Received MacPkt - forwarding it to everyone in range.");	
+		nextReceiver = pkt->getDestAddr();
+		phy->setRadioState(Radio::TX);
+	}else if(pkt->getDestAddr() == myIndex){
 		log("Received MacPkt for me - broadcasting answer (but first change to TX mode)");	
+		nextReceiver = myIndex + 1; 
 		phy->setRadioState(Radio::TX);
 	}else
 		log("Received MacPkt - but not for me.");
@@ -71,9 +76,9 @@ void SimpleMacLayer::log(std::string msg) {
 }
 
 void SimpleMacLayer::broadCastPacket() {
-	MacPkt* pkt = createMacPkt(3.0);
+	MacPkt* pkt = createMacPkt(64.0 / 11000.0);
 	
-	log("Broadcast packet with duration 3.0 send to phy layer.");
+	log("Sending broadcast packet to phy layer.");
 	sendDown(pkt);
 }
 
@@ -87,6 +92,6 @@ MacPkt* SimpleMacLayer::createMacPkt(simtime_t length) {
 	MacPkt* res = new MacPkt();
 	res->setControlInfo(ctrl);
 	res->setKind(TEST_MACPKT);
-	res->setDestAddr((myIndex + 1) );
+	res->setDestAddr(nextReceiver);
 	return res;
 }

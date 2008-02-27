@@ -4,7 +4,8 @@ import
 
 module PhyMacNic
 	parameters:
-		connectionManagerName: string; //name of the ConnectionManager module
+		id: numeric const,				//unique id of nic
+		connectionManagerName: string; 	//name of the ConnectionManager module
 		
     gates:
 		in: radioIn; // radioIn gate for sendDirect
