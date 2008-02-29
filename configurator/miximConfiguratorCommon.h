@@ -21,6 +21,15 @@
 
 #define BUFSIZE	256
 
+#ifdef UNUSED 
+#elif defined(__GNUC__) 
+# define UNUSED(x) UNUSED_ ## x __attribute__((unused)) 
+#elif defined(__LCLINT__) 
+# define UNUSED(x) /*@unused@*/ x 
+#else 
+# define UNUSED(x) x 
+#endif
+
 #if ENABLE_NLS
 # include <libintl.h>
 # define _(Text) gettext (Text)

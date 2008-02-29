@@ -5,12 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>531</width>
+    <width>527</width>
     <height>414</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Dialog</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
   </property>
   <widget class="QWidget" native="1" name="firstPage" >
    <property name="enabled" >
@@ -53,7 +56,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton10" >
+   <widget class="QPushButton" name="deleteNICButton" >
     <property name="geometry" >
      <rect>
       <x>254</x>
@@ -142,7 +145,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton9" >
+   <widget class="QPushButton" name="editNICButton" >
     <property name="geometry" >
      <rect>
       <x>136</x>
@@ -169,16 +172,6 @@
       <string>BaseNetwLayer</string>
      </property>
     </item>
-   </widget>
-   <widget class="QTableWidget" name="nicTable" >
-    <property name="geometry" >
-     <rect>
-      <x>20</x>
-      <y>180</y>
-      <width>481</width>
-      <height>121</height>
-     </rect>
-    </property>
    </widget>
    <widget class="Line" name="line5" >
     <property name="geometry" >
@@ -258,6 +251,19 @@
     </property>
     <property name="maximum" >
      <number>65535</number>
+    </property>
+   </widget>
+   <widget class="QTableView" name="nicTable" >
+    <property name="geometry" >
+     <rect>
+      <x>20</x>
+      <y>180</y>
+      <width>481</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="selectionBehavior" >
+     <enum>QAbstractItemView::SelectRows</enum>
     </property>
    </widget>
   </widget>

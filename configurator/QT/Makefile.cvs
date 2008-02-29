@@ -2,7 +2,7 @@
 
 all: Makefile
 
-Makefile:
+Makefile: mixim_generator_QT.pro
 	@qmake
 
 clean:

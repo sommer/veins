@@ -1,4 +1,6 @@
 #include "ui_generatorwizard.h"
+#include "WorldTableModel.h"
+#include "Node.h"
 
 class GeneratorWizard: public QMainWindow, private Ui::GeneratorWizard {
 	Q_OBJECT
@@ -8,6 +10,7 @@ class GeneratorWizard: public QMainWindow, private Ui::GeneratorWizard {
 
 	private:
 		void evaluateButtonsState(void);
+		WorldTableModel* worldModel;
 
 	private slots:
 		void on_addNodesButton_clicked(void);

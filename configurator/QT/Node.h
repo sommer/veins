@@ -1,3 +1,8 @@
+#ifndef __NODE_H__
+#define __NODE_H__
+
+#include <QStandardItemModel>
+
 #include "ui_node.h"
 #include "../miximConfiguratorCommon.h"
 
@@ -10,9 +15,13 @@ class Node: public QDialog, private Ui::Node {
 		QString getType(void);
 		QString getNetworkLayer(void);
 		QString getApplicationName(void);
+		void setModel(QStandardItemModel*);
+		QStandardItemModel* getModel(void);
 
 	private slots:
 		void on_addNICButton_clicked(void);
+		void on_deleteNICButton_clicked(void);
+		//void on_editNICButton_clicked(void);
 		void on_regularGridRB_toggled(bool);
 		void on_randomRB_toggled(bool);
 		void on_squareCB_toggled(bool);
@@ -22,4 +31,6 @@ class Node: public QDialog, private Ui::Node {
 		void on_nextButton_clicked(void);
 		void on_cancelButton_clicked(void);
 };
+
+#endif
 
