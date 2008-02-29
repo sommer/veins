@@ -42,7 +42,7 @@ QVariant WorldTableModel::headerData(int section, Qt::Orientation orientation, i
 }
 
 bool WorldTableModel::insertRows(int row, int count, const QModelIndex &parent) {
-	beginInsertRows(parent, row, row + count);
+	beginInsertRows(parent, row, row + count - 1);
 	printf("inserting %d rows at loc %d\n", count, row);	// does nothing; handled by insertData
 	rows++;
 	endInsertRows();
@@ -50,6 +50,10 @@ bool WorldTableModel::insertRows(int row, int count, const QModelIndex &parent) 
 }
 
 bool WorldTableModel::removeRows(int row, int count, const QModelIndex &parent) {
+	beginRemoveRows(parent, row, row + 1 - count);
+	// FIXME this assumes only one row gets deleted at a time atm
+	contents.removeAt(row);
+	endRemoveRows();
 	return false;	// TODO
 }
 

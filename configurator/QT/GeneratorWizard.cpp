@@ -43,9 +43,18 @@ void GeneratorWizard::on_addNodesButton_clicked() {
 }
 
 void GeneratorWizard::on_deleteItemButton_clicked() {
-	//int curRow = objectTable->currentRow();
-	//printf("Row about to be deleted: %d\n", curRow);
-	//objectTable->removeRow(curRow);
+	QModelIndexList indexes = objectTable->selectionModel()->selectedIndexes();
+	QModelIndex index;
+	int lastRow =-1;
+
+	foreach(index, indexes) {
+		if (index.row() != lastRow) {
+			printf("Selected: row %d column %d\n", index.row(), index.column());
+			worldModel->removeRows(index.row(), 1, index.parent());
+			lastRow = index.row();  // as the selection model is rows only; we can do this little trick
+		}
+	}
+
 	evaluateButtonsState();
 }
 
