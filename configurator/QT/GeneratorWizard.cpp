@@ -22,19 +22,17 @@ void GeneratorWizard::evaluateButtonsState() {
 void GeneratorWizard::on_addNodesButton_clicked() {
 	printf("add button clicked\n");
 	Node nodeDialog;
-	QStandardItemModel *model = new QStandardItemModel(4, 2);
+	QStandardItemModel *model = new QStandardItemModel(1, 2);
 
-	for (int row = 0; row < 4; ++row) {
-		for (int column = 0; column < 2; ++column) {
-			QModelIndex index = model->index(row, column, QModelIndex());
-			model->setData(index, QVariant((row+1) * (column+1)));
-		}
-	}
+	QModelIndex index = model->index(0, 0, QModelIndex());
+	model->setData(index, "BaseMac");
+	index = model->index(0, 1, QModelIndex());
+	model->setData(index, "BasePhy");
 
 	nodeDialog.setModel(model);
 
 	if (nodeDialog.exec() == QDialog::Accepted) {
-		// worldModel->insertRow(1);
+		worldModel->insertRow(1);
 		worldModel->insertData(nodeDialog.getModel());
 		//objectTable->setItem(0, 0, new QTableWidgetItem(QString::number(nodeDialog.getCount())));
 		//objectTable->setItem(0, 1, new QTableWidgetItem(nodeDialog.getType()));

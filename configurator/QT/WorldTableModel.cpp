@@ -9,7 +9,16 @@
 QVariant WorldTableModel::data(const QModelIndex &index, int role) const {
 	if (!index.isValid() || role != Qt::DisplayRole)
 		return QVariant();
-	return QString("data");
+	switch (index.column()) {
+		case 0:
+			return "1";
+		case 1:
+			return "BaseNode";
+		case 2:
+			return "BaseApplication";
+		default:
+			return "Error";
+	}
 }
 
 QVariant WorldTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
