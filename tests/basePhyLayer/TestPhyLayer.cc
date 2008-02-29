@@ -4,13 +4,15 @@
 Define_Module(TestPhyLayer);
 
 void TestPhyLayer::initialize(int stage) {
+	displayPassed = false;
+	if(stage == 0)
+		myIndex = findHost()->index();
 	
 	//call BasePhy's initialize
 	BasePhyLayer::initialize(stage);
 	
 	//run basic tests
 	if(stage == 0) {
-		myIndex = findHost()->index();
 		init("phy" + toString(myIndex));
 	} else if(stage == 1) {
 		testInitialisation();
@@ -93,6 +95,14 @@ void TestPhyLayer::testInitialisation() {
 	assertTrue("Check attenuation value of AnalogueModels.", 
 				FWMath::close(att1, 1.1) && FWMath::close(att2, 2.1)
 				|| FWMath::close(att1, 2.1) && FWMath::close(att2, 1.1));
+	
+	//check initialisation of timers
+	assertNotEqual("Check initialisation of TX-OVER timer", (void*)0, txOverTimer);
+	assertEqual("Check kind of TX_OVER timer", TX_OVER, txOverTimer->kind());
+	
+	assertNotEqual("Check initialisation of radioSwitchOver timer", (void*)0, radioSwitchingOverTimer);
+	assertEqual("Check kind of radioSwitchOver timer", RADIO_SWITCHING_OVER, radioSwitchingOverTimer->kind());
+	
 }
 
 AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
@@ -152,5 +162,5 @@ Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 	assertEqual("Check type of parameter \"anotherLong\".", 'L', par.type());
 	assertEqual("Check value of parameter \"anotherLong\".", -34567, par.longValue());
 	
-	return new TestDecider(this);
+	return new TestDecider(this, myIndex, simulation.runNumber());
 }

@@ -3,16 +3,12 @@
 
 #include <BasePhyLayer.h> 
 #include <TestModule.h>
+#include "TestDecider.h"
 
 
 class TestPhyLayer:public BasePhyLayer, public TestModule {
 private:
-	class TestDecider:public Decider {
-	public:
-		TestDecider(DeciderToPhyInterface* phy):
-			Decider::Decider(phy) {}
-	};
-	
+		
 	class TestAnalogueModel:public AnalogueModel {
 	public:
 		double att;

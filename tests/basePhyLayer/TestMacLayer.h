@@ -4,23 +4,23 @@
 #include <omnetpp.h>
 #include "MacToPhyInterface.h"
 #include "MacToPhyControlInfo.h"
+#include "TestGlobals.h"
 #include "TestPhyLayer.h"
 #include "Signal_.h"
 
 class TestMacLayer:public BaseModule, public TestModule {
-protected:
+public:
 	MacToPhyInterface* phy;
 	TestPhyLayer* testPhy;
 	
 	int dataOut;
 	int dataIn;
+	int controlOut;
+	int controlIn;
 	
 	int myIndex;
 	
-	enum {
-		TEST_MACPKT = 12121
-	};
-	
+		
 	enum {
 		TEST_START = 0,
 		
@@ -83,6 +83,7 @@ public:
 	
 	//---run 1 tests------------------------------
 	void testSwitchRadio(int stage);
+	void testChannelSense();
 	void testSendingOnNotTX();
 	
 	//---run 2 tests------------------------------

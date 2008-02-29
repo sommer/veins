@@ -11,6 +11,9 @@ void TestMacLayer::initialize(int stage) {
 		dataOut = findGate("lowerGateOut");
 		dataIn = findGate("lowerGateIn");
 		
+		controlOut = findGate("lowerControlOut");
+		controlIn = findGate("lowerControlIn");
+		
 		init("mac" + toString(myIndex));
 		
 		testPhy = FindModule<TestPhyLayer*>::findSubModule(this->parentModule());
@@ -51,12 +54,14 @@ void TestMacLayer::runTests(int state, const cMessage* msg) {
  * Testhandling for run 1:
  * - check switchRadio() method of MacToPhyInterface
  * - check sending on not TX mode
+ * - check channel sense request
  */
 void TestMacLayer::testRun1(int stage, const cMessage* msg){
 	switch(stage) {
 	case TEST_START:
 	case RUN1_TEST_ON_RX:
 		testSwitchRadio(stage);
+		testChannelSense();
 		break;
 	case RUN1_TEST_ON_SLEEP:
 		testSendingOnNotTX();
@@ -165,6 +170,19 @@ void TestMacLayer::testSwitchRadio(int stage) {
 	assertTrue("Invalid switchtime because already switching.", switchTime < 0.0);	
 }
 
+void TestMacLayer::testChannelSense() {
+	ChannelSenseRequest* req = new ChannelSenseRequest();
+	req->setKind(MacToPhyInterface::CHANNEL_SENSE_REQUEST);
+	req->setSenseDuration(0.5f);
+	send(req, controlOut);	
+	assertMessage(	"ChannelSense at phy layer.", 
+					MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+					simTime(), "phy" + toString(myIndex));
+	assertMessage(	"ChannelSense at decider.", 
+						MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+						simTime(), "decider" + toString(myIndex));
+}
+
 void TestMacLayer::testSendingOnNotTX() {
 	Radio::RadioState state = phy->getRadioState();
 	assertNotEqual("Radio is not in TX.", Radio::TX, state);
@@ -201,6 +219,10 @@ void TestMacLayer::testSending1(int stage, const cMessage* lastMsg) {
 		assertMessage("End receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime() + 1.0, "phy2");
 		assertMessage("End receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime() + 1.0, "phy3");
 		
+		assertMessage("First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider1");
+		assertMessage("First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider2");
+		assertMessage("First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider3");
+				
 		assertMessage("Transmission over message at phy", BasePhyLayer::TX_OVER, simTime() + 1.0, "phy0");
 		assertMessage("Transmission over message from phy", BasePhyLayer::TX_OVER, simTime() + 1.0);
 		break;

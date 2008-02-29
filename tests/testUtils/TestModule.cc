@@ -101,6 +101,16 @@ void TestModule::assertNewMessage(AssertMessage* assert, std::string destination
 }
 
 /**
+ * Asserts the arrival of a message described by the passed AssertMessage object 
+ * at the module with the passed name. If the module name is ommited the message is
+ * expected at this module.
+ * This method should be used if you want to write your own AssertMessage-Descriptor.
+ */
+void TestModule::assertMessage(AssertMessage* assert, std::string destination) {
+	assertNewMessage(assert, destination);
+}
+
+/**
  * Asserts the arrival of a message with the specified kind at the specified
  * time at module with the passed name.
  */

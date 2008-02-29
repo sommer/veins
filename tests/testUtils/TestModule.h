@@ -162,6 +162,14 @@ protected:
 	 */
 	std::string log(std::string msg);
 	
+	/**
+	 * Asserts the arrival of a message described by the passed AssertMessage object 
+	 * at the module with the passed name. If the module name is ommited the message is
+	 * expected at this module.
+	 * This method should be used if you want to write your own AssertMessage-Descriptor.
+	 */
+	void assertMessage(AssertMessage* assert, std::string destination = "");
+	
 	
 	/**
 	 * Asserts the arrival of a message with the specified kind at the specified
