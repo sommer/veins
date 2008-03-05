@@ -35,6 +35,9 @@ protected:
 
     /** @brief Should the world be 2-dimensional? */
     bool use2DFlag;
+    
+    /** @brief Provides a unique number for AirFrames per simulation */
+    long airFrameId;
 public:
 	Module_Class_Members(BaseWorldUtility,BaseModule,0);
 
@@ -58,6 +61,9 @@ public:
 
     /** @brief Returns true if the world is 2-dimensional */
     bool use2D() { return use2DFlag; }
+   
+    /** @brief Returns a unique-per-simulation Id for an AirFrame */
+    long getUniqueAirFrameId() { return airFrameId++; }
  };
 
 #endif

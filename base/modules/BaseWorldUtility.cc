@@ -24,6 +24,8 @@ Define_Module(BaseWorldUtility);
 
 const double BaseWorldUtility::speedOfLight = 299792458.0;
 
+
+
 void BaseWorldUtility::initialize(int stage) {
 	if (stage == 0) {
         use2DFlag = par("use2D");
@@ -39,6 +41,7 @@ void BaseWorldUtility::initialize(int stage) {
 
 		useTorusFlag = par("useTorus");
        
+		airFrameId = 0;
 	}
 }
 

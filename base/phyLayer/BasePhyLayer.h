@@ -8,6 +8,7 @@
 #include "AnalogueModel.h"
 #include "Decider.h"
 #include "ChannelInfo.h"
+#include "BaseWorldUtility.h"
 
 #include "MacPkt_m.h"
 
@@ -137,6 +138,9 @@ protected:
 		/** Receiving process over */
 		END_RECEIVE
 	};
+	
+	/* Pointer to the World Utility, to obtain some global information*/ 
+	BaseWorldUtility* world;
 	
 public:
 	

@@ -90,6 +90,11 @@ void BasePhyLayer::initialize(int stage) {
 		//	- decider parameters
 		initializeDecider(readPar("decider", (cXMLElement*)0));
 		
+		// get pointer to the world module
+		world = FindModule<BaseWorldUtility*>::findGlobalModule();
+        if (world == NULL)
+            throw new cRuntimeError("Could not find BaseWorldUtility module");
+		
 	} else if (stage == 1){
 				
 		//initialise timer messages
@@ -510,9 +515,8 @@ AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
 	delete s;
 	s = 0;
 	
-	// TODO: where to get a unique id from?, set id properly
-	//TOTEST: check if id is really unique
-	frame->setId(0);
+	// TO TEST: check if id is really unique
+	frame->setId(world->getUniqueAirFrameId());
 	frame->encapsulate(msg);
 	
 	// --- from here on, the AirFrame is the owner of the MacPacket ---
@@ -687,7 +691,13 @@ simtime_t BasePhyLayer::calculatePropagationDelay(AirFrame* frame) {
 	Move senderPos = s.getMove();
 	
 	//very naiv and very wrong calculation, but for now sufficient
-	double distance = senderPos.startPos.distance(move.startPos);
+	//double distance = senderPos.startPos.distance(move.startPos);
+	
+	// this is the time point when the transmission starts
+	simtime_t actualTime = simTime();
+	
+	// this time-point is used to calculate the distance between sending and receiving host
+	double distance = senderPos.getPositionAt(actualTime).distance(move.getPositionAt(actualTime));
 	
 	double delay = distance / BaseWorldUtility::speedOfLight;
 	return delay;
