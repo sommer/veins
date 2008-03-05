@@ -6,40 +6,31 @@
 #include <BasePhyLayer.h>
 #include "TestGlobals.h"
 
-class AssertAirFrame:public AssertMessage {
-protected:
-	AirFrame* pointer;
-	simtime_t arrival;
-public:
-	AssertAirFrame(std::string msg, AirFrame* frame, simtime_t arrival, TestModule* cModule = 0, int cState = 0):
-		AssertMessage(msg, cModule, cState), pointer(frame), arrival(arrival) {}
-		
-	/**
-	 * Returns true if the passed message is the message
-	 * expected by this AssertMessage.
-	 * Has to be implemented by every subclass.
-	 */
-	virtual bool isMessage(cMessage* msg) {
-		AirFrame* frame = dynamic_cast<AirFrame*>(msg);
-		return frame == pointer && arrival == msg->arrivalTime();
-	}
-};
-
 class TestDecider:public Decider, public TestModule {
 protected:
 	int myIndex;
 	int run;
+	const int RECEIVING_STATE;
+	
+	bool state;
+	double rssi;
 	
 protected:
-	void assertMessage(std::string msg, AirFrame* frame, simtime_t arrival, std::string dest = "") {
-		TestModule::assertMessage(new AssertAirFrame(msg, frame, arrival), dest);
+	void assertMessage(std::string msg, int state, AirFrame* frame, simtime_t arrival, std::string dest = "") {
+		TestModule::assertMessage(new AssertAirFrame(msg, state, arrival, frame), dest);
 	}
 	
 public:
-	TestDecider(DeciderToPhyInterface* phy, int index, int run):
-		Decider(phy), myIndex(index), run(run) {
+	TestDecider(DeciderToPhyInterface* phy, int index, int run, int RECEIVING_STATE):
+		Decider(phy), myIndex(index), run(run), RECEIVING_STATE(RECEIVING_STATE), state(false), rssi(0.0) {
 		
 		init("decider" + toString(myIndex));
+	}
+	
+	ChannelState getChannelState() {
+		state = !state;
+		rssi += 1.0;
+		return ChannelState(state, rssi);
 	}
 	
 	simtime_t handleChannelSenseRequest(ChannelSenseRequest* request) {
@@ -74,8 +65,8 @@ public:
 		simtime_t time = phy->getSimTime();
 		simtime_t headerEnd = s.getSignalStart() + s.getSignalLength() * 0.1;
 		if(time == s.getSignalStart()) {			
-			assertMessage("Scheduled AirFrame to Pseudoheader at phy.", frame, headerEnd, "phy" + toString(myIndex));
-			assertMessage("Scheduled AirFrame to Pseudoheader.", frame, headerEnd);
+			assertMessage("Scheduled AirFrame to Pseudoheader at phy.", RECEIVING_STATE, frame, headerEnd, "phy" + toString(myIndex));
+			assertMessage("Scheduled AirFrame to Pseudoheader.", RECEIVING_STATE, frame, headerEnd);
 			return headerEnd;
 			
 		} else if(time == headerEnd) {

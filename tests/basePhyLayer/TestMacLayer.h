@@ -34,7 +34,10 @@ public:
 		
 		RUN3_TEST_START = 3000,
 		RUN3_TEST_ON_TX,
-		RUN3_TEST_RECEIVE
+		RUN3_TEST_RECEIVE,
+		RUN3_TEST_ON_DECIDER1,
+		RUN3_TEST_ON_DECIDER2,
+		RUN3_TEST_ON_DECIDER3
 	};
 public:
 	//---Omnetpp parts-------------------------------
@@ -82,6 +85,7 @@ public:
 	void testRun3(int stage, const cMessage* msg = 0);
 	
 	//---run 1 tests------------------------------
+	void testGetChannelState();
 	void testSwitchRadio(int stage);
 	void testChannelSense();
 	void testSendingOnNotTX();
@@ -89,10 +93,8 @@ public:
 	//---run 2 tests------------------------------
 	
 	//---run 3 tests------------------------------
+	void testChannelInfo(int stage);
 	void testSending1(int stage, const cMessage* lastMsg = 0);
-
-	//---other------------------------------------
-	void testChannelState();
 	
 	//---utilities--------------------------------
 	void continueIn(simtime_t time, int nextStage);

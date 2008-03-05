@@ -38,8 +38,6 @@ void BasePhyLayer::initialize(int stage) {
 	
 	if (stage == 0) {
 		
-		//TODO: anything else to initialize?
-		
 		//get gate ids
 		upperGateIn = findGate("upperGateIn");
         upperGateOut = findGate("upperGateOut");
@@ -93,11 +91,8 @@ void BasePhyLayer::initialize(int stage) {
 		initializeDecider(readPar("decider", (cXMLElement*)0));
 		
 	} else if (stage == 1){
-		
-		//TODO: stage 1 initialisation
-		
+				
 		//initialise timer messages
-		//TOTEST: check initialisation of timers
 		radioSwitchingOverTimer = new cMessage(0, RADIO_SWITCHING_OVER);
 		txOverTimer = new cMessage(0, TX_OVER);
 	}
@@ -282,7 +277,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
  */
 AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
 	
-	//TODO: add default analogue mdoels here
+	//TODO: add default analogue models here
 	return 0;
 }
 
@@ -302,7 +297,6 @@ AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, Paramete
 void BasePhyLayer::handleMessage(cMessage* msg) {
 	
 	//self messages	
-	//TOTEST: generell receiving and sending of self messages
 	if(msg->isSelfMessage()) {
 		handleSelfMessage(msg);
 	
@@ -332,7 +326,6 @@ void BasePhyLayer::handleAirFrame(cMessage* msg) {
 	
 	AirFrame* frame = static_cast<AirFrame*>(msg);
 	
-	//TOTEST: check states of recceived AirFrames (not just the kind)
 	switch(frame->getState()) {
 	case FIRST_RECEIVE:
 		handleAirFrameFirstReceive(frame);
@@ -351,8 +344,7 @@ void BasePhyLayer::handleAirFrame(cMessage* msg) {
 		break;
 		
 	default:
-		ev << "Unknown AirFrame state: " << frame->getState() << endl;
-		//TODO: this is a serious error -> end simulation
+		opp_error( "Unknown AirFrame state: %s", frame->getState());
 		break;
 	}
 }
@@ -380,7 +372,6 @@ void BasePhyLayer::handleAirFrameFirstReceive(AirFrame* frame) {
  * Handles incoming AirFrames with the state START_RECEIVE.
  */
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
-	//TOTEST: check channelinfo for new airframe
 	channelInfo.addAirFrame(frame, simTime());
 	
 	filterSignal(frame->getSignal());
@@ -389,7 +380,6 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 		frame->setState(RECEIVING);
 		
 		//pass the AirFrame the first time to the Decider
-		//TOTEST: check first arrival at decider
 		handleAirFrameReceiving(frame);
 		
 	//if no decider is defined we will schedule the message directly to its end
@@ -409,13 +399,10 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 	
 	Signal& signal = frame->getSignal();
-	//TOTEST: check arrival at decider
 	simtime_t nextHandleTime = decider->processSignal(frame);
 	
 	simtime_t signalEndTime = signal.getSignalStart() + frame->getDuration();
-	
-	//TOTEST: check different possible return values of decider (x<0, x<simtime, x>end, x=end)
-	
+		
 	//check if this is the end of the receiving process
 	if(simTime() >= signalEndTime) {
 		frame->setState(END_RECEIVE);
@@ -431,7 +418,7 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 	//invalid point in time
 	} else if(nextHandleTime < simTime() || nextHandleTime > signalEndTime) {
 		
-		throw new cRuntimeError("Invalid next handle time returned by Decider. Expected a value between current simulation time (%.2f) and end of signal (%.2f) but got %.2f",
+		opp_error("Invalid next handle time returned by Decider. Expected a value between current simulation time (%.2f) and end of signal (%.2f) but got %.2f",
 								simTime(), signalEndTime, nextHandleTime);
 	}
 	
@@ -443,8 +430,6 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
  */
 void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
 	channelInfo.removeAirFrame(frame);
-	//TODO: any other things to do?
-	//TOTEST: check removal of airframe from channelinfo
 }
 
 /**
@@ -453,14 +438,12 @@ void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
  */
 void BasePhyLayer::handleUpperMessage(cMessage* msg){
 	
-	//TODO: check and test implementation
 	// check if Radio is in TX state
 	if (radio.getCurrentState() != Radio::TX)
 	{
         delete msg;
         msg = 0;
 		opp_error("Error: message for sending received, but radio not in state TX");
-		// TODO: opp_error correct handling?
 	}
 	
 	// check if not already sending
@@ -469,10 +452,8 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
         delete msg;
         msg = 0;
 		opp_error("Error: message for sending received, but radio already sending");
-		// TODO: opp_error correct handling?
 	}
 	
-	//TOTEST: check for correct encapsulation (data and encapsualted message)
 	// build the AirFrame to send
 	AirFrame* frame = encapsMsg(msg);
 	
@@ -491,10 +472,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
  * The new AirFrame instance becomes owner of the Signal and MacPacket
  */
 AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
-{
- //TODO: move method to the right position in the source code
- //TODO: check and test implementation
-	
+{	
 	// the cMessage passed must be a MacPacket... but no cast needed here
 	// MacPkt* pkt = static_cast<MacPkt*>(msg);
 	
@@ -515,7 +493,6 @@ AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
 	ctrlInfo = 0;
 	
 	// make sure we really obtained a pointer to an instance
-	// TODO: figure out what to do if we actually have NO Signal here
 	assert(s);
 	
 	// put host move pattern to Signal
@@ -551,12 +528,10 @@ AirFrame *BasePhyLayer::encapsMsg(cMessage *msg)
  * returned by the decider.
  */
 void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
-	//TOTEST: test ChannelSenseRequest handling
 	ChannelSenseRequest* senseReq = static_cast<ChannelSenseRequest*>(msg);
 			
 	simtime_t nextHandleTime = decider->handleChannelSenseRequest(senseReq);
 	
-	//TOTEST: check returned times x<0, x<simtime
 	if(nextHandleTime >= simTime()) { //schedule request for next handling
 		sendSelfMessage(msg, nextHandleTime);
 		
@@ -624,7 +599,6 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg) {
  * Sends the passed control message to the upper layer.
  */
 void BasePhyLayer::sendControlMessageUp(cMessage* msg) {
-	//TOTEST: send a test control message up
 	send(msg, upperControlOut);
 }
 
@@ -632,7 +606,6 @@ void BasePhyLayer::sendControlMessageUp(cMessage* msg) {
  * Sends the passed MacPkt to the upper layer.
  */
 void BasePhyLayer::sendMacPktUp(cMessage* pkt) {
-	//TOTEST: send a test MacPkt up
 	send(pkt, upperGateOut);
 }
 
@@ -641,7 +614,6 @@ void BasePhyLayer::sendMacPktUp(cMessage* pkt) {
  */
 void BasePhyLayer::sendMessageDown(AirFrame* msg) {
 	
-	//TODO: check if delay is needed
 	sendToChannel(msg, 0);
 }
 
@@ -744,7 +716,6 @@ Radio::RadioState BasePhyLayer::getRadioState() {
 simtime_t BasePhyLayer::setRadioState(Radio::RadioState rs) {
 	
 	//TODO: what to do if we are currently transmitting a signal?
-	//TOTEST: check radio switching at another time then 0.0
 	simtime_t switchTime = radio.switchTo(rs);
 	
 	if(switchTime < 0) //invalid switch time, we are propably already switching 
@@ -760,7 +731,6 @@ simtime_t BasePhyLayer::setRadioState(Radio::RadioState rs) {
  * for details.
  */
 ChannelState BasePhyLayer::getChannelState() {
-	//TOTEST: check correct passing of channelstate
 	return decider->getChannelState();
 }
 
@@ -771,7 +741,6 @@ ChannelState BasePhyLayer::getChannelState() {
  * with the time interval [from, to]
  */
 void BasePhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) {
-	//TOTEST: check correct passing of the airframevector
 	channelInfo.getAirFrames(from, to, out);
 }
 
@@ -781,7 +750,6 @@ void BasePhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
  * This function can be used to answer a ChannelSenseRequest to the MACLayer
  */
 void BasePhyLayer::sendControlMsg(cMessage* msg) {
-	//TOTEST: check correct passing of controlmessage to mac
 	sendControlMessageUp(msg);
 }
 
@@ -793,9 +761,6 @@ void BasePhyLayer::sendControlMsg(cMessage* msg) {
  * the corresponding DeciderResult up to the MACLayer
  */
 void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult result) {
-	
-	//TODO: implement
-	//TOTEST: check correct creation (decapsulation) of MacPkt
 	
 	cMessage* packet = frame->decapsulate();
 	

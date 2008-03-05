@@ -103,7 +103,7 @@ protected:
 	 */
 	typedef std::map<std::string, cPar> ParameterMap;
 	
-	/** The id of the in-data gate from the Mac layer */
+	/** @brief The id of the in-data gate from the Mac layer */
 	int upperGateIn;
 	/** The id of the out-data gate to the Mac layer */
 	int upperGateOut;

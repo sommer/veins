@@ -162,5 +162,5 @@ Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 	assertEqual("Check type of parameter \"anotherLong\".", 'L', par.type());
 	assertEqual("Check value of parameter \"anotherLong\".", -34567, par.longValue());
 	
-	return new TestDecider(this, myIndex, simulation.runNumber());
+	return new TestDecider(this, myIndex, simulation.runNumber(), RECEIVING);
 }

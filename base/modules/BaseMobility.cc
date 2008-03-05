@@ -353,7 +353,6 @@ void BaseMobility::placeRandomlyIfOutside( Coord& targetPos )
  *
  * Additionally the calculation of the step to reach the border is
  * started.
- * TODO fix for 3D
  **/
 BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coord& borderStep )
 {
@@ -447,8 +446,6 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coor
  * Calculate the step to reach the border. Additionally for the WRAP
  * policy the new start position after reaching the border is
  * calculated.
- *
- * TODO fix for 3D
  **/
 void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& borderStep, Coord& borderStart)
 {
@@ -586,8 +583,6 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
  * @param angle direction in which the host is moving
  *
  * @return true if host was outside, false otherwise.
- *
- * TODO fix for 3D
  **/
 bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord& targetPos, Coord& step, double& angle) {
     // where did the host leave the playground?

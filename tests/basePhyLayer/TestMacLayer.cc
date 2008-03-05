@@ -1,4 +1,5 @@
 #include "TestMacLayer.h"
+#include <DeciderToPhyInterface.h>
 Define_Module(TestMacLayer);
 
 //---omnetpp part----------------------
@@ -52,6 +53,7 @@ void TestMacLayer::runTests(int state, const cMessage* msg) {
 
 /**
  * Testhandling for run 1:
+ * - check getChannelState()
  * - check switchRadio() method of MacToPhyInterface
  * - check sending on not TX mode
  * - check channel sense request
@@ -59,6 +61,7 @@ void TestMacLayer::runTests(int state, const cMessage* msg) {
 void TestMacLayer::testRun1(int stage, const cMessage* msg){
 	switch(stage) {
 	case TEST_START:
+		testGetChannelState();
 	case RUN1_TEST_ON_RX:
 		testSwitchRadio(stage);
 		testChannelSense();
@@ -112,18 +115,46 @@ void TestMacLayer::testRun2(int stage, const cMessage* msg){
 /**
  * Testhandling for run 3:
  * - check valid sending of a packet to 3 recipients
+ * - check getChannelInfo
  */
 void TestMacLayer::testRun3(int stage, const cMessage* msg){
 	switch(myIndex) {
 	case 0:
 		testSending1(stage, msg);
 		break;
+	case 1:
+	case 2:
+	case 3:
+		testChannelInfo(stage);
+		break;
 	default:
+		fail("No handling for test run 3 for this host index: " + toString(myIndex));
 		break;
 	}
 }
 
 //---run 1 test-----------------------------
+
+/**
+ * Test the method "getChannelState()".
+ */
+void TestMacLayer::testGetChannelState() {
+	ChannelState state = phy->getChannelState();
+	assertTrue("First channelstates idle state should be true", state.isIdle());
+	assertClose("First channelstates rssi.", 1.0, state.getRSSI());
+	
+	state = phy->getChannelState();
+	assertFalse("Second channelstate should be false", state.isIdle());
+	assertClose("Second channelstates rssi.", 2.0, state.getRSSI());
+	
+	state = phy->getChannelState();
+	assertTrue("Third channelstate should be true", state.isIdle());
+	assertClose("Third channelstates rssi.", 3.0, state.getRSSI());
+	
+	state = phy->getChannelState();
+	assertFalse("Fourth channelstate should be false", state.isIdle());
+	assertClose("Fourth channelstates rssi.", 4.0, state.getRSSI());
+}
 /**
  * Tests for switchRadio interface methods
  */
@@ -198,6 +229,33 @@ void TestMacLayer::testSendingOnNotTX() {
 
 //---run 3 tests----------------------------
 
+void TestMacLayer::testChannelInfo(int stage) {
+	switch(stage) {
+	case TEST_START: {
+		DeciderToPhyInterface::AirFrameVector v;
+		testPhy->getChannelInfo(0.0, simTime(), v);
+		
+		assertTrue("No AirFrames on channel.", v.empty());		
+		break;
+	}
+	case RUN3_TEST_ON_DECIDER1:
+	case RUN3_TEST_ON_DECIDER2:
+	case RUN3_TEST_ON_DECIDER3:{
+		if(myIndex ==( stage - RUN3_TEST_ON_DECIDER1 + 1)) {
+			DeciderToPhyInterface::AirFrameVector v;
+			testPhy->getChannelInfo(0.0, simTime(), v);
+			
+			assertFalse("AirFrames on channel.", v.empty());	
+		}
+		break;
+	}
+	default:
+		fail("TestChannelInfo: Unknown stage.");
+		break;
+	}
+	//displayPassed = false;
+}
+
 void TestMacLayer::testSending1(int stage, const cMessage* lastMsg) {
 	switch(stage) {
 	case TEST_START: {
@@ -219,26 +277,25 @@ void TestMacLayer::testSending1(int stage, const cMessage* lastMsg) {
 		assertMessage("End receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime() + 1.0, "phy2");
 		assertMessage("End receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime() + 1.0, "phy3");
 		
-		assertMessage("First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider1");
-		assertMessage("First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider2");
-		assertMessage("First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider3");
+		waitForMessage(RUN3_TEST_ON_DECIDER1, "First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider1");
+		waitForMessage(RUN3_TEST_ON_DECIDER2, "First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider2");
+		waitForMessage(RUN3_TEST_ON_DECIDER3, "First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider3");
 				
 		assertMessage("Transmission over message at phy", BasePhyLayer::TX_OVER, simTime() + 1.0, "phy0");
 		assertMessage("Transmission over message from phy", BasePhyLayer::TX_OVER, simTime() + 1.0);
+		break;
+	}
+	case RUN3_TEST_ON_DECIDER1:
+	case RUN3_TEST_ON_DECIDER2:
+	case RUN3_TEST_ON_DECIDER3:{
+		TestMacLayer* mac = dynamic_cast<TestMacLayer*>(manager->getModule("mac" + toString((stage - RUN3_TEST_ON_DECIDER1)+ 1)));
+		mac->onAssertedMessage(stage, 0);
 		break;
 	}
 	default:
 		fail("Unknown stage");
 		break;
 	}
-}
-
-//---other----------------------------------
-/**
- * tests for ChannelState interface methods
- */
-void TestMacLayer::testChannelState() {
-	//TODO: implement
 }
 
 //---utilities------------------------------

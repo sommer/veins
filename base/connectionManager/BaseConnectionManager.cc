@@ -88,8 +88,8 @@ void BaseConnectionManager::initialize(int stage)
 						   + 1.0;								
 		} else {
 			findDistance = ceil(maxInterferenceDistance);		//otherwise the factor is our
-			if(findDistance == maxInterferenceDistance)			//maxInterferenceDistance
-				findDistance += EPSILON;						//TODO: find out why +EPSILON, why ceil()
+			if(findDistance == maxInterferenceDistance)			//maxInterferenceDistance 
+				findDistance += EPSILON;									//plus a small epsilon
 		}
 		ccEV << "findDistance is " << findDistance << endl;
 	}
