@@ -1,6 +1,7 @@
 #include "ChannelInfo.h"
 
 #include <iostream>
+#include <assert.h>
 
 /**
  * Tells the ChannelInfo that an AirFrame has started.
@@ -49,9 +50,8 @@ void ChannelInfo::deleteAirFrame(AirFrameMatrix& airFrames,
 	AirFrameMatrix::iterator listIt = airFrames.find(endTime);
 	AirFrameTimeList* list = &listIt->second;
 	
-	AirFrameTimeList::iterator it = list->begin();
-	
-	while(it != list->end()) {
+	for(AirFrameTimeList::iterator it = list->begin();
+		   it != list->end(); it++) {
 		
 		if(it->second == a) {
 			it = list->erase(it);
@@ -59,12 +59,11 @@ void ChannelInfo::deleteAirFrame(AirFrameMatrix& airFrames,
 			if(list->empty()) {
 				airFrames.erase(listIt);
 				//std::cerr << "Was last one in list." << std::endl;
-				return;
 			}
-		} else {
-			it++;
+			return;
 		}
 	}
+	assert(false);
 }
 
 void ChannelInfo::addToInactives(AirFrame* a, simtime_t startTime, simtime_t endTime) {

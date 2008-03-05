@@ -117,7 +117,7 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 		const char* type = (*it)->getAttribute("type");
 		const char* value = (*it)->getAttribute("value");
 		if(name == 0 || type == 0 || value == 0) {
-			ev << "Invalid parameter, could net find name, type or value." << endl;
+			ev << "Invalid parameter, could not find name, type or value." << endl;
 			continue;
 		}
 		

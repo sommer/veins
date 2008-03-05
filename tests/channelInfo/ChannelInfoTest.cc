@@ -137,6 +137,141 @@ void testIntersections() {
 	testChannel.getAirFrames(0.0, 10.0, v);	
 	assertTrue("There shouldn't be anymore AirFrames.", v.empty());
 	
+	
+	//add two airframes with same start and end
+	AirFrame* frame4 = new AirFrame();
+	frame4->setDuration(1.0);
+	AirFrame* frame4b = new AirFrame();
+	frame4b->setDuration(1.0);
+	testChannel.addAirFrame(frame4b, 15.0);	
+	testChannel.addAirFrame(frame4, 15.0);
+	
+	v.clear();
+	testChannel.getAirFrames(14.5, 15.0, v);	
+	assertEqual("Check for simultaneus airframes", 2, v.size());
+	bothReturned =    (v.front() == frame4b && v.back() == frame4) 
+								|| (v.front() == frame4 && v.back() == frame4b);
+	assertTrue("Check for simultaneus airframes.", bothReturned);
+	
+	
+	//remove one of them
+	testChannel.removeAirFrame(frame4);
+	
+	v.clear();
+	testChannel.getAirFrames(14.5, 15.0, v);	
+	assertEqual("Check for simultaneus airframes after remove of one.", 2, v.size());
+	bothReturned =    (v.front() == frame4b && v.back() == frame4) 
+								|| (v.front() == frame4 && v.back() == frame4b);
+	assertTrue("Check for simultaneus airframes after remove of one.", bothReturned);
+	
+	//add another airframe which starts at the end of the previous ones.
+	AirFrame* frame5 = new AirFrame();
+	frame5->setDuration(2.0);	
+	testChannel.addAirFrame(frame5, 16.0);
+	
+	v.clear();
+	testChannel.getAirFrames(16.0, 17.0, v);	
+	assertEqual("Aiframes with same start and end are intersecting.", 3, v.size());
+	
+	//remove the second of the simulateus AirFrames
+	testChannel.removeAirFrame(frame4b);
+	
+	v.clear();
+	testChannel.getAirFrames(16.0, 17.0, v);	
+	assertEqual("Should intersect still with both removed simultaneus AirFrames.", 3, v.size());
+	
+	v.clear();
+	testChannel.getAirFrames(16.1, 17.0, v);	
+	assertEqual("Interval after simultaneus should return only third AirFrame.", 1, v.size());
+	assertEqual("Interval after simultaneus should return only third AirFrame.", frame5, v.front());
+	
+	//create another AirFrame with same start as previous but later end
+	AirFrame* frame6 = new AirFrame();
+	frame6->setDuration(3.0);
+	testChannel.addAirFrame(frame6, 16.0);
+	
+	v.clear();
+	testChannel.getAirFrames(16.1, 16.1, v);	
+	assertEqual("Interval at start of both AirFrames should return both.", 2, v.size());
+	bothReturned =    (v.front() == frame5 && v.back() == frame6) 
+								|| (v.front() == frame6 && v.back() == frame5);
+	assertTrue("Interval at start of both AirFrames should return both.", bothReturned);
+	
+	v.clear();
+	testChannel.getAirFrames(18.1, 19.0, v);	
+	assertEqual("Interval after shorter AirFrame shouldn't return the shorter.", 1, v.size());
+	assertEqual("Interval after shorter AirFrame shouldn't return the shorter.", frame6, v.front());
+	
+	//remove shorter AirFrame with same start
+	testChannel.removeAirFrame(frame5);
+	
+	v.clear();
+	testChannel.getAirFrames(16.1, 16.1, v);	
+	assertEqual("Nothing should have changed after deletion of shorter AirFrame.", 2, v.size());
+	bothReturned =    (v.front() == frame5 && v.back() == frame6) 
+								|| (v.front() == frame6 && v.back() == frame5);
+	assertTrue("Nothing should have changed after deletion of shorter AirFrame.", bothReturned);
+	
+	v.clear();
+	testChannel.getAirFrames(18.1, 19.0, v);	
+	assertEqual("Nothing should have changed after deletion of shorter AirFrame.", 1, v.size());
+	assertEqual("Nothing should have changed after deletion of shorter AirFrame.", frame6, v.front());
+	
+	//add another one with same end as previous but later start
+	AirFrame* frame7 = new AirFrame();
+	frame7->setDuration(0.5);
+	testChannel.addAirFrame(frame7, 18.5);
+	
+	v.clear();
+	testChannel.getAirFrames(16.1, 16.1, v);	
+	assertEqual("Interval before newly added should not return newly added.", 2, v.size());
+	bothReturned =    (v.front() == frame5 && v.back() == frame6) 
+								|| (v.front() == frame6 && v.back() == frame5);
+	assertTrue("Interval before newly added should not return newly added.", bothReturned);
+	
+	v.clear();
+	testChannel.getAirFrames(18.1, 18.4, v);	
+	assertEqual("Interval before newly added should not return newly added.", 1, v.size());
+	assertEqual("Interval before newly added should not return newly added.", frame6, v.front());
+	
+	v.clear();
+	testChannel.getAirFrames(18.5, 18.5, v);	
+	assertEqual("Newly added should be returned together with the other one.", 2, v.size());
+	bothReturned =    (v.front() == frame6 && v.back() == frame7) 
+								|| (v.front() == frame7 && v.back() == frame6);
+	assertTrue("Newly added should be returned together with the other one.", bothReturned);
+	
+	v.clear();
+	testChannel.getAirFrames(14.5, 15.0, v);	
+	assertEqual("Our simulatneus AirFrames should be still there", 2, v.size());
+	bothReturned =    (v.front() == frame4b && v.back() == frame4) 
+								|| (v.front() == frame4 && v.back() == frame4b);
+	assertTrue("Our simulatneus AirFrames should be still there.", bothReturned);
+	
+	//remove the only AirFrame still intersecting with the simultaneus ones and the shorter version
+	testChannel.removeAirFrame(frame6);
+	
+	v.clear();
+	testChannel.getAirFrames(14.5, 15.0, v);	
+	assertEqual("Simultaneus AirFrames should be deleted now.", 0, v.size());
+	
+	v.clear();
+	testChannel.getAirFrames(16.0, 16.0, v);	
+	assertEqual("Only longer AirFrame should be still there.", 1, v.size());
+	assertEqual("Only longer AirFrame should be still there.", frame6, v.front());
+	
+	v.clear();
+	testChannel.getAirFrames(18.5, 18.5, v);	
+	assertEqual("Last mans standing: last added and the long AirFrame.", 2, v.size());
+	bothReturned =    (v.front() == frame6 && v.back() == frame7) 
+								|| (v.front() == frame7 && v.back() == frame6);
+	assertTrue("Last mans standing: last added and the long AirFrame.", bothReturned);
+	
+	//remove last AirFrame
+	testChannel.removeAirFrame(frame7);
+	v.clear();
+	testChannel.getAirFrames(18.5, 18.5, v);	
+	assertEqual("Should be empty now..", 0, v.size());
 }
 
 int main() {

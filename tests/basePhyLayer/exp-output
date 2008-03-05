@@ -11,74 +11,70 @@ Loading NED file: /home/karl/job/mixim/trunk/tests/basePhyLayer/TestPhyLayer.ned
 Processing listfile: /home/karl/job/mixim/trunk/tests/basePhyLayer/nedincludes.lst
 Loading NED file: ../../include/BaseWorldUtility.ned
 Loading NED file: ../../include/BaseUtility.ned
+Loading NED file: ../../include/BaseMobility.ned
 Loading NED file: ../../include/ConnectionManager.ned
 Loading NED file: ../testUtils/TestManager.ned
 
 Preparing for Run #1...
 Setting up network `tbpSim'...
 Initializing...
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
-Passed: Check parameter "usePropagationDelay".
-Passed: Check parameter "sensitivity".
-Passed: Check parameter "maxTXPower".
-Passed: Check parameter "thermalNoise".
-Passed: Switchtime SLEEP to RX.
-Passed: Switchtime RX to TX.
-Passed: Switchtime TX to SLEEP.
-Passed: Switchtime SLEEP to TX.
-Passed: Switchtime TX to RX.
-Passed: Switchtime RX to SLEEP.
-Passed: Decider is of type TestDecider.
-Passed: Check size of AnalogueModel list.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Check attenuation value of AnalogueModels.
-Passed: Radio starts in SLEEP.
-Passed: Correct switch time to RX.
-Passed: Invalid switchtime because already switching.
 
 Running simulation...
-** Event #0  T=       3  ( 3.00s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=8)
-Passed: [phy0] - Expected "SWITCH_OVER to RX.": kind = 22001, arrival = 3s
-** Event #1  T=       3  ( 3.00s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=9)
-Passed: [mac0] - Expected "SWITCH_OVER to RX message at mac.": kind = 22001, arrival = 3s
+** Event #0  T=0.0000000  ( 0.00s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #1  T=0.5000000000 (500ms).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #2  T=0.5000000000 (500ms).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #3  T=       3  ( 3.00s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #4  T=       3  ( 3.00s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #5  T=       3  ( 3.00s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #6  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #7  T=     3.5  ( 3.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #8  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #9  T=     4.5  ( 4.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #10  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+
+<!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy: User error: Error: message for sending received, but radio not in state TX.
+
+
+Preparing for Run #2...
+Setting up network `tbpSim'...
+Initializing...
+
+Running simulation...
+** Event #0  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #1  T=     3.5  ( 3.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #2  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #3  T=       4  ( 4.00s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #4  T=       4  ( 4.00s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+
+<!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy: User error: Error: message for sending received, but radio already sending.
+
+
+Preparing for Run #3...
+Setting up network `tbpSim'...
+Initializing...
+
+Running simulation...
+** Event #0  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
+** Event #1  T=     3.5  ( 3.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=13)
+** Event #2  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
+** Event #3  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
+** Event #4  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
+** Event #5  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
+** Event #6  T=     3.6  ( 3.60s).  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
+** Event #7  T=     3.6  ( 3.60s).  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
+** Event #8  T=     3.6  ( 3.60s).  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
+** Event #9  T=     3.6  ( 3.60s).  (TestMacLayer) tbpSim.node[1].nic.mac (id=18)
+** Event #10  T=     3.6  ( 3.60s).  (TestMacLayer) tbpSim.node[2].nic.mac (id=23)
+** Event #11  T=     3.6  ( 3.60s).  (TestMacLayer) tbpSim.node[3].nic.mac (id=28)
+** Event #12  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
+** Event #13  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
+** Event #14  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
+** Event #15  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
+** Event #16  T=     4.5  ( 4.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=13)
 
 <!> No more events -- simulation ended.
 
 
-Calling finish() at end of Run #1...
+Calling finish() at end of Run #3...
 
 End run of OMNeT++
