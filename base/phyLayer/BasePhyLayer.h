@@ -5,7 +5,9 @@
 #include "DeciderToPhyInterface.h"
 #include "MacToPhyInterface.h"
 
+// TODO already included through MacToPhyInterface -> PhyUtils
 #include "AnalogueModel.h"
+
 #include "Decider.h"
 #include "ChannelInfo.h"
 #include "BaseWorldUtility.h"
@@ -97,6 +99,10 @@ protected:
 	
 	/** A list of the analogue models to use.*/
 	AnalogueModelList analogueModels;
+	
+	// TODO: add
+	/** a special analogue model that represents the Radio's receiving ability */
+	// RadioStateAnalogueModel* rsAnalogueModel;
 	
 	/** 
 	 * ParameterMap is used at initialisation to pass the parameters
@@ -314,6 +320,14 @@ protected:
 	 * Filters the passed Signal to every registered AnalogueModel.
 	 */ 
 	void filterSignal(Signal& s);
+	
+	/**
+	 * @brief Called the moment the simulated switching process of the Radio is finished. 
+	 * 
+	 * The Radio is set the new RadioState and the MAC Layer is sent
+	 * a confirmation message.
+	 */
+	void finishRadioSwitching();
 	
 public:
 	

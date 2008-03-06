@@ -223,6 +223,12 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
  */
 void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 	
+	/* 
+	* TODO: first of all, attach the AnalogueModel that represents the RadioState
+	* to the AnalogueModelList as first element.
+	* 
+	*/
+	
 	if(xmlConfig == 0) {
 		ev << "No analogue models configuration file specified." << endl;
 		return;
@@ -578,8 +584,7 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg) {
 	//radio switch over
 	case RADIO_SWITCHING_OVER:
 		assert(msg == radioSwitchingOverTimer);
-		radio.endSwitch();
-		sendControlMsg(new cMessage(0, RADIO_SWITCHING_OVER));
+		finishRadioSwitching();
 		break;		
 		
 	//AirFrame
@@ -718,20 +723,44 @@ Radio::RadioState BasePhyLayer::getRadioState() {
 }
 
 /**
+ * @brief Called the moment the simulated switching process of the Radio is finished. 
+ * 
+ * The Radio is set the new RadioState and the MAC Layer is sent
+ * a confirmation message.
+ */
+void BasePhyLayer::finishRadioSwitching()
+{	
+	radio.endSwitch();
+	sendControlMsg(new cMessage(0, RADIO_SWITCHING_OVER));
+}
+
+/**
  * Tells the BasePhyLayer to switch to the specified
  * radio state. The switching process can take some time
  * depending on the specified switching times in the
  * ned file.
+ * 
+ * @return	-1: Error code if the Radio is currently switching
+ * 			
+ * 			else: switching time from the current RadioState to the new RadioState 
  */
 simtime_t BasePhyLayer::setRadioState(Radio::RadioState rs) {
 	
 	//TODO: what to do if we are currently transmitting a signal?
 	simtime_t switchTime = radio.switchTo(rs);
 	
-	if(switchTime < 0) //invalid switch time, we are propably already switching 
+	//invalid switch time, we are propably already switching 
+	if(switchTime < 0) 
 		return switchTime;
 	
-	sendSelfMessage(radioSwitchingOverTimer, simTime() + switchTime);
+	// if switching is done in exactly zero-time no extra self-message is scheduled
+	if (switchTime == 0.0)
+	{
+		finishRadioSwitching();
+	} else
+	{
+		sendSelfMessage(radioSwitchingOverTimer, simTime() + switchTime);
+	}
 	
 	return switchTime;
 }

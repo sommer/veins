@@ -1,22 +1,25 @@
 #ifndef PHYUTILS_H_
 #define PHYUTILS_H_
 
+#include "AnalogueModel.h"
+
 #include <omnetpp.h>
 #include <iostream>
 #include <assert.h>
+#include <map>
 
 using namespace std;
 
 
 /**
- * @brief
+ * @brief The class that represents the Radio as a state machine.
  * 
  */
 class Radio
 {
 public:
 	/**
-	* The state of the radio of the nic.
+	* @brief The state of the radio of the nic.
 	* 
 	* PLEASE INSERT NEW RADIOSTATES !!!BEFORE!!! NUM_RADIO_STATES
 	*/
@@ -49,9 +52,6 @@ protected:
 	RadioState state;
 	RadioState nextState;
 	
-	
-	
-	
 	/**
 	 * Array for storing switchtimes between states
 	 */
@@ -61,7 +61,7 @@ protected:
 public:
 	
 	/**
-	 * Default constructor for instances of class Radio
+	 * @brief Default constructor for instances of class Radio
 	 */
 	Radio(RadioState _state = SLEEP)
 		: state(_state), nextState(_state), numRadioStates(NUM_RADIO_STATES)
@@ -107,8 +107,13 @@ public:
 	}
 	
 	/**
-	 * @brief A function called by the Physical Layer 
+	 * @brief A function called by the Physical Layer to start the switching process to a new RadioState
 	 * 
+	 * 
+	 * 
+	 * @return	-1: Error code if the Radio is currently switching
+	 * 			
+	 * 			else: switching time from the current RadioState to the new RadioState 
 	 */
 	simtime_t switchTo(RadioState newState)
 	{
@@ -117,6 +122,7 @@ public:
 		
 		// state to switch to must not be SWITCHING
 		assert(newState != SWITCHING);
+		
 		
 		// return error value if newState is the same as the current state
 		// if (newState == state) return -1;
@@ -189,5 +195,82 @@ public:
 
 }; // end class Radio
 
+
+/**
+ * \brief This special AnalogueModel provides filtering of a Signal
+ * according to the actual RadioStates the Radio were in during
+ * the Signal's time interval
+ * 
+ * TODO: implement
+ */
+class RadioStateAnalogueModel : public AnalogueModel
+{
+
+protected:
+	
+	/**
+	 * \brief Indicator variable whether we are currently tracking changes
+	 */
+	bool currentlyTracking;
+	
+	/**
+	 * \brief Data structure to track when the Radio is receiving
+	 */
+	map<simtime_t, bool> radioIsReceiving;
+	
+		
+public:
+	
+	/**
+	 * \brief Standard constructor for a RadioStateAnalogueModel instance
+	 */
+	RadioStateAnalogueModel(bool _currentlyTracking = false)
+		: currentlyTracking(_currentlyTracking)
+	{
+	
+	}
+	
+	/**
+	 * \brief Filters the Signal according to the RadioState
+	 */
+	virtual void filterSignal(Signal& s)
+	{
+		// TODO implement
+	}
+	
+	/**
+	 * \brief Switches tracking mode on/off
+	 */	
+	void setTrackingModeTo(bool b)
+	{
+		currentlyTracking = b;
+	}
+	
+	/**
+	 * \brief Cleans up all stored information until given time-point
+	 */
+	void cleanUpUntil(simtime_t t)
+	{
+		
+	}
+	
+	/**
+	 * \brief Stores an entry of the form "time-point/receiving or not (from now on)"
+	 */
+	void writeRecvEntry(simtime_t t, bool b)
+	{
+		// something like this...
+		
+		if (currentlyTracking)
+		{
+			// store entry
+		}
+		
+		// else do nothing
+	}
+	
+	
+	
+}; // end class RadioStateAnalogueModel
 
 #endif /*PHYUTILS_H_*/
