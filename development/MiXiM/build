@@ -1,3 +1,0 @@
-#!/bin/sh
-opp_makemake -f -u cmdenv -o MiXiM
-make

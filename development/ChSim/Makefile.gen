@@ -1,3 +1,0 @@
-all:
-	opp_makemake -f -I.
-# DO NOT DELETE THIS LINE -- make depend depends on it.

@@ -1,9 +1,0 @@
-.PHONY: all clean
-
-all: Makefile
-
-Makefile:
-	qmake
-
-clean:
-	rm -rf Makefile
