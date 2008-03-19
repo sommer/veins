@@ -20,7 +20,7 @@ void GeneratorWizard::evaluateButtonsState() {
 }
 
 void GeneratorWizard::on_addNodesButton_clicked() {
-	printf("add button clicked\n");
+//	printf("add button clicked\n");
 	Node nodeDialog;
 	QStandardItemModel *model = new QStandardItemModel(1, 2);
 

@@ -29,7 +29,7 @@ void init(const char* configPath, const char* _sourcePath) {
 	buffer = (char*)malloc(BUFSIZE);
 
 	if (buffer == NULL || sourcePath == NULL) {
-		printf("Out of memory!\n");
+		fprintf(stderr, "Out of memory!\n");
 		exit(EXIT_FAILURE);
 	}
 	omnetFile = fopen(configPath, "w+b");
@@ -82,7 +82,7 @@ int nedCheck(const struct dirent* entry) {
 			return 0;
 		memcpy(&end, &(entry->d_name[length - 4]), 4);
 		if (strncmp(end, ".ned", 4) == 0) {
-			printf("found match: %s\n", entry->d_name);
+//			printf("found match: %s\n", entry->d_name);
 			return 1; // match found
 		}
 	}
@@ -144,20 +144,20 @@ bool checkNumber(const char *line) {
 	
 	while (isspace(*line)) line++;
 	if (!isdigit(*line) || (*line == '-' && !isdigit(*(line+1)) )) {
-		printf("No value supplied\n");
+		fprintf(stderr, "No value supplied\n");
 		return false;
 	}
 	
 	value = strtol(line, &endptr, 10);
 	
-	if (errno != 0) {
-		printf("Value (%ld) out of range\n", value);
+	if (errno) {
+		perror("number problem");
 		return false;
 	}
 
 	while (isspace(*endptr)) endptr++;
 	if (*endptr != 0) {
-		printf("Garbage after value\n");
+		fprintf(stderr, "Garbage after value\n");
 		return false;
 	}
 	return true;
@@ -173,26 +173,31 @@ bool checkTimeValue(const char *line) {
 	
 	while (isspace(*line)) line++;
 	if (!isdigit(*line) && *line != '-') {
-		printf("No value supplied\n");
+		fprintf(stderr, "No value supplied\n");
 		return false;
 	}
 	
 	value = strtol(line, &endptr, 10);
 	
-	if (errno != 0 || value <= 0) {
-		printf("Value (%ld) out of range\n", value);
+	if (value <= 0) {
+		fprintf(stderr, "Value (%ld) out of range\n", value);
+		return false;
+	}
+	
+	if (errno) {
+		perror("time value problem");
 		return false;
 	}
 	
 	while (isspace(*endptr)) endptr++;
 	
 	if (*endptr == 0) {
-		printf("No time base supplied\n");
+		fprintf(stderr, "No time base supplied\n");
 		return false;
 	}
 	
 	if (strchr("smhd", *endptr) == NULL) {
-		printf("Invalid time base supplied\n");
+		fprintf(stderr, "Invalid time base supplied\n");
 		return false;
 	}
 	
@@ -200,7 +205,7 @@ bool checkTimeValue(const char *line) {
 	while (isspace(*endptr)) endptr++;
 
 	if (*endptr != 0) {
-		printf("Garbage after time value\n");
+		fprintf(stderr, "Garbage after time value\n");
 		return false;
 	}
 	return true;
@@ -213,7 +218,7 @@ bool empty(const char *line) {
 
 bool checkString(const char *line) {
 	if (strchr(line, '"') != NULL) {
-		printf("Quotes are not allowed in strings\n");
+		fprintf(stderr, "Quotes are not allowed in strings\n");
 		return false;
 	}
 	if (empty(line))
@@ -301,7 +306,7 @@ char* getParamName(char* line) {
 
 	name = malloc(colIndex + 1);
 	if (name == NULL) {
-		printf("Out of memory in getParamName()\n");
+		fprintf(stderr, "Out of memory in getParamName()\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -323,7 +328,7 @@ paramType getParamType(char* line) {
 
 	comment = strstr(line, ":");
 	if (!comment) {
-		printf("Expected ':' in \"%s\"\n", line);
+		fprintf(stderr, "Expected ':' in \"%s\"\n", line);
 		return INVALID_PARAMTYPE;
 	}
 	type = stripComments(comment + 1);
@@ -341,110 +346,84 @@ paramType getParamType(char* line) {
 		return ANY;
 
 	// fallthrough case
-	printf("Encountered unknown parameter type: %s\n", type);
+	fprintf(stderr, "Encountered unknown parameter type: %s\n", type);
 	return INVALID_PARAMTYPE;
 }
 
-Module* _findModules(char* dir) {
-	int result;
-	int i = 0;
+Module* _parseModule(char* fileName) {
+	bool foundParamSection = false;
 	size_t lineLength;
 	ssize_t read = 0;
 	FILE* file;
 	char* lineContents;
-	char* fileString = (char*)malloc(1024);
-	struct dirent** baseFiles;
-	Module* firstModule = NULL;
-	Module* lastModule = NULL;
-
-	if (fileString == NULL) {
-		printf("Memory trouble\n");
-		return NULL;	
+	char* fName;
+	Module* mod;
+	Parameter* lastParam = NULL;
+	
+//	printf("Reading %s\n", fileName);
+	file = fopen(fileName, "r");
+	read = 0;
+	if (file == NULL) {
+		perror("Couldn't read file");
+		return NULL;
 	}
+	
+	// found a module
+	mod = malloc(sizeof(Module));
+	if (mod == NULL) {
+		fprintf(stderr, "Memory trouble\n");
+		return NULL;
+	}
+			
+	mod->name = malloc(100);
+	mod->next = NULL;
+	mod->depends = NULL;
+	mod->type = INVALID_MODULETYPE;
 
-	// looking for base modules
-	result = scandir(dir, &baseFiles, nedCheck, alphasort);
-	printf("Found %d files in %s\n", result, dir);
+	fName = basename(fileName);
+	mod->name = strncpy(mod->name, fName, strlen(fName) - 4);
+	mod->name[strlen(fName) - 4] = '\0';
+	mod->parameters = NULL;
 
-	while (result-- > 0) {
-		//int searchRes;
-		bool foundParamSection = false;
-
-		sprintf(fileString, "%s%s", dir, baseFiles[i++]->d_name);
-		printf("Reading %s\n", fileString);
-		file = fopen(fileString, "r");
-		read = 0;
-		if (file == NULL) {
-			perror("Couldn't read file");
+	while (read != -1) {
+		lineContents = NULL;
+		lineLength = 0;
+		read = getline(&lineContents, &lineLength, file);
+		// find the parameters
+		if (!foundParamSection) {
+			if (strstr(lineContents, "parameters:") != NULL) {
+				foundParamSection = true;
+			}
 		} else {
-			// found a module
-			Module* mod = malloc(sizeof(Module));
-			Parameter* lastParam = NULL;
-			char* fName;
-
-			if (mod == NULL) {
-				printf("Memory trouble\n");
-				free(fileString);
+			char* par;
+			Parameter* param = malloc(sizeof(Parameter));
+			
+			if (param == NULL) {
+				fprintf(stderr, "Memory trouble\n");
+				free(mod);
 				return NULL;
 			}
-			
-			mod->name = malloc(100);
-			mod->next = NULL;
-			mod->depends = NULL;
-			mod->type = INVALID_MODULETYPE;
 
-			if (firstModule == NULL) {
-				firstModule = mod;
-				lastModule = mod;
+			param->comment = getComments(lineContents);
+			param->next = NULL;
+			par = stripComments(lineContents);
+
+			param->name = getParamName(par);
+			param->type = getParamType(par);
+//			printf("Found param: %s of type %d (%s)\n", param->name, param->type, param->comment);
+
+			if (mod->parameters == NULL) {
+				mod->parameters = param;
+				lastParam = param;
 			} else {
-				lastModule->next = mod;
-				lastModule = mod;
+				lastParam->next = param;
+				lastParam = param;
 			}
-			
-			fName = basename(fileString);
-			mod->name = strncpy(mod->name, fName, strlen(fName) - 4);
-			mod->name[strlen(fName) - 4] = '\0';
-			mod->parameters = NULL;
 
-			while (read != -1) {
-				lineContents = NULL;
-				lineLength = 0;
-				read = getline(&lineContents, &lineLength, file);
-				// find the parameters
-				if (!foundParamSection) {
-					if (strstr(lineContents, "parameters:") != NULL) {
-						foundParamSection = true;
-					}
-				} else {
-					Parameter* param = malloc(sizeof(Parameter));
-					char* par;
-					if (param == NULL) {
-						printf("Memory trouble\n");
-						free(fileString);
-						return NULL;
-					}
-
-					param->comment = getComments(lineContents);
-					param->next = NULL;
-
-					par = stripComments(lineContents);
-
-					param->name = getParamName(par);
-					param->type = getParamType(par);
-					printf("Found param: %s of type %d (%s)\n", param->name, param->type, param->comment);
-
-					if (mod->parameters == NULL) {
-						mod->parameters = param;
-						lastParam = param;
-					} else {
-						lastParam->next = param;
-						lastParam = param;
-					}
-
-					if (par[strlen(par) - 1] == ';') {
-						read = -1; // dirty way to stop reading this file and continue with next
-					}
-				}
+			if (par[strlen(par) - 1] == ';') {
+				read = -1; // dirty way to stop reading this file and continue with next
+			}
+		}
 
 /*				searchRes = rx.search(lineContents);
 				if (searchRes != -1) {
@@ -452,93 +431,134 @@ Module* _findModules(char* dir) {
 					//printf("Found component: %s is a %s module\n", rx.cap(1).latin1(), rx.cap(2).latin1());
 					map.insert(pair<const char* const, const char* const>(strdup(rx.cap(2).latin1()), strdup(rx.cap(1).latin1())));
 				}*/
-			}
-			fclose(file);
-		}
 	}
-	// TODO 
-	// add the base module to this list
-	free(fileString);
-	return firstModule;
+	fclose(file);
+	
+	return mod;
 }
 
-Module* findBaseModules() {
+Module* _findModules(char* dir) {
 	int result;
-	char* sourceDirString = (char*)malloc(1024);
-	Module* mod;
+	int i = 0;
+	char* fileString = (char*)malloc(1024);
+	struct dirent** baseFiles;
+	Module* firstModule = NULL;
+	Module* lastModule = NULL;
 
-	if (sourceDirString == NULL) {
-		printf("Memory trouble\n");
+	if (fileString == NULL) {
+		fprintf(stderr, "Memory trouble\n");
 		return NULL;	
 	}
 
-	result = snprintf(sourceDirString, 1023, "%s/base/modules/", sourcePath);
-	if (result < 0 || result > 1024) {
-		printf("Dir length trouble\n");
-		free (sourceDirString);
-		return NULL;
-	}
+	// looking for modules
+	result = scandir(dir, &baseFiles, nedCheck, alphasort);
+//	printf("Found %d files in %s\n", result, dir);
 
-	mod = _findModules(sourceDirString);
-	free (sourceDirString);
-	return mod;
+	while (result-- > 0) {
+		//int searchRes;
+		Module* mod;
+
+		sprintf(fileString, "%s%s", dir, baseFiles[i++]->d_name);
+		mod = _parseModule(fileString);
+		
+		if (firstModule == NULL) {
+			firstModule = mod;
+			lastModule = mod;
+		} else {
+			lastModule->next = mod;
+			lastModule = mod;
+		}
+	}
+	free(fileString);
+
+	return firstModule;
 }
 
 Module* findModules(moduleType type) {
 	int result;
 	char* sourceDirString = (char*)malloc(1024);
-	char* typeString;
+	const char* typeString;
+	const char* baseString;
 	Module* mod;
 
 	if (sourceDirString == NULL) {
-		printf("Memory trouble\n");
+		fprintf(stderr, "Memory trouble\n");
 		return NULL;	
 	}
 
 	switch (type) {
 		case APPLICATION:
 			typeString = "application";
+			baseString = "BaseApplLayer";
 			break;
 		case NODE:
 			typeString = "node";
+			baseString = "BaseNode";
 			break;
 		case NETWORK:
 			typeString = "netw";
+			baseString = "BaseNetwLayer";
 			break;
 		case MAC:
 			typeString = "mac";
+			baseString = "BaseMacLayer";
 			break;
 		case PHY:
 			typeString = "phy";
+			baseString = "BaseNic";
 			break;
 		case BATTERY:
 			typeString = "battery";
+			baseString = "BaseBattery";
 			break;
 		case MOBILITY:
 			typeString = "mobility";
+			baseString = "BaseMobility";
 			break;
 		case ARP:
 			typeString = "ARP";
+			baseString = "BaseArp";
 			break;
 		case UTILITY:
 			typeString = "utility";
+			baseString = "BaseUtility";
 			break;
 		default:
 			typeString = "ERROR";
-			printf("Unknown type %d detected!\n", type);
+			baseString = "ERROR";
+			fprintf(stderr, "Unknown type %d detected!\n", type);
 	}
 
-	printf("Looking for %s modules...\n", typeString);
+//	printf("Looking for %s modules...\n", typeString);
 
-	result = snprintf(sourceDirString, 1023, "%s/modules/%s/", sourcePath, typeString);
+	// base module first
+	result = snprintf(sourceDirString, 1024, "%s/base/modules/%s.ned", sourcePath, baseString);
 	if (result < 0 || result > 1024) {
-		printf("Dir length trouble\n");
+		fprintf(stderr, "Dir length trouble\n");
 		free (sourceDirString);
 		return NULL;
 	}
 
-	mod = _findModules(sourceDirString);
+	mod = _parseModule(sourceDirString);
+	
+	// optional modules next
+	result = snprintf(sourceDirString, 1024, "%s/modules/%s/", sourcePath, typeString);
+	if (result < 0 || result > 1024) {
+		fprintf(stderr, "Dir length trouble\n");
+		free (sourceDirString);
+		return NULL;
+	}
+	
+	mod->next = _findModules(sourceDirString);
 	free (sourceDirString);
 	return mod;
 }
 
+Module* getModuleByName(Module* modules, const char* name) {
+	while (modules != NULL) {
+		if (!strcmp(modules->name, name))
+			return modules;
+		else modules = modules->next;
+	}
+	return NULL;
+}

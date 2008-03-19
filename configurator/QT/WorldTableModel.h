@@ -17,7 +17,7 @@ class WorldTableModel : public QAbstractTableModel {
 
 	public:
 		WorldTableModel(QObject* parent = 0) : QAbstractTableModel(parent), rows(0) {}
-		int rowCount(const QModelIndex & UNUSED(parent) = QModelIndex()) const {printf("returning %d rows\n", rows); return rows;}
+		int rowCount(const QModelIndex & UNUSED(parent) = QModelIndex()) const {return rows;}
 		int columnCount(const QModelIndex & UNUSED(parent) = QModelIndex()) const {return 3;}
 		QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 		QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;

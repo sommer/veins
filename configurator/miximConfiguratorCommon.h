@@ -74,6 +74,12 @@ typedef struct _parameter {
 	char* name;
 	char* comment;
 	paramType type;
+	union _value {
+		int numeric;
+		char* string;
+		bool boolean;
+		char character;
+	} value;
 	struct _parameter *next;
 } Parameter;
 
@@ -108,8 +114,9 @@ char* stripComments(char* line);
 char* getComments(char* line);
 char* getParamName(char* line);
 paramType getParamType(char* line);
-Module* findBaseModules(void);
+//Module* findBaseModules(void);
 Module* findModules(moduleType type);
+Module* getModuleByName(Module* modules, const char* name);
 
 #ifdef __cplusplus
 }

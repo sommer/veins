@@ -8,7 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += GeneratorWizard.h main.h Node.h ../miximConfiguratorCommon.h WorldTableModel.h
+HEADERS += GeneratorWizard.h main.h Node.h ../miximConfiguratorCommon.h WorldTableModel.h optionDialog.h
 FORMS += generatorwizard.ui nic.ui node.ui
-SOURCES += GeneratorWizard.cpp main.cpp Node.cpp ../miximConfiguratorCommon.c WorldTableModel.cpp
+SOURCES += GeneratorWizard.cpp main.cpp Node.cpp ../miximConfiguratorCommon.c WorldTableModel.cpp optionDialog.cpp
 RESOURCES += resources.qrc

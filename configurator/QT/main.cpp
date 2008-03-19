@@ -24,7 +24,6 @@ int main( int argc, char ** argv ) {
 	QString captured;
 	modules map;
 	pair<modules::iterator, modules::iterator> modIt;
-	Module* baseModules;
 
 	if (sourceDirString == NULL 
 		|| fileString == NULL
@@ -41,12 +40,6 @@ int main( int argc, char ** argv ) {
 	}
 
 	init("omnetpp.ini", sourceDirString);
-
-	baseModules = findBaseModules();
-	if (baseModules == NULL) {
-		printf("Couldn't find base modules!\n");
-		exit(EXIT_FAILURE);
-	}
 
 skipComponentScan:
 	w.show();
