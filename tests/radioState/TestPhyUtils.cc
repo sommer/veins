@@ -2,6 +2,9 @@
 
 #include <asserts.h>
 
+
+/* ------ Testing stuff for Radio ------ */
+
 // global variables needed for tests
 const Radio::RadioState initialState =  Radio::RX;
 
@@ -20,7 +23,7 @@ const double SLEEP2SLEEP = 9.0;
 // test functions
 
 
-void testConstructor()
+void testRadioConstructor()
 {
 	Radio radio1; // default constructor
 		
@@ -68,7 +71,7 @@ int testSwitching(Radio& radio, Radio::RadioState to, double refValue)
 	return 0;	
 }
 
-void testFunctionality()
+void testRadioFunctionality()
 {
 	Radio radio1;
 	
@@ -159,18 +162,281 @@ void testFunctionality()
 	return;	
 }
 
+/* ------ Testing stuff for RadioStateAnalogueModel ------ */
+
+
+// further global variables
+
+// timepoints to store in the analogue model
+const double time1 = 0.2; // first timepoint
+const double time2 = 0.3;
+const double time3 = 0.51;
+const double time4 = 0.6; // last timepoint
+
+// timepoint for testing purposes
+const double time5 = 0.5; // in between two timepoints, before duplicate
+const double time6 = 0.52; // in between two timepoints, after duplicate
+const double time7 = 0.19; // before first timepoint
+const double time8 = 0.65; // after last timepoint
+const double time9 = 0.59; // before last timepoint
+
+typedef std::list<std::pair<simtime_t, bool> > RSList;
+
+// reference lists
+RSList emptyList = RSList();
+RSList oneElemList = RSList();
+RSList manyElemList = RSList();
+RSList variableList = RSList();
 
 
 
+// just an inherited class to get access to the members
+class DiagRSAM : public RadioStateAnalogueModel
+{
 
+public:
+	
+	DiagRSAM(bool _currentlyTracking = false) : RadioStateAnalogueModel(_currentlyTracking) {}
+	
+	bool getTrackingFlag() { return currentlyTracking; }
+	
+	
+	int getRecvListSize() { return ((int) radioIsReceiving.size()); }
+	
+	
+	bool compareRecvLists(RSList refRecvList)
+	{
+		if ( ((int) radioIsReceiving.size()) != ((int) refRecvList.size()) ) return false;
+		
+		std::list<ListEntry>::iterator it1;
+		RSList::iterator it2;
+		
+		for (it1 = radioIsReceiving.begin(), it2 = refRecvList.begin(); it1 != radioIsReceiving.end(); it1++, it2++)
+		{
+			if ( it1->getTime() != it2->first ) return false;
+			if ( it1->getValue() != it2->second ) return false;
+		}
+		
+		return true;
+	}
+	
+	
+};
+
+
+void fillReferenceLists()
+{
+	// contains only last timestamp
+	// (time4,true)
+	oneElemList.push_back( std::pair<simtime_t, bool> (time4, true) );
+	
+	// contains all timestamps
+	// (time1,true)--(time2,true)--(time3,false)--(time3,true)--(time4,true)
+	manyElemList.push_back( std::pair<simtime_t, bool> (time1, true) );
+	manyElemList.push_back( std::pair<simtime_t, bool> (time2, true) );
+	manyElemList.push_back( std::pair<simtime_t, bool> (time3, false) );
+	manyElemList.push_back( std::pair<simtime_t, bool> (time3, true) );
+	manyElemList.push_back( std::pair<simtime_t, bool> (time4, true) );
+	
+	
+	
+}
+
+
+void testRSAMConstructor()
+{
+	DiagRSAM m;
+	assertFalse("Default constructor sets tracking off.", m.getTrackingFlag());
+	assertTrue("Default constructor creates empty list.", m.getRecvListSize() == 0);
+	
+	m = DiagRSAM(false);
+	assertFalse("DiagRSAM(false) sets tracking off.", m.getTrackingFlag());
+	assertTrue("DiagRSAM(false) creates empty list.", m.getRecvListSize() == 0);
+	
+	m = DiagRSAM(true);
+	assertTrue("DiagRSAM(true) sets tracking on.", m.getTrackingFlag());
+	assertTrue("DiagRSAM(true) creates empty list.", m.getRecvListSize() == 0);
+	
+}
+
+
+void testRSAMModification()
+{
+	// empty map, tracking off
+	DiagRSAM m = DiagRSAM();
+	
+	// call writeRecvEntry, should not write to list
+	m.writeRecvEntry(time1, true);
+	assertTrue("Nothing has been written to list.", m.getRecvListSize() == 0);
+	
+	
+	m.setTrackingModeTo(true);
+	assertTrue("Tracking is on.", m.getTrackingFlag());
+	
+	m.setTrackingModeTo(false);
+	assertFalse("Tracking is off.", m.getTrackingFlag());
+	
+	
+	// tests for lists storing many entries
+	
+	// add the elements to the model
+	// should create:
+	
+	// (time1,true)--(time2,true)--(time3,false)--(time3,true)--(time4,true)
+	
+	m = DiagRSAM();
+	
+	m.setTrackingModeTo(true);
+	
+	m.writeRecvEntry(time1, true);
+	m.writeRecvEntry(time2, true);
+	m.writeRecvEntry(time3, false);
+	m.writeRecvEntry(time3, true);
+	m.writeRecvEntry(time4, true);
+	
+	assertTrue("Elements have been written to list.", m.getRecvListSize() == 5);
+	
+
+	// compare lists
+	assertTrue("Lists are equal. (many entries)", m.compareRecvLists(manyElemList));
+	
+	
+	
+	// make copies for cleanup-tests
+	DiagRSAM temp;
+	
+	// special cases
+	temp = m;
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	// called with timepoint before the first entry
+	temp.cleanUpUntil(time7); // nothing should happen
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	
+	temp = m;
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	// called with timepoint after the last entry
+	temp.cleanUpUntil(time8); // complete list should be cleaned
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(emptyList));
+	
+	temp = m;
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	// called with timepoint equal to the first entry
+	temp.cleanUpUntil(time1); // nothing should happen
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	
+	temp = m;
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	// called with timepoint equal to the last entry
+	temp.cleanUpUntil(time4); // only last entry should remain
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(oneElemList));
+	
+	
+	// expected regular cases
+	
+	// (time3,false)--(time3,true)--(time4,true)
+	variableList.clear();
+	variableList.push_back( std::pair<simtime_t, bool> (time3, false) );
+	variableList.push_back( std::pair<simtime_t, bool> (time3, true) );
+	variableList.push_back( std::pair<simtime_t, bool> (time4, true) );
+	
+	temp = m;
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	// called with timepoint equal to the first entry of
+	// a bunch with same timepoint
+	temp.cleanUpUntil(time3); // all entries with timepoint >= time3 should remain
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(variableList));
+	
+	
+	
+	// (time5,true)--(time3,false)--(time3,true)--(time4,true)
+	variableList.clear();
+	variableList.push_back( std::pair<simtime_t, bool> (time5, true) );
+	variableList.push_back( std::pair<simtime_t, bool> (time3, false) );
+	variableList.push_back( std::pair<simtime_t, bool> (time3, true) );
+	variableList.push_back( std::pair<simtime_t, bool> (time4, true) );
+	
+	temp = m;
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	// called with timepoint in between two timepoint, one entry must be modified,
+	// all others before that one must be deleted
+	temp.cleanUpUntil(time5); // (time2, true) must become (time5, true), (time1, true) must be deleted
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(variableList));
+	
+	
+	
+	// (time2,true)--(time3,false)--(time3,true)--(time4,true)
+	variableList.clear();
+	variableList.push_back( std::pair<simtime_t, bool> (time2, true) );
+	variableList.push_back( std::pair<simtime_t, bool> (time3, false) );
+	variableList.push_back( std::pair<simtime_t, bool> (time3, true) );
+	variableList.push_back( std::pair<simtime_t, bool> (time4, true) );
+	
+	temp = m;
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	// called with exact timepoint of one entry in the middle
+	temp.cleanUpUntil(time2); // all entries before (time2, true) must be deleted
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(variableList));
+	
+	
+	// (time9,true)--(time4,true)
+	variableList.clear();
+	variableList.push_back( std::pair<simtime_t, bool> (time9, true) );
+	variableList.push_back( std::pair<simtime_t, bool> (time4, true) );
+	
+	
+	temp = m;
+	assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(manyElemList));
+	// called with timepoint before a single entry 
+	temp.cleanUpUntil(time9); // (time3, true) must become (time9, true) , all before must be deleted
+	assertTrue("Lists are equal. (many entries) END", temp.compareRecvLists(variableList));
+	
+	
+	
+	
+	// tests for lists storing exactly one entry
+	DiagRSAM m2 = DiagRSAM(true);
+	
+	m2.writeRecvEntry(time4, true);
+	
+	assertTrue("Element has been written to list.", m2.getRecvListSize() == 1);
+	assertTrue("Lists are equal. (one entry)", m2.compareRecvLists(oneElemList));
+	
+	DiagRSAM temp2;
+	
+	temp2 = m2;
+	assertTrue("Lists are equal. (one entry)", temp2.compareRecvLists(oneElemList));
+	// called with timepoint before entry
+	temp2.cleanUpUntil(time9); // nothing should happen
+	assertTrue("Lists are equal. (one entry)", temp2.compareRecvLists(oneElemList));
+	
+	temp2 = m2;
+	assertTrue("Lists are equal. (one entry)", temp2.compareRecvLists(oneElemList));
+	// called with exactly the timepoint contained
+	temp2.cleanUpUntil(time4); // nothing should happen
+	assertTrue("Lists are equal. (one entry)", temp2.compareRecvLists(oneElemList));
+	
+	temp2 = m2;
+	assertTrue("Lists are equal. (one entry)", temp2.compareRecvLists(oneElemList));
+	// called with timepoint after entry
+	temp2.cleanUpUntil(time8); // list should be cleaned
+	assertTrue("Lists are equal. (one entry) END", temp2.compareRecvLists(emptyList));
+
+	
+}
 
 
 
 int main()
 {
 	
-	testConstructor();
-	testFunctionality();
+	// Radio
+	testRadioConstructor();
+	testRadioFunctionality();
+	
+	// RadioStateAnalogueModel
+	fillReferenceLists();
+	testRSAMConstructor();
+	testRSAMModification();
 	
 }
 

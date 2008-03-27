@@ -6,7 +6,7 @@
 #include <omnetpp.h>
 #include <iostream>
 #include <assert.h>
-#include <map>
+#include <list>
 
 using namespace std;
 
@@ -196,17 +196,72 @@ public:
 }; // end class Radio
 
 
+
 /**
  * \brief This special AnalogueModel provides filtering of a Signal
  * according to the actual RadioStates the Radio were in during
  * the Signal's time interval
  * 
  * TODO: implement
+ * 
  */
 class RadioStateAnalogueModel : public AnalogueModel
 {
 
 protected:
+	
+	/**
+	 * data structure for the list elements, consists basically
+	 * of a pair of a simtime_t and a bool entry (simple timestamp)
+	 * 
+	 * further functionality can be added later if needed 
+	 * 
+	 */
+	class ListEntry
+	{
+	
+	protected:
+		pair<simtime_t, bool> basicTimestamp;
+		
+	public:
+		ListEntry(simtime_t time, bool value)
+		{
+			basicTimestamp = pair<simtime_t, bool> (time, value);
+		}
+		
+		virtual ~ListEntry() {}
+		
+		simtime_t getTime() const
+		{
+			return basicTimestamp.first;
+		}
+		
+		void setTime(simtime_t time)
+		{
+			basicTimestamp.first = time;
+		}
+		
+		bool getValue() const
+		{
+			return basicTimestamp.second;
+		}
+		
+		void setValue(bool value)
+		{
+			basicTimestamp.second = value;
+		}
+		
+		/**
+		 * overload of operator < for class ListEntry to be able to use the STL Algorithm "lower_bound"
+		 */
+		bool operator<(const simtime_t& t)
+		{
+			return (this->getTime() < t);			
+		}
+		
+		
+	};
+	
 	
 	/**
 	 * \brief Indicator variable whether we are currently tracking changes
@@ -216,7 +271,7 @@ protected:
 	/**
 	 * \brief Data structure to track when the Radio is receiving
 	 */
-	map<simtime_t, bool> radioIsReceiving;
+	list<ListEntry> radioIsReceiving;
 	
 		
 public:
@@ -247,10 +302,57 @@ public:
 	}
 	
 	/**
-	 * \brief Cleans up all stored information until given time-point
+	 * \brief Cleans up all stored information strictly before the given time-point,
+	 * i.e. all elements with their timepoint strictly smaller than given key
+	 * 
 	 */
 	void cleanUpUntil(simtime_t t)
 	{
+		// list is empty ==> nothing to do
+		if ( radioIsReceiving.empty() ) return;
+		
+		/* the list contains at least one element */
+		
+		// CASE: t is smaller or equal the timepoint of the first element ==> nothing to do, return
+		if ( t <= radioIsReceiving.front().getTime() )
+		{ 
+			return;
+		}
+		
+		// CASE: t is greater than the timepoint of the last element ==> clear complete list, return
+		if ( t > radioIsReceiving.back().getTime() )
+		{ 
+			radioIsReceiving.clear();
+			return;
+		}
+		
+		/*
+		 * preconditions from now on:
+		 * 1. list contains at least two elements, since 2. + 3.
+		 * 2. t > first_timepoint
+		 * 3. t <= last_timepoint
+		 */
+		
+		// get an iterator and set it to the first timepoint >= t
+		list<ListEntry>::iterator it;
+		it = lower_bound(radioIsReceiving.begin(), radioIsReceiving.end(), t);
+		
+		// TODO Question: shall multiple entries with same timepoint be preserved
+		// in this case or only the last one?
+		// CASE: list contains an element with exactly the given key
+		if ( it->getTime() == t )
+		{
+			radioIsReceiving.erase(radioIsReceiving.begin(), it);
+			return;
+		}
+		
+		// TODO: check whether this is allowed
+		// CASE: t is "in between two elements" 
+		// ==> set the iterators predecessors time to t, it becomes the first element
+		it--; // go back one element, possible since this one has not been the first one
+		
+		it->setTime(t); // set this elements time to t 
+		radioIsReceiving.erase(radioIsReceiving.begin(), it); // and erase all previous elements
 		
 	}
 	
@@ -259,18 +361,19 @@ public:
 	 */
 	void writeRecvEntry(simtime_t t, bool b)
 	{
-		// something like this...
+		assert( t >= (radioIsReceiving.end()->getTime()) );
 		
 		if (currentlyTracking)
 		{
-			// store entry
+			radioIsReceiving.push_back(ListEntry(t, b));
 		}
-		
-		// else do nothing
 	}
 	
 	
 	
+	
 }; // end class RadioStateAnalogueModel
+
+
 
 #endif /*PHYUTILS_H_*/
