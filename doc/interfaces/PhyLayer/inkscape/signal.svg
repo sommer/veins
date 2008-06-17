@@ -13,7 +13,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.44.1"
-   sodipodi:docbase="/home/karl/job/mixim/trunk/doc/interfaces/PhyLayer/inkscape"
+   sodipodi:docbase="/home/karl/job/mixim/workingcopy/doc/interfaces/PhyLayer/inkscape"
    sodipodi:docname="signal.svg"
    version="1.0">
   <defs
@@ -156,17 +156,7 @@
        d="M 239.16979,167.90885 C 239.16979,135.61113 239.03374,133.57032 239.03374,133.57032"
        id="path4129"
        sodipodi:nodetypes="cc" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot4131"
-       transform="translate(-62.50899,82.64339)"><flowRegion
-         id="flowRegion4133"><rect
-           id="rect4135"
-           width="92.85714"
-           height="25.714285"
-           x="248.57143"
-           y="60.933609" /></flowRegion><flowPara
-         id="flowPara4137">Signal</flowPara></flowRoot>    <path
+    <path
        style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:0.80694181px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 239.68291,150.77135 L 485.46233,150.77135"
        id="path4139" />
@@ -196,16 +186,6 @@
          x="242.97652"
          y="147.54936"
          id="tspan4151">time</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="244.84492"
-       y="164.8322"
-       id="text4153"><tspan
-         sodipodi:role="line"
-         x="244.84492"
-         y="164.8322"
-         id="tspan4155">TX</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -300,17 +280,7 @@
        d="M 89.256726,130.61787 C 121.55445,130.61787 123.59526,130.48182 123.59526,130.48182"
        id="path4191"
        sodipodi:nodetypes="cc" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot4193"
-       transform="matrix(0,1,-1,0,174.5222,-171.0609)"><flowRegion
-         id="flowRegion4195"><rect
-           id="rect4197"
-           width="92.85714"
-           height="25.714285"
-           x="248.57143"
-           y="60.933609" /></flowRegion><flowPara
-         id="flowPara4199">Signal</flowPara></flowRoot>    <path
+    <path
        style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:0.80132335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 106.34608,130.46484 L 106.34608,372.07745"
        id="path4201" />
@@ -420,17 +390,7 @@
        d="M 239.44813,217.31065 C 239.44813,185.01293 239.31208,182.97212 239.31208,182.97212"
        id="path4243"
        sodipodi:nodetypes="cc" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot4245"
-       transform="translate(-62.23065,132.0452)"><flowRegion
-         id="flowRegion4247"><rect
-           id="rect4249"
-           width="92.85714"
-           height="25.714285"
-           x="248.57143"
-           y="60.933609" /></flowRegion><flowPara
-         id="flowPara4251">Signal</flowPara></flowRoot>    <path
+    <path
        style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:0.80694181px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 239.86394,200.23008 L 485.64336,200.23008"
        id="path4253" />
@@ -460,16 +420,6 @@
          x="243.25485"
          y="196.95116"
          id="tspan4265">time</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="245.12326"
-       y="214.23399"
-       id="text4267"><tspan
-         sodipodi:role="line"
-         x="245.12326"
-         y="214.23399"
-         id="tspan4269">TX</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -563,17 +513,7 @@
        d="M 239.44814,267.73185 C 239.44814,235.43413 239.31209,233.39332 239.31209,233.39332"
        id="path4307"
        sodipodi:nodetypes="cc" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot4309"
-       transform="translate(-62.23064,182.4664)"><flowRegion
-         id="flowRegion4311"><rect
-           id="rect4313"
-           width="92.85714"
-           height="25.714285"
-           x="248.57143"
-           y="60.933609" /></flowRegion><flowPara
-         id="flowPara4315">Signal</flowPara></flowRoot>    <path
+    <path
        style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:0.80694181px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 239.86395,250.7094 L 485.64337,250.7094"
        id="path4317" />
@@ -603,16 +543,6 @@
          x="243.25487"
          y="247.37236"
          id="tspan4329">time</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="245.12328"
-       y="264.65518"
-       id="text4331"><tspan
-         sodipodi:role="line"
-         x="245.12328"
-         y="264.65518"
-         id="tspan4333">TX</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -717,42 +647,27 @@
        style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 179.16503,249.15731 L 116.5732,216.99206"
        id="path4379" />
-    <g
-       id="g4783"
-       transform="translate(-19.15909,-64.78907)">
-      <path
-         sodipodi:nodetypes="ccccccccc"
-         id="path4769"
-         d="M 19.445299,168.88649 L 70.275234,117.85157 L 121.10517,66.816647 L 138.85334,66.816647 L 156.60152,66.816647 L 105.44502,117.97314 L 54.288525,169.12964 L 36.866912,169.00806 L 19.445299,168.88649 z "
-         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-      <text
-         transform="matrix(1.018064,-0.982251,1.01807,0,0,0)"
-         id="text4771"
-         y="210.15703"
-         x="-170.40016"
-         style="font-size:9.8225069px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         xml:space="preserve"><tspan
-           y="210.15703"
-           x="-170.40016"
-           id="tspan4773"
-           sodipodi:role="line">Signal</tspan></text>
-      <path
-         id="path4775"
-         d="M 54.321316,133.61449 L 89.783911,133.61449"
-         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-      <path
-         id="path4777"
-         d="M 66.313005,122.0328 L 100.95566,122.0328"
-         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-      <path
-         id="path4779"
-         d="M 77.382257,110.34853 L 113.04984,110.55352"
-         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-      <path
-         id="path4781"
-         d="M 88.963966,98.766858 L 124.63155,98.971844"
-         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 0.286209,104.09742 L 51.116144,53.0625 L 101.94608,2.027577 L 119.69425,2.027577 L 137.44243,2.027577 L 86.28593,53.18407 L 35.129435,104.34057 L 17.707822,104.21899 L 0.286209,104.09742 z "
+       id="path4769"
+       sodipodi:nodetypes="ccccccccc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 35.162226,68.82542 L 70.624821,68.82542"
+       id="path4775" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 47.153915,57.24373 L 81.79657,57.24373"
+       id="path4777" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 58.223167,45.55946 L 93.89075,45.76445"
+       id="path4779" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 69.804876,33.977788 L 105.47246,34.182774"
+       id="path4781" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 76.159442,63.290813 L 95.428135,62.880833 L 95.428135,70.670303"
@@ -765,5 +680,99 @@
        style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 99.732843,40.127383 L 118.38658,39.922393 L 118.38658,47.506883"
        id="path4796" />
-  </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2226"
+       transform="translate(2.011706,1.005853)"><flowRegion
+         id="flowRegion2228"><rect
+           id="rect2230"
+           width="56.327778"
+           height="33.193157"
+           x="181.05357"
+           y="133.76988" /></flowRegion><flowPara
+         id="flowPara2232">Timed</flowPara><flowPara
+         id="flowPara2234">Mapping</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2236"
+       transform="translate(1.740009,50.74623)"><flowRegion
+         id="flowRegion2238"><rect
+           id="rect2240"
+           width="56.327778"
+           height="33.193157"
+           x="181.05357"
+           y="133.76988" /></flowRegion><flowPara
+         id="flowPara2242">Timed</flowPara><flowPara
+         id="flowPara2244">Mapping</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2261"
+       transform="translate(2.745863,101.0389)"><flowRegion
+         id="flowRegion2263"><rect
+           id="rect2265"
+           width="56.327778"
+           height="33.193157"
+           x="181.05357"
+           y="133.76988" /></flowRegion><flowPara
+         id="flowPara2267">Timed</flowPara><flowPara
+         id="flowPara2269">Mapping</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2271"><flowRegion
+         id="flowRegion2273"><rect
+           id="rect2275"
+           width="53.310219"
+           height="30.175596"
+           x="90.526787"
+           y="71.40699" /></flowRegion><flowPara
+         id="flowPara2277">MultiDimMM</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2279"
+       transform="matrix(0,1,-1,0,191.9005,-17.76957)"><flowRegion
+         id="flowRegion2281"><rect
+           id="rect2283"
+           width="57.33363"
+           height="32.187302"
+           x="90.526787"
+           y="69.395287" /></flowRegion><flowPara
+         id="flowPara2285">MultiDim</flowPara><flowPara
+         id="flowPara2287">Mapping</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2296"
+       transform="matrix(0.561438,-0.55305,0.99032,9.68674e-3,-115.6553,150.617)"><flowRegion
+         id="flowRegion2298"><rect
+           id="rect2300"
+           width="57.33363"
+           height="32.187302"
+           x="90.526787"
+           y="69.395287" /></flowRegion><flowPara
+         id="flowPara2302">MultiDim</flowPara><flowPara
+         id="flowPara2304">Mapping</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2306"
+       transform="translate(1.005853,2.011706)"><flowRegion
+         id="flowRegion2308"><rect
+           id="rect2310"
+           width="35.204861"
+           height="15.087798"
+           x="239.39307"
+           y="149.86354" /></flowRegion><flowPara
+         id="flowPara2312">value</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2322"
+       transform="translate(1.624471,51.36243)"><flowRegion
+         id="flowRegion2324"><rect
+           id="rect2326"
+           width="35.204861"
+           height="15.087798"
+           x="239.39307"
+           y="149.86354" /></flowRegion><flowPara
+         id="flowPara2328">value</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2330"
+       transform="translate(2.630329,101.6551)"><flowRegion
+         id="flowRegion2332"><rect
+           id="rect2334"
+           width="35.204861"
+           height="15.087798"
+           x="239.39307"
+           y="149.86354" /></flowRegion><flowPara
+         id="flowPara2336">value</flowPara></flowRoot>  </g>
 </svg>

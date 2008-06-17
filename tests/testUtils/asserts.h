@@ -54,10 +54,22 @@ template<class T> void assertClose(std::string msg, T target, T actual) {
  * value.
  */
 template<class T, class T2> void assertEqual(std::string msg, T target, T2 actual) {
-    if (target != actual) {
-    	fail(msg, target, actual);
+    if (target == actual) {
+    	pass(msg);
 	} else {
-		pass(msg);
+		fail(msg, target, actual);
+	}
+}
+
+/**
+ * Asserts that the passed value is equal to the passed expected
+ * value.
+ */
+template<class T, class T2> void assertEqualSilent(std::string msg, T target, T2 actual) {
+    if (target == actual) {
+    	pass(msg);
+	} else {
+		fail(msg);
 	}
 }
 
@@ -66,10 +78,10 @@ template<class T, class T2> void assertEqual(std::string msg, T target, T2 actua
  * value.
  */
 template<class T, class T2> void assertNotEqual(std::string msg, T target, T2 actual) {
-    if (target == actual) {
-    	fail(msg, target, actual);
+    if (target != actual) {
+    	pass(msg);
 	} else {
-		pass(msg);
+		fail(msg, target, actual);
 	}
 }
 

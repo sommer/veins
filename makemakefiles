@@ -20,7 +20,7 @@ IBASE=-I$(BASE)/utils -I$(BASE)/messages -I$(BASE)/modules -I$(BASE)/timers -I$(
 
 MODULES=$(ROOT)/modules
 # IMODULES=-I$(MODULES)/nic -I$(MODULES)/mobility -I$(MODULES)/utility -I$(MODULES)/localization -I$(MODULES)/node -I$(MODULES)/netw -I$(MODULES)/propagation -I$(MODULES)/phy -I$(MODULES)/mac
-IMODULES=-I$(MODULES)/nic -I$(MODULES)/mobility -I$(MODULES)/utility -I$(MODULES)/localization -I$(MODULES)/node -I$(MODULES)/netw -I$(MODULES)/propagation -I$(MODULES)/mac
+IMODULES=-I$(MODULES)/nic -I$(MODULES)/mobility -I$(MODULES)/utility -I$(MODULES)/node -I$(MODULES)/netw -I$(MODULES)/propagation
 
 ITESTS=-I$(ROOT)/tests/testUtils
 
@@ -44,7 +44,7 @@ all:
 	@echo $(ROOT)/base/modules
 	@cd $(ROOT)/base/modules && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 	@echo $(ROOT)/base/phyLayer
-	@cd $(ROOT)/base/phyLayer && $(MAKEMAKE) $(OPTS) -n $(IBASE)
+	@cd $(ROOT)/base/phyLayer && $(MAKEMAKE) $(OPTS) -n $(IBASE)	
 	@echo $(ROOT)/base/timers
 	@cd $(ROOT)/base/timers && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 	@echo $(ROOT)/base/connectionManager
@@ -53,15 +53,15 @@ all:
 	@cd $(ROOT)/base/localization && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 
 	@echo $(ROOT)/modules
-	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) -r -n -X phy -X channel
+	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) -r -n -X phy -X channel -X localization -X mac
 	@echo $(ROOT)/modules/utility
 	@cd $(ROOT)/modules/utility && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES)
 	@echo $(ROOT)/modules/application
 	@cd $(ROOT)/modules/application && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 #	@echo $(ROOT)/modules/channel
 #	@cd $(ROOT)/modules/channel && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-	@echo $(ROOT)/modules/mac
-	@cd $(ROOT)/modules/mac && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
+#	@echo $(ROOT)/modules/mac
+#	@cd $(ROOT)/modules/mac && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/nic
 	@cd $(ROOT)/modules/nic && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/netw
@@ -76,8 +76,8 @@ all:
 	@cd $(ROOT)/modules/mobility && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/netw
 	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-	@echo $(ROOT)/modules/localization
-	@cd $(ROOT)/modules/localization && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
+#	@echo $(ROOT)/modules/localization
+#	@cd $(ROOT)/modules/localization && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 	@echo $(ROOT)/modules/propagation
 	@cd $(ROOT)/modules/propagation && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
 
@@ -89,15 +89,15 @@ all:
 	@cd $(ROOT)/bin && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -o mixim
 
 	@echo $(ROOT)/examples
-	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -X centroid -X baseNetwork -X mfNetwork -X locNetwork -X multiChannel
+	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -X centroid -X baseNetwork -X mfNetwork -X locNetwork -X multiChannel -X positifNetwork
 #	@echo $(ROOT)/examples/baseNetwork
 #	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 #	@echo $(ROOT)/examples/mfNetwork
 #	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 #	@echo $(ROOT)/examples/locNetwork
 #	@cd $(ROOT)/examples/locNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-	@echo $(ROOT)/examples/positifNetwork
-	@cd $(ROOT)/examples/positifNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+#	@echo $(ROOT)/examples/positifNetwork
+#	@cd $(ROOT)/examples/positifNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/foxtrot
 	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 #	@echo $(ROOT)/examples/centroid
@@ -106,6 +106,8 @@ all:
 #	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/phyLayer
 	@cd $(ROOT)/examples/phyLayer && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@echo $(ROOT)/examples/analogueModels
+	@cd $(ROOT)/examples/analogueModels && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
@@ -125,5 +127,6 @@ all:
 	@cd $(ROOT)/tests/channelInfo && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(ITESTS)
 	@echo $(ROOT)/tests/radioState
 	@cd $(ROOT)/tests/radioState && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(ITESTS)
-	
+	@echo $(ROOT)/tests/mapping
+	@cd $(ROOT)/tests/mapping && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(ITESTS)
     

@@ -18,7 +18,7 @@ private:
 		};
 	public:
 		TestDecider(DeciderToPhyInterface* phy, int myIndex):
-			Decider::Decider(phy), myIndex(myIndex) {}
+			Decider(phy), myIndex(myIndex) {}
 		
 		virtual simtime_t processSignal(AirFrame* frame) {
 			Signal* s = &frame->getSignal();

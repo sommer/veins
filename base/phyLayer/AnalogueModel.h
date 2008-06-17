@@ -13,6 +13,8 @@
 class AnalogueModel {
 	
 public:
+	virtual ~AnalogueModel() {}
+	
 	/**
 	 * @brief Has to be overriden by every implementation.
 	 * 

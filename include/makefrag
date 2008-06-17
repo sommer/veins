@@ -6,7 +6,7 @@
 BASEDIRS := ../base/connectionManager ../base/localization ../base/messages ../base/modules ../base/phyLayer ../base/timers ../base/utils
 
 # MODULESDIRS := ../modules/application ../modules/channel ../modules/localization ../modules/mac ../modules/mobility ../modules/netw ../modules/nic ../modules/node ../modules/object ../modules/phy ../modules/propagation ../modules/utility
-MODULESDIRS := ../modules/application ../modules/localization ../modules/mac ../modules/mobility ../modules/netw ../modules/nic ../modules/node ../modules/object ../modules/propagation ../modules/utility
+MODULESDIRS := ../modules/application ../modules/mobility ../modules/netw ../modules/nic ../modules/node ../modules/object ../modules/propagation ../modules/utility
 
 BASEHEADERS = $(foreach dir,$(BASEDIRS),$(wildcard $(dir)/*.h))
 BASENEDS = $(foreach dir,$(BASEDIRS),$(wildcard $(dir)/*.ned))

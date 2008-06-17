@@ -84,11 +84,6 @@ void BasePhyLayer::initialize(int stage) {
 		radio.setSwitchTime(Radio::RX, Radio::SLEEP, readPar("timeRXToSleep", txToSleep));
 		
 		
-		//read complex(xml) ned-parameters
-		//	- analogue model parameters
-		initializeAnalogueModels(readPar("analogueModels", (cXMLElement*)0));
-		//	- decider parameters
-		initializeDecider(readPar("decider", (cXMLElement*)0));
 		
 		// get pointer to the world module
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
@@ -96,6 +91,13 @@ void BasePhyLayer::initialize(int stage) {
             throw new cRuntimeError("Could not find BaseWorldUtility module");
 		
 	} else if (stage == 1){
+		
+
+		//read complex(xml) ned-parameters
+		//	- analogue model parameters
+		initializeAnalogueModels(readPar("analogueModels", (cXMLElement*)0));
+		//	- decider parameters
+		initializeDecider(readPar("decider", (cXMLElement*)0));
 				
 		//initialise timer messages
 		radioSwitchingOverTimer = new cMessage(0, RADIO_SWITCHING_OVER);
@@ -730,7 +732,7 @@ Radio::RadioState BasePhyLayer::getRadioState() {
  */
 void BasePhyLayer::finishRadioSwitching()
 {	
-	radio.endSwitch();
+	radio.endSwitch(simTime());
 	sendControlMsg(new cMessage(0, RADIO_SWITCHING_OVER));
 }
 
@@ -747,7 +749,7 @@ void BasePhyLayer::finishRadioSwitching()
 simtime_t BasePhyLayer::setRadioState(Radio::RadioState rs) {
 	
 	//TODO: what to do if we are currently transmitting a signal?
-	simtime_t switchTime = radio.switchTo(rs);
+	simtime_t switchTime = radio.switchTo(rs, simTime());
 	
 	//invalid switch time, we are propably already switching 
 	if(switchTime < 0) 

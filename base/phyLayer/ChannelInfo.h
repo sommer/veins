@@ -73,10 +73,8 @@ protected:
 		 */
 		IntersectionIterator(AirFrameMatrix* airFrames, simtime_t from, simtime_t to) :
 			intervals(airFrames), from(from), to(to) {
-			endIt = intervals->find(from);
-			if(endIt == intervals->end()) {
-				endIt = intervals->upper_bound(from);
-			}
+			endIt = intervals->lower_bound(from);
+			
 			if(endIt != intervals->end()) {
 				startIt = endIt->second.begin();
 			}
@@ -161,10 +159,8 @@ protected:
 	public:
 		ConstIntersectionIterator(const AirFrameMatrix* airFrames, simtime_t from, simtime_t to) :
 			intervals(airFrames), from(from), to(to) {
-			endIt = intervals->find(from);
-			if(endIt == intervals->end()) {
-				endIt = intervals->upper_bound(from);
-			}
+			endIt = intervals->lower_bound(from);
+			
 			if(endIt != intervals->end()) {
 				startIt = endIt->second.begin();
 			}

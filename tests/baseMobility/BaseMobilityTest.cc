@@ -9,7 +9,7 @@ void BaseMobilityTest::initialize(int stage)
 	BaseMobility::initialize(stage);
 
 	
-	if (stage == 2)
+	if (stage == 1)
 	{
 		allTestsPassed = true;
 		

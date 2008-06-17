@@ -78,7 +78,7 @@ public:
      * an unintended result.
      * 
      */
-    virtual Coord getPositionAt(simtime_t actualTime)
+    virtual Coord getPositionAt(simtime_t actualTime) const
     {
     	// if speed is very close to 0.0, the host is practically standing still
     	if ( FWMath::close(speed, 0.0) ) return startPos;

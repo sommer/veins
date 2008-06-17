@@ -49,31 +49,31 @@ void TestPhyLayer::testInitialisation() {
 	assertTrue("Check upperControlOut ID.", upperControlOut != -1);
 	
 	//test radio state switching times
-	radio.switchTo(Radio::SLEEP);
-	radio.endSwitch();
-	simtime_t swTime = radio.switchTo(Radio::RX);
+	radio.switchTo(Radio::SLEEP, simTime());
+	radio.endSwitch(simTime());
+	simtime_t swTime = radio.switchTo(Radio::RX, simTime());
 	assertEqual("Switchtime SLEEP to RX.", 3.0, swTime);
-	radio.endSwitch();
+	radio.endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::TX);
+	swTime = radio.switchTo(Radio::TX, simTime());
 	assertEqual("Switchtime RX to TX.", 1.0, swTime);
-	radio.endSwitch();
+	radio.endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::SLEEP);
+	swTime = radio.switchTo(Radio::SLEEP, simTime());
 	assertEqual("Switchtime TX to SLEEP.", 2.5, swTime);
-	radio.endSwitch();
+	radio.endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::TX);
+	swTime = radio.switchTo(Radio::TX, simTime());
 	assertEqual("Switchtime SLEEP to TX.", 3.5, swTime);
-	radio.endSwitch();
+	radio.endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::RX);
+	swTime = radio.switchTo(Radio::RX, simTime());
 	assertEqual("Switchtime TX to RX.", 2.0, swTime);
-	radio.endSwitch();
+	radio.endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::SLEEP);
+	swTime = radio.switchTo(Radio::SLEEP, simTime());
 	assertEqual("Switchtime RX to SLEEP.", 1.5, swTime);
-	radio.endSwitch();
+	radio.endSwitch(simTime());
 	
 	TestDecider* dec = dynamic_cast<TestDecider*>(decider);
 	assertTrue("Decider is of type TestDecider.", dec != 0);
