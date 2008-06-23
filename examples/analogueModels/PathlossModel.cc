@@ -25,13 +25,13 @@ void PathlossModel::filterSignal(Signal& s){
 	 * Create a proper mapping.
 	 * 
 	 * We assume one constant attenuation Value for the whole duration
-	 * of the Signal. That is why we pass timepoints for start and end
-	 * and a default interval of 1.
+	 * of the Signal. That is why we pass the same timepoints for start and end
+	 * and a default interval of 1 (which isn't used).
 	 * 
 	 */
 	PathlossConstMapping* attMapping = new PathlossConstMapping(dimensions,
 											Argument(sStart),
-											Argument(sEnd),
+											Argument(sStart),
 											Argument(1),
 											attValue);
 			

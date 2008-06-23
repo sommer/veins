@@ -136,14 +136,19 @@ void Argument::setArgValue(const Dimension & dim, double value)
 	}*/
 }
 
-int Argument::insertValue(int pos, const Dimension& dim, double value){
+int Argument::insertValue(int pos, const Dimension& dim, double value, bool ignoreUnknown){
 	while(pos < count && !(dim < values[pos].first)){
-			if(values[pos].first == dim){
+		
+		if(values[pos].first == dim){
 			values[pos].second = value;
 			return pos;
 		}
 		++pos;
 	}
+	
+	if(ignoreUnknown)
+		return pos;
+	
 	if(pos == count){
 		values[count++] = std::pair<Dimension, double>(dim, value);
 	} else {
@@ -160,53 +165,23 @@ int Argument::insertValue(int pos, const Dimension& dim, double value){
 	return pos;
 }
 
-void Argument::setArgValues(const Argument& o){
+void Argument::setArgValues(const Argument& o, bool ingoreUnknown){
 	time = o.time;
 	
 	int pos = 0;
 	for(int i = 0; i < o.count; i++){
-		pos = insertValue(pos, o.values[i].first, o.values[i].second);
+		pos = insertValue(pos, o.values[i].first, o.values[i].second, ingoreUnknown);
 	}
 }
 
 bool Argument::isSamePosition(const Argument & o) const
-{
-	/*if(values.size() < o.values.size()){
-		return false;
-	}
-	
-	if(fabs(time - o.time) > 0.00001){
-		return false;
-	}
-	
-	if(o.values.empty())
-		return true;
-	
-	ArgValMap::const_iterator itO = o.values.begin();		
-	ArgValMap::const_iterator it = values.begin();	
-	
-	while (it!=values.end())
-	{
-		if (itO->first < it->first) {
-			break;
-		} else if (it->first < itO->first) 
-			++it;
-		else { 
-			if((fabs(it->second - itO->second) > 0.00001)){
-				break;
-			}
-			++it; 
-			++itO; 
-		}
-		if (itO==o.values.end()) return true;
-	}
-	
-	return false;*/
+{	
 	if(count < o.count){
 		return false;
 	}
 	
-	if(fabs(time - o.time) > 0.00001){
+	//if(fabs(time - o.time) > 0.000001){
+	if(time != o.time){
 		return false;
 	}
 	
@@ -223,7 +198,8 @@ bool Argument::isSamePosition(const Argument & o) const
 		} else if (values[it].first < o.values[itO].first) 
 			++it;
 		else { 
-			if((fabs(values[it].second - o.values[itO].second) > 0.00001)){
+			//if((fabs(values[it].second - o.values[itO].second) > 0.000001)){
+			if(values[it].second != o.values[itO].second){
 				break;
 			}
 			++it; 
@@ -235,37 +211,39 @@ bool Argument::isSamePosition(const Argument & o) const
 	return false;
 }
 
-bool Argument::operator==(const Argument & o) const
-{
-	/*
-	if(values.size() != o.values.size())
-		return false;
-	
-	if(fabs(time - o.time) > 0.00001)
-		return false;
-	
-	ArgValMap::const_iterator itO = o.values.begin();
-	for(ArgValMap::const_iterator it = values.begin();
-		it != values.end(); it++) {
-		
-		if(!(it->first == itO->first) || (fabs(it->second - itO->second) > 0.00001)){
-			return false;
-		}
-		itO++;
-	}
-	
-	return true;*/
+bool Argument::isClose(const Argument& o, double epsilon) const{
 	if(count != o.count)
 		return false;
 	
-	if(fabs(time - o.time) > 0.00001)
+	if(fabs(time - o.time) > epsilon)
 		return false;
 	
 	unsigned int itO = 0;
 	for(unsigned int it = 0;
 		it < count; it++) {
 		
-		if(!(values[it].first == o.values[itO].first) || (fabs(values[it].second - o.values[itO].second) > 0.00001)){
+		if(!(values[it].first == o.values[itO].first) || (fabs(values[it].second - o.values[itO].second) > epsilon)){
+			return false;
+		}
+		itO++;
+	}
+	
+	return true;
+}
+
+bool Argument::operator==(const Argument & o) const
+{
+	if(count != o.count)
+		return false;
+	
+	if(time != o.time)
+		return false;
+	
+	unsigned int itO = 0;
+	for(unsigned int it = 0;
+		it < count; it++) {
+		
+		if(!(values[it].first == o.values[itO].first) || (values[it].second != o.values[itO].second)){
 			return false;
 		}
 		itO++;
@@ -275,38 +253,12 @@ bool Argument::operator==(const Argument & o) const
 }
 
 void Argument::operator=(const Argument& o){
-	/*ArgValMap::const_iterator endO = o.values.end();
-	ArgValMap::iterator end = values.end();
-	ArgValMap::const_iterator itO = o.values.begin();
-	ArgValMap::iterator it = values.begin();
-	
-	while(itO != endO && it != end){
-		if(it->first < itO->first){
-			values.erase(it++);
-		}else if(it->first == itO->first){
-			it->second = itO->second;
-			it++;
-			itO++;
-		}else{
-			values.insert(it, *itO);
-			itO++;
-		}
-	}
-	if(it != end){
-		do{
-			values.erase(it++);
-		}while(it != end);
-	} else {
-		while(itO != endO){
-			values.insert(it, *itO);
-			itO++;
-		}
-	}*/
 	count = o.count;
-	for(unsigned int i = 0; i < count; i++)
-		values[i] = o.values[i];
 	
-	
+	memcpy(values, o.values, sizeof(std::pair<Dimension, double>) * count);
+	//for(unsigned int i = 0; i < count; i++)
+	//	values[i] = o.values[i];
+		
 	time = o.time;
 	
 }
@@ -317,12 +269,13 @@ bool Argument::operator<(const Argument & o) const
 	
 	for(int it = (int)o.count - 1; it >= 0; --it){
 		double diff = values[it].second - o.values[it].second;
-		if(fabs(diff) > 0.000001){
+		//if(fabs(diff) > 0.000001){
+		if(diff != 0){
 			return diff < 0.0;
 		}
 	}
 	
-	return (time - o.time) < -0.00001;
+	return (time - o.time) < 0;
 }
 
 double Argument::compare(const Argument& o, const DimensionSet& dims) const{
@@ -338,7 +291,8 @@ double Argument::compare(const Argument& o, const DimensionSet& dims) const{
 		//catch special case time (after which we can abort)
 		if(dim == Dimension::time){
 			double diff = time - o.time;
-			if(fabs(diff) < 0.000001)
+			//if(fabs(diff) < 0.000001)
+			if(diff == 0)
 				return 0;
 			
 			return diff;
@@ -360,7 +314,8 @@ double Argument::compare(const Argument& o, const DimensionSet& dims) const{
 		if(values[ind].first == dim && o.values[indO].first == dim){
 			double diff = values[ind].second - o.values[indO].second;
 			
-			if(fabs(diff) > 0.000001)
+			//if(fabs(diff) > 0.000001)
+			if(diff != 0)
 				return diff;
 		}
 		++rIt;
@@ -638,7 +593,7 @@ Mapping* Mapping::createMapping(const DimensionSet& domain,
 MultiDimMappingIterator::MultiDimMappingIterator(MultiDimMapping& mapping):
 	mapping(mapping), subIterator(0), subMapping(0), 
 	valueIt(mapping.entries.beginIntpl()), 
-	position() {
+	position(){
 	
 	subMapping = valueIt.getValue();
 	if(!subMapping.isInterpolated && *subMapping) {
@@ -648,6 +603,8 @@ MultiDimMappingIterator::MultiDimMappingIterator(MultiDimMapping& mapping):
 	} else {
 		position = Argument(mapping.dimensions);
 	} 
+	nextPosition = position;
+	
 	updateNextPosition();
 }
 
@@ -661,15 +618,17 @@ MultiDimMappingIterator::MultiDimMappingIterator(MultiDimMapping& mapping, const
 		subIterator = (*subMapping)->createIterator(pos);
 	}
 	
-	updateNextPosition();
 	position = pos;
+	nextPosition = position;
+	updateNextPosition();
+	
 }
 
 void MultiDimMappingIterator::updateNextPosition() {
 	if(subMapping.isInterpolated || !subIterator || !subIterator->hasNext()){
 		if(valueIt.hasNext()){
 			ConstMappingIterator* tmp = (*valueIt.getNextValue())->createConstIterator();
-			nextPosition = tmp->getPosition();
+			nextPosition.setArgValues(tmp->getPosition());
 			delete tmp;
 		}else{
 			nextPosition = position;
@@ -677,8 +636,7 @@ void MultiDimMappingIterator::updateNextPosition() {
 		nextPosition.setArgValue(mapping.myDimension, valueIt.getNextPosition());
 		
 	} else {
-		nextPosition = subIterator->getNextPosition();
-		nextPosition.setArgValue(mapping.myDimension, position.getArgValue(mapping.myDimension));
+		nextPosition.setArgValues(subIterator->getNextPosition());
 	}
 }
 
@@ -737,7 +695,7 @@ void MultiDimMappingIterator::next() {
 	
 	
 	if(subIterator)
-		position = subIterator->getPosition();
+		position.setArgValues(subIterator->getPosition());
 
 	position.setArgValue(mapping.myDimension, valueIt.getPosition());
 	
@@ -753,7 +711,7 @@ void MultiDimMappingIterator::jumpToBegin() {
 	valueIt.jumpToBegin();
 	updateSubIterator();
 	if(subIterator)
-		position = subIterator->getPosition();
+		position.setArgValues(subIterator->getPosition());
 	
 	position.setArgValue(mapping.myDimension, valueIt.getPosition());
 	updateNextPosition();

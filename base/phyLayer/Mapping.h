@@ -244,7 +244,7 @@ protected:
 	unsigned int count;
 	
 protected:
-	int insertValue(int pos, const Dimension& dim, double value);
+	int insertValue(int pos, const Dimension& dim, double value, bool ignoreUnknown = false);
 	
 public:
 	/**
@@ -299,8 +299,10 @@ public:
 	 * 
 	 * Only the dimensions from the passed Argument are updated or
 	 * added.
+	 * If the ignoreUnknown parameter is set to true, only the Dimensions
+	 * already inside the Argument are updated.
 	 */
-	void setArgValues(const Argument& o);
+	void setArgValues(const Argument& o, bool ignoreUnknown = false);
 	
 	/**
 	 * @brief Returns true if the passed Argument points to
@@ -315,10 +317,17 @@ public:
 	bool isSamePosition(const Argument& other) const;
 	
 	/**
-	 * @brief Two TimeArguments are compared equal if they have
+	 * @brief Two Arguments are compared equal if they have
 	 * the same dimensions and the same values.
 	 */
 	bool operator==(const Argument& o) const;
+	
+	/**
+	 * @brief Two Arguments are comapred close if they have
+	 * the same dimensions and their values don't differ more
+	 * then a specific epsilon.
+	 */
+	bool isClose(const Argument& o, double epsilon = 0.000001) const;
 	
 	/**
 	 * @brief Returns true if this Argument is smaller then the
@@ -574,6 +583,8 @@ class SimpleConstMappingIterator:public ConstMappingIterator {
 protected:
 	ConstMapping* mapping;
 	
+	DimensionSet dimensions;
+	
 	Argument position;
 	
 	typedef std::set<Argument> KeyEntrySet;
@@ -581,9 +592,6 @@ protected:
 	const KeyEntrySet& keyEntries;
 	
 	KeyEntrySet::const_iterator nextEntry;
-	
-	DimensionSet dimensions;
-	
 	
 public:
 	/**
@@ -601,11 +609,12 @@ public:
 							   const std::set<Argument>& keyEntries,
 							   const Argument& start):
 		mapping(mapping), 
-		position(start),
-		keyEntries(keyEntries),
-		dimensions(mapping->getDimensionSet()) {
+		dimensions(mapping->getDimensionSet()),
+		position(dimensions),
+		keyEntries(keyEntries) {
 		
-		nextEntry = keyEntries.upper_bound(start);
+		position.setArgValues(start, true);
+		nextEntry = keyEntries.upper_bound(position);
 	}
 	
 	/**
@@ -622,8 +631,9 @@ public:
 	SimpleConstMappingIterator(ConstMapping* mapping, 
 							   const std::set<Argument>& keyEntries):
 		mapping(mapping), 
-		keyEntries(keyEntries),
-		dimensions(mapping->getDimensionSet()) {
+		dimensions(mapping->getDimensionSet()), 
+		position(dimensions),
+		keyEntries(keyEntries) {
 		
 		jumpToBegin();
 	}
@@ -636,7 +646,8 @@ public:
 	}
 	
 	virtual void jumpTo(const Argument& pos) { 
-		position = pos;
+		position.setArgValues(pos, true);
+		//lastpos: handle jump to correctly
 		nextEntry = keyEntries.upper_bound(position);
 	}
 	
@@ -647,9 +658,10 @@ public:
 	}
 	
 	virtual void iterateTo(const Argument& pos) { 
-		while(nextEntry != keyEntries.end() && !(pos < *nextEntry))
+		position.setArgValues(pos, true);
+		while(nextEntry != keyEntries.end() && !(position < *nextEntry))
 			++nextEntry;
-		position = pos;
+		
 	}
 	
 	virtual void next() { 
@@ -953,7 +965,7 @@ public:
 	 */
 	void jumpTo(const Argument& pos) {
 		valueIt.jumpTo(pos.getTime());
-		position.setTime(valueIt.getPosition());
+		position.setTime(pos.getTime());
 		nextPosition.setTime(valueIt.getNextPosition());
 	}
 	
@@ -963,7 +975,7 @@ public:
 	 */
 	void iterateTo(const Argument& pos) {
 		valueIt.iterateTo(pos.getTime());
-		position.setTime(valueIt.getPosition());
+		position.setTime(pos.getTime());
 		nextPosition.setTime(valueIt.getNextPosition());
 	}
 	

@@ -201,7 +201,13 @@ AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, Paramete
 	else if(name == "RandomFrequencyOnlyModel")
 		return createRandomFrequencyOnlyModel(params);
 	
-	return 0;
+	//If we couldn't create the passed analogue model, call the method
+	//of our base class.
+	//Note: even if all models defined in the xml-config can be handled
+	//by this class method, there will be at least the call to create
+	//the RadioStateAnalogueModel which in almost every case has to be done
+	//by the BasePhyLayer.
+	return BasePhyLayer::getAnalogueModelFromName(name, params);
 }
 		
 Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {

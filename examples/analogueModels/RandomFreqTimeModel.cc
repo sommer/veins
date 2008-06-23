@@ -33,7 +33,7 @@ void RandomFreqTimeModel::filterSignal(Signal& s){
 	simtime_t sStart = s.getSignalStart();
 	simtime_t sEnd = sStart + s.getSignalLength();
 	
-	simtime_t interval = 0.001; //lets use constant intervals for entries in time
+	simtime_t interval = (sEnd - sStart) / 10.0; //lets divide it into 10 steps
 	
 	Argument pos(dimensions); //create an Argument which we will use as parameter
 							  //to set the values inside the mapping
@@ -42,8 +42,9 @@ void RandomFreqTimeModel::filterSignal(Signal& s){
 		
 		pos.setArgValue(frequency, freq); // update arguments position in frequency dimension
 		
-		//create time entries for this frequency
-		for(simtime_t t = sStart; t <= sEnd; t+=interval){
+		//create time entries for this frequency 
+		//the comparision to "sEnd + (interval * 0.5)" is used to avoid floating point errors
+		for(simtime_t t = sStart; t <= sEnd + (interval * 0.5); t+=interval){
 			
 			pos.setTime(t); // update arguments position in time dimension
 			

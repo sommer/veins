@@ -142,15 +142,24 @@ void testArg() {
 	displayPassed = false;
 }
 
+void assertClose(std::string msg, Argument target, Argument actual){
+	if(actual.isClose(target)){
+		if(displayPassed)
+			std::cout << "Passed: " << msg << "\n";
+	} else {
+		std::cout << "FAILED: " << msg << ": expected " << target << " was " << actual << "\n";
+	}
+}
+
 void checkIterator(std::string msg, ConstMappingIterator& it, 
 				   bool hasNext, bool inRange, 
 				   Argument arg, Argument nextArg, 
 				   double val, ConstMapping& f) {
 	assertEqual(msg + ": hasNext() at " + toString(arg), hasNext, it.hasNext());
 	assertEqual(msg + ": inRange() at " + toString(arg), inRange, it.inRange());
-	assertEqual(msg + ": currentPos() at " + toString(arg), arg, it.getPosition());
+	assertClose(msg + ": currentPos() at " + toString(arg), arg, it.getPosition());
 	try{
-		assertEqual(msg + ": nextPos() at " + toString(arg), nextArg, it.getNextPosition());
+		assertClose(msg + ": nextPos() at " + toString(arg), nextArg, it.getNextPosition());
 	}catch(NoNextIteratorExcpetion e){
 		assertFalse("HasNext should be false on NoNextException.", hasNext);
 	}

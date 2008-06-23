@@ -3,6 +3,7 @@
 
 #include <string>
 #include <cmath>
+#include <map>
 
 /**
  * @brief A simple Decider implementation which only checks for
@@ -60,12 +61,14 @@ protected:
 						
 		//get the receiving power from the signal (calculated at each call of
 		//this method
-		Mapping* receivingPower = it->first->getReceivingPower();
+		//Mapping* receivingPower = it->first->getReceivingPower();
 		
 		
 		//------print the mappings----------------------
 		ev << "Sending power mapping: " << endl;
 		printMapping(it->first->getTransmissionPower());
+		
+		Mapping* receivingPower = it->first->getTransmissionPower()->clone();
 		
 		std::list<ConstMapping*> attList = it->first->getAttenuation();
 		int count = 1;
@@ -73,14 +76,23 @@ protected:
 			aIt != attList.end(); ++aIt){
 			
 			ev << endl;
-			ev << "Attenuation " << count << ":" << endl;
+			ev << " multiplied with Attenuation " << count << ":" << endl;
 			printMapping(*aIt);
 			++count;
+			
+			Mapping* tmp = Mapping::multiply(*receivingPower, **aIt);
+			delete receivingPower;
+			receivingPower = tmp;
+			
+			ev << endl;
+			ev << " result:" << endl;
+			printMapping(receivingPower);
 		}
 		
 		ev << endl;
-		ev << "Receiving power mapping: " << endl;
-		printMapping(receivingPower);
+		ev << "Receiving power calculated.";
+		//ev << "Receiving power mapping: " << endl;
+		//printMapping(receivingPower);
 		
 		ev << endl;
 		ev << "Threshold is " << toDecibel(threshold) << "dbm" << endl;
@@ -152,9 +164,12 @@ protected:
 		std::set<simtime_t> timeEntries;
 		std::set<double> freqEntries;
 		
+		std::map<double, std::set<simtime_t> > entries;
+		
 		ConstMappingIterator* it = m->createConstIterator();
 		
 		while(it->inRange()){
+			entries[it->getPosition().getArgValue(frequency)].insert(it->getPosition().getTime());
 			timeEntries.insert(it->getPosition().getTime());
 			freqEntries.insert(it->getPosition().getArgValue(frequency));
 			
@@ -179,11 +194,18 @@ protected:
 			fIt != freqEntries.end(); ++fIt){
 			ev << toString(*fIt, 5) << " | ";
 			pos.setArgValue(frequency, *fIt);
+			
+			std::map<double, std::set<simtime_t> >::iterator tmpIt = entries.find(*fIt);
+			
 			for(std::set<simtime_t>::const_iterator tIt = timeEntries.begin();
 				tIt != timeEntries.end(); ++tIt){
 				
-				pos.setTime(*tIt);
-				ev << toString(toDecibel(m->getValue(pos)), 6) << " ";
+				if(tmpIt != entries.end() && tmpIt->second.find(*tIt) != tmpIt->second.end()){
+					pos.setTime(*tIt);
+					ev << toString(toDecibel(m->getValue(pos)), 6) << " ";
+				} else {
+					ev << "       ";
+				}
 			}
 			ev << endl;
 		}
