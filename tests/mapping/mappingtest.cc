@@ -30,13 +30,16 @@ void testDimension() {
 	
 	DimensionSet dims;
 	dims.addDimension(d2);
-	assertEqual("first dimension should be freq.", d2, dims.getFirst());	
-	assertEqual("next dimension of freq should be freq.", d2, dims.getNext(d2));
+	DimensionSet::reverse_iterator it = dims.rbegin();
+	assertEqual("first dimension should be freq.", d2, *it);	
+	it++;
+	assertEqual("next dimension of freq should be freq.", d2, *it);
 	
 	dims.addDimension(d4);
-	assertEqual("first dimension should be space.", d4, dims.getFirst());	
-	assertEqual("next dimension of freq should be freq.", d2, dims.getNext(d2));
-	assertEqual("next dimension of space should be freq.", d2, dims.getNext(d4));
+	it = dims.rbegin();
+	assertEqual("first dimension should be space.", d4, *it);	
+	assertEqual("next dimension of freq should be freq.", d2, *(++it));
+	assertEqual("next dimension of space should be freq.", d2, *(++it));
 }
 
 
@@ -160,7 +163,7 @@ void checkIterator(std::string msg, ConstMappingIterator& it,
 	assertClose(msg + ": currentPos() at " + toString(arg), arg, it.getPosition());
 	try{
 		assertClose(msg + ": nextPos() at " + toString(arg), nextArg, it.getNextPosition());
-	}catch(NoNextIteratorExcpetion e){
+	}catch(NoNextIteratorException e){
 		assertFalse("HasNext should be false on NoNextException.", hasNext);
 	}
 	assertClose(msg + ": getValue() at " + toString(arg), val, it.getValue());

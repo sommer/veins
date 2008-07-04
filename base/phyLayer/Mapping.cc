@@ -579,6 +579,136 @@ Mapping* ConstMapping::multiply(ConstMapping &f1, ConstMapping &f2)
 
 //---Mapping implementation---------------------------------------
 
+/**
+ * @brief Initializes the ConstIterator for the passed ConstMapping,
+ * with the passed key entries to iterate over and the passed position
+ * as start. 
+ * 
+ * Note: The reference to the key entries has to be valid as long as the 
+ * iterator exists.
+ */
+SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping, 
+						   const std::set<Argument>& keyEntries,
+						   const Argument& start):
+	mapping(mapping), 
+	dimensions(mapping->getDimensionSet()),
+	position(dimensions),
+	keyEntries(keyEntries) {
+	
+	//the passed start position should define a value for every dimension
+	//of this iterators underlying mapping.
+	assert(start.getDimensions().isSubSet(dimensions));
+	
+	//Since the position is compared to the key entries we have to make
+	//sure it always contains only the dimensions of the underlying mapping.
+	//(the passed Argument might have more dimensions)
+	position.setArgValues(start, true);
+	
+	nextEntry = keyEntries.upper_bound(position);
+}
+
+/**
+ * @brief Initializes the ConstIterator for the passed ConstMapping,
+ * with the passed key entries to iterate over.
+ * 
+ * Note: The reference to the key entries has to be valid as long as the 
+ * iterator exists.
+ */
+SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping, 
+						   const std::set<Argument>& keyEntries):
+	mapping(mapping), 
+	dimensions(mapping->getDimensionSet()), 
+	position(dimensions),
+	keyEntries(keyEntries) {
+	
+	jumpToBegin();
+}
+
+
+/**
+ * @brief Utility method to fill add range of key entries in the time dimension
+ * to the key entry set.
+ */
+void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& to, const Argument& step, Argument& pos){
+	
+	//get iteration borders and steps
+	simtime_t fromT = from.getTime();
+	simtime_t toT = to.getTime();
+	simtime_t stepT = step.getTime();
+	
+	//iterate over interval without the end of the interval
+	for(simtime_t t = fromT; (t - toT) < -0.0001; t += stepT){
+		//create key entry at current position
+		pos.setTime(t);
+		keyEntries.insert(pos);
+	}
+	
+	//makes sure that the end of the interval becomes it own key entry
+	pos.setTime(toT);
+	keyEntries.insert(pos);
+}
+
+/**
+ * @brief Utility method to fill add range of key entries in the passed dimension
+ * (and recursivly its sub dimensions) to the key entry set.
+ */
+void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& to, const Argument& step, 
+					  DimensionSet::const_iterator curDim, Argument& pos){
+	//get the dimension to iterate over
+	Dimension d = *curDim;
+	
+	//increase iterator to next dimension (means curDim now stores the next dimension)
+	--curDim;
+	bool nextIsTime = (*curDim == Dimension::time);
+	
+	//get our iteration borders and steps
+	double fromD = from.getArgValue(d);
+	double toD = to.getArgValue(d);
+	double stepD = step.getArgValue(d);
+	
+	//iterate over interval without the last entry
+	for(double i = fromD; (i - toD) < -0.0001; i += stepD){
+		pos.setArgValue(d, i); //update position
+		
+		//call iteration over sub dimension
+		if(nextIsTime){
+			createKeyEntries(from, to, step, pos);
+		} else {
+			createKeyEntries(from, to, step, curDim, pos);
+		}
+	}
+	
+	//makes sure that the end of the interval has its own key entry
+	pos.setArgValue(d, toD);
+	if(nextIsTime){
+		createKeyEntries(from, to, step, pos);
+	} else {
+		createKeyEntries(from, to, step, curDim, pos);
+	}
+}
+
+/**
+ * @brief Initializes the key entry set with the passed min, max and 
+ * interval-Arguments.
+ * 
+ * After a call to this method this SimpleConstMapping is able to return a valid
+ * ConstIterator.
+ */
+void SimpleConstMapping::initializeArguments(const Argument& min,
+						 const Argument& max,
+						 const Argument& interval) {
+	DimensionSet::const_iterator dimIt = dimensions.end();
+	--dimIt;
+	Argument pos = min;
+	if(*dimIt == Dimension::time)
+		createKeyEntries(min, max, interval, pos);
+	else
+		createKeyEntries(min, max, interval, dimIt, pos);
+	
+	fullyInitialized = true;
+}
+
+
 Mapping* Mapping::createMapping(const DimensionSet& domain, 
 							  Mapping::InterpolationMethod intpl) {
 	assert(domain.hasDimension(Dimension::time));
@@ -587,6 +717,27 @@ Mapping* Mapping::createMapping(const DimensionSet& domain,
 		return new TimeMapping(intpl);
 	else
 		return new MultiDimMapping(domain, intpl);
+}
+
+
+/**
+ * @brief Initializes the Interator with the passed Iterators of the mappings to 
+ * interpoalte and the their inteproaltionfactor.
+ */
+LinearIntplMappingIterator::LinearIntplMappingIterator(ConstMappingIterator* leftIt, ConstMappingIterator* rightIt, double f):
+	leftIt(leftIt), rightIt(rightIt), factor(f) {
+	
+	assert(leftIt->getPosition() == rightIt->getPosition());
+}
+
+/**
+ * @brief Deletes the left and the right mapping iterator.
+ */
+LinearIntplMappingIterator::~LinearIntplMappingIterator() {
+	if(leftIt)
+		delete leftIt;
+	if(rightIt)
+		delete rightIt;
 }
 
 
@@ -732,10 +883,12 @@ void MultiDimMappingIterator::setValue(double value) {
 MultiDimMapping::MultiDimMapping(const MultiDimMapping& o):
 	Mapping(o), entries(o.entries), myDimension(o.myDimension) {
 	
+	DimensionSet::const_iterator dimIt = dimensions.find(myDimension);
+	Dimension nextDim = *(--dimIt);
 	for(SubFunctionMap::iterator it = entries.begin();
 		it != entries.end(); it++) {
 		Mapping* tmp = it->second;
-		if(dimensions.getNext(myDimension) == Dimension::time)
+		if(nextDim == Dimension::time)
 			it->second = new TimeMapping(*(static_cast<TimeMapping*>(tmp)));
 		else
 			it->second = new MultiDimMapping(*(static_cast<MultiDimMapping*>(tmp)));
@@ -755,10 +908,13 @@ const MultiDimMapping& MultiDimMapping::operator=(const MultiDimMapping& o)
 	dimensions = o.dimensions;
 	myDimension = o.myDimension;
 	
+	DimensionSet::const_iterator dimIt = dimensions.find(myDimension);
+	Dimension nextDim = *(--dimIt);
+	
 	for(SubFunctionMap::iterator it = entries.begin();
 		it != entries.end(); it++) {
 		Mapping* tmp = it->second;
-		if(dimensions.getNext(myDimension) == Dimension::time)
+		if(nextDim == Dimension::time)
 			it->second = new TimeMapping(*(static_cast<TimeMapping*>(tmp)));
 		else
 			it->second = new MultiDimMapping(*(static_cast<MultiDimMapping*>(tmp)));
