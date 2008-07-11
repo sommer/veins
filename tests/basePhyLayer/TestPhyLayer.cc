@@ -49,40 +49,48 @@ void TestPhyLayer::testInitialisation() {
 	assertTrue("Check upperControlOut ID.", upperControlOut != -1);
 	
 	//test radio state switching times
-	radio.switchTo(Radio::SLEEP, simTime());
-	radio.endSwitch(simTime());
-	simtime_t swTime = radio.switchTo(Radio::RX, simTime());
+	radio->switchTo(Radio::SLEEP, simTime());
+	radio->endSwitch(simTime());
+	simtime_t swTime = radio->switchTo(Radio::RX, simTime());
 	assertEqual("Switchtime SLEEP to RX.", 3.0, swTime);
-	radio.endSwitch(simTime());
+	radio->endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::TX, simTime());
+	swTime = radio->switchTo(Radio::TX, simTime());
 	assertEqual("Switchtime RX to TX.", 1.0, swTime);
-	radio.endSwitch(simTime());
+	radio->endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::SLEEP, simTime());
+	swTime = radio->switchTo(Radio::SLEEP, simTime());
 	assertEqual("Switchtime TX to SLEEP.", 2.5, swTime);
-	radio.endSwitch(simTime());
+	radio->endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::TX, simTime());
+	swTime = radio->switchTo(Radio::TX, simTime());
 	assertEqual("Switchtime SLEEP to TX.", 3.5, swTime);
-	radio.endSwitch(simTime());
+	radio->endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::RX, simTime());
+	swTime = radio->switchTo(Radio::RX, simTime());
 	assertEqual("Switchtime TX to RX.", 2.0, swTime);
-	radio.endSwitch(simTime());
+	radio->endSwitch(simTime());
 	
-	swTime = radio.switchTo(Radio::SLEEP, simTime());
+	swTime = radio->switchTo(Radio::SLEEP, simTime());
 	assertEqual("Switchtime RX to SLEEP.", 1.5, swTime);
-	radio.endSwitch(simTime());
+	radio->endSwitch(simTime());
 	
 	TestDecider* dec = dynamic_cast<TestDecider*>(decider);
 	assertTrue("Decider is of type TestDecider.", dec != 0);
 	
-	assertEqual("Check size of AnalogueModel list.", (size_t)2, analogueModels.size());
+	assertEqual("Check size of AnalogueModel list.", (size_t)3, analogueModels.size());
 	double att1 = -1.0;
 	double att2 = -1.0;
-	for(AnalogueModelList::const_iterator it = analogueModels.begin();
-		it != analogueModels.end(); it++) {
+	
+	// handling first Analogue Model (RSAM)
+	AnalogueModelList::const_iterator it = analogueModels.begin();
+	RadioStateAnalogueModel* model = dynamic_cast<RadioStateAnalogueModel*>(*it);
+	assertTrue("Analogue model is of type RadioStateAnalogueModel.", model != 0);
+	model = 0;
+	it++;
+	
+	// handling all other analogue models
+	for(; it != analogueModels.end(); it++) {
 		
 		TestAnalogueModel* model = dynamic_cast<TestAnalogueModel*>(*it);
 		assertTrue("Analogue model is of type TestAnalogueModel.", model != 0);
@@ -106,6 +114,18 @@ void TestPhyLayer::testInitialisation() {
 }
 
 AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
+	
+	AnalogueModel* model = BasePhyLayer::getAnalogueModelFromName(name, params);
+	
+	if (model != 0)
+	{
+		assertEqual("Check AnalogueModel name.", std::string("RadioStateAnalogueModel"), name);
+		assertEqual("Check for correct RSAM-pointer.", radio->getAnalogueModel(), model);
+		assertEqual("Check AnalogueModel parameter count.", 0, params.size());
+		
+		return model;		
+	}
+	
 	assertEqual("Check AnalogueModel name.", std::string("TestAnalogueModel"), name);
 	
 	assertEqual("Check AnalogueModel parameter count.", 1, params.size());

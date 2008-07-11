@@ -34,7 +34,7 @@ public:
 	 * 
 	 * This method is mainly used by the mac layer.
 	 */
-	virtual Radio::RadioState getRadioState() = 0;
+	virtual int getRadioState() = 0;
 	
 	/**
 	 * Tells the BasePhyLayer to switch to the specified
@@ -45,7 +45,7 @@ public:
 	 * specified state, or smaller zero if the radio could
 	 * not be switched (propably because it is already switching. 
 	 */
-	virtual simtime_t setRadioState(Radio::RadioState rs) = 0;
+	virtual simtime_t setRadioState(int rs) = 0;
 	
 	/**
 	 * Returns the current state of the channel. See ChannelState

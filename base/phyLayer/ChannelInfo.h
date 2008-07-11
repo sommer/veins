@@ -217,6 +217,11 @@ protected:
 	 */
 	AirFrameStartMap airFrameStarts;
 	
+	/**
+	 * Stores the earliest time-point we need to keep information for. 
+	 */
+	simtime_t earliestInfoPoint;
+	
 
 public:
 	typedef std::vector<AirFrame*> AirFrameVector;
@@ -275,8 +280,11 @@ public:
 	/**
 	 * Tells the ChannelInfo that an AirFrame is over. This
 	 * does not mean that in looses ownership of the AirFrame.
+	 * 
+	 * @return  The current time-point from that information concerning AirFrames
+	 * is needed to be stored.
 	 */
-	void removeAirFrame(AirFrame* a);
+	simtime_t removeAirFrame(AirFrame* a);
 	
 	/**
 	 * Fills the passed AirFrameVector reference with the AirFrames 
@@ -290,6 +298,15 @@ public:
 	 * not yet removed from ChannelInfo.
 	 */
 	void getAirFrames(simtime_t from, simtime_t to, AirFrameVector& out) const;
+	
+	/**
+	 * Returns the current time-point from that information concerning AirFrames
+	 * is needed to be stored.
+	 */
+	simtime_t getEarliestInfoPoint()
+	{
+		return earliestInfoPoint;
+	}
 	
 };
 

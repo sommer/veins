@@ -85,7 +85,7 @@ void TestMacLayer::testRun2(int stage, const cMessage* msg){
 		waitForTX(RUN2_SWITCH_TO_TX);
 		break;
 	case RUN2_SWITCH_TO_TX:{
-		Radio::RadioState state = phy->getRadioState();
+		int state = phy->getRadioState();
 		assertEqual("Radio is in TX.", Radio::TX, state);
 		
 		MacPkt* pkt = createMacPkt(1.0);
@@ -159,9 +159,9 @@ void TestMacLayer::testGetChannelState() {
  * Tests for switchRadio interface methods
  */
 void TestMacLayer::testSwitchRadio(int stage) {
-	Radio::RadioState expState;
+	int expState;
 	simtime_t expTime;
-	Radio::RadioState nextState;
+	int nextState;
 	int nextStage;
 	
 	switch(stage) {
@@ -182,7 +182,7 @@ void TestMacLayer::testSwitchRadio(int stage) {
 		break;
 	}
 
-	Radio::RadioState state = phy->getRadioState();
+	int state = phy->getRadioState();
 	assertEqual("Radio starts in SLEEP.", expState, state);
 	simtime_t switchTime = phy->setRadioState(nextState);
 	assertEqual("Correct switch time to RX.", expTime, switchTime);
@@ -215,7 +215,7 @@ void TestMacLayer::testChannelSense() {
 }
 
 void TestMacLayer::testSendingOnNotTX() {
-	Radio::RadioState state = phy->getRadioState();
+	int state = phy->getRadioState();
 	assertNotEqual("Radio is not in TX.", Radio::TX, state);
 	
 	MacPkt* pkt = createMacPkt(1.0);

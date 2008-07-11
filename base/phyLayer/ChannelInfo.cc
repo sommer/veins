@@ -24,13 +24,13 @@ void ChannelInfo::addAirFrame(AirFrame* a, simtime_t startTime) {
  * Tells the ChannelInfo that an AirFrame is over. This
  * does not mean that in looses ownership of the AirFrame.
  */
-void ChannelInfo::removeAirFrame(AirFrame* a) {
+simtime_t ChannelInfo::removeAirFrame(AirFrame* a) {
 	
 	//get start of AirFrame
 	simtime_t startTime = airFrameStarts[a];
 	
 	//calculate end time
-	simtime_t endTime = startTime + a->getDuration();
+	simtime_t endTime = startTime + a->getDuration(); 
 	
 	//remove this AirFrame from active AirFrames
 	deleteAirFrame(activeAirFrames, a, startTime, endTime);
@@ -38,7 +38,42 @@ void ChannelInfo::removeAirFrame(AirFrame* a) {
 	//add to inactive AirFrames
 	addToInactives(a, startTime, endTime);	
 	
+	/* 
+	 * Now check, whether the earliest time-point we need to store information for
+	 * might have moved on in time, since an AirFrame has been deleted.  
+	 * 
+	 * TODO: check for a more efficient way to find out that earliest time-point
+	 */
+	
+	// make a variable for the earliest-start-time of all remaining AirFrames
+	simtime_t earliestStart = 0;
+	AirFrameStartMap::const_iterator it = airFrameStarts.begin();
+	
+	// if there is an entry for an AirFrame
+	if (it != airFrameStarts.end())
+	{
+		// store the start-time of the first entry as earliestStart so far
+		earliestStart = (*it).second;
+		
+		// go through all other start-time-points
+		for (; it != airFrameStarts.end(); ++it)
+		{
+			// and check if an earlier start-time was found,
+			// if so, replace earliestStart with it
+			if( (*it).second < earliestStart )
+				earliestStart = (*it).second;
+		}
+		
+		// check if the current earliest-start-time is later than the stored
+		// value so far, if so, replace the earliestInfoPoint
+		if ( earliestStart > earliestInfoPoint )
+			earliestInfoPoint = earliestStart;
+	}
+	
+	
 	//std::cerr << "remove";
+	
+	return earliestInfoPoint;
 }
 
 /*
@@ -162,3 +197,5 @@ void ChannelInfo::getAirFrames(simtime_t from, simtime_t to, AirFrameVector& out
 	//check for intersecting active AirFrames
 	getIntersections(activeAirFrames, from, to, out);
 }
+
+

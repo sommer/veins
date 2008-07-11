@@ -12,14 +12,12 @@
 
 using namespace std;
 
-
+class RSAMMapping;
 
 /**
  * @brief This special AnalogueModel provides filtering of a Signal
  * according to the actual RadioStates the Radio were in during
  * the Signal's time interval
- * 
- * TODO: implement
  * 
  */
 class RadioStateAnalogueModel : public AnalogueModel
@@ -30,8 +28,8 @@ class RadioStateAnalogueModel : public AnalogueModel
 protected:
 	
 	/**
-	 * data structure for the list elements, consists basically
-	 * of a pair of a simtime_t and a double value (simple timestamp)
+	 * @brief data structure for the list elements,
+	 * consists basically of a pair of a simtime_t and a double value (simple timestamp)
 	 * 
 	 * further functionality can be added later if needed 
 	 * 
@@ -121,11 +119,12 @@ public:
 	/**
 	 * @brief Filters the Signal according to the RadioState (passively),
 	 * i.e. adding an appropriate instance of RSAMMapping to the Signal
+	 * 
+	 * The Signal is added a new RSAMMapping that has a pointer to
+	 * this instance RadioStateAnalogueModel, hence the pointer is valid as long
+	 * as the Radio instance exists that has this RSAM as a member.
 	 */
-	virtual void filterSignal(Signal& s)
-	{
-		// TODO implement
-	}
+	virtual void filterSignal(Signal& s);
 	
 	/**
 	 * @brief sets tracking mode
@@ -269,8 +268,9 @@ protected:
 	/**
 	 * The current state the radio is in
 	 */
-	RadioState state;
-	RadioState nextState;
+	int state;
+	int nextState;
+	
 	
 	/**
 	 * Array for storing switchtimes between states
@@ -295,7 +295,7 @@ public:
 	/**
 	 * @brief Default constructor for instances of class Radio
 	 */
-	Radio(RadioState _state = SLEEP, double _minAtt = 1.0, double _maxAtt = 0.0)
+	Radio(int _state = SLEEP, double _minAtt = 1.0, double _maxAtt = 0.0)
 		: state(_state), nextState(_state), numRadioStates(NUM_RADIO_STATES),
 		minAtt(_minAtt), maxAtt(_maxAtt), rsam(mapStateToAtt(state))
 	{
@@ -350,7 +350,7 @@ public:
 	 * 
 	 * The actual simtime must be passed, to create properly RSAMEntry
 	 */
-	simtime_t switchTo(RadioState newState, simtime_t now)
+	simtime_t switchTo(int newState, simtime_t now)
 	{
 		// state to switch to must be in a valid range, i.e. 0 <= newState < numRadioStates
 		assert(0 <= newState && newState < numRadioStates);
@@ -371,7 +371,7 @@ public:
 		
 		// set the nextState to the newState and the current state to SWITCHING 
 		nextState = newState;
-		RadioState lastState = state;
+		int lastState = state;
 		state = SWITCHING;
 		
 		// make entry to RSAM
@@ -386,7 +386,7 @@ public:
 	 * i.e. set the time for switching from one state to another
 	 * 
 	 */
-	void setSwitchTime(RadioState from, RadioState to, double time)
+	void setSwitchTime(int from, int to, double time)
 	{
 		// assert parameters are in valid range
 		assert(time >= 0.0);
@@ -405,7 +405,7 @@ public:
 	 * Returns the state the Radio is currently in
 	 * 
 	 */
-	RadioState getCurrentState() const
+	int getCurrentState() const
 	{
 		
 		return state;
@@ -449,9 +449,20 @@ public:
 	}
 	
 	/**
+	 * @brief discards information in the RadioStateAnalogueModel before given time-point
+	 * 
+	 */
+	void cleanAnalogueModelUntil(simtime_t t)
+	{
+		rsam.cleanUpUntil(t);		
+	}
+
+	
+protected:
+	/**
 	 * @brief responsible for making entries to the RSAM
 	 */
-	virtual void makeRSAMEntry(simtime_t time, RadioState state)
+	virtual void makeRSAMEntry(simtime_t time, int state)
 	{
 		rsam.writeRecvEntry(time, mapStateToAtt(state));
 	}
@@ -460,7 +471,7 @@ public:
 	 * @brief maps RadioState to attenuation, the Radios receiving characteristic
 	 * 
 	 */
-	virtual double mapStateToAtt(RadioState state)
+	virtual double mapStateToAtt(int state)
 	{
 		if (state == RX)
 		{
@@ -476,7 +487,7 @@ public:
 }; // end class Radio
 
 
-// TODO : implement
+
 /**
  * @brief ConstMapingIterator implementation for a RSAM
  * 
@@ -484,21 +495,33 @@ public:
 class RSAMConstMappingIterator : public ConstMappingIterator
 {
 protected:
-	RadioStateAnalogueModel* rsam;
+	
+	const RadioStateAnalogueModel* rsam;
 	
 	typedef list<RadioStateAnalogueModel::ListEntry> CurrList;
-	CurrList::iterator it;
+	CurrList::const_iterator it;
 	
 	Argument position;
 	Argument nextPosition;
+	
+	simtime_t signalStart;
+	simtime_t signalEnd;
+	
+	
 		
 public:
 	
-	RSAMConstMappingIterator(RadioStateAnalogueModel* _rsam)
+	RSAMConstMappingIterator(const RadioStateAnalogueModel* _rsam,
+								simtime_t _signalStart,
+								simtime_t _signalEnd) :
+		rsam(_rsam),
+		signalStart(_signalStart),
+		signalEnd(_signalEnd)
 	{
 		assert(_rsam);
-		rsam = _rsam;
-	
+		// TODO maybe a condition concerning signalEnd should also be checked here
+		assert( !(signalStart < rsam->radioIsReceiving.front().getTime()) );
+		
 		jumpToBegin();
 	}
 	
@@ -507,7 +530,8 @@ public:
 	/**
 	 * @brief Lets the iterator point to the passed position.
 	 * 
-	 * The passed new position can be at arbitary places.
+	 * The passed new position can be at arbitary places, jumping explicitly
+	 * before signalStart is allowed.
 	 */
 	virtual void jumpTo(const Argument& pos)
 	{
@@ -580,7 +604,7 @@ public:
 	{
 		if (hasNext()) // iterator it does not stand on last entry
 		{
-			CurrList::iterator it2 = it;
+			CurrList::const_iterator it2 = it;
 			it2++;
 			
 			nextPosition.setTime(it2->getTime());
@@ -603,9 +627,11 @@ public:
 		it = rsam->radioIsReceiving.begin();
 		simtime_t t = it->getTime();
 		
-		iterateToOverZeroSwitches(t);
+		assert( !(signalStart < t) );
 		
-		position.setTime(t);
+		iterateToOverZeroSwitches(signalStart);
+		
+		position.setTime(signalStart);
 		setNextPosition();
 	}
 	
@@ -654,7 +680,6 @@ public:
 	 * The next position depends on the implementation of the
 	 * Function.
 	 */
-	// TODO : check implementation
 	virtual void next()
 	{
 		if(hasNext())
@@ -696,13 +721,13 @@ public:
 	{
 		assert( !(rsam->radioIsReceiving.empty()) && it != (rsam->radioIsReceiving.end()) );
 		
-		CurrList::iterator it2 = it;
+		CurrList::const_iterator it2 = it;
 		if (it2 != rsam->radioIsReceiving.end())
 		{
 			it2++;
 		}
 		
-		return (it2 != rsam->radioIsReceiving.end());
+		return ( (it2 != rsam->radioIsReceiving.end()) && (it2->getTime() <= signalEnd) );
 	}
 	
 	/**
@@ -715,7 +740,6 @@ public:
 	
 	virtual const Argument& getNextPosition() const
 	{
-		//TODO: implement next position
 		return nextPosition;
 	}
 	
@@ -763,39 +787,46 @@ public:
  * 
  * class RSAMMapping is a friend of class RadioStateAnalogueModel
  * 
- * TODO implement
  * 
  */
 class RSAMMapping : public ConstMapping
 {
 protected:
-	RadioStateAnalogueModel* rsam;
+	
+	const RadioStateAnalogueModel* rsam;
+	simtime_t signalStart;
+	simtime_t signalEnd;
 		
 public:
 	/**
 	 * @brief Constructor taking a pointer to the corresponding RSAM
 	 * 
 	 */
-	RSAMMapping(RadioStateAnalogueModel* _rsam) : ConstMapping()
+	RSAMMapping(const RadioStateAnalogueModel* _rsam,
+				simtime_t _signalStart,
+				simtime_t _signalEnd) :
+		ConstMapping(),
+		rsam(_rsam),
+		signalStart(_signalStart),
+		signalEnd(_signalEnd)
 	{
 		// TODO better: throw an error and exit if _rsam points to 0
+		// TODO maybe a condition concerning signalEnd should also be checked here
 		assert(_rsam);
-		rsam = _rsam;
+		assert( !(signalStart < rsam->radioIsReceiving.front().getTime()) );
 	}
 	
 	virtual ~RSAMMapping() {}
 	
 	/**
 	 * @brief Returns the value of this Function at position specified
-	 * by the passed Argument. Zero-time-switches are not considered here,
-	 * i.e. in case of multiple entries with the same time, the last one
+	 * by the passed Argument. Zero-time-switches are ignored here,
+	 * i.e. in case of multiple entries at the same time-point, the last one
 	 * is significant.
 	 * 
 	 * In this case we have a function: simtime_t -> attenuation
 	 * 
 	 * TODO returns -1.0 in case of an error right now, should be modified
-	 * 
-	 * TODO implement
 	 */
 	virtual double getValue(const Argument& pos) const
 	{
@@ -828,10 +859,9 @@ public:
 		}
 		
 		// set an iterator to the first entry with timepoint > t
-		list<RadioStateAnalogueModel::ListEntry>::iterator it;
+		list<RadioStateAnalogueModel::ListEntry>::const_iterator it;
 		it = upper_bound(rsam->radioIsReceiving.begin(), rsam->radioIsReceiving.end(), t);
 				
-		// TODO check return value
 		// REGULAR CASE: it points to an element that has a predecessor
 		it--; // go back one entry, this one is significant!
 		
@@ -841,23 +871,22 @@ public:
 	/**
 	 * @brief Returns a pointer of a new Iterator which is able to iterate
 	 * over the function.
-	 * 
-	 * TODO implement
 	 */
 	virtual ConstMappingIterator* createConstIterator()
 	{
-		return new RSAMConstMappingIterator(rsam);
+		return new RSAMConstMappingIterator(rsam, signalStart, signalEnd);
 	}
 	
 	/**
 	 * @brief Returns a pointer of a new Iterator which is able to iterate
 	 * over the function. The iterator starts at the passed position.
 	 * 
-	 * TODO implement
 	 */
 	virtual ConstMappingIterator* createConstIterator(const Argument& pos)
 	{
-		RSAMConstMappingIterator* rsamCMI = new RSAMConstMappingIterator(rsam);
+		RSAMConstMappingIterator* rsamCMI 
+			= new RSAMConstMappingIterator(rsam, signalStart, signalEnd);
+		
 		rsamCMI->jumpTo(pos);
 		
 		return rsamCMI;

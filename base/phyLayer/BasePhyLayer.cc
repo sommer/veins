@@ -53,15 +53,21 @@ void BasePhyLayer::initialize(int stage) {
 		maxTXPower = readPar("maxTXPower", 1.0);		
 		
 		//	- initialize radio
+		int initialRadioState = readPar("initalRadioState", (int) Radio::SLEEP);
+		double radioMinAtt = readPar("radioMinAtt", 1.0);
+		double radioMaxAtt = readPar("radioMaxAtt", 0.0);
+				
+		radio = new Radio(initialRadioState, radioMinAtt, radioMaxAtt);
+
 		
-		//		- switch times to TX
+		//	- switch times to TX
 		simtime_t rxToTX = readPar("timeRXToTX", 0.0);
 		simtime_t sleepToTX = readPar("timeSleepToTX", 0.0);
 		
 		//if no RX to TX defined asume same time as sleep to TX
-		radio.setSwitchTime(Radio::RX, Radio::TX, readPar("timeRXToTX", sleepToTX)); 
+		radio->setSwitchTime(Radio::RX, Radio::TX, readPar("timeRXToTX", sleepToTX)); 
 		//if no sleep to TX defined asume same time as RX to TX
-		radio.setSwitchTime(Radio::SLEEP, Radio::TX, readPar("timeSleepToTX", rxToTX));
+		radio->setSwitchTime(Radio::SLEEP, Radio::TX, readPar("timeSleepToTX", rxToTX));
 		
 		
 		//		- switch times to RX
@@ -69,9 +75,9 @@ void BasePhyLayer::initialize(int stage) {
 		simtime_t sleepToRX = readPar("timeSleepToRX", 0.0);
 		
 		//if no TX to RX defined asume same time as sleep to RX
-		radio.setSwitchTime(Radio::TX, Radio::RX, readPar("timeTXToRX", sleepToRX)); 
+		radio->setSwitchTime(Radio::TX, Radio::RX, readPar("timeTXToRX", sleepToRX)); 
 		//if no sleep to RX defined asume same time as TX to RX
-		radio.setSwitchTime(Radio::SLEEP, Radio::RX, readPar("timeSleepToRX", txToRX));
+		radio->setSwitchTime(Radio::SLEEP, Radio::RX, readPar("timeSleepToRX", txToRX));
 		
 		
 		//		- switch times to sleep
@@ -79,9 +85,9 @@ void BasePhyLayer::initialize(int stage) {
 		simtime_t rxToSleep = readPar("timeRXToSleep", 0.0);
 		
 		//if no TX to sleep defined asume same time as RX to sleep
-		radio.setSwitchTime(Radio::TX, Radio::SLEEP, readPar("timeTXToSleep", rxToSleep)); 
+		radio->setSwitchTime(Radio::TX, Radio::SLEEP, readPar("timeTXToSleep", rxToSleep)); 
 		//if no RX to sleep defined asume same time as TX to sleep
-		radio.setSwitchTime(Radio::RX, Radio::SLEEP, readPar("timeRXToSleep", txToSleep));
+		radio->setSwitchTime(Radio::RX, Radio::SLEEP, readPar("timeRXToSleep", txToSleep));
 		
 		
 		
@@ -226,10 +232,20 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 	
 	/* 
-	* TODO: first of all, attach the AnalogueModel that represents the RadioState
+	* first of all, attach the AnalogueModel that represents the RadioState
 	* to the AnalogueModelList as first element.
-	* 
 	*/
+	std::string s("RadioStateAnalogueModel");
+	ParameterMap p;
+	
+	AnalogueModel* newAnalogueModel = getAnalogueModelFromName(s, p);
+	
+	if(newAnalogueModel == 0)
+	{
+		ev << "Could not find an analogue model with the name \"" << s << "\"." << endl;
+	} 
+	analogueModels.push_back(newAnalogueModel);
+	
 	
 	if(xmlConfig == 0) {
 		ev << "No analogue models configuration file specified." << endl;
@@ -290,7 +306,14 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
  */
 AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
 	
-	//TODO: add default analogue models here
+	// add default analogue models here
+	
+	// case "RSAM", pointer is valid as long as the radio exists
+	if (name == "RadioStateAnalogueModel")
+	{
+		return radio->getAnalogueModel();
+	} 
+	
 	return 0;
 }
 
@@ -443,6 +466,13 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
  */
 void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
 	channelInfo.removeAirFrame(frame);
+	
+	/* clean information in the radio until earliest time-point
+	*  of information in the ChannelInfo, 
+	*  since this time-point might have changed due to removal of
+	*  the AirFrame
+	*/
+	radio->cleanAnalogueModelUntil(channelInfo.getEarliestInfoPoint());
 }
 
 /**
@@ -452,7 +482,7 @@ void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
 void BasePhyLayer::handleUpperMessage(cMessage* msg){
 	
 	// check if Radio is in TX state
-	if (radio.getCurrentState() != Radio::TX)
+	if (radio->getCurrentState() != Radio::TX)
 	{
         delete msg;
         msg = 0;
@@ -675,14 +705,35 @@ BasePhyLayer::~BasePhyLayer() {
 		delete decider;
 	}
 	
+	/*
+	 * get a pointer to the radios RSAM again to avoid deleting it,
+	 * it is not created by calling new (BasePhyLayer is not the owner)!
+	 */
+	AnalogueModel* rsamPointer = radio->getAnalogueModel();
+	
 	//free AnalogueModels
 	for(AnalogueModelList::iterator it = analogueModels.begin();
 		it != analogueModels.end(); it++) {
 		
 		AnalogueModel* tmp = *it;
+		
+		// do not delete the RSAM, it's not allocated by new!
+		if (tmp == rsamPointer)
+		{
+			rsamPointer = 0;
+			continue;
+		}
+		
 		if(tmp != 0) {
 			delete tmp;
 		}
+	}
+	
+	
+	// free radio
+	if(radio != 0)
+	{
+		delete radio;
 	}
 }
 
@@ -719,9 +770,9 @@ simtime_t BasePhyLayer::calculatePropagationDelay(AirFrame* frame) {
  * 
  * This method is mainly used by the mac layer.
  */
-Radio::RadioState BasePhyLayer::getRadioState() {
+int BasePhyLayer::getRadioState() {
 
-	return radio.getCurrentState();
+	return radio->getCurrentState();
 }
 
 /**
@@ -732,7 +783,7 @@ Radio::RadioState BasePhyLayer::getRadioState() {
  */
 void BasePhyLayer::finishRadioSwitching()
 {	
-	radio.endSwitch(simTime());
+	radio->endSwitch(simTime());
 	sendControlMsg(new cMessage(0, RADIO_SWITCHING_OVER));
 }
 
@@ -746,10 +797,10 @@ void BasePhyLayer::finishRadioSwitching()
  * 			
  * 			else: switching time from the current RadioState to the new RadioState 
  */
-simtime_t BasePhyLayer::setRadioState(Radio::RadioState rs) {
+simtime_t BasePhyLayer::setRadioState(int rs) {
 	
 	//TODO: what to do if we are currently transmitting a signal?
-	simtime_t switchTime = radio.switchTo(rs, simTime());
+	simtime_t switchTime = radio->switchTo(rs, simTime());
 	
 	//invalid switch time, we are propably already switching 
 	if(switchTime < 0) 

@@ -89,7 +89,7 @@ protected:
 	ChannelInfo channelInfo;
 	
 	/** The statemachine storing the current radio state (TX, RX, SLEEP).*/
-	Radio radio;
+	Radio* radio;
 	
 	/** Pointer to the decider module. */
 	Decider* decider;
@@ -100,9 +100,13 @@ protected:
 	/** A list of the analogue models to use.*/
 	AnalogueModelList analogueModels;
 	
-	// TODO: add
-	/** a special analogue model that represents the Radio's receiving ability */
-	// RadioStateAnalogueModel* rsAnalogueModel;
+	// this pointer is not directly needed by BasePhyLayer by now, might be added later
+	/** A special analogue model that represents the Radio's receiving ability
+	 * 
+	 * The pointer is valid as long as the member radio exists since
+	 * rsam points to one of radios member
+	 */
+	// RadioStateAnalogueModel* rsam;
 	
 	/** 
 	 * ParameterMap is used at initialisation to pass the parameters
@@ -332,7 +336,7 @@ protected:
 public:
 	
 	/**
-	 * Free the pointer to the decider and the AnalogueModels.
+	 * Free the pointer to the decider and the AnalogueModels and the Radio.
 	 */
 	virtual ~BasePhyLayer();
 	
@@ -344,7 +348,7 @@ public:
 	 * 
 	 * This method is mainly used by the mac layer.
 	 */
-	virtual Radio::RadioState getRadioState();
+	virtual int getRadioState();
 	
 	/**
 	 * Tells the BasePhyLayer to switch to the specified
@@ -352,7 +356,7 @@ public:
 	 * depending on the specified switching times in the
 	 * ned file.
 	 */
-	virtual simtime_t setRadioState(Radio::RadioState rs);
+	virtual simtime_t setRadioState(int rs);
 	
 	/**
 	 * Returns the current state of the channel. See ChannelState

@@ -7,7 +7,7 @@
 /* ------ Testing stuff for Radio ------ */
 
 // global variables needed for tests
-const Radio::RadioState initialState =  Radio::RX;
+const int initialState =  Radio::RX;
 
 const double RX2TX = 1.0;
 const double RX2SLEEP = 2.0;
@@ -46,7 +46,7 @@ void testRadioConstructor()
 	return;
 }
 
-int testSwitching(Radio& radio, Radio::RadioState to, double refValue)
+int testSwitching(Radio& radio, int to, double refValue)
 {
 	
 	// check whether radio is currently switching
@@ -183,6 +183,7 @@ const double time8 = 0.65; // after last timepoint
 const double time9 = 0.59; // before last timepoint
 
 const simtime_t initTime = 0.1;
+const simtime_t offset = 0.1;
 
 const double minAtt = 2.0;
 const double maxAtt = 0.0;
@@ -465,22 +466,33 @@ void testGetValue()
 	
 	cout << "---testGetValue" << endl;
 
-	
+	// TODO modified to RSAMMapping constructor call with signalStart and signalEnd, check
 	// create empty RSAM and mapping
 	RadioStateAnalogueModel rsam = RadioStateAnalogueModel(minAtt, true, initTime);
-	RSAMMapping mapping = RSAMMapping( &rsam );
+	RSAMMapping mapping = RSAMMapping( &rsam, initTime, time4 );
 	
 	// argument with time = 0.0
 	Argument pos = Argument();
 	
 	
 	// update of RSAM, leads to:
-	// (initTime, minAtt)--(time1,minAtt)--(time2,minAtt)--(time3,maxAtt)--(time3,minAtt)--(time4,minAtt)
+	// (initTime, minAtt)--(time1,minAtt)--(time2,maxAtt)--(time3,maxAtt)--(time3,minAtt)--(time4,minAtt)
 	rsam.writeRecvEntry(time1, minAtt);
-	rsam.writeRecvEntry(time2, minAtt);
+	rsam.writeRecvEntry(time2, maxAtt);
 	rsam.writeRecvEntry(time3, maxAtt);
 	rsam.writeRecvEntry(time3, minAtt);
 	rsam.writeRecvEntry(time4, minAtt);
+	
+	cout << "(initTime, minAtt)--(time1,minAtt)--(time2,maxAtt)--(time3,maxAtt)--(time3,minAtt)--(time4,minAtt)" << endl;
+	cout << "--------------------------------------------------------------------------------------------------" << endl;
+	assertEqual("Entry at init time", mapping.getValue(Argument(initTime)), minAtt);
+	assertEqual("Entry in between two time-points", mapping.getValue(Argument(initTime + 0.5*(initTime+time1))), minAtt);
+	assertEqual("Entry at exactly a time-point (time1)", mapping.getValue(Argument(time1)), minAtt);
+	assertEqual("Entry at exactly a time-point (time2)", mapping.getValue(Argument(time2)), maxAtt);
+	assertEqual("Entry at time-point with zero-time-switches (time3)", mapping.getValue(Argument(time3)), minAtt);
+	assertEqual("Entry at last time-point (time4)", mapping.getValue(Argument(time4)), minAtt);
+	assertEqual("Entry after last time-point", mapping.getValue(Argument(time4+offset)), mapping.getValue(Argument(time4)));
+	
 	
 	
 	
@@ -519,12 +531,12 @@ void testRSAMConstMappingIterator()
 	cout << "---test RSAMConstMappingiterator" << endl;
 	
 
-	simtime_t offset = 0.1;
-
 	
+
+	// TODO modified to RSAMMapping constructor call with signalStart and signalEnd, check
 	// create empty RSAM and mapping
 	RadioStateAnalogueModel rsam = RadioStateAnalogueModel(minAtt, true, initTime);
-	RSAMMapping mapping = RSAMMapping( &rsam );
+	RSAMMapping mapping = RSAMMapping( &rsam, initTime, time4 );
 	RSAMConstMappingIterator* rsamCMI;
 	
 		
@@ -562,8 +574,9 @@ void testRSAMConstMappingIterator()
 	
 	
 	//--- Begin iterator movement tests
+	// TODO modified to RSAMMapping constructor call with signalStart and signalEnd, check
 	rsam = RadioStateAnalogueModel(minAtt, true, initTime);
-	mapping = RSAMMapping( &rsam );
+	mapping = RSAMMapping( &rsam, initTime, time4 );
 	
 	// update of RSAM, leads to:
 	// (initTime, minAtt)--(time1,minAtt)--(time2,maxAtt)--(time3,maxAtt)--(time3,minAtt)--(time4,maxAtt)
@@ -682,7 +695,7 @@ void testRSAMConstMappingIterator()
 	// clean the list and add a zero time switch at initTime
 	//rsam.cleanUpUntil(initTime);	
 	rsam = RadioStateAnalogueModel(minAtt, true, initTime);
-	mapping = RSAMMapping( &rsam );
+	mapping = RSAMMapping( &rsam, initTime, time4 );
 	
 	t0 = initTime;
 	t0Next = t0; t0Next++;
