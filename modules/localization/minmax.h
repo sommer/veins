@@ -63,7 +63,7 @@ using std::vector;
 
 class minmax:public BaseLocalization, public Timer {
       public:
-	Module_Class_Members(minmax, BaseLocalization, 0);
+	//Module_Class_Members(minmax, BaseLocalization, 0);
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);

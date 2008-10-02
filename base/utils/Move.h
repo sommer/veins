@@ -54,7 +54,7 @@ class Move : public BBItem {
     simtime_t startTime;
     /** @brief direction the host is moving to **/
     Coord direction;
-    /** speed of the host **/
+    /** speed of the host in metres per second **/
     double speed;
 
 public:
@@ -84,7 +84,7 @@ public:
     	if ( FWMath::close(speed, 0.0) ) return startPos;
     	
     	// otherwise: actualPos = startPos + ( direction * v * t )
-    	return startPos + ( direction * speed * (actualTime - startTime) );
+    	return startPos + ( direction * speed * SIMTIME_DBL(actualTime - startTime) );
     }
     
 public:

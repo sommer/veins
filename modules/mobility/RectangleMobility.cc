@@ -74,7 +74,7 @@ void RectangleMobility::initialize(int stage)
 
 void RectangleMobility::makeMove()
 {
-    d += move.speed * updateInterval;
+    d += move.speed * updateInterval.dbl();
     while (d<0) d+=corner4;
     while (d>=corner4) d-=corner4;
 

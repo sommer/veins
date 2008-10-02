@@ -26,4 +26,5 @@
 
 simple TestStateSub
 
-endsimple
+{
+}

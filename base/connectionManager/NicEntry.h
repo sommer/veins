@@ -36,7 +36,7 @@
  * @author Daniel Willkomm
  * @sa ConnectionManager
  */
-class NicEntry : public cPolymorphic
+class NicEntry : public cObject
 {
   public:
     typedef std::map<int, cGate*> GateList;

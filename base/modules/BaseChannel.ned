@@ -1,5 +1,6 @@
 module BaseChannel
+{
     parameters:
-        debug: numeric const; // debug switch
-endmodule
+        bool debug; // debug switch
+}
 

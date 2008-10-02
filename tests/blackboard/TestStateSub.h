@@ -36,7 +36,7 @@ private:
     cModule *host;
 
 public:
-    Module_Class_Members(TestStateSub, BaseModule, 0);
+    //Module_Class_Members(TestStateSub, BaseModule, 0);
     virtual void initialize(int stage);
     virtual void handleMessage( cMessage* );
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);

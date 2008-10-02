@@ -95,7 +95,7 @@ class Node_HTRefine_SEQ:public PositifLayer {
 	void release_token(void);
 
       public:
-	 Module_Class_Members(Node_HTRefine_SEQ, PositifLayer, 0)
+	 //Module_Class_Members(Node_HTRefine_SEQ, PositifLayer, 0)
 	    // Implement Node's abstract functions.
 	virtual void init(void);
 	virtual void handleTimer(timer_info * timer);
@@ -104,7 +104,7 @@ class Node_HTRefine_SEQ:public PositifLayer {
 	virtual void handleStopMessage(cMessage * msg);
 };
 
-Define_Module_Like(Node_HTRefine_SEQ, PositifLayer);
+//Define_Module_Like(Node_HTRefine_SEQ, PositifLayer);
 
 void Node_HTRefine_SEQ::init(void)
 {
@@ -182,14 +182,14 @@ void Node_HTRefine_SEQ::release_token(void)
 
 void Node_HTRefine_SEQ::handleMessage(cMessage * msg, bool newNeighbor)
 {
-	if (msg->kind() == MSG_POSITION) {
+	if (msg->getKind() == MSG_POSITION) {
 		int src;
 		src = msg->par("src");
 		fprintf(stderr, "in: %d <- %d\n", me, src);
 	}
 	if (newNeighbor)
 		// Activate all timer routines when we meet a new neighbor
-//              for (cLinkedListIterator iter = getTimers(); !iter.end();
+//              for (cLinkedList::Iterator iter = getTimers(); !iter.end();
 //                   iter++) {
 //                      timer_info *ev = (timer_info *) iter();
 //                      resetTimer(ev);
@@ -281,7 +281,7 @@ void Node_HTRefine_SEQ::handleStopMessage(cMessage * msg)
 
 void Node_HTRefine_SEQ::anchor(cMessage * msg)
 {
-	switch (msg->kind()) {
+	switch (msg->getKind()) {
 	case MSG_ANCHOR:
 		if (new_anchor(msg)) {
 			calibrate();
@@ -294,7 +294,7 @@ void Node_HTRefine_SEQ::anchor(cMessage * msg)
 		break;
 
 	default:
-		error("anchor(): unexpected message kind: %d", msg->kind());
+		error("anchor(): unexpected message kind: %d", msg->getKind());
 		break;
 	}
 }
@@ -302,7 +302,7 @@ void Node_HTRefine_SEQ::anchor(cMessage * msg)
 
 void Node_HTRefine_SEQ::unknown(cMessage * msg)
 {
-	switch (msg->kind()) {
+	switch (msg->getKind()) {
 	case MSG_ANCHOR:
 		if (new_anchor(msg)) {
 			if (calibrated) {
@@ -358,7 +358,7 @@ void Node_HTRefine_SEQ::unknown(cMessage * msg)
 		break;
 
 	default:
-		error("unknown(): unexpected message kind: %d", msg->kind());
+		error("unknown(): unexpected message kind: %d", msg->getKind());
 		break;
 	}
 }
@@ -372,7 +372,7 @@ double Node_HTRefine_SEQ::true_pos_triangulate(void)
 	Position pos;
 
 	int i = 0;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 
 		pos_list[i] = node[neighbor->idx].true_pos;
@@ -406,7 +406,7 @@ void Node_HTRefine_SEQ::do_triangulation(void *arg)
 #endif
 	int i = 0;
 	FLOAT sum_conf = 0;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 		double w = neighbor->twin ? LOW_CONF / 8 : neighbor->confidence;
 
@@ -517,7 +517,7 @@ bool Node_HTRefine_SEQ::new_anchor(cMessage * msg)
 	if (idx == me)
 		return false;
 
-	for (cLinkedListIterator iter(anchors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(anchors); !iter.end(); iter++) {
 		anchor_info *anchor = (anchor_info *) iter();
 		if (anchor->idx == idx) {
 			if (hop_cnt < anchor->hop_cnt) {
@@ -593,7 +593,7 @@ bool Node_HTRefine_SEQ::inside_rectangle(Position pos)
 
 bool Node_HTRefine_SEQ::inside_neighbors_range(Position pos)
 {
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 
 		if (neighbor->confidence > 2 * LOW_CONF &&
@@ -611,7 +611,7 @@ void Node_HTRefine_SEQ::update_neighbor(cMessage * msg)
 	int src = msg->par("src");
 
 	bool found = false;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		neighbor = (nghbor_info *) iter();
 
 		if (neighbor->idx == src) {
@@ -636,7 +636,7 @@ void Node_HTRefine_SEQ::update_neighbor(cMessage * msg)
 		int n = ++summary.nr_nghbrs;
 		summary.nghbr_idx = new int[n];
 		int i = 0;
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			summary.nghbr_idx[i++] = ((nghbor_info *) iter())->idx;
 		}
 		summary_update = true;
@@ -665,12 +665,12 @@ void Node_HTRefine_SEQ::update_neighbor(cMessage * msg)
 
 		// Update may introduce new twins and/or remove old twins
 		// Simply check all pairs for twins (updating is too difficult)
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			nghbor_info *m = (nghbor_info *) iter();
 
 			m->twin = false;
 		}
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			nghbor_info *m = (nghbor_info *) iter();
 
 			// Skip anchors
@@ -682,7 +682,7 @@ void Node_HTRefine_SEQ::update_neighbor(cMessage * msg)
 				i_am_a_twin = m->twin = true;
 			}
 
-			for (cLinkedListIterator iter(neighbors); !iter.end();
+			for (cLinkedList::Iterator iter(neighbors); !iter.end();
 			     iter++) {
 				nghbor_info *k = (nghbor_info *) iter();
 
@@ -712,7 +712,7 @@ void Node_HTRefine_SEQ::hop_based_triangulation(void)
 		FLOAT* range_list = new FLOAT[n + 1];
 
 		int i = 0;
-		for (cLinkedListIterator iter(anchors); !iter.end();
+		for (cLinkedList::Iterator iter(anchors); !iter.end();
 		     iter++, i++) {
 			anchor_info *anchor = (anchor_info *) iter();
 
@@ -779,7 +779,7 @@ void Node_HTRefine_SEQ::calibrate(void)
 		FLOAT dist_sum = 0;
 		int hop_sum = 0;
 
-		for (cLinkedListIterator iter(anchors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(anchors); !iter.end(); iter++) {
 			anchor_info *anchor = (anchor_info *) iter();
 
 			assert(anchor->idx != me);
@@ -829,10 +829,10 @@ void Node_HTRefine_SEQ::sendPosition(void *arg)
 		for (int n = 0; n < num_nodes; n++)
 			sound[n] = false;
 
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			sound[((nghbor_info *) iter())->idx] = true;
 		}
-		for (cLinkedListIterator iter(anchors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(anchors); !iter.end(); iter++) {
 			sound[((anchor_info *) iter())->last_hop_idx] = true;
 		}
 

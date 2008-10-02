@@ -12,7 +12,7 @@
 class GlobalTime: public cSimpleModule
 {
 	public:	
-	    Module_Class_Members(GlobalTime, cSimpleModule, 0);
-		virtual const double currentGlobalTime() const {return simTime();}
+	    //Module_Class_Members(GlobalTime, cSimpleModule, 0);
+		virtual const simtime_t currentGlobalTime() const {return simTime();}
 };
 #endif

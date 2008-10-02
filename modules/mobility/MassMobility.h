@@ -58,7 +58,7 @@ class  MassMobility : public BaseMobility
 	LAST_MASS
     };
 
-    Module_Class_Members( MassMobility, BaseMobility, 0 );
+    //Module_Class_Members( MassMobility, BaseMobility, 0 );
 
     /** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);

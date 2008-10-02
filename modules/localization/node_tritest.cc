@@ -11,7 +11,7 @@
 
 class Node_TriTest:public PositifLayer {
       public:
-	Module_Class_Members(Node_TriTest, PositifLayer, 0)
+	//Module_Class_Members(Node_TriTest, PositifLayer, 0)
 	    // Implement Node's abstract functions.
 	virtual void init(void);
 	virtual void handleTimer(timer_info * timer);
@@ -20,7 +20,7 @@ class Node_TriTest:public PositifLayer {
 	virtual void handleStopMessage(cMessage * msg);
 };
 
-Define_Module_Like(Node_TriTest, PositifLayer);
+//Define_Module_Like(Node_TriTest, PositifLayer);
 
 void Node_TriTest::init(void)
 {

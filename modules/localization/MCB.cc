@@ -38,7 +38,7 @@
 
 
 
-Define_Module_Like(MCB, BaseLocalization);
+//Define_Module_Like(MCB, BaseLocalization);
 
 void MCB::initialize(int stage)
 {
@@ -105,7 +105,7 @@ void MCB::handleTimer(unsigned int index){
 							
 							// Get the new position.
 							BaseUtility *utility = (BaseUtility *) 
-									(findHost()->submodule("utility"));
+									(findHost()->getSubmodule("utility"));
 							Coord pos = utility->getPos();
 							Location *loc = new Location(pos,simTime(),1.0);
 							
@@ -143,7 +143,7 @@ void MCB::handleTimer(unsigned int index){
 							if (no_of_anchors > 0){
 								// Get the new position.
 								BaseUtility *utility = (BaseUtility *) 
-										(findHost()->submodule("utility"));
+										(findHost()->getSubmodule("utility"));
 								Coord pos = utility->getPos();
 								Location *loc = new Location(pos,simTime(),1.0);
 
@@ -490,7 +490,7 @@ void MCB::localize_MCB(){
 void MCB::display_results(){
 	
 	BaseUtility *utility = (BaseUtility *) 
-				(findHost()->submodule("utility"));
+				(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 
 	double xReal = pos.getX();
@@ -568,7 +568,7 @@ void MCB::newAnchor(cMessage * msg) {
 	// Reset the timer, to extend the timeout interval.
 	//cancelTimer(ANCHOR_TIMEOUT);
 	BaseUtility *utility = (BaseUtility *) 
-				(findHost()->submodule("utility"));
+				(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 
 	double real_dist = (node->pos).distance(pos);
@@ -619,7 +619,7 @@ void MCB::newNeighbor(cMessage * msg) {
 		}
 	
 		BaseUtility *utility = (BaseUtility *) 
-					(findHost()->submodule("utility"));
+					(findHost()->getSubmodule("utility"));
 		Coord pos1 = utility->getPos();
 	
 		double real_dist = (node->pos).distance(pos1);
@@ -855,7 +855,7 @@ void MCB::handleMsg(cMessage* msg){
 	LocPkt * m = dynamic_cast<LocPkt *>(msg);
 
 	// Process the message, depending upon whether it is from an anchor or a non-anchor.
- 	switch(m->kind())
+ 	switch(m->getKind())
 	{
 		case ANCHOR_BROADCAST_MESSAGE:  
 						if (! isAnchor)
@@ -882,7 +882,7 @@ void MCB::handleMsg(cMessage* msg){
  **/
 void MCB::sendBroadcast(LocPkt *pkt)
 {
-    pkt->setLength(headerLength);
+    pkt->setBitLength(headerLength);
     // set the control info to tell the network layer the layer 3 address;
     pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
     EV << "Sending broadcast packet!\n";

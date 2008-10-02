@@ -109,12 +109,13 @@
 // @author Andras Varga
 //
 simple TurtleMobility
+{
     parameters:
-        coreDebug : bool, // debug switch
-        debug : bool, // debug switch
-        turtleScript: xml, // describes the movement
-        updateInterval : numeric const; // time interval to update the hosts position
-endsimple
+        bool coreDebug; // debug switch
+        bool debug; // debug switch
+        xml turtleScript; // describes the movement
+        double updateInterval; // time interval to update the hosts position
+}
 
 
 

@@ -44,7 +44,7 @@ class  CircleMobility : public BaseMobility
     Coord targetPos;
 
   public:
-    Module_Class_Members( CircleMobility, BaseMobility, 0 );
+    //Module_Class_Members( CircleMobility, BaseMobility, 0 );
 
     /** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);

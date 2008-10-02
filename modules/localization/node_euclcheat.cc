@@ -111,7 +111,7 @@ class Node_EuclRefineCheat:public PositifLayer {
 	bool i_am_a_twin;
 
       public:
-	 Module_Class_Members(Node_EuclRefineCheat, PositifLayer, 0)
+	 //Module_Class_Members(Node_EuclRefineCheat, PositifLayer, 0)
 
 	void blast(void);
 	void recva(cMessage * msg);
@@ -148,7 +148,7 @@ class Node_EuclRefineCheat:public PositifLayer {
 	virtual void handleStopMessage(cMessage * msg);
 };
 
-Define_Module_Like(Node_EuclRefineCheat, PositifLayer);
+//Define_Module_Like(Node_EuclRefineCheat, PositifLayer);
 
 
 
@@ -242,7 +242,7 @@ void Node_EuclRefineCheat::handleMessage(cMessage * msg, bool newNeighbor)
 {
 	if (newNeighbor) {
 		// Activate all timer routines when we meet a new neighbor
-//              for (cLinkedListIterator iter = getTimers(); !iter.end();
+//              for (cLinkedList::Iterator iter = getTimers(); !iter.end();
 //                   iter++) {
 //                      timer_info *ev = (timer_info *) iter();
 //                      resetTimer(ev);
@@ -262,10 +262,10 @@ void Node_EuclRefineCheat::handleMessage(cMessage * msg, bool newNeighbor)
 	}
 
 
-	if (msg->kind() == MSG_BLAST)
+	if (msg->getKind() == MSG_BLAST)
 		recva(msg);
 
-	if (msg->kind() == MSG_POSITION) {
+	if (msg->getKind() == MSG_POSITION) {
 		// Maybe we're only interested in the initial estimate this time.
 		if (!do_2nd_phase || status == STATUS_ANCHOR)
 			return;
@@ -308,7 +308,7 @@ void Node_EuclRefineCheat::blast(void)
 
 	int i = 0, j = 0;
 	char parname[100] = "";
-	for (cLinkedListIterator iter(nbrs); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(nbrs); !iter.end(); iter++) {
 		link_info *nbr = (link_info *) iter();
 
 		if (nbr->cnt != 0 || send_all_data) {
@@ -322,7 +322,7 @@ void Node_EuclRefineCheat::blast(void)
 
 	j += i;
 	i = 0;
-	for (cLinkedListIterator iter(targets); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(targets); !iter.end(); iter++) {
 		link_info *target = (link_info *) iter();
 
 		if (target->cnt != 0 || send_all_data) {
@@ -336,7 +336,7 @@ void Node_EuclRefineCheat::blast(void)
 
 	j += i;
 	i = 0;
-	for (cLinkedListIterator iter(ntargets); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(ntargets); !iter.end(); iter++) {
 		link_info *ntarget = (link_info *) iter();
 
 		if (ntarget->cnt != 0 || send_all_data) {
@@ -415,7 +415,7 @@ void Node_EuclRefineCheat::get_data_from_blast(cMessage * msg)
 void Node_EuclRefineCheat::average_distances()
 {
 	// All neigbours of me
-	for (cLinkedListIterator iter(nbrs); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(nbrs); !iter.end(); iter++) {
 		link_info *link = (link_info *) iter();
 		link_info *link2;
 		if (!(link->avg)
@@ -430,7 +430,7 @@ void Node_EuclRefineCheat::average_distances()
 	}
 
 	// All neighbour pairs
-	for (cLinkedListIterator iter(nnbrs); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(nnbrs); !iter.end(); iter++) {
 		link_info *link = (link_info *) iter();
 		link_info *link2;
 		if (!(link->avg)
@@ -450,35 +450,35 @@ void Node_EuclRefineCheat::print_stored_data()
 	logprintf("ENV--");
 	logprintf("%d NBRS: ", nbrs.length());
 	if (nbrs.length() > 0)
-		for (cLinkedListIterator iter(nbrs); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(nbrs); !iter.end(); iter++) {
 			link_info *link = (link_info *) iter();
 			logprintf("%d-%d@%3.1f, ", link->from_idx, link->to_idx,
 				  link->distance);
 		}
 	logprintf("\n      %d NNBRS: ", nnbrs.length());
 	if (nnbrs.length() > 0)
-		for (cLinkedListIterator iter(nnbrs); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(nnbrs); !iter.end(); iter++) {
 			link_info *link = (link_info *) iter();
 			logprintf("%d-%d@%3.1f, ", link->from_idx, link->to_idx,
 				  link->distance);
 		}
 	logprintf("\n      %d TGTS: ", targets.length());
 	if (targets.length() > 0)
-		for (cLinkedListIterator iter(targets); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(targets); !iter.end(); iter++) {
 			link_info *link = (link_info *) iter();
 			logprintf("%d-%d@%3.1f, ", link->from_idx, link->to_idx,
 				  link->distance);
 		}
 	logprintf("\n      %d NTGTS: ", ntargets.length());
 	if (ntargets.length() > 0)
-		for (cLinkedListIterator iter(ntargets); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(ntargets); !iter.end(); iter++) {
 			link_info *link = (link_info *) iter();
 			logprintf("%d-%d@%3.1f, ", link->from_idx, link->to_idx,
 				  link->distance);
 		}
 	logprintf("\n      %d NNTGTS: ", nntargets.length());
 	if (nntargets.length() > 0)
-		for (cLinkedListIterator iter(nntargets); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(nntargets); !iter.end(); iter++) {
 			link_info *link = (link_info *) iter();
 			logprintf("%d-%d@%3.1f, ", link->from_idx, link->to_idx,
 				  link->distance);
@@ -756,7 +756,7 @@ void Node_EuclRefineCheat::target_based_triangulation(void)
 		int* idx_list = new int[used_anchors];
 
 		int i = 0;
-		for (cLinkedListIterator iter(targets); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(targets); !iter.end(); iter++) {
 			link_info *target = (link_info *) iter();
 			int store_at = -1;
 			FLOAT range = target->distance;
@@ -850,7 +850,7 @@ void Node_EuclRefineCheat::target_based_triangulation(void)
 
 		logprintf(" p1->%4.0f,%4.0f (%1.1f) using ", position[0],
 			  position[1], node[me].perf_data.phase1_err);
-		for (cLinkedListIterator iter(targets); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(targets); !iter.end(); iter++) {
 			link_info *target = (link_info *) iter();
 			bool used = false;
 			int j;
@@ -884,7 +884,7 @@ void Node_EuclRefineCheat::target_based_triangulation(void)
 
 bool Node_EuclRefineCheat::exists_link(cLinkedList * list, int from, int to)
 {
-	for (cLinkedListIterator iter(*list); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(*list); !iter.end(); iter++) {
 		link_info *link = (link_info *) iter();
 		if (link->from_idx == from && link->to_idx == to)
 			return true;
@@ -894,7 +894,7 @@ bool Node_EuclRefineCheat::exists_link(cLinkedList * list, int from, int to)
 
 link_info *Node_EuclRefineCheat::get_link(cLinkedList * list, int from, int to)
 {
-	for (cLinkedListIterator iter(*list); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(*list); !iter.end(); iter++) {
 		link_info *link = (link_info *) iter();
 		if (link->from_idx == from && link->to_idx == to)
 			return link;
@@ -1008,7 +1008,7 @@ FLOAT Node_EuclRefineCheat::vote_list(cLinkedList * votes)
 #define A2D2 4
 
 	cStdDev a1, a2;
-	cLinkedListIterator iter(*votes);
+	cLinkedList::Iterator iter(*votes);
 	diagonal_result *dres = (diagonal_result *) iter();
 
 	a1 += dres->d1;
@@ -1019,18 +1019,18 @@ FLOAT Node_EuclRefineCheat::vote_list(cLinkedList * votes)
 
 		// Find the combination with the minimum difference between a and d
 		int min_opt = A1D1;
-		FLOAT min_val = fabs(a1.mean() - dres->d1);
-		if (fabs(a1.mean() - dres->d2) < min_val) {
+		FLOAT min_val = fabs(a1.getMean() - dres->d1);
+		if (fabs(a1.getMean() - dres->d2) < min_val) {
 			min_opt = A1D2;
-			min_val = fabs(a1.mean() - dres->d2);
+			min_val = fabs(a1.getMean() - dres->d2);
 		}
-		if (fabs(a2.mean() - dres->d1) < min_val) {
+		if (fabs(a2.getMean() - dres->d1) < min_val) {
 			min_opt = A2D1;
-			min_val = fabs(a2.mean() - dres->d1);
+			min_val = fabs(a2.getMean() - dres->d1);
 		}
-		if (fabs(a2.mean() - dres->d2) < min_val) {
+		if (fabs(a2.getMean() - dres->d2) < min_val) {
 			min_opt = A2D2;
-			min_val = fabs(a2.mean() - dres->d2);
+			min_val = fabs(a2.getMean() - dres->d2);
 		}
 
 		switch (min_opt) {
@@ -1061,13 +1061,13 @@ FLOAT Node_EuclRefineCheat::vote_list(cLinkedList * votes)
 	//       coverage/accuracy tradeoff here.
 
 
-	if (a1.stddev() > a1.mean() * 0.05 && a2.stddev() > a2.mean() * 0.05)
+	if (a1.getStddev() > a1.getMean() * 0.05 && a2.getStddev() > a2.getMean() * 0.05)
 		return -1;	// Reject because of criterium 1.
 
-	if (a1.stddev() * 3 < a2.stddev())
-		return a1.mean();
-	else if (a2.stddev() * 3 < a2.stddev())
-		return a2.mean();
+	if (a1.getStddev() * 3 < a2.getStddev())
+		return a1.getMean();
+	else if (a2.getStddev() * 3 < a2.getStddev())
+		return a2.getMean();
 	else
 		return -1;	// Reject because of criterium 2.
 }
@@ -1090,7 +1090,7 @@ FLOAT Node_EuclRefineCheat::common_nbr(link_info * target, int *hops,
 	//
 	// Try to find two neighbors that both have a distance estimate to t
 
-	for (cLinkedListIterator iter2(nbrs); !iter2.end(); iter2++) {
+	for (cLinkedList::Iterator iter2(nbrs); !iter2.end(); iter2++) {
 		link_info *n2 = (link_info *) iter2();
 		link_info *ntarget2;
 
@@ -1099,7 +1099,7 @@ FLOAT Node_EuclRefineCheat::common_nbr(link_info * target, int *hops,
 		     get_link(&(ntargets), n2->to_idx, target->to_idx)))
 			continue;	// This neighbor has no range info for target.
 
-		for (cLinkedListIterator iter(nbrs); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(nbrs); !iter.end(); iter++) {
 			link_info *n1 = (link_info *) iter();
 			link_info *ntarget1;	// link between n1 and the target
 			link_info *n1_2;	// link between n1 and n2 ( $an2($n1) in Niculescu's code )
@@ -1162,9 +1162,9 @@ void Node_EuclRefineCheat::find_optimal( link_info *target, int *ret_n1, int *re
   *ret_n2=-1;
   *ret_cn=-1;
 
-  for( cLinkedListIterator iter(nbrs); !iter.end(); iter++) {
+  for( cLinkedList::Iterator iter(nbrs); !iter.end(); iter++) {
     n1 = (link_info *)iter();
-    for( cLinkedListIterator iter2(nbrs); !iter2.end(); iter2++) {
+    for( cLinkedList::Iterator iter2(nbrs); !iter2.end(); iter2++) {
       n2 = (link_info *)iter2();
 
       if( !(ntarget1=get_link( &(ntargets), n1->to_idx, target->to_idx ) ) )
@@ -1175,7 +1175,7 @@ void Node_EuclRefineCheat::find_optimal( link_info *target, int *ret_n1, int *re
 	continue; // There is no range information between n1 and n2
 
 
-      for( cLinkedListIterator citer(nnbrs); !citer.end(); citer++) {
+      for( cLinkedList::Iterator citer(nnbrs); !citer.end(); citer++) {
 	cn1 = (link_info *)citer();
 
 	if( cn1->to_idx==me // Don't want to be our own common node. This test should be unnecessary (cover by nntargets test), but it's implemented in Niculescu's code as well.
@@ -1424,7 +1424,7 @@ void Node_EuclRefineCheat::update_neighbor(cMessage * msg)
 	int src = msg->par("src");
 
 	bool found = false;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		neighbor = (nghbor_info *) iter();
 
 		if (neighbor->idx == src) {
@@ -1449,7 +1449,7 @@ void Node_EuclRefineCheat::update_neighbor(cMessage * msg)
 		int n = ++summary.nr_nghbrs;
 		summary.nghbr_idx = new int[n];
 		int i = 0;
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			summary.nghbr_idx[i++] = ((nghbor_info *) iter())->idx;
 		}
 		summary_update = true;
@@ -1478,12 +1478,12 @@ void Node_EuclRefineCheat::update_neighbor(cMessage * msg)
 
 		// Update may introduce new twins and/or remove old twins
 		// Simply check all pairs for twins (updating is too difficult)
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			nghbor_info *m = (nghbor_info *) iter();
 
 			m->twin = false;
 		}
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			nghbor_info *m = (nghbor_info *) iter();
 
 			// Skip anchors
@@ -1495,7 +1495,7 @@ void Node_EuclRefineCheat::update_neighbor(cMessage * msg)
 				i_am_a_twin = m->twin = true;
 			}
 
-			for (cLinkedListIterator iter(neighbors); !iter.end();
+			for (cLinkedList::Iterator iter(neighbors); !iter.end();
 			     iter++) {
 				nghbor_info *k = (nghbor_info *) iter();
 
@@ -1527,7 +1527,7 @@ void Node_EuclRefineCheat::do_triangulation(void *arg)
 #endif
 	int i = 0;
 	FLOAT sum_conf = 0;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 		double w = neighbor->twin ? LOW_CONF / 8 : neighbor->confidence;
 
@@ -1656,10 +1656,10 @@ void Node_EuclRefineCheat::sendPosition(void *arg)
 		for (int n = 0; n < num_nodes; n++)
 			sound[n] = false;
 
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			sound[((nghbor_info *) iter())->idx] = true;
 		}
-		/*niels        for (cLinkedListIterator iter(targets); !iter.end(); iter++) {
+		/*niels        for (cLinkedList::Iterator iter(targets); !iter.end(); iter++) {
 		   sound[((link_info *) iter())->last_hop_idx] = true;
 		   } */
 
@@ -1733,7 +1733,7 @@ bool Node_EuclRefineCheat::inside_rectangle(Position pos)
 
 bool Node_EuclRefineCheat::inside_neighbors_range(Position pos)
 {
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 
 		if (neighbor->confidence > 2 * LOW_CONF &&

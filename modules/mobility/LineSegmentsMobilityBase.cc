@@ -38,7 +38,7 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
     EV << "startPos: " << move.startPos.info() << " targetPos: " << targetPos.info() << endl;
 
     if (targetTime<now)
-        error("LineSegmentsMobilityBase: targetTime<now was set in %s's beginNextMove()", className());
+        error("LineSegmentsMobilityBase: targetTime<now was set in %s's beginNextMove()", getClassName());
 
     if( move.speed <= 0 ){
         // end of movement
@@ -52,7 +52,7 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
 	EV << "warning, we are not moving!\n";
         stepSize.setX(0);
         stepSize.setY(0);
-        scheduleAt(Max(targetTime,simTime()), msg);
+        scheduleAt(std::max(targetTime,simTime()), msg);
     }
     else{
         // keep moving

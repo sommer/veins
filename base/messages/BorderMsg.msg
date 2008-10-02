@@ -21,17 +21,17 @@ cplusplus {{
 #include "Coord.h"
 }}
 
+
+
 class noncobject Coord;
 
-
-// used as a self message containing the position, direction and BorderPolicy
+// used as a self packet containing the position, direction and BorderPolicy
 //
 // @author Daniel Willkomm
 //
-message BorderMsg
+packet BorderMsg
 {
-    fields:
-        int policy;    // border policy to use for the host
-        Coord startPos; // new start position of the host
-	Coord direction; // new direction of the host
-};
+    int policy;    // border policy to use for the host
+    Coord startPos; // new start position of the host
+    Coord direction; // new direction of the host
+}

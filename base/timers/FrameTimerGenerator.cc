@@ -3,7 +3,6 @@
 
 #include <assert.h>
 
-Define_Module_Like(FrameTimerGenerator,Trivial);
 
 void FrameTimerGenerator::init(FrameTimer *parent)
 {
@@ -14,9 +13,9 @@ void FrameTimerGenerator::init(FrameTimer *parent)
 		lookupname = strdup(parent->owner->par("GlobalTime"));
 	else
 		lookupname = strdup("GlobalTime");
-	gt = dynamic_cast<GlobalTime*>(parent->owner->getNode()->submodule(lookupname));
+	gt = dynamic_cast<GlobalTime*>(parent->owner->getNode()->getSubmodule(lookupname));
 	if (gt == NULL)
-		gt = dynamic_cast<GlobalTime*>(findModuleType(lookupname)->createScheduleInit(lookupname,parent->owner->getNode()));
+		gt = dynamic_cast<GlobalTime*>(cModuleType::get(lookupname)->createScheduleInit(lookupname,parent->owner->getNode()));
 	free(lookupname);	
 
 	frames = new std::map<unsigned int,double>;
@@ -30,7 +29,7 @@ void FrameTimerGenerator::nextFrame(unsigned int index)
 	if ((*frames)[index] == 0)
 		return;
 	assert(frames->find(index)!=frames->end());
-	double count = floor(now/(*frames)[index]);
+	simtime_t count = floor(now/(*frames)[index]);
 	ev <<"scheduling at "<<count<<"," <<((count+1)*(*frames)[index])<<endl;
 	scheduleAt((count+1)*(*frames)[index],(*timers)[index]);
 }
@@ -77,15 +76,15 @@ void FrameTimerGenerator::cancelFrameTimer(unsigned int index)
 
 void FrameTimerGenerator::handleMessage(cMessage* msg)
 {
-	ft->handleFrameTimer(msg->kind());
-	nextFrame(msg->kind());
+	ft->handleFrameTimer(msg->getKind());
+	nextFrame(msg->getKind());
 }
 
 FrameTimerGenerator::~FrameTimerGenerator()
 {
 	for (std::map<unsigned int,cMessage*>::const_iterator p=timers->begin();p!=timers->end();p++)
 	{
-		cancelFrameTimer(p->second->kind());
+		cancelFrameTimer(p->second->getKind());
 		delete p->second;
 	}
 	delete timers;

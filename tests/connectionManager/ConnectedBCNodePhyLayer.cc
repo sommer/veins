@@ -1,3 +1,3 @@
 #include "ConnectedBCNodePhyLayer.h"
 
-Define_Module_Like( ConnectedBCNodePhyLayer, TestPhyLayer );
+Define_Module( ConnectedBCNodePhyLayer);

@@ -31,44 +31,49 @@
 //***************************************************************************
 
 
-import  
-    "TestHost",
-    "CrashHost", 
+import TestHost;
+import CrashHost;
 //  "ConnectionManager",
-    "BaseWorldUtility"; 
- 
+import BaseWorldUtility;
+
 // @author Daniel Willkomm
-module Network 
-    parameters: 
-        playgroundSizeX : numeric const, // x size of the area the nodes are in (in meters)
-        playgroundSizeY : numeric const, // y size of the area the nodes are in (in meters)
-        playgroundSizeZ : numeric const, // z size of the area the nodes are in (in meters)
-        numHosts : numeric const; // total number of hosts in the network
-                                  
-    submodules: 
-    	world: BaseWorldUtility;
-    		parameters: 
-                playgroundSizeX = playgroundSizeX, 
-                playgroundSizeY = playgroundSizeY,
+module Network
+{
+    parameters:
+        double playgroundSizeX; // x size of the area the nodes are in (in meters)
+        double playgroundSizeY; // y size of the area the nodes are in (in meters)
+        double playgroundSizeZ; // z size of the area the nodes are in (in meters)
+        double numHosts; // total number of hosts in the network
+
+        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=10,10");
+    submodules:
+        world: BaseWorldUtility {
+            parameters:
+                playgroundSizeX = playgroundSizeX;
+                playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
-//      channelcontrol: ConnectionManager; 
-//            display: "p=60,30;i=eye14";
-        node: TestHost[numHosts]; 
-            parameters: 
-                numHosts = numHosts; 
-            display: "p=50,50;i=laptop";
-        node2: CrashHost[numHosts]; 
-            parameters: 
-                numHosts = numHosts; 
-            display: "p=50,50;i=laptop";
+        }
+        //      channelcontrol: ConnectionManager; 
+        //            display: "p=60,30;i=eye14";
+        node[numHosts]: TestHost {
+            parameters:
+                numHosts = numHosts;
+                @display("p=50,50;i=laptop");
+        }
+        node2[numHosts]: CrashHost {
+            parameters:
+                numHosts = numHosts;
+                @display("p=50,50;i=laptop");
 //    connections nocheck: 
 // all connections and gates are to be generated dynamically
-                         
-    display: "p=10,10;b=$playgroundSizeX,$playgroundSizeY,rect;o=white";
-endmodule 
+
+        }
+}
 
 
 // basic example simulation for the Mobility Framework
-network bmSim : Network
-endnetwork 
+network bmSim extends Network
+{
+    parameters:
+}
 

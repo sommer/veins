@@ -1,3 +1,3 @@
 #include "NotConnectedRNodePhyLayer.h"
 
-Define_Module_Like( NotConnectedRNodePhyLayer, TestPhyLayer );
+Define_Module( NotConnectedRNodePhyLayer);

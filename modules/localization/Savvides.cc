@@ -43,7 +43,7 @@ double Savvides::anchor_timer_interval;
 double Savvides::position_timer_interval;
 double Savvides::triangulation_timer_interval;
 
-//Define_Module_Like(Savvides, BaseLocalization);
+////Define_Module_Like(Savvides, BaseLocalization);
 Define_Module(Savvides)
 
 static bool AnchorSortPredicate(const AnchorInfo* a, const AnchorInfo* b)
@@ -358,7 +358,7 @@ void Savvides::sendMsg(cMessage * msg)
 {
 	msg->setControlInfo(new NetwControlInfo(L3BROADCAST));
 
-	sendDown(encapsMsg(msg, msg->kind()));
+	sendDown(encapsMsg(msg, msg->getKind()));
 }
 
 void Savvides::handleMsg(cMessage * msg)
@@ -370,7 +370,7 @@ void Savvides::handleMsg(cMessage * msg)
 	NodeInfo * node = new NodeInfo(pkt, getPosition());
 	cMessage * m = decapsMsg(msg);
 
-	switch (m->kind()) {
+	switch (m->getKind()) {
 	case ANCHOR_MSG: 
 		if (checkAnchors(m, node) && !isAnchor) {
 			savvides();
@@ -388,7 +388,7 @@ void Savvides::handleMsg(cMessage * msg)
 		}
 		break;
 	default:
-		error("Unknown message type %d", msg->kind());
+		error("Unknown message type %d", msg->getKind());
 	}
 	delete m;
 	delete node;

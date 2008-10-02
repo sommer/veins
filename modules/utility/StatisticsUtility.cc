@@ -36,14 +36,14 @@ void StatisticsUtility::finish() {
     Stats_t::const_iterator it;
     for(it = in.begin(); it != in.end(); ++it) {
         string lineStart("STATS incomingPackets : ");
-        BaseModule *bm = check_and_cast<BaseModule*>(simulation.module( it->first ));
-        lineStart.append(bm->logName()).append("::").append(bm->className()).append(": ");
+        BaseModule *bm = check_and_cast<BaseModule*>(simulation.getModule( it->first ));
+        lineStart.append(bm->logName()).append("::").append(bm->getClassName()).append(": ");
         it->second.printStats(lineStart);
     }
     for(it = out.begin(); it != out.end(); ++it) {
         string lineStart("STATS outgoingPackets : ");
-        BaseModule *bm = check_and_cast<BaseModule*>(simulation.module( it->first ));
-        lineStart.append(bm->logName()).append("::").append(bm->className()).append(": ");
+        BaseModule *bm = check_and_cast<BaseModule*>(simulation.getModule( it->first ));
+        lineStart.append(bm->logName()).append("::").append(bm->getClassName()).append(": ");
         it->second.printStats(lineStart);
     }
     in.clear();

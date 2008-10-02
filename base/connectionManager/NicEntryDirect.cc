@@ -6,16 +6,16 @@
  * copyright:   (C) 2005 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     framework implementation developed by tkn
- * description: Class to store information about a nic for the 
+ * description: Class to store information about a nic for the
  *              ConnectionManager module
  **************************************************************************/
 
@@ -24,7 +24,7 @@
 #include "ChannelAccess.h"
 
 #ifndef nicEV
-#define nicEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << "NicEntry: "
+#define nicEV (ev.isDisabled()||!coreDebug) ? ev : ev << "NicEntry: "
 #endif
 
 
@@ -48,9 +48,9 @@ void NicEntryDirect::connectTo(NicEntry* other)
 
     cGate *radioGate=NULL;
     if( (radioGate = otherPtr->gate("radioIn")) == NULL )
-		throw new cRuntimeError("Nic has no radioIn gate!");
-    
-    outConns[other->nicId] = radioGate->sourceGate();
+		throw cRuntimeError("Nic has no radioIn gate!");
+
+    outConns[other->nicId] = radioGate->getPathStartGate();
 }
 
 /**

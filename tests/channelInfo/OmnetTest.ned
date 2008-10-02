@@ -1,0 +1,4 @@
+simple OmnetTest
+{
+	@isNetwork(true);
+}

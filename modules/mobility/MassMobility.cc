@@ -48,8 +48,8 @@ void MassMobility::initialize(int stage)
         move.speed = par("speed");
         currentAngle = uniform(0, 360);
 
-        step.setX(move.speed * cos(PI * currentAngle / 180) * updateInterval);
-        step.setY(move.speed * sin(PI * currentAngle / 180) * updateInterval);
+        step.setX(move.speed * cos(PI * currentAngle / 180) * updateInterval.dbl());
+        step.setY(move.speed * sin(PI * currentAngle / 180) * updateInterval.dbl());
 
     }
     else if( stage == 1 ){
@@ -59,7 +59,7 @@ void MassMobility::initialize(int stage)
 
 	targetPos = move.startPos;
 
-	scheduleAt(simTime() + uniform(0, changeInterval->doubleValue()), new cMessage("turn", MK_CHANGE_DIR));	
+	scheduleAt(simTime() + uniform(0, changeInterval->doubleValue()), new cMessage("turn", MK_CHANGE_DIR));
     }
 }
 
@@ -70,16 +70,16 @@ void MassMobility::initialize(int stage)
 void MassMobility::handleSelfMsg(cMessage * msg)
 {
     Coord dummy;
-	
-    switch (msg->kind()){
+
+    switch (msg->getKind()){
     case MOVE_HOST:
 	BaseMobility::handleSelfMsg( msg );
 	break;
     case MK_CHANGE_DIR:
 	currentAngle += changeAngleBy->doubleValue();
 
-	step.setX(move.speed * cos(PI * currentAngle / 180) * updateInterval);
-	step.setY(move.speed * sin(PI * currentAngle / 180) * updateInterval);
+	step.setX(move.speed * cos(PI * currentAngle / 180) * updateInterval.dbl());
+	step.setY(move.speed * sin(PI * currentAngle / 180) * updateInterval.dbl());
 
 	move.setDirection(move.startPos+step);
 
@@ -101,7 +101,7 @@ void MassMobility::makeMove()
     move.startPos = targetPos;
     targetPos += step;
     move.startTime = simTime();
- 
+
    // do something if we reach the wall
     fixIfHostGetsOutside();
 }

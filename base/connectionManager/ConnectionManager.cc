@@ -5,7 +5,7 @@
 #include "BaseWorldUtility.h"
 
 #ifndef ccEV
-#define ccEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << "ConnectionManager: "
+#define ccEV (ev.isDisabled()||!coreDebug) ? ev : ev << "ConnectionManager: "
 #endif
 
 Define_Module( ConnectionManager );
@@ -24,15 +24,15 @@ double ConnectionManager::calcInterfDist()
   double interfDistance;
 
   //the minimum carrier frequency for this cell
-  double carrierFrequency = par("carrierFrequency");
+  double carrierFrequency = par("carrierFrequency").doubleValue();
   //maximum transmission power possible
-  double pMax             = par("pMax");
+  double pMax             = par("pMax").doubleValue();
   if (pMax <=0)
   	error("Max transmission power is <=0!");
   //minimum signal attenuation threshold
-  double sat              = par("sat");
+  double sat              = par("sat").doubleValue();
   //minimum path loss coefficient
-  double alpha            = par("alpha");
+  double alpha            = par("alpha").doubleValue();
 
   double waveLength     = (BaseWorldUtility::speedOfLight/carrierFrequency);
   //minimum power level to be able to physically receive a signal

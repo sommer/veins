@@ -1,4 +1,5 @@
 simple StatisticsUtility
-    parameters:	
-endsimple
+{
+    parameters:
+}
 

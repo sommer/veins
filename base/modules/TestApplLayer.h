@@ -38,7 +38,7 @@
 class TestApplLayer : public BaseApplLayer
 {
   public:
-    Module_Class_Members( TestApplLayer, BaseApplLayer, 0 );
+    //Module_Class_Members( TestApplLayer, BaseApplLayer, 0 );
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);

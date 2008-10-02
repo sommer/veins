@@ -1,4 +1,5 @@
 simple TestBMBaseMobility
-   parameters:
-        coreDebug: numeric const; // debug switch for the core framework
-endsimple
+{
+    parameters:
+        bool coreDebug; // debug switch for the core framework
+}

@@ -23,7 +23,7 @@ class FindModule
 			return NULL;
 		}
 
-		static T findGlobalModule() {return findSubModule(simulation.systemModule());}
+		static T findGlobalModule() {return findSubModule(simulation.getSystemModule());}
 };
 
 #endif

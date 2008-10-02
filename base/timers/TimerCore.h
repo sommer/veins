@@ -21,7 +21,7 @@ class TimerCore: public BaseModule
 		virtual void handleMessage(cMessage* msg);
 
 	public:
-		Module_Class_Members(TimerCore, BaseModule, 0);
+		//Module_Class_Members(TimerCore, BaseModule, 0);
 		~TimerCore();
 
 		void init (Timer* t);

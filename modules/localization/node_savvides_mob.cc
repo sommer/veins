@@ -124,7 +124,7 @@ class Node_Savvides_Mob: public PositifLayer {
 	double true_pos_triangulate(void);
 
       public:
-	Module_Class_Members(Node_Savvides_Mob, PositifLayer, 0)
+	//Module_Class_Members(Node_Savvides_Mob, PositifLayer, 0)
 
 // 	virtual void analyzeTopology(void) {}
 
@@ -136,7 +136,7 @@ class Node_Savvides_Mob: public PositifLayer {
 	virtual void handleStopMessage(cMessage * msg);
 };
 
-Define_Module_Like(Node_Savvides_Mob, PositifLayer);
+//Define_Module_Like(Node_Savvides_Mob, PositifLayer);
 
 void Node_Savvides_Mob::init(void)
 {
@@ -265,7 +265,7 @@ void Node_Savvides_Mob::handleMessage(cMessage * msg, bool newNeighbor)
 {
 	if (newNeighbor)
 		// Activate all timer routines when we meet a new neighbor
-//              for (cLinkedListIterator iter = getTimers(); !iter.end();
+//              for (cLinkedList::Iterator iter = getTimers(); !iter.end();
 //                   iter++) {
 //                      timer_info *ev = (timer_info *) iter();
 //                      resetTimer(ev);
@@ -344,7 +344,7 @@ void Node_Savvides_Mob::handleStopMessage(cMessage * msg)
 
 void Node_Savvides_Mob::anchor(cMessage * msg)
 {
-	switch (msg->kind()) {
+	switch (msg->getKind()) {
 	case MSG_ANCHOR:
 		if (new_anchor(msg)) {
 			// Don't need to do anything. Bit of a hack.
@@ -358,7 +358,7 @@ void Node_Savvides_Mob::anchor(cMessage * msg)
 		break;
 
 	default:
-		error("anchor(): unexpected message kind: %d", msg->kind());
+		error("anchor(): unexpected message kind: %d", msg->getKind());
 		break;
 	}
 }
@@ -366,7 +366,7 @@ void Node_Savvides_Mob::anchor(cMessage * msg)
 
 void Node_Savvides_Mob::unknown(cMessage * msg)
 {
-	switch (msg->kind()) {
+	switch (msg->getKind()) {
 	case MSG_ANCHOR:
 		if (new_anchor(msg)) {
 			savvides();	// Will do the bounding box thing, or just return if too few anchors are known.
@@ -394,7 +394,7 @@ void Node_Savvides_Mob::unknown(cMessage * msg)
 		break;
 
 	default:
-		error("unknown(): unexpected message kind: %d", msg->kind());
+		error("unknown(): unexpected message kind: %d", msg->getKind());
 		break;
 	}
 }
@@ -408,7 +408,7 @@ double Node_Savvides_Mob::true_pos_triangulate(void)
 	Position pos;
 
 	int i = 0;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 
 		pos_list[i] = node[neighbor->idx].true_pos;
@@ -440,7 +440,7 @@ void Node_Savvides_Mob::do_triangulation(void *arg)
 #endif
 	int i = 0;
 	FLOAT sum_conf = 0;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 		double w = neighbor->twin ? LOW_CONF / 8 : neighbor->confidence;
 
@@ -687,7 +687,7 @@ bool Node_Savvides_Mob::inside_rectangle(Position pos)
 
 bool Node_Savvides_Mob::inside_neighbors_range(Position pos)
 {
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 
 		if (neighbor->confidence > 2 * LOW_CONF &&
@@ -705,7 +705,7 @@ void Node_Savvides_Mob::update_neighbor(cMessage * msg)
 	int src = msg->par("src");
 
 	bool found = false;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		neighbor = (nghbor_info *) iter();
 
 		if (neighbor->idx == src) {
@@ -730,7 +730,7 @@ void Node_Savvides_Mob::update_neighbor(cMessage * msg)
 		int n = ++summary.nr_nghbrs;
 		summary.nghbr_idx = new int[n];
 		int i = 0;
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			summary.nghbr_idx[i++] = ((nghbor_info *) iter())->idx;
 		}
 		summary_update = true;
@@ -760,12 +760,12 @@ void Node_Savvides_Mob::update_neighbor(cMessage * msg)
 
 		// Update may introduce new twins and/or remove old twins
 		// Simply check all pairs for twins (updating is too difficult)
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			nghbor_info *m = (nghbor_info *) iter();
 
 			m->twin = false;
 		}
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			nghbor_info *m = (nghbor_info *) iter();
 
 			// Skip anchors
@@ -777,7 +777,7 @@ void Node_Savvides_Mob::update_neighbor(cMessage * msg)
 				i_am_a_twin = m->twin = true;
 			}
 
-			for (cLinkedListIterator iter(neighbors); !iter.end();
+			for (cLinkedList::Iterator iter(neighbors); !iter.end();
 			     iter++) {
 				nghbor_info *k = (nghbor_info *) iter();
 
@@ -821,7 +821,7 @@ void Node_Savvides_Mob::sendPosition(void *arg)
 		for (int n = 0; n < num_nodes; n++)
 			sound[n] = false;
 
-		for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+		for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 			sound[((nghbor_info *) iter())->idx] = true;
 		}
 		for (list<anchor_info *>::iterator iter = anchors.begin();

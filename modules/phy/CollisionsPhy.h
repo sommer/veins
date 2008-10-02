@@ -24,7 +24,7 @@
 class CollisionsPhy : public BasePhyLayer
 {
 public:
-    Module_Class_Members(CollisionsPhy, BasePhyLayer, 0 );
+    //Module_Class_Members(CollisionsPhy, BasePhyLayer, 0 );
 
 	void initialize(int stage);
 

@@ -39,7 +39,7 @@
 
 
 
-Define_Module_Like(RSL_new, BaseLocalization);
+//Define_Module_Like(RSL_new, BaseLocalization);
 
 void RSL_new::initialize(int stage)
 {
@@ -129,7 +129,7 @@ void RSL_new::handleTimer(unsigned int index){
 							{	
 								// Get the new position.
 								BaseUtility *utility = (BaseUtility *) 
-										(findHost()->submodule("utility"));
+										(findHost()->getSubmodule("utility"));
 								Coord pos = utility->getPos();
 								Location *loc = new Location(pos,simTime(),1.0);
 								
@@ -193,7 +193,7 @@ void RSL_new::handleTimer(unsigned int index){
 							lp->addPar("confidence") = self_info.confidence;
 							// true position.
 							BaseUtility *utility = (BaseUtility *) 
-										(findHost()->submodule("utility"));
+										(findHost()->getSubmodule("utility"));
 							Coord pos = utility->getPos();
 							Location *loc = new Location(pos,simTime(),1.0);
 							lp->setPos(*loc);
@@ -213,7 +213,7 @@ void RSL_new::handleTimer(unsigned int index){
 void RSL_new::display_results(){
 	
 	BaseUtility *utility = (BaseUtility *) 
-				(findHost()->submodule("utility"));
+				(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 
 	double xReal = pos.getX();
@@ -284,7 +284,7 @@ void RSL_new::newAnchor(cMessage * msg) {
 	// Reset the timer, to extend the timeout interval.
 	//cancelTimer(ANCHOR_TIMEOUT);
 	BaseUtility *utility = (BaseUtility *) 
-				(findHost()->submodule("utility"));
+				(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 
 	double real_dist = (node->pos).distance(pos);
@@ -356,7 +356,7 @@ void RSL_new::newNeighbor(cMessage * msg) {
 		}
 	
 		BaseUtility *utility = (BaseUtility *) 
-					(findHost()->submodule("utility"));
+					(findHost()->getSubmodule("utility"));
 		Coord pos1 = utility->getPos();
 	
 		double real_dist = (node->pos).distance(pos1);
@@ -475,7 +475,7 @@ Coord RSL_new::localize_with_mode(int flag){
 
 	// Get sensor's location.
 	BaseUtility *utility = (BaseUtility *) 
-			(findHost()->submodule("utility"));
+			(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 	Coord avg;
 	int total_anchors_heard = 0;
@@ -701,7 +701,7 @@ Coord RSL_new::localize_with_mean(int flag){
 
 	// Get sensor's location.
 	BaseUtility *utility = (BaseUtility *) 
-			(findHost()->submodule("utility"));
+			(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 
 	// Anchor list.
@@ -897,7 +897,7 @@ void RSL_new::handleMsg(cMessage* msg){
 	LocPkt * m = dynamic_cast<LocPkt *>(msg);
 
 	// Process the message, depending upon whether it is from an anchor or a non-anchor.
- 	switch(m->kind())
+ 	switch(m->getKind())
 	{
 		case ANCHOR_BROADCAST_MESSAGE:  
 						if (! isAnchor)
@@ -929,7 +929,7 @@ void RSL_new::handleMsg(cMessage* msg){
  **/
 void RSL_new::sendBroadcast(LocPkt *pkt)
 {
-    pkt->setLength(headerLength);
+    pkt->setBitLength(headerLength);
     // set the control info to tell the network layer the layer 3 address;
     pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
     EV << "Sending broadcast packet!\n";

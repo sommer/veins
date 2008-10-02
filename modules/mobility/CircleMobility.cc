@@ -56,7 +56,7 @@ void CircleMobility::makeMove()
 {
     move.startPos = targetPos;
 
-    angle += omega * updateInterval;
+    angle += omega * updateInterval.dbl();
     targetPos.setX(center.getX() + r * cos(angle));
     targetPos.setY(center.getY() + r * sin(angle));
 

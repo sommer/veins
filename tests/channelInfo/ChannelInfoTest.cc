@@ -18,6 +18,7 @@
 #include <omnetpp.h>
 #include <ChannelInfo.h>
 #include <asserts.h>
+#include <OmnetTestBase.h>
 
 /**
  * Unit test for isInRectangle method of class Coord
@@ -81,17 +82,17 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(0.5, 2.44, v);	
-	assertEqual("Interval before second AirFrame should return only first.", 1, v.size());
+	assertEqual("Interval before second AirFrame should return only first.", 1u, v.size());
 	assertEqual("Interval before second AirFrame should return the first AirFrame.", frame1, v.front());
 	
 	v.clear();
 	testChannel.getAirFrames(3.05, 4.0, v);	
-	assertEqual("Interval after first AirFrame should return only second.", 1, v.size());
+	assertEqual("Interval after first AirFrame should return only second.", 1u, v.size());
 	assertEqual("Interval after first AirFrame should return the second AirFrame.", frame2, v.front());
 	
 	v.clear();
 	testChannel.getAirFrames(2.44, 2.55, v);	
-	assertEqual("Interval inside both AirFrames should return both.", 2, v.size());
+	assertEqual("Interval inside both AirFrames should return both.", 2u, v.size());
 	bool bothReturned =    (v.front() == frame1 && v.back() == frame2) 
 						|| (v.front() == frame2 && v.back() == frame1);
 	assertTrue("Interval inside both AirFrame should return both.", bothReturned);
@@ -101,7 +102,7 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(2.51, 2.9, v);	
-	assertEqual("Interval inside both AirFrame should return also the deleted.", 2, v.size());
+	assertEqual("Interval inside both AirFrame should return also the deleted.", 2u, v.size());
 	bothReturned =    (v.front() == frame1 && v.back() == frame2) 
 							|| (v.front() == frame2 && v.back() == frame1);
 	assertTrue("Interval inside both AirFrame should return also the deleted.", bothReturned);
@@ -114,7 +115,7 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(2.51, 3.5, v);	
-	assertEqual("Interval inside all AirFrame should return all.", 3, v.size());
+	assertEqual("Interval inside all AirFrame should return all.", 3u, v.size());
 	
 	//remove second AirFrame
 	testChannel.removeAirFrame(frame2);
@@ -125,7 +126,7 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(3.5, 3.6, v);	
-	assertEqual("Interval inside second and third AirFrame should return also the second (deleted).", 2, v.size());
+	assertEqual("Interval inside second and third AirFrame should return also the second (deleted).", 2u, v.size());
 	bothReturned =    (v.front() == frame2 && v.back() == frame3) 
 							|| (v.front() == frame3 && v.back() == frame2);
 	assertTrue("Interval inside both AirFrame should return also the deleted.", bothReturned);
@@ -148,7 +149,7 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(14.5, 15.0, v);	
-	assertEqual("Check for simultaneus airframes", 2, v.size());
+	assertEqual("Check for simultaneus airframes", 2u, v.size());
 	bothReturned =    (v.front() == frame4b && v.back() == frame4) 
 								|| (v.front() == frame4 && v.back() == frame4b);
 	assertTrue("Check for simultaneus airframes.", bothReturned);
@@ -159,7 +160,7 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(14.5, 15.0, v);	
-	assertEqual("Check for simultaneus airframes after remove of one.", 2, v.size());
+	assertEqual("Check for simultaneus airframes after remove of one.", 2u, v.size());
 	bothReturned =    (v.front() == frame4b && v.back() == frame4) 
 								|| (v.front() == frame4 && v.back() == frame4b);
 	assertTrue("Check for simultaneus airframes after remove of one.", bothReturned);
@@ -171,18 +172,18 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(16.0, 17.0, v);	
-	assertEqual("Aiframes with same start and end are intersecting.", 3, v.size());
+	assertEqual("Aiframes with same start and end are intersecting.", 3u, v.size());
 	
 	//remove the second of the simulateus AirFrames
 	testChannel.removeAirFrame(frame4b);
 	
 	v.clear();
 	testChannel.getAirFrames(16.0, 17.0, v);	
-	assertEqual("Should intersect still with both removed simultaneus AirFrames.", 3, v.size());
+	assertEqual("Should intersect still with both removed simultaneus AirFrames.", 3u, v.size());
 	
 	v.clear();
 	testChannel.getAirFrames(16.1, 17.0, v);	
-	assertEqual("Interval after simultaneus should return only third AirFrame.", 1, v.size());
+	assertEqual("Interval after simultaneus should return only third AirFrame.", 1u, v.size());
 	assertEqual("Interval after simultaneus should return only third AirFrame.", frame5, v.front());
 	
 	//create another AirFrame with same start as previous but later end
@@ -192,14 +193,14 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(16.1, 16.1, v);	
-	assertEqual("Interval at start of both AirFrames should return both.", 2, v.size());
+	assertEqual("Interval at start of both AirFrames should return both.", 2u, v.size());
 	bothReturned =    (v.front() == frame5 && v.back() == frame6) 
 								|| (v.front() == frame6 && v.back() == frame5);
 	assertTrue("Interval at start of both AirFrames should return both.", bothReturned);
 	
 	v.clear();
 	testChannel.getAirFrames(18.1, 19.0, v);	
-	assertEqual("Interval after shorter AirFrame shouldn't return the shorter.", 1, v.size());
+	assertEqual("Interval after shorter AirFrame shouldn't return the shorter.", 1u, v.size());
 	assertEqual("Interval after shorter AirFrame shouldn't return the shorter.", frame6, v.front());
 	
 	//remove shorter AirFrame with same start
@@ -207,14 +208,14 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(16.1, 16.1, v);	
-	assertEqual("Nothing should have changed after deletion of shorter AirFrame.", 2, v.size());
+	assertEqual("Nothing should have changed after deletion of shorter AirFrame.", 2u, v.size());
 	bothReturned =    (v.front() == frame5 && v.back() == frame6) 
 								|| (v.front() == frame6 && v.back() == frame5);
 	assertTrue("Nothing should have changed after deletion of shorter AirFrame.", bothReturned);
 	
 	v.clear();
 	testChannel.getAirFrames(18.1, 19.0, v);	
-	assertEqual("Nothing should have changed after deletion of shorter AirFrame.", 1, v.size());
+	assertEqual("Nothing should have changed after deletion of shorter AirFrame.", 1u, v.size());
 	assertEqual("Nothing should have changed after deletion of shorter AirFrame.", frame6, v.front());
 	
 	//add another one with same end as previous but later start
@@ -224,26 +225,26 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(16.1, 16.1, v);	
-	assertEqual("Interval before newly added should not return newly added.", 2, v.size());
+	assertEqual("Interval before newly added should not return newly added.", 2u, v.size());
 	bothReturned =    (v.front() == frame5 && v.back() == frame6) 
 								|| (v.front() == frame6 && v.back() == frame5);
 	assertTrue("Interval before newly added should not return newly added.", bothReturned);
 	
 	v.clear();
 	testChannel.getAirFrames(18.1, 18.4, v);	
-	assertEqual("Interval before newly added should not return newly added.", 1, v.size());
+	assertEqual("Interval before newly added should not return newly added.", 1u, v.size());
 	assertEqual("Interval before newly added should not return newly added.", frame6, v.front());
 	
 	v.clear();
 	testChannel.getAirFrames(18.5, 18.5, v);	
-	assertEqual("Newly added should be returned together with the other one.", 2, v.size());
+	assertEqual("Newly added should be returned together with the other one.", 2u, v.size());
 	bothReturned =    (v.front() == frame6 && v.back() == frame7) 
 								|| (v.front() == frame7 && v.back() == frame6);
 	assertTrue("Newly added should be returned together with the other one.", bothReturned);
 	
 	v.clear();
 	testChannel.getAirFrames(14.5, 15.0, v);	
-	assertEqual("Our simulatneus AirFrames should be still there", 2, v.size());
+	assertEqual("Our simulatneus AirFrames should be still there", 2u, v.size());
 	bothReturned =    (v.front() == frame4b && v.back() == frame4) 
 								|| (v.front() == frame4 && v.back() == frame4b);
 	assertTrue("Our simulatneus AirFrames should be still there.", bothReturned);
@@ -253,16 +254,16 @@ void testIntersections() {
 	
 	v.clear();
 	testChannel.getAirFrames(14.5, 15.0, v);	
-	assertEqual("Simultaneus AirFrames should be deleted now.", 0, v.size());
+	assertEqual("Simultaneus AirFrames should be deleted now.", 0u, v.size());
 	
 	v.clear();
 	testChannel.getAirFrames(16.0, 16.0, v);	
-	assertEqual("Only longer AirFrame should be still there.", 1, v.size());
+	assertEqual("Only longer AirFrame should be still there.", 1u, v.size());
 	assertEqual("Only longer AirFrame should be still there.", frame6, v.front());
 	
 	v.clear();
 	testChannel.getAirFrames(18.5, 18.5, v);	
-	assertEqual("Last mans standing: last added and the long AirFrame.", 2, v.size());
+	assertEqual("Last mans standing: last added and the long AirFrame.", 2u, v.size());
 	bothReturned =    (v.front() == frame6 && v.back() == frame7) 
 								|| (v.front() == frame7 && v.back() == frame6);
 	assertTrue("Last mans standing: last added and the long AirFrame.", bothReturned);
@@ -271,10 +272,15 @@ void testIntersections() {
 	testChannel.removeAirFrame(frame7);
 	v.clear();
 	testChannel.getAirFrames(18.5, 18.5, v);	
-	assertEqual("Should be empty now..", 0, v.size());
+	assertEqual("Should be empty now..", 0u, v.size());
 }
 
-int main() {
-    testIntersections();
-}
 
+class OmnetTest:public OmnetTestBase {
+protected:
+	void runTests() {
+		testIntersections();
+	}
+};
+
+Define_Module(OmnetTest);

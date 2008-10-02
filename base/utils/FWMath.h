@@ -149,12 +149,13 @@ public:
      */
     static double torDist(double x1, double x2, double y1, double y2) {
         return (x1-x2) * (x1-x2) + (y1-y2) * (y1-y2);
-    };
+    }
 
+	//TODO: resolve "extra qualification"-error for "erf" and "erfc" with mingw
 	/**
 	 * @brief Complementary error function.
 	 **/
-	static double erfc(double x) {
+	/*static double erfc(double x) {
 		double t, u, y;
 
 		if (x <= -6.0)
@@ -179,12 +180,12 @@ public:
 			0.275374741597376782) * t * exp(-x * x);
 
 		return x < 0.0 ? 2.0 - y : y;
-	}
+	}*/
 
 	/**
 	 * @brief Error function.
 	 **/
-	static double erf(double x) { return 1.0 - erfc(x); }
+	//static double erf(double x) { return 1.0 - erfc(x); }
 
 };
 

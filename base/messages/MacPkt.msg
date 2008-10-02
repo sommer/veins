@@ -15,20 +15,20 @@
 // *              in the top level directory
 // **************************************************************************
 // * part of:     framework implementation developed by tkn
-// * description: - base class for MAC layer messages
-// *              - subclass to create your own MAC layer messages
+// * description: - base class for MAC layer packets
+// *              - subclass to create your own MAC layer packets
 // **************************************************************************/
 
 
 // A basic MAC (Media Access Control) packet format definition
 // 
-// subclass if you want to create your own MAC layer message class
+// subclass if you want to create your own MAC layer packet class
 //
-// The basic MAC message only provides source and destination address
+// The basic MAC packet only provides source and destination address
 //
 // @author Daniel Willkomm
-message MacPkt{
-    fields:
-	int destAddr; // destination mac address
-	int srcAddr;  // source mac address
+packet MacPkt
+{
+    int destAddr; // destination mac address
+    int srcAddr;  // source mac address
 }

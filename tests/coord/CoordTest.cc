@@ -17,6 +17,7 @@
 
 #include <Coord.h>
 #include <asserts.h>
+#include <OmnetTestBase.h>
 
 const double X = 2.4;
 const double Y = 1.2;
@@ -415,12 +416,17 @@ void testIsInRectangle() {
 	std::cout << "Is in rectangle test successful." << std::endl;
 }
 
-int main() {
-    testConstructors();
-    testOperators();
-    testCompareOperators();
-    testLength();
-    testDistance();
-    testIsInRectangle();
-}
+class OmnetTest:public OmnetTestBase {
+protected:
+	void runTests() {
+		testConstructors();
+	    testOperators();
+	    testCompareOperators();
+	    testLength();
+	    testDistance();
+	    testIsInRectangle();
+	}
+};
+
+Define_Module(OmnetTest);
 

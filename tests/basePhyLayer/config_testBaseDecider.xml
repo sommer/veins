@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<AnalogueModels>
+	    <AnalogueModel type="TestAnalogueModel">
+	        <parameter name="attenuation" type="double" value="1.1"/>
+	    </AnalogueModel>
+	    <AnalogueModel type="TestAnalogueModel">
+	        <parameter name="attenuation" type="double" value="2.1"/>
+	    </AnalogueModel>
+	</AnalogueModels>
+	<Decider type="TestBaseDecider">
+		<Parameter name="snrThreshold" type="double" value="-80.0"></Parameter>
+	</Decider>
+</root>

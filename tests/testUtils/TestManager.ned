@@ -3,4 +3,5 @@
 //TestModule
 simple TestManager
 
-endsimple
+{
+}

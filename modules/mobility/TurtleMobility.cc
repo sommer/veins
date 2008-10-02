@@ -207,7 +207,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         const char *tAttr = stmt->getAttribute("t");
         if (!tAttr)
             error("<wait>: required attribute 't' missing at %s", stmt->getSourceLocation());
-        double t = getValue(tAttr);
+        simtime_t t = getValue(tAttr);
         if (t<0)
             error("<wait>: time (attribute t) is negative (%g) at %s", t, stmt->getSourceLocation());
         targetTime += t;  // targetPos is unchanged
@@ -223,7 +223,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         if (yAttr)
             targetPos.setY(getValue(yAttr));
         // travel to targetPos at current speed, or get there in time t (ignoring current speed then)
-        double t = tAttr ? getValue(tAttr) : move.startPos.distance(targetPos)/move.speed;
+        simtime_t t = tAttr ? getValue(tAttr) : move.startPos.distance(targetPos)/move.speed;
         if (t<0)
             error("<wait>: time (attribute t) is negative at %s", stmt->getSourceLocation());
         targetTime += t;
@@ -238,7 +238,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         if (yAttr)
             targetPos.setY(targetPos.getY() + getValue(yAttr));
         // travel to targetPos at current speed, or get there in time t (ignoring current speed then)
-        double t = tAttr ? getValue(tAttr) : move.startPos.distance(targetPos)/move.speed;
+        simtime_t t = tAttr ? getValue(tAttr) : move.startPos.distance(targetPos)/move.speed;
         if (t<0)
             error("<wait>: time (attribute t) is negative at %s", stmt->getSourceLocation());
         targetTime += t;
@@ -264,9 +264,9 @@ double TurtleMobility::getValue(const char *s)
         s = str.c_str();
     }
 
-    // then use cPar to evaluate the string
-    cPar tmp;
-    if (!tmp.setFromText(s,'?'))
+    // then use cMsgPar to evaluate the string
+    cMsgPar tmp;
+    if (!tmp.parse(s,'?'))
         error("wrong value '%s' around %s", s, nextStatement->getSourceLocation());
     return tmp.doubleValue();
 }

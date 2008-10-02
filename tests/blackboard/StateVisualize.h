@@ -35,7 +35,7 @@ private:
     cModule *host;
 
 public:
-    Module_Class_Members(StateVisualize, BaseModule, 0);
+    //Module_Class_Members(StateVisualize, BaseModule, 0);
     virtual ~StateVisualize();
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage*);

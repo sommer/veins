@@ -32,13 +32,14 @@
 // @author Andras Varga
 //
 simple BonnMotionMobility
+{
     parameters:
-        coreDebug : bool, // debug switch
-        debug : bool, // debug switch
-        traceFile: string, // the BonnMotion trace file
-        nodeId: numeric const, // selects line in trace file; -1 gets substituted to parent module's index
-        updateInterval : numeric const; // time interval to update the hosts position
-endsimple
+        bool coreDebug; // debug switch
+        bool debug; // debug switch
+        string traceFile; // the BonnMotion trace file
+        double nodeId; // selects line in trace file; -1 gets substituted to parent module's index
+        double updateInterval; // time interval to update the hosts position
+}
 
 
 

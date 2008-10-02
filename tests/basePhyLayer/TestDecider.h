@@ -34,6 +34,8 @@ public:
 	}
 	
 	simtime_t handleChannelSenseRequest(ChannelSenseRequest* request) {
+		announceMessage(request);
+		
 		simtime_t time = phy->getSimTime();
 		if(request->getSenseDuration() > 0.0) {
 			simtime_t next = time + request->getSenseDuration();

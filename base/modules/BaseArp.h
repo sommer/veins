@@ -44,7 +44,7 @@
  **/
 class BaseArp : public BaseModule
 {
-    Module_Class_Members(BaseArp,BaseModule,0);
+    //Module_Class_Members(BaseArp,BaseModule,0);
 	bool coreDebug;
 
 public:

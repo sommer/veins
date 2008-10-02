@@ -1,28 +1,33 @@
-import
-    "TestNic",
-    "BaseMobility",
-    "BaseUtility";
+import TestNic;
+import BaseMobility;
+import BaseUtility;
 
 
 module TestHost
+{
     parameters:
-        numHosts : numeric const; // total number of hosts in the network
+        double numHosts; // total number of hosts in the network
 
+        @display("bgb=180,200,white,,;bgp=10,10");
     gates:
-        in: radioIn;
+        input radioIn;
 
     submodules:
-        utility: BaseUtility;
-            display: "p=130,60;b=25,25;o=black";   
-        mobility: BaseMobility;
-            display: "p=130,130;i=cogwheel2";  
-        nic: TestNic;
-        parameters:			
-            display: "b=32,30;p=60,166;i=iface";
+        utility: BaseUtility {
+            parameters:
+                @display("p=130,60;b=25,25,,black,,");
+        }
+        mobility: BaseMobility {
+            parameters:
+                @display("p=130,130;i=cogwheel2");
+        }
+        nic: TestNic {
+            parameters:
+                @display("b=32,30;p=60,166;i=iface");
+        }
     connections:
 
-		radioIn --> nic.radioIn;
+        radioIn --> nic.radioIn;
 
-    display: "p=10,10;b=180,200,rect;o=white";
-endmodule
+}
 

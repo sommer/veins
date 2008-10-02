@@ -23,24 +23,25 @@ std::string BasePacket::logName(void) const {
 	std::ostringstream ost;
 	cModule *parent = findHost();
 	parent->hasPar("logName") ?
-		ost << parent->par("logName").stringValue() : ost << parent->name();
-	ost << "[" << parent->index() << "]";
+		ost << parent->par("logName").stringValue() : ost << parent->getName();
+	ost << "[" << parent->getIndex() << "]";
 	return ost.str();
 };
 
+//TODO: consider removing this method because simTime() is a global method in omnet4
 simtime_t BasePacket::simTime () const
 {
-	return dynamic_cast<cSimpleModule*>(owner())->simTime();
+	return simTime();
 }
 
 cModule *BasePacket::findHost(void) const 
 {
-	cModule *mod=dynamic_cast<cModule*>(owner());
+	cModule *mod=dynamic_cast<cModule*>(getOwner());
 	if (!mod)
 		opp_error("findHost: no owner!");
-    for (; mod != NULL; mod = mod->parentModule())
+    for (; mod != NULL; mod = mod->getParentModule())
     {
-        if (strstr(mod->name(), "node") != NULL || strstr(mod->name(), "Node") != NULL)
+        if (strstr(mod->getName(), "node") != NULL || strstr(mod->getName(), "Node") != NULL)
             break;
     }
     if (!mod)

@@ -49,7 +49,7 @@ protected:
 
 public:	
 	
-	Module_Class_Members( TestBMBaseMobility , BaseMobility , 0 );
+	//Module_Class_Members( TestBMBaseMobility , BaseMobility , 0 );
 	
 	/** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);

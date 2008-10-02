@@ -35,6 +35,8 @@ class DeciderToPhyInterface
 	public:
 		typedef std::vector<AirFrame*> AirFrameVector;
 		
+		virtual ~DeciderToPhyInterface() {}
+		
 		/**
 		 * @brief Fills the passed AirFrameVector with all AirFrames that intersect 
 		 * with the time interval [from, to]

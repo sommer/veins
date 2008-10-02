@@ -55,7 +55,7 @@ typedef enum {
 	STATUS_ANCHOR = 0 /* This node has a known position */ ,
 	STATUS_UNKNOWN = 1 /* This node has not yet been able to estimate a position */ ,
 	STATUS_POSITIONED = 2 /* This node has estimated its position */ ,
-	STATUS_BAD = 3		/* This is a bad node (meaning will depend on the algorithm) */
+	STATUS_BAD = 3		/* This is a bad getNode(meaning will depend on the algorithm) */
 } NodeState;
 
 #endif

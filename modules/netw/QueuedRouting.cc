@@ -6,12 +6,12 @@
  * copyright:   (C) 2006 Parallel and Distributed Systems Group (PDS) at
  *              Technische Universiteit Delft, The Netherlands.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     routing modules
@@ -65,7 +65,7 @@ NetwPkt *QueuedRouting::buildPkt(int kind, int netwAddr, const char *name)
 {
 	int macAddr;
 	NetwPkt *pkt = new NetwPkt(name, kind);
-	pkt->setLength(headerLength);
+	pkt->setBitLength(headerLength);
 	pkt->setSrcAddr(myNetwAddr);
 	pkt->setDestAddr(netwAddr);
 	EV << " netw " << myNetwAddr << " sending packet" << endl;
@@ -92,6 +92,8 @@ NetwPkt *QueuedRouting::buildPkt(int kind, int netwAddr, const char *name)
 
 NetwPkt *QueuedRouting::encapsMsg(cMessage * msg)
 {
+	cPacket* pkt = static_cast<cPacket*>(msg);
+
 	EV << "in encaps...\n";
 	int netwAddr;
 
@@ -121,13 +123,13 @@ NetwPkt *QueuedRouting::encapsMsg(cMessage * msg)
 		delete cInfo;
 	}
 
-	NetwPkt *pkt = buildPkt(upperKind(), netwAddr, msg->name());
+	NetwPkt *netPkt = buildPkt(upperKind(), netwAddr, msg->getName());
 
 	//encapsulate the application packet
-	pkt->encapsulate(msg);
+	pkt->encapsulate(pkt);
 	EV << " pkt encapsulated\n";
-	return pkt;
-}	   
+	return netPkt;
+}
 
 /**
  * Redefine this function if you want to process messages from upper
@@ -146,7 +148,7 @@ void QueuedRouting::handleUpperMsg(cMessage * msg)
 
 void QueuedRouting::handleLowerControl(cMessage * msg)
 {
-	switch (msg->kind())
+	switch (msg->getKind())
 	{
 		case NicControlType::TX_END:
 			EV << "Transmission complete" << endl;
@@ -155,7 +157,7 @@ void QueuedRouting::handleLowerControl(cMessage * msg)
 			delete msg;
 			break;
 		default:
-			EV << "QueuedRouting does not handle control messages of this type (name was " << msg->name() << " kind was " << msg->kind() << ")" << endl;
+			EV << "QueuedRouting does not handle control messages of this type (name was " << msg->getName() << " kind was " << msg->getKind() << ")" << endl;
 			delete msg;
 			break;
 	}

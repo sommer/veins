@@ -26,4 +26,5 @@
 
 simple StateView
 
-endsimple
+{
+}

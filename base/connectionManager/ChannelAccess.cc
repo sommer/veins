@@ -46,19 +46,19 @@ void ChannelAccess::initialize( int stage )
 	// the phy module has to be named phy otherwise it cannot be found
 	// TODO: maybe we can remove this
         // we need to look at the functions in NicEntry* for this
-	if( strcmp( this->name(), "phy" )!=0 )
+	if( strcmp( this->getName(), "phy" )!=0 )
 	    error("phy module has to be named \"phy\"!");
 
-        cModule* nic = parentModule();
+        cModule* nic = getParentModule();
         if (nic->hasPar("connectionManagerName")){        		
-            cc = dynamic_cast<BaseConnectionManager *>(simulation.moduleByPath(nic->par("connectionManagerName").stringValue()));
+            cc = dynamic_cast<BaseConnectionManager *>(simulation.getModuleByPath(nic->par("connectionManagerName").stringValue()));
         } else {
             cc = FindModule<BaseConnectionManager *>::findGlobalModule();
         }
 		
         if( cc == 0 ) error("Could not find connectionmanager module");
         // subscribe to position changes
-        catMove = utility->subscribe(this, &move, findHost()->id());
+        catMove = utility->subscribe(this, &move, findHost()->getId());
         isRegistered = false;
     }
 }
@@ -72,9 +72,9 @@ void ChannelAccess::initialize( int stage )
  * depending on which ConnectionManager module is used, the messages are
  * send via sendDirect() or to the respective gates.
  **/
-void ChannelAccess::sendToChannel(cMessage *msg, double delay)
+void ChannelAccess::sendToChannel(cMessage *msg, simtime_t delay)
 {
-    const NicEntry::GateList& gateList = cc->getGateList( parentModule()->id());
+    const NicEntry::GateList& gateList = cc->getGateList( getParentModule()->getId());
     NicEntry::GateList::const_iterator i = gateList.begin();
         
     if(useSendDirect){
@@ -82,19 +82,19 @@ void ChannelAccess::sendToChannel(cMessage *msg, double delay)
         if( i != gateList.end() ){
             for(; i != --gateList.end(); ++i){
 
-                int radioStart = i->second->id();
+                int radioStart = i->second->getId();
                 int radioEnd = radioStart + i->second->size();
                 for (int g = radioStart; g != radioEnd; ++g)
                     sendDirect(static_cast<cMessage*>(msg->dup()),
-                               delay, i->second->ownerModule(), g);
+                               delay, 0.0, i->second->getOwnerModule(), g); //TODO: Check if duration 0.0 is correct
             }
-            int radioStart = i->second->id();
+            int radioStart = i->second->getId();
             int radioEnd = radioStart + i->second->size();
             for (int g = radioStart; g != --radioEnd; ++g)
                 sendDirect(static_cast<cMessage*>(msg->dup()),
-                           delay, i->second->ownerModule(), g);
+                           delay, 0.0, i->second->getOwnerModule(), g); //TODO: Check if duration 0.0 is correct
             
-            sendDirect(msg, delay, i->second->ownerModule(), radioEnd);
+            sendDirect(msg, delay, 0.0, i->second->getOwnerModule(), radioEnd); //TODO: Check if duration 0.0 is correct
         }
         else{
             coreEV << "Nic is not connected to any gates!" << endl;
@@ -131,12 +131,12 @@ void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scope
         Move m(*static_cast<const Move*>(details));
         
         if(isRegistered) {
-            cc->updateNicPos(parentModule()->id(), &m.startPos);
+            cc->updateNicPos(getParentModule()->getId(), &m.startPos);
         }
         else {
             // register the nic with ConnectionManager
             // returns true, if sendDirect is used
-            useSendDirect = cc->registerNic(parentModule(), &m.startPos);
+            useSendDirect = cc->registerNic(getParentModule(), &m.startPos);
             isRegistered = true;
         }
         move = m;

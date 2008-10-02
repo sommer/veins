@@ -36,7 +36,7 @@
  * @ingroup utils
  * @author Daniel Willkomm
  **/
-class MacControlInfo : public cPolymorphic
+class MacControlInfo : public cObject
 {
   protected:
     /** @brief netw address of the sending or receiving node*/

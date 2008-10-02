@@ -9,7 +9,7 @@
 #include <cassert>
 
 #ifndef ccEV
-#define ccEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << "ConnectionManager: "
+#define ccEV (ev.isDisabled()||!coreDebug) ? ev : ev << "ConnectionManager: "
 #endif
 
 void BaseConnectionManager::initialize(int stage)
@@ -292,7 +292,7 @@ bool BaseConnectionManager::registerNic(cModule* nic, const Coord* nicPos)
 {
 	assert(nic != 0);
 	
-	int nicID = nic->id();
+	int nicID = nic->getId();
 	ccEV << " registering nic #" << nicID << endl;		
 	
 	// create new NicEntry	
@@ -306,7 +306,7 @@ bool BaseConnectionManager::registerNic(cModule* nic, const Coord* nicPos)
 	// fill nicEntry  
 	nicEntry->nicPtr = nic;
 	nicEntry->nicId = nicID;
-	nicEntry->hostId = nic->parentModule()->id();
+	nicEntry->hostId = nic->getParentModule()->getId();
 	nicEntry->pos = nicPos;
 
 	// add to map

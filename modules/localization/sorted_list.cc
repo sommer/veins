@@ -12,7 +12,7 @@ void SortedList::insert(void *itm)
 {
 	void *prev = NULL;
 
-	for (cLinkedListIterator iter(*this); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(*this); !iter.end(); iter++) {
 		void *curr = iter();
 
 		if (before(itm, curr)) {

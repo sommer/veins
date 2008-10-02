@@ -7,7 +7,7 @@
  * Stores information which is needed by the physical layer
  * when sending a MacPkt.
  */
-class MacToPhyControlInfo: public cPolymorphic {
+class MacToPhyControlInfo: public cObject {
 protected:
 	Signal* signal;
 	

@@ -29,7 +29,7 @@
 //#include <BaseMobility.h>
 #include <ConstSpeedMobility.h>
 
-Define_Module_Like(Centroid, BaseLocalization);
+//Define_Module_Like(Centroid, BaseLocalization);
 
 /**
  * First we have to initialize the module from which we derived ours,
@@ -46,7 +46,7 @@ void Centroid::initialize(int stage)
       Timer::init(this);
 
       EV <<"initialize - Stage 0, id: "<<id<<"\n";
-      EV <<"initialize - Name: "<<fullName()<< " Path: "<<fullPath()<<"\n";
+      EV <<"initialize - Name: "<<getFullName()<< " Path: "<<getFullPath()<<"\n";
       if(isAnchor) { /* Node is an anchor */
 	EV << "\t\tInitializing centroid application for anchor "<<id<<"...\n";
 	setTimer(SEND_ANCHOR_POS_TIMER,ANCHOR_TIMER_INTERVAL);
@@ -76,7 +76,7 @@ void Centroid::handleMsg( cMessage* msg )
     Location loc;
     bool receivedIsAnchor;
 
-    EV <<"handleMsg - Node: "<<id<<" Name: "<<fullName()<< " Path: "<<fullPath()<<"\n";
+    EV <<"handleMsg - Node: "<<id<<" Name: "<<getFullName()<< " Path: "<<getFullPath()<<"\n";
     m = dynamic_cast < LocPkt * >(msg);
 
     receivedId=m->getId();
@@ -87,7 +87,7 @@ void Centroid::handleMsg( cMessage* msg )
     receivedTs=loc.getTimestamp();
     receivedIsAnchor=m->getIsAnchor();
 
-    switch(m->kind()){
+    switch(m->getKind()){
     case ANCHOR_BROADCAST_MESSAGE:
 	EV << "Received a broadcast packet from anchor "<<m->getId()<<"\n";
 	if(isAnchor){/* anchor only stuff */
@@ -112,7 +112,7 @@ void Centroid::handleMsg( cMessage* msg )
 	delete msg;
 	break;
     default:
-      EV <<"Error! Got packet with unknown kind/type: " << m->kind()<<endl;
+      EV <<"Error! Got packet with unknown kind/type: " << m->getKind()<<endl;
       delete msg;
     }
 }
@@ -132,7 +132,7 @@ void Centroid::handleTimer(unsigned int index) {
 	Coord pos;
 	Location *loc;
 
-	EV <<"handelTimer - Node: "<<id<<" Name: "<<fullName()<< " Path: "<<fullPath()<<"\n";
+	EV <<"handelTimer - Node: "<<id<<" Name: "<<getFullName()<< " Path: "<<getFullPath()<<"\n";
 	EV<<"Msg kind: "<<index<<" SEND_ANCHOR_POS_TIMER: "<<SEND_ANCHOR_POS_TIMER<<" SEND_NODE_LOC_TIMER: "<<SEND_NODE_LOC_TIMER<</*" NBANCHORS: "<<NBANCHORS<<*/"\n";
 
 	switch(index){
@@ -201,7 +201,7 @@ void Centroid::handleTimer(unsigned int index) {
  **/
 void Centroid::sendBroadcast(LocPkt *pkt)
 {
-    pkt->setLength(headerLength);
+    pkt->setBitLength(headerLength);
     // set the control info to tell the network layer the layer 3 address;
     pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
     EV << "Sending broadcast packet!\n";

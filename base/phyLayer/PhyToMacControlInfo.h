@@ -8,7 +8,7 @@
  * layer to the MAC layer. The ControlInfo contains the
  * the DeciderResult of the Decider.
  */
-class PhyToMacControlInfo: public cPolymorphic {
+class PhyToMacControlInfo: public cObject {
 protected:
 	/** The result of the decider evaluation.*/
 	DeciderResult result;

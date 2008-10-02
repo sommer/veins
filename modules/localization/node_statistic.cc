@@ -87,7 +87,7 @@ class Node_Statistic:public PositifLayer {
 	Position *sub_pos(Position init, Position sub);
 
       public:
-	 Module_Class_Members(Node_Statistic, PositifLayer, 0)
+	 //Module_Class_Members(Node_Statistic, PositifLayer, 0)
 	    // Implement Node's abstract functions.
 	virtual void init(void);
 	virtual void handleTimer(timer_info * timer);
@@ -96,7 +96,7 @@ class Node_Statistic:public PositifLayer {
 	virtual void handleStopMessage(cMessage * msg);
 };
 
-Define_Module_Like(Node_Statistic, PositifLayer);
+//Define_Module_Like(Node_Statistic, PositifLayer);
 
 void Node_Statistic::init(void)
 {
@@ -140,7 +140,7 @@ void Node_Statistic::handleMessage(cMessage * msg, bool newNeighbor)
 
 	if (newNeighbor)
 		// Activate all timer routines when we meet a new neighbor
-//              for (cLinkedListIterator iter = getTimers(); !iter.end();
+//              for (cLinkedList::Iterator iter = getTimers(); !iter.end();
 //                   iter++) {
 //                      timer_info *EV = (timer_info *) iter();
 //                      resetTimer(EV);
@@ -218,7 +218,7 @@ void Node_Statistic::handleStopMessage(cMessage * msg)
 	/* free up things */
 //      delete bc_position;
 //      delete comp_position;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 		delete neighbor;
 	}
@@ -233,7 +233,7 @@ double Node_Statistic::true_pos_triangulate(void)
 	Position pos;
 
 	int i = 0;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 
 		pos_list[i] = node[neighbor->idx].true_pos;
@@ -299,7 +299,7 @@ bool Node_Statistic::inside_rectangle(Position pos)
 
 bool Node_Statistic::inside_neighbors_range(Position pos)
 {
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 
 		if (neighbor->poss[0].confidence == 1.0
@@ -317,7 +317,7 @@ void Node_Statistic::update_neighbor(cMessage * msg)
 	int src = msg->par("src");
 
 	bool found = false;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		neighbor = (nghbor_info *) iter();
 
 		if (neighbor->idx == src) {
@@ -399,7 +399,7 @@ void Node_Statistic::Statistic(void)
 
 	EV << node[me].ID << ": working with ";
 	int i = 0;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *anchor = (nghbor_info *) iter();
 		pos_list[i * 2] = &(anchor->poss[0].pos);
 		conf_list[i * 2] = anchor->poss[0].confidence;

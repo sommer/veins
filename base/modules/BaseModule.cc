@@ -38,13 +38,13 @@ void BaseModule::initialize(int stage) {
 
 cModule *BaseModule::findHost(void)
 {
-    cModule *parent = parentModule();
+    cModule *parent = getParentModule();
     cModule *node = this;
 
     // all nodes should be a sub module of the simulation which has no parent module!!!
-    while( parent->parentModule() != NULL ){
+    while( parent->getParentModule() != NULL ){
 	node = parent;
-	parent = node->parentModule();
+	parent = node->getParentModule();
     }
 
     return node;
@@ -67,12 +67,12 @@ std::string BaseModule::getLogName(int id)
 {
     BaseModule *mod;
     std::string lname;
-    mod = check_and_cast<BaseModule *>(simulation.module(id));
+    mod = check_and_cast<BaseModule *>(simulation.getModule(id));
     if (mod->isSimple()) {
         lname = mod->logName();
     }
-    else if(mod->submodule("phy")) {
-        lname = check_and_cast<BaseModule *>(mod->submodule("phy"))->logName();
+    else if(mod->getSubmodule("phy")) {
+        lname = check_and_cast<BaseModule *>(mod->getSubmodule("phy"))->logName();
     }
     return lname;
 };
@@ -89,8 +89,8 @@ std::string BaseModule::logName(void)
 	{
 		cModule *parent = findHost();
 		parent->hasPar("logName") ?
-			ost << parent->par("logName").stringValue() : ost << parent->name();
-		ost << "[" << parent->index() << "]";
+			ost << parent->par("logName").stringValue() : ost << parent->getName();
+		ost << "[" << parent->getIndex() << "]";
 	}
 	return ost.str();
 }

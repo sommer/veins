@@ -37,7 +37,7 @@ void ConstSpeedMobility::initialize(int stage)
     BaseMobility::initialize(stage);
 
     if (stage == 0) {
-        move.speed = par("speed");
+        move.speed = par("speed").doubleValue();
 
         if(move.speed <= 0)
 	    move.speed = 0;
@@ -46,7 +46,7 @@ void ConstSpeedMobility::initialize(int stage)
 	step = -1;
 	stepSize = Coord(0,0,0);
 
-        EV << "Initialize: move speed: " << move.speed << " (" << par("speed") << ")"
+        EV << "Initialize: move speed: " << move.speed << " (" << par("speed").doubleValue() << ")"
            << " pos: " << move.info() << endl;
     }
     else if( stage == 1 ){
@@ -67,7 +67,7 @@ void ConstSpeedMobility::setTargetPosition()
 	targetPos = getRandomPosition();
 
 	double distance = move.startPos.distance(targetPos);
-	double totalTime = distance / move.speed;
+	simtime_t totalTime = distance / move.speed;
 	numSteps = FWMath::round(totalTime / updateInterval);
 
 	EV << "new targetPos: " << targetPos.info() << " distance=" << distance 

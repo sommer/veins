@@ -26,7 +26,7 @@ class Node_Example:public PositifLayer {
 	void update_neighbor(cMessage * msg);
 
       public:
-	 Module_Class_Members(Node_Example, PositifLayer, 0)
+	 //Module_Class_Members(Node_Example, PositifLayer, 0)
 	    // Implement Node's abstract functions.
 	virtual void init(void);
 	virtual void handleTimer(timer_info * timer);
@@ -35,7 +35,7 @@ class Node_Example:public PositifLayer {
 	virtual void handleStopMessage(cMessage * msg);
 };
 
-Define_Module_Like(Node_Example, PositifLayer);
+//Define_Module_Like(Node_Example, PositifLayer);
 
 void Node_Example::init(void)
 {
@@ -66,14 +66,14 @@ void Node_Example::handleTimer(timer_info * timer)
 void Node_Example::handleMessage(cMessage * msg, bool newNeighbor)
 {
 	// Call appropriate handler function
-	switch (msg->kind()) {
+	switch (msg->getKind()) {
 
 	case MSG_POSITION:
 		update_neighbor(msg);
 		break;
 
 	default:
-		error("unknown(): unexpected message kind: %d", msg->kind());
+		error("unknown(): unexpected message kind: %d", msg->getKind());
 		break;
 	}
 }
@@ -94,9 +94,9 @@ void Node_Example::handleStopMessage(cMessage * msg)
 	PositifLayer::handleStopMessage(msg);
 	send(returnMsg);
 
-	fprintf (stdout, "Neighbours of %d: ", findHost()->index());
+	fprintf (stdout, "Neighbours of %d: ", findHost()->getIndex());
 	
-	for (cLinkedListIterator iter = neighbors; !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter = neighbors; !iter.end(); iter++) {
 		nghbor_info *nb = (nghbor_info *) iter();
 		fprintf (stdout, "%d; ", nb->idx);
 	}
@@ -109,7 +109,7 @@ void Node_Example::update_neighbor(cMessage * msg)
 	int src = msg->par("src");
 
 	bool found = false;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		neighbor = (nghbor_info *) iter();
 
 		if (neighbor->idx == src) {

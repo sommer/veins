@@ -6,12 +6,12 @@
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     framework implementation developed by tkn
@@ -32,7 +32,7 @@
 
 /**
  * @brief Base class for the network layer
- * 
+ *
  * @ingroup netwLayer
  * @author Daniel Willkomm
  **/
@@ -41,25 +41,25 @@ class BaseNetwLayer : public BaseLayer
 
   protected:
     /**
-     * @brief Length of the NetwPkt header 
-     * Read from omnetpp.ini 
+     * @brief Length of the NetwPkt header
+     * Read from omnetpp.ini
      **/
     int headerLength;
-    
+
     /** @brief Pointer to the arp module*/
     BaseArp* arp;
-    
+
     /** @brief cached variable of my networ address */
     int myNetwAddr;
-    
+
 public:
-    Module_Class_Members(BaseNetwLayer,BaseLayer,0);
+    //Module_Class_Members(BaseNetwLayer,BaseLayer,0);
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
-    
+
   protected:
-    /** 
+    /**
      * @name Handle Messages
      * @brief Functions to redefine by the programmer
      *
@@ -69,10 +69,10 @@ public:
      *
      **/
     /*@{*/
-    
+
     /** @brief Handle messages from upper layer */
     virtual void handleUpperMsg(cMessage* msg);
-    
+
     /** @brief Handle messages from lower layer */
     virtual void handleLowerMsg(cMessage* msg);
 
@@ -92,10 +92,10 @@ public:
     /*@}*/
 
     /** @brief decapsulate higher layer message from NetwPkt */
-    virtual cMessage* decapsMsg(NetwPkt*);  
+    virtual cMessage* decapsMsg(NetwPkt*);
 
     /** @brief Encapsulate higher layer packet into an NetwPkt*/
-    virtual NetwPkt* encapsMsg(cMessage*);  
+    virtual NetwPkt* encapsMsg(cPacket*);
 };
 
 #endif

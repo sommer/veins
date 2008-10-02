@@ -29,12 +29,12 @@
 #include "FindModule.h"
 
 #ifndef EV
-#define EV_clear (ev.disabled()||!debug) ? ev : ev 
-#define EV (ev.disabled()||!debug) ? (std::ostream&)ev : ev << logName() << "::" << className() << ": "
+#define EV_clear (ev.isDisabled()||!debug) ? ev : ev
+//#define EV (ev.isDisabled()||!debug) ? ev : ev << logName() << "::" << getClassName() << ": " ==> EV is now part of <omnetpp.h>
 #endif
 #ifndef coreEV
-#define coreEV_clear (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev
-#define coreEV (ev.disabled()||!coreDebug) ? (std::ostream&)ev : ev << logName() << "::" << className() <<": "
+#define coreEV_clear (ev.isDisabled()||!coreDebug) ? ev : ev
+#define coreEV (ev.isDisabled()||!coreDebug) ? ev : ev << logName() << "::" << getClassName() <<": "
 #endif
 
 
@@ -80,7 +80,7 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
     std::string getLogName(int);
 
   public:
-    Module_Class_Members(BaseModule, cSimpleModule, 0);
+    //Module_Class_Members(BaseModule, cSimpleModule, 0);
 
     /** @brief Basic initialization for all modules */
     virtual void initialize(int);
@@ -95,7 +95,7 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
      * when everyone interested in them has already subscribed.
      */
     virtual int numInitStages() const {
-      return 2;
+    	return 2;
     }
 
     /**
@@ -111,7 +111,7 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
      * @brief Get a reference to the local node module
      */
     cModule * getNode(){
-	return findHost();
+    	return findHost();
     };
 
     /**

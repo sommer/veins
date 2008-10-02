@@ -52,7 +52,7 @@
  **/
 class ChannelAccess : public BaseModule
 {
-    Module_Class_Members( ChannelAccess, BaseModule, 0 );
+    //Module_Class_Members( ChannelAccess, BaseModule, 0 );
   
 protected:
     /** @brief use sendDirect or not?*/
@@ -66,7 +66,7 @@ protected:
 
     /** @brief Sends a message to all nics connected to this one. Waits
         delay seconds before sending*/
-    void sendToChannel(cMessage *msg, double delay);
+    void sendToChannel(cMessage *msg, simtime_t delay);
 
     /** @brief Last move of this host */
     Move move;

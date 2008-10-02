@@ -6,12 +6,12 @@
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     framework implementation developed by tkn
@@ -24,6 +24,8 @@
 #include "NetwControlInfo.h"
 #include "MacControlInfo.h"
 
+#include <cassert>
+
 Define_Module(BaseNetwLayer);
 
 void BaseNetwLayer::initialize(int stage)
@@ -33,15 +35,15 @@ void BaseNetwLayer::initialize(int stage)
     if(stage==0){
         headerLength= par("headerLength");
         arp = BaseArpAccess().get();
-        myNetwAddr = this->id();
+        myNetwAddr = this->getId();
         EV << " myNetwAddr " << myNetwAddr << endl;
     }
 }
 
 /**
- * Decapsulates the packet from the received Network packet 
+ * Decapsulates the packet from the received Network packet
  **/
-cMessage* BaseNetwLayer::decapsMsg(NetwPkt *msg) 
+cMessage* BaseNetwLayer::decapsMsg(NetwPkt *msg)
 {
     cMessage *m = msg->decapsulate();
     m->setControlInfo(new NetwControlInfo(msg->getSrcAddr()));
@@ -55,16 +57,16 @@ cMessage* BaseNetwLayer::decapsMsg(NetwPkt *msg)
  * Encapsulates the received ApplPkt into a NetwPkt and set all needed
  * header fields.
  **/
-NetwPkt* BaseNetwLayer::encapsMsg(cMessage *msg) {    
+NetwPkt* BaseNetwLayer::encapsMsg(cPacket *appPkt) {
     int macAddr;
     int netwAddr;
 
     EV <<"in encaps...\n";
 
-    NetwPkt *pkt = new NetwPkt(msg->name(), msg->kind());
-    pkt->setLength(headerLength);
-    
-    NetwControlInfo* cInfo = dynamic_cast<NetwControlInfo*>(msg->removeControlInfo());
+    NetwPkt *pkt = new NetwPkt(appPkt->getName(), appPkt->getKind());
+    pkt->setBitLength(headerLength);
+
+    NetwControlInfo* cInfo = dynamic_cast<NetwControlInfo*>(appPkt->removeControlInfo());
 
     if(cInfo == 0){
 	EV << "warning: Application layer did not specifiy a destination L3 address\n"
@@ -75,7 +77,7 @@ NetwPkt* BaseNetwLayer::encapsMsg(cMessage *msg) {
         netwAddr = cInfo->getNetwAddr();
 	delete cInfo;
     }
-    
+
     pkt->setSrcAddr(myNetwAddr);
     pkt->setDestAddr(netwAddr);
     EV << " netw "<< myNetwAddr << " sending packet" <<endl;
@@ -90,9 +92,9 @@ NetwPkt* BaseNetwLayer::encapsMsg(cMessage *msg) {
     }
 
     pkt->setControlInfo(new MacControlInfo(macAddr));
-    
+
     //encapsulate the application packet
-    pkt->encapsulate(msg);
+    pkt->encapsulate(appPkt);
     EV <<" pkt encapsulated\n";
     return pkt;
 }
@@ -124,12 +126,13 @@ void BaseNetwLayer::handleLowerMsg(cMessage* msg)
  **/
 void BaseNetwLayer::handleUpperMsg(cMessage* msg)
 {
-    sendDown(encapsMsg(msg));
+	assert(dynamic_cast<cPacket*>(msg));
+    sendDown(encapsMsg(static_cast<cPacket*>(msg)));
 }
 
 /**
  * Redefine this function if you want to process control messages
- * from lower layers. 
+ * from lower layers.
  *
  * This function currently handles one messagetype: TRANSMISSION_OVER.
  * If such a message is received in the network layer it is deleted.
@@ -140,13 +143,13 @@ void BaseNetwLayer::handleUpperMsg(cMessage* msg)
  **/
 void BaseNetwLayer::handleLowerControl(cMessage* msg)
 {
-	switch (msg->kind())
+	switch (msg->getKind())
 	{
 	case NicControlType::TX_END:
 		delete msg;
 		break;
 	default:
-		opp_warning("BaseNetwLayer does not handle control messages called %s",msg->name());
+		opp_warning("BaseNetwLayer does not handle control messages called %s",msg->getName());
 		delete msg;
 	}
 }

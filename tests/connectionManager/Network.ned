@@ -23,40 +23,46 @@
 //*              by:              $Author: omfw-willkomm $
 //***************************************************************************
 
-import  
-    "BasicHost", 
-    "ConnectionManager",
-    "BaseWorldUtility"; 
- 
+import BasicHost;
+import ConnectionManager;
+import BaseWorldUtility;
+
 // @author Karl Wessel
-module Network 
-    parameters: 
-        playgroundSizeX : numeric const, // x size of the area the nodes are in (in meters)
-        playgroundSizeY : numeric const, // y size of the area the nodes are in (in meters)
-        playgroundSizeZ : numeric const, // z size of the area the nodes are in (in meters)
-        numHosts : numeric const; // total number of hosts in the network
-                                  
-    submodules: 
-    	world: BaseWorldUtility;
-    		parameters: 
-                playgroundSizeX = playgroundSizeX, 
-                playgroundSizeY = playgroundSizeY,
+module Network
+{
+    parameters:
+        double playgroundSizeX; // x size of the area the nodes are in (in meters)
+        double playgroundSizeY; // y size of the area the nodes are in (in meters)
+        double playgroundSizeZ; // z size of the area the nodes are in (in meters)
+        double numHosts; // total number of hosts in the network
+
+        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=10,10");
+    submodules:
+        world: BaseWorldUtility {
+            parameters:
+                playgroundSizeX = playgroundSizeX;
+                playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
-        channelcontrol: ConnectionManager; 
-            
-            display: "p=60,30;i=eye14";
-        node: BasicHost[numHosts]; 
-            parameters: 
-                numHosts = numHosts; 
-            display: "p=50,50;i=laptop";
-    connections nocheck: 
+        }
+        channelcontrol: ConnectionManager {
+
+            parameters:
+                @display("p=60,30;i=eye14");
+        }
+        node[numHosts]: BasicHost {
+            parameters:
+                numHosts = numHosts;
+                @display("p=50,50;i=laptop");
+        }
+    connections allowunconnected:
                          // all connections and gates are to be generated dynamically
-                         
-    display: "p=10,10;b=$playgroundSizeX,$playgroundSizeY,rect;o=white";
-endmodule 
+
+}
 
 
 // basic example simulation for the Mobility Framework
-network ccSim : Network
-endnetwork 
+network ccSim extends Network
+{
+    parameters:
+}
 

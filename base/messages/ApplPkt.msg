@@ -15,21 +15,20 @@
 // *              in the top level directory
 // **************************************************************************
 // * part of:     framework implementation developed by tkn
-// * description: - base class for application layer messages
-// *              - subclass to create your own application layer messages
+// * description: - base class for application layer packets
+// *              - subclass to create your own application layer packets
 // **************************************************************************/
 
 
-// Basic application message definition
+// Basic application packet definition
 //
-// subclass if you want to create your own application layer message
+// subclass if you want to create your own application layer packet
 // class
 //
 // @author Daniel Willkomm
-message ApplPkt
+packet ApplPkt
 {
-    fields:
-        int destAddr = -1; // destination address
-        int srcAddr  = -1; // source address
+    int destAddr = -1; // destination address
+    int srcAddr = -1; // source address
 
 }

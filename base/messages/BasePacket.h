@@ -27,7 +27,7 @@ class BasePacket: public cMessage
 {
    public:
     BasePacket(const char *name=NULL, int kind=0) : cMessage(name,kind) {}
-    BasePacket(const BasePacket& other) : cMessage(other.name()) {operator=(other);}
+    BasePacket(const BasePacket& other) : cMessage(other.getName()) {operator=(other);}
 
 	simtime_t simTime () const;
     std::string logName(void) const;

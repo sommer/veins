@@ -21,7 +21,7 @@
  * -- and all that without the need to recompile the framework due to
  * a newly introduced constant.
  *
- * The info function of cPolymorphic should be implemented -- you can
+ * The info function of cObject should be implemented -- you can
  * use it to disinguish between items of the same category (like two
  * MAC addresses if the host has two network interfaces).
  * 
@@ -30,7 +30,7 @@
  * @ingroup blackboard
  * @author Andreas Koepke
  */
-class  BBItem : public cPolymorphic
+class  BBItem : public cObject
 {
  public:
     virtual BBItem *parentObject() const {

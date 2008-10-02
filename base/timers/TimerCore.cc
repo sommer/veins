@@ -3,7 +3,7 @@
 
 #include <assert.h>
 
-Define_Module_Like(TimerCore,Trivial);
+//Define_Module_Like(TimerCore,Trivial);
 
 void TimerCore::checkExists(unsigned int index)
 {
@@ -14,8 +14,8 @@ void TimerCore::checkExists(unsigned int index)
 void TimerCore::handleMessage(cMessage* msg)
 {
 	assert(msg->isSelfMessage());
-	simulation.setContextModule(timer->owner);	
-	timer->handleTimer(msg->kind());
+	//simulation.setContextModule(timer->owner);	
+	timer->handleTimer(msg->getKind());
 }
 
 void TimerCore::init(Timer *owner)
@@ -67,7 +67,7 @@ float TimerCore::remainingTimer(unsigned int index)
 {
 	checkExists(index);
 	if ((*timers)[index]->isScheduled())
-		return (*timers)[index]->arrivalTime()-simTime();
+		return SIMTIME_DBL((*timers)[index]->getArrivalTime()-simTime());
 	else
 		return -1;
 }
@@ -82,7 +82,7 @@ TimerCore::~TimerCore()
 {
 	for (std::map<unsigned int,cMessage*>::const_iterator p=timers->begin();p!=timers->end();p++)
 	{
-		unsigned int index = p->second->kind();
+		unsigned int index = p->second->getKind();
 		checkExists(index);
 		if ((*timers)[index]->isScheduled())
 		{
@@ -113,7 +113,7 @@ void TimerCore::setContextPointer(unsigned int index,void * data)
 void * TimerCore::contextPointer(unsigned int index)
 {
 	checkExists(index);
-	return (*timers)[index]->contextPointer();
+	return (*timers)[index]->getContextPointer();
 }
 
 /* Mark the first @count pointer ids (from 0 to @count-1) as allocated, so they don't get

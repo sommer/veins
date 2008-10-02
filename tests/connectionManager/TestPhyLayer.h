@@ -34,7 +34,7 @@ class TestPhyLayer : public ChannelAccess
 protected:
 	
 	int myAddr(){
-		return findHost()->index();
+		return findHost()->getIndex();
 	};
 
 	void sendDown(int destAddr) {
@@ -57,7 +57,7 @@ protected:
 	void assertFalse(std::string msg, bool value) { assertTrue(msg, !value); }
 
 public:
-    Module_Class_Members( TestPhyLayer, ChannelAccess, 0 );
+    //Module_Class_Members( TestPhyLayer, ChannelAccess, 0 );
 
     /** @brief Called every time a message arrives*/
     virtual void handleMessage( cMessage* );

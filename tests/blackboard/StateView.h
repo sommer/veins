@@ -35,7 +35,7 @@ private:
     cModule *host;
 
 public:
-    Module_Class_Members(StateView, BaseModule, 0);
+    //Module_Class_Members(StateView, BaseModule, 0);
     virtual ~StateView();
     virtual void initialize(int);
     virtual void handleMessage( cMessage* );

@@ -42,12 +42,12 @@ class LineSegmentsMobilityBase : public BaseMobility
     /*@}*/
 
     // state
-    double targetTime;  ///< end time of current linear movement
+    simtime_t targetTime;  ///< end time of current linear movement
     Coord targetPos;    ///< end position of current linear movement
     Coord stepTarget;
 
   protected:
-    Module_Class_Members(LineSegmentsMobilityBase, BaseMobility, 0);
+    //Module_Class_Members(LineSegmentsMobilityBase, BaseMobility, 0);
 
     /** @brief Called upon arrival of a self messages*/
     virtual void handleSelfMsg(cMessage *msg);

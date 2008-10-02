@@ -51,7 +51,7 @@ protected:
 	int headerLength;
 
 public:
-	Module_Class_Members(BaseApplLayer, BaseLayer, 0);
+	//Module_Class_Members(BaseApplLayer, BaseLayer, 0);
 
 	/** @brief Initialization of the module and some variables*/
 	virtual void initialize(int);
@@ -125,7 +125,7 @@ protected:
 	/*@}*/
 
 	/** @brief Sends a message delayed to the lower layer*/
-	void sendDelayedDown(cMessage *, double);
+	void sendDelayedDown(cMessage *, simtime_t);
 
 	/** 
 	 * @brief Return my application layer address
@@ -133,7 +133,7 @@ protected:
 	 * We use the node module index as application address
 	 **/
 	virtual const int myApplAddr() {
-		return parentModule()->index();
+		return getParentModule()->getIndex();
 	};
     
 };

@@ -1,11 +1,12 @@
 simple BaseApplLayer
+{
     parameters:
-        debug: bool, // debug switch
-        headerLength: numeric const; // length of the application message header (in bits)
+        bool debug; // debug switch
+        double headerLength; // length of the application message header (in bits)
     gates:
-        in: lowergateIn; // from network layer
-        out: lowergateOut; // to network layer
-        in: lowerControlIn; // control from network layer
-        out: lowerControlOut; // control to network layer
-endsimple
+        input lowergateIn; // from network layer
+        output lowergateOut; // to network layer
+        input lowerControlIn; // control from network layer
+        output lowerControlOut; // control to network layer
+}
 

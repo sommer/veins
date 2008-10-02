@@ -39,7 +39,7 @@ class LinearMobility : public BaseMobility
     Coord stepTarget;
 
   public:
-    Module_Class_Members( LinearMobility, BaseMobility, 0 );
+    //Module_Class_Members( LinearMobility, BaseMobility, 0 );
 
     /** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);

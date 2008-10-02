@@ -14,24 +14,26 @@
 // *              For further information see file COPYING 
 // *              in the top level directory
 // **************************************************************************
-// * description: - base class for localization messages
-// *              - subclass to create your own localization messages
+// * description: - base class for localization packets
+// *              - subclass to create your own localization packets
 // **************************************************************************/
 
 cplusplus {{
 #include "Location.h"
 }}
 
+
+
 class noncobject Location;
 
-// A basic localization message definition
+// A basic localization packet definition
 //
-// subclass if you want to create your own localization message class
+// subclass if you want to create your own localization packet class
 //
 // @author Peterpaul Klein Haneveld
-message LocPkt {
-    fields:
-	int id;
-	bool isAnchor;
-	Location pos;
+packet LocPkt
+{
+    int id;
+    bool isAnchor;
+    Location pos;
 }

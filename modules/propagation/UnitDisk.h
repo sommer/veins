@@ -26,7 +26,7 @@ class UnitDisk: public ConnectionManager
 	protected:
 		double radioRange;
 	public:
-		Module_Class_Members(UnitDisk, ConnectionManager, 0);
+		//Module_Class_Members(UnitDisk, ConnectionManager, 0);
 		void initialize(int stage);
     	virtual double calcInterfDist() {return radioRange;}
 };

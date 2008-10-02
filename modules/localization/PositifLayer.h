@@ -135,7 +135,7 @@ class PositifLayer:public BaseLayer, public RepeatTimer, public PositifUtil {
 	NodeState status;
 
       public:
-	 Module_Class_Members(PositifLayer, BaseLayer, 0);
+	 //Module_Class_Members(PositifLayer, BaseLayer, 0);
 
 	Position position;
 	int me;

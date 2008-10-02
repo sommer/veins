@@ -8,7 +8,7 @@
 using std::string;
 
 #ifndef EV
-#define EV ev
+//#define EV ev ==> EV is now part of <omnetpp.h>
 #define EV_clear ev
 #define coreEV ev
 #define coreEV_clear ev

@@ -1,12 +1,13 @@
 simple BaseMobilityTest
-	
-	parameters:
-		borderPolicy: numeric const,	// border policy to use
-		x: numeric const,				// starting point of the host
-		y: numeric const,
-		z: numeric const,
-		outX: numeric const,			// point outside playground
-		outY: numeric const,
-		outZ: numeric const;
 
-endsimple
+{
+    parameters:
+        double borderPolicy;	// border policy to use
+        double x;				// starting point of the host
+        double y;
+        double z;
+        double outX;			// point outside playground
+        double outY;
+        double outZ;
+
+}

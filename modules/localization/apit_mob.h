@@ -88,7 +88,7 @@ struct pit_struct{
 
 class apit_mob:public BaseLocalization, public Timer {
       public:
-	Module_Class_Members(apit_mob, BaseLocalization, 0);
+	//Module_Class_Members(apit_mob, BaseLocalization, 0);
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);

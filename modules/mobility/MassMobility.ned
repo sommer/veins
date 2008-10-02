@@ -49,14 +49,15 @@
 // @author Emin Ilker Cetinbas, Andras Varga
 //
 simple MassMobility
+{
     parameters:
-        coreDebug : bool, // core MF debug switch
-        debug : bool, // debug switch
-        x: numeric const, // x starting point of the node (-1 = random)
-        y: numeric const, // y starting point of the node (-1 = random)
-        changeInterval: numeric, // frequency of changing speed and angle (can be random) [s]
-        changeAngleBy: numeric, // change angle by this much (can be random) [deg]
-        speed: numeric, // speed (can be random, updated every changeInterval) [m/s]
-        updateInterval : numeric const; // time interval to update the hosts position
-endsimple
+        bool coreDebug; // core MF debug switch
+        bool debug; // debug switch
+        double x; // x starting point of the node (-1 = random)
+        double y; // y starting point of the node (-1 = random)
+        volatile double changeInterval; // frequency of changing speed and angle (can be random) [s]
+        volatile double changeAngleBy; // change angle by this much (can be random) [deg]
+        volatile double speed; // speed (can be random, updated every changeInterval) [m/s]
+        double updateInterval; // time interval to update the hosts position
+}
 

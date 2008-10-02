@@ -35,12 +35,13 @@
 // @author Steffen Sroka, Marc Loebbers, Daniel Willkomm
 //
 simple ConstSpeedMobility
+{
     parameters:
-	coreDebug : bool, // core debug switch
-    debug : bool, // debug switch
-        speed : numeric const, // speed of the host (in m/s)
-        x: numeric const, // x coordinate of the nodes' position (-1 = random)
-        y: numeric const, // y coordinate of the nodes' position (-1 = random)
-        z: numeric const, // z coordinate of the nodes' position (-1 = random)
-        updateInterval : numeric const; // time interval to update the hosts position
-endsimple
+        bool coreDebug; // core debug switch
+        bool debug; // debug switch
+        double speed; // speed of the host (in m/s)
+        double x; // x coordinate of the nodes' position (-1 = random)
+        double y; // y coordinate of the nodes' position (-1 = random)
+        double z; // z coordinate of the nodes' position (-1 = random)
+        double updateInterval; // time interval to update the hosts position
+}

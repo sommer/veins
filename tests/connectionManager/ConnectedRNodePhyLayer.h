@@ -17,7 +17,7 @@
 class ConnectedRNodePhyLayer : public TestPhyLayer
 {
 public:
-    Module_Class_Members(ConnectedRNodePhyLayer, TestPhyLayer, 0);
+    //Module_Class_Members(ConnectedRNodePhyLayer, TestPhyLayer, 0);
 
 	bool broadcastReceived;
 

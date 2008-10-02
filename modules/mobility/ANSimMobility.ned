@@ -24,13 +24,14 @@
 // @author Andras Varga
 //
 simple ANSimMobility
+{
     parameters:
-        debug : bool, // debug switch
-        ansimTrace: xml, // the ANSim trace file in XML
-        nodeId: numeric const, // <position_change> elements to match; 
+        bool debug; // debug switch
+        xml ansimTrace; // the ANSim trace file in XML
+        double nodeId; // <position_change> elements to match; 
                                // -1 gets substituted to parent module's index
-        updateInterval : numeric const; // time interval to update the hosts position
-endsimple
+        double updateInterval; // time interval to update the hosts position
+}
 
 
 

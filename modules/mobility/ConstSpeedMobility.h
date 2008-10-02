@@ -55,7 +55,7 @@ class ConstSpeedMobility : public BaseMobility
     //    double lastStep;
 
   public:
-    Module_Class_Members( ConstSpeedMobility, BaseMobility, 0 );
+    //Module_Class_Members( ConstSpeedMobility, BaseMobility, 0 );
 
     /** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);

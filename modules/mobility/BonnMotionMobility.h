@@ -37,7 +37,7 @@ class  BonnMotionMobility : public LineSegmentsMobilityBase
     unsigned vecpos;
 
   public:
-    Module_Class_Members(BonnMotionMobility, LineSegmentsMobilityBase, 0);
+    //Module_Class_Members(BonnMotionMobility, LineSegmentsMobilityBase, 0);
     ~BonnMotionMobility();
 
     /** @brief Initializes mobility model parameters.*/

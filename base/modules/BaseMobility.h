@@ -79,7 +79,7 @@ class BaseMobility : public BaseModule
      * that are used internally by this class have one of these values
      **/
     enum BaseMobilityMsgKinds {
-        MOVE_HOST = 1050198237,
+        MOVE_HOST = 21311,
 	MOVE_TO_BORDER,
 	LAST_BASIC
     };
@@ -113,7 +113,7 @@ class BaseMobility : public BaseModule
     int moveCategory;
     
     /** @brief Time interval to update the hosts position*/
-    double updateInterval;
+    simtime_t updateInterval;
 
     /** @brief Self message to trigger movement */
     cMessage* moveMsg;
@@ -122,7 +122,7 @@ class BaseMobility : public BaseModule
     bool coreDebug;
 
   public:
-    Module_Class_Members( BaseMobility , BaseModule , 0 );
+    //Module_Class_Members( BaseMobility , BaseModule , 0 );
 
     /** @brief This modules should only receive self-messages*/
     void handleMessage(cMessage *msg);

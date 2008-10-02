@@ -35,7 +35,7 @@
 
 using std::vector;
 
-Define_Module_Like(minmax, BaseLocalization);
+//Define_Module_Like(minmax, BaseLocalization);
 
 /**
  * First we have to initialize the module from which we derived ours,
@@ -109,7 +109,7 @@ void minmax::initialize(int stage)
 //void minmax::handleLowerMsg( cMessage* msg )
 void minmax::handleMsg( cMessage* msg )
 {
-    switch(msg->kind()){
+    switch(msg->getKind()){
 	    case ANCHOR_BROADCAST_MESSAGE:
 			if(! isAnchor)
 			{
@@ -129,7 +129,7 @@ void minmax::handleMsg( cMessage* msg )
 
 
 	    default:
-	  	       EV <<"Error! Got packet with unknown kind/type: " << msg->kind()<<endl;
+	  	       EV <<"Error! Got packet with unknown kind/type: " << msg->getKind()<<endl;
 		       delete msg;
     }
 }
@@ -160,7 +160,7 @@ void minmax::newAnchor(cMessage * msg) {
 
 
 	BaseUtility *utility = (BaseUtility *) 
-				(findHost()->submodule("utility"));
+				(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 
 	double real_dist = (node->pos).distance(pos);
@@ -218,7 +218,7 @@ void minmax::newNeighbor(cMessage * msg) {
 
 	// Get the node's own co-ordinate.
 	BaseUtility *utility = (BaseUtility *) 
-			(findHost()->submodule("utility"));
+			(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 
 	double xReal = pos.getX();
@@ -443,7 +443,7 @@ void minmax::handleTimer(unsigned int index) {
 	Coord pos;
 	Location *loc;
 
-	EV <<"handelTimer - Node: "<<id<<" Name: "<<fullName()<< " Path: "<<fullPath()<<"\n";
+	EV <<"handelTimer - Node: "<<id<<" Name: "<<getFullName()<< " Path: "<<getFullPath()<<"\n";
 	EV<<"Msg kind: "<<index<<" SEND_ANCHOR_POS_TIMER: "<<SEND_ANCHOR_POS_TIMER<<" SEND_NODE_LOC_TIMER: "<<SEND_NODE_LOC_TIMER<</*" NBANCHORS: "<<NBANCHORS<<*/"\n";
 
 	switch(index){
@@ -457,7 +457,7 @@ void minmax::handleTimer(unsigned int index) {
 		
 				// Get the new position.
 				BaseUtility *utility = (BaseUtility *) 
-						(findHost()->submodule("utility"));
+						(findHost()->getSubmodule("utility"));
 				Coord pos = utility->getPos();
 
 				EV << "Anchor position: " << pos.getX() << " " << pos.getY() << endl;
@@ -494,7 +494,7 @@ void minmax::handleTimer(unsigned int index) {
 						new LocPkt("NODE_BROADCAST_MESSAGE",NODE_BROADCAST_MESSAGE);
 						// Get the new position.
 						BaseUtility *utility = (BaseUtility *) 
-								(findHost()->submodule("utility"));
+								(findHost()->getSubmodule("utility"));
 						Coord pos = utility->getPos();
 						Location *loc = new Location(pos,simTime(),1.0);
 						lp->setId(id);
@@ -546,7 +546,7 @@ void minmax::handleTimer(unsigned int index) {
  **/
 void minmax::sendBroadcast(LocPkt *pkt)
 {
-    pkt->setLength(headerLength);
+    pkt->setBitLength(headerLength);
     // set the control info to tell the network layer the layer 3 address;
     pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
     EV << "Sending broadcast packet!\n";
@@ -557,7 +557,7 @@ void minmax::wind_up(){
 
 	if ((no_of_anchors != 0) || (no_of_neighbours != 0)){
 		BaseUtility *utility = (BaseUtility *) 
-					(findHost()->submodule("utility"));
+					(findHost()->getSubmodule("utility"));
 		Coord pos = utility->getPos();
 	
 		double xReal = pos.getX();

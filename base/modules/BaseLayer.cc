@@ -6,12 +6,12 @@
  * copyright:   (C) 2006 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     framework implementation developed by tkn
@@ -41,16 +41,16 @@ void BaseLayer::initialize(int stage)
             doStats = true;
             passedMsg = new PassedMessage();
             catPassedMsg = utility->getCategory(passedMsg);
-            passedMsg->fromModule = id();
-            hostId = findHost()->id();
+            passedMsg->fromModule = getId();
+            hostId = findHost()->getId();
         }
         else {
             doStats = false;
         }
-        uppergateIn  = findGate("uppergateIn");
-        uppergateOut = findGate("uppergateOut");
-        lowergateIn  = findGate("lowergateIn");
-        lowergateOut = findGate("lowergateOut");
+        upperGateIn  = findGate("upperGateIn");
+        upperGateOut = findGate("upperGateOut");
+        lowerGateIn  = findGate("lowerGateIn");
+        lowerGateOut = findGate("lowerGateOut");
         upperControlIn  = findGate("upperControlIn");
         upperControlOut = findGate("upperControlOut");
         lowerControlIn  = findGate("lowerControlIn");
@@ -74,29 +74,29 @@ void BaseLayer::handleMessage(cMessage* msg)
 {
     if (msg->isSelfMessage()){
         handleSelfMsg(msg);
-    } else if(msg->arrivalGateId()==uppergateIn) {
+    } else if(msg->getArrivalGateId()==upperGateIn) {
         recordPacket(PassedMessage::INCOMING,PassedMessage::UPPER_DATA,msg);
         handleUpperMsg(msg);
-    } else if(msg->arrivalGateId()==upperControlIn) {
+    } else if(msg->getArrivalGateId()==upperControlIn) {
         recordPacket(PassedMessage::INCOMING,PassedMessage::UPPER_CONTROL,msg);
         handleUpperControl(msg);
-    } else if(msg->arrivalGateId()==lowerControlIn){
+    } else if(msg->getArrivalGateId()==lowerControlIn){
         recordPacket(PassedMessage::INCOMING,PassedMessage::LOWER_CONTROL,msg);
         handleLowerControl(msg);
-    } else if(msg->arrivalGateId()==lowergateIn) {
+    } else if(msg->getArrivalGateId()==lowerGateIn) {
         recordPacket(PassedMessage::INCOMING,PassedMessage::LOWER_DATA,msg);
         handleLowerMsg(msg);
     }
-    else if(msg->arrivalGateId()==-1) {
+    else if(msg->getArrivalGateId()==-1) {
         /* Classes extending this class may not use all the gates, f.e.
          * BaseApplLayer has no upper gates. In this case all upper gate-
-         * handles are initialized to -1. When arrivalGateId() equals -1,
+         * handles are initialized to -1. When getArrivalGateId() equals -1,
          * it would be wrong to forward the message to one of these gates,
          * as they actually don't exist, so raise an error instead.
          */
         opp_error("No self message and no gateID?? Check configuration.");
     } else {
-        /* msg->arrivalGateId() should be valid, but it isn't recognized
+        /* msg->getArrivalGateId() should be valid, but it isn't recognized
          * here. This could signal the case that this class is extended
          * with extra gates, but handleMessage() isn't overridden to
          * check for the new gate(s).
@@ -107,12 +107,12 @@ void BaseLayer::handleMessage(cMessage* msg)
 
 void BaseLayer::sendDown(cMessage *msg) {
     recordPacket(PassedMessage::OUTGOING,PassedMessage::LOWER_DATA,msg);
-    send(msg, lowergateOut);
+    send(msg, lowerGateOut);
 }
 
 void BaseLayer::sendUp(cMessage *msg) {
     recordPacket(PassedMessage::OUTGOING,PassedMessage::UPPER_DATA,msg);
-    send(msg, uppergateOut);
+    send(msg, upperGateOut);
 }
 
 void BaseLayer::sendControlUp(cMessage *msg) {
@@ -131,18 +131,18 @@ void BaseLayer::recordPacket(PassedMessage::direction_t dir,
     if (!doStats) return;
     passedMsg->direction = dir;
     passedMsg->gateType = gate;
-    passedMsg->kind = msg->kind();
-    passedMsg->name = msg->name();
+    passedMsg->kind = msg->getKind();
+    passedMsg->name = msg->getName();
     utility->publishBBItem(catPassedMsg, passedMsg, hostId);
 }
 
 void BaseLayer::finish() {
-    
+
 }
 
 BaseLayer::~BaseLayer()
 {
     if (doStats) {
-        delete passedMsg;        
+        delete passedMsg;
     }
 }

@@ -43,7 +43,7 @@ typedef enum {
 	STATUS_UNKNOWN =
 	    1 /* This node has not yet been able to estimate a position */ ,
 	STATUS_POSITIONED = 2 /* This node has estimated its position */ ,
-	STATUS_BAD = 3		/* This is a bad node (meaning will depend on the algorithm) */
+	STATUS_BAD = 3		/* This is a bad getNode(meaning will depend on the algorithm) */
 } NodeState;
 
 #define add_struct(m,s,v)						\
@@ -240,7 +240,7 @@ private:
 	bool twins(NeighborInfo *, NeighborInfo *);
 
 public:
-	Module_Class_Members(Savvides, BaseLocalization, 0);
+	//Module_Class_Members(Savvides, BaseLocalization, 0);
 	/* Initialization and Finalization of the layer */
 	virtual void initialize(int);
 	virtual void finish();

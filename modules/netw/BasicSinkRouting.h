@@ -50,7 +50,7 @@ protected:
 	bool setNextHop(NetwPkt *pkt);
  
 public:
-	Module_Class_Members(BasicSinkRouting,QueuedRouting,0);
+	//Module_Class_Members(BasicSinkRouting,QueuedRouting,0);
 
 	/** @brief Initialization of the module and some variables*/
 	virtual void initialize(int stage);

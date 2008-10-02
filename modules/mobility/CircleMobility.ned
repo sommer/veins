@@ -23,13 +23,14 @@
 // @author Andras Varga
 //
 simple CircleMobility
+{
     parameters:
-        debug : bool, // debug switch
-        cx: numeric const, // x coord of the center of the circle
-        cy: numeric const, // y coord of the center of the circle
-        r: numeric const, // radius of the circle
-        speed: numeric const, // speed of the host (in m/s)
-        startAngle: numeric const, // starting angle (degreees)
-        updateInterval : numeric const; // time interval to update the hosts position
-endsimple
+        bool debug; // debug switch
+        double cx; // x coord of the center of the circle
+        double cy; // y coord of the center of the circle
+        double r; // radius of the circle
+        double speed; // speed of the host (in m/s)
+        double startAngle; // starting angle (degreees)
+        double updateInterval; // time interval to update the hosts position
+}
 

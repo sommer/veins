@@ -90,7 +90,7 @@ struct pit_struct{
 
 class apit:public BaseLocalization, public Timer {
       public:
-	Module_Class_Members(apit, BaseLocalization, 0);
+	//Module_Class_Members(apit, BaseLocalization, 0);
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);

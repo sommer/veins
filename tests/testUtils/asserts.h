@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <stdlib.h>
 
 extern bool haltOnFails;
 extern bool displayPassed;

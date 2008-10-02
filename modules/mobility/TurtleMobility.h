@@ -43,7 +43,7 @@ class  TurtleMobility : public LineSegmentsMobilityBase
     std::stack<long> loopVars; // for <repeat>
 
   public:
-    Module_Class_Members(TurtleMobility, LineSegmentsMobilityBase, 0);
+    //Module_Class_Members(TurtleMobility, LineSegmentsMobilityBase, 0);
 
     /** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);

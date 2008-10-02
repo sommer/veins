@@ -1,14 +1,19 @@
-import
-    "BaseMobility",
-    "BaseUtility";
+import BaseMobility;
+import BaseUtility;
 
 module BaseObject
+{
+    parameters:
+        @display("bgb=180,200,white,,;bgp=10,10");
     submodules:
-        utility: BaseUtility;
-            display: "p=130,38,rect;b=24,24;o=black";
-        mobility: BaseMobility;
-            display: "p=130,172;i=cogwheel2";
+        utility: BaseUtility {
+            parameters:
+                @display("p=130,38,rect;b=24,24,,black,,");
+        }
+        mobility: BaseMobility {
+            parameters:
+                @display("p=130,172;i=cogwheel2");
 
-    display: "p=10,10;b=180,200,rect;o=white";
-endmodule
+        }
+}
 

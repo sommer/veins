@@ -1,5 +1,6 @@
 simple BaseUtility
+{
     parameters:
-        coreDebug: numeric const; // debug switch for the base framework
-endsimple
+        bool coreDebug; // debug switch for the base framework
+}
 

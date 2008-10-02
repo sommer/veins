@@ -24,8 +24,6 @@
 
 #include <SimpleAddress.h>
 
-Define_Module_Like(TestApplLayer, BaseApplLayer);
-
 
 /**
  * First we have to initialize the module from which we derived ours,
@@ -42,7 +40,7 @@ void TestApplLayer::initialize(int stage)
         delayTimer = new cMessage( "delay-timer", SEND_BROADCAST_TIMER );
     }
     else if(stage==1) {
-        scheduleAt(simTime() + findHost()->index() + 0.005, delayTimer);
+        scheduleAt(simTime() + findHost()->getIndex() + 0.005, delayTimer);
     }
 }
 
@@ -57,7 +55,7 @@ void TestApplLayer::initialize(int stage)
 void TestApplLayer::handleLowerMsg( cMessage* msg )
 {
     ApplPkt *m;
-    switch( msg->kind() ){
+    switch( msg->getKind() ){
     case BROADCAST_MESSAGE:
         m = static_cast<ApplPkt *>(msg);        
 	EV << "Received a broadcast packet from host["<<m->getSrcAddr()<<"] -> sending reply\n";
@@ -69,7 +67,7 @@ void TestApplLayer::handleLowerMsg( cMessage* msg )
         delete msg;
 	break;
     default:
-	EV <<"Error! got packet with unknown kind: " << msg->kind()<<endl;
+	EV <<"Error! got packet with unknown kind: " << msg->getKind()<<endl;
         delete msg;
     }
 }
@@ -83,14 +81,14 @@ void TestApplLayer::handleLowerMsg( cMessage* msg )
  * @sa sendBroadcast
  **/
 void TestApplLayer::handleSelfMsg(cMessage *msg) {
-    switch( msg->kind() ){
+    switch( msg->getKind() ){
     case SEND_BROADCAST_TIMER:
         sendBroadcast();
 		delete msg;
 		delayTimer = NULL;
 	break;
     default:
-    	EV << "Unknown selfmessage! -> delete, kind: "<<msg->kind() <<endl;
+    	EV << "Unknown selfmessage! -> delete, kind: "<<msg->getKind() <<endl;
 	delete msg;
     }
 }
@@ -103,9 +101,9 @@ void TestApplLayer::sendBroadcast()
 {
     ApplPkt *pkt = new ApplPkt("BROADCAST_MESSAGE", BROADCAST_MESSAGE);
     pkt->setDestAddr(-1);
-    // we use the host modules index() as a appl address
+    // we use the host modules getIndex() as a appl address
     pkt->setSrcAddr( myApplAddr() );
-    pkt->setLength(headerLength);
+    pkt->setBitLength(headerLength);
     
     // set the control info to tell the network layer the layer 3
     // address;
@@ -117,7 +115,7 @@ void TestApplLayer::sendBroadcast()
 
 void TestApplLayer::sendReply(ApplPkt *msg) 
 {
-    double delay;
+    simtime_t delay;
 
     delay = uniform(0, 0.01);
 

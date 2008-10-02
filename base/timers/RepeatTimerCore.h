@@ -26,7 +26,7 @@ class RepeatTimerCore: public BaseModule
 		virtual void handleMessage(cMessage* msg);
 
 	public:
-		Module_Class_Members(RepeatTimerCore, BaseModule, 0);
+		//Module_Class_Members(RepeatTimerCore, BaseModule, 0);
 		~RepeatTimerCore();
 
 		void init (RepeatTimer* t);

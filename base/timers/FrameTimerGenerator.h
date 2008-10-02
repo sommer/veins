@@ -23,7 +23,7 @@ class FrameTimerGenerator: public cSimpleModule
 		void nextFrame(unsigned int index);
 		virtual void handleMessage(cMessage* msg);
 	public:	
-	    Module_Class_Members(FrameTimerGenerator, cSimpleModule, 0);
+	    //Module_Class_Members(FrameTimerGenerator, cSimpleModule, 0);
 		~FrameTimerGenerator();
 		virtual void init(FrameTimer *parent);
 		void setFrameTimer(unsigned int index, double period);

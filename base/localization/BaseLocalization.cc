@@ -6,12 +6,12 @@
  * copyright:   (C) 2007 Parallel and Distributed Systems Group (PDS) at
  *              Technische Universiteit Delft, The Netherlands.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     mixim framework
@@ -24,13 +24,15 @@
 
 Define_Module(BaseLocalization);
 
+#define EV_clear ev
+
 void BaseLocalization::initialize(int stage)
 {
 	BaseLayer::initialize(stage);
 
 	switch (stage) {
 	case 0:
-		id = findHost()->index();
+		id = findHost()->getIndex();
 		worldUtility = FindModule<BaseWorldUtility*>::findGlobalModule();
 		if (worldUtility == NULL)
 			error("Could not find BaseWorldUtility module");
@@ -43,15 +45,15 @@ void BaseLocalization::initialize(int stage)
 			pos = getLocation();
 		}
 		break;
-	default: 
+	default:
 		break;
 	}
 }
 
 void BaseLocalization::finish()
 {
-	EV << "BaseLocalization::finish()" 
-	   << pos.info() 
+	EV << "BaseLocalization::finish()"
+	   << pos.info()
 	   << getPosition().info()
 	   << endl;
 
@@ -123,7 +125,7 @@ void BaseLocalization::newAnchor(cMessage * msg) {
 	/* Check if this point already exists in the anchor
 	 * list. This check is made by position. */
 	list<NodeInfo *>::const_iterator current;
-	for (current = anchors.begin(); 
+	for (current = anchors.begin();
 	     current != anchors.end();
 	     current ++) {
 		if (node->pos == (*current)->pos) {
@@ -134,7 +136,7 @@ void BaseLocalization::newAnchor(cMessage * msg) {
 
 	/* We didn't return, therefore new anchor */
 	NodeInfo * node_info = handleNewAnchor(node);
-	if (node_info) 
+	if (node_info)
 		anchors.push_back(node_info);
 }
 
@@ -164,7 +166,7 @@ void BaseLocalization::newNeighbor(cMessage * msg) {
 		neighbors.push_back(node_info);
 }
 
-cMessage *BaseLocalization::decapsMsg(cMessage * msg)
+cPacket *BaseLocalization::decapsMsg(cPacket * msg)
 {
 	LocPkt * pkt = dynamic_cast<LocPkt *>(msg);
 	if (pkt->getIsAnchor()) {
@@ -173,9 +175,9 @@ cMessage *BaseLocalization::decapsMsg(cMessage * msg)
 		newNeighbor(msg);
 	}
 
-	cPolymorphic *cInfo = msg->removeControlInfo();
+	cObject *cInfo = msg->removeControlInfo();
 
-	cMessage *m = msg->decapsulate();
+	cPacket *m = msg->decapsulate();
 	if (cInfo != NULL)
 		m->setControlInfo(cInfo);
 
@@ -185,18 +187,18 @@ cMessage *BaseLocalization::decapsMsg(cMessage * msg)
 	return m;
 }
 
-cMessage *BaseLocalization::encapsMsg(cMessage * msg, int kind)
+cPacket *BaseLocalization::encapsMsg(cPacket * msg, int kind)
 {
-	LocPkt *pkt = new LocPkt(msg->name(), kind);
-	pkt->setLength(headerLength);
+	LocPkt *pkt = new LocPkt(msg->getName(), kind);
+	pkt->setBitLength(headerLength);
 	pkt->setId(id);
 	pkt->setIsAnchor(isAnchor);
 	if (isAnchor)
 		pkt->setPos(getLocation());
-	else 
+	else
 		pkt->setPos(getLocationEstimation());
 
-	cPolymorphic *cInfo = msg->removeControlInfo();
+	cObject *cInfo = msg->removeControlInfo();
 
 	if (cInfo != NULL)
 		pkt->setControlInfo(cInfo);
@@ -210,9 +212,10 @@ cMessage *BaseLocalization::encapsMsg(cMessage * msg, int kind)
 
 void BaseLocalization::handleLowerMsg(cMessage * msg)
 {
-	if (msg->kind() == APPLICATION_MSG) {
+	if (msg->getKind() == APPLICATION_MSG) {
 		EV << " handling application packet" << endl;
-		sendUp(decapsMsg(msg));
+		cPacket* pkt = static_cast<cPacket*>(msg);
+		sendUp(decapsMsg(pkt));
 	} else {
 		EV << " handling localization packet" << endl;
 		handleMsg(msg);
@@ -221,5 +224,8 @@ void BaseLocalization::handleLowerMsg(cMessage * msg)
 
 void BaseLocalization::handleUpperMsg(cMessage * msg)
 {
-	sendDown(encapsMsg(msg, APPLICATION_MSG));
+	assert(dynamic_cast<cPacket*>(msg) != 0);
+
+	cPacket* pkt = static_cast<cPacket*>(msg);
+	sendDown(encapsMsg(pkt, APPLICATION_MSG));
 }

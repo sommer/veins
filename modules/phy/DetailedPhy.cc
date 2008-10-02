@@ -3,7 +3,7 @@
 
 #include <assert.h>
 
-Define_Module_Like(DetailedPhy, BasePhyLayer);
+//Define_Module_Like(DetailedPhy, BasePhyLayer);
 
 void DetailedPhy::initialize(int stage)
 {
@@ -14,14 +14,14 @@ void DetailedPhy::initialize(int stage)
 
 void DetailedPhy::handleLowerMsgStart(cMessage* msg)
 {
-	assert(msg->fullPath().find("TimerCore")==std::string::npos);
+	assert(msg->getFullPath().find("TimerCore")==std::string::npos);
 	CollisionsPhy::handleLowerMsgStart(msg);
 	if (!colliding)
 	{
 		sendControlUp(new cMessage("RX_START",NicControlType::RX_START));
 
 		/* FIXME: cheating! This should be sent a bit later */
-		cMessage *dup = (cMessage*)msg->encapsulatedMsg()->dup();
+		cMessage *dup = (cMessage*)msg->getEncapsulatedMsg()->dup();
 		dup->setKind(NicControlType::RX_HDR);
 		sendControlUp(dup);
 	}
@@ -46,7 +46,7 @@ void DetailedPhy::handleCollision(cMessage *msg)
 
 void DetailedPhy::handleUpperControl(cMessage* msg)
 {
-	switch(msg->kind())
+	switch(msg->getKind())
 	{
 		case NicControlType::SET_TRANSMIT:
 			state = TRANSMIT;

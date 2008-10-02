@@ -41,7 +41,7 @@ class Node_AHLoSRefine:public PositifLayer {
 
 
       public:
-	 Module_Class_Members(Node_AHLoSRefine, PositifLayer, 0)
+	 //Module_Class_Members(Node_AHLoSRefine, PositifLayer, 0)
 	virtual void init(void);
 	virtual void handleTimer(timer_info * timer);
 	virtual void handleStartMessage(cMessage * msg);
@@ -49,7 +49,7 @@ class Node_AHLoSRefine:public PositifLayer {
 	virtual void handleStopMessage(cMessage * msg);
 };
 
-Define_Module_Like(Node_AHLoSRefine, PositifLayer);
+//Define_Module_Like(Node_AHLoSRefine, PositifLayer);
 
 
 void Node_AHLoSRefine::handleStartMessage(cMessage * msg)
@@ -106,7 +106,7 @@ void Node_AHLoSRefine::unknown(cMessage * msg)
 	nghbor_info *neighbor;
 	bool found = false;
 
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		neighbor = (nghbor_info *) iter();
 
 		if (neighbor->idx == src)
@@ -133,7 +133,7 @@ void Node_AHLoSRefine::unknown(cMessage * msg)
 
 bool Node_AHLoSRefine::inside_neighbors_range(Position pos)
 {
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 
 		if (neighbor->confidence > 2 * LOW_CONF &&
@@ -157,7 +157,7 @@ void Node_AHLoSRefine::do_triangulation(void)
 
 	int i = 0;
 	FLOAT sum_conf = 0;
-	for (cLinkedListIterator iter(neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter(neighbors); !iter.end(); iter++) {
 		nghbor_info *neighbor = (nghbor_info *) iter();
 		double w =
 		    /* TODO: fix neighbor->twin ? LOW_CONF/8 : */

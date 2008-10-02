@@ -316,7 +316,7 @@ public:
 	/**
 	 * @brief Constructor
 	 **/
-	Module_Class_Members(BaseConnectionManager, BaseModule, 0);
+	//Module_Class_Members(BaseConnectionManager, BaseModule, 0);
 	
 	
 	virtual ~BaseConnectionManager();

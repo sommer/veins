@@ -54,7 +54,7 @@ class ModuleAccess
     {
         if (!p)
         {
-            cModule *m = findModuleWherever(name, opp_typename(typeid(T)), simulation.contextModule());
+            cModule *m = findModuleWherever(name, opp_typename(typeid(T)), simulation.getContextModule());
             if (!m) opp_error("Module (%s)%s not found",opp_typename(typeid(T)),name);
             p = check_and_cast<T*>(m);
         }

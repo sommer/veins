@@ -6,12 +6,12 @@
  * copyright:   (C) 2007 Parallel and Distributed Systems Group (PDS) at
  *              Technische Universiteit Delft, The Netherlands.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     mixim framework
@@ -44,12 +44,12 @@ using std::string;
  *
  * This class contains the same fields as the LocPkt message.
  * In case one needs more information, one can extend this class or create
- * a new class with node information. The corresponding methods in 
+ * a new class with node information. The corresponding methods in
  * BaseLocalization need to be overwritten.
  */
 class NodeInfo {
 public:
-	NodeInfo(LocPkt * pkt, Coord basePos) 
+	NodeInfo(LocPkt * pkt, Coord basePos)
 		: id(pkt->getId()),
 		  isAnchor(pkt->getIsAnchor()),
 		  pos(pkt->getPos()),
@@ -70,14 +70,14 @@ public:
 		return os.str();
 	}
 
-	
+
 	/** Unique identifier of this node. */
 	int id;
 	/** Weather this node is an anchor node or not. */
 	bool isAnchor;
 	/** The (estimated) location of this node. */
 	Location pos;
-	/** The (estimated) distance between this node and the owner. 
+	/** The (estimated) distance between this node and the owner.
 	 * @TODO This must be determined base on RSSI once that's added
 	 * to Mixim. */
 	double distance;
@@ -87,7 +87,7 @@ using std::list;
 
 /**
  * @brief Base class for the localization layer
- * 
+ *
  * @ingroup localization
  * @author Peterpaul Klein Haneveld
  */
@@ -106,8 +106,8 @@ class BaseLocalization : public BaseLayer {
 	 * 	...
 	 * };
 	 * </code>
-	 */ 
-	enum 
+	 */
+	enum
 	{
 		APPLICATION_MSG = 0,
 	};
@@ -128,7 +128,7 @@ class BaseLocalization : public BaseLayer {
 	BaseWorldUtility * worldUtility;
 
       public:
-	 Module_Class_Members(BaseLocalization, BaseLayer, 0);
+	 //Module_Class_Members(BaseLocalization, BaseLayer, 0);
 
 	/**
 	 * @brief Initialization of the module and some variables
@@ -161,7 +161,7 @@ class BaseLocalization : public BaseLayer {
 	Location getLocationEstimation();
 
       protected:
-	/** 
+	/**
 	 * @name Handle Messages
 	 * @brief Functions to redefine by the programmer
 	 *
@@ -199,7 +199,7 @@ class BaseLocalization : public BaseLayer {
 	 * as it isn't used anywhere in the BaseLocalization class.
 	 */
 	void sendMsg(cMessage *);
-	
+
 	/** @brief Handle a message sent by the Localization layer.
 	 *
 	 * Overwrite this method in localization algorithms if you
@@ -215,12 +215,12 @@ class BaseLocalization : public BaseLayer {
 	/**
 	 * @brief Decapsulates messages received from the network layer.
 	 */
-	virtual cMessage *decapsMsg(cMessage *);
+	virtual cPacket *decapsMsg(cPacket *);
 
 	/**
 	 * @brief Encapsulates application layer messages.
 	 */
-	virtual cMessage *encapsMsg(cMessage *, int);
+	virtual cPacket *encapsMsg(cPacket *, int);
 
 	/** @name Localization methods
 	 * @brief Localization functions that can be redefined by
@@ -228,7 +228,7 @@ class BaseLocalization : public BaseLayer {
 	 */
 	/*@{ */
 	/** @brief Perform actions on the anchor list
-	 * 
+	 *
 	 * When the anchor doesn't need to be stored, this function must
 	 * delete the node.
 	 *  @return the anchor if it should be stored, NULL otherwise */

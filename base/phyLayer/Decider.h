@@ -1,7 +1,7 @@
 /* -*- mode:c++ -*- ********************************************************
- * 
- * 
- * 
+ *
+ *
+ *
  */
 
 #ifndef DECIDER_H_
@@ -19,13 +19,13 @@
 /**
  * @brief A class to represent the result of a processed packet (that is not
  * noise) by the Decider.
- * 
+ *
  * It stores information (i.e. basically whether a packet has been received
  * correctly) for the MACLayer that is handed up to the MACLayer by the PhyLayer
  * together with the received packet. (see also DeciderToPhyInterface)
- * 
+ *
  * You can subclass DeciderResult to create a more detailed result.
- *  
+ *
  */
 class DeciderResult
 {
@@ -33,76 +33,80 @@ protected:
 	/** Stores if the AirFrame for this result was received correct.*/
 	bool isCorrect;
 public:
-	
+
+	virtual ~DeciderResult() {}
+
 	/**
 	 * @brief Initializes the DeciderResult with the passed bool, or true
-	 * if ommited.
+	 * if omitted.
 	 */
 	DeciderResult(bool isCorrect = true):
 		isCorrect(isCorrect) {}
-	
+
 	/**
 	 * @brief A Function that returns a very basic result about the Signal.
 	 */
 	 virtual bool isSignalCorrect();
-	
+
 };
 
 
 /**
  * @brief The basic Decider class
- * 
+ *
  * The Deciders tasks are:
  * 	1.	decide which packets should be handed up to the MAC Layer (primary task)
  * 	2.	decide whether the channel is busy/idle at a time point or
  * 		during a time interval (channel sensing)
- * 
+ *
  * BasePhyLayer hands every receiving AirFrame several times to the
  * "processSignal()"-function and is returned a time point when to do so again.
- * 
+ *
  */
 class Decider
 {
 protected:
 	/** A pointer to the physical layer of this Decider. */
 	DeciderToPhyInterface* phy;
-	
+
 public:
-	
+
 	/**
 	 * @brief Initializes the Decider with a pointer to its PhyLayer
 	 */
 	Decider(DeciderToPhyInterface* phy);
-	
+
+	virtual ~Decider() {}
+
 	/**
 	 * @brief This function processes a AirFrame given by the PhyLayer and
 	 * returns the time point when Decider wants to be given the AirFrame again.
 	 */
 	virtual simtime_t processSignal(AirFrame* frame);
-	
+
 	/**
 	 * @brief A function that returns information about the channel state
-	 * 
+	 *
 	 * It is an alternative for the MACLayer in order to obtain information
 	 * immediately (in contrast to sending a ChannelSenseRequest,
 	 * i.e. sending a cMessage over the OMNeT-control-channel)
 	 */
 	virtual ChannelState getChannelState();
-	
+
 	/**
 	 * @brief This function is called by the PhyLayer to hand over a
 	 * ChannelSenseRequest.
-	 * 
+	 *
 	 * The MACLayer is able to send a ChannelSenseRequest to the PhyLayer
-	 * that calls this funtion with it and is returned a time point when to
+	 * that calls this function with it and is returned a time point when to
 	 * re-call this function with the specific ChannelSenseRequest.
-	 * 
+	 *
 	 * The Decider puts the result (ChannelState) to the ChannelSenseRequest
 	 * and "answers" by calling the "sendControlMsg"-function on the
 	 * DeciderToPhyInterface, i.e. telling the PhyLayer to send it back.
 	 */
-	virtual simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);	
-	
+	virtual simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);
+
 };
 
 

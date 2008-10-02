@@ -3,42 +3,38 @@ cplusplus {{
 #include "Signal_.h"
 }}
 
+
+
 class noncobject Signal;
 
 //
-// Format of the messages that are sent to the channel
+// Format of the packets that are sent to the channel
 //
-// subclass if you want to create your own AirFrame message class
-// (see Omnet manual, chapter Messages - Inheritance among message 
+// subclass if you want to create your own AirFrame packet class
+// (see Omnet manual, chapter Messages - Inheritance among packet 
 // classes).
 //
-// This message format is used to send a packet from the physical
+// This packet format is used to send a packet from the physical
 // layer to the channel. All other physical layers that can 'hear'
-// this message can evaluate noise, interference etc. from the
-// information contained in this message:
+// this packet can evaluate noise, interference etc. from the
+// information contained in this packet:
 //
 // If you need more fields for whatever reason, please do NOT create
-// your own message! Just extend (subclass) this message format 
+// your own packet! Just extend (subclass) this packet format 
 //
-message AirFrame
+packet AirFrame
 {
-//	properties:
-//		customize = true;
-		
-    fields:
-//      abstract Signal signal;    	// Contains the physical data of this AirFrame
-        
-        Signal signal;		// Contains the physical data of this AirFrame
-        
-        int state = 0; 		// state of the AirFrames, used by the physical layer
+    Signal signal;		// Contains the physical data of this AirFrame
+
+    int state = 0; 		// state of the AirFrames, used by the physical layer
         					// as state machine for delay and transmission duration
         					// simulation
-        					
-        double duration; 	// Time it takes to transmit the packet, in seconds!
-        
-        int type = 0;		// If type isn't null then this is a control-AirFrame
+
+    simtime_t duration; 	// Time it takes to transmit the packet, in simtime units!
+
+    int type = 0;		// If type isn't null then this is a control-AirFrame
         					// and type specifies the control type.
-	
-		long id;			// Unique ID of the AirFrame used as identifier for
+
+    long id;			// Unique ID of the AirFrame used as identifier for
 							// related control-AirFrames
-};
+}

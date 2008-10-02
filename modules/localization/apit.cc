@@ -38,7 +38,7 @@
 
 
 
-Define_Module_Like(apit, BaseLocalization);
+//Define_Module_Like(apit, BaseLocalization);
 
 void apit::initialize(int stage)
 {
@@ -83,7 +83,7 @@ void apit::handleTimer(unsigned int index){
 						else{	
 							// Get the new position.
 							BaseUtility *utility = (BaseUtility *) 
-									(findHost()->submodule("utility"));
+									(findHost()->getSubmodule("utility"));
 							Coord pos = utility->getPos();
 							Location *loc = new Location(pos,simTime(),1.0);
 							
@@ -110,7 +110,7 @@ void apit::handleTimer(unsigned int index){
 								LocPkt *lp = new 
 									LocPkt("NODE_BROADCAST_MESSAGE",NODE_BROADCAST_MESSAGE);
 								BaseUtility *utility = (BaseUtility *) 
-										(findHost()->submodule("utility"));
+										(findHost()->getSubmodule("utility"));
 								Coord pos = utility->getPos();
 	
 								// Prepare the packet to send.
@@ -203,7 +203,7 @@ void apit::newAnchor(cMessage * msg) {
 
 	// Get the node's own co-ordinate.
 	BaseUtility *utility = (BaseUtility *) 
-			(findHost()->submodule("utility"));
+			(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 
 	double xReal = pos.getX();
@@ -255,7 +255,7 @@ void apit::newNeighbor(cMessage * msg) {
 
 	// Get the node's own co-ordinate.
 	BaseUtility *utility = (BaseUtility *) 
-			(findHost()->submodule("utility"));
+			(findHost()->getSubmodule("utility"));
 	Coord pos = utility->getPos();
 
 	double xReal = pos.getX();
@@ -320,7 +320,7 @@ void apit::handleMsg(cMessage* msg){
 	LocPkt * m = dynamic_cast<LocPkt *>(msg);
 
 	// Process the message, depending upon whether it is from an anchor or a non-anchor.
- 	switch(m->kind())
+ 	switch(m->getKind())
 	{
 		case ANCHOR_BROADCAST_MESSAGE:  
 						if (! isAnchor)
@@ -410,7 +410,7 @@ void apit::PIT_test(){
 							// get the slopes of the three lines
 /*
 							BaseUtility *utility = (BaseUtility *) 
-									(findHost()->submodule("utility"));
+									(findHost()->getSubmodule("utility"));
 							Coord pos = utility->getPos();
 							Coord a1 = anchor_t[i].pos;
 							Coord a2 = anchor_t[j].pos;
@@ -681,7 +681,7 @@ Coord apit::compute_position(vector <struct pit_struct> pit, int pit_cnt){
 		
 
 		BaseUtility *utility = (BaseUtility *) 
-				(findHost()->submodule("utility"));
+				(findHost()->getSubmodule("utility"));
 		Coord pos = utility->getPos();
 
 		double xReal = pos.getX();
@@ -775,7 +775,7 @@ int apit:: in_triangle(Coord c, Coord anchor1, Coord anchor2, Coord anchor3){
  **/
 void apit::sendBroadcast(LocPkt *pkt)
 {
-    pkt->setLength(headerLength);
+    pkt->setBitLength(headerLength);
     // set the control info to tell the network layer the layer 3 address;
     pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
     EV << "Sending broadcast packet!\n";

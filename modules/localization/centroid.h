@@ -43,7 +43,7 @@ typedef enum { SEND_ANCHOR_POS_TIMER = 0,
  */
 class Centroid:public BaseLocalization, public Timer {
       public:
-	Module_Class_Members(Centroid, BaseLocalization, 0);
+	//Module_Class_Members(Centroid, BaseLocalization, 0);
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);

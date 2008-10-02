@@ -26,4 +26,5 @@
 
 simple StateVisualize
 
-endsimple
+{
+}

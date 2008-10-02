@@ -39,7 +39,7 @@ protected:
     /** @brief Provides a unique number for AirFrames per simulation */
     long airFrameId;
 public:
-	Module_Class_Members(BaseWorldUtility,BaseModule,0);
+	//Module_Class_Members(BaseWorldUtility,BaseModule,0);
 
 	void initialize(int stage);
 

@@ -1,0 +1,158 @@
+OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+See the license for distribution terms and warranty disclaimer
+Setting up Cmdenv...
+Loading NED files from ../../include/: 34
+Loading NED files from ../testUtils/: 1
+Loading NED files from .: 5
+
+Preparing for running configuration TestBaseDecider1, run #0...
+Scenario: $repetition=0
+Assigned runID=TestBaseDecider1-0-20080926-16:14:46-15988
+Setting up network `tbpSim'...
+setupNetwork finished, cParImpl objects in use: 85
+Initializing...
+Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
+Initializing module tbpSim, stage 0
+Initializing module tbpSim.world, stage 0
+Initializing module tbpSim.testManager, stage 0
+Initializing module tbpSim.channelcontrol, stage 0
+Initializing module tbpSim.node[0], stage 0
+Initializing module tbpSim.node[0].utility, stage 0
+Initializing module tbpSim.node[0].mobility, stage 0
+Initializing module tbpSim.node[0].nic, stage 0
+Initializing module tbpSim.node[0].nic.phy, stage 0
+[phy0] - Creating TestAirFrame 1 done.
+[phy0] - Creating TestAirFrame 2 done.
+[phy0] - Creating TestAirFrame 3 done.
+Initializing module tbpSim.node[0].nic.mac, stage 0
+Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.channelcontrol, stage 1
+Initializing module tbpSim.node[0].utility, stage 1
+Initializing module tbpSim.node[0].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[0].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "snrThreshold".
+Passed: Check type of parameter "snrThreshold".
+Passed: Check value of parameter "snrThreshold".
+Passed: [decider0] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [decider0] - pointer to DeciderToPhyInterface has been set properly
+Passed: [decider0] - snr-threshold and receiving-sensitivity have been set properly
+Passed: Check parameter "usePropagationDelay".
+Passed: Check parameter "sensitivity".
+Passed: Check parameter "maxTXPower".
+Passed: Check parameter "thermalNoise".
+Passed: Check upperGateIn ID.
+Passed: Check upperGateOut ID.
+Passed: Check upperControlIn ID.
+Passed: Check upperControlOut ID.
+Passed: Switchtime SLEEP to RX.
+Passed: Switchtime RX to TX.
+Passed: Switchtime TX to SLEEP.
+Passed: Switchtime SLEEP to TX.
+Passed: Switchtime TX to RX.
+Passed: Switchtime RX to SLEEP.
+Passed: Decider is of type TestBaseDecider.
+Passed: Check size of AnalogueModel list.
+Passed: Analogue model is of type RadioStateAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Check attenuation value of AnalogueModels.
+Passed: Check initialisation of TX-OVER timer
+Passed: Check kind of TX_OVER timer
+Passed: Check initialisation of radioSwitchOver timer
+Passed: Check kind of radioSwitchOver timer
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current timepoint
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'now' in an empty Set of AirFrames (empty Mapping)
+[phy0] - ------------------------------------------------
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime' in an empty Set of AirFrames (empty Mapping)
+[phy0] - -full output-----------------------------------------------
+[phy0] - A new testTime has been set: 1
+[phy0] - Putting AirFrames on the virtual channel.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+[phy0] - Calling getChannelState() of BaseDecider.
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+[phy0] - Checking results against expected results.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - -short output-----------------------------------------------
+[phy0] - A new testTime has been set: 2
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - -short output-----------------------------------------------
+[phy0] - A new testTime has been set: 3
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - -short output-----------------------------------------------
+[phy0] - A new testTime has been set: 4
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - -short output-----------------------------------------------
+[phy0] - A new testTime has been set: 5
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - -short output-----------------------------------------------
+[phy0] - A new testTime has been set: 9
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+Initializing module tbpSim.node[0].nic.mac, stage 1
+
+Running simulation...
+
+<!> No more events -- simulation ended.
+
+
+Calling finish() at end of Run #0...
+
+End run of OMNeT++

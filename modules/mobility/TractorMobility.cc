@@ -60,7 +60,7 @@ void TractorMobility::initialize(int stage)
 
 void TractorMobility::makeMove()
 {
-	position += move.speed * updateInterval;
+	position += move.speed * updateInterval.dbl();
 
 	calculateXY();
 

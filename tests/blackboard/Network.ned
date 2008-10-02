@@ -24,42 +24,45 @@
 //***************************************************************************
 
 
-import
-    "BasicHost",
-    "BaseWorldUtility";
+import BasicHost;
+import BaseWorldUtility;
 
 module Network
+{
     parameters:
         // parametes for the framework
-        playgroundSizeX : numeric const,
-        playgroundSizeY : numeric const,
-        playgroundSizeZ : numeric const,
-        numHosts : numeric const;
-        
+        double playgroundSizeX;
+        double playgroundSizeY;
+        double playgroundSizeZ;
+        double numHosts;
 
+
+        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=0,0");
     submodules:
-        node: BasicHost[numHosts];
+        node[numHosts]: BasicHost {
             parameters:
                 numHosts = numHosts;
-            display: "p=50,50;i=node";
-            
-        world: BaseWorldUtility;
-    		parameters: 
-                playgroundSizeX = playgroundSizeX, 
-                playgroundSizeY = playgroundSizeY,
+                @display("p=50,50;i=node");
+
+        }
+        world: BaseWorldUtility {
+            parameters:
+                playgroundSizeX = playgroundSizeX;
+                playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
 
-    connections nocheck:
+        }
+    connections allowunconnected:
     // all connections and gates are to be generated dynamically
 
-    display: "p=0,0;b=$playgroundSizeX,$playgroundSizeY,rect;o=white";
-endmodule
+}
 
 
 
 
-network sim : Network
+network sim extends Network
+{
     parameters:
-        numHosts =input(2,"Number of hosts:");
+        numHosts @prompt("Number of hosts:") = default(2);
 
-endnetwork
+}

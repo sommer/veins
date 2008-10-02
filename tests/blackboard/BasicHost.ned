@@ -1,32 +1,42 @@
 // empty host to test bb
 
-import
-    "StateChanger",
-    "StateVisualize",
-    "StateView",
-    "TestStateSub",
-    "BaseUtility";
+import StateChanger;
+import StateVisualize;
+import StateView;
+import TestStateSub;
+import BaseUtility;
 
 module BasicHost
+{
     parameters:
         // parameters for the framework
-        numHosts                   : numeric const,
-        appendDisplay              : string,
-        color                      : string;
+        double numHosts;
+        string appendDisplay;
+        string color;
 
+        @display("bgb=250,250,$color,,;bgp=10,10");
     submodules:
-        blackboard: BaseUtility;
-            display: "p=50,30;b=30,25";
-        statechanger: StateChanger
-            display: "p=50,90;b=30,25";
-        statevisualize: StateVisualize
-            display: "p=200,30;b=30,25";
-        stateview: StateView
-            display: "p=200,110;b=30,25";
-        testparam: TestStateSub
-            display: "p=200,160;b=30,25";
+        blackboard: BaseUtility {
+            parameters:
+                @display("p=50,30;b=30,25");
+        }
+        statechanger: StateChanger {
+            parameters:
+                @display("p=50,90;b=30,25");
+        }
+        statevisualize: StateVisualize {
+            parameters:
+                @display("p=200,30;b=30,25");
+        }
+        stateview: StateView {
+            parameters:
+                @display("p=200,110;b=30,25");
+        }
+        testparam: TestStateSub {
+            parameters:
+                @display("p=200,160;b=30,25");
 
+        }
     connections:
-    
-    display: "p=10,10;b=250,250,rect;o=$color";
-endmodule
+
+}

@@ -83,7 +83,7 @@ class BaseUtility : public BaseModule {
     Coord pos;
 
  protected:
-    Module_Class_Members(BaseUtility, BaseModule, 0);
+    //Module_Class_Members(BaseUtility, BaseModule, 0);
 
 //BB start
     class Subscriber {

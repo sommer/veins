@@ -39,7 +39,7 @@ class  ANSimMobility : public LineSegmentsMobilityBase
     cXMLElement *nextPosChange; ///< points to the next \<position_change> element
 
   public:
-    Module_Class_Members(ANSimMobility, LineSegmentsMobilityBase, 0);
+    //Module_Class_Members(ANSimMobility, LineSegmentsMobilityBase, 0);
 
     /** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);

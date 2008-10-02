@@ -7,19 +7,24 @@ Define_Module(TestMacLayer);
 //---intialisation---------------------
 void TestMacLayer::initialize(int stage) {
 	if(stage == 0) {
-		myIndex = findHost()->index();
-		
+		if (simulation.getSystemModule()->par("showPassed"))
+			displayPassed = true;
+		else
+			displayPassed = false;
+
+		myIndex = findHost()->getIndex();
+
 		dataOut = findGate("lowerGateOut");
 		dataIn = findGate("lowerGateIn");
-		
+
 		controlOut = findGate("lowerControlOut");
 		controlIn = findGate("lowerControlIn");
-		
+
 		init("mac" + toString(myIndex));
-		
-		testPhy = FindModule<TestPhyLayer*>::findSubModule(this->parentModule());
+
+		testPhy = FindModule<TestPhyLayer*>::findSubModule(this->getParentModule());
 		phy = testPhy;
-		
+
 	} else if(stage == 1) {
 		runTests(TEST_START);
 	}
@@ -36,19 +41,16 @@ void TestMacLayer::onAssertedMessage(int state, const cMessage* msg) {
  * dependend on the current run.
  */
 void TestMacLayer::runTests(int state, const cMessage* msg) {
-	switch(simulation.runNumber()) {
-	case 1:
+	int run = simulation.getSystemModule()->par("run");
+	if(run == 1)
 		testRun1(state, msg);
-		break;
-	case 2:
+	else if(run == 2)
 		testRun2(state, msg);
-		break;
-	case 3:
+	else if(run == 3)
 		testRun3(state, msg);
-		break;
-	default:
-		break;
-	}
+	else if (run == 5)
+		testRun5(state, msg);
+
 }
 
 /**
@@ -87,7 +89,7 @@ void TestMacLayer::testRun2(int stage, const cMessage* msg){
 	case RUN2_SWITCH_TO_TX:{
 		int state = phy->getRadioState();
 		assertEqual("Radio is in TX.", Radio::TX, state);
-		
+
 		MacPkt* pkt = createMacPkt(1.0);
 		sendDown(pkt);
 
@@ -133,6 +135,38 @@ void TestMacLayer::testRun3(int stage, const cMessage* msg){
 	}
 }
 
+/**
+ * Testhandling for run 5:
+ *
+ * - check getChannelState()
+ * - check channel sensing
+ *
+ * TODO: for now the methods called here are empty
+ *
+ * Testing BaseDecider is done in initialize of the TestPhyLayer
+ * without using the simulation so far, i.e. among other things TestPhyLayer
+ * overriding the methods of DeciderToPhyInterface implemented by
+ * BasePhyLayer. This way we check whether BaseDecider makes correct calls
+ * on the Interface and return specific testing values to BaseDecider.
+ *
+ * Sending real AirFrames over the channel that BaseDecider can obtain
+ * by calling the DeciderToPhyInterface will be done later.
+ */
+void TestMacLayer::testRun5(int stage, const cMessage* msg)
+{
+	switch (stage) {
+		case TEST_START:
+			testGetChannelStateWithBD();
+			// NOTE: there is no break here!
+		case RUN5_TEST_ON_RX:
+			// testSwitchRadio(stage);
+			testChannelSenseWithBD();
+			break;
+		default:
+			break;
+	}
+}
+
 //---run 1 test-----------------------------
 
 /**
@@ -142,15 +176,15 @@ void TestMacLayer::testGetChannelState() {
 	ChannelState state = phy->getChannelState();
 	assertTrue("First channelstates idle state should be true", state.isIdle());
 	assertClose("First channelstates rssi.", 1.0, state.getRSSI());
-	
+
 	state = phy->getChannelState();
 	assertFalse("Second channelstate should be false", state.isIdle());
 	assertClose("Second channelstates rssi.", 2.0, state.getRSSI());
-	
+
 	state = phy->getChannelState();
 	assertTrue("Third channelstate should be true", state.isIdle());
 	assertClose("Third channelstates rssi.", 3.0, state.getRSSI());
-	
+
 	state = phy->getChannelState();
 	assertFalse("Fourth channelstate should be false", state.isIdle());
 	assertClose("Fourth channelstates rssi.", 4.0, state.getRSSI());
@@ -163,21 +197,21 @@ void TestMacLayer::testSwitchRadio(int stage) {
 	simtime_t expTime;
 	int nextState;
 	int nextStage;
-	
+
 	switch(stage) {
 	case TEST_START:
-		expState = Radio::SLEEP;		
+		expState = Radio::SLEEP;
 		nextState = Radio::RX;
 		expTime = 3.0;
 		nextStage = RUN1_TEST_ON_RX;
 		break;
 	case RUN1_TEST_ON_RX:
-		expState = Radio::RX;		
+		expState = Radio::RX;
 		nextState = Radio::SLEEP;
 		expTime = 1.5;
 		nextStage = RUN1_TEST_ON_SLEEP;
 		break;
-		
+
 	default:
 		break;
 	}
@@ -186,30 +220,30 @@ void TestMacLayer::testSwitchRadio(int stage) {
 	assertEqual("Radio starts in SLEEP.", expState, state);
 	simtime_t switchTime = phy->setRadioState(nextState);
 	assertEqual("Correct switch time to RX.", expTime, switchTime);
-	
-	
-	assertMessage(	"SWITCH_OVER message at phy.", 
-					BasePhyLayer::RADIO_SWITCHING_OVER, 
-					simTime() + switchTime, 
+
+
+	assertMessage(	"SWITCH_OVER message at phy.",
+					BasePhyLayer::RADIO_SWITCHING_OVER,
+					simTime() + switchTime,
 					"phy" + toString(myIndex));
 	waitForMessage(	nextStage,
-					"SWITCH_OVER message.", 
-					BasePhyLayer::RADIO_SWITCHING_OVER, 
+					"SWITCH_OVER message.",
+					BasePhyLayer::RADIO_SWITCHING_OVER,
 					simTime() + switchTime);
-	
+
 	switchTime = phy->setRadioState(Radio::RX);
-	assertTrue("Invalid switchtime because already switching.", switchTime < 0.0);	
+	assertTrue("Invalid switchtime because already switching.", switchTime < 0.0);
 }
 
 void TestMacLayer::testChannelSense() {
 	ChannelSenseRequest* req = new ChannelSenseRequest();
 	req->setKind(MacToPhyInterface::CHANNEL_SENSE_REQUEST);
 	req->setSenseDuration(0.5f);
-	send(req, controlOut);	
-	assertMessage(	"ChannelSense at phy layer.", 
+	send(req, controlOut);
+	assertMessage(	"ChannelSense at phy layer.",
 					MacToPhyInterface::CHANNEL_SENSE_REQUEST,
 					simTime(), "phy" + toString(myIndex));
-	assertMessage(	"ChannelSense at decider.", 
+	assertMessage(	"ChannelSense at decider.",
 						MacToPhyInterface::CHANNEL_SENSE_REQUEST,
 						simTime(), "decider" + toString(myIndex));
 }
@@ -217,7 +251,7 @@ void TestMacLayer::testChannelSense() {
 void TestMacLayer::testSendingOnNotTX() {
 	int state = phy->getRadioState();
 	assertNotEqual("Radio is not in TX.", Radio::TX, state);
-	
+
 	MacPkt* pkt = createMacPkt(1.0);
 	sendDown(pkt);
 
@@ -234,8 +268,8 @@ void TestMacLayer::testChannelInfo(int stage) {
 	case TEST_START: {
 		DeciderToPhyInterface::AirFrameVector v;
 		testPhy->getChannelInfo(0.0, simTime(), v);
-		
-		assertTrue("No AirFrames on channel.", v.empty());		
+
+		assertTrue("No AirFrames on channel.", v.empty());
 		break;
 	}
 	case RUN3_TEST_ON_DECIDER1:
@@ -244,8 +278,8 @@ void TestMacLayer::testChannelInfo(int stage) {
 		if(myIndex ==( stage - RUN3_TEST_ON_DECIDER1 + 1)) {
 			DeciderToPhyInterface::AirFrameVector v;
 			testPhy->getChannelInfo(0.0, simTime(), v);
-			
-			assertFalse("AirFrames on channel.", v.empty());	
+
+			assertFalse("AirFrames on channel.", v.empty());
 		}
 		break;
 	}
@@ -260,7 +294,7 @@ void TestMacLayer::testSending1(int stage, const cMessage* lastMsg) {
 	switch(stage) {
 	case TEST_START: {
 		waitForTX(RUN3_TEST_ON_TX);
-		
+
 		break;
 	}
 	case RUN3_TEST_ON_TX:{
@@ -269,18 +303,18 @@ void TestMacLayer::testSending1(int stage, const cMessage* lastMsg) {
 		sendDown(pkt);
 
 		assertMessage("MacPkt at Phy layer.", TEST_MACPKT, simTime(), "phy0");
-		
+
 		assertMessage("First receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime(), "phy1");
 		assertMessage("First receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime(), "phy2");
 		assertMessage("First receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime(), "phy3");
 		assertMessage("End receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime() + 1.0, "phy1");
 		assertMessage("End receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime() + 1.0, "phy2");
 		assertMessage("End receive of AirFrame", BasePhyLayer::AIR_FRAME, simTime() + 1.0, "phy3");
-		
+
 		waitForMessage(RUN3_TEST_ON_DECIDER1, "First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider1");
 		waitForMessage(RUN3_TEST_ON_DECIDER2, "First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider2");
 		waitForMessage(RUN3_TEST_ON_DECIDER3, "First process of AirFrame at Decider", BasePhyLayer::AIR_FRAME, simTime(), "decider3");
-				
+
 		assertMessage("Transmission over message at phy", BasePhyLayer::TX_OVER, simTime() + 1.0, "phy0");
 		assertMessage("Transmission over message from phy", BasePhyLayer::TX_OVER, simTime() + 1.0);
 		break;
@@ -298,28 +332,41 @@ void TestMacLayer::testSending1(int stage, const cMessage* lastMsg) {
 	}
 }
 
+//---run 5 tests----------------------------
+
+void TestMacLayer::testChannelSenseWithBD()
+{
+	// empty for now
+
+}
+
+void TestMacLayer::testGetChannelStateWithBD()
+{
+	// empty for now
+}
+
 //---utilities------------------------------
 
 void TestMacLayer::continueIn(simtime_t time, int nextStage){
-	scheduleAt(simTime() + time, new cMessage(0, 232425));
-	waitForMessage(	nextStage, 
-					"Waiting for " + toString(time) + "s.", 
-					232425,
+	scheduleAt(simTime() + time, new cMessage(0, 23242));
+	waitForMessage(	nextStage,
+					"Waiting for " + toString(time) + "s.",
+					23242,
 					simTime() + time);
 }
 
 void TestMacLayer::waitForTX(int nextStage) {
 	simtime_t switchTime = phy->setRadioState(Radio::TX);
 	assertTrue("A valid switch time.", switchTime >= 0.0);
-	
-	
-	assertMessage(	"SWITCH_OVER to TX message at phy.", 
-					BasePhyLayer::RADIO_SWITCHING_OVER, 
-					simTime() + switchTime, 
+
+
+	assertMessage(	"SWITCH_OVER to TX message at phy.",
+					BasePhyLayer::RADIO_SWITCHING_OVER,
+					simTime() + switchTime,
 					"phy" + toString(myIndex));
 	waitForMessage(	nextStage,
-					"SWITCH_OVER to TX message.", 
-					BasePhyLayer::RADIO_SWITCHING_OVER, 
+					"SWITCH_OVER to TX message.",
+					BasePhyLayer::RADIO_SWITCHING_OVER,
 					simTime() + switchTime);
 }
 

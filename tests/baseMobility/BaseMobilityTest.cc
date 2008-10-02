@@ -101,7 +101,7 @@ void BaseMobilityTest::testInitialisation() {
 	assertTrue("Base utility pointer initialised.", utility != 0);
 	
 	assertTrue("Host pointer initialised.", hostPtr != 0);
-	assertTrue("Host ID and host pointer matches.", hostPtr->id() == hostId);	
+	assertTrue("Host ID and host pointer matches.", hostPtr->getId() == hostId);	
 }
 
 // handling incoming messages 

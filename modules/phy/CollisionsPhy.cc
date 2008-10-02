@@ -21,7 +21,7 @@
 #include "CollisionsPhy.h"
 #include <assert.h>
 
-Define_Module_Like(CollisionsPhy, BasePhyLayer);
+//Define_Module_Like(CollisionsPhy, BasePhyLayer);
 
 void CollisionsPhy::initialize(int stage)
 {

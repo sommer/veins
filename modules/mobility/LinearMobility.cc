@@ -31,7 +31,7 @@ void LinearMobility::initialize(int stage)
     EV << "initializing LinearMobility stage " << stage << endl;
 
     if (stage == 0){
-	
+
         move.speed = par("speed");
         acceleration = par("acceleration");
         angle = par("angle");
@@ -61,15 +61,15 @@ void LinearMobility::makeMove()
     move.startPos = stepTarget;
     move.startTime = simTime();
 
-    stepTarget.setX(move.startPos.getX() + move.speed * cos(PI * angle / 180) * updateInterval);
-    stepTarget.setY(move.startPos.getY() + move.speed * sin(PI * angle / 180) * updateInterval);
+    stepTarget.setX(move.startPos.getX() + move.speed * cos(PI * angle / 180) * updateInterval.dbl());
+    stepTarget.setY(move.startPos.getY() + move.speed * sin(PI * angle / 180) * updateInterval.dbl());
 
     move.setDirection(stepTarget);
 
     EV << "new stepTarget: " << stepTarget.info() << endl;
 
     // accelerate
-    move.speed += acceleration * updateInterval;
+    move.speed += acceleration * updateInterval.dbl();
 
     fixIfHostGetsOutside();
 }

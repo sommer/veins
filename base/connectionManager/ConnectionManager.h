@@ -19,7 +19,7 @@ public:
 	/**
 	 * @brief Constructor
 	 **/
-	Module_Class_Members(ConnectionManager, BaseConnectionManager, 0);
+	//Module_Class_Members(ConnectionManager, BaseConnectionManager, 0);
 };
 
 #endif /*CONNECTIONMANAGER_H_*/

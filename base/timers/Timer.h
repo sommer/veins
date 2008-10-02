@@ -18,7 +18,7 @@
  * class MyClass: public BaseLocalisation, public Timer
  * {
  *     public:
- *	    Module_Class_Members(MyClass, BaseLocalisation, 0)
+ *	    //Module_Class_Members(MyClass, BaseLocalisation, 0)
  *     	void initialize();
  *     	void handleTimer(unsigned int index);
  * }

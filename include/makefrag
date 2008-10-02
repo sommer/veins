@@ -6,7 +6,7 @@
 BASEDIRS := ../base/connectionManager ../base/localization ../base/messages ../base/modules ../base/phyLayer ../base/timers ../base/utils
 
 # MODULESDIRS := ../modules/application ../modules/channel ../modules/localization ../modules/mac ../modules/mobility ../modules/netw ../modules/nic ../modules/node ../modules/object ../modules/phy ../modules/propagation ../modules/utility
-MODULESDIRS := ../modules/application ../modules/mobility ../modules/netw ../modules/nic ../modules/node ../modules/object ../modules/propagation ../modules/utility
+MODULESDIRS := ../modules/application ../modules/mobility ../modules/netw ../modules/nic ../modules/node ../modules/object ../modules/propagation ../modules/utility ../modules/mac
 
 BASEHEADERS = $(foreach dir,$(BASEDIRS),$(wildcard $(dir)/*.h))
 BASENEDS = $(foreach dir,$(BASEDIRS),$(wildcard $(dir)/*.ned))
@@ -16,7 +16,7 @@ MODULESNEDS = $(foreach dir,$(MODULESDIRS),$(wildcard $(dir)/*.ned))
 
 
 # default target
-all:: .tstamp
+all: .tstamp
 
 .tstamp: .basestuff_tstamp .modulesstuff_tstamp
 	 @echo > .tstamp

@@ -94,7 +94,7 @@ struct outlier_info{
 
 class MCB:public BaseLocalization, public Timer {
       public:
-	Module_Class_Members(MCB, BaseLocalization, 0);
+	//Module_Class_Members(MCB, BaseLocalization, 0);
 
 	/** @brief Initialization of the module and some variables*/
 	virtual void initialize(int);

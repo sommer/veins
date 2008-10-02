@@ -35,12 +35,18 @@
 // @see BasicMobility
 //
 simple ConnectionManager
+{
     parameters:
-	coreDebug		  : numeric const, // debug switch for core framework
-	sendDirect                : bool,          // define which ConnectionManager module to use
-	pMax			  : numeric const, // maximum sending power used for this network (in mW)
-	sat			  : numeric const, // minimum signal attenuation threshold (in dBm)
-	alpha			  : numeric const, // minimum path loss coefficient
-	carrierFrequency	  : numeric const; // minimum carrier frequency of the channel (in Hz)
-endsimple
+        // debug switch for core framework
+        bool coreDebug; // debug switch for core framework
+        bool sendDirect;          // define which ConnectionManager module to use
+        // maximum sending power used for this network (in mW)
+        double pMax; // maximum sending power used for this network (in mW)
+        // minimum signal attenuation threshold (in dBm)
+        double sat; // minimum signal attenuation threshold (in dBm)
+        // minimum path loss coefficient
+        double alpha; // minimum path loss coefficient
+        // minimum carrier frequency of the channel (in Hz)
+        double carrierFrequency; // minimum carrier frequency of the channel (in Hz)
+}
 

@@ -16,12 +16,14 @@ class TestModule;
  */
 class AssertMessage {
 protected:
-	std::string msg;
-	int continueState;
+	std::string msg;	
 	TestModule* continueModule;
+	int continueState;
 public:
 	AssertMessage(std::string msg, TestModule* cModule = 0, int cState = 0):
 		msg(msg), continueModule(cModule), continueState(cState) {}
+	
+	virtual ~AssertMessage() {}
 		
 	/**
 	 * Returns true if the passed message is the message
@@ -78,12 +80,14 @@ public:
 	AssertMsgKind(std::string msg, int kind, simtime_t arrival, TestModule* cModule = 0, int cState = 0):
 		AssertMessage(msg, cModule, cState), kind(kind), arrival(arrival) {}
 		
+	virtual ~AssertMsgKind() {}
+	
 	/**
 	 * Returns true if the passed message has the kind and
 	 * arrival time this AssertMsgKind expects.
 	 */
 	virtual bool isMessage(cMessage* msg) {
-		return msg->kind() == kind && msg->arrivalTime() == arrival;
+		return msg->getKind() == kind && msg->getArrivalTime() == arrival;
 	}
 	
 	/**
@@ -191,6 +195,9 @@ protected:
 	 * to eb able to handle asserted messages.
 	 */
 	virtual void onAssertedMessage(int state, const cMessage* msg) {};
+	
+public:
+	virtual ~TestModule() {}
 };
 
 #endif /*TESTMODULE_H_*/

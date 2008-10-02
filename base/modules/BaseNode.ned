@@ -1,45 +1,59 @@
-import
-    "BaseApplLayer",
-    "BaseNetwLayer",
-    "BaseNic",
-    "BaseMobility",
-    "BaseArp",
-    "BaseBattery",
-    "BaseUtility";
+import BaseApplLayer;
+import BaseNetwLayer;
+import BaseNic;
+import BaseMobility;
+import BaseArp;
+import BaseBattery;
+import BaseUtility;
 
 module BaseNode
+{
     parameters:
-        applType: string; //type of the application layer
+        string applType; //type of the application layer
+        @display("bgb=,,white,,");
     gates:
-	    in: radioIn; // gate for sendDirect
+        input radioIn; // gate for sendDirect
     submodules:
-        utility: BaseUtility;
-            display: "p=130,38,rect;b=24,24;o=black";
-        arp: BaseArp;
-            display: "p=130,84,rect;b=24,24;o=blue";
-        battery: BaseBattery;
-            display: "p=130,128,rect;b=24,24;o=red";
-        mobility: BaseMobility;
-            display: "p=130,172;i=cogwheel2";
-        appl: applType like BaseApplLayer;
-            display: "p=60,50;i=app";
-        net: BaseNetwLayer;
-            display: "p=60,108;i=prot1";
-        nic: BaseNic;
-            display: "p=60,166;i=iface";
+        utility: BaseUtility {
+            parameters:
+                @display("p=130,38,rect;b=24,24,,black,,");
+        }
+        arp: BaseArp {
+            parameters:
+                @display("p=130,84,rect;b=24,24,,blue,,");
+        }
+        battery: BaseBattery {
+            parameters:
+                @display("p=130,128,rect;b=24,24,,red,,");
+        }
+        mobility: BaseMobility {
+            parameters:
+                @display("p=130,172;i=cogwheel2");
+        }
+        appl: <applType> like BaseApplLayer {
+            parameters:
+                @display("p=60,50;i=app");
+        }
+        net: BaseNetwLayer {
+            parameters:
+                @display("p=60,108;i=prot1");
+        }
+        nic: BaseNic {
+            parameters:
+                @display("p=60,166;i=iface");
+        }
     connections:
         nic.uppergateOut --> net.lowergateIn;
         nic.uppergateIn <-- net.lowergateOut;
-        nic.upperControlOut --> net.lowerControlIn display "m=m,70,0,70,0;o=red";
-        nic.upperControlIn <-- net.lowerControlOut display "m=m,70,0,70,0;o=red";
+        nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
+        nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
         net.uppergateOut --> appl.lowergateIn;
         net.uppergateIn <-- appl.lowergateOut;
-        net.upperControlOut --> appl.lowerControlIn display "m=m,70,0,70,0;o=red";
-        net.upperControlIn <-- appl.lowerControlOut display "m=m,70,0,70,0;o=red";
+        net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
+        net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 
-	radioIn --> nic.radioIn;
+        radioIn --> nic.radioIn;
 
-    display: "b=,,rect;o=white";
-endmodule
+}
 

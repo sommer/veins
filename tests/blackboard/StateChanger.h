@@ -43,7 +43,7 @@ private:
     int catTestParam;
     
 public:
-    Module_Class_Members(StateChanger, BaseModule, 0);
+    //Module_Class_Members(StateChanger, BaseModule, 0);
     virtual void initialize(int);
     virtual void finish();
     virtual void handleMessage(cMessage*);

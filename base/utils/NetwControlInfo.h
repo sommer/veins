@@ -36,7 +36,7 @@
  * @ingroup utils
  * @author Daniel Willkomm
  **/
-class NetwControlInfo : public cPolymorphic
+class NetwControlInfo : public cObject
 {
   protected:
     /** @brief netw address of the sending or receiving node*/

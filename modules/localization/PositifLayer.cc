@@ -103,7 +103,7 @@ void PositifLayer::initialize(int stage)
 	case 0:
 		RepeatTimer::init(this);
 //              me = par("me");
-		me = findHost()->index();
+		me = findHost()->getIndex();
 		/* clear arrays */
 		for (int i = 0; i < MAX_MSG_TYPES; i++) {
 			seqno[i] = last_sent_seqno[i] = 0;
@@ -244,7 +244,7 @@ void PositifLayer::setup_global_vars(void)
 	}
 
 //      num_nodes = par("num_nodes");
-	num_nodes = simulation.systemModule()->par("numHosts");
+	num_nodes = simulation.getSystemModule()->par("numHosts");
 	fprintf(stdout, "numHosts = %d\n", num_nodes);
 	/** @TODO This might better be determined by examining the number of achors. */
 //	num_anchors = (int) Max(num_nodes * (double) par("anchor_frac"), nr_dims + 1);
@@ -297,8 +297,8 @@ Coord PositifLayer::getPosition()
 /* Check if this node exists in neighbor list. */
 bool PositifLayer::isNewNeighbor(int src)
 {
-	for (cLinkedListIterator iter =
-		     cLinkedListIterator(*node[me].neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter =
+		     cLinkedList::Iterator(*node[me].neighbors); !iter.end(); iter++) {
 		neighbor_info *n = (neighbor_info *) iter();
 		if (n->idx == src)
 			return false;
@@ -308,8 +308,8 @@ bool PositifLayer::isNewNeighbor(int src)
 
 neighbor_info * PositifLayer::findNeighbor(int src)
 {
-	for (cLinkedListIterator iter =
-		     cLinkedListIterator(*node[me].neighbors); !iter.end(); iter++) {
+	for (cLinkedList::Iterator iter =
+		     cLinkedList::Iterator(*node[me].neighbors); !iter.end(); iter++) {
 		neighbor_info *n = (neighbor_info *) iter();
 		if (n->idx == src)
 			return n;
@@ -387,7 +387,7 @@ cMessage *PositifLayer::decapsMsg(LocPkt * msg)
 {
 	cMessage *m = msg->decapsulate();
 
-	cPolymorphic *cInfo = msg->removeControlInfo();
+	cObject *cInfo = msg->removeControlInfo();
 	if (cInfo != NULL) {
 		m->setControlInfo(cInfo);
 	}
@@ -403,10 +403,10 @@ cMessage *PositifLayer::decapsMsg(LocPkt * msg)
  **/
 LocPkt *PositifLayer::encapsMsg(cMessage * msg)
 {
-	LocPkt *pkt = new LocPkt(msg->name(), msg->kind());
-	pkt->setLength(headerLength);
+	LocPkt *pkt = new LocPkt(msg->getName(), msg->getKind());
+	pkt->setBitLength(headerLength);
 
-	cPolymorphic *cInfo = msg->removeControlInfo();
+	cObject *cInfo = msg->removeControlInfo();
 	if (cInfo != NULL) {
 		pkt->setControlInfo(cInfo);
 	}
@@ -461,7 +461,7 @@ void PositifLayer::handleLowerMsg(cMessage * msg)
 		
 		node[me].recv_cnt++;
 
-		switch (msg->kind()) {
+		switch (msg->getKind()) {
 		case MSG_NEIGHBOR:
 // 			The message is already handled
 // 			fprintf(stderr, "[%d] Received MSG_NEIGHBOR from [%d]\n", me, src);
@@ -508,11 +508,11 @@ void PositifLayer::handleUpperMsg(cMessage * msg)
  **/
 void PositifLayer::handleLowerControl(cMessage * msg)
 {
-	switch (msg->kind()) {
+	switch (msg->getKind()) {
 	default:
 		opp_warning
 			("PositifLayer does not handle control messages called %s",
-			 msg->name());
+			 msg->getName());
 		delete msg;
 	}
 }
@@ -587,7 +587,7 @@ void PositifLayer::handleRepeatTimer(unsigned int index)
 	} else if (index == start_timer) {
 //              fprintf(stderr, "[%d] received: %s\n", me, "START_TIMER");
 		cMessage *msg = (cMessage *) contextPointer(index);
-		assert(msg->kind() == MSG_START);
+		assert(msg->getKind() == MSG_START);
 		status = msg->par("anchor") ? STATUS_ANCHOR : STATUS_UNKNOWN;
 		// Anchors start with their position set
 		if (status == STATUS_ANCHOR) {
@@ -641,7 +641,7 @@ void PositifLayer::handleRepeatTimer(unsigned int index)
  ******************************************************************************/
 void PositifLayer::send(cMessage * msg)	// Synchronous send
 {
-	int kind = msg->kind();
+	int kind = msg->getKind();
 
 	// Add header
 	msg->addPar("src") = me;
@@ -649,7 +649,7 @@ void PositifLayer::send(cMessage * msg)	// Synchronous send
 	msg->setControlInfo(new NetwControlInfo(L3BROADCAST));
 
 #ifndef NDEBUG
-	EV << node[me].ID << ": broadcast " << msg->name();
+	EV << node[me].ID << ": broadcast " << msg->getName();
 	if (kind == MSG_POSITION && msg->hasPar("confidence")) {
 		EV << " confidence = " << msg->par("confidence");
 	}
@@ -791,33 +791,33 @@ void PositifLayer::write_statistics()
 		stopped++;
 	}
 
-	if (errs_phase1.samples() > 0)
+	if (errs_phase1.getCount() > 0)
 		fprintf(stderr,
 			"avg 1st phase error (%d nodes): %4.1f%% (+/- %3.1f%%)\n",
-			(int) errs_phase1.samples(), 100 * errs_phase1.mean(),
-			100 * errs_phase1.stddev());
-	if (errs_phase2.samples() > 0)
+			(int) errs_phase1.getCount(), 100 * errs_phase1.getMean(),
+			100 * errs_phase1.getStddev());
+	if (errs_phase2.getCount() > 0)
 		fprintf(stderr,
 			"avg 2nd phase error (%d nodes): %4.1f%% (+/- %3.1f%%)\n",
-			(int) errs_phase2.samples(), 100 * errs_phase2.mean(),
-			100 * errs_phase2.stddev());
-	if (errs.samples() > 0)
+			(int) errs_phase2.getCount(), 100 * errs_phase2.getMean(),
+			100 * errs_phase2.getStddev());
+	if (errs.getCount() > 0)
 		fprintf(stderr,
 			"avg final error (%d nodes): %4.1f%% (+/- %3.1f%%)\n",
-			(int) errs.samples(), 100 * errs.mean(),
-			100 * errs.stddev());
+			(int) errs.getCount(), 100 * errs.getMean(),
+			100 * errs.getStddev());
 
-	if (bad_node_pos_errs.samples() > 0)
+	if (bad_node_pos_errs.getCount() > 0)
 		fprintf(stderr,
 			"avg error of bad nodes (%d nodes): %4.1f%% (+/- %3.1f%%)\n",
-			(int) bad_node_pos_errs.samples(),
-			100 * bad_node_pos_errs.mean(),
-			100 * bad_node_pos_errs.stddev());
+			(int) bad_node_pos_errs.getCount(),
+			100 * bad_node_pos_errs.getMean(),
+			100 * bad_node_pos_errs.getStddev());
 
 	fprintf(stderr, "avg confidence: %.3f +/- %.3f\n",
-		avg_conf.mean(), avg_conf.stddev());
+		avg_conf.getMean(), avg_conf.getStddev());
 	fprintf(stderr, "avg flops: %f +/- %.3f\n",
-		avg_flops.mean(), avg_flops.stddev());
+		avg_flops.getMean(), avg_flops.getStddev());
 
 	statistics(false);
 
@@ -825,14 +825,14 @@ void PositifLayer::write_statistics()
 	fprintf(stderr,
 		"Message type, bcasts/node, unique bcasts/node, total, total unique\n");
 	for (int i = MSG_TYPE_BASE; i < MAX_MSG_TYPES; i++)
-		if (bcast_total[i].sum() > 0)
+		if (bcast_total[i].getSum() > 0)
 			fprintf(stderr,
 				"%8d, %7.1f (+/- %4.1f), %7.1f (+/- %4.1f), %8d, %8d\n",
-				i, bcast_total[i].mean(),
-				bcast_total[i].stddev(), bcast_unique[i].mean(),
-				bcast_unique[i].stddev(),
-				(int) bcast_sum_total.sum(),
-				(int) bcast_sum_unique.sum());
+				i, bcast_total[i].getMean(),
+				bcast_total[i].getStddev(), bcast_unique[i].getMean(),
+				bcast_unique[i].getStddev(),
+				(int) bcast_sum_total.getSum(),
+				(int) bcast_sum_unique.getSum());
 
 	for (int n = 0; n < num_nodes; n++)
 		if (strlen(node[n].perf_data.log) > 0)
@@ -893,23 +893,23 @@ void PositifLayer::write_statistics()
 		range,
 		range_variance,
 		(double) num_anchors / (double) num_nodes,
-		num_nodes, num_nodes / area, connectivity.mean(),
+		num_nodes, num_nodes / area, connectivity.getMean(),
 		// Sim results
-		(int) errs.samples(), 100 * errs.mean(), 100 * errs.stddev(),
-		(int) errs_phase1.samples(), 100 * errs_phase1.mean(),
-		100 * errs_phase1.stddev(), (int) errs_phase2.samples(),
-		100 * errs_phase2.mean(), 100 * errs_phase2.stddev(),
-		(int) bad_node_pos_errs.samples(),
-		100 * bad_node_pos_errs.mean(),
-		100 * bad_node_pos_errs.stddev(), avg_conf.mean(),
-		avg_conf.stddev(), avg_flops.mean(), avg_flops.stddev(),
-		bcast_sum_total.mean(), bcast_sum_total.stddev(),
-		bcast_sum_unique.mean(), bcast_sum_unique.stddev(),
-		bcast_total[5].mean(), bcast_total[5].stddev(),
-		bcast_total[6].mean(), bcast_total[6].stddev(),
-		bcast_total[7].mean(), bcast_total[7].stddev(),
-		bcast_total[8].mean(), bcast_total[8].stddev(),
-		bcast_total[9].mean(), bcast_total[9].stddev(), nr_retries,
+		(int) errs.getCount(), 100 * errs.getMean(), 100 * errs.getStddev(),
+		(int) errs_phase1.getCount(), 100 * errs_phase1.getMean(),
+		100 * errs_phase1.getStddev(), (int) errs_phase2.getCount(),
+		100 * errs_phase2.getMean(), 100 * errs_phase2.getStddev(),
+		(int) bad_node_pos_errs.getCount(),
+		100 * bad_node_pos_errs.getMean(),
+		100 * bad_node_pos_errs.getStddev(), avg_conf.getMean(),
+		avg_conf.getStddev(), avg_flops.getMean(), avg_flops.getStddev(),
+		bcast_sum_total.getMean(), bcast_sum_total.getStddev(),
+		bcast_sum_unique.getMean(), bcast_sum_unique.getStddev(),
+		bcast_total[5].getMean(), bcast_total[5].getStddev(),
+		bcast_total[6].getMean(), bcast_total[6].getStddev(),
+		bcast_total[7].getMean(), bcast_total[7].getStddev(),
+		bcast_total[8].getMean(), bcast_total[8].getStddev(),
+		bcast_total[9].getMean(), bcast_total[9].getStddev(), nr_retries,
 		count_anchor, count_unknown, count_positioned, count_bad,
 		version, do_2nd_phase ? 1 : 0, phase1_min_anchors,
 		phase1_max_anchors, flood_limit, topology_type, pos_variance,
@@ -922,8 +922,8 @@ void PositifLayer::write_statistics()
 		abs_anchor_range_error / anchor_range_error_count,
 		abs_rel_anchor_range_error / anchor_range_error_count,
 		anchor_range / anchor_range_error_count, tri_alg,
-		real_range_error.mean(), real_range_error.stddev(),
-		real_abs_range_error.mean(), real_abs_range_error.stddev(),
+		real_range_error.getMean(), real_range_error.getStddev(),
+		real_abs_range_error.getMean(), real_abs_range_error.getStddev(),
 		refine_limit);
 }
 
@@ -978,10 +978,10 @@ void PositifLayer::statistics(bool heading)
 			(100 * num_anchors) / num_nodes);
 		fprintf(stderr, "  radio range : %g m\n", range);
 		fprintf(stderr, "  connectivity: %.2f +/- %.2f\n",
-			connectivity.mean(), connectivity.stddev());
+			connectivity.getMean(), connectivity.getStddev());
 	}
 
-	if (pos_errs.samples() > 0) {
+	if (pos_errs.getCount() > 0) {
 		fprintf(stderr, "t = %4d #bcast %6d, ", (int) simTime(),
 			bcast_count);
 		fprintf(stderr, " #flops %6d, ", flop_count);
@@ -989,10 +989,10 @@ void PositifLayer::statistics(bool heading)
 			count_anchor, count_unknown, count_positioned,
 			count_bad, num_nodes);
 		fprintf(stderr, "err (/R): %6.2f%% +/- %5.2f, ",
-			100 * pos_errs.mean() / range,
-			100 * pos_errs.stddev() / range);
-		fprintf(stderr, "conf: %1.3f +/- %1.3f\n", avg_conf.mean(),
-			avg_conf.stddev());
+			100 * pos_errs.getMean() / range,
+			100 * pos_errs.getStddev() / range);
+		fprintf(stderr, "conf: %1.3f +/- %1.3f\n", avg_conf.getMean(),
+			avg_conf.getStddev());
 	}
 }
 
@@ -1132,7 +1132,7 @@ void PositifLayer::run_algorithms(void)
 		list.insert(hd);
 
 		// Update neighbors
-		for (cLinkedListIterator iter(node[hd->idx].neighbors);
+		for (cLinkedList::Iterator iter(node[hd->idx].neighbors);
 		     !iter.end(); iter++) {
 			glob_info *n = &ginfo[((neighbor_info *) iter())->idx];
 
@@ -1220,7 +1220,7 @@ void PositifLayer::run_algorithms(void)
 		sorted.insert(hd);
 
 		// Update neighbors
-		for (cLinkedListIterator iter(*(node[hd->idx].neighbors));
+		for (cLinkedList::Iterator iter(*(node[hd->idx].neighbors));
 		     !iter.end(); iter++) {
 			glob_info *n = &ginfo[((neighbor_info *) iter())->idx];
 
@@ -1253,7 +1253,7 @@ void PositifLayer::run_algorithms(void)
 	for (int n = 0; n < num_nodes; n++) {
 		if (node[n].anchor) {
 			ginfo[n].wave_cnt = 0;
-			for (cLinkedListIterator iter(node[n].neighbors);
+			for (cLinkedList::Iterator iter(node[n].neighbors);
 			     !iter.end(); iter++) {
 				neighbor_info *nbr = (neighbor_info *) iter();
 				if (!node[nbr->idx].anchor)
@@ -1269,7 +1269,7 @@ void PositifLayer::run_algorithms(void)
 		end_of_wave = true;
 		for (int n = 0; n < num_nodes; n++) {
 			if (ginfo[n].wave_cnt == max_hop) {
-				for (cLinkedListIterator
+				for (cLinkedList::Iterator
 					     iter(node[n].neighbors); !iter.end();
 				     iter++) {
 					neighbor_info *nbr =
@@ -1370,9 +1370,9 @@ void PositifLayer::stats(const char *str, bool details)
 	}
 	fprintf(stderr,
 		"GLOB (%-17s) skip %d, stuck %d, nodes %d (%d bad), error %.2f%% (%.2f)\n",
-		str, skip, stuck, (int) errs.samples(),
-		(int) errs.samples() - (int) clean_errs.samples(),
-		100 * errs.mean() / range, 100 * clean_errs.mean() / range);
+		str, skip, stuck, (int) errs.getCount(),
+		(int) errs.getCount() - (int) clean_errs.getCount(),
+		100 * errs.getMean() / range, 100 * clean_errs.getMean() / range);
 }
 
 
@@ -1386,7 +1386,7 @@ void PositifLayer::glob_triangulate(glob_info * nd)
 	FLOAT sum_conf = 0;
 
 	int i = 0;
-	for (cLinkedListIterator iter(*(node[nd->idx].neighbors)); !iter.end();
+	for (cLinkedList::Iterator iter(*(node[nd->idx].neighbors)); !iter.end();
 	     iter++) {
 		neighbor_info *neighbor = (neighbor_info *) iter();
 
@@ -1453,7 +1453,7 @@ void PositifLayer::run_terrain(bool stats_only, bool * undetermined)
 				front_cnt = 0;
 				for (int m = 0; m < num_nodes; m++) {
 					if (hop_cnt[m][anchor] == hop) {
-						for (cLinkedListIterator
+						for (cLinkedList::Iterator
 							     iter(*(node[m].neighbors));
 						     !iter.end(); iter++) {
 							neighbor_info *nbr =
@@ -1567,7 +1567,7 @@ void PositifLayer::run_terrain(bool stats_only, bool * undetermined)
 		}
 		for (int n = 0; n < num_nodes; n++) {
 			if (!undetermined[n]) {
-				for (cLinkedListIterator
+				for (cLinkedList::Iterator
 					     iter(*(node[n].neighbors)); !iter.end();
 				     iter++) {
 					int m = ((neighbor_info *) iter())->idx;
@@ -1607,7 +1607,7 @@ void PositifLayer::run_terrain(bool stats_only, bool * undetermined)
 		}
 		for (int n = 0; n < num_nodes; n++) {
 			if (!undetermined[n]) {
-				for (cLinkedListIterator
+				for (cLinkedList::Iterator
 					     iter(*(node[n].neighbors)); !iter.end();
 				     iter++) {
 					int m = ((neighbor_info *) iter())->idx;
@@ -1720,7 +1720,7 @@ void PositifLayer::run_terrain(bool stats_only, bool * undetermined)
 #endif
 
 					// Check if some neighbor has the same position (BAD)
-					for (cLinkedListIterator
+					for (cLinkedList::Iterator
 						     iter(*(node[n].neighbors));
 					     !iter.end(); iter++) {
 						int m =
@@ -1746,7 +1746,7 @@ void PositifLayer::run_terrain(bool stats_only, bool * undetermined)
 		}
 	}
 	fprintf(stderr, "\nTERRAIN's avg err (%d nodes): %.2f%%\n",
-		(int) pos_errs.samples(), 100 * pos_errs.mean() / range);
+		(int) pos_errs.getCount(), 100 * pos_errs.getMean() / range);
 
 }
 
@@ -1768,7 +1768,7 @@ void PositifLayer::topology_stats(bool * skip)
 			connectivity += node[i].recv_cnt;
 		}
 	}
-	int skips = num_nodes - num_anchors - connectivity.samples();
+	int skips = num_nodes - num_anchors - connectivity.getCount();
 
 	fprintf(scenario, "#\t#nodes         : %4d\n", num_nodes);
 	fprintf(scenario, "#\t  #anchors     : %4d (%2.2f%%)\n", num_anchors,
@@ -1776,10 +1776,10 @@ void PositifLayer::topology_stats(bool * skip)
 	fprintf(scenario, "#\t  #undetermined: %4d (%2.2f%%)\n", skips,
 		(100.0 * skips) / num_nodes);
 	fprintf(scenario, "#\t  #unknowns    : %4d (%2.2f%%),",
-		(int) connectivity.samples(),
-		(100.0 * connectivity.samples()) / num_nodes);
-	fprintf(scenario, " connectivity: %.2f +/- %.2f\n", connectivity.mean(),
-		connectivity.stddev());
+		(int) connectivity.getCount(),
+		(100.0 * connectivity.getCount()) / num_nodes);
+	fprintf(scenario, " connectivity: %.2f +/- %.2f\n", connectivity.getMean(),
+		connectivity.getStddev());
 
 	fprintf(scenario, "#\t    #twins     : %4d (%2.2f%%)\n", twins,
 		(100.0 * twins) / num_nodes);
@@ -1791,7 +1791,7 @@ void PositifLayer::topology_stats(bool * skip)
 	for (int n = 0; n < num_nodes; n++) {
 		if (!skip[n]) {
 			fprintf(stderr, "%3d:", node[n].ID);
-			for (cLinkedListIterator iter(*node[n].neighbors);
+			for (cLinkedList::Iterator iter(*node[n].neighbors);
 			     !iter.end(); iter++) {
 				int m = ((neighbor_info *) iter())->idx;
 
@@ -1825,7 +1825,7 @@ void PositifLayer::prune_loose_nodes(bool * skip)
 		}
 		for (int n = 0; n < num_nodes; n++) {
 			if (!skip[n]) {
-				for (cLinkedListIterator
+				for (cLinkedList::Iterator
 					     iter(*node[n].neighbors); !iter.end();
 				     iter++) {
 					int m = ((neighbor_info *) iter())->idx;
@@ -1870,7 +1870,7 @@ bool PositifLayer::collapse_twins(bool * skip)
 		for (int m = 0; m < num_nodes; m++) {
 			nghbr_of_n[m] = false;
 		}
-		for (cLinkedListIterator iter(*node[n].neighbors); !iter.end();
+		for (cLinkedList::Iterator iter(*node[n].neighbors); !iter.end();
 		     iter++) {
 			int m = ((neighbor_info *) iter())->idx;
 
@@ -1891,7 +1891,7 @@ bool PositifLayer::collapse_twins(bool * skip)
 			continue;
 		}
 
-		for (cLinkedListIterator iter(*node[n].neighbors); !iter.end();
+		for (cLinkedList::Iterator iter(*node[n].neighbors); !iter.end();
 		     iter++) {
 			int m = ((neighbor_info *) iter())->idx;
 			int nghbr_cnt_m = 0;
@@ -1905,7 +1905,7 @@ bool PositifLayer::collapse_twins(bool * skip)
 
 			// Check if all m's neighbors are the same as n's
 			bool twins = true;
-			for (cLinkedListIterator iter(*node[m].neighbors);
+			for (cLinkedList::Iterator iter(*node[m].neighbors);
 			     !iter.end(); iter++) {
 				int k = ((neighbor_info *) iter())->idx;
 
@@ -2017,7 +2017,7 @@ void PositifLayer::save_scenario(bool * skip, bool * bad)
 			int n_ok = 0;
 			int n_bad = 0;
 			int n_undetermined = 0;
-			for (cLinkedListIterator iter(*node[n].neighbors);
+			for (cLinkedList::Iterator iter(*node[n].neighbors);
 			     !iter.end(); iter++) {
 				int m = ((neighbor_info *) iter())->idx;
 
@@ -2062,7 +2062,7 @@ void PositifLayer::save_scenario(bool * skip, bool * bad)
 
 	fprintf(scenario, "\n# connections: src dst measured-range\n");
 	for (int i = 0; i < num_nodes; i++) {
-		for (cLinkedListIterator iter(*node[i].neighbors); !iter.end();
+		for (cLinkedList::Iterator iter(*node[i].neighbors); !iter.end();
 		     iter++) {
 			neighbor_info *n = (neighbor_info *) iter();
 

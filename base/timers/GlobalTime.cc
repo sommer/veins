@@ -1,4 +1,4 @@
 #include "GlobalTime.h"
 
-Define_Module_Like(GlobalTime,Trivial);
+//Define_Module_Like(GlobalTime,Trivial);
 

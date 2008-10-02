@@ -40,8 +40,8 @@ void StateChanger::initialize(int stage)
         catTestParam = utility->getCategory(&tp);
         hs.setState(HostState::SLEEP);
         tp.setState(TestParam::BLUE);
-        utility->publishBBItem(catHostState, &hs, parentModule()->id());
-        utility->publishBBItem(catTestParam, &tp, parentModule()->id());
+        utility->publishBBItem(catHostState, &hs, getParentModule()->getId());
+        utility->publishBBItem(catTestParam, &tp, getParentModule()->getId());
     }
 }
 
@@ -66,8 +66,8 @@ void StateChanger::handleMessage(cMessage* msg)
 		tp.setState(TestParam::GREEN);
 		break;
 	}
-        utility->publishBBItem(catHostState, &hs, parentModule()->id());
-        utility->publishBBItem(catTestParam, &tp, parentModule()->id());
+        utility->publishBBItem(catHostState, &hs, getParentModule()->getId());
+        utility->publishBBItem(catTestParam, &tp, getParentModule()->getId());
 	if(state_counter < 10) scheduleAt(simTime() + 1.0, change_timer);
     } else {
 	error(" StateChanger::handleMessage got wrong message");

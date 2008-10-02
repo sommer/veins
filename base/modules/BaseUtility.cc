@@ -8,7 +8,7 @@ Define_Module(BaseUtility);
 //BB start
 
 #ifndef coreEV
-#define coreEV (ev.disabled()||!coreDebug) ? std::cout : ev <<parentModule()->name()<<"["<<parentModule()->index()<<"]::Blackboard: "
+#define coreEV (ev.isDisabled()||!coreDebug) ? std::cout : ev <<getParentModule()->getName()<<"["<<getParentModule()->getIndex()<<"]::Blackboard: "
 #endif
 
 std::ostream& operator<<(std::ostream& os, const BaseUtility::SubscriberVector& v)
@@ -21,12 +21,12 @@ std::ostream& operator<<(std::ostream& os, const BaseUtility::SubscriberVector& 
         if (dynamic_cast<cModule*>((*it).client))
         {
             cModule *mod = dynamic_cast<cModule*>((*it).client);
-            os << "mod (" << mod->className() << ") " << mod->fullName() << " id=" << mod->id();
+            os << "mod (" << mod->getClassName() << ") " << mod->getFullName() << " id=" << mod->getId();
         }
-        else if (dynamic_cast<cPolymorphic*>((*it).client))
+        else if (dynamic_cast<cObject*>((*it).client))
         {
-            cPolymorphic *obj = dynamic_cast<cPolymorphic*>((*it).client);
-            os << "a " << obj->className();
+            cObject *obj = dynamic_cast<cObject*>((*it).client);
+            os << "a " << obj->getClassName();
         }
         else
         {
@@ -62,7 +62,7 @@ void BaseUtility::initialize(int stage) {
 
         // subscribe to position changes
         Move moveBBItem;
-        catMove = subscribe(this, &moveBBItem, findHost()->id());
+        catMove = subscribe(this, &moveBBItem, findHost()->getId());
 	}
 }
 
@@ -109,7 +109,7 @@ int BaseUtility::findAndCreateDescription(bool *isNewEntry, const BBItem *catego
 {
 
     CategoryDescriptions::size_type it;
-    std::string desc = category->className();
+    std::string desc = category->getClassName();
     std::string cName;
     
     for(it = 0; it < categoryDescriptions.size(); ++it)
@@ -122,7 +122,7 @@ int BaseUtility::findAndCreateDescription(bool *isNewEntry, const BBItem *catego
     }
     if(it == categoryDescriptions.size()) {
         (*isNewEntry) = true;
-        categoryDescriptions.push_back(category->className());
+        categoryDescriptions.push_back(category->getClassName());
         it = categoryDescriptions.size() - 1;
         clientVector.push_back(SubscriberVector());
         if(it != clientVector.size()-1)
@@ -170,7 +170,7 @@ int BaseUtility::subscribe(ImNotifiable *client, int category, int scopeModuleId
         if((*it).client == client) {
             std::string cname("unkown");
             cModule *cm = dynamic_cast<cModule *>(client);
-            if(cm) cname = cm->fullPath();
+            if(cm) cname = cm->getFullPath();
             error("BaseUtility::subscribe called twice for item %s, by client %s. \nThis probably means that a class from which you derived yours has \nalready subscribed to this item. This may result in conflicts, please check.\n ", categoryName(category), cname.c_str());
             break;
         }
@@ -185,7 +185,7 @@ int BaseUtility::subscribe(ImNotifiable *client, int category, int scopeModuleId
 int BaseUtility::subscribe(ImNotifiable *client, const BBItem *category, int scopeModuleId) 
 {
     if(coreDebug) {
-        Enter_Method("subscribe(%s, %i)", category?category->className() : "n/a",
+        Enter_Method("subscribe(%s, %i)", category?category->getClassName() : "n/a",
                      scopeModuleId);
     } else {
         Enter_Method_Silent();
@@ -249,7 +249,7 @@ void BaseUtility::publishBBItem(int category, const BBItem *details, int scopeMo
 int BaseUtility::getCategory(const BBItem *details) 
 {
     if(coreDebug) {
-        Enter_Method("getCategory(%s)", details?details->className():"n/a");
+        Enter_Method("getCategory(%s)", details?details->getClassName():"n/a");
     } else {
         Enter_Method_Silent();
     }

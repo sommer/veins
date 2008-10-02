@@ -46,7 +46,7 @@ protected:
 	void sendQueued();
  
 public:
-	Module_Class_Members(QueuedRouting,BaseNetwLayer,0);
+	//Module_Class_Members(QueuedRouting,BaseNetwLayer,0);
 	
 	/** @brief Initialization of the module and some variables*/
 	virtual void initialize(int stage);

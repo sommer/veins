@@ -5,18 +5,19 @@
 //
 // @author Peterpaul Klein Haneveld
 simple BaseLocalization
+{
     parameters:
-        debug: numeric const, // debug switch
-	isAnchor: bool,
-        headerLength: numeric const; // length of the network packet header (in bits)
+        bool debug; // debug switch
+        bool isAnchor;
+        double headerLength; // length of the network packet header (in bits)
     gates:
-        in: uppergateIn; // from application layer
-        out: uppergateOut; // to application layer
-        in: upperControlIn; // control from application layer
-        out: upperControlOut; // control to application layer
-        in: lowergateIn; // from network layer
-        out: lowergateOut; // to network layer
-        in: lowerControlIn; // control from network layer
-        out: lowerControlOut; // control to network layer
-endsimple
+        input uppergateIn; // from application layer
+        output uppergateOut; // to application layer
+        input upperControlIn; // control from application layer
+        output upperControlOut; // control to application layer
+        input lowergateIn; // from network layer
+        output lowergateOut; // to network layer
+        input lowerControlIn; // control from network layer
+        output lowerControlOut; // control to network layer
+}
 

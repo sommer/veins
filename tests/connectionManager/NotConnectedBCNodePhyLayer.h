@@ -17,7 +17,7 @@
 class NotConnectedBCNodePhyLayer : public TestPhyLayer
 {
 public:
-    Module_Class_Members(NotConnectedBCNodePhyLayer, TestPhyLayer, 0);
+    //Module_Class_Members(NotConnectedBCNodePhyLayer, TestPhyLayer, 0);
 
 	bool broadcastAnswered;
 

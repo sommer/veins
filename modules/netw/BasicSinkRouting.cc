@@ -83,7 +83,7 @@ void BasicSinkRouting::initialize(int stage)
 			isSink = true;
 			EV << "Sink node, broadcasting\n";
 			NetwPkt *out = buildSink();
-			(*sinks)[myNetwAddr] = check_and_cast < SinkInfo * >(out->encapsulatedMsg()->dup());
+			(*sinks)[myNetwAddr] = check_and_cast < SinkInfo * >(out->getEncapsulatedMsg()->dup());
 			msgQueue->push(out);
 			setTimer(0, 0.001);
 		}
@@ -150,8 +150,8 @@ void BasicSinkRouting::handleLowerMsg(cMessage * msg)
 {
 	NetwPkt *m = check_and_cast < NetwPkt * >(msg);
 	EV << "handling packet from " << m->getSrcAddr() << endl;
-	EV << "Incoming type is " << m->kind() << endl;
-	switch (m->kind())
+	EV << "Incoming type is " << m->getKind() << endl;
+	switch (m->getKind())
 	{
 		case UPPER_TYPE:
 			{
@@ -228,7 +228,7 @@ void BasicSinkRouting::handleLowerMsg(cMessage * msg)
 
 void BasicSinkRouting::handleUpperMsg(cMessage * msg)
 {
-	NetwControlInfo *cInfo = dynamic_cast < NetwControlInfo * >(msg->controlInfo());
+	NetwControlInfo *cInfo = dynamic_cast < NetwControlInfo * >(msg->getControlInfo());
 	if (isSink && (cInfo==NULL || cInfo->getNetwAddr() != L3BROADCAST))
 	{
 		EV << "D'oh. I'm the sink" << endl;

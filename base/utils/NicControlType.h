@@ -33,8 +33,8 @@
  * @author Andreas Koepke
  */
 
-class NicControlType : public cPolymorphic
-{    
+class NicControlType : public cObject
+{
  public:
     enum Types {
         NOTHING=1, // we don't want to start at zero -- it is ambiguous
@@ -51,27 +51,29 @@ class NicControlType : public cPolymorphic
 		SET_SLEEP,
 
 		SET_RSSI,
+
+		PACKET_DROPPED,
     };
-    
+
 
     /** @brief Enables inspection
      *
      * If you want to know the description of a certain number, make
-     * this object out of the number and call info. 
-     * 
-     * @{ */ 
-    NicControlType(Types t=NOTHING) : cPolymorphic(), type(t) {
+     * this object out of the number and call info.
+     *
+     * @{ */
+    NicControlType(Types t=NOTHING) : cObject(), type(t) {
         ;
     };
-    
+
     int getType() const  {
         return type;
     }
-    
+
     void setType(Types t) {
         type = t;
     }
-    
+
     std::string info() const {
         std::ostringstream ost;
 		switch(type)
@@ -110,7 +112,11 @@ class NicControlType : public cPolymorphic
 			case SET_RSSI:
 				ost<<"SET_RSSI";
 				break;
-			
+
+			case PACKET_DROPPED:
+				ost<<"PACKET_DROPPED";
+				break;
+
 		}
         return ost.str();
     }

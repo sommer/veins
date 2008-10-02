@@ -34,7 +34,7 @@ class PacketStatistics {
 
 class StatisticsUtility: public BaseUtility {
  protected:
-    Module_Class_Members(StatisticsUtility, BaseUtility, 0);
+    //Module_Class_Members(StatisticsUtility, BaseUtility, 0);
  protected:
     // track messages per layer
     int catPassedMsg;

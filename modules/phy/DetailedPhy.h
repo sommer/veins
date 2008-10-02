@@ -26,7 +26,7 @@
 class DetailedPhy: public CollisionsPhy
 {
 public:
-    Module_Class_Members(DetailedPhy, CollisionsPhy, 0 );
+    //Module_Class_Members(DetailedPhy, CollisionsPhy, 0 );
 
 	void initialize(int stage);
 

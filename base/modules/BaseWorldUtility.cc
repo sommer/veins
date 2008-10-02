@@ -22,7 +22,8 @@
 
 Define_Module(BaseWorldUtility);
 
-const double BaseWorldUtility::speedOfLight = 299792458.0;
+
+const double BaseWorldUtility::speedOfLight = 299792458.0; //metres per second
 
 
 
@@ -48,12 +49,12 @@ void BaseWorldUtility::initialize(int stage) {
 Coord BaseWorldUtility::getRandomPosition()
 {
     if (use2DFlag) {
-        return Coord(genk_uniform(0, 0, playgroundSize.getX()),
-                     genk_uniform(0, 0, playgroundSize.getY()));
+        return Coord(uniform(0, playgroundSize.getX()),
+                     uniform(0, playgroundSize.getY()));
     } else {
-        return Coord(genk_uniform(0, 0, playgroundSize.getX()),
-                     genk_uniform(0, 0, playgroundSize.getY()),
-                     genk_uniform(0, 0, playgroundSize.getZ()));
+        return Coord(uniform(0, playgroundSize.getX()),
+                     uniform(0, playgroundSize.getY()),
+                     uniform(0, playgroundSize.getZ()));
     }
 }
 

@@ -1,7 +1,6 @@
-message SinkInfo
+packet SinkInfo
 {
-	fields:
-		int SinkId;
-		int Parent;
-		int Cost;
-}	
+    int SinkId;
+    int Parent;
+    int Cost;
+}

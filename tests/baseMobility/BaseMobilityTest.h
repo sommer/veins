@@ -1,7 +1,7 @@
 #ifndef TEST_BASEMOBILITY_TEST_H_
 #define TEST_BASEMOBILITY_TEST_H_
 
-//#define note ev << "[" << id() << "]: "
+//#define note ev << "[" << getId() << "]: "
 
 #include "BaseMobility.h"
 #include "Coord.h"
@@ -21,7 +21,7 @@ protected:
 	bool allTestsPassed;
 	
 public:
-	Module_Class_Members( BaseMobilityTest , BaseMobility , 0 );
+	//Module_Class_Members( BaseMobilityTest , BaseMobility , 0 );
 	
 	virtual void initialize(int);
 	virtual void finish();

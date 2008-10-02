@@ -1,15 +1,17 @@
 simple BaseMacLayer
+{
     parameters:
-        coreDebug: numeric const, // debug switch
-        headerLength: numeric const; // length of the MAC packet header (in bits)
+        bool coreDebug; // debug switch
+        double headerLength; // length of the MAC packet header (in bits)
+        
     gates:
-        in: uppergateIn; // from the network layer
-        out: uppergateOut; // to the network layer
-        in: upperControlIn; // control from the network layer
-        out: upperControlOut; // control to the network layer
-        in: lowergateIn; // from the physical layer
-        out: lowergateOut; // to the physical layer
-        in: lowerControlIn; // control from the physical layer
-        out: lowerControlOut; // control to the physical layer
-endsimple
+        input upperGateIn; // from net layer
+        output upperGateOut; // to net layer
+        input upperControlIn; // control from net layer
+        output upperControlOut; // control to net layer
+        input lowerGateIn; // from phy
+        output lowerGateOut; // to phy
+        input lowerControlIn; // control from phy
+        output lowerControlOut; // control to phy
+}
 

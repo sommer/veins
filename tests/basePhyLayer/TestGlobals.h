@@ -9,13 +9,15 @@ enum {
 };
 
 class AssertAirFrame:public AssertMessage {
-protected:
-	int state;
+protected:	
 	AirFrame* pointer;
 	simtime_t arrival;
+	int state;
 public:
 	AssertAirFrame(std::string msg,int state, simtime_t arrival, AirFrame* frame = 0, TestModule* cModule = 0, int cState = 0):
 		AssertMessage(msg, cModule, cState), pointer(frame), arrival(arrival), state(state) {}
+	
+	virtual ~AssertAirFrame() {}
 		
 	/**
 	 * Returns true if the passed message is the message
@@ -24,7 +26,7 @@ public:
 	 */
 	virtual bool isMessage(cMessage* msg) {
 		AirFrame* frame = dynamic_cast<AirFrame*>(msg);
-		return frame != 0 && (frame == pointer || pointer == 0) && arrival == msg->arrivalTime() &&frame->getState() == state;
+		return frame != 0 && (frame == pointer || pointer == 0) && arrival == msg->getArrivalTime() &&frame->getState() == state;
 	}
 };
 

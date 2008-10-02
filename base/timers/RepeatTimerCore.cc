@@ -3,7 +3,7 @@
 
 #include <assert.h>
 
-Define_Module_Like(RepeatTimerCore,Trivial);
+//Define_Module_Like(RepeatTimerCore,Trivial);
 
 void RepeatTimerCore::checkExists(unsigned int index)
 {
@@ -14,15 +14,15 @@ void RepeatTimerCore::checkExists(unsigned int index)
 void RepeatTimerCore::handleMessage(cMessage* msg)
 {
 	assert(msg->isSelfMessage());
-	unsigned int index = msg->kind();
+	unsigned int index = msg->getKind();
 	(*timer_map)[index].count --;
 	if ((*timer_map)[index].count > 0) {
 		cMessage *timer = (*timer_map)[index].timer;
 		double when = (*timer_map)[index].when;
 		scheduleAt(simTime() + when, timer);
 	}
-	simulation.setContextModule(timer->owner);	
-	timer->handleRepeatTimer(msg->kind());
+	//simulation.setContextModule(timer->owner);	
+	timer->handleRepeatTimer(msg->getKind());
 }
 
 void RepeatTimerCore::init(RepeatTimer *owner)
@@ -72,7 +72,7 @@ float RepeatTimerCore::remainingRepeatTimer(unsigned int index)
 {
 	checkExists(index);
 	if ((*timer_map)[index].timer->isScheduled())
-		return (*timer_map)[index].timer->arrivalTime()-simTime();
+		return SIMTIME_DBL((*timer_map)[index].timer->getArrivalTime()-simTime());
 	else
 		return -1;
 }
@@ -86,7 +86,7 @@ void RepeatTimerCore::setContextDestructor(unsigned int index, cleanup *c)
 RepeatTimerCore::~RepeatTimerCore()
 {
 	for (std::map<unsigned int,TInfo>::const_iterator p=timer_map->begin();p!=timer_map->end();p++) {
-		unsigned int index = p->second.timer->kind();
+		unsigned int index = p->second.timer->getKind();
 		checkExists(index);
 		if ((*timer_map)[index].timer->isScheduled()) {
 			if ((*timer_map)[index].destructor!=NULL)
@@ -107,7 +107,7 @@ void RepeatTimerCore::setContextPointer(unsigned int index,void * data)
 void * RepeatTimerCore::contextPointer(unsigned int index)
 {
 	checkExists(index);
-	return (*timer_map)[index].timer->contextPointer();
+	return (*timer_map)[index].timer->getContextPointer();
 }
 
 void RepeatTimerCore::allocateRepeatTimers(unsigned int count)
@@ -149,7 +149,7 @@ void RepeatTimerCore::resetAllRepeatTimers(void)
 {
 	std::map <unsigned int, TInfo>::const_iterator p;
 	for (p = timer_map->begin(); p != timer_map->end(); p++) {
-		resetRepeatTimer(p->second.timer->kind());
+		resetRepeatTimer(p->second.timer->getKind());
 	}
 }
 

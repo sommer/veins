@@ -26,14 +26,15 @@
 // @author Emin Ilker Cetinbas
 //
 simple LinearMobility
+{
     parameters:
-        coreDebug : bool, // core MF debug switch
-        debug : bool, // debug switch
-        x: numeric const, // x starting point of the node (-1 = random)
-        y: numeric const, // y starting point of the node (-1 = random)
-        speed: numeric const, // speed of the host (in m/s)
-        angle: numeric const, // angle of linear motion (degreees)
-        acceleration: numeric const, // acceleration of linear motion (m/s2)
-        updateInterval : numeric const; // time interval to update the hosts position
-endsimple
+        bool coreDebug; // core MF debug switch
+        bool debug; // debug switch
+        double x; // x starting point of the node (-1 = random)
+        double y; // y starting point of the node (-1 = random)
+        double speed; // speed of the host (in m/s)
+        double angle; // angle of linear motion (degreees)
+        double acceleration; // acceleration of linear motion (m/s2)
+        double updateInterval; // time interval to update the hosts position
+}
 

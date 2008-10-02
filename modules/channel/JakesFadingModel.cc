@@ -67,7 +67,7 @@ double JakesFadingModel::getChannelState(double d, double f, double v)
 		// Phase shift due to delay spread => f-selectivity.
 		double phi_i = delay[i] * f;
 		// Calculate resulting phase due to t-selective and f-selective fading.
-		double phi = 2.00 * M_PI * (phi_d * simulation.simTime() - phi_i);
+		double phi = 2.00 * M_PI * (phi_d * simTime() - phi_i);
 
 		// One ring model/Clarke's model plus f-selectivity according to Cavers:
 		// Due to isotropic antenna gain pattern on all paths only a^2 can be received on all paths.

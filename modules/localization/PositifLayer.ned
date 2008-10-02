@@ -9,45 +9,46 @@
 // - added switch to specify a node as an anchor node
 
 simple PositifLayer
+{
     parameters:
-	debug: numeric const, // debug switch
-	isAnchor: bool,
-	headerLength: numeric const, // length of the network packet header (in bits)
-	accuracy: numeric const,
-//	nr_dims: numeric const,
-//	x_dim: numeric const,
-//	y_dim: numeric const,
-//	z_dim: numeric const,
-//	num_nodes: numeric const,
-	anchor_frac: numeric const,
-//	range: numeric const,
-	range_variance: numeric const,
-	pos_variance: numeric const,
-	do_2nd_phase: bool,
-	phase1_min_anchors: numeric const,
-	phase1_max_anchors: numeric const,
-	flood_limit: numeric const,
-	refine_limit: numeric const,
-	tri_alg: numeric const,
-	var0: numeric const,
-	var1: numeric const,
-	var2: numeric const,
-	repeats: numeric const,
-	use_log: bool,
-	msg_buffering: bool,
-	use_confs: bool,
-	terrain: string,
-	multihop: bool,
-	equal_pairs: bool,
-	outputfile: string;
+        bool debug; // debug switch
+        bool isAnchor;
+        double headerLength; // length of the network packet header (in bits)
+        double accuracy;
+        //	nr_dims: numeric const,
+        //	x_dim: numeric const,
+        //	y_dim: numeric const,
+        //	z_dim: numeric const,
+        //	num_nodes: numeric const,
+        double anchor_frac;
+        //	range: numeric const,
+        double range_variance;
+        double pos_variance;
+        bool do_2nd_phase;
+        double phase1_min_anchors;
+        double phase1_max_anchors;
+        double flood_limit;
+        double refine_limit;
+        double tri_alg;
+        double var0;
+        double var1;
+        double var2;
+        double repeats;
+        bool use_log;
+        bool msg_buffering;
+        bool use_confs;
+        string terrain;
+        bool multihop;
+        bool equal_pairs;
+        string outputfile;
     gates:
-	in: uppergateIn; // from application layer
-	out: uppergateOut; // to application layer
-	in: upperControlIn; // control from application layer
-	out: upperControlOut; // control to application layer
-	in: lowergateIn; // from network layer
-	out: lowergateOut; // to network layer
-	in: lowerControlIn; // control from network layer
-	out: lowerControlOut; // control to network layer
-endsimple
+        input uppergateIn; // from application layer
+        output uppergateOut; // to application layer
+        input upperControlIn; // control from application layer
+        output upperControlOut; // control to application layer
+        input lowergateIn; // from network layer
+        output lowergateOut; // to network layer
+        input lowerControlIn; // control from network layer
+        output lowerControlOut; // control to network layer
+}
 

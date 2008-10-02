@@ -33,14 +33,15 @@
 // @author Peterpaul Klein Haneveld
 //
 simple TractorMobility
+{
     parameters:
-        debug : bool, // debug switch
-        x1: numeric const, // rectangle is denoted by the (x1,y1) and (x2,y2) coords
-        y1: numeric const,
-        x2: numeric const,
-        y2: numeric const,
-	rows: numeric const, // the number of rows the field is divided in
-        speed: numeric const, // speed of the host (in m/s)
-        updateInterval : numeric const; // time interval to update the hosts position
-endsimple
+        bool debug; // debug switch
+        double x1; // rectangle is denoted by the (x1,y1) and (x2,y2) coords
+        double y1;
+        double x2;
+        double y2;
+        double rows; // the number of rows the field is divided in
+        double speed; // speed of the host (in m/s)
+        double updateInterval; // time interval to update the hosts position
+}
 

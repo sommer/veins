@@ -58,7 +58,7 @@ void BaseMobility::initialize(int stage)
 
         //get a pointer to the host
         hostPtr = findHost();
-        hostId = hostPtr->id();
+        hostId = hostPtr->getId();
 
         
         if (hasPar("updateInterval")) {
@@ -132,7 +132,7 @@ void BaseMobility::handleMessage(cMessage * msg)
         error("mobility modules can only receive self messages");
 
 
-    if(msg->kind() == MOVE_TO_BORDER){
+    if(msg->getKind() == MOVE_TO_BORDER){
 	handleBorderMsg(msg);
     }
     else{
@@ -224,11 +224,11 @@ void BaseMobility::updatePosition() {
     sprintf(xStr, "%d", FWMath::round(move.startPos.getX()));
     sprintf(yStr, "%d", FWMath::round(move.startPos.getY()));
     sprintf(zStr, "%d", FWMath::round(move.startPos.getZ()));
-    hostPtr->displayString().setTagArg("p", 0, xStr);
-    hostPtr->displayString().setTagArg("p", 1, yStr);
+    hostPtr->getDisplayString().setTagArg("p", 0, xStr);
+    hostPtr->getDisplayString().setTagArg("p", 1, yStr);
 
 	/* p parameter *does not* accept z co-ordinates. Tk has a 2-d view */
-	//hostPtr->displayString().setTagArg("p", 2, zStr);
+	//hostPtr->getDisplayString().setTagArg("p", 2, zStr);
 }
 
 /**
@@ -604,7 +604,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
     // new direction the host has to move to
     Coord borderDirection;
     // time to reach the border
-    double borderInterval;
+    simtime_t borderInterval;
 
     coreEV << "old values: stepTarget: " << stepTarget.info() << " step: " << step.info() 
 	   << " targetPos: " << targetPos.info() << " angle: " << angle << endl;

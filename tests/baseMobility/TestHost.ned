@@ -30,27 +30,30 @@
 //*
 //***************************************************************************
 
-import
-    "BaseMobilityTest",
-    "BaseUtility";
+import BaseMobilityTest;
+import BaseUtility;
 
 
 
 
 module TestHost
-    
+
+{
     parameters:
-        numHosts : numeric const, 		// total number of hosts in the network
-        borderPolicy : numeric const; 	// this hosts border policy
+        double numHosts; 		// total number of hosts in the network
+        double borderPolicy; 	// this hosts border policy
 
 
     submodules:
-        blackboard: BaseUtility;
-            display: "p=130,60;b=25,25;o=black";
-        mobility: BaseMobilityTest;
-        	parameters:
-        		borderPolicy = borderPolicy;	
-            display: "p=130,130;i=cogwheel2";        
+        blackboard: BaseUtility {
+            parameters:
+                @display("p=130,60;b=25,25,,black,,");
+        }
+        mobility: BaseMobilityTest {
+            parameters:
+                borderPolicy = borderPolicy;
+                @display("p=130,130;i=cogwheel2");
 
-endmodule
+        }
+}
 
