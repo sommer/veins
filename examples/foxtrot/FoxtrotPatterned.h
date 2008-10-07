@@ -26,7 +26,7 @@
 class FoxtrotPatterned:public Foxtrot
 {
   public:
-	Module_Class_Members(FoxtrotPatterned, Foxtrot, 0);
+	//Module_Class_Members(FoxtrotPatterned, Foxtrot, 0);
   protected:
 	virtual void dataUp(FoxtrotPacket * pkt);
 	virtual bool merge(uint8_t * subset, uint8_t * delete_count);

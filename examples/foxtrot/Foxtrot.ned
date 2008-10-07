@@ -1,34 +1,39 @@
-import
-    "Node",
-    "BaseWorldUtility",
-    "ConnectionManager";
+import Node;
+import BaseWorldUtility;
+import ConnectionManager;
 
 module Network
+{
     parameters:
-        playgroundSizeX: numeric const, // x size of the area the nodes are in (in meters)
-        playgroundSizeY: numeric const, // y size of the area the nodes are in (in meters)
-        playgroundSizeZ: numeric const, // z size of the area the nodes are in (in meters)
-        numNodes: numeric const, // total number of hosts in the network
-		prop: string;
+        double playgroundSizeX; // x size of the area the nodes are in (in meters)
+        double playgroundSizeY; // y size of the area the nodes are in (in meters)
+        double playgroundSizeZ; // z size of the area the nodes are in (in meters)
+        double numNodes; // total number of hosts in the network
+        string prop;
 
+        @display("bgb=,,white,,");
     submodules:
-        propagationmodel: prop like ConnectionManager;
-		world: BaseWorldUtility;
+        propagationmodel: <prop> like ConnectionManager;
+        world: BaseWorldUtility {
             parameters:
-                playgroundSizeX = playgroundSizeX,
-                playgroundSizeY = playgroundSizeY,
+                playgroundSizeX = playgroundSizeX;
+                playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
-            display: "p=68,54;i=abstract/multicast";
-        node: Node[numNodes]
-            display: "p=170,50;i=device/wifilaptop";
-    connections nocheck:
+                @display("p=68,54;i=abstract/multicast");
+        }
+        node[numNodes]: Node {
+            parameters:
+                @display("p=170,50;i=device/wifilaptop");
+        }
+    connections allowunconnected:
                          // all connections and gates are to be generated dynamically
 
-    display: "b=,,rect;o=white";
-endmodule
+}
 
 
 // basic example simulation MiXiM
-network baseSim : Network
-endnetwork
+network baseSim extends Network
+{
+    parameters:
+}
 

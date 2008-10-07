@@ -6,7 +6,7 @@ void TestPhyLayer::initialize(int stage) {
 	
 	//has to be done before decider and analogue models are initialized
 	if(stage == 0) 
-		myIndex = parentModule()->par("id");
+		myIndex = getParentModule()->par("id");
 	
 	//call BasePhy's initialize
 	BasePhyLayer::initialize(stage);
@@ -19,7 +19,7 @@ void TestPhyLayer::initialize(int stage) {
 }
 
 void TestPhyLayer::handleMessage(cMessage* msg) {	
-	if(msg->kind() == AIR_FRAME) {
+	if(msg->getKind() == AIR_FRAME) {
 		AirFrame* frame = static_cast<AirFrame*>(msg);
 		switch(frame->getState()) {
 		case FIRST_RECEIVE:
@@ -49,7 +49,7 @@ void TestPhyLayer::log(std::string msg) {
 }
 
 AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
-	cPar par = params["attenuation"];
+	cMsgPar par = params["attenuation"];
 	return new TestAnalogueModel(name, par.doubleValue(), myIndex);
 }
 		

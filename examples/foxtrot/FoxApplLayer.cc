@@ -28,7 +28,7 @@
 
 #include <SpecialAddresses.h>
 
-Define_Module_Like(FoxApplLayer, BaseApplLayer);
+//Define_Module_Like(FoxApplLayer, BaseApplLayer);
 
 #define DBG(...) {char *dbg_out;asprintf(&dbg_out,## __VA_ARGS__);EV<<dbg_out;free(dbg_out);}
 #define DBG_clear(...) {char *dbg_out;asprintf(&dbg_out,## __VA_ARGS__);EV_clear<<dbg_out;free(dbg_out);}
@@ -67,7 +67,7 @@ void FoxApplLayer::initialize(int stage)
 void FoxApplLayer::handleLowerMsg(cMessage * msg)
 {
 	AggPkt *m;
-	switch (msg->kind())
+	switch (msg->getKind())
 	{
 		case DATA_MESSAGE:
 			m = check_and_cast < AggPkt * >(msg);
@@ -92,8 +92,8 @@ void FoxApplLayer::handleLowerMsg(cMessage * msg)
 				break;
 			}
 		default:
-			DBG("Error! got packet with unknown kind: %x\n", msg->kind());
-			if (msg->kind() == 0)
+			DBG("Error! got packet with unknown kind: %x\n", msg->getKind());
+			if (msg->getKind() == 0)
 				error("blah");
 			delete msg;
 	}
@@ -109,7 +109,7 @@ void FoxApplLayer::handleLowerMsg(cMessage * msg)
  **/
 void FoxApplLayer::handleSelfMsg(cMessage * msg)
 {
-	switch (msg->kind())
+	switch (msg->getKind())
 	{
 		case SEND_DATA:
 			EV << "Sending aggregated packet" << endl;
@@ -118,7 +118,7 @@ void FoxApplLayer::handleSelfMsg(cMessage * msg)
 			delayTimer = NULL;
 			break;
 		default:
-			EV << "Unknown selfmessage! -> delete, kind: " << msg->kind() << endl;
+			EV << "Unknown selfmessage! -> delete, kind: " << msg->getKind() << endl;
 			delete msg;
 	}
 }
@@ -132,7 +132,7 @@ void FoxApplLayer::sendData()
 	AggPkt *pkt = new AggPkt("DATA_MESSAGE", DATA_MESSAGE);
 	pkt->setSrcAddr(myApplAddr());
 	pkt->setDestAddr(SINK_ADDRESS);
-	pkt->setLength(headerLength);
+	pkt->setBitLength(headerLength);
 	pkt->setDataArraySize(1);
 	pkt->setData(0, uniform(20, 21));	// FIXME: specify range in parameters
 

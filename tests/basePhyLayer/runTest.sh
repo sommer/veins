@@ -3,7 +3,7 @@
 ./basePhyLayer -c Test1 > out.tmp
 ./basePhyLayer -c Test2 >> out.tmp
 
-diff -I '^Assigned runID=' -w exp-output4 out.tmp
+diff -I '^Assigned runID=' -w exp-output out.tmp
 
 rm -f out.tmp
 

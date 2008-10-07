@@ -23,7 +23,7 @@
 #include <climits>
 #include "FWMath.h"
 
-Define_Module_Like(FoxtrotPatterned, BaseAggLayer);
+//Define_Module_Like(FoxtrotPatterned, BaseAggLayer);
 
 bool FoxtrotPatterned::merge(uint8_t * subset, uint8_t * delete_count)
 {
@@ -57,7 +57,7 @@ bool FoxtrotPatterned::merge(uint8_t * subset, uint8_t * delete_count)
 					DBG("real for pt %d, %d is (%lf, %lf), (%lf, %lf)\n", j, k, pf->x.min, pf->y.min, pf->x.max, pf->y.max);
 					grid_region *gr = midrange->realToGrid(pf);
 					free(pf);
-					DBG("grid (%d, %d), (%d, %d)\n", gr->top, gr->left, gr->bottom, gr->right);
+					DBG("getGrid(%d, %d), (%d, %d)\n", gr->top, gr->left, gr->bottom, gr->right);
 					//midrange->print_grid("mr before");
 					for (uint8_t l = gr->left; l <= gr->right; l++)
 						for (uint8_t m = gr->top; m <= gr->bottom; m++)

@@ -28,7 +28,7 @@
 #include "bits.h"
 #include "FWMath.h"
 
-Define_Module_Like(Foxtrot, BaseAggLayer);
+//Define_Module_Like(Foxtrot, BaseAggLayer);
 
 seconds_t nextTimeout = 0;
 uint8_t Foxtrot::pts = 0;

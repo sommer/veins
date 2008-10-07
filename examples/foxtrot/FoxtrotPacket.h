@@ -20,13 +20,13 @@ class FoxtrotPacket:public FoxtrotPacket_Base
 {
   public:
 	FoxtrotPacket(const char *name = NULL, int kind = 0);
-	 FoxtrotPacket(const FoxtrotPacket & other):FoxtrotPacket_Base(other.name())
+	 FoxtrotPacket(const FoxtrotPacket & other):FoxtrotPacket_Base(other.getName())
 	{
 		operator=(other);
 		debug = true;
 	}
 	FoxtrotPacket & operator=(const FoxtrotPacket & other);
-	virtual cPolymorphic *dup() const
+	virtual cObject *dup() const
 	{
 		return new FoxtrotPacket(*this);
 	}

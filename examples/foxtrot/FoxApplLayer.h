@@ -38,7 +38,7 @@
 class FoxApplLayer:public BaseApplLayer
 {
   public:
-	Module_Class_Members(FoxApplLayer, BaseApplLayer, 0);
+	//Module_Class_Members(FoxApplLayer, BaseApplLayer, 0);
 
 	/** @brief Initialization of the module and some variables*/
 	virtual void initialize(int);

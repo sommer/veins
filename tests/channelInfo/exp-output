@@ -1,3 +1,16 @@
+OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+See the license for distribution terms and warranty disclaimer
+Setting up Cmdenv...
+Loading NED files from .: 1
+
+Preparing for running configuration General, run #0...
+Scenario: $repetition=0
+Assigned runID=General-0-20081007-16:47:33-11327
+Setting up network `OmnetTest'...
+setupNetwork finished, cParImpl objects in use: 0
+Initializing...
+Initializing module OmnetTest, stage 0
 Passed: No intersecting AirFrames before single AirFrame.
 Passed: No intersecting AirFrames after single AirFrame.
 Passed: Cut with start should intersect.
@@ -55,3 +68,12 @@ Passed: Only longer AirFrame should be still there.
 Passed: Last mans standing: last added and the long AirFrame.
 Passed: Last mans standing: last added and the long AirFrame.
 Passed: Should be empty now..
+
+Running simulation...
+
+<!> No more events -- simulation ended.
+
+
+Calling finish() at end of Run #0...
+
+End run of OMNeT++

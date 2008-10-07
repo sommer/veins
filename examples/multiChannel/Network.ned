@@ -23,48 +23,58 @@
 // *              by:              $Author: omfw-willkomm $
 // **************************************************************************/
 
-import
-    "Node",
-    "BaseWorldUtility",
-    "ConnectionManager";
+import Node;
+import BaseWorldUtility;
+import ConnectionManager;
 
 module Sim
+{
     parameters:
         // parameters for the framework
-        playgroundSizeX : numeric const,
-		playgroundSizeY : numeric const,
-		playgroundSizeZ : numeric const,
-        numHosts : numeric const;
+        double playgroundSizeX;
+        double playgroundSizeY;
+        double playgroundSizeZ;
+        double numHosts;
 
+        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=0,0");
     submodules:
-        strongChannel: ConnectionManager;
-            display: "p=75,25;i=abstract/multicast";
-        weakChannel: ConnectionManager;
-            display: "p=50,25;i=abstract/multicast";
-		world: BaseWorldUtility;
+        strongChannel: ConnectionManager {
             parameters:
-                playgroundSizeX = playgroundSizeX,
-				playgroundSizeY = playgroundSizeY,
-				playgroundSizeZ = playgroundSizeZ;
-        strongNodes: Node[numHosts];
-            display: "p=50,50;i=device/wifilaptop";
-            
-        weakNodes: Node[numHosts];
-            display: "p=75,50;i=device/palm";
+                @display("p=75,25;i=abstract/multicast");
+        }
+        weakChannel: ConnectionManager {
+            parameters:
+                @display("p=50,25;i=abstract/multicast");
+        }
+        world: BaseWorldUtility {
+            parameters:
+                playgroundSizeX = playgroundSizeX;
+                playgroundSizeY = playgroundSizeY;
+                playgroundSizeZ = playgroundSizeZ;
+        }
+        strongNodes[numHosts]: Node {
+            parameters:
+                @display("p=50,50;i=device/wifilaptop");
 
-    connections nocheck:
+        }
+        weakNodes[numHosts]: Node {
+            parameters:
+                @display("p=75,50;i=device/palm");
+
+        }
+    connections allowunconnected:
     // all connections and gates are to be generated dynamically
 
-    display: "p=0,0;b=$playgroundSizeX,$playgroundSizeY,rect;o=white";
-endmodule
+}
 
 
 
 
-network sim : Sim
+network sim extends Sim
+{
     parameters:
-        playgroundSizeX = input(40,"playgroundSizeX"),
-		playgroundSizeY = input(40,"playgroundSizeY"),
-        numHosts =input(2,"Number of hosts:");
+        playgroundSizeX @prompt("playgroundSizeX") = default(40);
+        playgroundSizeY @prompt("playgroundSizeY") = default(40);
+        numHosts @prompt("Number of hosts:") = default(2);
 
-endnetwork
+}

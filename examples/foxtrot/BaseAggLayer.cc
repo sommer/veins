@@ -37,7 +37,7 @@ void BaseAggLayer::initialize(int stage)
 		headerLength = 0;		//par("headerLength");
 		arp = BaseArpAccess().get();
 		isSink = getNode()->par("isSink").boolValue();
-		//myAggAddr = this->id();
+		//myAggAddr = this->getId();
 		//EV << " myAggAddr " << myAggAddr << endl;
 	}
 }

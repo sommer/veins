@@ -8,12 +8,12 @@ void SimpleMacLayer::initialize(int stage) {
 	BaseModule::initialize(stage);
 	
 	if(stage == 0) {
-		myIndex = parentModule()->par("id");
+		myIndex = getParentModule()->par("id");
 		
 		dataOut = findGate("lowerGateOut");
 		dataIn = findGate("lowerGateIn");
 		
-		phy = FindModule<MacToPhyInterface*>::findSubModule(this->parentModule());
+		phy = FindModule<MacToPhyInterface*>::findSubModule(this->getParentModule());
 		
 	} else if(stage == 1) {
 		if(myIndex == 0 || myIndex == 10){
@@ -29,7 +29,7 @@ void SimpleMacLayer::initialize(int stage) {
 
 void SimpleMacLayer::handleMessage(cMessage* msg) {
 	
-	if(msg->kind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
+	if(msg->getKind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
 		log("...switching radio done.");
 		switch(phy->getRadioState()) {
 		case Radio::TX:
@@ -40,9 +40,9 @@ void SimpleMacLayer::handleMessage(cMessage* msg) {
 		}
 		delete msg;
 		
-	} else if (msg->kind() == TEST_MACPKT) {
+	} else if (msg->getKind() == TEST_MACPKT) {
 		handleMacPkt(static_cast<MacPkt*>(msg));
-	} else if(msg->kind() == MacToPhyInterface::TX_OVER) {
+	} else if(msg->getKind() == MacToPhyInterface::TX_OVER) {
 		handleTXOver();
 		delete msg;
 	}

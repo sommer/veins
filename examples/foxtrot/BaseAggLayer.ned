@@ -1,16 +1,17 @@
 simple BaseAggLayer
+{
     parameters:
-		maxLatency: numeric const,
-        debug: numeric const; // debug switch
+        double maxLatency;
+        bool debug; // debug switch
     gates:
-        in: uppergateIn; // from application layer
-        out: uppergateOut; // to application layer
-        in: upperControlIn; // control from application layer
-        out: upperControlOut; // control to application layer
+        input uppergateIn; // from application layer
+        output uppergateOut; // to application layer
+        input upperControlIn; // control from application layer
+        output upperControlOut; // control to application layer
 
-        in: lowergateIn; // from NIC
-        out: lowergateOut; // to NIC
-        in: lowerControlIn; // control from NIC
-        out: lowerControlOut; // control to NIC
-endsimple
+        input lowergateIn; // from NIC
+        output lowergateOut; // to NIC
+        input lowerControlIn; // control from NIC
+        output lowerControlOut; // control to NIC
+}
 

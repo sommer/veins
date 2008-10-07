@@ -1,11 +1,12 @@
 simple SimpleMacLayer
-     gates:
-        
-		in: lowerGateIn; 	// from the Phy layer
-        out: lowerGateOut; 	// to the Phy layer
-        
-        in: lowerControlIn; 	// control from the Phy layer        
-        out: lowerControlOut; 	// control to the Phy layer
-		
-endsimple
+{
+    gates:
+
+        input lowerGateIn; 	// from the Phy layer
+        output lowerGateOut; 	// to the Phy layer
+
+        input lowerControlIn; 	// control from the Phy layer        
+        output lowerControlOut; 	// control to the Phy layer
+
+}
 

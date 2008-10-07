@@ -24,7 +24,7 @@
 
 #include <SimpleAddress.h>
 
-Define_Module_Like(TestLocAppl, BaseApplLayer);
+//Define_Module_Like(TestLocAppl, BaseApplLayer);
 
 
 /**
@@ -42,7 +42,7 @@ void TestLocAppl::initialize(int stage)
 // 	if (stage == 0) {
 // 		delayTimer = new cMessage("delay-timer", SEND_BROADCAST_TIMER);
 // 	} else if (stage == 1) {
-// 		scheduleAt(simTime() + findHost()->index() + 0.005, delayTimer);
+// 		scheduleAt(simTime() + findHost()->getIndex() + 0.005, delayTimer);
 // 	}
 }
 
@@ -57,7 +57,7 @@ void TestLocAppl::initialize(int stage)
 void TestLocAppl::handleLowerMsg(cMessage * msg)
 {
 	ApplPkt *m;
-	switch (msg->kind()) {
+	switch (msg->getKind()) {
 	case BROADCAST_MESSAGE:
 		m = static_cast < ApplPkt * >(msg);
 		EV << "Received a broadcast packet from host[" << m->
@@ -72,7 +72,7 @@ void TestLocAppl::handleLowerMsg(cMessage * msg)
 		break;
 	default:
 		EV << "Error! got packet with unknown kind: " << msg->
-		    kind() << endl;
+		    getKind() << endl;
 		delete msg;
 	}
 }
@@ -87,7 +87,7 @@ void TestLocAppl::handleLowerMsg(cMessage * msg)
  **/
 void TestLocAppl::handleSelfMsg(cMessage * msg)
 {
-	switch (msg->kind()) {
+	switch (msg->getKind()) {
 	case SEND_BROADCAST_TIMER:
 //              sendBroadcast();
 		delete msg;
@@ -95,7 +95,7 @@ void TestLocAppl::handleSelfMsg(cMessage * msg)
 		break;
 	default:
 		EV << "Unknown selfmessage! -> delete, kind: " << msg->
-		    kind() << endl;
+		    getKind() << endl;
 		delete msg;
 	}
 }
@@ -108,9 +108,9 @@ void TestLocAppl::sendBroadcast()
 {
 	ApplPkt *pkt = new ApplPkt("BROADCAST_MESSAGE", BROADCAST_MESSAGE);
 	pkt->setDestAddr(-1);
-	// we use the host modules index() as a appl address
+	// we use the host modules getIndex() as a appl address
 	pkt->setSrcAddr(myApplAddr());
-	pkt->setLength(headerLength);
+	pkt->setBitLength(headerLength);
 
 	// set the control info to tell the network layer the layer 3
 	// address;

@@ -65,7 +65,7 @@ class Foxtrot:public BaseAggLayer, public FrameTimer, public Timer
 	~Foxtrot();
 
   protected:
-	 Module_Class_Members(Foxtrot, BaseAggLayer, 0);
+	 //Module_Class_Members(Foxtrot, BaseAggLayer, 0);
 	foxtrot_point limits[MAX_PTS];
 
 	FoxtrotPacketStorage storage;

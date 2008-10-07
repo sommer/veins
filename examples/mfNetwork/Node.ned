@@ -19,59 +19,71 @@
 // **************************************************************************/
 
 
-import
-    "BaseApplLayer",
-    "BaseArp",
-    "BaseNetwLayer",
-    "MfNic",
-    "ConstSpeedMobility",
-    "BaseMobility",
-    //"Blackboard",
-    "BaseUtility";
+import BaseApplLayer;
+import BaseArp;
+import BaseNetwLayer;
+import MfNic;
+import ConstSpeedMobility;
+import BaseMobility;
+//"Blackboard",
+import BaseUtility;
 
 module Node
 
+{
     parameters:
-        applType: string; //type of the application layer
+        string applType; //type of the application layer
 
+        @display("bgb=250,250,white,,;bgp=10,10");
     gates:
-	    in: radioIn; // gate for sendDirect
+        input radioIn; // gate for sendDirect
 
     submodules:
-        utility: BaseUtility;
-            display: "p=130,38,rect;b=24,24;o=black";
+        utility: BaseUtility {
+            parameters:
+                @display("p=130,38,rect;b=24,24,,black,,");
         //blackboard: Blackboard;
         //blackboard: BaseUtility;
        //     display: "p=200,75;b=30,25";
 
-        mobility: ConstSpeedMobility;
-        //mobility: MassMobility;
-            display: "p=200,150;b=30,25";
+        }
+        mobility: ConstSpeedMobility {
+            parameters:
+                //mobility: MassMobility;
+                @display("p=200,150;b=30,25");
 
-        arp: BaseArp;
-            display: "p=200,225;b=30,25";
+        }
+        arp: BaseArp {
+            parameters:
+                @display("p=200,225;b=30,25");
 
-        appl: applType like BaseApplLayer;
-            display: "p=90,50;b=100,20,rect";
+        }
+        appl: <applType> like BaseApplLayer {
+            parameters:
+                @display("p=90,50;b=100,20,rect");
 
-        net: BaseNetwLayer;
-            display: "p=90,100;b=100,20,rect";
+        }
+        net: BaseNetwLayer {
+            parameters:
+                @display("p=90,100;b=100,20,rect");
 
-	nic: MfNic;
-	    display: "p=90,150;b=100,20,rect";
+        }
+        nic: MfNic {
+            parameters:
+                @display("p=90,150;b=100,20,rect");
 
+        }
     connections:
         nic.uppergateOut --> net.lowergateIn;
         nic.uppergateIn <-- net.lowergateOut;
-	nic.upperControlOut --> net.lowerControlIn;	
-	nic.upperControlIn <-- net.lowerControlOut;	
+        nic.upperControlOut --> net.lowerControlIn;
+        nic.upperControlIn <-- net.lowerControlOut;
 
-	net.uppergateOut --> appl.lowergateIn;
-	net.uppergateIn <-- appl.lowergateOut;
-	net.upperControlOut --> appl.lowerControlIn;		
-	net.upperControlIn <-- appl.lowerControlOut;		
+        net.uppergateOut --> appl.lowergateIn;
+        net.uppergateIn <-- appl.lowergateOut;
+        net.upperControlOut --> appl.lowerControlIn;
+        net.upperControlIn <-- appl.lowerControlOut;
 
-	radioIn --> nic.radioIn;
+        radioIn --> nic.radioIn;
 
-    display: "p=10,10;b=250,250,rect;o=white";
-endmodule
+}

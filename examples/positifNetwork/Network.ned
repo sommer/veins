@@ -23,40 +23,48 @@
 // *              by:              $Author: omfw-willkomm $
 // **************************************************************************/
 
-import
-    "Node",
-    "BaseObject",
-    "BaseWorldUtility",
-    "ConnectionManager";
+import Node;
+import BaseObject;
+import BaseWorldUtility;
+import ConnectionManager;
 
 module Sim
+{
     parameters:
-        playgroundSizeX: numeric const, // x size of the area the nodes are in (in meters)
-        playgroundSizeY: numeric const, // y size of the area the nodes are in (in meters)
-        playgroundSizeZ: numeric const, // z size of the area the nodes are in (in meters)
-        numObjects: numeric const, // total number of objects in the network
-	numHosts : numeric const,
-	propagationType: string;
+        double playgroundSizeX; // x size of the area the nodes are in (in meters)
+        double playgroundSizeY; // y size of the area the nodes are in (in meters)
+        double playgroundSizeZ; // z size of the area the nodes are in (in meters)
+        double numObjects; // total number of objects in the network
+        double numHosts;
+        string propagationType;
 
+        @display("bgb=,,white,,;bgp=0,0");
     submodules:
-	propagationmodel: propagationType like ConnectionManager;
-		display: "p=50,25;i=eye14";
-	world: BaseWorldUtility;
-	    parameters:
-                playgroundSizeX = playgroundSizeX,
-                playgroundSizeY = playgroundSizeY,
+        propagationmodel: <propagationType> like ConnectionManager {
+            parameters:
+                @display("p=50,25;i=eye14");
+        }
+        world: BaseWorldUtility {
+            parameters:
+                playgroundSizeX = playgroundSizeX;
+                playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
-	node: LocNode[numHosts];
-		display: "p=50,50;i=node";
-        object: BaseObject[numObjects];
-            display: "b=40,24;p=164,114";
+        }
+        node[numHosts]: LocNode {
+            parameters:
+                @display("p=50,50;i=node");
+        }
+        object[numObjects]: BaseObject {
+            parameters:
+                @display("b=40,24;p=164,114");
 
-    connections nocheck:
+        }
+    connections allowunconnected:
     // all connections and gates are to be generated dynamically
 
-    display:
-	"p=0,0;o=white";
-endmodule
+}
 
-network sim : Sim
-endnetwork
+network sim extends Sim
+{
+    parameters:
+}

@@ -57,7 +57,7 @@ class BaseAggLayer:public BaseLayer
 	bool isSink;
 
   public:
-	 Module_Class_Members(BaseAggLayer, BaseLayer, 0);
+	 //Module_Class_Members(BaseAggLayer, BaseLayer, 0);
 
 	/** @brief Initialization of the module and some variables*/
 	virtual void initialize(int);

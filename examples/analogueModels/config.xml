@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<AnalogueModels>
-	    <AnalogueModel type="PathlossModel">
+	    <AnalogueModel type="SimplePathlossModel">
 	    	<parameter name="alpha" type="double" value="2.0"/>
 	    	<parameter name="carrierFrequency" type="double" value="2.412e+9"/>
 	    </AnalogueModel>

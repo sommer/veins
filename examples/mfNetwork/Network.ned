@@ -23,43 +23,49 @@
 // *              by:              $Author: omfw-willkomm $
 // **************************************************************************/
 
-import
-    "Node",
-    "BaseWorldUtility",
-    "ConnectionManager";
+import Node;
+import BaseWorldUtility;
+import ConnectionManager;
 
 module Sim
+{
     parameters:
         // parameters for the framework
-        playgroundSizeX : numeric const,
-		playgroundSizeY : numeric const,
-		playgroundSizeZ : numeric const,
-        numHosts : numeric const;
+        double playgroundSizeX;
+        double playgroundSizeY;
+        double playgroundSizeZ;
+        double numHosts;
 
+        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=0,0");
     submodules:
-        channelcontrol: ConnectionManager;
-            display: "p=50,25;i=eye14";
-		world: BaseWorldUtility;
+        channelcontrol: ConnectionManager {
             parameters:
-                playgroundSizeX = playgroundSizeX,
-				playgroundSizeY = playgroundSizeY,
-				playgroundSizeZ = playgroundSizeZ;
-        node: Node[numHosts];
-            display: "p=50,50;i=node";
+                @display("p=50,25;i=eye14");
+        }
+        world: BaseWorldUtility {
+            parameters:
+                playgroundSizeX = playgroundSizeX;
+                playgroundSizeY = playgroundSizeY;
+                playgroundSizeZ = playgroundSizeZ;
+        }
+        node[numHosts]: Node {
+            parameters:
+                @display("p=50,50;i=node");
 
-    connections nocheck:
+        }
+    connections allowunconnected:
     // all connections and gates are to be generated dynamically
 
-    display: "p=0,0;b=$playgroundSizeX,$playgroundSizeY,rect;o=white";
-endmodule
+}
 
 
 
 
-network sim : Sim
+network sim extends Sim
+{
     parameters:
-        playgroundSizeX = input(40,"playgroundSizeX"),
-		playgroundSizeY = input(40,"playgroundSizeY"),
-        numHosts =input(2,"Number of hosts:");
+        playgroundSizeX @prompt("playgroundSizeX") = default(40);
+        playgroundSizeY @prompt("playgroundSizeY") = default(40);
+        numHosts @prompt("Number of hosts:") = default(2);
 
-endnetwork
+}

@@ -1,80 +1,618 @@
-OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2005 Andras Varga
-Release: 3.3, edition: Academic Public License.
+OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
+Loading NED files from ../../include/: 34
+Loading NED files from ../testUtils/: 1
+Loading NED files from .: 5
 
-Loading NED file: /home/karl/job/mixim/trunk/tests/basePhyLayer/Network.ned
-Loading NED file: /home/karl/job/mixim/trunk/tests/basePhyLayer/TestHost.ned
-Loading NED file: /home/karl/job/mixim/trunk/tests/basePhyLayer/TestMacLayer.ned
-Loading NED file: /home/karl/job/mixim/trunk/tests/basePhyLayer/TestNic.ned
-Loading NED file: /home/karl/job/mixim/trunk/tests/basePhyLayer/TestPhyLayer.ned
-Processing listfile: /home/karl/job/mixim/trunk/tests/basePhyLayer/nedincludes.lst
-Loading NED file: ../../include/BaseWorldUtility.ned
-Loading NED file: ../../include/BaseUtility.ned
-Loading NED file: ../../include/BaseMobility.ned
-Loading NED file: ../../include/ConnectionManager.ned
-Loading NED file: ../testUtils/TestManager.ned
-
-Preparing for Run #1...
+Preparing for running configuration Test1, run #0...
+Scenario: $0=1, $repetition=0
+Assigned runID=Test1-0-20081007-16:51:36-11440
 Setting up network `tbpSim'...
+setupNetwork finished, cParImpl objects in use: 85
 Initializing...
+Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
+Initializing module tbpSim, stage 0
+Initializing module tbpSim.world, stage 0
+Initializing module tbpSim.testManager, stage 0
+Initializing module tbpSim.channelcontrol, stage 0
+Initializing module tbpSim.node[0], stage 0
+Initializing module tbpSim.node[0].utility, stage 0
+Initializing module tbpSim.node[0].mobility, stage 0
+Initializing module tbpSim.node[0].nic, stage 0
+Initializing module tbpSim.node[0].nic.phy, stage 0
+Initializing module tbpSim.node[0].nic.mac, stage 0
+Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.channelcontrol, stage 1
+Initializing module tbpSim.node[0].utility, stage 1
+Initializing module tbpSim.node[0].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[0].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Passed: Check parameter "usePropagationDelay".
+Passed: Check parameter "sensitivity".
+Passed: Check parameter "maxTXPower".
+Passed: Check parameter "thermalNoise".
+Passed: Check upperGateIn ID.
+Passed: Check upperGateOut ID.
+Passed: Check upperControlIn ID.
+Passed: Check upperControlOut ID.
+Passed: Switchtime SLEEP to RX.
+Passed: Switchtime RX to TX.
+Passed: Switchtime TX to SLEEP.
+Passed: Switchtime SLEEP to TX.
+Passed: Switchtime TX to RX.
+Passed: Switchtime RX to SLEEP.
+Passed: Decider is of type TestDecider.
+Passed: Check size of AnalogueModel list.
+Passed: Analogue model is of type RadioStateAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Check attenuation value of AnalogueModels.
+Passed: Check initialisation of TX-OVER timer
+Passed: Check kind of TX_OVER timer
+Passed: Check initialisation of radioSwitchOver timer
+Passed: Check kind of radioSwitchOver timer
+Initializing module tbpSim.node[0].nic.mac, stage 1
+Passed: First channelstates idle state should be true
+Passed: First channelstates rssi.
+Passed: Second channelstate should be false
+Passed: Second channelstates rssi.
+Passed: Third channelstate should be true
+Passed: Third channelstates rssi.
+Passed: Fourth channelstate should be false
+Passed: Fourth channelstates rssi.
+Passed: Radio starts in SLEEP.
+Passed: Correct switch time to RX.
+Passed: Invalid switchtime because already switching.
 
 Running simulation...
-** Event #0  T=0.0000000  ( 0.00s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
-** Event #1  T=0.5000000000 (500ms).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
-** Event #2  T=0.5000000000 (500ms).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
-** Event #3  T=       3  ( 3.00s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
-** Event #4  T=       3  ( 3.00s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
-** Event #5  T=       3  ( 3.00s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
-** Event #6  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
-** Event #7  T=     3.5  ( 3.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
-** Event #8  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
-** Event #9  T=     4.5  ( 4.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
-** Event #10  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #1  T=0.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 0s
+Passed: [decider0] - Expected "ChannelSense at decider.": kind = 22002, arrival = 0s
+** Event #2  T=0.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 0.5s
+Passed: [decider0] - Expected "Scheduled sense request.": kind = 22002, arrival = 0.5s
+** Event #3  T=0.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+Passed: [mac0] - Expected "Sense request answer at mac.": kind = 22002, arrival = 0.5s
+** Event #4  T=3.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "SWITCH_OVER message at phy.": kind = 22001, arrival = 3s
+** Event #5  T=3.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+Passed: [mac0] - Expected "SWITCH_OVER message.": kind = 22001, arrival = 3s
+Passed: Radio starts in SLEEP.
+Passed: Correct switch time to RX.
+Passed: Invalid switchtime because already switching.
+** Event #6  T=3.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 3s
+Passed: [decider0] - Expected "ChannelSense at decider.": kind = 22002, arrival = 3s
+** Event #7  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 3.5s
+Passed: [decider0] - Expected "Scheduled sense request.": kind = 22002, arrival = 3.5s
+** Event #8  T=3.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+Passed: [mac0] - Expected "Sense request answer at mac.": kind = 22002, arrival = 3.5s
+** Event #9  T=4.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "SWITCH_OVER message at phy.": kind = 22001, arrival = 4.5s
+** Event #10  T=4.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+Passed: [mac0] - Expected "SWITCH_OVER message.": kind = 22001, arrival = 4.5s
+Passed: Radio is not in TX.
+** Event #11  T=4.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4.5s
 
-<!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy: User error: Error: message for sending received, but radio not in state TX.
+<!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy (id=9): User error: Error: message for sending received, but radio not in state TX.
 
 
-Preparing for Run #2...
+Preparing for running configuration Test1, run #1...
+Scenario: $0=2, $repetition=0
+Assigned runID=Test1-1-20081007-16:51:36-11440
 Setting up network `tbpSim'...
+setupNetwork finished, cParImpl objects in use: 86
 Initializing...
+Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
+Initializing module tbpSim, stage 0
+Initializing module tbpSim.world, stage 0
+Initializing module tbpSim.testManager, stage 0
+Initializing module tbpSim.channelcontrol, stage 0
+Initializing module tbpSim.node[0], stage 0
+Initializing module tbpSim.node[0].utility, stage 0
+Initializing module tbpSim.node[0].mobility, stage 0
+Initializing module tbpSim.node[0].nic, stage 0
+Initializing module tbpSim.node[0].nic.phy, stage 0
+Initializing module tbpSim.node[0].nic.mac, stage 0
+Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.channelcontrol, stage 1
+Initializing module tbpSim.node[0].utility, stage 1
+Initializing module tbpSim.node[0].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[0].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Passed: Check parameter "usePropagationDelay".
+Passed: Check parameter "sensitivity".
+Passed: Check parameter "maxTXPower".
+Passed: Check parameter "thermalNoise".
+Passed: Check upperGateIn ID.
+Passed: Check upperGateOut ID.
+Passed: Check upperControlIn ID.
+Passed: Check upperControlOut ID.
+Passed: Switchtime SLEEP to RX.
+Passed: Switchtime RX to TX.
+Passed: Switchtime TX to SLEEP.
+Passed: Switchtime SLEEP to TX.
+Passed: Switchtime TX to RX.
+Passed: Switchtime RX to SLEEP.
+Passed: Decider is of type TestDecider.
+Passed: Check size of AnalogueModel list.
+Passed: Analogue model is of type RadioStateAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Check attenuation value of AnalogueModels.
+Passed: Check initialisation of TX-OVER timer
+Passed: Check kind of TX_OVER timer
+Passed: Check initialisation of radioSwitchOver timer
+Passed: Check kind of radioSwitchOver timer
+Initializing module tbpSim.node[0].nic.mac, stage 1
+Passed: A valid switch time.
 
 Running simulation...
-** Event #0  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
-** Event #1  T=     3.5  ( 3.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
-** Event #2  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
-** Event #3  T=       4  ( 4.00s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
-** Event #4  T=       4  ( 4.00s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #1  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arrival = 3.5s
+** Event #2  T=3.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 3.5s
+Passed: Radio is in TX.
+** Event #3  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 3.5s
+** Event #4  T=4.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+Passed: [mac0] - Expected "Waiting for 0.5s.": kind = 23242, arrival = 4s
+** Event #5  T=4.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4s
 
-<!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy: User error: Error: message for sending received, but radio already sending.
+<!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy (id=9): User error: Error: message for sending received, but radio already sending.
 
 
-Preparing for Run #3...
+End run of OMNeT++
+OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+See the license for distribution terms and warranty disclaimer
+Setting up Cmdenv...
+Loading NED files from ../../include/: 34
+Loading NED files from ../testUtils/: 1
+Loading NED files from .: 5
+
+Preparing for running configuration Test2, run #0...
+Scenario: $repetition=0
+Assigned runID=Test2-0-20081007-16:51:36-11441
 Setting up network `tbpSim'...
+setupNetwork finished, cParImpl objects in use: 85
 Initializing...
+Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
+Initializing channel tbpSim.node[1].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[1].nic.mac.lowerControlOut.channel, stage 0
+Initializing channel tbpSim.node[2].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[2].nic.mac.lowerControlOut.channel, stage 0
+Initializing channel tbpSim.node[3].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[3].nic.mac.lowerControlOut.channel, stage 0
+Initializing module tbpSim, stage 0
+Initializing module tbpSim.world, stage 0
+Initializing module tbpSim.testManager, stage 0
+Initializing module tbpSim.channelcontrol, stage 0
+Initializing module tbpSim.node[0], stage 0
+Initializing module tbpSim.node[0].utility, stage 0
+Initializing module tbpSim.node[0].mobility, stage 0
+Initializing module tbpSim.node[0].nic, stage 0
+Initializing module tbpSim.node[0].nic.phy, stage 0
+Initializing module tbpSim.node[0].nic.mac, stage 0
+Initializing module tbpSim.node[1], stage 0
+Initializing module tbpSim.node[1].utility, stage 0
+Initializing module tbpSim.node[1].mobility, stage 0
+Initializing module tbpSim.node[1].nic, stage 0
+Initializing module tbpSim.node[1].nic.phy, stage 0
+Initializing module tbpSim.node[1].nic.mac, stage 0
+Initializing module tbpSim.node[2], stage 0
+Initializing module tbpSim.node[2].utility, stage 0
+Initializing module tbpSim.node[2].mobility, stage 0
+Initializing module tbpSim.node[2].nic, stage 0
+Initializing module tbpSim.node[2].nic.phy, stage 0
+Initializing module tbpSim.node[2].nic.mac, stage 0
+Initializing module tbpSim.node[3], stage 0
+Initializing module tbpSim.node[3].utility, stage 0
+Initializing module tbpSim.node[3].mobility, stage 0
+Initializing module tbpSim.node[3].nic, stage 0
+Initializing module tbpSim.node[3].nic.phy, stage 0
+Initializing module tbpSim.node[3].nic.mac, stage 0
+Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.channelcontrol, stage 1
+Initializing module tbpSim.node[0].utility, stage 1
+Initializing module tbpSim.node[0].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[0].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Passed: Check parameter "usePropagationDelay".
+Passed: Check parameter "sensitivity".
+Passed: Check parameter "maxTXPower".
+Passed: Check parameter "thermalNoise".
+Passed: Check upperGateIn ID.
+Passed: Check upperGateOut ID.
+Passed: Check upperControlIn ID.
+Passed: Check upperControlOut ID.
+Passed: Switchtime SLEEP to RX.
+Passed: Switchtime RX to TX.
+Passed: Switchtime TX to SLEEP.
+Passed: Switchtime SLEEP to TX.
+Passed: Switchtime TX to RX.
+Passed: Switchtime RX to SLEEP.
+Passed: Decider is of type TestDecider.
+Passed: Check size of AnalogueModel list.
+Passed: Analogue model is of type RadioStateAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Check attenuation value of AnalogueModels.
+Passed: Check initialisation of TX-OVER timer
+Passed: Check kind of TX_OVER timer
+Passed: Check initialisation of radioSwitchOver timer
+Passed: Check kind of radioSwitchOver timer
+Initializing module tbpSim.node[0].nic.mac, stage 1
+Passed: A valid switch time.
+Initializing module tbpSim.node[1].utility, stage 1
+Initializing module tbpSim.node[1].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[1].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Passed: Check parameter "usePropagationDelay".
+Passed: Check parameter "sensitivity".
+Passed: Check parameter "maxTXPower".
+Passed: Check parameter "thermalNoise".
+Passed: Check upperGateIn ID.
+Passed: Check upperGateOut ID.
+Passed: Check upperControlIn ID.
+Passed: Check upperControlOut ID.
+Passed: Switchtime SLEEP to RX.
+Passed: Switchtime RX to TX.
+Passed: Switchtime TX to SLEEP.
+Passed: Switchtime SLEEP to TX.
+Passed: Switchtime TX to RX.
+Passed: Switchtime RX to SLEEP.
+Passed: Decider is of type TestDecider.
+Passed: Check size of AnalogueModel list.
+Passed: Analogue model is of type RadioStateAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Check attenuation value of AnalogueModels.
+Passed: Check initialisation of TX-OVER timer
+Passed: Check kind of TX_OVER timer
+Passed: Check initialisation of radioSwitchOver timer
+Passed: Check kind of radioSwitchOver timer
+Initializing module tbpSim.node[1].nic.mac, stage 1
+Passed: No AirFrames on channel.
+Initializing module tbpSim.node[2].utility, stage 1
+Initializing module tbpSim.node[2].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[2].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Passed: Check parameter "usePropagationDelay".
+Passed: Check parameter "sensitivity".
+Passed: Check parameter "maxTXPower".
+Passed: Check parameter "thermalNoise".
+Passed: Check upperGateIn ID.
+Passed: Check upperGateOut ID.
+Passed: Check upperControlIn ID.
+Passed: Check upperControlOut ID.
+Passed: Switchtime SLEEP to RX.
+Passed: Switchtime RX to TX.
+Passed: Switchtime TX to SLEEP.
+Passed: Switchtime SLEEP to TX.
+Passed: Switchtime TX to RX.
+Passed: Switchtime RX to SLEEP.
+Passed: Decider is of type TestDecider.
+Passed: Check size of AnalogueModel list.
+Passed: Analogue model is of type RadioStateAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Check attenuation value of AnalogueModels.
+Passed: Check initialisation of TX-OVER timer
+Passed: Check kind of TX_OVER timer
+Passed: Check initialisation of radioSwitchOver timer
+Passed: Check kind of radioSwitchOver timer
+Initializing module tbpSim.node[2].nic.mac, stage 1
+Passed: No AirFrames on channel.
+Initializing module tbpSim.node[3].utility, stage 1
+Initializing module tbpSim.node[3].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[3].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Passed: Check parameter "usePropagationDelay".
+Passed: Check parameter "sensitivity".
+Passed: Check parameter "maxTXPower".
+Passed: Check parameter "thermalNoise".
+Passed: Check upperGateIn ID.
+Passed: Check upperGateOut ID.
+Passed: Check upperControlIn ID.
+Passed: Check upperControlOut ID.
+Passed: Switchtime SLEEP to RX.
+Passed: Switchtime RX to TX.
+Passed: Switchtime TX to SLEEP.
+Passed: Switchtime SLEEP to TX.
+Passed: Switchtime TX to RX.
+Passed: Switchtime RX to SLEEP.
+Passed: Decider is of type TestDecider.
+Passed: Check size of AnalogueModel list.
+Passed: Analogue model is of type RadioStateAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Analogue model is of type TestAnalogueModel.
+Passed: Check attenuation value of AnalogueModels.
+Passed: Check initialisation of TX-OVER timer
+Passed: Check kind of TX_OVER timer
+Passed: Check initialisation of radioSwitchOver timer
+Passed: Check kind of radioSwitchOver timer
+Initializing module tbpSim.node[3].nic.mac, stage 1
+Passed: No AirFrames on channel.
 
 Running simulation...
-** Event #0  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
-** Event #1  T=     3.5  ( 3.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=13)
-** Event #2  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
-** Event #3  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
-** Event #4  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
-** Event #5  T=     3.5  ( 3.50s).  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
-** Event #6  T=     3.6  ( 3.60s).  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
-** Event #7  T=     3.6  ( 3.60s).  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
-** Event #8  T=     3.6  ( 3.60s).  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
-** Event #9  T=     3.6  ( 3.60s).  (TestMacLayer) tbpSim.node[1].nic.mac (id=18)
-** Event #10  T=     3.6  ( 3.60s).  (TestMacLayer) tbpSim.node[2].nic.mac (id=23)
-** Event #11  T=     3.6  ( 3.60s).  (TestMacLayer) tbpSim.node[3].nic.mac (id=28)
-** Event #12  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
-** Event #13  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
-** Event #14  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
-** Event #15  T=     4.5  ( 4.50s).  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
-** Event #16  T=     4.5  ( 4.50s).  (TestMacLayer) tbpSim.node[0].nic.mac (id=13)
+** Event #1  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
+Passed: [phy0] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arrival = 3.5s
+** Event #2  T=3.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=13)
+Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 3.5s
+** Event #3  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
+Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 3.5s
+** Event #4  T=3.5.  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
+Passed: [phy1] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
+Passed: [decider1] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
+Passed: AirFrames on channel.
+** Event #5  T=3.5.  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
+Passed: [phy2] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
+Passed: [decider2] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
+Passed: AirFrames on channel.
+** Event #6  T=3.5.  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
+Passed: [phy3] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
+Passed: [decider3] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
+Passed: AirFrames on channel.
+** Event #7  T=3.6.  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
+Passed: [phy1] - Expected "Scheduled AirFrame to Pseudoheader at phy."
+Passed: [decider1] - Expected "Scheduled AirFrame to Pseudoheader."
+** Event #8  T=3.6.  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
+Passed: [phy2] - Expected "Scheduled AirFrame to Pseudoheader at phy."
+Passed: [decider2] - Expected "Scheduled AirFrame to Pseudoheader."
+** Event #9  T=3.6.  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
+Passed: [phy3] - Expected "Scheduled AirFrame to Pseudoheader at phy."
+Passed: [decider3] - Expected "Scheduled AirFrame to Pseudoheader."
+** Event #10  T=3.6.  (TestMacLayer) tbpSim.node[1].nic.mac (id=18)
+Passed: [mac1] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
+** Event #11  T=3.6.  (TestMacLayer) tbpSim.node[2].nic.mac (id=23)
+Passed: [mac2] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
+** Event #12  T=3.6.  (TestMacLayer) tbpSim.node[3].nic.mac (id=28)
+Passed: [mac3] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
+** Event #13  T=4.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
+Passed: [phy0] - Expected "Transmission over message at phy": kind = 5, arrival = 4.5s
+** Event #14  T=4.5.  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
+Passed: [phy1] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
+** Event #15  T=4.5.  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
+Passed: [phy2] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
+** Event #16  T=4.5.  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
+Passed: [phy3] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
+** Event #17  T=4.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=13)
+Passed: [mac0] - Expected "Transmission over message from phy": kind = 5, arrival = 4.5s
 
 <!> No more events -- simulation ended.
 
 
-Calling finish() at end of Run #3...
+Calling finish() at end of Run #0...
 
 End run of OMNeT++
