@@ -86,7 +86,7 @@ protected:
 
 		helloWorld->setControlInfo(cInfo);
 
-		bubble("Hello World!");
+		getNode()->bubble("Hello World!");
 
 		sendDown(helloWorld);
 	}
@@ -132,7 +132,7 @@ protected:
 
 			char buff[255];
 			sprintf(buff, "Got hello from %d", srcIP);
-			bubble(buff);
+			getNode()->bubble(buff);
 			ev << buff << endl;
 		}
 
@@ -143,7 +143,7 @@ protected:
 				forwardPacket(pkt, L2BROADCAST);
 				char buff[255];
 				sprintf(buff, "%d said hello!", srcIP);
-				bubble(buff);
+				getNode()->bubble(buff);
 				ev << buff << endl;
 			}
 		} else {
@@ -176,7 +176,7 @@ protected:
 
 		char buff[255];
 		sprintf(buff, "Babbling with %d", it->first);
-		bubble(buff);
+		getNode()->bubble(buff);
 		ev << buff << endl;
 		sendDown(jabber);
 
@@ -193,14 +193,14 @@ protected:
 
 				char buff[255];
 				sprintf(buff, "%d babbles with %d", pkt->getSrcAddr(), pkt->getDestAddr());
-				bubble(buff);
+				getNode()->bubble(buff);
 				ev << buff << endl;
 
 				forwardPacket(pkt, nextHop);
 			} else {
 				char buff[255];
 				sprintf(buff, "%d babbles with me. But I'm a serious switch, I do not babble...", pkt->getSrcAddr());
-				bubble(buff);
+				getNode()->bubble(buff);
 				ev << buff << endl;
 			}
 		} else {
@@ -208,7 +208,7 @@ protected:
 
 			char buff[255];
 			sprintf(buff, "Got babbling from %d", pkt->getSrcAddr());
-			bubble(buff);
+			getNode()->bubble(buff);
 			ev << buff << endl;
 		}
 
