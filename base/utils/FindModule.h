@@ -10,7 +10,7 @@ class FindModule
 		static T findSubModule(cModule *top) 
 		{
 			T ret;
-			for (cSubModIterator i(*top); !i.end(); i++)
+			for (cModule::SubmoduleIterator i(top); !i.end(); i++)
 			{
 				cModule *sub = i();
 				ret = dynamic_cast<T>(sub);
