@@ -37,7 +37,7 @@ import org.mixim.base.modules.BaseWorldUtility;
 
 
 // @author Daniel Willkomm
-module Network
+network bmSim
 {
     parameters:
         double playgroundSizeX; // x size of the area the nodes are in (in meters)
@@ -69,11 +69,3 @@ module Network
 
         }
 }
-
-
-// basic example simulation for the Mobility Framework
-network bmSim extends Network
-{
-    parameters:
-}
-

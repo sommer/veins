@@ -112,11 +112,11 @@ all:
 #	@echo $(ROOT)/examples/multiChannel
 #	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
 	@echo $(ROOT)/examples/phyLayer
-	@cd $(ROOT)/examples/phyLayer && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@cd $(ROOT)/examples/phyLayer && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -o MiXiM
 	@echo $(ROOT)/examples/analogueModels
-	@cd $(ROOT)/examples/analogueModels && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@cd $(ROOT)/examples/analogueModels && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -o MiXiM
 	@echo $(ROOT)/examples/CSMAMac
-	@cd $(ROOT)/examples/CSMAMac && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
+	@cd $(ROOT)/examples/CSMAMac && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -o MiXiM
 
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n

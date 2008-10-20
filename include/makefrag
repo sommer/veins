@@ -9,10 +9,10 @@ BASEDIRS := ../base/connectionManager ../base/localization ../base/messages ../b
 MODULESDIRS := ../modules/application ../modules/mobility ../modules/netw ../modules/nic ../modules/node ../modules/object ../modules/propagation ../modules/utility ../modules/mac
 
 BASEHEADERS = $(foreach dir,$(BASEDIRS),$(wildcard $(dir)/*.h))
-BASENEDS = $(foreach dir,$(BASEDIRS),$(wildcard $(dir)/*.ned))
+#BASENEDS = $(foreach dir,$(BASEDIRS),$(wildcard $(dir)/*.ned))
 
 MODULESHEADERS = $(foreach dir,$(MODULESDIRS),$(wildcard $(dir)/*.h))
-MODULESNEDS = $(foreach dir,$(MODULESDIRS),$(wildcard $(dir)/*.ned))
+#MODULESNEDS = $(foreach dir,$(MODULESDIRS),$(wildcard $(dir)/*.ned))
 
 
 # default target
@@ -24,13 +24,13 @@ all: .tstamp
 # copy base header and ned files
 .basestuff_tstamp: $(BASEHEADERS) $(BASENEDS)
 	@cp $(BASEHEADERS) .
-	@cp $(BASENEDS) .
+#	@cp $(BASENEDS) .
 	@echo > .basestuff_tstamp
 
 # copy core header and ned files
 .modulesstuff_tstamp: $(MODULESHEADERS) $(MODULESNEDS)
 	@cp $(MODULESHEADERS) .
-	@cp $(MODULESNEDS) .
+#	@cp $(MODULESNEDS) .
 	@echo >.modulesstuff_tstamp
 
 # remove all header and ned files
