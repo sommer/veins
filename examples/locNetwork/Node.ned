@@ -1,13 +1,14 @@
-import BaseApplLayer;
-//    "BaseNetwLayer",
-import QueuedRouting;
-import BaseLocalization;
-import BaseNic;
-//    "BaseMobility",
-import ConstSpeedMobility;
-import BaseArp;
-import BaseBattery;
-import BaseUtility;
+package org.mixim.examples.locNetwork;
+
+import org.mixim.base.localization.BaseLocalization;
+import org.mixim.base.modules.BaseApplLayer;
+import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.BaseBattery;
+import org.mixim.base.modules.BaseNic;
+import org.mixim.base.modules.BaseUtility;
+import org.mixim.modules.mobility.ConstSpeedMobility;
+import org.mixim.modules.netw.QueuedRouting;
+
 
 module LocNode
 {
@@ -51,18 +52,18 @@ module LocNode
                 @display("p=60,166;i=iface");
         }
     connections:
-        nic.uppergateOut --> net.lowergateIn;
-        nic.uppergateIn <-- net.lowergateOut;
+        nic.upperGateOut --> net.lowerGateIn;
+        nic.upperGateIn <-- net.lowerGateOut;
         nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
         nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        net.uppergateOut --> loc.lowergateIn;
-        net.uppergateIn <-- loc.lowergateOut;
+        net.upperGateOut --> loc.lowerGateIn;
+        net.upperGateIn <-- loc.lowerGateOut;
         net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> loc.lowerControlIn;
         net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- loc.lowerControlOut;
 
-        loc.uppergateOut --> appl.lowergateIn;
-        loc.uppergateIn <-- appl.lowergateOut;
+        loc.upperGateOut --> appl.lowerGateIn;
+        loc.upperGateIn <-- appl.lowerGateOut;
         loc.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
         loc.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 

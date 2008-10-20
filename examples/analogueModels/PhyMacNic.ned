@@ -1,5 +1,4 @@
-import TestPhyLayer;
-import SimpleMacLayer;
+package org.mixim.examples.analogueModels;
 
 module PhyMacNic
 {

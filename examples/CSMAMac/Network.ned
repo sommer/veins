@@ -1,6 +1,8 @@
-import PhyMacHost;
-import ConnectionManager;
-import BaseWorldUtility;
+package org.mixim.examples.CSMAMac;
+
+import org.mixim.base.connectionManager.ConnectionManager;
+import org.mixim.base.modules.BaseWorldUtility;
+
 
 module Network
 {

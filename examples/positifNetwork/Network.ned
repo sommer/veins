@@ -23,10 +23,12 @@
 // *              by:              $Author: omfw-willkomm $
 // **************************************************************************/
 
-import Node;
-import BaseObject;
-import BaseWorldUtility;
-import ConnectionManager;
+package org.mixim.examples.positifNetwork;
+
+import org.mixim.base.connectionManager.ConnectionManager;
+import org.mixim.base.modules.BaseObject;
+import org.mixim.base.modules.BaseWorldUtility;
+
 
 module Sim
 {

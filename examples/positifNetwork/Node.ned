@@ -18,14 +18,17 @@
 // * description: a host for the aloha test network
 // **************************************************************************/
 
-import BaseApplLayer;
-import BaseNetwLayer;
-import PositifLayer;
-import BaseNic;
-import BaseMobility;
-import BaseArp;
-import BaseBattery;
-import BaseUtility;
+package org.mixim.examples.positifNetwork;
+
+import org.mixim.base.modules.BaseApplLayer;
+import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.BaseBattery;
+import org.mixim.base.modules.IBaseMobility;
+import org.mixim.base.modules.IBaseNetwLayer;
+import org.mixim.base.modules.BaseNic;
+import org.mixim.base.modules.BaseUtility;
+import org.mixim.modules.localization.PositifLayer;
+
 
 module LocNode
 {
@@ -50,7 +53,7 @@ module LocNode
             parameters:
                 @display("p=130,128,rect;b=24,24,,red,,");
         }
-        mobility: <mobType> like BaseMobility {
+        mobility: <mobType> like IBaseMobility {
             parameters:
                 @display("p=130,172;i=cogwheel2");
         }
@@ -58,7 +61,7 @@ module LocNode
             parameters:
                 @display("p=60,50;i=app");
         }
-        net: <netType> like BaseNetwLayer {
+        net: <netType> like IBaseNetwLayer {
             parameters:
                 @display("p=60,108;i=prot1");
         }
@@ -71,18 +74,18 @@ module LocNode
                 @display("p=60,166;i=iface");
         }
     connections:
-        nic.uppergateOut --> net.lowergateIn;
-        nic.uppergateIn <-- net.lowergateOut;
+        nic.upperGateOut --> net.lowerGateIn;
+        nic.upperGateIn <-- net.lowerGateOut;
         nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
         nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        net.uppergateOut --> loc.lowergateIn;
-        net.uppergateIn <-- loc.lowergateOut;
+        net.upperGateOut --> loc.lowerGateIn;
+        net.upperGateIn <-- loc.lowerGateOut;
         net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> loc.lowerControlIn;
         net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- loc.lowerControlOut;
 
-        loc.uppergateOut --> appl.lowergateIn;
-        loc.uppergateIn <-- appl.lowergateOut;
+        loc.upperGateOut --> appl.lowerGateIn;
+        loc.upperGateIn <-- appl.lowerGateOut;
         loc.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
         loc.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 

@@ -1,11 +1,12 @@
-import BaseApplLayer;
-import BaseAggLayer;
-import BaseNetwLayer;
-import Nic;
-import BaseMobility;
-import BaseArp;
-import BaseBattery;
-import BaseUtility;
+package org.mixim.examples.foxtrot;
+
+import org.mixim.base.modules.BaseApplLayer;
+import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.BaseBattery;
+import org.mixim.base.modules.BaseMobility;
+import org.mixim.base.modules.IBaseNetwLayer;
+import org.mixim.base.modules.BaseUtility;
+
 
 module Node
 {
@@ -42,7 +43,7 @@ module Node
             parameters:
                 @display("p=60,50;i=agg");
         }
-        net: <routingType> like BaseNetwLayer {
+        net: <routingType> like IBaseNetwLayer {
             parameters:
                 @display("p=60,108;i=prot1");
         }
@@ -51,18 +52,18 @@ module Node
                 @display("p=60,166;i=iface");
         }
     connections:
-        nic.uppergateOut --> net.lowergateIn;
-        nic.uppergateIn <-- net.lowergateOut;
+        nic.upperGateOut --> net.lowerGateIn;
+        nic.upperGateIn <-- net.lowerGateOut;
         nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
         nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        net.uppergateOut --> agg.lowergateIn;
-        net.uppergateIn <-- agg.lowergateOut;
+        net.upperGateOut --> agg.lowerGateIn;
+        net.upperGateIn <-- agg.lowerGateOut;
         net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> agg.lowerControlIn;
         net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- agg.lowerControlOut;
 
-        agg.uppergateOut --> appl.lowergateIn;
-        agg.uppergateIn <-- appl.lowergateOut;
+        agg.upperGateOut --> appl.lowerGateIn;
+        agg.upperGateIn <-- appl.lowerGateOut;
         agg.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
         agg.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
         radioIn --> nic.radioIn;

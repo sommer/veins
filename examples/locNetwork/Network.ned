@@ -1,7 +1,9 @@
-import Node;
-import BaseObject;
-import BaseWorldUtility;
-import ConnectionManager;
+package org.mixim.examples.locNetwork;
+
+import org.mixim.base.connectionManager.ConnectionManager;
+import org.mixim.base.modules.BaseObject;
+import org.mixim.base.modules.BaseWorldUtility;
+
 
 module BaseNetwork
 {

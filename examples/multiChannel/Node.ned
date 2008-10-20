@@ -19,14 +19,15 @@
 // **************************************************************************/
 
 
-import BaseApplLayer;
-import BaseArp;
-import BaseNetwLayer;
-import MfNic;
-import ConstSpeedMobility;
-import BaseMobility;
-//"Blackboard",
-import BaseUtility;
+package org.mixim.examples.multiChannel;
+
+import org.mixim.base.modules.BaseApplLayer;
+import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.BaseNetwLayer;
+import org.mixim.base.modules.BaseUtility;
+import org.mixim.modules.mobility.ConstSpeedMobility;
+import org.mixim.modules.nic.MfNic;
+
 
 module Node
 
@@ -74,13 +75,13 @@ module Node
 
         }
     connections:
-        nic.uppergateOut --> net.lowergateIn;
-        nic.uppergateIn <-- net.lowergateOut;
+        nic.upperGateOut --> net.lowerGateIn;
+        nic.upperGateIn <-- net.lowerGateOut;
         nic.upperControlOut --> net.lowerControlIn;
         nic.upperControlIn <-- net.lowerControlOut;
 
-        net.uppergateOut --> appl.lowergateIn;
-        net.uppergateIn <-- appl.lowergateOut;
+        net.upperGateOut --> appl.lowerGateIn;
+        net.upperGateIn <-- appl.lowerGateOut;
         net.upperControlOut --> appl.lowerControlIn;
         net.upperControlIn <-- appl.lowerControlOut;
 

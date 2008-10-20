@@ -1,3 +1,5 @@
+package org.mixim.examples.analogueModels;
+
 simple SimpleMacLayer
 {
     gates:

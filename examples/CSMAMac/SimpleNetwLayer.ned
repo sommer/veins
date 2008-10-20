@@ -1,10 +1,12 @@
+package org.mixim.examples.CSMAMac;
+
 simple SimpleNetwLayer
 {
-	parameters:
-		double ip;
-		bool isSwitch;
-		double maxTtl;
-		double boredTime;
+    parameters:
+        double ip;
+        bool isSwitch;
+        double maxTtl;
+        double boredTime;
     gates:
 
         input lowerGateIn; 	// from the Mac layer

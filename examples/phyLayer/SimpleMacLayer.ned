@@ -1,3 +1,5 @@
+package org.mixim.examples.phyLayer;
+
 simple SimpleMacLayer
 {
     gates:

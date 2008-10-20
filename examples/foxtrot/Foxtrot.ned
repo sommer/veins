@@ -1,6 +1,8 @@
-import Node;
-import BaseWorldUtility;
-import ConnectionManager;
+package org.mixim.examples.foxtrot;
+
+import org.mixim.base.connectionManager.ConnectionManager;
+import org.mixim.base.modules.BaseWorldUtility;
+
 
 module Network
 {

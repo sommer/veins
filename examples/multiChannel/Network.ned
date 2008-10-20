@@ -23,9 +23,11 @@
 // *              by:              $Author: omfw-willkomm $
 // **************************************************************************/
 
-import Node;
-import BaseWorldUtility;
-import ConnectionManager;
+package org.mixim.examples.multiChannel;
+
+import org.mixim.base.connectionManager.ConnectionManager;
+import org.mixim.base.modules.BaseWorldUtility;
+
 
 module Sim
 {

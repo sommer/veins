@@ -1,3 +1,5 @@
+package org.mixim.examples.analogueModels;
+
 simple TestPhyLayer
 {
     parameters:
@@ -19,7 +21,7 @@ simple TestPhyLayer
 
         double timeSleepToRX;
         double timeSleepToTX;
-        
+
         int initialRadioState;
 
     gates:
