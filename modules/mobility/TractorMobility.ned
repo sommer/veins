@@ -16,6 +16,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
+package org.mixim.modules.mobility;
+
 //
 // Moves a tractor through a field with a certain amount of rows.
 // Since the tractor also moves around the field, the tractor travels

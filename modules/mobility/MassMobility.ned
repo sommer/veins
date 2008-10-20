@@ -19,6 +19,8 @@
 //
 
 
+package org.mixim.modules.mobility;
+
 //
 // This is a random mobility model for a mobile host with a mass. It is the
 // one used in "Optimized Smooth Handoffs in Mobile IP" by Perkins & Wang.

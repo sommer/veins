@@ -17,6 +17,8 @@
 // description: propagation layer: unit disk model
 ////////////////////////////////////////////////////////////////////////////
 
+package org.mixim.modules.propagation;
+
 simple UnitDisk
 {
     parameters:

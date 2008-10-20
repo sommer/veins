@@ -18,6 +18,8 @@
 // **************************************************************************/
 
 
+package org.mixim.modules.mobility;
+
 //
 // Controls all movement related things of a host
 //

@@ -17,6 +17,8 @@
 //
 
 
+package org.mixim.modules.mobility;
+
 //
 // A LOGO-style movement model, with the script coming from XML. It can be
 // useful for describing random as well as deterministic scenarios.

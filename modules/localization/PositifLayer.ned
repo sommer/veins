@@ -8,6 +8,8 @@
 // changes PKH: Thu Feb  8 09:26:10 CET 2007
 // - added switch to specify a node as an anchor node
 
+package org.mixim.modules.localization;
+
 simple PositifLayer
 {
     parameters:
@@ -42,12 +44,12 @@ simple PositifLayer
         bool equal_pairs;
         string outputfile;
     gates:
-        input uppergateIn; // from application layer
-        output uppergateOut; // to application layer
+        input upperGateIn; // from application layer
+        output upperGateOut; // to application layer
         input upperControlIn; // control from application layer
         output upperControlOut; // control to application layer
-        input lowergateIn; // from network layer
-        output lowergateOut; // to network layer
+        input lowerGateIn; // from network layer
+        output lowerGateOut; // to network layer
         input lowerControlIn; // control from network layer
         output lowerControlOut; // control to network layer
 }

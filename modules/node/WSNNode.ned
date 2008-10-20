@@ -1,10 +1,13 @@
-import BaseApplLayer;
-import BaseNetwLayer;
-import BaseNic;
-import BaseMobility;
-import BaseArp;
-import BaseBattery;
-import BaseUtility;
+package org.mixim.modules.node;
+
+import org.mixim.base.modules.BaseApplLayer;
+import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.BaseBattery;
+import org.mixim.base.modules.BaseMobility;
+import org.mixim.base.modules.IBaseNetwLayer;
+import org.mixim.base.modules.BaseNic;
+import org.mixim.base.modules.BaseUtility;
+
 
 module WSNNode
 {
@@ -34,7 +37,7 @@ module WSNNode
             parameters:
                 @display("p=60,50;i=app");
         }
-        net: <routingType> like BaseNetwLayer {
+        net: <routingType> like IBaseNetwLayer {
             parameters:
                 @display("p=60,108;i=prot1");
         }
@@ -43,13 +46,13 @@ module WSNNode
                 @display("p=60,166;i=iface");
         }
     connections:
-        nic.uppergateOut --> net.lowergateIn;
-        nic.uppergateIn <-- net.lowergateOut;
+        nic.upperGateOut --> net.lowerGateIn;
+        nic.upperGateIn <-- net.lowerGateOut;
         nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
         nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        net.uppergateOut --> appl.lowergateIn;
-        net.uppergateIn <-- appl.lowergateOut;
+        net.upperGateOut --> appl.lowerGateIn;
+        net.upperGateIn <-- appl.lowerGateOut;
         net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
         net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 

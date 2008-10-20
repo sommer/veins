@@ -1,3 +1,5 @@
+package org.mixim.modules.macOld;
+
 simple EyesMacLayer
 {
     parameters:
@@ -6,12 +8,12 @@ simple EyesMacLayer
         bool lpl;
         volatile double siftNodes;
     gates:
-        input uppergateIn; // from the network layer
-        output uppergateOut; // to the network layer
+        input upperGateIn; // from the network layer
+        output upperGateOut; // to the network layer
         input upperControlIn; // control from the network layer
         output upperControlOut; // control to the network layer
-        input lowergateIn; // from the physical layer
-        output lowergateOut; // to the physical layer
+        input lowerGateIn; // from the physical layer
+        output lowerGateOut; // to the physical layer
         input lowerControlIn; // control from the physical layer
         output lowerControlOut; // control to the physical layer
 }

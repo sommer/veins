@@ -17,6 +17,8 @@
 //
 
 
+package org.mixim.modules.mobility;
+
 //
 // Uses the <position_change> elements of the ANSim tool's
 // trace file.

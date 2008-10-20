@@ -17,6 +17,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
+package org.mixim.modules.mobility;
+
 //
 // This is a linear mobility model with speed, angle and acceleration parameters.
 // Angle only changes when the mobile node hits a wall: then it reflects

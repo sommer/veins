@@ -1,3 +1,5 @@
+package org.mixim.modules.netw;
+
 simple BasicSinkRouting
 {
     parameters:
@@ -6,12 +8,12 @@ simple BasicSinkRouting
         double headerLength; // length of the network packet header (in bits)
         bool autoForward; // automatic forwarding of packets to sink (default: on)
     gates:
-        input uppergateIn; // from application layer
-        output uppergateOut; // to application layer
+        input upperGateIn; // from application layer
+        output upperGateOut; // to application layer
         input upperControlIn; // control from application layer
         output upperControlOut; // control to application layer
-        input lowergateIn; // from NIC
-        output lowergateOut; // to NIC
+        input lowerGateIn; // from NIC
+        output lowerGateOut; // to NIC
         input lowerControlIn; // control from NIC
         output lowerControlOut; // control to NIC
 }

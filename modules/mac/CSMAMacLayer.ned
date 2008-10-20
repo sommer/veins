@@ -19,7 +19,7 @@
 //**************************************************************************/
 
 
-import BaseMacLayer;
+package org.mixim.modules.mac;
 
 //
 // CSMA MAC protocol
@@ -46,10 +46,12 @@ simple CSMAMacLayer
         // contention window
         double contentionWindow;
 
-        
-     	bool coreDebug; // debug switch
+
+        // debug switch
+        // debug switch
+        bool coreDebug; // debug switch
         double headerLength; // length of the MAC packet header (in bits)
-        
+
     gates:
         input upperGateIn; // from net layer
         output upperGateOut; // to net layer
