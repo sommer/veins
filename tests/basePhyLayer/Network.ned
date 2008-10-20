@@ -1,7 +1,9 @@
-import TestHost;
-import ConnectionManager;
-import BaseWorldUtility;
-import TestManager;
+package org.mixim.tests.basePhyLayer;
+
+import org.mixim.base.connectionManager.ConnectionManager;
+import org.mixim.base.modules.BaseWorldUtility;
+import org.mixim.tests.testUtils.TestManager;
+
 
 module Network
 {

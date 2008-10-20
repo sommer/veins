@@ -24,6 +24,8 @@
 //***************************************************************************
 
 
+package org.mixim.tests.blackboard;
+
 simple StateView
 
 {

@@ -1,3 +1,5 @@
+package org.mixim.tests.baseMobility;
+
 simple BaseMobilityTest
 
 {

@@ -1,3 +1,5 @@
+package org.mixim.tests.basePhyLayer;
+
 simple TestPhyLayer
 {
     parameters:
@@ -10,7 +12,7 @@ simple TestPhyLayer
 
         double sensitivity;		//The sensitivity of the physical layer
         double maxTXPower;		//The maximum transimission power of the physical layer
-		
+
 	    //switchTimes:
         double timeRXToTX;
         double timeRXToSleep;
@@ -21,7 +23,7 @@ simple TestPhyLayer
         double timeSleepToRX;
         double timeSleepToTX;
 
-		int initialRadioState;
+        int initialRadioState;
     gates:
         input upperGateIn; 	// from the MAC layer
         output upperGateOut; 	// to the MAC layer

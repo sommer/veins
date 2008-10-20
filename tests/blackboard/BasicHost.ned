@@ -1,10 +1,9 @@
 // empty host to test bb
 
-import StateChanger;
-import StateVisualize;
-import StateView;
-import TestStateSub;
-import BaseUtility;
+package org.mixim.tests.blackboard;
+
+import org.mixim.base.modules.BaseUtility;
+
 
 module BasicHost
 {

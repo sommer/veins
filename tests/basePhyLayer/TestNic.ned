@@ -1,5 +1,4 @@
-import TestPhyLayer;
-import TestMacLayer;
+package org.mixim.tests.basePhyLayer;
 
 module TestNic
 {

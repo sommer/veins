@@ -30,10 +30,9 @@
 //*
 //***************************************************************************
 
-import BaseMobilityTest;
-import BaseUtility;
+package org.mixim.tests.baseMobility;
 
-
+import org.mixim.base.modules.BaseUtility;
 
 
 module TestHost

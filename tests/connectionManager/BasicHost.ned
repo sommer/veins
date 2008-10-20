@@ -23,10 +23,10 @@
 //*              by:              $Author: koepke $
 //***************************************************************************
 
-import TestNic;
-import BaseMobility;
-import BaseUtility;
+package org.mixim.tests.connectionManager;
 
+import org.mixim.base.modules.BaseMobility;
+import org.mixim.base.modules.BaseUtility;
 
 
 // The BasicHost is a compound module that implements a very

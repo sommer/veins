@@ -23,9 +23,11 @@
 //*              by:              $Author: omfw-willkomm $
 //***************************************************************************
 
-import BasicHost;
-import ConnectionManager;
-import BaseWorldUtility;
+package org.mixim.tests.connectionManager;
+
+import org.mixim.base.connectionManager.ConnectionManager;
+import org.mixim.base.modules.BaseWorldUtility;
+
 
 // @author Karl Wessel
 module Network

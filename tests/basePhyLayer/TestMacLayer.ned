@@ -1,3 +1,5 @@
+package org.mixim.tests.basePhyLayer;
+
 simple TestMacLayer
 {
     gates:

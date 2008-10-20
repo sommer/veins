@@ -1,4 +1,4 @@
-import TestPhyLayer;
+package org.mixim.tests.connectionManager;
 
 module TestNic
 {

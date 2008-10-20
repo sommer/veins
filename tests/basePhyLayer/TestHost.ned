@@ -1,6 +1,7 @@
-import TestNic;
-import BaseMobility;
-import BaseUtility;
+package org.mixim.tests.basePhyLayer;
+
+import org.mixim.base.modules.BaseMobility;
+import org.mixim.base.modules.BaseUtility;
 
 
 module TestHost

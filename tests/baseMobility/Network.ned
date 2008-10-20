@@ -31,10 +31,10 @@
 //***************************************************************************
 
 
-import TestHost;
-import CrashHost;
-//  "ConnectionManager",
-import BaseWorldUtility;
+package org.mixim.tests.baseMobility;
+
+import org.mixim.base.modules.BaseWorldUtility;
+
 
 // @author Daniel Willkomm
 module Network

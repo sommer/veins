@@ -24,8 +24,10 @@
 //***************************************************************************
 
 
-import BasicHost;
-import BaseWorldUtility;
+package org.mixim.tests.blackboard;
+
+import org.mixim.base.modules.BaseWorldUtility;
+
 
 module Network
 {
