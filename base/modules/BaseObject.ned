@@ -1,5 +1,4 @@
-import BaseMobility;
-import BaseUtility;
+package org.mixim.base.modules;
 
 module BaseObject
 {

@@ -1,10 +1,4 @@
-import BaseApplLayer;
-import BaseNetwLayer;
-import BaseNic;
-import BaseMobility;
-import BaseArp;
-import BaseBattery;
-import BaseUtility;
+package org.mixim.base.modules;
 
 module BaseNode
 {
@@ -43,13 +37,13 @@ module BaseNode
                 @display("p=60,166;i=iface");
         }
     connections:
-        nic.uppergateOut --> net.lowergateIn;
-        nic.uppergateIn <-- net.lowergateOut;
+        nic.upperGateOut --> net.lowerGateIn;
+        nic.upperGateIn <-- net.lowerGateOut;
         nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
         nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        net.uppergateOut --> appl.lowergateIn;
-        net.uppergateIn <-- appl.lowergateOut;
+        net.upperGateOut --> appl.lowerGateIn;
+        net.upperGateIn <-- appl.lowerGateOut;
         net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
         net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 

@@ -1,11 +1,13 @@
-simple BaseApplLayer
+package org.mixim.base.modules;
+
+moduleinterface BaseApplLayer
 {
     parameters:
         bool debug; // debug switch
         double headerLength; // length of the application message header (in bits)
     gates:
-        input lowergateIn; // from network layer
-        output lowergateOut; // to network layer
+        input lowerGateIn; // from network layer
+        output lowerGateOut; // to network layer
         input lowerControlIn; // control from network layer
         output lowerControlOut; // control to network layer
 }

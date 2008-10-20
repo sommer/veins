@@ -1,3 +1,5 @@
+package org.mixim.base.modules;
+
 simple BaseWorldUtility
 {
     parameters:

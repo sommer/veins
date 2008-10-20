@@ -1,3 +1,5 @@
+package org.mixim.base.modules;
+
 simple BaseUtility
 {
     parameters:

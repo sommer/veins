@@ -1,9 +1,11 @@
+package org.mixim.base.modules;
+
 simple BaseMacLayer
 {
     parameters:
         bool coreDebug; // debug switch
         double headerLength; // length of the MAC packet header (in bits)
-        
+
     gates:
         input upperGateIn; // from net layer
         output upperGateOut; // to net layer

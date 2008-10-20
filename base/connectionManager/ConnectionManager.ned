@@ -18,6 +18,8 @@
 // **************************************************************************/
 
 
+package org.mixim.base.connectionManager;
+
 // Module to control all connection related stuff
 //
 // The central module that coordinates the connections between all

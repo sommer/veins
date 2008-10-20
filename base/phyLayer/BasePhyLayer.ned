@@ -1,7 +1,9 @@
+package org.mixim.base.phyLayer;
+
 simple BasePhyLayer
 {
     parameters:
-    	bool coreDebug;
+        bool coreDebug;
         bool usePropagationDelay; 		//Should transmission delay be simulated?
         double thermalNoise;	//the strength of the thermal noise
 
@@ -20,7 +22,7 @@ simple BasePhyLayer
 
         double timeSleepToRX;
         double timeSleepToTX;
-        
+
         int initialRadioState;
 
     gates:

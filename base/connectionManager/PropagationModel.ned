@@ -1,3 +1,5 @@
+package org.mixim.base.connectionManager;
+
 simple PropagationModel
 {
     parameters:
