@@ -27,13 +27,6 @@ void TestPhyLayer::handleMessage(cMessage* msg) {
 		//events, we only catch them to display some messages telling the
 		//current state of the receiving process
 		switch(frame->getState()) {
-		case FIRST_RECEIVE:
-			log("Received new AirFrame (state=FIRST_RECEIVE)");
-			if(!usePropagationDelay) {
-				log("Since simualtion of propagation delay is disabled we proceed the AirFrame directly to state START_RECEIVE.");
-			}
-			break;
-
 		case START_RECEIVE:
 			log("Received delayed AirFrame (state=START_RECEIVE). Proceeding it directly to RECEIVING state");
 			break;

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <omnetpp.h>
-#include "AirFrame.h"
+#include "AirFrame_m.h"
 
 /**
  * This class is used by the BasePhyLayer to keep track

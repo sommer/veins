@@ -6,17 +6,17 @@
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     framework implementation developed by tkn
  * description: - Base class for physical layers
- *              - if you create your own physical layer, please subclass 
+ *              - if you create your own physical layer, please subclass
  *                from this class and use the sendToChannel() function!!
  **************************************************************************/
 
@@ -29,6 +29,8 @@
 
 #include "BaseModule.h"
 #include "Move.h"
+#include "BaseWorldUtility.h"
+#include "AirFrame_m.h"
 
 #include "BaseConnectionManager.h"
 
@@ -41,7 +43,7 @@
  * layer in a host) has to be derived from this class!!!! And please
  * follow the instructions on how to declare a physical layer in a
  * .ned file in "The Design of a Mobility Framework in OMNeT++"
- * paper. 
+ * paper.
  *
  * Please don't touch this class.
  *
@@ -53,7 +55,7 @@
 class ChannelAccess : public BaseModule
 {
     //Module_Class_Members( ChannelAccess, BaseModule, 0 );
-  
+
 protected:
     /** @brief use sendDirect or not?*/
     bool useSendDirect;
@@ -64,9 +66,16 @@ protected:
     /** @brief debug this core module? */
     bool coreDebug;
 
-    /** @brief Sends a message to all nics connected to this one. Waits
-        delay seconds before sending*/
-    void sendToChannel(cMessage *msg, simtime_t delay);
+    /** @brief Sends a message to all nics connected to this one.*/
+    void sendToChannel(cPacket *msg);
+
+	/** Defines if the physical layer should simulate propagation delay.*/
+	bool usePropagationDelay;
+
+    /**
+	 * Calculates the propagation delay for the passed AirFrame.
+	 */
+	simtime_t calculatePropagationDelay(AirFrame* frame);
 
     /** @brief Last move of this host */
     Move move;
@@ -77,11 +86,14 @@ protected:
      * @brief Is this module already registered with ConnectionManager?
      */
     bool isRegistered;
-    
+
+    /* Pointer to the World Utility, to obtain some global information*/
+	BaseWorldUtility* world;
+
 public:
     /** @brief Register with ConnectionManager and subscribe to hostPos*/
     virtual void initialize(int stage);
-    
+
     /**
      * called by Blackboard to inform of changes
      */
@@ -89,4 +101,4 @@ public:
 };
 
 #endif
- 
+

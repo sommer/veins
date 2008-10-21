@@ -3,31 +3,25 @@
 Define_Module(TestPhyLayer);
 
 void TestPhyLayer::initialize(int stage) {
-	
+
 	//has to be done before decider and analogue models are initialized
-	if(stage == 0) 
+	if(stage == 0)
 		myIndex = getParentModule()->par("id");
-	
+
 	//call BasePhy's initialize
 	BasePhyLayer::initialize(stage);
-	
+
 	if(stage == 0) {
-		
+
 	} else if(stage == 1) {
-		
+
 	}
 }
 
-void TestPhyLayer::handleMessage(cMessage* msg) {	
+void TestPhyLayer::handleMessage(cMessage* msg) {
 	if(msg->getKind() == AIR_FRAME) {
 		AirFrame* frame = static_cast<AirFrame*>(msg);
 		switch(frame->getState()) {
-		case FIRST_RECEIVE:
-			log("Received new AirFrame (state=FIRST_RECEIVE)");
-			if(!usePropagationDelay) {
-				log("Since simualtion of propagation delay is disabled we proceed the AirFrame directly to state START_RECEIVE.");
-			}
-			break;
 		case START_RECEIVE:
 			log("Received delayed AirFrame (state=START_RECEIVE). Proceeding it directly to RECEIVING state");
 			break;
@@ -41,7 +35,7 @@ void TestPhyLayer::handleMessage(cMessage* msg) {
 			break;
 		}
 	}
-	BasePhyLayer::handleMessage(msg);	
+	BasePhyLayer::handleMessage(msg);
 }
 
 void TestPhyLayer::log(std::string msg) {
@@ -52,8 +46,8 @@ AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, Paramete
 	cMsgPar par = params["attenuation"];
 	return new TestAnalogueModel(name, par.doubleValue(), myIndex);
 }
-		
+
 Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
-		
+
 	return new TestDecider(this, myIndex);
 }

@@ -26,13 +26,13 @@
 #include <iostream>
 
 /**
- * @brief 
+ * @brief
  */
 class TestPhyLayer : public ChannelAccess
 {
 
 protected:
-	
+
 	int myAddr(){
 		return findHost()->getIndex();
 	};
@@ -41,9 +41,9 @@ protected:
 		MacPkt* m = new MacPkt;
 		m->setDestAddr(destAddr);
 		m->setSrcAddr(myAddr());
-		sendToChannel(m, 0.0);
+		sendToChannel(m);
 	}
-    
+
 	void assertTrue(std::string msg, bool value) {
 		if (!value) {
 			ev << "FAILED: ";
@@ -64,9 +64,9 @@ public:
 
 	virtual void handleSelfMsg() { assertFalse("This phy layer expects no self-msg!", true); }
 	virtual void handleLowerMsg(int srcAddr) { assertFalse("This phy layer expects no msg!", true); }
-    
+
 protected:
-    
+
 };
 
 #endif

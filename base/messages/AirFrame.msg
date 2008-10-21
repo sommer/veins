@@ -26,11 +26,9 @@ packet AirFrame
 {
     Signal signal;		// Contains the physical data of this AirFrame
 
-    int state = 0; 		// state of the AirFrames, used by the physical layer
+    int state = 1; 		// state of the AirFrames, used by the physical layer
         					// as state machine for delay and transmission duration
         					// simulation
-
-    simtime_t duration; 	// Time it takes to transmit the packet, in simtime units!
 
     int type = 0;		// If type isn't null then this is a control-AirFrame
         					// and type specifies the control type.

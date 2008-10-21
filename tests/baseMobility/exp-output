@@ -2,13 +2,13 @@ OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Lt
 Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../include/: 34
-Loading NED files from ../testUtils/: 1
-Loading NED files from .: 5
+Loading NED files from ../../base/: 20
+Loading NED files from ../../modules: 21
+Loading NED files from ../../tests: 26
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20081007-16:46:19-11292
+Assigned runID=Test1-0-20081020-16:37:12-15913
 Setting up network `bmSim'...
 setupNetwork finished, cParImpl objects in use: 54
 Initializing...

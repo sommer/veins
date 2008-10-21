@@ -2,15 +2,15 @@ OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Lt
 Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../include/: 34
-Loading NED files from ../testUtils/: 1
-Loading NED files from .: 4
+Loading NED files from ../../base/: 20
+Loading NED files from ../../modules/: 21
+Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20081007-16:52:55-11484
+Assigned runID=Test1-0-20081020-16:36:54-15880
 Setting up network `ccSim'...
-setupNetwork finished, cParImpl objects in use: 94
+setupNetwork finished, cParImpl objects in use: 98
 Initializing...
 Initializing module ccSim, stage 0
 Initializing module ccSim.world, stage 0
@@ -597,15 +597,15 @@ OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Lt
 Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../include/: 34
-Loading NED files from ../testUtils/: 1
-Loading NED files from .: 4
+Loading NED files from ../../base/: 20
+Loading NED files from ../../modules/: 21
+Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20081007-16:52:56-11485
+Assigned runID=Test2-0-20081020-16:36:54-15881
 Setting up network `ccSim'...
-setupNetwork finished, cParImpl objects in use: 92
+setupNetwork finished, cParImpl objects in use: 95
 Initializing...
 Initializing module ccSim, stage 0
 Initializing module ccSim.world, stage 0
@@ -1212,15 +1212,15 @@ OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Lt
 Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../include/: 34
-Loading NED files from ../testUtils/: 1
-Loading NED files from .: 4
+Loading NED files from ../../base/: 20
+Loading NED files from ../../modules/: 21
+Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20081007-16:52:56-11486
+Assigned runID=Test3-0-20081020-16:36:54-15883
 Setting up network `ccSim'...
-setupNetwork finished, cParImpl objects in use: 93
+setupNetwork finished, cParImpl objects in use: 97
 Initializing...
 Initializing module ccSim, stage 0
 Initializing module ccSim.world, stage 0
@@ -2540,15 +2540,15 @@ OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Lt
 Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../include/: 34
-Loading NED files from ../testUtils/: 1
-Loading NED files from .: 4
+Loading NED files from ../../base/: 20
+Loading NED files from ../../modules/: 21
+Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20081007-16:52:56-11487
+Assigned runID=Test4-0-20081020-16:36:54-15884
 Setting up network `ccSim'...
-setupNetwork finished, cParImpl objects in use: 91
+setupNetwork finished, cParImpl objects in use: 94
 Initializing...
 Initializing module ccSim, stage 0
 Initializing module ccSim.world, stage 0

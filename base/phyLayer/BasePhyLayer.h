@@ -70,9 +70,6 @@ class BasePhyLayer: public ChannelAccess,
 
 protected:
 
-	/** Defines if the physical layer should simulate propagation delay.*/
-	bool usePropagationDelay;
-
 	/** Defines the strength of the thermal noise.*/
 	double thermalNoise;
 
@@ -136,13 +133,8 @@ protected:
 	cMessage* txOverTimer;
 
 	enum AirFrameStates {
-		/**
-		 * First receive of AirFrame in simulation, not
-		 * necessary real receiving start.
-		 */
-		FIRST_RECEIVE = 0,
 		/** Start of actual receiving process of the AirFrame. */
-		START_RECEIVE,
+		START_RECEIVE = 1,
 		/** AirFrame is being received. */
 		RECEIVING,
 		/** Receiving process over */
@@ -185,11 +177,6 @@ private:
 	 * passed XML-config data.
 	 */
 	void initializeDecider(cXMLElement* xmlConfig);
-
-	/**
-	 * Calculates the propagation delay for the passed AirFrame.
-	 */
-	simtime_t calculatePropagationDelay(AirFrame* frame);
 
 	/**
 	 * @brief Creates and initializes a SimplePathlossModel with the

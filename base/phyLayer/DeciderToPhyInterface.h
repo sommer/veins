@@ -10,7 +10,7 @@
 #include <vector>
 #include <omnetpp.h>
 
-#include "AirFrame.h"
+#include "AirFrame_m.h"
 
 /**
  * See Decider.h for definition of DeciderResult

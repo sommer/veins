@@ -41,6 +41,8 @@ void BasePhyLayer::initialize(int stage) {
 	ChannelAccess::initialize(stage);
 
 	if (stage == 0) {
+		// if using sendDirect, make sure that messages arrive without delay
+		gate("radioIn")->setDeliverOnReceptionStart(true);
 
 		//get gate ids
 		upperGateIn = findGate("upperGateIn");
@@ -51,7 +53,6 @@ void BasePhyLayer::initialize(int stage) {
 		//read simple ned-parameters
 		//	- initialize basic parameters
 
-		usePropagationDelay = readPar("usePropagationDelay", false);
 		thermalNoise = readPar("thermalNoise", 0.0);
 		sensitivity = readPar("sensitivity", 0.0);
 		maxTXPower = readPar("maxTXPower", 1.0);
@@ -458,10 +459,6 @@ void BasePhyLayer::handleAirFrame(cMessage* msg) {
 	AirFrame* frame = static_cast<AirFrame*>(msg);
 
 	switch(frame->getState()) {
-	case FIRST_RECEIVE:
-		handleAirFrameFirstReceive(frame);
-		break;
-
 	case START_RECEIVE:
 		handleAirFrameStartReceive(frame);
 		break;
@@ -477,25 +474,6 @@ void BasePhyLayer::handleAirFrame(cMessage* msg) {
 	default:
 		opp_error( "Unknown AirFrame state: %s", frame->getState());
 		break;
-	}
-}
-
-/**
- * Handles incoming AirFrames with the state FIRST_RECEIVE.
- */
-void BasePhyLayer::handleAirFrameFirstReceive(AirFrame* frame) {
-	frame->setState(START_RECEIVE);
-
-	if(usePropagationDelay) {
-		//calculate delayed signal start
-		simtime_t delay = calculatePropagationDelay(frame);
-		//update signal start in signal
-		frame->getSignal().delaySignalStart(delay);
-		//schedule delayed AirFrame
-		sendSelfMessage(frame, simTime() + delay);
-		//TOTEST: check if correctly delayed (signal and scheduled message)
-	} else {
-		handleAirFrameStartReceive(frame);
 	}
 }
 
@@ -754,7 +732,7 @@ void BasePhyLayer::sendMacPktUp(cMessage* pkt) {
  */
 void BasePhyLayer::sendMessageDown(AirFrame* msg) {
 
-	sendToChannel(msg, 0);
+	sendToChannel(msg);
 }
 
 /**
@@ -835,31 +813,6 @@ BasePhyLayer::~BasePhyLayer() {
 		delete radio;
 	}
 }
-
-//--calculations------------------------------------------
-
-/**
- * Calculates the propagation delay for the passed AirFrame.
- */
-simtime_t BasePhyLayer::calculatePropagationDelay(AirFrame* frame) {
-
-	//TODO: implement correct calculation
-	const Signal& s = frame->getSignal();
-	Move senderPos = s.getMove();
-
-	//very naiv and very wrong calculation, but for now sufficient
-	//double distance = senderPos.startPos.distance(move.startPos);
-
-	// this is the time point when the transmission starts
-	simtime_t actualTime = simTime();
-
-	// this time-point is used to calculate the distance between sending and receiving host
-	double distance = senderPos.getPositionAt(actualTime).distance(move.getPositionAt(actualTime));
-
-	simtime_t delay = distance / BaseWorldUtility::speedOfLight;
-	return delay;
-}
-
 
 //--MacToPhyInterface implementation-----------------------
 

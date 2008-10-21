@@ -2,7 +2,7 @@
 #define TESTGLOBALS_H_
 
 #include <TestModule.h>
-#include <AirFrame.h>
+#include <AirFrame_m.h>
 
 enum {
 	TEST_MACPKT = 12121
