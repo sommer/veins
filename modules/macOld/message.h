@@ -32,7 +32,7 @@ struct MetaData {
 class EyesMacLayer;
 
 /** Class that models a packet in the network stack. */
-class MacPacket : public cMessage {
+class MacPacket : public cPacket {
 	private:
 		/** Meta-data for locating  stored data */
 		MetaData metaData;
@@ -100,7 +100,7 @@ class MacPacket : public cMessage {
 
 		    Creates a copy of this @b MacPacket, taking polymorphism into account.
 		*/
-		virtual cObject* dup() const;
+		virtual cPacket* dup() const;
 		
 		/** Set the @a from field. */
 		void setFrom(int f);
@@ -144,7 +144,7 @@ class RssiMessage : public cMessage {
 		    Creates a copy of this @b RssiMessage, taking polymorphism into
 		    account.
 		*/
-		cObject* dup() const { return new RssiMessage(*this); }
+		cMessage* dup() const { return new RssiMessage(*this); }
 };
 
 #endif

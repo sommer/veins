@@ -68,7 +68,7 @@ class EyesMacLayer: public BaseMacLayer, Timer {
 		
 		    See @b getParameter() for details.
 		*/
-		double getTimeParameter(const char *parameter, double defaultValue = 0.0);
+		simtime_t getTimeParameter(const char *parameter, simtime_t defaultValue = 0);
 		/** Get a double-type implementation-parameter.
 		    @param parameter The parameter name.
 		    @param defaultValue The default value to be used when the parameter
@@ -409,11 +409,11 @@ class EyesMacLayer: public BaseMacLayer, Timer {
 			@param msg Incoming message.
 		*/	
 
-		void handleUpperMsg(cMessage * msg);
+		void handleUpperMsg(cPacket * msg);
 		void handleLowerMsg(cMessage * msg);
 		void handleLowerControl(cMessage * msg);
 
-		double getThenTime(unsigned short ticks);
+		simtime_t getThenTime(unsigned short ticks);
 
 		/* timer stuff */
 

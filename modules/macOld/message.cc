@@ -3,7 +3,7 @@
 #include "mac.h"
 //#include "mixim.h"
 
-MacPacket::MacPacket(EyesMacLayer *mac, const char *name, int kind) :cMessage(name, kind) {
+MacPacket::MacPacket(EyesMacLayer *mac, const char *name, int kind) :cPacket(name, kind) {
 	preamble_time = mac->preamble_time;
 	
 	/* Set all values in the metaData array to -1 */
@@ -15,7 +15,7 @@ MacPacket::MacPacket(EyesMacLayer *mac, const char *name, int kind) :cMessage(na
 	power = 0.0;
 }
 
-MacPacket::MacPacket(const MacPacket &packet) : cMessage(packet){
+MacPacket::MacPacket(const MacPacket &packet) : cPacket(packet){
 	/* Copy Packet specific member variables */
 	from = packet.from;
 	to = packet.to;
@@ -41,7 +41,7 @@ MacPacket::MacPacket(const MacPacket &packet) : cMessage(packet){
 	}
 }
 
-cObject *MacPacket::dup() const {
+cPacket *MacPacket::dup() const {
 	MacPacket *result = new MacPacket(*this);
 	return result;
 }
@@ -135,6 +135,6 @@ void MacPacket::increaseLength(int inc) {
 }
 
 void MacPacket::decreaseLength(int dec) {
-	assert(length() >= dec);
+	assert(getBitLength() >= dec);
 	addBitLength(-dec);
 }

@@ -66,7 +66,7 @@ void EyesMacLayer::initialize(int stage) {
 
 	rssi = 0.0;
 	recv_state = SENSE;
-	EV << "recv state "<<recv_state <<endl;
+	EV << "recv state " << (int)recv_state << endl;
 	send_state = 0;
 	force_sleep = false;
 	initialize();
@@ -147,34 +147,34 @@ void EyesMacLayer::txPacketFail(MacPacket *msg) {
 }
 
 void EyesMacLayer::reg_tx_data(MacPacket* p) {
-	stat_time_tx_data += frameTotalTime(p->length()+headerLength());
+	stat_time_tx_data += frameTotalTime(p->getBitLength()+headerLength());
 }
 
 void EyesMacLayer::reg_rx_overhead(MacPacket* p) {
-	stat_time_rx_overhead += frameTotalTime(p->length()+headerLength());
+	stat_time_rx_overhead += frameTotalTime(p->getBitLength()+headerLength());
 }
 
 void EyesMacLayer::reg_rx_overhear(MacPacket* p) {
-	stat_time_rx_overhear += frameTotalTime(p->length()+headerLength());
+	stat_time_rx_overhear += frameTotalTime(p->getBitLength()+headerLength());
 }
 
 void EyesMacLayer::reg_rx_data(MacPacket* p) {
-	stat_time_rx_data += frameTotalTime(p->length()+headerLength());
+	stat_time_rx_data += frameTotalTime(p->getBitLength()+headerLength());
 }
 
-double EyesMacLayer::getThenTime(unsigned short ticks) {
-	double then = floor(simTime() * 32768.0 /*+ clock_skew*/);
+simtime_t EyesMacLayer::getThenTime(unsigned short ticks) {
+	simtime_t then = simTime() * 32768 /*+ clock_skew*/;
 	then += ticks;
-	return (then /*- clock_skew*/ + 0.0001) / 32768.0;
+	return (then /*- clock_skew*/) / 32768;
 }
 
 void EyesMacLayer::setTimeout(int ticks, int which) {
 	assert(ticks > 0);
 	assert(which >= 0 && which < TIMERS);
 	// the actual timeout occurs at the next tb tick
-	double thenTime = getThenTime(ticks);
+	simtime_t thenTime = getThenTime(ticks);
 	assert(thenTime > simTime());
-	double val = thenTime - simTime();
+	simtime_t val = thenTime - simTime();
 	setTimer(which, val);
 	EV << "setting timer "<<which<<" for " << thenTime<<endl;
 }
@@ -197,8 +197,7 @@ void EyesMacLayer::handleTimer(unsigned int index) {
 		internalTimeout();
 }
 
-void EyesMacLayer::handleUpperMsg(cMessage * msg)
-{
+void EyesMacLayer::handleUpperMsg(cPacket * msg) {
 	MacPacket *packet = new MacPacket(this,"upper msg", TX);
 	MacControlInfo *cinfo = dynamic_cast<MacControlInfo*>(msg->getControlInfo());
 	packet->encapsulate(msg);
@@ -253,7 +252,7 @@ void EyesMacLayer::handleLowerMsg(cMessage* msg)
 
 	assert(packet);
 	if (packet->serial != -1)
-		printf("MAPPER: RX, %d %f %d %d", macid(), simTime(), packet->serial, packet->local_from);
+		printf("MAPPER: RX, %d %s %d %d", macid(), SIMTIME_STR(simTime()), packet->serial, packet->local_from);
 	rx(packet);
 }
 
@@ -275,13 +274,13 @@ void EyesMacLayer::internalTimeout() {
 				// nothing interesting detected
 				setRadioSleepInternal();
 				recv_state = SLEEP;
-				EV << "recv state "<<recv_state <<endl;
+				EV << "recv state " << (int)recv_state << endl;
 				setInternalTimeout(off_time);
 			} else {
 				// may have found a preamble
 				printf("channel busy, starting preamble search");
 				recv_state = PREAMBLE_DETECT;
-				EV << "recv state "<<recv_state <<endl;
+				EV << "recv state " << (int)recv_state << endl;
 				setInternalTimeout((int) (off_time+on_time+ceil(PREAMBLE_TIME*32768.0)));
 			}
 			break;
@@ -297,7 +296,7 @@ void EyesMacLayer::internalTimeout() {
 			rxFailed();     
 			setRadioSleepInternal();
 			recv_state = SLEEP;
-			EV << "recv state "<<recv_state <<endl;
+			EV << "recv state " << (int)recv_state << endl;
 			setInternalTimeout(off_time);
 			break;
 		case SLEEP:
@@ -312,7 +311,7 @@ void EyesMacLayer::internalTimeout() {
 void EyesMacLayer::setInternalTimeout(int ticks) {
 	assert(lpl);
 	assert(ticks > 0);
-	double thenTime = getThenTime(ticks);
+	simtime_t thenTime = getThenTime(ticks);
 	assert(thenTime > simTime());
 	setTimer(TIMERS, thenTime - simTime());
 }
@@ -331,7 +330,7 @@ void EyesMacLayer::setRadioListen() {
 		cancelInternalTimeout();
 		setInternalTimeout(on_time);
 		recv_state = SENSE;
-		EV << "recv state "<<recv_state <<endl;
+		EV << "recv state " << (int)recv_state << endl;
 	}
 }
 
@@ -340,7 +339,7 @@ void EyesMacLayer::setRadioTransmit() {
 	sendControlDown(msg);
 	if (lpl) {
 		cancelInternalTimeout();
-		EV << "recv state "<<recv_state <<endl;
+		EV << "recv state " << (int)recv_state << endl;
 		recv_state = SLEEP;
 		force_sleep = false;
 	}
@@ -350,7 +349,7 @@ void EyesMacLayer::setRadioSleep() {
 	setRadioSleepInternal();
 	if(lpl) {
 		cancelInternalTimeout();
-		EV << "recv state "<<recv_state <<endl;
+		EV << "recv state " << (int)recv_state << endl;
 		recv_state = SLEEP;
 		force_sleep = false;
 	}
@@ -370,7 +369,7 @@ void EyesMacLayer::txDone() {
 void EyesMacLayer::rxStart() {
 	//TODO: should it also allow the SENSE state ?
 	assert(recv_state == PREAMBLE_DETECT || recv_state == SENSE);
-	EV << "recv state "<<recv_state <<endl;
+	EV << "recv state " << (int)recv_state << endl;
 	EV << "starting rx"<<endl;
 	recv_state = FRAME;
 	if (lpl)
@@ -381,7 +380,7 @@ void EyesMacLayer::rxStart() {
 void EyesMacLayer::rxFail() {
 	if (lpl) {
 		if (recv_state == FRAME) {
-			EV << "recv state "<<recv_state <<endl;
+			EV << "recv state " << (int)recv_state << endl;
 			recv_state = SLEEP;
 			setRadioSleepInternal();
 			setInternalTimeout(off_time);
@@ -389,7 +388,7 @@ void EyesMacLayer::rxFail() {
 		}
 	} else
 	{
-		EV << "recv state "<<recv_state <<endl;
+		EV << "recv state " << (int)recv_state << endl;
 		recv_state = SENSE;
 	}
 	rxFailed(); // relay to implementation
@@ -406,21 +405,21 @@ void EyesMacLayer::rx(MacPacket * msg) {
 	if (lpl) {
 		// the transmitter will be on for a little while longer
 		recv_state = SLEEP;
-		EV << "recv state "<<recv_state <<endl;
+		EV << "recv state " << (int)recv_state << endl;
 		setRadioSleepInternal();
 		setInternalTimeout(2);
 		force_sleep = true;
 	} else
 	{
 		recv_state = SENSE;
-		EV << "recv state "<<recv_state <<endl;
+		EV << "recv state " << (int)recv_state << endl;
 	}
 
 	rxFrame(msg); // relay to implementation
 }
 
 void EyesMacLayer::reg_tx_overhead(MacPacket *p) {
-	stat_time_tx_overhead += frameTotalTime(p->length() + headerLength());
+	stat_time_tx_overhead += frameTotalTime(p->getBitLength() + headerLength());
 }
 
 int EyesMacLayer::siftSlot(int low, int high) {
@@ -525,7 +524,7 @@ void EyesMacLayer::printf_clr(const char *fmt, ...) {
 	vasprintf(&pbuf, fmt, va);
 	va_end(va);
 
-	EV_clear << pbuf;
+	EV/*_clear*/ << pbuf;
 	free(pbuf);
 }
 
@@ -557,13 +556,13 @@ string EyesMacLayer::getStringParameter(const char *parameter, string defaultVal
 	return result.empty() ? defaultValue : result;
 }
 
-double EyesMacLayer::getTimeParameter(const char *parameter, double defaultValue) {
+simtime_t EyesMacLayer::getTimeParameter(const char *parameter, simtime_t defaultValue) {
 	string result = getParameter(parameter);
 
 	if (result.empty())
 		return defaultValue;
 	
-	return strToSimtime(result.c_str());
+	return STR_SIMTIME(result.c_str());
 }
 
 double EyesMacLayer::getDoubleParameter(const char *parameter, double defaultValue) {
@@ -611,6 +610,6 @@ bool EyesMacLayer::getBoolParameter(const char *parameter, bool defaultValue) {
 }
 
 unsigned short EyesMacLayer::getCurrentTime() {
-	return (unsigned short)( simTime() * 32768.0 /*+ clock_skew */);
+	return (unsigned short)( simTime().raw() * 32768 /*+ clock_skew */);
 }
 
