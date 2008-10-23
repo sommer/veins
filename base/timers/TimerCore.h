@@ -31,7 +31,7 @@ class TimerCore: public BaseModule
 			@param index Timer number to set.
 			@param when Time in seconds in the future to fire the timer
 		 */
-		void setTimer(unsigned int index, double when);
+		void setTimer(unsigned int index, simtime_t when);
 
 		/** Set a timer to fire at a point in the future.
 			Auto-generates a timer id that's guaranteed not to have been used by anyone else.
@@ -39,7 +39,7 @@ class TimerCore: public BaseModule
 			@param when Time in seconds in the future to fire the timer
 			@return Timer id
 		 */
-		unsigned int setTimer(double when);
+		unsigned int setTimer(simtime_t when);
 
 		/** Cancel an existing timer set by @b setTimer()
 			If the timer has not been set, or has already fires, this does nothing

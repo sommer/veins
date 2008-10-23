@@ -25,7 +25,7 @@ void TimerCore::init(Timer *owner)
 	destructors = new std::map<unsigned int,cleanup *>();
 }
 
-unsigned int TimerCore::setTimer(double when)
+unsigned int TimerCore::setTimer(simtime_t when)
 {
 	unsigned int key = timers->size();
 	while (timers->find(key)!=timers->end())
@@ -34,7 +34,7 @@ unsigned int TimerCore::setTimer(double when)
 	return key;
 }
 
-void TimerCore::setTimer(unsigned int index, double when)
+void TimerCore::setTimer(unsigned int index, simtime_t when)
 {
 	Enter_Method_Silent();
 	cMessage *timer;

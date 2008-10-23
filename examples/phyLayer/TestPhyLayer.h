@@ -63,8 +63,8 @@ private:
 		int myIndex;
 		std::string myName;
 		
-		TestAnalogueModel(std::string name, double attenuation, int myIndex):
-			att(attenuation), myName(name), myIndex(myIndex) {}
+		TestAnalogueModel(std::string name, double attenuation, int index):
+			att(attenuation), myIndex(index), myName(name) {}
 		
 		void filterSignal(Signal& s) {
 			log("Filtering signal.");

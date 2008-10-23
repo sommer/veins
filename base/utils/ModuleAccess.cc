@@ -19,9 +19,9 @@
 
 #include "ModuleAccess.h"
 
-static cModule *findSubmodRecursive(cModule *curmod, const char *name, const char *classname)
+static cModule *findSubmodRecursive(const cModule *curmod, const char *name, const char *classname)
 {
-    for (cSubModIterator i(*curmod); !i.end(); i++)
+    for (cModule::SubmoduleIterator i(curmod); !i.end(); i++)
     {
         cModule *submod = i();
         if (!strcmp(submod->getFullName(), name))

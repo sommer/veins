@@ -5,11 +5,6 @@
 # set root directory
 ROOT=`pwd`
 
-if [ ! -f omnetppconfig ]; then
-	# make omnetppconfig if it doesn't exist
-	opp_makemake -f --genconfig omnetppconfig
-fi	
-
 # copy lib makefrag for linux
 (cd $ROOT/lib && cp makefrag.linux makefrag)
 

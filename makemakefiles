@@ -56,7 +56,7 @@ all:
 #	@cd $(ROOT)/base/localization && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 
 	@echo $(ROOT)/modules
-	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) $(MODULES_OPTS) -K MIXIMROOT=$(ROOT) --deep -o libmiximmodules -s -X phy -X channel -X localization -X macOld
+	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) $(MODULES_OPTS) -K MIXIMROOT=$(ROOT) --deep -o libmiximmodules -s -X phy -X channel -X localization
 	
 	
 #	@echo $(ROOT)/modules

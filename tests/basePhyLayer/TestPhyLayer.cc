@@ -184,8 +184,8 @@ void TestPhyLayer::testInitialisation() {
 	}
 
 	assertTrue("Check attenuation value of AnalogueModels.",
-				FWMath::close(att1, 1.1) && FWMath::close(att2, 2.1)
-				|| FWMath::close(att1, 2.1) && FWMath::close(att2, 1.1));
+				(FWMath::close(att1, 1.1) && FWMath::close(att2, 2.1))
+				|| (FWMath::close(att1, 2.1) && FWMath::close(att2, 1.1)));
 
 	//check initialisation of timers
 	assertNotEqual("Check initialisation of TX-OVER timer", (void*)0, txOverTimer);
