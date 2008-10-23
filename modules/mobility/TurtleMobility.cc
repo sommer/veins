@@ -209,7 +209,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
             error("<wait>: required attribute 't' missing at %s", stmt->getSourceLocation());
         simtime_t t = getValue(tAttr);
         if (t<0)
-            error("<wait>: time (attribute t) is negative (%g) at %s", t, stmt->getSourceLocation());
+            error("<wait>: time (attribute t) is negative (%s) at %s", SIMTIME_STR(t), stmt->getSourceLocation());
         targetTime += t;  // targetPos is unchanged
     }
     else if (!strcmp(tag,"moveto"))
