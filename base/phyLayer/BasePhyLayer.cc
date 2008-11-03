@@ -208,6 +208,8 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 		ev << "Could not find a decider with the name \"" << name << "\"." << endl;
 		return;
 	}
+
+	coreEV << "Decider \"" << name << "\" loaded." << endl;
 }
 
 /**
@@ -295,6 +297,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 		// attach the new AnalogueModel to the AnalogueModelList
 		analogueModels.push_back(newAnalogueModel);
 
+		coreEV << "AnalogueModel \"" << name << "\" loaded." << endl;
 
 	} // end iterator loop
 
@@ -481,6 +484,7 @@ void BasePhyLayer::handleAirFrame(cMessage* msg) {
  * Handles incoming AirFrames with the state START_RECEIVE.
  */
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
+	coreEV << "Received new AirFrame with ID " << frame->getId() << " from channel" << endl;
 	channelInfo.addAirFrame(frame, simTime());
 
 	filterSignal(frame->getSignal());
@@ -510,6 +514,7 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 	Signal& signal = frame->getSignal();
 	simtime_t nextHandleTime = decider->processSignal(frame);
 
+	assert(signal.getSignalLength() == frame->getDuration());
 	simtime_t signalEndTime = signal.getSignalStart() + frame->getDuration();
 
 	//check if this is the end of the receiving process
@@ -530,6 +535,8 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 								SIMTIME_DBL(simTime()), SIMTIME_DBL(signalEndTime), SIMTIME_DBL(nextHandleTime));
 	}
 
+	coreEV << "Handed AirFrame with ID " << frame->getId() << " to Decider. Next handling in " << nextHandleTime - simTime() << "s." << endl;
+
 	sendSelfMessage(frame, nextHandleTime);
 }
 
@@ -537,6 +544,8 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
  * Handles incoming AirFrames with the state END_RECEIVE.
  */
 void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
+	coreEV << "End of Airframe with ID " << frame->getId() << "." << endl;
+
 	channelInfo.removeAirFrame(frame);
 
 	/* clean information in the radio until earliest time-point
@@ -908,6 +917,8 @@ void BasePhyLayer::sendControlMsg(cMessage* msg) {
  * the corresponding DeciderResult up to the MACLayer
  */
 void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult result) {
+
+	coreEV << "Decapsulating MacPacket from Airframe with ID " << frame->getId() << " and sending it up to MAC." << endl;
 
 	cMessage* packet = frame->decapsulate();
 
