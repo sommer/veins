@@ -1,5 +1,5 @@
 OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -8,7 +8,7 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20081020-16:49:15-16277
+Assigned runID=Test1-0-20081103-12:02:40-15186
 Setting up network `tbpSim'...
 setupNetwork finished, cParImpl objects in use: 85
 Initializing...
@@ -105,35 +105,35 @@ Passed: Correct switch time to RX.
 Passed: Invalid switchtime because already switching.
 
 Running simulation...
-** Event #1  T=0.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #1  T=0   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 0s
 Passed: [decider0] - Expected "ChannelSense at decider.": kind = 22002, arrival = 0s
-** Event #2  T=0.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #2  T=0.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 0.5s
 Passed: [decider0] - Expected "Scheduled sense request.": kind = 22002, arrival = 0.5s
-** Event #3  T=0.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #3  T=0.5   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
 Passed: [mac0] - Expected "Sense request answer at mac.": kind = 22002, arrival = 0.5s
-** Event #4  T=3.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #4  T=3   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "SWITCH_OVER message at phy.": kind = 22001, arrival = 3s
-** Event #5  T=3.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #5  T=3   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
 Passed: [mac0] - Expected "SWITCH_OVER message.": kind = 22001, arrival = 3s
 Passed: Radio starts in SLEEP.
 Passed: Correct switch time to RX.
 Passed: Invalid switchtime because already switching.
-** Event #6  T=3.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #6  T=3   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 3s
 Passed: [decider0] - Expected "ChannelSense at decider.": kind = 22002, arrival = 3s
-** Event #7  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #7  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 3.5s
 Passed: [decider0] - Expected "Scheduled sense request.": kind = 22002, arrival = 3.5s
-** Event #8  T=3.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #8  T=3.5   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
 Passed: [mac0] - Expected "Sense request answer at mac.": kind = 22002, arrival = 3.5s
-** Event #9  T=4.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #9  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "SWITCH_OVER message at phy.": kind = 22001, arrival = 4.5s
-** Event #10  T=4.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #10  T=4.5   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
 Passed: [mac0] - Expected "SWITCH_OVER message.": kind = 22001, arrival = 4.5s
 Passed: Radio is not in TX.
-** Event #11  T=4.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #11  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4.5s
 
 <!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy (id=9): User error: Error: message for sending received, but radio not in state TX.
@@ -141,7 +141,7 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4.5s
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20081020-16:49:15-16277
+Assigned runID=Test1-1-20081103-12:02:40-15186
 Setting up network `tbpSim'...
 setupNetwork finished, cParImpl objects in use: 86
 Initializing...
@@ -228,24 +228,24 @@ Initializing module tbpSim.node[0].nic.mac, stage 1
 Passed: A valid switch time.
 
 Running simulation...
-** Event #1  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #1  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arrival = 3.5s
-** Event #2  T=3.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #2  T=3.5   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
 Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 3.5s
 Passed: Radio is in TX.
-** Event #3  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #3  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 3.5s
-** Event #4  T=4.  (TestMacLayer) tbpSim.node[0].nic.mac (id=10)
+** Event #4  T=4   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
 Passed: [mac0] - Expected "Waiting for 0.5s.": kind = 23242, arrival = 4s
-** Event #5  T=4.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=9)
+** Event #5  T=4   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4s
 
 <!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy (id=9): User error: Error: message for sending received, but radio already sending.
 
 
-End run of OMNeT++
+End.
 OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -254,7 +254,7 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20081020-16:49:15-16278
+Assigned runID=Test2-0-20081103-12:02:40-15187
 Setting up network `tbpSim'...
 setupNetwork finished, cParImpl objects in use: 85
 Initializing...
@@ -566,48 +566,48 @@ Initializing module tbpSim.node[3].nic.mac, stage 1
 Passed: No AirFrames on channel.
 
 Running simulation...
-** Event #1  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
+** Event #1  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
 Passed: [phy0] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arrival = 3.5s
-** Event #2  T=3.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=13)
+** Event #2  T=3.5   tbpSim.node[0].nic.mac (TestMacLayer, id=13)
 Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 3.5s
-** Event #3  T=3.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
+** Event #3  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
 Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 3.5s
-** Event #4  T=3.5.  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
+** Event #4  T=3.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
 Passed: [phy1] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
 Passed: [decider1] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
 Passed: AirFrames on channel.
-** Event #5  T=3.5.  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
+** Event #5  T=3.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
 Passed: [phy2] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
 Passed: [decider2] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
 Passed: AirFrames on channel.
-** Event #6  T=3.5.  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
+** Event #6  T=3.5   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
 Passed: [phy3] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
 Passed: [decider3] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
 Passed: AirFrames on channel.
-** Event #7  T=3.6.  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
+** Event #7  T=3.6   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
 Passed: [phy1] - Expected "Scheduled AirFrame to Pseudoheader at phy."
 Passed: [decider1] - Expected "Scheduled AirFrame to Pseudoheader."
-** Event #8  T=3.6.  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
+** Event #8  T=3.6   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
 Passed: [phy2] - Expected "Scheduled AirFrame to Pseudoheader at phy."
 Passed: [decider2] - Expected "Scheduled AirFrame to Pseudoheader."
-** Event #9  T=3.6.  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
+** Event #9  T=3.6   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
 Passed: [phy3] - Expected "Scheduled AirFrame to Pseudoheader at phy."
 Passed: [decider3] - Expected "Scheduled AirFrame to Pseudoheader."
-** Event #10  T=3.6.  (TestMacLayer) tbpSim.node[1].nic.mac (id=18)
+** Event #10  T=3.6   tbpSim.node[1].nic.mac (TestMacLayer, id=18)
 Passed: [mac1] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
-** Event #11  T=3.6.  (TestMacLayer) tbpSim.node[2].nic.mac (id=23)
+** Event #11  T=3.6   tbpSim.node[2].nic.mac (TestMacLayer, id=23)
 Passed: [mac2] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
-** Event #12  T=3.6.  (TestMacLayer) tbpSim.node[3].nic.mac (id=28)
+** Event #12  T=3.6   tbpSim.node[3].nic.mac (TestMacLayer, id=28)
 Passed: [mac3] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
-** Event #13  T=4.5.  (TestPhyLayer) tbpSim.node[0].nic.phy (id=12)
+** Event #13  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
 Passed: [phy0] - Expected "Transmission over message at phy": kind = 5, arrival = 4.5s
-** Event #14  T=4.5.  (TestPhyLayer) tbpSim.node[1].nic.phy (id=17)
+** Event #14  T=4.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
 Passed: [phy1] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
-** Event #15  T=4.5.  (TestPhyLayer) tbpSim.node[2].nic.phy (id=22)
+** Event #15  T=4.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
 Passed: [phy2] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
-** Event #16  T=4.5.  (TestPhyLayer) tbpSim.node[3].nic.phy (id=27)
+** Event #16  T=4.5   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
 Passed: [phy3] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
-** Event #17  T=4.5.  (TestMacLayer) tbpSim.node[0].nic.mac (id=13)
+** Event #17  T=4.5   tbpSim.node[0].nic.mac (TestMacLayer, id=13)
 Passed: [mac0] - Expected "Transmission over message from phy": kind = 5, arrival = 4.5s
 
 <!> No more events -- simulation ended.
@@ -615,4 +615,4 @@ Passed: [mac0] - Expected "Transmission over message from phy": kind = 5, arriva
 
 Calling finish() at end of Run #0...
 
-End run of OMNeT++
+End.

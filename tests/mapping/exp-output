@@ -1,5 +1,5 @@
 OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -8,7 +8,7 @@ Loading NED files from ../../tests: 26
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20081020-16:38:21-16014
+Assigned runID=General-0-20081103-12:04:01-15245
 Setting up network `OmnetTest'...
 setupNetwork finished, cParImpl objects in use: 0
 Initializing...
@@ -369,35 +369,35 @@ Passed: f*1-2 2:: hasNext() at (3.11)
 Passed: f*1-2 2:: inRange() at (3.11)
 Passed: f*1-2 2:: currentPos() at (3.11)
 Passed: f*1-2 2:: nextPos() at (3.11)
-FAILED: f*1-2 2:: getValue() at (3.11): value was '9.01034' instead of '107.268'
+Passed: f*1-2 2:: getValue() at (3.11)
 Passed: f*1-2 2:: Equal with function at (3.11)
 Passed: f*1-2 3:: hasNext() at (3.61)
 Passed: f*1-2 3:: inRange() at (3.61)
 Passed: f*1-2 3:: currentPos() at (3.61)
 Passed: f*1-2 3:: nextPos() at (3.61)
-FAILED: f*1-2 3:: getValue() at (3.61): value was '11.9095' instead of '155.835'
+Passed: f*1-2 3:: getValue() at (3.61)
 Passed: f*1-2 3:: Equal with function at (3.61)
 Passed: f*1-2 4:: hasNext() at (4.11)
 Passed: f*1-2 4:: inRange() at (4.11)
 Passed: f*1-2 4:: currentPos() at (4.11)
 Passed: f*1-2 4:: nextPos() at (4.11)
-FAILED: f*1-2 4:: getValue() at (4.11): value was '16.7414' instead of '236.78'
+Passed: f*1-2 4:: getValue() at (4.11)
 Passed: f*1-2 4:: Equal with function at (4.11)
 Passed: f*1-2 5:: hasNext() at (5)
 Passed: f*1-2 5:: inRange() at (5)
 Passed: f*1-2 5:: currentPos() at (5)
 Passed: f*1-2 5:: nextPos() at (5)
-FAILED: f*1-2 5:: getValue() at (5): value was '12.7931' instead of '201.88'
+Passed: f*1-2 5:: getValue() at (5)
 Passed: f*1-2 5:: Equal with function at (5)
 Passed: f*1-2 6:: hasNext() at (6)
 Passed: f*1-2 6:: inRange() at (6)
 Passed: f*1-2 6:: currentPos() at (6)
-FAILED: f*1-2 6:: getValue() at (6): value was '6' instead of '103.92'
+Passed: f*1-2 6:: getValue() at (6)
 Passed: f*1-2 6:: Equal with function at (6)
 Passed: f*1-2 7:: hasNext() at (7)
 Passed: f*1-2 7:: inRange() at (7)
 Passed: f*1-2 7:: currentPos() at (7)
-FAILED: f*1-2 7:: getValue() at (7): value was '6' instead of '103.92'
+Passed: f*1-2 7:: getValue() at (7)
 Passed: f*1-2 7:: Equal with function at (7)
 --------TimeMapping tests done.---------------------------------------------------
 Passed: Dimension of f
@@ -3613,4 +3613,4 @@ Running simulation...
 
 Calling finish() at end of Run #0...
 
-End run of OMNeT++
+End.

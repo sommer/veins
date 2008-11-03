@@ -1,5 +1,5 @@
 OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -8,7 +8,7 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20081020-16:37:29-15933
+Assigned runID=General-0-20081103-12:01:12-15121
 Setting up network `sim'...
 setupNetwork finished, cParImpl objects in use: 34
 Initializing...
@@ -31,43 +31,43 @@ Initializing module sim.node[0].testparam, stage 1
 Initializing module sim.world, stage 1
 
 Running simulation...
-** Event #1  T=1.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #1  T=1   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to DEAD
 StateView::receiveBBItem Host state changed to DEAD
 TestStateSub::receiveBBItem test param changed to RED
-** Event #2  T=2.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #2  T=2   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to AWAKE
 StateView::receiveBBItem Host state changed to AWAKE
 TestStateSub::receiveBBItem test param changed to GREEN
-** Event #3  T=3.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #3  T=3   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to SLEEP
 StateView::receiveBBItem Host state changed to SLEEP
 TestStateSub::receiveBBItem test param changed to BLUE
-** Event #4  T=4.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #4  T=4   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to DEAD
 StateView::receiveBBItem Host state changed to DEAD
 TestStateSub::receiveBBItem test param changed to RED
-** Event #5  T=5.  (StateView) sim.node[0].stateview (id=7)
+** Event #5  T=5   sim.node[0].stateview (StateView, id=7)
 StateView::handleMessage unsubscribed HostState
-** Event #6  T=5.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #6  T=5   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to AWAKE
 StateView::receiveBBItem Host state changed to AWAKE
 TestStateSub::receiveBBItem test param changed to GREEN
-** Event #7  T=6.  (TestStateSub) sim.node[0].testparam (id=8)
+** Event #7  T=6   sim.node[0].testparam (TestStateSub, id=8)
 TestStatSub::handleMessage unsubscribed TestParam
-** Event #8  T=6.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #8  T=6   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to SLEEP
 StateView::receiveBBItem Host state changed to SLEEP
-** Event #9  T=7.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #9  T=7   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to DEAD
 StateView::receiveBBItem Host state changed to DEAD
-** Event #10  T=8.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #10  T=8   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to AWAKE
 StateView::receiveBBItem Host state changed to AWAKE
-** Event #11  T=9.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #11  T=9   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to SLEEP
 StateView::receiveBBItem Host state changed to SLEEP
-** Event #12  T=10.  (StateChanger) sim.node[0].statechanger (id=5)
+** Event #12  T=10   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to DEAD
 StateView::receiveBBItem Host state changed to DEAD
 
@@ -76,4 +76,4 @@ StateView::receiveBBItem Host state changed to DEAD
 
 Calling finish() at end of Run #0...
 
-End run of OMNeT++
+End.

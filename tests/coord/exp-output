@@ -1,5 +1,5 @@
 OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: 4.0b6, build: 0809191522-9282, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -8,7 +8,7 @@ Loading NED files from ../../tests: 26
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20081020-16:38:07-15986
+Assigned runID=General-0-20081103-12:03:11-15228
 Setting up network `OmnetTest'...
 setupNetwork finished, cParImpl objects in use: 0
 Initializing...
@@ -145,4 +145,4 @@ Running simulation...
 
 Calling finish() at end of Run #0...
 
-End run of OMNeT++
+End.
