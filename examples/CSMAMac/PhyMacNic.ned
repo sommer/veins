@@ -13,6 +13,10 @@ module PhyMacNic
 
         @display("bgb=101,200,white,,;bgp=10,10");
     gates:
+    	input upperGateIn;
+    	output upperGateOut;
+    	input upperControlIn;
+    	output upperControlOut;
         input radioIn; // radioIn gate for sendDirect
 
     submodules:
@@ -28,15 +32,12 @@ module PhyMacNic
         	//display: "p=60,70;i=prot3";
 
         }
-        net: SimpleNetwLayer {
-            parameters:
-                @display("p=60,10;b=80,30,rect,white,,");
-        }
+        
     connections:
-        mac.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> net.lowerGateIn;
-        mac.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- net.lowerGateOut;
-        mac.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> net.lowerControlIn;
-        mac.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- net.lowerControlOut;
+    	mac.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperGateOut;
+        mac.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- upperGateIn;
+        mac.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> upperControlOut;
+        mac.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- upperControlIn;
 
         phy.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerGateIn;
         phy.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- mac.lowerGateOut;
