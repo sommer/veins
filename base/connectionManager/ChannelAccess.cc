@@ -79,17 +79,13 @@ void ChannelAccess::sendToChannel(cPacket *msg)
     const NicEntry::GateList& gateList = cc->getGateList( getParentModule()->getId());
     NicEntry::GateList::const_iterator i = gateList.begin();
 
-	//calculate delayed signal start
-	simtime_t delay;
-	if(usePropagationDelay)
-		delay = calculatePropagationDelay((AirFrame *) msg);
-	else
-		delay = 0;
-
     if(useSendDirect){
         // use Andras stuff
         if( i != gateList.end() ){
+        	simtime_t delay = 0;
             for(; i != --gateList.end(); ++i){
+            	//calculate delay (Propagation) to this receiving nic
+            	delay = calculatePropagationDelay(i->first);
 
                 int radioStart = i->second->getId();
                 int radioEnd = radioStart + i->second->size();
@@ -97,6 +93,9 @@ void ChannelAccess::sendToChannel(cPacket *msg)
                     sendDirect(static_cast<cPacket*>(msg->dup()),
                                delay, msg->getDuration(), i->second->getOwnerModule(), g);
             }
+            //calculate delay (Propagation) to this receiving nic
+			delay = calculatePropagationDelay(i->first);
+
             int radioStart = i->second->getId();
             int radioEnd = radioStart + i->second->size();
             for (int g = radioStart; g != --radioEnd; ++g)
@@ -114,10 +113,17 @@ void ChannelAccess::sendToChannel(cPacket *msg)
         // use our stuff
         coreEV <<"sendToChannel: sending to gates\n";
         if( i != gateList.end() ){
+        	simtime_t delay = 0;
             for(; i != --gateList.end(); ++i){
+            	//calculate delay (Propagation) to this receiving nic
+				delay = calculatePropagationDelay(i->first);
+
                 sendDelayed( static_cast<cPacket*>(msg->dup()),
                              delay, i->second );
             }
+            //calculate delay (Propagation) to this receiving nic
+			delay = calculatePropagationDelay(i->first);
+
             sendDelayed( msg, delay, i->second );
         }
         else{
@@ -145,7 +151,7 @@ void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scope
         else {
             // register the nic with ConnectionManager
             // returns true, if sendDirect is used
-            useSendDirect = cc->registerNic(getParentModule(), &m.startPos);
+            useSendDirect = cc->registerNic(getParentModule(), this, &m.startPos);
             isRegistered = true;
         }
         move = m;
@@ -156,11 +162,12 @@ void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scope
 /**
  * Calculates the propagation delay for the passed AirFrame.
  */
-simtime_t ChannelAccess::calculatePropagationDelay(AirFrame* frame) {
+simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic) {
+	if(!usePropagationDelay)
+		return 0;
 
-	//TODO: implement correct calculation
-	const Signal& s = frame->getSignal();
-	Move senderPos = s.getMove();
+	//receiver host move
+	const Move& recvPos = nic->chAccess->move;
 
 	//very naiv and very wrong calculation, but for now sufficient
 	//double distance = senderPos.startPos.distance(move.startPos);
@@ -169,7 +176,7 @@ simtime_t ChannelAccess::calculatePropagationDelay(AirFrame* frame) {
 	simtime_t actualTime = simTime();
 
 	// this time-point is used to calculate the distance between sending and receiving host
-	double distance = senderPos.getPositionAt(actualTime).distance(move.getPositionAt(actualTime));
+	double distance = move.getPositionAt(actualTime).distance(recvPos.getPositionAt(actualTime));
 
 	simtime_t delay = distance / BaseWorldUtility::speedOfLight;
 	return delay;

@@ -73,9 +73,9 @@ protected:
 	bool usePropagationDelay;
 
     /**
-	 * Calculates the propagation delay for the passed AirFrame.
+	 * Calculates the propagation delay to the passed receiving nic.
 	 */
-	simtime_t calculatePropagationDelay(AirFrame* frame);
+	simtime_t calculatePropagationDelay(const NicEntry* nic);
 
     /** @brief Last move of this host */
     Move move;

@@ -487,6 +487,9 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	coreEV << "Received new AirFrame with ID " << frame->getId() << " from channel" << endl;
 	channelInfo.addAirFrame(frame, simTime());
 
+	//TODO: consider updating signal start when propagation delay is used
+	assert(usePropagationDelay or frame->getSignal().getSignalStart() == simTime());
+
 	filterSignal(frame->getSignal());
 
 	if(decider) {

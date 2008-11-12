@@ -50,7 +50,7 @@ void NicEntryDirect::connectTo(NicEntry* other)
     if( (radioGate = otherPtr->gate("radioIn")) == NULL )
 		throw cRuntimeError("Nic has no radioIn gate!");
 
-    outConns[other->nicId] = radioGate->getPathStartGate();
+    outConns[other] = radioGate->getPathStartGate();
 }
 
 /**
@@ -61,5 +61,5 @@ void NicEntryDirect::connectTo(NicEntry* other)
 void NicEntryDirect::disconnectFrom(NicEntry* other)
 {
     nicEV <<"disconnecting nic #"<<nicId<< " and #"<<other->nicId<<endl;
-    outConns.erase(other->nicId);
+    outConns.erase(other);
 }
