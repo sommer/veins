@@ -49,6 +49,7 @@ protected:
 
 		TEST_GET_CHANNELSTATE_EMPTYCHANNEL = 100,
 		TEST_GET_CHANNELSTATE_NOISYCHANNEL,
+		TEST_GET_CHANNELSTATE_RECEIVING,
 
 		SIMULATION_RUN = 1000
 
@@ -111,6 +112,11 @@ protected:
 	AirFrame* TestAF1;
 	AirFrame* TestAF2;
 	AirFrame* TestAF3;
+	AirFrame* TestAF4;
+
+
+	// pointer to the AirFrame that is currently processed by BaseDecider
+	const AirFrame* processedAF;
 
 	// value for no attenuation (in attenuation-mappings)
 	double noAttenuation;
@@ -120,6 +126,7 @@ protected:
 	double TXpower1;
 	double TXpower2;
 	double TXpower3;
+	double TXpower4;
 
 	// some bitrates
 	double bitrate9600;
@@ -131,6 +138,14 @@ protected:
 	double res_t4_noisy;
 	double res_t5_noisy;
 	double res_t9_noisy;
+
+	double res_t2_receiving;
+	double res_t3_receiving_before;
+	double res_t3_receiving_after;
+	double res_t4_receiving;
+	double res_t5_receiving_before;
+	double res_t5_receiving_after;
+	double res_t6_receiving;
 
 
 public:

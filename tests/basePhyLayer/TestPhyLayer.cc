@@ -55,6 +55,7 @@ void TestPhyLayer::initialize(int stage) {
 			TXpower1 = 1.0;
 			TXpower2 = 2.0;
 			TXpower3 = 4.0;
+			TXpower4 = 8.0;
 
 			// some bitrates
 			bitrate9600 = 9600.0;
@@ -65,6 +66,9 @@ void TestPhyLayer::initialize(int stage) {
 			TestAF1 = createTestAirFrame(1);
 			TestAF2 = createTestAirFrame(2);
 			TestAF3 = createTestAirFrame(3);
+			TestAF4 = createTestAirFrame(4);
+
+			processedAF = 0;
 
 
 			// expected results of tests (hard coded)
@@ -72,8 +76,21 @@ void TestPhyLayer::initialize(int stage) {
 			res_t2_noisy = TXpower1;
 			res_t3_noisy = TXpower1 + TXpower2 + TXpower3;
 			res_t4_noisy = TXpower1 + TXpower2 + TXpower3;
-			res_t5_noisy = TXpower1 + TXpower2 + TXpower3;
+			res_t5_noisy = TXpower1 + TXpower2 + TXpower3 + TXpower4;
 			res_t9_noisy = TXpower2;
+
+			// expected results of getChannelState()-tests, when receiving TestAirFrame 3
+			// (testing the exclusion of a Frame when calculating the RSSI-value)
+			res_t2_receiving		= TXpower1;
+			res_t3_receiving_before	= TXpower1 + TXpower2 + TXpower3;
+			res_t3_receiving_after	= TXpower1 + TXpower2 + TXpower3;
+			res_t4_receiving		= TXpower1 + TXpower2 + TXpower3;
+			res_t5_receiving_before	= TXpower1 + TXpower2 + TXpower3	+ TXpower4;
+			res_t5_receiving_after	= TXpower1 + TXpower2 + TXpower3 	+ TXpower4;
+			res_t6_receiving		= TXpower1 + TXpower2 				+ TXpower4;
+
+
+
 
 		}
 
@@ -94,6 +111,9 @@ void TestPhyLayer::initialize(int stage) {
 			TestAF2 = 0;
 			delete TestAF3;
 			TestAF3 = 0;
+			delete TestAF4;
+			TestAF4 = 0;
+
 		}
 	}
 }
@@ -113,7 +133,7 @@ void TestPhyLayer::testInitialisation() {
 	//run dependend tests
 	assertFalse("Check parameter \"usePropagationDelay\".", usePropagationDelay);
 
-	assertEqual("Check parameter \"sensitivity\".", 2.0, sensitivity);
+	assertEqual("Check parameter \"sensitivity\".", 4.0, sensitivity);
 	assertEqual("Check parameter \"maxTXPower\".", 10.0, maxTXPower);
 	assertEqual("Check parameter \"thermalNoise\".", 1.0, thermalNoise);
 
@@ -224,7 +244,15 @@ void TestPhyLayer::testBaseDeciderInitialization()
 	doBaseDeciderTests();
 
 
+	/*
+	 * Test getChannelState() of BaseDecider while receiving an AirFrame
+	 */
+	stateTestBDInitialization = TEST_GET_CHANNELSTATE_RECEIVING;
+	doBaseDeciderTests();
+
 	// TODO: go on here...
+	// TODO	- test whether BaseDecider calculates SNR for a given signal correctly
+	//		- test whether BaseDecider handles SNR-threshold right (send up a packet or not)
 }
 
 AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
@@ -331,6 +359,7 @@ Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params
  * Frame1       |-----------------|				(start: t1, length: t7-t1)
  * Frame2             |-----------------|		(start: t3, length: t9-t3)
  * Frame3             |-----|					(start: t3, length: t5-t3)
+ * Frame4                   |--|				(start: t5, length: t6-t5)
  *
  *           |  |  |  |  |  |  |  |  |  |  |
  *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
@@ -345,6 +374,7 @@ void TestPhyLayer::fillAirFramesOnChannel()
 
 	switch (stateTestBDInitialization) {
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
+		case TEST_GET_CHANNELSTATE_RECEIVING:
 
 			// remove all pointers to AirFrames
 			airFramesOnChannel.clear();
@@ -358,13 +388,29 @@ void TestPhyLayer::fillAirFramesOnChannel()
 			{
 				airFramesOnChannel.push_back(TestAF1);
 			}
-			else if (testTime == t3 || testTime == t4 || testTime == t5)
+			else if (testTime == t3 || testTime == t4)
 			{
 				airFramesOnChannel.push_back(TestAF1);
 				airFramesOnChannel.push_back(TestAF2);
 				airFramesOnChannel.push_back(TestAF3);
+
 			}
-			else if (testTime == t6 || testTime == t7)
+			else if (testTime == t5)
+			{
+				airFramesOnChannel.push_back(TestAF1);
+				airFramesOnChannel.push_back(TestAF2);
+				airFramesOnChannel.push_back(TestAF3);
+				airFramesOnChannel.push_back(TestAF4);
+
+			}
+			else if (testTime == t6)
+			{
+				airFramesOnChannel.push_back(TestAF1);
+				airFramesOnChannel.push_back(TestAF2);
+				airFramesOnChannel.push_back(TestAF4);
+			}
+
+			else if (testTime == t7)
 			{
 				airFramesOnChannel.push_back(TestAF1);
 				airFramesOnChannel.push_back(TestAF2);
@@ -393,7 +439,8 @@ void TestPhyLayer::fillAirFramesOnChannel()
  *
  * i=1: start: t1, length: t7-t1, TXpower: 1.0, bitrate: 9600.0, constant
  * i=2: start: t3, length: t9-t3, TXpower: 2.0, bitrate: 9600.0, constant
- * i=3: start: t3, length: t5-t3, TXpower: 3.0, bitrate: 9600.0, constant
+ * i=3: start: t3, length: t5-t3, TXpower: 4.0, bitrate: 9600.0, constant
+ * i=4: start: t5, length: t6-t5, TXpower: 8.0, bitrate: 9600.0, constant
  *
  * where TXpower and bitrate are also specified by a variable.
  *
@@ -428,6 +475,12 @@ AirFrame* TestPhyLayer::createTestAirFrame(int i)
 			signalStart = t3;
 			signalLength = (t5-t3);
 			transmissionPower = TXpower3;
+			bitrate = bitrate9600;
+			break;
+		case 4:
+			signalStart = t5;
+			signalLength = (t6-t5);
+			transmissionPower = TXpower4;
 			bitrate = bitrate9600;
 			break;
 		default:
@@ -566,26 +619,44 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 		// and we are not currently receiving an AirFrame
 		case TEST_GET_CHANNELSTATE_EMPTYCHANNEL:
 			// test whether values 'from' and 'to' are the same
-			assertEqual( "Decider demands ChannelInfo for one single timepoint", from, to );
-			assertEqual( "Decider demands ChannelInfo for current timepoint", from, getSimTime() );
+			assertTrue( "Decider demands ChannelInfo for one single timepoint", from == to );
+			assertEqual( "Decider demands ChannelInfo for current timepoint", getSimTime() , from);
 
 			//  AirFrameVector referenced by 'out' remains as is
 			break;
 
 		// there are AirFrames on the Channel at the requested timepoint
-		// but we are not currently receiving an AirFrame, so everything is noise
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
 
-			// test whether values 'from' and 'to' are the same
-			assertEqual( "Decider demands ChannelInfo for one single timepoint", from, to );
-			assertEqual( "Decider demands ChannelInfo for current test-timepoint", from, getSimTime() );
+		//TODO this case must be considered separately, since BaseDecider will also ask for intervals
+		case TEST_GET_CHANNELSTATE_RECEIVING:
+
+			if (processedAF != 0)
+			{
+
+				const Signal& signal = processedAF->getSignal();
+
+				// test whether Decider asks for the duration-interval of the processed AirFrame
+				assertTrue( "Decider demands ChannelInfo for the duration of the AirFrame",
+						(from == signal.getSignalStart()) &&
+						(to == (signal.getSignalStart() + signal.getSignalLength())) );
+
+				assertEqual( "Decider demands ChannelInfo for current test-timepoint (end of AirFrame)", getSimTime() , to);
+
+			}
+			else
+			{
+				// test whether values 'from' and 'to' are the same
+				assertTrue( "Decider demands ChannelInfo for one single timepoint", from == to );
+				assertEqual( "Decider demands ChannelInfo for current test-timepoint", getSimTime() , from);
+			}
 
 			// pass all AirFrames currently on the (virtual) channel
 			passAirFramesOnChannel(out);
 
-
-
 			break;
+
+
 		// TODO go on here...
 
 		default:
@@ -611,7 +682,26 @@ void TestPhyLayer::sendControlMsg(cMessage* msg)
  */
 void TestPhyLayer::sendUp(AirFrame* packet, DeciderResult result)
 {
-	BasePhyLayer::sendUp(packet, result);
+
+	// if we are not testing the BaseDecider
+	// behave like BasePhyLayer, otherwise do testing stuff
+	if (!testBaseDecider)
+	{
+		BasePhyLayer::sendUp(packet, result);
+		return;
+	}
+
+	switch (stateTestBDInitialization) {
+		case TEST_GET_CHANNELSTATE_RECEIVING:
+			// TODO check what the result should be in this test case
+			// assertTrue("DeciderResult is: 'correct'", result.isSignalCorrect());
+			assertTrue("BaseDecider has returned the pointer to currently processed AirFrame", (packet==processedAF));
+			break;
+		default:
+			BasePhyLayer::sendUp(packet, result);
+			break;
+	}
+
 	return;
 }
 
@@ -633,6 +723,7 @@ simtime_t TestPhyLayer::getSimTime()
 			return BasePhyLayer::getSimTime();
 			break;
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
+		case TEST_GET_CHANNELSTATE_RECEIVING:
 			return testTime;
 			break;
 		default:
@@ -661,8 +752,8 @@ void TestPhyLayer::doBaseDeciderTests()
 															Mapping::LINEAR);
 			cs = decider->getChannelState();
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
-			assertEqual("RSSI-value is the value for 'now' in an empty Set of AirFrames (empty Mapping)", cs.getRSSI(),
-					testRSSIMap->getValue(Argument(getSimTime())));
+			assertEqual("RSSI-value is the value for 'now' in an empty Set of AirFrames (empty Mapping)",
+					testRSSIMap->getValue(Argument(getSimTime())), cs.getRSSI());
 
 			delete testRSSIMap;
 			testRSSIMap = 0;
@@ -671,7 +762,7 @@ void TestPhyLayer::doBaseDeciderTests()
 
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
 		{
-			ev << TestModule::log("------------------------------------------------") << endl;
+			ev << TestModule::log("-TEST_GET_CHANNELSTATE_NOISYCHANNEL-----------------------------------------------") << endl;
 
 
 			// 1. testTime = before = t0
@@ -686,8 +777,8 @@ void TestPhyLayer::doBaseDeciderTests()
 			// call getChannelState() of the BaseDecider
 			cs = decider->getChannelState();
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
-			assertEqual("RSSI-value is the value for 'testTime' in an empty Set of AirFrames (empty Mapping)", cs.getRSSI(),
-						testRSSIMap->getValue(Argument(getSimTime())));
+			assertEqual("RSSI-value is the value for 'testTime' in an empty Set of AirFrames (empty Mapping)",
+						testRSSIMap->getValue(Argument(getSimTime())), cs.getRSSI());
 
 			delete testRSSIMap;
 			testRSSIMap = 0;
@@ -706,7 +797,7 @@ void TestPhyLayer::doBaseDeciderTests()
 
 			ev << TestModule::log("Checking results against expected results.") << endl;
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
-			assertEqual("RSSI-value is the value for 'testTime'", cs.getRSSI(), res_t1_noisy);
+			assertEqual("RSSI-value is the value for 'testTime'", res_t1_noisy, cs.getRSSI());
 
 			ev << TestModule::log("-short output-----------------------------------------------") << endl;
 
@@ -718,7 +809,7 @@ void TestPhyLayer::doBaseDeciderTests()
 			cs = decider->getChannelState();
 
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
-			assertEqual("RSSI-value is the value for 'testTime'", cs.getRSSI(), res_t2_noisy);
+			assertEqual("RSSI-value is the value for 'testTime'", res_t2_noisy, cs.getRSSI());
 
 			ev << TestModule::log("-short output-----------------------------------------------") << endl;
 
@@ -730,7 +821,7 @@ void TestPhyLayer::doBaseDeciderTests()
 			cs = decider->getChannelState();
 
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
-			assertEqual("RSSI-value is the value for 'testTime'", cs.getRSSI(), res_t3_noisy);
+			assertEqual("RSSI-value is the value for 'testTime'", res_t3_noisy, cs.getRSSI());
 
 			ev << TestModule::log("-short output-----------------------------------------------") << endl;
 
@@ -742,7 +833,7 @@ void TestPhyLayer::doBaseDeciderTests()
 			cs = decider->getChannelState();
 
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
-			assertEqual("RSSI-value is the value for 'testTime'", cs.getRSSI(), res_t4_noisy);
+			assertEqual("RSSI-value is the value for 'testTime'", res_t4_noisy, cs.getRSSI());
 
 			ev << TestModule::log("-short output-----------------------------------------------") << endl;
 
@@ -754,7 +845,7 @@ void TestPhyLayer::doBaseDeciderTests()
 			cs = decider->getChannelState();
 
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
-			assertEqual("RSSI-value is the value for 'testTime'", cs.getRSSI(), res_t5_noisy);
+			assertEqual("RSSI-value is the value for 'testTime'", res_t5_noisy, cs.getRSSI());
 
 			ev << TestModule::log("-short output-----------------------------------------------") << endl;
 
@@ -766,7 +857,150 @@ void TestPhyLayer::doBaseDeciderTests()
 			cs = decider->getChannelState();
 
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
-			assertEqual("RSSI-value is the value for 'testTime'", cs.getRSSI(), res_t9_noisy);
+			assertEqual("RSSI-value is the value for 'testTime'", res_t9_noisy, cs.getRSSI());
+
+			ev << TestModule::log("-DONE-------------------------------------------") << endl;
+
+		}
+			break;
+		case TEST_GET_CHANNELSTATE_RECEIVING:
+		{
+			ev << TestModule::log("-TEST_GET_CHANNELSTATE_RECEIVING-----------------------------------------------") << endl;
+
+			ev << TestModule::log("-full output-----------------------------------------------") << endl;
+
+			// testTime = t2
+			testTime = t2;
+			ev << TestModule::log("A new testTime has been set: ")<< testTime << endl;
+
+			ev << TestModule::log("Putting AirFrames on the virtual channel.") << endl;
+			fillAirFramesOnChannel();
+
+			ev << TestModule::log("Calling getChannelState() of BaseDecider.") << endl;
+			cs = decider->getChannelState();
+
+			ev << TestModule::log("Checking results against expected results.") << endl;
+			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
+			assertEqual("RSSI-value is the value for 'testTime'", res_t2_receiving, cs.getRSSI());
+
+
+			simtime_t nextHandoverTime;
+			ev << TestModule::log("-short output-----------------------------------------------") << endl;
+
+			// testTime = t3
+			testTime = t3;
+			ev << TestModule::log("A new testTime has been set: ")<< testTime << endl;
+
+			fillAirFramesOnChannel();
+
+			// by now we are not yet receiving something
+			cs = decider->getChannelState();
+			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
+			assertEqual("RSSI-value is the value for 'testTime'", res_t3_receiving_before, cs.getRSSI());
+
+			// trying to receive an AirFrame whose signal (TXpower) is too weak
+			ev << TestModule::log("Trying to receive an AirFrame whose TXpower is too low.") << endl;
+			nextHandoverTime = decider->processSignal(TestAF2);
+			assertTrue("AirFrame has been rejected, since TXpower is too low.", (nextHandoverTime < 0));
+
+			// starting to receive TestAirFrame 3
+			ev << TestModule::log("Trying to receive TestAirFrame 3") << endl;
+			nextHandoverTime = decider->processSignal(TestAF3);
+			Signal& signal3 = TestAF3->getSignal();
+			assertTrue("TestAirFrame 3 can be received, end-time is returned",
+					(nextHandoverTime == signal3.getSignalStart() + signal3.getSignalLength()));
+
+
+			// try to receive another AirFrame at the same time, whose signal not too weak
+			// (taking a copy of the currently received one)
+			AirFrame* tempAF = new AirFrame(*TestAF3);
+			ev << TestModule::log("Trying to receive another AirFrame at the same time.") << endl;
+			nextHandoverTime = decider->processSignal(tempAF);
+			assertTrue("AirFrame has been rejected, since we already receive one.", (nextHandoverTime < 0));
+			delete tempAF;
+			tempAF = 0;
+
+
+			// now we have started to receive an AirFrame
+			cs = decider->getChannelState();
+			assertTrue("The PhyLayer IS currently receiving an AirFrame", !(cs.isIdle()));
+			assertEqual("RSSI-value is the value for 'testTime'", res_t3_receiving_after, cs.getRSSI());
+
+
+			ev << TestModule::log("-short output-----------------------------------------------") << endl;
+
+			// testTime = t4
+			testTime = t4;
+			ev << TestModule::log("A new testTime has been set: ")<< testTime << endl;
+
+			fillAirFramesOnChannel();
+
+			// now we have started to receive an AirFrame
+			cs = decider->getChannelState();
+			assertTrue("The PhyLayer IS currently receiving an AirFrame", !(cs.isIdle()));
+			assertEqual("RSSI-value is the value for 'testTime'", res_t4_receiving, cs.getRSSI());
+
+
+			ev << TestModule::log("-short output-----------------------------------------------") << endl;
+
+			// testTime = t5
+			testTime = t5;
+			ev << TestModule::log("A new testTime has been set: ")<< testTime << endl;
+
+			fillAirFramesOnChannel();
+
+			// now we have started to receive an AirFrame
+			cs = decider->getChannelState();
+			assertTrue("The PhyLayer IS currently receiving an AirFrame", !(cs.isIdle()));
+			assertEqual("RSSI-value is the value for 'testTime'", res_t5_receiving_before, cs.getRSSI());
+
+			//hand over the AirFrame again, end-time is reached
+			ev << TestModule::log("Handing over TestAirFrame 3 again, transmission has finished") << endl;
+
+			// set the pointer to the processed AirFrame before BaseDecider will finally process it
+			processedAF = TestAF3;
+			nextHandoverTime = decider->processSignal(TestAF3);
+			assertTrue("TestAirFrame 3 has been finally processed",
+					(nextHandoverTime < 0));
+			processedAF = 0;
+
+			// now receive of the AirFrame is over
+			cs = decider->getChannelState();
+			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
+			assertEqual("RSSI-value is the value for 'testTime'", res_t5_receiving_after, cs.getRSSI());
+
+			// BaseDecider should be able to handle the next AirFrame
+			ev << TestModule::log("Trying to immediately receive TestAirFrame 4") << endl;
+			nextHandoverTime = decider->processSignal(TestAF4);
+			Signal& signal4 = TestAF4->getSignal();
+			assertTrue("TestAirFrame 4 can be received, end-time is returned",
+					(nextHandoverTime == signal4.getSignalStart() + signal4.getSignalLength()));
+
+
+
+			ev << TestModule::log("-short output-----------------------------------------------") << endl;
+
+			// testTime = t6
+			testTime = t6;
+			ev << TestModule::log("A new testTime has been set: ")<< testTime << endl;
+
+			fillAirFramesOnChannel();
+
+			// now we are not receiving an AirFrame
+			cs = decider->getChannelState();
+			assertTrue("The PhyLayer is again receiving an AirFrame", !(cs.isIdle()));
+			assertEqual("RSSI-value is the value for 'testTime'", res_t6_receiving, cs.getRSSI());
+
+			// set the pointer to the processed AirFrame before BaseDecider will finally process it
+			processedAF = TestAF4;
+			nextHandoverTime = decider->processSignal(TestAF4);
+			assertTrue("TestAirFrame 4 has been finally processed",
+					(nextHandoverTime < 0));
+			processedAF = 0;
+
+			ev << TestModule::log("-DONE-------------------------------------------") << endl;
+
+
 
 		}
 			break;

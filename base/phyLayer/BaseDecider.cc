@@ -97,6 +97,7 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 		// discard old mapping
 		delete resultMap;
 		resultMap = resultMapNew;
+		resultMapNew = 0;
 
 		// TODO: so far recvPowerMap is a new instance of Mapping, that's why normally it should be
 		// deleted here, but in the future signal.getReceivingPower() will return a pointer to a

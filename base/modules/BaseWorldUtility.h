@@ -6,12 +6,12 @@
  * copyright:   (C) 2007 Parallel and Distributed Systems Group (PDS) at
  *              Technische Universiteit Delft, The Netherlands.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * description: basic world utility class
@@ -29,13 +29,13 @@ class BaseWorldUtility : public BaseModule
 protected:
 	/** @brief Size of the area the nodes are in (in meters)*/
     Coord playgroundSize;
-    
+
     /** @brief Should the playground be treatend as a torus?*/
     bool useTorusFlag;
 
     /** @brief Should the world be 2-dimensional? */
     bool use2DFlag;
-    
+
     /** @brief Provides a unique number for AirFrames per simulation */
     long airFrameId;
 public:
@@ -47,7 +47,7 @@ public:
     const Coord* getPgs(){
         return &playgroundSize;
     };
-    
+
     /** @brief Returns true if our playground represents a torus (borders are connected)*/
     bool useTorus(){
     	return useTorusFlag;
@@ -61,8 +61,9 @@ public:
 
     /** @brief Returns true if the world is 2-dimensional */
     bool use2D() { return use2DFlag; }
-   
-    /** @brief Returns a unique-per-simulation Id for an AirFrame */
+
+    /** @brief Returns an Id for an AirFrame, at the moment simply an incremented long-value */
+    // TODO: return a really unique Id, handle overflow of range if needed
     long getUniqueAirFrameId() { return airFrameId++; }
  };
 

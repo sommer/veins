@@ -88,10 +88,23 @@ public:
 	 *
 	 */
 	// TODO: finish
+
+	/**
+	 * @brief Just a bypass at the moment.
+	 */
 	virtual ChannelState getChannelState()
 	{
 		return BaseDecider::getChannelState();
 	}
+
+	/**
+	 * @brief Just a bypass at the moment.
+	 */
+	virtual simtime_t processSignal(AirFrame* frame)
+	{
+		return BaseDecider::processSignal(frame);
+	}
+
 
 	// TODO add the others
 };

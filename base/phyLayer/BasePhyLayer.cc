@@ -874,6 +874,8 @@ simtime_t BasePhyLayer::setRadioState(int rs) {
 	// if switching is done in exactly zero-time no extra self-message is scheduled
 	if (switchTime == 0.0)
 	{
+		// TODO: in case of zero-time-switch, send no control-message to mac!
+		// maybe call a method finishRadioSwitchingSilent()
 		finishRadioSwitching();
 	} else
 	{
