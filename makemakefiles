@@ -34,7 +34,6 @@ TEST_OPTS=-u Cmdenv
 all:
 #	@echo $(ROOT)
 #	@cd $(ROOT) && $(MAKEMAKE) $(OPTS) -r -n -X documentation -X doc -X configurator -X development
-
 	@echo $(ROOT)/base
 	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -K MIXIMROOT=$(ROOT) --deep -o libmiximbase -s 
 
