@@ -18,7 +18,7 @@ class FilledUpMapping;
  *
  * This class is meant to be used as base class for Iterators which
  * want to change just several parts without having to implement and pipe every
- * other method of the COnstMappingIteratorInterface.
+ * other method of the ConstMappingIteratorInterface.
  */
 template<class Base>
 class BaseFilteredIterator : public Base{
@@ -50,10 +50,19 @@ public:
 	virtual double getValue() const { return origIterator->getValue(); }
 };
 
+/**
+ * @brief Const version of the BaseFilteredIterator. Meant to be used for
+ * ConstMappingIterator instances.
+ *
+ * @see BaseFilteredIterator
+ * */
 typedef BaseFilteredIterator<ConstMappingIterator> FilteredConstMappingIterator;
 
 /**
- * @brief TODO: auto generated doc
+ * @brief Non-Const version of the BaseFilteredIterator. Meant to be used for
+ * MappingIterator instances.
+ *
+ * @see BaseFilteredIterator
  */
 class FilteredMappingIterator : public BaseFilteredIterator<MappingIterator> {
 public:
@@ -1477,7 +1486,11 @@ public:
 
 
 /**
- * @brief TODO: auto generated doc
+ * @brief MappingIterator implementation for FilledUpMappings. Assures that
+ * although FilledUpMapping is an Mapping instance the "setValue()"-method
+ * may never be called.
+ *
+ * @see FilledUpMapping
  */
 class FilledUpMappingIterator : public MultiDimMappingIterator<Linear>{
 public:
@@ -1491,7 +1504,14 @@ public:
 };
 
 /**
- * @brief TODO: auto generated doc
+ * @brief Takes a source ConstMapping with a domain A and a set of KeyEntries
+ * for a domain B and creates a clone of the source mapping with the domain B
+ * and the KeyEntries passed.
+ *
+ * This class is used by "applyElementWiseOperator()"-method to be able
+ * to handle cases where the second mappings domain is a real subset of
+ * the first mappings domain (meaning the first mappings domain has the same
+ * dimensions as the seconds domain and at least one further dimension).
  */
 class FilledUpMapping : public MultiDimMapping<Linear> {
 //--------members----------
@@ -1596,6 +1616,7 @@ public:
 };
 
 
+//TODO: implement mapping operation which have a defined boundary.
 /**
  * @brief TODO: auto generated doc
  */
@@ -1667,8 +1688,6 @@ public:
 	 * and the specified interpolation method.
 	 *
 	 * Note: The interpolation method is always linear, at the moment.
-	 *
-	 * TODO: implement other interpolation methods.
 	 */
 	static Mapping* createMapping(const DimensionSet& domain = DimensionSet(Dimension::time),
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
@@ -1678,8 +1697,6 @@ public:
 	 * and the specified interpolation method.
 	 *
 	 * Note: The interpolation method is always linear, at the moment.
-	 *
-	 * TODO: implement other interpolation methods.
 	 */
 	static Mapping* createMapping(double outOfRangeValue,
 								  const DimensionSet& domain = DimensionSet(Dimension::time),
@@ -1781,6 +1798,51 @@ public:
 	static Mapping* add(ConstMapping& f1, ConstMapping& f2, double outOfRangeVal);
 	static Mapping* subtract(ConstMapping& f1, ConstMapping& f2, double outOfRangeVal);
 	static Mapping* divide(ConstMapping& f1, ConstMapping& f2, double outOfRangeVal);
+
+	/**
+	 * @brief Iterates over the passed mapping and returns value at the key entry
+	 * with the highest value.
+	 */
+	static double findMax(ConstMapping& m);
+
+	/**
+	 * @brief Iterates over the passed mapping and returns the value at the key
+	 * entry with the highest value in the range defined by the passed min and
+	 * max parameter.
+	 *
+	 * The area defined by the min and max parameter is the number of key entries
+	 * which position in each dimension is bigger or equal than the value of the min
+	 * parameter in that dimension and smaller or equal than max parameter in
+	 * that dimension.
+	 *
+	 * NOTE: This method currently does only work for one dimensional (time) mappings!
+	 *
+	 * TODO: implement for multidimensional mappings
+	 */
+	static double findMax(ConstMapping& m, const Argument& min, const Argument& max);
+
+	/**
+	 * @brief Iterates over the passed mapping and returns value at the key entry
+	 * with the smallest value.
+	 */
+	static double findMin(ConstMapping& m);
+
+	/**
+	 * @brief Iterates over the passed mapping and returns the value at the key
+	 * entry with the smallest value in the range defined by the passed min and
+	 * max parameter.
+	 *
+	 * The area defined by the min and max parameter is the number of key entries
+	 * which position in each dimension is bigger or equal than the value of the min
+	 * parameter in that dimension and smaller or equal than max parameter in
+	 * that dimension.
+	 *
+	 * NOTE: This method currently does only work for one dimensional (time) mappings!
+	 *
+	 * TODO: implement for multidimensional mappings
+	 */
+	static double findMin(ConstMapping& m, const Argument& min, const Argument& max);
+
 
 	/*
 	static Mapping* multiply(ConstMapping& f1, ConstMapping& f2, const Argument& from, const Argument& to);

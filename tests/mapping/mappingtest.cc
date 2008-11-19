@@ -2075,6 +2075,149 @@ protected:
 		assertEqual("Out of range added after multi.",0.1, res->getValue(A(1.5, 0.5)));
 	}
 
+	/**
+	 * Unit tests for the MappingUtils::FindMin/-Max() methods.
+	 * Every test with one dimensional and multidimensional mappings
+	 * - test global min and max
+	 * -- empty mapping
+	 * -- one element mapping
+	 * -- five element mapping with min/max at
+	 * --- first entry
+	 * --- last entry
+	 * --- somewhere in the middle
+	 *
+	 * - test lokal min and max
+	 * -- empty mapping
+	 * -- one element mapping with element
+	 * --- before range
+	 * --- after range
+	 * --- in range
+	 * -- six element mapping with global min/max out range and local min/max at
+	 * --- first entry
+	 * --- last entry
+	 * --- somewhere in the middle
+	 *
+	 * TODO: test for local min max with multi dim mappings
+	 */
+	void testFindMinMax() {
+		DimensionSet timeFreqSpace(time, freq, space);
+
+		//- empty time mapping
+		Mapping* timed1 = MappingUtils::createMapping();
+		Mapping* multi1 = MappingUtils::createMapping(timeFreqSpace);
+
+		//global
+		assertEqual("Empty timed mapping max(global).", DBL_MIN, MappingUtils::findMax(*timed1));
+		assertEqual("Empty timed mapping min(global).", DBL_MAX, MappingUtils::findMin(*timed1));
+		//local
+		assertEqual("Empty timed mapping max(local).", DBL_MIN, MappingUtils::findMax(*timed1, A(1), A(2)));
+		assertEqual("Empty timed mapping min(local).", DBL_MAX, MappingUtils::findMin(*timed1, A(1), A(2)));
+
+		//global
+		assertEqual("Empty multidim mapping max(global).", DBL_MIN, MappingUtils::findMax(*multi1));
+		assertEqual("Empty multidim mapping min(global).", DBL_MAX, MappingUtils::findMin(*multi1));
+		//local - is not yet implemented
+		//assertEqual("Empty multidim mapping max(local).", DBL_MIN, MappingUtils::findMax(*multi1, A(1,1,1), A(2,2,2)));
+		//assertEqual("Empty multidim mapping min(local).", DBL_MAX, MappingUtils::findMin(*multi1, A(1,1,1), A(2,2,2)));
+
+		//- one element mapping
+		timed1->setValue(A(1), 2);
+		multi1->setValue(A(1,1,1), 2);
+
+		//global
+		assertEqual("One element timed mapping max(global).", 2, MappingUtils::findMax(*timed1));
+		assertEqual("One element timed mapping min(global).", 2, MappingUtils::findMin(*timed1));
+		//local
+		assertEqual("One element timed mapping max(local) before element.", DBL_MIN, MappingUtils::findMax(*timed1, A(0), A(0.5)));
+		assertEqual("One element timed mapping min(local) before element.", DBL_MAX, MappingUtils::findMin(*timed1, A(0), A(0.5)));
+		assertEqual("One element timed mapping max(local) around element.", 2, MappingUtils::findMax(*timed1, A(1), A(1)));
+		assertEqual("One element timed mapping min(local) around element.", 2, MappingUtils::findMin(*timed1, A(1), A(1)));
+		assertEqual("One element timed mapping max(local) after element.", DBL_MIN, MappingUtils::findMax(*timed1, A(2), A(3)));
+		assertEqual("One element timed mapping min(local) after element.", DBL_MAX, MappingUtils::findMin(*timed1, A(2), A(3)));
+
+		//global
+		assertEqual("One element multidim mapping max(global).", 2, MappingUtils::findMax(*multi1));
+		assertEqual("One element multidim mapping min(global).", 2, MappingUtils::findMin(*multi1));
+		//local - is not yet implemented
+//		assertEqual("One element multidim mapping max(local) before element.", DBL_MIN, MappingUtils::findMax(*multi1, A(0,0,0), A(0.5,2,2)));
+//		assertEqual("One element multidim mapping min(local) before element.", DBL_MAX, MappingUtils::findMin(*multi1, A(0,0,0), A(0.5,2,2)));
+//		assertEqual("One element multidim mapping max(local) around element.", 2, MappingUtils::findMax(*multi1, A(1,1,1), A(1,1,1)));
+//		assertEqual("One element multidim mapping min(local) around element.", 2, MappingUtils::findMin(*multi1, A(1,1,0), A(1,1,1)));
+//		assertEqual("One element multidim mapping max(local) after element.", DBL_MIN, MappingUtils::findMax(*multi1, A(2,0,0), A(3,2,2)));
+//		assertEqual("One element multidim mapping min(local) after element.", DBL_MAX, MappingUtils::findMin(*multi1, A(2,0,0), A(3,2,2)));
+
+		//Timed mapping multi element tests
+		timed1->setValue(A(2), 2);  /**/ timed1->setValue(A(3), 2);
+		timed1->setValue(A(4), 2);  /**/ timed1->setValue(A(5), 2);
+
+		Mapping* timed2 = timed1->clone();
+		Mapping* timed3 = timed1->clone();
+
+		//-- max at first entry min at last
+		timed1->setValue(A(1),3); /**/ timed1->setValue(A(5), 1);
+		//-- max at last entry min at first
+		timed2->setValue(A(1),1); /**/ timed2->setValue(A(5), 3);
+		//-- min and max somewhere in the middle
+		timed3->setValue(A(2),3); /**/ timed3->setValue(A(3), 1);
+
+		//global
+		assertEqual("Multi element timed mapping max(global) at first element.", 3, MappingUtils::findMax(*timed1));
+		assertEqual("Multi element timed mapping min(global) at first element.", 1, MappingUtils::findMin(*timed2));
+		assertEqual("Multi element timed mapping max(global) at last element.", 3, MappingUtils::findMax(*timed2));
+		assertEqual("Multi element timed mapping min(global) at last element.", 1, MappingUtils::findMin(*timed1));
+		assertEqual("Multi element timed mapping max(global) somewhere between.", 3, MappingUtils::findMax(*timed3));
+		assertEqual("Multi element timed mapping min(global) somewhere between.", 1, MappingUtils::findMin(*timed3));
+
+		//local
+		//add global min and max out of range
+		timed1->setValue(A(6), 10); /**/ timed1->setValue(A(7), 0);
+
+		assertEqual("Multi element timed mapping max(local) at first element.", 3, MappingUtils::findMax(*timed1, A(1), A(5)));
+		assertEqual("Multi element timed mapping min(local) at first element.", 1, MappingUtils::findMin(*timed2, A(1), A(5)));
+		assertEqual("Multi element timed mapping max(local) at last element.", 3, MappingUtils::findMax(*timed2, A(1), A(5)));
+		assertEqual("Multi element timed mapping min(local) at last element.", 1, MappingUtils::findMin(*timed1, A(1), A(5)));
+		assertEqual("Multi element timed mapping max(local) somewhere between.", 3, MappingUtils::findMax(*timed3, A(1), A(5)));
+		assertEqual("Multi element timed mapping min(local) somewhere between.", 1, MappingUtils::findMin(*timed3, A(1), A(5)));
+
+
+		//Multidim mapping multi element tests
+		for(int t=1; t < 5; ++t){
+			for(int f=1; f < 5; ++f){
+				for(int s=1; s < 5; ++s){
+					multi1->setValue(A(t,f,s), 2);
+				}
+			}
+		}
+
+		for(int t=1; t < 5; ++t){
+			for(int f=1; f < 5; ++f){
+				for(int s=1; s < 5; ++s){
+					Mapping* tmp = multi1->clone();
+					//set min and max
+					tmp->setValue(A(t,f,s),3);
+					tmp->setValue(A(5-t,5-f,5-s),1);
+
+					assertEqual("Multi element multidim mapping max(global) at (" + toString(t)+","+toString(f)+","+toString(s)+").",
+							    3, MappingUtils::findMax(*tmp));
+					assertEqual("Multi element multidim mapping min(global) at (" + toString(t)+","+toString(f)+","+toString(s)+").",
+								1, MappingUtils::findMin(*tmp));
+
+					delete tmp;
+				}
+			}
+		}
+		//Local - not yet implemented
+
+		delete timed1;
+		delete timed2;
+		delete timed3;
+		delete multi1;
+	}
+
+	void testMappingUtils() {
+		testFindMinMax();
+	}
+
 	void runTests() {
 		displayPassed = true;
 		testDimension();
@@ -2098,6 +2241,9 @@ protected:
 
 	    testOutOfRange();
 	    std::cout << "--------Out of range tests done.--------------------------------------------------\n";
+
+	    testMappingUtils();
+		std::cout << "--------Various MappingUtils tests done.------------------------------------------\n";
 
 	    //std::cout << "========Performance tests=========================================================\n";
 	    //testPerformance();

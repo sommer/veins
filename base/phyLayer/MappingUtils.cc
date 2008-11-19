@@ -211,6 +211,88 @@ Mapping* operator-(ConstMapping& f1, ConstMapping& f2) {
 	return MappingUtils::subtract(f1, f2);
 }
 
+
+double MappingUtils::findMax(ConstMapping& m) {
+	ConstMappingIterator* it = m.createConstIterator();
+
+	double res = DBL_MIN;
+
+	while(it->inRange()){
+		double val = it->getValue();
+		if(val > res)
+			res = val;
+
+		if(!it->hasNext())
+			break;
+
+		it->next();
+	}
+
+	return res;
+}
+
+double MappingUtils::findMax(ConstMapping& m, const Argument& min, const Argument& max){
+	assert(m.getDimensionSet() == DimensionSet(Dimension::time));
+
+	ConstMappingIterator* it = m.createConstIterator(min);
+
+	double res = DBL_MIN;
+
+	while(it->inRange() && it->getPosition().getTime() <= max.getTime()){
+		double val = it->getValue();
+		if(val > res)
+			res = val;
+
+		if(!it->hasNext())
+			break;
+
+		it->next();
+	}
+
+	return res;
+}
+
+double MappingUtils::findMin(ConstMapping& m) {
+	ConstMappingIterator* it = m.createConstIterator();
+
+	double res = DBL_MAX;
+
+	while(it->inRange()){
+		double val = it->getValue();
+		if(val < res)
+			res = val;
+
+		if(!it->hasNext())
+			break;
+
+		it->next();
+	}
+
+	return res;
+}
+
+double MappingUtils::findMin(ConstMapping& m, const Argument& min, const Argument& max){
+	assert(m.getDimensionSet() == DimensionSet(Dimension::time));
+
+	ConstMappingIterator* it = m.createConstIterator(min);
+
+	double res = DBL_MAX;
+
+	while(it->inRange() && it->getPosition().getTime() <= max.getTime()){
+		double val = it->getValue();
+		if(val < res)
+			res = val;
+
+		if(!it->hasNext())
+			break;
+
+		it->next();
+	}
+
+	return res;
+}
+
+
 /*
 Mapping* Mapping::multiply(ConstMapping &f1, ConstMapping &f2, const Argument& from, const Argument& to)
 {

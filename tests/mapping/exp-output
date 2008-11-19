@@ -8,7 +8,7 @@ Loading NED files from ../../tests: 26
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20081103-12:04:01-15245
+Assigned runID=General-0-20081119-17:07:16-19330
 Setting up network `OmnetTest'...
 setupNetwork finished, cParImpl objects in use: 0
 Initializing...
@@ -3605,6 +3605,163 @@ Passed: Out of range added after multi.
 Passed: Out of range added prev multi.
 Passed: Out of range added after multi.
 --------Out of range tests done.--------------------------------------------------
+Passed: Empty timed mapping max(global).
+Passed: Empty timed mapping min(global).
+Passed: Empty timed mapping max(local).
+Passed: Empty timed mapping min(local).
+Passed: Empty multidim mapping max(global).
+Passed: Empty multidim mapping min(global).
+Passed: One element timed mapping max(global).
+Passed: One element timed mapping min(global).
+Passed: One element timed mapping max(local) before element.
+Passed: One element timed mapping min(local) before element.
+Passed: One element timed mapping max(local) around element.
+Passed: One element timed mapping min(local) around element.
+Passed: One element timed mapping max(local) after element.
+Passed: One element timed mapping min(local) after element.
+Passed: One element multidim mapping max(global).
+Passed: One element multidim mapping min(global).
+Passed: Multi element timed mapping max(global) at first element.
+Passed: Multi element timed mapping min(global) at first element.
+Passed: Multi element timed mapping max(global) at last element.
+Passed: Multi element timed mapping min(global) at last element.
+Passed: Multi element timed mapping max(global) somewhere between.
+Passed: Multi element timed mapping min(global) somewhere between.
+Passed: Multi element timed mapping max(local) at first element.
+Passed: Multi element timed mapping min(local) at first element.
+Passed: Multi element timed mapping max(local) at last element.
+Passed: Multi element timed mapping min(local) at last element.
+Passed: Multi element timed mapping max(local) somewhere between.
+Passed: Multi element timed mapping min(local) somewhere between.
+Passed: Multi element multidim mapping max(global) at (1,1,1).
+Passed: Multi element multidim mapping min(global) at (1,1,1).
+Passed: Multi element multidim mapping max(global) at (1,1,2).
+Passed: Multi element multidim mapping min(global) at (1,1,2).
+Passed: Multi element multidim mapping max(global) at (1,1,3).
+Passed: Multi element multidim mapping min(global) at (1,1,3).
+Passed: Multi element multidim mapping max(global) at (1,1,4).
+Passed: Multi element multidim mapping min(global) at (1,1,4).
+Passed: Multi element multidim mapping max(global) at (1,2,1).
+Passed: Multi element multidim mapping min(global) at (1,2,1).
+Passed: Multi element multidim mapping max(global) at (1,2,2).
+Passed: Multi element multidim mapping min(global) at (1,2,2).
+Passed: Multi element multidim mapping max(global) at (1,2,3).
+Passed: Multi element multidim mapping min(global) at (1,2,3).
+Passed: Multi element multidim mapping max(global) at (1,2,4).
+Passed: Multi element multidim mapping min(global) at (1,2,4).
+Passed: Multi element multidim mapping max(global) at (1,3,1).
+Passed: Multi element multidim mapping min(global) at (1,3,1).
+Passed: Multi element multidim mapping max(global) at (1,3,2).
+Passed: Multi element multidim mapping min(global) at (1,3,2).
+Passed: Multi element multidim mapping max(global) at (1,3,3).
+Passed: Multi element multidim mapping min(global) at (1,3,3).
+Passed: Multi element multidim mapping max(global) at (1,3,4).
+Passed: Multi element multidim mapping min(global) at (1,3,4).
+Passed: Multi element multidim mapping max(global) at (1,4,1).
+Passed: Multi element multidim mapping min(global) at (1,4,1).
+Passed: Multi element multidim mapping max(global) at (1,4,2).
+Passed: Multi element multidim mapping min(global) at (1,4,2).
+Passed: Multi element multidim mapping max(global) at (1,4,3).
+Passed: Multi element multidim mapping min(global) at (1,4,3).
+Passed: Multi element multidim mapping max(global) at (1,4,4).
+Passed: Multi element multidim mapping min(global) at (1,4,4).
+Passed: Multi element multidim mapping max(global) at (2,1,1).
+Passed: Multi element multidim mapping min(global) at (2,1,1).
+Passed: Multi element multidim mapping max(global) at (2,1,2).
+Passed: Multi element multidim mapping min(global) at (2,1,2).
+Passed: Multi element multidim mapping max(global) at (2,1,3).
+Passed: Multi element multidim mapping min(global) at (2,1,3).
+Passed: Multi element multidim mapping max(global) at (2,1,4).
+Passed: Multi element multidim mapping min(global) at (2,1,4).
+Passed: Multi element multidim mapping max(global) at (2,2,1).
+Passed: Multi element multidim mapping min(global) at (2,2,1).
+Passed: Multi element multidim mapping max(global) at (2,2,2).
+Passed: Multi element multidim mapping min(global) at (2,2,2).
+Passed: Multi element multidim mapping max(global) at (2,2,3).
+Passed: Multi element multidim mapping min(global) at (2,2,3).
+Passed: Multi element multidim mapping max(global) at (2,2,4).
+Passed: Multi element multidim mapping min(global) at (2,2,4).
+Passed: Multi element multidim mapping max(global) at (2,3,1).
+Passed: Multi element multidim mapping min(global) at (2,3,1).
+Passed: Multi element multidim mapping max(global) at (2,3,2).
+Passed: Multi element multidim mapping min(global) at (2,3,2).
+Passed: Multi element multidim mapping max(global) at (2,3,3).
+Passed: Multi element multidim mapping min(global) at (2,3,3).
+Passed: Multi element multidim mapping max(global) at (2,3,4).
+Passed: Multi element multidim mapping min(global) at (2,3,4).
+Passed: Multi element multidim mapping max(global) at (2,4,1).
+Passed: Multi element multidim mapping min(global) at (2,4,1).
+Passed: Multi element multidim mapping max(global) at (2,4,2).
+Passed: Multi element multidim mapping min(global) at (2,4,2).
+Passed: Multi element multidim mapping max(global) at (2,4,3).
+Passed: Multi element multidim mapping min(global) at (2,4,3).
+Passed: Multi element multidim mapping max(global) at (2,4,4).
+Passed: Multi element multidim mapping min(global) at (2,4,4).
+Passed: Multi element multidim mapping max(global) at (3,1,1).
+Passed: Multi element multidim mapping min(global) at (3,1,1).
+Passed: Multi element multidim mapping max(global) at (3,1,2).
+Passed: Multi element multidim mapping min(global) at (3,1,2).
+Passed: Multi element multidim mapping max(global) at (3,1,3).
+Passed: Multi element multidim mapping min(global) at (3,1,3).
+Passed: Multi element multidim mapping max(global) at (3,1,4).
+Passed: Multi element multidim mapping min(global) at (3,1,4).
+Passed: Multi element multidim mapping max(global) at (3,2,1).
+Passed: Multi element multidim mapping min(global) at (3,2,1).
+Passed: Multi element multidim mapping max(global) at (3,2,2).
+Passed: Multi element multidim mapping min(global) at (3,2,2).
+Passed: Multi element multidim mapping max(global) at (3,2,3).
+Passed: Multi element multidim mapping min(global) at (3,2,3).
+Passed: Multi element multidim mapping max(global) at (3,2,4).
+Passed: Multi element multidim mapping min(global) at (3,2,4).
+Passed: Multi element multidim mapping max(global) at (3,3,1).
+Passed: Multi element multidim mapping min(global) at (3,3,1).
+Passed: Multi element multidim mapping max(global) at (3,3,2).
+Passed: Multi element multidim mapping min(global) at (3,3,2).
+Passed: Multi element multidim mapping max(global) at (3,3,3).
+Passed: Multi element multidim mapping min(global) at (3,3,3).
+Passed: Multi element multidim mapping max(global) at (3,3,4).
+Passed: Multi element multidim mapping min(global) at (3,3,4).
+Passed: Multi element multidim mapping max(global) at (3,4,1).
+Passed: Multi element multidim mapping min(global) at (3,4,1).
+Passed: Multi element multidim mapping max(global) at (3,4,2).
+Passed: Multi element multidim mapping min(global) at (3,4,2).
+Passed: Multi element multidim mapping max(global) at (3,4,3).
+Passed: Multi element multidim mapping min(global) at (3,4,3).
+Passed: Multi element multidim mapping max(global) at (3,4,4).
+Passed: Multi element multidim mapping min(global) at (3,4,4).
+Passed: Multi element multidim mapping max(global) at (4,1,1).
+Passed: Multi element multidim mapping min(global) at (4,1,1).
+Passed: Multi element multidim mapping max(global) at (4,1,2).
+Passed: Multi element multidim mapping min(global) at (4,1,2).
+Passed: Multi element multidim mapping max(global) at (4,1,3).
+Passed: Multi element multidim mapping min(global) at (4,1,3).
+Passed: Multi element multidim mapping max(global) at (4,1,4).
+Passed: Multi element multidim mapping min(global) at (4,1,4).
+Passed: Multi element multidim mapping max(global) at (4,2,1).
+Passed: Multi element multidim mapping min(global) at (4,2,1).
+Passed: Multi element multidim mapping max(global) at (4,2,2).
+Passed: Multi element multidim mapping min(global) at (4,2,2).
+Passed: Multi element multidim mapping max(global) at (4,2,3).
+Passed: Multi element multidim mapping min(global) at (4,2,3).
+Passed: Multi element multidim mapping max(global) at (4,2,4).
+Passed: Multi element multidim mapping min(global) at (4,2,4).
+Passed: Multi element multidim mapping max(global) at (4,3,1).
+Passed: Multi element multidim mapping min(global) at (4,3,1).
+Passed: Multi element multidim mapping max(global) at (4,3,2).
+Passed: Multi element multidim mapping min(global) at (4,3,2).
+Passed: Multi element multidim mapping max(global) at (4,3,3).
+Passed: Multi element multidim mapping min(global) at (4,3,3).
+Passed: Multi element multidim mapping max(global) at (4,3,4).
+Passed: Multi element multidim mapping min(global) at (4,3,4).
+Passed: Multi element multidim mapping max(global) at (4,4,1).
+Passed: Multi element multidim mapping min(global) at (4,4,1).
+Passed: Multi element multidim mapping max(global) at (4,4,2).
+Passed: Multi element multidim mapping min(global) at (4,4,2).
+Passed: Multi element multidim mapping max(global) at (4,4,3).
+Passed: Multi element multidim mapping min(global) at (4,4,3).
+Passed: Multi element multidim mapping max(global) at (4,4,4).
+Passed: Multi element multidim mapping min(global) at (4,4,4).
+--------Various MappingUtils tests done.------------------------------------------
 
 Running simulation...
 
