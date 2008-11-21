@@ -35,7 +35,7 @@ all:
 #	@echo $(ROOT)
 #	@cd $(ROOT) && $(MAKEMAKE) $(OPTS) -r -n -X documentation -X doc -X configurator -X development
 	@echo $(ROOT)/base
-	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -K MIXIMROOT=$(ROOT) --deep -o libmiximbase -s 
+	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -K MIXIMROOT=$(ROOT) --deep -o miximbase -s 
 
 #	@echo $(ROOT)/base
 #	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -r -n
@@ -55,7 +55,7 @@ all:
 #	@cd $(ROOT)/base/localization && $(MAKEMAKE) $(OPTS) -n $(IBASE)
 
 	@echo $(ROOT)/modules
-	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) $(MODULES_OPTS) -K MIXIMROOT=$(ROOT) --deep -o libmiximmodules -s -X phy -X channel -X localization
+	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) $(MODULES_OPTS) -K MIXIMROOT=$(ROOT) --deep -o miximmodules -s -X phy -X channel -X localization
 	
 	
 #	@echo $(ROOT)/modules
@@ -120,7 +120,7 @@ all:
 	@echo $(ROOT)/tests
 	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
 	@echo $(ROOT)/tests/testUtils 
-	@cd $(ROOT)/tests/testUtils && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -K MIXIMROOT=$(ROOT) -o libmiximtests -s 
+	@cd $(ROOT)/tests/testUtils && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -K MIXIMROOT=$(ROOT) -o miximtests -s 
 	
 	@echo $(ROOT)/tests/blackboard
 	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) -o blackboard

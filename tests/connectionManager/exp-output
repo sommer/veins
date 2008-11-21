@@ -1,5 +1,5 @@
-OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -8,7 +8,7 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20081112-13:54:10-6275
+Assigned runID=Test1-0-20081121-06:51:27-7090
 Setting up network `ccSim'...
 setupNetwork finished, cParImpl objects in use: 98
 Initializing...
@@ -356,8 +356,8 @@ Passed: Test Node 31: Broadcast should not be answered by any node.
 Passed: Test Node 32: Should have received no broadcast.
 
 End.
-OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -366,7 +366,7 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20081112-13:54:10-6276
+Assigned runID=Test2-0-20081121-06:51:27-7091
 Setting up network `ccSim'...
 setupNetwork finished, cParImpl objects in use: 95
 Initializing...
@@ -714,8 +714,8 @@ Passed: Test Node 31: Broadcast should be answered by at least one node.
 Passed: Test Node 32: Should have received at least one broadcast.
 
 End.
-OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -724,7 +724,7 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20081112-13:54:10-6277
+Assigned runID=Test3-0-20081121-06:51:27-7092
 Setting up network `ccSim'...
 setupNetwork finished, cParImpl objects in use: 97
 Initializing...
@@ -1422,8 +1422,8 @@ Passed: Test Node 66: Broadcast should not be answered by any node.
 Passed: Test Node 67: Should have received no broadcast.
 
 End.
-OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -1432,7 +1432,7 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20081112-13:54:11-6278
+Assigned runID=Test4-0-20081121-06:51:27-7093
 Setting up network `ccSim'...
 setupNetwork finished, cParImpl objects in use: 94
 Initializing...

@@ -1,5 +1,5 @@
-OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -8,7 +8,7 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration TestBaseDecider1, run #0...
 Scenario: $repetition=0
-Assigned runID=TestBaseDecider1-0-20081103-12:02:40-15188
+Assigned runID=TestBaseDecider1-0-20081121-06:51:40-7098
 Setting up network `tbpSim'...
 setupNetwork finished, cParImpl objects in use: 85
 Initializing...
@@ -26,6 +26,7 @@ Initializing module tbpSim.node[0].nic.phy, stage 0
 [phy0] - Creating TestAirFrame 1 done.
 [phy0] - Creating TestAirFrame 2 done.
 [phy0] - Creating TestAirFrame 3 done.
+[phy0] - Creating TestAirFrame 4 done.
 Initializing module tbpSim.node[0].nic.mac, stage 0
 Initializing module tbpSim.world, stage 1
 Initializing module tbpSim.channelcontrol, stage 1
@@ -81,7 +82,7 @@ Passed: Decider demands ChannelInfo for current timepoint
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
 Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'now' in an empty Set of AirFrames (empty Mapping)
-[phy0] - ------------------------------------------------
+[phy0] - -TEST_GET_CHANNELSTATE_NOISYCHANNEL-----------------------------------------------
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -146,6 +147,90 @@ Passed: Decider demands ChannelInfo for current test-timepoint
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
 Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
+[phy0] - -DONE-------------------------------------------
+[phy0] - -TEST_GET_CHANNELSTATE_RECEIVING-----------------------------------------------
+[phy0] - -full output-----------------------------------------------
+[phy0] - A new testTime has been set: 2
+[phy0] - Putting AirFrames on the virtual channel.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+[phy0] - Calling getChannelState() of BaseDecider.
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+[phy0] - Checking results against expected results.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - -short output-----------------------------------------------
+[phy0] - A new testTime has been set: 3
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - Trying to receive an AirFrame whose TXpower is too low.
+Passed: AirFrame has been rejected, since TXpower is too low.
+[phy0] - Trying to receive TestAirFrame 3
+Passed: TestAirFrame 3 can be received, end-time is returned
+[phy0] - Trying to receive another AirFrame at the same time.
+Passed: AirFrame has been rejected, since we already receive one.
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer IS currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - -short output-----------------------------------------------
+[phy0] - A new testTime has been set: 4
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer IS currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - -short output-----------------------------------------------
+[phy0] - A new testTime has been set: 5
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer IS currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - Handing over TestAirFrame 3 again, transmission has finished
+Passed: Decider demands ChannelInfo for the duration of the AirFrame
+Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: BaseDecider has returned the pointer to currently processed AirFrame
+Passed: TestAirFrame 3 has been finally processed
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is not currently receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+[phy0] - Trying to immediately receive TestAirFrame 4
+Passed: TestAirFrame 4 can be received, end-time is returned
+[phy0] - -short output-----------------------------------------------
+[phy0] - A new testTime has been set: 6
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Decider demands ChannelInfo for one single timepoint
+Passed: Decider demands ChannelInfo for current test-timepoint
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: The PhyLayer is again receiving an AirFrame
+Passed: RSSI-value is the value for 'testTime'
+Passed: Decider demands ChannelInfo for the duration of the AirFrame
+Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: BaseDecider has returned the pointer to currently processed AirFrame
+Passed: TestAirFrame 4 has been finally processed
+[phy0] - -DONE-------------------------------------------
 Initializing module tbpSim.node[0].nic.mac, stage 1
 
 Running simulation...
