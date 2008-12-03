@@ -55,6 +55,7 @@ void BasePhyLayer::initialize(int stage) {
 
 		thermalNoise = readPar("thermalNoise", 0.0);
 		sensitivity = readPar("sensitivity", 0.0);
+		sensitivity = FWMath::dBm2mW(sensitivity);
 		maxTXPower = readPar("maxTXPower", 1.0);
 
 		//	- initialize radio
@@ -102,8 +103,6 @@ void BasePhyLayer::initialize(int stage) {
             throw cRuntimeError("Could not find BaseWorldUtility module");
 
 	} else if (stage == 1){
-
-
 		//read complex(xml) ned-parameters
 		//	- analogue model parameters
 		initializeAnalogueModels(readPar("analogueModels", (cXMLElement*)0));
@@ -113,6 +112,7 @@ void BasePhyLayer::initialize(int stage) {
 		//initialise timer messages
 		radioSwitchingOverTimer = new cMessage(0, RADIO_SWITCHING_OVER);
 		txOverTimer = new cMessage(0, TX_OVER);
+
 	}
 }
 

@@ -133,7 +133,7 @@ void TestPhyLayer::testInitialisation() {
 	//run dependend tests
 	assertFalse("Check parameter \"usePropagationDelay\".", usePropagationDelay);
 
-	assertEqual("Check parameter \"sensitivity\".", 4.0, sensitivity);
+	assertEqual("Check parameter \"sensitivity\".", FWMath::dBm2mW(6), sensitivity);
 	assertEqual("Check parameter \"maxTXPower\".", 10.0, maxTXPower);
 	assertEqual("Check parameter \"thermalNoise\".", 1.0, thermalNoise);
 

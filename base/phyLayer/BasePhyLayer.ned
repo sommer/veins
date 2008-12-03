@@ -10,7 +10,7 @@ simple BasePhyLayer
         xml analogueModels; 			//Specification of the analogue models to use and their parameters
         xml decider;					//Specification of the decider to use and its parameters
 
-        double sensitivity;		//The sensitivity of the physical layer
+        double sensitivity;		//The sensitivity of the physical layer (in dBm)
         double maxTXPower;		//The maximum transimission power of the physical layer
 
         //switchTimes:

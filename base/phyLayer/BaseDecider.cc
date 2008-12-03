@@ -53,6 +53,11 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 											simtime_t end,
 											AirFrame* exclude = 0)
 {
+	if(exclude)
+		debugEV << "Creating RSSI map excluding AirFrame with id " << exclude->getId() << endl;
+	else
+		debugEV << "Creating RSSI map." << endl;
+
 	AirFrameVector airFrames;
 
 	// collect all AirFrames that intersect with [start, end]
@@ -92,6 +97,10 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 
 		// Mapping* resultMapNew = Mapping::add( *(signal.getReceivingPower()), *resultMap, start, end );
 
+		debugEV << "Adding mapping of Airframe with ID " << (*it)->getId()
+				<< ". Starts at " << signal.getSignalStart()
+				<< " and ends at " << signal.getSignalStart() + signal.getSignalLength() << endl;
+
 		Mapping* resultMapNew = MappingUtils::add( *recvPowerMap, *resultMap, 0.0 );
 
 		// discard old mapping
@@ -125,46 +134,45 @@ bool BaseDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, simtime_t
 
 	if(debug){
 		debugEV << "Checking if SNR is above Threshold of " << snrThreshold << endl;
-		debugEV << "SNR at time " << start << " is " << map->getValue(Argument(start)) << endl;
 	}
-	// check if values at start- and end-time (interval-borders) fulfill snrThreshold-criterion
-	// TODO: remove later when these interval-borders are always key-entries in the mapping
-	if ( map->getValue(Argument(start)) <= snrThreshold )
-		return false;
 
 	// check every entry in the mapping against threshold value
-	ConstMappingIterator* it = map->createConstIterator();
+	ConstMappingIterator* it = map->createConstIterator(Argument(start));
+	// check if values at start-time fulfill snrThreshold-criterion
+	if(debug){
+		debugEV << "SNR at time " << start << " is " << it->getValue() << endl;
+	}
+	if ( it->getValue() <= snrThreshold ){
+		delete it;
+		return false;
+	}
 
-	// the mapping should not be empty
-	assert(it->inRange());
-
-	while ( it->inRange() )
+	while ( it->hasNext() && it->getNextPosition().getTime() < end)
 	{
-		// TODO: remove later when not needed anymore
-		simtime_t timePos = it->getPosition().getTime();
+		it->next();
 
 		if(debug){
-			debugEV << "SNR at time " << timePos << " is " << it->getValue() << endl;
+			debugEV << "SNR at time " << it->getPosition().getTime() << " is " << it->getValue() << endl;
 		}
 
-		// TODO: remove the interval-criterion later
 		// perform the check for smaller entry
-		if ( it->getValue() <= snrThreshold
-				&& start <= timePos
-				&& timePos <= end) return false;
-
-		// if there is no next entry, end of mapping reached
-		if ( !(it->hasNext()) ) break;
-		it->next();
+		if ( it->getValue() <= snrThreshold) {
+			delete it;
+			return false;
+		}
 	}
 
+	it->iterateTo(Argument(end));
 	if(debug){
-		debugEV << "SNR at time " << end << " is " << map->getValue(Argument(end)) << endl;
+		debugEV << "SNR at time " << end << " is " << it->getValue() << endl;
 	}
 
-	if ( map->getValue(Argument(end)) <= snrThreshold )
+	if ( it->getValue() <= snrThreshold ){
+		delete it;
 		return false;
+	}
 
+	delete it;
 	return true;
 }
 
@@ -226,7 +234,7 @@ simtime_t BaseDecider::handleNewSignal(AirFrame* frame)
 
 	// Signal is strong enough, receive this Signal and schedule it
 	currentAirFrame = frame;
-	debugEV << "Trying to receive AirFrame." << endl;
+	debugEV << "Signal is strong enough (" << recvPower << " < " << sensitivity << ") -> Trying to receive AirFrame." << endl;
 	return ( signal.getSignalStart() + signal.getSignalLength() );
 }
 
@@ -330,14 +338,9 @@ simtime_t BaseDecider::handleChannelSenseRequest(ChannelSenseRequest* request)
 
 		Mapping* rssiMap = calculateRSSIMapping(start, end);
 
-		// TODO: better: iterate over whole interval [start, end] in rssiMap
-		// and find the maximum value
 
-		// the sensed RSSI-value is the maximum value of the interval-borders
-		double rssiValue = std::max(
-				rssiMap->getValue(Argument(start)),
-				rssiMap->getValue(Argument(end))
-				);
+		// the sensed RSSI-value is the maximum value between (and including) the interval-borders
+		double rssiValue = MappingUtils::findMax(*rssiMap, Argument(start), Argument(end));
 
 		delete rssiMap;
 		rssiMap = 0;
