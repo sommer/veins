@@ -35,6 +35,7 @@ void TestPhyLayer::initialize(int stage) {
 			noAttenuation = 1.0;
 
 			// some fix time-points for the signals
+			t0 = 0;
 			t1 = 1;
 			t3 = 3;
 			t5 = 5;
@@ -42,7 +43,7 @@ void TestPhyLayer::initialize(int stage) {
 			t9 = 9;
 
 			// time-points before and after
-			before = 0;
+			before = t0;
 			after = 10;
 
 			// time-points in between
@@ -57,6 +58,12 @@ void TestPhyLayer::initialize(int stage) {
 			TXpower3 = 4.0;
 			TXpower4 = 8.0;
 
+			// TX-power for SNR-threshold-test AirFrame
+			TXpower5P = 16.0;
+			TXpower5H = 32.0;
+
+			TXpower6 = 1.0;
+
 			// some bitrates
 			bitrate9600 = 9600.0;
 
@@ -67,6 +74,11 @@ void TestPhyLayer::initialize(int stage) {
 			TestAF2 = createTestAirFrame(2);
 			TestAF3 = createTestAirFrame(3);
 			TestAF4 = createTestAirFrame(4);
+
+			// AirFrames for SNR-threshold testing
+			TestAF5 = createTestAirFrame(5);
+			TestAF6 = createTestAirFrame(6);
+
 
 			processedAF = 0;
 
@@ -113,6 +125,10 @@ void TestPhyLayer::initialize(int stage) {
 			TestAF3 = 0;
 			delete TestAF4;
 			TestAF4 = 0;
+			delete TestAF5;
+			TestAF5 = 0;
+			delete TestAF6;
+			TestAF6 = 0;
 
 		}
 	}
@@ -253,6 +269,32 @@ void TestPhyLayer::testBaseDeciderInitialization()
 	// TODO: go on here...
 	// TODO	- test whether BaseDecider calculates SNR for a given signal correctly
 	//		- test whether BaseDecider handles SNR-threshold right (send up a packet or not)
+
+	/*
+	 * Test SNR-threshold
+	 */
+	stateTestBDInitialization = TEST_SNR_THRESHOLD_ACCEPT;
+	doBaseDeciderTests();
+
+	stateTestBDInitialization = TEST_SNR_THRESHOLD_DENY;
+	doBaseDeciderTests();
+
+
+	stateTestBDInitialization = TEST_SNR_THRESHOLD_PAYLOAD_DENY;
+	doBaseDeciderTests();
+
+
+	stateTestBDInitialization = TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY;
+	doBaseDeciderTests();
+
+
+	stateTestBDInitialization = TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY;
+	doBaseDeciderTests();
+
+
+	stateTestBDInitialization = TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY;
+	doBaseDeciderTests();
+
 }
 
 AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
@@ -294,7 +336,7 @@ Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 		assertEqual("Check for parameter \"snrThreshold\".", (unsigned int)1, params.count("snrThreshold"));
 		cMsgPar par = params["snrThreshold"];
 		assertEqual("Check type of parameter \"snrThreshold\".", 'D', par.getType());
-		assertEqual("Check value of parameter \"snrThreshold\".", -80.0, par.doubleValue());
+		assertEqual("Check value of parameter \"snrThreshold\".", 10.0, par.doubleValue());
 
 		double snrThreshold = par.doubleValue();
 		return new TestBaseDecider(this, snrThreshold, sensitivity, myIndex);
@@ -360,24 +402,57 @@ Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params
  * Frame2             |-----------------|		(start: t3, length: t9-t3)
  * Frame3             |-----|					(start: t3, length: t5-t3)
  * Frame4                   |--|				(start: t5, length: t6-t5)
- *
+ * SNR-Frame    |xx|--------|					(start: t1, length: t5-t1, header (xx): t2-t1)
+ * (Frame5)
+ * Frame6    |--|								(start: t0, length: t1-t0)
  *           |  |  |  |  |  |  |  |  |  |  |
  *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
  * To Test:  __ __ __ __ __ __          __
  *
  *           where: t0=before, t10=after
  */
+// TODO implement TestAirFrame6
 void TestPhyLayer::fillAirFramesOnChannel()
 {
 	assert(testBaseDecider);
 
+	// remove all pointers to AirFrames
+	airFramesOnChannel.clear();
 
 	switch (stateTestBDInitialization) {
+
+
+		// TODO put the right AirFrames on the channel for the following cases
+		case TEST_SNR_THRESHOLD_ACCEPT:
+		case TEST_SNR_THRESHOLD_DENY:
+		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
+			airFramesOnChannel.push_back(TestAF1);
+			airFramesOnChannel.push_back(TestAF5);
+			break;
+
+		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
+			airFramesOnChannel.push_back(TestAF1);
+			airFramesOnChannel.push_back(TestAF2);
+			airFramesOnChannel.push_back(TestAF5);
+			break;
+
+		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
+			airFramesOnChannel.push_back(TestAF1);
+			airFramesOnChannel.push_back(TestAF5);
+			airFramesOnChannel.push_back(TestAF6);
+			break;
+
+		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
+			airFramesOnChannel.push_back(TestAF1);
+			airFramesOnChannel.push_back(TestAF4);
+			airFramesOnChannel.push_back(TestAF5);
+			break;
+		// TODO end.
+
+
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
 		case TEST_GET_CHANNELSTATE_RECEIVING:
 
-			// remove all pointers to AirFrames
-			airFramesOnChannel.clear();
 
 			// fill with pointers to test AirFrames that interfere with the testTime
 			if (testTime == before || testTime == after)
@@ -442,6 +517,11 @@ void TestPhyLayer::fillAirFramesOnChannel()
  * i=3: start: t3, length: t5-t3, TXpower: 4.0, bitrate: 9600.0, constant
  * i=4: start: t5, length: t6-t5, TXpower: 8.0, bitrate: 9600.0, constant
  *
+ * This is the AirFrame for SNR-threshold testing, its values may be changed during test
+ * i=5: start: t1, length: t5-t1, TXpower: variable, bitrate: 9600.0, steps
+ *
+ * i=6:	start: t0, length : t1-t0, TXpower 1.0, bitrate: 9600.0, constant
+ *
  * where TXpower and bitrate are also specified by a variable.
  *
  *
@@ -454,34 +534,60 @@ AirFrame* TestPhyLayer::createTestAirFrame(int i)
 	// parameters needed
 	simtime_t signalStart = -1;
 	simtime_t signalLength = -1;
-	double transmissionPower = 0;
-	double bitrate = 0;
+	// values for header/payload
+	std::pair<double, double> transmissionPower(0, 0);
+	std::pair<double, double> bitrate(0, 0);
+	simtime_t payloadStart = -1;
 
 	// set parameters according to index
 	switch (i) {
 		case 1:
 			signalStart = t1;
 			signalLength = (t7-t1);
-			transmissionPower = TXpower1;
-			bitrate = bitrate9600;
+			transmissionPower.first = TXpower1;
+			bitrate.first = bitrate9600;
 			break;
 		case 2:
 			signalStart = t3;
 			signalLength = (t9-t3);
-			transmissionPower = TXpower2;
-			bitrate = bitrate9600;
+			transmissionPower.first = TXpower2;
+			bitrate.first = bitrate9600;
 			break;
 		case 3:
 			signalStart = t3;
 			signalLength = (t5-t3);
-			transmissionPower = TXpower3;
-			bitrate = bitrate9600;
+			transmissionPower.first = TXpower3;
+			bitrate.first = bitrate9600;
 			break;
 		case 4:
 			signalStart = t5;
 			signalLength = (t6-t5);
-			transmissionPower = TXpower4;
-			bitrate = bitrate9600;
+			transmissionPower.first = TXpower4;
+			bitrate.first = bitrate9600;
+			break;
+		case 5:
+			signalStart = t1;
+			signalLength = (t5-t1);
+
+			switch (stateTestBDInitialization) {
+				case TEST_SNR_THRESHOLD_ACCEPT:
+					transmissionPower.first = 10.0;
+					transmissionPower.second = 10.0;
+					break;
+				default:
+					transmissionPower.first = TXpower5H;
+					transmissionPower.second = TXpower5P;
+					break;
+			}
+
+			bitrate.first = bitrate9600;
+			payloadStart = t2;
+			break;
+		case 6:
+			signalStart = t0;
+			signalLength = (t1-t0);
+			transmissionPower.first = TXpower6;
+			bitrate.first = bitrate9600;
 			break;
 		default:
 			break;
@@ -508,7 +614,7 @@ AirFrame* TestPhyLayer::createTestAirFrame(int i)
 	// --- Mac-Layer's tasks
 
 	// create Signal containing TXpower- and bitrate-mapping
-	Signal* s = createSignal(signalStart, signalLength, transmissionPower, bitrate);
+	Signal* s = createSignal(signalStart, signalLength, transmissionPower, bitrate, i, payloadStart);
 
 	// just a bypass attenuation, that has no effect on the TXpower
 	Mapping* bypassMap = createConstantMapping(signalStart, signalStart + signalLength, noAttenuation);
@@ -556,19 +662,57 @@ void TestPhyLayer::passAirFramesOnChannel(AirFrameVector& out)
 	ev << TestModule::log("All TestAirFrames-pointers have been copied.") << endl;
 }
 
-Signal* TestPhyLayer::createSignal(simtime_t start, simtime_t length, double power, double bitrate)
+/**
+ * @brief Creates the right Signals for TestAirFrames (by index).
+ *
+ * By default TX-power and bitrate are constant for the whole duration of the Signal.
+ *
+ *
+ */
+Signal* TestPhyLayer::createSignal(simtime_t start,
+									simtime_t length,
+									std::pair<double, double> power,
+									std::pair<double, double> bitrate,
+									int index,
+									simtime_t payloadStart = -1)
 {
 	simtime_t end = start + length;
 	//create signal with start at current simtime and passed length
 	Signal* s = new Signal(start, length);
 
-	//create and set tx power mapping
-	Mapping* txPowerMapping = createConstantMapping(start, end, power);
-	s->setTransmissionPower(txPowerMapping);
+	Mapping* txPowerMapping = 0;
+	Mapping* bitrateMapping = 0;
 
-	//create and set bitrate mapping
-	Mapping* bitrateMapping = createConstantMapping(start, end, bitrate);
+	switch (index) {
+
+		// TestAirFrame 5 has different TX-power for header and payload
+		case 5:
+
+			//set tx power mapping
+			txPowerMapping = createHeaderPayloadMapping(start, payloadStart, end,
+																	power.first, power.second);
+
+			//set bitrate mapping
+			bitrateMapping = createConstantMapping(start, end, bitrate.first);
+			break;
+
+		default:
+			//set tx power mapping
+			txPowerMapping = createConstantMapping(start, end, power.first);
+
+			//set bitrate mapping
+			bitrateMapping = createConstantMapping(start, end, bitrate.first);
+			break;
+	}
+
+	assert(txPowerMapping);
+	assert(bitrateMapping);
+
+	// put the mappings to the Signal
+	s->setTransmissionPower(txPowerMapping);
 	s->setBitrate(bitrateMapping);
+
+	ev << "Signal for TestAirFrame" << index << " created with header/payload power: " <<  power.first << "/" << power.second << endl;
 
 	return s;
 }
@@ -580,18 +724,50 @@ Mapping* TestPhyLayer::createConstantMapping(simtime_t start, simtime_t end, dou
 
 	//set position Argument
 	Argument startPos(start);
-
 	//set mapping at position
 	m->setValue(startPos, value);
 
 	//set position Argument
 	Argument endPos(end);
-
 	//set mapping at position
 	m->setValue(endPos, value);
 
 	return m;
 }
+
+Mapping* TestPhyLayer::createHeaderPayloadMapping(	simtime_t start,
+													simtime_t payloadStart,
+													simtime_t end,
+													double headerValue,
+													double payloadValue)
+{
+	//create mapping over time
+	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time), Mapping::LINEAR);
+
+	//set position Argument
+	Argument startPos(start);
+	//set mapping at position
+	m->setValue(startPos, headerValue);
+
+
+	// header end (infinitely small time step earlier)
+	Argument headerEndPos(pre(payloadStart));
+	m->setValue(headerEndPos, headerValue);
+
+	// payload start
+	Argument payloadStartPos(payloadStart);
+	m->setValue(payloadStartPos, payloadValue);
+
+
+	//set position Argument
+	Argument payloadEndPos(end);
+	//set mapping at position
+	m->setValue(payloadEndPos, payloadValue);
+
+	return m;
+}
+
+
 
 // --- TESTING IMPLEMENTATION OF DeciderToPhyInterface !!! ---
 // --- PLEASE REFER TO HEADER-FILE !!! ---
@@ -630,6 +806,14 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 
 		//TODO this case must be considered separately, since BaseDecider will also ask for intervals
 		case TEST_GET_CHANNELSTATE_RECEIVING:
+
+
+		case TEST_SNR_THRESHOLD_ACCEPT:
+		case TEST_SNR_THRESHOLD_DENY:
+		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
+		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
+		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
+		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
 
 			if (processedAF != 0)
 			{
@@ -675,6 +859,9 @@ void TestPhyLayer::sendControlMsg(cMessage* msg)
 {
 	BasePhyLayer::sendControlMsg(msg);
 	return;
+
+	// TODO as soon as ThresholdDecider sends 'packet dropped' - control messages
+	// check correct sending of them here
 }
 
 /**
@@ -697,6 +884,23 @@ void TestPhyLayer::sendUp(AirFrame* packet, DeciderResult result)
 			// assertTrue("DeciderResult is: 'correct'", result.isSignalCorrect());
 			assertTrue("BaseDecider has returned the pointer to currently processed AirFrame", (packet==processedAF));
 			break;
+
+		case TEST_SNR_THRESHOLD_ACCEPT:
+			assertTrue("BaseDecider decided correctly to send up the packet", true);
+			assertTrue("BaseDecider has returned the pointer to currently processed AirFrame", (packet==processedAF));
+			break;
+
+		case TEST_SNR_THRESHOLD_DENY:
+		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
+		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
+		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
+		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
+			assertFalse("BaseDecider decided correctly not to send up the packet", true);
+
+			// TODO output in which state the error happened
+
+			break;
+
 		default:
 			BasePhyLayer::sendUp(packet, result);
 			break;
@@ -724,6 +928,13 @@ simtime_t TestPhyLayer::getSimTime()
 			break;
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
 		case TEST_GET_CHANNELSTATE_RECEIVING:
+
+		case TEST_SNR_THRESHOLD_ACCEPT:
+		case TEST_SNR_THRESHOLD_DENY:
+		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
+		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
+		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
+		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
 			return testTime;
 			break;
 		default:
@@ -741,6 +952,8 @@ void TestPhyLayer::doBaseDeciderTests()
 	assert(testBaseDecider);
 
 	ChannelState cs;
+
+	simtime_t nextHandoverTime = -1;
 
 
 	switch (stateTestBDInitialization) {
@@ -884,7 +1097,7 @@ void TestPhyLayer::doBaseDeciderTests()
 			assertEqual("RSSI-value is the value for 'testTime'", res_t2_receiving, cs.getRSSI());
 
 
-			simtime_t nextHandoverTime;
+
 			ev << TestModule::log("-short output-----------------------------------------------") << endl;
 
 			// testTime = t3
@@ -1003,6 +1216,81 @@ void TestPhyLayer::doBaseDeciderTests()
 
 
 		}
+			break;
+//		case TEST_SNR_THRESHOLD:
+//		{
+//			// TODO insert test cases
+//
+//			ev << TestModule::log("-TEST_SNR_THRESHOLD-----------------------------------------------") << endl;
+//
+//			//TODO this is just an example, not a real test
+//			testTime = t1;
+//			fillAirFramesOnChannel();
+//
+//			processedAF = TestAF5;
+//			nextHandoverTime = decider->processSignal(TestAF5);
+//			Signal& signal5 = TestAF5->getSignal();
+//			assertTrue("TestAirFrame 5 can be received, end-time is returned",
+//					(nextHandoverTime == signal5.getSignalStart() + signal5.getSignalLength()));
+//
+//
+//			assertEqual("NextHandoverTime is t5.", t5, nextHandoverTime);
+//			testTime = nextHandoverTime;
+//			fillAirFramesOnChannel();
+//
+//			nextHandoverTime = decider->processSignal(TestAF5);
+//
+//			assertTrue("TestAirFrame 5 has been finally processed",
+//								(nextHandoverTime < 0));
+//			processedAF = 0;
+//
+//			ev << TestModule::log("-DONE-------------------------------------------") << endl;
+//		}
+//			break;
+
+		// here we test a simple case where one noise-AirFrame is present, but SNR is just high enough
+		case TEST_SNR_THRESHOLD_ACCEPT:
+
+			testTime = t1;
+			fillAirFramesOnChannel();
+
+			processedAF = TestAF5;
+			nextHandoverTime = decider->processSignal(TestAF5);
+
+			assertEqual("NextHandoverTime is t5.", t5, nextHandoverTime);
+
+			testTime = nextHandoverTime;
+
+			nextHandoverTime = decider->processSignal(TestAF5);
+
+			assertTrue("TestAirFrame 5 has been finally processed",
+								(nextHandoverTime < 0));
+			processedAF = 0;
+
+			break;
+
+		// here we test a simple case where one noise-AirFrame is present, but SNR is just not high enough
+		case TEST_SNR_THRESHOLD_DENY:
+			break;
+
+		// here we test a simple case where one noise-AirFrame is present and  header-SNR is just high enough
+		// but payload-SNR is just not high enough
+		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
+			break;
+
+		// here we test a simple case where a second noise-AirFrame arrives during reception of an AirFrame
+		// and thus SNR-level turns too low
+		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
+			break;
+
+		// here we test a simple case where one noise-AirFrame ends at the beginning of the reception
+		// thus SNR-level is too low
+		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
+			break;
+
+		// here we test a simple case where one noise-AirFrame begins at the end of the reception
+		// thus SNR-level is too low
+		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
 			break;
 		default:
 			break;

@@ -9,6 +9,6 @@
 	    </AnalogueModel>
 	</AnalogueModels>
 	<Decider type="TestBaseDecider">
-		<Parameter name="snrThreshold" type="double" value="-80.0"></Parameter>
+		<Parameter name="snrThreshold" type="double" value="10"></Parameter>
 	</Decider>
 </root>
