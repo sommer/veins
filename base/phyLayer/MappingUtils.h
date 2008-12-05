@@ -97,7 +97,7 @@ protected:
 	/** @brief Stores the current position of the iterator.*/
 	Argument position;
 
-	/** @brief Stores the next position a call of "next()" whould jump to.*/
+	/** @brief Stores the next position a call of "next()" would jump to.*/
 	Argument nextPosition;
 public:
 
@@ -114,7 +114,7 @@ public:
 	/**
 	 * @brief Lets the iterator point to the passed position.
 	 *
-	 * The passed new position can be at arbitary places.
+	 * The passed new position can be at arbitrary places.
 	 *
 	 * This method has logarithmic complexity.
 	 */
@@ -162,7 +162,7 @@ public:
 	 * This method should be used as end-condition when iterating
 	 * over the function with the "next()" method.
 	 *
-	 * THis method has cosntant complexity.
+	 * THis method has constant complexity.
 	 */
 	virtual bool inRange() const {
 		return valueIt.inRange();
@@ -178,7 +178,7 @@ public:
 	}
 
 	/**
-	 * @brief Returns the next position a call to "next()" whould jump to.
+	 * @brief Returns the next position a call to "next()" would jump to.
 	 *
 	 * This method has constant complexity.
 	 */
@@ -232,7 +232,7 @@ public:
 
 /**
  * @brief Implements the Mapping-interface with an InterpolateableMap from
- * simtime_t to double betweeen which values can be interpolated to represent
+ * simtime_t to double between which values can be interpolated to represent
  * a Mapping with only time as domain.
  */
 template<template <class Key, class Value, class Pair, class Iterator> class Interpolator>
@@ -253,16 +253,12 @@ public:
 
 	/**
 	 * @brief Initializes the Mapping with the passed Interpolation method.
-	 *
-	 * TODO: check if interpolationmethod is actually used yet.
 	 */
 	TimeMapping(InterpolationMethod intpl = LINEAR):
 		Mapping(), entries() {}
 
 	/**
 	 * @brief Initializes the Mapping with the passed Interpolation method.
-	 *
-	 * TODO: check if interpolationmethod is actually used yet.
 	 */
 	TimeMapping(double outOfRangeVal, InterpolationMethod intpl = LINEAR):
 		Mapping(), entries(outOfRangeVal) {}
@@ -317,9 +313,9 @@ public:
 
 
 /**
- * @brief Helperclass for the MultiDimMapping which provides an Iterator
+ * @brief Helper-class for the MultiDimMapping which provides an Iterator
  * which linear interpolates between two other Mapping iterators. Or in
- * other words, it provides an Interator for an linear interpolated Mapping.
+ * other words, it provides an Iterator for an linear interpolated Mapping.
  */
 class LinearIntplMappingIterator:public MappingIterator {
 protected:
@@ -329,13 +325,13 @@ protected:
 	ConstMappingIterator* rightIt;
 
 	/** @brief The factor defining how strong the left and the right Mapping
-	 * affect the interpoaltion.*/
+	 * affect the interpolation.*/
 	double factor;
 
 public:
 	/**
-	 * @brief Initializes the Interator with the passed Iterators of the mappings to
-	 * interpoalte and the their inteproaltionfactor.
+	 * @brief Initializes the Iterator with the passed Iterators of the mappings to
+	 * Interpolate and the their interpolation-factor.
 	 */
 	LinearIntplMappingIterator(ConstMappingIterator* leftIt, ConstMappingIterator* rightIt, double f);
 
@@ -347,13 +343,13 @@ public:
 	/**
 	 * @brief An interpolated mapping isn't really iterateable over specific
 	 * values, it only provides an fast way to get several values from an
-	 * Interpoalted mapping.
+	 * Interpolated mapping.
 	 */
 	virtual bool hasNext() const { return false; }
 	/**
 	 * @brief An interpolated mapping isn't really iterateable over specific
 	 * values, it only provides an fast way to get several values from an
-	 * Interpoalted mapping.
+	 * Interpolated mapping.
 	 */
 	virtual bool inRange() const { return false; }
 
@@ -426,7 +422,7 @@ public:
 };
 
 /**
- * @brief Helperclass which represents a linear interpolation between
+ * @brief Helper class which represents a linear interpolation between
  * two other mappings.
  */
 class LinearIntplMapping:public Mapping {
@@ -436,7 +432,7 @@ protected:
 	/** @brief The right mapping to interpolate*/
 	ConstMapping* right;
 
-	/** @brief The interpolationfactor determining the linear interpolation
+	/** @brief The interpolation factor determining the linear interpolation
 	 * between left and right mapping.*/
 	double factor;
 
@@ -444,7 +440,7 @@ public:
 
 	/**
 	 * @brief Initializes the LinearIntplMapping with the passed left and right
-	 * Mapping to interpoalte by the passed interpolation value.
+	 * Mapping to interpolate by the passed interpolation value.
 	 */
 	LinearIntplMapping(ConstMapping* left = 0, ConstMapping* right = 0, double f = 0.0):
 		left(left), right(right), factor(f) {}
@@ -457,7 +453,7 @@ public:
 	/**
 	 * @brief Returns the linear interpolated value of this Mapping.
 	 *
-	 * The value is caclulated by the following formula:
+	 * The value is calculated by the following formula:
 	 *
 	 * v = left + (right - left) * intplFactor
 	 */
@@ -501,23 +497,23 @@ public:
 };
 
 /**
- * @brief Helperclass (-specialisation) for multiDimMapping which is used by an
+ * @brief Helper class (-specialization) for multiDimMapping which is used by an
  * InterpolateableMap as return value of the "getValue()" - method.
  *
  * Provides either an pointer to an actual SubMapping of the MultiDimMapping or
- * a Pointer to an temporary InterpolatedMapping between two Submappings of the
+ * a Pointer to an temporary InterpolatedMapping between two Sub-mappings of the
  * MultiDimMapping.
  */
 template<>
 class Interpolated<Mapping*> {
 protected:
-	/** @brief Holds the temporary InterpolatedMapping if neccessary.*/
+	/** @brief Holds the temporary InterpolatedMapping if necessary.*/
 	LinearIntplMapping mapping;
 
 	/** @brief A pointer to the Mapping this class represents.*/
 	Mapping* value;
 
-	/** @brief Stores if we use the temporary IntplMapping or a extern pointer.*/
+	/** @brief Stores if we use the temporary IntplMapping or a external pointer.*/
 	bool isPointer;
 public:
 	/** @brief Stores if the underlying Mapping is interpolated or not.*/
@@ -526,7 +522,7 @@ public:
 public:
 	/**
 	 * @brief Initializes this Interpolated instance to represent the passed
-	 * Interpoalted Mapping. Copies the passed Mapping to its internal member.
+	 * Interpolated Mapping. Copies the passed Mapping to its internal member.
 	 * Sets "isInterpolated" to true.
 	 */
 	Interpolated(const LinearIntplMapping& m):
@@ -536,7 +532,7 @@ public:
 	}
 
 	/**
-	 * @brief Initializes this Interpoalted instance to represent the Mapping
+	 * @brief Initializes this Interpolated instance to represent the Mapping
 	 * the passed pointer points to and with the passed isIntpl value.
 	 *
 	 * The passed pointer has to be valid as long as this instance exists.
@@ -545,7 +541,7 @@ public:
 		mapping(), value(m), isPointer(true), isInterpolated(isIntpl) {}
 
 	/**
-	 * @brief Copyconstructor which assures that the internal storage is used correctly.
+	 * @brief Copy-constructor which assures that the internal storage is used correctly.
 	 */
 	Interpolated(const Interpolated<Mapping*>& o):
 		mapping() {
@@ -577,7 +573,7 @@ public:
 	}
 
 	/**
-	 * @brief Dereferences this Interpoalted to the represented value (works like
+	 * @brief Dereferences this Interpolated to the represented value (works like
 	 * dereferencing an std::iterator).
 	 */
 	Mapping*& operator*() {
@@ -585,7 +581,7 @@ public:
 	}
 
 	/**
-	 * @brief Dereferences this Interpoalted to the represented value (works like
+	 * @brief Dereferences this Interpolated to the represented value (works like
 	 * dereferencing an std::iterator).
 	 */
 	Mapping** operator->() {
@@ -593,7 +589,7 @@ public:
 	}
 
 	/**
-	 * @brief Two Interpoalted<Mapping*> are compared equal if the pointer to
+	 * @brief Two Interpolated<Mapping*> are compared equal if the pointer to
 	 * the represented Mapping is the same as well as the "isInterpolated"
 	 * value.
 	 */
@@ -602,7 +598,7 @@ public:
 	}
 
 	/**
-	 * @brief Two Interpoalted<Mapping*> are compared non equal if the pointer to
+	 * @brief Two Interpolated<Mapping*> are compared non equal if the pointer to
 	 * the represented Mapping differs or the "isInterpolated"
 	 * value.
 	 */
@@ -612,7 +608,7 @@ public:
 };
 
 /**
- * @brief Specialisation of the Linear-template which provides LinearInterpolation
+ * @brief Specialization of the Linear-template which provides LinearInterpolation
  * for pointer two Mappings. Used by MultiDimMapping.
  */
 template<>
@@ -625,7 +621,7 @@ public:
 	typedef Interpolated<Mapping*> interpolated;
 protected:
 
-	/** @brief Comparission class for the values of the map to interpolate over.*/
+	/** @brief Comparison class for the values of the map to interpolate over.*/
 	PairLess<std::map<double, Mapping*>::value_type, double> comp;
 
 
@@ -642,7 +638,7 @@ public:
 	void setOutOfRangeVal(Mapping* oorv) { outOfRangeVal = oorv; }
 
 	/**
-	 * @brief calculates the linear interpoaltion factor used for the created
+	 * @brief calculates the linear interpolation factor used for the created
 	 * LinearIntplMappings.
 	 */
 	static double linearInterpolationFactor(const double& t,
@@ -655,7 +651,7 @@ public:
 	 * at the passed position using the values between the passed Iterators.
 	 *
 	 * The returned instance of interpolated represents the result. Which can be
-	 * either an actual entry of the interpoalted map (if the position two
+	 * either an actual entry of the interpolated map (if the position two
 	 * interpolate was exactly that. Or it can be an interpolated value, if the
 	 * passed position was between two entries of the map.
 	 * This state can be retrieved with the "isInterpolated"-Member of the returned
@@ -678,7 +674,7 @@ public:
 	 * passed position to interpolate.
 	 *
 	 * The returned instance of interpolated represents the result. Which can be
-	 * either an actual entry of the interpoalted map (if the position two
+	 * either an actual entry of the interpolated map (if the position two
 	 * interpolate was exactly that. Or it can be an interpolated value, if the
 	 * passed position was between two entries of the map.
 	 * This state can be retrieved with the "isInterpolated"-Member of the returned
@@ -816,17 +812,17 @@ class MultiDimMapping;
  * @brief Implementation of the MappingIterator-interface which is able
  * to iterate over every value in a MultiDimMapping.
  *
- * As the MultiDimMapping has a treelike structure of submappings to
+ * As the MultiDimMapping has a tree-like structure of sub-mappings to
  * represent multiple dimensions, the MultiDimIterator consist of a
  * number of sub-MultiDimIterator to represent the current position
- * inside the submappings. So every submapping-iterator represents
+ * inside the sub-mappings. So every sub-mapping-iterator represents
  * one dimension and the and Iterator to next Dimensions.
  * The last iterator is an TimeMappingIterator.
  *
  * Iteration works by sub-iterator-first-iteration. Which means that
  * at first the sub-iterator at the current position is iterated to its
  * end before the position inside the dimension of this iterator is increased.
- * This assures the iterationorder demanded by the MappingIterator-interface.
+ * This assures the iteration order demanded by the MappingIterator-interface.
  */
 template<template <class Key, class Value,
 					class Pair,
@@ -845,20 +841,20 @@ protected:
 	MultiDimMapping<Interpolator>& mapping;
 
 	/** @brief Iterator storing the current position inside the underlying Mappings
-	 * submapping map.*/
+	 * sub-mapping map.*/
 	IteratorType valueIt;
 
-	/** @brief The submapping of the submapping map at the current position.*/
+	/** @brief The sub-mapping of the sub-mapping map at the current position.*/
 	typename MapType::interpolated subMapping;
 
-	/** @brief An iterator for the submapping which points two the current position
+	/** @brief An iterator for the sub-mapping which points two the current position
 	 * in the next dimensions.*/
 	MappingIterator* subIterator;
 
 	/** @brief The current position in every Dimension of this Iterator.*/
 	Argument position;
 
-	/** @brief The position a call to "next()" whould jump to.*/
+	/** @brief The position a call to "next()" would jump to.*/
 	Argument nextPosition;
 
 protected:
@@ -889,7 +885,7 @@ protected:
 
 	/**
 	 * @brief Helper method which updates the sub-iterator and sets the position
-	 * of the subiterator to its beginning.
+	 * of the sub-iterator to its beginning.
 	 *
 	 * Called when the position of of the iterator inside the
 	 * dimension this Iterator represents has changed.
@@ -915,7 +911,7 @@ protected:
 	}
 
 	/**
-	 * @brief Helpermethod which updates the nextPosition member.
+	 * @brief Helper method which updates the nextPosition member.
 	 *
 	 * Called when the current position has changed.
 	 */
@@ -946,7 +942,7 @@ protected:
 
 public:
 	/**
-	 * @brief Intializes the Iterator for the passed MultiDimMapping and sets
+	 * @brief Initializes the Iterator for the passed MultiDimMapping and sets
 	 * its position two the first entry of the passed MultiDimMapping.
 	 */
 	MultiDimMappingIterator(MultiDimMapping<Interpolator>& mapping):
@@ -1000,7 +996,7 @@ public:
 	/**
 	 * @brief Lets the iterator point to the passed position.
 	 *
-	 * The passed new position can be at arbitary places.
+	 * The passed new position can be at arbitrary places.
 	 *
 	 * Has logarithmic complexity in number of dimensions and number of
 	 * entries inside each dimension.
@@ -1098,7 +1094,7 @@ public:
 	}
 
 	/**
-	 * @brief returns the next position a call to "next()" whould jump to.
+	 * @brief returns the next position a call to "next()" would jump to.
 	 *
 	 * Constant complexity.
 	 */
@@ -1166,15 +1162,15 @@ public:
 
 /**
  * @brief Implementation of the Mapping-interface which is able to represent
- * arbitary dimensional instances of Mappings by using a treelike structure
- * of submappings, each representing the values for one of the dimensions.
+ * arbitrary dimensional instances of Mappings by using a tree-like structure
+ * of sub-mappings, each representing the values for one of the dimensions.
  *
  * This class internally uses a map of Mappings two represent one dimension.
- * Where every Mapping in the map represents a submapping for the values in
- * the next dimension at that position in the this dimension. These submappings
- * can either be in turn MultiDimMappings with further submappings or they can
+ * Where every Mapping in the map represents a sub-mapping for the values in
+ * the next dimension at that position in the this dimension. These sub-mappings
+ * can either be in turn MultiDimMappings with further sub-mappings or they can
  * be TimedMappings if their dimension is the time. The TimedMappings therefore
- * represent the leafes of the threelike structure.
+ * represent the leafs of the tree-like structure.
  */
 template<template <class Key, class Value,
 					class Pair,
@@ -1187,10 +1183,19 @@ protected:
 										    std::map<double, Mapping*>::value_type,
 										    std::map<double, Mapping*>::const_iterator> > SubFunctionMap;
 
+	/**
+	 * @brief Returned by the Interpolator if the mapping is accessed outside
+	 * its range (before or after the last key entry in a dimension).
+	 */
 	ConstantSimpleConstMapping* outOfRangeMapping;
+
+	/**
+	 * @brief Wraps the out of range mapping which is an instance of ConstMapping
+	 * inside an instance of Mapping which setValue method is asserted to never be called.
+	 */
 	ConstMappingWrapper* wrappedOORMapping;
 
-	/** @brief Stores the submappings for the dimension this instance represents.*/
+	/** @brief Stores the sub-mappings for the dimension this instance represents.*/
 	SubFunctionMap entries;
 
 	/** @brief The dimension this instance represents.*/
@@ -1203,12 +1208,12 @@ protected:
 
 protected:
 	/**
-	 * @brief Initializes the Mapping with the passed dimensionset as domain and
+	 * @brief Initializes the Mapping with the passed DimensionSet as domain and
 	 * the passed dimension as the dimension this instance should represent.
 	 *
-	 * Also takes the interpoaltion method to use, but not yet implemented.
+	 * Also takes the interpolation method to use, but not yet implemented.
 	 *
-	 * This constructor is only used internally to create the submappings.
+	 * This constructor is only used internally to create the sub-mappings.
 	 */
 	MultiDimMapping(const DimensionSet& myDims, Dimension myDim, InterpolationMethod intpl = STEPS):
 			Mapping(myDims),
@@ -1216,15 +1221,15 @@ protected:
 			wrappedOORMapping(0),
 			entries(),
 			myDimension(myDim),
-			isMaster(false) {} //TODO: implement interpolationmethod
+			isMaster(false) {}
 
 	/**
-	 * @brief Initializes the Mapping with the passed dimensionset as domain and
+	 * @brief Initializes the Mapping with the passed DimensionSet as domain and
 	 * the passed dimension as the dimension this instance should represent.
 	 *
-	 * Also takes the interpoaltion method to use, but not yet implemented.
+	 * Also takes the interpolation method to use, but not yet implemented.
 	 *
-	 * This constructor is only used internally to create the submappings.
+	 * This constructor is only used internally to create the sub-mappings.
 	 */
 	MultiDimMapping(const DimensionSet& myDims, Dimension myDim,
 					ConstantSimpleConstMapping* oorm,
@@ -1235,11 +1240,11 @@ protected:
 			wrappedOORMapping(wrappedoorm),
 			entries(wrappedOORMapping),
 			myDimension(myDim),
-			isMaster(false) {} //TODO: implement interpolationmethod
+			isMaster(false) {}
 
 	/**
-	 * @brief Intern copy-constructor which assures that the submappings are deep
-	 * copied instead of only their the pointers.
+	 * @brief Intern copy-constructor which assures that the sub-mappings are deep
+	 * copied instead of only their pointers.
 	 */
 	MultiDimMapping(const MultiDimMapping<Interpolator>& o,
 					ConstantSimpleConstMapping* oorm,
@@ -1257,7 +1262,7 @@ protected:
 	}
 
 	/**
-	 * @brief Internal helper method which creates a new submapping for this
+	 * @brief Internal helper method which creates a new sub-mapping for this
 	 * MultiDimMapping instance.
 	 */
 	Mapping* createSubSignal() const{
@@ -1267,14 +1272,14 @@ protected:
 			if(nextDim == Dimension::time)
 				return new TimeMapping<Interpolator>();
 			else
-				return new MultiDimMapping<Interpolator>(dimensions, nextDim, LINEAR); //TODO: use interpolationmethod
+				return new MultiDimMapping<Interpolator>(dimensions, nextDim, LINEAR);
 		} else {
 			if(nextDim == Dimension::time)
 				return new TimeMapping<Interpolator>(outOfRangeMapping->getValue());
 			else
 				return new MultiDimMapping<Interpolator>(dimensions, nextDim,
 										   outOfRangeMapping,
-										   wrappedOORMapping, LINEAR); //TODO: use interpolationmethod
+										   wrappedOORMapping, LINEAR);
 		}
 	}
 
@@ -1309,7 +1314,7 @@ public:
 	/**
 	 * @brief Initializes the Mapping with the passed DimensionSet as domain.
 	 *
-	 * Also takes the interpolationmethod but is not used yet.
+	 * Also takes the interpolation-method but is not used yet.
 	 */
 	MultiDimMapping(const DimensionSet& myDims, InterpolationMethod intpl = STEPS):
 		Mapping(myDims),
@@ -1318,15 +1323,13 @@ public:
 		entries(),
 		isMaster(true){
 
-		//TODO: implement interpolationmethod
-
 		myDimension = *(dimensions.rbegin());
 	}
 
 	/**
 	 * @brief Initializes the Mapping with the passed DimensionSet as domain.
 	 *
-	 * Also takes the interpolationmethod but is not used yet.
+	 * Also takes the interpolation-method but is not used yet.
 	 */
 	MultiDimMapping(const DimensionSet& myDims, double oorv, InterpolationMethod intpl = STEPS):
 		Mapping(myDims),
@@ -1335,13 +1338,11 @@ public:
 		entries(wrappedOORMapping),
 		isMaster(true) {
 
-		//TODO: implement interpolationmethod
-
 		myDimension = *(dimensions.rbegin());
 	}
 
 	/**
-	 * @brief Copyconstructor which assures that the submappings are deep
+	 * @brief Copy-constructor which assures that the sub-mappings are deep
 	 * copied instead of only their the pointers.
 	 */
 	MultiDimMapping(const MultiDimMapping<Interpolator>& o):
@@ -1363,7 +1364,7 @@ public:
 	}
 
 	/**
-	 * @brief Copy operator which assures that the submappings are deep
+	 * @brief Copy operator which assures that the sub-mappings are deep
 	 * copied instead of only their the pointers.
 	 */
 	const MultiDimMapping& operator=(const MultiDimMapping<Interpolator>& o){
@@ -1540,7 +1541,7 @@ protected:
 	}
 
 	FilledUpMapping(const DimensionSet& myDims, Dimension myDim, const KeyMap* keys, InterpolationMethod intpl = STEPS):
-		MultiDimMapping<Linear>(myDims, myDim, intpl), fillRef(0), keys(keys) //TODO: implement interpolationmethod
+		MultiDimMapping<Linear>(myDims, myDim, intpl), fillRef(0), keys(keys)
 	{
 		fillRefIfNecessary();
 	}
@@ -1551,7 +1552,7 @@ protected:
 		if(nextDim == Dimension::time)
 			return new TimeMapping<Linear>();
 		else
-			return new FilledUpMapping(dimensions, nextDim, keys, LINEAR); //TODO: use interpolationmethod
+			return new FilledUpMapping(dimensions, nextDim, keys, LINEAR);
 	}
 public:
 	FilledUpMapping(ConstMapping* source, const DimensionSet& dims, const KeyMap* keys):
@@ -1684,7 +1685,7 @@ private:
 public:
 
 	/**
-	 * @brief Returns an apropriate changeable Mapping with the specified domain
+	 * @brief Returns an appropriate changeable Mapping with the specified domain
 	 * and the specified interpolation method.
 	 *
 	 * Note: The interpolation method is always linear, at the moment.
@@ -1693,7 +1694,7 @@ public:
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
 
 	/**
-	 * @brief Returns an apropriate changeable Mapping with the specified domain
+	 * @brief Returns an appropriate changeable Mapping with the specified domain
 	 * and the specified interpolation method.
 	 *
 	 * Note: The interpolation method is always linear, at the moment.
@@ -1766,7 +1767,7 @@ public:
 
 
 	/**
-	 * @brief Multiplies the passed functions elementwise with each other
+	 * @brief Multiplies the passed functions element-wise with each other
 	 * and returns the result in a new Function.
 	 *
 	 * The domain (DimensionSet) of the result is defined by the domain

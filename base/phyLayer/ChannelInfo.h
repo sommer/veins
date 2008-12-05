@@ -13,7 +13,7 @@
  * intersects with a specified interval. This
  * is mainly used to get the noise for a received signal.
  *
- * ChannelInfo is a passiv class meaning the user has to
+ * ChannelInfo is a passive class meaning the user has to
  * tell it when a new AirFrame starts and an existing ends.
  *
  * Once an AirFrame has been added to the ChannelInfo the
@@ -25,7 +25,7 @@
  *
  * Note: ChannelInfo assumes that the AirFrames are added
  * 		 and removed chronologically. This means every time
- * 		 you add an AirFrame with a specififc start time
+ * 		 you add an AirFrame with a specific start time
  * 		 ChannelInfo assumes that start time as the current
  * 		 time and assumes that every following action happens
  * 		 after that moment. The same goes for "removeAirFrame".
@@ -66,7 +66,7 @@ protected:
 	public:
 
 		/**
-		 * Creates an interator for the specified interval at the
+		 * Creates an iterator for the specified interval at the
 		 * specified AirFrameMatrix.
 		 */
 		BaseIntersectionIterator(C* airFrames, simtime_t from, simtime_t to) :

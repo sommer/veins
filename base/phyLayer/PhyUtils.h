@@ -323,8 +323,6 @@ public:
 
 	/**
 	 * @brief Destructor for the Radio class
-	 *
-	 * TODO: Check if pointers are 0 before delete (no hard req)
 	 */
 	virtual ~Radio()
 	{

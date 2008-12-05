@@ -34,8 +34,6 @@
  * the queue is full or there is no queue (length = 0) new packet(s)
  * will be deleted.
  *
- * @todo Inform upper layers about the full queue!
- *
  * ATTENTION: Imagine the following scenario:
  *
  * Several stations receive a broadcast request packet, usally exactly

@@ -244,7 +244,7 @@ protected:
 
 public:
 	/**
-	 * @brief Intialize this argument with the passed value for
+	 * @brief Initialize this argument with the passed value for
 	 * the time dimension.
 	 */
 	Argument(simtime_t timeVal = 0);
@@ -252,7 +252,7 @@ public:
 	/**
 	 * @brief Initializes the Argument with the dimensions of the
 	 * passed DimensionSet set to zero, and the passed value for the
-	 * time (or zero, if ommited).
+	 * time (or zero, if omitted).
 	 */
 	Argument(const DimensionSet& dims, simtime_t timeVal = 0);
 
@@ -325,7 +325,7 @@ public:
 	bool operator==(const Argument& o) const;
 
 	/**
-	 * @brief Two Arguments are comapred close if they have
+	 * @brief Two Arguments are compared close if they have
 	 * the same dimensions and their values don't differ more
 	 * then a specific epsilon.
 	 */
@@ -385,7 +385,7 @@ public:
     }
 
 	/**
-	 * @brief Faste implementation of the copy-operator then the default
+	 * @brief Fast implementation of the copy-operator then the default
 	 * implementation.
 	 */
 	void operator=(const Argument& o);
@@ -419,7 +419,7 @@ public:
 
 /**
  * @brief This exception is thrown by the MappingIterators when "next()" or "nextPosition()" is called
- * although "hasNext()" whould return false (means there is no next position).
+ * although "hasNext()" would return false (means there is no next position).
  *
  * Although this exception isn't thrown by every implementation of the "next()"-method it is always
  * a bad idea to call "next()" although there isn't any next position.
@@ -439,7 +439,7 @@ class NoNextIteratorException {};
  * when iterating over a Mapping. This is that, if the iterator is increased,
  * the position of the entry it points to has to be also "increased". Which
  * means that the new position has to be compared bigger than the previous
- * position (see class Argument for comparision of positions).
+ * position (see class Argument for comparison of positions).
  *
  * "Const" means that you can not change the values of the underlying Mapping
  * with this iterator.
@@ -450,14 +450,14 @@ public:
 
 	/**
 	 * @brief Returns the position the next call to "next()" of this
-	 * Iterator whould iterate to.
+	 * Iterator would iterate to.
 	 */
 	virtual const Argument& getNextPosition() const = 0;
 
 	/**
 	 * @brief Lets the iterator point to the passed position.
 	 *
-	 * The passed new position can be at arbitary places.
+	 * The passed new position can be at arbitrary places.
 	 */
 	virtual void jumpTo(const Argument& pos) = 0;
 
@@ -484,7 +484,7 @@ public:
 	 *
 	 * The next position depends on the implementation of the
 	 * Mapping. With an implementation based on a number of key-entries
-	 * this probably whould be the next bigger key-entry.
+	 * this probably would be the next bigger key-entry.
 	 */
 	virtual void next() = 0;
 
@@ -525,7 +525,7 @@ class Mapping;
  * from domain with at least the time to  a double value.
  *
  * This class is an interface which describes a mapping (math.)
- * from a arbitary dimensional domain (represented by a DimensionSet)
+ * from a arbitrary dimensional domain (represented by a DimensionSet)
  * to a double value.
  */
 class ConstMapping {
@@ -745,17 +745,17 @@ public:
 
 
 //###################################################################################
-//#                     default Mapping implemenations                              #
+//#                     default Mapping implementations                              #
 //###################################################################################
 
 /**
- * @brief A fully working ConstIterator-implementation useable with almost every
+ * @brief A fully working ConstIterator-implementation usable with almost every
  * ConstMapping.
  *
- * Although this ConstIterator whould work with almost any ConstMapping it should
- * only be used for ConstMappings whichs "getValue()"-method has constant comlexity.
+ * Although this ConstIterator would work with almost any ConstMapping it should
+ * only be used for ConstMappings whose "getValue()"-method has constant complexity.
  * This is because the iterator just calls the "getValue()"-method of the
- * underlying ConstMapping on every call of itselfs "getValue()"-method.
+ * underlying ConstMapping on every call of its own "getValue()"-method.
  *
  * The underlying ConstMapping has to provide a set of key-entries (Arguments) to the
  * iterator to tell it the positions it should iterate over.
@@ -765,7 +765,7 @@ protected:
 	/** @brief The underlying ConstMapping to iterate over. */
 	ConstMapping* mapping;
 
-	/** @brief The dimensions of the underlying Constmapping.*/
+	/** @brief The dimensions of the underlying ConstMapping.*/
 	DimensionSet dimensions;
 
 	/** @brief The current position of the iterator.*/
@@ -773,10 +773,10 @@ protected:
 
 	typedef std::set<Argument> KeyEntrySet;
 
-	/** @brief A reference to a set of Arguments defining the positions to
+	/** @brief A pointer to a set of Arguments defining the positions to
 	 * iterate over.
-	 * TODO: change this to a pointer*/
-	const KeyEntrySet& keyEntries;
+	 */
+	const KeyEntrySet* keyEntries;
 
 	/** @brief An iterator over the key entry set which defines the next bigger
 	 * entry of the current position.*/
@@ -788,32 +788,32 @@ public:
 	 * with the passed key entries to iterate over and the passed position
 	 * as start.
 	 *
-	 * Note: The reference to the key entries has to be valid as long as the
+	 * Note: The pointer to the key entries has to be valid as long as the
 	 * iterator exists.
 	 */
 	SimpleConstMappingIterator(ConstMapping* mapping,
-							   const std::set<Argument>& keyEntries,
+							   const std::set<Argument>* keyEntries,
 							   const Argument& start);
 
 	/**
 	 * @brief Initializes the ConstIterator for the passed ConstMapping,
 	 * with the passed key entries to iterate over.
 	 *
-	 * Note: The reference to the key entries has to be valid as long as the
+	 * Note: The pointer to the key entries has to be valid as long as the
 	 * iterator exists.
 	 */
 	SimpleConstMappingIterator(ConstMapping* mapping,
-							   const std::set<Argument>& keyEntries);
+							   const std::set<Argument>* keyEntries);
 
 	/**
-	 * @brief Returns the next position a call to "next()" whould iterate to.
+	 * @brief Returns the next position a call to "next()" would iterate to.
 	 *
 	 * This method has constant complexity.
 	 *
 	 * Throws an NoNextIteratorException if there is no next point of interest.
 	 */
 	virtual const Argument& getNextPosition() const {
-		if(nextEntry == keyEntries.end())
+		if(nextEntry == keyEntries->end())
 			throw NoNextIteratorException();
 
 		return *nextEntry;
@@ -826,7 +826,7 @@ public:
 	 */
 	virtual void jumpTo(const Argument& pos) {
 		position.setArgValues(pos, true);
-		nextEntry = keyEntries.upper_bound(position);
+		nextEntry = keyEntries->upper_bound(position);
 	}
 
 	/**
@@ -836,7 +836,7 @@ public:
 	 * This method has constant complexity.
 	 */
 	virtual void jumpToBegin(){
-		nextEntry = keyEntries.begin();
+		nextEntry = keyEntries->begin();
 		position = *nextEntry;
 		++nextEntry;
 	}
@@ -852,7 +852,7 @@ public:
 	 */
 	virtual void iterateTo(const Argument& pos) {
 		position.setArgValues(pos, true);
-		while(nextEntry != keyEntries.end() && !(position < *nextEntry))
+		while(nextEntry != keyEntries->end() && !(position < *nextEntry))
 			++nextEntry;
 
 	}
@@ -865,7 +865,7 @@ public:
 	 * This method has constant complexity.
 	 */
 	virtual void next() {
-		if(nextEntry == keyEntries.end())
+		if(nextEntry == keyEntries->end())
 			throw NoNextIteratorException();
 
 		position = *nextEntry;
@@ -873,14 +873,14 @@ public:
 	}
 
 	/**
-	 * @brief Returns true if the current psoition of the iterator is equal or bigger
-	 * than the first point of interrest and lower or equal than the last point of
-	 * interrest.
+	 * @brief Returns true if the current position of the iterator is equal or bigger
+	 * than the first point of interest and lower or equal than the last point of
+	 * interest.
 	 *
 	 * Has constant complexity.
 	 */
 	virtual bool inRange() const {
-		return !(*(keyEntries.rbegin()) < position) && !(position < *(keyEntries.begin()));
+		return !(*(keyEntries->rbegin()) < position) && !(position < *(keyEntries->begin()));
 	}
 
 	/**
@@ -888,7 +888,7 @@ public:
 	 *
 	 * Has constant complexity.
 	 */
-	virtual bool hasNext() const { return nextEntry != keyEntries.end(); }
+	virtual bool hasNext() const { return nextEntry != keyEntries->end(); }
 
 	/**
 	 * @brief Returns the current position of the iterator.
@@ -914,12 +914,12 @@ public:
  * Any subclass only has to implement the "getValue()" and the "clone()"-method.
  *
  * If the SimpleMapping should be iterateable the subclass has to define
- * the "points of interrest" the iterator should iterate over.
+ * the "points of interest" the iterator should iterate over.
  * This should be done either at construction time by calling or later by
  * calling the "initializeArguments()"-method.
  *
  * The SimpleConstMapping class provides Iterator creation by using the
- * SimpleConstMappingIterator which asumes that the underlying ConstMappings
+ * SimpleConstMappingIterator which assumes that the underlying ConstMappings
  * getValue()-method is fast enough to be called on every iteration step
  * (which means constant complexity).
  */
@@ -932,7 +932,7 @@ private:
 protected:
 	typedef std::set<Argument> KeyEntrySet;
 
-	/** @brief A set of Arguments definign the "points of interrest" an iterator
+	/** @brief A set of Arguments defining the "points of interest" an iterator
 	 * should iterate over.*/
 	KeyEntrySet keyEntries;
 
@@ -946,7 +946,7 @@ protected:
 
 	/**
 	 * @brief Utility method to fill add range of key entries in the passed dimension
-	 * (and recursivly its sub dimensions) to the key entry set.
+	 * (and recursively its sub dimensions) to the key entry set.
 	 */
 	void createKeyEntries(const Argument& from, const Argument& to, const Argument& step,
 						  DimensionSet::const_iterator curDim, Argument& pos);
@@ -961,7 +961,7 @@ public:
 	virtual ConstMappingIterator* createConstIterator() {
 		//assert(fullyInitialized);
 
-		return new SimpleConstMappingIterator(this, keyEntries);
+		return new SimpleConstMappingIterator(this, &keyEntries);
 	}
 
 	/**
@@ -973,7 +973,7 @@ public:
 	virtual ConstMappingIterator* createConstIterator(const Argument& pos) {
 		//assert(fullyInitialized);
 
-		return new SimpleConstMappingIterator(this, keyEntries, pos);
+		return new SimpleConstMappingIterator(this, &keyEntries, pos);
 	}
 
 public:

@@ -304,7 +304,7 @@ double Argument::compare(const Argument& o, const DimensionSet& dims) const{
 		}
 
 		//if both Arguments are defined in the current dimensions
-		//compare them (otherwise we asume them equal and continue)
+		//compare them (otherwise we assume them equal and continue)
 		if(values[ind].first == dim && o.values[indO].first == dim){
 			double diff = values[ind].second - o.values[indO].second;
 
@@ -317,42 +317,6 @@ double Argument::compare(const Argument& o, const DimensionSet& dims) const{
 	return 0;
 }
 
-/*bool Argument::operator<(const Argument & o) const
-{
-	assert(getDimensions().isSubSet(o.getDimensions()));
-
-	if(count < o.count){
-		return false;
-	}
-
-	int itO = (int)o.count - 1;
-	int it = (int)count - 1;
-
-	while (it >= 0 && itO >= 0)
-	{
-		//o has a dimensions this Argument doesn't have (o isn't subset)->invalid
-		if (o.values[itO].first < values[it].first) {
-			return false;
-		//o doesn't have the current dimension of Argument, we assume its equal
-		} else if (values[it].first < o.values[itO].first)
-			--it;
-		//o and this Argument have this dimension->check for smaller
-		else {
-			if((values[it].second - o.values[itO].second) < -0.00001){
-				return true;
-			}
-			--it;
-			--itO;
-		}
-		if (itO == o.count) break;
-	}
-
-	return time - o.time < -0.00001;
-}*/
-
-//---ConstMapping implementation----------------------------------
-
-
 //---Mapping implementation---------------------------------------
 
 /**
@@ -364,12 +328,14 @@ double Argument::compare(const Argument& o, const DimensionSet& dims) const{
  * iterator exists.
  */
 SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping,
-						   const std::set<Argument>& keyEntries,
+						   const std::set<Argument>* keyEntries,
 						   const Argument& start):
 	mapping(mapping),
 	dimensions(mapping->getDimensionSet()),
 	position(dimensions),
-	keyEntries(keyEntries) {
+	keyEntries(keyEntries)
+{
+	assert(keyEntries);
 
 	//the passed start position should define a value for every dimension
 	//of this iterators underlying mapping.
@@ -380,7 +346,7 @@ SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping,
 	//(the passed Argument might have more dimensions)
 	position.setArgValues(start, true);
 
-	nextEntry = keyEntries.upper_bound(position);
+	nextEntry = keyEntries->upper_bound(position);
 }
 
 /**
@@ -391,11 +357,13 @@ SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping,
  * iterator exists.
  */
 SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping,
-						   const std::set<Argument>& keyEntries):
+						   const std::set<Argument>* keyEntries):
 	mapping(mapping),
 	dimensions(mapping->getDimensionSet()),
 	position(dimensions),
-	keyEntries(keyEntries) {
+	keyEntries(keyEntries)
+{
+	assert(keyEntries);
 
 	jumpToBegin();
 }
@@ -426,7 +394,7 @@ void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& 
 
 /**
  * @brief Utility method to fill add range of key entries in the passed dimension
- * (and recursivly its sub dimensions) to the key entry set.
+ * (and recursively its sub dimensions) to the key entry set.
  */
 void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& to, const Argument& step,
 					  DimensionSet::const_iterator curDim, Argument& pos){

@@ -184,7 +184,7 @@ public:
 
 /**
  * @brief Given two iterators defining a range of key-value-pairs this class
- * provides linear interpolation of the value at an arbitary key-position.
+ * provides linear interpolation of the value at an arbitrary key-position.
  */
 template<class Key, class V, class Pair, class InputIterator>
 class Linear {
@@ -262,14 +262,14 @@ public:
  * map, but also can be a sorted list of pairs.
  *
  * The ConstInterpolateableIterator provides an iterator which as able to
- * iterate in arbitary steps over a iterateable number of pairs of "Key" and "Value".
+ * iterate in arbitrary steps over a iterateable number of pairs of "Key" and "Value".
  * To determine the Value for a Key which does not exist in within the iterateable
  * number of pairs it Interpolates between the nearby existing pairs.
  * The actual Interpolation is determined by the passed Interpolator-template
  * parameter.
  *
- * An example use whould be to be able to iterate over a std::map<double, double>
- * in arbitary steps (even at positions for which no Key exist inside the map) and
+ * An example use would be to be able to iterate over a std::map<double, double>
+ * in arbitrary steps (even at positions for which no Key exist inside the map) and
  * be able to return an interpolated Value.
  *
  * NOTE: The ConstInterpolateableIterator will become invalid if the underlying
@@ -411,7 +411,7 @@ public:
 	}
 
 	/**
-	 * @brief Returns true if the a call of "next()" whould increase to the position
+	 * @brief Returns true if the a call of "next()" would increase to the position
 	 * of an a valid entry of the data structure. This means if the current position
 	 * is smaller than position of the last entry.
 	 */

@@ -5,7 +5,6 @@
 #include "DeciderToPhyInterface.h"
 #include "MacToPhyInterface.h"
 
-// TODO already included through MacToPhyInterface -> PhyUtils
 #include "AnalogueModel.h"
 
 #include "Decider.h"
@@ -24,7 +23,7 @@
  * The BasePhyLayer represents the physical layer of a nic.
  * The BasePhyLayer is directly connected to the mac layer via
  * OMNeT channels and is able to send messages to other physical
- * layers through subclassing from ChannelAcces.
+ * layers through sub-classing from ChannelAcces.
  *
  * The BasePhyLayer encapsulates two sub modules.
  * The AnalogueModels, which are responsible for simulating
@@ -36,8 +35,8 @@
  * The BasePhyLayer itself is responsible for the OMNeT
  * depended parts of the physical layer which are the following:
  *
- * Module initialisation:
- * - read ned-parameters and initialice module, Decider and
+ * Module initialization:
+ * - read ned-parameters and initialize module, Decider and
  *   AnalogueModels.
  *
  * Message handling:
@@ -46,7 +45,7 @@
  * - receive AirFrames from the channel, hand them to the
  *   AnalogueModels for filtering, simulate delay and transmission
  *   duration, hand it to the Decider for evaluation and send
- *   receifed packets to the mac layer
+ *   received packets to the mac layer
  * - keep track of currently active AirFrames on the channel
  *   (see ChannelInfo)
  *
@@ -54,7 +53,7 @@
  * Decider.
  *
  * In most cases it should be sufficient to only write your own
- * Decider or AnalogueModel instead of subclassing from
+ * Decider or AnalogueModel instead of sub-classing from
  * BasePhyLayer if you want to write your own physical layer.
  *
  *
@@ -85,7 +84,7 @@ protected:
 	 */
 	ChannelInfo channelInfo;
 
-	/** The statemachine storing the current radio state (TX, RX, SLEEP).*/
+	/** The state machine storing the current radio state (TX, RX, SLEEP).*/
 	Radio* radio;
 
 	/** Pointer to the decider module. */
@@ -189,7 +188,7 @@ protected:
 	/**
 	 * OMNeT++ initialization function.
 	 * Read simple parameters.
-	 * Read and parse xml file for decider and anlogue models
+	 * Read and parse xml file for decider and analogue models
 	 * configuration.
 	 */
 	virtual void initialize(int stage);
@@ -215,7 +214,7 @@ protected:
 	 * initialisation to load the AnalogueModels which
 	 * has been specified in the ned file.
 	 *
-	 * This method has to be overriden if you want to be
+	 * This method has to be overridden if you want to be
 	 * able to load your own AnalogueModels.
 	 */
 	virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
@@ -230,14 +229,14 @@ protected:
 	 * initialisation to load the Decider which has been
 	 * specified in the ned file.
 	 *
-	 * This method has to be overriden if you want to be
+	 * This method has to be overridden if you want to be
 	 * able to load your own Decider.
 	 */
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 
 	//TODO: Check which handlers should be made virtual
 	/**
-	 * Handles messages received from the channel (propably AirFrames).
+	 * Handles messages received from the channel (probably AirFrames).
 	 */
 	void handleAirFrame(cMessage* msg);
 

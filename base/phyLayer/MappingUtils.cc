@@ -316,10 +316,6 @@ Mapping* Mapping::subtract(ConstMapping &f1, ConstMapping &f2, const Argument& f
 */
 
 
-/**
- * @brief Initializes the Interator with the passed Iterators of the mappings to
- * interpoalte and the their inteproaltionfactor.
- */
 LinearIntplMappingIterator::LinearIntplMappingIterator(ConstMappingIterator* leftIt, ConstMappingIterator* rightIt, double f):
 	leftIt(leftIt), rightIt(rightIt), factor(f) {
 

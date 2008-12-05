@@ -32,13 +32,6 @@ Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
 	delete noiseMap;
 	noiseMap = 0;
 
-	// TODO: so far recvPowerMap is a new instance of Mapping, that's why normally it should be
-	// deleted here, but in the future signal.getReceivingPower() will return a pointer to a
-	// shared instance, that is why we omit delete already to be future-proof
-
-	// delete recvPowerMap;
-	// recvPowerMap = 0;
-
 	return snrMap;
 }
 
@@ -107,13 +100,6 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 		delete resultMap;
 		resultMap = resultMapNew;
 		resultMapNew = 0;
-
-		// TODO: so far recvPowerMap is a new instance of Mapping, that's why normally it should be
-		// deleted here, but in the future signal.getReceivingPower() will return a pointer to a
-		// shared instance, that is why we omit delete already to be future-proof
-
-		// delete recvPowerMap;
-		// recvPowerMap = 0;
 	}
 
 	return resultMap;
@@ -300,7 +286,6 @@ ChannelState BaseDecider::getChannelState()
 	return ChannelState(currentlyIdle(), rssiValue);
 }
 
-// TODO: implement
 /**
  * @brief This function is called by the PhyLayer to hand over a
  * ChannelSenseRequest.

@@ -6,15 +6,15 @@ Define_Module(SimpleMacLayer);
 //---intialisation---------------------
 void SimpleMacLayer::initialize(int stage) {
 	BaseModule::initialize(stage);
-	
+
 	if(stage == 0) {
 		myIndex = getParentModule()->par("id");
-		
+
 		dataOut = findGate("lowerGateOut");
 		dataIn = findGate("lowerGateIn");
-		
+
 		phy = FindModule<MacToPhyInterface*>::findSubModule(this->getParentModule());
-		
+
 	} else if(stage == 1) {
 		if(myIndex == 0 || myIndex == 10){
 			log("Switching radio to TX...");
@@ -28,7 +28,7 @@ void SimpleMacLayer::initialize(int stage) {
 }
 
 void SimpleMacLayer::handleMessage(cMessage* msg) {
-	
+
 	if(msg->getKind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
 		log("...switching radio done.");
 		switch(phy->getRadioState()) {
@@ -39,14 +39,14 @@ void SimpleMacLayer::handleMessage(cMessage* msg) {
 			break;
 		}
 		delete msg;
-		
+
 	} else if (msg->getKind() == TEST_MACPKT) {
 		handleMacPkt(static_cast<MacPkt*>(msg));
 	} else if(msg->getKind() == MacToPhyInterface::TX_OVER) {
 		handleTXOver();
 		delete msg;
 	}
-	
+
 }
 
 void SimpleMacLayer::handleTXOver() {
@@ -55,20 +55,19 @@ void SimpleMacLayer::handleTXOver() {
 }
 
 void SimpleMacLayer::handleMacPkt(MacPkt* pkt) {
-	//TODO: do things
 	if(myIndex == 255) {
-		log("Received MacPkt - forwarding it to everyone in range.");	
+		log("Received MacPkt - forwarding it to everyone in range.");
 		nextReceiver = pkt->getDestAddr();
 		phy->setRadioState(Radio::TX);
 	}else if(pkt->getDestAddr() == myIndex){
-		log("Received MacPkt for me - broadcasting answer (but first change to TX mode)");	
-		nextReceiver = myIndex + 1; 
+		log("Received MacPkt for me - broadcasting answer (but first change to TX mode)");
+		nextReceiver = myIndex + 1;
 		phy->setRadioState(Radio::TX);
 	}else
 		log("Received MacPkt - but not for me.");
-	
+
 	delete pkt;
-	
+
 }
 
 void SimpleMacLayer::log(std::string msg) {
@@ -77,7 +76,7 @@ void SimpleMacLayer::log(std::string msg) {
 
 void SimpleMacLayer::broadCastPacket() {
 	MacPkt* pkt = createMacPkt(64.0 / 11000.0);
-	
+
 	log("Sending broadcast packet to phy layer.");
 	sendDown(pkt);
 }

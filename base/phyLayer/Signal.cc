@@ -6,32 +6,20 @@
 Signal::Signal(simtime_t start, simtime_t length):
 	signalStart(start), signalLength(length),
 	power(0), bitrate(0),
-	delayedPower(0), delayedBitrate(0),
-	delayed(false),
 	rcvPower(0) {}
 
 Signal::Signal(const Signal & o):
 	signalStart(o.signalStart), signalLength(o.signalLength),
 	senderMovement(o.senderMovement),
 	power(0), bitrate(0),
-	delayedPower(0), delayedBitrate(0),
-	delayed(o.delayed),
 	rcvPower(0) {
 
 	if (o.power != 0) {
 		power = o.power->clone();
-
-		if (delayed) {
-			delayedPower = new DelayedMapping(power, o.delayedPower->getDelay());
-		}
 	}
 
 	if (o.bitrate != 0) {
 		bitrate = o.bitrate->clone();
-
-		if (delayed) {
-			delayedBitrate = new DelayedMapping(bitrate, o.delayedBitrate->getDelay());
-		}
 	}
 
 	for(ConstMappingList::const_iterator it = o.attenuations.begin();
@@ -44,43 +32,25 @@ const Signal& Signal::operator=(const Signal& o) {
 	signalStart = o.signalStart;
 	signalLength = o.signalLength;
 	senderMovement = o.senderMovement;
-	delayed = o.delayed;
 
 	markRcvPowerOutdated();
 
 	if(power){
 		delete power;
-
-		if(delayedPower)
-			delete delayedPower;
 	}
 
 	if(bitrate){
 		delete bitrate;
-
-		if(delayedBitrate)
-			delete delayedBitrate;
 	}
 
 	if(o.power){
 		power = o.power->clone();
-
-		if(delayed)
-			delayedPower = new DelayedMapping(power, o.delayedPower->getDelay());
-		else
-			delayedPower = 0;
 	}else{
 		power = 0;
-		delayedPower = 0;
 	}
 
 	if(o.bitrate){
 		bitrate = o.bitrate->clone();
-
-		if(delayed)
-			delayedBitrate = new DelayedMapping(bitrate, o.delayedBitrate->getDelay());
-		else
-			delayedBitrate = 0;
 	}else{
 		bitrate = 0;
 	}
@@ -108,12 +78,6 @@ Signal::~Signal()
 	if(bitrate)
 		delete bitrate;
 
-	if(delayedPower)
-		delete delayedPower;
-
-	if (delayedBitrate)
-		delete delayedBitrate;
-
 	if(rcvPower)
 		delete rcvPower;
 
@@ -131,23 +95,6 @@ simtime_t Signal::getSignalStart() const {
 	return signalStart;
 }
 
-void Signal::delaySignalStart(simtime_t delay) {
-	signalStart += delay;
-
-	if(!delayed) {
-		delayed = true;
-		if(power)
-			delayedPower = new DelayedMapping(power, delay);
-		if(bitrate)
-			delayedBitrate = new DelayedMapping(bitrate, delay);
-	} else {
-		if(delayedPower)
-			delayedPower->delayMapping(delay);
-		if(delayedBitrate)
-			delayedBitrate->delayMapping(delay);
-	}
-}
-
 simtime_t Signal::getSignalLength() const{
 	return signalLength;
 }
@@ -159,8 +106,6 @@ void Signal::setTransmissionPower(Mapping *power)
 		delete this->power;
 	}
 
-	assert(!delayed);
-
 	this->power = power;
 }
 
@@ -168,8 +113,6 @@ void Signal::setBitrate(Mapping *bitrate)
 {
 	if(this->bitrate)
 		delete this->bitrate;
-
-	assert(!delayed);
 
 	this->bitrate = bitrate;
 }

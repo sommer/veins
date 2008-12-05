@@ -227,7 +227,7 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 
 	if(name == "BaseDecider"){
 		double threshold = params["threshold"];
-		return new BaseDecider(this, threshold, sensitivity, 0, coreDebug); //TODO: set a valid index
+		return new BaseDecider(this, threshold, sensitivity, findHost()->getIndex(), coreDebug);
 	}
 	return 0;
 }
@@ -639,7 +639,6 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	delete s;
 	s = 0;
 
-	// TODO TEST: check if id is really unique
 	frame->setId(world->getUniqueAirFrameId());
 	frame->encapsulate(macPkt);
 
@@ -678,8 +677,6 @@ void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
  */
 void BasePhyLayer::handleUpperControlMessage(cMessage* msg){
 
-	//TODO: we should propably process control messages independent from their
-	//		kind because they are just passed to the decider anyway
 	switch(msg->getKind()) {
 	case CHANNEL_SENSE_REQUEST:
 		handleChannelSenseRequest(msg);
@@ -864,10 +861,10 @@ void BasePhyLayer::finishRadioSwitching()
 simtime_t BasePhyLayer::setRadioState(int rs) {
 	Enter_Method_Silent();
 
-	//TODO: what to do if we are currently transmitting a signal?
+	//TODO: check if we are currently transmitting, if so throw a warning or error
 	simtime_t switchTime = radio->switchTo(rs, simTime());
 
-	//invalid switch time, we are propably already switching
+	//invalid switch time, we are probably already switching
 	if(switchTime < 0)
 		return switchTime;
 
