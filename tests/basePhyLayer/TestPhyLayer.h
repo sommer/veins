@@ -29,6 +29,7 @@ protected:
 
 	int myIndex;
 
+
 	// Indicator, whether a TestBaseDecider is used as Decider
 	bool testBaseDecider;
 
@@ -250,6 +251,10 @@ protected:
 	double res_t5_receiving_before;
 	double res_t5_receiving_after;
 	double res_t6_receiving;
+
+	// flag to signal whether sendUp() has been called by BaseDecider
+	bool sendUpCalled;
+
 
 	// TODO test whether this construction of the smallest possible time step works)
 	// TODO implement

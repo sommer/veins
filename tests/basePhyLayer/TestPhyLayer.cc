@@ -33,6 +33,7 @@ void TestPhyLayer::initialize(int stage) {
 			testRSSIMap = 0;
 			testTime = 0;
 			noAttenuation = 1.0;
+			sendUpCalled = false;
 
 			// some fix time-points for the signals
 			t0 = 0;
@@ -901,6 +902,9 @@ void TestPhyLayer::sendUp(AirFrame* packet, DeciderResult result)
 		return;
 	}
 
+	// signal that method has been called (if testBaseDecider == true)
+	sendUpCalled = true;
+
 	switch (stateTestBDInitialization) {
 		case TEST_GET_CHANNELSTATE_RECEIVING:
 			// TODO check what the result should be in this test case
@@ -911,17 +915,6 @@ void TestPhyLayer::sendUp(AirFrame* packet, DeciderResult result)
 		case TEST_SNR_THRESHOLD_ACCEPT:
 			assertTrue("BaseDecider decided correctly to send up the packet", true);
 			assertTrue("BaseDecider has returned the pointer to currently processed AirFrame", (packet==processedAF));
-			break;
-
-		case TEST_SNR_THRESHOLD_DENY:
-		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
-		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
-		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
-		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
-			assertFalse("BaseDecider decided correctly not to send up the packet", true);
-
-			// TODO output in which state the error happened
-
 			break;
 
 		default:
@@ -1274,6 +1267,32 @@ void TestPhyLayer::doBaseDeciderTests()
 		// here we test a simple case where one noise-AirFrame is present, but SNR is just high enough
 		case TEST_SNR_THRESHOLD_ACCEPT:
 
+			ev << TestModule::log("-------------------------------------------------------") << endl;
+			ev << TestModule::log(stateToString(stateTestBDInitialization)) << endl;
+
+			testTime = t1;
+			fillAirFramesOnChannel();
+
+			sendUpCalled = false;
+
+			processedAF = TestAF5;
+			nextHandoverTime = decider->processSignal(TestAF5);
+
+			assertEqual("NextHandoverTime is t5.", t5, nextHandoverTime);
+
+			testTime = nextHandoverTime;
+
+			nextHandoverTime = decider->processSignal(TestAF5);
+
+			assertTrue("TestAirFrame 5 has been finally processed",
+								(nextHandoverTime < 0));
+			processedAF = 0;
+
+			assertTrue("sendUp() has been called.", sendUpCalled);
+
+			break;
+
+
 		// here we test a simple case where one noise-AirFrame is present, but SNR is just not high enough
 		case TEST_SNR_THRESHOLD_DENY:
 
@@ -1292,8 +1311,14 @@ void TestPhyLayer::doBaseDeciderTests()
 		// here we test a simple case where one noise-AirFrame begins at the end of the reception
 		// thus SNR-level is too low
 		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
+
+			ev << TestModule::log("-------------------------------------------------------") << endl;
+			ev << TestModule::log(stateToString(stateTestBDInitialization)) << endl;
+
 			testTime = t1;
 			fillAirFramesOnChannel();
+
+			sendUpCalled = false;
 
 			processedAF = TestAF5;
 			nextHandoverTime = decider->processSignal(TestAF5);
@@ -1307,6 +1332,8 @@ void TestPhyLayer::doBaseDeciderTests()
 			assertTrue("TestAirFrame 5 has been finally processed",
 								(nextHandoverTime < 0));
 			processedAF = 0;
+
+			assertFalse("sendUp() has not been called.", sendUpCalled);
 
 			break;
 		default:
