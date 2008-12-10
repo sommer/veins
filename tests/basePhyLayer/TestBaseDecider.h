@@ -40,8 +40,9 @@ public:
 	TestBaseDecider(DeciderToPhyInterface* phy,
 					double threshold,
 					double sensitivity,
-					int myIndex)
-		: BaseDecider(phy, threshold, sensitivity, myIndex)
+					int myIndex,
+					bool debug)
+		: BaseDecider(phy, threshold, sensitivity, myIndex, debug)
 	{
 
 		init("decider" + toString(this->myIndex));

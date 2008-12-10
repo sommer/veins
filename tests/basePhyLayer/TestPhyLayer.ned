@@ -3,7 +3,8 @@ package org.mixim.tests.basePhyLayer;
 simple TestPhyLayer
 {
     parameters:
-        bool usePropagationDelay; 		//Should transmission delay be simulated?
+        bool coreDebug;
+	bool usePropagationDelay; 		//Should transmission delay be simulated?
         double thermalNoise;			//the strength of the thermal noise
         bool testBaseDecider; 			//shall a TestBaseDecider be used as Decider?
 

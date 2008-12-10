@@ -339,7 +339,7 @@ Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 		assertEqual("Check value of parameter \"snrThreshold\".", 10.0, par.doubleValue());
 
 		double snrThreshold = par.doubleValue();
-		return new TestBaseDecider(this, snrThreshold, sensitivity, myIndex);
+		return new TestBaseDecider(this, snrThreshold, sensitivity, myIndex, coreDebug);
 	}
 
 
@@ -418,7 +418,10 @@ void TestPhyLayer::fillAirFramesOnChannel()
 
 	// remove all pointers to AirFrames
 	airFramesOnChannel.clear();
+	if(TestAF5)
+		delete TestAF5;
 
+	TestAF5 = createTestAirFrame(5);
 	switch (stateTestBDInitialization) {
 
 
@@ -571,8 +574,28 @@ AirFrame* TestPhyLayer::createTestAirFrame(int i)
 
 			switch (stateTestBDInitialization) {
 				case TEST_SNR_THRESHOLD_ACCEPT:
+					transmissionPower.first = 10.00001;
+					transmissionPower.second = 10.00001;
+					break;
+				case TEST_SNR_THRESHOLD_DENY:
 					transmissionPower.first = 10.0;
 					transmissionPower.second = 10.0;
+					break;
+				case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
+					transmissionPower.first = 20.0;
+					transmissionPower.second = 10.0;
+					break;
+				case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
+					transmissionPower.first = 30.0;
+					transmissionPower.second = 30.0;
+					break;
+				case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
+					transmissionPower.first = 20.0;
+					transmissionPower.second = 20.0;
+					break;
+				case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
+					transmissionPower.first = 90.0;
+					transmissionPower.second = 90.0;
 					break;
 				default:
 					transmissionPower.first = TXpower5H;
@@ -1251,6 +1274,24 @@ void TestPhyLayer::doBaseDeciderTests()
 		// here we test a simple case where one noise-AirFrame is present, but SNR is just high enough
 		case TEST_SNR_THRESHOLD_ACCEPT:
 
+		// here we test a simple case where one noise-AirFrame is present, but SNR is just not high enough
+		case TEST_SNR_THRESHOLD_DENY:
+
+		// here we test a simple case where one noise-AirFrame is present and  header-SNR is just high enough
+		// but payload-SNR is just not high enough
+		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
+
+		// here we test a simple case where a second noise-AirFrame arrives during reception of an AirFrame
+		// and thus SNR-level turns too low
+		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
+
+		// here we test a simple case where one noise-AirFrame ends at the beginning of the reception
+		// thus SNR-level is too low
+		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
+
+		// here we test a simple case where one noise-AirFrame begins at the end of the reception
+		// thus SNR-level is too low
+		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
 			testTime = t1;
 			fillAirFramesOnChannel();
 
@@ -1267,30 +1308,6 @@ void TestPhyLayer::doBaseDeciderTests()
 								(nextHandoverTime < 0));
 			processedAF = 0;
 
-			break;
-
-		// here we test a simple case where one noise-AirFrame is present, but SNR is just not high enough
-		case TEST_SNR_THRESHOLD_DENY:
-			break;
-
-		// here we test a simple case where one noise-AirFrame is present and  header-SNR is just high enough
-		// but payload-SNR is just not high enough
-		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
-			break;
-
-		// here we test a simple case where a second noise-AirFrame arrives during reception of an AirFrame
-		// and thus SNR-level turns too low
-		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
-			break;
-
-		// here we test a simple case where one noise-AirFrame ends at the beginning of the reception
-		// thus SNR-level is too low
-		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
-			break;
-
-		// here we test a simple case where one noise-AirFrame begins at the end of the reception
-		// thus SNR-level is too low
-		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
 			break;
 		default:
 			break;

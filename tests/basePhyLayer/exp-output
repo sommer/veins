@@ -1,5 +1,5 @@
-OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -8,9 +8,9 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20081121-06:51:40-7096
+Assigned runID=Test1-0-20081210-14:18:43-6220
 Setting up network `tbpSim'...
-setupNetwork finished, cParImpl objects in use: 85
+setupNetwork finished, cParImpl objects in use: 87
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
 Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
@@ -141,9 +141,9 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4.5s
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20081121-06:51:40-7096
+Assigned runID=Test1-1-20081210-14:18:43-6220
 Setting up network `tbpSim'...
-setupNetwork finished, cParImpl objects in use: 86
+setupNetwork finished, cParImpl objects in use: 88
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
 Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
@@ -244,8 +244,8 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4s
 
 
 End.
-OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -254,9 +254,9 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20081121-06:51:40-7097
+Assigned runID=Test2-0-20081210-14:18:43-6221
 Setting up network `tbpSim'...
-setupNetwork finished, cParImpl objects in use: 85
+setupNetwork finished, cParImpl objects in use: 87
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
 Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0

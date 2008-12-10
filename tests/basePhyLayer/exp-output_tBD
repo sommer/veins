@@ -1,5 +1,5 @@
-OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from ../../base/: 20
@@ -8,9 +8,9 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration TestBaseDecider1, run #0...
 Scenario: $repetition=0
-Assigned runID=TestBaseDecider1-0-20081121-06:51:40-7098
+Assigned runID=TestBaseDecider1-0-20081210-14:18:43-6222
 Setting up network `tbpSim'...
-setupNetwork finished, cParImpl objects in use: 85
+setupNetwork finished, cParImpl objects in use: 87
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
 Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
@@ -23,10 +23,18 @@ Initializing module tbpSim.node[0].utility, stage 0
 Initializing module tbpSim.node[0].mobility, stage 0
 Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
+Signal for TestAirFrame1 created with header/payload power: 1/0
 [phy0] - Creating TestAirFrame 1 done.
+Signal for TestAirFrame2 created with header/payload power: 2/0
 [phy0] - Creating TestAirFrame 2 done.
+Signal for TestAirFrame3 created with header/payload power: 4/0
 [phy0] - Creating TestAirFrame 3 done.
+Signal for TestAirFrame4 created with header/payload power: 8/0
 [phy0] - Creating TestAirFrame 4 done.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+Signal for TestAirFrame6 created with header/payload power: 1/0
+[phy0] - Creating TestAirFrame 6 done.
 Initializing module tbpSim.node[0].nic.mac, stage 0
 Initializing module tbpSim.world, stage 1
 Initializing module tbpSim.channelcontrol, stage 1
@@ -83,6 +91,8 @@ Passed: Decider demands ChannelInfo for current timepoint
 Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'now' in an empty Set of AirFrames (empty Mapping)
 [phy0] - -TEST_GET_CHANNELSTATE_NOISYCHANNEL-----------------------------------------------
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -93,6 +103,8 @@ Passed: RSSI-value is the value for 'testTime' in an empty Set of AirFrames (emp
 [phy0] - -full output-----------------------------------------------
 [phy0] - A new testTime has been set: 1
 [phy0] - Putting AirFrames on the virtual channel.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 [phy0] - Calling getChannelState() of BaseDecider.
 Passed: Decider demands ChannelInfo for one single timepoint
@@ -104,6 +116,8 @@ Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
 [phy0] - -short output-----------------------------------------------
 [phy0] - A new testTime has been set: 2
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -113,6 +127,8 @@ Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
 [phy0] - -short output-----------------------------------------------
 [phy0] - A new testTime has been set: 3
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -122,6 +138,8 @@ Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
 [phy0] - -short output-----------------------------------------------
 [phy0] - A new testTime has been set: 4
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -131,6 +149,8 @@ Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
 [phy0] - -short output-----------------------------------------------
 [phy0] - A new testTime has been set: 5
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -140,6 +160,8 @@ Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
 [phy0] - -short output-----------------------------------------------
 [phy0] - A new testTime has been set: 9
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -152,6 +174,8 @@ Passed: RSSI-value is the value for 'testTime'
 [phy0] - -full output-----------------------------------------------
 [phy0] - A new testTime has been set: 2
 [phy0] - Putting AirFrames on the virtual channel.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 [phy0] - Calling getChannelState() of BaseDecider.
 Passed: Decider demands ChannelInfo for one single timepoint
@@ -163,6 +187,8 @@ Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
 [phy0] - -short output-----------------------------------------------
 [phy0] - A new testTime has been set: 3
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -184,6 +210,8 @@ Passed: The PhyLayer IS currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
 [phy0] - -short output-----------------------------------------------
 [phy0] - A new testTime has been set: 4
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -193,6 +221,8 @@ Passed: The PhyLayer IS currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
 [phy0] - -short output-----------------------------------------------
 [phy0] - A new testTime has been set: 5
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -205,7 +235,6 @@ Passed: Decider demands ChannelInfo for the duration of the AirFrame
 Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [phy0] - All TestAirFrames-pointers have been copied.
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
-Passed: BaseDecider has returned the pointer to currently processed AirFrame
 Passed: TestAirFrame 3 has been finally processed
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -217,6 +246,8 @@ Passed: RSSI-value is the value for 'testTime'
 Passed: TestAirFrame 4 can be received, end-time is returned
 [phy0] - -short output-----------------------------------------------
 [phy0] - A new testTime has been set: 6
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current test-timepoint
@@ -228,9 +259,64 @@ Passed: Decider demands ChannelInfo for the duration of the AirFrame
 Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [phy0] - All TestAirFrames-pointers have been copied.
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
-Passed: BaseDecider has returned the pointer to currently processed AirFrame
 Passed: TestAirFrame 4 has been finally processed
 [phy0] - -DONE-------------------------------------------
+Signal for TestAirFrame5 created with header/payload power: 10/10
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is t5.
+Passed: Decider demands ChannelInfo for the duration of the AirFrame
+Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: BaseDecider decided correctly to send up the packet
+Passed: BaseDecider has returned the pointer to currently processed AirFrame
+Passed: TestAirFrame 5 has been finally processed
+Signal for TestAirFrame5 created with header/payload power: 10/10
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is t5.
+Passed: Decider demands ChannelInfo for the duration of the AirFrame
+Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: TestAirFrame 5 has been finally processed
+Signal for TestAirFrame5 created with header/payload power: 20/10
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is t5.
+Passed: Decider demands ChannelInfo for the duration of the AirFrame
+Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: TestAirFrame 5 has been finally processed
+Signal for TestAirFrame5 created with header/payload power: 30/30
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is t5.
+Passed: Decider demands ChannelInfo for the duration of the AirFrame
+Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: TestAirFrame 5 has been finally processed
+Signal for TestAirFrame5 created with header/payload power: 20/20
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is t5.
+Passed: Decider demands ChannelInfo for the duration of the AirFrame
+Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: TestAirFrame 5 has been finally processed
+Signal for TestAirFrame5 created with header/payload power: 90/90
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is t5.
+Passed: Decider demands ChannelInfo for the duration of the AirFrame
+Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: TestAirFrame 5 has been finally processed
 Initializing module tbpSim.node[0].nic.mac, stage 1
 
 Running simulation...
