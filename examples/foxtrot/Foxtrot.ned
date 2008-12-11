@@ -15,7 +15,7 @@ module Network
 
         @display("bgb=,,white,,");
     submodules:
-        propagationmodel: <prop> like ConnectionManager;
+        propagationmodel: ConnectionManager;
         world: BaseWorldUtility {
             parameters:
                 playgroundSizeX = playgroundSizeX;

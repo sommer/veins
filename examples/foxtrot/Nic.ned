@@ -20,7 +20,7 @@ module Nic
             parameters:
                 @display("p=60,50;i=prot2");
         }
-        phy: <phyType> like BasePhyLayer {
+        phy: BasePhyLayer {
             parameters:
                 @display("p=60,150;i=prot3");
         }

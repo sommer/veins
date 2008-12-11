@@ -65,7 +65,7 @@ module LocNode
             parameters:
                 @display("p=60,108;i=prot1");
         }
-        loc: <locType> like PositifLayer {
+        loc: PositifLayer {
             parameters:
                 @display("p=60,137");
         }

@@ -42,7 +42,7 @@ module Sim
 
         @display("bgb=,,white,,;bgp=0,0");
     submodules:
-        propagationmodel: <propagationType> like ConnectionManager {
+        propagationmodel: ConnectionManager {
             parameters:
                 @display("p=50,25;i=eye14");
         }
