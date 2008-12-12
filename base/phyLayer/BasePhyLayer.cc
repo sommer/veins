@@ -4,7 +4,7 @@
 #include "MacToPhyControlInfo.h"
 #include "PhyToMacControlInfo.h"
 
-#include "BaseDecider.h"
+#include "SNRThresholdDecider.h"
 
 #include "analogueModel/SimplePathlossModel.h"
 
@@ -225,9 +225,9 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
  */
 Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 
-	if(name == "BaseDecider"){
+	if(name == "SNRThresholdDecider"){
 		double threshold = params["threshold"];
-		return new BaseDecider(this, threshold, sensitivity, findHost()->getIndex(), coreDebug);
+		return new SNRThresholdDecider(this, threshold, sensitivity, findHost()->getIndex(), coreDebug);
 	}
 	return 0;
 }

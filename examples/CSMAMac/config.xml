@@ -6,7 +6,7 @@
 	    	<parameter name="carrierFrequency" type="double" value="2.412e+9"/>
 	    </AnalogueModel>
 	</AnalogueModels>
-	<Decider type="BaseDecider">
+	<Decider type="SNRThresholdDecider">
 		<!-- SNR threshold -->
 		<parameter name="threshold" type="double" value="10"/>
 	</Decider>

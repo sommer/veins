@@ -1,4 +1,4 @@
-#include "BaseDecider.h"
+#include "SNRThresholdDecider.h"
 
 
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "[Host " << myIndex << "] - PhyLayer(Decider): "
@@ -14,7 +14,7 @@
  * Note: 'divided' means here the special element-wise operation on mappings.
  *
  */
-Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
+Mapping* SNRThresholdDecider::calculateSnrMapping(AirFrame* frame)
 {
 	/* calculate Noise-Strength-Mapping */
 	Signal& signal = frame->getSignal();
@@ -42,7 +42,7 @@ Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
  * exclude is omitted OR to calculate a Noise-Strength-Mapping in case the
  * AirFrame of the received Signal is passed as parameter exclude.
  */
-Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
+Mapping* SNRThresholdDecider::calculateRSSIMapping(	simtime_t start,
 											simtime_t end,
 											AirFrame* exclude = 0)
 {
@@ -114,7 +114,7 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
  *
  *
  */
-bool BaseDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, simtime_t end)
+bool SNRThresholdDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, simtime_t end)
 {
 	assert(map);
 
@@ -165,9 +165,9 @@ bool BaseDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, simtime_t
 // TODO: check implementation
 /**
  * @brief This function processes a AirFrame given by the PhyLayer and
- * returns the time point when BaseDecider wants to be given the AirFrame again.
+ * returns the time point when SNRThresholdDecider wants to be given the AirFrame again.
  */
-simtime_t BaseDecider::processSignal(AirFrame* frame)
+simtime_t SNRThresholdDecider::processSignal(AirFrame* frame)
 {
 	assert(frame);
 
@@ -202,7 +202,7 @@ simtime_t BaseDecider::processSignal(AirFrame* frame)
  * TODO: check implementation
  *
  */
-simtime_t BaseDecider::handleNewSignal(AirFrame* frame)
+simtime_t SNRThresholdDecider::handleNewSignal(AirFrame* frame)
 {
 	// extract Signal from AirFrame
 	Signal& signal = frame->getSignal();
@@ -228,7 +228,7 @@ simtime_t BaseDecider::handleNewSignal(AirFrame* frame)
  * TODO: check implementation
  *
  */
-simtime_t BaseDecider::handleSignalOver(AirFrame* frame)
+simtime_t SNRThresholdDecider::handleSignalOver(AirFrame* frame)
 {
 	// here the Signal is finally processed
 
@@ -273,7 +273,7 @@ simtime_t BaseDecider::handleSignalOver(AirFrame* frame)
  * immediately (in contrast to sending a ChannelSenseRequest,
  * i.e. sending a cMessage over the OMNeT-control-channel)
  */
-ChannelState BaseDecider::getChannelState()
+ChannelState SNRThresholdDecider::getChannelState()
 {
 	simtime_t now = phy->getSimTime();
 	Mapping* rssiMap = calculateRSSIMapping(now, now);
@@ -294,11 +294,11 @@ ChannelState BaseDecider::getChannelState()
  * that calls this function with it and is returned a time point when to
  * re-call this function with the specific ChannelSenseRequest.
  *
- * The BaseDecider puts the result (ChannelState) to the ChannelSenseRequest
+ * The SNRThresholdDecider puts the result (ChannelState) to the ChannelSenseRequest
  * and "answers" by calling the "sendControlMsg"-function on the
  * DeciderToPhyInterface, i.e. telling the PhyLayer to send it back.
  */
-simtime_t BaseDecider::handleChannelSenseRequest(ChannelSenseRequest* request)
+simtime_t SNRThresholdDecider::handleChannelSenseRequest(ChannelSenseRequest* request)
 {
 	assert(request);
 

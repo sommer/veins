@@ -23,7 +23,7 @@ void TestPhyLayer::initialize(int stage) {
 	if(stage == 0) {
 		init("phy" + toString(myIndex));
 
-		// if we're testing the BaseDecider in this run,
+		// if we're testing the SNRThresholdDecider in this run,
 		// initialize necessary members
 		// NOTE: take care to call delete in stage 1 after tests when needed
 		if (testBaseDecider)
@@ -110,11 +110,11 @@ void TestPhyLayer::initialize(int stage) {
 	} else if(stage == 1) {
 		testInitialisation();
 
-		// if we're testing the BaseDecider in this run,
-		// run specific BaseDecider tests (isolated) prior to simulation run
+		// if we're testing the SNRThresholdDecider in this run,
+		// run specific SNRThresholdDecider tests (isolated) prior to simulation run
 		if (testBaseDecider)
 		{
-			// start the test of BaseDecider (before simulation run)
+			// start the test of SNRThresholdDecider (before simulation run)
 			testBaseDeciderInitialization();
 
 			// clean up
@@ -234,11 +234,11 @@ void TestPhyLayer::testInitialisation() {
 }
 
 /*
- * Here we test the BaseDecider prior to simulation run.
+ * Here we test the SNRThresholdDecider prior to simulation run.
  * We pass special values to TestBaseDecider to check its behavior.
  *
  * It is important to set 'stateTestBDInitialization' properly, such that
- * BaseDecider's calls on the DeciderToPhyInterface can be handled right.
+ * SNRThresholdDecider's calls on the DeciderToPhyInterface can be handled right.
  *
  *
  */
@@ -248,28 +248,28 @@ void TestPhyLayer::testBaseDeciderInitialization()
 	assert(stateTestBDInitialization == BEFORE_TESTS);
 
 	/*
-	 * Test getChannelState() of BaseDecider on an empty channel
+	 * Test getChannelState() of SNRThresholdDecider on an empty channel
 	 */
 	stateTestBDInitialization = TEST_GET_CHANNELSTATE_EMPTYCHANNEL;
 	doBaseDeciderTests();
 
 
 	/*
-	 * Test getChannelState() of BaseDecider with noise on channel
+	 * Test getChannelState() of SNRThresholdDecider with noise on channel
 	 */
 	stateTestBDInitialization = TEST_GET_CHANNELSTATE_NOISYCHANNEL;
 	doBaseDeciderTests();
 
 
 	/*
-	 * Test getChannelState() of BaseDecider while receiving an AirFrame
+	 * Test getChannelState() of SNRThresholdDecider while receiving an AirFrame
 	 */
 	stateTestBDInitialization = TEST_GET_CHANNELSTATE_RECEIVING;
 	doBaseDeciderTests();
 
 	// TODO: go on here...
-	// TODO	- test whether BaseDecider calculates SNR for a given signal correctly
-	//		- test whether BaseDecider handles SNR-threshold right (send up a packet or not)
+	// TODO	- test whether SNRThresholdDecider calculates SNR for a given signal correctly
+	//		- test whether SNRThresholdDecider handles SNR-threshold right (send up a packet or not)
 
 	/*
 	 * Test SNR-threshold
@@ -327,7 +327,7 @@ AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, Paramete
 
 Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 
-	// testing a BaseDecider, so return an instance of TestBaseDecider
+	// testing a SNRThresholdDecider, so return an instance of TestBaseDecider
 	if (testBaseDecider)
 	{
 		// check name
@@ -673,7 +673,7 @@ AirFrame* TestPhyLayer::createTestAirFrame(int i)
 	return frame;
 }
 
-// pass AirFrame-pointers currently on the (virtual) channel to BaseDecider
+// pass AirFrame-pointers currently on the (virtual) channel to SNRThresholdDecider
 void TestPhyLayer::passAirFramesOnChannel(AirFrameVector& out)
 {
 	assert(testBaseDecider);
@@ -808,7 +808,7 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 	Enter_Method_Silent();
 
 
-	// if simulation is running or we are not testing the BaseDecider
+	// if simulation is running or we are not testing the SNRThresholdDecider
 	// behave like BasePhyLayer, otherwise do testing stuff (pass special things)
 	if ( stateTestBDInitialization == SIMULATION_RUN
 		 || !testBaseDecider)
@@ -832,7 +832,7 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 		// there are AirFrames on the Channel at the requested timepoint
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
 
-		//TODO this case must be considered separately, since BaseDecider will also ask for intervals
+		//TODO this case must be considered separately, since SNRThresholdDecider will also ask for intervals
 		case TEST_GET_CHANNELSTATE_RECEIVING:
 
 
@@ -927,7 +927,7 @@ void TestPhyLayer::sendControlMsg(cMessage* msg)
 void TestPhyLayer::sendUp(AirFrame* packet, DeciderResult result)
 {
 
-	// if we are not testing the BaseDecider
+	// if we are not testing the SNRThresholdDecider
 	// behave like BasePhyLayer, otherwise do testing stuff
 	if (!testBaseDecider)
 	{
@@ -963,7 +963,7 @@ void TestPhyLayer::sendUp(AirFrame* packet, DeciderResult result)
  */
 simtime_t TestPhyLayer::getSimTime()
 {
-	// if we are not testing the BaseDecider
+	// if we are not testing the SNRThresholdDecider
 	// behave like BasePhyLayer, otherwise do testing stuff (pass special things)
 	if (!testBaseDecider)
 	{
@@ -984,7 +984,7 @@ simtime_t TestPhyLayer::getSimTime()
 }
 
 //
-// --- implementation of BaseDecider-tests ---
+// --- implementation of SNRThresholdDecider-tests ---
 //
 void TestPhyLayer::doBaseDeciderTests()
 {
@@ -998,7 +998,7 @@ void TestPhyLayer::doBaseDeciderTests()
 	switch (stateTestBDInitialization) {
 		case TEST_GET_CHANNELSTATE_EMPTYCHANNEL:
 		{
-			// ask BaseDecider for the ChannelState, it should call getChannelInfo()
+			// ask SNRThresholdDecider for the ChannelState, it should call getChannelInfo()
 			// on the DeciderToPhyInterface
 			testRSSIMap = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time),
 															Mapping::LINEAR);
@@ -1026,7 +1026,7 @@ void TestPhyLayer::doBaseDeciderTests()
 
 			testRSSIMap = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time),
 														Mapping::LINEAR);
-			// call getChannelState() of the BaseDecider
+			// call getChannelState() of the SNRThresholdDecider
 			cs = decider->getChannelState();
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
 			assertEqual("RSSI-value is the value for 'testTime' in an empty Set of AirFrames (empty Mapping)",
@@ -1209,7 +1209,7 @@ void TestPhyLayer::doBaseDeciderTests()
 			//hand over the AirFrame again, end-time is reached
 			ev << TestModule::log("Handing over TestAirFrame 3 again, transmission has finished") << endl;
 
-			// set the pointer to the processed AirFrame before BaseDecider will finally process it
+			// set the pointer to the processed AirFrame before SNRThresholdDecider will finally process it
 			processedAF = TestAF3;
 			nextHandoverTime = decider->processSignal(TestAF3);
 			assertTrue("TestAirFrame 3 has been finally processed",
@@ -1221,7 +1221,7 @@ void TestPhyLayer::doBaseDeciderTests()
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
 			assertEqual("RSSI-value is the value for 'testTime'", res_t5_receiving_after, cs.getRSSI());
 
-			// BaseDecider should be able to handle the next AirFrame
+			// SNRThresholdDecider should be able to handle the next AirFrame
 			ev << TestModule::log("Trying to immediately receive TestAirFrame 4") << endl;
 			nextHandoverTime = decider->processSignal(TestAF4);
 			Signal& signal4 = TestAF4->getSignal();
@@ -1243,7 +1243,7 @@ void TestPhyLayer::doBaseDeciderTests()
 			assertTrue("The PhyLayer is again receiving an AirFrame", !(cs.isIdle()));
 			assertEqual("RSSI-value is the value for 'testTime'", res_t6_receiving, cs.getRSSI());
 
-			// set the pointer to the processed AirFrame before BaseDecider will finally process it
+			// set the pointer to the processed AirFrame before SNRThresholdDecider will finally process it
 			processedAF = TestAF4;
 			nextHandoverTime = decider->processSignal(TestAF4);
 			assertTrue("TestAirFrame 4 has been finally processed",

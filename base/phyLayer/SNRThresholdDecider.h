@@ -4,7 +4,7 @@
 #include "Decider.h"
 
 
-class BaseDecider : public Decider
+class SNRThresholdDecider : public Decider
 {
 protected:
 
@@ -115,7 +115,7 @@ public:
 	 * @brief Initializes the Decider with a pointer to its PhyLayer and
 	 * specific values for threshold and sensitivity
 	 */
-	BaseDecider(DeciderToPhyInterface* phy,
+	SNRThresholdDecider(DeciderToPhyInterface* phy,
 				double threshold,
 				double sensitivity,
 				int myIndex = -1,
@@ -127,13 +127,13 @@ public:
 		currentChannelSenseRequest = std::pair<ChannelSenseRequest*, simtime_t>(0, -1);
 	}
 
-	virtual ~BaseDecider() {};
+	virtual ~SNRThresholdDecider() {};
 
 	/**
 	 * @brief This function processes a AirFrame given by the PhyLayer and
-	 * returns the time point when BaseDecider wants to be given the AirFrame again.
+	 * returns the time point when SNRThresholdDecider wants to be given the AirFrame again.
 	 *
-	 * BaseDecider decides whether it receives an AirFrame when it is passed for
+	 * SNRThresholdDecider decides whether it receives an AirFrame when it is passed for
 	 * the first time and, if so, schedules it to the end of the AirFrame for the
 	 * second hand-over.
 	 *
@@ -174,7 +174,7 @@ public:
 	 * that calls this function with it and is returned a time point when to
 	 * re-call this function with the specific ChannelSenseRequest.
 	 *
-	 * The BaseDecider puts the result (ChannelState) to the ChannelSenseRequest
+	 * The SNRThresholdDecider puts the result (ChannelState) to the ChannelSenseRequest
 	 * and "answers" by calling the "sendControlMsg"-function on the
 	 * DeciderToPhyInterface, i.e. telling the PhyLayer to send it back.
 	 */

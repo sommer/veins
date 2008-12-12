@@ -143,13 +143,13 @@ void TestMacLayer::testRun3(int stage, const cMessage* msg){
  *
  * TODO: for now the methods called here are empty
  *
- * Testing BaseDecider is done in initialize of the TestPhyLayer
+ * Testing SNRThresholdDecider is done in initialize of the TestPhyLayer
  * without using the simulation so far, i.e. among other things TestPhyLayer
  * overriding the methods of DeciderToPhyInterface implemented by
- * BasePhyLayer. This way we check whether BaseDecider makes correct calls
- * on the Interface and return specific testing values to BaseDecider.
+ * BasePhyLayer. This way we check whether SNRThresholdDecider makes correct calls
+ * on the Interface and return specific testing values to SNRThresholdDecider.
  *
- * Sending real AirFrames over the channel that BaseDecider can obtain
+ * Sending real AirFrames over the channel that SNRThresholdDecider can obtain
  * by calling the DeciderToPhyInterface will be done later.
  */
 void TestMacLayer::testRun5(int stage, const cMessage* msg)

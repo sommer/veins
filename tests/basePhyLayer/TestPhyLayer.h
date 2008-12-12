@@ -126,7 +126,7 @@ protected:
 	// create a test AirFrame identified by an index
 	AirFrame* createTestAirFrame(int i);
 
-	// pass AirFrames currently on the (virtual) channel to BaseDecider
+	// pass AirFrames currently on the (virtual) channel to SNRThresholdDecider
 	void passAirFramesOnChannel(AirFrameVector& out);
 
 	/**
@@ -186,7 +186,7 @@ protected:
 
 
 
-	// NOTE: The following members are for testing the BaseDecider
+	// NOTE: The following members are for testing the SNRThresholdDecider
 	// so they are only initialized if testBaseDecider==true
 	// see also: TestPhyLayer::initialize()
 
@@ -227,7 +227,7 @@ protected:
 	// Represents the currently used ChannelSenseRequest which is tested
 	ChannelSenseRequest*  testChannelSense;
 
-	// pointer to the AirFrame that is currently processed by BaseDecider
+	// pointer to the AirFrame that is currently processed by SNRThresholdDecider
 	const AirFrame* processedAF;
 
 	// value for no attenuation (in attenuation-mappings)
@@ -262,7 +262,7 @@ protected:
 	double res_t5_receiving_after;
 	double res_t6_receiving;
 
-	// flag to signal whether sendUp() has been called by BaseDecider
+	// flag to signal whether sendUp() has been called by SNRThresholdDecider
 	bool sendUpCalled;
 
 

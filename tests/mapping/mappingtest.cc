@@ -2107,14 +2107,14 @@ protected:
 		Mapping* multi1 = MappingUtils::createMapping(timeFreqSpace);
 
 		//global
-		assertEqual("Empty timed mapping max(global).", DBL_MIN, MappingUtils::findMax(*timed1));
+		assertEqual("Empty timed mapping max(global).", -DBL_MAX, MappingUtils::findMax(*timed1));
 		assertEqual("Empty timed mapping min(global).", DBL_MAX, MappingUtils::findMin(*timed1));
 		//local
-		assertEqual("Empty timed mapping max(local).", DBL_MIN, MappingUtils::findMax(*timed1, A(1), A(2)));
+		assertEqual("Empty timed mapping max(local).", -DBL_MAX, MappingUtils::findMax(*timed1, A(1), A(2)));
 		assertEqual("Empty timed mapping min(local).", DBL_MAX, MappingUtils::findMin(*timed1, A(1), A(2)));
 
 		//global
-		assertEqual("Empty multidim mapping max(global).", DBL_MIN, MappingUtils::findMax(*multi1));
+		assertEqual("Empty multidim mapping max(global).", -DBL_MAX, MappingUtils::findMax(*multi1));
 		assertEqual("Empty multidim mapping min(global).", DBL_MAX, MappingUtils::findMin(*multi1));
 		//local - is not yet implemented
 		//assertEqual("Empty multidim mapping max(local).", DBL_MIN, MappingUtils::findMax(*multi1, A(1,1,1), A(2,2,2)));
@@ -2128,11 +2128,11 @@ protected:
 		assertEqual("One element timed mapping max(global).", 2, MappingUtils::findMax(*timed1));
 		assertEqual("One element timed mapping min(global).", 2, MappingUtils::findMin(*timed1));
 		//local
-		assertEqual("One element timed mapping max(local) before element.", DBL_MIN, MappingUtils::findMax(*timed1, A(0), A(0.5)));
+		assertEqual("One element timed mapping max(local) before element.", -DBL_MAX, MappingUtils::findMax(*timed1, A(0), A(0.5)));
 		assertEqual("One element timed mapping min(local) before element.", DBL_MAX, MappingUtils::findMin(*timed1, A(0), A(0.5)));
 		assertEqual("One element timed mapping max(local) around element.", 2, MappingUtils::findMax(*timed1, A(1), A(1)));
 		assertEqual("One element timed mapping min(local) around element.", 2, MappingUtils::findMin(*timed1, A(1), A(1)));
-		assertEqual("One element timed mapping max(local) after element.", DBL_MIN, MappingUtils::findMax(*timed1, A(2), A(3)));
+		assertEqual("One element timed mapping max(local) after element.", -DBL_MAX, MappingUtils::findMax(*timed1, A(2), A(3)));
 		assertEqual("One element timed mapping min(local) after element.", DBL_MAX, MappingUtils::findMin(*timed1, A(2), A(3)));
 
 		//global

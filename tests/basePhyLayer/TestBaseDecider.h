@@ -1,7 +1,7 @@
 #ifndef TESTBASEDECIDER_H_
 #define TESTBASEDECIDER_H_
 
-#include <BaseDecider.h>
+#include <SNRThresholdDecider.h>
 #include <TestModule.h>
 #include <BasePhyLayer.h>
 #include <cassert>
@@ -9,7 +9,7 @@
 
 #include "TestGlobals.h"
 
-class TestBaseDecider : public BaseDecider, public TestModule
+class TestBaseDecider : public SNRThresholdDecider, public TestModule
 {
 
 protected:
@@ -42,7 +42,7 @@ public:
 					double sensitivity,
 					int myIndex,
 					bool debug)
-		: BaseDecider(phy, threshold, sensitivity, myIndex, debug)
+		: SNRThresholdDecider(phy, threshold, sensitivity, myIndex, debug)
 	{
 
 		init("decider" + toString(this->myIndex));
@@ -59,7 +59,7 @@ public:
 	TestBaseDecider(DeciderToPhyInterface* phy,
 					double threshold,
 					double sensitivity)
-		: BaseDecider(phy, threshold, sensitivity)
+		: SNRThresholdDecider(phy, threshold, sensitivity)
 	{
 
 		// TODO: here we have the problem, that multiple deciders might
@@ -82,9 +82,9 @@ public:
 
 
 	/*
-	 * Here are the overridden public methods of BaseDecider.
+	 * Here are the overridden public methods of SNRThresholdDecider.
 	 *
-	 * Tests can be made and the method of BaseDecider (the one that shall be tested)
+	 * Tests can be made and the method of SNRThresholdDecider (the one that shall be tested)
 	 * is called.
 	 *
 	 */
@@ -95,7 +95,7 @@ public:
 	 */
 	virtual ChannelState getChannelState()
 	{
-		return BaseDecider::getChannelState();
+		return SNRThresholdDecider::getChannelState();
 	}
 
 	/**
@@ -103,7 +103,7 @@ public:
 	 */
 	virtual simtime_t processSignal(AirFrame* frame)
 	{
-		return BaseDecider::processSignal(frame);
+		return SNRThresholdDecider::processSignal(frame);
 	}
 
 
