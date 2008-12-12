@@ -55,8 +55,8 @@ void TestPhyLayer::initialize(int stage) {
 
 			// some TX-power values (should be 2^i, to detect errors in addition)
 			TXpower1 = 1.0;
-			TXpower2 = 2.0;
-			TXpower3 = 4.0;
+			TXpower2 = 3.981071705534;
+			TXpower3 = 3.981071705535; // == 6dBm (sensitivity)
 			TXpower4 = 8.0;
 
 			// TX-power for SNR-threshold-test AirFrame
@@ -296,6 +296,9 @@ void TestPhyLayer::testBaseDeciderInitialization()
 	stateTestBDInitialization = TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY;
 	doBaseDeciderTests();
 
+	stateTestBDInitialization = TEST_CHANNELSENSE;
+	doBaseDeciderTests();
+
 }
 
 AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
@@ -456,6 +459,7 @@ void TestPhyLayer::fillAirFramesOnChannel()
 
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
 		case TEST_GET_CHANNELSTATE_RECEIVING:
+		case TEST_CHANNELSENSE:
 
 
 			// fill with pointers to test AirFrames that interfere with the testTime
@@ -838,9 +842,11 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
 		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
 		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
+		case TEST_CHANNELSENSE:
 
 			if (processedAF != 0)
 			{
+				assert(testChannelSense == 0);
 
 				const Signal& signal = processedAF->getSignal();
 
@@ -851,6 +857,19 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 
 				assertEqual( "Decider demands ChannelInfo for current test-timepoint (end of AirFrame)", getSimTime() , to);
 
+			}
+			else if(testChannelSense != 0)
+			{
+				assert(processedAF == 0);
+
+				// test whether Decider asks for the duration-interval of the ChannelSense
+				assertEqual( "Start of the interval which Decider requested is correct.",
+							getSimTime() - testChannelSense->getSenseDuration(),
+							from);
+
+				assertEqual( "End of the interval which Decider requested is correct.",
+							getSimTime(),
+							to);
 			}
 			else
 			{
@@ -881,8 +900,22 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
  */
 void TestPhyLayer::sendControlMsg(cMessage* msg)
 {
-	BasePhyLayer::sendControlMsg(msg);
-	return;
+	if(!testBaseDecider)
+	{
+		BasePhyLayer::sendControlMsg(msg);
+		return;
+	}
+
+	ChannelSenseRequest* req = dynamic_cast<ChannelSenseRequest*>(msg);
+
+	assertNotEqual("Control message send to mac by the Decider should be a ChannelSenseRequest", (void*)0, req);
+
+	ChannelState state = req->getResult();
+
+	assertEqual("ChannelSense results isIdle state match expected results isIdle state.",
+				expChannelState.isIdle(), state.isIdle());
+	assertEqual("ChannelSense results RSSI value match expected results RSSI value.",
+				expChannelState.getRSSI(), state.getRSSI());
 
 	// TODO as soon as ThresholdDecider sends 'packet dropped' - control messages
 	// check correct sending of them here
@@ -942,18 +975,8 @@ simtime_t TestPhyLayer::getSimTime()
 		case TEST_GET_CHANNELSTATE_EMPTYCHANNEL:
 			return BasePhyLayer::getSimTime();
 			break;
-		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
-		case TEST_GET_CHANNELSTATE_RECEIVING:
-
-		case TEST_SNR_THRESHOLD_ACCEPT:
-		case TEST_SNR_THRESHOLD_DENY:
-		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
-		case TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY:
-		case TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY:
-		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
-			return testTime;
-			break;
 		default:
+			return testTime;
 			break;
 	}
 
@@ -1336,6 +1359,147 @@ void TestPhyLayer::doBaseDeciderTests()
 			assertFalse("sendUp() has not been called.", sendUpCalled);
 
 			break;
+
+		case TEST_CHANNELSENSE:
+			processedAF = 0;
+
+			ev << TestModule::log("-------------------------------------------------------") << endl;
+			ev << TestModule::log(stateToString(stateTestBDInitialization)) << " - empty channel"<< endl;
+			//test sense on empty channel
+			testTime = before;
+			fillAirFramesOnChannel();
+			testChannelSense = new ChannelSenseRequest();
+			testChannelSense->setSenseDuration(0.2);
+
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+
+			assertEqual("NextHandoverTime is correct current time + sense duration.",
+						testTime + 0.2, nextHandoverTime);
+			testTime = nextHandoverTime;
+
+			expChannelState = ChannelState(true, 0.0);
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertTrue("NextHandoverTime express that sense request has been finally processed.",
+					   nextHandoverTime < 0);
+
+			delete testChannelSense;
+
+
+			//test sense during one single airframe without an AirFrame receiving
+			ev << TestModule::log("-------------------------------------------------------") << endl;
+			ev << TestModule::log(stateToString(stateTestBDInitialization)) << " - signel airframe on channel"<< endl;
+			testTime = t1;
+			fillAirFramesOnChannel();
+			testChannelSense = new ChannelSenseRequest();
+			testChannelSense->setSenseDuration(0.2);
+
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+
+			assertEqual("NextHandoverTime is correct current time + sense duration.",
+						testTime + 0.2, nextHandoverTime);
+			testTime = nextHandoverTime;
+
+			expChannelState = ChannelState(true, TXpower1);
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertTrue("NextHandoverTime express that sense request has been finally processed.",
+					   nextHandoverTime < 0);
+
+			delete testChannelSense;
+
+			//test sense with new AirFrames at end of sense without an AirFrame receiving
+			ev << TestModule::log("-------------------------------------------------------") << endl;
+			ev << TestModule::log(stateToString(stateTestBDInitialization)) << " - new airframes at end of sense"<< endl;
+			testTime = t2;
+			fillAirFramesOnChannel();
+			testChannelSense = new ChannelSenseRequest();
+			testChannelSense->setSenseDuration(1.0);
+
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+
+			assertEqual("NextHandoverTime is correct current time + sense duration.",
+						testTime + 1.0, nextHandoverTime);
+			testTime = nextHandoverTime;
+			fillAirFramesOnChannel();
+
+			expChannelState = ChannelState(true, TXpower1 + TXpower2 + TXpower3);
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertTrue("NextHandoverTime express that sense request has been finally processed.",
+					   nextHandoverTime < 0);
+
+			delete testChannelSense;
+
+			//test sense with new AirFrames during sense without an AirFrame receiving
+			ev << TestModule::log("-------------------------------------------------------") << endl;
+			ev << TestModule::log(stateToString(stateTestBDInitialization)) << " - new AirFrames during sense"<< endl;
+			testTime = t2;
+			fillAirFramesOnChannel();
+			testChannelSense = new ChannelSenseRequest();
+			testChannelSense->setSenseDuration(2.0);
+
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+
+			assertEqual("NextHandoverTime is correct current time + sense duration.",
+						testTime + 2.0, nextHandoverTime);
+			testTime = nextHandoverTime;
+			fillAirFramesOnChannel();
+
+			expChannelState = ChannelState(true, TXpower1 + TXpower2 + TXpower3);
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertTrue("NextHandoverTime express that sense request has been finally processed.",
+					   nextHandoverTime < 0);
+
+			delete testChannelSense;
+
+			//test sense with AirFrames end at start of sense without an AirFrame receiving
+			ev << TestModule::log("-------------------------------------------------------") << endl;
+			ev << TestModule::log(stateToString(stateTestBDInitialization)) << " - AirFrames ends at start of sense"<< endl;
+			testTime = t7;
+			fillAirFramesOnChannel();
+			testChannelSense = new ChannelSenseRequest();
+			testChannelSense->setSenseDuration(1.0);
+
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+
+			assertEqual("NextHandoverTime is correct current time + sense duration.",
+						testTime + 1.0, nextHandoverTime);
+			testTime = nextHandoverTime;
+
+			expChannelState = ChannelState(true, TXpower1 + TXpower2);
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertTrue("NextHandoverTime express that sense request has been finally processed.",
+					   nextHandoverTime < 0);
+
+			delete testChannelSense;
+
+			//test sense with new AirFrames during sense with an AirFrame receiving
+			ev << TestModule::log("-------------------------------------------------------") << endl;
+			ev << TestModule::log(stateToString(stateTestBDInitialization)) << " - new AirFrames during sense not idle"<< endl;
+			testTime = t2;
+			fillAirFramesOnChannel();
+			testChannelSense = new ChannelSenseRequest();
+			testChannelSense->setSenseDuration(2.0);
+
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+
+			assertEqual("NextHandoverTime is correct current time + sense duration.",
+						testTime + 2.0, nextHandoverTime);
+
+			testTime = t3;
+			fillAirFramesOnChannel();
+			nextHandoverTime = decider->processSignal(TestAF3);
+			assertTrue("TestAF3 should be received by decider.", nextHandoverTime > 0.0);
+
+			testTime = t4;
+			fillAirFramesOnChannel();
+
+			expChannelState = ChannelState(false, TXpower1 + TXpower2 + TXpower3);
+			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertTrue("NextHandoverTime express that sense request has been finally processed.",
+					   nextHandoverTime < 0);
+
+			delete testChannelSense;
+			break;
+
 		default:
 			break;
 	}

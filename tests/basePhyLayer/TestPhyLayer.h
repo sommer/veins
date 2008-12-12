@@ -71,6 +71,8 @@ protected:
 		TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY,
 		TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY,
 
+		TEST_CHANNELSENSE,
+
 		SIMULATION_RUN = 1000
 
 	} stateTestBDInitialization;
@@ -103,6 +105,9 @@ protected:
 				return "TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY";
 			case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
 				return "TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY";
+
+			case TEST_CHANNELSENSE:
+				return "TEST_CHANNELSENSE";
 
 			case SIMULATION_RUN:
 				return "SIMULATION_RUN";
@@ -216,6 +221,11 @@ protected:
 	AirFrame* TestAF6;
 
 
+	// Used for ChannelSenseRequest tests to define the expected result of a Test sense
+	ChannelState expChannelState;
+
+	// Represents the currently used ChannelSenseRequest which is tested
+	ChannelSenseRequest*  testChannelSense;
 
 	// pointer to the AirFrame that is currently processed by BaseDecider
 	const AirFrame* processedAF;

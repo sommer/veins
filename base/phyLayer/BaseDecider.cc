@@ -327,6 +327,10 @@ simtime_t BaseDecider::handleChannelSenseRequest(ChannelSenseRequest* request)
 		// the sensed RSSI-value is the maximum value between (and including) the interval-borders
 		double rssiValue = MappingUtils::findMax(*rssiMap, Argument(start), Argument(end));
 
+		//"findMax()" returns "-DBL_MAX" on empty mappings
+		if (rssiValue < 0)
+			rssiValue = 0;
+
 		delete rssiMap;
 		rssiMap = 0;
 

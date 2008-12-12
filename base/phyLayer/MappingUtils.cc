@@ -215,7 +215,7 @@ Mapping* operator-(ConstMapping& f1, ConstMapping& f2) {
 double MappingUtils::findMax(ConstMapping& m) {
 	ConstMappingIterator* it = m.createConstIterator();
 
-	double res = DBL_MIN;
+	double res = -DBL_MAX;
 
 	while(it->inRange()){
 		double val = it->getValue();
@@ -236,7 +236,7 @@ double MappingUtils::findMax(ConstMapping& m, const Argument& min, const Argumen
 
 	ConstMappingIterator* it = m.createConstIterator(min);
 
-	double res = DBL_MIN;
+	double res = -DBL_MAX;
 
 	while(it->inRange() && it->getPosition().getTime() <= max.getTime()){
 		double val = it->getValue();

@@ -8,7 +8,7 @@ Loading NED files from ../../tests/: 26
 
 Preparing for running configuration TestBaseDecider1, run #0...
 Scenario: $repetition=0
-Assigned runID=TestBaseDecider1-0-20081210-14:18:43-6222
+Assigned runID=TestBaseDecider1-0-20081212-13:37:32-7322
 Setting up network `tbpSim'...
 setupNetwork finished, cParImpl objects in use: 87
 Initializing...
@@ -25,9 +25,9 @@ Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
 Signal for TestAirFrame1 created with header/payload power: 1/0
 [phy0] - Creating TestAirFrame 1 done.
-Signal for TestAirFrame2 created with header/payload power: 2/0
+Signal for TestAirFrame2 created with header/payload power: 3.98107/0
 [phy0] - Creating TestAirFrame 2 done.
-Signal for TestAirFrame3 created with header/payload power: 4/0
+Signal for TestAirFrame3 created with header/payload power: 3.98107/0
 [phy0] - Creating TestAirFrame 3 done.
 Signal for TestAirFrame4 created with header/payload power: 8/0
 [phy0] - Creating TestAirFrame 4 done.
@@ -261,6 +261,8 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 4 has been finally processed
 [phy0] - -DONE-------------------------------------------
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_SNR_THRESHOLD_ACCEPT
 Signal for TestAirFrame5 created with header/payload power: 10/10
 [phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
@@ -272,6 +274,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 Passed: BaseDecider decided correctly to send up the packet
 Passed: BaseDecider has returned the pointer to currently processed AirFrame
 Passed: TestAirFrame 5 has been finally processed
+Passed: sendUp() has been called.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_SNR_THRESHOLD_DENY
 Signal for TestAirFrame5 created with header/payload power: 10/10
 [phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
@@ -281,6 +286,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [phy0] - All TestAirFrames-pointers have been copied.
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
+Passed: sendUp() has not been called.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_SNR_THRESHOLD_PAYLOAD_DENY
 Signal for TestAirFrame5 created with header/payload power: 20/10
 [phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
@@ -290,6 +298,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [phy0] - All TestAirFrames-pointers have been copied.
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
+Passed: sendUp() has not been called.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY
 Signal for TestAirFrame5 created with header/payload power: 30/30
 [phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
@@ -299,6 +310,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [phy0] - All TestAirFrames-pointers have been copied.
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
+Passed: sendUp() has not been called.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY
 Signal for TestAirFrame5 created with header/payload power: 20/20
 [phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
@@ -308,6 +322,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [phy0] - All TestAirFrames-pointers have been copied.
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
+Passed: sendUp() has not been called.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY
 Signal for TestAirFrame5 created with header/payload power: 90/90
 [phy0] - Creating TestAirFrame 5 done.
 [phy0] - Filled airFramesOnChannel. (the virtual channel)
@@ -317,6 +334,104 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [phy0] - All TestAirFrames-pointers have been copied.
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
+Passed: sendUp() has not been called.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_CHANNELSENSE - empty channel
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is correct current time + sense duration.
+Passed: Start of the interval which Decider requested is correct.
+Passed: End of the interval which Decider requested is correct.
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: NextHandoverTime express that sense request has been finally processed.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_CHANNELSENSE - signel airframe on channel
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is correct current time + sense duration.
+Passed: Start of the interval which Decider requested is correct.
+Passed: End of the interval which Decider requested is correct.
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: NextHandoverTime express that sense request has been finally processed.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_CHANNELSENSE - new airframes at end of sense
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is correct current time + sense duration.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Start of the interval which Decider requested is correct.
+Passed: End of the interval which Decider requested is correct.
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: NextHandoverTime express that sense request has been finally processed.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_CHANNELSENSE - new AirFrames during sense
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is correct current time + sense duration.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Start of the interval which Decider requested is correct.
+Passed: End of the interval which Decider requested is correct.
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: NextHandoverTime express that sense request has been finally processed.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_CHANNELSENSE - AirFrames ends at start of sense
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is correct current time + sense duration.
+Passed: Start of the interval which Decider requested is correct.
+Passed: End of the interval which Decider requested is correct.
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: NextHandoverTime express that sense request has been finally processed.
+[phy0] - -------------------------------------------------------
+[phy0] - TEST_CHANNELSENSE - new AirFrames during sense not idle
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: NextHandoverTime is correct current time + sense duration.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: TestAF3 should be received by decider.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[phy0] - Creating TestAirFrame 5 done.
+[phy0] - Filled airFramesOnChannel. (the virtual channel)
+Passed: Start of the interval which Decider requested is correct.
+Passed: End of the interval which Decider requested is correct.
+[phy0] - All TestAirFrames-pointers have been copied.
+[phy0] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: NextHandoverTime express that sense request has been finally processed.
 Initializing module tbpSim.node[0].nic.mac, stage 1
 
 Running simulation...
