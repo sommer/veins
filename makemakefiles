@@ -1,141 +1,27 @@
 #
-# Makefile to create all other makefiles for the project.
+# Usage:
+#    make -f makemakefiles
+# or, for Microsoft Visual C++:
+#    nmake -f makemakefiles MMOPT=-n
 #
-# CAREFUL: This file has to remain portable across Unix make and
-# Windows nmake!
-#
 
-# The vars ROOT, MAKEMAKE, OPTS, LIB_OPTS and MIXIM_LIB have to
-# be specified externally, in the OP specific makefiles
-
-#ROOT=`pwd`
-#MAKEMAKE=opp_makemake
-#OPTS=-f -b $(ROOT) -c $(ROOT)/omnetppconfig
-#LIB_OPTS=-w -o libmixim -s 
-#MIXIM_LIB=-L$(ROOT)/lib -lmixim
-
-#--------------------------------------
-BASE=$(ROOT)/base
-IBASE=-I$(BASE)/utils -I$(BASE)/messages -I$(BASE)/modules -I$(BASE)/timers -I$(BASE)/connectionManager -I$(BASE)/localization -I$(BASE)/phyLayer
-
-MODULES=$(ROOT)/modules
-# IMODULES=-I$(MODULES)/nic -I$(MODULES)/mobility -I$(MODULES)/utility -I$(MODULES)/localization -I$(MODULES)/node -I$(MODULES)/netw -I$(MODULES)/propagation -I$(MODULES)/phy -I$(MODULES)/mac
-IMODULES=-I$(MODULES)/nic -I$(MODULES)/mobility -I$(MODULES)/utility -I$(MODULES)/node -I$(MODULES)/netw -I$(MODULES)/propagation
-
-MIXIM_INCLUDE=-I$(ROOT)/include
-
-MODULES_OPTS=$(MIXIM_INCLUDE) -L$(ROOT)/lib $(MIXIM_BASE_LIB)
-NET_OPTS=$(MODULES_OPTS) $(MIXIM_MODULES_LIB)
-TEST_UTILS=$(MIXIM_TESTS_LIB) -I$(ROOT)/tests/testUtils
-TEST_OPTS=-u Cmdenv
-#--------------------------------------
-
+MAKEMAKE=opp_makemake $(MMOPT)
 
 all:
-#	@echo $(ROOT)
-#	@cd $(ROOT) && $(MAKEMAKE) $(OPTS) -r -n -X documentation -X doc -X configurator -X development
-	@echo $(ROOT)/base
-	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -K MIXIMROOT=$(ROOT) --deep -o miximbase -s 
-
-#	@echo $(ROOT)/base
-#	@cd $(ROOT)/base && $(MAKEMAKE) $(OPTS) -r -n
-#	@echo $(ROOT)/base/utils
-#	@cd $(ROOT)/base/utils && $(MAKEMAKE) $(OPTS) -n
-#	@echo $(ROOT)/base/messages
-#	@cd $(ROOT)/base/messages && $(MAKEMAKE) $(OPTS) -n $(IBASE)
-#	@echo $(ROOT)/base/modules
-#	@cd $(ROOT)/base/modules && $(MAKEMAKE) $(OPTS) -n $(IBASE)
-#	@echo $(ROOT)/base/phyLayer
-#	@cd $(ROOT)/base/phyLayer && $(MAKEMAKE) $(OPTS) -n $(IBASE)	
-#	@echo $(ROOT)/base/timers
-#	@cd $(ROOT)/base/timers && $(MAKEMAKE) $(OPTS) -n $(IBASE)
-#	@echo $(ROOT)/base/connectionManager
-#	@cd $(ROOT)/base/connectionManager && $(MAKEMAKE) $(OPTS) -n $(IBASE)
-#	@echo $(ROOT)/base/localization
-#	@cd $(ROOT)/base/localization && $(MAKEMAKE) $(OPTS) -n $(IBASE)
-
-	@echo $(ROOT)/modules
-	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) $(MODULES_OPTS) -K MIXIMROOT=$(ROOT) --deep -o miximmodules -s -X phy -X channel -X localization
-	
-	
-#	@echo $(ROOT)/modules
-#	@cd $(ROOT)/modules && $(MAKEMAKE) $(OPTS) -r -n -X phy -X channel -X localization -X mac
-#	@echo $(ROOT)/modules/utility
-#	@cd $(ROOT)/modules/utility && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES)
-#	@echo $(ROOT)/modules/application
-#	@cd $(ROOT)/modules/application && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/channel
-#	@cd $(ROOT)/modules/channel && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/mac
-#	@cd $(ROOT)/modules/mac && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/nic
-#	@cd $(ROOT)/modules/nic && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/netw
-#	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/node
-#	@cd $(ROOT)/modules/node && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/object
-#	@cd $(ROOT)/modules/object && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/phy
-#	@cd $(ROOT)/modules/phy && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/mobility
-#	@cd $(ROOT)/modules/mobility && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/netw
-#	@cd $(ROOT)/modules/netw && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/localization
-#	@cd $(ROOT)/modules/localization && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-#	@echo $(ROOT)/modules/propagation
-#	@cd $(ROOT)/modules/propagation && $(MAKEMAKE) $(OPTS) -n $(IBASE) $(IMODULES) 
-
-	@echo $(ROOT)/include
-	@cd $(ROOT)/include && $(MAKEMAKE) $(OPTS) -n 
-#	@echo $(ROOT)/lib
-#	@cd $(ROOT)/lib && $(MAKEMAKE) $(OPTS) $(LIB_OPTS) $(IBASE) $(IMODULES)
-#	@echo $(ROOT)/bin
-#	@cd $(ROOT)/bin && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -o mixim
-
-	@echo $(ROOT)/examples
-	@cd $(ROOT)/examples && $(MAKEMAKE) $(OPTS) -r -n -X foxtrot -X baseNetwork -X mfNetwork -X locNetwork -X multiChannel -X positifNetwork
-#	@echo $(ROOT)/examples/baseNetwork
-#	@cd $(ROOT)/examples/baseNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-#	@echo $(ROOT)/examples/mfNetwork
-#	@cd $(ROOT)/examples/mfNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-#	@echo $(ROOT)/examples/locNetwork
-#	@cd $(ROOT)/examples/locNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-#	@echo $(ROOT)/examples/positifNetwork
-#	@cd $(ROOT)/examples/positifNetwork && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-#	@echo $(ROOT)/examples/foxtrot
-#	@cd $(ROOT)/examples/foxtrot && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-#	@echo $(ROOT)/examples/centroid
-#	@cd $(ROOT)/examples/centroid && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-#	@echo $(ROOT)/examples/multiChannel
-#	@cd $(ROOT)/examples/multiChannel && $(MAKEMAKE) $(OPTS) $(NET_OPTS)
-	@echo $(ROOT)/examples/phyLayer
-	@cd $(ROOT)/examples/phyLayer && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -o MiXiM
-	@echo $(ROOT)/examples/analogueModels
-	@cd $(ROOT)/examples/analogueModels && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -o MiXiM
-	@echo $(ROOT)/examples/CSMAMac
-	@cd $(ROOT)/examples/CSMAMac && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -o MiXiM
-
-	@echo $(ROOT)/tests
-	@cd $(ROOT)/tests && $(MAKEMAKE) $(OPTS) -r -n
-	@echo $(ROOT)/tests/testUtils 
-	@cd $(ROOT)/tests/testUtils && $(MAKEMAKE) $(OPTS) $(NET_OPTS) -K MIXIMROOT=$(ROOT) -o miximtests -s 
-	
-	@echo $(ROOT)/tests/blackboard
-	@cd $(ROOT)/tests/blackboard && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) -o blackboard
-	@echo $(ROOT)/tests/coord
-	@cd $(ROOT)/tests/coord && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(TEST_UTILS) -o coord
-	@echo $(ROOT)/tests/connectionManager
-	@cd $(ROOT)/tests/connectionManager && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) -o connectionManager
-	@echo $(ROOT)/tests/baseMobility
-	@cd $(ROOT)/tests/baseMobility && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) -o baseMobility
-	@echo $(ROOT)/tests/basePhyLayer
-	@cd $(ROOT)/tests/basePhyLayer && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(TEST_UTILS) -o basePhyLayer
-	@echo $(ROOT)/tests/channelInfo
-	@cd $(ROOT)/tests/channelInfo && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(TEST_UTILS) -o channelInfo
-	@echo $(ROOT)/tests/radioState
-	@cd $(ROOT)/tests/radioState && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(TEST_UTILS) -o radioState
-	@echo $(ROOT)/tests/mapping
-	@cd $(ROOT)/tests/mapping && $(MAKEMAKE) $(OPTS) $(TEST_OPTS) $(NET_OPTS) $(TEST_UTILS) -o mapping
-    
+	cd tests/radioState && $(MAKEMAKE) -f -o radioState -O out -u CMDENV -I../../base/messages -I../../base/modules -I../../base/phyLayer -I../../base/connectionManager -I../../base/utils -I../testUtils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules -lmiximtestUtils
+	cd examples/analogueModels && $(MAKEMAKE) -f -o MiXiM -O out -I../../base/modules -I../../base/messages -I../../base/phyLayer -I../../base/connectionManager -I../../base/utils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules
+	cd examples/phyLayer && $(MAKEMAKE) -f -o MiXiM -O out -I../../base/modules -I../../base/messages -I../../base/phyLayer -I../../base/connectionManager -I../../base/utils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules
+	cd tests/channelInfo && $(MAKEMAKE) -f -o channelInfo -O out -u CMDENV -I../../base/messages -I../../base/modules -I../../base/phyLayer -I../../base/connectionManager -I../../base/utils -I../testUtils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules -lmiximtestUtils
+	cd examples && $(MAKEMAKE) -f --nolink -O out -d analogueModels -d phyLayer -d CSMAMac -XbaseNetwork -Xfoxtrot -XlocNetwork -XmfNetwork -XmultiChannel -XpositifNetwork -L../out/$(CONFIGNAME)/base -L../out/$(CONFIGNAME)/modules -L../out/$(CONFIGNAME)/tests/testUtils
+	cd base && $(MAKEMAKE) -f --deep --make-so -o miximbase -O out -L../out/$(CONFIGNAME)/modules -L../out/$(CONFIGNAME)/tests/testUtils
+	cd examples/CSMAMac && $(MAKEMAKE) -f -o MiXiM -O out -I../../base/phyLayer -I../../base/messages -I../../base/modules -I../../base/connectionManager -I../../base/utils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules
+	cd tests/coord && $(MAKEMAKE) -f -o coord -O out -u CMDENV -I../../base/modules -I../../base/phyLayer -I../../base/messages -I../../base/connectionManager -I../../base/utils -I../testUtils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules -lmiximtestUtils
+	cd tests/basePhyLayer && $(MAKEMAKE) -f -o basePhyLayer -O out -u CMDENV -I../../base/modules -I../../base/messages -I../../base/phyLayer -I../../base/connectionManager -I../../base/utils -I../testUtils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules -lmiximtestUtils
+	cd tests/mapping && $(MAKEMAKE) -f -o mapping -O out -u CMDENV -I../../base/messages -I../../base/modules -I../../base/phyLayer -I../../base/connectionManager -I../../base/utils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules -lmiximtestUtils
+	cd tests/connectionManager && $(MAKEMAKE) -f -o connectionManager -O out -u CMDENV -I../../base/modules -I../../base/phyLayer -I../../base/messages -I../../base/connectionManager -I../../base/utils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules -lmiximtestUtils
+	$(MAKEMAKE) -f --nolink -O out -d configurator -d examples -d base -d modules -d tests -Xbin -Xconfigurator -Xdoc -Xdocumentation -Xexamples/baseNetwork -Xexamples/foxtrot -Xexamples/locNetwork -Xexamples/mfNetwork -Xexamples/multiChannel -Xexamples/positifNetwork -Xinclude -Xlib -Xmodules/channel -Xmodules/localization -Xmodules/phy -Xout -L./out/$(CONFIGNAME)/base -L./out/$(CONFIGNAME)/modules -L./out/$(CONFIGNAME)/tests/testUtils
+	cd tests/baseMobility && $(MAKEMAKE) -f -o baseMobility -O out -u CMDENV -I../../base/messages -I../../base/phyLayer -I../../base/modules -I../../base/connectionManager -I../../base/utils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules -lmiximtestUtils
+	cd modules && $(MAKEMAKE) -f --deep --make-so -o miximmodules -O out -Xchannel -Xlocalization -Xphy -I../base/modules -I../base/messages -I../base/phyLayer -I../base/connectionManager -I../base/utils -I../base/timers -L../out/$(CONFIGNAME)/base -L../out/$(CONFIGNAME)/tests/testUtils -lmiximbase
+	cd tests && $(MAKEMAKE) -f --nolink -O out -d radioState -d channelInfo -d coord -d basePhyLayer -d mapping -d connectionManager -d baseMobility -d blackboard -d testUtils -L../out/$(CONFIGNAME)/base -L../out/$(CONFIGNAME)/modules -L../out/$(CONFIGNAME)/tests/testUtils
+	cd tests/blackboard && $(MAKEMAKE) -f -o blackboard -O out -u CMDENV -I../../base/messages -I../../base/phyLayer -I../../base/modules -I../../base/connectionManager -I../../base/utils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules -L../../out/$(CONFIGNAME)/tests/testUtils -lmiximbase -lmiximmodules -lmiximtestUtils
+	cd tests/testUtils && $(MAKEMAKE) -f --make-so -o miximtestUtils -O out -I../../base/modules -I../../base/phyLayer -I../../base/messages -I../../base/connectionManager -I../../base/utils -L../../out/$(CONFIGNAME)/base -L../../out/$(CONFIGNAME)/modules

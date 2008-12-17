@@ -25,23 +25,16 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.1493209585" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1345723921" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.preprocessor.def.561198940" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def"/>
-<option id="gnu.cpp.compiler.option.include.paths.811482987" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MiXiM/include}&quot;"/>
-</option>
+<option id="gnu.cpp.compiler.option.include.paths.811482987" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1677225756" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1210609911" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
-<option id="gnu.c.compiler.option.include.paths.1556334342" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MiXiM/include}&quot;"/>
-</option>
+<option id="gnu.c.compiler.option.include.paths.1556334342" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath"/>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.876788787" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.610819722" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.546610095" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
-<option id="gnu.cpp.link.option.paths.167451922" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MiXiM/out/${ConfigName}/src/base}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MiXiM/out/${ConfigName}/src/modules}&quot;"/>
-</option>
+<option id="gnu.cpp.link.option.paths.167451922" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.434556665" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -54,7 +47,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="examples/mfNetwork|examples/baseNetwork|examples/positifNetwork|examples/multiChannel|examples/locNetwork|examples/foxtrot|modules/channel|modules/localization|modules/phy|modules/macOld" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="lib|include|out|documentation|doc|configurator|bin|examples/mfNetwork|examples/baseNetwork|examples/positifNetwork|examples/multiChannel|examples/locNetwork|examples/foxtrot|modules/channel|modules/localization|modules/phy" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -389,7 +382,7 @@
 </folderInfo>
 <sourceEntries>
 <entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="examples/phyLayer"/>
-<entry excluding="examples/CSMAMac|examples/phyLayer|src/modules/channel|src/modules/localization|src/modules/phy|src/modules/macOld|examples/multiChannel|examples/locNetwork|examples/mfNetwork|examples/foxtrot|examples/positifNetwork|examples/baseNetwork|modules/localization|modules/macOld|modules/phy|modules/channel" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="lib|include|out|documentation|doc|configurator|bin|examples/CSMAMac|examples/phyLayer|src/modules/channel|src/modules/localization|src/modules/phy|src/modules/macOld|examples/multiChannel|examples/locNetwork|examples/mfNetwork|examples/foxtrot|examples/positifNetwork|examples/baseNetwork|modules/localization|modules/macOld|modules/phy|modules/channel" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>

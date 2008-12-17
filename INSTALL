@@ -4,7 +4,7 @@ to compile and start using MiXiM.
 
 Requirements
 ============
-- OMNeT++, at least version 3.2, 
+- OMNeT++, at least version 4.0b8, 
   downloadable at www.omnetpp.org
   OMNeT++ must be compiled with dynamic NED loading enabled 
   (WITH_NETBUILDER=yes setting)
@@ -14,25 +14,38 @@ Requirements
 
 Installation under Linux
 ========================
-1. Unpack the archive (you have probably already done so)
-   tar xzf mixim<VERSION>.tgz
+Unpack the archive (you have probably already done so)
+ tar xzf mixim<VERSION>.tgz
 
-2. Update your LD_LIBRARY_PATH variable to include the
-   "mixim<VERSION>/lib" directory
+Commandline
+-----------
 
-3. Update your PATH variable to include the
-   "mixim<VERSION>/bin" directory
+1. run the following command in the MiXiM root dir
+    make -f makemakefiles CONFIGNAME=gcc-debug
+   (you can alternatively also use the gcc-release configuration)
 
-4. run the mkmk shell script
-   ./mkmk
-
-5. type "make all" to make the mixim library and binary 
+2. type "make all" to make the mixim library and binary 
    and to build the test networks
 
 TODO: we need to be more precise how to get started!!!
 
 Finally try the example networks in the example folder or
 build your own network using the configurator
+
+OMNeT++ IDE
+-----------
+
+1. Add MiXiM as a Project to your OMNeT++ IDE
+
+2. Build MiXiM (Ctrl+B)
+
+3. Choose an example from the examples folder, run it and have fun :-)
+
+=================================================
+TODO: the rest of this file needs to be converted
+   So far MiXiM has only been tested under linux
+   There might be problems under windows or OS-X
+=================================================
 
 
 Installation under Windows

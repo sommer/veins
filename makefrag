@@ -9,8 +9,6 @@ help:
 	@echo "	Targets are:"
 	@echo "	base		-- create base"
 	@echo "	modules		-- create modules"
-	@echo "	lib		-- create mixim library"
-	@echo "	bin		-- create mixim binary"
 	@echo "	tests		-- create tests "
 	@echo "	examples	-- create example networks "
 	@echo "	configurator	-- create the configuration tool "
@@ -21,10 +19,7 @@ help:
 	@echo "*******************************************************************"
 
 # make all
-all: base modules lib bin examples tests configurator
-
-configurator:
-	@(cd configurator; ${MAKE})
+all: base modules examples tests configurator
 
 distclean: clean
 	@cd configurator &&  $(MAKE) distclean
@@ -33,12 +28,9 @@ distclean: clean
 	@rm -f doc/miximtags.xml
 
 # add dependencies:
-modules: base
-include: modules
-lib: include
-bin: lib
-examples: lib
-tests: lib
+modules_dir: base_dir
+examples_dir: modules_dir
+tests_dir: modules_dir
 
 # documentation
 DOC_DIR=doc
