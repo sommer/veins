@@ -26,9 +26,7 @@ class FoxtrotPacket:public FoxtrotPacket_Base
 		debug = true;
 	}
 	FoxtrotPacket & operator=(const FoxtrotPacket & other);
-	virtual cObject *dup() const
-	{
-		return new FoxtrotPacket(*this);
+	virtual FoxtrotPacket *dup() const {return new FoxtrotPacket(*this);
 	}
 	// ADD CODE HERE to redefine and implement pure virtual functions from FoxtrotPacket_Base
 

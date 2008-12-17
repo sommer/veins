@@ -29,7 +29,7 @@
 #include "AggPkt_m.h"
 #include "SimpleAddress.h"
 
-#define DBG(...) {char *dbg_out;asprintf(&dbg_out,## __VA_ARGS__);EV<<dbg_out;free(dbg_out);if (isnan(simTime())){throw new cRuntimeError("nan simtime");}}
+#define DBG(...) {char *dbg_out;asprintf(&dbg_out,## __VA_ARGS__);EV<<dbg_out;free(dbg_out);if (isnan(simTime())){throw cRuntimeError("nan simtime");}}
 #define DBG_clear(...) {char *dbg_out;asprintf(&dbg_out,## __VA_ARGS__);EV_clear<<dbg_out;free(dbg_out);}
 
 /**

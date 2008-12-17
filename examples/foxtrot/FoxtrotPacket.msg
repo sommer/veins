@@ -5,10 +5,13 @@ cplusplus {{
 
 
 
+
 class BasePacket;
 
 
+
 struct foxtrot_data;
+
 
 
 

@@ -1,14 +1,14 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../base/: 20
-Loading NED files from ../../modules/: 21
-Loading NED files from ../../tests/: 26
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20081121-06:51:27-7090
+Assigned runID=Test1-0-20081217-16:17:46-16557
 Setting up network `ccSim'...
 setupNetwork finished, cParImpl objects in use: 98
 Initializing...
@@ -316,6 +316,12 @@ updatePosition:  HostMove  startPos: (0,400) direction: (0,0) startTime: 0 speed
 Initializing module ccSim.node[32].nic.phy, stage 1
 
 Running simulation...
+** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 5   present: 5   in FES: 5
+** Event #188   T=4.1   Elapsed: 0.001s (0m 00s)  8% completed
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 191   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
 
@@ -357,16 +363,16 @@ Passed: Test Node 32: Should have received no broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../base/: 20
-Loading NED files from ../../modules/: 21
-Loading NED files from ../../tests/: 26
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20081121-06:51:27-7091
+Assigned runID=Test2-0-20081217-16:17:47-16558
 Setting up network `ccSim'...
 setupNetwork finished, cParImpl objects in use: 95
 Initializing...
@@ -674,6 +680,12 @@ updatePosition:  HostMove  startPos: (0,400) direction: (0,0) startTime: 0 speed
 Initializing module ccSim.node[32].nic.phy, stage 1
 
 Running simulation...
+** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 5   present: 5   in FES: 5
+** Event #196   T=1   Elapsed: 0.001s (0m 00s)  2% completed
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 195   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
 
@@ -715,16 +727,16 @@ Passed: Test Node 32: Should have received at least one broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../base/: 20
-Loading NED files from ../../modules/: 21
-Loading NED files from ../../tests/: 26
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20081121-06:51:27-7092
+Assigned runID=Test3-0-20081217-16:17:47-16559
 Setting up network `ccSim'...
 setupNetwork finished, cParImpl objects in use: 97
 Initializing...
@@ -1347,6 +1359,12 @@ updatePosition:  HostMove  startPos: (277,400,0) direction: (0,0,0) startTime: 0
 Initializing module ccSim.node[67].nic.phy, stage 1
 
 Running simulation...
+** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 7   present: 7   in FES: 7
+** Event #518   T=7.6   Elapsed: 0.003s (0m 00s)  15% completed
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 523   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
 
@@ -1423,16 +1441,16 @@ Passed: Test Node 67: Should have received no broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../base/: 20
-Loading NED files from ../../modules/: 21
-Loading NED files from ../../tests/: 26
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20081121-06:51:27-7093
+Assigned runID=Test4-0-20081217-16:17:47-16560
 Setting up network `ccSim'...
 setupNetwork finished, cParImpl objects in use: 94
 Initializing...
@@ -2055,6 +2073,12 @@ updatePosition:  HostMove  startPos: (277,400,0) direction: (0,0,0) startTime: 0
 Initializing module ccSim.node[67].nic.phy, stage 1
 
 Running simulation...
+** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 7   present: 7   in FES: 7
+** Event #530   T=1   Elapsed: 0.004s (0m 00s)  2% completed
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 529   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
 

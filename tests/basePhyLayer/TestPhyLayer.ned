@@ -4,7 +4,9 @@ simple TestPhyLayer
 {
     parameters:
         bool coreDebug;
-	bool usePropagationDelay; 		//Should transmission delay be simulated?
+        //Should transmission delay be simulated?
+        //Should transmission delay be simulated?
+        bool usePropagationDelay; 		//Should transmission delay be simulated?
         double thermalNoise;			//the strength of the thermal noise
         bool testBaseDecider; 			//shall a TestBaseDecider be used as Decider?
 

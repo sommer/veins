@@ -1,14 +1,14 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0b8, build: 0811141943-9959, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../base/: 20
-Loading NED files from ../../modules: 21
-Loading NED files from ../../tests: 26
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20081121-06:52:05-7107
+Assigned runID=General-0-20081217-16:17:21-16435
 Setting up network `OmnetTest'...
 setupNetwork finished, cParImpl objects in use: 0
 Initializing...
@@ -3764,6 +3764,12 @@ Passed: Multi element multidim mapping min(global) at (4,4,4).
 --------Various MappingUtils tests done.------------------------------------------
 
 Running simulation...
+** Event #1   T=0   Elapsed: 0.000s (0m 00s)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 0   present: 0   in FES: 0
+** Event #1   T=0   Elapsed: 0.000s (0m 00s)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 0   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
 

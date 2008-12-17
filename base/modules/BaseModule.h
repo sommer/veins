@@ -28,10 +28,10 @@
 #include "ImNotifiable.h"
 #include "FindModule.h"
 
-#ifndef EV
+
 #define EV_clear (ev.isDisabled()||!debug) ? ev : ev
 //#define EV (ev.isDisabled()||!debug) ? ev : ev << logName() << "::" << getClassName() << ": " ==> EV is now part of <omnetpp.h>
-#endif
+
 #ifndef coreEV
 #define coreEV_clear (ev.isDisabled()||!coreDebug) ? ev : ev
 #define coreEV (ev.isDisabled()||!coreDebug) ? ev : ev << logName() << "::" << getClassName() <<": "

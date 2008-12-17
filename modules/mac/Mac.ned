@@ -1,6 +1,7 @@
 package org.mixim.modules.mac;
 
-simple EyesMacLayer {
+simple EyesMacLayer
+{
     parameters:
         bool debug;		// debug switch
         double headerLength;	// length of the MAC packet header (in bits)

@@ -1,14 +1,14 @@
-OMNeT++/OMNEST Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Release: omnetpp-4.0b7, build: 0810201524-9715, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
+Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from ../../base/: 20
-Loading NED files from ../../modules/: 21
-Loading NED files from ../../tests/: 26
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
+Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
 
 Preparing for running configuration TestBaseDecider1, run #0...
 Scenario: $repetition=0
-Assigned runID=TestBaseDecider1-0-20081212-13:37:32-7322
+Assigned runID=TestBaseDecider1-0-20081217-16:16:07-16389
 Setting up network `tbpSim'...
 setupNetwork finished, cParImpl objects in use: 87
 Initializing...

@@ -24,6 +24,7 @@ cplusplus {{
 
 
 
+
 class noncobject Location;
 
 // A basic localization packet definition

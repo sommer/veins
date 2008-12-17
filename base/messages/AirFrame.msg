@@ -5,6 +5,7 @@ cplusplus {{
 
 
 
+
 class noncobject Signal;
 
 //
@@ -25,7 +26,7 @@ class noncobject Signal;
 packet AirFrame
 {
     Signal signal;		// Contains the physical data of this AirFrame
-    
+
     simtime_t duration;	// time the AirFrames takes to be transmited (without propagation delay)
 
     int state = 1; 		// state of the AirFrames, used by the physical layer
