@@ -162,7 +162,6 @@ bool SNRThresholdDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, s
 	return true;
 }
 
-// TODO: check implementation
 /**
  * @brief This function processes a AirFrame given by the PhyLayer and
  * returns the time point when SNRThresholdDecider wants to be given the AirFrame again.
@@ -199,7 +198,10 @@ simtime_t SNRThresholdDecider::processSignal(AirFrame* frame)
 }
 
 /**
- * TODO: check implementation
+ * @brief Handles a newly arrived AirFrame, i.e. check whether the receiving power
+ * of the Signal is high enough and then focus on that AirFrame (receive it) or not.
+ *
+ * @return	Time point when the AirFrame shall be handed over again.
  *
  */
 simtime_t SNRThresholdDecider::handleNewSignal(AirFrame* frame)
@@ -225,8 +227,13 @@ simtime_t SNRThresholdDecider::handleNewSignal(AirFrame* frame)
 }
 
 /**
- * TODO: check implementation
+ * @brief Processes a received AirFrame.
  *
+ * The SNR-mapping for the Signal is created and checked against the Deciders
+ * SNR-threshold. Depending on that the received AirFrame is either sent up
+ * to the MAC-Layer or dropped.
+ *
+ * @return	usually return a value for: 'do not pass it again'
  */
 simtime_t SNRThresholdDecider::handleSignalOver(AirFrame* frame)
 {
@@ -260,12 +267,12 @@ simtime_t SNRThresholdDecider::handleSignalOver(AirFrame* frame)
 	snrMap = 0;
 
 
-	// we're through with this AirFrame and we prepare to receive the next one
+	// we have processed this AirFrame and we prepare to receive the next one
 	currentAirFrame = 0;
 	return notAgain;
 }
 
-// TODO: check implementation
+
 /**
  * @brief A function that returns information about the channel state
  *

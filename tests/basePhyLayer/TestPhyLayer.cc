@@ -82,6 +82,7 @@ void TestPhyLayer::initialize(int stage) {
 
 
 			processedAF = 0;
+			testChannelSense = 0;
 
 
 			// expected results of tests (hard coded)

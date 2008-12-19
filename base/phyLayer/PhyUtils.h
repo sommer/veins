@@ -10,7 +10,6 @@
 #include <list>
 
 
-using namespace std;
 
 class RSAMMapping;
 
@@ -38,12 +37,12 @@ protected:
 	{
 
 	protected:
-		pair<simtime_t, double> basicTimestamp;
+		std::pair<simtime_t, double> basicTimestamp;
 
 	public:
 		ListEntry(simtime_t time, double value)
 		{
-			basicTimestamp = pair<simtime_t, double> (time, value);
+			basicTimestamp = std::pair<simtime_t, double> (time, value);
 		}
 
 		virtual ~ListEntry() {}
@@ -94,7 +93,7 @@ protected:
 	/**
 	 * @brief Data structure to track when the Radio is receiving
 	 */
-	list<ListEntry> radioIsReceiving;
+	std::list<ListEntry> radioIsReceiving;
 
 
 
@@ -146,9 +145,8 @@ public:
 	 */
 	void cleanUpUntil(simtime_t t)
 	{
-		// TODO : remove, RSAM has been redesigned to be never empty
-		// list is empty ==> nothing to do
-		if ( radioIsReceiving.empty() ) return;
+		// assert that list is not empty
+		assert(!radioIsReceiving.empty());
 
 		/* the list contains at least one element */
 
@@ -177,11 +175,10 @@ public:
 		 */
 
 		// get an iterator and set it to the first timepoint >= t
-		list<ListEntry>::iterator it;
+		std::list<ListEntry>::iterator it;
 		it = lower_bound(radioIsReceiving.begin(), radioIsReceiving.end(), t);
 
-		// TODO Question: shall multiple entries with same timepoint be preserved
-		// in this case or only the last one?
+
 		// CASE: list contains an element with exactly the given key
 		if ( it->getTime() == t )
 		{
@@ -189,7 +186,6 @@ public:
 			return;
 		}
 
-		// TODO: check whether this is allowed
 		// CASE: t is "in between two elements"
 		// ==> set the iterators predecessors time to t, it becomes the first element
 		it--; // go back one element, possible since this one has not been the first one
@@ -496,7 +492,7 @@ protected:
 
 	const RadioStateAnalogueModel* rsam;
 
-	typedef list<RadioStateAnalogueModel::ListEntry> CurrList;
+	typedef std::list<RadioStateAnalogueModel::ListEntry> CurrList;
 	CurrList::const_iterator it;
 
 	Argument position;
@@ -517,7 +513,7 @@ public:
 		signalEnd(_signalEnd)
 	{
 		assert(_rsam);
-		// TODO maybe a condition concerning signalEnd should also be checked here
+
 		assert( !(signalStart < rsam->radioIsReceiving.front().getTime()) );
 
 		jumpToBegin();
@@ -737,7 +733,7 @@ public:
  * interacts with its RSAM to obtain information about the mapping.
  *
  * The relation to RSAM is very tight. RSAM creates an appropriate RSAMMapping
- * by passing a self-pointer to the construtor call.
+ * by passing a self-pointer to the constructor call.
  *
  * class RSAMMapping is a friend of class RadioStateAnalogueModel
  *
@@ -764,8 +760,6 @@ public:
 		signalStart(_signalStart),
 		signalEnd(_signalEnd)
 	{
-		// TODO better: throw an error and exit if _rsam points to 0
-		// TODO maybe a condition concerning signalEnd should also be checked here
 		assert(_rsam);
 		assert( !(signalStart < rsam->radioIsReceiving.front().getTime()) );
 	}
@@ -780,7 +774,6 @@ public:
 	 *
 	 * In this case we have a function: simtime_t -> attenuation
 	 *
-	 * TODO returns -1.0 in case of an error right now, should be modified
 	 */
 	virtual double getValue(const Argument& pos) const
 	{
@@ -792,28 +785,10 @@ public:
 		assert( !(rsam->radioIsReceiving.empty()) &&
 				!(t < rsam->radioIsReceiving.front().getTime()) );
 
-
-		// TODO: remove, RSAM has been redesigned to be never empty
-		// ERROR CASE: receiving list is empty
-		if ( rsam->radioIsReceiving.empty() )
-		{
-			cerr << "Tried to get Value from empty RSAM (empty receiving list). "
-					<< "Exiting." << endl;
-			exit(1);
-		}
-
 		/* receiving list contains at least one entry */
 
-		// ERROR CASE: t smaller than timepoint in in first ListEntry
-		if ( t < rsam->radioIsReceiving.front().getTime() )
-		{
-			cerr << "Tried to get Value before (time) the beginning of RSAMs list. "
-					<< "Exiting." << endl;
-			exit(1);
-		}
-
 		// set an iterator to the first entry with timepoint > t
-		list<RadioStateAnalogueModel::ListEntry>::const_iterator it;
+		std::list<RadioStateAnalogueModel::ListEntry>::const_iterator it;
 		it = upper_bound(rsam->radioIsReceiving.begin(), rsam->radioIsReceiving.end(), t);
 
 		// REGULAR CASE: it points to an element that has a predecessor

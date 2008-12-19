@@ -8,9 +8,7 @@ class SNRThresholdDecider : public Decider
 {
 protected:
 
-	// TODO: think of how to test the protected helper functions
-	// (calculateSNRMapping(), etc.)
-
+	// defines what an AirFrameVector shall be here
 	typedef DeciderToPhyInterface::AirFrameVector AirFrameVector;
 
 	// threshold value for checking a SNR-map (SNR-threshold)
@@ -69,27 +67,40 @@ protected:
 	virtual bool checkIfAboveThreshold(Mapping* map, simtime_t start, simtime_t end);
 
 	/**
-	 * @brief Handles a Signal that is new to the Decider
+	 * @brief Handles a newly arrived AirFrame, i.e. check whether the receiving power
+	 * of the Signal is high enough and then focus on that AirFrame (receive it) or not.
 	 *
-	 * @return	Time-point when the AirFrame shall be handed over again.
+	 * @return	Time point when the AirFrame shall be handed over again.
+	 *
 	 */
 	virtual simtime_t handleNewSignal(AirFrame* frame);
 
 	/**
-	 * @brief Handles (processes) a Signal that has been listened to and that is now over.
+	 * @brief Processes a received AirFrame.
+	 *
+	 * The SNR-mapping for the Signal is created and checked against the Deciders
+	 * SNR-threshold. Depending on that the received AirFrame is either sent up
+	 * to the MAC-Layer or dropped.
 	 *
 	 * @return	usually return a value for: 'do not pass it again'
-	 *
 	 */
 	virtual simtime_t handleSignalOver(AirFrame* frame);
 
 
 	// --- Utility methods ---
+	/**
+	 * @brief Defines when this specific Decider considers the channel to be idle.
+	 *
+	 */
 	virtual bool currentlyIdle()
 	{
 		return (currentAirFrame == 0);
 	}
 
+	/**
+	 * @brief Convenience method for logging output-messages.
+	 *
+	 */
 	void log(std::string msg)
 	{
 		if ( myIndex == -1 )
@@ -102,6 +113,10 @@ protected:
 		}
 	}
 
+	/**
+	 * @brief Resets the currently handled ChannelSenseRequest.
+	 *
+	 */
 	virtual void resetChannelSenseRequest()
 	{
 		currentChannelSenseRequest.first = 0;

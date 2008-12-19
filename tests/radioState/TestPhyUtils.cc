@@ -41,7 +41,7 @@ void testRadioConstructor()
 	assertTrue("RadioState is correct", radio2.getCurrentState() == initialState);
 
 
-	cout << "Constructor Test passed." << std::endl;
+	std::cout << "Constructor Test passed." << std::endl;
 
 
 	return;
@@ -158,7 +158,7 @@ void testRadioFunctionality()
 
 
 
-	cout << "SetSwitchTime test passed." << std::endl;
+	std::cout << "SetSwitchTime test passed." << std::endl;
 
 
 	return;
@@ -277,7 +277,7 @@ private:
 	// TODO: test constructor with all possible arguments (attenuation, initTime)
 	void testRSAMConstructor()
 	{
-		cout << "---testRSAMConstructor" << std::endl;
+		std::cout << "---testRSAMConstructor" << std::endl;
 
 		DiagRSAM m = DiagRSAM(minAtt);
 		assertTrue("Default constructor sets tracking on.", m.getTrackingFlag());
@@ -301,7 +301,7 @@ private:
 
 	void testRSAMModification()
 	{
-		cout << "---testRSAMModification" << std::endl;
+		std::cout << "---testRSAMModification" << std::endl;
 
 
 		// empty map, tracking off
@@ -432,7 +432,7 @@ private:
 		temp.cleanUpUntil(time9); // (time3, minAtt) must become (time9, minAtt) , all before must be deleted
 		assertTrue("Lists are equal. (many entries)", temp.compareRecvLists(variableList));
 
-		cout << "END" << std::endl;
+		std::cout << "END" << std::endl;
 
 
 
@@ -470,7 +470,7 @@ private:
 		temp2.cleanUpUntil(time8); // list should be cleaned
 		assertTrue("Lists are equal. (one entry), cleanUp after entry", temp2.compareRecvLists(oneElemList));
 
-		cout << "END" << std::endl;
+		std::cout << "END" << std::endl;
 
 
 	}
@@ -479,7 +479,7 @@ private:
 	void testGetValue()
 	{
 
-		cout << "---testGetValue" << std::endl;
+		std::cout << "---testGetValue" << std::endl;
 
 		// TODO modified to RSAMMapping constructor call with signalStart and signalEnd, check
 		// create empty RSAM and mapping
@@ -498,8 +498,8 @@ private:
 		rsam.writeRecvEntry(time3, minAtt);
 		rsam.writeRecvEntry(time4, minAtt);
 
-		cout << "(initTime, minAtt)--(time1,minAtt)--(time2,maxAtt)--(time3,maxAtt)--(time3,minAtt)--(time4,minAtt)" << std::endl;
-		cout << "--------------------------------------------------------------------------------------------------" << endl;
+		std::cout << "(initTime, minAtt)--(time1,minAtt)--(time2,maxAtt)--(time3,maxAtt)--(time3,minAtt)--(time4,minAtt)" << std::endl;
+		std::cout << "--------------------------------------------------------------------------------------------------" << std::endl;
 		assertEqual("Entry at init time", mapping.getValue(Argument(initTime)), minAtt);
 		assertEqual("Entry in between two time-points", mapping.getValue(Argument(initTime + 0.5*(initTime+time1))), minAtt);
 		assertEqual("Entry at exactly a time-point (time1)", mapping.getValue(Argument(time1)), minAtt);
@@ -543,7 +543,7 @@ private:
 
 	void testRSAMConstMappingIterator()
 	{
-		cout << "---test RSAMConstMappingiterator" << endl;
+		std::cout << "---test RSAMConstMappingiterator" << endl;
 
 
 
@@ -752,22 +752,22 @@ private:
 protected:
 	void runTests() {
 		// Radio
-		cout << "------ Testing stuff for the Radio ------" << endl;
+		std::cout << "------ Testing stuff for the Radio ------" << std::endl;
 		testRadioConstructor();
 		testRadioFunctionality();
 
 		// RadioStateAnalogueModel
-		cout << "------ Testing stuff for the RadioStateAnalogueModel ------" << endl;
+		std::cout << "------ Testing stuff for the RadioStateAnalogueModel ------" << std::endl;
 		fillReferenceLists();
 		testRSAMConstructor();
 		testRSAMModification();
 
 		//TODO : RSAMMapping
-		cout << "------ Testing stuff for RSAMMapping ------" << endl;
+		std::cout << "------ Testing stuff for RSAMMapping ------" << std::endl;
 		testGetValue();
 
 		//TODO : RSAMConstMappingIterator
-		cout << "------ Testing stuff for RSAMConstMappingIterator ------" << endl;
+		std::cout << "------ Testing stuff for RSAMConstMappingIterator ------" << std::endl;
 		testRSAMConstMappingIterator();
 	}
 };
