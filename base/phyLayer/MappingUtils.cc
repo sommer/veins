@@ -227,7 +227,7 @@ double MappingUtils::findMax(ConstMapping& m) {
 
 		it->next();
 	}
-
+	delete it;
 	return res;
 }
 
@@ -248,7 +248,7 @@ double MappingUtils::findMax(ConstMapping& m, const Argument& min, const Argumen
 
 		it->next();
 	}
-
+	delete it;
 	return res;
 }
 
@@ -267,7 +267,7 @@ double MappingUtils::findMin(ConstMapping& m) {
 
 		it->next();
 	}
-
+	delete it;
 	return res;
 }
 
@@ -288,7 +288,7 @@ double MappingUtils::findMin(ConstMapping& m, const Argument& min, const Argumen
 
 		it->next();
 	}
-
+	delete it;
 	return res;
 }
 

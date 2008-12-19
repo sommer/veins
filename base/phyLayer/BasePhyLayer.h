@@ -20,7 +20,8 @@
 
 
 /**
- * The BasePhyLayer represents the physical layer of a nic.
+ * @brief The BasePhyLayer represents the physical layer of a nic.
+ *
  * The BasePhyLayer is directly connected to the mac layer via
  * OMNeT channels and is able to send messages to other physical
  * layers through sub-classing from ChannelAcces.
@@ -69,78 +70,70 @@ class BasePhyLayer: public ChannelAccess,
 
 protected:
 
-	/** Defines the strength of the thermal noise.*/
+	/** @brief Defines the strength of the thermal noise.*/
 	double thermalNoise;
 
-	/** The maximum transmission power a message can be send with */
+	/** @brief The maximum transmission power a message can be send with */
 	double maxTXPower;
 
-	/** The sensitivity describes the minimum strength a signal must have to be received.*/
+	/** @brief The sensitivity describes the minimum strength a signal must have to be received.*/
 	double sensitivity;
 
 	/**
-	 * Channel info keeps track of received AirFrames and provides information about
+	 * @brief Channel info keeps track of received AirFrames and provides information about
 	 * currently active AirFrames at the channel.
 	 */
 	ChannelInfo channelInfo;
 
-	/** The state machine storing the current radio state (TX, RX, SLEEP).*/
+	/** @brief The state machine storing the current radio state (TX, RX, SLEEP).*/
 	Radio* radio;
 
-	/** Pointer to the decider module. */
+	/** @brief Pointer to the decider module. */
 	Decider* decider;
 
-	/** AnalogueModelList is used to store the AnalogueModels to be used as filters.*/
+	/** @brief Used to store the AnalogueModels to be used as filters.*/
 	typedef std::vector<AnalogueModel*> AnalogueModelList;
 
-	/** A list of the analogue models to use.*/
+	/** @brief List of the analogue models to use.*/
 	AnalogueModelList analogueModels;
 
-	// this pointer is not directly needed by BasePhyLayer by now, might be added later
-	/** A special analogue model that represents the Radio's receiving ability
-	 *
-	 * The pointer is valid as long as the member radio exists since
-	 * rsam points to one of radios member
-	 */
-	// RadioStateAnalogueModel* rsam;
-
 	/**
-	 * ParameterMap is used at initialisation to pass the parameters
+	 * @brief Used at initialisation to pass the parameters
 	 * to the AnalogueModel and Decider
 	 */
 	typedef std::map<std::string, cMsgPar> ParameterMap;
 
 	/** @brief The id of the in-data gate from the Mac layer */
 	int upperGateIn;
-	/** The id of the out-data gate to the Mac layer */
+	/** @brief The id of the out-data gate to the Mac layer */
 	int upperGateOut;
-	/** The id of the out-control gate to the Mac layer */
+	/** @brief The id of the out-control gate to the Mac layer */
 	int upperControlOut;
-	/** The id of the in-control gate from the Mac layer */
+	/** @brief The id of the in-control gate from the Mac layer */
 	int upperControlIn;
 
 	/**
-	 * Self message scheduled to the point in time when the
+	 * @brief Self message scheduled to the point in time when the
 	 * switching process of the radio is over.
 	 */
 	cMessage* radioSwitchingOverTimer;
 
 	/**
-	 * Self message scheduled to the point in time when the
+	 * @brief Self message scheduled to the point in time when the
 	 * transmission of an AirFrame is over.
 	 */
 	cMessage* txOverTimer;
 
 	enum AirFrameStates {
-		/** Start of actual receiving process of the AirFrame. */
+		/** @brief Start of actual receiving process of the AirFrame. */
 		START_RECEIVE = 1,
-		/** AirFrame is being received. */
+		/** @brief AirFrame is being received. */
 		RECEIVING,
-		/** Receiving process over */
+		/** @brief Receiving process over */
 		END_RECEIVE
 	};
 
-	/* Pointer to the World Utility, to obtain some global information*/
+	/* @brief Pointer to the World Utility, to obtain some global information*/
 	BaseWorldUtility* world;
 
 public:
@@ -149,7 +142,8 @@ public:
 private:
 
 	/**
-	 * Reads and returns the parameter with the passed named.
+	 * @brief Reads and returns the parameter with the passed name.
+	 *
 	 * If the parameter couldn't be found the value of defaultValue
 	 * is returned.
 	 *
@@ -160,19 +154,19 @@ private:
 	template<class T> T readPar(const char* parName, const T defaultValue);
 
 	/**
-	 * Utility function. Reads the parameters of a XML element
+	 * @brief Utility function. Reads the parameters of a XML element
 	 * and stores them in the passed ParameterMap reference.
 	 */
 	void getParametersFromXML(cXMLElement* xmlData, ParameterMap& outputMap);
 
 	/**
-	 * Initializes the AnalogueModels with the data from the
+	 * @brief Initializes the AnalogueModels with the data from the
 	 * passed XML-config data.
 	 */
 	void initializeAnalogueModels(cXMLElement* xmlConfig);
 
 	/**
-	 * Initializes the Decider with the data from the
+	 * @brief Initializes the Decider with the data from the
 	 * passed XML-config data.
 	 */
 	void initializeDecider(cXMLElement* xmlConfig);
@@ -186,7 +180,7 @@ private:
 protected:
 
 	/**
-	 * OMNeT++ initialization function.
+	 * @brief OMNeT++ initialization function.
 	 * Read simple parameters.
 	 * Read and parse xml file for decider and analogue models
 	 * configuration.
@@ -194,7 +188,8 @@ protected:
 	virtual void initialize(int stage);
 
 	/**
-	 * OMNeT++ handle message function.
+	 * @brief OMNeT++ handle message function.
+	 *
 	 * Classify and forward message to subroutines.
 	 * - AirFrames from channel
 	 * - self scheduled AirFrames
@@ -205,8 +200,10 @@ protected:
 	virtual void handleMessage(cMessage* msg);
 
 	/**
-	 * Returns an instance of the AnalogueModel with the
-	 * specified name. The returned AnalogueModel has to be
+	 * @brief Creates and returns an instance of the AnalogueModel with the
+	 * specified name.
+	 *
+	 * The returned AnalogueModel has to be
 	 * generated with the "new" command. The BasePhyLayer
 	 * keeps the ownership of the returned AnalogueModel.
 	 *
@@ -220,8 +217,10 @@ protected:
 	virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
 
 	/**
-	 * Returns an instance of the Decider with the specified
-	 * name. The returned Decider has to be generated with
+	 * @brief Creates and returns an instance of the Decider with the specified
+	 * name.
+	 *
+	 * The returned Decider has to be generated with
 	 * the "new" command. The BasePhyLayer keeps the ownership
 	 * of the returned Decider.
 	 *
@@ -236,84 +235,84 @@ protected:
 
 	//TODO: Check which handlers should be made virtual
 	/**
-	 * Handles messages received from the channel (probably AirFrames).
+	 * @brief Handles messages received from the channel (probably AirFrames).
 	 */
 	void handleAirFrame(cMessage* msg);
 
 	/**
-	 * Handles messages received from the upper layer through the
+	 * @brief Handles messages received from the upper layer through the
 	 * data gate.
 	 */
 	void handleUpperMessage(cMessage* msg);
 
 	/**
-	 * Handles messages received from the upper layer through the
+	 * @brief Handles messages received from the upper layer through the
 	 * control gate.
 	 */
 	void handleUpperControlMessage(cMessage* msg);
 
 	/**
-	 * Handles self scheduled messages.
+	 * @brief Handles self scheduled messages.
 	 */
 	void handleSelfMessage(cMessage* msg);
 
 	/**
-	 * Handles reception of a ChannelSenseRequest by forwarding it
+	 * @brief Handles reception of a ChannelSenseRequest by forwarding it
 	 * to the decider and scheduling it to the point in time
 	 * returned by the decider.
 	 */
 	void handleChannelSenseRequest(cMessage* msg);
 
 	/**
-	 * Handles incoming AirFrames with the state FIRST_RECEIVE.
+	 * @brief Handles incoming AirFrames with the state FIRST_RECEIVE.
 	 */
 	void handleAirFrameFirstReceive(AirFrame* msg);
 
 	/**
-	 * Handles incoming AirFrames with the state START_RECEIVE.
+	 * @brief Handles incoming AirFrames with the state START_RECEIVE.
 	 */
 	void handleAirFrameStartReceive(AirFrame* msg);
 
 	/**
-	 * Handles incoming AirFrames with the state RECEIVING.
+	 * @brief Handles incoming AirFrames with the state RECEIVING.
 	 */
 	void handleAirFrameReceiving(AirFrame* msg);
 
 	/**
-	 * Handles incoming AirFrames with the state END_RECEIVE.
+	 * @brief Handles incoming AirFrames with the state END_RECEIVE.
 	 */
 	void handleAirFrameEndReceive(AirFrame* msg);
 
 	//--Send messages------------------------------
 
 	/**
-	 * Sends the passed control message to the upper layer.
+	 * @brief Sends the passed control message to the upper layer.
 	 */
 	void sendControlMessageUp(cMessage* msg);
 
 	/**
-	 * Sends the passed MacPkt to the upper layer.
+	 * @brief Sends the passed MacPkt to the upper layer.
 	 */
 	void sendMacPktUp(cMessage* pkt);
 
 	/**
-	 * Sends the passed AirFrame to the channel
+	 * @brief Sends the passed AirFrame to the channel
 	 */
 	void sendMessageDown(AirFrame* pkt);
 
 	/**
-	 * Schedule self message to passed point in time.
+	 * @brief Schedule self message to passed point in time.
 	 */
 	void sendSelfMessage(cMessage* msg, simtime_t time);
 
 	/**
-	 * This function encapsulates messages from the upper layer into an
+	 * @brief This function encapsulates messages from the upper layer into an
 	 * AirFrame and sets all necessary attributes.
 	 */
 	AirFrame *encapsMsg(cPacket *msg);
 
 	/**
-	 * Filters the passed Signal to every registered AnalogueModel.
+	 * @brief Filters the passed Signal by every registered AnalogueModel.
 	 */
 	void filterSignal(Signal& s);
 
@@ -335,24 +334,27 @@ public:
 	//---------MacToPhyInterface implementation-----------
 
 	/**
-	 * Returns the current state the radio is in. See RadioState
-	 * for possible values.
+	 * @brief Returns the current state the radio is in.
+	 *
+	 * See RadioState for possible values.
 	 *
 	 * This method is mainly used by the mac layer.
 	 */
 	virtual int getRadioState();
 
 	/**
-	 * Tells the BasePhyLayer to switch to the specified
-	 * radio state. The switching process can take some time
-	 * depending on the specified switching times in the
-	 * ned file.
+	 * @brief Tells the BasePhyLayer to switch to the specified
+	 * radio state.
+	 *
+	 * The switching process can take some time depending on the
+	 * specified switching times in the ned file.
 	 */
 	virtual simtime_t setRadioState(int rs);
 
 	/**
-	 * Returns the current state of the channel. See ChannelState
-	 * for details.
+	 * @brief Returns the current state of the channel.
+	 *
+	 * See ChannelState for details.
 	 */
 	virtual ChannelState getChannelState();
 
@@ -384,7 +386,6 @@ public:
 
 	/**
 	 * @brief Returns the current simulation time
-	 *
 	 */
 	virtual simtime_t getSimTime();
 
