@@ -3,7 +3,7 @@
 ./basePhyLayer -c Test1 > out.tmp
 ./basePhyLayer -c Test2 >> out.tmp
 
-diff -I '^Assigned runID=' -w exp-output out.tmp
+diff -I '^Assigned runID=' -I '^Loading NED files from' -w exp-output out.tmp
 
 rm -f out.tmp
 
@@ -12,7 +12,7 @@ rm -f out.tmp
 
 ./basePhyLayer -c TestBaseDecider1 > out.tmp
 
-diff -I '^Assigned runID=' -w exp-output_tBD out.tmp
+diff -I '^Assigned runID=' -I '^Loading NED files from' -w exp-output_tBD out.tmp
 
 rm -f out.tmp
 
