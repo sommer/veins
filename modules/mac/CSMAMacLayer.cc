@@ -262,8 +262,8 @@ void CSMAMacLayer::scheduleBackoff()
         EV << " schedule backoff " << endl;
         txAttempts++;
         EV << " attempts so far: " << txAttempts  << " " << endl;
-        double time = intrand(initialCW - txAttempts)*slotDuration
-					  + 2.0*dblrand()*slotDuration;
+        double slots = intrand(initialCW - txAttempts) + 2.0*dblrand();
+        double time = std::max(slots, 1.0) * slotDuration;
 
 		if(minorMsg->isScheduled()){
 			cancelEvent( minorMsg );
