@@ -91,13 +91,13 @@ Mapping* MappingUtils::createMapping(const DimensionSet& domain,
 	if(domain.size() == 1){
 		switch(intpl){
 		case Mapping::LINEAR:
-			return new TimeMapping<Linear>();
+			return new TimeMapping<Linear>(intpl);
 			break;
 		case Mapping::NEAREST:
-			return new TimeMapping<Nearest>();
+			return new TimeMapping<Nearest>(intpl);
 			break;
 		case Mapping::STEPS:
-			return new TimeMapping<NextSmaller>();
+			return new TimeMapping<NextSmaller>(intpl);
 			break;
 		}
 		return 0;
@@ -125,13 +125,13 @@ Mapping* MappingUtils::createMapping(double outOfRangeVal,
 	if(domain.size() == 1){
 		switch(intpl){
 		case Mapping::LINEAR:
-			return new TimeMapping<Linear>(outOfRangeVal);
+			return new TimeMapping<Linear>(outOfRangeVal, intpl);
 			break;
 		case Mapping::NEAREST:
-			return new TimeMapping<Nearest>(outOfRangeVal);
+			return new TimeMapping<Nearest>(outOfRangeVal, intpl);
 			break;
 		case Mapping::STEPS:
-			return new TimeMapping<NextSmaller>(outOfRangeVal);
+			return new TimeMapping<NextSmaller>(outOfRangeVal, intpl);
 			break;
 		}
 		return 0;

@@ -99,16 +99,28 @@ protected:
 
 	/** @brief Stores the next position a call of "next()" would jump to.*/
 	Argument nextPosition;
+
+	bool isStepMapping;
+
+	bool atPreStep;
+protected:
+	void updateNextPos(){
+		simtime_t t = valueIt.getNextPosition();
+		if(isStepMapping && !atPreStep){
+			t.setRaw(t.raw() - 1);
+		}
+		nextPosition.setTime(t);
+	}
 public:
 
 	/**
 	 * @brief Initializes the Iterator to use the passed InterpolateableMapIterator.
 	 */
-	TimeMappingIterator(IteratorType it):
-		valueIt(it) {
+	TimeMappingIterator(IteratorType it, bool isStepMapping):
+		valueIt(it), isStepMapping(isStepMapping), atPreStep(false) {
 
 		position.setTime(valueIt.getPosition());
-		nextPosition.setTime(valueIt.getNextPosition());
+		updateNextPos();
 	}
 
 	/**
@@ -119,6 +131,7 @@ public:
 	 * This method has logarithmic complexity.
 	 */
 	void jumpTo(const Argument& pos) {
+		atPreStep = false;
 		valueIt.jumpTo(pos.getTime());
 		position.setTime(pos.getTime());
 		nextPosition.setTime(valueIt.getNextPosition());
@@ -136,6 +149,7 @@ public:
 	 * nearly constant.
 	 */
 	void iterateTo(const Argument& pos) {
+		atPreStep = false;
 		valueIt.iterateTo(pos.getTime());
 		position.setTime(pos.getTime());
 		nextPosition.setTime(valueIt.getNextPosition());
@@ -150,9 +164,15 @@ public:
 	 * This method has constant complexity.
 	 */
 	virtual void next() {
-		valueIt.next();
+		if(isStepMapping && !atPreStep){
+			valueIt.iterateTo(nextPosition.getTime());
+			atPreStep = true;
+		} else {
+			valueIt.next();
+			atPreStep = false;
+		}
 		position.setTime(valueIt.getPosition());
-		nextPosition.setTime(valueIt.getNextPosition());
+		updateNextPos();
 	}
 
 	/**
@@ -249,19 +269,29 @@ protected:
 
 	/** @brief Stores the key-entries defining the function.*/
 	ValueMap entries;
+
+	/**
+	 * @brief Stores if this mapping represents a step function.
+	 *
+	 * Assures that the steps are considered when iterating the mapping
+	 * by adding a second key-entry as short as possible before every
+	 * key entry set by the user. The additional key-entry defines the
+	 * value the mapping has just before the key entry the user added.
+	 */
+	bool isStepMapping;
 public:
 
 	/**
 	 * @brief Initializes the Mapping with the passed Interpolation method.
 	 */
 	TimeMapping(InterpolationMethod intpl = LINEAR):
-		Mapping(), entries() {}
+		Mapping(), entries(), isStepMapping(intpl == STEPS) {}
 
 	/**
 	 * @brief Initializes the Mapping with the passed Interpolation method.
 	 */
 	TimeMapping(double outOfRangeVal, InterpolationMethod intpl = LINEAR):
-		Mapping(), entries(outOfRangeVal) {}
+		Mapping(), entries(outOfRangeVal), isStepMapping(intpl == STEPS) {}
 
 	/**
 	 * @brief returns a deep copy of this mapping instance.
@@ -296,7 +326,7 @@ public:
 	 * pointer if it isn't used anymore.
 	 */
 	virtual MappingIterator* createIterator() {
-		return new TimeMappingIterator<Interpolator>(entries.beginIntpl());
+		return new TimeMappingIterator<Interpolator>(entries.beginIntpl(), isStepMapping);
 	}
 
 	/**
@@ -307,7 +337,7 @@ public:
 	 * pointer if it isn't used anymore.
 	 */
 	virtual MappingIterator* createIterator(const Argument& pos) {
-		return new TimeMappingIterator<Interpolator>(entries.findIntpl(pos.getTime()));
+		return new TimeMappingIterator<Interpolator>(entries.findIntpl(pos.getTime()), isStepMapping);
 	}
 };
 
@@ -1203,7 +1233,6 @@ protected:
 
 	friend class MultiDimMappingIterator<Interpolator>;
 
-
 	bool isMaster;
 
 protected:
@@ -1486,10 +1515,12 @@ public:
 
 
 
+
 /**
- * @brief MappingIterator implementation for FilledUpMappings. Assures that
- * although FilledUpMapping is an Mapping instance the "setValue()"-method
- * may never be called.
+ * @brief MappingIterator implementation for FilledUpMappings.
+ *
+ * Assures that although FilledUpMapping is an Mapping instance the
+ * "setValue()"-method may never be called.
  *
  * @see FilledUpMapping
  */

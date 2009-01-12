@@ -30,12 +30,17 @@ void assertClose(std::string msg, Argument target, Argument actual){
 	}
 }
 
+void checkIteratorRange(std::string msg, ConstMappingIterator& it,
+					   bool hasNext, bool inRange, Argument arg){
+	assertEqual(msg + ": hasNext() at " + toString(arg), hasNext, it.hasNext());
+	assertEqual(msg + ": inRange() at " + toString(arg), inRange, it.inRange());
+}
+
 void checkIterator(std::string msg, ConstMappingIterator& it,
 					   bool hasNext, bool inRange,
 					   Argument arg, Argument nextArg,
 					   double val){
-	assertEqual(msg + ": hasNext() at " + toString(arg), hasNext, it.hasNext());
-	assertEqual(msg + ": inRange() at " + toString(arg), inRange, it.inRange());
+	checkIteratorRange(msg, it, hasNext, inRange, arg);
 	assertClose(msg + ": currentPos() at " + toString(arg), arg, it.getPosition());
 	if(hasNext){
 		try{
@@ -56,12 +61,37 @@ void checkIterator(std::string msg, ConstMappingIterator& it,
 	assertClose(msg + ": Equal with function at " + toString(arg), f.getValue(it.getPosition()), it.getValue());
 }
 
+void checkIteratorHard(std::string msg, ConstMappingIterator& it,
+					   bool hasNext, bool inRange,
+					   Argument arg, Argument nextArg,
+					   double val, ConstMapping& f){
+	checkIteratorRange(msg, it, hasNext, inRange, arg);
+	assertEqual(msg + ": currentPos() at " + toString(arg), arg, it.getPosition());
+	if(hasNext){
+		try{
+			assertEqual(msg + ": nextPos() at " + toString(arg), nextArg, it.getNextPosition());
+		}catch(NoNextIteratorException e){
+			assertFalse("HasNext should be false on NoNextException.", hasNext);
+		}
+	}
+	assertClose(msg + ": getValue() at " + toString(arg), val, it.getValue());
+	assertClose(msg + ": Equal with function at " + toString(arg), f.getValue(it.getPosition()), it.getValue());
+}
+
 void checkNext(std::string msg, ConstMappingIterator& it,
 			   bool hasNext, bool inRange,
 			   Argument arg, Argument nextArg,
 			   double val, ConstMapping& f) {
 	it.next();
 	checkIterator(msg, it, hasNext, inRange, arg, nextArg, val, f);
+}
+
+void checkNextHard(std::string msg, ConstMappingIterator& it,
+			   bool hasNext, bool inRange,
+			   Argument arg, Argument nextArg,
+			   double val, ConstMapping& f) {
+	it.next();
+	checkIteratorHard(msg, it, hasNext, inRange, arg, nextArg, val, f);
 }
 
 void assertMappingItEqual(std::string msg, ConstMappingIterator* target, ConstMappingIterator* actual){
@@ -119,6 +149,11 @@ protected:
 			time(Dimension::time), d2(d2), d3(d3), set2(time, d2), set3(time, d2, d3) {}
 
 		Argument operator()(simtime_t t){
+			return Argument(t);
+		}
+
+		Argument operator[](simtime_t t){
+			t.setRaw(t.raw() - 1);
 			return Argument(t);
 		}
 
@@ -835,16 +870,28 @@ protected:
 
 	}
 
+
 	void testSteps() {
 		Mapping* t1 = MappingUtils::createMapping(DimensionSet(Dimension::time), Mapping::STEPS);
 
 		assertEqual("Interpolation method STEPS - empty time A.", 0, t1->getValue(A(0)));
+
+		ConstMappingIterator* it = t1->createConstIterator();
+		checkIteratorHard("Interpolation method STEPS - empty time A - Iterator", *it, false, false, A(0), A(0), 0, *t1);
+		delete it;
 
 		t1->setValue(A(1), 2.0);
 
 		assertEqual("Interpolation method STEPS - single before time A.", 2.0, t1->getValue(A(0)));
 		assertEqual("Interpolation method STEPS - single at time A.", 2.0, t1->getValue(A(1)));
 		assertEqual("Interpolation method STEPS - single after time A.", 2.0, t1->getValue(A(2)));
+
+		it = t1->createConstIterator(A(0));
+		checkIteratorHard("Interpolation method STEPS - single before time A - Iterator", *it, true, false, A(0), A[1], 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - single at pretime A - Iterator", *it, true, false, A[1], A(1), 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - single at time A - Iterator", *it, false, true, A(1), A[2], 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - single after time A - Iterator", *it, false, false, A[2], A(2), 2.0, *t1);
+		delete it;
 
 		t1->setValue(A(2), 3.0);
 
@@ -854,17 +901,37 @@ protected:
 		assertEqual("Interpolation method STEPS - 2 at end time A.", 3.0, t1->getValue(A(2)));
 		assertEqual("Interpolation method STEPS - 2 after time A.", 3.0, t1->getValue(A(2.5)));
 
+		it = t1->createConstIterator(A(0));
+		checkIteratorHard("Interpolation method STEPS - 2 before time A - Iterator.", *it, true, false, A(0), A[1], 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 at prebegin time A - Iterator.", *it, true, false, A[1], A(1), 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 at begin time A - Iterator.", *it, true, true, A(1), A[2], 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 at preend time A - Iterator.", *it, true, true, A[2], A(2), 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 at end time A - Iterator.", *it, false, true, A(2), A[3], 3.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 after end time A - Iterator.", *it, false, false, A[3], A(3), 3.0, *t1);
+		delete it;
+
 		delete t1;
 
 		t1 = MappingUtils::createMapping(1.0, DimensionSet(Dimension::time), Mapping::STEPS);
 
 		assertEqual("Interpolation method STEPS - empty time B.", 1.0, t1->getValue(A(0)));
 
+		it = t1->createConstIterator();
+		checkIteratorHard("Interpolation method STEPS - empty time B - Iterator", *it, false, false, A(0), A(0), 1.0, *t1);
+		delete it;
+
 		t1->setValue(A(1), 2.0);
 
 		assertEqual("Interpolation method STEPS - single before time B.", 1.0, t1->getValue(A(0)));
 		assertEqual("Interpolation method STEPS - single at time B.", 2.0, t1->getValue(A(1)));
 		assertEqual("Interpolation method STEPS - single after time B.", 2.0, t1->getValue(A(2)));
+
+		it = t1->createConstIterator(A(0));
+		checkIteratorHard("Interpolation method STEPS - single before time B - Iterator", *it, true, false, A(0), A[1], 1.0, *t1);
+		checkNextHard("Interpolation method STEPS - single at pretime B - Iterator", *it, true, false, A[1], A(1), 1.0, *t1);
+		checkNextHard("Interpolation method STEPS - single at time B - Iterator", *it, false, true, A(1), A[2], 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - single after time B - Iterator", *it, false, false, A[2], A(2), 2.0, *t1);
+		delete it;
 
 		t1->setValue(A(2), 3.0);
 
@@ -873,6 +940,15 @@ protected:
 		assertEqual("Interpolation method STEPS - 2 between time B.", 2.0, t1->getValue(A(1.9)));
 		assertEqual("Interpolation method STEPS - 2 at end time B.", 3.0, t1->getValue(A(2)));
 		assertEqual("Interpolation method STEPS - 2 after time B.", 3.0, t1->getValue(A(2.5)));
+
+		it = t1->createConstIterator(A(0));
+		checkIteratorHard("Interpolation method STEPS - 2 before time B - Iterator.", *it, true, false, A(0), A[1], 1.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 at prebegin time B - Iterator.", *it, true, false, A[1], A(1), 1.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 at begin time B - Iterator.", *it, true, true, A(1), A[2], 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 at preend time B - Iterator.", *it, true, true, A[2], A(2), 2.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 at end time B - Iterator.", *it, false, true, A(2), A[3], 3.0, *t1);
+		checkNextHard("Interpolation method STEPS - 2 after end time B - Iterator.", *it, false, false, A[3], A(3), 3.0, *t1);
+		delete it;
 
 		delete t1;
 

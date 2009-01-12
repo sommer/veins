@@ -24,8 +24,6 @@
 
 Define_Module(BaseLocalization);
 
-#define EV_clear ev
-
 void BaseLocalization::initialize(int stage)
 {
 	BaseLayer::initialize(stage);

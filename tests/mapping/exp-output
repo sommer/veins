@@ -2,13 +2,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
 Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
+Loading NED files from /home/karl/job/omnetpp-ws/MiXiM/base: 20
+Loading NED files from /home/karl/job/omnetpp-ws/MiXiM/modules: 21
+Loading NED files from /home/karl/job/omnetpp-ws/MiXiM/tests: 26
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20081217-16:17:21-16435
+Assigned runID=General-0-20090112-14:41:09-334
 Setting up network `OmnetTest'...
 setupNetwork finished, cParImpl objects in use: 0
 Initializing...
@@ -1142,23 +1142,145 @@ Passed: Not attenuated part.2,2
 Passed: Not attenuated part.2,2.5
 --------MultiDimMapping tests done.-----------------------------------------------
 Passed: Interpolation method STEPS - empty time A.
+Passed: Interpolation method STEPS - empty time A - Iterator: hasNext() at (0)
+Passed: Interpolation method STEPS - empty time A - Iterator: inRange() at (0)
+Passed: Interpolation method STEPS - empty time A - Iterator: currentPos() at (0)
+Passed: Interpolation method STEPS - empty time A - Iterator: getValue() at (0)
+Passed: Interpolation method STEPS - empty time A - Iterator: Equal with function at (0)
 Passed: Interpolation method STEPS - single before time A.
 Passed: Interpolation method STEPS - single at time A.
 Passed: Interpolation method STEPS - single after time A.
+Passed: Interpolation method STEPS - single before time A - Iterator: hasNext() at (0)
+Passed: Interpolation method STEPS - single before time A - Iterator: inRange() at (0)
+Passed: Interpolation method STEPS - single before time A - Iterator: currentPos() at (0)
+Passed: Interpolation method STEPS - single before time A - Iterator: nextPos() at (0)
+Passed: Interpolation method STEPS - single before time A - Iterator: getValue() at (0)
+Passed: Interpolation method STEPS - single before time A - Iterator: Equal with function at (0)
+Passed: Interpolation method STEPS - single at pretime A - Iterator: hasNext() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime A - Iterator: inRange() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime A - Iterator: currentPos() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime A - Iterator: nextPos() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime A - Iterator: getValue() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime A - Iterator: Equal with function at (0.999999999999)
+Passed: Interpolation method STEPS - single at time A - Iterator: hasNext() at (1)
+Passed: Interpolation method STEPS - single at time A - Iterator: inRange() at (1)
+Passed: Interpolation method STEPS - single at time A - Iterator: currentPos() at (1)
+Passed: Interpolation method STEPS - single at time A - Iterator: getValue() at (1)
+Passed: Interpolation method STEPS - single at time A - Iterator: Equal with function at (1)
+Passed: Interpolation method STEPS - single after time A - Iterator: hasNext() at (1.999999999999)
+Passed: Interpolation method STEPS - single after time A - Iterator: inRange() at (1.999999999999)
+Passed: Interpolation method STEPS - single after time A - Iterator: currentPos() at (1.999999999999)
+Passed: Interpolation method STEPS - single after time A - Iterator: getValue() at (1.999999999999)
+Passed: Interpolation method STEPS - single after time A - Iterator: Equal with function at (1.999999999999)
 Passed: Interpolation method STEPS - 2 before time A.
 Passed: Interpolation method STEPS - 2 at begin time A.
 Passed: Interpolation method STEPS - 2 between time A.
 Passed: Interpolation method STEPS - 2 at end time A.
 Passed: Interpolation method STEPS - 2 after time A.
+Passed: Interpolation method STEPS - 2 before time A - Iterator.: hasNext() at (0)
+Passed: Interpolation method STEPS - 2 before time A - Iterator.: inRange() at (0)
+Passed: Interpolation method STEPS - 2 before time A - Iterator.: currentPos() at (0)
+Passed: Interpolation method STEPS - 2 before time A - Iterator.: nextPos() at (0)
+Passed: Interpolation method STEPS - 2 before time A - Iterator.: getValue() at (0)
+Passed: Interpolation method STEPS - 2 before time A - Iterator.: Equal with function at (0)
+Passed: Interpolation method STEPS - 2 at prebegin time A - Iterator.: hasNext() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time A - Iterator.: inRange() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time A - Iterator.: currentPos() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time A - Iterator.: nextPos() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time A - Iterator.: getValue() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time A - Iterator.: Equal with function at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at begin time A - Iterator.: hasNext() at (1)
+Passed: Interpolation method STEPS - 2 at begin time A - Iterator.: inRange() at (1)
+Passed: Interpolation method STEPS - 2 at begin time A - Iterator.: currentPos() at (1)
+Passed: Interpolation method STEPS - 2 at begin time A - Iterator.: nextPos() at (1)
+Passed: Interpolation method STEPS - 2 at begin time A - Iterator.: getValue() at (1)
+Passed: Interpolation method STEPS - 2 at begin time A - Iterator.: Equal with function at (1)
+Passed: Interpolation method STEPS - 2 at preend time A - Iterator.: hasNext() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time A - Iterator.: inRange() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time A - Iterator.: currentPos() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time A - Iterator.: nextPos() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time A - Iterator.: getValue() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time A - Iterator.: Equal with function at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at end time A - Iterator.: hasNext() at (2)
+Passed: Interpolation method STEPS - 2 at end time A - Iterator.: inRange() at (2)
+Passed: Interpolation method STEPS - 2 at end time A - Iterator.: currentPos() at (2)
+Passed: Interpolation method STEPS - 2 at end time A - Iterator.: getValue() at (2)
+Passed: Interpolation method STEPS - 2 at end time A - Iterator.: Equal with function at (2)
+Passed: Interpolation method STEPS - 2 after end time A - Iterator.: hasNext() at (2.999999999999)
+Passed: Interpolation method STEPS - 2 after end time A - Iterator.: inRange() at (2.999999999999)
+Passed: Interpolation method STEPS - 2 after end time A - Iterator.: currentPos() at (2.999999999999)
+Passed: Interpolation method STEPS - 2 after end time A - Iterator.: getValue() at (2.999999999999)
+Passed: Interpolation method STEPS - 2 after end time A - Iterator.: Equal with function at (2.999999999999)
 Passed: Interpolation method STEPS - empty time B.
+Passed: Interpolation method STEPS - empty time B - Iterator: hasNext() at (0)
+Passed: Interpolation method STEPS - empty time B - Iterator: inRange() at (0)
+Passed: Interpolation method STEPS - empty time B - Iterator: currentPos() at (0)
+Passed: Interpolation method STEPS - empty time B - Iterator: getValue() at (0)
+Passed: Interpolation method STEPS - empty time B - Iterator: Equal with function at (0)
 Passed: Interpolation method STEPS - single before time B.
 Passed: Interpolation method STEPS - single at time B.
 Passed: Interpolation method STEPS - single after time B.
+Passed: Interpolation method STEPS - single before time B - Iterator: hasNext() at (0)
+Passed: Interpolation method STEPS - single before time B - Iterator: inRange() at (0)
+Passed: Interpolation method STEPS - single before time B - Iterator: currentPos() at (0)
+Passed: Interpolation method STEPS - single before time B - Iterator: nextPos() at (0)
+Passed: Interpolation method STEPS - single before time B - Iterator: getValue() at (0)
+Passed: Interpolation method STEPS - single before time B - Iterator: Equal with function at (0)
+Passed: Interpolation method STEPS - single at pretime B - Iterator: hasNext() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime B - Iterator: inRange() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime B - Iterator: currentPos() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime B - Iterator: nextPos() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime B - Iterator: getValue() at (0.999999999999)
+Passed: Interpolation method STEPS - single at pretime B - Iterator: Equal with function at (0.999999999999)
+Passed: Interpolation method STEPS - single at time B - Iterator: hasNext() at (1)
+Passed: Interpolation method STEPS - single at time B - Iterator: inRange() at (1)
+Passed: Interpolation method STEPS - single at time B - Iterator: currentPos() at (1)
+Passed: Interpolation method STEPS - single at time B - Iterator: getValue() at (1)
+Passed: Interpolation method STEPS - single at time B - Iterator: Equal with function at (1)
+Passed: Interpolation method STEPS - single after time B - Iterator: hasNext() at (1.999999999999)
+Passed: Interpolation method STEPS - single after time B - Iterator: inRange() at (1.999999999999)
+Passed: Interpolation method STEPS - single after time B - Iterator: currentPos() at (1.999999999999)
+Passed: Interpolation method STEPS - single after time B - Iterator: getValue() at (1.999999999999)
+Passed: Interpolation method STEPS - single after time B - Iterator: Equal with function at (1.999999999999)
 Passed: Interpolation method STEPS - 2 before time B.
 Passed: Interpolation method STEPS - 2 at begin time B.
 Passed: Interpolation method STEPS - 2 between time B.
 Passed: Interpolation method STEPS - 2 at end time B.
 Passed: Interpolation method STEPS - 2 after time B.
+Passed: Interpolation method STEPS - 2 before time B - Iterator.: hasNext() at (0)
+Passed: Interpolation method STEPS - 2 before time B - Iterator.: inRange() at (0)
+Passed: Interpolation method STEPS - 2 before time B - Iterator.: currentPos() at (0)
+Passed: Interpolation method STEPS - 2 before time B - Iterator.: nextPos() at (0)
+Passed: Interpolation method STEPS - 2 before time B - Iterator.: getValue() at (0)
+Passed: Interpolation method STEPS - 2 before time B - Iterator.: Equal with function at (0)
+Passed: Interpolation method STEPS - 2 at prebegin time B - Iterator.: hasNext() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time B - Iterator.: inRange() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time B - Iterator.: currentPos() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time B - Iterator.: nextPos() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time B - Iterator.: getValue() at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at prebegin time B - Iterator.: Equal with function at (0.999999999999)
+Passed: Interpolation method STEPS - 2 at begin time B - Iterator.: hasNext() at (1)
+Passed: Interpolation method STEPS - 2 at begin time B - Iterator.: inRange() at (1)
+Passed: Interpolation method STEPS - 2 at begin time B - Iterator.: currentPos() at (1)
+Passed: Interpolation method STEPS - 2 at begin time B - Iterator.: nextPos() at (1)
+Passed: Interpolation method STEPS - 2 at begin time B - Iterator.: getValue() at (1)
+Passed: Interpolation method STEPS - 2 at begin time B - Iterator.: Equal with function at (1)
+Passed: Interpolation method STEPS - 2 at preend time B - Iterator.: hasNext() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time B - Iterator.: inRange() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time B - Iterator.: currentPos() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time B - Iterator.: nextPos() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time B - Iterator.: getValue() at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at preend time B - Iterator.: Equal with function at (1.999999999999)
+Passed: Interpolation method STEPS - 2 at end time B - Iterator.: hasNext() at (2)
+Passed: Interpolation method STEPS - 2 at end time B - Iterator.: inRange() at (2)
+Passed: Interpolation method STEPS - 2 at end time B - Iterator.: currentPos() at (2)
+Passed: Interpolation method STEPS - 2 at end time B - Iterator.: getValue() at (2)
+Passed: Interpolation method STEPS - 2 at end time B - Iterator.: Equal with function at (2)
+Passed: Interpolation method STEPS - 2 after end time B - Iterator.: hasNext() at (2.999999999999)
+Passed: Interpolation method STEPS - 2 after end time B - Iterator.: inRange() at (2.999999999999)
+Passed: Interpolation method STEPS - 2 after end time B - Iterator.: currentPos() at (2.999999999999)
+Passed: Interpolation method STEPS - 2 after end time B - Iterator.: getValue() at (2.999999999999)
+Passed: Interpolation method STEPS - 2 after end time B - Iterator.: Equal with function at (2.999999999999)
 Passed: Interpolation method STEPS - empty time-freq A.
 Passed: Interpolation method STEPS - single before time at freq A.
 Passed: Interpolation method STEPS - single at time at freq A.
