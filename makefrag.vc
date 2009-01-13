@@ -27,9 +27,27 @@ configurator_dir:
 
 distclean: clean
 	-@cd configurator && $(MAKE) distclean
+	@deltree out
 	@deltree doc/api
 	@deltree doc/neddoc
 	@del doc/miximtags.xml
+	@del base/Makefile
+	@del modules/Makefile
+	@del examples/analogueModels/Makefile
+	@del examples/Makefile
+	@del examples/CSMAMac/Makefile
+	@del examples/phyLayer/Makefile
+	@del tests/connectionManager/Makefile
+	@del tests/Makefile
+	@del tests/basePhyLayer/Makefile
+	@del tests/blackboard/Makefile
+	@del tests/coord/Makefile
+	@del tests/baseMobility/Makefile
+	@del tests/radioState/Makefile
+	@del tests/channelInfo/Makefile
+	@del tests/testUtils/Makefile
+	@del tests/mapping/Makefile
+	@del Makefile
 
 # add dependencies:
 modules_dir: base_dir

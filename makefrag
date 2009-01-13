@@ -19,14 +19,31 @@ help:
 	@echo "*******************************************************************"
 
 # make all
-all: base modules examples tests configurator
+all: base_dir modules_dir examples_dir tests_dir
 
 distclean: clean
 	@cd configurator &&  $(MAKE) distclean
+	@rm -rf out
 	@rm -rf doc/api
 	@rm -rf doc/neddoc
 	@rm -f doc/miximtags.xml
-	@rm -rf out
+	@rm -f base/Makefile
+	@rm -f modules/Makefile
+	@rm -f examples/analogueModels/Makefile
+	@rm -f examples/Makefile
+	@rm -f examples/CSMAMac/Makefile
+	@rm -f examples/phyLayer/Makefile
+	@rm -f tests/connectionManager/Makefile
+	@rm -f tests/Makefile
+	@rm -f tests/basePhyLayer/Makefile
+	@rm -f tests/blackboard/Makefile
+	@rm -f tests/coord/Makefile
+	@rm -f tests/baseMobility/Makefile
+	@rm -f tests/radioState/Makefile
+	@rm -f tests/channelInfo/Makefile
+	@rm -f tests/testUtils/Makefile
+	@rm -f tests/mapping/Makefile
+	@rm -f Makefile
 
 # add dependencies:
 modules_dir: base_dir
