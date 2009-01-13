@@ -26,6 +26,7 @@ distclean: clean
 	@rm -rf doc/api
 	@rm -rf doc/neddoc
 	@rm -f doc/miximtags.xml
+	@rm -rf out
 
 # add dependencies:
 modules_dir: base_dir
