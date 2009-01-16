@@ -2069,12 +2069,15 @@ protected:
 
 		delete ts11;
 		delete ts12;
+		delete ts13;
 		delete ts21;
 		delete ts22;
 		delete tfs11;
 		delete tfs12;
 		delete tfs21;
 		delete tfs22;
+		delete tfsD1;
+		delete tfsD2;
 
 		testMappingOperator("Multiply", std::multiplies<double>());
 	}
@@ -2149,6 +2152,10 @@ protected:
 
 		assertEqual("Out of range added prev multi.",0.1, res->getValue(A(0.5, 0.5)));
 		assertEqual("Out of range added after multi.",0.1, res->getValue(A(1.5, 0.5)));
+
+		delete res;
+		delete f1;
+		delete f2;
 	}
 
 	/**

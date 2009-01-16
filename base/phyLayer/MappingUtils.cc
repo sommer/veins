@@ -44,8 +44,10 @@ ConstMapping* MappingUtils::createCompatibleMapping(ConstMapping& src, ConstMapp
 
 	ConstMappingIterator* dstIt = dst.createConstIterator();
 
-	if(!dstIt->inRange())
+	if(!dstIt->inRange()){
+		delete dstIt;
 		return &src;
+	}
 
 	do{
 		for (KeyMap::iterator keyDimIt = keys.begin();
@@ -59,6 +61,8 @@ ConstMapping* MappingUtils::createCompatibleMapping(ConstMapping& src, ConstMapp
 
 		dstIt->next();
 	}while(true);
+
+	delete dstIt;
 
 	setMappingBuffer(new FilledUpMapping(&src, dstDims, &keys));
 	return mappingBuffer;

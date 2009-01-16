@@ -777,6 +777,11 @@ public:
 	ConstMappingIteratorWrapper(ConstMappingIterator* it):
 		iterator(it) {}
 
+	virtual ~ConstMappingIteratorWrapper() {
+		if(iterator)
+			delete iterator;
+	}
+
 	virtual void setValue(double value) { assert(false); }
 
 	virtual const Argument& getNextPosition() const { return iterator->getNextPosition(); }
@@ -1605,6 +1610,8 @@ public:
 			}
 		}
 
+		delete it;
+
 		keys = 0;
 	}
 
@@ -1760,8 +1767,11 @@ public:
 		ConstMappingIterator* itF1 = f1.createConstIterator();
 		ConstMappingIterator* itF2 = f2Comp->createConstIterator();
 
-		if(!itF1->inRange() && !itF2->inRange())
+		if(!itF1->inRange() && !itF2->inRange()){
+			delete itF1;
+			delete itF2;
 			return result;
+		}
 
 		MappingIterator* itRes = 0;
 

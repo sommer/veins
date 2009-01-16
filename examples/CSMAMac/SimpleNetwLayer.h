@@ -159,9 +159,12 @@ protected:
 		assert(routingTable.size() > 0);
 		int target = intrand(routingTable.size());
 
+
 		RoutingTable::const_iterator it = routingTable.begin();
 		for(int i = 0; i < target; ++i)
 			++it;
+
+		ev << "Jabbering - Routingtablesize:" << routingTable.size() << "  target:" << target << "  dest:" << it->first << endl;
 
 		NetwPkt* jabber = new NetwPkt("jabber", JABBER);
 
