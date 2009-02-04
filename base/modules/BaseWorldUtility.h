@@ -64,7 +64,17 @@ public:
 
     /** @brief Returns an Id for an AirFrame, at the moment simply an incremented long-value */
     // TODO: return a really unique Id, handle overflow of range if needed
-    long getUniqueAirFrameId() { return airFrameId++; }
+    long getUniqueAirFrameId(){
+
+    	// if counter has done one complete cycle and will be set to a value it already had
+    	if (airFrameId == -1){
+    		// print a warning
+    		ev << "WARNING: AirFrameId-Counter has done one complete cycle."
+    		<< " AirFrameIds are repeating now and may not be unique anymore." << endl;
+    	}
+
+    	return airFrameId++;
+    }
  };
 
 #endif
