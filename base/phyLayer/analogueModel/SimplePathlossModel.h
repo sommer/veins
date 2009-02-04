@@ -34,9 +34,9 @@ public:
 	 */
 	SimplePathlossConstMapping(const DimensionSet& dimensions,
 						const Argument& start,
-						const double _attValue) :
+						const double attValue) :
 		SimpleConstMapping(dimensions, start),
-		attValue(_attValue)
+		attValue(attValue)
 	{
 
 	}
@@ -50,7 +50,7 @@ public:
 		/* In a more complex PathlossMapping we could use the value of the passed
 		 * Argument in the frequency dimension to calculate the attenuation
 		 * for the actual frequency correctly. But at this Mapping we assume
-		 * the frequncy of every signal the same.*/
+		 * the frequency of every signal the same.*/
 		return attValue;
 	}
 
@@ -97,10 +97,10 @@ protected:
 
 public:
 	/**
-	 * @brief Initializes the analogue model. _myMove and _playgroundSize
+	 * @brief Initializes the analogue model. myMove and playgroundSize
 	 * need to be valid as long as this instance exists.
 	 *
-	 * The constructor needs some specific knowlegde in order to create
+	 * The constructor needs some specific knowledge in order to create
 	 * its mapping properly:
 	 *
 	 * 1. the coefficient alpha (specified e.g. in config.xml and passed
@@ -110,14 +110,14 @@ public:
 	 * 4. information about the playground the host is moving in
 	 *
 	 */
-	SimplePathlossModel(double alpha, double _carrierFrequency, const Move* _myMove,
-					bool _useTorus, const Coord& _playgroundSize, bool debug):
+	SimplePathlossModel(double alpha, double carrierFrequency, const Move* myMove,
+					bool useTorus, const Coord& playgroundSize, bool debug):
 		dimensions(Dimension::time),
 		pathLossAlphaHalf(alpha * 0.5),
-		carrierFrequency(_carrierFrequency),
-		myMove(*_myMove),
-		useTorus(_useTorus),
-		playgroundSize(_playgroundSize),
+		carrierFrequency(carrierFrequency),
+		myMove(*myMove),
+		useTorus(useTorus),
+		playgroundSize(playgroundSize),
 		debug(debug)
 	{
 

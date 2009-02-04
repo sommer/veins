@@ -198,13 +198,13 @@ class DiagRSAM : public RadioStateAnalogueModel
 
 public:
 
-	DiagRSAM(double _initValue) : RadioStateAnalogueModel(_initValue) {}
+	DiagRSAM(double initValue) : RadioStateAnalogueModel(initValue) {}
 
-	DiagRSAM(double _initValue, bool _currentlyTracking)
-		: RadioStateAnalogueModel(_initValue, _currentlyTracking) {}
+	DiagRSAM(double initValue, bool currentlyTracking)
+		: RadioStateAnalogueModel(initValue, currentlyTracking) {}
 
-	DiagRSAM(double _initValue, bool _currentlyTracking, simtime_t _initTime)
-			: RadioStateAnalogueModel(_initValue, _currentlyTracking, _initTime) {}
+	DiagRSAM(double initValue, bool currentlyTracking, simtime_t initTime)
+			: RadioStateAnalogueModel(initValue, currentlyTracking, initTime) {}
 
 	bool getTrackingFlag() { return currentlyTracking; }
 

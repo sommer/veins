@@ -86,12 +86,12 @@ public:
     }
 
     /** Initializes 3D coordinate.*/
-    Coord(double _x, double _y, double _z)
-        : x(_x), y(_y), z(_z) , use2DFlag(false) {}
+    Coord(double x, double y, double z)
+        : x(x), y(y), z(z) , use2DFlag(false) {}
 
     /** Initializes 2D coordinate.*/
-    Coord(double _x, double _y)
-        : x(_x), y(_y), z(UNDEFINED) , use2DFlag(true) {}
+    Coord(double x, double y)
+        : x(x), y(y), z(UNDEFINED) , use2DFlag(true) {}
 
 
     /** Initializes coordinate from other coordinate.*/
@@ -124,7 +124,7 @@ public:
     }
 
     /**
-     * Subtracts two coordinate vectors. Does not check for 
+     * Subtracts two coordinate vectors. Does not check for
      * dimension compatibility!
      */
     friend Coord operator-(const Coord& a, const Coord& b) {
@@ -368,8 +368,8 @@ public:
      * than another coordinate vector.
      */
     friend bool operator>(const Coord& a, const Coord& b) {
-	return (a.x > b.x && 
-		a.y > b.y && 
+	return (a.x > b.x &&
+		a.y > b.y &&
 		(a.is3D() ? a.z > b.z : true));
     }
 
@@ -378,8 +378,8 @@ public:
      * than another coordinate vector.
      */
     friend bool operator<(const Coord& a, const Coord& b) {
-	return (a.x < b.x && 
-		a.y < b.y && 
+	return (a.x < b.x &&
+		a.y < b.y &&
 		(a.is3D() ? a.z < b.z : true));
     }
 };

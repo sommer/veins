@@ -105,9 +105,9 @@ public:
 	 * Default setting is: tracking on
 	 */
 	RadioStateAnalogueModel(double initValue,
-							bool _currentlyTracking = true,
+							bool currentlyTracking = true,
 							simtime_t initTime = 0)
-		: currentlyTracking(_currentlyTracking)
+		: currentlyTracking(currentlyTracking)
 	{
 		// put the initial Timestamp to the list
 		radioIsReceiving.push_back(ListEntry(initTime, initValue));
@@ -291,9 +291,9 @@ public:
 	/**
 	 * @brief Default constructor for instances of class Radio
 	 */
-	Radio(int _state = RX, double _minAtt = 1.0, double _maxAtt = 0.0)
-		: state(_state), nextState(_state), numRadioStates(NUM_RADIO_STATES),
-		minAtt(_minAtt), maxAtt(_maxAtt), rsam(mapStateToAtt(state))
+	Radio(int initialState = RX, double minAtt = 1.0, double maxAtt = 0.0)
+		: state(initialState), nextState(initialState), numRadioStates(NUM_RADIO_STATES),
+		minAtt(minAtt), maxAtt(maxAtt), rsam(mapStateToAtt(initialState))
 	{
 		// allocate memory for one dimension
 		swTimes = new simtime_t* [numRadioStates];
@@ -505,14 +505,14 @@ protected:
 
 public:
 
-	RSAMConstMappingIterator(const RadioStateAnalogueModel* _rsam,
-								simtime_t _signalStart,
-								simtime_t _signalEnd) :
-		rsam(_rsam),
-		signalStart(_signalStart),
-		signalEnd(_signalEnd)
+	RSAMConstMappingIterator(const RadioStateAnalogueModel* rsam,
+								simtime_t signalStart,
+								simtime_t signalEnd) :
+		rsam(rsam),
+		signalStart(signalStart),
+		signalEnd(signalEnd)
 	{
-		assert(_rsam);
+		assert(rsam);
 
 		assert( !(signalStart < rsam->radioIsReceiving.front().getTime()) );
 
@@ -752,15 +752,15 @@ public:
 	 * @brief Constructor taking a pointer to the corresponding RSAM
 	 *
 	 */
-	RSAMMapping(const RadioStateAnalogueModel* _rsam,
-				simtime_t _signalStart,
-				simtime_t _signalEnd) :
+	RSAMMapping(const RadioStateAnalogueModel* rsam,
+				simtime_t signalStart,
+				simtime_t signalEnd) :
 		ConstMapping(),
-		rsam(_rsam),
-		signalStart(_signalStart),
-		signalEnd(_signalEnd)
+		rsam(rsam),
+		signalStart(signalStart),
+		signalEnd(signalEnd)
 	{
-		assert(_rsam);
+		assert(rsam);
 		assert( !(signalStart < rsam->radioIsReceiving.front().getTime()) );
 	}
 
