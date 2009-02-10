@@ -20,8 +20,11 @@ protected:
 	// pointer to the currently received AirFrame
 	AirFrame* currentAirFrame;
 
+	/** @brief Pair of a ChannelSenseRequest and the simtime it started. */
+	typedef std::pair<ChannelSenseRequest*, simtime_t> CSRInfo;
+
 	// pointer to the currently running ChannelSenseRequest and its start-time
-	std::pair<ChannelSenseRequest*, simtime_t> currentChannelSenseRequest;
+	CSRInfo currentChannelSenseRequest;
 
 	// simtime that tells the Phy-Layer not to pass an AirFrame again
 	const simtime_t notAgain;
@@ -32,6 +35,9 @@ protected:
 
 	// toggles display of debugging messages
 	bool debug;
+
+
+protected:
 
 	/**
 	 * @brief Calculates a SNR-Mapping for a Signal.
@@ -85,6 +91,31 @@ protected:
 	 * @return	usually return a value for: 'do not pass it again'
 	 */
 	virtual simtime_t handleSignalOver(AirFrame* frame);
+
+	/**
+	 * @brief handles a new incoming ChannelSenseRequest and returns the next
+	 * (or latest) time to handle the request again.
+	 */
+	virtual simtime_t handleNewSenseRequest(ChannelSenseRequest* request);
+
+	/**
+	 * @brief Handles the timeout of a ChannelSenseRequest by calculating the
+	 * ChannelState and returning the request to the mac layer.
+	 */
+	virtual void handleSenseRequestTimeout(CSRInfo& requestInfo);
+
+	/**
+	 * @brief Returns true if the ChannelSenseRequest of the passed CSRInfo can be answered
+	 * (e.g. because channel state changed or timeout is reached).
+	 */
+	virtual bool canAnswerCSR(const CSRInfo& requestInfo);
+
+	/**
+	 * @brief Answers the ChannelSenseRequest (CSR) from the passed CSRInfo by calculating
+	 * the rssi value and the channel idle state and sending the CSR together with the result
+	 * back to the mac layer.
+	 */
+	virtual void answerCSR(const CSRInfo& requestInfo);
 
 
 	// --- Utility methods ---

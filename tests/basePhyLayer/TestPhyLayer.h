@@ -325,7 +325,7 @@ public:
 	 * the corresponding DeciderResult up to MACLayer
 	 *
 	 */
-	virtual void sendUp(AirFrame* packet, DeciderResult result);
+	virtual void sendUp(AirFrame* packet, DeciderResult* result);
 
 	/**
 	 * @brief Returns the current simulation time or a special test-time

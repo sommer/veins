@@ -918,7 +918,7 @@ void BasePhyLayer::sendControlMsg(cMessage* msg) {
  * calls this function to send the packet together with
  * the corresponding DeciderResult up to the MACLayer
  */
-void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult result) {
+void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult* result) {
 
 	coreEV << "Decapsulating MacPacket from Airframe with ID " << frame->getId() << " and sending it up to MAC." << endl;
 
@@ -939,4 +939,21 @@ void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult result) {
 simtime_t BasePhyLayer::getSimTime() {
 
 	return simTime();
+}
+
+/**
+ * @brief Tells the PhyLayer to cancel a scheduled message (AirFrame or
+ * ControlMessage).
+ *
+ * Used by the Decider if it has to handle an AirFrame or an control message
+ * earlier than it has returned to the PhyLayer the last time the Decider
+ * handled that message.
+ */
+void BasePhyLayer::cancelScheduledMessage(cMessage* msg) {
+	if(msg->isScheduled()){
+		cancelScheduledMessage(msg);
+	} else {
+		EV << "Warning: Decider wanted to cancel a scheduled message but message"
+		   << " wasn't actually scheduled. Message is: " << msg << endl;
+	}
 }

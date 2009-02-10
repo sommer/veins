@@ -382,12 +382,22 @@ public:
 	 * the corresponding DeciderResult up to MACLayer
 	 *
 	 */
-	virtual void sendUp(AirFrame* packet, DeciderResult result);
+	virtual void sendUp(AirFrame* packet, DeciderResult* result);
 
 	/**
 	 * @brief Returns the current simulation time
 	 */
 	virtual simtime_t getSimTime();
+
+	/**
+	 * @brief Tells the PhyLayer to cancel a scheduled message (AirFrame or
+	 * ControlMessage).
+	 *
+	 * Used by the Decider if it has to handle an AirFrame or an control message
+	 * earlier than it has returned to the PhyLayer the last time the Decider
+	 * handled that message.
+	 */
+	virtual void cancelScheduledMessage(cMessage* msg);
 
 };
 

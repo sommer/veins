@@ -222,6 +222,14 @@ simtime_t SNRThresholdDecider::handleNewSignal(AirFrame* frame)
 
 	// Signal is strong enough, receive this Signal and schedule it
 	currentAirFrame = frame;
+
+	//check if there is an ChannelSenseRequest we can answer now
+	if(canAnswerCSR(currentChannelSenseRequest)){
+		phy->cancelScheduledMessage(currentChannelSenseRequest.first);
+		answerCSR(currentChannelSenseRequest);
+		resetChannelSenseRequest();
+	}
+
 	debugEV << "Signal is strong enough (" << recvPower << " < " << sensitivity << ") -> Trying to receive AirFrame." << endl;
 	return ( signal.getSignalStart() + signal.getSignalLength() );
 }
@@ -257,7 +265,7 @@ simtime_t SNRThresholdDecider::handleSignalOver(AirFrame* frame)
 	{
 		debugEV << "SNR is above threshold("<<snrThreshold<<") -> sending up." << endl;
 		// go on with processing this AirFrame, send it to the Mac-Layer
-		phy->sendUp(frame, DeciderResult(true));
+		phy->sendUp(frame, new DeciderResult(true));
 	} else
 	{
 		debugEV << "SNR is below threshold("<<snrThreshold<<") -> dropped." << endl;
@@ -269,6 +277,14 @@ simtime_t SNRThresholdDecider::handleSignalOver(AirFrame* frame)
 
 	// we have processed this AirFrame and we prepare to receive the next one
 	currentAirFrame = 0;
+
+	//check if there is an ChannelSenseRequest we can answer now
+	if(canAnswerCSR(currentChannelSenseRequest)){
+		phy->cancelScheduledMessage(currentChannelSenseRequest.first);
+		answerCSR(currentChannelSenseRequest);
+		resetChannelSenseRequest();
+	}
+
 	return notAgain;
 }
 
@@ -293,6 +309,32 @@ ChannelState SNRThresholdDecider::getChannelState()
 	return ChannelState(currentlyIdle(), rssiValue);
 }
 
+simtime_t SNRThresholdDecider::handleNewSenseRequest(ChannelSenseRequest* request)
+{
+	// no request handled at the moment, handling the new one
+	simtime_t now = phy->getSimTime();
+
+	// saving the pointer to the request and its start-time (now)
+	currentChannelSenseRequest.first = request;
+	currentChannelSenseRequest.second = now;
+
+	if(canAnswerCSR(currentChannelSenseRequest))
+	{
+		answerCSR(currentChannelSenseRequest);
+		resetChannelSenseRequest();
+		return notAgain;
+	}
+
+	return ( now + request->getSenseTimeout() );
+}
+
+void SNRThresholdDecider::handleSenseRequestTimeout(CSRInfo& requestInfo) {
+	answerCSR(requestInfo);
+
+	// reset currently handled request
+	resetChannelSenseRequest();
+}
+
 /**
  * @brief This function is called by the PhyLayer to hand over a
  * ChannelSenseRequest.
@@ -311,43 +353,11 @@ simtime_t SNRThresholdDecider::handleChannelSenseRequest(ChannelSenseRequest* re
 
 	if (currentChannelSenseRequest.first == 0)
 	{
-		// no request handled at the moment, handling the new one
-		simtime_t now = phy->getSimTime();
-
-		// saving the pointer to the request and its start-time (now)
-		currentChannelSenseRequest.first = request;
-		currentChannelSenseRequest.second = now;
-
-		return ( now + request->getSenseDuration() );
-
+		return handleNewSenseRequest(request);
 	}
 	else if (currentChannelSenseRequest.first == request)
 	{
-		// we are handling this exactly this request at the moment,
-		// so sensing-interval should be over now
-		simtime_t start = currentChannelSenseRequest.second;
-		simtime_t end = start + request->getSenseDuration();
-
-		Mapping* rssiMap = calculateRSSIMapping(start, end);
-
-
-		// the sensed RSSI-value is the maximum value between (and including) the interval-borders
-		double rssiValue = MappingUtils::findMax(*rssiMap, Argument(start), Argument(end));
-
-		//"findMax()" returns "-DBL_MAX" on empty mappings
-		if (rssiValue < 0)
-			rssiValue = 0;
-
-		delete rssiMap;
-		rssiMap = 0;
-
-		// put the sensing-result to the request and
-		// send it to the Mac-Layer as Control-message (via Interface)
-		request->setResult( ChannelState(currentlyIdle(), rssiValue) );
-		phy->sendControlMsg(request);
-
-		// reset currently handled request
-		resetChannelSenseRequest();
+		handleSenseRequestTimeout(currentChannelSenseRequest);
 
 		// say that we don't want to have it again
 		return notAgain;
@@ -360,12 +370,49 @@ simtime_t SNRThresholdDecider::handleChannelSenseRequest(ChannelSenseRequest* re
 	log("WARNING: ChannelSenseRequest arrived while already handling another one!");
 
 	// then handle the new request
-	simtime_t now = phy->getSimTime();
-
-	// saving the pointer to the request and its start-time (now)
-	currentChannelSenseRequest.first = request;
-	currentChannelSenseRequest.second = now;
-
-	return ( now + request->getSenseDuration() );
+	return handleNewSenseRequest(request);
 }
 
+bool SNRThresholdDecider::canAnswerCSR(const CSRInfo& requestInfo)
+{
+	if(requestInfo.first == 0)
+		return false;
+
+	bool modeFulfilled = false;
+
+	switch(requestInfo.first->getSenseMode())
+	{
+	case UNTIL_IDLE:
+		modeFulfilled = currentlyIdle();
+		break;
+	case UNTIL_BUSY:
+		modeFulfilled = !currentlyIdle();
+		break;
+	}
+
+	return modeFulfilled 									//CSR mode is fulfilled
+		   || (phy->getSimTime() ==   requestInfo.second 	//or timeout is reached
+								    + requestInfo.first->getSenseTimeout());
+}
+
+void SNRThresholdDecider::answerCSR(const CSRInfo& requestInfo) {
+	simtime_t start = requestInfo.second;
+	simtime_t end = phy->getSimTime();
+
+	Mapping* rssiMap = calculateRSSIMapping(start, end);
+
+	// the sensed RSSI-value is the maximum value between (and including) the interval-borders
+	double rssiValue = MappingUtils::findMax(*rssiMap, Argument(start), Argument(end));
+
+	//"findMax()" returns "-DBL_MAX" on empty mappings
+	if (rssiValue < 0)
+		rssiValue = 0;
+
+	delete rssiMap;
+	rssiMap = 0;
+
+	// put the sensing-result to the request and
+	// send it to the Mac-Layer as Control-message (via Interface)
+	requestInfo.first->setResult( ChannelState(currentlyIdle(), rssiValue) );
+	phy->sendControlMsg(requestInfo.first);
+}

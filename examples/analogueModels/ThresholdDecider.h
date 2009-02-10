@@ -140,7 +140,7 @@ protected:
 			log("...signal is to weak -> discard.");
 		} else {
 			log("...strong enough -> forwarding it to Mac layer.");
-			phy->sendUp(frame, DeciderResult(true));
+			phy->sendUp(frame, new DeciderResult(true));
 		}
 
 		currentSignals.erase(it);

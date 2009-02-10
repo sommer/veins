@@ -238,7 +238,8 @@ void TestMacLayer::testSwitchRadio(int stage) {
 void TestMacLayer::testChannelSense() {
 	ChannelSenseRequest* req = new ChannelSenseRequest();
 	req->setKind(MacToPhyInterface::CHANNEL_SENSE_REQUEST);
-	req->setSenseDuration(0.5f);
+	req->setSenseTimeout(0.5f);
+	req->setSenseMode(UNTIL_TIMEOUT);
 	send(req, controlOut);
 	assertMessage(	"ChannelSense at phy layer.",
 					MacToPhyInterface::CHANNEL_SENSE_REQUEST,

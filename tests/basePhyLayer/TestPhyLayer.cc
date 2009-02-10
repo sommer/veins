@@ -865,7 +865,7 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 
 				// test whether Decider asks for the duration-interval of the ChannelSense
 				assertEqual( "Start of the interval which Decider requested is correct.",
-							getSimTime() - testChannelSense->getSenseDuration(),
+							getSimTime() - testChannelSense->getSenseTimeout(),
 							from);
 
 				assertEqual( "End of the interval which Decider requested is correct.",
@@ -925,7 +925,7 @@ void TestPhyLayer::sendControlMsg(cMessage* msg)
 /**
  * SPECIAL TESTING IMPLEMENTATION: PLEASE REFER TO HEADER-FILE!
  */
-void TestPhyLayer::sendUp(AirFrame* packet, DeciderResult result)
+void TestPhyLayer::sendUp(AirFrame* packet, DeciderResult* result)
 {
 
 	// if we are not testing the SNRThresholdDecider
@@ -1370,7 +1370,8 @@ void TestPhyLayer::doBaseDeciderTests()
 			testTime = before;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseDuration(0.2);
+			testChannelSense->setSenseTimeout(0.2);
+			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1392,7 +1393,8 @@ void TestPhyLayer::doBaseDeciderTests()
 			testTime = t1;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseDuration(0.2);
+			testChannelSense->setSenseTimeout(0.2);
+			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1413,7 +1415,8 @@ void TestPhyLayer::doBaseDeciderTests()
 			testTime = t2;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseDuration(1.0);
+			testChannelSense->setSenseTimeout(1.0);
+			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1435,7 +1438,8 @@ void TestPhyLayer::doBaseDeciderTests()
 			testTime = t2;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseDuration(2.0);
+			testChannelSense->setSenseTimeout(2.0);
+			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1457,7 +1461,8 @@ void TestPhyLayer::doBaseDeciderTests()
 			testTime = t7;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseDuration(1.0);
+			testChannelSense->setSenseTimeout(1.0);
+			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1478,7 +1483,8 @@ void TestPhyLayer::doBaseDeciderTests()
 			testTime = t2;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseDuration(2.0);
+			testChannelSense->setSenseTimeout(2.0);
+			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
