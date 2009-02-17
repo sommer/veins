@@ -441,6 +441,7 @@ void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& 
 void SimpleConstMapping::initializeArguments(const Argument& min,
 						 const Argument& max,
 						 const Argument& interval) {
+	keyEntries.clear();
 	DimensionSet::const_iterator dimIt = dimensions.end();
 	--dimIt;
 	Argument pos = min;

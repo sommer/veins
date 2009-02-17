@@ -4,7 +4,7 @@ moduleinterface BaseApplLayer
 {
     parameters:
         bool debug; // debug switch
-        double headerLength; // length of the application message header (in bits)
+        int headerLength; // length of the application message header (in bits)
     gates:
         input lowerGateIn; // from network layer
         output lowerGateOut; // to network layer

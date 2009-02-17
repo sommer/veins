@@ -1,6 +1,8 @@
-package org.mixim.base.phyLayer;
+package org.mixim.modules.phy;
 
-simple BasePhyLayer
+import org.mixim.base.phyLayer.BasePhyLayer;
+
+simple PhyLayer
 {
     parameters:
         bool coreDebug;
@@ -33,6 +35,4 @@ simple BasePhyLayer
         output upperControlOut; 	// control to the MAC layer
 
         input radioIn; // for sendDirect from other physical layers
-
 }
-

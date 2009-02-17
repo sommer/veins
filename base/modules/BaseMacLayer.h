@@ -64,6 +64,8 @@ public:
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
 
+protected:
+
     /**
      * @brief Handle messages comming from the network layer
      *
@@ -91,7 +93,7 @@ public:
 	error("BaseMacLayer does not handle control messages from upper layers");
     };
 
-protected:
+
     /** @brief decapsulate the network message from the MacPkt */
     virtual cPacket* decapsMsg(MacPkt*);
 

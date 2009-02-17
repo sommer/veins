@@ -40,7 +40,7 @@
  * for ARPs.
  *
  * @ingroup netwLayer
- * @author Daniel Willkomm 
+ * @author Daniel Willkomm
  **/
 class BaseArp : public BaseModule
 {
@@ -59,9 +59,15 @@ public:
 
     /** @brief returns a L2 address to a given L3 address*/
     int getMacAddr(const int netwAddr);
-    
+
     /** @brief returns a L3 address to a given L2 address*/
     int getNetwAddr(const int macAddr);
+
+    /** @brief Returns the L2 address for the passed mac*/
+    int myMacAddr(cModule* mac);
+
+    /** @brief Returns the L3 address for the passed net*/
+    int myNetwAddr(cModule* netw);
 };
 
 class  BaseArpAccess : public ModuleAccess<BaseArp>

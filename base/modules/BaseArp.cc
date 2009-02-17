@@ -37,7 +37,7 @@ int BaseArp::getMacAddr(const int netwAddr)
         Enter_Method_Silent();
     }
     coreEV << "for host[" << simulation.getModule( netwAddr )->getParentModule()->getIndex()
-       << "]: netwAddr " << netwAddr << "; MAC address " 
+       << "]: netwAddr " << netwAddr << "; MAC address "
        << simulation.getModule( netwAddr )->getParentModule()->getSubmodule( "nic" )->getId() <<endl;
     return simulation.getModule(netwAddr)->getParentModule()->getSubmodule("nic")->getId();
 }
@@ -50,7 +50,16 @@ int BaseArp::getNetwAddr(const int macAddr)
         Enter_Method_Silent();
     }
     coreEV << "for host[" << simulation.getModule( macAddr )->getParentModule()->getIndex()
-       << "]: macAddr " << macAddr << "; netw address " 
+       << "]: macAddr " << macAddr << "; netw address "
        << simulation.getModule( macAddr )->getParentModule()->getSubmodule("nic")->getId() <<endl;
     return simulation.getModule(macAddr)->getParentModule()->getSubmodule("netw")->getId();
+}
+
+int BaseArp::myNetwAddr(cModule* netw) {
+    return netw->getId();
+}
+
+int BaseArp::myMacAddr(cModule *mac)
+{
+    return (mac->getParentModule())->getId();
 }

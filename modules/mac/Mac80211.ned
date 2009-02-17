@@ -20,6 +20,8 @@
 
 package org.mixim.modules.mac;
 
+import org.mixim.base.modules.BaseMacLayer;
+
 //
 // Implementation of the 802.11b MAC protocol. This module is intended
 // to be used in combination with the Decider80211 as decider for the 
@@ -33,6 +35,8 @@ simple Mac80211
 {
     parameters:
         bool coreDebug; // debug switch
+        double headerLength; // length of the MAC packet header (in bits)
+        
         int queueLength;
         int rtsCtsThreshold;
 
@@ -50,14 +54,16 @@ simple Mac80211
     	int neighborhoodCacheSize;	
     	// consider information in cache outdate if older than 
     	double neighborhoodCacheMaxAge; 
-    	//the power to transmit packets with
+    	//the power to transmit packets with [mW]
     	double txPower;
 	
     gates:
-        input upperGateIn;
-        output upperGateOut;
-        input lowerGateIn;
-        output lowerGateOut;
-		output upperControlOut; // for control messages to upper layer
-		input lowerControlIn;   // for control messages from phy layer
+        input upperGateIn; // from net layer
+        output upperGateOut; // to net layer
+        input upperControlIn; // control from net layer
+        output upperControlOut; // control to net layer
+        input lowerGateIn; // from phy
+        output lowerGateOut; // to phy
+        input lowerControlIn; // control from phy
+        output lowerControlOut; // control to phy
 }

@@ -2,13 +2,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
 Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20081217-16:16:07-16387
+Assigned runID=Test1-0-20090212-14:56:37-7571
 Setting up network `tbpSim'...
 setupNetwork finished, cParImpl objects in use: 87
 Initializing...
@@ -70,7 +70,11 @@ Passed: Check value of parameter "anotherLong".
 Passed: Check parameter "usePropagationDelay".
 Passed: Check parameter "sensitivity".
 Passed: Check parameter "maxTXPower".
+Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
 Passed: Check parameter "thermalNoise".
+Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
+Passed: Check value of ("getThermalNoise()"-mapping).
+Passed: Check value of ("getThermalNoise()"-mapping at a position).
 Passed: Check upperGateIn ID.
 Passed: Check upperGateOut ID.
 Passed: Check upperControlIn ID.
@@ -141,7 +145,7 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4.5s
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20081217-16:16:07-16387
+Assigned runID=Test1-1-20090212-14:56:37-7571
 Setting up network `tbpSim'...
 setupNetwork finished, cParImpl objects in use: 88
 Initializing...
@@ -203,7 +207,11 @@ Passed: Check value of parameter "anotherLong".
 Passed: Check parameter "usePropagationDelay".
 Passed: Check parameter "sensitivity".
 Passed: Check parameter "maxTXPower".
+Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
 Passed: Check parameter "thermalNoise".
+Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
+Passed: Check value of ("getThermalNoise()"-mapping).
+Passed: Check value of ("getThermalNoise()"-mapping at a position).
 Passed: Check upperGateIn ID.
 Passed: Check upperGateOut ID.
 Passed: Check upperControlIn ID.
@@ -248,13 +256,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
 Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20081217-16:16:07-16388
+Assigned runID=Test2-0-20090212-14:56:37-7572
 Setting up network `tbpSim'...
 setupNetwork finished, cParImpl objects in use: 87
 Initializing...
@@ -340,7 +348,11 @@ Passed: Check value of parameter "anotherLong".
 Passed: Check parameter "usePropagationDelay".
 Passed: Check parameter "sensitivity".
 Passed: Check parameter "maxTXPower".
+Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
 Passed: Check parameter "thermalNoise".
+Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
+Passed: Check value of ("getThermalNoise()"-mapping).
+Passed: Check value of ("getThermalNoise()"-mapping at a position).
 Passed: Check upperGateIn ID.
 Passed: Check upperGateOut ID.
 Passed: Check upperControlIn ID.
@@ -407,7 +419,11 @@ Passed: Check value of parameter "anotherLong".
 Passed: Check parameter "usePropagationDelay".
 Passed: Check parameter "sensitivity".
 Passed: Check parameter "maxTXPower".
+Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
 Passed: Check parameter "thermalNoise".
+Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
+Passed: Check value of ("getThermalNoise()"-mapping).
+Passed: Check value of ("getThermalNoise()"-mapping at a position).
 Passed: Check upperGateIn ID.
 Passed: Check upperGateOut ID.
 Passed: Check upperControlIn ID.
@@ -474,7 +490,11 @@ Passed: Check value of parameter "anotherLong".
 Passed: Check parameter "usePropagationDelay".
 Passed: Check parameter "sensitivity".
 Passed: Check parameter "maxTXPower".
+Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
 Passed: Check parameter "thermalNoise".
+Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
+Passed: Check value of ("getThermalNoise()"-mapping).
+Passed: Check value of ("getThermalNoise()"-mapping at a position).
 Passed: Check upperGateIn ID.
 Passed: Check upperGateOut ID.
 Passed: Check upperControlIn ID.
@@ -541,7 +561,11 @@ Passed: Check value of parameter "anotherLong".
 Passed: Check parameter "usePropagationDelay".
 Passed: Check parameter "sensitivity".
 Passed: Check parameter "maxTXPower".
+Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
 Passed: Check parameter "thermalNoise".
+Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
+Passed: Check value of ("getThermalNoise()"-mapping).
+Passed: Check value of ("getThermalNoise()"-mapping at a position).
 Passed: Check upperGateIn ID.
 Passed: Check upperGateOut ID.
 Passed: Check upperControlIn ID.

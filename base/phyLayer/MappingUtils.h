@@ -755,6 +755,11 @@ public:
 	ConstantSimpleConstMapping(const DimensionSet& dims, double val):
 		SimpleConstMapping(dims), value(val) {}
 
+	ConstantSimpleConstMapping(const DimensionSet& dims,
+							   const Argument& key,
+							   double val):
+		SimpleConstMapping(dims, key), value(val) {}
+
 	virtual double getValue(const Argument& pos) const {
 		return value;
 	}

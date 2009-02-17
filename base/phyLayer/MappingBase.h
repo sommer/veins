@@ -1033,6 +1033,7 @@ public:
 	 * Convenience method for simple mappings.
 	 */
 	void initializeArguments(const Argument& key){
+		keyEntries.clear();
 		keyEntries.insert(key);
 		fullyInitialized = true;
 	}
@@ -1044,6 +1045,7 @@ public:
 	 * Convenience method for simple mappings.
 	 */
 	void initializeArguments(const Argument& key1, const Argument& key2){
+		keyEntries.clear();
 		keyEntries.insert(key1);
 		keyEntries.insert(key2);
 		fullyInitialized = true;

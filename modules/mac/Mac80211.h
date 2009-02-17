@@ -77,11 +77,13 @@ protected:
     virtual void initialize(int);
     virtual void finish();
 
+ protected:
+
     /** @brief Handle self messages such as timer... */
 	virtual void handleSelfMsg(cMessage*);
 
 	/** @brief Handle messages from upper layer */
-	virtual void handleUpperMsg(cMessage*);
+	virtual void handleUpperMsg(cMessage* msg);
 
 	/** @brief Handle messages from lower layer */
 	virtual void handleLowerMsg(cMessage*);
@@ -89,7 +91,7 @@ protected:
 	/** @brief Handle messages from lower layer */
 	virtual void handleLowerControl(cMessage*);
 
-  protected:
+
     /** @brief Called by the Blackboard whenever a change occurs we're interested in */
     //virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 
@@ -209,6 +211,11 @@ protected:
      * Used during contend state to check if the channel is free.
      */
     void senseChannelWhileIdle(simtime_t duration);
+
+    /**
+     * @brief Creates the signal to be used for a packet to be sent.
+     */
+    Signal* createSignal(simtime_t start, simtime_t length, double power, double bitrate);
 
 protected:
 

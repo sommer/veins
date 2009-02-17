@@ -44,6 +44,15 @@ class DeciderToPhyInterface
 		virtual void getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) = 0;
 
 		/**
+		 * @brief Returns a Mapping which defines the thermal noise in
+		 * the passed time frame (in mW).
+		 *
+		 * The implementing class of this method keeps ownership of the
+		 * Mapping.
+		 */
+		virtual ConstMapping* getThermalNoise(simtime_t from, simtime_t to) = 0;
+
+		/**
 		 * @brief Called by the Decider to send a control message to the MACLayer
 		 *
 		 * This function can be used to answer a ChannelSenseRequest to the MACLayer

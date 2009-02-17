@@ -37,11 +37,8 @@ void Mac80211::initialize(int stage)
     {
         EV << "Initializing stage 0\n";
 
-        //TODO: Use Arp here
-        //BaseArp *arp = BaseArpAccess().get();
-        //myMacAddr = arp->myMacAddr(this);
-
-        myMacAddr = getParentModule()->par("id");
+        arp = BaseArpAccess().get();
+        myMacAddr = arp->myMacAddr(this);
 
         switching = false;
         fsc = intrand(0x7FFFFFFF);
@@ -50,23 +47,12 @@ void Mac80211::initialize(int stage)
 
         queueLength = hasPar("queueLength") ? par("queueLength").longValue() : 10;
 
-        //TODO: look if radio state is still needed to be stored
-        /*
-        radioState = RadioState::RECV;
-        RadioState cs;
-        Bitrate br;
-        MediumIndication ind;
-
-        catRadioState = bb->subscribe(this, &cs, parentModule()->id());
-        catMedium = bb->subscribe(this, &ind, parentModule()->id());
-        */
-
         // timers
         timeout = new cMessage("timeout", TIMEOUT);
         nav = new cMessage("NAV", NAV);
-        contention = new ChannelSenseRequest("contention", CONTENTION);
+        contention = new ChannelSenseRequest("contention", MacToPhyInterface::CHANNEL_SENSE_REQUEST);
         contention->setSenseMode(UNTIL_BUSY);
-        endSifs = new ChannelSenseRequest("end SIFS", END_SIFS);
+        endSifs = new ChannelSenseRequest("end SIFS", MacToPhyInterface::CHANNEL_SENSE_REQUEST);
         endSifs->setSenseMode(UNTIL_BUSY);
         endSifs->setSenseTimeout(SIFS);
 
@@ -77,6 +63,8 @@ void Mac80211::initialize(int stage)
         currentIFS = EIFS;
 
         autoBitrate = hasPar("autoBitrate") ? par("autoBitrate").boolValue() : false;
+
+        txPower = hasPar("txPower") ? par("txPower").doubleValue() : 110.11;
 
         delta = 1E-9;
 
@@ -262,13 +250,15 @@ void Mac80211::handleLowerControl(cMessage *msg)
 {
     EV << simTime() << " handleLowerControl " << msg->getName() << "\n";
     switch(msg->getKind()) {
-    case END_SIFS:
-        handleEndSifsTimer();   // noch zu betrachten
+    case MacToPhyInterface::CHANNEL_SENSE_REQUEST:
+    	if(msg == contention) {
+    		handleEndContentionTimer();
+    	} else if(msg == endSifs) {
+    		handleEndSifsTimer();   // noch zu betrachten
+    	} else {
+    		error("Unknown ChannelSenseRequest returned!");
+    	}
         break;
-
-    case CONTENTION:
-    	handleEndContentionTimer();
-    	break;
 
     case COLLISION:
     case BITERROR:
@@ -1025,6 +1015,32 @@ void Mac80211::testMaxAttempts()
     }
 }
 
+Signal* Mac80211::createSignal(simtime_t start, simtime_t length, double power, double bitrate)
+{
+	simtime_t end = start + length;
+	//create signal with start at current simtime and passed length
+	Signal* s = new Signal(start, length);
+
+	//create and set tx power mapping
+	Mapping* txPowerMapping = createConstantMapping(start, end, power);
+	s->setTransmissionPower(txPowerMapping);
+
+	//create and set bitrate mapping
+
+	//create mapping over time
+	Mapping* bitrateMapping = MappingUtils::createMapping(DimensionSet(Dimension::time), Mapping::STEPS);
+
+	Argument pos(start);
+	bitrateMapping->setValue(pos, BITRATE_HEADER);
+
+	pos.setTime(PHY_HEADER_LENGTH / BITRATE_HEADER);
+	bitrateMapping->setValue(pos, bitrate);
+
+	s->setBitrate(bitrateMapping);
+
+	return s;
+}
+
 /**
  * Handle change nofitications. In this layer it is usually
  * information about the radio channel, i.e. if it is IDLE etc.
@@ -1223,10 +1239,10 @@ double Mac80211::retrieveBitrate(int destAddress) {
 void Mac80211::addNeighbor(Mac80211Pkt *af) {
     int srcAddress = af->getSrcAddr();
     NeighborList::iterator it = findNeighbor(srcAddress);
-    //TOPORT:
-    //double snr = static_cast<PhyToMacControlInfo *>(af->getControlInfo())->getSnr();
-    //tmp:
-    double snr = 0.0001;
+    const DeciderResult80211* result = static_cast<const DeciderResult80211*>(
+											static_cast<PhyToMacControlInfo *>(
+												af->getControlInfo())->getDeciderResult());
+    double snr = result->getSnr();
 
     double bitrate = BITRATES_80211[0];
     NeighborEntry entry;

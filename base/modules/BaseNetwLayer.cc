@@ -35,7 +35,7 @@ void BaseNetwLayer::initialize(int stage)
     if(stage==0){
         headerLength= par("headerLength");
         arp = BaseArpAccess().get();
-        myNetwAddr = this->getId();
+        myNetwAddr = arp->myNetwAddr(this);
         EV << " myNetwAddr " << myNetwAddr << endl;
     }
 }

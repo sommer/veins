@@ -153,7 +153,15 @@ void TestPhyLayer::testInitialisation() {
 
 	assertEqual("Check parameter \"sensitivity\".", FWMath::dBm2mW(6), sensitivity);
 	assertEqual("Check parameter \"maxTXPower\".", 10.0, maxTXPower);
-	assertEqual("Check parameter \"thermalNoise\".", 1.0, thermalNoise);
+
+	ConstantSimpleConstMapping* thNoise = dynamic_cast<ConstantSimpleConstMapping*>(thermalNoise);
+	assertNotEqual("Check if thermalNoise map is of type ConstantSimpleConstMapping.", (void*)0, thNoise);
+	assertEqual("Check parameter \"thermalNoise\".", FWMath::dBm2mW(1.0), thNoise->getValue());
+
+	thNoise = dynamic_cast<ConstantSimpleConstMapping*>(getThermalNoise(1.0, 2.0));
+	assertNotEqual("Check if thermalNoise map returned by \"getThermalNoise()\" is of type ConstantSimpleConstMapping.", (void*)0, thNoise);
+	assertEqual("Check value of (\"getThermalNoise()\"-mapping).", FWMath::dBm2mW(1.0), thNoise->getValue());
+	assertEqual("Check value of (\"getThermalNoise()\"-mapping at a position).", FWMath::dBm2mW(1.0), thNoise->getValue(Argument(1.5)));
 
 	assertTrue("Check upperGateIn ID.", upperGateIn != -1);
 	assertTrue("Check upperGateOut ID.", upperGateOut != -1);

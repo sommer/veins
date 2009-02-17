@@ -71,7 +71,7 @@ class BasePhyLayer: public ChannelAccess,
 protected:
 
 	/** @brief Defines the strength of the thermal noise.*/
-	double thermalNoise;
+	ConstantSimpleConstMapping* thermalNoise;
 
 	/** @brief The maximum transmission power a message can be send with */
 	double maxTXPower;
@@ -365,6 +365,21 @@ public:
 	 * with the time interval [from, to]
 	 */
 	virtual void getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out);
+
+	/**
+	 * @brief Returns a Mapping which defines the thermal noise in
+	 * the passed time frame (in mW).
+	 *
+	 * The implementing class of this method keeps ownership of the
+	 * Mapping.
+	 *
+	 * This implementation returns a constant mapping with the value
+	 * of the "thermalNoise" module parameter
+	 *
+	 * Override this method if you want to define a more complex
+	 * thermal noise.
+	 */
+	virtual ConstMapping* getThermalNoise(simtime_t from, simtime_t to);
 
 	/**
 	 * @brief Called by the Decider to send a control message to the MACLayer

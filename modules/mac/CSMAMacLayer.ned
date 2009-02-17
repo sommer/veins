@@ -27,7 +27,7 @@ package org.mixim.modules.mac;
 simple CSMAMacLayer
 {
     parameters:
-        // level at which we consider medium busy
+        // level at which we consider medium busy [dB]
         double busyRSSI;
         // how long is a slot?
         double slotDuration;
@@ -41,7 +41,7 @@ simple CSMAMacLayer
         double defaultChannel;
         // bit rate 
         double bitrate @unit(bps);
-        //tx power
+        //tx power [mW]
         double txPower;
         // contention window
         double contentionWindow;

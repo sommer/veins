@@ -53,7 +53,9 @@ void BasePhyLayer::initialize(int stage) {
 		//read simple ned-parameters
 		//	- initialize basic parameters
 
-		thermalNoise = readPar("thermalNoise", 0.0);
+		double thermalNoiseVal = readPar("thermalNoise", 0.0);
+		thermalNoise = new ConstantSimpleConstMapping(DimensionSet(Dimension::time),
+													  FWMath::dBm2mW(thermalNoiseVal));
 		sensitivity = readPar("sensitivity", 0.0);
 		sensitivity = FWMath::dBm2mW(sensitivity);
 		maxTXPower = readPar("maxTXPower", 1.0);
@@ -205,7 +207,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	decider = getDeciderFromName(name, params);
 
 	if(decider == 0) {
-		ev << "Could not find a decider with the name \"" << name << "\"." << endl;
+		EV << "Could not find a decider with the name \"" << name << "\"." << endl;
 		return;
 	}
 
@@ -229,7 +231,9 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 		double threshold = params["threshold"];
 		return new SNRThresholdDecider(this, threshold, sensitivity, findHost()->getIndex(), coreDebug);
 	}
-	return 0;
+
+	//return a dummy decider which does nothing
+	return new Decider(this);
 }
 
 
@@ -902,6 +906,11 @@ void BasePhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 	channelInfo.getAirFrames(from, to, out);
 }
 
+ConstMapping* BasePhyLayer::getThermalNoise(simtime_t from, simtime_t to) {
+	thermalNoise->initializeArguments(Argument(from));
+	return thermalNoise;
+}
+
 /**
  * @brief Called by the Decider to send a control message to the MACLayer
  *
@@ -951,7 +960,7 @@ simtime_t BasePhyLayer::getSimTime() {
  */
 void BasePhyLayer::cancelScheduledMessage(cMessage* msg) {
 	if(msg->isScheduled()){
-		cancelScheduledMessage(msg);
+		cancelEvent(msg);
 	} else {
 		EV << "Warning: Decider wanted to cancel a scheduled message but message"
 		   << " wasn't actually scheduled. Message is: " << msg << endl;
