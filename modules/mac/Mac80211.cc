@@ -285,6 +285,15 @@ void Mac80211::handleLowerControl(cMessage *msg)
         handleEndTransmission();
         delete msg;
         break;
+
+    case MacToPhyInterface::RADIO_SWITCHING_OVER:
+    	//TODO: handle this correctly (by now we assume switch times are zero)
+    	delete msg;
+    	break;
+
+    default:
+    	ev << "Unhandled control message from physical layer: " << msg << endl;
+    	delete msg;
     }
 }
 
@@ -788,6 +797,8 @@ void Mac80211::sendACKframe(Mac80211Pkt * af)
 
     PhyToMacControlInfo* phyCtrlInfo = static_cast<PhyToMacControlInfo*>(af->removeControlInfo());
     double br = static_cast<const DeciderResult80211*>(phyCtrlInfo->getDeciderResult())->getBitrate();
+    delete phyCtrlInfo;
+    phyCtrlInfo = 0;
 
     Signal* signal = createSignal(simTime(),
 								  packetDuration(LENGTH_ACK, br),
@@ -872,6 +883,8 @@ void Mac80211::sendCTSframe(Mac80211Pkt * af)
 
     PhyToMacControlInfo* phyCtrlInfo = static_cast<PhyToMacControlInfo*>(af->removeControlInfo());
 	double br = static_cast<const DeciderResult80211*>(phyCtrlInfo->getDeciderResult())->getBitrate();
+	delete phyCtrlInfo;
+	phyCtrlInfo = 0;
 
 	Signal* signal = createSignal(simTime(),
 								  packetDuration(LENGTH_CTS, br),

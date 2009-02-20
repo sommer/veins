@@ -343,6 +343,7 @@ simtime_t Decider80211::handleSignalOver(AirFrame* frame)
 		mac->setName("ERROR");
 		mac->setKind(BITERROR);
 		phy->sendControlMsg(mac);
+		delete result;
 	}
 
 	delete snrMap;

@@ -790,6 +790,11 @@ BasePhyLayer::~BasePhyLayer() {
 		delete radioSwitchingOverTimer;
 	}
 
+	//free thermal noise mapping
+	if(thermalNoise) {
+		delete thermalNoise;
+	}
+
 	//free Decider
 	if(decider != 0) {
 		delete decider;
