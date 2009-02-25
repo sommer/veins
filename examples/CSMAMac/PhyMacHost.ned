@@ -2,6 +2,7 @@ package org.mixim.examples.CSMAMac;
 
 import org.mixim.base.modules.BaseMobility;
 import org.mixim.base.modules.BaseUtility;
+import org.mixim.base.modules.BaseArp;
 
 
 module PhyMacHost
@@ -21,6 +22,9 @@ module PhyMacHost
         mobility: BaseMobility {
             parameters:
                 @display("p=130,130;i=block/cogwheel");
+        }
+        arp: BaseArp {
+            @display("p=200,225;b=30,25");
         }
         net: SimpleNetwLayer {
             parameters:

@@ -4,6 +4,7 @@
 #include "NicControlType.h"
 #include "FWMath.h"
 #include "MacToPhyControlInfo.h"
+#include <BaseArp.h>
 
 Define_Module( CSMAMacLayer )
 
@@ -16,9 +17,11 @@ void CSMAMacLayer::initialize(int stage)
     BaseMacLayer::initialize(stage);
 
     if (stage == 0) {
+    	BaseArp* arp = BaseArpAccess().get();
+		myMacAddr = arp ? arp->myMacAddr(this):getParentModule()->getId();
 
         queueLength = hasPar("queueLength") 	? par("queueLength").longValue()	 : 10;
-        busyRSSI = hasPar("busyRSSI") 			? par("busyRSSI").doubleValue() 	 : -90;
+        //busyRSSI = hasPar("busyRSSI") 			? par("busyRSSI").doubleValue() 	 : -90;
         slotDuration = hasPar("slotDuration") 	? par("slotDuration").doubleValue()	 : 0.1;
         difs = hasPar("difs") 					? par("difs").doubleValue()			 : 0.001;
         maxTxAttempts = hasPar("maxTxAttempts") ? par("maxTxAttempts").longValue()	 : 7;
@@ -30,10 +33,8 @@ void CSMAMacLayer::initialize(int stage)
         macState = RX;
 
         //droppedPacket.setReason(DroppedPacket::NONE);
-        if(!getParentModule()->hasPar("id"))
-        	error("Nic module has no id parameter!");
 
-        nicId = getParentModule()->par("id");
+        //nicId = getParentModule()->getId();
 
         // initialize the timer
         backoffTimer = new cMessage("backoff");
@@ -49,17 +50,15 @@ void CSMAMacLayer::initialize(int stage)
         //radio->setActiveChannel(channel);
         //radio->setBitrate(bitrate);
 
-    	myMacAddr = nicId;
-
         EV << "queueLength = " << queueLength
-           << " busyRSSI = " << busyRSSI
+           //<< " busyRSSI = " << busyRSSI
            << " slotDuration = " << slotDuration
            << " difs = " << difs
            << " maxTxAttempts = " << maxTxAttempts
            << " bitrate = " << bitrate
            << " contentionWindow = " << initialCW << endl;
 
-        busyRSSI = FWMath::dBm2mW(busyRSSI);
+        //busyRSSI = FWMath::dBm2mW(busyRSSI);
     }
 }
 
@@ -140,10 +139,8 @@ void CSMAMacLayer::handleSelfMsg(cMessage *msg)
             	macState = CCA;
 
                 if(phy->getRadioState() == Radio::RX) {
-                	double rssi = phy->getChannelState().getRSSI();
-                	EV << "rssi:" << rssi << " busyRSSI:" << busyRSSI << " ";
 
-                    if(rssi < busyRSSI) {
+                    if(phy->getChannelState().isIdle()) {
                         EV << " idle ";
                         scheduleAt(simTime()+difs, minorMsg);
                     }
@@ -166,10 +163,8 @@ void CSMAMacLayer::handleSelfMsg(cMessage *msg)
 
         //TODO: replace with channel sense request
         if((macState == CCA) && (phy->getRadioState() == Radio::RX)) {
-        	double rssi = phy->getChannelState().getRSSI();
-        	EV << "rssi:" << rssi << " busyRSSI:" << busyRSSI << " ";
 
-            if(rssi < busyRSSI) {
+            if(phy->getChannelState().isIdle()) {
                 EV << " idle -> to send ";
                 macState = TX;
                 phy->setRadioState(Radio::TX);

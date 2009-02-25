@@ -40,15 +40,15 @@ simple ConnectionManager
 {
     parameters:
         // debug switch for core framework
-        bool coreDebug; // debug switch for core framework
-        bool sendDirect;          // define which ConnectionManager module to use
-        // maximum sending power used for this network (in mW)
-        double pMax; // maximum sending power used for this network (in mW)
-        // minimum signal attenuation threshold (in dBm)
-        double sat; // minimum signal attenuation threshold (in dBm)
+        bool coreDebug;
+        bool sendDirect;
+        // maximum sending power used for this network [mW]
+        double pMax @unit(mW);
+        // minimum signal attenuation threshold [dBm]
+        double sat @unit(dBm);
         // minimum path loss coefficient
-        double alpha; // minimum path loss coefficient
-        // minimum carrier frequency of the channel (in Hz)
-        double carrierFrequency; // minimum carrier frequency of the channel (in Hz)
+        double alpha;
+        // minimum carrier frequency of the channel [Hz]
+        double carrierFrequency @unit(Hz);
 }
 

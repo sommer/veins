@@ -52,10 +52,13 @@ void BasePhyLayer::initialize(int stage) {
 
 		//read simple ned-parameters
 		//	- initialize basic parameters
-
-		double thermalNoiseVal = readPar("thermalNoise", 0.0);
-		thermalNoise = new ConstantSimpleConstMapping(DimensionSet(Dimension::time),
-													  FWMath::dBm2mW(thermalNoiseVal));
+        if(readPar("useThermalNoise", false)) {
+			double thermalNoiseVal = FWMath::dBm2mW(readPar("thermalNoise", -999.0));
+			thermalNoise = new ConstantSimpleConstMapping(DimensionSet(Dimension::time),
+														  thermalNoiseVal);
+		} else {
+			thermalNoise = 0;
+		}
 		sensitivity = readPar("sensitivity", 0.0);
 		sensitivity = FWMath::dBm2mW(sensitivity);
 		maxTXPower = readPar("maxTXPower", 1.0);
@@ -635,6 +638,7 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	AirFrame* frame = new AirFrame(0, AIR_FRAME);
 
 	// set the members
+	assert(s->getSignalLength() > 0);
 	frame->setDuration(s->getSignalLength());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
@@ -912,7 +916,9 @@ void BasePhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 }
 
 ConstMapping* BasePhyLayer::getThermalNoise(simtime_t from, simtime_t to) {
-	thermalNoise->initializeArguments(Argument(from));
+	if(thermalNoise)
+		thermalNoise->initializeArguments(Argument(from));
+
 	return thermalNoise;
 }
 

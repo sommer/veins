@@ -14,7 +14,7 @@ bool DeciderResult::isSignalCorrect() {
  * @brief Initializes the Decider with a pointer to its PhyLayer
  */
 Decider::Decider(DeciderToPhyInterface* phy):
-	phy(phy) {}
+	phy(phy), notAgain(-1) {}
 
 /**
  * @brief This function processes a AirFrame given by the PhyLayer and

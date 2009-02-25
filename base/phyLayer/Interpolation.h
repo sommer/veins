@@ -209,7 +209,7 @@ public:
 	static double linearInterpolation(const Key& t,
 									  const Key& t0, const Key& t1,
 									  const V& v0, const V& v1){
-		return v0 + (v1 - v0) * (t - t0) / (t1 - t0);
+		return v0 + (v1 - v0) * (double)((t - t0) / (t1 - t0));
 	}
 
 	interpolated operator()(const InputIterator& first,

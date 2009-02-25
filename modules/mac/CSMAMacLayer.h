@@ -96,7 +96,7 @@ class  CSMAMacLayer : public BaseMacLayer
     States macState;
 
     /** @brief RSSI level where medium is considered busy */
-    double busyRSSI;
+    //double busyRSSI;
 
     /** @brief Duration of a slot
      *
@@ -145,7 +145,7 @@ class  CSMAMacLayer : public BaseMacLayer
 
      /** @brief maximum number of transmission attempts
      *
-     * The packet is discared when this number is reached.
+     * The packet is discarded when this number is reached.
      */
     unsigned maxTxAttempts;
 
@@ -162,10 +162,10 @@ class  CSMAMacLayer : public BaseMacLayer
     //DroppedPacket droppedPacket;
 
     /** @brief plus category from BB */
-    int catDroppedPacket;
+    //int catDroppedPacket;
 
     /** @brief publish dropped packets nic wide */
-    int nicId;
+    //int nicId;
 
 protected:
     /** @brief schedule a backoff

@@ -27,28 +27,23 @@ package org.mixim.modules.mac;
 simple CSMAMacLayer
 {
     parameters:
-        // level at which we consider medium busy [dB]
-        double busyRSSI;
-        // how long is a slot?
-        double slotDuration;
-        // maximum time between a packet and its ack
-        double difs;
+        // how long is a slot? [s]
+        double slotDuration @unit(s);
+        // maximum time between a packet and its ack [s]
+        double difs @unit(s);
         // maximum number of transmission attempts
         double maxTxAttempts;
         // length of the MAC queue
         int queueLength;
         // default channel 
         double defaultChannel;
-        // bit rate 
+        // bit rate [bps]
         double bitrate @unit(bps);
         //tx power [mW]
-        double txPower;
+        double txPower @unit(mW);
         // contention window
         double contentionWindow;
 
-
-        // debug switch
-        // debug switch
         bool coreDebug; // debug switch
         double headerLength; // length of the MAC packet header (in bits)
 

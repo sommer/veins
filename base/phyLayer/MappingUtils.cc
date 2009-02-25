@@ -240,18 +240,20 @@ double MappingUtils::findMax(ConstMapping& m, const Argument& min, const Argumen
 
 	ConstMappingIterator* it = m.createConstIterator(min);
 
-	double res = -DBL_MAX;
+	double res = it->getValue();
 
-	while(it->inRange() && it->getPosition().getTime() <= max.getTime()){
+	while(it->hasNext() && it->getNextPosition().getTime() < max.getTime()){
+		it->next();
+
 		double val = it->getValue();
 		if(val > res)
 			res = val;
-
-		if(!it->hasNext())
-			break;
-
-		it->next();
 	}
+	it->iterateTo(max);
+	double val = it->getValue();
+	if(val > res)
+		res = val;
+
 	delete it;
 	return res;
 }
@@ -280,18 +282,19 @@ double MappingUtils::findMin(ConstMapping& m, const Argument& min, const Argumen
 
 	ConstMappingIterator* it = m.createConstIterator(min);
 
-	double res = DBL_MAX;
+	double res = it->getValue();
 
-	while(it->inRange() && it->getPosition().getTime() <= max.getTime()){
+	while(it->hasNext() && it->getNextPosition().getTime() < max.getTime()){
+		it->next();
+
 		double val = it->getValue();
 		if(val < res)
 			res = val;
-
-		if(!it->hasNext())
-			break;
-
-		it->next();
 	}
+	it->iterateTo(max);
+	double val = it->getValue();
+	if(val < res)
+		res = val;
 	delete it;
 	return res;
 }

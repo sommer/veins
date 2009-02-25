@@ -66,8 +66,14 @@ public:
 class Decider
 {
 protected:
-	/** A pointer to the physical layer of this Decider. */
+	/** @brief A pointer to the physical layer of this Decider. */
 	DeciderToPhyInterface* phy;
+
+	/** @brief simtime that tells the Phy-Layer not to pass an AirFrame again */
+	const simtime_t notAgain;
+
+	/** @brief Defines what an AirFrameVector shall be here */
+	typedef DeciderToPhyInterface::AirFrameVector AirFrameVector;
 
 public:
 

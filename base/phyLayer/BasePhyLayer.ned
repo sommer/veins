@@ -4,24 +4,25 @@ simple BasePhyLayer
 {
     parameters:
         bool coreDebug;
-        bool usePropagationDelay; 		//Should transmission delay be simulated?
-        double thermalNoise;	//the strength of the thermal noise [dBm]
+        bool usePropagationDelay;		//Should transmission delay be simulated?
+        double thermalNoise @unit(dBm);	//the strength of the thermal noise [dBm]
+        bool useThermalNoise;			//should thermal noise be considered?
 
         xml analogueModels; 			//Specification of the analogue models to use and their parameters
         xml decider;					//Specification of the decider to use and its parameters
 
-        double sensitivity;		//The sensitivity of the physical layer (in dBm)
-        double maxTXPower;		//The maximum transimission power of the physical layer
+		double sensitivity @unit(dBm);	//The sensitivity of the physical layer [dBm]
+        double maxTXPower @unit(mW);	//The maximum transimission power of the physical layer [mW]
 
-        //switchTimes:
-        double timeRXToTX;
-        double timeRXToSleep;
+        //switchTimes [s]:
+        double timeRXToTX @unit(s);
+        double timeRXToSleep @unit(s);
 
-        double timeTXToRX;
-        double timeTXToSleep;
+        double timeTXToRX @unit(s);
+        double timeTXToSleep @unit(s);
 
-        double timeSleepToRX;
-        double timeSleepToTX;
+        double timeSleepToRX @unit(s);
+        double timeSleepToTX @unit(s);
 
         int initialRadioState;
 

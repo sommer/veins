@@ -8,9 +8,9 @@ Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration TestBaseDecider1, run #0...
 Scenario: $repetition=0
-Assigned runID=TestBaseDecider1-0-20090212-14:56:37-7573
+Assigned runID=TestBaseDecider1-0-20090225-14:16:51-376
 Setting up network `tbpSim'...
-setupNetwork finished, cParImpl objects in use: 87
+setupNetwork finished, cParImpl objects in use: 89
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
 Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
@@ -64,11 +64,7 @@ Passed: [decider0] - snr-threshold and receiving-sensitivity have been set prope
 Passed: Check parameter "usePropagationDelay".
 Passed: Check parameter "sensitivity".
 Passed: Check parameter "maxTXPower".
-Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
-Passed: Check parameter "thermalNoise".
-Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
-Passed: Check value of ("getThermalNoise()"-mapping).
-Passed: Check value of ("getThermalNoise()"-mapping at a position).
+Passed: Check if thermalNoise map is NULL.
 Passed: Check upperGateIn ID.
 Passed: Check upperGateOut ID.
 Passed: Check upperControlIn ID.
