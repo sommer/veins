@@ -55,7 +55,7 @@ simple Mac80211
     	// consider information in cache outdate if older than 
     	double neighborhoodCacheMaxAge; 
     	//the power to transmit packets with [mW]
-    	double txPower;
+    	double txPower @unit(mW);
 	
     gates:
         input upperGateIn; // from net layer
