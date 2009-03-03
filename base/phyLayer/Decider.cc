@@ -6,7 +6,7 @@
  * @brief A Function that returns a very basic result about the Signal.
  *
  */
-bool DeciderResult::isSignalCorrect() {
+bool DeciderResult::isSignalCorrect() const {
 	return isCorrect;
 }
 

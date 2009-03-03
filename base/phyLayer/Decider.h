@@ -46,7 +46,7 @@ public:
 	/**
 	 * @brief A Function that returns a very basic result about the Signal.
 	 */
-	 virtual bool isSignalCorrect();
+	 virtual bool isSignalCorrect() const;
 
 };
 
