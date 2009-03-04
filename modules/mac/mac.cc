@@ -53,7 +53,7 @@ void EyesMacLayer::initialize(int stage) {
 	}
 
 	send_state = false;
-	
+
 	stat_tx = 0;
 	stat_rx = 0;
 	stat_tx_drop = 0;
@@ -73,7 +73,7 @@ void EyesMacLayer::initialize(int stage) {
 }
 
 void EyesMacLayer::finish() {
-	
+
 	printfNoInfo("\tMac super layer ending...");
 	printf("stats: rx=%u tx=%u tx_drop=%u "
 			"s_rx_data=%.4lf s_rx_overhead=%.4lf "
@@ -97,13 +97,13 @@ void EyesMacLayer::finish() {
 
 EyesMacLayer::~EyesMacLayer() {
 	int i;
-	
+
 	if (parametersInitialised) {
 		parametersInitialised = false;
 
 		for (i = 0; i < siftDistributions; i++)
 			free(siftDistribution[i].chances);
-		
+
 		parameterList.clear();
 	}
 }
@@ -193,7 +193,7 @@ int EyesMacLayer::headerLength() {
 void EyesMacLayer::handleTimer(unsigned int index) {
 	if (index < TIMERS)
 		timeout(index);
-	else	
+	else
 		internalTimeout();
 }
 
@@ -287,13 +287,13 @@ void EyesMacLayer::internalTimeout() {
 		case FRAME:
 			// when a frame is detected the timer should be
 			// cancelled
-			assert(false);  
+			assert(false);
 			break;
 		case PREAMBLE_DETECT:
 			// didn't find start symbol
 			printf("didn't find start symbol, going back to sleep");
 			// make sure we know we are not receiving anymore
-			rxFailed();     
+			rxFailed();
 			setRadioSleepInternal();
 			recv_state = SLEEP;
 			EV << "recv state " << (int)recv_state << endl;
@@ -301,7 +301,7 @@ void EyesMacLayer::internalTimeout() {
 			break;
 		case SLEEP:
 			// this will automatically set the right timeout
-			setRadioListen();       
+			setRadioListen();
 			break;
 		default:
 			assert(false);
@@ -429,7 +429,7 @@ int EyesMacLayer::siftSlot(int low, int high) {
 
 	if (low >= high)
 		return low;
-	
+
 	for (i = 0; i < siftDistributions; i++) {
 		if (siftDistribution[i].slots == slots)
 			break;
@@ -495,10 +495,11 @@ string EyesMacLayer::getParameter(const char *parameter) {
 
 void EyesMacLayer::internal_printf(const char* fmt, va_list list, bool newline) {
 	char *pbuf = NULL;
-	vasprintf(&pbuf, fmt, list);
+	//TODO: vasprintf is not defined within windows, fix this somehow
+	//vasprintf(&pbuf, fmt, list);
 	if (newline)
 		EV << pbuf << endl;
-	else	
+	else
 		EV << pbuf;
 	free(pbuf);
 }
@@ -521,7 +522,8 @@ void EyesMacLayer::printf_clr(const char *fmt, ...) {
 	va_list va;
 	char *pbuf=NULL;
 	va_start(va, fmt);
-	vasprintf(&pbuf, fmt, va);
+	//TODO: vasprintf is not defined within windows, fix this somehow
+	//vasprintf(&pbuf, fmt, va);
 	va_end(va);
 
 	EV/*_clear*/ << pbuf;
@@ -533,7 +535,8 @@ void EyesMacLayer::printfNoInfo(const char *fmt, ...) {
 	char *pbuf;
 
 	va_start(va, fmt);
-	vasprintf(&pbuf, fmt, va);
+	//TODO: vasprintf is not defined within windows, fix this somehow
+	//vasprintf(&pbuf, fmt, va);
 	EV << pbuf << endl;
 	va_end(va);
 	free(pbuf);
@@ -544,7 +547,8 @@ void EyesMacLayer::printfNoInfo_nr(const char *fmt, ...) {
 	char *pbuf;
 
 	va_start(va, fmt);
-	vasprintf(&pbuf, fmt, va);
+	//TODO: vasprintf is not defined within windows, fix this somehow
+	//vasprintf(&pbuf, fmt, va);
 	va_end(va);
 	EV << pbuf;
 	free(pbuf);
@@ -561,7 +565,7 @@ simtime_t EyesMacLayer::getTimeParameter(const char *parameter, simtime_t defaul
 
 	if (result.empty())
 		return defaultValue;
-	
+
 	return STR_SIMTIME(result.c_str());
 }
 
@@ -570,7 +574,7 @@ double EyesMacLayer::getDoubleParameter(const char *parameter, double defaultVal
 
 	if (result.empty())
 		return defaultValue;
-	
+
 	return strtod(result.c_str(), NULL);
 }
 
@@ -579,7 +583,7 @@ long EyesMacLayer::getLongParameter(const char *parameter, long defaultValue) {
 
 	if (result.empty())
 		return defaultValue;
-	
+
 	return strtol(result.c_str(), NULL, 0);
 }
 

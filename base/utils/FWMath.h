@@ -47,13 +47,17 @@
 #endif
 
 /* Provide function substitutes for Win32 architectures. */
+/*
 #ifdef _WIN32
+#ifndef _MINGW
 #include <float.h>
 #define finite	_finite
 #define isnan	_isnan
 #define erf(X)	FWMath::erf(X)
 #define erfc(X)	FWMath::erfc(X)
 #endif
+#endif
+*/
 
 #ifdef __APPLE__
 #define isnan(x) ((x) != (x))
@@ -155,7 +159,7 @@ public:
 	/**
 	 * @brief Complementary error function.
 	 **/
-	/*static double erfc(double x) {
+	static double erfc(double x) {
 		double t, u, y;
 
 		if (x <= -6.0)
@@ -180,7 +184,7 @@ public:
 			0.275374741597376782) * t * exp(-x * x);
 
 		return x < 0.0 ? 2.0 - y : y;
-	}*/
+	}
 
 	/**
 	 * @brief Error function.
