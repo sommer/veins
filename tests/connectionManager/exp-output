@@ -1,16 +1,16 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0, build: 090226-10668, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/examples: 31
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20081217-16:17:46-16557
+Assigned runID=Test1-0-20090304-09:12:33-7465
 Setting up network `ccSim'...
-setupNetwork finished, cParImpl objects in use: 98
 Initializing...
 Initializing module ccSim, stage 0
 Initializing module ccSim.world, stage 0
@@ -363,18 +363,18 @@ Passed: Test Node 32: Should have received no broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0, build: 090226-10668, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/examples: 31
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20081217-16:17:47-16558
+Assigned runID=Test2-0-20090304-09:12:33-7466
 Setting up network `ccSim'...
-setupNetwork finished, cParImpl objects in use: 95
 Initializing...
 Initializing module ccSim, stage 0
 Initializing module ccSim.world, stage 0
@@ -727,18 +727,18 @@ Passed: Test Node 32: Should have received at least one broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0, build: 090226-10668, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/examples: 31
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20081217-16:17:47-16559
+Assigned runID=Test3-0-20090304-09:12:34-7467
 Setting up network `ccSim'...
-setupNetwork finished, cParImpl objects in use: 97
 Initializing...
 Initializing module ccSim, stage 0
 Initializing module ccSim.world, stage 0
@@ -1362,7 +1362,7 @@ Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 7   present: 7   in FES: 7
-** Event #518   T=7.6   Elapsed: 0.003s (0m 00s)  15% completed
+** Event #518   T=7.6   Elapsed: 0.004s (0m 00s)  15% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 523   present: 0   in FES: 0
 
@@ -1441,18 +1441,18 @@ Passed: Test Node 67: Should have received no broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0, build: 090226-10668, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/examples: 31
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20081217-16:17:47-16560
+Assigned runID=Test4-0-20090304-09:12:34-7468
 Setting up network `ccSim'...
-setupNetwork finished, cParImpl objects in use: 94
 Initializing...
 Initializing module ccSim, stage 0
 Initializing module ccSim.world, stage 0

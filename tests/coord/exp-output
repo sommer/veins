@@ -1,16 +1,16 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0rc1, build: 081212-10196, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0, build: 090226-10668, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/base: 20
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/modules: 21
-Loading NED files from /home/karl/programme/omnetpp-4.0rc1/samples/MiXiM/tests: 26
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/examples: 31
+Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20081217-16:16:56-16412
+Assigned runID=General-0-20090304-09:13:03-7513
 Setting up network `OmnetTest'...
-setupNetwork finished, cParImpl objects in use: 0
 Initializing...
 Initializing module OmnetTest, stage 0
 Passed: Default constructor creates 3D-Coord.
