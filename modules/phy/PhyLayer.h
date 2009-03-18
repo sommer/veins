@@ -32,6 +32,12 @@ protected:
 	AnalogueModel* initializeSimplePathlossModel(ParameterMap& params);
 
 	/**
+	 * @brief Creates and initializes a LogNormalShadowing with the
+	 * passed parameter values.
+	 */
+	AnalogueModel* initializeLogNormalShadowing(ParameterMap& params);
+
+	/**
 	 * @brief Creates and returns an instance of the Decider with the specified
 	 * name.
 	 *

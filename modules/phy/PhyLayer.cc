@@ -8,6 +8,7 @@
 #include "PhyLayer.h"
 #include <Decider80211.h>
 #include <SimplePathlossModel.h>
+#include <LogNormalShadowing.h>
 
 Define_Module(PhyLayer);
 
@@ -17,7 +18,19 @@ AnalogueModel* PhyLayer::getAnalogueModelFromName(std::string name, ParameterMap
 	{
 		return initializeSimplePathlossModel(params);
 	}
+	else if (name == "LogNormalShadowing")
+	{
+		return initializeLogNormalShadowing(params);
+	}
 	return BasePhyLayer::getAnalogueModelFromName(name, params);
+}
+
+AnalogueModel* PhyLayer::initializeLogNormalShadowing(ParameterMap& params){
+	double mean = params["mean"].doubleValue();
+	double stdDev = params["stdDev"].doubleValue();
+	simtime_t interval = params["interval"].doubleValue();
+
+	return new LogNormalShadowing(mean, stdDev, interval);
 }
 
 AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){
