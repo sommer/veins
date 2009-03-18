@@ -1,24 +1,24 @@
 #ifndef TESTPHYLAYER_H_
 #define TESTPHYLAYER_H_
 
-#include <BasePhyLayer.h>
+#include <PhyLayer.h>
 #include <string>
 
 /**
- * @brief Simple BasePhyLayer sub class which is just responsible for
+ * @brief Simple PhyLayer sub class which is just responsible for
  * creating and initialising its own AnalogueModels and Decider.
  *
  * Initializing own AnalogueModels or Decider is the only task a PhyLayer-
  * subclass will normally have to do. Everything else should be already
- * done by the BasePhyLayer or should be implemented by writing your own
+ * done by the PhyLayer or should be implemented by writing your own
  * Decider or AnalogueModels.
  */
-class TestPhyLayer:public BasePhyLayer{
+class TestPhyLayer:public PhyLayer{
 protected:
 	int myIndex;
 
 	/**
-	 * @brief This method is called by the BasePhyLayer to initialize
+	 * @brief This method is called by the PhyLayer to initialize
 	 * the AnalogueModels read from the config.xml.
 	 *
 	 * Every AnalogueModel which should be used by a Simulation using this
@@ -34,7 +34,7 @@ protected:
 	AnalogueModel* createRandomFrequencyOnlyModel(ParameterMap & params);
 
 	/**
-	 * @brief This method is called by the BasePhyLayer to initialize
+	 * @brief This method is called by the PhyLayer to initialize
 	 * the Decider read from the config.xml.
 	 *
 	 * Every Decider which should be usable by a Simulation using this

@@ -9,13 +9,13 @@ Define_Module(TestPhyLayer);
 
 void TestPhyLayer::initialize(int stage) {
 	//call BasePhy's initialize
-	BasePhyLayer::initialize(stage);
+	PhyLayer::initialize(stage);
 
 	if(stage == 0) {
 		myIndex = findHost()->getIndex();
 
 	} else if(stage == 1) {
-		//Decider and AnalogueModels are created by the BasePhyLayer in this stage
+		//Decider and AnalogueModels are created by the PhyLayer in this stage
 	}
 }
 
@@ -44,9 +44,9 @@ void TestPhyLayer::handleMessage(cMessage* msg) {
 		}
 	}
 
-	//IF a subclass of BasePhyLayer overrides the handleMessage method it should
+	//IF a subclass of PhyLayer overrides the handleMessage method it should
 	//make sure to call the base method.
-	BasePhyLayer::handleMessage(msg);
+	PhyLayer::handleMessage(msg);
 }
 
 void TestPhyLayer::log(std::string msg) {
@@ -103,8 +103,8 @@ AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, Paramete
 	//Note: even if all models defined in the xml-config can be handled
 	//by this class method, there will be at least the call to create
 	//the RadioStateAnalogueModel which in almost every case has to be done
-	//by the BasePhyLayer.
-	return BasePhyLayer::getAnalogueModelFromName(name, params);
+	//by the PhyLayer.
+	return PhyLayer::getAnalogueModelFromName(name, params);
 }
 
 Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {

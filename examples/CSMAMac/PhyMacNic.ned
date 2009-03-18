@@ -1,7 +1,7 @@
 
 package org.mixim.examples.CSMAMac;
 
-import org.mixim.base.phyLayer.BasePhyLayer;
+import org.mixim.modules.phy.PhyLayer;
 import org.mixim.modules.mac.CSMAMacLayer;
 
 
@@ -20,7 +20,7 @@ module PhyMacNic
         input radioIn; // radioIn gate for sendDirect
 
     submodules:
-        phy: BasePhyLayer {
+        phy: PhyLayer {
             parameters:
                 @display("p=60,170;b=80,30,rect,white,,");
             //display: "p=60,150;i=prot3";

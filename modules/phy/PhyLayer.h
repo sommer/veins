@@ -26,6 +26,12 @@ protected:
 	virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
 
 	/**
+	 * @brief Creates and initializes a SimplePathlossModel with the
+	 * passed parameter values.
+	 */
+	AnalogueModel* initializeSimplePathlossModel(ParameterMap& params);
+
+	/**
 	 * @brief Creates and returns an instance of the Decider with the specified
 	 * name.
 	 *

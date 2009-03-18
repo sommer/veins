@@ -171,12 +171,6 @@ private:
 	 */
 	void initializeDecider(cXMLElement* xmlConfig);
 
-	/**
-	 * @brief Creates and initializes a SimplePathlossModel with the
-	 * passed parameter values.
-	 */
-	AnalogueModel* createSimplePathlossModel(ParameterMap& params);
-
 protected:
 
 	/**

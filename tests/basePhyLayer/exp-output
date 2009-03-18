@@ -1,15 +1,14 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0, build: 090226-10668, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
 Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/examples: 31
 Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20090304-09:12:49-7493
+Assigned runID=Test1-0-20090318-13:07:08-23739
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -145,7 +144,7 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4.5s
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20090304-09:12:49-7493
+Assigned runID=Test1-1-20090318-13:07:08-23739
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -252,17 +251,16 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4s
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0, build: 090226-10668, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
 Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/examples: 31
 Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20090304-09:12:49-7494
+Assigned runID=Test2-0-20090318-13:07:08-23740
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0

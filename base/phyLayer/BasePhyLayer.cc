@@ -6,7 +6,6 @@
 
 #include "SNRThresholdDecider.h"
 
-#include "analogueModel/SimplePathlossModel.h"
 
 //introduce BasePhyLayer as module to OMNet
 Define_Module(BasePhyLayer);
@@ -331,99 +330,11 @@ AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, Paramete
 	{
 		return radio->getAnalogueModel();
 	}
-	else if (name == "SimplePathlossModel")
-	{
-		return createSimplePathlossModel(params);
-	}
 
 	return 0;
 }
 
-AnalogueModel* BasePhyLayer::createSimplePathlossModel(ParameterMap& params){
 
-	// init with default value
-	double alpha;
-	double carrierFrequency;
-	bool useTorus = world->useTorus();
-	const Coord& playgroundSize = *(world->getPgs());
-
-	// get alpha-coefficient from config
-	ParameterMap::iterator it = params.find("alpha");
-
-	if ( it != params.end() ) // parameter alpha has been specified in config.xml
-	{
-		// set alpha
-		alpha = it->second.doubleValue();
-		coreEV << "createPathLossModel(): alpha set from config.xml to " << alpha << endl;
-
-
-		// check whether alpha is not smaller than specified in ConnectionManager
-		if(cc->hasPar("alpha") && alpha < cc->par("alpha").doubleValue())
-		{
-	        // throw error
-			opp_error("TestPhyLayer::createPathLossModel(): alpha can't be smaller than specified in \
-	               ConnectionManager. Please adjust your config.xml file accordingly");
-		}
-
-
-	} else // alpha has not been specified in config.xml
-	{
-
-		if (cc->hasPar("alpha")) // parameter alpha has been specified in ConnectionManager
-		{
-			// set alpha according to ConnectionManager
-			alpha = cc->par("alpha").doubleValue();
-			coreEV << "createPathLossModel(): alpha set from ConnectionManager to " << alpha << endl;
-		} else // alpha has not been specified in ConnectionManager
-
-		{
-			// set alpha to default value
-			alpha = 3.5;
-			coreEV << "createPathLossModel(): alpha set from default value to " << alpha << endl;
-		}
-	}
-
-
-
-	// get carrierFrequency from config
-	it = params.find("carrierFrequency");
-
-	if ( it != params.end() ) // parameter carrierFrequency has been specified in config.xml
-	{
-		// set carrierFrequency
-		carrierFrequency = it->second.doubleValue();
-		coreEV << "createPathLossModel(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
-
-
-		// check whether carrierFrequency is not smaller than specified in ConnectionManager
-		if(cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue())
-		{
-			// throw error
-			opp_error("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
-	               ConnectionManager. Please adjust your config.xml file accordingly");
-		}
-
-
-	} else // carrierFrequency has not been specified in config.xml
-	{
-
-		if (cc->hasPar("carrierFrequency")) // parameter carrierFrequency has been specified in ConnectionManager
-		{
-			// set carrierFrequency according to ConnectionManager
-			carrierFrequency = cc->par("carrierFrequency").doubleValue();
-			coreEV << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
-		} else // carrierFrequency has not been specified in ConnectionManager
-
-		{
-			// set carrierFrequency to default value
-			carrierFrequency  = 2.412e+9;
-			coreEV << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
-		}
-	}
-
-	return new SimplePathlossModel(alpha, carrierFrequency, &move, useTorus, playgroundSize, coreDebug);
-
-}
 
 //--Message handling--------------------------------------
 
