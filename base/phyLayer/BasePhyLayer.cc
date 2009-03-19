@@ -4,7 +4,6 @@
 #include "MacToPhyControlInfo.h"
 #include "PhyToMacControlInfo.h"
 
-#include "SNRThresholdDecider.h"
 
 
 //introduce BasePhyLayer as module to OMNet
@@ -194,11 +193,6 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 }
 
 Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
-
-	if(name == "SNRThresholdDecider"){
-		double threshold = params["threshold"];
-		return new SNRThresholdDecider(this, threshold, sensitivity, findHost()->getIndex(), coreDebug);
-	}
 
 	return 0;
 }

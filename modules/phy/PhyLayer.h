@@ -20,6 +20,7 @@
  *
  * Knows the following Deciders
  * - Decider80211
+ * - SNRThresholdDecider
  *
  * @ingroup phyLayer
  */
@@ -52,6 +53,7 @@ protected:
 	 * Is able to initialize the following Deciders:
 	 *
 	 * - Decider80211
+	 * - SNRThresholdDecider
 	 */
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 
@@ -59,6 +61,11 @@ protected:
 	 * @brief Initializes a new Decider80211 from the passed parameter map.
 	 */
 	virtual Decider* initializeDecider80211(ParameterMap& params);
+
+	/**
+	 * @brief Initializes a new SNRThresholdDecider from the passed parameter map.
+	 */
+	virtual Decider* initializeSNRThresholdDecider(ParameterMap& params);
 };
 
 #endif /* PHYLAYER_H_ */
