@@ -19,6 +19,9 @@ class FilledUpMapping;
  * This class is meant to be used as base class for Iterators which
  * want to change just several parts without having to implement and pipe every
  * other method of the ConstMappingIteratorInterface.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 template<class Base>
 class BaseFilteredIterator : public Base{
@@ -54,7 +57,9 @@ public:
  * @brief Const version of the BaseFilteredIterator. Meant to be used for
  * ConstMappingIterator instances.
  *
- * @see BaseFilteredIterator
+ * @sa BaseFilteredIterator *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  * */
 typedef BaseFilteredIterator<ConstMappingIterator> FilteredConstMappingIterator;
 
@@ -62,7 +67,9 @@ typedef BaseFilteredIterator<ConstMappingIterator> FilteredConstMappingIterator;
  * @brief Non-Const version of the BaseFilteredIterator. Meant to be used for
  * MappingIterator instances.
  *
- * @see BaseFilteredIterator
+ * @sa BaseFilteredIterator
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 class FilteredMappingIterator : public BaseFilteredIterator<MappingIterator> {
 public:
@@ -78,6 +85,9 @@ public:
 /**
  * @brief Provides an implementation of the MappingIterator-
  * Interface which is able to iterate over TimeMappings.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 template<template <class Key, class Value, class Pair, class Iterator> class Interpolator>
 class TimeMappingIterator:public MappingIterator {
@@ -254,6 +264,9 @@ public:
  * @brief Implements the Mapping-interface with an InterpolateableMap from
  * simtime_t to double between which values can be interpolated to represent
  * a Mapping with only time as domain.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 template<template <class Key, class Value, class Pair, class Iterator> class Interpolator>
 class TimeMapping:public Mapping {
@@ -346,6 +359,9 @@ public:
  * @brief Helper-class for the MultiDimMapping which provides an Iterator
  * which linear interpolates between two other Mapping iterators. Or in
  * other words, it provides an Iterator for an linear interpolated Mapping.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 class LinearIntplMappingIterator:public MappingIterator {
 protected:
@@ -454,6 +470,9 @@ public:
 /**
  * @brief Helper class which represents a linear interpolation between
  * two other mappings.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 class LinearIntplMapping:public Mapping {
 protected:
@@ -533,6 +552,9 @@ public:
  * Provides either an pointer to an actual SubMapping of the MultiDimMapping or
  * a Pointer to an temporary InterpolatedMapping between two Sub-mappings of the
  * MultiDimMapping.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 template<>
 class Interpolated<Mapping*> {
@@ -640,6 +662,9 @@ public:
 /**
  * @brief Specialization of the Linear-template which provides LinearInterpolation
  * for pointer two Mappings. Used by MultiDimMapping.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 template<>
 class Linear<double, Mapping*, std::map<double, Mapping*>::value_type, std::map<double, Mapping*>::const_iterator> {
@@ -747,6 +772,14 @@ public:
 	}
 };
 
+/**
+ * @brief Represents a constant mathematical mapping (f(x) = c)
+ *
+ * Returns the same value for every point in any dimension.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
+ */
 class ConstantSimpleConstMapping : public SimpleConstMapping {
 protected:
 	double value;
@@ -764,10 +797,16 @@ public:
 		return value;
 	}
 
+	/**
+	 * @brief Returns the value of this constant mapping.
+	 */
 	double getValue() const {
 		return value;
 	}
 
+	/**
+	 * @brief Sets the value of this constant mapping.
+	 */
 	void setValue(double val) { value = val; }
 
 	ConstMapping* constClone() const  {
@@ -775,6 +814,16 @@ public:
 	}
 };
 
+/**
+ * @brief Wraps an ConstMappingIterator into a MappingIterator
+ * interface.
+ *
+ * Assumes that "setValue()" of the MappingIterator interface will
+ * never be called.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
+ */
 class ConstMappingIteratorWrapper : public MappingIterator {
 protected:
 	ConstMappingIterator* iterator;
@@ -808,6 +857,15 @@ public:
 	virtual double getValue() const { return iterator->getValue(); }
 };
 
+/**
+ * @brief Wraps an ConstMapping into a Mapping interface.
+ *
+ * Assumes that "setValue()" of the Mapping interface will
+ * never be called.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
+ */
 class ConstMappingWrapper : public Mapping {
 protected:
 	ConstMapping* mapping;
@@ -863,6 +921,9 @@ class MultiDimMapping;
  * at first the sub-iterator at the current position is iterated to its
  * end before the position inside the dimension of this iterator is increased.
  * This assures the iteration order demanded by the MappingIterator-interface.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 template<template <class Key, class Value,
 					class Pair,
@@ -1211,6 +1272,9 @@ public:
  * can either be in turn MultiDimMappings with further sub-mappings or they can
  * be TimedMappings if their dimension is the time. The TimedMappings therefore
  * represent the leafs of the tree-like structure.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 template<template <class Key, class Value,
 					class Pair,
@@ -1532,7 +1596,9 @@ public:
  * Assures that although FilledUpMapping is an Mapping instance the
  * "setValue()"-method may never be called.
  *
- * @see FilledUpMapping
+ * @sa FilledUpMapping
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 class FilledUpMappingIterator : public MultiDimMappingIterator<Linear>{
 public:
@@ -1554,6 +1620,9 @@ public:
  * to handle cases where the second mappings domain is a real subset of
  * the first mappings domain (meaning the first mappings domain has the same
  * dimensions as the seconds domain and at least one further dimension).
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 class FilledUpMapping : public MultiDimMapping<Linear> {
 //--------members----------
@@ -1702,7 +1771,12 @@ public:
 };
 */
 
-
+/**
+ * @brief Provides several utility methods for Mappings.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
+ */
 class MappingUtils {
 private:
 	static ConstMapping* mappingBuffer;
@@ -1820,21 +1894,6 @@ public:
 	 * of the first operand.
 	 * The domain of the second Mapping has to be a subset of the domain of
 	 * the first mapping.
-	 *
-	 * Currently the domain of the second mapping has to be a simple subset of
-	 * the domain of the first Mapping, this means that the only missing dimensions
-	 * in the second mapping have to be the compared biggest ones.
-	 * For example:
-	 *
-	 * not simple subset:
-	 * domain 1 - d3, d2, d1, time
-	 * domain 2 - - , d2, - , time
-	 *                    ^
-	 *                   gap -> not a simple subset
-	 *
-	 * simple subset:
-	 * domain 1 - d3, d2, d1, time
-	 * domain 2 - - , - , d1, time
 	 */
 	static Mapping* multiply(ConstMapping& f1, ConstMapping& f2);
 	static Mapping* add(ConstMapping& f1, ConstMapping& f2);
@@ -1903,6 +1962,9 @@ public:
 
 /**
  * @brief Deletes its ConstMapping when this iterator is deleted.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 class ConcatConstMappingIterator : public FilteredConstMappingIterator{
 //--------members----------
@@ -1924,6 +1986,13 @@ public:
 	}
 };
 
+/**
+ * @brief Defines it values by concatenating a number of other
+ * Mappings.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
+ */
 template<class Operator>
 class ConcatConstMapping: public ConstMapping {
 protected:

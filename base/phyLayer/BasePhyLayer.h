@@ -53,16 +53,21 @@
  * The actual evaluation of incoming signals is done by the
  * Decider.
  *
- * In most cases it should be sufficient to only write your own
- * Decider or AnalogueModel instead of sub-classing from
- * BasePhyLayer if you want to write your own physical layer.
- *
- *
  * base class ChannelAccess:
  * - provides access to the channel via the ConnectionManager
  *
  * base class DeciderToPhyInterface:
  * - interface for the Decider
+ *
+ *  base class MacToPhyInterface:
+ * - interface for the Mac
+ *
+ * @defgroup phyLayer Physical layer
+ * @{
+ * 		@defgroup analogueModels Analogue models
+ * 		@defgroup decider Decider
+ * @}
+ * @ingroup phyLayer
  */
 class BasePhyLayer: public ChannelAccess,
 					public DeciderToPhyInterface,
@@ -147,9 +152,9 @@ private:
 	 * If the parameter couldn't be found the value of defaultValue
 	 * is returned.
 	 *
-	 * parName 		- the name of the ned-parameter
-	 * defaultValue - the value to be returned if the parameter
-	 * 				  couldn't be found
+	 * @param parName 		- the name of the ned-parameter
+	 * @param defaultValue 	- the value to be returned if the parameter
+	 * 				  		  couldn't be found
 	 */
 	template<class T> T readPar(const char* parName, const T defaultValue);
 
@@ -342,6 +347,9 @@ public:
 	 *
 	 * The switching process can take some time depending on the
 	 * specified switching times in the ned file.
+	 *
+	 * @return	-1: Error code if the Radio is currently switching
+	 *			else: switching time from the current RadioState to the new RadioState
 	 */
 	virtual simtime_t setRadioState(int rs);
 

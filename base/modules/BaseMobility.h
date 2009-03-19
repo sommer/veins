@@ -50,9 +50,10 @@
  * For most mobility modules the only two functions you need to
  * implement to define your own mobility module are makeMove and
  * fixIfHostGetsOutside..
- * 
+ *
  * This file contains 3D implementations from Michael Swigulski.
  *
+ * @defgroup mobility Mobility
  * @ingroup mobility
  * @ingroup basicModules
  * @author Daniel Willkomm, Andras Varga
@@ -62,7 +63,7 @@ class BaseMobility : public BaseModule
   public:
     /**
      * @brief Selects how a node should behave if it reaches the edge
-     * of the playground.  
+     * of the playground.
      *
      * @sa handleIfOutside()
      **/
@@ -73,9 +74,9 @@ class BaseMobility : public BaseModule
         RAISEERROR     ///< stop the simulation with error
     };
 
-    /** 
+    /**
      * @brief The kind field of messages
-     * 
+     *
      * that are used internally by this class have one of these values
      **/
     enum BaseMobilityMsgKinds {
@@ -98,20 +99,20 @@ class BaseMobility : public BaseModule
     };
 
   protected:
-	
+
     /** @brief Pointer to BaseWorldUtility -- these two must know each other */
     BaseWorldUtility *world;
-    
+
     /** @brief Pointer to host module, to speed up repeated access*/
     cModule* hostPtr;
     int hostId;
-    
+
     /** @brief Stores the current position and move pattern of the host*/
     Move move;
 
     /** @brief Store the category of HostMove */
     int moveCategory;
-    
+
     /** @brief Time interval to update the hosts position*/
     simtime_t updateInterval;
 
@@ -136,11 +137,11 @@ class BaseMobility : public BaseModule
   protected:
     /** @brief Called upon arrival of a self messages*/
     virtual void handleSelfMsg( cMessage* );
-    
+
     /** @brief Called upon arrival of a border messages*/
     virtual void handleBorderMsg( cMessage* );
-    
-    /** 
+
+    /**
      * @brief Moves the host
      *
      * This function is called every time a MOVE_HOST self message
@@ -169,7 +170,7 @@ class BaseMobility : public BaseModule
 	Coord getRandomPosition() { return world->getRandomPosition();}
 
     /**
-     * @name Border handling 
+     * @name Border handling
      *
      * @brief Utility functions to handle hosts that move outside the
      * playground
@@ -181,8 +182,8 @@ class BaseMobility : public BaseModule
     bool handleIfOutside(BorderPolicy, Coord&, Coord&, Coord&, double&);
 
     /**
-     * @brief Should be redefined in subclasses. 
-     * 
+     * @brief Should be redefined in subclasses.
+     *
      * Should invoke handleIfOutside() and pass the references to the
      * parameters to be modified.
      *
@@ -196,7 +197,7 @@ class BaseMobility : public BaseModule
 	error("fixIfHostGetsOutside has to be redefined by the user");
     };
 
-    /** 
+    /**
      * @brief Checks whether the host is outside the playground and
      * returns where
     **/
@@ -210,19 +211,19 @@ class BaseMobility : public BaseModule
      * a Coordinate at a given border
      **/
     void reflectCoordinate(BorderHandling border, Coord& c);
-    /** 
+    /**
      * @brief Utility function to reflect the node if it goes outside
      * the playground.
      **/
     void reflectIfOutside(BorderHandling, Coord&, Coord&, Coord&, double&);
 
-    /** 
+    /**
      * @brief Utility function to wrap the node to the opposite edge
      * (torus) if it goes outside the playground.
      **/
     void wrapIfOutside(BorderHandling, Coord&, Coord&);
 
-    /** 
+    /**
      * @brief Utility function to place the node randomly if it goes
      * outside the playground.
      **/

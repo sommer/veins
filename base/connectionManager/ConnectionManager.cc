@@ -10,15 +10,6 @@
 
 Define_Module( ConnectionManager );
 
-
-/**
- * Calculation of the interference distance based on the transmitter
- * power, wavelength, pathloss coefficient and a threshold for the
- * minimal receive Power
- *
- * You may want to overwrite this function in order to do your own
- * interference calculation
- **/
 double ConnectionManager::calcInterfDist()
 {
   double interfDistance;
@@ -37,12 +28,12 @@ double ConnectionManager::calcInterfDist()
   double waveLength     = (BaseWorldUtility::speedOfLight/carrierFrequency);
   //minimum power level to be able to physically receive a signal
   double minReceivePower = pow(10.0, sat/10.0);
-  
-  interfDistance = pow(waveLength * waveLength * pMax / 
+
+  interfDistance = pow(waveLength * waveLength * pMax /
 		       (16.0*M_PI*M_PI*minReceivePower), 1.0/alpha);
-  
+
   ccEV <<"max interference distance:"<<interfDistance<<endl;
-  
+
   return interfDistance;
 }
 

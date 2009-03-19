@@ -6,7 +6,7 @@
 #include "AirFrame_m.h"
 
 /**
- * This class is used by the BasePhyLayer to keep track
+ * @brief This class is used by the BasePhyLayer to keep track
  * of the AirFrames on the channel.
  *
  * ChannelInfo is able to return every AirFrame which
@@ -35,6 +35,8 @@
  * 		 This also affects "getAirFrames" in the way that you
  * 		 may only ask for intervals which lie before the
  * 		 "current time" of ChannelInfo.
+ *
+ * @ingroup phyLayer
  */
 class ChannelInfo {
 
@@ -50,7 +52,7 @@ protected:
 	typedef std::map<simtime_t, AirFrameTimeList > AirFrameMatrix;
 
 	/**
-	 * Iterator which iterates over every intersection of
+	 * @brief Iterator for every intersection of
 	 * a specific interval in a AirFrameMatrix.
 	 */
 	template<class C, class ItMatrix, class ItList>
@@ -66,7 +68,7 @@ protected:
 	public:
 
 		/**
-		 * Creates an iterator for the specified interval at the
+		 * @brief Creates an iterator for the specified interval at the
 		 * specified AirFrameMatrix.
 		 */
 		BaseIntersectionIterator(C* airFrames, simtime_t from, simtime_t to) :
@@ -80,7 +82,7 @@ protected:
 		}
 
 		/**
-		 * Increases the iterator to the next intersecting AirFrame
+		 * @brief Increases the iterator to the next intersecting AirFrame
 		 * and returns a pointer to this AirFrame.
 		 */
 		AirFrame* next() {
@@ -127,8 +129,9 @@ protected:
 									 AirFrameTimeList::iterator>(airFrames, from, to) {}
 
 		/**
-		 * Erases the AirFrame the iterator currently points to
+		 * @brief Erases the AirFrame the iterator currently points to
 		 * from the AirFrameMatrix.
+		 *
 		 * After the erase the iterator points to an invalid value
 		 * and "next()" should be called.
 		 */
@@ -157,27 +160,29 @@ protected:
 	};
 
 	/**
-	 * Stores the currently active AirFrames. This means every AirFrame
-	 * which was added but not yet removed.
+	 * @brief Stores the currently active AirFrames.
+	 *
+	 * This means every AirFrame which was added but not yet removed.
 	 */
 	AirFrameMatrix activeAirFrames;
 
 	/**
-	 * Stores inactive AirFrames. This means every AirFrame which has been
-	 * already removed but still is needed because it intersect with one or
-	 * more active AirFrames.
+	 * @brief Stores inactive AirFrames.
+	 *
+	 * This means every AirFrame which has been already removed but still
+	 * is needed because it intersect with one or more active AirFrames.
 	 */
 	AirFrameMatrix inactiveAirFrames;
 
 	typedef std::map<AirFrame*, simtime_t> AirFrameStartMap;
 
 	/**
-	 * Stores the start time of every AirFrame.
+	 * @brief Stores the start time of every AirFrame.
 	 */
 	AirFrameStartMap airFrameStarts;
 
 	/**
-	 * Stores the earliest time-point we need to keep information for.
+	 * @brief Stores the earliest time-point we need to keep information for.
 	 */
 	simtime_t earliestInfoPoint;
 
@@ -189,8 +194,9 @@ protected:
 
 
 	/**
-	 * Returns every AirFrame of an AirFrameMatrix which
+	 * @brief Returns every AirFrame of an AirFrameMatrix which
 	 * intersect with a given interval.
+	 *
 	 * The intersecting AirFrames are stored in the
 	 * AirFrameVector reference passed as parameter.
 	 */
@@ -199,7 +205,7 @@ protected:
 						   AirFrameVector& outVector) const;
 
 	/**
-	 * Returns true if there is at least one AirFrame in the
+	 * @brief Returns true if there is at least one AirFrame in the
 	 * passed AirFrameMatrix which intersect with the given
 	 * interval.
 	 */
@@ -207,7 +213,8 @@ protected:
 						 simtime_t from, simtime_t to) const;
 
 	/**
-	 * Moves an previously active AirFrame to the inactives.
+	 * @brief Moves an previously active AirFrame to the inactives.
+	 *
 	 * This methods checks if there are some inactive AirFrames
 	 * which can be deleted because the AirFrame to inactivate
 	 * was the last one they intersected with.
@@ -218,7 +225,7 @@ protected:
 	void addToInactives(AirFrame* a, simtime_t startTime, simtime_t endTime);
 
 	/*
-	 * Deletes an AirFrame from an AirFrameMatrix.
+	 * @brief Deletes an AirFrame from an AirFrameMatrix.
 	 */
 	void deleteAirFrame(AirFrameMatrix& airFrames,
 			 			AirFrame* a,
@@ -227,7 +234,8 @@ protected:
 public:
 
 	/**
-	 * Tells the ChannelInfo that an AirFrame has started.
+	 * @brief Tells the ChannelInfo that an AirFrame has started.
+	 *
 	 * From this point ChannelInfo gets the ownership of the
 	 * AirFrame.
 	 *
@@ -237,8 +245,9 @@ public:
 	void addAirFrame(AirFrame* a, simtime_t startTime);
 
 	/**
-	 * Tells the ChannelInfo that an AirFrame is over. This
-	 * does not mean that in looses ownership of the AirFrame.
+	 * @brief Tells the ChannelInfo that an AirFrame is over.
+	 *
+	 * This does not mean that in looses ownership of the AirFrame.
 	 *
 	 * @return  The current time-point from that information concerning AirFrames
 	 * is needed to be stored.
@@ -246,8 +255,8 @@ public:
 	simtime_t removeAirFrame(AirFrame* a);
 
 	/**
-	 * Fills the passed AirFrameVector reference with the AirFrames
-	 * which intersect with a given time interval.
+	 * @brief Fills the passed AirFrameVector reference with the AirFrames
+	 * which intersect with the given time interval.
 	 *
 	 * Note: Completeness of the list of AirFrames for specific
 	 * interval can only be assured if start and end point of
@@ -259,7 +268,7 @@ public:
 	void getAirFrames(simtime_t from, simtime_t to, AirFrameVector& out) const;
 
 	/**
-	 * Returns the current time-point from that information concerning AirFrames
+	 * @brief Returns the current time-point from that information concerning AirFrames
 	 * is needed to be stored.
 	 */
 	simtime_t getEarliestInfoPoint()

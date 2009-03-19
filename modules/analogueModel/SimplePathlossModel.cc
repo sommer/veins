@@ -2,13 +2,6 @@
 
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimplePathlossModel): "
 
-/**
- * @brief The actual filtering method.
- *
- * The attenuation value(s) is(are) calculated and put to the newly created
- * mapping.
- *
- */
 void SimplePathlossModel::filterSignal(Signal& s){
 
 	/** Get start of the signal */
@@ -38,12 +31,6 @@ void SimplePathlossModel::filterSignal(Signal& s){
 	s.addAttenuation(attMapping);
 }
 
-/**
- * @brief Method to calculate the attenuation value for pathloss.
- *
- * Functionality is similar to pathloss-calculation in BasicSnrEval
- *
- */
 double SimplePathlossModel::calcPathloss(const Coord& myPos, const Coord& sendersPos)
 {
 	/*

@@ -11,9 +11,17 @@
 #include "BasePhyLayer.h"
 
 /**
- * @brief Does not more than the BasePhyLayer except implementing
- * "getDeciderFromName()" and "getAnalogueModelFromName()" for
- * the AnalogueModels and Decider defined in modules.
+ * @brief Provides initialisation for several AnalogueModels and Deciders
+ * from modules directory.
+ *
+ * Knows the following AnalogueModels:
+ * - SimplePathlossModel
+ * - LogNormalShadowing
+ *
+ * Knows the following Deciders
+ * - Decider80211
+ *
+ * @ingroup phyLayer
  */
 class PhyLayer: public BasePhyLayer {
 protected:

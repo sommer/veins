@@ -4,6 +4,25 @@
 #include <map>
 #include <algorithm>
 
+/**
+ * @brief Represents an interpolated value of any type.
+ *
+ * This class is used for performance, transparency and memory
+ * reasons. Since the actual value can be of arbitrary
+ * type and therefore arbitrary complexity (for example a whole
+ * Mapping instance) or could even be a pointer to an existing
+ * or a new object. This class hides the actual value from the
+ * user and just provides it with the value and takes care
+ * of any memory deallocation if necessary.
+ *
+ * The actual value can be gotten by dereferencing the instance of
+ * this class (like with iterators).
+ *
+ * Returned by InterpolateableMaps "getValue()"
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
+ */
 template<class V>
 class Interpolated {
 protected:
@@ -52,6 +71,9 @@ public:
  *
  * If there is no smaller entry it returns the next bigger or the
  * "out of range"-value, if set.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 template<class Key, class V, class Pair, class InputIterator>
 class NextSmaller {
@@ -112,6 +134,9 @@ public:
  * @brief Given two iterators defining a range of key-value-pairs this class
  * provides interpolation of values for an arbitrary key by returning the
  * value of the nearest entry.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 template<class Key, class V, class Pair, class InputIterator>
 class Nearest {
@@ -185,6 +210,9 @@ public:
 /**
  * @brief Given two iterators defining a range of key-value-pairs this class
  * provides linear interpolation of the value at an arbitrary key-position.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 template<class Key, class V, class Pair, class InputIterator>
 class Linear {
@@ -295,6 +323,9 @@ public:
  * 										  Iterator upperBound)
  * 				  See the NextSmaller template for an example of an Interpolator.
  * 				  Default is NextSmaller<Key, V, Pair, Iterator>.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 template<class Key, class V,
 		 class Pair = const typename std::map<Key, V>::value_type,
@@ -460,6 +491,9 @@ public:
  *   which returns an iterator pointing to the newly inserted element
  *
  * See ConstInterpolateableIterator for more details.
+ *
+ * @author Karl Wessel
+ * @ingroup mappingDetail
  */
 template<class Key, class V,
 		 class Container = std::map<Key, V>,
@@ -505,6 +539,17 @@ public:
 	}
 };
 
+/**
+ * @brief Represents a std::map which is able to interpolate.
+ *
+ * Returns interpolated values if accessed at position without keys.
+ *
+ * Used to represent Mappings
+ *
+ * @author Karl Wessel
+ * @sa Mapping
+ * @ingroup mappingDetail
+ */
 template<class Key, class V,
 		 class Interpolator = NextSmaller<Key, V, typename std::map<Key, V>::value_type, typename std::map<Key, V>::const_iterator> >
 class InterpolateableMap:public std::map<Key, V> {

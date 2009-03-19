@@ -29,6 +29,7 @@ class DeciderResult;
  * 		- tell the BasePhyLayer to send a control message to the MACLayer (to answer
  * 			a ChannelSenseRequest)
  *
+ * @ingroup decider
  */
 class DeciderToPhyInterface
 {

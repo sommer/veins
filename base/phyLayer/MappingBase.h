@@ -22,6 +22,9 @@
  * defined ordering of the Dimensions it DOES matter which
  * dimensions are instantiated the first time.
  * Only the time dimension will always have zero as unique id.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class Dimension {
 protected:
@@ -112,6 +115,9 @@ public:
  *
  * Note: Unlike Arguments and Mappings, a DimensionSet does not contain "time"
  * as dimension per default. You'll have to add it like any other dimension.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class DimensionSet:public std::set<Dimension> {
 public:
@@ -209,6 +215,9 @@ public:
  *
  * Note: Currently an Argument can be maximal defined over ten Dimensions
  * plus the time dimension!
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class Argument{
 protected:
@@ -424,6 +433,9 @@ public:
  * Although this exception isn't thrown by every implementation of the "next()"-method it is always
  * a bad idea to call "next()" although there isn't any next position.
  * You should check "hasNext()" before calling "next()" or "nextPosition()".
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class NoNextIteratorException {};
 
@@ -443,6 +455,9 @@ class NoNextIteratorException {};
  *
  * "Const" means that you can not change the values of the underlying Mapping
  * with this iterator.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class ConstMappingIterator {
 public:
@@ -527,6 +542,13 @@ class Mapping;
  * This class is an interface which describes a mapping (math.)
  * from a arbitrary dimensional domain (represented by a DimensionSet)
  * to a double value.
+ *
+ * @defgroup mapping Mapping
+ * @{
+ * 		@defgroup mappingDetail Mapping details
+ * @}
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class ConstMapping {
 protected:
@@ -611,7 +633,10 @@ public:
  *
  * Implementations of this class are able to change the underlying
  * Mapping at the current position of the iterator with constant
- * complexity..
+ * complexity.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class MappingIterator:public ConstMappingIterator {
 
@@ -635,6 +660,9 @@ public:
  * This class extends the ConstMapping interface with write access.
  *
  * See ConstMapping for details.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class Mapping:public ConstMapping {
 public:
@@ -759,6 +787,9 @@ public:
  *
  * The underlying ConstMapping has to provide a set of key-entries (Arguments) to the
  * iterator to tell it the positions it should iterate over.
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class SimpleConstMappingIterator:public ConstMappingIterator {
 protected:
@@ -922,6 +953,9 @@ public:
  * SimpleConstMappingIterator which assumes that the underlying ConstMappings
  * getValue()-method is fast enough to be called on every iteration step
  * (which means constant complexity).
+ *
+ * @author Karl Wessel
+ * @ingroup mapping
  */
 class SimpleConstMapping:public ConstMapping {
 private:

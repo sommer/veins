@@ -18,6 +18,7 @@ class RSAMMapping;
  * according to the actual RadioStates the Radio were in during
  * the Signal's time interval
  *
+ * @ingroup phyLayer
  */
 class RadioStateAnalogueModel : public AnalogueModel
 {
@@ -229,6 +230,7 @@ public:
  * For this basic version we assume a minimal attenuation when the Radio is in
  * state RX, and a maximum attenuation otherwise.
  *
+ * @ingroup phyLayer
  */
 class Radio
 {
@@ -485,6 +487,7 @@ protected:
 /**
  * @brief ConstMapingIterator implementation for a RSAM
  *
+ * @ingroup phyLayer
  */
 class RSAMConstMappingIterator : public ConstMappingIterator
 {
@@ -738,6 +741,7 @@ public:
  * class RSAMMapping is a friend of class RadioStateAnalogueModel
  *
  *
+ * @ingroup phyLayer
  */
 class RSAMMapping : public ConstMapping
 {

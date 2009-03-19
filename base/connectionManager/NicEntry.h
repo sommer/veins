@@ -72,9 +72,7 @@ class NicEntry : public cObject
 
   public:
     /**
-     * @brief Constrcutor, initializes all members
-     *
-     * @todo initialize position!
+     * @brief Constructor, initializes all members
      */
     NicEntry(bool debug) : nicId(0), nicPtr(0), hostId(0){
         coreDebug = debug;
@@ -82,7 +80,6 @@ class NicEntry : public cObject
 
     /**
      * @brief Destructor -- needs to be there...
-     *
      */
     virtual ~NicEntry() {}
 

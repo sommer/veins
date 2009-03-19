@@ -159,9 +159,6 @@ void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scope
     }
 }
 
-/**
- * Calculates the propagation delay for the passed AirFrame.
- */
 simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic) {
 	if(!usePropagationDelay)
 		return 0;

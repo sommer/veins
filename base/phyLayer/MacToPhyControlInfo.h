@@ -4,48 +4,51 @@
 #include "Signal_.h"
 
 /**
- * Stores information which is needed by the physical layer
+ * @brief Stores information which is needed by the physical layer
  * when sending a MacPkt.
+ *
+ * @ingroup phyLayer
+ * @ingroup macLayer
  */
 class MacToPhyControlInfo: public cObject {
 protected:
 	Signal* signal;
-	
+
 public:
 	/**
-	 * Initialize the MacToPhyControlInfo with the passed 
+	 * @brief Initialize the MacToPhyControlInfo with the passed
 	 * signal or null if signal is ommited.
-	 * 
+	 *
 	 * NOTE: Once a signal is passed to the MacToPhyControlInfo,
 	 * 		 MacToPhyControlInfo takes the ownership of the Signal.
 	 */
 	MacToPhyControlInfo(Signal* signal = 0):
 		signal(signal) {}
-	
+
 	/**
-	 * Delete the signal if it is still in our ownership.
+	 * @brief Delete the signal if it is still in our ownership.
 	 */
 	virtual ~MacToPhyControlInfo() {
 		if(signal)
 			delete signal;
 	}
-	
+
 	/**
-	 * Sets the signal of this MacToPhyControlInfo.
-	 * 
+	 * @brief Sets the signal of this MacToPhyControlInfo.
+	 *
 	 * NOTE: Once a signal is passed to the MacToPhyControlInfo,
 	 * 		 MacToPhyControlInfo takes the ownership of the Signal.
 	 */
 	void setSignal(Signal* s) {
 		if(signal)
 			delete signal;
-		
+
 		signal = s;
 	}
-	
+
 	/**
-	 * Returns a pointer to the Signal of this ControlInfo.
-	 * 
+	 * @brief Returns a pointer to the Signal of this ControlInfo.
+	 *
 	 * NOTE: The ownership of the Signal is passed together with
 	 * 		 the Signal itself. This means the caller of this
 	 * 		 method is responsible for deletion of the Signal.

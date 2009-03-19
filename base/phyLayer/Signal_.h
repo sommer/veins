@@ -21,6 +21,8 @@
  * physical layer.
  * The RX-power Mapping is calculated on demand by multiplying the TX-power Mapping with
  * every attenuation Mapping of the signal.
+ *
+ * @ingroup phyLayer
  */
 class Signal {
 public:

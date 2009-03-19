@@ -7,11 +7,6 @@
 
 #include "BaseDecider.h"
 
-/**
- * @brief This function processes a AirFrame given by the PhyLayer and
- * returns the time point when Decider wants to be given the AirFrame again
- *
- */
 simtime_t BaseDecider::processSignal(AirFrame* frame) {
 
 	assert(frame);
@@ -74,14 +69,6 @@ simtime_t BaseDecider::processSignalEnd(AirFrame* frame) {
 	return notAgain;
 }
 
-/**
- * @brief A function that returns information about the channel state
- *
- * It is an alternative for the MACLayer in order to obtain information
- * immediately (in contrast to sending a ChannelSenseRequest,
- * i.e. sending a cMessage over the OMNeT-control-channel)
- *
- */
 ChannelState BaseDecider::getChannelState() {
 
 	simtime_t now = phy->getSimTime();
@@ -96,19 +83,6 @@ ChannelState BaseDecider::getChannelState() {
 }
 
 
-/**
- * @brief This function is called by the PhyLayer to hand over a
- * ChannelSenseRequest.
- *
- * The MACLayer is able to send a ChannelSenseRequest to the PhyLayer
- * that calls this funtion with it and is returned a time point when to
- * re-call this function with the specific ChannelSenseRequest.
- *
- * The Decider puts the result (ChannelState) to the ChannelSenseRequest
- * and "answers" by calling the "sendControlMsg"-function on the
- * DeciderToPhyInterface, i.e. telling the PhyLayer to send it back.
- *
- */
 simtime_t BaseDecider::handleChannelSenseRequest(ChannelSenseRequest* request) {
 
 	assert(request);
@@ -215,16 +189,6 @@ void BaseDecider::answerCSR(CSRInfo& requestInfo) {
 	requestInfo.first = 0;
 }
 
-/**
- * @brief Calculates a SNR-Mapping for a Signal.
- *
- * Therefore a Noise-Strength-Mapping is calculated for the time-interval
- * of the Signal and the Signal-Strength-Mapping is divided by the
- * Noise-Strength-Mapping.
- *
- * Note: 'divided' means here the special element-wise operation on mappings.
- *
- */
 Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
 {
 	/* calculate Noise-Strength-Mapping */
@@ -247,13 +211,6 @@ Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
 	return snrMap;
 }
 
-/**
- * @brief Calculates a RSSI-Mapping (or Noise-Strength-Mapping) for a Signal.
- *
- * This method can be used to calculate a RSSI-Mapping in case the parameter
- * exclude is omitted OR to calculate a Noise-Strength-Mapping in case the
- * AirFrame of the received Signal is passed as parameter exclude.
- */
 Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 										simtime_t end,
 										AirFrame* exclude)

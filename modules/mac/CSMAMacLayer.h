@@ -44,7 +44,6 @@
  * of the upper layers to simulate a random processing time!
  *
  * The TestApplLayer e.g. implements such a processing delay!
- * TODO: implement TestApplLayer or remove this comment
  *
  * @ingroup macLayer
  * @author Marc L�bbers, Yosia Hadisusanto, Andreas Koepke, Karl Wessel

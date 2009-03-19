@@ -13,15 +13,6 @@ Define_Module(BasePhyLayer);
 
 //--Initialization----------------------------------
 
-/**
- * Reads and returns the parameter with the passed named.
- * If the parameter couldn't be found the value of defaultValue
- * is returned.
- *
- * parName 		- the name of the ned-parameter
- * defaultValue - the value to be returned if the parameter
- * 				  couldn't be found
- */
 template<class T> T BasePhyLayer::readPar(const char* parName, const T defaultValue){
 	if(hasPar(parName))
 		return par(parName);
@@ -29,12 +20,6 @@ template<class T> T BasePhyLayer::readPar(const char* parName, const T defaultVa
 		return defaultValue;
 }
 
-/**
- * OMNeT++ initialization function.
- * Read simple parameters.
- * Read and parse xml file for decider and anlogue models
- * configuration.
- */
 void BasePhyLayer::initialize(int stage) {
 
 	ChannelAccess::initialize(stage);
@@ -120,10 +105,6 @@ void BasePhyLayer::initialize(int stage) {
 	}
 }
 
-/**
- * Utility function. Reads the parameters of a XML element
- * and stores them in the passed ParameterMap reference.
- */
 void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outputMap) {
 	cXMLElementList parameters = xmlData->getElementsByTagName("Parameter");
 
@@ -169,10 +150,6 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 //-----Decider initialization----------------------
 
 
-/**
- * Initializes the Decider with the data from the
- * passed XML-config data.
- */
 void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 
 	decider = 0;
@@ -209,24 +186,13 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	decider = getDeciderFromName(name, params);
 
 	if(decider == 0) {
-		EV << "Could not find a decider with the name \"" << name << "\"." << endl;
+		opp_error("Could not find a decider with the name \"%s\".", name);
 		return;
 	}
 
 	coreEV << "Decider \"" << name << "\" loaded." << endl;
 }
 
-/**
- * Returns an instance of the Decider with the specified
- * name.
- *
- * This method is used by the BasePhyLayer during
- * initialisation to load the Decider which has been
- * specified in the ned file.
- *
- * This method has to be overriden if you want to be
- * able to load your own Decider.
- */
 Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 
 	if(name == "SNRThresholdDecider"){
@@ -234,17 +200,12 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 		return new SNRThresholdDecider(this, threshold, sensitivity, findHost()->getIndex(), coreDebug);
 	}
 
-	//return a dummy decider which does nothing
-	return new Decider(this);
+	return 0;
 }
 
 
 //-----AnalogueModels initialization----------------
 
-/**
- * Initializes the AnalogueModels with the data from the
- * passed XML-config data.
- */
 void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 
 	/*
@@ -310,17 +271,6 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 
 }
 
-/**
- * Returns an instance of the AnalogueModel with the
- * specified name.
- *
- * This method is used by the BasePhyLayer during
- * initialisation to load the AnalogueModels which
- * has been specified in the ned file.
- *
- * This method has to be overriden if you want to be
- * able to load your own AnalogueModels.
- */
 AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
 
 	// add default analogue models here
@@ -338,15 +288,6 @@ AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, Paramete
 
 //--Message handling--------------------------------------
 
-/**
- * OMNeT++ handle message function.
- * Classify and forward message to subroutines.
- * - AirFrames from channel
- * - self scheduled AirFrames
- * - MacPackets from MAC layer
- * - ControllMesasges from MAC layer
- * - self messages like TX_OVER and RADIO_SWITCHED
- */
 void BasePhyLayer::handleMessage(cMessage* msg) {
 
 	//self messages
@@ -372,9 +313,6 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
 	}
 }
 
-/**
- * Handles messages received from the channel (propably AirFrames).
- */
 void BasePhyLayer::handleAirFrame(cMessage* msg) {
 
 	AirFrame* frame = static_cast<AirFrame*>(msg);
@@ -398,9 +336,6 @@ void BasePhyLayer::handleAirFrame(cMessage* msg) {
 	}
 }
 
-/**
- * Handles incoming AirFrames with the state START_RECEIVE.
- */
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	coreEV << "Received new AirFrame with ID " << frame->getId() << " from channel" << endl;
 	channelInfo.addAirFrame(frame, simTime());
@@ -427,9 +362,6 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	}
 }
 
-/**
- * Handles incoming AirFrames with the state RECEIVING.
- */
 void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 
 	Signal& signal = frame->getSignal();
@@ -461,9 +393,6 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 	sendSelfMessage(frame, nextHandleTime);
 }
 
-/**
- * Handles incoming AirFrames with the state END_RECEIVE.
- */
 void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
 	coreEV << "End of Airframe with ID " << frame->getId() << "." << endl;
 
@@ -477,10 +406,6 @@ void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
 	radio->cleanAnalogueModelUntil(channelInfo.getEarliestInfoPoint());
 }
 
-/**
- * Handles messages received from the upper layer through the
- * data gate.
- */
 void BasePhyLayer::handleUpperMessage(cMessage* msg){
 
 	// check if Radio is in TX state
@@ -512,12 +437,6 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
 	sendMessageDown(frame);
 }
 
-/**
- * This function encapsulates messages from the upper layer into an
- * AirFrame and sets all necessary attributes.
- *
- * The new AirFrame instance becomes owner of the Signal and MacPacket
- */
 AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 {
 	// the cMessage passed must be a MacPacket... but no cast needed here
@@ -568,11 +487,6 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	return frame;
 }
 
-/**
- * Handles reception of a ChannelSenseRequest by forwarding it
- * to the decider and scheduling it to the point in time
- * returned by the decider.
- */
 void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
 	ChannelSenseRequest* senseReq = static_cast<ChannelSenseRequest*>(msg);
 
@@ -590,10 +504,6 @@ void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
 	// the request again
 }
 
-/**
- * Handles messages received from the upper layer through the
- * control gate.
- */
 void BasePhyLayer::handleUpperControlMessage(cMessage* msg){
 
 	switch(msg->getKind()) {
@@ -606,9 +516,6 @@ void BasePhyLayer::handleUpperControlMessage(cMessage* msg){
 	}
 }
 
-/**
- * Handles self scheduled messages.
- */
 void BasePhyLayer::handleSelfMessage(cMessage* msg) {
 
 	switch(msg->getKind()) {
@@ -641,31 +548,19 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg) {
 
 //--Send messages------------------------------
 
-/**
- * Sends the passed control message to the upper layer.
- */
 void BasePhyLayer::sendControlMessageUp(cMessage* msg) {
 	send(msg, upperControlOut);
 }
 
-/**
- * Sends the passed MacPkt to the upper layer.
- */
 void BasePhyLayer::sendMacPktUp(cMessage* pkt) {
 	send(pkt, upperGateOut);
 }
 
-/**
- * Sends the passed AirFrame to the channel
- */
 void BasePhyLayer::sendMessageDown(AirFrame* msg) {
 
 	sendToChannel(msg);
 }
 
-/**
- * Schedule self message to passed point in time.
- */
 void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
 	//TODO: maybe delete this method because it doesn't makes much sense,
 	//		or change it to "scheduleIn(msg, timeDelta)" which schedules
@@ -674,9 +569,6 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
 }
 
 
-/**
- * Filters the passed Signal to every registered AnalogueModel.
- */
 void BasePhyLayer::filterSignal(Signal& s) {
 	for(AnalogueModelList::const_iterator it = analogueModels.begin();
 		it != analogueModels.end(); it++) {
@@ -687,9 +579,7 @@ void BasePhyLayer::filterSignal(Signal& s) {
 }
 
 //--Destruction--------------------------------
-/**
- * Free the pointer to the decider and the AnalogueModels.
- */
+
 BasePhyLayer::~BasePhyLayer() {
 	//free timer messages
 	//TOPROFILE: check BasePhy destruction for memory leaks
@@ -749,39 +639,17 @@ BasePhyLayer::~BasePhyLayer() {
 
 //--MacToPhyInterface implementation-----------------------
 
-/**
- * Returns the current state the radio is in. See RadioState
- * for possible values.
- *
- * This method is mainly used by the mac layer.
- */
 int BasePhyLayer::getRadioState() {
 	Enter_Method_Silent();
 	return radio->getCurrentState();
 }
 
-/**
- * @brief Called the moment the simulated switching process of the Radio is finished.
- *
- * The Radio is set the new RadioState and the MAC Layer is sent
- * a confirmation message.
- */
 void BasePhyLayer::finishRadioSwitching()
 {
 	radio->endSwitch(simTime());
 	sendControlMsg(new cMessage(0, RADIO_SWITCHING_OVER));
 }
 
-/**
- * Tells the BasePhyLayer to switch to the specified
- * radio state. The switching process can take some time
- * depending on the specified switching times in the
- * ned file.
- *
- * @return	-1: Error code if the Radio is currently switching
- *
- * 			else: switching time from the current RadioState to the new RadioState
- */
 simtime_t BasePhyLayer::setRadioState(int rs) {
 	Enter_Method_Silent();
 
@@ -806,10 +674,6 @@ simtime_t BasePhyLayer::setRadioState(int rs) {
 	return switchTime;
 }
 
-/**
- * Returns the current state of the channel. See ChannelState
- * for details.
- */
 ChannelState BasePhyLayer::getChannelState() {
 	Enter_Method_Silent();
 
@@ -818,10 +682,6 @@ ChannelState BasePhyLayer::getChannelState() {
 
 //--DeciderToPhyInterface implementation------------
 
-/**
- * @brief Fills the passed AirFrameVector with all AirFrames that intersect
- * with the time interval [from, to]
- */
 void BasePhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) {
 	channelInfo.getAirFrames(from, to, out);
 }
@@ -833,22 +693,10 @@ ConstMapping* BasePhyLayer::getThermalNoise(simtime_t from, simtime_t to) {
 	return thermalNoise;
 }
 
-/**
- * @brief Called by the Decider to send a control message to the MACLayer
- *
- * This function can be used to answer a ChannelSenseRequest to the MACLayer
- */
 void BasePhyLayer::sendControlMsg(cMessage* msg) {
 	sendControlMessageUp(msg);
 }
 
-/**
- * @brief Called to send an AirFrame with DeciderResult to the MACLayer
- *
- * When a packet is completely received and not noise, the Decider
- * calls this function to send the packet together with
- * the corresponding DeciderResult up to the MACLayer
- */
 void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult* result) {
 
 	coreEV << "Decapsulating MacPacket from Airframe with ID " << frame->getId() << " and sending it up to MAC." << endl;
@@ -864,22 +712,11 @@ void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult* result) {
 	sendMacPktUp(packet);
 }
 
-/**
- * @brief Returns the current simulation time
- */
 simtime_t BasePhyLayer::getSimTime() {
 
 	return simTime();
 }
 
-/**
- * @brief Tells the PhyLayer to cancel a scheduled message (AirFrame or
- * ControlMessage).
- *
- * Used by the Decider if it has to handle an AirFrame or an control message
- * earlier than it has returned to the PhyLayer the last time the Decider
- * handled that message.
- */
 void BasePhyLayer::cancelScheduledMessage(cMessage* msg) {
 	if(msg->isScheduled()){
 		cancelEvent(msg);

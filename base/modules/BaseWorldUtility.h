@@ -24,6 +24,12 @@
 #include <BaseModule.h>
 #include "Coord.h"
 
+/**
+ * @brief Provides information and utility methods for the
+ * whole simulation.
+ *
+ * @ingroup basicModules
+ */
 class BaseWorldUtility : public BaseModule
 {
 protected:

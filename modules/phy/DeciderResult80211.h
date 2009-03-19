@@ -13,6 +13,8 @@
 /**
  * @brief Defines an extended DeciderResult for the 80211 protocol
  * which stores the bit-rate of the transmission.
+ *
+ * @ingroup decider
  */
 class DeciderResult80211 : public DeciderResult{
 protected:

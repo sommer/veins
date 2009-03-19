@@ -9,6 +9,8 @@
  * layer to the MAC layer.
  *
  * The ControlInfo contains the the DeciderResult of the Decider.
+ * @ingroup phyLayer
+ * @ingroup macLayer
  */
 class PhyToMacControlInfo: public cObject {
 protected:

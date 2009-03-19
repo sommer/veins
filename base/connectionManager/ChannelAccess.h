@@ -54,8 +54,6 @@
  **/
 class ChannelAccess : public BaseModule
 {
-    //Module_Class_Members( ChannelAccess, BaseModule, 0 );
-
 protected:
     /** @brief use sendDirect or not?*/
     bool useSendDirect;
@@ -66,36 +64,35 @@ protected:
     /** @brief debug this core module? */
     bool coreDebug;
 
-    /** @brief Sends a message to all nics connected to this one.*/
-    void sendToChannel(cPacket *msg);
-
-	/** Defines if the physical layer should simulate propagation delay.*/
+	/** @brief Defines if the physical layer should simulate propagation delay.*/
 	bool usePropagationDelay;
-
-    /**
-	 * Calculates the propagation delay to the passed receiving nic.
-	 */
-	simtime_t calculatePropagationDelay(const NicEntry* nic);
 
     /** @brief Last move of this host */
     Move move;
     /** @brief category number given by bb for RSSI */
     int catMove;
 
-    /**
-     * @brief Is this module already registered with ConnectionManager?
-     */
+    /** @brief Is this module already registered with ConnectionManager? */
     bool isRegistered;
 
     /* Pointer to the World Utility, to obtain some global information*/
 	BaseWorldUtility* world;
+
+protected:
+	/**
+	 * @brief Calculates the propagation delay to the passed receiving nic.
+	 */
+	simtime_t calculatePropagationDelay(const NicEntry* nic);
+
+	/** @brief Sends a message to all nics connected to this one.*/
+	void sendToChannel(cPacket *msg);
 
 public:
     /** @brief Register with ConnectionManager and subscribe to hostPos*/
     virtual void initialize(int stage);
 
     /**
-     * called by Blackboard to inform of changes
+     * @brief Called by Blackboard to inform of changes
      */
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 };

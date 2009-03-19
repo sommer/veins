@@ -329,9 +329,6 @@ LinearIntplMappingIterator::LinearIntplMappingIterator(ConstMappingIterator* lef
 	assert(leftIt->getPosition() == rightIt->getPosition());
 }
 
-/**
- * @brief Deletes the left and the right mapping iterator.
- */
 LinearIntplMappingIterator::~LinearIntplMappingIterator() {
 	if(leftIt)
 		delete leftIt;

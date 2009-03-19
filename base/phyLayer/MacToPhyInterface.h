@@ -10,8 +10,10 @@
 
 
 /**
+ * @brief Defines the methods provided by the phy to the mac layer.
  *
- *
+ * @ingroup macLayer
+ * @ingroup phyLayer
  */
 class MacToPhyInterface
 {

@@ -26,6 +26,7 @@
  *
  * You can subclass DeciderResult to create a more detailed result.
  *
+ * @ingroup decider
  */
 class DeciderResult
 {
@@ -62,6 +63,7 @@ public:
  * BasePhyLayer hands every receiving AirFrame several times to the
  * "processSignal()"-function and is returned a time point when to do so again.
  *
+ * @ingroup decider
  */
 class Decider
 {

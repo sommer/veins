@@ -10,15 +10,7 @@
 #include <Mac80211Pkt_m.h>
 
 
-// TODO: for now we check a larger mapping within an interval
-/**
- * @brief Checks a mapping against a specific threshold (element-wise).
- *
- * @return	false	, if there exists an entry smaller than threshold
- * 			true	, otherwise
- *
- *
- */
+
 DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
 {
 	assert(snrMap);
@@ -97,15 +89,6 @@ bool Decider80211::packetOk(double snirMin, int lengthMPDU, double bitrate)
     }
 }
 
-/**
- * @brief Processes a received AirFrame.
- *
- * The SNR-mapping for the Signal is created and checked against the Deciders
- * SNR-threshold. Depending on that the received AirFrame is either sent up
- * to the MAC-Layer or dropped.
- *
- * @return	usually return a value for: 'do not pass it again'
- */
 simtime_t Decider80211::processSignalEnd(AirFrame* frame)
 {
 	// here the Signal is finally processed

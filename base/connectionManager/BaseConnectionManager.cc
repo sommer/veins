@@ -95,9 +95,6 @@ void BaseConnectionManager::initialize(int stage)
 	}
 }
 
-/**
-* Calculates the corresponding cell of a coordinate.
-*/
 BaseConnectionManager::GridCoord BaseConnectionManager::getCellForCoordinate(const Coord& c) {
     return GridCoord(c, findDistance);
 }
@@ -110,10 +107,6 @@ void BaseConnectionManager::updateConnections(int nicID, const Coord* oldPos, co
 	checkGrid(oldCell, newCell, nicID );
 }
 
-/**
-* Returns the NicEntries of the cell with specified
-* coordinate.
-*/
 BaseConnectionManager::NicEntries& BaseConnectionManager::getCellEntries(BaseConnectionManager::GridCoord& cell) {
     return nicGrid[cell.x][cell.y][cell.z];
 }
@@ -131,10 +124,6 @@ void BaseConnectionManager::registerNicExt(int nicID)
     cellEntries[nicID] = nicEntry;
 }
 
-/**
- * Called by ConnectionManager::updateConnections(...) when a nic has
- * moved.
- **/
 void BaseConnectionManager::checkGrid(BaseConnectionManager::GridCoord& oldCell,
                                       BaseConnectionManager::GridCoord& newCell,
                                       int id)
@@ -177,11 +166,6 @@ void BaseConnectionManager::checkGrid(BaseConnectionManager::GridCoord& oldCell,
     }
 }
 
-/**
- * If the value is outside of its bounds (zero <= x < max) this function
- * returns -1 if useTorus is false and the wrapped value if useTorus is true.
- * Otherwise its just returns the value unchanged.
- */
 int BaseConnectionManager::wrapIfTorus(int value, int max) {
 	if(value < 0) {
 		if(useTorus) {
@@ -200,9 +184,6 @@ int BaseConnectionManager::wrapIfTorus(int value, int max) {
 	}
 }
 
-/**
- * Adds every direct Neighbor of a GridCoord to a union of coords.
- */
 void BaseConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion, GridCoord cell) {
 	for(int iz = (int)cell.z - 1; iz <= (int)cell.z + 1; iz++) {
 		if(iz != cell.z && cell.use2D) {
@@ -231,16 +212,6 @@ void BaseConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion, GridCoor
 	}
 }
 
-
-/**
- * Called by BaseConnectionManager::checkGrid(...) when a nic has
- * moved. Sets up a new connection between two nics, if they are
- * within interference range. Accordingly tears down a connection,
- * if the nics move out of range.
- *
- * @param id Id of the nic that will have its' connections
- * updated
- **/
 void BaseConnectionManager::updateNicConnections(NicEntries& nmap, NicEntry* nic)
 {
     int id = nic->nicId;
@@ -282,12 +253,6 @@ void BaseConnectionManager::updateNicConnections(NicEntries& nmap, NicEntry* nic
     }
 }
 
-/**
- * @brief Called by ChannelAccess for the nic module upon
- * initialization. The nics are written into a list.
- *
- * @param nic the cModule pointer of the registered nic
- **/
 bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos)
 {
 	assert(nic != 0);
@@ -320,19 +285,6 @@ bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, c
 	return sendDirect;
 }
 
-/**
- * Called by ChannelAccess to indicate that the nic
- * with "nicID" moved.
- *
- * Updates the nics' position and all its connections
- *
- * Actually this class stores the new position of the nic.
- * After that it updates the connections by calling the
- * method "updateConnections()".
- *
- * @param nicID the module id of the registered nic
- * @param newPos the new coordinates of the registered nic
- **/
 void BaseConnectionManager::updateNicPos(int nicID, const Coord* newPos)
 {
 	NicEntry* nicEntry = nics[nicID];
@@ -345,23 +297,11 @@ void BaseConnectionManager::updateNicPos(int nicID, const Coord* newPos)
 	updateConnections(nicID, &oldPos, newPos);
 }
 
-/**
- * Returns the gates of all nics in range of the nic with "nicID".
- */
 const NicEntry::GateList& BaseConnectionManager::getGateList(int nicID)
 {
 	return nics[nicID]->getGateList();
 }
 
-/**
- * Called by P2PPhyLayer. Needed to send a packet directly to a
- * certain nic without other nodes 'hearing' it. This is only useful
- * for physical layers that work with bit error probability like
- * P2PPhyLayer.
- *
- * @param nic NicEntry of the nic from which the a packet is about to be sent
- * @param targetNic NicEntry of the nic to which the packet is about to be sent
- */
 const cGate* BaseConnectionManager::getOutGateTo(const NicEntry* nic, const NicEntry* targetNic)
 {
     return nics[nic->nicId]->getOutGateTo(targetNic);

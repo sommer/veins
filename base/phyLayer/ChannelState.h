@@ -4,23 +4,25 @@
 #include <sstream>
 
 /**
- * Provides information about the current state of the channel:
+ * @brief Provides information about the current state of the channel:
  *
  * idle/busy - is the physical currently receiving something?
  * RSSI - the currently received signal strength indicator.
+ *
+ * @ingroup decider
  */
 class ChannelState {
 protected:
 
-	/** defines if the channel is currently idle */
+	/** @brief defines if the channel is currently idle */
 	bool idle;
 
-	/** the current RSSI value of the channel */
+	/** @brief the current RSSI value of the channel */
 	double rssi;
 public:
 
 	/**
-	 * Creates and initializes a new ChannelState with the
+	 * @brief Creates and initializes a new ChannelState with the
 	 * passed state.
 	 *
 	 * isIdle - defines if the channel is currently idle
@@ -30,13 +32,13 @@ public:
 		idle(isIdle), rssi(rssi) {}
 
 	/**
-	 * Returns true if the channel is considered idle, meaning
-	 * no currently incoming signals.
+	 * @brief Returns true if the channel is considered idle, meaning
+	 * depends on the used decider.
 	 */
 	bool isIdle();
 
 	/**
-	 * Returns the current RSSI value of the channel.
+	 * @brief Returns the current RSSI value of the channel.
 	 */
 	double getRSSI();
 

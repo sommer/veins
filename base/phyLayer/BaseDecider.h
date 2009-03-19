@@ -12,6 +12,30 @@
 
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "[Host " << myIndex << "] - PhyLayer(Decider): "
 
+/**
+ * @brief Provides some base functionality for most common deciders.
+ *
+ * Forwards the AirFrame from "processSignal" to "processNewSignal",
+ * "processSignalHeader" or "processSignalEnd" depending on the
+ * state for that AirFrame returned by "getSignalState".
+ *
+ * Provides answering of ChannelSenseRequests (instantaneous and over time).
+ *
+ * Subclasses should define when they consider the channel as idle by
+ * calling "setChannelIdleStatus" because BaseDecider uses that to
+ * answer ChannelSenseRequests.
+ *
+ * If a subclassing Decider only tries to receive one signal at a time
+ * it can use BaseDeciders "currentSignal" member which is a pair of
+ * the signal to receive and the state for that signal. The state
+ * is then used by BaseDeciders "getSignalState" to decide to which
+ * "process***" method to forward the signal.
+ * If a subclassing Decider needs states for more than one Signal it
+ * has to store these states by itself and should probably override
+ * the "getSignalState" method.
+ *
+ * @ingroup decider
+ */
 class BaseDecider: public Decider {
 protected:
 	enum SignalState{
@@ -62,8 +86,9 @@ public:
 
 public:
 	/**
-	 * @brief This function processes a AirFrame given by the PhyLayer and
-	 * returns the time point when Decider wants to be given the AirFrame again.
+	 * @brief Processes an AirFrame given by the PhyLayer
+	 *
+	 * Returns the time point when the decider wants to be given the AirFrame again.
 	 */
 	virtual simtime_t processSignal(AirFrame* frame);
 
@@ -104,6 +129,7 @@ protected:
 
 	/**
 	 * @brief Processes the end of the header of a received Signal.
+	 *
 	 * Returns the time it wants to handle the signal again.
 	 *
 	 * Default implementation does not handle signal headers.
@@ -114,8 +140,10 @@ protected:
 	}
 
 	/**
-	 * @brief Processes the end of a received Signal. And returns
-	 * the time it wants to handle the signal again (most probably notAgain).
+	 * @brief Processes the end of a received Signal.
+	 *
+	 * Returns the time it wants to handle the signal again
+	 * (most probably notAgain).
 	 *
 	 * Default implementation just decides every signal as correct and passes it
 	 * to the upper layer.
@@ -141,7 +169,7 @@ protected:
 	virtual int getSignalState(AirFrame* frame);
 
 	/**
-	 * @brief handles a new incoming ChannelSenseRequest and returns the next
+	 * @brief Handles a new incoming ChannelSenseRequest and returns the next
 	 * (or latest) time to handle the request again.
 	 */
 	virtual simtime_t handleNewSenseRequest(ChannelSenseRequest* request);
@@ -167,9 +195,10 @@ protected:
 	virtual bool canAnswerCSR(const CSRInfo& requestInfo);
 
 	/**
-	 * @brief Answers the ChannelSenseRequest (CSR) from the passed CSRInfo by calculating
-	 * the rssi value and the channel idle state and sending the CSR together with the result
-	 * back to the mac layer.
+	 * @brief Answers the ChannelSenseRequest (CSR) from the passed CSRInfo.
+	 *
+	 * Calculates the rssi value and the channel idle state and sends the CSR
+	 * together with the result back to the mac layer.
 	 */
 	virtual void answerCSR(CSRInfo& requestInfo);
 
@@ -178,7 +207,7 @@ protected:
 	/**
 	 * @brief Calculates a SNR-Mapping for a Signal.
 	 *
-	 * Therefore a Noise-Strength-Mapping is calculated (by using the
+	 * A Noise-Strength-Mapping is calculated (by using the
 	 * "calculateRSSIMapping()"-method) for the time-interval
 	 * of the Signal and the Signal-Strength-Mapping is divided by the
 	 * Noise-Strength-Mapping.

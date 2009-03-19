@@ -319,14 +319,6 @@ double Argument::compare(const Argument& o, const DimensionSet& dims) const{
 
 //---Mapping implementation---------------------------------------
 
-/**
- * @brief Initializes the ConstIterator for the passed ConstMapping,
- * with the passed key entries to iterate over and the passed position
- * as start.
- *
- * Note: The reference to the key entries has to be valid as long as the
- * iterator exists.
- */
 SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping,
 						   const std::set<Argument>* keyEntries,
 						   const Argument& start):
@@ -349,13 +341,6 @@ SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping,
 	nextEntry = keyEntries->upper_bound(position);
 }
 
-/**
- * @brief Initializes the ConstIterator for the passed ConstMapping,
- * with the passed key entries to iterate over.
- *
- * Note: The reference to the key entries has to be valid as long as the
- * iterator exists.
- */
 SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping,
 						   const std::set<Argument>* keyEntries):
 	mapping(mapping),
@@ -368,11 +353,6 @@ SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping* mapping,
 	jumpToBegin();
 }
 
-
-/**
- * @brief Utility method to fill add range of key entries in the time dimension
- * to the key entry set.
- */
 void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& to, const Argument& step, Argument& pos){
 
 	//get iteration borders and steps
@@ -392,10 +372,6 @@ void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& 
 	keyEntries.insert(pos);
 }
 
-/**
- * @brief Utility method to fill add range of key entries in the passed dimension
- * (and recursively its sub dimensions) to the key entry set.
- */
 void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& to, const Argument& step,
 					  DimensionSet::const_iterator curDim, Argument& pos){
 	//get the dimension to iterate over
@@ -431,13 +407,6 @@ void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& 
 	}
 }
 
-/**
- * @brief Initializes the key entry set with the passed min, max and
- * interval-Arguments.
- *
- * After a call to this method this SimpleConstMapping is able to return a valid
- * ConstIterator.
- */
 void SimpleConstMapping::initializeArguments(const Argument& min,
 						 const Argument& max,
 						 const Argument& interval) {

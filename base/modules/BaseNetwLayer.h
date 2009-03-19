@@ -33,6 +33,8 @@
 /**
  * @brief Base class for the network layer
  *
+ * @defgroup netwLayer Network layer
+ *
  * @ingroup netwLayer
  * @author Daniel Willkomm
  **/

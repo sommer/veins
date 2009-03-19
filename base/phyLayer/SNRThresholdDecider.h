@@ -3,7 +3,12 @@
 
 #include <BaseDecider.h>
 
-
+/**
+ * @brief BaseDecider implementation which decides a signals
+ * correctness by checking its SNR against a threshold.
+ *
+ * @ingroup decider
+ */
 class SNRThresholdDecider : public BaseDecider
 {
 protected:

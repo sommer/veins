@@ -4,20 +4,22 @@
 #include "Signal_.h"
 
 /**
- * Interface for the analogue models of the physical layer.
- * 
+ * @brief Interface for the analogue models of the physical layer.
+ *
  * An analogue model is a filter responsible for changing
  * the attenuation value of a Signal to simulate things like
  * shadowing, fading, pathloss or obstacles.
+ *
+ * @ingroup analogueModels
  */
 class AnalogueModel {
-	
+
 public:
 	virtual ~AnalogueModel() {}
-	
+
 	/**
 	 * @brief Has to be overriden by every implementation.
-	 * 
+	 *
 	 * Filters a specified Signal by adding an attenuation
 	 * over time to the Signal.
 	 */

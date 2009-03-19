@@ -1,12 +1,12 @@
 /**
  * This file has been merged from BaseUtility.h and Blackboard.h in
  * order to bring Blackboard's functionality to BaseUtility.
- * 
+ *
  * Blackboard's comments have been copied since they describe the
  * migrated functionality.
- * 
- * 
- * 
+ *
+ *
+ *
  */
 
 #ifndef BASE_UTILITY_H
@@ -61,9 +61,9 @@
  * really messy. (Some code written for older versions of the BB
  * speaks for itself).
  *
- * 
  *
- * 
+ * @defgroup blackboard Black board
+ *
  * @see ImNotifiable
  * @ingroup blackboard
  *
@@ -94,25 +94,25 @@ class BaseUtility : public BaseModule {
         Subscriber(ImNotifiable *c=0, int b=-1) :
             client(c), scopeModuleId(b) {};
     };
-    
+
 
     typedef std::vector<Subscriber> SubscriberVector;
     typedef std::vector<SubscriberVector> ClientVector;
-    
+
     typedef std::vector<const char* > CategoryDescriptions;
 
     typedef std::vector<int> ParentVector;
-    
+
     typedef ClientVector::iterator ClientVectorIter;
     typedef CategoryDescriptions::iterator DescriptionsIter;
     typedef ParentVector::iterator ParentVectorIter;
-    
+
     ClientVector clientVector;
     CategoryDescriptions categoryDescriptions;
     ParentVector parentVector;
-    
+
     int nextCategory;
-    
+
     friend std::ostream& operator<<(std::ostream&, const SubscriberVector&);
 //BB end
 
@@ -160,11 +160,11 @@ class BaseUtility : public BaseModule {
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 
     //void setPos(Coord* newCoord);
-	
+
 //BB start
     virtual ~BaseUtility();
 
-    
+
     /** @name Methods for consumers of change notifications */
     //@{
     /**
@@ -174,7 +174,7 @@ class BaseUtility : public BaseModule {
      *
      * Both subscribe functions subscribe also to children of this
      * category class.
-     * 
+     *
      */
     int subscribe(ImNotifiable *client, const BBItem *category, int scopeModuleId=-1);
     /**
@@ -205,19 +205,19 @@ class BaseUtility : public BaseModule {
      *
      * This function is very central once you start working with the
      * blackboard. You should heed the following advices:
-     * 
+     *
      *     - Publish in stage 1 of initialize after everbody was able
      *       to subscribe.
      *     - This function should be the last thing you call in a method.
      *       There is a chance that a certain race condition occurs,
      *       as in the following case, for simplicity the module is subscribed
-     *       to the value that it publishes: 
+     *       to the value that it publishes:
      *          -- Module::myMethod: lock module; publishBBItem; unlock module
      *          -- Module::receiveBBItem: if module not locked, do something
      *       Since receiveBBItem is called from within publishBBItem, the module
      *       will always be locked and the code in receiveBBItem is never
-     *       executed. 
-     *           
+     *       executed.
+     *
      */
     void publishBBItem(int category, const BBItem* details, int scopeModuleId);
 
@@ -228,7 +228,7 @@ class BaseUtility : public BaseModule {
     int  getCategory(const BBItem* details);
     //@}
 //BB end
-	
+
 };
 
 #endif

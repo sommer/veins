@@ -1,19 +1,17 @@
 #include "Signal_.h"
 
-/**
- * Initializes a singal with the specified start and length.
- */
 Signal::Signal(simtime_t start, simtime_t length):
 	signalStart(start), signalLength(length),
 	power(0), bitrate(0),
-	rcvPower(0) {}
+	rcvPower(0)
+{}
 
 Signal::Signal(const Signal & o):
 	signalStart(o.signalStart), signalLength(o.signalLength),
 	senderMovement(o.senderMovement),
 	power(0), bitrate(0),
-	rcvPower(0) {
-
+	rcvPower(0)
+{
 	if (o.power != 0) {
 		power = o.power->clone();
 	}
@@ -88,9 +86,6 @@ Signal::~Signal()
 	}
 }
 
-/**
- * Returns the point in time when the receiving of the Signal started.
- */
 simtime_t Signal::getSignalStart() const {
 	return signalStart;
 }

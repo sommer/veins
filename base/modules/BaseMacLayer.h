@@ -34,6 +34,8 @@
  * MacControlInfo of MiXiM. It also provides basic handling of lower
  * layer messages.
  *
+ * @defgroup macLayer MAC layer
+ *
  * @ingroup macLayer
  * @ingroup basicModules
  * @author Daniel Willkomm, Karl Wessel

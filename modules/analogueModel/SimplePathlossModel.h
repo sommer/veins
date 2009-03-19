@@ -14,6 +14,7 @@
  * In this simple pathloss implementation, we assume one attenuation value
  * being constant over the signals duration.
  *
+ * @ingroup analogueModels
  */
 class SimplePathlossConstMapping : public SimpleConstMapping
 {

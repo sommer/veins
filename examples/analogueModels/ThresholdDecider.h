@@ -5,6 +5,8 @@
 #include <cmath>
 #include <map>
 
+#include <Decider.h>
+
 /**
  * @brief A simple Decider implementation which only checks for
  * a received signal if the receiving power is above a certain value.
@@ -268,7 +270,12 @@ public:
 		return 0;
 	}
 
-
+	virtual ChannelState getChannelState() {
+		return ChannelState(false, 0);
+	}
+	virtual simtime_t handleChannelSenseRequest(ChannelSenseRequest*) {
+		return -1;
+	}
 };
 
 #endif /*TESTDECIDER_H_*/

@@ -17,7 +17,8 @@ class ChannelAccess;
  * You may not instantiate BasicConnectionManager!
  * Use ConnectionManager instead.
  *
- * @ingroup ConnectionManager
+ * @defgroup connectionManager ConnectionManager
+ * @ingroup connectionManager
  * @author Steffen Sroka, Daniel Willkomm, Karl Wessel
  * @sa ChannelAccess
  */
@@ -25,7 +26,9 @@ class BaseConnectionManager : public BaseModule
 {
 private:
 	/**
-	 * Represents a position inside a grid.
+	 * @brief Represents a position inside a grid.
+	 *
+	 * Internal helper class of BaseConnectionManager.
 	 * This class provides some converting functions from a Coord
 	 * to a GridCoord.
 	 */
@@ -40,26 +43,26 @@ private:
 
 
 		/**
-		 * Initialize this GridCoord with the origin.
+		 * @brief Initialize this GridCoord with the origin.
 		 * Creates a 3-dimensional coord.
 		 */
 		GridCoord()
 			:x(0), y(0), z(0), use2D(false) {};
 
 		/**
-		 * Initialize a 2-dimensional GridCoord with x and y.
+		 * @brief Initialize a 2-dimensional GridCoord with x and y.
 		 */
 		GridCoord(int x, int y)
 			:x(x), y(y), z(UNDEFINED), use2D(true) {};
 
 		/**
-		 * Initialize a 3-dimensional GridCoord with x, y and z.
+		 * @brief Initialize a 3-dimensional GridCoord with x, y and z.
 		 */
 		GridCoord(int x, int y, int z)
 			:x(x), y(y), z(z), use2D(false) {};
 
 		/**
-		 * Simple copy-constructor.
+		 * @brief Simple copy-constructor.
 		 */
 		GridCoord(const GridCoord& o) {
 			x = o.x;
@@ -69,7 +72,7 @@ private:
         }
 
 		/**
-		 * Creates a GridCoord from a given Coord by dividing the
+		 * @brief Creates a GridCoord from a given Coord by dividing the
 		 * x,y and z-values by "gridCellWidth".
 		 * The dimension of the GridCoord depends on the Coord.
 		 */
@@ -108,8 +111,8 @@ private:
 	};
 
 	/**
-	 * Represents an unsorted set of GridCoords with minimalistic functions.
-	 * It is a workaround because c++ doesn't come with an unsorted set.
+	 * @brief Represents an minimalistic (hash)set of GridCoords.
+	 * It is a workaround because c++ doesn't come with an hash set.
 	 */
 	class CoordSet {
 	protected:
@@ -121,10 +124,11 @@ private:
 	protected:
 
 		/**
-		 * Tries to insert a GridCoord at the specified position.
+		 * @brief Tries to insert a GridCoord at the specified position.
+		 *
 		 * If the same Coord already exists there nothing happens.
-		 * If the an other Coord already exists there calculate
-		 * a new Position to isnert end recursively call this Method again.
+		 * If an other Coord already exists there calculate
+		 * a new Position to insert end recursively call this Method again.
 		 * If the spot is empty the Coord is inserted.
 		 */
 		void insert(const GridCoord& c, unsigned pos) {
@@ -140,7 +144,7 @@ private:
 
 	public:
 		/**
-		 * Initializes the set (hashtable) with the a specified size.
+		 * @brief Initializes the set (hashtable) with the a specified size.
 		 */
 		CoordSet(unsigned sz)
 			:maxSize(sz), size(0), current(0)
@@ -149,7 +153,7 @@ private:
 		}
 
 		/**
-		 * Delete every created GridCoord
+		 * @brief Delete every created GridCoord
 		 */
 		~CoordSet() {
 			for(unsigned i = 0; i < maxSize; i++) {
@@ -160,8 +164,9 @@ private:
 		}
 
 		/**
-		 * Adds a GridCoord to the set. If a GridCoord with the same
-		 * value already exists in the set nothing happens.
+		 * @brief Adds a GridCoord to the set.
+		 * If a GridCoord with the same value already exists in the set
+		 * nothing happens.
 		 */
 		void add(const GridCoord& c) {
 			unsigned hash = (c.x * 10000 + c.y * 100 + c.z) % maxSize;
@@ -169,8 +174,8 @@ private:
 		}
 
 		/**
-		 * Returns the next GridCoord in the set.
-		 * You can interate through the set only one time with this function!
+		 * @brief Returns the next GridCoord in the set.
+		 * You can iterate through the set only one time with this function!
 		 */
 		GridCoord* next() {
 			for(;current < maxSize; current++) {
@@ -182,14 +187,14 @@ private:
 		}
 
 		/**
-		 * Returns the number of GridCoords currently saved in this set.
+		 * @brief Returns the number of GridCoords currently saved in this set.
 		 */
 		unsigned getSize() { return size; }
 
 		/**
-		 * Returns the maximum number of elements which can be stored inside
-		 * this set. To prevent collisions the set should never be more
-		 * than 75% filled.
+		 * @brief Returns the maximum number of elements which can be stored inside
+		 * this set.
+		 * To prevent collisions the set should never be more than 75% filled.
 		 */
 		unsigned getmaxSize() { return maxSize; }
 	};
@@ -211,9 +216,8 @@ protected:
 	/** @brief the biggest interference distance in the network.*/
 	double maxInterferenceDistance;
 
-	/** @brief Square of maxInterferenceDistance
-	 * cache a value that is often used
-	 */
+	/** @brief Square of maxInterferenceDistance cache a value that
+	 * is often used */
 	double maxDistSquared;
 
 	/** @brief Stores the useTorus flag of the WorldUtility */
@@ -224,24 +228,25 @@ protected:
 	typedef std::vector<RowVector> NicMatrix;
     typedef std::vector<NicMatrix> NicCube;
 
-	/** @brief Registry of all Nics
+	/**
+	 * @brief Registry of all nics
      *
-     * This matrix keeps all Nics according to their position.  It
+     * This matrix keeps all nics according to their position.  It
      * allows to restrict the position update to a subset of all nics.
      */
     NicCube nicGrid;
 
     /**
-     * Distance that helps to find a node under a certain
-     * position. Can be larger then @see maxInterferenceDistance to
+     * @brief Distance that helps to find a node under a certain
+     * position.
+     *
+     * Can be larger then @see maxInterferenceDistance to
      * allow nodes to be placed into the same square if the playground
      * is too small for the grid speedup to work.
 	 */
     double findDistance;
 
-    /**
-     * the dimension of the grid
-     */
+    /** @brief The size of the grid */
     GridCoord gridDim;
 
 private:
@@ -249,19 +254,19 @@ private:
     void updateNicConnections(NicEntries& nmap, NicEntry* nic);
 
     /**
-     * check connections of a nic in the grid
+     * @brief Check connections of a nic in the grid
      */
     void checkGrid(GridCoord& oldCell,
                    GridCoord& newCell,
                    int id);
 
     /**
-     * Calculates the corresponding cell of a coordinate.
+     * @brief Calculates the corresponding cell of a coordinate.
      */
     GridCoord getCellForCoordinate(const Coord& c);
 
     /**
-     * Returns the NicEntries of the cell with specified
+     * @brief Returns the NicEntries of the cell with specified
      * coordinate.
      */
     NicEntries& getCellEntries(GridCoord& cell);
@@ -274,7 +279,7 @@ private:
     int wrapIfTorus(int value, int max);
 
 	/**
-	 * Adds every direct Neighbor of a GridCoord to a union of coords.
+	 * @brief Adds every direct Neighbor of a GridCoord to a union of coords.
 	 */
     void fillUnionWithNeighbors(CoordSet& gridUnion, GridCoord cell);
 protected:
@@ -286,7 +291,7 @@ protected:
 	virtual double calcInterfDist() = 0;
 
 	/**
-	 * @brief This method is called by "registerNic()" after the nic has been
+	 * @brief Called by "registerNic()" after the nic has been
 	 * registered. That means that the NicEntry for the nic has already been
 	 * created and added to nics map.
 	 *
@@ -315,16 +320,10 @@ protected:
 
 public:
 
-	/**
-	 * @brief Constructor
-	 **/
-	//Module_Class_Members(BaseConnectionManager, BaseModule, 0);
-
-
 	virtual ~BaseConnectionManager();
 
 	/**
-	 * @brief Reads init parameters and calculates a maximal interfence
+	 * @brief Reads init parameters and calculates a maximal interference
 	 * distance
 	 **/
 	virtual void initialize(int stage);

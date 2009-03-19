@@ -6,12 +6,12 @@
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     framework implementation developed by tkn
@@ -30,11 +30,12 @@
 
 /**
  * @brief Base class for the application layer
- * 
+ *
  * This is the generic class for all application layer modules. If you
  * want to implement your own application layer you have to subclass your
  * module from this class.
  *
+ * @defgroup applLayer Application layer
  * @ingroup applLayer
  *
  * @author Daniel Willkomm
@@ -43,8 +44,8 @@ class BaseApplLayer : public BaseLayer
 {
 protected:
 	/**
-	 * @brief Length of the ApplPkt header 
-	 * 
+	 * @brief Length of the ApplPkt header
+	 *
 	 * @todo for now it is read from omnetpp.ini but should be easily
 	 * settable by the user later
 	 **/
@@ -57,7 +58,7 @@ public:
 	virtual void initialize(int);
 
 protected:
-	/** 
+	/**
 	 * @name Handle Messages
 	 * @brief Functions to redefine by the programmer
 	 *
@@ -68,7 +69,7 @@ protected:
 	 **/
 	/*@{*/
 
-	/** 
+	/**
 	 * @brief Handle self messages such as timer...
 	 *
 	 * Define this function if you want to process timer or other kinds
@@ -79,7 +80,7 @@ protected:
 		delete msg;
 	};
 
-	/** 
+	/**
 	 * @brief Handle messages from lower layer
 	 *
 	 * Redefine this function if you want to process messages from lower
@@ -93,7 +94,7 @@ protected:
 		delete msg;
 	};
 
-	/** 
+	/**
 	 * @brief Handle control messages from lower layer
 	 *
 	 * The basic application layer just silently deletes all messages it
@@ -114,28 +115,28 @@ protected:
 		opp_error("Application has no upper layers!");
 		delete msg;
 	}
-	
+
 	/** @brief Handle control messages from upper layer */
 	virtual void handleUpperControl(cMessage *msg) {
 		assert(false);
 		opp_error("Application has no upper layers!");
 		delete msg;
 	}
-	
+
 	/*@}*/
 
 	/** @brief Sends a message delayed to the lower layer*/
 	void sendDelayedDown(cMessage *, simtime_t);
 
-	/** 
+	/**
 	 * @brief Return my application layer address
-	 * 
+	 *
 	 * We use the node module index as application address
 	 **/
 	virtual const int myApplAddr() {
 		return getParentModule()->getIndex();
 	};
-    
+
 };
 
 #endif

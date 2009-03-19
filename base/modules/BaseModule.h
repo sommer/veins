@@ -37,6 +37,11 @@
 #define coreEV (ev.isDisabled()||!coreDebug) ? ev : ev << logName() << "::" << getClassName() <<": "
 #endif
 
+/** @defgroup basicModules Base modules */
+
+
+
+class BaseUtility;
 
 /**
  * @brief Base class for all simple modules of a host that want to have
@@ -56,14 +61,12 @@
  * BasicModule).
  *
  * @see Blackboard
+ *
  * @ingroup basicModules
  *
  * @author Steffen Sroka
  * @author Andreas Koepke
  */
-
-class BaseUtility;
-
 class BaseModule: public cSimpleModule, public ImNotifiable {
   protected:
     /** @brief Cached pointer to the utility module*/
