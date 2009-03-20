@@ -1,6 +1,6 @@
 #/bin/bash
-echo "---------------- make all tests --------------"
-make
+
+
 
 echo ----------------Blackboard--------------------
 cd blackboard

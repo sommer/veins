@@ -4,12 +4,13 @@ to compile and start using MiXiM.
 
 Requirements
 ============
-- OMNeT++, at least version 4.0b8, 
+- OMNeT++, at least version 4.0, 
   downloadable at www.omnetpp.org
-  OMNeT++ must be compiled with dynamic NED loading enabled 
-  (WITH_NETBUILDER=yes setting)
-- make (or nmake)
-- C++ compiler
+  OMNeT++ must be compiled with 
+  	- dynamic NED loading (WITH_NETBUILDER=yes setting)
+  	- and XML support enabled 
+- make (for Linux)
+- C++ compiler (for Linux)
 
 
 Installation under Linux
@@ -27,10 +28,9 @@ Commandline
 2. type "make all" to make the mixim library and binary 
    and to build the test networks
 
-TODO: we need to be more precise how to get started!!!
+At last try to run one of the examples from the examples folder. 
 
-Finally try the example networks in the example folder or
-build your own network using the configurator
+
 
 OMNeT++ IDE
 -----------
@@ -41,57 +41,31 @@ OMNeT++ IDE
 
 3. Choose an example from the examples folder, run it and have fun :-)
 
-=================================================
-TODO: the rest of this file needs to be converted
-   So far MiXiM has only been tested under linux
-   There might be problems under windows or OS-X
-=================================================
 
 
 Installation under Windows
 ==========================
-1. Unpack the archive
+1. Add MiXiM as a Project to your OMNeT++ IDE
 
-2. modify the variable OMNETPP_ROOT in mkmk.cmd to point to your
-   OMNeT++ installation directory.
+2. Build MiXiM (Ctrl+B)
 
-3. Update your PATH variable to include the
-   "mixim<VERSION>/bin" directory
+3. Choose an example from the examples folder, run it and have fun :-)
 
-4. run the mkmk.cmd script
-   mkmk.cmd
 
-5. type "nmake /f Makefile.vc all" to make the mxim library and
-   binary and to build the test networks
 
-Finally try the example networks in the example folder or
-build your own network using the configurator
+=================================================
+TODO: the rest of this file needs to be converted
+   So far MiXiM has only been tested under linux
+   and windows There might be problems under OS-X
+=================================================
 
 
 Installation under MAC OS
 =========================
-There are two possibilities to install mixim under MAC OS,
-one is with shared libraries, one without.
 
-1. Unpack the archive (you have probably already done so)
-   tar xzf mixim<VERSION>.tgz
+1. Add MiXiM as a Project to your OMNeT++ IDE
 
-2. Modify the mkmk.mac script and choose shared libraries or not
-   (just comment out the corresponding lines in the script)
+2. Build MiXiM (Ctrl+B)
 
-3. If you go for shared libraries you need to update your
-   DYLD_LIBRARY_PATH (NOT LD_LIBRARY!) variable to include the
-   "mixim<VERSION>/lib" directory
-
-4. Update your PATH variable to include the
-   "mixim<VERSION>/bin" directory
-
-5. run the mkmk.mac shell script
-   ./mkmk.mac
-
-6. type "make all" to make the mixim library and binary
-   and to build the test networks
-
-Finally try the example networks in the example folder or
-build your own network using the configurator
+3. Choose an example from the examples folder, run it and have fun :-)
 
