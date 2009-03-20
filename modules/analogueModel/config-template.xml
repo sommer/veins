@@ -6,10 +6,14 @@ You have to define these settings in the config.xml of your PhyLayer.-->
 	<AnalogueModels>
 	
 	    <AnalogueModel type="SimplePathlossModel">
-	    	<!-- Environment parameter of the pathloss formula -->
-	    	<parameter name="alpha" type="double" value="2.0"/>
+	    	<!-- Environment parameter of the pathloss formula 
+	    		 If ommited default value is 3.5-->
+	    	<parameter name="alpha" type="double" value="3.5"/>
 	    	
-	    	<!-- Carrier frequency of the signal in Hz -->
+	    	<!-- Carrier frequency of the signal in Hz 
+	    		 If ommited the carrier frequency from the
+	    		 connection manager is taken if available
+	    		 otherwise set to default frequency of 2.412e+9-->
 	    	<parameter name="carrierFrequency" type="double" value="2.412e+9"/>
 	    </AnalogueModel>
 	    
@@ -22,6 +26,20 @@ You have to define these settings in the config.xml of your PhyLayer.-->
 	    	
 	    	<!-- Interval in which to define attenuation for in seconds -->
 	    	<parameter name="interval" type="double" value="0.001"/>
+	    </AnalogueModel>
+	    
+	    <AnalogueModel type="JakesFading">	    	
+	    	<!-- Carrier frequency of the signal in Hz 
+	    		 If ommited the carrier frequency from the
+	    		 connection manager is taken if available
+	    		 otherwise set to default frequency of 2.412e+9-->
+	    	<parameter name="carrierFrequency" type="double" value="2.412e+9"/>
+	    	
+	    	<!-- Number of fading paths per host -->
+	    	<parameter name="fadingPaths" type="long" value="3"/>
+	    	
+	    	<!-- TODO: what does this parameter defien exactly -->
+	    	<parameter name="delayRMS" type="double" value="0.0001"/>
 	    </AnalogueModel>
 	    
 	</AnalogueModels>	

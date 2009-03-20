@@ -418,8 +418,6 @@ void SimpleConstMapping::initializeArguments(const Argument& min,
 		createKeyEntries(min, max, interval, pos);
 	else
 		createKeyEntries(min, max, interval, dimIt, pos);
-
-	fullyInitialized = true;
 }
 
 

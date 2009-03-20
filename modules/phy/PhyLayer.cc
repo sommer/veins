@@ -10,6 +10,7 @@
 #include <SimplePathlossModel.h>
 #include <LogNormalShadowing.h>
 #include <SNRThresholdDecider.h>
+#include <JakesFading.h>
 
 Define_Module(PhyLayer);
 
@@ -23,6 +24,10 @@ AnalogueModel* PhyLayer::getAnalogueModelFromName(std::string name, ParameterMap
 	{
 		return initializeLogNormalShadowing(params);
 	}
+	else if (name == "JakesFading")
+	{
+		return initializeJakesFading(params);
+	}
 	return BasePhyLayer::getAnalogueModelFromName(name, params);
 }
 
@@ -32,6 +37,23 @@ AnalogueModel* PhyLayer::initializeLogNormalShadowing(ParameterMap& params){
 	simtime_t interval = params["interval"].doubleValue();
 
 	return new LogNormalShadowing(mean, stdDev, interval);
+}
+
+AnalogueModel* PhyLayer::initializeJakesFading(ParameterMap& params){
+	int fadingPaths = params["fadingPaths"].longValue();
+	simtime_t delayRMS = params["delayRMS"].doubleValue();
+
+	double carrierFrequency = 2.412e+9;
+	if(params.count("carrierFrequency") > 0) {
+		carrierFrequency = params["carrierFrequency"];
+	}
+	else {
+		if (cc->hasPar("carrierFrequency")) {
+			carrierFrequency = cc->par("carrierFrequency").doubleValue();
+		}
+	}
+
+	return new JakesFading(fadingPaths, delayRMS, &move, carrierFrequency);
 }
 
 AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){

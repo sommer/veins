@@ -17,6 +17,7 @@
  * Knows the following AnalogueModels:
  * - SimplePathlossModel
  * - LogNormalShadowing
+ * - JakesFading
  *
  * Knows the following Deciders
  * - Decider80211
@@ -45,6 +46,12 @@ protected:
 	 * passed parameter values.
 	 */
 	AnalogueModel* initializeLogNormalShadowing(ParameterMap& params);
+
+	/**
+	 * @brief Creates and initializes a JakesFading with the
+	 * passed parameter values.
+	 */
+	AnalogueModel* initializeJakesFading(ParameterMap& params);
 
 	/**
 	 * @brief Creates and returns an instance of the Decider with the specified

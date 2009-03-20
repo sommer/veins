@@ -868,8 +868,13 @@ public:
 	 */
 	virtual void jumpToBegin(){
 		nextEntry = keyEntries->begin();
-		position = *nextEntry;
-		++nextEntry;
+
+		if(nextEntry == keyEntries->end()) {
+			position = Argument(dimensions);
+		} else {
+			position = *nextEntry;
+			++nextEntry;
+		}
 	}
 
 	/**
@@ -911,7 +916,9 @@ public:
 	 * Has constant complexity.
 	 */
 	virtual bool inRange() const {
-		return !(*(keyEntries->rbegin()) < position) && !(position < *(keyEntries->begin()));
+		return !(keyEntries->empty()
+				 || (*(keyEntries->rbegin()) < position)
+				 || (position < *(keyEntries->begin())));
 	}
 
 	/**
@@ -944,10 +951,10 @@ public:
  *
  * Any subclass only has to implement the "getValue()" and the "clone()"-method.
  *
- * If the SimpleMapping should be iterateable the subclass has to define
- * the "points of interest" the iterator should iterate over.
- * This should be done either at construction time by calling or later by
- * calling the "initializeArguments()"-method.
+ * The subclass has to define the "points of interest" an iterator should
+ * iterate over.
+ * This should be done either at construction time or later by calling the
+ * "initializeArguments()"-method.
  *
  * The SimpleConstMapping class provides Iterator creation by using the
  * SimpleConstMappingIterator which assumes that the underlying ConstMappings
@@ -958,11 +965,6 @@ public:
  * @ingroup mapping
  */
 class SimpleConstMapping:public ConstMapping {
-private:
-	/** @brief Stores if the key entries had been set, and the Mapping is
-	 * therefore iterateable.*/
-	bool fullyInitialized;
-
 protected:
 	typedef std::set<Argument> KeyEntrySet;
 
@@ -993,8 +995,6 @@ public:
 	 * This method asserts that the mapping had been fully initialized.
 	 */
 	virtual ConstMappingIterator* createConstIterator() {
-		//assert(fullyInitialized);
-
 		return new SimpleConstMappingIterator(this, &keyEntries);
 	}
 
@@ -1005,8 +1005,6 @@ public:
 	 * This method asserts that the mapping had been fully initialized.
 	 */
 	virtual ConstMappingIterator* createConstIterator(const Argument& pos) {
-		//assert(fullyInitialized);
-
 		return new SimpleConstMappingIterator(this, &keyEntries, pos);
 	}
 
@@ -1016,7 +1014,7 @@ public:
 	 * passed DimensionSet as domain.
 	 */
 	SimpleConstMapping(const DimensionSet& dims):
-		ConstMapping(dims), fullyInitialized(false) {}
+		ConstMapping(dims) {}
 
 	/**
 	 * @brief Fully initializes this mapping with the passed position
@@ -1069,7 +1067,6 @@ public:
 	void initializeArguments(const Argument& key){
 		keyEntries.clear();
 		keyEntries.insert(key);
-		fullyInitialized = true;
 	}
 
 	/**
@@ -1082,7 +1079,6 @@ public:
 		keyEntries.clear();
 		keyEntries.insert(key1);
 		keyEntries.insert(key2);
-		fullyInitialized = true;
 	}
 
 	/**
