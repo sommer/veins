@@ -748,7 +748,6 @@ void Mac80211::handleEndTransmission()
  */
 void Mac80211::sendDATAframe(Mac80211Pkt *af)
 {
-	//TODO: figure out how this works and what needs to be ported/changed
     Mac80211Pkt *frame = static_cast<Mac80211Pkt *>(fromUpperLayer.front()->dup());
     double br;
 
@@ -792,7 +791,6 @@ void Mac80211::sendDATAframe(Mac80211Pkt *af)
  */
 void Mac80211::sendACKframe(Mac80211Pkt * af)
 {
-	//TODO: figure out what happens here and how/what to port
     Mac80211Pkt *frame = new Mac80211Pkt("wlan-ack");
 
     PhyToMacControlInfo* phyCtrlInfo = static_cast<PhyToMacControlInfo*>(af->removeControlInfo());
@@ -832,7 +830,6 @@ void Mac80211::sendACKframe(Mac80211Pkt * af)
  */
 void Mac80211::sendRTSframe()
 {
-	//TODO: figure out what happens here and what/how to port
     Mac80211Pkt *frame = new Mac80211Pkt("wlan-rts");
 
     const Mac80211Pkt* frameToSend = fromUpperLayer.front();
@@ -878,7 +875,6 @@ void Mac80211::sendRTSframe()
  */
 void Mac80211::sendCTSframe(Mac80211Pkt * af)
 {
-	//TODO: figure out what happens here and how/what to port
     Mac80211Pkt *frame = new Mac80211Pkt("wlan-cts");
 
     PhyToMacControlInfo* phyCtrlInfo = static_cast<PhyToMacControlInfo*>(af->removeControlInfo());
