@@ -7,7 +7,7 @@
 /**
  * Contains detailed information about the items published using the
  * BB.
- * 
+ *
  * To understand this class, consider the case of routing
  * protocols. The minimal entry in a routing table consists of the
  * tuple <target, neighbor, cost>. However, some more specific routing
@@ -24,9 +24,8 @@
  * The info function of cObject should be implemented -- you can
  * use it to disinguish between items of the same category (like two
  * MAC addresses if the host has two network interfaces).
- * 
+ *
  * @see BBITEM_METAINFO
- * @see RadioState
  * @ingroup blackboard
  * @author Andreas Koepke
  */
@@ -47,7 +46,7 @@ class  BBItem : public cObject
  *
  * @author Andras Varga
  * @author Andreas Koepke
- * 
+ *
  */
 class  ImNotifiable
 {
@@ -59,9 +58,9 @@ class  ImNotifiable
      * If your class is derived from a class that also is notifiable,
      * make sure that you call it first thing you do.
      * E.g.
-     * 
+     *
      * BaseClass : public ImNotifiable ...
-     * 
+     *
      * YourClass : public BaseClass ...
      *
      * YourClass::receiveBBItem(category, details, scopeModuleId) {
@@ -100,7 +99,7 @@ class  ImNotifiable
 #define BBITEM_METAINFO(BASECLASS) \
     public: \
       virtual BBItem* parentObject() const { \
-      return new BASECLASS(); } 
-      
+      return new BASECLASS(); }
+
 
 #endif /*IMNOTIFIABLE_H_*/

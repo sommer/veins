@@ -28,7 +28,7 @@
  * Enumerate for the kind field for control messages exchanged within
  * a NIC
  *
- * @ingroup basicUtils
+ * @ingroup baseUtils
  * @ingroup utils
  * @author Andreas Koepke
  */

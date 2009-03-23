@@ -37,9 +37,6 @@
 #define coreEV (ev.isDisabled()||!coreDebug) ? ev : ev << logName() << "::" << getClassName() <<": "
 #endif
 
-/** @defgroup basicModules Base modules */
-
-
 
 class BaseUtility;
 
@@ -62,7 +59,7 @@ class BaseUtility;
  *
  * @see Blackboard
  *
- * @ingroup basicModules
+ * @ingroup baseModules
  *
  * @author Steffen Sroka
  * @author Andreas Koepke

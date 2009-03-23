@@ -17,7 +17,6 @@ class ChannelAccess;
  * You may not instantiate BasicConnectionManager!
  * Use ConnectionManager instead.
  *
- * @defgroup connectionManager ConnectionManager
  * @ingroup connectionManager
  * @author Steffen Sroka, Daniel Willkomm, Karl Wessel
  * @sa ChannelAccess

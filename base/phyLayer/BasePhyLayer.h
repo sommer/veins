@@ -62,11 +62,6 @@
  *  base class MacToPhyInterface:
  * - interface for the Mac
  *
- * @defgroup phyLayer Physical layer
- * @{
- * 		@defgroup analogueModels Analogue models
- * 		@defgroup decider Decider
- * @}
  * @ingroup phyLayer
  */
 class BasePhyLayer: public ChannelAccess,

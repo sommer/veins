@@ -61,9 +61,6 @@
  * really messy. (Some code written for older versions of the BB
  * speaks for itself).
  *
- *
- * @defgroup blackboard Black board
- *
  * @see ImNotifiable
  * @ingroup blackboard
  *

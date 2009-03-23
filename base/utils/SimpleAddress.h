@@ -23,9 +23,9 @@
 /**
  * @brief Define some addresses for the simple layers
  *
- * @ingroup basicUtils
+ * @ingroup baseUtils
  * @ingroup utils
- * @author Andreas Köpke
+ * @author Andreas Kï¿½pke
  */
 enum {
     L3BROADCAST = -1,

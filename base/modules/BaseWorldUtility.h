@@ -28,7 +28,7 @@
  * @brief Provides information and utility methods for the
  * whole simulation.
  *
- * @ingroup basicModules
+ * @ingroup baseModules
  */
 class BaseWorldUtility : public BaseModule
 {

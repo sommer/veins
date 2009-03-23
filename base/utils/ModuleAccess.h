@@ -23,21 +23,22 @@
 
 
 /**
- * Find a module with given name and type "closest" to module "from".
+ * @brief Find a module with given name and type "closest" to module "from".
  *
  * Operation: gradually raises in the module hierarchy, and searches
  * recursively among all submodules at every level.
  *
- * @ingroup basicUtils
+ * @ingroup baseUtils
  * @ingroup utils
  */
 cModule *findModuleWherever(const char *name, const char *classname, cModule *from);
 
 /**
- * Finds and returns the pointer to a module of type T and name N.
+ * @brief Finds and returns the pointer to a module of type T and name N.
+ *
  * Uses findModuleWherever(). See usage e.g. at RoutingTableAccess.
  *
- * @ingroup basicUtils
+ * @ingroup baseUtils
  * @ingroup utils
  */
 template<typename T>

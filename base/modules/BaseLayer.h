@@ -32,7 +32,7 @@
  * This module provides basic abstractions that ease development of a
  * network or MAC layer.
  *
- * @ingroup basicModules
+ * @ingroup baseModules
  * @author Andreas Koepke
  */
 class BaseLayer : public BaseModule

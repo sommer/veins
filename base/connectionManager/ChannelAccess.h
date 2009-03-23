@@ -50,7 +50,7 @@
  * @author Marc Loebbers
  * @ingroup connectionManager
  * @ingroup phyLayer
- * @ingroup basicModules
+ * @ingroup baseModules
  **/
 class ChannelAccess : public BaseModule
 {

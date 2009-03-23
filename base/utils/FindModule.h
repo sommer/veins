@@ -3,11 +3,17 @@
 
 #include <omnetpp.h>
 
+/**
+ * @brief Provides method templates to find omnet modules.
+ *
+ * @ingroup baseUtils
+ * @ingrouo utils
+ */
 template<typename T>
 class FindModule
 {
 	public:
-		static T findSubModule(cModule *top) 
+		static T findSubModule(cModule *top)
 		{
 			T ret;
 			for (cModule::SubmoduleIterator i(top); !i.end(); i++)

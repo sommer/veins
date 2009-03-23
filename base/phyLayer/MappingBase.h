@@ -543,10 +543,6 @@ class Mapping;
  * from a arbitrary dimensional domain (represented by a DimensionSet)
  * to a double value.
  *
- * @defgroup mapping Mapping
- * @{
- * 		@defgroup mappingDetail Mapping details
- * @}
  * @author Karl Wessel
  * @ingroup mapping
  */

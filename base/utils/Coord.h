@@ -54,7 +54,8 @@
  * Coord are of the same dimension. The user has to assure the
  * proper use of this methods!
  *
- * @ingroup support
+ * @ingroup baseUtils
+ * @ingroup utils
  * @author Christian Frank
  */
 class Coord : public cObject

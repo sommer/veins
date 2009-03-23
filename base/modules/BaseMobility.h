@@ -53,9 +53,8 @@
  *
  * This file contains 3D implementations from Michael Swigulski.
  *
- * @defgroup mobility Mobility
  * @ingroup mobility
- * @ingroup basicModules
+ * @ingroup baseModules
  * @author Daniel Willkomm, Andras Varga
  */
 class BaseMobility : public BaseModule

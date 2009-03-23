@@ -68,7 +68,7 @@
  *
  * This class contains all kind of mathematical support functions
  *
- * @ingroup basicUtils
+ * @ingroup baseUtils
  * @ingroup utils
  * @author Christian Frank
  */

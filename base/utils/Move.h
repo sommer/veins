@@ -32,7 +32,7 @@
 /**
  * @brief Class to store object position and movement
  *
- * @ingroup basicUtils
+ * @ingroup baseUtils
  * @ingroup utils
  * @ingroup blackboard
  *

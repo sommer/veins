@@ -35,7 +35,6 @@
  * want to implement your own application layer you have to subclass your
  * module from this class.
  *
- * @defgroup applLayer Application layer
  * @ingroup applLayer
  *
  * @author Daniel Willkomm
