@@ -1987,8 +1987,8 @@ public:
 };
 
 /**
- * @brief Defines it values by concatenating a number of other
- * Mappings.
+ * @brief Defines it values by concatenating one or more
+ * Mappings to a reference Mapping.
  *
  * @author Karl Wessel
  * @ingroup mappingDetail
@@ -2003,9 +2003,16 @@ protected:
 	Operator op;
 
 public:
+	/**
+	 * @brief Initializes with the passed reference Mapping, the operator
+	 * and the Mappings defined by the passed iterator.
+	 */
 	template<class Iterator>
-	ConcatConstMapping(ConstMapping* refMapping, Iterator first, Iterator last, Operator op):
-		ConstMapping(refMapping->getDimensionSet()), refMapping(refMapping), op(op)
+	ConcatConstMapping(ConstMapping* refMapping,
+					   Iterator first, Iterator last,
+					   Operator op = Operator()):
+		ConstMapping(refMapping->getDimensionSet()),
+		refMapping(refMapping), op(op)
 	{
 		while(first != last){
 			mappings.push_back(*first);
@@ -2013,12 +2020,22 @@ public:
 		}
 	}
 
-	ConcatConstMapping(ConstMapping* refMapping, ConstMapping* other, Operator op):
-		ConstMapping(refMapping->getDimensionSet()), refMapping(refMapping), op(op)
+	/**
+	 * @brief Initializes with the passed reference Mapping, the operator
+	 * and another Mapping to concatenate.
+	 */
+	ConcatConstMapping(ConstMapping* refMapping, ConstMapping* other,
+					   Operator op = Operator()):
+		ConstMapping(refMapping->getDimensionSet()),
+		refMapping(refMapping), op(op)
 	{
 		mappings.push_back(other);
 	}
 
+	/**
+	 * @brief Adds another Mapping to the list of Mappings to
+	 * concatenate.
+	 */
 	void addMapping(ConstMapping* m) {
 		mappings.push_back(m);
 	}
@@ -2036,6 +2053,9 @@ public:
 		return res;
 	}
 
+	/**
+	 * @brief Returns the concatenated Mapping.
+	 */
 	Mapping* createConcatenatedMapping(){
 		MappingSet::const_iterator it = mappings.begin();
 
@@ -2061,8 +2081,142 @@ public:
 	virtual ConstMapping* constClone() const {
 		return new ConcatConstMapping(*this);
 	}
+
+	/**
+	 * @brief Returns the pointer to the reference mapping.
+	 */
+	ConstMapping* getRefMapping() {
+		return refMapping;
+	}
 };
 
+/**
+ * @brief Iterator for a DelayedMapping.
+ *
+ * @sa DelayedMapping
+ * @ingroup mappingDetail
+ * @author Karl Wessel
+ */
+class DelayedMappingIterator: public FilteredMappingIterator {
+protected:
+	simtime_t delay;
+
+	Argument position;
+	Argument nextPosition;
+protected:
+	Argument undelayPosition(const Argument& pos) const{
+		Argument res(pos);
+		res.setTime(res.getTime() - delay);
+		return res;
+	}
+
+	Argument delayPosition(const Argument& pos) const {
+		Argument res(pos);
+			res.setTime(res.getTime() + delay);
+			return res;
+	}
+
+	void updatePosition() {
+		nextPosition = delayPosition(origIterator->getNextPosition());
+		position = delayPosition(origIterator->getPosition());
+	}
+
+public:
+	DelayedMappingIterator(MappingIterator* it, simtime_t delay):
+		FilteredMappingIterator(it), delay(delay) {
+
+		updatePosition();
+	}
+
+	virtual const Argument& getNextPosition() const { return nextPosition; }
+
+	virtual void jumpTo(const Argument& pos) {
+		origIterator->jumpTo(undelayPosition(pos));
+		updatePosition();
+	}
+
+	virtual void jumpToBegin() {
+		origIterator->jumpToBegin();
+		updatePosition();
+	}
+
+	virtual void iterateTo(const Argument& pos) {
+		origIterator->iterateTo(undelayPosition(pos));
+		updatePosition();
+	}
+
+	virtual void next() {
+		origIterator->next();
+		updatePosition();
+	}
+
+	virtual const Argument& getPosition() const {
+		return position;
+	}
+};
+
+/**
+ * @brief Moves another Mapping in its time dimension.
+ *
+ * See propgation delay effect of the signal for an example
+ * how to use this mapping.
+ *
+ * @ingroup mappingDetail
+ * @author Karl Wessel
+ */
+class DelayedMapping: public Mapping {
+protected:
+	Mapping* mapping;
+	simtime_t delay;
+
+
+protected:
+	Argument delayPosition(const Argument& pos) const {
+		Argument res(pos);
+		res.setTime(res.getTime() - delay);
+		return res;
+	}
+
+public:
+	DelayedMapping(Mapping* mapping, simtime_t delay):
+		Mapping(mapping->getDimensionSet()), mapping(mapping), delay(delay) {}
+
+	virtual ~DelayedMapping() {}
+
+	virtual double getValue(const Argument& pos) const {
+		return mapping->getValue(delayPosition(pos));
+	}
+
+	virtual void setValue(const Argument& pos, double value) {
+		mapping->setValue(delayPosition(pos), value);
+	}
+
+	virtual Mapping* clone() const {
+		return new DelayedMapping(mapping->clone(), delay);
+	}
+
+	virtual MappingIterator* createIterator() {
+		return new DelayedMappingIterator(mapping->createIterator(), delay);
+	}
+
+	virtual MappingIterator* createIterator(const Argument& pos) {
+		return new DelayedMappingIterator(mapping->createIterator(delayPosition(pos)), delay);
+	}
+
+	/**
+	 * @brief Returns the delay used by this mapping.
+	 */
+	virtual simtime_t getDelay() const {
+		return delay;
+	}
+
+	/**
+	 * @brief Changes the delay to the passed value.
+	 */
+	virtual void delayMapping(simtime_t d) {
+		delay = d;
+	}
+};
 
 
 Mapping* operator*(ConstMapping& f1, ConstMapping& f2);

@@ -28,7 +28,10 @@ void TestPhyLayer::handleMessage(cMessage* msg) {
 		//current state of the receiving process
 		switch(frame->getState()) {
 		case START_RECEIVE:
-			log("Received delayed AirFrame (state=START_RECEIVE). Proceeding it directly to RECEIVING state");
+			if(frame->getSignal().getSignalStart() != simTime())
+				log("Received delayed AirFrame (state=START_RECEIVE). Proceeding it directly to RECEIVING state");
+			else
+				log("Received AirFrame (state=START_RECEIVE). Proceeding it directly to RECEIVING state");
 			break;
 
 		case RECEIVING:

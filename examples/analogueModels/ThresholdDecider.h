@@ -70,7 +70,13 @@ protected:
 		ev << "Sending power mapping: " << endl;
 		printMapping(it->first->getTransmissionPower());
 
-		Mapping* receivingPower = it->first->getTransmissionPower()->clone();
+		Mapping* receivingPower;
+
+		simtime_t delay = it->first->getPropagationDelay();
+		if(delay == 0)
+			receivingPower = it->first->getTransmissionPower()->clone();
+		else
+			receivingPower = new DelayedMapping(it->first->getTransmissionPower(), delay);
 
 		std::list<ConstMapping*> attList = it->first->getAttenuation();
 		int count = 1;

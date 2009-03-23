@@ -335,7 +335,12 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	channelInfo.addAirFrame(frame, simTime());
 
 	//TODO: consider updating signal start when propagation delay is used
-	assert(usePropagationDelay or frame->getSignal().getSignalStart() == simTime());
+	if(usePropagationDelay) {
+		Signal& s = frame->getSignal();
+		simtime_t delay = simTime() - s.getSignalStart();
+		s.setPropagationDelay(delay);
+	}
+	assert(frame->getSignal().getSignalStart() == simTime());
 
 	filterSignal(frame->getSignal());
 

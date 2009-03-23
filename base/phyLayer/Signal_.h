@@ -7,20 +7,23 @@
 #include <list>
 
 /**
- * @brief The signal class stores the physical representation of the signal of an AirFrame.
+ * @brief The signal class stores the physical representation of the
+ * signal  of an AirFrame.
  *
- * This includes start and duration of the signal, the sender hosts move pattern as well
- * as Mappings which represent the transmission power, bitrate, attenuations caused by
- * effects of the channel on the signal during its transmission and the receiving power.
+ * This includes start, duration and propagation delay of the signal,
+ * the sender hosts move pattern as well as Mappings which represent
+ * the transmission power, bitrate, attenuations caused by effects of
+ * the channel on the signal during its transmission and the
+ * receiving power.
  *
- * The Signal is created at the senders MAC layer which has to define the TX-power- and the
- * bitrate Mapping.
- * The sender hosts move pattern as well as start and duration is added at the senders
- * physical layer.
- * Attenuation Mappings are added to the Signal by the  AnalogueModels of the receivers
- * physical layer.
- * The RX-power Mapping is calculated on demand by multiplying the TX-power Mapping with
- * every attenuation Mapping of the signal.
+ * The Signal is created at the senders MAC layer which has to define
+ * the TX-power- and the bitrate Mapping.
+ * The sender hosts move pattern as well as start and duration is
+ * added at the senders physical layer.
+ * Attenuation Mappings are added to the Signal by the
+ * AnalogueModels of the receivers physical layer.
+ * The RX-power Mapping is calculated on demand by multiplying the
+ * TX-power Mapping with every attenuation Mapping of the signal.
  *
  * @ingroup phyLayer
  */
@@ -29,10 +32,14 @@ public:
 	typedef ConcatConstMapping<std::multiplies<double> > MultipliedMapping;
 
 protected:
+
 	/** @brief The start of the signal transmission.*/
 	simtime_t signalStart;
 	/** @brief The length of the signal transmission.*/
 	simtime_t signalLength;
+	/** @brief The propagation delay of the transmission. */
+	simtime_t propDelay;
+
 	/** @brief The movement of the sending host.*/
 	Move senderMovement;
 
@@ -41,6 +48,9 @@ protected:
 
 	/** @brief Stores the function which describes the bitrate of the signal*/
 	Mapping* bitrate;
+
+	/** @brief If propagation delay is not zero this stores the undelayed bitrate*/
+	Mapping* txBitrate;
 
 	typedef std::list<ConstMapping*> ConstMappingList;
 
@@ -52,6 +62,10 @@ protected:
 protected:
 	void markRcvPowerOutdated() {
 		if(rcvPower){
+			if(propDelay != 0) {
+				assert(rcvPower->getRefMapping() != power);
+				delete rcvPower->getRefMapping();
+			}
 			delete rcvPower;
 			rcvPower = 0;
 		}
@@ -59,7 +73,7 @@ protected:
 public:
 
 	/**
-	 * Initializes a signal with the specified start and length.
+	 * @brief Initializes a signal with the specified start and length.
 	 */
 	Signal(simtime_t start = -1.0, simtime_t length = -1.0);
 
@@ -76,12 +90,14 @@ public:
 	const Signal& operator=(const Signal& o);
 
 	/**
-	 * Delete the functions of this signal.
+	 * @brief Delete the functions of this signal.
 	 */
 	~Signal();
 
 	/**
-	 * Returns the point in time when the receiving of the Signal started.
+	 * @brief Returns the point in time when the receiving of the Signal started.
+	 *
+	 * Already includes the propagation delay.
 	 */
 	simtime_t getSignalStart() const;
 
@@ -99,6 +115,18 @@ public:
 	 * @brief Returns the length of the signal transmission.
 	 */
 	simtime_t getSignalLength() const;
+
+	/**
+	 * @brief Returns the propagation delay of the signal.
+	 */
+	simtime_t getPropagationDelay() const;
+
+	/**
+	 * @brief Sets the propagation delay of the signal.
+	 *
+	 * This should be only set by the sending physical layer.
+	 */
+	void setPropagationDelay(simtime_t delay);
 
 	/**
 	 * @brief Sets the function representing the transmission power
@@ -130,6 +158,9 @@ public:
 	/**
 	 * @brief Returns the function representing the transmission power
 	 * of the signal.
+	 *
+	 * Be aware that the transmission power mapping is not yet affected
+	 * by the propagation delay!
 	 */
 	Mapping* getTransmissionPower() {
 		return power;
@@ -138,6 +169,9 @@ public:
 	/**
 	 * @brief Returns the function representing the transmission power
 	 * of the signal.
+	 *
+	 * Be aware that the transmission power mapping is not yet affected
+	 * by the propagation delay!
 	 */
 	ConstMapping* getTransmissionPower() const {
 		return power;
@@ -169,10 +203,13 @@ public:
 	MultipliedMapping* getReceivingPower() {
 		if(!rcvPower)
 		{
-			rcvPower = new MultipliedMapping(power,
+			Mapping* tmp = power;
+			if(propDelay != 0) {
+				tmp = new DelayedMapping(power, propDelay);
+			}
+			rcvPower = new MultipliedMapping(tmp,
 											  attenuations.begin(),
-											  attenuations.end(),
-											  std::multiplies<double>());
+											  attenuations.end());
 		}
 
 		return rcvPower;
