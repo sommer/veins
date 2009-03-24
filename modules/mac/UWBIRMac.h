@@ -58,17 +58,20 @@ protected:
 
     cOutVector packetsBER;
     cOutVector dataLengths;
-    cOutVector nbErroneousSymbols;
+    cOutVector erroneousSymbols;
     cOutVector sentPulses;
     cOutVector receivedPulses;
     long nbReceivedPacketsNoRS, nbReceivedPacketsRS;
     long nbSentPackets;
+    long nbSymbolErrors;
 
     void prepareData(UWBIRMacPkt* packet);
 
     void handleLowerMsg(cPacket *msg);
 
     bool validatePacket(UWBIRMacPkt * mac);
+
+    void initCounters();
 
 };
 
