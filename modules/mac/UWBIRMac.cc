@@ -1,0 +1,185 @@
+/* -*- mode:c++ -*- ********************************************************
+ * file:        UWBIRMac.cc
+ *
+ * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
+ *
+ * copyright:   (C) 2008 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
+ * 				Systems Engineering
+ *              Real-Time Software and Networking
+ *              Jaquet-Droz 1, CH-2002 Neuchatel, Switzerland.
+ *
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
+ *              License as published by the Free Software Foundation; either
+ *              version 2 of the License, or (at your option) any later
+ *              version.
+ *              For further information see file COPYING
+ *              in the top level directory
+ * description: All MAC designed for use with UWB-IR should derive from this
+ * 				class. It provides the necessary functions to build UWBIR
+ * 				packets and to receive them.
+ ***************************************************************************/
+
+#include "UWBIRMac.h"
+#include <iostream>
+
+using namespace std;
+
+Define_Module(UWBIRMac);
+
+void UWBIRMac::initialize(int stage) {
+	BaseMacLayer::initialize(stage);
+        if(stage == 0) {
+            debug = par("debug").boolValue();
+            stats = par("stats").boolValue();
+            trace = par("trace").boolValue();
+            packetsAlwaysValid = par("packetsAlwaysValid");
+            myMacAddr = par("MACAddr");
+            rsDecoder = par("RSDecoder").boolValue();
+            phy = FindModule<MacToPhyInterface*>::findSubModule(this->getParentModule());
+            totalRxBits = 0;
+            errRxBits = 0;
+            nbReceivedPacketsRS = 0;
+            nbReceivedPacketsNoRS = 0;
+            nbSentPackets = 0;
+            packetsBER.setName("packetsBER");
+            dataLengths.setName("dataLengths");
+            sentPulses.setName("sentPulses");
+            receivedPulses.setName("receivedPulses");
+            nbErroneousSymbols.setName("nbErroneousSymbols");
+        }
+}
+
+void UWBIRMac::finish() {
+    if(stats) {
+        recordScalar("Erroneous bits", errRxBits);
+        recordScalar("Total received bits", totalRxBits);
+        recordScalar("Average BER", errRxBits/totalRxBits);
+        recordScalar("nbReceivedPacketsRS", nbReceivedPacketsRS);
+        recordScalar("nbReceivedPacketsnoRS", nbReceivedPacketsNoRS);
+        if(rsDecoder) {
+        	recordScalar("nbReceivedPackets", nbReceivedPacketsRS);
+        } else {
+        	recordScalar("nbReceivedPackets", nbReceivedPacketsNoRS);
+        }
+
+       	recordScalar("nbSentPackets", nbSentPackets);
+    }
+}
+
+void UWBIRMac::prepareData(UWBIRMacPkt* packet) {
+	// generate signal
+	int nbSymbols =packet->getByteLength()*8+92; // to move to ieee802154a.h
+	IEEE802154A::setPSDULength(packet->getByteLength());
+	IEEE802154A::signalAndData res = IEEE802154A::generateIEEE802154AUWBSignal(simTime());
+	Signal* theSignal = res.first;
+	vector<bool>* data = res.second;
+	if (trace) {
+		Mapping* power = theSignal->getTransmissionPower();
+		ConstMappingIterator* iter = power->createConstIterator();
+		iter->jumpToBegin();
+		while (iter->hasNext()) {
+			sentPulses.recordWithTimestamp(simTime()
+					+ iter->getPosition().getTime(), iter->getValue());
+			iter->next();
+		}
+	}
+
+	// save bit values
+	//packet->setBitValuesArraySize(data->size());
+	for (unsigned int pos = 0; pos < nbSymbols; pos = pos + 1) {
+		packet->setBitValues(pos, data->at(pos));
+	}
+	delete data;
+
+	packet->setNbSymbols(nbSymbols);
+
+	// attach control info
+	MacToPhyControlInfo* macPhycInfo = new MacToPhyControlInfo(theSignal);
+	packet->setControlInfo(macPhycInfo);
+
+}
+
+bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
+	if(!packetsAlwaysValid) {
+    DeciderResult res = (dynamic_cast<PhyToMacControlInfo*>(mac->getControlInfo()))->getDeciderResult();
+    std::vector<bool> * decodedBits = res.getDecodedBits();
+
+    int bitsToDecode = mac->getNbSymbols();
+    /*
+    if(decodedBits->size() != mac->getBitValuesArraySize()) {
+        EV << "Warning! decoded " << decodedBits->size() << " when I should have received ";
+        EV << mac->getBitValuesArraySize() << ". " << endl;
+        if(decodedBits->size() > mac->getBitValuesArraySize()) {
+            bitsToDecode = mac->getBitValuesArraySize();
+        }
+    }
+	*/
+    int nbBitErrors = 0;
+    int nbSymbolErrors = 0;
+    bool currSymbolError = false;
+    for(int i = 0; i < bitsToDecode; i++) {
+    	// Start of a new symbol
+    	if(i % IEEE802154A::RSSymbolLength == 0) {
+    		currSymbolError = false;
+    	}
+    	// bit error
+        if( decodedBits->at(i) != mac->getBitValues(i)) {
+            nbBitErrors++;
+            EV << "Found an error at position " << i << "." << endl;
+            // symbol error
+            if(!currSymbolError) {
+            	currSymbolError = true;
+            	nbSymbolErrors = nbSymbolErrors + 1;
+            }
+        }
+    }
+    EV << "Found " << nbBitErrors << " bit errors in MAC packet." << endl;
+    packetsBER.record(static_cast<double>(nbBitErrors)/static_cast<double>(bitsToDecode));
+    nbErroneousSymbols.record(nbSymbolErrors);
+    totalRxBits += bitsToDecode;
+    errRxBits += nbBitErrors;
+
+    decodedBits->clear();
+    delete decodedBits;
+
+    if (rsDecoder && nbSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) {
+    	nbReceivedPacketsRS++;
+    }
+    if(nbBitErrors == 0) {
+    	nbReceivedPacketsNoRS++;
+    }
+
+    // validate message
+    bool success = false;
+
+    success = (nbBitErrors == 0 || (rsDecoder && nbSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) );
+
+    return success;
+    }
+	return true;
+}
+
+void UWBIRMac::handleLowerMsg(cPacket *msg) {
+    UWBIRMacPkt *mac = static_cast<UWBIRMacPkt *>(msg);
+
+    if(validatePacket(mac)) {
+        int dest = mac->getDestAddr();
+        int src = mac->getSrcAddr();
+        if ((dest == myMacAddr)) {
+            coreEV << "message with mac addr " << src
+                    << " for me (dest=" << dest
+                    << ") -> forward packet to upper layer\n";
+            sendUp(decapsMsg(mac));
+        } else {
+            coreEV << "message with mac addr " << src
+                    << " not for me (dest=" << dest
+                    << ") -> delete (my MAC=" << myMacAddr << ")\n";
+            delete mac;
+        }
+    } else {
+        EV << "Errors in message ; dropping mac packet." << endl;
+        delete mac;
+    }
+}
+
