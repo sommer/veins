@@ -21,7 +21,7 @@
 
 package org.mixim.modules.node;
 
-import org.mixim.base.modules.BaseApplLayer;
+import org.mixim.base.modules.IBaseApplLayer;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseMobility;
 import org.mixim.base.modules.BaseNetwLayer;
@@ -56,7 +56,7 @@ module testNode
                 @display("p=200,225;b=30,25");
 
         }
-        appl: <applType> like BaseApplLayer {
+        appl: <applType> like IBaseApplLayer {
             parameters:
                 @display("p=90,50;b=100,20,rect");
 

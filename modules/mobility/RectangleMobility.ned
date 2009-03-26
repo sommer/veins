@@ -18,15 +18,18 @@
 
 package org.mixim.modules.mobility;
 
+import org.mixim.base.modules.BaseMobility;
+
 //
 // Moves the node around a rectangle.
 //
 // @see ConnectionManager
 // @author Andras Varga
 //
-simple RectangleMobility
+simple RectangleMobility extends BaseMobility
 {
     parameters:
+        @class(RectangleMobility);
         bool debug; // debug switch
         double x1; // rectangle is denoted by the (x1,y1) and (x2,y2) coords
         double y1;

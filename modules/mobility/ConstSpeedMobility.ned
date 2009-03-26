@@ -20,6 +20,8 @@
 
 package org.mixim.modules.mobility;
 
+import org.mixim.base.modules.BaseMobility;
+
 //
 // Controls all movement related things of a host
 //
@@ -36,14 +38,11 @@ package org.mixim.modules.mobility;
 // @see ConnectionManager
 // @author Steffen Sroka, Marc Loebbers, Daniel Willkomm
 //
-simple ConstSpeedMobility
+simple ConstSpeedMobility extends BaseMobility
 {
     parameters:
-        bool coreDebug; // core debug switch
+        @class(ConstSpeedMobility);
         bool debug; // debug switch
         double speed; // speed of the host (in m/s)
-        double x; // x coordinate of the nodes' position (-1 = random)
-        double y; // y coordinate of the nodes' position (-1 = random)
-        double z; // z coordinate of the nodes' position (-1 = random)
         double updateInterval; // time interval to update the hosts position
 }

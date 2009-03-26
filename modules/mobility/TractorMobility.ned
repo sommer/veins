@@ -18,6 +18,8 @@
 
 package org.mixim.modules.mobility;
 
+import org.mixim.base.modules.BaseMobility;
+
 //
 // Moves a tractor through a field with a certain amount of rows.
 // Since the tractor also moves around the field, the tractor travels
@@ -34,9 +36,10 @@ package org.mixim.modules.mobility;
 //
 // @author Peterpaul Klein Haneveld
 //
-simple TractorMobility
+simple TractorMobility extends BaseMobility
 {
     parameters:
+        @class(TractorMobility);
         bool debug; // debug switch
         double x1; // rectangle is denoted by the (x1,y1) and (x2,y2) coords
         double y1;

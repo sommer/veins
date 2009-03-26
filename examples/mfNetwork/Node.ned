@@ -21,7 +21,7 @@
 
 package org.mixim.examples.mfNetwork;
 
-import org.mixim.base.modules.BaseApplLayer;
+import org.mixim.base.modules.IBaseApplLayer;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseNetwLayer;
 import org.mixim.base.modules.BaseUtility;
@@ -59,7 +59,7 @@ module Node
                 @display("p=200,225;b=30,25");
 
         }
-        appl: <applType> like BaseApplLayer {
+        appl: <applType> like IBaseApplLayer {
             parameters:
                 @display("p=90,50;b=100,20,rect");
 

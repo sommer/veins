@@ -19,6 +19,8 @@
 
 package org.mixim.modules.mobility;
 
+import org.mixim.base.modules.BaseMobility;
+
 //
 // This is a linear mobility model with speed, angle and acceleration parameters.
 // Angle only changes when the mobile node hits a wall: then it reflects
@@ -27,13 +29,11 @@ package org.mixim.modules.mobility;
 // @see ConnectionManager
 // @author Emin Ilker Cetinbas
 //
-simple LinearMobility
+simple LinearMobility extends BaseMobility
 {
     parameters:
-        bool coreDebug; // core MF debug switch
+        @class(LinearMobility);
         bool debug; // debug switch
-        double x; // x starting point of the node (-1 = random)
-        double y; // y starting point of the node (-1 = random)
         double speed; // speed of the host (in m/s)
         double angle; // angle of linear motion (degreees)
         double acceleration; // acceleration of linear motion (m/s2)

@@ -19,6 +19,8 @@
 
 package org.mixim.modules.mobility;
 
+import org.mixim.base.modules.BaseMobility;
+
 //
 // A LOGO-style movement model, with the script coming from XML. It can be
 // useful for describing random as well as deterministic scenarios.
@@ -110,10 +112,10 @@ package org.mixim.modules.mobility;
 // @see ConnectionManager
 // @author Andras Varga
 //
-simple TurtleMobility
+simple TurtleMobility extends BaseMobility
 {
     parameters:
-        bool coreDebug; // debug switch
+        @class(TurtleMobility);
         bool debug; // debug switch
         xml turtleScript; // describes the movement
         double updateInterval; // time interval to update the hosts position

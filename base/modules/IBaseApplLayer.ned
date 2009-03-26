@@ -1,6 +1,6 @@
 package org.mixim.base.modules;
 
-moduleinterface BaseApplLayer
+moduleinterface IBaseApplLayer
 {
     parameters:
         bool debug; // debug switch

@@ -21,12 +21,15 @@
 
 package org.mixim.modules.mac;
 
+import org.mixim.base.modules.BaseMacLayer;
+
 //
 // CSMA MAC protocol
 //
-simple CSMAMacLayer
+simple CSMAMacLayer extends BaseMacLayer
 {
     parameters:
+        @class(CSMAMacLayer);
         // how long is a slot? [s]
         double slotDuration @unit(s);
         // maximum time between a packet and its ack [s]
@@ -43,17 +46,4 @@ simple CSMAMacLayer
         double txPower @unit(mW);
         // contention window
         double contentionWindow;
-
-        bool coreDebug; // debug switch
-        double headerLength; // length of the MAC packet header (in bits)
-
-    gates:
-        input upperGateIn; // from net layer
-        output upperGateOut; // to net layer
-        input upperControlIn; // control from net layer
-        output upperControlOut; // control to net layer
-        input lowerGateIn; // from phy
-        output lowerGateOut; // to phy
-        input lowerControlIn; // control from phy
-        output lowerControlOut; // control to phy
 }

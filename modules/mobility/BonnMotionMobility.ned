@@ -19,6 +19,8 @@
 
 package org.mixim.modules.mobility;
 
+import org.mixim.base.modules.BaseMobility;
+
 //
 // Uses the native file format of BonnMotion (http://www.cs.uni-bonn.de/IV/BonnMotion/).
 //
@@ -33,10 +35,11 @@ package org.mixim.modules.mobility;
 //
 // @author Andras Varga
 //
-simple BonnMotionMobility
+simple BonnMotionMobility extends BaseMobility
 {
     parameters:
-        bool coreDebug; // debug switch
+        @class(BonnMotionMobility);
+        
         bool debug; // debug switch
         string traceFile; // the BonnMotion trace file
         double nodeId; // selects line in trace file; -1 gets substituted to parent module's index

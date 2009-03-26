@@ -21,6 +21,8 @@
 
 package org.mixim.modules.mobility;
 
+import org.mixim.base.modules.BaseMobility;
+
 //
 // This is a random mobility model for a mobile host with a mass. It is the
 // one used in "Optimized Smooth Handoffs in Mobile IP" by Perkins & Wang.
@@ -50,13 +52,11 @@ package org.mixim.modules.mobility;
 // @see ConnectionManager
 // @author Emin Ilker Cetinbas, Andras Varga
 //
-simple MassMobility
+simple MassMobility extends BaseMobility
 {
     parameters:
-        bool coreDebug; // core MF debug switch
+        @class(MassMobility);
         bool debug; // debug switch
-        double x; // x starting point of the node (-1 = random)
-        double y; // y starting point of the node (-1 = random)
         volatile double changeInterval; // frequency of changing speed and angle (can be random) [s]
         volatile double changeAngleBy; // change angle by this much (can be random) [deg]
         volatile double speed; // speed (can be random, updated every changeInterval) [m/s]

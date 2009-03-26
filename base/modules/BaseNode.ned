@@ -4,6 +4,7 @@ module BaseNode
 {
     parameters:
         string applType; //type of the application layer
+        string netwType; //type of the network layer
         @display("bgb=,,white,,");
     gates:
         input radioIn; // gate for sendDirect
@@ -24,11 +25,11 @@ module BaseNode
             parameters:
                 @display("p=130,172;i=cogwheel2");
         }
-        appl: <applType> like BaseApplLayer {
+        appl: <applType> like IBaseApplLayer {
             parameters:
                 @display("p=60,50;i=app");
         }
-        net: BaseNetwLayer {
+        net: <netwType> like IBaseNetwLayer {
             parameters:
                 @display("p=60,108;i=prot1");
         }

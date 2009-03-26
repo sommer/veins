@@ -20,7 +20,7 @@
 
 package org.mixim.examples.positifNetwork;
 
-import org.mixim.base.modules.BaseApplLayer;
+import org.mixim.base.modules.IBaseApplLayer;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseBattery;
 import org.mixim.base.modules.IBaseMobility;
@@ -57,7 +57,7 @@ module LocNode
             parameters:
                 @display("p=130,172;i=cogwheel2");
         }
-        appl: <applType> like BaseApplLayer {
+        appl: <applType> like IBaseApplLayer {
             parameters:
                 @display("p=60,50;i=app");
         }

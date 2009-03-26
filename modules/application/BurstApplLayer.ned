@@ -25,7 +25,7 @@
 // ***************************************************************************/
 package org.mixim.modules.application;
 
-import org.mixim.base.modules.BaseApplLayer;
+import org.mixim.base.modules.IBaseApplLayer;
 
 // Application layer to test lower layer implementations
 //
@@ -36,7 +36,7 @@ import org.mixim.base.modules.BaseApplLayer;
 //
 // @sa TestApplALyer
 // @author Daniel Willkomm
-simple BurstApplLayer like BaseApplLayer
+simple BurstApplLayer like IBaseApplLayer
 {
     parameters:
     	bool debug; // debug switch

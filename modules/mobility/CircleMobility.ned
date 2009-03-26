@@ -18,15 +18,17 @@
 
 package org.mixim.modules.mobility;
 
+import org.mixim.base.modules.BaseMobility;
 //
 // Moves the node around a circle.
 //
 // @see ConnectionManager
 // @author Andras Varga
 //
-simple CircleMobility
+simple CircleMobility extends BaseMobility
 {
     parameters:
+        @class(CircleMobility);
         bool debug; // debug switch
         double cx; // x coord of the center of the circle
         double cy; // y coord of the center of the circle

@@ -19,15 +19,17 @@
 
 package org.mixim.modules.mobility;
 
+import org.mixim.base.modules.BaseMobility;
 //
 // Uses the <position_change> elements of the ANSim tool's
 // trace file.
 //
 // @author Andras Varga
 //
-simple ANSimMobility
+simple ANSimMobility extends BaseMobility
 {
     parameters:
+        @class(ANSimMobility);
         bool debug; // debug switch
         xml ansimTrace; // the ANSim trace file in XML
         double nodeId; // <position_change> elements to match; 

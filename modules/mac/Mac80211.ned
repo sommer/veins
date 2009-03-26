@@ -31,11 +31,10 @@ import org.mixim.base.modules.BaseMacLayer;
 // management frames), and does not support fragmentation, RTS threshold,
 // duplication detection and recovery.
 //
-simple Mac80211
+simple Mac80211 extends BaseMacLayer
 {
     parameters:
-        bool coreDebug; // debug switch
-        double headerLength; // length of the MAC packet header (in bits)
+        @class(Mac80211);
         
         int queueLength;
         int rtsCtsThreshold;
@@ -56,14 +55,4 @@ simple Mac80211
     	double neighborhoodCacheMaxAge; 
     	//the power to transmit packets with [mW]
     	double txPower @unit(mW);
-	
-    gates:
-        input upperGateIn; // from net layer
-        output upperGateOut; // to net layer
-        input upperControlIn; // control from net layer
-        output upperControlOut; // control to net layer
-        input lowerGateIn; // from phy
-        output lowerGateOut; // to phy
-        input lowerControlIn; // control from phy
-        output lowerControlOut; // control to phy
 }

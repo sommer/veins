@@ -1,6 +1,6 @@
 package org.mixim.base.modules;
 
-simple BaseMobility
+simple BaseMobility like IBaseMobility
 {
     parameters:
         bool coreDebug; // debug switch for the core framework
