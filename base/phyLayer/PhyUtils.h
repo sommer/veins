@@ -251,7 +251,7 @@ public:
 		SWITCHING,
 
 		/* New entries from here... */
-
+		SYNC,		// CSEM Jerome Rousselot
 		/* ... to here. */
 
 		/*
