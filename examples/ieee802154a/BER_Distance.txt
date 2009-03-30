@@ -1,0 +1,16 @@
+
+To test the pathloss and decider components,
+it is useful to generate a plot of Bit Error Rate
+as a function of distance between transmitter
+and receiver.
+
+cp omnetpp-ber.ini omnetpp.ini
+rm omnetpp.sca
+rm omnetpp.vec
+rm vectors/*
+./runBER.sh
+cd vectors
+splitvec *.vec
+cd ..
+./plotBER.py
+

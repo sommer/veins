@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<Decider type="UWBIREnergyDetectionDeciderV2">
+		<parameter name="sensitivity" type="double" value="0.9"/>
+		<parameter name="syncThreshold" type="double" value="10"/>
+		<parameter name="trace"		type="bool" value="false"/>
+		<parameter name="stats"         type="bool" value="true"/>
+	</Decider>
+</root>
+

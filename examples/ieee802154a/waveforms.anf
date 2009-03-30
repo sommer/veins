@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="results/waveforms-*.vec"/>
+    <inputs name="results/waveforms-*.sca"/>
+  </inputs>
+  <datasets>
+    <datasets name="sentSignal">
+      <items xsi:type="scave:Add" filterPattern="name(sentPulses) and attr:runnumber(1)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="a burst" lineNameFormat="">
+        <properties name="Y.Axis.Min" value="-2.0"/>
+        <properties name="Y.Axis.Max" value="12.0"/>
+        <properties name="X.Axis.Min" value="5.00012933"/>
+        <properties name="X.Axis.Max" value="5.00012938"/>
+      </items>
+      <items xsi:type="scave:LineChart" name="two bursts" lineNameFormat="">
+        <properties name="Y.Axis.Min" value="-2.0"/>
+        <properties name="Y.Axis.Max" value="12.0"/>
+        <properties name="X.Axis.Min" value="5.0001334"/>
+        <properties name="X.Axis.Max" value="5.000134"/>
+      </items>
+      <items xsi:type="scave:LineChart" name="all" lineNameFormat="">
+        <properties name="Y.Axis.Min" value="-12.0"/>
+        <properties name="Y.Axis.Max" value="12.0"/>
+        <properties name="X.Axis.Min" value="5.0"/>
+        <properties name="X.Axis.Max" value="5.0003"/>
+      </items>
+    </datasets>
+    <datasets name="receivedSignal-cm1">
+      <items xsi:type="scave:Add" filterPattern="name(receivedPulses) and attr:Channel(cm1) and attr:runnumber(18) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="burst cm1" lineNameFormat="">
+        <properties name="Y.Axis.Min" value="-1.0E-7"/>
+        <properties name="Y.Axis.Max" value="5.5E-6"/>
+        <properties name="X.Axis.Min" value="6.000096575"/>
+        <properties name="X.Axis.Max" value="6.00009676"/>
+      </items>
+    </datasets>
+    <datasets name="receivedSignal-cm2">
+      <items xsi:type="scave:Add" filterPattern="name(receivedPulses) and attr:Channel(cm2) and attr:runnumber(26) " type="VECTOR"/>
+    </datasets>
+    <datasets name="receivedSignal-ghassemzadeh-los">
+      <items xsi:type="scave:Add" filterPattern="name(receivedPulses) and attr:Channel(ghassemzadeh-los) and attr:runnumber(7) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="burst ghassemzadeh los" lineNameFormat=""/>
+    </datasets>
+    <datasets name="TH">
+      <items xsi:type="scave:Add" filterPattern="name(timeHoppings) and attr:runnumber(1) " type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="timeshift">
+        <params name="dt" value="-5"/>
+      </items>
+      <items xsi:type="scave:Apply" operation="timetoserial"/>
+      <items xsi:type="scave:LineChart" name="time hopping" lineNameFormat=""/>
+    </datasets>
+  </datasets>
+  <chartSheets>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.3/@items.1 //@datasets/@datasets.0/@items.3 //@datasets/@datasets.4/@items.3"/>
+  </chartSheets>
+</scave:Analysis>

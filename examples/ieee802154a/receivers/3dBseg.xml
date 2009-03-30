@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<Decider type="UWBIREDSync">
+		<parameter name="sensitivity" type="double" value="0.5"/>
+		<parameter name="syncThreshold" type="double" value="1.10"/>
+		<parameter name="syncTime" type="double" value="15.9E-6"/><!--15.4A short sync preamble length-->
+		<parameter name="syncAlwaysSucceeds" type="bool" value="false"/>
+		<parameter name="trace"		type="bool" value="false"/>
+		<parameter name="stats"         type="bool" value="true"/>
+	</Decider>
+</root>
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="results/RS-*.sca"/>
+    <inputs name="results/RS-*.vec"/>
+  </inputs>
+  <datasets>
+    <datasets name="PER">
+      <items xsi:type="scave:Add" filterPattern="module(phySim.node[0].nic.mac) AND name(nbReceivedPacketsRS)"/>
+      <items xsi:type="scave:Add" filterPattern="module(phySim.node[0].nic.mac) AND name(nbReceivedPacketsnoRS)"/>
+      <items xsi:type="scave:BarChart" name="PER">
+        <groupByFields>name</groupByFields>
+        <barFields>experiment</barFields>
+        <barFields>measurement</barFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+      <items xsi:type="scave:ScatterChart" name="RS - noRS" xDataPattern="module(phySim.node[0].nic.mac) AND name(nbReceivedPacketsnoRS)"/>
+    </datasets>
+    <datasets name="PER2">
+      <items xsi:type="scave:Add" filterPattern="module(phySim.node[0].nic.mac) AND name(nbReceivedPacketsNoRS)"/>
+      <items xsi:type="scave:BarChart" name="PER2">
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="SER-noRS">
+      <items xsi:type="scave:Add" filterPattern="name(nbErroneousSymbols) and attr:configname(BERwithoutRS) " type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="timeavg">
+        <params name="interpolation-mode" value="linear"/>
+      </items>
+      <items xsi:type="scave:LineChart" name="symbol error rates" lineNameFormat=""/>
+    </datasets>
+    <datasets name="SER-withRS">
+      <items xsi:type="scave:Add" filterPattern="name(nbErroneousSymbols) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="symbol error rates" lineNameFormat=""/>
+      <items xsi:type="scave:Apply" operation="timeavg">
+        <params name="interpolation-mode" value="linear"/>
+      </items>
+    </datasets>
+    <datasets name="symbolerrors">
+      <items xsi:type="scave:Add" filterPattern="name(nbErroneousSymbols) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="symbol errors per packet" lineNameFormat="">
+        <properties name="Y.Axis.Log" value="true"/>
+      </items>
+    </datasets>
+  </datasets>
+  <chartSheets>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2 //@datasets/@datasets.2/@items.2 //@datasets/@datasets.3/@items.1 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.4/@items.1 //@datasets/@datasets.0/@items.3"/>
+  </chartSheets>
+</scave:Analysis>

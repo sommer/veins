@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<AnalogueModels>
+                 <AnalogueModel type="UWBIRIEEE802154APathlossModel">  
+		<parameter name="CM" type="long" value="6"/> 
+		<parameter name="Threshold" type="double" value="0.1"/>
+	    </AnalogueModel>
+	</AnalogueModels>
+</root>
+

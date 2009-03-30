@@ -1,0 +1,3 @@
+# Partial Tkenv config file -- see $HOME/.tkenvrc as well
+inspector "phySim" "phySim" "2" "1055x304+100+535"
+
