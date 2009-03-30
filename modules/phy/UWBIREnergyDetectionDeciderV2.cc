@@ -134,8 +134,8 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(
 		// we cannot compute bit error rate here
 		// so we send the packet to the MAC layer which will compare receivedBits
 		// with the actual bits sent.
-		DeciderResult result(true);
-		result.setDecodedBits(receivedBits);
+		DeciderResult * result = new DeciderResult(true);
+		result->setDecodedBits(receivedBits);
 		phy->sendUp(frame, result);
 		currentSignals.erase(it);
 		tracking = 0;
@@ -364,7 +364,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleChannelSenseRequest(
 		return -1; // do not call me back ; I have finished
 	} else {
 		channelSensing = true;
-		return phy->getSimTime() + request->getSenseDuration();
+		return -1; //phy->getSimTime() + request->getSenseDuration();
 	}
 }
 
