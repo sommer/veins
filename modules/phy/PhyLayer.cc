@@ -42,6 +42,7 @@ AnalogueModel* PhyLayer::initializeLogNormalShadowing(ParameterMap& params){
 AnalogueModel* PhyLayer::initializeJakesFading(ParameterMap& params){
 	int fadingPaths = params["fadingPaths"].longValue();
 	simtime_t delayRMS = params["delayRMS"].doubleValue();
+	simtime_t interval = params["interval"].doubleValue();
 
 	double carrierFrequency = 2.412e+9;
 	if(params.count("carrierFrequency") > 0) {
@@ -53,7 +54,7 @@ AnalogueModel* PhyLayer::initializeJakesFading(ParameterMap& params){
 		}
 	}
 
-	return new JakesFading(fadingPaths, delayRMS, &move, carrierFrequency);
+	return new JakesFading(fadingPaths, delayRMS, &move, carrierFrequency, interval);
 }
 
 AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){

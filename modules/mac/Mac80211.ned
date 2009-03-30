@@ -39,20 +39,20 @@ simple Mac80211 extends BaseMacLayer
         int queueLength;
         int rtsCtsThreshold;
 
-        double bitrate;
+        double bitrate @unit(bps);
 		int defaultChannel; // minimum channel support
 
     	// auto bit rate selection support: specify borders at which
             // to change modulation.	
     	bool autoBitrate;         // use auto bit rate adaptation
-    	double snr2Mbit;  // threshold to use 2Mbit (in dB)
-    	double snr5Mbit;  // threshold to use 5.5Mbit (in dB)
-    	double snr11Mbit;  // threshold to use 11Mbit (in dB)
+    	double snr2Mbit @unit(dB);  // threshold to use 2Mbit (in dB)
+    	double snr5Mbit @unit(dB);  // threshold to use 5.5Mbit (in dB)
+    	double snr11Mbit @unit(dB);  // threshold to use 11Mbit (in dB)
 
     	// keep information on neighborhood
     	int neighborhoodCacheSize;	
-    	// consider information in cache outdate if older than 
-    	double neighborhoodCacheMaxAge; 
+    	// consider information in cache outdate if older than (in seconds)
+    	double neighborhoodCacheMaxAge @unit(s); 
     	//the power to transmit packets with [mW]
     	double txPower @unit(mW);
 }

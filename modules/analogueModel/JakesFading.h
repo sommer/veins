@@ -28,8 +28,11 @@ protected:
 	double relSpeed;
 
 public:
-	JakesFadingMapping(JakesFading* model, double relSpeed):
-		SimpleConstMapping(dimensions),
+	JakesFadingMapping(JakesFading* model, double relSpeed,
+					   const Argument& start,
+					   const Argument& interval,
+					   const Argument& end):
+		SimpleConstMapping(dimensions, start, end, interval),
 		model(model), relSpeed(relSpeed)
 	{}
 
@@ -75,8 +78,13 @@ protected:
 	/** @brief Carrier frequency to be used. */
 	double carrierFrequency;
 
+	/** @brief The interval to set attenuation entries in. */
+	Argument interval;
+
 public:
-	JakesFading(int fadingPaths, simtime_t delayRMS, Move* hostMove, double carrierFrequency);
+	JakesFading(int fadingPaths, simtime_t delayRMS,
+				Move* hostMove, double carrierFrequency,
+				simtime_t interval);
 	virtual ~JakesFading();
 
 	virtual void filterSignal(Signal& s);

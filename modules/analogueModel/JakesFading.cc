@@ -61,10 +61,13 @@ double JakesFadingMapping::getValue(const Argument& pos) const {
 }
 
 
-JakesFading::JakesFading(int fadingPaths, simtime_t delayRMS, Move* hostMove, double carrierFrequency):
+JakesFading::JakesFading(int fadingPaths, simtime_t delayRMS,
+						 Move* hostMove, double carrierFrequency,
+						 simtime_t interval):
 	fadingPaths(fadingPaths),
 	hostMove(hostMove),
-	carrierFrequency(carrierFrequency)
+	carrierFrequency(carrierFrequency),
+	interval(interval)
 {
 	angleOfArrival = new double[fadingPaths];
 	delay = new simtime_t[fadingPaths];
@@ -84,5 +87,11 @@ void JakesFading::filterSignal(Signal& s)
 {
 	double relSpeed = (s.getMove().direction - hostMove->direction).length();
 
-	s.addAttenuation(new JakesFadingMapping(this, relSpeed));
+	simtime_t start = s.getSignalStart();
+	simtime_t end = start + s.getSignalLength();
+
+	s.addAttenuation(new JakesFadingMapping(this, relSpeed,
+											Argument(start),
+											Argument(interval),
+											Argument(end)));
 }

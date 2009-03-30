@@ -38,8 +38,11 @@ You have to define these settings in the config.xml of your PhyLayer.-->
 	    	<!-- Number of fading paths per host -->
 	    	<parameter name="fadingPaths" type="long" value="3"/>
 	    	
-	    	<!-- TODO: what does this parameter defien exactly -->
+	    	<!-- f-selectivity: mean delay spread in seconds -->
 	    	<parameter name="delayRMS" type="double" value="0.0001"/>
+	    	
+	    	<!-- Interval in which to define attenuation for in seconds -->
+	    	<parameter name="interval" type="double" value="0.001"/>
 	    </AnalogueModel>
 	    
 	</AnalogueModels>	
