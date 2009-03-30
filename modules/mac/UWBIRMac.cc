@@ -48,7 +48,7 @@ void UWBIRMac::initCounters() {
 	nbReceivedPacketsRS = 0;
 	nbReceivedPacketsNoRS = 0;
 	nbSentPackets = 0;
-	nbErroneousSymbols = 0;
+	nbSymbolErrors = 0;
 	packetsBER.setName("packetsBER");
 	dataLengths.setName("dataLengths");
 	sentPulses.setName("sentPulses");
@@ -59,6 +59,7 @@ void UWBIRMac::initCounters() {
 void UWBIRMac::finish() {
 	if (stats) {
 		recordScalar("Erroneous bits", errRxBits);
+		recordScalar("nbSymbolErrors", nbSymbolErrors);
 		recordScalar("Total received bits", totalRxBits);
 		recordScalar("Average BER", errRxBits / totalRxBits);
 		recordScalar("nbReceivedPacketsRS", nbReceivedPacketsRS);
@@ -68,7 +69,6 @@ void UWBIRMac::finish() {
 		} else {
 			recordScalar("nbReceivedPackets", nbReceivedPacketsNoRS);
 		}
-
 		recordScalar("nbSentPackets", nbSentPackets);
 	}
 }
