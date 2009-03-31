@@ -44,6 +44,8 @@ class MacControlInfo : public cObject
     /** @brief netw address of the sending or receiving node*/
     int nextHopMac;
 
+    double ber;
+
   public:
     /** @brief Default constructor*/
     MacControlInfo(const int addr) : nextHopMac(addr) {};
@@ -59,6 +61,14 @@ class MacControlInfo : public cObject
     virtual void setNextHopMac(const int addr){
 	nextHopMac = addr;
     };
+
+    virtual const double getBER() {
+      return ber;
+    }
+
+    void setBER(double _ber) {
+    	ber = _ber;
+    }
 };
 
 
