@@ -154,19 +154,19 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	decider = 0;
 
 	if(xmlConfig == 0) {
-		ev << "No decider configuration file specified." << endl;
+		opp_error("No decider configuration file specified.");
 		return;
 	}
 
 	cXMLElementList deciderList = xmlConfig->getElementsByTagName("Decider");
 
 	if(deciderList.empty()) {
-		ev << "No decider configuration found in configuration file." << endl;
+		opp_error("No decider configuration found in configuration file.");
 		return;
 	}
 
 	if(deciderList.size() > 1) {
-		ev << "More than one decider configuration found in configuration file." << endl;
+		opp_error("More than one decider configuration found in configuration file.");
 		return;
 	}
 
@@ -175,7 +175,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	const char* name = deciderData->getAttribute("type");
 
 	if(name == 0) {
-		ev << "Could not read type of decider from configuration file." << endl;
+		opp_error("Could not read type of decider from configuration file.");
 		return;
 	}
 
@@ -213,20 +213,20 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 
 	if(newAnalogueModel == 0)
 	{
-		ev << "Could not find an analogue model with the name \"" << s << "\"." << endl;
+		opp_warning("Could not find an analogue model with the name \"%s\".", s.c_str());
 	}
 	analogueModels.push_back(newAnalogueModel);
 
 
 	if(xmlConfig == 0) {
-		ev << "No analogue models configuration file specified." << endl;
+		opp_warning("No analogue models configuration file specified.");
 		return;
 	}
 
 	cXMLElementList analogueModelList = xmlConfig->getElementsByTagName("AnalogueModel");
 
 	if(analogueModelList.empty()) {
-		ev << "No analogue models configuration found in configuration file." << endl;
+		opp_warning("No analogue models configuration found in configuration file.");
 		return;
 	}
 
@@ -241,7 +241,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 		const char* name = analogueModelData->getAttribute("type");
 
 		if(name == 0) {
-			ev << "Could not read name of analogue model." << endl;
+			opp_warning("Could not read name of analogue model.");
 			continue;
 		}
 
@@ -251,7 +251,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 		AnalogueModel* newAnalogueModel = getAnalogueModelFromName(name, params);
 
 		if(newAnalogueModel == 0) {
-			ev << "Could not find an analogue model with the name \"" << name << "\"." << endl;
+			opp_warning("Could not find an analogue model with the name \"%s\".", name);
 			continue;
 		}
 

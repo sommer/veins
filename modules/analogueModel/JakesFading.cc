@@ -85,13 +85,15 @@ JakesFading::~JakesFading() {
 
 void JakesFading::filterSignal(Signal& s)
 {
-	double relSpeed = (s.getMove().direction - hostMove->direction).length();
+	const Move& senderMove = s.getMove();
+	double relSpeed = (senderMove.direction * senderMove.speed
+					   - hostMove->direction * hostMove->speed).length();
 
 	simtime_t start = s.getSignalStart();
 	simtime_t end = start + s.getSignalLength();
 
 	s.addAttenuation(new JakesFadingMapping(this, relSpeed,
 											Argument(start),
-											Argument(interval),
+											interval,
 											Argument(end)));
 }
