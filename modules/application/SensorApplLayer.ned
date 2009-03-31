@@ -1,4 +1,7 @@
 package org.mixim.modules.application;
+
+import org.mixim.base.modules.BaseApplLayer;
+
 //****************************************************************************
 // * file:        SensorApplLayer.ned
 // *
