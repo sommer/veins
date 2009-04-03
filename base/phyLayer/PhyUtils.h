@@ -263,6 +263,8 @@ public:
 
 protected:
 
+	cOutVector radioStates;
+
 	/**
 	 * The current state the radio is in
 	 */
@@ -297,6 +299,8 @@ public:
 		: state(initialState), nextState(initialState), numRadioStates(NUM_RADIO_STATES),
 		minAtt(minAtt), maxAtt(maxAtt), rsam(mapStateToAtt(initialState))
 	{
+		 radioStates.setName("radioStates");
+
 		// allocate memory for one dimension
 		swTimes = new simtime_t* [numRadioStates];
 
@@ -346,7 +350,7 @@ public:
 	 *
 	 * The actual simtime must be passed, to create properly RSAMEntry
 	 */
-	simtime_t switchTo(int newState, simtime_t now)
+	virtual simtime_t switchTo(int newState, simtime_t now)
 	{
 		// state to switch to must be in a valid range, i.e. 0 <= newState < numRadioStates
 		assert(0 <= newState && newState < numRadioStates);
@@ -369,6 +373,7 @@ public:
 		nextState = newState;
 		int lastState = state;
 		state = SWITCHING;
+		radioStates.record(state);
 
 		// make entry to RSAM
 		makeRSAMEntry(now, state);
@@ -419,13 +424,14 @@ public:
 	 * The actual simtime must be passed, to create properly RSAMEntry
 	 *
 	 */
-	void endSwitch(simtime_t now)
+	virtual void endSwitch(simtime_t now)
 	{
 		// make sure we are currently switching
 		assert(state == SWITCHING);
 
 		// set the current state finally to the next state
 		state = nextState;
+		radioStates.record(state);
 
 		// make entry to RSAM
 		makeRSAMEntry(now, state);

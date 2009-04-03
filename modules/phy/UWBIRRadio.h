@@ -44,14 +44,11 @@ public:
 protected:
 	/** @brief Stores the power consumption of each radio state (in mW) */
 	double* powerConsumptions;
-
 	simtime_t powerConsumption;
-
-
 	simtime_t lastStateChange;
 
 public:
-	UWBIRRadio():Radio() {
+	UWBIRRadio():Radio(SYNC) {
 
 		state = SYNC;
 		lastStateChange = 0;
@@ -86,8 +83,8 @@ public:
 	 */
 
 	virtual simtime_t switchTo(int newState, simtime_t now) {
-		// state must be one of sleep, receive or transmit
-		assert(newState == Radio::RX || newState == Radio::TX || newState == Radio::SLEEP);
+		// state must be one of sleep, receive or transmit (not sync)
+		//assert(newState != Radio::SYNC);
 		if(newState == state || (newState == Radio::RX && state == Radio::SYNC)) {
 			return -1; // nothing to do
 		} else {
@@ -105,7 +102,7 @@ public:
 		nextState = newState;
 		int lastState = state;
 		state = Radio::SWITCHING;
-
+		radioStates.record(state);
 		// make entry to RSAM
 		makeRSAMEntry(now, state);
 
