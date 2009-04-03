@@ -46,7 +46,6 @@ simtime_t UWBIREnergyDetectionDeciderV2::processSignal(AirFrame* frame) {
 simtime_t UWBIREnergyDetectionDeciderV2::handleNewSignal(Signal* s) {
 
 	int currState = uwbiface->getRadioState();
-
 	if (tracking == 0 && currState == Radio::SYNC) {
 		  simtime_t endOfHeader = s->getSignalStart()
 				+ IEEE802154A::mandatory_preambleLength;
@@ -134,8 +133,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(
 		// we cannot compute bit error rate here
 		// so we send the packet to the MAC layer which will compare receivedBits
 		// with the actual bits sent.
-		DeciderResult * result = new DeciderResult(true);
-		result->setDecodedBits(receivedBits);
+		UWBIRDeciderResult * result = new UWBIRDeciderResult(true, receivedBits);
 		phy->sendUp(frame, result);
 		currentSignals.erase(it);
 		tracking = 0;
@@ -147,7 +145,6 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(
 		currentSignals.erase(it);
 		return -1;
 	}
-
 }
 
 void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
@@ -189,17 +186,29 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 
 	// debugging information (start)
 	if (trace) {
+		/*
 		signalLengths.recordWithTimestamp(signal->getSignalStart(),
-					signal->getSignalLength());
+					signal->getSignalLength()); */
+		simtime_t prev = 0;
 		ConstMappingIterator* iteratorDbg = signalPower->createConstIterator();
 		int nbItems = 0;
 		iteratorDbg->jumpToBegin();
 		while (iteratorDbg->hasNext()) {
 			nbItems = nbItems + 1;
 			iteratorDbg->next();
+
 			receivedPulses.recordWithTimestamp(signal->getSignalStart()
 												+ iteratorDbg->getPosition().getTime(),
 											   signalPower->getValue(iteratorDbg->getPosition()));
+			prev = iteratorDbg->getPosition().getTime();
+			simtime_t t = signal->getSignalStart() + prev;
+			/*
+			if(std::abs(signalPower->getValue(iteratorDbg->getPosition())) > 0) {
+				EV << "nbItems=" << nbItems << ", t= " << t <<  ", value=maxPulse." << endl;
+			} else {
+			EV << "nbItems=" << nbItems << ", t= " << t <<  ", value=" << signalPower->getValue(iteratorDbg->getPosition()) << "." << endl;
+			}
+			*/
 		}
 		delete iteratorDbg;
 	}

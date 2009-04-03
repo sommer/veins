@@ -29,7 +29,7 @@
 #include "Mapping.h"
 #include "AirFrame_m.h"
 #include "Decider.h"
-
+#include "UWBIRDeciderResult.h"
 #include "AlohaMacLayer.h"
 #include "IEEE802154A.h"
 //#include "UWBIRRadio.h"

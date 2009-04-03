@@ -76,19 +76,24 @@ void UWBIRMac::finish() {
 void UWBIRMac::prepareData(UWBIRMacPkt* packet) {
 	// generate signal
 	int nbSymbols = packet->getByteLength() * 8 + 92; // to move to ieee802154a.h
+	EV << "prepare Data for a packet with " << packet->getByteLength() << " data bytes. Requesting " << nbSymbols << " symbols." << endl;
 	IEEE802154A::setPSDULength(packet->getByteLength());
 	IEEE802154A::signalAndData res = IEEE802154A::generateIEEE802154AUWBSignal(
 			simTime());
 	Signal* theSignal = res.first;
 	vector<bool>* data = res.second;
 	if (trace) {
+		int nbItems = 0;
 		Mapping* power = theSignal->getTransmissionPower();
 		ConstMappingIterator* iter = power->createConstIterator();
 		iter->jumpToBegin();
 		while (iter->hasNext()) {
+			nbItems++;
 			sentPulses.recordWithTimestamp(simTime()
 					+ iter->getPosition().getTime(), iter->getValue());
 			iter->next();
+			simtime_t t = simTime() + iter->getPosition().getTime();
+			//EV << "nbItemsTx=" << nbItems << ", t= " << t <<  ", value=" << iter->getValue() << "." << endl;
 		}
 	}
 
@@ -109,24 +114,14 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet) {
 
 bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 	if (!packetsAlwaysValid) {
-		DeciderResult
-				res =
-						(dynamic_cast<PhyToMacControlInfo*> (mac->getControlInfo()))->getDeciderResult();
-		std::vector<bool> * decodedBits = res.getDecodedBits();
-
+		PhyToMacControlInfo * phyToMac = dynamic_cast<PhyToMacControlInfo*> (mac->getControlInfo());
+		UWBIRDeciderResult * res = dynamic_cast<UWBIRDeciderResult*>(phyToMac->getDeciderResult());
+		const std::vector<bool> * decodedBits = res->getDecodedBits();
 		int bitsToDecode = mac->getNbSymbols();
-		/*
-		 if(decodedBits->size() != mac->getBitValuesArraySize()) {
-		 EV << "Warning! decoded " << decodedBits->size() << " when I should have received ";
-		 EV << mac->getBitValuesArraySize() << ". " << endl;
-		 if(decodedBits->size() > mac->getBitValuesArraySize()) {
-		 bitsToDecode = mac->getBitValuesArraySize();
-		 }
-		 }
-		 */
 		int nbBitErrors = 0;
 		int pktSymbolErrors = 0;
 		bool currSymbolError = false;
+
 		for (int i = 0; i < bitsToDecode; i++) {
 			// Start of a new symbol
 			if (i % IEEE802154A::RSSymbolLength == 0) {
@@ -154,9 +149,6 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			errRxBits += nbBitErrors;
 			nbSymbolErrors += pktSymbolErrors;
 		}
-
-		decodedBits->clear();
-		delete decodedBits;
 
 		if (rsDecoder && pktSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) {
 			nbReceivedPacketsRS++;

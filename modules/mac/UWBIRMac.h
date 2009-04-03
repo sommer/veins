@@ -33,6 +33,7 @@
 #include "UWBIRMacPkt_m.h"
 #include "IEEE802154A.h"
 #include "UWBIRRadio.h"
+#include "UWBIRDeciderResult.h"
 #include <vector>
 #include <utility>
 
