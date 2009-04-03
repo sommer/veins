@@ -23,18 +23,17 @@ package org.mixim.modules.application;
 // Application layer to test lower layer implementations. Generate periodic traffic addressed to a sink.
 //
 // @sa SensorApplLayer
-// @author Amre El-Hoiydi, Jerome Rousselot
-simple SensorApplLayer
-{
+// @author Jerome Rousselot, Amre El-Hoiydi
+simple SensorApplLayer {
     parameters:
-        bool debug; // debug switch
-        bool doStats;   // stats generation switch
-        double nbPackets;
+        bool debug = default(false); // debug switch
+        bool stats = default(true);   // stats generation switch
+        bool broadcastPackets = default(false); // send packets in broadcast mode
+        double nbPackets = default(zero);
         string trafficType;
         double trafficParam;
-        double initializationTime; // minimum time before generation of the first packet
-        double headerLength @unit(byte); // length of the application payload
-
+        double initializationTime @unit(s) = default( 1 min); // minimum time before generation of the first packet
+		int headerLength @unit(byte) = default(2 byte);
     gates:
         input lowerGateIn; // from network layer
         input lowerControlIn;

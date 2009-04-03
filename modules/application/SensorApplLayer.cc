@@ -33,21 +33,24 @@ Define_Module(SensorApplLayer);
  *
  **/
 void SensorApplLayer::initialize(int stage) {
-	BaseModule::initialize(stage);
+    BaseLayer::initialize(stage);
 	if (stage == 0) {
+
 		EV<< "in initialize() stage 0...";
 		debug = par("debug");
-		firstPacketGeneration = -1;
-		lastPacketReception = -2;
-		stats = par("doStats");
+		stats = par("stats");
 		nbPackets = par("nbPackets");
 		trafficParam = par("trafficParam");
 		initializationTime = par("initializationTime");
+		broadcastPackets = par("broadcastPackets");
+		headerLength = par("headerLength");
 		// application configuration
 		const char *traffic = par("trafficType");
 
 		nbPacketsSent = 0;
 		nbPacketsReceived = 0;
+		firstPacketGeneration = -1;
+		lastPacketReception = -2;
 
 		if (!strcmp(traffic, "periodic")) {
 			trafficType = PERIODIC;
@@ -208,7 +211,9 @@ void SensorApplLayer::handleLowerControl(cMessage * msg) {
 void SensorApplLayer::sendData() {
 	ApplPkt *pkt = new ApplPkt("Data", DATA_MESSAGE);
 
-	if (myAppAddr == SINK_ADDR) {
+	if(broadcastPackets) {
+		pkt->setDestAddr(WiseRoute::NET_BROADCAST);
+	} else if (myAppAddr == SINK_ADDR) {
 		pkt->setDestAddr(ALTERNATIVE_ADDR);
 	} else {
 		pkt->setDestAddr(SINK_ADDR);
@@ -218,10 +223,10 @@ void SensorApplLayer::sendData() {
 	pkt->setByteLength(headerLength);
 	// set the control info to tell the network layer the layer 3
 	// address;
-	pkt->setControlInfo(new NetwControlInfo(SINK_ADDR));
-
+	pkt->setControlInfo(new MacControlInfo(pkt->getDestAddr()));
 	EV<< "Sending data packet!\n";
 	sendDown(pkt);
+	//send(pkt, dataOut);
 	nbPacketsSent++;
 	packet.setPacketSent(true);
 	packet.setNbPacketsSent(1);
@@ -254,7 +259,7 @@ void SensorApplLayer::finish() {
 		recordScalar("nbPacketsReceived", nbPacketsReceived);
 		latency.record();
 	}
-	BaseApplLayer::finish();
+	BaseModule::finish();
 }
 
 SensorApplLayer::~SensorApplLayer() {

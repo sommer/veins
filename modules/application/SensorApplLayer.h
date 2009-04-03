@@ -22,9 +22,14 @@
 #define SENSOR_APPL_LAYER_H
 
 #include <vector>
+#include "BaseUtility.h"
 #include "BaseModule.h"
+#include "BaseLayer.h"
 #include "NetwControlInfo.h"
 #include "Packet.h"
+#include "ApplPkt_m.h"
+#include "BaseApplLayer.h"
+#include "WiseRoute.h"
 //#include "cstat.h"
 //#include "BasicIPMacLayer.h"
 
@@ -48,7 +53,7 @@ using namespace std;
  * @ingroup applLayer
  * @author Amre El-Hoiydi, Jérôme Rousselot
  **/
-class SensorApplLayer:public BaseModule
+class SensorApplLayer:public BaseLayer
 {
 public:
 
@@ -76,7 +81,6 @@ public:
 
 protected:
   cMessage * delayTimer;
-  int petitTest;
   int myAppAddr;
   int sentPackets;
   simtime_t initializationTime;
@@ -90,14 +94,22 @@ protected:
   long nbPacketsReceived;
   bool stats;
   bool debug;
+  bool broadcastPackets;
   vector < cStdDev > latencies;
   cStdDev latency;
   cOutVector latenciesRaw;
   Packet packet; // informs the simulation of the number of packets sent and received by this node.
   int catPacket;
   int hostID;
+  int headerLength;
 
 protected:
+    // gates
+	int dataOut;
+	int dataIn;
+    int ctrlOut;
+    int ctrlIn;
+
   /** @brief Handle self messages such as timer... */
    virtual void handleSelfMsg(cMessage *);
 
@@ -105,6 +117,10 @@ protected:
   virtual void handleLowerMsg(cMessage *);
 
   virtual void handleLowerControl(cMessage * msg);
+
+  virtual void handleUpperMsg(cMessage * m) { delete m; }
+
+  virtual void handleUpperControl(cMessage * m) { delete m; }
 
   /** @brief send a data packet to the next hop */
   virtual void sendData();
