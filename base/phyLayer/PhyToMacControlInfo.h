@@ -37,7 +37,7 @@ public:
 	/**
 	 * @brief Returns the result of the evaluation of the Decider.
 	 */
-	const DeciderResult* getDeciderResult() const {
+	DeciderResult* getDeciderResult() const {
 		return result;
 	}
 };
