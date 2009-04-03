@@ -222,6 +222,11 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 	* first of all, attach the AnalogueModel that represents the RadioState
 	* to the AnalogueModelList as first element.
 	*/
+
+	/*** This section is commented out by CSEM - Jerome Rousselot.
+	 * Useless code because radio state is managed at the decider level.
+	 * The RSAM doesn't make sense physically and doesn't reduce memory footprint either.
+	 * It is also difficult to control when subclassing Radio.
 	std::string s("RadioStateAnalogueModel");
 	ParameterMap p;
 
@@ -233,7 +238,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 	}
 	analogueModels.push_back(newAnalogueModel);
 
-
+	*/
 	if(xmlConfig == 0) {
 		opp_warning("No analogue models configuration file specified.");
 		return;
@@ -479,7 +484,7 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	s->setMove(move);
 
 	// create the new AirFrame
-	AirFrame* frame = new AirFrame(0, AIR_FRAME);
+	AirFrame* frame = new AirFrame("airframe", AIR_FRAME);
 
 	// set the members
 	assert(s->getSignalLength() > 0);
