@@ -54,7 +54,7 @@ public:
 
     static const short shortSFD[8];
 
-
+    static const_simtime_t MaxFrameDuration;
 
 
     static const int maxS = 5000;

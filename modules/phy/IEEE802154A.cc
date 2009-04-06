@@ -81,6 +81,8 @@ int IEEE802154A::last_s = 15;
 
 int IEEE802154A::psduLength = 0;
 
+const_simtime_t IEEE802154A::MaxFrameDuration = IEEE802154A::MaxPSDULength*IEEE802154A::mandatory_symbol + IEEE802154A::mandatory_preambleLength;
+
 IEEE802154A::config IEEE802154A::cfg = { 3, NOMINAL_16_M, NON_RANGING, PSR_64,
 		850000, 16, mandatory_symbol, mandatory_timeShift, mandatory_pulse,
 		mandatory_burst, mandatory_preambleLength, 4498 };
