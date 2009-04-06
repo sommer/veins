@@ -102,6 +102,7 @@ protected:
   int catPacket;
   int hostID;
   int headerLength;
+  BaseUtility* utility2;
 
 protected:
     // gates

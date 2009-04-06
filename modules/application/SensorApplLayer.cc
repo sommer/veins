@@ -65,7 +65,11 @@ void SensorApplLayer::initialize(int stage) {
 		delayTimer = new cMessage("appDelay", SEND_DATA_TIMER);
 		// Blackboard stuff:
 		hostID = getParentModule()->getId();
-		catPacket = utility->getCategory(&packet);
+
+		// get pointer to the world module
+
+		utility2 = FindModule<BaseUtility*>::findGlobalModule();
+		catPacket = utility2->getCategory(&packet);
 
 	} else if (stage == 1) {
 		EV << "in initialize() stage 1...";
@@ -151,7 +155,8 @@ void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 		packet.setPacketSent(false);
 		packet.setNbPacketsSent(0);
 		packet.setNbPacketsReceived(1);
-		utility->publishBBItem(catPacket, &packet, hostID);
+		packet.setHost(myAppAddr);
+		utility2->publishBBItem(catPacket, &packet, hostID);
 		// EV << "Received a data packet from host["<<m->getSrcAddr()<<"]\n";
 		if (stats) {
 			//                      cStdDev latency = latencies[m->getSrcAddr()];
@@ -231,7 +236,8 @@ void SensorApplLayer::sendData() {
 	packet.setPacketSent(true);
 	packet.setNbPacketsSent(1);
 	packet.setNbPacketsReceived(0);
-	utility->publishBBItem(catPacket, &packet, hostID);
+	packet.setHost(myAppAddr);
+	utility2->publishBBItem(catPacket, &packet, hostID);
 	sentPackets++;
 	scheduleNextPacket();
 }
