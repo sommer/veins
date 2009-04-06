@@ -29,7 +29,6 @@ void SimTracer::initialize(int stage)
 {
   BaseModule::initialize(stage);
   if (stage == 0) {
-
 	char treeName[250];
 	int n;
 	n = sprintf(treeName, "results/tree-%d.txt", cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getActiveRunNumber());
@@ -40,10 +39,16 @@ void SimTracer::initialize(int stage)
     } else {
       treeFile << "graph aRoutingTree " << endl << "{" << endl;
     }
-    catPacket = utility->subscribe(this, &packet, -1);
+
+    // world utility
+	// get pointer to the simulation-wide blackboard module
+	utility2 = FindModule<BaseUtility*>::findGlobalModule();
+
+    // goodput code
+    Packet apacket;
+    catPacket = utility2->subscribe(this, &apacket, -1);
     nbApplPacketsSent = 0;
     nbApplPacketsReceived = 0;
-
   }
 }
 
@@ -71,12 +76,18 @@ void SimTracer::finish()
   summaryPowerFile.close();
 
   double goodput = 0;
-  if(nbApplPacketsSent > 0) {
-	  goodput = ((double) nbApplPacketsReceived)/nbApplPacketsSent;
-  } else {
-	  goodput = 0;
+  for(map<int, pair<long,long> >::iterator iter = goodputStats.begin();
+	  iter != goodputStats.end(); iter++) {
+	  if(nbApplPacketsSent  > 0) {
+		  goodput = ((double) iter->second.second)/(nbApplPacketsSent - iter->second.first); // goodput in broadcast
+	  } else {
+		  goodput = 0;
+	  }
+	  char description[250];
+	  int n;
+	  n = sprintf(description, "goodput-node_%d", iter->first);
+	  recordScalar(description, goodput);
   }
-  recordScalar("Application Packet Success Rate", goodput);
   recordScalar("Application packets received", nbApplPacketsReceived);
   recordScalar("Application packets sent", nbApplPacketsSent);
   recordScalar("Sink power consumption", powerConsumptions[0]);
@@ -126,14 +137,17 @@ void SimTracer::logPosition(int node, double x, double y)
 }
 
 void SimTracer::receiveBBItem(int category, const BBItem * details,
-	       int scopeModuleId) {
+	       int scope) {
 	if (category == catPacket) {
 		packet = *(static_cast<const Packet*>(details));
 	//	nbApplPacketsSent = nbApplPacketsSent + packet.getNbPacketsSent();
 	//	nbApplPacketsReceived = nbApplPacketsReceived + packet.getNbPacketsReceived();
+
 		if(packet.isSent()) {
+			goodputStats[packet.getHost()].first++;
 			nbApplPacketsSent = nbApplPacketsSent + 1;
 		} else {
+			goodputStats[packet.getHost()].second++;
 			nbApplPacketsReceived = nbApplPacketsReceived + 1;
 		}
 	}

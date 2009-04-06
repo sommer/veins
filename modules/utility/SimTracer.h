@@ -26,6 +26,7 @@
 #include <map>
 #include <BaseModule.h>
 #include <BaseLayer.h>
+#include "BaseWorldUtility.h"
 //#include <ChannelControl.h>
 #include "Packet.h"
 
@@ -75,6 +76,9 @@ protected:
    map < unsigned long, double >powerConsumptions2;
    map < unsigned long, double >currPower;
    map < unsigned long, simtime_t> lastUpdates;
+   BaseUtility* utility2;
+
+   map<int, pair<long, long> > goodputStats;
 };
 
 
