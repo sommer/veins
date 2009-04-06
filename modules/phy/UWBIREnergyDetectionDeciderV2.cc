@@ -54,6 +54,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleNewSignal(Signal* s) {
 		  return endOfHeader;
 	} else {
 		// we are already tracking an airframe, this is noise
+		// or we are transmitting, switching, or sleeping
 		currentSignals[s] = SIGNAL_OVER;
 		simtime_t endOfSignal = s->getSignalStart() + s->getSignalLength();
 		assert(endOfSignal> 0);
