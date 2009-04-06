@@ -99,7 +99,7 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet) {
 
 	// save bit values
 	//packet->setBitValuesArraySize(data->size());
-	for (unsigned int pos = 0; pos < nbSymbols; pos = pos + 1) {
+	for (int pos = 0; pos < nbSymbols; pos = pos + 1) {
 		packet->setBitValues(pos, data->at(pos));
 	}
 	delete data;
