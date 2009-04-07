@@ -57,7 +57,7 @@ public:
     static const_simtime_t MaxFrameDuration;
 
 
-    static const int maxS = 5000;
+    static const int maxS = 10000;
     static short s_array[maxS];
     static int last_s;
 
