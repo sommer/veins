@@ -49,6 +49,8 @@ void SimTracer::initialize(int stage)
     catPacket = utility2->subscribe(this, &apacket, -1);
     nbApplPacketsSent = 0;
     nbApplPacketsReceived = 0;
+    goodputSink.setName("goodput-sink");
+    goodputSources.setName("goodput-sources");
   }
 }
 
@@ -149,6 +151,24 @@ void SimTracer::receiveBBItem(int category, const BBItem * details,
 		} else {
 			goodputStats[packet.getHost()].second++;
 			nbApplPacketsReceived = nbApplPacketsReceived + 1;
+			map<int, cOutVector*>::iterator iter;
+			/*
+			iter = goodputMaps.find(packet.getHost());
+			if(iter == goodputMaps.end()) {
+				  char vecname[50];
+				  int n;
+				  n = sprintf(vecname, "goodput-node_%d", packet.getHost());
+				  goodputMaps[packet.getHost()] = new cOutVector();
+				  goodputMaps[packet.getHost()]->setName(vecname);
+			}
+			*/
+			double goodput = ((double) goodputStats[packet.getHost()].second)/(nbApplPacketsSent - goodputStats[packet.getHost()].first);
+			if(packet.getHost() == 0) {
+				goodputSink.record(goodput);
+			} else {
+				goodputSources.record(goodput);
+			}
+			//goodputMaps[packet.getHost()]->record(goodput);
 		}
 	}
 }

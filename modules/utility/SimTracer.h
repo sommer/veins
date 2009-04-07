@@ -67,18 +67,22 @@ public:
 protected:
    ofstream namFile, radioEnergyFile, treeFile;;
    vector < string > packetsColors;
-   map < unsigned long, double >powerConsumptions;
+   map < unsigned long, double > powerConsumptions;
    int catPacket;
    Packet packet;
    long nbApplPacketsSent;
    long nbApplPacketsReceived;
    int catEnergy;
-   map < unsigned long, double >powerConsumptions2;
-   map < unsigned long, double >currPower;
-   map < unsigned long, simtime_t> lastUpdates;
+   map < unsigned long, double > powerConsumptions2;
+   map < unsigned long, double > currPower;
+   map < unsigned long, simtime_t > lastUpdates;
    BaseUtility* utility2;
 
    map<int, pair<long, long> > goodputStats;
+   // map<int, cOutVector*> goodputMaps;
+
+   cOutVector goodputSink;
+   cOutVector goodputSources;
 };
 
 
