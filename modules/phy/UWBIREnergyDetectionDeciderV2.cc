@@ -245,7 +245,7 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		}
 
 		if (threshold < sensitivity) {
-			int randomValue = intuniform(0, 1, 4);
+			int randomValue = intuniform(0, 1);
 			if (randomValue == 0) {
 				decodedBit = 0;
 			} else {
@@ -319,7 +319,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 				sampling += measure;
 			} else {
 				// random phase for interferer
-				sampling += measure * intuniform(-1, 1, 5);
+				sampling += measure * intuniform(-1, 1);
 			}
 			++currSig;
 		}

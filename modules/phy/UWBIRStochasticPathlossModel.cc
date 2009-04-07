@@ -25,7 +25,7 @@ double UWBIRStochasticPathlossModel::n2_limit = 2;
 double UWBIRStochasticPathlossModel::simtruncnormal(double mean, double stddev, double a, int rng) {
     double res = a + 1;
     while(res > a || res < -a) {
-      res = normal(mean, stddev, rng);
+      res = normal(mean, stddev, 0);
     }
     return res;
 }
