@@ -12,6 +12,15 @@ Define_Module(BasePhyLayer);
 
 //--Initialization----------------------------------
 
+BasePhyLayer::BasePhyLayer():
+	thermalNoise(0),
+	radio(0),
+	decider(0),
+	radioSwitchingOverTimer(0),
+	txOverTimer(0),
+	world(0)
+{}
+
 template<class T> T BasePhyLayer::readPar(const char* parName, const T defaultValue){
 	if(hasPar(parName))
 		return par(parName);
@@ -98,8 +107,8 @@ void BasePhyLayer::initialize(int stage) {
 		initializeDecider(readPar("decider", (cXMLElement*)0));
 
 		//initialise timer messages
-		radioSwitchingOverTimer = new cMessage(0, RADIO_SWITCHING_OVER);
-		txOverTimer = new cMessage(0, TX_OVER);
+		radioSwitchingOverTimer = new cMessage("radio switching over", RADIO_SWITCHING_OVER);
+		txOverTimer = new cMessage("transmission over", TX_OVER);
 
 	}
 }
@@ -521,7 +530,7 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg) {
 	//transmission over
 	case TX_OVER:
 		assert(msg == txOverTimer);
-		sendControlMsg(new cMessage(0, TX_OVER));
+		sendControlMsg(new cMessage("Transmission over", TX_OVER));
 		break;
 
 	//radio switch over
@@ -640,17 +649,19 @@ BasePhyLayer::~BasePhyLayer() {
 
 int BasePhyLayer::getRadioState() {
 	Enter_Method_Silent();
+	assert(radio);
 	return radio->getCurrentState();
 }
 
 void BasePhyLayer::finishRadioSwitching()
 {
 	radio->endSwitch(simTime());
-	sendControlMsg(new cMessage(0, RADIO_SWITCHING_OVER));
+	sendControlMsg(new cMessage("Radio switching over", RADIO_SWITCHING_OVER));
 }
 
 simtime_t BasePhyLayer::setRadioState(int rs) {
 	Enter_Method_Silent();
+	assert(radio);
 
 	//TODO: check if we are currently transmitting, if so throw a warning or error
 	simtime_t switchTime = radio->switchTo(rs, simTime());
@@ -675,7 +686,7 @@ simtime_t BasePhyLayer::setRadioState(int rs) {
 
 ChannelState BasePhyLayer::getChannelState() {
 	Enter_Method_Silent();
-
+	assert(decider);
 	return decider->getChannelState();
 }
 

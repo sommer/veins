@@ -46,9 +46,9 @@ void BaseMobility::initialize(int stage)
 
     if (stage == 0){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
-        
+
         coreEV << "initializing BaseMobility stage " << stage << endl;
-        
+
         // get utility pointers (world and host)
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
         if (world == NULL)
@@ -60,27 +60,27 @@ void BaseMobility::initialize(int stage)
         hostPtr = findHost();
         hostId = hostPtr->getId();
 
-        
+
         if (hasPar("updateInterval")) {
         	updateInterval = par("updateInterval");
         } else {
             updateInterval = 0;
-        }        
+        }
 
 		// initialize Move parameter
         bool use2D = world->use2D();
-        
+
         double x = -1.0;
         double y = -1.0;
         double z = -1.0;
         //read coordinates from parameters if available
-        if (hasPar("x") && hasPar("y") && (hasPar("z") || use2D)){ 
+        if (hasPar("x") && hasPar("y") && (hasPar("z") || use2D)){
             x = par("x");
             y = par("y");
             if(!use2D) {
                 z = par("z");
-            }      
-		} 
+            }
+		}
 
         //a coordinate of -1.0 means random position
         if (x == -1.0 || y == -1.0 || (z == -1.0 && !use2D)) {
@@ -91,18 +91,18 @@ void BaseMobility::initialize(int stage)
             } else {
                 move.startPos = Coord(x, y, z);
             }
-            
+
         }
 		coreEV << "start pos: " << move.startPos.info() << endl;
         //check whether position is within the playground
         if (!move.startPos.isInRectangle(Coord(use2D), world->getPgs())) {
-            error("node position specified in omnetpp.ini exceeds playgroundsize");    
-        }        
-            
+            error("node position specified in omnetpp.ini exceeds playgroundsize");
+        }
+
         move.speed = 0;
         move.startTime = simTime();
         move.direction = Coord(use2D);
-        
+
         //get BBItem category for Move
         moveCategory = utility->getCategory(&move);
 
@@ -190,7 +190,7 @@ void BaseMobility::handleBorderMsg(cMessage * msg)
 	coreEV << "new random position: " << move.startPos.info() << endl;
 	break;
     case RAISEERROR:
-	error("node moved outside the playground");		      
+	error("node moved outside the playground");
 	break;
     default:
 	error("Unknown BorderPolicy!");
@@ -219,11 +219,11 @@ void BaseMobility::updatePosition() {
 
     //publish the the new move
     utility->publishBBItem(moveCategory, &move, hostId);
-    
+
     char xStr[32], yStr[32], zStr[32];
     sprintf(xStr, "%d", FWMath::round(move.startPos.getX()));
     sprintf(yStr, "%d", FWMath::round(move.startPos.getY()));
-    sprintf(zStr, "%d", FWMath::round(move.startPos.getZ()));
+    //sprintf(zStr, "%d", FWMath::round(move.startPos.getZ()));
     hostPtr->getDisplayString().setTagArg("p", 0, xStr);
     hostPtr->getDisplayString().setTagArg("p", 1, yStr);
 
@@ -336,7 +336,7 @@ void BaseMobility::wrapIfOutside(BorderHandling wo, Coord& stepTarget, Coord& ta
 
 /**
  * Start the host at a new random position. Here the target position
- * is set to the new start position. 
+ * is set to the new start position.
  *
  * You have to define a new target postion in fixIfHostGetsOutside to
  * keep the host moving.
@@ -381,7 +381,7 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coor
 	if( outside==NOWHERE || fabs(borderStep.getX()/move.direction.getX()) > fabs(borderStep.getY()/move.direction.getY()) )
 	    outside = Y_BIGGER;
     }
-    
+
     // Testing z-value
     if (!world->use2D())
     {
@@ -389,50 +389,50 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos, Coor
     	if (targetPos.getZ() < 0)
 	    {
 	    	borderStep.setZ(-move.startPos.getZ());
-	    	
+
 	    	// no border reached so far
 	    	if( outside==NOWHERE )
 	    	{
 	    		outside = Z_SMALLER;
 	    	}
 	    	// an y-border is reached earliest so far, test whether z-border is reached even earlier
-	    	else if( (outside==Y_SMALLER || outside==Y_BIGGER) && 
+	    	else if( (outside==Y_SMALLER || outside==Y_BIGGER) &&
 	    			fabs(borderStep.getY()/move.direction.getY()) > fabs(borderStep.getZ()/move.direction.getZ()) )
 	    	{
 	    		outside = Z_SMALLER;
 	    	}
 	    	// an x-border is reached earliest so far, test whether z-border is reached even earlier
-	    	else if( (outside==X_SMALLER || outside==X_BIGGER) && 
+	    	else if( (outside==X_SMALLER || outside==X_BIGGER) &&
 	    			fabs(borderStep.getX()/move.direction.getX()) > fabs(borderStep.getZ()/move.direction.getZ()) )
 	    	{
 	    		outside = Z_SMALLER;
 	    	}
-	    	
+
 	    }
     	// going to reach the upper z-border
 	    else if (targetPos.getZ() >= playgroundSizeZ())
 	    {
 	        borderStep.setZ(playgroundSizeZ() - move.startPos.getZ());
-	        
+
 	        // no border reached so far
 	        if( outside==NOWHERE )
 	        {
 	        	outside = Z_BIGGER;
 	        }
 	        // an y-border is reached earliest so far, test whether z-border is reached even earlier
-	        else if( (outside==Y_SMALLER || outside==Y_BIGGER) && 
+	        else if( (outside==Y_SMALLER || outside==Y_BIGGER) &&
 	    			fabs(borderStep.getY()/move.direction.getY()) > fabs(borderStep.getZ()/move.direction.getZ()) )
 	    	{
 	    		outside = Z_BIGGER;
 	    	}
 	        // an x-border is reached earliest so far, test whether z-border is reached even earlier
-	    	else if( (outside==X_SMALLER || outside==X_BIGGER) && 
+	    	else if( (outside==X_SMALLER || outside==X_BIGGER) &&
 	    			fabs(borderStep.getX()/move.direction.getX()) > fabs(borderStep.getZ()/move.direction.getZ()) )
 	    	{
 	    		outside = Z_BIGGER;
 	    	}
-	        
-	        
+
+
 	    }
     }
 
@@ -451,8 +451,8 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
 {
     double factor;
 
-    coreEV << "goToBorder: startPos: "<< move.startPos.info() << " borderStep: " << borderStep.info() 
-	   << " BorderPolicy: " << policy << " BorderHandling: " << wo << endl;	
+    coreEV << "goToBorder: startPos: "<< move.startPos.info() << " borderStep: " << borderStep.info()
+	   << " BorderPolicy: " << policy << " BorderHandling: " << wo << endl;
 
     switch( wo ){
     case X_SMALLER:
@@ -462,7 +462,7 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
 	{
 		borderStep.setZ(factor * move.direction.getZ()); // 3D case
 	}
-	
+
 
 	if( policy == WRAP ){
 	    borderStart.setX(playgroundSizeX());
@@ -528,7 +528,7 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
 	factor = borderStep.getZ() / move.direction.getZ();
 	borderStep.setX(factor * move.direction.getX());
 	borderStep.setY(factor * move.direction.getY());
-	
+
 	if( policy == WRAP )
 	{
 	    borderStart.setZ(playgroundSizeZ());
@@ -540,21 +540,21 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
 	factor = borderStep.getZ() / move.direction.getZ();
 	borderStep.setX(factor * move.direction.getX());
 	borderStep.setY(factor * move.direction.getY());
-    		
+
 	if( policy == WRAP )
 	{
 	    borderStart.setZ(0);
 	    borderStart.setX(move.startPos.getX() + borderStep.getX());
 	    borderStart.setY(move.startPos.getY() + borderStep.getY());
-	}		
+	}
     break;
     default:
         factor = 0;
 	error("invalid state in goToBorder switch!");
     }
-	
-    coreEV << "goToBorder: startPos: "<< move.startPos.info() << " borderStep: " << borderStep.info() 
-	   << " borderStart: " << borderStart.info() << " factor: " << factor << endl;	
+
+    coreEV << "goToBorder: startPos: "<< move.startPos.info() << " borderStep: " << borderStep.info()
+	   << " borderStart: " << borderStart.info() << " factor: " << factor << endl;
 }
 
 
@@ -568,7 +568,7 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
  *
  * The policy and stepTarget are mandatory parameters to
  * pass. stepTarget is used to check whether the host actually moved
- * outside the playground. 
+ * outside the playground.
  *
  * Additional parameters to pass (in case of non atomic movements) can
  * be targetPos (the target the host is moving to) and step (the size
@@ -606,21 +606,21 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
     // time to reach the border
     simtime_t borderInterval;
 
-    coreEV << "old values: stepTarget: " << stepTarget.info() << " step: " << step.info() 
+    coreEV << "old values: stepTarget: " << stepTarget.info() << " step: " << step.info()
 	   << " targetPos: " << targetPos.info() << " angle: " << angle << endl;
 
     // which border policy is to be followed
     switch (policy){
-    case REFLECT:       
-	reflectIfOutside( wo, stepTarget, targetPos, step, angle ); 
+    case REFLECT:
+	reflectIfOutside( wo, stepTarget, targetPos, step, angle );
 	break;
-    case WRAP:          
-	wrapIfOutside( wo, stepTarget, targetPos ); 
+    case WRAP:
+	wrapIfOutside( wo, stepTarget, targetPos );
 	break;
-    case PLACERANDOMLY: 
-	placeRandomlyIfOutside( targetPos ); 
+    case PLACERANDOMLY:
+	placeRandomlyIfOutside( targetPos );
 	break;
-    case RAISEERROR: 
+    case RAISEERROR:
 	break;
     }
 
@@ -632,7 +632,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
     // calculate the time to reach the border
     //borderInterval = sqrt(borderStep.getX()*borderStep.getX() + borderStep.getY()*borderStep.getY()) / move.speed;
     borderInterval = (borderStep.length()) / move.speed;
-    
+
     // calculate new start position
     // NOTE: for WRAP this is done in goToBorder
     switch( policy ){

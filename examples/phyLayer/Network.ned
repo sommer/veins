@@ -7,9 +7,9 @@ import org.mixim.base.modules.BaseWorldUtility;
 module Network
 {
     parameters:
-        double playgroundSizeX; // x size of the area the nodes are in (in meters)
-        double playgroundSizeY; // y size of the area the nodes are in (in meters)
-        double playgroundSizeZ; // z size of the area the nodes are in (in meters)
+        double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
+        double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
+        double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
         double numGSMHosts; // total number of weak hosts in the network
         double numISMHosts; // total number of strong hosts in the network
 

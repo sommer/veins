@@ -33,8 +33,8 @@ simple CircleMobility extends BaseMobility
         double cx; // x coord of the center of the circle
         double cy; // y coord of the center of the circle
         double r; // radius of the circle
-        double speed; // speed of the host (in m/s)
-        double startAngle; // starting angle (degreees)
-        double updateInterval; // time interval to update the hosts position
+        double speed @unit(mps); // speed of the host (in m/s)
+        double startAngle @unit(deg); // starting angle (degreees)
+        double updateInterval @unit(s); // time interval to update the hosts position (seconds)
 }
 

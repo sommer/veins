@@ -57,9 +57,9 @@ simple MassMobility extends BaseMobility
     parameters:
         @class(MassMobility);
         bool debug; // debug switch
-        volatile double changeInterval; // frequency of changing speed and angle (can be random) [s]
-        volatile double changeAngleBy; // change angle by this much (can be random) [deg]
-        volatile double speed; // speed (can be random, updated every changeInterval) [m/s]
-        double updateInterval; // time interval to update the hosts position
+        volatile double changeInterval @unit(s); // frequency of changing speed and angle (can be random) [s]
+        volatile double changeAngleBy @unit(deg); // change angle by this much (can be random) [deg]
+        volatile double speed @unit(mps); // speed (can be random, updated every changeInterval) [m/s]
+        double updateInterval @unit(s); // time interval to update the hosts position [seconds]
 }
 

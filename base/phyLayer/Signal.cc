@@ -127,8 +127,11 @@ void Signal::setPropagationDelay(simtime_t delay) {
 	markRcvPowerOutdated();
 
 	propDelay = delay;
-	txBitrate = bitrate;
-	bitrate = new DelayedMapping(txBitrate, propDelay);
+
+	if(bitrate) {
+		txBitrate = bitrate;
+		bitrate = new DelayedMapping(txBitrate, propDelay);
+	}
 }
 
 void Signal::setTransmissionPower(Mapping *power)

@@ -29,7 +29,6 @@ void CSMAMacLayer::initialize(int stage)
         txPower = hasPar("txPower")				? par("txPower").doubleValue()		 : 50;
         initialCW = hasPar("contentionWindow") 	? par("contentionWindow").longValue(): 31;
 
-        assert(phy->getRadioState() == Radio::RX);
         macState = RX;
 
         //droppedPacket.setReason(DroppedPacket::NONE);
@@ -43,6 +42,7 @@ void CSMAMacLayer::initialize(int stage)
         txAttempts = 0;
     }
     else if(stage == 1) {
+    	assert(phy->getRadioState() == Radio::RX);
     	//TODO: see what the old radio in mfw does with the bitrate
         //int channel;
 
@@ -64,10 +64,15 @@ void CSMAMacLayer::initialize(int stage)
 
 
 void CSMAMacLayer::finish() {
-    if (!backoffTimer->isScheduled())
-    	delete backoffTimer;
-    if (!minorMsg->isScheduled())
-    	delete minorMsg;
+    if (backoffTimer->isScheduled())
+    	cancelEvent(backoffTimer);
+	delete backoffTimer;
+	backoffTimer = 0;
+
+    if (minorMsg->isScheduled())
+    	cancelEvent(minorMsg);
+	delete minorMsg;
+	minorMsg = 0;
 
     for(MacQueue::iterator it = macQueue.begin();
 		it != macQueue.end(); ++it)
@@ -276,6 +281,14 @@ MacPkt* CSMAMacLayer::encapsMsg(cPacket *pkt)
 
 	//calc signal duration
 	simtime_t duration = macPkt->getBitLength() / bitrate;
+
+	if(duration > slotDuration) {
+		EV << "Warning: Sending packet " << pkt
+		   << " - duration (" << duration
+		   << " ) is bigger than the slot duration (" << slotDuration
+		   <<")." << endl;
+	}
+
 	//create signal
 	Signal* s = createSignal(simTime(), duration, txPower, bitrate);
 

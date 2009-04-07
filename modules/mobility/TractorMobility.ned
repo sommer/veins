@@ -41,12 +41,12 @@ simple TractorMobility extends BaseMobility
     parameters:
         @class(TractorMobility);
         bool debug; // debug switch
-        double x1; // rectangle is denoted by the (x1,y1) and (x2,y2) coords
-        double y1;
-        double x2;
-        double y2;
+        double x1 @unit(m); // rectangle is denoted by the (x1,y1) and (x2,y2) coords [m]
+        double y1 @unit(m); // rectangle is denoted by the (x1,y1) and (x2,y2) coords [m]
+        double x2 @unit(m); // rectangle is denoted by the (x1,y1) and (x2,y2) coords [m]
+        double y2 @unit(m); // rectangle is denoted by the (x1,y1) and (x2,y2) coords [m]
         double rows; // the number of rows the field is divided in
-        double speed; // speed of the host (in m/s)
-        double updateInterval; // time interval to update the hosts position
+        double speed @unit(mps); // speed of the host (in m/s)
+        double updateInterval @unit(s); // time interval to update the hosts position (in seconds)
 }
 

@@ -31,9 +31,9 @@ import org.mixim.base.modules.BaseWorldUtility;
 module Sim
 {
     parameters:
-        double playgroundSizeX; // x size of the area the nodes are in (in meters)
-        double playgroundSizeY; // y size of the area the nodes are in (in meters)
-        double playgroundSizeZ; // z size of the area the nodes are in (in meters)
+        double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
+        double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
+        double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
         double numHosts; // total number of hosts in the network  
         
         @display("p=0,0;b=$playgroundSizeX,$playgroundSizeY,rect;o=white");      

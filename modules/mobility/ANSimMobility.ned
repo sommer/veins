@@ -34,7 +34,7 @@ simple ANSimMobility extends BaseMobility
         xml ansimTrace; // the ANSim trace file in XML
         double nodeId; // <position_change> elements to match; 
                                // -1 gets substituted to parent module's index
-        double updateInterval; // time interval to update the hosts position
+        double updateInterval @unit(s); // time interval to update the hosts position (seconds)
 }
 
 

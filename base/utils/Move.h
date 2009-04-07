@@ -48,13 +48,13 @@ class Move : public BBItem {
     BBITEM_METAINFO(BBItem);
 
  public:
-    /** @brief Start position of the host **/
+    /** @brief Start position of the host (in meters)**/
     Coord startPos;
     /** @brief start time at which host started at startPos **/
     simtime_t startTime;
     /** @brief direction the host is moving to **/
     Coord direction;
-    /** speed of the host in metres per second **/
+    /** speed of the host in meters per second **/
     double speed;
 
 public:

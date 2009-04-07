@@ -12,6 +12,7 @@
 <dir makemake-options="-o mapping -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mapping" type="makemake"/>
 <dir makemake-options="-o connectionManager -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/connectionManager" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:export-library --meta:use-exported-libs" path="." type="makemake"/>
+<dir makemake-options="-O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/baseNetwork" type="makemake"/>
 <dir makemake-options="-o baseMobility -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/baseMobility" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests" type="makemake"/>
 <dir makemake-options="--deep --make-so -o miximmodules -O out -lmiximbase --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="modules" type="makemake"/>

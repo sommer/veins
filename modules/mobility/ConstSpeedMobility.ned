@@ -43,6 +43,6 @@ simple ConstSpeedMobility extends BaseMobility
     parameters:
         @class(ConstSpeedMobility);
         bool debug; // debug switch
-        double speed; // speed of the host (in m/s)
-        double updateInterval; // time interval to update the hosts position
+        double speed @unit(mps); // speed of the host (in m/s)
+        double updateInterval @unit(s); // time interval to update the hosts position (seconds)
 }

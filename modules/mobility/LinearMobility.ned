@@ -34,9 +34,9 @@ simple LinearMobility extends BaseMobility
     parameters:
         @class(LinearMobility);
         bool debug; // debug switch
-        double speed; // speed of the host (in m/s)
-        double angle; // angle of linear motion (degreees)
-        double acceleration; // acceleration of linear motion (m/s2)
-        double updateInterval; // time interval to update the hosts position
+        double speed @unit(mps); // speed of the host (in m/s)
+        double angle @unit(deg); // angle of linear motion (degreees)
+        double acceleration @unit(mps2); // acceleration of linear motion (m/s2)
+        double updateInterval @unit(s); // time interval to update the hosts position (seconds)
 }
 

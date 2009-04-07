@@ -36,13 +36,12 @@ package org.mixim.tests.baseMobility;
 import org.mixim.base.modules.BaseWorldUtility;
 
 
-// @author Daniel Willkomm
 network bmSim
 {
     parameters:
-        double playgroundSizeX; // x size of the area the nodes are in (in meters)
-        double playgroundSizeY; // y size of the area the nodes are in (in meters)
-        double playgroundSizeZ; // z size of the area the nodes are in (in meters)
+        double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
+        double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
+        double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
         double numHosts; // total number of hosts in the network
 
         @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=10,10");

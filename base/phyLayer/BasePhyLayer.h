@@ -319,6 +319,7 @@ protected:
 	void finishRadioSwitching();
 
 public:
+	BasePhyLayer();
 
 	/**
 	 * Free the pointer to the decider and the AnalogueModels and the Radio.

@@ -112,7 +112,7 @@ class BaseMobility : public BaseModule
     /** @brief Store the category of HostMove */
     int moveCategory;
 
-    /** @brief Time interval to update the hosts position*/
+    /** @brief Time interval (in seconds) to update the hosts position*/
     simtime_t updateInterval;
 
     /** @brief Self message to trigger movement */

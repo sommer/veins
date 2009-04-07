@@ -43,7 +43,7 @@ simple BonnMotionMobility extends BaseMobility
         bool debug; // debug switch
         string traceFile; // the BonnMotion trace file
         double nodeId; // selects line in trace file; -1 gets substituted to parent module's index
-        double updateInterval; // time interval to update the hosts position
+        double updateInterval @unit(s); // time interval to update the hosts position (in seconds)
 }
 
 

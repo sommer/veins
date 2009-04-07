@@ -33,9 +33,9 @@ module Network
 {
     parameters:
         // parametes for the framework
-        double playgroundSizeX;
-        double playgroundSizeY;
-        double playgroundSizeZ;
+        double playgroundSizeX @unit(m);
+        double playgroundSizeY @unit(m);
+        double playgroundSizeZ @unit(m);
         double numHosts;
 
 
