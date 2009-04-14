@@ -1,3 +1,3 @@
 #!/bin/sh
-../run_m $*
+../run_mf $*
 
