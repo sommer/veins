@@ -158,17 +158,19 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
 	// *** Taps
 
     txPower = s.getTransmissionPower();
-    newTxPower = dynamic_cast<TimeMapping<Linear>*> (txPower->clone());
+    newTxPower = dynamic_cast<TimeMapping<Linear>*> (txPower->clone()); // create working copy
+
     // number of clusters for this channel (channel coherence time > packet air time)
     L = poisson(cfg.Lmean, 0);
 
-    // Loop on each value of the mapping and generate multipath echoes
+    // Loop on each value of the original mapping and generate multipath echoes
     ConstMappingIterator* iter = txPower->createConstIterator();
 
     while (iter->inRange()) {
         // generate echoes for each non zero value
-        if (iter->getValue() > 0) {
-            addEchoes(iter->getPosition().getTime());
+        if (iter->getValue() != 0) {
+        	// give the pulse start position
+            addEchoes(iter->getPosition().getTime() - IEEE802154A::mandatory_pulse/2);
         }
         if (!iter->hasNext()) {
             break;
@@ -219,19 +221,22 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
     gamma_l = cfg.gamma_0;
     Mcluster = normal(0, cfg.sigma_cluster, 1);
     Omega_l = pow(10, Mcluster / 10);
+    // tapEnergy values are normalized
     double tapEnergy = sqrt( Omega_l / ( cfg.gamma_0 * ( (1-cfg.Beta)*cfg.lambda_1 + cfg.Beta*cfg.lambda_2 + 1 ) ) );
 
     for (int cluster = 0; cluster < L; cluster++) {
         while (moreTaps) {
             // modify newTxPower
             // we add three points for linear interpolation
+        	// we set the start and end point before adding the new value for correct interpolation
         	// TODO: add phase information
             arg.setTime(pulseStart + clusterStart + tau_kl);
+            newTxPower->setValue(arg, newTxPower->getValue(arg)); // ?
+            arg.setTime(pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse);
             newTxPower->setValue(arg, newTxPower->getValue(arg));
             arg.setTime(pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse / 2);
             newTxPower->setValue(arg, tapEnergy * IEEE802154A::maxPulse + newTxPower->getValue(arg));
-            arg.setTime(pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse);
-            newTxPower->setValue(arg, newTxPower->getValue(arg));
+
 
             // Update values for next iteration
             double mix1 = exponential(1 / cfg.lambda_1);
