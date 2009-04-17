@@ -1,6 +1,7 @@
 package org.mixim.base.phyLayer;
 
-
+// Basic physical layer module.
+// See the class "BasePhyLayer" documentation.
 simple BasePhyLayer
 {
     parameters:

@@ -51,7 +51,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="modules/localization|configurator/|doc/|documentation/|out/|examples/foxtrot/|examples/locNetwork/|examples/mfNetwork/|examples/multiChannel/|examples/positifNetwork/|modules/channel/|modules/phyOld/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+<entry excluding="modules/node|modules/localization|configurator/|doc/|documentation/|out/|examples/foxtrot/|examples/locNetwork/|examples/mfNetwork/|examples/multiChannel/|examples/positifNetwork/|modules/channel/|modules/phyOld/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -410,7 +410,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="modules/localization|modules/phyOld|modules/channel" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="modules/node|modules/localization|modules/phyOld|modules/channel" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>

@@ -46,8 +46,8 @@ Other placers to look at are:
 @htmlonly
   <ul>
     <li><a href="../neddoc/index.html" target="_blank">MiXiM Neddoc Reference</a></li>
-    <li><a href="../hp/omnetCoding.html" target="_blank">OMNeT++ Coding Conventions / Style Guide</a></li>
     <li><a href="http://sourceforge.net/projects/mixim/" target="_blank">Sourceforge Project Page</a></li>
+    <li><a href="http://apps.sourceforge.net/trac/mixim/" target="_blanc">Sourceforge Project Wiki</a></li>
   </ul>
 @endhtmlonly
 

@@ -1,5 +1,6 @@
 package org.mixim.base.modules;
 
+// Interface for application layer modules
 moduleinterface IBaseApplLayer
 {
     parameters:

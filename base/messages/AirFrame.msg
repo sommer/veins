@@ -18,7 +18,7 @@ class noncobject Signal;
 // This packet format is used to send a packet from the physical
 // layer to the channel. All other physical layers that can 'hear'
 // this packet can evaluate noise, interference etc. from the
-// information contained in this packet:
+// information contained in this packet (especially the signal):
 //
 // If you need more fields for whatever reason, please do NOT create
 // your own packet! Just extend (subclass) this packet format 

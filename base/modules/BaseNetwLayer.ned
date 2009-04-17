@@ -1,5 +1,6 @@
 package org.mixim.base.modules;
 
+// Base module for every network layer module
 simple BaseNetwLayer extends BaseLayer like IBaseNetwLayer
 {
     parameters:

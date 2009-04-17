@@ -1,7 +1,7 @@
 //***************************************************************************
 // * file:        ConnectionManager.ned
 // *
-// * author:      Steffen Sroka, Daniel Willkomm
+// * author:      Steffen Sroka, Daniel Willkomm, Karl Wessel, Michael Swigulski
 // *
 // * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
 // *              Technische Universitaet Berlin, Germany.
@@ -30,10 +30,10 @@ package org.mixim.base.connectionManager;
 // The four parameters pMax, sat, alpha, and carrierFrequency are used
 // to calculate the interference distance between nodes. The values used
 // here in ConnectionManager are used to calculate the upper bound,
-// i.e. they can be redifined in the snrEval modules, but never such
+// i.e. they can be redifined in the analogue models, but never such
 // that the maximal interference distance is exeeded.
 //       
-// @author Steffen Sroka, Daniel Willkomm
+// @author Steffen Sroka, Daniel Willkomm, Karl Wessel
 // @see BasicMobility
 //
 simple ConnectionManager
@@ -41,6 +41,7 @@ simple ConnectionManager
     parameters:
         // debug switch for core framework
         bool coreDebug;
+        // send directly to the node or create separate gates for every connection
         bool sendDirect;
         // maximum sending power used for this network [mW]
         double pMax @unit(mW);

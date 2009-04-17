@@ -26,7 +26,7 @@ import org.mixim.modules.phy.PhyLayer;
 // This NIC implements an 802.11 network interface card.
 //
 // @see Mac80211, Decider80211
-// @author Marc Loebbers
+// @author Marc Loebbers, Karl Wessel (port for MiXiM)
 //
 module Nic80211 
 {

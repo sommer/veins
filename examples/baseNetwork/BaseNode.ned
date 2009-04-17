@@ -32,7 +32,7 @@ module BaseNode
             parameters:
                 @display("p=60,108;i=prot1");
         }
-        nic: org.mixim.examples.baseNetwork.BaseNic {
+        nic: BaseNic {
             parameters:
                 @display("p=60,166;i=iface");
         }

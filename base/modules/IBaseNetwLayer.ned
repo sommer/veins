@@ -1,5 +1,6 @@
 package org.mixim.base.modules;
 
+// Interface for network layer modules
 moduleinterface IBaseNetwLayer
 {
     parameters:

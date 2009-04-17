@@ -1,5 +1,6 @@
 package org.mixim.base.modules;
 
+// Interface for mobility modules
 moduleinterface IBaseMobility
 {
     parameters:

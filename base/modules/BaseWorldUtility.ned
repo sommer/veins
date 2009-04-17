@@ -1,5 +1,8 @@
 package org.mixim.base.modules;
 
+// Basic utility module for the whole network.
+// Provides utility methods and information used by
+// the whole network.
 simple BaseWorldUtility
 {
     parameters:
