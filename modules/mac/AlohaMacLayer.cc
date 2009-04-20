@@ -28,9 +28,9 @@ Define_Module(AlohaMacLayer);
 
 void AlohaMacLayer::initialize(int stage) {
 	UWBIRMac::initialize(stage);
-	if(stage == 1 && myMacAddr != 0) {
+	if(stage == 1 && macaddress != 0) {
             phy->setRadioState(Radio::TX);
-    } else if(stage == 1 && myMacAddr == 0) {
+    } else if(stage == 1 && macaddress == 0) {
             phy->setRadioState(Radio::RX);
     }
 }
@@ -76,7 +76,7 @@ MacPkt* AlohaMacLayer::encapsMsg(cPacket *msg) {
 
     nbSentPackets++;
 
-	return UWBIRMac::encapsMsg(msg);
+	return encaps;
 }
 
 
