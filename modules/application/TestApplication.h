@@ -6,6 +6,7 @@
 #include "MacToPhyInterface.h"
 #include "MacToPhyControlInfo.h"
 #include "MacControlInfo.h"
+#include "NetwControlInfo.h"
 #include "Signal_.h"
 #include "MacPkt_m.h"
 #include "ApplPkt_m.h"
