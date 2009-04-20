@@ -47,7 +47,7 @@ void DummyRoute::handleUpperMsg(cMessage* msg) {
 	} else {
 		nextHopMacAddr = cInfo->getNetwAddr();
 	}
-
+	nextHopMacAddr = cInfo->getNetwAddr();
 	msg->setControlInfo(new MacControlInfo(nextHopMacAddr));
 	sendDown(msg);
 }
