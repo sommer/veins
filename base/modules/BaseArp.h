@@ -21,7 +21,7 @@
 #define BASE_ARP_H
 
 #include <BaseModule.h>
-#include <ModuleAccess.h>
+#include <FindModule.h>
 
 /**
  * @brief A class to convert integer layer addresses
@@ -73,7 +73,7 @@ public:
 class  BaseArpAccess : public ModuleAccess<BaseArp>
 {
   public:
-    BaseArpAccess() : ModuleAccess<BaseArp>("arp") {}
+    BaseArpAccess() : ModuleAccess<BaseArp>() {}
 };
 
 

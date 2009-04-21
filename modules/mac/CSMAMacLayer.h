@@ -2,7 +2,6 @@
 #define CSMAMAC_LAYER_H
 
 #include <list>
-#include <ActiveChannel.h>
 #include <PhyUtils.h>
 #include <BaseMacLayer.h>
 #include <BaseUtility.h>

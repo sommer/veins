@@ -23,7 +23,6 @@
 
 #include <list>
 #include <BaseMacLayer.h>
-#include <ActiveChannel.h>
 #include <Mac80211Pkt_m.h>
 #include <Consts80211.h>
 #include <BaseArp.h>
