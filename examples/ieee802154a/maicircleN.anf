@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="results/*.vec"/>
+    <inputs name="results/*.sca"/>
+  </inputs>
+  <datasets>
+    <datasets name="mai_per">
+      <items xsi:type="scave:Add" filterPattern="module(*stats) AND name(maiPER)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="PER(MAI)" lineNameFormat=""/>
+    </datasets>
+  </datasets>
+  <chartSheets>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1"/>
+  </chartSheets>
+</scave:Analysis>
