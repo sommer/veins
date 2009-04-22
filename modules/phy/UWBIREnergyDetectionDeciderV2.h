@@ -32,6 +32,8 @@
 #include "UWBIRDeciderResult.h"
 #include "AlohaMacLayer.h"
 #include "IEEE802154A.h"
+#include "UWBIRPacket.h"
+#include "BaseUtility.h"
 //#include "UWBIRRadio.h"
 //#include "PhyUtils.h"
 
@@ -51,6 +53,9 @@ protected:
 	double syncThreshold;
 	bool syncAlwaysSucceeds;
 	double sensitivity;
+	UWBIRPacket packet;
+	int catUWBIRPacket;
+	BaseUtility* utility;
 
 public:
 	// Boltzmann constant multiplied by 500 MHz (signal bandwidth) in mJ.K-1 !
@@ -75,6 +80,9 @@ public:
 		receivedPulses.setName("receivedPulses");
 		syncThresholds.setName("syncThresholds");
 		timeHoppings.setName("timeHoppings");
+
+		utility = iface->getUtility();
+		catUWBIRPacket = utility->getCategory(&packet);
 	};
 
 	virtual simtime_t processSignal(AirFrame* frame);

@@ -80,15 +80,19 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleHeaderOver(
 			isSyncSignalHigherThanThreshold = attemptSync(s);
 		}
 
+		packet.setNbSyncAttempts(packet.getNbSyncAttempts() + 1);
+
 		if(isSyncSignalHigherThanThreshold) {
 			nbSuccessfulSyncs = nbSuccessfulSyncs + 1;
 			tracking = s;
 			synced = true;
 			currentSignals[s] = SIGNAL_OVER;
 			uwbiface->switchRadioToRX();
+			packet.setNbSyncSuccesses(packet.getNbSyncSuccesses() + 1);
 		} else {
 			nbFailedSyncs = nbFailedSyncs + 1;
 		}
+		utility->publishBBItem(catUWBIRPacket, &packet, -1); // scope = all == host
 
 	}
 	// in any case, look at that frame again when it is finished
