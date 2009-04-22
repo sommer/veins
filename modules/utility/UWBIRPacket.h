@@ -1,7 +1,7 @@
 /* -*- mode:c++ -*- ********************************************************
  * file:        Packet.h
  *
- * author:      Jerome Rousselot
+ * author:      Jérôme Rousselot
  *
  * copyright:   (C) 2009 CSEM SA
  *
@@ -16,11 +16,11 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef BBPACKET_H
-#define BBPACKET_H
+#ifndef BBUWBIRPACKET_H
+#define BBUWBIRPACKET_H
 
 #include <omnetpp.h>
-#include <Blackboard.h>
+#include "ImNotifiable.h"
 #include <sstream>
 
 /**
@@ -31,68 +31,44 @@
  * @sa Blackboard
  */
 
-class  Packet : public BBItem
+class  UWBIRPacket : public BBItem
 {
-    BBITEM_METAINFO(BBItem);
+    BBITEM_METAINFO(BBItem)
 
 protected:
     /** @brief number of packets generated. */
+    long nbSyncAttempts;
+    long nbSyncSuccesses;
     long nbPacketsReceived;
-    long nbPacketsSent;
-    /** @brief The size of each of the received and sent packet.*/
-    long packetBitLength;
-    bool sent;
-    int host;
 
 public:
 
     /** @brief Constructor*/
-    Packet(long bitLength, long rcvd=0, long sent=0) :
-    	BBItem(),
-    	nbPacketsReceived(rcvd), nbPacketsSent(sent),
-    	packetBitLength(bitLength),
-    	sent(true), host(0) {
-    };
+    UWBIRPacket() : BBItem(), nbSyncAttempts(0), nbSyncSuccesses(0), nbPacketsReceived(0) { };
 
 
     double getNbPacketsReceived() const  {
         return nbPacketsReceived;
     }
 
-    double getNbBitsReceived() const {
-		return nbPacketsReceived * packetBitLength;
-	}
-
-    double getNbPacketsSent() const  {
-            return nbPacketsSent;
-	}
-
-    double getNbBitsSent() const {
-    	return nbPacketsSent * packetBitLength;
-    }
-
     void setNbPacketsReceived(int n)  {
         nbPacketsReceived = n;
     }
 
-    void setNbPacketsSent(int n)  {
-            nbPacketsSent = n;
+    double getNbSyncAttempts() const  {
+            return nbSyncAttempts;
 	}
 
-    void setBitLength(long bitLength) {
-    	packetBitLength = bitLength;
+    void setNbSyncAttempts(long n)  {
+            nbSyncAttempts = n;
+	}
+
+    long getNbSyncSuccesses() {
+    	return nbSyncSuccesses;
     }
 
-    long getBitLength() const {
-    	return packetBitLength;
-    }
-
-    bool isSent() const {
-    	return sent;
-    }
-
-    void setPacketSent(bool isSent) {
-    	sent = isSent;
+    void setNbSyncSuccesses(long n) {
+    	nbSyncSuccesses = n;
     }
 
     /** @brief Enables inspection */
