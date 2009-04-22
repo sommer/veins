@@ -54,6 +54,7 @@ public:
 
     void finish();
 
+    virtual BaseUtility* getUtility() { return utility; };
 
 protected:
 
@@ -81,6 +82,7 @@ protected:
     	Enter_Method_Silent();
     	_radio->finishReceivingFrame(simTime());
     }
+
 
 };
 
