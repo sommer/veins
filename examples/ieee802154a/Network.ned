@@ -37,7 +37,7 @@ module Network
 
 }
 
-network phySim extends Network
+network sim extends Network
 {
     parameters:
 }
