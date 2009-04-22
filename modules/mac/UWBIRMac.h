@@ -34,6 +34,7 @@
 #include "IEEE802154A.h"
 #include "UWBIRRadio.h"
 #include "UWBIRDeciderResult.h"
+#include "Packet.h"
 #include <vector>
 #include <utility>
 
@@ -56,6 +57,9 @@ protected:
     bool packetsAlwaysValid;
     double totalRxBits, errRxBits; // double and not long as we divide one by the other to get the BER
     MacToPhyInterface* phy;
+    Packet packet;
+    int catPacket;
+    int macaddress, netaddress;
 
     cOutVector packetsBER;
     cOutVector dataLengths;

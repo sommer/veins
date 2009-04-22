@@ -39,6 +39,7 @@ void UWBIRMac::initialize(int stage) {
 		phy = FindModule<MacToPhyInterface*>::findSubModule(
 				this->getParentModule());
 		initCounters();
+		catPacket = utility->getCategory(&packet);
 	}
 }
 
@@ -162,6 +163,8 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 
 		success = (nbBitErrors == 0 || (rsDecoder && nbSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) );
 
+		packet.setNbPacketsReceived(packet.getNbPacketsReceived()+1);
+		utility->publishBBItem(catPacket, &packet, -1);
 		return success;
 	}
 	return true;
