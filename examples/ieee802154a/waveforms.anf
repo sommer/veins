@@ -26,6 +26,24 @@
         <properties name="X.Axis.Min" value="5.0"/>
         <properties name="X.Axis.Max" value="5.0003"/>
       </items>
+      <items xsi:type="scave:LineChart" name="Pulse Phase" lineNameFormat="">
+        <properties name="Y.Axis.Min" value="-12.0"/>
+        <properties name="Y.Axis.Max" value="12.0"/>
+        <properties name="X.Axis.Min" value="5.00006823"/>
+        <properties name="X.Axis.Max" value="5.00006833"/>
+      </items>
+      <items xsi:type="scave:LineChart" name="Pulse Position" lineNameFormat="">
+        <properties name="Y.Axis.Min" value="-1.0"/>
+        <properties name="Y.Axis.Max" value="12.0"/>
+        <properties name="X.Axis.Min" value="5.000060085"/>
+        <properties name="X.Axis.Max" value="5.00006017"/>
+      </items>
+      <items xsi:type="scave:LineChart" name="Pulse On Off" lineNameFormat="">
+        <properties name="Y.Axis.Min" value="-1.0"/>
+        <properties name="Y.Axis.Max" value="12.0"/>
+        <properties name="X.Axis.Min" value="5.0000601"/>
+        <properties name="X.Axis.Max" value="5.00006017"/>
+      </items>
     </datasets>
     <datasets name="receivedSignal-cm1">
       <items xsi:type="scave:Add" filterPattern="name(receivedPulses) and attr:Channel(cm1) and attr:runnumber(20) " type="VECTOR"/>
@@ -120,6 +138,6 @@
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.3/@items.1 //@datasets/@datasets.0/@items.3 //@datasets/@datasets.4/@items.3 //@datasets/@datasets.1/@items.2 //@datasets/@datasets.2/@items.1 //@datasets/@datasets.2/@items.2 //@datasets/@datasets.5/@items.1 //@datasets/@datasets.5/@items.3 //@datasets/@datasets.5/@items.2 //@datasets/@datasets.5/@items.4 //@datasets/@datasets.1/@items.3 //@datasets/@datasets.5/@items.5"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.3/@items.1 //@datasets/@datasets.0/@items.3 //@datasets/@datasets.4/@items.3 //@datasets/@datasets.1/@items.2 //@datasets/@datasets.2/@items.1 //@datasets/@datasets.2/@items.2 //@datasets/@datasets.5/@items.1 //@datasets/@datasets.5/@items.3 //@datasets/@datasets.5/@items.2 //@datasets/@datasets.5/@items.4 //@datasets/@datasets.1/@items.3 //@datasets/@datasets.5/@items.5 //@datasets/@datasets.0/@items.4 //@datasets/@datasets.0/@items.5 //@datasets/@datasets.0/@items.6"/>
   </chartSheets>
 </scave:Analysis>
