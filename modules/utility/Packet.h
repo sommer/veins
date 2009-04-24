@@ -20,7 +20,7 @@
 #define BBPACKET_H
 
 #include <omnetpp.h>
-#include <Blackboard.h>
+#include "ImNotifiable.h"
 #include <sstream>
 
 /**
@@ -38,6 +38,7 @@ class  Packet : public BBItem
 protected:
     /** @brief number of packets generated. */
     long nbPacketsReceived;
+    long nbPacketsReceivedNoRS;
     long nbPacketsSent;
     /** @brief The size of each of the received and sent packet.*/
     long packetBitLength;
@@ -47,13 +48,8 @@ protected:
 public:
 
     /** @brief Constructor*/
-    Packet(long bitLength, long rcvd=0, long sent=0) :
-    	BBItem(),
-    	nbPacketsReceived(rcvd), nbPacketsSent(sent),
-    	packetBitLength(bitLength),
-    	sent(true), host(0) {
+    Packet() : BBItem(), nbPacketsReceived(0), nbPacketsReceivedNoRS(0), nbPacketsSent(0), sent(true), host(0) {
     };
-
 
     double getNbPacketsReceived() const  {
         return nbPacketsReceived;
@@ -62,6 +58,10 @@ public:
     double getNbBitsReceived() const {
 		return nbPacketsReceived * packetBitLength;
 	}
+
+    double getNbPacketsReceivedNoRS() const  {
+        return nbPacketsReceived;
+    }
 
     double getNbPacketsSent() const  {
             return nbPacketsSent;
@@ -75,6 +75,10 @@ public:
         nbPacketsReceived = n;
     }
 
+    void setNbPacketsReceivedNoRS(int n)  {
+        nbPacketsReceivedNoRS = n;
+    }
+
     void setNbPacketsSent(int n)  {
             nbPacketsSent = n;
 	}
@@ -85,6 +89,14 @@ public:
 
     long getBitLength() const {
     	return packetBitLength;
+    }
+
+    void setHost(int h) {
+    	host = h;
+    }
+
+    int getHost() {
+    	return host;
     }
 
     bool isSent() const {

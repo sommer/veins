@@ -34,12 +34,12 @@ class phyPER : public  BaseModule
     virtual void handleMessage(cMessage *msg) { };
 
     int catPacket, catUWBIRPacket;
-    long nbSyncAttempts, nbSyncSuccesses, nbRx;
+    long nbSyncAttempts, nbSyncSuccesses, nbRx, nbRxnoRS;
 
     Packet packet;
     UWBIRPacket uwbirpacket;
 
-    cOutVector maiPER;
+    cOutVector maiPER, maiPERnoRS;
 
   public:
 	/** @brief Called by the Blackboard whenever a change occurs we're interested in */

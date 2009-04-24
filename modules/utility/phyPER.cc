@@ -26,6 +26,7 @@ void phyPER::initialize(int stage)
 		catPacket = utility->subscribe(this, &packet, -1);
 		catUWBIRPacket = utility->subscribe(this, &uwbirpacket, -1);
 		maiPER.setName("maiPER");
+		maiPERnoRS.setName("maiPERnoRS");
 	}
 }
 
@@ -34,13 +35,15 @@ void phyPER::receiveBBItem(int category, const BBItem * details, int scopeModule
     if(category == catPacket) {
     	packet = *(static_cast<const Packet*>(details));
     	nbRx = packet.getNbPacketsReceived();
+    	nbRxnoRS = packet.getNbPacketsReceivedNoRS();
     } else if(category == catUWBIRPacket) {
     	uwbirpacket = *(static_cast<const UWBIRPacket*>(details));
     	nbSyncAttempts = uwbirpacket.getNbSyncAttempts();
     	nbSyncSuccesses = uwbirpacket.getNbSyncSuccesses();
     }
     if(nbSyncAttempts > 0) {
-      maiPER.record( static_cast<double>(nbRx) /nbSyncAttempts );
+      maiPER.record( static_cast<double>(nbRx) / nbSyncAttempts );
+      maiPERnoRS.record( static_cast<double>(nbRxnoRS) / nbSyncAttempts );
     }
 
 }
