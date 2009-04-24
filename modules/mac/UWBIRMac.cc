@@ -140,8 +140,8 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			}
 		}
 		EV << "Found " << nbBitErrors << " bit errors in MAC packet." << endl;
+		packetsBER.record(static_cast<double>(nbBitErrors)/static_cast<double>(bitsToDecode));
 		if(trace) {
-			packetsBER.record(static_cast<double>(nbBitErrors)/static_cast<double>(bitsToDecode));
 			erroneousSymbols.record(pktSymbolErrors);
 		}
 
