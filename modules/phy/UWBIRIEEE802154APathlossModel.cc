@@ -161,7 +161,7 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
     newTxPower = new TimeMapping<Linear>(); //dynamic_cast<TimeMapping<Linear>*> (txPower->clone()); // create working copy
 
     // number of clusters for this channel (channel coherence time > packet air time)
-    L = max(1, poisson(cfg.Lmean, 0));
+    L = max(1, poisson(cfg.Lmean));
 
     // Loop on each value of the original mapping and generate multipath echoes
     ConstMappingIterator* iter = txPower->createConstIterator();
@@ -221,7 +221,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
     // start time of cluster number "cluster"
     clusterStart = 0;
     gamma_l = cfg.gamma_0;
-    Mcluster = normal(0, cfg.sigma_cluster, 1);
+    Mcluster = normal(0, cfg.sigma_cluster);
     Omega_l = pow(10, Mcluster / 10);
     // tapEnergy values are normalized
     double tapEnergy = sqrt( Omega_l / ( cfg.gamma_0 * ( (1-cfg.Beta)*cfg.lambda_1 + cfg.Beta*cfg.lambda_2 + 1 ) ) );
@@ -270,7 +270,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
         }
         clusterStart += exponential(1 / cfg.Lambda); // sum(x_n) over n=1..cluster
         gamma_l = cfg.k_gamma * clusterStart + cfg.gamma_0;
-        Mcluster = normal(0, cfg.sigma_cluster, 2);
+        Mcluster = normal(0, cfg.sigma_cluster);
         simtime_t expArg = -clusterStart / cfg.Gamma;
         Omega_l = pow(10, (10 * log(exp(expArg.dbl())) + Mcluster) / 10);
         moreTaps = true;
@@ -278,7 +278,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
 }
 
 double UWBIRIEEE802154APathlossModel::Rayleigh(double param) {
-    return weibull(2, sqrt(2) * param, 3);
+    return weibull(2, sqrt(2) * param);
 }
 
 void UWBIRIEEE802154APathlossModel::setMove(const Move newMove) {
