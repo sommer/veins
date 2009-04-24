@@ -151,11 +151,16 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			nbSymbolErrors += pktSymbolErrors;
 		}
 
-		if (rsDecoder && pktSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) {
-			nbReceivedPacketsRS++;
-		}
+		// ! If this condition is true then the next one will also be true
 		if(nbBitErrors == 0) {
 			nbReceivedPacketsNoRS++;
+			packet.setNbPacketsReceivedNoRS(packet.getNbPacketsReceivedNoRS()+1);
+		}
+
+		if (rsDecoder && pktSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) {
+			nbReceivedPacketsRS++;
+			packet.setNbPacketsReceived(packet.getNbPacketsReceived()+1);
+			utility->publishBBItem(catPacket, &packet, -1);
 		}
 
 		// validate message
@@ -163,8 +168,6 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 
 		success = (nbBitErrors == 0 || (rsDecoder && nbSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) );
 
-		packet.setNbPacketsReceived(packet.getNbPacketsReceived()+1);
-		utility->publishBBItem(catPacket, &packet, -1);
 		return success;
 	}
 	return true;
