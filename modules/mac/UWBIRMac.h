@@ -66,6 +66,9 @@ protected:
     cOutVector erroneousSymbols;
     cOutVector sentPulses;
     cOutVector receivedPulses;
+    cOutVector meanPacketBER;
+    cStdDev meanBER;
+
     long nbReceivedPacketsNoRS, nbReceivedPacketsRS;
     long nbSentPackets;
     long nbSymbolErrors;

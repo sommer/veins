@@ -51,6 +51,7 @@ void UWBIRMac::initCounters() {
 	nbSentPackets = 0;
 	nbSymbolErrors = 0;
 	packetsBER.setName("packetsBER");
+	meanPacketBER.setName("meanPacketBER");
 	dataLengths.setName("dataLengths");
 	sentPulses.setName("sentPulses");
 	receivedPulses.setName("receivedPulses");
@@ -140,7 +141,10 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			}
 		}
 		EV << "Found " << nbBitErrors << " bit errors in MAC packet." << endl;
-		packetsBER.record(static_cast<double>(nbBitErrors)/static_cast<double>(bitsToDecode));
+		double packetBER = static_cast<double>(nbBitErrors)/static_cast<double>(bitsToDecode);
+		packetsBER.record(packetBER);
+		meanBER.collect(packetBER);
+		meanPacketBER.record(meanBER.getMean());
 		if(trace) {
 			erroneousSymbols.record(pktSymbolErrors);
 		}
