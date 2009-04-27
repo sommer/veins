@@ -1,0 +1,23 @@
+== Check for errors ==
+ * new clean checkout of MiXiM
+ * for debug and release config do the following:
+   * compile
+   * run tests (floating point precision caused diffs and execution time diffs are ok)
+   * test examples
+   
+== Package MiXiM and upload ==
+ * clean checkout (to get rid of binaries, "_m.h/cc" and makefiles)
+ * make neddoc (see below)
+ 
+   
+== DoxyGen and NedDoc ==
+ * make clean (to get rid of "_m.h/cc"-files)
+ * use the omnet IDE to create the ned doc for MiXiM
+ * upload new doc to sourceforge
+   * read "http://apps.sourceforge.net/trac/sourceforge/wiki/Shell%20service" on how to get a shell for mixim on sorceforge
+   * copy compiled neddoc to "/home/groups/m/mi/mixim/htdocs/doc/"
+   
+
+ 
+ 
+  
