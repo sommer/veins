@@ -2091,13 +2091,14 @@ public:
 };
 
 /**
- * @brief Iterator for a DelayedMapping.
+ * @brief Common base for a Const- and NonConst-Iterator for a DelayedMapping.
  *
- * @sa DelayedMapping
+ * @sa BaseDelayedMapping
  * @ingroup mappingDetail
  * @author Karl Wessel
  */
-class DelayedMappingIterator: public FilteredMappingIterator {
+template<class Base, class Iterator>
+class BaseDelayedIterator: public Base {
 protected:
 	simtime_t delay;
 
@@ -2117,36 +2118,38 @@ protected:
 	}
 
 	void updatePosition() {
-		nextPosition = delayPosition(origIterator->getNextPosition());
-		position = delayPosition(origIterator->getPosition());
+		nextPosition = delayPosition(this->origIterator->getNextPosition());
+		position = delayPosition(this->origIterator->getPosition());
 	}
 
 public:
-	DelayedMappingIterator(MappingIterator* it, simtime_t delay):
-		FilteredMappingIterator(it), delay(delay) {
+	BaseDelayedIterator(Iterator* it, simtime_t delay):
+		Base(it), delay(delay) {
 
 		updatePosition();
 	}
+
+	virtual ~BaseDelayedIterator() {}
 
 	virtual const Argument& getNextPosition() const { return nextPosition; }
 
 	virtual void jumpTo(const Argument& pos) {
-		origIterator->jumpTo(undelayPosition(pos));
+		this->origIterator->jumpTo(undelayPosition(pos));
 		updatePosition();
 	}
 
 	virtual void jumpToBegin() {
-		origIterator->jumpToBegin();
+		this->origIterator->jumpToBegin();
 		updatePosition();
 	}
 
 	virtual void iterateTo(const Argument& pos) {
-		origIterator->iterateTo(undelayPosition(pos));
+		this->origIterator->iterateTo(undelayPosition(pos));
 		updatePosition();
 	}
 
 	virtual void next() {
-		origIterator->next();
+		this->origIterator->next();
 		updatePosition();
 	}
 
@@ -2156,17 +2159,34 @@ public:
 };
 
 /**
- * @brief Moves another Mapping in its time dimension.
+ * @brief ConstIterator for a ConstDelayedMapping
  *
- * See propgation delay effect of the signal for an example
- * how to use this mapping.
+ * @sa ConstDelayedMapping
+ * @ingroup mappingDetail
+ * @author Karl Wess
+ */
+typedef BaseDelayedIterator<FilteredConstMappingIterator, ConstMappingIterator> ConstDelayedMappingIterator;
+
+/**
+ * @brief Iterator for a DelayedMapping.
  *
+ * @sa DelayedMapping
  * @ingroup mappingDetail
  * @author Karl Wessel
  */
-class DelayedMapping: public Mapping {
+typedef BaseDelayedIterator<FilteredMappingIterator, MappingIterator> DelayedMappingIterator;
+
+/**
+ * @brief Common base for Const- and NonConst-DelayedMapping.
+ *
+ * @sa DelayedMapping, ConstDelayedMapping
+ * @ingroup mappingDetail
+ * @author Karl Wessel
+ */
+template<class Base>
+class BaseDelayedMapping: public Base {
 protected:
-	Mapping* mapping;
+	Base* mapping;
 	simtime_t delay;
 
 
@@ -2178,14 +2198,74 @@ protected:
 	}
 
 public:
-	DelayedMapping(Mapping* mapping, simtime_t delay):
-		Mapping(mapping->getDimensionSet()), mapping(mapping), delay(delay) {}
+	BaseDelayedMapping(Base* mapping, simtime_t delay):
+		Base(mapping->getDimensionSet()), mapping(mapping), delay(delay) {}
 
-	virtual ~DelayedMapping() {}
+	virtual ~BaseDelayedMapping() {}
 
 	virtual double getValue(const Argument& pos) const {
 		return mapping->getValue(delayPosition(pos));
 	}
+
+	virtual ConstMappingIterator* createConstIterator() {
+		return new ConstDelayedMappingIterator(mapping->createConstIterator(), delay);
+	}
+
+	virtual ConstMappingIterator* createConstIterator(const Argument& pos) {
+		return new ConstDelayedMappingIterator(mapping->createConstIterator(delayPosition(pos)), delay);
+	}
+
+	/**
+	 * @brief Returns the delay used by this mapping.
+	 */
+	virtual simtime_t getDelay() const {
+		return delay;
+	}
+
+	/**
+	 * @brief Changes the delay to the passed value.
+	 */
+	virtual void delayMapping(simtime_t d) {
+		delay = d;
+	}
+};
+
+/**
+ * @brief Moves another ConstMapping in its time dimension.
+ *
+ * See propagation delay effect of the signal for an example
+ * how to use this mapping.
+ *
+ * @ingroup mappingDetail
+ * @author Karl Wessel
+ */
+class ConstDelayedMapping: public BaseDelayedMapping<ConstMapping> {
+public:
+	ConstDelayedMapping(ConstMapping* mapping, simtime_t delay):
+		BaseDelayedMapping<ConstMapping>(mapping, delay) {}
+
+	virtual ~ConstDelayedMapping() {}
+
+	virtual ConstMapping* constClone() const {
+		return new ConstDelayedMapping(mapping->constClone(), delay);
+	}
+};
+
+/**
+ * @brief Moves another Mapping in its time dimension.
+ *
+ * See propagation delay effect of the signal for an example
+ * how to use this mapping.
+ *
+ * @ingroup mappingDetail
+ * @author Karl Wessel
+ */
+class DelayedMapping: public BaseDelayedMapping<Mapping> {
+public:
+	DelayedMapping(Mapping* mapping, simtime_t delay):
+		BaseDelayedMapping<Mapping>(mapping, delay) {}
+
+	virtual ~DelayedMapping() {}
 
 	virtual void setValue(const Argument& pos, double value) {
 		mapping->setValue(delayPosition(pos), value);
@@ -2201,20 +2281,6 @@ public:
 
 	virtual MappingIterator* createIterator(const Argument& pos) {
 		return new DelayedMappingIterator(mapping->createIterator(delayPosition(pos)), delay);
-	}
-
-	/**
-	 * @brief Returns the delay used by this mapping.
-	 */
-	virtual simtime_t getDelay() const {
-		return delay;
-	}
-
-	/**
-	 * @brief Changes the delay to the passed value.
-	 */
-	virtual void delayMapping(simtime_t d) {
-		delay = d;
 	}
 };
 

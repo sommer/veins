@@ -17,7 +17,7 @@ Signal::Signal(const Signal & o):
 	rcvPower(0)
 {
 	if (o.power) {
-		power = o.power->clone();
+		power = o.power->constClone();
 	}
 
 	if (o.bitrate) {
@@ -58,7 +58,7 @@ const Signal& Signal::operator=(const Signal& o) {
 	}
 
 	if(o.power)
-		power = o.power->clone();
+		power = o.power->constClone();
 
 	if(o.bitrate)
 		bitrate = o.bitrate->clone();
@@ -134,7 +134,7 @@ void Signal::setPropagationDelay(simtime_t delay) {
 	}
 }
 
-void Signal::setTransmissionPower(Mapping *power)
+void Signal::setTransmissionPower(ConstMapping *power)
 {
 	if(this->power){
 		markRcvPowerOutdated();

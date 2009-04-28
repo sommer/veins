@@ -44,7 +44,7 @@ protected:
 	Move senderMovement;
 
 	/** @brief Stores the function which describes the power of the signal*/
-	Mapping* power;
+	ConstMapping* power;
 
 	/** @brief Stores the function which describes the bitrate of the signal*/
 	Mapping* bitrate;
@@ -134,7 +134,7 @@ public:
 	 *
 	 * The ownership of the passed pointer goes to the signal.
 	 */
-	void setTransmissionPower(Mapping* power);
+	void setTransmissionPower(ConstMapping* power);
 
 	/**
 	 * @brief Sets the function representing the bitrate of the signal.
@@ -162,7 +162,7 @@ public:
 	 * Be aware that the transmission power mapping is not yet affected
 	 * by the propagation delay!
 	 */
-	Mapping* getTransmissionPower() {
+	ConstMapping* getTransmissionPower() {
 		return power;
 	}
 
@@ -173,7 +173,7 @@ public:
 	 * Be aware that the transmission power mapping is not yet affected
 	 * by the propagation delay!
 	 */
-	ConstMapping* getTransmissionPower() const {
+	const ConstMapping* getTransmissionPower() const {
 		return power;
 	}
 
@@ -203,9 +203,9 @@ public:
 	MultipliedMapping* getReceivingPower() {
 		if(!rcvPower)
 		{
-			Mapping* tmp = power;
+			ConstMapping* tmp = power;
 			if(propDelay != 0) {
-				tmp = new DelayedMapping(power, propDelay);
+				tmp = new ConstDelayedMapping(power, propDelay);
 			}
 			rcvPower = new MultipliedMapping(tmp,
 											  attenuations.begin(),

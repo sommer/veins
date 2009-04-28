@@ -70,13 +70,13 @@ protected:
 		ev << "Sending power mapping: " << endl;
 		printMapping(it->first->getTransmissionPower());
 
-		Mapping* receivingPower;
+		ConstMapping* receivingPower;
 
 		simtime_t delay = it->first->getPropagationDelay();
 		if(delay == 0)
-			receivingPower = it->first->getTransmissionPower()->clone();
+			receivingPower = it->first->getTransmissionPower()->constClone();
 		else
-			receivingPower = new DelayedMapping(it->first->getTransmissionPower(), delay);
+			receivingPower = new ConstDelayedMapping(it->first->getTransmissionPower(), delay);
 
 		std::list<ConstMapping*> attList = it->first->getAttenuation();
 		int count = 1;
@@ -103,7 +103,7 @@ protected:
 			printMapping(*aIt);
 			++count;
 
-			Mapping* tmp = MappingUtils::multiply(*receivingPower, **aIt, 0.0);
+			ConstMapping* tmp = MappingUtils::multiply(*receivingPower, **aIt, 0.0);
 			delete receivingPower;
 			receivingPower = tmp;
 
@@ -125,7 +125,7 @@ protected:
 
 		//iterate over receiving power mapping and chekc if every value is bigger
 		//then the threshold
-		MappingIterator* mIt = receivingPower->createIterator();
+		ConstMappingIterator* mIt = receivingPower->createConstIterator();
 
 		while(mIt->inRange()){
 			if(mIt->getValue() < threshold){
