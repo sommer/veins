@@ -1,4 +1,4 @@
-package org.mixim.examples.phyLayer;
+package org.mixim.examples.multiConnectionManager;
 
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
@@ -42,12 +42,6 @@ module Network
             parameters:
                 numHosts = numISMHosts;
                 @display("p=75,50;b=42,42,rect,green,,;i=device/wifilaptop");
-
-        }
-        hybridNode: HybridHost {
-            parameters:
-                numHosts = 1;
-                @display("p=100,50;b=42,42,rect,yellow,,;i=device/antennatower");
 
         }
     connections allowunconnected:
