@@ -24,6 +24,7 @@
 #include <PhyToMacControlInfo.h>
 #include "SimpleAddress.h"
 #include <FWMath.h>
+#include <Decider80211.h>
 #include <DeciderResult80211.h>
 
 Define_Module(Mac80211);
@@ -260,8 +261,8 @@ void Mac80211::handleLowerControl(cMessage *msg)
     	}
         break;
 
-    case COLLISION:
-    case BITERROR:
+    case Decider80211::COLLISION:
+    case Decider80211::BITERROR:
     {
     	int radioState = phy->getRadioState();
         if(radioState == Radio::RX) {
@@ -277,7 +278,7 @@ void Mac80211::handleLowerControl(cMessage *msg)
         }
         break;
     }
-    case TRANSMISSION_OVER:
+    case MacToPhyInterface::TX_OVER:
         EV << "PHY indicated transmission over" << endl;
         phy->setRadioState(Radio::RX);
         //TODO: figure out how to handle bitrate setting
@@ -379,7 +380,7 @@ void Mac80211::handleMsgNotForMe(cMessage *af, simtime_t duration)
         }
     }
 
-    if((af->getKind() == BITERROR) || (af->getKind() == COLLISION)) {
+    if((af->getKind() == Decider80211::BITERROR) || (af->getKind() == Decider80211::COLLISION)) {
 
     	assert(!contention->isScheduled());
         //suspendContention();
@@ -1124,7 +1125,7 @@ void Mac80211::receiveBBItem(int category, const BBItem *details, int scopeModul
  *  Return a time-out value for a type of frame. Called by
  *  SendRTSframe, sendCTSframe, etc.
  */
-simtime_t Mac80211::timeOut(FrameType80211 type, double br)
+simtime_t Mac80211::timeOut(Mac80211MessageKinds type, double br)
 {
     simtime_t time_out = 0;
 

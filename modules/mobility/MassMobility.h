@@ -49,13 +49,13 @@ class  MassMobility : public BaseMobility
 
   public:
     /** @brief The kind field of messages
-     * 
+     *
      * that are used internally by this class have one of these values
-     * 
+     *
      */
     enum MassMobilityMsgKinds {
-	MK_CHANGE_DIR = BaseMobility::LAST_BASIC,
-	LAST_MASS
+	MK_CHANGE_DIR = BaseMobility::LAST_BASE_MOBILITY_KIND,
+	LAST_MASS_MOBILITY_KIND
     };
 
     //Module_Class_Members( MassMobility, BaseMobility, 0 );

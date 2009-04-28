@@ -38,15 +38,25 @@
  */
 class  Mac80211 : public BaseMacLayer
 {
+public:
+
+	/** @brief frame kinds */
+	enum Mac80211MessageKinds {
+	  //between MAC layers of two nodes
+	  RTS = LAST_BASE_MAC_MESSAGE_KIND, // request to send
+	  CTS,                 // clear to send
+	  ACK,                 // acknowledgement
+	  DATA,
+	  BROADCAST,
+	  LAST_MAC_80211_MESSAGE_KIND
+	};
 protected:
     typedef std::list<Mac80211Pkt*> MacPktList;
 
     /** Definition of the timer types */
     enum timerType {
       TIMEOUT,
-      NAV,
-      CONTENTION,
-      END_SIFS
+      NAV
     };
 
     /** Definition of the states*/
@@ -154,7 +164,7 @@ protected:
     void testMaxAttempts();
 
     /** @brief return a timeOut value for a certain type of frame*/
-    simtime_t timeOut(FrameType80211 type, double br);
+    simtime_t timeOut(Mac80211MessageKinds type, double br);
 
     /** @brief computes the duration of a transmission over the physical channel, given a certain bitrate */
     simtime_t packetDuration(double bits, double br);

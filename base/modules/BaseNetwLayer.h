@@ -28,7 +28,6 @@
 #include "BaseArp.h"
 #include "NetwPkt_m.h"
 #include "SimpleAddress.h"
-#include "NicControlType.h"
 
 /**
  * @brief Base class for the network layer
@@ -38,8 +37,19 @@
  **/
 class BaseNetwLayer : public BaseLayer
 {
+public:
+	enum BaseNetwMessageKinds {
+		/** Stores the id on which classes extending BaseNetw should
+		 * continue their own message kinds.*/
+		LAST_BASE_NETW_MESSAGE_KIND = 24000,
+	};
+	enum BaseNetwControlKinds {
+		/** Stores the id on which classes extending BaseNetw should
+		 * continue their own control kinds.*/
+		LAST_BASE_NETW_CONTROL_KIND = 24500,
+	};
 
-  protected:
+protected:
     /**
      * @brief Length of the NetwPkt header
      * Read from omnetpp.ini

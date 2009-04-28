@@ -23,6 +23,7 @@
 #include "BaseNetwLayer.h"
 #include "NetwControlInfo.h"
 #include "MacControlInfo.h"
+#include "BaseMacLayer.h"
 
 #include <cassert>
 
@@ -145,11 +146,11 @@ void BaseNetwLayer::handleLowerControl(cMessage* msg)
 {
 	switch (msg->getKind())
 	{
-	case NicControlType::TX_END:
+	case BaseMacLayer::TX_OVER:
 		delete msg;
 		break;
 	default:
-		opp_warning("BaseNetwLayer does not handle control messages called %s",msg->getName());
+		EV << "BaseNetwLayer does not handle control messages called " << msg->getName() << endl;
 		delete msg;
 	}
 }

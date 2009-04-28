@@ -41,6 +41,17 @@
  **/
 class BaseApplLayer : public BaseLayer
 {
+public:
+	enum BaseApplMessageKinds {
+		/** Stores the id on which classes extending BaseAppl should
+		 * continue their own message kinds.*/
+		LAST_BASE_APPL_MESSAGE_KIND = 25000,
+	};
+	enum BaseApplControlKinds {
+		/** Stores the id on which classes extending BaseAppl should
+		 * continue their own control kinds.*/
+		LAST_BASE_APPL_CONTROL_KIND = 25500,
+	};
 protected:
 	/**
 	 * @brief Length of the ApplPkt header

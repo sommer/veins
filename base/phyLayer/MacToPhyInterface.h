@@ -6,7 +6,6 @@
 #include "Signal_.h"
 #include "ChannelState.h"
 #include "PhyUtils.h"
-#include <NicControlType.h>
 
 
 /**
@@ -20,13 +19,16 @@ class MacToPhyInterface
 public:
 	enum BasePhyMessageKinds {
 		/** Indicates the end of a send transmission. */
-		TX_OVER = NicControlType::TX_END,
+		TX_OVER = 22000,
 		/** Indicates the end of a radio switch. */
-		RADIO_SWITCHING_OVER = 22001,
+		RADIO_SWITCHING_OVER,
 		/** Channel sense control message between Mac and Phy.*/
 		CHANNEL_SENSE_REQUEST,
 		/** AirFrame kind */
-		AIR_FRAME
+		AIR_FRAME,
+		/** Stores the id on which classes extending BasePhy should
+		 * continue their own kinds.*/
+		LAST_BASE_PHY_KIND,
 	};
 
 public:

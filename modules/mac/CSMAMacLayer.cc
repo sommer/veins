@@ -1,7 +1,6 @@
 
 
 #include "CSMAMacLayer.h"
-#include "NicControlType.h"
 #include "FWMath.h"
 #include "MacToPhyControlInfo.h"
 #include <BaseArp.h>
@@ -119,7 +118,7 @@ void CSMAMacLayer::handleUpperMsg(cMessage *msg)
         EV << "New packet arrived, but queue is FULL, so new packet is deleted\n";
         MacPkt* mac = encapsMsg(pkt);
         mac->setName("MAC ERROR");
-        mac->setKind(NicControlType::PACKET_DROPPED);
+        mac->setKind(PACKET_DROPPED);
         sendControlUp(mac);
 
         //TODO: send packet drop bb info
@@ -248,7 +247,7 @@ void CSMAMacLayer::scheduleBackoff()
 
         cMessage *mac = encapsMsg(macQueue.front());
         mac->setName("MAC ERROR");
-        mac->setKind(NicControlType::PACKET_DROPPED);
+        mac->setKind(PACKET_DROPPED);
         txAttempts = 0;
         macQueue.pop_front();
         sendControlUp(mac);

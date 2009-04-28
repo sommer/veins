@@ -23,7 +23,6 @@
 #include "BaseMacLayer.h"
 #include "MacControlInfo.h"
 #include "SimpleAddress.h"
-#include "NicControlType.h"
 
 #include <cassert>
 
@@ -139,7 +138,8 @@ void BaseMacLayer::handleLowerControl(cMessage* msg)
 {
 	switch (msg->getKind())
 	{
-		case NicControlType::TX_END:
+		case MacToPhyInterface::TX_OVER:
+			msg->setKind(TX_OVER);
 			sendControlUp(msg);
 			break;
 		default:

@@ -1,26 +1,6 @@
-#include <NicControlType.h>
 
 #ifndef CONSTANTS_802_11
 #define CONSTANTS_802_11
-
-enum ControlTypes80211 {
-    NOTHING = NicControlType::NOTHING,
-    TRANSMISSION_OVER = NicControlType::TX_END,
-    PACKET_DROPPED = NicControlType::PACKET_DROPPED,
-    BITERROR,       //the phy has recognized a bit error in the packet
-    COLLISION,       //packet lost due to collision
-};
-
-/** @brief frame kinds */
-enum FrameType80211 {
-
-  //between MAC layers of two nodes
-  RTS = COLLISION + 1, // request to send
-  CTS,                 // clear to send
-  ACK,                 // acknowledgement
-  DATA,
-  BROADCAST
-};
 
 /** @brief Bit rates for 802.11b */
 const double BITRATES_80211[] = {

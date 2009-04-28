@@ -80,8 +80,10 @@ class BaseMobility : public BaseModule
      **/
     enum BaseMobilityMsgKinds {
         MOVE_HOST = 21311,
-	MOVE_TO_BORDER,
-	LAST_BASIC
+        MOVE_TO_BORDER,
+        /** Stores the id on which classes extending BaseMobility should
+		 * continue their own kinds.*/
+		LAST_BASE_MOBILITY_KIND,
     };
 
     /**

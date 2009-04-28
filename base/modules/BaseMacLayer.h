@@ -40,6 +40,21 @@
  */
 class BaseMacLayer : public BaseLayer
 {
+public:
+	enum BaseMacMessageKinds {
+		/** Stores the id on which classes extending BaseMac should
+		 * continue their own message kinds.*/
+		LAST_BASE_MAC_MESSAGE_KIND = 23000,
+	};
+	enum BaseMacControlKinds {
+		/** Indicates the end of a transmission*/
+		TX_OVER = 23500,
+		/** Tells the netw layer that a packet to be sent has been dropped.*/
+		PACKET_DROPPED,
+		/** Stores the id on which classes extending BaseMac should
+		 * continue their own control kinds.*/
+		LAST_BASE_MAC_CONTROL_KIND,
+	};
 protected:
 
 	/** @brief Handler to the physical layer.*/

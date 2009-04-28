@@ -26,13 +26,18 @@
  * @author Marc L�bbers, David Raguin, Karl Wessel(port for MiXiM)
  */
 class Decider80211: public BaseDecider {
+public:
+	enum Decider80211ControlKinds {
+		NOTHING = 22100,
+		BITERROR,       //the phy has recognized a bit error in the packet
+		COLLISION,       //packet lost due to collision
+		LAST_DECIDER_80211_CONTROL_KIND
+	};
 protected:
 	// threshold value for checking a SNR-map (SNR-threshold)
 	double snrThreshold;
 
 protected:
-
-
 
 	/**
 	 * @brief Checks a mapping against a specific threshold (element-wise).
