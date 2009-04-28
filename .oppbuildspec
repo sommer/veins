@@ -1,7 +1,6 @@
 <buildspec version="4.0">
 <dir makemake-options="-o radioState -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/radioState" type="makemake"/>
 <dir makemake-options="-o MiXiM -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/analogueModels" type="makemake"/>
-<dir makemake-options="-o MiXiM -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/phyLayer" type="makemake"/>
 <dir makemake-options="-o channelInfo -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/channelInfo" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples" type="makemake"/>
 <dir makemake-options="--deep --make-so -o miximbase -O out --meta:recurse --meta:export-library --meta:use-exported-libs" path="base" type="makemake"/>
