@@ -94,9 +94,9 @@ void IEEE802154A::setPSDULength(int _psduLength) {
 
 IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
 		simtime_t signalStart) {
-	// 96 R-S parity bits, the 2 symbols phy header is not modeled as it includes its own parity bits
+	// 48 R-S parity bits, the 2 symbols phy header is not modeled as it includes its own parity bits
 	// and is thus very robust
-	unsigned int nbBits = IEEE802154A::psduLength * 8 + 96;
+	unsigned int nbBits = IEEE802154A::psduLength * 8 + 48;
 	simtime_t signalLength = IEEE802154A::mandatory_preambleLength;
 	signalLength += static_cast<double> (nbBits)
 			* IEEE802154A::mandatory_symbol;
@@ -184,7 +184,7 @@ void IEEE802154A::generatePulse(Mapping* mapping, Argument* arg,
 
 void IEEE802154A::generateBurst(Mapping* mapping, Argument* arg,
 		simtime_t burstStart, short polarity) {
-	assert(burstStart < IEEE802154A::mandatory_preambleLength+(IEEE802154A::MaxPSDULength*8+96+2)*IEEE802154A::mandatory_symbol);
+	assert(burstStart < IEEE802154A::mandatory_preambleLength+(IEEE802154A::MaxPSDULength*8+48+2)*IEEE802154A::mandatory_symbol);
 	// 1. Start point = zeros
 	simtime_t offset = burstStart;
 	for (int pulse = 0; pulse < IEEE802154A::mandatory_pulses_per_burst; pulse++) {
