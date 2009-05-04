@@ -161,7 +161,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			packet.setNbPacketsReceivedNoRS(packet.getNbPacketsReceivedNoRS()+1);
 		}
 
-		if (rsDecoder && pktSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) {
+		if (pktSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) {
 			nbReceivedPacketsRS++;
 			packet.setNbPacketsReceived(packet.getNbPacketsReceived()+1);
 			utility->publishBBItem(catPacket, &packet, -1);
