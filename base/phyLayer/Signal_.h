@@ -30,6 +30,7 @@
 class Signal {
 public:
 	typedef ConcatConstMapping<std::multiplies<double> > MultipliedMapping;
+	typedef std::list<ConstMapping*> ConstMappingList;
 
 protected:
 
@@ -51,8 +52,6 @@ protected:
 
 	/** @brief If propagation delay is not zero this stores the undelayed bitrate*/
 	Mapping* txBitrate;
-
-	typedef std::list<ConstMapping*> ConstMappingList;
 
 	/** @brief Stores the functions describing the attenuations of the signal*/
 	ConstMappingList attenuations;

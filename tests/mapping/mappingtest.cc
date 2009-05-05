@@ -2273,23 +2273,62 @@ protected:
 		}
 
 		for(int t=1; t < 5; ++t){
-			for(int f=1; f < 5; ++f){
-				for(int s=1; s < 5; ++s){
-					Mapping* tmp = multi1->clone();
-					//set min and max
-					tmp->setValue(A(t,f,s),3);
-					tmp->setValue(A(5-t,5-f,5-s),1);
+		for(int f=1; f < 5; ++f){
+		for(int s=1; s < 5; ++s){
+			Mapping* tmp = multi1->clone();
+			//set min and max
+			tmp->setValue(A(t,f,s),3);
+			tmp->setValue(A(5-t,5-f,5-s),1);
 
-					assertEqual("Multi element multidim mapping max(global) at (" + toString(t)+","+toString(f)+","+toString(s)+").",
-							    3, MappingUtils::findMax(*tmp));
-					assertEqual("Multi element multidim mapping min(global) at (" + toString(t)+","+toString(f)+","+toString(s)+").",
-								1, MappingUtils::findMin(*tmp));
+			assertEqual("Multi element multidim mapping max(global) at (" +
+						toString(t)+","+toString(f)+","+toString(s)+").",
+						3, MappingUtils::findMax(*tmp));
+			assertEqual("Multi element multidim mapping min(global) at (" +
+						toString(t)+","+toString(f)+","+toString(s)+").",
+						1, MappingUtils::findMin(*tmp));
 
-					delete tmp;
+			for(int t1=1; t1 < 5; ++t1){
+			for(int f1=1; f1 < 5; ++f1){
+			for(int s1=1; s1 < 5; ++s1){
+
+				for(int t2=t1; t2 < 5; ++t2){
+				for(int f2=f1; f2 < 5; ++f2){
+				for(int s2=s1; s2 < 5; ++s2){
+					double expMax = 2;
+					double expMin = 2;
+
+					if(t1==t2 && f1==f2 && s1==s2 && t1==5-t && f1==5-f && s1==5-s) {
+						expMax = 1;
+					} else if(t >= t1 && t <= t2 && f >= f1 && f <= f2 && s >= s1 && s <= s2) {
+						expMax = 3;
+					}
+					if(t1==t2 && f1==f2 && s1==s2 && t1==t && f1==f && s1==s) {
+						expMin=3;
+					} else if(5-t >= t1 && 5-t <= t2 && 5-f >= f1 && 5-f <= f2 && 5-s >= s1 && 5-s <= s2) {
+						expMin=1;
+					}
+
+					assertEqual("min at (" + toString(5-t)+","+toString(5-f)+","+toString(5-s)+
+								") at local (" + toString(t1)+","+toString(f1)+","+toString(s1)+
+								") to (" + toString(t2)+","+toString(f2)+","+toString(s2)+").",
+								expMin, MappingUtils::findMin(*tmp, A(t1,f1,s1), A(t2,f2,s2)));
+					assertEqual("max at (" + toString(t)+","+toString(f)+","+toString(s)+
+								") at local (" + toString(t1)+","+toString(f1)+","+toString(s1)+
+								") to (" + toString(t2)+","+toString(f2)+","+toString(s2)+").",
+								expMax, MappingUtils::findMax(*tmp, A(t1,f1,s1), A(t2,f2,s2)));
+
+				}
+				}
 				}
 			}
+			}
+			}
+
+			delete tmp;
 		}
-		//Local - not yet implemented
+		}
+		}
+
 
 		delete timed1;
 		delete timed2;
@@ -2302,7 +2341,7 @@ protected:
 	}
 
 	void runTests() {
-		displayPassed = true;
+		displayPassed = false;
 		testDimension();
 		testArg();
 		//testDoubleCompareLess();
@@ -2325,6 +2364,7 @@ protected:
 	    testOutOfRange();
 	    std::cout << "--------Out of range tests done.--------------------------------------------------\n";
 
+	    std::cout << "--------Various MappingUtils tests (may take a while)-----------------------------\n";
 	    testMappingUtils();
 		std::cout << "--------Various MappingUtils tests done.------------------------------------------\n";
 

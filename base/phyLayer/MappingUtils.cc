@@ -16,7 +16,7 @@ FilledUpMappingIterator::FilledUpMappingIterator(FilledUpMapping& mapping, const
 
 
 
-ConstMapping* MappingUtils::mappingBuffer = 0;
+MappingUtils::MappingBuffer MappingUtils::mappingBuffer;
 
 ConstMapping* MappingUtils::createCompatibleMapping(ConstMapping& src, ConstMapping& dst){
 	typedef FilledUpMapping::KeySet KeySet;
@@ -64,8 +64,8 @@ ConstMapping* MappingUtils::createCompatibleMapping(ConstMapping& src, ConstMapp
 
 	delete dstIt;
 
-	setMappingBuffer(new FilledUpMapping(&src, dstDims, &keys));
-	return mappingBuffer;
+	ConstMapping* res = setMappingBuffer(new FilledUpMapping(&src, dstDims, &keys));
+	return res;
 }
 
 bool MappingUtils::iterateToNext(ConstMappingIterator* it1, ConstMappingIterator* it2){
@@ -236,18 +236,34 @@ double MappingUtils::findMax(ConstMapping& m) {
 }
 
 double MappingUtils::findMax(ConstMapping& m, const Argument& min, const Argument& max){
-	assert(m.getDimensionSet() == DimensionSet(Dimension::time));
+	//the passed interval should define a value for every dimension
+	//of the mapping.
+	assert(min.getDimensions().isSubSet(m.getDimensionSet()));
+	assert(max.getDimensions().isSubSet(m.getDimensionSet()));
 
 	ConstMappingIterator* it = m.createConstIterator(min);
 
 	double res = it->getValue();
 
-	while(it->hasNext() && it->getNextPosition().getTime() < max.getTime()){
+	while(it->hasNext() && it->getNextPosition().compare(max, m.getDimensionSet()) < 0){
 		it->next();
 
-		double val = it->getValue();
-		if(val > res)
-			res = val;
+		const Argument& next = it->getPosition();
+		bool inRange = next.getTime() >= min.getTime() && next.getTime() <= max.getTime();
+		if(inRange) {
+			for(Argument::const_iterator itA = next.begin(); itA != next.end(); ++itA) {
+				if(itA->second < min.getArgValue(itA->first) || itA->second > max.getArgValue(itA->first)) {
+					inRange = false;
+					break;
+				}
+			}
+		}
+
+		if(inRange) {
+			double val = it->getValue();
+			if(val > res)
+				res = val;
+		}
 	}
 	it->iterateTo(max);
 	double val = it->getValue();
@@ -278,18 +294,35 @@ double MappingUtils::findMin(ConstMapping& m) {
 }
 
 double MappingUtils::findMin(ConstMapping& m, const Argument& min, const Argument& max){
-	assert(m.getDimensionSet() == DimensionSet(Dimension::time));
+
+	//the passed interval should define a value for every dimension
+	//of the mapping.
+	assert(min.getDimensions().isSubSet(m.getDimensionSet()));
+	assert(max.getDimensions().isSubSet(m.getDimensionSet()));
 
 	ConstMappingIterator* it = m.createConstIterator(min);
 
 	double res = it->getValue();
 
-	while(it->hasNext() && it->getNextPosition().getTime() < max.getTime()){
+	while(it->hasNext() && it->getNextPosition().compare(max, m.getDimensionSet()) < 0){
 		it->next();
 
-		double val = it->getValue();
-		if(val < res)
-			res = val;
+		const Argument& next = it->getPosition();
+		bool inRange = next.getTime() >= min.getTime() && next.getTime() <= max.getTime();
+		if(inRange) {
+			for(Argument::const_iterator itA = next.begin(); itA != next.end(); ++itA) {
+				if(itA->second < min.getArgValue(itA->first) || itA->second > max.getArgValue(itA->first)) {
+					inRange = false;
+					break;
+				}
+			}
+		}
+
+		if(inRange) {
+			double val = it->getValue();
+			if(val < res)
+				res = val;
+		}
 	}
 	it->iterateTo(max);
 	double val = it->getValue();

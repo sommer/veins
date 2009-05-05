@@ -1032,7 +1032,7 @@ Signal* Mac80211::createSignal(simtime_t start, simtime_t length, double power, 
 	Signal* s = new Signal(start, length);
 
 	//create and set tx power mapping
-	Mapping* txPowerMapping = createConstantMapping(start, end, power);
+	ConstMapping* txPowerMapping = createSingleFrequencyMapping(start, end, 2.412e9, 11.0e6, power);
 	s->setTransmissionPower(txPowerMapping);
 
 	//create and set bitrate mapping

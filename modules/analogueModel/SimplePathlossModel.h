@@ -7,6 +7,8 @@
 
 #include <cstdlib>
 
+class SimplePathlossModel;
+
 /**
  * @brief Mapping that represents a Pathloss-function.
  *
@@ -20,40 +22,25 @@ class SimplePathlossConstMapping : public SimpleConstMapping
 {
 
 protected:
-	const double attValue;
+	const double distFactor;
+	SimplePathlossModel* model;
+	bool hasFrequency;
 
 public:
 	/**
 	 * @brief initializes the PathlossMapping for the passed dimensions,
-	 * an interval the mapping is defined over and the actual constant
-	 * attenuation value.
-	 *
-	 * The passed interval is needed by the base class SimpleConstMapping
-	 * to be able to create an iterator for this Mapping. The interval
-	 * tells the base class where the iterator should start, which
-	 * step size it should use to iterate and where to end.
+	 * its model and the distance factor for the signal to attenuate.
 	 */
 	SimplePathlossConstMapping(const DimensionSet& dimensions,
-						const Argument& start,
-						const double attValue) :
-		SimpleConstMapping(dimensions, start),
-		attValue(attValue)
-	{
-
-	}
+							   SimplePathlossModel* model,
+							   const double distFactor);
 
 	/**
-	 * @brief simply return constant attenuation value
+	 * @brief Calculates attenuation from the distance factor and
+	 * the current positions frequency (or the models carrier frequency
+	 * if we are using using signals without frequency domain.
 	 */
-	virtual double getValue(const Argument& pos) const
-	{
-
-		/* In a more complex PathlossMapping we could use the value of the passed
-		 * Argument in the frequency dimension to calculate the attenuation
-		 * for the actual frequency correctly. But at this Mapping we assume
-		 * the frequency of every signal the same.*/
-		return attValue;
-	}
+	virtual double getValue(const Argument& pos) const;
 
 	/**
 	 * @brief creates a clone of this mapping. This method has to be implemented
@@ -76,9 +63,16 @@ public:
 class SimplePathlossModel : public AnalogueModel
 {
 protected:
+	friend class SimplePathlossConstMapping;
 
-	/** @brief stores the dimensions this analogue model applies to.*/
-	const DimensionSet dimensions;
+	/** @brief shortcut to frequency dimension */
+	static Dimension frequency;
+
+	/** @brief Shortcut to time domain.*/
+	static DimensionSet timeDomain;
+
+	/** @brief Shortcut to time x frequency domain.*/
+	static DimensionSet timeFreqDomain;
 
 	/** @brief Path loss coefficient. **/
     double pathLossAlphaHalf;
@@ -113,7 +107,6 @@ public:
 	 */
 	SimplePathlossModel(double alpha, double carrierFrequency, const Move* myMove,
 					bool useTorus, const Coord& playgroundSize, bool debug):
-		dimensions(Dimension::time),
 		pathLossAlphaHalf(alpha * 0.5),
 		carrierFrequency(carrierFrequency),
 		myMove(*myMove),

@@ -37,6 +37,9 @@ protected:
 	// threshold value for checking a SNR-map (SNR-threshold)
 	double snrThreshold;
 
+	/** @brief The center frequency on which the decider listens for signals */
+	double centerFrequency;
+
 protected:
 
 	/**
@@ -48,6 +51,8 @@ protected:
 	 *
 	 */
 	virtual DeciderResult* checkIfSignalOk(Mapping* snrMap, AirFrame* frame);
+
+	virtual simtime_t processNewSignal(AirFrame* frame);
 
 	/**
 	 * @brief Processes a received AirFrame.
@@ -63,6 +68,17 @@ protected:
 	/** @brief computes if packet is ok or has errors*/
 	bool packetOk(double snirMin, int lengthMPDU, double bitrate);
 
+	/**
+	 * @brief Calculates the RSSI value for the passed ChannelSenseRequest.
+	 *
+	 * This method is called by BaseDecider when it answers a ChannelSenseRequest
+	 * and can be overridden by sub classing Deciders.
+	 *
+	 * Returns the maximum RSSI value inside the ChannelSenseRequest time
+	 * interval and the channel the Decider currently listens to.
+	 */
+	virtual double calcChannelSenseRSSI(CSRInfo& requestInfo);
+
 public:
 
 	/**
@@ -72,10 +88,12 @@ public:
 	Decider80211(DeciderToPhyInterface* phy,
 				double threshold,
 				double sensitivity,
+				double centerFrequency,
 				int myIndex = -1,
 				bool debug = false):
 		BaseDecider(phy, sensitivity, myIndex, debug),
-		snrThreshold(threshold)
+		snrThreshold(threshold),
+		centerFrequency(centerFrequency)
 	{}
 
 	virtual ~Decider80211() {};

@@ -54,6 +54,10 @@ public:
 	 * but spares the parsing of a string.*/
 	static const Dimension time;
 
+	/** @brief Shortcut to the frequency Dimension, same as 'Dimension("frequency")',
+	 * but spares the parsing of a string.*/
+	static const Dimension frequency;
+
 public:
 	Dimension():
 		id(0) {}
@@ -120,6 +124,12 @@ public:
  * @ingroup mapping
  */
 class DimensionSet:public std::set<Dimension> {
+public:
+	/** @brief Shortcut to a DimensionSet which only contains time. */
+	static const DimensionSet timeDomain;
+
+	/** @brief Shortcut to a DimensionSet which contains time and frequency. */
+	static const DimensionSet timeFreqDomain;
 public:
 	/**
 	 * @brief Default constructor creates an empty DimensionSet
@@ -551,6 +561,25 @@ protected:
 	DimensionSet dimensions;
 
 protected:
+	double toDecibel(double v){
+		return 10.0 * log10(v);
+	}
+
+	template<class T>
+	std::string toString(T v, unsigned int length){
+		char* tmp = new char[255];
+		sprintf(tmp, "%.2f", v);
+
+		std::string result(tmp);
+		delete[] tmp;
+		while(result.length() < length)
+			result += " ";
+		return result;
+	}
+
+	std::string toString(simtime_t v, unsigned int length){
+		return toString(SIMTIME_DBL(v), length);
+	}
 
 public:
 
@@ -618,6 +647,114 @@ public:
 		return dimensions;
 	}
 
+	template<class stream>
+	void print(stream& out) {
+		ConstMapping& m = *this;
+		Dimension otherDim;
+		const DimensionSet& dims = m.getDimensionSet();
+		out << "Mapping domain: time";
+		for(DimensionSet::iterator it = dims.begin(); it != dims.end(); ++it) {
+			if(*it != Dimension::time){
+				otherDim = *it;
+				out << ", " << *it;
+			}
+		}
+		out << endl;
+
+		ConstMappingIterator* it = m.createConstIterator();
+
+		if(!it->inRange()) {
+			out << "Mapping is empty." << endl;
+			return;
+		}
+
+		Argument min = it->getPosition();
+		Argument max = it->getPosition();
+
+		std::set<simtime_t> timePositions;
+		std::set<double> otherPositions;
+
+		timePositions.insert(it->getPosition().getTime());
+		if(dims.size() == 2){
+			otherPositions.insert(it->getPosition().begin()->second);
+		}
+
+		while(it->hasNext()) {
+			it->next();
+			const Argument& pos = it->getPosition();
+
+			min.setTime(std::min(min.getTime(), pos.getTime()));
+			max.setTime(std::max(max.getTime(), pos.getTime()));
+
+			timePositions.insert(pos.getTime());
+
+			for(Argument::const_iterator itA = pos.begin(); itA != pos.end(); ++itA) {
+				if(dims.size() == 2){
+					otherPositions.insert(itA->second);
+				}
+				min.setArgValue(itA->first, std::min(min.getArgValue(itA->first), itA->second));
+				max.setArgValue(itA->first, std::max(max.getArgValue(itA->first), itA->second));
+			}
+		}
+		delete it;
+
+		if(dims.size() > 2) {
+			out << "domain - min=" << min << " max=" << max << endl;
+			return;
+		}
+
+		out << "------+---------------------------------------------------------" << endl;
+		out << "o\\t   | ";
+		std::set<simtime_t>::const_iterator tIt;
+		for(tIt = timePositions.begin();
+			tIt != timePositions.end(); ++tIt)
+		{
+			out << m.toString(*tIt * 1000, 6) << " ";
+		}
+		out << endl;
+		out << "------+---------------------------------------------------------" << endl;
+
+		it = m.createConstIterator();
+
+
+		if(dims.size() == 1) {
+			out << "value" << " | ";
+			while(it->inRange()) {
+				out << m.toString(m.toDecibel(it->getValue()), 6) << " ";
+
+				if(!it->hasNext()) {
+					break;
+				}
+				it->next();
+			}
+		} else {
+			tIt = timePositions.begin();
+			std::set<double>::const_iterator fIt = otherPositions.begin();
+			out << m.toString(*fIt, 5) << " | ";
+			while(it->inRange()) {
+				if(*fIt != it->getPosition().getArgValue(otherDim)) {
+					++fIt;
+					out << endl << m.toString(*fIt, 5) << " | ";
+					tIt = timePositions.begin();
+					assert(*fIt == it->getPosition().getArgValue(otherDim));
+				}
+
+				while(*tIt < it->getPosition().getTime()){
+					++tIt;
+					out << "      ";
+				}
+
+				out << m.toString(m.toDecibel(it->getValue()), 6) << " ";
+
+				if(!it->hasNext()) {
+					break;
+				}
+				it->next();
+			}
+		}
+		out << endl << "------+---------------------------------------------------------" << endl;
+
+	}
 };
 
 

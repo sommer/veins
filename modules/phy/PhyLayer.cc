@@ -146,7 +146,8 @@ Decider* PhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 
 Decider* PhyLayer::initializeDecider80211(ParameterMap& params) {
 	double threshold = params["threshold"];
-	return new Decider80211(this, threshold, sensitivity, findHost()->getIndex(), coreDebug);
+	double centerFreq = params["centerFrequency"];
+	return new Decider80211(this, threshold, sensitivity, centerFreq, findHost()->getIndex(), coreDebug);
 }
 
 Decider* PhyLayer::initializeSNRThresholdDecider(ParameterMap& params) {

@@ -73,6 +73,15 @@ protected:
     /** @brief debug this core module? */
     bool coreDebug;
 
+    /** @brief Shortcut for the frequency dimension */
+    static Dimension frequency;
+
+    /** @brief DimensionSet for time only signals */
+    static DimensionSet timeDomain;
+
+    /** @brief DimensionSet for time x frequency signals */
+    static DimensionSet timeFreqDomain;
+
 public:
     //Module_Class_Members( BaseMacLayer, BaseLayer, 0 );
 
@@ -132,6 +141,12 @@ protected:
      * Used by "createSignal" to create the power and bitrate mapping.
      */
     Mapping* createConstantMapping(simtime_t start, simtime_t end, double value);
+
+    /**
+     * @brief Creates a Mapping defined over time and frequency with
+     * constant power in a certain frequency band.
+     */
+    ConstMapping* createSingleFrequencyMapping(simtime_t start, simtime_t end, double centerFreq, double bandWith, double value);
 };
 
 #endif

@@ -2,6 +2,33 @@
 
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimplePathlossModel): "
 
+Dimension SimplePathlossModel::frequency("frequency");
+DimensionSet SimplePathlossModel::timeDomain(Dimension::time);
+DimensionSet SimplePathlossModel::timeFreqDomain(Dimension::time, Dimension("frequency"));
+
+SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimensions,
+													   SimplePathlossModel* model,
+													   const double distFactor) :
+	SimpleConstMapping(dimensions),
+	distFactor(distFactor),
+	model(model),
+	hasFrequency(dimensions.hasDimension(SimplePathlossModel::frequency))
+{
+}
+
+double SimplePathlossConstMapping::getValue(const Argument& pos) const
+{
+	double freq = model->carrierFrequency;
+	if(hasFrequency) {
+		assert(pos.hasArgVal(SimplePathlossModel::frequency));
+		freq = pos.getArgValue(SimplePathlossModel::frequency);
+	}
+	double wavelength = BaseWorldUtility::speedOfLight / freq;
+	return (wavelength * wavelength) * distFactor;
+}
+
+
+
 void SimplePathlossModel::filterSignal(Signal& s){
 
 	/** Get start of the signal */
@@ -9,23 +36,35 @@ void SimplePathlossModel::filterSignal(Signal& s){
 	simtime_t sEnd = s.getSignalLength() + sStart;
 
 	/** claim the Move pattern of the sender from the Signal */
-	Move sendersMove = s.getMove();
+	Coord sendersPos = s.getMove().getPositionAt(sStart);
+	Coord myPos = myMove.getPositionAt(sStart);
 
-	/** Calculate the attenuation value */
-	double attValue = calcPathloss(myMove.getPositionAt(sStart),
-									sendersMove.getPositionAt(sStart));
+	/** Calculate the distance factor */
+	double sqrDistance = useTorus ? myPos.sqrTorusDist(sendersPos, playgroundSize)
+								  : myPos.sqrdist(sendersPos);
 
-	/*
-	 * Create a proper mapping.
-	 *
-	 * We assume one constant attenuation Value for the whole duration
-	 * of the Signal. That is why we pass the same timepoints for start and end
-	 * and a default interval of 1 (which isn't used).
-	 *
-	 */
-	SimplePathlossConstMapping* attMapping = new SimplePathlossConstMapping(dimensions,
-											Argument(sStart),
-											attValue);
+	debugEV << "sqrdistance is: " << sqrDistance << endl;
+
+	if(sqrDistance <= 1.0) {
+		//attenuation is negligible
+		return;
+	}
+
+	// wavelength in metres
+	double wavelength = (BaseWorldUtility::speedOfLight/carrierFrequency);
+	debugEV << "wavelength is: " << wavelength << endl;
+
+	double distFactor = pow(sqrDistance, -pathLossAlphaHalf) / (16.0 * M_PI * M_PI);
+	debugEV << "distance factor is: " << distFactor << endl;
+
+	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(frequency);
+
+	const DimensionSet& domain = hasFrequency ? timeFreqDomain : timeDomain;
+
+	SimplePathlossConstMapping* attMapping = new SimplePathlossConstMapping(
+													domain,
+													this,
+													distFactor);
 
 	/* at last add the created attenuation mapping to the signal */
 	s.addAttenuation(attMapping);

@@ -9,6 +9,60 @@
 #include <DeciderResult80211.h>
 #include <Mac80211Pkt_m.h>
 
+simtime_t Decider80211::processNewSignal(AirFrame* frame) {
+	if(currentSignal.first != 0) {
+		debugEV << "Already receiving another AirFrame!" << endl;
+		return notAgain;
+	}
+
+	// get the receiving power of the Signal at start-time
+	Signal& signal = frame->getSignal();
+	Argument start(DimensionSet::timeFreqDomain);
+	start.setTime(signal.getSignalStart());
+	start.setArgValue(Dimension::frequency, centerFrequency);
+	double recvPower = signal.getReceivingPower()->getValue(start);
+
+	// check whether signal is strong enough to receive
+	if ( recvPower < sensitivity )
+	{
+		debugEV << "Signal is to weak (" << recvPower << " < " << sensitivity
+				<< ") -> do not receive." << endl;
+		// Signal too weak, we can't receive it, tell PhyLayer that we don't want it again
+		return notAgain;
+	}
+
+	// Signal is strong enough, receive this Signal and schedule it
+	debugEV << "Signal is strong enough (" << recvPower << " > " << sensitivity
+			<< ") -> Trying to receive AirFrame." << endl;
+
+	currentSignal.first = frame;
+	currentSignal.second = EXPECT_END;
+
+	//channel turned busy
+	setChannelIdleStatus(false);
+
+	return ( signal.getSignalStart() + signal.getSignalLength() );
+}
+
+double Decider80211::calcChannelSenseRSSI(CSRInfo& requestInfo) {
+	simtime_t start = requestInfo.second;
+	simtime_t end = phy->getSimTime();
+
+	Mapping* rssiMap = calculateRSSIMapping(start, end);
+
+	Argument min(DimensionSet::timeFreqDomain);
+	min.setTime(start);
+	min.setArgValue(Dimension::frequency, centerFrequency - 11e6);
+	Argument max(DimensionSet::timeFreqDomain);
+	max.setTime(end);
+	max.setArgValue(Dimension::frequency, centerFrequency + 11e6);
+
+	double rssi = MappingUtils::findMax(*rssiMap, min, max);
+
+	delete rssiMap;
+
+	return rssi;
+}
 
 
 DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
@@ -21,7 +75,20 @@ DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
 
 	start = start + RED_PHY_HEADER_DURATION; //its ok if the phy header is received only
 											 //partly - TODO: maybe solve this nicer
-	double snirMin = MappingUtils::findMin(*snrMap, Argument(start), Argument(end));
+	Argument min(DimensionSet::timeFreqDomain);
+	min.setTime(start);
+	min.setArgValue(Dimension::frequency, centerFrequency - 11e6);
+	Argument max(DimensionSet::timeFreqDomain);
+	max.setTime(end);
+	max.setArgValue(Dimension::frequency, centerFrequency + 11e6);
+
+	for(Signal::ConstMappingList::const_iterator it = s.getAttenuation().begin(); it != s.getAttenuation().end(); ++it) {
+		ev << "Att:" << endl;
+		(*it)->print(ev);
+	}
+
+	snrMap->print(ev);
+	double snirMin = MappingUtils::findMin(*snrMap, min, max);
 
 	EV << " snrMin: " << snirMin << endl;
 

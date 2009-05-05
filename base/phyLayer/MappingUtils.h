@@ -1580,6 +1580,7 @@ public:
 		return new MultiDimMappingIterator<Interpolator>(*this, pos);
 	}
 
+
 	/**
 	 * @brief Returns the dimension this instance represents.
 	 */
@@ -1778,21 +1779,24 @@ public:
  * @ingroup mapping
  */
 class MappingUtils {
+public:
+	typedef std::list<ConstMapping*> MappingBuffer;
 private:
-	static ConstMapping* mappingBuffer;
+	static MappingBuffer mappingBuffer;
 
 private:
-	static void freeMappingBuffer(){
-		if(mappingBuffer != 0){
-			delete mappingBuffer;
-			mappingBuffer = 0;
+	static void freeMappingBuffer(ConstMapping* m){
+		MappingBuffer::iterator it = std::find(mappingBuffer.begin(), mappingBuffer.end(), m);
+		if(it != mappingBuffer.end()){
+			delete m;
+			mappingBuffer.erase(it);
 		}
 	}
 
-	static void setMappingBuffer(ConstMapping* mapping){
-		assert(mappingBuffer == 0);
+	static ConstMapping* setMappingBuffer(ConstMapping* mapping){
 
-		mappingBuffer = mapping;
+		mappingBuffer.push_front(mapping);
+		return mapping;
 	}
 
 	static ConstMapping* createCompatibleMapping(ConstMapping& src, ConstMapping& dst);
@@ -1879,7 +1883,7 @@ public:
 		delete itF2;
 		delete itRes;
 
-		freeMappingBuffer();
+		freeMappingBuffer(f2Comp);
 
 		return result;
 	}

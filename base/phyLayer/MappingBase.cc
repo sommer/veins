@@ -5,7 +5,8 @@
 int Dimension::nextFreeID = 1;
 Dimension::DimensionIDMap Dimension::dimensionIDs;
 Dimension::DimensionNameMap Dimension::dimensionNames;
-const Dimension Dimension::time = Dimension("time");
+const Dimension Dimension::time("time");
+const Dimension Dimension::frequency("frequency");
 
 int Dimension::getDimensionID(const std::string& name)
 {
@@ -39,6 +40,10 @@ bool Dimension::operator <(const Dimension & other) const
 {
 	return id < other.id;
 }
+
+//--DimensionSet implementation ----------------------
+const DimensionSet DimensionSet::timeDomain(Dimension::time);
+const DimensionSet DimensionSet::timeFreqDomain(Dimension::time, Dimension::frequency);
 
 //--Argument implementation---------------------------
 

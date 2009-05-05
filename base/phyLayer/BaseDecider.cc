@@ -165,21 +165,27 @@ bool BaseDecider::canAnswerCSR(const CSRInfo& requestInfo)
 								    + requestInfo.first->getSenseTimeout());
 }
 
-void BaseDecider::answerCSR(CSRInfo& requestInfo) {
+double BaseDecider::calcChannelSenseRSSI(CSRInfo& requestInfo) {
 	simtime_t start = requestInfo.second;
 	simtime_t end = phy->getSimTime();
 
 	Mapping* rssiMap = calculateRSSIMapping(start, end);
 
 	// the sensed RSSI-value is the maximum value between (and including) the interval-borders
-	double rssiValue = MappingUtils::findMax(*rssiMap, Argument(start), Argument(end));
+	double rssi = MappingUtils::findMax(*rssiMap, Argument(start), Argument(end));
+
+	delete rssiMap;
+
+	return rssi;
+}
+
+void BaseDecider::answerCSR(CSRInfo& requestInfo) {
+
+	double rssiValue = calcChannelSenseRSSI(requestInfo);
 
 	//"findMax()" returns "-DBL_MAX" on empty mappings
 	if (rssiValue < 0)
 		rssiValue = 0;
-
-	delete rssiMap;
-	rssiMap = 0;
 
 	// put the sensing-result to the request and
 	// send it to the Mac-Layer as Control-message (via Interface)

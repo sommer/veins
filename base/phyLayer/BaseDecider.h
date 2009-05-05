@@ -195,6 +195,19 @@ protected:
 	virtual bool canAnswerCSR(const CSRInfo& requestInfo);
 
 	/**
+	 * @brief Calculates the RSSI value for the passed ChannelSenseRequest.
+	 *
+	 * This method is called by BaseDecider when it answers a ChannelSenseRequest
+	 * and can be overridden by sub classing Deciders.
+	 *
+	 * Default implementation gets start of the request from the passed CSRInfo
+	 * and end of the request from the current simulation time (because the request
+	 * is answered now) and returns the maximum RSSI value inside that
+	 * maximum.
+	 */
+	virtual double calcChannelSenseRSSI(CSRInfo& requestInfo);
+
+	/**
 	 * @brief Answers the ChannelSenseRequest (CSR) from the passed CSRInfo.
 	 *
 	 * Calculates the rssi value and the channel idle state and sends the CSR
