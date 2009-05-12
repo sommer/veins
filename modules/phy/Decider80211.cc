@@ -82,12 +82,6 @@ DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
 	max.setTime(end);
 	max.setArgValue(Dimension::frequency, centerFrequency + 11e6);
 
-	for(Signal::ConstMappingList::const_iterator it = s.getAttenuation().begin(); it != s.getAttenuation().end(); ++it) {
-		ev << "Att:" << endl;
-		(*it)->print(ev);
-	}
-
-	snrMap->print(ev);
 	double snirMin = MappingUtils::findMin(*snrMap, min, max);
 
 	EV << " snrMin: " << snirMin << endl;

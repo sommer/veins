@@ -7,6 +7,7 @@
 #include <string>
 #include <algorithm>
 #include <assert.h>
+#include <FWMath.h>
 
 #include "Interpolation.h"
 
@@ -561,10 +562,6 @@ protected:
 	DimensionSet dimensions;
 
 protected:
-	double toDecibel(double v){
-		return 10.0 * log10(v);
-	}
-
 	template<class T>
 	std::string toString(T v, unsigned int length){
 		char* tmp = new char[255];
@@ -647,6 +644,12 @@ public:
 		return dimensions;
 	}
 
+	/**
+	 * @brief Prints the Mapping to an output stream.
+	 *
+	 * This implementation is still pretty ugly, but it does
+	 * the job.
+	 */
 	template<class stream>
 	void print(stream& out) {
 		ConstMapping& m = *this;
@@ -720,7 +723,7 @@ public:
 		if(dims.size() == 1) {
 			out << "value" << " | ";
 			while(it->inRange()) {
-				out << m.toString(m.toDecibel(it->getValue()), 6) << " ";
+				out << m.toString(FWMath::mW2dBm(it->getValue()), 6) << " ";
 
 				if(!it->hasNext()) {
 					break;
@@ -744,7 +747,7 @@ public:
 					out << "      ";
 				}
 
-				out << m.toString(m.toDecibel(it->getValue()), 6) << " ";
+				out << m.toString(FWMath::mW2dBm(it->getValue()), 6) << " ";
 
 				if(!it->hasNext()) {
 					break;
