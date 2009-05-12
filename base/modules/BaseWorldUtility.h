@@ -69,7 +69,6 @@ public:
     bool use2D() { return use2DFlag; }
 
     /** @brief Returns an Id for an AirFrame, at the moment simply an incremented long-value */
-    // TODO: return a really unique Id, handle overflow of range if needed
     long getUniqueAirFrameId(){
 
     	// if counter has done one complete cycle and will be set to a value it already had

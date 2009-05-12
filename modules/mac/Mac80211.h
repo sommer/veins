@@ -260,18 +260,6 @@ protected:
     /** @brief Current state of the MAC*/
     State state;
 
-    //TODO: look which states still need to be stored and got via BaseUtility
-//    /** @brief Current state of active channel (radio), set using radio, updated via BB */
-//    RadioState::States radioState;
-//    /** @brief category number given by bb for RadioState */
-//    int catRadioState;
-//
-//    /** @brief last medium state */
-//    MediumIndication::States medium;
-//
-//    /** @brief category number given by bb for RSSI */
-//    int catMedium;
-
     /** @brief Default bitrate
      *
      * The default bitrate must be set in the omnetpp.ini. It is used
@@ -290,10 +278,6 @@ protected:
     bool autoBitrate;
     /** @brief Hold RSSI thresholds at which to change the bitrates */
     std::vector<double> snrThresholds;
-
-    /** @brief cached pointer to radio module */
-    //TODO: check if we need the radio
-    //SingleChannelRadio* radio;
 
     /** @brief Maximal number of packets in the queue; should be set in
        the omnetpp.ini*/

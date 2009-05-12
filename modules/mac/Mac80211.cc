@@ -74,12 +74,7 @@ void Mac80211::initialize(int stage)
     else if(stage == 1) {
     	//TODO: save channel to radio or as member variable!
     	int channel = hasPar("defaultChannel") ? par("defaultChannel") : 0;
-    	//TODO: look how the radio is needed here
-    	/*
-        // get handle to radio
-        radio = SingleChannelRadioAccess().get();
-        radio->setActiveChannel(channel);
-        */
+
 
         bool found = false;
         bitrate = hasPar("bitrate") ? par("bitrate").doubleValue() : BITRATES_80211[0];
@@ -90,8 +85,6 @@ void Mac80211::initialize(int stage)
             }
         }
         if(!found) bitrate = BITRATES_80211[0];
-        //TODO: check how radio is needed
-        //radio->setBitrate(bitrate);
         defaultBitrate = bitrate;
 
         snrThresholds.push_back(hasPar("snr2Mbit") ? par("snr2Mbit").doubleValue() : 100);
@@ -281,8 +274,6 @@ void Mac80211::handleLowerControl(cMessage *msg)
     case MacToPhyInterface::TX_OVER:
         EV << "PHY indicated transmission over" << endl;
         phy->setRadioState(Radio::RX);
-        //TODO: figure out how to handle bitrate setting
-        //radio->setBitrate(defaultBitrate);
         handleEndTransmission();
         delete msg;
         break;
@@ -773,9 +764,6 @@ void Mac80211::sendDATAframe(Mac80211Pkt *af)
     frame->setKind(DATA);
     frame->setDuration(SIFS + packetDuration(LENGTH_ACK, br));
 
-    //TODO: check if radio is needed
-	//radio->setBitrate(br);
-
     // schedule time out
     scheduleAt(simTime() + timeOut(DATA, br), timeout);
     EV << "sending DATA  to " << frame->getDestAddr() << " with bitrate " << br << endl;
@@ -814,9 +802,6 @@ void Mac80211::sendACKframe(Mac80211Pkt * af)
     frame->setSrcAddr(myMacAddr);
     frame->setDestAddr(af->getSrcAddr());
     frame->setDuration(0);
-
-    //TODO: check radio
-    //radio->setBitrate(br);
 
     sendDown(frame);
     EV << "sent ACK frame!\n";
@@ -857,9 +842,6 @@ void Mac80211::sendRTSframe()
 
     EV << " Mac80211::sendRTSframe duration: " <<  packetDuration(LENGTH_RTS, br) << " br: " << br << "\n";
 
-    //TODO: check radio
-    //radio->setBitrate(br);
-
     // schedule time-out
     scheduleAt(simTime() + timeOut(RTS, br), timeout);
 
@@ -899,9 +881,6 @@ void Mac80211::sendCTSframe(Mac80211Pkt * af)
 
     frame->setDuration(af->getDuration() - SIFS - packetDuration(LENGTH_CTS, br));
 
-    //TODO: check radio
-    //radio->setBitrate(br);
-
     scheduleAt(simTime() + af->getDuration() - packetDuration(LENGTH_ACK, br) - 2 * SIFS + delta, timeout);
     EV << " Mac80211::sendCTSframe duration: " <<  packetDuration(LENGTH_CTS, br) << " br: " << br << "\n";
     // send CTS frame
@@ -916,7 +895,6 @@ void Mac80211::sendCTSframe(Mac80211Pkt * af)
  */
 void Mac80211::sendBROADCASTframe()
 {
-	//TODO: figure out what happens here and how/what to port
     // send a copy of the frame in front of the queue
     Mac80211Pkt *frame = static_cast<Mac80211Pkt *>(fromUpperLayer.front()->dup());
 
@@ -929,9 +907,6 @@ void Mac80211::sendBROADCASTframe()
 
     frame->setControlInfo(pco);
     frame->setKind(BROADCAST);
-
-    //TODO: check radio
-    //radio->setBitrate(br);
 
     sendDown(frame);
     // update state and display
@@ -1081,40 +1056,6 @@ void Mac80211::receiveBBItem(int category, const BBItem *details, int scopeModul
         default:
             error("Mac80211::receiveBBItem unknown radio state");
             break;
-        }
-    }
-    else if(category == catMedium) {
-        medium = static_cast<const MediumIndication *>(details)->getState();
-        // beginning of a reception
-        if(medium == MediumIndication::BUSY)
-        {
-        	//TOPORT: move this ev to 80211 decider
-            EV << "medium busy" << endl;
-
-            // other calls to suspendContention() are superfluous ???
-            if(contention->isScheduled())
-                suspendContention();
-
-            // if there's a SIFS period
-            if (endSifs->isScheduled())
-            {
-                // delete the previously received frame
-                delete static_cast<Mac80211Pkt *>(endSifs->contextPointer());
-
-                // cancel the next transmission
-                cancelEvent(endSifs);
-
-                // state in now IDLE or CONTEND
-                if (fromUpperLayer.empty())
-                    setState(IDLE);
-                else
-                    setState(CONTEND);
-            }
-        }
-        else {
-            EV << "medium idle" << endl;
-            // contention should be resumed if needed by
-            // beginNewCycle() once the frame is handled
         }
     }
 }

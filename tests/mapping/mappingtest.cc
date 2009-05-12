@@ -2180,7 +2180,6 @@ protected:
 	 * --- last entry
 	 * --- somewhere in the middle
 	 *
-	 * TODO: test for local min max with multi dim mappings
 	 */
 	void testFindMinMax() {
 		DimensionSet timeFreqSpace(time, freq, space);

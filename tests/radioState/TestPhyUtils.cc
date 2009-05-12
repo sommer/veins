@@ -274,7 +274,7 @@ private:
 
 	}
 
-	// TODO: test constructor with all possible arguments (attenuation, initTime)
+	//test constructor with all possible arguments (attenuation, initTime)
 	void testRSAMConstructor()
 	{
 		std::cout << "---testRSAMConstructor" << std::endl;
@@ -481,7 +481,6 @@ private:
 
 		std::cout << "---testGetValue" << std::endl;
 
-		// TODO modified to RSAMMapping constructor call with signalStart and signalEnd, check
 		// create empty RSAM and mapping
 		RadioStateAnalogueModel rsam = RadioStateAnalogueModel(minAtt, true, initTime);
 		RSAMMapping mapping = RSAMMapping( &rsam, initTime, time4 );
@@ -548,7 +547,6 @@ private:
 
 
 
-		// TODO modified to RSAMMapping constructor call with signalStart and signalEnd, check
 		// create empty RSAM and mapping
 		RadioStateAnalogueModel rsam = RadioStateAnalogueModel(minAtt, true, initTime);
 		RSAMMapping mapping = RSAMMapping( &rsam, initTime, time4 );
@@ -589,7 +587,6 @@ private:
 
 
 		//--- Begin iterator movement tests
-		// TODO modified to RSAMMapping constructor call with signalStart and signalEnd, check
 		rsam = RadioStateAnalogueModel(minAtt, true, initTime);
 		mapping = RSAMMapping( &rsam, initTime, time4 );
 
@@ -762,11 +759,11 @@ protected:
 		testRSAMConstructor();
 		testRSAMModification();
 
-		//TODO : RSAMMapping
+		//RSAMMapping
 		std::cout << "------ Testing stuff for RSAMMapping ------" << std::endl;
 		testGetValue();
 
-		//TODO : RSAMConstMappingIterator
+		//RSAMConstMappingIterator
 		std::cout << "------ Testing stuff for RSAMConstMappingIterator ------" << std::endl;
 		testRSAMConstMappingIterator();
 	}

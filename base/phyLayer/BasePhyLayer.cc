@@ -343,7 +343,6 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	coreEV << "Received new AirFrame with ID " << frame->getId() << " from channel" << endl;
 	channelInfo.addAirFrame(frame, simTime());
 
-	//TODO: consider updating signal start when propagation delay is used
 	if(usePropagationDelay) {
 		Signal& s = frame->getSignal();
 		simtime_t delay = simTime() - s.getSignalStart();
@@ -663,7 +662,10 @@ simtime_t BasePhyLayer::setRadioState(int rs) {
 	Enter_Method_Silent();
 	assert(radio);
 
-	//TODO: check if we are currently transmitting, if so throw a warning or error
+	if(txOverTimer->isScheduled()) {
+		opp_warning("Switched radio while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
+	}
+
 	simtime_t switchTime = radio->switchTo(rs, simTime());
 
 	//invalid switch time, we are probably already switching

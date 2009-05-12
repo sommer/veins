@@ -42,12 +42,6 @@ void CSMAMacLayer::initialize(int stage)
     }
     else if(stage == 1) {
     	assert(phy->getRadioState() == Radio::RX);
-    	//TODO: see what the old radio in mfw does with the bitrate
-        //int channel;
-
-        //channel = hasPar("defaultChannel") ? par("defaultChannel").longValue() : 0;
-        //radio->setActiveChannel(channel);
-        //radio->setBitrate(bitrate);
 
         EV << "queueLength = " << queueLength
            //<< " busyRSSI = " << busyRSSI

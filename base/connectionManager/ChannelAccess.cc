@@ -166,9 +166,6 @@ simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic) {
 	//receiver host move
 	const Move& recvPos = nic->chAccess->move;
 
-	//very naiv and very wrong calculation, but for now sufficient
-	//double distance = senderPos.startPos.distance(move.startPos);
-
 	// this is the time point when the transmission starts
 	simtime_t actualTime = simTime();
 

@@ -99,7 +99,6 @@ DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
 
 	DeciderResult80211* result = 0;
 
-	//TOPORT: check why mobility-fws Decider checks for rxDuration
 	if (snirMin > snrThreshold) {
 		if(packetOk(snirMin, frame->getBitLength() - (int)PHY_HEADER_LENGTH, payloadBitrate)) {
 			result = new DeciderResult80211(true, payloadBitrate, snirMin);

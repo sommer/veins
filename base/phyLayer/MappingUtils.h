@@ -1729,49 +1729,6 @@ public:
 	}
 };
 
-
-//TODO: implement mapping operation which have a defined boundary.
-/**
- * @brief TODO: auto generated doc
- */
-/*
-class BoundedConstMappingIterator : public FilteredConstMappingIterator{
-//--------members----------
-protected:
-	simtime_t boundBegin;
-	simtime_t boundEnd;
-
-//--------methods----------
-protected:
-	void checkAndUpdatePosition(){
-		Argument pos = origIterator->getPosition();
-
-		if(pos.getTime() < boundBegin){
-			pos.setTime(boundBegin);
-			origIterator->jumpTo(pos);
-		} else if(pos.getTime() > boundEnd) {
-
-		}
-	}
-
-public:
-	BoundedConstMappingIterator(ConstMapping* mapping,
-								const simtime_t& boundStart,
-								const simtime_t& boundEnd):
-		FilteredConstMappingIterator(mapping->createConstIterator()),
-		boundBegin(boundStart),
-		boundEnd(boundEnd)
-	{
-		assert(boundStart <= boundEnd);
-
-
-	}
-
-
-
-};
-*/
-
 /**
  * @brief Provides several utility methods for Mappings.
  *
@@ -1924,10 +1881,6 @@ public:
 	 * which position in each dimension is bigger or equal than the value of the min
 	 * parameter in that dimension and smaller or equal than max parameter in
 	 * that dimension.
-	 *
-	 * NOTE: This method currently does only work for one dimensional (time) mappings!
-	 *
-	 * TODO: implement for multidimensional mappings
 	 */
 	static double findMax(ConstMapping& m, const Argument& min, const Argument& max);
 
@@ -1946,10 +1899,6 @@ public:
 	 * which position in each dimension is bigger or equal than the value of the min
 	 * parameter in that dimension and smaller or equal than max parameter in
 	 * that dimension.
-	 *
-	 * NOTE: This method currently does only work for one dimensional (time) mappings!
-	 *
-	 * TODO: implement for multidimensional mappings
 	 */
 	static double findMin(ConstMapping& m, const Argument& min, const Argument& max);
 
