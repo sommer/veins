@@ -7,10 +7,23 @@
   <datasets>
     <datasets name="mai_per">
       <items xsi:type="scave:Add" filterPattern="module(*stats) AND name(maiPER)" type="VECTOR"/>
-      <items xsi:type="scave:LineChart" name="PER(MAI)" lineNameFormat=""/>
+    </datasets>
+    <datasets name="avg_ber">
+      <items xsi:type="scave:Add" filterPattern="module(sim.node[0].nic.mac) AND name(&quot;Average BER&quot;)"/>
+    </datasets>
+    <datasets name="rxRS">
+      <items xsi:type="scave:Add" filterPattern="module(sim.node[0].nic.mac) AND name(nbReceivedPacketsRS)"/>
+    </datasets>
+    <datasets name="rxnoRS">
+      <items xsi:type="scave:Add" filterPattern="module(sim.node[0].nic.mac) AND name(nbReceivedPacketsnoRS)"/>
+    </datasets>
+    <datasets name="nbSyncs">
+      <items xsi:type="scave:Add" filterPattern="module(sim.node[0].nic*) AND name(nbSuccessfulSyncs)"/>
+      <items xsi:type="scave:Add" filterPattern="module(sim.node[0].nic.mac) AND name(nbReceivedPacketsnoRS)"/>
+      <items xsi:type="scave:Add" filterPattern="module(sim.node[0].nic.mac) AND name(nbReceivedPacketsRS)"/>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1"/>
+    <chartSheets name="default"/>
   </chartSheets>
 </scave:Analysis>
