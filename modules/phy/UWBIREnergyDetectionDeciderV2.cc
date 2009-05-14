@@ -3,7 +3,7 @@
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
- * copyright:   (C) 2008 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
+ * copyright:   (C) 2008-2009 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
  * 				Systems Engineering
  *              Real-Time Software and Networking
  *              Jaquet-Droz 1, CH-2002 Neuchatel, Switzerland.
@@ -15,7 +15,7 @@
  *              version.
  *              For further information see file COPYING
  *              in the top level directory
- * description: this Decider models a non-coherent energy-detection receiver
+ * description: this Decider models a non-coherent energy-detection receiver.
  ***************************************************************************/
 
 #include "UWBIREnergyDetectionDeciderV2.h"

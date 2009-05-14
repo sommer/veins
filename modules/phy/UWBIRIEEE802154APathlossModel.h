@@ -3,7 +3,7 @@
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
- * copyright:   (C) 2008 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
+ * copyright:   (C) 2008-2009 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
  * 				Systems Engineering
  *              Real-Time Software and Networking
  *              Jaquet-Droz 1, CH-2002 Neuchatel, Switzerland.
@@ -48,8 +48,8 @@ public:
 	/*
 	 * @brief Default constructor.
 	 */
-    UWBIRIEEE802154APathlossModel(int _channelModel, double _threshold):
-    	channelModel(_channelModel), tapThreshold(_threshold), move() {
+    UWBIRIEEE802154APathlossModel(int _channelModel, double _threshold, bool shadowing=true):
+    	channelModel(_channelModel), tapThreshold(_threshold), move(), doSmallScaleShadowing(false), doShadowing(shadowing) {
     	// Check that this model is supported
     	assert(implemented_CMs[channelModel]);
     	// load the model parameters
@@ -114,6 +114,9 @@ protected:
     // configure cluster threshold
     double tapThreshold; // Only generates taps with at most 10 dB attenuation
 
+    double doShadowing; //activates block shadowing
+    double doSmallScaleShadowing; // activates small-scale shadowing
+
     // channel statistical characterization parameters
     // (should be xml-ized)
     // First environment: Residential LOS
@@ -138,6 +141,8 @@ protected:
     Argument arg;
     // number of clusters
     double L;
+    // block shadowing
+    double S;
     // start time of cluster number "cluster"
     simtime_t clusterStart;
     simtime_t gamma_l;

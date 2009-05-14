@@ -3,7 +3,7 @@
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
- * copyright:   (C) 2008 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
+ * copyright:   (C) 2008-2009 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
  * 				Systems Engineering
  *              Real-Time Software and Networking
  *              Jaquet-Droz 1, CH-2002 Neuchatel, Switzerland.
@@ -160,8 +160,10 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
     txPower = s.getTransmissionPower();
     newTxPower = new TimeMapping<Linear>(); //dynamic_cast<TimeMapping<Linear>*> (txPower->clone()); // create working copy
 
-    // number of clusters for this channel (channel coherence time > packet air time)
+    // generate number of clusters for this channel (channel coherence time > packet air time)
     L = max(1, poisson(cfg.Lmean));
+    // Choose block shadowing
+    S = 10^(normal(0, cfg.sigma_s)/10);
 
     // Loop on each value of the original mapping and generate multipath echoes
     ConstMappingIterator* iter = txPower->createConstIterator();
@@ -215,7 +217,9 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
     bool moreTaps = true;
     arg.setTime(pulseStart + IEEE802154A::mandatory_pulse/2);
     double pulseEnergy = txPower->getValue(arg);
-
+    if(doShadowing) {
+    	pulseEnergy = pulseEnergy - S;
+    }
     simtime_t tau_kl = 0;
     simtime_t fromClusterStart = 0;
     // start time of cluster number "cluster"
@@ -225,7 +229,9 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
     Omega_l = pow(10, Mcluster / 10);
     // tapEnergy values are normalized
     double tapEnergy = sqrt( Omega_l / ( cfg.gamma_0 * ( (1-cfg.Beta)*cfg.lambda_1 + cfg.Beta*cfg.lambda_2 + 1 ) ) );
-
+    // nakagami fading parameters
+    double mfactor = 0;
+    double mmean = 0, msigma = 0;
     bool firstTap = true;
 
     for (int cluster = 0; cluster < L; cluster++) {
@@ -250,8 +256,22 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             	phase = 1;
             	firstTap = false;
             }*/
+            if(firstTap) {
+            	mfactor = cfg.m_0;
+            } else {
+            	mmean = cfg.m_0 - cfg.k_m*tau_kl;
+            	msigma = cfg.var_m_0 - cfg.var_k_m*tau_kl;
+            	mfactor = normal(mmean, msigma);
+            }
             arg.setTime(pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse / 2);
-            newTxPower->setValue(arg, tapEnergy * pulseEnergy);
+            double finalTapEnergy = tapEnergy * pulseEnergy;
+            if(doSmallScaleShadowing) {
+            	double tmp = sqrt(mfactor*mfactor-mfactor);
+            	double riceK = tmp/(mfactor-tmp);
+            	dw;
+            	finalTapEnergy = finalTapEnergy * 10^(mfactor/10);
+            }
+            newTxPower->setValue(arg, finalTapEnergy);
 
 
             // Update values for next iteration
