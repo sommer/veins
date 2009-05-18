@@ -137,14 +137,21 @@ AnalogueModel* UWBIRPhyLayer::createUWBIRIEEE802154APathlossModel(
 				"Could not find required integer parameter <CM> (Channel Model) in the IEEE 802.15.4A channel xml description file.");
 	}
 	CM = int(it->second.longValue());
+
 	double threshold;
 	it = params.find("Threshold");
 	if (it == params.end()) {
-		error(
-				"Could not find required double parameter <Threshold> in the IEEE 802.15.4A channel xml description file.");
+		error("Could not find required double parameter <Threshold> in the IEEE 802.15.4A channel xml description file.");
 	}
 	threshold = it->second.doubleValue();
-	ieee802154AChannel = new UWBIRIEEE802154APathlossModel(CM, threshold);
+
+	bool shadowing = false;
+	it = params.find("shadowing");
+	if (it != params.end()) {
+		shadowing = it->second.boolValue();
+	}
+
+	ieee802154AChannel = new UWBIRIEEE802154APathlossModel(CM, threshold, shadowing);
 	return ieee802154AChannel;
 }
 

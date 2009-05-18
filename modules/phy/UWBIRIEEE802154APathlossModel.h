@@ -49,7 +49,7 @@ public:
 	 * @brief Default constructor.
 	 */
     UWBIRIEEE802154APathlossModel(int _channelModel, double _threshold, bool shadowing=true):
-    	channelModel(_channelModel), tapThreshold(_threshold), move(), doSmallScaleShadowing(false), doShadowing(shadowing) {
+    	channelModel(_channelModel), tapThreshold(_threshold), doShadowing(shadowing), doSmallScaleShadowing(false), move()  {
     	// Check that this model is supported
     	assert(implemented_CMs[channelModel]);
     	// load the model parameters
