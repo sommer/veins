@@ -44,7 +44,7 @@ public:
     static const double s_mu = 1.6, s_sigma = 0.5;
     static const double kappa = 1;
 
-    bool isEnabled;
+    bool isEnabled, shadowing;
 
     cOutVector distances;
     cOutVector srcPosX, srcPosY, dstPosX, dstPosY;
@@ -52,9 +52,9 @@ public:
     int myIndex;
     std::string myName;
 
-    UWBIRStochasticPathlossModel(double _PL0, double _mu_gamma, double _sigma_gamma, double _mu_sigma, double _sigma_sigma, const Move* _move, bool _enabled) :
+    UWBIRStochasticPathlossModel(double _PL0, double _mu_gamma, double _sigma_gamma, double _mu_sigma, double _sigma_sigma, const Move* _move, bool _enabled, bool _shadowing=true) :
     PL0(_PL0), mu_gamma(_mu_gamma), sigma_gamma(_sigma_gamma), mu_sigma(_mu_sigma), sigma_sigma(_sigma_sigma), frequency("frequency"),
-    move(_move), isEnabled(_enabled) {
+    shadowing(_shadowing), move(_move), isEnabled(_enabled) {
     	distances.setName("distances");
     	srcPosX.setName("srcPosX");
     	srcPosY.setName("srcPosY");

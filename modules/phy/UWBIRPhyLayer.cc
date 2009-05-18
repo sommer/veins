@@ -121,8 +121,14 @@ AnalogueModel* UWBIRPhyLayer::createUWBIRStochasticPathlossModel(
 	}
 	bool isEnabled = it->second.boolValue();
 
+	bool shadowing = true;
+	it = params.find("shadowing");
+	if (it != params.end()) {
+		shadowing = it->second.boolValue();
+	}
+
 	uwbpathloss = new UWBIRStochasticPathlossModel(PL0, mu_gamma, sigma_gamma,
-			mu_sigma, sigma_sigma, &move, isEnabled);
+			mu_sigma, sigma_sigma, &move, isEnabled, shadowing);
 
 	return uwbpathloss;
 

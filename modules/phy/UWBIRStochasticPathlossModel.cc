@@ -81,8 +81,10 @@ double UWBIRStochasticPathlossModel::getGhassemzadehPathloss(double distance) {
     if(distance < d0) {
       distance = d0;
     }
-    attenuation -= 10*gamma*log10(distance/d0);
-    attenuation -= S;
+    attenuation = attenuation - 10*gamma*log10(distance/d0);
+    if (shadowing) {
+      attenuation = attenuation - S;
+    }
     attenuation = pow(10, attenuation/10); // from dB to mW
     return attenuation;
 }
