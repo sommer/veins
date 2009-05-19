@@ -163,7 +163,7 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
     // generate number of clusters for this channel (channel coherence time > packet air time)
     L = max(1, poisson(cfg.Lmean));
     // Choose block shadowing
-    S = 10^(normal(0, cfg.sigma_s)/10);
+    S = pow(10,(normal(0, cfg.sigma_s)/10));
 
     // Loop on each value of the original mapping and generate multipath echoes
     ConstMappingIterator* iter = txPower->createConstIterator();
@@ -259,18 +259,20 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             if(firstTap) {
             	mfactor = cfg.m_0;
             } else {
-            	mmean = cfg.m_0 - cfg.k_m*tau_kl;
-            	msigma = cfg.var_m_0 - cfg.var_k_m*tau_kl;
+            	mmean = cfg.m_0 - cfg.k_m*tau_kl.dbl();
+            	msigma = cfg.var_m_0 - cfg.var_k_m*tau_kl.dbl();
             	mfactor = normal(mmean, msigma);
             }
             arg.setTime(pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse / 2);
             double finalTapEnergy = tapEnergy * pulseEnergy;
+            /*
             if(doSmallScaleShadowing) {
             	double tmp = sqrt(mfactor*mfactor-mfactor);
             	double riceK = tmp/(mfactor-tmp);
-            	dw;
+            	//dw;
             	finalTapEnergy = finalTapEnergy * 10^(mfactor/10);
             }
+            */
             newTxPower->setValue(arg, finalTapEnergy);
 
 
