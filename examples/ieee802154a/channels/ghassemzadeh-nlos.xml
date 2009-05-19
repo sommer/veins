@@ -8,7 +8,7 @@
 		<parameter name="mu_sigma" type="double" value="2.7"/>
                 <parameter name="sigma_sigma" type="double" value="0.98"/>
 		<parameter name="isEnabled" type="bool" value="true"/>
-
+		<parameter name="shadowing" type="bool" value="true"/>
 	    </AnalogueModel>
 	</AnalogueModels>
 </root>
