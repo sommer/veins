@@ -77,13 +77,14 @@ void UWBIRMac::finish() {
 
 void UWBIRMac::prepareData(UWBIRMacPkt* packet) {
 	// generate signal
-	int nbSymbols = packet->getByteLength() * 8 + 92; // to move to ieee802154a.h
-	EV << "prepare Data for a packet with " << packet->getByteLength() << " data bytes. Requesting " << nbSymbols << " symbols." << endl;
+	//int nbSymbols = packet->getByteLength() * 8 + 92; // to move to ieee802154a.h
+	EV << "prepare Data for a packet with " << packet->getByteLength() << " data bytes." << endl;
 	IEEE802154A::setPSDULength(packet->getByteLength());
 	IEEE802154A::signalAndData res = IEEE802154A::generateIEEE802154AUWBSignal(
 			simTime());
 	Signal* theSignal = res.first;
 	vector<bool>* data = res.second;
+	int nbSymbols = data->size();
 	if (trace) {
 		int nbItems = 0;
 		Mapping* power = theSignal->getTransmissionPower();
