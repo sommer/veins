@@ -8,13 +8,17 @@
 == Package MiXiM and upload ==
  * clean checkout (to get rid of binaries, "_m.h/cc" and makefiles)
  * make neddoc (see below)
+ * create archive including the generated doc and excluding "doc/release-steps"
+ * add new release to mixims source forge site 
+   ("http://apps.sourceforge.net/trac/sourceforge/wiki/Release%20files%20for%20download")
  
    
 == DoxyGen and NedDoc ==
  * make clean (to get rid of "_m.h/cc"-files)
  * use the omnet IDE to create the ned doc for MiXiM
  * upload new doc to sourceforge
-   * read "http://apps.sourceforge.net/trac/sourceforge/wiki/Shell%20service" on how to get a shell for mixim on sorceforge
+   * read "http://apps.sourceforge.net/trac/sourceforge/wiki/Shell%20service" 
+     on how to get a shell for mixim on sourceforge
    * copy compiled neddoc to "/home/groups/m/mi/mixim/htdocs/doc/"
    
 
