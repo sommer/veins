@@ -30,6 +30,7 @@ simple UWBIRPhyLayer
         double timeSleepToTX;
 
 
+        @display("i=device/antennatower");
     gates:
         input upperGateIn; 	// from the MAC layer
         output upperGateOut; 	// to the MAC layer
