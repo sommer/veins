@@ -1,6 +1,6 @@
 package org.mixim.examples.analogueModels;
 
-simple TestPhyLayer
+simple SamplePhyLayer
 {
     parameters:
         bool usePropagationDelay; 		//Should transmission delay be simulated?

@@ -1,6 +1,6 @@
 package org.mixim.tests.connectionManager;
 
-moduleinterface TestPhyLayer
+moduleinterface CMPhyLayer
 {
     parameters:
         bool usePropagationDelay;
@@ -9,7 +9,7 @@ moduleinterface TestPhyLayer
 }
 
 
-simple ConnectedBCNodePhyLayer like TestPhyLayer
+simple ConnectedBCNodePhyLayer like CMPhyLayer
 {
     parameters:
         bool usePropagationDelay = false;
@@ -17,7 +17,7 @@ simple ConnectedBCNodePhyLayer like TestPhyLayer
         input radioIn; // for sendDirect
 }
 
-simple NotConnectedBCNodePhyLayer like TestPhyLayer
+simple NotConnectedBCNodePhyLayer like CMPhyLayer
 {
     parameters:
         bool usePropagationDelay = false;
@@ -25,7 +25,7 @@ simple NotConnectedBCNodePhyLayer like TestPhyLayer
         input radioIn; // for sendDirect
 }
 
-simple ConnectedRNodePhyLayer like TestPhyLayer
+simple ConnectedRNodePhyLayer like CMPhyLayer
 {
     parameters:
         bool usePropagationDelay = false;
@@ -33,7 +33,7 @@ simple ConnectedRNodePhyLayer like TestPhyLayer
         input radioIn; // for sendDirect
 }
 
-simple NotConnectedRNodePhyLayer like TestPhyLayer
+simple NotConnectedRNodePhyLayer like CMPhyLayer
 {
     parameters:
         bool usePropagationDelay = false;

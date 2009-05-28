@@ -28,7 +28,7 @@
 /**
  * @brief
  */
-class TestPhyLayer : public ChannelAccess
+class CMPhyLayer : public ChannelAccess
 {
 
 protected:
@@ -57,7 +57,7 @@ protected:
 	void assertFalse(std::string msg, bool value) { assertTrue(msg, !value); }
 
 public:
-    //Module_Class_Members( TestPhyLayer, ChannelAccess, 0 );
+    //Module_Class_Members( CMPhyLayer, ChannelAccess, 0 );
 
     /** @brief Called every time a message arrives*/
     virtual void handleMessage( cMessage* );

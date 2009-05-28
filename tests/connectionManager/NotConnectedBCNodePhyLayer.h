@@ -4,7 +4,7 @@
  * author:      Karl Wessel
  ***************************************************************************
  * part of:     mixim framework
- * description: physical layer which broadcasts packets and expects no 
+ * description: physical layer which broadcasts packets and expects no
 				answer
  ***************************************************************************/
 
@@ -12,17 +12,17 @@
 #ifndef NOT_CONNECTED_BCNODE_PHY_LAYER_H
 #define NOT_CONNECTED_BCNODE_PHY_LAYER_H
 
-#include "TestPhyLayer.h"
+#include "CMPhyLayer.h"
 
-class NotConnectedBCNodePhyLayer : public TestPhyLayer
+class NotConnectedBCNodePhyLayer : public CMPhyLayer
 {
 public:
-    //Module_Class_Members(NotConnectedBCNodePhyLayer, TestPhyLayer, 0);
+    //Module_Class_Members(NotConnectedBCNodePhyLayer, CMPhyLayer, 0);
 
 	bool broadcastAnswered;
 
 	virtual void initialize(int stage) {
-		TestPhyLayer::initialize(stage);
+		CMPhyLayer::initialize(stage);
 		if(stage==0){
 			broadcastAnswered = false;
 			scheduleAt(simTime() + 1.0 + (double)myAddr() * 0.1, new cMessage(0,10));
@@ -30,9 +30,9 @@ public:
 	}
 
 	virtual void finish() {
-		TestPhyLayer::finish();
+		CMPhyLayer::finish();
 
-		assertFalse("Broadcast should not be answered by any node.", 
+		assertFalse("Broadcast should not be answered by any node.",
 					broadcastAnswered);
 	}
 protected:
@@ -42,11 +42,11 @@ protected:
 	}
 
 	virtual void handleSelfMsg() {
-		// we should send a broadcast packet ... 
+		// we should send a broadcast packet ...
 		ev << "Not Connected BC-Node " << myAddr() << ": Sending broadcast packet!" << endl;
 		sendDown(-1);
 	}
 };
 
 #endif
- 
+

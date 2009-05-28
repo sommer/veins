@@ -9,7 +9,7 @@ module TestNic
     gates:
         input radioIn; // radioIn gate for sendDirect
     submodules:
-        phy: <phyLayerType> like TestPhyLayer {
+        phy: <phyLayerType> like CMPhyLayer {
             parameters:
                 @display("p=60,150;i=prot3");
         }

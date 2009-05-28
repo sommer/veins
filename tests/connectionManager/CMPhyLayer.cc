@@ -18,13 +18,13 @@
  ***************************************************************************/
 
 
-#include "TestPhyLayer.h"
+#include "CMPhyLayer.h"
 
 
-Define_Module(TestPhyLayer);
+Define_Module(CMPhyLayer);
 
 
-void TestPhyLayer::handleMessage(cMessage *msg)
+void CMPhyLayer::handleMessage(cMessage *msg)
 {
 	if(msg->isSelfMessage()) {
 		handleSelfMsg();
@@ -33,6 +33,6 @@ void TestPhyLayer::handleMessage(cMessage *msg)
 		if(m->getDestAddr() == myAddr() || m->getDestAddr() == -1){
 			handleLowerMsg(m->getSrcAddr());
 		}
-	}    
+	}
 	delete msg;
 }

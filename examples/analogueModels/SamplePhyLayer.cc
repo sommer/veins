@@ -1,13 +1,13 @@
-#include "TestPhyLayer.h"
+#include "SamplePhyLayer.h"
 
 #include "ThresholdDecider.h"
 #include "RandomFreqTimeModel.h"
 #include "RandomFrequencyOnlyModel.h"
 
-Define_Module(TestPhyLayer);
+Define_Module(SamplePhyLayer);
 
 
-void TestPhyLayer::initialize(int stage) {
+void SamplePhyLayer::initialize(int stage) {
 	//call BasePhy's initialize
 	PhyLayer::initialize(stage);
 
@@ -19,7 +19,7 @@ void TestPhyLayer::initialize(int stage) {
 	}
 }
 
-void TestPhyLayer::handleMessage(cMessage* msg) {
+void SamplePhyLayer::handleMessage(cMessage* msg) {
 	if(msg->getKind() == AIR_FRAME) {
 		AirFrame* frame = static_cast<AirFrame*>(msg);
 
@@ -52,7 +52,7 @@ void TestPhyLayer::handleMessage(cMessage* msg) {
 	PhyLayer::handleMessage(msg);
 }
 
-void TestPhyLayer::log(std::string msg) {
+void SamplePhyLayer::log(std::string msg) {
 	ev << "[Host " << myIndex << "] - PhyLayer: " << msg << endl;
 }
 
@@ -60,7 +60,7 @@ void TestPhyLayer::log(std::string msg) {
  * @brief Creates and initializes a RandomFreqTimeModel with the passed
  * parameter values.
  */
-AnalogueModel* TestPhyLayer::createRandomFreqTimeModel(ParameterMap& params){
+AnalogueModel* SamplePhyLayer::createRandomFreqTimeModel(ParameterMap& params){
 
 	//get the "seed"-parameter from the config
 	ParameterMap::iterator it = params.find("seed");
@@ -79,7 +79,7 @@ AnalogueModel* TestPhyLayer::createRandomFreqTimeModel(ParameterMap& params){
  * @brief Creates and initializes a RandomFreqOnlyModel with the passed
  * parameter values.
  */
-AnalogueModel* TestPhyLayer::createRandomFrequencyOnlyModel(ParameterMap& params){
+AnalogueModel* SamplePhyLayer::createRandomFrequencyOnlyModel(ParameterMap& params){
 
 	//get the "seed"-parameter from the config
 	ParameterMap::iterator it = params.find("seed");
@@ -94,7 +94,7 @@ AnalogueModel* TestPhyLayer::createRandomFrequencyOnlyModel(ParameterMap& params
 
 }
 
-AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
+AnalogueModel* SamplePhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
 
 	if(name == "RandomFreqTimeModel")
 		return createRandomFreqTimeModel(params);
@@ -110,7 +110,7 @@ AnalogueModel* TestPhyLayer::getAnalogueModelFromName(std::string name, Paramete
 	return PhyLayer::getAnalogueModelFromName(name, params);
 }
 
-Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
+Decider* SamplePhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 
 	if(name == "ThresholdDecider"){
 		ParameterMap::iterator it = params.find("threshold");

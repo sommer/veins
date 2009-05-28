@@ -4,7 +4,7 @@
  * author:      Karl Wessel
  ***************************************************************************
  * part of:     mixim framework
- * description: physical layer which expects to receive and answers at 
+ * description: physical layer which expects to receive and answers at
 				least one broadcast
  ***************************************************************************/
 
@@ -12,24 +12,24 @@
 #ifndef CONNECTED_RNODE_PHY_LAYER_H
 #define CONNECTED_RNODE_PHY_LAYER_H
 
-#include "TestPhyLayer.h"
+#include "CMPhyLayer.h"
 
-class ConnectedRNodePhyLayer : public TestPhyLayer
+class ConnectedRNodePhyLayer : public CMPhyLayer
 {
 public:
-    //Module_Class_Members(ConnectedRNodePhyLayer, TestPhyLayer, 0);
+    //Module_Class_Members(ConnectedRNodePhyLayer, CMPhyLayer, 0);
 
 	bool broadcastReceived;
 
 	virtual void initialize(int stage) {
-		TestPhyLayer::initialize(stage);
+		CMPhyLayer::initialize(stage);
 		if(stage==0){
 			broadcastReceived = false;
 		}
 	}
 
 	virtual void finish() {
-		TestPhyLayer::finish();
+		CMPhyLayer::finish();
 
 		assertTrue("Should have received at least one broadcast.", broadcastReceived);
 	}
@@ -38,11 +38,11 @@ protected:
 		broadcastReceived = true;
 
 		ev << "Connected R-Node " << myAddr() << ": got broadcast message from " << srcAddr << endl;
-		
+
 		ev << "Connected R-Node " << myAddr() << ": Sending answer packet!" << endl;
 		sendDown(srcAddr);
 	}
 };
 
 #endif
- 
+

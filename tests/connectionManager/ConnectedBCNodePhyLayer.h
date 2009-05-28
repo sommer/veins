@@ -4,7 +4,7 @@
  * author:      Karl Wessel
  ***************************************************************************
  * part of:     mixim framework
- * description: physical test layer which broadcasts packets and expects at least 
+ * description: physical test layer which broadcasts packets and expects at least
 				one answer
  ***************************************************************************/
 
@@ -12,17 +12,17 @@
 #ifndef CONNECTED_BCNODE_PHY_LAYER_H
 #define CONNECTED_BCNODE_PHY_LAYER_H
 
-#include "TestPhyLayer.h"
+#include "CMPhyLayer.h"
 
-class ConnectedBCNodePhyLayer : public TestPhyLayer
+class ConnectedBCNodePhyLayer : public CMPhyLayer
 {
 public:
-    //Module_Class_Members(ConnectedBCNodePhyLayer, TestPhyLayer, 0);
+    //Module_Class_Members(ConnectedBCNodePhyLayer, CMPhyLayer, 0);
 
 	bool broadcastAnswered;
 
 	virtual void initialize(int stage) {
-		TestPhyLayer::initialize(stage);
+		CMPhyLayer::initialize(stage);
 		if(stage==0){
 			broadcastAnswered = false;
 			scheduleAt(simTime() + 1.0 + myAddr() * 0., new cMessage(0,10));
@@ -30,9 +30,9 @@ public:
 	}
 
 	virtual void finish() {
-		TestPhyLayer::finish();
+		CMPhyLayer::finish();
 
-		assertTrue("Broadcast should be answered by at least one node.", 
+		assertTrue("Broadcast should be answered by at least one node.",
 					broadcastAnswered);
 	}
 protected:
@@ -42,11 +42,11 @@ protected:
 	}
 
 	virtual void handleSelfMsg() {
-		// we should send a broadcast packet ... 
+		// we should send a broadcast packet ...
 		ev << "Connected BC-Node " << myAddr() << ": Sending broadcast packet!" << endl;
 		sendDown(-1);
 	}
 };
 
 #endif
- 
+

@@ -220,7 +220,7 @@ void BaseMobility::updatePosition() {
     //publish the the new move
     utility->publishBBItem(moveCategory, &move, hostId);
 
-    char xStr[32], yStr[32], zStr[32];
+    char xStr[32], yStr[32]; //, zStr[32];
     sprintf(xStr, "%d", FWMath::round(move.startPos.getX()));
     sprintf(yStr, "%d", FWMath::round(move.startPos.getY()));
     //sprintf(zStr, "%d", FWMath::round(move.startPos.getZ()));

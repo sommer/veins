@@ -10,7 +10,7 @@ module PhyMacNic
         input radioIn; // radioIn gate for sendDirect
 
     submodules:
-        phy: TestPhyLayer {
+        phy: SamplePhyLayer {
             parameters:
                 @display("p=60,120;b=80,30,rect,white,,");
             //display: "p=60,150;i=prot3";

@@ -13,7 +13,7 @@
  * done by the PhyLayer or should be implemented by writing your own
  * Decider or AnalogueModels.
  */
-class TestPhyLayer:public PhyLayer{
+class SamplePhyLayer:public PhyLayer{
 protected:
 	int myIndex;
 
