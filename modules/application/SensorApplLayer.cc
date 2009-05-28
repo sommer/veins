@@ -1,7 +1,7 @@
 /***************************************************************************
  * file:        SensorApplLayer.h
  *
- * author:      Amre El-Hoiydi, J�r�me Rousselot
+ * author:      Amre El-Hoiydi, Jerome Rousselot
  *
  * copyright:   (C) 2007-2008 CSEM
  *
@@ -228,7 +228,7 @@ void SensorApplLayer::sendData() {
 	pkt->setByteLength(headerLength);
 	// set the control info to tell the network layer the layer 3
 	// address;
-	pkt->setControlInfo(new MacControlInfo(pkt->getDestAddr()));
+	pkt->setControlInfo(new NetwControlInfo(pkt->getDestAddr()));
 	EV<< "Sending data packet!\n";
 	sendDown(pkt);
 	//send(pkt, dataOut);
