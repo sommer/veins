@@ -80,7 +80,9 @@ protected:
     bool validatePacket(UWBIRMacPkt * mac);
 
     void initCounters();
-
+public:
+    int getmacaddress() { return macaddress; }
+    int getnetaddress() { return netaddress; }
 };
 
 #endif // UWBIRMAC_H

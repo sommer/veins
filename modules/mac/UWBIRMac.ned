@@ -5,7 +5,8 @@ simple UWBIRMac
 {
     parameters:
         double headerLength @unit(byte);
-        double MACAddr;
+        int netaddress;
+        int macaddress = default(netaddress);
         bool debug = default(false); // debug switch
         bool stats = default(true);
         bool trace = default(false);
