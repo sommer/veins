@@ -39,7 +39,12 @@ OMNeT++ IDE
 
 2. Build MiXiM (Ctrl+B)
 
-3. Choose an example from the examples folder, run it and have fun :-)
+3. Run an example:
+	a) Choose an example from the examples directory
+	b) right click its executeable and choose "Run as" -> "Run configurations..."
+	c) Double click on "Omnet++ Simualtion" in the left list to create a new
+	   Omnet++ run configuration for this project
+	d) Click "Run"
 
 
 
