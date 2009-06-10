@@ -59,7 +59,6 @@ class NicEntryDebug: public NicEntry
 
   public:
     /** @brief Constructor, initializes all members
-     * @todo initialize position!
      */
     NicEntryDebug(bool debug) : NicEntry(debug), inCnt(0), outCnt(0) {};
 

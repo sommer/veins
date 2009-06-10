@@ -24,32 +24,23 @@
  ***************************************************************************/
 
 /**
-@mainpage MiXiM API Reference
+\mainpage MiXiM API Reference
 
-
-The MiXiM API Reference can be browsed in several ways (see links at top
+The MiXiM API Classes Reference can be browsed in several ways (see links at top
 of this page):
 
-    - <b>Modules</b> -- the most important classes, grouped by functionality
-    - <b>Class Hierarchy</b> -- inheritance tree of all classes
-    - <b>Alphabetical List</b> -- alphabetical list of all classes
-    - <b>Compound List</b> -- list of all classes with brief descriptions
-    - <b>File List</b> -- list of all header files
-    - <b>Compound Members</b> -- all documented class members in alphabetical order
+	- <b>Modules</b> -- The most important classes, grouped by functionality.
+	- <b>Classes</b>
+		- <b>Alphabetical List</b> -- Alphabetical list of all classes.
+		- <b>Class List</b> -- List of all classes with brief descriptions.
+		- <b>Class Hierarchy</b> -- Inheritance tree of all classes.
+		- <b>Class Members</b> -- All documented class members in alphabetical order.
+	- <b>Files</b>
+		- <b>File List</b> -- List of all C++ files.
+	- <b>Directories</b> -- Directory tree
 
-The best place to get started with is <b>Modules</b> --> @ref base --> @ref baseModules.
 
-
-<hr>
-
-Other placers to look at are:
-@htmlonly
-  <ul>
-    <li><a href="../neddoc/index.html" target="_blank">MiXiM Neddoc Reference</a></li>
-    <li><a href="http://sourceforge.net/projects/mixim/" target="_blank">Sourceforge Project Page</a></li>
-    <li><a href="http://apps.sourceforge.net/trac/mixim/" target="_blanc">Sourceforge Project Wiki</a></li>
-  </ul>
-@endhtmlonly
+The best place to get started with is <b>Modules</b> --> @ref base.
 
 */
 

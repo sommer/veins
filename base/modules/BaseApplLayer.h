@@ -55,9 +55,6 @@ public:
 protected:
 	/**
 	 * @brief Length of the ApplPkt header
-	 *
-	 * @todo for now it is read from omnetpp.ini but should be easily
-	 * settable by the user later
 	 **/
 	int headerLength;
 
