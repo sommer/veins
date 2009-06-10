@@ -217,7 +217,7 @@ void SensorApplLayer::sendData() {
 	ApplPkt *pkt = new ApplPkt("Data", DATA_MESSAGE);
 
 	if(broadcastPackets) {
-		pkt->setDestAddr(WiseRoute::NET_BROADCAST);
+		pkt->setDestAddr(NET_BROADCAST);
 	} else if (myAppAddr == SINK_ADDR) {
 		pkt->setDestAddr(ALTERNATIVE_ADDR);
 	} else {
