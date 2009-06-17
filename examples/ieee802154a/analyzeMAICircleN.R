@@ -2,7 +2,7 @@
 
 # Parameters
 channels <- c("ghassemzadeh-los",  "ghassemzadeh-nlos", "cm1", "cm2", "cm5")
-interferers <- 1:4
+interferers <- 1:9
 
 # annotations
 #title="Robustness of IEEE 802.15.4A UWB-IR to Multiple Access Interference"
@@ -75,8 +75,8 @@ loadScaData <-function() {
 }
 
 loadAkaData <- function() {
-  p1 <- read.table("./akresults/maiunif-1.csv", header=TRUE)
-  p2 <- read.table("./akresults/maiunif-2.csv", header=TRUE)
+  p1 <- read.table("./mai-1.csv", header=TRUE)
+  p2 <- read.table("./mai-2.csv", header=TRUE)
   list(p1=p1, p2=p2)
 }
 
@@ -94,12 +94,13 @@ plotPSR <- function() {
     if (chan == 1) {
       plot(interferers[1:length(valuesToPlot)], valuesToPlot,  type="b", # log="y",
         main=title, xlab="", ylab="",
+	ylim=c(0.0, 1.1), 	# plotting limits
         las=1, 			# all axis values are horizontal
   	#lab=c(length(valuesToPlot)-1, 5, 2),
         	#ylim=c(0.01, 1),
         xaxp = c(1, length(valuesToPlot), length(valuesToPlot)-1), # n-1 intervals between 1 and n
   #      yaxp= c(0.6, 1, -4),  # 4 tick intervals between 0.6 and 1 (log mode)
-  	yaxp = c( 0.6, 1, 4),
+  	yaxp = c( 0, 1, 4),
         pch=symbs[[channel]], lty=styles[[channel]], 
         col= cols[[channel]], cex=symbolSize, lwd=lineWidth)
     } else {
@@ -129,7 +130,9 @@ plotPSR <- function() {
   }
   # axis labels
 #  mtext(xtitle, side=1, cex=axisSize, line=4) # bottom
-  mtext(ytitle, side=2, cex=axisSize, line=5) # left
+#  mtext(ytitle, side=2, cex=axisSize, line=5) # left
+  mtext(ytitle, side=3, cex=axisSize, outer=TRUE, adj=0.02, 
+ 	line =-2, padj=1) # top of vertical axis
   legend(x="bottomleft", channels, pch=as.numeric(symbs), col=paste(cols), 
   lty=as.numeric(styles), inset=0.05, pt.cex=symbolSize, cex=axisSize)
 
@@ -150,12 +153,15 @@ plotBER <- function() {
     xdataToPlot <- tmp$x - 1 				# ignore receiver node
     xdataToPlot
     ydataToPlot <- res[,1][info[,2]==channel][tmp$ix]
+    xAxisTicks <- c(1, length(xdataToPlot), length(xdataToPlot)-1) # n-1 intervals between 1 and n
     if(chan==1) {
       plot(xdataToPlot[1:length(interferers)], ydataToPlot[1:length(interferers)],
   	log="y",
-        xlab="", ylab="Bit Error Rate", type="b",
-        xaxp = c(1, length(valuesToPlot), length(valuesToPlot)-1), # n-1 intervals between 1 and n
-        yaxp= c(1e-6, 1, 1),  # see axis below
+	las = 1,
+        xlab="", ylab="", type="b",
+        xaxp = xAxisTicks,
+        yaxp= c(1E-4, 1, 1),  # see axis below
+	ylim = c(1E-4, 1),
  	pch=symbs[[channel]], lty=styles[[channel]], col= cols[[channel]], 
         cex=symbolSize, lwd=lineWidth )
     } else {
@@ -165,9 +171,11 @@ plotBER <- function() {
     }
     chan <- chan + 1
   }
-  axis(side=2, at=c(1e-5, 1e-4, 1e-3, 1e-2, 1e-1) )
+#  axis(side=2, at=c(1E-4, 1E-3, 1E-2, 1E-1) )
   grid(col="grey")
   mtext(xtitle, side=1, cex=axisSize, line=4) # bottom
+  mtext("Bit Error Rate", side=3, cex=axisSize, outer=TRUE, adj=0.02, 
+ 	line =-37, padj=1) # top of vertical axis
 }
 
 data <- loadScaData()
