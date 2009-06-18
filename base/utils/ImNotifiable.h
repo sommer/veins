@@ -5,7 +5,7 @@
 
 
 /**
- * Contains detailed information about the items published using the
+ * @brief Contains detailed information about the items published using the
  * BB.
  *
  * To understand this class, consider the case of routing
@@ -38,8 +38,10 @@ class  BBItem : public cObject
 };
 
 /**
- * Clients can receive change notifications from the Blackboard via
- * this interface. Clients must "implement" (subclass from) this class.
+ * @brief Clients can receive change notifications from the Blackboard via
+ * this interface.
+ *
+ * Clients must "implement" (subclass from) this class.
  *
  * @see Blackboard
  * @ingroup blackboard

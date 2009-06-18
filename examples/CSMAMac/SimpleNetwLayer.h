@@ -33,6 +33,8 @@
  *
  * The several instanceses can bable directly to each other or over
  * a switch instance.
+ *
+ * @ingroup exampleCSMA
  */
 class SimpleNetwLayer : public BaseModule{
 //--------members----------

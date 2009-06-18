@@ -14,6 +14,9 @@
  * Note: This implementation is only meant to be as a quick and ugly
  * Decider to demonstrate the usage of the AnalogueModels.
  * You should not take it as template for a real Decider.
+ *
+ * @ingroup Decider
+ * @ingroup exampleAM
  */
 class ThresholdDecider:public Decider {
 protected:

@@ -12,6 +12,9 @@
  * subclass will normally have to do. Everything else should be already
  * done by the PhyLayer or should be implemented by writing your own
  * Decider or AnalogueModels.
+ *
+ * @ingroup phyLayer
+ * @ingroup exampleAM
  */
 class SamplePhyLayer:public PhyLayer{
 protected:

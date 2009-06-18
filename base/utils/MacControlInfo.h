@@ -34,7 +34,7 @@
  *
  * @ingroup baseUtils
  * @ingroup macLayer
- * @ingroup phyLayer
+ * @ingroup netwLayer
  * @ingroup utils
  * @author Daniel Willkomm
  **/

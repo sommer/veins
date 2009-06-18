@@ -25,6 +25,8 @@
 #include "BaseModule.h"
 #include "ImNotifiable.h"
 /**
+ * @brief Provides a blackboard like information distribution.
+ *
  * In protocol simulations, one often has to evaluate the performance
  * of a protocol. This implies that not only the protocol has to be
  * developed, but also the code used for the performance evaluation.
@@ -63,6 +65,7 @@
  *
  * @see ImNotifiable
  * @ingroup blackboard
+ * @ingroup baseModules
  *
  * @author Andras Varga
  * @author Andreas Koepke

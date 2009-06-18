@@ -34,6 +34,7 @@
  * application layer
  *
  * @ingroup utils
+ * @ingroup baseUtils
  * @ingroup netwLayer
  * @ingroup applLayer
  * @author Daniel Willkomm

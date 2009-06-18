@@ -36,6 +36,7 @@
  * module from this class.
  *
  * @ingroup applLayer
+ * @ingroup baseModules
  *
  * @author Daniel Willkomm
  **/

@@ -11,11 +11,8 @@
 //
 //<hr>
 //
-//Other placers to look at are:
-//  <ul>
-//    <li><a href="http://sourceforge.net/projects/mixim/" target="_blank">Sourceforge Project Page</a></li>
-//    <li><a href="http://apps.sourceforge.net/trac/mixim/" target="_blanc">Sourceforge Project Wiki</a></li>
-//  </ul>
+//More documentation such as installation instructions, tutorials, how-tos, 
+//and an overview on the examples can be found at the MiXiM wiki at the <a href="http://apps.sourceforge.net/trac/mixim/" target="_blanc">Sourceforge Project Wiki</a>
 //
 
 

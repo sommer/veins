@@ -21,7 +21,7 @@
  * Returned by InterpolateableMaps "getValue()"
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<class V>
 class Interpolated {
@@ -52,6 +52,11 @@ public:
 	}
 };
 
+/**
+ * @brief Compares a the first value of a pair to a value.
+ *
+ * @ingroup mappingDetails
+ */
 template<class Pair, class Key>
 class PairLess {
 public:
@@ -73,7 +78,7 @@ public:
  * "out of range"-value, if set.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<class Key, class V, class Pair, class InputIterator>
 class NextSmaller {
@@ -136,7 +141,7 @@ public:
  * value of the nearest entry.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<class Key, class V, class Pair, class InputIterator>
 class Nearest {
@@ -212,7 +217,7 @@ public:
  * provides linear interpolation of the value at an arbitrary key-position.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<class Key, class V, class Pair, class InputIterator>
 class Linear {
@@ -325,7 +330,7 @@ public:
  * 				  Default is NextSmaller<Key, V, Pair, Iterator>.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<class Key, class V,
 		 class Pair = const typename std::map<Key, V>::value_type,
@@ -493,7 +498,7 @@ public:
  * See ConstInterpolateableIterator for more details.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<class Key, class V,
 		 class Container = std::map<Key, V>,
@@ -548,7 +553,7 @@ public:
  *
  * @author Karl Wessel
  * @sa Mapping
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<class Key, class V,
 		 class Interpolator = NextSmaller<Key, V, typename std::map<Key, V>::value_type, typename std::map<Key, V>::const_iterator> >

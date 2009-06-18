@@ -17,6 +17,7 @@ class SimplePathlossModel;
  * being constant over the signals duration.
  *
  * @ingroup analogueModels
+ * @ingroup mapping
  */
 class SimplePathlossConstMapping : public SimpleConstMapping
 {
@@ -59,6 +60,7 @@ public:
  * @brief Basic implementation of a SimplePathlossModel that uses
  * SimplePathlossConstMapping (that is subclassed from SimpleConstMapping) as attenuation-Mapping.
  *
+ * @ingroup analogueModels
  */
 class SimplePathlossModel : public AnalogueModel
 {

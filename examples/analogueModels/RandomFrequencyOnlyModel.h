@@ -17,6 +17,9 @@
  * Mapping over frequency and time which is constant in time space. This means
  * every time we want to set a value of the Mapping we will just pass 0 as parameter
  * for the time dimension.
+ *
+ * @ingroup analogueModels
+ * @ingroup exampleAM
  */
 class RandomFrequencyOnlyModel : public AnalogueModel
 {

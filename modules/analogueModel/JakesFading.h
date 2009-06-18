@@ -20,6 +20,12 @@
 
 class JakesFading;
 
+/**
+ * @brief Mapping used to represent attenuation of a signal by JakesFading.
+ *
+ * @ingroup analogueModels
+ * @ingroup mapping
+ */
 class JakesFadingMapping: public SimpleConstMapping {
 protected:
 	static DimensionSet dimensions;

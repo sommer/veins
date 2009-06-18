@@ -40,6 +40,8 @@
  * for ARPs.
  *
  * @ingroup netwLayer
+ * @ingroup baseModules
+ *
  * @author Daniel Willkomm
  **/
 class BaseArp : public BaseModule
@@ -70,6 +72,12 @@ public:
     int myNetwAddr(cModule* netw);
 };
 
+/**
+ * @brief Provides access to the hosts ARP module.
+ *
+ * @ingroup baseModules
+ * @ingroup netwLayer
+ */
 class  BaseArpAccess : public ModuleAccess<BaseArp>
 {
   public:

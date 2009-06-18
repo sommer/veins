@@ -35,6 +35,7 @@
  * the "getSignalState" method.
  *
  * @ingroup decider
+ * @ingroup baseModules
  */
 class BaseDecider: public Decider {
 protected:

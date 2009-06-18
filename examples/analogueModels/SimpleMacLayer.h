@@ -14,6 +14,8 @@
  * This Mac layer just sends an answer packet every time it receives a packet.
  * Since both hosts do that in this simulation, it will only terminate if one
  * packet gets lost (couldn't be received by the phy layer correctly).
+ *
+ * @ingroup exampleAM
  */
 class SimpleMacLayer:public BaseModule {
 protected:

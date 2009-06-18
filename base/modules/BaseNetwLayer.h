@@ -33,6 +33,7 @@
  * @brief Base class for the network layer
  *
  * @ingroup netwLayer
+ * @ingroup baseModules
  * @author Daniel Willkomm
  **/
 class BaseNetwLayer : public BaseLayer

@@ -47,9 +47,9 @@ module Sim
                 @display("p=100,0;i=misc/globe");
 
         }
-        channelcontrol: ConnectionManager {
-            parameters:
-            	@display("p=50,25;i=eye14");
+        connectionManager: ConnectionManager {
+            parameters:  
+            	@display("p=50,25;b=42,42,rect,green,,;i=abstract/multicast");
         }
         host[numHosts]: Host {
             @display("p=20,20;b=20,20,rect,yellow,,;i=device/wifilaptop");

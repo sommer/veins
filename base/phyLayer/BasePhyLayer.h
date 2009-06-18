@@ -63,6 +63,7 @@
  * - interface for the Mac
  *
  * @ingroup phyLayer
+ * @ingroup baseModules
  */
 class BasePhyLayer: public ChannelAccess,
 					public DeciderToPhyInterface,

@@ -22,7 +22,7 @@ module Network
                 @display("p=100,0;i=misc/globe");
 
         }
-        channelControl: ConnectionManager {
+        connectionManager: ConnectionManager {
             parameters:
                 @display("p=200,0;b=42,42,rect,yellow,,;i=abstract/multicast");
 

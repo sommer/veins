@@ -21,7 +21,7 @@ class FilledUpMapping;
  * other method of the ConstMappingIteratorInterface.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<class Base>
 class BaseFilteredIterator : public Base{
@@ -59,7 +59,7 @@ public:
  *
  * @sa BaseFilteredIterator *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  * */
 typedef BaseFilteredIterator<ConstMappingIterator> FilteredConstMappingIterator;
 
@@ -69,7 +69,7 @@ typedef BaseFilteredIterator<ConstMappingIterator> FilteredConstMappingIterator;
  *
  * @sa BaseFilteredIterator
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 class FilteredMappingIterator : public BaseFilteredIterator<MappingIterator> {
 public:
@@ -361,7 +361,7 @@ public:
  * other words, it provides an Iterator for an linear interpolated Mapping.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 class LinearIntplMappingIterator:public MappingIterator {
 protected:
@@ -472,7 +472,7 @@ public:
  * two other mappings.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 class LinearIntplMapping:public Mapping {
 protected:
@@ -554,7 +554,7 @@ public:
  * MultiDimMapping.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<>
 class Interpolated<Mapping*> {
@@ -664,7 +664,7 @@ public:
  * for pointer two Mappings. Used by MultiDimMapping.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<>
 class Linear<double, Mapping*, std::map<double, Mapping*>::value_type, std::map<double, Mapping*>::const_iterator> {
@@ -822,7 +822,7 @@ public:
  * never be called.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 class ConstMappingIteratorWrapper : public MappingIterator {
 protected:
@@ -864,7 +864,7 @@ public:
  * never be called.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 class ConstMappingWrapper : public Mapping {
 protected:
@@ -1599,7 +1599,7 @@ public:
  *
  * @sa FilledUpMapping
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 class FilledUpMappingIterator : public MultiDimMappingIterator<Linear>{
 public:
@@ -1623,7 +1623,7 @@ public:
  * dimensions as the seconds domain and at least one further dimension).
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 class FilledUpMapping : public MultiDimMapping<Linear> {
 //--------members----------
@@ -1917,7 +1917,7 @@ public:
  * @brief Deletes its ConstMapping when this iterator is deleted.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 class ConcatConstMappingIterator : public FilteredConstMappingIterator{
 //--------members----------
@@ -1944,7 +1944,7 @@ public:
  * Mappings to a reference Mapping.
  *
  * @author Karl Wessel
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  */
 template<class Operator>
 class ConcatConstMapping: public ConstMapping {
@@ -2047,7 +2047,7 @@ public:
  * @brief Common base for a Const- and NonConst-Iterator for a DelayedMapping.
  *
  * @sa BaseDelayedMapping
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  * @author Karl Wessel
  */
 template<class Base, class Iterator>
@@ -2115,7 +2115,7 @@ public:
  * @brief ConstIterator for a ConstDelayedMapping
  *
  * @sa ConstDelayedMapping
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  * @author Karl Wess
  */
 typedef BaseDelayedIterator<FilteredConstMappingIterator, ConstMappingIterator> ConstDelayedMappingIterator;
@@ -2124,7 +2124,7 @@ typedef BaseDelayedIterator<FilteredConstMappingIterator, ConstMappingIterator> 
  * @brief Iterator for a DelayedMapping.
  *
  * @sa DelayedMapping
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  * @author Karl Wessel
  */
 typedef BaseDelayedIterator<FilteredMappingIterator, MappingIterator> DelayedMappingIterator;
@@ -2133,7 +2133,7 @@ typedef BaseDelayedIterator<FilteredMappingIterator, MappingIterator> DelayedMap
  * @brief Common base for Const- and NonConst-DelayedMapping.
  *
  * @sa DelayedMapping, ConstDelayedMapping
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  * @author Karl Wessel
  */
 template<class Base>
@@ -2189,7 +2189,7 @@ public:
  * See propagation delay effect of the signal for an example
  * how to use this mapping.
  *
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  * @author Karl Wessel
  */
 class ConstDelayedMapping: public BaseDelayedMapping<ConstMapping> {
@@ -2210,7 +2210,7 @@ public:
  * See propagation delay effect of the signal for an example
  * how to use this mapping.
  *
- * @ingroup mappingDetail
+ * @ingroup mappingDetails
  * @author Karl Wessel
  */
 class DelayedMapping: public BaseDelayedMapping<Mapping> {

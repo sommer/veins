@@ -11,15 +11,38 @@ Requirements
   	- and XML support enabled 
 - make (for Linux)
 - C++ compiler (for Linux)
+- at least Mac OS X 10.5 (for Mac users)
 
 
-Installation under Linux
-========================
+Installation 
+============
+
+From the Omnet++ IDE
+--------------------
+This should be the same for every operating system.
+
+1. Choose "New->Import" from the menue.
+
+2. Choose "General->Existing Projects into Workspace" from the upcoming dialog and proceed with "Next".
+
+3. Choose "Select archive file" and select the MiXiM archive file.
+
+4. "MiXiM" should appear in the "Projects" list below. Import it by clicking on "Finish".
+
+5. Build MiXiM (Ctrl+B)
+
+6. Run an example:
+	a) Choose an example from the examples directory
+	b) right click its executeable and choose "Run as" -> "Run configurations..."
+	c) Double click on "Omnet++ Simualtion" in the left list to create a new
+	   Omnet++ run configuration for this project
+	d) Click "Run"
+
+
+From the commandline under Linux
+--------------------------------
 Unpack the archive (you have probably already done so)
  tar xzf mixim<VERSION>.tgz
-
-Commandline
------------
 
 1. run the following command in the MiXiM root dir
     make -f makemakefiles CONFIGNAME=gcc-debug
@@ -30,47 +53,4 @@ Commandline
 
 At last try to run one of the examples from the examples folder. 
 
-
-
-OMNeT++ IDE
------------
-
-1. Add MiXiM as a Project to your OMNeT++ IDE
-
-2. Build MiXiM (Ctrl+B)
-
-3. Run an example:
-	a) Choose an example from the examples directory
-	b) right click its executeable and choose "Run as" -> "Run configurations..."
-	c) Double click on "Omnet++ Simualtion" in the left list to create a new
-	   Omnet++ run configuration for this project
-	d) Click "Run"
-
-
-
-Installation under Windows
-==========================
-1. Add MiXiM as a Project to your OMNeT++ IDE
-
-2. Build MiXiM (Ctrl+B)
-
-3. Choose an example from the examples folder, run it and have fun :-)
-
-
-
-=================================================
-TODO: the rest of this file needs to be converted
-   So far MiXiM has only been tested under linux
-   and windows There might be problems under OS-X
-=================================================
-
-
-Installation under MAC OS
-=========================
-
-1. Add MiXiM as a Project to your OMNeT++ IDE
-
-2. Build MiXiM (Ctrl+B)
-
-3. Choose an example from the examples folder, run it and have fun :-)
 

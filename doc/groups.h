@@ -200,3 +200,17 @@
  * @defgroup mappingDetails mappingDetails - mostly internal mapping classes
  * @ingroup mapping
  */
+
+/**
+ * @defgroup examples examples - Classes for the examples of MiXiM
+ */
+
+/**
+ * @defgroup exampleAM AnalogueModels example - Classes from the AnalogueModels example
+ * @ingroup examples
+ */
+
+/**
+ * @defgroup exampleCSMA CSMAMac example - Classes from the CSMAMac example
+ * @ingroup examples
+ */
