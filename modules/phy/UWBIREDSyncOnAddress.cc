@@ -24,10 +24,10 @@
 #include "UWBIREnergyDetectionDeciderV2.h"
 
 UWBIREDSyncOnAddress::UWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
-				UWBIRPhyLayer* _uwbiface, double _sensitivity,
+				UWBIRPhyLayer* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, int _addr) :
-					UWBIREnergyDetectionDeciderV2(iface, _uwbiface, _sensitivity,
+					UWBIREnergyDetectionDeciderV2(iface, _uwbiface,
 						_syncThreshold, _syncAlwaysSucceeds, _stats, _trace), syncAddress(_addr) {
 
 };

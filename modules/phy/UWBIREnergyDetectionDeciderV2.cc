@@ -63,8 +63,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleNewSignal(Signal* s) {
 
 }
 
-simtime_t UWBIREnergyDetectionDeciderV2::handleHeaderOver(
-		map<Signal*, int>::iterator& it) {
+simtime_t UWBIREnergyDetectionDeciderV2::handleHeaderOver(map<Signal*, int>::iterator& it) {
 
 	int currState = uwbiface->getRadioState();
 	Signal* s = it->first;
@@ -105,9 +104,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleHeaderOver(
 }
 
 bool UWBIREnergyDetectionDeciderV2::attemptSync(Signal* s) {
-	double value;
-	//double meanSyncPreambleEnergy = 0;
-	//int nbValues = 0;
+	double snrValue;
 	ConstMapping* power = s->getReceivingPower();
 	ConstMappingIterator* mIt = power->createConstIterator();
 
@@ -121,17 +118,16 @@ bool UWBIREnergyDetectionDeciderV2::attemptSync(Signal* s) {
 	}
 	Argument posFirstPulse(IEEE802154A::tFirstSyncPulseMax);
 	mIt->jumpTo(posFirstPulse);
-	value = std::abs(mIt->getValue());
-    syncThresholds.record(value);
-    if(value/noiseLevel > syncThreshold) {
+	snrValue = std::abs(mIt->getValue()/getNoiseValue());
+    syncThresholds.record(snrValue);
+    if(snrValue > syncThreshold) {
     	return true;
     } else {
     	return false;
     }
 }
 
-simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(
-		map<Signal*, int>::iterator& it, AirFrame* frame) {
+simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(map<Signal*, int>::iterator& it, AirFrame* frame) {
 	if (it->first == tracking) {
 		vector<bool>* receivedBits = new vector<bool>();
 		decodePacket(it->first, receivedBits);
@@ -156,7 +152,6 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		vector<bool> * receivedBits) {
 
 	simtime_t now, offset;
-	//long double noiseLevel;
 	simtime_t aSymbol, shift, burst;
 
 	// Retrieve all potentially colliding airFrames
@@ -171,8 +166,6 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		receivingPowers.push_back(currPower);
 		if (aSignal.getSignalStart() == signal->getSignalStart()
 				&& aSignal.getSignalLength() == signal->getSignalLength()) {
-			// Why is this false ??
-			//assert(signalPower == currPower);
 			signalPower = currPower;
 		}
 	}
@@ -182,18 +175,11 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 	shift = IEEE802154A::mandatory_timeShift;
 	aSymbol = IEEE802154A::mandatory_symbol;
 	burst = IEEE802154A::mandatory_burst;
-	//double noise_interferences;
-	//bool morePulses;
-	//noiseLevel = kB500M*temperature;
-	//const double centerFreq = IEEE802154A::mandatory_centerFreq;
 	now = IEEE802154A::mandatory_preambleLength + IEEE802154A::mandatory_pulse / 2;
 	std::pair<double, double> energyZero, energyOne;
 
 	// debugging information (start)
 	if (trace) {
-		/*
-		signalLengths.recordWithTimestamp(signal->getSignalStart(),
-					signal->getSignalLength()); */
 		simtime_t prev = 0;
 		ConstMappingIterator* iteratorDbg = signalPower->createConstIterator();
 		int nbItems = 0;
@@ -207,13 +193,6 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 											   signalPower->getValue(iteratorDbg->getPosition()));
 			prev = iteratorDbg->getPosition().getTime();
 			simtime_t t = signal->getSignalStart() + prev;
-			/*
-			if(std::abs(signalPower->getValue(iteratorDbg->getPosition())) > 0) {
-				EV << "nbItems=" << nbItems << ", t= " << t <<  ", value=maxPulse." << endl;
-			} else {
-			EV << "nbItems=" << nbItems << ", t= " << t <<  ", value=" << signalPower->getValue(iteratorDbg->getPosition()) << "." << endl;
-			}
-			*/
 		}
 		delete iteratorDbg;
 	}
@@ -225,64 +204,34 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 			* aSymbol < signal->getSignalLength(); symbol++) {
 
 		int hoppingPos = IEEE802154A::getHoppingPos(symbol);
+		int decodedBit;
+
 		if(trace) {
 		  timeHoppings.record(hoppingPos);
 		}
-		now = now + IEEE802154A::getHoppingPos(symbol)*IEEE802154A::mandatory_burst;
+		if (stats) {
+			nbSymbols = nbSymbols + 1;
+		}
+
 		// sample in window zero
+		now = now + IEEE802154A::getHoppingPos(symbol)*IEEE802154A::mandatory_burst;
 		energyZero = integrateWindow(symbol, now, burst, noiseLevel, signal);
 		// sample in window one
 		now = now + shift;
 		energyOne = integrateWindow(symbol, now, burst, noiseLevel, signal);
 
-		//noise_interferences = energyZero.second + energyOne.second;
-		//long double snir_symbol = ( energyZero.first + energyOne.first ) / noise_interferences;
-		//symbolsSNRs.record(snir_symbol);
-		//decode
-		int decodedBit;
-		double threshold = min(energyZero.second, energyOne.second) / max(
-				energyZero.second, energyOne.second);
-
-		if (stats) {
-			allThresholds = allThresholds + threshold;
-			nbSymbols = nbSymbols + 1;
-		}
-
-		if (threshold < sensitivity) {
-			int randomValue = intuniform(0, 1);
-			if (randomValue == 0) {
-				decodedBit = 0;
-			} else {
-				decodedBit = 1;
-			}
-			nbRandomBits = nbRandomBits + 1;
-		} else {
-			if (energyZero.second > energyOne.second) {
-				decodedBit = 0;
-			} else {
-				decodedBit = 1;
-			}
-		}
-
+		if (energyZero.second > energyOne.second) {
+		  decodedBit = 0;
+	    } else {
+	      decodedBit = 1;
+	    }
 		receivedBits->push_back(static_cast<bool>(decodedBit));
-
-		// update state variables
-		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse
-				/ 2;
-
+		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
 	}
 
-	// free memory
-	/*
-	 vector<Mapping*>::iterator mappingIter;
-	 for (mappingIter = pulsesIters.begin(); mappingIter != pulsesIters.end(); ++mappingIter) {
-	 delete *mappingIter;
-	 }
-	 */
 	receivingPowers.clear();
 	airFrameVector.clear();
 	offsets.clear();
-	//delete receivingPower;
 }
 
 pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
@@ -293,12 +242,8 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 	vector<ConstMapping*>::iterator mappingIter;
 	Argument arg;
 	simtime_t windowEnd = now + burst;
-	//double amplitudes;
-	//double sigAmplitudes;
 
-
-	// Version 1.5
-	// Triangular pulses
+	// Triangular baseband pulses
 	// we sample at each pulse peak
 	// get the interpolated values of amplitude for each interferer
 	// and add these to the peak with a random phase
@@ -306,7 +251,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 	// we sample one point per pulse
 	// caller has already set our time reference ("now") at the peak of the pulse
 	for (; now < windowEnd; now += IEEE802154A::mandatory_pulse) {
-		double sampling = noiseLevel;
+		double sampling = getNoiseValue();
 		double signalValue = 0;
 		arg.setTime(now);
 		int currSig = 0;
@@ -317,7 +262,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			Signal & aSignal = (*airFrameIter)->getSignal();
 			ConstMapping* currPower = aSignal.getReceivingPower();
 			arg.setTime(now + offsets.at(currSig));
-			double measure = currPower->getValue(arg);
+			double measure = currPower->getValue(arg)*Vtx; // de-normalize
 			if (currPower == signalPower) {
 				signalValue += measure;
 				sampling += measure;
@@ -327,43 +272,11 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			}
 			++currSig;
 		}
-		double val = signalValue * IEEE802154A::mandatory_pulse / 2; // signalValue*signalValue * samplingInterval;
-		energy.first = energy.first + pow(val, 2);
-		//energy.second += sampling * sampling * (IEEE802154A::mandatory_pulse) * (IEEE802154A::mandatory_pulse) / 4;
-		// convert from mW to Voltpeak:
-		double voltPeak = 2 * 50 * sampling; // 50 Ohm
-		energy.second = energy.second + pow(voltPeak, 2);
-		//energy.second += sampling * sampling * IEEE802154A::mandatory_pulse * IEEE802154A::mandatory_pulse / 4;
+		// signal converted to Watt
+		energy.first = pow(signalValue, 2)/resistor;
+		// signal + interference + noise
+		energy.second = energy.second + pow(sampling, 2)/resistor;
 	} // consider next point in time
-	// End version 1.5
-
-
-	/*
-	 // new integration method based on discussion with epfl team
-	 mappingIter = pulsesIters.begin();
-	 // iterate over each signal and interferer
-	 sigAmplitudes = 0;
-	 while(mappingIter != pulsesIters.end()) {
-	 // iterate over all pulses of current signal/interferer
-	 while( (*mappingIter)->hasNext() &&
-	 (*mappingIter)->getNextPosition().getTime() < windowEnd ) {
-	 (*mappingIter)->next();
-	 sigAmplitudes = sigAmplitudes + (*mappingIter)->getValue();
-	 }
-	 if( *mappingIter == signalPower ) {
-	 energy.first = sigAmplitudes * IEEE802154A::mandatory_pulse / 2;
-	 energy.first = energy.first * energy.first;
-	 }  else {
-	 // random phase of interferer
-	 sigAmplitudes = sigAmplitudes * genk_intuniform(0, -1, 1);
-	 }
-	 amplitudes = amplitudes + sigAmplitudes;
-	 }
-
-	 energy.second = amplitudes * IEEE802154A::mandatory_pulse / 2;
-	 energy.second = energy.second * energy.second;
-	 */
-	// end of new integration method
 
 	return energy;
 }

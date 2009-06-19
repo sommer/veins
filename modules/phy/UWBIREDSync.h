@@ -40,7 +40,7 @@ class UWBIRPhyLayer;
 class UWBIREDSync: public UWBIREnergyDetectionDeciderV2 {
 public:
 	UWBIREDSync(DeciderToPhyInterface* iface,
-				UWBIRPhyLayer* _uwbiface, double _sensitivity,
+				UWBIRPhyLayer* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, double _tmin);
 	~UWBIREDSync();

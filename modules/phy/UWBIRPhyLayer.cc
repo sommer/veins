@@ -134,8 +134,7 @@ AnalogueModel* UWBIRPhyLayer::createUWBIRStochasticPathlossModel(
 
 }
 
-AnalogueModel* UWBIRPhyLayer::createUWBIRIEEE802154APathlossModel(
-		ParameterMap & params) {
+AnalogueModel* UWBIRPhyLayer::createUWBIRIEEE802154APathlossModel(ParameterMap & params) {
 	int CM;
 	ParameterMap::iterator it = params.find("CM");
 	if (it == params.end()) {
@@ -161,25 +160,13 @@ AnalogueModel* UWBIRPhyLayer::createUWBIRIEEE802154APathlossModel(
 	return ieee802154AChannel;
 }
 
-Decider* UWBIRPhyLayer::getDeciderFromName(std::string name,
-		ParameterMap& params) {
-
-	double sensitivity;
+Decider* UWBIRPhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 	double syncThreshold;
 	bool stats;
 	bool trace;
 	bool syncAlwaysSucceeds;
-
 	ParameterMap::iterator it;
 
-	it = params.find("sensitivity");
-	if (it == params.end()) {
-		error(
-				"Could not find required double parameter <sensitivity> in the decider xml configuration file.");
-	}
-	sensitivity = it->second.doubleValue();
-	// convert to real number
-	sensitivity = 10*log10(sensitivity);
 	it = params.find("syncThreshold");
 	if (it == params.end()) {
 		error(
@@ -216,27 +203,24 @@ Decider* UWBIRPhyLayer::getDeciderFromName(std::string name,
 					"Could not find required int parameter <addr> in the decider xml configuration file.");
 		}
 		addr = it->second.longValue();
-		return new UWBIREDSyncOnAddress(this, this, sensitivity, syncThreshold,
+		return new UWBIREDSyncOnAddress(this, this, syncThreshold,
 				syncAlwaysSucceeds, stats, trace, addr);
 	}
 
 	if (name == "UWBIREDSync") {
 		double tmin;
-		it = params.find("syncThreshold");
+		it = params.find("syncMinDuration");
 		if (it == params.end()) {
 			error(
-					"Could not find required double parameter <syncTrheshold> in the decider xml configuration file.");
+					"Could not find required double parameter <syncMinDuration> in the decider xml configuration file.");
 		}
 		tmin = it->second.doubleValue();
-		return new UWBIREDSync(this, this, sensitivity, syncThreshold,
-				syncAlwaysSucceeds, stats, trace, tmin);
+		return new UWBIREDSync(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace, tmin);
 	}
 
 	if (name=="UWBIREnergyDetectionDeciderV2") {
-	return new UWBIREnergyDetectionDeciderV2(this, this, sensitivity,
-			syncThreshold, syncAlwaysSucceeds, stats, trace);
+	    return new UWBIREnergyDetectionDeciderV2(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace);
 	}
-
 	return 0;
 }
 

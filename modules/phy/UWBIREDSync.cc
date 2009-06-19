@@ -25,10 +25,10 @@
 
 
 UWBIREDSync::UWBIREDSync(DeciderToPhyInterface* iface,
-				UWBIRPhyLayer* _uwbiface, double _sensitivity,
+				UWBIRPhyLayer* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, double _tmin) :
-					UWBIREnergyDetectionDeciderV2(iface, _uwbiface, _sensitivity,
+					UWBIREnergyDetectionDeciderV2(iface, _uwbiface,
 						_syncThreshold, _syncAlwaysSucceeds, _stats, _trace), tmin(_tmin) {
 
 };

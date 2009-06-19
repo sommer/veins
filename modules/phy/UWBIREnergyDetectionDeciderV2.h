@@ -52,7 +52,6 @@ private:
 protected:
 	double syncThreshold;
 	bool syncAlwaysSucceeds;
-	double sensitivity;
 	UWBIRPacket packet;
 	int catUWBIRPacket;
 	BaseUtility* utility;
@@ -62,20 +61,20 @@ public:
 	const static double kB500M = 5 * 1.38E-12; // mW/K
 	const static int temperature = 293; // 20 Celsius degrees
 	const static double noiseLevel = 6.29 * 1E-9; // -174 + 5 + 10logB in mW
+	const static double Vtx = 0.129; // Voltage transmitted
+	const static double resistor = 50; // 50 Ohms
 	UWBIREnergyDetectionDeciderV2(DeciderToPhyInterface* iface,
-			UWBIRPhyLayer* _uwbiface, double _sensitivity,
+			UWBIRPhyLayer* _uwbiface,
 			double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 			bool _trace) :
-		Decider(iface), sensitivity(_sensitivity), trace(_trace),
+		Decider(iface), trace(_trace),
 				stats(_stats), nbRandomBits(0), nbFailedSyncs(0),
-				nbSuccessfulSyncs(0), nbSymbols(0), allThresholds(0),
-				syncThreshold(_syncThreshold), syncAlwaysSucceeds(
-						_syncAlwaysSucceeds), uwbiface(_uwbiface), tracking(0),
+				nbSuccessfulSyncs(0), nbSymbols(0), syncThreshold(_syncThreshold),
+				syncAlwaysSucceeds(_syncAlwaysSucceeds), uwbiface(_uwbiface), tracking(0),
 				channelSensing(false), synced(false) {
 
 		zerosEnergies.setName("ZerosEnergies");
 		onesEnergies.setName("OnesEnergies");
-		thresholds.setName("thresholds");
 		signalLengths.setName("signalLengths");
 		receivedPulses.setName("receivedPulses");
 		syncThresholds.setName("syncThresholds");
@@ -105,6 +104,10 @@ public:
 	long getNbSuccessfulSyncs() {
 		return nbSuccessfulSyncs;
 	};
+
+	double getNoiseValue() {
+		 return normal(0, noiseLevel);
+	}
 
 protected:
 	map<Signal*, int> currentSignals;

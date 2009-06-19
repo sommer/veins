@@ -41,7 +41,7 @@ class UWBIREDSyncOnAddress: public UWBIREnergyDetectionDeciderV2 {
 
 public:
 	UWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
-				UWBIRPhyLayer* _uwbiface, double _sensitivity,
+				UWBIRPhyLayer* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, int _addr);
 
