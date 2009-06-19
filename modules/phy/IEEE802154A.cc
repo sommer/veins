@@ -36,8 +36,8 @@ const int IEEE802154A::mandatory_pulses_per_burst = 16;
 const double IEEE802154A::mandatory_centerFreq = 4498; // MHz
 // default sync preamble length
 const_simtime_t IEEE802154A::mandatory_preambleLength = 0.0000715; // Tpre=71.5 µs
-// Total triangular pulse peak energy in mW (0 dBm / 50 MHz over 500 MHz)
-const double IEEE802154A::maxPulse = 10;
+// Normalized pulse envelope peak
+const double IEEE802154A::maxPulse = 1;
 // Duration of a sync preamble symbol
 const_simtime_t IEEE802154A::Tpsym = 0.001 * 0.001 * 0.001 * 993.6; // 993.6 ns
 
