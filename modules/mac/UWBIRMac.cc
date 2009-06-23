@@ -173,8 +173,8 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			errRxBits += nbBitErrors;
 			nbSymbolErrors += pktSymbolErrors;
 			ber.record(errRxBits/totalRxBits);
-			packetSuccessRate.record(nbReceivedPacketsRS/nbHandledRxPackets);
-			packetSuccessRateNoRS.record(nbReceivedPacketsNoRS/nbHandledRxPackets);
+			packetSuccessRate.record( ((double) nbReceivedPacketsRS)/nbHandledRxPackets);
+			packetSuccessRateNoRS.record( ((double) nbReceivedPacketsNoRS)/nbHandledRxPackets);
 		}
 
 		// validate message
