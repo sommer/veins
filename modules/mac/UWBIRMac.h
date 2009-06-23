@@ -67,11 +67,15 @@ protected:
     cOutVector sentPulses;
     cOutVector receivedPulses;
     cOutVector meanPacketBER;
+    cOutVector packetSuccessRate;
+    cOutVector packetSuccessRateNoRS;
+    cOutVector ber;
     cStdDev meanBER;
 
     long nbReceivedPacketsNoRS, nbReceivedPacketsRS;
     long nbSentPackets;
     long nbSymbolErrors;
+    long nbHandledRxPackets;
 
     void prepareData(UWBIRMacPkt* packet);
 

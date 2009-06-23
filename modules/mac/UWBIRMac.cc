@@ -51,12 +51,16 @@ void UWBIRMac::initCounters() {
 	nbReceivedPacketsNoRS = 0;
 	nbSentPackets = 0;
 	nbSymbolErrors = 0;
+	nbHandledRxPackets = 0;
 	packetsBER.setName("packetsBER");
 	meanPacketBER.setName("meanPacketBER");
 	dataLengths.setName("dataLengths");
 	sentPulses.setName("sentPulses");
 	receivedPulses.setName("receivedPulses");
 	erroneousSymbols.setName("nbErroneousSymbols");
+	packetSuccessRate.setName("packetSuccessRate");
+	packetSuccessRateNoRS.setName("packetSuccessRateNoRS");
+	ber.setName("ber");
 }
 
 void UWBIRMac::finish() {
@@ -117,6 +121,7 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet) {
 }
 
 bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
+	nbHandledRxPackets++;
 	if (!packetsAlwaysValid) {
 		PhyToMacControlInfo * phyToMac = dynamic_cast<PhyToMacControlInfo*> (mac->getControlInfo());
 		UWBIRDeciderResult * res = dynamic_cast<UWBIRDeciderResult*>(phyToMac->getDeciderResult());
@@ -151,12 +156,6 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			erroneousSymbols.record(pktSymbolErrors);
 		}
 
-		if(stats) {
-			totalRxBits += bitsToDecode;
-			errRxBits += nbBitErrors;
-			nbSymbolErrors += pktSymbolErrors;
-		}
-
 		// ! If this condition is true then the next one will also be true
 		if(nbBitErrors == 0) {
 			nbReceivedPacketsNoRS++;
@@ -167,6 +166,15 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			nbReceivedPacketsRS++;
 			packet.setNbPacketsReceived(packet.getNbPacketsReceived()+1);
 			utility->publishBBItem(catPacket, &packet, -1);
+		}
+
+		if(stats) {
+			totalRxBits += bitsToDecode;
+			errRxBits += nbBitErrors;
+			nbSymbolErrors += pktSymbolErrors;
+			ber.record(errRxBits/totalRxBits);
+			packetSuccessRate.record(nbReceivedPacketsRS/nbHandledRxPackets);
+			packetSuccessRateNoRS.record(nbReceivedPacketsNoRS/nbHandledRxPackets);
 		}
 
 		// validate message
