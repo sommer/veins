@@ -2,6 +2,7 @@ package org.mixim.examples.ieee802154a;
 
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
+import org.mixim.modules.node.IEEE802154APhyMacHost;
 
 module Network
 {

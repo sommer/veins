@@ -1,4 +1,4 @@
-package org.mixim.examples.ieee802154a;
+package org.mixim.modules.nic;
 
 import org.mixim.modules.phy.UWBIRPhyLayer;
 import org.mixim.modules.mac.AlohaMacLayer;

@@ -1,10 +1,11 @@
-package org.mixim.examples.ieee802154a;
+package org.mixim.modules.node;
 
 import org.mixim.base.modules.BaseMobility;
 import org.mixim.base.modules.BaseUtility;
 import org.mixim.modules.application.TestApplication;
 import org.mixim.modules.netw.DummyRoute;
 import org.mixim.modules.utility.phyPER;
+import org.mixim.modules.nic.IEEE802154APhyMacNic;
 
 module IEEE802154APhyMacHost
 {
