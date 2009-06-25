@@ -1,8 +1,0 @@
-#!/bin/sh
-for i in {0..49};
-do 
-    akrun -n 2 -c 0.90 -e 0.05 -- ./run -f akaroa.ini -u Cmdenv -c MAICircleN -r $i > ./akresults/ak-maicircle-$i.out 2> ./akresults/ak-maicircle-$i.err ; 
-    killall opp_run ;
-done
-
-
