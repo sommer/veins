@@ -88,7 +88,7 @@ IEEE802154A::config IEEE802154A::cfg = { 3, NOMINAL_16_M, NON_RANGING, PSR_64,
 		mandatory_burst, mandatory_preambleLength, 4498 };
 
 void IEEE802154A::setPSDULength(int _psduLength) {
-	assert(_psduLength < IEEE802154A::MaxPSDULength);
+	assert(_psduLength < IEEE802154A::MaxPSDULength+1);
 	IEEE802154A::psduLength = _psduLength;
 }
 
