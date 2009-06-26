@@ -27,7 +27,7 @@ simple DummyRoute
         bool stats = default(true);
         
         // lenght of the routing packet header
-        double headerLength @unit(byte) = default(2 byte);
+        double headerLength @unit(byte) = default(0 byte);
 
     gates:
         input upperGateIn; // from application layer
