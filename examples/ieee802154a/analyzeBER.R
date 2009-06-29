@@ -10,10 +10,15 @@
 # Parameters
 #channels <- c("ghassemzadeh-los",  "ghassemzadeh-nlos", "cm1", "cm2", "cm5")
 channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos", "cm1", "cm2")
-distances <- c(1:10, seq(20, 100, 10))
+#channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos")
+distances <- c(1:10, seq(10, 20, 2), seq(25, 50, 5))
+packetSizes <- c("8 bytes", "16 bytes", "32 bytes", "64 bytes", "128 bytes") # , 128
+
 measures <- c("Packet Success Rate (R-S)", "Packet Success Rate (No R-S)", "Bit error rate")
+
 outputFiles <- c("PSR_Distance_RS.png", "PSR_Distance_NoRS.png", "BER_Distance.png")
 latticeFile <- "Distance_Lattice.png"
+
 ylabels <- c("Packet delivery success rate\n(with Reed-Solomon error correction)",
 	     "Packet delivery success rate\n(without Reed-Solomon error correction)",
 	     "Bit error rate")
@@ -106,26 +111,100 @@ plotPSR <- function(psr, line) {
     dev.off()
 }
 
+# utility function to tell lattice where to mark axes
+# from http://lmdvr.r-forge.r-project.org/figures/figures.html Figure 8.4
+logTicks <- function (lim, loc = c(1, 5)) {
+ ii <- floor(log10(range(lim))) + c(-1, 2)
+ main <- 10^(ii[1]:ii[2])
+ r <- as.numeric(outer(loc, main, "*"))
+ r[lim[1] <= r & r <= lim[2]] 
+} 
+
+# utility function to tell lattice where to mark axes
+yscale.components.log10 <- function(lim, ...) {
+    ans <- yscale.components.default(lim = lim, ...)
+    tick.at.major <- seq(0.1, 1, 0.1) # c(0.25, 0.5, 0.75, 1) # seq(0.2, 1, 0.2)
+    ans$left$labels$labels <- tick.at.major
+    ans$left$labels$at <- log(tick.at.major, 10)
+    ans$left$ticks$tck <- 1.5
+    ans$left$ticks$at  <- log(tick.at.major, 10)
+
+#    tick.at <- seq(0.1, 1, 0.1)
+#    tick.at.major <- seq(0.2, 1, 0.2)
+#    major <- c(FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE)
+#    ans$bottom$ticks$at <- log(tick.at, 10)
+#    ans$bottom$ticks$tck <- ifelse(major, 1.5, 0.75)
+#    ans$bottom$labels$at <- log(tick.at.major, 10)
+#    ans$bottom$labels$labels <- as.character(tick.at.major)
+#    ans$bottom$labels$labels[!major] <- ""
+#    ans$bottom$labels$check.overlap <- FALSE
+     ans
+}
+
+yscale.components.log2 <- function(...) {
+    ans <- yscale.components.default(...)
+    ans$right <- ans$left
+    ans$left$labels$labels <- 
+        parse(text = ans$left$labels$labels)
+    ans$right$labels$labels <- 
+        MASS::fractions(2^(ans$right$labels$at))
+    ans
+}
+
+
+xscale.components.log10 <- function(lim, ...) {
+    ans <- xscale.components.default(lim = lim, ...)
+    tick.at <- logTicks(10^lim, loc = 1:9)
+    tick.at.major <- logTicks(10^lim, loc = 1)
+    major <- tick.at %in% tick.at.major
+    ans$bottom$ticks$at <- log(tick.at, 10)
+    ans$bottom$ticks$tck <- ifelse(major, 1.5, 0.75)
+    ans$bottom$labels$at <- log(tick.at, 10)
+    ans$bottom$labels$labels <- as.character(tick.at)
+    ans$bottom$labels$labels[!major] <- ""
+    ans$bottom$labels$check.overlap <- FALSE
+    ans
+}
+
 latticePSRPlot <- function(data) {
 #  lattice.options(default.theme = col.whitebg)#canonical.theme(color = TRUE), new=TRUE)
   trellis.device(device=png, theme=col.whitebg)
-  png(filename="PSR-Distance_Lattice.png", width=1024, height=768) #, bg="transparent")
-  print(xyplot(psr ~ distances | channels, data=data, groups=ECC,
+  png(filename="PSR-Distance_Lattice-%d.png", width=2048, height=1536) #, bg="transparent")
+  theFigure <- xyplot(
+    psrRS + psrNoRS ~ distances | packetSizes * channels, data=data, 
     type="b",
     xlab = "Distance (meters)",
-    ylab = "Packet Delivery Success Rate"
-#   scales=list(x = list(log = 10)),
-   ))
+    ylab = "Packet Delivery Success Rate",
+    prepanel=prepanel.loess,
+#    panel=panel.loess,
+#    panel=panel.grid(h=-1, v=-1),
+panel = function(...) {
+           panel.grid(h=-1, v=-1, col="grey")
+           panel.xyplot(...)
+       },
+
+#    aspect ="xy", # change aspect ratio to make lines appear as 45 degrees oriented
+    as.table = TRUE, # start drawing from top left to bottom right
+#    layout = c(0, 10), # put 10 figures per page as it pleases you
+    layout = c(5, 2, 2),
+    auto.key = list(space="bottom", text=c("with Reed-Solomon error correction", "without Reed-Solomon error correction")),
+    scales = list(y=list(log = 10)), 
+    yscale.components = yscale.components.log10
+   )
+  print(theFigure)
+  dev.off()
 }
 
 plotAll <-function() {
-  png(outputFiles[1], width=1024, height=768, bg="transparent")
   psrRS <- loadData(1)
   psrNoRS <- loadData(2)
-  plotPSR(psrRS, 1)
-  psrFrame <- expand.grid(distances=distances, channels=channels, ECC=c(TRUE,FALSE)) #, packetSize=c(10,20,100)
-  psrFrame$psr <- c(psrRS$Estimate, psrNoRS$Estimate)
+  psrFrame <- expand.grid(distances=distances, packetSizes=packetSizes, channels=channels) 
+  psrFrame$psrRS <- psrRS$Estimate
+  psrFrame$psrNoRS <- psrNoRS$Estimate
   latticePSRPlot(psrFrame)
+ png(outputFiles[1], width=1024, height=768, bg="transparent")
+  plotPSR(psrRS, 1)
+ 
 #  png(outputFiles[2], width=800, height=600)
 #  plotPSR(psrNoRS)
 #  ber <- loadData(3)
