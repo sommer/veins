@@ -75,7 +75,14 @@ AnalogueModel* UWBIRPhyLayer::getAnalogueModelFromName(std::string name,
 	if (name == "RadioStateAnalogueModel")
 		return _radio->getAnalogueModel();
 
+	if(name == "intensity")
+		return createIntensityModel(params);
+
 	return 0;
+}
+
+AnalogueModel* UWBIRPhyLayer::createIntensityModel(ParameterMap & params) {
+
 }
 
 /*

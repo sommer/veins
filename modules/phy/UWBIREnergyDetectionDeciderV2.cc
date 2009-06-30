@@ -262,9 +262,10 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			Signal & aSignal = (*airFrameIter)->getSignal();
 			ConstMapping* currPower = aSignal.getReceivingPower();
 			arg.setTime(now + offsets.at(currSig));
-			double measure = currPower->getValue(arg)*Vtx; // de-normalize
+			double measure = currPower->getValue(arg)*Ptx; // de-normalize
+			measure = sqrt(120*PI*measure); // get electric field
 			if (currPower == signalPower) {
-				signalValue += measure;
+				signalValue = measure;
 				sampling += measure;
 			} else {
 				// random phase for interferer
@@ -272,8 +273,11 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			}
 			++currSig;
 		}
+
 		// convert from electric field to antenna voltage
-		sampling = sqrt(pow(sampling, 2)*50/377);
+		sampling = pow(sampling, 2) / 50;
+		sampling = sampling * pow(lambda, 2) /(4*PI);
+		sampling = sqrt(sampling);
 		// add noise
 		sampling = sampling + getNoiseValue();
 		// square it
@@ -281,7 +285,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		// signal + interference + noise
 		energy.second = energy.second + sampling;
 
-		// signal converted to Watt (E²/R)
+		// signal converted to Watt (E²/R) [deprecated -- do not use]
 		signalValue = sqrt(pow(signalValue, 2)*50/377);
 		energy.first = energy.first + signalValue;
 

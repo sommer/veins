@@ -39,6 +39,8 @@
 
 using namespace std;
 
+#define PI 3.1415926
+
 class UWBIRPhyLayer;
 
 
@@ -61,8 +63,9 @@ public:
 	const static double kB500M = 5 * 1.38E-12; // mW/K
 	const static int temperature = 293; // 20 Celsius degrees
 	const static double noiseVariance = 404.34E-12;
-	const static double Vtx = 0.0015; // radiated electric field
+	const static double Ptx = 50E-6; // radiated power at origin
 	const static double resistor = 50; // 50 Ohms
+	const static double lambda = 0.04;// center frequency wavelength
 	UWBIREnergyDetectionDeciderV2(DeciderToPhyInterface* iface,
 			UWBIRPhyLayer* _uwbiface,
 			double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,

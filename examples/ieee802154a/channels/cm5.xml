@@ -5,6 +5,8 @@
 		<parameter name="CM" type="long" value="5"/> 
 		<parameter name="Threshold" type="double" value="0.1"/>
 	    </AnalogueModel>
+                <AnalogueModel type="Intensity">
+                </AnalogueModel>
 	</AnalogueModels>
 </root>
 

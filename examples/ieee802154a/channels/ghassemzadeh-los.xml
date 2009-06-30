@@ -10,6 +10,8 @@
 		<parameter name="isEnabled" type="bool" value="true"/>
 		<parameter name="shadowing" type="bool" value="true"/>
 	    </AnalogueModel>
+		<AnalogueModel type="Intensity">
+		</AnalogueModel>
 	</AnalogueModels>
 </root>
 

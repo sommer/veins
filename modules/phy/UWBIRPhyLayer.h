@@ -67,6 +67,7 @@ protected:
 
     AnalogueModel* createUWBIRStochasticPathlossModel(ParameterMap & params);
     AnalogueModel* createUWBIRIEEE802154APathlossModel(ParameterMap & params);
+    AnalogueModel* createIntensityModel(ParameterMap & params);
     virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
     /**
      * called by Blackboard to inform of changes
