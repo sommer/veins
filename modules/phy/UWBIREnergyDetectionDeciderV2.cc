@@ -215,10 +215,10 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 
 		// sample in window zero
 		now = now + IEEE802154A::getHoppingPos(symbol)*IEEE802154A::mandatory_burst;
-		energyZero = integrateWindow(symbol, now, burst, noiseLevel, signal);
+		energyZero = integrateWindow(symbol, now, burst, signal);
 		// sample in window one
 		now = now + shift;
-		energyOne = integrateWindow(symbol, now, burst, noiseLevel, signal);
+		energyOne = integrateWindow(symbol, now, burst, signal);
 
 		if (energyZero.second > energyOne.second) {
 		  decodedBit = 0;
@@ -235,7 +235,7 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 }
 
 pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
-		simtime_t now, simtime_t burst, double noiseLevel, Signal* signal) {
+		simtime_t now, simtime_t burst, Signal* signal) {
 	std::pair<double, double> energy;
 	energy.first = 0; // stores energy contribution from tracked signal
 	energy.second = 0; // stores total captured window energy
@@ -251,7 +251,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 	// we sample one point per pulse
 	// caller has already set our time reference ("now") at the peak of the pulse
 	for (; now < windowEnd; now += IEEE802154A::mandatory_pulse) {
-		double sampling = getNoiseValue();
+		double sampling = 0;
 		double signalValue = 0;
 		arg.setTime(now);
 		int currSig = 0;
@@ -272,10 +272,19 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			}
 			++currSig;
 		}
-		// signal converted to Watt
-		energy.first = pow(signalValue, 2)/resistor;
+		// convert from electric field to antenna voltage
+		sampling = sqrt(pow(sampling, 2)*50/377);
+		// add noise
+		sampling = sampling + getNoiseValue();
+		// square it
+		sampling = pow(sampling, 2);
 		// signal + interference + noise
-		energy.second = energy.second + pow(sampling, 2)/resistor;
+		energy.second = energy.second + sampling;
+
+		// signal converted to Watt (E²/R)
+		signalValue = sqrt(pow(signalValue, 2)*50/377);
+		energy.first = energy.first + signalValue;
+
 	} // consider next point in time
 
 	return energy;

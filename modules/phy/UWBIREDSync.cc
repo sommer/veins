@@ -88,7 +88,11 @@ bool UWBIREDSync::evaluateEnergy(Signal* s) {
 	// Thus we can simply sample the first pulse of the received signal
 	ConstMapping* rxPower = s->getReceivingPower();
 	argSync.setTime(IEEE802154A::tFirstSyncPulseMax);
-	if(std::abs(rxPower->getValue(argSync))/noiseLevel > syncThreshold) {
+	double signal = sqrt(pow(rxPower->getValue(argSync), 2)*50/377);
+	double measure = signal + getNoiseValue();
+	signal = pow(signal, 2);
+    measure = pow(measure, 2);
+	if(signal/measure > syncThreshold) {
 		return true;
 	}
 	return false;
