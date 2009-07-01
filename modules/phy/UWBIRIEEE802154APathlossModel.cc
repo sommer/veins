@@ -197,13 +197,10 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
     rcvCoord = move.getPositionAt(s.getSignalStart());
     distance = rcvCoord.distance(srcCoord);
 
-    // compute attenuation
-    //double attenuation = ntx * nrx * cfg.PL0 / pow(distance / d0, cfg.n);
-
-
+	// Total radiated power Prx at that distance  [W]
     double attenuation = 0.5 * ntx * nrx * cfg.PL0 / pow(distance / d0, cfg.n);
-    //attenuation = attenuation / pow(fc, 2*(cfg.kappa+1));
-    //attenuation = attenuation * (pow(fc+0.25E9,1-2*(cfg.kappa+1))-pow(fc-0.25E9,1-2*(cfg.kappa+1)) );
+    // Power intensity I at that distance [W/m²]
+    attenuation = attenuation /(4*PI*pow(distance, cfg.n));
     // create mapping
     SimpleTimeConstMapping* attMapping = new SimpleTimeConstMapping(
     		attenuation, s.getSignalStart(), s.getSignalStart()+s.getSignalLength());

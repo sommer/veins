@@ -268,15 +268,15 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 				signalValue = measure;
 				sampling += measure;
 			} else {
-				// random phase for interferer
+				// take arandom point within pulse envelope for interferer
 				sampling += measure * intuniform(-1, 1);
 			}
 			++currSig;
 		}
 
-		// convert from electric field to antenna voltage
+		// convert from resulting electric field to antenna voltage
 		sampling = pow(sampling, 2) / 50;
-		sampling = sampling * pow(lambda, 2) /(4*PI);
+		sampling = sampling * pow(lambda, 2) /(120*PI*4*PI);
 		sampling = sqrt(sampling);
 		// add noise
 		sampling = sampling + getNoiseValue();

@@ -63,7 +63,7 @@ public:
 	const static double kB500M = 5 * 1.38E-12; // mW/K
 	const static int temperature = 293; // 20 Celsius degrees
 	const static double noiseVariance = 404.34E-12;
-	const static double Ptx = 50E-6; // radiated power at origin
+	const static double Ptx = 37.06E-6; // radiated power at origin (-41.3 dBm/MHz over 500 MHz in Watts)
 	const static double resistor = 50; // 50 Ohms
 	const static double lambda = 0.04;// center frequency wavelength
 	UWBIREnergyDetectionDeciderV2(DeciderToPhyInterface* iface,
