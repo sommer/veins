@@ -65,6 +65,7 @@ void UWBIRStochasticPathlossModel::filterSignal(Signal& s) {
 		 */
 		// Compute pathloss
 		double attenuation = getGhassemzadehPathloss(distance);
+		attenuation = attenuation / (4*PI*pow(distance, gamma));
 		// Store scalar mapping
 		attMapping->setValue(arg, attenuation);
 		s.addAttenuation(attMapping);
