@@ -251,43 +251,53 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 	// we sample one point per pulse
 	// caller has already set our time reference ("now") at the peak of the pulse
 	for (; now < windowEnd; now += IEEE802154A::mandatory_pulse) {
-		double sampling = 0;
-		double signalValue = 0;
-		arg.setTime(now);
+		double signalValue = 0;	// electric field from tracked signal [V/m²]
+		double Efield = 0;		// electric field at antenna = combination of all arriving electric fields [V/m²]
+		double vEfield = 0;		// voltage at antenna caused by electric field Efield [V]
+		double vmeasured = 0;	// voltage measured by energy-detector [V], including thermal noise
+		double vsignal_square = 0;	// square of the voltage that would be induced on the antenna if there were no interferers (Efield=signalValue)
+		arg.setTime(now);		// loop variable: begin by considering the first pulse
 		int currSig = 0;
+
 		// consider all interferers at this point in time
 		for (airFrameIter = airFrameVector.begin(); airFrameIter
 				!= airFrameVector.end(); ++airFrameIter) {
-
 			Signal & aSignal = (*airFrameIter)->getSignal();
 			ConstMapping* currPower = aSignal.getReceivingPower();
 			arg.setTime(now + offsets.at(currSig));
-			double measure = currPower->getValue(arg)*Ptx; // de-normalize
+			double measure = currPower->getValue(arg)*Ptx; // de-normalize (this value should be in AirFrame or in Signal, to be set at run-time)
 			measure = sqrt(120*PI*measure); // get electric field
 			if (currPower == signalPower) {
 				signalValue = measure;
-				sampling += measure;
+				Efield = Efield + measure;
 			} else {
-				// take arandom point within pulse envelope for interferer
-				sampling += measure * intuniform(-1, 1);
+				// take a random point within pulse envelope for interferer
+				Efield = Efield + measure * intuniform(-1, 1);
 			}
 			++currSig;
 		}
 
 		// convert from resulting electric field to antenna voltage
-		sampling = pow(sampling, 2) / 50;
-		sampling = sampling * pow(lambda, 2) /(120*PI*4*PI);
-		sampling = sqrt(sampling);
+		vEfield = pow(Efield, 2) / 50;
+		vEfield = vEfield * pow(lambda, 2) /(120*PI*4*PI);
+		vEfield = sqrt(vEfield);
 		// add noise
-		sampling = sampling + getNoiseValue();
-		// square it
-		sampling = pow(sampling, 2);
-		// signal + interference + noise
-		energy.second = energy.second + sampling;
+		double vThermalNoise = getNoiseValue();
+		vmeasured = vEfield + vThermalNoise;
+		vnoise2 = vnoise2 + pow(vThermalNoise, 2);
 
-		// signal converted to Watt (E²/R) [deprecated -- do not use]
-		signalValue = sqrt(pow(signalValue, 2)*50/377);
-		energy.first = energy.first + signalValue;
+		// square it
+		vmeasured = pow(vmeasured, 2);
+		// signal + interference + noise
+		energy.second = energy.second + vmeasured;
+
+		// signal converted to antenna voltage squared
+		vsignal_square = pow(signalValue, 2)/50;
+		vsignal_square = vsignal_square * pow(lambda, 2) / (120*PI*4*PI);
+		vsignal2 = vsignal2 + vsignal_square;
+		vnoise2 = vnoise2 + pow(vmeasured - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
+		pulseSINR.record(vsignal2/vnoise2);
+		energy.first = energy.first + vsignal_square; // ignore
 
 	} // consider next point in time
 
@@ -307,5 +317,3 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleChannelSenseRequest(
 		return -1; //phy->getSimTime() + request->getSenseDuration();
 	}
 }
-
-

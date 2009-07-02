@@ -72,8 +72,8 @@ public:
 
 	/**@brief bit length of a Reed-Solomon symbol */
 	static const short RSSymbolLength = 6;
-	/**@brief Maximum number of erroneous symbols that the Reed-Solomon code can correct in ieee802.15.4a */
-	static const short RSMaxSymbolErrors = 4;
+	/**@brief Maximum number of erroneous symbols that the Reed-Solomon code RS_6(63,55) can correct in ieee802.15.4a */
+	static const short RSMaxSymbolErrors = 4; // =(n-k)/2
 
 	/**@brief Maximum size of message that is accepted by the Phy layer (in bytes). */
 	static const int MaxPSDULength = 128;

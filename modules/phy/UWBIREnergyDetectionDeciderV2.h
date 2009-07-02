@@ -50,6 +50,7 @@ private:
 	long nbRandomBits;
 	long nbFailedSyncs, nbSuccessfulSyncs;
 	double nbSymbols, allThresholds;
+	double vsignal2, vnoise2;
 
 protected:
 	double syncThreshold;
@@ -74,7 +75,7 @@ public:
 				stats(_stats), nbRandomBits(0), nbFailedSyncs(0),
 				nbSuccessfulSyncs(0), nbSymbols(0), syncThreshold(_syncThreshold),
 				syncAlwaysSucceeds(_syncAlwaysSucceeds), uwbiface(_uwbiface), tracking(0),
-				channelSensing(false), synced(false) {
+				channelSensing(false), synced(false), vsignal2(0), vnoise2(0) {
 
 		zerosEnergies.setName("ZerosEnergies");
 		onesEnergies.setName("OnesEnergies");
@@ -83,6 +84,7 @@ public:
 		syncThresholds.setName("syncThresholds");
 		timeHoppings.setName("timeHoppings");
 		ebN0.setName("EbN0");
+		pulseSINR.setName("sinr");
 
 		utility = iface->getUtility();
 		catUWBIRPacket = utility->getCategory(&packet);
@@ -119,6 +121,7 @@ protected:
 			receivedPulses;
 	cOutVector syncThresholds, timeHoppings;
 	cOutVector ebN0;
+	cOutVector pulseSINR;
 
 	UWBIRPhyLayer* uwbiface;
 	Signal* tracking;
