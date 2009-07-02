@@ -255,6 +255,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		double Efield = 0;		// electric field at antenna = combination of all arriving electric fields [V/m²]
 		double vEfield = 0;		// voltage at antenna caused by electric field Efield [V]
 		double vmeasured = 0;	// voltage measured by energy-detector [V], including thermal noise
+		double vmeasured_square = 0; // to the square [V²]
 		double vsignal_square = 0;	// square of the voltage that would be induced on the antenna if there were no interferers (Efield=signalValue)
 		arg.setTime(now);		// loop variable: begin by considering the first pulse
 		int currSig = 0;
@@ -287,15 +288,15 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		vnoise2 = vnoise2 + pow(vThermalNoise, 2);
 
 		// square it
-		vmeasured = pow(vmeasured, 2);
+		vmeasured_square = pow(vmeasured, 2);
 		// signal + interference + noise
-		energy.second = energy.second + vmeasured;
+		energy.second = energy.second + vmeasured_square;
 
 		// signal converted to antenna voltage squared
 		vsignal_square = pow(signalValue, 2)/50;
 		vsignal_square = vsignal_square * pow(lambda, 2) / (120*PI*4*PI);
 		vsignal2 = vsignal2 + vsignal_square;
-		vnoise2 = vnoise2 + pow(vmeasured - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
+		vnoise2 = vnoise2 + pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
 		pulseSINR.record(vsignal2/vnoise2);
 		energy.first = energy.first + vsignal_square; // ignore
 
