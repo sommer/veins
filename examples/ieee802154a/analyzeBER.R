@@ -160,13 +160,13 @@ latticePSRPlot <- function(data) {
 	#			"without Reed-Solomon error correction"),		
 	#		cex=textSize, size=14, pch=16, type="b"),
     scales = list(y=list(log = 10), cex=textSize), 
-    yscale.components = yscale.components.log10
+  #  yscale.components = yscale.components.log10
    )
   print(theFigure)
   dev.off()
 }
 
-latticePSREfficiency <- function(data) {
+latticePSREfficiency <- function(psrFrame) {
   png("RSEfficiency-lattice-%d.png", width=2048, height=1536)
   theFigure <- xyplot(RSEfficiency ~ distances | packetSizes*channels, 
 		data=psrFrame, 
