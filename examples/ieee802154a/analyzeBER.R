@@ -13,7 +13,7 @@
 #channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos")
 #distances <- c(1:10, seq(10, 20, 2), seq(25, 50, 5))
 #packetSizes <- c("8 bytes", "16 bytes", "32 bytes", "64 bytes", "128 bytes") # , 128
-channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos", "cm1", "cm2")
+channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos", "cm1", "cm2", "cm5")
 distances <- seq(5, 30, 5)
 packetSizes <- c("8 bytes", "32 bytes", "128 bytes") 
 
@@ -120,7 +120,7 @@ plotPSR <- function(psr, line) {
 # from http://lmdvr.r-forge.r-project.org/figures/figures.html Figure 8.4
 yscale.components.log10 <- function(lim, ...) {
     ans <- yscale.components.default(lim = lim, ...)
-    tick.at.major <- seq(0.1, 1, 0.1) # c(0.25, 0.5, 0.75, 1) # seq(0.2, 1, 0.2)
+    tick.at.major <- c(0.01, 0.1, 0.25, 0.5, 0.75, 1) # seq(0.1, 1, 0.1) # c(0.25, 0.5, 0.75, 1) # seq(0.2, 1, 0.2)
     ans$left$labels$labels <- tick.at.major
     ans$left$labels$at <- log(tick.at.major, 10)
     ans$left$ticks$tck <- 1.5
@@ -153,14 +153,14 @@ latticePSRPlot <- function(data) {
 	#    aspect ="xy", # change aspect ratio to make lines appear as 45 degrees oriented
     as.table = TRUE, # start drawing from top left to bottom right
 	#    layout = c(0, 10), # put 10 figures per page as it pleases you
-    layout = c(3, 2, 2), # 3 columns, 2 lines, 2 pages
+    layout = c(3, 2, 3), # 3 columns, 2 lines, 3 pages
     auto.key = list(space="bottom", text=c("with Reed-Solomon error correction", "without Reed-Solomon error correction"), cex=textSize),
 	#    key = list(space="bottom", 
 	#		text=c("with Reed-Solomon error correction", 
 	#			"without Reed-Solomon error correction"),		
 	#		cex=textSize, size=14, pch=16, type="b"),
     scales = list(y=list(log = 10), cex=textSize), 
-  #  yscale.components = yscale.components.log10
+    yscale.components = yscale.components.log10
    )
   print(theFigure)
   dev.off()
@@ -172,7 +172,7 @@ latticePSREfficiency <- function(psrFrame) {
 		data=psrFrame, 
 		type="b",
 		as.table=T,
-	        layout = c(3, 2, 2),
+	        layout = c(3, 2, 3),
 		scales=list(x=list(log=10), y=list(log=10), cex=textSize), 
 		panel=gridPanel,
 		cex=textSize,
