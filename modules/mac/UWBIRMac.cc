@@ -22,6 +22,7 @@
 
 #include "UWBIRMac.h"
 #include <iostream>
+#include <math.h>
 
 using namespace std;
 
@@ -51,6 +52,7 @@ void UWBIRMac::initCounters() {
 	nbReceivedPacketsNoRS = 0;
 	nbSentPackets = 0;
 	nbSymbolErrors = 0;
+	nbSymbolsReceived = 0;
 	nbHandledRxPackets = 0;
 	packetsBER.setName("packetsBER");
 	meanPacketBER.setName("meanPacketBER");
@@ -61,6 +63,7 @@ void UWBIRMac::initCounters() {
 	packetSuccessRate.setName("packetSuccessRate");
 	packetSuccessRateNoRS.setName("packetSuccessRateNoRS");
 	ber.setName("ber");
+	RSErrorRate.setName("ser");
 }
 
 void UWBIRMac::finish() {
@@ -127,6 +130,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 		UWBIRDeciderResult * res = dynamic_cast<UWBIRDeciderResult*>(phyToMac->getDeciderResult());
 		const std::vector<bool> * decodedBits = res->getDecodedBits();
 		int bitsToDecode = mac->getNbSymbols();
+		nbSymbolsReceived = nbSymbolsReceived + ceil(bitsToDecode / IEEE802154A::RSSymbolLength);
 		int nbBitErrors = 0;
 		int pktSymbolErrors = 0;
 		bool currSymbolError = false;
@@ -147,6 +151,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 				}
 			}
 		}
+
 		EV << "Found " << nbBitErrors << " bit errors in MAC packet." << endl;
 		double packetBER = static_cast<double>(nbBitErrors)/static_cast<double>(bitsToDecode);
 		packetsBER.record(packetBER);
@@ -175,6 +180,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			ber.record(errRxBits/totalRxBits);
 			packetSuccessRate.record( ((double) nbReceivedPacketsRS)/nbHandledRxPackets);
 			packetSuccessRateNoRS.record( ((double) nbReceivedPacketsNoRS)/nbHandledRxPackets);
+			RSErrorRate.record( ((double) nbSymbolErrors) / nbSymbolsReceived);
 		}
 
 		// validate message
