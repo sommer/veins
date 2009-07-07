@@ -49,11 +49,13 @@ public:
 	 * @brief Default constructor.
 	 */
     UWBIRIEEE802154APathlossModel(int _channelModel, double _threshold, bool shadowing=true):
-    	channelModel(_channelModel), tapThreshold(_threshold), doShadowing(shadowing), doSmallScaleShadowing(false), move()  {
+    	channelModel(_channelModel), tapThreshold(_threshold), doShadowing(shadowing),
+    	doSmallScaleShadowing(false), move(), nbCalls(0)  {
     	// Check that this model is supported
     	assert(implemented_CMs[channelModel]);
     	// load the model parameters
     	cfg = CMconfigs[channelModel];
+    	averagePowers.setName("averagePower");
     }
 
     /*
@@ -132,7 +134,15 @@ protected:
     static const double gamma_0 = 12.53 * 0.001 * 0.001 * 0.01;
     static const double sigma_cluster = 1.883649089; // 2.75 dB
 
-    static const double fc = 4.492E9;
+    static const double fc = 4.492E9; // mandatory band 3, center frequency, Hz
+    static const double BW = 500E6;  //  mandatory band 3, bandwidth, Hz
+    static const double fcMHz = 4492; // mandatory band 3, center frequency, MHz
+
+    static const double d0 = 1;
+
+    // antenna parameters
+    static const double ntx = 1;
+    static const double nrx = 1;
 
 
     Move move;
@@ -149,11 +159,23 @@ protected:
     double Mcluster;
     // cluster integrated energy
     double Omega_l;
+    // distance between source and receiver
+    double distance;
+
+    double averagePower; // statistics counter (useful for model validation, should converges towards 1)
+    long nbCalls;
+    cOutVector averagePowers;
 
     /*
      * Generates taps for the considered pulse, with the current channel parameters
      */
     void addEchoes(simtime_t pulseStart);
+
+    /*
+     * @brief Computes the pathloss as a function of center frequency and bandwidth given in MHz
+     */
+    double getPathloss(double fc, double BW);
+
 };
 
 #endif	/* _UWBIRIEEE802154APATHLOSSMODEL_H */
