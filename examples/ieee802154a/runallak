@@ -1,5 +1,8 @@
 #!/bin/sh
-for i in {0..749};
+
+NBRUNS=$((`./run -f akaroa.ini -x BERDistance |  grep -o [[:digit:]]*$ `-1))
+
+for i in `seq 0 $NBRUNS` ;
 do 
     akrun -n 8 -- ./run -f akaroa.ini -u Cmdenv -c BERDistance -r $i > ./akresults/ak-berdistance-$i.out 2> ./akresults/ak-berdistance-$i.err ; 
 done
