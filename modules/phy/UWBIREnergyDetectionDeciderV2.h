@@ -50,7 +50,7 @@ private:
 	long nbRandomBits;
 	long nbFailedSyncs, nbSuccessfulSyncs;
 	double nbSymbols, allThresholds;
-	double vsignal2, vnoise2;
+	double vsignal2, vnoise2, snirs, snirEvals;
 
 protected:
 	double syncThreshold;
@@ -75,7 +75,7 @@ public:
 				stats(_stats), nbRandomBits(0), nbFailedSyncs(0),
 				nbSuccessfulSyncs(0), nbSymbols(0), syncThreshold(_syncThreshold),
 				syncAlwaysSucceeds(_syncAlwaysSucceeds), uwbiface(_uwbiface), tracking(0),
-				channelSensing(false), synced(false), vsignal2(0), vnoise2(0) {
+				channelSensing(false), synced(false), vsignal2(0), vnoise2(0), snirEvals(0) {
 
 		zerosEnergies.setName("ZerosEnergies");
 		onesEnergies.setName("OnesEnergies");
