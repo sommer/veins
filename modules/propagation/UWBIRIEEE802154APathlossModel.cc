@@ -305,10 +305,12 @@ double UWBIRIEEE802154APathlossModel::getPathloss(double fc, double BW) {
 	pathloss = pathloss * cfg.PL0;  // pathloss at reference distance
 	pathloss = pathloss * ntx * nrx; // antenna effects
 	pathloss = pathloss / pow(distance/d0, cfg.n); // distance
+	/*
 	// and frequency dependent effects
 	pathloss = pathloss / pow(fc, 2*(cfg.kappa+1));
 	pathloss = pathloss / (-2*cfg.kappa-1);
 	pathloss = pathloss * ( pow(fc+BW/2,-2*cfg.kappa-1) - pow(fc-BW/2,-2*cfg.kappa-1) );
+	*/
 	// old version was ignoring frequency dependent effects
 	//double attenuation = 0.5 * ntx * nrx * cfg.PL0 / pow(distance / d0, cfg.n);
 	return pathloss;
