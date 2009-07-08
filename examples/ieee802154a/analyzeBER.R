@@ -13,8 +13,8 @@
 #channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos")
 #distances <- c(1:10, seq(10, 20, 2), seq(25, 50, 5))
 #packetSizes <- c("8 bytes", "16 bytes", "32 bytes", "64 bytes", "128 bytes") # , 128
-channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos", "cm1", "cm2", "cm5")
-distances <- seq(5, 30, 5)
+channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos") #, "cm1", "cm2", "cm5")
+distances <- c(seq(5, 30, 5), 40, 50)
 packetSizes <- c("8 bytes", "32 bytes", "128 bytes") 
 
 measures <- c("Packet Success Rate (R-S)", "Packet Success Rate (No R-S)", "Bit error rate")
@@ -120,8 +120,8 @@ plotPSR <- function(psr, line) {
 # from http://lmdvr.r-forge.r-project.org/figures/figures.html Figure 8.4
 yscale.components.log10 <- function(lim, ...) {
     ans <- yscale.components.default(lim = lim, ...)
-    tick.at.major <- c(0.01, 0.1, 0.25, 0.5, 0.75, 1) # seq(0.1, 1, 0.1) # c(0.25, 0.5, 0.75, 1) # seq(0.2, 1, 0.2)
-    ans$left$labels$labels <- tick.at.major
+    tick.at.major <- c(0.001, 0.01, 0.1, 0.25, 0.5, 0.75, 1) # seq(0.1, 1, 0.1) # c(0.25, 0.5, 0.75, 1) # seq(0.2, 1, 0.2)
+    ans$left$labels$labels <- c("0.1%", "1%", "10%", "25%", "50%", "75%", "100%")#tick.at.major
     ans$left$labels$at <- log(tick.at.major, 10)
     ans$left$ticks$tck <- 1.5
     ans$left$ticks$at  <- log(tick.at.major, 10)
@@ -179,6 +179,7 @@ latticePSREfficiency <- function(psrFrame) {
 		par.strip.text=list(cex=textSize),
 		xlab=list(cex=textSize),
 		ylab=list(cex=textSize),
+		yscale.components = yscale.components.log10
 		)
   print(theFigure)
   dev.off()
