@@ -16,7 +16,7 @@
 #include "JakesFading.h"
 #include <BaseWorldUtility.h>
 
-DimensionSet JakesFadingMapping::dimensions(Dimension::time);
+DimensionSet JakesFadingMapping::dimensions(Dimension::time());
 
 double JakesFadingMapping::getValue(const Argument& pos) const {
 	double f = model->carrierFrequency;

@@ -45,13 +45,13 @@ public:
 	 * dimensions. If we need more we will have to add them after construction
 	 * by calling the DimensionSets "addDimension()"-method.
 	 *
-	 * Note: Using "Dimension("time")" instead of "Dimension::time" would
-	 * work also, but using "Dimension::time" saves us a string comparison
+	 * Note: Using "Dimension("time")" instead of "Dimension::time()" would
+	 * work also, but using "Dimension::time()" saves us a string comparison
 	 * and should therefore be prefered instead of using "Dimension("time")".
 	 */
 	RandomFrequencyOnlyModel(int seed = 23):
 		frequency("frequency"),
-		dimensions(Dimension::time, frequency) {
+		dimensions(Dimension::time(), frequency) {
 
 		//sets the seed for random number generation. The PhyLayer
 		//(which created the analogue models) gets the seed from the

@@ -41,15 +41,15 @@ public:
 	 * dimensions. If we need more we will have to add them after construction
 	 * by calling the DimensionSets "addDimension()"-method.
 	 *
-	 * Note: Using "Dimension("time")" instead of "Dimension::time" whould
-	 * work also, but using "Dimension::time" spares us a string comparison
+	 * Note: Using "Dimension("time")" instead of "Dimension::time()" whould
+	 * work also, but using "Dimension::time()" spares us a string comparison
 	 * and should therefore be prefered instead of using "Dimension("time")".
-	 * Besides using Dimension::time is more typo resistant since the
+	 * Besides using Dimension::time() is more typo resistant since the
 	 * compiler can check if the static member actually exists.
 	 */
 	RandomFreqTimeModel(int seed = 23):
 		frequency("frequency"),
-		dimensions(Dimension::time, frequency) {
+		dimensions(Dimension::time(), frequency) {
 
 		//sets the seed for random number generation. The PhyLayer
 		//(which created the analogue models) gets the seed from the

@@ -32,14 +32,23 @@ protected:
 	typedef std::map<std::string, int>DimensionIDMap;
 	typedef std::map<int, std::string>DimensionNameMap;
 
-	/** @brief stores the registered dimensions ids.*/
-	static DimensionIDMap dimensionIDs;
+	/** @brief stores the registered dimensions ids.
+	 *
+	 * Uses "construct-on-first-use" idiom to ensure correct initialization
+	 * of static members.*/
+	static DimensionIDMap& dimensionIDs();
 
-	/** @brief ConstMapping from id to name of registered dimensions.*/
-	static DimensionNameMap dimensionNames;
+	/** @brief ConstMapping from id to name of registered dimensions.
+	 *
+	 * Uses "construct-on-first-use" idiom to ensure correct initialization
+	 * of static members.*/
+	static DimensionNameMap& dimensionNames();
 
-	/** @brief Stores the next free ID for a new dimension.*/
-	static int nextFreeID;
+	/** @brief Stores the next free ID for a new dimension.
+	 *
+	 * Uses "construct-on-first-use" idiom to ensure correct initialization
+	 * of static members.*/
+	static int& nextFreeID();
 
 	/**
 	 * @brief Returns an instance of dimension which represents
@@ -50,14 +59,17 @@ protected:
 	/** @brief The unique id of the dimension this instance represents.*/
 	int id;
 
+protected:
+
+
 public:
 	/** @brief Shortcut to the time Dimension, same as 'Dimension("time")',
 	 * but spares the parsing of a string.*/
-	static const Dimension time;
+	static Dimension& time();
 
 	/** @brief Shortcut to the frequency Dimension, same as 'Dimension("frequency")',
 	 * but spares the parsing of a string.*/
-	static const Dimension frequency;
+	static Dimension& frequency();
 
 public:
 	Dimension():
@@ -91,6 +103,7 @@ public:
 	 * @brief Returns the name of this dimension.
 	 */
 	std::string getName() const{
+		static DimensionNameMap& dimensionNames = Dimension::dimensionNames();
 		return dimensionNames.find(id)->second;
 	}
 
@@ -387,7 +400,7 @@ public:
 	 * dimensions inside this Argument.
 	 */
 	DimensionSet getDimensions() const {
-		DimensionSet res(Dimension::time);
+		DimensionSet res(Dimension::time());
 
 		for(unsigned int i = 0; i < count; i++)
 			res.addDimension(values[i].first);
@@ -584,7 +597,7 @@ public:
 	 * @brief Initializes the ConstMapping with a the time dimension as domain.
 	 */
 	ConstMapping():
-		dimensions(Dimension::time) {}
+		dimensions(Dimension::time()) {}
 
 	/**
 	 * @brief Initializes the ConstMapping with the passed DimensionSet as
@@ -595,7 +608,7 @@ public:
 	ConstMapping(const DimensionSet& dimSet):
 		dimensions(dimSet) {
 
-		assert(dimSet.hasDimension(Dimension::time));
+		assert(dimSet.hasDimension(Dimension::time()));
 	}
 
 	virtual ~ConstMapping() {}
@@ -657,7 +670,7 @@ public:
 		const DimensionSet& dims = m.getDimensionSet();
 		out << "Mapping domain: time";
 		for(DimensionSet::iterator it = dims.begin(); it != dims.end(); ++it) {
-			if(*it != Dimension::time){
+			if(*it != Dimension::time()){
 				otherDim = *it;
 				out << ", " << *it;
 			}

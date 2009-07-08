@@ -28,10 +28,6 @@
 
 Define_Module(BaseMacLayer);
 
-Dimension BaseMacLayer::frequency("frequency");
-DimensionSet BaseMacLayer::timeDomain(Dimension::time);
-DimensionSet BaseMacLayer::timeFreqDomain(Dimension::time, Dimension("frequency"));
-
 /**
  * First we have to initialize the module from which we derived ours,
  * in this case BaseLayer.
@@ -173,7 +169,7 @@ Signal* BaseMacLayer::createSignal(simtime_t start, simtime_t length, double pow
 Mapping* BaseMacLayer::createConstantMapping(simtime_t start, simtime_t end, double value)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(0.0, timeDomain, Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet::timeDomain, Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);
@@ -196,18 +192,18 @@ ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t start,
 														 double halfBandwidth,
 														 double value)
 {
-	Mapping* res = MappingUtils::createMapping(0.0, timeFreqDomain, Mapping::LINEAR);
+	Mapping* res = MappingUtils::createMapping(0.0, DimensionSet::timeFreqDomain, Mapping::LINEAR);
 
-	Argument pos(timeFreqDomain);
+	Argument pos(DimensionSet::timeFreqDomain);
 
-	pos.setArgValue(frequency, centerFreq - halfBandwidth);
+	pos.setArgValue(Dimension::frequency(), centerFreq - halfBandwidth);
 	pos.setTime(start);
 	res->setValue(pos, value);
 
 	pos.setTime(end);
 	res->setValue(pos, value);
 
-	pos.setArgValue(frequency, centerFreq + halfBandwidth);
+	pos.setArgValue(Dimension::frequency(), centerFreq + halfBandwidth);
 	res->setValue(pos, value);
 
 	pos.setTime(start);

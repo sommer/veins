@@ -90,7 +90,7 @@ bool MappingUtils::iterateToNext(ConstMappingIterator* it1, ConstMappingIterator
 
 Mapping* MappingUtils::createMapping(const DimensionSet& domain,
 								  Mapping::InterpolationMethod intpl) {
-	assert(domain.hasDimension(Dimension::time));
+	assert(domain.hasDimension(Dimension::time()));
 
 	if(domain.size() == 1){
 		switch(intpl){
@@ -124,7 +124,7 @@ Mapping* MappingUtils::createMapping(const DimensionSet& domain,
 Mapping* MappingUtils::createMapping(double outOfRangeVal,
 								const DimensionSet& domain,
 								Mapping::InterpolationMethod intpl) {
-	assert(domain.hasDimension(Dimension::time));
+	assert(domain.hasDimension(Dimension::time()));
 
 	if(domain.size() == 1){
 		switch(intpl){

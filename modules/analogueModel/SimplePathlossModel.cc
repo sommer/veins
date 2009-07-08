@@ -3,8 +3,8 @@
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimplePathlossModel): "
 
 Dimension SimplePathlossModel::frequency("frequency");
-DimensionSet SimplePathlossModel::timeDomain(Dimension::time);
-DimensionSet SimplePathlossModel::timeFreqDomain(Dimension::time, Dimension("frequency"));
+DimensionSet SimplePathlossModel::timeDomain(Dimension::time());
+DimensionSet SimplePathlossModel::timeFreqDomain(Dimension::time(), Dimension("frequency"));
 
 SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimensions,
 													   SimplePathlossModel* model,
