@@ -154,6 +154,11 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 	simtime_t now, offset;
 	simtime_t aSymbol, shift, burst;
 
+	packetSNIR = 0;
+	packetNoise = 0;
+	packetSignal = 0;
+	packetSamples = 0;
+
 	// Retrieve all potentially colliding airFrames
 	phy->getChannelInfo(signal->getSignalStart(), signal->getSignalStart()
 			+ signal->getSignalLength(), airFrameVector);
@@ -229,6 +234,7 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
 	}
 
+	pulseSINR.record(packetSNIR / packetSamples);
 	receivingPowers.clear();
 	airFrameVector.clear();
 	offsets.clear();
@@ -300,9 +306,13 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		vsignal_square = vsignal_square * pow(lambda, 2) / (120*PI*4*PI);
 		vnoise_square = pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
 		snir = 10*log10(vsignal_square / vnoise_square);
+		packetSignal = packetSignal + vsignal_square;
+		packetNoise = packetNoise + vnoise_square;
+		packetSNIR = packetSNIR + vsignal_square / vnoise_square;
+		packetSamples = packetSamples + 1;
 		snirs = snirs + snir;
 		snirEvals = snirEvals + 1;
-		pulseSINR.record(snirs / snirEvals);
+		//pulseSINR.record(snirs / snirEvals);
 		energy.first = energy.first + vsignal_square; // ignore
 
 	} // consider next point in time

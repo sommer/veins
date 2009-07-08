@@ -51,6 +51,7 @@ private:
 	long nbFailedSyncs, nbSuccessfulSyncs;
 	double nbSymbols, allThresholds;
 	double vsignal2, vnoise2, snirs, snirEvals;
+	double packetSNIR, packetSignal, packetNoise, packetSamples;
 
 protected:
 	double syncThreshold;
