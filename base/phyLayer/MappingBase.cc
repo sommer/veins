@@ -2,6 +2,9 @@
 #include <assert.h>
 //---Dimension implementation-----------------------------
 
+const Dimension Dimension::time = Dimension::time_static();
+const Dimension Dimension::frequency = Dimension::frequency_static();
+
 int& Dimension::nextFreeID () {
 	static int* nextID = new int(1);
 	return *nextID;
@@ -21,14 +24,14 @@ Dimension::DimensionNameMap& Dimension::dimensionNames() {
 	return *names;
 }
 
-Dimension& Dimension::time() {
+Dimension& Dimension::time_static() {
 	//use "construct-on-first-use" idiom to ensure correct order of
 	//static initialization
 	static Dimension* time = new Dimension("time");
 	return *time;
 }
 
-Dimension& Dimension::frequency() {
+Dimension& Dimension::frequency_static() {
 	static Dimension* freq = new Dimension("frequency");
 	return *freq;
 }
@@ -72,8 +75,8 @@ bool Dimension::operator <(const Dimension & other) const
 }
 
 //--DimensionSet implementation ----------------------
-const DimensionSet DimensionSet::timeDomain(Dimension::time());
-const DimensionSet DimensionSet::timeFreqDomain(Dimension::time(), Dimension::frequency());
+const DimensionSet DimensionSet::timeDomain(Dimension::time_static());
+const DimensionSet DimensionSet::timeFreqDomain(Dimension::time_static(), Dimension::frequency_static());
 
 //--Argument implementation---------------------------
 
@@ -85,7 +88,7 @@ Argument::Argument(const DimensionSet & dims, simtime_t timeVal):
 {
 	DimensionSet::const_iterator it = dims.begin();
 
-	assert((*it) == Dimension::time());
+	assert((*it) == Dimension::time_static());
 
 	it++;
 	while(it != dims.end()) {
@@ -106,7 +109,7 @@ void Argument::setTime(simtime_t time)
 }
 
 Argument::iterator Argument::find(const Dimension& dim){
-	assert(!(dim == Dimension::time()));
+	assert(!(dim == Dimension::time_static()));
 
 	for(iterator it = begin(); it != end() && it->first <= dim; ++it){
 		if(it->first == dim)
@@ -116,7 +119,7 @@ Argument::iterator Argument::find(const Dimension& dim){
 	return end();
 }
 Argument::const_iterator Argument::find(const Dimension& dim) const{
-	assert(!(dim == Dimension::time()));
+	assert(!(dim == Dimension::time_static()));
 
 	for(const_iterator it = begin(); it != end() && it->first <= dim; ++it){
 		if(it->first == dim)
@@ -127,7 +130,7 @@ Argument::const_iterator Argument::find(const Dimension& dim) const{
 }
 
 Argument::iterator Argument::lower_bound(const Dimension& dim){
-	assert(!(dim == Dimension::time()));
+	assert(!(dim == Dimension::time_static()));
 
 	iterator it = begin();
 	while(it != end() && it->first < dim)
@@ -136,7 +139,7 @@ Argument::iterator Argument::lower_bound(const Dimension& dim){
 	return it;
 }
 Argument::const_iterator Argument::lower_bound(const Dimension& dim) const{
-	assert(!(dim == Dimension::time()));
+	assert(!(dim == Dimension::time_static()));
 
 	const_iterator it = begin();
 	while(it != end() && it->first < dim)
@@ -161,7 +164,7 @@ double Argument::getArgValue(const Dimension & dim) const
 
 void Argument::setArgValue(const Dimension & dim, double value)
 {
-	assert(!(dim == Dimension::time()));
+	assert(!(dim == Dimension::time_static()));
 
 	insertValue(begin(), dim, value);
 }
@@ -321,7 +324,7 @@ double Argument::compare(const Argument& o, const DimensionSet& dims) const{
 		const Dimension& dim = *rIt;
 
 		//catch special case time (after which we can abort)
-		if(dim == Dimension::time())
+		if(dim == Dimension::time)
 		{
 			return SIMTIME_DBL(time - o.time);
 		}
@@ -414,7 +417,7 @@ void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& 
 
 	//increase iterator to next dimension (means curDim now stores the next dimension)
 	--curDim;
-	bool nextIsTime = (*curDim == Dimension::time());
+	bool nextIsTime = (*curDim == Dimension::time);
 
 	//get our iteration borders and steps
 	double fromD = from.getArgValue(d);
@@ -449,7 +452,7 @@ void SimpleConstMapping::initializeArguments(const Argument& min,
 	DimensionSet::const_iterator dimIt = dimensions.end();
 	--dimIt;
 	Argument pos = min;
-	if(*dimIt == Dimension::time())
+	if(*dimIt == Dimension::time)
 		createKeyEntries(min, max, interval, pos);
 	else
 		createKeyEntries(min, max, interval, dimIt, pos);

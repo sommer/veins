@@ -196,14 +196,14 @@ ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t start,
 
 	Argument pos(DimensionSet::timeFreqDomain);
 
-	pos.setArgValue(Dimension::frequency(), centerFreq - halfBandwidth);
+	pos.setArgValue(Dimension::frequency_static(), centerFreq - halfBandwidth);
 	pos.setTime(start);
 	res->setValue(pos, value);
 
 	pos.setTime(end);
 	res->setValue(pos, value);
 
-	pos.setArgValue(Dimension::frequency(), centerFreq + halfBandwidth);
+	pos.setArgValue(Dimension::frequency_static(), centerFreq + halfBandwidth);
 	res->setValue(pos, value);
 
 	pos.setTime(start);

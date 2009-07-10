@@ -67,15 +67,6 @@ class SimplePathlossModel : public AnalogueModel
 protected:
 	friend class SimplePathlossConstMapping;
 
-	/** @brief shortcut to frequency dimension */
-	static Dimension frequency;
-
-	/** @brief Shortcut to time domain.*/
-	static DimensionSet timeDomain;
-
-	/** @brief Shortcut to time x frequency domain.*/
-	static DimensionSet timeFreqDomain;
-
 	/** @brief Path loss coefficient. **/
     double pathLossAlphaHalf;
 

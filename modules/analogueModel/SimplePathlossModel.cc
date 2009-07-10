@@ -2,17 +2,13 @@
 
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimplePathlossModel): "
 
-Dimension SimplePathlossModel::frequency("frequency");
-DimensionSet SimplePathlossModel::timeDomain(Dimension::time());
-DimensionSet SimplePathlossModel::timeFreqDomain(Dimension::time(), Dimension("frequency"));
-
 SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimensions,
 													   SimplePathlossModel* model,
 													   const double distFactor) :
 	SimpleConstMapping(dimensions),
 	distFactor(distFactor),
 	model(model),
-	hasFrequency(dimensions.hasDimension(SimplePathlossModel::frequency))
+	hasFrequency(dimensions.hasDimension(Dimension::frequency_static()))
 {
 }
 
@@ -20,8 +16,8 @@ double SimplePathlossConstMapping::getValue(const Argument& pos) const
 {
 	double freq = model->carrierFrequency;
 	if(hasFrequency) {
-		assert(pos.hasArgVal(SimplePathlossModel::frequency));
-		freq = pos.getArgValue(SimplePathlossModel::frequency);
+		assert(pos.hasArgVal(Dimension::frequency));
+		freq = pos.getArgValue(Dimension::frequency);
 	}
 	double wavelength = BaseWorldUtility::speedOfLight / freq;
 	return (wavelength * wavelength) * distFactor;
@@ -57,9 +53,9 @@ void SimplePathlossModel::filterSignal(Signal& s){
 	double distFactor = pow(sqrDistance, -pathLossAlphaHalf) / (16.0 * M_PI * M_PI);
 	debugEV << "distance factor is: " << distFactor << endl;
 
-	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(frequency);
+	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency);
 
-	const DimensionSet& domain = hasFrequency ? timeFreqDomain : timeDomain;
+	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain : DimensionSet::timeDomain;
 
 	SimplePathlossConstMapping* attMapping = new SimplePathlossConstMapping(
 													domain,

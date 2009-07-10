@@ -761,7 +761,7 @@ Signal* TestPhyLayer::createSignal(simtime_t start,
 Mapping* TestPhyLayer::createConstantMapping(simtime_t start, simtime_t end, double value)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time()), Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time), Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);
@@ -783,7 +783,7 @@ Mapping* TestPhyLayer::createHeaderPayloadMapping(	simtime_t start,
 													double payloadValue)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time()), Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time), Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);
@@ -1013,7 +1013,7 @@ void TestPhyLayer::doBaseDeciderTests()
 		{
 			// ask SNRThresholdDecider for the ChannelState, it should call getChannelInfo()
 			// on the DeciderToPhyInterface
-			testRSSIMap = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time()),
+			testRSSIMap = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time),
 															Mapping::LINEAR);
 			cs = decider->getChannelState();
 			assertTrue("The PhyLayer is not currently receiving an AirFrame", cs.isIdle());
@@ -1037,7 +1037,7 @@ void TestPhyLayer::doBaseDeciderTests()
 			// so it needs to be set properly before
 			fillAirFramesOnChannel();
 
-			testRSSIMap = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time()),
+			testRSSIMap = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time),
 														Mapping::LINEAR);
 			// call getChannelState() of the SNRThresholdDecider
 			cs = decider->getChannelState();

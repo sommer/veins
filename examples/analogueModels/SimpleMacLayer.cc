@@ -12,8 +12,8 @@ void SimpleMacLayer::initialize(int stage) {
 	if(stage == 0) {
 		myIndex = findHost()->getIndex();
 
-		dimensions.addDimension(Dimension::time());
-		dimensions.addDimension(Dimension("frequency"));
+		dimensions.addDimension(Dimension::time);
+		dimensions.addDimension(Dimension::frequency);
 
 		dataOut = findGate("lowerGateOut");
 		dataIn = findGate("lowerGateIn");

@@ -15,7 +15,7 @@
 
 #include "LogNormalShadowing.h"
 
-DimensionSet LogNormalShadowing::dimensions(Dimension::time());
+DimensionSet LogNormalShadowing::dimensions(Dimension::time_static());
 
 LogNormalShadowing::LogNormalShadowing(double mean, double stdDev, simtime_t interval):
 	mean(mean), stdDev(stdDev), interval(interval)

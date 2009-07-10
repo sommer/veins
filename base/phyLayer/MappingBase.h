@@ -61,15 +61,14 @@ protected:
 
 protected:
 
-
 public:
 	/** @brief Shortcut to the time Dimension, same as 'Dimension("time")',
 	 * but spares the parsing of a string.*/
-	static Dimension& time();
+	static const Dimension time;
 
 	/** @brief Shortcut to the frequency Dimension, same as 'Dimension("frequency")',
 	 * but spares the parsing of a string.*/
-	static Dimension& frequency();
+	static const Dimension frequency;
 
 public:
 	Dimension():
@@ -80,6 +79,26 @@ public:
 	 * dimension with the passed name.
 	 */
 	Dimension(const std::string& name);
+
+	/**
+	 * @brief Shortcut to the time Dimension, same as 'Dimension("time")',
+	 * but spares the parsing of a string.
+	 *
+	 * This method should be used instead of the static "time" member
+	 * when used during initialization of static variables since it assures
+	 * the correct order of initialization.
+	 * */
+	static Dimension& time_static();
+
+	/**
+	 * @brief Shortcut to the frequency Dimension, same as 'Dimension("frequency")',
+	 * but spares the parsing of a string.
+	 *
+	 * This method should be used instead of the static "frequency" member
+	 * when used during initialization of static variables since it assures
+	 * the correct order of initialization.
+	 */
+	static Dimension& frequency_static();
 
 	/**
 	 * @brief Returns true if the ids of the two dimensions are equal.
@@ -400,7 +419,7 @@ public:
 	 * dimensions inside this Argument.
 	 */
 	DimensionSet getDimensions() const {
-		DimensionSet res(Dimension::time());
+		DimensionSet res(Dimension::time_static());
 
 		for(unsigned int i = 0; i < count; i++)
 			res.addDimension(values[i].first);
@@ -597,7 +616,7 @@ public:
 	 * @brief Initializes the ConstMapping with a the time dimension as domain.
 	 */
 	ConstMapping():
-		dimensions(Dimension::time()) {}
+		dimensions(Dimension::time_static()) {}
 
 	/**
 	 * @brief Initializes the ConstMapping with the passed DimensionSet as
@@ -608,7 +627,7 @@ public:
 	ConstMapping(const DimensionSet& dimSet):
 		dimensions(dimSet) {
 
-		assert(dimSet.hasDimension(Dimension::time()));
+		assert(dimSet.hasDimension(Dimension::time_static()));
 	}
 
 	virtual ~ConstMapping() {}
@@ -670,7 +689,7 @@ public:
 		const DimensionSet& dims = m.getDimensionSet();
 		out << "Mapping domain: time";
 		for(DimensionSet::iterator it = dims.begin(); it != dims.end(); ++it) {
-			if(*it != Dimension::time()){
+			if(*it != Dimension::time){
 				otherDim = *it;
 				out << ", " << *it;
 			}

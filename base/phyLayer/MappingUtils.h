@@ -1372,12 +1372,12 @@ protected:
 		DimensionSet::const_iterator it = dimensions.find(myDimension);
 		Dimension nextDim = *(--it);
 		if(wrappedOORMapping == 0) {
-			if(nextDim == Dimension::time())
+			if(nextDim == Dimension::time)
 				return new TimeMapping<Interpolator>();
 			else
 				return new MultiDimMapping<Interpolator>(dimensions, nextDim, LINEAR);
 		} else {
-			if(nextDim == Dimension::time())
+			if(nextDim == Dimension::time)
 				return new TimeMapping<Interpolator>(outOfRangeMapping->getValue());
 			else
 				return new MultiDimMapping<Interpolator>(dimensions, nextDim,
@@ -1390,7 +1390,7 @@ protected:
 		DimensionSet::const_iterator dimIt = dimensions.find(myDimension);
 		Dimension nextDim = *(--dimIt);
 
-		if(nextDim == Dimension::time())
+		if(nextDim == Dimension::time_static())
 		{
 			for(typename SubFunctionMap::iterator it = entries.begin();
 				it != entries.end(); it++)
@@ -1660,7 +1660,7 @@ protected:
 	Mapping* createSubSignal() const{
 		DimensionSet::const_iterator it = dimensions.find(myDimension);
 		Dimension nextDim = *(--it);
-		if(nextDim == Dimension::time())
+		if(nextDim == Dimension::time)
 			return new TimeMapping<Linear>();
 		else
 			return new FilledUpMapping(dimensions, nextDim, keys, LINEAR);
@@ -1768,7 +1768,7 @@ public:
 	 *
 	 * Note: The interpolation method is always linear, at the moment.
 	 */
-	static Mapping* createMapping(const DimensionSet& domain = DimensionSet(Dimension::time()),
+	static Mapping* createMapping(const DimensionSet& domain = DimensionSet(Dimension::time_static()),
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
 
 	/**
@@ -1778,7 +1778,7 @@ public:
 	 * Note: The interpolation method is always linear, at the moment.
 	 */
 	static Mapping* createMapping(double outOfRangeValue,
-								  const DimensionSet& domain = DimensionSet(Dimension::time()),
+								  const DimensionSet& domain = DimensionSet(Dimension::time_static()),
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
 
 	template<class Operator>

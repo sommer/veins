@@ -146,7 +146,7 @@ protected:
 		DimensionSet set3;
 	public:
 		ArgFactory(Dimension d2, Dimension d3):
-			time(Dimension::time()), d2(d2), d3(d3), set2(time, d2), set3(time, d2, d3) {}
+			time(Dimension::time_static()), d2(d2), d3(d3), set2(time, d2), set3(time, d2, d3) {}
 
 		Argument operator()(simtime_t t){
 			return Argument(t);
@@ -182,7 +182,7 @@ protected:
 	Mapping* createMappingBuffer;
 public:
 	OmnetTest():
-		time(Dimension::time()), freq("frequency"), channel(freq), space("space"),
+		time(Dimension::time_static()), freq("frequency"), channel(freq), space("space"),
 		A(freq, space), createMappingBuffer(0){
 		for(double i = 0.0; i <= 6.0; i+=0.25) {
 			for(simtime_t j = 0.0; j <= 6.0; j+=0.25) {
@@ -209,7 +209,7 @@ protected:
 		assertTrue("Time dimension should be smaller then frequency.", d1 < d2);
 		assertFalse("Time dimension should not be equal with frequency.", d1 == d2);
 
-		assertEqual("With \"time\" created dimension should be equal with Dimension::time()", Dimension::time(), d1);
+		assertEqual("With \"time\" created dimension should be equal with Dimension::time()", Dimension::time, d1);
 
 		Dimension d3("time");
 		assertEqual("Check time2 dimensions name.", "time", d3.getName());
@@ -504,7 +504,7 @@ protected:
 
 	void testMultiFunction() {
 
-		DimensionSet dimSet(Dimension::time());
+		DimensionSet dimSet(Dimension::time);
 		dimSet.addDimension(channel);
 
 		MultiDimMapping<Linear> f(dimSet);
@@ -872,7 +872,7 @@ protected:
 
 
 	void testSteps() {
-		Mapping* t1 = MappingUtils::createMapping(DimensionSet(Dimension::time()), Mapping::STEPS);
+		Mapping* t1 = MappingUtils::createMapping(DimensionSet(Dimension::time), Mapping::STEPS);
 
 		assertEqual("Interpolation method STEPS - empty time A.", 0, t1->getValue(A(0)));
 
@@ -912,7 +912,7 @@ protected:
 
 		delete t1;
 
-		t1 = MappingUtils::createMapping(1.0, DimensionSet(Dimension::time()), Mapping::STEPS);
+		t1 = MappingUtils::createMapping(1.0, DimensionSet(Dimension::time), Mapping::STEPS);
 
 		assertEqual("Interpolation method STEPS - empty time B.", 1.0, t1->getValue(A(0)));
 
@@ -1090,7 +1090,7 @@ protected:
 	}
 
 	void testNearest() {
-		Mapping* t1 = MappingUtils::createMapping(DimensionSet(Dimension::time()), Mapping::NEAREST);
+		Mapping* t1 = MappingUtils::createMapping(DimensionSet(Dimension::time), Mapping::NEAREST);
 
 		assertEqual("Interpolation method NEAREST - empty time A.", 0, t1->getValue(A(0)));
 
@@ -1111,7 +1111,7 @@ protected:
 
 		delete t1;
 
-		t1 = MappingUtils::createMapping(1.0, DimensionSet(Dimension::time()), Mapping::NEAREST);
+		t1 = MappingUtils::createMapping(1.0, DimensionSet(Dimension::time), Mapping::NEAREST);
 
 		assertEqual("Interpolation method NEAREST - empty time B.", 1.0, t1->getValue(A(0)));
 
@@ -1692,7 +1692,7 @@ protected:
 		delete it;
 		delete res;
 
-		MultiDimMapping<Linear> multi1(DimensionSet(Dimension::time(), freq));
+		MultiDimMapping<Linear> multi1(DimensionSet(Dimension::time, freq));
 
 		Argument pos1f(t1);
 		pos1f.setArgValue(freq, 2.0);
@@ -1711,7 +1711,7 @@ protected:
 		delete it;
 		delete res;
 
-		MultiDimMapping<Linear> multi2(DimensionSet(Dimension::time(), freq, space));
+		MultiDimMapping<Linear> multi2(DimensionSet(Dimension::time, freq, space));
 
 		Argument pos1fs(t1);
 		pos1fs.setArgValue(freq, 2.0);
@@ -1734,7 +1734,7 @@ protected:
 
 		Argument pos0(0.5);
 
-		TestSimpleConstMapping simple1(DimensionSet(Dimension::time()));
+		TestSimpleConstMapping simple1(DimensionSet(Dimension::time));
 
 		simple1.initializeArguments(pos0, pos1, pos1);
 
@@ -1765,7 +1765,7 @@ protected:
 		delete it;
 		delete res;
 
-		TestSimpleConstMapping simple2(DimensionSet(Dimension::time(), freq));
+		TestSimpleConstMapping simple2(DimensionSet(Dimension::time, freq));
 
 		simple2.initializeArguments(pos1f, pos1f, pos1f);
 
@@ -1783,7 +1783,7 @@ protected:
 
 	template<class Operator>
 	void testMappingOperator(std::string opName, Operator op){
-		DimensionSet timeFreq(time, freq);
+		DimensionSet timeFreq(Dimension::time, freq);
 		MultiDimMapping<Linear> f1(timeFreq);
 		MultiDimMapping<Linear> f2(timeFreq);
 		TimeMapping<Linear> f3;

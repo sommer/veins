@@ -234,7 +234,7 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 	//TODO: create a "MappingUtils:createMappingFrom()"-method and use it here instead
 	//of abusing the add method
 	// create an empty mapping
-	Mapping* resultMap = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time()));
+	Mapping* resultMap = MappingUtils::createMapping(0.0, DimensionSet::timeDomain);
 
 	//add thermal noise
 	ConstMapping* thermalNoise = phy->getThermalNoise(start, end);

@@ -46,7 +46,7 @@ void BasePhyLayer::initialize(int stage) {
 		//	- initialize basic parameters
         if(readPar("useThermalNoise", false)) {
 			double thermalNoiseVal = FWMath::dBm2mW(readPar("thermalNoise", -999.0));
-			thermalNoise = new ConstantSimpleConstMapping(DimensionSet(Dimension::time()),
+			thermalNoise = new ConstantSimpleConstMapping(DimensionSet::timeDomain,
 														  thermalNoiseVal);
 		} else {
 			thermalNoise = 0;

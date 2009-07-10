@@ -1013,7 +1013,7 @@ Signal* Mac80211::createSignal(simtime_t start, simtime_t length, double power, 
 	//create and set bitrate mapping
 
 	//create mapping over time
-	Mapping* bitrateMapping = MappingUtils::createMapping(DimensionSet(Dimension::time()), Mapping::STEPS);
+	Mapping* bitrateMapping = MappingUtils::createMapping(DimensionSet::timeDomain, Mapping::STEPS);
 
 	Argument pos(start);
 	bitrateMapping->setValue(pos, BITRATE_HEADER);
