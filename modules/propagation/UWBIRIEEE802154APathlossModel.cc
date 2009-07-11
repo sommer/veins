@@ -233,24 +233,18 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
         while (moreTaps) {
             // modify newTxPower
             // we add three points for linear interpolation
-        	// we set the start and end point before adding the new value for correct interpolation
-        	// TODO: add phase information
-            arg.setTime(pulseStart + clusterStart + tau_kl);
-            double pValueStart = 0; // newTxPower->getValue(arg);
-            arg.setTime(pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse);
-            double pValueEnd = 0; // newTxPower->getValue(arg);
-
-            arg.setTime(pulseStart + clusterStart + tau_kl);
-            newTxPower->setValue(arg, pValueStart);
-
-            arg.setTime(pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse);
+        	// we set the start and end point before adding the new values for correct interpolation
+            double pValueStart = newTxPower->getValue(arg);
+            double pValueEnd = newTxPower->getValue(arg);
+            simtime_t echoStart = pulseStart + clusterStart + tau_kl;
+            simtime_t echoEnd = pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse;
+            simtime_t echoPeak = pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse/2;
+            arg.setTime(echoEnd);
             newTxPower->setValue(arg, pValueEnd);
-			/*
-            double phase = uniform(-1, 1);
-            if(firstTap) {
-            	phase = 1;
-            	firstTap = false;
-            }*/
+            arg.setTime(echoStart);
+            newTxPower->setValue(arg, pValueStart);
+            bool raising = true;
+
             if(firstTap) {
             	mfactor = cfg.m_0;
             } else {
@@ -258,8 +252,6 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             	msigma = cfg.var_m_0 - cfg.var_k_m*tau_kl.dbl();
             	mfactor = normal(mmean, msigma);
             }
-            arg.setTime(pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse / 2);
-            double finalTapEnergy = tapEnergy * pulseEnergy;
             /*
             if(doSmallScaleShadowing) {
             	double tmp = sqrt(mfactor*mfactor-mfactor);
@@ -268,7 +260,59 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             	finalTapEnergy = finalTapEnergy * 10^(mfactor/10);
             }
             */
-            newTxPower->setValue(arg, finalTapEnergy);
+            double finalTapEnergy = tapEnergy * pulseEnergy;
+
+            // We cannot add intermediate points "online" as we need the interpolated
+            // values of the signal before adding this echo pulse.
+            map<simtime_t, double> intermediatePoints;
+            // We need to evaluate all points of the mapping already stored that intersect
+            // with this pulse.
+            MappingIterator* iter = newTxPower->createIterator(arg);
+            simtime_t currentPoint = echoStart;
+            while(currentPoint < echoEnd) {
+            	if(raising && iter->getNextPosition().getTime() < echoPeak) {
+            		// there is a point in the first half of the echo
+            		// retrieve its value
+            		iter->next();
+            		double oldValue = iter->getValue();
+            		currentPoint = iter->getPosition().getTime();
+            		// interpolate current echo point
+            		double echoValue = ((currentPoint - echoStart)/(0.5*IEEE802154A::mandatory_pulse)).dbl();
+            		echoValue = echoValue * finalTapEnergy;
+            		intermediatePoints[currentPoint] = echoValue + oldValue;
+            	} else if(raising && iter->getNextPosition().getTime() >= echoPeak) {
+					// We reached the peak of the pulse.
+            		currentPoint = echoPeak;
+            		arg.setTime(currentPoint);
+            		iter->jumpTo(arg);
+            		double oldValue = iter->getValue();
+            		intermediatePoints[currentPoint] = oldValue + finalTapEnergy;
+					raising = false;
+            	} else if(!raising && iter->getNextPosition().getTime() < echoEnd) {
+            		// there is a point in the second half of the echo
+            		// retrieve its value
+            		iter->next();
+            		double oldValue = iter->getValue();
+            		currentPoint = iter->getPosition().getTime();
+            		// interpolate current echo point
+            		double echoValue = 1 - ((currentPoint - echoPeak)/(0.5*IEEE802154A::mandatory_pulse)).dbl();
+            		echoValue = echoValue * finalTapEnergy;
+            		intermediatePoints[currentPoint] = echoValue + oldValue;
+            	} else if (!raising && iter->getNextPosition().getTime() >= echoEnd) {
+            		currentPoint = echoEnd; // nothing to do, we already set this point
+            	}
+            }
+            delete iter;
+
+            // Add all points stored in intermediatePoints.
+            map<simtime_t, double>::iterator newPointsIter;
+            newPointsIter = intermediatePoints.begin();
+            while(newPointsIter != intermediatePoints.end()) {
+            	arg.setTime(newPointsIter->first);
+            	newTxPower->setValue(arg, newPointsIter->second);
+            	newPointsIter++;
+            }
+
             power = power + finalTapEnergy; // statistics
 
             // Update values for next iteration
