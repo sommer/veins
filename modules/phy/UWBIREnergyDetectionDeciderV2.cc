@@ -238,7 +238,7 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
 	}
 
-	pulseSINR.record(packetSNIR / packetSamples);
+	pulseSINR.record( 10*log(packetSNIR / packetSamples) );
 	receivingPowers.clear();
 	airFrameVector.clear();
 	offsets.clear();
