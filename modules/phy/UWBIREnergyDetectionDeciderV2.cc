@@ -227,10 +227,14 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 
 		if (energyZero.second > energyOne.second) {
 		  decodedBit = 0;
+		  packetSNIR = packetSNIR + energyZero.first;
 	    } else {
 	      decodedBit = 1;
+	      packetSNIR = packetSNIR + energyOne.first;
 	    }
 		receivedBits->push_back(static_cast<bool>(decodedBit));
+		packetSamples = packetSamples + 1;
+
 		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
 	}
 
@@ -240,10 +244,15 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 	offsets.clear();
 }
 
+/*
+ * @brief Returns a pair with as first value the SNIR (if the signal is not nul in this window, and 0 otherwise)
+ * and as second value a "score" associated to this window. This score is equals to the sum for all
+ * 16 pulse peak positions of the voltage measured by the receiver ADC.
+ */
 pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		simtime_t now, simtime_t burst, Signal* signal) {
 	std::pair<double, double> energy;
-	energy.first = 0; // stores energy contribution from tracked signal
+	energy.first = 0; // stores SNIR
 	energy.second = 0; // stores total captured window energy
 	vector<ConstMapping*>::iterator mappingIter;
 	Argument arg;
@@ -264,7 +273,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		double vmeasured_square = 0; // to the square [V²]
 		double vsignal_square = 0;	// square of the voltage that would be induced on the antenna if there were no interferers (Efield=signalValue)
 		double vnoise_square = 0;	// (thermal noise + interferers noise)²
-		double snir = 0;			// pulse SNIR estimate (stats)
+		double snir = 0;			// burst SNIR estimate
 		double vThermalNoise = 0;	// thermal noise realization
 		arg.setTime(now);		// loop variable: begin by considering the first pulse
 		int currSig = 0;
@@ -276,11 +285,11 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			ConstMapping* currPower = aSignal.getReceivingPower();
 			arg.setTime(now + offsets.at(currSig));
 			double measure = currPower->getValue(arg)*Ptx; // de-normalize (this value should be in AirFrame or in Signal, to be set at run-time)
-			measure = measure ; // times uniform(-1, +1); // random point of Efield at sampling (due to pulse waveform and self interference)
+//			measure = measure * uniform(0, +1); // random point of Efield at sampling (due to pulse waveform and self interference)
 			measure = sqrt(120*PI*measure); // get electric field
 			if (currPower == signalPower) {
-				signalValue = measure;
-				Efield = Efield + measure;
+				signalValue = measure*0.5; // we capture half of the pulse energy to account for self interference
+				Efield = Efield + signalValue;
 			} else {
 				// take a random point within pulse envelope for interferer
 				Efield = Efield + measure * uniform(-1, +1);
@@ -306,15 +315,19 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		vsignal_square = pow(signalValue, 2)/50;
 		vsignal_square = vsignal_square * pow(lambda, 2) / (120*PI*4*PI);
 		vnoise_square = pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
-		snir = 10*log10(vsignal_square / vnoise_square);
+		if(signalValue > 0) {
+		  snir = snir + vsignal_square / vnoise_square;
+		} else {
+			snir = snir + 0;
+		}
 		packetSignal = packetSignal + vsignal_square;
 		packetNoise = packetNoise + vnoise_square;
-		packetSNIR = packetSNIR + vsignal_square / vnoise_square;
-		packetSamples = packetSamples + 1;
+		//packetSNIR = packetSNIR + vsignal_square / vnoise_square;
+		//packetSamples = packetSamples + 1;
 		snirs = snirs + snir;
 		snirEvals = snirEvals + 1;
 		//pulseSINR.record(snirs / snirEvals);
-		energy.first = energy.first + vsignal_square; // ignore
+		energy.first = snir;
 
 	} // consider next point in time
 
