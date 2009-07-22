@@ -159,7 +159,7 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
 
     txPower = s.getTransmissionPower();
     newTxPower = new TimeMapping<Linear>(); //dynamic_cast<TimeMapping<Linear>*> (txPower->clone()); // create working copy
-
+    pulsesIter = newTxPower->createIterator(); // create an iterator that we will use many times in addEchoes
     // generate number of clusters for this channel (channel coherence time > packet air time)
     L = max(1, poisson(cfg.Lmean));
     // Choose block shadowing
@@ -180,6 +180,7 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
         iter->next();
     }
     delete iter;
+    delete pulsesIter;
     s.setTransmissionPower(newTxPower);
 
 
@@ -228,7 +229,6 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
     double mfactor = 0;
     double mmean = 0, msigma = 0;
     bool firstTap = true;
-
     for (int cluster = 0; cluster < L; cluster++) {
         while (moreTaps) {
             // modify newTxPower
@@ -267,42 +267,41 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             map<simtime_t, double> intermediatePoints;
             // We need to evaluate all points of the mapping already stored that intersect
             // with this pulse.
-            MappingIterator* iter = newTxPower->createIterator(arg);
+            pulsesIter->jumpTo(arg);
             simtime_t currentPoint = echoStart;
             while(currentPoint < echoEnd) {
-            	if(raising && iter->getNextPosition().getTime() < echoPeak) {
+            	if(raising && pulsesIter->getNextPosition().getTime() < echoPeak) {
             		// there is a point in the first half of the echo
             		// retrieve its value
-            		iter->next();
-            		double oldValue = iter->getValue();
-            		currentPoint = iter->getPosition().getTime();
+            		pulsesIter->next();
+            		double oldValue = pulsesIter->getValue();
+            		currentPoint = pulsesIter->getPosition().getTime();
             		// interpolate current echo point
             		double echoValue = ((currentPoint - echoStart)/(0.5*IEEE802154A::mandatory_pulse)).dbl();
             		echoValue = echoValue * finalTapEnergy;
             		intermediatePoints[currentPoint] = echoValue + oldValue;
-            	} else if(raising && iter->getNextPosition().getTime() >= echoPeak) {
+            	} else if(raising && pulsesIter->getNextPosition().getTime() >= echoPeak) {
 					// We reached the peak of the pulse.
             		currentPoint = echoPeak;
             		arg.setTime(currentPoint);
-            		iter->jumpTo(arg);
-            		double oldValue = iter->getValue();
+            		pulsesIter->jumpTo(arg);
+            		double oldValue = pulsesIter->getValue();
             		intermediatePoints[currentPoint] = oldValue + finalTapEnergy;
 					raising = false;
-            	} else if(!raising && iter->getNextPosition().getTime() < echoEnd) {
+            	} else if(!raising && pulsesIter->getNextPosition().getTime() < echoEnd) {
             		// there is a point in the second half of the echo
             		// retrieve its value
-            		iter->next();
-            		double oldValue = iter->getValue();
-            		currentPoint = iter->getPosition().getTime();
+            		pulsesIter->next();
+            		double oldValue = pulsesIter->getValue();
+            		currentPoint = pulsesIter->getPosition().getTime();
             		// interpolate current echo point
             		double echoValue = 1 - ((currentPoint - echoPeak)/(0.5*IEEE802154A::mandatory_pulse)).dbl();
             		echoValue = echoValue * finalTapEnergy;
             		intermediatePoints[currentPoint] = echoValue + oldValue;
-            	} else if (!raising && iter->getNextPosition().getTime() >= echoEnd) {
+            	} else if (!raising && pulsesIter->getNextPosition().getTime() >= echoEnd) {
             		currentPoint = echoEnd; // nothing to do, we already set this point
             	}
             }
-            delete iter;
 
             // Add all points stored in intermediatePoints.
             map<simtime_t, double>::iterator newPointsIter;

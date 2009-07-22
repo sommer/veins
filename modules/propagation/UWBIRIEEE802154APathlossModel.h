@@ -149,6 +149,7 @@ protected:
     TimeMapping<Linear>* newTxPower;
     Mapping* txPower;
     Argument arg;
+    MappingIterator* pulsesIter;
     // number of clusters
     double L;
     // block shadowing
