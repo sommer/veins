@@ -327,7 +327,9 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		snirs = snirs + snir;
 		snirEvals = snirEvals + 1;
 		if(signalValue > 0) {
-		  double pulseSnr = pow(signalValue, 2)/50 * pow(lambda, 2) / (120*PI*4*PI);
+		  double pulseSnr = pow(signalValue, 2)/50 * pow(lambda, 2) / (120*PI*4*PI); // peak voltage
+		  pulseSnr = pow(pulseSnr, 2) / 50  ; // watts
+		  pulseSnr = pulseSnr / (2.0217E-12); // noise power = kb*T*B
 		  //pulseSnrs = pulseSnrs + pulseSnr;
 		  ebN0.record(pulseSnr);
 		}
