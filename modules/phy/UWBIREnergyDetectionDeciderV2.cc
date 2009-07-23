@@ -203,7 +203,7 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 	}
 	// debugging information (end)
 
-
+    int nbSymbol = 0;
 	// Loop to decode each bit value
 	for (int symbol = 0; IEEE802154A::mandatory_preambleLength + symbol
 			* aSymbol < signal->getSignalLength(); symbol++) {
@@ -230,15 +230,16 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		  packetSNIR = packetSNIR + energyZero.first;
 	    } else {
 	      decodedBit = 1;
-	      packetSNIR = packetSNIR + energyOne.first;
+		//packetSNIR = packetSNIR + energyOne.first;
 	    }
 		receivedBits->push_back(static_cast<bool>(decodedBit));
-		packetSamples = packetSamples + 16; // 16 EbN0 evaluations per bit
+		nbSymbol = nbSymbol + 1;
+		//packetSamples = packetSamples + 16; // 16 EbN0 evaluations per bit
 
 		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
 	}
 
-	pulseSINR.record( 10*log(packetSNIR / packetSamples) );
+	pulseSINR.record( 10*log(packetSNIR / (16*(nbSymbols+1))) );
 	receivingPowers.clear();
 	airFrameVector.clear();
 	offsets.clear();
