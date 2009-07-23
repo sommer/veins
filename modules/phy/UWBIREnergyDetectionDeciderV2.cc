@@ -228,6 +228,7 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		if (energyZero.second > energyOne.second) {
 		  decodedBit = 0;
 		  packetSNIR = packetSNIR + energyZero.first;
+
 	    } else {
 	      decodedBit = 1;
 		//packetSNIR = packetSNIR + energyOne.first;
@@ -237,9 +238,11 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		//packetSamples = packetSamples + 16; // 16 EbN0 evaluations per bit
 
 		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
+
+		pulseSINR.record( 10*log(energyZero.second / energyOne.second) ); // valid only if signal consists of zeroes
 	}
 
-	pulseSINR.record( 10*log(packetSNIR / (16*(nbSymbols+1))) );
+//	pulseSINR.record( 10*log(packetSNIR / (16*(nbSymbols+1))) );
 	receivingPowers.clear();
 	airFrameVector.clear();
 	offsets.clear();
