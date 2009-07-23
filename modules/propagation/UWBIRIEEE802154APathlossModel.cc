@@ -229,6 +229,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
     double mfactor = 0;
     double mmean = 0, msigma = 0;
     bool firstTap = true;
+    simtime_t echoEnd = 0;
     for (int cluster = 0; cluster < L; cluster++) {
         while (moreTaps) {
             // modify newTxPower
@@ -237,7 +238,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             double pValueStart = newTxPower->getValue(arg);
             double pValueEnd = newTxPower->getValue(arg);
             simtime_t echoStart = pulseStart + clusterStart + tau_kl;
-            simtime_t echoEnd = pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse;
+            echoEnd = pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse;
             simtime_t echoPeak = pulseStart + clusterStart + tau_kl + IEEE802154A::mandatory_pulse/2;
             arg.setTime(echoEnd);
             newTxPower->setValue(arg, pValueEnd);
@@ -335,6 +336,8 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
         Omega_l = pow(10, (10 * log(exp(expArg.dbl())) + Mcluster) / 10);
         moreTaps = true;
     }
+    arg.setTime(echoEnd);
+    newTxPower->setValue(arg, 0);
     averagePower = averagePower + power;
     averagePowers.record( averagePower / ((double) nbCalls));
 }
