@@ -155,7 +155,9 @@ void IEEE802154A::generateSyncPreamble(Mapping* mapping, Argument* arg) {
 				arg->setTime(n * Tpsym + pos * IEEE802154A::spreadingdL
 						* IEEE802154A::mandatory_pulse);
 				}
-				generatePulse(mapping, arg, C31[Ci - 1][pos],
+				//generatePulse(mapping, arg, C31[Ci - 1][pos],
+				//		IEEE802154A::maxPulse, IEEE802154A::mandatory_pulse);
+				generatePulse(mapping, arg, 1,			// always positive polarity
 						IEEE802154A::maxPulse, IEEE802154A::mandatory_pulse);
 			}
 		}
@@ -170,7 +172,8 @@ void IEEE802154A::generateSFD(Mapping* mapping, Argument* arg) {
 				if (C31[Ci - 1][pos] != 0) {
 					arg->setTime(sfdStart + n * Tpsym + pos * IEEE802154A::spreadingdL
 							* IEEE802154A::mandatory_pulse);
-					generatePulse(mapping, arg, C31[Ci - 1][pos] * shortSFD[n]);
+					//generatePulse(mapping, arg, C31[Ci - 1][pos] * shortSFD[n]); // change pulse polarity
+					generatePulse(mapping, arg, 1); // always positive polarity
 				}
 			}
 		}
