@@ -93,7 +93,7 @@ void IEEE802154A::setPSDULength(int _psduLength) {
 }
 
 IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
-		simtime_t signalStart) {
+		simtime_t signalStart, bool allZeros) {
 	// 48 R-S parity bits, the 2 symbols phy header is not modeled as it includes its own parity bits
 	// and is thus very robust
 	unsigned int nbBits = IEEE802154A::psduLength * 8 + 48;
@@ -120,7 +120,11 @@ IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
 	simtime_t symbolStart = dataStart;
 	simtime_t burstPos;
 	for (unsigned int burst = 0; burst < nbBits; burst++) {
-		bitValue = intuniform(0, 1, 0);
+		if(allZeros) {
+			bitValue = 0;
+		} else {
+		  bitValue = intuniform(0, 1, 0);
+		}
 		bitValues->push_back(static_cast<bool>(bitValue));
 		burstPos = symbolStart + bitValue*IEEE802154A::mandatory_timeShift + getHoppingPos(burst)*IEEE802154A::mandatory_burst;
 		generateBurst(mapping, arg, burstPos, +1);
