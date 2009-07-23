@@ -147,8 +147,14 @@ void IEEE802154A::generateSyncPreamble(Mapping* mapping, Argument* arg) {
 	for (short n = 0; n < NSync; n = n + 1) {
 		for (short pos = 0; pos < CLength; pos = pos + 1) {
 			if (C31[Ci - 1][pos] != 0) {
+				if(n==0 && pos==0) {
+					// we slide the first pulse slightly in time to get the first point "inside" the signal
+					arg->setTime(1E-12 + n * Tpsym + pos * IEEE802154A::spreadingdL
+							* IEEE802154A::mandatory_pulse);
+				} else {
 				arg->setTime(n * Tpsym + pos * IEEE802154A::spreadingdL
 						* IEEE802154A::mandatory_pulse);
+				}
 				generatePulse(mapping, arg, C31[Ci - 1][pos],
 						IEEE802154A::maxPulse, IEEE802154A::mandatory_pulse);
 			}
