@@ -305,7 +305,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		// add noise
 		vThermalNoise = getNoiseValue();
 		vmeasured = vEfield + vThermalNoise;
-		vnoise2 = vnoise2 + pow(vThermalNoise, 2);
+		vnoise2 = pow(vThermalNoise, 2);
 
 		// square it
 		vmeasured_square = pow(vmeasured, 2);
@@ -319,8 +319,10 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
     	  //snir = snir + vsignal_square / vnoise_square;
 		// convert  to power levels and divide by average thermal noise
 		snir = (vsignal_square / 50) / (2.0217E-12);
-		// convert peak voltage to pulse power and divide by average thermal noise
+		// or convert peak voltage to pulse power and divide by average thermal noise
 		snir = 0.5 * vsignal_square * 100 / (2.0217E-12);
+		// or divide square signal by square noise (eliminate sign) to consider only the "sampled" noise by our receiver
+		snir = vsignal_square / vnoise2;
 		packetSignal = packetSignal + vsignal_square;
 		packetNoise = packetNoise + vnoise_square;
 		//packetSNIR = packetSNIR + vsignal_square / vnoise_square;
