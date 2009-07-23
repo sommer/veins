@@ -69,6 +69,8 @@ public:
 	const static double peakVoltage = 4.87E-3; // peak voltage of the triangular pulse to reach Ptx
 	const static double resistor = 50; // 50 Ohms
 	const static double lambda = 0.04;// center frequency wavelength
+	const static double Aiso = 127.32E-6; // Aperture of the ideal isotropic antenna (lambda²/4Pi)
+
 	UWBIREnergyDetectionDeciderV2(DeciderToPhyInterface* iface,
 			UWBIRPhyLayer* _uwbiface,
 			double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,

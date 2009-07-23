@@ -299,9 +299,9 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		}
 
 		// convert from resulting electric field to antenna voltage
-		vEfield = pow(Efield, 2) / 50;
-		vEfield = vEfield * pow(lambda, 2) /(120*PI*4*PI);
-		vEfield = sqrt(vEfield);
+		double intensity = pow(Efield, 2) / 120*PI; // I = E.H
+		double inducedPower = intensity * Aiso;
+		vEfield = sqrt(inducedPower / 50);
 		// add noise
 		vThermalNoise = getNoiseValue();
 		vmeasured = vEfield + vThermalNoise;
@@ -323,6 +323,8 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		snir = 0.5 * vsignal_square * 100 / (2.0217E-12);
 		// or divide square signal by square noise (eliminate sign) to consider only the "sampled" noise by our receiver
 		snir = vsignal_square / vnoise2;
+		// or divide induced power by thermal power
+		snir = inducedPower / 2.0217E-12;
 		packetSignal = packetSignal + vsignal_square;
 		packetNoise = packetNoise + vnoise_square;
 		//packetSNIR = packetSNIR + vsignal_square / vnoise_square;
