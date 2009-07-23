@@ -233,7 +233,7 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 	      packetSNIR = packetSNIR + energyOne.first;
 	    }
 		receivedBits->push_back(static_cast<bool>(decodedBit));
-		packetSamples = packetSamples + 1;
+		packetSamples = packetSamples + 16; // 16 EbN0 evaluations per bit
 
 		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
 	}
@@ -326,6 +326,11 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		//packetSamples = packetSamples + 1;
 		snirs = snirs + snir;
 		snirEvals = snirEvals + 1;
+		if(signalValue > 0) {
+		  double pulseSnr = pow(signalValue, 2)/50 * pow(lambda, 2) / (120*PI*4*PI);
+		  //pulseSnrs = pulseSnrs + pulseSnr;
+		  ebN0.record(pulseSnr);
+		}
 		//pulseSINR.record(snirs / snirEvals);
 		energy.first = snir;
 
