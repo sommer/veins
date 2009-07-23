@@ -284,7 +284,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			Signal & aSignal = (*airFrameIter)->getSignal();
 			ConstMapping* currPower = aSignal.getReceivingPower();
 			arg.setTime(now + offsets.at(currSig));
-			double measure = currPower->getValue(arg)*Ptx; // de-normalize (this value should be in AirFrame or in Signal, to be set at run-time)
+			double measure = currPower->getValue(arg)*peakVoltage; //Ptx; // de-normalize (this value should be in AirFrame or in Signal, to be set at run-time)
 //			measure = measure * uniform(0, +1); // random point of Efield at sampling (due to pulse waveform and self interference)
 			measure = sqrt(120*PI*measure); // get electric field
 			if (currPower == signalPower) {
