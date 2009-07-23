@@ -316,7 +316,9 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		vsignal_square = vsignal_square * pow(lambda, 2) / (120*PI*4*PI);
 		vnoise_square = pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
 		if(signalValue > 0) {
-		  snir = snir + vsignal_square / vnoise_square;
+		  //snir = snir + vsignal_square / vnoise_square;
+		  // convert  to power levels and divide by average thermal noise
+		  snir = snir + (vsignal_square / 50) / (2.0217E-12);
 		} else {
 			snir = snir + 0;
 		}
@@ -328,8 +330,8 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		snirEvals = snirEvals + 1;
 		if(signalValue > 0) {
 		  double pulseSnr = pow(signalValue, 2)/50 * pow(lambda, 2) / (120*PI*4*PI); // peak voltage
-		  pulseSnr = pow(pulseSnr, 2) / 50  ; // watts
-		  pulseSnr = pulseSnr / (2.0217E-12); // noise power = kb*T*B
+		  pulseSnr = pow(pulseSnr, 2) / 50  ; // instantaneous power [watts]
+		  pulseSnr = pulseSnr / (2.0217E-12); // divided by average noise power = kb*T*B
 		  //pulseSnrs = pulseSnrs + pulseSnr;
 		  ebN0.record(pulseSnr);
 		}
