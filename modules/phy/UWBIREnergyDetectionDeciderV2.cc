@@ -266,6 +266,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 	Argument arg;
 	simtime_t windowEnd = now + burst;
 
+	double burstsnr = 0;
 	// Triangular baseband pulses
 	// we sample at each pulse peak
 	// get the interpolated values of amplitude for each interferer
@@ -336,12 +337,13 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		snirEvals = snirEvals + 1;
 		if(signalValue > 0) {
 		  double pulseSnr = signalValue / (vnoise_square/50);
-		  ebN0.record(pulseSnr); // burst energy / thermal noise value
+		  burstsnr = burstsnr + pulseSnr;
 		}
 		//pulseSINR.record(snirs / snirEvals);
 		energy.first = energy.first + snir;
 
 	} // consider next point in time
+	ebN0.record(burstsnr/16); // burst energy / thermal noise value
 	return energy;
 }
 
