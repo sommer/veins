@@ -247,8 +247,8 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		//pulseSINR.record( 10*log(energyZero.second / energyOne.second) ); // valid only if signal consists of zeroes
 	}
 
-	pulseSINR.record( 10 * log10(packetSNIR/(16*nbSymbols)) );  // mean pulse SINR in dB
-	packetDecisionAvg.record( 10*log10(decisionScores / nbSymbols) );
+	pulseSINR.record( packetSNIR/(16*nbSymbols) );  // mean pulse SINR
+	packetDecisionAvg.record( decisionScores / nbSymbols );
 	receivingPowers.clear();
 	airFrameVector.clear();
 	offsets.clear();
@@ -309,18 +309,17 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		vEfield = sqrt(50*resPower); // P=V²/R
 		// add thermal noise realization
 		vThermalNoise = getNoiseValue();
+		vnoise2 = pow(vThermalNoise, 2);    // for convenience
 		vmeasured = vEfield + vThermalNoise;
-		// square it
 		vmeasured_square = pow(vmeasured, 2);
 		// signal + interference + noise
-		energy.second = energy.second + vmeasured_square;
+		energy.second = energy.second + vmeasured_square;  // collect this contribution
 
 		// Now evaluates signal to noise ratio
 		// signal converted to antenna voltage squared
-		vnoise2 = pow(vThermalNoise, 2);
 		vsignal_square = 50*signalValue;
 		vnoise_square = pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
-		snir = vmeasured_square / noiseVariance;
+		snir = signalValue / 2.0217E-12;  // mean thermal noise =  kb T B (kb=1.38E-23 J/K)
 		//snir = vsignal_square / vnoise_square;
         //snir = snir + vsignal_square / vnoise_square;
 		// convert  to power levels and divide by average thermal noise
@@ -338,7 +337,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		snirs = snirs + snir;
 		snirEvals = snirEvals + 1;
 		if(signalValue > 0) {
-		  double pulseSnr = signalValue / 2.0217E-12;
+		  double pulseSnr = signalValue / (vnoise_square/50);
 		  ebN0.record(pulseSnr); // this is really Ep/N0, sampled power from pulse divided by average termal noise
 		}
 		//pulseSINR.record(snirs / snirEvals);
