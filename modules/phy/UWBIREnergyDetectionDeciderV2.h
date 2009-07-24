@@ -66,7 +66,8 @@ public:
 	const static int temperature = 293; // 20 Celsius degrees
 	const static double noiseVariance = 404.34E-12;
 	const static double Ptx = 37.06E-6; // radiated power at origin (-41.3 dBm/MHz over 500 MHz in Watts)
-	const static double peakVoltage = 4.87E-3; // peak voltage of the triangular pulse to reach Ptx
+	const static double peakPulsePower = 7E-3; // peak instantaneous power of the transmitted pulse (A=0.6V)
+	const static double peakVoltage = 0.6; // peak voltage of the triangular pulse to reach Ptx
 	const static double resistor = 50; // 50 Ohms
 	const static double lambda = 0.04;// center frequency wavelength
 	const static double Aiso = 127.32E-6; // Aperture of the ideal isotropic antenna (lambda²/4Pi)
@@ -87,6 +88,8 @@ public:
 		receivedPulses.setName("receivedPulses");
 		syncThresholds.setName("syncThresholds");
 		timeHoppings.setName("timeHoppings");
+		decisionVariable.setName("decisionVariable");
+		packetDecisionAvg.setName("decisionAvg");
 		ebN0.setName("EbN0");
 		pulseSINR.setName("sinr");
 
@@ -119,9 +122,16 @@ public:
 		 return normal(0, noiseVariance);
 	}
 
+	double getInducedPowerFromEField(double Efield) {
+		double inducedPower = 0;
+		double intensity = pow(Efield, 2) / 120*PI;
+		inducedPower = intensity * Aiso;
+		return inducedPower;
+	}
+
 protected:
 	map<Signal*, int> currentSignals;
-	cOutVector zerosEnergies, onesEnergies, thresholds, signalLengths,
+	cOutVector zerosEnergies, onesEnergies, decisionVariable, packetDecisionAvg, signalLengths,
 			receivedPulses;
 	cOutVector syncThresholds, timeHoppings;
 	cOutVector ebN0;

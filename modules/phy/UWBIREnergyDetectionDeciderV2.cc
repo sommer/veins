@@ -204,6 +204,7 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 	// debugging information (end)
 
     int nbSymbol = 0;
+    double decisionScores = 0;
 	// Loop to decode each bit value
 	for (int symbol = 0; IEEE802154A::mandatory_preambleLength + symbol
 			* aSymbol < signal->getSignalLength(); symbol++) {
@@ -227,22 +228,27 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 
 		if (energyZero.second > energyOne.second) {
 		  decodedBit = 0;
-		  packetSNIR = packetSNIR + energyZero.first;
+
 
 	    } else {
 	      decodedBit = 1;
 		//packetSNIR = packetSNIR + energyOne.first;
 	    }
+		double decisionScore = (max(energyZero.second, energyOne.second)) / (min(energyZero.second, energyOne.second));
+		decisionVariable.record( decisionScore );
+		decisionScores = decisionScores + decisionScore;
+		packetSNIR = packetSNIR + energyZero.first; // valid only if the payload consists of zeros
 		receivedBits->push_back(static_cast<bool>(decodedBit));
 		nbSymbol = nbSymbol + 1;
 		//packetSamples = packetSamples + 16; // 16 EbN0 evaluations per bit
 
 		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
 
-		pulseSINR.record( 10*log(energyZero.second / energyOne.second) ); // valid only if signal consists of zeroes
+		//pulseSINR.record( 10*log(energyZero.second / energyOne.second) ); // valid only if signal consists of zeroes
 	}
 
-//	pulseSINR.record( 10*log(packetSNIR / (16*(nbSymbols+1))) );
+	pulseSINR.record( 10 * log10(packetSNIR/(16*nbSymbols)) );  // mean pulse SINR in dB
+	packetDecisionAvg.record( 10*log10(decisionScores / nbSymbols) );
 	receivingPowers.clear();
 	airFrameVector.clear();
 	offsets.clear();
@@ -271,7 +277,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 	// caller has already set our time reference ("now") at the peak of the pulse
 	for (; now < windowEnd; now += IEEE802154A::mandatory_pulse) {
 		double signalValue = 0;	// electric field from tracked signal [V/m²]
-		double Efield = 0;		// electric field at antenna = combination of all arriving electric fields [V/m²]
+		double resPower = 0;		// electric field at antenna = combination of all arriving electric fields [V/m²]
 		double vEfield = 0;		// voltage at antenna caused by electric field Efield [V]
 		double vmeasured = 0;	// voltage measured by energy-detector [V], including thermal noise
 		double vmeasured_square = 0; // to the square [V²]
@@ -288,46 +294,43 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			Signal & aSignal = (*airFrameIter)->getSignal();
 			ConstMapping* currPower = aSignal.getReceivingPower();
 			arg.setTime(now + offsets.at(currSig));
-			double measure = currPower->getValue(arg)*peakVoltage; //Ptx; // de-normalize (this value should be in AirFrame or in Signal, to be set at run-time)
+			double measure = currPower->getValue(arg)*peakPulsePower; //Ptx; // de-normalize (this value should be in AirFrame or in Signal, to be set at run-time)
 //			measure = measure * uniform(0, +1); // random point of Efield at sampling (due to pulse waveform and self interference)
-			measure = sqrt(120*PI*measure); // get electric field
 			if (currPower == signalPower) {
-				signalValue = measure*0.5; // we capture half of the pulse energy to account for self interference
-				Efield = Efield + signalValue;
+				signalValue = measure*0.5; // we capture half of the maximum possible pulse energy to account for self interference
+				resPower = resPower + signalValue;
 			} else {
 				// take a random point within pulse envelope for interferer
-				Efield = Efield + measure * uniform(-1, +1);
+				resPower = resPower + measure * uniform(-1, +1);
 			}
 			++currSig;
 		}
 
-		// convert from resulting electric field to antenna voltage
-		double intensity = pow(Efield, 2) / 120*PI; // I = E.H
-		double inducedPower = intensity * Aiso;
-		vEfield = sqrt(inducedPower / 50);
-		// add noise
+		vEfield = sqrt(50*resPower); // P=V²/R
+		// add thermal noise realization
 		vThermalNoise = getNoiseValue();
 		vmeasured = vEfield + vThermalNoise;
-		vnoise2 = pow(vThermalNoise, 2);
-
 		// square it
 		vmeasured_square = pow(vmeasured, 2);
 		// signal + interference + noise
 		energy.second = energy.second + vmeasured_square;
 
+		// Now evaluates signal to noise ratio
 		// signal converted to antenna voltage squared
-		vsignal_square = pow(signalValue, 2)/50;
-		vsignal_square = vsignal_square * pow(lambda, 2) / (120*PI*4*PI);
+		vnoise2 = pow(vThermalNoise, 2);
+		vsignal_square = 50*signalValue;
 		vnoise_square = pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
-    	  //snir = snir + vsignal_square / vnoise_square;
+		snir = vmeasured_square / noiseVariance;
+		//snir = vsignal_square / vnoise_square;
+        //snir = snir + vsignal_square / vnoise_square;
 		// convert  to power levels and divide by average thermal noise
-		snir = (vsignal_square / 50) / (2.0217E-12);
+		//snir = (vsignal_square / 50) / (2.0217E-12);
 		// or convert peak voltage to pulse power and divide by average thermal noise
-		snir = 0.5 * vsignal_square * 100 / (2.0217E-12);
+		//snir = 0.5 * vsignal_square * 100 / (2.0217E-12);
 		// or divide square signal by square noise (eliminate sign) to consider only the "sampled" noise by our receiver
-		snir = vsignal_square / vnoise2;
+		// snir = vsignal_square / vnoise2; // this cannot work well because vnoise has a mean 0
 		// or divide induced power by thermal power
-		snir = inducedPower / 2.0217E-12;
+		//snir = inducedPower / 2.0217E-12;
 		packetSignal = packetSignal + vsignal_square;
 		packetNoise = packetNoise + vnoise_square;
 		//packetSNIR = packetSNIR + vsignal_square / vnoise_square;
@@ -335,14 +338,11 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		snirs = snirs + snir;
 		snirEvals = snirEvals + 1;
 		if(signalValue > 0) {
-		  double pulseSnr = pow(signalValue, 2)/50 * pow(lambda, 2) / (120*PI*4*PI); // peak voltage
-		  pulseSnr = pow(pulseSnr, 2) / 50  ; // instantaneous power [watts]
-		  pulseSnr = pulseSnr / (2.0217E-12); // divided by average noise power = kb*T*B
-		  //pulseSnrs = pulseSnrs + pulseSnr;
-		  ebN0.record(pulseSnr);
+		  double pulseSnr = signalValue / 2.0217E-12;
+		  ebN0.record(pulseSnr); // this is really Ep/N0, sampled power from pulse divided by average termal noise
 		}
 		//pulseSINR.record(snirs / snirEvals);
-		energy.first = snir;
+		energy.first = energy.first + snir;
 
 	} // consider next point in time
 
