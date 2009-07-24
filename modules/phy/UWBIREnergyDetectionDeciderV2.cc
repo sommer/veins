@@ -203,10 +203,10 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 	}
 	// debugging information (end)
 
-    int nbSymbol = 0;
+	int symbol;
     double decisionScores = 0;
 	// Loop to decode each bit value
-	for (int symbol = 0; IEEE802154A::mandatory_preambleLength + symbol
+	for (symbol = 0; IEEE802154A::mandatory_preambleLength + symbol
 			* aSymbol < signal->getSignalLength(); symbol++) {
 
 		int hoppingPos = IEEE802154A::getHoppingPos(symbol);
@@ -228,27 +228,25 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 
 		if (energyZero.second > energyOne.second) {
 		  decodedBit = 0;
-
-
 	    } else {
 	      decodedBit = 1;
 		//packetSNIR = packetSNIR + energyOne.first;
 	    }
+
 		double decisionScore = (max(energyZero.second, energyOne.second)) / (min(energyZero.second, energyOne.second));
 		decisionVariable.record( decisionScore );
 		decisionScores = decisionScores + decisionScore;
 		packetSNIR = packetSNIR + energyZero.first; // valid only if the payload consists of zeros
 		receivedBits->push_back(static_cast<bool>(decodedBit));
-		nbSymbol = nbSymbol + 1;
 		//packetSamples = packetSamples + 16; // 16 EbN0 evaluations per bit
 
 		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
 
 		//pulseSINR.record( 10*log(energyZero.second / energyOne.second) ); // valid only if signal consists of zeroes
 	}
-
-	pulseSINR.record( packetSNIR/(16*nbSymbols) );  // mean pulse SINR
-	packetDecisionAvg.record( decisionScores / nbSymbols );
+    symbol = symbol + 1;
+	pulseSINR.record( packetSNIR/(16*symbol) );  // mean pulse SINR
+	packetDecisionAvg.record( decisionScores / symbol );
 	receivingPowers.clear();
 	airFrameVector.clear();
 	offsets.clear();
@@ -319,7 +317,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		// signal converted to antenna voltage squared
 		vsignal_square = 50*signalValue;
 		vnoise_square = pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
-		snir = signalValue / 2.0217E-12;  // mean thermal noise =  kb T B (kb=1.38E-23 J/K)
+		snir = signalValue / 2.0217E-12;  // mean thermal noise =  kb T B (kb=1.38E-23 J/K) | or -174+10logB=-87 dBm =1E-8 ?
 		//snir = vsignal_square / vnoise_square;
         //snir = snir + vsignal_square / vnoise_square;
 		// convert  to power levels and divide by average thermal noise
@@ -338,13 +336,12 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		snirEvals = snirEvals + 1;
 		if(signalValue > 0) {
 		  double pulseSnr = signalValue / (vnoise_square/50);
-		  ebN0.record(pulseSnr); // this is really Ep/N0, sampled power from pulse divided by average termal noise
+		  ebN0.record(pulseSnr); // burst energy / thermal noise value
 		}
 		//pulseSINR.record(snirs / snirEvals);
 		energy.first = energy.first + snir;
 
 	} // consider next point in time
-
 	return energy;
 }
 
