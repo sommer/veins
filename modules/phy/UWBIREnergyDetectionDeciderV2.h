@@ -92,7 +92,7 @@ public:
 		packetDecisionAvg.setName("decisionAvg");
 		ebN0.setName("EbN0");
 		pulseSINR.setName("sinr");
-
+		noisePower.setName("noise");
 		utility = iface->getUtility();
 		catUWBIRPacket = utility->getCategory(&packet);
 	};
@@ -136,6 +136,7 @@ protected:
 	cOutVector syncThresholds, timeHoppings;
 	cOutVector ebN0;
 	cOutVector pulseSINR;
+    cOutVector noisePower;
 
 	UWBIRPhyLayer* uwbiface;
 	Signal* tracking;

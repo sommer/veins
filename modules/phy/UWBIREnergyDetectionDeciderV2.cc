@@ -309,6 +309,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		// add thermal noise realization
 		vThermalNoise = getNoiseValue();
 		vnoise2 = pow(vThermalNoise, 2);    // for convenience
+		noisePower.record(vnoise2/50);
 		vmeasured = vEfield + vThermalNoise;
 		vmeasured_square = pow(vmeasured, 2);
 		// signal + interference + noise
