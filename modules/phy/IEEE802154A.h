@@ -138,7 +138,7 @@ public:
     static void setPSDULength(int _psduLength);
 
     /*@brief Generates psduLength bytes of data and encodes them into a Signal object.  */
-    static signalAndData generateIEEE802154AUWBSignal(simtime_t signalStart, bool allZeros=true);
+    static signalAndData generateIEEE802154AUWBSignal(simtime_t signalStart, bool allZeros=false);
 
 
 // Constants from standard
