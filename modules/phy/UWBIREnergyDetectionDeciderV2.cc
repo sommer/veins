@@ -324,7 +324,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		vsignal_square = 50*signalValue;
 		vnoise_square = pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
 		snir = signalValue / 2.0217E-12;  // mean thermal noise =  kb T B (kb=1.38E-23 J/K) | or -174+10logB=-87 dBm =1E-8 ?
-		epulseAggregate = epulseAggregate + vEfield;
+		epulseAggregate = epulseAggregate + power(vEfield, 2);
 		enoiseAggregate = enoiseAggregate + vnoise2;
 		//snir = vsignal_square / vnoise_square;
         //snir = snir + vsignal_square / vnoise_square;
