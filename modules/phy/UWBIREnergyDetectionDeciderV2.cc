@@ -183,6 +183,9 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 	now = IEEE802154A::mandatory_preambleLength + IEEE802154A::mandatory_pulse / 2;
 	std::pair<double, double> energyZero, energyOne;
 
+	epulseAggregate = 0;
+	enoiseAggregate = 0;
+
 	// debugging information (start)
 	if (trace) {
 		simtime_t prev = 0;
@@ -245,7 +248,8 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		//pulseSINR.record( 10*log(energyZero.second / energyOne.second) ); // valid only if signal consists of zeroes
 	}
     symbol = symbol + 1;
-	pulseSINR.record( packetSNIR/(16*symbol) );  // mean pulse SINR
+	pulseSINR.record( 10*log10(packetSNIR/(16*symbol)) );  // mean pulse SINR
+	ebN0.record(10*log10(epulseAggregate / enoiseAggregate) );
 	packetDecisionAvg.record( decisionScores / symbol );
 	receivingPowers.clear();
 	airFrameVector.clear();
@@ -320,6 +324,8 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		vsignal_square = 50*signalValue;
 		vnoise_square = pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
 		snir = signalValue / 2.0217E-12;  // mean thermal noise =  kb T B (kb=1.38E-23 J/K) | or -174+10logB=-87 dBm =1E-8 ?
+		epulseAggregate = epulseAggregate + vEfield;
+		enoiseAggregate = enoiseAggregate + vnoise2;
 		//snir = vsignal_square / vnoise_square;
         //snir = snir + vsignal_square / vnoise_square;
 		// convert  to power levels and divide by average thermal noise
@@ -344,7 +350,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 		energy.first = energy.first + snir;
 
 	} // consider next point in time
-	ebN0.record(burstsnr/16); // burst energy / thermal noise value
+	//ebN0.record(burstsnr/16); // burst energy / thermal noise value
 	return energy;
 }
 
