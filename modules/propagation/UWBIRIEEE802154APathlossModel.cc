@@ -195,6 +195,7 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
 	// Total radiated power Prx at that distance  [W]
     //double attenuation = 0.5 * ntx * nrx * cfg.PL0 / pow(distance / d0, cfg.n);
     double attenuation = getPathloss(fc, BW);
+    pathlosses.record(attenuation);
     // Power intensity I at that distance [W/m²]
     //attenuation = attenuation /(4*PI*pow(distance, cfg.n));
     // create mapping

@@ -56,6 +56,7 @@ public:
     	// load the model parameters
     	cfg = CMconfigs[channelModel];
     	averagePowers.setName("averagePower");
+    	pathlosses.setName("pathloss");
     }
 
     /*
@@ -166,6 +167,7 @@ protected:
     double averagePower; // statistics counter (useful for model validation, should converges towards 1)
     long nbCalls;
     cOutVector averagePowers;
+    cOutVector pathlosses;  // outputs computed pathlosses. Allows to compute Eb = Epulse*pathloss for Eb/N0 computations. (N0 is the noise sampled by the receiver)
 
     /*
      * Generates taps for the considered pulse, with the current channel parameters
