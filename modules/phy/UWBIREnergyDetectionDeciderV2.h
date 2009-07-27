@@ -65,7 +65,7 @@ public:
 	// Boltzmann constant multiplied by 500 MHz (signal bandwidth) in mJ.K-1 !
 	const static double kB500M = 5 * 1.38E-12; // mW/K
 	const static int temperature = 293; // 20 Celsius degrees
-	const static double noiseVariance = 404.34E-12;  // v²=s²=4kb T R B
+	const static double noiseVariance = 101.085E-12; // P=-116.9 dBW Farserotu // 404.34E-12;   v²=s²=4kb T R B
 	const static double Ptx = 37.06E-6; // radiated power at origin (-41.3 dBm/MHz over 500 MHz in Watts)
 	const static double peakPulsePower = 37.06E-6; //1E-3; // peak instantaneous power of the transmitted pulse (A=0.6V) : 7E-3 W. But peak limit is 0 dBm
 	const static double peakVoltage = 0.6; // peak voltage of the triangular pulse to reach Ptx
