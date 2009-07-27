@@ -121,7 +121,7 @@ public:
 	};
 
 	double getNoiseValue() {
-		 return normal(0, noiseVariance);
+		 return normal(0, sqrt(noiseVariance));
 	}
 
 	double getInducedPowerFromEField(double Efield) {
