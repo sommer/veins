@@ -309,6 +309,8 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			++currSig;
 		}
 
+		receivedPower.record(resPower);
+		double attenuatedPower = resPower / 10; // 10 dB = 6 dB implementation loss + 5 dB noise factor
 		vEfield = sqrt(50*resPower); // P=V²/R
 		// add thermal noise realization
 		vThermalNoise = getNoiseValue();

@@ -94,6 +94,7 @@ public:
 		ebN0.setName("EbN0");
 		pulseSINR.setName("sinr");
 		noisePower.setName("noise");
+		receivedPower.setName("Prx");
 		utility = iface->getUtility();
 		catUWBIRPacket = utility->getCategory(&packet);
 	};
@@ -137,7 +138,7 @@ protected:
 	cOutVector syncThresholds, timeHoppings;
 	cOutVector ebN0;
 	cOutVector pulseSINR;
-    cOutVector noisePower;
+    cOutVector noisePower, receivedPower;
 
 	UWBIRPhyLayer* uwbiface;
 	Signal* tracking;
