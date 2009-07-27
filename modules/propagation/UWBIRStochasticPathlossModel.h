@@ -60,6 +60,7 @@ public:
     	srcPosY.setName("srcPosY");
     	dstPosX.setName("dstPosX");
     	dstPosY.setName("dstPosY");
+    	pathlosses.setName("pathloss");
     }
 
     void filterSignal(Signal& s);
@@ -69,6 +70,7 @@ protected:
     double fading;
     Dimension frequency;
     const Move* move;
+    cOutVector pathlosses;  // outputs computed pathlosses. Allows to compute Eb = Epulse*pathloss for Eb/N0 computations. (N0 is the noise sampled by the receiver)
 
     double getNarrowBandFreeSpacePathloss(double fc, double distance);
     double getGhassemzadehPathloss(double distance);
