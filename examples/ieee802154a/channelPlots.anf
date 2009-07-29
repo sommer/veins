@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="results/channelPlots-*.vec"/>
+    <inputs name="results/channelPlots-*.sca"/>
+  </inputs>
+  <datasets>
+    <datasets name="CM2">
+      <items xsi:type="scave:Add" filterPattern="attr:Channel(cm2) AND Name(receivedPulses)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="CM2" lineNameFormat="">
+        <properties name="Axes.Grid" value="All"/>
+        <properties name="X.Axis.Min" value="4.999"/>
+        <properties name="X.Axis.Max" value="5.001"/>
+      </items>
+    </datasets>
+    <datasets name="Ghassemzadeh LOS">
+      <items xsi:type="scave:Add" filterPattern="attr:Channel(ghassemzadeh-los) AND name(receivedPulses) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="Ghassemzadeh LOS" lineNameFormat="">
+        <properties name="Axes.Grid" value="All"/>
+        <properties name="X.Axis.Min" value="4.999"/>
+        <properties name="X.Axis.Max" value="5.001"/>
+      </items>
+    </datasets>
+    <datasets name="ber">
+      <items xsi:type="scave:Add" filterPattern="name(&quot;Average BER&quot;)"/>
+    </datasets>
+  </datasets>
+  <chartSheets>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.1/@items.1"/>
+  </chartSheets>
+</scave:Analysis>
