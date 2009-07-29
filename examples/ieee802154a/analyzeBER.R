@@ -13,16 +13,17 @@
 #channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos")
 #distances <- c(1:10, seq(10, 20, 2), seq(25, 50, 5))
 #packetSizes <- c("8 bytes", "16 bytes", "32 bytes", "64 bytes", "128 bytes") # , 128
-channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos") #, "cm1", "cm2", "cm5")
-distances <- c(seq(5, 30, 5), 40, 50)
-packetSizes <- c("8 bytes", "32 bytes", "128 bytes") 
+channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos", "cm1", "cm2", "cm5") #, "cm1", "cm2", "cm5")
+distances <- c(seq(1, 5, 1), 7.5, seq(10, 30, 5))
+packetSizes <- c("7 bytes", "31 bytes", "127 bytes") 
+#packetSizes <- c("7 bytes", "31 bytes")
 
 measures <- c("Packet Success Rate (R-S)", "Packet Success Rate (No R-S)", "Bit error rate")
 
 outputFiles <- c("PSR_Distance_RS.png", "PSR_Distance_NoRS.png", "BER_Distance.png")
 latticeFile <- "Distance_Lattice.png"
 
-textSize <- 2
+textSize <- 2.4
 
 ylabels <- c("Packet delivery success rate\n(with Reed-Solomon error correction)",
 	     "Packet delivery success rate\n(without Reed-Solomon error correction)",
@@ -120,8 +121,8 @@ plotPSR <- function(psr, line) {
 # from http://lmdvr.r-forge.r-project.org/figures/figures.html Figure 8.4
 yscale.components.log10 <- function(lim, ...) {
     ans <- yscale.components.default(lim = lim, ...)
-    tick.at.major <- c(0.001, 0.01, 0.1, 0.25, 0.5, 0.75, 1) # seq(0.1, 1, 0.1) # c(0.25, 0.5, 0.75, 1) # seq(0.2, 1, 0.2)
-    ans$left$labels$labels <- c("0.1%", "1%", "10%", "25%", "50%", "75%", "100%")#tick.at.major
+    tick.at.major <- c(0.001, 0.01, 0.1, 0.25, 0.5, 1) # seq(0.1, 1, 0.1) # c(0.25, 0.5, 0.75, 1) # seq(0.2, 1, 0.2)
+    ans$left$labels$labels <- c("0.001", "0.01", "0.1", "0.25", "0.5", "1")#tick.at.major
     ans$left$labels$at <- log(tick.at.major, 10)
     ans$left$ticks$tck <- 1.5
     ans$left$ticks$at  <- log(tick.at.major, 10)
@@ -139,14 +140,14 @@ latticePSRPlot <- function(data) {
   trellis.device(device=png, theme=col.whitebg)
   png(filename="PSR-Distance_Lattice-%d.png", width=2048, height=1536) #, bg="transparent")
   theFigure <- xyplot(
-    psrRS + psrNoRS ~ distances | packetSizes * channels, data=data, 
+    perRS + perNoRS ~ distances | packetSizes*channels, data=data, 
     type="b",
     xlab = list(label="Distance (meters)", cex=textSize),
-    ylab = list(label="Packet Delivery Success Rate", cex=textSize),
+    ylab = list(label="Packet Error Rate", cex=textSize),
 	#    ylim= c(0, 1),
     cex = textSize,
     par.strip.text=list(cex=textSize),
-    prepanel=prepanel.loess,
+#    prepanel=prepanel.loess,
 	#    panel=panel.loess,
 	#    panel=panel.grid(h=-1, v=-1),
     panel = gridPanel,
@@ -174,6 +175,8 @@ latticePSREfficiency <- function(psrFrame) {
 		as.table=T,
 	        layout = c(3, 2, 3),
 		scales=list(x=list(log=10), y=list(log=10), cex=textSize), 
+		xlab = list(label="Distance (meters)", cex=textSize),
+    		ylab = list(label="Bit Error Rate", cex=textSize),
 		panel=gridPanel,
 		cex=textSize,
 		par.strip.text=list(cex=textSize),
@@ -185,17 +188,56 @@ latticePSREfficiency <- function(psrFrame) {
   dev.off()
 }
 
+latticeBER <- function(psrFrame) {
+  trellis.device(device=png, theme=col.whitebg)
+  png("BER-lattice.png", width=2048, height=1536)
+  theFigure <- xyplot( ber ~ distances | channels, 
+	data=psrFrame,
+	as.table=T,
+	layout = c(3, 2),
+	scales = list(y=list(log = 10), cex=textSize), 
+	panel=gridPanel,
+#        par.strip.text=list(cex=textSize),
+	cex=textSize,
+		par.strip.text=list(cex=textSize),
+		xlab=list(cex=textSize),
+		ylab=list(cex=textSize),
+		yscale.components = yscale.components.log10
+	)
+  print(theFigure)
+  dev.off()
+}
+
 plotAll <-function() {
   psrRS <- loadData(1)
   psrNoRS <- loadData(2)
-  psrFrame <- expand.grid(distances=distances, packetSizes=packetSizes, channels=channels) 
+  psrFrame <- expand.grid(distances=distances, channels=channels, packetSizes=packetSizes) 
   psrFrame$psrRS <- psrRS$Estimate
+  psrFrame$perRS <- 1 - psrRS$Estimate
   psrFrame$psrNoRS <- psrNoRS$Estimate
-  latticePSRPlot(psrFrame)
+  psrFrame$perNoRS <- 1 - psrNoRS$Estimate
   psrFrame$RSEfficiency <- (psrFrame$psrRS - psrFrame$psrNoRS) / psrFrame$psrNoRS
-  latticePSREfficiency(psrFrame)
-  png(outputFiles[1], width=1024, height=768, bg="transparent")
-  plotPSR(psrRS, 1)
+  psrFrame$ber <- loadData(3)$Estimate
+
+  latticePSRPlot(psrFrame)
+
+#  latticePSREfficiency(psrFrame)
+
+  latticeBER(psrFrame)
+
+#  png(outputFiles[1], width=1024, height=768)
+#  plotPSR(psrRS, 1)
+#  noise <- loadData(7)
+#  psrFrame$noise <- noise$Estimate
+#  pathloss <- loadData(5)
+#  psrFrame$pathloss <- pathloss$Estimate
+#  pulsePower <- 1E-3 # 0 dBm peak EIRP
+#  psrFrame$EbN0 <- 10*log10(pulsePower*psrFrame$pathloss  / psrFrame$noise)
+#  X11()
+#  xyplot(perRS + perNoRS ~ EbN0 | channels, data=psrFrame, table=T)
+#  X11()
+#  plot(perRS ~ EbN0 , data=psrFrame, log="y", xlab="Eb/N0 (dB)", ylab="Packet Error Rate")
+#  grid()
   #  png(outputFiles[2], width=800, height=600)
   #  plotPSR(psrNoRS)
   #  ber <- loadData(3)
