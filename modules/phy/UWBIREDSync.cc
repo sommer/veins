@@ -88,11 +88,12 @@ bool UWBIREDSync::evaluateEnergy(Signal* s) {
 	// Thus we can simply sample the first pulse of the received signal
 	ConstMapping* rxPower = s->getReceivingPower();
 	argSync.setTime(IEEE802154A::tFirstSyncPulseMax);
-	double signal = sqrt(pow(rxPower->getValue(argSync), 2)*50/377);
-	double measure = signal + getNoiseValue();
-	signal = pow(signal, 2);
-    measure = pow(measure, 2);
-	if(signal/measure > syncThreshold) {
+	// We could retrieve the pathloss through s->getAttenuation() but we must be careful:
+	// maybe the pathloss is not the only analogue model (e.g. RSAMAnalogueModel)
+	// If we get the pathloss, we can compute Eb/N0: Eb=1E-3*pathloss if we are at peak power
+	double signalPower = sqrt(pow(rxPower->getValue(argSync), 2)*0.5*peakPulsePower / 10); // de-normalize, take half, and 10 dB losses
+	double noisePower = pow(getNoiseValue(), 2)/ 50;
+	if(signalPower / noisePower > syncThreshold) {
 		return true;
 	}
 	return false;
