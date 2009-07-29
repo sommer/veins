@@ -39,7 +39,7 @@ void TestApplication::initialize(int stage) {
         // start timer if needed
         if (nodeAddr != 0 && remainingPackets > 0) {
             delayTimer = new cMessage("app-delay-timer");
-            scheduleAt(simTime() + INITIAL_DELAY, delayTimer);
+            scheduleAt(simTime() + INITIAL_DELAY +uniform(0,0.001), delayTimer); // we add a small shift to avoid systematic collisions
         } else {
             delayTimer = 0;
         }
