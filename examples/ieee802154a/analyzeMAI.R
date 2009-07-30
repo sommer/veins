@@ -110,7 +110,7 @@ latticeMAICirclePERPlot <- function(data) {
 	#		text=c("with Reed-Solomon error correction", 
 	#			"without Reed-Solomon error correction"),		
 	#		cex=textSize, size=14, pch=16, type="b"),
-    scales = list(y=list(log = 10), cex=textSize), 
+    scales = list(y=list(log = 10), x=list(tick.number=4), cex=textSize), 
     yscale.components = yscale.components.log10
    )
   print(theFigure)
