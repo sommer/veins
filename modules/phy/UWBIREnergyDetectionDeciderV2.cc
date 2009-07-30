@@ -300,8 +300,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 			double measure = currPower->getValue(arg)*peakPulsePower; //Ptx; // de-normalize (this value should be in AirFrame or in Signal, to be set at run-time)
 //			measure = measure * uniform(0, +1); // random point of Efield at sampling (due to pulse waveform and self interference)
 			if (currPower == signalPower) {
-//				signalValue = measure*0.5; // we capture half of the maximum possible pulse energy to account for self  interference
-				signalValue = measure*uniform(-1,+1); // random point within pulse enveloppe
+				signalValue = measure*0.5; // we capture half of the maximum possible pulse energy to account for self  interference
 				resPower = resPower + signalValue;
 			} else {
 				// take a random point within pulse envelope for interferer
