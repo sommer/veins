@@ -22,6 +22,7 @@ interferers <- seq(0, 3, 1)
 measures <- c("Packet Success Rate (R-S)", "Bit error rate")
 
 latticeFile <- "MAICircle_Lattice-%d.png"
+latticePoissonFile <- "MAICirclePoisson_3meters_Lattice-%d.png"
 
 textSize <- 2.4
 titleSize = 1.4
@@ -78,7 +79,6 @@ yscale.components.log10 <- function(lim, ...) {
     ans
 }
 
-
 gridPanel <- function(...) {
   panel.grid(h=-1, v=-1, col="grey")       
   panel.xyplot(...,)
@@ -106,11 +106,7 @@ latticeMAICirclePERPlot <- function(data) {
 	#    layout = c(0, 10), # put 10 figures per page as it pleases you
     layout = c(2, 2, 2), # 2 columns, 2 lines, 2 pages
     auto.key = list(space="bottom", text=c("Packet error rate", "Bit error rate"), type="b", cex=textSize),
-	#    key = list(space="bottom", 
-	#		text=c("with Reed-Solomon error correction", 
-	#			"without Reed-Solomon error correction"),		
-	#		cex=textSize, size=14, pch=16, type="b"),
-    scales = list(y=list(log = 10), x=list(tick.number=4), cex=textSize), 
+    scales = list(y=list(log = 10), x=list(tick.number=8), cex=textSize), 
     yscale.components = yscale.components.log10
    )
   print(theFigure)
@@ -118,12 +114,59 @@ latticeMAICirclePERPlot <- function(data) {
 }
 
 
+loadCirclePoisson <- function() {
+   frame <- expand.grid(rates=c("10", "200"),
+			interferers=seq(0, 8, 1),
+			channels=c("ghassemzadeh-los", "cm1")) 
+   frame$per <- 1 - loadData(config="MAICircleNPoisson", param=1)$Estimate
+   frame$ber <- loadData(config="MAICircleNPoisson", param=2)$Estimate
+   frame$per2 <- 1 - loadData(config="MAICircleNPoisson", param=3)$Estimate
+   frame
+}
+
+latticeMAICirclePoisson <- function(frame) {
+#  lattice.options(default.theme = col.whitebg)#canonical.theme(color = TRUE), new=TRUE)
+  trellis.device(device=png, theme=col.whitebg)
+  png(filename=latticePoissonFile, width=2048, height=1536) #, bg="transparent")
+  theFigure <- xyplot(
+    per + ber + per2 ~ interferers | channels*rates, data=frame, 
+    type="b",
+    xlab = list(label="Interferers", cex=textSize),
+    ylab = list(label="Error Rates", cex=textSize),
+	#    ylim= c(0, 1),
+#    cex = textSize,
+    par.settings = simpleTheme(pch=c(21,22,23), cex=4, lwd=2),
+    par.strip.text=list(cex=textSize),
+#    prepanel=prepanel.loess,
+	#    panel=panel.loess,
+	#    panel=panel.grid(h=-1, v=-1),
+    panel = gridPanel,
+	#    aspect ="xy", # change aspect ratio to make lines appear as 45 degrees oriented
+    as.table = TRUE, # start drawing from top left to bottom right
+	#    layout = c(0, 10), # put 10 figures per page as it pleases you
+    layout = c(2, 2, 2), # 2 columns, 2 lines, 2 pages
+    auto.key = list(space="bottom", text=c("Receiver PER", "Bit error rate", "Application PER"), type="b", cex=textSize),
+	#    key = list(space="bottom", 
+	#		text=c("with Reed-Solomon error correction", 
+	#			"without Reed-Solomon error correction"),		
+	#		cex=textSize, size=14, pch=16, type="b"),
+    scales = list(y=list(log = 10), x=list(tick.number=8), cex=textSize), 
+    yscale.components = yscale.components.log10
+   )
+  print(theFigure)
+  dev.off()
+
+}
+
 plotAll <-function() {
   psrFrame <- expand.grid(interferers=interferers, 
 			  channels=channels, 
 			  packetSizes=packetSizes) 
-  psrFrame$per <- 1-loadData(config="maicirclen",param=1)$Estimate
+  psrFrame$per <- 1 - loadData(config="maicirclen",param=1)$Estimate
   psrFrame$ber <- loadData(config="maicirclen", param=2)$Estimate
   latticeMAICirclePERPlot(psrFrame)
+  
+  circlePoisson <- loadCirclePoisson()
+  latticeMAICirclePoisson(circlePoisson)
 }
 
