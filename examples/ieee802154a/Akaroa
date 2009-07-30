@@ -1,4 +1,4 @@
-RelError = 0.05
-AbsError = 0.005
+RelError = 0.1
+AbsError = 0.01
 Confidence = 0.95
 
