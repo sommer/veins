@@ -3,7 +3,8 @@
 # It generates one csv file per parameter.
 # Data files should have the name ak-$config-$run.out
 
-CONFIG="maicirclen"
+CONFIG="MAICircleNPoisson"
+#CONFIG="maicirclen"
 #CONFIG="berdistance"
 
 NBRUNS=$((`ls ak-$CONFIG-*.out | wc -l`-1))
