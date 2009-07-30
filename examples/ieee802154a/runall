@@ -1,0 +1,10 @@
+#!/bin/sh
+
+CFG=MAICircleNPoisson
+NBRUNS=$((`./run -f akaroa.ini -x $CFG |  grep -o [[:digit:]]*$ `-1))
+echo $NBRUNS to execute for configuration $CFG...\n
+for i in `seq 0 $NBRUNS` ;
+do 
+    akrun -n 7 -- ./run -f akaroa.ini -u Cmdenv -c $CFG -r $i > ./akresults/ak-$CFG-$i.out 2> ./akresults/ak-$CFG-$i.err ; 
+done
+
