@@ -1,9 +1,9 @@
 /* -*- mode:c++ -*- ********************************************************
  * file:        SimTracer.cc
  *
- * author:      Jérôme Rousselot
+ * author:      Jerome Rousselot
  *
- * copyright:   (C) 2007-2008 CSEM SA, Neuchatel, Switzerland
+ * copyright:   (C) 2007-2009 CSEM SA, Neuchatel, Switzerland
  *
  *              This program is free software; you can redistribute it
  *              and/or modify it under the terms of the GNU General Public
@@ -12,9 +12,13 @@
  *              version.
  *              For further information see file COPYING
  *              in the top level directory
+ *
+ * Funding: This work was partially financed by the European Commission under the
+ * Framework 6 IST Project "Wirelessly Accessible Sensor Populations"
+ * (WASP) under contract IST-034963.
  ***************************************************************************
- * part of:     Modifications to the MF Framework by CSEM
- ***************************************************************************/
+ * part of:    Modifications to the MF-2 framework by CSEM
+ **************************************************************************/
 
 
 #include "SimTracer.h"
@@ -29,29 +33,52 @@ void SimTracer::initialize(int stage)
 {
   BaseModule::initialize(stage);
   if (stage == 0) {
+
 	char treeName[250];
 	int n;
-	n = sprintf(treeName, "results/tree-%d.txt", cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getActiveRunNumber());
-	treeFile.open(treeName);
+	n = sprintf(treeName, "results/tree-%d.txt",
+	cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getActiveRunNumber());
+    treeFile.open(treeName);
     if (!treeFile) {
       EV << "Error opening output stream for routing tree statistics."
           << endl;
     } else {
       treeFile << "graph aRoutingTree " << endl << "{" << endl;
     }
-
-    // world utility
-	// get pointer to the simulation-wide blackboard module
-	utility2 = FindModule<BaseUtility*>::findGlobalModule();
-
-    // goodput code
-    Packet apacket;
-    catPacket = utility2->subscribe(this, &apacket, -1);
+    goodputVec.setName("goodput");
+    pSinkVec.setName("sinkPowerConsumption");
+    pSensorVec.setName("sensorPowerConsumption");
     nbApplPacketsSent = 0;
     nbApplPacketsReceived = 0;
-    goodputSink.setName("goodput-sink");
-    goodputSources.setName("goodput-sources");
+
+  } else if(stage == 1) {
+	  catPacket = globalUtility->subscribe(this, &packet, -1);
   }
+}
+
+// compute current average sensor power consumption
+double SimTracer::getAvgSensorPowerConsumption() {
+	double sensorAvgP = 0;
+	int nbSensors = 0;
+	map < unsigned long, double >::iterator iter = powerConsumptions.begin(); // address, powerConsumption
+	for (; iter != powerConsumptions.end(); iter++) {	// iterate over all nodes power consumptions
+		  double eval = iter->second;
+		  eval = eval +  (simTime()-lastUpdates[iter->first]).dbl()*currPower[iter->first];
+		  eval = eval * 1000 / simTime();
+		  if(iter->first != 0) {
+			  nbSensors++;
+			  sensorAvgP += eval;
+		  }
+	  }
+	  sensorAvgP = sensorAvgP / nbSensors;
+	return sensorAvgP;
+}
+
+double SimTracer::getSinkPowerConsumption() {
+  double sinkP = powerConsumptions[0];
+  sinkP = sinkP + (simTime() - lastUpdates[0]).dbl() * currPower[0];
+  sinkP = sinkP * 1000 / simTime();
+  return sinkP;
 }
 
 /*
@@ -59,41 +86,17 @@ void SimTracer::initialize(int stage)
  */
 void SimTracer::finish()
 {
-  ofstream summaryPowerFile;
-
-  map < unsigned long, double >::iterator iter =
-    powerConsumptions.begin();
-
-  double sensorAvgP = 0;
-  int nbSensors = 0;
-  for (; iter != powerConsumptions.end(); iter++) {
-	  iter->second = iter->second +  (simTime()-lastUpdates[iter->first]).dbl()*currPower[iter->first];
-	  iter->second = iter->second * 1000 / simTime();
-	  if(iter->first != 0) {
-		  nbSensors++;
-		  sensorAvgP += iter->second;
-	  }
-  }
-  sensorAvgP = sensorAvgP / nbSensors;
-  summaryPowerFile.close();
-
   double goodput = 0;
-  for(map<int, pair<long,long> >::iterator iter = goodputStats.begin();
-	  iter != goodputStats.end(); iter++) {
-	  if(nbApplPacketsSent  > 0) {
-		  goodput = ((double) iter->second.second)/(nbApplPacketsSent - iter->second.first); // goodput in broadcast
-	  } else {
-		  goodput = 0;
-	  }
-	  char description[250];
-	  int n;
-	  n = sprintf(description, "goodput-node_%d", iter->first);
-	  recordScalar(description, goodput);
+  if(nbApplPacketsSent > 0) {
+	  goodput = ((double) nbApplPacketsReceived)/nbApplPacketsSent;
+  } else {
+	  goodput = 0;
   }
+  recordScalar("Application Packet Success Rate", goodput);
   recordScalar("Application packets received", nbApplPacketsReceived);
   recordScalar("Application packets sent", nbApplPacketsSent);
-  recordScalar("Sink power consumption", powerConsumptions[0]);
-  recordScalar("Sensor average power consumption", sensorAvgP);
+  recordScalar("Sink power consumption", getSinkPowerConsumption());
+  recordScalar("Sensor average power consumption", getAvgSensorPowerConsumption());
   if (treeFile) {
     treeFile << "}" << endl;
     treeFile.close();
@@ -124,6 +127,11 @@ void SimTracer::radioEnergyLog(unsigned long mac, int state,
   powerConsumptions[mac] = powerConsumptions[mac] + power * duration.dbl();
   currPower[mac] = newPower;
   lastUpdates[mac] = simTime();
+  if(mac != 0) {
+	  pSensorVec.record(getAvgSensorPowerConsumption());
+  } else {
+	  pSinkVec.record(getSinkPowerConsumption());
+  }
 }
 
 
@@ -139,37 +147,17 @@ void SimTracer::logPosition(int node, double x, double y)
 }
 
 void SimTracer::receiveBBItem(int category, const BBItem * details,
-	       int scope) {
+	       int scopeModuleId) {
 	if (category == catPacket) {
 		packet = *(static_cast<const Packet*>(details));
 	//	nbApplPacketsSent = nbApplPacketsSent + packet.getNbPacketsSent();
 	//	nbApplPacketsReceived = nbApplPacketsReceived + packet.getNbPacketsReceived();
-
 		if(packet.isSent()) {
-			goodputStats[packet.getHost()].first++;
 			nbApplPacketsSent = nbApplPacketsSent + 1;
 		} else {
-			goodputStats[packet.getHost()].second++;
 			nbApplPacketsReceived = nbApplPacketsReceived + 1;
-			map<int, cOutVector*>::iterator iter;
-			/*
-			iter = goodputMaps.find(packet.getHost());
-			if(iter == goodputMaps.end()) {
-				  char vecname[50];
-				  int n;
-				  n = sprintf(vecname, "goodput-node_%d", packet.getHost());
-				  goodputMaps[packet.getHost()] = new cOutVector();
-				  goodputMaps[packet.getHost()]->setName(vecname);
-			}
-			*/
-			double goodput = ((double) goodputStats[packet.getHost()].second)/(nbApplPacketsSent - goodputStats[packet.getHost()].first);
-			if(packet.getHost() == 0) {
-				goodputSink.record(goodput);
-			} else {
-				goodputSources.record(goodput);
-			}
-			//goodputMaps[packet.getHost()]->record(goodput);
 		}
+		goodputVec.record(((double) nbApplPacketsReceived)/nbApplPacketsSent);
 	}
 }
 

@@ -1,7 +1,7 @@
 /* -*- mode:c++ -*- ********************************************************
  * file:        SimTracer.h
  *
- * author:      Jérôme Rousselot
+ * author:      Jerome Rousselot
  *
  * copyright:   (C) 2007-2008 CSEM SA, Neuchatel, Switzerland
  *
@@ -12,9 +12,13 @@
  *              version.
  *              For further information see file COPYING
  *              in the top level directory
+ *
+ * Funding: This work was partially financed by the European Commission under the
+ * Framework 6 IST Project "Wirelessly Accessible Sensor Populations"
+ * (WASP) under contract IST-034963.
  ***************************************************************************
- * part of:     Modifications to the MF Framework by CSEM
- ***************************************************************************/
+ * part of:    Modifications to the MF-2 framework by CSEM
+ **************************************************************************/
 
 #ifndef SIMTRACER_H
 #define SIMTRACER_H
@@ -26,8 +30,7 @@
 #include <map>
 #include <BaseModule.h>
 #include <BaseLayer.h>
-#include "BaseWorldUtility.h"
-//#include <ChannelControl.h>
+#include <ConnectionManager.h>
 #include "Packet.h"
 
 using namespace std;
@@ -35,7 +38,7 @@ using namespace std;
 /**
  * @class SimTracer
  * @ingroup utils
- * @author Jérôme Rousselot
+ * @author Jerome Rousselot
  */
 
 class SimTracer:public BaseModule
@@ -64,25 +67,25 @@ public:
   /** @brief Called by the Blackboard whenever a change occurs we're interested in */
   virtual void receiveBBItem(int category, const BBItem * details, int scopeModuleId);
 
+  double getAvgSensorPowerConsumption();
+
+  double getSinkPowerConsumption();
+
 protected:
    ofstream namFile, radioEnergyFile, treeFile;;
    vector < string > packetsColors;
-   map < unsigned long, double > powerConsumptions;
+   cOutVector goodputVec;
+   cOutVector pSinkVec;
+   cOutVector pSensorVec;
+   map < unsigned long, double >powerConsumptions;
    int catPacket;
    Packet packet;
    long nbApplPacketsSent;
    long nbApplPacketsReceived;
    int catEnergy;
-   map < unsigned long, double > powerConsumptions2;
-   map < unsigned long, double > currPower;
-   map < unsigned long, simtime_t > lastUpdates;
-   BaseUtility* utility2;
-
-   map<int, pair<long, long> > goodputStats;
-   // map<int, cOutVector*> goodputMaps;
-
-   cOutVector goodputSink;
-   cOutVector goodputSources;
+   map < unsigned long, double >powerConsumptions2;
+   map < unsigned long, double >currPower;
+   map < unsigned long, simtime_t> lastUpdates;
 };
 
 
