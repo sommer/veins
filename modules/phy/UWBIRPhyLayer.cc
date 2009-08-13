@@ -60,6 +60,12 @@ void UWBIRPhyLayer::initialize(int stage) {
 		_radio->setPowerConsumption(UWBIRRadio::RX, par("PRx"));
 		_radio->setPowerConsumption(UWBIRRadio::TX, par("PTx"));
 		_radio->setPowerConsumption(UWBIRRadio::SWITCHING, par("PSwitch"));
+	} else if (stage == 1) {
+		cModule* macModule = getParentModule()->getSubmodule("mac");
+		int macaddress = (check_and_cast<UWBIRMac*>(macModule))->getmacaddress();
+		std::ostringstream stream;
+		stream << "powerConsumption-" << macaddress;
+		_radio->setName(stream.str());  // get MAC address and add it
 	}
 
 }

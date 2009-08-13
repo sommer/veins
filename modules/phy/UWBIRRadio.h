@@ -47,6 +47,8 @@ protected:
 	simtime_t powerConsumption;
 	simtime_t lastStateChange;
 
+	cOutVector vectorPower;
+
 public:
 	UWBIRRadio():Radio(SYNC) {
 
@@ -63,6 +65,10 @@ public:
 			powerConsumptions[i] = 0.0;
 		}
 
+	}
+
+	void setName(string name) {
+		vectorPower.setName(name.c_str());  // so that we have a name that include our address / node number
 	}
 
 	/** @brief Defines the power consumption in the selected radio state. */
@@ -166,6 +172,7 @@ private:
 		simtime_t delta = (now - lastStateChange) * powerConsumptions[state];
 		powerConsumption = powerConsumption + delta;
 		lastStateChange = now;
+		vectorPower.record(powerConsumption / simTime().dbl());
 	}
 };
 
