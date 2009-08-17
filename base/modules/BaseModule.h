@@ -27,6 +27,7 @@
 
 #include "ImNotifiable.h"
 #include "FindModule.h"
+#include "BaseBattery.h"
 
 
 #define EV_clear (ev.isDisabled()||!debug) ? ev : ev
@@ -72,6 +73,9 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
     /** @brief Debug switch for all other modules*/
     bool debug;
 
+    BaseBattery* battery;
+	int deviceID;
+
   protected:
     /** @brief Function to get a pointer to the host module*/
     cModule *findHost(void);
@@ -79,8 +83,15 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
     /** @brief Function to get the logging name of id*/
     std::string getLogName(int);
 
+
+    void registerWithBattery(const std::string& name, int numAccounts);
+
+	void drain(DrainAmount& amount, int activity);
+	void drainCurrent(double amount, int activity);
+	void drainEnergy(double amount, int activity);
+
   public:
-    //Module_Class_Members(BaseModule, cSimpleModule, 0);
+    BaseModule();
 
     /** @brief Basic initialization for all modules */
     virtual void initialize(int);

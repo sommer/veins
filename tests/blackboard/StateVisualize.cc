@@ -6,12 +6,12 @@
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     testsuite for framework
@@ -24,7 +24,7 @@
 
 
 #include "StateVisualize.h"
-#include "HostState.h"
+#include "TestHostState.h"
 
 Define_Module( StateVisualize );
 
@@ -32,7 +32,7 @@ void StateVisualize::initialize(int stage)
 {
     BaseModule::initialize(stage);
     if(stage == 0) {
-        HostState s;
+        TestHostState s;
         catHostState = utility->subscribe(this, &s);
     }
 }
@@ -42,23 +42,23 @@ void StateVisualize::handleMessage( cMessage* m)
     error("StateVisualize::handleMessage called");
 }
 
-void StateVisualize::receiveBBItem(int category, const BBItem *details, int scopeModuleId) 
+void StateVisualize::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
     Enter_Method("receiveBBItem(%s)", details->info().c_str());
     if(category == catHostState) {
-        const HostState *s = dynamic_cast<const HostState *>(details);       
+        const TestHostState *s = dynamic_cast<const TestHostState *>(details);
         if(s == 0)
             error("StateVisualize::handleMessage could not read value from Blackboard");
 
-        if(s->getState() == HostState::DEAD) {
+        if(s->getState() == TestHostState::DEAD) {
             ev << "StateVisualize::receiveBBItem "
                << "Host state changed to DEAD" << std::endl;
         }
-        else if (s->getState() == HostState::SLEEP){
+        else if (s->getState() == TestHostState::SLEEP){
             ev << "StateVisualize::receiveBBItem "
                << "Host state changed to SLEEP" << std::endl;
         }
-        else if (s->getState() == HostState::AWAKE){
+        else if (s->getState() == TestHostState::AWAKE){
             ev << "StateVisualize::receiveBBItem "
                << "Host state changed to AWAKE" << std::endl;
         } else {

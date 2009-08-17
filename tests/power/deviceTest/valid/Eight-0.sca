@@ -1,0 +1,27 @@
+version 2
+run Eight-0-20090817-17:40:29-19114
+attr configname Eight
+attr datetime 20090817-17:40:29
+attr experiment Eight
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network sim
+attr processid 19114
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+scalar sim.host[0].subscriber 	HostState::FAILED 	9.3
+scalar sim.host[0].batteryStats 	"nominal (mW-s)" 	10800
+scalar sim.host[0].batteryStats 	"total (mW-s)" 	10800
+scalar sim.host[0].batteryStats 	"lifetime(s) (-1 == non-failed)" 	9.3
+scalar sim.host[0].batteryStats 	"num devices" 	1
+scalar sim.host[0].batteryStats 	DeviceDutySimple 	0
+scalar sim.host[0].batteryStats 	"device total (mWs)" 	10800
+scalar sim.host[0].batteryStats 	account 	0
+scalar sim.host[0].batteryStats 	"energy (mWs)" 	10800
+scalar sim.host[0].batteryStats 	"time (s)" 	3

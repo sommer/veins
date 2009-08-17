@@ -1,0 +1,28 @@
+version 2
+run Six-0-20090817-17:40:29-19112
+attr configname Six
+attr datetime 20090817-17:40:29
+attr experiment Six
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network sim
+attr processid 19112
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+vector 1  sim.host[0].batteryStats  capacity(mW-s)  ETV
+1	0	0	10800
+1	4	0.15	10170
+1	22	1	9720
+1	27	1.15	9090
+1	45	2	8640
+1	50	2.15	8010
+1	68	3	7560
+1	73	3.15	6930
+1	91	4	6480
+1	96	4.15	5850

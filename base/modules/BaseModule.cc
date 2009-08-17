@@ -20,6 +20,13 @@
 
 #include "BaseModule.h"
 #include "BaseUtility.h"
+#include <cassert>
+
+BaseModule::BaseModule():
+	cSimpleModule(),
+	battery(NULL),
+	utility(NULL)
+{}
 
 /**
  * Subscription to Blackboard should be in stage==0, and firing
@@ -28,8 +35,8 @@
  * NOTE: You have to call this in the initialize() function of the
  * inherited class!
  */
-void BaseModule::initialize(int stage) {    
-    if (stage == 0) {        
+void BaseModule::initialize(int stage) {
+    if (stage == 0) {
         hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
         utility = FindModule<BaseUtility*>::findSubModule(findHost());
     }
@@ -48,6 +55,37 @@ cModule *BaseModule::findHost(void)
     }
 
     return node;
+}
+
+
+void BaseModule::registerWithBattery(const std::string& name, int numAccounts) {
+	battery = FindModule<BaseBattery*>::findSubModule(findHost());
+
+	if(!battery) {
+		error("Could not find battery module!");
+	}
+
+	deviceID = battery->registerDevice(name, numAccounts);
+}
+
+void BaseModule::drain(DrainAmount& amount, int activity) {
+	assert(battery);
+
+	battery->drain(deviceID, amount, activity);
+}
+
+void BaseModule::drainCurrent(double amount, int activity) {
+	assert(battery);
+
+	DrainAmount val(DrainAmount::CURRENT, amount);
+	battery->drain(deviceID, val, activity);
+}
+
+void BaseModule::drainEnergy(double amount, int activity) {
+	assert(battery);
+
+	DrainAmount val(DrainAmount::ENERGY, amount);
+	battery->drain(deviceID, val, activity);
 }
 
 

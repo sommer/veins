@@ -6,12 +6,12 @@
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     testsuite of framework
@@ -28,7 +28,7 @@
 
 #include <omnetpp.h>
 #include <BaseUtility.h>
-#include "HostState.h"
+#include "TestHostState.h"
 #include "TestParam.h"
 #include "YetAnother.h"
 
@@ -37,11 +37,11 @@ class StateChanger : public BaseModule
 private:
     cMessage *change_timer;
     unsigned int state_counter;
-    HostState hs;
+    TestHostState hs;
     YetAnother tp;
     int catHostState;
     int catTestParam;
-    
+
 public:
     //Module_Class_Members(StateChanger, BaseModule, 0);
     virtual void initialize(int);
@@ -50,4 +50,4 @@ public:
 };
 
 #endif
- 
+

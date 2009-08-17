@@ -1,0 +1,32 @@
+version 2
+run One-0-20090817-17:40:30-19130
+attr configname One
+attr datetime 20090817-17:40:30
+attr experiment One
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network sim
+attr processid 19130
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+scalar sim.host[0].batteryStats 	"nominal (mW-s)" 	10800
+scalar sim.host[0].batteryStats 	"total (mW-s)" 	8160
+scalar sim.host[0].batteryStats 	"lifetime(s) (-1 == non-failed)" 	-1
+scalar sim.host[0].batteryStats 	"num devices" 	1
+scalar sim.host[0].batteryStats 	DeviceDuty 	0
+scalar sim.host[0].batteryStats 	"device total (mWs)" 	8160
+scalar sim.host[0].batteryStats 	account 	0
+scalar sim.host[0].batteryStats 	"energy (mWs)" 	1500
+scalar sim.host[0].batteryStats 	"time (s)" 	1
+scalar sim.host[0].batteryStats 	account 	1
+scalar sim.host[0].batteryStats 	"energy (mWs)" 	6000
+scalar sim.host[0].batteryStats 	"time (s)" 	2
+scalar sim.host[0].batteryStats 	account 	2
+scalar sim.host[0].batteryStats 	"energy (mWs)" 	660
+scalar sim.host[0].batteryStats 	"time (s)" 	0

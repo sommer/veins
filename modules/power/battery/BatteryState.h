@@ -1,0 +1,63 @@
+/* -*- mode:c++ -*- ********************************************************
+ * Energy Framework for Omnet++, version 0.9
+ *
+ * Author:  Laura Marie Feeney
+ *
+ * Copyright 2009 Swedish Institute of Computer Science.
+ *
+ * This software is provided `as is' and without any express or implied
+ * warranties, including, but not limited to, the implied warranties of
+ * merchantability and fitness for a particular purpose.
+ *
+ ***************************************************************************/
+
+#ifndef BATTERYSTATE_H
+#define BATTERYSTATE_H
+
+#include <omnetpp.h>
+#include "BaseUtility.h"
+#include <sstream>
+
+/**
+ * @brief residual capacity of battery
+ *
+ * BatteryState is passed to BatteryStats and should not be used by
+ * non-statistics modules.  Value may be read as absolute or relative
+ * (to nominal) capacity.
+ */
+class BatteryState : public BBItem
+{
+  BBITEM_METAINFO(BBItem);
+
+ protected:
+  /** @brief nominal battery capacity in mW-s (mA-s at nominal voltage) */
+  double nominal;
+  /** @brief remaining battery capacity in mW-s */
+  double absolute;
+
+ public:
+  BatteryState(double n=-1) : BBItem(), nominal(n) {
+  };
+
+  /** @brief residual capacity of battery (relative to nominal capacity) */
+  double getRel() const {
+    return absolute/nominal;
+  }
+
+  /** @brief residual capacity of battery (in mW-s) */
+  double getAbs() const {
+    return absolute;
+  }
+
+  void set(double s) {
+    absolute = s;
+  }
+
+  std::string info() const {
+    std::ostringstream ost;
+    ost << " battery at "<<  (absolute/nominal) * 100 <<"%";
+    return ost.str();
+  }
+};
+
+#endif

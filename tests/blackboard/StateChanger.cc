@@ -38,7 +38,7 @@ void StateChanger::initialize(int stage)
     else if(stage == 1) {
         catHostState = utility->getCategory(&hs);
         catTestParam = utility->getCategory(&tp);
-        hs.setState(HostState::SLEEP);
+        hs.setState(TestHostState::SLEEP);
         tp.setState(TestParam::BLUE);
         utility->publishBBItem(catHostState, &hs, getParentModule()->getId());
         utility->publishBBItem(catTestParam, &tp, getParentModule()->getId());
@@ -54,15 +54,15 @@ void StateChanger::handleMessage(cMessage* msg)
 	switch(state_counter % 3)
 	{
 	    case 0:
-		hs.setState(HostState::SLEEP);
+		hs.setState(TestHostState::SLEEP);
                 tp.setState(TestParam::BLUE);
 		break;
 	    case 1:
-		hs.setState(HostState::DEAD);
+		hs.setState(TestHostState::DEAD);
                 tp.setState(TestParam::RED);
 		break;
 	    case 2:
-		hs.setState(HostState::AWAKE);
+		hs.setState(TestHostState::AWAKE);
 		tp.setState(TestParam::GREEN);
 		break;
 	}

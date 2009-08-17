@@ -6,12 +6,12 @@
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistrbute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistrbute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     testsuite for framework
@@ -24,7 +24,7 @@
 
 
 #include "StateView.h"
-#include "HostState.h"
+#include "TestHostState.h"
 #include "TestParam.h"
 
 Define_Module( StateView );
@@ -33,13 +33,13 @@ void StateView::initialize(int stage)
 {
     BaseModule::initialize(stage);
     if(stage == 0) {
-        HostState s;
+        TestHostState s;
         catHostState = utility->subscribe(this, &s, -1);
     } else if(stage == 1) {
         scheduleAt(simTime() + 5.0, new cMessage("unsubscribe memo"));
     }
 }
- 
+
 void StateView::handleMessage( cMessage* m)
 {
     TestParam h;
@@ -50,21 +50,21 @@ void StateView::handleMessage( cMessage* m)
     delete m;
 }
 
-void StateView::receiveBBItem(int category, const BBItem *details, int scopeModuleId) 
+void StateView::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
     Enter_Method("receiveBBItem(%s)", details->info().c_str());
-    const HostState *s = dynamic_cast<const HostState *>(details);
+    const TestHostState *s = dynamic_cast<const TestHostState *>(details);
     if(s == 0) error("StateView::receiveBBItem could not read details");
-    
-    if(s->getState() == HostState::DEAD) {
+
+    if(s->getState() == TestHostState::DEAD) {
         ev << "StateView::receiveBBItem "
            << "Host state changed to DEAD" << std::endl;
     }
-    else if (s->getState() == HostState::SLEEP){
+    else if (s->getState() == TestHostState::SLEEP){
         ev << "StateView::receiveBBItem "
            << "Host state changed to SLEEP" << std::endl;
     }
-    else if (s->getState() == HostState::AWAKE){
+    else if (s->getState() == TestHostState::AWAKE){
 	ev << "StateView::receiveBBItem "
            << "Host state changed to AWAKE" << std::endl;
     } else {
