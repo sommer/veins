@@ -143,18 +143,6 @@ public:
 private:
 
 	/**
-	 * @brief Reads and returns the parameter with the passed name.
-	 *
-	 * If the parameter couldn't be found the value of defaultValue
-	 * is returned.
-	 *
-	 * @param parName 		- the name of the ned-parameter
-	 * @param defaultValue 	- the value to be returned if the parameter
-	 * 				  		  couldn't be found
-	 */
-	template<class T> T readPar(const char* parName, const T defaultValue);
-
-	/**
 	 * @brief Utility function. Reads the parameters of a XML element
 	 * and stores them in the passed ParameterMap reference.
 	 */
@@ -173,6 +161,18 @@ private:
 	void initializeDecider(cXMLElement* xmlConfig);
 
 protected:
+
+	/**
+	 * @brief Reads and returns the parameter with the passed name.
+	 *
+	 * If the parameter couldn't be found the value of defaultValue
+	 * is returned.
+	 *
+	 * @param parName 		- the name of the ned-parameter
+	 * @param defaultValue 	- the value to be returned if the parameter
+	 * 				  		  couldn't be found
+	 */
+	template<class T> T readPar(const char* parName, const T defaultValue);
 
 	/**
 	 * @brief OMNeT++ initialization function.
@@ -232,31 +232,31 @@ protected:
 	/**
 	 * @brief Handles messages received from the channel (probably AirFrames).
 	 */
-	void handleAirFrame(cMessage* msg);
+	virtual void handleAirFrame(cMessage* msg);
 
 	/**
 	 * @brief Handles messages received from the upper layer through the
 	 * data gate.
 	 */
-	void handleUpperMessage(cMessage* msg);
+	virtual void handleUpperMessage(cMessage* msg);
 
 	/**
 	 * @brief Handles messages received from the upper layer through the
 	 * control gate.
 	 */
-	void handleUpperControlMessage(cMessage* msg);
+	virtual void handleUpperControlMessage(cMessage* msg);
 
 	/**
 	 * @brief Handles self scheduled messages.
 	 */
-	void handleSelfMessage(cMessage* msg);
+	virtual void handleSelfMessage(cMessage* msg);
 
 	/**
 	 * @brief Handles reception of a ChannelSenseRequest by forwarding it
 	 * to the decider and scheduling it to the point in time
 	 * returned by the decider.
 	 */
-	void handleChannelSenseRequest(cMessage* msg);
+	virtual void handleChannelSenseRequest(cMessage* msg);
 
 	/**
 	 * @brief Handles incoming AirFrames with the state FIRST_RECEIVE.
@@ -412,6 +412,8 @@ public:
 	 * handled that message.
 	 */
 	virtual void cancelScheduledMessage(cMessage* msg);
+
+	virtual void drawCurrent(double amount, int activity);
 
 };
 

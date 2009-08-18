@@ -737,3 +737,7 @@ void BasePhyLayer::cancelScheduledMessage(cMessage* msg) {
 		   << " wasn't actually scheduled. Message is: " << msg << endl;
 	}
 }
+
+void BasePhyLayer::drawCurrent(double amount, int activity) {
+	//does nothing yet
+}
