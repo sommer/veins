@@ -53,7 +53,7 @@ module Nic80211Battery
         input uppergateIn; // to upper layers
         output uppergateOut; // from upper layers
         output upperControlOut; // control information 
-        output batteryOut; // to battery 
+        input upperControlIn; // control information 
         input radioIn; // radioIn gate for sendDirect
 
     submodules:
@@ -75,10 +75,11 @@ module Nic80211Battery
         phy.upperGateIn <-- { @display("m=m,25,0,25,0"); } <-- mac.lowerGateOut;
         phy.upperGateOut --> { @display("m=m,73,0,50,50"); } --> mac.lowerGateIn;
         phy.upperControlOut --> mac.lowerControlIn;
-        phy.upperControlOut --> mac.lowerControlIn;
+        phy.upperControlIn <-- mac.lowerControlOut;
 
         mac.upperGateOut --> uppergateOut;
         mac.upperControlOut --> upperControlOut;
         mac.upperGateIn <-- uppergateIn;
+        mac.upperControlIn <-- upperControlIn;
 }
 

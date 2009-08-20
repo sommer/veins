@@ -39,5 +39,5 @@ package org.mixim.modules.application;
 simple BurstApplLayerBattery extends BurstApplLayer
 {
     parameters:
-        @class(BurstApplLayerbattery);
+        @class(BurstApplLayerBattery);
 }

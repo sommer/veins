@@ -55,4 +55,6 @@ simple Mac80211 extends BaseMacLayer
     	double neighborhoodCacheMaxAge @unit(s); 
     	//the power to transmit packets with [mW]
     	double txPower @unit(mW);
+    	//the center frequency the Mac uses [Hz]
+    	double centerFrequency @unit(Hz);
 }

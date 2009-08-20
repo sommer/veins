@@ -38,7 +38,7 @@ public:
 						double idleCurrent,
 						int myIndex = -1,
 						bool debug = false):
-		Decider80211(phy, sensitivity, myIndex, debug, threshold, centerFrequency),
+		Decider80211(phy, threshold, sensitivity, centerFrequency, myIndex, debug),
 		rxCurrent(rxCurrent),
 		idleCurrent(idleCurrent)
 	{}

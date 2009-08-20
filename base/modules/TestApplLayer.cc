@@ -6,12 +6,12 @@
  * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
- *              This program is free software; you can redistribute it 
- *              and/or modify it under the terms of the GNU General Public 
+ *              This program is free software; you can redistribute it
+ *              and/or modify it under the terms of the GNU General Public
  *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later 
+ *              version 2 of the License, or (at your option) any later
  *              version.
- *              For further information see file COPYING 
+ *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************
  * part of:     framework implementation developed by tkn
@@ -40,7 +40,7 @@ void TestApplLayer::initialize(int stage)
         delayTimer = new cMessage( "delay-timer", SEND_BROADCAST_TIMER );
     }
     else if(stage==1) {
-        scheduleAt(simTime() + findHost()->getIndex() + 0.005, delayTimer);
+        scheduleAt(simTime() + dblrand() * 10, delayTimer);
     }
 }
 
@@ -57,7 +57,7 @@ void TestApplLayer::handleLowerMsg( cMessage* msg )
     ApplPkt *m;
     switch( msg->getKind() ){
     case BROADCAST_MESSAGE:
-        m = static_cast<ApplPkt *>(msg);        
+        m = static_cast<ApplPkt *>(msg);
 	EV << "Received a broadcast packet from host["<<m->getSrcAddr()<<"] -> sending reply\n";
         sendReply(m);
         break;
@@ -74,7 +74,7 @@ void TestApplLayer::handleLowerMsg( cMessage* msg )
 
 /**
  * A timer with kind = SEND_BROADCAST_TIMER indicates that a new
- * broadcast has to be send (@ref sendBroadcast). 
+ * broadcast has to be send (@ref sendBroadcast).
  *
  * There are no other timer implemented for this module.
  *
@@ -104,16 +104,16 @@ void TestApplLayer::sendBroadcast()
     // we use the host modules getIndex() as a appl address
     pkt->setSrcAddr( myApplAddr() );
     pkt->setBitLength(headerLength);
-    
+
     // set the control info to tell the network layer the layer 3
     // address;
     pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
-    
+
     EV << "Sending broadcast packet!\n";
     sendDown( pkt );
 }
 
-void TestApplLayer::sendReply(ApplPkt *msg) 
+void TestApplLayer::sendReply(ApplPkt *msg)
 {
     simtime_t delay;
 
@@ -131,7 +131,7 @@ void TestApplLayer::sendReply(ApplPkt *msg)
     //and stays the same
 }
 
-void TestApplLayer::finish() 
+void TestApplLayer::finish()
 {
     BaseApplLayer::finish();
 	cancelAndDelete(delayTimer);

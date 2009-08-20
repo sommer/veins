@@ -75,10 +75,12 @@ module Host
         nic.uppergateOut --> net.lowerGateIn;
         nic.uppergateIn <-- net.lowerGateOut;
         nic.upperControlOut --> net.lowerControlIn;
+        nic.upperControlIn <-- net.lowerControlOut;
 
         net.upperGateOut --> appl.lowerGateIn;
         net.upperGateIn <-- appl.lowerGateOut;
         net.upperControlOut --> appl.lowerControlIn;
+        net.upperControlIn <-- appl.lowerControlOut;
 
         radioIn --> nic.radioIn;
 

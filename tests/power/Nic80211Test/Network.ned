@@ -32,8 +32,8 @@ module Sim
 {
     parameters:
         // parametes for the framework
-        double playgroundSizeX;
-        double playgroundSizeY;
+        double playgroundSizeX @unit(m);
+        double playgroundSizeY @unit(m);
         double numHosts;
 
 
@@ -64,8 +64,8 @@ module Sim
 network sim extends Sim
 {
     parameters:
-        playgroundSizeX @prompt("playgroundSizeX") = default(40);
-        playgroundSizeY @prompt("playgroundSizeY") = default(40);
+        playgroundSizeX @prompt("playgroundSizeX") = default(40m);
+        playgroundSizeY @prompt("playgroundSizeY") = default(40m);
         numHosts @prompt("Number of hosts:") = default(2);
 
 }

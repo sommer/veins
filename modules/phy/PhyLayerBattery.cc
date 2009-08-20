@@ -15,6 +15,8 @@
 
 #include "PhyLayerBattery.h"
 
+Define_Module(PhyLayerBattery);
+
 void PhyLayerBattery::initialize(int stage) {
 	PhyLayer::initialize(stage);
 	if (stage == 0) {
@@ -39,6 +41,8 @@ void PhyLayerBattery::initialize(int stage) {
 		txCurrent = getParentModule()->par( "txCurrent" );
 	} else {
 		registerWithBattery("80211Nic", numActivities);
+
+		drawCurrent(idleCurrent, IDLE_ACCT);
 	}
 }
 

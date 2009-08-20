@@ -270,6 +270,9 @@ protected:
     /** @brief The power at which data is transmitted */
     double txPower;
 
+    /** @brief Stores the center frequency the Mac uses. */
+    double centerFreq;
+
     /** @brief Current bit rate at which data is transmitted */
     double bitrate;
     /** @brief and category number */

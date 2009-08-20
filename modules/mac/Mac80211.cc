@@ -66,6 +66,7 @@ void Mac80211::initialize(int stage)
         autoBitrate = hasPar("autoBitrate") ? par("autoBitrate").boolValue() : false;
 
         txPower = hasPar("txPower") ? par("txPower").doubleValue() : 110.11;
+        centerFreq = hasPar("centerFrequency") ? par("centerFrequency").doubleValue() : 2.412e9;
 
         delta = 1E-9;
 
@@ -1007,7 +1008,7 @@ Signal* Mac80211::createSignal(simtime_t start, simtime_t length, double power, 
 	Signal* s = new Signal(start, length);
 
 	//create and set tx power mapping
-	ConstMapping* txPowerMapping = createSingleFrequencyMapping(start, end, 2.412e9, 11.0e6, power);
+	ConstMapping* txPowerMapping = createSingleFrequencyMapping(start, end, centerFreq, 11.0e6, power);
 	s->setTransmissionPower(txPowerMapping);
 
 	//create and set bitrate mapping
