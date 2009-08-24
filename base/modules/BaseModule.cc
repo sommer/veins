@@ -24,8 +24,8 @@
 
 BaseModule::BaseModule():
 	cSimpleModule(),
-	battery(NULL),
-	utility(NULL)
+	utility(NULL),
+	battery(NULL)
 {}
 
 /**
@@ -68,24 +68,24 @@ void BaseModule::registerWithBattery(const std::string& name, int numAccounts) {
 	deviceID = battery->registerDevice(name, numAccounts);
 }
 
-void BaseModule::drain(DrainAmount& amount, int activity) {
+void BaseModule::draw(DrawAmount& amount, int activity) {
 	assert(battery);
 
-	battery->drain(deviceID, amount, activity);
+	battery->draw(deviceID, amount, activity);
 }
 
-void BaseModule::drainCurrent(double amount, int activity) {
+void BaseModule::drawCurrent(double amount, int activity) {
 	assert(battery);
 
-	DrainAmount val(DrainAmount::CURRENT, amount);
-	battery->drain(deviceID, val, activity);
+	DrawAmount val(DrawAmount::CURRENT, amount);
+	battery->draw(deviceID, val, activity);
 }
 
-void BaseModule::drainEnergy(double amount, int activity) {
+void BaseModule::drawEnergy(double amount, int activity) {
 	assert(battery);
 
-	DrainAmount val(DrainAmount::ENERGY, amount);
-	battery->drain(deviceID, val, activity);
+	DrawAmount val(DrawAmount::ENERGY, amount);
+	battery->draw(deviceID, val, activity);
 }
 
 

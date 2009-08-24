@@ -27,8 +27,9 @@
  * current draw is being charged. The sum over the activities is the
  * total energy consumed by the device, but the sum of times is the
  * total active time, not ncessarily the total lifetime.
+ *
+ * @ingroup power
  */
-
 class DeviceEntry
   {
   public:

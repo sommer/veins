@@ -143,13 +143,13 @@ int SimpleBattery::registerDevice(const std::string& name, int numAccts)
 	return deviceID;
 }
 
-void SimpleBattery::drain(int deviceID, DrainAmount& amount, int activity)
+void SimpleBattery::draw(int deviceID, DrawAmount& amount, int activity)
 {
 	if(deviceID < 0 || deviceID > registeredDevices) {
 		error("Unknown device ID!");
 	}
 
-	if (amount.getType() == DrainAmount::CURRENT) {
+	if (amount.getType() == DrawAmount::CURRENT) {
 
 		if (devices[deviceID].name.empty()) {
 			error("drawMsg from unregistered device");
@@ -171,7 +171,7 @@ void SimpleBattery::drain(int deviceID, DrainAmount& amount, int activity)
 		devices[deviceID].currentActivity = activity;
 	}
 
-	else if (amount.getType() == DrainAmount::ENERGY) {
+	else if (amount.getType() == DrawAmount::ENERGY) {
 
 		if (devices[deviceID].name.empty()) {
 			error("drawMsg from unregistered device");

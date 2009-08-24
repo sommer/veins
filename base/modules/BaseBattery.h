@@ -4,43 +4,97 @@
 #include <omnetpp.h>
 class BaseUtility;
 
-class DrainAmount {
+/**
+ * @brief Defines the amount of power drawn by a device from
+ * a power source.
+ *
+ * Used as generic amount parameter for BaseBatteries "draw"-method.
+ *
+ * Can be either an instantaneous draw of a certain energy amount
+ * in mWs (type=ENERGY) or a draw of a certain current in mA over
+ * time (type=CURRENT).
+ *
+ * Can be sub-classed for more complex power draws.
+ *
+ * @ingroup baseModules
+ * @ingroup power
+ */
+class DrawAmount {
 public:
+	/** @brief The type of the amount to draw.*/
 	enum PowerType {
-		CURRENT,
-		ENERGY
+		CURRENT, 	/** @brief Current in mA over time. */
+		ENERGY 		/** @brief Single fixed energy draw in mWs */
 	};
 
 protected:
+	/** @brief Stores the type of the amount.*/
 	int type;
+
+	/** @brief Stores the actual amount.*/
 	double value;
 
 public:
-	DrainAmount(int type = CURRENT, int value = 0):
+	DrawAmount(int type = CURRENT, int value = 0):
 		type(type),
 		value(value)
 	{}
 
-	int getType() { return type; }
-	double getValue() { return value; }
-	void setType(int t) { type = t; }
-	void setValue(double v) { value = v; }
+	/** @brief Returns the type of power drawn as PowerType. */
+	virtual int getType() { return type; }
+	/** @brief Returns the actual amount of power drawn. */
+	virtual double getValue() { return value; }
+
+	/** @brief Sets the type of power drawn. */
+	virtual void setType(int t) { type = t; }
+	/** @brief Sets the actual amount of power drawn. */
+	virtual void setValue(double v) { value = v; }
 };
 
+/**
+ * @brief Base class for any power source.
+ *
+ * See "SimpleBattery" for an example implementation.
+ *
+ * @ingroup baseModules
+ * @ingroup power
+ * @see SimpleBattery
+ */
 class BaseBattery : public cSimpleModule {
 protected:
 	/** @brief Cached pointer to the utility module*/
 	BaseUtility *utility;
 
 protected:
+	/** @brief Function to get a pointer to the host module*/
 	cModule *findHost(void);
 
 public:
 	virtual void initialize(int stage);
 
+	/**
+	 * @brief Registers a power draining device with this battery.
+	 *
+	 * Takes the name of the device as well as a number of accounts
+	 * the devices draws power for (like rx, tx, idle for a radio device).
+	 *
+	 * Returns an ID by which the device can identify itself to the
+	 * battery.
+	 *
+	 * Has to be implemented by actual battery implementations.
+	 */
 	virtual int registerDevice(const std::string& name, int numAccounts) = 0;
 
-	virtual void drain(int drainID, DrainAmount& amount, int activity) = 0;
+	/**
+	 * @brief Draws power from the battery.
+	 *
+	 * The actual amount and type of power drawn is defined by the passed
+	 * DrawAmount parameter. Can be an fixed single amount or an amount
+	 * drawn over time.
+	 * The drainID identifies the device which drains the power.
+	 * "Account" identifies the account the power is drawn from.
+	 */
+	virtual void draw(int drainID, DrawAmount& amount, int account) = 0;
 
 	/** @brief Other host modules should use these interfaces to obtain
 	 *  the state-of-charge of the battery.  Do NOT use BatteryState
@@ -56,13 +110,7 @@ public:
 	virtual double estimateResidualAbs() = 0;
 
 	/**
-	 * @brief Divide initialization into two stages
-	 *
-	 * In the first stage (stage==0), modules subscribe to notification
-	 * categories at Blackboard. The first notifications
-	 * (e.g. about the initial values of some variables such as RadioState)
-	 * should take place earliest in the second stage (stage==1),
-	 * when everyone interested in them has already subscribed.
+	 * @brief Divide initialization into two stages.
 	 */
 	virtual int numInitStages() const {
 		return 2;

@@ -86,9 +86,9 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
 
     void registerWithBattery(const std::string& name, int numAccounts);
 
-	void drain(DrainAmount& amount, int activity);
-	void drainCurrent(double amount, int activity);
-	void drainEnergy(double amount, int activity);
+	void draw(DrawAmount& amount, int activity);
+	void drawCurrent(double amount, int activity);
+	void drawEnergy(double amount, int activity);
 
   public:
     BaseModule();

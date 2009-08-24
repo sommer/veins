@@ -103,13 +103,13 @@ void DeviceDuty::handleMessage(cMessage *msg) {
 //			drawMsg->setValue(wakeup);
 //			drawMsg->setActivity(WAKE);
 //			send(drawMsg, batteryGate);
-			drainEnergy(wakeup, WAKE);
+			drawEnergy(wakeup, WAKE);
 
 //			drawMsg = new DrawMsg ("draw current", CURRENT);
 //			drawMsg->setValue(current0);
 //			drawMsg->setActivity(DUTY0);
 //			send(drawMsg, batteryGate);
-			drainCurrent(current0, DUTY0);
+			drawCurrent(current0, DUTY0);
 
 			// ON for dutyCycle0, then the gap
 			scheduleAt(simTime() + (dutyCycle0 * period), gap01);
@@ -120,7 +120,7 @@ void DeviceDuty::handleMessage(cMessage *msg) {
 			//drawMsg->setValue(0.0);
 			// energy is 0 so account doesn't matter
 			//send(drawMsg, batteryGate);
-			drainCurrent(0.0, 0);
+			drawCurrent(0.0, 0);
 
 			// OFF for gap, then dutyCycle1
 			scheduleAt(simTime() + (gap * period), on1);
@@ -131,13 +131,13 @@ void DeviceDuty::handleMessage(cMessage *msg) {
 			//drawMsg->setValue(wakeup);
 			//drawMsg->setActivity(WAKE);
 			//send(drawMsg, batteryGate);
-				drainEnergy(wakeup, WAKE);
+				drawEnergy(wakeup, WAKE);
 
 			//drawMsg = new DrawMsg ("draw current", CURRENT);
 			//drawMsg->setValue(current1);
 			//drawMsg->setActivity(DUTY1);
 			//send(drawMsg, batteryGate);
-				drainCurrent(current1, DUTY1);
+				drawCurrent(current1, DUTY1);
 
 			// ON for DutyCycle1, then off
 			scheduleAt(simTime() + (dutyCycle1 * period), off);
@@ -149,7 +149,7 @@ void DeviceDuty::handleMessage(cMessage *msg) {
 				//drawMsg->setValue(0.0);
 				// energy is 0 so account doesn't matter
 				//send(drawMsg, batteryGate);
-				drainCurrent(0.0, 0);
+				drawCurrent(0.0, 0);
 
 				// OFF for remaining time, then back to dutyCycle0
 				double timeLeft = period * (1.0 - (dutyCycle0 + gap + dutyCycle1));

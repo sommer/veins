@@ -24,12 +24,16 @@
 /**
  * @brief A simple linear model of battery consumption.
  *
- * See SimpleBattery.ned for paramters
+ * See SimpleBattery.ned for parameters
  *
  * Simple Battery receives DrawMsg's from one or more devices, updates
  * residual capacity (total current * voltage * time), publishes
  * HostState notification on battery depletion, and provides time
  * series and summary information to Battery Stats module.
+ *
+ * @ingroup power
+ * @author Laura Marie Feeney
+ * @author Karl Wessel (port for MiXiM)
  */
 
 class SimpleBattery: public BaseBattery {
@@ -51,9 +55,16 @@ public:
 	/** @brief current state of charge of the battery (mW-s) */
 	double estimateResidualAbs();
 
+	/**
+	 * @brief Registers a power device by creating a new DeviceEntry for it.
+	 */
 	virtual int registerDevice(const std::string& name, int numAccounts);
 
-	virtual void drain(int drainID, DrainAmount& amount, int activity);
+	/**
+	 * @brief Draws either a certain amount of energy in mWs or
+	 * a defined current in mA over time, depending on passed DrawAmount.
+	 */
+	virtual void draw(int drainID, DrawAmount& amount, int activity);
 
 protected:
 

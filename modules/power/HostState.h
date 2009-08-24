@@ -27,6 +27,9 @@
  * subscribe to this notification.  Should eventually be generalized
  * to handle more general HostState (e.g. stochastic failure,
  * restart).
+ *
+ * @ingroup power
+ * @ingroup blackboard
  */
 class HostState : public BBItem
 {

@@ -214,3 +214,7 @@
  * @defgroup exampleCSMA CSMAMac example - Classes from the CSMAMac example
  * @ingroup examples
  */
+
+/**
+ * @defgroup power Power consumption - Classes using/defining power consumption
+ */

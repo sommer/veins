@@ -413,6 +413,10 @@ public:
 	 */
 	virtual void cancelScheduledMessage(cMessage* msg);
 
+	/**
+	 * @brief Does nothing. For an actual power supporting
+	 * phy see "PhyLayerBattery".
+	 */
 	virtual void drawCurrent(double amount, int activity);
 
 };

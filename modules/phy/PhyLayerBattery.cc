@@ -68,7 +68,7 @@ Decider* PhyLayerBattery::initializeDecider80211Battery(ParameterMap& params) {
 }
 
 void PhyLayerBattery::drawCurrent(double amount, int activity) {
-	drainCurrent(amount, activity);
+	drawCurrent(amount, activity);
 }
 
 void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
@@ -80,12 +80,12 @@ void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
 
 	PhyLayer::handleUpperMessage(msg);
 
-	drainCurrent(txCurrent, TX_ACCT);
+	drawCurrent(txCurrent, TX_ACCT);
 }
 
 void PhyLayerBattery::handleSelfMessage(cMessage* msg) {
 	if(msg->getKind() == TX_OVER) {
-		drainCurrent(idleCurrent, IDLE_ACCT);
+		drawCurrent(idleCurrent, IDLE_ACCT);
 	}
 	PhyLayer::handleSelfMessage(msg);
 }

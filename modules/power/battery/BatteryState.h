@@ -24,6 +24,9 @@
  * BatteryState is passed to BatteryStats and should not be used by
  * non-statistics modules.  Value may be read as absolute or relative
  * (to nominal) capacity.
+ *
+ * @ingroup blackboard
+ * @ingroup power
  */
 class BatteryState : public BBItem
 {

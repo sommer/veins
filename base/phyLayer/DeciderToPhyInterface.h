@@ -89,9 +89,9 @@ public:
 
 	/**
 	 * @brief Enables the Decider to draw Power from the
-	 * phy layers power account.
+	 * phy layers power accounts.
 	 *
-	 * Does nothing if no Battery module in Simulation is present.
+	 * Does nothing if no Battery module in simulation is present.
 	 */
 	virtual void drawCurrent(double amount, int activity) = 0;
 };

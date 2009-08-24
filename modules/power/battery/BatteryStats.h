@@ -33,6 +33,8 @@
  * Note: only BatteryStats modules should access BatteryState
  * information, other modules should use Battery's estimateResidual
  * method.
+ *
+ * @ingroup power
  */
 class BatteryStats : public BaseModule
 {

@@ -82,12 +82,12 @@ void DeviceDutySimple::handleMessage(cMessage *msg) {
 			//drawMsg = new DrawMsg ("device wakeup 0", ENERGY);
 			//drawMsg->setValue(wakeup);
 			//send(drawMsg, batteryGate);
-			drainEnergy(wakeup, 0);
+			drawEnergy(wakeup, 0);
 
 			//drawMsg = new DrawMsg ("draw current", CURRENT);
 			//drawMsg->setValue(current);
 			//send(drawMsg, batteryGate);
-			drainCurrent(current, 0);
+			drawCurrent(current, 0);
 
 			break;
 
@@ -98,7 +98,7 @@ void DeviceDutySimple::handleMessage(cMessage *msg) {
 			//drawMsg = new DrawMsg ("device off", CURRENT);
 			//drawMsg->setValue(0.0);
 			//send(drawMsg, batteryGate);
-			drainCurrent(0.0, 0);
+			drawCurrent(0.0, 0);
 
 			break;
 

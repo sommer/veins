@@ -18,11 +18,26 @@
 
 #include "Decider80211.h"
 
+/**
+ * @brief Extends Decider80211 by drawing power during receiving
+ * of messages.
+ *
+ * @ingroup decider
+ * @ingroup power
+ */
 class Decider80211Battery : public Decider80211 {
 protected:
+	/** @brief Stores the current in mA to draw during reception
+	 * of AirFrames. */
 	double rxCurrent;
+	/** @brief Stores the current in mA to draw when only listening
+	 * to the channel.*/
 	double idleCurrent;
 
+	/**
+	 * @brief Defines the power consuming activities (accounts) of
+	 * the NIC. Should be the same as defined in the phy layer.
+	 */
 	enum Activities {
 		SLEEP_ACCT=0,
 		IDLE_ACCT=1,
@@ -44,10 +59,8 @@ public:
 	{}
 
 	/**
-	 * @brief Changes the "isIdle"-status to the passed value.
-	 *
-	 * This method further checks if there are any ChannelSenseRequests
-	 * which can be answered because of the idle state changed.
+	 * @brief Draws either idle or rx current, depending on the
+	 * "isIdle" state.
 	 */
 	virtual void setChannelIdleStatus(bool isIdle);
 };
