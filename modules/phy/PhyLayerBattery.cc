@@ -67,9 +67,9 @@ Decider* PhyLayerBattery::initializeDecider80211Battery(ParameterMap& params) {
 								   coreDebug);
 }
 
-void PhyLayerBattery::drawCurrent(double amount, int activity) {
-	drawCurrent(amount, activity);
-}
+//void PhyLayerBattery::drawCurrent(double amount, int activity) {
+//	drawCurrent(amount, activity);
+//}
 
 void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
 	if (hostState == HostState::FAILED) {

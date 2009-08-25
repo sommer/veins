@@ -115,7 +115,7 @@ public:
 	 *
 	 * Method is defined in "DeciderToPhyInterface".
 	 */
-	virtual void drawCurrent(double amount, int activity);
+	//virtual void drawCurrent(double amount, int activity);
 
 	/**
 	 * @brief Captures changes in host state.

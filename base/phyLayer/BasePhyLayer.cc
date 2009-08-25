@@ -739,5 +739,5 @@ void BasePhyLayer::cancelScheduledMessage(cMessage* msg) {
 }
 
 void BasePhyLayer::drawCurrent(double amount, int activity) {
-	//does nothing yet
+	BaseModule::drawCurrent(amount, activity);
 }
