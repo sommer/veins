@@ -28,7 +28,7 @@ Define_Module(DeviceDutySimple)
 ;
 
 void DeviceDutySimple::initialize(int stage) {
-	BaseModule::initialize(stage);
+	BatteryAccess::initialize(stage);
 
 	if (stage == 0) {
 
@@ -47,14 +47,6 @@ void DeviceDutySimple::initialize(int stage) {
 		EV << "current = " << current << "mA,  wakeup = "<< wakeup
 		<< "mW-s" << endl;
 
-		// batteryState and hostState are published with Host scope
-		scopeHost = (this->findHost())->getId();
-
-		// subscription to hostState is needed because this module
-		// operates the "duty cycle protocol" and should stop when the
-		// battery is depleted
-		HostState hs;
-		hostStateCat = utility->subscribe(this, &hs, scopeHost);
 	}
 
 	else if (stage == 1) {
@@ -111,28 +103,21 @@ void DeviceDutySimple::handleMessage(cMessage *msg) {
 	}
 }
 
-void DeviceDutySimple::receiveBBItem(int category, const BBItem *details,
-		int scopeModuleId) {
-	Enter_Method_Silent();
-	BaseModule::receiveBBItem(category, details, scopeModuleId);
+void DeviceDutySimple::handleHostState(const HostState& hostState) {
+	HostState::States state = hostState.get();
 
-	if (category == hostStateCat) {
+	if (state == HostState::FAILED) {
 
-		HostState::States state = ((HostState *) details)->get();
+		EV<< simTime() <<
+		" hostState is FAILED...stopping operations" << endl;
 
-		if (state == HostState::FAILED) {
+		// in practice, the relevant protocol modules would have
+		// received the FAIL message; but here we just stop the duty
+		// cycle
 
-			EV<< simTime() <<
-			" hostState is FAILED...stopping operations" << endl;
+		if (on->isScheduled()) cancelEvent(on);
+		if (off->isScheduled()) cancelEvent(off);
 
-			// in practice, the relevant protocol modules would have
-			// received the FAIL message; but here we just stop the duty
-			// cycle
-
-			if (on->isScheduled()) cancelEvent(on);
-			if (off->isScheduled()) cancelEvent(off);
-
-		}
 	}
 }
 
@@ -141,5 +126,5 @@ void DeviceDutySimple::finish() {
 	cancelAndDelete(on);
 	cancelAndDelete(off);
 
-	BaseModule::finish();
+	BatteryAccess::finish();
 }

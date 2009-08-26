@@ -128,9 +128,7 @@ void BatteryStats::receiveBBItem(int category, const BBItem *details, int scopeM
       double estimateRel = battery->estimateResidualRelative();
       estimateRelVec.record(estimateRel);
     }
-    else {
-      error ("unexpected BB category");
-    }
+
 }
 
 void BatteryStats::finish() {

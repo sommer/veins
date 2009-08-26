@@ -14,7 +14,7 @@
 #define DEVICEDUTYSIMPLE_H
 
 #include <omnetpp.h>
-#include "BaseModule.h"
+#include "BatteryAccess.h"
 
 #include "BatteryState.h"
 #include "HostState.h"
@@ -27,13 +27,13 @@
  * failure.  Used for testing, can also be used as e.g. a prototype
  * sensor device. See DeviceDutySimple.ned for parameters.
  */
-class DeviceDutySimple : public BaseModule
+class DeviceDutySimple : public BatteryAccess
 {
 
 public:
   virtual void initialize(int);
   virtual void handleMessage( cMessage* );
-  virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+  virtual void handleHostState(const HostState& state);
   virtual void finish();
 
 protected:
@@ -42,11 +42,6 @@ protected:
     ON,
     OFF
   };
-
-  int batteryGate;
-
-  int scopeHost;
-  int hostStateCat;
 
   cMessage *on, *off;
 

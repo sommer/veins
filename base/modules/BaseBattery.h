@@ -2,7 +2,7 @@
 #define BASE_BATTERY_H
 
 #include <omnetpp.h>
-class BaseUtility;
+#include "BaseModule.h"
 
 /**
  * @brief Defines the amount of power drawn by a device from
@@ -60,18 +60,8 @@ public:
  * @ingroup power
  * @see SimpleBattery
  */
-class BaseBattery : public cSimpleModule {
-protected:
-	/** @brief Cached pointer to the utility module*/
-	BaseUtility *utility;
-
-protected:
-	/** @brief Function to get a pointer to the host module*/
-	cModule *findHost(void);
-
+class BaseBattery : public BaseModule {
 public:
-	virtual void initialize(int stage);
-
 	/**
 	 * @brief Registers a power draining device with this battery.
 	 *
@@ -108,13 +98,6 @@ public:
 	virtual double estimateResidualRelative() = 0;
 	/** @brief current state of charge of the battery (mW-s) */
 	virtual double estimateResidualAbs() = 0;
-
-	/**
-	 * @brief Divide initialization into two stages.
-	 */
-	virtual int numInitStages() const {
-		return 2;
-	}
 };
 
 

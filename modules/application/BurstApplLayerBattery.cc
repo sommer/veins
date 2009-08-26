@@ -30,13 +30,6 @@ void BurstApplLayerBattery::initialize(int stage)
     BurstApplLayer::initialize(stage);
 
     if(stage==0) {
-
-      EV << "subscribe to host state" << endl;
-        int scopeHost = (this->findHost())->getId();
-        HostState hs;
-        hostStateCat = utility->subscribe(this, &hs, scopeHost);
-        hostState = HostState::ON;
-
         bcastOut = replyOut = replyIn = 0;
     }
 }
@@ -82,37 +75,30 @@ void BurstApplLayerBattery::handleLowerMsg( cMessage* msg )
   }
 }
 
-
-void BurstApplLayerBattery::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
+void BurstApplLayerBattery::handleHostState(const HostState& state)
 {
-    Enter_Method_Silent();
-    BaseModule::receiveBBItem(category, details, scopeModuleId);
+	HostState::States hostState = state.get();
 
-    if (category == hostStateCat) {
+	switch (hostState) {
+	case HostState::FAILED:
+		EV << "t = " << simTime() << " host state FAILED" << endl;
+		recordScalar("HostState::FAILED", simTime());
 
-      hostState = ((HostState *)details)->get();
+		// BurstApplLayer sends all its frames to the MAC layer at
+		// once, so this happens only if the battery fails before the
+		// burst.  Frames that are already sendDown() are stopped at
+		// the SnrEval.
 
-      switch (hostState) {
-      case HostState::FAILED:
-        EV << "t = " << simTime() << " host state FAILED" << endl;
-        recordScalar("HostState::FAILED", simTime());
-
-        // BurstApplLayer sends all its frames to the MAC layer at
-        // once, so this happens only if the battery fails before the
-        // burst.  Frames that are already sendDown() are stopped at
-        // the SnrEval.
-
-        // battery is depleted, stop events
-        if (delayTimer->isScheduled()) {
-          EV << "canceling frame burst" << endl;
-          cancelEvent(delayTimer);
-        }
-        break;
-      default:
-        // ON/OFF aren't used
-        break;
-      }
-    }
+		// battery is depleted, stop events
+		if (delayTimer->isScheduled()) {
+		  EV << "canceling frame burst" << endl;
+		  cancelEvent(delayTimer);
+		}
+		break;
+	default:
+		// ON/OFF aren't used
+		break;
+	}
 }
 
 void BurstApplLayerBattery::finish()

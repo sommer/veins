@@ -43,6 +43,7 @@ void SimpleBattery::initialize(int stage) {
 		publishTime = par("publishTime");
 		if (publishTime > 0) {
 			publish = new cMessage("publish", PUBLISH);
+			publish->setSchedulingPriority(2000);
 			scheduleAt(simTime() + publishTime, publish);
 		}
 		publishDelta = 1;
@@ -74,6 +75,7 @@ void SimpleBattery::initialize(int stage) {
 		residualVec.record(residualCapacity);
 
 		timeout = new cMessage("auto-update", AUTO_UPDATE);
+		timeout->setSchedulingPriority(500);
 		scheduleAt(simTime() + resolution, timeout);
 
 		// publish battery depletion on hostStateCat
@@ -95,7 +97,7 @@ void SimpleBattery::initialize(int stage) {
 	}
 
 	if (stage == 1) {
-		hostState.set(HostState::ON);
+		hostState.set(HostState::ACTIVE);
 		utility->publishBBItem(hostStateCat, &hostState, scopeHost);
 
 		if (publishDelta < 1 || publishTime> 0 ) {
@@ -226,6 +228,11 @@ void SimpleBattery::handleMessage(cMessage *msg) {
 	}
 }
 
+void SimpleBattery::handleHostState(const HostState& state)
+{
+	//does nothing yet
+}
+
 void SimpleBattery::deductAndCheck() {
 	// already depleted, devices should have stopped sending drawMsg,
 	// but we catch any leftover messages in queue
@@ -259,7 +266,7 @@ void SimpleBattery::deductAndCheck() {
 	<< residualCapacity << endl;
 
 	// battery is depleted
-	if (residualCapacity <= 0.000001 ) {
+	if (residualCapacity <= 0.0 ) {
 
 		EV << "battery depleted at t = " << now << "s" << endl;
 

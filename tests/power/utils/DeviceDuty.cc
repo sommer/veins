@@ -28,7 +28,7 @@ Define_Module(DeviceDuty)
 ;
 
 void DeviceDuty::initialize(int stage) {
-	BaseModule::initialize(stage);
+	BatteryAccess::initialize(stage);
 
 	if (stage == 0) {
 
@@ -57,14 +57,6 @@ void DeviceDuty::initialize(int stage) {
 		EV << "current0 = " << current0 << "mA, current1 = " << current1
 		<< "mA, wakeup = "<< wakeup << "mW-s" << endl;
 
-		// batteryState and hostState are published with Host scope
-		scopeHost = (this->findHost())->getId();
-
-		// subscription to hostState is needed because this module
-		// operates the "duty cycle protocol" and should stop when the
-		// battery is depleted
-		HostState hs;
-		hostStateCat = utility->subscribe(this, &hs, scopeHost);
 	}
 
 	else if (stage == 1) {
@@ -165,30 +157,25 @@ void DeviceDuty::handleMessage(cMessage *msg) {
 	}
 }
 
-void DeviceDuty::receiveBBItem(int category, const BBItem *details,
-		int scopeModuleId) {
-	Enter_Method_Silent();
-	BaseModule::receiveBBItem(category, details, scopeModuleId);
+void DeviceDuty::handleHostState(const HostState& hostState) {
 
-	if (category == hostStateCat) {
 
-		HostState::States state = ((HostState *) details)->get();
+	HostState::States state = hostState.get();
 
-		if (state == HostState::FAILED) {
+	if (state == HostState::FAILED) {
 
-			EV<< simTime() <<
-			" hostState is FAILED...stopping operations" << endl;
+		EV<< simTime() <<
+		" hostState is FAILED...stopping operations" << endl;
 
-			// in practice, the relevant protocol modules would have
-			// received the FAIL message; but here we just stop the duty
-			// cycle
+		// in practice, the relevant protocol modules would have
+		// received the FAIL message; but here we just stop the duty
+		// cycle
 
-			if (on0->isScheduled()) cancelEvent(on0);
-			if (gap01->isScheduled()) cancelEvent(gap01);
-			if (on1->isScheduled()) cancelEvent(on1);
-			if (off->isScheduled()) cancelEvent(off);
+		if (on0->isScheduled()) cancelEvent(on0);
+		if (gap01->isScheduled()) cancelEvent(gap01);
+		if (on1->isScheduled()) cancelEvent(on1);
+		if (off->isScheduled()) cancelEvent(off);
 
-		}
 	}
 }
 
@@ -196,7 +183,7 @@ DeviceDuty::~DeviceDuty() {
 }
 
 void DeviceDuty::finish() {
-	BaseModule::finish();
+	BatteryAccess::finish();
 	cancelAndDelete(on0);
 	cancelAndDelete(gap01);
 	cancelAndDelete(on1);

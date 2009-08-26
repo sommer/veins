@@ -6,6 +6,7 @@
 #include "MacToPhyControlInfo.h"
 #include "Signal_.h"
 #include "MacPkt_m.h"
+#include "BaseModule.h"
 
 /**
  * @brief A simple Mac layer implementation which only shows how to

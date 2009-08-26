@@ -12,8 +12,6 @@
 #ifndef BASE_UTILITY_H
 #define BASE_UTILITY_H
 
-#include "Coord.h"
-
 //BB start
 #ifdef _MSC_VER
 #pragma warning(disable : 4786)
@@ -22,8 +20,9 @@
 #include <omnetpp.h>
 #include <vector>
 #include <string>
-#include "BaseModule.h"
 #include "ImNotifiable.h"
+#include "HostState.h"
+#include "Coord.h"
 /**
  * @brief Provides a blackboard like information distribution.
  *
@@ -71,9 +70,10 @@
  * @author Andreas Koepke
  */
 
-class BaseUtility : public BaseModule {
-
- private:
+class BaseUtility : public cSimpleModule,
+					public ImNotifiable
+{
+private:
     bool coreDebug;
 
     /**
@@ -82,8 +82,9 @@ class BaseUtility : public BaseModule {
      */
     Coord pos;
 
- protected:
-    //Module_Class_Members(BaseUtility, BaseModule, 0);
+protected:
+	/** @brief Function to get a pointer to the host module*/
+	cModule *findHost(void);
 
 //BB start
     class Subscriber {
@@ -119,6 +120,11 @@ class BaseUtility : public BaseModule {
     /** @brief BBItem category number of Move*/
     int catMove;
 
+    /** @brief BBItem category number of HostState*/
+    int catHostState;
+
+    /** @brief The hosts current state.*/
+    HostState hostState;
  protected:
 
 //BB start
@@ -153,9 +159,12 @@ class BaseUtility : public BaseModule {
     /** @brief Get current position */
     const Coord* getPos() {return &pos;}
 
+    /** @brief Get the current HostState */
+    const HostState& getHostState() { return hostState; }
+
     /**
-     * We want to receive Moves from BaseUtility to synchronize
-     * hostPosition with BaseMobility.
+     * We want to receive Moves and HostStates from BaseUtility to synchronize
+     * hostPosition and -state.
      */
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 
@@ -229,6 +238,9 @@ class BaseUtility : public BaseModule {
     //@}
 //BB end
 
+    virtual int numInitStages() const {
+		return 2;
+	}
 };
 
 #endif

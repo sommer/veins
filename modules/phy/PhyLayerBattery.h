@@ -43,12 +43,6 @@ protected:
 	/** @brief Number of power consuming activities (accounts).*/
 	int numActivities;
 
-	/** @brief Hosts current state.*/
-	int hostState;
-
-	/** @brief Blackboard category for HostStates.*/
-	int hostStateCat;
-
 	/** @brief The different currents in mA.*/
 	double sleepCurrent, idleCurrent, rxCurrent, txCurrent;
 
@@ -123,8 +117,7 @@ public:
 	 * Note: Does not yet cancel any ongoing transmissions if the
 	 * state changes to off.
 	 */
-	void receiveBBItem(int category, const BBItem *details,
-						int scopeModuleId);
+	virtual void handleHostState(const HostState& state);
 };
 
 #endif /* PHYLAYERBATTERY_H_ */

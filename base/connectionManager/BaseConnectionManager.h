@@ -1,7 +1,6 @@
 #ifndef BASECONNECTIONMANAGER_H_
 #define BASECONNECTIONMANAGER_H_
 
-#include "BaseModule.h"
 #include "NicEntry.h"
 
 class ChannelAccess;
@@ -21,7 +20,7 @@ class ChannelAccess;
  * @author Steffen Sroka, Daniel Willkomm, Karl Wessel
  * @sa ChannelAccess
  */
-class BaseConnectionManager : public BaseModule
+class BaseConnectionManager : public cSimpleModule
 {
 private:
 	/**
@@ -320,6 +319,10 @@ protected:
 public:
 
 	virtual ~BaseConnectionManager();
+
+	virtual int numInitStages() const {
+		return 2;
+	}
 
 	/**
 	 * @brief Reads init parameters and calculates a maximal interference

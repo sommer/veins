@@ -24,8 +24,7 @@
 
 BaseModule::BaseModule():
 	cSimpleModule(),
-	utility(NULL),
-	battery(NULL)
+	utility(NULL)
 {}
 
 /**
@@ -37,55 +36,56 @@ BaseModule::BaseModule():
  */
 void BaseModule::initialize(int stage) {
     if (stage == 0) {
+    	notAffectedByHostState = 	hasPar("notAffectedByHostState")
+								 && par("notAffectedByHostState").boolValue();
+
         hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
         utility = FindModule<BaseUtility*>::findSubModule(findHost());
+
+        if(!utility) {
+        	error("No BaseUtility module found!");
+        }
+
+        hostId = findHost()->getId();
+
+        /* host failure notification */
+		HostState hs;
+		hostStateCat = utility->subscribe(this, &hs, hostId);
     }
 }
 
+void BaseModule::receiveBBItem(int category, const BBItem *details, int scopeModuleId) {
+	Enter_Method_Silent();
+
+	if (category == hostStateCat) {
+
+		handleHostState(*(HostState*)details);
+	}
+}
+
+void BaseModule::handleHostState(const HostState& state)
+{
+	if(notAffectedByHostState)
+		return;
+
+	if(state.get() != HostState::ACTIVE) {
+		error("Hosts state changed to something else than active which"
+			  " is not handled by this module. Either handle this state"
+			  " correctly or if this module really isn't affected by the"
+			  " hosts state set the parameter \"notAffectedByHostState\""
+			  " of this module to true.");
+	}
+}
+
+void BaseModule::switchHostState(HostState::States state)
+{
+	HostState hostState(state);
+	utility->publishBBItem(hostStateCat, &hostState, hostId);
+}
 
 cModule *BaseModule::findHost(void)
 {
-    cModule *parent = getParentModule();
-    cModule *node = this;
-
-    // all nodes should be a sub module of the simulation which has no parent module!!!
-    while( parent->getParentModule() != NULL ){
-	node = parent;
-	parent = node->getParentModule();
-    }
-
-    return node;
-}
-
-
-void BaseModule::registerWithBattery(const std::string& name, int numAccounts) {
-	battery = FindModule<BaseBattery*>::findSubModule(findHost());
-
-	if(!battery) {
-		error("Could not find battery module!");
-	}
-
-	deviceID = battery->registerDevice(name, numAccounts);
-}
-
-void BaseModule::draw(DrawAmount& amount, int activity) {
-	assert(battery);
-
-	battery->draw(deviceID, amount, activity);
-}
-
-void BaseModule::drawCurrent(double amount, int activity) {
-	assert(battery);
-
-	DrawAmount val(DrawAmount::CURRENT, amount);
-	battery->draw(deviceID, val, activity);
-}
-
-void BaseModule::drawEnergy(double amount, int activity) {
-	assert(battery);
-
-	DrawAmount val(DrawAmount::ENERGY, amount);
-	battery->draw(deviceID, val, activity);
+   return FindModule<>::findHost(this);
 }
 
 

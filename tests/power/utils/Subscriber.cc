@@ -28,9 +28,6 @@ void Subscriber::initialize(int stage)
   BaseModule::initialize(stage);
 
   if (stage == 0) {
-    scopeHost = (this->findHost())->getId();
-    HostState hs;
-    hostStateCat = utility->subscribe(this, &hs, scopeHost);
   }
 }
 
@@ -39,35 +36,29 @@ void Subscriber::handleMessage(cMessage *msg)
   error("does not handle any messages");
 }
 
-void Subscriber::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
+void Subscriber::handleHostState(const HostState& hostState)
 {
-    Enter_Method_Silent();
-    BaseModule::receiveBBItem(category, details, scopeModuleId);
 
-    if (category == hostStateCat) {
-      HostState::States newState;
-      newState = ((HostState *)details)->get();
+	HostState::States newState;
+	newState = hostState.get();
 
-      switch (newState) {
-      case HostState::ON:
-        EV << simTime() << "host state ON" << endl;
-        break;
-      case HostState::FAILED:
-        EV << simTime() << " host state FAILED" << endl;
-        // battery is depleted, stop events, record statistics
-        recordScalar("HostState::FAILED", simTime());
-        break;
-      case HostState::OFF:
-        EV << (simTime()) << " host state OFF" << endl;
-        // not used
-        break;
-      default:
-        error ("unknown host state from BB");
-      }
-    }
-    else {
-      error ("unexpected BB category");
-    }
+	switch (newState) {
+	case HostState::ACTIVE:
+		EV << simTime() << "host state ON" << endl;
+		break;
+	case HostState::FAILED:
+		EV << simTime() << " host state FAILED" << endl;
+		// battery is depleted, stop events, record statistics
+		recordScalar("HostState::FAILED", simTime());
+		break;
+	case HostState::OFF:
+		EV << (simTime()) << " host state OFF" << endl;
+		// not used
+		break;
+	default:
+		error ("unknown host state from BB");
+	}
+
 }
 
 

@@ -31,6 +31,7 @@
 #include "TestHostState.h"
 #include "TestParam.h"
 #include "YetAnother.h"
+#include <BaseModule.h>
 
 class StateChanger : public BaseModule
 {

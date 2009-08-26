@@ -44,7 +44,7 @@ class BurstApplLayerBattery : public BurstApplLayer
 
   /** @brief Initialite module parameters*/
   virtual void initialize(int);
-  virtual void receiveBBItem(int, const BBItem *, int );
+  virtual void handleHostState(const HostState& state);
   virtual void finish() ;
 
  protected:
@@ -52,8 +52,6 @@ class BurstApplLayerBattery : public BurstApplLayer
   virtual void handleSelfMsg(cMessage *);
 
  private:
-  int hostStateCat;
-  HostState::States hostState;
 
   int bcastOut;
   int replyOut;

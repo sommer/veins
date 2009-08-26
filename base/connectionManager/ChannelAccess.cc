@@ -38,7 +38,7 @@
  **/
 void ChannelAccess::initialize( int stage )
 {
-    BaseModule::initialize(stage);
+	BatteryAccess::initialize(stage);
 
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
@@ -139,7 +139,7 @@ void ChannelAccess::sendToChannel(cPacket *msg)
  */
 void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
-    BaseModule::receiveBBItem(category, details, scopeModuleId);
+	BatteryAccess::receiveBBItem(category, details, scopeModuleId);
 
     if(category == catMove)
     {

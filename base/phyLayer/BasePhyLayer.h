@@ -160,8 +160,6 @@ private:
 	 */
 	void initializeDecider(cXMLElement* xmlConfig);
 
-protected:
-
 	/**
 	 * @brief Reads and returns the parameter with the passed name.
 	 *
@@ -173,6 +171,9 @@ protected:
 	 * 				  		  couldn't be found
 	 */
 	template<class T> T readPar(const char* parName, const T defaultValue);
+
+
+protected:
 
 	/**
 	 * @brief OMNeT++ initialization function.

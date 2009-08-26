@@ -22,6 +22,7 @@ package org.mixim.modules.power.battery;
 simple BatteryStats
 {
     parameters:
+        bool notAffectedByHostState = true;
         bool debug;
         bool detail;
         bool timeSeries;

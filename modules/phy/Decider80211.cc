@@ -15,7 +15,7 @@ simtime_t Decider80211::processNewSignal(AirFrame* frame) {
 		return notAgain;
 	}
 
-	// get the receiving power of the Signal at start-time
+	// get the receiving power of the Signal at start-time and center frequency
 	Signal& signal = frame->getSignal();
 	Argument start(DimensionSet::timeFreqDomain);
 	start.setTime(signal.getSignalStart());

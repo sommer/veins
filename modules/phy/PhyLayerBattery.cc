@@ -20,14 +20,7 @@ Define_Module(PhyLayerBattery);
 void PhyLayerBattery::initialize(int stage) {
 	PhyLayer::initialize(stage);
 	if (stage == 0) {
-		numActivities = readPar("numActivities", 4);
-
-		/* host failure notification */
-		int scopeHost = (this->findHost())->getId();
-		HostState hs;
-		hostStateCat = utility->subscribe(this, &hs, scopeHost);
-
-		hostState = HostState::ON;
+		numActivities = hasPar("numActivities") ? par("numActivities").longValue() : 4;
 
 		/* parameters belong to the NIC, not just snrEval
 		 *
@@ -72,7 +65,7 @@ Decider* PhyLayerBattery::initializeDecider80211Battery(ParameterMap& params) {
 //}
 
 void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
-	if (hostState == HostState::FAILED) {
+	if (utility->getHostState().get() == HostState::FAILED) {
 		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
@@ -91,7 +84,7 @@ void PhyLayerBattery::handleSelfMessage(cMessage* msg) {
 }
 
 void PhyLayerBattery::handleAirFrame(cMessage* msg) {
-	if (hostState == HostState::FAILED) {
+	if (utility->getHostState().get() == HostState::FAILED) {
 		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
@@ -100,25 +93,17 @@ void PhyLayerBattery::handleAirFrame(cMessage* msg) {
 	PhyLayer::handleAirFrame(msg);
 }
 
-void PhyLayerBattery::receiveBBItem(int category, const BBItem *details,
-		int scopeModuleId) {
-	Enter_Method_Silent();
+void PhyLayerBattery::handleHostState(const HostState& state) {
+	// handles only battery consumption
 
-	PhyLayer::receiveBBItem(category, details, scopeModuleId);
+	HostState::States hostState = state.get();
 
-	// handles only battery consumption, everything else handled above
-
-	if (category == hostStateCat) {
-
-		hostState = ((HostState *) details)->get();
-
-		switch (hostState) {
-		case HostState::FAILED:
-			EV<< "t = " << simTime() << " host state FAILED" << endl;
-			// it would be good to create a radioState OFF, as well
-			break;
-		default:
-			break;
-		}
+	switch (hostState) {
+	case HostState::FAILED:
+		EV<< "t = " << simTime() << " host state FAILED" << endl;
+		// it would be good to create a radioState OFF, as well
+		break;
+	default:
+		break;
 	}
 }

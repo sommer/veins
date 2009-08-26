@@ -15,7 +15,7 @@
 
 
 #include <omnetpp.h>
-#include "BaseModule.h"
+#include "BatteryAccess.h"
 
 #include "BatteryState.h"
 #include "HostState.h"
@@ -28,13 +28,13 @@
  *  only for testing multiple accounts.  See DeviceDuty.ned for
  *  parameters.
  */
-class DeviceDuty : public BaseModule
+class DeviceDuty : public BatteryAccess
 {
 
 public:
   virtual void initialize(int);
   virtual void handleMessage( cMessage* );
-  virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+  virtual void handleHostState(const HostState& state);
   virtual void finish();
   ~DeviceDuty();
 
@@ -52,11 +52,6 @@ protected:
     DUTY1,
     WAKE
   };
-
-  int batteryGate;
-
-  int scopeHost;
-  int hostStateCat;
 
   cMessage *on0, *gap01, *on1, *off;
 

@@ -1,14 +1,14 @@
 version 2
-run Nine-0-20090817-17:40:29-19115
+run Nine-0-20090826-15:15:26-9445
 attr configname Nine
-attr datetime 20090817-17:40:29
+attr datetime 20090826-15:15:26
 attr experiment Nine
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 19115
+attr processid 9445
 attr repetition 0
 attr replication #0
 attr resultdir results

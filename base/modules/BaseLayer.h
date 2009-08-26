@@ -23,7 +23,7 @@
 #ifndef BASE_LAYER_H
 #define BASE_LAYER_H
 
-#include "BaseUtility.h"
+#include "BatteryAccess.h"
 #include "PassedMessage.h"
 
 /**
@@ -35,7 +35,7 @@
  * @ingroup baseModules
  * @author Andreas Koepke
  */
-class BaseLayer : public BaseModule
+class BaseLayer : public BatteryAccess
 {
  protected:
 

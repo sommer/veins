@@ -21,7 +21,6 @@
 #ifndef BASE_WORLD_UTIL_H
 #define BASE_WORLD_UTIL_H
 
-#include <BaseModule.h>
 #include "Coord.h"
 
 /**
@@ -30,7 +29,7 @@
  *
  * @ingroup baseModules
  */
-class BaseWorldUtility : public BaseModule
+class BaseWorldUtility : public cSimpleModule
 {
 protected:
 	/** @brief Size of the area the nodes are in (in meters)*/
@@ -48,6 +47,10 @@ public:
 	//Module_Class_Members(BaseWorldUtility,BaseModule,0);
 
 	void initialize(int stage);
+
+	virtual int numInitStages() const {
+		return 2;
+	}
 
     /** @brief Returns the playgroundSize*/
     const Coord* getPgs(){

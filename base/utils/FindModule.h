@@ -9,7 +9,7 @@
  * @ingroup baseUtils
  * @ingrouo utils
  */
-template<typename T>
+template<typename T = cModule*>
 class FindModule
 {
 	public:
@@ -30,6 +30,19 @@ class FindModule
 		}
 
 		static T findGlobalModule() {return findSubModule(simulation.getSystemModule());}
+
+		static cModule* findHost(cModule *m) {
+			 cModule *parent = m->getParentModule();
+			cModule *node = m;
+
+			// all nodes should be a sub module of the simulation which has no parent module!!!
+			while( parent->getParentModule() != NULL ){
+			node = parent;
+			parent = node->getParentModule();
+			}
+
+			return node;
+		}
 };
 
 /**

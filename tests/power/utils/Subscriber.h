@@ -27,12 +27,10 @@ class Subscriber : public BaseModule
 public:
   virtual void initialize(int);
   virtual void handleMessage( cMessage* );
-  virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+  virtual void handleHostState(const HostState& state);
   virtual void finish( );
 
  protected:
-  int scopeHost;
-  int hostStateCat;
 
 };
 #endif

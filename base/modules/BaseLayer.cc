@@ -35,7 +35,7 @@
  **/
 void BaseLayer::initialize(int stage)
 {
-    BaseModule::initialize(stage);
+	BatteryAccess::initialize(stage);
     if(stage==0){
         if (hasPar("stats") && par("stats").boolValue()) {
             doStats = true;

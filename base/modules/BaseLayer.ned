@@ -20,6 +20,9 @@ package org.mixim.base.modules;
 //
 simple BaseLayer
 {
+    parameters:
+        bool notAffectedByHostState = default(false);
+        
     gates:
         input upperGateIn; // from application layer
         output upperGateOut; // to application layer

@@ -1,5 +1,6 @@
 #include "BaseUtility.h"
 #include "BaseWorldUtility.h"
+#include "FindModule.h"
 #include <assert.h>
 #include "Move.h"
 
@@ -8,7 +9,7 @@ Define_Module(BaseUtility);
 //BB start
 
 #ifndef coreEV
-#define coreEV (ev.isDisabled()||!coreDebug) ? std::cout : ev <<getParentModule()->getName()<<"["<<getParentModule()->getIndex()<<"]::Blackboard: "
+#define coreEV (ev.isDisabled()||!coreDebug) ? ev : ev <<getParentModule()->getName()<<"["<<getParentModule()->getIndex()<<"]::BaseUtility: "
 #endif
 
 std::ostream& operator<<(std::ostream& os, const BaseUtility::SubscriberVector& v)
@@ -46,24 +47,33 @@ BaseUtility::~BaseUtility()
 //BB end
 
 void BaseUtility::initialize(int stage) {
-	BaseModule::initialize(stage);
+	//BaseModule::initialize(stage);
+
 	if (stage == 0) {
 		hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
-		
+
 //BB start
 		WATCH_VECTOR(clientVector);
 	    WATCH_VECTOR(categoryDescriptions);
-	    
+
 	    clientVector.clear();
 	    categoryDescriptions.clear();
 	    parentVector.clear();
-	    nextCategory = 0;	
+	    nextCategory = 0;
 //BB end
 
         // subscribe to position changes
         Move moveBBItem;
         catMove = subscribe(this, &moveBBItem, findHost()->getId());
+
+        catHostState = subscribe(this, &hostState, findHost()->getId());
+        hostState.set(HostState::ACTIVE);
 	}
+}
+
+cModule *BaseUtility::findHost(void)
+{
+	return FindModule<>::findHost(this);
 }
 
 void BaseUtility::handleMessage(cMessage *msg) {
@@ -79,12 +89,12 @@ void BaseUtility::setPos(Coord* newCoord) {
 */
 
 /**
- * BaseUtility subscribes itself to position changes to
- * synchronize the hostPosition.
+ * BaseUtility subscribes itself to position and host state changes to
+ * synchronize the hostPosition and -state.
  */
 void BaseUtility::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
-    BaseModule::receiveBBItem(category, details, scopeModuleId);
+    //BaseModule::receiveBBItem(category, details, scopeModuleId);
 
     if(category == catMove)
     {
@@ -92,12 +102,18 @@ void BaseUtility::receiveBBItem(int category, const BBItem *details, int scopeMo
         pos = m->startPos;
         coreEV << "new HostMove: " << m->info() << endl;
     }
+    else if(category == catHostState)
+    {
+    	const HostState* state = static_cast<const HostState*>(details);
+		hostState = *state;
+		coreEV << "new HostState: " << hostState.info() << endl;
+    }
 }
 
 //BB start
 
 
-const char* BaseUtility::categoryName(int category) 
+const char* BaseUtility::categoryName(int category)
 {
     if(categoryDescriptions.size() < static_cast<unsigned>(category)) {
         error("BaseUtility::categoryName called with unknown category (%i)", category);
@@ -105,13 +121,13 @@ const char* BaseUtility::categoryName(int category)
     return categoryDescriptions[category];
 }
 
-int BaseUtility::findAndCreateDescription(bool *isNewEntry, const BBItem *category) 
+int BaseUtility::findAndCreateDescription(bool *isNewEntry, const BBItem *category)
 {
 
     CategoryDescriptions::size_type it;
     std::string desc = category->getClassName();
     std::string cName;
-    
+
     for(it = 0; it < categoryDescriptions.size(); ++it)
     {
         cName = categoryDescriptions[it];
@@ -135,14 +151,14 @@ int BaseUtility::findAndCreateDescription(bool *isNewEntry, const BBItem *catego
     return static_cast<int>(it);
 }
 
-void BaseUtility::fillParentVector(const BBItem *category, int cat) 
+void BaseUtility::fillParentVector(const BBItem *category, int cat)
 {
     bool isNewEntry = true;
     int it;
-    
+
     BBItem *parentObject;
     BBItem base;
-    
+
     parentObject = category->parentObject();
 
     if(typeid(*parentObject) != typeid(base)) {
@@ -162,7 +178,7 @@ int BaseUtility::subscribe(ImNotifiable *client, int category, int scopeModuleId
     } else {
         Enter_Method_Silent();
     }
-    
+
     // find or create entry for this category
     SubscriberVector& clients = clientVector[category];
     SubscriberVector::const_iterator it;
@@ -182,7 +198,7 @@ int BaseUtility::subscribe(ImNotifiable *client, int category, int scopeModuleId
     return category;
 }
 
-int BaseUtility::subscribe(ImNotifiable *client, const BBItem *category, int scopeModuleId) 
+int BaseUtility::subscribe(ImNotifiable *client, const BBItem *category, int scopeModuleId)
 {
     if(coreDebug) {
         Enter_Method("subscribe(%s, %i)", category?category->getClassName() : "n/a",
@@ -192,7 +208,7 @@ int BaseUtility::subscribe(ImNotifiable *client, const BBItem *category, int sco
     }
     CategoryDescriptions::size_type it = 0;
     bool isNewEntry;
-    
+
     if(category) {
         it = findAndCreateDescription(&isNewEntry, category);
         if(isNewEntry) fillParentVector(category, static_cast<int>(it));
@@ -230,7 +246,7 @@ void BaseUtility::publishBBItem(int category, const BBItem *details, int scopeMo
     } else {
         Enter_Method_Silent();
     }
-    
+
     int pCat;
     if(clientVector.size() > 0) {
         SubscriberVector::const_iterator j;
@@ -246,7 +262,7 @@ void BaseUtility::publishBBItem(int category, const BBItem *details, int scopeMo
     }
 }
 
-int BaseUtility::getCategory(const BBItem *details) 
+int BaseUtility::getCategory(const BBItem *details)
 {
     if(coreDebug) {
         Enter_Method("getCategory(%s)", details?details->getClassName():"n/a");
@@ -255,7 +271,7 @@ int BaseUtility::getCategory(const BBItem *details)
     }
     int category = -1;
     bool isNewEntry;
-    
+
     if(details) {
         category = findAndCreateDescription(&isNewEntry, details);
         if(isNewEntry) fillParentVector(details, category);
@@ -265,5 +281,5 @@ int BaseUtility::getCategory(const BBItem *details)
     return category;
 }
 
-//BB end 
+//BB end
 

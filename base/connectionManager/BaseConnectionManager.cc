@@ -4,7 +4,8 @@
 #include "NicEntryDirect.h"
 
 #include "BaseWorldUtility.h"
-#include "BaseUtility.h"
+
+#include "FindModule.h"
 
 #include <cassert>
 
@@ -14,7 +15,8 @@
 
 void BaseConnectionManager::initialize(int stage)
 {
-	BaseModule::initialize(stage);
+	//BaseModule::initialize(stage);
+
 	if (stage == 0)
 	{
 		if(hasPar("coreDebug"))

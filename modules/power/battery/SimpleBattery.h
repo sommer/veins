@@ -40,6 +40,7 @@ class SimpleBattery: public BaseBattery {
 public:
 	virtual void initialize(int);
 	virtual void handleMessage(cMessage*);
+	virtual void handleHostState(const HostState& state);
 	virtual void finish();
 
 	/** @brief Other host modules should use these interfaces to obtain

@@ -27,7 +27,9 @@
 
 #include "ImNotifiable.h"
 #include "FindModule.h"
-#include "BaseBattery.h"
+
+#include "HostState.h"
+#include "BaseUtility.h"
 
 
 #define EV_clear (ev.isDisabled()||!debug) ? ev : ev
@@ -38,27 +40,22 @@
 #define coreEV (ev.isDisabled()||!coreDebug) ? ev : ev << logName() << "::" << getClassName() <<": "
 #endif
 
-
-class BaseUtility;
-
 /**
  * @brief Base class for all simple modules of a host that want to have
- * access to the Blackboard module.
+ * access to the BaseUtility module.
  *
- * The basic module additionally provides a function findHost which
+ * The base module additionally provides a function findHost which
  * returns a pointer to the host module and a function hostIndex to
  * return the index of the host module. The latter one correspondes to
  * the index shown in tkenv and comes in very handy for testing and
  * debugging using tkenv. It is used e.g. in all the 'print' macros
  * used for debugging.
  *
- * There is no Define_Module() for this class because we use
- * BasicModule only as a base class to derive all other
- * module. There will never be a stand-alone BasicModule module
- * (and that is why there is no Define_Module() and no .ned file for
- * BasicModule).
+ * Provides access to the battery module.
  *
- * @see Blackboard
+ * There will never be a stand-alone BaseModule module.
+ *
+ * @see BaseUtility
  *
  * @ingroup baseModules
  *
@@ -73,10 +70,42 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
     /** @brief Debug switch for all other modules*/
     bool debug;
 
-    BaseBattery* battery;
-	int deviceID;
 
-  protected:
+
+	/** @brief Stores if this module is affected by changes in the
+	 * hosts state. If not explicitly set this module has to capture
+	 * changes in the host state.*/
+	bool notAffectedByHostState;
+
+	/** @brief Stores the category of the HostState*/
+	int hostStateCat;
+
+	/** @brief The hosts id. */
+	int hostId;
+protected:
+
+	/**
+	 * @brief Called whenever the hosts state changes.
+	 *
+	 * Default implementation of this method throws an
+	 * error whenever the host state changes and the
+	 * "notAffectedbyHostState" variable is not explicitly
+	 * set. This is because every module of a host has to
+	 * make sure to react well to changes in the host state.
+	 * Or it has to explicitly set its parameter
+	 * "notAffectedbyHostState" to true.
+	 */
+	virtual void handleHostState(const HostState& state);
+
+	/**
+	 * @brief Switches the host to the passed state.
+	 *
+	 * If the hosts state is switched to anything else than
+	 * "ACTIVE" every module of the host has to handle this
+	 * explicitly (see method "handleHostState()")!
+	 */
+	void switchHostState(HostState::States state);
+
     /** @brief Function to get a pointer to the host module*/
     cModule *findHost(void);
 
@@ -84,11 +113,6 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
     std::string getLogName(int);
 
 
-    void registerWithBattery(const std::string& name, int numAccounts);
-
-	void draw(DrawAmount& amount, int activity);
-	void drawCurrent(double amount, int activity);
-	void drawEnergy(double amount, int activity);
 
   public:
     BaseModule();
@@ -128,12 +152,10 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
     /**
      * @brief Called by the Blackboard whenever a change of a category occurs
      * to which we have subscribed. Redefined from ImNotifiable.
-     * In this base class just handle the context switching and
+     * In this base class just handle the host state switching and
      * some debug notifications
      */
-    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId) {
-        Enter_Method_Silent();
-    }
+    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 };
 
 #endif

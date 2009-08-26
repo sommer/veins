@@ -27,7 +27,7 @@
 #include <omnetpp.h>
 #include <vector>
 
-#include "BaseModule.h"
+#include "BatteryAccess.h"
 #include "Move.h"
 #include "BaseWorldUtility.h"
 #include "AirFrame_m.h"
@@ -52,7 +52,7 @@
  * @ingroup phyLayer
  * @ingroup baseModules
  **/
-class ChannelAccess : public BaseModule
+class ChannelAccess : public BatteryAccess
 {
 protected:
     /** @brief use sendDirect or not?*/
