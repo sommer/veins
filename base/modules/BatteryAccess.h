@@ -11,6 +11,14 @@
 #include "BaseModule.h"
 #include "BaseBattery.h"
 
+/**
+ * @brief Extends BaseModule by several methods which provide
+ * access to the battery module.
+ *
+ * @ingroup power
+ * @ingroup baseModules
+ * @author Karl Wessel
+ */
 class BatteryAccess: public BaseModule {
 protected:
 	/** @brief Stores pointer to the battery module. */

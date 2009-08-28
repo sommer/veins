@@ -44,6 +44,16 @@
  * @brief Base class for all simple modules of a host that want to have
  * access to the BaseUtility module.
  *
+ * BaseModule listens for HostState changes broadcasted over BaseUtility
+ * and calls its own "handleHostState()" method. This method raises
+ * an error if the host state changes to something else than ACTIVE.
+ * Therefore that a sub-classing module can be used in a simulation
+ * where the host state can change it has to override that method
+ * which forces the author to make sure the module reacts well to
+ * host state changes.
+ * Alternatively one can also set a "notAffectedByHostState" parameter
+ * of the module to true.
+ *
  * The base module additionally provides a function findHost which
  * returns a pointer to the host module and a function hostIndex to
  * return the index of the host module. The latter one correspondes to
@@ -51,11 +61,14 @@
  * debugging using tkenv. It is used e.g. in all the 'print' macros
  * used for debugging.
  *
- * Provides access to the battery module.
- *
  * There will never be a stand-alone BaseModule module.
  *
+ * Note: most modules wont derive from BaseModule directly but from
+ * its sub class "BatteryAccess" which extends BaseModule by several
+ * methods for accessing the battery module.
+ *
  * @see BaseUtility
+ * @see BatteryAccess
  *
  * @ingroup baseModules
  *
@@ -99,6 +112,9 @@ protected:
 
 	/**
 	 * @brief Switches the host to the passed state.
+	 *
+	 * This is a convenience method for publishing the
+	 * host state to BaseUtility.
 	 *
 	 * If the hosts state is switched to anything else than
 	 * "ACTIVE" every module of the host has to handle this

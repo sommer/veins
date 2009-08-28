@@ -23,7 +23,7 @@
 #ifndef BASE_MOBILITY_H
 #define BASE_MOBILITY_H
 
-#include "BaseModule.h"
+#include "BatteryAccess.h"
 #include "BaseWorldUtility.h"
 #include "Coord.h"
 #include "Move.h"
@@ -57,7 +57,7 @@
  * @ingroup baseModules
  * @author Daniel Willkomm, Andras Varga
  */
-class BaseMobility : public BaseModule
+class BaseMobility : public BatteryAccess
 {
   public:
     /**
