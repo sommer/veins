@@ -1,83 +1,83 @@
 version 2
-run Seven-0-20090820-14:43:06-12575
+run Seven-0-20090922-16:16:48-16898
 attr configname Seven
-attr datetime 20090820-14:43:06
+attr datetime 20090922-16:16:48
 attr experiment Seven
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 12575
+attr processid 16898
 attr repetition 0
 attr replication #0
 attr resultdir results
 attr runnumber 0
 attr seedset 0
 
-scalar "sim.host[2].appl" 	"HostState::FAILED" 	3.7
-scalar "sim.host[0].appl" 	"HostState::FAILED" 	7.3
-scalar "sim.host[1].appl" 	"HostState::FAILED" 	7.3
-scalar "sim.host[0].batteryStats" 	"nominal (mW-s)" 	3600
-scalar "sim.host[0].batteryStats" 	"total (mW-s)" 	3645.907184
-scalar "sim.host[0].batteryStats" 	"lifetime(s) (-1 == non-failed)" 	7.3
-scalar "sim.host[0].batteryStats" 	"num devices" 	1
-scalar "sim.host[0].batteryStats" 	"80211Nic" 	0
-scalar "sim.host[0].batteryStats" 	"device total (mWs)" 	3645.907184
-scalar "sim.host[0].batteryStats" 	"account" 	0
-scalar "sim.host[0].batteryStats" 	"energy (mWs)" 	0
-scalar "sim.host[0].batteryStats" 	"time (s)" 	0
-scalar "sim.host[0].batteryStats" 	"account" 	1
-scalar "sim.host[0].batteryStats" 	"energy (mWs)" 	3645.896
-scalar "sim.host[0].batteryStats" 	"time (s)" 	7.291792
-scalar "sim.host[0].batteryStats" 	"account" 	2
-scalar "sim.host[0].batteryStats" 	"energy (mWs)" 	0.005232
-scalar "sim.host[0].batteryStats" 	"time (s)" 	0.005232
-scalar "sim.host[0].batteryStats" 	"account" 	3
-scalar "sim.host[0].batteryStats" 	"energy (mWs)" 	0.005952
-scalar "sim.host[0].batteryStats" 	"time (s)" 	0.002976
-scalar "sim.host[0].appl" 	"broadcast queued" 	1
-scalar "sim.host[0].appl" 	"replies sent" 	1
-scalar "sim.host[0].appl" 	"replies received" 	2
-scalar "sim.host[1].batteryStats" 	"nominal (mW-s)" 	3600
-scalar "sim.host[1].batteryStats" 	"total (mW-s)" 	3645.906464
-scalar "sim.host[1].batteryStats" 	"lifetime(s) (-1 == non-failed)" 	7.3
-scalar "sim.host[1].batteryStats" 	"num devices" 	1
-scalar "sim.host[1].batteryStats" 	"80211Nic" 	0
-scalar "sim.host[1].batteryStats" 	"device total (mWs)" 	3645.906464
-scalar "sim.host[1].batteryStats" 	"account" 	0
-scalar "sim.host[1].batteryStats" 	"energy (mWs)" 	0
-scalar "sim.host[1].batteryStats" 	"time (s)" 	0
-scalar "sim.host[1].batteryStats" 	"account" 	1
-scalar "sim.host[1].batteryStats" 	"energy (mWs)" 	3645.896
-scalar "sim.host[1].batteryStats" 	"time (s)" 	7.291792
-scalar "sim.host[1].batteryStats" 	"account" 	2
-scalar "sim.host[1].batteryStats" 	"energy (mWs)" 	0.005952
-scalar "sim.host[1].batteryStats" 	"time (s)" 	0.005952
-scalar "sim.host[1].batteryStats" 	"account" 	3
-scalar "sim.host[1].batteryStats" 	"energy (mWs)" 	0.004512
-scalar "sim.host[1].batteryStats" 	"time (s)" 	0.002256
-scalar "sim.host[1].appl" 	"broadcast queued" 	0
-scalar "sim.host[1].appl" 	"replies sent" 	2
-scalar "sim.host[1].appl" 	"replies received" 	0
-scalar "sim.host[2].batteryStats" 	"nominal (mW-s)" 	1800
-scalar "sim.host[2].batteryStats" 	"total (mW-s)" 	1845.907184
-scalar "sim.host[2].batteryStats" 	"lifetime(s) (-1 == non-failed)" 	3.7
-scalar "sim.host[2].batteryStats" 	"num devices" 	1
-scalar "sim.host[2].batteryStats" 	"80211Nic" 	0
-scalar "sim.host[2].batteryStats" 	"device total (mWs)" 	1845.907184
-scalar "sim.host[2].batteryStats" 	"account" 	0
-scalar "sim.host[2].batteryStats" 	"energy (mWs)" 	0
-scalar "sim.host[2].batteryStats" 	"time (s)" 	0
-scalar "sim.host[2].batteryStats" 	"account" 	1
-scalar "sim.host[2].batteryStats" 	"energy (mWs)" 	1845.896
-scalar "sim.host[2].batteryStats" 	"time (s)" 	3.691792
-scalar "sim.host[2].batteryStats" 	"account" 	2
-scalar "sim.host[2].batteryStats" 	"energy (mWs)" 	0.005232
-scalar "sim.host[2].batteryStats" 	"time (s)" 	0.005232
-scalar "sim.host[2].batteryStats" 	"account" 	3
-scalar "sim.host[2].batteryStats" 	"energy (mWs)" 	0.005952
-scalar "sim.host[2].batteryStats" 	"time (s)" 	0.002976
-scalar "sim.host[2].appl" 	"broadcast queued" 	1
-scalar "sim.host[2].appl" 	"replies sent" 	1
-scalar "sim.host[2].appl" 	"replies received" 	2
+scalar sim.host[2].appl 	HostState::FAILED 	3.7
+scalar sim.host[0].appl 	HostState::FAILED 	7.3
+scalar sim.host[1].appl 	HostState::FAILED 	7.3
+scalar sim.host[0].batteryStats 	"nominal (mW-s)" 	3600
+scalar sim.host[0].batteryStats 	"total (mW-s)" 	3645.907184
+scalar sim.host[0].batteryStats 	"lifetime(s) (-1 == non-failed)" 	7.3
+scalar sim.host[0].batteryStats 	"num devices" 	1
+scalar sim.host[0].batteryStats 	80211Nic 	0
+scalar sim.host[0].batteryStats 	"device total (mWs)" 	3645.907184
+scalar sim.host[0].batteryStats 	account 	0
+scalar sim.host[0].batteryStats 	"energy (mWs)" 	0
+scalar sim.host[0].batteryStats 	"time (s)" 	0
+scalar sim.host[0].batteryStats 	account 	1
+scalar sim.host[0].batteryStats 	"energy (mWs)" 	3645.896
+scalar sim.host[0].batteryStats 	"time (s)" 	7.291792
+scalar sim.host[0].batteryStats 	account 	2
+scalar sim.host[0].batteryStats 	"energy (mWs)" 	0.005232
+scalar sim.host[0].batteryStats 	"time (s)" 	0.005232
+scalar sim.host[0].batteryStats 	account 	3
+scalar sim.host[0].batteryStats 	"energy (mWs)" 	0.005952
+scalar sim.host[0].batteryStats 	"time (s)" 	0.002976
+scalar sim.host[0].appl 	"broadcast queued" 	1
+scalar sim.host[0].appl 	"replies sent" 	1
+scalar sim.host[0].appl 	"replies received" 	2
+scalar sim.host[1].batteryStats 	"nominal (mW-s)" 	3600
+scalar sim.host[1].batteryStats 	"total (mW-s)" 	3645.906464
+scalar sim.host[1].batteryStats 	"lifetime(s) (-1 == non-failed)" 	7.3
+scalar sim.host[1].batteryStats 	"num devices" 	1
+scalar sim.host[1].batteryStats 	80211Nic 	0
+scalar sim.host[1].batteryStats 	"device total (mWs)" 	3645.906464
+scalar sim.host[1].batteryStats 	account 	0
+scalar sim.host[1].batteryStats 	"energy (mWs)" 	0
+scalar sim.host[1].batteryStats 	"time (s)" 	0
+scalar sim.host[1].batteryStats 	account 	1
+scalar sim.host[1].batteryStats 	"energy (mWs)" 	3645.896
+scalar sim.host[1].batteryStats 	"time (s)" 	7.291792
+scalar sim.host[1].batteryStats 	account 	2
+scalar sim.host[1].batteryStats 	"energy (mWs)" 	0.005952
+scalar sim.host[1].batteryStats 	"time (s)" 	0.005952
+scalar sim.host[1].batteryStats 	account 	3
+scalar sim.host[1].batteryStats 	"energy (mWs)" 	0.004512
+scalar sim.host[1].batteryStats 	"time (s)" 	0.002256
+scalar sim.host[1].appl 	"broadcast queued" 	0
+scalar sim.host[1].appl 	"replies sent" 	2
+scalar sim.host[1].appl 	"replies received" 	0
+scalar sim.host[2].batteryStats 	"nominal (mW-s)" 	1800
+scalar sim.host[2].batteryStats 	"total (mW-s)" 	1845.907184
+scalar sim.host[2].batteryStats 	"lifetime(s) (-1 == non-failed)" 	3.7
+scalar sim.host[2].batteryStats 	"num devices" 	1
+scalar sim.host[2].batteryStats 	80211Nic 	0
+scalar sim.host[2].batteryStats 	"device total (mWs)" 	1845.907184
+scalar sim.host[2].batteryStats 	account 	0
+scalar sim.host[2].batteryStats 	"energy (mWs)" 	0
+scalar sim.host[2].batteryStats 	"time (s)" 	0
+scalar sim.host[2].batteryStats 	account 	1
+scalar sim.host[2].batteryStats 	"energy (mWs)" 	1845.896
+scalar sim.host[2].batteryStats 	"time (s)" 	3.691792
+scalar sim.host[2].batteryStats 	account 	2
+scalar sim.host[2].batteryStats 	"energy (mWs)" 	0.005232
+scalar sim.host[2].batteryStats 	"time (s)" 	0.005232
+scalar sim.host[2].batteryStats 	account 	3
+scalar sim.host[2].batteryStats 	"energy (mWs)" 	0.005952
+scalar sim.host[2].batteryStats 	"time (s)" 	0.002976
+scalar sim.host[2].appl 	"broadcast queued" 	1
+scalar sim.host[2].appl 	"replies sent" 	1
+scalar sim.host[2].appl 	"replies received" 	2
