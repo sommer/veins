@@ -1,14 +1,14 @@
 version 2
-run Six-0-20090922-16:16:43-16887
+run Six-0-20090924-13:56:42-18884
 attr configname Six
-attr datetime 20090922-16:16:43
+attr datetime 20090924-13:56:42
 attr experiment Six
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 16887
+attr processid 18884
 attr repetition 0
 attr replication #0
 attr resultdir results

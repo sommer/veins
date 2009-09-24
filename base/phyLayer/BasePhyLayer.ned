@@ -6,6 +6,7 @@ simple BasePhyLayer
 {
     parameters:
         bool coreDebug;
+        int headerLength = default(0) @unit(bit); //defines the length of the phy header (/preamble)
         bool usePropagationDelay;		//Should transmission delay be simulated?
         double thermalNoise @unit(dBm);	//the strength of the thermal noise [dBm]
         bool useThermalNoise;			//should thermal noise be considered?

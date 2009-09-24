@@ -1,15 +1,15 @@
-file 8014 1253626582                                            
+file 8014 1253793440                                            
 version 2
-run Four-0-20090826-16:43:04-25114
+run Four-0-20090924-13:56:36-18868
 attr configname Four
-attr datetime 20090826-16:43:04
+attr datetime 20090924-13:56:36
 attr experiment Four
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 25114
+attr processid 18868
 attr repetition 0
 attr replication #0
 attr resultdir results

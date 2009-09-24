@@ -174,7 +174,7 @@ Mac80211Pkt *Mac80211::encapsMsg(cPacket * netw)
 
     Mac80211Pkt *pkt = new Mac80211Pkt(netw->getName());
     // headerLength, including final CRC-field AND the phy header length!
-    pkt->setBitLength(MAC80211_HEADER_LENGTH + PHY_HEADER_LENGTH);
+    pkt->setBitLength(MAC80211_HEADER_LENGTH);
     pkt->setRetry(false);                 // this is not a retry
     pkt->setSequenceControl(fsc++);       // add a unique fsc to it
     if(fsc <= 0) fsc = 1;
@@ -756,7 +756,7 @@ void Mac80211::sendDATAframe(Mac80211Pkt *af)
 
        if(shortRetryCounter) frame->setRetry(true);
     }
-    simtime_t duration = packetDuration(frame->getBitLength() - PHY_HEADER_LENGTH, br);
+    simtime_t duration = packetDuration(frame->getBitLength(), br);
     Signal* signal = createSignal(simTime(), duration, txPower, br);
     MacToPhyControlInfo *pco = new MacToPhyControlInfo(signal);
     // build a copy of the frame in front of the queue'
@@ -796,7 +796,7 @@ void Mac80211::sendACKframe(Mac80211Pkt * af)
 
     frame->setControlInfo(pco);
     frame->setKind(ACK);
-    frame->setBitLength((int)LENGTH_ACK + PHY_HEADER_LENGTH);
+    frame->setBitLength((int)LENGTH_ACK);
 
     // the dest address must be the src adress of the RTS or the DATA
     // packet received. The src adress is the adress of the node
@@ -830,13 +830,13 @@ void Mac80211::sendRTSframe()
 
     frame->setControlInfo(pco);
     frame->setKind(RTS);
-    frame->setBitLength((int)LENGTH_RTS + PHY_HEADER_LENGTH);
+    frame->setBitLength((int)LENGTH_RTS);
 
     // the src adress and dest address are copied in the frame in the queue (frame to be sent)
     frame->setSrcAddr(frameToSend->getSrcAddr());
     frame->setDestAddr(frameToSend->getDestAddr());
 
-    double packetSize = frameToSend->getBitLength() - PHY_HEADER_LENGTH;
+    double packetSize = frameToSend->getBitLength();
     frame->setDuration(3 * SIFS + packetDuration(LENGTH_CTS, br) +
                        packetDuration(packetSize, br) +
                        packetDuration(LENGTH_ACK, br));
@@ -873,7 +873,7 @@ void Mac80211::sendCTSframe(Mac80211Pkt * af)
     MacToPhyControlInfo *pco = new MacToPhyControlInfo(signal);
     frame->setControlInfo(pco);
     frame->setKind(CTS);
-    frame->setBitLength((int)LENGTH_CTS + PHY_HEADER_LENGTH);
+    frame->setBitLength((int)LENGTH_CTS);
 
     // the dest adress must be the src adress of the RTS received. The
     // src adress is the adress of the node
@@ -901,7 +901,7 @@ void Mac80211::sendBROADCASTframe()
 
     double br = retrieveBitrate(frame->getDestAddr());
 
-    simtime_t duration = packetDuration(frame->getBitLength() - PHY_HEADER_LENGTH, br);
+    simtime_t duration = packetDuration(frame->getBitLength(), br);
     Signal* signal = createSignal(simTime(), duration, txPower, br);
 
     MacToPhyControlInfo *pco = new MacToPhyControlInfo(signal);

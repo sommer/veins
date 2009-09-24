@@ -134,6 +134,9 @@ protected:
 		END_RECEIVE
 	};
 
+	/** @brief Stores the length of the phy header in bits. */
+	int headerLength;
+
 	/* @brief Pointer to the World Utility, to obtain some global information*/
 	BaseWorldUtility* world;
 

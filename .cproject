@@ -353,7 +353,6 @@
 </cconfiguration>
 <cconfiguration id="org.omnetpp.cdt.gnu.config.release.233601168">
 <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="org.omnetpp.cdt.gnu.config.release.233601168" moduleId="org.eclipse.cdt.core.settings" name="gcc-release">
-
 <macros>
 <stringMacro name="MIXIMBASE" type="VALUE_TEXT" value="."/>
 </macros>

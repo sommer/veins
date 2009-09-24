@@ -51,6 +51,7 @@ void BasePhyLayer::initialize(int stage) {
 		} else {
 			thermalNoise = 0;
 		}
+        headerLength = readPar("headerLength", 0);
 		sensitivity = readPar("sensitivity", 0.0);
 		sensitivity = FWMath::dBm2mW(sensitivity);
 		maxTXPower = readPar("maxTXPower", 1.0);
@@ -479,6 +480,7 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	frame->setDuration(s->getSignalLength());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
+	frame->setBitLength(headerLength);
 
 	// pointer and Signal not needed anymore
 	delete s;
@@ -489,7 +491,7 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 
 	// --- from here on, the AirFrame is the owner of the MacPacket ---
 	macPkt = 0;
-
+	EV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
 
 	return frame;
 }

@@ -1,15 +1,15 @@
-file 8895 1253626582                                            
+file 8895 1253793440                                            
 version 2
-run Seven-0-20090826-15:55:22-17287
+run Seven-0-20090924-13:56:48-18895
 attr configname Seven
-attr datetime 20090826-15:55:22
+attr datetime 20090924-13:56:48
 attr experiment Seven
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 17287
+attr processid 18895
 attr repetition 0
 attr replication #0
 attr resultdir results

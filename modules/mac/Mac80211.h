@@ -177,7 +177,7 @@ protected:
 
     /** @brief Check whether the next packet should be send with RTS/CTS */
     bool rtsCts(Mac80211Pkt* m) {
-        return m->getBitLength() - MAC80211_HEADER_LENGTH - PHY_HEADER_LENGTH > rtsCtsThreshold;
+        return m->getBitLength() - MAC80211_HEADER_LENGTH > rtsCtsThreshold;
     }
 
     /** @brief suspend an ongoing contention, pick it up again when the channel becomes idle */

@@ -1,15 +1,15 @@
-file 1271 1253626582                                            
+file 1271 1253793440                                            
 version 2
-run Three-0-20090826-15:55:10-17253
+run Three-0-20090924-13:56:35-18867
 attr configname Three
-attr datetime 20090826-15:55:10
+attr datetime 20090924-13:56:35
 attr experiment Three
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 17253
+attr processid 18867
 attr repetition 0
 attr replication #0
 attr resultdir results

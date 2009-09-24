@@ -1,15 +1,15 @@
-file 369403 1253626582                                          
+file 369403 1253793440                                          
 version 2
-run Six-0-20090826-15:55:18-17280
+run Six-0-20090924-13:56:42-18884
 attr configname Six
-attr datetime 20090826-15:55:18
+attr datetime 20090924-13:56:42
 attr experiment Six
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 17280
+attr processid 18884
 attr repetition 0
 attr replication #0
 attr resultdir results
