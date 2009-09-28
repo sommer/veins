@@ -1,0 +1,7 @@
+v1.1
++ added port of EnergyFramework written by Laura Marie Feeney
++ added "headerLength" parameter to physical layer and fixed wrong MacPkt length in Mac80211
+* fixed wrong initialization order of static time and frequency Dimension members by introducing time-/frequency_static() wrapper methods
+
+v1.0
+- first release
