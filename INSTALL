@@ -32,15 +32,14 @@ This should be the same for every operating system.
 5. Build MiXiM (Ctrl+B)
 
 6. Run an example:
-	Method A:
-		1. Choose an example from the examples directory.
-		2. Right click its executeable and choose "Run as" -> "Run configurations...".
-		3. Double click on "Omnet++ Simulation" in the left list to create a new
-		   Omnet++ run configuration for this example (each example needs its own Run 
-		   configuration). The "Working directory" should be the examples directory.
-		   Also make sure the correct executable is choosen under "Executable: ... Other:" 
-		   (should be the one inside the examples directory).
-		4. Click "Run"
+	1. Choose an example from the examples directory.
+	2. Right click its executeable and choose "Run as" -> "Run configurations...".
+	3. Double click on "Omnet++ Simulation" in the left list to create a new
+	   Omnet++ run configuration for this example (each example needs its own Run 
+	   configuration). The "Working directory" should be the examples directory.
+	   Also make sure the correct executable is choosen under "Executable: ... Other:" 
+	   (should be the one inside the examples directory).
+	4. Click "Run"
 
 From the commandline under Linux
 --------------------------------
