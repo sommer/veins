@@ -35,7 +35,8 @@ This should be the same for every operating system.
 	a) Choose an example from the examples directory
 	b) right click its executeable and choose "Run as" -> "Run configurations..."
 	c) Double click on "Omnet++ Simulation" in the left list to create a new
-	   Omnet++ run configuration for this project
+	   Omnet++ run configuration for this project. Make sure the correct executeable 
+	   is choosen under "Executable: ... Other:".
 	d) Click "Run"
 
 
