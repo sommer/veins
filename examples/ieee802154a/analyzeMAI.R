@@ -24,7 +24,7 @@ measures <- c("Packet Success Rate (R-S)", "Bit error rate")
 latticeFile <- "MAICircle_Lattice-%d.png"
 latticePoissonFile <- "MAICirclePoisson_3meters_Lattice-%d.png"
 
-textSize <- 2.4
+textSize <- 3.4
 titleSize = 1.4
 axisSize = 2.5
 
@@ -95,7 +95,7 @@ latticeMAICirclePERPlot <- function(data) {
     ylab = list(label="Error Rates", cex=textSize),
 	#    ylim= c(0, 1),
 #    cex = textSize,
-    par.settings = simpleTheme(pch=c(21,22), cex=4, lwd=2),
+    par.settings = simpleTheme(pch=c(19,15), cex=4, lwd=4),
     par.strip.text=list(cex=textSize),
 #    prepanel=prepanel.loess,
 	#    panel=panel.loess,
@@ -135,7 +135,8 @@ latticeMAICirclePoisson <- function(frame) {
     ylab = list(label="Error Rates", cex=textSize),
 	#    ylim= c(0, 1),
 #    cex = textSize,
-    par.settings = simpleTheme(pch=c(21,22,23), cex=4, lwd=2),
+    par.settings = simpleTheme(pch=c(19, 15, 18), cex=4, lwd=4),
+#    par.settings = simpleTheme(pch=c(21,22,23), cex=4, lwd=2),
     par.strip.text=list(cex=textSize),
 #    prepanel=prepanel.loess,
 	#    panel=panel.loess,

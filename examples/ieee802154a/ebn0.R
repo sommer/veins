@@ -1,5 +1,8 @@
 png("ebn0_per.png", width=1024, height=768)
 
+lineWidth = 3
+symbolSize = 3
+
 # We add a first point at -5 dB, 100% PER for each line
 
 psrRSValues <- c(0.97061, 0.97061, 0.97061, 0.97061, 0.97061, 
@@ -33,14 +36,14 @@ EbN0Values <- c(EbN0Values, -5)
 par(mar= c(5, 6, 4, 2) + 0.1)
 
 plot(c(0, 30),  c(1, 1E-3), type="n", las=1, xlab="Eb/N0 (dB)", ylab="", 
-	cex.lab=2, cex.axis=2, cex=2, log="y") # setup figure
-lines(EbN0Values, 1-psrNoRSValues, type="b", col="darkblue", pch=21, cex=2)
-lines(EbN0Values, 1-psrRSValues, type="b", col="darkgreen", pch=22, cex=2)
-lines(epflEbN0, epflPER_EDoptNoDrift, type="l", col="black",  cex=2)
-grid()
-lines(epflEbN0, epflPER_EDfixDrift,  type="b", pch=23, col="darkorange", cex=2)
-lines(c(17, 17), c(1, 1E-4), lty=5, type="l", col="darkred", cex=2)
-mtext("Packet Error Rate", side=3, line=1, adj=0, cex=2)
+	cex.lab=2, cex.axis=2, cex=2, log="y", lwd=lineWidth) # setup figure
+lines(EbN0Values, 1-psrNoRSValues, type="b", col="darkblue", pch=21, cex=symbolSize, lwd=lineWidth)
+lines(EbN0Values, 1-psrRSValues, type="b", col="darkgreen", pch=22, cex=symbolSize, lwd=lineWidth)
+lines(epflEbN0, epflPER_EDoptNoDrift, type="l", col="black",  cex=symbolSize, lwd=lineWidth)
+grid(col="grey")
+lines(epflEbN0, epflPER_EDfixDrift,  type="b", pch=23, col="darkorange", cex=symbolSize, lwd=lineWidth)
+lines(c(17, 17), c(1, 1E-4), lty=5, type="l", col="darkred", cex=symbolSize, lwd=lineWidth)
+mtext("Packet Error Rate", side=3, line=1, adj=0, cex=2, lwd=lineWidth)
 legend(x="bottomright",legend=c("No error correction", 
 				"With error correction",
 				"CEA-LETI SNR Limit",
@@ -50,6 +53,6 @@ legend(x="bottomright",legend=c("No error correction",
 	lty=c(0, 0, 5, 0, 1), # a line only for the last one
 	col=c("darkblue", "darkgreen", "darkred", "darkorange", "black"),
 	pch=c(21,22,NA_integer_,23,NA_integer_), # no symbol for third and last ones
-	cex=2, pt.cex=2)
+	cex=2, pt.cex=symbolSize, lwd=lineWidth)
 dev.off()
 

@@ -23,7 +23,7 @@ measures <- c("Packet Success Rate (R-S)", "Packet Success Rate (No R-S)", "Bit 
 outputFiles <- c("PSR_Distance_RS.png", "PSR_Distance_NoRS.png", "BER_Distance.png")
 latticeFile <- "Distance_Lattice.png"
 
-textSize <- 2.4
+textSize <- 3.4
 
 ylabels <- c("Packet delivery success rate\n(with Reed-Solomon error correction)",
 	     "Packet delivery success rate\n(without Reed-Solomon error correction)",
@@ -145,7 +145,8 @@ latticePSRPlot <- function(data) {
     xlab = list(label="Distance (meters)", cex=textSize),
     ylab = list(label="Packet Error Rate", cex=textSize),
 	#    ylim= c(0, 1),
-    cex = textSize,
+#    cex = textSize,
+    par.settings = simpleTheme(pch=c("O", "+"), cex=4, lwd=4),
     par.strip.text=list(cex=textSize),
 #    prepanel=prepanel.loess,
 	#    panel=panel.loess,
@@ -175,13 +176,11 @@ latticePSREfficiency <- function(psrFrame) {
 		as.table=T,
 	        layout = c(3, 2, 3),
 		scales=list(x=list(log=10), y=list(log=10), cex=textSize), 
-		xlab = list(label="Distance (meters)", cex=textSize),
+#		xlab = list(label="Distance (meters)", cex=textSize),
     		ylab = list(label="Bit Error Rate", cex=textSize),
 		panel=gridPanel,
 		cex=textSize,
 		par.strip.text=list(cex=textSize),
-		xlab=list(cex=textSize),
-		ylab=list(cex=textSize),
 		yscale.components = yscale.components.log10
 		)
   print(theFigure)
@@ -189,20 +188,25 @@ latticePSREfficiency <- function(psrFrame) {
 }
 
 latticeBER <- function(psrFrame) {
+#  textSize = textSize + 1
   trellis.device(device=png, theme=col.whitebg)
   png("BER-lattice.png", width=2048, height=1536)
   theFigure <- xyplot( ber ~ distances | channels, 
 	data=psrFrame,
+	type="p",
 	as.table=T,
+	xlab= list(label="Distance (meters)", cex=textSize),
+  	ylab = list(label="Bit Error Rate", cex=textSize),
+        par.settings = simpleTheme(pch=19, cex=4, lwd=2),
+	par.strip.text=list(cex=textSize),
+	panel=gridPanel,
 	layout = c(3, 2),
 	scales = list(y=list(log = 10), cex=textSize), 
-	panel=gridPanel,
+
 #        par.strip.text=list(cex=textSize),
-	cex=textSize,
-		par.strip.text=list(cex=textSize),
-		xlab=list(cex=textSize),
-		ylab=list(cex=textSize),
-		yscale.components = yscale.components.log10
+#	cex=textSize,
+
+	yscale.components = yscale.components.log10
 	)
   print(theFigure)
   dev.off()
