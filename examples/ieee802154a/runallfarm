@@ -17,7 +17,7 @@ runsome() {
   then
      REND=$NBRUNS
   fi
-  echo nice -n 5 ./run -f $CFGFILE -u Cmdenv -c $CFG -r $RSTART..$REND &
+  nice -n 15 ./run -f $CFGFILE -u Cmdenv -c $CFG -r $RSTART..$REND &
 }
 
 i=$(( $NBPARALLEL-1 ))
