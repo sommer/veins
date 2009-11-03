@@ -22,6 +22,10 @@ module Network
                 @display("p=250,0;i=misc/globe");
 
         }
+       globalUtility: BaseUtility {
+            parameters:
+        }
+
         channelControl: ConnectionManager {
             parameters:
                 @display("p=450,0;b=42,42,rect,red,,;i=abstract/multicast");
