@@ -19,7 +19,8 @@ runsome() {
   echo nice -n 5 ./run -f omnetpp.ini -u Cmdenv -c $CFG -r $RSTART..$REND &
 }
 
-for j in `seq 0 $(($NBPARALLEL-1))` ;
+i=$(( $NBPARALLEL-1 ))
+for j in `seq 0 $i` ;
 do
   runsome j ;
 done
