@@ -2,8 +2,9 @@
 
 CFG=BERDistance
 NBPARALLEL=8
+CFGFILE=omnetpp.ini
 
-NBRUNS=$((`./run -f akaroa.ini -x $CFG |  grep -o [[:digit:]]*$ `-1))
+NBRUNS=$((`./run -f $CFGFILE -x $CFG |  grep -o [[:digit:]]*$ `-1))
 echo $NBRUNS runs to execute for configuration $CFG...\\n
 
 INTERVAL=$(( 1 + ($NBRUNS+1)/$NBPARALLEL ))
@@ -16,7 +17,7 @@ runsome() {
   then
      REND=$NBRUNS
   fi
-  echo nice -n 5 ./run -f omnetpp.ini -u Cmdenv -c $CFG -r $RSTART..$REND &
+  echo nice -n 5 ./run -f $CFGFILE -u Cmdenv -c $CFG -r $RSTART..$REND &
 }
 
 i=$(( $NBPARALLEL-1 ))
