@@ -4,7 +4,7 @@ CFG=epflEbN0
 NBPARALLEL=6
 CFGFILE=noakaroa.ini
 
-CREATION_INTERVAL = 1
+CREATION_INTERVAL=1
 NBRUNS=$((`./run -f $CFGFILE -x $CFG |  grep -o [[:space:]][[:digit:]]*$ `))
 echo $NBRUNS runs to execute for configuration $CFG...\\n
 
