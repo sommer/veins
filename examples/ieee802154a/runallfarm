@@ -1,8 +1,8 @@
 #!/bin/bash
 
-CFG=BERDistance
+CFG=epflEbN0
 NBPARALLEL=6
-CFGFILE=omnetpp.ini
+CFGFILE=noakaroa.ini
 
 NBRUNS=$((`./run -f $CFGFILE -x $CFG |  grep -o [[:digit:]]*$ `-1))
 echo $NBRUNS runs to execute for configuration $CFG...\\n
