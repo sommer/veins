@@ -6,13 +6,13 @@ CFGFILE=noakaroa.ini
 
 CREATION_INTERVAL=1
 NBRUNS=$((`./run -f $CFGFILE -x $CFG |  grep -o [[:space:]][[:digit:]]*$ `))
-echo $NBRUNS runs to execute for configuration $CFG...\\n
 
 echo Ready to start $NBPARALLEL simultaneous opp_run processes until $NBRUNS are done...
 
 RUN=0
 while [ `ls results/$CFG-*.sca | wc -l` -lt $NBRUNS ] ; do
-  if [ (`ps -eo args | grep run_mf | grep -o \\-r[[:space:]][[:digit:]]* | awk '{ print $2}' | wc -l` -lt $NBPARALLEL) && $RUN -lt $NBRUNS] ; then
+   NBOPPRUNS=$(ps -eo args | grep run_mf | grep -o \\-r[[:space:]][[:digit:]]* | awk '{ print $2}' | wc -l)
+  if [ $NBOPPRUNS -lt $NBPARALLEL && $RUN -lt $NBRUNS] ; then
     nice -n 15 ./run -f $CFGFILE -u Cmdenv -c $CFG -r $RUN &
     RUN=$(($RUN+1))
   fi
