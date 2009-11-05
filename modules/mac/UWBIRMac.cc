@@ -64,6 +64,8 @@ void UWBIRMac::initCounters() {
 	packetSuccessRateNoRS.setName("packetSuccessRateNoRS");
 	ber.setName("ber");
 	RSErrorRate.setName("ser");
+	success.setName("success");
+	successNoRS.setName("successNoRS");
 }
 
 void UWBIRMac::finish() {
@@ -163,14 +165,21 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 
 		// ! If this condition is true then the next one will also be true
 		if(nbBitErrors == 0) {
+			success.record(1);
+			successNoRS.record(1);
 			nbReceivedPacketsNoRS++;
 			packet.setNbPacketsReceivedNoRS(packet.getNbPacketsReceivedNoRS()+1);
+		} else {
+			success.record(0);
 		}
 
 		if (pktSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) {
+			success.record(1);
 			nbReceivedPacketsRS++;
 			packet.setNbPacketsReceived(packet.getNbPacketsReceived()+1);
 			utility->publishBBItem(catPacket, &packet, -1);
+		} else {
+			success.record(0);
 		}
 
 		if(stats) {

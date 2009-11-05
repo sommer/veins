@@ -72,6 +72,7 @@ protected:
     cOutVector ber;
     cStdDev meanBER;
     cOutVector RSErrorRate;
+    cOutVector success, successNoRS;
 
     long nbReceivedPacketsNoRS, nbReceivedPacketsRS;
     long nbSentPackets;
