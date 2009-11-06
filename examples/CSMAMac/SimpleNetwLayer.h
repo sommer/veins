@@ -241,6 +241,10 @@ public:
 		}
 	}
 
+	virtual void finish() {
+		cancelAndDelete(startJabberTimer);
+	}
+
 	virtual void handleMessage(cMessage* msg){
 
 		switch(msg->getKind()){

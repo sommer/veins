@@ -20,6 +20,8 @@ class FilledUpMapping;
  * want to change just several parts without having to implement and pipe every
  * other method of the ConstMappingIteratorInterface.
  *
+ * Note: Does take ownership of the passed iterator pointer!
+ *
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
@@ -32,7 +34,9 @@ public:
 	BaseFilteredIterator(Base* orig):
 		origIterator(orig) {}
 
-	virtual ~BaseFilteredIterator() {}
+	virtual ~BaseFilteredIterator() {
+		delete origIterator;
+	}
 
 	virtual const Argument& getNextPosition() const { return origIterator->getNextPosition(); }
 
@@ -1934,7 +1938,6 @@ public:
 		baseMapping(baseMapping) {}
 
 	virtual ~ConcatConstMappingIterator() {
-		delete origIterator;
 		delete baseMapping;
 	}
 };
