@@ -319,6 +319,12 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             // Update values for next iteration
             double mix1 = exponential(1 / cfg.lambda_1);
             double mix2 = exponential(1 / cfg.lambda_2);
+            if(mix1 == numeric_limits<double>::infinity()) {
+                mix1 = 0;
+            }
+            if(mix2 == numeric_limits<double>::infinity()) {
+                mix2 = 0;
+            }
             tau_kl += mix1 * cfg.Beta + (1 - cfg.Beta) * mix2;
             //fromClusterStart += tau_kl;
             tapEnergy = gamma_l.dbl() * ((1 - cfg.Beta) * cfg.lambda_1 + cfg.Beta * cfg.lambda_2 + 1);
