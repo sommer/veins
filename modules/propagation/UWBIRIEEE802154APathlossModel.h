@@ -30,7 +30,7 @@
 #include "Move.h"
 #include "SimpleTimeConstMapping.h"
 #include <math.h>
-
+#include <limits>
 
 /** @brief This class implements the IEEE 802.15.4A Channel Model[1] in the MiXiM
  *  omnet++ modeling framework.
