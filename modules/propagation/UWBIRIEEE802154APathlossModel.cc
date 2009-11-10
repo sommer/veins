@@ -329,7 +329,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             //fromClusterStart += tau_kl;
             tapEnergy = gamma_l.dbl() * ((1 - cfg.Beta) * cfg.lambda_1 + cfg.Beta * cfg.lambda_2 + 1);
             tapEnergy = Omega_l / tapEnergy;
-            tapEnergy = tapEnergy * exp(-tau_kl / gamma_l);
+            tapEnergy = tapEnergy * exp(-tau_kl.dbl() / gamma_l.dbl());
             tapEnergy = sqrt(tapEnergy);
             if (tapEnergy < tapThreshold) {
                 moreTaps = false;
