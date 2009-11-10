@@ -336,10 +336,14 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             }
         }
         clusterStart += exponential(1 / cfg.Lambda); // sum(x_n) over n=1..cluster
-        gamma_l = cfg.k_gamma * clusterStart + cfg.gamma_0;
-        Mcluster = normal(0, cfg.sigma_cluster);
-        Omega_l = pow(10, (10 * log( exp( -clusterStart.dbl() / cfg.Gamma ) ) + Mcluster) / 10);
-        moreTaps = true;
+        if(clusterStart > 0.01) { // avoid extremely large packet durations (more than 10 ms)
+        	moreTaps = false;
+        } else {
+          gamma_l = cfg.k_gamma * clusterStart + cfg.gamma_0;
+          Mcluster = normal(0, cfg.sigma_cluster);
+          Omega_l = pow(10, (10 * log( exp( -clusterStart.dbl() / cfg.Gamma ) ) + Mcluster) / 10);
+          moreTaps = true;
+        }
     }
     arg.setTime(echoEnd);
     newTxPower->setValue(arg, 0);
