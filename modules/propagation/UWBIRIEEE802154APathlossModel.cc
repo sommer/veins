@@ -335,10 +335,11 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
                 moreTaps = false;
             }
         }
-        clusterStart += exponential(1 / cfg.Lambda); // sum(x_n) over n=1..cluster
-        if(clusterStart > 0.01) { // avoid extremely large packet durations (more than 10 ms)
-        	moreTaps = false;
+        double nextClusterStart = exponential(1 / cfg.Lambda);
+        if(nextClusterStart > 0.01 || nextClusterStart == numeric_limits<double>::infinity()) {
+          moreTaps = false;
         } else {
+          clusterStart = clusterStart + nextClusterStart; // sum(x_n) over n=1..cluster
           gamma_l = cfg.k_gamma * clusterStart + cfg.gamma_0;
           Mcluster = normal(0, cfg.sigma_cluster);
           Omega_l = pow(10, (10 * log( exp( -clusterStart.dbl() / cfg.Gamma ) ) + Mcluster) / 10);
