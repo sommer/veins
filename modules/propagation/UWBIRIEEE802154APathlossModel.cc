@@ -336,14 +336,19 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
             }
         }
         double nextClusterStart = exponential(1 / cfg.Lambda);
-        if(nextClusterStart > 0.01 || nextClusterStart == numeric_limits<double>::infinity()) {
+        if(nextClusterStart > 0.001 || nextClusterStart == numeric_limits<double>::infinity()) {
           moreTaps = false;
         } else {
           clusterStart = clusterStart + nextClusterStart; // sum(x_n) over n=1..cluster
           gamma_l = cfg.k_gamma * clusterStart + cfg.gamma_0;
           Mcluster = normal(0, cfg.sigma_cluster);
           Omega_l = pow(10, (10 * log( exp( -clusterStart.dbl() / cfg.Gamma ) ) + Mcluster) / 10);
-          moreTaps = true;
+          // new constraint to increase speed
+          if(Omega_l > 0.1) {
+            moreTaps = true;
+          } else {
+        	moreTaps = false;
+          }
         }
     }
     arg.setTime(echoEnd);
