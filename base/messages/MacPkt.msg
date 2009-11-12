@@ -29,6 +29,7 @@
 // @author Daniel Willkomm
 packet MacPkt
 {
-    int destAddr; // destination mac address
-    int srcAddr;  // source mac address
+    long destAddr; // destination mac address
+    long srcAddr;  // source mac address
+    long sequenceId; // Sequence Number to detect duplicate messages
 }

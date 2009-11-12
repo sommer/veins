@@ -7,6 +7,7 @@
 
 #include "PhyLayer.h"
 #include <Decider80211.h>
+#include <Decider802154Narrow.h>
 #include <SimplePathlossModel.h>
 #include <LogNormalShadowing.h>
 #include <SNRThresholdDecider.h>
@@ -140,6 +141,9 @@ Decider* PhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 	else if(name == "SNRThresholdDecider"){
 		return initializeSNRThresholdDecider(params);
 	}
+	else if(name == "Decider802154Narrow") {
+		return initializeDecider802154Narrow(params);
+	}
 
 	return BasePhyLayer::getDeciderFromName(name, params);
 }
@@ -148,6 +152,13 @@ Decider* PhyLayer::initializeDecider80211(ParameterMap& params) {
 	double threshold = params["threshold"];
 	double centerFreq = params["centerFrequency"];
 	return new Decider80211(this, threshold, sensitivity, centerFreq, findHost()->getIndex(), coreDebug);
+}
+
+Decider* PhyLayer::initializeDecider802154Narrow(ParameterMap& params) {
+	int sfdLength = params["sfdLength"];
+	double berLowerBound = params["berLowerBound"];
+	std::string modulation = params["modulation"].stringValue();
+	return new Decider802154Narrow(this, findHost()->getIndex(), coreDebug, sfdLength, berLowerBound, modulation);
 }
 
 Decider* PhyLayer::initializeSNRThresholdDecider(ParameterMap& params) {

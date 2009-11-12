@@ -70,6 +70,11 @@ protected:
 	virtual Decider* initializeDecider80211(ParameterMap& params);
 
 	/**
+	 * @brief Initializes a new Decider802154Narrow from the passed parameter map.
+	 */
+	virtual Decider* initializeDecider802154Narrow(ParameterMap& params);
+
+	/**
 	 * @brief Initializes a new SNRThresholdDecider from the passed parameter map.
 	 */
 	virtual Decider* initializeSNRThresholdDecider(ParameterMap& params);
