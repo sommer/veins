@@ -3,10 +3,10 @@ package org.mixim.base.modules;
 // Basic utility module for the whole network.
 // Provides utility methods and information used by
 // the whole network.
-simple BaseWorldUtility
+simple BaseWorldUtility extends BlackBoard
 {
     parameters:
-        bool coreDebug;       // debug switch for the base framework
+        @class(BaseWorldUtility);
         double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
         double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
         double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)

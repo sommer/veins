@@ -21,15 +21,17 @@
 #ifndef BASE_WORLD_UTIL_H
 #define BASE_WORLD_UTIL_H
 
+#include "BlackBoard.h"
 #include "Coord.h"
 
 /**
- * @brief Provides information and utility methods for the
- * whole simulation.
+ * @brief Provides information and utility methods as well as BlackBoard
+ * functionality for the whole simulation.
  *
+ * @see BlackBoard
  * @ingroup baseModules
  */
-class BaseWorldUtility : public cSimpleModule
+class BaseWorldUtility : public BlackBoard
 {
 protected:
 	/** @brief Size of the area the nodes are in (in meters)*/
@@ -47,10 +49,6 @@ public:
 	//Module_Class_Members(BaseWorldUtility,BaseModule,0);
 
 	void initialize(int stage);
-
-	virtual int numInitStages() const {
-		return 2;
-	}
 
     /** @brief Returns the playgroundSize*/
     const Coord* getPgs(){
