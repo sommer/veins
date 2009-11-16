@@ -16,6 +16,8 @@
 #include "NetworkStackTrafficGen.h"
 #include "MacControlInfo.h"
 #include <cassert>
+#include <Packet.h>
+
 
 Define_Module(NetworkStackTrafficGen);
 
@@ -24,6 +26,7 @@ void NetworkStackTrafficGen::initialize(int stage)
 	BaseLayer::initialize(stage);
 
 	if(stage == 0) {
+		world = FindModule<BaseWorldUtility*>::findGlobalModule();
 		delayTimer = new cMessage("delay-timer", SEND_BROADCAST_TIMER);
 
 		arp = BaseArpAccess().get();
@@ -33,6 +36,8 @@ void NetworkStackTrafficGen::initialize(int stage)
 		packetTime = par("packetTime");
 		pppt = par("packetsPerPacketTime");
 
+		Packet p(1);
+		catPacket = world->getCategory(&p);
 	} else if (stage == 1) {
 		scheduleAt(simTime() + dblrand() * 10, delayTimer);
 	} else {
@@ -40,6 +45,9 @@ void NetworkStackTrafficGen::initialize(int stage)
 	}
 }
 
+void NetworkStackTrafficGen::finish()
+{
+}
 void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 {
 	switch( msg->getKind() )
@@ -59,6 +67,9 @@ void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 // TODO implement
 void NetworkStackTrafficGen::handleLowerMsg(cMessage *msg)
 {
+	Packet p(packetLength, 1, 0);
+	world->publishBBItem(catPacket, &p, -1);
+
 	delete msg;
 	msg = 0;
 }
@@ -79,6 +90,9 @@ void NetworkStackTrafficGen::sendBroadcast()
 	pkt->setDestAddr(L3BROADCAST);
 
 	pkt->setControlInfo(new MacControlInfo(L2BROADCAST));
+
+	Packet p(packetLength, 0, 1);
+	world->publishBBItem(catPacket, &p, -1);
 
 	sendDown(pkt);
 }

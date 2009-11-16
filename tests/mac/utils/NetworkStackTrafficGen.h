@@ -20,6 +20,7 @@
 #include "SimpleAddress.h"
 #include "BaseLayer.h"
 #include "BaseArp.h"
+#include <BaseWorldUtility.h>
 
 #include <omnetpp.h>
 
@@ -42,10 +43,14 @@ protected:
 	simtime_t packetTime;
 	double pppt;
 
+	int catPacket;
+
 	BaseArp* arp;
 	int myNetwAddr;
 
 	cMessage *delayTimer;
+
+	BaseWorldUtility* world;
 
 public:
 
@@ -53,6 +58,8 @@ public:
 protected:
 
 	virtual void initialize(int stage);
+
+	virtual void finish();
 
 	/** @brief Handle self messages such as timer... */
 	virtual void handleSelfMsg(cMessage *msg);

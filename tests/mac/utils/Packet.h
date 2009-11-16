@@ -46,9 +46,9 @@ protected:
 public:
 
     /** @brief Constructor*/
-    Packet(long bitLength) :
+    Packet(long bitLength, long rcvd=0, long sent=0) :
     	BBItem(),
-    	nbPacketsReceived(0), nbPacketsSent(0),
+    	nbPacketsReceived(rcvd), nbPacketsSent(sent),
     	packetBitLength(bitLength),
     	sent(true), host(0) {
     };
