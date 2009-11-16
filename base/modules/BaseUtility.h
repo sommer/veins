@@ -18,20 +18,20 @@
 #endif
 
 #include <omnetpp.h>
-#include "BlackBoard.h"
+#include "Blackboard.h"
 #include "HostState.h"
 #include "Coord.h"
 /**
- * @brief Provides several utilities (mainly BlackBoard functionality
+ * @brief Provides several utilities (mainly Blackboard functionality
  * for a host).
  *
- * @see BlackBoard
+ * @see Blackboard
  * @ingroup baseModules
  *
  * @author Andreas Koepke
  */
 
-class BaseUtility : public BlackBoard,
+class BaseUtility : public Blackboard,
 					public ImNotifiable
 {
 private:

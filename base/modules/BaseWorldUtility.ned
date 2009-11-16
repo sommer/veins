@@ -3,7 +3,7 @@ package org.mixim.base.modules;
 // Basic utility module for the whole network.
 // Provides utility methods and information used by
 // the whole network.
-simple BaseWorldUtility extends BlackBoard
+simple BaseWorldUtility extends Blackboard
 {
     parameters:
         @class(BaseWorldUtility);

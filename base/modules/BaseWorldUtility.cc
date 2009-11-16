@@ -28,7 +28,7 @@ const double BaseWorldUtility::speedOfLight = 299792458.0; //metres per second
 
 
 void BaseWorldUtility::initialize(int stage) {
-	BlackBoard::initialize(stage);
+	Blackboard::initialize(stage);
 
 	if (stage == 0) {
         use2DFlag = par("use2D");

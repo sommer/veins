@@ -17,7 +17,7 @@ module Network
 
         @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=10,50");
     submodules:
-        world: BaseWorldUtility {
+        world: WorldUtilityStats {
             parameters:
                 playgroundSizeX = playgroundSizeX;
                 playgroundSizeY = playgroundSizeY;

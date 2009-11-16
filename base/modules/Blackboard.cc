@@ -1,12 +1,12 @@
-#include "BlackBoard.h"
+#include "Blackboard.h"
 #include <assert.h>
 
-Define_Module(BlackBoard);
+Define_Module(Blackboard);
 
-std::ostream& operator<<(std::ostream& os, const BlackBoard::SubscriberVector& v)
+std::ostream& operator<<(std::ostream& os, const Blackboard::SubscriberVector& v)
 {
     os << v.size() << " client(s) ";
-    BlackBoard::SubscriberVector::const_iterator it;
+    Blackboard::SubscriberVector::const_iterator it;
     for (it = v.begin(); it != v.end(); ++it)
     {
         os << (it == v.begin() ? ": " : ", ");
@@ -31,11 +31,11 @@ std::ostream& operator<<(std::ostream& os, const BlackBoard::SubscriberVector& v
 
 
 
-BlackBoard::~BlackBoard()
+Blackboard::~Blackboard()
 {
 }
 
-void BlackBoard::initialize(int stage) {
+void Blackboard::initialize(int stage) {
 
 	if (stage == 0) {
 		hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
@@ -50,11 +50,11 @@ void BlackBoard::initialize(int stage) {
 	}
 }
 
-void BlackBoard::handleMessage(cMessage *msg) {
+void Blackboard::handleMessage(cMessage *msg) {
 	error("This module does not handle any messages yet");
 }
 
-const char* BlackBoard::categoryName(int category)
+const char* Blackboard::categoryName(int category)
 {
     if(categoryDescriptions.size() < static_cast<unsigned>(category)) {
         error("BlackBoard::categoryName called with unknown category (%i)", category);
@@ -62,7 +62,7 @@ const char* BlackBoard::categoryName(int category)
     return categoryDescriptions[category];
 }
 
-int BlackBoard::findAndCreateDescription(bool *isNewEntry, const BBItem *category)
+int Blackboard::findAndCreateDescription(bool *isNewEntry, const BBItem *category)
 {
 
     CategoryDescriptions::size_type it;
@@ -92,7 +92,7 @@ int BlackBoard::findAndCreateDescription(bool *isNewEntry, const BBItem *categor
     return static_cast<int>(it);
 }
 
-void BlackBoard::fillParentVector(const BBItem *category, int cat)
+void Blackboard::fillParentVector(const BBItem *category, int cat)
 {
     bool isNewEntry = true;
     int it;
@@ -112,7 +112,7 @@ void BlackBoard::fillParentVector(const BBItem *category, int cat)
 
 
 
-int BlackBoard::subscribe(ImNotifiable *client, int category, int scopeModuleId)
+int Blackboard::subscribe(ImNotifiable *client, int category, int scopeModuleId)
 {
     if(coreDebug) {
         Enter_Method("subscribe(%s, %i)", categoryName(category), scopeModuleId);
@@ -139,7 +139,7 @@ int BlackBoard::subscribe(ImNotifiable *client, int category, int scopeModuleId)
     return category;
 }
 
-int BlackBoard::subscribe(ImNotifiable *client, const BBItem *category, int scopeModuleId)
+int Blackboard::subscribe(ImNotifiable *client, const BBItem *category, int scopeModuleId)
 {
     if(coreDebug) {
         Enter_Method("subscribe(%s, %i)", category?category->getClassName() : "n/a",
@@ -161,7 +161,7 @@ int BlackBoard::subscribe(ImNotifiable *client, const BBItem *category, int scop
     return static_cast<int>(it);
 }
 
-void BlackBoard::unsubscribe(ImNotifiable *client, int category)
+void Blackboard::unsubscribe(ImNotifiable *client, int category)
 {
     if(coreDebug) {
         Enter_Method("unsubscribe(%s)", categoryName(category));
@@ -179,7 +179,7 @@ void BlackBoard::unsubscribe(ImNotifiable *client, int category)
     }
 }
 
-void BlackBoard::publishBBItem(int category, const BBItem *details, int scopeModuleId)
+void Blackboard::publishBBItem(int category, const BBItem *details, int scopeModuleId)
 {
     if(coreDebug) {
         Enter_Method("publish(%s, %s, %i)", categoryName(category),
@@ -203,7 +203,7 @@ void BlackBoard::publishBBItem(int category, const BBItem *details, int scopeMod
     }
 }
 
-int BlackBoard::getCategory(const BBItem *details)
+int Blackboard::getCategory(const BBItem *details)
 {
     if(coreDebug) {
         Enter_Method("getCategory(%s)", details?details->getClassName():"n/a");

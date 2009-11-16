@@ -57,7 +57,7 @@
  * @author Andreas Koepke
  */
 
-class BlackBoard : public cSimpleModule
+class Blackboard : public cSimpleModule
 {
 protected:
 
@@ -118,7 +118,7 @@ protected:
     /** @brief Initializes blackboard.*/
     virtual void initialize(int);
 
-    virtual ~BlackBoard();
+    virtual ~Blackboard();
 
 
     /** @name Methods for consumers of change notifications */

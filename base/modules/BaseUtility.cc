@@ -11,7 +11,7 @@ Define_Module(BaseUtility);
 #endif
 
 void BaseUtility::initialize(int stage) {
-	BlackBoard::initialize(stage);
+	Blackboard::initialize(stage);
 
 	if (stage == 0) {
         // subscribe to position changes
