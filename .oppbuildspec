@@ -8,12 +8,15 @@
 <dir makemake-options="-o deviceTestMulti -O out -d ../utils/ -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTestMulti" type="makemake"/>
 <dir makemake-options="-O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/Mac80211" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power" type="makemake"/>
+<dir makemake-options="-o csma -O out -lmacTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mac/csma" type="makemake"/>
 <dir makemake-options="-o mapping -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mapping" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:export-library --meta:use-exported-libs" path="." type="makemake"/>
 <dir makemake-options="-O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/baseNetwork" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests" type="makemake"/>
 <dir makemake-options="-o deviceTestAll -O out -u CMDENV -d ../utils/ -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTestAll" type="makemake"/>
 <dir makemake-options="--make-so -o miximtestUtils -O out --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/testUtils" type="makemake"/>
+<dir makemake-options="--make-so -o macTestUtils -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mac/utils" type="makemake"/>
+<dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mac" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples" type="makemake"/>
 <dir makemake-options="--deep --make-so -o miximbase -O out --meta:recurse --meta:export-library --meta:use-exported-libs" path="base" type="makemake"/>
 <dir makemake-options="-o coord -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/coord" type="makemake"/>
