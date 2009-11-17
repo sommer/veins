@@ -30,9 +30,9 @@ protected:
 	int catPacket;
 
 	/** @brief Stores the number of bits sent */
-	long bitsSent;
+	double bitsSent;
 	/** @brief Stores the number of bits received */
-	long bitsReceived;
+	double bitsReceived;
 
 protected:
     virtual void initialize(int stage);

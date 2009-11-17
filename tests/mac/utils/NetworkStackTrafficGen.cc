@@ -17,6 +17,7 @@
 #include "MacControlInfo.h"
 #include <cassert>
 #include <Packet.h>
+#include <BaseMacLayer.h>
 
 
 Define_Module(NetworkStackTrafficGen);
@@ -35,11 +36,15 @@ void NetworkStackTrafficGen::initialize(int stage)
 		packetLength = par("packetLength");
 		packetTime = par("packetTime");
 		pppt = par("packetsPerPacketTime");
+		burstSize = par("burstSize");
+
+		nbPacketDropped = 0;
 
 		Packet p(1);
 		catPacket = world->getCategory(&p);
 	} else if (stage == 1) {
-		scheduleAt(simTime() + dblrand() * 10, delayTimer);
+		remainingBurst = burstSize;
+		scheduleAt(dblrand() * packetTime * burstSize / pppt, delayTimer);
 	} else {
 
 	}
@@ -47,6 +52,7 @@ void NetworkStackTrafficGen::initialize(int stage)
 
 void NetworkStackTrafficGen::finish()
 {
+	recordScalar("dropped", nbPacketDropped);
 }
 void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 {
@@ -55,8 +61,16 @@ void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 	case SEND_BROADCAST_TIMER:
 		assert(msg == delayTimer);
 		sendBroadcast();
-		ev << "scheduling new broadcast in " << packetTime*pppt << endl;
-		scheduleAt(simTime() + packetTime/pppt, msg);
+
+		remainingBurst--;
+
+		if(remainingBurst == 0) {
+			remainingBurst = burstSize;
+			scheduleAt(simTime() + packetTime * burstSize / pppt, msg);
+		} else {
+			scheduleAt(simTime() + packetTime * 2, msg);
+		}
+
 		break;
 	default:
 		EV << "Unkown selfmessage! -> delete, kind: "<<msg->getKind() <<endl;
@@ -77,6 +91,9 @@ void NetworkStackTrafficGen::handleLowerMsg(cMessage *msg)
 // TODO implement
 void NetworkStackTrafficGen::handleLowerControl(cMessage *msg)
 {
+	if(msg->getKind() == BaseMacLayer::PACKET_DROPPED) {
+		nbPacketDropped++;
+	}
 	delete msg;
 	msg = 0;
 }

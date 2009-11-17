@@ -42,8 +42,12 @@ protected:
 	int packetLength;
 	simtime_t packetTime;
 	double pppt;
+	int burstSize;
+	int remainingBurst;
 
 	int catPacket;
+
+	long nbPacketDropped;
 
 	BaseArp* arp;
 	int myNetwAddr;
