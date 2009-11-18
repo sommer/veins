@@ -97,8 +97,9 @@ void BasePhyLayer::initialize(int stage) {
 
 		// get pointer to the world module
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
-        if (world == NULL)
-            throw cRuntimeError("Could not find BaseWorldUtility module");
+        if (world == NULL) {
+            opp_error("Could not find BaseWorldUtility module");
+        }
 
 	} else if (stage == 1){
 		//read complex(xml) ned-parameters
@@ -742,4 +743,12 @@ void BasePhyLayer::cancelScheduledMessage(cMessage* msg) {
 
 void BasePhyLayer::drawCurrent(double amount, int activity) {
 	BatteryAccess::drawCurrent(amount, activity);
+}
+
+BaseUtility* BasePhyLayer::getUtility() {
+	return utility;
+}
+
+BaseWorldUtility* BasePhyLayer::getWorldUtility() {
+	return world;
 }
