@@ -37,14 +37,17 @@ void NetworkStackTrafficGen::initialize(int stage)
 		packetTime = par("packetTime");
 		pppt = par("packetsPerPacketTime");
 		burstSize = par("burstSize");
+		destination = par("destination");
 
 		nbPacketDropped = 0;
 
 		Packet p(1);
 		catPacket = world->getCategory(&p);
 	} else if (stage == 1) {
-		remainingBurst = burstSize;
-		scheduleAt(dblrand() * packetTime * burstSize / pppt, delayTimer);
+		if(burstSize > 0) {
+			remainingBurst = burstSize;
+			scheduleAt(dblrand() * packetTime * burstSize / pppt, delayTimer);
+		}
 	} else {
 
 	}
@@ -53,6 +56,8 @@ void NetworkStackTrafficGen::initialize(int stage)
 void NetworkStackTrafficGen::finish()
 {
 	recordScalar("dropped", nbPacketDropped);
+
+	cancelAndDelete(delayTimer);
 }
 void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 {
@@ -104,9 +109,9 @@ void NetworkStackTrafficGen::sendBroadcast()
 	pkt->setBitLength(packetLength);
 
 	pkt->setSrcAddr(myNetwAddr);
-	pkt->setDestAddr(L3BROADCAST);
+	pkt->setDestAddr(destination);
 
-	pkt->setControlInfo(new MacControlInfo(L2BROADCAST));
+	pkt->setControlInfo(new MacControlInfo(destination));
 
 	Packet p(packetLength, 0, 1);
 	world->publishBBItem(catPacket, &p, -1);

@@ -44,10 +44,12 @@ protected:
 	double pppt;
 	int burstSize;
 	int remainingBurst;
+	long destination;
 
 	int catPacket;
 
 	long nbPacketDropped;
+
 
 	BaseArp* arp;
 	int myNetwAddr;

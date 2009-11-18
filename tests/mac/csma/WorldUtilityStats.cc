@@ -23,12 +23,17 @@ void WorldUtilityStats::initialize(int stage)
 	BaseWorldUtility::initialize(stage);
 
 	if(stage == 0) {
+		recordVectors = par("recordVectors");
+
 		bitsSent = 0;
 		bitsReceived = 0;
 
 		//register for global stats to collect
 		Packet tmp(10);
 		catPacket = subscribe(this, &tmp);
+
+		sent.setName("Bits generated");
+		rcvd.setName("Bits received");
 	}
 }
 
@@ -38,8 +43,15 @@ void WorldUtilityStats::receiveBBItem(int category, const BBItem *details, int s
 	if(category == catPacket)
 	{
 		const Packet* p = static_cast<const Packet*>(details);
-		bitsSent += p->getNbBitsSent();
-		bitsReceived += p->getNbBitsReceived();
+		double nbBitsSent = p->getNbBitsSent();
+		double nbBitsRcvd = p->getNbBitsReceived();
+		bitsSent += nbBitsSent;
+		bitsReceived += nbBitsRcvd;
+
+		if(recordVectors) {
+			sent.record(bitsSent);
+			rcvd.record(bitsReceived);
+		}
 	}
 	else {
 		opp_error("BBItem of unexpected category: %s", details->getClassName());

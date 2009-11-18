@@ -1,9 +1,10 @@
 package org.mixim.tests.mac.csma;
 
-import org.mixim.modules.mobility.ConstSpeedMobility;
+import org.mixim.modules.mobility.LinearMobility;
 //import org.mixim.modules.application.BurstApplLayer;
 import org.mixim.base.modules.BaseUtility;
 import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.BaseMobility;
 import org.mixim.tests.mac.utils.NetworkStackTrafficGen;
 
 
@@ -21,7 +22,7 @@ module PhyMacHost
             parameters:
                 @display("p=205,182;i=block/blackboard");
         }
-        mobility: ConstSpeedMobility {
+        mobility: LinearMobility {
             parameters:
                 @display("p=205,81;i=block/cogwheel");
         }

@@ -34,6 +34,11 @@ protected:
 	/** @brief Stores the number of bits received */
 	double bitsReceived;
 
+	cOutVector sent;
+	cOutVector rcvd;
+
+	bool recordVectors;
+
 protected:
     virtual void initialize(int stage);
 

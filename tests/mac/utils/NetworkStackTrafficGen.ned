@@ -26,6 +26,7 @@ simple NetworkStackTrafficGen
         bool debug; // debug switch
         int burstSize = default(1);
     	int packetLength @unit("bit"); // length of the generated packet (in bits)
+    	int destination = default(-1);
     gates:
     	input lowerGateIn; // from NIC
         output lowerGateOut; // to NIC
