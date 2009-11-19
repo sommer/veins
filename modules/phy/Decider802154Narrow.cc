@@ -187,4 +187,12 @@ double Decider802154Narrow::getBERFromSNR(double snr) {
 	return std::max(ber, BER_LOWER_BOUND);
 }
 
-//TODO: implement/port an finish() equivalent
+
+void Decider802154Narrow::finish() {
+
+	// record scalars through the interface to the PHY-Layer
+	phy->recordScalar("nbFramesWithInterference", nbFramesWithInterference);
+	phy->recordScalar("nbFramesWithoutInterference", nbFramesWithoutInterference);
+	phy->recordScalar("nbFramesWithInterferenceDropped", nbFramesWithInterferenceDropped);
+	phy->recordScalar("nbFramesWithoutInterferenceDropped", nbFramesWithoutInterferenceDropped);
+}

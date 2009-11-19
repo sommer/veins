@@ -8,11 +8,13 @@
   </inputs>
   <datasets>
     <datasets name="sent">
-      <items xsi:type="scave:Add" filterPattern="run(Test6-Acks-0-20091118-13:41:42-15887) AND module(csmaTestSim.world) AND name(&quot;Bits received&quot;)" type="VECTOR"/>
-      <items xsi:type="scave:Add" filterPattern="run(Test8-Hidden-Station-0-20091118-13:41:51-16210) AND module(csmaTestSim.world) AND name(&quot;Bits received&quot;)" type="VECTOR"/>
-      <items xsi:type="scave:Add" filterPattern="run(Test7-Acks-BC-0-20091118-13:42:00-16533) AND module(csmaTestSim.world) AND name(&quot;Bits generated&quot;)" type="VECTOR"/>
-      <items xsi:type="scave:Add" filterPattern="run(Test7-Acks-BC-0-20091118-13:42:00-16533) AND module(csmaTestSim.world) AND name(&quot;Bits received&quot;)" type="VECTOR"/>
-      <items xsi:type="scave:LineChart"/>
+      <items xsi:type="scave:Add" filterPattern="run(Test6-Acks-0-*) AND module(csmaTestSim.world) AND name(&quot;Bits received&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="run(Test8-Hidden-Station-0-*) AND module(csmaTestSim.world) AND name(&quot;Bits received&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="run(Test7-Acks-BC-0-*) AND module(csmaTestSim.world) AND name(&quot;Bits generated&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="run(Test7-Acks-BC-0-*) AND module(csmaTestSim.world) AND name(&quot;Bits received&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="" lineNameFormat="">
+        <properties name="Legend.Border" value="true"/>
+      </items>
     </datasets>
   </datasets>
   <chartSheets>

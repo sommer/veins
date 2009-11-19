@@ -157,6 +157,11 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 	}
 }
 
+void BasePhyLayer::finish(){
+	// give decider the chance to do something
+	decider->finish();
+}
+
 //-----Decider initialization----------------------
 
 
@@ -751,4 +756,8 @@ BaseUtility* BasePhyLayer::getUtility() {
 
 BaseWorldUtility* BasePhyLayer::getWorldUtility() {
 	return world;
+}
+
+void BasePhyLayer::recordScalar(const char *name, double value, const char *unit) {
+	ChannelAccess::recordScalar(name, value, unit);
 }

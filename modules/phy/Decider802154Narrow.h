@@ -75,6 +75,12 @@ public:
 	}
 
 	virtual ~Decider802154Narrow() {};
+
+	/**
+	 * @brief Method to be called by an OMNeT-module during its own finish(),
+	 * to enable a decider to do some things.
+	 */
+	virtual void finish();
 };
 
 #endif /* DECIDER80211_H_ */

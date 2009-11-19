@@ -106,6 +106,17 @@ public:
 	 * @brief Returns a pointer to the simulations world-utility-module.
 	 */
 	virtual BaseWorldUtility* getWorldUtility() = 0;
+
+	/**
+	 * @brief Utility method to enable a Decider, which isn't an OMNeT-module, to
+	 * use the OMNeT-method 'recordScalar' with the help of and through its interface to BasePhyLayer.
+	 *
+	 * The method-signature is taken from OMNeTs 'ccomponent.h' but made pure virtual here.
+	 * See the original method-description below:
+	 *
+	 * Records a double into the scalar result file.
+	 */
+	virtual void recordScalar(const char *name, double value, const char *unit=NULL) = 0;
 };
 
 #endif /*DECIDER_TO_PHY_INTERFACE_H_*/

@@ -115,6 +115,12 @@ public:
 	 */
 	virtual simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);
 
+	/**
+	 * @brief Method to be called by an OMNeT-module during its own finish(),
+	 * to enable a decider to do some things.
+	 */
+	virtual void finish() {}
+
 };
 
 

@@ -331,6 +331,8 @@ public:
 	 */
 	virtual ~BasePhyLayer();
 
+	virtual void finish();
+
 	//---------MacToPhyInterface implementation-----------
 
 	/**
@@ -432,6 +434,14 @@ public:
 	 * @brief Returns a pointer to the simulations world-utility-module.
 	 */
 	virtual BaseWorldUtility* getWorldUtility();
+
+	/**
+	 * @brief Records a double into the scalar result file.
+	 *
+	 * Implements the method from DeciderToPhyInterface, method-calls are forwarded
+	 * to OMNeT-method 'recordScalar'.
+	 */
+	void recordScalar(const char *name, double value, const char *unit=NULL);
 
 };
 
