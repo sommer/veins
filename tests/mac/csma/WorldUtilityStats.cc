@@ -24,6 +24,7 @@ void WorldUtilityStats::initialize(int stage)
 
 	if(stage == 0) {
 		recordVectors = par("recordVectors");
+		bitrate = par("bitrate");
 
 		bitsSent = 0;
 		bitsReceived = 0;
@@ -62,4 +63,8 @@ void WorldUtilityStats::finish()
 {
 	recordScalar("GlobalTrafficGenerated", bitsSent, "bit");
 	recordScalar("GlobalTrafficReceived", bitsReceived, "bit");
+
+	recordScalar("Traffic", bitsSent / bitrate / simTime());
+	double hosts = simulation.getSystemModule()->par("numHosts");
+	recordScalar("Usage", bitsReceived / bitrate / simTime() / (hosts-1));
 }

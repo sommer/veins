@@ -25,4 +25,5 @@ simple WorldUtilityStats extends BaseWorldUtility
     parameters:
         @class(WorldUtilityStats);
         bool recordVectors = default(false);
+        double bitrate;
 }

@@ -39,6 +39,8 @@ protected:
 
 	bool recordVectors;
 
+	double bitrate;
+
 protected:
     virtual void initialize(int stage);
 
