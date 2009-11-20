@@ -53,10 +53,10 @@ grid(col="grey")
 lines(epflEbN0, epflPER_EDfixDrift,  type="b", pch=23, col="darkorange", cex=symbolSize, lwd=lineWidth)
 lines(c(17, 17), c(1, 1E-4), lty=5, type="l", col="darkred", cex=symbolSize, lwd=lineWidth)
 mtext("Packet Error Rate", side=3, line=1, adj=0, cex=2, lwd=lineWidth)
-legend(x="bottomright",legend=c("With error correction",
-				"CEA-LETI SNR Limit",
-				"EPFL MATLAB EDfix, drift",
-				"EPFL MATLAB EDOpt, no drift"
+legend(x="bottomright",legend=c("CSEM MiXiM MPAE",
+				"CEA Analytical SNR Limit",
+				"EPFL MATLAB EDfix",
+				"EPFL MATLAB EDOpt"
 				),
 	lty=c(0, 5, 0, 1), # a line only for the last one
 	col=c("darkgreen", "darkred", "darkorange", "black"),
