@@ -34,6 +34,8 @@ public:
 
     virtual void finish();
 
+    int minBE;
+    int maxBE;
 
 protected:
 
@@ -42,7 +44,7 @@ protected:
 
     virtual void handleLowerMsg(cMessage *msg);
 
-
+    //virtual void handleUpperMsg(cMessage * msg);
 
 };
 

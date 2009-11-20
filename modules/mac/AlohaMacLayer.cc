@@ -79,7 +79,12 @@ MacPkt* AlohaMacLayer::encapsMsg(cPacket *msg) {
 	return encaps;
 }
 
+/*
+void AlohaMacLayer::handleUpperMsg(cMessage *msg) {
+    MacPkt* packet = encapsMsg(msg);
 
+}
+*/
 void AlohaMacLayer::handleLowerMsg(cMessage *msg) {
     UWBIRMacPkt *mac = static_cast<UWBIRMacPkt *>(msg);
 
