@@ -1,5 +1,6 @@
 #!/bin/sh
 
+rm -f results/Test1*
 ./csma -c Test1-A -u Cmdenv 
 ./csma -c Test1-B -u Cmdenv 
 ./csma -c Test1-C -u Cmdenv 

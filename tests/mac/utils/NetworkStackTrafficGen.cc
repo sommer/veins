@@ -65,13 +65,15 @@ void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 	{
 	case SEND_BROADCAST_TIMER:
 		assert(msg == delayTimer);
+
+
 		sendBroadcast();
 
 		remainingBurst--;
 
 		if(remainingBurst == 0) {
 			remainingBurst = burstSize;
-			scheduleAt(simTime() + packetTime * burstSize / pppt, msg);
+			scheduleAt(simTime() + (dblrand()*1.4+0.3)*packetTime * burstSize / pppt, msg);
 		} else {
 			scheduleAt(simTime() + packetTime * 2, msg);
 		}

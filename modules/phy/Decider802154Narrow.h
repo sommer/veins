@@ -36,11 +36,11 @@ protected:
 	/** @brief modulation type */
 	std::string modulation;
 
-	long nbFramesWithInterference;
-	long nbFramesWithoutInterference;
+	unsigned long nbFramesWithInterference;
+	unsigned long nbFramesWithoutInterference;
 
-	long nbFramesWithInterferenceDropped;
-	long nbFramesWithoutInterferenceDropped;
+	unsigned long nbFramesWithInterferenceDropped;
+	unsigned long nbFramesWithoutInterferenceDropped;
 
 protected:
 	virtual simtime_t processNewSignal(AirFrame* frame);
@@ -68,7 +68,11 @@ public:
 		BaseDecider(phy, 0, myIndex, debug),
 		sfdLength(sfdLength),
 		BER_LOWER_BOUND(BER_LOWER_BOUND),
-		modulation(modulation)
+		modulation(modulation),
+		nbFramesWithInterference(0),
+		nbFramesWithoutInterference(0),
+		nbFramesWithInterferenceDropped(0),
+		nbFramesWithoutInterferenceDropped(0)
 	{
 		//TODO: publish initial rssi/channel state
 		//TODO: trace noise level, snr and rssi to vectors

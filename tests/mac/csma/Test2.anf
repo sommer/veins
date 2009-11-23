@@ -6,20 +6,29 @@
   </inputs>
   <datasets>
     <datasets name="sent">
-      <items xsi:type="scave:Add" filterPattern="run(Test2*) AND module(csmaTestSim.world) AND name(&quot;Bits received&quot;)" type="VECTOR"/>
-      <items xsi:type="scave:Add" filterPattern="run(Test2-A*) AND module(csmaTestSim.world) AND name(&quot;Bits generated&quot;)" type="VECTOR"/>
-      <items xsi:type="scave:LineChart" name="traffic generated/received" lineNameFormat="">
-        <properties name="Graph.Title" value="traffic sent/received"/>
-        <properties name="X.Axis.Title" value="time"/>
-        <properties name="Y.Axis.Title" value="bits"/>
-        <properties name="Legend.Display" value="true"/>
-        <properties name="Legend.Border" value="true"/>
-        <properties name="Legend.Position" value="Inside"/>
-        <properties name="Legend.Anchoring" value="NorthWest"/>
+      <items xsi:type="scave:Group">
+        <items xsi:type="scave:Add" filterPattern="name(dist)"/>
+        <items xsi:type="scave:Add" filterPattern="name(Usage)"/>
+        <items xsi:type="scave:ScatterChart" name="traffic rcv" xDataPattern="module(.) AND name(dist)">
+          <properties name="Legend.Display" value="true"/>
+          <properties name="Legend.Position" value="Inside"/>
+          <properties name="Legend.Anchoring" value="NorthEast"/>
+          <isoDataPattern>attr:configname(*)</isoDataPattern>
+        </items>
+      </items>
+      <items xsi:type="scave:Group">
+        <items xsi:type="scave:Add" filterPattern="name(dist)"/>
+        <items xsi:type="scave:Add" filterPattern="name(Traffic)"/>
+        <items xsi:type="scave:ScatterChart" name="traffic gen" xDataPattern="module(.) AND name(dist)">
+          <properties name="Legend.Display" value="true"/>
+          <properties name="Legend.Position" value="Inside"/>
+          <properties name="Legend.Anchoring" value="NorthEast"/>
+          <isoDataPattern>attr:configname(*)</isoDataPattern>
+        </items>
       </items>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1/@items.2 //@datasets/@datasets.0/@items.0/@items.2"/>
   </chartSheets>
 </scave:Analysis>
