@@ -2,16 +2,20 @@
 <scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
   <inputs>
     <inputs name="/MiXiM/tests/mac/csma/results/Test1*.sca"/>
-    <inputs name="/MiXiM/tests/mac/csma/results/Test2*.sca"/>
-    <inputs name="/MiXiM/tests/mac/csma/results/Test3*.sca"/>
-    <inputs name="/MiXiM/tests/mac/csma/results/Test4*.sca"/>
-    <inputs name="/MiXiM/tests/mac/csma/results/Test5*.sca"/>
   </inputs>
   <datasets>
     <datasets name="da">
       <items xsi:type="scave:Add" filterPattern="run(*) AND name(Traffic)"/>
       <items xsi:type="scave:Add" filterPattern="run(*) AND name(Usage)"/>
-      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(csmaTestSim.world) AND name(Traffic)">
+      <items xsi:type="scave:ScatterChart" name="Channelusage" xDataPattern="module(csmaTestSim.world) AND name(Traffic)">
+        <properties name="X.Axis.Title" value="Generated Traffic/channel bitrate/simulation time"/>
+        <properties name="Y.Axis.Title" value="transmitted traffic/channel bitrate/simulation time"/>
+        <properties name="Y.Axis.Min" value="0.1"/>
+        <properties name="Y.Axis.Max" value="0.9"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="X.Axis.Max" value="1.6"/>
         <isoDataPattern>attr:configname(*)</isoDataPattern>
       </items>
     </datasets>

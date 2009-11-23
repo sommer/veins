@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="/MiXiM/tests/mac/csma/results/Test2*.vec"/>
+    <inputs name="/MiXiM/tests/mac/csma/results/Test2*.sca"/>
+  </inputs>
+  <datasets>
+    <datasets name="sent">
+      <items xsi:type="scave:Add" filterPattern="run(Test2*) AND module(csmaTestSim.world) AND name(&quot;Bits received&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="run(Test2-A*) AND module(csmaTestSim.world) AND name(&quot;Bits generated&quot;)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="traffic generated/received" lineNameFormat="">
+        <properties name="Graph.Title" value="traffic sent/received"/>
+        <properties name="X.Axis.Title" value="time"/>
+        <properties name="Y.Axis.Title" value="bits"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+      </items>
+    </datasets>
+  </datasets>
+  <chartSheets>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2"/>
+  </chartSheets>
+</scave:Analysis>
