@@ -48,9 +48,9 @@ public:
 	/*
 	 * @brief Default constructor.
 	 */
-    UWBIRIEEE802154APathlossModel(int _channelModel, double _threshold, bool shadowing=true):
+    UWBIRIEEE802154APathlossModel(int _channelModel, double _threshold, const Move* _move, bool shadowing=true):
     	channelModel(_channelModel), tapThreshold(_threshold), doShadowing(shadowing),
-    	doSmallScaleShadowing(false), move(), nbCalls(0)  {
+    	doSmallScaleShadowing(false), move(_move), nbCalls(0)  {
     	// Check that this model is supported
     	assert(implemented_CMs[channelModel]);
     	// load the model parameters
@@ -63,12 +63,6 @@ public:
      * @brief Applies the model to an incoming signal.
      */
     void filterSignal(Signal& s);
-
-    /*
-     * @brief This class needs to know the position of the host it is attached to.
-     * This function is called by the UWBIRPhyLayer to provide this information.
-     */
-    void setMove(const Move newMove);
 
     /*@brief Utility function to use a Rayleigh random variable
      *
@@ -146,7 +140,7 @@ protected:
     static const double nrx = 1;
 
 
-    Move move;
+    const Move* move;
     TimeMapping<Linear>* newTxPower;
     Mapping* txPower;
     Argument arg;

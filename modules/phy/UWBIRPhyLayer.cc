@@ -163,7 +163,7 @@ AnalogueModel* UWBIRPhyLayer::createUWBIRIEEE802154APathlossModel(ParameterMap &
 		shadowing = it->second.boolValue();
 	}
 
-	ieee802154AChannel = new UWBIRIEEE802154APathlossModel(CM, threshold, shadowing);
+	ieee802154AChannel = new UWBIRIEEE802154APathlossModel(CM, threshold, &move, shadowing);
 	return ieee802154AChannel;
 }
 
@@ -245,9 +245,6 @@ void UWBIRPhyLayer::receiveBBItem(int category, const BBItem *details,
 	ChannelAccess::receiveBBItem(category, details, scopeModuleId);
 	if (category == catMove) {
 		EV<< "Received move information in uwbphylayer." << endl;
-		if(ieee802154AChannel) {
-			ieee802154AChannel->setMove(move);
-		}
 
 	}
 }

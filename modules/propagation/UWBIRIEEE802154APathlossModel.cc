@@ -189,7 +189,7 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
     Coord srcCoord, rcvCoord;
     distance = 0;
     srcCoord = srcMove.getPositionAt(s.getSignalStart());
-    rcvCoord = move.getPositionAt(s.getSignalStart());
+    rcvCoord = move->getPositionAt(s.getSignalStart());
     distance = rcvCoord.distance(srcCoord);
 
 	// Total radiated power Prx at that distance  [W]
@@ -381,6 +381,3 @@ double UWBIRIEEE802154APathlossModel::Rayleigh(double param) {
     return weibull(2, sqrt(2) * param);
 }
 
-void UWBIRIEEE802154APathlossModel::setMove(const Move newMove) {
-    move = newMove;
-}
