@@ -1,4 +1,7 @@
-package org.mixim.examples.IEEE802154;
+// TODO: remove following comment later
+// csma-test-network based on IEEE802.15.4 example
+
+package org.mixim.examples.ieee802154Narrow;
 
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
@@ -14,23 +17,23 @@ module Network
 
         @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=10,50");
     submodules:
-        world: BaseWorldUtility {
+        world: WorldUtilityStats {
             parameters:
                 playgroundSizeX = playgroundSizeX;
                 playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
-                @display("p=100,0;i=misc/globe");
+                @display("p=129,40;i=misc/globe");
 
         }
         connectionManager: ConnectionManager {
             parameters:
-                @display("p=200,0;b=42,42,rect,yellow,,;i=abstract/multicast");
+                @display("p=225,40;b=42,42,rect,yellow;i=abstract/multicast");
 
         }
         node[numHosts]: PhyMacHost {
             parameters:
                 numHosts = numHosts;
-                @display("p=50,50;b=42,42,rect,yellow,,;i=device/wifilaptop");
+                @display("p=75,130;b=42,42,rect,yellow;i=device/wifilaptop");
 
         }
     connections allowunconnected:
@@ -38,7 +41,7 @@ module Network
 
 }
 
-network phySim extends Network
+network csmaTestSim extends Network
 {
     parameters:
 }

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
   <inputs>
-    <inputs name="/MiXiM/tests/mac/csma/results/Test2*.vec"/>
-    <inputs name="/MiXiM/tests/mac/csma/results/Test2*.sca"/>
+    <inputs name="./results/Test2*.sca"/>
   </inputs>
   <datasets>
     <datasets name="sent">

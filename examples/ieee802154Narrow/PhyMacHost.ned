@@ -1,4 +1,4 @@
-package org.mixim.tests.mac.csma;
+package org.mixim.examples.ieee802154Narrow;
 
 import org.mixim.modules.mobility.LinearMobility;
 //import org.mixim.modules.application.BurstApplLayer;

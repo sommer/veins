@@ -1,5 +1,5 @@
 
-package org.mixim.examples.IEEE802154;
+package org.mixim.examples.ieee802154Narrow;
 
 import org.mixim.modules.phy.PhyLayer;
 import org.mixim.modules.mac.csma;
@@ -10,7 +10,7 @@ module PhyMacNic
     parameters:
         string connectionManagerName; 	//name of the ConnectionManager module
 
-        @display("bgb=101,200,white,,;bgp=10,10");
+        @display("bgb=259,229,white;bgp=10,10");
     gates:
         input upperGateIn;
         output upperGateOut;
@@ -21,14 +21,14 @@ module PhyMacNic
     submodules:
         phy: PhyLayer {
             parameters:
-                @display("p=60,170;b=80,30,rect,white,,");
+                @display("p=118,171;b=80,30,rect,white");
             //display: "p=60,150;i=prot3";
 
         }
         mac: csma {
             parameters:
                 rxSetupTime = 0.00108 s;
-                @display("p=60,100;b=80,30,rect,white,,");
+                @display("p=118,60;b=80,30,rect,white");
         	//display: "p=60,70;i=prot3";
 
         }

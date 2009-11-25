@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package org.mixim.tests.mac.csma;
+package org.mixim.examples.ieee802154Narrow;
 
 import org.mixim.base.modules.BaseWorldUtility;
 
