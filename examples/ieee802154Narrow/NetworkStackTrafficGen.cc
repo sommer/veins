@@ -59,6 +59,7 @@ void NetworkStackTrafficGen::finish()
 
 	cancelAndDelete(delayTimer);
 }
+
 void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 {
 	switch( msg->getKind() )
@@ -85,7 +86,7 @@ void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 	}
 }
 
-// TODO implement
+
 void NetworkStackTrafficGen::handleLowerMsg(cMessage *msg)
 {
 	Packet p(packetLength, 1, 0);
@@ -95,7 +96,7 @@ void NetworkStackTrafficGen::handleLowerMsg(cMessage *msg)
 	msg = 0;
 }
 
-// TODO implement
+
 void NetworkStackTrafficGen::handleLowerControl(cMessage *msg)
 {
 	if(msg->getKind() == BaseMacLayer::PACKET_DROPPED) {
