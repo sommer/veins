@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package org.mixim.tests.mac.utils;
+package org.mixim.tests.mac.csma;
 
 //
 // TODO auto-generated module

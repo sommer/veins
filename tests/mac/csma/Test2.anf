@@ -6,29 +6,20 @@
   </inputs>
   <datasets>
     <datasets name="sent">
-      <items xsi:type="scave:Group">
-        <items xsi:type="scave:Add" filterPattern="name(dist)"/>
-        <items xsi:type="scave:Add" filterPattern="name(Usage)"/>
-        <items xsi:type="scave:ScatterChart" name="traffic rcv" xDataPattern="module(.) AND name(dist)">
-          <properties name="Legend.Display" value="true"/>
-          <properties name="Legend.Position" value="Inside"/>
-          <properties name="Legend.Anchoring" value="NorthEast"/>
-          <isoDataPattern>attr:configname(*)</isoDataPattern>
-        </items>
-      </items>
-      <items xsi:type="scave:Group">
-        <items xsi:type="scave:Add" filterPattern="name(dist)"/>
-        <items xsi:type="scave:Add" filterPattern="name(Traffic)"/>
-        <items xsi:type="scave:ScatterChart" name="traffic gen" xDataPattern="module(.) AND name(dist)">
-          <properties name="Legend.Display" value="true"/>
-          <properties name="Legend.Position" value="Inside"/>
-          <properties name="Legend.Anchoring" value="NorthEast"/>
-          <isoDataPattern>attr:configname(*)</isoDataPattern>
-        </items>
+      <items xsi:type="scave:Add" filterPattern="run(*) AND name(dist)"/>
+      <items xsi:type="scave:Add" filterPattern="run(*) AND name(Usage)"/>
+      <items xsi:type="scave:ScatterChart" name="channel usage over distance" xDataPattern="module(.) AND name(dist)">
+        <properties name="Graph.Title" value="channel usage over distance"/>
+        <properties name="X.Axis.Title" value="distance (m)"/>
+        <properties name="Y.Axis.Title" value="bits received/bitrate/simulation time"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthEast"/>
+        <isoDataPattern>attr:configname(*)</isoDataPattern>
       </items>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1/@items.2 //@datasets/@datasets.0/@items.0/@items.2"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2"/>
   </chartSheets>
 </scave:Analysis>

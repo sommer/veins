@@ -5,7 +5,6 @@ import org.mixim.modules.mobility.LinearMobility;
 import org.mixim.base.modules.BaseUtility;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseMobility;
-import org.mixim.tests.mac.utils.NetworkStackTrafficGen;
 
 
 module PhyMacHost
