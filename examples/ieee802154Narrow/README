@@ -1,0 +1,18 @@
+This example shows how to use MiXiMs implementation of the ieee802154 narrow band protocol.
+It also provides an example on using the global blackboard provided by BaseWorldUtility.
+
+The network consist of the "WorldUtilityStats" which extends from BaseWorldUtility to 
+collect some global statistics as well as the usual ConnectionManager and a number of
+host.
+The hosts contain a special Traffic generation layer (also shows how to publish
+global statistics to the global blackboard) which lies directly above the
+NIC which moreover consist of the "csma"-mac layer module and the PhyLayer.
+The PhyLayer uses "Decider802154Narrow" as a decider.
+
+There are three "Test"s which try to show the characteristics of the used csma mac layer.
+For each of these tests exists a "runTestX.sh" script as well as a "TestX.anf" file which execute
+the configurations necessary to produce the result-files for the according "*.anf" file.
+So you can take a look at the result of these tests by calling the "runTestX.sh" script and then
+opening the according "TestX.anf" file.
+
+Take a look at the omnetpp.ini for more details on the several test configurations.
