@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CFG=epflEbN0
-NBPARALLEL=6
+CFG=flury07
+NBPARALLEL=8
 CFGFILE=noakaroa.ini
 
 CREATION_INTERVAL=1
