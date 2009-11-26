@@ -24,8 +24,16 @@
     <datasets name="ber">
       <items xsi:type="scave:Add" filterPattern="name(&quot;Average BER&quot;)"/>
     </datasets>
+    <datasets name="CM1">
+      <items xsi:type="scave:Add" filterPattern="attr:Channel(cm1) AND Name(receivedPulses)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="CM1" lineNameFormat="">
+        <properties name="Axes.Grid" value="All"/>
+        <properties name="X.Axis.Min" value="4.999"/>
+        <properties name="X.Axis.Max" value="5.001"/>
+      </items>
+    </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.1/@items.1"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.3/@items.1"/>
   </chartSheets>
 </scave:Analysis>
