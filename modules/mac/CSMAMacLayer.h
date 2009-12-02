@@ -156,6 +156,15 @@ class  CSMAMacLayer : public BaseMacLayer
     /** @brief initial contention window size */
     unsigned initialCW;
 
+    /** @brief Counts the total number of backoffs. */
+    double nbBackoffs;
+
+    /** @brief Counts the total time spent in backoff. */
+    double backoffValues;
+
+    /** @brief Counts the number of frames transmitted. */
+    unsigned long nbTxFrames;
+
     /** @brief Inspect reasons for dropped packets */
     //DroppedPacket droppedPacket;
 

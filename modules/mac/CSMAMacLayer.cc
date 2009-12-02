@@ -38,6 +38,10 @@ void CSMAMacLayer::initialize(int stage)
         backoffTimer = new cMessage("backoff");
         minorMsg = new cMessage("minClear");
 
+        nbBackoffs = 0;
+		backoffValues = 0;
+		nbTxFrames = 0;
+
         txAttempts = 0;
     }
     else if(stage == 1) {
@@ -57,15 +61,12 @@ void CSMAMacLayer::initialize(int stage)
 
 
 void CSMAMacLayer::finish() {
-    if (backoffTimer->isScheduled())
-    	cancelEvent(backoffTimer);
-	delete backoffTimer;
-	backoffTimer = 0;
+	recordScalar("nbBackoffs", nbBackoffs);
+	recordScalar("backoffDurations", backoffValues);
+	recordScalar("nbTxFrames", nbTxFrames);
 
-    if (minorMsg->isScheduled())
-    	cancelEvent(minorMsg);
-	delete minorMsg;
-	minorMsg = 0;
+	cancelAndDelete(backoffTimer);
+	cancelAndDelete(minorMsg);
 
     for(MacQueue::iterator it = macQueue.begin();
 		it != macQueue.end(); ++it)
@@ -212,11 +213,12 @@ void CSMAMacLayer::handleLowerControl(cMessage *msg)
         macState = RX;
         phy->setRadioState(Radio::RX);
         txAttempts = 0;
+        if(!backoffTimer->isScheduled()) scheduleBackoff();
     }
     else if(msg->getKind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
     	if((macState == TX) && (phy->getRadioState() == Radio::TX)) {
             EV << " radio switched to tx, sendDown packet" << endl;
-
+            nbTxFrames++;
             sendDown(encapsMsg(macQueue.front()));
             macQueue.pop_front();
         }
@@ -225,8 +227,6 @@ void CSMAMacLayer::handleLowerControl(cMessage *msg)
         EV << "control message with wrong kind -- deleting\n";
     }
     delete msg;
-
-    if(!backoffTimer->isScheduled()) scheduleBackoff();
 }
 
 void CSMAMacLayer::scheduleBackoff()
@@ -253,15 +253,20 @@ void CSMAMacLayer::scheduleBackoff()
 
     if(macQueue.size() != 0) {
         EV << " schedule backoff " << endl;
+
+        double slots = intrand(initialCW + txAttempts) + 1.0 + dblrand();
+        double time = slots * slotDuration;
+
         txAttempts++;
-        EV << " attempts so far: " << txAttempts  << " " << endl;
-        double slots = intrand(initialCW - txAttempts) + 2.0*dblrand();
-        double time = std::max(slots, 1.0) * slotDuration;
+		EV << " attempts so far: " << txAttempts  << " " << endl;
 
 		if(minorMsg->isScheduled()){
 			cancelEvent( minorMsg );
 			macState=RX;
 		}
+
+		nbBackoffs = nbBackoffs + 1;
+		backoffValues = backoffValues + time;
 
         scheduleAt(simTime() + time, backoffTimer);
     }
