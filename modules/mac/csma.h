@@ -33,21 +33,17 @@
 #include <sstream>
 #include <vector>
 #include <list>
-//#include <ActiveChannel.h>
-//#include <RadioAccNoise3State.h>
-//#include <RSSI.h>
 #include "BaseMacLayer.h"
-//#include <Bitrate.h>
 #include <DroppedPacket.h>
-//#include <BasicMobility.h>
-//#include <Blackboard.h>
 #include <MacPkt_m.h>
 #include "MacControlInfo.h"
-//#include <SingleChannelRadioAccNoise3.h>
-//#include "RadioAccNoise3PhyControlInfo.h"
-//#include "ConstsAccNoise3.h"
 
 /**
+ * @brief Generic CSMA Mac layer.
+ *
+ * Supports constant, linear and exponential backoffs as well as
+ * MAC ACKs.
+ *
  * @class csma
  * @ingroup macLayer
  * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Yosia Hadisusanto, Andreas Koepke
@@ -76,9 +72,6 @@ class  csma : public BaseMacLayer
 
     /** @brief Handle control messages from lower layer */
     virtual void handleLowerControl(cMessage *msg);
-
-    /** @brief Called by the Blackboard whenever a change occurs we're interested in */
-    //virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 
   protected:
     typedef std::list<MacPkt*> MacQueue;
@@ -156,24 +149,15 @@ class  csma : public BaseMacLayer
       STATUS_FRAME_TRANSMITTED
     };
 
+    enum backoff_methods {
+    	CONSTANT = 0,
+    	LINEAR,
+    	EXPONENTIAL,
+    };
+
     /** @brief keep track of MAC state */
     t_mac_states macState;
     t_mac_status status;
-
-    /** @brief Current state of active channel (radio), set using radio, updated via BB */
-    //RadioAccNoise3State::States radioState;
-    /** @brief category number given by bb for RadioState */
-    //int catRadioState;
-
-    /** @brief Last RSSI level */
-    //double rssi;
-    /** @brief category number given by bb for RSSI */
-    //int catRSSI;
-
-    /** @brief RSSI level where medium is considered busy */
-    double busyRSSI;
-
-
 
     /** @brief Maximum time between a packet and its ACK
      *
@@ -189,10 +173,6 @@ class  csma : public BaseMacLayer
     simtime_t rxSetupTime;
     /** @brief Time to switch radio from Rx to Tx state */
     simtime_t aTurnaroundTime;
-    /** @ brief minimum IEEE 802.15.4-2006 backoff exponent */
-    int macMinBE;
-    /** @brief maximum IEEE 802.15.4-2006 backoff exponent */
-    int macMaxBE;
     /** @brief maximum number of backoffs before frame drop */
     int macMaxCSMABackoffs;
     /** @brief maximum number of frame retransmissions without ack */
@@ -200,19 +180,30 @@ class  csma : public BaseMacLayer
     /** @brief base time unit for calculating backoff durations */
     simtime_t aUnitBackoffPeriod;
 
+    /** @brief Defines the backoff method to be used.*/
+    backoff_methods backoffMethod;
+
+    /**
+     * @brief Minimum backoff exponent.
+     * Only used for exponential backoff method.
+     */
+	int macMinBE;
+	/**
+	 * @brief Maximum backoff exponent.
+     * Only used for exponential backoff method.
+     */
+	int macMaxBE;
+
+	/** @brief initial contention window size
+	 * Only used for linear and constant backoff method.*/
+	double initialCW;
+
     /** @brief The power (in mW) to transmit with.*/
     double txPower;
 
-
-    /** @brief cached pointer to radio module */
-    //SingleChannelRadioAccNoise3* radio;
-
     /** @brief number of backoff performed until now for current frame */
     int NB;
-    /** @brief current value of backoff exponent for current frame */
-    int BE;
-    /** @brief cached pointer to mobility module */
-    //BasicMobility * mobility;
+
     /** @brief A queue to store packets from upper layer in case another
     packet is still waiting for transmission..*/
     MacQueue macQueue;
@@ -226,14 +217,8 @@ class  csma : public BaseMacLayer
      */
     unsigned int txAttempts;
 
-
     /** @brief the bit rate at which we transmit */
     double bitrate;
-
-    double backoffWindow;
-
-    /** @brief initial contention window size */
-    double initialCW;
 
     /** @brief Inspect reasons for dropped packets */
     DroppedPacket droppedPacket;
@@ -252,7 +237,7 @@ class  csma : public BaseMacLayer
     int macaddress;
 
 
-private:
+protected:
 	// FSM functions
 	void fsmError(t_mac_event event, cMessage *msg);
 	void executeMac(t_mac_event event, cMessage *msg);
@@ -270,9 +255,10 @@ private:
 	void attachSignal(MacPkt* mac, simtime_t startTime);
 	void manageMissingAck(t_mac_event event, cMessage *msg);
 	void startTimer(t_mac_timer timer);
-	double scheduleBackoff();
 
-	cPacket *decapsMsg(MacPkt * macPkt);
+	virtual double scheduleBackoff();
+
+	virtual cPacket *decapsMsg(MacPkt * macPkt);
 	MacPkt * ackMessage;
 
 	//sequence number for sending, map for the general case with more senders

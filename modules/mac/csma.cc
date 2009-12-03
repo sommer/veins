@@ -26,16 +26,15 @@
  **************************************************************************/
 
 #include "csma.h"
-//#include "NicControlType.h"
 #include "FWMath.h"
 #include <cassert>
-#include <Decider802154Narrow.h>
-#include <DeciderResult802154Narrow.h>
+#include <BaseDecider.h>
+//#include <DeciderResult802154Narrow.h>
 #include <BaseArp.h>
 #include <MacToPhyControlInfo.h>
 #include <PhyToMacControlInfo.h>
 #include <SimpleAddress.h>
-#include <Consts802154.h>
+//#include <Consts802154.h>
 
 Define_Module(csma);
 
@@ -52,15 +51,9 @@ void csma::initialize(int stage) {
 		BaseArp* arp = BaseArpAccess().get();
 		macaddress = arp ? arp->myMacAddr(this):getParentModule()->getId();
 
-		//headerLength = par("headerLength");
 		queueLength = par("queueLength");
-		busyRSSI = par("busyRSSI");
 		sifs = par("sifs");
-		macMinBE = par("macMinBE");
-		macMaxBE = par("macMaxBE");
 		transmissionAttemptInterruptedByRx = false;
-		BE = macMinBE;
-		NB = 0;
 		nbTxFrames = 0;
 		nbRxFrames = 0;
 		nbMissedAcks = 0;
@@ -82,24 +75,36 @@ void csma::initialize(int stage) {
 		bitrate = par("bitrate");
 		ackLength = par("ackLength");
 		ackMessage = NULL;
-		initialCW = hasPar("contentionWindow") ? par("contentionWindow") : 3;
-		backoffWindow = initialCW;
+
+		//init parameters for backoff method
+		std::string backoffMethodStr = par("backoffMethod").stdstringValue();
+		if(backoffMethodStr == "exponential") {
+			backoffMethod = EXPONENTIAL;
+			macMinBE = par("macMinBE");
+			macMaxBE = par("macMaxBE");
+		}
+		else {
+			if(backoffMethodStr == "linear") {
+				backoffMethod = LINEAR;
+			}
+			else if (backoffMethodStr == "constant") {
+				backoffMethod = CONSTANT;
+			}
+			else {
+				error("Unknown backoff method \"%s\".\
+					   Use \"constant\", \"linear\" or \"\
+					   \"exponential\".", backoffMethodStr.c_str());
+			}
+			initialCW = par("contentionWindow");
+		}
+		NB = 0;
 
 		txPower = par("txPower").doubleValue();
 
-		//radioState = RadioAccNoise3State::SLEEP;
-		//rssi = 0;
 		droppedPacket.setReason(DroppedPacket::NONE);
 		nicId = getParentModule()->getId();
-		//RadioAccNoise3State cs;
-		//RSSI rs;
-		//catRadioState = bb->subscribe(this, &cs, getParentModule()->getId());
-		//catRSSI = bb->subscribe(this, &rs, getParentModule()->getId());
 
 		catDroppedPacket = utility->getCategory(&droppedPacket);
-
-		// get handle to radio
-		//radio = SingleChannelRadioAccNoise3Access().get();
 
 		// initialize the timers
 		backoffTimer = new cMessage("timer-backoff");
@@ -110,18 +115,9 @@ void csma::initialize(int stage) {
 		txAttempts = 0;
 
 	} else if(stage == 1) {
-		//int channel;
-		//channel = hasPar("defaultChannel") ? par("defaultChannel") : 0;
-		//radio->setActiveChannel(channel);
-		//radio->setBitrate(bitrate);
-		//radio->execute(SingleChannelRadioAccNoise3::ENTER_RX);
 		EV << "queueLength = " << queueLength
-		<< " busyRSSI = " << busyRSSI
 		<< " bitrate = " << bitrate
-		<< " contentionWindow = " << initialCW << endl;
-
-		busyRSSI = FWMath::dBm2mW(busyRSSI);
-		//mobility = check_and_cast<BasicMobility*>(getParentModule()->getParentModule()->getSubmodule("mobility"));
+		<< " backoff method = " << par("backoffMethod").stringValue() << endl;
 
 		EV << "finished csma init stage 1." << endl;
 	}
@@ -203,7 +199,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 			EV<<"(1) FSM State IDLE_1, EV_SEND_REQUEST and [TxBuff avail]: startTimerBackOff -> BACKOFF." << endl;
 			updateMacState(BACKOFF_2);
 			NB = 0;
-			BE = macMinBE;
+			//BE = macMinBE;
 			startTimer(TIMER_BACKOFF);
 		} else {
 			// queue is full, message has to be deleted
@@ -298,7 +294,7 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 }
 
 void csma::attachSignal(MacPkt* mac, simtime_t startTime) {
-	simtime_t duration = (mac->getBitLength() + MAC802154_PHY_HEADER_LENGTH)/bitrate;
+	simtime_t duration = (mac->getBitLength() + phyHeaderLength)/bitrate;
 	Signal* s = createSignal(startTime, duration, txPower, bitrate);
 	MacToPhyControlInfo* cinfo = new MacToPhyControlInfo(s);
 
@@ -310,8 +306,8 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 	case EV_TIMER_CCA:
 	{
 		EV<< "(25) FSM State CCA_3, EV_TIMER_CCA" << endl;
-		double rssi = phy->getChannelState().getRSSI();
-		if(rssi<busyRSSI) {
+		bool isIdle = phy->getChannelState().isIdle();
+		if(isIdle) {
 			EV << "(3) FSM State CCA_3, EV_TIMER_CCA, [Channel Idle]: -> TRANSMITFRAME_4." << endl;
 			updateMacState(TRANSMITFRAME_4);
 			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
@@ -330,7 +326,7 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 			EV << "(7) FSM State CCA_3, EV_TIMER_CCA, [Channel Busy]: "
 			<< " increment counters." << endl;
 			NB = NB+1;
-			BE = std::min(BE+1, macMaxBE);
+			//BE = std::min(BE+1, macMaxBE);
 
 			// decide if we go for another backoff or if we drop the frame.
 			if(NB> macMaxCSMABackoffs) {
@@ -588,7 +584,7 @@ void csma::manageQueue() {
 			// initialize counters if we start a new transmission
 			// cycle from zero
 			NB = 0;
-			BE = macMinBE;
+			//BE = macMinBE;
 		}
 	} else {
 		EV << "(manageQueue) no packets to send, entering IDLE state." << endl;
@@ -630,19 +626,45 @@ void csma::startTimer(t_mac_timer timer) {
 }
 
 double csma::scheduleBackoff() {
-	double d = std::pow((double) 2, (int) BE);
-	int v = (int) d - 1;
-	int r = intuniform(1, v, 0);
-	double value = r * aUnitBackoffPeriod.dbl();
+
+	double backoffTime;
+
+	switch(backoffMethod) {
+	case EXPONENTIAL:
+	{
+		int BE = std::min(macMinBE + NB, macMaxBE);
+		double d = std::pow((double) 2, (int) BE);
+		int v = (int) d - 1;
+		int r = intuniform(1, v, 0);
+		backoffTime = r * aUnitBackoffPeriod.dbl();
+
+		EV<< "(startTimer) backoffTimer value=" << backoffTime
+		<< " (BE=" << BE << ", 2^BE-1= " << v << "r="
+		<< r << ")" << endl;
+		break;
+	}
+	case LINEAR:
+	{
+		int slots = intuniform(1, initialCW + NB, 0);
+		backoffTime = slots * aUnitBackoffPeriod.dbl();
+		EV<< "(startTimer) backoffTimer value=" << backoffTime << endl;
+		break;
+	}
+	case CONSTANT:
+	{
+		int slots = intuniform(1, initialCW, 0);
+		backoffTime = slots * aUnitBackoffPeriod.dbl();
+		EV<< "(startTimer) backoffTimer value=" << backoffTime << endl;
+		break;
+	}
+	default:
+		error("Unknown backoff method!");
+	}
+
 	nbBackoffs = nbBackoffs + 1;
-	backoffValues = backoffValues + value;
-	// this guarantees that we have the time to setup the radio into rx state
-	//value = max(value-rxSetupTime,0);
-	EV<< "(startTimer) backoffTimer value=" << value
-	<< " (BE=" << BE << ", 2^BE-1= " << v << "r="
-	<< r << ")" << endl;
-	value = value + simTime().dbl();
-	return value;
+	backoffValues = backoffValues + backoffTime;
+
+	return backoffTime + simTime().dbl();
 }
 
 /*
@@ -748,7 +770,7 @@ void csma::handleLowerMsg(cMessage *msg) {
 void csma::handleLowerControl(cMessage *msg) {
 	if (msg->getKind() == MacToPhyInterface::TX_OVER) {
 		executeMac(EV_FRAME_TRANSMITTED, msg);
-	} else if (msg->getKind() == Decider802154Narrow::PACKET_DROPPED) {
+	} else if (msg->getKind() == BaseDecider::PACKET_DROPPED) {
 		EV<< "control message: PACKED DROPPED" << endl;
 	} else {
 		EV << "Invalid control message type (type=NOTHING) : name="
@@ -781,13 +803,6 @@ void csma::handleLowerControl(cMessage *msg) {
 
 cPacket *csma::decapsMsg(MacPkt * macPkt) {
 	cPacket * msg = macPkt->decapsulate();
-//OLD: 	double
-//OLD: 			ber =
-//OLD: 					static_cast<RadioAccNoise3PhyControlInfo*> (macPkt->getControlInfo()) ->getBER();
-	PhyToMacControlInfo* cinfo = static_cast<PhyToMacControlInfo*> (macPkt->getControlInfo());
-	const DeciderResult802154Narrow* result = static_cast<const DeciderResult802154Narrow*> (cinfo->getDeciderResult());
-	double ber = result->getBER();
-	//TODO: pass bit error rate with control info to upper layer
 	msg->setControlInfo(new MacControlInfo(macPkt->getSrcAddr()));
 	return msg;
 }

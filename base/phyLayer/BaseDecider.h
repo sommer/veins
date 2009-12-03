@@ -38,6 +38,12 @@
  * @ingroup baseModules
  */
 class BaseDecider: public Decider {
+public:
+	enum BaseDeciderControlKinds {
+		PACKET_DROPPED = 22100,       //the phy has recognized a bit error in the packet
+		LAST_BASE_DECIDER_CONTROL_KIND
+	};
+
 protected:
 	enum SignalState{
 		NEW, 			/** @brief Signal is received the first time. */
@@ -196,17 +202,15 @@ protected:
 	virtual bool canAnswerCSR(const CSRInfo& requestInfo);
 
 	/**
-	 * @brief Calculates the RSSI value for the passed ChannelSenseRequest.
+	 * @brief Calculates the RSSI value for the passed interval.
 	 *
 	 * This method is called by BaseDecider when it answers a ChannelSenseRequest
-	 * and can be overridden by sub classing Deciders.
+	 * or calculates the channel state. Can be overridden by sub classing Deciders.
 	 *
-	 * Default implementation gets start of the request from the passed CSRInfo
-	 * and end of the request from the current simulation time (because the request
-	 * is answered now) and returns the maximum RSSI value inside that
-	 * maximum.
+	 * Default implementation returns the maximum RSSI value inside the
+	 * passed interval.
 	 */
-	virtual double calcChannelSenseRSSI(CSRInfo& requestInfo);
+	virtual double calcChannelSenseRSSI(simtime_t start, simtime_t end);
 
 	/**
 	 * @brief Answers the ChannelSenseRequest (CSR) from the passed CSRInfo.

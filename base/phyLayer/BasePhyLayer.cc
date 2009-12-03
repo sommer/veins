@@ -700,6 +700,11 @@ ChannelState BasePhyLayer::getChannelState() {
 	return decider->getChannelState();
 }
 
+int BasePhyLayer::getPhyHeaderLength() {
+	Enter_Method_Silent();
+	return readPar("headerLength", 0);
+}
+
 //--DeciderToPhyInterface implementation------------
 
 void BasePhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) {

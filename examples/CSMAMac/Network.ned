@@ -1,6 +1,6 @@
 package org.mixim.examples.CSMAMac;
 
-import org.mixim.modules.connectionManager.UnitDisk;
+import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
 
 
@@ -22,7 +22,7 @@ module Network
                 @display("p=100,0;i=misc/globe");
 
         }
-        connectionManager: UnitDisk {
+        connectionManager: ConnectionManager {
             parameters:
                 @display("p=200,0;b=42,42,rect,yellow,,;i=abstract/multicast");
 

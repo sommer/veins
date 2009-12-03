@@ -1094,7 +1094,7 @@ simtime_t Mac80211::timeOut(Mac80211MessageKinds type, double br)
  */
 simtime_t Mac80211::packetDuration(double bits, double br)
 {
-    return bits / br + PHY_HEADER_LENGTH / BITRATE_HEADER;
+    return bits / br + phyHeaderLength / BITRATE_HEADER;
 }
 
 const char *Mac80211::stateName(State state)

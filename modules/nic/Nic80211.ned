@@ -43,6 +43,7 @@ module Nic80211
         }
         
         phy: PhyLayer {
+            headerLength = 192bit;
             @display("p=106,157;i=block/process_s");
         }
 		//radio: SingleChannelRadio;

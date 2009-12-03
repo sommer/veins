@@ -73,6 +73,15 @@ protected:
     /** @brief debug this core module? */
     bool coreDebug;
 
+    /** @brief The length of the phy header (in bits).
+     *
+     * Since the MAC layer has to create the signal for
+     * a transmission it has to know the total length of
+     * the packet and therefore needs the length of the
+     * phy header.
+     */
+    int phyHeaderLength;
+
 public:
     //Module_Class_Members( BaseMacLayer, BaseLayer, 0 );
 

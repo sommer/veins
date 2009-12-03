@@ -72,12 +72,7 @@ simtime_t BaseDecider::processSignalEnd(AirFrame* frame) {
 ChannelState BaseDecider::getChannelState() {
 
 	simtime_t now = phy->getSimTime();
-	Mapping* rssiMap = calculateRSSIMapping(now, now);
-
-	double rssiValue = rssiMap->getValue(Argument(now));
-
-	delete rssiMap;
-	rssiMap = 0;
+	double rssiValue = calcChannelSenseRSSI(now, now);
 
 	return ChannelState(isChannelIdle, rssiValue);
 }
@@ -165,10 +160,7 @@ bool BaseDecider::canAnswerCSR(const CSRInfo& requestInfo)
 								    + requestInfo.first->getSenseTimeout());
 }
 
-double BaseDecider::calcChannelSenseRSSI(CSRInfo& requestInfo) {
-	simtime_t start = requestInfo.second;
-	simtime_t end = phy->getSimTime();
-
+double BaseDecider::calcChannelSenseRSSI(simtime_t start, simtime_t end) {
 	Mapping* rssiMap = calculateRSSIMapping(start, end);
 
 	// the sensed RSSI-value is the maximum value between (and including) the interval-borders
@@ -181,7 +173,7 @@ double BaseDecider::calcChannelSenseRSSI(CSRInfo& requestInfo) {
 
 void BaseDecider::answerCSR(CSRInfo& requestInfo) {
 
-	double rssiValue = calcChannelSenseRSSI(requestInfo);
+	double rssiValue = calcChannelSenseRSSI(requestInfo.second, phy->getSimTime());
 
 	//"findMax()" returns "-DBL_MAX" on empty mappings
 	if (rssiValue < 0)

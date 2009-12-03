@@ -26,7 +26,8 @@ package org.mixim.modules.mac;
 import org.mixim.base.modules.BaseMacLayer;
 
 //
-// IEEE 802.15.4-2006 non-beacon enabled CSMA protocol
+// Generic CSMA protocol supporting Mac-ACKs as well as
+// constant, linear or exponential backoff times.
 //
 simple csma extends BaseMacLayer
 {
@@ -36,8 +37,6 @@ simple csma extends BaseMacLayer
         bool debug = default(false);
         bool stats = default(true);
         bool trace = default(false);
-        // level at which we consider medium busy (in dBm)
-        double busyRSSI @unit(dBm) = default(-97 dBm);
 
         // simple interframe space. Time to wait between receiving a frame and acknowledging it.
         // Should be bigger than the maximum time for switching between Tx and Rx at the receiver.
@@ -46,23 +45,15 @@ simple csma extends BaseMacLayer
         headerLength @unit(bit) = default(72 bit);
         // size of the MAC queue (maximum number of packets in Tx buffer)
         double queueLength = default(100);
-        // default channel 
-        double defaultChannel = default(0);
         // bit rate 
         double bitrate @unit(bps) = default(250000 bps);
         // complete MAC ack message length (in bits) 
         // (! headerLength is not added to this)
-        double ackLength @unit(bit) = default(40 bit);
-        // minimum backoff exponent
-        double macMinBE = default(3);
-        // maximum backoff exponent
-        double macMaxBE = default(8);
+        double ackLength @unit(bit) = default(40 bit);        
         // maximum backoffs
         double macMaxCSMABackoffs = default(5);
         // maximum number of frame retransmission
-        double macMaxFrameRetries = default(3);
-        // base unit for all backoff calculations
-        double aUnitBackoffPeriod @unit(s) = default(0.00032 s);
+        double macMaxFrameRetries = default(3);        
         // time to wait for an acknowledgement after transmitting a unicast frame.
         double macAckWaitDuration @unit(s) = default(0.00056 s);  // 1+12+10+12 symbols
         // Clear Channel Assessment detection time
@@ -73,6 +64,18 @@ simple csma extends BaseMacLayer
         double aTurnaroundTime @unit(s) = default(0.000192 s);    // 12 symbols
         //tx power [mW]
         double txPower @unit(mW);
+        
+        //backoff method to use. constant, linear or exponential
+        string backoffMethod = default("linear");
+        // base unit for all backoff calculations
+        double aUnitBackoffPeriod @unit(s) = default(0.00032 s);
+        // # of backoff periods of the initial contention window
+        // (for linear and constant backoff method only)
+        int contentionWindow = default(2);
+        // minimum backoff exponent (for exponential backoff method only)
+        double macMinBE = default(3);
+        // maximum backoff exponent (for exponential backoff method only)
+        double macMaxBE = default(8);
 
 }
 

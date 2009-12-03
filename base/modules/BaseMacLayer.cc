@@ -41,6 +41,7 @@ void BaseMacLayer::initialize(int stage)
         phy = FindModule<MacToPhyInterface*>::findSubModule(getParentModule());
 
         headerLength= par("headerLength");
+        phyHeaderLength = phy->getPhyHeaderLength();
 
         // The nic id is used as MAC address
         myMacAddr = getParentModule()->getId();

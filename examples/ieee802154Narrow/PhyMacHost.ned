@@ -6,6 +6,7 @@ import org.mixim.base.modules.BaseUtility;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseMobility;
 
+import org.mixim.modules.nic.Nic802154_TI_CC2420;
 
 module PhyMacHost
 {
@@ -32,7 +33,7 @@ module PhyMacHost
             parameters:
                 @display("p=80,132;b=80,30,rect,white");
         }
-        nic: PhyMacNic {
+        nic: Nic802154_TI_CC2420 {
             parameters:
                 @display("b=32,30;p=80,233;i=block/ifcard");
         }

@@ -17,11 +17,6 @@
  * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Karl Wessel(port for MiXiM)
  */
 class Decider802154Narrow: public BaseDecider {
-public:
-	enum Decider802154NarrowControlKinds {
-		PACKET_DROPPED = 22100,       //the phy has recognized a bit error in the packet
-		LAST_DECIDER_802154_NARROW_CONTROL_KIND
-	};
 protected:
 
 

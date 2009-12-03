@@ -63,6 +63,7 @@ module Nic80211Battery
         }
         phy: PhyLayerBattery {
             parameters:
+                headerLength = 192;
                 @display("p=106,157;i=block/process_s");
         }
 //        snrEval: SnrEval80211Battery {

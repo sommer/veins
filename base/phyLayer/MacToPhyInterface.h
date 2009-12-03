@@ -60,6 +60,15 @@ public:
 	 */
 	virtual ChannelState getChannelState() = 0;
 
+	/**
+	 * @brief Returns the length of the phy header in bits.
+	 *
+	 * Since the MAC layer has to create the signal for
+     * a transmission it has to know the total length of
+     * the packet and therefore needs the length of the
+     * phy header.
+	 */
+	virtual int getPhyHeaderLength() = 0;
 };
 
 #endif /*MACTOPHYINTERFACE_H_*/

@@ -69,15 +69,15 @@ protected:
 	bool packetOk(double snirMin, int lengthMPDU, double bitrate);
 
 	/**
-	 * @brief Calculates the RSSI value for the passed ChannelSenseRequest.
+	 * @brief Calculates the RSSI value for the passed interval.
 	 *
 	 * This method is called by BaseDecider when it answers a ChannelSenseRequest
-	 * and can be overridden by sub classing Deciders.
+	 * or calculates the current channel state.
 	 *
-	 * Returns the maximum RSSI value inside the ChannelSenseRequest time
+	 * Returns the maximum RSSI value inside the passed time
 	 * interval and the channel the Decider currently listens to.
 	 */
-	virtual double calcChannelSenseRSSI(CSRInfo& requestInfo);
+	virtual double calcChannelSenseRSSI(simtime_t start, simtime_t end);
 
 public:
 
