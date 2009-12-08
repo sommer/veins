@@ -64,6 +64,8 @@ simple csma extends BaseMacLayer
         double aTurnaroundTime @unit(s) = default(0.000192 s);    // 12 symbols
         //tx power [mW]
         double txPower @unit(mW);
+        // Send/Expect MAC acks for unicast traffic?
+        bool useMACAcks;
         
         //backoff method to use. constant, linear or exponential
         string backoffMethod = default("linear");

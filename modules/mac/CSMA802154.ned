@@ -42,6 +42,7 @@ simple CSMA802154 extends csma
         ccaDetectionTime @unit(s) = default(0.000128 s); // 8 symbols
         aTurnaroundTime @unit(s) = default(0.000192 s);    // 12 symbols
         txPower @unit(mW);
+        useMACAcks = default(true);
         
         backoffMethod = default("exponential");
         aUnitBackoffPeriod @unit(s) = default(0.00032 s);

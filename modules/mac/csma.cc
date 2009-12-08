@@ -51,6 +51,7 @@ void csma::initialize(int stage) {
 		BaseArp* arp = BaseArpAccess().get();
 		macaddress = arp ? arp->myMacAddr(this):getParentModule()->getId();
 
+		useMACAcks = par("useMACAcks").boolValue();
 		queueLength = par("queueLength");
 		sifs = par("sifs");
 		transmissionAttemptInterruptedByRx = false;
@@ -171,16 +172,18 @@ void csma::handleUpperMsg(cMessage *msg) {
 	delete cInfo;
 	macPkt->setSrcAddr(macaddress);
 
-	if(SeqNrParent.find(dest) == SeqNrParent.end()) {
-		//no record of current parent -> add next sequence number to map
-		SeqNrParent[dest] = 1;
-		macPkt->setSequenceId(0);
-		EV << "Adding a new parent to the map of Sequence numbers:" << dest << endl;
-	}
-	else {
-		macPkt->setSequenceId(SeqNrParent[dest]);
-		EV << "Packet send with sequence number = " << SeqNrParent[dest] << endl;
-		SeqNrParent[dest]++;
+	if(useMACAcks) {
+		if(SeqNrParent.find(dest) == SeqNrParent.end()) {
+			//no record of current parent -> add next sequence number to map
+			SeqNrParent[dest] = 1;
+			macPkt->setSequenceId(0);
+			EV << "Adding a new parent to the map of Sequence numbers:" << dest << endl;
+		}
+		else {
+			macPkt->setSequenceId(SeqNrParent[dest]);
+			EV << "Packet send with sequence number = " << SeqNrParent[dest] << endl;
+			SeqNrParent[dest]++;
+		}
 	}
 
 	//RadioAccNoise3PhyControlInfo *pco = new RadioAccNoise3PhyControlInfo(bitrate);
@@ -217,9 +220,11 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 		//sendUp(decapsMsg(static_cast<MacSeqPkt *>(msg)));
 		delete msg;
 		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
-		phy->setRadioState(Radio::TX);
-		updateMacState(WAITSIFS_6);
-		startTimer(TIMER_SIFS);
+		if(useMACAcks) {
+			phy->setRadioState(Radio::TX);
+			updateMacState(WAITSIFS_6);
+			startTimer(TIMER_SIFS);
+		}
 		break;
 
 	case EV_FRAME_RECEIVED:
@@ -227,9 +232,11 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
 		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
-		phy->setRadioState(Radio::TX);
-		updateMacState(WAITSIFS_6);
-		startTimer(TIMER_SIFS);
+		if(useMACAcks) {
+			phy->setRadioState(Radio::TX);
+			updateMacState(WAITSIFS_6);
+			startTimer(TIMER_SIFS);
+		}
 		break;
 
 	case EV_BROADCAST_RECEIVED:
@@ -256,31 +263,40 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 		// suspend current transmission attempt,
 		// transmit ack,
 		// and resume transmission when entering manageQueue()
-		EV << "(28) FSM State BACKOFF, EV_DUPLICATE_RECEIVED:"
-		<< "suspending current transmit tentative and transmitting ack";
-		transmissionAttemptInterruptedByRx = true;
-		cancelEvent(backoffTimer);
+		EV << "(28) FSM State BACKOFF, EV_DUPLICATE_RECEIVED:";
+		if(useMACAcks) {
+			EV << "suspending current transmit tentative and transmitting ack";
+			transmissionAttemptInterruptedByRx = true;
+			cancelEvent(backoffTimer);
+			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
+			phy->setRadioState(Radio::TX);
+			updateMacState(WAITSIFS_6);
+			startTimer(TIMER_SIFS);
+		} else {
+			EV << "Nothing to do.";
+		}
 		//sendUp(decapsMsg(static_cast<MacSeqPkt *>(msg)));
 		delete msg;
-		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
-		phy->setRadioState(Radio::TX);
-		updateMacState(WAITSIFS_6);
-		startTimer(TIMER_SIFS);
+
 		break;
 	case EV_FRAME_RECEIVED:
 		// suspend current transmission attempt,
 		// transmit ack,
 		// and resume transmission when entering manageQueue()
-		EV << "(28) FSM State BACKOFF, EV_FRAME_RECEIVED:"
-		<< "suspending current transmit tentative and transmitting ack";
-		transmissionAttemptInterruptedByRx = true;
-		cancelEvent(backoffTimer);
+		EV << "(28) FSM State BACKOFF, EV_FRAME_RECEIVED:";
+		if(useMACAcks) {
+			EV << "suspending current transmit tentative and transmitting ack";
+			transmissionAttemptInterruptedByRx = true;
+			cancelEvent(backoffTimer);
+			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
+			phy->setRadioState(Radio::TX);
+			updateMacState(WAITSIFS_6);
+			startTimer(TIMER_SIFS);
+		} else {
+			EV << "sending frame up and resuming normal operation.";
+		}
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
-		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
-		phy->setRadioState(Radio::TX);
-		updateMacState(WAITSIFS_6);
-		startTimer(TIMER_SIFS);
 		break;
 	case EV_BROADCAST_RECEIVED:
 		EV << "(29) FSM State BACKOFF, EV_BROADCAST_RECEIVED:"
@@ -350,35 +366,44 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 		break;
 	}
 	case EV_DUPLICATE_RECEIVED:
-		EV << "(26) FSM State CCA_3, EV_DUPLICATE_RECEIVED:"
-		<< " setting up radio tx -> WAITSIFS." << endl;
-		// suspend current transmission attempt,
-		// transmit ack,
-		// and resume transmission when entering manageQueue()
-		transmissionAttemptInterruptedByRx = true;
-		cancelEvent(ccaTimer);
-		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
+		EV << "(26) FSM State CCA_3, EV_DUPLICATE_RECEIVED:";
+		if(useMACAcks) {
+			EV << " setting up radio tx -> WAITSIFS." << endl;
+			// suspend current transmission attempt,
+			// transmit ack,
+			// and resume transmission when entering manageQueue()
+			transmissionAttemptInterruptedByRx = true;
+			cancelEvent(ccaTimer);
+
+			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
+			phy->setRadioState(Radio::TX);
+			updateMacState(WAITSIFS_6);
+			startTimer(TIMER_SIFS);
+		} else {
+			EV << " Nothing to do." << endl;
+		}
+		//sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
-		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
-		phy->setRadioState(Radio::TX);
-		updateMacState(WAITSIFS_6);
-		startTimer(TIMER_SIFS);
 		break;
 
 	case EV_FRAME_RECEIVED:
-		EV << "(26) FSM State CCA_3, EV_FRAME_RECEIVED:"
-		<< " setting up radio tx -> WAITSIFS." << endl;
-		// suspend current transmission attempt,
-		// transmit ack,
-		// and resume transmission when entering manageQueue()
-		transmissionAttemptInterruptedByRx = true;
-		cancelEvent(ccaTimer);
+		EV << "(26) FSM State CCA_3, EV_FRAME_RECEIVED:";
+		if(useMACAcks) {
+			EV << " setting up radio tx -> WAITSIFS." << endl;
+			// suspend current transmission attempt,
+			// transmit ack,
+			// and resume transmission when entering manageQueue()
+			transmissionAttemptInterruptedByRx = true;
+			cancelEvent(ccaTimer);
+			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
+			phy->setRadioState(Radio::TX);
+			updateMacState(WAITSIFS_6);
+			startTimer(TIMER_SIFS);
+		} else {
+			EV << " Nothing to do." << endl;
+		}
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
-		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
-		phy->setRadioState(Radio::TX);
-		updateMacState(WAITSIFS_6);
-		startTimer(TIMER_SIFS);
 		break;
 	case EV_BROADCAST_RECEIVED:
 		EV << "(24) FSM State BACKOFF, EV_BROADCAST_RECEIVED:"
@@ -398,17 +423,24 @@ void csma::updateStatusTransmitFrame(t_mac_event event, cMessage *msg) {
 		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_RX);
 		phy->setRadioState(Radio::RX);
 
+		bool expectAck = useMACAcks;
 		if (packet->getDestAddr() != L2BROADCAST) {
 			//unicast
-			EV<< "(4) FSM State TRANSMITFRAME_4, "
-			<< "EV_FRAME_TRANSMITTED [Unicast]: RadioSetupRx "
-			<< " -> WAITACK." << endl;
-			updateMacState(WAITACK_5);
-			startTimer(TIMER_RX_ACK);
+			EV << "(4) FSM State TRANSMITFRAME_4, "
+			   << "EV_FRAME_TRANSMITTED [Unicast]: ";
 		} else {
 			//broadcast
 			EV << "(27) FSM State TRANSMITFRAME_4, EV_FRAME_TRANSMITTED "
-			<< " [Broadcast]: RadioSetupRx, manageQueue..." << endl;
+			   << " [Broadcast]";
+			expectAck = false;
+		}
+
+		if(expectAck) {
+			EV << "RadioSetupRx -> WAITACK." << endl;
+			updateMacState(WAITACK_5);
+			startTimer(TIMER_RX_ACK);
+		} else {
+			EV << ": RadioSetupRx, manageQueue..." << endl;
 			macQueue.pop_front();
 			delete packet;
 			manageQueue();
@@ -419,6 +451,8 @@ void csma::updateStatusTransmitFrame(t_mac_event event, cMessage *msg) {
 }
 
 void csma::updateStatusWaitAck(t_mac_event event, cMessage *msg) {
+	assert(useMACAcks);
+
 	cMessage * mac;
 	switch (event) {
 	case EV_ACK_RECEIVED:
@@ -473,6 +507,8 @@ void csma::manageMissingAck(t_mac_event event, cMessage *msg) {
 	manageQueue();
 }
 void csma::updateStatusSIFS(t_mac_event event, cMessage *msg) {
+	assert(useMACAcks);
+
 	switch (event) {
 	case EV_TIMER_SIFS:
 		EV<< "(17) FSM State WAITSIFS_6, EV_TIMER_SIFS:"
@@ -503,6 +539,8 @@ void csma::updateStatusSIFS(t_mac_event event, cMessage *msg) {
 }
 
 void csma::updateStatusTransmitAck(t_mac_event event, cMessage *msg) {
+	assert(useMACAcks);
+
 	if (event == EV_FRAME_TRANSMITTED) {
 		EV<< "(19) FSM State TRANSMITACK_7, EV_FRAME_TRANSMITTED:"
 		<< " ->manageQueue." << endl;
@@ -615,9 +653,11 @@ void csma::startTimer(t_mac_timer timer) {
 		<< "," << ccaDetectionTime <<")." << endl;
 		scheduleAt(simTime()+rxSetupTime+ccaDetectionTime, ccaTimer);
 	} else if (timer==TIMER_SIFS) {
+		assert(useMACAcks);
 		EV << "(startTimer) sifsTimer value=" << sifs << endl;
 		scheduleAt(simTime()+sifs, sifsTimer);
 	} else if (timer==TIMER_RX_ACK) {
+		assert(useMACAcks);
 		EV << "(startTimer) rxAckTimer value=" << macAckWaitDuration << endl;
 		scheduleAt(simTime()+macAckWaitDuration, rxAckTimer);
 	} else {
@@ -693,7 +733,6 @@ void csma::handleLowerMsg(cMessage *msg) {
 	MacPkt *macPkt = static_cast<MacPkt *> (msg);
 	long src = macPkt->getSrcAddr();
 	long dest = macPkt->getDestAddr();
-	long SeqNr = macPkt->getSequenceId();
 	long ExpectedNr = 0;
 
 	EV<< "Received frame name= " << macPkt->getName()
@@ -703,60 +742,70 @@ void csma::handleLowerMsg(cMessage *msg) {
 
 	if(macPkt->getDestAddr() == macaddress)
 	{
-		if(strcmp(macPkt->getName(), "CSMA-Ack")) {
-			// This is a data message addressed to us
-			// and we should send an ack.
-			// we build the ack packet here because we need to
-			// copy data from macPkt (src).
-			EV << "Received a data packet addressed to me,"
-			<< " preparing an ack..." << endl;
+		if(!useMACAcks) {
+			EV << "Received a data packet addressed to me." << endl;
 			nbRxFrames++;
-			if(ackMessage != NULL)
-				delete ackMessage;
-			ackMessage = new MacPkt("CSMA-Ack");
-			ackMessage->setSrcAddr(macaddress);
-			ackMessage->setDestAddr(macPkt->getSrcAddr());
-			ackMessage->setBitLength(ackLength);
-			//OLD: RadioAccNoise3PhyControlInfo *pco = new RadioAccNoise3PhyControlInfo(bitrate);
-			//OLD: ackMessage->setControlInfo(pco);
+			executeMac(EV_FRAME_RECEIVED, macPkt);
+		}
+		else {
+			long SeqNr = macPkt->getSequenceId();
 
-			//Check for duplicates by checking expected seqNr of sender
-			if(SeqNrChild.find(src) == SeqNrChild.end()) {
-				//no record of current child -> add expected next number to map
-				SeqNrChild[src] = SeqNr + 1;
-				EV << "Adding a new child to the map of Sequence numbers:" << src << endl;
-				executeMac(EV_FRAME_RECEIVED, macPkt);
-			}
-			else {
-				ExpectedNr = SeqNrChild[src];
-				EV << "Expected Sequence number is " << ExpectedNr <<
-				" and number of packet is " << SeqNr << endl;
-				if(SeqNr < ExpectedNr) {
-					//Duplicate Packet, count and do not send to upper layer
-					nbDuplicates++;
-					executeMac(EV_DUPLICATE_RECEIVED, macPkt);
-				}
-				else {
+			if(strcmp(macPkt->getName(), "CSMA-Ack") != 0) {
+				// This is a data message addressed to us
+				// and we should send an ack.
+				// we build the ack packet here because we need to
+				// copy data from macPkt (src).
+				EV << "Received a data packet addressed to me,"
+				   << " preparing an ack..." << endl;
+
+				nbRxFrames++;
+
+				if(ackMessage != NULL)
+					delete ackMessage;
+				ackMessage = new MacPkt("CSMA-Ack");
+				ackMessage->setSrcAddr(macaddress);
+				ackMessage->setDestAddr(macPkt->getSrcAddr());
+				ackMessage->setBitLength(ackLength);
+				//OLD: RadioAccNoise3PhyControlInfo *pco = new RadioAccNoise3PhyControlInfo(bitrate);
+				//OLD: ackMessage->setControlInfo(pco);
+				//Check for duplicates by checking expected seqNr of sender
+				if(SeqNrChild.find(src) == SeqNrChild.end()) {
+					//no record of current child -> add expected next number to map
 					SeqNrChild[src] = SeqNr + 1;
+					EV << "Adding a new child to the map of Sequence numbers:" << src << endl;
 					executeMac(EV_FRAME_RECEIVED, macPkt);
 				}
+				else {
+					ExpectedNr = SeqNrChild[src];
+					EV << "Expected Sequence number is " << ExpectedNr <<
+					" and number of packet is " << SeqNr << endl;
+					if(SeqNr < ExpectedNr) {
+						//Duplicate Packet, count and do not send to upper layer
+						nbDuplicates++;
+						executeMac(EV_DUPLICATE_RECEIVED, macPkt);
+					}
+					else {
+						SeqNrChild[src] = SeqNr + 1;
+						executeMac(EV_FRAME_RECEIVED, macPkt);
+					}
+				}
 
-			}
+			} else if(macQueue.size() != 0) {
 
-		} else if(macQueue.size() != 0) {
-			// message is an ack, and it is for us.
-			// Is it from the right node ?
-			MacPkt * firstPacket = static_cast<MacPkt *>(macQueue.front());
-			if(macPkt->getSrcAddr() == firstPacket->getDestAddr()) {
-				nbRecvdAcks++;
-				executeMac(EV_ACK_RECEIVED, macPkt);
+				// message is an ack, and it is for us.
+				// Is it from the right node ?
+				MacPkt * firstPacket = static_cast<MacPkt *>(macQueue.front());
+				if(macPkt->getSrcAddr() == firstPacket->getDestAddr()) {
+					nbRecvdAcks++;
+					executeMac(EV_ACK_RECEIVED, macPkt);
+				} else {
+					EV << "Error! Received an ack from an unexpected source: src=" << macPkt->getSrcAddr() << ", I was expecting from node addr=" << firstPacket->getDestAddr() << endl;
+					delete macPkt;
+				}
 			} else {
-				EV << "Error! Received an ack from an unexpected source: src=" << macPkt->getSrcAddr() << ", I was expecting from node addr=" << firstPacket->getDestAddr() << endl;
+				EV << "Error! Received an Ack while my send queue was empty. src=" << macPkt->getSrcAddr() << "." << endl;
 				delete macPkt;
 			}
-		} else {
-			EV << "Error! Received an Ack while my send queue was empty. src=" << macPkt->getSrcAddr() << "." << endl;
-			delete macPkt;
 		}
 	}
 	else if (dest == L2BROADCAST) {

@@ -179,6 +179,8 @@ class  csma : public BaseMacLayer
     unsigned int macMaxFrameRetries;
     /** @brief base time unit for calculating backoff durations */
     simtime_t aUnitBackoffPeriod;
+    /** @brief Stores if the MAC expects Acks for Unicast packets.*/
+    bool useMACAcks;
 
     /** @brief Defines the backoff method to be used.*/
     backoff_methods backoffMethod;
