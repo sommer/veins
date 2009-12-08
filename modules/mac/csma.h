@@ -39,7 +39,7 @@
 #include "MacControlInfo.h"
 
 /**
- * @brief Generic CSMA Mac layer.
+ * @brief Generic CSMA Mac-Layer.
  *
  * Supports constant, linear and exponential backoffs as well as
  * MAC ACKs.
@@ -47,6 +47,8 @@
  * @class csma
  * @ingroup macLayer
  * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Yosia Hadisusanto, Andreas Koepke
+ *
+ * \image html csmaFSM.png "CSMA Mac-Layer - finite state machine"
  */
 class  csma : public BaseMacLayer
 {
