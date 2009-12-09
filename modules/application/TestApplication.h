@@ -3,7 +3,7 @@
 
 #include <omnetpp.h>
 #include "BaseModule.h"
-#include "MacToPhyInterface.h"
+#include "BaseMacLayer.h"
 #include "MacToPhyControlInfo.h"
 #include "MacControlInfo.h"
 #include "NetwControlInfo.h"

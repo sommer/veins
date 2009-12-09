@@ -136,7 +136,7 @@ void TestApplication::handleMessage(cMessage * msg) {
     } else if (msg->getArrivalGateId() == ctrlIn) {
         EV << "Received a control message." << endl;
         // msg announces end of transmission.
-        if (msg->getKind() ==MacToPhyInterface::TX_OVER) {
+        if (msg->getKind() ==BaseMacLayer::TX_OVER) {
         	isTransmitting = false;
             if (remainingPackets > 0 && flood && !delayTimer->isScheduled()) {
                 scheduleAt(simTime() + 0.001*001 + uniform(0, 0.001*0.001), delayTimer);
