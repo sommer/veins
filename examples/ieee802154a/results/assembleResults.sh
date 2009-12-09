@@ -11,7 +11,7 @@ params=(packetsBER success successNoRS)
 # associative arrays
 declare -A vectors
 declare -A defaults
-cfg=flury07
+cfg=BERDistance
 expectedNbLines=1000  # expected number of lines per run
 
 # retrieve vector numbers
