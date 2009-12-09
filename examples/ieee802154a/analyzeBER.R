@@ -13,11 +13,11 @@
 #channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos")
 #distances <- c(1:10, seq(10, 20, 2), seq(25, 50, 5))
 #packetSizes <- c("8 bytes", "16 bytes", "32 bytes", "64 bytes", "128 bytes") # , 128
-channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos", "cm1", "cm2", "cm5") #, "cm1", "cm2", "cm5")
+channels <- c("ghassemzadeh-los", "ghassemzadeh-nlos", "cm1", "cm2") #, "cm1", "cm2", "cm5")
 distances <- c(seq(1, 5, 1), 7.5, seq(10, 30, 5))
 packetSizes <- c("7 bytes", "31 bytes", "127 bytes") 
 #packetSizes <- c("7 bytes", "31 bytes")
-
+noAkaFields <- c("Average BER", "nbReceivedPacketsRS", "nbReceivedPacketsnoRS")
 measures <- c("Packet Success Rate (R-S)", "Packet Success Rate (No R-S)", "Bit error rate")
 
 outputFiles <- c("PSR_Distance_RS.png", "PSR_Distance_NoRS.png", "BER_Distance.png")
@@ -78,6 +78,12 @@ loadData <- function(param) {
   data
 }
 
+loadDataNoAkaroa <- function(param) {
+  fileName <- paste(sep="", paste(sep="-", "BERDistance", param), ".csv")
+  data <- read.table(fileName, header=FALSE)
+  data$V1
+}
+
 plotPSR <- function(psr, line) {
   par(las=1)
   #par("cex.main"=titleSize)
@@ -121,14 +127,13 @@ plotPSR <- function(psr, line) {
 # from http://lmdvr.r-forge.r-project.org/figures/figures.html Figure 8.4
 yscale.components.log10 <- function(lim, ...) {
     ans <- yscale.components.default(lim = lim, ...)
-    tick.at.major <- c(0.001, 0.01, 0.1, 0.25, 0.5, 1) # seq(0.1, 1, 0.1) # c(0.25, 0.5, 0.75, 1) # seq(0.2, 1, 0.2)
-    ans$left$labels$labels <- c("0.001", "0.01", "0.1", "0.25", "0.5", "1")#tick.at.major
+    tick.at.major <- c(0.001, 0.01, 0.1, 1) # seq(0.1, 1, 0.1) # c(0.25, 0.5, 0.75, 1) # seq(0.2, 1, 0.2)
+    ans$left$labels$labels <- c("10⁻³", "10⁻²", "10⁻¹", "1") #tick.at.major
     ans$left$labels$at <- log(tick.at.major, 10)
     ans$left$ticks$tck <- 1.5
     ans$left$ticks$at  <- log(tick.at.major, 10)
     ans
 }
-
 
 gridPanel <- function(...) {
   panel.grid(h=-1, v=-1, col="grey")       
@@ -136,9 +141,10 @@ gridPanel <- function(...) {
 }
 
 latticePSRPlot <- function(data) {
+  textSize <- 3
 #  lattice.options(default.theme = col.whitebg)#canonical.theme(color = TRUE), new=TRUE)
   trellis.device(device=png, theme=col.whitebg)
-  png(filename="PSR-Distance_Lattice-%d.png", width=2048, height=1536) #, bg="transparent")
+  png(filename="PSR-Distance_Lattice-%d.png", width=1280, height=1024) # width=2048, height=1536) #, bg="transparent")
   theFigure <- xyplot(
     perRS + perNoRS ~ distances | packetSizes*channels, data=data, 
     type="b",
@@ -146,7 +152,7 @@ latticePSRPlot <- function(data) {
     ylab = list(label="Packet Error Rate", cex=textSize),
 	#    ylim= c(0, 1),
 #    cex = textSize,
-    par.settings = simpleTheme(pch=c("O", "+"), cex=4, lwd=4),
+    par.settings = simpleTheme(pch=c(15, 16), cex=3, lwd=4),
     par.strip.text=list(cex=textSize),
 #    prepanel=prepanel.loess,
 	#    panel=panel.loess,
@@ -166,6 +172,7 @@ latticePSRPlot <- function(data) {
    )
   print(theFigure)
   dev.off()
+  dev.off()
 }
 
 latticePSREfficiency <- function(psrFrame) {
@@ -174,7 +181,7 @@ latticePSREfficiency <- function(psrFrame) {
 		data=psrFrame, 
 		type="b",
 		as.table=T,
-	        layout = c(3, 2, 3),
+	        layout = c(2, 2, 3),
 		scales=list(x=list(log=10), y=list(log=10), cex=textSize), 
 #		xlab = list(label="Distance (meters)", cex=textSize),
     		ylab = list(label="Bit Error Rate", cex=textSize),
@@ -190,22 +197,19 @@ latticePSREfficiency <- function(psrFrame) {
 latticeBER <- function(psrFrame) {
 #  textSize = textSize + 1
   trellis.device(device=png, theme=col.whitebg)
-  png("BER-lattice.png", width=2048, height=1536)
+  png("BER-lattice.png", width=1024, height=768) #width=2048, height=1536)
+  data127 <- subset(psrFrame, psrFrame$packetSizes=="127 bytes")
   theFigure <- xyplot( ber ~ distances | channels, 
-	data=psrFrame,
-	type="p",
+	data=data127,
+	type="o",
 	as.table=T,
-	xlab= list(label="Distance (meters)", cex=textSize),
-  	ylab = list(label="Bit Error Rate", cex=textSize),
-        par.settings = simpleTheme(pch=19, cex=4, lwd=2),
-	par.strip.text=list(cex=textSize),
+	xlab= list(label="Distance (meters)", cex=2.5),
+  	ylab = list(label="Bit Error Rate", cex=2.5),
+        par.settings = simpleTheme(pch=19, cex=2, lwd=2),
+	par.strip.text=list(cex=2.5),
 	panel=gridPanel,
-	layout = c(3, 2),
-	scales = list(y=list(log = 10), cex=textSize), 
-
-#        par.strip.text=list(cex=textSize),
-#	cex=textSize,
-
+	layout = c(2, 2),
+	scales = list(y=list(log = 10), cex=2), 
 	yscale.components = yscale.components.log10
 	)
   print(theFigure)
@@ -213,39 +217,15 @@ latticeBER <- function(psrFrame) {
 }
 
 plotAll <-function() {
-  psrRS <- loadData(1)
-  psrNoRS <- loadData(2)
   psrFrame <- expand.grid(distances=distances, channels=channels, packetSizes=packetSizes) 
-  psrFrame$psrRS <- psrRS$Estimate
-  psrFrame$perRS <- 1 - psrRS$Estimate
-  psrFrame$psrNoRS <- psrNoRS$Estimate
-  psrFrame$perNoRS <- 1 - psrNoRS$Estimate
+  # no akaroa
+  psrFrame$ber <- loadDataNoAkaroa(noAkaFields[1]) 
+  psrFrame$psrRS <- loadDataNoAkaroa(noAkaFields[2]) / 1000 
+  psrFrame$psrNoRS <- loadDataNoAkaroa(noAkaFields[3]) / 1000
+  psrFrame$perRS <- 1 - psrFrame$psrRS
+  psrFrame$perNoRS <- 1 - psrFrame$psrNoRS
   psrFrame$RSEfficiency <- (psrFrame$psrRS - psrFrame$psrNoRS) / psrFrame$psrNoRS
-  psrFrame$ber <- loadData(3)$Estimate
-
   latticePSRPlot(psrFrame)
-
-#  latticePSREfficiency(psrFrame)
-
   latticeBER(psrFrame)
-
-#  png(outputFiles[1], width=1024, height=768)
-#  plotPSR(psrRS, 1)
-#  noise <- loadData(7)
-#  psrFrame$noise <- noise$Estimate
-#  pathloss <- loadData(5)
-#  psrFrame$pathloss <- pathloss$Estimate
-#  pulsePower <- 1E-3 # 0 dBm peak EIRP
-#  psrFrame$EbN0 <- 10*log10(pulsePower*psrFrame$pathloss  / psrFrame$noise)
-#  X11()
-#  xyplot(perRS + perNoRS ~ EbN0 | channels, data=psrFrame, table=T)
-#  X11()
-#  plot(perRS ~ EbN0 , data=psrFrame, log="y", xlab="Eb/N0 (dB)", ylab="Packet Error Rate")
-#  grid()
-  #  png(outputFiles[2], width=800, height=600)
-  #  plotPSR(psrNoRS)
-  #  ber <- loadData(3)
-  #  png(outputFiles[3], width=800, height=600)
-  #  plotBER(ber)
 }
 

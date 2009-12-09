@@ -1,4 +1,10 @@
 #!/usr/bin/R
+#
+# (C) 2009 Jérôme Rousselot, CSEM SA Neuchâtel, Switzerland.
+# This script plots data representing the impact of
+# MAI on UWB-IR networks.
+#
+
 
 # call
 #png("psr_mai.png", width=1280, height=1024)
@@ -7,8 +13,9 @@
 # after to output to a file.
 
 # Parameters
-channels <- c("ghassemzadeh-los",  "ghassemzadeh-nlos", "cm1", "cm2", "cm5")
-interferers <- 1:9
+channels <- c("ghassemzadeh-los",  "ghassemzadeh-nlos", "cm1", "cm2")
+interferers <- 1:3
+packetSizes <- c(7, 31)
 
 # annotations
 #title="Robustness of IEEE 802.15.4A UWB-IR to Multiple Access Interference"

@@ -38,29 +38,33 @@ EbN0Values <- c(EbN0Values, -5)
 perRSValues <- c( 1, 1,  1,  1,  1, 0.325, 0.01, 0.01)
 EbN0Values  <- c(-6, 0, 10, 12, 14,    16,   18, 20)
 # binSize = 1
-perRSValues <- c( 1, 1,  1, 1,   1,  1,  1, 0.64, 0.01, 0.01, 0.01, 0.01)
+perRSValues <- c( 1, 1,  1, 1,   1,  1,  1, 0.64, 0.001, 0.001, 0.001, 0.001)
 EbN0Values  <- c(-6, 0, 10, 11, 12, 13, 14,   15,  16,    18,   19, 21)
 par(mar= c(5, 6, 4, 2) + 0.1)
 
 plot(c(0, 20),  c(1, 1E-3), type="n", las=1, xlab="Eb/N0 (dB)", ylab="", 
-	cex.lab=2, cex.axis=2, cex=2, log="y", lwd=lineWidth) # setup figure
+	cex.lab=2, axes=FALSE, cex=2, log="y", lwd=lineWidth) # setup figure
 #lines(EbN0Values, 1-psrNoRSValues, type="b", col="darkblue", pch=21, cex=symbolSize, lwd=lineWidth)
 #lines(EbN0Values, 1-psrRSValues, type="b", col="darkgreen", pch=22, cex=symbolSize, lwd=lineWidth)
-lines(EbN0Values, perRSValues, type="b", col="darkgreen", pch=22, cex=symbolSize, lwd=lineWidth)
 
-lines(epflEbN0, epflPER_EDoptNoDrift, type="l", col="black",  cex=symbolSize, lwd=lineWidth)
 grid(col="grey")
-lines(epflEbN0, epflPER_EDfixDrift,  type="b", pch=23, col="darkorange", cex=symbolSize, lwd=lineWidth)
-lines(c(17, 17), c(1, 1E-4), lty=5, type="l", col="darkred", cex=symbolSize, lwd=lineWidth)
+lines(EbN0Values, perRSValues, type="b", col="darkgreen", pch=15, cex=symbolSize, lwd=lineWidth)
+lines(epflEbN0, epflPER_EDoptNoDrift, type="l", col="black",  cex=symbolSize, lwd=lineWidth)
+lines(epflEbN0, epflPER_EDfixDrift,  type="b", pch=16, col="darkorange", cex=symbolSize, lwd=lineWidth) #23
+
+lines(c(17, 17), c(1.5, 1E-4), lty=5, type="l", col="darkred", cex=symbolSize, lwd=lineWidth)
 mtext("Packet Error Rate", side=3, line=1, adj=0, cex=2, lwd=lineWidth)
 legend(x="bottomright",legend=c("CSEM MiXiM MPAE",
 				"CEA Analytical SNR Limit",
 				"EPFL MATLAB EDfix",
 				"EPFL MATLAB EDOpt"
 				),
-	lty=c(0, 5, 0, 1), # a line only for the last one
+	lty=c(1, 5, 1, 1), 
 	col=c("darkgreen", "darkred", "darkorange", "black"),
-	pch=c(22,NA_integer_,23,NA_integer_), # no symbol for third and last ones
+	pch=c(15, NA_integer_, 16, NA_integer_), # no symbol for third and last ones
 	cex=2, pt.cex=symbolSize, lwd=lineWidth)
+axis(1, at=seq(0,20,5), cex.axis=2)
+axis(2, las=1, at=c(1, 0.1, 0.01, 0.001), cex.axis=2, lab=c("1", "10⁻¹", "10⁻²", "10⁻³"))
+box()
 dev.off()
 
