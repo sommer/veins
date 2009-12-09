@@ -142,7 +142,7 @@ protected:
 
     const Move* move;
     TimeMapping<Linear>* newTxPower;
-    Mapping* txPower;
+    ConstMapping* txPower;
     Argument arg;
     MappingIterator* pulsesIter;
     // number of clusters

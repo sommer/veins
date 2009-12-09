@@ -97,7 +97,7 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet) {
 	int nbSymbols = data->size();
 	if (trace) {
 		int nbItems = 0;
-		Mapping* power = theSignal->getTransmissionPower();
+		ConstMapping* power = theSignal->getTransmissionPower();
 		ConstMappingIterator* iter = power->createConstIterator();
 		iter->jumpToBegin();
 		while (iter->hasNext()) {
