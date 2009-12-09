@@ -36,7 +36,6 @@ BaseModule::BaseModule():
  */
 void BaseModule::initialize(int stage) {
     if (stage == 0) {
-<<<<<<< HEAD:base/modules/BaseModule.cc
     	notAffectedByHostState = 	hasPar("notAffectedByHostState")
 								 && par("notAffectedByHostState").boolValue();
 
