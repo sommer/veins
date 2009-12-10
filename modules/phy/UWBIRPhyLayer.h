@@ -62,6 +62,7 @@ protected:
 
     UWBIRStochasticPathlossModel* uwbpathloss;
     UWBIRIEEE802154APathlossModel* ieee802154AChannel;
+    UWBIREnergyDetectionDeciderV2* uwbdecider;
 
     virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
 
@@ -84,6 +85,8 @@ protected:
     	_radio->finishReceivingFrame(simTime());
     }
 
+
+    virtual simtime_t setRadioState(int rs);
 
 };
 

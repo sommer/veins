@@ -76,12 +76,13 @@ public:
 	UWBIREnergyDetectionDeciderV2(DeciderToPhyInterface* iface,
 			UWBIRPhyLayer* _uwbiface,
 			double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
-			bool _trace) :
+			bool _trace, bool alwaysFailOnDataInterference=false) :
 		Decider(iface), trace(_trace),
 				stats(_stats), nbRandomBits(0), nbFailedSyncs(0),
 				nbSuccessfulSyncs(0), nbSymbols(0), syncThreshold(_syncThreshold),
 				syncAlwaysSucceeds(_syncAlwaysSucceeds), uwbiface(_uwbiface), tracking(0),
-				channelSensing(false), synced(false), vsignal2(0), vnoise2(0), snirEvals(0), pulseSnrs(0) {
+				channelSensing(false), synced(false), vsignal2(0), vnoise2(0), snirEvals(0), pulseSnrs(0),
+				alwaysFailOnDataInterference(alwaysFailOnDataInterference) {
 
 		zerosEnergies.setName("ZerosEnergies");
 		onesEnergies.setName("OnesEnergies");
@@ -131,6 +132,8 @@ public:
 		return inducedPower;
 	}
 
+	void cancelReception();
+
 protected:
 	map<Signal*, int> currentSignals;
 	cOutVector zerosEnergies, onesEnergies, decisionVariable, packetDecisionAvg, signalLengths,
@@ -148,6 +151,7 @@ protected:
 
 	bool channelSensing;
 	bool synced;
+	bool alwaysFailOnDataInterference;
 
 	vector<ConstMapping*> receivingPowers;
 	ConstMapping* signalPower; // = signal->getReceivingPower();
@@ -159,7 +163,7 @@ protected:
 
 	typedef ConcatConstMapping<std::multiplies<double> > MultipliedMapping;
 
-	void decodePacket(Signal* signal, vector<bool> * receivedBits);
+	bool decodePacket(Signal* signal, vector<bool> * receivedBits);
 	simtime_t handleNewSignal(Signal* s);
 	simtime_t handleHeaderOver(map<Signal*, int>::iterator& it);
 	virtual bool attemptSync(Signal* signal);

@@ -43,7 +43,7 @@ public:
 	UWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
 				UWBIRPhyLayer* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
-				bool _trace, int _addr);
+				bool _trace, int _addr, bool alwaysFailOnDataInterference);
 
 	virtual bool attemptSync(Signal* signal);
 

@@ -70,6 +70,7 @@ void UWBIRPhyLayer::initialize(int stage) {
 
 }
 
+
 AnalogueModel* UWBIRPhyLayer::getAnalogueModelFromName(std::string name,
 		ParameterMap& params) {
 	if (name == "UWBIRStochasticPathlossModel")
@@ -201,6 +202,14 @@ Decider* UWBIRPhyLayer::getDeciderFromName(std::string name, ParameterMap& param
 	}
 	syncAlwaysSucceeds = it->second.boolValue();
 
+	bool alwaysFailOnDataInterference;
+	it = params.find("alwaysFailOnDataInterference");
+	if (it == params.end()) {
+		alwaysFailOnDataInterference = false;
+	} else {
+	  alwaysFailOnDataInterference = it->second.boolValue();
+	}
+
 	if (name == "UWBIREDSyncOnAddress") {
 		int addr;
 		it = params.find("addr");
@@ -209,8 +218,8 @@ Decider* UWBIRPhyLayer::getDeciderFromName(std::string name, ParameterMap& param
 					"Could not find required int parameter <addr> in the decider xml configuration file.");
 		}
 		addr = it->second.longValue();
-		return new UWBIREDSyncOnAddress(this, this, syncThreshold,
-				syncAlwaysSucceeds, stats, trace, addr);
+		uwbdecider = new UWBIREDSyncOnAddress(this, this, syncThreshold,
+				syncAlwaysSucceeds, stats, trace, addr, alwaysFailOnDataInterference);
 	}
 
 	if (name == "UWBIREDSync") {
@@ -221,13 +230,13 @@ Decider* UWBIRPhyLayer::getDeciderFromName(std::string name, ParameterMap& param
 					"Could not find required double parameter <syncMinDuration> in the decider xml configuration file.");
 		}
 		tmin = it->second.doubleValue();
-		return new UWBIREDSync(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace, tmin);
+		uwbdecider = new UWBIREDSync(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace, tmin, alwaysFailOnDataInterference);
 	}
 
 	if (name=="UWBIREnergyDetectionDeciderV2") {
-	    return new UWBIREnergyDetectionDeciderV2(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace);
+	    uwbdecider = new UWBIREnergyDetectionDeciderV2(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace, alwaysFailOnDataInterference);
 	}
-	return 0;
+	return uwbdecider;
 }
 
 void UWBIRPhyLayer::receiveBBItem(int category, const BBItem *details,
@@ -241,6 +250,14 @@ void UWBIRPhyLayer::receiveBBItem(int category, const BBItem *details,
 		}
 
 	}
+}
+
+
+simtime_t UWBIRPhyLayer::setRadioState(int rs) {
+	if(_radio->getCurrentState()==UWBIRRadio::RX && rs != UWBIRRadio::RX && rs!= UWBIRRadio::SYNC) {
+		uwbdecider->cancelReception();
+	}
+  BasePhyLayer::setRadioState(rs);
 }
 
 void UWBIRPhyLayer::finish() {

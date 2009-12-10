@@ -42,7 +42,7 @@ public:
 	UWBIREDSync(DeciderToPhyInterface* iface,
 				UWBIRPhyLayer* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
-				bool _trace, double _tmin);
+				bool _trace, double _tmin, bool alwaysFailOnDataInterference);
 	~UWBIREDSync();
 
 protected:

@@ -63,6 +63,16 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleNewSignal(Signal* s) {
 
 }
 
+
+// We just left reception state ; we must update our data on this frame accordingly
+
+void UWBIREnergyDetectionDeciderV2::cancelReception() {
+	if(tracking != NULL) {
+   	  tracking = NULL;
+   	  synced = false;
+	}
+}
+
 simtime_t UWBIREnergyDetectionDeciderV2::handleHeaderOver(map<Signal*, int>::iterator& it) {
 
 	int currState = uwbiface->getRadioState();
@@ -130,12 +140,17 @@ bool UWBIREnergyDetectionDeciderV2::attemptSync(Signal* s) {
 simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(map<Signal*, int>::iterator& it, AirFrame* frame) {
 	if (it->first == tracking) {
 		vector<bool>* receivedBits = new vector<bool>();
-		decodePacket(it->first, receivedBits);
+		bool isCorrect = decodePacket(it->first, receivedBits);
 		// we cannot compute bit error rate here
 		// so we send the packet to the MAC layer which will compare receivedBits
 		// with the actual bits sent.
-		UWBIRDeciderResult * result = new UWBIRDeciderResult(true, receivedBits);
-		phy->sendUp(frame, result);
+		UWBIRDeciderResult * result = new UWBIRDeciderResult(isCorrect, receivedBits);
+		if(isCorrect) {
+		  phy->sendUp(frame, result);
+		} else {
+			delete frame;
+			delete result;
+		}
 		currentSignals.erase(it);
 		tracking = 0;
 		synced = false;
@@ -148,7 +163,11 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(map<Signal*, int>::ite
 	}
 }
 
-void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
+/*
+ * @brief Returns false if the packet is incorrect. If true,
+ * the MAC layer must still compare bit values to validate the frame.
+ */
+bool UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		vector<bool> * receivedBits) {
 
 	simtime_t now, offset;
@@ -251,9 +270,17 @@ void UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 	pulseSINR.record( 10*log10(packetSNIR/(16*symbol)) );  // mean pulse SINR
 	ebN0.record(10*log10(epulseAggregate / enoiseAggregate) );
 	packetDecisionAvg.record( decisionScores / symbol );
-	receivingPowers.clear();
+
+	bool isCorrect = true;
+	if(airFrameVector.size() > 1 && alwaysFailOnDataInterference) {
+		isCorrect = false;
+	}
+
 	airFrameVector.clear();
+	receivingPowers.clear();
 	offsets.clear();
+
+	return isCorrect;
 }
 
 /*

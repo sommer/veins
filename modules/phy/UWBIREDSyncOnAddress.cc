@@ -26,9 +26,10 @@
 UWBIREDSyncOnAddress::UWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
 				UWBIRPhyLayer* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
-				bool _trace, int _addr) :
+				bool _trace, int _addr, bool alwaysFailOnDataInterference) :
 					UWBIREnergyDetectionDeciderV2(iface, _uwbiface,
-						_syncThreshold, _syncAlwaysSucceeds, _stats, _trace), syncAddress(_addr) {
+						_syncThreshold, _syncAlwaysSucceeds, _stats, _trace, alwaysFailOnDataInterference),
+						syncAddress(_addr) {
 
 };
 
