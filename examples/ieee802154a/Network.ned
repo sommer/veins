@@ -23,9 +23,6 @@ module Network
                 @display("p=250,0;i=misc/globe");
 
         }
-       globalUtility: BaseUtility {
-            parameters:
-        }
 
         channelControl: ConnectionManager {
             parameters:
