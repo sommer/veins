@@ -31,7 +31,7 @@ Define_Module(SimTracer);
  */
 void SimTracer::initialize(int stage)
 {
-  BaseModule::initialize(stage);
+  cSimpleModule::initialize(stage);
   if (stage == 0) {
 
 	char treeName[250];
@@ -51,8 +51,11 @@ void SimTracer::initialize(int stage)
     nbApplPacketsSent = 0;
     nbApplPacketsReceived = 0;
 
-  } else if(stage == 1) {
-	  catPacket = globalUtility->subscribe(this, &packet, -1);
+    // retrieve pointer to BaseWorldUtility module
+    world = check_and_cast<BaseWorldUtility*>(cSimulation::getActiveSimulation()->getModuleByPath("sim.world"));
+	  catPacket = world->subscribe(this, &packet, -1);
+
+//  } else if(stage == 1) {  // it seems that we are initialized only once. Why ?
   }
 }
 

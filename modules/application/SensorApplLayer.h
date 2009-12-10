@@ -29,7 +29,7 @@
 #include "Packet.h"
 #include "ApplPkt_m.h"
 #include "BaseApplLayer.h"
-
+#include "BaseWorldUtility.h"
 #define NET_BROADCAST 65535
 
 //#include "cstat.h"
@@ -104,7 +104,7 @@ protected:
   int catPacket;
   int hostID;
   int headerLength;
-  BaseUtility* utility2;
+  BaseWorldUtility* world;
 
 protected:
     // gates

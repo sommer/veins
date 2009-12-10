@@ -17,6 +17,10 @@ package org.mixim.modules.utility;
 // * part of:     Modifications to the MF Framework by CSEM
 // ***************************************************************************/
 
-simple SimTracer
+
+simple SimTracer 
 {
+  parameters:
+    @class(SimTracer);
 }
+

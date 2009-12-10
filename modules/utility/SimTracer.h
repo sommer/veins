@@ -28,10 +28,11 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include <BaseModule.h>
+#include <BaseWorldUtility.h>
 #include <BaseLayer.h>
 #include <ConnectionManager.h>
 #include "Packet.h"
+# include "ImNotifiable.h"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ using namespace std;
  * @author Jerome Rousselot
  */
 
-class SimTracer:public BaseModule
+class SimTracer:public cSimpleModule, ImNotifiable
 {
 
 public:
@@ -86,6 +87,7 @@ protected:
    map < unsigned long, double >powerConsumptions2;
    map < unsigned long, double >currPower;
    map < unsigned long, simtime_t> lastUpdates;
+   BaseWorldUtility* world;
 };
 
 
