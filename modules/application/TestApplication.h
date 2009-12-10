@@ -11,7 +11,7 @@
 #include "MacPkt_m.h"
 #include "ApplPkt_m.h"
 #include "AlohaMacLayer.h"
-#include "NicControlType.h"
+#include "MacToPhyInterface.h"
 #include "Mapping.h"
 
 class TestApplication : public BaseModule {
