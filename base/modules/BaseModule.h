@@ -79,7 +79,6 @@ class BaseModule: public cSimpleModule, public ImNotifiable {
   protected:
     /** @brief Cached pointer to the utility module*/
     BaseUtility *utility;
-    BaseUtility* globalUtility;
 
     /** @brief Debug switch for all other modules*/
     bool debug;
@@ -125,7 +124,6 @@ protected:
 
     /** @brief Function to get a pointer to the host module*/
     cModule *findHost(void);
-    BaseUtility* findGlobalUtility();
     /** @brief Function to get the logging name of id*/
     std::string getLogName(int);
 

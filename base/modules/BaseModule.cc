@@ -41,18 +41,16 @@ void BaseModule::initialize(int stage) {
 
         hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
         utility = FindModule<BaseUtility*>::findSubModule(findHost());
-        globalUtility = findGlobalUtility();
 
         if(!utility) {
-        	//error("No BaseUtility module found!");
-        } else {
+        	error("No BaseUtility module found!");
+        } 
 
         hostId = findHost()->getId();
 
         /* host failure notification */
-		HostState hs;
-		hostStateCat = utility->subscribe(this, &hs, hostId);
-        }
+	HostState hs;
+	hostStateCat = utility->subscribe(this, &hs, hostId);
     }
 }
 
@@ -63,19 +61,6 @@ void BaseModule::receiveBBItem(int category, const BBItem *details, int scopeMod
 
 		handleHostState(*(HostState*)details);
 	}
-}
-
-// returns a pointer to a network-wide utility module
-BaseUtility* BaseModule::findGlobalUtility() {
-    cModule *parent = getParentModule();
-    cModule *node = this;
-
-    // all nodes should be a sub module of the simulation which has no parent module!!!
-    while( parent->getParentModule() != NULL ){
-	node = parent;
-	parent = node->getParentModule();
-    }
-    return check_and_cast<BaseUtility*>(parent->getSubmodule("globalUtility"));
 }
 
 void BaseModule::handleHostState(const HostState& state)
