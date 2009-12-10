@@ -44,14 +44,15 @@ void BaseModule::initialize(int stage) {
         globalUtility = findGlobalUtility();
 
         if(!utility) {
-        	error("No BaseUtility module found!");
-        }
+        	//error("No BaseUtility module found!");
+        } else {
 
         hostId = findHost()->getId();
 
         /* host failure notification */
 		HostState hs;
 		hostStateCat = utility->subscribe(this, &hs, hostId);
+        }
     }
 }
 
