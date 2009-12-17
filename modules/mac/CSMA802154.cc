@@ -28,9 +28,6 @@ cPacket *CSMA802154::decapsMsg(MacPkt * macPkt) {
 
 	cPacket * msg = csma::decapsMsg(macPkt);
 
-//OLD: 	double
-//OLD: 			ber =
-//OLD: 					static_cast<RadioAccNoise3PhyControlInfo*> (macPkt->getControlInfo()) ->getBER();
 	PhyToMacControlInfo* cinfo = static_cast<PhyToMacControlInfo*> (macPkt->getControlInfo());
 	const DeciderResult802154Narrow* result = static_cast<const DeciderResult802154Narrow*> (cinfo->getDeciderResult());
 	double ber = result->getBER();

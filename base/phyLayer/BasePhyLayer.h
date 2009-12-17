@@ -59,7 +59,7 @@
  * base class DeciderToPhyInterface:
  * - interface for the Decider
  *
- *  base class MacToPhyInterface:
+ * base class MacToPhyInterface:
  * - interface for the Mac
  *
  * @ingroup phyLayer

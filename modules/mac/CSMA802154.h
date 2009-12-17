@@ -20,7 +20,12 @@
 #include <csma.h>
 
 /**
- * TODO - Generated class
+ * @brief Extends "csma" module by some statistics send
+ * up to the upper layer.
+ *
+ * @ingroup macLayer
+ * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Yosia Hadisusanto, Andreas Koepke
+ * @author Karl Wessel (port for MiXiM)
  */
 class CSMA802154 : public csma
 {

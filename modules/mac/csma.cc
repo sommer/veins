@@ -219,7 +219,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 		EV << "(15) FSM State IDLE_1, EV_DUPLICATE_RECEIVED: setting up radio tx -> WAITSIFS." << endl;
 		//sendUp(decapsMsg(static_cast<MacSeqPkt *>(msg)));
 		delete msg;
-		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
+
 		if(useMACAcks) {
 			phy->setRadioState(Radio::TX);
 			updateMacState(WAITSIFS_6);
@@ -231,7 +231,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 		EV << "(15) FSM State IDLE_1, EV_FRAME_RECEIVED: setting up radio tx -> WAITSIFS." << endl;
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
-		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
+
 		if(useMACAcks) {
 			phy->setRadioState(Radio::TX);
 			updateMacState(WAITSIFS_6);
@@ -256,7 +256,6 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 		<< " starting CCA timer." << endl;
 		startTimer(TIMER_CCA);
 		updateMacState(CCA_3);
-		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_RX);
 		phy->setRadioState(Radio::RX);
 		break;
 	case EV_DUPLICATE_RECEIVED:
@@ -268,7 +267,6 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 			EV << "suspending current transmit tentative and transmitting ack";
 			transmissionAttemptInterruptedByRx = true;
 			cancelEvent(backoffTimer);
-			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
 			phy->setRadioState(Radio::TX);
 			updateMacState(WAITSIFS_6);
 			startTimer(TIMER_SIFS);
@@ -288,7 +286,7 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 			EV << "suspending current transmit tentative and transmitting ack";
 			transmissionAttemptInterruptedByRx = true;
 			cancelEvent(backoffTimer);
-			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
+
 			phy->setRadioState(Radio::TX);
 			updateMacState(WAITSIFS_6);
 			startTimer(TIMER_SIFS);
@@ -326,12 +324,8 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 		if(isIdle) {
 			EV << "(3) FSM State CCA_3, EV_TIMER_CCA, [Channel Idle]: -> TRANSMITFRAME_4." << endl;
 			updateMacState(TRANSMITFRAME_4);
-			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
 			phy->setRadioState(Radio::TX);
 			MacPkt * mac = check_and_cast<MacPkt *>(macQueue.front()->dup());
-			//OLD: double configuredber = (check_and_cast<RadioAccNoise3PhyControlInfo *>(macQueue.front()->getControlInfo())->getBitrate());
-			//OLD: RadioAccNoise3PhyControlInfo * pco = new RadioAccNoise3PhyControlInfo(configuredber);
-			//OLD: msg->setControlInfo(check_and_cast<RadioAccNoise3PhyControlInfo*>(pco));
 			attachSignal(mac, simTime()+aTurnaroundTime);
 			//sendDown(msg);
 			// give time for the radio to be in Tx state before transmitting
@@ -375,7 +369,6 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 			transmissionAttemptInterruptedByRx = true;
 			cancelEvent(ccaTimer);
 
-			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
 			phy->setRadioState(Radio::TX);
 			updateMacState(WAITSIFS_6);
 			startTimer(TIMER_SIFS);
@@ -395,7 +388,6 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 			// and resume transmission when entering manageQueue()
 			transmissionAttemptInterruptedByRx = true;
 			cancelEvent(ccaTimer);
-			//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_TX);
 			phy->setRadioState(Radio::TX);
 			updateMacState(WAITSIFS_6);
 			startTimer(TIMER_SIFS);
@@ -420,7 +412,6 @@ void csma::updateStatusTransmitFrame(t_mac_event event, cMessage *msg) {
 	if (event == EV_FRAME_TRANSMITTED) {
 		//    delete msg;
 		MacPkt * packet = macQueue.front();
-		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_RX);
 		phy->setRadioState(Radio::RX);
 
 		bool expectAck = useMACAcks;
@@ -544,7 +535,6 @@ void csma::updateStatusTransmitAck(t_mac_event event, cMessage *msg) {
 	if (event == EV_FRAME_TRANSMITTED) {
 		EV<< "(19) FSM State TRANSMITACK_7, EV_FRAME_TRANSMITTED:"
 		<< " ->manageQueue." << endl;
-		//OLD: radio->execute(SingleChannelRadioAccNoise3::ENTER_RX);
 		phy->setRadioState(Radio::RX);
 		//		delete msg;
 		manageQueue();
@@ -766,8 +756,6 @@ void csma::handleLowerMsg(cMessage *msg) {
 				ackMessage->setSrcAddr(macaddress);
 				ackMessage->setDestAddr(macPkt->getSrcAddr());
 				ackMessage->setBitLength(ackLength);
-				//OLD: RadioAccNoise3PhyControlInfo *pco = new RadioAccNoise3PhyControlInfo(bitrate);
-				//OLD: ackMessage->setControlInfo(pco);
 				//Check for duplicates by checking expected seqNr of sender
 				if(SeqNrChild.find(src) == SeqNrChild.end()) {
 					//no record of current child -> add expected next number to map

@@ -47,6 +47,7 @@
  * @class csma
  * @ingroup macLayer
  * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Yosia Hadisusanto, Andreas Koepke
+ * @author Karl Wessel (port for MiXiM)
  *
  * \image html csmaFSM.png "CSMA Mac-Layer - finite state machine"
  */
