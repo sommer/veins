@@ -35,12 +35,25 @@ simple SimpleBattery extends BaseBattery
     parameters:
         @class(SimpleBattery);
         bool debug;
-        volatile double nominal;
-        double capacity;
-        volatile double voltage;
+        // nominal battery capacity
+        volatile double nominal @unit(mAh);
+        // battery capacity
+        double capacity @unit(mAh); 
+        // nominal voltage 
+        volatile double voltage @unit(V);
+        // capacity is updated at least every resolution time
         volatile double resolution @unit(s);
+        
+        // (0..1): capacity is published to the blackboard each time it is
+		// observed to have changed by publishDelta * nominal_capacity
         volatile double publishDelta;
+        
+        // if > 0, capacity is published to the BB each publishTime 
+		// interval		
         volatile double publishTime @unit(s);
-        double numDevices;
+        
+        // number of modules that will draw energy from the 
+		// battery
+        int numDevices;
 
 }

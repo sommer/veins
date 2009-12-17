@@ -21,7 +21,7 @@
 // **************************************************************************/
 package org.mixim.modules.nic;
 
-import org.mixim.modules.phy.PhyLayer;
+import org.mixim.modules.phy.PhyLayerBattery;
 import org.mixim.modules.mac.CSMA802154;
 
 
@@ -34,8 +34,16 @@ import org.mixim.modules.mac.CSMA802154;
 module Nic802154_TI_CC1100
 
 {
-//	parameters:
-	
+	parameters:
+	    // power consumption from boards (at 3V)
+	    double sleepCurrent @unit(mA) = 0.02mA; // 20 µA
+		double rxCurrent @unit(mA) = 16.4 mA;
+		double decodingCurrentDelta @unit(mA) = 0 mA;
+		double txCurrent @unit(mA) = 17 mA;
+		double setupRxCurrent @unit(mA) = 8.2mA;
+		double setupTxCurrent @unit(mA) = 8.2mA;
+		double rxTxCurrent @unit(mA) = 17 mA;
+		double txRxCurrent @unit(mA) = 17 mA;
 	
     gates:
         input upperGateIn; // from upper layers
@@ -45,7 +53,7 @@ module Nic802154_TI_CC1100
         input upperControlIn;
 
     submodules:
-        phy: PhyLayer {
+        phy: PhyLayerBattery {
             parameters:
                 decider = xmldoc("Nic802154_TI_CC1100_Decider.xml");
                 //publishRSSIAlways = false;
@@ -58,14 +66,6 @@ module Nic802154_TI_CC1100
                 timeTXToRX = 0.000022 s;
                 timeRXToSleep = 0 s;
                 timeTXToSleep = 0 s;
-                // power consumption from boards
-                //sleepPower = 0.000060 W; // 20 µA * 3 V
-                //rxPower = 0.0492 W;   // 16.4 mA * 3 V
-                //txPower = 0.051 W;   // 17 mA * 3 V
-                //rxTxPower = 0.051 W; 
-                //txRxPower = 0.051 W; 
-                //setupTxPower = 0.0246 W; 
-                //setupRxPower = 0.0246 W; 
                 @display("p=96,236;i=block/wrxtx");
 
         }

@@ -24,7 +24,7 @@
 
 package org.mixim.modules.nic;
 
-import org.mixim.modules.phy.PhyLayer;
+import org.mixim.modules.phy.PhyLayerBattery;
 import org.mixim.modules.mac.CSMA802154;
 
 
@@ -37,6 +37,17 @@ import org.mixim.modules.mac.CSMA802154;
 module Nic802154_TI_CC2420
 
 {
+    parameters:
+        // power consumption from boards (at 3.3V)
+	    double sleepCurrent @unit(mA) = 0.000021mA; // 0.021 µA
+		double rxCurrent @unit(mA) = 18.8 mA;
+		double decodingCurrentDelta @unit(mA) = 0 mA;
+		double txCurrent @unit(mA) = 17.4 mA;
+		double setupRxCurrent @unit(mA) = 0.6391mA; // 0.002109 W = (ESetupPower+ESetupXtal+ETxCalibrate)/TSetupTx
+		double setupTxCurrent @unit(mA) = 0.6845mA; // 0.002259 W = (ESetupPower+ESetupXtal+ERxCalibrate)/TSetupRx
+		double rxTxCurrent @unit(mA) = 18.8 mA; // Upper bound
+		double txRxCurrent @unit(mA) = 18.8 mA; // idem
+		
     gates:
         input upperGateIn; // from upper layers
         input radioIn; // to receive AirFrames
@@ -45,7 +56,7 @@ module Nic802154_TI_CC2420
         input upperControlIn;
 
     submodules:
-        phy: PhyLayer {
+        phy: PhyLayerBattery {
             parameters:
                 decider = xmldoc("Nic802154_TI_CC2420_Decider.xml");
                 //publishRSSIAlways = false;

@@ -17,9 +17,9 @@
 
 void Decider80211Battery::setChannelIdleStatus(bool isIdle) {
 	if(isIdle) {
-		phy->drawCurrent(idleCurrent, IDLE_ACCT);
+		phy->drawCurrent(0.0, 0);
 	} else {
-		phy->drawCurrent(rxCurrent, RX_ACCT);
+		phy->drawCurrent(decodingCurrentDelta, DECODING_ACCT);
 	}
 
 	Decider80211::setChannelIdleStatus(isIdle);

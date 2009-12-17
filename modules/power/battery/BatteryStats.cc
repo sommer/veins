@@ -44,6 +44,7 @@ void BatteryStats::initialize(int stage)
     doTimeSeries = par("timeSeries").boolValue();
     EV << "show timeSeries = " << doTimeSeries << endl;
 
+    batteryCat = -1;
     if (doTimeSeries) {
       int scopeHost = (this->findHost())->getId();
       BatteryState bs;
@@ -55,9 +56,9 @@ void BatteryStats::initialize(int stage)
       residualVec.setName("capacity(mW-s)");
       relativeVec.setName("capacity(relative)");
 
-      cModule *batteryModule = getParentModule()->getSubmodule("battery");
+      BaseBattery* batteryModule = FindModule<BaseBattery*>::findSubModule(getParentModule());
       if (batteryModule) {
-        battery = check_and_cast<SimpleBattery *>(batteryModule);
+        battery = batteryModule;
       }
       else {
         error("no battery module found, please check your Host.ned");

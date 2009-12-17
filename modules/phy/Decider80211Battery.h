@@ -27,35 +27,32 @@
  */
 class Decider80211Battery : public Decider80211 {
 protected:
-	/** @brief Stores the current in mA to draw during reception
-	 * of AirFrames. */
-	double rxCurrent;
-	/** @brief Stores the current in mA to draw when only listening
-	 * to the channel.*/
-	double idleCurrent;
+	/**
+	 * @brief Stores the current delta in mA to draw during reception
+	 * of AirFrames.
+	 *
+	 * Stores the delta to add to the base current drawn during RX state
+	 * when no frame is received but we are listening.
+	 */
+	double decodingCurrentDelta;
 
 	/**
 	 * @brief Defines the power consuming activities (accounts) of
-	 * the NIC. Should be the same as defined in the phy layer.
+	 * the decider.
 	 */
 	enum Activities {
-		SLEEP_ACCT=0,
-		IDLE_ACCT=1,
-		RX_ACCT=2,
-		TX_ACCT=3
+		DECODING_ACCT=0
 	};
 public:
 	Decider80211Battery(DeciderToPhyInterface* phy,
 						double threshold,
 						double sensitivity,
 						double centerFrequency,
-						double rxCurrent,
-						double idleCurrent,
+						double decodingCurrentDelta,
 						int myIndex = -1,
 						bool debug = false):
 		Decider80211(phy, threshold, sensitivity, centerFrequency, myIndex, debug),
-		rxCurrent(rxCurrent),
-		idleCurrent(idleCurrent)
+		decodingCurrentDelta(decodingCurrentDelta)
 	{}
 
 	/**

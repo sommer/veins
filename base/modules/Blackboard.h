@@ -118,6 +118,10 @@ protected:
     /** @brief Initializes blackboard.*/
     virtual void initialize(int);
 
+    Blackboard():
+    	nextCategory(0)
+	{}
+
     virtual ~Blackboard();
 
 

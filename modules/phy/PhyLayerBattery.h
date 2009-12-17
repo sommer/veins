@@ -44,7 +44,10 @@ protected:
 	int numActivities;
 
 	/** @brief The different currents in mA.*/
-	double sleepCurrent, idleCurrent, rxCurrent, txCurrent;
+	double sleepCurrent, rxCurrent, decodingCurrentDelta, txCurrent;
+
+	/** @brief The differnet switching state currents in mA.*/
+	double setupRxCurrent, setupTxCurrent, rxTxCurrent, txRxCurrent;
 
 	/**
 	 * @brief Defines the power consuming activities (accounts) of
@@ -52,9 +55,10 @@ protected:
 	 */
 	enum Activities {
 		SLEEP_ACCT=0,
-		IDLE_ACCT=1,
-		RX_ACCT=2,
-		TX_ACCT=3
+		RX_ACCT,
+		TX_ACCT,
+		SWITCHING_ACCT,
+		DECIDER_ACCT,
 	};
 
 protected:
@@ -74,6 +78,10 @@ protected:
 	 * @brief Initializes a new Decider80211Battery from the passed parameter map.
 	 */
 	virtual Decider* initializeDecider80211Battery(ParameterMap& params);
+
+	virtual void setRadioCurrent(int rs);
+
+	virtual void setSwitchingCurrent(int from, int to);
 
 public:
 	virtual void initialize(int stage);
@@ -97,19 +105,15 @@ public:
 	virtual void handleAirFrame(cMessage* msg);
 
 	/**
-	 * @brief Catches TX over messages to set current power consumption
-	 * back for idle mode.
-	 *
-	 * Calls the base classes overriden method for normal handling.
-	 */
-	virtual void handleSelfMessage(cMessage* msg);
-
-	/**
 	 * @brief Provides ability to draw power for the Decider.
 	 *
 	 * Method is defined in "DeciderToPhyInterface".
+	 *
+	 * Note: This method should only be used by the Decider to
+	 * draw power. The phy layer itself should call instead its
+	 * protected method BatteryAccess::drawCurrent()!
 	 */
-	//virtual void drawCurrent(double amount, int activity);
+	virtual void drawCurrent(double amount, int activity);
 
 	/**
 	 * @brief Captures changes in host state.
@@ -118,6 +122,16 @@ public:
 	 * state changes to off.
 	 */
 	virtual void handleHostState(const HostState& state);
+
+	/**
+	 * @brief Captures radio switches to adjust power consumption.
+	 */
+	virtual simtime_t setRadioState(int rs);
+
+	/**
+	 * @brief Captures radio switches to adjust power consumption.
+	 */
+	virtual void finishRadioSwitching();
 };
 
 #endif /* PHYLAYERBATTERY_H_ */

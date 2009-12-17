@@ -44,10 +44,14 @@ import org.mixim.modules.phy.PhyLayerBattery;
 module Nic80211Battery
 {
     parameters:
-        double sleepCurrent;
-        double idleCurrent;
-        double rxCurrent;
-        double txCurrent;
+        double sleepCurrent @unit(mA);
+		double rxCurrent @unit(mA);
+		double decodingCurrentDelta @unit(mA);
+		double txCurrent @unit(mA);
+		double setupRxCurrent @unit(mA);
+		double setupTxCurrent @unit(mA);
+		double rxTxCurrent @unit(mA);
+		double txRxCurrent @unit(mA);
 
     gates:
         input uppergateIn; // to upper layers
@@ -63,7 +67,7 @@ module Nic80211Battery
         }
         phy: PhyLayerBattery {
             parameters:
-                headerLength = 192;
+                headerLength = 192bit;
                 @display("p=106,157;i=block/process_s");
         }
 //        snrEval: SnrEval80211Battery {

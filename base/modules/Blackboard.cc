@@ -42,11 +42,6 @@ void Blackboard::initialize(int stage) {
 
 		WATCH_VECTOR(clientVector);
 	    WATCH_VECTOR(categoryDescriptions);
-
-	    clientVector.clear();
-	    categoryDescriptions.clear();
-	    parentVector.clear();
-	    nextCategory = 0;
 	}
 }
 

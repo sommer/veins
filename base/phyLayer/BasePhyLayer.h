@@ -321,7 +321,7 @@ protected:
 	 * The Radio is set the new RadioState and the MAC Layer is sent
 	 * a confirmation message.
 	 */
-	void finishRadioSwitching();
+	virtual void finishRadioSwitching();
 
 public:
 	BasePhyLayer();

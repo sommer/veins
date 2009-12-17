@@ -66,6 +66,6 @@ class BatteryStats : public BaseModule
   cOutVector estimateVec;
   cOutVector estimateRelVec;
 
-  SimpleBattery *battery;
+  BaseBattery *battery;
 };
 #endif
