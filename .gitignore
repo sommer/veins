@@ -24,5 +24,5 @@ tests/coord/coord
 tests/mapping/mapping
 tests/radioState/radioState
 tests/testUtils/libmiximtestUtils.so
-
+**.vci
 
