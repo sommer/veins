@@ -89,7 +89,7 @@ bool UWBIREDSync::evaluateEnergy(Signal* s) {
 	// Assumption: channel coherence time > signal duration
 	// Thus we can simply sample the first pulse of the received signal
 	ConstMapping* rxPower = s->getReceivingPower();
-	argSync.setTime(IEEE802154A::tFirstSyncPulseMax);
+	argSync.setTime(s->getSignalStart() + IEEE802154A::tFirstSyncPulseMax);
 	// We could retrieve the pathloss through s->getAttenuation() but we must be careful:
 	// maybe the pathloss is not the only analogue model (e.g. RSAMAnalogueModel)
 	// If we get the pathloss, we can compute Eb/N0: Eb=1E-3*pathloss if we are at peak power

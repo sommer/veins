@@ -78,6 +78,7 @@ short IEEE802154A::s_array[maxS] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		0, 0, 0 };
 int IEEE802154A::last_s = 15;
 
+double IEEE802154A::signalStart = 0;
 
 int IEEE802154A::psduLength = 0;
 
@@ -97,6 +98,7 @@ IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
 	// 48 R-S parity bits, the 2 symbols phy header is not modeled as it includes its own parity bits
 	// and is thus very robust
 	unsigned int nbBits = IEEE802154A::psduLength * 8 + 48;
+	IEEE802154A::signalStart = signalStart.dbl();  // use the signalStart time value as a global offset for all Mapping values
 	simtime_t signalLength = IEEE802154A::mandatory_preambleLength;
 	signalLength += static_cast<double> (nbBits)
 			* IEEE802154A::mandatory_symbol;
@@ -187,6 +189,7 @@ void IEEE802154A::generatePhyHeader(Mapping* mapping, Argument* arg) {
 void IEEE802154A::generatePulse(Mapping* mapping, Argument* arg,
 		short polarity, double peak, simtime_t chip) {
 	assert(polarity == -1 || polarity == +1);
+	arg->setTime(arg->getTime() + IEEE802154A::signalStart);  // adjust argument so that we use absolute time values in Mapping
 	mapping->setValue(*arg, 0);
 	arg->setTime(arg->getTime() + chip / 2);
 	// Maximum point at symbol half (triangular pulse)
@@ -211,7 +214,7 @@ void IEEE802154A::setBitRate(Signal* s) {
 	Argument arg = Argument();
 	// set a constant value for bitrate
 	TimeMapping<Linear>* bitrate = new TimeMapping<Linear> ();
-	arg.setTime(0); // relative to signal->getSignalStart()
+	arg.setTime(IEEE802154A::signalStart); // absolute time (required for compatibility with MiXiM base RSAM code)
 	bitrate->setValue(arg, 1 / IEEE802154A::mandatory_symbol);
 	arg.setTime(s->getSignalLength());
 	bitrate->setValue(arg, 1 / IEEE802154A::mandatory_symbol);

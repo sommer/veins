@@ -126,7 +126,7 @@ bool UWBIREnergyDetectionDeciderV2::attemptSync(Signal* s) {
 		// do not accept interferers
 		return false;
 	}
-	Argument posFirstPulse(IEEE802154A::tFirstSyncPulseMax);
+	Argument posFirstPulse(IEEE802154A::tFirstSyncPulseMax + s->getSignalStart());
 	mIt->jumpTo(posFirstPulse);
 	snrValue = std::abs(mIt->getValue()/getNoiseValue());
     syncThresholds.record(snrValue);
@@ -194,12 +194,12 @@ bool UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
 		}
 	}
 
-	// all times are relative to signal->getSignalStart() !
-	offset = IEEE802154A::mandatory_preambleLength;
+	// times are absolute
+	offset = signal->getSignalStart() + IEEE802154A::mandatory_preambleLength;
 	shift = IEEE802154A::mandatory_timeShift;
 	aSymbol = IEEE802154A::mandatory_symbol;
 	burst = IEEE802154A::mandatory_burst;
-	now = IEEE802154A::mandatory_preambleLength + IEEE802154A::mandatory_pulse / 2;
+	now = offset + IEEE802154A::mandatory_pulse / 2;
 	std::pair<double, double> energyZero, energyOne;
 
 	epulseAggregate = 0;

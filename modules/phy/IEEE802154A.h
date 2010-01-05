@@ -62,6 +62,8 @@ public:
     static short s_array[maxS];
     static int last_s;
 
+    static double signalStart; // we cannot use a simtime_t here because the scale exponent is not yet known at initialization.
+
     /**@brief Number of Repetitions of the sync symbol in the SYNC preamble */
 	static const int NSync = 64;
 	/**@brief Length of the preamble code */
