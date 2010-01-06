@@ -209,6 +209,7 @@ Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
 	return snrMap;
 }
 
+/*
 Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 										simtime_t end,
 										AirFrame* exclude)
@@ -276,4 +277,105 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 	}
 
 	return resultMap;
+}
+*/
+
+Mapping* BaseDecider::calculateRSSIMapping(    simtime_t start, simtime_t end, AirFrame* exclude)
+{
+    if(exclude)
+        debugEV << "Creating RSSI map excluding AirFrame with id " << exclude->getId() << endl;
+    else
+    debugEV << "Creating RSSI map." << endl;
+
+    AirFrameVector airFrames;
+
+    // collect all AirFrames that intersect with [start, end]
+    phy->getChannelInfo(start, end, airFrames);
+
+    //TODO: create a "MappingUtils:createMappingFrom()"-method and use it here instead
+    //of abusing the add method
+    // create an empty mapping
+    Mapping* resultMap = MappingUtils::createMapping(0.0, DimensionSet::timeDomain);
+
+    //add thermal noise
+    ConstMapping* thermalNoise = phy->getThermalNoise(start, end);
+
+    if(thermalNoise) {
+        Mapping* tmp = resultMap;
+        resultMap = MappingUtils::add(*resultMap, *thermalNoise);
+
+        delete tmp;
+    }
+
+    // otherwise, iterate over all AirFrames (except exclude)
+    // and sum up their receiving-power-mappings
+    AirFrameVector::iterator it;
+    for (it = airFrames.begin(); it != airFrames.end(); it++)
+    {
+        // the vector should not contain pointers to 0
+        assert (*it != 0);
+
+        // if iterator points to exclude (that includes the default-case 'exclude == 0')
+        // then skip this AirFrame
+        if ( *it == exclude ) continue;
+
+        // otherwise get the Signal and its receiving-power-mapping
+        Signal& signal = (*it)->getSignal();
+
+        // backup pointer to result map
+        // Mapping* resultMapOld = resultMap;
+
+        // TODO1.1: for testing purposes, for now we don't specify an interval
+        // and add the Signal's receiving-power-mapping to resultMap in [start, end],
+        // the operation Mapping::add returns a pointer to a new Mapping
+
+        ConstMapping* recvPowerMap = signal.getReceivingPower();
+        assert(recvPowerMap);
+
+
+        //*****************/
+        //for debugging
+        //recvPowerMap = Daten des Störers
+        simtime_t start_interferer = signal.getSignalStart();
+        simtime_t after_end_interferer = signal.getSignalStart() + signal.getSignalLength() + signal.getSignalLength() + signal.getSignalLength();
+        simtime_t end_interferer = signal.getSignalStart() + signal.getSignalLength();
+
+        double power_interferer_begin_nutzpaket = recvPowerMap->getValue(start);
+        double power_begin_interferer = recvPowerMap->getValue(start_interferer);
+        double power_interferer_end_nutzpaket = recvPowerMap->getValue(end);
+        double power_end_interferer = recvPowerMap->getValue(end_interferer );
+        double power_after_end_interferer = recvPowerMap->getValue(after_end_interferer );
+
+        double noise_power_begin_nutzpaket = resultMap->getValue(start);
+        double noise_power_begin_interference_paket = resultMap->getValue(start_interferer);
+        double noise_power_end_nutzpaket = resultMap->getValue(end);
+        //****************/
+
+
+        // Mapping* resultMapNew = Mapping::add( *(signal.getReceivingPower()), *resultMap, start, end );
+
+        debugEV << "Adding mapping of Airframe with ID " << (*it)->getId()
+                << ". Starts at " << signal.getSignalStart()
+                << " and ends at " << signal.getSignalStart() + signal.getSignalLength() << endl;
+
+        Mapping* resultMapNew = MappingUtils::add( *recvPowerMap, *resultMap, 0.0 );
+
+        //*****************/
+        //for debugging
+        simtime_t before_use_package = start - signal.getSignalLength();
+        double interference_power_vor_nutzpaket = resultMapNew->getValue(start - signal.getSignalLength());
+        double interference_power_begin_nutzpaket = resultMapNew->getValue(start);
+        double interference_power_begin_interferer = resultMapNew->getValue(start_interferer);
+        double interference_power_end_nutzpaket = resultMapNew->getValue(end);
+        double interference_power_end_interferer = resultMapNew->getValue(end_interferer);
+        double interference_power_after_interferer = resultMapNew->getValue(after_end_interferer);
+        //*****************/
+
+
+        // discard old mapping
+        delete resultMap;
+        resultMap = resultMapNew;
+        resultMapNew = 0;
+    }
+    return resultMap;
 }

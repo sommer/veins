@@ -208,7 +208,8 @@ public:
 			}
 			rcvPower = new MultipliedMapping(tmp,
 											  attenuations.begin(),
-											  attenuations.end());
+											  attenuations.end(),
+											  false, 0.0);
 		}
 
 		return rcvPower;

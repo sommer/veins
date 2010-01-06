@@ -1956,8 +1956,11 @@ protected:
 	typedef std::list<ConstMapping*> MappingSet;
 	MappingSet mappings;
 	ConstMapping* refMapping;
-	Operator op;
 
+	bool continueOutOfRange;
+	double oorValue;
+
+	Operator op;
 public:
 	/**
 	 * @brief Initializes with the passed reference Mapping, the operator
@@ -1966,9 +1969,13 @@ public:
 	template<class Iterator>
 	ConcatConstMapping(ConstMapping* refMapping,
 					   Iterator first, Iterator last,
+					   bool continueOutOfRange = true,
+					   double oorValue = 0.0,
 					   Operator op = Operator()):
 		ConstMapping(refMapping->getDimensionSet()),
-		refMapping(refMapping), op(op)
+		refMapping(refMapping), op(op),
+		continueOutOfRange(continueOutOfRange),
+		oorValue(oorValue)
 	{
 		while(first != last){
 			mappings.push_back(*first);
@@ -1981,9 +1988,13 @@ public:
 	 * and another Mapping to concatenate.
 	 */
 	ConcatConstMapping(ConstMapping* refMapping, ConstMapping* other,
+					   bool continueOutOfRange = true,
+					   double oorValue = 0.0,
 					   Operator op = Operator()):
 		ConstMapping(refMapping->getDimensionSet()),
-		refMapping(refMapping), op(op)
+		refMapping(refMapping), op(op),
+		continueOutOfRange(continueOutOfRange),
+		oorValue(oorValue)
 	{
 		mappings.push_back(other);
 	}
@@ -2015,11 +2026,13 @@ public:
 	Mapping* createConcatenatedMapping(){
 		MappingSet::const_iterator it = mappings.begin();
 
-		Mapping* result = MappingUtils::applyElementWiseOperator(*refMapping, **it, op);
+		Mapping* result = MappingUtils::applyElementWiseOperator(*refMapping, **it, op,
+																 oorValue, continueOutOfRange);
 
 		while(++it != mappings.end()){
 			Mapping* buf = result;
-			result = MappingUtils::applyElementWiseOperator(*buf, **it, op);
+			result = MappingUtils::applyElementWiseOperator(*buf, **it, op,
+															oorValue, continueOutOfRange);
 			delete buf;
 		}
 
