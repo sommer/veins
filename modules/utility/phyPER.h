@@ -42,6 +42,9 @@ class phyPER : public  BaseModule
     cOutVector maiPER, maiPERnoRS;
 
   public:
+
+    phyPER(): packet(100) {}
+
 	/** @brief Called by the Blackboard whenever a change occurs we're interested in */
 	virtual void receiveBBItem(int category, const BBItem * details, int scopeModuleId);
 

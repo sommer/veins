@@ -65,6 +65,8 @@ public:
   virtual void finish();
 
   ~SensorApplLayer();
+  
+  SensorApplLayer(): packet(100) {} // we must specify a packet length for Packet.h
 
   enum APPL_MSG_TYPES
   {

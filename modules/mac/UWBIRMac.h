@@ -48,6 +48,7 @@ public:
 
     virtual void finish();
 
+    UWBIRMac(): packet(100) { }
 
 protected:
     bool debug;

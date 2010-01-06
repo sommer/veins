@@ -48,7 +48,9 @@ protected:
 public:
 
     /** @brief Constructor*/
-    Packet() : BBItem(), nbPacketsReceived(0), nbPacketsReceivedNoRS(0), nbPacketsSent(0), sent(true), host(0) {
+    Packet(long bitLength, long rcvd=0, long sent=0) :
+	 BBItem(), nbPacketsReceived(rcvd), nbPacketsReceivedNoRS(rcvd), 
+	 nbPacketsSent(sent), packetBitLength(bitLength), sent(true), host(0) {
     };
 
     double getNbPacketsReceived() const  {

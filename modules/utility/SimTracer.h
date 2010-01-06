@@ -46,7 +46,7 @@ class SimTracer:public cSimpleModule, ImNotifiable
 {
 
 public:
-
+  SimTracer(): packet(100) {}
 
 	/** @brief Initialization of the module and some variables*/
   virtual void initialize(int);
