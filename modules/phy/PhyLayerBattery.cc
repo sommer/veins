@@ -189,11 +189,12 @@ void PhyLayerBattery::setRadioCurrent(int rs) {
 }
 
 simtime_t PhyLayerBattery::setRadioState(int rs) {
+	Enter_Method_Silent();
 	int prevState = radio->getCurrentState();
 
 	simtime_t endSwitch = PhyLayer::setRadioState(rs);
 
-	if(endSwitch >= 0) {
+	if(endSwitch > 0) {
 
 		if(radio->getCurrentState() == Radio::SWITCHING) {
 			setSwitchingCurrent(prevState, rs);

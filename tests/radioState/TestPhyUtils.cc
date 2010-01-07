@@ -27,22 +27,24 @@ const double SLEEP2SLEEP = 9.0;
 
 void testRadioConstructor()
 {
-	Radio radio1; // default constructor
+	Radio* radio1 = Radio::createNewRadio(); // default constructor
 
 	// check members of radio1
-	assertTrue("RadioState is correct", radio1.getCurrentState() == Radio::RX);
+	assertTrue("RadioState is correct", radio1->getCurrentState() == Radio::RX);
 
 
 
 
-	Radio radio2(initialState); // contructor with argument
+	Radio* radio2 = Radio::createNewRadio(initialState); // contructor with argument
 
 	//check members of radio2
-	assertTrue("RadioState is correct", radio2.getCurrentState() == initialState);
+	assertTrue("RadioState is correct", radio2->getCurrentState() == initialState);
 
 
 	std::cout << "Constructor Test passed." << std::endl;
 
+	delete radio1;
+	delete radio2;
 
 	return;
 }
@@ -75,7 +77,7 @@ int testSwitching(Radio& radio, int to, double refValue)
 
 void testRadioFunctionality()
 {
-	Radio radio1;
+	Radio radio1 = *Radio::createNewRadio();
 
 
 

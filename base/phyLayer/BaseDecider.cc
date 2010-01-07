@@ -277,3 +277,4 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 
 	return resultMap;
 }
+

@@ -57,43 +57,7 @@ void BasePhyLayer::initialize(int stage) {
 		maxTXPower = readPar("maxTXPower", 1.0);
 
 		//	- initialize radio
-		int initialRadioState = readPar("initalRadioState", (int) Radio::RX);
-		double radioMinAtt = readPar("radioMinAtt", 1.0);
-		double radioMaxAtt = readPar("radioMaxAtt", 0.0);
-
-		radio = new Radio(initialRadioState, radioMinAtt, radioMaxAtt);
-
-
-		//	- switch times to TX
-		simtime_t rxToTX = readPar("timeRXToTX", 0.0);
-		simtime_t sleepToTX = readPar("timeSleepToTX", 0.0);
-
-		//if no RX to TX defined asume same time as sleep to TX
-		radio->setSwitchTime(Radio::RX, Radio::TX, readPar("timeRXToTX", sleepToTX));
-		//if no sleep to TX defined asume same time as RX to TX
-		radio->setSwitchTime(Radio::SLEEP, Radio::TX, readPar("timeSleepToTX", rxToTX));
-
-
-		//		- switch times to RX
-		simtime_t txToRX = readPar("timeTXToRX", 0.0);
-		simtime_t sleepToRX = readPar("timeSleepToRX", 0.0);
-
-		//if no TX to RX defined asume same time as sleep to RX
-		radio->setSwitchTime(Radio::TX, Radio::RX, readPar("timeTXToRX", sleepToRX));
-		//if no sleep to RX defined asume same time as TX to RX
-		radio->setSwitchTime(Radio::SLEEP, Radio::RX, readPar("timeSleepToRX", txToRX));
-
-
-		//		- switch times to sleep
-		simtime_t txToSleep = readPar("timeTXToSleep", 0.0);
-		simtime_t rxToSleep = readPar("timeRXToSleep", 0.0);
-
-		//if no TX to sleep defined asume same time as RX to sleep
-		radio->setSwitchTime(Radio::TX, Radio::SLEEP, readPar("timeTXToSleep", rxToSleep));
-		//if no RX to sleep defined asume same time as TX to sleep
-		radio->setSwitchTime(Radio::RX, Radio::SLEEP, readPar("timeRXToSleep", txToSleep));
-
-
+		radio = initalizeRadio();
 
 		// get pointer to the world module
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
@@ -113,6 +77,45 @@ void BasePhyLayer::initialize(int stage) {
 		txOverTimer = new cMessage("transmission over", TX_OVER);
 
 	}
+}
+
+Radio* BasePhyLayer::initalizeRadio() {
+	int initialRadioState = readPar("initalRadioState", (int) Radio::RX);
+	double radioMinAtt = readPar("radioMinAtt", 1.0);
+	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
+
+	Radio* radio = Radio::createNewRadio(initialRadioState, radioMinAtt, radioMaxAtt);
+
+	//	- switch times to TX
+	simtime_t rxToTX = readPar("timeRXToTX", 0.0);
+	simtime_t sleepToTX = readPar("timeSleepToTX", 0.0);
+
+	//if no RX to TX defined asume same time as sleep to TX
+	radio->setSwitchTime(Radio::RX, Radio::TX, readPar("timeRXToTX", sleepToTX));
+	//if no sleep to TX defined asume same time as RX to TX
+	radio->setSwitchTime(Radio::SLEEP, Radio::TX, readPar("timeSleepToTX", rxToTX));
+
+
+	//		- switch times to RX
+	simtime_t txToRX = readPar("timeTXToRX", 0.0);
+	simtime_t sleepToRX = readPar("timeSleepToRX", 0.0);
+
+	//if no TX to RX defined asume same time as sleep to RX
+	radio->setSwitchTime(Radio::TX, Radio::RX, readPar("timeTXToRX", sleepToRX));
+	//if no sleep to RX defined asume same time as TX to RX
+	radio->setSwitchTime(Radio::SLEEP, Radio::RX, readPar("timeSleepToRX", txToRX));
+
+
+	//		- switch times to sleep
+	simtime_t txToSleep = readPar("timeTXToSleep", 0.0);
+	simtime_t rxToSleep = readPar("timeRXToSleep", 0.0);
+
+	//if no TX to sleep defined asume same time as RX to sleep
+	radio->setSwitchTime(Radio::TX, Radio::SLEEP, readPar("timeTXToSleep", rxToSleep));
+	//if no RX to sleep defined asume same time as TX to sleep
+	radio->setSwitchTime(Radio::RX, Radio::SLEEP, readPar("timeRXToSleep", txToSleep));
+
+	return radio;
 }
 
 void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outputMap) {

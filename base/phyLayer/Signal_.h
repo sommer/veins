@@ -8,13 +8,17 @@
 
 /**
  * @brief The signal class stores the physical representation of the
- * signal  of an AirFrame.
+ * signal of an AirFrame.
  *
  * This includes start, duration and propagation delay of the signal,
  * the sender hosts move pattern as well as Mappings which represent
  * the transmission power, bitrate, attenuations caused by effects of
  * the channel on the signal during its transmission and the
  * receiving power.
+ *
+ * Note: Although the Signal itself has a startTime parameter the Mappings
+ * it contains should use absolute time positions to store the values at
+ * (NOT relative to the start time of the signal).
  *
  * The Signal is created at the senders MAC layer which has to define
  * the TX-power- and the bitrate Mapping.
@@ -208,7 +212,8 @@ public:
 			}
 			rcvPower = new MultipliedMapping(tmp,
 											  attenuations.begin(),
-											  attenuations.end());
+											  attenuations.end(),
+											  false, 0.0);
 		}
 
 		return rcvPower;

@@ -199,6 +199,14 @@ protected:
 	virtual void handleMessage(cMessage* msg);
 
 	/**
+	 * @brief Initializes and returns the radio class to use.
+	 *
+	 * Can be overridden by sub-classing phy layers to use their
+	 * own Radio implementations.
+	 */
+	virtual Radio* initalizeRadio();
+
+	/**
 	 * @brief Creates and returns an instance of the AnalogueModel with the
 	 * specified name.
 	 *

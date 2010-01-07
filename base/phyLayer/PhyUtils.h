@@ -18,6 +18,19 @@ class RSAMMapping;
  * according to the actual RadioStates the Radio were in during
  * the Signal's time interval
  *
+ * This AnalogueModel models the effects of the radio state on the
+ * received signal. This effects are for example total attenuation
+ * during the time the radio is not in receiving state. And no
+ * attenuation at all if it is in receiving state.
+ *
+ * This way it is assured that the received power calculated for
+ * a Signal by use of the AnalogueModels really is the power received,
+ * means if the radio is not in receiving state then this is reflected
+ * by the received power of the signal. Therefore the Decider which
+ * evaluates the receiving power doesn't has to care about if the
+ * radio was in correct state to actually receive a signal. It
+ * just has to check if the receiving power was/is high enough.
+ *
  * @ingroup phyLayer
  */
 class RadioStateAnalogueModel : public AnalogueModel
@@ -250,13 +263,13 @@ public:
 		/* switching between two states*/
 		SWITCHING,
 
-		/* New entries from here... */
-		SYNC,		// CSEM Jerome Rousselot
-		/* ... to here. */
-
 		/*
 		 * NOTE: THIS IS NO REAL RADIOSTATE, JUST A COUNTER FOR THE NUMBER OF RADIOSTATES
 		 * IT ALWAYS NEEDS TO BE THE LAST ENTRY IN THIS ENUM!
+		 *
+		 * Sub-classing Radios which want to add more states can add their own
+		 * states beginning at the value of NUM_RADIO_STATES.
+		 * They should also remember to update the "numRadioStates" member accordingly.
 		 */
 		NUM_RADIO_STATES
 	};
@@ -293,34 +306,22 @@ protected:
 public:
 
 	/**
-	 * @brief Default constructor for instances of class Radio
+	 * @brief Creates a new instance of this class.
+	 *
+	 * Since Radio hasn't a public constructor this is the only
+	 * way to create an instance of this class.
+	 *
+	 * This method assures that the radio is initialized with the
+	 * correct number of radio states. Sub classing Radios should also
+	 * define a factory method like this instead of an public constructor.
 	 */
-	Radio(int initialState = RX, double minAtt = 1.0, double maxAtt = 0.0)
-		: state(initialState), nextState(initialState), numRadioStates(NUM_RADIO_STATES),
-		minAtt(minAtt), maxAtt(maxAtt), rsam(mapStateToAtt(initialState))
+	static Radio* createNewRadio(int initialState = RX,
+								 double minAtt = 1.0,
+								 double maxAtt = 0.0)
 	{
-		 radioStates.setName("radioStates");
-
-		// allocate memory for one dimension
-		swTimes = new simtime_t* [numRadioStates];
-
-		// go through the first dimension and
-		for (int i = 0; i < numRadioStates; i++)
-		{
-			// allocate memory for the second dimension
-			swTimes[i] = new simtime_t[numRadioStates];
-		}
-
-		// initialize all matrix entries to 0.0
-		for (int i = 0; i < numRadioStates; i++)
-		{
-			for (int j = 0; j < numRadioStates; j++)
-			{
-				swTimes[i][j] = 0;
-			}
-		}
-
-
+		return new Radio(NUM_RADIO_STATES,
+						 initialState,
+						 minAtt, maxAtt);
 	}
 
 	/**
@@ -387,7 +388,7 @@ public:
 	 * i.e. set the time for switching from one state to another
 	 *
 	 */
-	void setSwitchTime(int from, int to, simtime_t time)
+	virtual void setSwitchTime(int from, int to, simtime_t time)
 	{
 		// assert parameters are in valid range
 		assert(time >= 0.0);
@@ -406,7 +407,7 @@ public:
 	 * Returns the state the Radio is currently in
 	 *
 	 */
-	int getCurrentState() const
+	virtual int getCurrentState() const
 	{
 
 		return state;
@@ -445,7 +446,7 @@ public:
 	 * This method is intended to be used by the PhyLayer to obtain a pointer
 	 * to the corresponding RSAM to this Radio
 	 */
-	RadioStateAnalogueModel* getAnalogueModel()
+	virtual RadioStateAnalogueModel* getAnalogueModel()
 	{
 		return (&rsam);
 	}
@@ -454,13 +455,52 @@ public:
 	 * @brief discards information in the RadioStateAnalogueModel before given time-point
 	 *
 	 */
-	void cleanAnalogueModelUntil(simtime_t t)
+	virtual void cleanAnalogueModelUntil(simtime_t t)
 	{
 		rsam.cleanUpUntil(t);
 	}
 
 
 protected:
+	/**
+	 * @brief Intern constructor to initialize the radio.
+	 *
+	 * By defining no default constructor we assure that sub classing radios
+	 * have to explicitly call this constructor which assures they pass
+	 * the correct number of radio states.
+	 *
+	 * The protected constructor + factory method solution assures that
+	 * while sub-classing Radios HAVE to explicitly pass their correct amount
+	 * of radio states to this constructor, the user (creator) of the Radio
+	 * doesn't has to pass it or even know about it (which wouldn't be possible
+	 * with a public constructor).
+	 * Therefore sub classing Radios which could be sub-classed further should
+	 * also do it this way.
+	 */
+	Radio(int numRadioStates, int initialState = RX, double minAtt = 1.0, double maxAtt = 0.0)
+		: state(initialState), nextState(initialState), numRadioStates(numRadioStates),
+		minAtt(minAtt), maxAtt(maxAtt), rsam(mapStateToAtt(initialState))
+	{
+		// allocate memory for one dimension
+		swTimes = new simtime_t* [numRadioStates];
+
+		// go through the first dimension and
+		for (int i = 0; i < numRadioStates; i++)
+		{
+			// allocate memory for the second dimension
+			swTimes[i] = new simtime_t[numRadioStates];
+		}
+
+		// initialize all matrix entries to 0.0
+		for (int i = 0; i < numRadioStates; i++)
+		{
+			for (int j = 0; j < numRadioStates; j++)
+			{
+				swTimes[i][j] = 0;
+			}
+		}
+	}
+
 	/**
 	 * @brief responsible for making entries to the RSAM
 	 */
