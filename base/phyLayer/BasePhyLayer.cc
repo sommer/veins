@@ -57,7 +57,7 @@ void BasePhyLayer::initialize(int stage) {
 		maxTXPower = readPar("maxTXPower", 1.0);
 
 		//	- initialize radio
-		radio = initalizeRadio();
+		radio = initializeRadio();
 
 		// get pointer to the world module
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
@@ -79,8 +79,8 @@ void BasePhyLayer::initialize(int stage) {
 	}
 }
 
-Radio* BasePhyLayer::initalizeRadio() {
-	int initialRadioState = readPar("initalRadioState", (int) Radio::RX);
+Radio* BasePhyLayer::initializeRadio() {
+	int initialRadioState = readPar("initialRadioState", (int) Radio::RX);
 	double radioMinAtt = readPar("radioMinAtt", 1.0);
 	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
 

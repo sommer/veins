@@ -163,20 +163,21 @@ private:
 	 */
 	void initializeDecider(cXMLElement* xmlConfig);
 
-	/**
-	 * @brief Reads and returns the parameter with the passed name.
-	 *
-	 * If the parameter couldn't be found the value of defaultValue
-	 * is returned.
-	 *
-	 * @param parName 		- the name of the ned-parameter
-	 * @param defaultValue 	- the value to be returned if the parameter
-	 * 				  		  couldn't be found
-	 */
-	template<class T> T readPar(const char* parName, const T defaultValue);
 
 
 protected:
+
+	/**
+		 * @brief Reads and returns the parameter with the passed name.
+		 *
+		 * If the parameter couldn't be found the value of defaultValue
+		 * is returned.
+		 *
+		 * @param parName 		- the name of the ned-parameter
+		 * @param defaultValue 	- the value to be returned if the parameter
+		 * 				  		  couldn't be found
+		 */
+		template<class T> T readPar(const char* parName, const T defaultValue);
 
 	/**
 	 * @brief OMNeT++ initialization function.
@@ -204,7 +205,7 @@ protected:
 	 * Can be overridden by sub-classing phy layers to use their
 	 * own Radio implementations.
 	 */
-	virtual Radio* initalizeRadio();
+	virtual Radio* initializeRadio();
 
 	/**
 	 * @brief Creates and returns an instance of the AnalogueModel with the
