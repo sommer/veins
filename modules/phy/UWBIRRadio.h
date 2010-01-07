@@ -41,6 +41,28 @@ class UWBIRRadio: public Radio {
 
 public:
 
+	enum UWBIRRadioState {
+		/* receiving state*/
+		RX = 0,
+		/* transmiting state*/
+		TX,
+		/* sleeping*/
+		SLEEP,
+		/* switching between two states*/
+		SWITCHING,
+		/* state added for synchronization */
+		SYNC,
+		/*
+		 * NOTE: THIS IS NO REAL RADIOSTATE, JUST A COUNTER FOR THE NUMBER OF RADIOSTATES
+		 * IT ALWAYS NEEDS TO BE THE LAST ENTRY IN THIS ENUM!
+		 *
+		 * Sub-classing Radios which want to add more states can add their own
+		 * states beginning at the value of NUM_RADIO_STATES.
+		 * They should also remember to update the "numRadioStates" member accordingly.
+		 */
+		NUM_RADIO_STATES
+	};
+
 protected:
 	/** @brief Stores the power consumption of each radio state (in mW) */
 	double* powerConsumptions;
@@ -50,22 +72,6 @@ protected:
 	cOutVector vectorPower;
 
 public:
-	UWBIRRadio():Radio(SYNC) {
-
-		state = SYNC;
-		lastStateChange = 0;
-
-		powerConsumption = 0;
-
-		powerConsumptions = new double [numRadioStates];
-
-		for (int i = 0; i < numRadioStates; i++)
-		{
-			// initialize all power consumption entries to 0.0
-			powerConsumptions[i] = 0.0;
-		}
-
-	}
 
 	void setName(string name) {
 		vectorPower.setName(name.c_str());  // so that we have a name that include our address / node number
@@ -83,6 +89,17 @@ public:
 		powerConsumptions = 0;
 	}
 
+	/* Static factory method (see Radio class in PhyUtils.h) */
+	static UWBIRRadio* createNewUWBIRRadio(int initialState = SYNC,
+								 double minAtt = 1.0,
+								 double maxAtt = 0.0)
+	{
+		return new UWBIRRadio(UWBIRRadio::NUM_RADIO_STATES,
+						 initialState,
+						 minAtt, maxAtt);
+	}
+
+
 	/**
 	 * @brief This switchTo method only accepts three states to switch to:
 	 * reception, transmission and sleep.
@@ -91,12 +108,12 @@ public:
 	virtual simtime_t switchTo(int newState, simtime_t now) {
 		// state must be one of sleep, receive or transmit (not sync)
 		//assert(newState != Radio::SYNC);
-		if(newState == state || (newState == Radio::RX && state == Radio::SYNC)) {
+		if(newState == state || (newState == UWBIRRadio::RX && state == UWBIRRadio::SYNC)) {
 			return -1; // nothing to do
 		} else {
-			if(newState == Radio::RX) {
+			if(newState == UWBIRRadio::RX) {
 				// prevent entering "frame reception" immediately
-				newState = Radio::SYNC;
+				newState = UWBIRRadio::SYNC;
 			}
 			return reallySwitchTo(newState, now);
 		}
@@ -107,7 +124,7 @@ public:
 		// set the nextState to the newState and the current state to SWITCHING
 		nextState = newState;
 		int lastState = state;
-		state = Radio::SWITCHING;
+		state = UWBIRRadio::SWITCHING;
 		radioStates.record(state);
 		// make entry to RSAM
 		makeRSAMEntry(now, state);
@@ -129,10 +146,23 @@ public:
 
 protected:
 
+	UWBIRRadio(int numRadioStates, int initialState = SYNC, double minAtt = 1.0, double maxAtt = 0.0)
+	:Radio(numRadioStates, initialState, minAtt, maxAtt) {
+
+		lastStateChange = 0;
+		powerConsumption = 0;
+		powerConsumptions = new double [numRadioStates];
+
+		for (int i = 0; i < numRadioStates; i++)
+		{
+			// initialize all power consumption entries to 0.0
+			powerConsumptions[i] = 0.0;
+		}
+	}
 
 	virtual double mapStateToAtt(int state)
 	{
-		if (state == Radio::RX || state == Radio::SYNC)
+		if (state == UWBIRRadio::RX || state == UWBIRRadio::SYNC)
 		{
 			return minAtt;
 		} else
@@ -147,9 +177,9 @@ private:
 	 * the radio has locked on a frame and is attempting reception.
 	 */
 	virtual void startReceivingFrame(simtime_t now) {
-		assert(state == Radio::SYNC);
-		state = Radio::SWITCHING;
-		nextState = Radio::RX;
+		assert(state == UWBIRRadio::SYNC);
+		state = UWBIRRadio::SWITCHING;
+		nextState = UWBIRRadio::RX;
 		endSwitch(now);
 	}
 	/**
@@ -158,9 +188,9 @@ private:
 		 * synchronize on incoming frames.
 		 */
 	virtual void finishReceivingFrame(simtime_t now) {
-		assert(state == Radio::RX);
-		state = Radio::SWITCHING;
-		nextState = Radio::SYNC;
+		assert(state == UWBIRRadio::RX);
+		state = UWBIRRadio::SWITCHING;
+		nextState = UWBIRRadio::SYNC;
 		endSwitch(now);
 	}
 

@@ -67,8 +67,6 @@ public:
 
 protected:
 
-	UWBIRRadio * _radio;
-
     UWBIRStochasticPathlossModel* uwbpathloss;
     UWBIRIEEE802154APathlossModel* ieee802154AChannel;
     UWBIREnergyDetectionDeciderV2* uwbdecider;
@@ -79,6 +77,9 @@ protected:
     AnalogueModel* createUWBIRIEEE802154APathlossModel(ParameterMap & params);
     AnalogueModel* createIntensityModel(ParameterMap & params);
     virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
+    virtual Radio* initializeRadio();
+
+    UWBIRRadio* uwbradio;
     /**
      * called by Blackboard to inform of changes
      */
@@ -88,13 +89,13 @@ protected:
 
     virtual void switchRadioToRX() {
     	Enter_Method_Silent();
-    	_radio->startReceivingFrame(simTime());
-    	setRadioCurrent(_radio->getCurrentState());
+    	uwbradio->startReceivingFrame(simTime());
+    	setRadioCurrent(uwbradio->getCurrentState());
     }
 
     virtual void switchRadioToSync() {
     	Enter_Method_Silent();
-    	_radio->finishReceivingFrame(simTime());
+    	uwbradio->finishReceivingFrame(simTime());
     	setRadioCurrent(radio->getCurrentState());
     }
 

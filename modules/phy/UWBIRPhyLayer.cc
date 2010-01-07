@@ -35,31 +35,8 @@ void UWBIRPhyLayer::initialize(int stage) {
 	BasePhyLayer::initialize(stage);
 	if (stage == 0) {
 
-		delete radio;
-
-		_radio = new UWBIRRadio();
-		radio = _radio;
 
 		numActivities = 6;
-
-		// Radio timers
-		// From Sleep mode
-		_radio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::RX, par("timeSleepToRX"));
-		_radio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::TX, par("timeSleepToTX"));
-		_radio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::SLEEP, 0);
-
-		// From TX mode
-		_radio->setSwitchTime(UWBIRRadio::TX, UWBIRRadio::SYNC, par("timeTXToRX"));
-		_radio->setSwitchTime(UWBIRRadio::TX, UWBIRRadio::RX, par("timeTXToRX"));
-
-		// From RX mode
-		_radio->setSwitchTime(UWBIRRadio::RX, UWBIRRadio::TX, par("timeRXToTX"));
-		_radio->setSwitchTime(UWBIRRadio::RX, UWBIRRadio::SYNC, 0.000000001);
-		_radio->setSwitchTime(UWBIRRadio::SYNC, UWBIRRadio::TX, par("timeRXToTX"));
-
-		// From SYNC mode
-		_radio->setSwitchTime(UWBIRRadio::SYNC, UWBIRRadio::RX, 0.000000001);
-
 
 		// Power consumption (from PhyLayerBattery)
 		/* parameters belong to the NIC, not just phy layer
@@ -83,13 +60,45 @@ void UWBIRPhyLayer::initialize(int stage) {
 		int macaddress = (check_and_cast<UWBIRMac*>(macModule))->getmacaddress();
 		std::ostringstream stream;
 		stream << "powerConsumption-" << macaddress;
-		_radio->setName(stream.str());  // get MAC address and add it
+		uwbradio->setName(stream.str());  // get MAC address and add it
 		registerWithBattery("physical layer", numActivities);
 		BatteryAccess::drawCurrent(rxCurrent, RX_ACCT);
 	}
 
 }
 
+
+Radio* UWBIRPhyLayer::initializeRadio() {
+	int initialRadioState = readPar("initalRadioState", (int) UWBIRRadio::SYNC);
+	double radioMinAtt = readPar("radioMinAtt", 1.0);
+	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
+
+	uwbradio = UWBIRRadio::createNewUWBIRRadio(initialRadioState, radioMinAtt, radioMaxAtt);
+
+	//	- switch times to TX
+	simtime_t rxToTX = readPar("timeRXToTX", 0.0);
+	simtime_t sleepToTX = readPar("timeSleepToTX", 0.0);
+
+	// Radio timers
+	// From Sleep mode
+	uwbradio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::RX, par("timeSleepToRX"));
+	uwbradio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::TX, par("timeSleepToTX"));
+	uwbradio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::SLEEP, 0);
+
+	// From TX mode
+	uwbradio->setSwitchTime(UWBIRRadio::TX, UWBIRRadio::SYNC, par("timeTXToRX"));
+	uwbradio->setSwitchTime(UWBIRRadio::TX, UWBIRRadio::RX, par("timeTXToRX"));
+
+	// From RX mode
+	uwbradio->setSwitchTime(UWBIRRadio::RX, UWBIRRadio::TX, par("timeRXToTX"));
+	uwbradio->setSwitchTime(UWBIRRadio::RX, UWBIRRadio::SYNC, 0.000000001);
+	uwbradio->setSwitchTime(UWBIRRadio::SYNC, UWBIRRadio::TX, par("timeRXToTX"));
+
+	// From SYNC mode
+	uwbradio->setSwitchTime(UWBIRRadio::SYNC, UWBIRRadio::RX, 0.000000001);
+
+	return uwbradio;
+}
 
 AnalogueModel* UWBIRPhyLayer::getAnalogueModelFromName(std::string name,
 		ParameterMap& params) {
@@ -100,7 +109,7 @@ AnalogueModel* UWBIRPhyLayer::getAnalogueModelFromName(std::string name,
 		return createUWBIRIEEE802154APathlossModel(params);
 
 	if (name == "RadioStateAnalogueModel")
-		return _radio->getAnalogueModel();
+		return uwbradio->getAnalogueModel();
 
 	return 0;
 }
@@ -280,7 +289,7 @@ void UWBIRPhyLayer::handleAirFrame(cMessage* msg) {
 
 void UWBIRPhyLayer::finishRadioSwitching() {
 	BasePhyLayer::finishRadioSwitching();
-	setRadioCurrent(_radio->getCurrentState());
+	setRadioCurrent(radio->getCurrentState());
 }
 
 void UWBIRPhyLayer::handleHostState(const HostState& state) {
@@ -303,7 +312,7 @@ void UWBIRPhyLayer::setSwitchingCurrent(int from, int to) {
 	double current = 0;
 
 	switch(from) {
-	case Radio::SYNC:
+	case UWBIRRadio::SYNC:
 	case Radio::RX:
 		switch(to) {
 		case Radio::SLEEP:
