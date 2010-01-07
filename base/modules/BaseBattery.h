@@ -35,7 +35,7 @@ protected:
 	double value;
 
 public:
-	DrawAmount(int type = CURRENT, int value = 0):
+	DrawAmount(int type = CURRENT, double value = 0):
 		type(type),
 		value(value)
 	{}

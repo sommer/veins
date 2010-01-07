@@ -1973,9 +1973,10 @@ public:
 					   double oorValue = 0.0,
 					   Operator op = Operator()):
 		ConstMapping(refMapping->getDimensionSet()),
-		refMapping(refMapping), op(op),
+		refMapping(refMapping),
 		continueOutOfRange(continueOutOfRange),
-		oorValue(oorValue)
+		oorValue(oorValue),
+		op(op)
 	{
 		while(first != last){
 			mappings.push_back(*first);
@@ -1992,9 +1993,10 @@ public:
 					   double oorValue = 0.0,
 					   Operator op = Operator()):
 		ConstMapping(refMapping->getDimensionSet()),
-		refMapping(refMapping), op(op),
+		refMapping(refMapping),
 		continueOutOfRange(continueOutOfRange),
-		oorValue(oorValue)
+		oorValue(oorValue),
+		op(op)
 	{
 		mappings.push_back(other);
 	}
