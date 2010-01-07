@@ -6,6 +6,8 @@ import org.mixim.modules.application.TestApplication;
 import org.mixim.modules.netw.DummyRoute;
 import org.mixim.modules.utility.phyPER;
 import org.mixim.modules.nic.IEEE802154APhyMacNic;
+import org.mixim.modules.power.battery.SimpleBattery;
+import org.mixim.modules.power.battery.BatteryStats;
 
 module IEEE802154APhyMacHost
 {
@@ -17,6 +19,12 @@ module IEEE802154APhyMacHost
         input radioIn;
 
     submodules:
+        batteryStats: BatteryStats {
+            @display("p=239,206;i=block/circle");
+        }
+        battery: SimpleBattery {
+            @display("p=171,206;i=block/control");
+        }
         utility: BaseUtility {
             parameters:
                 @display("p=130,60;i=block/blackboard");

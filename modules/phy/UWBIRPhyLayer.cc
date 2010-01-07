@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        UWBIRPhy.h
+ * file:        UWBIRPhyLayer.h
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
@@ -17,12 +17,19 @@
  *              in the top level directory
  * description: this physical layer models an ultra wideband impulse radio channel.
  ***************************************************************************/
+//
+// Physical layer that models an Ultra Wideband Impulse Radio transceiver.
+// See the following publication for more information.
+//  A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
+// for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
+// Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
+// http://portal.acm.org/citation.cfm?id=1537714
+//
 
 #include "UWBIRPhyLayer.h"
 #include <assert.h>
 
-Define_Module(UWBIRPhyLayer)
-;
+Define_Module(UWBIRPhyLayer);
 
 void UWBIRPhyLayer::initialize(int stage) {
 	BasePhyLayer::initialize(stage);
@@ -33,39 +40,52 @@ void UWBIRPhyLayer::initialize(int stage) {
 		_radio = new UWBIRRadio();
 		radio = _radio;
 
+		numActivities = 6;
+
 		// Radio timers
 		// From Sleep mode
-		_radio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::RX, par(
-				"timeSleepToRX"));
-		_radio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::TX, par(
-				"timeSleepToTX"));
+		_radio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::RX, par("timeSleepToRX"));
+		_radio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::TX, par("timeSleepToTX"));
 		_radio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::SLEEP, 0);
 
 		// From TX mode
-		_radio->setSwitchTime(UWBIRRadio::TX, UWBIRRadio::SYNC, par(
-				"timeTXToRX"));
+		_radio->setSwitchTime(UWBIRRadio::TX, UWBIRRadio::SYNC, par("timeTXToRX"));
 		_radio->setSwitchTime(UWBIRRadio::TX, UWBIRRadio::RX, par("timeTXToRX"));
 
 		// From RX mode
 		_radio->setSwitchTime(UWBIRRadio::RX, UWBIRRadio::TX, par("timeRXToTX"));
 		_radio->setSwitchTime(UWBIRRadio::RX, UWBIRRadio::SYNC, 0.000000001);
-		_radio->setSwitchTime(UWBIRRadio::SYNC, UWBIRRadio::TX, par(
-				"timeRXToTX"));
+		_radio->setSwitchTime(UWBIRRadio::SYNC, UWBIRRadio::TX, par("timeRXToTX"));
 
 		// From SYNC mode
 		_radio->setSwitchTime(UWBIRRadio::SYNC, UWBIRRadio::RX, 0.000000001);
 
-		_radio->setPowerConsumption(UWBIRRadio::SLEEP, par("PSleep"));
-		_radio->setPowerConsumption(UWBIRRadio::SYNC, par("PSync"));
-		_radio->setPowerConsumption(UWBIRRadio::RX, par("PRx"));
-		_radio->setPowerConsumption(UWBIRRadio::TX, par("PTx"));
-		_radio->setPowerConsumption(UWBIRRadio::SWITCHING, par("PSwitch"));
+
+		// Power consumption (from PhyLayerBattery)
+		/* parameters belong to the NIC, not just phy layer
+		 *
+		 * if/when variable transmit power is supported, txCurrent
+		 * should be specified as an xml table of available transmit
+		 * power levels and corresponding txCurrent */
+		sleepCurrent = rxCurrent = decodingCurrentDelta = txCurrent = 0;
+		setupRxCurrent = setupTxCurrent = rxTxCurrent = txRxCurrent = 0;
+		sleepCurrent = getParentModule()->par( "sleepCurrent" );
+		rxCurrent = getParentModule()->par( "rxCurrent" );
+//		decodingCurrentDelta = getParentModule()->par( "decodingCurrentDelta" );
+		txCurrent = getParentModule()->par( "txCurrent" );
+		setupRxCurrent = getParentModule()->par( "setupRxCurrent" );
+		setupTxCurrent = getParentModule()->par( "setupTxCurrent" );
+		rxTxCurrent = getParentModule()->par( "rxTxCurrent" );
+		txRxCurrent = getParentModule()->par( "txRxCurrent" );
+		syncCurrent = getParentModule()->par( "syncCurrent" ); // assume instantaneous transitions between rx and sync
 	} else if (stage == 1) {
 		cModule* macModule = getParentModule()->getSubmodule("mac");
 		int macaddress = (check_and_cast<UWBIRMac*>(macModule))->getmacaddress();
 		std::ostringstream stream;
 		stream << "powerConsumption-" << macaddress;
 		_radio->setName(stream.str());  // get MAC address and add it
+		registerWithBattery("physical layer", numActivities);
+		BatteryAccess::drawCurrent(rxCurrent, RX_ACCT);
 	}
 
 }
@@ -249,13 +269,134 @@ void UWBIRPhyLayer::receiveBBItem(int category, const BBItem *details,
 	}
 }
 
+void UWBIRPhyLayer::handleAirFrame(cMessage* msg) {
+	if (utility->getHostState().get() == HostState::FAILED) {
+		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
+		delete msg;
+		return;
+	}
+	BasePhyLayer::handleAirFrame(msg);
+}
 
+void UWBIRPhyLayer::finishRadioSwitching() {
+	BasePhyLayer::finishRadioSwitching();
+	setRadioCurrent(_radio->getCurrentState());
+}
+
+void UWBIRPhyLayer::handleHostState(const HostState& state) {
+	// handles only battery consumption
+
+	HostState::States hostState = state.get();
+
+	switch (hostState) {
+	case HostState::FAILED:
+		EV<< "t = " << simTime() << " host state FAILED" << endl;
+		// it would be good to create a radioState OFF, as well
+		break;
+	default:
+		break;
+	}
+}
+
+void UWBIRPhyLayer::setSwitchingCurrent(int from, int to) {
+	int act = SWITCHING_ACCT;
+	double current = 0;
+
+	switch(from) {
+	case Radio::SYNC:
+	case Radio::RX:
+		switch(to) {
+		case Radio::SLEEP:
+			current = rxCurrent;
+			break;
+		case Radio::TX:
+			current = rxTxCurrent;
+			break;
+			// ! transitions between rx and sync should be immediate
+		default:
+			opp_error("Unknown radio switch! From RX to %d", to);
+		}
+		break;
+
+	case Radio::TX:
+		switch(to) {
+		case Radio::SLEEP:
+			current = txCurrent;
+			break;
+		case Radio::RX:
+			current = txRxCurrent;
+			break;
+		default:
+			opp_error("Unknown radio switch! From TX to %d", to);
+		}
+		break;
+
+	case Radio::SLEEP:
+		switch(to) {
+		case Radio::TX:
+			current = setupTxCurrent;
+			break;
+		case Radio::RX:
+			current = setupRxCurrent;
+			break;
+		default:
+			opp_error("Unknown radio switch! From SLEEP to %d", to);
+		}
+		break;
+
+	default:
+		opp_error("Unknown radio state: %d", from);
+	}
+
+	BatteryAccess::drawCurrent(current, act);
+}
+
+void UWBIRPhyLayer::setRadioCurrent(int rs) {
+	switch(rs) {
+	case UWBIRRadio::RX:
+		BatteryAccess::drawCurrent(rxCurrent, RX_ACCT);
+		break;
+	case UWBIRRadio::TX:
+		BatteryAccess::drawCurrent(txCurrent, TX_ACCT);
+		break;
+	case UWBIRRadio::SLEEP:
+		BatteryAccess::drawCurrent(sleepCurrent, SLEEP_ACCT);
+		break;
+	case UWBIRRadio::SYNC:
+		BatteryAccess::drawCurrent(syncCurrent, SYNC_ACCT);
+	default:
+		break;
+	}
+}
+
+/*
 simtime_t UWBIRPhyLayer::setRadioState(int rs) {
 	if(_radio->getCurrentState()==UWBIRRadio::RX && rs != UWBIRRadio::RX && rs!= UWBIRRadio::SYNC) {
 		uwbdecider->cancelReception();
 	}
   BasePhyLayer::setRadioState(rs);
 }
+*/
+simtime_t UWBIRPhyLayer::setRadioState(int rs) {
+	int prevState = radio->getCurrentState();
+
+	if(radio->getCurrentState()==UWBIRRadio::RX && rs != UWBIRRadio::RX && rs!= UWBIRRadio::SYNC) {
+		uwbdecider->cancelReception();
+	}
+
+	simtime_t endSwitch = BasePhyLayer::setRadioState(rs);
+
+	if(endSwitch >= 0) {
+		if(radio->getCurrentState() == Radio::SWITCHING) {
+						setSwitchingCurrent(prevState, rs);
+		} else {
+			setRadioCurrent(radio->getCurrentState());
+		}
+	}
+
+	return endSwitch;
+}
+
 
 void UWBIRPhyLayer::finish() {
 	UWBIREnergyDetectionDeciderV2 * dec =

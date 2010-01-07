@@ -1,17 +1,19 @@
 package org.mixim.modules.phy;
 
-simple UWBIRPhyLayer
+import org.mixim.base.phyLayer.BasePhyLayer;
+
+//
+// Physical layer that models an Ultra Wideband Impulse Radio transceiver.
+// See the following publication for more information. 
+//  A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
+// for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie, 
+// Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
+// http://portal.acm.org/citation.cfm?id=1537714
+//
+simple UWBIRPhyLayer extends BasePhyLayer
 {
     parameters:
-        bool usePropagationDelay; 		//Should transmission delay be simulated?
-        double thermalNoise;	//the strength of the thermal noise
-
-        xml analogueModels; 			//Specification of the analogue models to use and their parameters
-        xml decider;					//Specification of the decider to use and its parameters
-
-        double sensitivity;		//The sensitivity of the physical layer
-        double maxTXPower;		//The maximum transimission power of the physical layer
-
+        @class(UWBIRPhyLayer);
         // radio power consumption
         double PSleep;
         double PRx;
@@ -19,26 +21,7 @@ simple UWBIRPhyLayer
         double PSync;
         double PSwitch;
 
-        //switchTimes:
-        double timeRXToTX;
-        double timeRXToSleep;
-
-        double timeTXToRX;
-        double timeTXToSleep;
-
-        double timeSleepToRX;
-        double timeSleepToTX;
-
-
         @display("i=device/antennatower");
-    gates:
-        input upperGateIn; 	// from the MAC layer
-        output upperGateOut; 	// to the MAC layer
-
-        input upperControlIn; 	// control from the MAC layer
-        output upperControlOut; 	// control to the MAC layer
-
-        input radioIn; // for sendDirect from other physical layers
 
 }
 

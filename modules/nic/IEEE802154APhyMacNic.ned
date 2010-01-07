@@ -7,6 +7,16 @@ module IEEE802154APhyMacNic
 {
     parameters:
         string connectionManagerName; 	//name of the ConnectionManager module
+        // power consumption from boards (at 3.3V)
+	    double sleepCurrent @unit(mA) = .00303 mA; // 0.021 µA
+		double rxCurrent @unit(mA) = 9.1 mA;
+		double syncCurrent @unit(mA) = 30.3 mA;
+		double txCurrent @unit(mA) = 0.303 mA;
+		double setupRxCurrent @unit(mA) = 9.1 mA;
+		double setupTxCurrent @unit(mA) = 0.303 mA;
+		double rxTxCurrent @unit(mA) = 9.1 mA; 
+		double txRxCurrent @unit(mA) = 9.1 mA; 
+        
 
         @display("bgb=101,150,white,,;bgp=10,10");
     gates:
