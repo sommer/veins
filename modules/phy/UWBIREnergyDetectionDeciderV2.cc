@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include "UWBIREnergyDetectionDeciderV2.h"
-#include "UWBIRPhyLayer.h"
+#include "PhyLayerUWBIR.h"
 
 
 simtime_t UWBIREnergyDetectionDeciderV2::processSignal(AirFrame* frame) {

@@ -41,7 +41,7 @@ using namespace std;
 
 #define PI 3.1415926
 
-class UWBIRPhyLayer;
+class PhyLayerUWBIR;
 
 
 class UWBIREnergyDetectionDeciderV2: public Decider {
@@ -74,7 +74,7 @@ public:
 	const static double Aiso = 127.32E-6; // Aperture of the ideal isotropic antenna (lambda²/4Pi)
 
 	UWBIREnergyDetectionDeciderV2(DeciderToPhyInterface* iface,
-			UWBIRPhyLayer* _uwbiface,
+			PhyLayerUWBIR* _uwbiface,
 			double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 			bool _trace, bool alwaysFailOnDataInterference=false) :
 		Decider(iface), trace(_trace),
@@ -143,7 +143,7 @@ protected:
 	cOutVector pulseSINR;
     cOutVector noisePower, receivedPower;
 
-	UWBIRPhyLayer* uwbiface;
+	PhyLayerUWBIR* uwbiface;
 	Signal* tracking;
 	enum {
 		FIRST, HEADER_OVER, SIGNAL_OVER

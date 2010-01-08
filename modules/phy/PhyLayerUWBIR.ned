@@ -10,10 +10,10 @@ import org.mixim.base.phyLayer.BasePhyLayer;
 // Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
 // http://portal.acm.org/citation.cfm?id=1537714
 //
-simple UWBIRPhyLayer extends BasePhyLayer
+simple PhyLayerUWBIR extends BasePhyLayer
 {
     parameters:
-        @class(UWBIRPhyLayer);
+        @class(PhyLayerUWBIR);
         // radio power consumption
         double PSleep;
         double PRx;

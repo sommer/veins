@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        UWBIRPhyLayer.h
+ * file:        PhyLayerUWBIR.h
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
@@ -26,12 +26,12 @@
 // http://portal.acm.org/citation.cfm?id=1537714
 //
 
-#include "UWBIRPhyLayer.h"
+#include "PhyLayerUWBIR.h"
 #include <assert.h>
 
-Define_Module(UWBIRPhyLayer);
+Define_Module(PhyLayerUWBIR);
 
-void UWBIRPhyLayer::initialize(int stage) {
+void PhyLayerUWBIR::initialize(int stage) {
 	BasePhyLayer::initialize(stage);
 	if (stage == 0) {
 
@@ -68,7 +68,7 @@ void UWBIRPhyLayer::initialize(int stage) {
 }
 
 
-Radio* UWBIRPhyLayer::initializeRadio() {
+Radio* PhyLayerUWBIR::initializeRadio() {
 	int initialRadioState = readPar("initalRadioState", (int) UWBIRRadio::SYNC);
 	double radioMinAtt = readPar("radioMinAtt", 1.0);
 	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
@@ -100,7 +100,7 @@ Radio* UWBIRPhyLayer::initializeRadio() {
 	return uwbradio;
 }
 
-AnalogueModel* UWBIRPhyLayer::getAnalogueModelFromName(std::string name,
+AnalogueModel* PhyLayerUWBIR::getAnalogueModelFromName(std::string name,
 		ParameterMap& params) {
 	if (name == "UWBIRStochasticPathlossModel")
 		return createUWBIRStochasticPathlossModel(params);
@@ -120,7 +120,7 @@ AnalogueModel* UWBIRPhyLayer::getAnalogueModelFromName(std::string name,
  * to any signal at the beginning of its reception, and their outputs
  * (attenuations objects) are then associated to the incoming signal object.
  **/
-AnalogueModel* UWBIRPhyLayer::createUWBIRStochasticPathlossModel(
+AnalogueModel* PhyLayerUWBIR::createUWBIRStochasticPathlossModel(
 		ParameterMap & params) {
 	//get the pathloss exponent parameter from the config
 	ParameterMap::iterator it = params.find("PL0");
@@ -170,7 +170,7 @@ AnalogueModel* UWBIRPhyLayer::createUWBIRStochasticPathlossModel(
 
 }
 
-AnalogueModel* UWBIRPhyLayer::createUWBIRIEEE802154APathlossModel(ParameterMap & params) {
+AnalogueModel* PhyLayerUWBIR::createUWBIRIEEE802154APathlossModel(ParameterMap & params) {
 	int CM;
 	ParameterMap::iterator it = params.find("CM");
 	if (it == params.end()) {
@@ -196,7 +196,7 @@ AnalogueModel* UWBIRPhyLayer::createUWBIRIEEE802154APathlossModel(ParameterMap &
 	return ieee802154AChannel;
 }
 
-Decider* UWBIRPhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
+Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& params) {
 	double syncThreshold;
 	bool stats;
 	bool trace;
@@ -268,7 +268,7 @@ Decider* UWBIRPhyLayer::getDeciderFromName(std::string name, ParameterMap& param
 	return uwbdecider;
 }
 
-void UWBIRPhyLayer::receiveBBItem(int category, const BBItem *details,
+void PhyLayerUWBIR::receiveBBItem(int category, const BBItem *details,
 		int scopeModuleId) {
 	Enter_Method_Silent();
 	ChannelAccess::receiveBBItem(category, details, scopeModuleId);
@@ -278,7 +278,7 @@ void UWBIRPhyLayer::receiveBBItem(int category, const BBItem *details,
 	}
 }
 
-void UWBIRPhyLayer::handleAirFrame(cMessage* msg) {
+void PhyLayerUWBIR::handleAirFrame(cMessage* msg) {
 	if (utility->getHostState().get() == HostState::FAILED) {
 		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
@@ -287,12 +287,12 @@ void UWBIRPhyLayer::handleAirFrame(cMessage* msg) {
 	BasePhyLayer::handleAirFrame(msg);
 }
 
-void UWBIRPhyLayer::finishRadioSwitching() {
+void PhyLayerUWBIR::finishRadioSwitching() {
 	BasePhyLayer::finishRadioSwitching();
 	setRadioCurrent(radio->getCurrentState());
 }
 
-void UWBIRPhyLayer::handleHostState(const HostState& state) {
+void PhyLayerUWBIR::handleHostState(const HostState& state) {
 	// handles only battery consumption
 
 	HostState::States hostState = state.get();
@@ -307,7 +307,7 @@ void UWBIRPhyLayer::handleHostState(const HostState& state) {
 	}
 }
 
-void UWBIRPhyLayer::setSwitchingCurrent(int from, int to) {
+void PhyLayerUWBIR::setSwitchingCurrent(int from, int to) {
 	int act = SWITCHING_ACCT;
 	double current = 0;
 
@@ -360,7 +360,7 @@ void UWBIRPhyLayer::setSwitchingCurrent(int from, int to) {
 	BatteryAccess::drawCurrent(current, act);
 }
 
-void UWBIRPhyLayer::setRadioCurrent(int rs) {
+void PhyLayerUWBIR::setRadioCurrent(int rs) {
 	switch(rs) {
 	case UWBIRRadio::RX:
 		BatteryAccess::drawCurrent(rxCurrent, RX_ACCT);
@@ -379,14 +379,14 @@ void UWBIRPhyLayer::setRadioCurrent(int rs) {
 }
 
 /*
-simtime_t UWBIRPhyLayer::setRadioState(int rs) {
+simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 	if(_radio->getCurrentState()==UWBIRRadio::RX && rs != UWBIRRadio::RX && rs!= UWBIRRadio::SYNC) {
 		uwbdecider->cancelReception();
 	}
   BasePhyLayer::setRadioState(rs);
 }
 */
-simtime_t UWBIRPhyLayer::setRadioState(int rs) {
+simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 	int prevState = radio->getCurrentState();
 
 	if(radio->getCurrentState()==UWBIRRadio::RX && rs != UWBIRRadio::RX && rs!= UWBIRRadio::SYNC) {
@@ -407,7 +407,7 @@ simtime_t UWBIRPhyLayer::setRadioState(int rs) {
 }
 
 
-void UWBIRPhyLayer::finish() {
+void PhyLayerUWBIR::finish() {
 	UWBIREnergyDetectionDeciderV2 * dec =
 			static_cast<UWBIREnergyDetectionDeciderV2*> (decider);
 	recordScalar("nbRandomBits", dec->getNbRandomBits());

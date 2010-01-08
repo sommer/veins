@@ -41,7 +41,7 @@
  */
 
 class UWBIRRadio: public Radio {
-	friend class UWBIRPhyLayer;
+	friend class PhyLayerUWBIR;
 
 public:
 

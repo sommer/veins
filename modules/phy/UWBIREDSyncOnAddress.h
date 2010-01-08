@@ -35,13 +35,13 @@
 
 using namespace std;
 
-class UWBIRPhyLayer;
+class PhyLayerUWBIR;
 
 class UWBIREDSyncOnAddress: public UWBIREnergyDetectionDeciderV2 {
 
 public:
 	UWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
-				UWBIRPhyLayer* _uwbiface,
+				PhyLayerUWBIR* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, int _addr, bool alwaysFailOnDataInterference);
 

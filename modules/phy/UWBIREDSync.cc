@@ -25,7 +25,7 @@
 
 
 UWBIREDSync::UWBIREDSync(DeciderToPhyInterface* iface,
-				UWBIRPhyLayer* _uwbiface,
+				PhyLayerUWBIR* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, double _tmin, bool alwaysFailOnDataInterference) :
 					UWBIREnergyDetectionDeciderV2(iface, _uwbiface,

@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        UWBIRPhyLayer.h
+ * file:        PhyLayerUWBIR.h
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
@@ -53,13 +53,13 @@ class UWBIREDSync;
 #include "UWBIREDSyncOnAddress.h"
 #include "UWBIREDSync.h"
 
-class UWBIRPhyLayer : public BasePhyLayer
+class PhyLayerUWBIR : public BasePhyLayer
 {
 	friend class UWBIREnergyDetectionDeciderV2;
 
 public:
 	void initialize(int stage);
-        UWBIRPhyLayer() : uwbpathloss(0), ieee802154AChannel(0) {}
+        PhyLayerUWBIR() : uwbpathloss(0), ieee802154AChannel(0) {}
 
     void finish();
 

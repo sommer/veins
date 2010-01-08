@@ -24,7 +24,7 @@
 #include "UWBIREnergyDetectionDeciderV2.h"
 
 UWBIREDSyncOnAddress::UWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
-				UWBIRPhyLayer* _uwbiface,
+				PhyLayerUWBIR* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, int _addr, bool alwaysFailOnDataInterference) :
 					UWBIREnergyDetectionDeciderV2(iface, _uwbiface,

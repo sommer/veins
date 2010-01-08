@@ -1,6 +1,6 @@
 package org.mixim.modules.nic;
 
-import org.mixim.modules.phy.UWBIRPhyLayer;
+import org.mixim.modules.phy.PhyLayerUWBIR;
 import org.mixim.modules.mac.AlohaMacLayer;
 
 module IEEE802154APhyMacNic
@@ -27,7 +27,7 @@ module IEEE802154APhyMacNic
         output upperGateCtrlOut; // uppergateCtrlOut to send control messages to network layer
 
     submodules:
-        phy: UWBIRPhyLayer {
+        phy: PhyLayerUWBIR {
             parameters:
                 @display("p=60,120;b=80,30,rect,white,,");
             //display: "p=60,150;i=prot3";
