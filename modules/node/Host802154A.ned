@@ -5,11 +5,11 @@ import org.mixim.base.modules.BaseUtility;
 import org.mixim.modules.application.TestApplication;
 import org.mixim.modules.netw.DummyRoute;
 import org.mixim.modules.utility.phyPER;
-import org.mixim.modules.nic.IEEE802154APhyMacNic;
+import org.mixim.modules.nic.Nic802154A;
 import org.mixim.modules.power.battery.SimpleBattery;
 import org.mixim.modules.power.battery.BatteryStats;
 
-module IEEE802154APhyMacHost
+module Host802154A
 {
     parameters:
         double numHosts; // total number of hosts in the network
@@ -33,7 +33,7 @@ module IEEE802154APhyMacHost
             parameters:
                 @display("p=130,130;i=block/cogwheel");
         }
-        nic: IEEE802154APhyMacNic {
+        nic: Nic802154A {
             parameters:
                 @display("b=32,30;p=60,166;i=block/ifcard");
         }

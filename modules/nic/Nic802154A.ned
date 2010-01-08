@@ -3,7 +3,7 @@ package org.mixim.modules.nic;
 import org.mixim.modules.phy.PhyLayerUWBIR;
 import org.mixim.modules.mac.AlohaMacLayer;
 
-module IEEE802154APhyMacNic
+module Nic802154A
 {
     parameters:
         string connectionManagerName; 	//name of the ConnectionManager module

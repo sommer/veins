@@ -3,7 +3,7 @@ package org.mixim.examples.ieee802154a;
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
 import org.mixim.base.modules.BaseUtility;
-import org.mixim.modules.node.IEEE802154APhyMacHost;
+import org.mixim.modules.node.Host802154A;
 
 module Network
 {
@@ -29,7 +29,7 @@ module Network
                 @display("p=450,0;b=42,42,rect,red,,;i=abstract/multicast");
 
         }
-        node[numHosts]: IEEE802154APhyMacHost {
+        node[numHosts]: Host802154A {
             parameters:
                 numHosts = numHosts;
                 @display("p=50,50;b=42,42,rect,red,,;i=device/wifilaptop");
