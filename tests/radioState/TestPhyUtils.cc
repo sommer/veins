@@ -77,7 +77,7 @@ int testSwitching(Radio& radio, int to, double refValue)
 
 void testRadioFunctionality()
 {
-	Radio radio1 = *Radio::createNewRadio();
+	Radio& radio1 = *Radio::createNewRadio();
 
 
 
@@ -162,6 +162,7 @@ void testRadioFunctionality()
 
 	std::cout << "SetSwitchTime test passed." << std::endl;
 
+	delete &radio1;
 
 	return;
 }
