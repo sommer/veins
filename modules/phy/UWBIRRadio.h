@@ -34,6 +34,10 @@
  * This is done through a private method so that the MAC can not change these states.
  * This is why this class is friend with uwbirphylayer.
  *
+ * Update: please note that the power consumption estimate now uses the energy framework,
+ * integrated into mixim.
+ * The power consumption code of this class will be removed and is deprecated.
+ *
  */
 
 class UWBIRRadio: public Radio {
@@ -41,26 +45,10 @@ class UWBIRRadio: public Radio {
 
 public:
 
-	enum UWBIRRadioState {
+	enum UWBIRRadioStates {
 		/* receiving state*/
-		RX = 0,
-		/* transmiting state*/
-		TX,
-		/* sleeping*/
-		SLEEP,
-		/* switching between two states*/
-		SWITCHING,
-		/* state added for synchronization */
-		SYNC,
-		/*
-		 * NOTE: THIS IS NO REAL RADIOSTATE, JUST A COUNTER FOR THE NUMBER OF RADIOSTATES
-		 * IT ALWAYS NEEDS TO BE THE LAST ENTRY IN THIS ENUM!
-		 *
-		 * Sub-classing Radios which want to add more states can add their own
-		 * states beginning at the value of NUM_RADIO_STATES.
-		 * They should also remember to update the "numRadioStates" member accordingly.
-		 */
-		NUM_RADIO_STATES
+		 SYNC = Radio::NUM_RADIO_STATES,
+		 UWBIR_NUM_RADIO_STATES
 	};
 
 protected:
@@ -94,7 +82,7 @@ public:
 								 double minAtt = 1.0,
 								 double maxAtt = 0.0)
 	{
-		return new UWBIRRadio(UWBIRRadio::NUM_RADIO_STATES,
+		return new UWBIRRadio(UWBIRRadio::UWBIR_NUM_RADIO_STATES,
 						 initialState,
 						 minAtt, maxAtt);
 	}
