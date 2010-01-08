@@ -239,7 +239,7 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 	  alwaysFailOnDataInterference = it->second.boolValue();
 	}
 
-	if (name == "UWBIREDSyncOnAddress") {
+	if (name == "DeciderUWBIREDSyncOnAddress") {
 		int addr;
 		it = params.find("addr");
 		if (it == params.end()) {
@@ -247,7 +247,7 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 					"Could not find required int parameter <addr> in the decider xml configuration file.");
 		}
 		addr = it->second.longValue();
-		uwbdecider = new UWBIREDSyncOnAddress(this, this, syncThreshold,
+		uwbdecider = new DeciderUWBIREDSyncOnAddress(this, this, syncThreshold,
 				syncAlwaysSucceeds, stats, trace, addr, alwaysFailOnDataInterference);
 	}
 

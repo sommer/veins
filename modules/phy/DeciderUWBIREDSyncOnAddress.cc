@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        UWBIREDSyncOnAddress.h
+ * file:        DeciderUWBIREDSyncOnAddress.cc
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
@@ -20,38 +20,31 @@
  * 				a particular node.
  ***************************************************************************/
 
-#ifndef UWBIREDSYNCONADDRESS_H_
-#define UWBIREDSYNCONADDRESS_H_
-
-#include <vector>
-#include <map>
-#include <math.h>
-
-#include "Mapping.h"
-#include "AirFrame_m.h"
-#include "MacPkt_m.h"
-#include "Decider.h"
+#include "DeciderUWBIREDSyncOnAddress.h"
 #include "DeciderUWBIRED.h"
 
-using namespace std;
-
-class PhyLayerUWBIR;
-
-class UWBIREDSyncOnAddress: public DeciderUWBIRED {
-
-public:
-	UWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
+DeciderUWBIREDSyncOnAddress::DeciderUWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
 				PhyLayerUWBIR* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
-				bool _trace, int _addr, bool alwaysFailOnDataInterference);
+				bool _trace, int _addr, bool alwaysFailOnDataInterference) :
+					DeciderUWBIRED(iface, _uwbiface,
+						_syncThreshold, _syncAlwaysSucceeds, _stats, _trace, alwaysFailOnDataInterference),
+						syncAddress(_addr) {
 
-	virtual bool attemptSync(Signal* signal);
-
-	virtual simtime_t processSignal(AirFrame* frame);
-
-protected:
-	AirFrame* currFrame;
-	int syncAddress;
 };
 
-#endif /* UWBIREDSYNCONADDRESS_H_ */
+
+bool DeciderUWBIREDSyncOnAddress::attemptSync(Signal* s) {
+	cMessage* encaps = currFrame->getEncapsulatedMsg();
+	assert(static_cast<MacPkt*>(encaps));
+	MacPkt* macPkt = static_cast<MacPkt*>(encaps);
+
+	return (macPkt->getSrcAddr()==syncAddress);
+};
+
+simtime_t DeciderUWBIREDSyncOnAddress::processSignal(AirFrame* frame) {
+	currFrame = frame;
+	return DeciderUWBIRED::processSignal(frame);
+};
+
+

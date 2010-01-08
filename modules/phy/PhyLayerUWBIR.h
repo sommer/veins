@@ -46,11 +46,11 @@
 
 
 class DeciderUWBIRED;
-class UWBIREDSyncOnAddress;
+class DeciderUWBIREDSyncOnAddress;
 class UWBIREDSync;
 
 #include "DeciderUWBIRED.h"
-#include "UWBIREDSyncOnAddress.h"
+#include "DeciderUWBIREDSyncOnAddress.h"
 #include "UWBIREDSync.h"
 
 class PhyLayerUWBIR : public BasePhyLayer
