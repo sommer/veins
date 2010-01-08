@@ -251,7 +251,7 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 				syncAlwaysSucceeds, stats, trace, addr, alwaysFailOnDataInterference);
 	}
 
-	if (name == "UWBIREDSync") {
+	if (name == "DeciderUWBIREDSync") {
 		double tmin;
 		it = params.find("syncMinDuration");
 		if (it == params.end()) {
@@ -259,7 +259,7 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 					"Could not find required double parameter <syncMinDuration> in the decider xml configuration file.");
 		}
 		tmin = it->second.doubleValue();
-		uwbdecider = new UWBIREDSync(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace, tmin, alwaysFailOnDataInterference);
+		uwbdecider = new DeciderUWBIREDSync(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace, tmin, alwaysFailOnDataInterference);
 	}
 
 	if (name=="DeciderUWBIRED") {

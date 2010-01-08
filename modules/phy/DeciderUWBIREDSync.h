@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        UWBIREDSync.h
+ * file:        DeciderUWBIREDSync.h
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
@@ -37,13 +37,13 @@ using namespace std;
 
 class PhyLayerUWBIR;
 
-class UWBIREDSync: public DeciderUWBIRED {
+class DeciderUWBIREDSync: public DeciderUWBIRED {
 public:
-	UWBIREDSync(DeciderToPhyInterface* iface,
+	DeciderUWBIREDSync(DeciderToPhyInterface* iface,
 				PhyLayerUWBIR* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, double _tmin, bool alwaysFailOnDataInterference);
-	~UWBIREDSync();
+	~DeciderUWBIREDSync();
 
 protected:
 	virtual bool attemptSync(Signal* signal);

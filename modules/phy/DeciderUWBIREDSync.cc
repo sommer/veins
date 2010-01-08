@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        UWBIREDSync.cc
+ * file:        DeciderUWBIREDSync.cc
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
@@ -20,10 +20,10 @@
  * 				that is "long enough" and "powerful enough".
 ***************************************************************************/
 
-#include "UWBIREDSync.h"
+#include "DeciderUWBIREDSync.h"
 
 
-UWBIREDSync::UWBIREDSync(DeciderToPhyInterface* iface,
+DeciderUWBIREDSync::DeciderUWBIREDSync(DeciderToPhyInterface* iface,
 				PhyLayerUWBIR* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, double _tmin, bool alwaysFailOnDataInterference) :
@@ -34,7 +34,7 @@ UWBIREDSync::UWBIREDSync(DeciderToPhyInterface* iface,
 
 };
 
-bool UWBIREDSync::attemptSync(Signal* s) {
+bool DeciderUWBIREDSync::attemptSync(Signal* s) {
 	syncVector.clear();
 	// Retrieve all potentially colliding airFrames
 	phy->getChannelInfo(s->getSignalStart(), s->getSignalStart()+IEEE802154A::mandatory_preambleLength,
@@ -84,7 +84,7 @@ bool UWBIREDSync::attemptSync(Signal* s) {
 	return synchronized;
 };
 
-bool UWBIREDSync::evaluateEnergy(Signal* s) {
+bool DeciderUWBIREDSync::evaluateEnergy(Signal* s) {
 	// Assumption: channel coherence time > signal duration
 	// Thus we can simply sample the first pulse of the received signal
 	ConstMapping* rxPower = s->getReceivingPower();
@@ -100,7 +100,7 @@ bool UWBIREDSync::evaluateEnergy(Signal* s) {
 	return false;
 };
 
-UWBIREDSync::~UWBIREDSync() {
+DeciderUWBIREDSync::~DeciderUWBIREDSync() {
 	syncVector.clear();
 };
 
