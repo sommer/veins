@@ -323,7 +323,6 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 				!= airFrameVector.end(); ++airFrameIter) {
 			Signal & aSignal = (*airFrameIter)->getSignal();
 			ConstMapping* currPower = aSignal.getReceivingPower();
-			arg.setTime(now + offsets.at(currSig));
 			double measure = currPower->getValue(arg)*peakPulsePower; //Ptx; // de-normalize (this value should be in AirFrame or in Signal, to be set at run-time)
 //			measure = measure * uniform(0, +1); // random point of Efield at sampling (due to pulse waveform and self interference)
 			if (currPower == signalPower) {

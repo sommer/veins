@@ -409,11 +409,8 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<<<<<<< HEAD:.cproject
 <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-=======
 <entry excluding="examples/analogueModels|modules/phyOld|modules/localization|modules/channel" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
->>>>>>> Fixed build process. Ignores examples directory.:.cproject
 </sourceEntries>
 </configuration>
 </storageModule>

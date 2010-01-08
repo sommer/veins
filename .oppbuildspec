@@ -23,7 +23,6 @@
 <dir makemake-options="-o channelInfo -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/channelInfo" type="makemake"/>
 <dir makemake-options="--deep --make-so -o miximbase -O out --meta:recurse --meta:export-library --meta:use-exported-libs" path="base" type="makemake"/>
 <dir makemake-options="-o coord -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/coord" type="makemake"/>
->>>>>>> Fixed build process. Ignores examples directory.:.oppbuildspec
 <dir makemake-options="-o basePhyLayer -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/basePhyLayer" type="makemake"/>
 <dir makemake-options="-o connectionManager -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/connectionManager" type="makemake"/>
 <dir makemake-options="--make-so -o powerTestUtils -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/utils" type="makemake"/>
@@ -36,5 +35,4 @@
 <dir makemake-options="--deep --make-so -o miximmodules -O out -lmiximbase --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="modules" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests" type="makemake"/>
 <dir makemake-options="--make-so -o miximtestUtils -O out --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/testUtils" type="makemake"/>
->>>>>>> Fixed build process. Ignores examples directory.:.oppbuildspec
 </buildspec>
