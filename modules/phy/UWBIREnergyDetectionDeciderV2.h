@@ -29,12 +29,12 @@
 #include "Mapping.h"
 #include "AirFrame_m.h"
 #include "Decider.h"
-#include "UWBIRDeciderResult.h"
+#include "DeciderResultUWBIR.h"
 #include "AlohaMacLayer.h"
 #include "IEEE802154A.h"
 #include "UWBIRPacket.h"
 #include "BaseUtility.h"
-//#include "UWBIRRadio.h"
+//#include "RadioUWBIR.h"
 //#include "PhyUtils.h"
 
 using namespace std;

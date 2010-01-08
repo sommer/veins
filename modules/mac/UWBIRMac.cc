@@ -129,7 +129,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 	nbHandledRxPackets++;
 	if (!packetsAlwaysValid) {
 		PhyToMacControlInfo * phyToMac = dynamic_cast<PhyToMacControlInfo*> (mac->getControlInfo());
-		UWBIRDeciderResult * res = dynamic_cast<UWBIRDeciderResult*>(phyToMac->getDeciderResult());
+		DeciderResultUWBIR * res = dynamic_cast<DeciderResultUWBIR*>(phyToMac->getDeciderResult());
 		const std::vector<bool> * decodedBits = res->getDecodedBits();
 		int bitsToDecode = mac->getNbSymbols();
 		nbSymbolsReceived = nbSymbolsReceived + ceil(bitsToDecode / IEEE802154A::RSSymbolLength);

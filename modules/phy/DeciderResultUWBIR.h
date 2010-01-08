@@ -5,11 +5,11 @@
 #include "Decider.h"
 #include <vector>
 
-class UWBIRDeciderResult : public DeciderResult {
+class DeciderResultUWBIR : public DeciderResult {
 public:
-	UWBIRDeciderResult(bool isCorrect, std::vector<bool>* _decodedBits): DeciderResult(isCorrect), decodedBits(_decodedBits) { }
+	DeciderResultUWBIR(bool isCorrect, std::vector<bool>* _decodedBits): DeciderResult(isCorrect), decodedBits(_decodedBits) { }
 
-	~UWBIRDeciderResult() {
+	~DeciderResultUWBIR() {
 		decodedBits->clear();
 		delete decodedBits;
 	}

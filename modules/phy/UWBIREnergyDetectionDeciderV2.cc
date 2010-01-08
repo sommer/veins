@@ -46,7 +46,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::processSignal(AirFrame* frame) {
 simtime_t UWBIREnergyDetectionDeciderV2::handleNewSignal(Signal* s) {
 
 	int currState = uwbiface->getRadioState();
-	if (tracking == 0 && currState == UWBIRRadio::SYNC) {
+	if (tracking == 0 && currState == RadioUWBIR::SYNC) {
 		  simtime_t endOfHeader = s->getSignalStart()
 				+ IEEE802154A::mandatory_preambleLength;
 		  currentSignals[s] = HEADER_OVER;
@@ -78,7 +78,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleHeaderOver(map<Signal*, int>::ite
 	int currState = uwbiface->getRadioState();
 	Signal* s = it->first;
 
-	if (tracking == 0 && currState == UWBIRRadio::SYNC) {
+	if (tracking == 0 && currState == RadioUWBIR::SYNC) {
 		// We are not tracking a signal currently.
 		// Can we synchronize on this one ?
 
@@ -144,7 +144,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(map<Signal*, int>::ite
 		// we cannot compute bit error rate here
 		// so we send the packet to the MAC layer which will compare receivedBits
 		// with the actual bits sent.
-		UWBIRDeciderResult * result = new UWBIRDeciderResult(isCorrect, receivedBits);
+		DeciderResultUWBIR * result = new DeciderResultUWBIR(isCorrect, receivedBits);
 		if(isCorrect) {
 		  phy->sendUp(frame, result);
 		} else {

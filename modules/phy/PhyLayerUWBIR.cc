@@ -69,11 +69,11 @@ void PhyLayerUWBIR::initialize(int stage) {
 
 
 Radio* PhyLayerUWBIR::initializeRadio() {
-	int initialRadioState = readPar("initalRadioState", (int) UWBIRRadio::SYNC);
+	int initialRadioState = readPar("initalRadioState", (int) RadioUWBIR::SYNC);
 	double radioMinAtt = readPar("radioMinAtt", 1.0);
 	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
 
-	uwbradio = UWBIRRadio::createNewUWBIRRadio(initialRadioState, radioMinAtt, radioMaxAtt);
+	uwbradio = RadioUWBIR::createNewUWBIRRadio(initialRadioState, radioMinAtt, radioMaxAtt);
 
 	//	- switch times to TX
 	simtime_t rxToTX = readPar("timeRXToTX", 0.0);
@@ -81,21 +81,21 @@ Radio* PhyLayerUWBIR::initializeRadio() {
 
 	// Radio timers
 	// From Sleep mode
-	uwbradio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::RX, par("timeSleepToRX"));
-	uwbradio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::TX, par("timeSleepToTX"));
-	uwbradio->setSwitchTime(UWBIRRadio::SLEEP, UWBIRRadio::SLEEP, 0);
+	uwbradio->setSwitchTime(RadioUWBIR::SLEEP, RadioUWBIR::RX, par("timeSleepToRX"));
+	uwbradio->setSwitchTime(RadioUWBIR::SLEEP, RadioUWBIR::TX, par("timeSleepToTX"));
+	uwbradio->setSwitchTime(RadioUWBIR::SLEEP, RadioUWBIR::SLEEP, 0);
 
 	// From TX mode
-	uwbradio->setSwitchTime(UWBIRRadio::TX, UWBIRRadio::SYNC, par("timeTXToRX"));
-	uwbradio->setSwitchTime(UWBIRRadio::TX, UWBIRRadio::RX, par("timeTXToRX"));
+	uwbradio->setSwitchTime(RadioUWBIR::TX, RadioUWBIR::SYNC, par("timeTXToRX"));
+	uwbradio->setSwitchTime(RadioUWBIR::TX, RadioUWBIR::RX, par("timeTXToRX"));
 
 	// From RX mode
-	uwbradio->setSwitchTime(UWBIRRadio::RX, UWBIRRadio::TX, par("timeRXToTX"));
-	uwbradio->setSwitchTime(UWBIRRadio::RX, UWBIRRadio::SYNC, 0.000000001);
-	uwbradio->setSwitchTime(UWBIRRadio::SYNC, UWBIRRadio::TX, par("timeRXToTX"));
+	uwbradio->setSwitchTime(RadioUWBIR::RX, RadioUWBIR::TX, par("timeRXToTX"));
+	uwbradio->setSwitchTime(RadioUWBIR::RX, RadioUWBIR::SYNC, 0.000000001);
+	uwbradio->setSwitchTime(RadioUWBIR::SYNC, RadioUWBIR::TX, par("timeRXToTX"));
 
 	// From SYNC mode
-	uwbradio->setSwitchTime(UWBIRRadio::SYNC, UWBIRRadio::RX, 0.000000001);
+	uwbradio->setSwitchTime(RadioUWBIR::SYNC, RadioUWBIR::RX, 0.000000001);
 
 	return uwbradio;
 }
@@ -312,7 +312,7 @@ void PhyLayerUWBIR::setSwitchingCurrent(int from, int to) {
 	double current = 0;
 
 	switch(from) {
-	case UWBIRRadio::SYNC:
+	case RadioUWBIR::SYNC:
 	case Radio::RX:
 		switch(to) {
 		case Radio::SLEEP:
@@ -362,16 +362,16 @@ void PhyLayerUWBIR::setSwitchingCurrent(int from, int to) {
 
 void PhyLayerUWBIR::setRadioCurrent(int rs) {
 	switch(rs) {
-	case UWBIRRadio::RX:
+	case RadioUWBIR::RX:
 		BatteryAccess::drawCurrent(rxCurrent, RX_ACCT);
 		break;
-	case UWBIRRadio::TX:
+	case RadioUWBIR::TX:
 		BatteryAccess::drawCurrent(txCurrent, TX_ACCT);
 		break;
-	case UWBIRRadio::SLEEP:
+	case RadioUWBIR::SLEEP:
 		BatteryAccess::drawCurrent(sleepCurrent, SLEEP_ACCT);
 		break;
-	case UWBIRRadio::SYNC:
+	case RadioUWBIR::SYNC:
 		BatteryAccess::drawCurrent(syncCurrent, SYNC_ACCT);
 	default:
 		break;
@@ -380,7 +380,7 @@ void PhyLayerUWBIR::setRadioCurrent(int rs) {
 
 /*
 simtime_t PhyLayerUWBIR::setRadioState(int rs) {
-	if(_radio->getCurrentState()==UWBIRRadio::RX && rs != UWBIRRadio::RX && rs!= UWBIRRadio::SYNC) {
+	if(_radio->getCurrentState()==RadioUWBIR::RX && rs != RadioUWBIR::RX && rs!= RadioUWBIR::SYNC) {
 		uwbdecider->cancelReception();
 	}
   BasePhyLayer::setRadioState(rs);
@@ -389,7 +389,7 @@ simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 	int prevState = radio->getCurrentState();
 
-	if(radio->getCurrentState()==UWBIRRadio::RX && rs != UWBIRRadio::RX && rs!= UWBIRRadio::SYNC) {
+	if(radio->getCurrentState()==RadioUWBIR::RX && rs != RadioUWBIR::RX && rs!= RadioUWBIR::SYNC) {
 		uwbdecider->cancelReception();
 	}
 

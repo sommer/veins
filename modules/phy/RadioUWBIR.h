@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        UWBIRRadio.h
+ * file:        RadioUWBIR.h
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
@@ -40,7 +40,7 @@
  *
  */
 
-class UWBIRRadio: public Radio {
+class RadioUWBIR: public Radio {
 	friend class PhyLayerUWBIR;
 
 public:
@@ -72,17 +72,17 @@ public:
 		powerConsumptions[radioState] = _powerConsumption;
 	}
 
-	virtual ~UWBIRRadio() {
+	virtual ~RadioUWBIR() {
 		delete[] powerConsumptions;
 		powerConsumptions = 0;
 	}
 
 	/* Static factory method (see Radio class in PhyUtils.h) */
-	static UWBIRRadio* createNewUWBIRRadio(int initialState = SYNC,
+	static RadioUWBIR* createNewUWBIRRadio(int initialState = SYNC,
 								 double minAtt = 1.0,
 								 double maxAtt = 0.0)
 	{
-		return new UWBIRRadio(UWBIRRadio::UWBIR_NUM_RADIO_STATES,
+		return new RadioUWBIR(RadioUWBIR::UWBIR_NUM_RADIO_STATES,
 						 initialState,
 						 minAtt, maxAtt);
 	}
@@ -96,12 +96,12 @@ public:
 	virtual simtime_t switchTo(int newState, simtime_t now) {
 		// state must be one of sleep, receive or transmit (not sync)
 		//assert(newState != Radio::SYNC);
-		if(newState == state || (newState == UWBIRRadio::RX && state == UWBIRRadio::SYNC)) {
+		if(newState == state || (newState == RadioUWBIR::RX && state == RadioUWBIR::SYNC)) {
 			return -1; // nothing to do
 		} else {
-			if(newState == UWBIRRadio::RX) {
+			if(newState == RadioUWBIR::RX) {
 				// prevent entering "frame reception" immediately
-				newState = UWBIRRadio::SYNC;
+				newState = RadioUWBIR::SYNC;
 			}
 			return reallySwitchTo(newState, now);
 		}
@@ -112,7 +112,7 @@ public:
 		// set the nextState to the newState and the current state to SWITCHING
 		nextState = newState;
 		int lastState = state;
-		state = UWBIRRadio::SWITCHING;
+		state = RadioUWBIR::SWITCHING;
 		radioStates.record(state);
 		// make entry to RSAM
 		makeRSAMEntry(now, state);
@@ -134,7 +134,7 @@ public:
 
 protected:
 
-	UWBIRRadio(int numRadioStates, int initialState = SYNC, double minAtt = 1.0, double maxAtt = 0.0)
+	RadioUWBIR(int numRadioStates, int initialState = SYNC, double minAtt = 1.0, double maxAtt = 0.0)
 	:Radio(numRadioStates, initialState, minAtt, maxAtt) {
 
 		lastStateChange = 0;
@@ -150,7 +150,7 @@ protected:
 
 	virtual double mapStateToAtt(int state)
 	{
-		if (state == UWBIRRadio::RX || state == UWBIRRadio::SYNC)
+		if (state == RadioUWBIR::RX || state == RadioUWBIR::SYNC)
 		{
 			return minAtt;
 		} else
@@ -165,9 +165,9 @@ private:
 	 * the radio has locked on a frame and is attempting reception.
 	 */
 	virtual void startReceivingFrame(simtime_t now) {
-		assert(state == UWBIRRadio::SYNC);
-		state = UWBIRRadio::SWITCHING;
-		nextState = UWBIRRadio::RX;
+		assert(state == RadioUWBIR::SYNC);
+		state = RadioUWBIR::SWITCHING;
+		nextState = RadioUWBIR::RX;
 		endSwitch(now);
 	}
 	/**
@@ -176,9 +176,9 @@ private:
 		 * synchronize on incoming frames.
 		 */
 	virtual void finishReceivingFrame(simtime_t now) {
-		assert(state == UWBIRRadio::RX);
-		state = UWBIRRadio::SWITCHING;
-		nextState = UWBIRRadio::SYNC;
+		assert(state == RadioUWBIR::RX);
+		state = RadioUWBIR::SWITCHING;
+		nextState = RadioUWBIR::SYNC;
 		endSwitch(now);
 	}
 

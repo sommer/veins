@@ -31,7 +31,7 @@
 #define UWBIR_PHY_LAYER_H
 
 #include "PhyLayerBattery.h"
-#include "UWBIRRadio.h"
+#include "RadioUWBIR.h"
 #include "UWBIRStochasticPathlossModel.h"
 #include "UWBIRIEEE802154APathlossModel.h"
 #include "HostState.h"
@@ -79,7 +79,7 @@ protected:
     virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
     virtual Radio* initializeRadio();
 
-    UWBIRRadio* uwbradio;
+    RadioUWBIR* uwbradio;
     /**
      * called by Blackboard to inform of changes
      */
