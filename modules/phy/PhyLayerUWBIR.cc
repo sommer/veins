@@ -262,8 +262,8 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 		uwbdecider = new UWBIREDSync(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace, tmin, alwaysFailOnDataInterference);
 	}
 
-	if (name=="UWBIREnergyDetectionDeciderV2") {
-	    uwbdecider = new UWBIREnergyDetectionDeciderV2(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace, alwaysFailOnDataInterference);
+	if (name=="DeciderUWBIRED") {
+	    uwbdecider = new DeciderUWBIRED(this, this, syncThreshold, syncAlwaysSucceeds, stats, trace, alwaysFailOnDataInterference);
 	}
 	return uwbdecider;
 }
@@ -408,8 +408,8 @@ simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 
 
 void PhyLayerUWBIR::finish() {
-	UWBIREnergyDetectionDeciderV2 * dec =
-			static_cast<UWBIREnergyDetectionDeciderV2*> (decider);
+	DeciderUWBIRED * dec =
+			static_cast<DeciderUWBIRED*> (decider);
 	recordScalar("nbRandomBits", dec->getNbRandomBits());
 	recordScalar("avgThreshold", dec->getAvgThreshold());
 	recordScalar("nbSuccessfulSyncs", dec->getNbSuccessfulSyncs());

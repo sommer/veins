@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<Decider type="UWBIREnergyDetectionDeciderV2">
+	<Decider type="DeciderUWBIRED">
 		<parameter name="sensitivity" type="double" value="0.5"/>
 		<parameter name="syncThreshold" type="double" value="1.10"/>
 		<parameter name="syncAlwaysSucceeds" type="bool" value="true"/>

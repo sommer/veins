@@ -21,13 +21,13 @@
  ***************************************************************************/
 
 #include "UWBIREDSyncOnAddress.h"
-#include "UWBIREnergyDetectionDeciderV2.h"
+#include "DeciderUWBIRED.h"
 
 UWBIREDSyncOnAddress::UWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
 				PhyLayerUWBIR* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, int _addr, bool alwaysFailOnDataInterference) :
-					UWBIREnergyDetectionDeciderV2(iface, _uwbiface,
+					DeciderUWBIRED(iface, _uwbiface,
 						_syncThreshold, _syncAlwaysSucceeds, _stats, _trace, alwaysFailOnDataInterference),
 						syncAddress(_addr) {
 
@@ -44,7 +44,7 @@ bool UWBIREDSyncOnAddress::attemptSync(Signal* s) {
 
 simtime_t UWBIREDSyncOnAddress::processSignal(AirFrame* frame) {
 	currFrame = frame;
-	return UWBIREnergyDetectionDeciderV2::processSignal(frame);
+	return DeciderUWBIRED::processSignal(frame);
 };
 
 

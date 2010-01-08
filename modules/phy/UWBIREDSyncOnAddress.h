@@ -31,13 +31,13 @@
 #include "AirFrame_m.h"
 #include "MacPkt_m.h"
 #include "Decider.h"
-#include "UWBIREnergyDetectionDeciderV2.h"
+#include "DeciderUWBIRED.h"
 
 using namespace std;
 
 class PhyLayerUWBIR;
 
-class UWBIREDSyncOnAddress: public UWBIREnergyDetectionDeciderV2 {
+class UWBIREDSyncOnAddress: public DeciderUWBIRED {
 
 public:
 	UWBIREDSyncOnAddress(DeciderToPhyInterface* iface,

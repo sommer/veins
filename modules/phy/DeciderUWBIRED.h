@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        UWBIREnergyDetectionDeciderV2.h
+ * file:        DeciderUWBIRED.h
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
@@ -42,7 +42,7 @@ using namespace std;
 class PhyLayerUWBIR;
 
 
-class UWBIREnergyDetectionDeciderV2: public Decider {
+class DeciderUWBIRED: public Decider {
 private:
 	bool trace, stats;
 	long nbRandomBits;
@@ -71,7 +71,7 @@ public:
 	const static double lambda = 0.04;// center frequency wavelength
 	const static double Aiso = 127.32E-6; // Aperture of the ideal isotropic antenna (lambda²/4Pi)
 
-	UWBIREnergyDetectionDeciderV2(DeciderToPhyInterface* iface,
+	DeciderUWBIRED(DeciderToPhyInterface* iface,
 			PhyLayerUWBIR* _uwbiface,
 			double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 			bool _trace, bool alwaysFailOnDataInterference=false) :

@@ -45,17 +45,17 @@
  */
 
 
-class UWBIREnergyDetectionDeciderV2;
+class DeciderUWBIRED;
 class UWBIREDSyncOnAddress;
 class UWBIREDSync;
 
-#include "UWBIREnergyDetectionDeciderV2.h"
+#include "DeciderUWBIRED.h"
 #include "UWBIREDSyncOnAddress.h"
 #include "UWBIREDSync.h"
 
 class PhyLayerUWBIR : public BasePhyLayer
 {
-	friend class UWBIREnergyDetectionDeciderV2;
+	friend class DeciderUWBIRED;
 
 public:
 	void initialize(int stage);
@@ -69,7 +69,7 @@ protected:
 
     UWBIRStochasticPathlossModel* uwbpathloss;
     UWBIRIEEE802154APathlossModel* ieee802154AChannel;
-    UWBIREnergyDetectionDeciderV2* uwbdecider;
+    DeciderUWBIRED* uwbdecider;
 
     virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
 

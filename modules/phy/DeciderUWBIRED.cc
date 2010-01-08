@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- ********************************************************
- * file:        UWBIREnergyDetectionDeciderV2.cc
+ * file:        DeciderUWBIRED.cc
  *
  * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
  *
@@ -18,11 +18,11 @@
  * description: this Decider models a non-coherent energy-detection receiver.
  ***************************************************************************/
 
-#include "UWBIREnergyDetectionDeciderV2.h"
+#include "DeciderUWBIRED.h"
 #include "PhyLayerUWBIR.h"
 
 
-simtime_t UWBIREnergyDetectionDeciderV2::processSignal(AirFrame* frame) {
+simtime_t DeciderUWBIRED::processSignal(AirFrame* frame) {
 	Signal* s = &frame->getSignal();
 	map<Signal*, int>::iterator it = currentSignals.find(s);
 
@@ -43,7 +43,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::processSignal(AirFrame* frame) {
 	return 0;
 }
 
-simtime_t UWBIREnergyDetectionDeciderV2::handleNewSignal(Signal* s) {
+simtime_t DeciderUWBIRED::handleNewSignal(Signal* s) {
 
 	int currState = uwbiface->getRadioState();
 	if (tracking == 0 && currState == RadioUWBIR::SYNC) {
@@ -66,14 +66,14 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleNewSignal(Signal* s) {
 
 // We just left reception state ; we must update our data on this frame accordingly
 
-void UWBIREnergyDetectionDeciderV2::cancelReception() {
+void DeciderUWBIRED::cancelReception() {
 	if(tracking != NULL) {
    	  tracking = NULL;
    	  synced = false;
 	}
 }
 
-simtime_t UWBIREnergyDetectionDeciderV2::handleHeaderOver(map<Signal*, int>::iterator& it) {
+simtime_t DeciderUWBIRED::handleHeaderOver(map<Signal*, int>::iterator& it) {
 
 	int currState = uwbiface->getRadioState();
 	Signal* s = it->first;
@@ -113,7 +113,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleHeaderOver(map<Signal*, int>::ite
 	return endOfSignal;
 }
 
-bool UWBIREnergyDetectionDeciderV2::attemptSync(Signal* s) {
+bool DeciderUWBIRED::attemptSync(Signal* s) {
 	double snrValue;
 	ConstMapping* power = s->getReceivingPower();
 	ConstMappingIterator* mIt = power->createConstIterator();
@@ -137,7 +137,7 @@ bool UWBIREnergyDetectionDeciderV2::attemptSync(Signal* s) {
     }
 }
 
-simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(map<Signal*, int>::iterator& it, AirFrame* frame) {
+simtime_t DeciderUWBIRED::handleSignalOver(map<Signal*, int>::iterator& it, AirFrame* frame) {
 	if (it->first == tracking) {
 		vector<bool>* receivedBits = new vector<bool>();
 		bool isCorrect = decodePacket(it->first, receivedBits);
@@ -167,7 +167,7 @@ simtime_t UWBIREnergyDetectionDeciderV2::handleSignalOver(map<Signal*, int>::ite
  * @brief Returns false if the packet is incorrect. If true,
  * the MAC layer must still compare bit values to validate the frame.
  */
-bool UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
+bool DeciderUWBIRED::decodePacket(Signal* signal,
 		vector<bool> * receivedBits) {
 
 	simtime_t now, offset;
@@ -288,7 +288,7 @@ bool UWBIREnergyDetectionDeciderV2::decodePacket(Signal* signal,
  * and as second value a "score" associated to this window. This score is equals to the sum for all
  * 16 pulse peak positions of the voltage measured by the receiver ADC.
  */
-pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
+pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
 		simtime_t now, simtime_t burst, Signal* signal) {
 	std::pair<double, double> energy;
 	energy.first = 0; // stores SNIR
@@ -382,7 +382,7 @@ pair<double, double> UWBIREnergyDetectionDeciderV2::integrateWindow(int symbol,
 	return energy;
 }
 
-simtime_t UWBIREnergyDetectionDeciderV2::handleChannelSenseRequest(
+simtime_t DeciderUWBIRED::handleChannelSenseRequest(
 		ChannelSenseRequest* request) {
 	if (channelSensing) {
 		// send back the channel state

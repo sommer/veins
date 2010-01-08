@@ -21,14 +21,13 @@
 ***************************************************************************/
 
 #include "UWBIREDSync.h"
-#include "UWBIREnergyDetectionDeciderV2.h"
 
 
 UWBIREDSync::UWBIREDSync(DeciderToPhyInterface* iface,
 				PhyLayerUWBIR* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
 				bool _trace, double _tmin, bool alwaysFailOnDataInterference) :
-					UWBIREnergyDetectionDeciderV2(iface, _uwbiface,
+					DeciderUWBIRED(iface, _uwbiface,
 						_syncThreshold, _syncAlwaysSucceeds, _stats, _trace,
 						alwaysFailOnDataInterference),
 						tmin(_tmin){
