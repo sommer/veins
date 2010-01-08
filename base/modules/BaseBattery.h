@@ -82,7 +82,9 @@ public:
 	 * DrawAmount parameter. Can be an fixed single amount or an amount
 	 * drawn over time.
 	 * The drainID identifies the device which drains the power.
-	 * "Account" identifies the account the power is drawn from.
+	 * "Account" identifies the account the power is drawn from. It is
+	 * used for statistical evaluation only to see which activity of a
+	 * device has used how much power. It does not affect functionality.
 	 */
 	virtual void draw(int drainID, DrawAmount& amount, int account) = 0;
 
