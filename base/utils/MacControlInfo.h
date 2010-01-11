@@ -45,10 +45,12 @@ class MacControlInfo : public cObject
     int nextHopMac;
 
     double ber;
+    double rssi;  // CSEM Jérôme Rousselot -- allows the MAC layer to forward RSSI information to the routing layer
 
   public:
     /** @brief Default constructor*/
-    MacControlInfo(const int addr) : nextHopMac(addr) {};
+    MacControlInfo(const int addr) : nextHopMac(addr), ber(0), rssi(0) {};
+
     /** @brief Destructor*/
     virtual ~MacControlInfo(){};
 
@@ -68,6 +70,14 @@ class MacControlInfo : public cObject
 
     void setBER(double _ber) {
     	ber = _ber;
+    }
+
+    virtual const double getRSSI() {
+    	return rssi;
+    }
+
+    void setRSSI(double _rssi) {
+    	rssi = _rssi;
     }
 };
 
