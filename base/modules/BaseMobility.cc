@@ -315,18 +315,18 @@ void BaseMobility::wrapIfOutside(BorderHandling wo, Coord& stepTarget, Coord& ta
     switch( wo ){
     case X_SMALLER:
     case X_BIGGER:
-        targetPos.setX(fmod(targetPos.getX(), playgroundSizeX()));
-        stepTarget.setX(fmod(stepTarget.getX(), playgroundSizeX()));
+        targetPos.setX(FWMath::modulo(targetPos.getX(), playgroundSizeX()));
+        stepTarget.setX(FWMath::modulo(stepTarget.getX(), playgroundSizeX()));
 	    break;
     case Y_SMALLER:
     case Y_BIGGER:
-        targetPos.setY(fmod(targetPos.getY(), playgroundSizeY()));
-        stepTarget.setY(fmod(stepTarget.getY(), playgroundSizeY()));
+        targetPos.setY(FWMath::modulo(targetPos.getY(), playgroundSizeY()));
+        stepTarget.setY(FWMath::modulo(stepTarget.getY(), playgroundSizeY()));
 	    break;
     case Z_SMALLER:
     case Z_BIGGER:
-        targetPos.setZ(fmod(targetPos.getZ(), playgroundSizeZ()));
-        stepTarget.setZ(fmod(stepTarget.getZ(), playgroundSizeZ()));
+        targetPos.setZ(FWMath::modulo(targetPos.getZ(), playgroundSizeZ()));
+        stepTarget.setZ(FWMath::modulo(stepTarget.getZ(), playgroundSizeZ()));
 	    break;
     case NOWHERE:
     default:

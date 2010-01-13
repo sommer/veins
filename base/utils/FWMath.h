@@ -95,6 +95,15 @@ public:
     }
 
     /**
+     * @brief Returns the remainder r on division of dividend a by divisor n,
+     * using floored division. The remainder r has the same sign as the divisor n.
+     *
+     */
+    static double modulo(double a, double n) {
+		return (a - n * floor(a/n));
+    }
+
+    /**
      * Tests whether two doubles are close enough to be declared equal.
      * @return true if parameters are at most epsilon apart, false
      * otherwise
