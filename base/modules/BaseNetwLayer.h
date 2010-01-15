@@ -63,8 +63,6 @@ protected:
     /** @brief cached variable of my networ address */
     int myNetwAddr;
 
-    virtual BaseArp* initializeArp();
-
 public:
     //Module_Class_Members(BaseNetwLayer,BaseLayer,0);
 

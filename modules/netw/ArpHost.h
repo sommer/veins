@@ -66,17 +66,4 @@ public:
     virtual int myNetwAddr(cModule* netw);
 };
 
-/**
- * @brief Provides access to the hosts ARP module.
- *
- * @ingroup baseModules
- * @ingroup netwLayer
- */
-class  ArpHostAccess : public ModuleAccess<ArpHost>
-{
-  public:
-    ArpHostAccess() : ModuleAccess<ArpHost>() {}
-};
-
-
 #endif
