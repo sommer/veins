@@ -207,19 +207,14 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 
 	// debugging information (start)
 	if (trace) {
-		simtime_t prev = 0;
 		ConstMappingIterator* iteratorDbg = signalPower->createConstIterator();
-		int nbItems = 0;
 		iteratorDbg->jumpToBegin();
 		while (iteratorDbg->hasNext()) {
-			nbItems = nbItems + 1;
 			iteratorDbg->next();
-
-			receivedPulses.recordWithTimestamp(signal->getSignalStart()
-												+ iteratorDbg->getPosition().getTime(),
-											   signalPower->getValue(iteratorDbg->getPosition()));
-			prev = iteratorDbg->getPosition().getTime();
-			simtime_t t = signal->getSignalStart() + prev;
+			receivedPulses.recordWithTimestamp(
+			  iteratorDbg->getPosition().getTime(),
+			  signalPower->getValue(iteratorDbg->getPosition())
+			);
 		}
 		delete iteratorDbg;
 	}
