@@ -43,10 +43,11 @@ void BaseMacLayer::initialize(int stage)
         headerLength= par("headerLength");
         phyHeaderLength = phy->getPhyHeaderLength();
 
-        // The nic id is used as MAC address
-        myMacAddr = getParentModule()->getId();
-
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
+    } else {
+		// get handle to arp module, which is initialized at stage 0 in BaseNetwLayer.
+        BaseArp* arp = FindModule<BaseArp*>::findSubModule(getParentModule()->getParentModule());
+        myMacAddr = arp->myMacAddr(this);
     }
 }
 

@@ -25,6 +25,7 @@
 
 #include <omnetpp.h>
 #include "BaseLayer.h"
+#include "BaseArp.h"
 #include "MacPkt_m.h"
 #include <MacToPhyInterface.h>
 

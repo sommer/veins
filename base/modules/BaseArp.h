@@ -39,6 +39,9 @@
  * adds another set of basic operations that may or may not make sense
  * for ARPs.
  *
+ * Update: Jerome Rousselot / CSEM
+ * We modified BaseArp so that it can be subclassed.
+ *
  * @ingroup netwLayer
  * @ingroup baseModules
  *
@@ -60,16 +63,16 @@ public:
     };
 
     /** @brief returns a L2 address to a given L3 address*/
-    int getMacAddr(const int netwAddr);
+    virtual int getMacAddr(const int netwAddr);
 
     /** @brief returns a L3 address to a given L2 address*/
-    int getNetwAddr(const int macAddr);
+    virtual int getNetwAddr(const int macAddr);
 
     /** @brief Returns the L2 address for the passed mac*/
-    int myMacAddr(cModule* mac);
+    virtual int myMacAddr(cModule* mac);
 
     /** @brief Returns the L3 address for the passed net*/
-    int myNetwAddr(cModule* netw);
+    virtual int myNetwAddr(cModule* netw);
 };
 
 /**
