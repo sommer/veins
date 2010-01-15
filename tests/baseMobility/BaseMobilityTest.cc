@@ -8,23 +8,23 @@ void BaseMobilityTest::initialize(int stage)
 {
 	BaseMobility::initialize(stage);
 
-	
+
 	if (stage == 1)
 	{
 		allTestsPassed = true;
-		
+
 		//note << "This host is not moving, it just tests helper-methods of its BaseMobility-class" << endl;
-		
+
 		// read BorderPolicy parameter from ini-file
-		
+
 		int bPolValue = 0;
 		if ( hasPar("borderPolicy") )
-		{ 
-			bPolValue = par("borderPolicy");	
-			
+		{
+			bPolValue = par("borderPolicy");
+
 		}
-		
-		// set border policy properly		
+
+		// set border policy properly
 		switch (bPolValue) {
 				case 1:
 					bPol = REFLECT;
@@ -39,23 +39,23 @@ void BaseMobilityTest::initialize(int stage)
 					bPol = RAISEERROR;
 					break;
 			}
-		
+
 		bPolStr = "";
-		setBPolStr(bPolStr, bPol);		
+		setBPolStr(bPolStr, bPol);
 		//note << "Using " << bPolStr << " as BorderPolicy." << endl;
-		
+
 		// initializing border handling
 		bHand = NOWHERE;
-		
+
 		bHandStr = "";
 		setBHandStr(bHandStr, bHand);
 		//note << "BorderHandling initially set to " << bHandStr << endl;
-		
+
 		// getting info about PlayGroundSize
 		Coord pgs = *(world->getPgs());
-		
+
 		use2D = world->use2D();
-		
+
 		// setting an outer point
 		if ( hasPar("outX") && hasPar("outY") && (hasPar("outZ") || use2D) )
 		{
@@ -67,31 +67,31 @@ void BaseMobilityTest::initialize(int stage)
 			if (!use2D)	{ pointOutside = pgs + Coord (10, 10, 10); }
 			else { pointOutside = pgs + Coord (10, 10); }
 		}
-		
+
 		// setting values of playground size to member variables
 		xMax = pgs.getX();
 		yMax = pgs.getY();
 		if (!use2D) { zMax = pgs.getZ(); }
 		else { zMax = Coord::UNDEFINED; }
-		
+
 		xMin = 0.0;
 		yMin = 0.0;
 		if (!use2D) { zMin = 0.0; }
 		else { zMin = Coord::UNDEFINED; }
-		
+
 		// some output
 		//note << "My Move-Info: " << move.info() << endl;
 		//note << "My Target: " << pointOutside.info() << endl;
-		
+
 		ev << "Starting tests..." << endl;
-		
-				
+
+
 		// Here the methods to be tested are called
-		
+
 		testInitialisation();
 		testCheckIfOutside();
-		
-		
+
+
 	}
 
 }
@@ -99,12 +99,12 @@ void BaseMobilityTest::initialize(int stage)
 void BaseMobilityTest::testInitialisation() {
 	assertTrue("World pointer initialised.", world != 0);
 	assertTrue("Base utility pointer initialised.", utility != 0);
-	
+
 	assertTrue("Host pointer initialised.", hostPtr != 0);
-	assertTrue("Host ID and host pointer matches.", hostPtr->getId() == hostId);	
+	assertTrue("Host ID and host pointer matches.", hostPtr->getId() == hostId);
 }
 
-// handling incoming messages 
+// handling incoming messages
 void BaseMobilityTest::handleSelfMsg( cMessage* msg )
 {
 	delete msg;
@@ -123,19 +123,19 @@ void BaseMobilityTest::handleBorderMsg( cMessage* msg)
 void BaseMobilityTest::finish()
 {
 	assertTrue("Check if all tests passed.", allTestsPassed);
-	
+
 }
 
 // output for a bool
 void BaseMobilityTest::passed(bool b)
 {
 	if (b) { ev << "PASSED" << endl; }
-	else { ev << "FAILED" << endl; }	
+	else { ev << "FAILED" << endl; }
 }
 
 // interprete int values for borderHandling and border Policy
 void BaseMobilityTest::setBHandStr(std::string& str, int i){
-	
+
 	switch (i) {
 		case X_SMALLER:
 			str = "X_SMALLER";
@@ -161,11 +161,11 @@ void BaseMobilityTest::setBHandStr(std::string& str, int i){
 		default:
 			break;
 	}
-	
+
 }
 
 void BaseMobilityTest::setBPolStr(std::string& str, int i){
-	
+
 	switch (i) {
 		case REFLECT:
 			str = "REFLECT";
@@ -182,7 +182,7 @@ void BaseMobilityTest::setBPolStr(std::string& str, int i){
 		default:
 			break;
 	}
-	
+
 }
 
 // test checkIfOutside
@@ -199,62 +199,62 @@ void BaseMobilityTest::testSimpleCIO()
 	Coord borderStep = origin;
 	Coord stepTarget;
 	double dist = 10.0;
-	
-	
+
+
 	ev << "Testing simple checkIfOutside... " << endl;
-	
-	double m = move.startPos.getX();
-	
+
+	double m = move.getStartPos().getX();
+
 	// test X
 	stepTarget = getCoord(xMax+dist, m, m);
-	move.setDirection(stepTarget);
+	move.setDirectionByTarget(stepTarget);
 	//note << "My Target: " << stepTarget.info() << endl;
-	
+
 	assertTrue("Step: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == X_BIGGER);
 	borderStep = origin;
-	
-	
+
+
 	stepTarget = getCoord(xMin-dist, m, m);
-	move.setDirection(stepTarget);
+	move.setDirectionByTarget(stepTarget);
 	//note << "My Target: " << stepTarget.info() << endl;
-	
+
 	assertTrue("Step: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == X_SMALLER);
 	borderStep = origin;
-	
+
 	// test Y
 	stepTarget = getCoord(m, yMax+dist, m);
-	move.setDirection(stepTarget);
+	move.setDirectionByTarget(stepTarget);
 	//note << "My Target: " << stepTarget.info() << endl;
-	
+
 	assertTrue("Step: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Y_BIGGER);
 	borderStep = origin;
-	
-	
+
+
 	stepTarget = getCoord(m, yMin-dist, m);
-	move.setDirection(stepTarget);
+	move.setDirectionByTarget(stepTarget);
 	//note << "My Target: " << stepTarget.info() << endl;
-	
+
 	assertTrue("Step: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Y_SMALLER);
 	borderStep = origin;
-	
+
 	// test Z
 	if (!use2D) {
-		
+
 		stepTarget = getCoord(m, m, zMax+dist);
-		move.setDirection(stepTarget);
+		move.setDirectionByTarget(stepTarget);
 		//note << "My Target: " << stepTarget.info() << endl;
-		
+
 		assertTrue("Step: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Z_BIGGER);
 		borderStep = origin;
-		
-		
+
+
 		stepTarget = getCoord(m, m, zMin-dist);
-		move.setDirection(stepTarget);
+		move.setDirectionByTarget(stepTarget);
 		//note << "My Target: " << stepTarget.info() << endl;
-		
+
 		assertTrue("Step: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Z_SMALLER);
 		borderStep = origin;
-			
+
 	}
 }
 
@@ -264,97 +264,97 @@ void BaseMobilityTest::testComplexCIO()
 	Coord borderStep = origin;
 	Coord stepTarget;
 	double dist = 30.0;
-	
+
 	ev << "Testing complex checkIfOutside... " << endl;
-	
+
 	// test X
 	//note << endl;
-	//note << "Should cross X first." << endl; 
+	//note << "Should cross X first." << endl;
 	for (int i = -1; i <= (yMax/dist +1); i++){
-		
+
 		for (int j = -1; j <= (zMax/dist +1); j++){
-	
+
 			stepTarget = getCoord(xMax+2*dist, i*dist, j*dist);
-			move.setDirection(stepTarget);
+			move.setDirectionByTarget(stepTarget);
 			//note << "My Target: " << stepTarget.info() << endl;
-			
+
 			assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == X_BIGGER);
 			borderStep = origin;
 		}
-	}	
-	
+	}
+
 	for (int i = -1; i <= (yMax/dist +1); i++){
-		
+
 		for (int j = -1; j <= (zMax/dist +1); j++){
-	
+
 			stepTarget = getCoord(xMin-2*dist, i*dist, j*dist);
-			move.setDirection(stepTarget);
+			move.setDirectionByTarget(stepTarget);
 			//note << "My Target: " << stepTarget.info() << endl;
-			
+
 			assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == X_SMALLER);
 			borderStep = origin;
 		}
-	}	
-	
+	}
+
 	// test Y
 	//note << endl;
-	//note << "Should cross Y first." << endl; 
+	//note << "Should cross Y first." << endl;
 	for (int i = -1; i <= (xMax/dist +1); i++){
-		
+
 		for (int j = -1; j <= (zMax/dist +1); j++){
-	
+
 			stepTarget = getCoord(i*dist, yMax+2*dist, j*dist);
-			move.setDirection(stepTarget);
+			move.setDirectionByTarget(stepTarget);
 			//note << "My Target: " << stepTarget.info() << endl;
-			
+
 			assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Y_BIGGER);
 			borderStep = origin;
 		}
-	}	
-	
+	}
+
 	for (int i = -1; i <= (xMax/dist +1); i++){
-		
+
 		for (int j = -1; j <= (zMax/dist +1); j++){
-	
+
 			stepTarget = getCoord(i*dist, yMin-2*dist, j*dist);
-			move.setDirection(stepTarget);
+			move.setDirectionByTarget(stepTarget);
 			//note << "My Target: " << stepTarget.info() << endl;
-			
+
 			assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Y_SMALLER);
 			borderStep = origin;
 		}
 	}
-	
+
 	// test Z
 	//note << endl;
-	//note << "Should cross Z first." << endl; 
+	//note << "Should cross Z first." << endl;
 	if (!use2D){
-		
+
 		for (int i = -1; i <= (xMax/dist +1); i++){
-		
+
 			for (int j = -1; j <= (yMax/dist +1); j++){
-		
+
 				stepTarget = getCoord(i*dist, j*dist, zMax+2*dist);
-				move.setDirection(stepTarget);
+				move.setDirectionByTarget(stepTarget);
 				//note << "My Target: " << stepTarget.info() << endl;
-				
+
 				assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Z_BIGGER);
 				borderStep = origin;
 			}
 		}
-		
+
 		for (int i = -1; i <= (xMax/dist +1); i++){
-		
+
 			for (int j = -1; j <= (yMax/dist +1); j++){
-		
+
 				stepTarget = getCoord(i*dist, j*dist, zMin-2*dist);
-				move.setDirection(stepTarget);
+				move.setDirectionByTarget(stepTarget);
 				//note << "My Target: " << stepTarget.info() << endl;
-				
+
 				assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Z_SMALLER);
 				borderStep = origin;
 			}
-		}		
+		}
 	}
 }
 
@@ -367,81 +367,81 @@ Coord BaseMobilityTest::getCoord(double x, double y, double z) {
 }
 
 void BaseMobilityTest::testBorderCIO()
-{	
+{
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
 	Coord stepTarget;
-	
+
 	double min = 0.0;
 	int bHandVal;
-	
+
 	std::string debug = "";
-	
+
 	ev << "Testing border and edges checkIfOutside... " << endl;
-	
+
 	// testing origin
 	stepTarget = getCoord(min, min, min);
-	move.setDirection(stepTarget);	
+	move.setDirectionByTarget(stepTarget);
 	//note << "My Target: " << stepTarget.info() << endl;
-				
+
 	assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == NOWHERE);
 	borderStep = origin;
-	
+
 	// "one max corners"
 	stepTarget = getCoord(xMax, min, min);
-	move.setDirection(stepTarget);	
+	move.setDirectionByTarget(stepTarget);
 	//note << "My Target: " << stepTarget.info() << endl;
-				
+
 	assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == X_BIGGER);
 	borderStep = origin;
-	
-	
+
+
 	stepTarget = getCoord(min, yMax, min);
-	move.setDirection(stepTarget);	
+	move.setDirectionByTarget(stepTarget);
 	//note << "My Target: " << stepTarget.info() << endl;
-				
+
 	assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Y_BIGGER);
 	borderStep = origin;
-	
+
 	// "two max corners"
 	// this one contains output of the result
 	stepTarget = getCoord(xMax, yMax, min);
-	move.setDirection(stepTarget);	
+	move.setDirectionByTarget(stepTarget);
 	//note << "My Target: " << stepTarget.info() << endl;
-				
+
 	assertTrue("Step to border: " + borderStep.info(), (bHandVal = checkIfOutside(stepTarget, borderStep)) == X_BIGGER);
 	//setBHandStr(debug, bHandVal);
 	//note << "Result: " << debug << endl;
 	borderStep = origin;
-	
+
 	if(!use2D) {
 		stepTarget = getCoord(xMax, min, zMax);
-		move.setDirection(stepTarget);	
+		move.setDirectionByTarget(stepTarget);
 		//note << "My Target: " << stepTarget.info() << endl;
-					
+
 		assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == X_BIGGER);
 		borderStep = origin;
-		
+
 		stepTarget = getCoord(min, min, zMax);
-		move.setDirection(stepTarget);	
+		move.setDirectionByTarget(stepTarget);
 		//note << "My Target: " << stepTarget.info() << endl;
-					
+
 		assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Z_BIGGER);
 		borderStep = origin;
-		
-		
+
+
 		stepTarget = getCoord(min, yMax, zMax);
-		move.setDirection(stepTarget);	
+		move.setDirectionByTarget(stepTarget);
 		//note << "My Target: " << stepTarget.info() << endl;
-					
+
 		assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == Y_BIGGER);
 		borderStep = origin;
-		
+
 		// "all max corner"
 		stepTarget = getCoord(xMax, yMax, zMax);
-		move.setDirection(stepTarget);	
+		move.setDirectionByTarget(stepTarget);
 		//note << "My Target: " << stepTarget.info() << endl;
-					
+
 		assertTrue("Step to border: " + borderStep.info(), checkIfOutside(stepTarget, borderStep) == X_BIGGER);
 		borderStep = origin;
 	}

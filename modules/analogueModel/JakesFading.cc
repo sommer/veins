@@ -86,8 +86,8 @@ JakesFading::~JakesFading() {
 void JakesFading::filterSignal(Signal& s)
 {
 	const Move& senderMove = s.getMove();
-	double relSpeed = (senderMove.direction * senderMove.speed
-					   - hostMove->direction * hostMove->speed).length();
+	double relSpeed = (senderMove.getDirection() * senderMove.getSpeed()
+					   - hostMove->getDirection() * hostMove->getSpeed()).length();
 
 	simtime_t start = s.getSignalStart();
 	simtime_t end = start + s.getSignalLength();

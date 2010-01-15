@@ -45,21 +45,21 @@ void MassMobility::initialize(int stage)
         changeAngleBy = &par("changeAngleBy");
 
         // initial speed and angle
-        move.speed = par("speed");
+        move.setSpeed(par("speed"));
         currentAngle = uniform(0, 360);
 
-        step.setX(move.speed * cos(PI * currentAngle / 180) * updateInterval.dbl());
-        step.setY(move.speed * sin(PI * currentAngle / 180) * updateInterval.dbl());
+        step.setX(move.getSpeed() * cos(PI * currentAngle / 180) * updateInterval.dbl());
+        step.setY(move.getSpeed() * sin(PI * currentAngle / 180) * updateInterval.dbl());
 
     }
     else if( stage == 1 ){
-	// start moving: set direction and start time
-	move.setDirection(move.startPos+step);
-	move.startTime = simTime();
+		// start moving: set direction and start time
+		move.setDirectionByTarget(move.getStartPos() + step);
+		move.setStart(move.getStartPos(), simTime());
 
-	targetPos = move.startPos;
+		targetPos = move.getStartPos();
 
-	scheduleAt(simTime() + uniform(0, changeInterval->doubleValue()), new cMessage("turn", MK_CHANGE_DIR));
+		scheduleAt(simTime() + uniform(0, changeInterval->doubleValue()), new cMessage("turn", MK_CHANGE_DIR));
     }
 }
 
@@ -72,22 +72,22 @@ void MassMobility::handleSelfMsg(cMessage * msg)
     Coord dummy;
 
     switch (msg->getKind()){
-    case MOVE_HOST:
-	BaseMobility::handleSelfMsg( msg );
-	break;
-    case MK_CHANGE_DIR:
-	currentAngle += changeAngleBy->doubleValue();
+		case MOVE_HOST:
+		BaseMobility::handleSelfMsg( msg );
+		break;
+		case MK_CHANGE_DIR:
+		currentAngle += changeAngleBy->doubleValue();
 
-	step.setX(move.speed * cos(PI * currentAngle / 180) * updateInterval.dbl());
-	step.setY(move.speed * sin(PI * currentAngle / 180) * updateInterval.dbl());
+		step.setX(move.getSpeed() * cos(PI * currentAngle / 180) * updateInterval.dbl());
+		step.setY(move.getSpeed() * sin(PI * currentAngle / 180) * updateInterval.dbl());
 
-	move.setDirection(move.startPos+step);
+		move.setDirectionByTarget(move.getStartPos() + step);
 
-	scheduleAt(simTime() + changeInterval->doubleValue(), msg);
-	break;
-    default:
-	opp_error("Unknown self message kind in MassMobility class");
-	break;
+		scheduleAt(simTime() + changeInterval->doubleValue(), msg);
+		break;
+		default:
+		opp_error("Unknown self message kind in MassMobility class");
+		break;
     }
 
 }
@@ -98,11 +98,10 @@ void MassMobility::handleSelfMsg(cMessage * msg)
  */
 void MassMobility::makeMove()
 {
-    move.startPos = targetPos;
+    move.setStart(targetPos, simTime());
     targetPos += step;
-    move.startTime = simTime();
 
-   // do something if we reach the wall
+    // do something if we reach the wall
     fixIfHostGetsOutside();
 }
 

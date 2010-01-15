@@ -58,13 +58,13 @@ void ANSimMobility::initialize(int stage)
 
         // set initial position;
         setTargetPosition();
-        move.startPos = targetPos;
-	stepTarget = move.startPos;
+        move.setStart(targetPos, simTime());
+	stepTarget = move.getStartPos();
 
 	targetTime = simTime();
 
 	// dummy value; speed not used in ansim
-	move.speed = 1;
+	move.setSpeed(1);
     }
 }
 
@@ -82,7 +82,7 @@ void ANSimMobility::setTargetPosition()
 
     if (!nextPosChange)
     {
-        move.speed = 0;
+        move.setSpeed(0);
         return;
     }
 

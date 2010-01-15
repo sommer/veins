@@ -2,6 +2,7 @@ v1.2
 + added port of 802154 narrowband phy and mac layer of mobility-fw2 for omnet 4 from Jérôme Rousselot
 + added global blackboard functionality to BaseWorldUtility
 * fixed memory leak when propagation delay is simulated
++ made members of Move protected, added functions for member access
 
 v1.1
 + added port of EnergyFramework written by Laura Marie Feeney

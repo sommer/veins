@@ -41,27 +41,26 @@ void CircleMobility::initialize(int stage)
         r = par("r");
         ASSERT(r>0);
         angle = par("startAngle").doubleValue()/180.0*PI;
-        move.speed = par("speed");
-        omega = move.speed/r;
+        move.setSpeed(par("speed"));
+        omega = move.getSpeed()/r;
 
         // calculate initial position
-        move.startPos.setX(center.getX() + r * cos(angle));
-        move.startPos.setY(center.getY() + r * sin(angle));
-	targetPos = move.startPos;
+        move.setStart( Coord(center.getX() + r * cos(angle), center.getY() + r * sin(angle)) );
+
+        targetPos = move.getStartPos();
     }
 }
 
 
 void CircleMobility::makeMove()
 {
-    move.startPos = targetPos;
+    move.setStart(targetPos, simTime());
 
     angle += omega * updateInterval.dbl();
     targetPos.setX(center.getX() + r * cos(angle));
     targetPos.setY(center.getY() + r * sin(angle));
 
-    move.setDirection(targetPos);
-    move.startTime = simTime();
+    move.setDirectionByTarget(targetPos);
 
     fixIfHostGetsOutside();
 }

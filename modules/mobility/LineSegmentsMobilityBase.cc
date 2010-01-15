@@ -23,11 +23,11 @@
 
 void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
 {
-    EV << "beginNextMove, startPos: " << move.startPos.info() << " stepTarget: " << stepTarget.info() << " targetPos: " 
+    EV << "beginNextMove, startPos: " << move.getStartPos().info() << " stepTarget: " << stepTarget.info() << " targetPos: "
        << targetPos.info() << endl << "simTime: " << simTime() << " targetTime: " << targetTime << endl;;
 
     // go to exact position where previous statement was supposed to finish
-    move.startPos = targetPos;
+    move.setStart(targetPos, simTime());
     stepTarget = targetPos;
     simtime_t now = targetTime;
 
@@ -35,21 +35,21 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
     setTargetPosition();
 
 
-    EV << "startPos: " << move.startPos.info() << " targetPos: " << targetPos.info() << endl;
+    EV << "startPos: " << move.getStartPos().info() << " targetPos: " << targetPos.info() << endl;
 
     if (targetTime<now)
         error("LineSegmentsMobilityBase: targetTime<now was set in %s's beginNextMove()", getClassName());
 
-    if( move.speed <= 0 ){
+    if( move.getSpeed() <= 0 ){
         // end of movement
         stepSize.setX(0);
         stepSize.setY(0);
-	EV << "speed < 0; stop moving!\n";
+        EV << "speed < 0; stop moving!\n";
         delete msg;
     }
-    else if (targetPos==move.startPos){
+    else if (targetPos==move.getStartPos()){
         // no movement, just wait
-	EV << "warning, we are not moving!\n";
+    	EV << "warning, we are not moving!\n";
         stepSize.setX(0);
         stepSize.setY(0);
         scheduleAt(std::max(targetTime,simTime()), msg);
@@ -64,19 +64,17 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
         // Note: step = speed*updateInterval = distance/time*updateInterval =
         //        = (targetPos-pos) / (targetTime-now) * updateInterval =
         //        = (targetPos-pos) / numIntervals
-        stepSize = (targetPos - move.startPos);
+        stepSize = (targetPos - move.getStartPos());
 
-	move.setDirection( targetPos );
-
-	move.startTime = simTime();
+	move.setDirectionByTarget( targetPos );
 
 	stepSize = stepSize / numIntervals;
 	stepTarget += stepSize;
 
-	move.speed = move.startPos.distance( targetPos ) / (targetTime - now );
+	move.setSpeed(move.getStartPos().distance( targetPos ) / (targetTime - now ));
 
-	EV << "numIntervals: " << numIntervals << " now: " << now << " simTime " << simTime() << " stepTarget: " 
-	   << stepTarget.info() << " speed: " << move.speed << endl; 
+	EV << "numIntervals: " << numIntervals << " now: " << now << " simTime " << simTime() << " stepTarget: "
+	   << stepTarget.info() << " speed: " << move.getSpeed() << endl;
 
         scheduleAt(simTime() + updateInterval, msg);
     }
@@ -84,7 +82,7 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
 
 void LineSegmentsMobilityBase::handleSelfMsg(cMessage *msg)
 {
-    if( move.speed <= 0 ){
+    if( move.getSpeed() <= 0 ){
         delete msg;
         return;
     }
@@ -92,14 +90,13 @@ void LineSegmentsMobilityBase::handleSelfMsg(cMessage *msg)
         beginNextMove(msg);
     }
     else{
-	EV << "make next step\n";
+    	EV << "make next step\n";
 
         scheduleAt(simTime() + updateInterval, msg);
 
-	// update position
-	move.startPos = stepTarget;
-	stepTarget += stepSize;
-	move.startTime = simTime();
+		// update position
+		move.setStart(stepTarget, simTime());
+		stepTarget += stepSize;
     }
 
     // do something if we reach the wall

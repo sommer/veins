@@ -39,7 +39,7 @@ void BaseUtility::receiveBBItem(int category, const BBItem *details, int scopeMo
     if(category == catMove)
     {
         const Move* m = static_cast<const Move*>(details);
-        pos = m->startPos;
+        pos = m->getStartPos();
         coreEV << "new HostMove: " << m->info() << endl;
     }
     else if(category == catHostState)

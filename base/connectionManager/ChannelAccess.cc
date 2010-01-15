@@ -146,12 +146,12 @@ void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scope
         Move m(*static_cast<const Move*>(details));
 
         if(isRegistered) {
-            cc->updateNicPos(getParentModule()->getId(), &m.startPos);
+            cc->updateNicPos(getParentModule()->getId(), &m.getStartPos());
         }
         else {
             // register the nic with ConnectionManager
             // returns true, if sendDirect is used
-            useSendDirect = cc->registerNic(getParentModule(), this, &m.startPos);
+            useSendDirect = cc->registerNic(getParentModule(), this, &m.getStartPos());
             isRegistered = true;
         }
         move = m;
