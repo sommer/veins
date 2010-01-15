@@ -4,6 +4,7 @@ import org.mixim.base.modules.BaseMobility;
 import org.mixim.base.modules.BaseUtility;
 import org.mixim.modules.application.TestApplication;
 import org.mixim.modules.netw.DummyRoute;
+import org.mixim.modules.netw.ArpHost;
 import org.mixim.modules.utility.phyPER;
 import org.mixim.modules.nic.Nic802154A;
 import org.mixim.modules.power.battery.SimpleBattery;
@@ -40,6 +41,9 @@ module Host802154A
         net: DummyRoute {
             parameters:
         }
+	arp: ArpHost {
+	    parameters:
+	}
         app: TestApplication {
             parameters:
                 @display("p=60,60;i=block/app");
