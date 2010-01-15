@@ -2,13 +2,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
 Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 26
+Loading NED files from /home/karl/git-repo/mixim/tests: 39
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20090318-13:06:47-23705
+Assigned runID=Test1-0-20100115-17:28:59-26502
 Setting up network `bmSim'...
 Initializing...
 Initializing module bmSim, stage 0
@@ -436,7 +436,7 @@ Passed: In our test every handleIfOutside should find a collission.
 Passed: Check for correct step target of border handling 5
 Passed: Check for correct target position of border handling 5
 Passed: Check for correct step of border handling 5
-updatePosition:  HostMove  startPos: (0,0,60) direction: (0.707107,-0.707107,0) startTime: 2 speed: 1.41421
+updatePosition:  HostMove  startPos: (0,0,60) direction: (0.707107,-0.707107,0) startTime: 2.5 speed: 1.41421
 ** Event #31  T=2.5  5% completed   bmSim.node2[0].mobility (TestBMBaseMobility, id=8)
 Passed: Check for correct arrival time of border message 5
 Passed: Check for correct start position of border move 5
@@ -458,7 +458,7 @@ Passed: In our test every handleIfOutside should find a collission.
 Passed: Check for correct step target of border handling 6
 Passed: Check for correct target position of border handling 6
 Passed: Check for correct step of border handling 6
-updatePosition:  HostMove  startPos: (0,120,60) direction: (0.707107,0.707107,0) startTime: 2.5 speed: 1.41421
+updatePosition:  HostMove  startPos: (0,120,60) direction: (0.707107,0.707107,0) startTime: 3 speed: 1.41421
 ** Event #38  T=3  5% completed   bmSim.node2[0].mobility (TestBMBaseMobility, id=8)
 Passed: Check for correct arrival time of border message 6
 Passed: Check for correct start position of border move 6
@@ -480,7 +480,7 @@ Passed: In our test every handleIfOutside should find a collission.
 Passed: Check for correct step target of border handling 7
 Passed: Check for correct target position of border handling 7
 Passed: Check for correct step of border handling 7
-updatePosition:  HostMove  startPos: (120,120,60) direction: (-0.707107,0.707107,0) startTime: 3 speed: 1.41421
+updatePosition:  HostMove  startPos: (120,120,60) direction: (-0.707107,0.707107,0) startTime: 3.5 speed: 1.41421
 ** Event #45  T=3.5  7% completed   bmSim.node2[0].mobility (TestBMBaseMobility, id=8)
 Passed: Check for correct arrival time of border message 7
 Passed: Check for correct start position of border move 7
@@ -502,7 +502,7 @@ Passed: In our test every handleIfOutside should find a collission.
 Passed: Check for correct step target of border handling 8
 Passed: Check for correct target position of border handling 8
 Passed: Check for correct step of border handling 8
-updatePosition:  HostMove  startPos: (120,0,60) direction: (-0.707107,-0.707107,0) startTime: 3.5 speed: 1.41421
+updatePosition:  HostMove  startPos: (120,0,60) direction: (-0.707107,-0.707107,0) startTime: 4 speed: 1.41421
 ** Event #52  T=4  8% completed   bmSim.node2[0].mobility (TestBMBaseMobility, id=8)
 Passed: Check for correct arrival time of border message 8
 Passed: Check for correct start position of border move 8
@@ -524,7 +524,7 @@ Passed: In our test every handleIfOutside should find a collission.
 Passed: Check for correct step target of border handling 9
 Passed: Check for correct target position of border handling 9
 Passed: Check for correct step of border handling 9
-updatePosition:  HostMove  startPos: (120,0,60) direction: (0.999947,0.0102946,0) startTime: 4 speed: 235.268
+updatePosition:  HostMove  startPos: (120,0,60) direction: (0.999947,0.0102946,0) startTime: 4.5 speed: 235.268
 ** Event #59  T=4.5  8% completed   bmSim.node2[0].mobility (TestBMBaseMobility, id=8)
 Passed: Check for correct arrival time of border message 9
 Passed: Check for correct start position of border move 9
@@ -565,7 +565,7 @@ Passed: In our test every handleIfOutside should find a collission.
 Passed: Check for correct step target of border handling 11
 Passed: Check for correct target position of border handling 11
 Passed: Check for correct step of border handling 11
-updatePosition:  HostMove  startPos: (0,60,120) direction: (-0.693469,0,-0.720487) startTime: 5 speed: 0.666216
+updatePosition:  HostMove  startPos: (0,60,120) direction: (-0.693469,0,-0.720487) startTime: 5.5 speed: 0.666216
 ** Event #72  T=5.5  11% completed   bmSim.node2[0].mobility (TestBMBaseMobility, id=8)
 Passed: Check for correct arrival time of border message 11
 Passed: Check for correct start position of border move 11
@@ -584,13 +584,13 @@ updatePosition:  HostMove  startPos: (118.5,119.5,119.5) direction: (0.904534,0.
 updatePosition:  HostMove  startPos: (118.5,119.5,119.5) direction: (0.904534,0.301511,0.301511) startTime: 5.5 speed: 3.31662
 ** Event #78  T=6  11% completed   bmSim.node2[0].mobility (TestBMBaseMobility, id=8)
 Passed: In our test every handleIfOutside should find a collission.
-updatePosition:  HostMove  startPos: (120,120,120) direction: (0.904534,0.301511,-0.301511) startTime: 5.5 speed: 3.31662
+updatePosition:  HostMove  startPos: (120,120,120) direction: (0.904534,0.301511,-0.301511) startTime: 6 speed: 3.31662
 ** Event #79  T=6  11% completed   bmSim.node2[0].mobility (TestBMBaseMobility, id=8)
 Passed: In our test every handleIfOutside should find a collission.
 Passed: Check for correct step target of border handling 12
 Passed: Check for correct target position of border handling 12
 Passed: Check for correct step of border handling 12
-updatePosition:  HostMove  startPos: (120,120,120) direction: (-0.904534,0.301511,-0.301511) startTime: 5.5 speed: 3.31662
+updatePosition:  HostMove  startPos: (120,120,120) direction: (-0.904534,0.301511,-0.301511) startTime: 6 speed: 3.31662
 ** Event #80  T=6  11% completed   bmSim.node2[0].mobility (TestBMBaseMobility, id=8)
 Passed: Check for correct arrival time of border message 12
 Passed: Check for correct start position of border move 12

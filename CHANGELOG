@@ -3,10 +3,13 @@ v1.2
 + added global blackboard functionality to BaseWorldUtility
 + introduced "csma" module which implements a generic CSMA mac protocol and will replace CSMAMacLayer 
   in the future
-* fixed memory leak when propagation delay is simulated
 + made members of Move protected, added functions for member access
+* fixed memory leak when propagation delay is simulated
 * fixed a bug in the calculated receiving power of a signal which caused it to be greater zero before 
   and after its signal in certain cases
+* fixed wrong calculation of position on "WRAP" border handling in BaseMobility
+* fixed missing connections when the cells from ConnectionManager do not cover the playground size
+  exactly
 
 v1.1
 + added port of EnergyFramework written by Laura Marie Feeney
