@@ -327,7 +327,7 @@ public:
     bool is3D() const { return !use2DFlag; }
 
     /**
-     * Checks if this coordinate is inside a specified rectangle.
+     * @brief Checks if this coordinate is inside a specified rectangle.
      *
      * Does not check for dimension compatibility!
      *
@@ -339,6 +339,21 @@ public:
                 y >= upperLeftCorner.y && y <= lowerRightCorner.y &&
                 (use2DFlag || (z >= upperLeftCorner.z && z <= lowerRightCorner.z));
     }
+
+    /**
+	 * @brief Checks if this coordinate is inside the passed boundary of
+	 * [lowerBound, upperBound).
+	 *
+	 * Does not check for dimension compatibility!
+	 *
+	 * @param lowerBound The lower boundary.
+	 * @param upperBound the upper boundary.
+	 */
+	bool isInBoundary(const Coord& lowerBound, const Coord& upperBound) const {
+		return  x >= lowerBound.x && x < upperBound.x &&
+				y >= lowerBound.y && y < upperBound.y &&
+				(use2DFlag || (z >= lowerBound.z && z < upperBound.z));
+	}
 
     /**
      * Returns the minimal coordinates.

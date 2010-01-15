@@ -43,7 +43,7 @@
 /* Constant for comparing doubles. Two doubles at most epsilon apart
    are declared equal.*/
 #ifndef EPSILON
-#define EPSILON 0.001
+#define EPSILON 0.00001
 #endif
 
 /* Provide function substitutes for Win32 architectures. */

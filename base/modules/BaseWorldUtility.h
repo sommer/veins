@@ -34,7 +34,13 @@
 class BaseWorldUtility : public Blackboard
 {
 protected:
-	/** @brief Size of the area the nodes are in (in meters)*/
+	/**
+	 * @brief Size of the area the nodes are in (in meters)
+	 *
+	 * Note: The playground is in the range [0, playground size].
+	 * Meaning the upper borders (at pg-size) as well as the lower
+	 * borders (at 0) are part of the playground.
+	 **/
     Coord playgroundSize;
 
     /** @brief Should the playground be treatend as a torus?*/
@@ -50,7 +56,13 @@ public:
 
 	void initialize(int stage);
 
-    /** @brief Returns the playgroundSize*/
+    /**
+     * @brief Returns the playgroundSize
+     *
+     * Note: The playground is in the range [0, playground size].
+	 * Meaning the upper borders (at pg-size) as well as the lower
+	 * borders (at 0) are part of the playground.
+     **/
     const Coord* getPgs(){
         return &playgroundSize;
     };

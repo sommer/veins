@@ -45,9 +45,9 @@ void BaseConnectionManager::initialize(int stage)
 
 		//----initialize node grid-----
 		//step 1 - calculate dimension of grid
-		//one cell should have the size of maxInterferenceDistance
-		Coord dim((*playgroundSize) / maxInterferenceDistance + Coord(1.0, 1.0, 1.0));
-
+		//one cell should have at least the size of maxInterferenceDistance
+		//but also should divide the playground in equal parts
+		Coord dim((*playgroundSize) / maxInterferenceDistance);
 		gridDim = GridCoord(dim);
 
 		//A grid smaller or equal to 3x3 whould mean that every cell has every other cell as direct
@@ -58,6 +58,10 @@ void BaseConnectionManager::initialize(int stage)
 			gridDim.x = 1;
 			gridDim.y = 1;
 			gridDim.z = 1;
+		} else {
+			gridDim.x = std::max(1, gridDim.x);
+			gridDim.y = std::max(1, gridDim.y);
+			gridDim.z = std::max(1, gridDim.z);
 		}
 
 		//step 2 - initialize the matrix which represents our grid
@@ -83,17 +87,33 @@ void BaseConnectionManager::initialize(int stage)
 
 		if (gridDim.x == 1 &&												//if we use a 1x1 grid
 			gridDim.y == 1 &&												//every coordinate is
-			gridDim.z == 1) {									 			//mapped to (1,1, 1)
-			findDistance = FWMath::max(playgroundSize->getX(),				//so the factor is the
-									   FWMath::max(playgroundSize->getY(),	//largest number a
-												   playgroundSize->getZ()))	//coordinate can get (+1)
-						   + 1.0;
+			gridDim.z == 1) {									 			//mapped to (0,0, 0)
+			findDistance = Coord(std::max(playgroundSize->getX(), maxInterferenceDistance),
+								 std::max(playgroundSize->getY(), maxInterferenceDistance),
+								 std::max(playgroundSize->getZ(), maxInterferenceDistance));
 		} else {
-			findDistance = ceil(maxInterferenceDistance);		//otherwise the factor is our
-			if(findDistance == maxInterferenceDistance)			//maxInterferenceDistance
-				findDistance += EPSILON;									//plus a small epsilon
+			findDistance = Coord(playgroundSize->getX() / gridDim.x,		//otherwise the factor is our
+								 playgroundSize->getY() / gridDim.y,		//playground divided by the
+								 playgroundSize->getZ() / gridDim.z);		//number of cells
 		}
-		ccEV << "findDistance is " << findDistance << endl;
+
+		//since the upper playground borders (at pg-size) are part of the
+		//playground we have to assure that they are mapped to a valid
+		//(the last) grid cell we do this by increasing the find distance
+		//by a small value.
+		//This also assures that findDistance is never zero.
+		findDistance += Coord(EPSILON, EPSILON, EPSILON);
+
+		//findDistance (equals cell size) has to be greater or equal maxInt-distance
+		assert(findDistance.getX() >= maxInterferenceDistance);
+		assert(findDistance.getY() >= maxInterferenceDistance);
+		assert(world->use2D() || findDistance.getZ() >= maxInterferenceDistance);
+
+		//playGroundSize has to be part of the playGround
+		assert(GridCoord(*playgroundSize, findDistance).x == gridDim.x - 1);
+		assert(GridCoord(*playgroundSize, findDistance).y == gridDim.y - 1);
+		assert(GridCoord(*playgroundSize, findDistance).z == gridDim.z - 1);
+		ccEV << "findDistance is " << findDistance.info() << endl;
 	}
 }
 

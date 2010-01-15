@@ -42,6 +42,19 @@ void BaseWorldUtility::initialize(int stage) {
                                    par("playgroundSizeZ"));
         }
 
+        if(playgroundSize.getX() <= 0) {
+        	opp_error("Playground size in X direction is invalid: "\
+        			  "(%f). Should be greater zero.", playgroundSize.getX());
+        }
+        if(playgroundSize.getY() <= 0) {
+			opp_error("Playground size in Y direction is invalid: "\
+					  "(%f). Should be greater zero.", playgroundSize.getY());
+		}
+        if(!use2DFlag && playgroundSize.getZ() <= 0) {
+			opp_error("Playground size in Z direction is invalid: "\
+					  "(%f). Should be greater zero (or use 2D mode).", playgroundSize.getZ());
+		}
+
 		useTorusFlag = par("useTorus");
 
 		airFrameId = 0;
