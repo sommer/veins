@@ -39,8 +39,6 @@
  * adds another set of basic operations that may or may not make sense
  * for ARPs.
  *
- * Update: Jerome Rousselot / CSEM
- * We modified BaseArp so that it can be subclassed.
  *
  * @ingroup netwLayer
  * @ingroup baseModules
