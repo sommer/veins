@@ -22,6 +22,7 @@
 
 #include <string>
 #include <cmath>
+#include <cassert>
 
 #include <omnetpp.h>
 
@@ -38,13 +39,8 @@
  *
  * @author Andreas Koepke, Michael Swigulski
  **/
-
-/** TODO: Think about making members private and encapsulate access to members
-* to guarantee consistence and properly working functions.
-*/
-
 class Move : public BBItem {
-//class Move {
+
     BBITEM_METAINFO(BBItem);
 
 protected:
@@ -52,7 +48,7 @@ protected:
     Coord startPos;
     /** @brief start time at which host started at startPos **/
     simtime_t startTime;
-    /** @brief direction the host is moving to **/
+    /** @brief direction the host is moving to, must be normalized **/
     Coord direction;
     /** speed of the host in meters per second **/
     double speed;
@@ -101,10 +97,13 @@ public:
 	}
 
 	/**
-	 * @brief Sets the direction from a passed vector.
+	 * @brief Sets the direction from a passed vector,
+	 * which must be already normalized or 0.
 	 */
-	void setDirection(const Coord& direction)
+	void setDirectionByVector(const Coord& direction)
 	{
+		assert(	FWMath::close(direction.squareLength(), 1.0)
+				|| FWMath::close(direction.squareLength(), 0.0));
 		this->direction = direction;
 	}
 

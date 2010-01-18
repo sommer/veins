@@ -102,7 +102,7 @@ void BaseMobility::initialize(int stage)
 
         // set speed and direction of the Move
         move.setSpeed(0);
-        move.setDirection(Coord(use2D));
+        move.setDirectionByVector(Coord(use2D));
 
         //get BBItem category for Move
         moveCategory = utility->getCategory(&move);
@@ -181,7 +181,7 @@ void BaseMobility::handleBorderMsg(cMessage * msg)
     switch( bMsg->getPolicy() ){
     case REFLECT:
 	move.setStart(bMsg->getStartPos());
-	move.setDirection(bMsg->getDirection());
+	move.setDirectionByVector(bMsg->getDirection());
 	break;
     case WRAP:
 	move.setStart(bMsg->getStartPos());
