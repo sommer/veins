@@ -2,13 +2,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
 Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 26
+Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20090318-13:07:00-23723
+Assigned runID=Test1-0-20100118-15:40:56-2904
 Setting up network `ccSim'...
 Initializing...
 Initializing module ccSim, stage 0
@@ -318,9 +318,9 @@ Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 5   present: 5   in FES: 5
-** Event #188   T=4.1   Elapsed: 0.001s (0m 00s)  8% completed
+** Event #177   T=4.1   Elapsed: 0.001s (0m 00s)  8% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 191   present: 0   in FES: 0
+     Messages:  created: 180   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
 
@@ -365,13 +365,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
 Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 26
+Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20090318-13:07:00-23724
+Assigned runID=Test2-0-20100118-15:40:56-2905
 Setting up network `ccSim'...
 Initializing...
 Initializing module ccSim, stage 0
@@ -681,9 +681,9 @@ Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 5   present: 5   in FES: 5
-** Event #196   T=1   Elapsed: 0.001s (0m 00s)  2% completed
-     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 195   present: 0   in FES: 0
+** Event #185   T=1   Elapsed: 0.015s (0m 00s)  2% completed
+     Speed:     ev/sec=12266.7   simsec/sec=66.6667   ev/simsec=184
+     Messages:  created: 184   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
 
@@ -728,13 +728,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
 Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 26
+Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20090318-13:07:00-23725
+Assigned runID=Test3-0-20100118-15:40:57-2906
 Setting up network `ccSim'...
 Initializing...
 Initializing module ccSim, stage 0
@@ -1441,13 +1441,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
 Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 20
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 25
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 26
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 26
+Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20090318-13:07:00-23726
+Assigned runID=Test4-0-20100118-15:40:57-2907
 Setting up network `ccSim'...
 Initializing...
 Initializing module ccSim, stage 0
