@@ -197,7 +197,7 @@ void BaseMobilityTest::testSimpleCIO()
 {
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
-	Coord stepTarget;
+	Coord stepTarget(false);
 	double dist = 10.0;
 
 
@@ -262,7 +262,7 @@ void BaseMobilityTest::testComplexCIO()
 {
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
-	Coord stepTarget;
+	Coord stepTarget(false);
 	double dist = 30.0;
 
 	ev << "Testing complex checkIfOutside... " << endl;
@@ -370,7 +370,7 @@ void BaseMobilityTest::testBorderCIO()
 {
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
-	Coord stepTarget;
+	Coord stepTarget(false);
 
 	double min = 0.0;
 	int bHandVal;

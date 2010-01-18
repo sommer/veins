@@ -34,6 +34,7 @@ import org.mixim.base.modules.BaseMobility;
 // v              ^
 // >>>>>>>>>>>>>>>^
 //
+// NOTE: Does not yet support 3-dimensional movement.
 // @author Peterpaul Klein Haneveld
 //
 simple TractorMobility extends BaseMobility

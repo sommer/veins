@@ -26,6 +26,7 @@
  * @brief Uses the \<position_change> elements of the ANSim tool's trace file.
  * See NED file for more info.
  *
+ * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Andras Varga
  */

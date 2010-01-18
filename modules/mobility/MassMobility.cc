@@ -52,7 +52,13 @@ void MassMobility::initialize(int stage)
         step.setY(move.getSpeed() * sin(PI * currentAngle / 180) * updateInterval.dbl());
 
     }
-    else if( stage == 1 ){
+    else if( stage == 1 )
+    {
+    	if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
+
 		// start moving: set direction and start time
 		move.setDirectionByTarget(move.getStartPos() + step);
 		move.setStart(move.getStartPos(), simTime());
@@ -69,7 +75,7 @@ void MassMobility::initialize(int stage)
  */
 void MassMobility::handleSelfMsg(cMessage * msg)
 {
-    Coord dummy;
+    Coord dummy(world->use2D());
 
     switch (msg->getKind()){
 		case MOVE_HOST:
@@ -107,7 +113,7 @@ void MassMobility::makeMove()
 
 void MassMobility::fixIfHostGetsOutside()
 {
-    Coord dummy;
+    Coord dummy(world->use2D());
 
     handleIfOutside( REFLECT, targetPos, dummy, step, currentAngle );
 }

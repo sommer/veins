@@ -39,13 +39,23 @@ void LinearMobility::initialize(int stage)
     }
     else if(stage == 1){
     	stepTarget = move.getStartPos();
+
+		if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
+		if(!world->useTorus()) {
+			opp_warning("You are not using a torus (parameter \"useTorus\" in"\
+						"BaseWorldUtility module) playground but this mobility"\
+						"module uses WRAP as border policy.");
+		}
     }
 }
 
 
 void LinearMobility::fixIfHostGetsOutside()
 {
-    Coord dummy;
+    Coord dummy(world->use2D());
     handleIfOutside(WRAP, stepTarget, dummy, dummy, angle);
 }
 

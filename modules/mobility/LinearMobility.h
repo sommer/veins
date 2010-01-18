@@ -26,6 +26,10 @@
 /**
  * @brief Linear movement model. See NED file for more info.
  *
+ * This mobility module expects a torus as playground ("useTorus"
+ * Parameter of BaseWorldUtility module).
+ *
+ * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Emin Ilker Cetinbas
  */

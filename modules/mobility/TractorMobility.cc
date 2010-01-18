@@ -55,6 +55,13 @@ void TractorMobility::initialize(int stage)
 
 		move.setStart(targetPos);
 	}
+	else
+	{
+		if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
+	}
 }
 
 
@@ -69,7 +76,7 @@ void TractorMobility::makeMove()
 
 void TractorMobility::fixIfHostGetsOutside()
 {
-	Coord dummy;
+	Coord dummy(world->use2D());
 	double dum;
 
 	handleIfOutside( RAISEERROR, targetPos, dummy, dummy, dum );

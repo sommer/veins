@@ -61,6 +61,11 @@ void TurtleMobility::initialize(int stage)
         WATCH(borderPolicy);
     }
     else if(stage == 1){
+    	if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
+
 		targetPos = move.getStartPos();
 		stepTarget = move.getStartPos();
 		targetTime = simTime();

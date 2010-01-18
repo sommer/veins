@@ -60,6 +60,13 @@ void BonnMotionMobility::initialize(int stage)
 			EV << "start pos: t=" << move.getStartTime() << move.getStartPos().info() << endl;
         }
     }
+    else
+	{
+		if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
+	}
 }
 
 BonnMotionMobility::~BonnMotionMobility()
@@ -88,7 +95,7 @@ void BonnMotionMobility::setTargetPosition()
 
 void BonnMotionMobility::fixIfHostGetsOutside()
 {
-    Coord dummy;
+    Coord dummy(world->use2D());
     double dum;
 
     handleIfOutside( RAISEERROR, stepTarget, dummy, dummy, dum );

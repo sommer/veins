@@ -30,7 +30,7 @@
  * Parameters to be specified in omnetpp.ini
  *  - vHost : Speed of a host [m/s]
  *  - updateInterval : Time interval to update the hosts position
- *  - x, y : Starting position of the host, -1 = random
+ *  - x, y, z : Starting position of the host, -1 = random
  *
  * @ingroup mobility
  * @author Steffen Sroka, Marc Loebbers, Daniel Willkomm
@@ -51,7 +51,7 @@ class ConstSpeedMobility : public BaseMobility
 
     Coord targetPos;
     Coord stepTarget;
-    
+
     //    double lastStep;
 
   public:

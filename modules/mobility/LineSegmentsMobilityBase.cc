@@ -20,6 +20,16 @@
 
 #include <FWMath.h>
 
+void LineSegmentsMobilityBase::initialize(int stage) {
+	BaseMobility::initialize(stage);
+
+	if(stage == 1) {
+		if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3-dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
+	}
+}
 
 void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
 {

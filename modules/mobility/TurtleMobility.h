@@ -27,6 +27,7 @@
  * @brief LOGO-style movement model, with the script coming from XML.
  * See NED file for more info.
  *
+ * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Andras Varga
  */

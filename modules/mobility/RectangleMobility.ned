@@ -23,6 +23,7 @@ import org.mixim.base.modules.BaseMobility;
 //
 // Moves the node around a rectangle.
 //
+// NOTE: Does not yet support 3-dimensional movement.
 // @see ConnectionManager
 // @author Andras Varga
 //

@@ -590,7 +590,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
     BorderHandling wo;
 
     // step to reach the border
-    Coord borderStep;
+    Coord borderStep(world->use2D());
 
     wo = checkIfOutside(stepTarget, borderStep);
 
@@ -601,9 +601,9 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
     coreEV << "handleIfOutside:stepTarget = " << stepTarget.info() << endl;
 
     // new start position after the host reaches the border
-    Coord borderStart;
+    Coord borderStart(world->use2D());
     // new direction the host has to move to
-    Coord borderDirection;
+    Coord borderDirection(world->use2D());
     // time to reach the border
     simtime_t borderInterval;
 

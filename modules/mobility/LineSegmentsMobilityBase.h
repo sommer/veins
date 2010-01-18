@@ -26,9 +26,10 @@
  * @brief Base class for mobility models where movement consists of
  * a sequence of linear movements of constant speed.
  *
- * Subclasses must redefine setTargetPosition() which is suppsed to set
+ * Subclasses must redefine setTargetPosition() which is supposed to set
  * a new target position and target time once the previous one is reached.
  *
+ * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Andras Varga
  */
@@ -47,7 +48,6 @@ class LineSegmentsMobilityBase : public BaseMobility
     Coord stepTarget;
 
   protected:
-    //Module_Class_Members(LineSegmentsMobilityBase, BaseMobility, 0);
 
     /** @brief Called upon arrival of a self messages*/
     virtual void handleSelfMsg(cMessage *msg);
@@ -62,6 +62,9 @@ class LineSegmentsMobilityBase : public BaseMobility
      * sequence, it should set targetTime=0.
      */
     virtual void setTargetPosition() = 0;
+
+  public:
+	  virtual void initialize(int stage);
 };
 
 #endif
