@@ -14,11 +14,11 @@ module BaseNode
     submodules:
         utility: BaseUtility {
             parameters:
-                @display("p=130,38,rect;b=24,24,,black,,");
+                @display("p=130,38;b=24,24,rect,black,,");
         }
         arp: BaseArp {
             parameters:
-                @display("p=130,84,rect;b=24,24,,blue,,");
+                @display("p=130,84;b=24,24,rect,blue,,");
         }
         mobility: <mobType> like IBaseMobility {
             parameters:

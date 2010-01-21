@@ -221,15 +221,39 @@ void BaseMobility::updatePosition() {
     //publish the the new move
     utility->publishBBItem(moveCategory, &move, hostId);
 
-    char xStr[32], yStr[32]; //, zStr[32];
-    sprintf(xStr, "%d", FWMath::round(move.getStartPos().getX()));
-    sprintf(yStr, "%d", FWMath::round(move.getStartPos().getY()));
-    //sprintf(zStr, "%d", FWMath::round(move.startPos.getZ()));
-    hostPtr->getDisplayString().setTagArg("p", 0, xStr);
-    hostPtr->getDisplayString().setTagArg("p", 1, yStr);
+    if(ev.isGUI())
+    {
+		char xStr[32], yStr[32];
+		sprintf(xStr, "%d", FWMath::round(move.getStartPos().getX()));
+		sprintf(yStr, "%d", FWMath::round(move.getStartPos().getY()));
 
-	/* p parameter *does not* accept z co-ordinates. Tk has a 2-d view */
-	//hostPtr->getDisplayString().setTagArg("p", 2, zStr);
+		cDisplayString& disp = hostPtr->getDisplayString();
+		disp.setTagArg("p", 0, xStr);
+		disp.setTagArg("p", 1, yStr);
+
+		if(!world->use2D())
+		{
+			//scale host dependent on their z coordinate to
+			//simulate a depth effect
+			//z-coordinate of zero maps to a size of 50 (16+34) (very close)
+			//z-coordinate of playground size z maps to size of 16 (far away)
+			double width = 16.0 + 34.0 *  ((1.0 - move.getStartPos().getZ()/playgroundSizeZ()));
+
+			char sizeStr[32];
+			sprintf(sizeStr, "%d", FWMath::round(width));
+			disp.setTagArg("b", 0, sizeStr);
+			disp.setTagArg("b", 1, sizeStr);
+
+			//choose a appropriate icon size
+			if(width >= 40)
+				disp.setTagArg("is", 0, "n");
+			else if(width >= 24)
+				disp.setTagArg("is", 0, "s");
+			else
+				disp.setTagArg("is", 0, "vs");
+
+		}
+    }
 }
 
 /**
