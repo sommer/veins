@@ -250,13 +250,11 @@ class Radio
 public:
 	/**
 	* @brief The state of the radio of the nic.
-	*
-	* PLEASE INSERT NEW RADIOSTATES !!!BEFORE!!! NUM_RADIO_STATES
 	*/
 	enum RadioState {
 		/* receiving state*/
 		RX = 0,
-		/* transmiting state*/
+		/* transmitting state*/
 		TX,
 		/* sleeping*/
 		SLEEP,
@@ -268,8 +266,10 @@ public:
 		 * IT ALWAYS NEEDS TO BE THE LAST ENTRY IN THIS ENUM!
 		 *
 		 * Sub-classing Radios which want to add more states can add their own
-		 * states beginning at the value of NUM_RADIO_STATES.
+		 * states in their own enum beginning at the value of NUM_RADIO_STATES.
 		 * They should also remember to update the "numRadioStates" member accordingly.
+		 *
+		 * TODO: when uwb is merged check this again: "See RadioUWB for an example."
 		 */
 		NUM_RADIO_STATES
 	};
