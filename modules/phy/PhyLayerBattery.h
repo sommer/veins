@@ -19,6 +19,7 @@
 #include "PhyLayer.h"
 #include "Decider80211Battery.h"
 #include "HostState.h"
+#include "MacToPhyControlInfo.h"
 
 /**
  * @brief Extends PhyLayer by adding power consumption for tx, rx and idle.
@@ -27,11 +28,22 @@
  * receiving messages from the channel it checks the hosts current state.
  * If the host is not able to send or the receive (e.g. no power) the
  * messages are dropped.
- * Draws tx current from battery during transmissions (starting on
- * reception of message from upper layer until reception of TX_OVER
- * message). And idle current any time else.
+ *
+ * Further it draws a current depending on the current radio state.
+ * For this it captures every call to "setRadioState()" and changes
+ * the current to previously set default values according to the
+ * new radios state. There are different currents for TX, RX, SLEEP
+ * and SWITCHING state.
+ * Its also possible to override "calcTXCurrentForPacket()" to
+ * calculate the current used during TX depending on the actual
+ * TX power instead of using the default value.
+ *
  * Does also provide battery access to the Decider by implementing
- * DeciderToPhyInterfaces "drawCurrent()"-method.
+ * DeciderToPhyInterfaces "drawCurrent()"-method. Using this method
+ * the Decider can define a current delta which is applied to the RX
+ * current during this radio state. This is meant to be used if the
+ * Decider wants to define different currents for "listening" and
+ * "decoding" phases in RX state.
  *
  * Defines initialization for "Decider80211Battery".
  *
@@ -78,6 +90,20 @@ protected:
 	 * @brief Initializes a new Decider80211Battery from the passed parameter map.
 	 */
 	virtual Decider* initializeDecider80211Battery(ParameterMap& params);
+
+	/**
+	 * @brief Calculates the current needed for the transmission of the
+	 * passed MacPkt.
+	 *
+	 * A return value below or equal zero is ignored and the default txCurrent
+	 * is used instead.
+	 *
+	 * Sub classing modules can override this method if they don't want to use
+	 * a default TX-current for every transmission but a current depending on
+	 * the actual used TX power for a packet.
+	 */
+	virtual double calcTXCurrentForPacket(MacPkt* pkt, MacToPhyControlInfo* cInfo)
+	{ return -1.0; }
 
 	virtual void setRadioCurrent(int rs);
 
