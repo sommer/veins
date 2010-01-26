@@ -24,6 +24,7 @@
  *
  * @ingroup decider
  * @ingroup power
+ * @ingroup ieee80211
  */
 class Decider80211Battery : public Decider80211 {
 protected:

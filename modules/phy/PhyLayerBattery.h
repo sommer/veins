@@ -48,7 +48,7 @@
  * Defines initialization for "Decider80211Battery".
  *
  * @ingroup power
- * @ingroup decider
+ * @ingroup phyLayer
  */
 class PhyLayerBattery : public PhyLayer{
 protected:

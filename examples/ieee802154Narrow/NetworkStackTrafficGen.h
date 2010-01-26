@@ -26,6 +26,8 @@
 
 /**
  * @brief A module to generate traffic for the NIC, used for testing purposes.
+ *
+ * @ingroup exampleIEEE802154Narrow
  */
 class NetworkStackTrafficGen : public BaseLayer
 {

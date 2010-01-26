@@ -27,7 +27,8 @@
  * @brief Class that keeps track of the number of packets sent.
  *
  * @ingroup blackboard
- * @author Andreas K�pke
+ * @ingroup utils
+ * @author Andreas K�pke, Karl Wessel
  * @sa Blackboard
  */
 

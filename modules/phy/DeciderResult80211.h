@@ -15,6 +15,7 @@
  * which stores the bit-rate of the transmission.
  *
  * @ingroup decider
+ * @ingroup ieee80211
  */
 class DeciderResult80211 : public DeciderResult{
 protected:

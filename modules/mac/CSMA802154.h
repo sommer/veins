@@ -24,6 +24,8 @@
  * up to the upper layer.
  *
  * @ingroup macLayer
+ * @ingroup csma
+ * @ingroup ieee802154
  * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Yosia Hadisusanto, Andreas Koepke
  * @author Karl Wessel (port for MiXiM)
  */

@@ -202,6 +202,25 @@
  */
 
 /**
+ * @defgroup protocols protocols - Classes for the different protocols implemented in MiXiM
+ */
+
+/**
+ * @defgroup ieee80211 IEEE 802.11 - Classes for the IEEE 802.11 implementation of MiXiM
+ * @ingroup protocols
+ */
+
+/**
+ * @defgroup ieee802154 IEEE 802.15.4 - Classes for the IEEE 802.15.4 implementation of MiXiM
+ * @ingroup protocols
+ */
+
+/**
+ * @defgroup csma CSMA - Classes for the CSMA implementation of MiXiM
+ * @ingroup protocols
+ */
+
+/**
  * @defgroup examples examples - Classes for the examples of MiXiM
  */
 
@@ -213,6 +232,13 @@
 /**
  * @defgroup exampleCSMA CSMAMac example - Classes from the CSMAMac example
  * @ingroup examples
+ * @ingroup csma
+ */
+
+/**
+ * @defgroup exampleIEEE802154Narrow IEEE 802.15.4 Narrow band example - Classes from the ieee802154Narrow example
+ * @ingroup examples
+ * @ingroup ieee802154
  */
 
 /**
