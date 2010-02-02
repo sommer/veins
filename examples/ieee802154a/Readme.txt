@@ -24,7 +24,10 @@ To run the scenarios, compile mixim, open a terminal and go to
 examples/ieee80154a. There, type:
 ./run -u Cmdenv -c BERDistance 
 to execute all runs of the Bit Error Rate over Distance scenario.
-Or:
+The "run" script expects to find opp_run in the path. Thus, make sure 
+to have $OMNET_PATH/bin in your path. 
+
+You can also try:
 ./run -u Cmdenv -c channelPlots
 to execute all runs of the channelPlots scenario.
 
