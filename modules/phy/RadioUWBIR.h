@@ -61,10 +61,6 @@ protected:
 
 public:
 
-	void setName(string name) {
-		vectorPower.setName(name.c_str());  // so that we have a name that include our address / node number
-	}
-
 	/** @brief Defines the power consumption in the selected radio state. */
 	virtual void setPowerConsumption(int radioState, double _powerConsumption) {
 		assert(0 <= radioState);

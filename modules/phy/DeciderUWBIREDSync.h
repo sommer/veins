@@ -18,6 +18,10 @@
  * description: this Decider models a non-coherent energy-detection receiver
  * 				that synchronizes on the first sync preamble sequence
  * 				that is "long enough" and "powerful enough".
+ * acknowledgment: this work was supported (in part) by the National Competence
+ * 			    Center in Research on Mobile Information and Communication Systems
+ * 				NCCR-MICS, a center supported by the Swiss National Science
+ * 				Foundation under grant number 5005-67322.
  ***************************************************************************/
 
 #ifndef UWBIREDSYNC_H_

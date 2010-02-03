@@ -37,6 +37,7 @@ or channelPlots.anf (depending on the scenario that you ran before).
 At the bottom of the window, switch from the Inputs tab to the Datasets
 tab. In the BERDistance.anf file, you will find a "scatter chart BER_Distance"
 item. Double-click on it to generate the graph.
+
 In the channelPlots.anf file, there are several graphs. Opening
 "line chart Ghassemzadeh LOS" will show the packet as modified by the 
 Ghassemzadeh LOS channel model. Compare it with "line chart CM2" to see
@@ -48,9 +49,14 @@ touch and drawing a zoom box with the mouse around the area to enlarge.
 For more information, please refer to:
 * the Omnet++ documentation at www.omnetpp.org/documentation and the user guide.
 * the MiXiM documentation
+* UWB-IR NED modules documentation and source code.
 
 Questions should be send to the Omnet++ mailing-list: omnetpp@googlegroups.com.
 
-
+acknowledgment: this work was supported (in part) by the National Competence
+ * 			    Center in Research on Mobile Information and Communication Systems
+ * 				NCCR-MICS, a center supported by the Swiss National Science
+ * 				Foundation under grant number 5005-67322.
+ 
 
 

@@ -16,7 +16,17 @@
  *              For further information see file COPYING
  *              in the top level directory
  * description: this class holds constants specified in IEEE 802.15.4A UWB-IR Phy
+ * acknowledgment: this work was supported (in part) by the National Competence
+ * 			    Center in Research on Mobile Information and Communication Systems
+ * 				NCCR-MICS, a center supported by the Swiss National Science
+ * 				Foundation under grant number 5005-67322.
  ***************************************************************************/
+//
+// This class regroups static methods needed to generate
+// a pulse-level representation of an IEEE 802.15.4A UWB PHY frame
+// using the mandatory mode (high PRF).
+// The main function of interest is
+// static signalAndData generateIEEE802154AUWBSignal(simtime_t signalStart, bool allZeros=false).
 
 #ifndef _IEEE802154A_H
 #define	_IEEE802154A_H
@@ -136,10 +146,20 @@ public:
 
     typedef std::pair<Signal *, vector<bool> * > signalAndData;
 
+    /* @brief Sets the configuration of the IEEE802.15.4A standard.
+     *  Use this (and the struct config) to implement optional modes of the standard. */
     static void selectConfig();
+
+    // sets the number of data bytes to encode in the data structure.
     static void setPSDULength(int _psduLength);
 
-    /*@brief Generates psduLength bytes of data and encodes them into a Signal object.  */
+    /* @brief Generates a frame starting at time signalStart and composed of
+	 * psduLength bytes of data (this value must be set before by using setPSDULength()).
+     * If allZeros is set to true, all bit values are equal to zero.
+     * If it is set to false or undefined, bit values are generated randomly.
+     * The returned structure is a pair. Its first component is the Signal*,
+     * and the second component is a vector of bool with the the generated bit values.
+     * */
     static signalAndData generateIEEE802154AUWBSignal(simtime_t signalStart, bool allZeros=false);
 
 

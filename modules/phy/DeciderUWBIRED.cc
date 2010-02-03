@@ -16,6 +16,10 @@
  *              For further information see file COPYING
  *              in the top level directory
  * description: this Decider models a non-coherent energy-detection receiver.
+ * acknowledgment: this work was supported (in part) by the National Competence
+ * 			    Center in Research on Mobile Information and Communication Systems
+ * 				NCCR-MICS, a center supported by the Swiss National Science
+ * 				Foundation under grant number 5005-67322.
  ***************************************************************************/
 
 #include "DeciderUWBIRED.h"
@@ -64,7 +68,7 @@ simtime_t DeciderUWBIRED::handleNewSignal(Signal* s) {
 }
 
 
-// We just left reception state ; we must update our data on this frame accordingly
+// We just left reception state ; we must update our information on this frame accordingly
 
 void DeciderUWBIRED::cancelReception() {
 	if(tracking != NULL) {
@@ -143,7 +147,7 @@ simtime_t DeciderUWBIRED::handleSignalOver(map<Signal*, int>::iterator& it, AirF
 		bool isCorrect = decodePacket(it->first, receivedBits);
 		// we cannot compute bit error rate here
 		// so we send the packet to the MAC layer which will compare receivedBits
-		// with the actual bits sent.
+		// with the actual bits sent (stored in the encapsulated UWBIRMacPkt object).
 		DeciderResultUWBIR * result = new DeciderResultUWBIR(isCorrect, receivedBits);
 		if(isCorrect) {
 		  phy->sendUp(frame, result);
@@ -221,7 +225,6 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 	// debugging information (end)
 
 	int symbol;
-    double decisionScores = 0;
 	// Loop to decode each bit value
 	for (symbol = 0; IEEE802154A::mandatory_preambleLength + symbol
 			* aSymbol < signal->getSignalLength(); symbol++) {
@@ -229,9 +232,6 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 		int hoppingPos = IEEE802154A::getHoppingPos(symbol);
 		int decodedBit;
 
-		if(trace) {
-		  timeHoppings.record(hoppingPos);
-		}
 		if (stats) {
 			nbSymbols = nbSymbols + 1;
 		}
@@ -250,21 +250,14 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 		//packetSNIR = packetSNIR + energyOne.first;
 	    }
 
-		double decisionScore = (max(energyZero.second, energyOne.second)) / (min(energyZero.second, energyOne.second));
-		decisionVariable.record( decisionScore );
-		decisionScores = decisionScores + decisionScore;
 		packetSNIR = packetSNIR + energyZero.first; // valid only if the payload consists of zeros
 		receivedBits->push_back(static_cast<bool>(decodedBit));
 		//packetSamples = packetSamples + 16; // 16 EbN0 evaluations per bit
 
 		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
 
-		//pulseSINR.record( 10*log(energyZero.second / energyOne.second) ); // valid only if signal consists of zeroes
 	}
     symbol = symbol + 1;
-	pulseSINR.record( 10*log10(packetSNIR/(16*symbol)) );  // mean pulse SINR
-	ebN0.record(10*log10(epulseAggregate / enoiseAggregate) );
-	packetDecisionAvg.record( decisionScores / symbol );
 
 	bool isCorrect = true;
 	if(airFrameVector.size() > 1 && alwaysFailOnDataInterference) {
@@ -318,7 +311,7 @@ pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
 				!= airFrameVector.end(); ++airFrameIter) {
 			Signal & aSignal = (*airFrameIter)->getSignal();
 			ConstMapping* currPower = aSignal.getReceivingPower();
-			double measure = currPower->getValue(arg)*peakPulsePower; //Ptx; // de-normalize (this value should be in AirFrame or in Signal, to be set at run-time)
+			double measure = currPower->getValue(arg)*peakPulsePower; //TODO: de-normalize (peakPulsePower should be in AirFrame or in Signal, to be set at run-time)
 //			measure = measure * uniform(0, +1); // random point of Efield at sampling (due to pulse waveform and self interference)
 			if (currPower == signalPower) {
 				signalValue = measure*0.5; // we capture half of the maximum possible pulse energy to account for self  interference
@@ -330,13 +323,11 @@ pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
 			++currSig;
 		}
 
-		receivedPower.record(resPower);
 		double attenuatedPower = resPower / 10; // 10 dB = 6 dB implementation loss + 5 dB noise factor
 		vEfield = sqrt(50*resPower); // P=V²/R
 		// add thermal noise realization
 		vThermalNoise = getNoiseValue();
 		vnoise2 = pow(vThermalNoise, 2);    // for convenience
-		noisePower.record(vnoise2/50);
 		vmeasured = vEfield + vThermalNoise;
 		vmeasured_square = pow(vmeasured, 2);
 		// signal + interference + noise
@@ -346,34 +337,20 @@ pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
 		// signal converted to antenna voltage squared
 		vsignal_square = 50*signalValue;
 		vnoise_square = pow(sqrt(vmeasured_square) - sqrt(vsignal_square), 2); // everything - signal = noise + interfence
-		snir = signalValue / 2.0217E-12;  // mean thermal noise =  kb T B (kb=1.38E-23 J/K) | or -174+10logB=-87 dBm =1E-8 ?
+		snir = signalValue / 2.0217E-12;
 		epulseAggregate = epulseAggregate + pow(vEfield, 2);
 		enoiseAggregate = enoiseAggregate + vnoise2;
-		//snir = vsignal_square / vnoise_square;
-        //snir = snir + vsignal_square / vnoise_square;
-		// convert  to power levels and divide by average thermal noise
-		//snir = (vsignal_square / 50) / (2.0217E-12);
-		// or convert peak voltage to pulse power and divide by average thermal noise
-		//snir = 0.5 * vsignal_square * 100 / (2.0217E-12);
-		// or divide square signal by square noise (eliminate sign) to consider only the "sampled" noise by our receiver
-		// snir = vsignal_square / vnoise2; // this cannot work well because vnoise has a mean 0
-		// or divide induced power by thermal power
-		//snir = inducedPower / 2.0217E-12;
 		packetSignal = packetSignal + vsignal_square;
 		packetNoise = packetNoise + vnoise_square;
-		//packetSNIR = packetSNIR + vsignal_square / vnoise_square;
-		//packetSamples = packetSamples + 1;
 		snirs = snirs + snir;
 		snirEvals = snirEvals + 1;
 		if(signalValue > 0) {
 		  double pulseSnr = signalValue / (vnoise_square/50);
 		  burstsnr = burstsnr + pulseSnr;
 		}
-		//pulseSINR.record(snirs / snirEvals);
 		energy.first = energy.first + snir;
 
 	} // consider next point in time
-	//ebN0.record(burstsnr/16); // burst energy / thermal noise value
 	return energy;
 }
 

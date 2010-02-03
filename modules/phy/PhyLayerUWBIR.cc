@@ -16,6 +16,10 @@
  *              For further information see file COPYING
  *              in the top level directory
  * description: this physical layer models an ultra wideband impulse radio channel.
+ * acknowledgment: this work was supported (in part) by the National Competence
+ * 			    Center in Research on Mobile Information and Communication Systems
+ * 				NCCR-MICS, a center supported by the Swiss National Science
+ * 				Foundation under grant number 5005-67322.
  ***************************************************************************/
 //
 // Physical layer that models an Ultra Wideband Impulse Radio transceiver.
@@ -57,10 +61,6 @@ void PhyLayerUWBIR::initialize(int stage) {
 		syncCurrent = getParentModule()->par( "syncCurrent" ); // assume instantaneous transitions between rx and sync
 	} else if (stage == 1) {
 		cModule* macModule = getParentModule()->getSubmodule("mac");
-		int macaddress = (check_and_cast<UWBIRMac*>(macModule))->getmacaddress();
-		std::ostringstream stream;
-		stream << "powerConsumption-" << macaddress;
-		uwbradio->setName(stream.str());  // get MAC address and add it
 		registerWithBattery("physical layer", numActivities);
 		BatteryAccess::drawCurrent(rxCurrent, RX_ACCT);
 	}

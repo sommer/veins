@@ -16,6 +16,10 @@
  *              For further information see file COPYING
  *              in the top level directory
  * description: this class holds constants specified in IEEE 802.15.4A UWB-IR Phy
+ * acknowledgment: this work was supported (in part) by the National Competence
+ * 			    Center in Research on Mobile Information and Communication Systems
+ * 				NCCR-MICS, a center supported by the Swiss National Science
+ * 				Foundation under grant number 5005-67322.
  ***************************************************************************/
 
 #include "IEEE802154A.h"

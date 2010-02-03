@@ -16,7 +16,22 @@
  *              For further information see file COPYING
  *              in the top level directory
  * description: this Decider models an energy-detection receiver with soft-decision
+ * acknowledgment: this work was supported (in part) by the National Competence
+ * 			    Center in Research on Mobile Information and Communication Systems
+ * 				NCCR-MICS, a center supported by the Swiss National Science
+ * 				Foundation under grant number 5005-67322.
  ***************************************************************************/
+
+//
+// This class implements a model of an energy detection receiver
+// that demodulates UWB-IR burst position modulation as defined
+// in the IEEE802154A standard (mandatory mode, high PRF).
+// The code modeling the frame clock synchronization is implemented
+// in attemptSync(). Simply subclass this class and redefine attemptSync()
+// if you wish to consider more sophisticated synchronization models.
+// To implement a coherent receiver, the easiest way to start is to copy-paste
+// this code into a new class and rename it accordingly. Then, redefine
+// decodePacket().
 
 #ifndef _UWBIRENERGYDETECTIONDECIDERV2_H
 #define	_UWBIRENERGYDETECTIONDECIDERV2_H
@@ -60,16 +75,8 @@ protected:
 	double epulseAggregate, enoiseAggregate;
 
 public:
-	// Boltzmann constant multiplied by 500 MHz (signal bandwidth) in mJ.K-1 !
-	const static double kB500M = 5 * 1.38E-12; // mW/K
-	const static int temperature = 293; // 20 Celsius degrees
-	const static double noiseVariance = 101.085E-12; // P=-116.9 dBW Farserotu // 404.34E-12;   v²=s²=4kb T R B
-	const static double Ptx = 37.06E-6; // radiated power at origin (-41.3 dBm/MHz over 500 MHz in Watts)
+	const static double noiseVariance = 101.085E-12; // P=-116.9 dBW // 404.34E-12;   v²=s²=4kb T R B (T=293 K)
 	const static double peakPulsePower = 1.3E-3; //1.3E-3 W peak power of pulse to reach  0dBm during burst; // peak instantaneous power of the transmitted pulse (A=0.6V) : 7E-3 W. But peak limit is 0 dBm
-	const static double peakVoltage = 0.6; // peak voltage of the triangular pulse to reach Ptx
-	const static double resistor = 50; // 50 Ohms
-	const static double lambda = 0.04;// center frequency wavelength
-	const static double Aiso = 127.32E-6; // Aperture of the ideal isotropic antenna (lambda²/4Pi)
 
 	DeciderUWBIRED(DeciderToPhyInterface* iface,
 			PhyLayerUWBIR* _uwbiface,
@@ -82,18 +89,8 @@ public:
 				channelSensing(false), synced(false), vsignal2(0), vnoise2(0), snirEvals(0), pulseSnrs(0),
 				alwaysFailOnDataInterference(alwaysFailOnDataInterference) {
 
-		zerosEnergies.setName("ZerosEnergies");
-		onesEnergies.setName("OnesEnergies");
-		signalLengths.setName("signalLengths");
 		receivedPulses.setName("receivedPulses");
 		syncThresholds.setName("syncThresholds");
-		timeHoppings.setName("timeHoppings");
-		decisionVariable.setName("decisionVariable");
-		packetDecisionAvg.setName("decisionAvg");
-		ebN0.setName("EbN0");
-		pulseSINR.setName("sinr");
-		noisePower.setName("noise");
-		receivedPower.setName("Prx");
 		utility = iface->getUtility();
 		catUWBIRPacket = utility->getCategory(&packet);
 	};
@@ -123,23 +120,12 @@ public:
 		 return normal(0, sqrt(noiseVariance));
 	}
 
-	double getInducedPowerFromEField(double Efield) {
-		double inducedPower = 0;
-		double intensity = pow(Efield, 2) / 120*PI;
-		inducedPower = intensity * Aiso;
-		return inducedPower;
-	}
-
 	void cancelReception();
 
 protected:
 	map<Signal*, int> currentSignals;
-	cOutVector zerosEnergies, onesEnergies, decisionVariable, packetDecisionAvg, signalLengths,
-			receivedPulses;
-	cOutVector syncThresholds, timeHoppings;
-	cOutVector ebN0;
-	cOutVector pulseSINR;
-    cOutVector noisePower, receivedPower;
+	cOutVector receivedPulses;
+	cOutVector syncThresholds;
 
 	PhyLayerUWBIR* uwbiface;
 	Signal* tracking;
