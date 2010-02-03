@@ -35,14 +35,6 @@ simple PhyLayerUWBIR extends BasePhyLayer
 {
     parameters:
         @class(PhyLayerUWBIR);
-        // radio power consumption
-        double PSleep;
-        double PRx;
-        double PTx;
-        double PSync;
-        double PSwitch;
-
         @display("i=device/antennatower");
-
 }
 
