@@ -35,8 +35,6 @@ void UWBIRMac::initialize(int stage) {
 		stats = par("stats").boolValue();
 		trace = par("trace").boolValue();
 		packetsAlwaysValid = par("packetsAlwaysValid");
-		macaddress = par("macaddress").longValue();
-		netaddress = par("netaddress").longValue();
 		rsDecoder = par("RSDecoder").boolValue();
 		phy = FindModule<MacToPhyInterface*>::findSubModule(
 				this->getParentModule());
@@ -207,7 +205,7 @@ void UWBIRMac::handleLowerMsg(cPacket *msg) {
 	if (validatePacket(mac)) {
 		int dest = mac->getDestAddr();
 		int src = mac->getSrcAddr();
-		if ((dest == macaddress)) {
+		if ((dest == myMacAddr)) {
 			coreEV<< "message with mac addr " << src
 			<< " for me (dest=" << dest
 			<< ") -> forward packet to upper layer\n";
@@ -215,7 +213,7 @@ void UWBIRMac::handleLowerMsg(cPacket *msg) {
 		} else {
 			coreEV << "message with mac addr " << src
 			<< " not for me (dest=" << dest
-			<< ") -> delete (my MAC=" << macaddress << ")\n";
+			<< ") -> delete (my MAC=" << myMacAddr << ")\n";
 			delete mac;
 		}
 	} else {

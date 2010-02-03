@@ -19,6 +19,12 @@
  * 				class. It provides the necessary functions to build UWBIR
  * 				packets and to receive them.
  ***************************************************************************/
+//
+// This class provides helper function for MAC modules that use the UWB-IR IEEE 802.15.4A model.
+// Just before sending down a packet to the UWBIRPhyLayer, call prepareData(UWBIRMacPkt* packet).
+// Just after receiving a packet from the UWBIRPhyLayer, call validatePacket(UWBIRMacPkt* packet)
+// and check the returned bool value to know if the packet could be decoded successfully.
+//
 
 #ifndef UWBIRMAC_H
 #define UWBIRMAC_H
@@ -60,7 +66,6 @@ protected:
     MacToPhyInterface* phy;
     Packet packet;
     int catPacket;
-    int macaddress, netaddress;
 
     cOutVector packetsBER;
     cOutVector dataLengths;
@@ -87,9 +92,7 @@ protected:
     bool validatePacket(UWBIRMacPkt * mac);
 
     void initCounters();
-public:
-    int getmacaddress() { return macaddress; }
-    int getnetaddress() { return netaddress; }
+
 };
 
 #endif // UWBIRMAC_H
