@@ -41,7 +41,7 @@ simple CSMA802154 extends csma
         macAckWaitDuration @unit(s) = default(0.00056 s);  // 1+12+10+12 symbols
         ccaDetectionTime @unit(s) = default(0.000128 s); // 8 symbols
         aTurnaroundTime @unit(s) = default(0.000192 s);    // 12 symbols
-        txPower @unit(mW);
+        //txPower @unit(mW);
         useMACAcks = default(true);
         
         backoffMethod = default("exponential");
