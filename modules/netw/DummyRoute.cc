@@ -18,7 +18,7 @@
 Define_Module(DummyRoute);
 
 void DummyRoute::initialize(int stage) {
-	BaseLayer::initialize(stage);
+	BaseNetwLayer::initialize(stage);
 	if (stage == 0) {
 		headerLength = par("headerLength");
 		stats = par("stats");

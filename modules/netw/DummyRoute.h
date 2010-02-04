@@ -23,6 +23,7 @@
 #include "NetwControlInfo.h"
 #include "MacControlInfo.h"
 #include "BaseMobility.h"
+#include "BaseNetwLayer.h"
 
 #include <map>
 #include <list>
@@ -37,7 +38,7 @@ using namespace std;
  * @author Jerome Rousselot
  **/
 
-class DummyRoute : public BaseLayer
+class DummyRoute : public BaseNetwLayer
 {
 public:
     /** @brief Initialization of the module and some variables*/
@@ -45,18 +46,8 @@ public:
     virtual void finish();
 
 protected:
-    /**
-     * @brief Length of the NetwPkt header
-     * Read from omnetpp.ini
-     **/
-    int headerLength;
 
-    /** @brief cached variable of my network address */
-    int netaddress;
-    int macaddress;
-
-
-    bool trace, stats, debug;
+    bool stats, trace;
 
 
     /** @brief Handle messages from upper layer */
