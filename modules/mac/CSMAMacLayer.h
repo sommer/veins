@@ -45,6 +45,7 @@
  * The TestApplLayer e.g. implements such a processing delay!
  *
  * @ingroup macLayer
+ * @ingroup csma
  * @author Marc L�bbers, Yosia Hadisusanto, Andreas Koepke, Karl Wessel
  */
 class  CSMAMacLayer : public BaseMacLayer

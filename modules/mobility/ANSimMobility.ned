@@ -24,6 +24,7 @@ import org.mixim.base.modules.BaseMobility;
 // Uses the <position_change> elements of the ANSim tool's
 // trace file.
 //
+// NOTE: Does not yet support 3-dimensional movement.
 // @author Andras Varga
 //
 simple ANSimMobility extends BaseMobility

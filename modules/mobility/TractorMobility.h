@@ -26,6 +26,7 @@
 /**
  * @brief Tractor movement model. See NED file for more info.
  *
+ * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Peterpaul Klein Haneveld
  */

@@ -32,20 +32,30 @@ void LinearMobility::initialize(int stage)
 
     if (stage == 0){
 
-        move.speed = par("speed");
+        move.setSpeed(par("speed"));
         acceleration = par("acceleration");
         angle = par("angle");
         angle = fmod(angle,360);
     }
     else if(stage == 1){
-	stepTarget = move.startPos;
+    	stepTarget = move.getStartPos();
+
+		if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
+		if(!world->useTorus()) {
+			opp_warning("You are not using a torus (parameter \"useTorus\" in"\
+						"BaseWorldUtility module) playground but this mobility"\
+						"module uses WRAP as border policy.");
+		}
     }
 }
 
 
 void LinearMobility::fixIfHostGetsOutside()
 {
-    Coord dummy;
+    Coord dummy(world->use2D());
     handleIfOutside(WRAP, stepTarget, dummy, dummy, angle);
 }
 
@@ -58,18 +68,17 @@ void LinearMobility::makeMove()
 {
     EV << "start makeMove " << move.info() << endl;
 
-    move.startPos = stepTarget;
-    move.startTime = simTime();
+    move.setStart(stepTarget, simTime());
 
-    stepTarget.setX(move.startPos.getX() + move.speed * cos(PI * angle / 180) * updateInterval.dbl());
-    stepTarget.setY(move.startPos.getY() + move.speed * sin(PI * angle / 180) * updateInterval.dbl());
+    stepTarget.setX(move.getStartPos().getX() + move.getSpeed() * cos(PI * angle / 180) * updateInterval.dbl());
+    stepTarget.setY(move.getStartPos().getY() + move.getSpeed() * sin(PI * angle / 180) * updateInterval.dbl());
 
-    move.setDirection(stepTarget);
+    move.setDirectionByTarget(stepTarget);
 
     EV << "new stepTarget: " << stepTarget.info() << endl;
 
     // accelerate
-    move.speed += acceleration * updateInterval.dbl();
+    move.setSpeed(move.getSpeed() + acceleration * updateInterval.dbl());
 
     fixIfHostGetsOutside();
 }

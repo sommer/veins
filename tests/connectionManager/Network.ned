@@ -46,7 +46,7 @@ module Network
                 playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
         }
-        channelcontrol: ConnectionManager {
+        channelcontrol: TestCM {
 
             parameters:
                 @display("p=60,30;i=eye14");

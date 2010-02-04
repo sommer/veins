@@ -20,7 +20,10 @@
 #include <BaseWorldUtility.h>
 
 /**
- * TODO - Generated class
+ * @brief Collects global statistics (like channel usage) from the
+ * global blackboard.
+ *
+ * @ingroup exampleIEEE802154Narrow
  */
 class WorldUtilityStats : public BaseWorldUtility,
 						  public ImNotifiable

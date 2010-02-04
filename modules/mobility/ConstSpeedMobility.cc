@@ -37,21 +37,21 @@ void ConstSpeedMobility::initialize(int stage)
     BaseMobility::initialize(stage);
 
     if (stage == 0) {
-        move.speed = par("speed").doubleValue();
+        move.setSpeed(par("speed").doubleValue());
 
-        if(move.speed <= 0)
-	    move.speed = 0;
+        if(move.getSpeed() <= 0)
+        	move.setSpeed(0);
 
-	numSteps = 0;
-	step = -1;
-	stepSize = Coord(0,0,0);
+		numSteps = 0;
+		step = -1;
+		stepSize = Coord(0,0,0);
 
-        EV << "Initialize: move speed: " << move.speed << " (" << par("speed").doubleValue() << ")"
+        EV << "Initialize: move speed: " << move.getSpeed() << " (" << par("speed").doubleValue() << ")"
            << " pos: " << move.info() << endl;
     }
     else if( stage == 1 ){
-	stepTarget = move.startPos;
-    }	
+    	stepTarget = move.getStartPos();
+    }
 }
 
 
@@ -66,25 +66,25 @@ void ConstSpeedMobility::setTargetPosition()
     do{
 	targetPos = getRandomPosition();
 
-	double distance = move.startPos.distance(targetPos);
-	simtime_t totalTime = distance / move.speed;
+	double distance = move.getStartPos().distance(targetPos);
+	simtime_t totalTime = distance / move.getSpeed();
 	numSteps = FWMath::round(totalTime / updateInterval);
 
-	EV << "new targetPos: " << targetPos.info() << " distance=" << distance 
+	EV << "new targetPos: " << targetPos.info() << " distance=" << distance
 	   << " totalTime=" << totalTime << " numSteps=" << numSteps << endl;
     }
     while( numSteps == 0 );
 
-    stepSize = targetPos - move.startPos;
+    stepSize = targetPos - move.getStartPos();
 
     stepSize = stepSize / numSteps;
 
-    stepTarget = move.startPos + stepSize;
+    stepTarget = move.getStartPos() + stepSize;
 
     EV << "stepSize: " << stepSize.info() << " target: " << (stepSize*numSteps).info() << endl;
 
     step = 0;
-    move.setDirection(targetPos);
+    move.setDirectionByTarget(targetPos);
 
     EV << "end setTargetPosistion: " << move.info() << endl;
 }
@@ -100,29 +100,27 @@ void ConstSpeedMobility::makeMove()
     step++;
 
     if( step == numSteps ){
-	// last step
-	//stepSize.x = 
-	// step forward
-	move.startPos = stepTarget;
-	move.startTime = simTime();
+		// last step
+		//stepSize.x =
+		// step forward
+		move.setStart(stepTarget, simTime());
 
-	EV << "stepping forward. step #=" << step
-	   << " startPos: " << move.startPos.info() << endl;
+		EV << "stepping forward. step #=" << step
+		   << " startPos: " << move.getStartPos().info() << endl;
 
 
-	// get new target position
-	EV << "destination reached.\n"
-	   << move.info() << endl;
-	setTargetPosition();
+		// get new target position
+		EV << "destination reached.\n"
+		   << move.info() << endl;
+		setTargetPosition();
     }
     else if( step < numSteps ){
-	// step forward
-	move.startPos = stepTarget;
-	stepTarget += stepSize;
-	move.startTime = simTime();
+		// step forward
+		move.setStart(stepTarget, simTime());
+		stepTarget += stepSize;
 
-	EV << "stepping forward. step #=" << step
-	   << " startPos: " << move.startPos.info() << endl;
+		EV << "stepping forward. step #=" << step
+		   << " startPos: " << move.getStartPos().info() << endl;
 
     }
     else{
@@ -136,7 +134,7 @@ void ConstSpeedMobility::makeMove()
 void ConstSpeedMobility::fixIfHostGetsOutside()
 {
     double dummy;
-    
+
     handleIfOutside( PLACERANDOMLY, stepTarget, targetPos, stepSize, dummy );
 }
 */

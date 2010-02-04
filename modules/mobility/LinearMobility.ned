@@ -26,6 +26,7 @@ import org.mixim.base.modules.BaseMobility;
 // Angle only changes when the mobile node hits a wall: then it reflects
 // off the wall at the same angle.
 //
+// NOTE: Does not yet support 3-dimensional movement.
 // @see ConnectionManager
 // @author Emin Ilker Cetinbas
 //

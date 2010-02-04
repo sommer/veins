@@ -1,9 +1,9 @@
 /* -*- mode:c++ -*- ********************************************************
  * file:        Move.h
  *
- * author:      Andreas Koepke
+ * author:      Andreas Koepke, Michael Swigulski
  *
- * copyright:   (C) 2005 Telecommunication Networks Group (TKN) at
+ * copyright:   (C) 2005, 2010 Telecommunication Networks Group (TKN) at
  *              Technische Universitaet Berlin, Germany.
  *
  *              This program is free software; you can redistribute it
@@ -22,6 +22,7 @@
 
 #include <string>
 #include <cmath>
+#include <cassert>
 
 #include <omnetpp.h>
 
@@ -36,29 +37,80 @@
  * @ingroup utils
  * @ingroup blackboard
  *
- * @author Andreas Koepke
+ * @author Andreas Koepke, Michael Swigulski
  **/
-
-/** TODO: Think about making members private and encapsulate access to members
-* to guarantee consistence and properly working functions.
-*/
-
 class Move : public BBItem {
-//class Move {
+
     BBITEM_METAINFO(BBItem);
 
- public:
+protected:
     /** @brief Start position of the host (in meters)**/
     Coord startPos;
     /** @brief start time at which host started at startPos **/
     simtime_t startTime;
-    /** @brief direction the host is moving to **/
+    /** @brief direction the host is moving to, must be normalized **/
     Coord direction;
     /** speed of the host in meters per second **/
     double speed;
 
 public:
-    void setDirection(const Coord& target) {
+	double getSpeed() const
+	{
+		return speed;
+	}
+
+	void setSpeed(double speed)
+	{
+		this->speed = speed;
+	}
+
+	const Coord& getStartPos() const
+	{
+		return startPos;
+	}
+
+	simtime_t getStartTime() const
+	{
+		return startTime;
+	}
+
+	/**
+	 * @brief Sets start-position and start-time
+	 */
+	void setStart(const Coord& startPos, simtime_t startTime)
+	{
+		this->startPos = startPos;
+		this->startTime = startTime;
+	}
+
+	/**
+	 * @brief Sets start-position to passed value and start-time to current simulation-time
+	 */
+	void setStart(const Coord& startPos)
+	{
+		setStart(startPos, simTime());
+	}
+
+	const Coord& getDirection() const
+	{
+		return direction;
+	}
+
+	/**
+	 * @brief Sets the direction from a passed vector,
+	 * which must be already normalized or 0.
+	 */
+	void setDirectionByVector(const Coord& direction)
+	{
+		assert(	FWMath::close(direction.squareLength(), 1.0)
+				|| FWMath::close(direction.squareLength(), 0.0));
+		this->direction = direction;
+	}
+
+	/**
+	 * @brief Sets the normalized direction from a passed target.
+	 */
+	void setDirectionByTarget(const Coord& target) {
 
     	double d = startPos.distance( target );
 	    direction = (target - startPos) / d;

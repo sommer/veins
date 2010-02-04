@@ -12,11 +12,11 @@ module BaseNetwork
         double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
         double numNodes; // total number of hosts in the network
 
-        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=0,0");
+        @display("bgb=$playgroundSizeX,$playgroundSizeY,white;bgp=0,0");
     submodules:
         connectionManager: ConnectionManager {
-         	parameters:
-                @display("p=150,0;b=42,42,rect,green,,;i=abstract/multicast");   
+            parameters:
+                @display("p=150,0;b=42,42,rect,green,,;i=abstract/multicast");
         }
         world: BaseWorldUtility {
             parameters:

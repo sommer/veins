@@ -26,6 +26,7 @@
 /**
  * @brief Uses the BonnMotion native file format. See NED file for more info.
  *
+ * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Andras Varga
  */

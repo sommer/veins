@@ -30,6 +30,7 @@
  * @brief Models the mobility of with mass, making random motions.
  * See NED file for more info.
  *
+ * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Emin Ilker Cetinbas, Andras Varga
  */

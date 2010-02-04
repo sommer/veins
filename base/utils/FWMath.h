@@ -43,7 +43,7 @@
 /* Constant for comparing doubles. Two doubles at most epsilon apart
    are declared equal.*/
 #ifndef EPSILON
-#define EPSILON 0.001
+#define EPSILON 0.00001
 #endif
 
 /* Provide function substitutes for Win32 architectures. */
@@ -92,6 +92,15 @@ public:
         double f;
         f=modf(dividend/divisor, &i);
         return i;
+    }
+
+    /**
+     * @brief Returns the remainder r on division of dividend a by divisor n,
+     * using floored division. The remainder r has the same sign as the divisor n.
+     *
+     */
+    static double modulo(double a, double n) {
+		return (a - n * floor(a/n));
     }
 
     /**

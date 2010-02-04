@@ -58,13 +58,20 @@ void ANSimMobility::initialize(int stage)
 
         // set initial position;
         setTargetPosition();
-        move.startPos = targetPos;
-	stepTarget = move.startPos;
+        move.setStart(targetPos, simTime());
+        stepTarget = move.getStartPos();
 
-	targetTime = simTime();
+		targetTime = simTime();
 
-	// dummy value; speed not used in ansim
-	move.speed = 1;
+		// dummy value; speed not used in ansim
+		move.setSpeed(1);
+    }
+    else
+    {
+    	if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
     }
 }
 
@@ -82,7 +89,7 @@ void ANSimMobility::setTargetPosition()
 
     if (!nextPosChange)
     {
-        move.speed = 0;
+        move.setSpeed(0);
         return;
     }
 
@@ -112,7 +119,7 @@ void ANSimMobility::extractDataFrom(cXMLElement *node)
 
 void ANSimMobility::fixIfHostGetsOutside()
 {
-    Coord dummy;
+    Coord dummy(world->use2D());
     double dum;
     handleIfOutside( RAISEERROR, stepTarget, dummy, dummy, dum );
 }

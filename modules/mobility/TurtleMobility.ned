@@ -109,6 +109,7 @@ import org.mixim.base.modules.BaseMobility;
 //
 // You can find the DTD with the sources: TurtleMobility.dtd.
 //
+// NOTE: Does not yet support 3-dimensional movement.
 // @see ConnectionManager
 // @author Andras Varga
 //

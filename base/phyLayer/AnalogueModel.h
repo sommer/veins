@@ -10,6 +10,11 @@
  * the attenuation value of a Signal to simulate things like
  * shadowing, fading, pathloss or obstacles.
  *
+ * Note: The Mapping this an AnalogeuModel adds to a signal has
+ * to define absolute time positions not relative.
+ * Meaning the position zero refers to the simulation start not
+ * the signal start.
+ *
  * @ingroup analogueModels
  */
 class AnalogueModel {

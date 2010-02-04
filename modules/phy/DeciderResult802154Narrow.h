@@ -14,6 +14,7 @@
  * @brief Defines an extended DeciderResult for the 802.15.4 protocol.
  *
  * @ingroup decider
+ * @ingroup ieee802154
  */
 class DeciderResult802154Narrow : public DeciderResult {
 protected:

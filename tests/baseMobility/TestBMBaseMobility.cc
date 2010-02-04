@@ -18,7 +18,7 @@ void TestBMBaseMobility::initialize(int stage){
 
 	if (stage == 0) {
 		updateInterval = 0.1;
-		move.speed = 0.1;
+		move.setSpeed(0.1);
 		testStage = 0;
 		testsPassed = true;
 		use2D = world->use2D();
@@ -44,26 +44,26 @@ Coord TestBMBaseMobility::getCoord(double x, double y, double z) {
 }
 
 void TestBMBaseMobility::calcTestReflection(Coord from, Coord collission, Coord reflected) {
-	move.startPos = from;
-	move.setDirection(collission);
-	move.speed = (from - collission).length() * 2.0;
+	move.setStart(from, move.getStartTime());
+	move.setDirectionByTarget(collission);
+	move.setSpeed((from - collission).length() * 2.0);
 
 	expectedBorderTime = simTime() + 0.5;
-	expectedBorderMove.startPos = collission;
-	expectedBorderMove.setDirection(reflected);
+	expectedBorderMove.setStart(collission, expectedBorderMove.getStartTime());
+	expectedBorderMove.setDirectionByTarget(reflected);
 
 	policy = REFLECT;
 
-	step = move.direction * move.speed;
-	expStep = expectedBorderMove.direction * move.speed;
-	stepTarget = move.startPos + step;
-	expStepTarget = expectedBorderMove.startPos + expStep * 0.5;
-	targetPos = move.startPos + step * 2.0;
-	expTargetPos = expectedBorderMove.startPos + expStep * 1.5;
+	step = move.getDirection() * move.getSpeed();
+	expStep = expectedBorderMove.getDirection() * move.getSpeed();
+	stepTarget = move.getStartPos() + step;
+	expStepTarget = expectedBorderMove.getStartPos() + expStep * 0.5;
+	targetPos = move.getStartPos() + step * 2.0;
+	expTargetPos = expectedBorderMove.getStartPos() + expStep * 1.5;
 }
 
 void TestBMBaseMobility::getNextTestMove() {
-	move.startTime = simTime();
+	move.setStart(move.getStartPos(), simTime());
 
 	switch(++testStage) {
 	case 1:
@@ -140,7 +140,7 @@ void TestBMBaseMobility::getNextTestMove() {
 	case 10:
 		//3-dimensional test from here set breakpoint for 2D
 		if(use2D) {
-			move.speed = 0.0;
+			move.setSpeed(0.0);
 			break;
 		}
 
@@ -177,7 +177,7 @@ void TestBMBaseMobility::getNextTestMove() {
 
 
 	default:
-		move.speed = 0.0;
+		move.setSpeed(0.0);
 		updateInterval = 0.0;
 		break;
 	}
@@ -201,20 +201,20 @@ void TestBMBaseMobility::assertRightTime(simtime_t expected) {
 }
 
 void TestBMBaseMobility::assertRightMove(Move& expected) {
-	if(expected.startPos == move.startPos) {
+	if(expected.getStartPos() == move.getStartPos()) {
 		ev << "Passed: Check for correct start position of border move " << testStage << endl;
 	} else {
 		ev << "FAILED: Check for correct start position of border move " << testStage <<
-			  ". Expected " << expected.startPos.info() << " was " << move.startPos.info() << endl;
+			  ". Expected " << expected.getStartPos().info() << " was " << move.getStartPos().info() << endl;
 
 		testsPassed = false;
 	}
 
-	if(expected.direction == move.direction) {
+	if(expected.getDirection() == move.getDirection()) {
 		ev << "Passed: Check for correct direction of border move " << testStage << endl;
 	} else {
 		ev << "FAILED: Check for correct direction of border move " << testStage <<
-			  ". Expected " << expected.direction.info() << " was " << move.direction.info() << endl;
+			  ". Expected " << expected.getDirection().info() << " was " << move.getDirection().info() << endl;
 
 		testsPassed = false;
 	}
@@ -238,7 +238,7 @@ void TestBMBaseMobility::fixIfHostGetsOutside()
 			assertRightMove(expectedBorderMove);
 		}
 	    getNextTestMove();
-	    if(move.speed == 0.0) {
+	    if(move.getSpeed() == 0.0) {
 	    	return;
 	    }
 	} else {

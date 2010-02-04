@@ -14,6 +14,7 @@
  * @brief Decider for the 802.15.4 Narrow band module
  *
  * @ingroup decider
+ * @ingroup ieee802154
  * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Karl Wessel(port for MiXiM)
  */
 class Decider802154Narrow: public BaseDecider {

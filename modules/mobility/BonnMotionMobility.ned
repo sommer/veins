@@ -33,6 +33,7 @@ import org.mixim.base.modules.BaseMobility;
 // The meaning is that the given node gets to (xk,yk) at tk. There's no
 // separate notation for wait, so x and y coordinates will be repeated there.
 //
+// NOTE: Does not yet support 3-dimensional movement.
 // @author Andras Varga
 //
 simple BonnMotionMobility extends BaseMobility

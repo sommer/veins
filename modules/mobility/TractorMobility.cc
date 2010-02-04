@@ -41,7 +41,7 @@ void TractorMobility::initialize(int stage)
 		y2 = par("y2");
 		rows = par("rows");
 
-		move.speed = par("speed");
+		move.setSpeed(par("speed"));
 
 		dx = x2-x1;
 		dy = y2-y1;
@@ -53,14 +53,21 @@ void TractorMobility::initialize(int stage)
 
 		calculateXY();
 
-		move.startPos = targetPos;
+		move.setStart(targetPos);
+	}
+	else
+	{
+		if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
 	}
 }
 
 
 void TractorMobility::makeMove()
 {
-	position += move.speed * updateInterval.dbl();
+	position += move.getSpeed() * updateInterval.dbl();
 
 	calculateXY();
 
@@ -69,7 +76,7 @@ void TractorMobility::makeMove()
 
 void TractorMobility::fixIfHostGetsOutside()
 {
-	Coord dummy;
+	Coord dummy(world->use2D());
 	double dum;
 
 	handleIfOutside( RAISEERROR, targetPos, dummy, dummy, dum );
@@ -78,7 +85,7 @@ void TractorMobility::fixIfHostGetsOutside()
 void TractorMobility::calculateXY()
 {
 	// update the position
-	move.startPos = targetPos;
+	move.setStart(targetPos, simTime());
 
 	// calculate new target position
 	bool moving_away = fmod(position / path_length, 2.0) < 1.0;
@@ -108,6 +115,5 @@ void TractorMobility::calculateXY()
 		}
 	}
 
-	move.setDirection(targetPos);
-	move.startTime = simTime();
+	move.setDirectionByTarget(targetPos);
 }

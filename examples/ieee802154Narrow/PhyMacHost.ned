@@ -30,7 +30,7 @@ module PhyMacHost
             parameters:
                 @display("p=205,146;i=block/blackboard");
         }
-        mobility: LinearMobility {
+        mobility: BaseMobility {
             parameters:
                 @display("p=205,81;i=block/cogwheel");
         }

@@ -23,6 +23,7 @@
  *
  *
  * @ingroup decider
+ * @ingroup ieee80211
  * @author Marc L�bbers, David Raguin, Karl Wessel(port for MiXiM)
  */
 class Decider80211: public BaseDecider {

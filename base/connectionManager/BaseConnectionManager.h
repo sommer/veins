@@ -74,10 +74,10 @@ private:
 		 * x,y and z-values by "gridCellWidth".
 		 * The dimension of the GridCoord depends on the Coord.
 		 */
-        GridCoord(const Coord& c, double gridCellWidth = 1.0) {
-            x = static_cast<int>(c.getX() / gridCellWidth);
-            y = static_cast<int>(c.getY() / gridCellWidth);
-            z = static_cast<int>(c.getZ() / gridCellWidth);
+        GridCoord(const Coord& c, const Coord& gridCellSize = Coord(1.0,1.0,1.0)) {
+            x = static_cast<int>(c.getX() / gridCellSize.getX());
+            y = static_cast<int>(c.getY() / gridCellSize.getY());
+            z = static_cast<int>(c.getZ() / gridCellSize.getZ());
             use2D = c.is2D();
         }
 
@@ -242,7 +242,7 @@ protected:
      * allow nodes to be placed into the same square if the playground
      * is too small for the grid speedup to work.
 	 */
-    double findDistance;
+    Coord findDistance;
 
     /** @brief The size of the grid */
     GridCoord gridDim;

@@ -39,7 +39,7 @@ void TurtleMobility::initialize(int stage)
         turtleScript = par("turtleScript");
         nextStatement = turtleScript->getFirstChild();
 
-        move.speed = 1;
+        move.setSpeed(1);
         angle = 0;
         borderPolicy = REFLECT;
 
@@ -54,14 +54,21 @@ void TurtleMobility::initialize(int stage)
         //nextStatement = turtleScript->getFirstChild();
         //while (!loopVars.empty()) loopVars.pop();
 
-        WATCH(move.speed);
+        // WATCH for member 'speed' of the Move is disabled at the moment
+        // because the member is not accessible directly anymore
+        //WATCH(move.speed);
         WATCH(angle);
         WATCH(borderPolicy);
     }
     else if(stage == 1){
-	targetPos = move.startPos;
-	stepTarget = move.startPos;
-	targetTime = simTime();
+    	if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
+
+		targetPos = move.getStartPos();
+		stepTarget = move.getStartPos();
+		targetTime = simTime();
     }
 }
 
@@ -69,7 +76,7 @@ void TurtleMobility::setTargetPosition()
 {
     resumeScript();
 
-    move.startTime = simTime();
+    move.setStart(move.getStartPos(), simTime());
 }
 
 void TurtleMobility::fixIfHostGetsOutside()
@@ -92,7 +99,7 @@ void TurtleMobility::resumeScript()
 {
     if (!nextStatement)
     {
-	move.speed = 0;
+	move.setSpeed(0);
 	EV << "no statement found -> not moving!\n";
         return;
     }
@@ -135,14 +142,14 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         const char *yAttr = stmt->getAttribute("y");
         const char *bpAttr = stmt->getAttribute("borderPolicy");
         if (speedAttr)
-            move.speed = getValue(speedAttr);
+            move.setSpeed(getValue(speedAttr));
         if (angleAttr)
             angle = getValue(angleAttr);
         if (xAttr)
             targetPos.setX(getValue(xAttr));
         if (yAttr)
             targetPos.setY(getValue(yAttr));
-        if (move.speed<=0)
+        if (move.getSpeed()<=0)
             error("<set>: speed is negative or zero at %s", stmt->getSourceLocation());
         if (bpAttr)
         {
@@ -178,13 +185,13 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         {
             // travel distance d at current speed
             d = getValue(dAttr);
-            t = d / move.speed;
+            t = d / move.getSpeed();
         }
         else // tAttr only
         {
             // travel for time t at current speed
             t = getValue(tAttr);
-            d = move.speed * t;
+            d = move.getSpeed() * t;
         }
         if (t<0)
             error("<forward>: time (attribute t) is negative at %s", stmt->getSourceLocation());
@@ -223,7 +230,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         if (yAttr)
             targetPos.setY(getValue(yAttr));
         // travel to targetPos at current speed, or get there in time t (ignoring current speed then)
-        simtime_t t = tAttr ? getValue(tAttr) : move.startPos.distance(targetPos)/move.speed;
+        simtime_t t = tAttr ? getValue(tAttr) : move.getStartPos().distance(targetPos)/move.getSpeed();
         if (t<0)
             error("<wait>: time (attribute t) is negative at %s", stmt->getSourceLocation());
         targetTime += t;
@@ -238,7 +245,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
         if (yAttr)
             targetPos.setY(targetPos.getY() + getValue(yAttr));
         // travel to targetPos at current speed, or get there in time t (ignoring current speed then)
-        simtime_t t = tAttr ? getValue(tAttr) : move.startPos.distance(targetPos)/move.speed;
+        simtime_t t = tAttr ? getValue(tAttr) : move.getStartPos().distance(targetPos)/move.getSpeed();
         if (t<0)
             error("<wait>: time (attribute t) is negative at %s", stmt->getSourceLocation());
         targetTime += t;

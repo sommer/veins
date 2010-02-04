@@ -47,21 +47,26 @@ void BonnMotionMobility::initialize(int stage)
         // obtain initial position
         const BonnMotionFile::Line& vec = *vecp;
         if (vec.size()>=3){
-            move.startPos.setX(vec[1]);
-            move.startPos.setY(vec[2]);
 
-	    move.startTime = vec[0];
+        	move.setStart(Coord(vec[1], vec[2]), vec[0]);
 
-	    //vecpos += 3;
-            targetPos = move.startPos;
-	    targetTime = simTime();
-	    //stepTarget = move.startPos;
+			//vecpos += 3;
+			targetPos = move.getStartPos();
+			targetTime = simTime();
+			//stepTarget = move.startPos;
 
-	    //dummy value; speed not used in BonnMotion
-	    move.speed = 1;
-	    EV << "start pos: t=" << move.startTime << move.startPos.info() << endl;
+			//dummy value; speed not used in BonnMotion
+			move.setSpeed(1);
+			EV << "start pos: t=" << move.getStartTime() << move.getStartPos().info() << endl;
         }
     }
+    else
+	{
+		if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
+	}
 }
 
 BonnMotionMobility::~BonnMotionMobility()
@@ -75,7 +80,7 @@ void BonnMotionMobility::setTargetPosition()
 
     if (vecpos+2 >= vec.size())
     {
-	move.speed = 0;
+	move.setSpeed(0);
 	EV << "host is stationary now!!!\n";
         return;
     }
@@ -90,7 +95,7 @@ void BonnMotionMobility::setTargetPosition()
 
 void BonnMotionMobility::fixIfHostGetsOutside()
 {
-    Coord dummy; 
+    Coord dummy(world->use2D());
     double dum;
 
     handleIfOutside( RAISEERROR, stepTarget, dummy, dummy, dum );

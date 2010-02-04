@@ -83,9 +83,16 @@ void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
 		return;
 	}
 
+	MacPkt* pkt = static_cast<MacPkt*>(msg);
+	MacToPhyControlInfo* cInfo = static_cast<MacToPhyControlInfo*>(pkt->getControlInfo());
+
+	double current = calcTXCurrentForPacket(pkt, cInfo);
+
+	if(current > 0) {
+		BatteryAccess::drawCurrent(current, TX_ACCT);
+	}
+
 	PhyLayer::handleUpperMessage(msg);
-
-
 }
 
 void PhyLayerBattery::handleAirFrame(cMessage* msg) {

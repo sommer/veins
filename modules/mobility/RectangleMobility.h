@@ -26,6 +26,7 @@
 /**
  * @brief Rectangle movement model. See NED file for more info.
  *
+ * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Andras Varga
  */
@@ -38,7 +39,7 @@ class  RectangleMobility : public BaseMobility
     // state
     double d;  ///< distance from (x1,y1), measured clockwise on the perimeter
     double corner1, corner2, corner3, corner4;
-    
+
     /** @brief Target position of the host */
     Coord targetPos;
 

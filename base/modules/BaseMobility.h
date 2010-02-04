@@ -90,13 +90,13 @@ class BaseMobility : public BatteryAccess
      * @brief Specifies which border actually has been reached
      **/
     enum BorderHandling {
-	NOWHERE,   ///< not outside the playground
+    	NOWHERE,   ///< not outside the playground
         X_SMALLER, ///< x smaller than 0
-	X_BIGGER,  ///< x bigger than playground size
-	Y_SMALLER, ///< y smaller than 0
-	Y_BIGGER,  ///< y bigger than playground size
-	Z_SMALLER, ///< z smaller than 0
-	Z_BIGGER   ///< z bigger than playground size
+		X_BIGGER,  ///< x bigger or equal than playground size
+		Y_SMALLER, ///< y smaller than 0
+		Y_BIGGER,  ///< y bigger or equal than playground size
+		Z_SMALLER, ///< z smaller than 0
+		Z_BIGGER   ///< z bigger or equal than playground size
     };
 
   protected:

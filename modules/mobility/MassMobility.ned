@@ -49,6 +49,7 @@ import org.mixim.base.modules.BaseMobility;
 //    - changeAngleBy = normal(0, 30)
 //    - speed = normal(avgSpeed, 0.01)
 //
+// NOTE: Does not yet support 3-dimensional movement.
 // @see ConnectionManager
 // @author Emin Ilker Cetinbas, Andras Varga
 //

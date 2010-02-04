@@ -42,7 +42,7 @@ void RectangleMobility::initialize(int stage)
         x2 = par("x2");
         y2 = par("y2");
 
-        move.speed = par("speed");
+        move.setSpeed(par("speed"));
 
         // calculate helper vars
         double dx = x2-x1;
@@ -65,16 +65,23 @@ void RectangleMobility::initialize(int stage)
             d = corner3 + (startPos-3)*dy; // left side
         calculateXY();
 
-	move.startPos = targetPos;
+        move.setStart(targetPos);
 
         WATCH(d);
+    }
+    else
+    {
+    	if(!world->use2D()) {
+			opp_warning("This mobility module does not yet support 3 dimensional movement."\
+						"Movements will probably be incorrect.");
+		}
     }
 }
 
 
 void RectangleMobility::makeMove()
 {
-    d += move.speed * updateInterval.dbl();
+    d += move.getSpeed() * updateInterval.dbl();
     while (d<0) d+=corner4;
     while (d>=corner4) d-=corner4;
 
@@ -85,7 +92,7 @@ void RectangleMobility::makeMove()
 
 void RectangleMobility::fixIfHostGetsOutside()
 {
-    Coord dummy;
+    Coord dummy(world->use2D());
     double dum;
 
     handleIfOutside( RAISEERROR, targetPos, dummy, dummy, dum );
@@ -94,7 +101,7 @@ void RectangleMobility::fixIfHostGetsOutside()
 void RectangleMobility::calculateXY()
 {
     // update the position
-    move.startPos = targetPos;
+    move.setStart(targetPos, simTime());
 
     // calcultae new target position
     if (d < corner1)
@@ -122,6 +129,5 @@ void RectangleMobility::calculateXY()
         targetPos.setY(y2 - d + corner3);
     }
 
-    move.setDirection(targetPos);
-    move.startTime = simTime();
+    move.setDirectionByTarget(targetPos);
 }

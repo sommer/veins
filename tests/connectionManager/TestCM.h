@@ -13,28 +13,20 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __CSMA802154_H__
-#define __CSMA802154_H__
+#ifndef __TESTCM_H__
+#define __TESTCM_H__
 
 #include <omnetpp.h>
-#include <csma.h>
+#include <BaseConnectionManager.h>
 
 /**
- * @brief Extends "csma" module by some statistics send
- * up to the upper layer.
- *
- * @ingroup macLayer
- * @ingroup csma
- * @ingroup ieee802154
- * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Yosia Hadisusanto, Andreas Koepke
- * @author Karl Wessel (port for MiXiM)
+ * TODO - Generated class
  */
-class CSMA802154 : public csma
+class TestCM : public BaseConnectionManager
 {
 protected:
-    virtual void initialize(int stage);
-
-    virtual cPacket *decapsMsg(MacPkt * macPkt);
+	virtual double calcInterfDist();
+	virtual void updateConnections(int nicID, const Coord* oldPos, const Coord* newPos);
 };
 
 #endif
