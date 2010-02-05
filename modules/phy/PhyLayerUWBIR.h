@@ -68,6 +68,11 @@ class DeciderUWBIREDSync;
 #include "DeciderUWBIRED.h"
 #include "DeciderUWBIREDSyncOnAddress.h"
 #include "DeciderUWBIREDSync.h"
+#include "PhyLayerUWBIRNED.h"
+
+#include "cdynamicexpression.h"
+#include "cxmlparimpl.h"
+
 
 class PhyLayerUWBIR : public BasePhyLayer
 {
@@ -80,6 +85,31 @@ public:
     void finish();
 
     virtual BaseUtility* getUtility() { return utility; };
+
+    // this function allows to include common xml documents for ned parameters as ned functions
+    static cDynamicExpression::Value ghassemzadehNLOSFunc(cComponent *context, cDynamicExpression::Value argv[], int argc) {
+      const char * ghassemzadehnlosxml =
+    		  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    		  "<root>"
+    		  "<AnalogueModels>"
+    		  "<AnalogueModel type=\"UWBIRStochasticPathlossModel\"><parameter name=\"PL0\" type=\"double\" value=\"-51\"/>"
+    		        "<parameter name=\"mu_gamma\" type=\"double\" value=\"3.5\"/>"
+                    "<parameter name=\"sigma_gamma\" type=\"double\" value=\"0.97\"/>"
+                    "<parameter name=\"mu_sigma\" type=\"double\" value=\"2.7\"/>"
+                    "<parameter name=\"sigma_sigma\" type=\"double\" value=\"0.98\"/>"
+                    "<parameter name=\"isEnabled\" type=\"bool\" value=\"true\"/>"
+                    "<parameter name=\"shadowing\" type=\"bool\" value=\"true\"/>"
+                "</AnalogueModel>"
+    		  "</AnalogueModels>"
+    		  "</root>";
+      cXMLParImpl xmlParser;
+      xmlParser.parse(ghassemzadehnlosxml);  // from char* to xml
+      cDynamicExpression::Value parameters(xmlParser.xmlValue(NULL)); // from xml to Value
+      return parameters;
+    }
+    typedef cDynamicExpression::Value (*fptr) (cComponent *context, cDynamicExpression::Value argv[], int argc);
+    static fptr ghassemzadehNLOSFPtr;
+    //static cDynamicExpression::Value (*ghassemzadehNLOSFPtr) (cComponent *context, cDynamicExpression::Value argv[], int argc);
 
 protected:
 
