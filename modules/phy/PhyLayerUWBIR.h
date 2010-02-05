@@ -68,7 +68,6 @@ class DeciderUWBIREDSync;
 #include "DeciderUWBIRED.h"
 #include "DeciderUWBIREDSyncOnAddress.h"
 #include "DeciderUWBIREDSync.h"
-#include "PhyLayerUWBIRNED.h"
 
 #include "cdynamicexpression.h"
 #include "cxmlparimpl.h"
