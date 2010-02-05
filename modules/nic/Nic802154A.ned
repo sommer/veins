@@ -3,7 +3,7 @@ package org.mixim.modules.nic;
 import org.mixim.modules.phy.PhyLayerUWBIR;
 import org.mixim.modules.mac.AlohaMacLayer;
 
-module Nic802154A
+module Nic802154A like INic
 {
     parameters:
         string connectionManagerName; 	//name of the ConnectionManager module
@@ -35,6 +35,7 @@ module Nic802154A
         }
         mac: AlohaMacLayer {
             parameters:
+                maxRetries = 3;
                 @display("p=60,45;b=80,30,rect,white,,");
         	//display: "p=60,70;i=prot3";
 
