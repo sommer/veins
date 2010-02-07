@@ -91,6 +91,7 @@ void SensorApplLayer::initialize(int stage) {
 			cModule *host = getParentModule();
 			int nbNodes = host->size();
 			latenciesRaw.setName("rawLatencies");
+			latenciesRaw.setUnit("s");
 			for (int i = 0; i < nbNodes; i++) {
 				std::ostringstream oss;
 				oss << i;
@@ -251,13 +252,13 @@ void SensorApplLayer::finish() {
 			//recordScalar("mean_latency ", aLatency.getMean());
 			sprintf(dispstring, "latency%d", i);
 			//dispstring
-			recordScalar(dispstring, aLatency.getMean());
+			recordScalar(dispstring, aLatency.getMean(), "s");
 			aLatency.record();
 		}
 		recordScalar("activity duration", lastPacketReception
-				- firstPacketGeneration);
-		recordScalar("firstPacketGeneration", firstPacketGeneration);
-		recordScalar("lastPacketReception", lastPacketReception);
+				- firstPacketGeneration, "s");
+		recordScalar("firstPacketGeneration", firstPacketGeneration, "s");
+		recordScalar("lastPacketReception", lastPacketReception, "s");
 		recordScalar("nbPacketsSent", nbPacketsSent);
 		recordScalar("nbPacketsReceived", nbPacketsReceived);
 		latency.record();

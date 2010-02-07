@@ -53,7 +53,8 @@ void BatteryStats::initialize(int stage)
       // suggest enabling only residualVec (omnetpp.ini), unless
       // others are of interest
 
-      residualVec.setName("capacity(mW-s)");
+      residualVec.setName("capacity");
+      residualVec.setUnit("mW-s");
       relativeVec.setName("capacity(relative)");
 
       BaseBattery* batteryModule = FindModule<BaseBattery*>::findSubModule(getParentModule());
@@ -63,7 +64,8 @@ void BatteryStats::initialize(int stage)
       else {
         error("no battery module found, please check your Host.ned");
       }
-      estimateVec.setName("estimate(mW-s)");
+      estimateVec.setName("estimate");
+      estimateVec.setUnit("mW-s");
       estimateRelVec.setName("estimate(relative)");
     }
   }
@@ -79,10 +81,10 @@ void BatteryStats::handleMessage(cMessage *msg)
 void BatteryStats::summary(double init, double final, simtime_t lifetime)
 {
   Enter_Method_Silent();
-  recordScalar("nominal (mW-s)", init);
-  recordScalar("total (mW-s)", init - final);
-  recordScalar("lifetime(s) (-1 == non-failed)", lifetime);
-  recordScalar("Mean power consumption (mW)", (init - final)/simTime().dbl());
+  recordScalar("nominal", init, "mW-s");
+  recordScalar("total", init - final, "mW-s");
+  recordScalar("lifetime", lifetime, "s");
+  recordScalar("Mean power consumption", (init - final)/simTime().dbl(), "mW");
 }
 
 void BatteryStats::detail(DeviceEntry *devices, int numDevices)
