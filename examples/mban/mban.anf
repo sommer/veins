@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="results/*.vec"/>
+    <inputs name="results/*.sca"/>
+  </inputs>
+  <datasets>
+    <datasets name="appl">
+      <items xsi:type="scave:Add" filterPattern="module(sim.host[0].appl) AND name(*:count) "/>
+      <items xsi:type="scave:Discard" filterPattern="latency:count"/>
+      <items xsi:type="scave:BarChart" name="">
+        <barFields>measurement</barFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+      <items xsi:type="scave:Add" filterPattern="module(.) AND name(Tw) "/>
+      <items xsi:type="scave:ScatterChart" name="success rate" xDataPattern="module(.) AND name(Tw)">
+        <properties name="Y.Axis.Log" value="true"/>
+      </items>
+      <items xsi:type="scave:Add" filterPattern="module(sim.host[0].appl) AND name(nbPacketsReceived) "/>
+    </datasets>
+    <datasets name="missed acks">
+      <items xsi:type="scave:Add" filterPattern="name(nbMissedAcks) "/>
+      <items xsi:type="scave:BarChart" name="missed acks">
+        <barFields>measurement</barFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+      <items xsi:type="scave:Add" filterPattern="module(.) AND name(Tw) "/>
+      <items xsi:type="scave:ScatterChart" name="missed acks" xDataPattern="module(.) AND name(Tw)"/>
+    </datasets>
+    <datasets name="energy">
+      <items xsi:type="scave:Add" filterPattern="name(avgPowerConsumption) "/>
+      <items xsi:type="scave:BarChart" name="power consumptions">
+        <barFields>measurement</barFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+      <items xsi:type="scave:Add" filterPattern="module(.) AND name(Tw) "/>
+      <items xsi:type="scave:ScatterChart" name="Power consumption as a function of the nodes wake-up frequency." xDataPattern="module(.) AND name(Tw)">
+        <properties name="Graph.Title" value="Power consumption"/>
+        <properties name="Graph.Title.Font" value="Arial-regular-16"/>
+        <properties name="X.Axis.Title" value="WiseMAC periodic sampling interval (ms)"/>
+        <properties name="Y.Axis.Title" value="Power consumption (mW)"/>
+        <properties name="Axis.Title.Font" value="Arial-regular-16"/>
+        <properties name="Label.Font" value="Arial-regular-14"/>
+        <properties name="Y.Axis.Min" value="0.0"/>
+        <properties name="Y.Axis.Max" value="0.0050"/>
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="Axes.Grid" value="All"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Font" value="Arial-regular-14"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthEast"/>
+        <properties name="X.Axis.Min" value="20.0"/>
+        <properties name="X.Axis.Max" value="500.0"/>
+        <properties name="Symbols.Size" value="8"/>
+      </items>
+    </datasets>
+    <datasets name="overhearing">
+      <items xsi:type="scave:Add" filterPattern="name(nbOverhearings) "/>
+      <items xsi:type="scave:BarChart" name="overhearing">
+        <barFields>measurement</barFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+      <items xsi:type="scave:Add" filterPattern="module(.) AND name(Tw)"/>
+      <items xsi:type="scave:ScatterChart" name="overhearing" xDataPattern="module(.) AND name(Tw)">
+        <properties name="Y.Axis.Log" value="true"/>
+      </items>
+    </datasets>
+    <datasets name="errFrames">
+      <items xsi:type="scave:Add" filterPattern="name(nbErroneousFrames)"/>
+      <items xsi:type="scave:Add" filterPattern="module(.) AND name(Tw)"/>
+      <items xsi:type="scave:ScatterChart" name="erroneous Frames" xDataPattern="module(.) AND name(Tw)">
+        <properties name="Y.Axis.Log" value="true"/>
+      </items>
+    </datasets>
+    <datasets name="rx">
+      <items xsi:type="scave:Add" filterPattern="name(nbRxFrames)"/>
+      <items xsi:type="scave:Add" filterPattern="name(nbRxAttempts)"/>
+      <items xsi:type="scave:Add" filterPattern="name(nbRxBroadcasts)"/>
+      <items xsi:type="scave:Add" filterPattern="name(nbIdleListenings)"/>
+      <items xsi:type="scave:Add" filterPattern="name(nbOverhearings) "/>
+      <items xsi:type="scave:BarChart" name="rx">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="Axes.Grid" value="All"/>
+        <groupByFields>measurement</groupByFields>
+        <barFields>name</barFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="frames">
+      <items xsi:type="scave:Add" filterPattern="name(frameDurations) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="frameDurations" lineNameFormat="">
+        <properties name="Y.Axis.Log" value="true"/>
+      </items>
+    </datasets>
+    <datasets name="repetitions">
+      <items xsi:type="scave:Add" filterPattern="name(repetitions)" type="VECTOR"/>
+      <items xsi:type="scave:Discard" filterPattern="*host[0]*" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="repetitions" lineNameFormat="">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="Axes.Grid" value="All"/>
+      </items>
+    </datasets>
+    <datasets name="snreval">
+      <items xsi:type="scave:Add" filterPattern="module(*snrEval)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="snreval frames" lineNameFormat=""/>
+    </datasets>
+    <datasets name="samplingOffsets">
+      <items xsi:type="scave:Add" filterPattern="name(samplingOffset)"/>
+    </datasets>
+    <datasets name="dropped">
+      <items xsi:type="scave:Add" filterPattern="name(nbDroppedFrames)"/>
+      <items xsi:type="scave:Add" filterPattern="name(avgTimeBeforeDropped)"/>
+      <items xsi:type="scave:BarChart" name="droppedFrames">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="Axes.Grid" value="All"/>
+        <groupByFields>measurement</groupByFields>
+        <barFields>name</barFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="backoffs">
+      <items xsi:type="scave:Add" filterPattern="name(meanBackoff)"/>
+      <items xsi:type="scave:BarChart" name="meanBackoffs">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="Axes.Grid" value="All"/>
+        <groupByFields>measurement</groupByFields>
+        <barFields>name</barFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="latencies 50">
+      <items xsi:type="scave:Add" filterPattern="name(rawLatencies) and attr:Tw(50) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="latencies 50" lineNameFormat=""/>
+    </datasets>
+    <datasets name="latencies-sca-50">
+      <items xsi:type="scave:Add" filterPattern="module(sim.host[0].appl) AND name(*:mean) AND NOT name(0*)  "/>
+      <items xsi:type="scave:Add" filterPattern="module(.) AND name(Tw)"/>
+      <items xsi:type="scave:ScatterChart" name="test" xDataPattern="module(.) AND name(Tw)"/>
+      <items xsi:type="scave:BarChart" name="latencies-max 50">
+        <properties name="Y.Axis.Log" value="true"/>
+      </items>
+    </datasets>
+    <datasets name="ltcy_overall">
+      <items xsi:type="scave:Add" filterPattern="module(sim.host[0].appl) AND name(latency:*)"/>
+      <items xsi:type="scave:Discard" filterPattern="name(latency:sqrsum) "/>
+      <items xsi:type="scave:Discard" filterPattern="name(latency:count)"/>
+      <items xsi:type="scave:Discard" filterPattern="name(latency:sum) "/>
+      <items xsi:type="scave:BarChart" name="latency">
+        <properties name="Y.Axis.Log" value="true"/>
+        <groupByFields>measurement</groupByFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="latencymean">
+      <items xsi:type="scave:Add" filterPattern="module(sim.host[0].appl) AND name(?:mean)"/>
+      <items xsi:type="scave:Discard" filterPattern="name(0:mean)"/>
+      <items xsi:type="scave:ScatterChart" name="mean latencies" xDataPattern="Tw(*)">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="Axes.Grid" value="All"/>
+      </items>
+    </datasets>
+    <datasets name="seq">
+      <items xsi:type="scave:Add" filterPattern="name(seqNumbers)" type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="timetoserial"/>
+      <items xsi:type="scave:LineChart" name="seq" lineNameFormat=""/>
+    </datasets>
+    <datasets name="goodput_latency">
+      <items xsi:type="scave:Add" filterPattern="module(sim.host[0].appl) AND name(latency:*)  and attr:Tw(200)"/>
+      <items xsi:type="scave:Discard" filterPattern="latency:sqrsum"/>
+      <items xsi:type="scave:Discard" filterPattern="latency:sum"/>
+      <items xsi:type="scave:Add" filterPattern="module(sim.host[0].appl) AND name(nbPacketsReceived)  AND attr:Tw(200)"/>
+      <items xsi:type="scave:ScatterChart" name="goodput vs latency" xDataPattern="module(sim.host[0].appl) AND name(nbPacketsReceived)" averageReplications="false">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="Axes.Grid" value="All"/>
+      </items>
+    </datasets>
+  </datasets>
+  <chartSheets>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.2/@items.3 //@datasets/@datasets.3/@items.3 //@datasets/@datasets.4/@items.2 //@datasets/@datasets.5/@items.5 //@datasets/@datasets.6/@items.1 //@datasets/@datasets.7/@items.2 //@datasets/@datasets.8/@items.1 //@datasets/@datasets.2/@items.1 //@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.3 //@datasets/@datasets.3/@items.1 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.10/@items.2 //@datasets/@datasets.11/@items.1 //@datasets/@datasets.12/@items.1 //@datasets/@datasets.13/@items.3 //@datasets/@datasets.13/@items.2 //@datasets/@datasets.14/@items.4 //@datasets/@datasets.15/@items.2 //@datasets/@datasets.16/@items.2 //@datasets/@datasets.17/@items.4"/>
+    <chartSheets name="" charts="//@datasets/@datasets.2/@items.3 //@datasets/@datasets.4/@items.2 //@datasets/@datasets.3/@items.3 //@datasets/@datasets.0/@items.4"/>
+    <chartSheets name="" charts="//@datasets/@datasets.2/@items.1 //@datasets/@datasets.0/@items.4"/>
+    <chartSheets name="Success rates and explanation" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.10/@items.2 //@datasets/@datasets.4/@items.2 //@datasets/@datasets.1/@items.1"/>
+  </chartSheets>
+</scave:Analysis>
