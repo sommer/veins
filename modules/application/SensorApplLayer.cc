@@ -20,8 +20,8 @@
 #include "SensorApplLayer.h"
 #include <sstream>
 
-#define SINK_ADDR 0
-#define ALTERNATIVE_ADDR 6
+//#define SINK_ADDR 0
+//#define ALTERNATIVE_ADDR 6
 Define_Module(SensorApplLayer);
 
 /**
@@ -46,7 +46,7 @@ void SensorApplLayer::initialize(int stage) {
 		headerLength = par("headerLength");
 		// application configuration
 		const char *traffic = par("trafficType");
-
+		destAddr = par("destAddr");
 		nbPacketsSent = 0;
 		nbPacketsReceived = 0;
 		firstPacketGeneration = -1;
@@ -216,10 +216,10 @@ void SensorApplLayer::sendData() {
 
 	if(broadcastPackets) {
 		pkt->setDestAddr(NET_BROADCAST);
-	} else if (myAppAddr == SINK_ADDR) {
-		pkt->setDestAddr(ALTERNATIVE_ADDR);
+//	} else if (myAppAddr == SINK_ADDR) {
+//		pkt->setDestAddr(ALTERNATIVE_ADDR);
 	} else {
-		pkt->setDestAddr(SINK_ADDR);
+		pkt->setDestAddr(destAddr);
 	}
 	// we use the host modules getIndex() as a appl address
 	pkt->setSrcAddr(myAppAddr);

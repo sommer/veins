@@ -86,6 +86,7 @@ public:
 protected:
   cMessage * delayTimer;
   int myAppAddr;
+  int destAddr;
   int sentPackets;
   simtime_t initializationTime;
   simtime_t firstPacketGeneration;
