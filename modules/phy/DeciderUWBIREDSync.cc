@@ -72,7 +72,7 @@ bool DeciderUWBIREDSync::attemptSync(Signal* s) {
 
 	if(search && i < syncVector.size()) {
 		// sync is possible but there is a frame beginning after our sync start
-		Signal & nextSignal = syncVector.at(++i)->getSignal();
+		Signal & nextSignal = syncVector.at(i)->getSignal();
 		if(nextSignal.getSignalStart() <
 				aSignal.getSignalStart()+aSignal.getSignalLength() + tmin) {
 			// CASE: sync is not possible because next frame starts too early
