@@ -317,7 +317,7 @@ protected:
 	 * @brief This function encapsulates messages from the upper layer into an
 	 * AirFrame and sets all necessary attributes.
 	 */
-	AirFrame *encapsMsg(cPacket *msg);
+	virtual AirFrame *encapsMsg(cPacket *msg);
 
 	/**
 	 * @brief Filters the passed Signal by every registered AnalogueModel.
