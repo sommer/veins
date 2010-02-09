@@ -133,7 +133,7 @@ void IEEE802154A::setConfig(config newCfg) {
 }
 
 void IEEE802154A::setPSDULength(int _psduLength) {
-	assert(_psduLength < IEEE802154A::MaxPSDULength+1);
+	//assert(_psduLength < IEEE802154A::MaxPSDULength+1);
 	IEEE802154A::psduLength = _psduLength;
 }
 
@@ -244,7 +244,7 @@ void IEEE802154A::generatePulse(Mapping* mapping, Argument* arg,
 
 void IEEE802154A::generateBurst(Mapping* mapping, Argument* arg,
 		simtime_t burstStart, short polarity) {
-	assert(burstStart < cfg.preambleLength+(IEEE802154A::MaxPSDULength*8+48+2)*cfg.data_symbol_duration);
+	assert(burstStart < cfg.preambleLength+(psduLength*8+48+2)*cfg.data_symbol_duration);
 	// 1. Start point = zeros
 	simtime_t offset = burstStart;
 	for (int pulse = 0; pulse < cfg.nbPulsesPerBurst; pulse++) {
