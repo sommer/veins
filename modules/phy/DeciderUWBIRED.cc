@@ -24,7 +24,7 @@
 
 #include "DeciderUWBIRED.h"
 #include "PhyLayerUWBIR.h"
-
+#include "AirFrameUWBIR_m.h"
 
 simtime_t DeciderUWBIRED::processSignal(AirFrame* frame) {
 	Signal* s = &frame->getSignal();
@@ -144,6 +144,8 @@ bool DeciderUWBIRED::attemptSync(Signal* s) {
 simtime_t DeciderUWBIRED::handleSignalOver(map<Signal*, int>::iterator& it, AirFrame* frame) {
 	if (it->first == tracking) {
 		vector<bool>* receivedBits = new vector<bool>();
+		AirFrameUWBIR* frameuwb = check_and_cast<AirFrameUWBIR*>(frame);
+		cfg = frameuwb->getCfg();
 		bool isCorrect = decodePacket(it->first, receivedBits);
 		// we cannot compute bit error rate here
 		// so we send the packet to the MAC layer which will compare receivedBits
@@ -199,13 +201,13 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 	}
 
 	// times are absolute
-	offset = signal->getSignalStart() + IEEE802154A::mandatory_preambleLength;
-	shift = IEEE802154A::mandatory_timeShift;
-	aSymbol = IEEE802154A::mandatory_symbol;
-	burst = IEEE802154A::mandatory_burst;
-	now = offset + IEEE802154A::mandatory_pulse / 2;
+	offset = signal->getSignalStart() + cfg.preambleLength;
+	shift = cfg.shift_duration;
+	aSymbol = cfg.data_symbol_duration;
+	burst = cfg.burst_duration;
+	now = offset + cfg.pulse_duration / 2;
 	std::pair<double, double> energyZero, energyOne;
-
+	IEEE802154A::setConfig(cfg);
 	epulseAggregate = 0;
 	enoiseAggregate = 0;
 
@@ -226,7 +228,7 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 
 	int symbol;
 	// Loop to decode each bit value
-	for (symbol = 0; IEEE802154A::mandatory_preambleLength + symbol
+	for (symbol = 0; cfg.preambleLength + symbol
 			* aSymbol < signal->getSignalLength(); symbol++) {
 
 		int hoppingPos = IEEE802154A::getHoppingPos(symbol);
@@ -237,7 +239,7 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 		}
 
 		// sample in window zero
-		now = now + IEEE802154A::getHoppingPos(symbol)*IEEE802154A::mandatory_burst;
+		now = now + IEEE802154A::getHoppingPos(symbol)*cfg.burst_duration;
 		energyZero = integrateWindow(symbol, now, burst, signal);
 		// sample in window one
 		now = now + shift;
@@ -254,7 +256,7 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 		receivedBits->push_back(static_cast<bool>(decodedBit));
 		//packetSamples = packetSamples + 16; // 16 EbN0 evaluations per bit
 
-		now = offset + (symbol + 1) * aSymbol + IEEE802154A::mandatory_pulse / 2;
+		now = offset + (symbol + 1) * aSymbol + cfg.pulse_duration / 2;
 
 	}
     symbol = symbol + 1;
@@ -293,7 +295,7 @@ pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
 
 	// we sample one point per pulse
 	// caller has already set our time reference ("now") at the peak of the pulse
-	for (; now < windowEnd; now += IEEE802154A::mandatory_pulse) {
+	for (; now < windowEnd; now += cfg.pulse_duration) {
 		double signalValue = 0;	// electric field from tracked signal [V/m²]
 		double resPower = 0;		// electric field at antenna = combination of all arriving electric fields [V/m²]
 		double vEfield = 0;		// voltage at antenna caused by electric field Efield [V]

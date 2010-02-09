@@ -86,15 +86,59 @@ double IEEE802154A::signalStart = 0;
 
 int IEEE802154A::psduLength = 0;
 
-const_simtime_t IEEE802154A::MaxFrameDuration = IEEE802154A::MaxPSDULength*IEEE802154A::mandatory_symbol + IEEE802154A::mandatory_preambleLength;
+//const_simtime_t IEEE802154A::MaxFrameDuration = IEEE802154A::MaxPSDULength*IEEE802154A::mandatory_symbol + IEEE802154A::mandatory_preambleLength;
 
-IEEE802154A::config IEEE802154A::cfg = { 3, NOMINAL_16_M, NON_RANGING, PSR_64,
-		850000, 16, mandatory_symbol, mandatory_timeShift, mandatory_pulse,
-		mandatory_burst, mandatory_preambleLength, 4498 };
+const IEEE802154A::config IEEE802154A::cfg_mandatory_16M = {
+		3,					// channel
+		NOMINAL_16_M, 		// PRF
+		NON_RANGING, 		// Frame type
+		PSR_DEFAULT,		// preamble length (number of preamble symbols)
+		31,					// Spreading code length
+		16,					// spreading delta L
+		16,					// chips per burst
+		850000,				// bit rate (bps)
+		16,					// pulses per data burst
+		993.6E-9,			// preamble symbol duration
+		1023.64E-9,			// data symbol duration
+		512.82E-9,			// burst time shift duration
+		2.003E-9,			// pulse duration (chip)
+		32.05E-9,			// burst duration (pulses per data burst * chip)
+		71.5E-6,			// synchronization preamble duration
+		4498				// center frequency
+};
+
+const IEEE802154A::config IEEE802154A::cfg_mandatory_4M = {
+		3,					// channel
+		NOMINAL_4_M, 		// PRF
+		NON_RANGING, 		// Frame type
+		PSR_DEFAULT,		// preamble length (number of preamble symbols)
+		31,					// Spreading code length
+		64,					// spreading delta L
+		4,					// chips per burst
+		850000,				// bit rate (bps)
+		4,					// pulses per data burst
+		3974.36E-9,			// preamble symbol duration
+		1023.64E-9,			// data symbol duration
+		512.82E-9,			// burst time shift duration
+		2.003E-9,			// pulse duration (chip)
+		8.01E-9,			// burst duration (pulses per data burst * chip)
+		286.2E-6,			// synchronization preamble duration
+		4498				// center frequency
+};
+
+IEEE802154A::config IEEE802154A::cfg = IEEE802154A::cfg_mandatory_16M;
+
+void IEEE802154A::setConfig(config newCfg) {
+	cfg = newCfg;
+}
 
 void IEEE802154A::setPSDULength(int _psduLength) {
 	assert(_psduLength < IEEE802154A::MaxPSDULength+1);
 	IEEE802154A::psduLength = _psduLength;
+}
+
+simtime_t IEEE802154A::getMaxFrameDuration() {
+	return IEEE802154A::MaxPSDULength*cfg.data_symbol_duration + cfg.preambleLength;
 }
 
 IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
@@ -103,16 +147,15 @@ IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
 	// and is thus very robust
 	unsigned int nbBits = IEEE802154A::psduLength * 8 + 48;
 	IEEE802154A::signalStart = signalStart.dbl();  // use the signalStart time value as a global offset for all Mapping values
-	simtime_t signalLength = IEEE802154A::mandatory_preambleLength;
-	signalLength += static_cast<double> (nbBits)
-			* IEEE802154A::mandatory_symbol;
+	simtime_t signalLength = cfg.preambleLength;
+	signalLength += static_cast<double> (nbBits) * cfg.data_symbol_duration;
 	Signal* s = new Signal(signalStart, signalLength);
 	vector<bool>* bitValues = new vector<bool> ();
 
 	signalAndData res;
 	int bitValue;
 	// data start time relative to signal->getSignalStart();
-	simtime_t dataStart = IEEE802154A::mandatory_preambleLength; // = Tsync + Tsfd
+	simtime_t dataStart = cfg.preambleLength; // = Tsync + Tsfd
 	TimeMapping<Linear>* mapping = new TimeMapping<Linear> ();
 	Argument* arg = new Argument();
 	setBitRate(s);
@@ -132,9 +175,9 @@ IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
 		  bitValue = intuniform(0, 1, 0);
 		}
 		bitValues->push_back(static_cast<bool>(bitValue));
-		burstPos = symbolStart + bitValue*IEEE802154A::mandatory_timeShift + getHoppingPos(burst)*IEEE802154A::mandatory_burst;
+		burstPos = symbolStart + bitValue*cfg.shift_duration + getHoppingPos(burst)*cfg.burst_duration;
 		generateBurst(mapping, arg, burstPos, +1);
-		symbolStart = symbolStart + IEEE802154A::mandatory_symbol;
+		symbolStart = symbolStart + cfg.data_symbol_duration;
 	}
 	//assert(uwbirMacPkt->getBitValuesArraySize() == dataLength);
 	//assert(bitValues->size() == nbBits);
@@ -150,21 +193,19 @@ IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
 
 void IEEE802154A::generateSyncPreamble(Mapping* mapping, Argument* arg) {
 	// NSync repetitions of the Si symbol
-	for (short n = 0; n < NSync; n = n + 1) {
-		for (short pos = 0; pos < CLength; pos = pos + 1) {
+	for (short n = 0; n < cfg.NSync; n = n + 1) {
+		for (short pos = 0; pos < cfg.CLength; pos = pos + 1) {
 			if (C31[Ci - 1][pos] != 0) {
 				if(n==0 && pos==0) {
 					// we slide the first pulse slightly in time to get the first point "inside" the signal
-					arg->setTime(1E-12 + n * Tpsym + pos * IEEE802154A::spreadingdL
-							* IEEE802154A::mandatory_pulse);
+				  arg->setTime(1E-12 + n * cfg.sync_symbol_duration + pos * cfg.spreadingdL * cfg.pulse_duration);
 				} else {
-				arg->setTime(n * Tpsym + pos * IEEE802154A::spreadingdL
-						* IEEE802154A::mandatory_pulse);
+				  arg->setTime(n * cfg.sync_symbol_duration + pos * cfg.spreadingdL * cfg.pulse_duration);
 				}
 				//generatePulse(mapping, arg, C31[Ci - 1][pos],
 				//		IEEE802154A::maxPulse, IEEE802154A::mandatory_pulse);
 				generatePulse(mapping, arg, 1,			// always positive polarity
-						IEEE802154A::maxPulse, IEEE802154A::mandatory_pulse);
+						IEEE802154A::maxPulse, cfg.pulse_duration);
 			}
 		}
 	}
@@ -174,10 +215,9 @@ void IEEE802154A::generateSFD(Mapping* mapping, Argument* arg) {
 	double sfdStart = NSync * Tpsym;
 	for (short n = 0; n < 8; n = n + 1) {
 		if (IEEE802154A::shortSFD[n] != 0) {
-			for (short pos = 0; pos < CLength; pos = pos + 1) {
+			for (short pos = 0; pos < cfg.CLength; pos = pos + 1) {
 				if (C31[Ci - 1][pos] != 0) {
-					arg->setTime(sfdStart + n * Tpsym + pos * IEEE802154A::spreadingdL
-							* IEEE802154A::mandatory_pulse);
+					arg->setTime(sfdStart + n*cfg.sync_symbol_duration + pos*cfg.spreadingdL*cfg.pulse_duration);
 					//generatePulse(mapping, arg, C31[Ci - 1][pos] * shortSFD[n]); // change pulse polarity
 					generatePulse(mapping, arg, 1); // always positive polarity
 				}
@@ -204,13 +244,13 @@ void IEEE802154A::generatePulse(Mapping* mapping, Argument* arg,
 
 void IEEE802154A::generateBurst(Mapping* mapping, Argument* arg,
 		simtime_t burstStart, short polarity) {
-	assert(burstStart < IEEE802154A::mandatory_preambleLength+(IEEE802154A::MaxPSDULength*8+48+2)*IEEE802154A::mandatory_symbol);
+	assert(burstStart < cfg.preambleLength+(IEEE802154A::MaxPSDULength*8+48+2)*cfg.data_symbol_duration);
 	// 1. Start point = zeros
 	simtime_t offset = burstStart;
-	for (int pulse = 0; pulse < IEEE802154A::mandatory_pulses_per_burst; pulse++) {
+	for (int pulse = 0; pulse < cfg.nbPulsesPerBurst; pulse++) {
 		arg->setTime(offset);
 		generatePulse(mapping, arg, 1);
-		offset = offset + IEEE802154A::mandatory_pulse;
+		offset = offset + cfg.pulse_duration;
 	}
 }
 
@@ -219,16 +259,16 @@ void IEEE802154A::setBitRate(Signal* s) {
 	// set a constant value for bitrate
 	TimeMapping<Linear>* bitrate = new TimeMapping<Linear> ();
 	arg.setTime(IEEE802154A::signalStart); // absolute time (required for compatibility with MiXiM base RSAM code)
-	bitrate->setValue(arg, 1 / IEEE802154A::mandatory_symbol);
+	bitrate->setValue(arg, cfg.bitrate);
 	arg.setTime(s->getSignalLength());
-	bitrate->setValue(arg, 1 / IEEE802154A::mandatory_symbol);
+	bitrate->setValue(arg, cfg.bitrate);
 	s->setBitrate(bitrate);
 }
 
 simtime_t IEEE802154A::getThdr() {
-	switch (IEEE802154A::cfg.channel) {
+	switch (cfg.channel) {
 	default:
-		switch (IEEE802154A::cfg.prf) {
+		switch (cfg.prf) {
 		case NOMINAL_4_M:
 			//error("This optional mode is not implemented.");
 			return 0;
@@ -258,12 +298,19 @@ int IEEE802154A::s(int n) {
 }
 
 int IEEE802154A::getHoppingPos(int sym) {
-	// Warning: only valid for the mandatory mode
-	//int m = 3;
-	int Ncpb = 16;
+	//int m = 3;  // or 5 with 4M
 	int pos = 0;
-	pos = s(sym * Ncpb) + 2 * s(1 + sym * Ncpb) + 4 * s(2 + sym * Ncpb);
-	assert(pos > -1 && pos < 8);
+	int kNcpb = 0;
+	switch(cfg.prf) {
+	case NOMINAL_4_M:
+		kNcpb = sym * cfg.Ncpb;
+		pos = s(kNcpb) + 2*s(1+kNcpb) + 4*s(2+kNcpb) + 8*s(3+kNcpb) + 16*s(4+kNcpb);
+		break;
+	case NOMINAL_16_M:
+		pos = s(kNcpb) + 2*s(1+kNcpb) + 4*s(2+kNcpb);
+		break;
+	}
+	// assert(pos > -1 && pos < 8); // TODO: update to reflect number of hopping pos for current config
 	return pos;
 }
 

@@ -110,6 +110,8 @@ public:
     static fptr ghassemzadehNLOSFPtr;
     //static cDynamicExpression::Value (*ghassemzadehNLOSFPtr) (cComponent *context, cDynamicExpression::Value argv[], int argc);
 
+    virtual AirFrame *encapsMsg(cPacket *msg);
+
 protected:
 
     UWBIRStochasticPathlossModel* uwbpathloss;
@@ -143,7 +145,6 @@ protected:
     	uwbradio->finishReceivingFrame(simTime());
     	setRadioCurrent(radio->getCurrentState());
     }
-
 
     virtual simtime_t setRadioState(int rs);
 

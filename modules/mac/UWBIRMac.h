@@ -85,7 +85,7 @@ protected:
     long nbSymbolErrors, nbSymbolsReceived;
     long nbHandledRxPackets;
 
-    void prepareData(UWBIRMacPkt* packet);
+    void prepareData(UWBIRMacPkt* packet, IEEE802154A::config cfg = IEEE802154A::cfg_mandatory_4M);
 
     void handleLowerMsg(cPacket *msg);
 

@@ -75,7 +75,7 @@ public:
     static double signalStart; // we cannot use a simtime_t here because the scale exponent is not yet known at initialization.
 
     /**@brief Number of Repetitions of the sync symbol in the SYNC preamble */
-	static const int NSync = 64;
+	static const int NSync = 64;  // default sync preamble length
 	/**@brief Length of the preamble code */
 	static const short CLength = 31;
 	/**@brief sync preamble spreading factor L */
@@ -108,11 +108,10 @@ public:
     };
 
     enum UWBPreambleSymbolRepetitions {
-    	PSR_0,
-    	PSR_16,
-    	PSR_64,
-    	PSR_1024,
-    	PSR_4096
+    	PSR_SHORT=16,
+    	PSR_DEFAULT=64,
+    	PSR_MEDIUM=1024,
+    	PSR_LONG=4096
     };
 
     enum DataRate {
@@ -123,21 +122,32 @@ public:
             	DATA_RATE_4
     };
 
+public:
     /**@brief currently unused */
     struct config {
     	int channel;
     	UWBPRF prf;
     	Ranging ranging;
-    	UWBPreambleSymbolRepetitions preSymRep;
+    	UWBPreambleSymbolRepetitions NSync;
+    	int CLength;
+    	int spreadingdL;		// spreading deltaL
+    	int Ncpb;
     	int bitrate;
     	int nbPulsesPerBurst;
 
+//    	simtime_t sync_symbol_duration;
+//    	simtime_t data_symbol_duration;
+//    	simtime_t shift_duration;
+//    	simtime_t pulse_duration;
+//    	simtime_t burst_duration;
+//    	simtime_t preambleLength;
+    	double sync_symbol_duration;
+    	double data_symbol_duration;
+    	double shift_duration;
+    	double pulse_duration;
+    	double burst_duration;
+    	double preambleLength;
 
-    	const_simtime_t symbol_duration;
-    	const_simtime_t shift_duration;
-    	const_simtime_t pulse_duration;
-    	const_simtime_t burst_duration;
-    	const_simtime_t preambleLength;
     	double centerFrequency;
     };
 
@@ -148,7 +158,9 @@ public:
 
     /* @brief Sets the configuration of the IEEE802.15.4A standard.
      *  Use this (and the struct config) to implement optional modes of the standard. */
-    static void selectConfig();
+    static void setConfig(config newCfg);
+
+    static config getConfig() { return cfg; }
 
     // sets the number of data bytes to encode in the data structure.
     static void setPSDULength(int _psduLength);
@@ -162,6 +174,7 @@ public:
      * */
     static signalAndData generateIEEE802154AUWBSignal(simtime_t signalStart, bool allZeros=false);
 
+    static simtime_t getMaxFrameDuration();
 
 // Constants from standard
     /* @brief Always 16 symbols for the PHY header */
@@ -182,6 +195,7 @@ protected:
 public:
 	static int psduLength;
 	static config cfg;
+	static const config cfg_mandatory_16M, cfg_mandatory_4M;
 
 	// Compute derived parameters
     static simtime_t getPhyMaxFrameDuration();

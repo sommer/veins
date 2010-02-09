@@ -23,6 +23,7 @@
 #include "UWBIRMac.h"
 #include <iostream>
 #include <math.h>
+#include "MacToUWBIRPhyControlInfo.h"
 
 using namespace std;
 
@@ -83,13 +84,13 @@ void UWBIRMac::finish() {
 	}
 }
 
-void UWBIRMac::prepareData(UWBIRMacPkt* packet) {
+void UWBIRMac::prepareData(UWBIRMacPkt* packet, IEEE802154A::config cfg) {
 	// generate signal
 	//int nbSymbols = packet->getByteLength() * 8 + 92; // to move to ieee802154a.h
 	EV << "prepare Data for a packet with " << packet->getByteLength() << " data bytes." << endl;
+	IEEE802154A::setConfig(cfg);
 	IEEE802154A::setPSDULength(packet->getByteLength());
-	IEEE802154A::signalAndData res = IEEE802154A::generateIEEE802154AUWBSignal(
-			simTime());
+	IEEE802154A::signalAndData res = IEEE802154A::generateIEEE802154AUWBSignal(simTime());
 	Signal* theSignal = res.first;
 	vector<bool>* data = res.second;
 	int nbSymbols = data->size();
@@ -118,7 +119,7 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet) {
 	packet->setNbSymbols(nbSymbols);
 
 	// attach control info
-	MacToPhyControlInfo* macPhycInfo = new MacToPhyControlInfo(theSignal);
+	MacToUWBIRPhyControlInfo* macPhycInfo = new MacToUWBIRPhyControlInfo(theSignal, IEEE802154A::getConfig());
 	packet->setControlInfo(macPhycInfo);
 
 }

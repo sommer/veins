@@ -32,6 +32,8 @@
 
 #include "PhyLayerUWBIR.h"
 #include <assert.h>
+#include "MacToUWBIRPhyControlInfo.h"
+#include "AirFrameUWBIR_m.h"
 
 Define_Module(PhyLayerUWBIR);
 
@@ -410,6 +412,54 @@ simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 	return endSwitch;
 }
 
+AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
+{
+	// the cMessage passed must be a MacPacket... but no cast needed here
+	// MacPkt* pkt = static_cast<MacPkt*>(msg);
+
+	// ...and must always have a ControlInfo attached (contains Signal)
+	cObject* ctrlInfo = macPkt->removeControlInfo();
+	assert(ctrlInfo);
+
+	MacToUWBIRPhyControlInfo* macToPhyCI = static_cast<MacToUWBIRPhyControlInfo*>(ctrlInfo);
+
+	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
+	// We are now the new owner of this instance.
+	Signal* s = macToPhyCI->retrieveSignal();
+
+	// make sure we really obtained a pointer to an instance
+	assert(s);
+
+	// put host move pattern to Signal
+	s->setMove(move);
+
+	// create the new AirFrame
+	AirFrameUWBIR* frame = new AirFrameUWBIR("airframe", AIR_FRAME);
+	// set the members
+	assert(s->getSignalLength() > 0);
+	frame->setDuration(s->getSignalLength());
+	// copy the signal into the AirFrame
+	frame->setSignal(*s);
+	frame->setBitLength(headerLength);
+	frame->setCfg(macToPhyCI->getConfig());
+	// pointer and Signal not needed anymore
+	delete s;
+	s = 0;
+	// delete the Control info
+	delete macToPhyCI;
+	macToPhyCI = 0;
+	ctrlInfo = 0;
+
+	frame->setId(world->getUniqueAirFrameId());
+	frame->encapsulate(macPkt);
+
+	// --- from here on, the AirFrame is the owner of the MacPacket ---
+	macPkt = 0;
+	EV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
+
+	return frame;
+}
+
 
 void PhyLayerUWBIR::finish() {
 	DeciderUWBIRED * dec =
@@ -419,3 +469,4 @@ void PhyLayerUWBIR::finish() {
 	recordScalar("nbSuccessfulSyncs", dec->getNbSuccessfulSyncs());
 	recordScalar("nbFailedSyncs", dec->getNbFailedSyncs());
 }
+

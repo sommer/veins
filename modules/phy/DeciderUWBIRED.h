@@ -65,7 +65,7 @@ private:
 	double nbSymbols, allThresholds;
 	double vsignal2, vnoise2, snirs, snirEvals, pulseSnrs;
 	double packetSNIR, packetSignal, packetNoise, packetSamples;
-
+	IEEE802154A::config cfg;
 protected:
 	double syncThreshold;
 	bool syncAlwaysSucceeds;
