@@ -35,6 +35,8 @@ void UWBIRMac::initialize(int stage) {
 		debug = par("debug").boolValue();
 		stats = par("stats").boolValue();
 		trace = par("trace").boolValue();
+		prf = par("PRF");
+		assert(prf == 4 || prf == 16);
 		packetsAlwaysValid = par("packetsAlwaysValid");
 		rsDecoder = par("RSDecoder").boolValue();
 		phy = FindModule<MacToPhyInterface*>::findSubModule(
@@ -88,7 +90,11 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet, IEEE802154A::config cfg) {
 	// generate signal
 	//int nbSymbols = packet->getByteLength() * 8 + 92; // to move to ieee802154a.h
 	EV << "prepare Data for a packet with " << packet->getByteLength() << " data bytes." << endl;
-	IEEE802154A::setConfig(cfg);
+	if(prf == 4) {
+	  IEEE802154A::setConfig(IEEE802154A::cfg_mandatory_4M);
+	} else if (prf == 16) {
+		IEEE802154A::setConfig(IEEE802154A::cfg_mandatory_16M);
+	}
 	IEEE802154A::setPSDULength(packet->getByteLength());
 	IEEE802154A::signalAndData res = IEEE802154A::generateIEEE802154AUWBSignal(simTime());
 	Signal* theSignal = res.first;
@@ -112,7 +118,8 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet, IEEE802154A::config cfg) {
 	// save bit values
 	//packet->setBitValuesArraySize(data->size());
 	for (int pos = 0; pos < nbSymbols; pos = pos + 1) {
-		packet->setBitValues(pos, data->at(pos));
+		packet->pushBitvalue(data->at(pos));
+		//packet->setBitValues(pos, data->at(pos));
 	}
 	delete data;
 
@@ -142,7 +149,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 				currSymbolError = false;
 			}
 			// bit error
-			if (decodedBits->at(i) != mac->getBitValues(i)) {
+			if (decodedBits->at(i) != mac->popBitValue()) {
 				nbBitErrors++;
 				EV<< "Found an error at position " << i << "." << endl;
 				// symbol error

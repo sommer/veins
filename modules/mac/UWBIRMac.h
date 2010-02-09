@@ -41,6 +41,7 @@
 #include "RadioUWBIR.h"
 #include "DeciderResultUWBIR.h"
 #include "Packet.h"
+#include "UWBIRMacPkt.h"
 #include <vector>
 #include <utility>
 
@@ -66,7 +67,7 @@ protected:
     MacToPhyInterface* phy;
     Packet packet;
     int catPacket;
-
+    int prf; // pulse repetition frequency
     cOutVector packetsBER;
     cOutVector dataLengths;
     cOutVector erroneousSymbols;
@@ -85,6 +86,7 @@ protected:
     long nbSymbolErrors, nbSymbolsReceived;
     long nbHandledRxPackets;
 
+    // warning: cfg value is currently ignored
     void prepareData(UWBIRMacPkt* packet, IEEE802154A::config cfg = IEEE802154A::cfg_mandatory_4M);
 
     void handleLowerMsg(cPacket *msg);

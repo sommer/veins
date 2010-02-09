@@ -29,6 +29,7 @@ class MacPkt;
 
 message UWBIRMacPkt extends MacPkt
 {
-    bool bitValues[1984];
+    @customize(true);
+    abstract bool bitValues[];
     int nbSymbols;
 }

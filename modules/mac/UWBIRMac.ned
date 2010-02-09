@@ -17,6 +17,6 @@ simple UWBIRMac extends BaseMacLayer
         bool trace = default(false);
         bool RSDecoder = default(true);
 		bool packetsAlwaysValid = default(false);
-
+		int PRF = default(4);  // Pulse repetition frequency, either 4 or 16 MHz currently
 }
 
