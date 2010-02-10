@@ -5,7 +5,7 @@ import org.mixim.base.modules.BaseWorldUtility;
 import org.mixim.base.modules.BaseUtility;
 import org.mixim.modules.node.Host802154A;
 
-module Network
+network ieee802154a
 {
     parameters:
         double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
@@ -38,10 +38,5 @@ module Network
     connections allowunconnected:
                          // all connections and gates are to be generated dynamically
 
-}
-
-network sim extends Network
-{
-    parameters:
 }
 

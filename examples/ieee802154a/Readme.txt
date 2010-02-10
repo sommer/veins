@@ -22,13 +22,13 @@ models.
 
 To run the scenarios, compile mixim, open a terminal and go to
 examples/ieee80154a. There, type:
-./run -u Cmdenv -c BERDistance 
+./runBERDistance.sh 
 to execute all runs of the Bit Error Rate over Distance scenario.
 The "run" script expects to find opp_run in the path. Thus, make sure 
 to have $OMNET_PATH/bin in your path. 
 
 You can also try:
-./run -u Cmdenv -c channelPlots
+./runchannelPlots.sh
 to execute all runs of the channelPlots scenario.
 
 The results can be analyzed from within Omnet++. In the
@@ -53,10 +53,12 @@ For more information, please refer to:
 
 Questions should be send to the Omnet++ mailing-list: omnetpp@googlegroups.com.
 
-acknowledgment: this work was supported (in part) by the National Competence
- * 			    Center in Research on Mobile Information and Communication Systems
- * 				NCCR-MICS, a center supported by the Swiss National Science
- * 				Foundation under grant number 5005-67322.
+acknowledgment 
+--------------
+this work was supported (in part) by the National Competence
+Center in Research on Mobile Information and Communication Systems
+NCCR-MICS, a center supported by the Swiss National Science
+Foundation under grant number 5005-67322.
  
 
 
