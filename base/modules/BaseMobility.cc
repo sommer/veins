@@ -576,11 +576,11 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
 
 
 /**
- * This function takes the BorderPolicy and all varaibles to be
+ * This function takes the BorderPolicy and all variables to be
  * modified in case a border is reached and invokes the appropriate
  * action. Pass dummy variables if you do not need them.
  *
- * The supproted border policies are REFLECT, WRAP, PLACERANOMLY, and
+ * The supported border policies are REFLECT, WRAP, PLACERANDOMLY, and
  * RAISEERROR.
  *
  * The policy and stepTarget are mandatory parameters to
@@ -658,9 +658,6 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
 
 	borderStart = move.getStartPos() + borderStep;
 	d = stepTarget.distance( borderStart );
-	//borderDirection.setX((stepTarget.getX() - borderStart.getX()) / d);
-	//borderDirection.setY((stepTarget.getY() - borderStart.getY()) / d);
-	//borderDirection.setZ((stepTarget.getZ() - borderStart.getZ()) / d);
 	borderDirection = (stepTarget - borderStart) / d;
 	break;
     case PLACERANDOMLY:

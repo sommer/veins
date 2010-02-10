@@ -88,6 +88,11 @@
 
 /**
  * @defgroup mobility mobility - modules handling the mobility of the hosts
+ *
+ * The following diagrams give an overview on the functionality of a mobility module.
+ *
+ * \image html Mobility.png "Activity diagram: Mobility in MiXiM"
+ * \image html makeMove.png "Sequence diagram: call-hierarchy when move-message is processed"
  */
 
 /**
