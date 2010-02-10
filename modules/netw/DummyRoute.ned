@@ -7,7 +7,7 @@ package org.mixim.modules.netw;
 // copyright:   (C) 2009 CSEM SA, Neuchatel, Switzerland.
 //
 // description:  Adaptor module that simply "translates" netwControlInfo to macControlInfo
-//
+//				 and filters packets according to their network ID.
 // *              This program is free software; you can redistribute it 
 // *              and/or modify it under the terms of the GNU General Public 
 // *              License as published by the Free Software Foundation; either
@@ -27,6 +27,7 @@ simple DummyRoute extends BaseNetwLayer
         bool trace = default(false);
         stats = default(true);
         headerLength = default(0);
+        int networkID = default(0);  // network ID, allows coexistence tests
         @class(DummyRoute);
 }
 

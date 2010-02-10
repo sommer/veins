@@ -49,6 +49,7 @@ protected:
 
     bool stats, trace;
 
+    int networkID;  // the network to which we belong
 
     /** @brief Handle messages from upper layer */
     virtual void handleUpperMsg(cMessage* msg);
@@ -63,6 +64,8 @@ protected:
     virtual void handleLowerControl(cMessage* msg);
 
     virtual void handleUpperControl(cMessage* msg) { delete msg; }
+
+    NetwPkt* encapsMsg(cPacket *appPkt);
 
     /** @brief Decapsulate a message */
     cMessage* decapsMsg(NetwPkt *msg);
