@@ -3,8 +3,18 @@ package org.mixim.examples.baseNetwork;
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
 
-
-module BaseNetwork
+//
+//This example shows the basic structure of an network using MiXiM.
+//
+//The network consists of three hosts which use the CSMAMacLayer as MAC layer,
+//"SimplePathlossModel" as only AnalogueModel and a SNRThresholdDecider as Decider.
+//
+//The used Network- and Application layer can be defined in the omnetpp.ini. As default
+//the BaseNetwLayer and BurstApplLayer are used.
+//
+//You can use this network as an template for you own simulation.
+//
+network BaseNetwork
 {
     parameters:
         double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
@@ -31,12 +41,5 @@ module BaseNetwork
         }
     connections allowunconnected:
 
-}
-
-
-// basic example simulation MiXiM
-network baseSim extends BaseNetwork
-{
-    parameters:
 }
 
