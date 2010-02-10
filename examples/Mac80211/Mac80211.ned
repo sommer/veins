@@ -27,8 +27,21 @@ package org.mixim.examples.Mac80211;
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
 
-
-module Sim
+//
+//This example shows how to use MiXiMs 802.11 protocol implementation. 
+//
+//The network consists of ten hosts broadcasting bursts of three packets
+//to the other hosts. When a broadcast is received a reply is sent back 
+//to the sender.
+//
+//The hosts use "Mac80211" as MAC layer and their phy layer uses 
+//"SimplePathlossModel" as AnalogueModel and "Decider80211" as Decider.
+//Note that Mac80211 and Decider80211 are always meant to be used
+//together.
+//
+//The default configuration in omnetpp.ini uses no propagation delay.
+//
+network Mac80211
 {
     parameters:
         double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
@@ -57,14 +70,5 @@ module Sim
 
     connections allowunconnected:
     // all connections and gates are to be generated dynamically
-
-}
-
-
-
-
-network sim extends Sim
-{
-    parameters:
 
 }
