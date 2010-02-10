@@ -41,6 +41,14 @@ using namespace std;
 
 class PhyLayerUWBIR;
 
+/**
+ * @brief  this Decider models a non-coherent energy-detection receiver
+ * that synchronizes on the first sync preamble sequence
+ * that is "long enough" and "powerful enough". This is defined with
+ * the respective fields tmin and syncThreshold.
+ *
+ * @ingroup ieee802154a
+*/
 class DeciderUWBIREDSync: public DeciderUWBIRED {
 public:
 	DeciderUWBIREDSync(DeciderToPhyInterface* iface,

@@ -41,6 +41,18 @@ using namespace std;
 
 class PhyLayerUWBIR;
 
+/**
+ * @brief  this Decider models a non-coherent energy-detection receiver
+ * that that always synchronizes successfully on frames coming from
+ * a particular node. It can be used to approximate quasi-orthogonal UWB
+ * modulations and private time hopping sequences (you should also configure
+ * the Decider adequately). It can also be used to study the robustness to
+ * interference of the data segment while neglecting interference on the
+ * sync preamble.
+ *
+ * @ingroup ieee802154a
+*/
+
 class DeciderUWBIREDSyncOnAddress: public DeciderUWBIRED {
 
 public:

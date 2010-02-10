@@ -22,26 +22,6 @@
  * 				NCCR-MICS, a center supported by the Swiss National Science
  * 				Foundation under grant number 5005-67322.
  ***************************************************************************/
-//
-// Physical layer that models an Ultra Wideband Impulse Radio wireless communication system.
-// This class loads channel models and deliver frames to an UWB Decider. It is independent of the modulation technique,
-// as long as the frames are represented using the same approach as in IEEE802154A.h (Maximum Pulse Amplitude Estimation).
-// Several channel models are possible: Ghassemzadeh-LOS, Ghassemadeh-NLOS (see UWBIRStochasticPathlossModel.h)
-// and the IEEE 802.15.4A UWB channel models that use the default power delay profile (see UWBIRIEEE802154APathlossModel.h).
-// Currently, an energy detection receiver is modeled in UWBIRED.h.
-// Several synchronization logics have been implemented in derived classes:
-// see DeciderUWBIREDSync.h and and DeciderUWBIREDSyncOnAddress.h.
-// If you want to add a novel receiver (e.g. coherent demodulation), either derive UWBIRED or write your own,
-// then add functionality in this module to load your decider.
-// The same apply for new channel models.
-// To change the modulation, refer to UWBIRMac.h, IEEE802154A.h and UWBIRED.h.
-// To implement optional modes of IEEE802154A, refer to IEEE802154A.h.
-// Refer to the following publication for more information:
-//  A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
-// for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
-// Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
-// http://portal.acm.org/citation.cfm?id=1537714
-//
 
 #ifndef UWBIR_PHY_LAYER_H
 #define UWBIR_PHY_LAYER_H
@@ -53,12 +33,6 @@
 #include "HostState.h"
 #include "MacToPhyControlInfo.h"
 #include "BaseUtility.h"
-
-/*
- * @brief This class implements an Ultra Wideband Impulse Radio physical layer
- * and uses an implementation of the IEEE 802.15.4A channel model, a Burst Position
- * Modulation transmitter (at the MAC level), and a non-coherent energy-detection receiver.
- */
 
 
 class DeciderUWBIRED;
@@ -72,7 +46,33 @@ class DeciderUWBIREDSync;
 #include "cdynamicexpression.h"
 #include "cxmlparimpl.h"
 
-
+/**
+ * @brief Physical layer that models an Ultra Wideband Impulse Radio wireless communication system.
+ * This class loads channel models and deliver frames to an UWB Decider. It is independent of the modulation technique,
+ * as long as the frames are represented using the same approach as in IEEE802154A.h (Maximum Pulse Amplitude Estimation).
+ *
+ * Several channel models are possible: Ghassemzadeh-LOS, Ghassemadeh-NLOS (see UWBIRStochasticPathlossModel.h)
+ * and the IEEE 802.15.4A UWB channel models that use the default power delay profile (see UWBIRIEEE802154APathlossModel.h).
+ *
+ * Currently, an energy detection receiver is modeled in UWBIRED.h.
+ * Several synchronization logics have been implemented in derived classes:
+ * see DeciderUWBIREDSync.h and and DeciderUWBIREDSyncOnAddress.h.
+ *
+ * If you want to add a novel receiver (e.g. coherent demodulation), either derive UWBIRED or write your own,
+ * then add functionality in this module to load your decider.
+ * The same apply for new channel models.
+ *
+ * To change the modulation, refer to UWBIRMac.h, IEEE802154A.h and UWBIRED.h.
+ * To implement optional modes of IEEE802154A, refer to IEEE802154A.h.
+ *
+ * Refer to the following publication for more information:
+ *  A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
+ * for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
+ * Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
+ * http://portal.acm.org/citation.cfm?id=1537714
+ *
+ * @ingroup ieee802154a
+ */
 class PhyLayerUWBIR : public BasePhyLayer
 {
 	friend class DeciderUWBIRED;

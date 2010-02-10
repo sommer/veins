@@ -22,17 +22,6 @@
  * 				Foundation under grant number 5005-67322.
  ***************************************************************************/
 
-//
-// This class implements a model of an energy detection receiver
-// that demodulates UWB-IR burst position modulation as defined
-// in the IEEE802154A standard (mandatory mode, high PRF).
-// The code modeling the frame clock synchronization is implemented
-// in attemptSync(). Simply subclass this class and redefine attemptSync()
-// if you wish to consider more sophisticated synchronization models.
-// To implement a coherent receiver, the easiest way to start is to copy-paste
-// this code into a new class and rename it accordingly. Then, redefine
-// decodePacket().
-
 #ifndef _UWBIRENERGYDETECTIONDECIDERV2_H
 #define	_UWBIRENERGYDETECTIONDECIDERV2_H
 
@@ -56,7 +45,21 @@ using namespace std;
 
 class PhyLayerUWBIR;
 
-
+/**
+ * @brief  This class implements a model of an energy detection receiver
+ * that demodulates UWB-IR burst position modulation as defined
+ * in the IEEE802154A standard (mandatory mode, high PRF).
+ *
+ *  The code modeling the frame clock synchronization is implemented
+ *  in attemptSync(). Simply subclass this class and redefine attemptSync()
+ *  if you wish to consider more sophisticated synchronization models.
+ *
+ *  To implement a coherent receiver, the easiest way to start is to copy-paste
+ *  this code into a new class and rename it accordingly. Then, redefine
+ *  decodePacket().
+ *
+ * @ingroup ieee802154a
+*/
 class DeciderUWBIRED: public Decider {
 private:
 	bool trace, stats;

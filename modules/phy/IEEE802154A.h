@@ -21,12 +21,6 @@
  * 				NCCR-MICS, a center supported by the Swiss National Science
  * 				Foundation under grant number 5005-67322.
  ***************************************************************************/
-//
-// This class regroups static methods needed to generate
-// a pulse-level representation of an IEEE 802.15.4A UWB PHY frame
-// using the mandatory mode (high PRF).
-// The main function of interest is
-// static signalAndData generateIEEE802154AUWBSignal(simtime_t signalStart, bool allZeros=false).
 
 #ifndef _IEEE802154A_H
 #define	_IEEE802154A_H
@@ -37,6 +31,16 @@
 
 using namespace std;
 
+/**
+ * @brief This class regroups static methods needed to generate
+ * a pulse-level representation of an IEEE 802.15.4A UWB PHY frame
+ * using the mandatory mode (high PRF).
+ *
+ *  The main function of interest is
+ * static signalAndData generateIEEE802154AUWBSignal(simtime_t signalStart, bool allZeros=false).
+ *
+ * @ingroup ieee802154a
+ */
 class IEEE802154A {
 public:
 	/**@brief bit rate (850 kbps) */

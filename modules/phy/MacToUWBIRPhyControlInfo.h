@@ -6,6 +6,12 @@
 #include "MacToPhyControlInfo.h"
 #include "IEEE802154A.h"
 
+/**
+ * @brief This control info allows to store the IEEE802154A config parameters
+ * that were used to generate the accompanying signal.
+ *
+ * @ingroup ieee802154a
+ */
 class MacToUWBIRPhyControlInfo: public MacToPhyControlInfo {
 protected:
 	IEEE802154A::config cfg;

@@ -5,6 +5,14 @@
 #include "Decider.h"
 #include <vector>
 
+/**
+ * @brief This class stores results from an UWBIR Decider.
+ * It allows to pass to the MAC layer the demodulate bit values,
+ * so that it (the MAC layer) can compare these demodulated bit values
+ * with the bit values actually encoded by the MAC layer at the origin.
+ *
+ * @ingroup ieee802154a
+ */
 class DeciderResultUWBIR : public DeciderResult {
 public:
 	DeciderResultUWBIR(bool isCorrect, std::vector<bool>* _decodedBits): DeciderResult(isCorrect), decodedBits(_decodedBits) { }
@@ -20,7 +28,7 @@ public:
 
 
 private:
-	std::vector<bool>* decodedBits; // CSEM Jerome Rousselot
+	std::vector<bool>* decodedBits;
 
 };
 #endif
