@@ -31,7 +31,7 @@
 //
 
 #include "PhyLayerUWBIR.h"
-#include <assert.h>
+#include <cassert>
 #include "MacToUWBIRPhyControlInfo.h"
 #include "AirFrameUWBIR_m.h"
 
@@ -66,7 +66,6 @@ void PhyLayerUWBIR::initialize(int stage) {
 		txRxCurrent = getParentModule()->par( "txRxCurrent" );
 		syncCurrent = getParentModule()->par( "syncCurrent" ); // assume instantaneous transitions between rx and sync
 	} else if (stage == 1) {
-		cModule* macModule = getParentModule()->getSubmodule("mac");
 		registerWithBattery("physical layer", numActivities);
 		BatteryAccess::drawCurrent(rxCurrent, RX_ACCT);
 	}

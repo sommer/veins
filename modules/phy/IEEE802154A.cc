@@ -23,6 +23,7 @@
  ***************************************************************************/
 
 #include "IEEE802154A.h"
+#include <cassert>
 
 // bit rate (850 kbps)
 const int IEEE802154A::mandatory_bitrate = 850000;
@@ -309,6 +310,10 @@ int IEEE802154A::getHoppingPos(int sym) {
 	case NOMINAL_16_M:
 		pos = s(kNcpb) + 2*s(1+kNcpb) + 4*s(2+kNcpb);
 		break;
+	case NOMINAL_64_M:
+	case PRF_OFF:
+	default:
+		assert(0==1);  // unimplemented or invalid PRF value
 	}
 	// assert(pos > -1 && pos < 8); // TODO: update to reflect number of hopping pos for current config
 	return pos;

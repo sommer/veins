@@ -231,7 +231,7 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 	for (symbol = 0; cfg.preambleLength + symbol
 			* aSymbol < signal->getSignalLength(); symbol++) {
 
-		int hoppingPos = IEEE802154A::getHoppingPos(symbol);
+//		int hoppingPos = IEEE802154A::getHoppingPos(symbol);
 		int decodedBit;
 
 		if (stats) {
@@ -325,7 +325,7 @@ pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
 			++currSig;
 		}
 
-		double attenuatedPower = resPower / 10; // 10 dB = 6 dB implementation loss + 5 dB noise factor
+//		double attenuatedPower = resPower / 10; // 10 dB = 6 dB implementation loss + 5 dB noise factor
 		vEfield = sqrt(50*resPower); // P=V²/R
 		// add thermal noise realization
 		vThermalNoise = getNoiseValue();

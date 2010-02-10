@@ -17,10 +17,12 @@ class AggrPkt : public AggrPkt_Base
     virtual AggrPkt *dup() const {return new AggrPkt(*this);}
 
     // array methods
+    // do not use these
     virtual void setStoredPacketsArraySize(unsigned int size);
     virtual unsigned int getStoredPacketsArraySize() const;
     virtual pApplPkt& getStoredPackets(unsigned int k);
     virtual void setStoredPackets(unsigned int k, const pApplPkt& storedPackets_var);
+    // instead, use those:
     virtual void storePacket(pApplPkt& storedPackets_var);
     virtual bool isEmpty();
     virtual pApplPkt& popFrontPacket();

@@ -12,17 +12,14 @@ unsigned int AggrPkt::getStoredPacketsArraySize() const {
 pApplPkt& AggrPkt::getStoredPackets(unsigned int k) {
 	pApplPkt pkt = storedPackets.front();
 	return pkt ;
-//	return storedPackets.front()& ;
 }
-//	{ return storedPackets.at(k); }
-
 
 // should not be used -- implemented only because omnet++ expects it
-void AggrPkt::setStoredPackets(unsigned int k, const pApplPkt& storedPackets_var) { }
-//	cMessage* msg = reinterpret_cast<cMessage*>(storedPackets_var);
-//	take(msg); // update ownership
-//	storedPackets[k] = storedPackets_var;
-//}
+void AggrPkt::setStoredPackets(unsigned int k, const pApplPkt& storedPackets_var) {
+
+}
+
+// use these functions instead
 
 void AggrPkt::storePacket(pApplPkt& msg) {
 	take(msg); // update ownership

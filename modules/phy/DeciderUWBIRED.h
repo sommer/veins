@@ -69,10 +69,30 @@ private:
 protected:
 	double syncThreshold;
 	bool syncAlwaysSucceeds;
+	bool channelSensing;
+	bool synced;
+	bool alwaysFailOnDataInterference;
 	UWBIRPacket packet;
 	int catUWBIRPacket;
 	BaseUtility* utility;
 	double epulseAggregate, enoiseAggregate;
+	map<Signal*, int> currentSignals;
+	cOutVector receivedPulses;
+	cOutVector syncThresholds;
+	PhyLayerUWBIR* uwbiface;
+	Signal* tracking;
+	enum {
+		FIRST, HEADER_OVER, SIGNAL_OVER
+	};
+	vector<ConstMapping*> receivingPowers;
+	ConstMapping* signalPower; // = signal->getReceivingPower();
+	// store relative offsets between signals starts
+	vector<simtime_t> offsets;
+	vector<AirFrame*> airFrameVector;
+	// Create an iterator for each potentially colliding airframe
+	vector<AirFrame*>::iterator airFrameIter;
+
+	typedef ConcatConstMapping<std::multiplies<double> > MultipliedMapping;
 
 public:
 	const static double noiseVariance = 101.085E-12; // P=-116.9 dBW // 404.34E-12;   v²=s²=4kb T R B (T=293 K)
@@ -84,10 +104,10 @@ public:
 			bool _trace, bool alwaysFailOnDataInterference=false) :
 		Decider(iface), trace(_trace),
 				stats(_stats), nbRandomBits(0), nbFailedSyncs(0),
-				nbSuccessfulSyncs(0), nbSymbols(0), syncThreshold(_syncThreshold),
-				syncAlwaysSucceeds(_syncAlwaysSucceeds), uwbiface(_uwbiface), tracking(0),
-				channelSensing(false), synced(false), vsignal2(0), vnoise2(0), snirEvals(0), pulseSnrs(0),
-				alwaysFailOnDataInterference(alwaysFailOnDataInterference) {
+				nbSuccessfulSyncs(0), nbSymbols(0), vsignal2(0), vnoise2(0), snirEvals(0), pulseSnrs(0), syncThreshold(_syncThreshold),
+				syncAlwaysSucceeds(_syncAlwaysSucceeds),
+				channelSensing(false), synced(false), alwaysFailOnDataInterference(alwaysFailOnDataInterference),
+				uwbiface(_uwbiface), tracking(0) {
 
 		receivedPulses.setName("receivedPulses");
 		syncThresholds.setName("syncThresholds");
@@ -123,30 +143,6 @@ public:
 	void cancelReception();
 
 protected:
-	map<Signal*, int> currentSignals;
-	cOutVector receivedPulses;
-	cOutVector syncThresholds;
-
-	PhyLayerUWBIR* uwbiface;
-	Signal* tracking;
-	enum {
-		FIRST, HEADER_OVER, SIGNAL_OVER
-	};
-
-	bool channelSensing;
-	bool synced;
-	bool alwaysFailOnDataInterference;
-
-	vector<ConstMapping*> receivingPowers;
-	ConstMapping* signalPower; // = signal->getReceivingPower();
-	// store relative offsets between signals starts
-	vector<simtime_t> offsets;
-	vector<AirFrame*> airFrameVector;
-	// Create an iterator for each potentially colliding airframe
-	vector<AirFrame*>::iterator airFrameIter;
-
-	typedef ConcatConstMapping<std::multiplies<double> > MultipliedMapping;
-
 	bool decodePacket(Signal* signal, vector<bool> * receivedBits);
 	simtime_t handleNewSignal(Signal* s);
 	simtime_t handleHeaderOver(map<Signal*, int>::iterator& it);
