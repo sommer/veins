@@ -1,4 +1,4 @@
 #! /bin/sh
-./ieee802154a -u Cmdenv -c BERDistance $*
+./ieee802154a.sh -u Cmdenv -c BERDistance $*
 
 

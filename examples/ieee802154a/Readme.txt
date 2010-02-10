@@ -28,7 +28,7 @@ The "run" script expects to find opp_run in the path. Thus, make sure
 to have $OMNET_PATH/bin in your path. 
 
 You can also try:
-./runchannelPlots.sh
+./runChannelPlots.sh
 to execute all runs of the channelPlots scenario.
 
 The results can be analyzed from within Omnet++. In the
