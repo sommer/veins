@@ -31,6 +31,11 @@
 
 using namespace std;
 
+/**
+ * @brief this class aggregates the packets received from the application
+ * layer and separates packet emissions by a time InterPacketDelay.
+ *
+ */
 class Aggregation: public BaseLayer {
 public:
 	virtual void initialize(int);
