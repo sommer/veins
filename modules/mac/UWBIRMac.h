@@ -19,12 +19,6 @@
  * 				class. It provides the necessary functions to build UWBIR
  * 				packets and to receive them.
  ***************************************************************************/
-//
-// This class provides helper function for MAC modules that use the UWB-IR IEEE 802.15.4A model.
-// Just before sending down a packet to the UWBIRPhyLayer, call prepareData(UWBIRMacPkt* packet).
-// Just after receiving a packet from the UWBIRPhyLayer, call validatePacket(UWBIRMacPkt* packet)
-// and check the returned bool value to know if the packet could be decoded successfully.
-//
 
 #ifndef UWBIRMAC_H
 #define UWBIRMAC_H
@@ -47,6 +41,15 @@
 
 using namespace std;
 
+
+/**
+ * @brief This class provides helper function for MAC modules that use the UWB-IR IEEE 802.15.4A model.
+ * Just before sending down a packet to the UWBIRPhyLayer, call prepareData(UWBIRMacPkt* packet).
+ * Just after receiving a packet from the UWBIRPhyLayer, call validatePacket(UWBIRMacPkt* packet)
+ * and check the returned bool value to know if the packet could be decoded successfully.
+ *
+ * @ingroup ieee802154a
+ */
 class UWBIRMac : public BaseMacLayer {
 
 public:

@@ -15,8 +15,8 @@
  *              version.
  *              For further information see file COPYING
  *              in the top level directory
- * description: this class implements the Aloha MAC protocol for an UWB-IR
- * 				IEEE 802.15.4A transceiver.
+ * description: this class implements a basic Aloha MAC protocol for an UWB-IR
+ * 				IEEE 802.15.4A transceiver to allow testing the PHY layer.
  ***************************************************************************/
 
 #ifndef ALOHA_MAC_LAYER_H
@@ -26,6 +26,13 @@
 
 using namespace std;
 
+/**
+ * @brief this class implements a basic Aloha MAC protocol for an UWB-IR
+ * IEEE 802.15.4A transceiver to allow testing the PHY layer.
+ * This is not a complete implementation of the IEEE 802.15.4A non beacon enabled mode !
+ *
+ * @ingroup ieee802154a
+ */
 class AlohaMacLayer : public UWBIRMac {
 
 public:
