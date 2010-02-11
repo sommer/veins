@@ -65,6 +65,7 @@ void UWBIRMac::initCounters() {
 	nbSymbolErrors = 0;
 	nbSymbolsReceived = 0;
 	nbHandledRxPackets = 0;
+	nbFramesDropped = 0;
 	packetsBER.setName("packetsBER");
 	meanPacketBER.setName("meanPacketBER");
 	dataLengths.setName("dataLengths");
@@ -86,6 +87,7 @@ void UWBIRMac::finish() {
 		recordScalar("Total received bits", totalRxBits);
 		recordScalar("Average BER", errRxBits / totalRxBits);
 		recordScalar("nbReceivedPacketsRS", nbReceivedPacketsRS);
+		recordScalar("nbFramesDropped", nbFramesDropped);
 		recordScalar("nbReceivedPacketsnoRS", nbReceivedPacketsNoRS);
 		if (rsDecoder) {
 			recordScalar("nbReceivedPackets", nbReceivedPacketsRS);
@@ -195,6 +197,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			utility->publishBBItem(catPacket, &packet, -1);
 		} else {
 			success.record(0);
+			nbFramesDropped++;
 		}
 
 		if(stats) {
