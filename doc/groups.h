@@ -216,6 +216,11 @@
  */
 
 /**
+ * @defgroup ieee802154a IEEE 802.15.4A - Classes that implement the IEEE 802.15.4A UWB PHY.
+ * @ingroup protocols
+ */
+
+/**
  * @defgroup csma CSMA - Classes for the CSMA implementation of MiXiM
  * @ingroup protocols
  */
