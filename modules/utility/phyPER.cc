@@ -34,11 +34,11 @@ void phyPER::initialize(int stage)
 void phyPER::receiveBBItem(int category, const BBItem * details, int scopeModuleId) {
     if(category == catPacket) {
     	packet = *(static_cast<const Packet*>(details));
-    	nbRx = packet.getNbPacketsReceived();
-    	nbRxnoRS = packet.getNbPacketsReceivedNoRS();
+    	nbRx = static_cast<long>(packet.getNbPacketsReceived());
+    	nbRxnoRS = static_cast<long>(packet.getNbPacketsReceivedNoRS());
     } else if(category == catUWBIRPacket) {
     	uwbirpacket = *(static_cast<const UWBIRPacket*>(details));
-    	nbSyncAttempts = uwbirpacket.getNbSyncAttempts();
+    	nbSyncAttempts = static_cast<long>(uwbirpacket.getNbSyncAttempts());
     	nbSyncSuccesses = uwbirpacket.getNbSyncSuccesses();
     }
     if(nbSyncAttempts > 0) {
