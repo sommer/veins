@@ -5,6 +5,11 @@
 #    nmake -f makemakefiles MMOPT=-n
 #
 CONFIGNAME = gcc-debug
+
+ifeq ($(MODE),release)
+        CONFIGNAME=gcc-release
+endif
+
 MAKEMAKE=opp_makemake $(MMOPT)
 
 all:
