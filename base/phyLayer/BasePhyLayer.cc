@@ -28,6 +28,12 @@ template<class T> T BasePhyLayer::readPar(const char* parName, const T defaultVa
 		return defaultValue;
 }
 
+// the following line is needed to allow linking when compiled in RELEASE mode.
+// Aadd a declaration for each parameterization of the template used in
+// code to be linked, e.g. in modules or in examples, if it is not already
+// used in base (double and simtime_t). Needed with (at least): gcc 4.4.1.
+template int BasePhyLayer::readPar<int>(const char* parName, const int);
+
 void BasePhyLayer::initialize(int stage) {
 
 	ChannelAccess::initialize(stage);
