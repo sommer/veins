@@ -10,7 +10,7 @@ unsigned int AggrPkt::getStoredPacketsArraySize() const {
 
 // should not be used -- implemented only because omnet++ expects it
 pApplPkt& AggrPkt::getStoredPackets(unsigned int k) {
-	pApplPkt pkt = storedPackets.front();
+	pApplPkt& pkt = storedPackets.front();
 	return pkt ;
 }
 
@@ -27,7 +27,7 @@ void AggrPkt::storePacket(pApplPkt& msg) {
 }
 
 pApplPkt& AggrPkt::popFrontPacket() {
-	pApplPkt pkt = storedPackets.front();
+	pApplPkt& pkt = storedPackets.front();
 	storedPackets.pop_front();
 	drop(pkt); // update ownership
 	return pkt;
