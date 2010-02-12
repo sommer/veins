@@ -1,4 +1,4 @@
 #! /bin/sh
-./ieee802154a.sh -u Cmdenv -c channelPlots $*
+./mixim -u Cmdenv -c channelPlots $*
 
 
