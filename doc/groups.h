@@ -89,10 +89,22 @@
 /**
  * @defgroup mobility mobility - modules handling the mobility of the hosts
  *
- * The following diagrams give an overview on the functionality of a mobility module.
+ * The following diagrams give an overview of the functionality of a mobility-module.
  *
- * \image html Mobility.png "Activity diagram: Mobility in MiXiM"
+ * \image html Mobility.png "Activity diagram: an overview on how movement-updates in BaseMobility work"
+ *
  * \image html makeMove.png "Sequence diagram: call-hierarchy when move-message is processed"
+ *
+ * Shows how sub-classing mobility-modules are involved in the movement-calculation for a host.
+ * They overwrite the method makeMove() to calculate the next movement-step and after that
+ * they have to call fixIfHostGetsOutside() which takes care of border-handling. The implementation
+ * of this method at least has to call handleIfOutside() and pass the border-policy to use
+ * as well as references to parameters to be updated.
+ * The figure below shows some details on how border-handling and the different border-policies
+ * work.
+ *
+ * \image html borderPolicies.png "Illustrated border-handling under the different border-policies, multiple border-handling in one movement-step"
+ *
  */
 
 /**
