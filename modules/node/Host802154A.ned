@@ -20,15 +20,18 @@ module Host802154A
         input radioIn;
 
     submodules:
+         utility: BaseUtility {
+            parameters:
+                @display("p=292,60;i=block/blackboard");
+        }
+        stats: phyPER {
+            @display("p=202,257");
+        }
         batteryStats: BatteryStats {
             @display("p=292,257;i=block/circle");
         }
         battery: SimpleBattery {
             @display("p=292,186;i=block/control");
-        }
-        utility: BaseUtility {
-            parameters:
-                @display("p=292,60;i=block/blackboard");
         }
         mobility: BaseMobility {
             parameters:
@@ -50,9 +53,6 @@ module Host802154A
             parameters:
                 @display("p=86,60;i=block/app");
 
-        }
-        stats: phyPER {
-            @display("p=202,257");
         }
 
     connections:

@@ -27,6 +27,10 @@ void phyPER::initialize(int stage)
 		catUWBIRPacket = utility->subscribe(this, &uwbirpacket, -1);
 		maiPER.setName("maiPER");
 		maiPERnoRS.setName("maiPERnoRS");
+		nbSyncAttempts = 0;
+		nbSyncSuccesses = 0;
+		nbRx = 0;
+		nbRxnoRS = 0;
 	}
 }
 

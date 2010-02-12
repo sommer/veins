@@ -107,7 +107,7 @@ public:
 			bool _trace, bool alwaysFailOnDataInterference=false) :
 		Decider(iface), trace(_trace),
 				stats(_stats), nbRandomBits(0), nbFailedSyncs(0),
-				nbSuccessfulSyncs(0), nbSymbols(0), vsignal2(0), vnoise2(0), snirEvals(0), pulseSnrs(0), syncThreshold(_syncThreshold),
+				nbSuccessfulSyncs(0), nbSymbols(0), allThresholds(0), vsignal2(0), vnoise2(0), snirEvals(0), pulseSnrs(0), syncThreshold(_syncThreshold),
 				syncAlwaysSucceeds(_syncAlwaysSucceeds),
 				channelSensing(false), synced(false), alwaysFailOnDataInterference(alwaysFailOnDataInterference),
 				uwbiface(_uwbiface), tracking(0) {

@@ -53,11 +53,11 @@ public:
 
 protected:
 	/** @brief Stores the power consumption of each radio state (in mW) */
-	double* powerConsumptions;
-	simtime_t powerConsumption;
+//	double* powerConsumptions;
+//	simtime_t powerConsumption;
 	simtime_t lastStateChange;
 
-	cOutVector vectorPower;
+//	cOutVector vectorPower;
 
 public:
 
@@ -65,12 +65,12 @@ public:
 	virtual void setPowerConsumption(int radioState, double _powerConsumption) {
 		assert(0 <= radioState);
 		assert(radioState < numRadioStates);
-		powerConsumptions[radioState] = _powerConsumption;
+//		powerConsumptions[radioState] = _powerConsumption;
 	}
 
 	virtual ~RadioUWBIR() {
-		delete[] powerConsumptions;
-		powerConsumptions = 0;
+//		delete[] powerConsumptions;
+//		powerConsumptions = 0;
 	}
 
 	/* Static factory method (see Radio class in PhyUtils.h) */
@@ -104,7 +104,7 @@ public:
 	}
 
 	virtual simtime_t reallySwitchTo(int newState, simtime_t now) {
-		updatePowerConsumption(now);
+//		updatePowerConsumption(now);
 		// set the nextState to the newState and the current state to SWITCHING
 		nextState = newState;
 		int lastState = state;
@@ -118,14 +118,15 @@ public:
 	}
 
 	virtual void endSwitch(simtime_t now) {
-		updatePowerConsumption(now);
+//		updatePowerConsumption(now);
 		Radio::endSwitch(now);
 	}
 
 	/** @brief Getter function to read the power consumption of this radio
 	 * from simulation start until now. */
 	simtime_t getPowerConsumption(simtime_t now) {
-		return powerConsumption + (now - lastStateChange) * powerConsumptions[state];
+		return 0;
+//		return powerConsumption + (now - lastStateChange) * powerConsumptions[state];
 	}
 
 protected:
@@ -134,14 +135,14 @@ protected:
 	:Radio(numRadioStates, initialState, minAtt, maxAtt) {
 
 		lastStateChange = 0;
-		powerConsumption = 0;
-		powerConsumptions = new double [numRadioStates];
+//		powerConsumption = 0;
+//		powerConsumptions = new double [numRadioStates];
 
-		for (int i = 0; i < numRadioStates; i++)
-		{
-			// initialize all power consumption entries to 0.0
-			powerConsumptions[i] = 0.0;
-		}
+//		for (int i = 0; i < numRadioStates; i++)
+//		{
+//			// initialize all power consumption entries to 0.0
+//			powerConsumptions[i] = 0.0;
+//		}
 	}
 
 	virtual double mapStateToAtt(int state)
@@ -183,10 +184,10 @@ private:
 	 */
 	virtual void updatePowerConsumption(simtime_t now) {
 		assert(now >= lastStateChange);
-		simtime_t delta = (now - lastStateChange) * powerConsumptions[state];
-		powerConsumption = powerConsumption + delta;
-		lastStateChange = now;
-		vectorPower.record(powerConsumption / simTime().dbl());
+//		simtime_t delta = (now - lastStateChange) * powerConsumptions[state];
+//		powerConsumption = powerConsumption + delta;
+//		lastStateChange = now;
+//		vectorPower.record(powerConsumption / simTime().dbl());
 	}
 };
 
