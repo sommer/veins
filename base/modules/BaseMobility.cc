@@ -70,31 +70,23 @@ void BaseMobility::initialize(int stage)
 		// initialize Move parameter
         bool use2D = world->use2D();
 
-        double x = -1.0;
-        double y = -1.0;
-        double z = -1.0;
+        //initalize position with random values
+        Coord pos = world->getRandomPosition();
+
         //read coordinates from parameters if available
-        if (hasPar("x") && hasPar("y") && (hasPar("z") || use2D)){
-            x = par("x");
-            y = par("y");
-            if(!use2D) {
-                z = par("z");
-            }
-		}
+        double x = hasPar("x") ? par("x").doubleValue() : -1;
+        double y = hasPar("y") ? par("y").doubleValue() : -1;
+        double z = hasPar("z") ? par("z").doubleValue() : -1;
+
+        //set position with values from parameters if available
+        if(x > -1) pos.setX(x);
+        if(y > -1) pos.setY(y);
+        if(!use2D && z > -1) pos.setZ(z);
 
         // set start-position and start-time (i.e. current simulation-time) of the Move
-        //a coordinate of -1.0 means random position
-        if (x == -1.0 || y == -1.0 || (z == -1.0 && !use2D)) {
-            move.setStart(world->getRandomPosition());
-        } else {
-            if (use2D) {
-                move.setStart(Coord(x, y));
-            } else {
-                move.setStart(Coord(x, y, z));
-            }
-
-        }
+        move.setStart(pos);
 		coreEV << "start pos: " << move.getStartPos().info() << endl;
+
         //check whether position is within the playground
         if (!move.getStartPos().isInRectangle(Coord(use2D), world->getPgs())) {
             error("node position specified in omnetpp.ini exceeds playgroundsize");
