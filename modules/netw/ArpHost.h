@@ -34,7 +34,6 @@
  * macaddress=netaddress= host index in array.
  *
  * @ingroup netwLayer
- * @ingroup baseModules
  *
  * @author Jerome Rousselot
  **/

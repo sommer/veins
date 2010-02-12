@@ -41,7 +41,6 @@ using namespace std;
  * @ingroup utils
  * @author Jerome Rousselot
  */
-
 class SimTracer:public cSimpleModule, ImNotifiable
 {
 

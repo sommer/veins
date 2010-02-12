@@ -30,7 +30,6 @@
  * @author Andreas K�pke
  * @sa Blackboard
  */
-
 class  UWBIRPacket : public BBItem
 {
     BBITEM_METAINFO(BBItem)

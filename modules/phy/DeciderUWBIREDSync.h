@@ -48,6 +48,7 @@ class PhyLayerUWBIR;
  * the respective fields tmin and syncThreshold.
  *
  * @ingroup ieee802154a
+ * @ingroup decider
 */
 class DeciderUWBIREDSync: public DeciderUWBIRED {
 public:

@@ -12,6 +12,7 @@
  * with the bit values actually encoded by the MAC layer at the origin.
  *
  * @ingroup ieee802154a
+ * @ingroup decider
  */
 class DeciderResultUWBIR : public DeciderResult {
 public:

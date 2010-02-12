@@ -21,6 +21,11 @@
 #ifndef _SIMPLETIMECONSTMAPPING_H
 #define _SIMPLETIMECONSTMAPPING_H
 
+/**
+ * @brief TODO: short description for this class
+ *
+ * @ingroup mapping
+ */
 class SimpleTimeConstMapping: public SimpleConstMapping {
 
 protected:

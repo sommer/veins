@@ -28,7 +28,9 @@
 
 /**
  * @brief This AnalogueModel models implements the Ghassmezadeh stochastic UWB channel models.
+ *
  * @ingroup ieee802154a
+ * @ingroup analogueModels
  */
 class UWBIRStochasticPathlossModel : public AnalogueModel {
 

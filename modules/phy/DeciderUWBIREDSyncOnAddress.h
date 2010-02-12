@@ -43,6 +43,7 @@ class PhyLayerUWBIR;
 
 /**
  * @brief  this Decider models a non-coherent energy-detection receiver
+ *
  * that that always synchronizes successfully on frames coming from
  * a particular node. It can be used to approximate quasi-orthogonal UWB
  * modulations and private time hopping sequences (you should also configure
@@ -51,6 +52,7 @@ class PhyLayerUWBIR;
  * sync preamble.
  *
  * @ingroup ieee802154a
+ * @ingroup decider
 */
 
 class DeciderUWBIREDSyncOnAddress: public DeciderUWBIRED {

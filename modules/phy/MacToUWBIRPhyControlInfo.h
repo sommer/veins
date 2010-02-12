@@ -11,6 +11,8 @@
  * that were used to generate the accompanying signal.
  *
  * @ingroup ieee802154a
+ * @ingroup phyLayer
+ * @ingroup macLayer
  */
 class MacToUWBIRPhyControlInfo: public MacToPhyControlInfo {
 protected:

@@ -32,15 +32,17 @@
 #include <math.h>
 #include <limits>
 
-/** @brief This class implements the IEEE 802.15.4A Channel Model[1] in the MiXiM
- *  omnet++ modeling framework.
+/**
+ * @brief This class implements the IEEE 802.15.4A Channel Model[1] in the MiXiM
+ * omnet++ modeling framework.
+ *
  *  [1] "IEEE 802.15.4a channel model - final report", 2005, Andreas F. Molisch,
  *  Kannan Balakrishnan, Dajana Cassioli, Chia-Chin Chong, Shahriar Emami,
  *  Andrew Fort, Johan Karedal, Juergen Kunisch, Hans Schantz, Ulrich Schuster, Kai Siwiak
  *
+ * @ingroup analogueModels
+ * @ingroup ieee802154a
  */
-
-
 class UWBIRIEEE802154APathlossModel : public AnalogueModel {
 
 public:

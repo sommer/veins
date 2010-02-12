@@ -59,6 +59,7 @@ class PhyLayerUWBIR;
  *  decodePacket().
  *
  * @ingroup ieee802154a
+ * @ingroup decider
 */
 class DeciderUWBIRED: public Decider {
 private:

@@ -29,9 +29,11 @@ using namespace std;
 /**
  * @brief this class implements a basic Aloha MAC protocol for an UWB-IR
  * IEEE 802.15.4A transceiver to allow testing the PHY layer.
+ *
  * This is not a complete implementation of the IEEE 802.15.4A non beacon enabled mode !
  *
  * @ingroup ieee802154a
+ * @ingroup macLayer
  */
 class AlohaMacLayer : public UWBIRMac {
 

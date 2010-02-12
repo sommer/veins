@@ -28,6 +28,11 @@
 
 #define PI 3.1415926
 
+/**
+ * @brief TODO: Short description for this AnalogueModel
+ *
+ * @ingroup analogueModels
+ */
 class IntensityModel : public AnalogueModel {
 
 public:

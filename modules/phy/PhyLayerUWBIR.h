@@ -48,6 +48,7 @@ class DeciderUWBIREDSync;
 
 /**
  * @brief Physical layer that models an Ultra Wideband Impulse Radio wireless communication system.
+ *
  * This class loads channel models and deliver frames to an UWB Decider. It is independent of the modulation technique,
  * as long as the frames are represented using the same approach as in IEEE802154A.h (Maximum Pulse Amplitude Estimation).
  *
@@ -72,6 +73,8 @@ class DeciderUWBIREDSync;
  * http://portal.acm.org/citation.cfm?id=1537714
  *
  * @ingroup ieee802154a
+ * @ingroup phyLayer
+ * @ingroup power
  */
 class PhyLayerUWBIR : public BasePhyLayer
 {
