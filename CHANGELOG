@@ -5,6 +5,7 @@ v1.2
   in the future
 + added depth dependent scaled display of hosts when GUI and 3-D is used
 + made members of Move protected, added functions for member access
++ BaseMobilitys host coordinates can be set to random values indepentently now
 + gave networks of examples more meaningfull and consistent names (same as the example)
 + renamed executeables for examples from "MiXiM" to <example name>
 * fixed memory leak when propagation delay is simulated
