@@ -260,4 +260,21 @@
 
 /**
  * @defgroup power Power consumption - Classes using/defining power consumption
+ *
+ * \image html power.png "Classes handling power consumption and host state"
+ *
+ * Every BaseModule automatically receives HostState changes published by BaseUtilities
+ * blackboard functionality. BaseModule itself raises an error inside "handleHostState()"
+ * method if the hosts state changes to something else then active. This means every
+ * host module (which derives from BaseModule) has to override this method if it wants
+ * to work with host states other then active (like sleep, or off).
+ *
+ * BaseBattery defines the methods every battery module (or power source) has to implement
+ * for tracking power consumption.
+ * BatteryAccess provides for every host module access to the battery (/power source)
+ * by providing methods for registration with and drawing power from the battery.
+ *
+ * SimpleBattery is a simple implementation of a battery module.
+ * PhyLayerBattery and BurstApplicationLayerBattery are only two examples for
+ * host modules which support power consumption and host state changes.
  */

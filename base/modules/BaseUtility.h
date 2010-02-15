@@ -25,7 +25,7 @@
  * @brief Provides several utilities (mainly Blackboard functionality
  * for a host).
  *
- * @see Blackboard
+ * @ingroup blackboard
  * @ingroup baseModules
  *
  * @author Andreas Koepke

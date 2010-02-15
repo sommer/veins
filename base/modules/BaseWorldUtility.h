@@ -28,7 +28,7 @@
  * @brief Provides information and utility methods as well as Blackboard
  * functionality for the whole simulation.
  *
- * @see Blackboard
+ * @ingroup blackboard
  * @ingroup baseModules
  */
 class BaseWorldUtility : public Blackboard
