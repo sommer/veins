@@ -373,8 +373,7 @@ pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
 	return energy;
 }
 
-simtime_t DeciderUWBIRED::handleChannelSenseRequest(
-		ChannelSenseRequest* request) {
+simtime_t DeciderUWBIRED::handleChannelSenseRequest(ChannelSenseRequest* request) {
 	if (channelSensing) {
 		// send back the channel state
 		request->setResult(new ChannelState(synced, 0)); // bogus rssi value (0)

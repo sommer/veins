@@ -464,11 +464,6 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 
 
 void PhyLayerUWBIR::finish() {
-	DeciderUWBIRED * dec =
-			static_cast<DeciderUWBIRED*> (decider);
-	recordScalar("nbRandomBits", dec->getNbRandomBits());
-	recordScalar("avgThreshold", dec->getAvgThreshold());
-	recordScalar("nbSuccessfulSyncs", dec->getNbSuccessfulSyncs());
-	recordScalar("nbFailedSyncs", dec->getNbFailedSyncs());
+	BasePhyLayer::finish();
 }
 
