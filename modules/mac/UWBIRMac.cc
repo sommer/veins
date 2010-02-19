@@ -210,7 +210,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 		// validate message
 		bool success = false;
 
-		success = (nbBitErrors == 0 || (rsDecoder && nbSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) );
+		success = (nbBitErrors == 0 || (rsDecoder && pktSymbolErrors <= IEEE802154A::RSMaxSymbolErrors) );
 
 		return success;
 	}
