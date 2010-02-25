@@ -77,7 +77,7 @@ public:
 	}
 
 	/* Static factory method (see Radio class in PhyUtils.h) */
-	static RadioUWBIR* createNewUWBIRRadio(int initialState = SYNC,
+	static RadioUWBIR* createNewUWBIRRadio(int initialState,
 								 double minAtt = 1.0,
 								 double maxAtt = 0.0)
 	{
@@ -134,7 +134,7 @@ public:
 
 protected:
 
-	RadioUWBIR(int numRadioStates, int initialState = SYNC, double minAtt = 1.0, double maxAtt = 0.0)
+	RadioUWBIR(int numRadioStates, int initialState, double minAtt = 1.0, double maxAtt = 0.0)
 	:Radio(numRadioStates, initialState, minAtt, maxAtt) {
 
 		lastStateChange = 0;

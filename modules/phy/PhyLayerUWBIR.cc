@@ -67,14 +67,14 @@ void PhyLayerUWBIR::initialize(int stage) {
 		syncCurrent = getParentModule()->par( "syncCurrent" ); // assume instantaneous transitions between rx and sync
 	} else if (stage == 1) {
 		registerWithBattery("physical layer", numActivities);
-		BatteryAccess::drawCurrent(rxCurrent, RX_ACCT);
+		setRadioCurrent(uwbradio->getCurrentState());
 	}
 
 }
 
 
 Radio* PhyLayerUWBIR::initializeRadio() {
-	int initialRadioState = readPar("initalRadioState", (int) RadioUWBIR::SYNC);
+	int initialRadioState = par("initialRadioState"); //readPar("initalRadioState", (int) RadioUWBIR::SYNC);
 	double radioMinAtt = readPar("radioMinAtt", 1.0);
 	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
 
@@ -394,6 +394,9 @@ simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 	int prevState = radio->getCurrentState();
 
+	if(rs==Radio::RX) {
+		EV << "this is my breakpoint" << endl;
+	}
 	if(radio->getCurrentState()==RadioUWBIR::RX && rs != RadioUWBIR::RX && rs!= RadioUWBIR::SYNC) {
 		uwbdecider->cancelReception();
 	}
