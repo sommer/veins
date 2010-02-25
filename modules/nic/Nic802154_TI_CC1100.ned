@@ -56,9 +56,13 @@ module Nic802154_TI_CC1100
         phy: PhyLayerBattery {
             parameters:
                 decider = xmldoc("Nic802154_TI_CC1100_Decider.xml");
+				analogueModels = default(xmldoc("config.xml"));
                 //publishRSSIAlways = false;
+				sensitivity = -100 dBm;
                 headerLength = 48 bit; // ieee 802.15.4
                 thermalNoise = -110 dBm;
+                maxTXPower = 1 mW;
+                initialRadioState = 0;
                 // From TI CC1100 datasheet rev. C
                 timeSleepToRX = 0.00108 s;
                 timeSleepToTX = 0.00108 s;
