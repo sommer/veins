@@ -86,7 +86,7 @@ void BasePhyLayer::initialize(int stage) {
 }
 
 Radio* BasePhyLayer::initializeRadio() {
-	int initialRadioState = readPar("initialRadioState", (int) Radio::RX);
+	int initialRadioState = par("initialRadioState"); //readPar("initialRadioState", (int) Radio::RX);
 	double radioMinAtt = readPar("radioMinAtt", 1.0);
 	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
 
