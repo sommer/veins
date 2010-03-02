@@ -7,7 +7,7 @@
  * @brief Provides method templates to find omnet modules.
  *
  * @ingroup baseUtils
- * @ingrouo utils
+ * @ingroup utils
  */
 template<typename T = cModule*>
 class FindModule
