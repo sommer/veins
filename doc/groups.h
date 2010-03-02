@@ -88,6 +88,23 @@
 
 /**
  * @defgroup mobility mobility - modules handling the mobility of the hosts
+ *
+ * The following diagrams give an overview of the functionality of a mobility-module.
+ *
+ * \image html Mobility.png "Activity diagram: an overview on how movement-updates in BaseMobility work"
+ *
+ * \image html makeMove.png "Sequence diagram: call-hierarchy when move-message is processed"
+ *
+ * Shows how sub-classing mobility-modules are involved in the movement-calculation for a host.
+ * They overwrite the method makeMove() to calculate the next movement-step and after that
+ * they have to call fixIfHostGetsOutside() which takes care of border-handling. The implementation
+ * of this method at least has to call handleIfOutside() and pass the border-policy to use
+ * as well as references to parameters to be updated.
+ * The figure below shows some details on how border-handling and the different border-policies
+ * work.
+ *
+ * \image html borderPolicies.png "Illustrated border-handling under the different border-policies, multiple border-handling in one movement-step"
+ *
  */
 
 /**
@@ -248,4 +265,21 @@
 
 /**
  * @defgroup power Power consumption - Classes using/defining power consumption
+ *
+ * \image html power.png "Classes handling power consumption and host state"
+ *
+ * Every BaseModule automatically receives HostState changes published by BaseUtilities
+ * blackboard functionality. BaseModule itself raises an error inside "handleHostState()"
+ * method if the hosts state changes to something else then active. This means every
+ * host module (which derives from BaseModule) has to override this method if it wants
+ * to work with host states other then active (like sleep, or off).
+ *
+ * BaseBattery defines the methods every battery module (or power source) has to implement
+ * for tracking power consumption.
+ * BatteryAccess provides for every host module access to the battery (/power source)
+ * by providing methods for registration with and drawing power from the battery.
+ *
+ * SimpleBattery is a simple implementation of a battery module.
+ * PhyLayerBattery and BurstApplicationLayerBattery are only two examples for
+ * host modules which support power consumption and host state changes.
  */

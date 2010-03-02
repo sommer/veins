@@ -110,14 +110,10 @@ public:
 	/**
 	 * @brief Sets the normalized direction from a passed target.
 	 */
-	void setDirectionByTarget(const Coord& target) {
-
-    	double d = startPos.distance( target );
-	    direction = (target - startPos) / d;
-
-        //double d = sqrt(dir.x*dir.x + dir.y*dir.y);
-        //direction.x = dir.x/d;
-        //direction.y = dir.y/d;
+	void setDirectionByTarget(const Coord& target)
+	{
+    	direction = target - startPos;
+	    direction /= direction.length();
     }
 
     /*

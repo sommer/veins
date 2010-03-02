@@ -19,6 +19,8 @@
 
 Define_Module(CSMA802154);
 
+#include <MacToUpperControlInfo.h>
+
 void CSMA802154::initialize(int stage)
 {
 	csma::initialize(stage);
@@ -31,7 +33,6 @@ cPacket *CSMA802154::decapsMsg(MacPkt * macPkt) {
 	PhyToMacControlInfo* cinfo = static_cast<PhyToMacControlInfo*> (macPkt->getControlInfo());
 	const DeciderResult802154Narrow* result = static_cast<const DeciderResult802154Narrow*> (cinfo->getDeciderResult());
 	double ber = result->getBER();
-	//TODO: pass bit error rate with control info to upper layer
-
+	msg->setControlInfo(new MacToUpperControlInfo(ber));
 	return msg;
 }

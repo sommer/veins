@@ -1,14 +1,14 @@
-OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
+Version: 4.1b2, build: internal, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 16
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 21
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 39
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 26
+Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20090924-13:59:25-19790
+Assigned runID=Test1-0-20100212-15:24:21-7889
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -144,7 +144,7 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4.5s
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20090924-13:59:25-19790
+Assigned runID=Test1-1-20100212-15:24:21-7889
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -251,17 +251,17 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4s
 
 
 End.
-OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
+Version: 4.1b2, build: internal, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/base: 16
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/modules: 21
-Loading NED files from /home/karl/job/omnetpp4/MiXiM/tests: 39
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 26
+Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20090924-13:59:25-19791
+Assigned runID=Test2-0-20100212-15:24:21-7890
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -610,28 +610,28 @@ Passed: AirFrames on channel.
 ** Event #7  T=3.6   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
 Passed: [phy1] - Expected "Scheduled AirFrame to Pseudoheader at phy."
 Passed: [decider1] - Expected "Scheduled AirFrame to Pseudoheader."
-** Event #8  T=3.6   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
+** Event #8  T=3.6   tbpSim.node[1].nic.mac (TestMacLayer, id=18)
+Passed: [mac1] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
+** Event #9  T=3.6   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
 Passed: [phy2] - Expected "Scheduled AirFrame to Pseudoheader at phy."
 Passed: [decider2] - Expected "Scheduled AirFrame to Pseudoheader."
-** Event #9  T=3.6   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
+** Event #10  T=3.6   tbpSim.node[2].nic.mac (TestMacLayer, id=23)
+Passed: [mac2] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
+** Event #11  T=3.6   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
 Passed: [phy3] - Expected "Scheduled AirFrame to Pseudoheader at phy."
 Passed: [decider3] - Expected "Scheduled AirFrame to Pseudoheader."
-** Event #10  T=3.6   tbpSim.node[1].nic.mac (TestMacLayer, id=18)
-Passed: [mac1] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
-** Event #11  T=3.6   tbpSim.node[2].nic.mac (TestMacLayer, id=23)
-Passed: [mac2] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
 ** Event #12  T=3.6   tbpSim.node[3].nic.mac (TestMacLayer, id=28)
 Passed: [mac3] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
 ** Event #13  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
 Passed: [phy0] - Expected "Transmission over message at phy": kind = 22000, arrival = 4.5s
-** Event #14  T=4.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
-Passed: [phy1] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
-** Event #15  T=4.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
-Passed: [phy2] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
-** Event #16  T=4.5   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
-Passed: [phy3] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
-** Event #17  T=4.5   tbpSim.node[0].nic.mac (TestMacLayer, id=13)
+** Event #14  T=4.5   tbpSim.node[0].nic.mac (TestMacLayer, id=13)
 Passed: [mac0] - Expected "Transmission over message from phy": kind = 22000, arrival = 4.5s
+** Event #15  T=4.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
+Passed: [phy1] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
+** Event #16  T=4.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
+Passed: [phy2] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
+** Event #17  T=4.5   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
+Passed: [phy3] - Expected "End receive of AirFrame": kind = 22003, arrival = 4.5s
 
 <!> No more events -- simulation ended.
 

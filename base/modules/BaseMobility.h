@@ -152,7 +152,7 @@ class BaseMobility : public BatteryAccess
      * You should call fixIfHostGetsOutside here for border handling
      **/
     virtual void makeMove(){
-	error("BaseMobility does not move the host");
+    	error("BaseMobility does not move the host");
     };
 
     /** @brief Update the position information for this node*/
@@ -195,7 +195,7 @@ class BaseMobility : public BatteryAccess
      * @sa HandleIfOutside
      */
     virtual void fixIfHostGetsOutside(){
-	error("fixIfHostGetsOutside has to be redefined by the user");
+    	error("fixIfHostGetsOutside has to be redefined by the user");
     };
 
     /**

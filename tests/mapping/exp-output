@@ -1,14 +1,14 @@
-OMNeT++ Discrete Event Simulation  (C) 1992-2008 Andras Varga, OpenSim Ltd.
-Version: 4.0, build: 090310-10709, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
+Version: 4.1b2, build: internal, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/job/omnetpp/MiXiM/base: 16
-Loading NED files from /home/karl/job/omnetpp/MiXiM/modules: 16
-Loading NED files from /home/karl/job/omnetpp/MiXiM/tests: 26
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 26
+Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20090501-14:43:45-11166
+Assigned runID=General-0-20100212-15:23:11-7803
 Setting up network `OmnetTest'...
 Initializing...
 Initializing module OmnetTest, stage 0

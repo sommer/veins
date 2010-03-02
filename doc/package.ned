@@ -1,4 +1,3 @@
-
 //
 //@titlepage
 //<h1>MiXiM API Reference</h1>
