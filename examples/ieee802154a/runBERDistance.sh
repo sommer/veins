@@ -1,4 +1,4 @@
 #! /bin/sh
-./mixim -u Cmdenv -c BERDistance $*
+./ieee802154a -u Cmdenv -c BERDistance $*
 
 
