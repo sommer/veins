@@ -152,6 +152,9 @@ public:
 	 * The ownership of the passed pointer goes to the signal.
 	 */
 	void addAttenuation(ConstMapping* att) {
+		//assert the attenuation wasn't already added to the list before
+		assert(std::find(attenuations.begin(), attenuations.end(), att) == attenuations.end());
+
 		attenuations.push_back(att);
 
 		if(rcvPower)
