@@ -16,7 +16,7 @@
  */
 class DeciderResultUWBIR : public DeciderResult {
 public:
-	DeciderResultUWBIR(bool isCorrect, std::vector<bool>* _decodedBits): DeciderResult(isCorrect), decodedBits(_decodedBits) { }
+	DeciderResultUWBIR(bool isCorrect, std::vector<bool>* _decodedBits, double snr): DeciderResult(isCorrect), decodedBits(_decodedBits), snr(snr) { }
 
 	~DeciderResultUWBIR() {
 		decodedBits->clear();
@@ -28,8 +28,11 @@ public:
         { return decodedBits; }
 
 
+    const double getSNR() { return snr; }
+
 private:
 	std::vector<bool>* decodedBits;
+	double snr;
 
 };
 #endif

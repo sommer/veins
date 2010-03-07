@@ -38,8 +38,7 @@
 #include "IEEE802154A.h"
 #include "UWBIRPacket.h"
 #include "BaseUtility.h"
-//#include "RadioUWBIR.h"
-//#include "PhyUtils.h"
+#include "MacToPhyInterface.h"
 
 using namespace std;
 
@@ -70,6 +69,7 @@ private:
 	double vsignal2, vnoise2, snirs, snirEvals, pulseSnrs;
 	double packetSNIR, packetSignal, packetNoise, packetSamples;
 	IEEE802154A::config cfg;
+	double snrLastPacket; /**@brief Stores the snr value of the last packet seen (see decodePacket) */
 protected:
 	double syncThreshold;
 	bool syncAlwaysSucceeds;
@@ -85,6 +85,10 @@ protected:
 	cOutVector syncThresholds;
 	PhyLayerUWBIR* uwbiface;
 	Signal* tracking;
+	int nbFramesWithInterference, nbFramesWithoutInterference;
+	int nbCancelReceptions;
+	int nbFinishTrackingFrames;
+	int nbFinishNoiseFrames;
 	enum {
 		FIRST, HEADER_OVER, SIGNAL_OVER
 	};
@@ -111,7 +115,8 @@ public:
 				nbSuccessfulSyncs(0), nbSymbols(0), allThresholds(0), vsignal2(0), vnoise2(0), snirEvals(0), pulseSnrs(0), syncThreshold(_syncThreshold),
 				syncAlwaysSucceeds(_syncAlwaysSucceeds),
 				channelSensing(false), synced(false), alwaysFailOnDataInterference(alwaysFailOnDataInterference),
-				uwbiface(_uwbiface), tracking(0) {
+				uwbiface(_uwbiface), tracking(0), nbFramesWithInterference(0), nbFramesWithoutInterference(0), nbCancelReceptions(0),
+				nbFinishTrackingFrames(0), nbFinishNoiseFrames(0) {
 
 		receivedPulses.setName("receivedPulses");
 		syncThresholds.setName("syncThresholds");
@@ -121,10 +126,6 @@ public:
 
 	virtual simtime_t processSignal(AirFrame* frame);
 
-	long getNbRandomBits() {
-		return nbRandomBits;
-	};
-
 	double getAvgThreshold() {
 		if (nbSymbols > 0)
 			return allThresholds / nbSymbols;
@@ -132,19 +133,25 @@ public:
 			return 0;
 	};
 
-	long getNbFailedSyncs() {
-		return nbFailedSyncs;
-	};
-
-	long getNbSuccessfulSyncs() {
-		return nbSuccessfulSyncs;
-	};
-
 	double getNoiseValue() {
 		 return normal(0, sqrt(noiseVariance));
 	}
 
 	void cancelReception();
+
+	void finish();
+
+	/**@brief Control message kinds specific to DeciderUWBIRED. Currently defines a
+	 * message kind that informs the MAC of a successful SYNC event at PHY layer. */
+	enum UWBIRED_CTRL_KIND {
+	    SYNC_SUCCESS=MacToPhyInterface::LAST_BASE_PHY_KIND+1,
+	    SYNC_FAILURE,
+	    // add other control messages kinds here (from decider to mac, e.g. CCA)
+	};
+
+	// compatibility function to allow running MAC layers that depend on channel state information
+	// from PHY layer. Returns last SNR
+	virtual ChannelState getChannelState();
 
 protected:
 	bool decodePacket(Signal* signal, vector<bool> * receivedBits);

@@ -75,6 +75,7 @@ void DeciderUWBIRED::cancelReception() {
    	  tracking = NULL;
    	  synced = false;
 	}
+	nbCancelReceptions++;
 }
 
 simtime_t DeciderUWBIRED::handleHeaderOver(map<Signal*, int>::iterator& it) {
@@ -102,8 +103,14 @@ simtime_t DeciderUWBIRED::handleHeaderOver(map<Signal*, int>::iterator& it) {
 			currentSignals[s] = SIGNAL_OVER;
 			uwbiface->switchRadioToRX();
 			packet.setNbSyncSuccesses(packet.getNbSyncSuccesses() + 1);
+			// notify MAC layer through PHY layer
+			cMessage* syncSuccessfulNotification = new cMessage("Ctrl_PHY2MAC_Sync_Success", SYNC_SUCCESS);
+			phy->sendControlMsg(syncSuccessfulNotification);
 		} else {
 			nbFailedSyncs = nbFailedSyncs + 1;
+			cMessage* syncFailureNotification = new cMessage("Ctrl_PHY2MAC_Sync_Failure", SYNC_FAILURE);
+			phy->sendControlMsg(syncFailureNotification);
+
 		}
 		utility->publishBBItem(catUWBIRPacket, &packet, -1); // scope = all == host
 
@@ -143,6 +150,7 @@ bool DeciderUWBIRED::attemptSync(Signal* s) {
 
 simtime_t DeciderUWBIRED::handleSignalOver(map<Signal*, int>::iterator& it, AirFrame* frame) {
 	if (it->first == tracking) {
+		nbFinishTrackingFrames++;
 		vector<bool>* receivedBits = new vector<bool>();
 		AirFrameUWBIR* frameuwb = check_and_cast<AirFrameUWBIR*>(frame);
 		cfg = frameuwb->getCfg();
@@ -150,7 +158,7 @@ simtime_t DeciderUWBIRED::handleSignalOver(map<Signal*, int>::iterator& it, AirF
 		// we cannot compute bit error rate here
 		// so we send the packet to the MAC layer which will compare receivedBits
 		// with the actual bits sent (stored in the encapsulated UWBIRMacPkt object).
-		DeciderResultUWBIR * result = new DeciderResultUWBIR(isCorrect, receivedBits);
+		DeciderResultUWBIR * result = new DeciderResultUWBIR(isCorrect, receivedBits, snrLastPacket);
 		if(isCorrect) {
 		  phy->sendUp(frame, result);
 		} else {
@@ -200,6 +208,13 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 		}
 	}
 
+	bool hasInterference = (airFrameVector.size() > 1);
+	if(hasInterference) {
+		nbFramesWithInterference++;
+	} else {
+		nbFramesWithoutInterference++;
+	}
+
 	// times are absolute
 	offset = signal->getSignalStart() + cfg.preambleLength;
 	shift = cfg.shift_duration;
@@ -247,12 +262,13 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 
 		if (energyZero.second > energyOne.second) {
 		  decodedBit = 0;
+		  packetSNIR = packetSNIR + energyZero.first;
 	    } else {
 	      decodedBit = 1;
-		//packetSNIR = packetSNIR + energyOne.first;
+		  packetSNIR = packetSNIR + energyOne.first;
 	    }
 
-		packetSNIR = packetSNIR + energyZero.first; // valid only if the payload consists of zeros
+
 		receivedBits->push_back(static_cast<bool>(decodedBit));
 		//packetSamples = packetSamples + 16; // 16 EbN0 evaluations per bit
 
@@ -265,7 +281,8 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 	if(airFrameVector.size() > 1 && alwaysFailOnDataInterference) {
 		isCorrect = false;
 	}
-
+	packetSNIR = packetSNIR / symbol;
+	snrLastPacket = 10*log10(packetSNIR);  // convert to dB
 	airFrameVector.clear();
 	receivingPowers.clear();
 	offsets.clear();
@@ -368,4 +385,20 @@ simtime_t DeciderUWBIRED::handleChannelSenseRequest(
 		channelSensing = true;
 		return -1; //phy->getSimTime() + request->getSenseDuration();
 	}
+}
+
+ChannelState DeciderUWBIRED::getChannelState() {
+	return ChannelState(true, 0);  // channel is always "sensed" free
+}
+
+void DeciderUWBIRED::finish() {
+	phy->recordScalar("nbFramesWithInterference", nbFramesWithInterference);
+	phy->recordScalar("nbFramesWithoutInterference", nbFramesWithoutInterference);
+	phy->recordScalar("nbRandomBits", nbRandomBits);
+	phy->recordScalar("avgThreshold", getAvgThreshold());
+	phy->recordScalar("nbSuccessfulSyncs", nbSuccessfulSyncs);
+	phy->recordScalar("nbFailedSyncs", nbFailedSyncs);
+	phy->recordScalar("nbCancelReceptions", nbCancelReceptions);
+	phy->recordScalar("nbFinishTrackingFrames", nbFinishTrackingFrames);
+	phy->recordScalar("nbFinishNoiseFrames", nbFinishNoiseFrames);
 }
