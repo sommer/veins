@@ -138,7 +138,7 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 	delete snrMapping;
 
 	avgBER = avgBER / frame->getBitLength();
-	snirAvg = snirAvg / frame->getBitLength();
+	snirAvg = snirAvg / (end - start);
 	double rssi = 10*log10(snirAvg);
 	if (noErrors)
 	{
