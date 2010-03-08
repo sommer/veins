@@ -29,7 +29,7 @@
 #include "FWMath.h"
 #include <cassert>
 #include <BaseDecider.h>
-//#include <DeciderResult802154Narrow.h>
+#include <DeciderResult802154Narrow.h>
 #include <BaseArp.h>
 #include <MacToPhyControlInfo.h>
 #include <PhyToMacControlInfo.h>
@@ -840,7 +840,12 @@ void csma::handleLowerControl(cMessage *msg) {
 
 cPacket *csma::decapsMsg(MacPkt * macPkt) {
 	cPacket * msg = macPkt->decapsulate();
-	msg->setControlInfo(new MacControlInfo(macPkt->getSrcAddr()));
+	MacControlInfo* info = new MacControlInfo(macPkt->getSrcAddr());
+	PhyToMacControlInfo* phyInfo = dynamic_cast<PhyToMacControlInfo*>(macPkt->getControlInfo());
+	DeciderResult* decRes = phyInfo->getDeciderResult();
+	DeciderResult802154Narrow* decRes154 = dynamic_cast<DeciderResult802154Narrow*>(decRes);
+	info->setRSSI(decRes154->getRSSI());
+	msg->setControlInfo(info);
 	return msg;
 }
 
