@@ -36,6 +36,9 @@ class HostState : public BBItem
     BBITEM_METAINFO(BBItem)
 
 public:
+    /**
+     * @brief Possible host states.
+     */
     enum States
         {
           ACTIVE,	/** Host is active and fully working*/
@@ -50,10 +53,16 @@ public:
     // the cause of failure (e.g. battery, stochastic hardware failure)
 
 private:
+    /**
+     * @brief Host state.
+     */
     States state;
 
 public:
-	HostState(States state = ACTIVE):
+	/**
+	 * @brief Constructor taking a state.
+	 */
+    HostState(States state = ACTIVE):
 		state(state)
 	{}
 
@@ -62,6 +71,9 @@ public:
     /** @brief Sets the host state */
     void set(States s) { state = s; }
 
+    /**
+     * @brief Returns information about the current state.
+     */
     std::string info() const {
 		std::ostringstream ost;
 		switch(state) {

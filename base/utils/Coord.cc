@@ -1,13 +1,10 @@
 #include "Coord.h"
 
 // Workaround for C2864
+// If set to another value than 0.0 one has to check the
+// compliance with the overloaded operators
 const double Coord::UNDEFINED = 0.0;
 
-/**
- * Returns the squared distance on a torus to Coord a (omits square root).
- *
- * Does not check for dimension compatibility!
- */
 double Coord::sqrTorusDist(const Coord& b, const Coord& playgroundSize) const {
 
     double xDist = fabs(x - b.x);
