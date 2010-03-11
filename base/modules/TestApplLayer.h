@@ -42,8 +42,10 @@ class TestApplLayer : public BaseApplLayer
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
+    /** @brief Clean up after end of simulation.*/
     virtual void finish();
 
+    /** @brief Message kinds used by this layer.*/
     enum TestApplMessageKinds{
 		SEND_BROADCAST_TIMER = LAST_BASE_APPL_MESSAGE_KIND,
 		BROADCAST_MESSAGE,
@@ -52,6 +54,7 @@ class TestApplLayer : public BaseApplLayer
     };
 
 protected:
+    /** @brief Timer message for scheduling next message.*/
     cMessage *delayTimer;
 
 protected:

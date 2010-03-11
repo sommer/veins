@@ -32,10 +32,7 @@
 
 #include <cassert>
 
-/**
- * Upon initialization ChannelAccess registers the nic parent module
- * to have all its connections handeled by ConnectionManager
- **/
+
 void ChannelAccess::initialize( int stage )
 {
 	BatteryAccess::initialize(stage);
@@ -66,14 +63,7 @@ void ChannelAccess::initialize( int stage )
 }
 
 
-/**
- * This function has to be called whenever a packet is supposed to be
- * sent to the channel. Don't try to figure out what gates you have
- * and which ones are connected, this function does this for you!
- *
- * depending on which ConnectionManager module is used, the messages are
- * send via sendDirect() or to the respective gates.
- **/
+
 void ChannelAccess::sendToChannel(cPacket *msg)
 {
     const NicEntry::GateList& gateList = cc->getGateList( getParentModule()->getId());
@@ -133,10 +123,7 @@ void ChannelAccess::sendToChannel(cPacket *msg)
     }
 }
 
-/**
- * ChannelAccess is subscribed to position changes and informs the
- * ConnectionManager
- */
+
 void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
 	BatteryAccess::receiveBBItem(category, details, scopeModuleId);

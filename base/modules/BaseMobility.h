@@ -65,7 +65,7 @@ class BaseMobility : public BatteryAccess
      * of the playground.
      *
      * @sa handleIfOutside()
-     **/
+     */
     enum BorderPolicy {
         REFLECT,       ///< reflect off the wall
         WRAP,          ///< reappear at the opposite edge (torus)
@@ -77,7 +77,7 @@ class BaseMobility : public BatteryAccess
      * @brief The kind field of messages
      *
      * that are used internally by this class have one of these values
-     **/
+     */
     enum BaseMobilityMsgKinds {
         MOVE_HOST = 21311,
         MOVE_TO_BORDER,
@@ -88,7 +88,7 @@ class BaseMobility : public BatteryAccess
 
     /**
      * @brief Specifies which border actually has been reached
-     **/
+     */
     enum BorderHandling {
     	NOWHERE,   ///< not outside the playground
         X_SMALLER, ///< x smaller than 0
@@ -124,22 +124,54 @@ class BaseMobility : public BatteryAccess
     bool coreDebug;
 
   public:
-    //Module_Class_Members( BaseMobility , BaseModule , 0 );
 
-    /** @brief This modules should only receive self-messages*/
+    /** @brief This modules should only receive self-messages
+     *
+     * Dispatches border messages to handleBorderMsg() and all other
+     * self-messages to handleSelfMsg()
+     */
     void handleMessage(cMessage *msg);
 
-    /** @brief Initializes mobility model parameters.*/
+    /** @brief Initializes mobility model parameters.
+     *
+     * Assigns a pointer to ConnectionManager and gets a pointer to its host.
+     *
+     * Creates a random position for a host if the position is not given
+     * as a parameter in "omnetpp.ini".
+     *
+     * Additionally the registration with ConnectionManager is done and it is
+     * assured that the position display string tag (p) exists and contains
+     * the exact (x) tag.
+     *
+     * If the speed of the host is bigger than 0 a first MOVE_HOST self
+     * message is scheduled in stage 1
+     */
     virtual void initialize(int);
 
     /** @brief Delete dynamically allocated objects*/
     virtual void finish(){};
 
   protected:
-    /** @brief Called upon arrival of a self messages*/
+    /** @brief Called upon arrival of a self messages
+     *
+     * The only self message possible is to indicate a new movement. If
+     * the host is stationary this function is never called.
+     *
+     * every time a self message arrives makeMove is called to handle the
+     * movement. Afterward updatePosition updates the position with the
+     * blackboard and the display.
+     */
     virtual void handleSelfMsg( cMessage* );
 
-    /** @brief Called upon arrival of a border messages*/
+    /** @brief Called upon arrival of a border messages
+     *
+     * The host actually reached the border, so the startPos and startTime
+     * has to be updated.
+     *
+     * Additionally fixIfHostGetsOutside has to be called again to catch
+     * cases where the host moved in both (x and y) direction outside the
+     * playground.
+     */
     virtual void handleBorderMsg( cMessage* );
 
     /**
@@ -150,12 +182,20 @@ class BaseMobility : public BatteryAccess
      * host.
      *
      * You should call fixIfHostGetsOutside here for border handling
-     **/
+     */
     virtual void makeMove(){
     	error("BaseMobility does not move the host");
     };
 
-    /** @brief Update the position information for this node*/
+    /** @brief Update the position information for this node
+     *
+     * This function tells the Blackboard that the position has changed,
+     * and it also moves the host's icon to the new position on the
+     * screen.
+     *
+     * This function has to be called every time the position of the host
+     * changes!
+     */
     void updatePosition();
 
     /** @brief Returns the width of the playground */
@@ -167,7 +207,7 @@ class BaseMobility : public BatteryAccess
     /** @brief Returns the height of the playground */
     double playgroundSizeZ() const  {return world->getPgs()->getZ();}
 
-	/* @brief Random position somewhere in the playground. DEPRECATED: Use BaseWorldUtility::getRandomPosition() instead */
+	/** @brief Random position somewhere in the playground. DEPRECATED: Use BaseWorldUtility::getRandomPosition() instead */
 	Coord getRandomPosition() { return world->getRandomPosition();}
 
     /**
@@ -176,10 +216,36 @@ class BaseMobility : public BatteryAccess
      * @brief Utility functions to handle hosts that move outside the
      * playground
      *
-     **/
+     */
     /*@{*/
 
-    /** @brief Main border handling function */
+    /** @brief Main border handling function
+     *
+	 * This function takes the BorderPolicy and all variables to be
+	 * modified in case a border is reached and invokes the appropriate
+	 * action. Pass dummy variables if you do not need them.
+	 *
+	 * The supported border policies are REFLECT, WRAP, PLACERANDOMLY, and
+	 * RAISEERROR.
+	 *
+	 * The policy and stepTarget are mandatory parameters to
+	 * pass. stepTarget is used to check whether the host actually moved
+	 * outside the playground.
+	 *
+	 * Additional parameters to pass (in case of non atomic movements) can
+	 * be targetPos (the target the host is moving to) and step (the size
+	 * of a step).
+	 *
+	 * Angle is the direction in which the host is moving.
+	 *
+	 * @param policy BorderPolicy to use
+	 * @param stepTarget target position of the next step of the host
+	 * @param targetPos target position of the host (for non atomic movement)
+	 * @param step step size of the host (for non atomic movement)
+	 * @param angle direction in which the host is moving
+	 *
+	 * @return true if host was outside, false otherwise.
+	 */
     bool handleIfOutside(BorderPolicy, Coord&, Coord&, Coord&, double&);
 
     /**
@@ -201,33 +267,72 @@ class BaseMobility : public BatteryAccess
     /**
      * @brief Checks whether the host is outside the playground and
      * returns where
-    **/
+     *
+     * Checks whether the host moved outside and return the border it
+     * crossed.
+     *
+     * Additionally the calculation of the step to reach the border is
+     * started.
+     */
     BorderHandling checkIfOutside( Coord, Coord& );
 
-    /** @brief calculate the step to reach the border **/
+    /** @brief calculate the step to reach the border
+     *
+     * Calculate the step to reach the border. Additionally for the WRAP
+     * policy the new start position after reaching the border is
+     * calculated.
+     */
     void goToBorder( BorderPolicy, BorderHandling, Coord&, Coord& );
 
     /**
      * @brief helperfunction for reflectIfOutside() to reflect
      * a Coordinate at a given border
-     **/
+     *
+     * Helper function for BaseMobility::reflectIfOutside().
+     *
+     * Reflects a given coordinate according to the given
+     * BorderHandling.
+     *
+     */
     void reflectCoordinate(BorderHandling border, Coord& c);
     /**
      * @brief Utility function to reflect the node if it goes outside
      * the playground.
-     **/
+     *
+     * Reflects the host from the playground border.
+     *
+     * This function can update the target position, the step (for non
+     * atomic movements) and the angle.
+     *
+     * @param stepTarget target position of the current step of the host
+     * @param targetPos target position of the host (for non atomic movements)
+     * @param step step size and direction of the host (for non atomic movements)
+     * @param angle direction to which the host is moving
+     */
     void reflectIfOutside(BorderHandling, Coord&, Coord&, Coord&, double&);
 
     /**
      * @brief Utility function to wrap the node to the opposite edge
      * (torus) if it goes outside the playground.
-     **/
+     *
+     * Wraps the host to the other playground size. Updates the target
+     * position.
+     *
+     * @param stepTarget target position of the current step of the host
+     * @param targetPos target position of the host (for non atomic movements)
+     */
     void wrapIfOutside(BorderHandling, Coord&, Coord&);
 
     /**
      * @brief Utility function to place the node randomly if it goes
      * outside the playground.
-     **/
+     *
+     * Start the host at a new random position. Here the target position
+     * is set to the new start position.
+     *
+     * You have to define a new target postion in fixIfHostGetsOutside to
+     * keep the host moving.
+     */
     void placeRandomlyIfOutside( Coord& );
 
     /*@}*/

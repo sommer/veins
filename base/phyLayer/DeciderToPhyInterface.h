@@ -36,6 +36,11 @@ class DeciderResult;
 class DeciderToPhyInterface
 {
 public:
+	/**
+	 * @brief Type for container of AirFrames.
+	 *
+	 * Used as out-value in "getChannelInfo" method.
+	 */
 	typedef std::vector<AirFrame*> AirFrameVector;
 
 	virtual ~DeciderToPhyInterface() {}

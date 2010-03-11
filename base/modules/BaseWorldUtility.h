@@ -72,7 +72,7 @@ public:
     	return useTorusFlag;
     };
 
-	/* @brief Random position somewhere in the playground */
+	/** @brief Random position somewhere in the playground */
 	Coord getRandomPosition();
 
     /** @brief Speed of light */

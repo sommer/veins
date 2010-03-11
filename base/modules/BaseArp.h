@@ -47,7 +47,7 @@
  **/
 class BaseArp : public BaseModule
 {
-    //Module_Class_Members(BaseArp,BaseModule,0);
+	/** @brief Is core debugging enabled?*/
 	bool coreDebug;
 
 public:

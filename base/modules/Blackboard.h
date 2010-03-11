@@ -61,16 +61,21 @@ class Blackboard : public cSimpleModule
 {
 protected:
 
+	/** @brief Internal class to store subscriber data.*/
     class Subscriber {
     public:
+    	/** @brief Pointer to the subscriber.*/
         ImNotifiable *client;
+        /** @brief The scope for the subscriber.*/
         int scopeModuleId;
         public:
+        /** @brief Inits this subscriber with the passed values.*/
         Subscriber(ImNotifiable *c=0, int b=-1) :
             client(c), scopeModuleId(b) {};
     };
 
-
+    /** @brief Typedefs for container shortcuts.*/
+    /*@{*/
     typedef std::vector<Subscriber> SubscriberVector;
     typedef std::vector<SubscriberVector> ClientVector;
 
@@ -81,6 +86,7 @@ protected:
     typedef ClientVector::iterator ClientVectorIter;
     typedef CategoryDescriptions::iterator DescriptionsIter;
     typedef ParentVector::iterator ParentVectorIter;
+    /*@}*/
 
     ClientVector clientVector;
     CategoryDescriptions categoryDescriptions;
@@ -187,8 +193,8 @@ protected:
      */
     int  getCategory(const BBItem* details);
     //@}
-//BB end
 
+    /** @brief We define two initialisation stages.*/
     virtual int numInitStages() const {
 		return 2;
 	}

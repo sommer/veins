@@ -12,6 +12,7 @@
  */
 class MacToPhyControlInfo: public cObject {
 protected:
+	/** @brief A pointer to the signal representing the transmission.*/
 	Signal* signal;
 
 public:

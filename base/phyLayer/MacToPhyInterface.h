@@ -17,16 +17,22 @@
 class MacToPhyInterface
 {
 public:
+	/**
+	 * @brief Message kinds used by every phy layer.
+	 *
+	 * Physical layers should begin their additional kinds
+	 * at the value of LAST_BASE_PHY_KIND.
+	 */
 	enum BasePhyMessageKinds {
-		/** Indicates the end of a send transmission. */
+		/** @brief Indicates the end of a send transmission. */
 		TX_OVER = 22000,
-		/** Indicates the end of a radio switch. */
+		/** @brief Indicates the end of a radio switch. */
 		RADIO_SWITCHING_OVER,
-		/** Channel sense control message between Mac and Phy.*/
+		/** @brief Channel sense control message between Mac and Phy.*/
 		CHANNEL_SENSE_REQUEST,
-		/** AirFrame kind */
+		/** @brief AirFrame kind */
 		AIR_FRAME,
-		/** Stores the id on which classes extending BasePhy should
+		/** @brief Stores the id on which classes extending BasePhy should
 		 * continue their own kinds.*/
 		LAST_BASE_PHY_KIND,
 	};

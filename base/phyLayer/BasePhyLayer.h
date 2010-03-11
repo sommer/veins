@@ -125,6 +125,7 @@ protected:
 	 */
 	cMessage* txOverTimer;
 
+	/** @brief The states of the receiving process for AirFrames.*/
 	enum AirFrameStates {
 		/** @brief Start of actual receiving process of the AirFrame. */
 		START_RECEIVE = 1,
@@ -137,7 +138,7 @@ protected:
 	/** @brief Stores the length of the phy header in bits. */
 	int headerLength;
 
-	/* @brief Pointer to the World Utility, to obtain some global information*/
+	/** @brief Pointer to the World Utility, to obtain some global information*/
 	BaseWorldUtility* world;
 
 public:
@@ -168,19 +169,20 @@ private:
 protected:
 
 	/**
-		 * @brief Reads and returns the parameter with the passed name.
-		 *
-		 * If the parameter couldn't be found the value of defaultValue
-		 * is returned.
-		 *
-		 * @param parName 		- the name of the ned-parameter
-		 * @param defaultValue 	- the value to be returned if the parameter
-		 * 				  		  couldn't be found
-		 */
-		template<class T> T readPar(const char* parName, const T defaultValue);
+	 * @brief Reads and returns the parameter with the passed name.
+	 *
+	 * If the parameter couldn't be found the value of defaultValue
+	 * is returned.
+	 *
+	 * @param parName 		- the name of the ned-parameter
+	 * @param defaultValue 	- the value to be returned if the parameter
+	 * 				  		  couldn't be found
+	 */
+	template<class T> T readPar(const char* parName, const T defaultValue);
 
 	/**
 	 * @brief OMNeT++ initialization function.
+	 *
 	 * Read simple parameters.
 	 * Read and parse xml file for decider and analogue models
 	 * configuration.
@@ -241,7 +243,10 @@ protected:
 	 */
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 
-	//TODO: Check which handlers should be made virtual
+	/**
+	 * @name Handle Messages
+	 **/
+	/*@{ */
 	/**
 	 * @brief Handles messages received from the channel (probably AirFrames).
 	 */
@@ -291,7 +296,12 @@ protected:
 	 */
 	void handleAirFrameEndReceive(AirFrame* msg);
 
-	//--Send messages------------------------------
+	/*@}*/
+
+	/**
+	 * @name Send Messages
+	 **/
+	/*@{ */
 
 	/**
 	 * @brief Sends the passed control message to the upper layer.
@@ -312,6 +322,8 @@ protected:
 	 * @brief Schedule self message to passed point in time.
 	 */
 	void sendSelfMessage(cMessage* msg, simtime_t time);
+
+	/*@}*/
 
 	/**
 	 * @brief This function encapsulates messages from the upper layer into an
@@ -340,9 +352,15 @@ public:
 	 */
 	virtual ~BasePhyLayer();
 
+	/** @brief Only calls the deciders finish method.*/
 	virtual void finish();
 
 	//---------MacToPhyInterface implementation-----------
+	/**
+	 * @name MacToPhyInterface implementation
+	 * @brief These methods implement the MacToPhyInterface.
+	 **/
+	/*@{ */
 
 	/**
 	 * @brief Returns the current state the radio is in.
@@ -382,7 +400,14 @@ public:
 	 */
 	virtual int getPhyHeaderLength();
 
+	/*@}*/
+
 	//---------DeciderToPhyInterface implementation-----------
+	/**
+	 * @name DeciderToPhyInterface implementation
+	 * @brief These methods implement the DeciderToPhyInterface.
+	 **/
+	/*@{ */
 
 	/**
 	 * @brief Fills the passed AirFrameVector with all AirFrames that intersect
@@ -461,6 +486,8 @@ public:
 	 * to OMNeT-method 'recordScalar'.
 	 */
 	void recordScalar(const char *name, double value, const char *unit=NULL);
+
+	/*@}*/
 
 };
 

@@ -40,6 +40,7 @@ class ChannelAccess;
 class NicEntry : public cObject
 {
   public:
+	/** @brief Type for map from NicEntry pointer to a gate.*/
     typedef std::map<const NicEntry*, cGate*> GateList;
 
     /** @brief module id of the nic for which information is stored*/
@@ -91,7 +92,7 @@ class NicEntry : public cObject
 
     /** @brief return the actual gateList*/
     const GateList& getGateList(){
-	return outConns;
+    	return outConns;
     }
 
     /** @brief Checks if this nic is connected to the "other" nic*/
@@ -109,7 +110,7 @@ class NicEntry : public cObject
      */
     const cGate* getOutGateTo(const NicEntry* to)
     {
-	return outConns[to];
+    	return outConns[to];
     };
 
 };

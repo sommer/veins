@@ -26,20 +26,6 @@
 
 Define_Module(BaseMobility);
 
-/**
- * Assigns a pointer to ConnectionManager and gets a pointer to its host.
- *
- * Creates a random position for a host if the position is not given
- * as a parameter in "omnetpp.ini".
- *
- * Additionally the registration with ConnectionManager is done and it is
- * assured that the position display string tag (p) exists and contains
- * the exact (x) tag.
- *
- * If the speed of the host is bigger than 0 a first MOVE_HOST self
- * message is scheduled in stage 1
- */
-
 void BaseMobility::initialize(int stage)
 {
     BaseModule::initialize(stage);
@@ -116,10 +102,7 @@ void BaseMobility::initialize(int stage)
 }
 
 
-/**
- * Dispatches border messages to handleBorderMsg() and all other
- * self-messages to handleSelfMsg()
- */
+
 void BaseMobility::handleMessage(cMessage * msg)
 {
     if (!msg->isSelfMessage())
@@ -133,14 +116,7 @@ void BaseMobility::handleMessage(cMessage * msg)
 }
 
 
-/**
- * The only self message possible is to indicate a new movement. If
- * the host is stationary this function is never called.
- *
- * every time a self message arrives makeMove is called to handle the
- * movement. Afterward updatePosition updates the position with the
- * blackboard and the display.
- */
+
 void BaseMobility::handleSelfMsg(cMessage * msg)
 {
     makeMove();
@@ -155,14 +131,7 @@ void BaseMobility::handleSelfMsg(cMessage * msg)
 }
 
 
-/**
- * The host actually reached the border, so the startPos and startTime
- * has to be updated.
- *
- * Additionally fixIfHostGetsOutside has to be called again to catch
- * cases where the host moved in both (x and y) direction outside the
- * playground.
- **/
+
 void BaseMobility::handleBorderMsg(cMessage * msg)
 {
     coreEV << "start MOVE_TO_BORDER:" << move.info() << endl;
@@ -202,14 +171,7 @@ void BaseMobility::handleBorderMsg(cMessage * msg)
 }
 
 
-/**
- * This function tells the Blackboard that the position has changed,
- * and it also moves the host's icon to the new position on the
- * screen.
- *
- * This function has to be called every time the position of the host
- * changes!
- */
+
 void BaseMobility::updatePosition() {
     EV << "updatePosition: " << move.info() << endl;
 
@@ -252,13 +214,7 @@ void BaseMobility::updatePosition() {
     }
 }
 
-/**
- * Helper function for BaseMobility::reflectIfOutside().
- *
- * Reflects a given coordinate according to the given
- * BorderHandling.
- *
- */
+
 void BaseMobility::reflectCoordinate(BorderHandling border, Coord& c)
 {
     switch( border ) {
@@ -289,17 +245,7 @@ void BaseMobility::reflectCoordinate(BorderHandling border, Coord& c)
     }
 }
 
-/**
- * Reflects the host from the playground border.
- *
- * This function can update the target position, the step (for non
- * atomic movements) and the angle.
- *
- * @param stepTarget target position of the current step of the host
- * @param targetPos target position of the host (for non atomic movements)
- * @param step step size and direction of the host (for non atomic movements)
- * @param angle direction to which the host is moving
- **/
+
 void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget,
 									Coord& targetPos, Coord& step,
 									double& angle) {
@@ -333,13 +279,7 @@ void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget,
 }
 
 
-/**
- * Wraps the host to the other playground size. Updates the target
- * position.
- *
- * @param stepTarget target position of the current step of the host
- * @param targetPos target position of the host (for non atomic movements)
- **/
+
 void BaseMobility::wrapIfOutside(BorderHandling wo,
 								 Coord& stepTarget, Coord& targetPos) {
     switch( wo ) {
@@ -367,26 +307,14 @@ void BaseMobility::wrapIfOutside(BorderHandling wo,
     }
 }
 
-/**
- * Start the host at a new random position. Here the target position
- * is set to the new start position.
- *
- * You have to define a new target postion in fixIfHostGetsOutside to
- * keep the host moving.
- **/
+
 void BaseMobility::placeRandomlyIfOutside( Coord& targetPos )
 {
     targetPos = world->getRandomPosition();
 }
 
 
-/**
- * Checks whether the host moved outside and return the border it
- * crossed.
- *
- * Additionally the calculation of the step to reach the border is
- * started.
- **/
+
 BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos,
 														   Coord& borderStep )
 {
@@ -492,11 +420,7 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos,
 }
 
 
-/**
- * Calculate the step to reach the border. Additionally for the WRAP
- * policy the new start position after reaching the border is
- * calculated.
- **/
+
 void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
 							  Coord& borderStep, Coord& borderStart)
 {
@@ -626,32 +550,7 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
 }
 
 
-/**
- * This function takes the BorderPolicy and all variables to be
- * modified in case a border is reached and invokes the appropriate
- * action. Pass dummy variables if you do not need them.
- *
- * The supported border policies are REFLECT, WRAP, PLACERANDOMLY, and
- * RAISEERROR.
- *
- * The policy and stepTarget are mandatory parameters to
- * pass. stepTarget is used to check whether the host actually moved
- * outside the playground.
- *
- * Additional parameters to pass (in case of non atomic movements) can
- * be targetPos (the target the host is moving to) and step (the size
- * of a step).
- *
- * Angle is the direction in which the host is moving.
- *
- * @param policy BorderPolicy to use
- * @param stepTarget target position of the next step of the host
- * @param targetPos target position of the host (for non atomic movement)
- * @param step step size of the host (for non atomic movement)
- * @param angle direction in which the host is moving
- *
- * @return true if host was outside, false otherwise.
- **/
+
 bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget,
 								   Coord& targetPos, Coord& step,
 								   double& angle)

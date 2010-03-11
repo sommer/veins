@@ -39,16 +39,29 @@
  */
 class BaseDecider: public Decider {
 public:
+	/**
+	 * @brief The kinds of ControlMessages this Decider sends.
+	 *
+	 * Sub-classing decider should begin their own kind enumeration
+	 * at the value of "LAST_BASE_DECIDER_CONTROL_KIND".
+	 */
 	enum BaseDeciderControlKinds {
-		PACKET_DROPPED = 22100,       //the phy has recognized a bit error in the packet
+		/** @brief The phy has recognized a bit error in the packet.*/
+		PACKET_DROPPED = 22100,
+		/** @brief Sub-classing decider should begin their own kinds at this value.*/
 		LAST_BASE_DECIDER_CONTROL_KIND
 	};
 
 protected:
-	enum SignalState{
-		NEW, 			/** @brief Signal is received the first time. */
-		EXPECT_HEADER,	/** @brief Waiting for the header of the signal. */
-		EXPECT_END,		/** @brief Waiting for the end of the signal. */
+
+	/** @brief The current state of processing for a signal*/
+	enum SignalState {
+		/** @brief Signal is received the first time. */
+		NEW,
+		/** @brief Waiting for the header of the signal. */
+		EXPECT_HEADER,
+		/** @brief Waiting for the end of the signal. */
+		EXPECT_END,
 	};
 
 	/** @brief sensitivity value for receiving an AirFrame */
@@ -77,6 +90,12 @@ protected:
 	bool debug;
 
 public:
+	/**
+	 * @brief Initializes the decider with the passed values.
+	 *
+	 * Needs a pointer to its physical layer, the sensitivity, the index of the host
+	 * and the debug flag.
+	 */
 	BaseDecider(DeciderToPhyInterface* phy, double sensitivity, int myIndex, bool debug):
 		Decider(phy),
 		sensitivity(sensitivity),
