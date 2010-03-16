@@ -36,6 +36,7 @@ void AlohaMacLayer::initialize(int stage) {
 }
 
 void AlohaMacLayer::finish() {
+	UWBIRMac::finish();
     if(stats) {
         recordScalar("Erroneous bits", errRxBits);
         recordScalar("Total received bits", totalRxBits);
