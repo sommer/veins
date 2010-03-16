@@ -30,6 +30,7 @@ module Nic802154A like INic
         phy: PhyLayerUWBIR {
             parameters:
                 @display("p=60,120;b=80,30,rect,white,,");
+                initialRadioState = 4; // initializes radio state to SYNC
             //display: "p=60,150;i=prot3";
 
         }
@@ -38,7 +39,6 @@ module Nic802154A like INic
                 maxRetries = 3;
                 @display("p=60,45;b=80,30,rect,white,,");
         	//display: "p=60,70;i=prot3";
-
         }
     connections:
         phy.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerGateIn;
