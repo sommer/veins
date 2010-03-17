@@ -28,18 +28,7 @@
 #endif
 
 
-/**
- * Establish unidirectional connection with other nic
- *
- * @param other reference to remote nic (other NicEntry)
- *
- * This function acquires an in gate at the remote nic and an out
- * gate at this nic, connects the two and updates the freeInGate,
- * freeOutGate and outConns data sets.
- *
- * It handles compound modules correctly, provided that the physical
- * module is called "phy" or "snrEval" respectively in the .ned files.
- **/
+
 void NicEntryDirect::connectTo(NicEntry* other)
 {
     cModule* otherPtr = other->nicPtr;
@@ -53,11 +42,7 @@ void NicEntryDirect::connectTo(NicEntry* other)
     outConns[other] = radioGate->getPathStartGate();
 }
 
-/**
- * Release unidirectional connection with other nic
- *
- * @param other reference to remote nic (other NicEntry)
- **/
+
 void NicEntryDirect::disconnectFrom(NicEntry* other)
 {
     nicEV <<"disconnecting nic #"<<nicId<< " and #"<<other->nicId<<endl;

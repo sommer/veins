@@ -49,8 +49,8 @@ void BaseModule::initialize(int stage) {
         hostId = findHost()->getId();
 
         /* host failure notification */
-	HostState hs;
-	hostStateCat = utility->subscribe(this, &hs, hostId);
+		HostState hs;
+		hostStateCat = utility->subscribe(this, &hs, hostId);
     }
 }
 

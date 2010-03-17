@@ -51,28 +51,60 @@ class NicEntryDebug: public NicEntry
     std::vector<cGate* > freeOutGates;
 
   protected:
-    /** @brief Returns a free in gate of the nic */
+    /**
+     * @brief Returns a free in gate of the nic
+	 *
+	 * This checks the list of free in gates, if one is available it is
+	 * returned. Otherwise, a new in gate is added to the nic. This
+	 * function handles the interaction with phy and nic
+	 * correctly, provided that the phy name is "phy"
+	 * in the .ned files.
+	 */
     cGate* requestInGate(void);
 
-    /** @brief Returns a free out gate of the nic */
+    /**
+     * @brief Returns a free out gate of the nic
+     *
+	 * returns a free out gate. If none is available it is created. See
+	 * NicEntry::requestInGate for a detailed description
+     */
     cGate* requestOutGate(void);
 
   public:
-    /** @brief Constructor, initializes all members
+    /**
+     * @brief Constructor, initializes all members
      */
     NicEntryDebug(bool debug) : NicEntry(debug), inCnt(0), outCnt(0) {};
 
     /**
      * @brief Destructor -- needs to be there...
-     *
      */
     virtual ~NicEntryDebug() {}
 
-    /** @brief Connect two nics */
-    virtual void connectTo(NicEntry*);
+    /**
+     * @brief Connect two nics
+     *
+     * Establish unidirectional connection with other nic
+     *
+     * @param other reference to remote nic (other NicEntry)
+     *
+     * This function acquires an in gate at the remote nic and an out
+     * gate at this nic, connects the two and updates the freeInGate,
+     * freeOutGate and outConns data sets.
+     *
+     * It handles compound modules correctly, provided that the physical
+     * module is called "phy" in the .ned files.
+     **/
+    virtual void connectTo(NicEntry* other);
 
-    /** @brief Disconnect two nics */
-    virtual void disconnectFrom(NicEntry*);
+    /**
+     * @brief Disconnect two nics
+     *
+	 * Release unidirectional connection with other nic
+	 *
+	 * @param other reference to remote nic (other NicEntry)
+	 **/
+    virtual void disconnectFrom(NicEntry* other);
 };
 
 #endif

@@ -42,6 +42,11 @@ public:
 	 */
 	double getRSSI();
 
+	/**
+	 * @brief Output for this ChannelState.
+	 *
+	 * Of the form "[<idle/busy> with rssi of x]".
+	 */
 	std::string info() const {
 		std::stringstream os;
 		if (idle) {

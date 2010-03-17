@@ -108,7 +108,7 @@
  */
 
 /**
- * @defgroup utils utils  -  utiltity classes
+ * @defgroup utils utils  -  utility classes
  */
 
 
@@ -182,7 +182,7 @@
  */
 
 /**
- * @defgroup baseUtils baseUtils - utitities for base MiXiM
+ * @defgroup baseUtils baseUtils - utilities for base MiXiM
  * @ingroup base
  */
 

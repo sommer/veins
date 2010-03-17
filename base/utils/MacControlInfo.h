@@ -23,6 +23,9 @@
 
 #include <omnetpp.h>
 
+// TODO separate into two classes (one for each direction),
+// class MacToUpperControlInfo has corresponding TODO-comment
+// TODO update documentation
 /**
  * @brief Control info to pass next hop L2 addr from netw to MAC layer
  *
@@ -41,9 +44,10 @@
 class MacControlInfo : public cObject
 {
   protected:
-    /** @brief netw address of the sending or receiving node*/
+    /** @brief MAC address of the sending or receiving node*/
     int nextHopMac;
 
+    /** @brief bit-error rate */
     double ber;
     double rssi;  // CSEM Jérôme Rousselot -- allows the MAC layer to forward RSSI information to the routing layer
 
@@ -54,20 +58,22 @@ class MacControlInfo : public cObject
     /** @brief Destructor*/
     virtual ~MacControlInfo(){};
 
-    /** @brief Getter method*/
+    /** @brief Getter method */
     virtual const int getNextHopMac() {
 	return nextHopMac;
     };
 
-    /** @brief Setter method*/
+    /** @brief Setter method */
     virtual void setNextHopMac(const int addr){
 	nextHopMac = addr;
     };
 
+    /** @brief Getter for bit-error rate */
     virtual const double getBER() {
       return ber;
     }
 
+    /** @brief Setter for bit-error rate */
     void setBER(double _ber) {
     	ber = _ber;
     }

@@ -42,8 +42,9 @@ class ChannelInfo {
 
 protected:
 
-
+	/** @brief Type for a pair of an AirFrame and a simulation time.*/
 	typedef std::pair<simtime_t, AirFrame*> AirFrameTimePair;
+	/** @brief Type for a list of AirFrames and a simulation time.*/
 	typedef std::list<AirFrameTimePair> AirFrameTimeList;
 	/**
 	 * The AirFrames are stored in a Matrix with start- and end time
@@ -54,15 +55,23 @@ protected:
 	/**
 	 * @brief Iterator for every intersection of
 	 * a specific interval in a AirFrameMatrix.
+	 *
+	 * In template form to work as const- and non-const iterator.
 	 */
 	template<class C, class ItMatrix, class ItList>
 	class BaseIntersectionIterator {
 	public:
+		/** @brief Pointer to the matrix holding the intervals.*/
 		C* intervals;
+		/** @brief Point in time to start iterating over intersections.*/
 		simtime_t from;
+		/** @brief Point in time to end iterating over intersections.*/
 		simtime_t to;
+		/** @brief Iterator for current interval end.*/
 		ItMatrix endIt;
+		/** @brief Iterator for current interval start.*/
 		ItList startIt;
+		/** @brief True if the we are already pointing to the next entry.*/
 		bool alreadyNext;
 
 	public:
@@ -115,18 +124,33 @@ protected:
 		}
 	};
 
+	/** @brief Type for a const-iterator over an AirFrame interval matrix.*/
 	typedef BaseIntersectionIterator<const AirFrameMatrix,
 									 AirFrameMatrix::const_iterator,
 									 AirFrameTimeList::const_iterator> ConstIntersectionIterator;
 
+	/**
+	 * @brief Type for a iterator over an AirFrame interval matrix.
+	 *
+	 * Extends the const-version by an erase method.
+	 */
 	class IntersectionIterator: public BaseIntersectionIterator<AirFrameMatrix,
 																AirFrameMatrix::iterator,
-																AirFrameTimeList::iterator> {
+																AirFrameTimeList::iterator>
+	{
+	private:
+		/** @brief Type for shortcut to base class type.*/
+		typedef BaseIntersectionIterator<AirFrameMatrix,
+										 AirFrameMatrix::iterator,
+										 AirFrameTimeList::iterator> Base;
 	public:
+		/**
+		 * @brief Creates an iterator for the specified interval at the
+		 * specified AirFrameMatrix.
+		 */
 		IntersectionIterator(AirFrameMatrix* airFrames, simtime_t from, simtime_t to) :
-			BaseIntersectionIterator<AirFrameMatrix,
-									 AirFrameMatrix::iterator,
-									 AirFrameTimeList::iterator>(airFrames, from, to) {}
+			Base(airFrames, from, to)
+		{}
 
 		/**
 		 * @brief Erases the AirFrame the iterator currently points to
@@ -174,20 +198,22 @@ protected:
 	 */
 	AirFrameMatrix inactiveAirFrames;
 
+	/** @brief Type for a map of AirFrame pointers to their start time.*/
 	typedef std::map<AirFrame*, simtime_t> AirFrameStartMap;
 
-	/**
-	 * @brief Stores the start time of every AirFrame.
-	 */
+	/** @brief Stores the start time of every AirFrame.*/
 	AirFrameStartMap airFrameStarts;
 
-	/**
-	 * @brief Stores the earliest time-point we need to keep information for.
-	 */
+	/** @brief Stores the earliest time-point we need to keep information for.*/
 	simtime_t earliestInfoPoint;
 
 
 public:
+	/**
+	 * @brief Type for a container of AirFrames.
+	 *
+	 * Used as out type for "getAirFrames" method.
+	 */
 	typedef std::vector<AirFrame*> AirFrameVector;
 
 protected:
@@ -224,7 +250,7 @@ protected:
 	 */
 	void addToInactives(AirFrame* a, simtime_t startTime, simtime_t endTime);
 
-	/*
+	/**
 	 * @brief Deletes an AirFrame from an AirFrameMatrix.
 	 */
 	void deleteAirFrame(AirFrameMatrix& airFrames,

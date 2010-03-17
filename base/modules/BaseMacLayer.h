@@ -42,11 +42,13 @@
 class BaseMacLayer : public BaseLayer
 {
 public:
+	/** @brief Message kinds used by this layer.*/
 	enum BaseMacMessageKinds {
 		/** Stores the id on which classes extending BaseMac should
 		 * continue their own message kinds.*/
 		LAST_BASE_MAC_MESSAGE_KIND = 23000,
 	};
+	/** @brief Control message kinds used by this layer.*/
 	enum BaseMacControlKinds {
 		/** Indicates the end of a transmission*/
 		TX_OVER = 23500,

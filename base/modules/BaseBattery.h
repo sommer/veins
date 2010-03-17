@@ -35,6 +35,7 @@ protected:
 	double value;
 
 public:
+	/** @brief Initializes with passed type and value.*/
 	DrawAmount(int type = CURRENT, double value = 0):
 		type(type),
 		value(value)

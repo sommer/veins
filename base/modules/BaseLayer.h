@@ -52,9 +52,13 @@ class BaseLayer : public BatteryAccess
 
     /*@}*/
 
+    /** @brief Do we track statistics?*/
     bool doStats;
+    /** @brief Blackboard category for PassedMessage BBItems.*/
     int  catPassedMsg;
+    /** @brief The last message passed through this layer.*/
     PassedMessage *passedMsg;
+    /** @brief This layers hosts id.*/
     int  hostId;
 
 public:
@@ -66,6 +70,7 @@ public:
     /** @brief Called every time a message arrives*/
     virtual void handleMessage( cMessage* );
 
+    /** @brief Called when the simulation has finished.*/
 	virtual void finish();
 	virtual ~BaseLayer();
 

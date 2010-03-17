@@ -39,13 +39,15 @@
 class BaseNetwLayer : public BaseLayer
 {
 public:
+	/** @brief Message kinds used by this layer.*/
 	enum BaseNetwMessageKinds {
-		/** Stores the id on which classes extending BaseNetw should
+		/** @brief Stores the id on which classes extending BaseNetw should
 		 * continue their own message kinds.*/
 		LAST_BASE_NETW_MESSAGE_KIND = 24000,
 	};
+	/** @brief Control message kinds used by this layer.*/
 	enum BaseNetwControlKinds {
-		/** Stores the id on which classes extending BaseNetw should
+		/** @brief Stores the id on which classes extending BaseNetw should
 		 * continue their own control kinds.*/
 		LAST_BASE_NETW_CONTROL_KIND = 24500,
 	};

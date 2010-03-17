@@ -11,7 +11,7 @@
  * To understand this class, consider the case of routing
  * protocols. The minimal entry in a routing table consists of the
  * tuple <target, neighbor, cost>. However, some more specific routing
- * protocol may wqant to store more information in a table
+ * protocol may want to store more information in a table
  * entry. Hence, it subclasses the original entry and adds its own
  * fields. How do other parties that are interested in topology
  * changes still receive information about changes in the routing
@@ -22,7 +22,7 @@
  * a newly introduced constant.
  *
  * The info function of cObject should be implemented -- you can
- * use it to disinguish between items of the same category (like two
+ * use it to distinguish between items of the same category (like two
  * MAC addresses if the host has two network interfaces).
  *
  * @see BBITEM_METAINFO
@@ -54,7 +54,7 @@ class  ImNotifiable
 {
   public:
     /**
-     * Called by the Blackboard whenever a change of a category
+     * @brief Called by the Blackboard whenever a change of a category
      * occurs to which this client has subscribed.
      *
      * If your class is derived from a class that also is notifiable,
@@ -91,7 +91,7 @@ class  ImNotifiable
 
 
 /**
- * Helper macro to define a minimum of necessary fields for siblings
+ * @brief Helper macro to define a minimum of necessary fields for siblings
  * of BBItem. @see RadioState for an implementation example.
  *
  * @author Andreas Koepke

@@ -75,7 +75,7 @@ protected:
     /** @brief Is this module already registered with ConnectionManager? */
     bool isRegistered;
 
-    /* Pointer to the World Utility, to obtain some global information*/
+    /** @brief Pointer to the World Utility, to obtain some global information*/
 	BaseWorldUtility* world;
 
 protected:
@@ -84,16 +84,31 @@ protected:
 	 */
 	simtime_t calculatePropagationDelay(const NicEntry* nic);
 
-	/** @brief Sends a message to all nics connected to this one.*/
+	/** @brief Sends a message to all nics connected to this one.
+	 *
+	 * This function has to be called whenever a packet is supposed to be
+	 * sent to the channel. Don't try to figure out what gates you have
+	 * and which ones are connected, this function does this for you!
+	 *
+	 * depending on which ConnectionManager module is used, the messages are
+	 * send via sendDirect() or to the respective gates.
+	 **/
 	void sendToChannel(cPacket *msg);
 
 public:
-    /** @brief Register with ConnectionManager and subscribe to hostPos*/
+    /** @brief Register with ConnectionManager and subscribe to hostPos
+     *
+	 * Upon initialization ChannelAccess registers the nic parent module
+	 * to have all its connections handeled by ConnectionManager
+	 **/
     virtual void initialize(int stage);
 
     /**
      * @brief Called by Blackboard to inform of changes
-     */
+     *
+	 * ChannelAccess is subscribed to position changes and informs the
+	 * ConnectionManager
+	 */
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 };
 

@@ -28,18 +28,6 @@
 #define nicEV (ev.isDisabled()||!coreDebug) ? ev : ev << "NicEntry: "
 #endif
 
-/**
- * Establish unidirectional connection with other nic
- *
- * @param other reference to remote nic (other NicEntry)
- *
- * This function acquires an in gate at the remote nic and an out
- * gate at this nic, connects the two and updates the freeInGate,
- * freeOutGate and outConns data sets.
- *
- * It handles compound modules correctly, provided that the physical
- * module is called "phy" or "snrEval" respectively in the .ned files.
- **/
 void NicEntryDebug::connectTo(NicEntry* other) {
 	nicEV<<"connecting nic #"<<nicId<< " and #"<<other->nicId<<endl;
 
@@ -50,11 +38,7 @@ void NicEntryDebug::connectTo(NicEntry* other) {
 	outConns[other] = localoutgate->getPathStartGate();
 }
 
-/**
- * Release unidirectional connection with other nic
- *
- * @param other reference to remote nic (other NicEntry)
- **/
+
 void NicEntryDebug::disconnectFrom(NicEntry* other) {
 	nicEV<<"disconnecting nic #"<<nicId<< " and #"<<other->nicId<<endl;
 
@@ -81,13 +65,7 @@ void NicEntryDebug::disconnectFrom(NicEntry* other) {
 	outConns.erase(p);
 }
 
-/**
- *  This checks the list of free in gates, if one is available it is
- *  returned. Otherwise, a new in gate is added to the nic. This
- *  function handles the interaction with snrEval / phy and nic
- *  corectly, provided that the phy name is "snrEval or "phy"
- *  respectively in the .ned files.
- **/
+
 cGate* NicEntryDebug::requestInGate(void) {
 	// gate of the host
 	cGate *hostGate;
@@ -139,10 +117,6 @@ cGate* NicEntryDebug::requestInGate(void) {
 	return hostGate;
 }
 
-/**
- * returns a free out gate. If none is available it is created. See
- * NicEntry::requestInGate for a detailed description
- **/
 cGate* NicEntryDebug::requestOutGate(void) {
 	// gate of the host
 	cGate *hostGate;

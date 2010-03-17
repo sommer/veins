@@ -50,32 +50,45 @@ protected:
     simtime_t startTime;
     /** @brief direction the host is moving to, must be normalized **/
     Coord direction;
-    /** speed of the host in meters per second **/
+    /** @brief speed of the host in meters per second **/
     double speed;
 
 public:
-	double getSpeed() const
+
+    /**
+     * @brief Returns the current speed.
+     */
+    double getSpeed() const
 	{
 		return speed;
 	}
 
+    /**
+	 * @brief Sets the current speed in meters per second.
+	 */
 	void setSpeed(double speed)
 	{
 		this->speed = speed;
 	}
 
+	/**
+	 * @brief Returns the start position.
+	 */
 	const Coord& getStartPos() const
 	{
 		return startPos;
 	}
 
+	/**
+	 * @brief Returns start time, i.e. time point of the start at start position.
+	 */
 	simtime_t getStartTime() const
 	{
 		return startTime;
 	}
 
 	/**
-	 * @brief Sets start-position and start-time
+	 * @brief Sets start position (components in meters) and start time.
 	 */
 	void setStart(const Coord& startPos, simtime_t startTime)
 	{
@@ -84,21 +97,25 @@ public:
 	}
 
 	/**
-	 * @brief Sets start-position to passed value and start-time to current simulation-time
+	 * @brief Sets start position to passed value (components in meters),
+	 * start time will be set to current simulation-time.
 	 */
 	void setStart(const Coord& startPos)
 	{
 		setStart(startPos, simTime());
 	}
 
+	/**
+	 * @brief Returns the direction vector.
+	 */
 	const Coord& getDirection() const
 	{
 		return direction;
 	}
 
 	/**
-	 * @brief Sets the direction from a passed vector,
-	 * which must be already normalized or 0.
+	 * @brief Sets the direction to the passed vector,
+	 * which must be already normalized or the 0-vector.
 	 */
 	void setDirectionByVector(const Coord& direction)
 	{
@@ -108,15 +125,21 @@ public:
 	}
 
 	/**
-	 * @brief Sets the normalized direction from a passed target.
+	 * @brief Sets the direction to the normalized vector pointing
+	 * from the current start position to the passed target point.
+	 *
+	 * NOTE: The target point must not be the current start position
+	 * or too close to it.
 	 */
 	void setDirectionByTarget(const Coord& target)
 	{
     	direction = target - startPos;
-	    direction /= direction.length();
+
+    	assert( !FWMath::close(direction.length(), 0.0) );
+    	direction /= direction.length();
     }
 
-    /*
+	/**
      * @brief Returns the position of the Move (Host) at the specified point in time.
      * It is intended to be passed simTime() as actualTime and returns the actual position.
      *
@@ -137,6 +160,9 @@ public:
 
 public:
 
+    /**
+     * @brief Returns information about the current state.
+     */
     std::string info() const {
         std::ostringstream ost;
         ost << " HostMove "

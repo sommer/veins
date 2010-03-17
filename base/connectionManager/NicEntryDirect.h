@@ -36,20 +36,36 @@
 class NicEntryDirect: public NicEntry
 {
   public:
-    /** @brief Constrcutor, initializes all members
+    /** @brief Constructor, initializes all members
      */
     NicEntryDirect(bool debug) : NicEntry(debug) {};
 
     /**
      * @brief Destructor -- needs to be there...
-     *
      */
     virtual ~NicEntryDirect() {}
 
-    /** @brief Connect two nics */
+    /** @brief Connect two nics
+     *
+	 * Establish unidirectional connection with other nic
+	 *
+	 * @param other reference to remote nic (other NicEntry)
+	 *
+	 * This function acquires an in gate at the remote nic and an out
+	 * gate at this nic, connects the two and updates the freeInGate,
+	 * freeOutGate and outConns data sets.
+	 *
+	 * It handles compound modules correctly, provided that the physical
+	 * module is called "phy" or "snrEval" respectively in the .ned files.
+	 */
     virtual void connectTo(NicEntry*);
 
-    /** @brief Disconnect two nics */
+    /** @brief Disconnect two nics
+     *
+     * Release unidirectional connection with other nic
+     *
+     * @param other reference to remote nic (other NicEntry)
+     */
     virtual void disconnectFrom(NicEntry*);
 };
 

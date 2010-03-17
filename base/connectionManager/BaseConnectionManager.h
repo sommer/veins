@@ -33,13 +33,18 @@ private:
 	class GridCoord
 	{
 	public:
+		/** @brief Constant for undefined coordinates.*/
 		static const int UNDEFINED = 0;
+		/** @brief Coordinates in the grid.*/
+		/*@{*/
 		int x;
 		int y;
 		int z;
+		/*@}*/
+		/** @brief Use 2D or 3D coordinates?*/
 		bool use2D;
 
-
+	public:
 		/**
 		 * @brief Initialize this GridCoord with the origin.
 		 * Creates a 3-dimensional coord.
@@ -81,6 +86,7 @@ private:
             use2D = c.is2D();
         }
 
+        /** @brief Output string for this coordinate.*/
         std::string info() const {
 			std::stringstream os;
 			if (use2D) {
@@ -91,32 +97,31 @@ private:
 			return os.str();
 		}
 
+        /** @brief Comparison operator for coordinates.*/
 		friend bool operator==(const GridCoord& a, const GridCoord& b) {
 			return a.x == b.x && a.y == b.y && a.z == b.z;
 		}
 
+		/** @brief Comparison operator for coordinates.*/
 		friend bool operator!=(const GridCoord& a, const GridCoord& b) {
 			return !(a==b);
-		}
-
-		GridCoord operator=(const GridCoord& a) {
-			x = a.x;
-			y = a.y;
-			z = a.z;
-			use2D = a.use2D;
-			return *this;
 		}
 	};
 
 	/**
 	 * @brief Represents an minimalistic (hash)set of GridCoords.
+	 *
 	 * It is a workaround because c++ doesn't come with an hash set.
 	 */
 	class CoordSet {
 	protected:
+		/** @brief Holds the hash table.*/
 		std::vector<GridCoord*> data;
+		/** @brief maximum size of the hash table.*/
 		unsigned maxSize;
+		/** @brief Current number of entries in the hash table.*/
 		unsigned size;
+		/** @brief Holds the current element when iterating over this table.*/
 		unsigned current;
 
 	protected:
@@ -198,8 +203,10 @@ private:
 	};
 
 protected:
+	/** @brief Type for map from nic-module id to nic-module pointer.*/
 	typedef std::map<int, NicEntry*> NicEntries;
 
+	/** @brief Map from nic-module ids to nic-module pointers.*/
 	NicEntries nics;
 
 	/** @brief Set debugging for the basic module*/
@@ -221,13 +228,15 @@ protected:
 	/** @brief Stores the useTorus flag of the WorldUtility */
 	bool useTorus;
 
-
+	/** @brief Type for 1-dimensional array of NicEntries.*/
 	typedef std::vector<NicEntries> RowVector;
+	/** @brief Type for 2-dimensional array of NicEntries.*/
 	typedef std::vector<RowVector> NicMatrix;
+	/** @brief Type for 3-dimensional array of NicEntries.*/
     typedef std::vector<NicMatrix> NicCube;
 
 	/**
-	 * @brief Registry of all nics
+	 * @brief Register of all nics
      *
      * This matrix keeps all nics according to their position.  It
      * allows to restrict the position update to a subset of all nics.
@@ -320,6 +329,7 @@ public:
 
 	virtual ~BaseConnectionManager();
 
+	/** @brief Needs two initialisation stages.*/
 	virtual int numInitStages() const {
 		return 2;
 	}

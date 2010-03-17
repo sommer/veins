@@ -18,6 +18,7 @@
 
 #include <omnetpp.h>
 
+// TODO consider that class MacControlInfo will be separated into two classes (one for each direction)
 /**
  * @brief Stores control information from mac to upper layer.
  *

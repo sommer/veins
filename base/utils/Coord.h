@@ -61,18 +61,24 @@
 class Coord : public cObject
 {
 public:
+	/** @brief Constant representing an undefined value. */
 	static const double UNDEFINED;
 
 protected:
-    /** @brief x and y coordinates of the position*/
-    double x, y, z;
+    /** @brief x, y and z coordinate of the position. */
+    /*@{*/
+	double x;
+    double y;
+    double z;
+    /*@}*/
 
+    /** @brief Member to store whether this coordinate is 2D or 3D. */
     bool use2DFlag;
 
 public:
 
     /**
-     * Initialize a 3d (default) or 2d coordinate
+     * @brief Initialize a 3d (default) or 2d coordinate
      * with the origin
      */
     Coord(bool use2D = false)
@@ -86,24 +92,24 @@ public:
         }
     }
 
-    /** Initializes 3D coordinate.*/
+    /** @brief Initializes 3D coordinate.*/
     Coord(double x, double y, double z)
         : x(x), y(y), z(z) , use2DFlag(false) {}
 
-    /** Initializes 2D coordinate.*/
+    /** @brief Initializes 2D coordinate.*/
     Coord(double x, double y)
         : x(x), y(y), z(UNDEFINED) , use2DFlag(true) {}
 
 
-    /** Initializes coordinate from other coordinate.*/
+    /** @brief Initializes coordinate from other coordinate.*/
     Coord( const Coord& pos )
         : cObject(pos), x(pos.x), y(pos.y), z(pos.z), use2DFlag(pos.use2DFlag) {}
 
-    /** Initializes coordinate from other coordinate.*/
+    /** @brief Initializes coordinate from other coordinate.*/
     Coord( const Coord* pos )
         : cObject(*pos), x(pos->x), y(pos->y), z(pos->z), use2DFlag(pos->use2DFlag) {}
 
-    /** Returns a string with the value of the coordinate.*/
+    /** @brief Returns a string with the value of the coordinate.*/
     std::string info() const {
         std::stringstream os;
         if (use2DFlag) {
@@ -115,8 +121,9 @@ public:
     }
 
     /**
-     * Adds two coordinate vectors. Does not check for dimension
-     * compatibility!
+     * @brief Adds two coordinate vectors.
+     *
+     * Does not check for dimension compatibility!
      */
     friend Coord operator+(const Coord& a, const Coord& b) {
         Coord tmp = a;
@@ -125,8 +132,9 @@ public:
     }
 
     /**
-     * Subtracts two coordinate vectors. Does not check for
-     * dimension compatibility!
+     * @brief Subtracts two coordinate vectors.
+     *
+     * Does not check for dimension compatibility!
      */
     friend Coord operator-(const Coord& a, const Coord& b) {
         Coord tmp = a;
@@ -134,14 +142,14 @@ public:
         return tmp;
     }
 
-    /** Multiplies a coordinate vector by a real number.*/
+    /** @brief Multiplies a coordinate vector by a real number.*/
     friend Coord operator*(const Coord& a, double f) {
 		Coord tmp = a;
 		tmp *= f;
         return tmp;
     }
 
-    /** Divides a coordinate vector by a real number.*/
+    /** @brief Divides a coordinate vector by a real number.*/
     friend Coord operator/(const Coord& a, double f) {
 		Coord tmp = a;
 		tmp /= f;
@@ -149,7 +157,7 @@ public:
     }
 
     /**
-     * Multiplies a coordinate vector by a real number.
+     * @brief Multiplies this coordinate vector by a real number.
      */
     Coord operator*=(double f) {
         x *= f;
@@ -159,7 +167,7 @@ public:
     }
 
     /**
-     * Divides a coordinate vector by a real number.
+     * @brief Divides this coordinate vector by a real number.
      */
     Coord operator/=(double f) {
         x /= f;
@@ -169,7 +177,8 @@ public:
     }
 
     /**
-     * Adds coordinate vector b to a.
+     * @brief Adds coordinate vector 'a' to this.
+     *
      * Does not check for dimension compatibility!
      */
     Coord operator+=(const Coord& a) {
@@ -180,7 +189,8 @@ public:
     }
 
     /**
-     * Assigns a this.
+     * @brief Assigns a this.
+     *
      * This operator can change the dimension of the coordinate.
      */
     Coord operator=(const Coord& a) {
@@ -192,7 +202,8 @@ public:
     }
 
     /**
-     * Subtracts coordinate vector b from a.
+     * @brief Subtracts coordinate vector 'a' from this.
+     *
      * Does not check for dimension compatibility!
      */
     Coord operator-=(const Coord& a) {
@@ -203,8 +214,9 @@ public:
     }
 
     /**
-     * Tests whether two coordinate vectors are equal. Because
-     * coordinates are of type double, this is done through the
+     * @brief Tests whether two coordinate vectors are equal.
+     *
+     * Because coordinates are of type double, this is done through the
      * FWMath::close function.
      *
      * Does not check for dimension compatibility!
@@ -214,8 +226,9 @@ public:
     }
 
     /**
-     * Tests whether two coordinate vectors are not equal. Negation of
-     * the operator==.
+     * @brief Tests whether two coordinate vectors are not equal.
+     *
+     * Negation of the operator==.
      *
      * Does not check for dimension compatibility!
      */
@@ -224,7 +237,8 @@ public:
     }
 
     /**
-     * Returns the distance to Coord a.
+     * @brief Returns the distance to Coord 'a'.
+     *
      * Does not check for dimension compatibility!
      */
     double distance( const Coord& a ) const {
@@ -233,7 +247,8 @@ public:
     }
 
     /**
-     * Returns distance^2 to Coord a (omits square root).
+     * @brief Returns distance^2 to Coord 'a' (omits square root).
+     *
      * Does not check for dimension compatibility!
      */
     double sqrdist( const Coord& a ) const {
@@ -242,14 +257,14 @@ public:
     }
 
     /**
-     * Returns the squared distance on a torus to Coord a (omits square root).
+     * @brief Returns the squared distance on a torus of this to Coord 'b' (omits square root).
      *
      * Does not check for dimension compatibility!
      */
     double sqrTorusDist(const Coord& b, const Coord& playgroundSize) const;
 
     /**
-     * Returns the square of the length of this coords position vector
+     * @brief Returns the square of the length of this Coords position vector
      */
     double squareLength() const
     {
@@ -257,7 +272,7 @@ public:
     }
 
     /**
-     * Returns the length of this coords position vector
+     * @brief Returns the length of this Coords position vector
      */
     double length() const
     {
@@ -265,27 +280,27 @@ public:
     }
 
     /**
-     * Getter for the x coordinate
+     * @brief Getter for the x coordinate
      */
     double getX() const{ return x; }
 
     /**
-     * Setter for the x coordinate
+     * @brief Setter for the x coordinate
      */
     void setX(double x){this->x = x;}
 
     /**
-     * Getter for the y coordinate
+     * @brief Getter for the y coordinate
      */
     double getY() const{ return y; }
 
     /**
-     * Setter for the y coordinate
+     * @brief Setter for the y coordinate
      */
     void setY(double y){this->y = y;}
 
     /**
-     * Getter for the z coordinate.
+     * @brief Getter for the z coordinate.
      *
      * This method should return Coord::UNDEFINED if
      * this is a two-dimensional coordinate. If not,
@@ -295,7 +310,7 @@ public:
     double getZ() const{ return z; }
 
     /**
-     * Setter for the z coordinate.
+     * @brief Setter for the z coordinate.
      *
      * This method does not check its dimension!
      * So never call it if you are working with
@@ -307,22 +322,23 @@ public:
     void setZ(double z){this->z = z;}
 
     /**
-     * Returns true if this coordinate is valid.
+     * @brief Returns true if this coordinate is valid.
+     *
      * Valid means this Coord is 3-dimensional or
      * this Coord is 2-Dimensional and the z-value
-     * i equal to Coord::UNDEFINED.
+     * is equal to Coord::UNDEFINED.
      */
     bool isValid() const {
         return (z == UNDEFINED) || !use2DFlag;
     }
 
     /**
-     * Returns true if this coordinate is two-dimensional
+     * @brief Returns true if this coordinate is two-dimensional
      */
     bool is2D() const { return use2DFlag; }
 
     /**
-     * Returns true if this coordinate is three-dimensional
+     * @brief Returns true if this coordinate is three-dimensional
      */
     bool is3D() const { return !use2DFlag; }
 
@@ -356,7 +372,7 @@ public:
 	}
 
     /**
-     * Returns the minimal coordinates.
+     * @brief Returns the minimal coordinates.
      */
     Coord min(const Coord& a) {
         Coord tmp = *this;
@@ -368,7 +384,7 @@ public:
     }
 
     /**
-     * Returns the maximal coordinates.
+     * @brief Returns the maximal coordinates.
      */
     Coord max(const Coord& a) {
         Coord tmp = *this;
@@ -380,23 +396,23 @@ public:
     }
 
     /**
-     * Tests whether this coordinate vector is strictly larger
-     * than another coordinate vector.
+     * @brief Tests whether this coordinate vector is
+     * strictly larger than another coordinate vector (component-wise).
      */
     friend bool operator>(const Coord& a, const Coord& b) {
-	return (a.x > b.x &&
-		a.y > b.y &&
-		(a.is3D() ? a.z > b.z : true));
+		return (a.x > b.x
+				&& a.y > b.y
+				&& (a.is3D() ? a.z > b.z : true));
     }
 
     /**
-     * Tests whether this coordinate vector is strictly smaller
-     * than another coordinate vector.
+     * @brief Tests whether this coordinate vector is
+     * strictly smaller than another coordinate vector (component-wise).
      */
     friend bool operator<(const Coord& a, const Coord& b) {
-	return (a.x < b.x &&
-		a.y < b.y &&
-		(a.is3D() ? a.z < b.z : true));
+		return (a.x < b.x
+				&& a.y < b.y
+				&& (a.is3D() ? a.z < b.z : true));
     }
 };
 

@@ -29,25 +29,33 @@
  */
 class Dimension {
 protected:
+	/** @brief Type for map from dimension name to ID.*/
 	typedef std::map<std::string, int>DimensionIDMap;
+	/** @brief Type for map from ID to dimension name.*/
 	typedef std::map<int, std::string>DimensionNameMap;
 
-	/** @brief stores the registered dimensions ids.
+	/**
+	 * @brief stores the registered dimensions ids.
 	 *
 	 * Uses "construct-on-first-use" idiom to ensure correct initialization
-	 * of static members.*/
+	 * of static members.
+	 */
 	static DimensionIDMap& dimensionIDs();
 
-	/** @brief ConstMapping from id to name of registered dimensions.
+	/**
+	 * @brief ConstMapping from id to name of registered dimensions.
 	 *
 	 * Uses "construct-on-first-use" idiom to ensure correct initialization
-	 * of static members.*/
+	 * of static members.
+	 */
 	static DimensionNameMap& dimensionNames();
 
-	/** @brief Stores the next free ID for a new dimension.
+	/**
+	 * @brief Stores the next free ID for a new dimension.
 	 *
 	 * Uses "construct-on-first-use" idiom to ensure correct initialization
-	 * of static members.*/
+	 * of static members.
+	 */
 	static int& nextFreeID();
 
 	/**
@@ -72,7 +80,8 @@ public:
 
 public:
 	Dimension():
-		id(0) {}
+		id(0)
+	{}
 
 	/**
 	 * @brief Creates a new dimension instance representing the
@@ -113,9 +122,13 @@ public:
 	 */
 	bool operator<(const Dimension& other) const;
 
+	/** @brief Sorting operator by dimension ID.*/
 	bool operator<=(const Dimension& other) const { return id <= other.id; }
+	/** @brief Sorting operator by dimension ID.*/
 	bool operator>(const Dimension& other) const { return id > other.id; }
+	/** @brief Sorting operator by dimension ID.*/
 	bool operator>=(const Dimension& other) const { return id >= other.id; }
+	/** @brief Sorting operator by dimension ID.*/
 	bool operator!=(const Dimension& other) const { return id != other.id; }
 
 	/**
@@ -136,6 +149,7 @@ public:
 	 */
 	int getID() const { return id; }
 
+	/** @brief Output operator for a dimension.*/
 	friend std::ostream& operator<<(std::ostream& out, const Dimension& d) {
     	return (out << d.getName() << "(" << d.id << ")");
     }
@@ -275,7 +289,9 @@ protected:
 	unsigned int count;
 
 public:
+	/** @brief Iterator type for this set.*/
 	typedef std::pair<Dimension, double>* iterator;
+	/** @brief Const-iterator type for this set.*/
 	typedef const std::pair<Dimension, double>* const_iterator;
 
 protected:
@@ -427,6 +443,11 @@ public:
 		return res;
 	}
 
+	/**
+	 * @brief Output operator for Arguments.
+	 *
+	 * Produces output of form "(x1, x2, x3, <...>)".
+	 */
 	friend std::ostream& operator<<(std::ostream& out, const Argument& d) {
 		out << "(" << d.time;
 
@@ -446,19 +467,32 @@ public:
 	 * @brief Returns an iterator to the first argument value in this Argument.
 	 */
 	iterator begin() { return values; }
+	/**
+	 * @brief Returns an iterator to the first argument value in this Argument.
+	 */
 	const_iterator begin() const { return values; }
+
 
 	/**
 	 * @brief Returns an iterator to the value behind the last argument value.
 	 */
 	iterator end() { return values + count; }
+	/**
+	 * @brief Returns an iterator to the value behind the last argument value.
+	 */
 	const_iterator end() const { return values + count; }
 
 	/**
 	 * @brief Returns an iterator to the Argument value for the passed Dimension.
+	 *
 	 * Returns end() if there is no Argument for that dimension.
 	 */
 	iterator find(const Dimension& dim);
+	/**
+	 * @brief Returns an iterator to the Argument value for the passed Dimension.
+	 *
+	 * Returns end() if there is no Argument for that dimension.
+	 */
 	const_iterator find(const Dimension& dim) const;
 
 	/**
@@ -466,6 +500,10 @@ public:
 	 * compares greater or equal to the passed Dimension.
 	 */
 	iterator lower_bound(const Dimension& dim);
+	/**
+	 * @brief Returns an iterator to the first Argument value which dimension
+	 * compares greater or equal to the passed Dimension.
+	 */
 	const_iterator lower_bound(const Dimension& dim) const;
 };
 
@@ -591,9 +629,10 @@ class Mapping;
  */
 class ConstMapping {
 protected:
+	/** @brief The dimensions of this mappings domain.*/
 	DimensionSet dimensions;
 
-protected:
+private:
 	template<class T>
 	std::string toString(T v, unsigned int length){
 		char* tmp = new char[255];
@@ -834,6 +873,7 @@ public:
  */
 class Mapping:public ConstMapping {
 public:
+	/** @brief Types of interpolation methods for mappings.*/
 	enum InterpolationMethod {
 		/** @brief interpolates with next lower entry*/
 		STEPS,
@@ -970,6 +1010,7 @@ protected:
 	/** @brief The current position of the iterator.*/
 	Argument position;
 
+	/** @brief Type for a set of Arguments defining key entries.*/
 	typedef std::set<Argument> KeyEntrySet;
 
 	/** @brief A pointer to a set of Arguments defining the positions to
@@ -1134,6 +1175,7 @@ public:
  */
 class SimpleConstMapping:public ConstMapping {
 protected:
+	/** @brief Type for a set of Arguments defining key entries.*/
 	typedef std::set<Argument> KeyEntrySet;
 
 	/** @brief A set of Arguments defining the "points of interest" an iterator
