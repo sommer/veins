@@ -30,10 +30,17 @@ class JakesFadingMapping: public SimpleConstMapping {
 protected:
 	static DimensionSet dimensions;
 
+	/** @brief Pointer to the model.*/
 	JakesFading* model;
+
+	/** @brief The relative speed between the two hosts for this attenuation.*/
 	double relSpeed;
 
 public:
+	/**
+	 * @brief Takes the model, the relative speed between two hosts and
+	 * the interval in which to create key entries.
+	 */
 	JakesFadingMapping(JakesFading* model, double relSpeed,
 					   const Argument& start,
 					   const Argument& interval,
@@ -88,6 +95,11 @@ protected:
 	Argument interval;
 
 public:
+	/**
+	 * @brief Takes the number of fading paths, the maximum delay
+	 * on a path, the hosts move, the carrier frequency used and the
+	 * interval in which to defien attenuation entries in.	 *
+	 */
 	JakesFading(int fadingPaths, simtime_t delayRMS,
 				Move* hostMove, double carrierFrequency,
 				simtime_t interval);

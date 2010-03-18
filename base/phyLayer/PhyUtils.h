@@ -49,39 +49,49 @@ protected:
 	class ListEntry
 	{
 	protected:
+		/** @brief The pair representing the time stamp.*/
 		std::pair<simtime_t, double> basicTimestamp;
 
 	public:
+		/** @brief Initializes the entry with the passed values.*/
 		ListEntry(simtime_t time, double value) {
 			basicTimestamp = std::pair<simtime_t, double> (time, value);
 		}
 
 		virtual ~ListEntry() {}
 
+		/** @brief Returns the time of the entry.*/
 		simtime_t getTime() const {
 			return basicTimestamp.first;
 		}
 
+		/** @brief Sets the time of the entry.*/
 		void setTime(simtime_t time) {
 			basicTimestamp.first = time;
 		}
 
+		/** @brief Returns the value of the entry.*/
 		double getValue() const {
 			return basicTimestamp.second;
 		}
 
+		/** @brief Sets the value of the entry.*/
 		void setValue(double value) {
 			basicTimestamp.second = value;
 		}
 
 		/**
-		 * overload of operator < for class ListEntry to be able to use the STL Algorithms
+		 * @brief overload of operator < for class ListEntry to be able to use the STL Algorithms
 		 * "lower_bound" and "upper_bound"
 		 */
 		friend bool operator<(const ListEntry& e, const simtime_t& t) {
 			return (e.getTime() < t);
 		}
 
+		/**
+		 * @brief overload of operator < for class ListEntry to be able to use the STL Algorithms
+		 * "lower_bound" and "upper_bound"
+		 */
 		friend bool operator<(const simtime_t& t, const ListEntry& e) {
 			return (t < e.getTime());
 		}
@@ -186,14 +196,13 @@ public:
 		SWITCHING,
 
 		/**
-		 * @brief THIS IS NO REAL RADIOSTATE, JUST A COUNTER FOR THE NUMBER OF RADIOSTATES
-		 * IT ALWAYS NEEDS TO BE THE LAST ENTRY IN THIS ENUM!
+		 * @brief No real radio state just a counter constant for the amount of states.
 		 *
 		 * Sub-classing Radios which want to add more states can add their own
 		 * states in their own enum beginning at the value of NUM_RADIO_STATES.
 		 * They should also remember to update the "numRadioStates" member accordingly.
 		 *
-		 * @see RadioUWBIR for an example."
+		 * @see RadioUWBIR for an example.
 		 */
 		NUM_RADIO_STATES
 	};
@@ -373,19 +382,27 @@ class RSAMConstMappingIterator : public ConstMappingIterator
 {
 protected:
 
+	/** @brief Pointer to the RSAM module.*/
 	const RadioStateAnalogueModel* rsam;
 
+	/** @brief Type for the list of attenuation entries.*/
 	typedef std::list<RadioStateAnalogueModel::ListEntry> CurrList;
+	/** @brief List iterator pointing to the current position.*/
 	CurrList::const_iterator it;
 
+	/** @brief The current position of this iterator.*/
 	Argument position;
+	/** @brief The next position the iterator will jump to.*/
 	Argument nextPosition;
 
+	/** @brief The start time of the signal this iterators mapping attenuates.*/
 	simtime_t signalStart;
+	/** @brief The end time of the signal this iterators mapping attenuates.*/
 	simtime_t signalEnd;
 
 public:
 
+	/** @brief Initializes the iterator with the passed values.*/
 	RSAMConstMappingIterator(const RadioStateAnalogueModel* rsam,
 							 simtime_t signalStart,
 							simtime_t signalEnd);
@@ -502,8 +519,11 @@ class RSAMMapping : public ConstMapping
 {
 protected:
 
+	/** @brief Pointer to the RSAM module.*/
 	const RadioStateAnalogueModel* rsam;
+	/** @brief Start of the signal this mapping defines attenuation for.*/
 	simtime_t signalStart;
+	/** @brief End of the signal this mapping defines attenuation for.*/
 	simtime_t signalEnd;
 
 public:

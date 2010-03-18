@@ -295,6 +295,7 @@ class BaseMobility : public BatteryAccess
      *
      */
     void reflectCoordinate(BorderHandling border, Coord& c);
+
     /**
      * @brief Utility function to reflect the node if it goes outside
      * the playground.
@@ -304,6 +305,7 @@ class BaseMobility : public BatteryAccess
      * This function can update the target position, the step (for non
      * atomic movements) and the angle.
      *
+     * @param wo defines the border at which to reflect
      * @param stepTarget target position of the current step of the host
      * @param targetPos target position of the host (for non atomic movements)
      * @param step step size and direction of the host (for non atomic movements)
@@ -318,6 +320,7 @@ class BaseMobility : public BatteryAccess
      * Wraps the host to the other playground size. Updates the target
      * position.
      *
+     * @param wo defines the border at which to reflect
      * @param stepTarget target position of the current step of the host
      * @param targetPos target position of the host (for non atomic movements)
      */

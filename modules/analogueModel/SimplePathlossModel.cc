@@ -46,17 +46,24 @@ void SimplePathlossModel::filterSignal(Signal& s){
 		return;
 	}
 
-	// wavelength in metres
+	// wavelength in meters (this is only used for debug purposes here
+	// the actual effect of the wavelength on the attenuation is
+	// calculated in SimplePathlossConstMappings "getValue()" method).
 	double wavelength = (BaseWorldUtility::speedOfLight/carrierFrequency);
 	debugEV << "wavelength is: " << wavelength << endl;
 
+	// the part of the attenuation only depending on the distance
 	double distFactor = pow(sqrDistance, -pathLossAlphaHalf) / (16.0 * M_PI * M_PI);
 	debugEV << "distance factor is: " << distFactor << endl;
 
+	//is our signal to attenuate defined over frequency?
 	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency);
 
 	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain : DimensionSet::timeDomain;
 
+	//create the Attenuation mapping which takes the distance factor as parameter
+	//to calculate the attenuation from this and the frequency used for the transmission
+	//see the classes "getValue()" for more
 	SimplePathlossConstMapping* attMapping = new SimplePathlossConstMapping(
 													domain,
 													this,

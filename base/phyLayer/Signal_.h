@@ -33,7 +33,13 @@
  */
 class Signal {
 public:
+	/**
+	 * @brief Shortcut type for a concatenated Mapping using multiply operator.
+	 *
+	 * Used to define the receiving power mapping.
+	 */
 	typedef ConcatConstMapping<std::multiplies<double> > MultipliedMapping;
+	/** @brief Shortcut type for a list of ConstMappings.*/
 	typedef std::list<ConstMapping*> ConstMappingList;
 
 protected:
@@ -60,9 +66,16 @@ protected:
 	/** @brief Stores the functions describing the attenuations of the signal*/
 	ConstMappingList attenuations;
 
+	/** @brief Stores the mapping defining the receiving power of the signal.*/
 	MultipliedMapping* rcvPower;
 
 protected:
+	/**
+	 * @brief Deletes the rcvPower mapping member because it became
+	 * out-dated.
+	 *
+	 * This happens when transmission power or propagation delay changes.
+	 */
 	void markRcvPowerOutdated() {
 		if(rcvPower){
 			if(propDelay != 0) {

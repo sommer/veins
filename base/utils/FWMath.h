@@ -28,21 +28,22 @@
 
 #include <cmath>
 
-/* windows math.h doesn't define the PI variable so we have to do it
-   by hand*/
+
 #ifndef M_PI
+/** @brief Windows math.h doesn't define the PI variable so we have to do it
+ * by hand.*/
 #define M_PI 3.14159265358979323846
 #endif
 
-/* Windows math.h doesn't define sqrt(2) so we have to do it by
-   hand. */
 #ifndef M_SQRT2
+/** @brief Windows math.h doesn't define sqrt(2) so we have to do it by
+ * hand. */
 #define M_SQRT2 1.41421356237309504880
 #endif
 
-/* Constant for comparing doubles. Two doubles at most epsilon apart
-   are declared equal.*/
 #ifndef EPSILON
+/** @brief Constant for comparing doubles. Two doubles at most epsilon apart
+ * are declared equal.*/
 #define EPSILON 0.00001
 #endif
 

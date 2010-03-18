@@ -41,6 +41,7 @@
  **/
 class Move : public BBItem {
 
+	/** @brief Provides BBItem meta information for this class.*/
     BBITEM_METAINFO(BBItem);
 
 protected:

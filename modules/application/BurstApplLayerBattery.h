@@ -53,8 +53,11 @@ class BurstApplLayerBattery : public BurstApplLayer
 
  private:
 
+  /** @brief The number of broadcasts queued so far.*/
   int bcastOut;
+  /** @brief The number of replies sent so far.*/
   int replyOut;
+  /** @brief The number of replies received so far.*/
   int replyIn;
 
 };
