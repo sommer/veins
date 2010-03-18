@@ -14,6 +14,9 @@ v1.2
 * fixed wrong calculation of position on "WRAP" border handling in BaseMobility
 * fixed missing connections when the cells from ConnectionManager do not cover the playground size
   exactly
+* fixed increasing heap memory usage while hosts sending AirFrames but wheren receiving any.
+  This was caused by RSAM tracking every radio state although there wheren't any Signals on the
+  channel to attenuate.
 
 v1.1
 + added port of EnergyFramework written by Laura Marie Feeney

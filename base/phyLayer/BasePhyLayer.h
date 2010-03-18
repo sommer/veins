@@ -80,6 +80,9 @@ protected:
 	/** @brief The sensitivity describes the minimum strength a signal must have to be received.*/
 	double sensitivity;
 
+	/** @brief Stores if tracking of statistics (esp. cOutvectors) is enabled.*/
+	bool recordStats;
+
 	/**
 	 * @brief Channel info keeps track of received AirFrames and provides information about
 	 * currently active AirFrames at the channel.

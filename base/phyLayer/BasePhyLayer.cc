@@ -62,6 +62,8 @@ void BasePhyLayer::initialize(int stage) {
 		sensitivity = FWMath::dBm2mW(sensitivity);
 		maxTXPower = readPar("maxTXPower", 1.0);
 
+		recordStats = readPar("recordStats", true);
+
 		//	- initialize radio
 		radio = initializeRadio();
 
@@ -90,7 +92,7 @@ Radio* BasePhyLayer::initializeRadio() {
 	double radioMinAtt = readPar("radioMinAtt", 1.0);
 	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
 
-	Radio* radio = Radio::createNewRadio(initialRadioState, radioMinAtt, radioMaxAtt);
+	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState, radioMinAtt, radioMaxAtt);
 
 	//	- switch times to TX
 	simtime_t rxToTX = readPar("timeRXToTX", 0.0);
@@ -169,6 +171,18 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 void BasePhyLayer::finish(){
 	// give decider the chance to do something
 	decider->finish();
+
+	//get AirFrames from ChannelInfo and delete
+	//(also ChannelInfo normally owns the AirFrames it
+	//is not able to cancel and delete them itself
+	AirFrameVector channel;
+	channelInfo.getAirFrames(0, simTime(), channel);
+
+	for(AirFrameVector::iterator it = channel.begin();
+		it != channel.end(); ++it)
+	{
+		cancelAndDelete(*it);
+	}
 }
 
 //-----Decider initialization----------------------
@@ -358,7 +372,13 @@ void BasePhyLayer::handleAirFrame(cMessage* msg) {
 
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	coreEV << "Received new AirFrame with ID " << frame->getId() << " from channel" << endl;
+
+	if(channelInfo.isChannelEmpty()) {
+		radio->setTrackingModeTo(true);
+	}
+
 	channelInfo.addAirFrame(frame, simTime());
+	assert(!channelInfo.isChannelEmpty());
 
 	if(usePropagationDelay) {
 		Signal& s = frame->getSignal();
@@ -420,14 +440,19 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
 	coreEV << "End of Airframe with ID " << frame->getId() << "." << endl;
 
-	channelInfo.removeAirFrame(frame);
+	simtime_t earliestInfoPoint = channelInfo.removeAirFrame(frame);
 
 	/* clean information in the radio until earliest time-point
 	*  of information in the ChannelInfo,
 	*  since this time-point might have changed due to removal of
 	*  the AirFrame
 	*/
-	radio->cleanAnalogueModelUntil(channelInfo.getEarliestInfoPoint());
+	if(channelInfo.isChannelEmpty()) {
+		earliestInfoPoint = simTime();
+		radio->setTrackingModeTo(false);
+	}
+
+	radio->cleanAnalogueModelUntil(earliestInfoPoint);
 }
 
 void BasePhyLayer::handleUpperMessage(cMessage* msg){

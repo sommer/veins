@@ -135,7 +135,7 @@ public:
 protected:
 
 	RadioUWBIR(int numRadioStates, int initialState, double minAtt = 1.0, double maxAtt = 0.0)
-	:Radio(numRadioStates, initialState, minAtt, maxAtt) {
+	:Radio(numRadioStates, true, initialState, minAtt, maxAtt) {
 
 		lastStateChange = 0;
 //		powerConsumption = 0;

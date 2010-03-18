@@ -257,7 +257,14 @@ protected:
 			 			AirFrame* a,
 			 			simtime_t startTime, simtime_t endTime);
 
+	/**
+	 * @brief Returns the start time of the odlest AirFrame on the channel.
+	 */
+	simtime_t findEarliestInfoPoint();
+
 public:
+
+	virtual ~ChannelInfo() {}
 
 	/**
 	 * @brief Tells the ChannelInfo that an AirFrame has started.
@@ -299,9 +306,20 @@ public:
 	 */
 	simtime_t getEarliestInfoPoint()
 	{
+		assert(!isChannelEmpty() || earliestInfoPoint == -1);
+
 		return earliestInfoPoint;
 	}
 
+	/**
+	 * @brief Returns true if there are currently no active or inactive AirFrames
+	 * on the channel.
+	 */
+	bool isChannelEmpty() const {
+		assert(activeAirFrames.empty() == airFrameStarts.empty());
+
+		return airFrameStarts.empty();
+	}
 };
 
 #endif /*CHANNELINFO_H_*/
