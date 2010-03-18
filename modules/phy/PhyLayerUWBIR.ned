@@ -23,9 +23,15 @@ import org.mixim.base.phyLayer.BasePhyLayer;
 //
 // To implement optional modes of IEEE802154A, refer to IEEE802154A.h.
 //
-// Refer to the following publication for more information:
+// Refer to the following publications for more information:
 //
-//  A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
+// [1] An Ultra Wideband Impulse Radio PHY Layer Model for Network Simulation,
+// J. Rousselot, J.-D. Decotignie, Simulation: Transactions of the Society
+// for Computer Simulation, 2010 (submitted).
+//
+// http://sim.sagepub.com/archive/2010.dtl
+//
+// [2]  A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
 // for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
 // Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
 //

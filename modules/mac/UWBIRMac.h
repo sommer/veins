@@ -19,6 +19,16 @@
  * 				class. It provides the necessary functions to build UWBIR
  * 				packets and to receive them.
  ***************************************************************************/
+//
+// See the following publications for more information:
+// [1] An Ultra Wideband Impulse Radio PHY Layer Model for Network Simulation,
+// J. Rousselot, J.-D. Decotignie, Simulation: Transactions of the Society
+// for Computer Simulation, 2010 (submitted).
+// [2] A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
+// for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
+// Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
+// http://portal.acm.org/citation.cfm?id=1537714
+//
 
 #ifndef UWBIRMAC_H
 #define UWBIRMAC_H
