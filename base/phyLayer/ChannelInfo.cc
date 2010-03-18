@@ -5,6 +5,12 @@
 
 void ChannelInfo::addAirFrame(AirFrame* a, simtime_t startTime) {
 
+	//check if we were previously empty
+	if(isChannelEmpty()) {
+		//earliest time point is current sim time
+		earliestInfoPoint = startTime;
+	}
+
 	//calculate endTime of AirFrame
 	simtime_t endTime = startTime + a->getDuration();
 
@@ -13,28 +19,12 @@ void ChannelInfo::addAirFrame(AirFrame* a, simtime_t startTime) {
 
 	//add to start time map
 	airFrameStarts[a] = startTime;
+
+	assert(!isChannelEmpty());
 }
 
-simtime_t ChannelInfo::removeAirFrame(AirFrame* a) {
-
-	//get start of AirFrame
-	simtime_t startTime = airFrameStarts[a];
-
-	//calculate end time
-	simtime_t endTime = startTime + a->getDuration();
-
-	//remove this AirFrame from active AirFrames
-	deleteAirFrame(activeAirFrames, a, startTime, endTime);
-
-	//add to inactive AirFrames
-	addToInactives(a, startTime, endTime);
-
-	/*
-	 * Now check, whether the earliest time-point we need to store information for
-	 * might have moved on in time, since an AirFrame has been deleted.
-	 *
-	 * TODO: check for a more efficient way to find out that earliest time-point
-	 */
+simtime_t ChannelInfo::findEarliestInfoPoint() {
+	//TODO: check for a more efficient way to find out that earliest time-point
 
 	// make a variable for the earliest-start-time of all remaining AirFrames
 	simtime_t earliestStart = 0;
@@ -54,15 +44,34 @@ simtime_t ChannelInfo::removeAirFrame(AirFrame* a) {
 			if( (*it).second < earliestStart )
 				earliestStart = (*it).second;
 		}
-
-		// check if the current earliest-start-time is later than the stored
-		// value so far, if so, replace the earliestInfoPoint
-		if ( earliestStart > earliestInfoPoint )
-			earliestInfoPoint = earliestStart;
 	}
 
+	return earliestStart;
+}
 
-	//std::cerr << "remove";
+simtime_t ChannelInfo::removeAirFrame(AirFrame* a) {
+
+	//get start of AirFrame
+	simtime_t startTime = airFrameStarts[a];
+
+	//calculate end time
+	simtime_t endTime = startTime + a->getDuration();
+
+	//remove this AirFrame from active AirFrames
+	deleteAirFrame(activeAirFrames, a, startTime, endTime);
+
+	//add to inactive AirFrames
+	addToInactives(a, startTime, endTime);
+
+	/*
+	 * Now check, whether the earliest time-point we need to store information for
+	 * might have moved on in time, since an AirFrame has been deleted.
+	 */
+	if(isChannelEmpty()) {
+		earliestInfoPoint = -1;
+	} else {
+		earliestInfoPoint = findEarliestInfoPoint();
+	}
 
 	return earliestInfoPoint;
 }

@@ -35,7 +35,7 @@ void testRadioConstructor()
 
 
 
-	Radio* radio2 = Radio::createNewRadio(initialState); // contructor with argument
+	Radio* radio2 = Radio::createNewRadio(false, initialState); // contructor with argument
 
 	//check members of radio2
 	assertTrue("RadioState is correct", radio2->getCurrentState() == initialState);
