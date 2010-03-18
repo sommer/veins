@@ -78,7 +78,7 @@ Radio* PhyLayerUWBIR::initializeRadio() {
 	double radioMinAtt = readPar("radioMinAtt", 1.0);
 	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
 
-	uwbradio = RadioUWBIR::createNewUWBIRRadio(initialRadioState, radioMinAtt, radioMaxAtt);
+	uwbradio = RadioUWBIR::createNewUWBIRRadio(initialRadioState, recordStats, radioMinAtt, radioMaxAtt);
 
 	//	- switch times to TX
 	simtime_t rxToTX = readPar("timeRXToTX", 0.0);

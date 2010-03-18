@@ -54,34 +54,14 @@ public:
 		 UWBIR_NUM_RADIO_STATES
 	};
 
-protected:
-	/** @brief Stores the power consumption of each radio state (in mW) */
-//	double* powerConsumptions;
-//	simtime_t powerConsumption;
-	simtime_t lastStateChange;
-
-//	cOutVector vectorPower;
-
-public:
-
-	/** @brief Defines the power consumption in the selected radio state. */
-	virtual void setPowerConsumption(int radioState, double _powerConsumption) {
-		assert(0 <= radioState);
-		assert(radioState < numRadioStates);
-//		powerConsumptions[radioState] = _powerConsumption;
-	}
-
-	virtual ~RadioUWBIR() {
-//		delete[] powerConsumptions;
-//		powerConsumptions = 0;
-	}
-
 	/* Static factory method (see Radio class in PhyUtils.h) */
 	static RadioUWBIR* createNewUWBIRRadio(int initialState,
+								 bool recordStats,
 								 double minAtt = 1.0,
 								 double maxAtt = 0.0)
 	{
 		return new RadioUWBIR(RadioUWBIR::UWBIR_NUM_RADIO_STATES,
+						 recordStats,
 						 initialState,
 						 minAtt, maxAtt);
 	}
@@ -107,12 +87,11 @@ public:
 	}
 
 	virtual simtime_t reallySwitchTo(int newState, simtime_t now) {
-//		updatePowerConsumption(now);
 		// set the nextState to the newState and the current state to SWITCHING
 		nextState = newState;
 		int lastState = state;
 		state = RadioUWBIR::SWITCHING;
-		radioStates.record(state);
+  	    radioStates.record(state);
 		// make entry to RSAM
 		makeRSAMEntry(now, state);
 
@@ -120,33 +99,10 @@ public:
 		return swTimes[lastState][nextState];
 	}
 
-	virtual void endSwitch(simtime_t now) {
-//		updatePowerConsumption(now);
-		Radio::endSwitch(now);
-	}
-
-	/** @brief Getter function to read the power consumption of this radio
-	 * from simulation start until now. */
-	simtime_t getPowerConsumption(simtime_t now) {
-		return 0;
-//		return powerConsumption + (now - lastStateChange) * powerConsumptions[state];
-	}
-
 protected:
 
-	RadioUWBIR(int numRadioStates, int initialState, double minAtt = 1.0, double maxAtt = 0.0)
-	:Radio(numRadioStates, true, initialState, minAtt, maxAtt) {
-
-		lastStateChange = 0;
-//		powerConsumption = 0;
-//		powerConsumptions = new double [numRadioStates];
-
-//		for (int i = 0; i < numRadioStates; i++)
-//		{
-//			// initialize all power consumption entries to 0.0
-//			powerConsumptions[i] = 0.0;
-//		}
-	}
+	RadioUWBIR(int numRadioStates,bool recordStats, int initialState, double minAtt = 1.0, double maxAtt = 0.0)
+	:Radio(numRadioStates, recordStats, initialState, minAtt, maxAtt) {	}
 
 	virtual double mapStateToAtt(int state)
 	{
@@ -182,16 +138,6 @@ private:
 		endSwitch(now);
 	}
 
-	/**
-	 * @brief Updates the power consumption counter at each state switch.
-	 */
-	virtual void updatePowerConsumption(simtime_t now) {
-		assert(now >= lastStateChange);
-//		simtime_t delta = (now - lastStateChange) * powerConsumptions[state];
-//		powerConsumption = powerConsumption + delta;
-//		lastStateChange = now;
-//		vectorPower.record(powerConsumption / simTime().dbl());
-	}
 };
 
 #endif /* UWBIRRADIO_H_ */
