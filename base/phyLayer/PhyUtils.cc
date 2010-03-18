@@ -90,7 +90,7 @@ Radio::Radio(int numRadioStates,
 	minAtt(minAtt), maxAtt(maxAtt),
 	rsam(mapStateToAtt(initialState))
 {
-	radioStates.setName("Radio state");
+	radioStates.setName("RadioState");
 	radioStates.setEnabled(recordStats);
 
 	// allocate memory for one dimension
