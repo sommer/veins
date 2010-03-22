@@ -72,6 +72,7 @@ class  CSMAMacLayer : public BaseMacLayer
     virtual void handleLowerControl(cMessage *msg);
 
   protected:
+    /** @brief Type for a queue of cPackets.*/
     typedef std::list<cPacket*> MacQueue;
 
     /** @brief MAC states
@@ -79,23 +80,18 @@ class  CSMAMacLayer : public BaseMacLayer
      *  The MAC states help to keep track what the MAC is actually
      *  trying to do -- this is esp. useful when radio switching takes
      *  some time.
-     *  RX  -- MAC accepts packets from PHY layer
-     *  TX  -- MAC transmits a packet
-     *  CCA -- Clear Channel Assessment - MAC checks
-     *         whether medium is busy
      */
-
     enum States {
+    	/** @brief MAC accepts packets from PHY layer.*/
         RX,
+        /** @brief Clear Channel Assessment - MAC checks whether medium is busy.*/
         CCA,
+        /** @brief MAC transmits a packet. */
         TX,
     };
 
     /** @brief kepp track of MAC state */
     States macState;
-
-    /** @brief RSSI level where medium is considered busy */
-    //double busyRSSI;
 
     /** @brief Duration of a slot
      *
@@ -103,7 +99,6 @@ class  CSMAMacLayer : public BaseMacLayer
      *  time) but in general it should be the time it takes to send a
      *  packet plus some guard times (RX-TX-turnaround + a minimum
      *  inter-packet space).
-     *
      */
     double slotDuration;
 
@@ -113,9 +108,6 @@ class  CSMAMacLayer : public BaseMacLayer
      * The channel should stay clear within this period of time.
      */
     double difs;
-
-    /** @brief cached pointer to radio module */
-    //SingleChannelRadio* radio;
 
     /** @brief A queue to store packets from upper layer in case another
     packet is still waiting for transmission..*/

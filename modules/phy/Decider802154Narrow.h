@@ -32,15 +32,25 @@ protected:
 	/** @brief modulation type */
 	std::string modulation;
 
+	/** @name Tracked statistic values.*/
+	/*@{*/
 	unsigned long nbFramesWithInterference;
 	unsigned long nbFramesWithoutInterference;
 
 	unsigned long nbFramesWithInterferenceDropped;
 	unsigned long nbFramesWithoutInterferenceDropped;
+	/*@}*/
 
 protected:
+	/** @brief Process a new signal the first time.*/
 	virtual simtime_t processNewSignal(AirFrame* frame);
 
+	/**
+	 * @brief Process the end of a signal.
+	 *
+	 * Checks if signal was received correct and sends it
+	 * up to the MAC layer.
+	 */
 	virtual simtime_t processSignalEnd(AirFrame* frame);
 
 	double getBERFromSNR(double snr);

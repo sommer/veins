@@ -45,6 +45,18 @@ protected:
 		DECODING_ACCT=0
 	};
 public:
+	/**
+	 * @brief Initializes this Decider with the passed values.
+	 *
+	 * @param phy Pointer to this deciders phy layer
+	 * @param threshold The SNR threshold above which reception is correct
+	 * @param sensitivity The strength (mW) at which a signal can be received
+	 * @param centerFrequency The frequency used by the phy layer
+	 * @param decodingCurrentDelta The additional amount of power it takes to
+	 *        decode a signal
+	 * @param myIndex The index of this deciders host (for debug output)
+	 * @param debug Use debug output?
+	 */
 	Decider80211Battery(DeciderToPhyInterface* phy,
 						double threshold,
 						double sensitivity,

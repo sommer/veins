@@ -12,7 +12,7 @@
 class SNRThresholdDecider : public BaseDecider
 {
 protected:
-	// threshold value for checking a SNR-map (SNR-threshold)
+	/** @brief Threshold value for checking a SNR-map (SNR-threshold).*/
 	double snrThreshold;
 
 protected:

@@ -80,22 +80,27 @@ class  csma : public BaseMacLayer
   protected:
     typedef std::list<MacPkt*> MacQueue;
 
-  long nbTxFrames;
-  long nbRxFrames;
-  long nbMissedAcks;
-  long nbRecvdAcks;
-  long nbDroppedFrames;
-  long nbTxAcks;
-  long nbDuplicates;
-  long nbBackoffs;
-  double backoffValues;
-  bool stats;
-  bool trace;
+    /** @name Different tracked statistics.*/
+    /*@{*/
+	long nbTxFrames;
+	long nbRxFrames;
+	long nbMissedAcks;
+	long nbRecvdAcks;
+	long nbDroppedFrames;
+	long nbTxAcks;
+	long nbDuplicates;
+	long nbBackoffs;
+	double backoffValues;
+	/*@}*/
+
+	/** @brief Records general statistics?*/
+	bool stats;
+	/** @brief Record out put vectors?*/
+	bool trace;
 
     /** @brief MAC states
      * see states diagram.
      */
-
     enum t_mac_states {
         IDLE_1=1,
         BACKOFF_2,
@@ -111,6 +116,7 @@ class  csma : public BaseMacLayer
     /****************** TYPES ************************************/
     /*************************************************************/
 
+    /** @brief Kinds for timer messages.*/
     enum t_mac_timer {
       TIMER_NULL=0,
       TIMER_BACKOFF,
@@ -119,8 +125,13 @@ class  csma : public BaseMacLayer
       TIMER_RX_ACK,
     };
 
+    /** @name Pointer for timer messages.*/
+    /*@{*/
     cMessage * backoffTimer, * ccaTimer, * txTimer, * sifsTimer, * rxAckTimer;
+    /*@}*/
 
+    /** @brief MAC state machine events.
+     * See state diagram.*/
     enum t_mac_event {
       EV_SEND_REQUEST=1,                   // 1, 11, 20, 21, 22
       EV_TIMER_BACKOFF,                    // 2, 7, 14, 15
@@ -134,10 +145,12 @@ class  csma : public BaseMacLayer
       EV_TIMER_CCA
     };
 
+    /** @brief Types for frames sent by the CSMA.*/
     enum t_csma_frame_types {
     	DATA,
     	ACK
     };
+
     enum t_mac_carrier_sensed {
       CHANNEL_BUSY=1,
       CHANNEL_FREE
@@ -153,9 +166,13 @@ class  csma : public BaseMacLayer
       STATUS_FRAME_TRANSMITTED
     };
 
+    /** @brief The different back-off methods.*/
     enum backoff_methods {
+    	/** @brief Constant back-off time.*/
     	CONSTANT = 0,
+    	/** @brief Linear increasing back-off time.*/
     	LINEAR,
+    	/** @brief Exponentially increasing back-off time.*/
     	EXPONENTIAL,
     };
 
@@ -169,7 +186,10 @@ class  csma : public BaseMacLayer
      * The channel should stay clear within this period of time.
      */
     simtime_t sifs;
+
+    /** @brief The amount of time the MAC waits for the ACK of a packet.*/
     simtime_t macAckWaitDuration;
+
     bool transmissionAttemptInterruptedByRx;
     /** @brief CCA detection time */
     simtime_t ccaDetectionTime;
@@ -235,8 +255,7 @@ class  csma : public BaseMacLayer
     /** @brief publish dropped packets nic wide */
     int nicId;
 
-    //int headerLength;
-
+    /** @brief The bit length of the ACK packet.*/
     int ackLength;
 
     /** @brief This MAC layers MAC address.*/

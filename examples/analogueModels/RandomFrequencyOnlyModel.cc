@@ -46,7 +46,7 @@ void RandomFrequencyOnlyModel::filterSignal(Signal& s){
 
 	for(double freq = 2.412; freq < 2.465; freq += 0.01){
 
-		pos.setArgValue(frequency, freq); // update arguments position in frequency dimension
+		pos.setArgValue(frequency, freq*1.e9); // update arguments position in frequency dimension
 
 		/*
 		//create time entries for this frequency
@@ -67,7 +67,7 @@ void RandomFrequencyOnlyModel::filterSignal(Signal& s){
 		*/
 	}
 	//asure attenuation is set at end of freq range
-	pos.setArgValue(frequency, 2.472); // update arguments position in frequency dimension
+	pos.setArgValue(frequency, 2.472e9); // update arguments position in frequency dimension
 	double att = (double)rand() / (double)RAND_MAX * 0.9 + 0.1;
 	attMapping->setValue(pos, att); //put the attenuation at the current position into the mapping
 

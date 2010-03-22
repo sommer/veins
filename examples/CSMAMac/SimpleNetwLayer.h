@@ -31,7 +31,7 @@
  * to other instances without caring if they here them.
  * The switch instances does only provide packet forwarding from there on.
  *
- * The several instanceses can bable directly to each other or over
+ * The several instances can babble directly to each other or over
  * a switch instance.
  *
  * @ingroup exampleCSMA

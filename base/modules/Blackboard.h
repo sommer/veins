@@ -74,7 +74,7 @@ protected:
             client(c), scopeModuleId(b) {};
     };
 
-    /** @brief Typedefs for container shortcuts.*/
+    /** @name Typedefs for container shortcuts.*/
     /*@{*/
     typedef std::vector<Subscriber> SubscriberVector;
     typedef std::vector<SubscriberVector> ClientVector;

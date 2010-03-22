@@ -136,11 +136,11 @@ MacPkt* SimpleMacLayer::createMacPkt(simtime_t length) {
 	Signal* s = new Signal(simTime(), length);
 
 	//create and set tx power mapping
-	Mapping* txPower = createMapping(simTime(), length, 2.412, 2.472, 50.0);
+	Mapping* txPower = createMapping(simTime(), length, 2.412e9, 2.472e9, 50.0);
 	s->setTransmissionPower(txPower);
 
 	//create and set bitrate mapping
-	Mapping* bitrate = createMapping(simTime(), length, 2.412, 2.472, 54.0);
+	Mapping* bitrate = createMapping(simTime(), length, 2.412e9, 2.472e9, 54.0);
 	s->setBitrate(bitrate);
 
 	//create and initialize control info

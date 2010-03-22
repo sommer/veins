@@ -28,35 +28,52 @@ class TrafficGen : public BaseApplLayer
 {
 public:
 
-	enum TrafficGenMessageKinds{
+	/** @brief The message kinds used by this layer.*/
+	enum TrafficGenMessageKinds {
+		/** @brief Schedules sending of a new message.*/
 		SEND_PACKET_TIMER = LAST_BASE_APPL_MESSAGE_KIND,
+		/** @brief The kind for a packet send by this layer.*/
 		TRAFFIC_GEN_PACKET,
+		/** @brief Sub classing layers shoudl begin their own kinds at this value.*/
 		LAST_TRAFFIC_GEN_MESSAGE_KIND
 	};
 
 protected:
 
+	/** @brief The time it takes to transmit a packet.
+	 * Bit length divided by bitrate.*/
 	simtime_t packetTime;
+
+	/** @brief Packets per packet time. More or less the load
+	 * this layer should generate.*/
 	double pppt;
+
+	/** @brief The number of packets to send at once.*/
 	int burstSize;
+
+	/** @brief The remainign apckets to send for the current burst.*/
 	int remainingBurst;
 
+	/** @brief SHortcut to blackboards Packet category.*/
 	int catPacket;
 
+	/** @brief Tracks the number of packets dropped so far.*/
 	long nbPacketDropped;
 
+	/** @brief Timer message to schedule next packet send.*/
 	cMessage *delayTimer;
 
+	/** @brief Pointer to world utility module.*/
 	BaseWorldUtility* world;
 
 public:
-
-
-protected:
-
+	/** @brief Omnet++ Initialisation.*/
 	virtual void initialize(int stage);
 
+	/** @brief Called at the end of the simulation to record statistics.*/
 	virtual void finish();
+
+protected:
 
 	/** @brief Handle self messages such as timer... */
 	virtual void handleSelfMsg(cMessage *msg);

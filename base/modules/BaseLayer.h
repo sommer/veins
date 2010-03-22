@@ -39,7 +39,7 @@ class BaseLayer : public BatteryAccess
 {
  protected:
 
-    /** @brief gate id*/
+    /** @name gate ids*/
     /*@{*/
     int upperGateIn;
     int upperGateOut;

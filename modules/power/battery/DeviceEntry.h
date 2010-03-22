@@ -26,20 +26,28 @@
  * being drawn by the device, the activity and time for which ongoing
  * current draw is being charged. The sum over the activities is the
  * total energy consumed by the device, but the sum of times is the
- * total active time, not ncessarily the total lifetime.
+ * total active time, not necessarily the total lifetime.
  *
  * @ingroup power
  */
 class DeviceEntry
   {
   public:
+	/** @brief Name of the device.*/
     opp_string  name;
+    /** @brief Actual current drawn.*/
     double 	draw;
+    /** @brief The activity/account currently drawing power.*/
     int		currentActivity;
+    /** @brief The amount of different power drawing activities/acounts this
+     * device has.*/
     int 	numAccts;
+    /** @brief The power already drawn for each activity/account.*/
     double	*accts;
+    /** @brief The time spend for each activity/account.*/
     simtime_t	*times;
 
+    /** @brief New empty device entry.*/
     DeviceEntry() {
       name = NULL;
       draw = 0.0;

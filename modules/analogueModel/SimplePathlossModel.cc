@@ -58,6 +58,7 @@ void SimplePathlossModel::filterSignal(Signal& s){
 
 	//is our signal to attenuate defined over frequency?
 	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency);
+	debugEV << "Signal contains frequency dimension: " << (hasFrequency ? "yes" : "no") << endl;
 
 	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain : DimensionSet::timeDomain;
 

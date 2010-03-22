@@ -23,12 +23,16 @@
 
 class UnitDisk: public ConnectionManager
 {
-	protected:
-		double radioRange;
-	public:
-		//Module_Class_Members(UnitDisk, ConnectionManager, 0);
-		void initialize(int stage);
-    	virtual double calcInterfDist() {return radioRange;}
+protected:
+	/** @brief Holds the maximum interference range.*/
+	double radioRange;
+
+public:
+	/** @brief Called by Omnet++ during initialisation.*/
+	void initialize(int stage);
+
+	/** @brief Returns a constant value as maximum interference range.*/
+	virtual double calcInterfDist() { return radioRange; }
 };
 
 #endif

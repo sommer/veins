@@ -43,7 +43,7 @@ void RandomFreqTimeModel::filterSignal(Signal& s){
 		if(freq > 2.465)
 			freq = 2.472;
 
-		pos.setArgValue(frequency, freq); // update arguments position in frequency dimension
+		pos.setArgValue(frequency, freq*1e9); // update arguments position in frequency dimension
 
 		//create time entries for this frequency
 		//the comparision to "sEnd + (interval * 0.5)" is used to avoid floating point errors
