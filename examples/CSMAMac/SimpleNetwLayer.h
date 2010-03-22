@@ -13,7 +13,8 @@
 #include <BaseModule.h>
 #include <NetwPkt_m.h>
 #include <SimpleAddress.h>
-#include <MacControlInfo.h>
+#include <NetwToMacControlInfo.h>
+#include <MacToNetwControlInfo.h>
 
 /**
  * @brief This is an implementation of a simple network layer
@@ -84,7 +85,7 @@ protected:
 		helloWorld->setSeqNum(runningSeqNumber++);
 		helloWorld->setTtl(maxTtl);
 
-		MacControlInfo* cInfo = new MacControlInfo(L2BROADCAST);
+		NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(L2BROADCAST);
 
 		helloWorld->setControlInfo(cInfo);
 
@@ -105,7 +106,7 @@ protected:
 		fwd->setSeqNum(pkt->getSeqNum());
 		fwd->setTtl(pkt->getTtl() - 1);
 
-		MacControlInfo* cInfo = new MacControlInfo(nextHop);
+		NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(nextHop);
 
 		fwd->setControlInfo(cInfo);
 
@@ -126,9 +127,9 @@ protected:
 		//do we already know him?
 		if(routingTable.count(srcIP) == 0){
 			//if not add him with the mac address of the previous hop
-			MacControlInfo* cInfo = static_cast<MacControlInfo*>(pkt->getControlInfo());
+			MacToNetwControlInfo* cInfo = static_cast<MacToNetwControlInfo*>(pkt->getControlInfo());
 
-			int prevHop = cInfo->getNextHopMac();
+			int prevHop = cInfo->getLastHopMac();
 
 			routingTable[srcIP] = prevHop;
 
@@ -175,7 +176,7 @@ protected:
 		jabber->setSeqNum(runningSeqNumber++);
 		jabber->setTtl(maxTtl);
 
-		MacControlInfo* cInfo = new MacControlInfo(it->second);
+		NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(it->second);
 
 		jabber->setControlInfo(cInfo);
 

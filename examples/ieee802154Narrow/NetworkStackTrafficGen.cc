@@ -14,7 +14,7 @@
 //
 
 #include "NetworkStackTrafficGen.h"
-#include "MacControlInfo.h"
+#include "NetwToMacControlInfo.h"
 #include <cassert>
 #include <Packet.h>
 #include <BaseMacLayer.h>
@@ -114,7 +114,7 @@ void NetworkStackTrafficGen::sendBroadcast()
 	pkt->setSrcAddr(myNetwAddr);
 	pkt->setDestAddr(destination);
 
-	pkt->setControlInfo(new MacControlInfo(destination));
+	pkt->setControlInfo(new NetwToMacControlInfo(destination));
 
 	Packet p(packetLength, 0, 1);
 	world->publishBBItem(catPacket, &p, -1);

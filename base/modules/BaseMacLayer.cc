@@ -21,7 +21,8 @@
 
 
 #include "BaseMacLayer.h"
-#include "MacControlInfo.h"
+#include "MacToNetwControlInfo.h"
+#include "NetwToMacControlInfo.h"
 #include "SimpleAddress.h"
 
 #include <cassert>
@@ -57,7 +58,7 @@ void BaseMacLayer::initialize(int stage)
 cPacket* BaseMacLayer::decapsMsg(MacPkt* msg)
 {
     cPacket *m = msg->decapsulate();
-    m->setControlInfo(new MacControlInfo(msg->getSrcAddr()));
+    m->setControlInfo(new MacToNetwControlInfo(msg->getSrcAddr(), 0));
     // delete the macPkt
     delete msg;
     coreEV << " message decapsulated " << endl;
@@ -76,7 +77,7 @@ MacPkt* BaseMacLayer::encapsMsg(cPacket *netwPkt)
 
     // copy dest address from the Control Info attached to the network
     // message by the network layer
-    MacControlInfo* cInfo = static_cast<MacControlInfo*>(netwPkt->removeControlInfo());
+    NetwToMacControlInfo* cInfo = static_cast<NetwToMacControlInfo*>(netwPkt->removeControlInfo());
 
     coreEV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
     pkt->setDestAddr(cInfo->getNextHopMac());

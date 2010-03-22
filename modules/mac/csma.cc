@@ -33,6 +33,8 @@
 #include <BaseArp.h>
 #include <MacToPhyControlInfo.h>
 #include <PhyToMacControlInfo.h>
+#include <NetwToMacControlInfo.h>
+#include <MacToNetwControlInfo.h>
 #include <SimpleAddress.h>
 //#include <Consts802154.h>
 
@@ -164,8 +166,8 @@ void csma::handleUpperMsg(cMessage *msg) {
 	//MacPkt *macPkt = encapsMsg(msg);
 	MacPkt *macPkt = new MacPkt(msg->getName());
 	macPkt->setBitLength(headerLength);
-	MacControlInfo* cInfo =
-			static_cast<MacControlInfo*> (msg->removeControlInfo());
+	NetwToMacControlInfo* cInfo =
+			static_cast<NetwToMacControlInfo*> (msg->removeControlInfo());
 	EV<<"CSMA received a message from upper layer, name is " << msg->getName() <<", CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
 	int dest = cInfo->getNextHopMac();
 	macPkt->setDestAddr(dest);
@@ -840,7 +842,7 @@ void csma::handleLowerControl(cMessage *msg) {
 
 cPacket *csma::decapsMsg(MacPkt * macPkt) {
 	cPacket * msg = macPkt->decapsulate();
-	msg->setControlInfo(new MacControlInfo(macPkt->getSrcAddr()));
+	msg->setControlInfo(new MacToNetwControlInfo(macPkt->getSrcAddr(), 0));
 	return msg;
 }
 

@@ -36,7 +36,6 @@
 #include "BaseMacLayer.h"
 #include <DroppedPacket.h>
 #include <MacPkt_m.h>
-#include "MacControlInfo.h"
 
 /**
  * @brief Generic CSMA Mac-Layer.

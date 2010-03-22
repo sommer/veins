@@ -13,33 +13,41 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef MACTOUPPERCONTROLINFO_H_
-#define MACTOUPPERCONTROLINFO_H_
+#ifndef MACTONETWCONTROLINFO_H_
+#define MACTONETWCONTROLINFO_H_
 
 #include <omnetpp.h>
 
-// TODO consider that class MacControlInfo will be separated into two classes (one for each direction)
 /**
  * @brief Stores control information from mac to upper layer.
  *
- * Holds the bit error rate of the transmission.
+ * Holds the bit error rate of the transmission as well as the
+ * MAC address of the last hop.
  *
+ * @ingroup baseUtils
  * @ingroup macLayer
+ * @ingroup netwLayer
+ *
+ * @author Karl Wessel
  */
-class MacToUpperControlInfo : public cObject {
+class MacToNetwControlInfo : public cObject {
 protected:
 	/** @brief The bit error rate for this packet.*/
 	double bitErrorRate;
 
+	/** @brief MAC address of the last hop of this packet.*/
+	long lastHopMac;
+
 public:
 	/**
-	 * @brief Initializes with the passed bit error rate.
+	 * @brief Initializes with the passed last hop address and bit error rate.
 	 */
-	MacToUpperControlInfo(double ber):
-		bitErrorRate(ber)
+	MacToNetwControlInfo(long lastHop, double ber):
+		bitErrorRate(ber),
+		lastHopMac(lastHop)
 	{}
 
-	virtual ~MacToUpperControlInfo() {}
+	virtual ~MacToNetwControlInfo() {}
 
 	/**
 	 * @brief Returns the bit error rate for this packet.
@@ -48,6 +56,13 @@ public:
     {
         return bitErrorRate;
     }
+
+	/**
+	 * @brief Returns the MAC address of the packets last hop.
+	 */
+	long getLastHopMac() const {
+		return lastHopMac;
+	}
 };
 
-#endif /* MACTOUPPERCONTROLINFO_H_ */
+#endif /* MACTONETWCONTROLINFO_H_ */

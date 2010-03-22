@@ -22,7 +22,7 @@
 
 #include "BaseNetwLayer.h"
 #include "NetwControlInfo.h"
-#include "MacControlInfo.h"
+#include "NetwToMacControlInfo.h"
 #include "BaseMacLayer.h"
 
 #include <cassert>
@@ -92,7 +92,7 @@ NetwPkt* BaseNetwLayer::encapsMsg(cPacket *appPkt) {
         macAddr = arp->getMacAddr(netwAddr);
     }
 
-    pkt->setControlInfo(new MacControlInfo(macAddr));
+    pkt->setControlInfo(new NetwToMacControlInfo(macAddr));
 
     //encapsulate the application packet
     pkt->encapsulate(appPkt);

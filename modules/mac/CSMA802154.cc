@@ -16,10 +16,10 @@
 #include "CSMA802154.h"
 #include <DeciderResult802154Narrow.h>
 #include <PhyToMacControlInfo.h>
+#include <MacToNetwControlInfo.h>
 
 Define_Module(CSMA802154);
 
-#include <MacToUpperControlInfo.h>
 
 void CSMA802154::initialize(int stage)
 {
@@ -33,6 +33,6 @@ cPacket *CSMA802154::decapsMsg(MacPkt * macPkt) {
 	PhyToMacControlInfo* cinfo = static_cast<PhyToMacControlInfo*> (macPkt->getControlInfo());
 	const DeciderResult802154Narrow* result = static_cast<const DeciderResult802154Narrow*> (cinfo->getDeciderResult());
 	double ber = result->getBER();
-	msg->setControlInfo(new MacToUpperControlInfo(ber));
+	msg->setControlInfo(new MacToNetwControlInfo(macPkt->getSrcAddr(), ber));
 	return msg;
 }

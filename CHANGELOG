@@ -8,6 +8,7 @@ v1.2
 + BaseMobilitys host coordinates can be set to random values indepentently now
 + gave networks of examples more meaningfull and consistent names (same as the example)
 + renamed executeables for examples from "MiXiM" to <example name>
++ divided MacControlInfo into MacToNetwControlInfo and NetwToMacControlInfo
 * fixed memory leak when propagation delay is simulated
 * fixed a bug in the calculated receiving power of a signal which caused it to be greater zero before 
   and after its signal in certain cases

@@ -19,9 +19,10 @@
 
 
 #include "Mac80211.h"
-#include "MacControlInfo.h"
 #include "MacToPhyControlInfo.h"
+#include <MacToNetwControlInfo.h>
 #include <PhyToMacControlInfo.h>
+#include <NetwToMacControlInfo.h>
 #include "SimpleAddress.h"
 #include <FWMath.h>
 #include <Decider80211.h>
@@ -181,7 +182,7 @@ Mac80211Pkt *Mac80211::encapsMsg(cPacket * netw)
 
     // copy dest address from the Control Info attached to the network
     // mesage by the network layer
-    MacControlInfo* cInfo = static_cast<MacControlInfo*>(netw->removeControlInfo());
+    NetwToMacControlInfo* cInfo = static_cast<NetwToMacControlInfo*>(netw->removeControlInfo());
 
     EV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
     pkt->setDestAddr(cInfo->getNextHopMac());
@@ -202,7 +203,7 @@ Mac80211Pkt *Mac80211::encapsMsg(cPacket * netw)
 //TODO: See if we can use the BaseMacLayers decapsMsg-method here
 cMessage *Mac80211::decapsMsg(Mac80211Pkt *frame) {
     cMessage *m = frame->decapsulate();
-    m->setControlInfo(new MacControlInfo(frame->getSrcAddr()));
+    m->setControlInfo(new MacToNetwControlInfo(frame->getSrcAddr(), 0));
     EV << " message decapsulated " << endl;
     return m;
 }
