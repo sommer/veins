@@ -74,6 +74,23 @@
  *
  * At the end of the transmission BasePhyLayer tells ChannelInfo that the
  * AirFrame has ended.
+ *
+ * \image html RadioStatemachine.png "Behaviour and cooperation of Radio, RadioStateAnalogueModel and ChannelInfo under control of BasePhyLayer"
+ *
+ * The statemachine-diagram above gives an overview on how Radio,
+ * RadioStateAnalogueModel (RSAM) and ChannelInfo work together under control
+ * of BasePhyLayer.
+ *
+ * The coloured transitions and event-descriptions point out important
+ * events that are propagated in the system by coordinator BasePhyLayer.
+ *
+ * NOTE: (Global) events in the diagram are denoted in the form "module.event",
+ * thus they only affect the particular module and are easier to find. Inside a module, an event is
+ * denoted without this prefix "module.". The term "module" is used here not in the
+ * sense of an OMNeT-module.
+ *
+ * The events "BasePhyLayer.AirFrame started", "BasePhyLayer.AirFrame ended"
+ * and "BasePhyLayer.E1" come from outside.
  */
 
 /**
