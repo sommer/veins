@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100318-11:02:18-9987
+Assigned runID=General-0-20100329-16:34:58-10730
 Setting up network `OmnetTest'...
 Initializing...
 Initializing module OmnetTest, stage 0
@@ -83,7 +83,7 @@ Passed: RadioState is correct
 SetSwitchTime test passed.
 ------ Testing stuff for the RadioStateAnalogueModel ------
 ---testRSAMConstructor
-Passed: Default constructor sets tracking on.
+Passed: Default constructor sets tracking off.
 Passed: Default constructor sets initialTime to 0.
 Passed: Default constructor creates one-elem list.
 Passed: DiagRSAM(false) sets tracking off.
