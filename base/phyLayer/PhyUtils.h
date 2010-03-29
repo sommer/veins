@@ -27,9 +27,13 @@ class RSAMMapping;
  * a Signal by use of the AnalogueModels really is the power received,
  * means if the radio is not in receiving state then this is reflected
  * by the received power of the signal. Therefore the Decider which
- * evaluates the receiving power doesn't has to care about if the
+ * evaluates the receiving power doesn't have to care about if the
  * radio was in correct state to actually receive a signal. It
  * just has to check if the receiving power was/is high enough.
+ *
+ * A state-machine-diagram for Radio, RadioStateAnalogueModel and ChannelInfo showing
+ * how they work together under control of BasePhyLayer as well as some documentation
+ * on how RadioStateAnalogueModel works is available in @ref phyLayer.
  *
  * @ingroup phyLayer
  */
@@ -44,7 +48,7 @@ protected:
 	 * @brief Data structure for the list elements.
 	 *
 	 * Consists basically of a pair of a simtime_t and a double
-	 * value (simple timestamp).
+	 * value (simple time-stamp).
 	 */
 	class ListEntry
 	{
@@ -103,23 +107,23 @@ protected:
 	 */
 	bool currentlyTracking;
 
-	/**  @brief Data structure to track when the Radio is receiving.*/
-	std::list<ListEntry> radioIsReceiving;
+	/**  @brief Data structure to track the Radios attenuation over time.*/
+	std::list<ListEntry> radioStateAttenuation;
 
 public:
 
 	/**
 	 * @brief Standard constructor for a RadioStateAnalogueModel instance
 	 *
-	 * Default setting is: tracking on
+	 * Default setting is: tracking off
 	 */
 	RadioStateAnalogueModel(double initValue,
-							bool currentlyTracking = true,
+							bool currentlyTracking = false,
 							simtime_t initTime = 0)
 		: currentlyTracking(currentlyTracking)
 	{
-		// put the initial Timestamp to the list
-		radioIsReceiving.push_back(ListEntry(initTime, initValue));
+		// put the initial time-stamp to the list
+		radioStateAttenuation.push_back(ListEntry(initTime, initValue));
 	}
 
 	virtual ~RadioStateAnalogueModel() {}
@@ -143,7 +147,7 @@ public:
 
 	/**
 	 * @brief Cleans up all stored information strictly before the given time-point,
-	 * i.e. all elements with their timepoint strictly smaller than given key. That
+	 * i.e. all elements with their time-point strictly smaller than given key. That
 	 * means multiple entries with same time are preserved.
 	 *
 	 * Intended to be used by the PhyLayer
@@ -176,6 +180,10 @@ public:
  *
  * For this basic version we assume a minimal attenuation when the Radio is in
  * state RX, and a maximum attenuation otherwise.
+ *
+ * A state-machine-diagram for Radio, RadioStateAnalogueModel and ChannelInfo showing
+ * how they work together under control of BasePhyLayer as well as some documentation
+ * on how RadioStateAnalogueModel works is available in @ref phyLayer.
  *
  * @ingroup phyLayer
  */
@@ -540,7 +548,7 @@ public:
 		signalEnd(signalEnd)
 	{
 		assert(rsam);
-		assert( !(signalStart < rsam->radioIsReceiving.front().getTime()) );
+		assert( !(signalStart < rsam->radioStateAttenuation.front().getTime()) );
 	}
 
 	virtual ~RSAMMapping() {}

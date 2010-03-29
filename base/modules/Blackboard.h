@@ -22,8 +22,8 @@
  *
  * Another, somewhat similar, problem appears if programmers want to
  * implement new protocols that integrate information from other
- * protocol layers. Usually, researchers have to reimplement at least
- * parts of the protocol tp expose the necessary information -- making
+ * protocol layers. Usually, researchers have to re-implement at least
+ * parts of the protocol to expose the necessary information -- making
  * it less useful for other researchers as this usually increases the
  * coupling of the protocols.
  *
@@ -146,7 +146,7 @@ protected:
     /**
      * Subscribe to changes of a specific category. This time using
      * the numeric id. This implies that you have previously called
-     * subscribe with the apprpriate category class.
+     * subscribe with the appropriate category class.
      *
      * Both subscribe functions subscribe also to children of this
      * category class.
@@ -194,7 +194,7 @@ protected:
     int  getCategory(const BBItem* details);
     //@}
 
-    /** @brief We define two initialisation stages.*/
+    /** @brief We define two initialization stages.*/
     virtual int numInitStages() const {
 		return 2;
 	}
