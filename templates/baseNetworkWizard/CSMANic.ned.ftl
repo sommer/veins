@@ -1,9 +1,10 @@
+<#if protocolName=="CSMA">
 <#if nedPackageName!="">package ${nedPackageName};</#if>
 
 import org.mixim.modules.mac.CSMAMacLayer;
 import org.mixim.modules.phy.PhyLayer;
 
-module BaseNic 
+module CSMANic 
 {
     gates:
         input upperGateIn; // to upper layers
@@ -36,4 +37,5 @@ module BaseNic
 
         radioIn --> phy.radioIn;
 }
+</#if>
 

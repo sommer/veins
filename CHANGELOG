@@ -9,6 +9,7 @@ v1.2
 + gave networks of examples more meaningfull and consistent names (same as the example)
 + renamed executeables for examples from "MiXiM" to <example name>
 + divided MacControlInfo into MacToNetwControlInfo and NetwToMacControlInfo
++ added a wizard to create a basic MiXiM-network as well as a wizard for creating your own AnalogueModel
 * fixed memory leak when propagation delay is simulated
 * fixed a bug in the calculated receiving power of a signal which caused it to be greater zero before 
   and after its signal in certain cases

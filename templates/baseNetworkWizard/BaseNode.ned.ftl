@@ -1,5 +1,12 @@
 <#if nedPackageName!="">package ${nedPackageName};</#if>
 
+<#assign nicType="CSMANic">
+<#if protocolName=="802.11">
+<#assign nicType="Nic80211">
+import org.mixim.modules.nic.Nic80211;
+</#if>
+
+
 import org.mixim.base.modules.*;
 
 module BaseNode
@@ -32,7 +39,7 @@ module BaseNode
             parameters:
                 @display("p=60,108;i=prot1");
         }
-        nic: BaseNic {
+        nic: ${nicType} {
             parameters:
                 @display("p=60,166;i=iface");
         }

@@ -1,5 +1,4 @@
 [General]
-cmdenv-config-name = perftest
 cmdenv-express-mode = true
 network = ${targetTypeName}
 
@@ -7,7 +6,6 @@ network = ${targetTypeName}
 ##########################################################
 #			Simulation parameters                        #
 ##########################################################
-tkenv-default-config = 
 **.**.coreDebug = false
 **.playgroundSizeX = 300m
 **.playgroundSizeY = 300m
@@ -20,48 +18,11 @@ tkenv-default-config =
 **.world.useTorus = false
 **.world.use2D = false
 
-##########################################################
-#			         channel parameters                  #
-##########################################################
-**.connectionManager.sendDirect = false
-**.connectionManager.pMax = 100mW
-**.connectionManager.sat = -84dBm
-**.connectionManager.alpha = 3.0
-**.connectionManager.carrierFrequency = 2.412e+9Hz
-
-
-################ PhyLayer parameters #####################
-**.node[*].nic.phy.usePropagationDelay = false
-**.node[*].nic.phy.thermalNoise = -100dBm
-**.node[*].nic.phy.useThermalNoise = true
-        
-**.node[*].nic.phy.analogueModels = xmldoc("config.xml")
-**.node[*].nic.phy.decider = xmldoc("config.xml")
-
-**.node[*].nic.phy.timeRXToTX = 0.00021s
-**.node[*].nic.phy.timeRXToSleep = 0.000031s
-
-**.node[*].nic.phy.timeTXToRX = 0.00012s
-**.node[*].nic.phy.timeTXToSleep = 0.000032s
-
-**.node[*].nic.phy.timeSleepToRX = 0.000102s
-**.node[*].nic.phy.timeSleepToTX = 0.000203s
-
-**.node[*].nic.phy.sensitivity = -80dBm
-**.node[*].nic.phy.maxTXPower = 100.0mW
-
-**.node[*].nic.phy.initialRadioState = 0
-
-################ MAC layer parameters ####################
-**.node[*].nic.mac.queueLength = 5
-**.node[*].nic.mac.headerLength = 24bit
-**.node[*].nic.mac.slotDuration = 0.04s
-**.node[*].nic.mac.difs = 0.0005s
-**.node[*].nic.mac.maxTxAttempts = 14
-**.node[*].nic.mac.defaultChannel = 0
-**.node[*].nic.mac.bitrate = 15360bps
-**.node[*].nic.mac.contentionWindow = 20
-**.node[*].nic.mac.txPower = 100mW  # [mW]
+<#if protocolName="802.11">
+<#include "80211.ini.fti">
+<#else>
+<#include "CSMA.ini.fti">
+</#if>
 
 ################ NETW layer parameters ####################
 
