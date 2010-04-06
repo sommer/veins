@@ -60,7 +60,7 @@ void SimplePathlossModel::filterSignal(Signal& s){
 	SimplePathlossConstMapping* attMapping = new SimplePathlossConstMapping(
 													domain,
 													this,
-													wavelength*wavelength*distFactor);
+													distFactor);
 
 	/* at last add the created attenuation mapping to the signal */
 	s.addAttenuation(attMapping);
