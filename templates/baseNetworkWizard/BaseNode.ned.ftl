@@ -1,9 +1,13 @@
 <#if nedPackageName!="">package ${nedPackageName};</#if>
 
-<#assign nicType="CSMANic">
 <#if protocolName=="802.11">
 <#assign nicType="Nic80211">
 import org.mixim.modules.nic.Nic80211;
+<#elseif protocolName=="CSMA using old CSMAMacLayer">
+<#assign nicType="CSMANic">
+<#else>
+<#assign nicType="NicCSMA">
+import org.mixim.modules.nic.NicCSMA;
 </#if>
 
 

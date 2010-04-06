@@ -19,6 +19,7 @@
 		<combo x:id="protocolName" x:style="READ_ONLY|BORDER">
 			<add x:p0="CSMA"/>
 			<add x:p0="802.11"/>
+			<add x:p0="CSMA using old CSMAMacLayer"/>
 			<!-- <add x:p0="802.15.4"/> -->
 			<!-- <add x:p0="802.15.4a (UWB)"/> -->
 		</combo>

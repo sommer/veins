@@ -1,4 +1,4 @@
-<#if protocolName=="CSMA">
+<#if protocolName=="CSMA using old CSMAMacLayer">
 <#if nedPackageName!="">package ${nedPackageName};</#if>
 
 import org.mixim.modules.mac.CSMAMacLayer;

@@ -1,15 +1,28 @@
-package org.mixim.examples.baseNetwork;
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program.  If not, see http://www.gnu.org/licenses/.
+// 
 
-import org.mixim.modules.mac.CSMAMacLayer;
+package org.mixim.modules.nic;
+
 import org.mixim.modules.phy.PhyLayer;
+import org.mixim.modules.mac.csma;
 
 //
-// This NIC implements an CSMA network interface card using
-// the CSMAMacLayer module
+// This module implements a CSMA network interface card using
+// the "csma" MAC layer module
 //
-// @see CSMAMacLayer
-//
-module BaseNic 
+module NicCSMA like INic
 {
     gates:
         input upperGateIn; // to upper layers
@@ -19,7 +32,7 @@ module BaseNic
 		input radioIn; // radioIn gate for sendDirect
 
     submodules:
-        mac: CSMAMacLayer {
+        mac: csma {
             @display("p=96,87;i=block/layer");
         }
         
@@ -39,5 +52,6 @@ module BaseNic
         phy.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- mac.lowerControlOut;
 
         radioIn --> phy.radioIn;
+
 }
 

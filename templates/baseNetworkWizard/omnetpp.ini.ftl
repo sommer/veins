@@ -20,6 +20,8 @@ network = ${targetTypeName}
 
 <#if protocolName="802.11">
 <#include "80211.ini.fti">
+<#elseif protocolName="CSMA using old CSMAMacLayer">
+<#include "CSMAMacLayer.ini.fti">
 <#else>
 <#include "CSMA.ini.fti">
 </#if>

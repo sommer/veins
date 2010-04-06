@@ -33,26 +33,10 @@
 ################ MAC layer parameters ####################
 **.node[*].nic.mac.queueLength = 5
 **.node[*].nic.mac.headerLength = 24bit
+**.node[*].nic.mac.slotDuration = 0.04s
+**.node[*].nic.mac.difs = 0.0005s
+**.node[*].nic.mac.maxTxAttempts = 14
+**.node[*].nic.mac.defaultChannel = 0
 **.node[*].nic.mac.bitrate = 15360bps
-**.node[*].nic.mac.txPower = 100mW
-**.node[*].nic.mac.stats = true
-**.node[*].nic.mac.trace = true
-
-**.node[*].nic.mac.ccaDetectionTime = 0.0005s
-**.node[*].nic.mac.aTurnaroundTime = 0s #no radio switch times
-**.node[*].nic.mac.rxSetupTime = 0s #no radio switch times
-
-**.node[*].nic.mac.backoffMethod = "linear"
-**.node[*].nic.mac.macMaxCSMABackoffs = 14
 **.node[*].nic.mac.contentionWindow = 20
-**.node[*].nic.mac.aUnitBackoffPeriod = 0.04s
-
-# MAC Ack settings (disabled)
-**.node[*].nic.mac.useMACAcks = false
-**.node[*].nic.mac.ackLength = 0bit
-**.node[*].nic.mac.macMaxFrameRetries = 0
-**.node[*].nic.mac.macAckWaitDuration = 0s
-**.node[*].nic.mac.sifs = 0s
-
-**.node[*].nic.mac.macMinBE = 0 #only used for exponential backoffs
-**.node[*].nic.mac.macMaxBE = 0 #only used for exponential backoffs
+**.node[*].nic.mac.txPower = 100mW  # [mW]

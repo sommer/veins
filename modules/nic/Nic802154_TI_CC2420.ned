@@ -36,7 +36,7 @@ import org.mixim.modules.mac.CSMA802154;
 //"Nic802154_TI_CC2420_Decider.xml" from "modules/nic/" to your simulation directory.
 // @author Jerome Rousselot
 //
-module Nic802154_TI_CC2420
+module Nic802154_TI_CC2420 like INic
 {
     parameters:
         // power consumption from boards (at 3.3V)

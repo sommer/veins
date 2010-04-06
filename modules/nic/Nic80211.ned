@@ -28,7 +28,7 @@ import org.mixim.modules.phy.PhyLayer;
 // @see Mac80211, Decider80211
 // @author Marc Loebbers, Karl Wessel (port for MiXiM)
 //
-module Nic80211 
+module Nic80211 like INic
 {
     gates:
         input upperGateIn; // to upper layers
@@ -46,8 +46,6 @@ module Nic80211
             headerLength = 192bit;
             @display("p=106,157;i=block/process_s");
         }
-		//radio: SingleChannelRadio;
-	    // display: "p=200,30;b=30,25";
 
     connections:
         mac.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperGateOut;
