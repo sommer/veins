@@ -24,12 +24,12 @@ simple BaseLayer
         bool notAffectedByHostState = default(false);
         
     gates:
-        input upperGateIn; // from application layer
-        output upperGateOut; // to application layer
-        input upperControlIn; // control from application layer
-        output upperControlOut; // control to application layer
-        input lowerGateIn; // from NIC
-        output lowerGateOut; // to NIC
-        input lowerControlIn; // control from NIC
-        output lowerControlOut; // control to NIC
+        input upperGateIn; // from upper layer
+        output upperGateOut; // to uppe layer
+        input upperControlIn; // control from upper layer
+        output upperControlOut; // control to upper layer
+        input lowerGateIn; // from lower layer
+        output lowerGateOut; // to lower layer
+        input lowerControlIn; // control from lower layer
+        output lowerControlOut; // control to lower layer
 }

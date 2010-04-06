@@ -1,27 +1,3 @@
-//***************************************************************************
-// * file:        Network.ned
-// *
-// * author:      Marc Loebbers, der Schoenste!
-// *
-// * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
-// *              Technische Universitaet Berlin, Germany.
-// *
-// *              This program is free software; you can redistribute it 
-// *              and/or modify it under the terms of the GNU General Public 
-// *              License as published by the Free Software Foundation; either
-// *              version 2 of the License, or (at your option) any later 
-// *              version.
-// *              For further information see file COPYING 
-// *              in the top level directory
-// ***************************************************************************
-// * part of:     framework implementation developed by tkn
-// * description: a host in the 802.11 test network
-// *              
-// ***************************************************************************
-// * changelog:   $Revision: 277 $
-// *              last modified:   $Date: 2006-05-08 11:18:03 +0200 (Mo, 08 Mai 2006) $
-// *              by:              $Author: koepke $
-// **************************************************************************/
 package org.mixim.examples.Mac80211;
 
 import org.mixim.modules.mobility.ConstSpeedMobility;

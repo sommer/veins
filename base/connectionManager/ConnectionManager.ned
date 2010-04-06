@@ -34,7 +34,7 @@ package org.mixim.base.connectionManager;
 // that the maximal interference distance is exeeded.
 //       
 // @author Steffen Sroka, Daniel Willkomm, Karl Wessel
-// @see BasicMobility
+// @see BaseMobility
 //
 simple ConnectionManager
 {

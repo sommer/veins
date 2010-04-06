@@ -23,22 +23,23 @@
 //# Author:  Laura Marie Feeney 
 //#
 //######################################################################
-// Based on Nic80211 (above)
-//
-// Extends Nic80211 to use the Energy Framework to record battery
-// consumption.  The relevant changes for communicating with the
-// Battery module are in snrEval; core 80211 functionality is not
-// changed.
 
-// parameters: note that the NIC module owns the hardware parameters
-// to allow external access/alternate implementations.
-//
-//      {sleep,idle,rx,tx}Current: respective current in mA 
 package org.mixim.modules.nic;
 
 import org.mixim.modules.mac.Mac80211;
 import org.mixim.modules.phy.PhyLayerBattery;
 
+//
+// Based on Nic80211
+//
+// Extends Nic80211 to use the Energy Framework to record battery
+// consumption.  The relevant changes for communicating with the
+// Battery module are in PhyLayerBattery; core 80211 functionality 
+// is not changed.
+//
+// parameters: note that the NIC module owns the hardware parameters
+// to allow external access/alternate implementations.
+//
 module Nic80211Battery like INic
 {
     parameters:

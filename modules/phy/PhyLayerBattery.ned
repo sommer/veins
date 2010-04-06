@@ -1,8 +1,8 @@
 package org.mixim.modules.phy;
 
-// Physical layer module which knows how to initialize the Deciders
-// and AnalogueModels from the modules directory.
-// See the classes documentation for details.
+//
+// Extends PhyLayer module with power consumption support
+//
 simple PhyLayerBattery extends PhyLayer
 {
     parameters:

@@ -811,6 +811,8 @@ void csma::handleLowerControl(cMessage *msg) {
 		executeMac(EV_FRAME_TRANSMITTED, msg);
 	} else if (msg->getKind() == BaseDecider::PACKET_DROPPED) {
 		EV<< "control message: PACKED DROPPED" << endl;
+	} else if (msg->getKind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
+		EV<< "control message: RADIO_SWITCHING_OVER" << endl;
 	} else {
 		EV << "Invalid control message type (type=NOTHING) : name="
 		<< msg->getName() << " modulesrc="

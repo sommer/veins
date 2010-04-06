@@ -9,21 +9,22 @@
 //# merchantability and fitness for a particular purpose.
 //#
 //######################################################################
-// module for collecting battery statistics
-// 
-//      detail: write per-activity and per-device statistics to omnetpp.sca
-//              (if false, only total energy and lifetime are written)
-//
-//      timeSeries: subscribe to battery status and record time series
-//              data in omnetpp.vec (resolution depends on battery's 
-//              publishDelta)
+
 package org.mixim.modules.power.battery;
 
+//
+// module for collecting battery statistics
+//
 simple BatteryStats
 {
     parameters:
         bool notAffectedByHostState = true;
         bool debug;
+        // write per-activity and per-device statistics to omnetpp.sca
+		// (if false, only total energy and lifetime are written)
         bool detail;
+        // subscribe to battery status and record time series
+		// data in omnetpp.vec (resolution depends on battery's 
+		// publishDelta)
         bool timeSeries;
 }

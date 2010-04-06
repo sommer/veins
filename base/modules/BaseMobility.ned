@@ -5,7 +5,7 @@ package org.mixim.base.modules;
 // BaseMobility itself defines a static mobility
 // pattern (means only a position, no movement).
 // Mobility modules which extend from this module
-// willd efien more complex movement patterns.
+// will define more complex movement patterns.
 simple BaseMobility like IBaseMobility
 {
     parameters:

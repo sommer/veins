@@ -19,7 +19,6 @@
 package org.mixim.modules.nic;
 
 import org.mixim.modules.mac.Mac80211;
-//import    "SingleChannelRadio",
 import org.mixim.modules.phy.PhyLayer;
 
 //
