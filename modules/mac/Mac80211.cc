@@ -599,7 +599,6 @@ void Mac80211::handleEndContentionTimer()
         remainingBackoff = 0;
         // unicast packet
         phy->setRadioState(Radio::TX);
-        //OLD: radio->switchToSend();
         if (!nextIsBroadcast)
         {
             if(rtsCts(fromUpperLayer.front())) {
@@ -698,7 +697,6 @@ void Mac80211::handleEndSifsTimer()
 
     Mac80211Pkt *frame = static_cast<Mac80211Pkt *>(endSifs->getContextPointer());
     phy->setRadioState(Radio::TX);
-    //OLD: radio->switchToSend();
     switch (frame->getKind())
     {
     case RTS:
@@ -944,7 +942,7 @@ void Mac80211::beginNewCycle()
         	ChannelState channel = phy->getChannelState();
             EV << simTime() << " do contention: medium = " << channel.info() << ", backoff = "
                <<  remainingBackoff << endl;
-            //OLD:if(medium == MediumIndication::IDLE) {
+
             if(channel.isIdle()) {
             	senseChannelWhileIdle(currentIFS + remainingBackoff);
                 //scheduleAt(simTime() + currentIFS + remainingBackoff, contention);
@@ -958,7 +956,7 @@ void Mac80211::beginNewCycle()
         	ChannelState channel = phy->getChannelState();
             EV << simTime() << " do contention: medium = " << channel.info() << ", backoff = "
                <<  remainingBackoff << endl;
-            //OLD:if(medium == MediumIndication::IDLE) {
+
             if(channel.isIdle()) {
             	senseChannelWhileIdle(currentIFS + remainingBackoff);
                 //scheduleAt(simTime() + currentIFS + remainingBackoff, contention);
@@ -1036,7 +1034,6 @@ Signal* Mac80211::createSignal(simtime_t start, simtime_t length, double power, 
 /*
 void Mac80211::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
-	//TODO: ended porting here!
     Enter_Method_Silent();
     BasicLayer::receiveBBItem(category, details, scopeModuleId);
 
