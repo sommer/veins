@@ -24,7 +24,9 @@ protected:
 	/** @brief Stores the minimum signal to noise ratio of the transmission */
 	double snr;
 
+	/** @brief The bit error rate of the transmission.*/
 	double ber;
+	/** @brief The received signal strength of the transmission.*/
 	double rssi;
 public:
 
@@ -49,7 +51,9 @@ public:
 	 */
 	double getSnr() const { return snr; }
 
+	/** @brief Returns the bit error rate of the transmission.*/
 	double getBER() const { return ber; }
+	/** @brief Returns the received signal strength of the transmission.*/
 	double getRSSI() const { return rssi; }
 };
 

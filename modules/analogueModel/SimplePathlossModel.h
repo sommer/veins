@@ -23,8 +23,11 @@ class SimplePathlossConstMapping : public SimpleConstMapping
 {
 
 protected:
+	/** @brief The factor dependent on the distance of the transmission.*/
 	const double distFactor;
+	/** @brief Pointer to the model.*/
 	SimplePathlossModel* model;
+	/** @brief Is the Signal to attenuate defined over frequency?*/
 	bool hasFrequency;
 
 public:
@@ -76,8 +79,10 @@ protected:
     /** @brief stores my Move pattern */
     const Move& myMove;
 
-	/** Information needed about the playground */
+	/** @brief Information needed about the playground */
 	const bool useTorus;
+
+	/** @brief The size of the playground.*/
 	const Coord& playgroundSize;
 
 	/** @brief Whether debug messages should be displayed. */
@@ -91,12 +96,13 @@ public:
 	 * The constructor needs some specific knowledge in order to create
 	 * its mapping properly:
 	 *
-	 * 1. the coefficient alpha (specified e.g. in config.xml and passed
-	 *    in constructor call)
-	 * 2. the carrier frequency
-	 * 3. a pointer to the hosts move pattern
-	 * 4. information about the playground the host is moving in
-	 *
+	 * @param alpha the coefficient alpha (specified e.g. in config.xml and passed
+	 *    			in constructor call)
+	 * @param carrierFrequency the carrier frequency
+	 * @param myMove a pointer to the hosts move pattern
+	 * @param useTorus information about the playground the host is moving in
+	 * @param playgroundSize information about the playground the host is moving in
+	 * @param debug display debug messages?
 	 */
 	SimplePathlossModel(double alpha, double carrierFrequency, const Move* myMove,
 					bool useTorus, const Coord& playgroundSize, bool debug):
@@ -113,7 +119,6 @@ public:
 	/**
 	 * @brief Filters a specified Signal by adding an attenuation
 	 * over time to the Signal.
-	 *
 	 */
 	virtual void filterSignal(Signal& s);
 
@@ -123,6 +128,9 @@ public:
 	 * Functionality is similar to pathloss-calculation in BasicSnrEval from
 	 * Mobility-frame work.
 	 *
+	 * Note: This method is not used directly anymore. Instead the actual
+	 * pathloss is calculated in SimplePathlossConstMappings "getValue()"
+	 * method.
 	 */
 	virtual double calcPathloss(const Coord& myPos, const Coord& sendersPos);
 };

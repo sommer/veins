@@ -21,16 +21,19 @@ simple BasePhyLayer
         double maxTXPower @unit(mW);	//The maximum transimission power of the physical layer [mW]
 
         //switchTimes [s]:
-        double timeRXToTX @unit(s);
-        double timeRXToSleep @unit(s);
+        double timeRXToTX = default(0) @unit(s);
+        double timeRXToSleep = default(0) @unit(s);
 
-        double timeTXToRX @unit(s);
-        double timeTXToSleep @unit(s);
+        double timeTXToRX = default(0) @unit(s);
+        double timeTXToSleep = default(0) @unit(s);
 
-        double timeSleepToRX @unit(s);
-        double timeSleepToTX @unit(s);
+        double timeSleepToRX = default(0) @unit(s);
+        double timeSleepToTX = default(0) @unit(s);
 
-        int initialRadioState;
+        int initialRadioState = default(0); //state the radio is initially in
+        
+        double radioMinAtt = default(1.0); //radios gain factor (attenuation) while receiving
+        double radioMaxAtt = default(0.0); //radios gain factor (attenuation) while not receiving
 
     gates:
         input upperGateIn; 	// from the MAC layer

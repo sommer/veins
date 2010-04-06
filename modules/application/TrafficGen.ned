@@ -18,7 +18,9 @@ package org.mixim.modules.application;
 import org.mixim.base.modules.IBaseApplLayer;
 
 //
-// TODO auto-generated module
+// Application layer which generates a certain almost constant
+// amount of traffic.
+// See class description for details.
 //
 simple TrafficGen like IBaseApplLayer
 {

@@ -35,7 +35,7 @@ private:
 	public:
 		/** @brief Constant for undefined coordinates.*/
 		static const int UNDEFINED = 0;
-		/** @brief Coordinates in the grid.*/
+		/** @name Coordinates in the grid.*/
 		/*@{*/
 		int x;
 		int y;

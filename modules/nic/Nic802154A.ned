@@ -32,23 +32,21 @@ module Nic802154A like INic
     gates:
         input radioIn; // radioIn gate for sendDirect
         input upperGateIn; // uppergateIn for incoming messages from network layer
-        input upperGateCtrlIn; // uppergateCtrlIn for incoming control messages from network layer
+        input upperControlIn; // uppergateCtrlIn for incoming control messages from network layer
         output upperGateOut; // uppergateOut to send data messages to network layer
-        output upperGateCtrlOut; // uppergateCtrlOut to send control messages to network layer
+        output upperControlOut; // uppergateCtrlOut to send control messages to network layer
 
     submodules:
         phy: PhyLayerUWBIR {
             parameters:
                 @display("p=60,120;b=80,30,rect,white,,");
                 initialRadioState = 4; // initializes radio state to SYNC
-            //display: "p=60,150;i=prot3";
 
         }
         mac: AlohaMacLayer {
             parameters:
                 maxRetries = 3;
                 @display("p=60,45;b=80,30,rect,white,,");
-        	//display: "p=60,70;i=prot3";
         }
     connections:
         phy.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerGateIn;
@@ -59,9 +57,9 @@ module Nic802154A like INic
         radioIn --> phy.radioIn;
 
         upperGateIn --> mac.upperGateIn;
-        upperGateCtrlIn --> mac.upperControlIn;
+        upperControlIn --> mac.upperControlIn;
         upperGateOut <-- mac.upperGateOut;
-        upperGateCtrlOut <-- mac.upperControlOut;
+        upperControlOut <-- mac.upperControlOut;
 
 }
 

@@ -32,7 +32,7 @@
 /**
  * @brief A very simple MAC module template which provides de- and
  * encapsulation of messages using the standard addresses and
- * MacControlInfo of MiXiM. It also provides basic handling of lower
+ * NetwToMacControlInfo of MiXiM. It also provides basic handling of lower
  * layer messages.
  *
  * @ingroup macLayer

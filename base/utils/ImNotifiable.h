@@ -32,6 +32,11 @@
 class  BBItem : public cObject
 {
  public:
+	/**
+	 * @brief Returns an instance of BBItem.
+	 *
+	 * This method is used to get a kind of class hierarchy at runtime.
+	 */
     virtual BBItem *parentObject() const {
         return new BBItem();
     }

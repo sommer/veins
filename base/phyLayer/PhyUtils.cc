@@ -14,12 +14,12 @@ void RadioStateAnalogueModel::filterSignal(Signal& s)
 void RadioStateAnalogueModel::cleanUpUntil(simtime_t t)
 {
 	// assert that list is not empty
-	assert(!radioIsReceiving.empty());
+	assert(!radioStateAttenuation.empty());
 
 	/* the list contains at least one element */
 
 	// CASE: t is smaller or equal the timepoint of the first element ==> nothing to do, return
-	if ( t <= radioIsReceiving.front().getTime() )
+	if ( t <= radioStateAttenuation.front().getTime() )
 	{
 		return;
 	}
@@ -27,11 +27,11 @@ void RadioStateAnalogueModel::cleanUpUntil(simtime_t t)
 
 	// CASE: t is greater than the timepoint of the last element
 	// ==> clear complete list except the last element, return
-	if ( t > radioIsReceiving.back().getTime() )
+	if ( t > radioStateAttenuation.back().getTime() )
 	{
-		ListEntry lastEntry = radioIsReceiving.back();
-		radioIsReceiving.clear();
-		radioIsReceiving.push_back(lastEntry);
+		ListEntry lastEntry = radioStateAttenuation.back();
+		radioStateAttenuation.clear();
+		radioStateAttenuation.push_back(lastEntry);
 		return;
 	}
 
@@ -44,13 +44,13 @@ void RadioStateAnalogueModel::cleanUpUntil(simtime_t t)
 
 	// get an iterator and set it to the first timepoint >= t
 	std::list<ListEntry>::iterator it;
-	it = lower_bound(radioIsReceiving.begin(), radioIsReceiving.end(), t);
+	it = lower_bound(radioStateAttenuation.begin(), radioStateAttenuation.end(), t);
 
 
 	// CASE: list contains an element with exactly the given key
 	if ( it->getTime() == t )
 	{
-		radioIsReceiving.erase(radioIsReceiving.begin(), it);
+		radioStateAttenuation.erase(radioStateAttenuation.begin(), it);
 		return;
 	}
 
@@ -59,22 +59,22 @@ void RadioStateAnalogueModel::cleanUpUntil(simtime_t t)
 	it--; // go back one element, possible since this one has not been the first one
 
 	it->setTime(t); // set this elements time to t
-	radioIsReceiving.erase(radioIsReceiving.begin(), it); // and erase all previous elements
+	radioStateAttenuation.erase(radioStateAttenuation.begin(), it); // and erase all previous elements
 
 }
 
 void RadioStateAnalogueModel::writeRecvEntry(simtime_t time, double value)
 {
 	// bugfixed on 08.04.2008
-	assert( (radioIsReceiving.empty()) || (time >= radioIsReceiving.back().getTime()) );
+	assert( (radioStateAttenuation.empty()) || (time >= radioStateAttenuation.back().getTime()) );
 
-	radioIsReceiving.push_back(ListEntry(time, value));
+	radioStateAttenuation.push_back(ListEntry(time, value));
 
 	if (!currentlyTracking)
 	{
 		cleanUpUntil(time);
 
-		assert(radioIsReceiving.back().getTime() == time);
+		assert(radioStateAttenuation.back().getTime() == time);
 	}
 }
 
@@ -90,7 +90,7 @@ Radio::Radio(int numRadioStates,
 	minAtt(minAtt), maxAtt(maxAtt),
 	rsam(mapStateToAtt(initialState))
 {
-	radioStates.setName("Radio state");
+	radioStates.setName("RadioState");
 	radioStates.setEnabled(recordStats);
 
 	// allocate memory for one dimension
@@ -200,7 +200,7 @@ RSAMConstMappingIterator::RSAMConstMappingIterator
 {
 	assert(rsam);
 
-	assert( !(signalStart < rsam->radioIsReceiving.front().getTime()) );
+	assert( !(signalStart < rsam->radioStateAttenuation.front().getTime()) );
 
 	jumpToBegin();
 }
@@ -210,15 +210,15 @@ void RSAMConstMappingIterator::jumpTo(const Argument& pos)
 	// extract the time-component from the argument
 	simtime_t t = pos.getTime();
 
-	assert( !(rsam->radioIsReceiving.empty()) &&
-			!(t < rsam->radioIsReceiving.front().getTime()) );
+	assert( !(rsam->radioStateAttenuation.empty()) &&
+			!(t < rsam->radioStateAttenuation.front().getTime()) );
 
 	// current position is already correct
 	if( t == position.getTime() )
 		return;
 
 	// this automatically goes over all zero time switches
-	it = upper_bound(rsam->radioIsReceiving.begin(), rsam->radioIsReceiving.end(), t);
+	it = upper_bound(rsam->radioStateAttenuation.begin(), rsam->radioStateAttenuation.end(), t);
 
 	--it;
 	position.setTime(t);
@@ -253,8 +253,8 @@ void RSAMConstMappingIterator::iterateTo(const Argument& pos)
 	simtime_t t = pos.getTime();
 
 	// ERROR CASE: iterating to a position before (time) the beginning of the mapping is forbidden
-	assert( !(rsam->radioIsReceiving.empty()) &&
-			!(t < rsam->radioIsReceiving.front().getTime()) );
+	assert( !(rsam->radioStateAttenuation.empty()) &&
+			!(t < rsam->radioStateAttenuation.front().getTime()) );
 
 	assert( !(t < position.getTime()) );
 
@@ -277,7 +277,7 @@ void RSAMConstMappingIterator::iterateTo(const Argument& pos)
 bool RSAMConstMappingIterator::inRange() const
 {
 	simtime_t t = position.getTime();
-	simtime_t lastEntryTime = std::max(rsam->radioIsReceiving.back().getTime(), signalStart);
+	simtime_t lastEntryTime = std::max(rsam->radioStateAttenuation.back().getTime(), signalStart);
 
 	return 	signalStart <= t
 			&& t <= signalEnd
@@ -287,24 +287,24 @@ bool RSAMConstMappingIterator::inRange() const
 
 bool RSAMConstMappingIterator::hasNext() const
 {
-	assert( !(rsam->radioIsReceiving.empty()) );
+	assert( !(rsam->radioStateAttenuation.empty()) );
 
 	CurrList::const_iterator it2 = it;
-	if (it2 != rsam->radioIsReceiving.end())
+	if (it2 != rsam->radioStateAttenuation.end())
 	{
 		it2++;
 	}
 
 	return 	position.getTime() < signalStart
-			|| (it2 != rsam->radioIsReceiving.end() && it2->getTime() <= signalEnd);
+			|| (it2 != rsam->radioStateAttenuation.end() && it2->getTime() <= signalEnd);
 }
 
 void RSAMConstMappingIterator::iterateToOverZeroSwitches(simtime_t t)
 {
-	if( it != rsam->radioIsReceiving.end() && !(t < it->getTime()) )
+	if( it != rsam->radioStateAttenuation.end() && !(t < it->getTime()) )
 	{
 		// and go over (ignore) all zero-time-switches, to the next greater entry (time)
-		while( it != rsam->radioIsReceiving.end() && !(t < it->getTime()) )
+		while( it != rsam->radioStateAttenuation.end() && !(t < it->getTime()) )
 			it++;
 
 		// go back one step, here the iterator 'it' is placed right
@@ -326,14 +326,14 @@ double RSAMMapping::getValue(const Argument& pos) const
 
 	// assert that t is not before the first timepoint in the RSAM
 	// and receiving list is not empty
-	assert( !(rsam->radioIsReceiving.empty()) &&
-			!(t < rsam->radioIsReceiving.front().getTime()) );
+	assert( !(rsam->radioStateAttenuation.empty()) &&
+			!(t < rsam->radioStateAttenuation.front().getTime()) );
 
 	/* receiving list contains at least one entry */
 
 	// set an iterator to the first entry with timepoint > t
 	std::list<RadioStateAnalogueModel::ListEntry>::const_iterator it;
-	it = upper_bound(rsam->radioIsReceiving.begin(), rsam->radioIsReceiving.end(), t);
+	it = upper_bound(rsam->radioStateAttenuation.begin(), rsam->radioStateAttenuation.end(), t);
 
 	// REGULAR CASE: it points to an element that has a predecessor
 	it--; // go back one entry, this one is significant!

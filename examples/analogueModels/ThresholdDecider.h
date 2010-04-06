@@ -12,8 +12,11 @@
  * a received signal if the receiving power is above a certain value.
  *
  * Note: This implementation is only meant to be as a quick and ugly
- * Decider to demonstrate the usage of the AnalogueModels.
- * You should not take it as template for a real Decider.
+ * Decider to demonstrate (and print) how the AnalogueModels affect the signal.
+ * You should not take it as template for a real Decider!
+ *
+ * @see SNRThresholdDecider for a simple Decider implementation or take
+ * a look at the "How to write your own Decider" tutorial at the MiXiM wiki.
  *
  * @ingroup Decider
  * @ingroup exampleAM
@@ -211,35 +214,41 @@ protected:
 
 		delete it;
 
-		ev << "------+---------------------------------------------------------" << endl;
-		ev << "f\\t   | ";
+		ev << "--------+---------------------------------------------------------" << endl;
+		ev << "GHz \\ms | ";
 		for(std::set<simtime_t>::const_iterator tIt = timeEntries.begin();
 			tIt != timeEntries.end(); ++tIt){
 			ev << toString(*tIt * 1000, 6) << " ";
 		}
 		ev << endl;
-		ev << "------+---------------------------------------------------------" << endl;
-		Argument pos;
-		for(std::set<double>::const_iterator fIt = freqEntries.begin();
-			fIt != freqEntries.end(); ++fIt){
-			ev << toString(*fIt, 5) << " | ";
-			pos.setArgValue(frequency, *fIt);
-
-			std::map<double, std::set<simtime_t> >::iterator tmpIt = entries.find(*fIt);
-
-			for(std::set<simtime_t>::const_iterator tIt = timeEntries.begin();
-				tIt != timeEntries.end(); ++tIt){
-
-				if(tmpIt != entries.end() && tmpIt->second.find(*tIt) != tmpIt->second.end()){
-					pos.setTime(*tIt);
-					ev << toString(toDecibel(m->getValue(pos)), 6) << " ";
-				} else {
-					ev << "       ";
-				}
-			}
-			ev << endl;
+		ev << "--------+---------------------------------------------------------" << endl;
+		if(freqEntries.begin() == freqEntries.end()) {
+			ev << "        | Defines no own key entries." << endl;
+			ev << "        | That does NOT mean it doesn't define any attenuation." << endl;
 		}
-		ev << "------+---------------------------------------------------------" << endl;
+		else {
+			Argument pos;
+			for(std::set<double>::const_iterator fIt = freqEntries.begin();
+				fIt != freqEntries.end(); ++fIt){
+				ev << toString((*fIt)/1e9, 5) << "   | ";
+				pos.setArgValue(frequency, *fIt);
+
+				std::map<double, std::set<simtime_t> >::iterator tmpIt = entries.find(*fIt);
+
+				for(std::set<simtime_t>::const_iterator tIt = timeEntries.begin();
+					tIt != timeEntries.end(); ++tIt){
+
+					if(tmpIt != entries.end() && tmpIt->second.find(*tIt) != tmpIt->second.end()){
+						pos.setTime(*tIt);
+						ev << toString(toDecibel(m->getValue(pos)), 6) << " ";
+					} else {
+						ev << "       ";
+					}
+				}
+				ev << endl;
+			}
+		}
+		ev << "--------+---------------------------------------------------------" << endl;
 	}
 
 public:

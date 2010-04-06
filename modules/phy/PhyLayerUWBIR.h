@@ -53,9 +53,6 @@ class DeciderUWBIREDSync;
 #include "DeciderUWBIREDSyncOnAddress.h"
 #include "DeciderUWBIREDSync.h"
 
-#include "cdynamicexpression.h"
-#include "cxmlparimpl.h"
-
 /**
  * @brief Physical layer that models an Ultra Wideband Impulse Radio wireless communication system.
  *

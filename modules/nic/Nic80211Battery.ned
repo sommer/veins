@@ -23,25 +23,24 @@
 //# Author:  Laura Marie Feeney 
 //#
 //######################################################################
-// Based on Nic80211 (above)
-//
-// Extends Nic80211 to use the Energy Framework to record battery
-// consumption.  The relevant changes for communicating with the
-// Battery module are in snrEval; core 80211 functionality is not
-// changed.
 
-// parameters: note that the NIC module owns the hardware parameters
-// to allow external access/alternate implementations.
-//
-//      {sleep,idle,rx,tx}Current: respective current in mA 
 package org.mixim.modules.nic;
 
 import org.mixim.modules.mac.Mac80211;
 import org.mixim.modules.phy.PhyLayerBattery;
-//import Decider80211;
-//import SnrEval80211Battery;
 
-module Nic80211Battery
+//
+// Based on Nic80211
+//
+// Extends Nic80211 to use the Energy Framework to record battery
+// consumption.  The relevant changes for communicating with the
+// Battery module are in PhyLayerBattery; core 80211 functionality 
+// is not changed.
+//
+// parameters: note that the NIC module owns the hardware parameters
+// to allow external access/alternate implementations.
+//
+module Nic80211Battery like INic
 {
     parameters:
         double sleepCurrent @unit(mA);
@@ -54,8 +53,8 @@ module Nic80211Battery
 		double txRxCurrent @unit(mA);
 
     gates:
-        input uppergateIn; // to upper layers
-        output uppergateOut; // from upper layers
+        input upperGateIn; // to upper layers
+        output upperGateOut; // from upper layers
         output upperControlOut; // control information 
         input upperControlIn; // control information 
         input radioIn; // radioIn gate for sendDirect
@@ -70,11 +69,7 @@ module Nic80211Battery
                 headerLength = 192bit;
                 @display("p=106,157;i=block/process_s");
         }
-//        snrEval: SnrEval80211Battery {
-//            parameters:
-//                @display("p=96,236;i=block/wrxtx");
-//        }
-//        radio: SingleChannelRadio;
+        
     connections:
         radioIn --> phy.radioIn;
         phy.upperGateIn <-- { @display("m=m,25,0,25,0"); } <-- mac.lowerGateOut;
@@ -82,9 +77,9 @@ module Nic80211Battery
         phy.upperControlOut --> mac.lowerControlIn;
         phy.upperControlIn <-- mac.lowerControlOut;
 
-        mac.upperGateOut --> uppergateOut;
+        mac.upperGateOut --> upperGateOut;
         mac.upperControlOut --> upperControlOut;
-        mac.upperGateIn <-- uppergateIn;
+        mac.upperGateIn <-- upperGateIn;
         mac.upperControlIn <-- upperControlIn;
 }
 

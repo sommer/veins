@@ -212,19 +212,19 @@ public:
 	bool getTrackingFlag() { return currentlyTracking; }
 
 
-	int getRecvListSize() { return ((int) radioIsReceiving.size()); }
+	int getRecvListSize() { return ((int) radioStateAttenuation.size()); }
 
-	ListEntry getFirstRecvListEntry() { return radioIsReceiving.front(); }
+	ListEntry getFirstRecvListEntry() { return radioStateAttenuation.front(); }
 
 
 	bool compareRecvLists(RSList refRecvList)
 	{
-		if ( ((int) radioIsReceiving.size()) != ((int) refRecvList.size()) ) return false;
+		if ( ((int) radioStateAttenuation.size()) != ((int) refRecvList.size()) ) return false;
 
 		std::list<ListEntry>::iterator it1;
 		RSList::iterator it2;
 
-		for (it1 = radioIsReceiving.begin(), it2 = refRecvList.begin(); it1 != radioIsReceiving.end(); it1++, it2++)
+		for (it1 = radioStateAttenuation.begin(), it2 = refRecvList.begin(); it1 != radioStateAttenuation.end(); it1++, it2++)
 		{
 			if ( it1->getTime() != it2->first ) return false;
 			if ( it1->getValue() != it2->second ) return false;
@@ -283,7 +283,7 @@ private:
 		std::cout << "---testRSAMConstructor" << std::endl;
 
 		DiagRSAM m = DiagRSAM(minAtt);
-		assertTrue("Default constructor sets tracking on.", m.getTrackingFlag());
+		assertFalse("Default constructor sets tracking off.", m.getTrackingFlag());
 		assertTrue("Default constructor sets initialTime to 0.", m.getFirstRecvListEntry().getTime() == 0);
 		assertTrue("Default constructor creates one-elem list.", m.getRecvListSize() == 1);
 

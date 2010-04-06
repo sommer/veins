@@ -45,7 +45,10 @@ void CSMAMacLayer::initialize(int stage)
         txAttempts = 0;
     }
     else if(stage == 1) {
-    	assert(phy->getRadioState() == Radio::RX);
+    	if(phy->getRadioState() != Radio::RX) {
+    		opp_error("Initial radio state isn't RX but CSMAMacLayer"
+    				  " assumes that the NIC starts in RX state.");
+    	}
 
         EV << "queueLength = " << queueLength
            //<< " busyRSSI = " << busyRSSI

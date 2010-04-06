@@ -1,0 +1,27 @@
+<xswt xmlns:x="http://sweet_swt.sf.net/xswt">
+	<x:import>
+		<!-- Import all widgets and utility classes -->
+		<package name="java.lang"/>
+		<package name="org.eclipse.swt.widgets" />
+		<package name="org.eclipse.swt.graphics" />
+		<package name="org.eclipse.swt.layout" />
+		<package name="org.eclipse.swt.custom" />
+		<package name="org.omnetpp.common.wizard.support" />
+		<package name="org.omnetpp.ned.editor.wizards.support" />
+		<package name="org.omnetpp.cdt.wizard.support" />
+	</x:import>
+	<!-- Create a two-column layout -->
+	
+		
+	<layout x:class="GridLayout" numColumns="2"/>		
+	<x:children>
+		<label text="NIC protocol:"/>
+		<combo x:id="protocolName" x:style="READ_ONLY|BORDER">
+			<add x:p0="CSMA"/>
+			<add x:p0="802.11"/>
+			<add x:p0="CSMA using old CSMAMacLayer"/>
+			<!-- <add x:p0="802.15.4"/> -->
+			<!-- <add x:p0="802.15.4a (UWB)"/> -->
+		</combo>
+	</x:children>
+</xswt>

@@ -1,5 +1,5 @@
 /* -*- mode:c++ -*- *******************************************************
- * file:        MacControlInfo.h
+ * file:        NetwToMacControlInfo.h
  *
  * author:      Daniel Willkomm
  *
@@ -18,14 +18,11 @@
  * description: - control info to pass next hop to the MAC layer
  **************************************************************************/
 
-#ifndef MACCONTROLINFO_H
-#define MACCONTROLINFO_H
+#ifndef NETWTOMACCONTROLINFO_H
+#define NETWTOMACCONTROLINFO_H
 
 #include <omnetpp.h>
 
-// TODO separate into two classes (one for each direction),
-// class MacToUpperControlInfo has corresponding TODO-comment
-// TODO update documentation
 /**
  * @brief Control info to pass next hop L2 addr from netw to MAC layer
  *
@@ -34,57 +31,34 @@
  * address of the next hop, which has to be determined by ARP or some
  * similar mechanism
  *
- *
  * @ingroup baseUtils
  * @ingroup macLayer
  * @ingroup netwLayer
- * @ingroup utils
  * @author Daniel Willkomm
  **/
-class MacControlInfo : public cObject
+class NetwToMacControlInfo : public cObject
 {
   protected:
     /** @brief MAC address of the sending or receiving node*/
     int nextHopMac;
 
-    /** @brief bit-error rate */
-    double ber;
-    double rssi;  // CSEM Jérôme Rousselot -- allows the MAC layer to forward RSSI information to the routing layer
 
   public:
     /** @brief Default constructor*/
-    MacControlInfo(const int addr) : nextHopMac(addr), ber(0), rssi(0) {};
+    NetwToMacControlInfo(const int addr) : nextHopMac(addr) {};
 
     /** @brief Destructor*/
-    virtual ~MacControlInfo(){};
+    virtual ~NetwToMacControlInfo() {};
 
     /** @brief Getter method */
     virtual const int getNextHopMac() {
-	return nextHopMac;
+    	return nextHopMac;
     };
 
     /** @brief Setter method */
     virtual void setNextHopMac(const int addr){
-	nextHopMac = addr;
+    	nextHopMac = addr;
     };
-
-    /** @brief Getter for bit-error rate */
-    virtual const double getBER() {
-      return ber;
-    }
-
-    /** @brief Setter for bit-error rate */
-    void setBER(double _ber) {
-    	ber = _ber;
-    }
-
-    virtual const double getRSSI() {
-    	return rssi;
-    }
-
-    void setRSSI(double _rssi) {
-    	rssi = _rssi;
-    }
 };
 
 

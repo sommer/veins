@@ -23,7 +23,7 @@
 
 #include "BaseLayer.h"
 #include "ApplPkt_m.h"
-#include "omnetpp.h"
+#include <omnetpp.h>
 #include <map>
 #include <vector>
 #include <utility>

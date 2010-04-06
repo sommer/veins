@@ -34,7 +34,7 @@ import org.mixim.base.modules.IBaseApplLayer;
 // broadcast messages instead of just one. The burst size is specified
 // in burstSize and can be set in omnetpp.ini
 //
-// @sa TestApplALyer
+// @see TestApplLayer
 // @author Daniel Willkomm
 simple BurstApplLayer like IBaseApplLayer
 {

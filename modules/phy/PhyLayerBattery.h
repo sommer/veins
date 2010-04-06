@@ -55,11 +55,15 @@ protected:
 	/** @brief Number of power consuming activities (accounts).*/
 	int numActivities;
 
-	/** @brief The different currents in mA.*/
+	/** @name The different currents in mA.*/
+	/*@{*/
 	double sleepCurrent, rxCurrent, decodingCurrentDelta, txCurrent;
+	/*@}*/
 
-	/** @brief The differnet switching state currents in mA.*/
+	/** @name The different switching state currents in mA.*/
+	/*@{*/
 	double setupRxCurrent, setupTxCurrent, rxTxCurrent, txRxCurrent;
+	/*@}*/
 
 	/**
 	 * @brief Defines the power consuming activities (accounts) of
@@ -105,8 +109,11 @@ protected:
 	virtual double calcTXCurrentForPacket(MacPkt* pkt, MacToPhyControlInfo* cInfo)
 	{ return -1.0; }
 
+	/** @brief Updates the actual current drawn for the passed state.*/
 	virtual void setRadioCurrent(int rs);
 
+	/** @brief Updates the actual current drawn for switching between
+	 * the passed states.*/
 	virtual void setSwitchingCurrent(int from, int to);
 
 public:

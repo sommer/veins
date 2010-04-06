@@ -3,9 +3,6 @@
 
 #include <omnetpp.h>
 #include "BaseModule.h"
-#include "BaseMacLayer.h"
-#include "MacToPhyControlInfo.h"
-#include "MacControlInfo.h"
 #include "NetwControlInfo.h"
 #include "Signal_.h"
 #include "MacPkt_m.h"

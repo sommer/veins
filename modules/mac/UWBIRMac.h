@@ -37,7 +37,6 @@
 #include "Decider.h"
 #include "MacToPhyControlInfo.h"
 #include "PhyToMacControlInfo.h"
-#include "MacControlInfo.h"
 #include "Signal_.h"
 #include "MacToPhyInterface.h"
 #include "UWBIRMacPkt_m.h"

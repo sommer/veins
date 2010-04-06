@@ -1,37 +1,28 @@
+<#if protocolName=="CSMA using old CSMAMacLayer">
+<#if nedPackageName!="">package ${nedPackageName};</#if>
 
-package org.mixim.examples.ieee802154Narrow;
-
+import org.mixim.modules.mac.CSMAMacLayer;
 import org.mixim.modules.phy.PhyLayer;
-import org.mixim.modules.mac.csma;
 
-
-module PhyMacNic
+module CSMANic 
 {
-    parameters:
-        string connectionManagerName; 	//name of the ConnectionManager module
-
-        @display("bgb=259,229,white;bgp=10,10");
     gates:
-        input upperGateIn;
-        output upperGateOut;
-        input upperControlIn;
-        output upperControlOut;
-        input radioIn; // radioIn gate for sendDirect
+        input upperGateIn; // to upper layers
+        output upperGateOut; // from upper layers
+        output upperControlOut; // control information 
+        input upperControlIn; // control information 
+		input radioIn; // radioIn gate for sendDirect
 
     submodules:
+        mac: CSMAMacLayer {
+            @display("p=96,87;i=block/layer");
+        }
+        
         phy: PhyLayer {
-            parameters:
-                @display("p=118,171;b=80,30,rect,white");
-            //display: "p=60,150;i=prot3";
-
+            @display("p=106,157;i=block/process_s");
         }
-        mac: csma {
-            parameters:
-                rxSetupTime = 0.00108 s;
-                @display("p=118,60;b=80,30,rect,white");
-        	//display: "p=60,70;i=prot3";
-
-        }
+		//radio: SingleChannelRadio;
+	    // display: "p=200,30;b=30,25";
 
     connections:
         mac.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperGateOut;
@@ -45,6 +36,6 @@ module PhyMacNic
         phy.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- mac.lowerControlOut;
 
         radioIn --> phy.radioIn;
-
 }
+</#if>
 

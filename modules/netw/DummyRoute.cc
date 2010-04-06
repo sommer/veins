@@ -14,6 +14,7 @@
 
 #include "DummyRoute.h"
 #include "DummyRoutePkt_m.h"
+#include <NetwToMacControlInfo.h>
 #include <cassert>
 
 Define_Module(DummyRoute);
@@ -52,7 +53,7 @@ void DummyRoute::handleUpperMsg(cMessage* msg) {
 //		nextHopMacAddr = cInfo->getNetwAddr();
 //	}
 //	nextHopMacAddr = cInfo->getNetwAddr();
-//	msg->setControlInfo(new MacControlInfo(nextHopMacAddr));
+//	msg->setControlInfo(new NetwToMacControlInfo(nextHopMacAddr));
 	sendDown(encapsMsg(check_and_cast<cPacket*>(msg)));
 }
 
@@ -94,7 +95,7 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
         macAddr = arp->getMacAddr(netwAddr);
     }
 
-    pkt->setControlInfo(new MacControlInfo(macAddr));
+    pkt->setControlInfo(new NetwToMacControlInfo(macAddr));
 
     //encapsulate the application packet
     pkt->encapsulate(appPkt);

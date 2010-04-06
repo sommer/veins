@@ -1,7 +1,7 @@
 package org.mixim.base.modules;
 
 // Provides black board like information
-// exchange between the other modules of a host.
+// exchange
 simple Blackboard
 {
     parameters:

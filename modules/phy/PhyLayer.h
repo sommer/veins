@@ -32,6 +32,9 @@ protected:
 	 * specified name.
 	 *
 	 * Is able to initialize the following AnalogueModels:
+	 * - SimplePathlossModel
+	 * - LogNormalShadowing
+	 * - JakesFading
 	 */
 	virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
 

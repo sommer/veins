@@ -18,7 +18,7 @@ package org.mixim.examples.ieee802154Narrow;
 import org.mixim.base.modules.BaseWorldUtility;
 
 //
-// TODO auto-generated module
+// Tracks simulation wide traffic statistics
 //
 simple WorldUtilityStats extends BaseWorldUtility
 {

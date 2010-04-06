@@ -28,14 +28,18 @@
  */
 class Decider80211: public BaseDecider {
 public:
+	/** @brief Control message kinds used by this Decider.*/
 	enum Decider80211ControlKinds {
 		NOTHING = 22100,
-		BITERROR,       //the phy has recognized a bit error in the packet
-		COLLISION,       //packet lost due to collision
+		/** @brief The decider has recognized a bit error in the packet.*/
+		BITERROR,
+		/** @brief Packet lost due to collision.*/
+		COLLISION,
+		/** @brief Sub-classing deciders should begin their own kinds at this value.*/
 		LAST_DECIDER_80211_CONTROL_KIND
 	};
 protected:
-	// threshold value for checking a SNR-map (SNR-threshold)
+	/** @brief threshold value for checking a SNR-map (SNR-threshold)*/
 	double snrThreshold;
 
 	/** @brief The center frequency on which the decider listens for signals */

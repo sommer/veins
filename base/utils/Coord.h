@@ -65,7 +65,7 @@ public:
 	static const double UNDEFINED;
 
 protected:
-    /** @brief x, y and z coordinate of the position. */
+    /** @name x, y and z coordinate of the position. */
     /*@{*/
 	double x;
     double y;

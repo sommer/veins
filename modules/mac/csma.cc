@@ -33,6 +33,8 @@
 #include <BaseArp.h>
 #include <MacToPhyControlInfo.h>
 #include <PhyToMacControlInfo.h>
+#include <NetwToMacControlInfo.h>
+#include <MacToNetwControlInfo.h>
 #include <SimpleAddress.h>
 //#include <Consts802154.h>
 
@@ -164,8 +166,8 @@ void csma::handleUpperMsg(cMessage *msg) {
 	//MacPkt *macPkt = encapsMsg(msg);
 	MacPkt *macPkt = new MacPkt(msg->getName());
 	macPkt->setBitLength(headerLength);
-	MacControlInfo* cInfo =
-			static_cast<MacControlInfo*> (msg->removeControlInfo());
+	NetwToMacControlInfo* cInfo =
+			static_cast<NetwToMacControlInfo*> (msg->removeControlInfo());
 	EV<<"CSMA received a message from upper layer, name is " << msg->getName() <<", CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
 	int dest = cInfo->getNextHopMac();
 	macPkt->setDestAddr(dest);
@@ -809,6 +811,8 @@ void csma::handleLowerControl(cMessage *msg) {
 		executeMac(EV_FRAME_TRANSMITTED, msg);
 	} else if (msg->getKind() == BaseDecider::PACKET_DROPPED) {
 		EV<< "control message: PACKED DROPPED" << endl;
+	} else if (msg->getKind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
+		EV<< "control message: RADIO_SWITCHING_OVER" << endl;
 	} else {
 		EV << "Invalid control message type (type=NOTHING) : name="
 		<< msg->getName() << " modulesrc="
@@ -840,7 +844,7 @@ void csma::handleLowerControl(cMessage *msg) {
 
 cPacket *csma::decapsMsg(MacPkt * macPkt) {
 	cPacket * msg = macPkt->decapsulate();
-	MacControlInfo* info = new MacControlInfo(macPkt->getSrcAddr());
+	MacToNetwControlInfo* info = new MacToNetwControlInfo(macPkt->getSrcAddr());
 	PhyToMacControlInfo* phyInfo = dynamic_cast<PhyToMacControlInfo*>(macPkt->getControlInfo());
 	DeciderResult* decRes = phyInfo->getDeciderResult();
 	DeciderResult802154Narrow* decRes154 = dynamic_cast<DeciderResult802154Narrow*>(decRes);

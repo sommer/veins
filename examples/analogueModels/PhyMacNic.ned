@@ -13,13 +13,11 @@ module PhyMacNic
         phy: SamplePhyLayer {
             parameters:
                 @display("p=60,120;b=80,30,rect,white,,");
-            //display: "p=60,150;i=prot3";
 
         }
         mac: SimpleMacLayer {
             parameters:
                 @display("p=60,45;b=80,30,rect,white,,");
-        	//display: "p=60,70;i=prot3";
 
         }
     connections:

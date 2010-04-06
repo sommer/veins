@@ -13,6 +13,12 @@ template<typename T = cModule*>
 class FindModule
 {
 	public:
+		/**
+		 * @brief Returns a pointer to a sub module of the passed module with
+		 * the type of this template.
+		 *
+		 * Returns NULL if no matching submodule could be found.
+		 */
 		static T findSubModule(cModule *top)
 		{
 			T ret;
@@ -29,8 +35,20 @@ class FindModule
 			return NULL;
 		}
 
+		/**
+		 * @brief Returns a pointer to the module with the type of this
+		 * template.
+		 *
+		 * Returns NULL if no module of this type could be found.
+		 */
 		static T findGlobalModule() {return findSubModule(simulation.getSystemModule());}
 
+		/**
+		 * @brief Returns a pointer to the host module of the passed module.
+		 *
+		 * Assumes that every host module is a direct sub module of the
+		 * simulation.
+		 */
 		static cModule* findHost(cModule *m) {
 			 cModule *parent = m->getParentModule();
 			cModule *node = m;
@@ -48,7 +66,7 @@ class FindModule
 /**
  * @brief Finds and returns the pointer to a module of type T.
  *
- * Uses findModuleWherever(). See usage e.g. at RoutingTableAccess.
+ * Uses FindModule<T*>::findGlobalModule(). @see BaseArpAccess for usage e.g.
  *
  * @ingroup baseUtils
  * @ingroup utils
@@ -59,12 +77,16 @@ class ModuleAccess
      // Note: MSVC 6.0 doesn't like const char *N as template parameter,
      // so we have to pass it via the ctor...
   private:
+	/** @brief Caches the pointer to the module this class provides access for.*/
     T *p;
   public:
     ModuleAccess():
 		p(0)
 	{}
 
+    /**
+     * @brief Returns a pointer to the module this class provides access for.
+     */
     T *get()
     {
         if (!p)

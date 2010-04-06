@@ -31,11 +31,12 @@ import org.mixim.modules.mac.CSMA802154;
 //
 // This NIC implements a Texas Instruments CC 2420 802.15.4 network interface card
 // using the CSMA protocol as specified in IEEE 802.15.4-2006.
+//
+//Note: To be able to use this Nic in your simulation you have to copy the file 
+//"Nic802154_TI_CC2420_Decider.xml" from "modules/nic/" to your simulation directory.
 // @author Jerome Rousselot
 //
-
-module Nic802154_TI_CC2420
-
+module Nic802154_TI_CC2420 like INic
 {
     parameters:
         // power consumption from boards (at 3.3V)

@@ -19,9 +19,10 @@
 
 
 #include "Mac80211.h"
-#include "MacControlInfo.h"
 #include "MacToPhyControlInfo.h"
+#include <MacToNetwControlInfo.h>
 #include <PhyToMacControlInfo.h>
+#include <NetwToMacControlInfo.h>
 #include "SimpleAddress.h"
 #include <FWMath.h>
 #include <Decider80211.h>
@@ -181,7 +182,7 @@ Mac80211Pkt *Mac80211::encapsMsg(cPacket * netw)
 
     // copy dest address from the Control Info attached to the network
     // mesage by the network layer
-    MacControlInfo* cInfo = static_cast<MacControlInfo*>(netw->removeControlInfo());
+    NetwToMacControlInfo* cInfo = static_cast<NetwToMacControlInfo*>(netw->removeControlInfo());
 
     EV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
     pkt->setDestAddr(cInfo->getNextHopMac());
@@ -202,7 +203,7 @@ Mac80211Pkt *Mac80211::encapsMsg(cPacket * netw)
 //TODO: See if we can use the BaseMacLayers decapsMsg-method here
 cMessage *Mac80211::decapsMsg(Mac80211Pkt *frame) {
     cMessage *m = frame->decapsulate();
-    m->setControlInfo(new MacControlInfo(frame->getSrcAddr()));
+    m->setControlInfo(new MacToNetwControlInfo(frame->getSrcAddr(), 0));
     EV << " message decapsulated " << endl;
     return m;
 }
@@ -598,7 +599,6 @@ void Mac80211::handleEndContentionTimer()
         remainingBackoff = 0;
         // unicast packet
         phy->setRadioState(Radio::TX);
-        //OLD: radio->switchToSend();
         if (!nextIsBroadcast)
         {
             if(rtsCts(fromUpperLayer.front())) {
@@ -697,7 +697,6 @@ void Mac80211::handleEndSifsTimer()
 
     Mac80211Pkt *frame = static_cast<Mac80211Pkt *>(endSifs->getContextPointer());
     phy->setRadioState(Radio::TX);
-    //OLD: radio->switchToSend();
     switch (frame->getKind())
     {
     case RTS:
@@ -943,7 +942,7 @@ void Mac80211::beginNewCycle()
         	ChannelState channel = phy->getChannelState();
             EV << simTime() << " do contention: medium = " << channel.info() << ", backoff = "
                <<  remainingBackoff << endl;
-            //OLD:if(medium == MediumIndication::IDLE) {
+
             if(channel.isIdle()) {
             	senseChannelWhileIdle(currentIFS + remainingBackoff);
                 //scheduleAt(simTime() + currentIFS + remainingBackoff, contention);
@@ -957,7 +956,7 @@ void Mac80211::beginNewCycle()
         	ChannelState channel = phy->getChannelState();
             EV << simTime() << " do contention: medium = " << channel.info() << ", backoff = "
                <<  remainingBackoff << endl;
-            //OLD:if(medium == MediumIndication::IDLE) {
+
             if(channel.isIdle()) {
             	senseChannelWhileIdle(currentIFS + remainingBackoff);
                 //scheduleAt(simTime() + currentIFS + remainingBackoff, contention);
@@ -1035,7 +1034,6 @@ Signal* Mac80211::createSignal(simtime_t start, simtime_t length, double power, 
 /*
 void Mac80211::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
-	//TODO: ended porting here!
     Enter_Method_Silent();
     BasicLayer::receiveBBItem(category, details, scopeModuleId);
 

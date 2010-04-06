@@ -43,7 +43,7 @@ simple Mac80211 extends BaseMacLayer
 		int defaultChannel; // minimum channel support
 
     	// auto bit rate selection support: specify borders at which
-            // to change modulation.	
+        // to change modulation.	
     	bool autoBitrate;         // use auto bit rate adaptation
     	double snr2Mbit @unit(dB);  // threshold to use 2Mbit (in dB)
     	double snr5Mbit @unit(dB);  // threshold to use 5.5Mbit (in dB)

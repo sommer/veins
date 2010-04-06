@@ -52,6 +52,7 @@ public:
 	  LAST_MAC_80211_MESSAGE_KIND
 	};
 protected:
+	/** @brief Type for a queue of Mac80211Pkts.*/
     typedef std::list<Mac80211Pkt*> MacPktList;
 
     /** Definition of the timer types */
@@ -71,15 +72,16 @@ protected:
       BUSY = 6    // during transmission of an ACK or a BROADCAST packet
     };
 
-
-
+    /** @brief Data about a neighbor host.*/
     struct NeighborEntry {
+    	/** @brief The neighbors address.*/
         int address;
         int fsc;
         simtime_t age;
         double bitrate;
     };
 
+    /** @brief Type for a list of NeighborEntries.*/
     typedef std::list<NeighborEntry> NeighborList;
 
   public:
@@ -325,6 +327,7 @@ protected:
     /** @brief Consider information in cache outdate if it is older than this */
     simtime_t neighborhoodCacheMaxAge;
 
+    /** @brief A list of this hosts neighbors.*/
     NeighborList neighbors;
 
     /** take care of switchover times */

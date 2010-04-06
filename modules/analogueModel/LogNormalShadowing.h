@@ -48,7 +48,13 @@ protected:
 	double randomLogNormalGain() const;
 
 public:
+	/**
+	 * @brief Takes the mean and standard deviation of the log normal
+	 * distributed attenuation values as well as the inteval in which
+	 * to define key entries in (accuracy of the model).
+	 */
 	LogNormalShadowing(double mean, double stdDev, simtime_t interval);
+
 	virtual ~LogNormalShadowing();
 
 	/**

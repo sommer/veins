@@ -74,6 +74,32 @@
  *
  * At the end of the transmission BasePhyLayer tells ChannelInfo that the
  * AirFrame has ended.
+ *
+ * \image html RadioStatemachine.png "Behaviour and cooperation of Radio, RadioStateAnalogueModel and ChannelInfo under control of BasePhyLayer"
+ *
+ * The statemachine-diagram above gives an overview on how Radio,
+ * RadioStateAnalogueModel (RSAM) and ChannelInfo work together under control
+ * of BasePhyLayer.
+ *
+ * NOTE: (Global) events in the diagram are denoted in the form "module.event",
+ * thus they only affect the particular module and are easier to find. Inside a module, an event is
+ * denoted without this prefix "module.". The term "module" is used here not in the
+ * sense of an OMNeT-module.
+ * The events "BasePhyLayer.AirFrame started", "BasePhyLayer.AirFrame ended"
+ * and "BasePhyLayer.E1" come from outside.
+ *
+ * On the functionality of the RadioStateAnalogueModel (RSAM):
+ * RSAM is a passive database/entity module controlled and updated by BasePhyLayer according to the state
+ * of the radio and the channel. RSAM filters incoming Signals
+ * by adding an attenuation-mapping corresponding to radio-states and therefore tracks
+ * information about the radio-state over time.
+ *
+ * Since this stored information may not be needed for all time in the past,
+ * information that becomes obsolete can be discarded in RSAM by the CLEANUP-mechanism
+ * (blue transitions).
+ * Tracking of radio-states is switched on and off when the channel (see ChannelInfo states) becomes empty (tracking off,
+ * green transition) or becomes not empty (tracking on, red transition).
+ *
  */
 
 /**

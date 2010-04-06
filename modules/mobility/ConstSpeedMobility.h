@@ -39,7 +39,7 @@
 class ConstSpeedMobility : public BaseMobility
 {
   protected:
-    /** @brief parameters to handle the movement of the host*/
+    /** @name parameters to handle the movement of the host*/
     /*@{*/
     /** @brief Size of a step*/
     Coord stepSize;

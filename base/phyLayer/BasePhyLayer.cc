@@ -33,6 +33,9 @@ template<class T> T BasePhyLayer::readPar(const char* parName, const T defaultVa
 // code to be linked, e.g. in modules or in examples, if it is not already
 // used in base (double and simtime_t). Needed with (at least): gcc 4.4.1.
 template int BasePhyLayer::readPar<int>(const char* parName, const int);
+template double BasePhyLayer::readPar<double>(const char* parName, const double);
+template simtime_t BasePhyLayer::readPar<simtime_t>(const char* parName, const simtime_t);
+template bool BasePhyLayer::readPar<bool>(const char* parName, const bool);
 
 void BasePhyLayer::initialize(int stage) {
 
@@ -50,19 +53,19 @@ void BasePhyLayer::initialize(int stage) {
 
 		//read simple ned-parameters
 		//	- initialize basic parameters
-        if(readPar("useThermalNoise", false)) {
-			double thermalNoiseVal = FWMath::dBm2mW(readPar("thermalNoise", -999.0));
+        if(par("useThermalNoise").boolValue()) {
+			double thermalNoiseVal = FWMath::dBm2mW(par("thermalNoise").doubleValue());
 			thermalNoise = new ConstantSimpleConstMapping(DimensionSet::timeDomain,
 														  thermalNoiseVal);
 		} else {
 			thermalNoise = 0;
 		}
-        headerLength = readPar("headerLength", 0);
-		sensitivity = readPar("sensitivity", 0.0);
+        headerLength = par("headerLength").longValue();
+		sensitivity = par("sensitivity").doubleValue();
 		sensitivity = FWMath::dBm2mW(sensitivity);
-		maxTXPower = readPar("maxTXPower", 1.0);
+		maxTXPower = par("maxTXPower").doubleValue();
 
-		recordStats = readPar("recordStats", true);
+		recordStats = par("recordStats").boolValue();
 
 		//	- initialize radio
 		radio = initializeRadio();
@@ -76,9 +79,9 @@ void BasePhyLayer::initialize(int stage) {
 	} else if (stage == 1){
 		//read complex(xml) ned-parameters
 		//	- analogue model parameters
-		initializeAnalogueModels(readPar("analogueModels", (cXMLElement*)0));
+		initializeAnalogueModels(par("analogueModels").xmlValue());
 		//	- decider parameters
-		initializeDecider(readPar("decider", (cXMLElement*)0));
+		initializeDecider(par("decider").xmlValue());
 
 		//initialise timer messages
 		radioSwitchingOverTimer = new cMessage("radio switching over", RADIO_SWITCHING_OVER);
@@ -88,40 +91,40 @@ void BasePhyLayer::initialize(int stage) {
 }
 
 Radio* BasePhyLayer::initializeRadio() {
-	int initialRadioState = par("initialRadioState"); //readPar("initialRadioState", (int) Radio::RX);
-	double radioMinAtt = readPar("radioMinAtt", 1.0);
-	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
+	int initialRadioState = par("initialRadioState").longValue();
+	double radioMinAtt = par("radioMinAtt").doubleValue();
+	double radioMaxAtt = par("radioMaxAtt").doubleValue();
 
 	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState, radioMinAtt, radioMaxAtt);
 
 	//	- switch times to TX
-	simtime_t rxToTX = readPar("timeRXToTX", 0.0);
-	simtime_t sleepToTX = readPar("timeSleepToTX", 0.0);
+	simtime_t rxToTX = par("timeRXToTX").doubleValue();
+	simtime_t sleepToTX = par("timeSleepToTX").doubleValue();
 
 	//if no RX to TX defined asume same time as sleep to TX
-	radio->setSwitchTime(Radio::RX, Radio::TX, readPar("timeRXToTX", sleepToTX));
+	radio->setSwitchTime(Radio::RX, Radio::TX, par("timeRXToTX").doubleValue());
 	//if no sleep to TX defined asume same time as RX to TX
-	radio->setSwitchTime(Radio::SLEEP, Radio::TX, readPar("timeSleepToTX", rxToTX));
+	radio->setSwitchTime(Radio::SLEEP, Radio::TX, par("timeSleepToTX").doubleValue());
 
 
 	//		- switch times to RX
-	simtime_t txToRX = readPar("timeTXToRX", 0.0);
-	simtime_t sleepToRX = readPar("timeSleepToRX", 0.0);
+	simtime_t txToRX = par("timeTXToRX").doubleValue();
+	simtime_t sleepToRX = par("timeSleepToRX").doubleValue();
 
 	//if no TX to RX defined asume same time as sleep to RX
-	radio->setSwitchTime(Radio::TX, Radio::RX, readPar("timeTXToRX", sleepToRX));
+	radio->setSwitchTime(Radio::TX, Radio::RX, par("timeTXToRX").doubleValue());
 	//if no sleep to RX defined asume same time as TX to RX
-	radio->setSwitchTime(Radio::SLEEP, Radio::RX, readPar("timeSleepToRX", txToRX));
+	radio->setSwitchTime(Radio::SLEEP, Radio::RX, par("timeSleepToRX").doubleValue());
 
 
 	//		- switch times to sleep
-	simtime_t txToSleep = readPar("timeTXToSleep", 0.0);
-	simtime_t rxToSleep = readPar("timeRXToSleep", 0.0);
+	simtime_t txToSleep = par("timeTXToSleep").doubleValue();
+	simtime_t rxToSleep = par("timeRXToSleep").doubleValue();
 
 	//if no TX to sleep defined asume same time as RX to sleep
-	radio->setSwitchTime(Radio::TX, Radio::SLEEP, readPar("timeTXToSleep", rxToSleep));
+	radio->setSwitchTime(Radio::TX, Radio::SLEEP, par("timeTXToSleep").doubleValue());
 	//if no RX to sleep defined asume same time as TX to sleep
-	radio->setSwitchTime(Radio::RX, Radio::SLEEP, readPar("timeRXToSleep", txToSleep));
+	radio->setSwitchTime(Radio::RX, Radio::SLEEP, par("timeRXToSleep").doubleValue());
 
 	return radio;
 }
@@ -737,7 +740,7 @@ ChannelState BasePhyLayer::getChannelState() {
 
 int BasePhyLayer::getPhyHeaderLength() {
 	Enter_Method_Silent();
-	return readPar("headerLength", 0);
+	return par("headerLength").longValue();
 }
 
 //--DeciderToPhyInterface implementation------------

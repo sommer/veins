@@ -69,46 +69,63 @@ public:
 
 protected:
 
-	// INPUT parameters
+	/** @brief The maximum amount of different power drawing devices.*/
 	int numDevices;
 
-	// battery parameters
+	/** @name battery parameters*/
+	/*@{*/
+	/** @brief Actual capacity.*/
 	double capmAh;
+	/** @brief Nominal capacity.*/
 	double nominalCapmAh;
+	/** @brief Voltage*/
 	double voltage;
+	/*@}*/
 
-	// debit battery at least once every resolution seconds
+	/** @brief Debit battery at least once every resolution seconds.*/
 	simtime_t resolution;
 	cMessage *timeout;
 
-	// publish capacity to BatteryStats via the BB
+	/** @name publishing of capacity to BatteryStats via the BB. */
+	/*@{*/
 	int batteryCat;
 	cMessage *publish;
 	double publishDelta;
 	simtime_t publishTime;
 
+	/** @brief Holds the state of the battery.*/
 	BatteryState *batteryState;
+	/*@}*/
 
-	// publish the host failure notification (everyone should subscribe to this)
+	/** @name publish of host failure notification
+	 * @brief everyone should subscribe to this*/
+	/*@{*/
 	int scopeHost;
 	int hostStateCat;
 	HostState hostState;
+	/*@}*/
 
-	// INTERNAL state
-
+	/** @name INTERNAL state*/
+	/*@{*/
 	double capacity;
 	double nominalCapacity;
 	double residualCapacity;
 	double lastPublishCapacity;
 	simtime_t lifetime;
+	/*@}*/
 
+	/** @brief Ouput vector tracking the residual capacity.*/
 	cOutVector residualVec;
 
+	/** @brief Array of different power consuming devices.*/
 	DeviceEntry *devices;
+	/** @brief Amount of currently registered devices.*/
 	int registeredDevices;
 
+	/** @brief Self message kinds used by the battery.*/
 	enum msgType {
-		AUTO_UPDATE, PUBLISH,
+		AUTO_UPDATE,
+		PUBLISH,
 	};
 
 	simtime_t lastUpdateTime;

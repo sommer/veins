@@ -1,6 +1,3 @@
-// TODO: remove following comment later
-// csma-test-network based on IEEE802.15.4 example
-
 package org.mixim.examples.ieee802154Narrow;
 
 import org.mixim.base.connectionManager.ConnectionManager;

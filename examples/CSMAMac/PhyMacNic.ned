@@ -23,14 +23,10 @@ module PhyMacNic
         phy: PhyLayer {
             parameters:
                 @display("p=60,170;b=80,30,rect,white,,");
-            //display: "p=60,150;i=prot3";
-
         }
         mac: CSMAMacLayer {
             parameters:
                 @display("p=60,100;b=80,30,rect,white,,");
-        	//display: "p=60,70;i=prot3";
-
         }
 
     connections:

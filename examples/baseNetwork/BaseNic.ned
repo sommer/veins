@@ -4,10 +4,10 @@ import org.mixim.modules.mac.CSMAMacLayer;
 import org.mixim.modules.phy.PhyLayer;
 
 //
-// This NIC implements an 802.11 network interface card.
+// This NIC implements an CSMA network interface card using
+// the CSMAMacLayer module
 //
-// @see Mac80211, Decider80211
-// @author Marc Loebbers
+// @see CSMAMacLayer
 //
 module BaseNic 
 {
@@ -26,8 +26,6 @@ module BaseNic
         phy: PhyLayer {
             @display("p=106,157;i=block/process_s");
         }
-		//radio: SingleChannelRadio;
-	    // display: "p=200,30;b=30,25";
 
     connections:
         mac.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperGateOut;
