@@ -1,21 +1,22 @@
 version 2
-run Two-0-20090826-15:46:30-14789
+run Two-0-20100408-14:34:16-4278
 attr configname Two
-attr datetime 20090826-15:46:30
+attr datetime 20100408-14:34:16
 attr experiment Two
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 14789
+attr processid 4278
 attr repetition 0
 attr replication #0
 attr resultdir results
 attr runnumber 0
 attr seedset 0
 
-vector 1  sim.host[0].batteryStats  capacity(mW-s)  ETV
+vector 1  sim.host[0].batteryStats  capacity  ETV
+attr unit  mW-s
 1	0	0	10800
 1	9	0.6	10080
 1	11	0.8	9480

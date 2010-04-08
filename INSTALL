@@ -4,7 +4,7 @@ to compile and start using MiXiM.
 
 Requirements
 ============
-- OMNeT++, at least version 4.0, 
+- OMNeT++, at least version 4.1b3, 
   downloadable at www.omnetpp.org
   OMNeT++ must be compiled with 
   	- dynamic NED loading (WITH_NETBUILDER=yes setting)

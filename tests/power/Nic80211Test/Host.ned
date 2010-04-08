@@ -72,8 +72,8 @@ module Host
 
         }
     connections:
-        nic.uppergateOut --> net.lowerGateIn;
-        nic.uppergateIn <-- net.lowerGateOut;
+        nic.upperGateOut --> net.lowerGateIn;
+        nic.upperGateIn <-- net.lowerGateOut;
         nic.upperControlOut --> net.lowerControlIn;
         nic.upperControlIn <-- net.lowerControlOut;
 

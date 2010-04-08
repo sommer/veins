@@ -1,23 +1,28 @@
 version 2
-run Three-0-20091217-15:09:05-32003
+run Three-0-20100408-14:36:22-4493
 attr configname Three
-attr datetime 20091217-15:09:05
+attr datetime 20100408-14:36:22
 attr experiment Three
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 32003
+attr processid 4493
 attr repetition 0
 attr replication #0
 attr resultdir results
 attr runnumber 0
 attr seedset 0
 
-scalar sim.host[0].batteryStats 	"nominal (mW-s)" 	20000
-scalar sim.host[0].batteryStats 	"total (mW-s)" 	50.006848
-scalar sim.host[0].batteryStats 	"lifetime(s) (-1 == non-failed)" 	-1
+scalar sim.host[0].batteryStats 	nominal 	20000
+attr unit  mW-s
+scalar sim.host[0].batteryStats 	total 	50.006848
+attr unit  mW-s
+scalar sim.host[0].batteryStats 	lifetime 	-1
+attr unit  s
+scalar sim.host[0].batteryStats 	"Mean power consumption" 	5.0006848
+attr unit  mW
 scalar sim.host[0].batteryStats 	"num devices" 	1
 scalar sim.host[0].batteryStats 	"physical layer" 	0
 scalar sim.host[0].batteryStats 	"device total (mWs)" 	50.006848
@@ -39,9 +44,14 @@ scalar sim.host[0].batteryStats 	"time (s)" 	0.000856
 scalar sim.host[0].appl 	"broadcast queued" 	1
 scalar sim.host[0].appl 	"replies sent" 	0
 scalar sim.host[0].appl 	"replies received" 	0
-scalar sim.host[1].batteryStats 	"nominal (mW-s)" 	20000
-scalar sim.host[1].batteryStats 	"total (mW-s)" 	50.006848
-scalar sim.host[1].batteryStats 	"lifetime(s) (-1 == non-failed)" 	-1
+scalar sim.host[1].batteryStats 	nominal 	20000
+attr unit  mW-s
+scalar sim.host[1].batteryStats 	total 	50.006848
+attr unit  mW-s
+scalar sim.host[1].batteryStats 	lifetime 	-1
+attr unit  s
+scalar sim.host[1].batteryStats 	"Mean power consumption" 	5.0006848
+attr unit  mW
 scalar sim.host[1].batteryStats 	"num devices" 	1
 scalar sim.host[1].batteryStats 	"physical layer" 	0
 scalar sim.host[1].batteryStats 	"device total (mWs)" 	50.006848

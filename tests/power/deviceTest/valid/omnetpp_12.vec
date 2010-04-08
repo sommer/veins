@@ -1,23 +1,25 @@
 version 2
-run Twelve-0-20090826-15:15:27-9450
+run Twelve-0-20100408-14:34:14-4266
 attr configname Twelve
-attr datetime 20090826-15:15:27
+attr datetime 20100408-14:34:14
 attr experiment Twelve
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network sim
-attr processid 9450
+attr processid 4266
 attr repetition 0
 attr replication #0
 attr resultdir results
 attr runnumber 0
 attr seedset 0
 
-vector 1  sim.host[0].batteryStats  capacity(mW-s)  ETV
+vector 1  sim.host[0].batteryStats  capacity  ETV
+attr unit  mW-s
 vector 2  sim.host[0].batteryStats  capacity(relative)  ETV
-vector 3  sim.host[0].batteryStats  estimate(mW-s)  ETV
+vector 3  sim.host[0].batteryStats  estimate  ETV
+attr unit  mW-s
 vector 4  sim.host[0].batteryStats  estimate(relative)  ETV
 1	0	0	5400
 1	2	0.1	4920
