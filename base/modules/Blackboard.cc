@@ -168,9 +168,16 @@ void Blackboard::unsubscribe(ImNotifiable *client, int category)
 
     // remove client if there
     SubscriberVector::iterator it;
-    for(it = clients.begin(); it != clients.end(); ++it) {
-        if((*it).client == client) clients.erase(it);
-        break;
+    // go through the clients
+    for(it = clients.begin(); it != clients.end(); ++it)
+    {
+       	// check if client to be unsubscribed was found
+    	if((*it).client == client)
+    	{
+    		// client found, unsubscribe client and end search
+    		clients.erase(it);
+			break;
+    	}
     }
 }
 

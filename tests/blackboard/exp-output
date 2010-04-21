@@ -2,13 +2,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
 Version: 4.1b3, build: 100311-af6d180, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 39
-Loading NED files from /home/karl/git-repo/mixim/tests: 40
+Loading NED files from /Users/mixim/git-workspace/MiXiM/base: 17
+Loading NED files from /Users/mixim/git-workspace/MiXiM/modules: 40
+Loading NED files from /Users/mixim/git-workspace/MiXiM/tests: 40
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100318-11:02:14-9970
+Assigned runID=General-0-20100421-16:30:59-631
 Setting up network `sim'...
 Initializing...
 Initializing module sim, stage 0
@@ -50,25 +50,19 @@ TestStateSub::receiveBBItem test param changed to RED
 StateView::handleMessage unsubscribed HostState
 ** Event #6  T=5   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to AWAKE
-StateView::receiveBBItem Host state changed to AWAKE
 TestStateSub::receiveBBItem test param changed to GREEN
 ** Event #7  T=6   sim.node[0].testparam (TestStateSub, id=8)
 TestStatSub::handleMessage unsubscribed TestParam
 ** Event #8  T=6   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to SLEEP
-StateView::receiveBBItem Host state changed to SLEEP
 ** Event #9  T=7   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to DEAD
-StateView::receiveBBItem Host state changed to DEAD
 ** Event #10  T=8   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to AWAKE
-StateView::receiveBBItem Host state changed to AWAKE
 ** Event #11  T=9   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to SLEEP
-StateView::receiveBBItem Host state changed to SLEEP
 ** Event #12  T=10   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to DEAD
-StateView::receiveBBItem Host state changed to DEAD
 
 <!> No more events -- simulation ended.
 
