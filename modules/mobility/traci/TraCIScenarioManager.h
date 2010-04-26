@@ -28,9 +28,10 @@
 
 #include <omnetpp.h>
 
-#include "INETDefs.h"
-#include "ChannelControl.h"
-#include "ModuleAccess.h"
+#include "BaseModule.h"
+#include "Coord.h"
+#include "BaseWorldUtility.h"
+#include "FindModule.h"
 
 /**
  * TraCIScenarioManager connects OMNeT++ to a TraCI server running road traffic simulations.
@@ -42,12 +43,12 @@
  *
  * @author Christoph Sommer
  */
-class INET_API TraCIScenarioManager : public cSimpleModule
+class TraCIScenarioManager : public BaseModule
 {
 	public:
 
 		~TraCIScenarioManager();
-		virtual void initialize();
+	    virtual void initialize(int stage);
 		virtual void finish();
 		virtual void handleMessage(cMessage *msg);
 		virtual void handleSelfMsg(cMessage *msg);
@@ -84,7 +85,7 @@ class INET_API TraCIScenarioManager : public cSimpleModule
 		std::map<int32_t, cModule*> hosts; /**< vector of all hosts managed by us */
 		cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
 
-		ChannelControl* cc;
+		BaseWorldUtility* world;
 
 		void executeOneTimestep(); /**< read and execute all commands for the next timestep */
 
@@ -249,7 +250,7 @@ template<> std::string TraCIScenarioManager::TraCIBuffer::read();
 class TraCIScenarioManagerAccess : public ModuleAccess<TraCIScenarioManager>
 {
 	public:
-		TraCIScenarioManagerAccess() : ModuleAccess<TraCIScenarioManager>("manager") {};
+		TraCIScenarioManagerAccess() : ModuleAccess<TraCIScenarioManager>() {};
 };
 
 #endif

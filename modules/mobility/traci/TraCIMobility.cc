@@ -72,7 +72,7 @@ void TraCIMobility::initialize(int stage)
 {
 	// skip stage 1 initialisation of BasicMobility as this messes with pos.x/pos.y and triggers an NB update with these wrong values
 	if (stage != 1) {
-		BasicMobility::initialize(stage);
+		BaseMobility::initialize(stage);
 	}
 
 	if (stage == 1)
@@ -96,8 +96,7 @@ void TraCIMobility::initialize(int stage)
 			speed = -1; 
 			angle = M_PI; 
 			allowed_speed = -1; 
-			pos.x = -1; 
-			pos.y = -1; 
+			move.setStart(Coord(-1, -1));
 		}
 		isPreInitialized = false;
 
@@ -105,8 +104,6 @@ void TraCIMobility::initialize(int stage)
 		WATCH(speed);
 		WATCH(angle);
 		WATCH(allowed_speed);
-		WATCH(pos.x);
-		WATCH(pos.y);
 
 		startAccidentMsg = 0;
 		stopAccidentMsg = 0;
@@ -156,11 +153,11 @@ void TraCIMobility::handleSelfMsg(cMessage *msg)
 
 void TraCIMobility::preInitialize(int32_t external_id, const Coord& position, std::string road_id, double speed, double angle, double allowed_speed)
 {
-	if (debug) EV << "pre-initializing to " << position.x << " " << position.y << " " << road_id << " " << speed << " " << angle << " " << allowed_speed << std::endl;
+	if (debug) EV << "pre-initializing to " << position.getX() << " " << position.getY() << " " << road_id << " " << speed << " " << angle << " " << allowed_speed << std::endl;
 
 	this->external_id = external_id;
 	nextPos = position;
-	pos = position;
+	move.setStart(position);
 	this->road_id = road_id;
 	this->speed = speed;
 	this->angle = angle;
@@ -171,7 +168,7 @@ void TraCIMobility::preInitialize(int32_t external_id, const Coord& position, st
 
 void TraCIMobility::nextPosition(const Coord& position, std::string road_id, double speed, double angle, double allowed_speed)
 {
-	if (debug) EV << "nextPosition " << position.x << " " << position.y << " " << road_id << " " << speed << " " << angle << " " << allowed_speed << std::endl;
+	if (debug) EV << "nextPosition " << position.getX() << " " << position.getY() << " " << road_id << " " << speed << " " << angle << " " << allowed_speed << std::endl;
 	isPreInitialized = false;
 	nextPos = position;
 	this->road_id = road_id;
@@ -190,15 +187,15 @@ void TraCIMobility::changePosition()
 	if (statistics.firstRoadNumber == MY_INFINITY && (!road_id.empty())) statistics.firstRoadNumber = roadIdAsDouble(road_id);
 
 	// keep speed statistics
-	if ((pos.x != -1) && (pos.y != -1)) {
-		double distance = pos.distance(nextPos);
+	if ((move.getStartPos().getX() != -1) && (move.getStartPos().getY() != -1)) {
+		double distance = move.getStartPos().distance(nextPos);
 		statistics.totalDistance += distance;
 		statistics.totalTime += updateInterval;
 		if (speed != -1) {
 			statistics.minSpeed = std::min(statistics.minSpeed, speed);
 			statistics.maxSpeed = std::max(statistics.maxSpeed, speed);
-			currentPosXVec.record(pos.x);
-			currentPosYVec.record(pos.y);
+			currentPosXVec.record(move.getStartPos().getX());
+			currentPosYVec.record(move.getStartPos().getY());
 			currentSpeedVec.record(speed);
 			if (last_speed != -1) {
 				double acceleration = (speed - last_speed) / updateInterval;
@@ -214,14 +211,17 @@ void TraCIMobility::changePosition()
 		}
 	}
 
-	pos = nextPos;
+	move.setStart(nextPos);
 	fixIfHostGetsOutside();
 	updatePosition();
 }
 
 void TraCIMobility::fixIfHostGetsOutside()
 {
-	raiseErrorIfOutside();
+	Coord dummy = move.getStartPos();
+	double dum;
+
+	handleIfOutside( RAISEERROR, dummy, dummy, dummy, dum);
 }
 
 double TraCIMobility::calculateCO2emission(double v, double a) {

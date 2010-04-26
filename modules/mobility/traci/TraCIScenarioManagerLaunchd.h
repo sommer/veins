@@ -22,20 +22,19 @@
 
 #include <omnetpp.h>
 
-#include "INETDefs.h"
-#include "world/traci/TraCIScenarioManager.h"
+#include "mobility/traci/TraCIScenarioManager.h"
 
 /**
  * A TraCIScenarioManager that interacts with sumo-launchd
  *
  * @author Christoph Sommer
  */
-class INET_API TraCIScenarioManagerLaunchd : public TraCIScenarioManager
+class TraCIScenarioManagerLaunchd : public TraCIScenarioManager
 {
 	public:
 
 		virtual ~TraCIScenarioManagerLaunchd();
-		virtual void initialize();
+		virtual void initialize(int stage);
 		virtual void finish();
 
 	protected:
@@ -49,7 +48,7 @@ class INET_API TraCIScenarioManagerLaunchd : public TraCIScenarioManager
 class TraCIScenarioManagerLaunchdAccess : public ModuleAccess<TraCIScenarioManagerLaunchd>
 {
 	public:
-		TraCIScenarioManagerLaunchdAccess() : ModuleAccess<TraCIScenarioManagerLaunchd>("manager") {};
+		TraCIScenarioManagerLaunchdAccess() : ModuleAccess<TraCIScenarioManagerLaunchd>() {};
 };
 
 #endif

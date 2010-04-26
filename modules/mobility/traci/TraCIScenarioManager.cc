@@ -30,8 +30,8 @@
 #endif
 #define MYSOCKET (*(SOCKET*)socketPtr)
 
-#include "world/traci/TraCIScenarioManager.h"
-#include "world/traci/TraCIConstants.h"
+#include "mobility/traci/TraCIScenarioManager.h"
+#include "mobility/traci/TraCIConstants.h"
 #include "mobility/traci/TraCIMobility.h"
 
 Define_Module(TraCIScenarioManager);
@@ -42,8 +42,10 @@ TraCIScenarioManager::~TraCIScenarioManager()
 }
 
 
-void TraCIScenarioManager::initialize()
+void TraCIScenarioManager::initialize(int stage)
 {
+	if (stage != 1) return;
+
 	debug = par("debug");
 	updateInterval = par("updateInterval");
 	moduleType = par("moduleType").stdstringValue();
@@ -86,8 +88,9 @@ void TraCIScenarioManager::initialize()
 	executeOneTimestepTrigger = new cMessage("step");
 	scheduleAt(0, executeOneTimestepTrigger);
 
-	cc = dynamic_cast<ChannelControl *>(simulation.getModuleByPath("channelcontrol"));
-	if (cc == 0) error("Could not find a ChannelControl module named channelcontrol");
+	world = FindModule<BaseWorldUtility*>::findGlobalModule();
+    if (world == NULL) error("Could not find BaseWorldUtility module");
+
 
 	if (debug) EV << "TraCIScenarioManager connecting to TraCI server" << endl;
 	socketPtr = 0;
@@ -244,7 +247,7 @@ void TraCIScenarioManager::init_traci() {
 		netbounds1 = Coord(x1, y1);
 		netbounds2 = Coord(x2, y2);
 		if (debug) EV << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
-		if ((traci2omnet(netbounds2).x > cc->getPgs()->x) || (traci2omnet(netbounds2).y > cc->getPgs()->y)) EV << "WARNING: Playground size (" << cc->getPgs()->x << ", " << cc->getPgs()->y << ") might be too small for vehicle at network bounds (" << traci2omnet(netbounds2).x << ", " << traci2omnet(netbounds2).y << ")" << endl;
+		if ((traci2omnet(netbounds2).getX() > world->getPgs()->getX()) || (traci2omnet(netbounds2).getY() > world->getPgs()->getY())) EV << "WARNING: Playground size (" << world->getPgs()->getX() << ", " << world->getPgs()->getY() << ") might be too small for vehicle at network bounds (" << traci2omnet(netbounds2).getX() << ", " << traci2omnet(netbounds2).getY() << ")" << endl;
 	}
 
 	{
@@ -326,7 +329,7 @@ float TraCIScenarioManager::commandDistanceRequest(Coord position1, Coord positi
 {
 	position1 = omnet2traci(position1);
 	position2 = omnet2traci(position2);
-	TraCIBuffer buf = queryTraCI(CMD_DISTANCEREQUEST, TraCIBuffer() << static_cast<uint8_t>(POSITION_2D) << float(position1.x) << float(position1.y) << static_cast<uint8_t>(POSITION_2D) << float(position2.x) << float(position2.y) << static_cast<uint8_t>(returnDrivingDistance ? REQUEST_DRIVINGDIST : REQUEST_AIRDIST));
+	TraCIBuffer buf = queryTraCI(CMD_DISTANCEREQUEST, TraCIBuffer() << static_cast<uint8_t>(POSITION_2D) << float(position1.getX()) << float(position1.getY()) << static_cast<uint8_t>(POSITION_2D) << float(position2.getX()) << float(position2.getY()) << static_cast<uint8_t>(returnDrivingDistance ? REQUEST_DRIVINGDIST : REQUEST_AIRDIST));
 
 	uint8_t cmdLength; buf >> cmdLength;
 	uint8_t commandId; buf >> commandId;
@@ -394,7 +397,7 @@ std::list<std::pair<float, float> > TraCIScenarioManager::commandGetPolygonShape
 		float x; buf >> x;
 		float y; buf >> y;
 		Coord pos = traci2omnet(Coord(x, y));
-		res.push_back(std::make_pair(pos.x, pos.y));
+		res.push_back(std::make_pair(pos.getX(), pos.getY()));
 	}
 
 	if (!buf.eof()) error("received additional bytes");
@@ -410,7 +413,7 @@ void TraCIScenarioManager::commandSetPolygonShape(std::string polyId, std::list<
 		float x = i->first;
 		float y = i->second;
 		Coord pos = omnet2traci(Coord(x, y));
-		buf << static_cast<float>(pos.x) << static_cast<float>(pos.y);
+		buf << static_cast<float>(pos.getX()) << static_cast<float>(pos.getY());
 	}
 	TraCIBuffer obuf = queryTraCI(CMD_SET_POLYGON_VARIABLE, buf);
 	if (!obuf.eof()) error("received additional bytes");
@@ -460,8 +463,8 @@ void TraCIScenarioManager::deleteModule(int32_t nodeId) {
 	cModule* mod = getManagedModule(nodeId);
 	if (!mod) error("no vehicle with Id %d found", nodeId);
 
-	if (!mod->getSubmodule("notificationBoard")) error("host has no submodule notificationBoard");
-	cc->unregisterHost(mod);
+	//if (!mod->getSubmodule("notificationBoard")) error("host has no submodule notificationBoard");
+	//cc->unregisterHost(mod);
 
 	hosts.erase(nodeId);
 	mod->callFinish();
@@ -477,7 +480,7 @@ bool TraCIScenarioManager::isInRegionOfInterest(const Coord& position, std::stri
 	}
 	if (roiRects.size() > 0) {
 		for (std::list<std::pair<Coord, Coord> >::const_iterator i = roiRects.begin(); i != roiRects.end(); ++i) {
-			if ((position.x >= i->first.x) && (position.y >= i->first.y) && (position.x <= i->second.x) && (position.y <= i->second.y)) return true;
+			if ((position.getX() >= i->first.getX()) && (position.getY() >= i->first.getY()) && (position.getX() <= i->second.getX()) && (position.getY() <= i->second.getY())) return true;
 		}
 	}
 	return false;
@@ -509,7 +512,7 @@ void TraCIScenarioManager::processUpdateObject(uint8_t domain, int32_t nodeId, T
 	float px; buf >> px;
 	float py; buf >> py;
 	Coord p = traci2omnet(Coord(px, py));
-	if ((p.x < 0) || (p.y < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
+	if ((p.getX() < 0) || (p.getY() < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.getX(), p.getY());
 
 	std::string edge; buf >> edge;
 
@@ -542,7 +545,7 @@ void TraCIScenarioManager::processUpdateObject(uint8_t domain, int32_t nodeId, T
 			cModule* submod = iter();
 			TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
 			if (!mm) continue;
-			if (debug) EV << "module " << nodeId << " moving to " << p.x << "," << p.y << endl;
+			if (debug) EV << "module " << nodeId << " moving to " << p.getX() << "," << p.getY() << endl;
 			mm->nextPosition(p, edge, speed, angle, allowed_speed);
 		}
 	}
@@ -587,11 +590,11 @@ void TraCIScenarioManager::executeOneTimestep() {
 }
 
 Coord TraCIScenarioManager::traci2omnet(Coord coord) const {
-	return Coord(coord.x - netbounds1.x + margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
+	return Coord(coord.getX() - netbounds1.getX() + margin, (netbounds2.getY() - netbounds1.getY()) - (coord.getY() - netbounds1.getY()) + margin);
 }
 
 Coord TraCIScenarioManager::omnet2traci(Coord coord) const {
-	return Coord(coord.x + netbounds1.x - margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
+	return Coord(coord.getX() + netbounds1.getX() - margin, (netbounds2.getY() - netbounds1.getY()) - (coord.getY() - netbounds1.getY()) + margin);
 }
 
 double TraCIScenarioManager::traci2omnetAngle(double angle) const {

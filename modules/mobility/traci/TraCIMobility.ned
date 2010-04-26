@@ -17,16 +17,19 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-package inet.mobility.traci;
+package org.mixim.modules.mobility.traci;
+
+import org.mixim.base.modules.BaseMobility;
 
 //
 // TraCIMobility is a mobility module for hosts controlled by TraCIScenarioManager.
 // It receives position and state updates from an external module and updates
 // the parent module accordingly.
 //
-simple TraCIMobility
+simple TraCIMobility extends BaseMobility
 {
     parameters:
+		@class(TraCIMobility);
         @display("i=block/cogwheel");
         bool debug = default(false);  // debug switch
         int accidentCount = default(0);  // number of accidents

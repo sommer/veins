@@ -16,68 +16,56 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-package inet.examples.traci_launchd;
+package org.mixim.examples.traci_launchd;
 
-import inet.base.NotificationBoard;
-import inet.networklayer.common.InterfaceTable;
-import inet.mobility.traci.TraCIMobility;
-import inet.networklayer.ipv4.RoutingTable;
-import inet.transport.udp.UDP;
-import inet.nodes.inet.NetworkLayer;
-import inet.linklayer.mf80211.Nic80211;
+import org.mixim.base.modules.*;
 
 module Car
 {
     parameters:
-
-        @display("bgb=424,541");
+        string applType; //type of the application layer
+        string netwType; //type of the network layer
+        string mobType; //type of the mobility module
+        @display("bgb=,,white,,");
     gates:
-        input radioIn;
-
+        input radioIn; // gate for sendDirect
     submodules:
-        notificationBoard: NotificationBoard {
+        utility: BaseUtility {
             parameters:
-                @display("p=140,462;i=block/control");
+                @display("p=130,38,rect;b=24,24,,black,,");
         }
-        interfaceTable: InterfaceTable {
+        arp: BaseArp {
             parameters:
-                @display("p=140,326;i=block/table");
+                @display("p=130,84,rect;b=24,24,,blue,,");
         }
-        mobility: TraCIMobility {
+        mobility: <mobType> like IBaseMobility {
             parameters:
-                @display("p=60,459;i=block/cogwheel");
+                @display("p=130,172;i=cogwheel2");
         }
-        routingTable: RoutingTable {
+        appl: <applType> like IBaseApplLayer {
             parameters:
-                IPForward = true;
-                routerId = "";
-                routingFile = "";
-                @display("p=60,326;i=block/table");
+                @display("p=60,50;i=app");
         }
-        udp: UDP {
+        net: <netwType> like IBaseNetwLayer {
             parameters:
-                @display("p=384,146;i=block/transport");
+                @display("p=60,108;i=prot1");
         }
-        networkLayer: NetworkLayer {
+        nic: BaseNic {
             parameters:
-                proxyARP = false;
-                @display("p=304,327;i=block/fork;q=queue");
-            gates:
-                ifIn[1];
-                ifOut[1];
+                @display("p=60,166;i=iface");
         }
-        wlan: Nic80211 {
-            parameters:
-                @display("p=304,461;q=queue;i=block/ifcard");
-        }
-    connections allowunconnected:
-        udp.ipOut --> networkLayer.udpIn;
-        udp.ipIn <-- networkLayer.udpOut;
+    connections:
+        nic.upperGateOut --> net.lowerGateIn;
+        nic.upperGateIn <-- net.lowerGateOut;
+        nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
+        nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        wlan.uppergateOut --> networkLayer.ifIn[0];
-        wlan.uppergateIn <-- networkLayer.ifOut[0];
+        net.upperGateOut --> appl.lowerGateIn;
+        net.upperGateIn <-- appl.lowerGateOut;
+        net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
+        net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 
-        radioIn --> wlan.radioIn;
+        radioIn --> nic.radioIn;
 
 }
 

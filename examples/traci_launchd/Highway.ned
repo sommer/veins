@@ -16,28 +16,36 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-package inet.examples.traci_launchd;
+package org.mixim.examples.traci_launchd;
 
-import inet.world.ChannelControl;
-import inet.world.traci.TraCIScenarioManagerLaunchd;
+import org.mixim.base.connectionManager.ConnectionManager;
+import org.mixim.base.modules.BaseWorldUtility;
+import org.mixim.modules.mobility.traci.TraCIScenarioManagerLaunchd;
 
 module Highway
 {
     parameters:
-        double playgroundSizeX;
-        double playgroundSizeY;
-        @display("bgi=map;bgs=0.25");
+        double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
+        double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
+        double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
+        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=0,0;bgi=map;bgs=0.25");
     submodules:
-        channelcontrol: ChannelControl {
+        connectionManager: ConnectionManager {
+         	parameters:
+                @display("p=150,0;b=42,42,rect,green,,;i=abstract/multicast");   
+        }
+        world: BaseWorldUtility {
             parameters:
                 playgroundSizeX = playgroundSizeX;
                 playgroundSizeY = playgroundSizeY;
-                @display("p=256,128");
+                playgroundSizeZ = playgroundSizeZ;
+                @display("p=30,0;i=misc/globe");
         }
         manager: TraCIScenarioManagerLaunchd {
             parameters:
                 @display("p=512,128");
         }
+        
     connections allowunconnected:
 }
 

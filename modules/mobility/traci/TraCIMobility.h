@@ -1,3 +1,4 @@
+/* -*- mode:c++ -*- ********************************************************/
 //
 // TraCIMobility - Mobility module to be controlled by TraCIScenarioManager
 // Copyright (C) 2006 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
@@ -25,11 +26,9 @@
 #include <list>
 #include <stdexcept>
 
-#include <omnetpp.h>
-
-#include "BasicMobility.h"
-#include "ModuleAccess.h"
-#include "world/traci/TraCIScenarioManager.h"
+#include <BaseMobility.h>
+#include "FindModule.h"
+#include "mobility/traci/TraCIScenarioManager.h"
 
 /**
  * @brief
@@ -41,7 +40,7 @@
  * @ingroup mobility
  * @author Christoph Sommer
  */
-class INET_API TraCIMobility : public BasicMobility
+class TraCIMobility : public BaseMobility
 {
 	public:
 		class Statistics {
@@ -60,7 +59,7 @@ class INET_API TraCIMobility : public BasicMobility
 				void recordScalars(cSimpleModule& module);
 		};
 
-		TraCIMobility() : BasicMobility(), isPreInitialized(false) {}
+		TraCIMobility() : BaseMobility(), isPreInitialized(false) {}
 		virtual void initialize(int);
 		virtual void finish();
 
@@ -76,7 +75,7 @@ class INET_API TraCIMobility : public BasicMobility
 			return external_id;
 		}
 		virtual Coord getPosition() {
-			return pos;
+			return move.getStartPos();
 		}
 		virtual std::string getRoadId() {
 			if (road_id == "") throw std::runtime_error("TraCIMobility::getRoadId called with no road_id set yet");
@@ -165,7 +164,7 @@ class INET_API TraCIMobility : public BasicMobility
 class TraCIMobilityAccess : public ModuleAccess<TraCIMobility>
 {
 	public:
-		TraCIMobilityAccess() : ModuleAccess<TraCIMobility>("mobility") {};
+		TraCIMobilityAccess() : ModuleAccess<TraCIMobility>() {};
 };
 
 
