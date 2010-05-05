@@ -49,7 +49,7 @@ class TraCIScenarioManager : public BaseModule
 	public:
 
 		~TraCIScenarioManager();
-	    virtual void initialize(int stage);
+		virtual void initialize(int stage);
 		virtual void finish();
 		virtual void handleMessage(cMessage *msg);
 		virtual void handleSelfMsg(cMessage *msg);

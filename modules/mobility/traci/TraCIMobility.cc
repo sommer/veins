@@ -229,7 +229,7 @@ double TraCIMobility::calculateCO2emission(double v, double a) {
 	// Cappiello, A. and Chabini, I. and Nam, E.K. and Lue, A. and Abou Zeid, M., "A statistical model of vehicle emissions and fuel consumption," IEEE 5th International Conference on Intelligent Transportation Systems (IEEE ITSC), pp. 801-809, 2002
 
 	double A = 1000 * 0.1326; // W/m/s
-        double B = 1000 * 2.7384e-03; // W/(m/s)^2
+	double B = 1000 * 2.7384e-03; // W/(m/s)^2
 	double C = 1000 * 1.0843e-03; // W/(m/s)^3
 	double M = 1325.0; // kg
 
