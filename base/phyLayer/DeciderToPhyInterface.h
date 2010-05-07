@@ -88,11 +88,20 @@ public:
 	 * @brief Tells the PhyLayer to cancel a scheduled message (AirFrame or
 	 * ControlMessage).
 	 *
+	 * Used by the Decider if it doesn't need to handle an AirFrame or
+	 * ControlMessage again anymore.
+	 */
+	virtual void cancelScheduledMessage(cMessage* msg) = 0;
+
+	/**
+	 * @brief Tells the PhyLayer to reschedule a message (AirFrame or
+	 * ControlMessage).
+	 *
 	 * Used by the Decider if it has to handle an AirFrame or an control message
 	 * earlier than it has returned to the PhyLayer the last time the Decider
 	 * handled that message.
 	 */
-	virtual void cancelScheduledMessage(cMessage* msg) = 0;
+	virtual void rescheduleMessage(cMessage* msg, simtime_t t) = 0;
 
 	/**
 	 * @brief Enables the Decider to draw Power from the

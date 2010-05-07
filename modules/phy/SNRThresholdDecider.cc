@@ -1,5 +1,39 @@
 #include "SNRThresholdDecider.h"
 
+simtime_t SNRThresholdDecider::processNewSignal(AirFrame* frame)
+{
+	//the rssi level changes therefore we need to check if we can
+	//answer an ongoing ChannelSenseRequest now
+	channelStateChanged();
+
+	if(currentSignal.first != 0) {
+		debugEV << "Already receiving another AirFrame!" << endl;
+		return notAgain;
+	}
+
+	// get the receiving power of the Signal at start-time
+	Signal& signal = frame->getSignal();
+	double recvPower = signal.getReceivingPower()->getValue(Argument(signal.getSignalStart()));
+
+	// check whether signal is strong enough to receive
+	if ( recvPower < sensitivity )
+	{
+		debugEV << "Signal is to weak (" << recvPower << " < " << sensitivity
+				<< ") -> do not receive." << endl;
+		// Signal too weak, we can't receive it, tell PhyLayer that we don't want it again
+		return notAgain;
+	}
+
+	// Signal is strong enough, receive this Signal and schedule it
+	debugEV << "Signal is strong enough (" << recvPower << " > " << sensitivity
+			<< ") -> Trying to receive AirFrame." << endl;
+
+	currentSignal.first = frame;
+	currentSignal.second = EXPECT_END;
+
+	return ( signal.getSignalStart() + signal.getSignalLength() );
+}
+
 // TODO: for now we check a larger mapping within an interval
 bool SNRThresholdDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, simtime_t end)
 {
@@ -49,6 +83,73 @@ bool SNRThresholdDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, s
 	return true;
 }
 
+ChannelState SNRThresholdDecider::getChannelState() {
+
+	simtime_t now = phy->getSimTime();
+	double rssiValue = calcChannelSenseRSSI(now, now);
+
+	return ChannelState(isIdleRSSI(rssiValue), rssiValue);
+}
+
+void SNRThresholdDecider::answerCSR(CSRInfo& requestInfo)
+{
+	// put the sensing-result to the request and
+	// send it to the Mac-Layer as Control-message (via Interface)
+	requestInfo.first->setResult( getChannelState() );
+	phy->sendControlMsg(requestInfo.first);
+
+	requestInfo.first = 0;
+	requestInfo.second = -1;
+	requestInfo.canAnswerAt = -1;
+}
+
+simtime_t SNRThresholdDecider::canAnswerCSR(const CSRInfo& requestInfo) {
+	const ChannelSenseRequest* request = requestInfo.getRequest();
+	assert(request);
+
+	simtime_t requestTimeout = requestInfo.getSenseStart() + request->getSenseTimeout();
+
+	if(request->getSenseMode() == UNTIL_TIMEOUT) {
+		return requestTimeout;
+	}
+
+	simtime_t now = phy->getSimTime();
+
+	ConstMapping* rssiMapping = calculateRSSIMapping(now, requestTimeout);
+
+	//this Decider only works for time-only signals
+	assert(rssiMapping->getDimensionSet() == DimensionSet::timeDomain);
+
+	ConstMappingIterator* it = rssiMapping->createConstIterator(Argument(now));
+
+	assert(request->getSenseMode() == UNTIL_IDLE
+		   || request->getSenseMode() == UNTIL_BUSY);
+	bool untilIdle = request->getSenseMode() == UNTIL_IDLE;
+
+	simtime_t answerTime = requestTimeout;
+	//check if the current rssi value enables us to answer the request
+	if(isIdleRSSI(it->getValue()) == untilIdle) {
+		answerTime = now;
+	}
+	else {
+		//iterate through request interval to check when the rssi level
+		//changes such that the request can be answered
+		while(it->hasNext() && it->getNextPosition().getTime() < requestTimeout) {
+			it->next();
+
+			if(isIdleRSSI(it->getValue()) == untilIdle) {
+				answerTime = it->getPosition().getTime();
+				break;
+			}
+		}
+	}
+
+	delete it;
+	delete rssiMapping;
+
+	return answerTime;
+}
+
 simtime_t SNRThresholdDecider::processSignalEnd(AirFrame* frame)
 {
 	assert(frame == currentSignal.first);
@@ -84,9 +185,6 @@ simtime_t SNRThresholdDecider::processSignalEnd(AirFrame* frame)
 
 	// we have processed this AirFrame and we prepare to receive the next one
 	currentSignal.first = 0;
-
-	//channel turned idle
-	setChannelIdleStatus(true);
 
 	return notAgain;
 }

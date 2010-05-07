@@ -76,8 +76,19 @@ protected:
 	/** @brief Stores the idle state of the channel.*/
 	bool isChannelIdle;
 
-	/** @brief Pair of a ChannelSenseRequest and the simtime it started. */
-	typedef std::pair<ChannelSenseRequest*, simtime_t> CSRInfo;
+	/** @brief Data about an currently ongoing ChannelSenseRequest. */
+	typedef struct{
+		ChannelSenseRequest* first;
+		simtime_t second;
+		simtime_t canAnswerAt;
+
+		ChannelSenseRequest* getRequest() const { return first; }
+		void setRequest(ChannelSenseRequest* request) { first = request; }
+		simtime_t getSenseStart() const { return second; }
+		void setSenseStart(simtime_t start) { second = start; }
+		simtime_t getAnswerTime() const { return canAnswerAt; }
+		void setAnswerTime(simtime_t answerAt) { canAnswerAt = answerAt; }
+	} CSRInfo;
 
 	/** @brief pointer to the currently running ChannelSenseRequest and its start-time */
 	CSRInfo currentChannelSenseRequest;
@@ -105,7 +116,9 @@ public:
 	{
 		currentSignal.first = 0;
 		currentSignal.second = NEW;
-		currentChannelSenseRequest = std::pair<ChannelSenseRequest*, simtime_t>(0, -1);
+		currentChannelSenseRequest.first = 0;
+		currentChannelSenseRequest.second = -1;
+		currentChannelSenseRequest.canAnswerAt = -1;
 	}
 
 	virtual ~BaseDecider() {}
@@ -201,10 +214,14 @@ protected:
 	virtual simtime_t handleNewSenseRequest(ChannelSenseRequest* request);
 
 	/**
-	 * @brief Handles the timeout of a ChannelSenseRequest by calculating the
+	 * @brief Handles the timeout or end of a ChannelSenseRequest by calculating the
 	 * ChannelState and returning the request to the mac layer.
+	 *
+	 * If this handler is reached the decider has to be able to answer the
+	 * request. Either because the timeout is reached or because the
+	 * channel state changed accordingly.
 	 */
-	virtual void handleSenseRequestTimeout(CSRInfo& requestInfo);
+	virtual void handleSenseRequestEnd(CSRInfo& requestInfo);
 
 	/**
 	 * @brief Changes the "isIdle"-status to the passed value.
@@ -215,10 +232,10 @@ protected:
 	virtual void setChannelIdleStatus(bool isIdle);
 
 	/**
-	 * @brief Returns true if the ChannelSenseRequest of the passed CSRInfo can be answered
+	 * @brief Returns point in time when the ChannelSenseRequest of the passed CSRInfo can be answered
 	 * (e.g. because channel state changed or timeout is reached).
 	 */
-	virtual bool canAnswerCSR(const CSRInfo& requestInfo);
+	virtual simtime_t canAnswerCSR(const CSRInfo& requestInfo);
 
 	/**
 	 * @brief Calculates the RSSI value for the passed interval.
@@ -238,6 +255,15 @@ protected:
 	 * together with the result back to the mac layer.
 	 */
 	virtual void answerCSR(CSRInfo& requestInfo);
+
+	/**
+	 * @brief Checks if the changed channel state enables us to answer
+	 * any ongoing ChannelSenseRequests.
+	 *
+	 * This method is ment to update only an already ongoing ChannelSenseRequests
+	 * it can't handle a new one.
+	 */
+	virtual void channelStateChanged();
 
 	//------Utility methods------------
 

@@ -1,14 +1,14 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b3, build: 100311-af6d180, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 39
+Loading NED files from /home/karl/git-repo/mixim/modules: 40
 Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration TestBaseDecider1, run #0...
 Scenario: $repetition=0
-Assigned runID=TestBaseDecider1-0-20100318-11:02:17-9981
+Assigned runID=TestBaseDecider1-0-20100428-16:20:40-11782
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0

@@ -92,7 +92,7 @@ simtime_t BaseDecider::handleChannelSenseRequest(ChannelSenseRequest* request) {
 		return notAgain;
 	}
 
-	handleSenseRequestTimeout(currentChannelSenseRequest);
+	handleSenseRequestEnd(currentChannelSenseRequest);
 
 	// say that we don't want to have it again
 	return notAgain;
@@ -104,20 +104,25 @@ simtime_t BaseDecider::handleNewSenseRequest(ChannelSenseRequest* request)
 	simtime_t now = phy->getSimTime();
 
 	// saving the pointer to the request and its start-time (now)
-	currentChannelSenseRequest.first = request;
-	currentChannelSenseRequest.second = now;
+	currentChannelSenseRequest.setRequest(request);
+	currentChannelSenseRequest.setSenseStart(now);
+
+	//get point in time when we can answer the request (as far as we
+	//know at this point in time)
+	currentChannelSenseRequest.canAnswerAt = canAnswerCSR(currentChannelSenseRequest);
 
 	//check if we can already answer the request
-	if(canAnswerCSR(currentChannelSenseRequest))
+	if(now == currentChannelSenseRequest.canAnswerAt)
 	{
 		answerCSR(currentChannelSenseRequest);
 		return notAgain;
 	}
 
-	return ( now + request->getSenseTimeout() );
+	return currentChannelSenseRequest.canAnswerAt;
 }
 
-void BaseDecider::handleSenseRequestTimeout(CSRInfo& requestInfo) {
+void BaseDecider::handleSenseRequestEnd(CSRInfo& requestInfo) {
+	assert(canAnswerCSR(requestInfo) == phy->getSimTime());
 	answerCSR(requestInfo);
 }
 
@@ -128,20 +133,37 @@ int BaseDecider::getSignalState(AirFrame* frame) {
 	return NEW;
 }
 
-void BaseDecider::setChannelIdleStatus(bool isIdle) {
-	isChannelIdle = isIdle;
+void BaseDecider::channelStateChanged()
+{
+	if(!currentChannelSenseRequest.getRequest())
+		return;
 
-	//check if there is an ChannelSenseRequest we can answer now
-	if(canAnswerCSR(currentChannelSenseRequest)){
-		phy->cancelScheduledMessage(currentChannelSenseRequest.first);
-		answerCSR(currentChannelSenseRequest);
+	//check if the point in time when we can answer the request has changed
+	simtime_t canAnswerAt = canAnswerCSR(currentChannelSenseRequest);
+
+	//check if answer time has changed
+	if(canAnswerAt != currentChannelSenseRequest.canAnswerAt) {
+		//can we answer it now?
+		if(canAnswerAt == phy->getSimTime()) {
+			phy->cancelScheduledMessage(currentChannelSenseRequest.getRequest());
+			answerCSR(currentChannelSenseRequest);
+		} else {
+			phy->rescheduleMessage(currentChannelSenseRequest.getRequest(),
+								   canAnswerAt);
+			currentChannelSenseRequest.canAnswerAt = canAnswerAt;
+		}
 	}
 }
 
-bool BaseDecider::canAnswerCSR(const CSRInfo& requestInfo)
+void BaseDecider::setChannelIdleStatus(bool isIdle) {
+	isChannelIdle = isIdle;
+
+	channelStateChanged();
+}
+
+simtime_t BaseDecider::canAnswerCSR(const CSRInfo& requestInfo)
 {
-	if(requestInfo.first == 0)
-		return false;
+	assert(requestInfo.first);
 
 	bool modeFulfilled = false;
 
@@ -155,9 +177,12 @@ bool BaseDecider::canAnswerCSR(const CSRInfo& requestInfo)
 		break;
 	}
 
-	return modeFulfilled 									//CSR mode is fulfilled
-		   || (phy->getSimTime() ==   requestInfo.second 	//or timeout is reached
-								    + requestInfo.first->getSenseTimeout());
+	if(modeFulfilled) {
+		return phy->getSimTime();
+	}
+
+	//return point in time when time out is reached
+	return requestInfo.second + requestInfo.first->getSenseTimeout();
 }
 
 double BaseDecider::calcChannelSenseRSSI(simtime_t start, simtime_t end) {
@@ -165,6 +190,10 @@ double BaseDecider::calcChannelSenseRSSI(simtime_t start, simtime_t end) {
 
 	// the sensed RSSI-value is the maximum value between (and including) the interval-borders
 	double rssi = MappingUtils::findMax(*rssiMap, Argument(start), Argument(end));
+
+	//"findMax()" returns "-DBL_MAX" on empty mappings
+	if (rssi < 0)
+		rssi = 0;
 
 	delete rssiMap;
 
@@ -175,16 +204,14 @@ void BaseDecider::answerCSR(CSRInfo& requestInfo) {
 
 	double rssiValue = calcChannelSenseRSSI(requestInfo.second, phy->getSimTime());
 
-	//"findMax()" returns "-DBL_MAX" on empty mappings
-	if (rssiValue < 0)
-		rssiValue = 0;
-
 	// put the sensing-result to the request and
 	// send it to the Mac-Layer as Control-message (via Interface)
 	requestInfo.first->setResult( ChannelState(isChannelIdle, rssiValue) );
 	phy->sendControlMsg(requestInfo.first);
 
 	requestInfo.first = 0;
+	requestInfo.second = -1;
+	requestInfo.canAnswerAt = -1;
 }
 
 Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)

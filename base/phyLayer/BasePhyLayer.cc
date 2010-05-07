@@ -789,6 +789,11 @@ void BasePhyLayer::cancelScheduledMessage(cMessage* msg) {
 	}
 }
 
+void BasePhyLayer::rescheduleMessage(cMessage* msg, simtime_t t) {
+	cancelScheduledMessage(msg);
+	scheduleAt(t, msg);
+}
+
 void BasePhyLayer::drawCurrent(double amount, int activity) {
 	BatteryAccess::drawCurrent(amount, activity);
 }

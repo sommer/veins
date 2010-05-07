@@ -1,318 +1,49 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b3, build: 100311-af6d180, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 39
+Loading NED files from /home/karl/git-repo/mixim/modules: 40
 Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20100318-11:02:14-9972
+Assigned runID=Test1-0-20100428-16:20:38-11772
 Setting up network `ccSim'...
 Initializing...
-Initializing module ccSim, stage 0
-Initializing module ccSim.world, stage 0
-Initializing module ccSim.channelcontrol, stage 0
-Initializing module ccSim.node[0], stage 0
-Initializing module ccSim.node[0].blackboard, stage 0
-Initializing module ccSim.node[0].mobility, stage 0
-Initializing module ccSim.node[0].nic, stage 0
-Initializing module ccSim.node[0].nic.phy, stage 0
-Initializing module ccSim.node[1], stage 0
-Initializing module ccSim.node[1].blackboard, stage 0
-Initializing module ccSim.node[1].mobility, stage 0
-Initializing module ccSim.node[1].nic, stage 0
-Initializing module ccSim.node[1].nic.phy, stage 0
-Initializing module ccSim.node[2], stage 0
-Initializing module ccSim.node[2].blackboard, stage 0
-Initializing module ccSim.node[2].mobility, stage 0
-Initializing module ccSim.node[2].nic, stage 0
-Initializing module ccSim.node[2].nic.phy, stage 0
-Initializing module ccSim.node[3], stage 0
-Initializing module ccSim.node[3].blackboard, stage 0
-Initializing module ccSim.node[3].mobility, stage 0
-Initializing module ccSim.node[3].nic, stage 0
-Initializing module ccSim.node[3].nic.phy, stage 0
-Initializing module ccSim.node[4], stage 0
-Initializing module ccSim.node[4].blackboard, stage 0
-Initializing module ccSim.node[4].mobility, stage 0
-Initializing module ccSim.node[4].nic, stage 0
-Initializing module ccSim.node[4].nic.phy, stage 0
-Initializing module ccSim.node[5], stage 0
-Initializing module ccSim.node[5].blackboard, stage 0
-Initializing module ccSim.node[5].mobility, stage 0
-Initializing module ccSim.node[5].nic, stage 0
-Initializing module ccSim.node[5].nic.phy, stage 0
-Initializing module ccSim.node[6], stage 0
-Initializing module ccSim.node[6].blackboard, stage 0
-Initializing module ccSim.node[6].mobility, stage 0
-Initializing module ccSim.node[6].nic, stage 0
-Initializing module ccSim.node[6].nic.phy, stage 0
-Initializing module ccSim.node[7], stage 0
-Initializing module ccSim.node[7].blackboard, stage 0
-Initializing module ccSim.node[7].mobility, stage 0
-Initializing module ccSim.node[7].nic, stage 0
-Initializing module ccSim.node[7].nic.phy, stage 0
-Initializing module ccSim.node[8], stage 0
-Initializing module ccSim.node[8].blackboard, stage 0
-Initializing module ccSim.node[8].mobility, stage 0
-Initializing module ccSim.node[8].nic, stage 0
-Initializing module ccSim.node[8].nic.phy, stage 0
-Initializing module ccSim.node[9], stage 0
-Initializing module ccSim.node[9].blackboard, stage 0
-Initializing module ccSim.node[9].mobility, stage 0
-Initializing module ccSim.node[9].nic, stage 0
-Initializing module ccSim.node[9].nic.phy, stage 0
-Initializing module ccSim.node[10], stage 0
-Initializing module ccSim.node[10].blackboard, stage 0
-Initializing module ccSim.node[10].mobility, stage 0
-Initializing module ccSim.node[10].nic, stage 0
-Initializing module ccSim.node[10].nic.phy, stage 0
-Initializing module ccSim.node[11], stage 0
-Initializing module ccSim.node[11].blackboard, stage 0
-Initializing module ccSim.node[11].mobility, stage 0
-Initializing module ccSim.node[11].nic, stage 0
-Initializing module ccSim.node[11].nic.phy, stage 0
-Initializing module ccSim.node[12], stage 0
-Initializing module ccSim.node[12].blackboard, stage 0
-Initializing module ccSim.node[12].mobility, stage 0
-Initializing module ccSim.node[12].nic, stage 0
-Initializing module ccSim.node[12].nic.phy, stage 0
-Initializing module ccSim.node[13], stage 0
-Initializing module ccSim.node[13].blackboard, stage 0
-Initializing module ccSim.node[13].mobility, stage 0
-Initializing module ccSim.node[13].nic, stage 0
-Initializing module ccSim.node[13].nic.phy, stage 0
-Initializing module ccSim.node[14], stage 0
-Initializing module ccSim.node[14].blackboard, stage 0
-Initializing module ccSim.node[14].mobility, stage 0
-Initializing module ccSim.node[14].nic, stage 0
-Initializing module ccSim.node[14].nic.phy, stage 0
-Initializing module ccSim.node[15], stage 0
-Initializing module ccSim.node[15].blackboard, stage 0
-Initializing module ccSim.node[15].mobility, stage 0
-Initializing module ccSim.node[15].nic, stage 0
-Initializing module ccSim.node[15].nic.phy, stage 0
-Initializing module ccSim.node[16], stage 0
-Initializing module ccSim.node[16].blackboard, stage 0
-Initializing module ccSim.node[16].mobility, stage 0
-Initializing module ccSim.node[16].nic, stage 0
-Initializing module ccSim.node[16].nic.phy, stage 0
-Initializing module ccSim.node[17], stage 0
-Initializing module ccSim.node[17].blackboard, stage 0
-Initializing module ccSim.node[17].mobility, stage 0
-Initializing module ccSim.node[17].nic, stage 0
-Initializing module ccSim.node[17].nic.phy, stage 0
-Initializing module ccSim.node[18], stage 0
-Initializing module ccSim.node[18].blackboard, stage 0
-Initializing module ccSim.node[18].mobility, stage 0
-Initializing module ccSim.node[18].nic, stage 0
-Initializing module ccSim.node[18].nic.phy, stage 0
-Initializing module ccSim.node[19], stage 0
-Initializing module ccSim.node[19].blackboard, stage 0
-Initializing module ccSim.node[19].mobility, stage 0
-Initializing module ccSim.node[19].nic, stage 0
-Initializing module ccSim.node[19].nic.phy, stage 0
-Initializing module ccSim.node[20], stage 0
-Initializing module ccSim.node[20].blackboard, stage 0
-Initializing module ccSim.node[20].mobility, stage 0
-Initializing module ccSim.node[20].nic, stage 0
-Initializing module ccSim.node[20].nic.phy, stage 0
-Initializing module ccSim.node[21], stage 0
-Initializing module ccSim.node[21].blackboard, stage 0
-Initializing module ccSim.node[21].mobility, stage 0
-Initializing module ccSim.node[21].nic, stage 0
-Initializing module ccSim.node[21].nic.phy, stage 0
-Initializing module ccSim.node[22], stage 0
-Initializing module ccSim.node[22].blackboard, stage 0
-Initializing module ccSim.node[22].mobility, stage 0
-Initializing module ccSim.node[22].nic, stage 0
-Initializing module ccSim.node[22].nic.phy, stage 0
-Initializing module ccSim.node[23], stage 0
-Initializing module ccSim.node[23].blackboard, stage 0
-Initializing module ccSim.node[23].mobility, stage 0
-Initializing module ccSim.node[23].nic, stage 0
-Initializing module ccSim.node[23].nic.phy, stage 0
-Initializing module ccSim.node[24], stage 0
-Initializing module ccSim.node[24].blackboard, stage 0
-Initializing module ccSim.node[24].mobility, stage 0
-Initializing module ccSim.node[24].nic, stage 0
-Initializing module ccSim.node[24].nic.phy, stage 0
-Initializing module ccSim.node[25], stage 0
-Initializing module ccSim.node[25].blackboard, stage 0
-Initializing module ccSim.node[25].mobility, stage 0
-Initializing module ccSim.node[25].nic, stage 0
-Initializing module ccSim.node[25].nic.phy, stage 0
-Initializing module ccSim.node[26], stage 0
-Initializing module ccSim.node[26].blackboard, stage 0
-Initializing module ccSim.node[26].mobility, stage 0
-Initializing module ccSim.node[26].nic, stage 0
-Initializing module ccSim.node[26].nic.phy, stage 0
-Initializing module ccSim.node[27], stage 0
-Initializing module ccSim.node[27].blackboard, stage 0
-Initializing module ccSim.node[27].mobility, stage 0
-Initializing module ccSim.node[27].nic, stage 0
-Initializing module ccSim.node[27].nic.phy, stage 0
-Initializing module ccSim.node[28], stage 0
-Initializing module ccSim.node[28].blackboard, stage 0
-Initializing module ccSim.node[28].mobility, stage 0
-Initializing module ccSim.node[28].nic, stage 0
-Initializing module ccSim.node[28].nic.phy, stage 0
-Initializing module ccSim.node[29], stage 0
-Initializing module ccSim.node[29].blackboard, stage 0
-Initializing module ccSim.node[29].mobility, stage 0
-Initializing module ccSim.node[29].nic, stage 0
-Initializing module ccSim.node[29].nic.phy, stage 0
-Initializing module ccSim.node[30], stage 0
-Initializing module ccSim.node[30].blackboard, stage 0
-Initializing module ccSim.node[30].mobility, stage 0
-Initializing module ccSim.node[30].nic, stage 0
-Initializing module ccSim.node[30].nic.phy, stage 0
-Initializing module ccSim.node[31], stage 0
-Initializing module ccSim.node[31].blackboard, stage 0
-Initializing module ccSim.node[31].mobility, stage 0
-Initializing module ccSim.node[31].nic, stage 0
-Initializing module ccSim.node[31].nic.phy, stage 0
-Initializing module ccSim.node[32], stage 0
-Initializing module ccSim.node[32].blackboard, stage 0
-Initializing module ccSim.node[32].mobility, stage 0
-Initializing module ccSim.node[32].nic, stage 0
-Initializing module ccSim.node[32].nic.phy, stage 0
-Initializing module ccSim.world, stage 1
-Initializing module ccSim.channelcontrol, stage 1
-Initializing module ccSim.node[0].blackboard, stage 1
-Initializing module ccSim.node[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[0].nic.phy, stage 1
-Initializing module ccSim.node[1].blackboard, stage 1
-Initializing module ccSim.node[1].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[1].nic.phy, stage 1
-Initializing module ccSim.node[2].blackboard, stage 1
-Initializing module ccSim.node[2].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[2].nic.phy, stage 1
-Initializing module ccSim.node[3].blackboard, stage 1
-Initializing module ccSim.node[3].mobility, stage 1
 updatePosition:  HostMove  startPos: (369,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[3].nic.phy, stage 1
-Initializing module ccSim.node[4].blackboard, stage 1
-Initializing module ccSim.node[4].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[4].nic.phy, stage 1
-Initializing module ccSim.node[5].blackboard, stage 1
-Initializing module ccSim.node[5].mobility, stage 1
 updatePosition:  HostMove  startPos: (200,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[5].nic.phy, stage 1
-Initializing module ccSim.node[6].blackboard, stage 1
-Initializing module ccSim.node[6].mobility, stage 1
 updatePosition:  HostMove  startPos: (184,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[6].nic.phy, stage 1
-Initializing module ccSim.node[7].blackboard, stage 1
-Initializing module ccSim.node[7].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,367) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[7].nic.phy, stage 1
-Initializing module ccSim.node[8].blackboard, stage 1
-Initializing module ccSim.node[8].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,368) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[8].nic.phy, stage 1
-Initializing module ccSim.node[9].blackboard, stage 1
-Initializing module ccSim.node[9].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,369) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[9].nic.phy, stage 1
-Initializing module ccSim.node[10].blackboard, stage 1
-Initializing module ccSim.node[10].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,276) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[10].nic.phy, stage 1
-Initializing module ccSim.node[11].blackboard, stage 1
-Initializing module ccSim.node[11].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,200) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[11].nic.phy, stage 1
-Initializing module ccSim.node[12].blackboard, stage 1
-Initializing module ccSim.node[12].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,184) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[12].nic.phy, stage 1
-Initializing module ccSim.node[13].blackboard, stage 1
-Initializing module ccSim.node[13].mobility, stage 1
 updatePosition:  HostMove  startPos: (341,341) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[13].nic.phy, stage 1
-Initializing module ccSim.node[14].blackboard, stage 1
-Initializing module ccSim.node[14].mobility, stage 1
 updatePosition:  HostMove  startPos: (342,342) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[14].nic.phy, stage 1
-Initializing module ccSim.node[15].blackboard, stage 1
-Initializing module ccSim.node[15].mobility, stage 1
 updatePosition:  HostMove  startPos: (369,369) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[15].nic.phy, stage 1
-Initializing module ccSim.node[16].blackboard, stage 1
-Initializing module ccSim.node[16].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,276) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[16].nic.phy, stage 1
-Initializing module ccSim.node[17].blackboard, stage 1
-Initializing module ccSim.node[17].mobility, stage 1
 updatePosition:  HostMove  startPos: (213,213) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[17].nic.phy, stage 1
-Initializing module ccSim.node[18].blackboard, stage 1
-Initializing module ccSim.node[18].mobility, stage 1
 updatePosition:  HostMove  startPos: (211,211) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[18].nic.phy, stage 1
-Initializing module ccSim.node[19].blackboard, stage 1
-Initializing module ccSim.node[19].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,278) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[19].nic.phy, stage 1
-Initializing module ccSim.node[20].blackboard, stage 1
-Initializing module ccSim.node[20].mobility, stage 1
 updatePosition:  HostMove  startPos: (213,341) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[20].nic.phy, stage 1
-Initializing module ccSim.node[21].blackboard, stage 1
-Initializing module ccSim.node[21].mobility, stage 1
 updatePosition:  HostMove  startPos: (211,343) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[21].nic.phy, stage 1
-Initializing module ccSim.node[22].blackboard, stage 1
-Initializing module ccSim.node[22].mobility, stage 1
 updatePosition:  HostMove  startPos: (341,276) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[22].nic.phy, stage 1
-Initializing module ccSim.node[23].blackboard, stage 1
-Initializing module ccSim.node[23].mobility, stage 1
 updatePosition:  HostMove  startPos: (342,275) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[23].nic.phy, stage 1
-Initializing module ccSim.node[24].blackboard, stage 1
-Initializing module ccSim.node[24].mobility, stage 1
 updatePosition:  HostMove  startPos: (369,211) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[24].nic.phy, stage 1
-Initializing module ccSim.node[25].blackboard, stage 1
-Initializing module ccSim.node[25].mobility, stage 1
 updatePosition:  HostMove  startPos: (92,0) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[25].nic.phy, stage 1
-Initializing module ccSim.node[26].blackboard, stage 1
-Initializing module ccSim.node[26].mobility, stage 1
 updatePosition:  HostMove  startPos: (92,499) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[26].nic.phy, stage 1
-Initializing module ccSim.node[27].blackboard, stage 1
-Initializing module ccSim.node[27].mobility, stage 1
 updatePosition:  HostMove  startPos: (400,499) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[27].nic.phy, stage 1
-Initializing module ccSim.node[28].blackboard, stage 1
-Initializing module ccSim.node[28].mobility, stage 1
 updatePosition:  HostMove  startPos: (400,0) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[28].nic.phy, stage 1
-Initializing module ccSim.node[29].blackboard, stage 1
-Initializing module ccSim.node[29].mobility, stage 1
 updatePosition:  HostMove  startPos: (0,92) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[29].nic.phy, stage 1
-Initializing module ccSim.node[30].blackboard, stage 1
-Initializing module ccSim.node[30].mobility, stage 1
 updatePosition:  HostMove  startPos: (499,92) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[30].nic.phy, stage 1
-Initializing module ccSim.node[31].blackboard, stage 1
-Initializing module ccSim.node[31].mobility, stage 1
 updatePosition:  HostMove  startPos: (499,400) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[31].nic.phy, stage 1
-Initializing module ccSim.node[32].blackboard, stage 1
-Initializing module ccSim.node[32].mobility, stage 1
 updatePosition:  HostMove  startPos: (0,400) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[32].nic.phy, stage 1
 
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
@@ -362,320 +93,51 @@ Passed: Test Node 32: Should have received no broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b3, build: 100311-af6d180, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 39
+Loading NED files from /home/karl/git-repo/mixim/modules: 40
 Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20100318-11:02:15-9973
+Assigned runID=Test2-0-20100428-16:20:39-11773
 Setting up network `ccSim'...
 Initializing...
-Initializing module ccSim, stage 0
-Initializing module ccSim.world, stage 0
-Initializing module ccSim.channelcontrol, stage 0
-Initializing module ccSim.node[0], stage 0
-Initializing module ccSim.node[0].blackboard, stage 0
-Initializing module ccSim.node[0].mobility, stage 0
-Initializing module ccSim.node[0].nic, stage 0
-Initializing module ccSim.node[0].nic.phy, stage 0
-Initializing module ccSim.node[1], stage 0
-Initializing module ccSim.node[1].blackboard, stage 0
-Initializing module ccSim.node[1].mobility, stage 0
-Initializing module ccSim.node[1].nic, stage 0
-Initializing module ccSim.node[1].nic.phy, stage 0
-Initializing module ccSim.node[2], stage 0
-Initializing module ccSim.node[2].blackboard, stage 0
-Initializing module ccSim.node[2].mobility, stage 0
-Initializing module ccSim.node[2].nic, stage 0
-Initializing module ccSim.node[2].nic.phy, stage 0
-Initializing module ccSim.node[3], stage 0
-Initializing module ccSim.node[3].blackboard, stage 0
-Initializing module ccSim.node[3].mobility, stage 0
-Initializing module ccSim.node[3].nic, stage 0
-Initializing module ccSim.node[3].nic.phy, stage 0
-Initializing module ccSim.node[4], stage 0
-Initializing module ccSim.node[4].blackboard, stage 0
-Initializing module ccSim.node[4].mobility, stage 0
-Initializing module ccSim.node[4].nic, stage 0
-Initializing module ccSim.node[4].nic.phy, stage 0
-Initializing module ccSim.node[5], stage 0
-Initializing module ccSim.node[5].blackboard, stage 0
-Initializing module ccSim.node[5].mobility, stage 0
-Initializing module ccSim.node[5].nic, stage 0
-Initializing module ccSim.node[5].nic.phy, stage 0
-Initializing module ccSim.node[6], stage 0
-Initializing module ccSim.node[6].blackboard, stage 0
-Initializing module ccSim.node[6].mobility, stage 0
-Initializing module ccSim.node[6].nic, stage 0
-Initializing module ccSim.node[6].nic.phy, stage 0
-Initializing module ccSim.node[7], stage 0
-Initializing module ccSim.node[7].blackboard, stage 0
-Initializing module ccSim.node[7].mobility, stage 0
-Initializing module ccSim.node[7].nic, stage 0
-Initializing module ccSim.node[7].nic.phy, stage 0
-Initializing module ccSim.node[8], stage 0
-Initializing module ccSim.node[8].blackboard, stage 0
-Initializing module ccSim.node[8].mobility, stage 0
-Initializing module ccSim.node[8].nic, stage 0
-Initializing module ccSim.node[8].nic.phy, stage 0
-Initializing module ccSim.node[9], stage 0
-Initializing module ccSim.node[9].blackboard, stage 0
-Initializing module ccSim.node[9].mobility, stage 0
-Initializing module ccSim.node[9].nic, stage 0
-Initializing module ccSim.node[9].nic.phy, stage 0
-Initializing module ccSim.node[10], stage 0
-Initializing module ccSim.node[10].blackboard, stage 0
-Initializing module ccSim.node[10].mobility, stage 0
-Initializing module ccSim.node[10].nic, stage 0
-Initializing module ccSim.node[10].nic.phy, stage 0
-Initializing module ccSim.node[11], stage 0
-Initializing module ccSim.node[11].blackboard, stage 0
-Initializing module ccSim.node[11].mobility, stage 0
-Initializing module ccSim.node[11].nic, stage 0
-Initializing module ccSim.node[11].nic.phy, stage 0
-Initializing module ccSim.node[12], stage 0
-Initializing module ccSim.node[12].blackboard, stage 0
-Initializing module ccSim.node[12].mobility, stage 0
-Initializing module ccSim.node[12].nic, stage 0
-Initializing module ccSim.node[12].nic.phy, stage 0
-Initializing module ccSim.node[13], stage 0
-Initializing module ccSim.node[13].blackboard, stage 0
-Initializing module ccSim.node[13].mobility, stage 0
-Initializing module ccSim.node[13].nic, stage 0
-Initializing module ccSim.node[13].nic.phy, stage 0
-Initializing module ccSim.node[14], stage 0
-Initializing module ccSim.node[14].blackboard, stage 0
-Initializing module ccSim.node[14].mobility, stage 0
-Initializing module ccSim.node[14].nic, stage 0
-Initializing module ccSim.node[14].nic.phy, stage 0
-Initializing module ccSim.node[15], stage 0
-Initializing module ccSim.node[15].blackboard, stage 0
-Initializing module ccSim.node[15].mobility, stage 0
-Initializing module ccSim.node[15].nic, stage 0
-Initializing module ccSim.node[15].nic.phy, stage 0
-Initializing module ccSim.node[16], stage 0
-Initializing module ccSim.node[16].blackboard, stage 0
-Initializing module ccSim.node[16].mobility, stage 0
-Initializing module ccSim.node[16].nic, stage 0
-Initializing module ccSim.node[16].nic.phy, stage 0
-Initializing module ccSim.node[17], stage 0
-Initializing module ccSim.node[17].blackboard, stage 0
-Initializing module ccSim.node[17].mobility, stage 0
-Initializing module ccSim.node[17].nic, stage 0
-Initializing module ccSim.node[17].nic.phy, stage 0
-Initializing module ccSim.node[18], stage 0
-Initializing module ccSim.node[18].blackboard, stage 0
-Initializing module ccSim.node[18].mobility, stage 0
-Initializing module ccSim.node[18].nic, stage 0
-Initializing module ccSim.node[18].nic.phy, stage 0
-Initializing module ccSim.node[19], stage 0
-Initializing module ccSim.node[19].blackboard, stage 0
-Initializing module ccSim.node[19].mobility, stage 0
-Initializing module ccSim.node[19].nic, stage 0
-Initializing module ccSim.node[19].nic.phy, stage 0
-Initializing module ccSim.node[20], stage 0
-Initializing module ccSim.node[20].blackboard, stage 0
-Initializing module ccSim.node[20].mobility, stage 0
-Initializing module ccSim.node[20].nic, stage 0
-Initializing module ccSim.node[20].nic.phy, stage 0
-Initializing module ccSim.node[21], stage 0
-Initializing module ccSim.node[21].blackboard, stage 0
-Initializing module ccSim.node[21].mobility, stage 0
-Initializing module ccSim.node[21].nic, stage 0
-Initializing module ccSim.node[21].nic.phy, stage 0
-Initializing module ccSim.node[22], stage 0
-Initializing module ccSim.node[22].blackboard, stage 0
-Initializing module ccSim.node[22].mobility, stage 0
-Initializing module ccSim.node[22].nic, stage 0
-Initializing module ccSim.node[22].nic.phy, stage 0
-Initializing module ccSim.node[23], stage 0
-Initializing module ccSim.node[23].blackboard, stage 0
-Initializing module ccSim.node[23].mobility, stage 0
-Initializing module ccSim.node[23].nic, stage 0
-Initializing module ccSim.node[23].nic.phy, stage 0
-Initializing module ccSim.node[24], stage 0
-Initializing module ccSim.node[24].blackboard, stage 0
-Initializing module ccSim.node[24].mobility, stage 0
-Initializing module ccSim.node[24].nic, stage 0
-Initializing module ccSim.node[24].nic.phy, stage 0
-Initializing module ccSim.node[25], stage 0
-Initializing module ccSim.node[25].blackboard, stage 0
-Initializing module ccSim.node[25].mobility, stage 0
-Initializing module ccSim.node[25].nic, stage 0
-Initializing module ccSim.node[25].nic.phy, stage 0
-Initializing module ccSim.node[26], stage 0
-Initializing module ccSim.node[26].blackboard, stage 0
-Initializing module ccSim.node[26].mobility, stage 0
-Initializing module ccSim.node[26].nic, stage 0
-Initializing module ccSim.node[26].nic.phy, stage 0
-Initializing module ccSim.node[27], stage 0
-Initializing module ccSim.node[27].blackboard, stage 0
-Initializing module ccSim.node[27].mobility, stage 0
-Initializing module ccSim.node[27].nic, stage 0
-Initializing module ccSim.node[27].nic.phy, stage 0
-Initializing module ccSim.node[28], stage 0
-Initializing module ccSim.node[28].blackboard, stage 0
-Initializing module ccSim.node[28].mobility, stage 0
-Initializing module ccSim.node[28].nic, stage 0
-Initializing module ccSim.node[28].nic.phy, stage 0
-Initializing module ccSim.node[29], stage 0
-Initializing module ccSim.node[29].blackboard, stage 0
-Initializing module ccSim.node[29].mobility, stage 0
-Initializing module ccSim.node[29].nic, stage 0
-Initializing module ccSim.node[29].nic.phy, stage 0
-Initializing module ccSim.node[30], stage 0
-Initializing module ccSim.node[30].blackboard, stage 0
-Initializing module ccSim.node[30].mobility, stage 0
-Initializing module ccSim.node[30].nic, stage 0
-Initializing module ccSim.node[30].nic.phy, stage 0
-Initializing module ccSim.node[31], stage 0
-Initializing module ccSim.node[31].blackboard, stage 0
-Initializing module ccSim.node[31].mobility, stage 0
-Initializing module ccSim.node[31].nic, stage 0
-Initializing module ccSim.node[31].nic.phy, stage 0
-Initializing module ccSim.node[32], stage 0
-Initializing module ccSim.node[32].blackboard, stage 0
-Initializing module ccSim.node[32].mobility, stage 0
-Initializing module ccSim.node[32].nic, stage 0
-Initializing module ccSim.node[32].nic.phy, stage 0
-Initializing module ccSim.world, stage 1
-Initializing module ccSim.channelcontrol, stage 1
-Initializing module ccSim.node[0].blackboard, stage 1
-Initializing module ccSim.node[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[0].nic.phy, stage 1
-Initializing module ccSim.node[1].blackboard, stage 1
-Initializing module ccSim.node[1].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[1].nic.phy, stage 1
-Initializing module ccSim.node[2].blackboard, stage 1
-Initializing module ccSim.node[2].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[2].nic.phy, stage 1
-Initializing module ccSim.node[3].blackboard, stage 1
-Initializing module ccSim.node[3].mobility, stage 1
 updatePosition:  HostMove  startPos: (369,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[3].nic.phy, stage 1
-Initializing module ccSim.node[4].blackboard, stage 1
-Initializing module ccSim.node[4].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[4].nic.phy, stage 1
-Initializing module ccSim.node[5].blackboard, stage 1
-Initializing module ccSim.node[5].mobility, stage 1
 updatePosition:  HostMove  startPos: (200,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[5].nic.phy, stage 1
-Initializing module ccSim.node[6].blackboard, stage 1
-Initializing module ccSim.node[6].mobility, stage 1
 updatePosition:  HostMove  startPos: (184,277) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[6].nic.phy, stage 1
-Initializing module ccSim.node[7].blackboard, stage 1
-Initializing module ccSim.node[7].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,367) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[7].nic.phy, stage 1
-Initializing module ccSim.node[8].blackboard, stage 1
-Initializing module ccSim.node[8].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,368) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[8].nic.phy, stage 1
-Initializing module ccSim.node[9].blackboard, stage 1
-Initializing module ccSim.node[9].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,369) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[9].nic.phy, stage 1
-Initializing module ccSim.node[10].blackboard, stage 1
-Initializing module ccSim.node[10].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,276) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[10].nic.phy, stage 1
-Initializing module ccSim.node[11].blackboard, stage 1
-Initializing module ccSim.node[11].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,200) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[11].nic.phy, stage 1
-Initializing module ccSim.node[12].blackboard, stage 1
-Initializing module ccSim.node[12].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,184) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[12].nic.phy, stage 1
-Initializing module ccSim.node[13].blackboard, stage 1
-Initializing module ccSim.node[13].mobility, stage 1
 updatePosition:  HostMove  startPos: (341,341) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[13].nic.phy, stage 1
-Initializing module ccSim.node[14].blackboard, stage 1
-Initializing module ccSim.node[14].mobility, stage 1
 updatePosition:  HostMove  startPos: (342,342) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[14].nic.phy, stage 1
-Initializing module ccSim.node[15].blackboard, stage 1
-Initializing module ccSim.node[15].mobility, stage 1
 updatePosition:  HostMove  startPos: (369,369) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[15].nic.phy, stage 1
-Initializing module ccSim.node[16].blackboard, stage 1
-Initializing module ccSim.node[16].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,276) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[16].nic.phy, stage 1
-Initializing module ccSim.node[17].blackboard, stage 1
-Initializing module ccSim.node[17].mobility, stage 1
 updatePosition:  HostMove  startPos: (213,213) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[17].nic.phy, stage 1
-Initializing module ccSim.node[18].blackboard, stage 1
-Initializing module ccSim.node[18].mobility, stage 1
 updatePosition:  HostMove  startPos: (211,211) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[18].nic.phy, stage 1
-Initializing module ccSim.node[19].blackboard, stage 1
-Initializing module ccSim.node[19].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,278) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[19].nic.phy, stage 1
-Initializing module ccSim.node[20].blackboard, stage 1
-Initializing module ccSim.node[20].mobility, stage 1
 updatePosition:  HostMove  startPos: (213,341) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[20].nic.phy, stage 1
-Initializing module ccSim.node[21].blackboard, stage 1
-Initializing module ccSim.node[21].mobility, stage 1
 updatePosition:  HostMove  startPos: (211,343) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[21].nic.phy, stage 1
-Initializing module ccSim.node[22].blackboard, stage 1
-Initializing module ccSim.node[22].mobility, stage 1
 updatePosition:  HostMove  startPos: (341,276) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[22].nic.phy, stage 1
-Initializing module ccSim.node[23].blackboard, stage 1
-Initializing module ccSim.node[23].mobility, stage 1
 updatePosition:  HostMove  startPos: (342,275) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[23].nic.phy, stage 1
-Initializing module ccSim.node[24].blackboard, stage 1
-Initializing module ccSim.node[24].mobility, stage 1
 updatePosition:  HostMove  startPos: (369,211) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[24].nic.phy, stage 1
-Initializing module ccSim.node[25].blackboard, stage 1
-Initializing module ccSim.node[25].mobility, stage 1
 updatePosition:  HostMove  startPos: (92,0) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[25].nic.phy, stage 1
-Initializing module ccSim.node[26].blackboard, stage 1
-Initializing module ccSim.node[26].mobility, stage 1
 updatePosition:  HostMove  startPos: (92,499) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[26].nic.phy, stage 1
-Initializing module ccSim.node[27].blackboard, stage 1
-Initializing module ccSim.node[27].mobility, stage 1
 updatePosition:  HostMove  startPos: (400,499) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[27].nic.phy, stage 1
-Initializing module ccSim.node[28].blackboard, stage 1
-Initializing module ccSim.node[28].mobility, stage 1
 updatePosition:  HostMove  startPos: (400,0) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[28].nic.phy, stage 1
-Initializing module ccSim.node[29].blackboard, stage 1
-Initializing module ccSim.node[29].mobility, stage 1
 updatePosition:  HostMove  startPos: (0,92) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[29].nic.phy, stage 1
-Initializing module ccSim.node[30].blackboard, stage 1
-Initializing module ccSim.node[30].mobility, stage 1
 updatePosition:  HostMove  startPos: (499,92) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[30].nic.phy, stage 1
-Initializing module ccSim.node[31].blackboard, stage 1
-Initializing module ccSim.node[31].mobility, stage 1
 updatePosition:  HostMove  startPos: (499,400) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[31].nic.phy, stage 1
-Initializing module ccSim.node[32].blackboard, stage 1
-Initializing module ccSim.node[32].mobility, stage 1
 updatePosition:  HostMove  startPos: (0,400) direction: (0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[32].nic.phy, stage 1
 
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
@@ -725,642 +187,93 @@ Passed: Test Node 32: Should have received at least one broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b3, build: 100311-af6d180, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 39
+Loading NED files from /home/karl/git-repo/mixim/modules: 40
 Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20100318-11:02:15-9974
+Assigned runID=Test3-0-20100428-16:20:39-11774
 Setting up network `ccSim'...
 Initializing...
-Initializing module ccSim, stage 0
-Initializing module ccSim.world, stage 0
-Initializing module ccSim.channelcontrol, stage 0
-Initializing module ccSim.node[0], stage 0
-Initializing module ccSim.node[0].blackboard, stage 0
-Initializing module ccSim.node[0].mobility, stage 0
-Initializing module ccSim.node[0].nic, stage 0
-Initializing module ccSim.node[0].nic.phy, stage 0
-Initializing module ccSim.node[1], stage 0
-Initializing module ccSim.node[1].blackboard, stage 0
-Initializing module ccSim.node[1].mobility, stage 0
-Initializing module ccSim.node[1].nic, stage 0
-Initializing module ccSim.node[1].nic.phy, stage 0
-Initializing module ccSim.node[2], stage 0
-Initializing module ccSim.node[2].blackboard, stage 0
-Initializing module ccSim.node[2].mobility, stage 0
-Initializing module ccSim.node[2].nic, stage 0
-Initializing module ccSim.node[2].nic.phy, stage 0
-Initializing module ccSim.node[3], stage 0
-Initializing module ccSim.node[3].blackboard, stage 0
-Initializing module ccSim.node[3].mobility, stage 0
-Initializing module ccSim.node[3].nic, stage 0
-Initializing module ccSim.node[3].nic.phy, stage 0
-Initializing module ccSim.node[4], stage 0
-Initializing module ccSim.node[4].blackboard, stage 0
-Initializing module ccSim.node[4].mobility, stage 0
-Initializing module ccSim.node[4].nic, stage 0
-Initializing module ccSim.node[4].nic.phy, stage 0
-Initializing module ccSim.node[5], stage 0
-Initializing module ccSim.node[5].blackboard, stage 0
-Initializing module ccSim.node[5].mobility, stage 0
-Initializing module ccSim.node[5].nic, stage 0
-Initializing module ccSim.node[5].nic.phy, stage 0
-Initializing module ccSim.node[6], stage 0
-Initializing module ccSim.node[6].blackboard, stage 0
-Initializing module ccSim.node[6].mobility, stage 0
-Initializing module ccSim.node[6].nic, stage 0
-Initializing module ccSim.node[6].nic.phy, stage 0
-Initializing module ccSim.node[7], stage 0
-Initializing module ccSim.node[7].blackboard, stage 0
-Initializing module ccSim.node[7].mobility, stage 0
-Initializing module ccSim.node[7].nic, stage 0
-Initializing module ccSim.node[7].nic.phy, stage 0
-Initializing module ccSim.node[8], stage 0
-Initializing module ccSim.node[8].blackboard, stage 0
-Initializing module ccSim.node[8].mobility, stage 0
-Initializing module ccSim.node[8].nic, stage 0
-Initializing module ccSim.node[8].nic.phy, stage 0
-Initializing module ccSim.node[9], stage 0
-Initializing module ccSim.node[9].blackboard, stage 0
-Initializing module ccSim.node[9].mobility, stage 0
-Initializing module ccSim.node[9].nic, stage 0
-Initializing module ccSim.node[9].nic.phy, stage 0
-Initializing module ccSim.node[10], stage 0
-Initializing module ccSim.node[10].blackboard, stage 0
-Initializing module ccSim.node[10].mobility, stage 0
-Initializing module ccSim.node[10].nic, stage 0
-Initializing module ccSim.node[10].nic.phy, stage 0
-Initializing module ccSim.node[11], stage 0
-Initializing module ccSim.node[11].blackboard, stage 0
-Initializing module ccSim.node[11].mobility, stage 0
-Initializing module ccSim.node[11].nic, stage 0
-Initializing module ccSim.node[11].nic.phy, stage 0
-Initializing module ccSim.node[12], stage 0
-Initializing module ccSim.node[12].blackboard, stage 0
-Initializing module ccSim.node[12].mobility, stage 0
-Initializing module ccSim.node[12].nic, stage 0
-Initializing module ccSim.node[12].nic.phy, stage 0
-Initializing module ccSim.node[13], stage 0
-Initializing module ccSim.node[13].blackboard, stage 0
-Initializing module ccSim.node[13].mobility, stage 0
-Initializing module ccSim.node[13].nic, stage 0
-Initializing module ccSim.node[13].nic.phy, stage 0
-Initializing module ccSim.node[14], stage 0
-Initializing module ccSim.node[14].blackboard, stage 0
-Initializing module ccSim.node[14].mobility, stage 0
-Initializing module ccSim.node[14].nic, stage 0
-Initializing module ccSim.node[14].nic.phy, stage 0
-Initializing module ccSim.node[15], stage 0
-Initializing module ccSim.node[15].blackboard, stage 0
-Initializing module ccSim.node[15].mobility, stage 0
-Initializing module ccSim.node[15].nic, stage 0
-Initializing module ccSim.node[15].nic.phy, stage 0
-Initializing module ccSim.node[16], stage 0
-Initializing module ccSim.node[16].blackboard, stage 0
-Initializing module ccSim.node[16].mobility, stage 0
-Initializing module ccSim.node[16].nic, stage 0
-Initializing module ccSim.node[16].nic.phy, stage 0
-Initializing module ccSim.node[17], stage 0
-Initializing module ccSim.node[17].blackboard, stage 0
-Initializing module ccSim.node[17].mobility, stage 0
-Initializing module ccSim.node[17].nic, stage 0
-Initializing module ccSim.node[17].nic.phy, stage 0
-Initializing module ccSim.node[18], stage 0
-Initializing module ccSim.node[18].blackboard, stage 0
-Initializing module ccSim.node[18].mobility, stage 0
-Initializing module ccSim.node[18].nic, stage 0
-Initializing module ccSim.node[18].nic.phy, stage 0
-Initializing module ccSim.node[19], stage 0
-Initializing module ccSim.node[19].blackboard, stage 0
-Initializing module ccSim.node[19].mobility, stage 0
-Initializing module ccSim.node[19].nic, stage 0
-Initializing module ccSim.node[19].nic.phy, stage 0
-Initializing module ccSim.node[20], stage 0
-Initializing module ccSim.node[20].blackboard, stage 0
-Initializing module ccSim.node[20].mobility, stage 0
-Initializing module ccSim.node[20].nic, stage 0
-Initializing module ccSim.node[20].nic.phy, stage 0
-Initializing module ccSim.node[21], stage 0
-Initializing module ccSim.node[21].blackboard, stage 0
-Initializing module ccSim.node[21].mobility, stage 0
-Initializing module ccSim.node[21].nic, stage 0
-Initializing module ccSim.node[21].nic.phy, stage 0
-Initializing module ccSim.node[22], stage 0
-Initializing module ccSim.node[22].blackboard, stage 0
-Initializing module ccSim.node[22].mobility, stage 0
-Initializing module ccSim.node[22].nic, stage 0
-Initializing module ccSim.node[22].nic.phy, stage 0
-Initializing module ccSim.node[23], stage 0
-Initializing module ccSim.node[23].blackboard, stage 0
-Initializing module ccSim.node[23].mobility, stage 0
-Initializing module ccSim.node[23].nic, stage 0
-Initializing module ccSim.node[23].nic.phy, stage 0
-Initializing module ccSim.node[24], stage 0
-Initializing module ccSim.node[24].blackboard, stage 0
-Initializing module ccSim.node[24].mobility, stage 0
-Initializing module ccSim.node[24].nic, stage 0
-Initializing module ccSim.node[24].nic.phy, stage 0
-Initializing module ccSim.node[25], stage 0
-Initializing module ccSim.node[25].blackboard, stage 0
-Initializing module ccSim.node[25].mobility, stage 0
-Initializing module ccSim.node[25].nic, stage 0
-Initializing module ccSim.node[25].nic.phy, stage 0
-Initializing module ccSim.node[26], stage 0
-Initializing module ccSim.node[26].blackboard, stage 0
-Initializing module ccSim.node[26].mobility, stage 0
-Initializing module ccSim.node[26].nic, stage 0
-Initializing module ccSim.node[26].nic.phy, stage 0
-Initializing module ccSim.node[27], stage 0
-Initializing module ccSim.node[27].blackboard, stage 0
-Initializing module ccSim.node[27].mobility, stage 0
-Initializing module ccSim.node[27].nic, stage 0
-Initializing module ccSim.node[27].nic.phy, stage 0
-Initializing module ccSim.node[28], stage 0
-Initializing module ccSim.node[28].blackboard, stage 0
-Initializing module ccSim.node[28].mobility, stage 0
-Initializing module ccSim.node[28].nic, stage 0
-Initializing module ccSim.node[28].nic.phy, stage 0
-Initializing module ccSim.node[29], stage 0
-Initializing module ccSim.node[29].blackboard, stage 0
-Initializing module ccSim.node[29].mobility, stage 0
-Initializing module ccSim.node[29].nic, stage 0
-Initializing module ccSim.node[29].nic.phy, stage 0
-Initializing module ccSim.node[30], stage 0
-Initializing module ccSim.node[30].blackboard, stage 0
-Initializing module ccSim.node[30].mobility, stage 0
-Initializing module ccSim.node[30].nic, stage 0
-Initializing module ccSim.node[30].nic.phy, stage 0
-Initializing module ccSim.node[31], stage 0
-Initializing module ccSim.node[31].blackboard, stage 0
-Initializing module ccSim.node[31].mobility, stage 0
-Initializing module ccSim.node[31].nic, stage 0
-Initializing module ccSim.node[31].nic.phy, stage 0
-Initializing module ccSim.node[32], stage 0
-Initializing module ccSim.node[32].blackboard, stage 0
-Initializing module ccSim.node[32].mobility, stage 0
-Initializing module ccSim.node[32].nic, stage 0
-Initializing module ccSim.node[32].nic.phy, stage 0
-Initializing module ccSim.node[33], stage 0
-Initializing module ccSim.node[33].blackboard, stage 0
-Initializing module ccSim.node[33].mobility, stage 0
-Initializing module ccSim.node[33].nic, stage 0
-Initializing module ccSim.node[33].nic.phy, stage 0
-Initializing module ccSim.node[34], stage 0
-Initializing module ccSim.node[34].blackboard, stage 0
-Initializing module ccSim.node[34].mobility, stage 0
-Initializing module ccSim.node[34].nic, stage 0
-Initializing module ccSim.node[34].nic.phy, stage 0
-Initializing module ccSim.node[35], stage 0
-Initializing module ccSim.node[35].blackboard, stage 0
-Initializing module ccSim.node[35].mobility, stage 0
-Initializing module ccSim.node[35].nic, stage 0
-Initializing module ccSim.node[35].nic.phy, stage 0
-Initializing module ccSim.node[36], stage 0
-Initializing module ccSim.node[36].blackboard, stage 0
-Initializing module ccSim.node[36].mobility, stage 0
-Initializing module ccSim.node[36].nic, stage 0
-Initializing module ccSim.node[36].nic.phy, stage 0
-Initializing module ccSim.node[37], stage 0
-Initializing module ccSim.node[37].blackboard, stage 0
-Initializing module ccSim.node[37].mobility, stage 0
-Initializing module ccSim.node[37].nic, stage 0
-Initializing module ccSim.node[37].nic.phy, stage 0
-Initializing module ccSim.node[38], stage 0
-Initializing module ccSim.node[38].blackboard, stage 0
-Initializing module ccSim.node[38].mobility, stage 0
-Initializing module ccSim.node[38].nic, stage 0
-Initializing module ccSim.node[38].nic.phy, stage 0
-Initializing module ccSim.node[39], stage 0
-Initializing module ccSim.node[39].blackboard, stage 0
-Initializing module ccSim.node[39].mobility, stage 0
-Initializing module ccSim.node[39].nic, stage 0
-Initializing module ccSim.node[39].nic.phy, stage 0
-Initializing module ccSim.node[40], stage 0
-Initializing module ccSim.node[40].blackboard, stage 0
-Initializing module ccSim.node[40].mobility, stage 0
-Initializing module ccSim.node[40].nic, stage 0
-Initializing module ccSim.node[40].nic.phy, stage 0
-Initializing module ccSim.node[41], stage 0
-Initializing module ccSim.node[41].blackboard, stage 0
-Initializing module ccSim.node[41].mobility, stage 0
-Initializing module ccSim.node[41].nic, stage 0
-Initializing module ccSim.node[41].nic.phy, stage 0
-Initializing module ccSim.node[42], stage 0
-Initializing module ccSim.node[42].blackboard, stage 0
-Initializing module ccSim.node[42].mobility, stage 0
-Initializing module ccSim.node[42].nic, stage 0
-Initializing module ccSim.node[42].nic.phy, stage 0
-Initializing module ccSim.node[43], stage 0
-Initializing module ccSim.node[43].blackboard, stage 0
-Initializing module ccSim.node[43].mobility, stage 0
-Initializing module ccSim.node[43].nic, stage 0
-Initializing module ccSim.node[43].nic.phy, stage 0
-Initializing module ccSim.node[44], stage 0
-Initializing module ccSim.node[44].blackboard, stage 0
-Initializing module ccSim.node[44].mobility, stage 0
-Initializing module ccSim.node[44].nic, stage 0
-Initializing module ccSim.node[44].nic.phy, stage 0
-Initializing module ccSim.node[45], stage 0
-Initializing module ccSim.node[45].blackboard, stage 0
-Initializing module ccSim.node[45].mobility, stage 0
-Initializing module ccSim.node[45].nic, stage 0
-Initializing module ccSim.node[45].nic.phy, stage 0
-Initializing module ccSim.node[46], stage 0
-Initializing module ccSim.node[46].blackboard, stage 0
-Initializing module ccSim.node[46].mobility, stage 0
-Initializing module ccSim.node[46].nic, stage 0
-Initializing module ccSim.node[46].nic.phy, stage 0
-Initializing module ccSim.node[47], stage 0
-Initializing module ccSim.node[47].blackboard, stage 0
-Initializing module ccSim.node[47].mobility, stage 0
-Initializing module ccSim.node[47].nic, stage 0
-Initializing module ccSim.node[47].nic.phy, stage 0
-Initializing module ccSim.node[48], stage 0
-Initializing module ccSim.node[48].blackboard, stage 0
-Initializing module ccSim.node[48].mobility, stage 0
-Initializing module ccSim.node[48].nic, stage 0
-Initializing module ccSim.node[48].nic.phy, stage 0
-Initializing module ccSim.node[49], stage 0
-Initializing module ccSim.node[49].blackboard, stage 0
-Initializing module ccSim.node[49].mobility, stage 0
-Initializing module ccSim.node[49].nic, stage 0
-Initializing module ccSim.node[49].nic.phy, stage 0
-Initializing module ccSim.node[50], stage 0
-Initializing module ccSim.node[50].blackboard, stage 0
-Initializing module ccSim.node[50].mobility, stage 0
-Initializing module ccSim.node[50].nic, stage 0
-Initializing module ccSim.node[50].nic.phy, stage 0
-Initializing module ccSim.node[51], stage 0
-Initializing module ccSim.node[51].blackboard, stage 0
-Initializing module ccSim.node[51].mobility, stage 0
-Initializing module ccSim.node[51].nic, stage 0
-Initializing module ccSim.node[51].nic.phy, stage 0
-Initializing module ccSim.node[52], stage 0
-Initializing module ccSim.node[52].blackboard, stage 0
-Initializing module ccSim.node[52].mobility, stage 0
-Initializing module ccSim.node[52].nic, stage 0
-Initializing module ccSim.node[52].nic.phy, stage 0
-Initializing module ccSim.node[53], stage 0
-Initializing module ccSim.node[53].blackboard, stage 0
-Initializing module ccSim.node[53].mobility, stage 0
-Initializing module ccSim.node[53].nic, stage 0
-Initializing module ccSim.node[53].nic.phy, stage 0
-Initializing module ccSim.node[54], stage 0
-Initializing module ccSim.node[54].blackboard, stage 0
-Initializing module ccSim.node[54].mobility, stage 0
-Initializing module ccSim.node[54].nic, stage 0
-Initializing module ccSim.node[54].nic.phy, stage 0
-Initializing module ccSim.node[55], stage 0
-Initializing module ccSim.node[55].blackboard, stage 0
-Initializing module ccSim.node[55].mobility, stage 0
-Initializing module ccSim.node[55].nic, stage 0
-Initializing module ccSim.node[55].nic.phy, stage 0
-Initializing module ccSim.node[56], stage 0
-Initializing module ccSim.node[56].blackboard, stage 0
-Initializing module ccSim.node[56].mobility, stage 0
-Initializing module ccSim.node[56].nic, stage 0
-Initializing module ccSim.node[56].nic.phy, stage 0
-Initializing module ccSim.node[57], stage 0
-Initializing module ccSim.node[57].blackboard, stage 0
-Initializing module ccSim.node[57].mobility, stage 0
-Initializing module ccSim.node[57].nic, stage 0
-Initializing module ccSim.node[57].nic.phy, stage 0
-Initializing module ccSim.node[58], stage 0
-Initializing module ccSim.node[58].blackboard, stage 0
-Initializing module ccSim.node[58].mobility, stage 0
-Initializing module ccSim.node[58].nic, stage 0
-Initializing module ccSim.node[58].nic.phy, stage 0
-Initializing module ccSim.node[59], stage 0
-Initializing module ccSim.node[59].blackboard, stage 0
-Initializing module ccSim.node[59].mobility, stage 0
-Initializing module ccSim.node[59].nic, stage 0
-Initializing module ccSim.node[59].nic.phy, stage 0
-Initializing module ccSim.node[60], stage 0
-Initializing module ccSim.node[60].blackboard, stage 0
-Initializing module ccSim.node[60].mobility, stage 0
-Initializing module ccSim.node[60].nic, stage 0
-Initializing module ccSim.node[60].nic.phy, stage 0
-Initializing module ccSim.node[61], stage 0
-Initializing module ccSim.node[61].blackboard, stage 0
-Initializing module ccSim.node[61].mobility, stage 0
-Initializing module ccSim.node[61].nic, stage 0
-Initializing module ccSim.node[61].nic.phy, stage 0
-Initializing module ccSim.node[62], stage 0
-Initializing module ccSim.node[62].blackboard, stage 0
-Initializing module ccSim.node[62].mobility, stage 0
-Initializing module ccSim.node[62].nic, stage 0
-Initializing module ccSim.node[62].nic.phy, stage 0
-Initializing module ccSim.node[63], stage 0
-Initializing module ccSim.node[63].blackboard, stage 0
-Initializing module ccSim.node[63].mobility, stage 0
-Initializing module ccSim.node[63].nic, stage 0
-Initializing module ccSim.node[63].nic.phy, stage 0
-Initializing module ccSim.node[64], stage 0
-Initializing module ccSim.node[64].blackboard, stage 0
-Initializing module ccSim.node[64].mobility, stage 0
-Initializing module ccSim.node[64].nic, stage 0
-Initializing module ccSim.node[64].nic.phy, stage 0
-Initializing module ccSim.node[65], stage 0
-Initializing module ccSim.node[65].blackboard, stage 0
-Initializing module ccSim.node[65].mobility, stage 0
-Initializing module ccSim.node[65].nic, stage 0
-Initializing module ccSim.node[65].nic.phy, stage 0
-Initializing module ccSim.node[66], stage 0
-Initializing module ccSim.node[66].blackboard, stage 0
-Initializing module ccSim.node[66].mobility, stage 0
-Initializing module ccSim.node[66].nic, stage 0
-Initializing module ccSim.node[66].nic.phy, stage 0
-Initializing module ccSim.node[67], stage 0
-Initializing module ccSim.node[67].blackboard, stage 0
-Initializing module ccSim.node[67].mobility, stage 0
-Initializing module ccSim.node[67].nic, stage 0
-Initializing module ccSim.node[67].nic.phy, stage 0
-Initializing module ccSim.world, stage 1
-Initializing module ccSim.channelcontrol, stage 1
-Initializing module ccSim.node[0].blackboard, stage 1
-Initializing module ccSim.node[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[0].nic.phy, stage 1
-Initializing module ccSim.node[1].blackboard, stage 1
-Initializing module ccSim.node[1].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,276,276) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[1].nic.phy, stage 1
-Initializing module ccSim.node[2].blackboard, stage 1
-Initializing module ccSim.node[2].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,367,276) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[2].nic.phy, stage 1
-Initializing module ccSim.node[3].blackboard, stage 1
-Initializing module ccSim.node[3].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,276,367) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[3].nic.phy, stage 1
-Initializing module ccSim.node[4].blackboard, stage 1
-Initializing module ccSim.node[4].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,276,276) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[4].nic.phy, stage 1
-Initializing module ccSim.node[5].blackboard, stage 1
-Initializing module ccSim.node[5].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,367,367) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[5].nic.phy, stage 1
-Initializing module ccSim.node[6].blackboard, stage 1
-Initializing module ccSim.node[6].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,276,367) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[6].nic.phy, stage 1
-Initializing module ccSim.node[7].blackboard, stage 1
-Initializing module ccSim.node[7].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,367,276) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[7].nic.phy, stage 1
-Initializing module ccSim.node[8].blackboard, stage 1
-Initializing module ccSim.node[8].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,367,367) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[8].nic.phy, stage 1
-Initializing module ccSim.node[9].blackboard, stage 1
-Initializing module ccSim.node[9].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[9].nic.phy, stage 1
-Initializing module ccSim.node[10].blackboard, stage 1
-Initializing module ccSim.node[10].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,275,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[10].nic.phy, stage 1
-Initializing module ccSim.node[11].blackboard, stage 1
-Initializing module ccSim.node[11].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,275,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[11].nic.phy, stage 1
-Initializing module ccSim.node[12].blackboard, stage 1
-Initializing module ccSim.node[12].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,275,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[12].nic.phy, stage 1
-Initializing module ccSim.node[13].blackboard, stage 1
-Initializing module ccSim.node[13].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[13].nic.phy, stage 1
-Initializing module ccSim.node[14].blackboard, stage 1
-Initializing module ccSim.node[14].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,368,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[14].nic.phy, stage 1
-Initializing module ccSim.node[15].blackboard, stage 1
-Initializing module ccSim.node[15].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,368,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[15].nic.phy, stage 1
-Initializing module ccSim.node[16].blackboard, stage 1
-Initializing module ccSim.node[16].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,368,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[16].nic.phy, stage 1
-Initializing module ccSim.node[17].blackboard, stage 1
-Initializing module ccSim.node[17].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,322,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[17].nic.phy, stage 1
-Initializing module ccSim.node[18].blackboard, stage 1
-Initializing module ccSim.node[18].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,275,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[18].nic.phy, stage 1
-Initializing module ccSim.node[19].blackboard, stage 1
-Initializing module ccSim.node[19].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,275,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[19].nic.phy, stage 1
-Initializing module ccSim.node[20].blackboard, stage 1
-Initializing module ccSim.node[20].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,275,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[20].nic.phy, stage 1
-Initializing module ccSim.node[21].blackboard, stage 1
-Initializing module ccSim.node[21].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,322,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[21].nic.phy, stage 1
-Initializing module ccSim.node[22].blackboard, stage 1
-Initializing module ccSim.node[22].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,368,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[22].nic.phy, stage 1
-Initializing module ccSim.node[23].blackboard, stage 1
-Initializing module ccSim.node[23].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,368,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[23].nic.phy, stage 1
-Initializing module ccSim.node[24].blackboard, stage 1
-Initializing module ccSim.node[24].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,368,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[24].nic.phy, stage 1
-Initializing module ccSim.node[25].blackboard, stage 1
-Initializing module ccSim.node[25].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,322,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[25].nic.phy, stage 1
-Initializing module ccSim.node[26].blackboard, stage 1
-Initializing module ccSim.node[26].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,275,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[26].nic.phy, stage 1
-Initializing module ccSim.node[27].blackboard, stage 1
-Initializing module ccSim.node[27].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,275,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[27].nic.phy, stage 1
-Initializing module ccSim.node[28].blackboard, stage 1
-Initializing module ccSim.node[28].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,275,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[28].nic.phy, stage 1
-Initializing module ccSim.node[29].blackboard, stage 1
-Initializing module ccSim.node[29].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,322,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[29].nic.phy, stage 1
-Initializing module ccSim.node[30].blackboard, stage 1
-Initializing module ccSim.node[30].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,368,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[30].nic.phy, stage 1
-Initializing module ccSim.node[31].blackboard, stage 1
-Initializing module ccSim.node[31].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,368,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[31].nic.phy, stage 1
-Initializing module ccSim.node[32].blackboard, stage 1
-Initializing module ccSim.node[32].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,368,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[32].nic.phy, stage 1
-Initializing module ccSim.node[33].blackboard, stage 1
-Initializing module ccSim.node[33].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[33].nic.phy, stage 1
-Initializing module ccSim.node[34].blackboard, stage 1
-Initializing module ccSim.node[34].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,230,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[34].nic.phy, stage 1
-Initializing module ccSim.node[35].blackboard, stage 1
-Initializing module ccSim.node[35].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,230,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[35].nic.phy, stage 1
-Initializing module ccSim.node[36].blackboard, stage 1
-Initializing module ccSim.node[36].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,230,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[36].nic.phy, stage 1
-Initializing module ccSim.node[37].blackboard, stage 1
-Initializing module ccSim.node[37].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[37].nic.phy, stage 1
-Initializing module ccSim.node[38].blackboard, stage 1
-Initializing module ccSim.node[38].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,414,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[38].nic.phy, stage 1
-Initializing module ccSim.node[39].blackboard, stage 1
-Initializing module ccSim.node[39].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,414,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[39].nic.phy, stage 1
-Initializing module ccSim.node[40].blackboard, stage 1
-Initializing module ccSim.node[40].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,414,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[40].nic.phy, stage 1
-Initializing module ccSim.node[41].blackboard, stage 1
-Initializing module ccSim.node[41].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,322,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[41].nic.phy, stage 1
-Initializing module ccSim.node[42].blackboard, stage 1
-Initializing module ccSim.node[42].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,230,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[42].nic.phy, stage 1
-Initializing module ccSim.node[43].blackboard, stage 1
-Initializing module ccSim.node[43].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,230,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[43].nic.phy, stage 1
-Initializing module ccSim.node[44].blackboard, stage 1
-Initializing module ccSim.node[44].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,322,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[44].nic.phy, stage 1
-Initializing module ccSim.node[45].blackboard, stage 1
-Initializing module ccSim.node[45].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,414,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[45].nic.phy, stage 1
-Initializing module ccSim.node[46].blackboard, stage 1
-Initializing module ccSim.node[46].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,414,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[46].nic.phy, stage 1
-Initializing module ccSim.node[47].blackboard, stage 1
-Initializing module ccSim.node[47].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,414,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[47].nic.phy, stage 1
-Initializing module ccSim.node[48].blackboard, stage 1
-Initializing module ccSim.node[48].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,322,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[48].nic.phy, stage 1
-Initializing module ccSim.node[49].blackboard, stage 1
-Initializing module ccSim.node[49].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,230,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[49].nic.phy, stage 1
-Initializing module ccSim.node[50].blackboard, stage 1
-Initializing module ccSim.node[50].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,230,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[50].nic.phy, stage 1
-Initializing module ccSim.node[51].blackboard, stage 1
-Initializing module ccSim.node[51].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,230,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[51].nic.phy, stage 1
-Initializing module ccSim.node[52].blackboard, stage 1
-Initializing module ccSim.node[52].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,322,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[52].nic.phy, stage 1
-Initializing module ccSim.node[53].blackboard, stage 1
-Initializing module ccSim.node[53].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,414,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[53].nic.phy, stage 1
-Initializing module ccSim.node[54].blackboard, stage 1
-Initializing module ccSim.node[54].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,414,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[54].nic.phy, stage 1
-Initializing module ccSim.node[55].blackboard, stage 1
-Initializing module ccSim.node[55].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,414,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[55].nic.phy, stage 1
-Initializing module ccSim.node[56].blackboard, stage 1
-Initializing module ccSim.node[56].mobility, stage 1
 updatePosition:  HostMove  startPos: (92,0,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[56].nic.phy, stage 1
-Initializing module ccSim.node[57].blackboard, stage 1
-Initializing module ccSim.node[57].mobility, stage 1
 updatePosition:  HostMove  startPos: (92,499,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[57].nic.phy, stage 1
-Initializing module ccSim.node[58].blackboard, stage 1
-Initializing module ccSim.node[58].mobility, stage 1
 updatePosition:  HostMove  startPos: (400,499,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[58].nic.phy, stage 1
-Initializing module ccSim.node[59].blackboard, stage 1
-Initializing module ccSim.node[59].mobility, stage 1
 updatePosition:  HostMove  startPos: (400,0,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[59].nic.phy, stage 1
-Initializing module ccSim.node[60].blackboard, stage 1
-Initializing module ccSim.node[60].mobility, stage 1
 updatePosition:  HostMove  startPos: (0,92,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[60].nic.phy, stage 1
-Initializing module ccSim.node[61].blackboard, stage 1
-Initializing module ccSim.node[61].mobility, stage 1
 updatePosition:  HostMove  startPos: (499,92,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[61].nic.phy, stage 1
-Initializing module ccSim.node[62].blackboard, stage 1
-Initializing module ccSim.node[62].mobility, stage 1
 updatePosition:  HostMove  startPos: (499,400,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[62].nic.phy, stage 1
-Initializing module ccSim.node[63].blackboard, stage 1
-Initializing module ccSim.node[63].mobility, stage 1
 updatePosition:  HostMove  startPos: (0,400,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[63].nic.phy, stage 1
-Initializing module ccSim.node[64].blackboard, stage 1
-Initializing module ccSim.node[64].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,92,0) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[64].nic.phy, stage 1
-Initializing module ccSim.node[65].blackboard, stage 1
-Initializing module ccSim.node[65].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,92,499) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[65].nic.phy, stage 1
-Initializing module ccSim.node[66].blackboard, stage 1
-Initializing module ccSim.node[66].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,400,499) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[66].nic.phy, stage 1
-Initializing module ccSim.node[67].blackboard, stage 1
-Initializing module ccSim.node[67].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,400,0) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[67].nic.phy, stage 1
 
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 7   present: 7   in FES: 7
-** Event #518   T=7.6   Elapsed: 0.002s (0m 00s)  15% completed
-     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+** Event #518   T=7.6   Elapsed: 0.014s (0m 00s)  15% completed
+     Speed:     ev/sec=36928.6   simsec/sec=542.857   ev/simsec=68.0263
      Messages:  created: 523   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
@@ -1438,635 +351,86 @@ Passed: Test Node 67: Should have received no broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b3, build: 100311-af6d180, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 39
+Loading NED files from /home/karl/git-repo/mixim/modules: 40
 Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20100318-11:02:16-9975
+Assigned runID=Test4-0-20100428-16:20:39-11775
 Setting up network `ccSim'...
 Initializing...
-Initializing module ccSim, stage 0
-Initializing module ccSim.world, stage 0
-Initializing module ccSim.channelcontrol, stage 0
-Initializing module ccSim.node[0], stage 0
-Initializing module ccSim.node[0].blackboard, stage 0
-Initializing module ccSim.node[0].mobility, stage 0
-Initializing module ccSim.node[0].nic, stage 0
-Initializing module ccSim.node[0].nic.phy, stage 0
-Initializing module ccSim.node[1], stage 0
-Initializing module ccSim.node[1].blackboard, stage 0
-Initializing module ccSim.node[1].mobility, stage 0
-Initializing module ccSim.node[1].nic, stage 0
-Initializing module ccSim.node[1].nic.phy, stage 0
-Initializing module ccSim.node[2], stage 0
-Initializing module ccSim.node[2].blackboard, stage 0
-Initializing module ccSim.node[2].mobility, stage 0
-Initializing module ccSim.node[2].nic, stage 0
-Initializing module ccSim.node[2].nic.phy, stage 0
-Initializing module ccSim.node[3], stage 0
-Initializing module ccSim.node[3].blackboard, stage 0
-Initializing module ccSim.node[3].mobility, stage 0
-Initializing module ccSim.node[3].nic, stage 0
-Initializing module ccSim.node[3].nic.phy, stage 0
-Initializing module ccSim.node[4], stage 0
-Initializing module ccSim.node[4].blackboard, stage 0
-Initializing module ccSim.node[4].mobility, stage 0
-Initializing module ccSim.node[4].nic, stage 0
-Initializing module ccSim.node[4].nic.phy, stage 0
-Initializing module ccSim.node[5], stage 0
-Initializing module ccSim.node[5].blackboard, stage 0
-Initializing module ccSim.node[5].mobility, stage 0
-Initializing module ccSim.node[5].nic, stage 0
-Initializing module ccSim.node[5].nic.phy, stage 0
-Initializing module ccSim.node[6], stage 0
-Initializing module ccSim.node[6].blackboard, stage 0
-Initializing module ccSim.node[6].mobility, stage 0
-Initializing module ccSim.node[6].nic, stage 0
-Initializing module ccSim.node[6].nic.phy, stage 0
-Initializing module ccSim.node[7], stage 0
-Initializing module ccSim.node[7].blackboard, stage 0
-Initializing module ccSim.node[7].mobility, stage 0
-Initializing module ccSim.node[7].nic, stage 0
-Initializing module ccSim.node[7].nic.phy, stage 0
-Initializing module ccSim.node[8], stage 0
-Initializing module ccSim.node[8].blackboard, stage 0
-Initializing module ccSim.node[8].mobility, stage 0
-Initializing module ccSim.node[8].nic, stage 0
-Initializing module ccSim.node[8].nic.phy, stage 0
-Initializing module ccSim.node[9], stage 0
-Initializing module ccSim.node[9].blackboard, stage 0
-Initializing module ccSim.node[9].mobility, stage 0
-Initializing module ccSim.node[9].nic, stage 0
-Initializing module ccSim.node[9].nic.phy, stage 0
-Initializing module ccSim.node[10], stage 0
-Initializing module ccSim.node[10].blackboard, stage 0
-Initializing module ccSim.node[10].mobility, stage 0
-Initializing module ccSim.node[10].nic, stage 0
-Initializing module ccSim.node[10].nic.phy, stage 0
-Initializing module ccSim.node[11], stage 0
-Initializing module ccSim.node[11].blackboard, stage 0
-Initializing module ccSim.node[11].mobility, stage 0
-Initializing module ccSim.node[11].nic, stage 0
-Initializing module ccSim.node[11].nic.phy, stage 0
-Initializing module ccSim.node[12], stage 0
-Initializing module ccSim.node[12].blackboard, stage 0
-Initializing module ccSim.node[12].mobility, stage 0
-Initializing module ccSim.node[12].nic, stage 0
-Initializing module ccSim.node[12].nic.phy, stage 0
-Initializing module ccSim.node[13], stage 0
-Initializing module ccSim.node[13].blackboard, stage 0
-Initializing module ccSim.node[13].mobility, stage 0
-Initializing module ccSim.node[13].nic, stage 0
-Initializing module ccSim.node[13].nic.phy, stage 0
-Initializing module ccSim.node[14], stage 0
-Initializing module ccSim.node[14].blackboard, stage 0
-Initializing module ccSim.node[14].mobility, stage 0
-Initializing module ccSim.node[14].nic, stage 0
-Initializing module ccSim.node[14].nic.phy, stage 0
-Initializing module ccSim.node[15], stage 0
-Initializing module ccSim.node[15].blackboard, stage 0
-Initializing module ccSim.node[15].mobility, stage 0
-Initializing module ccSim.node[15].nic, stage 0
-Initializing module ccSim.node[15].nic.phy, stage 0
-Initializing module ccSim.node[16], stage 0
-Initializing module ccSim.node[16].blackboard, stage 0
-Initializing module ccSim.node[16].mobility, stage 0
-Initializing module ccSim.node[16].nic, stage 0
-Initializing module ccSim.node[16].nic.phy, stage 0
-Initializing module ccSim.node[17], stage 0
-Initializing module ccSim.node[17].blackboard, stage 0
-Initializing module ccSim.node[17].mobility, stage 0
-Initializing module ccSim.node[17].nic, stage 0
-Initializing module ccSim.node[17].nic.phy, stage 0
-Initializing module ccSim.node[18], stage 0
-Initializing module ccSim.node[18].blackboard, stage 0
-Initializing module ccSim.node[18].mobility, stage 0
-Initializing module ccSim.node[18].nic, stage 0
-Initializing module ccSim.node[18].nic.phy, stage 0
-Initializing module ccSim.node[19], stage 0
-Initializing module ccSim.node[19].blackboard, stage 0
-Initializing module ccSim.node[19].mobility, stage 0
-Initializing module ccSim.node[19].nic, stage 0
-Initializing module ccSim.node[19].nic.phy, stage 0
-Initializing module ccSim.node[20], stage 0
-Initializing module ccSim.node[20].blackboard, stage 0
-Initializing module ccSim.node[20].mobility, stage 0
-Initializing module ccSim.node[20].nic, stage 0
-Initializing module ccSim.node[20].nic.phy, stage 0
-Initializing module ccSim.node[21], stage 0
-Initializing module ccSim.node[21].blackboard, stage 0
-Initializing module ccSim.node[21].mobility, stage 0
-Initializing module ccSim.node[21].nic, stage 0
-Initializing module ccSim.node[21].nic.phy, stage 0
-Initializing module ccSim.node[22], stage 0
-Initializing module ccSim.node[22].blackboard, stage 0
-Initializing module ccSim.node[22].mobility, stage 0
-Initializing module ccSim.node[22].nic, stage 0
-Initializing module ccSim.node[22].nic.phy, stage 0
-Initializing module ccSim.node[23], stage 0
-Initializing module ccSim.node[23].blackboard, stage 0
-Initializing module ccSim.node[23].mobility, stage 0
-Initializing module ccSim.node[23].nic, stage 0
-Initializing module ccSim.node[23].nic.phy, stage 0
-Initializing module ccSim.node[24], stage 0
-Initializing module ccSim.node[24].blackboard, stage 0
-Initializing module ccSim.node[24].mobility, stage 0
-Initializing module ccSim.node[24].nic, stage 0
-Initializing module ccSim.node[24].nic.phy, stage 0
-Initializing module ccSim.node[25], stage 0
-Initializing module ccSim.node[25].blackboard, stage 0
-Initializing module ccSim.node[25].mobility, stage 0
-Initializing module ccSim.node[25].nic, stage 0
-Initializing module ccSim.node[25].nic.phy, stage 0
-Initializing module ccSim.node[26], stage 0
-Initializing module ccSim.node[26].blackboard, stage 0
-Initializing module ccSim.node[26].mobility, stage 0
-Initializing module ccSim.node[26].nic, stage 0
-Initializing module ccSim.node[26].nic.phy, stage 0
-Initializing module ccSim.node[27], stage 0
-Initializing module ccSim.node[27].blackboard, stage 0
-Initializing module ccSim.node[27].mobility, stage 0
-Initializing module ccSim.node[27].nic, stage 0
-Initializing module ccSim.node[27].nic.phy, stage 0
-Initializing module ccSim.node[28], stage 0
-Initializing module ccSim.node[28].blackboard, stage 0
-Initializing module ccSim.node[28].mobility, stage 0
-Initializing module ccSim.node[28].nic, stage 0
-Initializing module ccSim.node[28].nic.phy, stage 0
-Initializing module ccSim.node[29], stage 0
-Initializing module ccSim.node[29].blackboard, stage 0
-Initializing module ccSim.node[29].mobility, stage 0
-Initializing module ccSim.node[29].nic, stage 0
-Initializing module ccSim.node[29].nic.phy, stage 0
-Initializing module ccSim.node[30], stage 0
-Initializing module ccSim.node[30].blackboard, stage 0
-Initializing module ccSim.node[30].mobility, stage 0
-Initializing module ccSim.node[30].nic, stage 0
-Initializing module ccSim.node[30].nic.phy, stage 0
-Initializing module ccSim.node[31], stage 0
-Initializing module ccSim.node[31].blackboard, stage 0
-Initializing module ccSim.node[31].mobility, stage 0
-Initializing module ccSim.node[31].nic, stage 0
-Initializing module ccSim.node[31].nic.phy, stage 0
-Initializing module ccSim.node[32], stage 0
-Initializing module ccSim.node[32].blackboard, stage 0
-Initializing module ccSim.node[32].mobility, stage 0
-Initializing module ccSim.node[32].nic, stage 0
-Initializing module ccSim.node[32].nic.phy, stage 0
-Initializing module ccSim.node[33], stage 0
-Initializing module ccSim.node[33].blackboard, stage 0
-Initializing module ccSim.node[33].mobility, stage 0
-Initializing module ccSim.node[33].nic, stage 0
-Initializing module ccSim.node[33].nic.phy, stage 0
-Initializing module ccSim.node[34], stage 0
-Initializing module ccSim.node[34].blackboard, stage 0
-Initializing module ccSim.node[34].mobility, stage 0
-Initializing module ccSim.node[34].nic, stage 0
-Initializing module ccSim.node[34].nic.phy, stage 0
-Initializing module ccSim.node[35], stage 0
-Initializing module ccSim.node[35].blackboard, stage 0
-Initializing module ccSim.node[35].mobility, stage 0
-Initializing module ccSim.node[35].nic, stage 0
-Initializing module ccSim.node[35].nic.phy, stage 0
-Initializing module ccSim.node[36], stage 0
-Initializing module ccSim.node[36].blackboard, stage 0
-Initializing module ccSim.node[36].mobility, stage 0
-Initializing module ccSim.node[36].nic, stage 0
-Initializing module ccSim.node[36].nic.phy, stage 0
-Initializing module ccSim.node[37], stage 0
-Initializing module ccSim.node[37].blackboard, stage 0
-Initializing module ccSim.node[37].mobility, stage 0
-Initializing module ccSim.node[37].nic, stage 0
-Initializing module ccSim.node[37].nic.phy, stage 0
-Initializing module ccSim.node[38], stage 0
-Initializing module ccSim.node[38].blackboard, stage 0
-Initializing module ccSim.node[38].mobility, stage 0
-Initializing module ccSim.node[38].nic, stage 0
-Initializing module ccSim.node[38].nic.phy, stage 0
-Initializing module ccSim.node[39], stage 0
-Initializing module ccSim.node[39].blackboard, stage 0
-Initializing module ccSim.node[39].mobility, stage 0
-Initializing module ccSim.node[39].nic, stage 0
-Initializing module ccSim.node[39].nic.phy, stage 0
-Initializing module ccSim.node[40], stage 0
-Initializing module ccSim.node[40].blackboard, stage 0
-Initializing module ccSim.node[40].mobility, stage 0
-Initializing module ccSim.node[40].nic, stage 0
-Initializing module ccSim.node[40].nic.phy, stage 0
-Initializing module ccSim.node[41], stage 0
-Initializing module ccSim.node[41].blackboard, stage 0
-Initializing module ccSim.node[41].mobility, stage 0
-Initializing module ccSim.node[41].nic, stage 0
-Initializing module ccSim.node[41].nic.phy, stage 0
-Initializing module ccSim.node[42], stage 0
-Initializing module ccSim.node[42].blackboard, stage 0
-Initializing module ccSim.node[42].mobility, stage 0
-Initializing module ccSim.node[42].nic, stage 0
-Initializing module ccSim.node[42].nic.phy, stage 0
-Initializing module ccSim.node[43], stage 0
-Initializing module ccSim.node[43].blackboard, stage 0
-Initializing module ccSim.node[43].mobility, stage 0
-Initializing module ccSim.node[43].nic, stage 0
-Initializing module ccSim.node[43].nic.phy, stage 0
-Initializing module ccSim.node[44], stage 0
-Initializing module ccSim.node[44].blackboard, stage 0
-Initializing module ccSim.node[44].mobility, stage 0
-Initializing module ccSim.node[44].nic, stage 0
-Initializing module ccSim.node[44].nic.phy, stage 0
-Initializing module ccSim.node[45], stage 0
-Initializing module ccSim.node[45].blackboard, stage 0
-Initializing module ccSim.node[45].mobility, stage 0
-Initializing module ccSim.node[45].nic, stage 0
-Initializing module ccSim.node[45].nic.phy, stage 0
-Initializing module ccSim.node[46], stage 0
-Initializing module ccSim.node[46].blackboard, stage 0
-Initializing module ccSim.node[46].mobility, stage 0
-Initializing module ccSim.node[46].nic, stage 0
-Initializing module ccSim.node[46].nic.phy, stage 0
-Initializing module ccSim.node[47], stage 0
-Initializing module ccSim.node[47].blackboard, stage 0
-Initializing module ccSim.node[47].mobility, stage 0
-Initializing module ccSim.node[47].nic, stage 0
-Initializing module ccSim.node[47].nic.phy, stage 0
-Initializing module ccSim.node[48], stage 0
-Initializing module ccSim.node[48].blackboard, stage 0
-Initializing module ccSim.node[48].mobility, stage 0
-Initializing module ccSim.node[48].nic, stage 0
-Initializing module ccSim.node[48].nic.phy, stage 0
-Initializing module ccSim.node[49], stage 0
-Initializing module ccSim.node[49].blackboard, stage 0
-Initializing module ccSim.node[49].mobility, stage 0
-Initializing module ccSim.node[49].nic, stage 0
-Initializing module ccSim.node[49].nic.phy, stage 0
-Initializing module ccSim.node[50], stage 0
-Initializing module ccSim.node[50].blackboard, stage 0
-Initializing module ccSim.node[50].mobility, stage 0
-Initializing module ccSim.node[50].nic, stage 0
-Initializing module ccSim.node[50].nic.phy, stage 0
-Initializing module ccSim.node[51], stage 0
-Initializing module ccSim.node[51].blackboard, stage 0
-Initializing module ccSim.node[51].mobility, stage 0
-Initializing module ccSim.node[51].nic, stage 0
-Initializing module ccSim.node[51].nic.phy, stage 0
-Initializing module ccSim.node[52], stage 0
-Initializing module ccSim.node[52].blackboard, stage 0
-Initializing module ccSim.node[52].mobility, stage 0
-Initializing module ccSim.node[52].nic, stage 0
-Initializing module ccSim.node[52].nic.phy, stage 0
-Initializing module ccSim.node[53], stage 0
-Initializing module ccSim.node[53].blackboard, stage 0
-Initializing module ccSim.node[53].mobility, stage 0
-Initializing module ccSim.node[53].nic, stage 0
-Initializing module ccSim.node[53].nic.phy, stage 0
-Initializing module ccSim.node[54], stage 0
-Initializing module ccSim.node[54].blackboard, stage 0
-Initializing module ccSim.node[54].mobility, stage 0
-Initializing module ccSim.node[54].nic, stage 0
-Initializing module ccSim.node[54].nic.phy, stage 0
-Initializing module ccSim.node[55], stage 0
-Initializing module ccSim.node[55].blackboard, stage 0
-Initializing module ccSim.node[55].mobility, stage 0
-Initializing module ccSim.node[55].nic, stage 0
-Initializing module ccSim.node[55].nic.phy, stage 0
-Initializing module ccSim.node[56], stage 0
-Initializing module ccSim.node[56].blackboard, stage 0
-Initializing module ccSim.node[56].mobility, stage 0
-Initializing module ccSim.node[56].nic, stage 0
-Initializing module ccSim.node[56].nic.phy, stage 0
-Initializing module ccSim.node[57], stage 0
-Initializing module ccSim.node[57].blackboard, stage 0
-Initializing module ccSim.node[57].mobility, stage 0
-Initializing module ccSim.node[57].nic, stage 0
-Initializing module ccSim.node[57].nic.phy, stage 0
-Initializing module ccSim.node[58], stage 0
-Initializing module ccSim.node[58].blackboard, stage 0
-Initializing module ccSim.node[58].mobility, stage 0
-Initializing module ccSim.node[58].nic, stage 0
-Initializing module ccSim.node[58].nic.phy, stage 0
-Initializing module ccSim.node[59], stage 0
-Initializing module ccSim.node[59].blackboard, stage 0
-Initializing module ccSim.node[59].mobility, stage 0
-Initializing module ccSim.node[59].nic, stage 0
-Initializing module ccSim.node[59].nic.phy, stage 0
-Initializing module ccSim.node[60], stage 0
-Initializing module ccSim.node[60].blackboard, stage 0
-Initializing module ccSim.node[60].mobility, stage 0
-Initializing module ccSim.node[60].nic, stage 0
-Initializing module ccSim.node[60].nic.phy, stage 0
-Initializing module ccSim.node[61], stage 0
-Initializing module ccSim.node[61].blackboard, stage 0
-Initializing module ccSim.node[61].mobility, stage 0
-Initializing module ccSim.node[61].nic, stage 0
-Initializing module ccSim.node[61].nic.phy, stage 0
-Initializing module ccSim.node[62], stage 0
-Initializing module ccSim.node[62].blackboard, stage 0
-Initializing module ccSim.node[62].mobility, stage 0
-Initializing module ccSim.node[62].nic, stage 0
-Initializing module ccSim.node[62].nic.phy, stage 0
-Initializing module ccSim.node[63], stage 0
-Initializing module ccSim.node[63].blackboard, stage 0
-Initializing module ccSim.node[63].mobility, stage 0
-Initializing module ccSim.node[63].nic, stage 0
-Initializing module ccSim.node[63].nic.phy, stage 0
-Initializing module ccSim.node[64], stage 0
-Initializing module ccSim.node[64].blackboard, stage 0
-Initializing module ccSim.node[64].mobility, stage 0
-Initializing module ccSim.node[64].nic, stage 0
-Initializing module ccSim.node[64].nic.phy, stage 0
-Initializing module ccSim.node[65], stage 0
-Initializing module ccSim.node[65].blackboard, stage 0
-Initializing module ccSim.node[65].mobility, stage 0
-Initializing module ccSim.node[65].nic, stage 0
-Initializing module ccSim.node[65].nic.phy, stage 0
-Initializing module ccSim.node[66], stage 0
-Initializing module ccSim.node[66].blackboard, stage 0
-Initializing module ccSim.node[66].mobility, stage 0
-Initializing module ccSim.node[66].nic, stage 0
-Initializing module ccSim.node[66].nic.phy, stage 0
-Initializing module ccSim.node[67], stage 0
-Initializing module ccSim.node[67].blackboard, stage 0
-Initializing module ccSim.node[67].mobility, stage 0
-Initializing module ccSim.node[67].nic, stage 0
-Initializing module ccSim.node[67].nic.phy, stage 0
-Initializing module ccSim.world, stage 1
-Initializing module ccSim.channelcontrol, stage 1
-Initializing module ccSim.node[0].blackboard, stage 1
-Initializing module ccSim.node[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[0].nic.phy, stage 1
-Initializing module ccSim.node[1].blackboard, stage 1
-Initializing module ccSim.node[1].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,276,276) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[1].nic.phy, stage 1
-Initializing module ccSim.node[2].blackboard, stage 1
-Initializing module ccSim.node[2].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,367,276) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[2].nic.phy, stage 1
-Initializing module ccSim.node[3].blackboard, stage 1
-Initializing module ccSim.node[3].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,276,367) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[3].nic.phy, stage 1
-Initializing module ccSim.node[4].blackboard, stage 1
-Initializing module ccSim.node[4].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,276,276) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[4].nic.phy, stage 1
-Initializing module ccSim.node[5].blackboard, stage 1
-Initializing module ccSim.node[5].mobility, stage 1
 updatePosition:  HostMove  startPos: (276,367,367) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[5].nic.phy, stage 1
-Initializing module ccSim.node[6].blackboard, stage 1
-Initializing module ccSim.node[6].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,276,367) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[6].nic.phy, stage 1
-Initializing module ccSim.node[7].blackboard, stage 1
-Initializing module ccSim.node[7].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,367,276) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[7].nic.phy, stage 1
-Initializing module ccSim.node[8].blackboard, stage 1
-Initializing module ccSim.node[8].mobility, stage 1
 updatePosition:  HostMove  startPos: (367,367,367) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[8].nic.phy, stage 1
-Initializing module ccSim.node[9].blackboard, stage 1
-Initializing module ccSim.node[9].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[9].nic.phy, stage 1
-Initializing module ccSim.node[10].blackboard, stage 1
-Initializing module ccSim.node[10].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,275,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[10].nic.phy, stage 1
-Initializing module ccSim.node[11].blackboard, stage 1
-Initializing module ccSim.node[11].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,275,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[11].nic.phy, stage 1
-Initializing module ccSim.node[12].blackboard, stage 1
-Initializing module ccSim.node[12].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,275,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[12].nic.phy, stage 1
-Initializing module ccSim.node[13].blackboard, stage 1
-Initializing module ccSim.node[13].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[13].nic.phy, stage 1
-Initializing module ccSim.node[14].blackboard, stage 1
-Initializing module ccSim.node[14].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,368,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[14].nic.phy, stage 1
-Initializing module ccSim.node[15].blackboard, stage 1
-Initializing module ccSim.node[15].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,368,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[15].nic.phy, stage 1
-Initializing module ccSim.node[16].blackboard, stage 1
-Initializing module ccSim.node[16].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,368,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[16].nic.phy, stage 1
-Initializing module ccSim.node[17].blackboard, stage 1
-Initializing module ccSim.node[17].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,322,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[17].nic.phy, stage 1
-Initializing module ccSim.node[18].blackboard, stage 1
-Initializing module ccSim.node[18].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,275,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[18].nic.phy, stage 1
-Initializing module ccSim.node[19].blackboard, stage 1
-Initializing module ccSim.node[19].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,275,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[19].nic.phy, stage 1
-Initializing module ccSim.node[20].blackboard, stage 1
-Initializing module ccSim.node[20].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,275,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[20].nic.phy, stage 1
-Initializing module ccSim.node[21].blackboard, stage 1
-Initializing module ccSim.node[21].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,322,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[21].nic.phy, stage 1
-Initializing module ccSim.node[22].blackboard, stage 1
-Initializing module ccSim.node[22].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,368,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[22].nic.phy, stage 1
-Initializing module ccSim.node[23].blackboard, stage 1
-Initializing module ccSim.node[23].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,368,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[23].nic.phy, stage 1
-Initializing module ccSim.node[24].blackboard, stage 1
-Initializing module ccSim.node[24].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,368,275) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[24].nic.phy, stage 1
-Initializing module ccSim.node[25].blackboard, stage 1
-Initializing module ccSim.node[25].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,322,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[25].nic.phy, stage 1
-Initializing module ccSim.node[26].blackboard, stage 1
-Initializing module ccSim.node[26].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,275,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[26].nic.phy, stage 1
-Initializing module ccSim.node[27].blackboard, stage 1
-Initializing module ccSim.node[27].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,275,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[27].nic.phy, stage 1
-Initializing module ccSim.node[28].blackboard, stage 1
-Initializing module ccSim.node[28].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,275,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[28].nic.phy, stage 1
-Initializing module ccSim.node[29].blackboard, stage 1
-Initializing module ccSim.node[29].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,322,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[29].nic.phy, stage 1
-Initializing module ccSim.node[30].blackboard, stage 1
-Initializing module ccSim.node[30].mobility, stage 1
 updatePosition:  HostMove  startPos: (368,368,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[30].nic.phy, stage 1
-Initializing module ccSim.node[31].blackboard, stage 1
-Initializing module ccSim.node[31].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,368,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[31].nic.phy, stage 1
-Initializing module ccSim.node[32].blackboard, stage 1
-Initializing module ccSim.node[32].mobility, stage 1
 updatePosition:  HostMove  startPos: (275,368,368) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[32].nic.phy, stage 1
-Initializing module ccSim.node[33].blackboard, stage 1
-Initializing module ccSim.node[33].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[33].nic.phy, stage 1
-Initializing module ccSim.node[34].blackboard, stage 1
-Initializing module ccSim.node[34].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,230,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[34].nic.phy, stage 1
-Initializing module ccSim.node[35].blackboard, stage 1
-Initializing module ccSim.node[35].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,230,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[35].nic.phy, stage 1
-Initializing module ccSim.node[36].blackboard, stage 1
-Initializing module ccSim.node[36].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,230,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[36].nic.phy, stage 1
-Initializing module ccSim.node[37].blackboard, stage 1
-Initializing module ccSim.node[37].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,322,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[37].nic.phy, stage 1
-Initializing module ccSim.node[38].blackboard, stage 1
-Initializing module ccSim.node[38].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,414,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[38].nic.phy, stage 1
-Initializing module ccSim.node[39].blackboard, stage 1
-Initializing module ccSim.node[39].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,414,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[39].nic.phy, stage 1
-Initializing module ccSim.node[40].blackboard, stage 1
-Initializing module ccSim.node[40].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,414,322) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[40].nic.phy, stage 1
-Initializing module ccSim.node[41].blackboard, stage 1
-Initializing module ccSim.node[41].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,322,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[41].nic.phy, stage 1
-Initializing module ccSim.node[42].blackboard, stage 1
-Initializing module ccSim.node[42].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,230,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[42].nic.phy, stage 1
-Initializing module ccSim.node[43].blackboard, stage 1
-Initializing module ccSim.node[43].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,230,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[43].nic.phy, stage 1
-Initializing module ccSim.node[44].blackboard, stage 1
-Initializing module ccSim.node[44].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,322,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[44].nic.phy, stage 1
-Initializing module ccSim.node[45].blackboard, stage 1
-Initializing module ccSim.node[45].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,414,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[45].nic.phy, stage 1
-Initializing module ccSim.node[46].blackboard, stage 1
-Initializing module ccSim.node[46].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,414,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[46].nic.phy, stage 1
-Initializing module ccSim.node[47].blackboard, stage 1
-Initializing module ccSim.node[47].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,414,230) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[47].nic.phy, stage 1
-Initializing module ccSim.node[48].blackboard, stage 1
-Initializing module ccSim.node[48].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,322,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[48].nic.phy, stage 1
-Initializing module ccSim.node[49].blackboard, stage 1
-Initializing module ccSim.node[49].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,230,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[49].nic.phy, stage 1
-Initializing module ccSim.node[50].blackboard, stage 1
-Initializing module ccSim.node[50].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,230,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[50].nic.phy, stage 1
-Initializing module ccSim.node[51].blackboard, stage 1
-Initializing module ccSim.node[51].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,230,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[51].nic.phy, stage 1
-Initializing module ccSim.node[52].blackboard, stage 1
-Initializing module ccSim.node[52].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,322,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[52].nic.phy, stage 1
-Initializing module ccSim.node[53].blackboard, stage 1
-Initializing module ccSim.node[53].mobility, stage 1
 updatePosition:  HostMove  startPos: (414,414,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[53].nic.phy, stage 1
-Initializing module ccSim.node[54].blackboard, stage 1
-Initializing module ccSim.node[54].mobility, stage 1
 updatePosition:  HostMove  startPos: (322,414,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[54].nic.phy, stage 1
-Initializing module ccSim.node[55].blackboard, stage 1
-Initializing module ccSim.node[55].mobility, stage 1
 updatePosition:  HostMove  startPos: (230,414,414) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[55].nic.phy, stage 1
-Initializing module ccSim.node[56].blackboard, stage 1
-Initializing module ccSim.node[56].mobility, stage 1
 updatePosition:  HostMove  startPos: (92,0,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[56].nic.phy, stage 1
-Initializing module ccSim.node[57].blackboard, stage 1
-Initializing module ccSim.node[57].mobility, stage 1
 updatePosition:  HostMove  startPos: (92,499,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[57].nic.phy, stage 1
-Initializing module ccSim.node[58].blackboard, stage 1
-Initializing module ccSim.node[58].mobility, stage 1
 updatePosition:  HostMove  startPos: (400,499,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[58].nic.phy, stage 1
-Initializing module ccSim.node[59].blackboard, stage 1
-Initializing module ccSim.node[59].mobility, stage 1
 updatePosition:  HostMove  startPos: (400,0,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[59].nic.phy, stage 1
-Initializing module ccSim.node[60].blackboard, stage 1
-Initializing module ccSim.node[60].mobility, stage 1
 updatePosition:  HostMove  startPos: (0,92,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[60].nic.phy, stage 1
-Initializing module ccSim.node[61].blackboard, stage 1
-Initializing module ccSim.node[61].mobility, stage 1
 updatePosition:  HostMove  startPos: (499,92,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[61].nic.phy, stage 1
-Initializing module ccSim.node[62].blackboard, stage 1
-Initializing module ccSim.node[62].mobility, stage 1
 updatePosition:  HostMove  startPos: (499,400,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[62].nic.phy, stage 1
-Initializing module ccSim.node[63].blackboard, stage 1
-Initializing module ccSim.node[63].mobility, stage 1
 updatePosition:  HostMove  startPos: (0,400,277) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[63].nic.phy, stage 1
-Initializing module ccSim.node[64].blackboard, stage 1
-Initializing module ccSim.node[64].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,92,0) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[64].nic.phy, stage 1
-Initializing module ccSim.node[65].blackboard, stage 1
-Initializing module ccSim.node[65].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,92,499) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[65].nic.phy, stage 1
-Initializing module ccSim.node[66].blackboard, stage 1
-Initializing module ccSim.node[66].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,400,499) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[66].nic.phy, stage 1
-Initializing module ccSim.node[67].blackboard, stage 1
-Initializing module ccSim.node[67].mobility, stage 1
 updatePosition:  HostMove  startPos: (277,400,0) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module ccSim.node[67].nic.phy, stage 1
 
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
