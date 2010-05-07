@@ -348,6 +348,8 @@ public:
 	 */
 	bool registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos);
 
+	bool unregisterNic(cModule* nic);
+
 	/** @brief Updates the position information of a registered nic.*/
 	void updateNicPos(int nicID, const Coord* newPos);
 

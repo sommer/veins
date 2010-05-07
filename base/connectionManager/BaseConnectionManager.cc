@@ -307,6 +307,49 @@ bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, c
 	return sendDirect;
 }
 
+bool BaseConnectionManager::unregisterNic(cModule* nicModule)
+{
+	assert(nicModule != 0);
+
+	// find nicEntry
+	int nicID = nicModule->getId();
+	ccEV << " unregistering nic #" << nicID << endl;
+	assert(nics.find(nicID) != nics.end());
+	NicEntry* nicEntry = nics[nicID];
+
+	// get all affected grid squares
+	CoordSet gridUnion(74);
+	GridCoord cell = getCellForCoordinate(nicEntry->pos);
+	if((gridDim.x == 1) && (gridDim.y == 1) && (gridDim.z == 1)) {
+		gridUnion.add(cell);
+	} else {
+		fillUnionWithNeighbors(gridUnion, cell);
+	}
+
+	// disconnect from all NICs in these grid squares
+	GridCoord* c = gridUnion.next();
+	while(c != 0) {
+		ccEV << "Update cons in [" << c->info() << "]" << endl;
+		NicEntries& nmap = getCellEntries(*c);
+		for(NicEntries::iterator i = nmap.begin(); i != nmap.end(); ++i) {
+			NicEntry* other = i->second;
+			if (other == nicEntry) continue;
+			if (!other->isConnected(nicEntry)) continue;
+			other->disconnectFrom(nicEntry);
+		}
+		c = gridUnion.next();
+	}
+
+	// erase from grid
+	NicEntries& cellEntries = getCellEntries(cell);
+	cellEntries.erase(nicID);
+
+	// erase from list of known nics
+	nics.erase(nicID);
+
+	return true;
+}
+
 void BaseConnectionManager::updateNicPos(int nicID, const Coord* newPos)
 {
 	NicEntry* nicEntry = nics[nicID];
