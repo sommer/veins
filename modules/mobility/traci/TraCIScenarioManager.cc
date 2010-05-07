@@ -89,7 +89,10 @@ void TraCIScenarioManager::initialize(int stage)
 	scheduleAt(0, executeOneTimestepTrigger);
 
 	world = FindModule<BaseWorldUtility*>::findGlobalModule();
-    if (world == NULL) error("Could not find BaseWorldUtility module");
+	if (world == NULL) error("Could not find BaseWorldUtility module");
+
+	cc = FindModule<BaseConnectionManager*>::findGlobalModule();
+	if (cc == NULL) error("Could not find BaseConnectionManager module");
 
 
 	if (debug) EV << "TraCIScenarioManager connecting to TraCI server" << endl;
@@ -452,6 +455,14 @@ void TraCIScenarioManager::addModule(int32_t nodeId, std::string type, std::stri
 
 	mod->callInitialize();
 	hosts[nodeId] = mod;
+
+	// post-initialize TraCIMobility
+	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
+		cModule* submod = iter();
+		TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
+		if (!mm) continue;
+		mm->changePosition();
+	}
 }
 
 cModule* TraCIScenarioManager::getManagedModule(int32_t nodeId) {
@@ -463,8 +474,7 @@ void TraCIScenarioManager::deleteModule(int32_t nodeId) {
 	cModule* mod = getManagedModule(nodeId);
 	if (!mod) error("no vehicle with Id %d found", nodeId);
 
-	//if (!mod->getSubmodule("notificationBoard")) error("host has no submodule notificationBoard");
-	//cc->unregisterHost(mod);
+	cc->unregisterNic(mod->getSubmodule("nic"));
 
 	hosts.erase(nodeId);
 	mod->callFinish();

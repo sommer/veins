@@ -31,6 +31,7 @@
 #include "BaseModule.h"
 #include "Coord.h"
 #include "BaseWorldUtility.h"
+#include "BaseConnectionManager.h"
 #include "FindModule.h"
 
 /**
@@ -86,6 +87,7 @@ class TraCIScenarioManager : public BaseModule
 		cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
 
 		BaseWorldUtility* world;
+		BaseConnectionManager* cc;
 
 		void executeOneTimestep(); /**< read and execute all commands for the next timestep */
 
