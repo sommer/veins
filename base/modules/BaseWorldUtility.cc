@@ -19,6 +19,8 @@
  **************************************************************************/
 
 #include "BaseWorldUtility.h"
+#include "FindModule.h"
+#include "BaseConnectionManager.h"
 
 Define_Module(BaseWorldUtility);
 
@@ -58,6 +60,13 @@ void BaseWorldUtility::initialize(int stage) {
 		useTorusFlag = par("useTorus");
 
 		airFrameId = 0;
+	}
+	else if(stage == 1) {
+		//check if necessary modules are there
+		//Connection Manager
+		if(!FindModule<BaseConnectionManager*>::findGlobalModule()) {
+			opp_warning("Could not find a connection manager module in the network!");
+		}
 	}
 }
 

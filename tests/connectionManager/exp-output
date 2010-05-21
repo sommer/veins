@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20100521-15:47:23-4716
+Assigned runID=Test1-0-20100521-16:43:45-6742
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (277,277) direction: (0,0) startTime: 0 speed: 0
@@ -49,7 +49,7 @@ Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 5   present: 5   in FES: 5
-** Event #177   T=4.1   Elapsed: 0.001s (0m 00s)  8% completed
+** Event #177   T=4.1   Elapsed: 0.000s (0m 00s)  8% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 180   present: 0   in FES: 0
 
@@ -102,7 +102,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20100521-15:47:23-4717
+Assigned runID=Test2-0-20100521-16:43:45-6743
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (277,277) direction: (0,0) startTime: 0 speed: 0
@@ -196,7 +196,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20100521-15:47:23-4718
+Assigned runID=Test3-0-20100521-16:43:45-6744
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (322,322,322) direction: (0,0,0) startTime: 0 speed: 0
@@ -360,7 +360,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20100521-15:47:23-4719
+Assigned runID=Test4-0-20100521-16:43:46-6745
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (322,322,322) direction: (0,0,0) startTime: 0 speed: 0

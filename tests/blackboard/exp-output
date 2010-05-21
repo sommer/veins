@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100521-15:47:22-4714
+Assigned runID=General-0-20100521-16:43:45-6740
 Setting up network `sim'...
 Initializing...
 Initializing module sim, stage 0
@@ -20,6 +20,9 @@ Initializing module sim.node[0].stateview, stage 0
 Initializing module sim.node[0].testparam, stage 0
 Initializing module sim.world, stage 0
 Initializing module sim.node[0].blackboard, stage 1
+
+<!> Module sim.node[0].blackboard: No mobility module found in host with index 0!.
+
 Initializing module sim.node[0].statechanger, stage 1
 StateVisualize::receiveBBItem Host state changed to SLEEP
 StateView::receiveBBItem Host state changed to SLEEP
@@ -28,6 +31,9 @@ Initializing module sim.node[0].statevisualize, stage 1
 Initializing module sim.node[0].stateview, stage 1
 Initializing module sim.node[0].testparam, stage 1
 Initializing module sim.world, stage 1
+
+<!> Module sim.world: Could not find a connection manager module in the network!.
+
 
 Running simulation...
 ** Event #1  T=1   sim.node[0].statechanger (StateChanger, id=5)

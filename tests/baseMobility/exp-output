@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20100521-15:47:23-4721
+Assigned runID=Test1-0-20100521-16:43:46-6747
 Setting up network `bmSim'...
 Initializing...
 Initializing module bmSim, stage 0
@@ -20,6 +20,9 @@ Initializing module bmSim.node2[0], stage 0
 Initializing module bmSim.node2[0].blackboard, stage 0
 Initializing module bmSim.node2[0].mobility, stage 0
 Initializing module bmSim.world, stage 1
+
+<!> Module bmSim.world: Could not find a connection manager module in the network!.
+
 Initializing module bmSim.node[0].blackboard, stage 1
 Initializing module bmSim.node[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (60,60,60) direction: (0,0,0) startTime: 0 speed: 0

@@ -3,12 +3,9 @@
 #include "FindModule.h"
 #include <assert.h>
 #include "Move.h"
+#include "BaseMobility.h"
 
 Define_Module(BaseUtility);
-
-#ifndef coreEV
-#define coreEV (ev.isDisabled()||!coreDebug) ? ev : ev <<getParentModule()->getName()<<"["<<getParentModule()->getIndex()<<"]::BaseUtility: "
-#endif
 
 void BaseUtility::initialize(int stage) {
 	Blackboard::initialize(stage);
@@ -21,6 +18,14 @@ void BaseUtility::initialize(int stage) {
         catHostState = subscribe(this, &hostState, findHost()->getId());
         hostState.set(HostState::ACTIVE);
 	}
+	else if(stage == 1) {
+		cModule* host = findHost();
+		//check if necessary host modules are available
+		//mobility module
+		if(!FindModule<BaseMobility*>::findSubModule(host)) {
+			opp_warning("No mobility module found in host with index %d!", host->getIndex());
+		}
+	}
 }
 
 cModule *BaseUtility::findHost(void)
@@ -28,10 +33,6 @@ cModule *BaseUtility::findHost(void)
 	return FindModule<>::findHost(this);
 }
 
-/**
- * BaseUtility subscribes itself to position and host state changes to
- * synchronize the hostPosition and -state.
- */
 void BaseUtility::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
     //BaseModule::receiveBBItem(category, details, scopeModuleId);
@@ -48,4 +49,14 @@ void BaseUtility::receiveBBItem(int category, const BBItem *details, int scopeMo
 		hostState = *state;
 		coreEV << "new HostState: " << hostState.info() << endl;
     }
+}
+
+std::string BaseUtility::logName(void)
+{
+    std::ostringstream ost;
+	cModule *parent = findHost();
+	parent->hasPar("logName") ?
+		ost << parent->par("logName").stringValue() : ost << parent->getName();
+	ost << "[" << parent->getIndex() << "]";
+	return ost.str();
 }

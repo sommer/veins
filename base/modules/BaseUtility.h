@@ -54,6 +54,16 @@ protected:
     /** @brief The hosts current state.*/
     HostState hostState;
 
+protected:
+    /**
+     * @brief Function to get the logging name of the host
+     *
+     * The logging name is the ned module name of the host (unless the
+     * host ned variable loggingName is specified). It can be used for
+     * logging messages to simplify debugging in TKEnv.
+     */
+    std::string logName(void);
+
 public:
 
     /** @brief Initializes mobility model parameters.*/
@@ -66,7 +76,7 @@ public:
     const HostState& getHostState() { return hostState; }
 
     /**
-     * We want to receive Moves and HostStates from BaseUtility to synchronize
+     * @brief Receive Moves and HostStates from BaseUtility to synchronize
      * hostPosition and -state.
      */
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
