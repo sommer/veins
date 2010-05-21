@@ -4,11 +4,11 @@ See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 40
+Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20100521-16:43:45-6742
+Assigned runID=Test1-0-20100521-17:54:39-32032
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (277,277) direction: (0,0) startTime: 0 speed: 0
@@ -98,11 +98,11 @@ See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 40
+Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20100521-16:43:45-6743
+Assigned runID=Test2-0-20100521-17:54:39-32033
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (277,277) direction: (0,0) startTime: 0 speed: 0
@@ -192,11 +192,11 @@ See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 40
+Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20100521-16:43:45-6744
+Assigned runID=Test3-0-20100521-17:54:39-32034
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (322,322,322) direction: (0,0,0) startTime: 0 speed: 0
@@ -272,7 +272,7 @@ Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 7   present: 7   in FES: 7
-** Event #518   T=7.6   Elapsed: 0.003s (0m 00s)  15% completed
+** Event #518   T=7.6   Elapsed: 0.002s (0m 00s)  15% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 523   present: 0   in FES: 0
 
@@ -356,11 +356,11 @@ See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 40
+Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20100521-16:43:46-6745
+Assigned runID=Test4-0-20100521-17:54:39-32035
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (322,322,322) direction: (0,0,0) startTime: 0 speed: 0

@@ -4,11 +4,11 @@ See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 40
+Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100521-16:43:45-6740
+Assigned runID=General-0-20100521-17:54:38-32030
 Setting up network `sim'...
 Initializing...
 Initializing module sim, stage 0

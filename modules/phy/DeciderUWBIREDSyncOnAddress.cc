@@ -39,7 +39,7 @@ DeciderUWBIREDSyncOnAddress::DeciderUWBIREDSyncOnAddress(DeciderToPhyInterface* 
 
 
 bool DeciderUWBIREDSyncOnAddress::attemptSync(Signal* s) {
-	cMessage* encaps = currFrame->getEncapsulatedMsg();
+	cMessage* encaps = currFrame->getEncapsulatedPacket();
 	assert(static_cast<MacPkt*>(encaps));
 	MacPkt* macPkt = static_cast<MacPkt*>(encaps);
 
