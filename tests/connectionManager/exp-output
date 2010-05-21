@@ -1,5 +1,5 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1, build: 100518-c18652f, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20100428-16:20:38-11772
+Assigned runID=Test1-0-20100521-15:47:23-4716
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (277,277) direction: (0,0) startTime: 0 speed: 0
@@ -93,7 +93,7 @@ Passed: Test Node 32: Should have received no broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1, build: 100518-c18652f, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
@@ -102,7 +102,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20100428-16:20:39-11773
+Assigned runID=Test2-0-20100521-15:47:23-4717
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (277,277) direction: (0,0) startTime: 0 speed: 0
@@ -187,7 +187,7 @@ Passed: Test Node 32: Should have received at least one broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1, build: 100518-c18652f, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
@@ -196,7 +196,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20100428-16:20:39-11774
+Assigned runID=Test3-0-20100521-15:47:23-4718
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (322,322,322) direction: (0,0,0) startTime: 0 speed: 0
@@ -272,8 +272,8 @@ Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)  0% completed
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 7   present: 7   in FES: 7
-** Event #518   T=7.6   Elapsed: 0.014s (0m 00s)  15% completed
-     Speed:     ev/sec=36928.6   simsec/sec=542.857   ev/simsec=68.0263
+** Event #518   T=7.6   Elapsed: 0.003s (0m 00s)  15% completed
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 523   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
@@ -351,7 +351,7 @@ Passed: Test Node 67: Should have received no broadcast.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1, build: 100518-c18652f, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
@@ -360,7 +360,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 40
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20100428-16:20:39-11775
+Assigned runID=Test4-0-20100521-15:47:23-4719
 Setting up network `ccSim'...
 Initializing...
 updatePosition:  HostMove  startPos: (322,322,322) direction: (0,0,0) startTime: 0 speed: 0
