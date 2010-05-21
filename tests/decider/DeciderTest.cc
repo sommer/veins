@@ -198,7 +198,7 @@ Decider* DeciderTest::getDeciderFromName(std::string name, ParameterMap& params)
 
 	// parameters for original TestBaseDecider (tests/basePhyLayer with testBaseDecider = true)
 	double snrThreshold = 10.0;
-	double sensitivity = 6.0;
+	double sensitivity = FWMath::dBm2mW(6.0);
 	bool coreDebug = false;
 
 	return new TestBaseDecider(this, snrThreshold, sensitivity, myIndex, coreDebug);

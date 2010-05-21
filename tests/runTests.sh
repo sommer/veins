@@ -14,6 +14,9 @@ cd ../baseMobility
 echo ----------------BasePhyLayer------------------
 cd ../basePhyLayer
 ./runTest.sh
+echo ----------------DeciderTest------------------
+cd ../decider
+./runTest.sh
 echo -------------------Coord----------------------
 cd ../coord
 ./runTest.sh

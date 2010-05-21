@@ -1,27 +1,15 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1b3, build: 100311-af6d180, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1b4, build: 100421-6ff37b9, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 39
-Loading NED files from /home/karl/git-repo/mixim/tests: 40
+Loading NED files from /Users/mixim/git-workspace/MiXiM/base: 17
+Loading NED files from /Users/mixim/git-workspace/MiXiM/modules: 40
+Loading NED files from /Users/mixim/git-workspace/MiXiM/tests: 41
 
-Preparing for running configuration TestBaseDecider1, run #0...
+Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=TestBaseDecider1-0-20100318-11:02:17-9981
-Setting up network `tbpSim'...
-Initializing...
-Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
-Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
-Initializing module tbpSim, stage 0
-Initializing module tbpSim.world, stage 0
-Initializing module tbpSim.testManager, stage 0
-Initializing module tbpSim.channelcontrol, stage 0
-Initializing module tbpSim.node[0], stage 0
-Initializing module tbpSim.node[0].utility, stage 0
-Initializing module tbpSim.node[0].mobility, stage 0
-Initializing module tbpSim.node[0].nic, stage 0
-Initializing module tbpSim.node[0].nic.phy, stage 0
+Assigned runID=General-0-20100521-16:34:19-8180
+Setting up network `DeciderTest'...
 Signal for TestAirFrame1 created with header/payload power: 1/0
 [phy0] - Creating TestAirFrame 1 done.
 Signal for TestAirFrame2 created with header/payload power: 3.98107/0
@@ -34,56 +22,10 @@ Signal for TestAirFrame5 created with header/payload power: 32/16
 [phy0] - Creating TestAirFrame 5 done.
 Signal for TestAirFrame6 created with header/payload power: 1/0
 [phy0] - Creating TestAirFrame 6 done.
-Initializing module tbpSim.node[0].nic.mac, stage 0
-Initializing module tbpSim.world, stage 1
-Initializing module tbpSim.channelcontrol, stage 1
-Initializing module tbpSim.node[0].utility, stage 1
-Initializing module tbpSim.node[0].mobility, stage 1
-updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module tbpSim.node[0].nic.phy, stage 1
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "snrThreshold".
-Passed: Check type of parameter "snrThreshold".
-Passed: Check value of parameter "snrThreshold".
-Passed: [decider0] - Member 'myIndex' has been initialized properly by passed value.
-Passed: [decider0] - pointer to DeciderToPhyInterface has been set properly
-Passed: [decider0] - snr-threshold and receiving-sensitivity have been set properly
-Passed: Check parameter "usePropagationDelay".
-Passed: Check parameter "sensitivity".
-Passed: Check parameter "maxTXPower".
-Passed: Check if thermalNoise map is NULL.
-Passed: Check upperGateIn ID.
-Passed: Check upperGateOut ID.
-Passed: Check upperControlIn ID.
-Passed: Check upperControlOut ID.
-Passed: Switchtime SLEEP to RX.
-Passed: Switchtime RX to TX.
-Passed: Switchtime TX to SLEEP.
-Passed: Switchtime SLEEP to TX.
-Passed: Switchtime TX to RX.
-Passed: Switchtime RX to SLEEP.
-Passed: Decider is of type TestBaseDecider.
-Passed: Check size of AnalogueModel list.
-Passed: Analogue model is of type RadioStateAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Check attenuation value of AnalogueModels.
-Passed: Check initialisation of TX-OVER timer
-Passed: Check kind of TX_OVER timer
-Passed: Check initialisation of radioSwitchOver timer
-Passed: Check kind of radioSwitchOver timer
+Initializing...
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 Passed: Decider demands ChannelInfo for one single timepoint
 Passed: Decider demands ChannelInfo for current timepoint
 [phy0] - All channel-info has been copied to AirFrameVector-reference.
@@ -431,9 +373,14 @@ Passed: Control message send to mac by the Decider should be a ChannelSenseReque
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
-Initializing module tbpSim.node[0].nic.mac, stage 1
 
 Running simulation...
+** Event #1   T=0   Elapsed: 0.000s (0m 00s)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 35   present: 0   in FES: 0
+** Event #1   T=0   Elapsed: 0.000s (0m 00s)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 35   present: 0   in FES: 0
 
 <!> No more events -- simulation ended.
 

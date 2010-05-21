@@ -8,12 +8,3 @@ diff -I '^Assigned runID=' -I '^Loading NED files from' -w exp-output out.tmp
 rm -f out.tmp
 
 
-# Test configurations with TestBaseDecider as Decider
-
-./basePhyLayer -c TestBaseDecider1 > out.tmp
-
-diff -I '^Assigned runID=' -I '^Loading NED files from' -w exp-output_tBD out.tmp
-
-rm -f out.tmp
-
-
