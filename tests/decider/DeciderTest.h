@@ -420,6 +420,16 @@ public:
 	 */
 	virtual void recordScalar(const char *name, double value, const char *unit=NULL);
 
+	/**
+	 * @brief Tells the PhyLayer to reschedule a message (AirFrame or
+	 * ControlMessage).
+	 *
+	 * Used by the Decider if it has to handle an AirFrame or an control message
+	 * earlier than it has returned to the PhyLayer the last time the Decider
+	 * handled that message.
+	 */
+	virtual void rescheduleMessage(cMessage* msg, simtime_t t);
+
 
 	//---------OmnetTestBase implementation-----------
 

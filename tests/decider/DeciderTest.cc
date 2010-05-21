@@ -1320,6 +1320,11 @@ void DeciderTest::recordScalar(const char *name, double value, const char *unit)
 	return;
 }
 
+// TODO implement
+void DeciderTest::rescheduleMessage(cMessage* msg, simtime_t t)
+{
+	return;
+}
 
 void DeciderTest::runTests()
 {
