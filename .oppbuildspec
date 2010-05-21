@@ -21,7 +21,8 @@
 <dir makemake-options="-o coord -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/coord" type="makemake"/>
 <dir makemake-options="-o multiConnectionManager -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/multiConnectionManager" type="makemake"/>
 <dir makemake-options="-o deviceTest -O out -u CMDENV -d ../utils/ -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTest" type="makemake"/>
-<dir makemake-options="-o basePhyLayer -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/basePhyLayer" type="makemake"/>
+<dir makemake-options="-o basePhyLayer -O out -u CMDENV -d ../testUtils -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/basePhyLayer" type="makemake"/>
+<dir makemake-options="-o decider -O out -u Cmdenv -d ../testUtils -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/decider" type="makemake"/>
 <dir makemake-options="-o connectionManager -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/connectionManager" type="makemake"/>
 <dir makemake-options="--make-so -o powerTestUtils -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:use-exported-libs" path="tests/power/utils" type="makemake"/>
 <dir makemake-options="-o baseMobility -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/baseMobility" type="makemake"/>
