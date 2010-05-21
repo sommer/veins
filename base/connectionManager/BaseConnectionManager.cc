@@ -314,6 +314,9 @@ bool BaseConnectionManager::unregisterNic(cModule* nicModule)
 	// find nicEntry
 	int nicID = nicModule->getId();
 	ccEV << " unregistering nic #" << nicID << endl;
+
+	//we assume that the module was previously registered with this CM
+	//TODO: maybe change this to an omnet-error instead of an assertion
 	assert(nics.find(nicID) != nics.end());
 	NicEntry* nicEntry = nics[nicID];
 

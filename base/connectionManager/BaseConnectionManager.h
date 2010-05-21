@@ -18,6 +18,7 @@ class ChannelAccess;
  *
  * @ingroup connectionManager
  * @author Steffen Sroka, Daniel Willkomm, Karl Wessel
+ * @author Christoph Sommer ("unregisterNic()"-method)
  * @sa ChannelAccess
  */
 class BaseConnectionManager : public cSimpleModule
@@ -329,7 +330,7 @@ public:
 
 	virtual ~BaseConnectionManager();
 
-	/** @brief Needs two initialisation stages.*/
+	/** @brief Needs two initialization stages.*/
 	virtual int numInitStages() const {
 		return 2;
 	}
@@ -348,6 +349,18 @@ public:
 	 */
 	bool registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos);
 
+	/**
+	 * @brief Unregisters a NIC such that its connections aren't managed by the CM
+	 * anymore.
+	 *
+	 * NOTE: This method asserts that the passed NIC module was previously registered
+	 * with this ConnectionManager!
+	 *
+	 * This method should be used for dynamic networks were hosts can actually disappear.
+	 *
+	 * @param nic the NIC module to be unregistered
+	 * @return returns true if the NIC was unregistered successfully
+	 */
 	bool unregisterNic(cModule* nic);
 
 	/** @brief Updates the position information of a registered nic.*/
