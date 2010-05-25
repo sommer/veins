@@ -15,13 +15,7 @@ private:
 
 protected:
 
-
-	int myIndex;
-
 	Decider* decider;
-
-	// Indicator, whether a TestBaseDecider is used as Decider
-	bool testBaseDecider;
 
 	// prepared RSSI mapping for testing purposes
 	Mapping* testRSSIMap;
@@ -68,20 +62,14 @@ protected:
 	    }
 	};
 
-	/**
-	 * @ brief Method to initialize Decider to be tested.
-	 */
-	void initializeDecider(cXMLElement* xmlConfig);
-
-
 	// list containing simtime-to-double entries
 	// typedef std::list<std::pair<simtime_t, double> > KeyList;
 
-	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
+	virtual Decider* initDeciderTest(std::string name, ParameterMap& params);
 
-	void testBaseDeciderInitialization();
+	void runDeciderTests();
 
-	void doBaseDeciderTests();
+	void executeTestCase();
 
 
 
@@ -102,11 +90,9 @@ protected:
 		TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY,
 		TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY,
 
-		TEST_CHANNELSENSE,
+		TEST_CHANNELSENSE
 
-		SIMULATION_RUN = 1000
-
-	} stateTestBDInitialization;
+	} currentTestCase;
 
 
 	std::string stateToString(int state)
@@ -140,9 +126,6 @@ protected:
 			case TEST_CHANNELSENSE:
 				return "TEST_CHANNELSENSE";
 
-			case SIMULATION_RUN:
-				return "SIMULATION_RUN";
-
 			default:
 				assertFalse("Correct state found.", true);
 				return "Unknown state.";
@@ -157,7 +140,7 @@ protected:
 	// create a test AirFrame identified by an index
 	AirFrame* createTestAirFrame(int i);
 
-	// pass AirFrames currently on the (virtual) channel to SNRThresholdDecider
+	// pass AirFrames currently on the (virtual) channel to currently tested decider
 	void passAirFramesOnChannel(AirFrameVector& out);
 
 	/**
@@ -186,18 +169,6 @@ protected:
 	 */
 	Mapping* createConstantMapping(simtime_t start, simtime_t end, double value);
 
-	/**
-	 * @brief Creates a quasi-step mapping containing all entries of the passed list,
-	 * using linear interpolation of mappings.
-	 * (i.e. creates additional entries in the mapping as close as possible to the key-entries)
-	 *
-	 * NOTE:
-	 * The first and the last element of the passed list are considered start- and end-point of the mapping.
-	 *
-	 * Used by "createSignal" to create the power and bitrate mapping.
-	 */
-	 // Mapping* createVariableMapping(const KeyList& list);
-
 
 	/**
 	 * @brief Creates a mapping with separate values for header and payload of an AirFrame.
@@ -216,10 +187,6 @@ protected:
 										double payloadValue);
 
 
-
-	// NOTE: The following members are for testing the SNRThresholdDecider
-	// so they are only initialized if testBaseDecider==true
-	// see also: DeciderTest::initialize()
 
 	// some fix time-points for the signals
 	simtime_t t0;
@@ -258,7 +225,7 @@ protected:
 	// Represents the currently used ChannelSenseRequest which is tested
 	ChannelSenseRequest*  testChannelSense;
 
-	// pointer to the AirFrame that is currently processed by SNRThresholdDecider
+	// pointer to the AirFrame that is currently processed by decider
 	const AirFrame* processedAF;
 
 	// value for no attenuation (in attenuation-mappings)
@@ -293,7 +260,7 @@ protected:
 	double res_t5_receiving_after;
 	double res_t6_receiving;
 
-	// flag to signal whether sendUp() has been called by SNRThresholdDecider
+	// flag to signal whether sendUp() has been called by decider
 	bool sendUpCalled;
 
 	// dummy move
@@ -303,8 +270,6 @@ protected:
 	TestWorld* world;
 
 
-	// TODO test whether this construction of the smallest possible time step works)
-	// TODO implement
 	/**
 	 * @brief returns the closest value of simtime before passed value
 	 *
@@ -326,12 +291,7 @@ public:
 
 	//---------DeciderToPhyInterface implementation-----------
 	// Taken from BasePhyLayer. Will be overridden to control
-	// BaseDeciders calls on the Interface during testBaseDeciderInitialization().
-	//
-	// Depending on whether we are still in testBaseDeciderInitialization() of DeciderTest (*)
-	// or the simulation is already running and real AirFrames are sent (**), either BaseDeciders
-	// calls are caught and special values are returned (*) or the original implementation of
-	// the super-class ( BasePhyLayer::_______ ) is called and everything is as usual (**).
+	// the deciders calls on the Interface during runDeciderTests().
 
 	/**
 	 * @brief Fills the passed AirFrameVector with all AirFrames that intersect
@@ -340,7 +300,7 @@ public:
 	virtual void getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out);
 
 	/**
-	 * @brief Called by the Decider to send a control message to the MACLayer
+	 * @brief Called by the decider to send a control message to the MACLayer
 	 *
 	 * This function can be used to answer a ChannelSenseRequest to the MACLayer
 	 *
@@ -350,15 +310,15 @@ public:
 	/**
 	 * @brief Called to send an AirFrame with DeciderResult to the MACLayer
 	 *
-	 * When a packet is completely received and not noise, the Decider
-	 * call this function to send the packet together with
+	 * When a packet is completely received and not noise, the decider
+	 * calls this function to send the packet together with
 	 * the corresponding DeciderResult up to MACLayer
 	 *
 	 */
 	virtual void sendUp(AirFrame* packet, DeciderResult* result);
 
 	/**
-	 * @brief Returns the current simulation time or a special test-time
+	 * @brief Returns a special test-time
 	 *
 	 */
 	virtual simtime_t getSimTime();

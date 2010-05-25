@@ -5,23 +5,12 @@ Define_Module(DeciderTest);
 
 DeciderTest::DeciderTest()
 {
-	// set the testBaseDecider flag to true, because this class
-	// only does testing
-	testBaseDecider = true;
-
 	// initializing members for testing
 	move = Move();
 	world = new TestWorld();
 
-
-	// former initialization (stage == 0)
-
-	myIndex = 0;
-
-	//run basic tests
-
 	// set controlling things (initial states)
-	stateTestBDInitialization = BEFORE_TESTS;
+	currentTestCase = BEFORE_TESTS;
 	testRSSIMap = 0;
 	testTime = 0;
 	noAttenuation = 1.0;
@@ -123,76 +112,70 @@ DeciderTest::~DeciderTest() {
 
 
 /*
- * Here we test the SNRThresholdDecider prior to simulation run.
- * We pass special values to TestBaseDecider to check its behavior.
- *
- * It is important to set 'stateTestBDInitialization' properly, such that
- * SNRThresholdDecider's calls on the DeciderToPhyInterface can be handled right.
+ * It is important to set 'currentTestCase' properly, such that
+ * the deciders calls on the DeciderToPhyInterface can be handled right.
  *
  *
  */
 // TODO : finish
-void DeciderTest::testBaseDeciderInitialization()
+void DeciderTest::runDeciderTests()
 {
-	assert(stateTestBDInitialization == BEFORE_TESTS);
+	assert(currentTestCase == BEFORE_TESTS);
 
 	/*
 	 * Test getChannelState() of SNRThresholdDecider on an empty channel
 	 */
-	stateTestBDInitialization = TEST_GET_CHANNELSTATE_EMPTYCHANNEL;
-	doBaseDeciderTests();
+	currentTestCase = TEST_GET_CHANNELSTATE_EMPTYCHANNEL;
+	executeTestCase();
 
 
 	/*
 	 * Test getChannelState() of SNRThresholdDecider with noise on channel
 	 */
-	stateTestBDInitialization = TEST_GET_CHANNELSTATE_NOISYCHANNEL;
-	doBaseDeciderTests();
+	currentTestCase = TEST_GET_CHANNELSTATE_NOISYCHANNEL;
+	executeTestCase();
 
 
 	/*
 	 * Test getChannelState() of SNRThresholdDecider while receiving an AirFrame
 	 */
-	stateTestBDInitialization = TEST_GET_CHANNELSTATE_RECEIVING;
-	doBaseDeciderTests();
+	currentTestCase = TEST_GET_CHANNELSTATE_RECEIVING;
+	executeTestCase();
 
-	// TODO: go on here...
-	// TODO	- test whether SNRThresholdDecider calculates SNR for a given signal correctly
-	//		- test whether SNRThresholdDecider handles SNR-threshold right (send up a packet or not)
 
 	/*
 	 * Test SNR-threshold
 	 */
-	stateTestBDInitialization = TEST_SNR_THRESHOLD_ACCEPT;
-	doBaseDeciderTests();
+	currentTestCase = TEST_SNR_THRESHOLD_ACCEPT;
+	executeTestCase();
 
-	stateTestBDInitialization = TEST_SNR_THRESHOLD_DENY;
-	doBaseDeciderTests();
-
-
-	stateTestBDInitialization = TEST_SNR_THRESHOLD_PAYLOAD_DENY;
-	doBaseDeciderTests();
+	currentTestCase = TEST_SNR_THRESHOLD_DENY;
+	executeTestCase();
 
 
-	stateTestBDInitialization = TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY;
-	doBaseDeciderTests();
+	currentTestCase = TEST_SNR_THRESHOLD_PAYLOAD_DENY;
+	executeTestCase();
 
 
-	stateTestBDInitialization = TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY;
-	doBaseDeciderTests();
+	currentTestCase = TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY;
+	executeTestCase();
 
 
-	stateTestBDInitialization = TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY;
-	doBaseDeciderTests();
+	currentTestCase = TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY;
+	executeTestCase();
 
-	stateTestBDInitialization = TEST_CHANNELSENSE;
-	doBaseDeciderTests();
+
+	currentTestCase = TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY;
+	executeTestCase();
+
+	currentTestCase = TEST_CHANNELSENSE;
+	executeTestCase();
 
 }
 
 
 
-Decider* DeciderTest::getDeciderFromName(std::string name, ParameterMap& params) {
+Decider* DeciderTest::initDeciderTest(std::string name, ParameterMap& params) {
 
 	// TODO: extend to use the passed parameters to initialize multiple Deciders (switch)
 
@@ -200,6 +183,7 @@ Decider* DeciderTest::getDeciderFromName(std::string name, ParameterMap& params)
 	double snrThreshold = 10.0;
 	double sensitivity = FWMath::dBm2mW(6.0);
 	bool coreDebug = false;
+	int myIndex = 0;
 
 	return new TestBaseDecider(this, snrThreshold, sensitivity, myIndex, coreDebug);
 }
@@ -226,15 +210,13 @@ Decider* DeciderTest::getDeciderFromName(std::string name, ParameterMap& params)
 // TODO implement TestAirFrame6
 void DeciderTest::fillAirFramesOnChannel()
 {
-	assert(testBaseDecider);
-
 	// remove all pointers to AirFrames
 	airFramesOnChannel.clear();
 	if(TestAF5)
 		delete TestAF5;
 
 	TestAF5 = createTestAirFrame(5);
-	switch (stateTestBDInitialization) {
+	switch (currentTestCase) {
 
 
 		// TODO put the right AirFrames on the channel for the following cases
@@ -345,8 +327,6 @@ void DeciderTest::fillAirFramesOnChannel()
  */
 AirFrame* DeciderTest::createTestAirFrame(int i)
 {
-	assert(testBaseDecider);
-
 	// parameters needed
 	simtime_t signalStart = -1;
 	simtime_t signalLength = -1;
@@ -385,7 +365,7 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 			signalStart = t1;
 			signalLength = (t5-t1);
 
-			switch (stateTestBDInitialization) {
+			switch (currentTestCase) {
 				case TEST_SNR_THRESHOLD_ACCEPT:
 					transmissionPower.first = 10.00001;
 					transmissionPower.second = 10.00001;
@@ -429,24 +409,6 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 			break;
 	}
 
-	/* Using convenience functions for creating the Signal
-
-	// create and initialize Signal and AirFrame
-	Signal* s = new Signal(signalStart, signalLength);
-
-	// TODO : think of whether a Signal with constant power and bitrate
-	// over the whole duration is sufficient for this test
-
-	Mapping* powerMap = Mapping::createMapping();
-	powerMap->setValue(Argument(signalStart), transmissionPower);
-	s->setTransmissionPower(powerMap);
-
-	Mapping* bitrateMap = Mapping::createMapping();
-	bitrateMap->setValue(Argument(signalStart), bitrate);
-	s->setBitrate(bitrateMap);
-
-	*/
-
 	// --- Mac-Layer's tasks
 
 	// create Signal containing TXpower- and bitrate-mapping
@@ -481,7 +443,7 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 	return frame;
 }
 
-// pass AirFrame-pointers currently on the (virtual) channel to SNRThresholdDecider
+// pass AirFrame-pointers currently on the (virtual) channel to decider
 void DeciderTest::passAirFramesOnChannel(AirFrameVector& out)
 {
 	AirFrameVector::iterator it;
@@ -612,7 +574,7 @@ Mapping* DeciderTest::createHeaderPayloadMapping(	simtime_t start,
 void DeciderTest::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out)
 {
 
-	switch (stateTestBDInitialization) {
+	switch (currentTestCase) {
 
 		// there is no AirFrame on the Channel at the requested timepoint,
 		// and we are not currently receiving an AirFrame
@@ -717,10 +679,10 @@ void DeciderTest::sendControlMsg(cMessage* msg)
 void DeciderTest::sendUp(AirFrame* packet, DeciderResult* result)
 {
 
-	// signal that method has been called (if testBaseDecider == true)
+	// signal that method has been called
 	sendUpCalled = true;
 
-	switch (stateTestBDInitialization) {
+	switch (currentTestCase) {
 		case TEST_GET_CHANNELSTATE_RECEIVING:
 			// TODO check what the result should be in this test case
 			// assertTrue("DeciderResult is: 'correct'", result.isSignalCorrect());
@@ -748,16 +710,16 @@ simtime_t DeciderTest::getSimTime()
 }
 
 //
-// --- implementation of SNRThresholdDecider-tests ---
+// --- implementation of of test-cases ---
 //
-void DeciderTest::doBaseDeciderTests()
+void DeciderTest::executeTestCase()
 {
 	ChannelState cs;
 
 	simtime_t nextHandoverTime = -1;
 
 
-	switch (stateTestBDInitialization) {
+	switch (currentTestCase) {
 		case TEST_GET_CHANNELSTATE_EMPTYCHANNEL:
 		{
 			// ask SNRThresholdDecider for the ChannelState, it should call getChannelInfo()
@@ -1053,7 +1015,7 @@ void DeciderTest::doBaseDeciderTests()
 		case TEST_SNR_THRESHOLD_ACCEPT:
 
 			ev << log("-------------------------------------------------------") << endl;
-			ev << log(stateToString(stateTestBDInitialization)) << endl;
+			ev << log(stateToString(currentTestCase)) << endl;
 
 			testTime = t1;
 			fillAirFramesOnChannel();
@@ -1098,7 +1060,7 @@ void DeciderTest::doBaseDeciderTests()
 		case TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY:
 
 			ev << log("-------------------------------------------------------") << endl;
-			ev << log(stateToString(stateTestBDInitialization)) << endl;
+			ev << log(stateToString(currentTestCase)) << endl;
 
 			testTime = t1;
 			fillAirFramesOnChannel();
@@ -1126,7 +1088,7 @@ void DeciderTest::doBaseDeciderTests()
 			processedAF = 0;
 
 			ev << log("-------------------------------------------------------") << endl;
-			ev << log(stateToString(stateTestBDInitialization)) << " - empty channel"<< endl;
+			ev << log(stateToString(currentTestCase)) << " - empty channel"<< endl;
 			//test sense on empty channel
 			testTime = before;
 			fillAirFramesOnChannel();
@@ -1150,7 +1112,7 @@ void DeciderTest::doBaseDeciderTests()
 
 			//test sense during one single airframe without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
-			ev << log(stateToString(stateTestBDInitialization)) << " - signel airframe on channel"<< endl;
+			ev << log(stateToString(currentTestCase)) << " - signel airframe on channel"<< endl;
 			testTime = t1;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
@@ -1172,7 +1134,7 @@ void DeciderTest::doBaseDeciderTests()
 
 			//test sense with new AirFrames at end of sense without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
-			ev << log(stateToString(stateTestBDInitialization)) << " - new airframes at end of sense"<< endl;
+			ev << log(stateToString(currentTestCase)) << " - new airframes at end of sense"<< endl;
 			testTime = t2;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
@@ -1195,7 +1157,7 @@ void DeciderTest::doBaseDeciderTests()
 
 			//test sense with new AirFrames during sense without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
-			ev << log(stateToString(stateTestBDInitialization)) << " - new AirFrames during sense"<< endl;
+			ev << log(stateToString(currentTestCase)) << " - new AirFrames during sense"<< endl;
 			testTime = t2;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
@@ -1218,7 +1180,7 @@ void DeciderTest::doBaseDeciderTests()
 
 			//test sense with AirFrames end at start of sense without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
-			ev << log(stateToString(stateTestBDInitialization)) << " - AirFrames ends at start of sense"<< endl;
+			ev << log(stateToString(currentTestCase)) << " - AirFrames ends at start of sense"<< endl;
 			testTime = t7;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
@@ -1240,7 +1202,7 @@ void DeciderTest::doBaseDeciderTests()
 
 			//test sense with new AirFrames during sense with an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
-			ev << log(stateToString(stateTestBDInitialization)) << " - new AirFrames during sense not idle"<< endl;
+			ev << log(stateToString(currentTestCase)) << " - new AirFrames during sense not idle"<< endl;
 			testTime = t2;
 			fillAirFramesOnChannel();
 			testChannelSense = new ChannelSenseRequest();
@@ -1328,23 +1290,10 @@ void DeciderTest::rescheduleMessage(cMessage* msg, simtime_t t)
 
 void DeciderTest::runTests()
 {
-	// former initialization (stage == 1)
-
-	// formerly done in BasePhyLayers
-	// TODO: to test more than one Decider, here must be passed an argument
-	// dummy parameter
-	cXMLElement* dummy = 0;
-	initializeDecider(dummy);
+	ParameterMap dummyParams;
+	decider = initDeciderTest("SNRThresholdDecider", dummyParams);
 
 	// start the test of the decider
-	testBaseDeciderInitialization();
+	runDeciderTests();
 }
 
-void DeciderTest::initializeDecider(cXMLElement* xmlConfig)
-{
-	// dummy parameters
-	std::string dummyName;
-	ParameterMap dummyParams;
-
-	decider = getDeciderFromName(dummyName, dummyParams);
-}
