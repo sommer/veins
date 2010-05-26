@@ -4,7 +4,7 @@
 #include <DeciderToPhyInterface.h>
 #include <MacToPhyInterface.h>
 #include <OmnetTestBase.h>
-#include "TestBaseDecider.h"
+#include "TestSNRThresholdDecider.h"
 
 #include <list>
 //#include <utility>
@@ -16,6 +16,9 @@ private:
 protected:
 
 	Decider* decider;
+
+	/** @brief The name of the currently tested decider (for logging purposes).*/
+	std::string deciderName;
 
 	// prepared RSSI mapping for testing purposes
 	Mapping* testRSSIMap;
@@ -67,32 +70,133 @@ protected:
 
 	virtual Decider* initDeciderTest(std::string name, ParameterMap& params);
 
-	void runDeciderTests();
+	void runDeciderTests(std::string name);
 
-	void executeTestCase();
-
-
-
-	enum
+	enum TestCaseIdentifier
 	{
+		//NOTE: The form of the comments and the position of the
+		//commas results from the IDE not being able to show the comments
+		//otherwise
 		BEFORE_TESTS = 0,
 
 		TEST_GET_CHANNELSTATE_EMPTYCHANNEL = 100,
 
-		TEST_GET_CHANNELSTATE_NOISYCHANNEL,
-		TEST_GET_CHANNELSTATE_RECEIVING,
 
 
-		TEST_SNR_THRESHOLD_ACCEPT,
-		TEST_SNR_THRESHOLD_DENY,
-		TEST_SNR_THRESHOLD_PAYLOAD_DENY,
-		TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY,
-		TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY,
-		TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY,
 
-		TEST_CHANNELSENSE
+		TEST_SNR_THRESHOLD_ACCEPT /**
+		 * Frame1       |-----------------|				(start: t1, length: t7-t1)
+		 * SNR-Frame    |xx|--------|					(start: t1, length: t5-t1, header (xx): t2-t1)
+		 * (Frame5)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
+
+		TEST_SNR_THRESHOLD_DENY /**
+		 * Frame1       |-----------------|				(start: t1, length: t7-t1)
+		 * SNR-Frame    |xx|--------|					(start: t1, length: t5-t1, header (xx): t2-t1)
+		 * (Frame5)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
+		TEST_SNR_THRESHOLD_PAYLOAD_DENY /**
+		 * Frame1       |-----------------|				(start: t1, length: t7-t1)
+		 * SNR-Frame    |xx|--------|					(start: t1, length: t5-t1, header (xx): t2-t1)
+		 * (Frame5)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
+		TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY /**
+		 * Frame1       |-----------------|				(start: t1, length: t7-t1)
+		 * Frame2             |-----------------|		(start: t3, length: t9-t3)
+		 * SNR-Frame    |xx|--------|					(start: t1, length: t5-t1, header (xx): t2-t1)
+		 * (Frame5)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
+		TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY /**
+		 * Frame1       |-----------------|				(start: t1, length: t7-t1)
+		 * SNR-Frame    |xx|--------|					(start: t1, length: t5-t1, header (xx): t2-t1)
+		 * (Frame5)
+		 * Frame6    |--|								(start: t0, length: t1-t0)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
+		TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY/**
+		 * Frame1       |-----------------|				(start: t1, length: t7-t1)
+		 * Frame4                   |--|				(start: t5, length: t6-t5)
+		 * SNR-Frame    |xx|--------|					(start: t1, length: t5-t1, header (xx): t2-t1)
+		 * (Frame5)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
+
+		TEST_GET_CHANNELSTATE_NOISYCHANNEL /**
+		 * Frame1       |-----------------|				(start: t1, length: t7-t1)
+		 * Frame2             |-----------------|		(start: t3, length: t9-t3)
+		 * Frame3             |-----|					(start: t3, length: t5-t3)
+		 * Frame4                   |--|				(start: t5, length: t6-t5)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,	//<-------BEWARE!!!!!!! A COMMA!
+
+
+		TEST_GET_CHANNELSTATE_RECEIVING /**
+		 * Frame1       |-----------------|				(start: t1, length: t7-t1)
+		 * Frame2             |-----------------|		(start: t3, length: t9-t3)
+		 * Frame3             |-----|					(start: t3, length: t5-t3)
+		 * Frame4                   |--|				(start: t5, length: t6-t5)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
+
+		TEST_CHANNELSENSE /**
+		 * Frame1       |-----------------|				(start: t1, length: t7-t1)
+		 * Frame2             |-----------------|		(start: t3, length: t9-t3)
+		 * Frame3             |-----|					(start: t3, length: t5-t3)
+		 * Frame4                   |--|				(start: t5, length: t6-t5)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
 
 	} currentTestCase;
+
+	/**
+	 * @brief Dispatchs test case execution to the correct
+	 * "execute*TestCase" method depending of the current decider
+	 * under test
+	 *
+	 * @param testCase the test case to execute
+	 */
+	void executeTestCase(TestCaseIdentifier testCase);
+	/**
+	 * @brief Executes test cases for SNRThresholdDecider.
+	 */
+	void executeSNRTestCase();
+	/**
+	 * @brief Executes test cases for SNRThresholdDeciderNew.
+	 */
+	void executeSNRNewTestCase();
+
+
+
+
 
 
 	std::string stateToString(int state)
@@ -279,6 +383,18 @@ protected:
 	{
 		if (t.raw() > 0)
 			t.setRaw(t.raw() - 1);
+
+		return t;
+	}
+	/**
+	 * @brief returns the closest value of simtime after passed value
+	 *
+	 * Works only for arguments t > 0;
+	 */
+	simtime_t post(simtime_t t)
+	{
+		if (t.raw() > 0)
+			t.setRaw(t.raw() + 1);
 
 		return t;
 	}
