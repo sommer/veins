@@ -4,7 +4,7 @@
 
 Define_Module(DeciderTest);
 
-DeciderTest::DeciderTest()
+DeciderTest::DeciderTest() : decider(0)
 {
 	// initializing members for testing
 	move = Move();
