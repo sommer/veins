@@ -83,6 +83,7 @@ DeciderTest::DeciderTest()
 
 DeciderTest::~DeciderTest() {
 
+	freeAirFramePool();
 	// clean up
 	delete TestAF1;
 	TestAF1 = 0;
@@ -99,6 +100,39 @@ DeciderTest::~DeciderTest() {
 
 	delete world;
 	world = 0;
+}
+
+AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t end, double power)
+{
+	simtime_t length = end - start;
+	// create Signal containing TXpower- and bitrate-mapping
+	Signal* s = createSignal(start, length, power, 16.0);
+
+	// --- Phy-Layer's tasks
+	// just a bypass attenuation, that has no effect on the TXpower
+	//Mapping* bypassMap = createConstantMapping(start, end, noAttenuation);
+	//s->addAttenuation(bypassMap);
+
+	// put host move pattern to Signal
+	s->setMove(move);
+
+	// create the new AirFrame
+	AirFrame* frame = new AirFrame(0, MacToPhyInterface::AIR_FRAME);
+
+	// set the members
+	frame->setDuration(s->getSignalLength());
+	// copy the signal into the AirFrame
+	frame->setSignal(*s);
+
+	// pointer and Signal not needed anymore
+	delete s;
+	s = 0;
+
+	frame->setId(world->getUniqueAirFrameId());
+
+	airFramePool.push_back(frame);
+
+	return frame;
 }
 
 void DeciderTest::runTests()
@@ -120,13 +154,8 @@ void DeciderTest::runTests()
 // TODO : finish
 void DeciderTest::runDeciderTests(std::string name)
 {
-	//init decider to be tested
-	ParameterMap dummyParams;
 	deciderName = name;
-	decider = initDeciderTest(name, dummyParams);
-
-
-
+	currentTestCase = BEFORE_TESTS;
 	assert(currentTestCase == BEFORE_TESTS);
 
 	/*
@@ -168,12 +197,30 @@ void DeciderTest::runDeciderTests(std::string name)
 
 	executeTestCase(TEST_CHANNELSENSE);
 
+	executeTestCase(TEST_CHANNELSENSE_IDLE_AND_BUSY);
+
+}
+
+void DeciderTest::freeAirFramePool() {
+	for(AirFrameList::iterator it = airFramePool.begin();
+		it != airFramePool.end(); ++it)
+	{
+		assert(*it);
+		delete *it;
+	}
+
+	airFramePool.clear();
 }
 
 void DeciderTest::executeTestCase(TestCaseIdentifier testCase) {
 	//set current test case
+	if(decider)
+		delete decider;
+	ParameterMap dummyParams;
+	decider = initDeciderTest(deciderName, dummyParams);
 	currentTestCase = testCase;
 	airFramesOnChannel.clear();
+	freeAirFramePool();
 	processedAF = 0;
 	testChannelSense = 0;
 	testRSSIMap = 0;
@@ -197,8 +244,6 @@ Decider* DeciderTest::initDeciderTest(std::string name, ParameterMap& params) {
 
 	// TODO: extend to use the passed parameters to initialize multiple Deciders (switch)
 	//reset globals
-	currentTestCase = BEFORE_TESTS;
-
 	if(name == "SNRThresholdDecider") {
 		// parameters for original TestDecider (tests/basePhyLayer with testBaseDecider = true)
 		double snrThreshold = 10.0;
@@ -331,9 +376,31 @@ void DeciderTest::fillAirFramesOnChannel()
 			}
 
 			break;
+		case TEST_CHANNELSENSE_IDLE_AND_BUSY:
+			// fill with pointers to test AirFrames that interfere with the testTime
+			if (testTime >= t3 && testTime <= t5)
+			{
+				airFramesOnChannel.push_back(TestAF3);
+			}
+
+			break;
 		default:
 			break;
 	}
+
+	//iterate over pool and add active airframes to channel
+	for(AirFrameList::iterator it = airFramePool.begin();
+		it != airFramePool.end(); ++it)
+	{
+		Signal& s = (*it)->getSignal();
+
+		if(s.getSignalStart() <= testTime
+		   && testTime <= s.getSignalStart() + s.getSignalLength())
+		{
+			airFramesOnChannel.push_back(*it);
+		}
+	}
+
 
 	ev << log("Filled airFramesOnChannel. (the virtual channel)") << endl;
 }
@@ -448,8 +515,8 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 	Signal* s = createSignal(signalStart, signalLength, transmissionPower, bitrate, i, payloadStart);
 
 	// just a bypass attenuation, that has no effect on the TXpower
-	Mapping* bypassMap = createConstantMapping(signalStart, signalStart + signalLength, noAttenuation);
-	s->addAttenuation(bypassMap);
+	//Mapping* bypassMap = createConstantMapping(signalStart, signalStart + signalLength, noAttenuation);
+	//s->addAttenuation(bypassMap);
 
 	// --- Phy-Layer's tasks
 
@@ -542,6 +609,36 @@ Signal* DeciderTest::createSignal(simtime_t start,
 	s->setBitrate(bitrateMapping);
 
 	ev << "Signal for TestAirFrame" << index << " created with header/payload power: " <<  power.first << "/" << power.second << endl;
+
+	return s;
+}
+
+Signal* DeciderTest::createSignal(simtime_t start,
+									simtime_t length,
+									double power,
+									double bitrate)
+{
+	simtime_t end = start + length;
+	//create signal with start at current simtime and passed length
+	Signal* s = new Signal(start, length);
+
+	Mapping* txPowerMapping = 0;
+	Mapping* bitrateMapping = 0;
+
+	//set tx power mapping
+	txPowerMapping = createConstantMapping(start, end, power);
+
+	//set bitrate mapping
+	bitrateMapping = createConstantMapping(start, end, bitrate);
+
+	assert(txPowerMapping);
+	assert(bitrateMapping);
+
+	// put the mappings to the Signal
+	s->setTransmissionPower(txPowerMapping);
+	s->setBitrate(bitrateMapping);
+
+	//ev << "Signal for TestAirFrame" << index << " created with header/payload power: " <<  power.first << "/" << power.second << endl;
 
 	return s;
 }
@@ -677,10 +774,12 @@ void DeciderTest::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& o
 
 			break;
 
-
-		// TODO go on here...
+		case TEST_CHANNELSENSE_IDLE_AND_BUSY:
+			passAirFramesOnChannel(out);
+			break;
 
 		default:
+			assertFalse("Unknown test scenario in getChannelInfo!",false);
 			break;
 	}
 
@@ -698,6 +797,9 @@ void DeciderTest::sendControlMsg(cMessage* msg)
 	ChannelSenseRequest* req = dynamic_cast<ChannelSenseRequest*>(msg);
 
 	assertNotEqual("Control message send to mac by the Decider should be a ChannelSenseRequest", (void*)0, req);
+
+	assertTrue("This ChannelSenseRequest answer has been expected.", expectCSRAnswer);
+	expectCSRAnswer = false;
 
 	ChannelState state = req->getResult();
 
@@ -1040,8 +1142,8 @@ void DeciderTest::executeSNRNewTestCase()
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << endl;
 
-			testTime = t1;
-			fillAirFramesOnChannel();
+			updateSimTime(t1);
+
 
 			sendUpCalled = false;
 
@@ -1085,8 +1187,8 @@ void DeciderTest::executeSNRNewTestCase()
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << endl;
 
-			testTime = t1;
-			fillAirFramesOnChannel();
+			updateSimTime(t1);
+
 
 			sendUpCalled = false;
 
@@ -1113,11 +1215,9 @@ void DeciderTest::executeSNRNewTestCase()
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - empty channel"<< endl;
 			//test sense on empty channel
-			testTime = before;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(0.2);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(before);
+
+			testChannelSense = createCSR(0.2, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1125,7 +1225,7 @@ void DeciderTest::executeSNRNewTestCase()
 						testTime + 0.2, nextHandoverTime);
 			testTime = nextHandoverTime;
 
-			expChannelState = ChannelState(true, 0.0);
+			setExpectedCSRAnswer(true, 0.0);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1136,11 +1236,9 @@ void DeciderTest::executeSNRNewTestCase()
 			//test sense during one single airframe without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - signel airframe on channel"<< endl;
-			testTime = t1;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(0.2);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t1);
+
+			testChannelSense = createCSR(0.2, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1148,7 +1246,7 @@ void DeciderTest::executeSNRNewTestCase()
 						testTime + 0.2, nextHandoverTime);
 			testTime = nextHandoverTime;
 
-			expChannelState = ChannelState(true, TXpower1);
+			setExpectedCSRAnswer(true, TXpower1);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1158,20 +1256,18 @@ void DeciderTest::executeSNRNewTestCase()
 			//test sense with new AirFrames at end of sense without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - new airframes at end of sense"<< endl;
-			testTime = t2;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(1.0);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t2);
+
+			testChannelSense = createCSR(1.0, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
 			assertEqual("NextHandoverTime is correct current time + sense duration.",
 						testTime + 1.0, nextHandoverTime);
-			testTime = nextHandoverTime;
-			fillAirFramesOnChannel();
+			updateSimTime(nextHandoverTime);
 
-			expChannelState = ChannelState(false, TXpower1 + TXpower2 + TXpower3);
+
+			setExpectedCSRAnswer(false, TXpower1 + TXpower2 + TXpower3);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1181,20 +1277,18 @@ void DeciderTest::executeSNRNewTestCase()
 			//test sense with new AirFrames during sense without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - new AirFrames during sense"<< endl;
-			testTime = t2;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(2.0);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t2);
+
+			testChannelSense = createCSR(2.0, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
 			assertEqual("NextHandoverTime is correct current time + sense duration.",
 						testTime + 2.0, nextHandoverTime);
-			testTime = nextHandoverTime;
-			fillAirFramesOnChannel();
+			updateSimTime(nextHandoverTime);
 
-			expChannelState = ChannelState(false, TXpower1 + TXpower2 + TXpower3);
+
+			setExpectedCSRAnswer(false, TXpower1 + TXpower2 + TXpower3);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1204,11 +1298,9 @@ void DeciderTest::executeSNRNewTestCase()
 			//test sense with AirFrames end at start of sense without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - AirFrames ends at start of sense"<< endl;
-			testTime = t7;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(1.0);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t7);
+
+			testChannelSense = createCSR(1.0, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1216,7 +1308,7 @@ void DeciderTest::executeSNRNewTestCase()
 						testTime + 1.0, nextHandoverTime);
 			testTime = nextHandoverTime;
 
-			expChannelState = ChannelState(true, TXpower2);
+			setExpectedCSRAnswer(true, TXpower2);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1226,32 +1318,69 @@ void DeciderTest::executeSNRNewTestCase()
 			//test sense with new AirFrames during sense with an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - new AirFrames during sense not idle"<< endl;
-			testTime = t2;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(2.0);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t2);
+
+			testChannelSense = createCSR(2.0, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
 			assertEqual("NextHandoverTime is correct current time + sense duration.",
 						testTime + 2.0, nextHandoverTime);
 
-			testTime = t3;
-			fillAirFramesOnChannel();
+			updateSimTime(t3);
+
 			nextHandoverTime = decider->processSignal(TestAF3);
 			assertTrue("TestAF3 should be received by decider.", nextHandoverTime > 0.0);
 
-			testTime = t4;
-			fillAirFramesOnChannel();
+			updateSimTime(t4);
 
-			expChannelState = ChannelState(false, TXpower1 + TXpower2 + TXpower3);
+
+			setExpectedCSRAnswer(false, TXpower1 + TXpower2 + TXpower3);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
 
 			delete testChannelSense;
+
 			break;
+
+		case TEST_CHANNELSENSE_IDLE_AND_BUSY:
+		{
+			double tmpAF1Power = TXpower2;
+			AirFrame* tmpAF1 = addAirFrameToPool(t1, t8, tmpAF1Power);
+			updateSimTime(t1);
+
+			simtime_t handleTime = decider->processSignal(tmpAF1);
+			assert(handleTime < 0);
+
+			double senseLength = 6;
+			testChannelSense = createCSR(senseLength, UNTIL_IDLE);
+			setExpectedCSRAnswer(true, tmpAF1Power);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertEqual("UNTIL_IDLE request on idle channel should be answered immediately.",
+						-1.0, handleTime.dbl());
+			delete testChannelSense;
+
+			//since both the airframe and the request have been handled or rejected
+			//the decider should be in the same state as it was before again
+			testChannelSense = createCSR(senseLength, UNTIL_BUSY);
+
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertEqual("UNTIL_BUSY request on idle channel can't be answered yet.",
+						testTime + senseLength, handleTime.dbl());
+
+			updateSimTime(t3);
+
+			setExpectedCSRAnswer(false, TXpower3 + tmpAF1Power);
+			assert(expectCSRAnswer);
+			handleTime = decider->processSignal(TestAF3);
+			assertFalse("UNTIL_BUSY request should have been answered because of AF3.", expectCSRAnswer);
+
+			assert(handleTime > 0);
+
+			delete testChannelSense;
+			break;
+		}
 
 		default:
 			break;
@@ -1567,8 +1696,8 @@ void DeciderTest::executeSNRTestCase()
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << endl;
 
-			testTime = t1;
-			fillAirFramesOnChannel();
+			updateSimTime(t1);
+
 
 			sendUpCalled = false;
 
@@ -1612,8 +1741,8 @@ void DeciderTest::executeSNRTestCase()
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << endl;
 
-			testTime = t1;
-			fillAirFramesOnChannel();
+			updateSimTime(t1);
+
 
 			sendUpCalled = false;
 
@@ -1640,11 +1769,9 @@ void DeciderTest::executeSNRTestCase()
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - empty channel"<< endl;
 			//test sense on empty channel
-			testTime = before;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(0.2);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(before);
+
+			testChannelSense = createCSR(0.2, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1652,7 +1779,7 @@ void DeciderTest::executeSNRTestCase()
 						testTime + 0.2, nextHandoverTime);
 			testTime = nextHandoverTime;
 
-			expChannelState = ChannelState(true, 0.0);
+			setExpectedCSRAnswer(true, 0.0);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1663,11 +1790,8 @@ void DeciderTest::executeSNRTestCase()
 			//test sense during one single airframe without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - signel airframe on channel"<< endl;
-			testTime = t1;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(0.2);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t1);
+			testChannelSense = createCSR(0.2, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1675,7 +1799,7 @@ void DeciderTest::executeSNRTestCase()
 						testTime + 0.2, nextHandoverTime);
 			testTime = nextHandoverTime;
 
-			expChannelState = ChannelState(true, TXpower1);
+			setExpectedCSRAnswer(true, TXpower1);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1685,20 +1809,18 @@ void DeciderTest::executeSNRTestCase()
 			//test sense with new AirFrames at end of sense without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - new airframes at end of sense"<< endl;
-			testTime = t2;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(1.0);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t2);
+
+			testChannelSense = createCSR(1.0, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
 			assertEqual("NextHandoverTime is correct current time + sense duration.",
 						testTime + 1.0, nextHandoverTime);
-			testTime = nextHandoverTime;
-			fillAirFramesOnChannel();
+			updateSimTime(nextHandoverTime);
 
-			expChannelState = ChannelState(true, TXpower1 + TXpower2 + TXpower3);
+
+			setExpectedCSRAnswer(true, TXpower1 + TXpower2 + TXpower3);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1708,20 +1830,18 @@ void DeciderTest::executeSNRTestCase()
 			//test sense with new AirFrames during sense without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - new AirFrames during sense"<< endl;
-			testTime = t2;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(2.0);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t2);
+
+			testChannelSense = createCSR(2.0, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
 			assertEqual("NextHandoverTime is correct current time + sense duration.",
 						testTime + 2.0, nextHandoverTime);
-			testTime = nextHandoverTime;
-			fillAirFramesOnChannel();
+			updateSimTime(nextHandoverTime);
 
-			expChannelState = ChannelState(true, TXpower1 + TXpower2 + TXpower3);
+
+			setExpectedCSRAnswer(true, TXpower1 + TXpower2 + TXpower3);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1731,11 +1851,9 @@ void DeciderTest::executeSNRTestCase()
 			//test sense with AirFrames end at start of sense without an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - AirFrames ends at start of sense"<< endl;
-			testTime = t7;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(1.0);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t7);
+
+			testChannelSense = createCSR(1.0, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
@@ -1743,7 +1861,7 @@ void DeciderTest::executeSNRTestCase()
 						testTime + 1.0, nextHandoverTime);
 			testTime = nextHandoverTime;
 
-			expChannelState = ChannelState(true, TXpower1 + TXpower2);
+			setExpectedCSRAnswer(true, TXpower1 + TXpower2);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);
@@ -1753,26 +1871,24 @@ void DeciderTest::executeSNRTestCase()
 			//test sense with new AirFrames during sense with an AirFrame receiving
 			ev << log("-------------------------------------------------------") << endl;
 			ev << log(stateToString(currentTestCase)) << " - new AirFrames during sense not idle"<< endl;
-			testTime = t2;
-			fillAirFramesOnChannel();
-			testChannelSense = new ChannelSenseRequest();
-			testChannelSense->setSenseTimeout(2.0);
-			testChannelSense->setSenseMode(UNTIL_TIMEOUT);
+			updateSimTime(t2);
+
+			testChannelSense = createCSR(2.0, UNTIL_TIMEOUT);
 
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 
 			assertEqual("NextHandoverTime is correct current time + sense duration.",
 						testTime + 2.0, nextHandoverTime);
 
-			testTime = t3;
-			fillAirFramesOnChannel();
+			updateSimTime(t3);
+
 			nextHandoverTime = decider->processSignal(TestAF3);
 			assertTrue("TestAF3 should be received by decider.", nextHandoverTime > 0.0);
 
-			testTime = t4;
-			fillAirFramesOnChannel();
+			updateSimTime(t4);
 
-			expChannelState = ChannelState(false, TXpower1 + TXpower2 + TXpower3);
+
+			setExpectedCSRAnswer(false, TXpower1 + TXpower2 + TXpower3);
 			nextHandoverTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertTrue("NextHandoverTime express that sense request has been finally processed.",
 					   nextHandoverTime < 0);

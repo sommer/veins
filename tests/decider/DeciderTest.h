@@ -32,6 +32,12 @@ protected:
 	 */
 	typedef std::map<std::string, cMsgPar> ParameterMap;
 
+	typedef std::list<AirFrame*> AirFrameList;
+
+	/** @brief Defines the all AirFrames for one test scenario which
+	 * can appear on the channel.*/
+	AirFrameList airFramePool;
+
 	/**
 	 * @brief Small service-class.
 	 */
@@ -175,6 +181,13 @@ protected:
 		 * where: t0=before, t10=after */
 		,//<-------BEWARE!!!!!!!
 
+		TEST_CHANNELSENSE_IDLE_AND_BUSY /**
+		 * Frame3             |-----|					(start: t3, length: t5-t3)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
 	} currentTestCase;
 
 	/**
@@ -266,6 +279,19 @@ protected:
 									simtime_t payloadStart);
 
 	/**
+	 * @brief Creates a simple Signal defined over time with the
+	 * passed parameters.
+	 *
+	 * Convenience method to be able to create the appropriate
+	 * Signal for the MacToPhyControlInfo without needing to care
+	 * about creating Mappings.
+	 */
+	virtual Signal* createSignal(simtime_t start,
+									simtime_t length,
+									double power,
+									double bitrate);
+
+	/**
 	 * @brief Creates a simple Mapping with a constant curve
 	 * progression at the passed value.
 	 *
@@ -325,6 +351,9 @@ protected:
 
 	// Used for ChannelSenseRequest tests to define the expected result of a Test sense
 	ChannelState expChannelState;
+
+	/** @brief Stores if we are currently expecting an answer for a CSR from the decider.*/
+	bool expectCSRAnswer;
 
 	// Represents the currently used ChannelSenseRequest which is tested
 	ChannelSenseRequest*  testChannelSense;
@@ -399,6 +428,32 @@ protected:
 		return t;
 	}
 
+	/**
+	 * @brief Updates the current test time to the passed value and
+	 * updates the channel by calling "fillAirFramesOnChannel".
+	 *
+	 * @param t - the new test time
+	 */
+	void updateSimTime(simtime_t t) {
+		testTime = t;
+		fillAirFramesOnChannel();
+	}
+
+	ChannelSenseRequest* createCSR(simtime_t duration, int mode) {
+		ChannelSenseRequest* tmp = new ChannelSenseRequest();
+		tmp->setSenseMode(mode);
+		tmp->setSenseTimeout(duration);
+		return tmp;
+	}
+
+	AirFrame* addAirFrameToPool(simtime_t start, simtime_t end, double power);
+
+	void freeAirFramePool();
+
+	void setExpectedCSRAnswer(bool expIsIdle, double expRSSI) {
+		expectCSRAnswer = true;
+		expChannelState = ChannelState(expIsIdle, expRSSI);
+	}
 public:
 	DeciderTest();
 

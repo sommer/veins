@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100526-16:36:45-8694
+Assigned runID=General-0-20100528-18:18:01-11098
 Setting up network `DeciderTest'...
 Signal for TestAirFrame1 created with header/payload power: 1/0
 [ Test] - Creating TestAirFrame 1 done.
@@ -31,6 +31,9 @@ Passed: Decider demands ChannelInfo for current timepoint
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'now' in an empty Set of AirFrames (empty Mapping)
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDecider Test] - -TEST_GET_CHANNELSTATE_NOISYCHANNEL-----------------------------------------------
 Signal for TestAirFrame5 created with header/payload power: 32/16
 [SNRThresholdDecider Test] - Creating TestAirFrame 5 done.
@@ -111,6 +114,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint
 Passed: The PhyLayer is not currently receiving an AirFrame
 Passed: RSSI-value is the value for 'testTime'
 [SNRThresholdDecider Test] - -DONE-------------------------------------------
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDecider Test] - -TEST_GET_CHANNELSTATE_RECEIVING-----------------------------------------------
 [SNRThresholdDecider Test] - -full output-----------------------------------------------
 [SNRThresholdDecider Test] - A new testTime has been set: 2
@@ -202,6 +208,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 4 has been finally processed
 [SNRThresholdDecider Test] - -DONE-------------------------------------------
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDecider Test] - -------------------------------------------------------
 [SNRThresholdDecider Test] - TEST_SNR_THRESHOLD_ACCEPT
 Signal for TestAirFrame5 created with header/payload power: 10/10
@@ -216,6 +225,9 @@ Passed: BaseDecider decided correctly to send up the packet
 Passed: BaseDecider has returned the pointer to currently processed AirFrame
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDecider Test] - -------------------------------------------------------
 [SNRThresholdDecider Test] - TEST_SNR_THRESHOLD_DENY
 Signal for TestAirFrame5 created with header/payload power: 10/10
@@ -228,6 +240,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDecider Test] - -------------------------------------------------------
 [SNRThresholdDecider Test] - TEST_SNR_THRESHOLD_PAYLOAD_DENY
 Signal for TestAirFrame5 created with header/payload power: 20/10
@@ -240,6 +255,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDecider Test] - -------------------------------------------------------
 [SNRThresholdDecider Test] - TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY
 Signal for TestAirFrame5 created with header/payload power: 30/30
@@ -252,6 +270,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDecider Test] - -------------------------------------------------------
 [SNRThresholdDecider Test] - TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY
 Signal for TestAirFrame5 created with header/payload power: 20/20
@@ -264,6 +285,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDecider Test] - -------------------------------------------------------
 [SNRThresholdDecider Test] - TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY
 Signal for TestAirFrame5 created with header/payload power: 90/90
@@ -276,6 +300,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDecider Test] - -------------------------------------------------------
 [SNRThresholdDecider Test] - TEST_CHANNELSENSE - empty channel
 Signal for TestAirFrame5 created with header/payload power: 32/16
@@ -287,6 +314,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDecider Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -301,6 +329,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDecider Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -318,6 +347,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDecider Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -335,6 +365,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDecider Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -349,6 +380,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDecider Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -370,9 +402,13 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDecider Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDecider Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
 Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
 Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
@@ -381,6 +417,9 @@ Passed: Decider demands ChannelInfo for current timepoint
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: This decider considers an empty channel as idle.
 Passed: RSSI-value is the value for 'now' in an empty Set of AirFrames
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDeciderNew Test] - -TEST_GET_CHANNELSTATE_NOISYCHANNEL-----------------------------------------------
 Signal for TestAirFrame5 created with header/payload power: 32/16
 [SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
@@ -461,6 +500,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint
 Passed: This decider considers the RX-power of AirFrame2 as idle.
 Passed: RSSI-value is the value for 'testTime'
 [SNRThresholdDeciderNew Test] - -DONE-------------------------------------------
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDeciderNew Test] - -TEST_GET_CHANNELSTATE_RECEIVING-----------------------------------------------
 [SNRThresholdDeciderNew Test] - -full output-----------------------------------------------
 [SNRThresholdDeciderNew Test] - A new testTime has been set: 2
@@ -552,6 +594,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 4 has been finally processed
 [SNRThresholdDeciderNew Test] - -DONE-------------------------------------------
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDeciderNew Test] - -------------------------------------------------------
 [SNRThresholdDeciderNew Test] - TEST_SNR_THRESHOLD_ACCEPT
 Signal for TestAirFrame5 created with header/payload power: 10/10
@@ -566,6 +611,9 @@ Passed: BaseDecider decided correctly to send up the packet
 Passed: BaseDecider has returned the pointer to currently processed AirFrame
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDeciderNew Test] - -------------------------------------------------------
 [SNRThresholdDeciderNew Test] - TEST_SNR_THRESHOLD_DENY
 Signal for TestAirFrame5 created with header/payload power: 10/10
@@ -578,6 +626,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDeciderNew Test] - -------------------------------------------------------
 [SNRThresholdDeciderNew Test] - TEST_SNR_THRESHOLD_PAYLOAD_DENY
 Signal for TestAirFrame5 created with header/payload power: 20/10
@@ -590,6 +641,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDeciderNew Test] - -------------------------------------------------------
 [SNRThresholdDeciderNew Test] - TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY
 Signal for TestAirFrame5 created with header/payload power: 30/30
@@ -602,6 +656,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDeciderNew Test] - -------------------------------------------------------
 [SNRThresholdDeciderNew Test] - TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY
 Signal for TestAirFrame5 created with header/payload power: 20/20
@@ -614,6 +671,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDeciderNew Test] - -------------------------------------------------------
 [SNRThresholdDeciderNew Test] - TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY
 Signal for TestAirFrame5 created with header/payload power: 90/90
@@ -626,6 +686,9 @@ Passed: Decider demands ChannelInfo for current test-timepoint (end of AirFrame)
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: TestAirFrame 5 has been finally processed
 Passed: sendUp() has not been called.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 [SNRThresholdDeciderNew Test] - -------------------------------------------------------
 [SNRThresholdDeciderNew Test] - TEST_CHANNELSENSE - empty channel
 Signal for TestAirFrame5 created with header/payload power: 32/16
@@ -637,6 +700,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -651,6 +715,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -668,6 +733,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -685,6 +751,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -699,6 +766,7 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
@@ -720,17 +788,48 @@ Passed: End of the interval which Decider requested is correct.
 [SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_IDLE request on idle channel should be answered immediately.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_BUSY request on idle channel can't be answered yet.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_BUSY request should have been answered because of AF3.
 
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 70   present: 0   in FES: 0
+     Messages:  created: 75   present: 1   in FES: 0
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 70   present: 0   in FES: 0
+     Messages:  created: 75   present: 1   in FES: 0
 
 <!> No more events -- simulation ended.
 

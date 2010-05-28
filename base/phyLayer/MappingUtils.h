@@ -2026,6 +2026,8 @@ public:
 	 * @brief Returns the concatenated Mapping.
 	 */
 	Mapping* createConcatenatedMapping(){
+		assert(!mappings.empty());
+
 		MappingSet::const_iterator it = mappings.begin();
 
 		Mapping* result = MappingUtils::applyElementWiseOperator(*refMapping, **it, op,
@@ -2042,10 +2044,16 @@ public:
 	}
 
 	virtual ConstMappingIterator* createConstIterator() {
+		if(mappings.empty()) {
+			return refMapping->createConstIterator();
+		}
 		return new ConcatConstMappingIterator(createConcatenatedMapping());
 	}
 
 	virtual ConstMappingIterator* createConstIterator(const Argument& pos) {
+		if(mappings.empty()) {
+			return refMapping->createConstIterator(pos);
+		}
 		return new ConcatConstMappingIterator(createConcatenatedMapping(), pos);
 	}
 
