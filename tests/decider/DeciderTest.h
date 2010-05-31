@@ -181,8 +181,20 @@ protected:
 		 * where: t0=before, t10=after */
 		,//<-------BEWARE!!!!!!!
 
-		TEST_CHANNELSENSE_IDLE_AND_BUSY /**
+		TEST_CHANNELSENSE_IDLE_CHANNEL /**
 		 * Frame3             |-----|					(start: t3, length: t5-t3)
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
+		TEST_CHANNELSENSE_BUSY_CHANNEL /**
+		 *           |  |  |  |  |  |  |  |  |  |  |
+		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
+		 * where: t0=before, t10=after */
+		,//<-------BEWARE!!!!!!!
+
+		TEST_CHANNELSENSE_CHANNEL_CHANGES_DURING_AIRFRAME /**
 		 *           |  |  |  |  |  |  |  |  |  |  |
 		 *           t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10
 		 * where: t0=before, t10=after */
@@ -291,6 +303,13 @@ protected:
 									double power,
 									double bitrate);
 
+	virtual Signal* createSignal(simtime_t start,
+								 simtime_t payloadStart,
+								 simtime_t end,
+								 double powerHeader,
+								 double powerPayload,
+								 double bitrate);
+
 	/**
 	 * @brief Creates a simple Mapping with a constant curve
 	 * progression at the passed value.
@@ -354,6 +373,14 @@ protected:
 
 	/** @brief Stores if we are currently expecting an answer for a CSR from the decider.*/
 	bool expectCSRAnswer;
+
+	/** @brief Used for CSR tests to define the expected rescheduling time.*/
+	simtime_t expRescheduleTime;
+
+	simtime_t actualRescheduleTime;
+
+	/** @brief Stores if we are currently expecting an reschedule for a CSR from the Decider.*/
+	bool expectReschedule;
 
 	// Represents the currently used ChannelSenseRequest which is tested
 	ChannelSenseRequest*  testChannelSense;
@@ -447,12 +474,20 @@ protected:
 	}
 
 	AirFrame* addAirFrameToPool(simtime_t start, simtime_t end, double power);
+	AirFrame* addAirFrameToPool(simtime_t start, simtime_t payloadStart, simtime_t end,
+								double headerPower, double payloadPower);
+	void removeAirFrameFromPool(AirFrame* af);
 
 	void freeAirFramePool();
 
 	void setExpectedCSRAnswer(bool expIsIdle, double expRSSI) {
 		expectCSRAnswer = true;
 		expChannelState = ChannelState(expIsIdle, expRSSI);
+	}
+
+	void setExpectedReschedule(simtime_t newTime) {
+		expectReschedule = true;
+		expRescheduleTime = newTime;
 	}
 public:
 	DeciderTest();

@@ -102,11 +102,58 @@ DeciderTest::~DeciderTest() {
 	world = 0;
 }
 
+void DeciderTest::removeAirFrameFromPool(AirFrame* af)
+{
+	for(AirFrameList::iterator it = airFramePool.begin();
+		it != airFramePool.end(); ++it)
+	{
+		if(*it == af) {
+			airFramePool.erase(it);
+			delete af;
+			return;
+		}
+	}
+
+	assertTrue("AirFrame to remove has to be in pool.",false);
+}
+
+AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t payloadStart, simtime_t end,
+										 double headerPower, double payloadPower)
+{
+	// create Signal containing TXpower- and bitrate-mapping
+	Signal* s = createSignal(start, payloadStart, end, headerPower, payloadPower, 16.0);
+
+	// --- Phy-Layer's tasks
+	// just a bypass attenuation, that has no effect on the TXpower
+	//Mapping* bypassMap = createConstantMapping(start, end, noAttenuation);
+	//s->addAttenuation(bypassMap);
+
+	// put host move pattern to Signal
+	s->setMove(move);
+
+	// create the new AirFrame
+	AirFrame* frame = new AirFrame(0, MacToPhyInterface::AIR_FRAME);
+
+	// set the members
+	frame->setDuration(s->getSignalLength());
+	// copy the signal into the AirFrame
+	frame->setSignal(*s);
+
+	// pointer and Signal not needed anymore
+	delete s;
+	s = 0;
+
+	frame->setId(world->getUniqueAirFrameId());
+
+	airFramePool.push_back(frame);
+
+	return frame;
+}
+
 AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t end, double power)
 {
-	simtime_t length = end - start;
 	// create Signal containing TXpower- and bitrate-mapping
-	Signal* s = createSignal(start, length, power, 16.0);
+	Signal* s = createSignal(start, end, power, 16.0);
 
 	// --- Phy-Layer's tasks
 	// just a bypass attenuation, that has no effect on the TXpower
@@ -197,7 +244,11 @@ void DeciderTest::runDeciderTests(std::string name)
 
 	executeTestCase(TEST_CHANNELSENSE);
 
-	executeTestCase(TEST_CHANNELSENSE_IDLE_AND_BUSY);
+	executeTestCase(TEST_CHANNELSENSE_IDLE_CHANNEL);
+
+	executeTestCase(TEST_CHANNELSENSE_BUSY_CHANNEL);
+
+	executeTestCase(TEST_CHANNELSENSE_CHANNEL_CHANGES_DURING_AIRFRAME);
 
 }
 
@@ -376,7 +427,10 @@ void DeciderTest::fillAirFramesOnChannel()
 			}
 
 			break;
-		case TEST_CHANNELSENSE_IDLE_AND_BUSY:
+		case TEST_CHANNELSENSE_BUSY_CHANNEL:
+		case TEST_CHANNELSENSE_CHANNEL_CHANGES_DURING_AIRFRAME:
+			break;
+		case TEST_CHANNELSENSE_IDLE_CHANNEL:
 			// fill with pointers to test AirFrames that interfere with the testTime
 			if (testTime >= t3 && testTime <= t5)
 			{
@@ -613,12 +667,43 @@ Signal* DeciderTest::createSignal(simtime_t start,
 	return s;
 }
 
+Signal* DeciderTest::createSignal(simtime_t start, simtime_t payLoadStart,
+									simtime_t end,
+									double headerPower,
+									double payloadPower,
+									double bitrate)
+{
+	simtime_t length = end - start;
+	//create signal with start at current simtime and passed length
+	Signal* s = new Signal(start, length);
+
+	Mapping* txPowerMapping = 0;
+	Mapping* bitrateMapping = 0;
+
+	//set tx power mapping
+	txPowerMapping = createHeaderPayloadMapping(start, payLoadStart, end, headerPower, payloadPower);
+
+	//set bitrate mapping
+	bitrateMapping = createConstantMapping(start, end, bitrate);
+
+	assert(txPowerMapping);
+	assert(bitrateMapping);
+
+	// put the mappings to the Signal
+	s->setTransmissionPower(txPowerMapping);
+	s->setBitrate(bitrateMapping);
+
+	//ev << "Signal for TestAirFrame" << index << " created with header/payload power: " <<  power.first << "/" << power.second << endl;
+
+	return s;
+}
+
 Signal* DeciderTest::createSignal(simtime_t start,
-									simtime_t length,
+									simtime_t end,
 									double power,
 									double bitrate)
 {
-	simtime_t end = start + length;
+	simtime_t length = end - start;
 	//create signal with start at current simtime and passed length
 	Signal* s = new Signal(start, length);
 
@@ -774,7 +859,9 @@ void DeciderTest::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& o
 
 			break;
 
-		case TEST_CHANNELSENSE_IDLE_AND_BUSY:
+		case TEST_CHANNELSENSE_IDLE_CHANNEL:
+		case TEST_CHANNELSENSE_BUSY_CHANNEL:
+		case TEST_CHANNELSENSE_CHANNEL_CHANGES_DURING_AIRFRAME:
 			passAirFramesOnChannel(out);
 			break;
 
@@ -1344,8 +1431,9 @@ void DeciderTest::executeSNRNewTestCase()
 
 			break;
 
-		case TEST_CHANNELSENSE_IDLE_AND_BUSY:
+		case TEST_CHANNELSENSE_IDLE_CHANNEL:
 		{
+			//test UNTIL_IDLE on already idle channel
 			double tmpAF1Power = TXpower2;
 			AirFrame* tmpAF1 = addAirFrameToPool(t1, t8, tmpAF1Power);
 			updateSimTime(t1);
@@ -1360,6 +1448,10 @@ void DeciderTest::executeSNRNewTestCase()
 			assertEqual("UNTIL_IDLE request on idle channel should be answered immediately.",
 						-1.0, handleTime.dbl());
 			delete testChannelSense;
+
+
+			//test UNTIL_BUSY on idle channel with incoming frame changing
+			//answer time of request
 
 			//since both the airframe and the request have been handled or rejected
 			//the decider should be in the same state as it was before again
@@ -1376,7 +1468,246 @@ void DeciderTest::executeSNRNewTestCase()
 			handleTime = decider->processSignal(TestAF3);
 			assertFalse("UNTIL_BUSY request should have been answered because of AF3.", expectCSRAnswer);
 
-			assert(handleTime > 0);
+			assert(handleTime == t5);
+
+			delete testChannelSense;
+
+			//clear af3 from decider
+			updateSimTime(t5);
+			handleTime = decider->processSignal(TestAF3);
+			assert(handleTime < 0);
+
+			//test UNTIL_BUSY on idle channel with time out occurs (because of idle channel)
+			updateSimTime(t6);
+
+			senseLength = 2;
+			testChannelSense = createCSR(senseLength, UNTIL_BUSY);
+
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertEqual("UNTIL_BUSY request on idle channel can't be answered yet.",
+						testTime + senseLength, handleTime.dbl());
+
+			updateSimTime(testTime + senseLength);
+
+			setExpectedCSRAnswer(true, tmpAF1Power);
+			assert(expectCSRAnswer);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertFalse("UNTIL_BUSY request should have been answered because of time out.", expectCSRAnswer);
+
+			break;
+		}
+
+		case TEST_CHANNELSENSE_BUSY_CHANNEL:
+		{
+			//test UNTIL_BUSY on already busy channel
+			double tmpAF1Power = 1;
+			AirFrame* tmpAF1 = addAirFrameToPool(t1, t5, tmpAF1Power);
+			double tmpAF2Power = 3;
+			AirFrame* tmpAF2 = addAirFrameToPool(t3, t7, tmpAF2Power);
+			updateSimTime(t3);
+
+			simtime_t senseLength = 2;
+			testChannelSense = createCSR(senseLength, UNTIL_BUSY);
+
+			setExpectedCSRAnswer(false, tmpAF1Power + tmpAF2Power);
+			assert(expectCSRAnswer);
+			simtime_t handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertFalse("UNTIL_BUSY request should have been answered because of already busy channel.", expectCSRAnswer);
+			assert(handleTime < 0);
+
+			delete testChannelSense;
+
+			//test UNTIL_IDLE on busy channel:
+			// - without change until timeout
+			senseLength = 1;
+			testChannelSense = createCSR(senseLength, UNTIL_IDLE);
+
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertClose("UNTIL_IDLE request can't be answered because of busy channel.",
+						testTime + senseLength, handleTime);
+
+			updateSimTime(handleTime);
+
+			setExpectedCSRAnswer(false, tmpAF1Power + tmpAF2Power);
+			assert(expectCSRAnswer);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assert(handleTime < 0);
+			assertFalse("UNTIL_IDLE request was answered because of time out.",
+						expectCSRAnswer);
+
+			delete testChannelSense;
+
+			// - without new airframe but channel changes before timeout
+			senseLength = 2;
+			testChannelSense = createCSR(senseLength, UNTIL_IDLE);
+
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertClose("UNTIL_IDLE request can't be answered because of busy channel.",
+						t5, handleTime);
+
+			updateSimTime(handleTime);
+
+			setExpectedCSRAnswer(true, tmpAF2Power);
+			assert(expectCSRAnswer);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assert(handleTime < 0);
+			assertFalse("UNTIL_IDLE request was answered because of idle channel.",
+						expectCSRAnswer);
+
+			delete testChannelSense;
+
+			// - with new airframe delaying answer time
+			double tmpAF3Power = 1;
+			AirFrame* tmpAF3 = addAirFrameToPool(t4, t6, tmpAF3Power);
+
+			updateSimTime(t3);
+
+			senseLength = 5;
+			testChannelSense = createCSR(senseLength, UNTIL_IDLE);
+
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertClose("UNTIL_IDLE request can't be answered because of busy channel.",
+						t5, handleTime);
+
+			updateSimTime(t4);
+
+			setExpectedReschedule(t6);
+			assert(expectReschedule);
+			handleTime = decider->processSignal(tmpAF3);
+			assert(handleTime < 0);
+			assertFalse("UNTIL_IDLE request was rescheduled because of new AirFrame.",
+						expectReschedule);
+
+			updateSimTime(expRescheduleTime);
+
+			setExpectedCSRAnswer(true, tmpAF2Power);
+			assert(expectCSRAnswer);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assert(handleTime < 0);
+			assertFalse("UNTIL_IDLE request was answered because of idle channel.",
+						expectCSRAnswer);
+
+			delete testChannelSense;
+
+			// - with new airframe not changing answer time
+
+			// ASSUMPTION: decider state is the same as directly after initialization
+			removeAirFrameFromPool(tmpAF3);
+			tmpAF3Power = 0.2;
+			tmpAF3 = addAirFrameToPool(t4, t6, tmpAF3Power);
+
+			updateSimTime(t3);
+
+			senseLength = 5;
+			testChannelSense = createCSR(senseLength, UNTIL_IDLE);
+
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertClose("UNTIL_IDLE request can't be answered because of busy channel.",
+						t5, handleTime);
+
+			simtime_t answerCSRTime = handleTime;
+
+			updateSimTime(t4);
+
+			handleTime = decider->processSignal(tmpAF3);
+			assert(handleTime < 0);
+
+			updateSimTime(answerCSRTime);
+
+			setExpectedCSRAnswer(true, tmpAF2Power + tmpAF3Power);
+			assert(expectCSRAnswer);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assert(handleTime < 0);
+			assertFalse("UNTIL_IDLE request was answered because of idle channel.",
+						expectCSRAnswer);
+
+			delete testChannelSense;
+
+			break;
+		}
+
+		case TEST_CHANNELSENSE_CHANNEL_CHANGES_DURING_AIRFRAME:
+		{
+			//UNTIL_IDLE with channel state busy->idle during airframe
+			double tmpAF1Power1 = 4;
+			double tmpAF1Power2 = 3;
+			AirFrame* tmpAF1 = addAirFrameToPool(t1, t3, t5, tmpAF1Power1, tmpAF1Power2);
+
+			updateSimTime(t2);
+
+			simtime_t senseLength = 6;
+			testChannelSense = createCSR(senseLength, UNTIL_IDLE);
+
+			simtime_t handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertClose("UNTIL_IDLE request can't be answered because of busy header.",
+						t3, handleTime);
+
+			updateSimTime(handleTime);
+
+			setExpectedCSRAnswer(true, tmpAF1Power2);
+			assert(expectCSRAnswer);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertFalse("UNTIL_IDLE request should have been answered because of idle payload.", expectCSRAnswer);
+			assert(handleTime < 0);
+
+			delete testChannelSense;
+
+			//UNTIL_BUSY with channel state idle->busy during airframe
+			removeAirFrameFromPool(tmpAF1);
+			tmpAF1Power1 = 2;
+			tmpAF1Power2 = 4;
+			tmpAF1 = addAirFrameToPool(t1, t4, t7, tmpAF1Power1, tmpAF1Power2);
+
+			updateSimTime(t2);
+
+			senseLength = 7;
+			testChannelSense = createCSR(senseLength, UNTIL_BUSY);
+
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertClose("UNTIL_BUSY request can't be answered because of idle header.",
+						t4, handleTime);
+
+			updateSimTime(handleTime);
+
+			setExpectedCSRAnswer(false, tmpAF1Power2);
+			assert(expectCSRAnswer);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertFalse("UNTIL_BUSY request should have been answered because of busy payload.", expectCSRAnswer);
+			assert(handleTime < 0);
+
+			delete testChannelSense;
+
+			//UNTIL_BUSY with busy change is brought forward by second payload
+			double tmpAF2Power1 = 1;
+			double tmpAF2Power2 = 2;
+			AirFrame* tmpAF2 = addAirFrameToPool(t2, t3, t5, tmpAF2Power1, tmpAF2Power2);
+
+			updateSimTime(t1);
+
+			senseLength = 7;
+			testChannelSense = createCSR(senseLength, UNTIL_BUSY);
+
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertClose("UNTIL_BUSY request can't be answered because of idle header(s).",
+						t4, handleTime);
+
+			updateSimTime(t2);
+
+			setExpectedReschedule(t3);
+			assert(expectReschedule);
+			handleTime = decider->processSignal(tmpAF2);
+			assert(handleTime < 0);
+			assertFalse("UNTIL_BUSY request was rescheduled because of new AirFrame payload.",
+						expectReschedule);
+
+			updateSimTime(expRescheduleTime);
+
+			setExpectedCSRAnswer(false, tmpAF1Power1 + tmpAF2Power2);
+			assert(expectCSRAnswer);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assert(handleTime < 0);
+			assertFalse("UNTIL_BUSY request was answered because of busy payload.",
+						expectCSRAnswer);
 
 			delete testChannelSense;
 			break;
@@ -1948,10 +2279,16 @@ void DeciderTest::recordScalar(const char *name, double value, const char *unit)
 	return;
 }
 
-// TODO implement
+
 void DeciderTest::rescheduleMessage(cMessage* msg, simtime_t t)
 {
-	return;
+	ChannelSenseRequest* req = dynamic_cast<ChannelSenseRequest*>(msg);
+	assertTrue("Rescheduled message is a ChannelSenseRequest.", req != 0);
+	assertTrue("This rescheduling was expected.", expectReschedule);
+	assertClose("Decider rescheduled CSR to correct time.", expRescheduleTime, t);
+	expRescheduleTime = t;
+
+	expectReschedule = false;
 }
 
 

@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100528-18:18:01-11098
+Assigned runID=General-0-20100531-19:19:59-6377
 Setting up network `DeciderTest'...
 Signal for TestAirFrame1 created with header/payload power: 1/0
 [ Test] - Creating TestAirFrame 1 done.
@@ -406,6 +406,12 @@ Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: NextHandoverTime express that sense request has been finally processed.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
 Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
 Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
 Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
@@ -822,18 +828,203 @@ Passed: This ChannelSenseRequest answer has been expected.
 Passed: ChannelSense results isIdle state match expected results isIdle state.
 Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: UNTIL_BUSY request should have been answered because of AF3.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_BUSY request on idle channel can't be answered yet.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_BUSY request should have been answered because of time out.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_BUSY request should have been answered because of already busy channel.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_IDLE request can't be answered because of busy channel.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_IDLE request was answered because of time out.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_IDLE request can't be answered because of busy channel.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_IDLE request was answered because of idle channel.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_IDLE request can't be answered because of busy channel.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Rescheduled message is a ChannelSenseRequest.
+Passed: This rescheduling was expected.
+Passed: Decider rescheduled CSR to correct time.
+Passed: UNTIL_IDLE request was rescheduled because of new AirFrame.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_IDLE request was answered because of idle channel.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_IDLE request can't be answered because of busy channel.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_IDLE request was answered because of idle channel.
+Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
+Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
+Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_IDLE request can't be answered because of busy header.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_IDLE request should have been answered because of idle payload.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_BUSY request can't be answered because of idle header.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_BUSY request should have been answered because of busy payload.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_BUSY request can't be answered because of idle header(s).
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Rescheduled message is a ChannelSenseRequest.
+Passed: This rescheduling was expected.
+Passed: Decider rescheduled CSR to correct time.
+Passed: UNTIL_BUSY request was rescheduled because of new AirFrame payload.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_BUSY request was answered because of busy payload.
 
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 75   present: 1   in FES: 0
+     Messages:  created: 110   present: 3   in FES: 0
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 75   present: 1   in FES: 0
+     Messages:  created: 110   present: 3   in FES: 0
 
 <!> No more events -- simulation ended.
 
 
 Calling finish() at end of Run #0...
+undisposed object: (ChannelSenseRequest) .DeciderTest. -- check module destructor
 
 End.
