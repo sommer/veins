@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100531-19:19:59-6377
+Assigned runID=General-0-20100602-17:35:34-3064
 Setting up network `DeciderTest'...
 Signal for TestAirFrame1 created with header/payload power: 1/0
 [ Test] - Creating TestAirFrame 1 done.
@@ -972,6 +972,33 @@ Signal for TestAirFrame5 created with header/payload power: 32/16
 [SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
 [SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
 [SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: UNTIL_IDLE request can't be answered yet because of busy header(1).
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Rescheduled message is a ChannelSenseRequest.
+Passed: This rescheduling was expected.
+Passed: Decider rescheduled CSR to correct time.
+Passed: UNTIL_IDLE request should have been rescheduled.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
+Passed: Control message send to mac by the Decider should be a ChannelSenseRequest
+Passed: This ChannelSenseRequest answer has been expected.
+Passed: ChannelSense results isIdle state match expected results isIdle state.
+Passed: ChannelSense results RSSI value match expected results RSSI value.
+Passed: UNTIL_IDLE request should have been answered because of idle channel.
+Signal for TestAirFrame5 created with header/payload power: 32/16
+[SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
+[SNRThresholdDeciderNew Test] - Filled airFramesOnChannel. (the virtual channel)
+[SNRThresholdDeciderNew Test] - All TestAirFrames-pointers have been copied.
+[SNRThresholdDeciderNew Test] - All channel-info has been copied to AirFrameVector-reference.
 Passed: UNTIL_BUSY request can't be answered because of idle header.
 Signal for TestAirFrame5 created with header/payload power: 32/16
 [SNRThresholdDeciderNew Test] - Creating TestAirFrame 5 done.
@@ -1016,10 +1043,10 @@ Passed: UNTIL_BUSY request was answered because of busy payload.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 110   present: 3   in FES: 0
+     Messages:  created: 117   present: 3   in FES: 0
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 110   present: 3   in FES: 0
+     Messages:  created: 117   present: 3   in FES: 0
 
 <!> No more events -- simulation ended.
 

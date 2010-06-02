@@ -1630,7 +1630,7 @@ void DeciderTest::executeSNRNewTestCase()
 		{
 			//UNTIL_IDLE with channel state busy->idle during airframe
 			double tmpAF1Power1 = 4;
-			double tmpAF1Power2 = 3;
+			double tmpAF1Power2 = 0.5;
 			AirFrame* tmpAF1 = addAirFrameToPool(t1, t3, t5, tmpAF1Power1, tmpAF1Power2);
 
 			updateSimTime(t2);
@@ -1652,8 +1652,48 @@ void DeciderTest::executeSNRNewTestCase()
 
 			delete testChannelSense;
 
+			//UNTIL_IDLE with idle delayed because of summed up power at a
+			//time point which is not a start or end of any airframe
+			removeAirFrameFromPool(tmpAF1);
+
+			tmpAF1 = addAirFrameToPool(t2, t5, t8, tmpAF1Power1, tmpAF1Power2);
+			double tmpAF23Power1 = 2;
+			double tmpAF23Power2 = 0.5;
+			AirFrame* tmpAF2 = addAirFrameToPool(t1, t4, t8, tmpAF23Power2, tmpAF23Power1);
+			AirFrame* tmpAF3 = addAirFrameToPool(t3, t6, t8, tmpAF23Power1, tmpAF23Power2);
+
+			updateSimTime(t2);
+
+			senseLength = 6;
+			testChannelSense = createCSR(senseLength, UNTIL_IDLE);
+
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertClose("UNTIL_IDLE request can't be answered yet because of busy header(1).",
+						t5, handleTime);
+
+			updateSimTime(t3);
+
+			setExpectedReschedule(t6);
+			assert(expectReschedule);
+			handleTime = decider->processSignal(tmpAF3);
+			assert(handleTime < 0);
+			assertFalse("UNTIL_IDLE request should have been rescheduled.", expectReschedule);
+
+			updateSimTime(expRescheduleTime);
+
+			setExpectedCSRAnswer(true, tmpAF1Power2 + tmpAF23Power1 + tmpAF23Power2);
+			assert(expectCSRAnswer);
+			handleTime = decider->handleChannelSenseRequest(testChannelSense);
+			assertFalse("UNTIL_IDLE request should have been answered because of idle channel.",
+						expectCSRAnswer);
+			assert(handleTime < 0);
+
+			delete testChannelSense;
+
 			//UNTIL_BUSY with channel state idle->busy during airframe
 			removeAirFrameFromPool(tmpAF1);
+			removeAirFrameFromPool(tmpAF2);
+			removeAirFrameFromPool(tmpAF3);
 			tmpAF1Power1 = 2;
 			tmpAF1Power2 = 4;
 			tmpAF1 = addAirFrameToPool(t1, t4, t7, tmpAF1Power1, tmpAF1Power2);
@@ -1680,7 +1720,7 @@ void DeciderTest::executeSNRNewTestCase()
 			//UNTIL_BUSY with busy change is brought forward by second payload
 			double tmpAF2Power1 = 1;
 			double tmpAF2Power2 = 2;
-			AirFrame* tmpAF2 = addAirFrameToPool(t2, t3, t5, tmpAF2Power1, tmpAF2Power2);
+			tmpAF2 = addAirFrameToPool(t2, t3, t5, tmpAF2Power1, tmpAF2Power2);
 
 			updateSimTime(t1);
 
