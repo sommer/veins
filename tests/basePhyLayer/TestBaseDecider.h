@@ -42,7 +42,7 @@ public:
 					double sensitivity,
 					int myIndex,
 					bool debug)
-		: SNRThresholdDecider(phy, threshold, sensitivity, myIndex, debug)
+		: SNRThresholdDecider(phy, threshold, sensitivity, sensitivity, myIndex, debug)
 	{
 
 		init("decider" + toString(this->myIndex));
@@ -59,7 +59,7 @@ public:
 	TestBaseDecider(DeciderToPhyInterface* phy,
 					double threshold,
 					double sensitivity)
-		: SNRThresholdDecider(phy, threshold, sensitivity)
+		: SNRThresholdDecider(phy, threshold, sensitivity, sensitivity)
 	{
 
 		// TODO: here we have the problem, that multiple deciders might

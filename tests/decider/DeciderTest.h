@@ -215,7 +215,7 @@ protected:
 	 */
 	void executeSNRTestCase();
 	/**
-	 * @brief Executes test cases for SNRThresholdDeciderNew.
+	 * @brief Executes test cases for SNRThresholdDecider.
 	 */
 	void executeSNRNewTestCase();
 

@@ -258,8 +258,13 @@ public:
 		case JABBER:
 			handleIncomingJabber(static_cast<NetwPkt*>(msg));
 			break;
+/*
+		case BaseMacLayer::PACKET_DROPPED:
+			ev << "Packet dropped by MAC layer." << endl;
+			break;
+*/
 		default:
-			error("unknown packet type");
+			error("unknown packet type of packet %s", msg->getName());
 			break;
 		}
 	}

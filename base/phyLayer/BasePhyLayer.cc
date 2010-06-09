@@ -354,8 +354,8 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
 void BasePhyLayer::handleAirFrame(cMessage* msg) {
 	AirFrame* frame = static_cast<AirFrame*>(msg);
 
-	//TODO: remove this assert
-	assert(frame->getSchedulingPriority() == airFramePriority);
+	//TODO: ask jerome to set air frame priority in his UWBIRPhy
+	//assert(frame->getSchedulingPriority() == airFramePriority);
 
 	switch(frame->getState()) {
 	case START_RECEIVE:

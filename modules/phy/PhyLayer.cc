@@ -161,7 +161,28 @@ Decider* PhyLayer::initializeDecider802154Narrow(ParameterMap& params) {
 	return new Decider802154Narrow(this, findHost()->getIndex(), coreDebug, sfdLength, berLowerBound, modulation);
 }
 
-Decider* PhyLayer::initializeSNRThresholdDecider(ParameterMap& params) {
-	double threshold = params["threshold"];
-	return new SNRThresholdDecider(this, threshold, sensitivity, findHost()->getIndex(), coreDebug);
+Decider* PhyLayer::initializeSNRThresholdDecider(ParameterMap& params)
+{
+	double snrThreshold = 0;
+	if(params.count("snrThreshold") == 1) {
+		snrThreshold = params["snrThreshold"];
+	}
+	else if(params.count("threshold") == 1) {
+		snrThreshold = params["threshold"];
+	}
+	else {
+		opp_warning("No SNR threshold defined in config.xml for Decider!");
+	}
+
+	double busyThreshold = sensitivity;
+	if(params.count("busyThreshold") == 0) {
+		ev << "No busy threshold defined for SNRThresholdDecider. Using"
+		   << " phy layers sensitivity as busy threshold." << endl;
+	} else {
+		busyThreshold = params["busyThreshold"];
+	}
+
+	return new SNRThresholdDecider(this, snrThreshold,
+								   sensitivity, busyThreshold,
+								   findHost()->getIndex(), coreDebug);
 }

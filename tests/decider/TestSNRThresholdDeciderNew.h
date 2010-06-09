@@ -1,11 +1,11 @@
 #ifndef TESTSNRTHRESHOLDDECIDERNEW_H_
 #define TESTSNRTHRESHOLDDECIDERNEW_H_
 
-#include <SNRThresholdDeciderNew.h>
+#include <SNRThresholdDecider.h>
 #include <BasePhyLayer.h>
 #include <cassert>
 
-class TestSNRThresholdDeciderNew : public SNRThresholdDeciderNew
+class TestSNRThresholdDeciderNew : public SNRThresholdDecider
 {
 protected:
 	/**
@@ -38,7 +38,7 @@ public:
 					double busyThreshold,
 					int myIndex,
 					bool debug)
-		: SNRThresholdDeciderNew(phy, snrThreshold, sensitivity, busyThreshold, myIndex, debug)
+		: SNRThresholdDecider(phy, snrThreshold, sensitivity, busyThreshold, myIndex, debug)
 	{
 
 		// commented out, because TestBaseLayer no longer subclasses TestModule
