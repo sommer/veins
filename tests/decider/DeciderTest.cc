@@ -1297,6 +1297,8 @@ void DeciderTest::executeSNRNewTestCase()
 			break;
 
 		case TEST_CHANNELSENSE:
+			break;
+/*
 			processedAF = 0;
 
 			ev << log("-------------------------------------------------------") << endl;
@@ -1430,7 +1432,7 @@ void DeciderTest::executeSNRNewTestCase()
 			delete testChannelSense;
 
 			break;
-
+*/
 		case TEST_CHANNELSENSE_IDLE_CHANNEL:
 		{
 			//test UNTIL_IDLE on already idle channel

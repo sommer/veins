@@ -14,13 +14,14 @@ v1.2
 + added a wizard to create a basic MiXiM-network as well as a wizard for creating your own AnalogueModel
 + added, updated or extended documentation for Radio, RSAM, ChannelInfo, MiXiM-basics, mobility,
   border-handling and CSMA MAC-Layer 
++ changed scheduling priority of AirFrames to slightly higher than normal to ensure channel consistency
 * fixed memory leak when propagation delay is simulated
 * fixed a bug in the calculated receiving power of a signal which caused it to be greater zero before 
   and after its signal in certain cases
 * fixed wrong calculation of position on "WRAP" border handling in BaseMobility
 * fixed missing connections when the cells from ConnectionManager do not cover the playground size
   exactly
-* fixed increasing heap memory usage while hosts sending AirFrames but wheren receiving any.
+* fixed increasing heap memory usage while hosts sending AirFrames but wheren't receiving any.
   This was caused by RSAM tracking every radio state although there wheren't any Signals on the
   channel to attenuate.
 

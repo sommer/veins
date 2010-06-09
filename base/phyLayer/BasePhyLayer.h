@@ -70,6 +70,18 @@ class BasePhyLayer: public ChannelAccess,
 					public MacToPhyInterface {
 
 protected:
+	/** @brief Defines the scheduling priority of AirFrames.
+	 *
+	 * AirFrames use a slightly higher priority than normal to ensure
+	 * channel consistency. This means that before anything else happens
+	 * at a time point t every AirFrame which ended at t has been removed and
+	 * every AirFrame started at t has been added to the channel.
+	 *
+	 * An example where this matters is a ChannelSenseRequest which ends at
+	 * the same time as an AirFrame starts (or ends). Depending on which message
+	 * is handled first the result of ChannelSenseRequest would differ.
+	 */
+	static short airFramePriority;
 
 	/** @brief Defines the strength of the thermal noise.*/
 	ConstantSimpleConstMapping* thermalNoise;

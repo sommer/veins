@@ -9,6 +9,7 @@
 //introduce BasePhyLayer as module to OMNet
 Define_Module(BasePhyLayer);
 
+short BasePhyLayer::airFramePriority = 10;
 
 //--Initialization----------------------------------
 
@@ -351,8 +352,10 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
 }
 
 void BasePhyLayer::handleAirFrame(cMessage* msg) {
-
 	AirFrame* frame = static_cast<AirFrame*>(msg);
+
+	//TODO: remove this assert
+	assert(frame->getSchedulingPriority() == airFramePriority);
 
 	switch(frame->getState()) {
 	case START_RECEIVE:
@@ -518,6 +521,12 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 
 	// create the new AirFrame
 	AirFrame* frame = new AirFrame("airframe", AIR_FRAME);
+
+	//set priority of AirFrames above the normal priority to ensure
+	//channel consistency (before any thing else happens at a time
+	//point t make sure that the channel has removed every AirFrame
+	//ended at t and added every AirFrame started at t)
+	frame->setSchedulingPriority(airFramePriority);
 
 	// set the members
 	assert(s->getSignalLength() > 0);

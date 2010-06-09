@@ -4,15 +4,31 @@
 #include <BaseDecider.h>
 
 /**
- * @brief BaseDecider implementation which decides a signals
+ * @brief Decider implementation which decides a signals
  * correctness by checking its SNR against a threshold.
  *
- * Decides the channel state (idle/busy) at hand of the current
+ * SNRThresholdDecider decides the channel state (idle/busy) at hand of the current
  * received total power level (independent from signal or noise).
  * If its above the threshold defined by the "busyThreshold" parameter
  * it considers the channel busy.
  * The RSSI value returned by this Decider for a ChannelSenseRequest
  * over time is always the RSSI value at the end of the sense.
+ *
+ * SNRThresholdDecider implements only instantaneous channel sensing
+ * therefore it can only handle "UNTIL_IDLE" and "UNTIL_BUSY"
+ * ChannelSenseRequests but not "UNTIL_TIMEOUT".
+ *
+ * Instantaneous channel sensing means SNRThresholdDecider is simplified in the way that
+ * the channel does not has to be below the threshold for a certain
+ * amount of time to be considered idle (how it would be in reality),
+ * but immediately after the RSSI drops below the threshold the channel
+ * is considered idle. This means "UNTIL_IDLE" and "UNTIL_BUSY" request
+ * are also answered at the first moment the channel drops below or raises
+ * above the threshold.
+ * SNRThresholdDecider does not support "UNTIL_TIMEOUT" requests because
+ * they are used to calculate the channel state over a time period
+ * (by averaging over it for example) which is not consistent with using
+ * instantaneous idle/busy changes.
  *
  * @ingroup decider
  */

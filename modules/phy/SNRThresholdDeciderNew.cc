@@ -107,11 +107,15 @@ simtime_t SNRThresholdDeciderNew::canAnswerCSR(const CSRInfo& requestInfo) {
 	const ChannelSenseRequest* request = requestInfo.getRequest();
 	assert(request);
 
-	simtime_t requestTimeout = requestInfo.getSenseStart() + request->getSenseTimeout();
-
 	if(request->getSenseMode() == UNTIL_TIMEOUT) {
-		return requestTimeout;
+		opp_error("SNRThresholdDecider received an UNTIL_TIMEOUT ChannelSenseRequest.\n"
+				  "SNRThresholdDecider can only handle UNTIL_IDLE or UNTIL_BUSY requests because it "
+				  "implements only instantaneous sensing where UNTIL_TIMEOUT requests "
+				  "don't make sense. Please refer to ChannelSenseRequests documentation "
+				  "for details.");
 	}
+
+	simtime_t requestTimeout = requestInfo.getSenseStart() + request->getSenseTimeout();
 
 	simtime_t now = phy->getSimTime();
 

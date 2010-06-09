@@ -20,6 +20,14 @@ class noncobject Signal;
 // this packet can evaluate noise, interference etc. from the
 // information contained in this packet (especially the signal):
 //
+// Note: BasePhy layer creates AirFrames with a slightly higher 
+// priority than normal to ensure channel consistency. This means that before anything else happens
+// at a time point t every AirFrame which ended at t has been removed and
+// every AirFrame started at t has been added to the channel.
+// An example where this matters is a ChannelSenseRequest which ends at
+// the same time as an AirFrame starts (or ends). Depending on which message
+// is handled first the result of ChannelSenseRequest would differ.
+//
 // If you need more fields for whatever reason, please do NOT create
 // your own packet! Just extend (subclass) this packet format 
 //
