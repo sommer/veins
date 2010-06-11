@@ -9,22 +9,22 @@ import org.mixim.modules.phy.PhyLayer;
 //
 // @see CSMAMacLayer
 //
-module BaseNic 
+module BaseNic
 {
     gates:
         input upperGateIn; // to upper layers
         output upperGateOut; // from upper layers
         output upperControlOut; // control information 
         input upperControlIn; // control information 
-		input radioIn; // radioIn gate for sendDirect
+        input radioIn; // radioIn gate for sendDirect
 
     submodules:
         mac: CSMAMacLayer {
             @display("p=96,87;i=block/layer");
         }
-        
+
         phy: PhyLayer {
-            @display("p=106,157;i=block/process_s");
+            @display("p=96,157;i=block/process_s");
         }
 
     connections:

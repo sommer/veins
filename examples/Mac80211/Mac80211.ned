@@ -48,8 +48,8 @@ network Mac80211
         double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
         double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
         double numHosts; // total number of hosts in the network  
-        
-        @display("p=0,0;b=$playgroundSizeX,$playgroundSizeY,rect;o=white");      
+
+        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=10,50");
 
     submodules:
         world: BaseWorldUtility {
@@ -57,12 +57,12 @@ network Mac80211
                 playgroundSizeX = playgroundSizeX;
                 playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
-                @display("p=100,0;i=misc/globe");
+                @display("p=171,27;i=misc/globe");
 
         }
         connectionManager: ConnectionManager {
-            parameters:  
-            	@display("p=50,25;b=42,42,rect,green,,;i=abstract/multicast");
+            parameters:
+                @display("p=66,25;b=42,42,rect,green;i=abstract/multicast");
         }
         host[numHosts]: Host {
             @display("p=20,20;b=20,20,rect,yellow,,;i=device/wifilaptop");

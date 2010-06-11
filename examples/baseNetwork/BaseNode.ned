@@ -14,15 +14,15 @@ module BaseNode
     submodules:
         utility: BaseUtility {
             parameters:
-                @display("p=130,38;b=24,24,rect,black,,");
+                @display("p=130,38;b=24,24,rect,black;i=block/blackboard");
         }
         arp: BaseArp {
             parameters:
-                @display("p=130,84;b=24,24,rect,blue,,");
+                @display("p=130,108;b=24,24,rect,blue;i=block/process");
         }
         mobility: <mobType> like IBaseMobility {
             parameters:
-                @display("p=130,172;i=cogwheel2");
+                @display("p=130,172;i=block/cogwheel");
         }
         appl: <applType> like IBaseApplLayer {
             parameters:
@@ -30,11 +30,11 @@ module BaseNode
         }
         net: <netwType> like IBaseNetwLayer {
             parameters:
-                @display("p=60,108;i=prot1");
+                @display("p=60,108;i=block/layer");
         }
         nic: BaseNic {
             parameters:
-                @display("p=60,166;i=iface");
+                @display("p=60,166;i=block/ifcard");
         }
     connections:
         nic.upperGateOut --> net.lowerGateIn;

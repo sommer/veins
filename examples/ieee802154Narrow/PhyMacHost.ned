@@ -35,11 +35,11 @@ module PhyMacHost
                 @display("p=205,81;i=block/cogwheel");
         }
         arp: BaseArp {
-            @display("p=205,264;b=30,25");
+            @display("p=205,264;b=30,25;i=block/process");
         }
         appl: NetworkStackTrafficGen {
             parameters:
-                @display("p=80,132;b=80,30,rect,white");
+                @display("p=80,132;b=20,20,rect,white;i=block/app");
         }
         nic: Nic802154_TI_CC2420 {
             parameters:

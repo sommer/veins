@@ -29,11 +29,11 @@ module PhyMacHost
             @display("p=200,225;b=30,25");
         }
         appl: BurstApplLayer {
-            @display("p=90,50;b=100,20,rect");
+            @display("p=60,42;b=10,10,rect;i=block/app");
         }
         net: BaseNetwLayer {
             parameters:
-                @display("p=60,10;b=80,30,rect,white,,");
+                @display("p=60,106;b=10,10,rect,white;i=block/layer");
         }
         nic: PhyMacNic {
             parameters:
@@ -44,11 +44,11 @@ module PhyMacHost
         nic.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- net.lowerGateOut;
         nic.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> net.lowerControlIn;
         nic.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- net.lowerControlOut;
-        
+
         net.upperGateOut --> appl.lowerGateIn;
-    	net.upperGateIn <-- appl.lowerGateOut;
-    	net.upperControlOut --> appl.lowerControlIn;
-    	net.upperControlIn <-- appl.lowerControlOut;	
+        net.upperGateIn <-- appl.lowerGateOut;
+        net.upperControlOut --> appl.lowerControlIn;
+        net.upperControlIn <-- appl.lowerControlOut;
 
         radioIn --> nic.radioIn;
 

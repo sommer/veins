@@ -28,11 +28,11 @@ module PhyMacHost
         }
         net: SimpleNetwLayer {
             parameters:
-                @display("p=60,10;b=80,30,rect,white,,");
+                @display("p=60,84;b=80,30,rect,white");
         }
         nic: PhyMacNic {
             parameters:
-                @display("b=32,30;p=60,166;i=block/ifcard");
+                @display("b=32,30;p=60,153;i=block/ifcard");
         }
     connections:
         nic.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> net.lowerGateIn;
