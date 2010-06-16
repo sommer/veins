@@ -237,7 +237,17 @@ void RSAMConstMappingIterator::setNextPosition()
 			CurrList::const_iterator it2 = it;
 			it2++;
 
-			nextPosition.setTime(it2->getTime());
+			assert(it->getTime() <= position.getTime() && position.getTime() < it2->getTime());
+
+			//point in time for the "pre step" of the next real key entry
+			simtime_t preTime = MappingUtils::pre(it2->getTime());
+
+			if(position.getTime() == preTime) {
+				nextPosition.setTime(it2->getTime());
+			}
+			else {
+				nextPosition.setTime(preTime);
+			}
 		}
 
 	} else // iterator it stands on last entry or next entry whould be behind signal end

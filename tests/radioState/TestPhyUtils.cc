@@ -556,7 +556,7 @@ private:
 		RSAMConstMappingIterator* rsamCMI;
 
 
-		// Constructor tests with rsam storing only one the entry (initTime, minAtt)
+		// Constructor tests with rsam storing only the entry (initTime, minAtt)
 		// rsamCMI stands on initTime
 		simtime_t t0(initTime);
 		simtime_t t0Next(t0); t0Next+=1;
@@ -607,7 +607,7 @@ private:
 
 
 		checkIterator("Iterator at beginning of filled RSAM",
-				*rsamCMI, true, true, Argument(initTime), Argument(time1), minAtt, mapping);
+				*rsamCMI, true, true, Argument(initTime), Argument(MappingUtils::pre(time1)), minAtt, mapping);
 
 
 		// --- test iterateTo() method by iterating through some interesting points
@@ -617,18 +617,20 @@ private:
 		simtime_t t3(time1 + (time2-time1)/2);
 		rsamCMI->iterateTo(Argument(t3));
 		checkIterator("Iterator between time1 and time2",
-					*rsamCMI, true, true, Argument(t3), Argument(time2), minAtt, mapping);
+					*rsamCMI, true, true, Argument(t3), Argument(MappingUtils::pre(time2)), minAtt, mapping);
 
-
+		rsamCMI->iterateTo(Argument(MappingUtils::pre(time2)));
+		checkIterator("Iterator on pre(time2)",
+					*rsamCMI, true, true, Argument(MappingUtils::pre(time2)), Argument(time2), minAtt, mapping);
 
 		rsamCMI->iterateTo(Argument(time2));
 		checkIterator("Iterator on time2",
-					*rsamCMI, true, true, Argument(time2), Argument(time3), maxAtt, mapping);
+					*rsamCMI, true, true, Argument(time2), Argument(MappingUtils::pre(time3)), maxAtt, mapping);
 
 
 		rsamCMI->iterateTo(Argument(time3));
 		checkIterator("Iterator on time3",
-					*rsamCMI, true, true, Argument(time3), Argument(time4), minAtt, mapping);
+					*rsamCMI, true, true, Argument(time3), Argument(MappingUtils::pre(time4)), minAtt, mapping);
 
 		rsamCMI->iterateTo(Argument(time4));
 		simtime_t time4Next = incrTime(time4);
@@ -653,24 +655,26 @@ private:
 
 
 		checkIterator("Iterator at beginning of filled RSAM",
-					*rsamCMI, true, true, Argument(initTime), Argument(time1), minAtt, mapping);
+					*rsamCMI, true, true, Argument(initTime), Argument(MappingUtils::pre(time1)), minAtt, mapping);
 
 
 
 		rsamCMI->jumpTo(Argument(t3));
 		checkIterator("Iterator between time1 and time2",
-					*rsamCMI, true, true, Argument(t3), Argument(time2), minAtt, mapping);
+					*rsamCMI, true, true, Argument(t3), Argument(MappingUtils::pre(time2)), minAtt, mapping);
 
-
+		rsamCMI->jumpTo(Argument(MappingUtils::pre(time2)));
+		checkIterator("Iterator on pre(time2)",
+					*rsamCMI, true, true, Argument(MappingUtils::pre(time2)), Argument(time2), minAtt, mapping);
 
 		rsamCMI->jumpTo(Argument(time2));
 		checkIterator("Iterator on time2",
-					*rsamCMI, true, true, Argument(time2), Argument(time3), maxAtt, mapping);
+					*rsamCMI, true, true, Argument(time2), Argument(MappingUtils::pre(time3)), maxAtt, mapping);
 
 
 		rsamCMI->jumpTo(Argument(time3));
 		checkIterator("Iterator on time3",
-					*rsamCMI, true, true, Argument(time3), Argument(time4), minAtt, mapping);
+					*rsamCMI, true, true, Argument(time3), Argument(MappingUtils::pre(time4)), minAtt, mapping);
 
 		rsamCMI->jumpTo(Argument(time4));
 		checkIterator("Iterator on time4",
@@ -692,16 +696,16 @@ private:
 
 		rsamCMI->jumpTo(Argument(time3));
 		checkIterator("Iterator on time3",
-					*rsamCMI, true, true, Argument(time3), Argument(time4), minAtt, mapping);
+					*rsamCMI, true, true, Argument(time3), Argument(MappingUtils::pre(time4)), minAtt, mapping);
 
 
 		rsamCMI->jumpTo(Argument(time2));
 		checkIterator("Iterator on time2",
-					*rsamCMI, true, true, Argument(time2), Argument(time3), maxAtt, mapping);
+					*rsamCMI, true, true, Argument(time2), Argument(MappingUtils::pre(time3)), maxAtt, mapping);
 
 		rsamCMI->jumpTo(Argument(t3));
 		checkIterator("Iterator between time1 and time2",
-					*rsamCMI, true, true, Argument(t3), Argument(time2), minAtt, mapping);
+					*rsamCMI, true, true, Argument(t3), Argument(MappingUtils::pre(time2)), minAtt, mapping);
 
 		// some tests on multiple entries at first timepoint
 		std::cout << "--- some tests on multiple entries at first timepoint" << endl;

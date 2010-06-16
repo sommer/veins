@@ -1,5 +1,5 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100518-c18652f, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100521-17:54:38-32030
+Assigned runID=General-0-20100616-13:39:23-4960
 Setting up network `sim'...
 Initializing...
 Initializing module sim, stage 0
@@ -70,7 +70,7 @@ StateVisualize::receiveBBItem Host state changed to SLEEP
 ** Event #12  T=10   sim.node[0].statechanger (StateChanger, id=5)
 StateVisualize::receiveBBItem Host state changed to DEAD
 
-<!> No more events -- simulation ended.
+<!> No more events -- simulation ended at event #13, t=10.
 
 
 Calling finish() at end of Run #0...

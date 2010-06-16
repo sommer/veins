@@ -1,14 +1,14 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100518-c18652f, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /Users/mixim/git-workspace/MiXiM/base: 17
-Loading NED files from /Users/mixim/git-workspace/MiXiM/modules: 40
-Loading NED files from /Users/mixim/git-workspace/MiXiM/tests: 41
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 40
+Loading NED files from /home/karl/git-repo/mixim/tests: 41
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100614-17:18:48-31661
+Assigned runID=General-0-20100616-13:42:21-5105
 Setting up network `DeciderTest'...
 Signal for TestAirFrame1 created with header/payload power: 1/0
 [ Test] - Creating TestAirFrame 1 done.
@@ -885,7 +885,7 @@ Running simulation...
      Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
      Messages:  created: 97   present: 3   in FES: 0
 
-<!> No more events -- simulation ended.
+<!> No more events -- simulation ended at event #1, t=0.
 
 
 Calling finish() at end of Run #0...
