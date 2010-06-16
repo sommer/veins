@@ -333,6 +333,42 @@ double MappingUtils::findMin(ConstMapping& m, const Argument& min, const Argumen
 }
 
 
+void MappingUtils::addDiscontinuity(Mapping* m,
+									const Argument& pos, double value,
+									simtime_t limitTime, double limitValue)
+{
+	// asserts/preconditions
+	// make sure the time really differs at the discontinuity
+	assert(limitTime != pos.getTime());
+
+	// add (pos, value) to mapping
+	m->setValue(pos, value);
+
+	// create Argument limitPos for the limit-position, i.e. copy pos and set limitTime as its time
+	Argument limitPos = pos;
+	limitPos.setTime(limitTime);
+
+	// add (limitPos, limitValue) to mapping
+	m->setValue(limitPos, limitValue);
+}
+
+simtime_t MappingUtils::pre(simtime_t t)
+{
+	t.setRaw(t.raw() - 1);
+
+	return t;
+}
+
+simtime_t MappingUtils::post(simtime_t t)
+{
+	assert(t.raw() < simtime_t::getMaxTime().raw());
+
+	t.setRaw(t.raw() + 1);
+
+	return t;
+}
+
+
 /*
 Mapping* Mapping::multiply(ConstMapping &f1, ConstMapping &f2, const Argument& from, const Argument& to)
 {

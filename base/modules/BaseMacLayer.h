@@ -134,6 +134,13 @@ protected:
      * Convenience method to be able to create the appropriate
      * Signal for the MacToPhyControlInfo without needing to care
      * about creating Mappings.
+     *
+     * NOTE: The created signal's transmission-power is a rectangular function.
+     * This method uses MappingUtils::addDiscontinuity to represent the discontinuities
+     * at the beginning and end of this rectangular function.
+     * Because of this the created mapping which represents the signal's
+     * transmission-power is still zero at the exact start and end.
+     * Please see the method MappingUtils::addDiscontinuity for the reason.
      */
     virtual Signal* createSignal(simtime_t start, simtime_t length, double power, double bitrate);
 
@@ -141,9 +148,17 @@ protected:
      * @brief Creates a simple Mapping with a constant curve
      * progression at the passed value.
      *
-     * Used by "createSignal" to create the power and bitrate mapping.
+     * Used by "createSignal" to create the bitrate mapping.
      */
     Mapping* createConstantMapping(simtime_t start, simtime_t end, double value);
+
+    /**
+	 * @brief Creates a simple Mapping with a constant curve
+	 * progression at the passed value and discontinuities at the boundaries.
+	 *
+	 * Used by "createSignal" to create the power mapping.
+	 */
+    Mapping* createRectangleMapping(simtime_t start, simtime_t end, double value);
 
     /**
      * @brief Creates a Mapping defined over time and frequency with

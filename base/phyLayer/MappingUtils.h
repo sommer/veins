@@ -1913,6 +1913,41 @@ public:
 	static Mapping* subtract(ConstMapping& f1, ConstMapping& f2, const Argument& from, const Argument& to);
 	static Mapping* divide(ConstMapping& f1, ConstMapping& f2, const Argument& from, const Argument& to);
 	*/
+
+
+	/**
+	 * @brief Adds a discontinuity in time-dimension, i.e. its representation, to a passed mapping.
+	 *
+	 * This is done by setting a regular entry and a limit-entry. The limit-entry shall be
+	 * very close to the regular entry (on its left or right).
+	 *
+	 * The implementation works simply by adding the limit-value as a separate entry at the
+	 * position of the limit-time. This means that this methods adds a total of two entries
+	 * to the passed mapping.
+	 *
+	 * Note: One should use the methods 'pre' or 'post' provided by MappingUtils to calculate
+	 * the limit-time for the discontinuity.
+	 *
+	 * @param m The mapping the discontinuity will be added to.
+	 * @param pos The position of the regular entry.
+	 * @param value The value of the regular entry.
+	 * @param limitTime The time-point of the limit-entry.
+	 * @param limitValue The value of the limit-entry.
+	 *
+	 */
+	static void addDiscontinuity(Mapping* m,
+								 const Argument& pos, double value,
+								 simtime_t limitTime, double limitValue);
+
+	/**
+	 * @brief returns the closest value of simtime before passed value
+	 */
+	static simtime_t pre(simtime_t t);
+
+	/**
+	 * @brief returns the closest value of simtime after passed values
+	 */
+	static simtime_t post(simtime_t t);
 };
 
 

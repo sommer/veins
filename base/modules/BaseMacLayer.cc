@@ -159,7 +159,7 @@ Signal* BaseMacLayer::createSignal(simtime_t start, simtime_t length, double pow
 	Signal* s = new Signal(start, length);
 
 	//create and set tx power mapping
-	Mapping* txPowerMapping = createConstantMapping(start, end, power);
+	Mapping* txPowerMapping = createRectangleMapping(start, end, power);
 	s->setTransmissionPower(txPowerMapping);
 
 	//create and set bitrate mapping
@@ -185,6 +185,24 @@ Mapping* BaseMacLayer::createConstantMapping(simtime_t start, simtime_t end, dou
 
 	//set mapping at position
 	m->setValue(endPos, value);
+
+	return m;
+}
+
+Mapping* BaseMacLayer::createRectangleMapping(simtime_t start, simtime_t end, double value)
+{
+	//create mapping over time
+	Mapping* m = MappingUtils::createMapping(DimensionSet::timeDomain, Mapping::LINEAR);
+
+	//set position Argument
+	Argument startPos(start);
+	//set discontinuity at position
+	MappingUtils::addDiscontinuity(m, startPos, 0.0, MappingUtils::post(start), value);
+
+	//set position Argument
+	Argument endPos(end);
+	//set discontinuity at position
+	MappingUtils::addDiscontinuity(m, endPos, 0.0, MappingUtils::pre(end), value);
 
 	return m;
 }

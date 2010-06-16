@@ -15,6 +15,10 @@ v1.2
 + added, updated or extended documentation for Radio, RSAM, ChannelInfo, MiXiM-basics, mobility,
   border-handling and CSMA MAC-Layer 
 + changed scheduling priority of AirFrames to slightly higher than normal to ensure channel consistency
++ added utility-method 'addDiscontinuity' to MappingUtils which provides a workaround to represent
+  discontinuities in mappings by defining two entries as close as possible to each other
++ changed default signal created by BaseMacLayer's 'createSignal'-method to use a rectangular function
+  for TX-power
 * fixed memory leak when propagation delay is simulated
 * fixed a bug in the calculated receiving power of a signal which caused it to be greater zero before 
   and after its signal in certain cases

@@ -237,10 +237,12 @@ void DeciderTest::runDeciderTests(std::string name)
 	executeTestCase(TEST_SNR_THRESHOLD_MORE_NOISE_BEGINS_IN_BETWEEN_DENY);
 
 
-	executeTestCase(TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY);
-
-
-	executeTestCase(TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY);
+	// Since we don't simulate the real order in which BasePhyLayer
+	// handles AirFrames occuring at the same simulation-time we can't
+	// test these border-cases
+	//
+	//executeTestCase(TEST_SNR_THRESHOLD_NOISE_ENDS_AT_BEGINNING_DENY);
+	//executeTestCase(TEST_SNR_THRESHOLD_NOISE_BEGINS_AT_END_DENY);
 
 	executeTestCase(TEST_CHANNELSENSE);
 

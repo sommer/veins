@@ -24,7 +24,7 @@ bool Decider802154Narrow::syncOnSFD(AirFrame* frame) {
 double Decider802154Narrow::evalBER(AirFrame* frame) {
 	Signal& signal = frame->getSignal();
 
-	simtime_t time = phy->getSimTime();
+	simtime_t time = MappingUtils::post(phy->getSimTime());
 	double rcvPower = signal.getReceivingPower()->getValue(Argument(time));
 
 	ConstMapping* noise = calculateRSSIMapping(time, time, frame);
@@ -87,7 +87,8 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 	double ber;
 	double errorProbability;
 
-	ConstMappingIterator* iter = snrMapping->createConstIterator(Argument(start));
+	simtime_t receivingStart = MappingUtils::post(start);
+	ConstMappingIterator* iter = snrMapping->createConstIterator(Argument(receivingStart));
 	double snirMin = iter->getValue();
 	// Evaluate bit errors for each snr value
 	// and stops as soon as we have an error.

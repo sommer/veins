@@ -13,7 +13,8 @@ simtime_t SNRThresholdDecider::processNewSignal(AirFrame* frame)
 
 	// get the receiving power of the Signal at start-time
 	Signal& signal = frame->getSignal();
-	double recvPower = signal.getReceivingPower()->getValue(Argument(signal.getSignalStart()));
+	simtime_t receivingStart = MappingUtils::post(signal.getSignalStart());
+	double recvPower = signal.getReceivingPower()->getValue(Argument(receivingStart));
 
 	// check whether signal is strong enough to receive
 	if ( recvPower < sensitivity )
@@ -169,7 +170,14 @@ simtime_t SNRThresholdDecider::processSignalEnd(AirFrame* frame)
 	simtime_t start = signal.getSignalStart();
 	simtime_t end = start + signal.getSignalLength();
 
-	bool aboveThreshold = checkIfAboveThreshold(snrMap, start, end);
+	// NOTE: Since this decider does not consider the amount of time when the signal's SNR is
+	// below the threshold even the smallest (normally insignificant) drop causes this decider
+	// to reject reception of the signal.
+	// Since the default MiXiM-signal is still zero at its exact start and end, these points
+	// are ignored in the interval passed to the following method.
+	bool aboveThreshold = checkIfAboveThreshold(snrMap,
+												MappingUtils::post(start),
+												MappingUtils::pre(end));
 
 	// check if the snrMapping is above the Decider's specific threshold,
 	// i.e. the Decider has received it correctly
