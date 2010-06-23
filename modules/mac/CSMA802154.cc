@@ -34,12 +34,14 @@ cPacket *CSMA802154::decapsMsg(MacPkt * macPkt) {
 	PhyToMacControlInfo* cinfo = static_cast<PhyToMacControlInfo*> (macPkt->getControlInfo());
 	const DeciderResult802154Narrow* result = static_cast<const DeciderResult802154Narrow*> (cinfo->getDeciderResult());
 	double ber = result->getBER();
+	double rssi = result->getRSSI();
 
 	//get control info attached by base class decapsMsg method
-	//and set its rssi
+	//and set its rssi and ber
 	assert(dynamic_cast<MacToNetwControlInfo*>(msg->getControlInfo()));
 	MacToNetwControlInfo* cInfo = static_cast<MacToNetwControlInfo*>(msg->getControlInfo());
 	cInfo->setBitErrorRate(ber);
+	cInfo->setRSSI(rssi);
 
 	return msg;
 }

@@ -16,8 +16,14 @@
 	</Decider>
 <#else>	
 	<Decider type="SNRThresholdDecider">
-		<!-- SNR threshold -->
-		<parameter name="threshold" type="double" value="0.12589254117942"/>
+		<!-- SNR threshold (as fraction) above which the decider consideres a
+			 a signal as received correctly. -->
+		<parameter name="snrThreshold" type="double" value="0.12589254117942"/>
+		<!-- RSSI (noise and signal) threshold (in mW) above which the 
+			 channel is considered idle. If this parameter is
+			 ommited the sensitivity of the physical layer is
+			 used as threshold.-->
+		<parameter name="busyThreshold" type="double" value="3.98107170553E-9"/>
 	</Decider>
 </#if>
 </root>

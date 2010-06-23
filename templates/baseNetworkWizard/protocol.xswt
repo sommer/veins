@@ -15,6 +15,12 @@
 		
 	<layout x:class="GridLayout" numColumns="2"/>		
 	<x:children>
+		<label text="Application layer:"/>
+		<combo x:id="applName" x:style="READ_ONLY|BORDER">
+			<add x:p0="Burst Application Layer"/>
+			<add x:p0="Traffic Generator"/>
+		</combo>
+		
 		<label text="NIC protocol:"/>
 		<combo x:id="protocolName" x:style="READ_ONLY|BORDER">
 			<add x:p0="CSMA"/>
@@ -22,6 +28,18 @@
 			<add x:p0="CSMA using old CSMAMacLayer"/>
 			<!-- <add x:p0="802.15.4"/> -->
 			<!-- <add x:p0="802.15.4a (UWB)"/> -->
+		</combo>
+		
+		<label text="Mobility module:"/>
+		<combo x:id="mobilityName" x:style="READ_ONLY|BORDER">
+			<add x:p0="Static (no mobility)"/>
+			<add x:p0="Constant speed"/>
+		</combo>
+		
+		<label text="Playground:"/>
+		<combo x:id="dimensions" x:style="READ_ONLY|BORDER">
+			<add x:p0="2-dimensional"/>
+			<add x:p0="3-dimensional"/>
 		</combo>
 	</x:children>
 </xswt>

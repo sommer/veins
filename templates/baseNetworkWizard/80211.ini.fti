@@ -43,7 +43,7 @@
 **.phy.useThermalNoise = true
 **.phy.analogueModels = xmldoc("config.xml")
 **.phy.decider = xmldoc("config.xml")
-**.phy.sensitivity = -80dBm  # [dBm]
+**.phy.sensitivity = -84dBm  # [dBm]
 **.phy.maxTXPower = 100.0mW
 **.phy.timeRXToTX = 0s
 **.phy.timeRXToSleep = 0s

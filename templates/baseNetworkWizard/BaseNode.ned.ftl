@@ -25,27 +25,27 @@ module BaseNode
     submodules:
         utility: BaseUtility {
             parameters:
-                @display("p=130,38;b=24,24,rect,black,,");
+                @display("p=130,38;b=24,24,rect,black;i=block/blackboard");
         }
         arp: BaseArp {
             parameters:
-                @display("p=130,84;b=24,24,rect,blue,,");
+                @display("p=130,101;b=24,24,rect,blue;i=block/process");
         }
         mobility: <mobType> like IBaseMobility {
             parameters:
-                @display("p=130,172;i=cogwheel2");
+                @display("p=130,166;i=block/cogwheel");
         }
         appl: <applType> like IBaseApplLayer {
             parameters:
-                @display("p=60,50;i=app");
+                @display("p=59,38;i=app");
         }
         net: <netwType> like IBaseNetwLayer {
             parameters:
-                @display("p=60,108;i=prot1");
+                @display("p=60,101;i=block/layer");
         }
         nic: ${nicType} {
             parameters:
-                @display("p=60,166;i=iface");
+                @display("p=60,166;i=block/ifcard");
         }
     connections:
         nic.upperGateOut --> net.lowerGateIn;

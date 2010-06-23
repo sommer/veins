@@ -845,10 +845,7 @@ void csma::handleLowerControl(cMessage *msg) {
 cPacket *csma::decapsMsg(MacPkt * macPkt) {
 	cPacket * msg = macPkt->decapsulate();
 	MacToNetwControlInfo* info = new MacToNetwControlInfo(macPkt->getSrcAddr());
-	PhyToMacControlInfo* phyInfo = dynamic_cast<PhyToMacControlInfo*>(macPkt->getControlInfo());
-	DeciderResult* decRes = phyInfo->getDeciderResult();
-	DeciderResult802154Narrow* decRes154 = dynamic_cast<DeciderResult802154Narrow*>(decRes);
-	info->setRSSI(decRes154->getRSSI());
+
 	msg->setControlInfo(info);
 	return msg;
 }

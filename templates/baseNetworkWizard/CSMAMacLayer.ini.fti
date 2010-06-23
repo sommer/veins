@@ -25,7 +25,7 @@
 **.node[*].nic.phy.timeSleepToRX = 0s
 **.node[*].nic.phy.timeSleepToTX = 0s
 
-**.node[*].nic.phy.sensitivity = -80dBm
+**.node[*].nic.phy.sensitivity = -84dBm
 **.node[*].nic.phy.maxTXPower = 100.0mW
 
 **.node[*].nic.phy.initialRadioState = 0
