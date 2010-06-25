@@ -85,6 +85,27 @@ Installation
 For installation instructions please see the INSTALL file
 
 
+How to start
+============
+Starting points can be found in MiXiM's wiki at:
+http://sourceforge.net/apps/trac/mixim/
+
+MiXiM contains wizards for the project-creation-wizard in the OMNeT++ IDE.
+These are:
+* a wizard to create a basic MiXiM-network by configuring the hosts from
+predefines application layers, NIC protocols and mobility modules as well
+as choosing the playground topology.
+* a wizard to create a simple MiXiM-network. The hosts contain an analogue model
+which can be basically configured in the wizard. This network is useful
+to implement and test a new analogue model.
+
+To create a new project using MiXiM's wizards please go to:
+"File -> New -> OMNeT++ Project...", name your project, and in the next step
+select the wizard to be used. It will present the configuration options
+during the next step(s). When the creation process has finished,
+the new MiXiM-network is ready to be built and run.
+
+
 Documentation
 ==============
 All documentation can be found in the doc directory. If you still have questions 

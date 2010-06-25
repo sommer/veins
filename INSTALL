@@ -40,6 +40,11 @@ This should be the same for every operating system.
 	   Also make sure the correct executable is choosen under "Executable: ... Other:" 
 	   (should be the one inside the examples directory).
 	4. Click "Run"
+	
+7. Try to run one of the examples from the examples folder.
+
+8. To see how to get started with MiXiM please read the section "How to start"
+   in the README-file.
 
 From the commandline under Linux
 --------------------------------
@@ -52,7 +57,12 @@ Unpack the archive (you have probably already done so)
 
 2. type "make all" to make the mixim library and binary 
    and to build the test networks
+   
+3. Try to run one of the examples from the examples folder.
 
-At last try to run one of the examples from the examples folder. 
+4. To see how to get started with MiXiM please read the section "How to start"
+   in the README-file.
+
+ 
 
 
