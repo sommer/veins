@@ -70,7 +70,6 @@ void TestPhyLayer::initialize(int stage) {
 
 
 			// create test AirFrames
-			// TODO: make sure that the AirFrames remain unchanged during all tests
 			TestAF1 = createTestAirFrame(1);
 			TestAF2 = createTestAirFrame(2);
 			TestAF3 = createTestAirFrame(3);
@@ -255,7 +254,6 @@ void TestPhyLayer::testInitialisation() {
  *
  *
  */
-// TODO : finish
 void TestPhyLayer::testBaseDeciderInitialization()
 {
 	assert(stateTestBDInitialization == BEFORE_TESTS);
@@ -279,10 +277,6 @@ void TestPhyLayer::testBaseDeciderInitialization()
 	 */
 	stateTestBDInitialization = TEST_GET_CHANNELSTATE_RECEIVING;
 	doBaseDeciderTests();
-
-	// TODO: go on here...
-	// TODO	- test whether SNRThresholdDecider calculates SNR for a given signal correctly
-	//		- test whether SNRThresholdDecider handles SNR-threshold right (send up a packet or not)
 
 	/*
 	 * Test SNR-threshold
@@ -428,7 +422,6 @@ Decider* TestPhyLayer::getDeciderFromName(std::string name, ParameterMap& params
  *
  *           where: t0=before, t10=after
  */
-// TODO implement TestAirFrame6
 void TestPhyLayer::fillAirFramesOnChannel()
 {
 	assert(testBaseDecider);
@@ -442,7 +435,6 @@ void TestPhyLayer::fillAirFramesOnChannel()
 	switch (stateTestBDInitialization) {
 
 
-		// TODO put the right AirFrames on the channel for the following cases
 		case TEST_SNR_THRESHOLD_ACCEPT:
 		case TEST_SNR_THRESHOLD_DENY:
 		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
@@ -467,7 +459,6 @@ void TestPhyLayer::fillAirFramesOnChannel()
 			airFramesOnChannel.push_back(TestAF4);
 			airFramesOnChannel.push_back(TestAF5);
 			break;
-		// TODO end.
 
 
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
@@ -634,24 +625,6 @@ AirFrame* TestPhyLayer::createTestAirFrame(int i)
 			break;
 	}
 
-	/* Using convenience functions for creating the Signal
-
-	// create and initialize Signal and AirFrame
-	Signal* s = new Signal(signalStart, signalLength);
-
-	// TODO : think of whether a Signal with constant power and bitrate
-	// over the whole duration is sufficient for this test
-
-	Mapping* powerMap = Mapping::createMapping();
-	powerMap->setValue(Argument(signalStart), transmissionPower);
-	s->setTransmissionPower(powerMap);
-
-	Mapping* bitrateMap = Mapping::createMapping();
-	bitrateMap->setValue(Argument(signalStart), bitrate);
-	s->setBitrate(bitrateMap);
-
-	*/
-
 	// --- Mac-Layer's tasks
 
 	// create Signal containing TXpower- and bitrate-mapping
@@ -678,7 +651,6 @@ AirFrame* TestPhyLayer::createTestAirFrame(int i)
 	delete s;
 	s = 0;
 
-	// TODO TEST: check if id is really unique
 	frame->setId(world->getUniqueAirFrameId());
 
 	ev << TestModule::log("Creating TestAirFrame ") << i << " done." << endl;
@@ -845,7 +817,6 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 		// there are AirFrames on the Channel at the requested timepoint
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
 
-		//TODO this case must be considered separately, since SNRThresholdDecider will also ask for intervals
 		case TEST_GET_CHANNELSTATE_RECEIVING:
 
 
@@ -897,7 +868,7 @@ void TestPhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& 
 			break;
 
 
-		// TODO go on here...
+		//go on here...
 
 		default:
 			break;
@@ -1271,11 +1242,9 @@ void TestPhyLayer::doBaseDeciderTests()
 			break;
 //		case TEST_SNR_THRESHOLD:
 //		{
-//			// TODO insert test cases
 //
 //			ev << TestModule::log("-TEST_SNR_THRESHOLD-----------------------------------------------") << endl;
 //
-//			//TODO this is just an example, not a real test
 //			testTime = t1;
 //			fillAirFramesOnChannel();
 //

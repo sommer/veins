@@ -9,7 +9,7 @@
 #include <list>
 //#include <utility>
 
-
+//TODO: remove decider test code from files (has been moved to own test)
 class TestPhyLayer:public BasePhyLayer, public TestModule {
 private:
 
@@ -266,8 +266,6 @@ protected:
 	bool sendUpCalled;
 
 
-	// TODO test whether this construction of the smallest possible time step works)
-	// TODO implement
 	/**
 	 * @brief returns the closest value of simtime before passed value
 	 *

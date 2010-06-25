@@ -535,9 +535,6 @@ public:
 	 */
 	std::string log(std::string msg);
 
-	// TODO: implement the following methods
-
-	// TODO think of whether thermal noise is important for testing
 	/**
 	 * @brief Returns a Mapping which defines the thermal noise in
 	 * the passed time frame (in mW).

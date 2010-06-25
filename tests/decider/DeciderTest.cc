@@ -48,7 +48,6 @@ DeciderTest::DeciderTest() : decider(0)
 
 
 	// create test AirFrames
-	// TODO: make sure that the AirFrames remain unchanged during all tests
 	TestAF1 = createTestAirFrame(1);
 	TestAF2 = createTestAirFrame(2);
 	TestAF3 = createTestAirFrame(3);
@@ -198,7 +197,6 @@ void DeciderTest::runTests()
  *
  *
  */
-// TODO : finish
 void DeciderTest::runDeciderTests(std::string name)
 {
 	deciderName = name;
@@ -295,7 +293,6 @@ void DeciderTest::executeTestCase(TestCaseIdentifier testCase) {
 
 Decider* DeciderTest::initDeciderTest(std::string name, ParameterMap& params) {
 
-	// TODO: extend to use the passed parameters to initialize multiple Deciders (switch)
 	//reset globals
 	if(name == "SNRThresholdDecider") {
 		// parameters for original TestDecider (tests/basePhyLayer with testBaseDecider = true)
@@ -338,7 +335,6 @@ Decider* DeciderTest::initDeciderTest(std::string name, ParameterMap& params) {
  *
  *           where: t0=before, t10=after
  */
-// TODO implement TestAirFrame6
 void DeciderTest::fillAirFramesOnChannel()
 {
 	// remove all pointers to AirFrames
@@ -350,7 +346,6 @@ void DeciderTest::fillAirFramesOnChannel()
 	switch (currentTestCase) {
 
 
-		// TODO put the right AirFrames on the channel for the following cases
 		case TEST_SNR_THRESHOLD_ACCEPT:
 		case TEST_SNR_THRESHOLD_DENY:
 		case TEST_SNR_THRESHOLD_PAYLOAD_DENY:
@@ -375,7 +370,6 @@ void DeciderTest::fillAirFramesOnChannel()
 			airFramesOnChannel.push_back(TestAF4);
 			airFramesOnChannel.push_back(TestAF5);
 			break;
-		// TODO end.
 
 
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
@@ -591,7 +585,6 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 	delete s;
 	s = 0;
 
-	// TODO TEST: check if id is really unique
 	frame->setId(world->getUniqueAirFrameId());
 
 	ev << log("Creating TestAirFrame ") << i << " done." << endl;
@@ -611,7 +604,7 @@ void DeciderTest::passAirFramesOnChannel(AirFrameVector& out)
 		out.push_back(*it);
 	}
 
-	ev << log("All TestAirFrames-pointers have been copied.") << endl;
+	//ev << log("All TestAirFrames-pointers have been copied.") << endl;
 }
 
 /**
@@ -808,7 +801,6 @@ void DeciderTest::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& o
 		// there are AirFrames on the Channel at the requested timepoint
 		case TEST_GET_CHANNELSTATE_NOISYCHANNEL:
 
-		//TODO this case must be considered separately, since SNRThresholdDecider will also ask for intervals
 		case TEST_GET_CHANNELSTATE_RECEIVING:
 
 
@@ -872,7 +864,7 @@ void DeciderTest::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& o
 			break;
 	}
 
-	ev << log("All channel-info has been copied to AirFrameVector-reference.") << endl;
+	//ev << log("All channel-info has been copied to AirFrameVector-reference.") << endl;
 
 	return;
 }
@@ -1194,36 +1186,6 @@ void DeciderTest::executeSNRNewTestCase()
 
 		}
 			break;
-//		case TEST_SNR_THRESHOLD:
-//		{
-//			// TODO insert test cases
-//
-//			ev << log("-TEST_SNR_THRESHOLD-----------------------------------------------") << endl;
-//
-//			//TODO this is just an example, not a real test
-//			testTime = t1;
-//			fillAirFramesOnChannel();
-//
-//			processedAF = TestAF5;
-//			nextHandoverTime = decider->processSignal(TestAF5);
-//			Signal& signal5 = TestAF5->getSignal();
-//			assertTrue("TestAirFrame 5 can be received, end-time is returned",
-//					(nextHandoverTime == signal5.getSignalStart() + signal5.getSignalLength()));
-//
-//
-//			assertEqual("NextHandoverTime is t5.", t5, nextHandoverTime);
-//			testTime = nextHandoverTime;
-//			fillAirFramesOnChannel();
-//
-//			nextHandoverTime = decider->processSignal(TestAF5);
-//
-//			assertTrue("TestAirFrame 5 has been finally processed",
-//								(nextHandoverTime < 0));
-//			processedAF = 0;
-//
-//			ev << log("-DONE-------------------------------------------") << endl;
-//		}
-//			break;
 
 		// here we test a simple case where one noise-AirFrame is present, but SNR is just high enough
 		case TEST_SNR_THRESHOLD_ACCEPT:
@@ -2034,36 +1996,6 @@ void DeciderTest::executeSNRTestCase()
 
 		}
 			break;
-//		case TEST_SNR_THRESHOLD:
-//		{
-//			// TODO insert test cases
-//
-//			ev << log("-TEST_SNR_THRESHOLD-----------------------------------------------") << endl;
-//
-//			//TODO this is just an example, not a real test
-//			testTime = t1;
-//			fillAirFramesOnChannel();
-//
-//			processedAF = TestAF5;
-//			nextHandoverTime = decider->processSignal(TestAF5);
-//			Signal& signal5 = TestAF5->getSignal();
-//			assertTrue("TestAirFrame 5 can be received, end-time is returned",
-//					(nextHandoverTime == signal5.getSignalStart() + signal5.getSignalLength()));
-//
-//
-//			assertEqual("NextHandoverTime is t5.", t5, nextHandoverTime);
-//			testTime = nextHandoverTime;
-//			fillAirFramesOnChannel();
-//
-//			nextHandoverTime = decider->processSignal(TestAF5);
-//
-//			assertTrue("TestAirFrame 5 has been finally processed",
-//								(nextHandoverTime < 0));
-//			processedAF = 0;
-//
-//			ev << log("-DONE-------------------------------------------") << endl;
-//		}
-//			break;
 
 		// here we test a simple case where one noise-AirFrame is present, but SNR is just high enough
 		case TEST_SNR_THRESHOLD_ACCEPT:
@@ -2281,43 +2213,35 @@ void DeciderTest::executeSNRTestCase()
  * "[module name] - passed text"
  */
 std::string DeciderTest::log(std::string msg) {
-	// TODO the name in the output currently is the name of the former module
-	// this avoids unnecessary diffs, change name when expected output has been updated
 	return "[" + deciderName + " Test] - " + msg;
 }
 
 
-//TODO implement
 ConstMapping* DeciderTest::getThermalNoise(simtime_t from, simtime_t to)
 {
 	return 0;
 }
 
-// TODO implement
 void DeciderTest::cancelScheduledMessage(cMessage* msg)
 {
 	return;
 }
 
-// TODO implement
 void DeciderTest::drawCurrent(double amount, int activity)
 {
 	return;
 }
 
-// TODO implement
 BaseUtility* DeciderTest::getUtility()
 {
 	return 0;
 }
 
-// TODO implement
 BaseWorldUtility* DeciderTest::getWorldUtility()
 {
 	return 0;
 }
 
-// TODO implement
 void DeciderTest::recordScalar(const char *name, double value, const char *unit)
 {
 	return;

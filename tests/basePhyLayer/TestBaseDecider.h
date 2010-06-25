@@ -62,7 +62,6 @@ public:
 		: SNRThresholdDecider(phy, threshold, sensitivity, sensitivity)
 	{
 
-		// TODO: here we have the problem, that multiple deciders might
 		// have the same default 'myIndex'-value if not passed in constructor call
 		init("decider" + toString(this->myIndex));
 		assert(phy);
@@ -88,7 +87,6 @@ public:
 	 * is called.
 	 *
 	 */
-	// TODO: finish
 
 	/**
 	 * @brief Just a bypass at the moment.
@@ -106,8 +104,6 @@ public:
 		return SNRThresholdDecider::processSignal(frame);
 	}
 
-
-	// TODO add the others
 };
 
 

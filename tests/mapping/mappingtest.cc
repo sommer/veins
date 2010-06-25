@@ -124,7 +124,6 @@ void assertEqualNotSmaller(std::string msg, T& v1, T& v2){
 	assertEqual(msg, 0, v1.compare(v2, v1.getDimensions()));
 }
 
-//TODO: run test, possibly check setting of position at jumpTo and co
 
 
 class OmnetTest:public OmnetTestBase {

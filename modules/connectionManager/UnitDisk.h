@@ -21,6 +21,7 @@
 
 #include "ConnectionManager.h"
 
+//TODO: clean up UnitDisk code, maybe extends its ned file from baseConnectionManager
 class UnitDisk: public ConnectionManager
 {
 protected:

@@ -20,7 +20,8 @@
 #include <BaseConnectionManager.h>
 
 /**
- * TODO - Generated class
+ * @brief Checks after every update of the connection if the
+ * hosts are connected correctly by checking every single host pair.
  */
 class TestCM : public BaseConnectionManager
 {

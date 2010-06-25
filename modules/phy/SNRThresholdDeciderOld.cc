@@ -58,8 +58,6 @@ simtime_t SNRThresholdDeciderOld::processSignalEnd(AirFrame* frame)
 	Mapping* snrMap = calculateSnrMapping(frame);
 	assert(snrMap);
 
-	//TODO: this extraction is just temporary, since we need to pass Signal's start-
-	// and end-time to the following method
 	const Signal& signal = frame->getSignal();
 	simtime_t start = signal.getSignalStart();
 	simtime_t end = start + signal.getSignalLength();
