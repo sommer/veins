@@ -87,8 +87,8 @@ For installation instructions please see the INSTALL file
 
 How to start
 ============
-Starting points can be found in MiXiM's wiki at:
-http://sourceforge.net/apps/trac/mixim/
+A step-by-step guide on how to start with MiXiM can be found in MiXiM's wiki at:
+http://sourceforge.net/apps/trac/mixim/wiki/StepByStep
 
 MiXiM contains wizards for the project-creation-wizard in the OMNeT++ IDE.
 These are:
