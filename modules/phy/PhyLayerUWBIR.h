@@ -5,7 +5,7 @@
  *
  * copyright:   (C) 2008 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
  * 				Systems Engineering
- *              Real-Time Software and Networking
+ *              Wireless Embedded Systems
  *              Jaquet-Droz 1, CH-2002 Neuchatel, Switzerland.
  *
  *
@@ -26,7 +26,7 @@
 // See the following publications for more information:
 // [1] An Ultra Wideband Impulse Radio PHY Layer Model for Network Simulation,
 // J. Rousselot, J.-D. Decotignie, Simulation: Transactions of the Society
-// for Computer Simulation, 2010 (submitted).
+// for Computer Simulation, 2010 (to appear).
 // [2] A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
 // for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
 // Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
@@ -73,8 +73,11 @@ class DeciderUWBIREDSync;
  * To change the modulation, refer to UWBIRMac.h, IEEE802154A.h and UWBIRED.h.
  * To implement optional modes of IEEE802154A, refer to IEEE802154A.h.
  *
- * Refer to the following publication for more information:
- *  A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
+ * Refer to the following publications for more information:
+ * [1] An Ultra Wideband Impulse Radio PHY Layer Model for Network Simulation,
+ * J. Rousselot, J.-D. Decotignie, Simulation: Transactions of the Society
+ * for Computer Simulation, 2010 (to appear).
+ * [2] A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
  * for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
  * Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
  * http://portal.acm.org/citation.cfm?id=1537714

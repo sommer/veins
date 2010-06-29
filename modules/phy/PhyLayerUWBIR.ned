@@ -27,7 +27,7 @@ import org.mixim.base.phyLayer.BasePhyLayer;
 //
 // [1] An Ultra Wideband Impulse Radio PHY Layer Model for Network Simulation,
 // J. Rousselot, J.-D. Decotignie, Simulation: Transactions of the Society
-// for Computer Simulation, 2010 (submitted).
+// for Computer Simulation, 2010 (to appear).
 //
 // http://sim.sagepub.com/archive/2010.dtl
 //

@@ -1,37 +1,3 @@
-/* -*- mode:c++ -*- ********************************************************
- * file:        PhyLayerUWBIR.h
- *
- * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
- *
- * copyright:   (C) 2008 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
- * 				Systems Engineering
- *              Real-Time Software and Networking
- *              Jaquet-Droz 1, CH-2002 Neuchatel, Switzerland.
- *
- *              This program is free software; you can redistribute it
- *              and/or modify it under the terms of the GNU General Public
- *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later
- *              version.
- *              For further information see file COPYING
- *              in the top level directory
- * description: this physical layer models an ultra wideband impulse radio channel.
- * acknowledgment: this work was supported (in part) by the National Competence
- * 			    Center in Research on Mobile Information and Communication Systems
- * 				NCCR-MICS, a center supported by the Swiss National Science
- * 				Foundation under grant number 5005-67322.
- ***************************************************************************/
-//
-// See the following publications for more information:
-// [1] An Ultra Wideband Impulse Radio PHY Layer Model for Network Simulation,
-// J. Rousselot, J.-D. Decotignie, Simulation: Transactions of the Society
-// for Computer Simulation, 2010 (submitted).
-// [2] A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
-// for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
-// Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
-// http://portal.acm.org/citation.cfm?id=1537714
-//
-
 #include "PhyLayerUWBIR.h"
 #include <cassert>
 #include "MacToUWBIRPhyControlInfo.h"
@@ -439,6 +405,13 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 
 	// create the new AirFrame
 	AirFrameUWBIR* frame = new AirFrameUWBIR("airframe", AIR_FRAME);
+
+	//set priority of AirFrames above the normal priority to ensure
+	//channel consistency (before any thing else happens at a time
+	//point t make sure that the channel has removed every AirFrame
+	//ended at t and added every AirFrame started at t)
+	frame->setSchedulingPriority(airFramePriority);
+
 	// set the members
 	assert(s->getSignalLength() > 0);
 	frame->setDuration(s->getSignalLength());

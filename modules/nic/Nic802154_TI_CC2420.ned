@@ -3,7 +3,7 @@
 // *
 // * author:      Jerome Rousselot, Marc Loebbers
 // *
-// * copyright:   (C) 2008-2009 CSEM SA, Neuchatel, Switzerland.
+// * copyright:   (C) 2008-2010 CSEM SA, Neuchatel, Switzerland.
 // *		  	  (C) 2004 Telecommunication Networks Group (TKN) at
 // *              Technische Universitaet Berlin, Germany.
 // *
@@ -18,8 +18,6 @@
 // * Funding: This work was partially financed by the European Commission under the  
 // * Framework 6 IST Project "Wirelessly Accessible Sensor Populations"  
 // * (WASP) under contract IST-034963.
-// ***************************************************************************
-// * part of:    Modifications to the MF-2 framework by CSEM
 // **************************************************************************/
 
 package org.mixim.modules.nic;

@@ -1,28 +1,10 @@
-/* -*- mode:c++ -*- ********************************************************
- * file:        DeciderUWBIREDSync.h
- *
- * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
- *
- * copyright:   (C) 2008-2009 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
- * 				Systems Engineering
- *              Real-Time Software and Networking
+/*
+ * DeciderUWBIREDSync.h
+ * Author: Jerome Rousselot <jerome.rousselot@csem.ch>
+ * Copyright: (C) 2008-2010 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
+ *              Wireless Embedded Systems
  *              Jaquet-Droz 1, CH-2002 Neuchatel, Switzerland.
- *
- *              This program is free software; you can redistribute it
- *              and/or modify it under the terms of the GNU General Public
- *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later
- *              version.
- *              For further information see file COPYING
- *              in the top level directory
- * description: this Decider models a non-coherent energy-detection receiver
- * 				that synchronizes on the first sync preamble sequence
- * 				that is "long enough" and "powerful enough".
- * acknowledgment: this work was supported (in part) by the National Competence
- * 			    Center in Research on Mobile Information and Communication Systems
- * 				NCCR-MICS, a center supported by the Swiss National Science
- * 				Foundation under grant number 5005-67322.
- ***************************************************************************/
+ */
 
 #ifndef UWBIREDSYNC_H_
 #define UWBIREDSYNC_H_

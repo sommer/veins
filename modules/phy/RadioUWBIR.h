@@ -1,23 +1,11 @@
-/* -*- mode:c++ -*- ********************************************************
- * file:        RadioUWBIR.h
- *
- * author:      Jerome Rousselot <jerome.rousselot@csem.ch>
- *
- * copyright:   (C) 2008 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
- * 				Systems Engineering
- *              Real-Time Software and Networking
+/*
+ * RadioUWBIR.h
+ * Author: Jerome Rousselot <jerome.rousselot@csem.ch>
+ * Copyright: (C) 2008-2010 Centre Suisse d'Electronique et Microtechnique (CSEM) SA
+ *              Wireless Embedded Systems
  *              Jaquet-Droz 1, CH-2002 Neuchatel, Switzerland.
- *
- *              This program is free software; you can redistribute it
- *              and/or modify it under the terms of the GNU General Public
- *              License as published by the Free Software Foundation; either
- *              version 2 of the License, or (at your option) any later
- *              version.
- *              For further information see file COPYING
- *              in the top level directory
- * description: this Radio subclass computes the power consumption of the radio
- * 				and also adds a synchronization state.
- ***************************************************************************/
+ */
+
 
 #ifndef UWBIRRADIO_H_
 #define UWBIRRADIO_H_

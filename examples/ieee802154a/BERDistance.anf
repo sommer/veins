@@ -11,6 +11,10 @@
       <items xsi:type="scave:ScatterChart" name="BER_Distance" xDataPattern="module(.) AND name(distance)">
         <properties name="Y.Axis.Log" value="true"/>
         <properties name="Axes.Grid" value="All"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="SouthEast"/>
+        <properties name="Symbols.Size" value="6"/>
         <isoDataPattern>Channel(*)</isoDataPattern>
       </items>
     </datasets>
