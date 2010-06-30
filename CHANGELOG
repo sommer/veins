@@ -19,6 +19,8 @@ v1.2
   discontinuities in mappings by defining two entries as close as possible to each other
 + changed default signal created by BaseMacLayer's 'createSignal'-method to use a rectangular function
   for TX-power
++ changed BaseDeciders handling of ChannelSenseRequests for better support of rssi based idle/busy state
++ removed ModuleAccess and BaseArpAccess and replaced calls to them by using class FindModule
 * fixed memory leak when propagation delay is simulated
 * fixed a bug in the calculated receiving power of a signal which caused it to be greater zero before 
   and after its signal in certain cases

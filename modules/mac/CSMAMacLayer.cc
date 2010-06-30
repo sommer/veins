@@ -16,8 +16,6 @@ void CSMAMacLayer::initialize(int stage)
     BaseMacLayer::initialize(stage);
 
     if (stage == 0) {
-    	BaseArp* arp = BaseArpAccess().get();
-		myMacAddr = arp ? arp->myMacAddr(this):getParentModule()->getId();
 
         queueLength = hasPar("queueLength") 	? par("queueLength").longValue()	 : 10;
         //busyRSSI = hasPar("busyRSSI") 			? par("busyRSSI").doubleValue() 	 : -90;

@@ -39,9 +39,6 @@ void Mac80211::initialize(int stage)
     {
         EV << "Initializing stage 0\n";
 
-        arp = BaseArpAccess().get();
-        myMacAddr = arp->myMacAddr(this);
-
         switching = false;
         fsc = intrand(0x7FFFFFFF);
         if(fsc == 0) fsc = 1;

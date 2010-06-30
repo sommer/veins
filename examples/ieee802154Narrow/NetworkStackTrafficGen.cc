@@ -30,7 +30,7 @@ void NetworkStackTrafficGen::initialize(int stage)
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
 		delayTimer = new cMessage("delay-timer", SEND_BROADCAST_TIMER);
 
-		arp = BaseArpAccess().get();
+		arp = FindModule<BaseArp*>::findSubModule(findHost());
 		myNetwAddr = arp->myNetwAddr(this);
 
 		packetLength = par("packetLength");

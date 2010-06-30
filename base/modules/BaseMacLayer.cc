@@ -38,6 +38,10 @@ void BaseMacLayer::initialize(int stage)
 {
     BaseLayer::initialize(stage);
     if(stage==0) {
+    	// get handle to arp module
+        arp = FindModule<BaseArp*>::findSubModule(findHost());
+        myMacAddr = arp->myMacAddr(this);
+
     	// get handle to phy layer
         phy = FindModule<MacToPhyInterface*>::findSubModule(getParentModule());
 
@@ -45,10 +49,6 @@ void BaseMacLayer::initialize(int stage)
         phyHeaderLength = phy->getPhyHeaderLength();
 
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
-    } else {
-		// get handle to arp module, which is initialized at stage 0 in BaseNetwLayer.
-        BaseArp* arp = FindModule<BaseArp*>::findSubModule(getParentModule()->getParentModule());
-        myMacAddr = arp->myMacAddr(this);
     }
 }
 

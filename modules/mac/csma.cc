@@ -50,7 +50,6 @@ void csma::initialize(int stage) {
 
 	if (stage == 0) {
 		//get my mac address
-		BaseArp* arp = BaseArpAccess().get();
 		macaddress = arp ? arp->myMacAddr(this):getParentModule()->getId();
 
 		useMACAcks = par("useMACAcks").boolValue();

@@ -63,6 +63,9 @@ protected:
 	/** @brief Handler to the physical layer.*/
 	MacToPhyInterface* phy;
 
+	/** @brief Pointer to the arp module*/
+    BaseArp* arp;
+
     /**
      * @brief Length of the MacPkt header
      **/

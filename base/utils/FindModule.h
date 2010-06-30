@@ -63,39 +63,4 @@ class FindModule
 		}
 };
 
-/**
- * @brief Finds and returns the pointer to a module of type T.
- *
- * Uses FindModule<T*>::findGlobalModule(). @see BaseArpAccess for usage e.g.
- *
- * @ingroup baseUtils
- * @ingroup utils
- */
-template<typename T>
-class ModuleAccess
-{
-     // Note: MSVC 6.0 doesn't like const char *N as template parameter,
-     // so we have to pass it via the ctor...
-  private:
-	/** @brief Caches the pointer to the module this class provides access for.*/
-    T *p;
-  public:
-    ModuleAccess():
-		p(0)
-	{}
-
-    /**
-     * @brief Returns a pointer to the module this class provides access for.
-     */
-    T *get()
-    {
-        if (!p)
-        {
-            p = FindModule<T*>::findGlobalModule();
-            if (!p) opp_error("Module %s not found",opp_typename(typeid(T)));
-        }
-        return p;
-    }
-};
-
 #endif
