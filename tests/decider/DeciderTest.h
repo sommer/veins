@@ -4,10 +4,9 @@
 #include <DeciderToPhyInterface.h>
 #include <MacToPhyInterface.h>
 #include <OmnetTestBase.h>
-#include "TestSNRThresholdDecider.h"
 
 #include <list>
-//#include <utility>
+#include <Decider.h>
 
 
 class DeciderTest : public DeciderToPhyInterface, public OmnetTestBase {
@@ -210,10 +209,6 @@ protected:
 	 * @param testCase the test case to execute
 	 */
 	void executeTestCase(TestCaseIdentifier testCase);
-	/**
-	 * @brief Executes test cases for SNRThresholdDecider.
-	 */
-	void executeSNRTestCase();
 	/**
 	 * @brief Executes test cases for SNRThresholdDecider.
 	 */

@@ -11,7 +11,16 @@ simtime_t SNRThresholdDecider::processNewSignal(AirFrame* frame)
 		return notAgain;
 	}
 
-	// get the receiving power of the Signal at start-time
+	//get the receiving power of the Signal
+	//Note: We assume the transmission power is represented by a rectangular function
+	//which discontinuities (at start and end of the signal) are represented
+	//by two key entries with different values very close to each other (see
+	//MappingUtils "addDiscontinuity" method for details). This means
+	//the transmission- and therefore also the receiving-power-mapping is still zero
+	//at the exact start of the signal and not till one time step after the start its
+	//at its actual transmission(/receiving) power.
+	//Therefore we use MappingUtils "post"-method to ask for the receiving power
+	//at the correct position.
 	Signal& signal = frame->getSignal();
 	simtime_t receivingStart = MappingUtils::post(signal.getSignalStart());
 	double recvPower = signal.getReceivingPower()->getValue(Argument(receivingStart));

@@ -21,6 +21,8 @@ v1.2
   for TX-power
 + changed BaseDeciders handling of ChannelSenseRequests for better support of rssi based idle/busy state
 + removed ModuleAccess and BaseArpAccess and replaced calls to them by using class FindModule
++ changed SNRThresholdDecider to evaluate the received energy level to decide whether the channel is idle
+  or busy (before the channel was only busy if the decider actually received, meaning decoded, a signal)
 * fixed memory leak when propagation delay is simulated
 * fixed a bug in the calculated receiving power of a signal which caused it to be greater zero before 
   and after its signal in certain cases
