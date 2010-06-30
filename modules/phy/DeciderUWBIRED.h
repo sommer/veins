@@ -100,7 +100,8 @@ public:
 				nbSuccessfulSyncs(0), nbSymbols(0), allThresholds(0), vsignal2(0), vnoise2(0), snirEvals(0), pulseSnrs(0), syncThreshold(_syncThreshold),
 				syncAlwaysSucceeds(_syncAlwaysSucceeds),
 				channelSensing(false), synced(false), alwaysFailOnDataInterference(alwaysFailOnDataInterference),
-				uwbiface(_uwbiface), tracking(0), nbFramesWithInterference(0), nbFramesWithoutInterference(0) {
+				uwbiface(_uwbiface), tracking(0), nbFramesWithInterference(0), nbFramesWithoutInterference(0),
+				nbCancelReceptions(0), nbFinishTrackingFrames(0), nbFinishNoiseFrames(0){
 
 		receivedPulses.setName("receivedPulses");
 		syncThresholds.setName("syncThresholds");
