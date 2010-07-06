@@ -27,6 +27,7 @@
 #include <FWMath.h>
 #include <Decider80211.h>
 #include <DeciderResult80211.h>
+#include <BaseConnectionManager.h>
 
 Define_Module(Mac80211);
 
@@ -71,6 +72,12 @@ void Mac80211::initialize(int stage)
         EV << "SIFS: " << SIFS << " DIFS: " << DIFS << " EIFS: " << EIFS << endl;
     }
     else if(stage == 1) {
+    	BaseConnectionManager* cc = FindModule<BaseConnectionManager*>::findGlobalModule();
+
+    	if(txPower > cc->par("pMax").doubleValue())
+            opp_error("TranmitterPower can't be bigger than pMax in ConnectionManager! "
+            	      "Please adjust your omnetpp.ini file accordingly.");
+
     	//TODO: save channel to radio or as member variable!
     	int channel = hasPar("defaultChannel") ? par("defaultChannel") : 0;
 

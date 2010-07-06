@@ -4,6 +4,7 @@
 #include "FWMath.h"
 #include "MacToPhyControlInfo.h"
 #include <BaseArp.h>
+#include <BaseConnectionManager.h>
 
 Define_Module( CSMAMacLayer )
 
@@ -43,6 +44,12 @@ void CSMAMacLayer::initialize(int stage)
         txAttempts = 0;
     }
     else if(stage == 1) {
+    	BaseConnectionManager* cc = FindModule<BaseConnectionManager*>::findGlobalModule();
+
+    	if(txPower > cc->par("pMax").doubleValue())
+            opp_error("TranmitterPower can't be bigger than pMax in ConnectionManager! "
+            		  "Please adjust your omnetpp.ini file accordingly.");
+
     	if(phy->getRadioState() != Radio::RX) {
     		opp_error("Initial radio state isn't RX but CSMAMacLayer"
     				  " assumes that the NIC starts in RX state.");

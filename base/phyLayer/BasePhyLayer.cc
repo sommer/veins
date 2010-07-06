@@ -78,6 +78,13 @@ void BasePhyLayer::initialize(int stage) {
         }
 
 	} else if (stage == 1){
+		if(cc->hasPar("sat")
+		   && sensitivity < FWMath::dBm2mW(cc->par("sat").doubleValue())) {
+            opp_error("Sensitivity can't be smaller than the "
+					  "signal attenuation threshold (sat) in ConnectionManager. "
+					  "Please adjust your omnetpp.ini file accordingly.");
+		}
+
 		//read complex(xml) ned-parameters
 		//	- analogue model parameters
 		initializeAnalogueModels(par("analogueModels").xmlValue());

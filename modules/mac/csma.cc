@@ -36,6 +36,8 @@
 #include <NetwToMacControlInfo.h>
 #include <MacToNetwControlInfo.h>
 #include <SimpleAddress.h>
+
+#include <BaseConnectionManager.h>
 //#include <Consts802154.h>
 
 Define_Module(csma);
@@ -117,6 +119,12 @@ void csma::initialize(int stage) {
 		txAttempts = 0;
 
 	} else if(stage == 1) {
+		BaseConnectionManager* cc = FindModule<BaseConnectionManager*>::findGlobalModule();
+
+    	if(txPower > cc->par("pMax").doubleValue())
+            opp_error("TranmitterPower can't be bigger than pMax in ConnectionManager! "
+            		  "Please adjust your omnetpp.ini file accordingly.");
+
 		EV << "queueLength = " << queueLength
 		<< " bitrate = " << bitrate
 		<< " backoff method = " << par("backoffMethod").stringValue() << endl;

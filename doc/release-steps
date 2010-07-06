@@ -1,6 +1,7 @@
 == Check for errors ==
  * new clean checkout of MiXiM
- * for debug and release config do the following:
+ * make sure "makemakefiles" is up to date
+ * for debug and release config and from IDE and command line and for each OS do the following:
    * compile
    * run tests (floating point precision caused diffs and execution time diffs are ok)
    * test examples
