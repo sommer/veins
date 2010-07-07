@@ -10,10 +10,10 @@ class ChannelAccess;
  * related stuff
  *
  * The central module that coordinates the connections between all
- * nodes, and handles dynamic gate creation. BasicConnectionManager therefore
+ * nodes, and handles dynamic gate creation. BaseConnectionManager therefore
  * periodically communicates with the ChannelAccess modules
  *
- * You may not instantiate BasicConnectionManager!
+ * You may not instantiate BaseConnectionManager!
  * Use ConnectionManager instead.
  *
  * @ingroup connectionManager
