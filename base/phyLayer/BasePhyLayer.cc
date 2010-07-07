@@ -79,7 +79,7 @@ void BasePhyLayer::initialize(int stage) {
 
 	} else if (stage == 1){
 		if(cc->hasPar("sat")
-		   && sensitivity < FWMath::dBm2mW(cc->par("sat").doubleValue())) {
+		   && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
             opp_error("Sensitivity can't be smaller than the "
 					  "signal attenuation threshold (sat) in ConnectionManager. "
 					  "Please adjust your omnetpp.ini file accordingly.");
