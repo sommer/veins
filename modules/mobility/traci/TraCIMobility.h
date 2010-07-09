@@ -162,10 +162,12 @@ class TraCIMobility : public BaseMobility
 		double calculateCO2emission(double v, double a);
 };
 
-class TraCIMobilityAccess : public ModuleAccess<TraCIMobility>
+class TraCIMobilityAccess
 {
 	public:
-		TraCIMobilityAccess() : ModuleAccess<TraCIMobility>() {};
+		TraCIMobility* get(cModule* host) {
+			return FindModule<TraCIMobility*>::findSubModule(host);
+		};
 };
 
 

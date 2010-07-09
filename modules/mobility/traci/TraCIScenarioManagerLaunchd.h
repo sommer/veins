@@ -45,10 +45,12 @@ class TraCIScenarioManagerLaunchd : public TraCIScenarioManager
 		virtual void init_traci();
 };
 
-class TraCIScenarioManagerLaunchdAccess : public ModuleAccess<TraCIScenarioManagerLaunchd>
+class TraCIScenarioManagerLaunchdAccess
 {
 	public:
-		TraCIScenarioManagerLaunchdAccess() : ModuleAccess<TraCIScenarioManagerLaunchd>() {};
+		TraCIScenarioManagerLaunchd* get() {
+			return FindModule<TraCIScenarioManagerLaunchd*>::findGlobalModule();
+		};
 };
 
 #endif

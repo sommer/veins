@@ -264,10 +264,12 @@ class TraCIScenarioManager : public BaseModule
 template<> void TraCIScenarioManager::TraCIBuffer::write(std::string inv);
 template<> std::string TraCIScenarioManager::TraCIBuffer::read();
 
-class TraCIScenarioManagerAccess : public ModuleAccess<TraCIScenarioManager>
+class TraCIScenarioManagerAccess
 {
 	public:
-		TraCIScenarioManagerAccess() : ModuleAccess<TraCIScenarioManager>() {};
+		TraCIScenarioManager* get() {
+			return FindModule<TraCIScenarioManager*>::findGlobalModule();
+		};
 };
 
 #endif
