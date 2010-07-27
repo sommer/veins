@@ -44,9 +44,9 @@ void CSMAMacLayer::initialize(int stage)
         txAttempts = 0;
     }
     else if(stage == 1) {
-    	BaseConnectionManager* cc = FindModule<BaseConnectionManager*>::findGlobalModule();
+    	BaseConnectionManager* cc = getConnectionManager();
 
-    	if(txPower > cc->par("pMax").doubleValue())
+    	if(cc->hasPar("pMax") && txPower > cc->par("pMax").doubleValue())
             opp_error("TranmitterPower can't be bigger than pMax in ConnectionManager! "
             		  "Please adjust your omnetpp.ini file accordingly.");
 

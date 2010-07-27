@@ -233,7 +233,14 @@ ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t start,
 	return res;
 }
 
-
+BaseConnectionManager* BaseMacLayer::getConnectionManager() {
+	cModule* nic = getParentModule();
+	if (nic->hasPar("connectionManagerName")){
+		return dynamic_cast<BaseConnectionManager *>(simulation.getModuleByPath(nic->par("connectionManagerName").stringValue()));
+	} else {
+		return FindModule<BaseConnectionManager *>::findGlobalModule();
+	}
+}
 
 
 

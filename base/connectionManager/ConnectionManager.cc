@@ -5,7 +5,7 @@
 #include "BaseWorldUtility.h"
 
 #ifndef ccEV
-#define ccEV (ev.isDisabled()||!coreDebug) ? ev : ev << "ConnectionManager: "
+#define ccEV (ev.isDisabled()||!coreDebug) ? ev : ev << getName() << ": "
 #endif
 
 Define_Module( ConnectionManager );

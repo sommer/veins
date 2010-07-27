@@ -1,3 +1,6 @@
+v1.2.1
+* fixed use of wrong connection manager in MAC layer when using multiple connection managers (thanks to "David" from the omnetpp list for reporting)
+
 v1.2
 + added port of 802154 narrowband phy and mac layer of mobility-fw2 for omnet 4 from Jérôme Rousselot
 + added global blackboard functionality to BaseWorldUtility
