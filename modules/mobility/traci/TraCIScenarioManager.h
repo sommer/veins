@@ -217,7 +217,7 @@ class TraCIScenarioManager : public BaseModule
 		/**
 		 * sends a single command via TraCI, expects no reply, returns true if successful
 		 */
-		bool queryTraCIOptional(uint8_t commandId, const TraCIBuffer& buf, std::string* errorMsg = 0);
+		TraCIScenarioManager::TraCIBuffer queryTraCIOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg = 0);
 
 		/**
 		 * returns byte-buffer containing a TraCI command with optional parameters
