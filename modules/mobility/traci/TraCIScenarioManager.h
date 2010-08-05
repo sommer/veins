@@ -53,6 +53,7 @@ class TraCIScenarioManager : public BaseModule
 		virtual void handleMessage(cMessage *msg);
 		virtual void handleSelfMsg(cMessage *msg);
 
+		std::pair<uint32_t, std::string> commandGetVersion();
 		void commandSetMaximumSpeed(std::string nodeId, float maxSpeed);
 		void commandChangeRoute(std::string nodeId, std::string roadId, double travelTime);
 		float commandDistanceRequest(Coord position1, Coord position2, bool returnDrivingDistance);
