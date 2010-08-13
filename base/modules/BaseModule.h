@@ -125,7 +125,7 @@ protected:
     /** @brief Function to get a pointer to the host module*/
     cModule *findHost(void);
     /** @brief Function to get the logging name of id*/
-    std::string getLogName(int);
+    //std::string getLogName(int);
 
 
 

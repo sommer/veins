@@ -39,11 +39,8 @@
  *
  * This class is not supposed to work on its own, but it contains
  * functions and lists that cooperate with ConnectionManager to handle
- * the dynamically created gates. This means EVERY SnrEval (the lowest
- * layer in a host) has to be derived from this class!!!! And please
- * follow the instructions on how to declare a physical layer in a
- * .ned file in "The Design of a Mobility Framework in OMNeT++"
- * paper.
+ * the dynamically created gates. This means EVERY physical layer (the lowest
+ * layer in a host) has to be derived from this class!!!!
  *
  * Please don't touch this class.
  *

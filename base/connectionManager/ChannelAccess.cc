@@ -40,12 +40,6 @@ void ChannelAccess::initialize( int stage )
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
-	// the phy module has to be named phy otherwise it cannot be found
-	// TODO: maybe we can remove this
-        // we need to look at the functions in NicEntry* for this
-	if( strcmp( this->getName(), "phy" )!=0 )
-	    error("phy module has to be named \"phy\"!");
-
         cModule* nic = getParentModule();
         if (nic->hasPar("connectionManagerName")){
             cc = dynamic_cast<BaseConnectionManager *>(simulation.getModuleByPath(nic->par("connectionManagerName").stringValue()));

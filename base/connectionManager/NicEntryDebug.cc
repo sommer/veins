@@ -104,6 +104,7 @@ cGate* NicEntryDebug::requestInGate(void) {
 		// to avoid unnecessary dynamic_casting we check for a "phy"-named submodule first
 		if ((phyModule = static_cast<ChannelAccess *> (nicPtr->getSubmodule("phy"))) == NULL)
 			phyModule = FindModule<ChannelAccess*>::findSubModule(nicPtr);
+		assert(phyModule != 0);
 
 		// create a new gate for the phy module
 		phyModule->addGate(gateName, cGate::INPUT);

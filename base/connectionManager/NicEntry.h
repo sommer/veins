@@ -46,7 +46,7 @@ class NicEntry : public cObject
     /** @brief module id of the nic for which information is stored*/
     int nicId;
 
-    /** @brief Pointer to the host module */
+    /** @brief Pointer to the NIC module */
     cModule *nicPtr;
 
     /** @brief Module id of the host module this nic belongs to*/
