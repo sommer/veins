@@ -78,9 +78,6 @@ module MFMobileHost
             parameters:
                 @display("p=60,445");
         }
-        arp: BaseArp {
-            @display("p=163,388;b=30,25;i=block/process");
-        }
 
         tcpApp[numTcpApps]: <tcpAppType> like TCPApp {
             parameters:

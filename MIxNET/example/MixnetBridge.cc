@@ -16,6 +16,10 @@
 #include "MixnetBridge.h"
 #include <InterfaceTableAccess.h>
 #include <cassert>
+#include <AddressingInterface.h>
+#include <Ieee802Ctrl_m.h>
+#include <NetwToMacControlInfo.h>
+#include <SimpleAddress.h>
 
 Define_Module(MixnetBridge);
 
@@ -28,6 +32,27 @@ void MixnetBridge::initialize(int stage)
         lowerGateOut = findGate("lowerGateOut");
         lowerControlIn  = findGate("lowerControlIn");
         lowerControlOut = findGate("lowerControlOut");
+
+		//make sure not AddressingInterface module is in host
+		AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(getParentModule());
+		if(addrScheme) {
+			opp_warning("Found addressing module in host. "
+						"This will most likely break the functionality "
+						"of this module. Please remove it!");
+		}
+
+		//find this bridges NIC module
+		nic = findMyNic();
+
+		//mixim mac address has to be the nics id
+		myMiximMacAddr = nic->getId();
+
+		//get a pointer to the MIxNET world utility module
+		world = FindModule<MIxNETWorldUtility*>::findGlobalModule();
+		if(world == 0) {
+			opp_error("Could not find an instance of MIxNETWorldUtility in network!");
+		}
+
 		registerInterface();
 	}
 }
@@ -40,30 +65,56 @@ void MixnetBridge::handleMessage(cMessage *msg)
 		handleLowerMsg(msg);
 	} else {
 		assert(msg->arrivedOn(lowerControlIn));
-		delete msg;
+
 		ev << "Dumped control message " << msg << " from MAC layer." << endl;
+
+		delete msg;
 	}
 }
 
-void MixnetBridge::handleUpperMsg(cMessage *msg) {
+void MixnetBridge::handleUpperMsg(cMessage *msg)
+{
+	//remove inet control info
+	Ieee802Ctrl* inetCtrl = static_cast<Ieee802Ctrl*>(msg->removeControlInfo());
 
-	delete msg;
+	//convert inet dest address to mixim dest address
+	const MACAddress& inetDestAddr = inetCtrl->getDest();
+	int miximDestAddr = L2BROADCAST;
+	if(!inetDestAddr.isBroadcast()) {
+		miximDestAddr = world->getMiximMACAddr(inetDestAddr);
+	}
+
+	//create and attach mixim control info
+	NetwToMacControlInfo* miximCtrl = new NetwToMacControlInfo(miximDestAddr);
+	msg->setControlInfo(miximCtrl);
+
+	//forward to lower layer (NIC)
+	send(msg, lowerGateOut);
 }
 
-void MixnetBridge::handleLowerMsg(cMessage *msg) {
-
-	delete msg;
+void MixnetBridge::handleLowerMsg(cMessage *msg)
+{
+	//just forward to upper layer
+	send(msg, upperGateOut);
 }
 
+cModule* MixnetBridge::findMyNic() {
+	cGate* lowerOutDest = gate(lowerGateOut)->getNextGate();
+	if(lowerOutDest == 0) {
+		opp_error("Can't find NIC module for this bridge because lowerGateOut is not connected to it!");
+	}
+
+	return lowerOutDest->getOwnerModule();
+}
 
 void MixnetBridge::registerInterface()
 {
     InterfaceEntry *e = new InterfaceEntry();
 
     // interface name: NetworkInterface module's name without special characters ([])
-    char *interfaceName = new char[strlen(getParentModule()->getFullName()) + 1];
+    char *interfaceName = new char[strlen(nic->getFullName()) + 1];
     char *d = interfaceName;
-    for (const char *s = getParentModule()->getFullName(); *s; s++)
+    for (const char *s = nic->getFullName(); *s; s++)
         if (isalnum(*s))
             *d++ = *s;
     *d = '\0';
@@ -75,19 +126,19 @@ void MixnetBridge::registerInterface()
     if (!strcmp(addrstr, "auto"))
     {
         // assign automatic address
-        myMacAddr = MACAddress::generateAutoAddress();
+        myINETMacAddr = MACAddress::generateAutoAddress();
 
         // change module parameter from "auto" to concrete address
-        par("address").setStringValue(myMacAddr.str().c_str());
+        par("address").setStringValue(myINETMacAddr.str().c_str());
     }
     else
     {
-        myMacAddr.setAddress(addrstr);
+        myINETMacAddr.setAddress(addrstr);
     }
-    e->setMACAddress(myMacAddr);
+    e->setMACAddress(myINETMacAddr);
 
     // generate interface identifier for IPv6
-    e->setInterfaceToken(myMacAddr.formInterfaceIdentifier());
+    e->setInterfaceToken(myINETMacAddr.formInterfaceIdentifier());
 
     // MTU on 802.11 = ?
     e->setMtu(par("mtu"));            // FIXME
@@ -100,4 +151,7 @@ void MixnetBridge::registerInterface()
     // add
     IInterfaceTable *ift = InterfaceTableAccess().get();
     ift->addInterface(e, this);
+
+    //register mac address pair with MIxNETWorldUtility
+    world->addMACAddrPair(myINETMacAddr, nic->getId());
 }

@@ -19,14 +19,48 @@
 #include <omnetpp.h>
 #include <MACAddress.h>
 #include <BaseLayer.h>
+#include <MIxNETWorldUtility.h>
 
 /**
- * TODO - Generated class
+ * @brief INET <-> MiXiM compatibility class. Converts packet between
+ * INET network layer and MiXiM NIC.
+ *
+ * For support of MiXiM NICs in INET hosts put this connect the MiXiM
+ * NIC with the lower gates of the bridge and the INET network layer
+ * with the upper gates of this bridge.
+ *
+ * Does the following things:
+ * - registers the the NIC connected to its lowerGateOut in INETs Interface
+ * table
+ * - dumps control messages send by the NIC (INET does support them)
+ * - forwards packets from NIC to upper layer
+ * - converts the Ieee802Ctrl control info (INET) of packets send from upper layer to NIC
+ *   to a NetwToMacControlInfo (INET)
+ * - converts INET MAC addresses to MiXiM MAC addresses
+ *
+ * This class expects that the MiXiM NIC uses the NIC modules id as MAC address to work.
+ * Therefore no addressing module implementing MiXiMs "AddressingInterface" should be
+ * present in the host!
+ *
+ * Uses MIxNETWorldUtility as INET<->MiXiM MAC address database.
+ *
+ * @ingroup mixnet
+ *
+ * @author KarlWessel
  */
 class MixnetBridge : public cSimpleModule
 {
 protected:
-	MACAddress myMacAddr;
+	/** @brief INET's MAC address for this bridges NIC.*/
+	MACAddress myINETMacAddr;
+	/** @brief MiXiM's MAC address for this bridges NIC.*/
+	int myMiximMacAddr;
+
+	/** @brief Pointer to MIxNET's world utility module.*/
+	MIxNETWorldUtility* world;
+
+	/** @brief Pointer to this bridge's NIC module.*/
+	cModule* nic;
 
 	/** @name gate ids*/
     /*@{*/
@@ -46,6 +80,9 @@ public:
     virtual int numInitStages() const {return 2;}
 
 protected:
+    /**
+     * @brief Registers this bridges NIC with INET's InterfaceTable.
+     */
     void registerInterface();
 
     /** @brief Handle messages from upper layer
@@ -54,6 +91,14 @@ protected:
 
     /** @brief Handle messages from lower layer */
     virtual void handleLowerMsg(cMessage *msg);
+
+    /**
+     * @brief Looks for this bridges module by using the
+     * lowerGateOut connection.
+     *
+     * @return Pointer to this bridges NIC module or NULL
+     */
+    cModule* findMyNic();
 };
 
 #endif

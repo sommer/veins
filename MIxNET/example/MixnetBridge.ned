@@ -15,18 +15,23 @@
 package mixnetexample;
 
 //
-// TODO auto-generated module
+// INET <-> MiXiM compatibility class. Connects INET network layer
+// with MiXiM NIC.
+// See C++ documentation for details.
 //
 simple MixnetBridge
 {
     parameters:
         bool notAffectedByHostState = default(true);
+        
+        //The INET MAC address for this bridges NIC
         string address = default("auto");
+        //The maximum transmission unit for this bridges NIC
         int mtu = default(1500);
         
     gates:
         input upperGateIn; // from upper layer
-        output upperGateOut; // to uppe layer
+        output upperGateOut; // to upper layer
         
         input lowerGateIn; // from lower layer
         output lowerGateOut; // to lower layer
