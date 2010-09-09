@@ -1,0 +1,3 @@
+package mixnetexample;
+
+@license(LGPL);
