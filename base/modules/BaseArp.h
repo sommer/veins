@@ -20,14 +20,16 @@
 #ifndef BASE_ARP_H
 #define BASE_ARP_H
 
+#include <ArpInterface.h>
+#include <AddressingInterface.h>
 #include <BaseModule.h>
 #include <FindModule.h>
 
 /**
  * @brief A class to convert integer layer addresses
  *
- * This class takes the network layer id as the network layer
- * address and the mac layer id as the mac layer address
+ * This class takes the network layer module id as the network layer
+ * address and the NIC module id as the mac layer address
  *
  * ARP implementations are divers, it does not make sense to start
  * from a common class. Their main purpose is to translate layer 2
@@ -35,17 +37,20 @@
  * different. Here, simple integers are sufficient, but for
  * hardware-in-the-loop simulations more complex ones are appropriate.
  *
- * In contrast to this ARP, others may want to cache entries. This
- * adds another set of basic operations that may or may not make sense
- * for ARPs.
+ * In contrast to this ARP, others may want to cache entries.
  *
+ * Since this simplified ARP relies on a certain addressing scheme
+ * it implements the AddressingInterface to be able to define the
+ * addresses for each network and mac layer.
  *
  * @ingroup netwLayer
  * @ingroup baseModules
  *
  * @author Daniel Willkomm
  **/
-class BaseArp : public BaseModule
+class BaseArp : public ArpInterface,
+				public AddressingInterface,
+				public BaseModule
 {
 	/** @brief Is core debugging enabled?*/
 	bool coreDebug;
@@ -62,9 +67,6 @@ public:
 
     /** @brief returns a L2 address to a given L3 address*/
     virtual int getMacAddr(const int netwAddr);
-
-    /** @brief returns a L3 address to a given L2 address*/
-    virtual int getNetwAddr(const int macAddr);
 
     /** @brief Returns the L2 address for the passed mac*/
     virtual int myMacAddr(cModule* mac);

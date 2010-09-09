@@ -25,8 +25,8 @@
 
 #include <omnetpp.h>
 #include "BaseLayer.h"
-#include "BaseArp.h"
-#include "MacPkt_m.h"
+//#include "BaseArp.h"
+#include <MacPkt_m.h>
 #include <MacToPhyInterface.h>
 #include <BaseConnectionManager.h>
 
@@ -65,7 +65,7 @@ protected:
 	MacToPhyInterface* phy;
 
 	/** @brief Pointer to the arp module*/
-    BaseArp* arp;
+    //BaseArp* arp;
 
     /**
      * @brief Length of the MacPkt header

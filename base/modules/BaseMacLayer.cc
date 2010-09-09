@@ -24,6 +24,7 @@
 #include "MacToNetwControlInfo.h"
 #include "NetwToMacControlInfo.h"
 #include "SimpleAddress.h"
+#include "AddressingInterface.h"
 
 #include <cassert>
 
@@ -38,9 +39,14 @@ void BaseMacLayer::initialize(int stage)
 {
     BaseLayer::initialize(stage);
     if(stage==0) {
-    	// get handle to arp module
-        arp = FindModule<BaseArp*>::findSubModule(findHost());
-        myMacAddr = arp->myMacAddr(this);
+    	// see if there is an addressing module available
+    	// otherwise use NIC modules id as MAC address
+        AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
+        if(addrScheme) {
+        	myMacAddr = addrScheme->myMacAddr(this);
+        } else {
+        	myMacAddr = getParentModule()->getId();
+        }
 
     	// get handle to phy layer
         phy = FindModule<MacToPhyInterface*>::findSubModule(getParentModule());
