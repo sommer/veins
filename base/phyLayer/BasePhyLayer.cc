@@ -266,7 +266,10 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 	{
 		opp_warning("Could not find an analogue model with the name \"%s\".", s.c_str());
 	}
-	analogueModels.push_back(newAnalogueModel);
+	else
+	{
+		analogueModels.push_back(newAnalogueModel);
+	}
 
 
 	if(xmlConfig == 0) {
