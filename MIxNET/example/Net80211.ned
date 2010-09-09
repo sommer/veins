@@ -24,14 +24,13 @@ import inet.networklayer.autorouting.FlatNetworkConfigurator;
 //import inet.nodes.adhoc.MFMobileHost;
 //import inet.world.ChannelControl;
 import org.mixim.base.connectionManager.ConnectionManager;
-import org.mixim.base.modules.BaseWorldUtility;
 
 network Net80211
 {
     parameters:
         int numHosts;
     submodules:
-        world: BaseWorldUtility {
+        world: MIxNETWorldUtility {
         }        
         connectionManager: ConnectionManager {
             parameters:
