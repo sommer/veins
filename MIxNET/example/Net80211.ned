@@ -30,7 +30,7 @@ network Net80211
     parameters:
         int numHosts;
     submodules:
-        world: MIxNETWorldUtility {
+        world: MixnetWorldUtility {
         }        
         connectionManager: ConnectionManager {
             parameters:

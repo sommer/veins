@@ -48,7 +48,7 @@ void MixnetBridge::initialize(int stage)
 		myMiximMacAddr = nic->getId();
 
 		//get a pointer to the MIxNET world utility module
-		world = FindModule<MIxNETWorldUtility*>::findGlobalModule();
+		world = FindModule<MixnetWorldUtility*>::findGlobalModule();
 		if(world == 0) {
 			opp_error("Could not find an instance of MIxNETWorldUtility in network!");
 		}
@@ -152,6 +152,7 @@ void MixnetBridge::registerInterface()
     IInterfaceTable *ift = InterfaceTableAccess().get();
     ift->addInterface(e, this);
 
-    //register mac address pair with MIxNETWorldUtility
+    //register mac address pair with MixnetWorldUtility
     world->addMACAddrPair(myINETMacAddr, nic->getId());
+
 }

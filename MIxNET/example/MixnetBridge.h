@@ -19,7 +19,7 @@
 #include <omnetpp.h>
 #include <MACAddress.h>
 #include <BaseLayer.h>
-#include <MIxNETWorldUtility.h>
+#include <MixnetWorldUtility.h>
 
 /**
  * @brief INET <-> MiXiM compatibility class. Converts packet between
@@ -42,7 +42,7 @@
  * Therefore no addressing module implementing MiXiMs "AddressingInterface" should be
  * present in the host!
  *
- * Uses MIxNETWorldUtility as INET<->MiXiM MAC address database.
+ * Uses MixnetWorldUtility as INET<->MiXiM MAC address database.
  *
  * @ingroup mixnet
  *
@@ -57,7 +57,7 @@ protected:
 	int myMiximMacAddr;
 
 	/** @brief Pointer to MIxNET's world utility module.*/
-	MIxNETWorldUtility* world;
+	MixnetWorldUtility* world;
 
 	/** @brief Pointer to this bridge's NIC module.*/
 	cModule* nic;

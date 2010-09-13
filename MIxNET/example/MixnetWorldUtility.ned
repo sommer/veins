@@ -2,10 +2,14 @@ package mixnetexample;
 
 import org.mixim.base.modules.BaseWorldUtility;
 
-// TODO: add comment
-simple MIxNETWorldUtility extends BaseWorldUtility
+//
+// INET <-> MiXiM compatibility class. Stores mapping between 
+// corresponding INET and MiXiM MAC-addresses.
+// See C++ documentation for details.
+//
+simple MixnetWorldUtility extends BaseWorldUtility
 {
     parameters:
-        @class(MIxNETWorldUtility);
+        @class(MixnetWorldUtility);
 }
 
