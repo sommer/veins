@@ -33,7 +33,7 @@ void MixnetBridge::initialize(int stage)
         lowerControlIn  = findGate("lowerControlIn");
         lowerControlOut = findGate("lowerControlOut");
 
-		//make sure not AddressingInterface module is in host
+		//make sure no AddressingInterface module is in host
 		AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(getParentModule());
 		if(addrScheme) {
 			opp_warning("Found addressing module in host. "
@@ -41,10 +41,10 @@ void MixnetBridge::initialize(int stage)
 						"of this module. Please remove it!");
 		}
 
-		//find this bridges NIC module
+		//find this bridge's NIC module
 		nic = findMyNic();
 
-		//mixim mac address has to be the nics id
+		//MiXiM MAC-address has to be the NIC's id
 		myMiximMacAddr = nic->getId();
 
 		//get a pointer to the MIxNET world utility module
@@ -74,17 +74,17 @@ void MixnetBridge::handleMessage(cMessage *msg)
 
 void MixnetBridge::handleUpperMsg(cMessage *msg)
 {
-	//remove inet control info
+	//remove INET control info
 	Ieee802Ctrl* inetCtrl = static_cast<Ieee802Ctrl*>(msg->removeControlInfo());
 
-	//convert inet dest address to mixim dest address
+	//convert INET dest address to MiXiM dest address
 	const MACAddress& inetDestAddr = inetCtrl->getDest();
 	int miximDestAddr = L2BROADCAST;
 	if(!inetDestAddr.isBroadcast()) {
 		miximDestAddr = world->getMiximMACAddr(inetDestAddr);
 	}
 
-	//create and attach mixim control info
+	//create and attach MiXiM control info
 	NetwToMacControlInfo* miximCtrl = new NetwToMacControlInfo(miximDestAddr);
 	msg->setControlInfo(miximCtrl);
 
@@ -111,7 +111,8 @@ void MixnetBridge::registerInterface()
 {
     InterfaceEntry *e = new InterfaceEntry();
 
-    // interface name: NetworkInterface module's name without special characters ([])
+    // interface name: NetworkInterface module's name without special
+    // characters ([])
     char *interfaceName = new char[strlen(nic->getFullName()) + 1];
     char *d = interfaceName;
     for (const char *s = nic->getFullName(); *s; s++)
@@ -152,7 +153,7 @@ void MixnetBridge::registerInterface()
     IInterfaceTable *ift = InterfaceTableAccess().get();
     ift->addInterface(e, this);
 
-    //register mac address pair with MixnetWorldUtility
+    //register MAC-address pair with MixnetWorldUtility
     world->addMACAddrPair(myINETMacAddr, nic->getId());
 
 }

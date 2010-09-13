@@ -24,9 +24,9 @@ simple MixnetBridge
     parameters:
         bool notAffectedByHostState = default(true);
         
-        //The INET MAC address for this bridges NIC
+        //The INET MAC-address for this bridge's NIC
         string address = default("auto");
-        //The maximum transmission unit for this bridges NIC
+        //The maximum transmission unit for this bridge's NIC
         int mtu = default(1500);
         
     gates:

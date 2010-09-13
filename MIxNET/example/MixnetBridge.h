@@ -22,38 +22,38 @@
 #include <MixnetWorldUtility.h>
 
 /**
- * @brief INET <-> MiXiM compatibility class. Converts packet between
+ * @brief INET <-> MiXiM compatibility class. Converts packets between
  * INET network layer and MiXiM NIC.
  *
- * For support of MiXiM NICs in INET hosts put this connect the MiXiM
+ * For support of MiXiM NICs in INET hosts connect the MiXiM
  * NIC with the lower gates of the bridge and the INET network layer
  * with the upper gates of this bridge.
  *
  * Does the following things:
- * - registers the the NIC connected to its lowerGateOut in INETs Interface
- * table
- * - dumps control messages send by the NIC (INET does support them)
+ * - registers the NIC connected to its lowerGateOut in INETs Interface
+ *   table
+ * - dumps control messages sent by the NIC (INET doesn't support them)
  * - forwards packets from NIC to upper layer
- * - converts the Ieee802Ctrl control info (INET) of packets send from upper layer to NIC
- *   to a NetwToMacControlInfo (INET)
- * - converts INET MAC addresses to MiXiM MAC addresses
+ * - converts the Ieee802Ctrl control info (INET) of packets sent from upper
+ *   layer to NIC into a NetwToMacControlInfo (MiXiM)
+ * - converts INET MAC-addresses to MiXiM MAC-addresses
  *
- * This class expects that the MiXiM NIC uses the NIC modules id as MAC address to work.
- * Therefore no addressing module implementing MiXiMs "AddressingInterface" should be
- * present in the host!
+ * This class expects that the MiXiM NIC uses the NIC modules id as MAC-address
+ * to work. Therefore no addressing module implementing MiXiM's
+ * "AddressingInterface" should be present in the host!
  *
- * Uses MixnetWorldUtility as INET<->MiXiM MAC address database.
+ * Uses MixnetWorldUtility as INET<->MiXiM MAC-address database.
  *
  * @ingroup mixnet
  *
- * @author KarlWessel
+ * @author Karl Wessel
  */
 class MixnetBridge : public cSimpleModule
 {
 protected:
-	/** @brief INET's MAC address for this bridges NIC.*/
+	/** @brief INET's MAC-address for this bridge's NIC.*/
 	MACAddress myINETMacAddr;
-	/** @brief MiXiM's MAC address for this bridges NIC.*/
+	/** @brief MiXiM's MAC-address for this bridge's NIC.*/
 	int myMiximMacAddr;
 
 	/** @brief Pointer to MIxNET's world utility module.*/
@@ -81,19 +81,19 @@ public:
 
 protected:
     /**
-     * @brief Registers this bridges NIC with INET's InterfaceTable.
+     * @brief Registers this bridge's NIC with INET's InterfaceTable.
      */
     void registerInterface();
 
-    /** @brief Handle messages from upper layer
+    /** @brief Handles messages from upper layer
      */
     virtual void handleUpperMsg(cMessage *msg);
 
-    /** @brief Handle messages from lower layer */
+    /** @brief Handles messages from lower layer */
     virtual void handleLowerMsg(cMessage *msg);
 
     /**
-     * @brief Looks for this bridges module by using the
+     * @brief Looks for this bridge's module by using the
      * lowerGateOut connection.
      *
      * @return Pointer to this bridges NIC module or NULL
