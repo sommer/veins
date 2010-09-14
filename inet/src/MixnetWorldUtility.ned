@@ -1,4 +1,4 @@
-package mixnetexample;
+package mixnet;
 
 import org.mixim.base.modules.BaseWorldUtility;
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-package mixnetexample;
+package mixnet.examples.adhoc;
 
 
 
@@ -24,6 +24,7 @@ import inet.networklayer.autorouting.FlatNetworkConfigurator;
 //import inet.nodes.adhoc.MFMobileHost;
 //import inet.world.ChannelControl;
 import org.mixim.base.connectionManager.ConnectionManager;
+import mixnet.MixnetWorldUtility;
 
 network Net80211
 {

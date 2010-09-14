@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
-package mixnetexample;
+package mixnet.examples.adhoc;
 
 import inet.applications.pingapp.PingApp;
 import inet.applications.tcpapp.TCPApp;
@@ -32,6 +32,8 @@ import inet.transport.udp.UDP;
 
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseUtility;
+
+import mixnet.MixnetBridge;
 //
 // Models a mobile host with a wireless (802.11b) card in ad-hoc mode.
 // This model contains the Mobility Framework's 802.11 implementation, Nic80211,
