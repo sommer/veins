@@ -7,5 +7,6 @@ simple BaseUtility extends Blackboard
 {
     parameters:
         @class(BaseUtility);
+        @display("i=block/blackboard");
 }
 

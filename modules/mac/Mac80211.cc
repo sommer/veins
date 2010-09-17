@@ -1231,18 +1231,20 @@ void Mac80211::addNeighbor(Mac80211Pkt *af) {
        << " snr: " << snr << " bitrate: " << bitrate << endl;
 }
 
-void Mac80211::finish() {
-    BaseMacLayer::finish();
-    MacPktList::iterator it;
+Mac80211::~Mac80211() {
+	cancelAndDelete(timeout);
+	cancelAndDelete(nav);
+	cancelAndDelete(contention);
+	cancelAndDelete(endSifs);
 
-    if(!timeout->isScheduled()) delete timeout;
-    if(!nav->isScheduled()) delete nav;
-    if(!contention->isScheduled()) delete contention;
-    if(!endSifs->isScheduled()) delete endSifs;
-
-    for(it = fromUpperLayer.begin(); it != fromUpperLayer.end(); ++it) {
+	MacPktList::iterator it;
+	for(it = fromUpperLayer.begin(); it != fromUpperLayer.end(); ++it) {
         delete (*it);
     }
     fromUpperLayer.clear();
+}
+
+void Mac80211::finish() {
+    BaseMacLayer::finish();
 }
 

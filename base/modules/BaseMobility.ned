@@ -14,5 +14,6 @@ simple BaseMobility like IBaseMobility
         double x; // x coordinate of the nodes' position (-1 = random)
         double y; // y coordinate of the nodes' position (-1 = random)
         double z; // z coordinate of the nodes' position (-1 = random)
+        @display("i=block/cogwheel");
 }
 
