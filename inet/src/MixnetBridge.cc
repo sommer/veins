@@ -34,24 +34,45 @@ void MixnetBridge::initialize(int stage)
         lowerControlOut = findGate("lowerControlOut");
 
 		//make sure no AddressingInterface module is in host
-		AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(getParentModule());
+		AddressingInterface* addrScheme =
+				FindModule<AddressingInterface*>
+					::findSubModule(getParentModule());
 		if(addrScheme) {
-			opp_warning("Found addressing module in host. "
-						"This will most likely break the functionality "
-						"of this module. Please remove it!");
+			opp_warning("Found addressing module in host.\n"
+						"This will most likely break the functionality of this "
+						"module. Please remove it!");
 		}
 
 		//find this bridge's NIC module
 		nic = findMyNic();
 
+		//get a pointer to the Mixnet world utility module
+		world = FindModule<MixnetWorldUtility*>::findGlobalModule();
+		if(world == 0) {
+			opp_error("Could not find an instance of MixnetWorldUtility in "
+					  "network! Please add it.");
+		}
+
 		//MiXiM MAC-address has to be the NIC's id
 		myMiximMacAddr = nic->getId();
 
-		//get a pointer to the MIxNET world utility module
-		world = FindModule<MixnetWorldUtility*>::findGlobalModule();
-		if(world == 0) {
-			opp_error("Could not find an instance of MIxNETWorldUtility in network!");
+		//get INET MAC-address
+		const char *addrstr = par("address");
+		if (!strcmp(addrstr, "auto"))
+		{
+			// assign automatic address
+			myINETMacAddr = MACAddress::generateAutoAddress();
+
+			// change module parameter from "auto" to concrete address
+			par("address").setStringValue(myINETMacAddr.str().c_str());
 		}
+		else
+		{
+			myINETMacAddr.setAddress(addrstr);
+		}
+
+		//register MAC-address pair with MixnetWorldUtility
+		world->addMACAddrPair(myINETMacAddr, nic->getId());
 
 		registerInterface();
 	}
@@ -75,6 +96,7 @@ void MixnetBridge::handleMessage(cMessage *msg)
 void MixnetBridge::handleUpperMsg(cMessage *msg)
 {
 	//remove INET control info
+	assert(dynamic_cast<Ieee802Ctrl*>(msg->getControlInfo()));
 	Ieee802Ctrl* inetCtrl = static_cast<Ieee802Ctrl*>(msg->removeControlInfo());
 
 	//convert INET dest address to MiXiM dest address
@@ -82,11 +104,18 @@ void MixnetBridge::handleUpperMsg(cMessage *msg)
 	int miximDestAddr = L2BROADCAST;
 	if(!inetDestAddr.isBroadcast()) {
 		miximDestAddr = world->getMiximMACAddr(inetDestAddr);
+
+		if(miximDestAddr == MixnetWorldUtility::NoMacPairFound) {
+			opp_error("Could not find MiXiM's corresponding MAC address for "
+					  "INET's address %s!", inetDestAddr.str().c_str());
+		}
 	}
 
 	//create and attach MiXiM control info
 	NetwToMacControlInfo* miximCtrl = new NetwToMacControlInfo(miximDestAddr);
 	msg->setControlInfo(miximCtrl);
+
+	delete inetCtrl;
 
 	//forward to lower layer (NIC)
 	send(msg, lowerGateOut);
@@ -111,7 +140,7 @@ void MixnetBridge::registerInterface()
 {
     InterfaceEntry *e = new InterfaceEntry();
 
-    // interface name: NetworkInterface module's name without special
+    // interface name: NIC module's name without special
     // characters ([])
     char *interfaceName = new char[strlen(nic->getFullName()) + 1];
     char *d = interfaceName;
@@ -123,19 +152,6 @@ void MixnetBridge::registerInterface()
     e->setName(interfaceName);
     delete [] interfaceName;
 
-    const char *addrstr = par("address");
-    if (!strcmp(addrstr, "auto"))
-    {
-        // assign automatic address
-        myINETMacAddr = MACAddress::generateAutoAddress();
-
-        // change module parameter from "auto" to concrete address
-        par("address").setStringValue(myINETMacAddr.str().c_str());
-    }
-    else
-    {
-        myINETMacAddr.setAddress(addrstr);
-    }
     e->setMACAddress(myINETMacAddr);
 
     // generate interface identifier for IPv6
@@ -152,8 +168,4 @@ void MixnetBridge::registerInterface()
     // add
     IInterfaceTable *ift = InterfaceTableAccess().get();
     ift->addInterface(e, this);
-
-    //register MAC-address pair with MixnetWorldUtility
-    world->addMACAddrPair(myINETMacAddr, nic->getId());
-
 }
