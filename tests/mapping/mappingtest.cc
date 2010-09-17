@@ -181,6 +181,7 @@ protected:
 	Mapping* createMappingBuffer;
 public:
 	OmnetTest():
+		OmnetTestBase(),
 		time(Dimension::time_static()), freq("frequency"), channel(freq), space("space"),
 		A(freq, space), createMappingBuffer(0){
 		for(double i = 0.0; i <= 6.0; i+=0.25) {
@@ -2368,6 +2369,7 @@ protected:
 
 	    //std::cout << "========Performance tests=========================================================\n";
 	    //testPerformance();
+		testsExecuted = true;
 	}
 };
 

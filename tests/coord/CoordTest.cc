@@ -425,6 +425,8 @@ protected:
 	    testLength();
 	    testDistance();
 	    testIsInRectangle();
+
+	    testsExecuted = true;
 	}
 };
 

@@ -280,6 +280,7 @@ class OmnetTest:public OmnetTestBase {
 protected:
 	void runTests() {
 		testIntersections();
+		testsExecuted = true;
 	}
 };
 

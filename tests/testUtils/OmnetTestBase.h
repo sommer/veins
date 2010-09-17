@@ -5,12 +5,21 @@
 #include <omnetpp.h>
 
 class OmnetTestBase:public cSimpleModule {
+protected:
+	bool testsExecuted;
 	
 protected:
 	virtual void runTests() = 0;
 	
 public:
-	virtual ~OmnetTestBase() {}
+	OmnetTestBase()
+		:testsExecuted(false)
+	{}
+
+	virtual ~OmnetTestBase() {
+		displayPassed = false;
+		assertTrue("Tests should have been executed!", testsExecuted);
+	}
 	
 	virtual void initialize(int stage){
 		runTests();

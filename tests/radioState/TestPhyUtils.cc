@@ -773,6 +773,8 @@ protected:
 		//RSAMConstMappingIterator
 		std::cout << "------ Testing stuff for RSAMConstMappingIterator ------" << std::endl;
 		testRSAMConstMappingIterator();
+
+		testsExecuted = true;
 	}
 };
 
