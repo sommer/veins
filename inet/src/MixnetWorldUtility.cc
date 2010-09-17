@@ -9,11 +9,22 @@
 
 Define_Module(MixnetWorldUtility);
 
+const int MixnetWorldUtility::NoMacPairFound = -242;
+
 void MixnetWorldUtility::addMACAddrPair(const MACAddress& inetAddr,
 										int miximAddr)
 {
-	// convert INET-MAC-address to a string-representation
-	std::string inetAddrString = inetAddr.str();
+	//Normally the mixim address should never be smaller than -1 since it uses
+	//module-ids as address. But in case we were wrong we check and give a
+	//warning at this point if the passed mixim address is the same as the value
+	//used as error value for "NoMACPairFound"
+	if(miximAddr == NoMacPairFound) {
+		opp_warning("Added an address pair whose MiXiM address has the same "
+					"value as the error value \"NoMacPairFound\". This either "
+					"means you are using another addressing scheme for MiXiM "
+					"than the default one or OMNeT++ has changed the way it "
+					"assigns module ids.");
+	}
 
 	//check if mapping for this INET-address already exists
 	INETToMiximMACMap::const_iterator it =
@@ -57,7 +68,7 @@ int MixnetWorldUtility::getMiximMACAddr(const MACAddress& inetAddr) const
 	// else return the mapped value
 	if (it == inetToMiximMACAddr.end())
 	{
-		return 0;
+		return NoMacPairFound;
 	}
 	else
 	{

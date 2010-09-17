@@ -1,5 +1,6 @@
 all: checkmakefiles
 	cd src && $(MAKE)
+	cd tests && $(MAKE)
 
 clean: checkmakefiles
 	cd src && $(MAKE) clean

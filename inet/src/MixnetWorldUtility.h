@@ -40,6 +40,11 @@ public:
 		}
 	};
 
+	/** @brief Defines the error value returned when no corresponding
+	 * MAC address for a passed MAC address was found.
+	 */
+	static const int NoMacPairFound;
+
 protected:
 
 	typedef std::map<MACAddress, int, LessMACAddress> INETToMiximMACMap;
@@ -70,7 +75,8 @@ public:
 	 * INET MAC-address
 	 *
 	 * @return Returns the corresponding MiXiM MAC-address if an entry to
-	 * the passed INET MAC-address exists, else returns an error value.
+	 * the passed INET MAC-address exists, else returns
+	 * MixnetWorldUtility::NoMacPairFound.
 	 */
 	virtual int getMiximMACAddr(const MACAddress& inetAddr) const;
 };
