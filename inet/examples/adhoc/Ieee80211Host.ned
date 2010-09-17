@@ -24,7 +24,7 @@ module Ieee80211Host
     parameters:
         @node();
         @labels(node,ethernet-node,wireless-node);
-        @display("i=device/wifilaptop");
+        @display("i=device/wifilaptop;bgb=462,483");
         int numTcpApps = default(0);
         int numUdpApps = default(0);
         string tcpAppType = default("");
@@ -37,74 +37,74 @@ module Ieee80211Host
         inout ethg[] @labels(EtherFrame-conn);
         input radioIn @directIn;
     submodules:
-    	utility: BaseUtility {
-            @display("p=60,388");
+        utility: BaseUtility {
+            @display("p=147,41");
         }
         mobility: <mobilityType> like IBaseMobility {
             parameters:
-                @display("p=60,445");
+                @display("p=147,128");
         }
-        
+
         notificationBoard: NotificationBoard {
             parameters:
-                @display("p=60,70");
+                @display("p=60,41");
         }
         interfaceTable: InterfaceTable {
             parameters:
-                @display("p=60,150");
+                @display("p=60,200");
         }
         routingTable: RoutingTable {
             parameters:
                 IPForward = IPForward;
                 routerId = "";
                 routingFile = routingFile;
-                @display("p=60,230");
+                @display("p=60,262");
         }
         tcpApp[numTcpApps]: <tcpAppType> like TCPApp {
             parameters:
-                @display("p=163,67");
+                @display("p=231,67");
         }
         tcp: TCP {
             parameters:
-                @display("p=163,154");
+                @display("p=231,154");
         }
         udpApp[numUdpApps]: <udpAppType> like UDPApp {
             parameters:
-                @display("p=272,67");
+                @display("p=388,67");
         }
         udp: UDP {
             parameters:
-                @display("p=272,154");
+                @display("p=388,154");
         }
         pingApp: PingApp {
             parameters:
-                @display("p=343,200");
+                @display("p=231,223");
         }
         networkLayer: NetworkLayer {
             parameters:
                 proxyARP = false;
-                @display("p=248,247;q=queue");
+                @display("p=316,247;q=queue");
             gates:
                 ifIn[(sizeof(pppg)+sizeof(ethg))+1];
                 ifOut[(sizeof(pppg)+sizeof(ethg))+1];
         }
         ppp[sizeof(pppg)]: PPPInterface {
             parameters:
-                @display("p=205,350,row,90;q=txQueue");
+                @display("p=316,408,row,90;q=txQueue");
         }
         eth[sizeof(ethg)]: EthernetInterface {
             parameters:
-                @display("p=240,350,row,90;q=txQueue");
+                @display("p=404,427,row,90;q=txQueue");
         }
-        
+
         bridge: MixnetBridge {
-            @display("p=248,317;i=block/classifier2");
+            @display("p=217,332");
         }
         wlan: Nic80211 {
             parameters:
-                @display("p=248,388;q=queue");
+                @display("p=217,427;q=queue");
         }
-        
+
     connections allowunconnected:
         for i=0..numTcpApps-1 {
             tcpApp[i].tcpOut --> tcp.appIn++;

@@ -23,16 +23,17 @@ simple MixnetBridge
 {
     parameters:
         bool notAffectedByHostState = default(true);
-        
+
         //The INET MAC-address for this bridge's NIC
         string address = default("auto");
         //The maximum transmission unit for this bridge's NIC
         int mtu = default(1500);
-        
+
+        @display("i=block/classifier2");
     gates:
         input upperGateIn; // from upper layer
         output upperGateOut; // to upper layer
-        
+
         input lowerGateIn; // from lower layer
         output lowerGateOut; // to lower layer
         input lowerControlIn; // control from lower layer

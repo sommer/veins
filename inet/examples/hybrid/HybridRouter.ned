@@ -13,7 +13,7 @@ import inet.transport.tcp.TCP;
 import inet.transport.udp.UDP;
 
 import org.mixim.modules.nic.Nic80211;
-import org.mixim.base.modules.IBaseMobility;
+import org.mixim.base.modules.BaseMobility;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseUtility;
 
@@ -24,67 +24,66 @@ module HybridRouter
     parameters:
         @node();
         @labels(node,ethernet-node,wireless-node);
-        @display("i=device/wifilaptop");
-        
+        @display("i=device/wifilaptop;bgb=392,418");
+
         string routingFile = default("");
-        string mobilityType = default("BaseMobility");
     gates:
         inout pppg[] @labels(PPPFrame-conn);
         inout ethg[] @labels(EtherFrame-conn);
         input radioIn @directIn;
     submodules:
-    	utility: BaseUtility {
-            @display("p=60,388");
+        utility: BaseUtility {
+            @display("p=155,49");
         }
-        mobility: <mobilityType> like IBaseMobility {
+        mobility: BaseMobility {
             parameters:
-                @display("p=60,445");
+                @display("p=155,119");
         }
-        
+
         notificationBoard: NotificationBoard {
             parameters:
-                @display("p=60,70");
+                @display("p=60,49");
         }
         interfaceTable: InterfaceTable {
             parameters:
-                @display("p=60,150");
+                @display("p=60,179");
         }
         routingTable: RoutingTable {
             parameters:
                 IPForward = true;
                 routerId = "auto";
                 routingFile = routingFile;
-                @display("p=60,230");
+                @display("p=60,241");
         }
-        
+
         networkLayer: NetworkLayer {
             parameters:
                 proxyARP = true;
-                @display("p=248,247;q=queue");
+                @display("p=265,218;q=queue");
             gates:
                 ifIn[(sizeof(pppg)+sizeof(ethg))+1];
                 ifOut[(sizeof(pppg)+sizeof(ethg))+1];
         }
         ppp[sizeof(pppg)]: PPPInterface {
             parameters:
-                @display("p=205,350,row,90;q=txQueue");
+                @display("p=343,370,row,90;q=txQueue");
         }
         eth[sizeof(ethg)]: EthernetInterface {
             parameters:
-                @display("p=240,350,row,90;q=txQueue");
+                @display("p=265,345,row,90;q=txQueue");
         }
-        
+
         bridge: MixnetBridge {
-            @display("p=248,317;i=block/classifier2");
+            @display("p=180,280");
         }
-        
+
         wlan: Nic80211 {
             parameters:
-                @display("p=248,388;q=queue");
+                @display("p=180,370;q=queue");
         }
-        
+
     connections allowunconnected:
-        
+
 
         // connections to network outside
         for i=0..sizeof(pppg)-1 {
