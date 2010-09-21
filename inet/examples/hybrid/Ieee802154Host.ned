@@ -12,15 +12,17 @@ import inet.nodes.inet.NetworkLayer;
 import inet.transport.tcp.TCP;
 import inet.transport.udp.UDP;
 
-//import org.mixim.modules.nic.Nic80211;
+//import org.mixim.modules.nic.Nic802154_TI_CC2420;
 import org.mixim.base.modules.IBaseMobility;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseUtility;
+import org.mixim.modules.power.battery.SimpleBattery;
+import org.mixim.modules.power.battery.BatteryStats;
 
 import mixnet.MixnetBridge;
 
-// Host equipped with a 802.11-NIC
-module Ieee80211Host
+// Host equipped with a 802.15.4-NIC (TI_CC2420)
+module Ieee802154Host
 {
     parameters:
         @node();
@@ -38,6 +40,12 @@ module Ieee80211Host
         inout ethg[] @labels(EtherFrame-conn);
         input radioIn @directIn;
     submodules:
+        batteryStats: BatteryStats {
+            @display("p=60,106;i=block/circle");
+        }
+        battery: SimpleBattery {
+            @display("p=60,176;i=block/control");
+        }
         utility: BaseUtility {
             @display("p=147,41");
         }
@@ -52,14 +60,14 @@ module Ieee80211Host
         }
         interfaceTable: InterfaceTable {
             parameters:
-                @display("p=60,200");
+                @display("p=60,275");
         }
         routingTable: RoutingTable {
             parameters:
                 IPForward = IPForward;
                 routerId = "";
                 routingFile = routingFile;
-                @display("p=60,262");
+                @display("p=60,346");
         }
         tcpApp[numTcpApps]: <tcpAppType> like TCPApp {
             parameters:
@@ -101,9 +109,9 @@ module Ieee80211Host
         bridge: MixnetBridge {
             @display("p=217,332");
         }
-        wlan: Nic80211_MCM {
+        lrwpan: Nic802154_TI_CC2420_MCM {
             parameters:
-                @display("p=217,427;q=queue");
+                @display("p=217,427;q=queue;i=block/ifcard");
         }
 
     connections allowunconnected:
@@ -139,13 +147,13 @@ module Ieee80211Host
             eth[i].netwIn <-- networkLayer.ifOut[sizeof(pppg)+i];
         }
 
-        radioIn --> wlan.radioIn;
+        radioIn --> lrwpan.radioIn;
         bridge.upperGateOut --> networkLayer.ifIn[(sizeof(pppg)+sizeof(ethg))];
         bridge.upperGateIn <-- networkLayer.ifOut[(sizeof(pppg)+sizeof(ethg))];
 
-        wlan.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> bridge.lowerGateIn;
-        wlan.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- bridge.lowerGateOut;
-        wlan.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> bridge.lowerControlIn;
-        wlan.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- bridge.lowerControlOut;
+        lrwpan.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> bridge.lowerGateIn;
+        lrwpan.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- bridge.lowerGateOut;
+        lrwpan.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> bridge.lowerControlIn;
+        lrwpan.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- bridge.lowerControlOut;
 }
 

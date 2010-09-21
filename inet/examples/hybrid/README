@@ -1,1 +1,14 @@
 Network for testing a hybrid host containing different wired and wireless NICs.
+
+
+This network contains several hosts equipped with different types of NICs, in
+particular ethernet, 802.11 and 802.15.4 (TI_CC2420).
+
+Further the network contains a hybrid host (hybridRouter) which is equipped with
+all of these types of NICs. Thus the hybridRouter is capable of establishing a
+connection to every host in the network as well as route packages between two
+hosts.
+
+All hosts which are not the router are equipped with a PING-application. The
+several configurations demonstrate the sending of PINGs between the different
+hosts, routed by the hybridRouter.

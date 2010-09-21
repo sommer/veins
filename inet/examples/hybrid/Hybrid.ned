@@ -9,7 +9,8 @@ import org.mixim.base.connectionManager.ConnectionManager;
 import mixnet.MixnetWorldUtility;
 
 
-
+// Network containing several hosts equipped with different types of NICs
+// as well as a hybrid-router equipped with all of the host's types of NICs
 network Hybrid
 {
     parameters:
@@ -25,12 +26,17 @@ network Hybrid
                 playgroundSizeX = playgroundSizeX;
                 playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
-                @display("p=171,25");
+                @display("p=159,25");
 
         }
-        connectionManager: ConnectionManager {
+        wlanChannel: ConnectionManager {
             parameters:
-                @display("p=66,25");
+                @display("p=253,25");
+        }
+
+        lrwpanChannel: ConnectionManager {
+            parameters:
+                @display("p=369,25");
         }
 
 
@@ -41,7 +47,11 @@ network Hybrid
 
         }
         wlanHost: Ieee80211Host {
-            @display("r=,,#707070;p=197,132");
+            @display("r=,,#707070;p=166,181");
+        }
+
+        lrwpanHost: Ieee802154Host {
+            @display("p=214,86");
         }
 
         hybridRouter: HybridRouter {
