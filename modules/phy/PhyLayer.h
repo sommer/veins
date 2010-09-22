@@ -35,6 +35,7 @@ protected:
 	 * - SimplePathlossModel
 	 * - LogNormalShadowing
 	 * - JakesFading
+	 * - SimpleObstacleModel
 	 */
 	virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
 
@@ -55,6 +56,12 @@ protected:
 	 * passed parameter values.
 	 */
 	AnalogueModel* initializeJakesFading(ParameterMap& params);
+
+	/**
+	 * @brief Creates and initializes a SimpleObstacleShadowing with the
+	 * passed parameter values.
+	 */
+	AnalogueModel* initializeSimpleObstacleShadowing(ParameterMap& params);
 
 	/**
 	 * @brief Creates and returns an instance of the Decider with the specified

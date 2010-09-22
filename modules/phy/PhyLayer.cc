@@ -12,6 +12,7 @@
 #include <LogNormalShadowing.h>
 #include <SNRThresholdDecider.h>
 #include <JakesFading.h>
+#include <SimpleObstacleShadowing.h>
 
 Define_Module(PhyLayer);
 
@@ -28,6 +29,10 @@ AnalogueModel* PhyLayer::getAnalogueModelFromName(std::string name, ParameterMap
 	else if (name == "JakesFading")
 	{
 		return initializeJakesFading(params);
+	}
+	else if (name == "SimpleObstacleShadowing")
+	{
+		return initializeSimpleObstacleShadowing(params);
 	}
 	return BasePhyLayer::getAnalogueModelFromName(name, params);
 }
@@ -56,6 +61,51 @@ AnalogueModel* PhyLayer::initializeJakesFading(ParameterMap& params){
 	}
 
 	return new JakesFading(fadingPaths, delayRMS, &move, carrierFrequency, interval);
+}
+
+AnalogueModel* PhyLayer::initializeSimpleObstacleShadowing(ParameterMap& params){
+
+	// init with default value
+	double carrierFrequency = 2.412e+9;
+	bool useTorus = world->useTorus();
+	const Coord& playgroundSize = *(world->getPgs());
+
+	ParameterMap::iterator it;
+
+	// get carrierFrequency from config
+	it = params.find("carrierFrequency");
+
+	if ( it != params.end() ) // parameter carrierFrequency has been specified in config.xml
+	{
+		// set carrierFrequency
+		carrierFrequency = it->second.doubleValue();
+		coreEV << "initializeSimpleObstacleShadowing(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
+
+		// check whether carrierFrequency is not smaller than specified in ConnectionManager
+		if(cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue())
+		{
+			// throw error
+			opp_error("initializeSimpleObstacleShadowing(): carrierFrequency can't be smaller than specified in ConnectionManager. Please adjust your config.xml file accordingly");
+		}
+	}
+	else // carrierFrequency has not been specified in config.xml
+	{
+		if (cc->hasPar("carrierFrequency")) // parameter carrierFrequency has been specified in ConnectionManager
+		{
+			// set carrierFrequency according to ConnectionManager
+			carrierFrequency = cc->par("carrierFrequency").doubleValue();
+			coreEV << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
+		}
+		else // carrierFrequency has not been specified in ConnectionManager
+		{
+			// keep carrierFrequency at default value
+			coreEV << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
+		}
+	}
+
+	ObstacleControl* obstacleControlP = ObstacleControlAccess().getIfExists();
+	if (!obstacleControlP) opp_error("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
+	return new SimpleObstacleShadowing(*obstacleControlP, carrierFrequency, &move, useTorus, playgroundSize, coreDebug);
 }
 
 AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){
