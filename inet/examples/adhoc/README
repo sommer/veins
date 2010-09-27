@@ -1,1 +1,2 @@
-Network for testing an INET network stack with MiXiM NIC (802.11).
+Network for testing hosts containing an INET network stack,
+a MiXiM NIC (802.11) and a MiXiM mobility module.

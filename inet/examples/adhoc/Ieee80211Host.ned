@@ -19,6 +19,11 @@ import org.mixim.base.modules.BaseUtility;
 
 import mixnet.MixnetBridge;
 
+// This host is an example on how a host with INET network stack
+// can be equipped with mobility- and wireless-modules from MiXiM. 
+//
+// It contains an INET network stack and a MiXiM 802.11 NIC (connected
+// by the MixnetBridge module) as well as a mobility-module from MiXiM.
 module Ieee80211Host
 {
     parameters:

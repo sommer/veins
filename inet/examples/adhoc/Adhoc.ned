@@ -5,6 +5,8 @@ import inet.networklayer.autorouting.FlatNetworkConfigurator;
 import org.mixim.base.connectionManager.ConnectionManager;
 import mixnet.MixnetWorldUtility;
 
+//Network for testing hosts containing an INET network stack,
+//a MiXiM NIC (802.11) and a MiXiM mobility module.
 network Adhoc
 {
     parameters:

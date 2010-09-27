@@ -130,7 +130,8 @@ void MixnetBridge::handleLowerMsg(cMessage *msg)
 cModule* MixnetBridge::findMyNic() {
 	cGate* lowerOutDest = gate(lowerGateOut)->getNextGate();
 	if(lowerOutDest == 0) {
-		opp_error("Can't find NIC module for this bridge because lowerGateOut is not connected to it!");
+		opp_error("Can't find NIC module for this bridge because lowerGateOut "
+				  "is not connected to it!");
 	}
 
 	return lowerOutDest->getOwnerModule();

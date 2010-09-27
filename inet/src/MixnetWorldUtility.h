@@ -1,9 +1,17 @@
-/*
- * MixnetWorldUtility.h
- *
- *  Created on: 09.09.2010
- *      Author: Michael Swigulski
- */
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program.  If not, see http://www.gnu.org/licenses/.
+//
 
 #ifndef MIXNETWORLDUTILITY_H_
 #define MIXNETWORLDUTILITY_H_
@@ -20,17 +28,19 @@
  * This module is needed for MixnetBridge to work. Every bridge module
  * registers its own INET <-> MiXiM MAC-address pair with it so other
  * bridge modules can use this mapping to convert next hop MAC-addresses
- * in control info of packets send between INET network-layer and MiXiM NIC.
+ * in control info of packets sent between INET network-layer and MiXiM NIC.
  *
  * @see MixnetBridge for more details.
+ *
  * @ingroup blackboard
  * @ingroup mixnet
- * @author Michael Swigulski
+ *
+ * @author Michael Swigulski, Karl Wessel
  */
 class MixnetWorldUtility: public BaseWorldUtility {
 public:
 	/**
-	 * @brief Provides less comparison between values of type MACAddress.
+	 * @brief Provides less-comparison between values of type MACAddress.
 	 *
 	 * Used for std::maps with MACAddress as keys.
 	 */
@@ -41,7 +51,7 @@ public:
 	};
 
 	/** @brief Defines the error value returned when no corresponding
-	 * MAC address for a passed MAC address was found.
+	 * MAC-address for a passed MAC-address was found.
 	 */
 	static const int NoMacPairFound;
 

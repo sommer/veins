@@ -21,7 +21,15 @@ import org.mixim.modules.power.battery.BatteryStats;
 
 import mixnet.MixnetBridge;
 
-// Host equipped with a 802.15.4-NIC (TI_CC2420)
+// This host is an example on how a host with INET network stack
+// can be equipped with mobility- and wireless-modules from MiXiM. 
+//
+// It contains an INET network stack and a MiXiM 802.15.4 NIC (TI_CC2420)
+// (connected by the MixnetBridge module), a mobility-module from MiXiM
+// as well as a battery module from MiXiM which is used by the NIC.
+//
+// This host's NIC is able to operate in a multi-ConnectionManager
+// network, i.e. more than one physical network in parallel (non-interfering).
 module Ieee802154Host
 {
     parameters:

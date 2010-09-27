@@ -17,7 +17,7 @@ package mixnet;
 //
 // INET <-> MiXiM compatibility class. Connects INET network layer
 // with MiXiM NIC.
-// See C++ documentation for details.
+// See C++ definition for details.
 //
 simple MixnetBridge
 {

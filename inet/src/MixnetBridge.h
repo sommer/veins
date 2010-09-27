@@ -85,18 +85,21 @@ protected:
      */
     void registerInterface();
 
-    /** @brief Handles messages from upper layer
+    /**
+     * @brief Handles messages from upper layer
      */
     virtual void handleUpperMsg(cMessage *msg);
 
-    /** @brief Handles messages from lower layer */
+    /**
+     * @brief Handles messages from lower layer
+     */
     virtual void handleLowerMsg(cMessage *msg);
 
     /**
      * @brief Looks for this bridge's module by using the
      * lowerGateOut connection.
      *
-     * @return Pointer to this bridges NIC module or NULL
+     * @return Pointer to this bridge's NIC module or NULL
      */
     cModule* findMyNic();
 };

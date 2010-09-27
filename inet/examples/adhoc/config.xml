@@ -10,7 +10,7 @@
 		<!-- SNR threshold [NOT dB]-->
 		<parameter name="threshold" type="double" value="2.51188643151"/>
 		
-		<!-- The center frequency on whcih the phy listens-->
+		<!-- The center frequency on which the phy listens-->
 		<parameter name="centerFrequency" type="double" value="2.4e9"/>
 	</Decider>
 </root>

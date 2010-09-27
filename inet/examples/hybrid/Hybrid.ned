@@ -9,8 +9,20 @@ import org.mixim.base.connectionManager.ConnectionManager;
 import mixnet.MixnetWorldUtility;
 
 
-// Network containing several hosts equipped with different types of NICs
-// as well as a hybrid-router equipped with all of the host's types of NICs
+//Network for testing a hybrid host (hybridRouter) containing different wired
+//(from INET) and wireless (from MiXiM) NICs.
+//
+//This network contains several hosts, each equipped with a different type of
+//NIC, in particular ethernet, 802.11 and 802.15.4 (TI_CC2420).
+//
+//Further the network contains the hybridRouter which is equipped with
+//all of these types of NICs. Thus the hybridRouter is capable of establishing a
+//connection to every host in the network as well as route packages between
+//hosts.
+//
+//All hosts which are not the router are equipped with a PING-application. The
+//several configurations demonstrate the sending of PINGs between the different
+//hosts, routed by the hybridRouter.
 network Hybrid
 {
     parameters:

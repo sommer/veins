@@ -22,7 +22,11 @@ import org.mixim.modules.power.battery.BatteryStats;
 
 import mixnet.MixnetBridge;
 
-// Router equipped with all types of NICs existent in the network's hosts
+// Router equipped with all types of NICs existent in the network's hosts,
+// able to route packages between all of the hosts.
+//
+// It consists of an INET network-layer, MiXiM NICs (which are each connected
+// by a separate MixnetBridge) and INET NICs. 
 module HybridRouter
 {
     parameters:
