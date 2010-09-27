@@ -12,7 +12,52 @@
 #include <SimpleAddress.h>
 
 
+/**
+ * @brief Executes test cases for class MixnetBridge
+ *
+ * - initialize:
+ *   - test correct registration of NIC with InterfaceTable @DummyTable::addInterface
+ *     - mac address
+ *       - from parameter
+ *         - invalid
+ *         - valid
+ *       - automatic
+ *     - name
+ *       - not empty
+ *       - not NULL
+ *     - can broadcast?
+ *     - can multicast?
+ *     - can point to point?
+ *     - mtu
+ *     - pointer to NIC module
+ *   - pointer to NIC
+ *     - no NIC @Config Test6
+ *     - valid NIC @Config Test1 et al.
+ *   - pointer to world utility
+ *     - no world utility @Config Test2
+ *     - no MixnetWorldUtility @Config Test3
+ *     - valid MixnetWorldUtility @Config Test1 et al.
+ *   - register MAC address pair with world utility
+ *     - INET @TestWorldUtility::addMACAddressPair
+ *     - MiXiM
+ *       - address should be default addressing scheme (NIC modules id)
+ *         @TestWorldUtility::addMACAddressPair
+ *       - warning if addressing module found
+ *         @Config Test4
+ *     - registeration of address pair in worldutility
+ *       @TestWorldUtility::addMACAddressPair
+ *
+ * - check forwarding of lower to upper messages @state MAC_TO_NETW
+ *   - should not touch/change forwarded message
+ * - check dump of lower to upper control messages @state BROADCAST_TO_MAC
+ * - check forwarding of upper to lower message
+ *   - convert Ieee802Ctrl to NetwToMacCtrlInfo @state NETW_TO_MAC
+ *   - convert Ieee802Ctrl's destAddr from MACAddress to Mixim int
+ *     - broadcast @state BROADCAST_TO_MAC
+ *     - unicast @state NETW_TO_MAC
+ *     - invalid address @Config Test5
 
+ */
 class OmnetTest:public OmnetTestBase {
 protected:
 	cPacket* testPacket;
@@ -133,23 +178,91 @@ protected:
 
 Define_Module(OmnetTest);
 
+class TestWorldUtility: public MixnetWorldUtility {
+protected:
+	bool addressRegistered;
+public:
+	TestWorldUtility():
+		addressRegistered(false)
+	{}
+
+	virtual void finish() {
+		MixnetWorldUtility::finish();
+
+		int run = simulation.getSystemModule()->par("run").longValue();
+		assertTrue("Address-pair should have been registered.",
+				   (run > 0) || addressRegistered);
+	}
+
+	virtual void addMACAddrPair(const MACAddress& inetAddr, int miximAddr) {
+		MixnetWorldUtility::addMACAddrPair(inetAddr, miximAddr);
+
+		int run = simulation.getSystemModule()->par("run").longValue();
+    	if(run > 0)
+    		return;
+
+    	OmnetTest* nic = FindModule<OmnetTest*>::findGlobalModule();
+
+    	assertEqual("Mixim MAC address correctly set?",
+					nic->getId(), miximAddr);
+
+    	if(run == 0) {
+			assertEqual("MACAddress correctly set?",
+						MACAddress("11 11 11 11 11 11"), inetAddr);
+    	}else if(run == -1) {
+    		assertFalse("MACAddress specified?",
+						inetAddr.isUnspecified());
+    		assertFalse("MACAddress not broadcast?",
+						inetAddr.isBroadcast());
+    		assertFalse("MACAddress not multicast?",
+						inetAddr.isMulticast());
+    	}
+
+    	addressRegistered = true;
+	}
+
+	//virtual int getMiximMACAddr(const MACAddress& inetAddr) const;
+};
+Define_Module(TestWorldUtility);
 
 class DummyTable: public cSimpleModule,
 				  public IInterfaceTable {
 protected:
-
+	bool interfaceAdded;
 public:
+	DummyTable():
+		interfaceAdded(false)
+	{}
+
+	virtual void finish() {
+		int run = simulation.getSystemModule()->par("run").longValue();
+		assertTrue("Interface should have been registered.",
+				   (run > 0) || interfaceAdded);
+	}
 
 	/**
-     * Adds an interface. The second argument should be a module which belongs
-     * to the physical interface (e.g. PPP or EtherMac) -- it will be used
-     * to discover and fill in getNetworkLayerGateIndex(), getNodeOutputGateId(),
-     * and getNodeInputGateId() in InterfaceEntry. It should be NULL if this is
-     * a virtual interface (e.g. loopback).
-     */
+	 * Checks if bridge registered NIC correctly:
+	 *
+	 * - mac address
+	 *   - from parameter
+	 *     - invalid
+	 *     - valid
+	 *   - automatic
+	 * - name
+	 *   - not empty
+	 *   - not NULL
+	 * - can broadcast?
+	 * - can multicast?
+	 * - can point to point?
+	 * - is loopback?
+	 * - mtu
+	 * - pointer to interface module
+	 *
+	 */
     virtual void addInterface(InterfaceEntry *entry, cModule *ifmod)
     {
-    	if(simulation.getSystemModule()->par("run").longValue() > 0)
+    	int run = simulation.getSystemModule()->par("run").longValue();
+    	if(run > 0)
     		return;
 
     	MixnetBridge* bridge = FindModule<MixnetBridge*>::findGlobalModule();
@@ -159,8 +272,6 @@ public:
 					bridge, ifmod);
 
     	assertEqual("MTU correctly set?", 1500, entry->getMTU());
-    	assertEqual("MACAddress correctly set?",
-					MACAddress("11 11 11 11 11 11"), entry->getMacAddress());
     	assertTrue("Broadcast capability set?", entry->isBroadcast());
     	assertTrue("Multicast capability set?", entry->isMulticast());
     	assertFalse("Point-to-point capability set?", entry->isPointToPoint());
@@ -168,6 +279,20 @@ public:
     	assertTrue("Name is not NULL.", entry->getName());
     	std::string name = entry->getName();
     	assertTrue("name is not empty string.", name != "");
+
+    	if(run == 0) {
+			assertEqual("MACAddress correctly set?",
+						MACAddress("11 11 11 11 11 11"), entry->getMacAddress());
+    	}else if(run == -1) {
+    		assertFalse("MACAddress specified?",
+						entry->getMacAddress().isUnspecified());
+    		assertFalse("MACAddress not broadcast?",
+						entry->getMacAddress().isBroadcast());
+    		assertFalse("MACAddress not multicast?",
+						entry->getMacAddress().isMulticast());
+    	}
+
+    	interfaceAdded = true;
     }
 
 

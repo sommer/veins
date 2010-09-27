@@ -28,7 +28,12 @@ moduleinterface IHost {
 simple DummyTable {
 }
 
-module TestHost like IHost{
+simple TestWorldUtility extends MixnetWorldUtility {
+	parameters:
+	    @class("TestWorldUtility");
+}
+
+module NoNICHost like IHost{
     submodules:
         interfaceTable: DummyTable {
             parameters:
@@ -41,10 +46,15 @@ module TestHost like IHost{
         testModule:OmnetTest {
         }
         
-    connections:
+    connections allowunconnected:
         bridge.upperGateOut --> testModule.fromUpperBridge;
         bridge.upperGateIn <-- testModule.toUpperBridge;
+}
 
+module TestHost extends NoNICHost like IHost{
+    submodules:
+        
+    connections:
         testModule.toLowerBridge --> { @display("ls=black;m=m,25,50,25,0"); } --> bridge.lowerGateIn;
         testModule.fromLowerBridge <-- { @display("ls=black;m=m,15,50,15,0"); } <-- bridge.lowerGateOut;
         testModule.toCtrlLowerBridge --> { @display("ls=red;m=m,75,50,75,0"); } --> bridge.lowerControlIn;
@@ -75,7 +85,7 @@ network BaseNetwork {
 network Network extends BaseNetwork
 {
     submodules:
-        world: MixnetWorldUtility {
+        world: TestWorldUtility {
             parameters:
                 playgroundSizeX = 100m;
                 playgroundSizeY = 100m;

@@ -5,6 +5,7 @@
 ./testCase -c Test3 >> out.tmp
 ./testCase -c Test4 >> out.tmp
 ./testCase -c Test5 >> out.tmp
+./testCase -c Test6 >> out.tmp
 
 diff -I '^Assigned runID=' -I '^Loading NED files from' -w exp-output out.tmp
 
