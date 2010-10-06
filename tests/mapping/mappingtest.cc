@@ -23,10 +23,9 @@ void assertClose(std::string msg, simtime_t target, double actual){
 
 void assertClose(std::string msg, Argument target, Argument actual){
 	if(actual.isClose(target)){
-		if(displayPassed)
-			std::cout << "Passed: " << msg << "\n";
+		pass(msg);
 	} else {
-		std::cout << "FAILED: " << msg << ": expected " << target << " was " << actual << "\n";
+		fail(msg, target, actual);
 	}
 }
 
@@ -126,7 +125,7 @@ void assertEqualNotSmaller(std::string msg, T& v1, T& v2){
 
 
 
-class OmnetTest:public OmnetTestBase {
+class OmnetTest:public SimpleTest {
 protected:
 	std::map<double, std::map<simtime_t, Argument> > a;
 	std::map<simtime_t, Argument> t;
@@ -181,7 +180,7 @@ protected:
 	Mapping* createMappingBuffer;
 public:
 	OmnetTest():
-		OmnetTestBase(),
+		SimpleTest(),
 		time(Dimension::time_static()), freq("frequency"), channel(freq), space("space"),
 		A(freq, space), createMappingBuffer(0){
 		for(double i = 0.0; i <= 6.0; i+=0.25) {

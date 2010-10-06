@@ -3,6 +3,7 @@
 
 #include "TestManager.h"
 #include "asserts.h"
+#include "OmnetTestBase.h"
 #include <FindModule.h>
 #include <string>
 
@@ -16,14 +17,32 @@ class TestModule;
  */
 class AssertMessage {
 protected:
-	std::string msg;	
+	std::string msg;
 	TestModule* continueModule;
 	int continueState;
+	/** @brief Stores if this assert executes a test case planned by a
+	 * "planTest" call.*/
+	bool isPlannedFlag;
+
 public:
-	AssertMessage(std::string msg, TestModule* cModule = 0, int cState = 0):
-		msg(msg), continueModule(cModule), continueState(cState) {}
+	AssertMessage(std::string msg,
+				  bool isPlanned = false,
+				  TestModule* cModule = 0,
+				  int cState = 0):
+		msg(msg),
+		continueModule(cModule),
+		continueState(cState),
+		isPlannedFlag(isPlanned)
+	{}
 	
 	virtual ~AssertMessage() {}
+
+	/**
+	 * @brief Returns true if this assert executes a previously planned test
+	 * case.
+	 * @return true if this executes a planned test case
+	 */
+	virtual bool isPlanned() const { return isPlannedFlag; }
 		
 	/**
 	 * Returns true if the passed message is the message
@@ -33,12 +52,18 @@ public:
 	virtual bool isMessage(cMessage* msg) = 0;
 	
 	/**
+	 * @brief Returns the message or in case of a planned test the name for this
+	 * test case.
+	 * @return message or name of test case
+	 */
+	virtual std::string getMessage() const { return msg; }
+
+	/**
 	 * Appends the description text of this AssertMessage
 	 * to an outstream.
 	 * Should be overriden/extended by subclasses.
 	 */
 	virtual std::ostream& concat(std::ostream& o) const {
-		o << "\"" << msg << "\"";
 		return o;
 	}
 	
@@ -77,8 +102,14 @@ protected:
 	int kind;
 	simtime_t arrival;
 public:
-	AssertMsgKind(std::string msg, int kind, simtime_t arrival, TestModule* cModule = 0, int cState = 0):
-		AssertMessage(msg, cModule, cState), kind(kind), arrival(arrival) {}
+	AssertMsgKind(std::string msg, int kind, simtime_t arrival,
+				  bool isPlanned = false,
+				  TestModule* cModule = 0,
+				  int cState = 0):
+		AssertMessage(msg, isPlanned, cModule, cState),
+		kind(kind),
+		arrival(arrival)
+	{}
 		
 	virtual ~AssertMsgKind() {}
 	
@@ -95,7 +126,7 @@ public:
 	 * kind and arrival time to an out stream.
 	 */
 	virtual std::ostream& concat(std::ostream& o) const{
-		o << "\"" << msg << "\": kind = " << kind << ", arrival = " << arrival << "s";
+		o << ": kind = " << kind << ", arrival = " << arrival << "s";
 		return o;
 	}
 };
@@ -135,6 +166,29 @@ private:
 	void assertNewMessage(AssertMessage* assert, std::string destination);
 	
 protected:
+	/**
+	 * @brief Plans test case with the passed name and description.
+	 *
+	 * The passed name should then be passed to the "testForX()" method call
+	 * which actually executes the test case.
+	 *
+	 * @param name A short identifier for this test case.
+	 * @param description A description what this test case covers.
+	 */
+	void planTest(std::string name, std::string description) {
+		manager->planTest(name, description);
+	}
+
+	/**
+	 * @brief Executes a previously planned test case with the passed name.
+	 *
+	 * @param name the name of the test case which has been executed.
+	 * @return the test message associated with the test case
+	 */
+	std::string executePlannedTest(std::string name) {
+		return manager->executePlannedTest(name);
+	}
+
 	/**
 	 * This method has to be called by the subclassing Omnet module
 	 * to register the TestModule with the TestManager with the
@@ -182,6 +236,20 @@ protected:
 	 */
 	void assertMessage(std::string msg, int kind, simtime_t arrival, std::string destination = "");
 	
+	/**
+	 * @brief Analog for "assertMessage" method but for a previously planned
+	 * test case.
+	 *
+	 * @param testName - name of the planned test case this test executes
+	 * @param kind - message kind of the expected message
+	 * @param arrival - arrival time of the expected message
+	 * @param destination - destination where the message is expected
+	 * 						if omitted this module is used as destination
+	 */
+	void testForMessage(std::string testName,
+						int kind, simtime_t arrival,
+						std::string destination = "");
+
 	/**
 	 * Does the same as "assertMessage" plus it calls the "continueTest()"-method
 	 * with the passed state as argument when the message arrives.

@@ -567,9 +567,18 @@ void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
 	if(nextHandleTime >= simTime()) { //schedule request for next handling
 		sendSelfMessage(msg, nextHandleTime);
 
+		//don't throw away any AirFrames while ChannelSenseRequest is active
+		if(!channelInfo.isRecording()) {
+			channelInfo.startRecording(simTime());
+		}
 	} else if(nextHandleTime >= 0.0){
 		opp_error("Next handle time of ChannelSenseRequest returned by the Decider is smaller then current simulation time: %.2f",
 				SIMTIME_DBL(nextHandleTime));
+	} else {
+		//start throwing away inactive AirFrames again since CSR is over
+		if(channelInfo.isRecording()) {
+			channelInfo.stopRecording();
+		}
 	}
 
 	// else, i.e. nextHandleTime < 0.0, the Decider doesn't want to handle

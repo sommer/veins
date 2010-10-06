@@ -238,7 +238,7 @@ public:
 
 
 
-class OmnetTest:public OmnetTestBase {
+class OmnetTest:public SimpleTest {
 private:
 	simtime_t initTime;
 	simtime_t offset;

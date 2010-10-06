@@ -26,12 +26,12 @@ void fail(std::string msg);
 /**
  * Prints a pass message with the passed text.
  */
-void pass(std::string msg);
+void pass(std::string msg, bool hidePassed = false);
 
 /**
  * Asserts that the passed boolean value is true.
  */
-void assertTrue(std::string msg, bool value);
+void assertTrue(std::string msg, bool value, bool hidePassed = false);
 
 /**
  * Asserts that the passed boolean value is false.

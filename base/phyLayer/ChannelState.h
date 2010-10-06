@@ -35,12 +35,12 @@ public:
 	 * @brief Returns true if the channel is considered idle, meaning
 	 * depends on the used decider.
 	 */
-	bool isIdle();
+	bool isIdle() const;
 
 	/**
 	 * @brief Returns the current RSSI value of the channel.
 	 */
-	double getRSSI();
+	double getRSSI() const;
 
 	/**
 	 * @brief Output for this ChannelState.
