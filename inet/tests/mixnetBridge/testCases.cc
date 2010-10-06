@@ -58,7 +58,7 @@
  *     - invalid address @Config Test5
 
  */
-class OmnetTest:public OmnetTestBase {
+class OmnetTest:public SimpleTest {
 protected:
 	cPacket* testPacket;
 	enum {
@@ -72,7 +72,7 @@ protected:
 	int run;
 public:
 	OmnetTest():
-		OmnetTestBase()
+		SimpleTest()
 	{
 		testsExecuted = true;
 	}

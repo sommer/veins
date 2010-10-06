@@ -8,7 +8,7 @@
 
 
 
-class OmnetTest:public OmnetTestBase {
+class OmnetTest:public SimpleTest {
 protected:
 
 public:

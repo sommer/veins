@@ -4,13 +4,13 @@ See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base/: 17
 Loading NED files from /home/karl/git-repo/mixim/modules/: 40
-Loading NED files from /home/karl/git-repo/mixim/tests/: 41
+Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 3
 Loading NED files from /home/karl/git-repo/mixnet/inet/src: 3
-Loading NED files from /home/karl/git-repo/mixnet/inet/tests: 2
+Loading NED files from /home/karl/git-repo/mixnet/inet/tests: 3
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100917-12:42:08-16774
+Assigned runID=General-0-20101006-15:37:27-14449
 Setting up network `OmnetTestNetwork'...
 Initializing...
 
@@ -43,7 +43,7 @@ Passed: Getting mixim address for inet duplicate.
 Passed: Getting mixim address for mixim duplicate.
 Passed: Getting mixim address for inet duplicate.
 
-<!> Module OmnetTestNetwork.test: Added an address pair whose MiXiM address has the same value as the error value "NoMacPairFound". This either means you are using another addressing scheme for MiXiM than the default one or OMNeT++ has changed the way it assigns module ids..
+<!> Module OmnetTestNetwork.test: Added an address pair whose MiXiM-address has the same value as the error value "NoMacPairFound". This either means you are using another addressing scheme for MiXiM than the default one or OMNeT++ has changed the way it assigns module ids..
 
 Passed: Getting mixim address for error pair.
 Passed: Getting mixim address for second pair.
