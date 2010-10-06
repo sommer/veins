@@ -574,11 +574,6 @@ void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
 	} else if(nextHandleTime >= 0.0){
 		opp_error("Next handle time of ChannelSenseRequest returned by the Decider is smaller then current simulation time: %.2f",
 				SIMTIME_DBL(nextHandleTime));
-	} else {
-		//start throwing away inactive AirFrames again since CSR is over
-		if(channelInfo.isRecording()) {
-			channelInfo.stopRecording();
-		}
 	}
 
 	// else, i.e. nextHandleTime < 0.0, the Decider doesn't want to handle
@@ -785,6 +780,11 @@ ConstMapping* BasePhyLayer::getThermalNoise(simtime_t from, simtime_t to) {
 }
 
 void BasePhyLayer::sendControlMsg(cMessage* msg) {
+	if(msg->getKind() == CHANNEL_SENSE_REQUEST) {
+		if(channelInfo.isRecording()) {
+			channelInfo.stopRecording();
+		}
+	}
 	sendControlMessageUp(msg);
 }
 
