@@ -93,6 +93,16 @@ protected:
 	void sendToChannel(cPacket *msg);
 
 public:
+	/**
+	 * @brief Returns a pointer to the ConnectionManager responsible for the
+	 * passed NIC module.
+	 *
+	 * @param nic a pointer to a NIC module
+	 * @return a pointer to a connection manager module or NULL if an error
+	 * occurred
+	 */
+	static BaseConnectionManager* getConnectionManager(cModule* nic);
+
     /** @brief Register with ConnectionManager and subscribe to hostPos
      *
 	 * Upon initialization ChannelAccess registers the nic parent module

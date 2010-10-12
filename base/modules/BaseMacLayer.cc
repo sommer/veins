@@ -25,6 +25,7 @@
 #include "NetwToMacControlInfo.h"
 #include "SimpleAddress.h"
 #include "AddressingInterface.h"
+#include <ChannelAccess.h>
 
 #include <cassert>
 
@@ -241,11 +242,7 @@ ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t start,
 
 BaseConnectionManager* BaseMacLayer::getConnectionManager() {
 	cModule* nic = getParentModule();
-	if (nic->hasPar("connectionManagerName")){
-		return dynamic_cast<BaseConnectionManager *>(simulation.getModuleByPath(nic->par("connectionManagerName").stringValue()));
-	} else {
-		return FindModule<BaseConnectionManager *>::findGlobalModule();
-	}
+	return ChannelAccess::getConnectionManager(nic);
 }
 
 

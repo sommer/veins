@@ -223,6 +223,10 @@ protected:
 	}
 
 public:
+	virtual ~SimpleNetwLayer() {
+		cancelAndDelete(startJabberTimer);
+	}
+
 	virtual void initialize(int stage){
 
 		if(stage == 0){
@@ -241,10 +245,6 @@ public:
 			startJabberTimer = new cMessage("jabber!", START_TO_JABBER);
 			broadcastHelloWorld();
 		}
-	}
-
-	virtual void finish() {
-		cancelAndDelete(startJabberTimer);
 	}
 
 	virtual void handleMessage(cMessage* msg){

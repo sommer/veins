@@ -67,12 +67,7 @@ void CSMAMacLayer::initialize(int stage)
     }
 }
 
-
-void CSMAMacLayer::finish() {
-	recordScalar("nbBackoffs", nbBackoffs);
-	recordScalar("backoffDurations", backoffValues);
-	recordScalar("nbTxFrames", nbTxFrames);
-
+CSMAMacLayer::~CSMAMacLayer() {
 	cancelAndDelete(backoffTimer);
 	cancelAndDelete(minorMsg);
 
@@ -82,6 +77,14 @@ void CSMAMacLayer::finish() {
         delete (*it);
     }
     macQueue.clear();
+}
+
+void CSMAMacLayer::finish() {
+	recordScalar("nbBackoffs", nbBackoffs);
+	recordScalar("backoffDurations", backoffValues);
+	recordScalar("nbTxFrames", nbTxFrames);
+
+
 }
 
 /**

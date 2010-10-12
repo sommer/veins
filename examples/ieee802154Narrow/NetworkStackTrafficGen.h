@@ -61,14 +61,13 @@ protected:
 	BaseWorldUtility* world;
 
 public:
-
-
-protected:
+	virtual ~NetworkStackTrafficGen();
 
 	virtual void initialize(int stage);
 
 	virtual void finish();
 
+protected:
 	/** @brief Handle self messages such as timer... */
 	virtual void handleSelfMsg(cMessage *msg);
 

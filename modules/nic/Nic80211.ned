@@ -29,7 +29,10 @@ import org.mixim.modules.phy.PhyLayer;
 //
 module Nic80211 like INic
 {
-    @display("i=block/ifcard");
+    parameters:
+        string connectionManagerName = default("");   //name of the ConnectionManager module
+    	@display("i=block/ifcard");
+    
     gates:
         input upperGateIn; // to upper layers
         output upperGateOut; // from upper layers

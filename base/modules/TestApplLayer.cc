@@ -131,9 +131,7 @@ void TestApplLayer::sendReply(ApplPkt *msg)
     //and stays the same
 }
 
-void TestApplLayer::finish()
+TestApplLayer::~TestApplLayer()
 {
-    BaseApplLayer::finish();
 	cancelAndDelete(delayTimer);
-	delayTimer = NULL;
 }

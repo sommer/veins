@@ -77,7 +77,7 @@ public:
 		testsExecuted = true;
 	}
 
-	virtual void finish() {
+	virtual ~OmnetTest() {
 		delete testPacket;
 	}
 

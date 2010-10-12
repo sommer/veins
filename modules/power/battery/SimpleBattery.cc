@@ -373,14 +373,16 @@ void SimpleBattery::finish() {
 		error("No batteryStats module found, please check your Host.ned");
 	}
 
+	BaseBattery::finish();
+}
+
+SimpleBattery::~SimpleBattery() {
 	cancelAndDelete(timeout);
 	if (publishTime> 0)
-	cancelAndDelete(publish);
+		cancelAndDelete(publish);
 
 	delete [] devices; // it's ok, batteryStats is done with device info
 
 	delete batteryState;
-
-	BaseBattery::finish();
 }
 

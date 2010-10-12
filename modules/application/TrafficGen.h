@@ -67,6 +67,7 @@ protected:
 	BaseWorldUtility* world;
 
 public:
+	virtual ~TrafficGen();
 	/** @brief Omnet++ Initialisation.*/
 	virtual void initialize(int stage);
 

@@ -43,6 +43,7 @@ import org.mixim.modules.phy.PhyLayerBattery;
 module Nic80211Battery like INic
 {
     parameters:
+        string connectionManagerName = default("");   //name of the ConnectionManager module
         double sleepCurrent @unit(mA);
         double rxCurrent @unit(mA);
         double decodingCurrentDelta @unit(mA);

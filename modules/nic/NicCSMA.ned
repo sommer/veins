@@ -24,6 +24,8 @@ import org.mixim.modules.mac.csma;
 //
 module NicCSMA like INic
 {
+    parameters:
+        string connectionManagerName = default("");   //name of the ConnectionManager module
     gates:
         input upperGateIn; // to upper layers
         output upperGateOut; // from upper layers

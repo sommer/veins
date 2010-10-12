@@ -53,11 +53,14 @@ void NetworkStackTrafficGen::initialize(int stage)
 	}
 }
 
+NetworkStackTrafficGen::~NetworkStackTrafficGen() {
+	cancelAndDelete(delayTimer);
+}
+
+
 void NetworkStackTrafficGen::finish()
 {
 	recordScalar("dropped", nbPacketDropped);
-
-	cancelAndDelete(delayTimer);
 }
 
 void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)

@@ -32,6 +32,20 @@
 
 #include <cassert>
 
+BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
+{
+	std::string cmName = nic->hasPar("connectionManagerName")
+						 ? nic->par("connectionManagerName").stringValue()
+						 : "";
+	if (cmName != ""){
+		cModule* ccModule = simulation.getModuleByPath(cmName.c_str());
+
+		return dynamic_cast<BaseConnectionManager *>(ccModule);
+	}
+	else {
+		return FindModule<BaseConnectionManager *>::findGlobalModule();
+	}
+}
 
 void ChannelAccess::initialize( int stage )
 {
@@ -41,11 +55,7 @@ void ChannelAccess::initialize( int stage )
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
         cModule* nic = getParentModule();
-        if (nic->hasPar("connectionManagerName")){
-            cc = dynamic_cast<BaseConnectionManager *>(simulation.getModuleByPath(nic->par("connectionManagerName").stringValue()));
-        } else {
-            cc = FindModule<BaseConnectionManager *>::findGlobalModule();
-        }
+		cc = getConnectionManager(nic);
 
         if( cc == 0 ) error("Could not find connectionmanager module");
         // subscribe to position changes

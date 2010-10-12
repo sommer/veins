@@ -51,7 +51,7 @@
 class  CSMAMacLayer : public BaseMacLayer
 {
   public:
-
+	virtual ~CSMAMacLayer();
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
