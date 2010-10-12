@@ -1,4 +1,4 @@
-package mixnet.examples.hybrid;
+package mixnet.nodes;
 
 import inet.applications.pingapp.PingApp;
 import inet.applications.tcpapp.TCPApp;
@@ -12,25 +12,19 @@ import inet.nodes.inet.NetworkLayer;
 import inet.transport.tcp.TCP;
 import inet.transport.udp.UDP;
 
-import org.mixim.modules.nic.Nic802154_TI_CC2420;
+import org.mixim.modules.nic.Nic80211;
 import org.mixim.base.modules.IBaseMobility;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseUtility;
-import org.mixim.modules.power.battery.SimpleBattery;
-import org.mixim.modules.power.battery.BatteryStats;
 
-import mixnet.MixnetBridge;
+import mixnet.modules.MixnetBridge;
 
 // This host is an example on how a host with INET network stack
 // can be equipped with mobility- and wireless-modules from MiXiM. 
 //
-// It contains an INET network stack and a MiXiM 802.15.4 NIC (TI_CC2420)
-// (connected by the MixnetBridge module), a mobility-module from MiXiM
-// as well as a battery module from MiXiM which is used by the NIC.
-//
-// This host's NIC is able to operate in a multi-ConnectionManager
-// network, i.e. more than one physical network in parallel (non-interfering).
-module Ieee802154Host
+// It contains an INET network stack and a MiXiM 802.11 NIC (connected
+// by the MixnetBridge module) as well as a mobility-module from MiXiM.
+module Ieee80211Host
 {
     parameters:
         @node();
@@ -48,12 +42,6 @@ module Ieee802154Host
         inout ethg[] @labels(EtherFrame-conn);
         input radioIn @directIn;
     submodules:
-        batteryStats: BatteryStats {
-            @display("p=60,106;i=block/circle");
-        }
-        battery: SimpleBattery {
-            @display("p=60,176;i=block/control");
-        }
         utility: BaseUtility {
             @display("p=147,41");
         }
@@ -68,14 +56,14 @@ module Ieee802154Host
         }
         interfaceTable: InterfaceTable {
             parameters:
-                @display("p=60,275");
+                @display("p=60,200");
         }
         routingTable: RoutingTable {
             parameters:
                 IPForward = IPForward;
                 routerId = "";
                 routingFile = routingFile;
-                @display("p=60,346");
+                @display("p=60,262");
         }
         tcpApp[numTcpApps]: <tcpAppType> like TCPApp {
             parameters:
@@ -117,9 +105,9 @@ module Ieee802154Host
         bridge: MixnetBridge {
             @display("p=217,332");
         }
-        lrwpan: Nic802154_TI_CC2420 {
+        wlan: Nic80211 {
             parameters:
-                @display("p=217,427;q=queue;i=block/ifcard");
+                @display("p=217,427;q=queue");
         }
 
     connections allowunconnected:
@@ -155,13 +143,13 @@ module Ieee802154Host
             eth[i].netwIn <-- networkLayer.ifOut[sizeof(pppg)+i];
         }
 
-        radioIn --> lrwpan.radioIn;
+        radioIn --> wlan.radioIn;
         bridge.upperGateOut --> networkLayer.ifIn[(sizeof(pppg)+sizeof(ethg))];
         bridge.upperGateIn <-- networkLayer.ifOut[(sizeof(pppg)+sizeof(ethg))];
 
-        lrwpan.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> bridge.lowerGateIn;
-        lrwpan.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- bridge.lowerGateOut;
-        lrwpan.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> bridge.lowerControlIn;
-        lrwpan.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- bridge.lowerControlOut;
+        wlan.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> bridge.lowerGateIn;
+        wlan.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- bridge.lowerGateOut;
+        wlan.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> bridge.lowerControlIn;
+        wlan.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- bridge.lowerControlOut;
 }
 

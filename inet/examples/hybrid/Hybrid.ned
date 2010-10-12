@@ -6,7 +6,9 @@ import inet.nodes.inet.StandardHost;
 
 import org.mixim.base.connectionManager.ConnectionManager;
 
-import mixnet.MixnetWorldUtility;
+import mixnet.modules.MixnetWorldUtility;
+import mixnet.nodes.Ieee80211Host;
+import mixnet.nodes.Ieee802154Host;
 
 
 //Network for testing a hybrid host (hybridRouter) containing different wired

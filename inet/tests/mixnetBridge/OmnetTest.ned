@@ -1,7 +1,7 @@
 package mixnet.tests.mixnetBridge;
 
-import mixnet.MixnetWorldUtility;
-import mixnet.MixnetBridge;
+import mixnet.modules.MixnetWorldUtility;
+import mixnet.modules.MixnetBridge;
 
 import org.mixim.base.modules.BaseWorldUtility;
 import org.mixim.modules.netw.ArpHost;

@@ -27,7 +27,8 @@ import inet.nodes.inet.StandardHost;
 import ned.DatarateChannel;
 
 import org.mixim.base.connectionManager.ConnectionManager;
-import mixnet.MixnetWorldUtility;
+import mixnet.modules.MixnetWorldUtility;
+import mixnet.nodes.Ieee80211Host;
 
 //
 //This network is based on INET's "inet/bulktransfer" example.

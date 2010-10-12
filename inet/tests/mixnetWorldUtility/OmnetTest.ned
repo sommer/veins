@@ -1,5 +1,5 @@
 package mixnet.tests.mixnetWorldUtility;
-import mixnet.MixnetWorldUtility;
+import mixnet.modules.MixnetWorldUtility;
 
 simple OmnetTest {
 }

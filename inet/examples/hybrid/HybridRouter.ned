@@ -20,7 +20,7 @@ import org.mixim.base.modules.BaseUtility;
 import org.mixim.modules.power.battery.SimpleBattery;
 import org.mixim.modules.power.battery.BatteryStats;
 
-import mixnet.MixnetBridge;
+import mixnet.modules.MixnetBridge;
 
 // Router equipped with all types of NICs existent in the network's hosts,
 // able to route packages between all of the hosts.
