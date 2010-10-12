@@ -12,3 +12,6 @@ hosts.
 All hosts which are not the router are equipped with a PING-application. The
 several configurations demonstrate the sending of PINGs between the different
 hosts, routed by the hybridRouter.
+
+Note: NICs connected by different ConnectionManagers (here: 802.11 and
+      802.15.4) cannot interfere with each other yet.
