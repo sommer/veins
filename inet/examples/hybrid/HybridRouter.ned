@@ -12,8 +12,8 @@ import inet.nodes.inet.NetworkLayer;
 import inet.transport.tcp.TCP;
 import inet.transport.udp.UDP;
 
-//import org.mixim.modules.nic.Nic80211;
-//import org.mixim.modules.nic.Nic802154_TI_CC2420;
+import org.mixim.modules.nic.Nic80211;
+import org.mixim.modules.nic.Nic802154_TI_CC2420;
 import org.mixim.base.modules.BaseMobility;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseUtility;
@@ -96,12 +96,12 @@ module HybridRouter
             @display("p=92,280");
         }
 
-        wlan: Nic80211_MCM {
+        wlan: Nic80211 {
             parameters:
                 @display("p=180,370;q=queue");
         }
 
-        lrwpan: Nic802154_TI_CC2420_MCM {
+        lrwpan: Nic802154_TI_CC2420 {
             parameters:
                 @display("p=92,370;i=block/ifcard");
         }

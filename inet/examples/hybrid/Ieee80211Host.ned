@@ -12,7 +12,7 @@ import inet.nodes.inet.NetworkLayer;
 import inet.transport.tcp.TCP;
 import inet.transport.udp.UDP;
 
-//import org.mixim.modules.nic.Nic80211;
+import org.mixim.modules.nic.Nic80211;
 import org.mixim.base.modules.IBaseMobility;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseUtility;
@@ -108,7 +108,7 @@ module Ieee80211Host
         bridge: MixnetBridge {
             @display("p=217,332");
         }
-        wlan: Nic80211_MCM {
+        wlan: Nic80211 {
             parameters:
                 @display("p=217,427;q=queue");
         }

@@ -12,7 +12,7 @@ import inet.nodes.inet.NetworkLayer;
 import inet.transport.tcp.TCP;
 import inet.transport.udp.UDP;
 
-//import org.mixim.modules.nic.Nic802154_TI_CC2420;
+import org.mixim.modules.nic.Nic802154_TI_CC2420;
 import org.mixim.base.modules.IBaseMobility;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.base.modules.BaseUtility;
@@ -117,7 +117,7 @@ module Ieee802154Host
         bridge: MixnetBridge {
             @display("p=217,332");
         }
-        lrwpan: Nic802154_TI_CC2420_MCM {
+        lrwpan: Nic802154_TI_CC2420 {
             parameters:
                 @display("p=217,427;q=queue;i=block/ifcard");
         }
