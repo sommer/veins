@@ -29,7 +29,20 @@ import ned.DatarateChannel;
 import org.mixim.base.connectionManager.ConnectionManager;
 import mixnet.MixnetWorldUtility;
 
-
+//
+//This network is based on INET's "inet/bulktransfer" example.
+//It is used to show a simple INET network with a host exchanging data over TCP
+//using a MiXiM 802.11 network interface card.
+//
+//IP addresses and default routes are set up automatically, using 
+//FlatNetworkConfigurator. Note: FlatNetworkConfigurator does only work with MiXiM
+//wireless NICs if default routes for every host are sufficient. This means hosts
+//may not have more than one NIC and no routing is necessary.
+//
+//The network consists of three clients and one server. All three clients exchange
+//data with the server.
+//The application models bulk file transfer.
+//
 network BulkTransfer
 {
     parameters:
