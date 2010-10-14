@@ -20,7 +20,7 @@ To set up and run Mixnet, you need:
 How to prepare MiXiM, INET and Mixnet:
 1.  Install MiXiM and add its project to your OMNeT IDE
     (see MiXiM's INSTALL-file in the MiXiM folder)
-2.  Download "inet4mixnet" from [TODO: add url to archive]
+2.  Download "inet4mixnet" from http://github.com/mixim/inet4mixnet/tarball/v1.0
 3.  Import the downloaded "inet4mixim" project into your OMNeT IDE
 4.  Now add the mixnet project to your OMNeT IDE
     1.  Choose "File->Import..." from the menu
