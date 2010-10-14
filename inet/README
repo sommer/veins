@@ -37,7 +37,7 @@ How to prepare MiXiM, INET and Mixnet:
     example networks from Mixnet's "examples" directory.
 
 As a next step you can use the examples as templates for your own simulation
-networks or have a look at the documention (see next section).
+networks or have a look at the documentation (see next section).
 
 
 Documentation
@@ -47,11 +47,11 @@ Mixnet's API-documentation can be found in the doc directory.
 
 For more information/documentation and a tutorial on how to get
 started with Mixnet please refer to Mixnet's section of the MiXiM wiki at
-http://sourceforge.net/apps/trac/mixim/wiki/mixnet/.
+http://sourceforge.net/apps/trac/mixim/.
 
 Documentation on MiXiM such as installation instructions, tutorials,
 how-tos, and an overview on the examples can be found in the MiXiM wiki at
-http://apps.sourceforge.net/trac/mixim/.
+http://sourceforge.net/apps/trac/mixim/.
 
 To send any kind of feedback, bug reports, feature requests etc. please use the 
 OMNeT++ mailing list omnetpp-l@omnetpp.org.
