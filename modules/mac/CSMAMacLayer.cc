@@ -244,6 +244,11 @@ void CSMAMacLayer::scheduleBackoff()
                   << macState << " radio state : " << phy->getRadioState() << endl;
     }
 
+    if(minorMsg->isScheduled()){
+		cancelEvent( minorMsg );
+		macState=RX;
+	}
+
     if(txAttempts > maxTxAttempts) {
         EV << " drop packet " << endl;
 
@@ -267,11 +272,6 @@ void CSMAMacLayer::scheduleBackoff()
 
         txAttempts++;
 		EV << " attempts so far: " << txAttempts  << " " << endl;
-
-		if(minorMsg->isScheduled()){
-			cancelEvent( minorMsg );
-			macState=RX;
-		}
 
 		nbBackoffs = nbBackoffs + 1;
 		backoffValues = backoffValues + time;
