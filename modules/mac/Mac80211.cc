@@ -1234,8 +1234,10 @@ void Mac80211::addNeighbor(Mac80211Pkt *af) {
 Mac80211::~Mac80211() {
 	cancelAndDelete(timeout);
 	cancelAndDelete(nav);
-	cancelAndDelete(contention);
-	cancelAndDelete(endSifs);
+	if(!contention->isScheduled())
+		delete contention;
+	if(!endSifs->isScheduled())
+		delete endSifs;
 
 	MacPktList::iterator it;
 	for(it = fromUpperLayer.begin(); it != fromUpperLayer.end(); ++it) {
