@@ -72,13 +72,15 @@ protected:
 	int run;
 public:
 	OmnetTest():
-		SimpleTest()
+		SimpleTest(),
+		testPacket(NULL)
 	{
 		testsExecuted = true;
 	}
 
 	virtual ~OmnetTest() {
-		delete testPacket;
+		if(testPacket && !testPacket->isScheduled() && run != -1)
+			delete testPacket;
 	}
 
 	virtual int numInitStages() const {return 2;}
