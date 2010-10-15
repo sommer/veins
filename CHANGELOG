@@ -1,45 +1,64 @@
-v1.2.1
-* fixed use of wrong connection manager in MAC layer when using multiple connection managers (thanks to "David" from the omnetpp list for reporting)
+v2.0
++ introduced Mixnet - compatibility modules for using MiXiM NICs within INET 
+  networks
++ divided BaseArps addressing and ARP functionality into two separate interfaces
+  to become more compatible with real ARPs which do not implement addressing
+* fixed use of wrong connection manager in MAC layer when using multiple 
+  connection managers (thanks to "David" from the omnetpp list for reporting)
+* fixed a problem with ChannelInfo where it throw away channel information 
+  although it was still needed to answer a ChannelSenseRequest
+* fixed not canceled CCA timer on backoff (bug tracker id: 3083767)
+
 
 v1.2
-+ added port of 802154 narrowband phy and mac layer of mobility-fw2 for omnet 4 from Jérôme Rousselot
++ added port of 802154 narrowband phy and mac layer of mobility-fw2 for omnet 4
+  from Jérôme Rousselot
 + added global blackboard functionality to BaseWorldUtility
-+ introduced "csma" module which implements a generic CSMA mac protocol and will replace CSMAMacLayer 
-  in the future
++ introduced "csma" module which implements a generic CSMA mac protocol and will
+  replace CSMAMacLayer in the future
 + added depth dependent scaled display of hosts when GUI and 3-D is used
 + made members of Move protected, added functions for member access
   - 'setDirectionByVector' replaces the direct access to the member 'direction'
   - 'setDirectionByTarget' replaces the method 'setDirection'
 + BaseMobilitys host coordinates can be set to random values indepentently now
-+ gave networks of examples more meaningfull and consistent names (same as the example)
++ gave networks of examples more meaningfull and consistent names (same as the
+  example)
 + renamed executeables for examples from "MiXiM" to <example name>
 + divided MacControlInfo into MacToNetwControlInfo and NetwToMacControlInfo
-+ added a wizard to create a basic MiXiM-network as well as a wizard for creating your own AnalogueModel
-+ added, updated or extended documentation for Radio, RSAM, ChannelInfo, MiXiM-basics, mobility,
-  border-handling and CSMA MAC-Layer 
-+ changed scheduling priority of AirFrames to slightly higher than normal to ensure channel consistency
-+ added utility-method 'addDiscontinuity' to MappingUtils which provides a workaround to represent
-  discontinuities in mappings by defining two entries as close as possible to each other
-+ changed default signal created by BaseMacLayer's 'createSignal'-method to use a rectangular function
-  for TX-power
-+ changed BaseDeciders handling of ChannelSenseRequests for better support of rssi based idle/busy state
-+ removed ModuleAccess and BaseArpAccess and replaced calls to them by using class FindModule
-+ changed SNRThresholdDecider to evaluate the received energy level to decide whether the channel is idle
-  or busy (before the channel was only busy if the decider actually received, meaning decoded, a signal)
++ added a wizard to create a basic MiXiM-network as well as a wizard for
+  creating your own AnalogueModel
++ added, updated or extended documentation for Radio, RSAM, ChannelInfo,
+  MiXiM-basics, mobility, border-handling and CSMA MAC-Layer 
++ changed scheduling priority of AirFrames to slightly higher than normal to
+  ensure channel consistency
++ added utility-method 'addDiscontinuity' to MappingUtils which provides a
+  workaround to represent discontinuities in mappings by defining two entries as
+  close as possible to each other
++ changed default signal created by BaseMacLayer's 'createSignal'-method to use
+  a rectangular function for TX-power
++ changed BaseDeciders handling of ChannelSenseRequests for better support of
+  rssi based idle/busy state
++ removed ModuleAccess and BaseArpAccess and replaced calls to them by using
+  class FindModule
++ changed SNRThresholdDecider to evaluate the received energy level to decide
+  whether the channel is idle or busy (before the channel was only busy if the
+  decider actually received, meaning decoded, a signal)
 * fixed memory leak when propagation delay is simulated
-* fixed a bug in the calculated receiving power of a signal which caused it to be greater zero before 
-  and after its signal in certain cases
+* fixed a bug in the calculated receiving power of a signal which caused it to
+  be greater zero before and after its signal in certain cases
 * fixed wrong calculation of position on "WRAP" border handling in BaseMobility
-* fixed missing connections when the cells from ConnectionManager do not cover the playground size
-  exactly
-* fixed increasing heap memory usage while hosts sending AirFrames but wheren't receiving any.
-  This was caused by RSAM tracking every radio state although there wheren't any Signals on the
-  channel to attenuate.
+* fixed missing connections when the cells from ConnectionManager do not cover
+  the playground size exactly
+* fixed increasing heap memory usage while hosts sending AirFrames but wheren't
+  receiving any. This was caused by RSAM tracking every radio state although
+  there wheren't any Signals on the channel to attenuate.
 
 v1.1
 + added port of EnergyFramework written by Laura Marie Feeney
-+ added "headerLength" parameter to physical layer and fixed wrong MacPkt length in Mac80211
-* fixed wrong initialization order of static time and frequency Dimension members by introducing time-/frequency_static() wrapper methods
++ added "headerLength" parameter to physical layer and fixed wrong MacPkt length
+  in Mac80211
+* fixed wrong initialization order of static time and frequency Dimension
+  members by introducing time-/frequency_static() wrapper methods
 
 v1.0
 - first release
