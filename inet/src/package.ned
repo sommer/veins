@@ -9,7 +9,7 @@
 //This is Mixnet's API-documentation, for more information/documentation
 //on Mixnet please refer to the README-file in the main folder of the Mixnet
 //project (MiXiM-folder/inet) or 
-//<a href="http://sourceforge.net/apps/trac/mixim/wiki/mixnet/" target="_blanc">
+//<a href="http://sourceforge.net/apps/trac/mixim/wiki/" target="_blanc">
 //Mixnet's section of the MiXiM wiki</a> which also contains a tutorial on how
 //to get started with Mixnet.
 //
