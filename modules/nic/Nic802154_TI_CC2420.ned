@@ -37,6 +37,7 @@ import org.mixim.modules.mac.CSMA802154;
 module Nic802154_TI_CC2420 like INic
 {
     parameters:
+        string connectionManagerName = default("");   //name of the ConnectionManager module
         // power consumption from boards (at 3.3V)
 	    double sleepCurrent @unit(mA) = 0.000021mA; // 0.021 µA
 		double rxCurrent @unit(mA) = 18.8 mA;

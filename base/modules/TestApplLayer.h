@@ -38,12 +38,10 @@
 class TestApplLayer : public BaseApplLayer
 {
   public:
-    //Module_Class_Members( TestApplLayer, BaseApplLayer, 0 );
+    virtual ~TestApplLayer();
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
-    /** @brief Clean up after end of simulation.*/
-    virtual void finish();
 
     /** @brief Message kinds used by this layer.*/
     enum TestApplMessageKinds{

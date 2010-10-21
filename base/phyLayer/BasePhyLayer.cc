@@ -182,18 +182,6 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 void BasePhyLayer::finish(){
 	// give decider the chance to do something
 	decider->finish();
-
-	//get AirFrames from ChannelInfo and delete
-	//(also ChannelInfo normally owns the AirFrames it
-	//is not able to cancel and delete them itself
-	AirFrameVector channel;
-	channelInfo.getAirFrames(0, simTime(), channel);
-
-	for(AirFrameVector::iterator it = channel.begin();
-		it != channel.end(); ++it)
-	{
-		cancelAndDelete(*it);
-	}
 }
 
 //-----Decider initialization----------------------
@@ -266,7 +254,10 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 	{
 		opp_warning("Could not find an analogue model with the name \"%s\".", s.c_str());
 	}
-	analogueModels.push_back(newAnalogueModel);
+	else
+	{
+		analogueModels.push_back(newAnalogueModel);
+	}
 
 
 	if(xmlConfig == 0) {
@@ -527,7 +518,7 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	s->setMove(move);
 
 	// create the new AirFrame
-	AirFrame* frame = new AirFrame("airframe", AIR_FRAME);
+	AirFrame* frame = new AirFrame(macPkt->getName(), AIR_FRAME);
 
 	//set priority of AirFrames above the normal priority to ensure
 	//channel consistency (before any thing else happens at a time
@@ -564,6 +555,10 @@ void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
 	if(nextHandleTime >= simTime()) { //schedule request for next handling
 		sendSelfMessage(msg, nextHandleTime);
 
+		//don't throw away any AirFrames while ChannelSenseRequest is active
+		if(!channelInfo.isRecording()) {
+			channelInfo.startRecording(simTime());
+		}
 	} else if(nextHandleTime >= 0.0){
 		opp_error("Next handle time of ChannelSenseRequest returned by the Decider is smaller then current simulation time: %.2f",
 				SIMTIME_DBL(nextHandleTime));
@@ -650,18 +645,24 @@ void BasePhyLayer::filterSignal(Signal& s) {
 //--Destruction--------------------------------
 
 BasePhyLayer::~BasePhyLayer() {
+	//get AirFrames from ChannelInfo and delete
+	//(although ChannelInfo normally owns the AirFrames it
+	//is not able to cancel and delete them itself
+	AirFrameVector channel;
+	channelInfo.getAirFrames(0, simTime(), channel);
+
+	for(AirFrameVector::iterator it = channel.begin();
+		it != channel.end(); ++it)
+	{
+		cancelAndDelete(*it);
+	}
+
 	//free timer messages
-	//TOPROFILE: check BasePhy destruction for memory leaks
 	if(txOverTimer) {
-        if(txOverTimer->isScheduled())
-            cancelEvent(txOverTimer);
-		delete txOverTimer;
+		cancelAndDelete(txOverTimer);
 	}
 	if(radioSwitchingOverTimer) {
-        if(radioSwitchingOverTimer->isScheduled())
-            cancelEvent(radioSwitchingOverTimer);
-
-		delete radioSwitchingOverTimer;
+        cancelAndDelete(radioSwitchingOverTimer);
 	}
 
 	//free thermal noise mapping
@@ -773,6 +774,11 @@ ConstMapping* BasePhyLayer::getThermalNoise(simtime_t from, simtime_t to) {
 }
 
 void BasePhyLayer::sendControlMsg(cMessage* msg) {
+	if(msg->getKind() == CHANNEL_SENSE_REQUEST) {
+		if(channelInfo.isRecording()) {
+			channelInfo.stopRecording();
+		}
+	}
 	sendControlMessageUp(msg);
 }
 

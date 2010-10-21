@@ -25,9 +25,9 @@
 
 #include <BaseLayer.h>
 
-#include "BaseArp.h"
-#include "NetwPkt_m.h"
-#include "SimpleAddress.h"
+#include <ArpInterface.h>
+#include <NetwPkt_m.h>
+#include <SimpleAddress.h>
 
 /**
  * @brief Base class for the network layer
@@ -60,7 +60,7 @@ protected:
     int headerLength;
 
     /** @brief Pointer to the arp module*/
-    BaseArp* arp;
+    ArpInterface* arp;
 
     /** @brief cached variable of my networ address */
     int myNetwAddr;

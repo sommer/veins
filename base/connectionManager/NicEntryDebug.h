@@ -55,10 +55,7 @@ class NicEntryDebug: public NicEntry
      * @brief Returns a free in gate of the nic
 	 *
 	 * This checks the list of free in gates, if one is available it is
-	 * returned. Otherwise, a new in gate is added to the nic. This
-	 * function handles the interaction with phy and nic
-	 * correctly, provided that the phy name is "phy"
-	 * in the .ned files.
+	 * returned. Otherwise, a new in gate is added to the nic.
 	 */
     cGate* requestInGate(void);
 
@@ -91,9 +88,6 @@ class NicEntryDebug: public NicEntry
      * This function acquires an in gate at the remote nic and an out
      * gate at this nic, connects the two and updates the freeInGate,
      * freeOutGate and outConns data sets.
-     *
-     * It handles compound modules correctly, provided that the physical
-     * module is called "phy" in the .ned files.
      **/
     virtual void connectTo(NicEntry* other);
 

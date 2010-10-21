@@ -24,6 +24,7 @@
 #include "NetwControlInfo.h"
 #include "NetwToMacControlInfo.h"
 #include "BaseMacLayer.h"
+#include "AddressingInterface.h"
 
 #include <cassert>
 
@@ -35,8 +36,16 @@ void BaseNetwLayer::initialize(int stage)
 
     if(stage==0){
         headerLength= par("headerLength");
-        arp = FindModule<BaseArp*>::findSubModule(findHost());
-        myNetwAddr = arp->myNetwAddr(this);
+        arp = FindModule<ArpInterface*>::findSubModule(findHost());
+
+        // see if there is an addressing module available
+    	// otherwise use module id as network address
+        AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
+        if(addrScheme) {
+        	myNetwAddr = addrScheme->myNetwAddr(this);
+        } else {
+        	myNetwAddr = getId();
+        }
         EV << " myNetwAddr " << myNetwAddr << endl;
     }
 }

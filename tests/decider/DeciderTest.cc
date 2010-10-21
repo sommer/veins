@@ -185,6 +185,8 @@ void DeciderTest::runTests()
 {
 	// start the test of the decider
 	runDeciderTests("SNRThresholdDeciderNew");
+
+	testsExecuted = true;
 }
 
 
@@ -1455,9 +1457,9 @@ void DeciderTest::executeSNRNewTestCase()
 		{
 			//test UNTIL_BUSY on already busy channel
 			double tmpAF1Power = 1;
-			AirFrame* tmpAF1 = addAirFrameToPool(t1, t5, tmpAF1Power);
+			addAirFrameToPool(t1, t5, tmpAF1Power);
 			double tmpAF2Power = 3;
-			AirFrame* tmpAF2 = addAirFrameToPool(t3, t7, tmpAF2Power);
+			addAirFrameToPool(t3, t7, tmpAF2Power);
 			updateSimTime(t3);
 
 			simtime_t senseLength = 2;

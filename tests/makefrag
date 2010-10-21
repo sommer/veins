@@ -5,6 +5,6 @@
 # preserve default target
 all: $(TARGET)
 
-baseMobility_dir basePhyLayer_dir blackboard_dir channelInfo_dir connectionManager_dir coord_dir mapping_dir radioState_dir: testUtils_dir
+baseMobility_dir basePhyLayer_dir blackboard_dir channelInfo_dir connectionManager_dir coord_dir mapping_dir radioState_dir decider_dir: testUtils_dir
 
 .PHONY: testUtils

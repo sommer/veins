@@ -6,39 +6,36 @@
 #include "AirFrame_m.h"
 
 /**
- * @brief This class is used by the BasePhyLayer to keep track
- * of the AirFrames on the channel.
+ * @brief This class is used by the BasePhyLayer to keep track of the AirFrames
+ * on the channel.
  *
- * ChannelInfo is able to return every AirFrame which
- * intersects with a specified interval. This
- * is mainly used to get the noise for a received signal.
+ * ChannelInfo is able to return every AirFrame which intersects with a
+ * specified interval. This is mainly used to get the noise for a received
+ * signal.
  *
- * ChannelInfo is a passive class meaning the user has to
- * tell it when a new AirFrame starts and an existing ends.
+ * ChannelInfo is a passive class meaning the user has to tell it when a new
+ * AirFrame starts and an existing ends.
  *
- * Once an AirFrame has been added to the ChannelInfo the
- * ChannelInfo holds the ownership of this AirFrame even if
- * the AirFrame is removed again from the ChannelInfo.
- * This is necessary because the ChannelInfo has to be
- * able to store also the AirFrames which are over but still
- * intersect with an currently running AirFrame.
+ * Once an AirFrame has been added to the ChannelInfo the ChannelInfo holds the
+ * ownership of this AirFrame even if the AirFrame is removed again from the
+ * ChannelInfo. This is necessary because the ChannelInfo has to be able to
+ * store also the AirFrames which are over but still intersect with an currently
+ * running AirFrame.
  *
- * Note: ChannelInfo assumes that the AirFrames are added
- * 		 and removed chronologically. This means every time
- * 		 you add an AirFrame with a specific start time
- * 		 ChannelInfo assumes that start time as the current
- * 		 time and assumes that every following action happens
- * 		 after that moment. The same goes for "removeAirFrame".
- * 		 When removing an AirFrames, ChannelInfo assumes
- * 		 the start time plus the duration of the AirFrame as
+ * Note: ChannelInfo assumes that the AirFrames are added and removed
+ * 		 chronologically. This means every time you add an AirFrame with a
+ * 		 specific start time ChannelInfo assumes that start time as the current
+ * 		 time and assumes that every following action happens after that moment.
+ * 		 The same goes for "removeAirFrame". When removing an AirFrames,
+ * 		 ChannelInfo assumes the start time plus the duration of the AirFrame as
  * 		 the current time.
- * 		 This also affects "getAirFrames" in the way that you
- * 		 may only ask for intervals which lie before the
- * 		 "current time" of ChannelInfo.
+ * 		 This also affects "getAirFrames" in the way that you may only ask for
+ * 		 intervals which lie before the "current time" of ChannelInfo.
  *
- * A state-machine-diagram for Radio, RadioStateAnalogueModel and ChannelInfo showing
- * how they work together under control of BasePhyLayer as well as some documentation
- * on how RadioStateAnalogueModel works is available in @ref phyLayer.
+ * A state-machine-diagram for Radio, RadioStateAnalogueModel and ChannelInfo
+ * showing how they work together under control of BasePhyLayer as well as some
+ * documentation on how RadioStateAnalogueModel works is available
+ * in @ref phyLayer.
  *
  * @ingroup phyLayer
  */
@@ -51,30 +48,53 @@ protected:
 	/** @brief Type for a list of AirFrames and a simulation time.*/
 	typedef std::list<AirFrameTimePair> AirFrameTimeList;
 	/**
-	 * The AirFrames are stored in a Matrix with start- and end time
-	 * as dimensions.
+	 * The AirFrames are stored in a Matrix with start- and end time as
+	 * dimensions.
 	 */
 	typedef std::map<simtime_t, AirFrameTimeList > AirFrameMatrix;
 
 	/**
-	 * @brief Iterator for every intersection of
-	 * a specific interval in a AirFrameMatrix.
+	 * @brief Iterator for every intersection of a specific interval in a
+	 * AirFrameMatrix.
+	 *
+	 * A time interval A_start to A_end intersects with another interval B_start
+	 * to B_end iff the following two conditions are fulfilled:
+	 *
+	 * 		1. A_end >= B_start.
+	 * 		2. A_start <= B_end and
+	 *
+	 * Or the defined by the
+	 * opposite: The two intervals do not intersect iff A_end < B_start or
+	 * A_start > B_end.
+	 *
+	 * To iterate over a two dimensional (end-time x start-time) container
+	 * of AirFrames this class iterates over all AirFrame-lists whose end-time
+	 * is bigger or equal than the interval start (intersect condition 1) and in
+	 * each of these lists iterates over all entries but only stops at and
+	 * returns entries which start-time is smaller or equal than the interval
+	 * end (intersection condition 2).
 	 *
 	 * In template form to work as const- and non-const iterator.
 	 */
 	template<class C, class ItMatrix, class ItList>
-	class BaseIntersectionIterator {
+	class BaseIntersectionIterator
+	{
 	public:
 		/** @brief Pointer to the matrix holding the intervals.*/
 		C* intervals;
+
 		/** @brief Point in time to start iterating over intersections.*/
 		simtime_t from;
+
 		/** @brief Point in time to end iterating over intersections.*/
 		simtime_t to;
-		/** @brief Iterator for current interval end.*/
+
+		/** @brief Iterator over AirFrame end times.*/
 		ItMatrix endIt;
-		/** @brief Iterator for current interval start.*/
+
+		/** @brief Iterator over AirFrame start times.*/
 		ItList startIt;
+
 		/** @brief True if the we are already pointing to the next entry.*/
 		bool alreadyNext;
 
@@ -85,62 +105,79 @@ protected:
 		 * specified AirFrameMatrix.
 		 */
 		BaseIntersectionIterator(C* airFrames, simtime_t from, simtime_t to) :
-			intervals(airFrames), from(from), to(to) {
+			intervals(airFrames), from(from), to(to)
+		{
+			// begin at the smallest end-time-entry fulfilling the intersection
+			// condition 1
 			endIt = intervals->lower_bound(from);
 
 			if(endIt != intervals->end()) {
 				startIt = endIt->second.begin();
 			}
+			//we are already pointing at the first unchecked interval
 			alreadyNext = true;
 		}
 
 		/**
-		 * @brief Increases the iterator to the next intersecting AirFrame
-		 * and returns a pointer to this AirFrame.
+		 * @brief Increases the iterator to the next intersecting AirFrame and
+		 * returns a pointer to this AirFrame.
 		 */
-		AirFrame* next() {
+		AirFrame* next()
+		{
 			if(endIt == intervals->end())
 				return 0;
 
-			//"alreadyNext" indicates that some previous iterator
-			//function has already increased the intern iterators
-			//to a yet unchecked values. This happen after
-			//initialisation of the iterator and when an element
-			//is erased.
+			// "alreadyNext" indicates that some previous iterator function has
+			// already increased the intern iterators to a yet unchecked values.
+			// This happens after initialization of the iterator and when an
+			// element is erased.
 			if(alreadyNext)
 				alreadyNext = false;
 			else
 				startIt++;
 
-			while(endIt != intervals->end()) {
-				while(startIt != endIt->second.end()) {
+
+			while(endIt != intervals->end())
+			{
+				// while there are entries left at the current end-time
+				while(startIt != endIt->second.end())
+				{
+					// check if this entry fulfilles the intersection condition
+					// 2 (condition 1 is already fulfilled in the constructor by
+					// the start-value of the end-time-iterator)
 					if(startIt->first <= to) {
 						return startIt->second;
 					}
 					startIt++;
 				}
+
 				endIt++;
 				if(endIt == intervals->end())
 					return 0;
+
 				startIt = endIt->second.begin();
+
 			}
+
 			return 0;
 		}
 	};
 
 	/** @brief Type for a const-iterator over an AirFrame interval matrix.*/
-	typedef BaseIntersectionIterator<const AirFrameMatrix,
-									 AirFrameMatrix::const_iterator,
-									 AirFrameTimeList::const_iterator> ConstIntersectionIterator;
+	typedef BaseIntersectionIterator
+				<const AirFrameMatrix,
+				 AirFrameMatrix::const_iterator,
+				 AirFrameTimeList::const_iterator> ConstIntersectionIterator;
 
 	/**
 	 * @brief Type for a iterator over an AirFrame interval matrix.
 	 *
 	 * Extends the const-version by an erase method.
 	 */
-	class IntersectionIterator: public BaseIntersectionIterator<AirFrameMatrix,
-																AirFrameMatrix::iterator,
-																AirFrameTimeList::iterator>
+	class IntersectionIterator:
+			public BaseIntersectionIterator<AirFrameMatrix,
+											AirFrameMatrix::iterator,
+											AirFrameTimeList::iterator>
 	{
 	private:
 		/** @brief Type for shortcut to base class type.*/
@@ -152,36 +189,41 @@ protected:
 		 * @brief Creates an iterator for the specified interval at the
 		 * specified AirFrameMatrix.
 		 */
-		IntersectionIterator(AirFrameMatrix* airFrames, simtime_t from, simtime_t to) :
+		IntersectionIterator(AirFrameMatrix* airFrames,
+							 simtime_t from,
+							 simtime_t to) :
 			Base(airFrames, from, to)
 		{}
 
 		/**
-		 * @brief Erases the AirFrame the iterator currently points to
-		 * from the AirFrameMatrix.
+		 * @brief Erases the AirFrame the iterator currently points to from the
+		 * AirFrameMatrix.
 		 *
-		 * After the erase the iterator points to an invalid value
-		 * and "next()" should be called.
+		 * After the erase the iterator points to an invalid value and "next()"
+		 * should be called.
 		 */
-		void eraseAirFrame() {
-			//check if our iterator points to a valid entry
-			if(endIt == intervals->end())
-				return;
+		void eraseAirFrame()
+		{
+			assert(endIt != intervals->end());
+			assert(startIt != endIt->second.end());
 
 			//erase AirFrame from list
 			startIt = endIt->second.erase(startIt);
 
 			//check if we've deleted the last entry in the list
-			if(startIt == endIt->second.end()) {
+			if(startIt == endIt->second.end())
+			{
 				//check if we deleted the only entry in the list
-				if(endIt->second.empty())
+				if(endIt->second.empty()) {
 					intervals->erase(endIt++); //delete list from map
-				else
+				} else {
 					endIt++;
+				}
 
 				//increase to a valid value if we are not done
-				if(endIt != intervals->end())
+				if(endIt != intervals->end()) {
 					startIt = endIt->second.begin();
+				}
 			}
 			alreadyNext = true;
 		}
@@ -197,8 +239,8 @@ protected:
 	/**
 	 * @brief Stores inactive AirFrames.
 	 *
-	 * This means every AirFrame which has been already removed but still
-	 * is needed because it intersect with one or more active AirFrames.
+	 * This means every AirFrame which has been already removed but still is
+	 * needed because it intersect with one or more active AirFrames.
 	 */
 	AirFrameMatrix inactiveAirFrames;
 
@@ -208,9 +250,13 @@ protected:
 	/** @brief Stores the start time of every AirFrame.*/
 	AirFrameStartMap airFrameStarts;
 
-	/** @brief Stores the earliest time-point we need to keep information for.*/
+	/** @brief Stores the point in history up to which we have some (but not
+	 * necessarily all) channel information stored.*/
 	simtime_t earliestInfoPoint;
 
+	/** @brief Stores a point in history up to which we need to keep all channel
+	 * information stored.*/
+	simtime_t recordStartTime;
 
 public:
 	/**
@@ -224,33 +270,31 @@ protected:
 
 
 	/**
-	 * @brief Returns every AirFrame of an AirFrameMatrix which
-	 * intersect with a given interval.
+	 * @brief Returns every AirFrame of an AirFrameMatrix which intersect with a
+	 * given interval.
 	 *
-	 * The intersecting AirFrames are stored in the
-	 * AirFrameVector reference passed as parameter.
+	 * The intersecting AirFrames are stored in the AirFrameVector reference
+	 * passed as parameter.
 	 */
 	void getIntersections( const AirFrameMatrix& airFrames,
 						   simtime_t from, simtime_t to,
 						   AirFrameVector& outVector) const;
 
 	/**
-	 * @brief Returns true if there is at least one AirFrame in the
-	 * passed AirFrameMatrix which intersect with the given
-	 * interval.
+	 * @brief Returns true if there is at least one AirFrame in the passed
+	 * AirFrameMatrix which intersect with the given interval.
 	 */
 	bool isIntersecting( const AirFrameMatrix& airFrames,
 						 simtime_t from, simtime_t to) const;
 
 	/**
-	 * @brief Moves an previously active AirFrame to the inactives.
+	 * @brief Moves a previously active AirFrame to the inactive AirFrames.
 	 *
-	 * This methods checks if there are some inactive AirFrames
-	 * which can be deleted because the AirFrame to inactivate
-	 * was the last one they intersected with.
-	 * It also checks if the AirFrame do inactivate still
-	 * intersect with at least one active AirFrame before
-	 * it is moved to inactived AirFrames.
+	 * This methods checks if there are some inactive AirFrames which can be
+	 * deleted because the AirFrame to in-activate was the last one they
+	 * intersected with.
+	 * It also checks if the AirFrame to in-activate still intersect with at
+	 * least one active AirFrame before it is moved to inactive AirFrames.
 	 */
 	void addToInactives(AirFrame* a, simtime_t startTime, simtime_t endTime);
 
@@ -266,47 +310,75 @@ protected:
 	 */
 	simtime_t findEarliestInfoPoint();
 
+	/**
+	 * @brief Checks if any information inside the passed interval can be
+	 * discarded.
+	 *
+	 * This method should be called every time the information for a certain
+	 * interval changes (AirFrame is removed or record time changed).
+	 *
+	 * @param startTime The start of the interval to check
+	 * @param endTime The end of the interval to check
+	 */
+	void checkAndCleanInterval(simtime_t startTime, simtime_t endTime);
+
+	/**
+	 * @brief Returns true if all information inside the passed interval can be
+	 * deleted.
+	 *
+	 * For example this method is used to check if information for the duration
+	 * of an AirFrame is needed anymore and if not the AirFrame is deleted.
+	 *
+	 * @param startTime The start time of the interval (e.g. AirFrame start)
+	 * @param endTime The end time of the interval (e.g. AirFrame end)
+	 * @return returns true if any information for the passed interval can be
+	 * discarded.
+	 */
+	bool canDiscardInterval(simtime_t startTime, simtime_t endTime);
+
 public:
+	ChannelInfo():
+		earliestInfoPoint(-1),
+		recordStartTime(-1)
+	{}
 
 	virtual ~ChannelInfo() {}
 
 	/**
 	 * @brief Tells the ChannelInfo that an AirFrame has started.
 	 *
-	 * From this point ChannelInfo gets the ownership of the
-	 * AirFrame.
+	 * From this point ChannelInfo gets the ownership of the AirFrame.
 	 *
-	 * parameter startTime holds the time the receiving of
-	 * the AirFrame has started in seconds.
+	 * parameter startTime holds the time the receiving of the AirFrame has
+	 * started in seconds.
 	 */
 	void addAirFrame(AirFrame* a, simtime_t startTime);
 
 	/**
 	 * @brief Tells the ChannelInfo that an AirFrame is over.
 	 *
-	 * This does not mean that in looses ownership of the AirFrame.
+	 * This does not mean that it loses ownership of the AirFrame.
 	 *
-	 * @return  The current time-point from that information concerning AirFrames
-	 * is needed to be stored.
+	 * @return The current time-point from on which information concerning
+	 * AirFrames is needed to be stored.
 	 */
 	simtime_t removeAirFrame(AirFrame* a);
 
 	/**
-	 * @brief Fills the passed AirFrameVector reference with the AirFrames
-	 * which intersect with the given time interval.
+	 * @brief Fills the passed AirFrameVector reference with the AirFrames which
+	 * intersect with the given time interval.
 	 *
-	 * Note: Completeness of the list of AirFrames for specific
-	 * interval can only be assured if start and end point of
-	 * the interval lies inside the duration of at least one
-	 * currently active AirFrame.
-	 * An AirFrame is called active if it has been added but
-	 * not yet removed from ChannelInfo.
+	 * Note: Completeness of the list of AirFrames for specific interval can
+	 * only be assured if start and end point of the interval lies inside the
+	 * duration of at least one currently active AirFrame.
+	 * An AirFrame is called active if it has been added but not yet removed
+	 * from ChannelInfo.
 	 */
 	void getAirFrames(simtime_t from, simtime_t to, AirFrameVector& out) const;
 
 	/**
-	 * @brief Returns the current time-point from that information concerning AirFrames
-	 * is needed to be stored.
+	 * @brief Returns the current time-point from that information concerning
+	 * AirFrames is needed to be stored.
 	 */
 	simtime_t getEarliestInfoPoint()
 	{
@@ -316,11 +388,61 @@ public:
 	}
 
 	/**
-	 * @brief Returns true if there are currently no active or inactive AirFrames
-	 * on the channel.
+	 * @brief Tells ChannelInfo to keep from now on all channel information
+	 * until the passed time in history.
+	 *
+	 * The passed start-time should be the current simulation time, otherwise
+	 * ChannelInfo can't assure that it hasn't already thrown away some
+	 * information for that passed time period.
+	 *
+	 * Subsequent calls to this method will update the recording start time and
+	 * information from old start times is thrown away.
+	 *
+	 * @param start The point in time from which to keep all channel information
+	 * stored.
+	 */
+	void startRecording(simtime_t start)
+	{
+		// clean up until old record start
+		if(recordStartTime > -1) {
+			recordStartTime = start;
+			checkAndCleanInterval(0, recordStartTime);
+		} else {
+			recordStartTime = start;
+		}
+	}
+
+	/**
+	 * @brief Tells ChannelInfo to stop recording Information from now on.
+	 *
+	 * Its up to ChannelInfo to decide when to actually throw away the
+	 * information it doesn't need to store anymore now.
+	 */
+	void stopRecording()
+	{
+		if(recordStartTime > -1) {
+			simtime_t old = recordStartTime;
+			recordStartTime = -1;
+			checkAndCleanInterval(0, old);
+		}
+	}
+
+	/**
+	 * @brief Returns true if ChannelInfo is currently recording.
+	 * @return true if ChannelInfo is recording
+	 */
+	bool isRecording() const
+	{
+		return recordStartTime > -1;
+	}
+
+	/**
+	 * @brief Returns true if there are currently no active or inactive
+	 * AirFrames on the channel.
 	 */
 	bool isChannelEmpty() const {
-		assert(activeAirFrames.empty() == airFrameStarts.empty());
+		assert(recordStartTime != -1
+			   || activeAirFrames.empty() == airFrameStarts.empty());
 
 		return airFrameStarts.empty();
 	}

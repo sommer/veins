@@ -276,10 +276,151 @@ void testIntersections() {
 }
 
 
-class OmnetTest:public OmnetTestBase {
+class OmnetTest:public SimpleTest {
 protected:
+	void planTests() {
+		//tests for record flag of ChannelInfo
+		planTest("1.1", "Start recording on empty ChannelInfo");
+		planTest("1.2", "Start recording after AirFrame starts");
+		planTest("1.3", "Start recording before AirFrame starts");
+
+		planTest("2.1", "Forwarding recording time on empty ChannelInfo");
+		planTest("2.2", "Forwarding recording time before AirFrame ends.");
+		planTest("2.3", "Forwarding recording time after AirFrame ends");
+
+		planTest("3.1", "Stop recording on empty ChannelInfo");
+		planTest("3.2.1", "Stop recording after AirFrame removed but not "
+						  "cleared.");
+		planTest("3.2.2", "Stop recording after AirFrame removed but not "
+						  "cleared and interfering active AirFrame.");
+		planTest("3.3", "Stop recording after AirFrame removed and cleared.");
+
+		planTest("4.1", "Remove AirFrame during recording.");
+		planTest("4.2", "Remove AirFrame before recording with interfering "
+						  "active AirFrame.");
+
+		planTest("5.", "Remove AirFrame during recording which frees a inactive "
+					  "one.");
+
+		planTest("6.1", "Result of ChannelInfo::isRecording() before "
+						"recording.");
+		planTest("6.2", "Result of ChannelInfo::isRecording() while "
+						"recording.");
+		planTest("6.3", "Result of ChannelInfo::isRecording() after "
+						"recording.");
+
+	}
+
+	void testRecordingFlag() {
+		ChannelInfo testChannel;
+
+		//planTest("6.1", "Result of ChannelInfo::isRecording() before "
+		//				  "recording.");
+		testForFalse("6.1", testChannel.isRecording());
+
+		//planTest("1.1", "Start recording on empty ChannelInfo");
+		testChannel.startRecording(0.0);
+		testForTrue("1.1", testChannel.isChannelEmpty());
+
+		//planTest("6.2", "Result of ChannelInfo::isRecording() while "
+		//				  "recording.");
+		testForTrue("6.2", testChannel.isRecording());
+
+		//planTest("1.3", "Start recording before AirFrame starts");
+		AirFrame* frame1 = new AirFrame();
+		frame1->setDuration(2.0);
+		testChannel.addAirFrame(frame1, 1.0);
+		testForFalse("1.3", testChannel.isChannelEmpty());
+
+		//planTest("4.1", "Remove AirFrame during recording.");
+		testChannel.removeAirFrame(frame1);
+		testForFalse("4.1", testChannel.isChannelEmpty());
+
+		//planTest("2.2", "Forwarding recording time before AirFrame ends.");
+		testChannel.startRecording(3.0);
+		testForFalse("2.2", testChannel.isChannelEmpty());
+
+		//planTest("2.3", "Forwarding recording time after AirFrame ends");
+		testChannel.startRecording(3.1);
+		testForTrue("2.3", testChannel.isChannelEmpty());
+
+		//planTest("2.1", "Forwarding recording time on empty ChannelInfo");
+		testChannel.startRecording(1.0);
+		testForTrue("2.1", testChannel.isChannelEmpty());
+
+		//planTest("3.1", "Stop recording on empty ChannelInfo");
+		testChannel.stopRecording();
+		testForTrue("3.1", testChannel.isChannelEmpty());
+
+		//planTest("3.3", "Stop recording after AirFrame removed and cleared.");
+		testForTrue("3.3", testChannel.isChannelEmpty());
+
+		//planTest("6.3", "Result of ChannelInfo::isRecording() after "
+		//				  "recording.");
+		testForFalse("6.3", testChannel.isRecording());
+
+		//planTest("1.2", "Start recording after AirFrame starts");
+		frame1 = new AirFrame();
+		frame1->setDuration(2.0);
+		testChannel.addAirFrame(frame1, 1.0);
+		testChannel.startRecording(3.0);
+		testForFalse("1.2", testChannel.isChannelEmpty());
+
+		//planTest("4.1", "Remove AirFrame during recording.");
+		testChannel.removeAirFrame(frame1);
+		testForFalse("4.1", testChannel.isChannelEmpty());
+
+		//planTest("3.2.1", "Stop recording after AirFrame removed but not "
+		//				    "cleared.");
+		testChannel.stopRecording();
+		testForTrue("3.2.1", testChannel.isChannelEmpty());
+
+		//planTest("4.2", "Remove AirFrame before recording with interfering "
+		//				  "active AirFrame.");
+		frame1 = new AirFrame();
+		frame1->setDuration(1.0);
+		testChannel.addAirFrame(frame1, 1.0);
+		AirFrame* frame2 = new AirFrame();
+		frame2->setDuration(1.0);
+		testChannel.addAirFrame(frame2, 2.0);
+		testChannel.removeAirFrame(frame1);
+		testChannel.startRecording(2.1);
+		testForEqual("4.2", 2, numAirFramesOnChannel(testChannel));
+
+		//planTest("3.2.2", "Stop recording after AirFrame removed but not "
+		//				    "cleared and interfering active AirFrame.");
+		testChannel.stopRecording();
+		testForEqual("3.2.2", 2, numAirFramesOnChannel(testChannel));
+
+		//planTest("5.", "Remove AirFrame during recording which frees a inactive "
+		//			    "one.");
+		testChannel.startRecording(2.1);
+		testChannel.removeAirFrame(frame2);
+		testForEqual("5.", 1, numAirFramesOnChannel(testChannel));
+
+		//planTest("2.3", "Forwarding recording time after AirFrame ends");
+		testChannel.startRecording(4);
+		testForTrue("2.3", testChannel.isChannelEmpty());
+
+		//planTest("3.3", "Stop recording after AirFrame removed and cleared.");
+		testChannel.stopRecording();
+		testForTrue("3.3", testChannel.isChannelEmpty());
+
+	}
+
+	int numAirFramesOnChannel(ChannelInfo& ch,
+							  simtime_t from = 0.0, simtime_t to = 999999.0)
+	{
+		ChannelInfo::AirFrameVector v;
+		ch.getAirFrames(from, to, v);
+		return v.size();
+	}
+
 	void runTests() {
 		testIntersections();
+
+		testRecordingFlag();
+		testsExecuted = true;
 	}
 };
 

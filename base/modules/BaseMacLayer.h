@@ -25,9 +25,10 @@
 
 #include <omnetpp.h>
 #include "BaseLayer.h"
-#include "BaseArp.h"
-#include "MacPkt_m.h"
+//#include "BaseArp.h"
+#include <MacPkt_m.h>
 #include <MacToPhyInterface.h>
+#include <BaseConnectionManager.h>
 
 /**
  * @brief A very simple MAC module template which provides de- and
@@ -64,7 +65,7 @@ protected:
 	MacToPhyInterface* phy;
 
 	/** @brief Pointer to the arp module*/
-    BaseArp* arp;
+    //BaseArp* arp;
 
     /**
      * @brief Length of the MacPkt header
@@ -168,6 +169,12 @@ protected:
      * constant power in a certain frequency band.
      */
     ConstMapping* createSingleFrequencyMapping(simtime_t start, simtime_t end, double centerFreq, double bandWith, double value);
+
+    /**
+     * @brief Returns a pointer to this MACs NICs ConnectionManager module.
+     * @return pointer to the connection manager module
+     */
+    BaseConnectionManager* getConnectionManager();
 };
 
 #endif

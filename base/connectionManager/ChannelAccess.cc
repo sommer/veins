@@ -32,6 +32,20 @@
 
 #include <cassert>
 
+BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
+{
+	std::string cmName = nic->hasPar("connectionManagerName")
+						 ? nic->par("connectionManagerName").stringValue()
+						 : "";
+	if (cmName != ""){
+		cModule* ccModule = simulation.getModuleByPath(cmName.c_str());
+
+		return dynamic_cast<BaseConnectionManager *>(ccModule);
+	}
+	else {
+		return FindModule<BaseConnectionManager *>::findGlobalModule();
+	}
+}
 
 void ChannelAccess::initialize( int stage )
 {
@@ -40,18 +54,8 @@ void ChannelAccess::initialize( int stage )
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
-	// the phy module has to be named phy otherwise it cannot be found
-	// TODO: maybe we can remove this
-        // we need to look at the functions in NicEntry* for this
-	if( strcmp( this->getName(), "phy" )!=0 )
-	    error("phy module has to be named \"phy\"!");
-
         cModule* nic = getParentModule();
-        if (nic->hasPar("connectionManagerName")){
-            cc = dynamic_cast<BaseConnectionManager *>(simulation.getModuleByPath(nic->par("connectionManagerName").stringValue()));
-        } else {
-            cc = FindModule<BaseConnectionManager *>::findGlobalModule();
-        }
+		cc = getConnectionManager(nic);
 
         if( cc == 0 ) error("Could not find connectionmanager module");
         // subscribe to position changes

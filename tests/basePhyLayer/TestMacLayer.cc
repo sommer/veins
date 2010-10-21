@@ -20,10 +20,14 @@ void TestMacLayer::initialize(int stage) {
 		controlOut = findGate("lowerControlOut");
 		controlIn = findGate("lowerControlIn");
 
+		run = simulation.getSystemModule()->par("run");
+
 		init("mac" + toString(myIndex));
 
 		testPhy = FindModule<TestPhyLayer*>::findSubModule(this->getParentModule());
 		phy = testPhy;
+
+		planTests();
 
 	} else if(stage == 1) {
 		runTests(TEST_START);
@@ -31,7 +35,35 @@ void TestMacLayer::initialize(int stage) {
 }
 
 void TestMacLayer::onAssertedMessage(int state, const cMessage* msg) {
+	Enter_Method_Silent();
+
 	runTests(state, msg);
+}
+
+void TestMacLayer::planTests()
+{
+	if(run == 6 && myIndex == 0)
+	{
+		/*
+		Test if decider has access to already ended AirFrames during a
+		ChannelSenseRequest which started during the AirFrame but ended after
+		the AirFrame. This tests the use of ChannelInfo's record-feature during
+		ChannelSenseRequests.
+		Testoutline:
+		*/
+		planTest("1.", "Host1 sends AirFrame A to Host2");
+		planTest("2.", "Host2 starts receiving AirFrame A");
+		planTest("3.", "Host2 starts a ChannelSense");
+		planTest("3.1", "Host2 ends ChannelSense and asks ChannelInfo for AirFrames during "
+					    "ChannelSense duration which should return AirFrame A");
+		planTest("3.2", "Host2 starts a ChannelSense");
+		planTest("4.", "Host2 completes reception of AirFrame A");
+		planTest("5.", "Host2 ends ChannelSense and asks ChannelInfo for AirFrames during "
+					   "ChannelSense duration which should return AirFrame A");
+		planTest("6.", "Host2 starts a ChannelSense");
+		planTest("7.", "Host2 ends ChannelSense and asks ChannelInfo for AirFrames during "
+					  "ChannelSense duration which should return none");
+	}
 }
 
 //---test handling and redirection------------
@@ -41,7 +73,6 @@ void TestMacLayer::onAssertedMessage(int state, const cMessage* msg) {
  * dependend on the current run.
  */
 void TestMacLayer::runTests(int state, const cMessage* msg) {
-	int run = simulation.getSystemModule()->par("run");
 	if(run == 1)
 		testRun1(state, msg);
 	else if(run == 2)
@@ -50,7 +81,8 @@ void TestMacLayer::runTests(int state, const cMessage* msg) {
 		testRun3(state, msg);
 	else if (run == 5)
 		testRun5(state, msg);
-
+	else if (run == 6)
+		testRun6(state, msg);
 }
 
 /**
@@ -165,6 +197,118 @@ void TestMacLayer::testRun5(int stage, const cMessage* msg)
 		default:
 			break;
 	}
+}
+
+void TestMacLayer::testRun6(int stage, const cMessage* msg)
+{
+
+	if(stage == TEST_START && myIndex == 0) {
+// planTest("1.", "Host1 sends AirFrame A to Host2");
+		waitForTX(RUN6_TEST_ON_TX);
+	} else if(stage == RUN6_TEST_ON_TX && myIndex == 0) {
+		MacPkt* pkt = createMacPkt(1.0);
+		sendDown(pkt);
+		testForMessage("1.", TEST_MACPKT, simTime(), "phy0");
+
+// planTest("2.", "Host2 starts receiving AirFrame A");
+		testForMessage("2.", BasePhyLayer::AIR_FRAME, simTime(), "phy1");
+
+//planTest("3.", "Host2 starts a ChannelSense");
+	} else if(stage == TEST_START && myIndex == 1) {
+		waitForMessage(RUN6_TEST_ON_DECIDER1,
+					   "First process of AirFrame at Decider",
+					   BasePhyLayer::AIR_FRAME,
+					   3.5, "decider1");
+	} else if(stage == RUN6_TEST_ON_DECIDER1 && myIndex == 1) {
+		ChannelSenseRequest* req = new ChannelSenseRequest();
+		req->setKind(MacToPhyInterface::CHANNEL_SENSE_REQUEST);
+		req->setSenseTimeout(0.5);
+		req->setSenseMode(UNTIL_TIMEOUT);
+		send(req, controlOut);
+		testForMessage(	"3.", MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+						simTime(), "phy1");
+		assertMessage(	"ChannelSense at decider.",
+						MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+						simTime(), "decider1");
+
+//planTest("3.1", "Host2 ends ChannelSense and asks ChannelInfo for AirFrames during "
+//				"ChannelSense duration which should return AirFrame A");
+		waitForMessage(RUN6_TEST_ON_CSR_RESULT_1, "Channel sense answer at mac",
+					   MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+					   simTime() + 0.5);
+	} else if(stage == RUN6_TEST_ON_CSR_RESULT_1 && myIndex == 1) {
+		const ChannelSenseRequest* answer
+				= dynamic_cast<const ChannelSenseRequest*>(msg);
+		assertTrue("Received ChannelSenseRequest answer.", answer != NULL);
+		manager->testForFalse("3.1", answer->getResult().isIdle());
+
+//planTest("3.2", "Host2 starts a ChannelSense");
+		ChannelSenseRequest* req = new ChannelSenseRequest();
+		req->setKind(MacToPhyInterface::CHANNEL_SENSE_REQUEST);
+		req->setSenseTimeout(1.0);
+		req->setSenseMode(UNTIL_TIMEOUT);
+		send(req, controlOut);
+		testForMessage(	"3.2", MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+						simTime(), "phy1");
+		assertMessage(	"ChannelSense at decider.",
+						MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+						simTime(), "decider1");
+
+// planTest("4.", "Host2 completes reception of AirFrame A");
+		assertMessage("Transmission over message at phy",
+					  BasePhyLayer::TX_OVER,
+					  simTime() + 0.5, "phy0");
+		assertMessage("Transmission over message from phy",
+					  BasePhyLayer::TX_OVER,
+					  simTime() + 0.5, "mac0");
+		testForMessage("4.", BasePhyLayer::AIR_FRAME, simTime() + 0.5, "phy1");
+
+// planTest("5.", "Host2 ends ChannelSense and asks ChannelInfo for AirFrames"
+//		   		  "during ChannelSense duration which should return AirFrame A");
+		//decider will return busy if AirFrame was returned otherwise idle
+		waitForMessage(RUN6_TEST_ON_CSR_RESULT_2, "Channel sense answer at mac",
+					   MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+					   simTime() + 1.0);
+	} else if(stage == RUN6_TEST_ON_CSR_RESULT_2 && myIndex == 1) {
+		const ChannelSenseRequest* answer
+				= dynamic_cast<const ChannelSenseRequest*>(msg);
+		assertTrue("Received ChannelSenseRequest answer.", answer != NULL);
+		manager->testForFalse("5.", answer->getResult().isIdle());
+
+// planTest("6.", "Host2 starts a ChannelSense");
+		ChannelSenseRequest* req = new ChannelSenseRequest();
+		req->setKind(MacToPhyInterface::CHANNEL_SENSE_REQUEST);
+		req->setSenseTimeout(0.5);
+		req->setSenseMode(UNTIL_TIMEOUT);
+		send(req, controlOut);
+		testForMessage(	"6.", MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+						simTime(), "phy1");
+		assertMessage(	"ChannelSense at decider.",
+						MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+						simTime(), "decider1");
+
+// planTest("7.", "Host2 ends ChannelSense and asks ChannelInfo for AirFrames during "
+//  			 "ChannelSense duration which should return none");
+		waitForMessage(RUN6_TEST_ON_CSR_RESULT_3, "Channel sense answer at mac",
+					   MacToPhyInterface::CHANNEL_SENSE_REQUEST,
+					   simTime() + 0.5);
+
+	} else if(stage == RUN6_TEST_ON_CSR_RESULT_3 && myIndex == 1) {
+		const ChannelSenseRequest* answer
+				= dynamic_cast<const ChannelSenseRequest*>(msg);
+		assertTrue("Received ChannelSenseRequest answer.", answer != NULL);
+		manager->testForTrue("7.", answer->getResult().isIdle());
+	}
+
+
+	/*
+	planTest("1.", "Host1 sends AirFrame A to Host2");
+	planTest("2.", "Host2 starts receiving AirFrame A");
+	planTest("3.", "Host2 starts a ChannelSense");
+	planTest("4.", "Host2 completes reception of AirFrame A");
+	planTest("5.", "Host2 ends ChannelSense and asks ChannelInfo for AirFrames during "
+				   "ChannelSense duration which should return AirFrame A");
+	*/
 }
 
 //---run 1 test-----------------------------

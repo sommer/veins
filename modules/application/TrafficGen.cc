@@ -48,11 +48,13 @@ void TrafficGen::initialize(int stage)
 	}
 }
 
+TrafficGen::~TrafficGen() {
+	cancelAndDelete(delayTimer);
+}
+
 void TrafficGen::finish()
 {
 	recordScalar("dropped", nbPacketDropped);
-
-	cancelAndDelete(delayTimer);
 }
 
 void TrafficGen::handleSelfMsg(cMessage *msg)

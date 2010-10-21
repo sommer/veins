@@ -1,11 +1,11 @@
 #include "ChannelState.h"
 
-bool ChannelState::isIdle() {
+bool ChannelState::isIdle() const {
 
 	return idle;
 }
 
-double ChannelState::getRSSI() {
+double ChannelState::getRSSI() const {
 
 	return rssi;
 }

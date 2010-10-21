@@ -54,9 +54,6 @@ class NicEntryDirect: public NicEntry
 	 * This function acquires an in gate at the remote nic and an out
 	 * gate at this nic, connects the two and updates the freeInGate,
 	 * freeOutGate and outConns data sets.
-	 *
-	 * It handles compound modules correctly, provided that the physical
-	 * module is called "phy" or "snrEval" respectively in the .ned files.
 	 */
     virtual void connectTo(NicEntry*);
 

@@ -1,12 +1,5 @@
 #include "TestModule.h"
 
-/**
- * This method has to be called by the subclassing Omnet module
- * to register the TestModule with the TestManager with the
- * passed name.
- * 
- * Note: The name should be unique in simulation.
- */ 
 void TestModule::init(const std::string& name) {
 	this->name = name;
 	
@@ -20,13 +13,6 @@ void TestModule::init(const std::string& name) {
 	manager->registerModule(name, this);
 }
 
-/**
- * This method has to be called at the beginning of "handleMessage()"
- * or whenever a new message arrives at the module.
- * The passed message should be the newly arrived message.
- * 
- * The method checks if the passed message is expected.
- */
 void TestModule::announceMessage(cMessage* msg) {
 	MessageDescList::iterator it = expectedMsgs.begin();
 	bool foundMessage = false;
@@ -34,18 +20,20 @@ void TestModule::announceMessage(cMessage* msg) {
 		
 		AssertMessage* exp = *it;
 		if(exp->isMessage(msg)) {
-			if(foundMessage) {
-				fail(log("Received message was expected more then once!"));
-			} else {
-				pass(log("Expected " + toString(*exp)));
 				
-				TestModule* cont = exp->getContinueModule();
-				if(cont) {
-					cont->onAssertedMessage(exp->getContinueState(), msg);
-				}
-				
-				foundMessage = true;
+			std::string testMsg = exp->getMessage();
+			if(exp->isPlanned()) {
+				testMsg = executePlannedTest(testMsg);
 			}
+			pass(log("Expected \"" + testMsg + "\"" + toString(*exp)));
+
+			TestModule* cont = exp->getContinueModule();
+			if(cont) {
+				cont->onAssertedMessage(exp->getContinueState(), msg);
+			}
+
+			foundMessage = true;
+
 			delete exp;
 			it = expectedMsgs.erase(it);
 			continue;				
@@ -57,34 +45,28 @@ void TestModule::announceMessage(cMessage* msg) {
 	}
 }
 
-/**
- * This method has to be called at the end of the "finish()"-method.
- * It checks if there are still message which has been expected but
- * hadn't arrived.
- */
 void TestModule::finalize() {
 	for(MessageDescList::iterator it = expectedMsgs.begin();
 		it != expectedMsgs.end(); it++) {
 		
 		AssertMessage* exp = *it;
-		fail(log("Expected " + toString(*exp)));
+
+		std::string testMsg = exp->getMessage();
+		if(exp->isPlanned()) {
+			testMsg = executePlannedTest(testMsg);
+		}
+		fail(log("Expected \"" + testMsg + "\"" + toString(*exp)));
 		delete exp;
 	}
-	
+
 	expectedMsgs.clear();
 }
 
-/**
- * Return a string with the pattern 
- * "[module name] - passed text"
- */
 std::string TestModule::log(std::string msg) {
 	return "[" + name + "] - " + msg;
 }	
 
-/**
- * Proceeds the message assert to the correct destination.
- */
+
 void TestModule::assertNewMessage(AssertMessage* assert, std::string destination) {
 	
 	if(destination == "") {
@@ -100,34 +82,40 @@ void TestModule::assertNewMessage(AssertMessage* assert, std::string destination
 	}
 }
 
-/**
- * Asserts the arrival of a message described by the passed AssertMessage object 
- * at the module with the passed name. If the module name is ommited the message is
- * expected at this module.
- * This method should be used if you want to write your own AssertMessage-Descriptor.
- */
+
 void TestModule::assertMessage(AssertMessage* assert, std::string destination) {
 	assertNewMessage(assert, destination);
 }
 
-/**
- * Asserts the arrival of a message with the specified kind at the specified
- * time at module with the passed name.
- */
+
 void TestModule::assertMessage(	std::string msg, 
 								int kind, simtime_t arrival, 
-								std::string destination) {
+								std::string destination)
+{
 	
-	assertNewMessage(new AssertMsgKind(msg, kind, arrival), destination);
+	assertNewMessage(new AssertMsgKind(msg, kind, arrival),
+					 destination);
 }
 
-/**
- * Does the same as "assertMessage" plus it calls the "continueTest()"-method
- * with the passed state as argument when the message arrives.
- */
+void TestModule::testForMessage(std::string testName,
+								int kind, simtime_t arrival,
+								std::string destination)
+{
+
+	assertNewMessage(new AssertMsgKind(testName, kind, arrival, true),
+					 destination);
+}
+
+
 void TestModule::waitForMessage(int state, std::string msg, 
 								int kind, simtime_t arrival, 
 								std::string destination) {
 	
-	assertNewMessage(new AssertMsgKind(msg, kind, arrival, this, state), destination);
+	assertNewMessage(new AssertMsgKind(msg,
+									   kind,
+									   arrival,
+									   false,
+									   this,
+									   state),
+					 destination);
 }

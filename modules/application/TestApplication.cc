@@ -66,6 +66,11 @@ void TestApplication::initialize(int stage) {
 
 }
 
+TestApplication::~TestApplication() {
+	if (delayTimer)
+        cancelAndDelete(delayTimer);
+}
+
 void TestApplication::finish() {
 
     if (stats) {
@@ -76,10 +81,6 @@ void TestApplication::finish() {
             aLatency.record();
         }
     }
-
-    if (delayTimer)
-        cancelAndDelete(delayTimer);
-
 }
 
 void TestApplication::handleMessage(cMessage * msg) {

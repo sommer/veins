@@ -15,6 +15,7 @@
 #include <SimpleAddress.h>
 #include <NetwToMacControlInfo.h>
 #include <MacToNetwControlInfo.h>
+#include <BaseMacLayer.h>
 
 /**
  * @brief This is an implementation of a simple network layer
@@ -222,6 +223,10 @@ protected:
 	}
 
 public:
+	virtual ~SimpleNetwLayer() {
+		cancelAndDelete(startJabberTimer);
+	}
+
 	virtual void initialize(int stage){
 
 		if(stage == 0){
@@ -242,10 +247,6 @@ public:
 		}
 	}
 
-	virtual void finish() {
-		cancelAndDelete(startJabberTimer);
-	}
-
 	virtual void handleMessage(cMessage* msg){
 
 		switch(msg->getKind()){
@@ -258,11 +259,12 @@ public:
 		case JABBER:
 			handleIncomingJabber(static_cast<NetwPkt*>(msg));
 			break;
-/*
+
 		case BaseMacLayer::PACKET_DROPPED:
 			ev << "Packet dropped by MAC layer." << endl;
+			delete msg;
 			break;
-*/
+
 		default:
 			error("unknown packet type of packet %s", msg->getName());
 			break;

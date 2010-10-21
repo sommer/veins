@@ -8,8 +8,9 @@
 #include "TestPhyLayer.h"
 #include "Signal_.h"
 
-class TestMacLayer:public BaseModule, public TestModule {
-public:
+class TestMacLayer:public BaseModule, public TestModule
+{
+protected:
 	MacToPhyInterface* phy;
 	TestPhyLayer* testPhy;
 
@@ -19,6 +20,8 @@ public:
 	int controlIn;
 
 	int myIndex;
+
+	int run;
 
 
 	enum {
@@ -40,8 +43,19 @@ public:
 		RUN3_TEST_ON_DECIDER3,
 
 		RUN5_TEST_START = 5000,
-		RUN5_TEST_ON_RX
+		RUN5_TEST_ON_RX,
+
+		RUN6_TEST_START = 6000,
+		RUN6_TEST_ON_TX,
+		RUN6_TEST_ON_DECIDER1,
+		RUN6_TEST_ON_CSR_RESULT_1,
+		RUN6_TEST_ON_CSR_RESULT_2,
+		RUN6_TEST_ON_CSR_RESULT_3,
 	};
+
+protected:
+	void planTests();
+
 public:
 	//---Omnetpp parts-------------------------------
 	virtual void initialize(int stage);
@@ -92,6 +106,13 @@ public:
 	 *
 	 */
 	void testRun5(int stage, const cMessage* msg = 0);
+
+	/**
+	 * Testhandling for run 6:
+	 *
+	 * see "planTests()" for details
+	 */
+	void testRun6(int stage, const cMessage* msg = 0);
 
 	//---run 1 tests------------------------------
 	void testGetChannelState();

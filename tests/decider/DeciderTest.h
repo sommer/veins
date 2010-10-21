@@ -9,7 +9,7 @@
 #include <Decider.h>
 
 
-class DeciderTest : public DeciderToPhyInterface, public OmnetTestBase {
+class DeciderTest : public DeciderToPhyInterface, public SimpleTest {
 private:
 
 protected:
@@ -589,7 +589,7 @@ public:
 	virtual void rescheduleMessage(cMessage* msg, simtime_t t);
 
 
-	//---------OmnetTestBase implementation-----------
+	//---------SimpleTest implementation-----------
 
 	virtual void runTests();
 };

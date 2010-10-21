@@ -416,7 +416,7 @@ void testIsInRectangle() {
 	std::cout << "Is in rectangle test successful." << std::endl;
 }
 
-class OmnetTest:public OmnetTestBase {
+class OmnetTest:public SimpleTest {
 protected:
 	void runTests() {
 		testConstructors();
@@ -425,6 +425,8 @@ protected:
 	    testLength();
 	    testDistance();
 	    testIsInRectangle();
+
+	    testsExecuted = true;
 	}
 };
 

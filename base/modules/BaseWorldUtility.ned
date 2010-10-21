@@ -13,5 +13,6 @@ simple BaseWorldUtility extends Blackboard
         double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
         bool useTorus;                  // use the playground as torus?
         bool use2D;                    // use a 2-dimensional world?
+        @display("i=misc/globe");
 }
 

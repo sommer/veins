@@ -15,7 +15,9 @@ protected:
 	int state;
 public:
 	AssertAirFrame(std::string msg,int state, simtime_t arrival, AirFrame* frame = 0, TestModule* cModule = 0, int cState = 0):
-		AssertMessage(msg, cModule, cState), pointer(frame), arrival(arrival), state(state) {}
+		AssertMessage(msg, false, cModule, cState),
+		pointer(frame), arrival(arrival), state(state)
+	{}
 	
 	virtual ~AssertAirFrame() {}
 		

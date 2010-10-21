@@ -1,0 +1,59 @@
+Mixnet Framework
+================
+
+Mixnet is a project contained in MiXiM's "inet" folder which provides all
+modules, examples and documentation concerning using MiXiM and INET together
+in the same network.
+
+Mixnet connects INET's application layer, IP-stack and non-wireless NICs with
+MiXiM's NICs and mobility modules. Thus, using Mixnet a node in a simulation may
+contain modules of INET and MiXiM.
+
+
+Getting started
+---------------
+
+To set up and run Mixnet, you need:
+    * MiXiM (since 2.0)
+    * the "inet4mixnet" fork from github: http://github.com/mixim/inet4mixnet
+    
+How to prepare MiXiM, INET and Mixnet:
+1.  Install MiXiM and add its project to your OMNeT IDE
+    (see MiXiM's INSTALL-file in the MiXiM folder)
+2.  Download "inet4mixnet" from http://github.com/mixim/inet4mixnet/tarball/v1.0
+3.  Import the downloaded "inet4mixim" project into your OMNeT IDE
+4.  Now add the mixnet project to your OMNeT IDE
+    1.  Choose "File->Import..." from the menu
+    2.  Choose "Existing projects into workspace"
+    3.  Select "Select root directory" and click "Browse"
+    4.  Browse to MiXiM's "inet" directory and click "Ok"
+    5.  Under "Projects" you should see and choose "Mixnet"
+    6.  Enable "Copy projects into workspace"
+    7.  Click "Finish"
+5.  Now your OMNeT IDE should contain all three projects: "MiXiM", "INET" and
+    "Mixnet"
+6.  Choose "Project->Build All" from the menue to build all three projects.
+7.  If the build process was successful you can try starting one of the the
+    example networks from Mixnet's "examples" directory.
+
+As a next step you can use the examples as templates for your own simulation
+networks or have a look at the documentation (see next section).
+
+
+Documentation
+-------------
+
+Mixnet's API-documentation can be found in the doc directory.
+
+For more information/documentation and a tutorial on how to get
+started with Mixnet please refer to Mixnet's section of the MiXiM wiki at
+http://sourceforge.net/apps/trac/mixim/.
+
+Documentation on MiXiM such as installation instructions, tutorials,
+how-tos, and an overview on the examples can be found in the MiXiM wiki at
+http://sourceforge.net/apps/trac/mixim/.
+
+To send any kind of feedback, bug reports, feature requests etc. please use the 
+OMNeT++ mailing list omnetpp-l@omnetpp.org.
+You have to subscribe to it first,
+see http://www.omnetpp.org/external/maillist.php for details.

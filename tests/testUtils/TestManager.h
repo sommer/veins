@@ -3,6 +3,7 @@
 
 #include <omnetpp.h>
 #include <map>
+#include "OmnetTestBase.h"
 
 class TestModule;
 
@@ -11,12 +12,18 @@ class TestModule;
  * TestModule in the simulation to get access to the other 
  * TestModules.
  */
-class TestManager:public cSimpleModule {
+class TestManager:public cSimpleModule,
+				  public TestModuleBase
+{
 protected:
 	typedef std::map<std::string, TestModule*> ModuleMap;
 	
 	ModuleMap modules;
 public:
+	virtual ~TestManager() {
+		assertPlannedTestsExecuted();
+	}
+
 	/**
 	 * Registers the passed TestModule with the passed name
 	 * at the database.

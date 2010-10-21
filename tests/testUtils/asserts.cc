@@ -9,16 +9,16 @@ void fail(std::string msg) {
 		exit(1);
 }
 
-void pass(std::string msg) {
-	if(displayPassed)
+void pass(std::string msg, bool hidePassed) {
+	if(!hidePassed && displayPassed)
 		std::cout << "Passed: " << msg << std::endl;
 }
 
-void assertTrue(std::string msg, bool value) {
+void assertTrue(std::string msg, bool value, bool hidePassed) {
 	if (!value) {
 		fail(msg);
 	} else {
-		pass(msg);
+		pass(msg, hidePassed);
 	}
 }
 

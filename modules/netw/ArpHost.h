@@ -21,7 +21,8 @@
 #ifndef ARP_HOST_H
 #define ARP_HOST_H
 
-#include "BaseArp.h"
+#include <ArpInterface.h>
+#include <AddressingInterface.h>
 #include <BaseModule.h>
 #include <FindModule.h>
 
@@ -37,7 +38,9 @@
  *
  * @author Jerome Rousselot
  **/
-class ArpHost : public BaseArp
+class ArpHost : public ArpInterface,
+				public AddressingInterface,
+				public BaseModule
 {
     //Module_Class_Members(BaseArp,BaseModule,0);
 	bool coreDebug;
