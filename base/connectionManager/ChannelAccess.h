@@ -39,11 +39,8 @@
  *
  * This class is not supposed to work on its own, but it contains
  * functions and lists that cooperate with ConnectionManager to handle
- * the dynamically created gates. This means EVERY SnrEval (the lowest
- * layer in a host) has to be derived from this class!!!! And please
- * follow the instructions on how to declare a physical layer in a
- * .ned file in "The Design of a Mobility Framework in OMNeT++"
- * paper.
+ * the dynamically created gates. This means EVERY physical layer (the lowest
+ * layer in a host) has to be derived from this class!!!!
  *
  * Please don't touch this class.
  *
@@ -96,6 +93,16 @@ protected:
 	void sendToChannel(cPacket *msg);
 
 public:
+	/**
+	 * @brief Returns a pointer to the ConnectionManager responsible for the
+	 * passed NIC module.
+	 *
+	 * @param nic a pointer to a NIC module
+	 * @return a pointer to a connection manager module or NULL if an error
+	 * occurred
+	 */
+	static BaseConnectionManager* getConnectionManager(cModule* nic);
+
     /** @brief Register with ConnectionManager and subscribe to hostPos
      *
 	 * Upon initialization ChannelAccess registers the nic parent module

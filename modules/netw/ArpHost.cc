@@ -23,8 +23,10 @@
 Define_Module(ArpHost);
 
 void ArpHost::initialize(int stage) {
-	BaseArp::initialize(stage);
-	return;
+	BaseModule::initialize(stage);
+    if(stage==0) {
+        hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
+	}
 }
 
 int ArpHost::getMacAddr(const int netwAddr)

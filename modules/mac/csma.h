@@ -258,7 +258,7 @@ class  csma : public BaseMacLayer
     int ackLength;
 
     /** @brief This MAC layers MAC address.*/
-    int macaddress;
+    //int macaddress;
 
 
 protected:

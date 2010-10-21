@@ -51,5 +51,6 @@ simple ConnectionManager
         double alpha;
         // minimum carrier frequency of the channel [Hz]
         double carrierFrequency @unit(Hz);
+        @display("i=abstract/multicast");
 }
 

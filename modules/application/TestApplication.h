@@ -15,6 +15,8 @@ class TestApplication : public BaseModule {
 
 
     public:
+	virtual ~TestApplication();
+
 	virtual void initialize(int stage);
 	virtual void handleMessage(cMessage* msg);
         virtual void finish();

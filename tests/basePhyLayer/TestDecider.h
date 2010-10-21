@@ -15,6 +15,8 @@ protected:
 	bool state;
 	double rssi;
 
+	simtime_t senseStart;
+
 protected:
 	void assertMessage(std::string msg, int state, AirFrame* frame, simtime_t arrival, std::string dest = "") {
 		TestModule::assertMessage(new AssertAirFrame(msg, state, arrival, frame), dest);
@@ -38,6 +40,7 @@ public:
 
 		simtime_t time = phy->getSimTime();
 		if(request->getSenseTimeout() > 0.0) {
+			senseStart = time;
 			simtime_t next = time + request->getSenseTimeout();
 			TestModule::assertMessage(	"Scheduled sense request at phy.",
 										BasePhyLayer::CHANNEL_SENSE_REQUEST,
@@ -53,7 +56,10 @@ public:
 										BasePhyLayer::CHANNEL_SENSE_REQUEST,
 										time,
 										"mac" + toString(myIndex));
-			request->setResult(ChannelState());
+
+			DeciderToPhyInterface::AirFrameVector v;
+			phy->getChannelInfo(senseStart, time, v);
+			request->setResult(ChannelState(v.empty()));
 			phy->sendControlMsg(request);
 			return -1.0;
 		}

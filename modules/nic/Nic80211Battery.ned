@@ -43,15 +43,17 @@ import org.mixim.modules.phy.PhyLayerBattery;
 module Nic80211Battery like INic
 {
     parameters:
+        string connectionManagerName = default("");   //name of the ConnectionManager module
         double sleepCurrent @unit(mA);
-		double rxCurrent @unit(mA);
-		double decodingCurrentDelta @unit(mA);
-		double txCurrent @unit(mA);
-		double setupRxCurrent @unit(mA);
-		double setupTxCurrent @unit(mA);
-		double rxTxCurrent @unit(mA);
-		double txRxCurrent @unit(mA);
+        double rxCurrent @unit(mA);
+        double decodingCurrentDelta @unit(mA);
+        double txCurrent @unit(mA);
+        double setupRxCurrent @unit(mA);
+        double setupTxCurrent @unit(mA);
+        double rxTxCurrent @unit(mA);
+        double txRxCurrent @unit(mA);
 
+        @display("i=block/ifcard");
     gates:
         input upperGateIn; // to upper layers
         output upperGateOut; // from upper layers
@@ -69,7 +71,7 @@ module Nic80211Battery like INic
                 headerLength = 192bit;
                 @display("p=106,157;i=block/process_s");
         }
-        
+
     connections:
         radioIn --> phy.radioIn;
         phy.upperGateIn <-- { @display("m=m,25,0,25,0"); } <-- mac.lowerGateOut;

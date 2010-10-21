@@ -238,7 +238,7 @@ public:
 
 
 
-class OmnetTest:public OmnetTestBase {
+class OmnetTest:public SimpleTest {
 private:
 	simtime_t initTime;
 	simtime_t offset;
@@ -773,6 +773,8 @@ protected:
 		//RSAMConstMappingIterator
 		std::cout << "------ Testing stuff for RSAMConstMappingIterator ------" << std::endl;
 		testRSAMConstMappingIterator();
+
+		testsExecuted = true;
 	}
 };
 

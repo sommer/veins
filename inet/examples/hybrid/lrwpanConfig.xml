@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<AnalogueModels>
+		<AnalogueModel type="SimplePathlossModel">
+	    	<parameter name="alpha" type="double" value="2.5"/>
+	    	<parameter name="carrierFrequency" type="double" value="2.4E+9"/>
+	    </AnalogueModel>
+	</AnalogueModels>
+</root>

@@ -72,9 +72,9 @@ void Mac80211::initialize(int stage)
         EV << "SIFS: " << SIFS << " DIFS: " << DIFS << " EIFS: " << EIFS << endl;
     }
     else if(stage == 1) {
-    	BaseConnectionManager* cc = FindModule<BaseConnectionManager*>::findGlobalModule();
+    	BaseConnectionManager* cc = getConnectionManager();
 
-    	if(txPower > cc->par("pMax").doubleValue())
+    	if(cc->hasPar("pMax") && txPower > cc->par("pMax").doubleValue())
             opp_error("TranmitterPower can't be bigger than pMax in ConnectionManager! "
             	      "Please adjust your omnetpp.ini file accordingly.");
 
@@ -1231,18 +1231,22 @@ void Mac80211::addNeighbor(Mac80211Pkt *af) {
        << " snr: " << snr << " bitrate: " << bitrate << endl;
 }
 
-void Mac80211::finish() {
-    BaseMacLayer::finish();
-    MacPktList::iterator it;
+Mac80211::~Mac80211() {
+	cancelAndDelete(timeout);
+	cancelAndDelete(nav);
+	if(!contention->isScheduled())
+		delete contention;
+	if(!endSifs->isScheduled())
+		delete endSifs;
 
-    if(!timeout->isScheduled()) delete timeout;
-    if(!nav->isScheduled()) delete nav;
-    if(!contention->isScheduled()) delete contention;
-    if(!endSifs->isScheduled()) delete endSifs;
-
-    for(it = fromUpperLayer.begin(); it != fromUpperLayer.end(); ++it) {
+	MacPktList::iterator it;
+	for(it = fromUpperLayer.begin(); it != fromUpperLayer.end(); ++it) {
         delete (*it);
     }
     fromUpperLayer.clear();
+}
+
+void Mac80211::finish() {
+    BaseMacLayer::finish();
 }
 

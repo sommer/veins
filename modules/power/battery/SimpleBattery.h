@@ -38,6 +38,7 @@
 
 class SimpleBattery: public BaseBattery {
 public:
+	virtual ~SimpleBattery();
 	virtual void initialize(int);
 	virtual void handleMessage(cMessage*);
 	virtual void handleHostState(const HostState& state);

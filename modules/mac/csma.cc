@@ -52,7 +52,7 @@ void csma::initialize(int stage) {
 
 	if (stage == 0) {
 		//get my mac address
-		macaddress = arp ? arp->myMacAddr(this):getParentModule()->getId();
+		//myMacAddr = arp ? arp->myMacAddr(this):getParentModule()->getId();
 
 		useMACAcks = par("useMACAcks").boolValue();
 		queueLength = par("queueLength");
@@ -119,9 +119,9 @@ void csma::initialize(int stage) {
 		txAttempts = 0;
 
 	} else if(stage == 1) {
-		BaseConnectionManager* cc = FindModule<BaseConnectionManager*>::findGlobalModule();
+		BaseConnectionManager* cc = getConnectionManager();
 
-    	if(txPower > cc->par("pMax").doubleValue())
+    	if(cc->hasPar("pMax") && txPower > cc->par("pMax").doubleValue())
             opp_error("TranmitterPower can't be bigger than pMax in ConnectionManager! "
             		  "Please adjust your omnetpp.ini file accordingly.");
 
@@ -179,7 +179,7 @@ void csma::handleUpperMsg(cMessage *msg) {
 	int dest = cInfo->getNextHopMac();
 	macPkt->setDestAddr(dest);
 	delete cInfo;
-	macPkt->setSrcAddr(macaddress);
+	macPkt->setSrcAddr(myMacAddr);
 
 	if(useMACAcks) {
 		if(SeqNrParent.find(dest) == SeqNrParent.end()) {
@@ -737,9 +737,9 @@ void csma::handleLowerMsg(cMessage *msg) {
 	EV<< "Received frame name= " << macPkt->getName()
 	<< ", myState=" << macState << " src=" << macPkt->getSrcAddr()
 	<< " dst=" << macPkt->getDestAddr() << " myAddr="
-	<< macaddress << endl;
+	<< myMacAddr << endl;
 
-	if(macPkt->getDestAddr() == macaddress)
+	if(macPkt->getDestAddr() == myMacAddr)
 	{
 		if(!useMACAcks) {
 			EV << "Received a data packet addressed to me." << endl;
@@ -762,7 +762,7 @@ void csma::handleLowerMsg(cMessage *msg) {
 				if(ackMessage != NULL)
 					delete ackMessage;
 				ackMessage = new MacPkt("CSMA-Ack");
-				ackMessage->setSrcAddr(macaddress);
+				ackMessage->setSrcAddr(myMacAddr);
 				ackMessage->setDestAddr(macPkt->getSrcAddr());
 				ackMessage->setBitLength(ackLength);
 				//Check for duplicates by checking expected seqNr of sender

@@ -42,6 +42,7 @@ int BaseArp::getMacAddr(const int netwAddr)
     return simulation.getModule(netwAddr)->getParentModule()->getSubmodule("nic")->getId();
 }
 
+/*
 int BaseArp::getNetwAddr(const int macAddr)
 {
     if(coreDebug) {
@@ -54,6 +55,7 @@ int BaseArp::getNetwAddr(const int macAddr)
        << simulation.getModule( macAddr )->getParentModule()->getSubmodule("nic")->getId() <<endl;
     return simulation.getModule(macAddr)->getParentModule()->getSubmodule("netw")->getId();
 }
+*/
 
 int BaseArp::myNetwAddr(cModule* netw) {
     return netw->getId();

@@ -25,7 +25,6 @@
 #include <BaseMacLayer.h>
 #include <Mac80211Pkt_m.h>
 #include <Consts80211.h>
-#include <BaseArp.h>
 #include <ChannelSenseRequest_m.h>
 
 /**
@@ -85,6 +84,7 @@ protected:
     typedef std::list<NeighborEntry> NeighborList;
 
   public:
+    virtual ~Mac80211();
 
     virtual void initialize(int);
     virtual void finish();
@@ -230,14 +230,6 @@ protected:
     Signal* createSignal(simtime_t start, simtime_t length, double power, double bitrate);
 
 protected:
-
-    /** @brief Pointer to the arp module */
-    BaseArp* arp;
-
-    /**
-     * @brief MAC address (obtained from arp module)
-     **/
-    int myMacAddr;
 
     // TIMERS:
 
