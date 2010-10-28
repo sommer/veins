@@ -36,6 +36,10 @@ Those prdecessors of MiXiM are:
   http://www.consensus.tudelft.nl/software.html
   (c) by Technische Universiteit Delft
 
+MiXiM further includes the "Mixnet" project which provides compatibility modules
+and documentation in case you want to use MiXiM together with the INET
+framework. For details on Mixnet and INET please take a look at its README file
+in MiXiM's "inet" folder.
 
 Copyright
 =========
