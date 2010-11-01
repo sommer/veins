@@ -51,8 +51,6 @@ void csma::initialize(int stage) {
 	BaseMacLayer::initialize(stage);
 
 	if (stage == 0) {
-		//get my mac address
-		//myMacAddr = arp ? arp->myMacAddr(this):getParentModule()->getId();
 
 		useMACAcks = par("useMACAcks").boolValue();
 		queueLength = par("queueLength");

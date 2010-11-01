@@ -39,16 +39,9 @@ Define_Module(BaseMacLayer);
 void BaseMacLayer::initialize(int stage)
 {
     BaseLayer::initialize(stage);
-    if(stage==0) {
-    	// see if there is an addressing module available
-    	// otherwise use NIC modules id as MAC address
-        AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
-        if(addrScheme) {
-        	myMacAddr = addrScheme->myMacAddr(this);
-        } else {
-        	myMacAddr = getParentModule()->getId();
-        }
 
+    if(stage==0)
+    {
     	// get handle to phy layer
         phy = FindModule<MacToPhyInterface*>::findSubModule(getParentModule());
 
@@ -56,6 +49,17 @@ void BaseMacLayer::initialize(int stage)
         phyHeaderLength = phy->getPhyHeaderLength();
 
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
+    }
+    else if (stage==1)
+    {
+    	// see if there is an addressing module available
+		// otherwise use NIC modules id as MAC address
+		AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
+		if(addrScheme) {
+			myMacAddr = addrScheme->myMacAddr(this);
+		} else {
+			myMacAddr = getParentModule()->getId();
+		}
     }
 }
 
