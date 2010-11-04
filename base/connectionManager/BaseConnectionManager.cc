@@ -26,7 +26,8 @@ void BaseConnectionManager::initialize(int stage)
 
 		ccEV <<"initializing BaseConnectionManager\n";
 
-		BaseWorldUtility* world = FindModule<BaseWorldUtility*>::findGlobalModule();
+		BaseWorldUtility* world = FindModule<BaseWorldUtility*>
+										::findGlobalModule();
 
 		assert(world != 0);
 
@@ -48,9 +49,10 @@ void BaseConnectionManager::initialize(int stage)
 		Coord dim((*playgroundSize) / maxInterferenceDistance);
 		gridDim = GridCoord(dim);
 
-		//A grid smaller or equal to 3x3 whould mean that every cell has every other cell as direct
-		//neighbor (if our playground is a torus, even if not the most of the cells are direct
-		//neighbors of each other. So we reduce the grid size to 1x1.
+		//A grid smaller or equal to 3x3 would mean that every cell has every
+		//other cell as direct neighbor (if our playground is a torus, even if
+		//not the most of the cells are direct neighbors of each other. So we
+		//reduce the grid size to 1x1.
 		if((gridDim.x <= 3) && (gridDim.y <= 3) && (gridDim.z <= 3))
 		{
 			gridDim.x = 1;
@@ -68,13 +70,13 @@ void BaseConnectionManager::initialize(int stage)
 		NicMatrix matrix;
 
 		for (int i = 0; i < gridDim.z; ++i) {
-			row.push_back(entries);					//copy empty NicEntries to RowVector
+			row.push_back(entries);			//copy empty NicEntries to RowVector
 		}
-		for (int i = 0; i < gridDim.y; ++i) {	//fill the ColVector with copies of
-			matrix.push_back(row);					//the RowVector.
+		for (int i = 0; i < gridDim.y; ++i) {//fill the ColVector with copies of
+			matrix.push_back(row);			 //the RowVector.
 		}
 		for (int i = 0; i < gridDim.x; ++i) {	//fill the grid with copies of
-			nicGrid.push_back(matrix);				//the matrix.
+			nicGrid.push_back(matrix);			//the matrix.
 		}
 		ccEV << " using " << gridDim.x << "x" <<
 							 gridDim.y << "x" <<
@@ -83,16 +85,21 @@ void BaseConnectionManager::initialize(int stage)
 		//step 3 -	calculate the factor which maps the coordinate of a node
 		//			to the grid cell
 
-		if (gridDim.x == 1 &&												//if we use a 1x1 grid
-			gridDim.y == 1 &&												//every coordinate is
-			gridDim.z == 1) {									 			//mapped to (0,0, 0)
-			findDistance = Coord(std::max(playgroundSize->getX(), maxInterferenceDistance),
-								 std::max(playgroundSize->getY(), maxInterferenceDistance),
-								 std::max(playgroundSize->getZ(), maxInterferenceDistance));
+		if (gridDim.x == 1 &&							//if we use a 1x1 grid
+			gridDim.y == 1 &&							//every coordinate is
+			gridDim.z == 1) {							//mapped to (0,0, 0)
+			findDistance = Coord(std::max(playgroundSize->getX(),
+										  maxInterferenceDistance),
+								 std::max(playgroundSize->getY(),
+										  maxInterferenceDistance),
+								 std::max(playgroundSize->getZ(),
+										  maxInterferenceDistance));
 		} else {
-			findDistance = Coord(playgroundSize->getX() / gridDim.x,		//otherwise the factor is our
-								 playgroundSize->getY() / gridDim.y,		//playground divided by the
-								 playgroundSize->getZ() / gridDim.z);		//number of cells
+			//otherwise the factor is our playground divided by the number of
+			//cells
+			findDistance = Coord(playgroundSize->getX() / gridDim.x,
+								 playgroundSize->getY() / gridDim.y,
+								 playgroundSize->getZ() / gridDim.z);
 		}
 
 		//since the upper playground borders (at pg-size) are part of the
@@ -102,10 +109,12 @@ void BaseConnectionManager::initialize(int stage)
 		//This also assures that findDistance is never zero.
 		findDistance += Coord(EPSILON, EPSILON, EPSILON);
 
-		//findDistance (equals cell size) has to be greater or equal maxInt-distance
+		//findDistance (equals cell size) has to be greater or equal
+		//maxInt-distance
 		assert(findDistance.getX() >= maxInterferenceDistance);
 		assert(findDistance.getY() >= maxInterferenceDistance);
-		assert(world->use2D() || findDistance.getZ() >= maxInterferenceDistance);
+		assert(world->use2D()
+			   || findDistance.getZ() >= maxInterferenceDistance);
 
 		//playGroundSize has to be part of the playGround
 		assert(GridCoord(*playgroundSize, findDistance).x == gridDim.x - 1);
@@ -119,11 +128,15 @@ void BaseConnectionManager::initialize(int stage)
 	}
 }
 
-BaseConnectionManager::GridCoord BaseConnectionManager::getCellForCoordinate(const Coord& c) {
+BaseConnectionManager::GridCoord BaseConnectionManager
+	::getCellForCoordinate(const Coord& c)
+{
     return GridCoord(c, findDistance);
 }
 
-void BaseConnectionManager::updateConnections(int nicID, const Coord* oldPos, const Coord* newPos)
+void BaseConnectionManager::updateConnections(int nicID,
+											  const Coord* oldPos,
+											  const Coord* newPos)
 {
 	GridCoord oldCell = getCellForCoordinate(*oldPos);
     GridCoord newCell = getCellForCoordinate(*newPos);
@@ -131,7 +144,9 @@ void BaseConnectionManager::updateConnections(int nicID, const Coord* oldPos, co
 	checkGrid(oldCell, newCell, nicID );
 }
 
-BaseConnectionManager::NicEntries& BaseConnectionManager::getCellEntries(BaseConnectionManager::GridCoord& cell) {
+BaseConnectionManager::NicEntries& BaseConnectionManager
+	::getCellEntries(BaseConnectionManager::GridCoord& cell)
+{
     return nicGrid[cell.x][cell.y][cell.z];
 }
 
@@ -208,7 +223,9 @@ int BaseConnectionManager::wrapIfTorus(int value, int max) {
 	}
 }
 
-void BaseConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion, GridCoord cell) {
+void BaseConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion,
+												   GridCoord cell)
+{
 	for(int iz = (int)cell.z - 1; iz <= (int)cell.z + 1; iz++) {
 		if(iz != cell.z && cell.use2D) {
 			continue;
@@ -236,7 +253,8 @@ void BaseConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion, GridCoor
 	}
 }
 
-void BaseConnectionManager::updateNicConnections(NicEntries& nmap, NicEntry* nic)
+void BaseConnectionManager::updateNicConnections(NicEntries& nmap,
+												 NicEntry* nic)
 {
     int id = nic->nicId;
 
@@ -263,21 +281,25 @@ void BaseConnectionManager::updateNicConnections(NicEntries& nmap, NicEntry* nic
         if ( inRange && !connected ){
             // nodes within communication range: connect
             // nodes within communication range && not yet connected
-            ccEV << "nic #" << id << " and #" << nic_i->nicId << " are in range" << endl;
+            ccEV << "nic #" << id << " and #" << nic_i->nicId
+            	 << " are in range" << endl;
             nic->connectTo( nic_i );
             nic_i->connectTo( nic );
         }
         else if ( !inRange && connected ){
             // out of range: disconnect
             // out of range, and still connected
-            ccEV << "nic #" << id << " and #" << nic_i->nicId << " are NOT in range" << endl;
+            ccEV << "nic #" << id << " and #" << nic_i->nicId
+            	 << " are NOT in range" << endl;
             nic->disconnectFrom( nic_i );
             nic_i->disconnectFrom( nic );
         }
     }
 }
 
-bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos)
+bool BaseConnectionManager::registerNic(cModule* nic,
+										ChannelAccess* chAccess,
+										const Coord* nicPos)
 {
 	assert(nic != 0);
 
@@ -372,7 +394,8 @@ const NicEntry::GateList& BaseConnectionManager::getGateList(int nicID)
 	return nics[nicID]->getGateList();
 }
 
-const cGate* BaseConnectionManager::getOutGateTo(const NicEntry* nic, const NicEntry* targetNic)
+const cGate* BaseConnectionManager::getOutGateTo(const NicEntry* nic,
+												 const NicEntry* targetNic)
 {
     return nics[nic->nicId]->getOutGateTo(targetNic);
 }

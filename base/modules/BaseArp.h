@@ -28,20 +28,20 @@
 /**
  * @brief A class to convert integer layer addresses
  *
- * This class takes the network layer module id as the network layer
- * address and the NIC module id as the mac layer address
+ * This class takes the network layer module id as the network layer address and
+ * the NIC module id as the mac layer address
  *
- * ARP implementations are divers, it does not make sense to start
- * from a common class. Their main purpose is to translate layer 2
- * into layer 3 addresses. However, these addresses can be very
- * different. Here, simple integers are sufficient, but for
- * hardware-in-the-loop simulations more complex ones are appropriate.
+ * ARP implementations are divers, it does not make sense to start from a common
+ * class. Their main purpose is to translate layer 2 into layer 3 addresses.
+ * However, these addresses can be very different. Here, simple integers are
+ * sufficient, but for hardware-in-the-loop simulations more complex ones are
+ * appropriate.
  *
  * In contrast to this ARP, others may want to cache entries.
  *
- * Since this simplified ARP relies on a certain addressing scheme
- * it implements the AddressingInterface to be able to define the
- * addresses for each network and mac layer.
+ * Since this simplified ARP relies on a certain addressing scheme it implements
+ * the AddressingInterface to be able to define the addresses for each network
+ * and mac layer.
  *
  * @ingroup netwLayer
  * @ingroup baseModules
@@ -65,13 +65,13 @@ public:
         error("ARP module cannot receive messages!");
     };
 
-    /** @brief returns a L2 address to a given L3 address*/
+    /** @brief returns a L2 address to a given L3 address.*/
     virtual int getMacAddr(const int netwAddr);
 
-    /** @brief Returns the L2 address for the passed mac*/
+    /** @brief Returns the L2 address for the passed mac.*/
     virtual int myMacAddr(cModule* mac);
 
-    /** @brief Returns the L3 address for the passed net*/
+    /** @brief Returns the L3 address for the passed net.*/
     virtual int myNetwAddr(cModule* netw);
 };
 

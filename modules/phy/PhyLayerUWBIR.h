@@ -96,8 +96,6 @@ public:
 
     void finish();
 
-    virtual BaseUtility* getUtility() { return utility; };
-
     // this function allows to include common xml documents for ned parameters as ned functions
     static cDynamicExpression::Value ghassemzadehNLOSFunc(cComponent *context, cDynamicExpression::Value argv[], int argc) {
       const char * ghassemzadehnlosxml =
@@ -123,13 +121,15 @@ public:
     static fptr ghassemzadehNLOSFPtr;
     //static cDynamicExpression::Value (*ghassemzadehNLOSFPtr) (cComponent *context, cDynamicExpression::Value argv[], int argc);
 
-    virtual AirFrame *encapsMsg(cPacket *msg);
+
 
 protected:
 
     UWBIRStochasticPathlossModel* uwbpathloss;
     UWBIRIEEE802154APathlossModel* ieee802154AChannel;
     DeciderUWBIRED* uwbdecider;
+
+    virtual AirFrame *encapsMsg(cPacket *msg);
 
     virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
 

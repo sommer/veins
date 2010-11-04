@@ -9,7 +9,7 @@ void UnitDisk::initialize(int stage)
 	{
 		//cPar *p = addPar("logName"); //TODO: addPar removed in omnet 4, replace it
 		//p->setStringValue("UnitDisk");
-		radioRange = par("radioRange");
+		radioRange = par("radioRange").doubleValue();
 		EV << "UnitDisk initialised with range "<<radioRange<<endl;
 	}
 }

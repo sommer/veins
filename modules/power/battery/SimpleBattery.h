@@ -44,10 +44,14 @@ public:
 	virtual void handleHostState(const HostState& state);
 	virtual void finish();
 
-	/** @brief Other host modules should use these interfaces to obtain
+	/**
+	 * @name State-of-charge interface
+	 *
+	 * @brief Other host modules should use these interfaces to obtain
 	 *  the state-of-charge of the battery.  Do NOT use BatteryState
 	 *  interfaces, which should be used only by Battery Stats modules.
 	 */
+	/*@{*/
 	/** @brief get voltage (future support for non-voltage regulated h/w */
 	double getVoltage();
 	/** @brief current state of charge of the battery, relative to its
@@ -56,6 +60,7 @@ public:
 	double estimateResidualRelative();
 	/** @brief current state of charge of the battery (mW-s) */
 	double estimateResidualAbs();
+	/*@}*/
 
 	/**
 	 * @brief Registers a power device by creating a new DeviceEntry for it.

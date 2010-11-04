@@ -44,10 +44,11 @@ class BurstApplLayerBattery : public BurstApplLayer
 
   /** @brief Initialite module parameters*/
   virtual void initialize(int);
-  virtual void handleHostState(const HostState& state);
+
   virtual void finish() ;
 
  protected:
+  virtual void handleHostState(const HostState& state);
   virtual void handleLowerMsg( cMessage* );
   virtual void handleSelfMsg(cMessage *);
 

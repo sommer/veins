@@ -53,24 +53,6 @@ class  CSMAMacLayer : public BaseMacLayer
   public:
 	virtual ~CSMAMacLayer();
 
-    /** @brief Initialization of the module and some variables*/
-    virtual void initialize(int);
-
-    /** @brief Delete all dynamically allocated objects of the module*/
-    virtual void finish();
-
-    /** @brief Handle messages from lower layer */
-    virtual void handleLowerMsg(cMessage*);
-
-    /** @brief Handle messages from upper layer */
-    virtual void handleUpperMsg(cMessage*);
-
-    /** @brief Handle self messages such as timers */
-    virtual void handleSelfMsg(cMessage*);
-
-    /** @brief Handle control messages from lower layer */
-    virtual void handleLowerControl(cMessage *msg);
-
   protected:
     /** @brief Type for a queue of cPackets.*/
     typedef std::list<cPacket*> MacQueue;
@@ -168,6 +150,24 @@ class  CSMAMacLayer : public BaseMacLayer
     //int nicId;
 
 protected:
+    /** @brief Initialization of the module and some variables*/
+    virtual void initialize(int);
+
+    /** @brief Delete all dynamically allocated objects of the module*/
+    virtual void finish();
+
+    /** @brief Handle messages from lower layer */
+    virtual void handleLowerMsg(cMessage*);
+
+    /** @brief Handle messages from upper layer */
+    virtual void handleUpperMsg(cMessage*);
+
+    /** @brief Handle self messages such as timers */
+    virtual void handleSelfMsg(cMessage*);
+
+    /** @brief Handle control messages from lower layer */
+    virtual void handleLowerControl(cMessage *msg);
+
     /** @brief schedule a backoff
      *
      *  A non-persistent CSMA ideally uses a fixed backoff window, but

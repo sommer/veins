@@ -41,6 +41,8 @@ void WorldUtilityStats::initialize(int stage)
 
 void WorldUtilityStats::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
 {
+	Enter_Method_Silent();
+
 	if(category == catPacket)
 	{
 		const Packet* p = static_cast<const Packet*>(details);
@@ -53,9 +55,6 @@ void WorldUtilityStats::receiveBBItem(int category, const BBItem *details, int s
 			sent.record(bitsSent);
 			rcvd.record(bitsReceived);
 		}
-	}
-	else {
-		opp_error("BBItem of unexpected category: %s", details->getClassName());
 	}
 }
 

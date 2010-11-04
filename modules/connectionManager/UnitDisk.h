@@ -33,7 +33,7 @@ public:
 	void initialize(int stage);
 
 	/** @brief Returns a constant value as maximum interference range.*/
-	virtual double calcInterfDist() { return radioRange; }
+	virtual double calcInterfDist() { return par("radioRange").doubleValue(); }
 };
 
 #endif

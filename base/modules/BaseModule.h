@@ -100,25 +100,23 @@ protected:
 	/**
 	 * @brief Called whenever the hosts state changes.
 	 *
-	 * Default implementation of this method throws an
-	 * error whenever the host state changes and the
-	 * "notAffectedbyHostState" variable is not explicitly
-	 * set. This is because every module of a host has to
-	 * make sure to react well to changes in the host state.
-	 * Or it has to explicitly set its parameter
-	 * "notAffectedbyHostState" to true.
+	 * Default implementation of this method throws an error whenever the host
+	 * state changes and the "notAffectedbyHostState" variable is not explicitly
+	 * set. This is because every module of a host has to make sure to react
+	 * well to changes in the host state. Or it has to explicitly set its
+	 * parameter "notAffectedbyHostState" to true.
 	 */
 	virtual void handleHostState(const HostState& state);
 
 	/**
 	 * @brief Switches the host to the passed state.
 	 *
-	 * This is a convenience method for publishing the
-	 * host state to BaseUtility.
+	 * This is a convenience method for publishing the host state to
+	 * BaseUtility.
 	 *
-	 * If the hosts state is switched to anything else than
-	 * "ACTIVE" every module of the host has to handle this
-	 * explicitly (see method "handleHostState()")!
+	 * If the hosts state is switched to anything else than "ACTIVE" every
+	 * module of the host has to handle this explicitly (see method
+	 * "handleHostState()")!
 	 */
 	void switchHostState(HostState::States state);
 
@@ -139,10 +137,13 @@ protected:
      * @brief Divide initialization into two stages
      *
      * In the first stage (stage==0), modules subscribe to notification
-     * categories at Blackboard. The first notifications
-     * (e.g. about the initial values of some variables such as RadioState)
-     * should take place earliest in the second stage (stage==1),
-     * when everyone interested in them has already subscribed.
+     * categories at Blackboard. The first notifications (e.g. about the initial
+     * values of some variables such as RadioState) should take place earliest
+     * in the second stage (stage==1), when everyone interested in them has
+     * already subscribed.
+     * Further one should try to keep calls to other modules out of stage 0 to
+     * assure that the other module had at least once the chance to initialize
+     * itself in stage 0.
      */
     virtual int numInitStages() const {
     	return 2;

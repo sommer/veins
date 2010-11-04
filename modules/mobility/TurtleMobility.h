@@ -44,18 +44,17 @@ class  TurtleMobility : public LineSegmentsMobilityBase
     std::stack<long> loopVars; // for <repeat>
 
   public:
-    //Module_Class_Members(TurtleMobility, LineSegmentsMobilityBase, 0);
 
     /** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);
 
+  protected:
     /** @brief Overridden from LineSegmentsMobilityBase. Invokes resumeScript().*/
     virtual void setTargetPosition();
 
-    /** @brief Overridden from LineSegmentsMobilityBase.*/
+    /** @brief Overridden from BaseMobility.*/
     virtual void fixIfHostGetsOutside();
 
-  protected:
     /** @brief Process next statements from script */
     void resumeScript();
 

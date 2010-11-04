@@ -116,9 +116,6 @@ protected:
 	 * the passed states.*/
 	virtual void setSwitchingCurrent(int from, int to);
 
-public:
-	virtual void initialize(int stage);
-
 	/**
 	 * @brief Checks the hosts state and draws txCurrent from
 	 * battery.
@@ -138,6 +135,22 @@ public:
 	virtual void handleAirFrame(cMessage* msg);
 
 	/**
+	 * @brief Captures changes in host state.
+	 *
+	 * Note: Does not yet cancel any ongoing transmissions if the
+	 * state changes to off.
+	 */
+	virtual void handleHostState(const HostState& state);
+
+	/**
+	 * @brief Captures radio switches to adjust power consumption.
+	 */
+	virtual void finishRadioSwitching();
+
+public:
+	virtual void initialize(int stage);
+
+	/**
 	 * @brief Provides ability to draw power for the Decider.
 	 *
 	 * Method is defined in "DeciderToPhyInterface".
@@ -149,22 +162,9 @@ public:
 	virtual void drawCurrent(double amount, int activity);
 
 	/**
-	 * @brief Captures changes in host state.
-	 *
-	 * Note: Does not yet cancel any ongoing transmissions if the
-	 * state changes to off.
-	 */
-	virtual void handleHostState(const HostState& state);
-
-	/**
 	 * @brief Captures radio switches to adjust power consumption.
 	 */
 	virtual simtime_t setRadioState(int rs);
-
-	/**
-	 * @brief Captures radio switches to adjust power consumption.
-	 */
-	virtual void finishRadioSwitching();
 };
 
 #endif /* PHYLAYERBATTERY_H_ */
