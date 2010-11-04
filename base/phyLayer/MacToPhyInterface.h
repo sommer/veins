@@ -44,6 +44,9 @@ public:
 	 * @brief Returns the current state the radio is in. See RadioState
 	 * for possible values.
 	 *
+	 * NOTE: Radio state information is not available until
+	 *       initialization-stage 1.
+	 *
 	 * This method is mainly used by the mac layer.
 	 */
 	virtual int getRadioState() = 0;
@@ -51,6 +54,8 @@ public:
 	/**
 	 * @brief Tells the BasePhyLayer to switch to the specified
 	 * radio state.
+	 *
+	 * NOTE: Radio state can't be changed until initialization-stage 1.
 	 *
 	 * The switching process can take some time depending on the
 	 * specified switching times in the ned file.
@@ -63,6 +68,9 @@ public:
 	/**
 	 * @brief Returns the current state of the channel. See ChannelState
 	 * for details.
+	 *
+	 * NOTE: Channel state information is not available until initialization
+	 *       is over and the simulation has started.
 	 */
 	virtual ChannelState getChannelState() = 0;
 

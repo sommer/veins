@@ -69,10 +69,21 @@ public:
     /** @brief Initializes mobility model parameters.*/
     virtual void initialize(int);
 
-    /** @brief Get current position */
+    /** @brief Get current position
+     *
+     * NOTE: This method can't provide the correct host position during
+     *       initialization, but only after initialization.
+     *
+     *       A module which needs the position during initialization can
+     *       instead subscribe to the BBItem-category for 'Move' in order to
+     *       receive position information during the initialization.
+     */
     const Coord* getPos() {return &pos;}
 
-    /** @brief Get the current HostState */
+    /** @brief Get the current HostState
+     *
+     * NOTE: The correct host state is available from initialization-stage 1.
+     */
     const HostState& getHostState() { return hostState; }
 
     /**
