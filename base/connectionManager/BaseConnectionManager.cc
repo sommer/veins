@@ -23,9 +23,7 @@ void BaseConnectionManager::initialize(int stage)
 			coreDebug = par("coreDebug").boolValue();
 		else
 			coreDebug = false;
-	}
-	else if (stage == 1)
-	{
+
 		ccEV <<"initializing BaseConnectionManager\n";
 
 		BaseWorldUtility* world = FindModule<BaseWorldUtility*>::findGlobalModule();
@@ -114,6 +112,10 @@ void BaseConnectionManager::initialize(int stage)
 		assert(GridCoord(*playgroundSize, findDistance).y == gridDim.y - 1);
 		assert(GridCoord(*playgroundSize, findDistance).z == gridDim.z - 1);
 		ccEV << "findDistance is " << findDistance.info() << endl;
+	}
+	else if (stage == 1)
+	{
+
 	}
 }
 

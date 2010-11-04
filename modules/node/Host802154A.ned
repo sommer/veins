@@ -30,7 +30,7 @@ module Host802154A
         input radioIn;
 
     submodules:
-         utility: BaseUtility {
+        utility: BaseUtility {
             parameters:
                 @display("p=292,60;i=block/blackboard");
         }

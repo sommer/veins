@@ -27,39 +27,15 @@ Define_Module(BaseWorldUtility);
 
 const double BaseWorldUtility::speedOfLight = 299792458.0; //metres per second
 
-
+BaseWorldUtility::BaseWorldUtility():
+		isInitialized(false)
+{}
 
 void BaseWorldUtility::initialize(int stage) {
 	Blackboard::initialize(stage);
 
 	if (stage == 0) {
-        use2DFlag = par("use2D");
-
-        if (use2DFlag) {
-            playgroundSize = Coord(par("playgroundSizeX"),
-                                   par("playgroundSizeY"));
-        } else {
-            playgroundSize = Coord(par("playgroundSizeX"),
-                                   par("playgroundSizeY"),
-                                   par("playgroundSizeZ"));
-        }
-
-        if(playgroundSize.getX() <= 0) {
-        	opp_error("Playground size in X direction is invalid: "\
-        			  "(%f). Should be greater zero.", playgroundSize.getX());
-        }
-        if(playgroundSize.getY() <= 0) {
-			opp_error("Playground size in Y direction is invalid: "\
-					  "(%f). Should be greater zero.", playgroundSize.getY());
-		}
-        if(!use2DFlag && playgroundSize.getZ() <= 0) {
-			opp_error("Playground size in Z direction is invalid: "\
-					  "(%f). Should be greater zero (or use 2D mode).", playgroundSize.getZ());
-		}
-
-		useTorusFlag = par("useTorus");
-
-		airFrameId = 0;
+        initializeIfNecessary();
 	}
 	else if(stage == 1) {
 		//check if necessary modules are there
@@ -70,8 +46,46 @@ void BaseWorldUtility::initialize(int stage) {
 	}
 }
 
+void BaseWorldUtility::initializeIfNecessary()
+{
+	if(isInitialized)
+		return;
+
+	use2DFlag = par("use2D");
+
+	if (use2DFlag) {
+		playgroundSize = Coord(par("playgroundSizeX"),
+							   par("playgroundSizeY"));
+	} else {
+		playgroundSize = Coord(par("playgroundSizeX"),
+							   par("playgroundSizeY"),
+							   par("playgroundSizeZ"));
+	}
+
+	if(playgroundSize.getX() <= 0) {
+		opp_error("Playground size in X direction is invalid: "\
+				  "(%f). Should be greater zero.", playgroundSize.getX());
+	}
+	if(playgroundSize.getY() <= 0) {
+		opp_error("Playground size in Y direction is invalid: "\
+				  "(%f). Should be greater zero.", playgroundSize.getY());
+	}
+	if(!use2DFlag && playgroundSize.getZ() <= 0) {
+		opp_error("Playground size in Z direction is invalid: "\
+				  "(%f). Should be greater zero (or use 2D mode).", playgroundSize.getZ());
+	}
+
+	useTorusFlag = par("useTorus");
+
+	airFrameId = 0;
+
+	isInitialized = true;
+}
+
 Coord BaseWorldUtility::getRandomPosition()
 {
+	initializeIfNecessary();
+
     if (use2DFlag) {
         return Coord(uniform(0, playgroundSize.getX()),
                      uniform(0, playgroundSize.getY()));

@@ -51,8 +51,21 @@ protected:
 
     /** @brief Provides a unique number for AirFrames per simulation */
     long airFrameId;
+
+    /** @brief Stores if members are already initialized. */
+    bool isInitialized;
+
+protected:
+    /**
+     * @brief Initializes all members accessible by other modules.
+     *
+     * Called once the first time another module accesses a member or during
+     * initialize stage 0 at the latest.
+     */
+    void initializeIfNecessary();
+
 public:
-	//Module_Class_Members(BaseWorldUtility,BaseModule,0);
+	BaseWorldUtility();
 
 	void initialize(int stage);
 
@@ -64,11 +77,13 @@ public:
 	 * borders (at 0) are part of the playground.
      **/
     const Coord* getPgs(){
+    	initializeIfNecessary();
         return &playgroundSize;
     };
 
     /** @brief Returns true if our playground represents a torus (borders are connected)*/
     bool useTorus(){
+    	initializeIfNecessary();
     	return useTorusFlag;
     };
 
@@ -79,10 +94,16 @@ public:
     static const double speedOfLight;
 
     /** @brief Returns true if the world is 2-dimensional */
-    bool use2D() { return use2DFlag; }
+    bool use2D()
+    {
+    	initializeIfNecessary();
+    	return use2DFlag;
+    }
 
     /** @brief Returns an Id for an AirFrame, at the moment simply an incremented long-value */
-    long getUniqueAirFrameId(){
+    long getUniqueAirFrameId()
+    {
+    	initializeIfNecessary();
 
     	// if counter has done one complete cycle and will be set to a value it already had
     	if (airFrameId == -1){

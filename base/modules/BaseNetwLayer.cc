@@ -37,10 +37,12 @@ void BaseNetwLayer::initialize(int stage)
     if(stage==0){
         headerLength= par("headerLength");
         arp = FindModule<ArpInterface*>::findSubModule(findHost());
-
-        // see if there is an addressing module available
+    }
+    else if(stage == 1) {
+    	// see if there is an addressing module available
     	// otherwise use module id as network address
-        AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
+        AddressingInterface* addrScheme = FindModule<AddressingInterface*>
+													::findSubModule(findHost());
         if(addrScheme) {
         	myNetwAddr = addrScheme->myNetwAddr(this);
         } else {
@@ -159,7 +161,8 @@ void BaseNetwLayer::handleLowerControl(cMessage* msg)
 		delete msg;
 		break;
 	default:
-		EV << "BaseNetwLayer does not handle control messages called " << msg->getName() << endl;
+		EV << "BaseNetwLayer does not handle control messages called "
+		   << msg->getName() << endl;
 		delete msg;
 	}
 }

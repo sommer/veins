@@ -294,6 +294,12 @@ protected:
 
 	/**
 	 * @brief Calculate interference distance
+	 *
+	 * Called by BaseConnectionManager already during initialization stage 0.
+	 * Implementations therefore have to make sure that everything necessary
+	 * for calculation is either already initialized or has to be initialized in
+	 * this method!
+	 *
 	 * This method has to be overridden by any derived class.
 	 */
 	virtual double calcInterfDist() = 0;
