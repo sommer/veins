@@ -22,21 +22,21 @@ Getting started
 To set up and run Mixnet, you need:
     * MiXiM (since 2.0)
     * The "inet4mixnet" fork from github: http://github.com/mixim/inet4mixnet
-      * The INET framework is a framework for wireless networks developed 
+      * The INET framework is a framework for TCP/IP networks developed 
         independently of MiXiM. The original framework can be found at 
       		http://inet.omnetpp.org/
-      * The INET branch we provide is only a version of INET which has been made
+      * The INET branch we provide is only a branch which has been made
         compatible with MiXiM by removing all wireless related modules. We did
         not add any further functionality to it.
     
 How to prepare MiXiM, INET and Mixnet:
-
-MiXiM: 	If not already done install MiXiM and add its project to your OMNeT IDE
-       	(see MiXiM's INSTALL-file in the MiXiM folder)
        
 INET: 	1. Download "inet4mixnet" from 
 		 	http://github.com/mixim/inet4mixnet/tarball/v1.0
       	2. Import the downloaded "inet4mixim" project into your OMNeT IDE
+      	
+MiXiM: 	If not already done install MiXiM and add its project to your OMNeT IDE
+       	(see MiXiM's INSTALL-file in the MiXiM folder)
       
 Mixnet: In case you didn't choose to import Mixnet during the installation of 
 		MiXiM you can do it now following these steps (otherwise you can 
