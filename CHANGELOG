@@ -1,5 +1,9 @@
 v2.1
 * organized inter-module dependent initialisation code
+* fixed CSMA802154 module to correctly use csma802154 class instead of only csma
+* fixed problem where airframes arrived at different order in tkenv and cmdenv
+* fixed problem with NicEntryDebug when a Nic unregisters and then registers
+itself again with ConnectionManager
 
 v2.0
 + introduced Mixnet - compatibility modules for using MiXiM NICs within INET 
