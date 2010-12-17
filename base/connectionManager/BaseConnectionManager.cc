@@ -363,6 +363,7 @@ bool BaseConnectionManager::unregisterNic(cModule* nicModule)
 			if (other == nicEntry) continue;
 			if (!other->isConnected(nicEntry)) continue;
 			other->disconnectFrom(nicEntry);
+			nicEntry->disconnectFrom(other);
 		}
 		c = gridUnion.next();
 	}
@@ -391,13 +392,19 @@ void BaseConnectionManager::updateNicPos(int nicID, const Coord* newPos)
 
 const NicEntry::GateList& BaseConnectionManager::getGateList(int nicID)
 {
-	return nics[nicID]->getGateList();
+	NicEntry* nicEntry = nics[nicID];
+	if(nicEntry == 0)
+		error("No nic with this ID is registered with this ConnectionManager.");
+	return nicEntry->getGateList();
 }
 
 const cGate* BaseConnectionManager::getOutGateTo(const NicEntry* nic,
 												 const NicEntry* targetNic)
 {
-    return nics[nic->nicId]->getOutGateTo(targetNic);
+	NicEntry* nicEntry = nics[nic->nicId];
+	if(nicEntry == 0)
+		error("No nic with this ID is registered with this ConnectionManager.");
+    return nicEntry->getOutGateTo(targetNic);
 }
 
 BaseConnectionManager::~BaseConnectionManager()

@@ -28,6 +28,7 @@
 #define nicEV (ev.isDisabled()||!coreDebug) ? ev : ev << "NicEntry: "
 #endif
 
+
 void NicEntryDebug::connectTo(NicEntry* other) {
 	nicEV<<"connecting nic #"<<nicId<< " and #"<<other->nicId<<endl;
 
@@ -65,8 +66,51 @@ void NicEntryDebug::disconnectFrom(NicEntry* other) {
 	outConns.erase(p);
 }
 
+int NicEntryDebug::collectGates(const char* pattern, GateStack& gates)
+{
+	cModule* host = nicPtr->getParentModule();
+	int i = 1;
+	char gateName[20];
+	//create the unique name for the gate (composed of the nic module id and a counter)
+	sprintf(gateName, pattern, nicId, i);
+	while(host->hasGate(gateName))
+	{
+		cGate* hostGate = host->gate(gateName);
+		if(hostGate->isConnectedOutside()) {
+			opp_error("Gate %s is still connected but not registered with this "
+					  "NicEntry. Either the last NicEntry for this NIC did not "
+					  "clean up correctly or another gate creation module is "
+					  "interfering with this one!", gateName);
+		}
+		assert(hostGate->isConnectedInside());
+		gates.push_back(hostGate);
+
+		++i;
+		sprintf(gateName, pattern, nicId, i);
+	}
+
+	return i - 1;
+}
+
+void NicEntryDebug::collectFreeGates()
+{
+	if(!checkFreeGates)
+		return;
+
+	inCnt = collectGates("in%d-%d", freeInGates);
+	nicEV << "found " << inCnt << " already existing usable in-gates." << endl;
+
+
+	outCnt = collectGates("out%d-%d", freeOutGates);
+	nicEV << "found " << inCnt << " already existing usable out-gates." << endl;
+
+	checkFreeGates = false;
+}
+
 
 cGate* NicEntryDebug::requestInGate(void) {
+	collectFreeGates();
+
 	// gate of the host
 	cGate *hostGate;
 
@@ -119,6 +163,8 @@ cGate* NicEntryDebug::requestInGate(void) {
 }
 
 cGate* NicEntryDebug::requestOutGate(void) {
+	collectFreeGates();
+
 	// gate of the host
 	cGate *hostGate;
 
