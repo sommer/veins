@@ -1,9 +1,13 @@
 v2.1
++ added parameter "scaleNodeByDepth" to BaseMobility to disable scaling of nodes
+when tkenv and 3d is used
 * organized inter-module dependent initialisation code
 * fixed CSMA802154 module to correctly use csma802154 class instead of only csma
 * fixed problem where airframes arrived at different order in tkenv and cmdenv
 * fixed problem with NicEntryDebug when a Nic unregisters and then registers
 itself again with ConnectionManager
+* changed Mac80211 to wait for end of transmission instead of end of a timer
+to start a new cycle after sending a CTS
 
 v2.0
 + introduced Mixnet - compatibility modules for using MiXiM NICs within INET 

@@ -14,6 +14,9 @@ simple BaseMobility like IBaseMobility
         double x; // x coordinate of the nodes' position (-1 = random)
         double y; // y coordinate of the nodes' position (-1 = random)
         double z; // z coordinate of the nodes' position (-1 = random)
+        //enable scaling of nodes depending on the z-coordinate to represent
+        //depth when 3d is enabled and tkenv is used
+        bool scaleNodeByDepth = default(true);
         @display("i=block/cogwheel");
 }
 
