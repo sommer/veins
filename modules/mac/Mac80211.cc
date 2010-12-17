@@ -736,6 +736,9 @@ void Mac80211::handleEndTransmission()
         }
         beginNewCycle();
     }
+    else if(state == WFDATA) {
+    	beginNewCycle();
+    }
 }
 
 /**
@@ -885,7 +888,7 @@ void Mac80211::sendCTSframe(Mac80211Pkt * af)
 
     frame->setDuration(af->getDuration() - SIFS - packetDuration(LENGTH_CTS, br));
 
-    scheduleAt(simTime() + af->getDuration() - packetDuration(LENGTH_ACK, br) - 2 * SIFS + delta, timeout);
+    //scheduleAt(simTime() + af->getDuration() - packetDuration(LENGTH_ACK, br) - 2 * SIFS + delta, timeout);
     EV << " Mac80211::sendCTSframe duration: " <<  packetDuration(LENGTH_CTS, br) << " br: " << br << "\n";
     // send CTS frame
     sendDown(frame);
@@ -935,6 +938,12 @@ void Mac80211::beginNewCycle()
         EV << "cannot beginNewCycle until NAV expires at t " << nav->getArrivalTime() << endl;
         return;
     }
+
+    /*
+    if(timeout->isScheduled()) {
+    	cancelEvent(timeout);
+    }
+    */
 
     if (!fromUpperLayer.empty()) {
 
