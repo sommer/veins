@@ -35,7 +35,9 @@ void BaseMobility::initialize(int stage)
 
         coreEV << "initializing BaseMobility stage " << stage << endl;
 
-        scaleNodeByDepth = par("scaleNodeByDepth").boolValue();
+        hasPar("scaleNodeByDepth") ? scaleNodeByDepth
+        		= par("scaleNodeByDepth").boolValue()
+        		: scaleNodeByDepth = true;
 
         // get utility pointers (world and host)
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
