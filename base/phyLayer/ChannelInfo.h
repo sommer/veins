@@ -461,19 +461,8 @@ public:
 	 * AirFrames on the channel.
 	 */
 	bool isChannelEmpty() const {
-		if(recordStartTime == -1) {
-			if(activeAirFrames.empty()) {
-				if(!airFrameStarts.empty()) {
-					assert(!inactiveAirFrames.empty());
-					assert(airFrameStarts.empty());
-				}
-
-			} else {
-				assert(!airFrameStarts.empty());
-			}
-		}
-		//assert(recordStartTime != -1
-		//	   || activeAirFrames.empty() == airFrameStarts.empty());
+		assert(recordStartTime != -1
+			   || activeAirFrames.empty() == airFrameStarts.empty());
 
 		return airFrameStarts.empty();
 	}
