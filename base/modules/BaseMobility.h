@@ -200,7 +200,7 @@ class BaseMobility : public BatteryAccess
      * This function has to be called every time the position of the host
      * changes!
      */
-    void updatePosition();
+    virtual void updatePosition();
 
     /** @brief Returns the width of the playground */
     double playgroundSizeX() const  {return world->getPgs()->getX();}

@@ -135,7 +135,7 @@ protected:
 	};
 
 	simtime_t lastUpdateTime;
-	void deductAndCheck();
+	virtual void deductAndCheck();
 };
 
 #endif
