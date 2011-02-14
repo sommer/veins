@@ -23,6 +23,7 @@
 #include "BaseMobility.h"
 #include "FWMath.h"
 #include "BorderMsg_m.h"
+#include <sstream>
 
 Define_Module(BaseMobility);
 
@@ -184,37 +185,75 @@ void BaseMobility::updatePosition() {
 
     if(ev.isGUI())
     {
-		char xStr[32], yStr[32];
-		sprintf(xStr, "%d", FWMath::round(move.getStartPos().getX()));
-		sprintf(yStr, "%d", FWMath::round(move.getStartPos().getY()));
+    	std::ostringstream osDisplayTag;
 
-		cDisplayString& disp = hostPtr->getDisplayString();
-		disp.setTagArg("p", 0, xStr);
-		disp.setTagArg("p", 1, yStr);
+    	const int          iPrecis        = 0;   // maybe this can be defined by a parameter; if the p-tag will be parsed as double then we can define here the post comma digits ;)
+    	double             dScaleX        = 1.0; // for small playground sizes it maybe usefully to scale the playground
+    	double             dScaleY        = 1.0; // for better node positioning (because of integer-value parsing of p-tags)
+    	cDisplayString&    disp           = hostPtr->getDisplayString();
 
-		if(!world->use2D() && scaleNodeByDepth)
-		{
-			//scale host dependent on their z coordinate to
-			//simulate a depth effect
-			//z-coordinate of zero maps to a size of 50 (16+34) (very close)
-			//z-coordinate of playground size z maps to size of 16 (far away)
-			double width = 16.0 + 34.0 *  ((1.0 - move.getStartPos().getZ()
-												  / playgroundSizeZ()));
+    	if ( world->getParentModule() != NULL && world->getParentModule()->getDisplayString().containsTag("bgb") ) {
+    		const cDisplayString& dispWorldOwner = world->getParentModule()->getDisplayString();
 
-			char sizeStr[32];
-			sprintf(sizeStr, "%d", FWMath::round(width));
-			disp.setTagArg("b", 0, sizeStr);
-			disp.setTagArg("b", 1, sizeStr);
+    		std::istringstream(dispWorldOwner.getTagArg("bgb", 0)) >> dScaleX; // normally this should be equal to playground X-size
+    		std::istringstream(dispWorldOwner.getTagArg("bgb", 1)) >> dScaleY; // normally this should be equal to playground Y-size
 
-			//choose a appropriate icon size
-			if(width >= 40)
-				disp.setTagArg("is", 0, "n");
-			else if(width >= 24)
-				disp.setTagArg("is", 0, "s");
-			else
-				disp.setTagArg("is", 0, "vs");
+    		dScaleX /= playgroundSizeX();
+    		dScaleY /= playgroundSizeY();
 
-		}
+    		// safety checks
+    		if (dScaleX <= 0.0)
+    			dScaleX = 1.0;
+    		if (dScaleY <= 0.0)
+    			dScaleY = 1.0;
+    	}
+
+    	// setup output stream
+    	osDisplayTag << std::fixed; osDisplayTag.precision(iPrecis);
+
+    	osDisplayTag << move.getStartPos().getX()*dScaleX;
+    	disp.setTagArg("p", 0, osDisplayTag.str().data());
+
+    	osDisplayTag.str(""); // reset
+    	osDisplayTag << move.getStartPos().getY()*dScaleY;
+    	disp.setTagArg("p", 1, osDisplayTag.str().data());
+
+    	if(!world->use2D() && scaleNodeByDepth)
+    	{
+    		double dNormZ = 1.0 - move.getStartPos().getZ() / playgroundSizeZ();
+
+    		if (disp.containsTag("b")) {
+    			double dMinWidth    = world->getPgs()->length() / 40 / dScaleX;
+    			double dWidth       = dMinWidth + dMinWidth * dNormZ;
+    			double dScaleHeight = 1.0;
+    			double dOldWidth    = 1.0;
+    			double dOldHeight   = 1.0;
+
+    			std::istringstream(disp.getTagArg("b", 0)) >> dOldWidth;
+    			std::istringstream(disp.getTagArg("b", 1)) >> dOldHeight;
+
+    			if (FWMath::round(dWidth*std::pow(10.0, iPrecis)) > 0 && dOldWidth > 0.0) {
+    				dScaleHeight = dOldHeight / dOldWidth;
+
+    				osDisplayTag.str(""); // reset
+    				osDisplayTag << dWidth;
+    				disp.setTagArg("b", 0, osDisplayTag.str().data());
+
+    				osDisplayTag.str(""); // reset
+    				osDisplayTag << (dWidth * dScaleHeight);
+    				disp.setTagArg("b", 1, osDisplayTag.str().data());
+    			}
+    		}
+    		if (disp.containsTag("i")) {
+    			// choose a appropriate icon size (only if a icon is specified)
+    			if(dNormZ >= 0.666)
+    				disp.setTagArg("is", 0, "n");
+    			else if(dNormZ >= 0.333)
+    				disp.setTagArg("is", 0, "s");
+    			else
+    				disp.setTagArg("is", 0, "vs");
+    		}
+    	}
     }
 }
 
