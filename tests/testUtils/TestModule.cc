@@ -27,9 +27,8 @@ void TestModule::announceMessage(cMessage* msg) {
 			}
 			pass(log("Expected \"" + testMsg + "\"" + toString(*exp)));
 
-			TestModule* cont = exp->getContinueModule();
-			if(cont) {
-				cont->onAssertedMessage(exp->getContinueState(), msg);
+			if(exp->continueTests()) {
+				manager->continueTests(msg);
 			}
 
 			foundMessage = true;
@@ -72,7 +71,7 @@ void TestModule::assertNewMessage(AssertMessage* assert, std::string destination
 	if(destination == "") {
 		expectedMsgs.push_back(assert);
 	} else {
-		TestModule* dest = manager->getModule(destination);
+		TestModule* dest = manager->getModule<TestModule>(destination);
 		if(!dest) {
 			fail(log("No test module with name \"" + destination + "\" found."));
 			return;
@@ -107,7 +106,7 @@ void TestModule::testForMessage(std::string testName,
 }
 
 
-void TestModule::waitForMessage(int state, std::string msg, 
+void TestModule::waitForMessage(std::string msg,
 								int kind, simtime_t arrival, 
 								std::string destination) {
 	
@@ -115,7 +114,17 @@ void TestModule::waitForMessage(int state, std::string msg,
 									   kind,
 									   arrival,
 									   false,
-									   this,
-									   state),
+									   true),
 					 destination);
 }
+
+void TestModule::testAndWaitForMessage(	std::string testName,
+										int kind, simtime_t arrival,
+										std::string destination)
+{
+
+	assertNewMessage(new AssertMsgKind(testName, kind, arrival, true, true),
+					 destination);
+}
+
+

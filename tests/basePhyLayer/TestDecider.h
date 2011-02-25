@@ -42,20 +42,10 @@ public:
 		if(request->getSenseTimeout() > 0.0) {
 			senseStart = time;
 			simtime_t next = time + request->getSenseTimeout();
-			TestModule::assertMessage(	"Scheduled sense request at phy.",
-										BasePhyLayer::CHANNEL_SENSE_REQUEST,
-										next,
-										"phy" + toString(myIndex));
-			TestModule::assertMessage(	"Scheduled sense request.",
-										BasePhyLayer::CHANNEL_SENSE_REQUEST,
-										next);
+
 			request->setSenseTimeout(0.0);
 			return next;
 		} else {
-			TestModule::assertMessage(	"Sense request answer at mac.",
-										BasePhyLayer::CHANNEL_SENSE_REQUEST,
-										time,
-										"mac" + toString(myIndex));
 
 			DeciderToPhyInterface::AirFrameVector v;
 			phy->getChannelInfo(senseStart, time, v);

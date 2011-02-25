@@ -4,14 +4,14 @@ See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base/: 17
 Loading NED files from /home/karl/git-repo/mixim/modules/: 40
-Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 3
+Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 5
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 41
+Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20101006-12:48:03-8084
+Assigned runID=Test1-0-20110225-11:31:18-30077
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -27,6 +27,7 @@ Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
 Initializing module tbpSim.node[0].nic.mac, stage 0
 Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.testManager, stage 1
 Initializing module tbpSim.channelcontrol, stage 1
 Initializing module tbpSim.node[0].utility, stage 1
 Initializing module tbpSim.node[0].mobility, stage 1
@@ -98,56 +99,84 @@ Passed: Check kind of TX_OVER timer
 Passed: Check initialisation of radioSwitchOver timer
 Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[0].nic.mac, stage 1
-Passed: First channelstates idle state should be true
-Passed: First channelstates rssi.
-Passed: Second channelstate should be false
-Passed: Second channelstates rssi.
-Passed: Third channelstate should be true
-Passed: Third channelstates rssi.
-Passed: Fourth channelstate should be false
-Passed: Fourth channelstates rssi.
-Passed: Radio starts in SLEEP.
+Initializing module tbpSim.testManager, stage 2
+Passed: Planning new test case:1
+Passed: Planning new test case:1.1
+Passed: Planning new test case:1.2
+Passed: Planning new test case:1.3
+Passed: Planning new test case:1.4
+Passed: Planning new test case:1.5
+Passed: Planning new test case:1.6
+Passed: Planning new test case:1.7
+Passed: Planning new test case:1.8
+Passed: Planning new test case:2
+Passed: Planning new test case:2.1
+Passed: Planning new test case:2.2
+Passed: Planning new test case:2.3
+Passed: Planning new test case:2.4
+Passed: Planning new test case:3
+Passed: Planning new test case:4
+Passed: [1.1] - First channel idle state is true.
+Passed: [1.2] - First channel rssi is 1.0
+Passed: [1.3] - Second channel idle state is false.
+Passed: [1.4] - Second channel rssi is 2.0
+Passed: [1.5] - Third channel idle state is true.
+Passed: [1.6] - Third channel rssi is 3.0
+Passed: [1.7] - 4th channel idle state is false.
+Passed: [1.8] - 4th channel rssi is 4.0
+Passed: [1] - Check correct passing of channel state from decider to mac by phy. For this a sequence of predefined states is created by the decider.
+Passed: [2.1] - Radio starts in SLEEP mode.
 Passed: Correct switch time to RX.
-Passed: Invalid switchtime because already switching.
+Passed: [2.4] - Try switching during ongoing switching.
 
 Running simulation...
-** Event #1  T=0   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
-Passed: [phy0] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 0s
-Passed: [decider0] - Expected "ChannelSense at decider.": kind = 22002, arrival = 0s
-** Event #2  T=0.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
-Passed: [phy0] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 0.5s
-Passed: [decider0] - Expected "Scheduled sense request.": kind = 22002, arrival = 0.5s
-** Event #3  T=0.5   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
-Passed: [mac0] - Expected "Sense request answer at mac.": kind = 22002, arrival = 0.5s
-** Event #4  T=3   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
+** Event #1  T=3   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "SWITCH_OVER message at phy.": kind = 22001, arrival = 3s
-** Event #5  T=3   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
+** Event #2  T=3   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
 Passed: [mac0] - Expected "SWITCH_OVER message.": kind = 22001, arrival = 3s
-Passed: Radio starts in SLEEP.
-Passed: Correct switch time to RX.
-Passed: Invalid switchtime because already switching.
-** Event #6  T=3   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
-Passed: [phy0] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 3s
-Passed: [decider0] - Expected "ChannelSense at decider.": kind = 22002, arrival = 3s
-** Event #7  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
-Passed: [phy0] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 3.5s
-Passed: [decider0] - Expected "Scheduled sense request.": kind = 22002, arrival = 3.5s
-** Event #8  T=3.5   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
-Passed: [mac0] - Expected "Sense request answer at mac.": kind = 22002, arrival = 3.5s
-** Event #9  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
+Passed: [2.2] - Switch SLEEP to RX.
+Passed: Correct switch time to SLEEP.
+** Event #3  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "SWITCH_OVER message at phy.": kind = 22001, arrival = 4.5s
-** Event #10  T=4.5   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
+** Event #4  T=4.5   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
 Passed: [mac0] - Expected "SWITCH_OVER message.": kind = 22001, arrival = 4.5s
+Passed: [2.3] - Switch RX to SLEEP.
+Passed: [2] - Check correct handling of radio switches.
+** Event #5  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
+Passed: [phy0] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 4.5s
+Passed: [decider0] - Expected "ChannelSense at decider.": kind = 22002, arrival = 4.5s
+** Event #6  T=5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
+Passed: [phy0] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 5s
+Passed: [decider0] - Expected "Scheduled sense request.": kind = 22002, arrival = 5s
+** Event #7  T=5   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
+Passed: [mac0] - Expected "[3] - Check correct forwarding of ChannelSenseRequests from mac to decider by phy layer.": kind = 22002, arrival = 5s
 Passed: Radio is not in TX.
-** Event #11  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
-Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4.5s
+** Event #8  T=5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
+Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 5s
 
-<!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy (id=9) at event #11, t=4.5: Model error: Error: message for sending received, but radio not in state TX.
+<!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy (id=9) at event #8, t=5: Model error: Error: message for sending received, but radio not in state TX.
 
+Passed: [4] - Test if sending of packet while radio is not in TX state is correctly handled by phy (throws error).
+Passed: 1 - Test has been executed.
+Passed: 1.1 - Test has been executed.
+Passed: 1.2 - Test has been executed.
+Passed: 1.3 - Test has been executed.
+Passed: 1.4 - Test has been executed.
+Passed: 1.5 - Test has been executed.
+Passed: 1.6 - Test has been executed.
+Passed: 1.7 - Test has been executed.
+Passed: 1.8 - Test has been executed.
+Passed: 2 - Test has been executed.
+Passed: 2.1 - Test has been executed.
+Passed: 2.2 - Test has been executed.
+Passed: 2.3 - Test has been executed.
+Passed: 2.4 - Test has been executed.
+Passed: 3 - Test has been executed.
+Passed: 4 - Test has been executed.
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20101006-12:48:04-8084
+Assigned runID=Test1-1-20110225-11:31:18-30077
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -163,6 +192,7 @@ Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
 Initializing module tbpSim.node[0].nic.mac, stage 0
 Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.testManager, stage 1
 Initializing module tbpSim.channelcontrol, stage 1
 Initializing module tbpSim.node[0].utility, stage 1
 Initializing module tbpSim.node[0].mobility, stage 1
@@ -234,6 +264,7 @@ Passed: Check kind of TX_OVER timer
 Passed: Check initialisation of radioSwitchOver timer
 Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[0].nic.mac, stage 1
+Initializing module tbpSim.testManager, stage 2
 Passed: A valid switch time.
 
 Running simulation...
@@ -252,6 +283,7 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 4s
 
 <!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy (id=9) at event #5, t=4: Model error: Error: message for sending received, but radio already sending.
 
+Passed: Phy should throw an error if we are trying to to send more than one packet at once.
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
@@ -260,14 +292,14 @@ See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base/: 17
 Loading NED files from /home/karl/git-repo/mixim/modules/: 40
-Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 3
+Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 5
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 41
+Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20101006-12:48:04-8085
+Assigned runID=Test2-0-20110225-11:31:18-30078
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -307,6 +339,7 @@ Initializing module tbpSim.node[3].nic, stage 0
 Initializing module tbpSim.node[3].nic.phy, stage 0
 Initializing module tbpSim.node[3].nic.mac, stage 0
 Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.testManager, stage 1
 Initializing module tbpSim.channelcontrol, stage 1
 Initializing module tbpSim.node[0].utility, stage 1
 Initializing module tbpSim.node[0].mobility, stage 1
@@ -378,7 +411,6 @@ Passed: Check kind of TX_OVER timer
 Passed: Check initialisation of radioSwitchOver timer
 Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[0].nic.mac, stage 1
-Passed: A valid switch time.
 Initializing module tbpSim.node[1].utility, stage 1
 Initializing module tbpSim.node[1].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
@@ -449,7 +481,6 @@ Passed: Check kind of TX_OVER timer
 Passed: Check initialisation of radioSwitchOver timer
 Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[1].nic.mac, stage 1
-Passed: No AirFrames on channel.
 Initializing module tbpSim.node[2].utility, stage 1
 Initializing module tbpSim.node[2].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
@@ -520,7 +551,6 @@ Passed: Check kind of TX_OVER timer
 Passed: Check initialisation of radioSwitchOver timer
 Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[2].nic.mac, stage 1
-Passed: No AirFrames on channel.
 Initializing module tbpSim.node[3].utility, stage 1
 Initializing module tbpSim.node[3].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
@@ -591,6 +621,8 @@ Passed: Check kind of TX_OVER timer
 Passed: Check initialisation of radioSwitchOver timer
 Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[3].nic.mac, stage 1
+Initializing module tbpSim.testManager, stage 2
+Passed: A valid switch time.
 Passed: No AirFrames on channel.
 
 Running simulation...
@@ -598,6 +630,7 @@ Running simulation...
 Passed: [phy0] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arrival = 3.5s
 ** Event #2  T=3.5   tbpSim.node[0].nic.mac (TestMacLayer, id=13)
 Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 3.5s
+FAILED: TestChannelInfo: Unknown stage.
 ** Event #3  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
 Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 3.5s
 AirFrame encapsulated, length: 0
@@ -608,11 +641,9 @@ Passed: AirFrames on channel.
 ** Event #5  T=3.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
 Passed: [phy2] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
 Passed: [decider2] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
-Passed: AirFrames on channel.
 ** Event #6  T=3.5   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
 Passed: [phy3] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
 Passed: [decider3] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
-Passed: AirFrames on channel.
 ** Event #7  T=3.6   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
 Passed: [phy1] - Expected "Scheduled AirFrame to Pseudoheader at phy."
 Passed: [decider1] - Expected "Scheduled AirFrame to Pseudoheader."
@@ -651,14 +682,14 @@ See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base/: 17
 Loading NED files from /home/karl/git-repo/mixim/modules/: 40
-Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 3
+Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 5
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 41
+Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration Test6, run #0...
 Scenario: $repetition=0
-Assigned runID=Test6-0-20101006-12:48:04-8086
+Assigned runID=Test6-0-20110225-11:31:18-30079
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -675,15 +706,6 @@ Initializing module tbpSim.node[0].mobility, stage 0
 Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
 Initializing module tbpSim.node[0].nic.mac, stage 0
-Passed: Planning new test case:1.
-Passed: Planning new test case:2.
-Passed: Planning new test case:3.
-Passed: Planning new test case:3.1
-Passed: Planning new test case:3.2
-Passed: Planning new test case:4.
-Passed: Planning new test case:5.
-Passed: Planning new test case:6.
-Passed: Planning new test case:7.
 Initializing module tbpSim.node[1], stage 0
 Initializing module tbpSim.node[1].utility, stage 0
 Initializing module tbpSim.node[1].mobility, stage 0
@@ -691,6 +713,7 @@ Initializing module tbpSim.node[1].nic, stage 0
 Initializing module tbpSim.node[1].nic.phy, stage 0
 Initializing module tbpSim.node[1].nic.mac, stage 0
 Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.testManager, stage 1
 Initializing module tbpSim.channelcontrol, stage 1
 Initializing module tbpSim.node[0].utility, stage 1
 Initializing module tbpSim.node[0].mobility, stage 1
@@ -734,7 +757,6 @@ Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[0].nic.mac, stage 1
-Passed: A valid switch time.
 Initializing module tbpSim.node[1].utility, stage 1
 Initializing module tbpSim.node[1].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
@@ -777,6 +799,17 @@ Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[1].nic.mac, stage 1
+Initializing module tbpSim.testManager, stage 2
+Passed: Planning new test case:1.
+Passed: Planning new test case:2.
+Passed: Planning new test case:3.
+Passed: Planning new test case:3.1
+Passed: Planning new test case:3.2
+Passed: Planning new test case:4.
+Passed: Planning new test case:5.
+Passed: Planning new test case:6.
+Passed: Planning new test case:7.
+Passed: A valid switch time.
 
 Running simulation...
 ** Event #1  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=10)
@@ -790,7 +823,7 @@ AirFrame encapsulated, length: 0
 Passed: [phy1] - Expected "[2.] - Host2 starts receiving AirFrame A": kind = 22003, arrival = 3.5s
 Passed: [decider1] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
 ** Event #5  T=3.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=15)
-Passed: [phy1] - Expected "[3.] - Host2 starts a ChannelSense": kind = 22002, arrival = 3.5s
+Passed: [phy1] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 3.5s
 Passed: [decider1] - Expected "ChannelSense at decider.": kind = 22002, arrival = 3.5s
 ** Event #6  T=3.6   tbpSim.node[1].nic.phy (TestPhyLayer, id=15)
 Passed: [phy1] - Expected "Scheduled AirFrame to Pseudoheader at phy."
@@ -801,12 +834,11 @@ Passed: [mac1] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
 Passed: [phy1] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 4s
 Passed: [decider1] - Expected "Scheduled sense request.": kind = 22002, arrival = 4s
 ** Event #9  T=4   tbpSim.node[1].nic.mac (TestMacLayer, id=16)
-Passed: [mac1] - Expected "Channel sense answer at mac": kind = 22002, arrival = 4s
+Passed: [mac1] - Expected "[3.] - Host2 starts a ChannelSense": kind = 22002, arrival = 4s
 Passed: Received ChannelSenseRequest answer.
 Passed: [3.1] - Host2 ends ChannelSense and asks ChannelInfo for AirFrames during ChannelSense duration which should return AirFrame A
-Passed: [mac1] - Expected "Sense request answer at mac.": kind = 22002, arrival = 4s
 ** Event #10  T=4   tbpSim.node[1].nic.phy (TestPhyLayer, id=15)
-Passed: [phy1] - Expected "[3.2] - Host2 starts a ChannelSense": kind = 22002, arrival = 4s
+Passed: [phy1] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 4s
 Passed: [decider1] - Expected "ChannelSense at decider.": kind = 22002, arrival = 4s
 ** Event #11  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=10)
 Passed: [phy0] - Expected "Transmission over message at phy": kind = 22000, arrival = 4.5s
@@ -818,21 +850,19 @@ Passed: [phy1] - Expected "[4.] - Host2 completes reception of AirFrame A": kind
 Passed: [phy1] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 5s
 Passed: [decider1] - Expected "Scheduled sense request.": kind = 22002, arrival = 5s
 ** Event #15  T=5   tbpSim.node[1].nic.mac (TestMacLayer, id=16)
-Passed: [mac1] - Expected "Channel sense answer at mac": kind = 22002, arrival = 5s
+Passed: [mac1] - Expected "[3.2] - Host2 starts a ChannelSense": kind = 22002, arrival = 5s
 Passed: Received ChannelSenseRequest answer.
 Passed: [5.] - Host2 ends ChannelSense and asks ChannelInfo for AirFrames during ChannelSense duration which should return AirFrame A
-Passed: [mac1] - Expected "Sense request answer at mac.": kind = 22002, arrival = 5s
 ** Event #16  T=5   tbpSim.node[1].nic.phy (TestPhyLayer, id=15)
-Passed: [phy1] - Expected "[6.] - Host2 starts a ChannelSense": kind = 22002, arrival = 5s
+Passed: [phy1] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 5s
 Passed: [decider1] - Expected "ChannelSense at decider.": kind = 22002, arrival = 5s
 ** Event #17  T=5.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=15)
 Passed: [phy1] - Expected "Scheduled sense request at phy.": kind = 22002, arrival = 5.5s
 Passed: [decider1] - Expected "Scheduled sense request.": kind = 22002, arrival = 5.5s
 ** Event #18  T=5.5   tbpSim.node[1].nic.mac (TestMacLayer, id=16)
-Passed: [mac1] - Expected "Channel sense answer at mac": kind = 22002, arrival = 5.5s
+Passed: [mac1] - Expected "[6.] - Host2 starts a ChannelSense": kind = 22002, arrival = 5.5s
 Passed: Received ChannelSenseRequest answer.
 Passed: [7.] - Host2 ends ChannelSense and asks ChannelInfo for AirFrames during ChannelSense duration which should return none
-Passed: [mac1] - Expected "Sense request answer at mac.": kind = 22002, arrival = 5.5s
 
 <!> No more events -- simulation ended at event #19, t=5.5.
 

@@ -2,22 +2,77 @@
 
 Define_Module(TestManager);
 
-/**
- * Registers the passed TestModule with the passed name
- * at the database.
- */
-void TestManager::registerModule(const std::string& name, TestModule* module) {
+TestManager::TestManager():
+	finishCalled(false)
+{
+	testForErrorTest = plannedTests.end();
+	errorExpected = "";
+}
+
+TestManager::~TestManager()
+{
+	if(!finishCalled) {
+		if(testForErrorTest != plannedTests.end()) {
+			testPassed(testForErrorTest->first);
+		} else if(errorExpected != ""){
+			pass(errorExpected);
+		} else {
+			fail("Simulation should end normally.");
+		}
+	}
+
+	assertPlannedTestsExecuted();
+}
+
+void TestManager::initialize(int stage)
+{
+	if(stage == 0) {
+		run = simulation.getSystemModule()->par("run").longValue();
+		this->stage = 0;
+	}
+	else if(stage == 2) {
+		planTests(run);
+		runTests(run, 0, NULL);
+	}
+}
+
+void TestManager::finish()
+{
+	finishCalled = true;
+
+	if(testForErrorTest != plannedTests.end()) {
+		testFailed(testForErrorTest->first);
+	} else if(errorExpected != ""){
+		fail(errorExpected);
+	}
+}
+
+void TestManager::registerModule(const std::string& name, TestModule* module)
+{
 	modules[name] = module;
 }
 
-/**
- * Returns a pointer to the TestModule with the passed name.
- * Or null if no module with this name is registered.
- */
-TestModule* TestManager::getModule(const std::string& name) const {
-	ModuleMap::const_iterator it = modules.find(name);
-	if(it == modules.end())
-		return 0;
-	else
-		return it->second;
+void TestManager::continueTests(cMessage* msg)
+{
+	runTests(run, ++stage, msg);
 }
+
+void TestManager::assertError(std::string msg)
+{
+	assertTrue("Only one error may be expected per test run.",
+				errorExpected == "", true);
+	errorExpected = msg;
+}
+
+void TestManager::testForError(std::string name)
+{
+	bool isPlanned = plannedTests.count(name) > 0;
+
+	assertTrue("Error test " + name + " is planned.",
+				isPlanned, true);
+
+	testForErrorTest = plannedTests.find(name);
+	assertError(testForErrorTest->second);
+}
+
+
