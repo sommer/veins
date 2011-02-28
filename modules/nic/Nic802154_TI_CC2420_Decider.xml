@@ -9,6 +9,6 @@
 		<parameter name="berLowerBound" type="double" value="1e-8"/>
 		
 		<!--modulation type-->
-		<parameter name="modulation" type="string" value="msk"/>
+		<parameter name="modulation" type="string" value="oqpsk16"/>
 	</Decider>
 </root>

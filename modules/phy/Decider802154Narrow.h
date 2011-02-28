@@ -9,6 +9,7 @@
 #define DECIDER802154NARROW_H_
 
 #include <BaseDecider.h>
+#include <BaseArp.h>
 
 /**
  * @brief Decider for the 802.15.4 Narrow band module
@@ -29,6 +30,8 @@ protected:
 		the performance. */
 	double BER_LOWER_BOUND;
 
+	/** @brief We store the MAC address in the PHY as it enables us to identify Hidden Terminal problems */
+	int myMacAddr;
 	/** @brief modulation type */
 	std::string modulation;
 
@@ -39,7 +42,20 @@ protected:
 
 	unsigned long nbFramesWithInterferenceDropped;
 	unsigned long nbFramesWithoutInterferenceDropped;
+	unsigned long nbHiddenTerminalOccurences;
 	/*@}*/
+	/** log minimum snir values of dropped packets */
+	cOutVector snirDropped;
+
+	/** log minimum snir values of received packets */
+	cOutVector snirReceived;
+
+
+	/** log snr value each time we enter getBERFromSNR */
+	cOutVector snrlog;
+
+	/** log ber value each time we enter getBERFromSNR */
+	cOutVector berlog;
 
 protected:
 	/** @brief Process a new signal the first time.*/
@@ -58,6 +74,9 @@ protected:
 	bool syncOnSFD(AirFrame* frame);
 
 	double evalBER(AirFrame* frame);
+
+	/** @brief Helper function to compute BER from SNR using analytical formulas */
+	double n_choose_k(int n, int k);
 
 public:
 
@@ -78,10 +97,18 @@ public:
 		nbFramesWithInterference(0),
 		nbFramesWithoutInterference(0),
 		nbFramesWithInterferenceDropped(0),
-		nbFramesWithoutInterferenceDropped(0)
+		nbFramesWithoutInterferenceDropped(0),
+		nbHiddenTerminalOccurences(0)
 	{
 		//TODO: publish initial rssi/channel state
 		//TODO: trace noise level, snr and rssi to vectors
+		myMacAddr = myIndex+1;  // quick hack to enable overhearing detection. We cannot call findSubModule bc we are not a module.
+        //BaseArp* arp = FindModule<BaseArp*>::findSubModule(getParentModule()->getParentModule());
+        //myMacAddr = arp->myMacAddr(this);
+		snirDropped.setName("snirDropped");
+		snirReceived.setName("snirReceived");
+		berlog.setName("berlog");
+		snrlog.setName("snrlog");
 	}
 
 	virtual ~Decider802154Narrow() {};
