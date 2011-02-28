@@ -347,6 +347,52 @@ void TestMacLayer::testRun6(int stage, const cMessage* msg)
 	*/
 }
 
+void TestMacLayer::testRun7(int stage, const cMessage* msg)
+{
+	Enter_Method_Silent();
+
+	if(stage == 0) {
+//planTest("1.2", "Host A1 sends packet 1.");
+		waitForTX();
+	} else if(stage == 1) {
+		MacPkt* pkt = createMacPkt(5.0);
+		sendDown(pkt);
+		testForMessage("1.2", TEST_MACPKT, simTime(), "phy0");
+
+
+//planTest("1.4", "Packet 1 arrives only at decider A2.");
+		testForMessage("1.4", BasePhyLayer::AIR_FRAME, simTime(), "decider1");
+
+//planTest("1.3", "Packet 1 arrives at phy of A2, B1 and B2.");
+		assertMessage("Packet 1 at phy of A2", BasePhyLayer::AIR_FRAME, simTime(), "phy1");
+		assertMessage("Packet 1 at phy of B2", BasePhyLayer::AIR_FRAME, simTime(), "phy3");
+		testForMessage("1.3", BasePhyLayer::AIR_FRAME,
+					   	   	  simTime(), "phy2");
+
+		continueIn(0.5);
+	} else if(stage == 2) {
+//planTest("1.5.1", "Packet 1 is still active.");
+		testPassed("1.5.1"); //this is implicitly true since if not we would
+							 //get an unasserted TX over until now
+//planTest("1.5.2", "Host B1 sends packet 2.");
+		waitForTX();
+	} else if(stage == 3) {
+		MacPkt* pkt = createMacPkt(5.0);
+		sendDown(pkt);
+		testForMessage("1.5.2", TEST_MACPKT, simTime(), "phy2");
+
+
+//planTest("1.7", "Packet 2 arrives only at decider B2.");
+		testForMessage("1.7", BasePhyLayer::AIR_FRAME, simTime(), "decider1");
+
+//planTest("1.6", "Packet 2 arrives at phy of A1, A2 and B2.");
+		assertMessage("Packet 2 at phy of A1", BasePhyLayer::AIR_FRAME, simTime(), "phy0");
+		assertMessage("Packet 2 at phy of A2", BasePhyLayer::AIR_FRAME, simTime(), "phy1");
+		testForMessage("1.6", BasePhyLayer::AIR_FRAME,
+					   	   	  simTime(), "phy3");
+	}
+}
+
 //---run 3 tests----------------------------
 
 void TestMacLayer::testChannelInfo(int stage) {

@@ -77,6 +77,13 @@ public:
 	 */
 	void testRun6(int stage, const cMessage* msg = 0);
 
+	/**
+	 * @brief Test handling for run 7:
+	 *
+	 * @see "BasePhyTests::planTests()" for details
+	 */
+	void testRun7(int stage, const cMessage* msg = 0);
+
 	//---run 3 tests------------------------------
 	void testChannelInfo(int stage);
 	void testSending1(int stage, const cMessage* lastMsg = 0);

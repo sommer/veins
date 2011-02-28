@@ -1,5 +1,5 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base/: 17
@@ -11,7 +11,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20110225-11:31:18-30077
+Assigned runID=Test1-0-20110228-15:02:23-7109
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -70,6 +70,27 @@ Passed: Check value of parameter "aLong".
 Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
+Initializing module tbpSim.node[0].nic.mac, stage 1
+Initializing module tbpSim.testManager, stage 2
+Passed: Planning new test case:mac0
+Passed: Planning new test case:0
+Passed: Planning new test case:1
+Passed: Planning new test case:1.1
+Passed: Planning new test case:1.2
+Passed: Planning new test case:1.3
+Passed: Planning new test case:1.4
+Passed: Planning new test case:1.5
+Passed: Planning new test case:1.6
+Passed: Planning new test case:1.7
+Passed: Planning new test case:1.8
+Passed: Planning new test case:2
+Passed: Planning new test case:2.1
+Passed: Planning new test case:2.2
+Passed: Planning new test case:2.3
+Passed: Planning new test case:2.4
+Passed: Planning new test case:3
+Passed: Planning new test case:4
+Passed: [mac0] - Expected module - Mac layer executing all of test run 1
 Passed: Check parameter "usePropagationDelay".
 Passed: Check parameter "sensitivity".
 Passed: Check parameter "maxTXPower".
@@ -98,24 +119,7 @@ Passed: Check initialisation of TX-OVER timer
 Passed: Check kind of TX_OVER timer
 Passed: Check initialisation of radioSwitchOver timer
 Passed: Check kind of radioSwitchOver timer
-Initializing module tbpSim.node[0].nic.mac, stage 1
-Initializing module tbpSim.testManager, stage 2
-Passed: Planning new test case:1
-Passed: Planning new test case:1.1
-Passed: Planning new test case:1.2
-Passed: Planning new test case:1.3
-Passed: Planning new test case:1.4
-Passed: Planning new test case:1.5
-Passed: Planning new test case:1.6
-Passed: Planning new test case:1.7
-Passed: Planning new test case:1.8
-Passed: Planning new test case:2
-Passed: Planning new test case:2.1
-Passed: Planning new test case:2.2
-Passed: Planning new test case:2.3
-Passed: Planning new test case:2.4
-Passed: Planning new test case:3
-Passed: Planning new test case:4
+Passed: [0] - Test initialisation of phy layer.
 Passed: [1.1] - First channel idle state is true.
 Passed: [1.2] - First channel rssi is 1.0
 Passed: [1.3] - Second channel idle state is false.
@@ -157,6 +161,7 @@ Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 5s
 <!> Error in module (TestPhyLayer) tbpSim.node[0].nic.phy (id=9) at event #8, t=5: Model error: Error: message for sending received, but radio not in state TX.
 
 Passed: [4] - Test if sending of packet while radio is not in TX state is correctly handled by phy (throws error).
+Passed: 0 - Test has been executed.
 Passed: 1 - Test has been executed.
 Passed: 1.1 - Test has been executed.
 Passed: 1.2 - Test has been executed.
@@ -173,10 +178,11 @@ Passed: 2.3 - Test has been executed.
 Passed: 2.4 - Test has been executed.
 Passed: 3 - Test has been executed.
 Passed: 4 - Test has been executed.
+Passed: mac0 - Test has been executed.
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20110225-11:31:18-30077
+Assigned runID=Test1-1-20110228-15:02:23-7109
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -235,34 +241,6 @@ Passed: Check value of parameter "aLong".
 Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
-Passed: Check parameter "usePropagationDelay".
-Passed: Check parameter "sensitivity".
-Passed: Check parameter "maxTXPower".
-Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
-Passed: Check parameter "thermalNoise".
-Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
-Passed: Check value of ("getThermalNoise()"-mapping).
-Passed: Check value of ("getThermalNoise()"-mapping at a position).
-Passed: Check upperGateIn ID.
-Passed: Check upperGateOut ID.
-Passed: Check upperControlIn ID.
-Passed: Check upperControlOut ID.
-Passed: Switchtime SLEEP to RX.
-Passed: Switchtime RX to TX.
-Passed: Switchtime TX to SLEEP.
-Passed: Switchtime SLEEP to TX.
-Passed: Switchtime TX to RX.
-Passed: Switchtime RX to SLEEP.
-Passed: Decider is of type TestDecider.
-Passed: Check size of AnalogueModel list.
-Passed: Analogue model is of type RadioStateAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Check attenuation value of AnalogueModels.
-Passed: Check initialisation of TX-OVER timer
-Passed: Check kind of TX_OVER timer
-Passed: Check initialisation of radioSwitchOver timer
-Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[0].nic.mac, stage 1
 Initializing module tbpSim.testManager, stage 2
 Passed: A valid switch time.
@@ -287,7 +265,7 @@ Passed: Phy should throw an error if we are trying to to send more than one pack
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base/: 17
@@ -299,7 +277,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20110225-11:31:18-30078
+Assigned runID=Test2-0-20110228-15:02:23-7110
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -382,34 +360,6 @@ Passed: Check value of parameter "aLong".
 Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
-Passed: Check parameter "usePropagationDelay".
-Passed: Check parameter "sensitivity".
-Passed: Check parameter "maxTXPower".
-Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
-Passed: Check parameter "thermalNoise".
-Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
-Passed: Check value of ("getThermalNoise()"-mapping).
-Passed: Check value of ("getThermalNoise()"-mapping at a position).
-Passed: Check upperGateIn ID.
-Passed: Check upperGateOut ID.
-Passed: Check upperControlIn ID.
-Passed: Check upperControlOut ID.
-Passed: Switchtime SLEEP to RX.
-Passed: Switchtime RX to TX.
-Passed: Switchtime TX to SLEEP.
-Passed: Switchtime SLEEP to TX.
-Passed: Switchtime TX to RX.
-Passed: Switchtime RX to SLEEP.
-Passed: Decider is of type TestDecider.
-Passed: Check size of AnalogueModel list.
-Passed: Analogue model is of type RadioStateAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Check attenuation value of AnalogueModels.
-Passed: Check initialisation of TX-OVER timer
-Passed: Check kind of TX_OVER timer
-Passed: Check initialisation of radioSwitchOver timer
-Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[0].nic.mac, stage 1
 Initializing module tbpSim.node[1].utility, stage 1
 Initializing module tbpSim.node[1].mobility, stage 1
@@ -452,34 +402,6 @@ Passed: Check value of parameter "aLong".
 Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
-Passed: Check parameter "usePropagationDelay".
-Passed: Check parameter "sensitivity".
-Passed: Check parameter "maxTXPower".
-Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
-Passed: Check parameter "thermalNoise".
-Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
-Passed: Check value of ("getThermalNoise()"-mapping).
-Passed: Check value of ("getThermalNoise()"-mapping at a position).
-Passed: Check upperGateIn ID.
-Passed: Check upperGateOut ID.
-Passed: Check upperControlIn ID.
-Passed: Check upperControlOut ID.
-Passed: Switchtime SLEEP to RX.
-Passed: Switchtime RX to TX.
-Passed: Switchtime TX to SLEEP.
-Passed: Switchtime SLEEP to TX.
-Passed: Switchtime TX to RX.
-Passed: Switchtime RX to SLEEP.
-Passed: Decider is of type TestDecider.
-Passed: Check size of AnalogueModel list.
-Passed: Analogue model is of type RadioStateAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Check attenuation value of AnalogueModels.
-Passed: Check initialisation of TX-OVER timer
-Passed: Check kind of TX_OVER timer
-Passed: Check initialisation of radioSwitchOver timer
-Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[1].nic.mac, stage 1
 Initializing module tbpSim.node[2].utility, stage 1
 Initializing module tbpSim.node[2].mobility, stage 1
@@ -522,34 +444,6 @@ Passed: Check value of parameter "aLong".
 Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
-Passed: Check parameter "usePropagationDelay".
-Passed: Check parameter "sensitivity".
-Passed: Check parameter "maxTXPower".
-Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
-Passed: Check parameter "thermalNoise".
-Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
-Passed: Check value of ("getThermalNoise()"-mapping).
-Passed: Check value of ("getThermalNoise()"-mapping at a position).
-Passed: Check upperGateIn ID.
-Passed: Check upperGateOut ID.
-Passed: Check upperControlIn ID.
-Passed: Check upperControlOut ID.
-Passed: Switchtime SLEEP to RX.
-Passed: Switchtime RX to TX.
-Passed: Switchtime TX to SLEEP.
-Passed: Switchtime SLEEP to TX.
-Passed: Switchtime TX to RX.
-Passed: Switchtime RX to SLEEP.
-Passed: Decider is of type TestDecider.
-Passed: Check size of AnalogueModel list.
-Passed: Analogue model is of type RadioStateAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Check attenuation value of AnalogueModels.
-Passed: Check initialisation of TX-OVER timer
-Passed: Check kind of TX_OVER timer
-Passed: Check initialisation of radioSwitchOver timer
-Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[2].nic.mac, stage 1
 Initializing module tbpSim.node[3].utility, stage 1
 Initializing module tbpSim.node[3].mobility, stage 1
@@ -592,34 +486,6 @@ Passed: Check value of parameter "aLong".
 Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
-Passed: Check parameter "usePropagationDelay".
-Passed: Check parameter "sensitivity".
-Passed: Check parameter "maxTXPower".
-Passed: Check if thermalNoise map is of type ConstantSimpleConstMapping.
-Passed: Check parameter "thermalNoise".
-Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
-Passed: Check value of ("getThermalNoise()"-mapping).
-Passed: Check value of ("getThermalNoise()"-mapping at a position).
-Passed: Check upperGateIn ID.
-Passed: Check upperGateOut ID.
-Passed: Check upperControlIn ID.
-Passed: Check upperControlOut ID.
-Passed: Switchtime SLEEP to RX.
-Passed: Switchtime RX to TX.
-Passed: Switchtime TX to SLEEP.
-Passed: Switchtime SLEEP to TX.
-Passed: Switchtime TX to RX.
-Passed: Switchtime RX to SLEEP.
-Passed: Decider is of type TestDecider.
-Passed: Check size of AnalogueModel list.
-Passed: Analogue model is of type RadioStateAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Analogue model is of type TestAnalogueModel.
-Passed: Check attenuation value of AnalogueModels.
-Passed: Check initialisation of TX-OVER timer
-Passed: Check kind of TX_OVER timer
-Passed: Check initialisation of radioSwitchOver timer
-Passed: Check kind of radioSwitchOver timer
 Initializing module tbpSim.node[3].nic.mac, stage 1
 Initializing module tbpSim.testManager, stage 2
 Passed: A valid switch time.
@@ -677,7 +543,7 @@ Calling finish() at end of Run #0...
 
 End.
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base/: 17
@@ -689,7 +555,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration Test6, run #0...
 Scenario: $repetition=0
-Assigned runID=Test6-0-20110225-11:31:18-30079
+Assigned runID=Test6-0-20110228-15:02:23-7111
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -800,6 +666,8 @@ Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[1].nic.mac, stage 1
 Initializing module tbpSim.testManager, stage 2
+Passed: Planning new test case:mac0
+Passed: Planning new test case:mac1
 Passed: Planning new test case:1.
 Passed: Planning new test case:2.
 Passed: Planning new test case:3.
@@ -809,6 +677,8 @@ Passed: Planning new test case:4.
 Passed: Planning new test case:5.
 Passed: Planning new test case:6.
 Passed: Planning new test case:7.
+Passed: [mac0] - Expected module - Mac layer of Host0 (Sender)
+Passed: [mac1] - Expected module - Mac layer of Host1 (receiver)
 Passed: A valid switch time.
 
 Running simulation...
@@ -877,5 +747,7 @@ Passed: 4. - Test has been executed.
 Passed: 5. - Test has been executed.
 Passed: 6. - Test has been executed.
 Passed: 7. - Test has been executed.
+Passed: mac0 - Test has been executed.
+Passed: mac1 - Test has been executed.
 
 End.

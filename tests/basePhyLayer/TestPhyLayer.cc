@@ -7,9 +7,6 @@ void TestPhyLayer::initialize(int stage) {
 	if(stage == 0)
 	{
 		myIndex = findHost()->getIndex();
-
-		run = simulation.getSystemModule()->par("run");
-
 	}
 
 	//call BasePhy's initialize
@@ -18,11 +15,6 @@ void TestPhyLayer::initialize(int stage) {
 	//run basic tests
 	if(stage == 0) {
 		init("phy" + toString(myIndex));
-
-
-
-	} else if(stage == 1) {
-		testInitialisation();
 	}
 }
 
@@ -37,8 +29,6 @@ TestPhyLayer::~TestPhyLayer() {
 }
 
 void TestPhyLayer::testInitialisation() {
-	if(run == 6)
-		return;
 	//run dependend tests
 	assertFalse("Check parameter \"usePropagationDelay\".", usePropagationDelay);
 
@@ -124,6 +114,7 @@ void TestPhyLayer::testInitialisation() {
 	assertNotEqual("Check initialisation of radioSwitchOver timer", (void*)0, radioSwitchingOverTimer);
 	assertEqual("Check kind of radioSwitchOver timer", RADIO_SWITCHING_OVER, radioSwitchingOverTimer->getKind());
 
+	testPassed("0");
 }
 
 

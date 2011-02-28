@@ -6,9 +6,7 @@
 #include "TestDecider.h"
 
 #include <list>
-//#include <utility>
 
-//TODO: remove decider test code from files (has been moved to own test)
 class TestPhyLayer:public BasePhyLayer, public TestModule {
 private:
 
@@ -24,7 +22,6 @@ private:
 		}
 	};
 protected:
-	int run;
 
 	int myIndex;
 
@@ -35,7 +32,7 @@ protected:
 
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 
-	void testInitialisation();
+
 
 public:
 	virtual void initialize(int stage);
@@ -43,6 +40,8 @@ public:
 	virtual void handleMessage(cMessage* msg);
 
 	virtual ~TestPhyLayer();
+
+	void testInitialisation();
 
 };
 

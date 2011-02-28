@@ -43,9 +43,14 @@ class TestManager:public cSimpleModule,
 {
 protected:
 	typedef std::map<std::string, TestModule*> ModuleMap;
+	typedef std::set<std::string> PlannedModules;
 	
-	/** @brief Map of modules which are part of test execution. */
+	/** @brief Modules which are part of test execution. */
 	ModuleMap modules;
+
+	/** @brief Stores the modules expected to be present for the current test
+	 * case as well as their description.*/
+	PlannedModules plannedModules;
 
 	/** @brief The current run number. */
 	int run;
@@ -103,6 +108,12 @@ protected:
 	 * "assertError()" and "testForError()" fail if this method is called.
 	 */
 	virtual void finish();
+
+	/**
+	 * @brief Checks if all modules planned with "planTestModule()" are present
+	 * and registered.
+	 */
+	void checkPlannedModules();
 
 
 public:
@@ -180,6 +191,17 @@ public:
 	 * @param name The identifier of the planned test to execute
 	 */
 	void testForError(std::string name);
+
+	/**
+	 * @brief Tells the manager that a module with the passed id is expected to
+	 * be present for this test.
+	 *
+	 * @param id The id of the module which is expected to be present for this
+	 * test.
+	 * @param description A description what the module does or for what its
+	 * needed. Is displayed if the test for the presence of this module failes.
+	 */
+	void planTestModule(std::string id, std::string description);
 };
 
 #endif /*TESTMANAGER_H_*/

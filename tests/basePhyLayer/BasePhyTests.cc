@@ -20,6 +20,8 @@ Define_Module(BasePhyTests);
 
 void BasePhyTests::planTestRun1()
 {
+	planTestModule("mac0", "Mac layer executing all of test run 1");
+	planTest("0", "Test initialisation of phy layer.");
 	planTest("1", "Check correct passing of channel state from decider to mac "
 				  "by phy. For this a sequence of predefined states is created "
 				  "by the decider.");
@@ -47,6 +49,9 @@ void BasePhyTests::planTestRun1()
 
 void BasePhyTests::testRun1(int stage, cMessage* msg)
 {
+	if(stage == 0) {
+		getModule<TestPhyLayer>("phy0")->testInitialisation();
+	}
 	getModule<TestMacLayer>("mac0")->testRun1(stage, msg);
 }
 
@@ -55,6 +60,8 @@ void BasePhyTests::testRun1(int stage, cMessage* msg)
 
 void BasePhyTests::planTestRun6()
 {
+	planTestModule("mac0", "Mac layer of Host0 (Sender)");
+	planTestModule("mac1", "Mac layer of Host1 (receiver)");
     planTest("1.", "Host1 sends AirFrame A to Host2");
     planTest("2.", "Host2 starts receiving AirFrame A");
     planTest("3.", "Host2 starts a ChannelSense");
@@ -90,7 +97,54 @@ void BasePhyTests::testRun6(int stage, cMessage* msg)
 	}
 }
 
+void BasePhyTests::planTestRun7()
+{
+	planTestModule("mac0", "Mac layer of host A1");
+	planTestModule("phy0", "Phy layer of host A1");
+	planTestModule("phy1", "Phy layer of host A2");
+	planTestModule("mac2", "Mac layer of host B1");
+	planTestModule("phy2", "Phy layer of host B1");
+	planTestModule("phy3", "Phy layer of host B2");
+	planTest("1.1.1", "2 Hosts protocol A (A1 and A2)");
+	planTest("1.1.2", "2 hosts protocol B (B1 and B2).");
+	planTest("1.2", "Host A1 sends packet 1.");
+	planTest("1.3", "Packet 1 arrives at phy of A2, B1 and B2.");
+	planTest("1.4", "Packet 1 arrives only at decider A2.");
 
+	planTest("1.5.1", "Packet 1 is still active.");
+	planTest("1.5.2", "Host B1 sends packet 2.");
+	planTest("1.6", "Packet 2 arrives at phy of A1, A2 and B2.");
+	planTest("1.7", "Packet 2 arrives only at decider B2.");
+	planTest("1.8", "Interference for Packet 2 at decider B2 contains packet 1.");
+	planTest("1.9", "Interference for Packet 1 at decider A2 contains packet 2.");
+}
+
+void BasePhyTests::testRun7(int stage, cMessage* msg)
+{
+	if(stage == 0)
+	{
+//planTest("1.1.1", "2 Hosts protocol A (A1 and A2)");
+		TestPhyLayer* tmp = getModule<TestPhyLayer>("phy0");
+		assertEqual("Host A1 uses protocol 1",
+					1, tmp->par("protocol").longValue());
+		tmp = getModule<TestPhyLayer>("phy1");
+		testForEqual("1.1.1", 1, tmp->par("protocol").longValue());
+
+//planTest("1.1.2", "2 hosts protocol B (B1 and B2).");
+		tmp = getModule<TestPhyLayer>("phy2");
+		assertEqual("Host B1 uses protocol 2",
+					2, tmp->par("protocol").longValue());
+		tmp = getModule<TestPhyLayer>("phy3");
+		testForEqual("1.1.2", 2, tmp->par("protocol").longValue());
+
+//planTest("1.2", "Host A1 sends packet 1.");
+		getModule<TestMacLayer>("mac0")->testRun7(stage, msg);
+	} else if(stage == 1){
+		getModule<TestMacLayer>("mac0")->testRun7(stage, msg);
+	} else if(stage >= 2){
+		getModule<TestMacLayer>("mac2")->testRun7(stage, msg);
+	}
+}
 
 
 void BasePhyTests::planTests(int run)
@@ -102,8 +156,11 @@ void BasePhyTests::planTests(int run)
     } else if(run == 6)
     {
         planTestRun6();
+    } else if(run == 7)
+    {
+        planTestRun7();
     }
-    else if (run > 6)
+    else if (run > 7)
     	assertFalse("Unknown test run number: " + run, true);
 }
 
@@ -116,6 +173,10 @@ void BasePhyTests::runTests(int run, int stage, cMessage* msg)
 	else if(run == 6)
 	{
 		testRun6(stage, msg);
+	}
+	else if(run == 7)
+	{
+		testRun7(stage, msg);
 	}
 	else {
 		getModule<TestMacLayer>("mac0")->runTests(run, stage, msg);

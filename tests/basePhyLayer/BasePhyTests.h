@@ -72,7 +72,19 @@ protected:
 	void testRun6(int stage, cMessage* msg);
 
 
-
+	/**
+	 * @brief Plans tests to be executed in test run 7.
+	 */
+    void planTestRun7();
+	/**
+	 * @brief Executes test run 7 by forwarding execution to the correct
+	 * TestModule.
+	 *
+	 * Tests for phy protocol id implementation
+	 * - only AirFrames with known protocol are transfered to decider
+	 * - other protocols are only contained in interference for decider
+	 */
+	void testRun7(int stage, cMessage* msg);
 };
 
 #endif

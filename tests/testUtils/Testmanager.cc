@@ -32,7 +32,17 @@ void TestManager::initialize(int stage)
 	}
 	else if(stage == 2) {
 		planTests(run);
+		checkPlannedModules();
 		runTests(run, 0, NULL);
+	}
+}
+
+void TestManager::checkPlannedModules()
+{
+	for(PlannedModules::iterator it = plannedModules.begin();
+		it != plannedModules.end(); ++it)
+	{
+		testForTrue(*it, modules.count(*it));
 	}
 }
 
@@ -75,4 +85,13 @@ void TestManager::testForError(std::string name)
 	assertError(testForErrorTest->second);
 }
 
+void TestManager::planTestModule(std::string id, std::string description)
+{
+	assertTrue(	"Module with the following id already planned:" + id,
+				plannedModules.count(id) == 0, true);
+
+	planTest(id, "Expected module - " + description);
+
+	plannedModules.insert(id);
+}
 
