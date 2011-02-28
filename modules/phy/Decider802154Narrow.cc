@@ -10,6 +10,7 @@
 #include "Consts802154.h"
 #include <MacPkt_m.h>
 #include <PhyToMacControlInfo.h>
+#include <cmath>
 
 bool Decider802154Narrow::syncOnSFD(AirFrame* frame) {
 	double BER;
@@ -35,8 +36,7 @@ double Decider802154Narrow::evalBER(AirFrame* frame) {
 
 	delete noise;
 
-	return std::max(0.5 * exp(-rcvPower / (2 * noiseLevel)),
-			DEFAULT_BER_LOWER_BOUND);
+	return getBERFromSNR(rcvPower/noiseLevel); //std::max(0.5 * exp(-rcvPower / (2 * noiseLevel)), DEFAULT_BER_LOWER_BOUND);
 }
 
 simtime_t Decider802154Narrow::processNewSignal(AirFrame* frame) {
@@ -156,6 +156,7 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 	{
 		phy->sendUp(frame,
 					new DeciderResult802154Narrow(true, bitrate, snirMin, avgBER, rssi));
+		snirReceived.record(10*log10(snirMin));  // in dB
 	} else {
 		MacPkt* mac = static_cast<MacPkt*> (frame->decapsulate());
 		mac->setName("BIT_ERRORS");
@@ -166,9 +167,12 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 		PhyToMacControlInfo* cInfo = new PhyToMacControlInfo(result);
 		mac->setControlInfo(cInfo);
 		phy->sendControlMsg(mac);
-
+		snirDropped.record(10*log10(snirMin));  // in dB
 		if(hasInterference) {
 			nbFramesWithInterferenceDropped++;
+			if(mac->getSrcAddr() == myMacAddr) {
+				nbHiddenTerminalOccurences++;
+			}
 		} else {
 			nbFramesWithoutInterferenceDropped++;
 		}
@@ -184,21 +188,38 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 	return notAgain;
 }
 
-double Decider802154Narrow::getBERFromSNR(double snr) {
-	double ber = BER_LOWER_BOUND;
-
-	if(modulation == "msk") {
-		// non-coherent detection of binary signals in an AWGN Channel
-		// Digital Communications, John G. Proakis, section 4.3.1
-		// p.207, (4.3.19)
-		ber = 0.5 * exp(-0.5 * snr);
-	} else if (modulation == "FMUWB") {
-		ber = 0.5 * exp(-0.5 * snr);
-	}
-
-	return std::max(ber, BER_LOWER_BOUND);
+double Decider802154Narrow::n_choose_k(int n, int k) {
+  double res = 1;
+  for(int i = 1; i <= k; i++) {
+    res = res * (n-k+i) / i;
+  }
+  return res;
 }
 
+double Decider802154Narrow::getBERFromSNR(double snr) {
+	double ber = BER_LOWER_BOUND;
+	double sum_k = 0;
+	if(modulation == "msk") {
+		// valid for IEEE 802.15.4 868 MHz BPSK modulation
+		ber = 0.5 *  erfc(sqrt(snr));
+	} else if (modulation == "oqpsk16") {
+		// valid for IEEE 802.15.4 2.45 GHz OQPSK modulation
+		for (int k = 2; k <= 16; k++) {
+			sum_k = sum_k + pow(-1, k) * n_choose_k(16, k) * exp(20 * snr * (1.0 / k - 1.0));
+		}
+		ber = (8.0 / 15) * (1.0 / 16) * sum_k;
+	} else if(modulation == "gfsk") {
+		// valid for Bluetooth 4.0 PHY mandatory base rate 1 Mbps
+		// Please note that this is not the correct expression for
+		// the enhanced data rates (EDR), which uses another modulation.
+		ber = 0.5 * erfc(sqrt(0.5 * snr));
+	} else {
+		opp_error("The selected modulation is not supported.");
+	}
+	berlog.record(ber);
+	snrlog.record(10*log10(snr));
+	return std::max(ber, BER_LOWER_BOUND);
+}
 
 void Decider802154Narrow::finish() {
 
@@ -207,4 +228,5 @@ void Decider802154Narrow::finish() {
 	phy->recordScalar("nbFramesWithoutInterference", nbFramesWithoutInterference);
 	phy->recordScalar("nbFramesWithInterferenceDropped", nbFramesWithInterferenceDropped);
 	phy->recordScalar("nbFramesWithoutInterferenceDropped", nbFramesWithoutInterferenceDropped);
+	phy->recordScalar("nbHiddenTerminalOccurences", nbHiddenTerminalOccurences);
 }
