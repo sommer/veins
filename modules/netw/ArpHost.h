@@ -44,7 +44,7 @@ class ArpHost : public ArpInterface,
 {
     //Module_Class_Members(BaseArp,BaseModule,0);
 	bool coreDebug;
-
+	int offset;
 public:
 	virtual void initialize(int stage);
 

@@ -26,6 +26,7 @@ void ArpHost::initialize(int stage) {
 	BaseModule::initialize(stage);
     if(stage==0) {
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
+        offset = par("offset");
 	}
 }
 
@@ -67,7 +68,7 @@ int ArpHost::myNetwAddr(cModule* netw) {
     // modification by Jerome Rousselot, CSEM
     // assumes that addresses are equal to host index.
     // and that mac addresses == net addresses
-	return netw->getParentModule()->getIndex();
+	return netw->getParentModule()->getIndex()+offset;
 //    return netw->getId();
 }
 
@@ -76,6 +77,6 @@ int ArpHost::myMacAddr(cModule *mac)
     // modification by Jerome Rousselot, CSEM
 	// assumes that addresses are equal to host index.
     // and that mac addresses == net addresses
-	return mac->getParentModule()->getParentModule()->getIndex();
+	return mac->getParentModule()->getParentModule()->getIndex()+offset;
 //    return (mac->getParentModule())->getId();
 }
