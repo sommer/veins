@@ -14,18 +14,25 @@ SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimen
 
 double SimplePathlossConstMapping::getValue(const Argument& pos) const
 {
-	double freq = model->carrierFrequency;
-	if(hasFrequency) {
-		assert(pos.hasArgVal(Dimension::frequency));
-		freq = pos.getArgValue(Dimension::frequency);
+	double value = 0;
+	if(model->L0 == -1) {
+		// use analytical loss at 1 meter, apply frequency aperture dependency here
+		double freq = model->carrierFrequency;
+		if(hasFrequency) {
+			assert(pos.hasArgVal(Dimension::frequency));
+			freq = pos.getArgValue(Dimension::frequency);
+		}
+		double wavelength = BaseWorldUtility::speedOfLight / freq;
+		value = (wavelength * wavelength) * distFactor;
+	} else {
+		// use measured loss at 1 meter, nothing to do
+		value = distFactor;
 	}
-	double wavelength = BaseWorldUtility::speedOfLight / freq;
-	return (wavelength * wavelength) * distFactor;
+	return value;
 }
 
 
-
-void SimplePathlossModel::filterSignal(Signal& s){
+void SimplePathlossModel::filterSignal(Signal& s, bool isActiveAtOrigin){
 
 	/** Get start of the signal */
 	simtime_t sStart = s.getSignalStart();
@@ -53,8 +60,21 @@ void SimplePathlossModel::filterSignal(Signal& s){
 	debugEV << "wavelength is: " << wavelength << endl;
 
 	// the part of the attenuation only depending on the distance
-	double distFactor = pow(sqrDistance, -pathLossAlphaHalf) / (16.0 * M_PI * M_PI);
-	debugEV << "distance factor is: " << distFactor << endl;
+	double distFactor;
+	double attenuation = 0;
+	if (sqrDistance > 1.0)
+	{
+		// energy spread over a sphere of radius distance
+		attenuation = pow(sqrDistance, -pathLossAlphaHalf) / (4.0 * M_PI);
+		if(L0 == -1) {
+			// theoretical L0 path loss (without Lambda², applied later in getValue)
+			attenuation = attenuation / (4.0 * M_PI);
+		} else {
+			// use user-defined (measured / estimated) L0
+			attenuation = attenuation * L0;
+		}
+	}
+	debugEV << "distance factor is: " << attenuation << endl;
 
 	//is our signal to attenuate defined over frequency?
 	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency);
@@ -68,7 +88,7 @@ void SimplePathlossModel::filterSignal(Signal& s){
 	SimplePathlossConstMapping* attMapping = new SimplePathlossConstMapping(
 													domain,
 													this,
-													distFactor);
+													attenuation);
 
 	/* at last add the created attenuation mapping to the signal */
 	s.addAttenuation(attMapping);

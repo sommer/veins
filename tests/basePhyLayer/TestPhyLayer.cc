@@ -91,19 +91,19 @@ void TestPhyLayer::testInitialisation() {
 	TestDecider* dec = dynamic_cast<TestDecider*>(decider);
 	assertTrue("Decider is of type TestDecider.", dec != 0);
 
-	assertEqual("Check size of AnalogueModel list.", (size_t)3, analogueModels.size());
+	assertEqual("Check size of AnalogueModel list.", (size_t)3, analogueModelsAtReception.size());
 	double att1 = -1.0;
 	double att2 = -1.0;
 
 	// handling first Analogue Model (RSAM)
-	AnalogueModelList::const_iterator it = analogueModels.begin();
+	AnalogueModelList::const_iterator it = analogueModelsAtReception.begin();
 	RadioStateAnalogueModel* model = dynamic_cast<RadioStateAnalogueModel*>(*it);
 	assertTrue("Analogue model is of type RadioStateAnalogueModel.", model != 0);
 	model = 0;
 	it++;
 
 	// handling all other analogue models
-	for(; it != analogueModels.end(); it++) {
+	for(; it != analogueModelsAtReception.end(); it++) {
 
 		TestAnalogueModel* model = dynamic_cast<TestAnalogueModel*>(*it);
 		assertTrue("Analogue model is of type TestAnalogueModel.", model != 0);

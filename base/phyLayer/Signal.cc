@@ -32,6 +32,10 @@ Signal::Signal(const Signal & o):
 		it != o.attenuations.end(); it++){
 		attenuations.push_back((*it)->constClone());
 	}
+	for(AnalogueModelList::const_iterator it = o.analogueModelsAtOrigin.begin();
+		it != o.analogueModelsAtOrigin.end(); it++){
+		analogueModelsAtOrigin.push_back(*it);
+	}
 }
 
 const Signal& Signal::operator=(const Signal& o) {
@@ -39,7 +43,6 @@ const Signal& Signal::operator=(const Signal& o) {
 	signalLength = o.signalLength;
 	propDelay = o.propDelay;
 	senderMovement = o.senderMovement;
-
 	markRcvPowerOutdated();
 
 	if(power){
@@ -76,6 +79,12 @@ const Signal& Signal::operator=(const Signal& o) {
 	for(ConstMappingList::const_iterator it = o.attenuations.begin();
 		it != o.attenuations.end(); it++){
 		attenuations.push_back((*it)->constClone());
+	}
+
+	analogueModelsAtOrigin.clear();
+	for(AnalogueModelList::const_iterator it = o.analogueModelsAtOrigin.begin();
+		it != o.analogueModelsAtOrigin.end(); it++){
+		analogueModelsAtOrigin.push_back(*it);
 	}
 
 	return *this;

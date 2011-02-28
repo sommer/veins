@@ -9,9 +9,11 @@
 #include <Decider80211.h>
 #include <Decider802154Narrow.h>
 #include <SimplePathlossModel.h>
+#include <BreakpointPathlossModel.h>
 #include <LogNormalShadowing.h>
 #include <SNRThresholdDecider.h>
 #include <JakesFading.h>
+#include "AntennaModel.h"
 
 Define_Module(PhyLayer);
 
@@ -29,7 +31,20 @@ AnalogueModel* PhyLayer::getAnalogueModelFromName(std::string name, ParameterMap
 	{
 		return initializeJakesFading(params);
 	}
+	else if(name == "BreakpointPathlossModel")
+	{
+		return initializeBreakpointPathlossModel(params);
+	} else if(name == "AntennaModel")
+	{
+		return initializeAntenna(params);
+	}
 	return BasePhyLayer::getAnalogueModelFromName(name, params);
+}
+
+AnalogueModel* PhyLayer::initializeAntenna(ParameterMap& params){
+	double initialX = params["directionX"].doubleValue();
+	double initialY = params["directionY"].doubleValue();
+	return new AntennaModel(initialX, initialY);
 }
 
 AnalogueModel* PhyLayer::initializeLogNormalShadowing(ParameterMap& params){
@@ -58,9 +73,103 @@ AnalogueModel* PhyLayer::initializeJakesFading(ParameterMap& params){
 	return new JakesFading(fadingPaths, delayRMS, &move, carrierFrequency, interval);
 }
 
+AnalogueModel* PhyLayer::initializeBreakpointPathlossModel(ParameterMap& params) {
+	double alpha1 =-1, alpha2=-1, breakpointDistance=-1;
+	double L01=-1, L02=-1;
+	double carrierFrequency = 2.412e+9;
+	bool useTorus = world->useTorus();
+	const Coord& playgroundSize = *(world->getPgs());
+	ParameterMap::iterator it;
+
+	it = params.find("alpha1");
+	if ( it != params.end() ) // parameter alpha1 has been specified in config.xml
+	{
+		// set alpha1
+		alpha1 = it->second.doubleValue();
+		coreEV << "createPathLossModel(): alpha1 set from config.xml to " << alpha1 << endl;
+		// check whether alpha is not smaller than specified in ConnectionManager
+		if(cc->hasPar("alpha") && alpha1 < cc->par("alpha").doubleValue())
+		{
+	        // throw error
+			opp_error("TestPhyLayer::createPathLossModel(): alpha can't be smaller than specified in \
+	               ConnectionManager. Please adjust your config.xml file accordingly");
+		}
+	}
+	it = params.find("L01");
+	if(it != params.end()) {
+		L01 = it->second.doubleValue();
+	}
+	it = params.find("L02");
+	if(it != params.end()) {
+		L02 = it->second.doubleValue();
+	}
+
+	it = params.find("alpha2");
+	if ( it != params.end() ) // parameter alpha1 has been specified in config.xml
+	{
+		// set alpha2
+		alpha2 = it->second.doubleValue();
+		coreEV << "createPathLossModel(): alpha2 set from config.xml to " << alpha2 << endl;
+		// check whether alpha is not smaller than specified in ConnectionManager
+		if(cc->hasPar("alpha") && alpha2 < cc->par("alpha").doubleValue())
+		{
+	        // throw error
+			opp_error("TestPhyLayer::createPathLossModel(): alpha can't be smaller than specified in \
+	               ConnectionManager. Please adjust your config.xml file accordingly");
+		}
+	}
+	it = params.find("breakpointDistance");
+	if ( it != params.end() ) // parameter alpha1 has been specified in config.xml
+	{
+		breakpointDistance = it->second.doubleValue();
+		coreEV << "createPathLossModel(): breakpointDistance set from config.xml to " << alpha2 << endl;
+		// check whether alpha is not smaller than specified in ConnectionManager
+	}
+
+	// get carrierFrequency from config
+	it = params.find("carrierFrequency");
+
+	if ( it != params.end() ) // parameter carrierFrequency has been specified in config.xml
+	{
+		// set carrierFrequency
+		carrierFrequency = it->second.doubleValue();
+		coreEV << "createPathLossModel(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
+
+		// check whether carrierFrequency is not smaller than specified in ConnectionManager
+		if(cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue())
+		{
+			// throw error
+			opp_error("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
+	               ConnectionManager. Please adjust your config.xml file accordingly");
+		}
+	}
+	else // carrierFrequency has not been specified in config.xml
+	{
+		if (cc->hasPar("carrierFrequency")) // parameter carrierFrequency has been specified in ConnectionManager
+		{
+			// set carrierFrequency according to ConnectionManager
+			carrierFrequency = cc->par("carrierFrequency").doubleValue();
+			coreEV << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
+		}
+		else // carrierFrequency has not been specified in ConnectionManager
+		{
+			// keep carrierFrequency at default value
+			coreEV << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
+		}
+	}
+
+	if(alpha1 ==-1 || alpha2==-1 || breakpointDistance==-1 || L01==-1 || L02==-1) {
+		opp_error("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
+	}
+
+	return new BreakpointPathlossModel(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, &move, useTorus, playgroundSize, coreDebug);
+
+}
+
 AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){
 
 	// init with default value
+	double L0 = -1;
 	double alpha = 3.5;
 	double carrierFrequency = 2.412e+9;
 	bool useTorus = world->useTorus();
@@ -98,6 +207,11 @@ AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){
 		}
 	}
 
+	// search for optionally defined path loss at 1m
+	it = params.find("L0");
+	if(it != params.end()) {
+		L0 = it->second.doubleValue();
+	}
 	// get carrierFrequency from config
 	it = params.find("carrierFrequency");
 
@@ -130,7 +244,7 @@ AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){
 		}
 	}
 
-	return new SimplePathlossModel(alpha, carrierFrequency, &move, useTorus, playgroundSize, coreDebug);
+	return new SimplePathlossModel(L0, alpha, carrierFrequency, &move, useTorus, playgroundSize, coreDebug);
 
 }
 

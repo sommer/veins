@@ -136,7 +136,7 @@ public:
 	 * this instance RadioStateAnalogueModel, hence the pointer is valid as long
 	 * as the Radio instance exists that has this RSAM as a member.
 	 */
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(Signal& s, bool isActiveAtOrigin);
 
 	/**
 	 * @brief sets tracking mode
@@ -163,8 +163,11 @@ public:
 	 */
 	void writeRecvEntry(simtime_t time, double value);
 
+	virtual bool isActiveAtDestination() { return true; }
 
+	virtual bool isActiveAtOrigin() { return false; }
 
+	virtual void setDestinationChannelAccess(ChannelAccess*) { ; }
 
 }; // end class RadioStateAnalogueModel
 

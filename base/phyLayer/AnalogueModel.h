@@ -2,6 +2,8 @@
 #define ANALOGUEMODEL_
 
 #include "Signal_.h"
+#include "ChannelAccess.h"
+
 
 /**
  * @brief Interface for the analogue models of the physical layer.
@@ -28,7 +30,23 @@ public:
 	 * Filters a specified Signal by adding an attenuation
 	 * over time to the Signal.
 	 */
-	virtual void filterSignal(Signal& s) = 0;
+	virtual void filterSignal(Signal& s, bool isActiveAtOrigin=false) = 0;
+
+	/**
+	 * @brief Returns true if this analogue model must be applied
+	 * at origin of signal.
+	 *
+	 */
+	virtual bool isActiveAtOrigin() = 0;
+
+	/**
+	 * @brief Returns true if this analogue model must be applied
+	 * at destination.
+	 *
+	 */
+	virtual bool isActiveAtDestination() = 0;
+
+	virtual void setDestinationChannelAccess(ChannelAccess*) = 0;
 };
 
 #endif /*ANALOGUEMODEL_*/

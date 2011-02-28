@@ -6,7 +6,7 @@
  * put some random attenuations over time and frequency into
  * the attenuation mapping.
  */
-void RandomFrequencyOnlyModel::filterSignal(Signal& s){
+void RandomFrequencyOnlyModel::filterSignal(Signal& s, bool b){
 
 
 	/* At first get a new instance of the default Mapping implementation

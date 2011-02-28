@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void RadioStateAnalogueModel::filterSignal(Signal& s)
+void RadioStateAnalogueModel::filterSignal(Signal& s, bool isActiveAtOrigin)
 {
 	simtime_t start = s.getSignalStart();
 	simtime_t end = start + s.getSignalLength();
@@ -210,8 +210,8 @@ void RSAMConstMappingIterator::jumpTo(const Argument& pos)
 	// extract the time-component from the argument
 	simtime_t t = pos.getTime();
 
-	assert( !(rsam->radioStateAttenuation.empty()) &&
-			!(t < rsam->radioStateAttenuation.front().getTime()) );
+//	assert( !(rsam->radioStateAttenuation.empty()) &&
+//			!(t < rsam->radioStateAttenuation.front().getTime()) );
 
 	// current position is already correct
 	if( t == position.getTime() )

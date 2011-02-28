@@ -60,7 +60,14 @@ public:
 	/**
 	 * @brief Calculates shadowing loss based on a normal gaussian function.
 	 */
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(Signal& s, bool isActiveAtOrigin);
+
+	virtual bool isActiveAtDestination() { return true; }
+
+	virtual bool isActiveAtOrigin() { return false; }
+
+	virtual void setDestinationChannelAccess(ChannelAccess* ca) { ;	}
+
 };
 
 #endif /* LOGNORMALSHADOWING_H_ */

@@ -70,6 +70,9 @@ class SimplePathlossModel : public AnalogueModel
 protected:
 	friend class SimplePathlossConstMapping;
 
+	/** @brief Path loss at 1 meter. **/
+	double L0;
+
 	/** @brief Path loss coefficient. **/
     double pathLossAlphaHalf;
 
@@ -104,8 +107,9 @@ public:
 	 * @param playgroundSize information about the playground the host is moving in
 	 * @param debug display debug messages?
 	 */
-	SimplePathlossModel(double alpha, double carrierFrequency, const Move* myMove,
+	SimplePathlossModel(double L0, double alpha, double carrierFrequency, const Move* myMove,
 					bool useTorus, const Coord& playgroundSize, bool debug):
+		L0(L0),
 		pathLossAlphaHalf(alpha * 0.5),
 		carrierFrequency(carrierFrequency),
 		myMove(*myMove),
@@ -113,14 +117,16 @@ public:
 		playgroundSize(playgroundSize),
 		debug(debug)
 	{
-
+		if(L0 != -1) {
+			L0 = pow(10,L0/10);  // convert from dB to real value.
+		}
 	}
 
 	/**
 	 * @brief Filters a specified Signal by adding an attenuation
 	 * over time to the Signal.
 	 */
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(Signal& s, bool isActiveAtOrigin);
 
 	/**
 	 * @brief Method to calculate the attenuation value for pathloss.
@@ -133,6 +139,13 @@ public:
 	 * method.
 	 */
 	virtual double calcPathloss(const Coord& myPos, const Coord& sendersPos);
+
+	virtual bool isActiveAtDestination() { return true; }
+
+	virtual bool isActiveAtOrigin() { return false; }
+
+	virtual void setDestinationChannelAccess(ChannelAccess*)  { ; }
+
 };
 
 #endif /*PATHLOSSMODEL_H_*/

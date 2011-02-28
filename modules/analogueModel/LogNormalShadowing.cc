@@ -27,7 +27,7 @@ double LogNormalShadowing::randomLogNormalGain() const {
 	return FWMath::dBm2mW(-1.0 * normal(mean, stdDev));
 }
 
-void LogNormalShadowing::filterSignal(Signal& s) {
+void LogNormalShadowing::filterSignal(Signal& s, bool isActiveAtOrigin) {
 	simtime_t start = s.getSignalStart();
 	simtime_t end = start + s.getSignalLength();
 

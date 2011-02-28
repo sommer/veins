@@ -105,7 +105,15 @@ public:
 				simtime_t interval);
 	virtual ~JakesFading();
 
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(Signal& s, bool isActiveAtOrigin);
+
+	virtual bool isActiveAtDestination() { return true; }
+
+	virtual bool isActiveAtOrigin() { return false; }
+
+	virtual void setDestinationChannelAccess(ChannelAccess*) { ; }
+
+
 };
 
 #endif /* JAKESFADING_H_ */

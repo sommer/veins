@@ -117,6 +117,8 @@ public:
 	 * ConnectionManager
 	 */
     virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+
+    Move getMove() const { return move; }
 };
 
 #endif

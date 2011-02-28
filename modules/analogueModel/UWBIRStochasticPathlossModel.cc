@@ -30,7 +30,7 @@ double UWBIRStochasticPathlossModel::simtruncnormal(double mean, double stddev, 
     return res;
 }
 
-void UWBIRStochasticPathlossModel::filterSignal(Signal& s) {
+void UWBIRStochasticPathlossModel::filterSignal(Signal& s, bool isActiveAtOrigin) {
 
 	if (isEnabled) {
 		// Initialize objects and variables

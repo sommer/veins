@@ -6,6 +6,8 @@
 #include "Mapping.h"
 #include <list>
 
+class AnalogueModel;
+
 /**
  * @brief The signal class stores the physical representation of the
  * signal of an AirFrame.
@@ -41,6 +43,10 @@ public:
 	typedef ConcatConstMapping<std::multiplies<double> > MultipliedMapping;
 	/** @brief Shortcut type for a list of ConstMappings.*/
 	typedef std::list<ConstMapping*> ConstMappingList;
+
+	typedef std::vector<AnalogueModel*> AnalogueModelList;
+
+	AnalogueModelList analogueModelsAtOrigin;
 
 protected:
 

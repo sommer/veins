@@ -80,7 +80,16 @@ void BaseMobility::initialize(int stage)
 
         // set speed and direction of the Move
         move.setSpeed(0);
-        move.setDirectionByVector(Coord(use2D));
+        double initialDirectionX = par("initialDirectionX");
+        double initialDirectionY = par("initialDirectionY");
+        double initialDirectionZ = par("initialDirectionZ");
+        if(use2D) {
+        	assert(FWMath::close(initialDirectionX*initialDirectionX+initialDirectionY*initialDirectionY, 1));
+        	move.setDirectionByVector(Coord(initialDirectionX, initialDirectionY));
+        } else {
+        	assert(FWMath::close(initialDirectionX*initialDirectionX+initialDirectionY*initialDirectionY+initialDirectionZ*initialDirectionZ, 1));
+        	move.setDirectionByVector(Coord(initialDirectionX, initialDirectionY, initialDirectionZ));
+        }
 
         //get BBItem category for Move
         moveCategory = utility->getCategory(&move);
