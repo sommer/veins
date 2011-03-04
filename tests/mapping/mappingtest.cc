@@ -2087,6 +2087,113 @@ protected:
 		testMappingOperator("Divide", std::divides<double>());
 	}
 
+	/**
+	 * @brief Creates a quadratic mapping with the passed domain and size at the
+	 * passed offset.
+	 *
+	 * "Quadratic" in the sense of the number of dimensions of the passed domain
+	 * not limited to 2D. In 3D it would be a cube in 4D a whatever.
+	 * The value of each entry is the product of its coordinates (without the
+	 * offset).
+	 *
+	 * @param domain The domain of the mapping to create.
+	 * @param size The number of entries in each dimension to create.
+	 * @param offset The position to start the entries at.
+	 * @return A mapping with size^|domain| entries.
+	 */
+	Mapping* createTestMapping(	const DimensionSet& domain,
+								unsigned int size = 3,
+								double offset = 1.0)
+	{
+		Mapping* res = MappingUtils::createMapping(domain);
+		unsigned int numDims = domain.size();
+
+		//for each entry i
+		for(int i = 0; i < pow(size, numDims); ++i) {
+			Argument pos(domain);
+			int d = numDims; 	//the current dimension counter
+			int remain = i; //stores the remainder used to convert the entry
+							//number into a coordinate in the domain
+			double val = 1; //accumulates the value for the entry
+
+			//iterate over dimensions and calculate coordinate in them
+			for(DimensionSet::iterator it = domain.begin(); it != domain.end(); ++it)
+			{
+				--d;
+				unsigned int coord = floor(remain / pow(size, d));
+				val *= coord + 1;
+				if(it == domain.begin())
+					pos.setTime((double)coord + offset);
+				else
+					pos.setArgValue(*it, (double)coord + offset);
+				remain = remain % (int)pow(size, d);
+			}
+			res->setValue(pos, val);
+		}
+
+		return res;
+	}
+
+	void checkMappingAddition(Mapping* m1, Mapping* m2, Mapping* result)
+	{
+		ConstMappingIterator* it = result->createConstIterator();
+
+		while(true) {
+			const Argument& pos = it->getPosition();
+			assertEqual("@" + toString(pos)
+						+ ":\tM1(" + toString(m1->getValue(pos))
+						+ ")\t+ M2(" + toString(m2->getValue(pos))
+						+ ")\t= " + toString(m1->getValue(pos)
+											+ m2->getValue(pos)),
+						m1->getValue(pos) + m2->getValue(pos), it->getValue());
+
+			if(!it->hasNext())
+				break;
+
+			it->next();
+		}
+
+		delete it;
+	}
+
+	void testMappingMulBF(DimensionSet d1, DimensionSet d2) {
+		Mapping* m1 = createTestMapping(d1, 2, 1.0);
+		Mapping* m2 = createTestMapping(d2, 3, 0.5);
+
+		Mapping* m3 = MappingUtils::add(*m1, *m2);
+		checkMappingAddition(m1, m2, m3);
+		delete m3;
+
+		m3 = MappingUtils::add(*m2, *m1);
+		checkMappingAddition(m2, m1, m3);
+		delete m3;
+
+		delete m1;
+		delete m2;
+	}
+
+	void testOperatorBruteForce()
+	{
+		//displayPassed = true;
+
+		DimensionSet timeFreq(time, freq);
+		DimensionSet timeSpace(time, space);
+		DimensionSet timeFreqSpace(time, freq, space);
+		Dimension bigDim("bigDim");
+		DimensionSet timeFreqSpaceBig(time, freq, space);
+		timeFreqSpaceBig.addDimension(bigDim);
+		DimensionSet timeBig(time, bigDim);
+
+		std::cout << "--------TimeFreq^2.--------\n";
+		testMappingMulBF(timeFreq, timeFreq);
+		std::cout << "--------Time * TimeBig.--------\n";
+		testMappingMulBF(timeBig, DimensionSet(time));
+		std::cout << "--------timeSpace * timeFreqSpaceBig.--------\n";
+		testMappingMulBF(timeSpace, timeFreqSpaceBig);
+
+		//displayPassed = false;
+	}
+
 	void testOperators(){
 		testMulitply();
 
@@ -2098,6 +2205,8 @@ protected:
 
 		testSubstract();
 		testDivide();
+
+		testOperatorBruteForce();
 	}
 
 	void testOutOfRange() {
@@ -2363,7 +2472,7 @@ protected:
 	    std::cout << "--------Out of range tests done.--------------------------------------------------\n";
 
 	    std::cout << "--------Various MappingUtils tests (may take a while)-----------------------------\n";
-	    testMappingUtils();
+	    //testMappingUtils();
 		std::cout << "--------Various MappingUtils tests done.------------------------------------------\n";
 
 	    //std::cout << "========Performance tests=========================================================\n";

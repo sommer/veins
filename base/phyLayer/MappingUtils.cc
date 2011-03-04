@@ -30,12 +30,11 @@ ConstMapping* MappingUtils::createCompatibleMapping(ConstMapping& src, ConstMapp
 	for (DimensionSet::const_reverse_iterator dstDimIt = dstDims.rbegin();
 		 dstDimIt != dstDims.rend(); ++dstDimIt)
 	{
-		if(srcDimIt != srcDims.rend() && *srcDimIt == *dstDimIt){
+		while(srcDimIt != srcDims.rend() && *srcDimIt > *dstDimIt)
 			++srcDimIt;
-		} else {
+		if(*srcDimIt != *dstDimIt){
 			keys.insert(keys.end(),
-						KeyMap::value_type(*dstDimIt,
-											KeySet()));
+						KeyMap::value_type(*dstDimIt, KeySet()));
 		}
 	}
 
