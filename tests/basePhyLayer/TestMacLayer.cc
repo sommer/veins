@@ -357,6 +357,14 @@ void TestMacLayer::testRun7(int stage, const cMessage* msg)
 	} else if(stage == 1) {
 		MacPkt* pkt = createMacPkt(5.0);
 		sendDown(pkt);
+
+		assertMessage("Transmission over message at phy",
+					  BasePhyLayer::TX_OVER,
+					  simTime() + 5.0, "phy0");
+		assertMessage("Transmission over message from phy",
+					  BasePhyLayer::TX_OVER,
+					  simTime() + 5.0, "mac0");
+
 		testForMessage("1.2", TEST_MACPKT, simTime(), "phy0");
 
 
@@ -366,6 +374,10 @@ void TestMacLayer::testRun7(int stage, const cMessage* msg)
 //planTest("1.3", "Packet 1 arrives at phy of A2, B1 and B2.");
 		assertMessage("Packet 1 at phy of A2", BasePhyLayer::AIR_FRAME, simTime(), "phy1");
 		assertMessage("Packet 1 at phy of B2", BasePhyLayer::AIR_FRAME, simTime(), "phy3");
+		assertMessage("End of Packet 1 at phy of B1", BasePhyLayer::AIR_FRAME,
+					  simTime() + 5.0, "phy2");
+		assertMessage("End of Packet 1 at phy of B2", BasePhyLayer::AIR_FRAME,
+					  simTime() + 5.0, "phy3");
 		testForMessage("1.3", BasePhyLayer::AIR_FRAME,
 					   	   	  simTime(), "phy2");
 
@@ -379,17 +391,33 @@ void TestMacLayer::testRun7(int stage, const cMessage* msg)
 	} else if(stage == 3) {
 		MacPkt* pkt = createMacPkt(5.0);
 		sendDown(pkt);
+
+		assertMessage("Transmission over message at phy",
+					  BasePhyLayer::TX_OVER,
+					  simTime() + 5.0, "phy2");
+		assertMessage("Transmission over message from phy",
+					  BasePhyLayer::TX_OVER,
+					  simTime() + 5.0, "mac2");
+
 		testForMessage("1.5.2", TEST_MACPKT, simTime(), "phy2");
 
 
 //planTest("1.7", "Packet 2 arrives only at decider B2.");
-		testForMessage("1.7", BasePhyLayer::AIR_FRAME, simTime(), "decider1");
+		testForMessage("1.7", BasePhyLayer::AIR_FRAME, simTime(), "decider3");
 
 //planTest("1.6", "Packet 2 arrives at phy of A1, A2 and B2.");
 		assertMessage("Packet 2 at phy of A1", BasePhyLayer::AIR_FRAME, simTime(), "phy0");
 		assertMessage("Packet 2 at phy of A2", BasePhyLayer::AIR_FRAME, simTime(), "phy1");
+		assertMessage("End of Packet 1 at phy of A1", BasePhyLayer::AIR_FRAME,
+					  simTime() + 5.0, "phy0");
+		assertMessage("End of Packet 1 at phy of A2", BasePhyLayer::AIR_FRAME,
+					  simTime() + 5.0, "phy1");
 		testForMessage("1.6", BasePhyLayer::AIR_FRAME,
 					   	   	  simTime(), "phy3");
+
+//planTest("1.9", "Interference for Packet 1 at decider A2 contains packet 2.");
+		waitForMessage( "End of Packet 1 at decider of A2",
+						BasePhyLayer::AIR_FRAME, simTime() + 1.0, "decider1");
 	}
 }
 

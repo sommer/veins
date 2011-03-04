@@ -7,6 +7,7 @@ void TestPhyLayer::initialize(int stage) {
 	if(stage == 0)
 	{
 		myIndex = findHost()->getIndex();
+		protocolID = par("protocol").longValue();
 	}
 
 	//call BasePhy's initialize
@@ -16,6 +17,14 @@ void TestPhyLayer::initialize(int stage) {
 	if(stage == 0) {
 		init("phy" + toString(myIndex));
 	}
+}
+
+bool TestPhyLayer::isKnownProtocolId(int id) {
+	return id == protocolID;
+}
+
+int TestPhyLayer::myProtocolId() {
+	return protocolID;
 }
 
 void TestPhyLayer::handleMessage(cMessage* msg) {

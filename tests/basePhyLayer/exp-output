@@ -2,16 +2,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
 Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base/: 17
-Loading NED files from /home/karl/git-repo/mixim/modules/: 40
-Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 5
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
 Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20110228-15:02:23-7109
+Assigned runID=Test1-0-20110302-11:51:31-6097
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -182,7 +179,7 @@ Passed: mac0 - Test has been executed.
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20110228-15:02:23-7109
+Assigned runID=Test1-1-20110302-11:51:31-6097
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -268,16 +265,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
 Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base/: 17
-Loading NED files from /home/karl/git-repo/mixim/modules/: 40
-Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 5
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
 Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20110228-15:02:23-7110
+Assigned runID=Test2-0-20110302-11:51:31-6098
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -511,18 +505,18 @@ Passed: [decider2] - Expected "First process of AirFrame at Decider": kind = 220
 Passed: [phy3] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
 Passed: [decider3] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
 ** Event #7  T=3.6   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
-Passed: [phy1] - Expected "Scheduled AirFrame to Pseudoheader at phy."
-Passed: [decider1] - Expected "Scheduled AirFrame to Pseudoheader."
+Passed: [phy1] - Expected "Scheduled AirFrame to end at phy."
+Passed: [decider1] - Expected "Scheduled AirFrame to end."
 ** Event #8  T=3.6   tbpSim.node[1].nic.mac (TestMacLayer, id=18)
 Passed: [mac1] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
 ** Event #9  T=3.6   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
-Passed: [phy2] - Expected "Scheduled AirFrame to Pseudoheader at phy."
-Passed: [decider2] - Expected "Scheduled AirFrame to Pseudoheader."
+Passed: [phy2] - Expected "Scheduled AirFrame to end at phy."
+Passed: [decider2] - Expected "Scheduled AirFrame to end."
 ** Event #10  T=3.6   tbpSim.node[2].nic.mac (TestMacLayer, id=23)
 Passed: [mac2] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
 ** Event #11  T=3.6   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
-Passed: [phy3] - Expected "Scheduled AirFrame to Pseudoheader at phy."
-Passed: [decider3] - Expected "Scheduled AirFrame to Pseudoheader."
+Passed: [phy3] - Expected "Scheduled AirFrame to end at phy."
+Passed: [decider3] - Expected "Scheduled AirFrame to end."
 ** Event #12  T=3.6   tbpSim.node[3].nic.mac (TestMacLayer, id=28)
 Passed: [mac3] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
 ** Event #13  T=4.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
@@ -546,16 +540,13 @@ OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
 Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base/: 17
-Loading NED files from /home/karl/git-repo/mixim/modules/: 40
-Loading NED files from /home/karl/git-repo/mixnet/inet/src/: 5
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
 Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration Test6, run #0...
 Scenario: $repetition=0
-Assigned runID=Test6-0-20110228-15:02:23-7111
+Assigned runID=Test6-0-20110302-11:51:31-6099
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -696,8 +687,8 @@ Passed: [decider1] - Expected "First process of AirFrame at Decider": kind = 220
 Passed: [phy1] - Expected "ChannelSense at phy layer.": kind = 22002, arrival = 3.5s
 Passed: [decider1] - Expected "ChannelSense at decider.": kind = 22002, arrival = 3.5s
 ** Event #6  T=3.6   tbpSim.node[1].nic.phy (TestPhyLayer, id=15)
-Passed: [phy1] - Expected "Scheduled AirFrame to Pseudoheader at phy."
-Passed: [decider1] - Expected "Scheduled AirFrame to Pseudoheader."
+Passed: [phy1] - Expected "Scheduled AirFrame to end at phy."
+Passed: [decider1] - Expected "Scheduled AirFrame to end."
 ** Event #7  T=3.6   tbpSim.node[1].nic.mac (TestMacLayer, id=16)
 Passed: [mac1] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 3.6s
 ** Event #8  T=4   tbpSim.node[1].nic.phy (TestPhyLayer, id=15)
@@ -749,5 +740,342 @@ Passed: 6. - Test has been executed.
 Passed: 7. - Test has been executed.
 Passed: mac0 - Test has been executed.
 Passed: mac1 - Test has been executed.
+
+End.
+OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
+Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+See the license for distribution terms and warranty disclaimer
+Setting up Cmdenv...
+Loading NED files from /home/karl/git-repo/mixim/base: 17
+Loading NED files from /home/karl/git-repo/mixim/modules: 40
+Loading NED files from /home/karl/git-repo/mixim/tests: 44
+
+Preparing for running configuration Test7, run #0...
+Scenario: $repetition=0
+Assigned runID=Test7-0-20110302-11:51:31-6100
+Setting up network `tbpSim'...
+Initializing...
+Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[0].nic.mac.lowerControlOut.channel, stage 0
+Initializing channel tbpSim.node[1].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[1].nic.mac.lowerControlOut.channel, stage 0
+Initializing channel tbpSim.node[2].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[2].nic.mac.lowerControlOut.channel, stage 0
+Initializing channel tbpSim.node[3].nic.phy.upperControlOut.channel, stage 0
+Initializing channel tbpSim.node[3].nic.mac.lowerControlOut.channel, stage 0
+Initializing module tbpSim, stage 0
+Initializing module tbpSim.world, stage 0
+Initializing module tbpSim.testManager, stage 0
+Initializing module tbpSim.channelcontrol, stage 0
+Initializing module tbpSim.node[0], stage 0
+Initializing module tbpSim.node[0].utility, stage 0
+Initializing module tbpSim.node[0].mobility, stage 0
+Initializing module tbpSim.node[0].nic, stage 0
+Initializing module tbpSim.node[0].nic.phy, stage 0
+Initializing module tbpSim.node[0].nic.mac, stage 0
+Initializing module tbpSim.node[1], stage 0
+Initializing module tbpSim.node[1].utility, stage 0
+Initializing module tbpSim.node[1].mobility, stage 0
+Initializing module tbpSim.node[1].nic, stage 0
+Initializing module tbpSim.node[1].nic.phy, stage 0
+Initializing module tbpSim.node[1].nic.mac, stage 0
+Initializing module tbpSim.node[2], stage 0
+Initializing module tbpSim.node[2].utility, stage 0
+Initializing module tbpSim.node[2].mobility, stage 0
+Initializing module tbpSim.node[2].nic, stage 0
+Initializing module tbpSim.node[2].nic.phy, stage 0
+Initializing module tbpSim.node[2].nic.mac, stage 0
+Initializing module tbpSim.node[3], stage 0
+Initializing module tbpSim.node[3].utility, stage 0
+Initializing module tbpSim.node[3].mobility, stage 0
+Initializing module tbpSim.node[3].nic, stage 0
+Initializing module tbpSim.node[3].nic.phy, stage 0
+Initializing module tbpSim.node[3].nic.mac, stage 0
+Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.testManager, stage 1
+Initializing module tbpSim.channelcontrol, stage 1
+Initializing module tbpSim.node[0].utility, stage 1
+Initializing module tbpSim.node[0].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[0].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Initializing module tbpSim.node[0].nic.mac, stage 1
+Initializing module tbpSim.node[1].utility, stage 1
+Initializing module tbpSim.node[1].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[1].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Initializing module tbpSim.node[1].nic.mac, stage 1
+Initializing module tbpSim.node[2].utility, stage 1
+Initializing module tbpSim.node[2].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[2].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Initializing module tbpSim.node[2].nic.mac, stage 1
+Initializing module tbpSim.node[3].utility, stage 1
+Initializing module tbpSim.node[3].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[3].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
+Initializing module tbpSim.node[3].nic.mac, stage 1
+Initializing module tbpSim.testManager, stage 2
+Passed: Planning new test case:mac0
+Passed: Planning new test case:phy0
+Passed: Planning new test case:phy1
+Passed: Planning new test case:mac2
+Passed: Planning new test case:phy2
+Passed: Planning new test case:phy3
+Passed: Planning new test case:1.1.1
+Passed: Planning new test case:1.1.2
+Passed: Planning new test case:1.2
+Passed: Planning new test case:1.3
+Passed: Planning new test case:1.4
+Passed: Planning new test case:1.5.1
+Passed: Planning new test case:1.5.2
+Passed: Planning new test case:1.6
+Passed: Planning new test case:1.7
+Passed: Planning new test case:1.8
+Passed: Planning new test case:1.9
+Passed: [mac0] - Expected module - Mac layer of host A1
+Passed: [mac2] - Expected module - Mac layer of host B1
+Passed: [phy0] - Expected module - Phy layer of host A1
+Passed: [phy1] - Expected module - Phy layer of host A2
+Passed: [phy2] - Expected module - Phy layer of host B1
+Passed: [phy3] - Expected module - Phy layer of host B2
+Passed: Host A1 uses protocol 1
+Passed: [1.1.1] - 2 Hosts protocol A (A1 and A2)
+Passed: Host B1 uses protocol 2
+Passed: [1.1.2] - 2 hosts protocol B (B1 and B2).
+Passed: A valid switch time.
+
+Running simulation...
+** Event #1  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
+Passed: [phy0] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arrival = 3.5s
+** Event #2  T=3.5   tbpSim.node[0].nic.mac (TestMacLayer, id=13)
+Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 3.5s
+** Event #3  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
+Passed: [phy0] - Expected "[1.2] - Host A1 sends packet 1.": kind = 12121, arrival = 3.5s
+AirFrame encapsulated, length: 0
+** Event #4  T=3.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
+Passed: [phy1] - Expected "Packet 1 at phy of A2": kind = 22003, arrival = 3.5s
+Passed: [decider1] - Expected "[1.4] - Packet 1 arrives only at decider A2.": kind = 22003, arrival = 3.5s
+** Event #5  T=3.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
+Passed: [phy2] - Expected "[1.3] - Packet 1 arrives at phy of A2, B1 and B2.": kind = 22003, arrival = 3.5s
+** Event #6  T=3.5   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
+Passed: [phy3] - Expected "Packet 1 at phy of B2": kind = 22003, arrival = 3.5s
+** Event #7  T=4   tbpSim.node[0].nic.mac (TestMacLayer, id=13)
+Passed: [mac0] - Expected "Waiting for 0.5s.": kind = 23242, arrival = 4s
+Passed: [1.5.1] - Packet 1 is still active.
+Passed: A valid switch time.
+** Event #8  T=7.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
+Passed: [phy2] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arrival = 7.5s
+** Event #9  T=7.5   tbpSim.node[2].nic.mac (TestMacLayer, id=23)
+Passed: [mac2] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 7.5s
+** Event #10  T=7.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
+Passed: [phy2] - Expected "[1.5.2] - Host B1 sends packet 2.": kind = 12121, arrival = 7.5s
+AirFrame encapsulated, length: 0
+** Event #11  T=7.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
+Passed: [phy0] - Expected "Packet 2 at phy of A1": kind = 22003, arrival = 7.5s
+** Event #12  T=7.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
+Passed: [phy1] - Expected "Packet 2 at phy of A2": kind = 22003, arrival = 7.5s
+** Event #13  T=7.5   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
+Passed: [phy3] - Expected "[1.6] - Packet 2 arrives at phy of A1, A2 and B2.": kind = 22003, arrival = 7.5s
+Passed: [decider3] - Expected "[1.7] - Packet 2 arrives only at decider B2.": kind = 22003, arrival = 7.5s
+** Event #14  T=8.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
+Passed: [phy0] - Expected "Transmission over message at phy": kind = 22000, arrival = 8.5s
+** Event #15  T=8.5   tbpSim.node[0].nic.mac (TestMacLayer, id=13)
+Passed: [mac0] - Expected "Transmission over message from phy": kind = 22000, arrival = 8.5s
+** Event #16  T=8.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
+Passed: [phy1] - Expected "Scheduled AirFrame to end at phy."
+Passed: [decider1] - Expected "Scheduled AirFrame to end."
+Passed: [decider1] - Expected "End of Packet 1 at decider of A2": kind = 22003, arrival = 8.5s
+Passed: [1.9] - Interference for Packet 1 at decider A2 contains packet 2.
+** Event #17  T=8.5   tbpSim.node[1].nic.mac (TestMacLayer, id=18)
+Passed: [mac1] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 8.5s
+** Event #18  T=8.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
+Passed: [phy2] - Expected "End of Packet 1 at phy of B1": kind = 22003, arrival = 8.5s
+** Event #19  T=8.5   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
+Passed: [phy3] - Expected "End of Packet 1 at phy of B2": kind = 22003, arrival = 8.5s
+** Event #20  T=12.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
+Passed: [phy2] - Expected "Transmission over message at phy": kind = 22000, arrival = 12.5s
+** Event #21  T=12.5   tbpSim.node[2].nic.mac (TestMacLayer, id=23)
+Passed: [mac2] - Expected "Transmission over message from phy": kind = 22000, arrival = 12.5s
+** Event #22  T=12.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
+Passed: [phy0] - Expected "End of Packet 1 at phy of A1": kind = 22003, arrival = 12.5s
+** Event #23  T=12.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
+Passed: [phy1] - Expected "End of Packet 1 at phy of A2": kind = 22003, arrival = 12.5s
+** Event #24  T=12.5   tbpSim.node[3].nic.phy (TestPhyLayer, id=27)
+Passed: [phy3] - Expected "Scheduled AirFrame to end at phy."
+Passed: [decider3] - Expected "Scheduled AirFrame to end."
+Passed: [decider3] - Expected "End of Packet 2 at decider of B2": kind = 22003, arrival = 12.5s
+Passed: [1.8] - Interference for Packet 2 at decider B2 contains packet 1.
+** Event #25  T=12.5   tbpSim.node[3].nic.mac (TestMacLayer, id=28)
+Passed: [mac3] - Expected "MacPkt at mac layer.": kind = 12121, arrival = 12.5s
+
+<!> No more events -- simulation ended at event #26, t=12.5.
+
+
+Calling finish() at end of Run #0...
+Passed: 1.1.1 - Test has been executed.
+Passed: 1.1.2 - Test has been executed.
+Passed: 1.2 - Test has been executed.
+Passed: 1.3 - Test has been executed.
+Passed: 1.4 - Test has been executed.
+Passed: 1.5.1 - Test has been executed.
+Passed: 1.5.2 - Test has been executed.
+Passed: 1.6 - Test has been executed.
+Passed: 1.7 - Test has been executed.
+Passed: 1.8 - Test has been executed.
+Passed: 1.9 - Test has been executed.
+Passed: mac0 - Test has been executed.
+Passed: mac2 - Test has been executed.
+Passed: phy0 - Test has been executed.
+Passed: phy1 - Test has been executed.
+Passed: phy2 - Test has been executed.
+Passed: phy3 - Test has been executed.
 
 End.

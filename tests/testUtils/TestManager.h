@@ -158,7 +158,7 @@ public:
 		else
 		{
 			T* m = dynamic_cast<T*>(it->second);
-
+			assertTrue("Module with passed name and type exists.", m != NULL, true);
 			return m;
 		}
 	}

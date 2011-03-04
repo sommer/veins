@@ -141,8 +141,14 @@ void BasePhyTests::testRun7(int stage, cMessage* msg)
 		getModule<TestMacLayer>("mac0")->testRun7(stage, msg);
 	} else if(stage == 1){
 		getModule<TestMacLayer>("mac0")->testRun7(stage, msg);
-	} else if(stage >= 2){
+	} else if(stage == 2 || stage == 3){
 		getModule<TestMacLayer>("mac2")->testRun7(stage, msg);
+	} else if(stage == 4) {
+//planTest("1.9", "Interference for Packet 1 at decider A2 contains packet 2.");
+		getModule<TestDecider>("decider1")->testRun7(stage, msg);
+	} else if(stage == 5) {
+//planTest("1.8", "Interference for Packet 2 at decider B2 contains packet 1.");
+		getModule<TestDecider>("decider3")->testRun7(stage, msg);
 	}
 }
 

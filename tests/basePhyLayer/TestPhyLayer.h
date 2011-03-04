@@ -24,6 +24,7 @@ private:
 protected:
 
 	int myIndex;
+	int protocolID;
 
 	// prepared RSSI mapping for testing purposes
 	Mapping* testRSSIMap;
@@ -32,7 +33,8 @@ protected:
 
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 
-
+	virtual bool isKnownProtocolId(int id);
+	virtual int myProtocolId();
 
 public:
 	virtual void initialize(int stage);
