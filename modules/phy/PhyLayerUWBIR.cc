@@ -176,6 +176,8 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 	bool syncAlwaysSucceeds;
 	ParameterMap::iterator it;
 
+	protocolId = IEEE_802154_UWB;
+
 	it = params.find("syncThreshold");
 	if (it == params.end()) {
 		error(
@@ -391,43 +393,53 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 	cObject* ctrlInfo = macPkt->removeControlInfo();
 	assert(ctrlInfo);
 
+	// create the new AirFrame
+	AirFrameUWBIR* frame = new AirFrameUWBIR("airframe", AIR_FRAME);
+
 	MacToUWBIRPhyControlInfo* macToPhyCI = static_cast<MacToUWBIRPhyControlInfo*>(ctrlInfo);
+
+
 
 	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
 	// We are now the new owner of this instance.
 	Signal* s = macToPhyCI->retrieveSignal();
-
 	// make sure we really obtained a pointer to an instance
 	assert(s);
 
 	// put host move pattern to Signal
 	s->setMove(move);
 
-	// create the new AirFrame
-	AirFrameUWBIR* frame = new AirFrameUWBIR("airframe", AIR_FRAME);
-
-	//set priority of AirFrames above the normal priority to ensure
-	//channel consistency (before any thing else happens at a time
-	//point t make sure that the channel has removed every AirFrame
-	//ended at t and added every AirFrame started at t)
-	frame->setSchedulingPriority(airFramePriority);
 
 	// set the members
 	assert(s->getSignalLength() > 0);
 	frame->setDuration(s->getSignalLength());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
+	//set priority of AirFrames above the normal priority to ensure
+	//channel consistency (before any thing else happens at a time
+	//point t make sure that the channel has removed every AirFrame
+	//ended at t and added every AirFrame started at t)
+	frame->setSchedulingPriority(airFramePriority);
+	frame->setProtocolId(myProtocolId());
 	frame->setBitLength(headerLength);
+	frame->setId(world->getUniqueAirFrameId());
 	frame->setCfg(macToPhyCI->getConfig());
+
+
+
 	// pointer and Signal not needed anymore
 	delete s;
 	s = 0;
+
+
+
+
 	// delete the Control info
 	delete macToPhyCI;
 	macToPhyCI = 0;
 	ctrlInfo = 0;
 
-	frame->setId(world->getUniqueAirFrameId());
+
 	frame->encapsulate(macPkt);
 
 	// --- from here on, the AirFrame is the owner of the MacPacket ---

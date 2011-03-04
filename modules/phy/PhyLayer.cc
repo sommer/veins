@@ -136,12 +136,15 @@ AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){
 
 Decider* PhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 	if(name == "Decider80211") {
+		protocolId = IEEE_80211;
 		return initializeDecider80211(params);
 	}
 	else if(name == "SNRThresholdDecider"){
+		protocolId = GENERIC;
 		return initializeSNRThresholdDecider(params);
 	}
 	else if(name == "Decider802154Narrow") {
+		protocolId = IEEE_802154_NARROW;
 		return initializeDecider802154Narrow(params);
 	}
 

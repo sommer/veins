@@ -46,4 +46,6 @@ packet AirFrame
 
     long id;			// Unique ID of the AirFrame used as identifier for
 							// related control-AirFrames
+							
+	int protocolId;		//the id of the phy protocol of this airframe
 }

@@ -14,6 +14,7 @@ short BasePhyLayer::airFramePriority = 10;
 //--Initialization----------------------------------
 
 BasePhyLayer::BasePhyLayer():
+	protocolId(GENERIC),
 	thermalNoise(0),
 	radio(0),
 	decider(0),
@@ -230,7 +231,8 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	coreEV << "Decider \"" << name << "\" loaded." << endl;
 }
 
-Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
+Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
+{
 
 	return 0;
 }
@@ -393,7 +395,7 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 
 	filterSignal(frame->getSignal());
 
-	if(decider) {
+	if(decider and isKnownProtocolId(frame->getProtocolId())) {
 		frame->setState(RECEIVING);
 
 		//pass the AirFrame the first time to the Decider
@@ -499,11 +501,42 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	cObject* ctrlInfo = macPkt->removeControlInfo();
 	assert(ctrlInfo);
 
+	// create the new AirFrame
+	AirFrame* frame = new AirFrame(macPkt->getName(), AIR_FRAME);
+
 	MacToPhyControlInfo* macToPhyCI = static_cast<MacToPhyControlInfo*>(ctrlInfo);
+
+
 
 	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
 	// We are now the new owner of this instance.
 	Signal* s = macToPhyCI->retrieveSignal();
+	// make sure we really obtained a pointer to an instance
+	assert(s);
+
+	// put host move pattern to Signal
+	s->setMove(move);
+
+	// set the members
+	assert(s->getSignalLength() > 0);
+	frame->setDuration(s->getSignalLength());
+	// copy the signal into the AirFrame
+	frame->setSignal(*s);
+	//set priority of AirFrames above the normal priority to ensure
+	//channel consistency (before any thing else happens at a time
+	//point t make sure that the channel has removed every AirFrame
+	//ended at t and added every AirFrame started at t)
+	frame->setSchedulingPriority(airFramePriority);
+	frame->setProtocolId(myProtocolId());
+	frame->setBitLength(headerLength);
+	frame->setId(world->getUniqueAirFrameId());
+
+
+
+	// pointer and Signal not needed anymore
+	delete s;
+	s = 0;
+
 
 
 	// delete the Control info
@@ -511,33 +544,10 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	macToPhyCI = 0;
 	ctrlInfo = 0;
 
-	// make sure we really obtained a pointer to an instance
-	assert(s);
 
-	// put host move pattern to Signal
-	s->setMove(move);
 
-	// create the new AirFrame
-	AirFrame* frame = new AirFrame(macPkt->getName(), AIR_FRAME);
 
-	//set priority of AirFrames above the normal priority to ensure
-	//channel consistency (before any thing else happens at a time
-	//point t make sure that the channel has removed every AirFrame
-	//ended at t and added every AirFrame started at t)
-	frame->setSchedulingPriority(airFramePriority);
 
-	// set the members
-	assert(s->getSignalLength() > 0);
-	frame->setDuration(s->getSignalLength());
-	// copy the signal into the AirFrame
-	frame->setSignal(*s);
-	frame->setBitLength(headerLength);
-
-	// pointer and Signal not needed anymore
-	delete s;
-	s = 0;
-
-	frame->setId(world->getUniqueAirFrameId());
 	frame->encapsulate(macPkt);
 
 	// --- from here on, the AirFrame is the owner of the MacPacket ---

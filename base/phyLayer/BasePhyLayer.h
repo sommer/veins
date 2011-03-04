@@ -70,6 +70,13 @@ class BasePhyLayer: public ChannelAccess,
 					public MacToPhyInterface {
 
 protected:
+
+	enum ProtocolIds {
+		GENERIC = 0,
+	};
+
+	int protocolId;
+
 	/** @brief Defines the scheduling priority of AirFrames.
 	 *
 	 * AirFrames use a slightly higher priority than normal to ensure
@@ -358,6 +365,31 @@ protected:
 	 * a confirmation message.
 	 */
 	virtual void finishRadioSwitching();
+
+	/**
+	 * @brief Returns the identifier of the protocol this phy uses to send
+	 * messages.
+	 *
+	 * @return An integer representing the identifier of the used protocol.
+	 */
+	virtual int myProtocolId() { return protocolId; }
+
+	/**
+	 * @brief Returns true if the protocol with the passed identifier is
+	 * decodeable by the decider.
+	 *
+	 * If the protocol with the passed id is not understood by this phy layers
+	 * decider the according AirFrame is not passed to the it but only is added
+	 * to channel info to be available as interference to the decider.
+	 *
+	 * Default implementation checks only if the passed id is the same as the
+	 * one returned by "myProtocolId()".
+	 *
+	 * @param id The identifier of the protocol of an AirFrame.
+	 * @return Returns true if the passed protocol id is supported by this phy-
+	 * layer.
+	 */
+	virtual bool isKnownProtocolId(int id) { return id == myProtocolId(); }
 
 public:
 	BasePhyLayer();

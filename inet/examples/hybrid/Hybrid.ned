@@ -51,10 +51,10 @@ network Hybrid
                 @display("p=253,25");
         }
 
-        lrwpanChannel: ConnectionManager {
-            parameters:
-                @display("p=369,25");
-        }
+//        lrwpanChannel: ConnectionManager {
+//            parameters:
+//                @display("p=369,25");
+//        }
 
 
         etherHost: StandardHost {

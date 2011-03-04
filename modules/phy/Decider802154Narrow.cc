@@ -29,7 +29,9 @@ double Decider802154Narrow::evalBER(AirFrame* frame) {
 
 	ConstMapping* noise = calculateRSSIMapping(time, time, frame);
 
-	double noiseLevel = noise->getValue(Argument(time));
+	Argument argStart(time);
+	argStart.setArgValue(Dimension::frequency, 2.4E+9);
+	double noiseLevel = noise->getValue(argStart);
 
 	delete noise;
 
@@ -88,7 +90,9 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 	double errorProbability;
 
 	simtime_t receivingStart = MappingUtils::post(start);
-	ConstMappingIterator* iter = snrMapping->createConstIterator(Argument(receivingStart));
+	Argument argStart(receivingStart);
+	argStart.setArgValue(Dimension::frequency, 2.4E+9);
+	ConstMappingIterator* iter = snrMapping->createConstIterator(argStart);
 	double snirMin = iter->getValue();
 	// Evaluate bit errors for each snr value
 	// and stops as soon as we have an error.
@@ -103,8 +107,15 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 		//determine end of this interval
 		simtime_t nextTime = end;	//either the end of the signal...
 		if(iter->hasNext()) {		//or the position of the next entry
-			nextTime = std::min(iter->getNextPosition().getTime(), nextTime);
-			iter->next();	//the iterator will already point to the next entry
+			const Argument& argNext = iter->getNextPosition();
+			if(	!argNext.hasArgVal(Dimension::frequency)
+				|| argNext.getArgValue(Dimension::frequency) == 2.4e+9)
+			{
+				nextTime = std::min(argNext.getTime(), nextTime);
+				iter->next();	//the iterator will already point to the next entry
+			} else {
+				nextTime = end;
+			}
 		}
 
 		if (noErrors) {
