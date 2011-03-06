@@ -9,6 +9,10 @@ AntennaModel::AntennaModel(double directionX, double directionY)
 
 void AntennaModel::filterSignal(Signal& s, bool isActiveAtOrigin)
 {
+	TimeMapping<Linear>* attMapping = new TimeMapping<Linear>();
+	Argument arg;
+	double attenuation=1;
+
 	/** Get start of the signal */
 	simtime_t sStart = s.getSignalStart();
 	simtime_t sEnd = s.getSignalLength() + sStart;
@@ -16,38 +20,46 @@ void AntennaModel::filterSignal(Signal& s, bool isActiveAtOrigin)
 	/** claim the Move pattern of the sender from the Signal */
 	Coord senderPos = s.getMove().getPositionAt(sStart);
 	Coord rxPos =  destinationChannelAccess->getMove().getPositionAt(sStart);
+	if (rxPos != senderPos) {
+		double sqrDistance = rxPos.sqrdist(senderPos);
 
-	double sqrDistance = rxPos.sqrdist(senderPos);
+		Coord signalDirection = rxPos - senderPos;
+		signalDirection = signalDirection / signalDirection.length(); // normalize
 
-	Coord signalDirection = rxPos - senderPos;
-	signalDirection = signalDirection / signalDirection.length();  // normalize
+		// obtain "absolute" orientation of this antenna:
+		// host direction + antenna direction, normalized
+		Coord hostDirection;
 
-	// obtain "absolute" orientation of this antenna:
-	// host direction + antenna direction, normalized
-	Coord hostDirection;
+		if (isActiveAtOrigin) {
+			hostDirection = s.getMove().getDirection();
+		} else {
+			hostDirection = destinationChannelAccess->getMove().getDirection();
+		}
+		double hostOrientation = atan2(hostDirection.getY(),
+				hostDirection.getX()); // in rad
 
-	if(isActiveAtOrigin) {
-		hostDirection = s.getMove().getDirection();
+		double antennaOrientation = hostOrientation
+				+ relativeAntennaOrientation; // in rad
+
+
+		if (!isActiveAtOrigin) {
+			// we are modeling a receiving antenna
+			// revert the direction
+			signalDirection = Coord(-signalDirection.getX(),
+					-signalDirection.getY());
+		}
+
+		double signalOrientation = atan2(signalDirection.getY(),
+				signalDirection.getX());
+		attenuation = getAntennaGain(signalOrientation - antennaOrientation);
+		// combine absolute antenna orientation and interpolated radiation pattern
 	} else {
-		hostDirection = destinationChannelAccess->getMove().getDirection();
+		// reception occurs at same point: we are using multiple NIC at the same host.
+		// For now, we make the hypothesis that no reception is possible.
+		// TODO: to improve this, we need some information on the relative positions and
+		// orientations of the antennas, so that we can define the signal orientation.
+		attenuation = 0;
 	}
-	double hostOrientation = atan2(hostDirection.getY(), hostDirection.getX());  // in rad
-
-	double antennaOrientation = hostOrientation + relativeAntennaOrientation;  // in rad
-
-
-	if(!isActiveAtOrigin) {
-		// we are modeling a receiving antenna
-		// revert the direction
-		signalDirection = Coord(-signalDirection.getX(), -signalDirection.getY());
-	}
-
-	double signalOrientation = atan2(signalDirection.getY(), signalDirection.getX());
-	double attenuation = getAntennaGain(signalOrientation - antennaOrientation);
-	// combine absolute antenna orientation and interpolated radiation pattern
-
-	TimeMapping<Linear>* attMapping = new TimeMapping<Linear>();
-	Argument arg;
 	attMapping->setValue(arg, attenuation);
 	s.addAttenuation(attMapping);
 }
