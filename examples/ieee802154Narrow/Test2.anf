@@ -14,6 +14,7 @@
         <properties name="Legend.Display" value="true"/>
         <properties name="Legend.Position" value="Inside"/>
         <properties name="Legend.Anchoring" value="NorthEast"/>
+        <properties name="X.Axis.Min" value="100.0"/>
         <isoDataPattern>attr:configname(*)</isoDataPattern>
       </items>
     </datasets>

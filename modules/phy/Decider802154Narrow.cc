@@ -170,9 +170,6 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 		snirDropped.record(10*log10(snirMin));  // in dB
 		if(hasInterference) {
 			nbFramesWithInterferenceDropped++;
-			if(mac->getSrcAddr() == myMacAddr) {
-				nbHiddenTerminalOccurences++;
-			}
 		} else {
 			nbFramesWithoutInterferenceDropped++;
 		}
@@ -228,5 +225,4 @@ void Decider802154Narrow::finish() {
 	phy->recordScalar("nbFramesWithoutInterference", nbFramesWithoutInterference);
 	phy->recordScalar("nbFramesWithInterferenceDropped", nbFramesWithInterferenceDropped);
 	phy->recordScalar("nbFramesWithoutInterferenceDropped", nbFramesWithoutInterferenceDropped);
-	phy->recordScalar("nbHiddenTerminalOccurences", nbHiddenTerminalOccurences);
 }
