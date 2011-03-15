@@ -2472,7 +2472,7 @@ protected:
 	    std::cout << "--------Out of range tests done.--------------------------------------------------\n";
 
 	    std::cout << "--------Various MappingUtils tests (may take a while)-----------------------------\n";
-	    //testMappingUtils();
+	    testMappingUtils();
 		std::cout << "--------Various MappingUtils tests done.------------------------------------------\n";
 
 	    //std::cout << "========Performance tests=========================================================\n";
