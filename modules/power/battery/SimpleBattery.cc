@@ -236,7 +236,7 @@ void SimpleBattery::handleHostState(const HostState& state)
 void SimpleBattery::deductAndCheck() {
 	// already depleted, devices should have stopped sending drawMsg,
 	// but we catch any leftover messages in queue
-	if (batteryState->getAbs() == 0) {
+	if (residualCapacity <= 0) {
 		return;
 	}
 
@@ -321,7 +321,7 @@ double SimpleBattery::getVoltage() {
 
 double SimpleBattery::estimateResidualAbs() {
 	Enter_Method_Silent();
-	double value = batteryState->getAbs();
+	double value = std::max(0.0, residualCapacity);
 	return value;
 }
 
@@ -330,7 +330,7 @@ double SimpleBattery::estimateResidualAbs() {
 
 double SimpleBattery::estimateResidualRelative() {
 	Enter_Method_Silent();
-	double value = batteryState->getAbs();
+	double value = std::max(0.0, residualCapacity);
 	return value / nominalCapacity;
 }
 
