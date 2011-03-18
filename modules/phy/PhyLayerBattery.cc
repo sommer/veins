@@ -191,6 +191,7 @@ void PhyLayerBattery::setRadioCurrent(int rs) {
 		BatteryAccess::drawCurrent(sleepCurrent, SLEEP_ACCT);
 		break;
 	default:
+		opp_error("Unknown radio state: %d", rs);
 		break;
 	}
 }

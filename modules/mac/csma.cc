@@ -662,9 +662,9 @@ void csma::startTimer(t_mac_timer timer) {
 	}
 }
 
-double csma::scheduleBackoff() {
+simtime_t csma::scheduleBackoff() {
 
-	double backoffTime;
+	simtime_t backoffTime;
 
 	switch(backoffMethod) {
 	case EXPONENTIAL:
@@ -672,8 +672,8 @@ double csma::scheduleBackoff() {
 		int BE = std::min(macMinBE + NB, macMaxBE);
 		double d = std::pow((double) 2, (int) BE);
 		int v = (int) d - 1;
-		int r = intuniform(1, v, 0);
-		backoffTime = r * aUnitBackoffPeriod.dbl();
+		int r = intuniform(0, v, 0);
+		backoffTime = r * aUnitBackoffPeriod;
 
 		EV<< "(startTimer) backoffTimer value=" << backoffTime
 		<< " (BE=" << BE << ", 2^BE-1= " << v << "r="
@@ -683,14 +683,14 @@ double csma::scheduleBackoff() {
 	case LINEAR:
 	{
 		int slots = intuniform(1, initialCW + NB, 0);
-		backoffTime = slots * aUnitBackoffPeriod.dbl();
+		backoffTime = slots * aUnitBackoffPeriod;
 		EV<< "(startTimer) backoffTimer value=" << backoffTime << endl;
 		break;
 	}
 	case CONSTANT:
 	{
 		int slots = intuniform(1, initialCW, 0);
-		backoffTime = slots * aUnitBackoffPeriod.dbl();
+		backoffTime = slots * aUnitBackoffPeriod;
 		EV<< "(startTimer) backoffTimer value=" << backoffTime << endl;
 		break;
 	}
@@ -699,9 +699,9 @@ double csma::scheduleBackoff() {
 	}
 
 	nbBackoffs = nbBackoffs + 1;
-	backoffValues = backoffValues + backoffTime;
+	backoffValues = backoffValues + backoffTime.dbl();
 
-	return backoffTime + simTime().dbl();
+	return backoffTime + simTime();
 }
 
 /*
