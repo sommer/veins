@@ -1013,20 +1013,26 @@ void Mac80211::testMaxAttempts()
     }
 }
 
-Signal* Mac80211::createSignal(simtime_t start, simtime_t length, double power, double bitrate)
+Signal* Mac80211::createSignal(	simtime_t start, simtime_t length,
+								double power, double bitrate)
 {
 	simtime_t end = start + length;
 	//create signal with start at current simtime and passed length
 	Signal* s = new Signal(start, length);
 
 	//create and set tx power mapping
-	ConstMapping* txPowerMapping = createSingleFrequencyMapping(start, end, centerFreq, 11.0e6, power);
+	ConstMapping* txPowerMapping
+			= createSingleFrequencyMapping(	start, end,
+											centerFreq, 11.0e6,
+											power);
 	s->setTransmissionPower(txPowerMapping);
 
 	//create and set bitrate mapping
 
 	//create mapping over time
-	Mapping* bitrateMapping = MappingUtils::createMapping(DimensionSet::timeDomain, Mapping::STEPS);
+	Mapping* bitrateMapping
+			= MappingUtils::createMapping(DimensionSet::timeDomain,
+										  Mapping::STEPS);
 
 	Argument pos(start);
 	bitrateMapping->setValue(pos, BITRATE_HEADER);

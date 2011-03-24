@@ -37,10 +37,14 @@ simple Mac80211 extends BaseMacLayer
         @class(Mac80211);
         
         int queueLength;
-        int rtsCtsThreshold;
+        // Number of bits in a packet before RTS/CTS is used. 
+        // Is currently not used.
+        int rtsCtsThreshold = default(-1); 
 
         double bitrate @unit(bps);
-		int defaultChannel; // minimum channel support
+        // The default channel to use. Not used by Mac80211 itself yet instead
+        // it uses the "centerFrequency" parameter.
+		int defaultChannel; 
 
     	// auto bit rate selection support: specify borders at which
         // to change modulation.	
@@ -57,4 +61,6 @@ simple Mac80211 extends BaseMacLayer
     	double txPower @unit(mW);
     	//the center frequency the Mac uses [Hz]
     	double centerFrequency @unit(Hz);
+    	
+    	headerLength = default(272bit);
 }
