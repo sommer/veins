@@ -236,6 +236,12 @@ Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
 	return snrMap;
 }
 
+void BaseDecider::getChannelInfo(simtime_t start, simtime_t end,
+								 AirFrameVector& out)
+{
+	phy->getChannelInfo(start, end, out);
+}
+
 Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 										simtime_t end,
 										AirFrame* exclude)
@@ -248,7 +254,7 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 	AirFrameVector airFrames;
 
 	// collect all AirFrames that intersect with [start, end]
-	phy->getChannelInfo(start, end, airFrames);
+	getChannelInfo(start, end, airFrames);
 
 	//TODO: create a "MappingUtils:createMappingFrom()"-method and use it here instead
 	//of abusing the add method

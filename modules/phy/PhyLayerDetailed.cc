@@ -1,10 +1,31 @@
 #include "PhyLayerDetailed.h"
 #include "PhyUtils.h"
 #include "AirFrameMultiChannel_m.h"
+#include "Decider80211MultiChannel.h"
 
 Define_Module(PhyLayerDetailed);
 
+Decider* PhyLayerDetailed::getDeciderFromName(std::string name,
+											  ParameterMap& params) {
+	if(name == "Decider80211MultiChannel") {
+		return initializeDecider80211MultiChannel(params);
+	}
 
+	return PhyLayer::getDeciderFromName(name, params);
+}
+
+Decider* PhyLayerDetailed
+			::initializeDecider80211MultiChannel(ParameterMap& params)
+{
+	double threshold = params["threshold"];
+	return new Decider80211MultiChannel(this,
+								   threshold,
+								   sensitivity,
+								   decodingCurrentDelta,
+								   radioDetailed->getCurrentChannel(),
+								   findHost()->getIndex(),
+								   coreDebug);
+}
 
 Radio* PhyLayerDetailed::initializeRadio() {
     	int initialRadioState = par("initialRadioState"); //readPar("initalRadioState", (int) RadioUWBIR::SYNC);
@@ -121,6 +142,8 @@ void PhyLayerDetailed::setSwitchingCurrent(int from, int to) {
 
 void PhyLayerDetailed::setCurrentRadioChannel(int newRadioChannel) {
 	radioDetailed->setCurrentChannel(newRadioChannel);
+	decider->channelChanged(newRadioChannel);
+	coreEV << "Switched radio to channel " << newRadioChannel << endl;
 }
 
 int PhyLayerDetailed::getCurrentRadioChannel() {
@@ -131,6 +154,7 @@ int PhyLayerDetailed::getNbRadioChannels() {
 	return par("nbRadioChannels");
 }
 
+/*
 void PhyLayerDetailed::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) {
 	AirFrameVector tmp;
 	channelInfo.getAirFrames(from, to, tmp);
@@ -142,6 +166,7 @@ void PhyLayerDetailed::getChannelInfo(simtime_t from, simtime_t to, AirFrameVect
 		}
 	}
 }
+*/
 
 AirFrame *PhyLayerDetailed::encapsMsg(cPacket *macPkt)
 {
@@ -192,6 +217,7 @@ AirFrame *PhyLayerDetailed::encapsMsg(cPacket *macPkt)
 	s = 0;
 
 	frame->setId(world->getUniqueAirFrameId());
+	frame->setProtocolId(myProtocolId());
 	frame->encapsulate(macPkt);
 
 	// --- from here on, the AirFrame is the owner of the MacPacket ---

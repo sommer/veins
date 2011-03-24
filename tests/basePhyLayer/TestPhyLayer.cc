@@ -38,6 +38,8 @@ TestPhyLayer::~TestPhyLayer() {
 }
 
 void TestPhyLayer::testInitialisation() {
+	Enter_Method_Silent();
+
 	//run dependend tests
 	assertFalse("Check parameter \"usePropagationDelay\".", usePropagationDelay);
 

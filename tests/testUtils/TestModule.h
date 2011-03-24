@@ -4,7 +4,6 @@
 #include "TestManager.h"
 #include "asserts.h"
 #include "OmnetTestBase.h"
-#include <FindModule.h>
 #include <string>
 
 class TestModule;
@@ -120,6 +119,48 @@ public:
 	 */
 	virtual std::ostream& concat(std::ostream& o) const{
 		o << ": kind = " << kind << ", arrival = " << arrival << "s";
+		return o;
+	}
+};
+
+/**
+ * @brief Asserts a message with a specific kind in a specific time interval.
+ *
+ * Normally you shouldn't have to use this class by yourself.
+ */
+class AssertMsgInterval:public AssertMsgKind {
+protected:
+	simtime_t intvStart;
+	simtime_t intvEnd;
+public:
+	AssertMsgInterval(std::string msg, int kind,
+					  simtime_t intvStart, simtime_t intvEnd,
+					  bool isPlanned = false,
+					  bool continuesTests = false):
+		AssertMsgKind(msg, kind, intvStart, isPlanned, continuesTests),
+		intvStart(intvStart),
+		intvEnd(intvEnd)
+	{}
+
+	virtual ~AssertMsgInterval() {}
+
+	/**
+	 * @brief Returns true if the passed message has the kind and arrival time
+	 * this AssertMsgInterval expects.
+	 */
+	virtual bool isMessage(cMessage* msg) {
+		return msg->getKind() == kind
+			   && intvStart <= msg->getArrivalTime()
+			   && msg->getArrivalTime() <= intvEnd;
+	}
+
+	/**
+	 * @brief Concatenates the description text together with expected kind and
+	 * arrival time to an out stream.
+	 */
+	virtual std::ostream& concat(std::ostream& o) const{
+		o << ": kind = " << kind
+		  << ", arrival = (" << intvStart << "<=t<=" << intvEnd << ")";
 		return o;
 	}
 };
@@ -246,6 +287,16 @@ protected:
 	void assertMessage(std::string msg, int kind, simtime_t arrival, std::string destination = "");
 	
 	/**
+	 * Asserts the arrival of a message with the specified kind in the specified
+	 * time interval at module with the passed name.
+	 *
+	 * If the module name is ommited the message is expected at this module.
+	 */
+	void assertMessage(	std::string msg, int kind,
+						simtime_t intvStart, simtime_t intvEnd,
+						std::string destination = "");
+
+	/**
 	 * @brief Analog for "assertMessage" method but for a previously planned
 	 * test case.
 	 *
@@ -257,6 +308,23 @@ protected:
 	 */
 	void testForMessage(std::string testName,
 						int kind, simtime_t arrival,
+						std::string destination = "");
+	/**
+	 * @brief Analog for "assertMessage" method but for a previously planned
+	 * test case.
+	 *
+	 * @param testName Name of the planned test case this test executes.
+	 * @param kind The kind of the expected message.
+	 * @param intvStart The start of the time interval in which to expect the
+	 * 					message.
+	 * @param intvEnd 	The end of the time interval in which to expect the
+	 * 					message.
+	 * @param destination The destination TestModule at which the message is
+	 * 					  expected. Default is this module.
+	 */
+	void testForMessage(std::string testName,
+						int kind,
+						simtime_t intvStart, simtime_t intvEnd,
 						std::string destination = "");
 
 	/**
@@ -277,6 +345,24 @@ protected:
 	 */
 	void testAndWaitForMessage(	std::string testName,
 								int kind, simtime_t arrival,
+								std::string destination = "");
+
+	/**
+	 * @brief Analog for "waitForMessage" method but for a previously planned
+	 * test case.
+	 *
+	 * @param testName - name of the planned test case this test executes
+	 * @param kind - message kind of the expected message
+	 * @param intvStart The start of the time interval in which to expect the
+	 * 					message.
+	 * @param intvEnd 	The end of the time interval in which to expect the
+	 * 					message.
+	 * @param destination - destination where the message is expected
+	 * 						if omitted this module is used as destination
+	 */
+	void testAndWaitForMessage(	std::string testName,
+								int kind,
+								simtime_t intvStart, simtime_t intvEnd,
 								std::string destination = "");
 
 	/**

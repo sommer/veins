@@ -64,6 +64,7 @@ void TestManager::registerModule(const std::string& name, TestModule* module)
 
 void TestManager::continueTests(cMessage* msg)
 {
+	Enter_Method_Silent();
 	runTests(run, ++stage, msg);
 }
 

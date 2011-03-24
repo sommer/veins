@@ -48,7 +48,8 @@ public:
 	enum BaseDeciderControlKinds {
 		/** @brief The phy has recognized a bit error in the packet.*/
 		PACKET_DROPPED = 22100,
-		/** @brief Sub-classing decider should begin their own kinds at this value.*/
+		/** @brief Sub-classing decider should begin their own kinds at this
+		 * value.*/
 		LAST_BASE_DECIDER_CONTROL_KIND
 	};
 
@@ -90,11 +91,12 @@ protected:
 		void setAnswerTime(simtime_t answerAt) { canAnswerAt = answerAt; }
 	} CSRInfo;
 
-	/** @brief pointer to the currently running ChannelSenseRequest and its start-time */
+	/** @brief pointer to the currently running ChannelSenseRequest and its
+	 * start-time */
 	CSRInfo currentChannelSenseRequest;
 
-	/** @brief index for this Decider-instance given by Phy-Layer (mostly Host-index)
-	 * default-value for myIndex is -1, i.e. no parameter passed to constructor-call */
+	/** @brief index for this Decider-instance given by Phy-Layer (mostly
+	 * Host-index) */
 	int myIndex;
 
 	/** @brief toggles display of debugging messages */
@@ -104,10 +106,11 @@ public:
 	/**
 	 * @brief Initializes the decider with the passed values.
 	 *
-	 * Needs a pointer to its physical layer, the sensitivity, the index of the host
-	 * and the debug flag.
+	 * Needs a pointer to its physical layer, the sensitivity, the index of the
+	 * host and the debug flag.
 	 */
-	BaseDecider(DeciderToPhyInterface* phy, double sensitivity, int myIndex, bool debug):
+	BaseDecider(DeciderToPhyInterface* phy, double sensitivity,
+				int myIndex, bool debug):
 		Decider(phy),
 		sensitivity(sensitivity),
 		isChannelIdle(true),
@@ -127,7 +130,8 @@ public:
 	/**
 	 * @brief Processes an AirFrame given by the PhyLayer
 	 *
-	 * Returns the time point when the decider wants to be given the AirFrame again.
+	 * Returns the time point when the decider wants to be given the AirFrame
+	 * again.
 	 */
 	virtual simtime_t processSignal(AirFrame* frame);
 
@@ -153,6 +157,8 @@ public:
 	 * DeciderToPhyInterface, i.e. telling the PhyLayer to send it back.
 	 */
 	virtual simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);
+
+
 
 protected:
 	/**
@@ -214,8 +220,8 @@ protected:
 	virtual simtime_t handleNewSenseRequest(ChannelSenseRequest* request);
 
 	/**
-	 * @brief Handles the timeout or end of a ChannelSenseRequest by calculating the
-	 * ChannelState and returning the request to the mac layer.
+	 * @brief Handles the timeout or end of a ChannelSenseRequest by calculating
+	 * the ChannelState and returning the request to the mac layer.
 	 *
 	 * If this handler is reached the decider has to be able to answer the
 	 * request. Either because the timeout is reached or because the
@@ -232,16 +238,18 @@ protected:
 	virtual void setChannelIdleStatus(bool isIdle);
 
 	/**
-	 * @brief Returns point in time when the ChannelSenseRequest of the passed CSRInfo can be answered
-	 * (e.g. because channel state changed or timeout is reached).
+	 * @brief Returns point in time when the ChannelSenseRequest of the passed
+	 * CSRInfo can be answered (e.g. because channel state changed or timeout
+	 * is reached).
 	 */
 	virtual simtime_t canAnswerCSR(const CSRInfo& requestInfo);
 
 	/**
 	 * @brief Calculates the RSSI value for the passed interval.
 	 *
-	 * This method is called by BaseDecider when it answers a ChannelSenseRequest
-	 * or calculates the channel state. Can be overridden by sub classing Deciders.
+	 * This method is called by BaseDecider when it answers a
+	 * ChannelSenseRequest or calculates the channel state. Can be overridden
+	 * by sub classing Deciders.
 	 *
 	 * Default implementation returns the maximum RSSI value inside the
 	 * passed interval.
@@ -260,10 +268,25 @@ protected:
 	 * @brief Checks if the changed channel state enables us to answer
 	 * any ongoing ChannelSenseRequests.
 	 *
-	 * This method is ment to update only an already ongoing ChannelSenseRequests
-	 * it can't handle a new one.
+	 * This method is ment to update only an already ongoing
+	 * ChannelSenseRequests it can't handle a new one.
 	 */
 	virtual void channelStateChanged();
+
+	/**
+	 * @brief Collects the AirFrame on the channel during the passed interval.
+	 *
+	 * Forwards to DeciderToPhyInterfaces "getChannelInfo" method.
+	 * Subclassing deciders can override this method to filter the returned
+	 * AirFrames for their own criteria, for example by removing AirFrames on
+	 * another not interferring channel.
+	 *
+	 * @param start The start of the interval to collect AirFrames from.
+	 * @param end The end of the interval to collect AirFrames from.
+	 * @param out The output vector in which to put the AirFrames.
+	 */
+	virtual void getChannelInfo(simtime_t start, simtime_t end,
+								AirFrameVector& out);
 
 	//------Utility methods------------
 
@@ -275,13 +298,14 @@ protected:
 	 * of the Signal and the Signal-Strength-Mapping is divided by the
 	 * Noise-Strength-Mapping.
 	 *
-	 * Note: 'divided' means here the special element-wise operation on mappings.
-	 *
+	 * Note: 'divided' means here the special element-wise operation on
+	 * mappings.
 	 */
 	virtual Mapping* calculateSnrMapping(AirFrame* frame);
 
 	/**
-	 * @brief Calculates a RSSI-Mapping (or Noise-Strength-Mapping) for a Signal.
+	 * @brief Calculates a RSSI-Mapping (or Noise-Strength-Mapping) for a
+	 * Signal.
 	 *
 	 * This method can be used to calculate a RSSI-Mapping in case the parameter
 	 * exclude is omitted OR to calculate a Noise-Strength-Mapping in case the

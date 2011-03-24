@@ -1,4 +1,5 @@
 #include "TestModule.h"
+#include "FindModule.h"
 
 void TestModule::init(const std::string& name) {
 	this->name = name;
@@ -96,12 +97,33 @@ void TestModule::assertMessage(	std::string msg,
 					 destination);
 }
 
+void TestModule::assertMessage(	std::string msg,
+								int kind,
+								simtime_t intvStart, simtime_t intvEnd,
+								std::string destination)
+{
+
+	assertNewMessage(new AssertMsgInterval(msg, kind, intvStart, intvEnd),
+					 destination);
+}
+
 void TestModule::testForMessage(std::string testName,
 								int kind, simtime_t arrival,
 								std::string destination)
 {
 
 	assertNewMessage(new AssertMsgKind(testName, kind, arrival, true),
+					 destination);
+}
+
+void TestModule::testForMessage(std::string testName,
+								int kind,
+								simtime_t intvStart, simtime_t intvEnd,
+								std::string destination)
+{
+
+	assertNewMessage(new AssertMsgInterval(	testName, kind,
+											intvStart, intvEnd, true),
 					 destination);
 }
 
@@ -127,4 +149,14 @@ void TestModule::testAndWaitForMessage(	std::string testName,
 					 destination);
 }
 
+void TestModule::testAndWaitForMessage(	std::string testName,
+										int kind,
+										simtime_t intvStart, simtime_t intvEnd,
+										std::string destination)
+{
+
+	assertNewMessage(new AssertMsgInterval(	testName, kind,
+											intvStart, intvEnd, true, true),
+					 destination);
+}
 

@@ -55,6 +55,7 @@ void TestMacLayer::runTests(int run, int state, const cMessage* msg)
 }
 
 void TestMacLayer::testRun1(int stage, const cMessage* msg){
+	Enter_Method_Silent();
 	if(stage == 0)
 	{
 //planTest("1", "Check correct passing of channel state from decider to mac "
