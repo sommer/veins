@@ -78,8 +78,7 @@ void BasePhyLayer::initialize(int stage) {
             opp_error("Could not find BaseWorldUtility module");
         }
 
-	} else if (stage == 1){
-		if(cc->hasPar("sat")
+        if(cc->hasPar("sat")
 		   && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
             opp_error("Sensitivity can't be smaller than the "
 					  "signal attenuation threshold (sat) in ConnectionManager. "
@@ -91,6 +90,8 @@ void BasePhyLayer::initialize(int stage) {
 		initializeAnalogueModels(par("analogueModels").xmlValue());
 		//	- decider parameters
 		initializeDecider(par("decider").xmlValue());
+	} else if (stage == 1){
+
 
 		//initialise timer messages
 		radioSwitchingOverTimer = new cMessage("radio switching over", RADIO_SWITCHING_OVER);
@@ -377,7 +378,7 @@ void BasePhyLayer::handleAirFrame(cMessage* msg) {
 }
 
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
-	coreEV << "Received new AirFrame with ID " << frame->getId() << " from channel" << endl;
+	coreEV << "Received new AirFrame " << frame << " from channel." << endl;
 
 	if(channelInfo.isChannelEmpty()) {
 		radio->setTrackingModeTo(true);

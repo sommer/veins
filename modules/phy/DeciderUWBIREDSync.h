@@ -46,7 +46,7 @@ protected:
 
 private:
 	simtime_t tmin;
-	vector<AirFrame*> syncVector;
+	AirFrameVector syncVector;
 	Argument argSync;
 };
 

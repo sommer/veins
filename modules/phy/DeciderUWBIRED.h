@@ -81,9 +81,9 @@ protected:
 	ConstMapping* signalPower; // = signal->getReceivingPower();
 	// store relative offsets between signals starts
 	vector<simtime_t> offsets;
-	vector<AirFrame*> airFrameVector;
+	AirFrameVector airFrameVector;
 	// Create an iterator for each potentially colliding airframe
-	vector<AirFrame*>::iterator airFrameIter;
+	AirFrameVector::iterator airFrameIter;
 
 	typedef ConcatConstMapping<std::multiplies<double> > MultipliedMapping;
 

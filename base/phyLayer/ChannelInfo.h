@@ -1,7 +1,7 @@
 #ifndef CHANNELINFO_H_
 #define CHANNELINFO_H_
 
-#include <vector>
+#include <list>
 #include <omnetpp.h>
 #include "AirFrame_m.h"
 
@@ -264,7 +264,7 @@ public:
 	 *
 	 * Used as out type for "getAirFrames" method.
 	 */
-	typedef std::vector<AirFrame*> AirFrameVector;
+	typedef std::list<AirFrame*> AirFrameVector;
 
 protected:
 	/**
