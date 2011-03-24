@@ -16,7 +16,15 @@
 package org.mixim.modules.mac;
 
 //
-// TODO auto-generated module
+// Extends the the 802.11b MAC protocol by multi channel support meaning
+// changing of the channel used for transmission and reception during run-time. 
+// This module is intended to be used in combination with the 
+// Decider80211MultiChannel as decider for the physical layer.
+// See Nic80211MultiChannel for a pre configured NIC using this module.
+//
+// This module supports ad-hoc mode only (does not generate or handle
+// management frames), and does not support fragmentation, RTS threshold,
+// duplication detection and recovery.
 //
 simple Mac80211MultiChannel extends Mac80211
 {

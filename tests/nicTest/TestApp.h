@@ -22,7 +22,8 @@
 #include "Mac80211MultiChannel.h"
 
 /**
- * TODO - Generated class
+ * @brief Executes most of the tests by sending packets to other instances of
+ * this module.
  */
 class TestApp : public BaseModule,
 				public TestModule

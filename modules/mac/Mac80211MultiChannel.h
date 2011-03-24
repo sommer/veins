@@ -21,17 +21,37 @@
 #include "MacToPhyDetailedInterface.h"
 
 /**
- * TODO - Generated class
+ * @brief Adds multi channel support to Mac80211.
+ *
+ * Multi channel support enables the MAC layer to change the channel for
+ * transmission and reception during simulation.
+ *
+ * @author Karl Wessel
  */
 class Mac80211MultiChannel : public Mac80211
 {
 protected:
+	/** @brief Pointer to the interface extending the phy by multi channel
+	 * support.*/
 	MacToPhyDetailedInterface* detailedPhy;
+
+	/** @brief The current channel the used.*/
 	int currentChannel;
 protected:
     virtual void initialize(int stage);
 public:
+    /**
+     * @brief Tells the MAC layer to switch to the passed channel.
+     *
+     * This method can be used by upper layers to change the channel.
+     * @param channel The channel to switch to, must be 1<=channel<=14.
+     */
     void switchChannel(int channel);
+
+    /**
+     * @brief Returns the currently used channel.
+     * @return The currently used channel.
+     */
     int getChannel();
 };
 

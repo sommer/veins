@@ -22,15 +22,17 @@ import org.mixim.modules.mac.Mac80211MultiChannel;
 import org.mixim.modules.phy.PhyLayerDetailed;
 
 //
-// This NIC implements an 802.11 network interface card.
+// This NIC implements an 802.11 network interface card with multi channel 
+// support and power consumption.
 //
-// @see Mac80211, Decider80211
-// @author Marc Loebbers, Karl Wessel (port for MiXiM)
+// @see Mac80211MultiChannel, Decider80211MultiChannel
+// @author Karl Wessel
 //
 module Nic80211MultiChannel like INic
 {
     parameters:
-        string connectionManagerName = default("");   //name of the ConnectionManager module
+        //name of the ConnectionManager module
+        string connectionManagerName = default("");   
     	@display("i=block/ifcard");
     	double sleepCurrent @unit(mA);
         double rxCurrent @unit(mA);

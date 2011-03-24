@@ -22,7 +22,7 @@
 /**
  * @brief Starts and manages the tests for NIC functionality.
  *
- * Test run 1: TODO
+ * Test run 1: tests for Nic80211MultiChannel
  */
 class NicTests : public TestManager
 {
@@ -47,7 +47,8 @@ protected:
 	 * TestModule.
 	 *
 	 * Tests for this test run:
-	 * - TODO
+	 * - sending between different host on different channels
+	 * - interference between channel (non existent)
 	 */
     void testRun1(int stage, cMessage* msg);
 
