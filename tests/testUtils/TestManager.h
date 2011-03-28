@@ -95,6 +95,16 @@ protected:
 	virtual void planTests(int run) {};
 
 	/**
+	 * @brief Calles whenever a message arrived at a test module.
+	 *
+	 * Can be used to handle messages which do not have influence on test
+	 * execution but are needed for evaluation.
+	 * @param module The module the message arrived on.
+	 * @param msg The message arrived.
+	 */
+	virtual void onTestModuleMessage(std::string module, cMessage* msg) {}
+
+	/**
 	 * @brief Reads current run number from ned parameter and calls planTests()
 	 * followed by "runTests()" in stage number two.
 	 *
@@ -202,6 +212,18 @@ public:
 	 * needed. Is displayed if the test for the presence of this module failes.
 	 */
 	void planTestModule(std::string id, std::string description);
+
+	/**
+	 * @brief Is called whenever a message arrives at a TestModule.
+	 *
+	 * Forwards the message to "onTestModuleMessage" which can be overridden
+	 * by tests to react to certain messages although they do not influence the
+	 * test execution.
+	 *
+	 * @param module The test module the message arrived on.
+	 * @param msg The message arrived at a TestModule.
+	 */
+	void onMessage(std::string module, cMessage* msg);
 };
 
 #endif /*TESTMANAGER_H_*/

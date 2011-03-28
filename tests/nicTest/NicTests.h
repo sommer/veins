@@ -27,6 +27,10 @@
 class NicTests : public TestManager
 {
 protected:
+	const int numPings;
+	int pingsSent;
+	int pingsRcvd;
+protected:
 	/**
 	 * @brief Just forwards to the corresponding "planTestRunX()" method.
 	 * @param run The test run to plan tests for.
@@ -52,6 +56,68 @@ protected:
 	 */
     void testRun1(int stage, cMessage* msg);
 
+    /**
+	 * @brief Plans tests to be executed in test run 2.
+	 */
+	void planTestRun2();
+	/**
+	 * @brief Executes test run 2 by forwarding execution to the correct
+	 * TestModule.
+	 *
+	 * Tests for this test run:
+	 * - communication between two non interfering pairs on same channel
+	 */
+    void testRun2(int stage, cMessage* msg);
+
+    /**
+	 * @brief Plans tests to be executed in test run 3.
+	 */
+	void planTestRun3();
+	/**
+	 * @brief Executes test run 3 by forwarding execution to the correct
+	 * TestModule.
+	 *
+	 * Tests for this test run:
+	 * - communication between two non interfering pairs on different channel
+	 */
+    void testRun3(int stage, cMessage* msg);
+
+    /**
+	 * @brief Plans tests to be executed in test run 4.
+	 */
+	void planTestRun4();
+	/**
+	 * @brief Executes test run 4 by forwarding execution to the correct
+	 * TestModule.
+	 *
+	 * Tests for this test run:
+	 * - communication between two interfering pairs on same channel
+	 */
+    void testRun4(int stage, cMessage* msg);
+
+    /**
+	 * @brief Plans tests to be executed in test run 5.
+	 */
+	void planTestRun5();
+	/**
+	 * @brief Executes test run 5 by forwarding execution to the correct
+	 * TestModule.
+	 *
+	 * Tests for this test run:
+	 * - communication between two interfering pairs on different channel
+	 */
+    void testRun5(int stage, cMessage* msg);
+
+    void onTestModuleMessage(std::string module, cMessage* msg);
+
+    void testForRange(std::string test,
+    				  simtime_t from, simtime_t to, simtime_t act);
+public:
+    NicTests():
+    	numPings(100),
+    	pingsSent(0),
+    	pingsRcvd(0)
+    {}
 };
 
 #endif

@@ -43,6 +43,7 @@ void TestModule::announceMessage(cMessage* msg) {
 	if(!foundMessage) {
 		fail(log("Received not expected Message " + toString(msg) + " at " + toString(msg->getArrivalTime()) + "s"));
 	}
+	manager->onMessage(name, msg);
 }
 
 void TestModule::finalize() {

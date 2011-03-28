@@ -29,12 +29,12 @@ class TestApp : public BaseModule,
 				public TestModule
 {
 protected:
-	enum {
-		TESTPACKET = 22331,
-	};
+
 	cGate* out;
 	int myIndex;
 	Mac80211MultiChannel* mac;
+	int pingsSent;
+	simtime_t lastPong;
   protected:
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage *msg);
@@ -42,11 +42,24 @@ protected:
     void sendPacket(int dest = -1);
     void continueIn(simtime_t time);
     void switchChannel(int channel);
-    int getCurrentChannel();
+
     simtime_t in(simtime_t delta);
 
+
+
   public:
+    enum {
+    	WAITING = 2224,
+		TESTPACKET = 22331,
+		PONG = TESTPACKET + 10,
+		PING = PONG + 1,
+
+	};
+     int getCurrentChannel();
     void testRun1(int stage);
+    void startTraffic();
+    void ping(int nr);
+    void pong();
 };
 
 #endif

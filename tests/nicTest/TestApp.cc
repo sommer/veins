@@ -25,6 +25,7 @@ void TestApp::initialize(int stage)
 
 	if(stage == 0)
 	{
+		pingsSent = 0;
 		myIndex = findHost()->getIndex();
 		init("app" + toString(myIndex));
 
@@ -44,16 +45,44 @@ void TestApp::handleMessage(cMessage *msg)
     delete msg;
 }
 
+
+
 void TestApp::finish()
 {
 	finalize();
 }
 
+void TestApp::ping(int nr){
+	Enter_Method_Silent();
+	cPacket* p = new cPacket(("Ping Traffic #" + toString(nr)).c_str(), PING+nr, 5000);
+	NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(myIndex - 1);
+	p->setControlInfo(cInfo);
+	send(p, out);
+	assertMessage("Ping", PING+nr, in(0), in(5), "app" + toString(myIndex - 1));
+	pingsSent++;
+}
+
+void TestApp::pong(){
+	Enter_Method_Silent();
+	cPacket* p = new cPacket("Ping Traffic", PONG, 5000);
+	NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(myIndex + 1);
+	p->setControlInfo(cInfo);
+	send(p, out);
+	assertMessage("Pong", PONG, in(0), in(5), "app" + toString(myIndex + 1));
+}
+
+void TestApp::startTraffic() {
+	Enter_Method_Silent();
+
+	ping(0);
+}
+
 void TestApp::testRun1(int stage)
 {
+	Enter_Method_Silent();
 	const double min = 0.0025;
 	const double max = 0.0037;
-	Enter_Method_Silent();
+
 	if(stage == 0) {
 //planTest("1.1", "A same channel but different time as B");
 		sendPacket();
@@ -139,9 +168,9 @@ int TestApp::getCurrentChannel(){
 }
 
 void TestApp::continueIn(simtime_t time){
-	scheduleAt(simTime() + time, new cMessage(0, 23242));
+	scheduleAt(simTime() + time, new cMessage(0, WAITING));
 	waitForMessage(	"Waiting for " + toString(time) + "s.",
-					23242,
+					WAITING,
 					simTime() + time);
 }
 

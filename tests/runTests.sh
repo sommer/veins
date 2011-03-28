@@ -26,6 +26,9 @@ cd ../channelInfo
 echo -----------------RadioState-------------------
 cd ../radioState
 ./runTest.sh
+echo "---------------NICTests(80211)----------------"
+cd ../nicTest
+./runTest.sh
 echo "---------Mapping (may take a while)-----------"
 cd ../mapping
 ./runTest.sh

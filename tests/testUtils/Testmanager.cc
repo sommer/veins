@@ -96,3 +96,8 @@ void TestManager::planTestModule(std::string id, std::string description)
 	plannedModules.insert(id);
 }
 
+void TestManager::onMessage(std::string module, cMessage* msg) {
+	Enter_Method_Silent();
+	onTestModuleMessage(module, msg);
+}
+
