@@ -18,7 +18,6 @@
 
 #include <omnetpp.h>
 #include "Mac80211.h"
-#include "MacToPhyDetailedInterface.h"
 
 /**
  * @brief Adds multi channel support to Mac80211.
@@ -31,9 +30,6 @@
 class Mac80211MultiChannel : public Mac80211
 {
 protected:
-	/** @brief Pointer to the interface extending the phy by multi channel
-	 * support.*/
-	MacToPhyDetailedInterface* detailedPhy;
 
 	/** @brief The current channel the used.*/
 	int currentChannel;

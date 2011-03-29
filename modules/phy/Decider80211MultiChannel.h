@@ -8,7 +8,6 @@
 #ifndef DECIDER80211MULTICHANNEL_H_
 #define DECIDER80211MULTICHANNEL_H_
 
-#include "AirFrameMultiChannel_m.h"
 
 #include "Decider80211Battery.h"
 

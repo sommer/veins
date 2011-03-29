@@ -423,6 +423,7 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 	frame->setProtocolId(myProtocolId());
 	frame->setBitLength(headerLength);
 	frame->setId(world->getUniqueAirFrameId());
+	frame->setChannel(radio->getCurrentChannel());
 	frame->setCfg(macToPhyCI->getConfig());
 
 

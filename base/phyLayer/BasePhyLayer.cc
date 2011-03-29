@@ -104,8 +104,12 @@ Radio* BasePhyLayer::initializeRadio() {
 	int initialRadioState = par("initialRadioState").longValue();
 	double radioMinAtt = par("radioMinAtt").doubleValue();
 	double radioMaxAtt = par("radioMaxAtt").doubleValue();
+	int nbRadioChannels = readPar("nbRadioChannels", 1);
+	int initialRadioChannel = readPar("initialRadioChannel", 0);
 
-	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState, radioMinAtt, radioMaxAtt);
+	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState,
+										 radioMinAtt, radioMaxAtt,
+										 initialRadioChannel, nbRadioChannels);
 
 	//	- switch times to TX
 	simtime_t rxToTX = par("timeRXToTX").doubleValue();
@@ -531,7 +535,7 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	frame->setProtocolId(myProtocolId());
 	frame->setBitLength(headerLength);
 	frame->setId(world->getUniqueAirFrameId());
-
+	frame->setChannel(radio->getCurrentChannel());
 
 
 	// pointer and Signal not needed anymore
@@ -769,6 +773,20 @@ ChannelState BasePhyLayer::getChannelState() {
 int BasePhyLayer::getPhyHeaderLength() {
 	Enter_Method_Silent();
 	return par("headerLength").longValue();
+}
+
+void BasePhyLayer::setCurrentRadioChannel(int newRadioChannel) {
+	radio->setCurrentChannel(newRadioChannel);
+	decider->channelChanged(newRadioChannel);
+	coreEV << "Switched radio to channel " << newRadioChannel << endl;
+}
+
+int BasePhyLayer::getCurrentRadioChannel() {
+	return radio->getCurrentChannel();
+}
+
+int BasePhyLayer::getNbRadioChannels() {
+	return par("nbRadioChannels");
 }
 
 //--DeciderToPhyInterface implementation------------

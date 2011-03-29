@@ -447,6 +447,15 @@ public:
 	 */
 	virtual int getPhyHeaderLength();
 
+	/** @brief Sets the channel currently used by the radio. */
+	virtual void setCurrentRadioChannel(int newRadioChannel);
+
+	/** @brief Returns the channel currently used by the radio. */
+	virtual int getCurrentRadioChannel();
+
+	/** @brief Returns the number of channels available on this radio. */
+	virtual int getNbRadioChannels();
+
 	/*@}*/
 
 	//---------DeciderToPhyInterface implementation-----------

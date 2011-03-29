@@ -24,11 +24,6 @@ void Mac80211MultiChannel::initialize(int stage)
     Mac80211::initialize(stage);
 
     if(stage == 0) {
-    	detailedPhy = dynamic_cast<MacToPhyDetailedInterface*>(phy);
-    	if(!detailedPhy) {
-    		opp_error("Physical layer does not support multiple channels!"
-    				  "Please make sure to use PhyLayerDetailed.");
-    	}
     }
     else if(stage == 1) {
     	switchChannel(par("defaultChannel").longValue());
@@ -41,11 +36,11 @@ void Mac80211MultiChannel::switchChannel(int channel) {
 				  " supported by this protocoll.", channel);
 	}
 	currentChannel = channel;
-	detailedPhy->setCurrentRadioChannel(currentChannel);
+	phy->setCurrentRadioChannel(currentChannel);
 
 	centerFreq = CENTER_FREQUENCIES[currentChannel];
 }
 
 int Mac80211MultiChannel::getChannel() {
-	return detailedPhy->getCurrentRadioChannel();
+	return phy->getCurrentRadioChannel();
 }

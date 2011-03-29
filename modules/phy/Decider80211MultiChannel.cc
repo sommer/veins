@@ -33,10 +33,7 @@ void Decider80211MultiChannel::getChannelInfo(simtime_t start, simtime_t end, Ai
 		it != out.end(); ++it)
 	{
 		AirFrame* af = *it;
-		assert(af);
-		assert(dynamic_cast<AirFrameMultiChannel*>(af));
-		AirFrameMultiChannel* afm = static_cast<AirFrameMultiChannel*>(af);
-		if(afm->getChannel() != currentChannel) {
+		if(af->getChannel() != currentChannel) {
 			it = out.erase(it);
 			--it;
 		}
@@ -44,18 +41,14 @@ void Decider80211MultiChannel::getChannelInfo(simtime_t start, simtime_t end, Ai
 }
 
 simtime_t Decider80211MultiChannel::processNewSignal(AirFrame* frame) {
-	assert(dynamic_cast<AirFrameMultiChannel*>(frame));
-	AirFrameMultiChannel* af = static_cast<AirFrameMultiChannel*>(frame);
-	if(af->getChannel() != currentChannel)
+	if(frame->getChannel() != currentChannel)
 		return notAgain;
 
 	return Decider80211Battery::processNewSignal(frame);
 }
 
 simtime_t Decider80211MultiChannel::processSignalEnd(AirFrame* frame) {
-	assert(dynamic_cast<AirFrameMultiChannel*>(frame));
-	AirFrameMultiChannel* af = static_cast<AirFrameMultiChannel*>(frame);
-	if(af->getChannel() != currentChannel) {
+	if(frame->getChannel() != currentChannel) {
 		//TODO: hand up broken packet to upper layer
 		// we have processed this AirFrame and we prepare to receive the next one
 		currentSignal.first = 0;

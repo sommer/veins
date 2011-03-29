@@ -243,6 +243,12 @@ protected:
 	 */
 	RadioStateAnalogueModel rsam;
 
+	/** @brief Currently selected channel (varies between 0 and nbChannels-1). */
+	int currentChannel;
+
+	/** @brief Number of available channels. */
+	int nbChannels;
+
 public:
 
 	/**
@@ -258,12 +264,14 @@ public:
 	static Radio* createNewRadio(bool recordStats = false,
 								 int initialState = RX,
 								 double minAtt = 1.0,
-								 double maxAtt = 0.0)
+								 double maxAtt = 0.0,
+								 int currentChannel=0, int nbChannels=1)
 	{
 		return new Radio(NUM_RADIO_STATES,
 						 recordStats,
 						 initialState,
-						 minAtt, maxAtt);
+						 minAtt, maxAtt,
+						 currentChannel, nbChannels);
 	}
 
 	/**
@@ -334,6 +342,16 @@ public:
 		rsam.setTrackingModeTo(b);
 	}
 
+	void setCurrentChannel(int newChannel) {
+		assert(newChannel > -1);
+		assert(newChannel < nbChannels);
+		currentChannel = newChannel;
+	}
+
+	int getCurrentChannel() {
+		return currentChannel;
+	}
+
 
 protected:
 	/**
@@ -354,7 +372,8 @@ protected:
 	Radio(int numRadioStates,
 		  bool recordStats,
 		  int initialState = RX,
-		  double minAtt = 1.0, double maxAtt = 0.0);
+		  double minAtt = 1.0, double maxAtt = 0.0,
+		  int currentChannel = 0, int nbChannels = 1);
 
 	/**
 	 * @brief responsible for making entries to the RSAM

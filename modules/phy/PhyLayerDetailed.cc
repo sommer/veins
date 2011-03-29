@@ -1,31 +1,7 @@
 #include "PhyLayerDetailed.h"
 #include "PhyUtils.h"
-#include "AirFrameMultiChannel_m.h"
-#include "Decider80211MultiChannel.h"
 
 Define_Module(PhyLayerDetailed);
-
-Decider* PhyLayerDetailed::getDeciderFromName(std::string name,
-											  ParameterMap& params) {
-	if(name == "Decider80211MultiChannel") {
-		return initializeDecider80211MultiChannel(params);
-	}
-
-	return PhyLayer::getDeciderFromName(name, params);
-}
-
-Decider* PhyLayerDetailed
-			::initializeDecider80211MultiChannel(ParameterMap& params)
-{
-	double threshold = params["threshold"];
-	return new Decider80211MultiChannel(this,
-								   threshold,
-								   sensitivity,
-								   decodingCurrentDelta,
-								   radioDetailed->getCurrentChannel(),
-								   findHost()->getIndex(),
-								   coreDebug);
-}
 
 Radio* PhyLayerDetailed::initializeRadio() {
     	int initialRadioState = par("initialRadioState"); //readPar("initalRadioState", (int) RadioUWBIR::SYNC);
@@ -138,91 +114,4 @@ void PhyLayerDetailed::setSwitchingCurrent(int from, int to) {
 	}
 
 	BatteryAccess::drawCurrent(current, act);
-}
-
-void PhyLayerDetailed::setCurrentRadioChannel(int newRadioChannel) {
-	radioDetailed->setCurrentChannel(newRadioChannel);
-	decider->channelChanged(newRadioChannel);
-	coreEV << "Switched radio to channel " << newRadioChannel << endl;
-}
-
-int PhyLayerDetailed::getCurrentRadioChannel() {
-	return radioDetailed->getCurrentChannel();
-}
-
-int PhyLayerDetailed::getNbRadioChannels() {
-	return par("nbRadioChannels");
-}
-
-/*
-void PhyLayerDetailed::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) {
-	AirFrameVector tmp;
-	channelInfo.getAirFrames(from, to, tmp);
-	AirFrameVector::iterator it;
-	for(it=tmp.begin(); it != tmp.end(); it++) {
-		AirFrameMultiChannel* af = check_and_cast<AirFrameMultiChannel*>(*it);
-		if(af->getChannel() == radioDetailed->getCurrentChannel()) {
-			out.push_back(af);
-		}
-	}
-}
-*/
-
-AirFrame *PhyLayerDetailed::encapsMsg(cPacket *macPkt)
-{
-	// the cMessage passed must be a MacPacket... but no cast needed here
-	// MacPkt* pkt = static_cast<MacPkt*>(msg);
-
-	// ...and must always have a ControlInfo attached (contains Signal)
-	cObject* ctrlInfo = macPkt->removeControlInfo();
-	assert(ctrlInfo);
-
-	MacToPhyControlInfo* macToPhyCI = static_cast<MacToPhyControlInfo*>(ctrlInfo);
-
-	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
-	// We are now the new owner of this instance.
-	Signal* s = macToPhyCI->retrieveSignal();
-
-
-	// delete the Control info
-	delete macToPhyCI;
-	macToPhyCI = 0;
-	ctrlInfo = 0;
-
-	// make sure we really obtained a pointer to an instance
-	assert(s);
-
-	// put host move pattern to Signal
-	s->setMove(move);
-
-	// create the new AirFrame
-	AirFrameMultiChannel* frame = new AirFrameMultiChannel(macPkt->getName(), AIR_FRAME);
-
-	//set priority of AirFrames above the normal priority to ensure
-	//channel consistency (before any thing else happens at a time
-	//point t make sure that the channel has removed every AirFrame
-	//ended at t and added every AirFrame started at t)
-	frame->setSchedulingPriority(airFramePriority);
-
-	// set the members
-	assert(s->getSignalLength() > 0);
-	frame->setDuration(s->getSignalLength());
-	// copy the signal into the AirFrame
-	frame->setSignal(*s);
-	frame->setBitLength(headerLength);
-
-	frame->setChannel(radioDetailed->getCurrentChannel());
-	// pointer and Signal not needed anymore
-	delete s;
-	s = 0;
-
-	frame->setId(world->getUniqueAirFrameId());
-	frame->setProtocolId(myProtocolId());
-	frame->encapsulate(macPkt);
-
-	// --- from here on, the AirFrame is the owner of the MacPacket ---
-	macPkt = 0;
-	EV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
-
-	return frame;
 }

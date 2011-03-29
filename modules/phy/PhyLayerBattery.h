@@ -86,6 +86,7 @@ protected:
 	 *
 	 * - Decider80211
 	 * - Decider80211Battery
+	 * - Decider80211MultiChannel
 	 * - SNRThresholdDecider
 	 */
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
@@ -94,6 +95,11 @@ protected:
 	 * @brief Initializes a new Decider80211Battery from the passed parameter map.
 	 */
 	virtual Decider* initializeDecider80211Battery(ParameterMap& params);
+
+	/**
+	 * @brief Initializes a new Decider80211MultiChannel from the passed parameter map.
+	 */
+	virtual Decider* initializeDecider80211MultiChannel(ParameterMap& params);
 
 	/**
 	 * @brief Calculates the current needed for the transmission of the

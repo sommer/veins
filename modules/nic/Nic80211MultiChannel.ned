@@ -19,7 +19,7 @@
 package org.mixim.modules.nic;
 
 import org.mixim.modules.mac.Mac80211MultiChannel;
-import org.mixim.modules.phy.PhyLayerDetailed;
+import org.mixim.modules.phy.PhyLayerBattery;
 
 //
 // This NIC implements an 802.11 network interface card with multi channel 
@@ -69,7 +69,7 @@ module Nic80211MultiChannel like INic
             @display("p=96,87;i=block/layer");
         }
 
-        phy: PhyLayerDetailed {
+        phy: PhyLayerBattery {
             headerLength = 192bit;
             sensitivity = default(-119.5dBm);
             decider = default(xmldoc("Nic80211MultiChannel_Decider.xml"));
