@@ -85,13 +85,12 @@ void BasePhyLayer::initialize(int stage) {
 					  "Please adjust your omnetpp.ini file accordingly.");
 		}
 
+	} else if (stage == 1){
 		//read complex(xml) ned-parameters
 		//	- analogue model parameters
 		initializeAnalogueModels(par("analogueModels").xmlValue());
 		//	- decider parameters
 		initializeDecider(par("decider").xmlValue());
-	} else if (stage == 1){
-
 
 		//initialise timer messages
 		radioSwitchingOverTimer = new cMessage("radio switching over", RADIO_SWITCHING_OVER);

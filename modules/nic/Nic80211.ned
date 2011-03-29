@@ -52,8 +52,6 @@ module Nic80211 like INic
 			neighborhoodCacheSize = default(30);
 			neighborhoodCacheMaxAge = default(100s);
 			txPower = default(110.11mW);
-			defaultChannel = default(1); 
-			centerFrequency = default(2.412e9Hz);
             
             @display("p=96,87;i=block/layer");
         }
@@ -62,6 +60,8 @@ module Nic80211 like INic
             headerLength = 192bit;
             sensitivity = default(-119.5dBm);
             decider = default(xmldoc("Nic80211_Decider.xml"));
+            initialRadioChannel = default(1);
+            nbRadioChannels = default(15); //1 to 14, 0 is invalid
             @display("p=96,158;i=block/process;is=n");
         }
 

@@ -92,13 +92,9 @@ public:
 	Decider80211(DeciderToPhyInterface* phy,
 				double threshold,
 				double sensitivity,
-				double centerFrequency,
+				int channel,
 				int myIndex = -1,
-				bool debug = false):
-		BaseDecider(phy, sensitivity, myIndex, debug),
-		snrThreshold(threshold),
-		centerFrequency(centerFrequency)
-	{}
+				bool debug = false);
 
 	virtual ~Decider80211() {};
 };

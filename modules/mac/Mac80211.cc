@@ -65,7 +65,7 @@ void Mac80211::initialize(int stage)
         autoBitrate = hasPar("autoBitrate") ? par("autoBitrate").boolValue() : false;
 
         txPower = hasPar("txPower") ? par("txPower").doubleValue() : 110.11;
-        centerFreq = hasPar("centerFrequency") ? par("centerFrequency").doubleValue() : 2.412e9;
+
 
         delta = 1E-9;
 
@@ -78,9 +78,13 @@ void Mac80211::initialize(int stage)
             opp_error("TranmitterPower can't be bigger than pMax in ConnectionManager! "
             	      "Please adjust your omnetpp.ini file accordingly.");
 
-    	//TODO: save channel to radio or as member variable!
-    	int channel = hasPar("defaultChannel") ? par("defaultChannel") : 0;
-
+    	int channel = phy->getCurrentRadioChannel();
+    	if(!(1<=channel && channel<=14)) {
+    		opp_error("Radio set to invalid channel %d. Please make sure the"
+    				  " phy modules parameter \"initialRadioChannel\" is set to"
+    				  " a valid 802.11 channel (1 to 14)!", channel);
+    	}
+    	centerFreq = CENTER_FREQUENCIES[channel];
 
         bool found = false;
         bitrate = hasPar("bitrate") ? par("bitrate").doubleValue() : BITRATES_80211[0];

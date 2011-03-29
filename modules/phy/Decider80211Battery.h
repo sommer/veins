@@ -60,11 +60,11 @@ public:
 	Decider80211Battery(DeciderToPhyInterface* phy,
 						double threshold,
 						double sensitivity,
-						double centerFrequency,
+						int channel,
 						double decodingCurrentDelta,
 						int myIndex = -1,
 						bool debug = false):
-		Decider80211(phy, threshold, sensitivity, centerFrequency, myIndex, debug),
+		Decider80211(phy, threshold, sensitivity, channel, myIndex, debug),
 		decodingCurrentDelta(decodingCurrentDelta)
 	{}
 

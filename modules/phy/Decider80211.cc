@@ -9,6 +9,20 @@
 #include <DeciderResult80211.h>
 #include <Mac80211Pkt_m.h>
 
+Decider80211::Decider80211(	DeciderToPhyInterface* phy,
+							double threshold,
+							double sensitivity,
+							int channel,
+							int myIndex,
+							bool debug):
+	BaseDecider(phy, sensitivity, myIndex, debug),
+	snrThreshold(threshold)
+{
+	assert(1 <= channel);
+	assert(channel  <= 14);
+	centerFrequency = CENTER_FREQUENCIES[channel];
+}
+
 simtime_t Decider80211::processNewSignal(AirFrame* frame) {
 	if(currentSignal.first != 0) {
 		debugEV << "Already receiving another AirFrame!" << endl;

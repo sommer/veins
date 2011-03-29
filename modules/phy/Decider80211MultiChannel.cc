@@ -16,12 +16,10 @@ Decider80211MultiChannel::Decider80211MultiChannel(DeciderToPhyInterface* phy,
 					int myIndex,
 					bool debug):
 	Decider80211Battery(phy, threshold, sensitivity,
-						0.0, decodingCurrentDelta,
+						currentChannel, decodingCurrentDelta,
 						myIndex, debug),
 	currentChannel(currentChannel)
 {
-	assert(1 <= currentChannel && currentChannel <= 14);
-	centerFrequency = CENTER_FREQUENCIES[currentChannel];
 }
 
 Decider80211MultiChannel::~Decider80211MultiChannel() {}

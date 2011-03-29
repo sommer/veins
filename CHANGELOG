@@ -5,6 +5,8 @@ support
 + added parameter "scaleNodeByDepth" to BaseMobility to disable scaling of nodes
 when tkenv and 3d is used
 + added more modulation models to Decider802154Narrow
+* removed "centerFrequency" and "defaultChannel" parameter from Mac80211 module,
+they are replaced by BasePhyLayers "initialRadioChannel" parameter
 * organized inter-module dependent initialisation code
 * fixed CSMA802154 module to correctly use csma802154 class instead of only csma
 * fixed problem where airframes arrived at different order in tkenv and cmdenv

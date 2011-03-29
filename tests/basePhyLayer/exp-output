@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20110329-10:40:10-4173
+Assigned runID=Test1-0-20110329-15:15:47-8932
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -22,6 +22,14 @@ Initializing module tbpSim.node[0].utility, stage 0
 Initializing module tbpSim.node[0].mobility, stage 0
 Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
+Initializing module tbpSim.node[0].nic.mac, stage 0
+Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.testManager, stage 1
+Initializing module tbpSim.channelcontrol, stage 1
+Initializing module tbpSim.node[0].utility, stage 1
+Initializing module tbpSim.node[0].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[0].nic.phy, stage 1
 Passed: Check AnalogueModel name.
 Passed: Check for correct RSAM-pointer.
 Passed: Check AnalogueModel parameter count.
@@ -59,14 +67,6 @@ Passed: Check value of parameter "aLong".
 Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
-Initializing module tbpSim.node[0].nic.mac, stage 0
-Initializing module tbpSim.world, stage 1
-Initializing module tbpSim.testManager, stage 1
-Initializing module tbpSim.channelcontrol, stage 1
-Initializing module tbpSim.node[0].utility, stage 1
-Initializing module tbpSim.node[0].mobility, stage 1
-updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module tbpSim.node[0].nic.phy, stage 1
 Initializing module tbpSim.node[0].nic.mac, stage 1
 Initializing module tbpSim.testManager, stage 2
 Passed: Planning new test case:mac0
@@ -179,7 +179,7 @@ Passed: mac0 - Test has been executed.
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20110329-10:40:10-4173
+Assigned runID=Test1-1-20110329-15:15:47-8932
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -193,6 +193,14 @@ Initializing module tbpSim.node[0].utility, stage 0
 Initializing module tbpSim.node[0].mobility, stage 0
 Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
+Initializing module tbpSim.node[0].nic.mac, stage 0
+Initializing module tbpSim.world, stage 1
+Initializing module tbpSim.testManager, stage 1
+Initializing module tbpSim.channelcontrol, stage 1
+Initializing module tbpSim.node[0].utility, stage 1
+Initializing module tbpSim.node[0].mobility, stage 1
+updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
+Initializing module tbpSim.node[0].nic.phy, stage 1
 Passed: Check AnalogueModel name.
 Passed: Check for correct RSAM-pointer.
 Passed: Check AnalogueModel parameter count.
@@ -230,14 +238,6 @@ Passed: Check value of parameter "aLong".
 Passed: Check for parameter "anotherLong".
 Passed: Check type of parameter "anotherLong".
 Passed: Check value of parameter "anotherLong".
-Initializing module tbpSim.node[0].nic.mac, stage 0
-Initializing module tbpSim.world, stage 1
-Initializing module tbpSim.testManager, stage 1
-Initializing module tbpSim.channelcontrol, stage 1
-Initializing module tbpSim.node[0].utility, stage 1
-Initializing module tbpSim.node[0].mobility, stage 1
-updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
-Initializing module tbpSim.node[0].nic.phy, stage 1
 Initializing module tbpSim.node[0].nic.mac, stage 1
 Initializing module tbpSim.testManager, stage 2
 Passed: A valid switch time.
@@ -271,7 +271,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20110329-10:40:10-4174
+Assigned runID=Test2-0-20110329-15:15:47-8933
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -291,172 +291,24 @@ Initializing module tbpSim.node[0].utility, stage 0
 Initializing module tbpSim.node[0].mobility, stage 0
 Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[0].nic.mac, stage 0
 Initializing module tbpSim.node[1], stage 0
 Initializing module tbpSim.node[1].utility, stage 0
 Initializing module tbpSim.node[1].mobility, stage 0
 Initializing module tbpSim.node[1].nic, stage 0
 Initializing module tbpSim.node[1].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[1].nic.mac, stage 0
 Initializing module tbpSim.node[2], stage 0
 Initializing module tbpSim.node[2].utility, stage 0
 Initializing module tbpSim.node[2].mobility, stage 0
 Initializing module tbpSim.node[2].nic, stage 0
 Initializing module tbpSim.node[2].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[2].nic.mac, stage 0
 Initializing module tbpSim.node[3], stage 0
 Initializing module tbpSim.node[3].utility, stage 0
 Initializing module tbpSim.node[3].mobility, stage 0
 Initializing module tbpSim.node[3].nic, stage 0
 Initializing module tbpSim.node[3].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[3].nic.mac, stage 0
 Initializing module tbpSim.world, stage 1
 Initializing module tbpSim.testManager, stage 1
@@ -465,21 +317,169 @@ Initializing module tbpSim.node[0].utility, stage 1
 Initializing module tbpSim.node[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[0].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[0].nic.mac, stage 1
 Initializing module tbpSim.node[1].utility, stage 1
 Initializing module tbpSim.node[1].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[1].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[1].nic.mac, stage 1
 Initializing module tbpSim.node[2].utility, stage 1
 Initializing module tbpSim.node[2].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[2].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[2].nic.mac, stage 1
 Initializing module tbpSim.node[3].utility, stage 1
 Initializing module tbpSim.node[3].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[3].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[3].nic.mac, stage 1
 Initializing module tbpSim.testManager, stage 2
 Passed: A valid switch time.
@@ -546,7 +546,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test6, run #0...
 Scenario: $repetition=0
-Assigned runID=Test6-0-20110329-10:40:10-4175
+Assigned runID=Test6-0-20110329-15:15:47-8934
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -562,86 +562,12 @@ Initializing module tbpSim.node[0].utility, stage 0
 Initializing module tbpSim.node[0].mobility, stage 0
 Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[0].nic.mac, stage 0
 Initializing module tbpSim.node[1], stage 0
 Initializing module tbpSim.node[1].utility, stage 0
 Initializing module tbpSim.node[1].mobility, stage 0
 Initializing module tbpSim.node[1].nic, stage 0
 Initializing module tbpSim.node[1].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[1].nic.mac, stage 0
 Initializing module tbpSim.world, stage 1
 Initializing module tbpSim.testManager, stage 1
@@ -650,11 +576,85 @@ Initializing module tbpSim.node[0].utility, stage 1
 Initializing module tbpSim.node[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[0].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[0].nic.mac, stage 1
 Initializing module tbpSim.node[1].utility, stage 1
 Initializing module tbpSim.node[1].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[1].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[1].nic.mac, stage 1
 Initializing module tbpSim.testManager, stage 2
 Passed: Planning new test case:mac0
@@ -752,7 +752,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test7, run #0...
 Scenario: $repetition=0
-Assigned runID=Test7-0-20110329-10:40:10-4176
+Assigned runID=Test7-0-20110329-15:15:47-8935
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -772,172 +772,24 @@ Initializing module tbpSim.node[0].utility, stage 0
 Initializing module tbpSim.node[0].mobility, stage 0
 Initializing module tbpSim.node[0].nic, stage 0
 Initializing module tbpSim.node[0].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[0].nic.mac, stage 0
 Initializing module tbpSim.node[1], stage 0
 Initializing module tbpSim.node[1].utility, stage 0
 Initializing module tbpSim.node[1].mobility, stage 0
 Initializing module tbpSim.node[1].nic, stage 0
 Initializing module tbpSim.node[1].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[1].nic.mac, stage 0
 Initializing module tbpSim.node[2], stage 0
 Initializing module tbpSim.node[2].utility, stage 0
 Initializing module tbpSim.node[2].mobility, stage 0
 Initializing module tbpSim.node[2].nic, stage 0
 Initializing module tbpSim.node[2].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[2].nic.mac, stage 0
 Initializing module tbpSim.node[3], stage 0
 Initializing module tbpSim.node[3].utility, stage 0
 Initializing module tbpSim.node[3].mobility, stage 0
 Initializing module tbpSim.node[3].nic, stage 0
 Initializing module tbpSim.node[3].nic.phy, stage 0
-Passed: Check AnalogueModel name.
-Passed: Check for correct RSAM-pointer.
-Passed: Check AnalogueModel parameter count.
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check AnalogueModel name.
-Passed: Check AnalogueModel parameter count.
-Passed: Check for parameter "attenuation".
-Passed: Check type of parameter "attenuation".
-Passed: Check Decider name.
-Passed: Check Decider parameter count.
-Passed: Check for parameter "aString".
-Passed: Check type of parameter "aString".
-Passed: Check value of parameter "aString".
-Passed: Check for parameter "anotherString".
-Passed: Check type of parameter "anotherString".
-Passed: Check value of parameter "anotherString".
-Passed: Check for parameter "aBool".
-Passed: Check type of parameter "aBool".
-Passed: Check value of parameter "aBool".
-Passed: Check for parameter "anotherBool".
-Passed: Check type of parameter "anotherBool".
-Passed: Check value of parameter "anotherBool".
-Passed: Check for parameter "aDouble".
-Passed: Check type of parameter "aDouble".
-Passed: Check value of parameter "aDouble".
-Passed: Check for parameter "anotherDouble".
-Passed: Check type of parameter "anotherDouble".
-Passed: Check value of parameter "anotherDouble".
-Passed: Check for parameter "aLong".
-Passed: Check type of parameter "aLong".
-Passed: Check value of parameter "aLong".
-Passed: Check for parameter "anotherLong".
-Passed: Check type of parameter "anotherLong".
-Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[3].nic.mac, stage 0
 Initializing module tbpSim.world, stage 1
 Initializing module tbpSim.testManager, stage 1
@@ -946,21 +798,169 @@ Initializing module tbpSim.node[0].utility, stage 1
 Initializing module tbpSim.node[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[0].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[0].nic.mac, stage 1
 Initializing module tbpSim.node[1].utility, stage 1
 Initializing module tbpSim.node[1].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[1].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[1].nic.mac, stage 1
 Initializing module tbpSim.node[2].utility, stage 1
 Initializing module tbpSim.node[2].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[2].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[2].nic.mac, stage 1
 Initializing module tbpSim.node[3].utility, stage 1
 Initializing module tbpSim.node[3].mobility, stage 1
 updatePosition:  HostMove  startPos: (100,100,100) direction: (0,0,0) startTime: 0 speed: 0
 Initializing module tbpSim.node[3].nic.phy, stage 1
+Passed: Check AnalogueModel name.
+Passed: Check for correct RSAM-pointer.
+Passed: Check AnalogueModel parameter count.
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check AnalogueModel name.
+Passed: Check AnalogueModel parameter count.
+Passed: Check for parameter "attenuation".
+Passed: Check type of parameter "attenuation".
+Passed: Check Decider name.
+Passed: Check Decider parameter count.
+Passed: Check for parameter "aString".
+Passed: Check type of parameter "aString".
+Passed: Check value of parameter "aString".
+Passed: Check for parameter "anotherString".
+Passed: Check type of parameter "anotherString".
+Passed: Check value of parameter "anotherString".
+Passed: Check for parameter "aBool".
+Passed: Check type of parameter "aBool".
+Passed: Check value of parameter "aBool".
+Passed: Check for parameter "anotherBool".
+Passed: Check type of parameter "anotherBool".
+Passed: Check value of parameter "anotherBool".
+Passed: Check for parameter "aDouble".
+Passed: Check type of parameter "aDouble".
+Passed: Check value of parameter "aDouble".
+Passed: Check for parameter "anotherDouble".
+Passed: Check type of parameter "anotherDouble".
+Passed: Check value of parameter "anotherDouble".
+Passed: Check for parameter "aLong".
+Passed: Check type of parameter "aLong".
+Passed: Check value of parameter "aLong".
+Passed: Check for parameter "anotherLong".
+Passed: Check type of parameter "anotherLong".
+Passed: Check value of parameter "anotherLong".
 Initializing module tbpSim.node[3].nic.mac, stage 1
 Initializing module tbpSim.testManager, stage 2
 Passed: Planning new test case:mac0

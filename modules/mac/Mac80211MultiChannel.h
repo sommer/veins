@@ -30,10 +30,6 @@
 class Mac80211MultiChannel : public Mac80211
 {
 protected:
-
-	/** @brief The current channel the used.*/
-	int currentChannel;
-protected:
     virtual void initialize(int stage);
 public:
     /**

@@ -64,8 +64,6 @@ module Nic80211MultiChannel like INic
 			neighborhoodCacheSize = default(30);
 			neighborhoodCacheMaxAge = default(100s);
 			txPower = default(110.11mW);
-			defaultChannel = default(1); 
-			centerFrequency = default(2.412e9Hz);
             
             @display("p=96,87;i=block/layer");
         }

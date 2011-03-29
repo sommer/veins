@@ -13,6 +13,7 @@
 #include <SNRThresholdDecider.h>
 #include <JakesFading.h>
 
+
 Define_Module(PhyLayer);
 
 AnalogueModel* PhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
@@ -153,8 +154,9 @@ Decider* PhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 
 Decider* PhyLayer::initializeDecider80211(ParameterMap& params) {
 	double threshold = params["threshold"];
-	double centerFreq = params["centerFrequency"];
-	return new Decider80211(this, threshold, sensitivity, centerFreq, findHost()->getIndex(), coreDebug);
+	return new Decider80211(this, threshold, sensitivity,
+							radio->getCurrentChannel(),
+							findHost()->getIndex(), coreDebug);
 }
 
 Decider* PhyLayer::initializeDecider802154Narrow(ParameterMap& params) {

@@ -27,20 +27,6 @@ void Mac80211MultiChannel::initialize(int stage)
     if(stage == 0) {
     }
     else if(stage == 1) {
-    	BasePhyLayer* basePhy = FindModule<BasePhyLayer*>
-    								::findSubModule(getParentModule());
-    	assert(basePhy);
-    	if(	basePhy->par("initialRadioChannel").longValue()
-    		!= par("defaultChannel").longValue())
-    	{
-    		opp_error("Initial radio channel is set inconsistently in mac (%d)"
-    				  " and phy (%d)! Please change phy's"
-    				  " \"initialRadioChannel\" and mac's \"defaultChannel\""
-    				  " to match.",
-    				  basePhy->par("initialRadioChannel").longValue(),
-    				  par("defaultChannel").longValue());
-    	}
-    	switchChannel(par("defaultChannel").longValue());
     }
 }
 
@@ -49,10 +35,9 @@ void Mac80211MultiChannel::switchChannel(int channel) {
 		opp_error("Invalid channel %d. Mac tried to switch to a channel not"
 				  " supported by this protocoll.", channel);
 	}
-	currentChannel = channel;
-	phy->setCurrentRadioChannel(currentChannel);
+	phy->setCurrentRadioChannel(channel);
 
-	centerFreq = CENTER_FREQUENCIES[currentChannel];
+	centerFreq = CENTER_FREQUENCIES[channel];
 }
 
 int Mac80211MultiChannel::getChannel() {

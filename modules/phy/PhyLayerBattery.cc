@@ -58,11 +58,10 @@ Decider* PhyLayerBattery::getDeciderFromName(std::string name, ParameterMap& par
 
 Decider* PhyLayerBattery::initializeDecider80211Battery(ParameterMap& params) {
 	double threshold = params["threshold"];
-	double centerFreq = params["centerFrequency"];
 	return new Decider80211Battery(this,
 								   threshold,
 								   sensitivity,
-								   centerFreq,
+								   radio->getCurrentChannel(),
 								   decodingCurrentDelta,
 								   findHost()->getIndex(),
 								   coreDebug);
