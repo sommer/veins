@@ -1,6 +1,10 @@
 v2.1
++ added multi channel support to BasePhyLayer
++ added Nic80211MultiChannel which extends the Nic80211 with multi channel 
+support
 + added parameter "scaleNodeByDepth" to BaseMobility to disable scaling of nodes
 when tkenv and 3d is used
++ added more modulation models to Decider802154Narrow
 * organized inter-module dependent initialisation code
 * fixed CSMA802154 module to correctly use csma802154 class instead of only csma
 * fixed problem where airframes arrived at different order in tkenv and cmdenv
@@ -8,6 +12,13 @@ when tkenv and 3d is used
 itself again with ConnectionManager
 * changed Mac80211 to wait for end of transmission instead of end of a timer
 to start a new cycle after sending a CTS
+* typedef of ChannelInfo::AirFrameVector changed from vector to list
+* fixed csma's exponential slot interval from [1,2^BE] to [0,2^BE]
+* fixed a bug in SimpleBattery where the capacity wasn't updated if publishing
+was disabled
+
+
+
 
 v2.0
 + introduced Mixnet - compatibility modules for using MiXiM NICs within INET 

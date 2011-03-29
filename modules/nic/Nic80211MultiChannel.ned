@@ -24,6 +24,7 @@ import org.mixim.modules.phy.PhyLayerBattery;
 //
 // This NIC implements an 802.11 network interface card with multi channel 
 // support and power consumption.
+// Note: This NIC does not model interference between adjacent channels!
 //
 // @see Mac80211MultiChannel, Decider80211MultiChannel
 // @author Karl Wessel

@@ -22,6 +22,9 @@ package org.mixim.modules.mac;
 // Decider80211MultiChannel as decider for the physical layer.
 // See Nic80211MultiChannel for a pre configured NIC using this module.
 //
+// Note: Decider80211MultiChannel does not model interference between adjacent 
+//       channels!
+//
 // This module supports ad-hoc mode only (does not generate or handle
 // management frames), and does not support fragmentation, RTS threshold,
 // duplication detection and recovery.

@@ -22,7 +22,7 @@
  * considered lost, independent from the size of the part which was lost due to
  * channel change.
  *
- * NOTE: This decider does not model interference between channels!
+ * NOTE: This decider does not model interference between adjacent channels!
  *
  * @author Karl Wessel
  */
