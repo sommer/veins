@@ -740,7 +740,7 @@ simtime_t BasePhyLayer::setRadioState(int rs) {
 	Enter_Method_Silent();
 	assert(radio);
 
-	if(txOverTimer->isScheduled()) {
+	if(txOverTimer && txOverTimer->isScheduled()) {
 		opp_warning("Switched radio while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
 	}
 
@@ -776,6 +776,10 @@ int BasePhyLayer::getPhyHeaderLength() {
 }
 
 void BasePhyLayer::setCurrentRadioChannel(int newRadioChannel) {
+	if(txOverTimer && txOverTimer->isScheduled()) {
+		opp_warning("Switched channel while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
+	}
+
 	radio->setCurrentChannel(newRadioChannel);
 	decider->channelChanged(newRadioChannel);
 	coreEV << "Switched radio to channel " << newRadioChannel << endl;

@@ -14,6 +14,7 @@
 // 
 
 #include "Mac80211MultiChannel.h"
+#include "BasePhyLayer.h"
 
 Define_Module(Mac80211MultiChannel);
 
@@ -26,6 +27,19 @@ void Mac80211MultiChannel::initialize(int stage)
     if(stage == 0) {
     }
     else if(stage == 1) {
+    	BasePhyLayer* basePhy = FindModule<BasePhyLayer*>
+    								::findSubModule(getParentModule());
+    	assert(basePhy);
+    	if(	basePhy->par("initialRadioChannel").longValue()
+    		!= par("defaultChannel").longValue())
+    	{
+    		opp_error("Initial radio channel is set inconsistently in mac (%d)"
+    				  " and phy (%d)! Please change phy's"
+    				  " \"initialRadioChannel\" and mac's \"defaultChannel\""
+    				  " to match.",
+    				  basePhy->par("initialRadioChannel").longValue(),
+    				  par("defaultChannel").longValue());
+    	}
     	switchChannel(par("defaultChannel").longValue());
     }
 }

@@ -23,6 +23,8 @@
  * channel change.
  *
  * NOTE: This decider does not model interference between channels!
+ *
+ * @author Karl Wessel
  */
 class Decider80211MultiChannel: public Decider80211Battery
 {
@@ -52,16 +54,17 @@ protected:
 	 */
 	virtual simtime_t processNewSignal(AirFrame* frame);
 
+
 	/**
-	 * @brief Processes a received AirFrame.
+	 * @brief Checks if the passed completed AirFrame was received correctly.
 	 *
-	 * The SNR-mapping for the Signal is created and checked against the
-	 * Deciders SNR-threshold. Depending on that the received AirFrame is
-	 * either sent up to the MAC-Layer or dropped.
+	 * Returns the result as a DeciderResult.
+	 * If the channel changed during transmission the AirFrame is considered
+	 * broken.
 	 *
-	 * @return	usually return a value for: 'do not pass it again'
+	 * @return	The result of the decider for the passed AirFrame.
 	 */
-	virtual simtime_t processSignalEnd(AirFrame* frame);
+	virtual DeciderResult* checkIfSignalOk(AirFrame* frame);
 
 public:
 	/**

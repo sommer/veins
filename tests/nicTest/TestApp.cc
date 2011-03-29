@@ -83,7 +83,7 @@ void TestApp::testRun1(int stage)
 	const double min = 0.0025;
 	const double max = 0.0037;
 
-	if(stage == 0) {
+	if(stage == 0) { //@app1
 //planTest("1.1", "A same channel but different time as B");
 		sendPacket();
 		assertMessage("Com A at receiver B", TESTPACKET+myIndex,
@@ -91,7 +91,8 @@ void TestApp::testRun1(int stage)
 		assertMessage("Com A at sender B", TESTPACKET+myIndex,
 					  min, max, "app3");
 		testAndWaitForMessage("1.1", TESTPACKET+myIndex, min, max, "app0");
-	} else if(stage == 1){
+	}
+	else if(stage == 1){ //@app3
 //planTest("1.2", "B same channel but different time as A");
 		sendPacket();
 		assertMessage("Com B at receiver A", TESTPACKET+myIndex,
@@ -100,11 +101,13 @@ void TestApp::testRun1(int stage)
 					  in(min), in(max), "app1");
 		testAndWaitForMessage("1.2", TESTPACKET+myIndex,
 							  in(min), in(max), "app2");
-	} else if(stage == 2) {
+	}
+	else if(stage == 2) { //@app1
 //planTest("2.1", "A same channel same time as B");
 		sendPacket();
 		continueIn(0.0015);
-	} else if(stage == 3){
+	}
+	else if(stage == 3){ //@app3
 		assertMessage("Com A at receiver B", TESTPACKET+1,
 				  in(min-0.0015), in(max-0.0015), "app2");
 		assertMessage("Com A at sender B", TESTPACKET+1,
@@ -119,20 +122,22 @@ void TestApp::testRun1(int stage)
 				  in(min-0.0015+min), in(max-0.0015+max), "app1");
 		testAndWaitForMessage("2.2", TESTPACKET+myIndex,
 				  in(min-0.0015+min), in(max-0.0015+max), "app2");
-	} else if(stage == 4) {
+	} else if(stage == 4) { //@app3
 //planTest("3", "Sender of B switches to different channel");
 		switchChannel(14);
 		testForEqual("3", 14, getCurrentChannel());
 //planTest("4", "B different channel between sender and receiver");
 		sendPacket();
 		continueIn(5);
-	} else if(stage == 5) {
-		if(myIndex == 2) {
+	}
+	else if(stage == 5) {
+		if(myIndex == 2) { //@app2
 			testPassed("4");
 //planTest("5", "Receiver of B switches to different channel");
 			switchChannel(14);
 			testForEqual("5", 14, getCurrentChannel());
-		} else if(myIndex == 3) {
+		}
+		else if(myIndex == 3) { //@app3
 //planTest("6", "B sender and receiver back to same channel");
 			sendPacket();
 			testAndWaitForMessage("6", TESTPACKET+myIndex,
@@ -140,17 +145,41 @@ void TestApp::testRun1(int stage)
 		} else {
 			assertFalse("Not expected host index.", true);
 		}
-	}	else if(stage == 6) {
+	}
+	else if(stage == 6) { //@app1
 //planTest("7.1", "A different channel same time as B");
 		sendPacket();
 		continueIn(0.0015);
-	} else if(stage == 7){
+	}
+	else if(stage == 7){ //@app3
 		testForMessage("7.1", TESTPACKET+1,
 				  in(min-0.0015), in(max-0.0015), "app0");
 //planTest("7.2", "B different channel same time as A");
 		sendPacket();
 		testAndWaitForMessage("7.2", TESTPACKET+myIndex,
 				  in(min), in(max), "app2");
+	} else if(stage == 8){ //@app3
+//planTest("8", "B receiver changes channel during reception.");
+		sendPacket();
+		continueIn(min*0.9);
+	}
+	else if(stage == 9) { //@app2
+		//receiver changes channel before end of transmission
+		switchChannel(13);
+		continueIn(max*1.1 - min*0.9);
+	}
+	else if(stage == 10) { //@app3
+		//if no packet arrived until now test 8 is passed, otherwise there
+		//should be an unexpected packet
+		testPassed("8");
+//planTest("9", "B sender changes channel during transmission.");
+		sendPacket();
+		continueIn(min*0.9);
+	} else if(stage == 11) { //@app3
+		//switching channel during transmission should throw a warning, which
+		//we can only see in the diff of the output
+		switchChannel(13);
+		testPassed("9");
 	}
 }
 

@@ -48,14 +48,13 @@ protected:
 protected:
 
 	/**
-	 * @brief Checks a mapping against a specific threshold (element-wise).
+	 * @brief Checks if the passed completed AirFrame was received correctly.
 	 *
-	 * @return	true	, if every entry of the mapping is above threshold
-	 * 			false	, otherwise
+	 * Returns the result as a DeciderResult
 	 *
-	 *
+	 * @return	The result of the decider for the passed AirFrame.
 	 */
-	virtual DeciderResult* checkIfSignalOk(Mapping* snrMap, AirFrame* frame);
+	virtual DeciderResult* checkIfSignalOk(AirFrame* frame);
 
 	virtual simtime_t processNewSignal(AirFrame* frame);
 

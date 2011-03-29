@@ -243,7 +243,7 @@ protected:
 	 */
 	RadioStateAnalogueModel rsam;
 
-	/** @brief Currently selected channel (varies between 0 and nbChannels-1). */
+	/** @brief Currently selected channel (varies between 0 and nbChannels-1).*/
 	int currentChannel;
 
 	/** @brief Number of available channels. */
@@ -342,12 +342,22 @@ public:
 		rsam.setTrackingModeTo(b);
 	}
 
+	/**
+	 * @brief Changes the current channel of the radio.
+	 *
+	 * @param newChannel The new channel to switch to, between 0 and
+	 * 					 nbChannels-1
+	 */
 	void setCurrentChannel(int newChannel) {
 		assert(newChannel > -1);
 		assert(newChannel < nbChannels);
 		currentChannel = newChannel;
 	}
 
+	/**
+	 * @brief Returns the channel the radio is currently set to.
+	 * @return The current channel of the radio, between 0 and nbChannels-1.
+	 */
 	int getCurrentChannel() {
 		return currentChannel;
 	}

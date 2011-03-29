@@ -8,7 +8,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20110329-10:39:57-4155
+Assigned runID=Test1-0-20110329-11:25:48-5634
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -127,6 +127,8 @@ Passed: Planning new test case:5
 Passed: Planning new test case:6
 Passed: Planning new test case:7.1
 Passed: Planning new test case:7.2
+Passed: Planning new test case:8
+Passed: Planning new test case:9
 Passed: [app0] - Expected module - Receiving Host of pair A
 Passed: [app1] - Expected module - Sending Host of pair A
 Passed: [app2] - Expected module - Receiving Host of pair B
@@ -155,9 +157,17 @@ Passed: [app2] - Expected "[6] - B sender and receiver back to same channel": ki
 Passed: [app1] - Expected "Waiting for 0.0015s.": kind = 2224, arrival = 5.017164s
 Passed: [app0] - Expected "[7.1] - A different channel same time as B": kind = 22332, arrival = (5.018164<=t<=5.019364)
 Passed: [app2] - Expected "[7.2] - B different channel same time as A": kind = 22334, arrival = (5.019664<=t<=5.020864)
-** Event #181   T=5.020112   Elapsed: 0.005s (0m 00s)   ev/sec=0
+Passed: [app3] - Expected "Waiting for 0.00225s.": kind = 2224, arrival = 5.022292s
+Passed: [app2] - Expected "Waiting for 0.00182s.": kind = 2224, arrival = 5.024112s
+Passed: [8] - B receiver changes channel during reception.
+Passed: [app3] - Expected "Waiting for 0.00225s.": kind = 2224, arrival = 5.026362s
 
-<!> No more events -- simulation ended at event #181, t=5.020112.
+<!> Module NicTest.node[3].app: Switched channel while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!.
+
+Passed: [9] - B sender changes channel during transmission.
+** Event #215   T=5.02699   Elapsed: 0.005s (0m 00s)   ev/sec=0
+
+<!> No more events -- simulation ended at event #215, t=5.02699.
 
 
 Calling finish() at end of Run #0...
@@ -171,6 +181,8 @@ Passed: 5 - Test has been executed.
 Passed: 6 - Test has been executed.
 Passed: 7.1 - Test has been executed.
 Passed: 7.2 - Test has been executed.
+Passed: 8 - Test has been executed.
+Passed: 9 - Test has been executed.
 Passed: app0 - Test has been executed.
 Passed: app1 - Test has been executed.
 Passed: app2 - Test has been executed.
@@ -187,7 +199,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20110329-10:39:57-4156
+Assigned runID=Test2-0-20110329-11:25:48-5635
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -299,7 +311,7 @@ Passed: [0.2] - B on Channel 1.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage ratio should be very good (over 1.0). - (1<=1.434854424963<=2)
-** Event #4613   T=0.201344   Elapsed: 0.098s (0m 00s)   ev/sec=47061.2
+** Event #4613   T=0.201344   Elapsed: 0.099s (0m 00s)   ev/sec=46585.9
 
 <!> No more events -- simulation ended at event #4613, t=0.201344.
 
@@ -324,7 +336,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20110329-10:39:57-4157
+Assigned runID=Test3-0-20110329-11:25:49-5636
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -461,7 +473,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20110329-10:39:58-4158
+Assigned runID=Test4-0-20110329-11:25:49-5637
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -607,7 +619,7 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test5, run #0...
 Scenario: $repetition=0
-Assigned runID=Test5-0-20110329-10:39:58-4159
+Assigned runID=Test5-0-20110329-11:25:49-5638
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -728,7 +740,7 @@ Passed: [0.2] - B on Channel 2.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage should be about same as run 2. - (1<=1.434854424963<=2)
-** Event #5813   T=0.201344   Elapsed: 0.159s (0m 00s)   ev/sec=36553.5
+** Event #5813   T=0.201344   Elapsed: 0.160s (0m 00s)   ev/sec=36325
 
 <!> No more events -- simulation ended at event #5813, t=0.201344.
 

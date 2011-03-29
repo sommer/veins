@@ -63,8 +63,13 @@ double Decider80211::calcChannelSenseRSSI(simtime_t start, simtime_t end) {
 }
 
 
-DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
+DeciderResult* Decider80211::checkIfSignalOk(AirFrame* frame)
 {
+	// check if the snrMapping is above the Decider's specific threshold,
+	// i.e. the Decider has received it correctly
+
+	// first collect all necessary information
+	Mapping* snrMap = calculateSnrMapping(frame);
 	assert(snrMap);
 
 	Signal& s = frame->getSignal();
@@ -102,6 +107,9 @@ DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
 		EV << "Packet has ERRORS! It is lost!\n";
 		result = new DeciderResult80211(false, payloadBitrate, snirMin);
 	}
+
+	delete snrMap;
+	snrMap = 0;
 
 	return result;
 }
@@ -151,14 +159,8 @@ simtime_t Decider80211::processSignalEnd(AirFrame* frame)
 {
 	// here the Signal is finally processed
 
-	// first collect all necessary information
-	Mapping* snrMap = calculateSnrMapping(frame);
-	assert(snrMap);
+	DeciderResult* result = checkIfSignalOk(frame);
 
-	DeciderResult* result = checkIfSignalOk(snrMap, frame);
-
-	// check if the snrMapping is above the Decider's specific threshold,
-	// i.e. the Decider has received it correctly
 	if (result->isSignalCorrect())
 	{
 		EV << "packet was received correctly, it is now handed to upper layer...\n";
@@ -173,10 +175,6 @@ simtime_t Decider80211::processSignalEnd(AirFrame* frame)
 		phy->sendControlMsg(mac);
 		delete result;
 	}
-
-	delete snrMap;
-	snrMap = 0;
-
 
 	// we have processed this AirFrame and we prepare to receive the next one
 	currentSignal.first = 0;

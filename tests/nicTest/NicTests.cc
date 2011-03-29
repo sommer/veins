@@ -35,6 +35,8 @@ void NicTests::planTestRun1()
 	planTest("6", "B sender and receiver back to same channel");
 	planTest("7.1", "A different channel same time as B");
 	planTest("7.2", "B different channel same time as A");
+	planTest("8", "B receiver changes channel during reception.");
+	planTest("9", "B sender changes channel during transmission.");
 }
 
 void NicTests::planTestRun2()
@@ -103,6 +105,14 @@ void NicTests::testRun1(int stage, cMessage* msg)
 	} else if(stage == 6) {
 		getModule<TestApp>("app1")->testRun1(stage);
 	} else if(stage == 7) {
+		getModule<TestApp>("app3")->testRun1(stage);
+	} else if(stage == 8) {
+		getModule<TestApp>("app3")->testRun1(stage);
+	} else if(stage == 9) {
+		getModule<TestApp>("app2")->testRun1(stage);
+	} else if(stage == 10) {
+		getModule<TestApp>("app3")->testRun1(stage);
+	} else if(stage == 11) {
 		getModule<TestApp>("app3")->testRun1(stage);
 	}
 	//getModule<TestMacLayer>("mac0")->testRun1(stage, msg);

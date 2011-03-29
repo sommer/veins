@@ -6,6 +6,7 @@
  */
 
 #include "Decider80211MultiChannel.h"
+#include "DeciderResult80211.h"
 
 Decider80211MultiChannel::Decider80211MultiChannel(DeciderToPhyInterface* phy,
 					double threshold,
@@ -47,21 +48,23 @@ simtime_t Decider80211MultiChannel::processNewSignal(AirFrame* frame) {
 	return Decider80211Battery::processNewSignal(frame);
 }
 
-simtime_t Decider80211MultiChannel::processSignalEnd(AirFrame* frame) {
-	if(frame->getChannel() != currentChannel) {
-		//TODO: hand up broken packet to upper layer
-		// we have processed this AirFrame and we prepare to receive the next one
-		currentSignal.first = 0;
+DeciderResult* Decider80211MultiChannel::checkIfSignalOk(AirFrame* frame) {
+	DeciderResult* result = 0;
 
-		//channel is idle now
-		setChannelIdleStatus(true);
-		return notAgain;
+	if(frame->getChannel() != currentChannel) {
+		ConstMappingIterator* bitrateIt
+				= frame->getSignal().getBitrate()->createConstIterator();
+		bitrateIt->next(); //iterate to payload bitrate indicator
+		double payloadBitrate = bitrateIt->getValue();
+		delete bitrateIt;
+		EV << "Channel changed during reception. packet is lost!\n";
+		result = new DeciderResult80211(false, payloadBitrate, 0);
+	} else {
+		result = Decider80211Battery::checkIfSignalOk(frame);
 	}
 
-	return Decider80211Battery::processSignalEnd(frame);
+	return result;
 }
-
-
 
 void Decider80211MultiChannel::channelChanged(int newChannel) {
 	assert(1 <= currentChannel && currentChannel <= 14);
