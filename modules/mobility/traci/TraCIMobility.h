@@ -3,6 +3,8 @@
 // TraCIMobility - Mobility module to be controlled by TraCIScenarioManager
 // Copyright (C) 2006 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
 //
+// Documentation for these modules is at http://veins.car2x.org/
+//
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
@@ -75,7 +77,7 @@ class TraCIMobility : public BaseMobility
 			return external_id;
 		}
 		virtual Coord getPosition() {
-			return move.getStartPos();
+			return nextPos;
 		}
 		virtual std::string getRoadId() {
 			if (road_id == "") throw std::runtime_error("TraCIMobility::getRoadId called with no road_id set yet");
@@ -98,6 +100,9 @@ class TraCIMobility : public BaseMobility
 		}
 		void commandSetMaximumSpeed(float maxSpeed) {
 			getManager()->commandSetMaximumSpeed(getExternalId(), maxSpeed);
+		}
+		void commandSetSpeed(double speed) {
+			getManager()->commandSetSpeed(getExternalId(), speed);
 		}
 		void commandChangeRoute(std::string roadId, double travelTime) {
 			getManager()->commandChangeRoute(getExternalId(), roadId, travelTime);
@@ -166,7 +171,9 @@ class TraCIMobilityAccess
 {
 	public:
 		TraCIMobility* get(cModule* host) {
-			return FindModule<TraCIMobility*>::findSubModule(host);
+			TraCIMobility* traci = FindModule<TraCIMobility*>::findSubModule(host);
+			ASSERT(traci);
+			return traci;
 		};
 };
 

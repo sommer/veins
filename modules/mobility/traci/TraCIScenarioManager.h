@@ -2,6 +2,8 @@
 // TraCIScenarioManager - connects OMNeT++ to a TraCI server, manages hosts
 // Copyright (C) 2006 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
 //
+// Documentation for these modules is at http://veins.car2x.org/
+//
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
@@ -27,7 +29,6 @@
 
 #include <omnetpp.h>
 
-#include "BaseModule.h"
 #include "Coord.h"
 #include "BaseWorldUtility.h"
 #include "BaseConnectionManager.h"
@@ -43,11 +44,11 @@
  *
  * @author Christoph Sommer
  */
-class TraCIScenarioManager : public BaseModule
+class TraCIScenarioManager : public cSimpleModule
 {
 	public:
-
 		~TraCIScenarioManager();
+		virtual int numInitStages() const { return std::max(cSimpleModule::numInitStages(), 2); }
 		virtual void initialize(int stage);
 		virtual void finish();
 		virtual void handleMessage(cMessage *msg);
@@ -55,6 +56,7 @@ class TraCIScenarioManager : public BaseModule
 
 		std::pair<uint32_t, std::string> commandGetVersion();
 		void commandSetMaximumSpeed(std::string nodeId, float maxSpeed);
+		void commandSetSpeed(std::string nodeId, double speed);
 		void commandChangeRoute(std::string nodeId, std::string roadId, double travelTime);
 		float commandDistanceRequest(Coord position1, Coord position2, bool returnDrivingDistance);
 		void commandStopNode(std::string nodeId, std::string roadId, float pos, uint8_t laneid, float radius, double waittime);
@@ -71,6 +73,19 @@ class TraCIScenarioManager : public BaseModule
 		}
 
 	protected:
+		/**
+		 * Coord equivalent for storing TraCI coordinates
+		 */
+		struct TraCICoord {
+			TraCICoord() : x(0), y(0) {}
+			TraCICoord(double x, double y) : x(x), y(y) {}
+			double getX() const { return x; }
+			double getY() const { return y; }
+		protected:
+			double x;
+			double y;
+		};
+
 		/**
 		 * Byte-buffer that stores values in TraCI byte-order
 		 */
@@ -179,11 +194,11 @@ class TraCIScenarioManager : public BaseModule
 		bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
 		int margin;
 		std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
-		std::list<std::pair<Coord, Coord> > roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
+		std::list<std::pair<TraCICoord, TraCICoord> > roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
 
 		void* socketPtr;
-		Coord netbounds1; /* network boundaries as reported by TraCI (x1, y1) */
-		Coord netbounds2; /* network boundaries as reported by TraCI (x2, y2) */
+		TraCICoord netbounds1; /* network boundaries as reported by TraCI (x1, y1) */
+		TraCICoord netbounds2; /* network boundaries as reported by TraCI (x2, y2) */
 
 		size_t nextNodeVectorIndex; /**< next OMNeT++ module vector index to use */
 		std::map<std::string, cModule*> hosts; /**< vector of all hosts managed by us */
@@ -194,6 +209,8 @@ class TraCIScenarioManager : public BaseModule
 
 		BaseWorldUtility* world;
 		BaseConnectionManager* cc;
+
+		uint32_t getCurrentTimeMs(); /**< get current simulation time (in ms) */
 
 		void executeOneTimestep(); /**< read and execute all commands for the next timestep */
 
@@ -208,7 +225,7 @@ class TraCIScenarioManager : public BaseModule
 		 * returns whether a given position lies within the simulation's region of interest.
 		 * Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI
 		 */
-		bool isInRegionOfInterest(const Coord& position, std::string road_id, double speed, double angle);
+		bool isInRegionOfInterest(const TraCICoord& position, std::string road_id, double speed, double angle);
 
 		/**
 		 * sends a single command via TraCI, checks status response, returns additional responses
@@ -238,12 +255,12 @@ class TraCIScenarioManager : public BaseModule
 		/**
 		 * convert TraCI coordinates to OMNeT++ coordinates
 		 */
-		Coord traci2omnet(Coord coord) const;
+		Coord traci2omnet(TraCICoord coord) const;
 
 		/**
 		 * convert OMNeT++ coordinates to TraCI coordinates
 		 */
-		Coord omnet2traci(Coord coord) const;
+		TraCICoord omnet2traci(Coord coord) const;
 
 		/**
 		 * convert TraCI angle to OMNeT++ angle (in rad)

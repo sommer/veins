@@ -31,8 +31,8 @@ module Highway
         @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=0,0;bgi=map;bgs=0.25");
     submodules:
         connectionManager: ConnectionManager {
-         	parameters:
-                @display("p=150,0;b=42,42,rect,green,,;i=abstract/multicast");   
+            parameters:
+                @display("p=150,0;i=abstract/multicast");   
         }
         world: BaseWorldUtility {
             parameters:

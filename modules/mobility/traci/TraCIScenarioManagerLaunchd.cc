@@ -2,6 +2,8 @@
 // TraCIScenarioManagerLaunchd - TraCIScenarioManager that interacts with sumo-launchd
 // Copyright (C) 2009 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
 //
+// Documentation for these modules is at http://veins.car2x.org/
+//
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
@@ -40,7 +42,6 @@ void TraCIScenarioManagerLaunchd::initialize(int stage)
 		TraCIScenarioManager::initialize(stage);
 		return;
 	}
-
 	launchConfig = par("launchConfig").xmlValue();
 	seed = par("seed");
 	cXMLElementList basedir_nodes = launchConfig->getElementsByTagName("basedir");
@@ -63,7 +64,6 @@ void TraCIScenarioManagerLaunchd::initialize(int stage)
 		seed_node->setAttribute("value", ss.str().c_str());
 		launchConfig->appendChild(seed_node);
 	}
-
 	TraCIScenarioManager::initialize(stage);
 }
 

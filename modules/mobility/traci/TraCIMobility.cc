@@ -2,6 +2,8 @@
 // TraCIMobility - Mobility module to be controlled by TraCIScenarioManager
 // Copyright (C) 2006 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
 //
+// Documentation for these modules is at http://veins.car2x.org/
+//
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
@@ -135,13 +137,13 @@ void TraCIMobility::finish()
 void TraCIMobility::handleSelfMsg(cMessage *msg)
 {
 	if (msg == startAccidentMsg) {
-		commandSetMaximumSpeed(0);
+		commandSetSpeed(0);
 		simtime_t accidentDuration = par("accidentDuration");
 		scheduleAt(simTime() + accidentDuration, stopAccidentMsg);
 		accidentCount--;
 	}
 	else if (msg == stopAccidentMsg) {
-		commandSetMaximumSpeed(-1);
+		commandSetSpeed(-1);
 		if (accidentCount > 0) {
 			simtime_t accidentInterval = par("accidentInterval");
 			scheduleAt(simTime() + accidentInterval, startAccidentMsg);
@@ -155,10 +157,12 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
 
 	this->external_id = external_id;
 	nextPos = position;
-	move.setStart(position);
 	this->road_id = road_id;
 	this->speed = speed;
 	this->angle = angle;
+	move.setStart(position);
+	move.setDirectionByVector(Coord(sin(angle), cos(angle)));
+	move.setSpeed(speed);
 
 	isPreInitialized = true;
 }
@@ -208,6 +212,8 @@ void TraCIMobility::changePosition()
 	}
 
 	move.setStart(nextPos);
+	move.setDirectionByVector(Coord(sin(angle), cos(angle)));
+	move.setSpeed(speed);
 	fixIfHostGetsOutside();
 	updatePosition();
 }

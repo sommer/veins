@@ -2,6 +2,8 @@
 // TraCIScenarioManager - connects OMNeT++ to a TraCI server, manages hosts
 // Copyright (C) 2006 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
 //
+// Documentation for these modules is at http://veins.car2x.org/
+//
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
@@ -45,7 +47,7 @@ TraCIScenarioManager::~TraCIScenarioManager() {
 }
 
 void TraCIScenarioManager::initialize(int stage) {
-
+	cSimpleModule::initialize(stage);
 	if (stage != 1) {
 		return;
 	}
@@ -83,7 +85,7 @@ void TraCIScenarioManager::initialize(int stage) {
 		double x2; rect_i >> x2; ASSERT(rect_i);
 		char c3; rect_i >> c3; ASSERT(rect_i);
 		double y2; rect_i >> y2; ASSERT(rect_i);
-		roiRects.push_back(std::pair<Coord, Coord>(Coord(x1, y1), Coord(x2, y2)));
+		roiRects.push_back(std::pair<TraCICoord, TraCICoord>(TraCICoord(x1, y1), TraCICoord(x2, y2)));
 	}
 
 	nextNodeVectorIndex = 0;
@@ -276,8 +278,8 @@ void TraCIScenarioManager::init_traci() {
 		float y1; buf >> y1;
 		float x2; buf >> x2;
 		float y2; buf >> y2;
-		netbounds1 = Coord(x1, y1);
-		netbounds2 = Coord(x2, y2);
+		netbounds1 = TraCICoord(x1, y1);
+		netbounds2 = TraCICoord(x2, y2);
 		MYDEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
 		if ((traci2omnet(netbounds2).getX() > world->getPgs()->getX()) || (traci2omnet(netbounds2).getY() > world->getPgs()->getY())) MYDEBUG << "WARNING: Playground size (" << world->getPgs()->getX() << ", " << world->getPgs()->getY() << ") might be too small for vehicle at network bounds (" << traci2omnet(netbounds2).getX() << ", " << traci2omnet(netbounds2).getY() << ")" << endl;
 	}
@@ -295,14 +297,15 @@ void TraCIScenarioManager::init_traci() {
 	}
 
 	{
-		// subscribe to list of departed and arrived vehicles
+		// subscribe to list of departed and arrived vehicles, as well as simulation time
 		uint32_t beginTime = 0;
 		uint32_t endTime = 0x7FFFFFFF;
 		std::string objectId = "";
-		uint8_t variableNumber = 2;
+		uint8_t variableNumber = 3;
 		uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
 		uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
-		TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2);
+		uint8_t variable3 = VAR_TIME_STEP;
+		TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3);
 		processSubcriptionResult(buf);
 		ASSERT(buf.eof());
 	}
@@ -368,6 +371,13 @@ void TraCIScenarioManager::commandSetMaximumSpeed(std::string nodeId, float maxS
 	ASSERT(buf.eof());
 }
 
+void TraCIScenarioManager::commandSetSpeed(std::string nodeId, double speed) {
+	uint8_t variableId = VAR_SPEED;
+	uint8_t variableType = TYPE_DOUBLE;
+	TraCIBuffer buf = queryTraCI(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << speed);
+	ASSERT(buf.eof());
+}
+
 void TraCIScenarioManager::commandChangeRoute(std::string nodeId, std::string roadId, double travelTime) {
 	if (travelTime >= 0) {
 		uint8_t variableId = VAR_EDGE_TRAVELTIME;
@@ -398,9 +408,9 @@ void TraCIScenarioManager::commandChangeRoute(std::string nodeId, std::string ro
 }
 
 float TraCIScenarioManager::commandDistanceRequest(Coord position1, Coord position2, bool returnDrivingDistance) {
-	position1 = omnet2traci(position1);
-	position2 = omnet2traci(position2);
-	TraCIBuffer buf = queryTraCI(CMD_DISTANCEREQUEST, TraCIBuffer() << static_cast<uint8_t>(POSITION_2D) << float(position1.getX()) << float(position1.getY()) << static_cast<uint8_t>(POSITION_2D) << float(position2.getX()) << float(position2.getY()) << static_cast<uint8_t>(returnDrivingDistance ? REQUEST_DRIVINGDIST : REQUEST_AIRDIST));
+	TraCICoord p1 = omnet2traci(position1);
+	TraCICoord p2 = omnet2traci(position2);
+	TraCIBuffer buf = queryTraCI(CMD_DISTANCEREQUEST, TraCIBuffer() << static_cast<uint8_t>(POSITION_2D) << float(p1.getX()) << float(p1.getY()) << static_cast<uint8_t>(POSITION_2D) << float(p2.getX()) << float(p2.getY()) << static_cast<uint8_t>(returnDrivingDistance ? REQUEST_DRIVINGDIST : REQUEST_AIRDIST));
 
 	uint8_t cmdLength; buf >> cmdLength;
 	uint8_t commandId; buf >> commandId;
@@ -522,7 +532,7 @@ std::list<Coord> TraCIScenarioManager::commandGetPolygonShape(std::string polyId
 	for (uint8_t i = 0; i < count; i++) {
 		float x; buf >> x;
 		float y; buf >> y;
-		Coord pos = traci2omnet(Coord(x, y));
+		Coord pos = traci2omnet(TraCICoord(x, y));
 		res.push_back(pos);
 	}
 
@@ -538,7 +548,7 @@ void TraCIScenarioManager::commandSetPolygonShape(std::string polyId, std::list<
 	for (std::list<std::pair<float, float> >::const_iterator i = points.begin(); i != points.end(); ++i) {
 		float x = i->first;
 		float y = i->second;
-		Coord pos = omnet2traci(Coord(x, y));
+		TraCICoord pos = omnet2traci(Coord(x, y));
 		buf << static_cast<float>(pos.getX()) << static_cast<float>(pos.getY());
 	}
 	TraCIBuffer obuf = queryTraCI(CMD_SET_POLYGON_VARIABLE, buf);
@@ -607,7 +617,7 @@ void TraCIScenarioManager::deleteModule(std::string nodeId) {
 	mod->deleteModule();
 }
 
-bool TraCIScenarioManager::isInRegionOfInterest(const Coord& position, std::string road_id, double speed, double angle) {
+bool TraCIScenarioManager::isInRegionOfInterest(const TraCICoord& position, std::string road_id, double speed, double angle) {
 	if ((roiRoads.size() == 0) && (roiRects.size() == 0)) return true;
 	if (roiRoads.size() > 0) {
 		for (std::list<std::string>::const_iterator i = roiRoads.begin(); i != roiRoads.end(); ++i) {
@@ -615,36 +625,43 @@ bool TraCIScenarioManager::isInRegionOfInterest(const Coord& position, std::stri
 		}
 	}
 	if (roiRects.size() > 0) {
-		for (std::list<std::pair<Coord, Coord> >::const_iterator i = roiRects.begin(); i != roiRects.end(); ++i) {
+		for (std::list<std::pair<TraCICoord, TraCICoord> >::const_iterator i = roiRects.begin(); i != roiRects.end(); ++i) {
 			if ((position.getX() >= i->first.getX()) && (position.getY() >= i->first.getY()) && (position.getX() <= i->second.getX()) && (position.getY() <= i->second.getY())) return true;
 		}
 	}
 	return false;
 }
 
+uint32_t TraCIScenarioManager::getCurrentTimeMs() {
+	return static_cast<uint32_t>(round((simTime() * 1000).dbl()));
+}
+
 void TraCIScenarioManager::executeOneTimestep() {
 
 	MYDEBUG << "Triggering TraCI server simulation advance to t=" << simTime() <<endl;
 
-	uint32_t targetTime = static_cast<uint32_t>(simTime().dbl() * 1000);
-	TraCIBuffer buf = queryTraCI(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
+	uint32_t targetTime = getCurrentTimeMs();
 
-	uint32_t count; buf >> count;
-	MYDEBUG << "Getting " << count << " subscription results" << endl;
-	for (uint32_t i = 0; i < count; ++i) {
-		processSubcriptionResult(buf);
+	if (targetTime > 0) {
+		TraCIBuffer buf = queryTraCI(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
+
+		uint32_t count; buf >> count;
+		MYDEBUG << "Getting " << count << " subscription results" << endl;
+		for (uint32_t i = 0; i < count; ++i) {
+			processSubcriptionResult(buf);
+		}
 	}
 
 	if (!autoShutdownTriggered) scheduleAt(simTime()+updateInterval, executeOneTimestepTrigger);
 
 }
 
-Coord TraCIScenarioManager::traci2omnet(Coord coord) const {
+Coord TraCIScenarioManager::traci2omnet(TraCICoord coord) const {
 	return Coord(coord.getX() - netbounds1.getX() + margin, (netbounds2.getY() - netbounds1.getY()) - (coord.getY() - netbounds1.getY()) + margin);
 }
 
-Coord TraCIScenarioManager::omnet2traci(Coord coord) const {
-	return Coord(coord.getX() + netbounds1.getX() - margin, (netbounds2.getY() - netbounds1.getY()) - (coord.getY() - netbounds1.getY()) + margin);
+TraCIScenarioManager::TraCICoord TraCIScenarioManager::omnet2traci(Coord coord) const {
+	return TraCICoord(coord.getX() + netbounds1.getX() - margin, (netbounds2.getY() - netbounds1.getY()) - (coord.getY() - netbounds1.getY()) + margin);
 }
 
 double TraCIScenarioManager::traci2omnetAngle(double angle) const {
@@ -745,6 +762,14 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			if ((count > 0) && (count >= activeVehicleCount)) autoShutdownTriggered = true;
 			activeVehicleCount -= count;
 
+		} else if (variable1_resp == VAR_TIME_STEP) {
+			uint8_t varType; buf >> varType;
+			ASSERT(varType == TYPE_INTEGER);
+			uint32_t serverTimestep; buf >> serverTimestep;
+			MYDEBUG << "TraCI reports current time step as " << serverTimestep << "ms." << endl;
+			uint32_t omnetTimestep = getCurrentTimeMs();
+			ASSERT(omnetTimestep == serverTimestep);
+
 		} else {
 			error("Received unhandled sim subscription result");
 		}
@@ -813,7 +838,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	// make sure we got updates for all 4 attributes
 	if (numRead != 4) return;
 
-	Coord p = traci2omnet(Coord(px, py));
+	Coord p = traci2omnet(TraCICoord(px, py));
 	if ((p.getX() < 0) || (p.getY() < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.getX(), p.getY());
 
 	float angle = traci2omnetAngle(angle_traci);
@@ -821,7 +846,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	cModule* mod = getManagedModule(objectId);
 
 	// is it in the ROI?
-	bool inRoi = isInRegionOfInterest(Coord(px, py), edge, speed, angle);
+	bool inRoi = isInRegionOfInterest(TraCICoord(px, py), edge, speed, angle);
 	if (!inRoi) {
 		if (mod) {
 			deleteModule(objectId);
