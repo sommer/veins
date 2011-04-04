@@ -1,0 +1,2 @@
+#!/bin/sh
+gdb --args opp_run -l../../base/miximbase -l../../modules/miximmodules -n../../base:../../modules:.. "$@"
