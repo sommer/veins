@@ -156,12 +156,12 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
 	if (debug) EV << "pre-initializing to " << position.getX() << " " << position.getY() << " " << road_id << " " << speed << " " << angle << std::endl;
 
 	this->external_id = external_id;
-	nextPos = position;
+	this->nextPos = position;
 	this->road_id = road_id;
 	this->speed = speed;
 	this->angle = angle;
 	move.setStart(position);
-	move.setDirectionByVector(Coord(sin(angle), cos(angle)));
+	move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
 	move.setSpeed(speed);
 
 	isPreInitialized = true;
@@ -212,7 +212,7 @@ void TraCIMobility::changePosition()
 	}
 
 	move.setStart(nextPos);
-	move.setDirectionByVector(Coord(sin(angle), cos(angle)));
+	move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
 	move.setSpeed(speed);
 	fixIfHostGetsOutside();
 	updatePosition();
