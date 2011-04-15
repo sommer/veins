@@ -38,7 +38,7 @@ void ANSimMobility::initialize(int stage)
 {
     LineSegmentsMobilityBase::initialize(stage);
 
-    EV << "initializing ANSimMobility stage " << stage << endl;
+    debugEV << "initializing ANSimMobility stage " << stage << endl;
 
     if (stage == 0)
     {

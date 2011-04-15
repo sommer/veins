@@ -35,6 +35,8 @@ simple Mac80211 extends BaseMacLayer
 {
     parameters:
         @class(Mac80211);
+        // enable debugging for this module
+        bool debug = default(false);
         
         int queueLength;
         // Number of bits in a packet before RTS/CTS is used. 

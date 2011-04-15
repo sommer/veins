@@ -4,7 +4,6 @@ package org.mixim.base.modules;
 moduleinterface IBaseApplLayer
 {
     parameters:
-        bool debug; // debug switch
         int headerLength @unit("bit"); // length of the application message header (in bits)
     gates:
         input lowerGateIn; // from network layer

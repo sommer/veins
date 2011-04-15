@@ -40,12 +40,12 @@ void BurstApplLayerBattery::handleSelfMsg(cMessage *msg)
   case SEND_BROADCAST_TIMER:
     for(int i=0; i<burstSize; i++) {
       bcastOut += 1;
-      EV << "bcastQueued = " << bcastOut << endl;
+      debugEV << "bcastQueued = " << bcastOut << endl;
       sendBroadcast();
     }
     break;
   default:
-    EV <<" Unkown selfmessage! kind: "<<msg->getKind() << endl;
+	  EV <<" Unkown selfmessage! kind: "<<msg->getKind() << endl;
     break;
   }
 }
@@ -57,16 +57,16 @@ void BurstApplLayerBattery::handleLowerMsg( cMessage* msg )
   switch( msg->getKind() ) {
   case BROADCAST_MESSAGE:
     m = static_cast<ApplPkt *>(msg);
-    EV << "Received a broadcast packet from host["<<m->getSrcAddr()<<"] -> sending reply\n";
+    debugEV << "Received a broadcast packet from host["<<m->getSrcAddr()<<"] -> sending reply\n";
     replyOut += 1;
-    EV << simTime() << ": replyOut = " << replyOut << endl;
+    debugEV << simTime() << ": replyOut = " << replyOut << endl;
     sendReply(m);
     break;
   case BROADCAST_REPLY_MESSAGE:
     m = static_cast<ApplPkt *>(msg);
-    EV << "Received reply from host["<<m->getSrcAddr()<<"]; delete msg\n";
+    debugEV << "Received reply from host["<<m->getSrcAddr()<<"]; delete msg\n";
     replyIn += 1;
-    EV << simTime() << ": replyIn = " << replyIn << endl;
+    debugEV << simTime() << ": replyIn = " << replyIn << endl;
     delete msg;
     break;
   default:
@@ -81,7 +81,7 @@ void BurstApplLayerBattery::handleHostState(const HostState& state)
 
 	switch (hostState) {
 	case HostState::FAILED:
-		EV << "t = " << simTime() << " host state FAILED" << endl;
+		debugEV << "t = " << simTime() << " host state FAILED" << endl;
 		recordScalar("HostState::FAILED", simTime());
 
 		// BurstApplLayer sends all its frames to the MAC layer at
@@ -91,8 +91,8 @@ void BurstApplLayerBattery::handleHostState(const HostState& state)
 
 		// battery is depleted, stop events
 		if (delayTimer->isScheduled()) {
-		  EV << "canceling frame burst" << endl;
-		  cancelEvent(delayTimer);
+			debugEV << "canceling frame burst" << endl;
+			cancelEvent(delayTimer);
 		}
 		break;
 	default:

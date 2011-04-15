@@ -94,7 +94,7 @@ void PhyLayerBattery::drawCurrent(double amount, int activity) {
 
 void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
 	if (utility->getHostState().get() == HostState::FAILED) {
-		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
+		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
 	}
@@ -113,7 +113,7 @@ void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
 
 void PhyLayerBattery::handleAirFrame(cMessage* msg) {
 	if (utility->getHostState().get() == HostState::FAILED) {
-		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
+		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
 	}

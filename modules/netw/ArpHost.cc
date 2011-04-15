@@ -25,7 +25,6 @@ Define_Module(ArpHost);
 void ArpHost::initialize(int stage) {
 	BaseModule::initialize(stage);
     if(stage==0) {
-        hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
         offset = par("offset");
 	}
 }
@@ -41,7 +40,7 @@ int ArpHost::getMacAddr(const int netwAddr)
     // assumes that addresses are equal to host IDs
     // and that mac addresses == net addresses
     return netwAddr;
-//    coreEV << "for host[" << simulation.getModule( netwAddr )->getParentModule()->getIndex()
+//    debugEV << "for host[" << simulation.getModule( netwAddr )->getParentModule()->getIndex()
 //       << "]: netwAddr " << netwAddr << "; MAC address "
 //       << simulation.getModule( netwAddr )->getParentModule()->getSubmodule( "nic" )->getId() <<endl;
 //    return simulation.getModule(netwAddr)->getParentModule()->getSubmodule("nic")->getId();
@@ -49,7 +48,7 @@ int ArpHost::getMacAddr(const int netwAddr)
 
 int ArpHost::getNetwAddr(const int macAddr)
 {
-    if(coreDebug) {
+    if(debug) {
         Enter_Method("getNetwAddr(%d)",macAddr);
     } else {
         Enter_Method_Silent();
@@ -58,7 +57,7 @@ int ArpHost::getNetwAddr(const int macAddr)
     // assumes that addresses are equal to host IDs
     // and that mac addresses == net addresses
     return macAddr;
-//    coreEV << "for host[" << simulation.getModule( macAddr )->getParentModule()->getIndex()
+//    debugEV << "for host[" << simulation.getModule( macAddr )->getParentModule()->getIndex()
 //       << "]: macAddr " << macAddr << "; netw address "
 //       << simulation.getModule( macAddr )->getParentModule()->getSubmodule("nic")->getId() <<endl;
 //    return simulation.getModule(macAddr)->getParentModule()->getSubmodule("netw")->getId();

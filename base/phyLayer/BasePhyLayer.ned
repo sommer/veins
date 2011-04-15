@@ -5,7 +5,7 @@ package org.mixim.base.phyLayer;
 simple BasePhyLayer
 {
     parameters:
-        bool coreDebug;
+        bool coreDebug; //debug switch for core framework
         
         bool recordStats = default(false); //enable/disable tracking of statistics (eg. cOutvectors)
         int headerLength = default(0) @unit(bit); //defines the length of the phy header (/preamble)

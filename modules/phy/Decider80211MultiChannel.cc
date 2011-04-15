@@ -55,7 +55,7 @@ DeciderResult* Decider80211MultiChannel::checkIfSignalOk(AirFrame* frame) {
 		bitrateIt->next(); //iterate to payload bitrate indicator
 		double payloadBitrate = bitrateIt->getValue();
 		delete bitrateIt;
-		EV << "Channel changed during reception. packet is lost!\n";
+		deciderEV << "Channel changed during reception. packet is lost!\n";
 		result = new DeciderResult80211(false, payloadBitrate, 0);
 	} else {
 		result = Decider80211Battery::checkIfSignalOk(frame);

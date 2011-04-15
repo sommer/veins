@@ -38,12 +38,12 @@ void Mac80211::initialize(int stage)
 
     if (stage == 0)
     {
-        EV << "Initializing stage 0\n";
+        debugEV << "Initializing stage 0\n";
 
         switching = false;
         fsc = intrand(0x7FFFFFFF);
         if(fsc == 0) fsc = 1;
-        EV << " fsc: " << fsc << "\n";
+        debugEV << " fsc: " << fsc << "\n";
 
         queueLength = hasPar("queueLength") ? par("queueLength").longValue() : 10;
 
@@ -69,7 +69,7 @@ void Mac80211::initialize(int stage)
 
         delta = 1E-9;
 
-        EV << "SIFS: " << SIFS << " DIFS: " << DIFS << " EIFS: " << EIFS << endl;
+        debugEV << "SIFS: " << SIFS << " DIFS: " << DIFS << " EIFS: " << EIFS << endl;
     }
     else if(stage == 1) {
     	BaseConnectionManager* cc = getConnectionManager();
@@ -105,7 +105,7 @@ void Mac80211::initialize(int stage)
         neighborhoodCacheSize = hasPar("neighborhoodCacheSize") ? par("neighborhoodCacheSize").longValue() : 0;
         neighborhoodCacheMaxAge = hasPar("neighborhoodCacheMaxAge") ? par("neighborhoodCacheMaxAge").longValue() : 10000;
 
-        EV << " MAC Address: " << myMacAddr
+        debugEV << " MAC Address: " << myMacAddr
            << " rtsCtsThreshold: " << rtsCtsThreshold
            << " bitrate: " << bitrate
            << " channel: " << channel
@@ -145,7 +145,7 @@ void Mac80211::handleUpperMsg(cMessage *msg)
 {
 	cPacket* pkt = static_cast<cPacket*>(msg);
 
-    EV << "Mac80211::handleUpperMsg " << msg->getName() << "\n";
+	debugEV << "Mac80211::handleUpperMsg " << msg->getName() << "\n";
     if (pkt->getBitLength() > 18496){
         error("packet from higher layer (%s)%s is too long for 802.11b, %d bytes (fragmentation is not supported yet)",
               pkt->getClassName(), pkt->getName(), pkt->getByteLength());
@@ -156,12 +156,12 @@ void Mac80211::handleUpperMsg(cMessage *msg)
         msg->setName("MAC ERROR");
         msg->setKind(PACKET_DROPPED);
         sendControlUp(msg);
-        EV << "packet " << msg << " received from higher layer but MAC queue is full, signalling error\n";
+        debugEV << "packet " << msg << " received from higher layer but MAC queue is full, signalling error\n";
         return;
     }
 
     Mac80211Pkt *mac = encapsMsg(pkt);
-    EV << "packet " << pkt << " received from higher layer, dest=" << mac->getDestAddr() << ", encapsulated\n";
+    debugEV << "packet " << pkt << " received from higher layer, dest=" << mac->getDestAddr() << ", encapsulated\n";
 
     fromUpperLayer.push_back(mac);
     // If the MAC is in the IDLE state, then start a new contention period
@@ -170,7 +170,7 @@ void Mac80211::handleUpperMsg(cMessage *msg)
     }
     else
     {
-        EV << "enqueued, will be transmitted later\n";
+    	debugEV << "enqueued, will be transmitted later\n";
     }
 }
 
@@ -192,7 +192,7 @@ Mac80211Pkt *Mac80211::encapsMsg(cPacket * netw)
     // mesage by the network layer
     NetwToMacControlInfo* cInfo = static_cast<NetwToMacControlInfo*>(netw->removeControlInfo());
 
-    EV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
+    debugEV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
     pkt->setDestAddr(cInfo->getNextHopMac());
 
     //delete the control info
@@ -203,7 +203,7 @@ Mac80211Pkt *Mac80211::encapsMsg(cPacket * netw)
 
     //encapsulate the network packet
     pkt->encapsulate(netw);
-    EV <<"pkt encapsulated, length: " << pkt->getBitLength() << "\n";
+    debugEV <<"pkt encapsulated, length: " << pkt->getBitLength() << "\n";
 
     return pkt;
 }
@@ -212,7 +212,7 @@ Mac80211Pkt *Mac80211::encapsMsg(cPacket * netw)
 cMessage *Mac80211::decapsMsg(Mac80211Pkt *frame) {
     cMessage *m = frame->decapsulate();
     m->setControlInfo(new MacToNetwControlInfo(frame->getSrcAddr(), 0));
-    EV << " message decapsulated " << endl;
+    debugEV << " message decapsulated " << endl;
     return m;
 }
 
@@ -228,7 +228,7 @@ void Mac80211::handleLowerMsg(cMessage *msg)
     int radioState = phy->getRadioState();
     if(radioState == Radio::RX) {
         // end of the reception
-        EV << " handleLowerMsg frame " << af << " received\n";
+    	debugEV << " handleLowerMsg frame " << af << " received\n";
         addNeighbor(af);
         if (contention->isScheduled()) {
             error("Gaack! I am changing the IFS on an ongoing contention");
@@ -245,14 +245,14 @@ void Mac80211::handleLowerMsg(cMessage *msg)
         }
     }
     else {
-        EV << " handleLowerMsg frame " << af << " deleted, strange race condition\n";
+    	debugEV << " handleLowerMsg frame " << af << " deleted, strange race condition\n";
         delete af;
     }
 }
 
 void Mac80211::handleLowerControl(cMessage *msg)
 {
-    EV << simTime() << " handleLowerControl " << msg->getName() << "\n";
+	debugEV << simTime() << " handleLowerControl " << msg->getName() << "\n";
     switch(msg->getKind()) {
     case MacToPhyInterface::CHANNEL_SENSE_REQUEST:
     	if(msg == contention) {
@@ -276,13 +276,13 @@ void Mac80211::handleLowerControl(cMessage *msg)
             handleMsgNotForMe(msg, 0);
         }
         else {
-            EV << " frame " << msg->getName() << " deleted, strange race condition\n";
+        	debugEV << " frame " << msg->getName() << " deleted, strange race condition\n";
             delete msg;
         }
         break;
     }
     case MacToPhyInterface::TX_OVER:
-        EV << "PHY indicated transmission over" << endl;
+    	debugEV << "PHY indicated transmission over" << endl;
         phy->setRadioState(Radio::RX);
         handleEndTransmission();
         delete msg;
@@ -305,7 +305,7 @@ void Mac80211::handleLowerControl(cMessage *msg)
  */
 void Mac80211::handleSelfMsg(cMessage * msg)
 {
-    EV << simTime() << " handleSelfMsg " << msg->getName() << "\n";
+	debugEV << simTime() << " handleSelfMsg " << msg->getName() << "\n";
     switch (msg->getKind())
     {
         // the MAC was waiting for a CTS, a DATA, or an ACK packet but the timer has expired.
@@ -335,7 +335,7 @@ void Mac80211::handleSelfMsg(cMessage * msg)
  */
 void Mac80211::handleMsgNotForMe(cMessage *af, simtime_t duration)
 {
-    EV << "handle msg not for me " << af->getName() << "\n";
+	debugEV << "handle msg not for me " << af->getName() << "\n";
 
     // if the duration of the packet is null, then do nothing (to avoid
     // the unuseful scheduling of a self message)
@@ -348,7 +348,7 @@ void Mac80211::handleMsgNotForMe(cMessage *af, simtime_t duration)
             {
                 cancelEvent(nav);
                 scheduleAt(simTime() + duration, nav);
-                EV << "NAV timer started for: " << duration << " State QUIET\n";
+                debugEV << "NAV timer started for: " << duration << " State QUIET\n";
             }
         }
         // other states
@@ -372,7 +372,7 @@ void Mac80211::handleMsgNotForMe(cMessage *af, simtime_t duration)
             }
             // the node must defer for the time of the transmission
             scheduleAt(simTime() + duration, nav);
-            EV << "NAV timer started, not QUIET: " << duration << endl;
+            debugEV << "NAV timer started, not QUIET: " << duration << endl;
 
             assert(!contention->isScheduled());
             //suspendContention();
@@ -405,7 +405,7 @@ void Mac80211::handleMsgNotForMe(cMessage *af, simtime_t duration)
  */
 void Mac80211::handleMsgForMe(Mac80211Pkt *af)
 {
-    EV << "handle msg for me " << af->getName() << " in " <<  stateName(state) << "\n";
+	debugEV << "handle msg for me " << af->getName() << " in " <<  stateName(state) << "\n";
 
     switch (state)
     {
@@ -435,7 +435,7 @@ void Mac80211::handleMsgForMe(Mac80211Pkt *af)
             handleDATAframe(af);
         }
         else {
-            EV << "unexpected message -- probably a collision of RTSs\n";
+        	EV << "unexpected message -- probably a collision of RTSs\n";
             delete af;
         }
         break;
@@ -506,7 +506,7 @@ void Mac80211::handleDATAframe(Mac80211Pkt * af)
     it = findNeighbor(af->getSrcAddr());
     if(it == neighbors.end()) error("Mac80211::handleDATAframe: neighbor not registered");
     if(af->getRetry() && (it->fsc == af->getSequenceControl())) {
-        EV << "Mac80211::handleDATAframe suppressed duplicate message " << af
+    	debugEV << "Mac80211::handleDATAframe suppressed duplicate message " << af
            << " fsc: " << it->fsc << "\n";
     }
     else {
@@ -570,7 +570,7 @@ void Mac80211::handleCTSframe(Mac80211Pkt * af)
  */
 void Mac80211::handleBroadcastMsg(Mac80211Pkt *af)
 {
-    EV << "handle broadcast\n";
+	debugEV << "handle broadcast\n";
     if((state == BUSY) && (!switching)) {
         error("logic error: node is currently transmitting, can not receive "
               "(does the physical layer do its job correctly?)");
@@ -660,7 +660,7 @@ void Mac80211::handleNavTimer()
 void Mac80211::handleTimeoutTimer()
 {
     bool rtscts = true;
-    EV << simTime() << " handleTimeoutTimer " << stateName(state) << "\n";
+    debugEV << simTime() << " handleTimeoutTimer " << stateName(state) << "\n";
     if(state == WFCTS) {
         longRetryCounter++;
         remainingBackoff = backoff();
@@ -731,7 +731,7 @@ void Mac80211::handleEndSifsTimer()
  */
 void Mac80211::handleEndTransmission()
 {
-    EV << "transmission of packet is over\n";
+	debugEV << "transmission of packet is over\n";
     if(state == BUSY) {
         if(nextIsBroadcast) {
             shortRetryCounter = 0;
@@ -777,7 +777,7 @@ void Mac80211::sendDATAframe(Mac80211Pkt *af)
 
     // schedule time out
     scheduleAt(simTime() + timeOut(DATA, br), timeout);
-    EV << "sending DATA  to " << frame->getDestAddr() << " with bitrate " << br << endl;
+    debugEV << "sending DATA  to " << frame->getDestAddr() << " with bitrate " << br << endl;
     // send DATA frame
     sendDown(frame);
 
@@ -815,7 +815,7 @@ void Mac80211::sendACKframe(Mac80211Pkt * af)
     frame->setDuration(0);
 
     sendDown(frame);
-    EV << "sent ACK frame!\n";
+    debugEV << "sent ACK frame!\n";
 
     // update state and display
     setState(BUSY);
@@ -851,7 +851,7 @@ void Mac80211::sendRTSframe()
                        packetDuration(packetSize, br) +
                        packetDuration(LENGTH_ACK, br));
 
-    EV << " Mac80211::sendRTSframe duration: " <<  packetDuration(LENGTH_RTS, br) << " br: " << br << "\n";
+    debugEV << " Mac80211::sendRTSframe duration: " <<  packetDuration(LENGTH_RTS, br) << " br: " << br << "\n";
 
     // schedule time-out
     scheduleAt(simTime() + timeOut(RTS, br), timeout);
@@ -893,7 +893,7 @@ void Mac80211::sendCTSframe(Mac80211Pkt * af)
     frame->setDuration(af->getDuration() - SIFS - packetDuration(LENGTH_CTS, br));
 
     //scheduleAt(simTime() + af->getDuration() - packetDuration(LENGTH_ACK, br) - 2 * SIFS + delta, timeout);
-    EV << " Mac80211::sendCTSframe duration: " <<  packetDuration(LENGTH_CTS, br) << " br: " << br << "\n";
+    debugEV << " Mac80211::sendCTSframe duration: " <<  packetDuration(LENGTH_CTS, br) << " br: " << br << "\n";
     // send CTS frame
     sendDown(frame);
 
@@ -939,7 +939,7 @@ void Mac80211::beginNewCycle()
     testMaxAttempts();
 
     if (nav->isScheduled()) {
-        EV << "cannot beginNewCycle until NAV expires at t " << nav->getArrivalTime() << endl;
+    	debugEV << "cannot beginNewCycle until NAV expires at t " << nav->getArrivalTime() << endl;
         return;
     }
 
@@ -957,7 +957,7 @@ void Mac80211::beginNewCycle()
         setState(CONTEND);
         if(!contention->isScheduled()) {
         	ChannelState channel = phy->getChannelState();
-            EV << simTime() << " do contention: medium = " << channel.info() << ", backoff = "
+        	debugEV << simTime() << " do contention: medium = " << channel.info() << ", backoff = "
                <<  remainingBackoff << endl;
 
             if(channel.isIdle()) {
@@ -971,7 +971,7 @@ void Mac80211::beginNewCycle()
 
         if(remainingBackoff > 0 && !contention->isScheduled()) {
         	ChannelState channel = phy->getChannelState();
-            EV << simTime() << " do contention: medium = " << channel.info() << ", backoff = "
+        	debugEV << simTime() << " do contention: medium = " << channel.info() << ", backoff = "
                <<  remainingBackoff << endl;
 
             if(channel.isIdle()) {
@@ -992,7 +992,7 @@ simtime_t Mac80211::backoff(bool rtscts) {
     if(cw > CW_MAX) cw = CW_MAX;
 
     simtime_t value = ((double) intrand(cw + 1)) * ST;
-    EV << simTime() << " random backoff = " << value << endl;
+    debugEV << simTime() << " random backoff = " << value << endl;
 
     return value;
 }
@@ -1004,7 +1004,7 @@ simtime_t Mac80211::backoff(bool rtscts) {
 void Mac80211::testMaxAttempts()
 {
     if ((longRetryCounter >= LONG_RETRY_LIMIT) || (shortRetryCounter >= SHORT_RETRY_LIMIT)) {
-        EV << "retry limit reached src: "<< shortRetryCounter << " lrc: " << longRetryCounter << endl;
+    	debugEV << "retry limit reached src: "<< shortRetryCounter << " lrc: " << longRetryCounter << endl;
         // initialize counter
         longRetryCounter = 0;
         shortRetryCounter = 0;
@@ -1096,11 +1096,11 @@ simtime_t Mac80211::timeOut(Mac80211MessageKinds type, double br)
     {
     case RTS:
         time_out = SIFS + packetDuration(LENGTH_RTS, br) + packetDuration(LENGTH_CTS, br) + delta;
-        EV << " Mac80211::timeOut RTS " << time_out << "\n";
+        debugEV << " Mac80211::timeOut RTS " << time_out << "\n";
         break;
     case DATA:
         time_out = SIFS + packetDuration(fromUpperLayer.front()->getBitLength(), br) + packetDuration(LENGTH_ACK, br) + delta;
-        EV << " Mac80211::timeOut DATA " << time_out << "\n";
+        debugEV << " Mac80211::timeOut DATA " << time_out << "\n";
         break;
     default:
         EV << "Unused frame type was given when calling timeOut(), this should not happen!\n";
@@ -1139,9 +1139,9 @@ const char *Mac80211::stateName(State state)
 void Mac80211::setState(State newState)
 {
     if (state==newState)
-        EV << "staying in state " << stateName(state) << "\n";
+    	debugEV << "staying in state " << stateName(state) << "\n";
     else
-        EV << "state " << stateName(state) << " --> " << stateName(newState) << "\n";
+    	debugEV << "state " << stateName(state) << " --> " << stateName(newState) << "\n";
     state = newState;
 }
 
@@ -1155,7 +1155,7 @@ void Mac80211::suspendContention()  {
 
     	simtime_t quietTime = simTime() - chSenseStart;
 
-        EV << simTime() << " suspend contention: "
+    	debugEV << simTime() << " suspend contention: "
 		   << "began " << chSenseStart
 		   << ", ends " << chSenseStart + contention->getSenseTimeout()
 		   << ", ifs " << currentIFS
@@ -1163,7 +1163,7 @@ void Mac80211::suspendContention()  {
 		   << endl;
 
         if(quietTime < currentIFS) {
-            EV << "suspended during D/EIFS (no backoff)" << endl;
+        	debugEV << "suspended during D/EIFS (no backoff)" << endl;
         }
         else {
             double remainingSlots;
@@ -1186,11 +1186,11 @@ void Mac80211::suspendContention()  {
                 remainingBackoff = ceil(remainingSlots) * ST;
             }
 
-            EV << "backoff was " << ((contention->getSenseTimeout() - currentIFS))/ST
+            debugEV << "backoff was " << ((contention->getSenseTimeout() - currentIFS))/ST
                << " slots, now " << remainingSlots << " slots remain" << endl;
         }
 
-        EV << "suspended backoff timer, remaining backoff time: "
+        debugEV << "suspended backoff timer, remaining backoff time: "
            << remainingBackoff << endl;
 
     //}
@@ -1246,7 +1246,7 @@ void Mac80211::addNeighbor(Mac80211Pkt *af) {
             }
         }
     }
-    EV << "updated information for neighbor: " << srcAddress
+    debugEV << "updated information for neighbor: " << srcAddress
        << " snr: " << snr << " bitrate: " << bitrate << endl;
 }
 

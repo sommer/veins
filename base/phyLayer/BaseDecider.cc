@@ -10,7 +10,7 @@
 simtime_t BaseDecider::processSignal(AirFrame* frame) {
 
 	assert(frame);
-	debugEV << "Processing AirFrame..." << endl;
+	deciderEV << "Processing AirFrame..." << endl;
 
 	switch(getSignalState(frame)) {
 	case NEW:
@@ -26,7 +26,7 @@ simtime_t BaseDecider::processSignal(AirFrame* frame) {
 
 simtime_t BaseDecider::processNewSignal(AirFrame* frame) {
 	if(currentSignal.first != 0) {
-		debugEV << "Already receiving another AirFrame!" << endl;
+		deciderEV << "Already receiving another AirFrame!" << endl;
 		return notAgain;
 	}
 
@@ -37,14 +37,14 @@ simtime_t BaseDecider::processNewSignal(AirFrame* frame) {
 	// check whether signal is strong enough to receive
 	if ( recvPower < sensitivity )
 	{
-		debugEV << "Signal is to weak (" << recvPower << " < " << sensitivity
+		deciderEV << "Signal is to weak (" << recvPower << " < " << sensitivity
 				<< ") -> do not receive." << endl;
 		// Signal too weak, we can't receive it, tell PhyLayer that we don't want it again
 		return notAgain;
 	}
 
 	// Signal is strong enough, receive this Signal and schedule it
-	debugEV << "Signal is strong enough (" << recvPower << " > " << sensitivity
+	deciderEV << "Signal is strong enough (" << recvPower << " > " << sensitivity
 			<< ") -> Trying to receive AirFrame." << endl;
 
 	currentSignal.first = frame;
@@ -57,7 +57,7 @@ simtime_t BaseDecider::processNewSignal(AirFrame* frame) {
 }
 
 simtime_t BaseDecider::processSignalEnd(AirFrame* frame) {
-	EV << "packet was received correctly, it is now handed to upper layer...\n";
+	deciderEV << "packet was received correctly, it is now handed to upper layer...\n";
 	phy->sendUp(frame, new DeciderResult(true));
 
 	// we have processed this AirFrame and we prepare to receive the next one
@@ -247,9 +247,9 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 										AirFrame* exclude)
 {
 	if(exclude)
-		debugEV << "Creating RSSI map excluding AirFrame with id " << exclude->getId() << endl;
+		deciderEV << "Creating RSSI map excluding AirFrame with id " << exclude->getId() << endl;
 	else
-		debugEV << "Creating RSSI map." << endl;
+		deciderEV << "Creating RSSI map." << endl;
 
 	AirFrameVector airFrames;
 
@@ -296,7 +296,7 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 
 		// Mapping* resultMapNew = Mapping::add( *(signal.getReceivingPower()), *resultMap, start, end );
 
-		debugEV << "Adding mapping of Airframe with ID " << (*it)->getId()
+		deciderEV << "Adding mapping of Airframe with ID " << (*it)->getId()
 				<< ". Starts at " << signal.getSignalStart()
 				<< " and ends at " << signal.getSignalStart() + signal.getSignalLength() << endl;
 

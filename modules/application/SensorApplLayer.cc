@@ -36,7 +36,7 @@ void SensorApplLayer::initialize(int stage) {
     BaseLayer::initialize(stage);
 	if (stage == 0) {
 
-		EV<< "in initialize() stage 0...";
+		debugEV<< "in initialize() stage 0...";
 		debug = par("debug");
 		stats = par("stats");
 		nbPackets = par("nbPackets");
@@ -71,7 +71,7 @@ void SensorApplLayer::initialize(int stage) {
 		world = check_and_cast<BaseWorldUtility*>(cSimulation::getActiveSimulation()->getModuleByPath("sim.world"));
 
 	} else if (stage == 1) {
-		EV << "in initialize() stage 1...";
+		debugEV << "in initialize() stage 1...";
 		// Application address configuration: equals to host IP address
 		cModule *mac = getParentModule()->getSubmodule("nic")->getSubmodule("mac");
 		myAppAddr = mac->par("netaddress");
@@ -111,15 +111,15 @@ void SensorApplLayer::scheduleNextPacket() {
 		switch (trafficType) {
 		case PERIODIC:
 			waitTime = trafficParam;
-			EV<< "Periodic traffic, waitTime=" << waitTime << endl;
+			debugEV<< "Periodic traffic, waitTime=" << waitTime << endl;
 			break;
 			case UNIFORM:
 			waitTime = uniform(0, trafficParam);
-			EV << "Uniform traffic, waitTime=" << waitTime << endl;
+			debugEV << "Uniform traffic, waitTime=" << waitTime << endl;
 			break;
 			case EXPONENTIAL:
 			waitTime = exponential(trafficParam);
-			EV << "Exponential traffic, waitTime=" << waitTime << endl;
+			debugEV << "Exponential traffic, waitTime=" << waitTime << endl;
 			break;
 			case UNKNOWN:
 			default:
@@ -128,15 +128,15 @@ void SensorApplLayer::scheduleNextPacket() {
 			<< endl;
 
 		}
-		EV << "Start timer for a new packet in " << waitTime << " seconds." <<
+		debugEV << "Start timer for a new packet in " << waitTime << " seconds." <<
 		endl;
 		//drop(delayTimer);
 		//delete delayTimer;
 		//delayTimer = new cMessage( "delay-timer", SEND_DATA_TIMER );
 		scheduleAt(simTime() + waitTime, delayTimer);
-		EV << "...timer rescheduled." << endl;
+		debugEV << "...timer rescheduled." << endl;
 	} else {
-		EV << "All packets sent.\n";
+		debugEV << "All packets sent.\n";
 	}
 }
 
@@ -155,19 +155,19 @@ void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 		packet.setNbPacketsReceived(1);
 		packet.setHost(myAppAddr);
 		world->publishBBItem(catPacket, &packet, hostID);
-		// EV << "Received a data packet from host["<<m->getSrcAddr()<<"]\n";
+		// debugEV << "Received a data packet from host["<<m->getSrcAddr()<<"]\n";
 		if (stats) {
 			//                      cStdDev latency = latencies[m->getSrcAddr()];
 			//                      latency.collect(m->getArrivalTime()-m->getCreationTime());
 			//                      testStat.collect(m->getArrivalTime()-m->getCreationTime());
-			//                      EV << "Received a data packet from host["<<m->getSrcAddr()<<"], latency=" <<  m->getArrivalTime()-m->getCreationTime() << ", collected " << latency.getCount() << "mean is now: " << latency.getMean() << endl;
+			//                      debugEV << "Received a data packet from host["<<m->getSrcAddr()<<"], latency=" <<  m->getArrivalTime()-m->getCreationTime() << ", collected " << latency.getCount() << "mean is now: " << latency.getMean() << endl;
 			simtime_t theLatency = m->getArrivalTime() - m->getCreationTime();
 			latencies[m->getSrcAddr()].collect(theLatency);
 			latency.collect(theLatency);
 			if (firstPacketGeneration < 0)
 				firstPacketGeneration = m->getCreationTime();
 			lastPacketReception = m->getArrivalTime();
-			EV<< "Received a data packet from host[" << m->getSrcAddr()
+			debugEV<< "Received a data packet from host[" << m->getSrcAddr()
 			<< "], latency=" << theLatency
 			<< ", collected " << latencies[m->getSrcAddr()].
 			getCount() << "mean is now: " << latencies[m->getSrcAddr()].
@@ -227,7 +227,7 @@ void SensorApplLayer::sendData() {
 	// set the control info to tell the network layer the layer 3
 	// address;
 	pkt->setControlInfo(new NetwControlInfo(pkt->getDestAddr()));
-	EV<< "Sending data packet!\n";
+	debugEV<< "Sending data packet!\n";
 	sendDown(pkt);
 	//send(pkt, dataOut);
 	nbPacketsSent++;
@@ -248,7 +248,7 @@ void SensorApplLayer::finish() {
 			char dispstring[12];
 			cStdDev aLatency = latencies[i];
 
-			//EV << "Recording mean latency for node " << i << ": " << aLatency.getMean() << endl;
+			//debugEV << "Recording mean latency for node " << i << ": " << aLatency.getMean() << endl;
 			//recordScalar("mean_latency ", aLatency.getMean());
 			sprintf(dispstring, "latency%d", i);
 			//dispstring

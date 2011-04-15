@@ -64,7 +64,7 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
     int macAddr;
     int netwAddr;
 
-    EV <<"in encaps...\n";
+    debugEV <<"in encaps...\n";
 
     DummyRoutePkt *pkt = new DummyRoutePkt(appPkt->getName(), appPkt->getKind());
     pkt->setBitLength(headerLength);
@@ -76,7 +76,7 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
 	   << "\tusing broadcast address instead\n";
 	  netwAddr = L3BROADCAST;
     } else {
-	  EV <<"CInfo removed, netw addr="<< cInfo->getNetwAddr()<<endl;
+	  debugEV <<"CInfo removed, netw addr="<< cInfo->getNetwAddr()<<endl;
         netwAddr = cInfo->getNetwAddr();
 	  delete cInfo;
     }
@@ -84,14 +84,14 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
     pkt->setNetworkID(networkID);
     pkt->setSrcAddr(myNetwAddr);
     pkt->setDestAddr(netwAddr);
-    EV << " netw "<< myNetwAddr << " sending packet" <<endl;
+    debugEV << " netw "<< myNetwAddr << " sending packet" <<endl;
     if(netwAddr == L3BROADCAST) {
-        EV << "sendDown: nHop=L3BROADCAST -> message has to be broadcasted"
+        debugEV << "sendDown: nHop=L3BROADCAST -> message has to be broadcasted"
            << " -> set destMac=L2BROADCAST\n";
         macAddr = L2BROADCAST;
     }
     else{
-        EV <<"sendDown: get the MAC address\n";
+        debugEV <<"sendDown: get the MAC address\n";
         macAddr = arp->getMacAddr(netwAddr);
     }
 
@@ -99,7 +99,7 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
 
     //encapsulate the application packet
     pkt->encapsulate(appPkt);
-    EV <<" pkt encapsulated\n";
+    debugEV <<" pkt encapsulated\n";
     return pkt;
 }
 

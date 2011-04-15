@@ -54,9 +54,9 @@ void SimpleBattery::initialize(int stage) {
 
 		resolution = par("resolution");
 
-		EV<< "capacity = " << capmAh << "mA-h (nominal = " << nominalCapmAh <<
+		debugEV<< "capacity = " << capmAh << "mA-h (nominal = " << nominalCapmAh <<
 		") at " << voltage << "V" << endl;
-		EV << "publishDelta = " << publishDelta * 100 << "%, publishTime = "
+		debugEV << "publishDelta = " << publishDelta * 100 << "%, publishTime = "
 		<< publishTime << "s, resolution = " << resolution << "sec"
 		<< endl;
 
@@ -138,7 +138,7 @@ int SimpleBattery::registerDevice(const std::string& name, int numAccts)
 	}
 	devices[deviceID].times = times;
 
-	EV<< "initialized device " << devices[deviceID].name << " as device "
+	debugEV<< "initialized device " << devices[deviceID].name << " as device "
 	<< deviceID << " with " << devices[deviceID].numAccts <<
 	" accounts" << endl;
 
@@ -161,7 +161,7 @@ void SimpleBattery::draw(int deviceID, DrawAmount& amount, int activity)
 		if (activity < 0 && current != 0)
 			error("invalid CURRENT message");
 
-		EV << simTime() << " device " << deviceID <<
+		debugEV << simTime() << " device " << deviceID <<
 		" (" << devices[deviceID].name << ") draw current " << current <<
 		"mA, activity = " << activity << endl;
 
@@ -183,7 +183,7 @@ void SimpleBattery::draw(int deviceID, DrawAmount& amount, int activity)
 			error("invalid activity specified");
 		}
 
-		EV << simTime() << " device " << deviceID <<
+		debugEV << simTime() << " device " << deviceID <<
 		" (" << devices[deviceID].name << ") deduct " << energy <<
 		" mW-s, activity = " << activity << endl;
 
@@ -262,7 +262,7 @@ void SimpleBattery::deductAndCheck() {
 
 	lastUpdateTime = now;
 
-	EV<< simTime() << ": residual capacity = "
+	debugEV<< simTime() << ": residual capacity = "
 	<< residualCapacity << endl;
 
 	// battery is depleted
@@ -344,11 +344,11 @@ void SimpleBattery::finish() {
 		for (int j = 0; j < devices[i].numAccts; j++) {
 			total += devices[i].accts[j];
 		}
-		EV<< "device " << i << " (" << devices[i].name << ") consumed "
+		debugEV<< "device " << i << " (" << devices[i].name << ") consumed "
 		<< total << " mW-s at" << endl;
 
 		for (int j = 0; j < devices[i].numAccts; j++) {
-			EV << "activity " << j << ": " << devices[i].accts[j] << " mWs and "
+			debugEV << "activity " << j << ": " << devices[i].accts[j] << " mWs and "
 			<< devices[i].times[j] << "sec" << endl;
 		}
 

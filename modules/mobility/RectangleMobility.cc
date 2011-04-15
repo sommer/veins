@@ -33,7 +33,7 @@ void RectangleMobility::initialize(int stage)
 {
     BaseMobility::initialize(stage);
 
-    EV << "initializing RectangleMobility stage " << stage << endl;
+    debugEV << "initializing RectangleMobility stage " << stage << endl;
 
     if (stage == 0)
     {

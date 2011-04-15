@@ -55,7 +55,7 @@ void CSMAMacLayer::initialize(int stage)
     				  " assumes that the NIC starts in RX state.");
     	}
 
-        EV << "queueLength = " << queueLength
+    	debugEV << "queueLength = " << queueLength
            //<< " busyRSSI = " << busyRSSI
            << " slotDuration = " << slotDuration
            << " difs = " << difs
@@ -112,7 +112,7 @@ void CSMAMacLayer::handleUpperMsg(cMessage *msg)
     if (macQueue.size() <= queueLength)
     {
         macQueue.push_back(pkt);
-		EV 	<< "packet putt in queue\n  queue size:" << macQueue.size() << " macState:" << macState
+        debugEV 	<< "packet putt in queue\n  queue size:" << macQueue.size() << " macState:" << macState
 			<< " (RX=" << RX << ") is scheduled:" << backoffTimer->isScheduled() << endl;;
 
         if((macQueue.size() == 1) && (macState == RX) && !backoffTimer->isScheduled()) {
@@ -121,7 +121,7 @@ void CSMAMacLayer::handleUpperMsg(cMessage *msg)
     }
     else {
         // queue is full, message has to be deleted
-        EV << "New packet arrived, but queue is FULL, so new packet is deleted\n";
+    	EV << "New packet arrived, but queue is FULL, so new packet is deleted\n";
         MacPkt* mac = encapsMsg(pkt);
         mac->setName("MAC ERROR");
         mac->setKind(PACKET_DROPPED);
@@ -140,10 +140,10 @@ void CSMAMacLayer::handleUpperMsg(cMessage *msg)
 void CSMAMacLayer::handleSelfMsg(cMessage *msg)
 {
     if(msg == backoffTimer) {
-        EV << "backoffTimer ";
+    	debugEV << "backoffTimer ";
 
         if(macState == RX) {
-            EV << " RX ";
+        	debugEV << " RX ";
 
             if(macQueue.size() != 0) {
             	macState = CCA;
@@ -151,36 +151,36 @@ void CSMAMacLayer::handleSelfMsg(cMessage *msg)
                 if(phy->getRadioState() == Radio::RX) {
 
                     if(phy->getChannelState().isIdle()) {
-                        EV << " idle ";
+                    	debugEV << " idle ";
                         scheduleAt(simTime()+difs, minorMsg);
                     }
                     else{
                     	macState = RX;
-                        EV << " busy ";
+                    	debugEV << " busy ";
                         scheduleBackoff();
                     }
                 }
             }
         }
         else {
-        	EV << "" << endl;
-        	EV << "state=" << macState << "(TX="<<TX<<", CCA="<<CCA<<")\n";
+        	debugEV << "" << endl;
+        	debugEV << "state=" << macState << "(TX="<<TX<<", CCA="<<CCA<<")\n";
             error("backoffTimer expired, MAC in wrong state");
         }
     }
     else if(msg == minorMsg) {
-        EV << " minorMsg ";
+    	debugEV << " minorMsg ";
 
         //TODO: replace with channel sense request
         if((macState == CCA) && (phy->getRadioState() == Radio::RX)) {
 
             if(phy->getChannelState().isIdle()) {
-                EV << " idle -> to send ";
+            	debugEV << " idle -> to send ";
                 macState = TX;
                 phy->setRadioState(Radio::TX);
             }
             else {
-                EV << " busy -> backoff ";
+            	debugEV << " busy -> backoff ";
                 macState = RX;
                 if(!backoffTimer->isScheduled())
                 	scheduleBackoff();
@@ -190,7 +190,7 @@ void CSMAMacLayer::handleSelfMsg(cMessage *msg)
             error("minClearTimer fired -- channel or mac in wrong state");
         }
     }
-    EV << endl;
+    debugEV << endl;
 }
 
 
@@ -206,11 +206,11 @@ void CSMAMacLayer::handleLowerMsg(cMessage *msg)
 
     if(dest == myMacAddr || dest == L2BROADCAST)
     {
-        EV << "sending pkt to upper...\n";
+    	debugEV << "sending pkt to upper...\n";
         sendUp(decapsMsg(mac));
     }
     else {
-        EV << "packet not for me, deleting...\n";
+    	debugEV << "packet not for me, deleting...\n";
         delete mac;
     }
 
@@ -220,7 +220,7 @@ void CSMAMacLayer::handleLowerMsg(cMessage *msg)
 void CSMAMacLayer::handleLowerControl(cMessage *msg)
 {
     if(msg->getKind() == MacToPhyInterface::TX_OVER) {
-        EV << " transmission over" << endl;
+    	debugEV << " transmission over" << endl;
         macState = RX;
         phy->setRadioState(Radio::RX);
         txAttempts = 0;
@@ -228,14 +228,14 @@ void CSMAMacLayer::handleLowerControl(cMessage *msg)
     }
     else if(msg->getKind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
     	if((macState == TX) && (phy->getRadioState() == Radio::TX)) {
-            EV << " radio switched to tx, sendDown packet" << endl;
+    		debugEV << " radio switched to tx, sendDown packet" << endl;
             nbTxFrames++;
             sendDown(encapsMsg(macQueue.front()));
             macQueue.pop_front();
         }
     }
     else {
-        EV << "control message with wrong kind -- deleting\n";
+    	EV << "control message with wrong kind -- deleting\n";
     }
     delete msg;
 }
@@ -253,7 +253,7 @@ void CSMAMacLayer::scheduleBackoff()
 	}
 
     if(txAttempts > maxTxAttempts) {
-        EV << " drop packet " << endl;
+    	debugEV << " drop packet " << endl;
 
         cMessage *mac = encapsMsg(macQueue.front());
         mac->setName("MAC ERROR");
@@ -268,13 +268,13 @@ void CSMAMacLayer::scheduleBackoff()
     }
 
     if(macQueue.size() != 0) {
-        EV << " schedule backoff " << endl;
+    	debugEV << " schedule backoff " << endl;
 
         double slots = intrand(initialCW + txAttempts) + 1.0 + dblrand();
         double time = slots * slotDuration;
 
         txAttempts++;
-		EV << " attempts so far: " << txAttempts  << " " << endl;
+        debugEV << " attempts so far: " << txAttempts  << " " << endl;
 
 		nbBackoffs = nbBackoffs + 1;
 		backoffValues = backoffValues + time;

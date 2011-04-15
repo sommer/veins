@@ -157,7 +157,7 @@ void BaseMacLayer::handleLowerControl(cMessage* msg)
 			sendControlUp(msg);
 			break;
 		default:
-			coreEV << "BaseMacLayer does not handle control messages of this type (name was "<<msg->getName()<<")\n";
+			EV << "BaseMacLayer does not handle control messages of this type (name was "<<msg->getName()<<")\n";
 			delete msg;
 			break;
 	}

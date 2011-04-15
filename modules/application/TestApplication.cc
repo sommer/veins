@@ -84,10 +84,10 @@ void TestApplication::finish() {
 }
 
 void TestApplication::handleMessage(cMessage * msg) {
-    EV << "In TestApplication::handleMessage" << endl;
+	debugEV << "In TestApplication::handleMessage" << endl;
     if (msg == delayTimer) {
         if (debug) {
-            EV << "  processing application timer." << endl;
+        	debugEV << "  processing application timer." << endl;
         }
         if (! isTransmitting) {
 			// create and send a new message
@@ -98,7 +98,7 @@ void TestApplication::handleMessage(cMessage * msg) {
 			NetwControlInfo* cInfo = new NetwControlInfo(0);
 			msg->setControlInfo(cInfo);
 			if (debug) {
-				EV << " sending down new data message to Aloha MAC layer for radio transmission." << endl;
+				debugEV << " sending down new data message to Aloha MAC layer for radio transmission." << endl;
 			}
 			send(msg, dataOut);
 			isTransmitting = true;
@@ -118,7 +118,7 @@ void TestApplication::handleMessage(cMessage * msg) {
         // we received a data message from someone else !
         ApplPkt* m = dynamic_cast<ApplPkt*>(msg);
         if (debug)
-            EV << "I (" << nodeAddr << ") received a message from node "
+        	debugEV << "I (" << nodeAddr << ") received a message from node "
                 << m->getSrcAddr() << " of size " << m->getBitLength() << "." << endl;
         nbPacketsReceived++;
 
@@ -135,7 +135,7 @@ void TestApplication::handleMessage(cMessage * msg) {
 
         delete msg;
     } else if (msg->getArrivalGateId() == ctrlIn) {
-        EV << "Received a control message." << endl;
+    	debugEV << "Received a control message." << endl;
         // msg announces end of transmission.
         if (msg->getKind() ==BaseMacLayer::TX_OVER) {
         	isTransmitting = false;
@@ -147,9 +147,9 @@ void TestApplication::handleMessage(cMessage * msg) {
     } else {
         // default case
         if (debug) {
-        ApplPkt* m = static_cast<ApplPkt*>(msg);
-            EV << "I (" << nodeAddr << ") received a message from node "
-                << (static_cast<ApplPkt*>(msg))->getSrcAddr() << " of size " << m->getBitLength() << "." << endl;
+			ApplPkt* m = static_cast<ApplPkt*>(msg);
+			debugEV << "I (" << nodeAddr << ") received a message from node "
+					<< (static_cast<ApplPkt*>(msg))->getSrcAddr() << " of size " << m->getBitLength() << "." << endl;
         }
         delete msg;
     }

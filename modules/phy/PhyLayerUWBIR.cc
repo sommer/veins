@@ -248,14 +248,14 @@ void PhyLayerUWBIR::receiveBBItem(int category, const BBItem *details,
 	Enter_Method_Silent();
 	ChannelAccess::receiveBBItem(category, details, scopeModuleId);
 	if (category == catMove) {
-		EV<< "Received move information in uwbphylayer." << endl;
+		coreEV<< "Received move information in uwbphylayer." << endl;
 
 	}
 }
 
 void PhyLayerUWBIR::handleAirFrame(cMessage* msg) {
 	if (utility->getHostState().get() == HostState::FAILED) {
-		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
+		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
 	}
@@ -365,7 +365,7 @@ simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 	int prevState = radio->getCurrentState();
 
 	if(rs==Radio::RX) {
-		EV << "this is my breakpoint" << endl;
+		coreEV << "this is my breakpoint" << endl;
 	}
 	if(radio->getCurrentState()==RadioUWBIR::RX && rs != RadioUWBIR::RX && rs!= RadioUWBIR::SYNC) {
 		uwbdecider->cancelReception();
@@ -445,7 +445,7 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 
 	// --- from here on, the AirFrame is the owner of the MacPacket ---
 	macPkt = 0;
-	EV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
+	coreEV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
 
 	return frame;
 }

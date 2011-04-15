@@ -3,12 +3,12 @@ Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT F
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 43
+Loading NED files from /home/karl/git-repo/mixim/modules: 42
 Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test1, run #0...
 Scenario: $0=1, $repetition=0
-Assigned runID=Test1-0-20110329-15:15:47-8932
+Assigned runID=Test1-0-20110415-09:16:51-5916
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -179,7 +179,7 @@ Passed: mac0 - Test has been executed.
 
 Preparing for running configuration Test1, run #1...
 Scenario: $0=2, $repetition=0
-Assigned runID=Test1-1-20110329-15:15:47-8932
+Assigned runID=Test1-1-20110415-09:16:51-5916
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -250,7 +250,6 @@ Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 
 Passed: Radio is in TX.
 ** Event #3  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
 Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 3.5s
-AirFrame encapsulated, length: 0
 ** Event #4  T=4   tbpSim.node[0].nic.mac (TestMacLayer, id=10)
 Passed: [mac0] - Expected "Waiting for 0.5s.": kind = 23242, arrival = 4s
 ** Event #5  T=4   tbpSim.node[0].nic.phy (TestPhyLayer, id=9)
@@ -266,12 +265,12 @@ Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT F
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 43
+Loading NED files from /home/karl/git-repo/mixim/modules: 42
 Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20110329-15:15:47-8933
+Assigned runID=Test2-0-20110415-09:16:51-5917
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -493,7 +492,6 @@ Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 
 FAILED: TestChannelInfo: Unknown stage.
 ** Event #3  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
 Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 3.5s
-AirFrame encapsulated, length: 0
 ** Event #4  T=3.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
 Passed: [phy1] - Expected "First receive of AirFrame": kind = 22003, arrival = 3.5s
 Passed: [decider1] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
@@ -541,12 +539,12 @@ Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT F
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 43
+Loading NED files from /home/karl/git-repo/mixim/modules: 42
 Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test6, run #0...
 Scenario: $repetition=0
-Assigned runID=Test6-0-20110329-15:15:47-8934
+Assigned runID=Test6-0-20110415-09:16:51-5918
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -679,7 +677,6 @@ Passed: [phy0] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arr
 Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 3.5s
 ** Event #3  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=10)
 Passed: [phy0] - Expected "[1.] - Host1 sends AirFrame A to Host2": kind = 12121, arrival = 3.5s
-AirFrame encapsulated, length: 0
 ** Event #4  T=3.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=15)
 Passed: [phy1] - Expected "[2.] - Host2 starts receiving AirFrame A": kind = 22003, arrival = 3.5s
 Passed: [decider1] - Expected "First process of AirFrame at Decider": kind = 22003, arrival = 3.5s
@@ -747,12 +744,12 @@ Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT F
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 43
+Loading NED files from /home/karl/git-repo/mixim/modules: 42
 Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test7, run #0...
 Scenario: $repetition=0
-Assigned runID=Test7-0-20110329-15:15:47-8935
+Assigned runID=Test7-0-20110415-09:16:51-5919
 Setting up network `tbpSim'...
 Initializing...
 Initializing channel tbpSim.node[0].nic.phy.upperControlOut.channel, stage 0
@@ -999,7 +996,6 @@ Passed: [phy0] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arr
 Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 3.5s
 ** Event #3  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
 Passed: [phy0] - Expected "[1.2] - Host A1 sends packet 1.": kind = 12121, arrival = 3.5s
-AirFrame encapsulated, length: 0
 ** Event #4  T=3.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)
 Passed: [phy1] - Expected "Packet 1 at phy of A2": kind = 22003, arrival = 3.5s
 Passed: [decider1] - Expected "[1.4] - Packet 1 arrives only at decider A2.": kind = 22003, arrival = 3.5s
@@ -1017,7 +1013,6 @@ Passed: [phy2] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arr
 Passed: [mac2] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 7.5s
 ** Event #10  T=7.5   tbpSim.node[2].nic.phy (TestPhyLayer, id=22)
 Passed: [phy2] - Expected "[1.5.2] - Host B1 sends packet 2.": kind = 12121, arrival = 7.5s
-AirFrame encapsulated, length: 0
 ** Event #11  T=7.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
 Passed: [phy0] - Expected "Packet 2 at phy of A1": kind = 22003, arrival = 7.5s
 ** Event #12  T=7.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)

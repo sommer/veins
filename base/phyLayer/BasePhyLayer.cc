@@ -556,7 +556,7 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 
 	// --- from here on, the AirFrame is the owner of the MacPacket ---
 	macPkt = 0;
-	EV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
+	coreEV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
 
 	return frame;
 }

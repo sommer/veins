@@ -101,7 +101,7 @@ void UWBIRMac::finish() {
 void UWBIRMac::prepareData(UWBIRMacPkt* packet, IEEE802154A::config cfg) {
 	// generate signal
 	//int nbSymbols = packet->getByteLength() * 8 + 92; // to move to ieee802154a.h
-	EV << "prepare Data for a packet with " << packet->getByteLength() << " data bytes." << endl;
+	debugEV << "prepare Data for a packet with " << packet->getByteLength() << " data bytes." << endl;
 	if(prf == 4) {
 	  IEEE802154A::setConfig(IEEE802154A::cfg_mandatory_4M);
 	} else if (prf == 16) {
@@ -123,7 +123,7 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet, IEEE802154A::config cfg) {
 					+ iter->getPosition().getTime(), iter->getValue());
 			iter->next();
 			simtime_t t = simTime() + iter->getPosition().getTime();
-			//EV << "nbItemsTx=" << nbItems << ", t= " << t <<  ", value=" << iter->getValue() << "." << endl;
+			//debugEV << "nbItemsTx=" << nbItems << ", t= " << t <<  ", value=" << iter->getValue() << "." << endl;
 		}
 	}
 
@@ -163,7 +163,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			// bit error
 			if (decodedBits->at(i) != mac->popBitValue()) {
 				nbBitErrors++;
-				EV<< "Found an error at position " << i << "." << endl;
+				debugEV<< "Found an error at position " << i << "." << endl;
 				// symbol error
 				if(!currSymbolError) {
 					currSymbolError = true;
@@ -172,7 +172,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			}
 		}
 
-		EV << "Found " << nbBitErrors << " bit errors in MAC packet." << endl;
+		debugEV << "Found " << nbBitErrors << " bit errors in MAC packet." << endl;
 		double packetBER = static_cast<double>(nbBitErrors)/static_cast<double>(bitsToDecode);
 		packetsBER.record(packetBER);
 		meanBER.collect(packetBER);
@@ -227,18 +227,18 @@ void UWBIRMac::handleLowerMsg(cPacket *msg) {
 		int dest = mac->getDestAddr();
 		int src = mac->getSrcAddr();
 		if ((dest == myMacAddr)) {
-			coreEV<< "message with mac addr " << src
+			debugEV<< "message with mac addr " << src
 			<< " for me (dest=" << dest
 			<< ") -> forward packet to upper layer\n";
 			sendUp(decapsMsg(mac));
 		} else {
-			coreEV << "message with mac addr " << src
+			debugEV << "message with mac addr " << src
 			<< " not for me (dest=" << dest
 			<< ") -> delete (my MAC=" << myMacAddr << ")\n";
 			delete mac;
 		}
 	} else {
-		EV << "Errors in message ; dropping mac packet." << endl;
+		debugEV << "Errors in message ; dropping mac packet." << endl;
 		delete mac;
 	}
 }

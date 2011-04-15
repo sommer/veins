@@ -32,7 +32,7 @@ void TurtleMobility::initialize(int stage)
 {
     LineSegmentsMobilityBase::initialize(stage);
 
-    EV << "initializing TurtleMobility stage " << stage << endl;
+    debugEV << "initializing TurtleMobility stage " << stage << endl;
 
     if(stage == 0)
     {
@@ -81,12 +81,12 @@ void TurtleMobility::setTargetPosition()
 
 void TurtleMobility::fixIfHostGetsOutside()
 {
-    EV << "stepTarget: " << stepTarget.info() << " targetPos: " << targetPos.info() << " stepSize: " << stepSize.info()
+	debugEV << "stepTarget: " << stepTarget.info() << " targetPos: " << targetPos.info() << " stepSize: " << stepSize.info()
        << " angle: " << angle << endl;
 
     if( handleIfOutside(borderPolicy, stepTarget, targetPos, stepSize, angle) ){
 
-	EV << "stepTarget: " << stepTarget.info() << " targetPos: " << targetPos.info() << " stepSize: " << stepSize.info()
+    	debugEV << "stepTarget: " << stepTarget.info() << " targetPos: " << targetPos.info() << " stepSize: " << stepSize.info()
 	   << " angle: " << angle << endl;
 
     }
@@ -100,7 +100,7 @@ void TurtleMobility::resumeScript()
     if (!nextStatement)
     {
 	move.setSpeed(0);
-	EV << "no statement found -> not moving!\n";
+	debugEV << "no statement found -> not moving!\n";
         return;
     }
 
@@ -118,7 +118,7 @@ void TurtleMobility::executeStatement(cXMLElement *stmt)
 {
     const char *tag = stmt->getTagName();
 
-    EV << "doing <" << tag << ">\n";
+    debugEV << "doing <" << tag << ">\n";
 
     if (!strcmp(tag,"repeat"))
     {
