@@ -31,7 +31,6 @@ double Decider802154Narrow::evalBER(AirFrame* frame) {
 	ConstMapping* noise = calculateRSSIMapping(time, time, frame);
 
 	Argument argStart(time);
-	argStart.setArgValue(Dimension::frequency, 2.4E+9);
 	double noiseLevel = noise->getValue(argStart);
 
 	delete noise;
@@ -91,7 +90,6 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 
 	simtime_t receivingStart = MappingUtils::post(start);
 	Argument argStart(receivingStart);
-	argStart.setArgValue(Dimension::frequency, 2.4E+9);
 	ConstMappingIterator* iter = snrMapping->createConstIterator(argStart);
 	double snirMin = iter->getValue();
 	// Evaluate bit errors for each snr value
@@ -108,14 +106,8 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 		simtime_t nextTime = end;	//either the end of the signal...
 		if(iter->hasNext()) {		//or the position of the next entry
 			const Argument& argNext = iter->getNextPosition();
-			if(	!argNext.hasArgVal(Dimension::frequency)
-				|| argNext.getArgValue(Dimension::frequency) == 2.4e+9)
-			{
-				nextTime = std::min(argNext.getTime(), nextTime);
-				iter->next();	//the iterator will already point to the next entry
-			} else {
-				nextTime = end;
-			}
+			nextTime = std::min(argNext.getTime(), nextTime);
+			iter->next();	//the iterator will already point to the next entry
 		}
 
 		if (noErrors) {
