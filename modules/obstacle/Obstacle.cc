@@ -115,7 +115,10 @@ double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& recei
 	bool receiverInside = isPointInObstacle(receiverPos, *this);
 	if (!doesIntersect && !senderInside && !receiverInside) return 1;
 
-	// make sure every other pair of points marks transition through matter and void, respectively.
+	// remember number of walls before messing with intersection points
+	double numWalls = intersectAt.size();
+
+	// for distance calculation, make sure every other pair of points marks transition through matter and void, respectively.
 	if (senderInside) intersectAt.insert(0);
 	if (receiverInside) intersectAt.insert(1);
 	ASSERT((intersectAt.size() % 2) == 0);
@@ -129,7 +132,6 @@ double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& recei
 	}
 
 	// calculate attenuation
-	double numWalls = intersectAt.size();
 	double totalDistance = senderPos.distance(receiverPos);
 	double attenuation = (attenuationPerWall * numWalls) + (attenuationPerMeter * fractionInObstacle * totalDistance);
 	return pow(10.0, -attenuation/10.0);
