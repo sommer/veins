@@ -18,6 +18,7 @@
 //
 
 #include <sstream>
+#include <cmath>
 
 #include "world/annotations/AnnotationManager.h"
 
@@ -208,16 +209,16 @@ cModule* AnnotationManager::createDummyModule(std::string displayString) {
 }
 
 cModule* AnnotationManager::createDummyModuleLine(Coord p1, Coord p2, std::string color) {
-	int w = abs(int(p2.getX()) - int(p1.getX()));
-	int h = abs(int(p2.getY()) - int(p1.getY()));
-	int px = 0;
+	double w = std::abs(p2.getX() - p1.getX());
+	double h = std::abs(p2.getY() - p1.getY());
+	double px = 0;
 	if (p1.getX() <= p2.getX()) {
 		px = p1.getX() + 0.5 * w;
 	} else {
 		px = p2.getX() + 0.5 * w;
 		w = -w;
 	}
-	int py = 0;
+	double py = 0;
 	if (p1.getY() <= p2.getY()) {
 		py = p1.getY() + 0.5 * h;
 	} else {
