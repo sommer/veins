@@ -72,13 +72,10 @@ void TraCIMobility::Statistics::recordScalars(cSimpleModule& module)
 
 void TraCIMobility::initialize(int stage)
 {
-	// skip stage 1 initialisation of BasicMobility as this messes with pos.x/pos.y and triggers an NB update with these wrong values
-	if (stage != 1) {
-		BaseMobility::initialize(stage);
-	}
-
-	if (stage == 1)
+	if (stage == 0)
 	{
+		BaseMobility::initialize(stage);
+
 		debug = par("debug");
 		accidentCount = par("accidentCount");
 
@@ -93,13 +90,17 @@ void TraCIMobility::initialize(int stage)
 
 		if (!isPreInitialized) {
 			external_id = -1;
-			nextPos = Coord(-1,-1);
+			nextPos = move.getStartPos();
 			road_id = -1; 
 			speed = -1; 
 			angle = M_PI; 
 			move.setStart(Coord(-1, -1));
 		}
 		isPreInitialized = false;
+
+		move.setStart(nextPos);
+		move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
+		move.setSpeed(speed);
 
 		WATCH(road_id);
 		WATCH(speed);
@@ -116,8 +117,14 @@ void TraCIMobility::initialize(int stage)
 			stopAccidentMsg = new cMessage("scheduledAccidentResolved");
 			scheduleAt(simTime() + accidentStart, startAccidentMsg);
 		}
-
-		updatePosition();
+	}
+	else if (stage == 1)
+	{
+		// don't call BaseMobility::initialize(stage) -- our parent will take care to call changePosition later
+	}
+	else
+	{
+		BaseMobility::initialize(stage);
 	}
 
 }
