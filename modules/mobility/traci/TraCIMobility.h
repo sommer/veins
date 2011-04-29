@@ -77,8 +77,8 @@ class TraCIMobility : public BaseMobility
 			if (external_id == "") throw std::runtime_error("TraCIMobility::getExternalId called with no external_id set yet");
 			return external_id;
 		}
-		virtual Coord getPosition() const {
-			return nextPos;
+		virtual Coord getPositionAt(const simtime_t& t) const {
+			return move.getPositionAt(t) ;
 		}
 		virtual std::string getRoadId() const {
 			if (road_id == "") throw std::runtime_error("TraCIMobility::getRoadId called with no road_id set yet");

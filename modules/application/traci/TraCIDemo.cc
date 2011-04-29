@@ -69,7 +69,7 @@ void TraCIDemo::sendMessage() {
 }
 
 void TraCIDemo::handlePositionUpdate() {
-	if (traci->getPosition().getX() < 7350) {
+	if (traci->getPositionAt(simTime()).getX() < 7350) {
 		if (!sentMessage) sendMessage();
 	}
 }
