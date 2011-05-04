@@ -34,26 +34,32 @@ package org.mixim.modules.mac;
 
 import org.mixim.base.modules.BaseMacLayer;
 
-
+//
+// Implementation of B-MAC (called also Berkeley MAC, Low Power Listening or 
+// LPL).
+// See C++ documentation for details.
+//
 simple BMacLayer extends BaseMacLayer
 {
     parameters:
 		@class(BMacLayer);
         // debug switch
         bool debug = default(false);
+        //collect statistics?
         bool stats = default(true);
 
 		// BMAC specific parameters
 		// how long is one slot?
-		double slotDuration = default(1);
+		double slotDuration @unit(s) = default(1s);
 		
 		// how long is the check interval (CCA)?
-		double checkInterval = default(0.01);
+		double checkInterval @unit(s) = default(0.01s);
 		
 		// size of the MAC queue (maximum number of packets in Tx buffer)
         double queueLength = default(20);
         
-        // should we animate the nodes with colors depending on their state or not?
+        // should we animate the nodes with colors depending on their state or 
+        // not?
         bool animation = default(true);
         
         // bit rate 
@@ -62,6 +68,7 @@ simple BMacLayer extends BaseMacLayer
         //tx power [mW]
         double txPower @unit(mW) = default(50 mW);
           
+        //should mac send and expect acknowledgments?
         bool useMACAcks = default(false);
         // maximum number of frame retransmission
         // only used when usage of MAC acks is enabled

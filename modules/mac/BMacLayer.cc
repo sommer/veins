@@ -146,8 +146,9 @@ void BMacLayer::finish() {
 }
 
 /**
- * Check whether the queue is not full: if yes, print a warning and drop the packet.
- * Then initiate sending of the packet, if the node is sleeping. Do nothing, if node is working.
+ * Check whether the queue is not full: if yes, print a warning and drop the
+ * packet. Then initiate sending of the packet, if the node is sleeping. Do
+ * nothing, if node is working.
  */
 void BMacLayer::handleUpperMsg(cMessage *msg)
 {
@@ -202,11 +203,15 @@ void BMacLayer::sendMacAck()
 /**
  * Handle own messages:
  * BMAC_WAKEUP: wake up the node, check the channel for some time.
- * BMAC_CHECK_CHANNEL: if the channel is free, check whether there is something in the queue and switch teh radio to TX.
- * when switched to TX, (in receiveBBItem), the node will start sending preambles for a full slot duration.
- * if the channel is busy, stay awake to receive message. Schedule a timeout to handle false alarms.
- * BMAC_SEND_PREAMBLES: sending of preambles over. Next time the data packet will be send out (single one).
- * BMAC_TIMEOUT_DATA: timeout the node after a false busy channel alarm. Go back to sleep.
+ * BMAC_CHECK_CHANNEL: if the channel is free, check whether there is something
+ * in the queue and switch the radio to TX. When switched to TX, (in
+ * receiveBBItem), the node will start sending preambles for a full slot
+ * duration. If the channel is busy, stay awake to receive message. Schedule a
+ * timeout to handle false alarms.
+ * BMAC_SEND_PREAMBLES: sending of preambles over. Next time the data packet
+ * will be send out (single one).
+ * BMAC_TIMEOUT_DATA: timeout the node after a false busy channel alarm. Go
+ * back to sleep.
  */
 void BMacLayer::handleSelfMsg(cMessage *msg)
 {
@@ -241,7 +246,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			// something waiting in eth queue?
 			if (macQueue.size() > 0)
 			{
-				coreEV << "State CCA, message CCA_TIMEOUT, new state SEND_PREAMBLE" << endl;
+				coreEV << "State CCA, message CCA_TIMEOUT, new state"
+						  " SEND_PREAMBLE" << endl;
 				phy->setRadioState(Radio::TX);
 				changeDisplayColor(YELLOW);
 				macState = SEND_PREAMBLE;
@@ -251,7 +257,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			// if not, go back to sleep and wake up after a full period
 			else
 			{
-				coreEV << "State CCA, message CCA_TIMEOUT, new state SLEEP" << endl;
+				coreEV << "State CCA, message CCA_TIMEOUT, new state SLEEP"
+					   << endl;
 				scheduleAt(simTime() + slotDuration, wakeup);
 				macState = SLEEP;
 				phy->setRadioState(Radio::SLEEP);
@@ -259,30 +266,34 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 				return;
 			}
 		}
-		// during CCA, we received a preamble. Go to state WAIT_DATA and schedule the timeout.
+		// during CCA, we received a preamble. Go to state WAIT_DATA and
+		// schedule the timeout.
 		if (msg->getKind() == BMAC_PREAMBLE)
 		{
 			nbRxPreambles++;
-			coreEV << "State CCA, message BMAC_PREAMBLE received, new state WAIT_DATA" << endl;
+			coreEV << "State CCA, message BMAC_PREAMBLE received, new state"
+					  " WAIT_DATA" << endl;
 			macState = WAIT_DATA;
 			cancelEvent(cca_timeout);
 			scheduleAt(simTime() + slotDuration + checkInterval, data_timeout);
 			return;
 		}
 		// this case is very, very, very improbable, but let's do it.
-		// if in CCA and the node receives directly the data packet, switch to state WAIT_DATA
-		// and re-send the message
+		// if in CCA and the node receives directly the data packet, switch to
+		// state WAIT_DATA and re-send the message
 		if (msg->getKind() == BMAC_DATA)
 		{
 			nbRxDataPackets++;
-			coreEV << "State CCA, message BMAC_DATA, new state WAIT_DATA" << endl;
+			coreEV << "State CCA, message BMAC_DATA, new state WAIT_DATA"
+				   << endl;
 			macState = WAIT_DATA;
 			cancelEvent(cca_timeout);
 			scheduleAt(simTime() + slotDuration + checkInterval, data_timeout);
 			scheduleAt(simTime(), msg);
 			return;
 		}
-		//in case we get an ACK, we simply dicard it, because it means the end of another communication
+		//in case we get an ACK, we simply dicard it, because it means the end
+		//of another communication
 		if (msg->getKind() == BMAC_ACK)
 		{
 			coreEV << "State CCA, message BMAC_ACK, new state CCA" << endl;
@@ -293,7 +304,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 	case SEND_PREAMBLE:
 		if (msg->getKind() == BMAC_SEND_PREAMBLE)
 		{
-			coreEV << "State SEND_PREAMBLE, message BMAC_SEND_PREAMBLE, new state SEND_PREAMBLE" << endl;
+			coreEV << "State SEND_PREAMBLE, message BMAC_SEND_PREAMBLE, new"
+					  " state SEND_PREAMBLE" << endl;
 			sendPreamble();
 			scheduleAt(simTime() + 0.5f*checkInterval, send_preamble);
 			macState = SEND_PREAMBLE;
@@ -302,7 +314,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		// simply change the state to SEND_DATA
 		if (msg->getKind() == BMAC_STOP_PREAMBLES)
 		{
-			coreEV << "State SEND_PREAMBLE, message BMAC_STOP_PREAMBLES, new state SEND_DATA" << endl;
+			coreEV << "State SEND_PREAMBLE, message BMAC_STOP_PREAMBLES, new"
+					  " state SEND_DATA" << endl;
 			macState = SEND_DATA;
 			txAttempts = 1;
 			return;
@@ -310,9 +323,11 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		break;
 
 	case SEND_DATA:
-		if ((msg->getKind() == BMAC_SEND_PREAMBLE) || (msg->getKind() == BMAC_RESEND_DATA))
+		if ((msg->getKind() == BMAC_SEND_PREAMBLE)
+			|| (msg->getKind() == BMAC_RESEND_DATA))
 		{
-			coreEV << "State SEND_DATA, message BMAC_SEND_PREAMBLE or BMAC_RESEND_DATA, new state WAIT_TX_DATA_OVER" << endl;
+			coreEV << "State SEND_DATA, message BMAC_SEND_PREAMBLE or"
+					  " BMAC_RESEND_DATA, new state WAIT_TX_DATA_OVER" << endl;
 			// send the data packet
 			sendDataPacket();
 			macState = WAIT_TX_DATA_OVER;
@@ -325,7 +340,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		{
 			if ((useMacAcks) && (lastDataPktDestAddr != L2BROADCAST))
 			{
-				coreEV << "State WAIT_TX_DATA_OVER, message BMAC_DATA_TX_OVER, new state WAIT_ACK" << endl;
+				coreEV << "State WAIT_TX_DATA_OVER, message BMAC_DATA_TX_OVER,"
+						  " new state WAIT_ACK" << endl;
 				macState = WAIT_ACK;
 				phy->setRadioState(Radio::RX);
 				changeDisplayColor(GREEN);
@@ -333,7 +349,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			}
 			else
 			{
-				coreEV << "State WAIT_TX_DATA_OVER, message BMAC_DATA_TX_OVER, new state  SLEEP" << endl;
+				coreEV << "State WAIT_TX_DATA_OVER, message BMAC_DATA_TX_OVER,"
+						  " new state  SLEEP" << endl;
 				macQueue.pop_front();
 				// if something in the queue, wakeup soon.
 				if (macQueue.size() > 0)
@@ -353,7 +370,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			// No ACK received. try again or drop.
 			if (txAttempts < maxTxAttempts)
 			{
-				coreEV << "State WAIT_ACK, message BMAC_ACK_TIMEOUT, new state SEND_DATA" << endl;
+				coreEV << "State WAIT_ACK, message BMAC_ACK_TIMEOUT, new state"
+						  " SEND_DATA" << endl;
 				txAttempts++;
 				macState = SEND_PREAMBLE;
 				scheduleAt(simTime() + slotDuration, stop_preambles);
@@ -362,7 +380,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			}
 			else
 			{
-				coreEV << "State WAIT_ACK, message BMAC_ACK_TIMEOUT, new state SLEEP" << endl;
+				coreEV << "State WAIT_ACK, message BMAC_ACK_TIMEOUT, new state"
+						  " SLEEP" << endl;
 				//drop the packet
 				macQueue.pop_front();
 				// if something in the queue, wakeup soon.
@@ -380,7 +399,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		//ignore and other packets
 		if ((msg->getKind() == BMAC_DATA) || (msg->getKind() == BMAC_PREAMBLE))
 		{
-			coreEV << "State WAIT_ACK, message BMAC_DATA or BMAC_PREMABLE, new state WAIT_ACK" << endl;
+			coreEV << "State WAIT_ACK, message BMAC_DATA or BMAC_PREMABLE, new"
+					  " state WAIT_ACK" << endl;
 			return;
 		}
 		if (msg->getKind() == BMAC_ACK)
@@ -389,7 +409,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			MacPkt *mac = static_cast<MacPkt *>(msg);
 			int src = mac->getSrcAddr();
 			// the right ACK is received..
-			coreEV << "We are waiting for ACK from : " << lastDataPktDestAddr << ", and ACK came from : " << src << endl;
+			coreEV << "We are waiting for ACK from : " << lastDataPktDestAddr
+				   << ", and ACK came from : " << src << endl;
 			if (src == lastDataPktDestAddr)
 			{
 				coreEV << "New state SLEEP" << endl;
@@ -414,14 +435,16 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		if(msg->getKind() == BMAC_PREAMBLE)
 		{
 			//nothing happens
-			coreEV << "State WAIT_DATA, message BMAC_PREAMBLE, new state WAIT_DATA" << endl;
+			coreEV << "State WAIT_DATA, message BMAC_PREAMBLE, new state"
+					  " WAIT_DATA" << endl;
 			nbRxPreambles++;
 			return;
 		}
 		if(msg->getKind() == BMAC_ACK)
 		{
 			//nothing happens
-			coreEV << "State WAIT_DATA, message BMAC_ACK, new state WAIT_DATA" << endl;
+			coreEV << "State WAIT_DATA, message BMAC_ACK, new state WAIT_DATA"
+				   << endl;
 			return;
 		}
 		if (msg->getKind() == BMAC_DATA)
@@ -436,7 +459,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			cancelEvent(data_timeout);
 			if ((useMacAcks) && (dest == myMacAddr))
 			{
-				coreEV << "State WAIT_DATA, message BMAC_DATA, new state SEND_ACK" << endl;
+				coreEV << "State WAIT_DATA, message BMAC_DATA, new state"
+						  " SEND_ACK" << endl;
 				macState = SEND_ACK;
 				lastDataPktSrcAddr = src;
 				phy->setRadioState(Radio::TX);
@@ -444,7 +468,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			}
 			else
 			{
-				coreEV << "State WAIT_DATA, message BMAC_DATA, new state SLEEP" << endl;
+				coreEV << "State WAIT_DATA, message BMAC_DATA, new state SLEEP"
+					   << endl;
 				// if something in the queue, wakeup soon.
 				if (macQueue.size() > 0)
 					scheduleAt(simTime() + dblrand()*checkInterval, wakeup);
@@ -458,7 +483,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		}
 		if (msg->getKind() == BMAC_DATA_TIMEOUT)
 		{
-			coreEV << "State WAIT_DATA, message BMAC_DATA_TIMEOUT, new state SLEEP" << endl;
+			coreEV << "State WAIT_DATA, message BMAC_DATA_TIMEOUT, new state"
+					  " SLEEP" << endl;
 			// if something in the queue, wakeup soon.
 			if (macQueue.size() > 0)
 				scheduleAt(simTime() + dblrand()*checkInterval, wakeup);
@@ -473,7 +499,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 	case SEND_ACK:
 		if (msg->getKind() == BMAC_SEND_ACK)
 		{
-			coreEV << "State SEND_ACK, message BMAC_SEND_ACK, new state WAIT_ACK_TX" << endl;
+			coreEV << "State SEND_ACK, message BMAC_SEND_ACK, new state"
+					  " WAIT_ACK_TX" << endl;
 			// send now the ack packet
 			sendMacAck();
 			macState = WAIT_ACK_TX;
@@ -483,7 +510,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 	case WAIT_ACK_TX:
 		if (msg->getKind() == BMAC_ACK_TX_OVER)
 		{
-			coreEV << "State WAIT_ACK_TX, message BMAC_ACK_TX_OVER, new state SLEEP" << endl;
+			coreEV << "State WAIT_ACK_TX, message BMAC_ACK_TX_OVER, new state"
+					  " SLEEP" << endl;
 			// ack sent, go to sleep now.
 			// if something in the queue, wakeup soon.
 			if (macQueue.size() > 0)
@@ -498,7 +526,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		}
 		break;
 	}
-	coreEV << "Undefined event  of type " << msg->getKind() << "in state " << macState << endl;
+	coreEV << "Undefined event  of type " << msg->getKind() << "in state "
+		   << macState << endl;
 	endSimulation();
 }
 
@@ -523,7 +552,8 @@ void BMacLayer::sendDataPacket()
 }
 
 /**
- * Handle transmission over messages: either send another preambles or the data packet itself.
+ * Handle transmission over messages: either send another preambles or the data
+ * packet itself.
  */
 void BMacLayer::handleLowerControl(cMessage *msg)
 {
@@ -540,7 +570,8 @@ void BMacLayer::handleLowerControl(cMessage *msg)
     }
     // Radio switching (to RX or TX) ir over, ignore switching to SLEEP.
     else if(msg->getKind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
-    	// we just switched to TX after CCA, so simply send the first sendPremable self message
+    	// we just switched to TX after CCA, so simply send the first
+    	// sendPremable self message
     	if ((macState == SEND_PREAMBLE) && (phy->getRadioState() == Radio::TX))
     	{
     		scheduleAt(simTime(), send_preamble);
@@ -549,7 +580,8 @@ void BMacLayer::handleLowerControl(cMessage *msg)
     	{
     		scheduleAt(simTime(), send_ack);
     	}
-    	// we were waiting for acks, but none came. we switched to TX and now need to resend data
+    	// we were waiting for acks, but none came. we switched to TX and now
+    	// need to resend data
     	if ((macState == SEND_DATA) && (phy->getRadioState() == Radio::TX))
     	{
     		scheduleAt(simTime(), resend_data);
@@ -566,15 +598,18 @@ void BMacLayer::handleLowerControl(cMessage *msg)
 
 
 /**
- * Encapsulates the received network-layer packet into a MacPkt and set all needed
- * header fields.
+ * Encapsulates the received network-layer packet into a MacPkt and set all
+ * needed header fields.
  */
 bool BMacLayer::addToQueue(cMessage *msg)
 {
 	MacPkt *macPkt = new MacPkt(msg->getName());
 	macPkt->setBitLength(headerLength);
-	NetwToMacControlInfo* cInfo = static_cast<NetwToMacControlInfo*> (msg->removeControlInfo());
-	//EV<<"CSMA received a message from upper layer, name is " << msg->getName() <<", CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
+	NetwToMacControlInfo* cInfo
+			= static_cast<NetwToMacControlInfo*> (msg->removeControlInfo());
+	//EV<<"CSMA received a message from upper layer, name is "
+	//  << msg->getName() <<", CInfo removed, mac addr="
+	//  << cInfo->getNextHopMac()<<endl;
 	int dest = cInfo->getNextHopMac();
 	macPkt->setDestAddr(dest);
 	delete cInfo;
@@ -585,12 +620,15 @@ bool BMacLayer::addToQueue(cMessage *msg)
 
 	if (macQueue.size() < queueLength) {
 		macQueue.push_back(macPkt);
-		coreEV << "Max queue length: " << queueLength << ", packet put in queue\n  queue size: " << macQueue.size() << " macState: " << macState << endl;
+		coreEV << "Max queue length: " << queueLength << ", packet put in queue"
+				  "\n  queue size: " << macQueue.size() << " macState: "
+				  << macState << endl;
 		return true;
 	}
 	else {
 		// queue is full, message has to be deleted
-		coreEV << "New packet arrived, but queue is FULL, so new packet is deleted\n";
+		coreEV << "New packet arrived, but queue is FULL, so new packet is"
+				  " deleted\n";
 		msg->setName("MAC ERROR");
 		msg->setKind(PACKET_DROPPED);
 		sendControlUp(msg);
@@ -621,7 +659,8 @@ void BMacLayer::changeDisplayColor(BMAC_COLORS color)
 {
 	if (!animation)
 		return;
-	cDisplayString& dispStr = getParentModule()->getParentModule()->getDisplayString();
+	cDisplayString& dispStr
+			= getParentModule()->getParentModule()->getDisplayString();
 	//b=40,40,rect,black,black,2"
 	if (color == GREEN)
 		dispStr.parse("b=40,40,rect,green,green,2");

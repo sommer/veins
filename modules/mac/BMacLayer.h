@@ -25,19 +25,25 @@
 #include <MacPkt_m.h>
 
 /**
- *\mainpage
- * @brief Implementation of B-MAC (called also Berkeley MAC, Low Power Listening or LPL.
+ * @brief Implementation of B-MAC (called also Berkeley MAC, Low Power
+ * Listening or LPL).
  *
- * The protocol works as follows: each node is allowed to sleep for slotDuration. After waking up, it first checks the channel for ongoing transmisison.
- * If a transmission is catched (a premable is received), the node stays awake for at most slotDuration and waits for the actual data packet.
- * If a node wants to send a packet, it first sends preambles for at least slotDuration, thus waking up all nodes in its transmisison radius and
- * then sends out the data packet. If a mac-level ack is required, then the receiver sends the ack immediately after receiving the packet (no preambles)
+ * The protocol works as follows: each node is allowed to sleep for
+ * slotDuration. After waking up, it first checks the channel for ongoing
+ * transmissions.
+ * If a transmission is catched (a preamble is received), the node stays awake
+ * for at most slotDuration and waits for the actual data packet.
+ * If a node wants to send a packet, it first sends preambles for at least
+ * slotDuration, thus waking up all nodes in its transmission radius and
+ * then sends out the data packet. If a mac-level ack is required, then the
+ * receiver sends the ack immediately after receiving the packet (no preambles)
  * and the sender waits for some time more before going back to sleep.
  *
- * B-MAC is designed for low traffic, low power communication in WSN and is one of the most widely usde protocols (e.g. it is part of TinyOS).
+ * B-MAC is designed for low traffic, low power communication in WSN and is one
+ * of the most widely used protocols (e.g. it is part of TinyOS).
  * The finite state machine of the protocol is given in the below figure:
  *
- * \image html FSM.png "B-MAC Layer - finite state machine"
+ * \image html BMACFSM.png "B-MAC Layer - finite state machine"
  *
  *
  * @class BMacLayer
@@ -49,10 +55,6 @@
 class  BMacLayer : public BaseMacLayer
 {
   public:
-
-
-	//~BMacLayer();
-
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
 
@@ -75,7 +77,7 @@ class  BMacLayer : public BaseMacLayer
     typedef std::list<MacPkt*> MacQueue;
 
     /** @brief A queue to store packets from upper layer in case another
-	packet is still waiting for transmission..*/
+	packet is still waiting for transmission.*/
     MacQueue macQueue;
 
     /** @name Different tracked statistics.*/
@@ -91,21 +93,25 @@ class  BMacLayer : public BaseMacLayer
 	/*@}*/
 
 	/** @brief MAC states
-	   *
-	   *  The MAC states help to keep track what the MAC is actually
-	   *  trying to do.
-	   *  INIT -- node has just started and its status is unclear
-	   *  SLEEP -- node sleeps, but accepts packets from the network layer
-	   *  CCA -- Clear Channel Assessment - MAC checks
-	   *         whether medium is busy
-	   *  SEND_PREAMBLE -- node sends preambles to wake up all nodes
-	   *  WAIT_DATA -- node has received at least one preamble from another node and wiats for the actual data packet
-	   *  SEND_DATA -- node has sent enough preambles and sends the actual data packet
-	   *  WAIT_TX_DATA_OVER -- node waits until the data packet sending is ready
-	   *  WAIT_ACK -- node has sent the data packet and waits for ack from the receiving node
-	   *  SEND_ACK -- node send an ACK back to the sender
-	   *  WAIT_ACK_TX -- node waits until the transmission of the ack packet is over
-	   */
+	*
+	*  The MAC states help to keep track what the MAC is actually
+	*  trying to do.
+	*  INIT -- node has just started and its status is unclear
+	*  SLEEP -- node sleeps, but accepts packets from the network layer
+	*  CCA -- Clear Channel Assessment - MAC checks
+	*         whether medium is busy
+	*  SEND_PREAMBLE -- node sends preambles to wake up all nodes
+	*  WAIT_DATA -- node has received at least one preamble from another node
+	*  				and wiats for the actual data packet
+	*  SEND_DATA -- node has sent enough preambles and sends the actual data
+	*  				packet
+	*  WAIT_TX_DATA_OVER -- node waits until the data packet sending is ready
+	*  WAIT_ACK -- node has sent the data packet and waits for ack from the
+	*  			   receiving node
+	*  SEND_ACK -- node send an ACK back to the sender
+	*  WAIT_ACK_TX -- node waits until the transmission of the ack packet is
+	*  				  over
+	*/
 	enum States {
 		INIT,	//0
 		SLEEP,	//1
@@ -121,9 +127,8 @@ class  BMacLayer : public BaseMacLayer
 	/** @brief The current state of the protocol */
 	States macState;
 
-	/** @brief Types of messages (self messages and packets) the node can process
-		   *
-		   **/
+	/** @brief Types of messages (self messages and packets) the node can
+	 * process **/
 	enum TYPES {
 		// packet types
 		BMAC_PREAMBLE = 191,
@@ -156,19 +161,18 @@ class  BMacLayer : public BaseMacLayer
 	cMessage *data_tx_over;
 	cMessage *data_timeout;
 
-	/** @brief Help variables for the acknowledgement process
-		   *
-		   */
+	/** @name Help variables for the acknowledgment process. */
+	/*@{*/
 	int lastDataPktSrcAddr;
 	int lastDataPktDestAddr;
 	int txAttempts;
-
+	/*@}*/
 
 
 	/** @brief Inspect reasons for dropped packets */
 	DroppedPacket droppedPacket;
 
-	/** @brief plus category from BB */
+	/** @brief Category for dropped packets from BB */
 	int catDroppedPacket;
 
 	/** @brief publish dropped packets nic wide */
@@ -194,9 +198,10 @@ class  BMacLayer : public BaseMacLayer
 	double checkInterval;
 	/** @brief Transmission power of the node */
 	double txPower;
-	/** @brief Use MAc level acks or not */
+	/** @brief Use MAC level acks or not */
 	bool useMacAcks;
-	/** @brief Maximum trasnmission attempts per data packet, when ACKs are used */
+	/** @brief Maximum transmission attempts per data packet, when ACKs are
+	 * used */
 	int maxTxAttempts;
 	/** @brief Gather stats at the end of the simulation */
 	bool stats;
@@ -210,13 +215,13 @@ class  BMacLayer : public BaseMacLayer
 		YELLOW = 5
 	};
 
-	/** @brief Internal fucntion to change the color of the node */
+	/** @brief Internal function to change the color of the node */
 	void changeDisplayColor(BMAC_COLORS color);
 
 	/** @brief Internal function to send the first packet in the queue */
 	void sendDataPacket();
 
-	/** @brief Internal fucnction to send an ACK */
+	/** @brief Internal function to send an ACK */
 	void sendMacAck();
 
 	/** @brief Internal function to send one preamble */
