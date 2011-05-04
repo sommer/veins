@@ -25,7 +25,15 @@ package org.mixim.modules.mac;
 
 //
 // IEEE 802.15.4-2006 non-beacon enabled CSMA protocol
+// This model was independently validated on a wireless sensor network testbed.
+// For more information, see 
+// Accurate Timeliness Simulations for Real-Time Wireless Sensor Networks,
+// J. Rousselot, J.-D. Decotignie, M. Aoun, P. van der Stok, R. Serna Oliver,
+// G. Fohler. In Proceedings of the 2009 Third UKSim European Symposium on Computer 
+// Modeling and Simulation. 
 //
+// http://dx.doi.org/10.1109/EMS.2009.34
+// 
 simple CSMA802154 extends csma
 {
     parameters:
