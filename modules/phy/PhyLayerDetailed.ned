@@ -9,8 +9,16 @@ simple PhyLayerDetailed extends PhyLayerBattery
         @display("i=device/antennatower");
 		double timeONToTX @unit(s) = default(0 s);
 		double timeONToRX @unit(s) = default(0 s);
+		double timeONToSleep @unit(s) = default(0 s);
+		
 		double timeSleepToON @unit(s) = default(1 ms);
+		double timeTXToON @unit(s) = default(0 s);
+		
+		double timeRXToON @unit(s) = default(0 s);
+		
 		int nbRadioChannels = default(1);  // Number of available radio channels. Defaults to single channel radio.
 		int initialRadioChannel = default(0);  // Initial radio channel.
+		
+		double phyHeaderDuration @unit(s) = default(192 us);
 }
 

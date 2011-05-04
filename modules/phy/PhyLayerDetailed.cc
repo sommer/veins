@@ -1,20 +1,24 @@
 #include "PhyLayerDetailed.h"
 #include "PhyUtils.h"
 #include "AirFrameMultiChannel_m.h"
+#include "PERModel.h"
 
 Define_Module(PhyLayerDetailed);
 
 
 
 Radio* PhyLayerDetailed::initializeRadio() {
+	    radioChannel.setName("radioChannel");
     	int initialRadioState = par("initialRadioState"); //readPar("initalRadioState", (int) RadioUWBIR::SYNC);
-    	double radioMinAtt = readPar("radioMinAtt", 1.0);
-    	double radioMaxAtt = readPar("radioMaxAtt", 0.0);
+    	// deactivate RSAM analogueModel
+    	double radioMinAtt = 1; //readPar("radioMinAtt", 1.0);
+    	double radioMaxAtt = 1; //readPar("radioMaxAtt", 0.0);
     	int nbRadioChannels = readPar("nbRadioChannels", 1);
     	int initialRadioChannel = readPar("initialRadioChannel", 0);
     	radioDetailed = RadioDetailed::createNewRadioDetailed(initialRadioState, recordStats, radioMinAtt, radioMaxAtt,
     			initialRadioChannel, nbRadioChannels);
-
+    	radioChannel.record(initialRadioChannel);
+    	phyHeaderDuration = par("phyHeaderDuration").doubleValue();
     	//	- switch times to TX
     	simtime_t rxToTX = readPar("timeRXToTX", 0.0);
     	simtime_t sleepToTX = readPar("timeSleepToTX", 0.0);
@@ -26,20 +30,20 @@ Radio* PhyLayerDetailed::initializeRadio() {
 
     	// From ON mode
     	radioDetailed->setSwitchTime(RadioDetailed::ON, RadioDetailed::ON, 0);
-    	radioDetailed->setSwitchTime(RadioDetailed::ON, RadioDetailed::SLEEP, 0);
+    	radioDetailed->setSwitchTime(RadioDetailed::ON, RadioDetailed::SLEEP, par("timeONToSleep"));
     	radioDetailed->setSwitchTime(RadioDetailed::ON, RadioDetailed::TX, par("timeONToTX"));
     	radioDetailed->setSwitchTime(RadioDetailed::ON, RadioDetailed::RX, par("timeONToRX"));
 
     	// From TX mode
     	radioDetailed->setSwitchTime(RadioDetailed::TX, RadioDetailed::TX, 0);
-    	radioDetailed->setSwitchTime(RadioDetailed::TX, RadioDetailed::ON, 0);
-    	radioDetailed->setSwitchTime(RadioDetailed::TX, RadioDetailed::SLEEP, 0);
+    	radioDetailed->setSwitchTime(RadioDetailed::TX, RadioDetailed::ON, par("timeTXToON"));
+    	radioDetailed->setSwitchTime(RadioDetailed::TX, RadioDetailed::SLEEP, par("timeTXToSleep"));
     	radioDetailed->setSwitchTime(RadioDetailed::TX, RadioDetailed::RX, par("timeTXToRX"));
 
     	// From RX mode
     	radioDetailed->setSwitchTime(RadioDetailed::RX, RadioDetailed::RX, 0);
-    	radioDetailed->setSwitchTime(RadioDetailed::RX, RadioDetailed::ON, 0);
-    	radioDetailed->setSwitchTime(RadioDetailed::RX, RadioDetailed::SLEEP, 0);
+    	radioDetailed->setSwitchTime(RadioDetailed::RX, RadioDetailed::ON, par("timeRXToON"));
+    	radioDetailed->setSwitchTime(RadioDetailed::RX, RadioDetailed::SLEEP, par("timeRXToSleep"));
     	radioDetailed->setSwitchTime(RadioDetailed::RX, RadioDetailed::TX, par("timeRXToTX"));
 
     	// Radio currents:
@@ -121,6 +125,7 @@ void PhyLayerDetailed::setSwitchingCurrent(int from, int to) {
 
 void PhyLayerDetailed::setCurrentRadioChannel(int newRadioChannel) {
 	radioDetailed->setCurrentChannel(newRadioChannel);
+	radioChannel.record(newRadioChannel);
 }
 
 int PhyLayerDetailed::getCurrentRadioChannel() {
@@ -141,6 +146,41 @@ void PhyLayerDetailed::getChannelInfo(simtime_t from, simtime_t to, AirFrameVect
 			out.push_back(af);
 		}
 	}
+}
+
+
+AnalogueModel* PhyLayerDetailed::getAnalogueModelFromName(std::string name, ParameterMap& params) {
+
+	if (name == "SimplePathlossModel")
+	{
+		return initializeSimplePathlossModel(params);
+	}
+	else if (name == "LogNormalShadowing")
+	{
+		return initializeLogNormalShadowing(params);
+	}
+	else if (name == "JakesFading")
+	{
+		return initializeJakesFading(params);
+	}
+	else if(name == "BreakpointPathlossModel")
+	{
+		return initializeBreakpointPathlossModel(params);
+	} else if(name == "AntennaModel")
+	{
+		return initializeAntenna(params);
+	} else if (name == "RadioStateAnalogueModel") {
+		//return 0;
+		return radioDetailed->getAnalogueModel();
+	} else if (name == "PERModel") {
+		return initializePERModel(params);
+	}
+	return 0;
+}
+
+AnalogueModel* PhyLayerDetailed::initializePERModel(ParameterMap& params) {
+	double per = params["packetErrorRate"].doubleValue();
+	return new PERModel(per);
 }
 
 AirFrame *PhyLayerDetailed::encapsMsg(cPacket *macPkt)
@@ -181,11 +221,12 @@ AirFrame *PhyLayerDetailed::encapsMsg(cPacket *macPkt)
 
 	// set the members
 	assert(s->getSignalLength() > 0);
+	assert(s->getSignalLength() > phyHeaderDuration);
 	frame->setDuration(s->getSignalLength());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
 	frame->setBitLength(headerLength);
-
+	frame->setPhyHeaderDuration(phyHeaderDuration);
 	frame->setChannel(radioDetailed->getCurrentChannel());
 	// pointer and Signal not needed anymore
 	delete s;

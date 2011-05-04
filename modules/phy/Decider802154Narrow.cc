@@ -7,10 +7,11 @@
 
 #include "Decider802154Narrow.h"
 #include "DeciderResult802154Narrow.h"
-#include "Consts802154.h"
+//#include "Consts802154.h"
 #include <MacPkt_m.h>
 #include <PhyToMacControlInfo.h>
 #include <cmath>
+#include "AirFrameMultiChannel_m.h"
 
 bool Decider802154Narrow::syncOnSFD(AirFrame* frame) {
 	double BER;
@@ -18,7 +19,6 @@ bool Decider802154Narrow::syncOnSFD(AirFrame* frame) {
 
 	BER = evalBER(frame);
 	sfdErrorProbability = 1.0 - pow((1.0 - BER), sfdLength);
-
 	return sfdErrorProbability < uniform(0, 1, 0);
 }
 
@@ -43,22 +43,45 @@ simtime_t Decider802154Narrow::processNewSignal(AirFrame* frame) {
 		return notAgain;
 	}
 
+	AirFrameMultiChannel* mcFrame;
+	mcFrame = dynamic_cast<AirFrameMultiChannel*>(frame);
+	if(mcFrame->getChannel() != phyDetailed->getCurrentRadioChannel()) {
+		// we cannot synchronize on a frame on another channel.
+		return notAgain;
+	}
+
+	currentSignal.first = frame;
+	currentSignal.second = EXPECT_HEADER;
+	Signal& s = frame->getSignal();
+	return s.getSignalStart() + mcFrame->getPhyHeaderDuration();
+
+
+}
+
+simtime_t Decider802154Narrow::processSignalHeader(AirFrame* frame)
+{
 	if (!syncOnSFD(frame)) {
+		currentSignal.first = 0;
+		//channel is back idle
+		setChannelIdleStatus(true);
 		return notAgain;
 	}
 
 	// store this frame as signal to receive and set state
-	currentSignal.first = frame;
+//	currentSignal.first = frame;
 	currentSignal.second = EXPECT_END;
 
 	//channel is busy now
 	setChannelIdleStatus(false);
 
 	//TODO: publish rssi and channel state
-
+	// Inform the MAC that we started receiving a frame
+	phy->sendControlMsg(new cMessage("start_rx",RECEPTION_STARTED));
 	Signal& s = frame->getSignal();
 	return s.getSignalStart() + s.getSignalLength();
 }
+
+
 
 simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 {
@@ -194,7 +217,7 @@ double Decider802154Narrow::getBERFromSNR(double snr) {
 	} else if (modulation == "oqpsk16") {
 		// valid for IEEE 802.15.4 2.45 GHz OQPSK modulation
 		for (int k = 2; k <= 16; k++) {
-			sum_k = sum_k + pow(-1, k) * n_choose_k(16, k) * exp(20 * snr * (1.0 / k - 1.0));
+			sum_k = sum_k + pow(-1.0, k) * n_choose_k(16, k) * exp(20 * snr * (1.0 / k - 1.0));
 		}
 		ber = (8.0 / 15) * (1.0 / 16) * sum_k;
 	} else if(modulation == "gfsk") {

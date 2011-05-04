@@ -72,12 +72,11 @@ protected:
 		assert(currentChannel <= nbChannels);
 	}
 
-
+	/*
 	virtual double mapStateToAtt(int state)
 	{
-		//return minAtt;
 		// if (state == RadioDetailed::RX || state == RadioDetailed::ON)
-			if (state == RadioDetailed::RX)
+			if (state == Radio::RX || state == RadioDetailed::ON || state == Radio::SWITCHING)
 		{
 			return minAtt;
 		} else
@@ -85,7 +84,7 @@ protected:
 			return maxAtt;
 		}
 	}
-
+*/
 };
 
 #endif /* RADIODETAILED_H_ */

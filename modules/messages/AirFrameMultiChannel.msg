@@ -12,4 +12,5 @@ class AirFrame;
 
 packet AirFrameMultiChannel extends AirFrame {
 	int channel;    
+	double phyHeaderDuration;
 } 
