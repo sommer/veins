@@ -163,7 +163,8 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 
 	avgBER = avgBER / frame->getBitLength();
 	snirAvg = snirAvg / (end - start);
-	double rssi = 10*log10(snirAvg);
+	//double rssi = 10*log10(snirAvg);
+	double rssi = calcChannelSenseRSSI(start, end);
 	if (noErrors)
 	{
 		phy->sendUp(frame,
