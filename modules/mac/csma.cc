@@ -36,6 +36,7 @@
 #include <NetwToMacControlInfo.h>
 #include <MacToNetwControlInfo.h>
 #include <SimpleAddress.h>
+#include <BasePhyLayer.h>
 
 #include <BaseConnectionManager.h>
 //#include <Consts802154.h>
@@ -116,12 +117,29 @@ void csma::initialize(int stage) {
 		macState = IDLE_1;
 		txAttempts = 0;
 
+		//check parameters for consistency
+		cModule* phyModule = FindModule<BasePhyLayer*>
+								::findSubModule(getParentModule());
+
+		//aTurnaroundTime should match (be equal or bigger) the RX to TX
+		//switching time of the radio
+		if(phyModule->hasPar("timeRXToTX")) {
+			simtime_t rxToTx = phyModule->par("timeRXToTX").doubleValue();
+			if( rxToTx > aTurnaroundTime)
+			{
+				opp_warning("Parameter \"aTurnaroundTime\" (%f) does not match"
+							" the radios RX to TX switching time (%f)! It"
+							" should be equal or bigger",
+							aTurnaroundTime.dbl(), rxToTx.dbl());
+			}
+		}
+
 	} else if(stage == 1) {
 		BaseConnectionManager* cc = getConnectionManager();
 
     	if(cc->hasPar("pMax") && txPower > cc->par("pMax").doubleValue())
             opp_error("TranmitterPower can't be bigger than pMax in ConnectionManager! "
-            		  "Please adjust your omnetpp.ini file accordingly.");
+            		  "Please adjust your omnetpp.ini file accordingly");
 
     	debugEV << "queueLength = " << queueLength
 		<< " bitrate = " << bitrate
