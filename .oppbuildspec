@@ -2,6 +2,7 @@
 <dir makemake-options="-o ieee802154a -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/ieee802154a" type="makemake"/>
 <dir makemake-options="-o radioState -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/radioState" type="makemake"/>
 <dir makemake-options="-o analogueModels -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/analogueModels" type="makemake"/>
+<dir makemake-options="-o bmac -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/bmac" type="makemake"/>
 <dir makemake-options="-o channelInfo -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/channelInfo" type="makemake"/>
 <dir makemake-options="-o deviceTestAccts -O out -u CMDENV -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTestAccts" type="makemake"/>
 <dir makemake-options="-o ieee802154Narrow -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/ieee802154Narrow" type="makemake"/>
@@ -11,7 +12,7 @@
 <dir makemake-options="-o Mac80211 -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/Mac80211" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power" type="makemake"/>
 <dir makemake-options="-o mapping -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mapping" type="makemake"/>
-<dir makemake-options="-o nicTest -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/nicTest" type="makemake"/>
+<dir makemake-options="-o nicTest -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/nicTest" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:export-library --meta:use-exported-libs" path="." type="makemake"/>
 <dir makemake-options="-o baseNetwork -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/baseNetwork" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests" type="makemake"/>
