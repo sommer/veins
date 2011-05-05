@@ -39,21 +39,21 @@ simple CSMA802154 extends csma
     parameters:
         @class(csma);
         
-        sifs @unit(s) = default(0.000192 s); // 12 symbols
-        headerLength @unit(bit) = default(72 bit);
+        sifs @unit(s) = 0.000192 s; // 12 symbols
+        headerLength @unit(bit) = 72 bit;
         queueLength = default(100);
-        bitrate @unit(bps) = default(250000 bps);
-        ackLength @unit(bit) = default(40 bit);        
-        macMaxCSMABackoffs = default(5);
-        macMaxFrameRetries = default(3);        
-        macAckWaitDuration @unit(s) = default(0.00056 s);  // 1+12+10+12 symbols
-        ccaDetectionTime @unit(s) = default(0.000128 s); // 8 symbols
-        aTurnaroundTime @unit(s) = default(0.000192 s);    // 12 symbols
+        bitrate @unit(bps) = 250000 bps;
+        ackLength @unit(bit) = 40 bit;        
+        macMaxCSMABackoffs = default(4);  // takes values between 0 and 5  
+        macMaxFrameRetries = default(3);  // takes values between 0 and 7
+        macAckWaitDuration @unit(s) = 0.00056 s;  // 1+12+10+12 symbols
+        ccaDetectionTime @unit(s) = 0.000128 s; // 8 symbols
+        aTurnaroundTime @unit(s) = 0.000192 s;    // 12 symbols
         //txPower @unit(mW);
         useMACAcks = default(true);
         
-        backoffMethod = default("exponential");
-        aUnitBackoffPeriod @unit(s) = default(0.00032 s);
-        macMinBE = default(3);
-        macMaxBE = default(8);
+        backoffMethod = "exponential";
+        aUnitBackoffPeriod @unit(s) = 0.00032 s;
+        macMaxBE = default(5);	// takes values between 3 and 8
+        macMinBE = default(3);	// takes values between 0 and macMaxBE
 }
