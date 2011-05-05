@@ -5,7 +5,7 @@ package org.mixim.base.phyLayer;
 simple BasePhyLayer
 {
     parameters:
-        bool coreDebug;
+        bool coreDebug; //debug switch for core framework
         
         bool recordStats = default(false); //enable/disable tracking of statistics (eg. cOutvectors)
         int headerLength = default(0) @unit(bit); //defines the length of the phy header (/preamble)
@@ -34,6 +34,9 @@ simple BasePhyLayer
         
         double radioMinAtt = default(1.0); //radios gain factor (attenuation) while receiving
         double radioMaxAtt = default(0.0); //radios gain factor (attenuation) while not receiving
+        
+        int nbRadioChannels = default(1);  // Number of available radio channels. Defaults to single channel radio.
+		int initialRadioChannel = default(0);  // Initial radio channel.
 
     gates:
         input upperGateIn; 	// from the MAC layer

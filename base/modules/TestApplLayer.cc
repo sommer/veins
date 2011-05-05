@@ -37,6 +37,7 @@ void TestApplLayer::initialize(int stage)
 {
     BaseApplLayer::initialize(stage);
     if(stage == 0) {
+    	hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
         delayTimer = new cMessage( "delay-timer", SEND_BROADCAST_TIMER );
     }
     else if(stage==1) {
@@ -58,12 +59,12 @@ void TestApplLayer::handleLowerMsg( cMessage* msg )
     switch( msg->getKind() ){
     case BROADCAST_MESSAGE:
         m = static_cast<ApplPkt *>(msg);
-	EV << "Received a broadcast packet from host["<<m->getSrcAddr()<<"] -> sending reply\n";
+        coreEV << "Received a broadcast packet from host["<<m->getSrcAddr()<<"] -> sending reply\n";
         sendReply(m);
         break;
     case BROADCAST_REPLY_MESSAGE:
         m = static_cast<ApplPkt *>(msg);
-	EV << "Received reply from host["<<m->getSrcAddr()<<"]; delete msg\n";
+        coreEV << "Received reply from host["<<m->getSrcAddr()<<"]; delete msg\n";
         delete msg;
 	break;
     default:
@@ -109,7 +110,7 @@ void TestApplLayer::sendBroadcast()
     // address;
     pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
 
-    EV << "Sending broadcast packet!\n";
+    coreEV << "Sending broadcast packet!\n";
     sendDown( pkt );
 }
 
@@ -125,7 +126,7 @@ void TestApplLayer::sendReply(ApplPkt *msg)
     msg->setName("BROADCAST_REPLY_MESSAGE");
     sendDelayedDown(msg, delay);
 
-    EV << "sent message with delay " << delay << endl;
+    coreEV << "sent message with delay " << delay << endl;
 
     //NOTE: the NetwControl info was already ste by the network layer
     //and stays the same

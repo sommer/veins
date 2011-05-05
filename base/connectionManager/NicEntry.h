@@ -29,6 +29,7 @@
 
 class ChannelAccess;
 
+
 /**
  * @brief NicEntry is used by ConnectionManager to store the necessary
  * information for each nic
@@ -39,9 +40,16 @@ class ChannelAccess;
  */
 class NicEntry : public cObject
 {
+protected:
+	class NicEntryComparator {
+	  public:
+		bool operator() (const NicEntry* nic1, const NicEntry* nic2) const {
+			return nic1->nicId < nic2->nicId;
+		}
+	};
   public:
 	/** @brief Type for map from NicEntry pointer to a gate.*/
-    typedef std::map<const NicEntry*, cGate*> GateList;
+    typedef std::map<const NicEntry*, cGate*, NicEntryComparator> GateList;
 
     /** @brief module id of the nic for which information is stored*/
     int nicId;

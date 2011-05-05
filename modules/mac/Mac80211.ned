@@ -35,12 +35,15 @@ simple Mac80211 extends BaseMacLayer
 {
     parameters:
         @class(Mac80211);
+        // enable debugging for this module
+        bool debug = default(false);
         
         int queueLength;
-        int rtsCtsThreshold;
+        // Number of bits in a packet before RTS/CTS is used. 
+        // Is currently not used.
+        int rtsCtsThreshold = default(-1); 
 
         double bitrate @unit(bps);
-		int defaultChannel; // minimum channel support
 
     	// auto bit rate selection support: specify borders at which
         // to change modulation.	
@@ -55,6 +58,6 @@ simple Mac80211 extends BaseMacLayer
     	double neighborhoodCacheMaxAge @unit(s); 
     	//the power to transmit packets with [mW]
     	double txPower @unit(mW);
-    	//the center frequency the Mac uses [Hz]
-    	double centerFrequency @unit(Hz);
+    	
+    	headerLength = default(272bit);
 }

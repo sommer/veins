@@ -182,6 +182,10 @@ protected:
 		SYNC_ACCT,		//4
 	};
 
+	enum ProtocolIds {
+		IEEE_802154_UWB = 3200,
+	};
+
 	virtual void setRadioCurrent(int rs);
 
 	virtual void setSwitchingCurrent(int from, int to);

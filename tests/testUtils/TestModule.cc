@@ -1,4 +1,5 @@
 #include "TestModule.h"
+#include "FindModule.h"
 
 void TestModule::init(const std::string& name) {
 	this->name = name;
@@ -27,9 +28,8 @@ void TestModule::announceMessage(cMessage* msg) {
 			}
 			pass(log("Expected \"" + testMsg + "\"" + toString(*exp)));
 
-			TestModule* cont = exp->getContinueModule();
-			if(cont) {
-				cont->onAssertedMessage(exp->getContinueState(), msg);
+			if(exp->continueTests()) {
+				manager->continueTests(msg);
 			}
 
 			foundMessage = true;
@@ -41,8 +41,9 @@ void TestModule::announceMessage(cMessage* msg) {
 		it++;
 	}
 	if(!foundMessage) {
-		fail(log("Received not expected Message at " + toString(msg->getArrivalTime()) + "s"));
+		fail(log("Received not expected Message " + toString(msg) + " at " + toString(msg->getArrivalTime()) + "s"));
 	}
+	manager->onMessage(name, msg);
 }
 
 void TestModule::finalize() {
@@ -72,7 +73,7 @@ void TestModule::assertNewMessage(AssertMessage* assert, std::string destination
 	if(destination == "") {
 		expectedMsgs.push_back(assert);
 	} else {
-		TestModule* dest = manager->getModule(destination);
+		TestModule* dest = manager->getModule<TestModule>(destination);
 		if(!dest) {
 			fail(log("No test module with name \"" + destination + "\" found."));
 			return;
@@ -97,6 +98,16 @@ void TestModule::assertMessage(	std::string msg,
 					 destination);
 }
 
+void TestModule::assertMessage(	std::string msg,
+								int kind,
+								simtime_t intvStart, simtime_t intvEnd,
+								std::string destination)
+{
+
+	assertNewMessage(new AssertMsgInterval(msg, kind, intvStart, intvEnd),
+					 destination);
+}
+
 void TestModule::testForMessage(std::string testName,
 								int kind, simtime_t arrival,
 								std::string destination)
@@ -106,8 +117,19 @@ void TestModule::testForMessage(std::string testName,
 					 destination);
 }
 
+void TestModule::testForMessage(std::string testName,
+								int kind,
+								simtime_t intvStart, simtime_t intvEnd,
+								std::string destination)
+{
 
-void TestModule::waitForMessage(int state, std::string msg, 
+	assertNewMessage(new AssertMsgInterval(	testName, kind,
+											intvStart, intvEnd, true),
+					 destination);
+}
+
+
+void TestModule::waitForMessage(std::string msg,
 								int kind, simtime_t arrival, 
 								std::string destination) {
 	
@@ -115,7 +137,27 @@ void TestModule::waitForMessage(int state, std::string msg,
 									   kind,
 									   arrival,
 									   false,
-									   this,
-									   state),
+									   true),
 					 destination);
 }
+
+void TestModule::testAndWaitForMessage(	std::string testName,
+										int kind, simtime_t arrival,
+										std::string destination)
+{
+
+	assertNewMessage(new AssertMsgKind(testName, kind, arrival, true, true),
+					 destination);
+}
+
+void TestModule::testAndWaitForMessage(	std::string testName,
+										int kind,
+										simtime_t intvStart, simtime_t intvEnd,
+										std::string destination)
+{
+
+	assertNewMessage(new AssertMsgInterval(	testName, kind,
+											intvStart, intvEnd, true, true),
+					 destination);
+}
+

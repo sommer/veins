@@ -38,11 +38,11 @@ void BatteryStats::initialize(int stage)
   if (stage==0) {
     doDetail = 0;
     doDetail = par("detail").boolValue();
-    EV << "show details = " << doDetail << endl;
+    debugEV << "show details = " << doDetail << endl;
 
     doTimeSeries = 0;
     doTimeSeries = par("timeSeries").boolValue();
-    EV << "show timeSeries = " << doTimeSeries << endl;
+    debugEV << "show timeSeries = " << doTimeSeries << endl;
 
     batteryCat = -1;
     if (doTimeSeries) {

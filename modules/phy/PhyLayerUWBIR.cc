@@ -176,6 +176,8 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 	bool syncAlwaysSucceeds;
 	ParameterMap::iterator it;
 
+	protocolId = IEEE_802154_UWB;
+
 	it = params.find("syncThreshold");
 	if (it == params.end()) {
 		error(
@@ -246,14 +248,14 @@ void PhyLayerUWBIR::receiveBBItem(int category, const BBItem *details,
 	Enter_Method_Silent();
 	ChannelAccess::receiveBBItem(category, details, scopeModuleId);
 	if (category == catMove) {
-		EV<< "Received move information in uwbphylayer." << endl;
+		coreEV<< "Received move information in uwbphylayer." << endl;
 
 	}
 }
 
 void PhyLayerUWBIR::handleAirFrame(cMessage* msg) {
 	if (utility->getHostState().get() == HostState::FAILED) {
-		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
+		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
 	}
@@ -363,7 +365,7 @@ simtime_t PhyLayerUWBIR::setRadioState(int rs) {
 	int prevState = radio->getCurrentState();
 
 	if(rs==Radio::RX) {
-		EV << "this is my breakpoint" << endl;
+		coreEV << "this is my breakpoint" << endl;
 	}
 	if(radio->getCurrentState()==RadioUWBIR::RX && rs != RadioUWBIR::RX && rs!= RadioUWBIR::SYNC) {
 		uwbdecider->cancelReception();
@@ -391,48 +393,59 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 	cObject* ctrlInfo = macPkt->removeControlInfo();
 	assert(ctrlInfo);
 
+	// create the new AirFrame
+	AirFrameUWBIR* frame = new AirFrameUWBIR("airframe", AIR_FRAME);
+
 	MacToUWBIRPhyControlInfo* macToPhyCI = static_cast<MacToUWBIRPhyControlInfo*>(ctrlInfo);
+
+
 
 	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
 	// We are now the new owner of this instance.
 	Signal* s = macToPhyCI->retrieveSignal();
-
 	// make sure we really obtained a pointer to an instance
 	assert(s);
 
 	// put host move pattern to Signal
 	s->setMove(move);
 
-	// create the new AirFrame
-	AirFrameUWBIR* frame = new AirFrameUWBIR("airframe", AIR_FRAME);
-
-	//set priority of AirFrames above the normal priority to ensure
-	//channel consistency (before any thing else happens at a time
-	//point t make sure that the channel has removed every AirFrame
-	//ended at t and added every AirFrame started at t)
-	frame->setSchedulingPriority(airFramePriority);
 
 	// set the members
 	assert(s->getSignalLength() > 0);
 	frame->setDuration(s->getSignalLength());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
+	//set priority of AirFrames above the normal priority to ensure
+	//channel consistency (before any thing else happens at a time
+	//point t make sure that the channel has removed every AirFrame
+	//ended at t and added every AirFrame started at t)
+	frame->setSchedulingPriority(airFramePriority);
+	frame->setProtocolId(myProtocolId());
 	frame->setBitLength(headerLength);
+	frame->setId(world->getUniqueAirFrameId());
+	frame->setChannel(radio->getCurrentChannel());
 	frame->setCfg(macToPhyCI->getConfig());
+
+
+
 	// pointer and Signal not needed anymore
 	delete s;
 	s = 0;
+
+
+
+
 	// delete the Control info
 	delete macToPhyCI;
 	macToPhyCI = 0;
 	ctrlInfo = 0;
 
-	frame->setId(world->getUniqueAirFrameId());
+
 	frame->encapsulate(macPkt);
 
 	// --- from here on, the AirFrame is the owner of the MacPacket ---
 	macPkt = 0;
-	EV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
+	coreEV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
 
 	return frame;
 }

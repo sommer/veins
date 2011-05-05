@@ -61,7 +61,7 @@ MacPkt* AlohaMacLayer::encapsMsg(cPacket *msg) {
     // mesage by the network layer
     NetwToMacControlInfo* cInfo = static_cast<NetwToMacControlInfo*>(msg->removeControlInfo());
 
-    coreEV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
+    debugEV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
     encaps->setDestAddr(cInfo->getNextHopMac());
 
     //delete the control info
@@ -93,18 +93,18 @@ void AlohaMacLayer::handleLowerMsg(cMessage *msg) {
         int dest = mac->getDestAddr();
         int src = mac->getSrcAddr();
         if ((dest == myMacAddr)) {
-            coreEV << "message with mac addr " << src
+        	debugEV << "message with mac addr " << src
                     << " for me (dest=" << dest
                     << ") -> forward packet to upper layer\n";
             sendUp(decapsMsg(mac));
         } else {
-            coreEV << "message with mac addr " << src
+        	debugEV << "message with mac addr " << src
                     << " not for me (dest=" << dest
                     << ") -> delete (my MAC=" << myMacAddr << ")\n";
             delete mac;
         }
     } else {
-        EV << "Errors in message ; dropping mac packet." << endl;
+    	debugEV << "Errors in message ; dropping mac packet." << endl;
         delete mac;
     }
 }

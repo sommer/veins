@@ -35,6 +35,10 @@ void BaseMobility::initialize(int stage)
 
         coreEV << "initializing BaseMobility stage " << stage << endl;
 
+        hasPar("scaleNodeByDepth") ? scaleNodeByDepth
+        		= par("scaleNodeByDepth").boolValue()
+        		: scaleNodeByDepth = true;
+
         // get utility pointers (world and host)
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
         if (world == NULL)
@@ -197,7 +201,7 @@ void BaseMobility::updatePosition() {
 		disp.setTagArg("p", 0, xStr);
 		disp.setTagArg("p", 1, yStr);
 
-		if(!world->use2D())
+		if(!world->use2D() && scaleNodeByDepth)
 		{
 			//scale host dependent on their z coordinate to
 			//simulate a depth effect

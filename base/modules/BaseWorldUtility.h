@@ -55,6 +55,10 @@ protected:
     /** @brief Stores if members are already initialized. */
     bool isInitialized;
 
+public:
+    /** @brief Speed of light */
+	static const double speedOfLight;
+
 protected:
     /**
      * @brief Initializes all members accessible by other modules.
@@ -62,12 +66,12 @@ protected:
      * Called once the first time another module accesses a member or during
      * initialize stage 0 at the latest.
      */
-    void initializeIfNecessary();
+    virtual void initializeIfNecessary();
 
 public:
 	BaseWorldUtility();
 
-	void initialize(int stage);
+	virtual void initialize(int stage);
 
     /**
      * @brief Returns the playgroundSize
@@ -88,10 +92,7 @@ public:
     };
 
 	/** @brief Random position somewhere in the playground */
-	Coord getRandomPosition();
-
-    /** @brief Speed of light */
-    static const double speedOfLight;
+	virtual Coord getRandomPosition();
 
     /** @brief Returns true if the world is 2-dimensional */
     bool use2D()

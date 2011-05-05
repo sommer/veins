@@ -280,7 +280,7 @@ protected:
 	void manageMissingAck(t_mac_event event, cMessage *msg);
 	void startTimer(t_mac_timer timer);
 
-	virtual double scheduleBackoff();
+	virtual simtime_t scheduleBackoff();
 
 	virtual cPacket *decapsMsg(MacPkt * macPkt);
 	MacPkt * ackMessage;

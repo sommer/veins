@@ -14,6 +14,7 @@
 //
 
 #include "PhyLayerBattery.h"
+#include "Decider80211MultiChannel.h"
 
 Define_Module(PhyLayerBattery);
 
@@ -48,18 +49,33 @@ Decider* PhyLayerBattery::getDeciderFromName(std::string name, ParameterMap& par
 	if(name == "Decider80211Battery") {
 		return initializeDecider80211Battery(params);
 	}
+	else if(name == "Decider80211MultiChannel") {
+		return initializeDecider80211MultiChannel(params);
+	}
 
 	return PhyLayer::getDeciderFromName(name, params);
 }
 
 Decider* PhyLayerBattery::initializeDecider80211Battery(ParameterMap& params) {
 	double threshold = params["threshold"];
-	double centerFreq = params["centerFrequency"];
 	return new Decider80211Battery(this,
 								   threshold,
 								   sensitivity,
-								   centerFreq,
+								   radio->getCurrentChannel(),
 								   decodingCurrentDelta,
+								   findHost()->getIndex(),
+								   coreDebug);
+}
+
+Decider* PhyLayerBattery
+			::initializeDecider80211MultiChannel(ParameterMap& params)
+{
+	double threshold = params["threshold"];
+	return new Decider80211MultiChannel(this,
+								   threshold,
+								   sensitivity,
+								   decodingCurrentDelta,
+								   radio->getCurrentChannel(),
 								   findHost()->getIndex(),
 								   coreDebug);
 }
@@ -78,7 +94,7 @@ void PhyLayerBattery::drawCurrent(double amount, int activity) {
 
 void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
 	if (utility->getHostState().get() == HostState::FAILED) {
-		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
+		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
 	}
@@ -97,7 +113,7 @@ void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
 
 void PhyLayerBattery::handleAirFrame(cMessage* msg) {
 	if (utility->getHostState().get() == HostState::FAILED) {
-		EV<< "host has FAILED, dropping msg " << msg->getName() << endl;
+		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
 	}
@@ -191,6 +207,7 @@ void PhyLayerBattery::setRadioCurrent(int rs) {
 		BatteryAccess::drawCurrent(sleepCurrent, SLEEP_ACCT);
 		break;
 	default:
+		opp_error("Unknown radio state: %d", rs);
 		break;
 	}
 }

@@ -42,11 +42,26 @@ module Nic80211 like INic
 
     submodules:
         mac: Mac80211 {
+            queueLength = default(20);
+            bitrate = default(2E+6bps);            
+            autoBitrate = default(false);
+            // values if no fading is modelled, gives at most 1% packet error rate
+			snr2Mbit = default(1.46dB); 
+			snr5Mbit = default(2.6dB);
+			snr11Mbit = default(5.68dB);
+			neighborhoodCacheSize = default(30);
+			neighborhoodCacheMaxAge = default(100s);
+			txPower = default(110.11mW);
+            
             @display("p=96,87;i=block/layer");
         }
 
         phy: PhyLayer {
             headerLength = 192bit;
+            sensitivity = default(-119.5dBm);
+            decider = default(xmldoc("Nic80211_Decider.xml"));
+            initialRadioChannel = default(1);
+            nbRadioChannels = default(15); //1 to 14, 0 is invalid
             @display("p=96,158;i=block/process;is=n");
         }
 

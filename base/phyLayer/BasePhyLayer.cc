@@ -14,6 +14,7 @@ short BasePhyLayer::airFramePriority = 10;
 //--Initialization----------------------------------
 
 BasePhyLayer::BasePhyLayer():
+	protocolId(GENERIC),
 	thermalNoise(0),
 	radio(0),
 	decider(0),
@@ -77,14 +78,14 @@ void BasePhyLayer::initialize(int stage) {
             opp_error("Could not find BaseWorldUtility module");
         }
 
-	} else if (stage == 1){
-		if(cc->hasPar("sat")
+        if(cc->hasPar("sat")
 		   && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
             opp_error("Sensitivity can't be smaller than the "
 					  "signal attenuation threshold (sat) in ConnectionManager. "
 					  "Please adjust your omnetpp.ini file accordingly.");
 		}
 
+	} else if (stage == 1){
 		//read complex(xml) ned-parameters
 		//	- analogue model parameters
 		initializeAnalogueModels(par("analogueModels").xmlValue());
@@ -102,8 +103,12 @@ Radio* BasePhyLayer::initializeRadio() {
 	int initialRadioState = par("initialRadioState").longValue();
 	double radioMinAtt = par("radioMinAtt").doubleValue();
 	double radioMaxAtt = par("radioMaxAtt").doubleValue();
+	int nbRadioChannels = readPar("nbRadioChannels", 1);
+	int initialRadioChannel = readPar("initialRadioChannel", 0);
 
-	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState, radioMinAtt, radioMaxAtt);
+	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState,
+										 radioMinAtt, radioMaxAtt,
+										 initialRadioChannel, nbRadioChannels);
 
 	//	- switch times to TX
 	simtime_t rxToTX = par("timeRXToTX").doubleValue();
@@ -230,7 +235,8 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	coreEV << "Decider \"" << name << "\" loaded." << endl;
 }
 
-Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
+Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
+{
 
 	return 0;
 }
@@ -386,7 +392,7 @@ void BasePhyLayer::handleAirFrame(cMessage* msg) {
 }
 
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
-	coreEV << "Received new AirFrame with ID " << frame->getId() << " from channel" << endl;
+	coreEV << "Received new AirFrame " << frame << " from channel." << endl;
 
 	if(channelInfo.isChannelEmpty()) {
 		radio->setTrackingModeTo(true);
@@ -404,7 +410,7 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 
 	filterSignal(frame->getSignal());
 
-	if(decider) {
+	if(decider and isKnownProtocolId(frame->getProtocolId())) {
 		frame->setState(RECEIVING);
 
 		//pass the AirFrame the first time to the Decider
@@ -510,11 +516,42 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	cObject* ctrlInfo = macPkt->removeControlInfo();
 	assert(ctrlInfo);
 
+	// create the new AirFrame
+	AirFrame* frame = new AirFrame(macPkt->getName(), AIR_FRAME);
+
 	MacToPhyControlInfo* macToPhyCI = static_cast<MacToPhyControlInfo*>(ctrlInfo);
+
+
 
 	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
 	// We are now the new owner of this instance.
 	Signal* s = macToPhyCI->retrieveSignal();
+	// make sure we really obtained a pointer to an instance
+	assert(s);
+
+	// put host move pattern to Signal
+	s->setMove(move);
+
+	// set the members
+	assert(s->getSignalLength() > 0);
+	frame->setDuration(s->getSignalLength());
+	// copy the signal into the AirFrame
+	frame->setSignal(*s);
+	//set priority of AirFrames above the normal priority to ensure
+	//channel consistency (before any thing else happens at a time
+	//point t make sure that the channel has removed every AirFrame
+	//ended at t and added every AirFrame started at t)
+	frame->setSchedulingPriority(airFramePriority);
+	frame->setProtocolId(myProtocolId());
+	frame->setBitLength(headerLength);
+	frame->setId(world->getUniqueAirFrameId());
+	frame->setChannel(radio->getCurrentChannel());
+
+
+	// pointer and Signal not needed anymore
+	delete s;
+	s = 0;
+
 
 
 	// delete the Control info
@@ -522,38 +559,15 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	macToPhyCI = 0;
 	ctrlInfo = 0;
 
-	// make sure we really obtained a pointer to an instance
-	assert(s);
 
-	// put host move pattern to Signal
-	s->setMove(move);
 
-	// create the new AirFrame
-	AirFrame* frame = new AirFrame(macPkt->getName(), AIR_FRAME);
 
-	//set priority of AirFrames above the normal priority to ensure
-	//channel consistency (before any thing else happens at a time
-	//point t make sure that the channel has removed every AirFrame
-	//ended at t and added every AirFrame started at t)
-	frame->setSchedulingPriority(airFramePriority);
 
-	// set the members
-	assert(s->getSignalLength() > 0);
-	frame->setDuration(s->getSignalLength());
-	// copy the signal into the AirFrame
-	frame->setSignal(*s);
-	frame->setBitLength(headerLength);
-
-	// pointer and Signal not needed anymore
-	delete s;
-	s = 0;
-
-	frame->setId(world->getUniqueAirFrameId());
 	frame->encapsulate(macPkt);
 
 	// --- from here on, the AirFrame is the owner of the MacPacket ---
 	macPkt = 0;
-	EV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
+	coreEV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
 
 	return frame;
 }
@@ -763,7 +777,7 @@ simtime_t BasePhyLayer::setRadioState(int rs) {
 	Enter_Method_Silent();
 	assert(radio);
 
-	if(txOverTimer->isScheduled()) {
+	if(txOverTimer && txOverTimer->isScheduled()) {
 		opp_warning("Switched radio while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
 	}
 
@@ -796,6 +810,24 @@ ChannelState BasePhyLayer::getChannelState() {
 int BasePhyLayer::getPhyHeaderLength() {
 	Enter_Method_Silent();
 	return par("headerLength").longValue();
+}
+
+void BasePhyLayer::setCurrentRadioChannel(int newRadioChannel) {
+	if(txOverTimer && txOverTimer->isScheduled()) {
+		opp_warning("Switched channel while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
+	}
+
+	radio->setCurrentChannel(newRadioChannel);
+	decider->channelChanged(newRadioChannel);
+	coreEV << "Switched radio to channel " << newRadioChannel << endl;
+}
+
+int BasePhyLayer::getCurrentRadioChannel() {
+	return radio->getCurrentChannel();
+}
+
+int BasePhyLayer::getNbRadioChannels() {
+	return par("nbRadioChannels");
 }
 
 //--DeciderToPhyInterface implementation------------

@@ -1,7 +1,7 @@
 #ifndef CHANNELINFO_H_
 #define CHANNELINFO_H_
 
-#include <vector>
+#include <list>
 #include <omnetpp.h>
 #include "AirFrame_m.h"
 
@@ -264,9 +264,14 @@ public:
 	 *
 	 * Used as out type for "getAirFrames" method.
 	 */
-	typedef std::vector<AirFrame*> AirFrameVector;
+	typedef std::list<AirFrame*> AirFrameVector;
 
 protected:
+	/**
+	 * @brief Asserts that every inactive AirFrame is still intersecting with at
+	 * least one active airframe or with the current record start time.
+	 */
+	void assertNoIntersections();
 
 
 	/**
@@ -335,6 +340,21 @@ protected:
 	 * discarded.
 	 */
 	bool canDiscardInterval(simtime_t startTime, simtime_t endTime);
+
+	/**
+	 * @brief Checks if any information up from the passed start time can be
+	 * discarded.
+	 *
+	 * @param startTime The start of the interval to check
+	 */
+	void checkAndCleanFrom(simtime_t start) {
+		//nothing to do
+		if(inactiveAirFrames.empty())
+			return;
+
+		//take last ended inactive airframe as end of interval
+		checkAndCleanInterval(start, inactiveAirFrames.rbegin()->first);
+	}
 
 public:
 	ChannelInfo():
@@ -423,7 +443,7 @@ public:
 		if(recordStartTime > -1) {
 			simtime_t old = recordStartTime;
 			recordStartTime = -1;
-			checkAndCleanInterval(0, old);
+			checkAndCleanFrom(old);
 		}
 	}
 

@@ -7,7 +7,7 @@ simtime_t SNRThresholdDecider::processNewSignal(AirFrame* frame)
 	channelStateChanged();
 
 	if(currentSignal.first != 0) {
-		debugEV << "Already receiving another AirFrame!" << endl;
+		deciderEV << "Already receiving another AirFrame!" << endl;
 		return notAgain;
 	}
 
@@ -28,14 +28,14 @@ simtime_t SNRThresholdDecider::processNewSignal(AirFrame* frame)
 	// check whether signal is strong enough to receive
 	if ( recvPower < sensitivity )
 	{
-		debugEV << "Signal is to weak (" << recvPower << " < " << sensitivity
+		deciderEV << "Signal is to weak (" << recvPower << " < " << sensitivity
 				<< ") -> do not receive." << endl;
 		// Signal too weak, we can't receive it, tell PhyLayer that we don't want it again
 		return notAgain;
 	}
 
 	// Signal is strong enough, receive this Signal and schedule it
-	debugEV << "Signal is strong enough (" << recvPower << " > " << sensitivity
+	deciderEV << "Signal is strong enough (" << recvPower << " > " << sensitivity
 			<< ") -> Trying to receive AirFrame." << endl;
 
 	currentSignal.first = frame;
@@ -50,14 +50,14 @@ bool SNRThresholdDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, s
 	assert(map);
 
 	if(debug){
-		debugEV << "Checking if SNR is above Threshold of " << snrThreshold << endl;
+		deciderEV << "Checking if SNR is above Threshold of " << snrThreshold << endl;
 	}
 
 	// check every entry in the mapping against threshold value
 	ConstMappingIterator* it = map->createConstIterator(Argument(start));
 	// check if values at start-time fulfill snrThreshold-criterion
 	if(debug){
-		debugEV << "SNR at time " << start << " is " << it->getValue() << endl;
+		deciderEV << "SNR at time " << start << " is " << it->getValue() << endl;
 	}
 	if ( it->getValue() <= snrThreshold ){
 		delete it;
@@ -69,7 +69,7 @@ bool SNRThresholdDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, s
 		it->next();
 
 		if(debug){
-			debugEV << "SNR at time " << it->getPosition().getTime() << " is " << it->getValue() << endl;
+			deciderEV << "SNR at time " << it->getPosition().getTime() << " is " << it->getValue() << endl;
 		}
 
 		// perform the check for smaller entry
@@ -81,7 +81,7 @@ bool SNRThresholdDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, s
 
 	it->iterateTo(Argument(end));
 	if(debug){
-		debugEV << "SNR at time " << end << " is " << it->getValue() << endl;
+		deciderEV << "SNR at time " << end << " is " << it->getValue() << endl;
 	}
 
 	if ( it->getValue() <= snrThreshold ){
@@ -190,12 +190,12 @@ simtime_t SNRThresholdDecider::processSignalEnd(AirFrame* frame)
 	// i.e. the Decider has received it correctly
 	if (aboveThreshold)
 	{
-		debugEV << "SNR is above threshold("<<snrThreshold<<") -> sending up." << endl;
+		deciderEV << "SNR is above threshold("<<snrThreshold<<") -> sending up." << endl;
 		// go on with processing this AirFrame, send it to the Mac-Layer
 		phy->sendUp(frame, new DeciderResult(true));
 	} else
 	{
-		debugEV << "SNR is below threshold("<<snrThreshold<<") -> dropped." << endl;
+		deciderEV << "SNR is below threshold("<<snrThreshold<<") -> dropped." << endl;
 	}
 
 	delete snrMap;

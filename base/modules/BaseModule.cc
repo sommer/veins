@@ -39,7 +39,7 @@ void BaseModule::initialize(int stage) {
     	notAffectedByHostState = 	hasPar("notAffectedByHostState")
 								 && par("notAffectedByHostState").boolValue();
 
-        hasPar("debug") ? debug = par("debug").boolValue() : debug = false;
+        hasPar("debug") ? debug = par("debug").boolValue() : debug = true;
         utility = FindModule<BaseUtility*>::findSubModule(findHost());
 
         if(!utility) {

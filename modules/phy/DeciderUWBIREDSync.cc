@@ -24,7 +24,7 @@ bool DeciderUWBIREDSync::attemptSync(Signal* s) {
 	}
 
 	bool synchronized = false;
-	unsigned int i = 0;
+	AirFrameVector::iterator it = syncVector.begin();
 	bool search = true;
 	simtime_t latestSyncStart = s->getSignalStart() + IEEE802154A::mandatory_preambleLength - tmin;
 	AirFrame* af = syncVector.front();
@@ -39,14 +39,14 @@ bool DeciderUWBIREDSync::attemptSync(Signal* s) {
 			search = false;
 			break;
 		}
-		i++;
-		af = syncVector.at(i);
+		it++;
+		af = *it;
 		aSignal = af->getSignal();
 	}
 
-	if(search && i < syncVector.size()) {
+	if(search && it != syncVector.end()) {
 		// sync is possible but there is a frame beginning after our sync start
-		Signal & nextSignal = syncVector.at(i)->getSignal();
+		Signal & nextSignal = (*it)->getSignal();
 		if(nextSignal.getSignalStart() <
 				aSignal.getSignalStart()+aSignal.getSignalLength() + tmin) {
 			// CASE: sync is not possible because next frame starts too early

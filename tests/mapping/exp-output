@@ -1,14 +1,14 @@
 OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+Version: 4.2b1, build: 110223-1e1fef1, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
 Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 41
+Loading NED files from /home/karl/git-repo/mixim/tests: 44
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100616-15:51:16-7266
+Assigned runID=General-0-20110304-10:28:54-21361
 Setting up network `OmnetTest'...
 Initializing...
 --------TimeMapping tests done.---------------------------------------------------
@@ -17,6 +17,9 @@ Initializing...
 --------SimpleConstMapping tests done.--------------------------------------------
 ---Int64 simtime tests---
 ---Int64 simtime tests done.---
+--------TimeFreq^2.--------
+--------Time * TimeBig.--------
+--------timeSpace * timeFreqSpaceBig.--------
 --------Operator tests done.------------------------------------------------------
 --------Out of range tests done.--------------------------------------------------
 --------Various MappingUtils tests (may take a while)-----------------------------

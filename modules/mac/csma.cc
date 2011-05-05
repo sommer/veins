@@ -36,6 +36,7 @@
 #include <NetwToMacControlInfo.h>
 #include <MacToNetwControlInfo.h>
 #include <SimpleAddress.h>
+#include <BasePhyLayer.h>
 
 #include <BaseConnectionManager.h>
 //#include <Consts802154.h>
@@ -116,18 +117,35 @@ void csma::initialize(int stage) {
 		macState = IDLE_1;
 		txAttempts = 0;
 
+		//check parameters for consistency
+		cModule* phyModule = FindModule<BasePhyLayer*>
+								::findSubModule(getParentModule());
+
+		//aTurnaroundTime should match (be equal or bigger) the RX to TX
+		//switching time of the radio
+		if(phyModule->hasPar("timeRXToTX")) {
+			simtime_t rxToTx = phyModule->par("timeRXToTX").doubleValue();
+			if( rxToTx > aTurnaroundTime)
+			{
+				opp_warning("Parameter \"aTurnaroundTime\" (%f) does not match"
+							" the radios RX to TX switching time (%f)! It"
+							" should be equal or bigger",
+							aTurnaroundTime.dbl(), rxToTx.dbl());
+			}
+		}
+
 	} else if(stage == 1) {
 		BaseConnectionManager* cc = getConnectionManager();
 
     	if(cc->hasPar("pMax") && txPower > cc->par("pMax").doubleValue())
             opp_error("TranmitterPower can't be bigger than pMax in ConnectionManager! "
-            		  "Please adjust your omnetpp.ini file accordingly.");
+            		  "Please adjust your omnetpp.ini file accordingly");
 
-		EV << "queueLength = " << queueLength
+    	debugEV << "queueLength = " << queueLength
 		<< " bitrate = " << bitrate
 		<< " backoff method = " << par("backoffMethod").stringValue() << endl;
 
-		EV << "finished csma init stage 1." << endl;
+		debugEV << "finished csma init stage 1." << endl;
 	}
 }
 
@@ -173,7 +191,7 @@ void csma::handleUpperMsg(cMessage *msg) {
 	macPkt->setBitLength(headerLength);
 	NetwToMacControlInfo* cInfo =
 			static_cast<NetwToMacControlInfo*> (msg->removeControlInfo());
-	EV<<"CSMA received a message from upper layer, name is " << msg->getName() <<", CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
+	debugEV<<"CSMA received a message from upper layer, name is " << msg->getName() <<", CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
 	int dest = cInfo->getNextHopMac();
 	macPkt->setDestAddr(dest);
 	delete cInfo;
@@ -184,11 +202,11 @@ void csma::handleUpperMsg(cMessage *msg) {
 			//no record of current parent -> add next sequence number to map
 			SeqNrParent[dest] = 1;
 			macPkt->setSequenceId(0);
-			EV << "Adding a new parent to the map of Sequence numbers:" << dest << endl;
+			debugEV << "Adding a new parent to the map of Sequence numbers:" << dest << endl;
 		}
 		else {
 			macPkt->setSequenceId(SeqNrParent[dest]);
-			EV << "Packet send with sequence number = " << SeqNrParent[dest] << endl;
+			debugEV << "Packet send with sequence number = " << SeqNrParent[dest] << endl;
 			SeqNrParent[dest]++;
 		}
 	}
@@ -197,7 +215,7 @@ void csma::handleUpperMsg(cMessage *msg) {
 	//macPkt->setControlInfo(pco);
 	assert(static_cast<cPacket*>(msg));
 	macPkt->encapsulate(static_cast<cPacket*>(msg));
-	EV <<"pkt encapsulated, length: " << macPkt->getBitLength() << "\n";
+	debugEV <<"pkt encapsulated, length: " << macPkt->getBitLength() << "\n";
 	executeMac(EV_SEND_REQUEST, macPkt);
 }
 
@@ -206,14 +224,14 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 	case EV_SEND_REQUEST:
 		if (macQueue.size() <= queueLength) {
 			macQueue.push_back(static_cast<MacPkt *> (msg));
-			EV<<"(1) FSM State IDLE_1, EV_SEND_REQUEST and [TxBuff avail]: startTimerBackOff -> BACKOFF." << endl;
+			debugEV<<"(1) FSM State IDLE_1, EV_SEND_REQUEST and [TxBuff avail]: startTimerBackOff -> BACKOFF." << endl;
 			updateMacState(BACKOFF_2);
 			NB = 0;
 			//BE = macMinBE;
 			startTimer(TIMER_BACKOFF);
 		} else {
 			// queue is full, message has to be deleted
-			EV << "(12) FSM State IDLE_1, EV_SEND_REQUEST and [TxBuff not avail]: dropping packet -> IDLE." << endl;
+			debugEV << "(12) FSM State IDLE_1, EV_SEND_REQUEST and [TxBuff not avail]: dropping packet -> IDLE." << endl;
 			msg->setName("MAC ERROR");
 			msg->setKind(PACKET_DROPPED);
 			sendControlUp(msg);
@@ -223,7 +241,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 		}
 		break;
 	case EV_DUPLICATE_RECEIVED:
-		EV << "(15) FSM State IDLE_1, EV_DUPLICATE_RECEIVED: setting up radio tx -> WAITSIFS." << endl;
+		debugEV << "(15) FSM State IDLE_1, EV_DUPLICATE_RECEIVED: setting up radio tx -> WAITSIFS." << endl;
 		//sendUp(decapsMsg(static_cast<MacSeqPkt *>(msg)));
 		delete msg;
 
@@ -235,7 +253,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 		break;
 
 	case EV_FRAME_RECEIVED:
-		EV << "(15) FSM State IDLE_1, EV_FRAME_RECEIVED: setting up radio tx -> WAITSIFS." << endl;
+		debugEV << "(15) FSM State IDLE_1, EV_FRAME_RECEIVED: setting up radio tx -> WAITSIFS." << endl;
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
 
@@ -247,7 +265,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 		break;
 
 	case EV_BROADCAST_RECEIVED:
-		EV << "(23) FSM State IDLE_1, EV_BROADCAST_RECEIVED: Nothing to do." << endl;
+		debugEV << "(23) FSM State IDLE_1, EV_BROADCAST_RECEIVED: Nothing to do." << endl;
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
 		break;
@@ -259,7 +277,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 	switch (event) {
 	case EV_TIMER_BACKOFF:
-		EV<< "(2) FSM State BACKOFF, EV_TIMER_BACKOFF:"
+		debugEV<< "(2) FSM State BACKOFF, EV_TIMER_BACKOFF:"
 		<< " starting CCA timer." << endl;
 		startTimer(TIMER_CCA);
 		updateMacState(CCA_3);
@@ -269,16 +287,16 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 		// suspend current transmission attempt,
 		// transmit ack,
 		// and resume transmission when entering manageQueue()
-		EV << "(28) FSM State BACKOFF, EV_DUPLICATE_RECEIVED:";
+		debugEV << "(28) FSM State BACKOFF, EV_DUPLICATE_RECEIVED:";
 		if(useMACAcks) {
-			EV << "suspending current transmit tentative and transmitting ack";
+			debugEV << "suspending current transmit tentative and transmitting ack";
 			transmissionAttemptInterruptedByRx = true;
 			cancelEvent(backoffTimer);
 			phy->setRadioState(Radio::TX);
 			updateMacState(WAITSIFS_6);
 			startTimer(TIMER_SIFS);
 		} else {
-			EV << "Nothing to do.";
+			debugEV << "Nothing to do.";
 		}
 		//sendUp(decapsMsg(static_cast<MacSeqPkt *>(msg)));
 		delete msg;
@@ -288,9 +306,9 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 		// suspend current transmission attempt,
 		// transmit ack,
 		// and resume transmission when entering manageQueue()
-		EV << "(28) FSM State BACKOFF, EV_FRAME_RECEIVED:";
+		debugEV << "(28) FSM State BACKOFF, EV_FRAME_RECEIVED:";
 		if(useMACAcks) {
-			EV << "suspending current transmit tentative and transmitting ack";
+			debugEV << "suspending current transmit tentative and transmitting ack";
 			transmissionAttemptInterruptedByRx = true;
 			cancelEvent(backoffTimer);
 
@@ -298,13 +316,13 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 			updateMacState(WAITSIFS_6);
 			startTimer(TIMER_SIFS);
 		} else {
-			EV << "sending frame up and resuming normal operation.";
+			debugEV << "sending frame up and resuming normal operation.";
 		}
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
 		break;
 	case EV_BROADCAST_RECEIVED:
-		EV << "(29) FSM State BACKOFF, EV_BROADCAST_RECEIVED:"
+		debugEV << "(29) FSM State BACKOFF, EV_BROADCAST_RECEIVED:"
 		<< "sending frame up and resuming normal operation." <<endl;
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
@@ -326,10 +344,10 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 	switch (event) {
 	case EV_TIMER_CCA:
 	{
-		EV<< "(25) FSM State CCA_3, EV_TIMER_CCA" << endl;
+		debugEV<< "(25) FSM State CCA_3, EV_TIMER_CCA" << endl;
 		bool isIdle = phy->getChannelState().isIdle();
 		if(isIdle) {
-			EV << "(3) FSM State CCA_3, EV_TIMER_CCA, [Channel Idle]: -> TRANSMITFRAME_4." << endl;
+			debugEV << "(3) FSM State CCA_3, EV_TIMER_CCA, [Channel Idle]: -> TRANSMITFRAME_4." << endl;
 			updateMacState(TRANSMITFRAME_4);
 			phy->setRadioState(Radio::TX);
 			MacPkt * mac = check_and_cast<MacPkt *>(macQueue.front()->dup());
@@ -340,7 +358,7 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 			nbTxFrames++;
 		} else {
 			// Channel was busy, increment 802.15.4 backoff timers as specified.
-			EV << "(7) FSM State CCA_3, EV_TIMER_CCA, [Channel Busy]: "
+			debugEV << "(7) FSM State CCA_3, EV_TIMER_CCA, [Channel Busy]: "
 			<< " increment counters." << endl;
 			NB = NB+1;
 			//BE = std::min(BE+1, macMaxBE);
@@ -348,7 +366,7 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 			// decide if we go for another backoff or if we drop the frame.
 			if(NB> macMaxCSMABackoffs) {
 				// drop the frame
-				EV << "Tried " << NB << " backoffs, all reported a busy "
+				debugEV << "Tried " << NB << " backoffs, all reported a busy "
 				<< "channel. Dropping the packet." << endl;
 				cMessage * mac = macQueue.front();
 				macQueue.pop_front();
@@ -367,9 +385,9 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 		break;
 	}
 	case EV_DUPLICATE_RECEIVED:
-		EV << "(26) FSM State CCA_3, EV_DUPLICATE_RECEIVED:";
+		debugEV << "(26) FSM State CCA_3, EV_DUPLICATE_RECEIVED:";
 		if(useMACAcks) {
-			EV << " setting up radio tx -> WAITSIFS." << endl;
+			debugEV << " setting up radio tx -> WAITSIFS." << endl;
 			// suspend current transmission attempt,
 			// transmit ack,
 			// and resume transmission when entering manageQueue()
@@ -380,16 +398,16 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 			updateMacState(WAITSIFS_6);
 			startTimer(TIMER_SIFS);
 		} else {
-			EV << " Nothing to do." << endl;
+			debugEV << " Nothing to do." << endl;
 		}
 		//sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
 		break;
 
 	case EV_FRAME_RECEIVED:
-		EV << "(26) FSM State CCA_3, EV_FRAME_RECEIVED:";
+		debugEV << "(26) FSM State CCA_3, EV_FRAME_RECEIVED:";
 		if(useMACAcks) {
-			EV << " setting up radio tx -> WAITSIFS." << endl;
+			debugEV << " setting up radio tx -> WAITSIFS." << endl;
 			// suspend current transmission attempt,
 			// transmit ack,
 			// and resume transmission when entering manageQueue()
@@ -399,13 +417,13 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 			updateMacState(WAITSIFS_6);
 			startTimer(TIMER_SIFS);
 		} else {
-			EV << " Nothing to do." << endl;
+			debugEV << " Nothing to do." << endl;
 		}
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
 		break;
 	case EV_BROADCAST_RECEIVED:
-		EV << "(24) FSM State BACKOFF, EV_BROADCAST_RECEIVED:"
+		debugEV << "(24) FSM State BACKOFF, EV_BROADCAST_RECEIVED:"
 		<< " Nothing to do." << endl;
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
@@ -424,21 +442,21 @@ void csma::updateStatusTransmitFrame(t_mac_event event, cMessage *msg) {
 		bool expectAck = useMACAcks;
 		if (packet->getDestAddr() != L2BROADCAST) {
 			//unicast
-			EV << "(4) FSM State TRANSMITFRAME_4, "
+			debugEV << "(4) FSM State TRANSMITFRAME_4, "
 			   << "EV_FRAME_TRANSMITTED [Unicast]: ";
 		} else {
 			//broadcast
-			EV << "(27) FSM State TRANSMITFRAME_4, EV_FRAME_TRANSMITTED "
+			debugEV << "(27) FSM State TRANSMITFRAME_4, EV_FRAME_TRANSMITTED "
 			   << " [Broadcast]";
 			expectAck = false;
 		}
 
 		if(expectAck) {
-			EV << "RadioSetupRx -> WAITACK." << endl;
+			debugEV << "RadioSetupRx -> WAITACK." << endl;
 			updateMacState(WAITACK_5);
 			startTimer(TIMER_RX_ACK);
 		} else {
-			EV << ": RadioSetupRx, manageQueue..." << endl;
+			debugEV << ": RadioSetupRx, manageQueue..." << endl;
 			macQueue.pop_front();
 			delete packet;
 			manageQueue();
@@ -454,7 +472,7 @@ void csma::updateStatusWaitAck(t_mac_event event, cMessage *msg) {
 	cMessage * mac;
 	switch (event) {
 	case EV_ACK_RECEIVED:
-		EV<< "(5) FSM State WAITACK_5, EV_ACK_RECEIVED: "
+		debugEV<< "(5) FSM State WAITACK_5, EV_ACK_RECEIVED: "
 		<< " ProcessAck, manageQueue..." << endl;
 		if(rxAckTimer->isScheduled())
 		cancelEvent(rxAckTimer);
@@ -468,7 +486,7 @@ void csma::updateStatusWaitAck(t_mac_event event, cMessage *msg) {
 		manageQueue();
 		break;
 	case EV_ACK_TIMEOUT:
-		EV << "(12) FSM State WAITACK_5, EV_ACK_TIMEOUT:"
+		debugEV << "(12) FSM State WAITACK_5, EV_ACK_TIMEOUT:"
 		<< " incrementCounter/dropPacket, manageQueue..." << endl;
 		manageMissingAck(event, msg);
 		break;
@@ -476,7 +494,7 @@ void csma::updateStatusWaitAck(t_mac_event event, cMessage *msg) {
 	case EV_FRAME_RECEIVED:
 		sendUp(decapsMsg(static_cast<MacPkt*>(msg)));
 	case EV_DUPLICATE_RECEIVED:
-		EV << "Error ! Received a frame during SIFS !" << endl;
+		debugEV << "Error ! Received a frame during SIFS !" << endl;
 		delete msg;
 		break;
 	default:
@@ -489,11 +507,11 @@ void csma::manageMissingAck(t_mac_event event, cMessage *msg) {
 	if (txAttempts < macMaxFrameRetries + 1) {
 		// increment counter
 		txAttempts++;
-		EV<< "I will retransmit this packet (I already tried "
+		debugEV<< "I will retransmit this packet (I already tried "
 		<< txAttempts << " times)." << endl;
 	} else {
 		// drop packet
-		EV << "Packet was transmitted " << txAttempts
+		debugEV << "Packet was transmitted " << txAttempts
 		<< " times and I never got an Ack. I drop the packet." << endl;
 		cMessage * mac = macQueue.front();
 		macQueue.pop_front();
@@ -509,7 +527,7 @@ void csma::updateStatusSIFS(t_mac_event event, cMessage *msg) {
 
 	switch (event) {
 	case EV_TIMER_SIFS:
-		EV<< "(17) FSM State WAITSIFS_6, EV_TIMER_SIFS:"
+		debugEV<< "(17) FSM State WAITSIFS_6, EV_TIMER_SIFS:"
 		<< " sendAck -> TRANSMITACK." << endl;
 		updateMacState(TRANSMITACK_7);
 		attachSignal(ackMessage, simTime());
@@ -521,7 +539,7 @@ void csma::updateStatusSIFS(t_mac_event event, cMessage *msg) {
 	case EV_TIMER_BACKOFF:
 		// Backoff timer has expired while receiving a frame. Restart it
 		// and stay here.
-		EV << "(16) FSM State WAITSIFS_6, EV_TIMER_BACKOFF. "
+		debugEV << "(16) FSM State WAITSIFS_6, EV_TIMER_BACKOFF. "
 		<< "Restart backoff timer and don't move." << endl;
 		startTimer(TIMER_BACKOFF);
 		break;
@@ -540,7 +558,7 @@ void csma::updateStatusTransmitAck(t_mac_event event, cMessage *msg) {
 	assert(useMACAcks);
 
 	if (event == EV_FRAME_TRANSMITTED) {
-		EV<< "(19) FSM State TRANSMITACK_7, EV_FRAME_TRANSMITTED:"
+		debugEV<< "(19) FSM State TRANSMITACK_7, EV_FRAME_TRANSMITTED:"
 		<< " ->manageQueue." << endl;
 		phy->setRadioState(Radio::RX);
 		//		delete msg;
@@ -551,14 +569,14 @@ void csma::updateStatusTransmitAck(t_mac_event event, cMessage *msg) {
 }
 
 void csma::updateStatusNotIdle(cMessage *msg) {
-	EV<< "(20) FSM State NOT IDLE, EV_SEND_REQUEST. Is a TxBuffer available ?" << endl;
+	debugEV<< "(20) FSM State NOT IDLE, EV_SEND_REQUEST. Is a TxBuffer available ?" << endl;
 	if (macQueue.size() <= queueLength) {
 		macQueue.push_back(static_cast<MacPkt *>(msg));
-		EV << "(21) FSM State NOT IDLE, EV_SEND_REQUEST"
+		debugEV << "(21) FSM State NOT IDLE, EV_SEND_REQUEST"
 		<<" and [TxBuff avail]: enqueue packet and don't move." << endl;
 	} else {
 		// queue is full, message has to be deleted
-		EV << "(22) FSM State NOT IDLE, EV_SEND_REQUEST"
+		debugEV << "(22) FSM State NOT IDLE, EV_SEND_REQUEST"
 		<< " and [TxBuff not avail]: dropping packet and don't move."
 		<< endl;
 		msg->setName("MAC ERROR");
@@ -573,7 +591,7 @@ void csma::updateStatusNotIdle(cMessage *msg) {
  * Updates state machine.
  */
 void csma::executeMac(t_mac_event event, cMessage *msg) {
-	EV<< "In executeMac" << endl;
+	debugEV<< "In executeMac" << endl;
 	if(macState != IDLE_1 && event == EV_SEND_REQUEST) {
 		updateStatusNotIdle(msg);
 	} else {
@@ -607,7 +625,7 @@ void csma::executeMac(t_mac_event event, cMessage *msg) {
 
 void csma::manageQueue() {
 	if (macQueue.size() != 0) {
-		EV<< "(manageQueue) there are " << macQueue.size() << " packets to send, entering backoff wait state." << endl;
+		debugEV<< "(manageQueue) there are " << macQueue.size() << " packets to send, entering backoff wait state." << endl;
 		if(! backoffTimer->isScheduled())
 		startTimer(TIMER_BACKOFF);
 		updateMacState(BACKOFF_2);
@@ -622,7 +640,7 @@ void csma::manageQueue() {
 			//BE = macMinBE;
 		}
 	} else {
-		EV << "(manageQueue) no packets to send, entering IDLE state." << endl;
+		debugEV << "(manageQueue) no packets to send, entering IDLE state." << endl;
 		updateMacState(IDLE_1);
 	}
 }
@@ -645,26 +663,26 @@ void csma::startTimer(t_mac_timer timer) {
 		scheduleAt(scheduleBackoff(), backoffTimer);
 	} else if (timer == TIMER_CCA) {
 		simtime_t ccaTime = rxSetupTime + ccaDetectionTime;
-		EV<< "(startTimer) ccaTimer value=" << ccaTime
+		debugEV<< "(startTimer) ccaTimer value=" << ccaTime
 		<< "(rxSetupTime,ccaDetectionTime:" << rxSetupTime
 		<< "," << ccaDetectionTime <<")." << endl;
 		scheduleAt(simTime()+rxSetupTime+ccaDetectionTime, ccaTimer);
 	} else if (timer==TIMER_SIFS) {
 		assert(useMACAcks);
-		EV << "(startTimer) sifsTimer value=" << sifs << endl;
+		debugEV << "(startTimer) sifsTimer value=" << sifs << endl;
 		scheduleAt(simTime()+sifs, sifsTimer);
 	} else if (timer==TIMER_RX_ACK) {
 		assert(useMACAcks);
-		EV << "(startTimer) rxAckTimer value=" << macAckWaitDuration << endl;
+		debugEV << "(startTimer) rxAckTimer value=" << macAckWaitDuration << endl;
 		scheduleAt(simTime()+macAckWaitDuration, rxAckTimer);
 	} else {
 		EV << "Unknown timer requested to start:" << timer << endl;
 	}
 }
 
-double csma::scheduleBackoff() {
+simtime_t csma::scheduleBackoff() {
 
-	double backoffTime;
+	simtime_t backoffTime;
 
 	switch(backoffMethod) {
 	case EXPONENTIAL:
@@ -672,10 +690,10 @@ double csma::scheduleBackoff() {
 		int BE = std::min(macMinBE + NB, macMaxBE);
 		double d = std::pow((double) 2, (int) BE);
 		int v = (int) d - 1;
-		int r = intuniform(1, v, 0);
-		backoffTime = r * aUnitBackoffPeriod.dbl();
+		int r = intuniform(0, v, 0);
+		backoffTime = r * aUnitBackoffPeriod;
 
-		EV<< "(startTimer) backoffTimer value=" << backoffTime
+		debugEV<< "(startTimer) backoffTimer value=" << backoffTime
 		<< " (BE=" << BE << ", 2^BE-1= " << v << "r="
 		<< r << ")" << endl;
 		break;
@@ -683,15 +701,15 @@ double csma::scheduleBackoff() {
 	case LINEAR:
 	{
 		int slots = intuniform(1, initialCW + NB, 0);
-		backoffTime = slots * aUnitBackoffPeriod.dbl();
-		EV<< "(startTimer) backoffTimer value=" << backoffTime << endl;
+		backoffTime = slots * aUnitBackoffPeriod;
+		debugEV<< "(startTimer) backoffTimer value=" << backoffTime << endl;
 		break;
 	}
 	case CONSTANT:
 	{
 		int slots = intuniform(1, initialCW, 0);
-		backoffTime = slots * aUnitBackoffPeriod.dbl();
-		EV<< "(startTimer) backoffTimer value=" << backoffTime << endl;
+		backoffTime = slots * aUnitBackoffPeriod;
+		debugEV<< "(startTimer) backoffTimer value=" << backoffTime << endl;
 		break;
 	}
 	default:
@@ -699,16 +717,16 @@ double csma::scheduleBackoff() {
 	}
 
 	nbBackoffs = nbBackoffs + 1;
-	backoffValues = backoffValues + backoffTime;
+	backoffValues = backoffValues + backoffTime.dbl();
 
-	return backoffTime + simTime().dbl();
+	return backoffTime + simTime();
 }
 
 /*
  * Binds timers to events and executes FSM.
  */
 void csma::handleSelfMsg(cMessage *msg) {
-	EV<< "timer routine." << endl;
+	debugEV<< "timer routine." << endl;
 	if(msg==backoffTimer)
 		executeMac(EV_TIMER_BACKOFF, msg);
 	else if(msg==ccaTimer)
@@ -732,7 +750,7 @@ void csma::handleLowerMsg(cMessage *msg) {
 	long dest = macPkt->getDestAddr();
 	long ExpectedNr = 0;
 
-	EV<< "Received frame name= " << macPkt->getName()
+	debugEV<< "Received frame name= " << macPkt->getName()
 	<< ", myState=" << macState << " src=" << macPkt->getSrcAddr()
 	<< " dst=" << macPkt->getDestAddr() << " myAddr="
 	<< myMacAddr << endl;
@@ -740,7 +758,7 @@ void csma::handleLowerMsg(cMessage *msg) {
 	if(macPkt->getDestAddr() == myMacAddr)
 	{
 		if(!useMACAcks) {
-			EV << "Received a data packet addressed to me." << endl;
+			debugEV << "Received a data packet addressed to me." << endl;
 			nbRxFrames++;
 			executeMac(EV_FRAME_RECEIVED, macPkt);
 		}
@@ -752,7 +770,7 @@ void csma::handleLowerMsg(cMessage *msg) {
 				// and we should send an ack.
 				// we build the ack packet here because we need to
 				// copy data from macPkt (src).
-				EV << "Received a data packet addressed to me,"
+				debugEV << "Received a data packet addressed to me,"
 				   << " preparing an ack..." << endl;
 
 				nbRxFrames++;
@@ -767,12 +785,12 @@ void csma::handleLowerMsg(cMessage *msg) {
 				if(SeqNrChild.find(src) == SeqNrChild.end()) {
 					//no record of current child -> add expected next number to map
 					SeqNrChild[src] = SeqNr + 1;
-					EV << "Adding a new child to the map of Sequence numbers:" << src << endl;
+					debugEV << "Adding a new child to the map of Sequence numbers:" << src << endl;
 					executeMac(EV_FRAME_RECEIVED, macPkt);
 				}
 				else {
 					ExpectedNr = SeqNrChild[src];
-					EV << "Expected Sequence number is " << ExpectedNr <<
+					debugEV << "Expected Sequence number is " << ExpectedNr <<
 					" and number of packet is " << SeqNr << endl;
 					if(SeqNr < ExpectedNr) {
 						//Duplicate Packet, count and do not send to upper layer
@@ -806,7 +824,7 @@ void csma::handleLowerMsg(cMessage *msg) {
 	else if (dest == L2BROADCAST) {
 		executeMac(EV_BROADCAST_RECEIVED, macPkt);
 	} else {
-		EV << "packet not for me, deleting...\n";
+		debugEV << "packet not for me, deleting...\n";
 		delete macPkt;
 	}
 }
@@ -815,9 +833,9 @@ void csma::handleLowerControl(cMessage *msg) {
 	if (msg->getKind() == MacToPhyInterface::TX_OVER) {
 		executeMac(EV_FRAME_TRANSMITTED, msg);
 	} else if (msg->getKind() == BaseDecider::PACKET_DROPPED) {
-		EV<< "control message: PACKED DROPPED" << endl;
+		debugEV<< "control message: PACKED DROPPED" << endl;
 	} else if (msg->getKind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
-		EV<< "control message: RADIO_SWITCHING_OVER" << endl;
+		debugEV<< "control message: RADIO_SWITCHING_OVER" << endl;
 	} else {
 		EV << "Invalid control message type (type=NOTHING) : name="
 		<< msg->getName() << " modulesrc="

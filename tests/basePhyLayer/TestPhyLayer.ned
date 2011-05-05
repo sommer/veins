@@ -5,5 +5,6 @@ simple TestPhyLayer extends BasePhyLayer
 {
     parameters:
     	@class(TestPhyLayer);
+    	int protocol = default(0);
 }
 

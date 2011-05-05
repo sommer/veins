@@ -42,20 +42,10 @@ public:
 		if(request->getSenseTimeout() > 0.0) {
 			senseStart = time;
 			simtime_t next = time + request->getSenseTimeout();
-			TestModule::assertMessage(	"Scheduled sense request at phy.",
-										BasePhyLayer::CHANNEL_SENSE_REQUEST,
-										next,
-										"phy" + toString(myIndex));
-			TestModule::assertMessage(	"Scheduled sense request.",
-										BasePhyLayer::CHANNEL_SENSE_REQUEST,
-										next);
+
 			request->setSenseTimeout(0.0);
 			return next;
 		} else {
-			TestModule::assertMessage(	"Sense request answer at mac.",
-										BasePhyLayer::CHANNEL_SENSE_REQUEST,
-										time,
-										"mac" + toString(myIndex));
 
 			DeciderToPhyInterface::AirFrameVector v;
 			phy->getChannelInfo(senseStart, time, v);
@@ -65,27 +55,69 @@ public:
 		}
 	}
 
+	void testRun7(int stage, cMessage* msg)
+	{
+
+		AirFrame* frame = dynamic_cast<AirFrame*>(msg);
+		assertTrue("Passed message is an AirFrame.", frame != NULL, true);
+
+		const Signal& s = frame->getSignal();
+
+		simtime_t start = s.getSignalStart();
+		simtime_t end = s.getSignalStart() + s.getSignalLength();
+
+		AirFrameVector interf;
+
+		if(stage == 4) {
+//planTest("1.9", "Interference for Packet 1 at decider A2 contains packet 2.");
+			phy->getChannelInfo(start, end, interf);
+
+			testForEqual("1.9", (unsigned int)2, interf.size());
+
+//planTest("1.8", "Interference for Packet 2 at decider B2 contains packet 1.");
+			waitForMessage( "End of Packet 2 at decider of B2",
+							BasePhyLayer::AIR_FRAME,
+							simTime() + 4.0, "decider3");
+		} else if(stage == 5) {
+			phy->getChannelInfo(start, end, interf);
+
+			testForEqual("1.8", (unsigned int)2, interf.size());
+		}
+	}
+
 	simtime_t processSignal(AirFrame* frame) {
 		announceMessage(frame);
 
 		const Signal& s = frame->getSignal();
 
 		simtime_t time = phy->getSimTime();
-		simtime_t headerEnd = s.getSignalStart() + s.getSignalLength() * 0.1;
-		if(time == s.getSignalStart()) {
-			assertMessage("Scheduled AirFrame to Pseudoheader at phy.", RECEIVING_STATE, frame, headerEnd, "phy" + toString(myIndex));
-			assertMessage("Scheduled AirFrame to Pseudoheader.", RECEIVING_STATE, frame, headerEnd);
-			return headerEnd;
+		simtime_t end;
 
-		} else if(time == headerEnd) {
+		if(run == 7)
+		{
+			end = s.getSignalStart() + s.getSignalLength();
+		} else {
+			end = s.getSignalStart() + s.getSignalLength() * 0.1;
+		}
+
+		if(time == s.getSignalStart()) {
+			assertMessage("Scheduled AirFrame to end at phy.", RECEIVING_STATE,
+						  frame, end, "phy" + toString(myIndex));
+			assertMessage("Scheduled AirFrame to end.", RECEIVING_STATE,
+						  frame, end);
+			return end;
+
+		} else if(time == end) {
 			phy->sendUp(frame, new DeciderResult(true));
 			TestModule::assertMessage("MacPkt at mac layer.", TEST_MACPKT,
 						  time, "mac" + toString(myIndex));
 			return -1;
 		}
 
-		fail("Simtime(" + toString(time) + ") was neither signal start (" + toString(s.getSignalStart()) +
-			 ") nor header end(" + toString(headerEnd) + ").");
+		fail("Simtime(" + toString(time) + ") was neither signal start ("
+			 + toString(s.getSignalStart()) + ") nor end(" + toString(end)
+			 + ").");
+
 		return -1;
 	}
 

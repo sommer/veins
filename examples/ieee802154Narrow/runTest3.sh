@@ -1,4 +1,5 @@
 #!/bin/sh
 
 rm -f results/Test3*
-./ieee802154Narrow -c Test3 -u Cmdenv 
+opp_runall $1 ./ieee802154Narrow -c Test3 -u Cmdenv -r 0..6 &
+./ieee802154Narrow -c Test3 -u Cmdenv -r 7

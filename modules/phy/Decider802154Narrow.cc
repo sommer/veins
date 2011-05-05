@@ -7,7 +7,6 @@
 
 #include "Decider802154Narrow.h"
 #include "DeciderResult802154Narrow.h"
-//#include "Consts802154.h"
 #include <MacPkt_m.h>
 #include <PhyToMacControlInfo.h>
 #include <cmath>
@@ -19,6 +18,7 @@ bool Decider802154Narrow::syncOnSFD(AirFrame* frame) {
 
 	BER = evalBER(frame);
 	sfdErrorProbability = 1.0 - pow((1.0 - BER), sfdLength);
+
 	return sfdErrorProbability < uniform(0, 1, 0);
 }
 
@@ -30,7 +30,8 @@ double Decider802154Narrow::evalBER(AirFrame* frame) {
 
 	ConstMapping* noise = calculateRSSIMapping(time, time, frame);
 
-	double noiseLevel = noise->getValue(Argument(time));
+	Argument argStart(time);
+	double noiseLevel = noise->getValue(argStart);
 
 	delete noise;
 
@@ -81,8 +82,6 @@ simtime_t Decider802154Narrow::processSignalHeader(AirFrame* frame)
 	return s.getSignalStart() + s.getSignalLength();
 }
 
-
-
 simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 {
 	ConstMapping* snrMapping = calculateSnrMapping(frame);
@@ -111,7 +110,8 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 	double errorProbability;
 
 	simtime_t receivingStart = MappingUtils::post(start);
-	ConstMappingIterator* iter = snrMapping->createConstIterator(Argument(receivingStart));
+	Argument argStart(receivingStart);
+	ConstMappingIterator* iter = snrMapping->createConstIterator(argStart);
 	double snirMin = iter->getValue();
 	// Evaluate bit errors for each snr value
 	// and stops as soon as we have an error.
@@ -126,7 +126,8 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 		//determine end of this interval
 		simtime_t nextTime = end;	//either the end of the signal...
 		if(iter->hasNext()) {		//or the position of the next entry
-			nextTime = std::min(iter->getNextPosition().getTime(), nextTime);
+			const Argument& argNext = iter->getNextPosition();
+			nextTime = std::min(argNext.getTime(), nextTime);
 			iter->next();	//the iterator will already point to the next entry
 		}
 
@@ -183,9 +184,6 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 		snirDropped.record(10*log10(snirMin));  // in dB
 		if(hasInterference) {
 			nbFramesWithInterferenceDropped++;
-			if(mac->getSrcAddr() == myMacAddr) {
-				nbHiddenTerminalOccurences++;
-			}
 		} else {
 			nbFramesWithoutInterferenceDropped++;
 		}
@@ -241,5 +239,4 @@ void Decider802154Narrow::finish() {
 	phy->recordScalar("nbFramesWithoutInterference", nbFramesWithoutInterference);
 	phy->recordScalar("nbFramesWithInterferenceDropped", nbFramesWithInterferenceDropped);
 	phy->recordScalar("nbFramesWithoutInterferenceDropped", nbFramesWithoutInterferenceDropped);
-	phy->recordScalar("nbHiddenTerminalOccurences", nbHiddenTerminalOccurences);
 }

@@ -22,7 +22,6 @@ package org.mixim.modules.connectionManager;
 simple UnitDisk
 {
     parameters:
-        // debug switch
         bool debug; // debug switch
         double radioRange;
 

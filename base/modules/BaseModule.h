@@ -31,9 +31,10 @@
 #include "HostState.h"
 #include "BaseUtility.h"
 
-
-#define EV_clear (ev.isDisabled()||!debug) ? ev : ev
-//#define EV (ev.isDisabled()||!debug) ? ev : ev << logName() << "::" << getClassName() << ": " ==> EV is now part of <omnetpp.h>
+#ifndef debugEV
+#define debugEV_clear (ev.isDisabled()||!debug) ? ev : ev
+#define debugEV (ev.isDisabled()||!debug) ? ev : ev << logName() << "::" << getClassName() << ": "
+#endif
 
 #ifndef coreEV
 #define coreEV_clear (ev.isDisabled()||!coreDebug) ? ev : ev

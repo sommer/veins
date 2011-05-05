@@ -33,7 +33,7 @@ void LineSegmentsMobilityBase::initialize(int stage) {
 
 void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
 {
-    EV << "beginNextMove, startPos: " << move.getStartPos().info() << " stepTarget: " << stepTarget.info() << " targetPos: "
+	debugEV << "beginNextMove, startPos: " << move.getStartPos().info() << " stepTarget: " << stepTarget.info() << " targetPos: "
        << targetPos.info() << endl << "simTime: " << simTime() << " targetTime: " << targetTime << endl;;
 
     // go to exact position where previous statement was supposed to finish
@@ -45,7 +45,7 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
     setTargetPosition();
 
 
-    EV << "startPos: " << move.getStartPos().info() << " targetPos: " << targetPos.info() << endl;
+    debugEV << "startPos: " << move.getStartPos().info() << " targetPos: " << targetPos.info() << endl;
 
     if (targetTime<now)
         error("LineSegmentsMobilityBase: targetTime<now was set in %s's beginNextMove()", getClassName());
@@ -54,12 +54,12 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
         // end of movement
         stepSize.setX(0);
         stepSize.setY(0);
-        EV << "speed < 0; stop moving!\n";
+        debugEV << "speed < 0; stop moving!\n";
         delete msg;
     }
     else if (targetPos==move.getStartPos()){
         // no movement, just wait
-    	EV << "warning, we are not moving!\n";
+    	debugEV << "warning, we are not moving!\n";
         stepSize.setX(0);
         stepSize.setY(0);
         scheduleAt(std::max(targetTime,simTime()), msg);
@@ -83,7 +83,7 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
 
 	move.setSpeed(move.getStartPos().distance( targetPos ) / (targetTime - now ));
 
-	EV << "numIntervals: " << numIntervals << " now: " << now << " simTime " << simTime() << " stepTarget: "
+	debugEV << "numIntervals: " << numIntervals << " now: " << now << " simTime " << simTime() << " stepTarget: "
 	   << stepTarget.info() << " speed: " << move.getSpeed() << endl;
 
         scheduleAt(simTime() + updateInterval, msg);
@@ -100,7 +100,7 @@ void LineSegmentsMobilityBase::handleSelfMsg(cMessage *msg)
         beginNextMove(msg);
     }
     else{
-    	EV << "make next step\n";
+    	debugEV << "make next step\n";
 
         scheduleAt(simTime() + updateInterval, msg);
 

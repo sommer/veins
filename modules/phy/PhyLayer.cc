@@ -15,6 +15,7 @@
 #include <JakesFading.h>
 #include "AntennaModel.h"
 
+
 Define_Module(PhyLayer);
 
 AnalogueModel* PhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
@@ -250,12 +251,15 @@ AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){
 
 Decider* PhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 	if(name == "Decider80211") {
+		protocolId = IEEE_80211;
 		return initializeDecider80211(params);
 	}
 	else if(name == "SNRThresholdDecider"){
+		protocolId = GENERIC;
 		return initializeSNRThresholdDecider(params);
 	}
 	else if(name == "Decider802154Narrow") {
+		protocolId = IEEE_802154_NARROW;
 		return initializeDecider802154Narrow(params);
 	}
 
@@ -264,8 +268,9 @@ Decider* PhyLayer::getDeciderFromName(std::string name, ParameterMap& params) {
 
 Decider* PhyLayer::initializeDecider80211(ParameterMap& params) {
 	double threshold = params["threshold"];
-	double centerFreq = params["centerFrequency"];
-	return new Decider80211(this, threshold, sensitivity, centerFreq, findHost()->getIndex(), coreDebug);
+	return new Decider80211(this, threshold, sensitivity,
+							radio->getCurrentChannel(),
+							findHost()->getIndex(), coreDebug);
 }
 
 Decider* PhyLayer::initializeDecider802154Narrow(ParameterMap& params) {

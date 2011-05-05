@@ -7,9 +7,7 @@ void TestPhyLayer::initialize(int stage) {
 	if(stage == 0)
 	{
 		myIndex = findHost()->getIndex();
-
-		run = simulation.getSystemModule()->par("run");
-
+		protocolID = par("protocol").longValue();
 	}
 
 	//call BasePhy's initialize
@@ -18,12 +16,15 @@ void TestPhyLayer::initialize(int stage) {
 	//run basic tests
 	if(stage == 0) {
 		init("phy" + toString(myIndex));
-
-
-
-	} else if(stage == 1) {
-		testInitialisation();
 	}
+}
+
+bool TestPhyLayer::isKnownProtocolId(int id) {
+	return id == protocolID;
+}
+
+int TestPhyLayer::myProtocolId() {
+	return protocolID;
 }
 
 void TestPhyLayer::handleMessage(cMessage* msg) {
@@ -37,8 +38,8 @@ TestPhyLayer::~TestPhyLayer() {
 }
 
 void TestPhyLayer::testInitialisation() {
-	if(run == 6)
-		return;
+	Enter_Method_Silent();
+
 	//run dependend tests
 	assertFalse("Check parameter \"usePropagationDelay\".", usePropagationDelay);
 
@@ -124,6 +125,7 @@ void TestPhyLayer::testInitialisation() {
 	assertNotEqual("Check initialisation of radioSwitchOver timer", (void*)0, radioSwitchingOverTimer);
 	assertEqual("Check kind of radioSwitchOver timer", RADIO_SWITCHING_OVER, radioSwitchingOverTimer->getKind());
 
+	testPassed("0");
 }
 
 

@@ -84,12 +84,18 @@ void RadioStateAnalogueModel::writeRecvEntry(simtime_t time, double value)
 Radio::Radio(int numRadioStates,
 			 bool recordStats,
 			 int initialState,
-			 double minAtt, double maxAtt):
+			 double minAtt, double maxAtt,
+			 int currentChannel, int nbChannels):
 	state(initialState), nextState(initialState),
 	numRadioStates(numRadioStates),
 	minAtt(minAtt), maxAtt(maxAtt),
-	rsam(mapStateToAtt(initialState))
+	rsam(mapStateToAtt(initialState)),
+	currentChannel(currentChannel), nbChannels(nbChannels)
 {
+	assert(nbChannels > 0);
+	assert(currentChannel > -1);
+	assert(currentChannel < nbChannels);
+
 	radioStates.setName("RadioState");
 	radioStates.setEnabled(recordStats);
 

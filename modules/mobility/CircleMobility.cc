@@ -28,7 +28,7 @@ void CircleMobility::initialize(int stage)
 {
     BaseMobility::initialize(stage);
 
-    EV << "initializing CircleMobility stage " << stage << endl;
+    debugEV << "initializing CircleMobility stage " << stage << endl;
 
 
 

@@ -83,6 +83,15 @@ public:
      * phy header.
 	 */
 	virtual int getPhyHeaderLength() = 0;
+
+	/** @brief Sets the channel currently used by the radio. */
+	virtual void setCurrentRadioChannel(int newRadioChannel) = 0;
+
+	/** @brief Returns the channel currently used by the radio. */
+	virtual int getCurrentRadioChannel() = 0;
+
+	/** @brief Returns the number of channels available on this radio. */
+	virtual int getNbRadioChannels() = 0;
 };
 
 #endif /*MACTOPHYINTERFACE_H_*/

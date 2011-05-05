@@ -11,6 +11,7 @@
 <dir makemake-options="-o Mac80211 -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/Mac80211" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power" type="makemake"/>
 <dir makemake-options="-o mapping -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mapping" type="makemake"/>
+<dir makemake-options="-o nicTest -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/nicTest" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:export-library --meta:use-exported-libs" path="." type="makemake"/>
 <dir makemake-options="-o baseNetwork -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/baseNetwork" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests" type="makemake"/>

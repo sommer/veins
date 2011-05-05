@@ -121,6 +121,18 @@ public:
 	 */
 	virtual void finish() {}
 
+	/**
+	 * @brief Called by phy layer to indicate that the channel this radio
+	 * currently listens to has changed.
+	 *
+	 * Sub-classing deciders which support multiple channels should override
+	 * this method to handle the effects of channel changes on ongoing
+	 * receptions.
+	 *
+	 * @param newChannel The new channel the radio has changed to.
+	 */
+	virtual void channelChanged(int newChannel) {}
+
 };
 
 

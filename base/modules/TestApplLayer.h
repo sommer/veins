@@ -55,6 +55,9 @@ protected:
     /** @brief Timer message for scheduling next message.*/
     cMessage *delayTimer;
 
+    /** @brief Enables debugging of this module.*/
+	bool coreDebug;
+
 protected:
     /** @brief Handle self messages such as timer... */
     virtual void handleSelfMsg(cMessage*);

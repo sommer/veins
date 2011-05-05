@@ -37,7 +37,7 @@ package org.mixim.modules.mac;
 simple CSMA802154 extends csma
 {
     parameters:
-        @class(csma);
+        @class(CSMA802154);
         
         sifs @unit(s) = 0.000192 s; // 12 symbols
         headerLength @unit(bit) = 72 bit;

@@ -4,7 +4,6 @@ package org.mixim.base.modules;
 moduleinterface IBaseNetwLayer
 {
     parameters:
-        bool debug; // debug switch
         bool stats; // stats switch
         double headerLength @unit("bit"); // length of the network packet header (in bits)
     gates:

@@ -37,7 +37,7 @@ void MassMobility::initialize(int stage)
 {
     BaseMobility::initialize(stage);
 
-    EV << "initializing MassMobility stage " << stage << endl;
+    debugEV << "initializing MassMobility stage " << stage << endl;
 
     if (stage == 0)
     {

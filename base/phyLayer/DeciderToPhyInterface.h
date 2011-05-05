@@ -8,6 +8,7 @@
 #define DECIDER_TO_PHY_INTERFACE_H_
 
 #include <vector>
+#include <list>
 #include <omnetpp.h>
 
 #include "AirFrame_m.h"
@@ -41,7 +42,7 @@ public:
 	 *
 	 * Used as out-value in "getChannelInfo" method.
 	 */
-	typedef std::vector<AirFrame*> AirFrameVector;
+	typedef std::list<AirFrame*> AirFrameVector;
 
 	virtual ~DeciderToPhyInterface() {}
 

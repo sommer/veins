@@ -24,7 +24,7 @@ module Network
                 playgroundSizeZ = playgroundSizeZ;
 
         }
-        testManager: TestManager;
+        testManager: BasePhyTests;
         channelcontrol: ConnectionManager {
             parameters:
                 @display("p=60,30;i=eye14");

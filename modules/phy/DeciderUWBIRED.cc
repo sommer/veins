@@ -105,7 +105,7 @@ bool DeciderUWBIRED::attemptSync(Signal* s) {
 	ConstMapping* power = s->getReceivingPower();
 	ConstMappingIterator* mIt = power->createConstIterator();
 
-	vector<AirFrame*> syncVector;
+	AirFrameVector syncVector;
 	// Retrieve all potentially colliding airFrames
 	phy->getChannelInfo(s->getSignalStart(), simTime(), syncVector);
 

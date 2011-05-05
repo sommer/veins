@@ -65,6 +65,9 @@ protected:
     /** @brief cached variable of my networ address */
     int myNetwAddr;
 
+    /** @brief Enables debugging of this module.*/
+    bool coreDebug;
+
 public:
     //Module_Class_Members(BaseNetwLayer,BaseLayer,0);
 

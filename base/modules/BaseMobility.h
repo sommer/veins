@@ -123,6 +123,10 @@ class BaseMobility : public BatteryAccess
     /** @brief debug this core module? */
     bool coreDebug;
 
+    /** @brief Enable depth dependent scaling of nodes when 3d and tkenv is
+     * used. */
+    bool scaleNodeByDepth;
+
   public:
 
     /** @brief This modules should only receive self-messages

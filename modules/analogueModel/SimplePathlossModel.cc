@@ -1,6 +1,6 @@
 #include "SimplePathlossModel.h"
 
-#define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimplePathlossModel): "
+#define splmEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimplePathlossModel): "
 
 SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimensions,
 													   SimplePathlossModel* model,
@@ -46,7 +46,7 @@ void SimplePathlossModel::filterSignal(Signal& s, bool isActiveAtOrigin){
 	double sqrDistance = useTorus ? myPos.sqrTorusDist(sendersPos, playgroundSize)
 								  : myPos.sqrdist(sendersPos);
 
-	debugEV << "sqrdistance is: " << sqrDistance << endl;
+	splmEV << "sqrdistance is: " << sqrDistance << endl;
 
 	if(sqrDistance <= 1.0) {
 		//attenuation is negligible
@@ -57,9 +57,10 @@ void SimplePathlossModel::filterSignal(Signal& s, bool isActiveAtOrigin){
 	// the actual effect of the wavelength on the attenuation is
 	// calculated in SimplePathlossConstMappings "getValue()" method).
 	double wavelength = (BaseWorldUtility::speedOfLight/carrierFrequency);
-	debugEV << "wavelength is: " << wavelength << endl;
+	splmEV << "wavelength is: " << wavelength << endl;
 
 	// the part of the attenuation only depending on the distance
+<<<<<<< HEAD
 	double distFactor;
 	double attenuation = 0;
 	if (sqrDistance > 1.0)
@@ -74,11 +75,11 @@ void SimplePathlossModel::filterSignal(Signal& s, bool isActiveAtOrigin){
 			attenuation = attenuation * L0;
 		}
 	}
-	debugEV << "distance factor is: " << attenuation << endl;
+	splmEV << "distance factor is: " << attenuation << endl;
 
 	//is our signal to attenuate defined over frequency?
 	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency);
-	debugEV << "Signal contains frequency dimension: " << (hasFrequency ? "yes" : "no") << endl;
+	splmEV << "Signal contains frequency dimension: " << (hasFrequency ? "yes" : "no") << endl;
 
 	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain : DimensionSet::timeDomain;
 
@@ -111,13 +112,13 @@ double SimplePathlossModel::calcPathloss(const Coord& myPos, const Coord& sender
 		sqrdistance = myPos.sqrdist(sendersPos);
 	}
 
-	debugEV << "sqrdistance is: " << sqrdistance << endl;
+	splmEV << "sqrdistance is: " << sqrdistance << endl;
 
 	double attenuation = 1.0;
 	// wavelength in metres
 	double wavelength = (BaseWorldUtility::speedOfLight/carrierFrequency);
 
-	debugEV << "wavelength is: " << wavelength << endl;
+	splmEV << "wavelength is: " << wavelength << endl;
 
 	if (sqrdistance > 1.0)
 	{
@@ -125,7 +126,7 @@ double SimplePathlossModel::calcPathloss(const Coord& myPos, const Coord& sender
 						* (pow(sqrdistance, -1.0*pathLossAlphaHalf));
 	}
 
-	debugEV << "attenuation is: " << attenuation << endl;
+	splmEV << "attenuation is: " << attenuation << endl;
 
 	return attenuation;
 }

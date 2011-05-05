@@ -38,8 +38,6 @@ protected:
 		the performance. */
 	double BER_LOWER_BOUND;
 
-	/** @brief We store the MAC address in the PHY as it enables us to identify Hidden Terminal problems */
-	int myMacAddr;
 	/** @brief modulation type */
 	std::string modulation;
 
@@ -50,7 +48,6 @@ protected:
 
 	unsigned long nbFramesWithInterferenceDropped;
 	unsigned long nbFramesWithoutInterferenceDropped;
-	unsigned long nbHiddenTerminalOccurences;
 	/*@}*/
 	/** log minimum snir values of dropped packets */
 	cOutVector snirDropped;
@@ -107,14 +104,10 @@ public:
 		nbFramesWithInterference(0),
 		nbFramesWithoutInterference(0),
 		nbFramesWithInterferenceDropped(0),
-		nbFramesWithoutInterferenceDropped(0),
-		nbHiddenTerminalOccurences(0)
+		nbFramesWithoutInterferenceDropped(0)
 	{
 		//TODO: publish initial rssi/channel state
 		//TODO: trace noise level, snr and rssi to vectors
-		myMacAddr = myIndex+1;  // quick hack to enable overhearing detection. We cannot call findSubModule bc we are not a module.
-        //BaseArp* arp = FindModule<BaseArp*>::findSubModule(getParentModule()->getParentModule());
-        //myMacAddr = arp->myMacAddr(this);
 		snirDropped.setName("snirDropped");
 		snirReceived.setName("snirReceived");
 		berlog.setName("berlog");

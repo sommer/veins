@@ -34,7 +34,6 @@ import org.mixim.base.modules.BaseLayer;
 simple Aggregation extends BaseLayer
 {
     parameters:
-        // debug switch
         bool trace = default(false);
         bool stats = default(true);
         int headerLength @unit(byte) = default(2 byte);

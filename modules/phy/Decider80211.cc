@@ -9,9 +9,23 @@
 #include <DeciderResult80211.h>
 #include <Mac80211Pkt_m.h>
 
+Decider80211::Decider80211(	DeciderToPhyInterface* phy,
+							double threshold,
+							double sensitivity,
+							int channel,
+							int myIndex,
+							bool debug):
+	BaseDecider(phy, sensitivity, myIndex, debug),
+	snrThreshold(threshold)
+{
+	assert(1 <= channel);
+	assert(channel  <= 14);
+	centerFrequency = CENTER_FREQUENCIES[channel];
+}
+
 simtime_t Decider80211::processNewSignal(AirFrame* frame) {
 	if(currentSignal.first != 0) {
-		debugEV << "Already receiving another AirFrame!" << endl;
+		deciderEV << "Already receiving another AirFrame!" << endl;
 		return notAgain;
 	}
 
@@ -26,14 +40,14 @@ simtime_t Decider80211::processNewSignal(AirFrame* frame) {
 	// check whether signal is strong enough to receive
 	if ( recvPower < sensitivity )
 	{
-		debugEV << "Signal is to weak (" << recvPower << " < " << sensitivity
+		deciderEV << "Signal is to weak (" << recvPower << " < " << sensitivity
 				<< ") -> do not receive." << endl;
 		// Signal too weak, we can't receive it, tell PhyLayer that we don't want it again
 		return notAgain;
 	}
 
 	// Signal is strong enough, receive this Signal and schedule it
-	debugEV << "Signal is strong enough (" << recvPower << " > " << sensitivity
+	deciderEV << "Signal is strong enough (" << recvPower << " > " << sensitivity
 			<< ") -> Trying to receive AirFrame." << endl;
 
 	currentSignal.first = frame;
@@ -63,8 +77,13 @@ double Decider80211::calcChannelSenseRSSI(simtime_t start, simtime_t end) {
 }
 
 
-DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
+DeciderResult* Decider80211::checkIfSignalOk(AirFrame* frame)
 {
+	// check if the snrMapping is above the Decider's specific threshold,
+	// i.e. the Decider has received it correctly
+
+	// first collect all necessary information
+	Mapping* snrMap = calculateSnrMapping(frame);
 	assert(snrMap);
 
 	Signal& s = frame->getSignal();
@@ -82,7 +101,7 @@ DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
 
 	double snirMin = MappingUtils::findMin(*snrMap, min, max);
 
-	EV << " snrMin: " << snirMin << endl;
+	deciderEV << " snrMin: " << snirMin << endl;
 
 	ConstMappingIterator* bitrateIt = s.getBitrate()->createConstIterator();
 	bitrateIt->next(); //iterate to payload bitrate indicator
@@ -95,13 +114,16 @@ DeciderResult* Decider80211::checkIfSignalOk(Mapping* snrMap, AirFrame* frame)
 		if(packetOk(snirMin, frame->getBitLength() - (int)PHY_HEADER_LENGTH, payloadBitrate)) {
 			result = new DeciderResult80211(true, payloadBitrate, snirMin);
 		} else {
-			EV << "Packet has BIT ERRORS! It is lost!\n";
+			deciderEV << "Packet has BIT ERRORS! It is lost!\n";
 			result = new DeciderResult80211(false, payloadBitrate, snirMin);
 		}
 	} else {
-		EV << "Packet has ERRORS! It is lost!\n";
+		deciderEV << "Packet has ERRORS! It is lost!\n";
 		result = new DeciderResult80211(false, payloadBitrate, snirMin);
 	}
+
+	delete snrMap;
+	snrMap = 0;
 
 	return result;
 }
@@ -128,7 +150,7 @@ bool Decider80211::packetOk(double snirMin, int lengthMPDU, double bitrate)
 
     //probability of no bit error in the MPDU
     double MpduNoError = pow(1.0 - berMPDU, lengthMPDU);
-    EV << "berHeader: " << berHeader << " berMPDU: " << berMPDU << endl;
+    deciderEV << "berHeader: " << berHeader << " berMPDU: " << berMPDU << endl;
     double rand = dblrand();
 
     //if error in header
@@ -151,32 +173,22 @@ simtime_t Decider80211::processSignalEnd(AirFrame* frame)
 {
 	// here the Signal is finally processed
 
-	// first collect all necessary information
-	Mapping* snrMap = calculateSnrMapping(frame);
-	assert(snrMap);
+	DeciderResult* result = checkIfSignalOk(frame);
 
-	DeciderResult* result = checkIfSignalOk(snrMap, frame);
-
-	// check if the snrMapping is above the Decider's specific threshold,
-	// i.e. the Decider has received it correctly
 	if (result->isSignalCorrect())
 	{
-		EV << "packet was received correctly, it is now handed to upper layer...\n";
+		deciderEV << "packet was received correctly, it is now handed to upper layer...\n";
 		// go on with processing this AirFrame, send it to the Mac-Layer
 		phy->sendUp(frame, result);
 	} else
 	{
-		EV << "packet was not received correctly, sending it as control message to upper layer\n";
+		deciderEV << "packet was not received correctly, sending it as control message to upper layer\n";
 		Mac80211Pkt* mac = static_cast<Mac80211Pkt*>(frame->decapsulate());
 		mac->setName("ERROR");
 		mac->setKind(BITERROR);
 		phy->sendControlMsg(mac);
 		delete result;
 	}
-
-	delete snrMap;
-	snrMap = 0;
-
 
 	// we have processed this AirFrame and we prepare to receive the next one
 	currentSignal.first = 0;

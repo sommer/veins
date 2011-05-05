@@ -46,7 +46,7 @@ void ConstSpeedMobility::initialize(int stage)
 		step = -1;
 		stepSize = Coord(0,0,0);
 
-        EV << "Initialize: move speed: " << move.getSpeed() << " (" << par("speed").doubleValue() << ")"
+		debugEV << "Initialize: move speed: " << move.getSpeed() << " (" << par("speed").doubleValue() << ")"
            << " pos: " << move.info() << endl;
     }
     else if( stage == 1 ){
@@ -61,7 +61,7 @@ void ConstSpeedMobility::initialize(int stage)
  */
 void ConstSpeedMobility::setTargetPosition()
 {
-    EV << "start setTargetPosistion: " << move.info() << endl;
+	debugEV << "start setTargetPosistion: " << move.info() << endl;
 
     do{
 	targetPos = getRandomPosition();
@@ -70,7 +70,7 @@ void ConstSpeedMobility::setTargetPosition()
 	simtime_t totalTime = distance / move.getSpeed();
 	numSteps = FWMath::round(totalTime / updateInterval);
 
-	EV << "new targetPos: " << targetPos.info() << " distance=" << distance
+	debugEV << "new targetPos: " << targetPos.info() << " distance=" << distance
 	   << " totalTime=" << totalTime << " numSteps=" << numSteps << endl;
     }
     while( numSteps == 0 );
@@ -81,12 +81,12 @@ void ConstSpeedMobility::setTargetPosition()
 
     stepTarget = move.getStartPos() + stepSize;
 
-    EV << "stepSize: " << stepSize.info() << " target: " << (stepSize*numSteps).info() << endl;
+    debugEV << "stepSize: " << stepSize.info() << " target: " << (stepSize*numSteps).info() << endl;
 
     step = 0;
     move.setDirectionByTarget(targetPos);
 
-    EV << "end setTargetPosistion: " << move.info() << endl;
+    debugEV << "end setTargetPosistion: " << move.info() << endl;
 }
 
 
@@ -105,12 +105,12 @@ void ConstSpeedMobility::makeMove()
 		// step forward
 		move.setStart(stepTarget, simTime());
 
-		EV << "stepping forward. step #=" << step
+		debugEV << "stepping forward. step #=" << step
 		   << " startPos: " << move.getStartPos().info() << endl;
 
 
 		// get new target position
-		EV << "destination reached.\n"
+		debugEV << "destination reached.\n"
 		   << move.info() << endl;
 		setTargetPosition();
     }
@@ -119,7 +119,7 @@ void ConstSpeedMobility::makeMove()
 		move.setStart(stepTarget, simTime());
 		stepTarget += stepSize;
 
-		EV << "stepping forward. step #=" << step
+		debugEV << "stepping forward. step #=" << step
 		   << " startPos: " << move.getStartPos().info() << endl;
 
     }

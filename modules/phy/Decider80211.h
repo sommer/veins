@@ -48,14 +48,13 @@ protected:
 protected:
 
 	/**
-	 * @brief Checks a mapping against a specific threshold (element-wise).
+	 * @brief Checks if the passed completed AirFrame was received correctly.
 	 *
-	 * @return	true	, if every entry of the mapping is above threshold
-	 * 			false	, otherwise
+	 * Returns the result as a DeciderResult
 	 *
-	 *
+	 * @return	The result of the decider for the passed AirFrame.
 	 */
-	virtual DeciderResult* checkIfSignalOk(Mapping* snrMap, AirFrame* frame);
+	virtual DeciderResult* checkIfSignalOk(AirFrame* frame);
 
 	virtual simtime_t processNewSignal(AirFrame* frame);
 
@@ -93,13 +92,9 @@ public:
 	Decider80211(DeciderToPhyInterface* phy,
 				double threshold,
 				double sensitivity,
-				double centerFrequency,
+				int channel,
 				int myIndex = -1,
-				bool debug = false):
-		BaseDecider(phy, sensitivity, myIndex, debug),
-		snrThreshold(threshold),
-		centerFrequency(centerFrequency)
-	{}
+				bool debug = false);
 
 	virtual ~Decider80211() {};
 };

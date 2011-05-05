@@ -31,7 +31,7 @@ void TractorMobility::initialize(int stage)
 {
 	BaseMobility::initialize(stage);
 
-	EV << "initializing TractorMobility stage " << stage << endl;
+	debugEV << "initializing TractorMobility stage " << stage << endl;
 
 	if (stage == 0)
 	{

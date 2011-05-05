@@ -28,7 +28,7 @@ void BonnMotionMobility::initialize(int stage)
 {
     LineSegmentsMobilityBase::initialize(stage);
 
-    EV << "initializing BonnMotionMobility stage " << stage << endl;
+    debugEV << "initializing BonnMotionMobility stage " << stage << endl;
 
     if(stage == 0)
     {
@@ -57,7 +57,7 @@ void BonnMotionMobility::initialize(int stage)
 
 			//dummy value; speed not used in BonnMotion
 			move.setSpeed(1);
-			EV << "start pos: t=" << move.getStartTime() << move.getStartPos().info() << endl;
+			debugEV << "start pos: t=" << move.getStartTime() << move.getStartPos().info() << endl;
         }
     }
     else
@@ -81,7 +81,7 @@ void BonnMotionMobility::setTargetPosition()
     if (vecpos+2 >= vec.size())
     {
 	move.setSpeed(0);
-	EV << "host is stationary now!!!\n";
+	debugEV << "host is stationary now!!!\n";
         return;
     }
 
@@ -90,7 +90,7 @@ void BonnMotionMobility::setTargetPosition()
     targetPos.setY(vec[vecpos+2]);
     vecpos += 3;
 
-    EV << "TARGET: t=" << targetTime << targetPos.info() << "\n";
+    debugEV << "TARGET: t=" << targetTime << targetPos.info() << "\n";
 }
 
 void BonnMotionMobility::fixIfHostGetsOutside()

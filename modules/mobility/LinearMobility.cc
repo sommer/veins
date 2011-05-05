@@ -28,7 +28,7 @@ void LinearMobility::initialize(int stage)
 {
     BaseMobility::initialize(stage);
 
-    EV << "initializing LinearMobility stage " << stage << endl;
+    debugEV << "initializing LinearMobility stage " << stage << endl;
 
     if (stage == 0){
 
@@ -66,7 +66,7 @@ void LinearMobility::fixIfHostGetsOutside()
  */
 void LinearMobility::makeMove()
 {
-    EV << "start makeMove " << move.info() << endl;
+	debugEV << "start makeMove " << move.info() << endl;
 
     move.setStart(stepTarget, simTime());
 
@@ -75,7 +75,7 @@ void LinearMobility::makeMove()
 
     move.setDirectionByTarget(stepTarget);
 
-    EV << "new stepTarget: " << stepTarget.info() << endl;
+    debugEV << "new stepTarget: " << stepTarget.info() << endl;
 
     // accelerate
     move.setSpeed(move.getSpeed() + acceleration * updateInterval.dbl());

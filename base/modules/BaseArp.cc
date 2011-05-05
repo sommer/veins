@@ -31,7 +31,7 @@ void BaseArp::initialize(int stage)
 
 int BaseArp::getMacAddr(const int netwAddr)
 {
-    if(debug) {
+    if(coreDebug) {
         Enter_Method("getMacAddr(%d)",netwAddr);
     } else {
         Enter_Method_Silent();

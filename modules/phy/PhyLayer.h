@@ -27,6 +27,10 @@
  */
 class PhyLayer: public BasePhyLayer {
 protected:
+	enum ProtocolIds {
+		IEEE_80211 = 12123,
+		IEEE_802154_NARROW,
+	};
 	/**
 	 * @brief Creates and returns an instance of the AnalogueModel with the
 	 * specified name.

@@ -30,6 +30,8 @@ simple CSMAMacLayer extends BaseMacLayer
 {
     parameters:
         @class(CSMAMacLayer);
+        // enable debugging for this module
+        bool debug = default(false);
         // how long is a slot? [s]
         double slotDuration @unit(s);
         // maximum time between a packet and its ack [s]

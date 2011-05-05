@@ -107,7 +107,7 @@ void TrafficGen::sendBroadcast()
 	// address;
 	pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
 
-	EV << "Sending broadcast packet!\n";
+	debugEV << "Sending broadcast packet!\n";
 	sendDown( pkt );
 }
 

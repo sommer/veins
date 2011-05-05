@@ -44,11 +44,21 @@ class NicEntryDebug: public NicEntry
     /** @brief Number of out gates allocated for the nic so far */
     int outCnt;
 
+    /** @brief Check for unknown free gates before next gate request.
+     *
+     * This flag is true after creation of the NicEntryDebug and assures
+     * that it checks for already existing in- and out-gates from a previous
+     * NicEntryDebug (which can happen if the same NIC is unregistered and
+     * later again registered with a connection manager.
+     */
+    bool checkFreeGates;
+
+    typedef std::vector<cGate* > GateStack;
     /** @brief In Gates that were once used but are not connected now */
-    std::vector<cGate* > freeInGates;
+    GateStack freeInGates;
 
     /** @brief Out Gates that were once used but are not connected now */
-    std::vector<cGate* > freeOutGates;
+    GateStack freeOutGates;
 
   protected:
     /**
@@ -67,14 +77,43 @@ class NicEntryDebug: public NicEntry
      */
     cGate* requestOutGate(void);
 
+    /**
+     * @brief Collects all free gates with a certain pattern as names and puts
+     * them on a stack.
+     *
+     * @param pattern The naming pattern of the gates, something like "out%d-%d"
+     * where the first %d is filled with the nic id and the second with an
+     * incrementing counter.
+     * @param gates The gate stack in which to put the found gates.
+     * @return the number of free gates found.
+     */
+    int collectGates(const char* pattern, GateStack& gates);
+
+    /**
+     * @brief Iterates over all existing gates of this NicEntries nic and host
+     * and checks wether they are useable by this nic entry.
+     *
+     * This method is necessary if a nic was unregistered from its connection
+     * manager during a simulation and is then again registered with one.
+     * When unregistered the gates created by this NicEntryDebug are not deleted
+     * so they can be collected and reused again when the nic is registered
+     * again.
+     */
+    void collectFreeGates();
+
   public:
     /**
      * @brief Constructor, initializes all members
      */
-    NicEntryDebug(bool debug) : NicEntry(debug), inCnt(0), outCnt(0) {};
+    NicEntryDebug(bool debug) :
+    	NicEntry(debug),
+    	inCnt(0),
+    	outCnt(0),
+    	checkFreeGates(true)
+    {};
 
     /**
-     * @brief Destructor -- needs to be there...
+     * @brief Removes all dynamically created out-/ingates.
      */
     virtual ~NicEntryDebug() {}
 

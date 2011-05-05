@@ -6,4 +6,5 @@ package org.mixim.tests.testUtils;
 simple TestManager
 
 {
+    @display("i=block/segm");
 }

@@ -68,6 +68,7 @@ simtime_t ChannelInfo::removeAirFrame(AirFrame* frame)
 	//add to inactive AirFrames
 	addToInactives(frame, startTime, endTime);
 
+
 	// Now check, whether the earliest time-point we need to store information
 	// for might have moved on in time, since an AirFrame has been deleted.
 	if(isChannelEmpty()) {
@@ -77,6 +78,36 @@ simtime_t ChannelInfo::removeAirFrame(AirFrame* frame)
 	}
 
 	return earliestInfoPoint;
+}
+
+void ChannelInfo::assertNoIntersections() {
+	for(AirFrameMatrix::iterator it1 = inactiveAirFrames.begin();
+		it1 != inactiveAirFrames.end(); ++it1)
+	{
+		simtime_t e0 = it1->first;
+		for(AirFrameTimeList::iterator it2 = it1->second.begin();
+			it2 != it1->second.end(); ++it2)
+		{
+			simtime_t s0 = it2->first;
+
+			bool intersects = (recordStartTime > -1 && recordStartTime <= e0);
+
+			for(AirFrameMatrix::iterator it3 = activeAirFrames.begin();
+				it3 != activeAirFrames.end() && !intersects; ++it3)
+			{
+				simtime_t e1 = it3->first;
+				for(AirFrameTimeList::iterator it4 = it3->second.begin();
+					it4 != it3->second.end() && !intersects; ++it4)
+				{
+					simtime_t s1 = it4->first;
+
+					if(e0 >= s1 && s0 <= e1)
+						intersects = true;
+				}
+			}
+			assert(intersects);
+		}
+	}
 }
 
 void ChannelInfo::deleteAirFrame(AirFrameMatrix& airFrames,

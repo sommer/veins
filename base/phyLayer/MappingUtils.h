@@ -1532,6 +1532,7 @@ public:
 	 * entries per dimension.
 	 */
 	virtual double getValue(const Argument& pos) const {
+		assert(pos.hasArgVal(myDimension));
 		double argVal = pos.getArgValue(myDimension);
 
 		Interpolated<Mapping*> subM = entries.getIntplValue(argVal);
@@ -1798,17 +1799,20 @@ public:
 	static Mapping* applyElementWiseOperator(ConstMapping& f1, ConstMapping& f2, Operator op,
 											 double outOfRangeVal = 0.0,
 											 bool contOutOfRange = true){
-		const DimensionSet& domain1 = f1.getDimensionSet();
+
 
 		ConstMapping* f2Comp = createCompatibleMapping(f2, f1);
+		ConstMapping* f1Comp = createCompatibleMapping(f1, f2);
+
+		const DimensionSet& domain = f1Comp->getDimensionSet();
 
 		Mapping* result = 0;
 		if(contOutOfRange)
-			result = MappingUtils::createMapping(domain1);
+			result = MappingUtils::createMapping(domain);
 		else
-			result = MappingUtils::createMapping(outOfRangeVal, domain1);
+			result = MappingUtils::createMapping(outOfRangeVal, domain);
 
-		ConstMappingIterator* itF1 = f1.createConstIterator();
+		ConstMappingIterator* itF1 = f1Comp->createConstIterator();
 		ConstMappingIterator* itF2 = f2Comp->createConstIterator();
 
 		if(!itF1->inRange() && !itF2->inRange()){
@@ -1845,6 +1849,7 @@ public:
 		delete itRes;
 
 		freeMappingBuffer(f2Comp);
+		freeMappingBuffer(f1Comp);
 
 		return result;
 	}
