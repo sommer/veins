@@ -60,6 +60,9 @@ protected:
 	 */
 	AnalogueModel* initializeJakesFading(ParameterMap& params);
 
+	/** @brief Initializes PER Model */
+	AnalogueModel* initializePERModel(ParameterMap& params);
+
 	/**
 	 * @brief Creates and returns an instance of the Decider with the specified
 	 * name.

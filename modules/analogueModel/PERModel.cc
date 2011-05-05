@@ -1,6 +1,6 @@
 #include "PERModel.h"
 
-void PERModel::filterSignal(Signal& s, bool isActiveAtOrigin) {
+void PERModel::filterSignal(Signal& s) {
 	simtime_t start = s.getSignalStart();
 	simtime_t end = start + s.getSignalLength();
 

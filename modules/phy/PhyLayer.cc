@@ -12,6 +12,7 @@
 #include <LogNormalShadowing.h>
 #include <SNRThresholdDecider.h>
 #include <JakesFading.h>
+#include <PERModel.h>
 
 
 Define_Module(PhyLayer);
@@ -29,6 +30,10 @@ AnalogueModel* PhyLayer::getAnalogueModelFromName(std::string name, ParameterMap
 	else if (name == "JakesFading")
 	{
 		return initializeJakesFading(params);
+	}
+	else if (name == "PERModel")
+	{
+		return initializePERModel(params);
 	}
 	return BasePhyLayer::getAnalogueModelFromName(name, params);
 }
@@ -57,6 +62,11 @@ AnalogueModel* PhyLayer::initializeJakesFading(ParameterMap& params){
 	}
 
 	return new JakesFading(fadingPaths, delayRMS, &move, carrierFrequency, interval);
+}
+
+AnalogueModel* PhyLayer::initializePERModel(ParameterMap& params) {
+	double per = params["packetErrorRate"].doubleValue();
+	return new PERModel(per);
 }
 
 AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){
