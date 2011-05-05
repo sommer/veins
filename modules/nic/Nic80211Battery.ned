@@ -83,6 +83,14 @@ module Nic80211Battery like INic
                 decider = default(xmldoc("Nic80211_Decider.xml"));
                 initialRadioChannel = default(1);
                 nbRadioChannels = default(15); //1 to 14, 0 is invalid
+                
+                //Mac80211 does not support switching times
+                timeRXToTX = 0s;
+                timeRXToSleep = 0s;
+                timeTXToRX = 0s;
+                timeTXToSleep = 0s;
+                timeSleepToRX = 0s;
+                timeSleepToTX = 0s;
                 @display("p=106,157;i=block/process_s");
         }
 
