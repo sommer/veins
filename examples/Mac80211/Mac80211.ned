@@ -26,7 +26,7 @@ package org.mixim.examples.Mac80211;
 
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
-
+import org.mixim.modules.node.Host80211;
 //
 //This example shows how to use MiXiMs 802.11 protocol implementation. 
 //
@@ -64,7 +64,11 @@ network Mac80211
             parameters:
                 @display("p=66,25;b=42,42,rect,green;i=abstract/multicast");
         }
-        host[numHosts]: Host {
+        host[numHosts]: Host80211 {
+            netwType = "BaseNetwLayer";
+            applType = "BurstApplLayer";
+            mobType = "ConstSpeedMobility";
+            
             @display("p=20,20;b=20,20,rect,yellow,,;i=device/wifilaptop");
         }
 
