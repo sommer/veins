@@ -6,6 +6,9 @@
 env.sh
 **/Makefile
 out
+doc/doxy
+doc/neddoc
+doc/index.html
 base/*.so
 modules/*.so
 Makefile
@@ -23,5 +26,16 @@ tests/coord/coord
 tests/mapping/mapping
 tests/radioState/radioState
 tests/testUtils/libmiximtestUtils.so
+tests/nicTest/nicTest
+tests/decider/decider
+inet/tests/mixnetBridge/testCase
+inet/tests/mixnetWorldUtility/testCase
+examples/CSMAMac/CSMAMac
+examples/Mac80211/Mac80211
+examples/analogueModels/analogueModels
+examples/baseNetwork/baseNetwork
+examples/ieee802154Narrow/ieee802154Narrow
+examples/ieee802154a/ieee802154a
+examples/multiConnectionManager/multiConnectionManager
 **.vci
 
