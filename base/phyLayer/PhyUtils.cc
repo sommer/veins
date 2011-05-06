@@ -98,6 +98,10 @@ Radio::Radio(int numRadioStates,
 
 	radioStates.setName("RadioState");
 	radioStates.setEnabled(recordStats);
+	radioStates.record(initialState);
+	radioChannels.setName("RadioChannel");
+	radioChannels.setEnabled(recordStats);
+	radioChannels.record(currentChannel);
 
 	// allocate memory for one dimension
 	swTimes = new simtime_t* [numRadioStates];

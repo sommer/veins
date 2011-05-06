@@ -222,6 +222,8 @@ protected:
 
 	/** @brief Output vector for radio states.*/
 	cOutVector radioStates;
+	/** @brief Output vector for radio channels.*/
+	cOutVector radioChannels;
 
 	/** @brief The current state the radio is in.*/
 	int state;
@@ -355,6 +357,7 @@ public:
 		assert(newChannel > -1);
 		assert(newChannel < nbChannels);
 		currentChannel = newChannel;
+		radioChannels.record(currentChannel);
 	}
 
 	/**
