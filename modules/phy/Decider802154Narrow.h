@@ -17,7 +17,7 @@
  *
  * @ingroup decider
  * @ingroup ieee802154
- * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Karl Wessel(port for MiXiM)
+ * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Karl Wessel (port for MiXiM)
  */
 class Decider802154Narrow: public BaseDecider {
 public:
@@ -40,6 +40,9 @@ protected:
 
 	/** @brief modulation type */
 	std::string modulation;
+
+	/** @brief PHY header length in bits */
+	int phyHeaderLength;
 
 	/** @name Tracked statistic values.*/
 	/*@{*/
@@ -96,11 +99,12 @@ public:
 						bool debug,
 						int sfdLength,
 						double BER_LOWER_BOUND,
-						const std::string& modulation):
+						const std::string& modulation, int phyHeaderLength):
 		BaseDecider(phy, 0, myIndex, debug),
 		sfdLength(sfdLength),
 		BER_LOWER_BOUND(BER_LOWER_BOUND),
 		modulation(modulation),
+		phyHeaderLength(phyHeaderLength),
 		nbFramesWithInterference(0),
 		nbFramesWithoutInterference(0),
 		nbFramesWithInterferenceDropped(0),
@@ -116,6 +120,8 @@ public:
 	}
 
 	virtual ~Decider802154Narrow() {};
+
+	virtual void channelChanged(int newChannel);
 
 	/**
 	 * @brief Method to be called by an OMNeT-module during its own finish(),

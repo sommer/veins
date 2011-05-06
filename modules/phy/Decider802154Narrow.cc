@@ -10,7 +10,6 @@
 #include <MacPkt_m.h>
 #include <PhyToMacControlInfo.h>
 #include <cmath>
-#include "AirFrameMultiChannel_m.h"
 
 bool Decider802154Narrow::syncOnSFD(AirFrame* frame) {
 	double BER;
@@ -44,9 +43,7 @@ simtime_t Decider802154Narrow::processNewSignal(AirFrame* frame) {
 		return notAgain;
 	}
 
-	AirFrameMultiChannel* mcFrame;
-	mcFrame = dynamic_cast<AirFrameMultiChannel*>(frame);
-	if(mcFrame->getChannel() != phyDetailed->getCurrentRadioChannel()) {
+	if(frame->getChannel() != phyDetailed->getCurrentRadioChannel()) {
 		// we cannot synchronize on a frame on another channel.
 		return notAgain;
 	}
@@ -54,8 +51,9 @@ simtime_t Decider802154Narrow::processNewSignal(AirFrame* frame) {
 	currentSignal.first = frame;
 	currentSignal.second = EXPECT_HEADER;
 	Signal& s = frame->getSignal();
-	return s.getSignalStart() + mcFrame->getPhyHeaderDuration();
-
+	double bitrate = s.getBitrate()->getValue(Argument(s.getSignalStart()));
+	simtime_t phyHeaderDuration = ((double) phyHeaderLength)/bitrate;
+	return s.getSignalStart() + phyHeaderDuration;
 
 }
 
@@ -230,6 +228,11 @@ double Decider802154Narrow::getBERFromSNR(double snr) {
 	berlog.record(ber);
 	snrlog.record(10*log10(snr));
 	return std::max(ber, BER_LOWER_BOUND);
+}
+
+void Decider802154Narrow::channelChanged(int newChannel) {
+	//TODO: stop receiving
+	;
 }
 
 void Decider802154Narrow::finish() {
