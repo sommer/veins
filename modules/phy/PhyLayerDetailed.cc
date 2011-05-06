@@ -1,6 +1,5 @@
 #include "PhyLayerDetailed.h"
 #include "PhyUtils.h"
-#include "AirFrameMultiChannel_m.h"
 #include "PERModel.h"
 
 Define_Module(PhyLayerDetailed);
@@ -8,7 +7,6 @@ Define_Module(PhyLayerDetailed);
 
 
 Radio* PhyLayerDetailed::initializeRadio() {
-	    radioChannel.setName("radioChannel");
     	int initialRadioState = par("initialRadioState"); //readPar("initalRadioState", (int) RadioUWBIR::SYNC);
     	// deactivate RSAM analogueModel
     	double radioMinAtt = 1; //readPar("radioMinAtt", 1.0);
@@ -17,7 +15,6 @@ Radio* PhyLayerDetailed::initializeRadio() {
     	int initialRadioChannel = readPar("initialRadioChannel", 0);
     	radioDetailed = RadioDetailed::createNewRadioDetailed(initialRadioState, recordStats, radioMinAtt, radioMaxAtt,
     			initialRadioChannel, nbRadioChannels);
-    	radioChannel.record(initialRadioChannel);
     	phyHeaderDuration = par("phyHeaderDuration").doubleValue();
     	//	- switch times to TX
     	simtime_t rxToTX = readPar("timeRXToTX", 0.0);
@@ -123,32 +120,6 @@ void PhyLayerDetailed::setSwitchingCurrent(int from, int to) {
 	BatteryAccess::drawCurrent(current, act);
 }
 
-void PhyLayerDetailed::setCurrentRadioChannel(int newRadioChannel) {
-	radioDetailed->setCurrentChannel(newRadioChannel);
-	radioChannel.record(newRadioChannel);
-}
-
-int PhyLayerDetailed::getCurrentRadioChannel() {
-	return radioDetailed->getCurrentChannel();
-}
-
-int PhyLayerDetailed::getNbRadioChannels() {
-	return par("nbRadioChannels");
-}
-
-void PhyLayerDetailed::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) {
-	AirFrameVector tmp;
-	channelInfo.getAirFrames(from, to, tmp);
-	AirFrameVector::iterator it;
-	for(it=tmp.begin(); it != tmp.end(); it++) {
-		AirFrameMultiChannel* af = check_and_cast<AirFrameMultiChannel*>(*it);
-		if(af->getChannel() == radioDetailed->getCurrentChannel()) {
-			out.push_back(af);
-		}
-	}
-}
-
-
 AnalogueModel* PhyLayerDetailed::getAnalogueModelFromName(std::string name, ParameterMap& params) {
 
 	if (name == "SimplePathlossModel")
@@ -181,63 +152,4 @@ AnalogueModel* PhyLayerDetailed::getAnalogueModelFromName(std::string name, Para
 AnalogueModel* PhyLayerDetailed::initializePERModel(ParameterMap& params) {
 	double per = params["packetErrorRate"].doubleValue();
 	return new PERModel(per);
-}
-
-AirFrame *PhyLayerDetailed::encapsMsg(cPacket *macPkt)
-{
-	// the cMessage passed must be a MacPacket... but no cast needed here
-	// MacPkt* pkt = static_cast<MacPkt*>(msg);
-
-	// ...and must always have a ControlInfo attached (contains Signal)
-	cObject* ctrlInfo = macPkt->removeControlInfo();
-	assert(ctrlInfo);
-
-	MacToPhyControlInfo* macToPhyCI = static_cast<MacToPhyControlInfo*>(ctrlInfo);
-
-	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
-	// We are now the new owner of this instance.
-	Signal* s = macToPhyCI->retrieveSignal();
-
-
-	// delete the Control info
-	delete macToPhyCI;
-	macToPhyCI = 0;
-	ctrlInfo = 0;
-
-	// make sure we really obtained a pointer to an instance
-	assert(s);
-
-	// put host move pattern to Signal
-	s->setMove(move);
-
-	// create the new AirFrame
-	AirFrameMultiChannel* frame = new AirFrameMultiChannel(macPkt->getName(), AIR_FRAME);
-
-	//set priority of AirFrames above the normal priority to ensure
-	//channel consistency (before any thing else happens at a time
-	//point t make sure that the channel has removed every AirFrame
-	//ended at t and added every AirFrame started at t)
-	frame->setSchedulingPriority(airFramePriority);
-
-	// set the members
-	assert(s->getSignalLength() > 0);
-	assert(s->getSignalLength() > phyHeaderDuration);
-	frame->setDuration(s->getSignalLength());
-	// copy the signal into the AirFrame
-	frame->setSignal(*s);
-	frame->setBitLength(headerLength);
-	frame->setPhyHeaderDuration(phyHeaderDuration);
-	frame->setChannel(radioDetailed->getCurrentChannel());
-	// pointer and Signal not needed anymore
-	delete s;
-	s = 0;
-
-	frame->setId(world->getUniqueAirFrameId());
-	frame->encapsulate(macPkt);
-
-	// --- from here on, the AirFrame is the owner of the MacPacket ---
-	macPkt = 0;
-	EV <<"AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
-
-	return frame;
 }

@@ -27,10 +27,6 @@
 class RadioDetailed: public Radio {
 
 private:
-	/** @brief Currently selected channel (varies between 0 and nbChannels-1). */
-	int currentChannel;
-	/** @brief Number of available channels. */
-	int nbChannels;
 
 public:
 
@@ -52,39 +48,20 @@ public:
 						 minAtt, maxAtt, currentChannel, nbChannels);
 	}
 
-	void setCurrentChannel(int newChannel) {
-		assert(newChannel > -1);
-		assert(newChannel < nbChannels);
-		currentChannel = newChannel;
-	}
-
-	int getCurrentChannel() {
-		return currentChannel;
-	}
-
 protected:
 
 	RadioDetailed(int numRadioStates,bool recordStats, int initialState, double minAtt = 1.0, double maxAtt = 0.0,
 			int currentChannel = 0, int nbChannels = 1)
-	:Radio(numRadioStates, recordStats, initialState, minAtt, maxAtt), currentChannel(currentChannel), nbChannels(nbChannels)
-	{	assert(nbChannels > 0);
-		assert(currentChannel > -1);
-		assert(currentChannel <= nbChannels);
-	}
+	:Radio(numRadioStates, recordStats, initialState, minAtt, maxAtt, currentChannel, nbChannels) {	}
 
-	/*
 	virtual double mapStateToAtt(int state)
 	{
-		// if (state == RadioDetailed::RX || state == RadioDetailed::ON)
-			if (state == Radio::RX || state == RadioDetailed::ON || state == Radio::SWITCHING)
-		{
+		if(state == RadioDetailed::ON) {
 			return minAtt;
-		} else
-		{
-			return maxAtt;
+		} else {
+			return Radio::mapStateToAtt(state);
 		}
 	}
-*/
 };
 
 #endif /* RADIODETAILED_H_ */
