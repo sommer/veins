@@ -3,6 +3,15 @@
 
 #include "AnalogueModel.h"
 
+/**
+ * @brief This class applies a parameterized packet error rate
+ * to incoming packets. This allows the user to easily
+ * study the robustness of its system to packet loss.
+ *
+ * @ingroup analogueModels
+ *
+ * @author Jérôme Rousselot <jerome.rousselot@csem.ch>
+ */
 class PERModel : public AnalogueModel {
 protected:
 	double packetErrorRate;
