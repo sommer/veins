@@ -60,8 +60,6 @@ void SimplePathlossModel::filterSignal(Signal& s, bool isActiveAtOrigin){
 	splmEV << "wavelength is: " << wavelength << endl;
 
 	// the part of the attenuation only depending on the distance
-<<<<<<< HEAD
-	double distFactor;
 	double attenuation = 0;
 	if (sqrDistance > 1.0)
 	{
