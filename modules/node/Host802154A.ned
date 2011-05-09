@@ -11,14 +11,23 @@ import org.mixim.modules.power.battery.SimpleBattery;
 import org.mixim.modules.power.battery.BatteryStats;
 
 //
+// This host NED module can be used to study ultra-wideband impulse radio
+// wireless communication systems using IEEE 802.15.4A compatible transceivers.
+// 
+// @author Jérôme Rousselot
+// 
 // See the following publications for more information:
-// [1] An Ultra Wideband Impulse Radio PHY Layer Model for Network Simulation,
-// J. Rousselot, J.-D. Decotignie, Simulation: Transactions of the Society
-// for Computer Simulation, 2010 (submitted).
+// [1] An Ultra-Wideband Impulse Radio PHY Layer Model for Network Simulation,
+// J. Rousselot, J.-D. Decotignie. Simulation: Transactions of the Society
+// for Computer Simulation, vol. 87 no. 1-2 pp.82-112, January 2011.
+// <a href="http://dx.doi.org/10.1177/0037549710377767">http://dx.doi.org/10.1177/0037549710377767</a>
 // [2] A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
-// for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
+// for Network Simulation, J. Rousselot, J.-D. Decotignie,
 // Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
-// http://portal.acm.org/citation.cfm?id=1537714
+// <a href="http://portal.acm.org/citation.cfm?id=1537714">http://portal.acm.org/citation.cfm?id=1537714</a>
+// [3] Ultra Low Power Communication Protocols for UWB Impulse Radio Wireless Sensor Networks,
+// J. Rousselot. EPFL thesis 4720, 2010.
+// <a href="http://infoscience.epfl.ch/record/147987">http://infoscience.epfl.ch/record/147987</a> 
 //
 module Host802154A
 {
