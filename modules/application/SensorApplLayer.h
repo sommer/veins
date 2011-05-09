@@ -80,7 +80,8 @@ public:
     UNKNOWN=0,
     PERIODIC,
     UNIFORM,
-    EXPONENTIAL
+    EXPONENTIAL,
+    NB_DISTRIBUTIONS,
   };
 
 protected:
@@ -92,7 +93,7 @@ protected:
   simtime_t firstPacketGeneration;
   simtime_t lastPacketReception;
   // parameters:
-  TRAFFIC_TYPES trafficType;
+  int trafficType;
   double trafficParam;
   int nbPackets;
   long nbPacketsSent;
@@ -131,8 +132,11 @@ protected:
   /** @brief send a data packet to the next hop */
   virtual void sendData();
 
-  /** @brief calculate time to wait before sending next packet, if required. */
-  void scheduleNextPacket();
+  /** @brief Recognize distribution name. Redefine this method to add your own distribution. */
+  virtual void initializeDistribution(const char*);
+
+  /** @brief calculate time to wait before sending next packet, if required. You can redefine this method in a subclass to add your own distribution. */
+  virtual void scheduleNextPacket();
 };
 
 #endif
