@@ -52,16 +52,8 @@ void SensorApplLayer::initialize(int stage) {
 		firstPacketGeneration = -1;
 		lastPacketReception = -2;
 
-		if (!strcmp(traffic, "periodic")) {
-			trafficType = PERIODIC;
-		} else if (!strcmp(traffic, "uniform")) {
-			trafficType = UNIFORM;
-		} else if (!strcmp(traffic, "exponential")) {
-			trafficType = EXPONENTIAL;
-		} else {
-			trafficType = UNKNOWN;
-			EV << "Error! Unknown traffic type: " << traffic << endl;
-		}
+		initializeDistribution(traffic);
+
 		delayTimer = new cMessage("appDelay", SEND_DATA_TIMER);
 		// Blackboard stuff:
 		hostID = getParentModule()->getId();
@@ -100,6 +92,19 @@ void SensorApplLayer::initialize(int stage) {
 			}
 			latency.setName("latency");
 		}
+	}
+}
+
+void SensorApplLayer::initializeDistribution(const char* traffic) {
+	if (!strcmp(traffic, "periodic")) {
+		trafficType = PERIODIC;
+	} else if (!strcmp(traffic, "uniform")) {
+		trafficType = UNIFORM;
+	} else if (!strcmp(traffic, "exponential")) {
+		trafficType = EXPONENTIAL;
+	} else {
+		trafficType = UNKNOWN;
+		EV << "Error! Unknown traffic type: " << traffic << endl;
 	}
 }
 

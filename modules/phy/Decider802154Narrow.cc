@@ -7,7 +7,6 @@
 
 #include "Decider802154Narrow.h"
 #include "DeciderResult802154Narrow.h"
-#include "Consts802154.h"
 #include <MacPkt_m.h>
 #include <PhyToMacControlInfo.h>
 #include <cmath>
@@ -44,19 +43,39 @@ simtime_t Decider802154Narrow::processNewSignal(AirFrame* frame) {
 		return notAgain;
 	}
 
+	if(frame->getChannel() != phyDetailed->getCurrentRadioChannel()) {
+		// we cannot synchronize on a frame on another channel.
+		return notAgain;
+	}
+
+	currentSignal.first = frame;
+	currentSignal.second = EXPECT_HEADER;
+	Signal& s = frame->getSignal();
+	double bitrate = s.getBitrate()->getValue(Argument(s.getSignalStart()));
+	simtime_t phyHeaderDuration = ((double) phyHeaderLength)/bitrate;
+	return s.getSignalStart() + phyHeaderDuration;
+
+}
+
+simtime_t Decider802154Narrow::processSignalHeader(AirFrame* frame)
+{
 	if (!syncOnSFD(frame)) {
+		currentSignal.first = 0;
+		//channel is back idle
+		setChannelIdleStatus(true);
 		return notAgain;
 	}
 
 	// store this frame as signal to receive and set state
-	currentSignal.first = frame;
+//	currentSignal.first = frame;
 	currentSignal.second = EXPECT_END;
 
 	//channel is busy now
 	setChannelIdleStatus(false);
 
 	//TODO: publish rssi and channel state
-
+	// Inform the MAC that we started receiving a frame
+	phy->sendControlMsg(new cMessage("start_rx",RECEPTION_STARTED));
 	Signal& s = frame->getSignal();
 	return s.getSignalStart() + s.getSignalLength();
 }
@@ -143,7 +162,8 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 
 	avgBER = avgBER / frame->getBitLength();
 	snirAvg = snirAvg / (end - start);
-	double rssi = 10*log10(snirAvg);
+	//double rssi = 10*log10(snirAvg);
+	double rssi = calcChannelSenseRSSI(start, end);
 	if (noErrors)
 	{
 		phy->sendUp(frame,
@@ -194,7 +214,7 @@ double Decider802154Narrow::getBERFromSNR(double snr) {
 	} else if (modulation == "oqpsk16") {
 		// valid for IEEE 802.15.4 2.45 GHz OQPSK modulation
 		for (int k = 2; k <= 16; k++) {
-			sum_k = sum_k + pow(-1, k) * n_choose_k(16, k) * exp(20 * snr * (1.0 / k - 1.0));
+			sum_k = sum_k + pow(-1.0, k) * n_choose_k(16, k) * exp(20 * snr * (1.0 / k - 1.0));
 		}
 		ber = (8.0 / 15) * (1.0 / 16) * sum_k;
 	} else if(modulation == "gfsk") {
@@ -208,6 +228,11 @@ double Decider802154Narrow::getBERFromSNR(double snr) {
 	berlog.record(ber);
 	snrlog.record(10*log10(snr));
 	return std::max(ber, BER_LOWER_BOUND);
+}
+
+void Decider802154Narrow::channelChanged(int newChannel) {
+	//TODO: stop receiving
+	;
 }
 
 void Decider802154Narrow::finish() {
