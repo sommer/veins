@@ -1,6 +1,6 @@
-##############################################################################
-#       Parameters for the ConnectionManager                                 #
-##############################################################################
+##########################################################
+#       Parameters for the ConnectionManager             #
+##########################################################
 **.connectionManager.carrierFrequency = 2.412e9Hz  # [Hz]
 
 # max transmission power [mW]
@@ -11,11 +11,13 @@
 **.connectionManager.alpha = 3.0
 **.connectionManager.sendDirect = false
 
-##############################################################################
-#       Parameters for the Mac Layer                                         #
-##############################################################################
+##########################################################
+#       Parameters for the Host                          #
+##########################################################
+**.host[*].nicType = "Nic80211"
 
-# debug switch
+<!--
+########### MAC parameters ###############################
 **.mac.headerLength = 272 bit
 **.mac.queueLength = 14
 **.mac.bitrate = 2E+6bps# in bits/second
@@ -34,10 +36,7 @@
 **.mac.txPower = 100mW  # [mW]
 **.mac.centerFrequency = 2.412e9Hz
 
-##############################################################################
-#       Parameters for the Phy                                               #
-##############################################################################
-
+############# Phy parameters #############################
 **.phy.usePropagationDelay = false
 **.phy.thermalNoise = -100dBm  # [dBm]
 **.phy.useThermalNoise = true
@@ -45,10 +44,5 @@
 **.phy.decider = xmldoc("config.xml")
 **.phy.sensitivity = -84dBm  # [dBm]
 **.phy.maxTXPower = 100.0mW
-**.phy.timeRXToTX = 0s
-**.phy.timeRXToSleep = 0s
-**.phy.timeTXToRX = 0s
-**.phy.timeTXToSleep = 0s
-**.phy.timeSleepToRX = 0s
-**.phy.timeSleepToTX = 0s
 **.phy.initialRadioState = 0
+</-->

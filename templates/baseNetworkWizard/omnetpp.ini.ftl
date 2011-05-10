@@ -22,6 +22,7 @@ network = ${targetTypeName}
 **.world.use2D = true
 </#if>
 
+<!--########### Protocoll dependent include#############-->
 <#if protocolName="802.11">
 <#include "80211.ini.fti">
 <#elseif protocolName="CSMA using old CSMAMacLayer">
@@ -30,9 +31,38 @@ network = ${targetTypeName}
 <#include "CSMA.ini.fti">
 </#if>
 
-################ NETW layer parameters ####################
+################ Application layer parameters ############
+<#if applName="Traffic Generator">
+**.node[*].applType = "TrafficGen"
+**.node[*].appl.debug = false
+**.node[*].appl.headerLength = 512bit
+**.node[*].appl.burstSize = 1
+**.node[*].appl.packetTime = (600/15000) * 1s #should be the maximum paket size divided by minimum bitrate
+**.node[*].appl.packetsPerPacketTime = 1/5
+<#else>
+**.node[*].applType = "BurstApplLayer"
+**.node[*].appl.debug = false
+**.node[*].appl.headerLength = 512bit
+**.node[*].appl.burstSize = 3
+</#if>
+
+################ NETW layer parameters ###################
+**.node[*].netwType = "BaseNetwLayer"
+**.node[*].net.debug = false
+**.node[*].net.stats = false
+**.node[*].net.headerLength = 32bit
 
 ################ Mobility parameters #####################
+<#if mobilityName="Constant speed">
+**.node[*].mobType = "ConstSpeedMobility"
+**.node[*].mobility.debug = false
+**.node[*].mobility.speed = 1mps
+**.node[*].mobility.updateInterval = 0.1s
+<#else>
+**.node[*].mobType = "BaseMobility"
+**.node[*].mobility.debug = false
+**.node[*].mobility.updateInterval = 0.1s
+</#if>
 
 **.node[0].mobility.x = 150
 **.node[0].mobility.y = 200
@@ -57,36 +87,6 @@ network = ${targetTypeName}
 **.node[5].mobility.x = 50
 **.node[5].mobility.y = 200
 **.node[5].mobility.z = 10 #ignored when use2D
-
-<#if applName="Traffic Generator">
-**.node[*].applType = "TrafficGen"
-**.node[*].appl.debug = false
-**.node[*].appl.headerLength = 512bit
-**.node[*].appl.burstSize = 1
-**.node[*].appl.packetTime = (600/15000) * 1s #should be the maximum paket size divided by minimum bitrate
-**.node[*].appl.packetsPerPacketTime = 1/5
-<#else>
-**.node[*].applType = "BurstApplLayer"
-**.node[*].appl.debug = false
-**.node[*].appl.headerLength = 512bit
-**.node[*].appl.burstSize = 3
-</#if>
-
-<#if mobilityName="Constant speed">
-**.node[*].mobType = "ConstSpeedMobility"
-**.node[*].mobility.debug = false
-**.node[*].mobility.speed = 1mps
-**.node[*].mobility.updateInterval = 0.1s
-<#else>
-**.node[*].mobType = "BaseMobility"
-**.node[*].mobility.debug = false
-**.node[*].mobility.updateInterval = 0.1s
-</#if>
-
-**.node[*].netwType = "BaseNetwLayer"
-**.node[*].net.debug = false
-**.node[*].net.stats = false
-**.node[*].net.headerLength = 32bit
 
 
 

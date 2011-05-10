@@ -1,5 +1,6 @@
 <#if nedPackageName!="">package ${nedPackageName};</#if>
 
+<!-->
 <#if protocolName=="802.11">
 <#assign nicType="Nic80211">
 import org.mixim.modules.nic.Nic80211;
@@ -9,7 +10,8 @@ import org.mixim.modules.nic.Nic80211;
 <#assign nicType="NicCSMA">
 import org.mixim.modules.nic.NicCSMA;
 </#if>
-
+</-->
+import org.mixim.modules.nic.INic;
 
 import org.mixim.base.modules.*;
 
@@ -19,6 +21,7 @@ module BaseNode
         string applType; //type of the application layer
         string netwType; //type of the network layer
         string mobType; //type of the mobility module
+        string nicType; //type of the NIC module
         @display("bgb=,,white,,");
     gates:
         input radioIn; // gate for sendDirect
@@ -43,7 +46,7 @@ module BaseNode
             parameters:
                 @display("p=60,101;i=block/layer");
         }
-        nic: ${nicType} {
+        nic: <nicType> like INic {
             parameters:
                 @display("p=60,166;i=block/ifcard");
         }
