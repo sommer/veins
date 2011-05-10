@@ -2,9 +2,6 @@
 #define FIND_MODULE_H
 
 #include <omnetpp.h>
-#include <vector>
-
-using namespace std;
 
 /**
  * @brief Provides method templates to find omnet modules.
@@ -16,32 +13,6 @@ template<typename T = cModule*>
 class FindModule
 {
 	public:
-	/**
-	 * @brief Returns a pointer to a vector containing pointers to sub modules of the passed module with
-	 * the type of this template.
-	 *
-	 * Returns NULL if no matching submodule could be found.
-	 */
-	static vector<T>* findAllSubModules(cModule *top)
-	{
-		vector<T>* answer = new vector<T>();
-		for (cModule::SubmoduleIterator i(top); !i.end(); i++)
-		{
-			cModule *sub = i();
-			T ret = dynamic_cast<T>(sub);
-			if (ret!=NULL)
-				answer->push_back(ret);
-				//return ret;
-			vector<T>* retSubModule = findAllSubModules(sub);
-			if (retSubModule!=NULL) {
-				typename vector<T>::iterator it;
-				for(it = retSubModule->begin(); it != retSubModule->end(); it++) {
-					answer->push_back(*it);
-				}
-			}
-		}
-		return answer;
-	}
 		/**
 		 * @brief Returns a pointer to a sub module of the passed module with
 		 * the type of this template.

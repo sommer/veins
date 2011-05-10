@@ -63,15 +63,7 @@ public:
 	 * Filters a specified Signal by adding an attenuation
 	 * over time to the Signal.
 	 */
-	virtual void filterSignal(Signal& s, bool b);
-
-
-	virtual bool isActiveAtOrigin() { return false; };
-
-	virtual bool isActiveAtDestination() { return true; };
-
-	virtual void setDestinationChannelAccess(ChannelAccess*) { ; };
-
+	virtual void filterSignal(Signal& s);
 };
 
 #endif /*RANDOMFREQTIMEMODEL_H_*/

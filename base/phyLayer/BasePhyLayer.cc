@@ -262,12 +262,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 	}
 	else
 	{
-		if(newAnalogueModel->isActiveAtOrigin()) {
-			analogueModelsAtOrigin.push_back(newAnalogueModel);
-		}
-		if(newAnalogueModel->isActiveAtDestination()) {
-			analogueModelsAtReception.push_back(newAnalogueModel);
-		}
+		analogueModels.push_back(newAnalogueModel);
 	}
 
 
@@ -309,13 +304,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 		}
 
 		// attach the new AnalogueModel to the AnalogueModelList
-		if(newAnalogueModel->isActiveAtOrigin()) {
-			analogueModelsAtOrigin.push_back(newAnalogueModel);
-		}
-		if(newAnalogueModel->isActiveAtDestination()) {
-			analogueModelsAtReception.push_back(newAnalogueModel);
-		}
-
+		analogueModels.push_back(newAnalogueModel);
 
 		coreEV << "AnalogueModel \"" << name << "\" loaded." << endl;
 
@@ -646,12 +635,7 @@ void BasePhyLayer::sendMacPktUp(cMessage* pkt) {
 }
 
 void BasePhyLayer::sendMessageDown(AirFrame* msg) {
-	Signal s = msg->getSignal();
-	for(AnalogueModelList::iterator it = analogueModelsAtOrigin.begin();
-			it != analogueModelsAtOrigin.end(); it++) {
-		s.analogueModelsAtOrigin.push_back(*it);
-	}
-	msg->setSignal(s);
+
 	sendToChannel(msg);
 }
 
@@ -664,16 +648,11 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
 
 
 void BasePhyLayer::filterSignal(Signal& s) {
-	AnalogueModelList::const_iterator it;
-	for (it = s.analogueModelsAtOrigin.begin(); it != s.analogueModelsAtOrigin.end(); it++) {
+	for(AnalogueModelList::const_iterator it = analogueModels.begin();
+		it != analogueModels.end(); it++) {
+
 		AnalogueModel* tmp = *it;
-		tmp->setDestinationChannelAccess(this);  // enables the analogueModel to get information on the arrival point
-		tmp->filterSignal(s, true);
-	}
-	for(it = analogueModelsAtReception.begin(); it != analogueModelsAtReception.end(); it++) {
-		AnalogueModel* tmp = *it;
-		tmp->setDestinationChannelAccess(this);  // enables the analogueModel to get information on the arrival point
-		tmp->filterSignal(s, false);
+		tmp->filterSignal(s);
 	}
 }
 
@@ -717,24 +696,8 @@ BasePhyLayer::~BasePhyLayer() {
 	AnalogueModel* rsamPointer = radio->getAnalogueModel();
 
 	//free AnalogueModels
-	for(AnalogueModelList::iterator it = analogueModelsAtOrigin.begin();
-		it != analogueModelsAtOrigin.end(); it++) {
-
-		AnalogueModel* tmp = *it;
-
-		// do not delete the RSAM, it's not allocated by new!
-		if (tmp == rsamPointer)
-		{
-			rsamPointer = 0;
-			continue;
-		}
-
-		if(tmp != 0 && ! tmp->isActiveAtDestination()) {
-			delete tmp;
-		}
-	}
-	for(AnalogueModelList::iterator it = analogueModelsAtReception.begin();
-		it != analogueModelsAtReception.end(); it++) {
+	for(AnalogueModelList::iterator it = analogueModels.begin();
+		it != analogueModels.end(); it++) {
 
 		AnalogueModel* tmp = *it;
 
@@ -749,7 +712,6 @@ BasePhyLayer::~BasePhyLayer() {
 			delete tmp;
 		}
 	}
-
 
 
 	// free radio

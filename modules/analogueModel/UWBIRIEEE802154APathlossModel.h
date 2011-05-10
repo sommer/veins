@@ -64,7 +64,7 @@ public:
     /*
      * @brief Applies the model to an incoming signal.
      */
-    void filterSignal(Signal& s, bool isActiveAtOrigin);
+    void filterSignal(Signal& s);
 
     /*@brief Utility function to use a Rayleigh random variable
      *
@@ -174,13 +174,6 @@ protected:
      * @brief Computes the pathloss as a function of center frequency and bandwidth given in MHz
      */
     double getPathloss(double fc, double BW);
-
-	virtual bool isActiveAtDestination() { return true; }
-
-	virtual bool isActiveAtOrigin() { return false; }
-
-	virtual void setDestinationChannelAccess(ChannelAccess* ca) { ;	}
-
 
 };
 

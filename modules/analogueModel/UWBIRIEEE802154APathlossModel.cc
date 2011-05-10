@@ -151,7 +151,7 @@ const UWBIRIEEE802154APathlossModel::CMconfig UWBIRIEEE802154APathlossModel::CMc
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // CM9
 };
 
-void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s, bool isActiveAtOrigin) {
+void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
     // We create a new "fake" txPower to add multipath taps
     // and then attenuation is applied to all pulses.
 

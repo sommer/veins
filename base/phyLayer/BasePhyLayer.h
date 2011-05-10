@@ -114,7 +114,11 @@ protected:
 	/** @brief Pointer to the decider module. */
 	Decider* decider;
 
+	/** @brief Used to store the AnalogueModels to be used as filters.*/
+	typedef std::vector<AnalogueModel*> AnalogueModelList;
 
+	/** @brief List of the analogue models to use.*/
+	AnalogueModelList analogueModels;
 
 	/**
 	 * @brief Used at initialisation to pass the parameters
@@ -161,11 +165,6 @@ protected:
 
 public:
 
-	/** @brief Used to store the AnalogueModels to be used as filters.*/
-	typedef std::vector<AnalogueModel*> AnalogueModelList;
-
-	/** @brief Lists of the analogue models to use, at transmission and reception.*/
-	AnalogueModelList analogueModelsAtOrigin, analogueModelsAtReception;
 
 private:
 
@@ -553,7 +552,6 @@ public:
 	 */
 	void recordScalar(const char *name, double value, const char *unit=NULL);
 
-	friend class Signal;
 	/*@}*/
 
 };

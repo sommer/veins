@@ -17,16 +17,9 @@ private:
 		TestAnalogueModel(double attenuation):
 			att(attenuation) {}
 
-		void filterSignal(Signal& s, bool b) {
+		void filterSignal(Signal& s) {
 			return;
 		}
-
-		virtual bool isActiveAtOrigin() { return false; };
-
-		virtual bool isActiveAtDestination() { return true; };
-
-		virtual void setDestinationChannelAccess(ChannelAccess*) { ; };
-
 	};
 protected:
 

@@ -43,11 +43,6 @@ protected:
 	virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
 
 	/**
-	 * @brief Creates and initializes a BreakpointPathlossModel with the
-	 * passed parameter values.
-	 */
-	virtual AnalogueModel* initializeBreakpointPathlossModel(ParameterMap& params);
-	/**
 	 * @brief Creates and initializes a SimplePathlossModel with the
 	 * passed parameter values.
 	 */
@@ -64,8 +59,6 @@ protected:
 	 * passed parameter values.
 	 */
 	AnalogueModel* initializeJakesFading(ParameterMap& params);
-
-	AnalogueModel* initializeAntenna(ParameterMap& params);
 
 	/**
 	 * @brief Creates and returns an instance of the Decider with the specified

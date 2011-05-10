@@ -83,7 +83,7 @@ JakesFading::~JakesFading() {
 	delete[] angleOfArrival;
 }
 
-void JakesFading::filterSignal(Signal& s, bool isActiveAtOrigin)
+void JakesFading::filterSignal(Signal& s)
 {
 	const Move& senderMove = s.getMove();
 	double relSpeed = (senderMove.getDirection() * senderMove.getSpeed()

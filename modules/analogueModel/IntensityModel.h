@@ -52,11 +52,6 @@ public:
 		attMapping->setValue(arg, 4*PI*pow(distance, 2));
 		s.addAttenuation(attMapping);
 	}
-
-	virtual bool isActiveAtDestination() { return true; }
-
-	virtual bool isActiveAtOrigin() { return false; }
-
 };
 
 #endif /* INTENSITYMODEL_H_ */

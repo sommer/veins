@@ -69,7 +69,7 @@ public:
     	pathlosses.setName("pathloss");
     }
 
-    void filterSignal(Signal& s, bool isActiveAtOrigin);
+    void filterSignal(Signal& s);
 
 protected:
     double pathloss_exponent;
@@ -82,12 +82,6 @@ protected:
     double getGhassemzadehPathloss(double distance);
     double getFDPathloss(double freq, double distance);
     double simtruncnormal(double mean, double stddev, double a, int rng);
-
-	virtual bool isActiveAtDestination() { return true; }
-
-	virtual bool isActiveAtOrigin() { return false; }
-
-	virtual void setDestinationChannelAccess(ChannelAccess* ca) { ;	}
 
 };
 
