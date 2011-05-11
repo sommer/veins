@@ -43,7 +43,7 @@ simtime_t Decider802154Narrow::processNewSignal(AirFrame* frame) {
 		return notAgain;
 	}
 
-	if(frame->getChannel() != phyDetailed->getCurrentRadioChannel()) {
+	if(frame->getChannel() != phy->getCurrentRadioChannel()) {
 		// we cannot synchronize on a frame on another channel.
 		return notAgain;
 	}

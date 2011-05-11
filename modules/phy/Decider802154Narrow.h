@@ -10,7 +10,6 @@
 
 #include <BaseDecider.h>
 #include <BaseArp.h>
-#include "PhyLayerDetailed.h"
 
 /**
  * @brief Decider for the 802.15.4 Narrow band module
@@ -26,10 +25,6 @@ public:
 		LAST_DECIDER802154NARROW_CONTROL_KIND
 	};
 protected:
-
-    /** @brief This allows us to know on which channel the radio is set. */
-	PhyLayerDetailed* phyDetailed;
-
 	/** @brief Start Frame Delimiter length in bits. */
 	int sfdLength;
 
@@ -116,7 +111,6 @@ public:
 		snirReceived.setName("snirReceived");
 		berlog.setName("berlog");
 		snrlog.setName("snrlog");
-		phyDetailed = dynamic_cast<PhyLayerDetailed*>(phy);
 	}
 
 	virtual ~Decider802154Narrow() {};

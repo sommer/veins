@@ -132,6 +132,9 @@ public:
 	 * Records a double into the scalar result file.
 	 */
 	virtual void recordScalar(const char *name, double value, const char *unit=NULL) = 0;
+
+	/** @brief Returns the channel currently used by the radio. */
+	virtual int getCurrentRadioChannel() = 0;
 };
 
 #endif /*DECIDER_TO_PHY_INTERFACE_H_*/
