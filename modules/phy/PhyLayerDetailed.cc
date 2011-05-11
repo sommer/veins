@@ -133,13 +133,13 @@ AnalogueModel* PhyLayerDetailed::getAnalogueModelFromName(std::string name, Para
 	else if (name == "JakesFading")
 	{
 		return initializeJakesFading(params);
-	}
-	else if(name == "BreakpointPathlossModel")
-	{
-		return initializeBreakpointPathlossModel(params);
-	} else if(name == "AntennaModel")
-	{
-		return initializeAntenna(params);
+//	}
+//	else if(name == "BreakpointPathlossModel")
+//	{
+//		return initializeBreakpointPathlossModel(params);
+//	} else if(name == "AntennaModel")
+//	{
+//		return initializeAntenna(params);
 	} else if (name == "RadioStateAnalogueModel") {
 		//return 0;
 		return radioDetailed->getAnalogueModel();
