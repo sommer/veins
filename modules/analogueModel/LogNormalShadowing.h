@@ -21,6 +21,20 @@
 /**
  * @brief Channel state implementing log-normal shadowing.
  *
+ * An example config.xml for this AnalogueModel can be the following:
+ * @verbatim
+	<AnalogueModel type="LogNormalShadowing">
+		<!-- Mean attenuation in dB -->
+		<parameter name="mean" type="double" value="0.5"/>
+
+		<!-- Standart deviation of the attenuation in dB -->
+		<parameter name="stdDev" type="double" value="0.25"/>
+
+		<!-- Interval in which to define attenuation for in seconds -->
+		<parameter name="interval" type="double" value="0.001"/>
+	</AnalogueModel>
+   @endverbatim
+ *
  * @ingroup analogueModels
  * @author Hermann S. Lichte, Karl Wessel (port for MiXiM)
  * @date 2007-08-15

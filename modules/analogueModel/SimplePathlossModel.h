@@ -12,7 +12,8 @@ class SimplePathlossModel;
 /**
  * @brief Mapping that represents a Pathloss-function.
  *
- * SimplePathlossConstMapping is subclassed from SimpleConstMapping for convenience.
+ * SimplePathlossConstMapping is subclassed from SimpleConstMapping for
+ * convenience.
  * In this simple pathloss implementation, we assume one attenuation value
  * being constant over the signals duration.
  *
@@ -61,7 +62,23 @@ public:
 
 /**
  * @brief Basic implementation of a SimplePathlossModel that uses
- * SimplePathlossConstMapping (that is subclassed from SimpleConstMapping) as attenuation-Mapping.
+ * SimplePathlossConstMapping (that is subclassed from SimpleConstMapping) as
+ * attenuation-Mapping.
+ *
+ * An example config.xml for this AnalogueModel can be the following:
+ * @verbatim
+	<AnalogueModel type="SimplePathlossModel">
+		<!-- Environment parameter of the pathloss formula
+			 If ommited default value is 3.5-->
+		<parameter name="alpha" type="double" value="3.5"/>
+
+		<!-- Carrier frequency of the signal in Hz
+			 If ommited the carrier frequency from the
+			 connection manager is taken if available
+			 otherwise set to default frequency of 2.412e+9-->
+		<parameter name="carrierFrequency" type="double" value="2.412e+9"/>
+	</AnalogueModel>
+   @endverbatim
  *
  * @ingroup analogueModels
  */
@@ -96,12 +113,13 @@ public:
 	 * The constructor needs some specific knowledge in order to create
 	 * its mapping properly:
 	 *
-	 * @param alpha the coefficient alpha (specified e.g. in config.xml and passed
-	 *    			in constructor call)
+	 * @param alpha the coefficient alpha (specified e.g. in config.xml and
+	 * 				passed in constructor call)
 	 * @param carrierFrequency the carrier frequency
 	 * @param myMove a pointer to the hosts move pattern
 	 * @param useTorus information about the playground the host is moving in
-	 * @param playgroundSize information about the playground the host is moving in
+	 * @param playgroundSize information about the playground the host is
+	 * 						 moving in
 	 * @param debug display debug messages?
 	 */
 	SimplePathlossModel(double alpha, double carrierFrequency, const Move* myMove,

@@ -67,6 +67,26 @@ public:
 /**
  * @brief Implements Rayleigh fading after Jakes' model.
  *
+ * An example config.xml for this AnalogueModel can be the following:
+ * @verbatim
+	<AnalogueModel type="JakesFading">
+		<!-- Carrier frequency of the signal in Hz
+			 If ommited the carrier frequency from the
+			 connection manager is taken if available
+			 otherwise set to default frequency of 2.412e+9-->
+		<parameter name="carrierFrequency" type="double" value="2.412e+9"/>
+
+		<!-- Number of fading paths per host -->
+		<parameter name="fadingPaths" type="long" value="3"/>
+
+		<!-- f-selectivity: mean delay spread in seconds -->
+		<parameter name="delayRMS" type="double" value="0.0001"/>
+
+		<!-- Interval in which to define attenuation for in seconds -->
+		<parameter name="interval" type="double" value="0.001"/>
+	</AnalogueModel>
+   @endverbatim
+ *
  * @ingroup analogueModels
  * @author Hermann S. Lichte, Karl Wessel (port for MiXiM)
  */
