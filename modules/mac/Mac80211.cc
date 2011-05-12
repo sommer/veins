@@ -1095,11 +1095,11 @@ simtime_t Mac80211::timeOut(Mac80211MessageKinds type, double br)
     switch (type)
     {
     case RTS:
-        time_out = SIFS + packetDuration(LENGTH_RTS, br) + packetDuration(LENGTH_CTS, br) + delta;
+        time_out = SIFS + packetDuration(LENGTH_RTS, br) + ST + packetDuration(LENGTH_CTS, br) + delta;
         debugEV << " Mac80211::timeOut RTS " << time_out << "\n";
         break;
     case DATA:
-        time_out = SIFS + packetDuration(fromUpperLayer.front()->getBitLength(), br) + packetDuration(LENGTH_ACK, br) + delta;
+        time_out = SIFS + packetDuration(fromUpperLayer.front()->getBitLength(), br) + ST + packetDuration(LENGTH_ACK, br) + delta;
         debugEV << " Mac80211::timeOut DATA " << time_out << "\n";
         break;
     default:
