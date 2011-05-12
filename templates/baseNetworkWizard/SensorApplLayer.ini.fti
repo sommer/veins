@@ -1,0 +1,3 @@
+**.node[*].applType = "SensorApplLayer"
+**.appl.trafficType = "periodic"
+**.appl.trafficParam = 1 #in seconds

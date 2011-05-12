@@ -4,6 +4,14 @@ ${bannerComment}
 
 <#if nedPackageName!="">package ${nedPackageName};</#if>
 
+<#if protocolName=="802.11">
+<#assign hostType="Host80211">
+<#else>
+<#assign hostType="HostBasic">
+</#if>
+import org.mixim.modules.node.${hostType};
+
+
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
 
@@ -28,10 +36,7 @@ network ${targetTypeName}
                 playgroundSizeZ = playgroundSizeZ;
                 @display("p=30,0;i=misc/globe");
         }
-        node[numNodes]: BaseNode {
-            parameters:
-                @display("p=170,50;i=device/wifilaptop");
-        }
+		node[numNodes]: ${hostType} {}
     connections allowunconnected:
 
 }

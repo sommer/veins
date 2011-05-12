@@ -22,6 +22,7 @@ import org.mixim.base.modules.IBaseApplLayer;
 // *
 // ***************************************************************************/
 
+import org.mixim.base.modules.IBaseApplLayer;
 
 // @brief Application layer to test lower layer implementations. 
 // SensorApplLayer waits a time initializationTime, then starts sending
@@ -31,7 +32,7 @@ import org.mixim.base.modules.IBaseApplLayer;
 //
 // @ingroup application
 // @author Jerome Rousselot, Amre El-Hoiydi
-simple SensorApplLayer {
+simple SensorApplLayer like IBaseApplLayer {
     parameters:
         bool debug = default(false); // debug switch
         bool stats = default(true);   // stats generation switch

@@ -60,7 +60,7 @@ void SensorApplLayer::initialize(int stage) {
 
 		// get pointer to the world module
 
-		world = check_and_cast<BaseWorldUtility*>(cSimulation::getActiveSimulation()->getModuleByPath("sim.world"));
+		world = FindModule<BaseWorldUtility*>::findGlobalModule(); //check_and_cast<BaseWorldUtility*>(cSimulation::getActiveSimulation()->getModuleByPath("sim.world"));
 
 	} else if (stage == 1) {
 		debugEV << "in initialize() stage 1...";

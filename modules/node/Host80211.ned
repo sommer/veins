@@ -6,13 +6,13 @@ import org.mixim.modules.nic.Nic80211;
 //
 // Example host module using an 802.11 Network interface card.
 //
-module Host80211 
+module Host80211
 {
     parameters:
         string applType; //type of the application layer
         string netwType; //type of the network layer
         string mobType; //type of the mobility module
-        @display("bgb=,,white,,");
+        @display("bgb=,,white;i=device/laptop");
     gates:
         input radioIn; // gate for sendDirect
     submodules:
