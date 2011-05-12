@@ -22,12 +22,13 @@ import org.mixim.base.modules.IBaseApplLayer;
 // *
 // ***************************************************************************/
 
+import org.mixim.base.modules.IBaseApplLayer;
 
 // Application layer to test lower layer implementations. Generate periodic traffic addressed to a sink.
 //
 // @sa SensorApplLayer
 // @author Jerome Rousselot, Amre El-Hoiydi
-simple SensorApplLayer {
+simple SensorApplLayer like IBaseApplLayer {
     parameters:
         bool debug = default(false); // debug switch
         bool stats = default(true);   // stats generation switch
