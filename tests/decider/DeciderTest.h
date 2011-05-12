@@ -588,6 +588,8 @@ public:
 	 */
 	virtual void rescheduleMessage(cMessage* msg, simtime_t t);
 
+	virtual int getCurrentRadioChannel()  { return -1; }
+
 
 	//---------SimpleTest implementation-----------
 

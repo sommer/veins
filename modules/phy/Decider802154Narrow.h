@@ -16,12 +16,15 @@
  *
  * @ingroup decider
  * @ingroup ieee802154
- * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Karl Wessel(port for MiXiM)
+ * @author Jerome Rousselot, Amre El-Hoiydi, Marc Loebbers, Karl Wessel (port for MiXiM)
  */
 class Decider802154Narrow: public BaseDecider {
+public:
+	enum Decider802154NarrowControlKinds {
+		RECEPTION_STARTED=LAST_BASE_DECIDER_CONTROL_KIND,
+		LAST_DECIDER802154NARROW_CONTROL_KIND
+	};
 protected:
-
-
 	/** @brief Start Frame Delimiter length in bits. */
 	int sfdLength;
 
@@ -32,6 +35,9 @@ protected:
 
 	/** @brief modulation type */
 	std::string modulation;
+
+	/** @brief PHY header length in bits */
+	int phyHeaderLength;
 
 	/** @name Tracked statistic values.*/
 	/*@{*/
@@ -57,6 +63,8 @@ protected:
 protected:
 	/** @brief Process a new signal the first time.*/
 	virtual simtime_t processNewSignal(AirFrame* frame);
+
+	virtual simtime_t processSignalHeader(AirFrame* frame);
 
 	/**
 	 * @brief Process the end of a signal.
@@ -86,11 +94,12 @@ public:
 						bool debug,
 						int sfdLength,
 						double BER_LOWER_BOUND,
-						const std::string& modulation):
+						const std::string& modulation, int phyHeaderLength):
 		BaseDecider(phy, 0, myIndex, debug),
 		sfdLength(sfdLength),
 		BER_LOWER_BOUND(BER_LOWER_BOUND),
 		modulation(modulation),
+		phyHeaderLength(phyHeaderLength),
 		nbFramesWithInterference(0),
 		nbFramesWithoutInterference(0),
 		nbFramesWithInterferenceDropped(0),
@@ -105,6 +114,8 @@ public:
 	}
 
 	virtual ~Decider802154Narrow() {};
+
+	virtual void channelChanged(int newChannel);
 
 	/**
 	 * @brief Method to be called by an OMNeT-module during its own finish(),

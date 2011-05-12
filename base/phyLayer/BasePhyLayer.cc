@@ -85,7 +85,7 @@ void BasePhyLayer::initialize(int stage) {
 					  "Please adjust your omnetpp.ini file accordingly.");
 		}
 
-	} else if (stage == 1){
+//	} else if (stage == 1){
 		//read complex(xml) ned-parameters
 		//	- analogue model parameters
 		initializeAnalogueModels(par("analogueModels").xmlValue());

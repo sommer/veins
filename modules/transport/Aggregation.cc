@@ -1,6 +1,8 @@
 #include "Aggregation.h"
 #include "AggrPkt.h"
 #include <iostream>
+#include <omnetpp.h>
+#include <cassert>
 
 Define_Module(Aggregation);
 
@@ -8,49 +10,56 @@ void Aggregation::initialize(int stage) {
     BaseLayer::initialize(stage);
 	if(stage == 0) {
 		interPacketDelay = par("interPacketDelay").doubleValue();
-		ASSERT(interPacketDelay > 0);
-		nbMaxPacketsPerAggregation = par("nbMaxPacketsPerAggregation");
-		ASSERT(nbMaxPacketsPerAggregation > 0);
-		aggregationTimer = new cMessage("AggregationTimer");
-		nbAggrPktSentDown = 0;
-		nbAggrPktReceived = 0;
+		if(interPacketDelay > 0) {
+		  nbMaxPacketsPerAggregation = par("nbMaxPacketsPerAggregation");
+		  assert(nbMaxPacketsPerAggregation > 0);
+		  aggregationTimer = new cMessage("AggregationTimer");
+		  nbAggrPktSentDown = 0;
+		  nbAggrPktReceived = 0;
+		} else {
+		  interPacketDelay = 0;
+		}
 	}
 }
 
 bool Aggregation::isOkToSendNow(int dest) {
 	bool isOkToSendNow = false;
-	map<int, destInfo>::iterator iter = destInfos.find(dest);
+    map<int, destInfo>::iterator iter = destInfos.find(dest);
 	if(iter == destInfos.end()) {
 		// we can send directly if we meet this node for the first time
 		isOkToSendNow = true;
 	} else if(destInfos[dest].first + interPacketDelay < simTime()) {
 		// we can send directly if the interPacketDelay time has expired since last transmission
 		isOkToSendNow = true;
-		ASSERT(destInfos[dest].second.size() == 0); // otherwise the aggregation timer should have fired
+		assert(destInfos[dest].second.size() == 0); // otherwise the aggregation timer should have fired
 	}
 	return isOkToSendNow;
 }
 
 void Aggregation::handleUpperMsg(cMessage* msg) {
-	ApplPkt* pkt = check_and_cast<ApplPkt*>(msg);
-	int dest = pkt->getDestAddr();
-	if(!isOkToSendNow(dest)) {
-		    // store packet
+	ApplPkt* pkt = check_and_cast<ApplPkt*> (msg);
+	if (interPacketDelay == 0) {
+		sendDown(msg);
+	} else {
+		int dest = pkt->getDestAddr();
+		if (!isOkToSendNow(dest)) {
+			// store packet
 			destInfos[dest].second.push_back(pkt);
 			// reschedule aggregation timer to "earliest destination"
 			simtime_t destTxTime = destInfos[dest].first + interPacketDelay;
-			if(aggregationTimer->isScheduled()) {
-				if(aggregationTimer->getArrivalTime() > destTxTime) {
-					cancelEvent(aggregationTimer);
+			if (aggregationTimer->isScheduled()) {
+				if (aggregationTimer->getArrivalTime() > destTxTime) {
+					cancelEvent( aggregationTimer);
 					scheduleAt(destTxTime, aggregationTimer);
 				}
 			} else {
 				scheduleAt(destTxTime, aggregationTimer);
 			}
-	} else {
-		// send now
-		destInfos[dest].second.push_back(pkt);
-		sendAggregatedPacketNow(dest);
+		} else {
+			// send now
+			destInfos[dest].second.push_back(pkt);
+			sendAggregatedPacketNow(dest);
+		}
 	}
 }
 
@@ -78,13 +87,17 @@ void Aggregation::sendAggregatedPacketNow(int dest) {
 }
 
 void Aggregation::handleLowerMsg(cMessage * msg) {
-	AggrPkt* aggr = check_and_cast<AggrPkt*>(msg);
-	while(!aggr->isEmpty()) {
+	if(interPacketDelay == 0) {
+		sendUp(msg);
+	} else {
+	  AggrPkt* aggr = check_and_cast<AggrPkt*>(msg);
+	  while(!aggr->isEmpty()) {
 		ApplPkt* aPacket = aggr->popFrontPacket();
 		sendUp(aPacket);
+	  }
+	  delete aggr;
+	  nbAggrPktReceived++;
 	}
-	delete aggr;
-	nbAggrPktReceived++;
 }
 
 void Aggregation::handleSelfMsg(cMessage* msg) {
