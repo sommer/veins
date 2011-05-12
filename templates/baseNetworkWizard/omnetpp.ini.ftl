@@ -1,3 +1,27 @@
+<#if protocolName=="802.11">
+<#assign nicIni="80211.ini.fti">
+<#elseif protocolName=="CSMA Generic">
+<#assign nicIni="CSMA.ini.fti">
+<#elseif protocolName=="CSMA 802.15.4">
+<#assign nicIni="802154.ini.fti">
+<#elseif protocolName=="CSMA using old CSMAMacLayer">
+<#assign nicIni="CSMAMacLayer.ini.fti">
+</#if>
+
+<#if applName="Traffic Generator">
+<#assign applIni="TrafficGen.ini.fti">
+<#elseif applName="Sensor Application Layer">
+<#assign applIni="SensorApplLayer.ini.fti">
+<#else>
+<#assign applIni="BurstApplLayer.ini.fti">
+</#if>
+
+<#if mobilityName="Constant speed">
+<#assign mobIni="ConstSpeedMobility.ini.fti">
+<#else>
+<#assign mobIni="BaseMobility.ini.fti">
+</#if>
+
 [General]
 cmdenv-express-mode = true
 network = ${targetTypeName}
@@ -22,29 +46,11 @@ network = ${targetTypeName}
 **.world.use2D = true
 </#if>
 
-<!--########### Protocoll dependent include#############-->
-<#if protocolName="802.11">
-<#include "80211.ini.fti">
-<#elseif protocolName="CSMA using old CSMAMacLayer">
-<#include "CSMAMacLayer.ini.fti">
-<#else>
-<#include "CSMA.ini.fti">
-</#if>
+<#--########### Protocoll dependent include#############-->
+<#include nicIni>
 
 ################ Application layer parameters ############
-<#if applName="Traffic Generator">
-**.node[*].applType = "TrafficGen"
-**.node[*].appl.debug = false
-**.node[*].appl.headerLength = 512bit
-**.node[*].appl.burstSize = 1
-**.node[*].appl.packetTime = (600/15000) * 1s #should be the maximum paket size divided by minimum bitrate
-**.node[*].appl.packetsPerPacketTime = 1/5
-<#else>
-**.node[*].applType = "BurstApplLayer"
-**.node[*].appl.debug = false
-**.node[*].appl.headerLength = 512bit
-**.node[*].appl.burstSize = 3
-</#if>
+<#include applIni>
 
 ################ NETW layer parameters ###################
 **.node[*].netwType = "BaseNetwLayer"
@@ -53,16 +59,7 @@ network = ${targetTypeName}
 **.node[*].net.headerLength = 32bit
 
 ################ Mobility parameters #####################
-<#if mobilityName="Constant speed">
-**.node[*].mobType = "ConstSpeedMobility"
-**.node[*].mobility.debug = false
-**.node[*].mobility.speed = 1mps
-**.node[*].mobility.updateInterval = 0.1s
-<#else>
-**.node[*].mobType = "BaseMobility"
-**.node[*].mobility.debug = false
-**.node[*].mobility.updateInterval = 0.1s
-</#if>
+<#include mobIni>
 
 **.node[0].mobility.x = 150
 **.node[0].mobility.y = 200

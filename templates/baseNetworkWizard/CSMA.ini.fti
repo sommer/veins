@@ -7,6 +7,10 @@
 **.connectionManager.alpha = 3.0
 **.connectionManager.carrierFrequency = 2.412e+9Hz
 
+##########################################################
+#       Parameters for the Host                          #
+##########################################################
+**.node[*].nicType = "NicCSMA"
 
 ################ PhyLayer parameters #####################
 **.node[*].nic.phy.usePropagationDelay = false
