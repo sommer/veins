@@ -14,7 +14,7 @@ module HostBasic
         string netwType; //type of the network layer
         string mobType; //type of the mobility module
         string nicType; //type of the NIC module
-        @display("bgb=,,white,,");
+        @display("bgb=,,white;i=device/laptop");
     gates:
         input radioIn; // gate for sendDirect
     submodules:
