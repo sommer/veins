@@ -47,7 +47,6 @@
  *
  *
  * @class BMacLayer
- * @ingroup bmac
  * @ingroup macLayer
  * @author Anna Foerster
  *
