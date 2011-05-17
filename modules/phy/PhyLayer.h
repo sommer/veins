@@ -60,8 +60,18 @@ protected:
 	 */
 	AnalogueModel* initializeJakesFading(ParameterMap& params);
 
-	/** @brief Initializes PER Model */
-	AnalogueModel* initializePERModel(ParameterMap& params);
+	/**
+	 * @brief Creates and initializes a BreakpointPathlossModel with the
+	 * passed parameter values.
+	 */
+	virtual AnalogueModel* initializeBreakpointPathlossModel(ParameterMap& params);
+
+	/**
+	 * @brief Creates a simple Packet Error Rate model that attenuates a percentage
+	 * of the packets to zero, and does not attenuate the other packets.
+	 *
+	 */
+	virtual AnalogueModel* initializePERModel(ParameterMap& params);
 
 	/**
 	 * @brief Creates and returns an instance of the Decider with the specified
@@ -88,6 +98,7 @@ protected:
 	 * @brief Initializes a new SNRThresholdDecider from the passed parameter map.
 	 */
 	virtual Decider* initializeSNRThresholdDecider(ParameterMap& params);
+
 };
 
 #endif /* PHYLAYER_H_ */
