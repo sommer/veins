@@ -36,10 +36,16 @@ int BaseArp::getMacAddr(const int netwAddr)
     } else {
         Enter_Method_Silent();
     }
-    coreEV << "for host[" << simulation.getModule( netwAddr )->getParentModule()->getIndex()
+    cModule* netwLayer = simulation.getModule( netwAddr );
+    if(!netwLayer) {
+    	opp_error("Invalid network address: %d! Could not find a module with "
+				  "that id.", netwAddr);
+    }
+    int macAddr = netwLayer->getParentModule()->getSubmodule( "nic" )->getId();
+    coreEV << "for host[" << netwLayer->getParentModule()->getIndex()
        << "]: netwAddr " << netwAddr << "; MAC address "
-       << simulation.getModule( netwAddr )->getParentModule()->getSubmodule( "nic" )->getId() <<endl;
-    return simulation.getModule(netwAddr)->getParentModule()->getSubmodule("nic")->getId();
+       << macAddr <<endl;
+    return macAddr;
 }
 
 /*
