@@ -6,6 +6,10 @@
 
 Define_Module(Aggregation);
 
+Aggregation::Aggregation() :
+		aggregationTimer(NULL)
+{}
+
 void Aggregation::initialize(int stage) {
     BaseLayer::initialize(stage);
 	if(stage == 0) {

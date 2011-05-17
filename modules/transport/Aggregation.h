@@ -38,6 +38,7 @@ using namespace std;
  */
 class Aggregation: public BaseLayer {
 public:
+	Aggregation();
 	virtual void initialize(int);
 	virtual void finish();
 protected:
