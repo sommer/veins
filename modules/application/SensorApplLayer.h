@@ -21,7 +21,7 @@
 #ifndef SENSOR_APPL_LAYER_H
 #define SENSOR_APPL_LAYER_H
 
-#include <vector>
+#include <map>
 #include "BaseUtility.h"
 #include "BaseModule.h"
 #include "BaseLayer.h"
@@ -101,7 +101,7 @@ protected:
   bool stats;
   bool debug;
   bool broadcastPackets;
-  vector < cStdDev > latencies;
+  map < int, cStdDev > latencies;
   cStdDev latency;
   cOutVector latenciesRaw;
   Packet packet; // informs the simulation of the number of packets sent and received by this node.
@@ -137,6 +137,13 @@ protected:
 
   /** @brief calculate time to wait before sending next packet, if required. You can redefine this method in a subclass to add your own distribution. */
   virtual void scheduleNextPacket();
+
+  /**
+   * @brief Returns the latency statistics variable for the passed host address.
+   * @param hostAddress the address of the host to return the statistics for.
+   * @return A reference to the hosts latency statistics.
+   */
+  cStdDev& hostsLatency(int hostAddress);
 };
 
 #endif

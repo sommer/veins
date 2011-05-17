@@ -102,15 +102,29 @@ void SensorApplLayer::initialize(int stage) {
 			int nbNodes = host->size();
 			latenciesRaw.setName("rawLatencies");
 			latenciesRaw.setUnit("s");
+			/*
 			for (int i = 0; i < nbNodes; i++) {
 				std::ostringstream oss;
 				oss << i;
 				cStdDev aLatency(oss.str().c_str());
 				latencies.push_back(aLatency);
 			}
+			*/
 			latency.setName("latency");
 		}
 	}
+}
+
+cStdDev& SensorApplLayer::hostsLatency(int hostAddress)
+{
+	  if(latencies.count(hostAddress) == 0) {
+		  std::ostringstream oss;
+		  oss << hostAddress;
+		  cStdDev aLatency(oss.str().c_str());
+		  latencies.insert(pair<int, cStdDev>(hostAddress, aLatency));
+	  }
+
+	  return latencies[hostAddress];
 }
 
 void SensorApplLayer::initializeDistribution(const char* traffic) {
@@ -180,20 +194,20 @@ void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 		world->publishBBItem(catPacket, &packet, hostID);
 		// debugEV << "Received a data packet from host["<<m->getSrcAddr()<<"]\n";
 		if (stats) {
-			//                      cStdDev latency = latencies[m->getSrcAddr()];
+			//                      cStdDev latency = hostsLatency(m->getSrcAddr());
 			//                      latency.collect(m->getArrivalTime()-m->getCreationTime());
 			//                      testStat.collect(m->getArrivalTime()-m->getCreationTime());
 			//                      debugEV << "Received a data packet from host["<<m->getSrcAddr()<<"], latency=" <<  m->getArrivalTime()-m->getCreationTime() << ", collected " << latency.getCount() << "mean is now: " << latency.getMean() << endl;
 			simtime_t theLatency = m->getArrivalTime() - m->getCreationTime();
-			latencies[m->getSrcAddr()].collect(theLatency);
+			hostsLatency(m->getSrcAddr()).collect(theLatency);
 			latency.collect(theLatency);
 			if (firstPacketGeneration < 0)
 				firstPacketGeneration = m->getCreationTime();
 			lastPacketReception = m->getArrivalTime();
 			debugEV<< "Received a data packet from host[" << m->getSrcAddr()
 			<< "], latency=" << theLatency
-			<< ", collected " << latencies[m->getSrcAddr()].
-			getCount() << "mean is now: " << latencies[m->getSrcAddr()].
+			<< ", collected " << hostsLatency(m->getSrcAddr()).
+			getCount() << "mean is now: " << hostsLatency(m->getSrcAddr()).
 			getMean() << endl;
 			latenciesRaw.record(theLatency.dbl());
 		}
@@ -267,13 +281,15 @@ void SensorApplLayer::finish() {
 	if (stats) {
 		// output logs to scalar file
 
-		for (unsigned int i = 0; i < latencies.size(); i++) {
+		for (map<int, cStdDev>::iterator it = latencies.begin();
+			 it != latencies.end(); ++it)
+		{
 			char dispstring[12];
-			cStdDev aLatency = latencies[i];
+			cStdDev aLatency = it->second;
 
 			//debugEV << "Recording mean latency for node " << i << ": " << aLatency.getMean() << endl;
 			//recordScalar("mean_latency ", aLatency.getMean());
-			sprintf(dispstring, "latency%d", i);
+			sprintf(dispstring, "latency%d", it->first);
 			//dispstring
 			recordScalar(dispstring, aLatency.getMean(), "s");
 			aLatency.record();
