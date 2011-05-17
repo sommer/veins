@@ -3,6 +3,7 @@ package org.mixim.examples.bmac;
 import org.mixim.modules.nic.NicCSMA;
 
 import org.mixim.base.modules.*;
+import org.mixim.modules.netw.ArpHost;
 
 module BaseNode
 {
@@ -18,7 +19,7 @@ module BaseNode
             parameters:
                 @display("p=130,38;b=24,24,rect,black;i=block/blackboard");
         }
-        arp: BaseArp {
+        arp: ArpHost {
             parameters:
                 @display("p=130,101;b=24,24,rect,blue;i=block/process");
         }
