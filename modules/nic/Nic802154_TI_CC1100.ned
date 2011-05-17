@@ -76,7 +76,6 @@ module Nic802154_TI_CC1100 like INic
         mac: CSMA802154 {
             parameters:
                 rxSetupTime = 0.00108 s;
-                bitrate = 250000 bps;
 				
                 @display("p=96,87;i=block/layer");
 

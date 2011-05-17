@@ -83,7 +83,6 @@ module Nic802154_TI_CC2420 like INic
         mac: CSMA802154 {
             parameters:
                 rxSetupTime = 0.001792 s;
-                bitrate = 250000 bps;
                 txPower = default(1 mW);
 				
                 @display("p=96,87;i=block/layer");
