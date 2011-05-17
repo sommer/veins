@@ -30,7 +30,7 @@
 #include "ApplPkt_m.h"
 #include "BaseApplLayer.h"
 #include "BaseWorldUtility.h"
-#define NET_BROADCAST 65535
+//#define NET_BROADCAST 65535
 
 //#include "cstat.h"
 //#include "BasicIPMacLayer.h"

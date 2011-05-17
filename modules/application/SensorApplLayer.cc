@@ -19,6 +19,8 @@
 
 #include "SensorApplLayer.h"
 #include <sstream>
+#include <BaseNetwLayer.h>
+#include <AddressingInterface.h>
 
 //#define SINK_ADDR 0
 //#define ALTERNATIVE_ADDR 6
@@ -65,8 +67,24 @@ void SensorApplLayer::initialize(int stage) {
 	} else if (stage == 1) {
 		debugEV << "in initialize() stage 1...";
 		// Application address configuration: equals to host IP address
-		cModule *mac = getParentModule()->getSubmodule("nic")->getSubmodule("mac");
-		myAppAddr = mac->par("netaddress");
+
+		cModule *netw = FindModule<BaseNetwLayer*>::findSubModule(findHost());
+		if(!netw) {
+			netw = findHost()->getSubmodule("netw");
+			if(!netw) {
+				opp_error("Could not find network layer module. This means "
+						  "either no network layer module is present or the "
+						  "used network layer module does not subclass from "
+						  "BaseNetworkLayer.");
+			}
+		}
+		AddressingInterface* addrScheme = FindModule<AddressingInterface*>
+													::findSubModule(findHost());
+		if(addrScheme) {
+			myAppAddr = addrScheme->myNetwAddr(netw);
+		} else {
+			myAppAddr = netw->getId();
+		}
 		sentPackets = 0;
 		catPacket = world->getCategory(&packet);
 		// the sink does not generate packets to itself.
@@ -220,7 +238,7 @@ void SensorApplLayer::sendData() {
 	ApplPkt *pkt = new ApplPkt("Data", DATA_MESSAGE);
 
 	if(broadcastPackets) {
-		pkt->setDestAddr(NET_BROADCAST);
+		pkt->setDestAddr(L3BROADCAST);
 //	} else if (myAppAddr == SINK_ADDR) {
 //		pkt->setDestAddr(ALTERNATIVE_ADDR);
 	} else {
