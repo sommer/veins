@@ -14,12 +14,25 @@
 ##########################################################
 #       Parameters for the Host                          #
 ##########################################################
-**.node[*].nicType = "Nic802154_TI_CC2420"
 
 ############# Phy parameters #############################
 **.phy.usePropagationDelay = false
 **.phy.useThermalNoise = true
 **.phy.analogueModels = xmldoc("config.xml")
-**.phy.decider = xmldoc("config.xml")
 **.phy.maxTXPower = 1.1mW
 **.phy.sensitivity = -100dBm
+
+############# Battery statistic parameters ###############
+**.batteryStats.debug = false
+**.batteryStats.detail = false
+**.batteryStats.timeSeries = false
+
+############# Battery parameters #########################
+**.battery.debug = false
+**.battery.nominal = 99999mAh
+**.battery.capacity = 99999mAh
+**.battery.voltage = 3.3V
+**.battery.resolution = 10s
+**.battery.publishDelta = 0.1
+**.battery.publishTime = 0
+**.battery.numDevices = 1

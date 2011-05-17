@@ -6,10 +6,14 @@ ${bannerComment}
 
 <#if protocolName=="802.11">
 <#assign hostType="Host80211">
+import org.mixim.modules.node.${hostType};
+<#elseif protocolName=="CSMA 802.15.4">
+<#assign hostType="Host802154">
 <#else>
 <#assign hostType="HostBasic">
-</#if>
 import org.mixim.modules.node.${hostType};
+</#if>
+
 
 
 import org.mixim.base.connectionManager.ConnectionManager;
