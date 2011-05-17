@@ -45,6 +45,8 @@
  *
  * \image html BMACFSM.png "B-MAC Layer - finite state machine"
  *
+ * A paper describing this implementation can be found at:
+ * http://www.omnet-workshop.org/2011/uploads/slides/OMNeT_WS2011_S5_C1_Foerster.pdf
  *
  * @class BMacLayer
  * @ingroup macLayer
