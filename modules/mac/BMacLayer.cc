@@ -74,6 +74,7 @@ void BMacLayer::initialize(int stage)
 
 		data_timeout = new cMessage("data_timeout");
 		data_timeout->setKind(BMAC_DATA_TIMEOUT);
+		data_timeout->setSchedulingPriority(100);
 
 		data_tx_over = new cMessage("data_tx_over");
 		data_tx_over->setKind(BMAC_DATA_TX_OVER);
@@ -89,6 +90,7 @@ void BMacLayer::initialize(int stage)
 
 		cca_timeout = new cMessage("cca_timeout");
 		cca_timeout->setKind(BMAC_CCA_TIMEOUT);
+		cca_timeout->setSchedulingPriority(100);
 
 		send_ack = new cMessage("send_ack");
 		send_ack->setKind(BMAC_SEND_ACK);
@@ -101,6 +103,7 @@ void BMacLayer::initialize(int stage)
 
 		resend_data = new cMessage("resend_data");
 		resend_data->setKind(BMAC_RESEND_DATA);
+		resend_data->setSchedulingPriority(100);
 
 		scheduleAt(0.0, start_bmac);
     }
@@ -276,6 +279,7 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			macState = WAIT_DATA;
 			cancelEvent(cca_timeout);
 			scheduleAt(simTime() + slotDuration + checkInterval, data_timeout);
+			delete msg;
 			return;
 		}
 		// this case is very, very, very improbable, but let's do it.
@@ -297,6 +301,7 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		if (msg->getKind() == BMAC_ACK)
 		{
 			debugEV << "State CCA, message BMAC_ACK, new state CCA" << endl;
+			delete msg;
 			return;
 		}
 		break;
@@ -401,6 +406,7 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		{
 			debugEV << "State WAIT_ACK, message BMAC_DATA or BMAC_PREMABLE, new"
 					  " state WAIT_ACK" << endl;
+			delete msg;
 			return;
 		}
 		if (msg->getKind() == BMAC_ACK)
@@ -428,6 +434,7 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 				changeDisplayColor(BLACK);
 				lastDataPktDestAddr = L2BROADCAST;
 			}
+			delete msg;
 			return;
 		}
 		break;
@@ -438,6 +445,7 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			debugEV << "State WAIT_DATA, message BMAC_PREAMBLE, new state"
 					  " WAIT_DATA" << endl;
 			nbRxPreambles++;
+			delete msg;
 			return;
 		}
 		if(msg->getKind() == BMAC_ACK)
@@ -445,6 +453,7 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			//nothing happens
 			debugEV << "State WAIT_DATA, message BMAC_ACK, new state WAIT_DATA"
 				   << endl;
+			delete msg;
 			return;
 		}
 		if (msg->getKind() == BMAC_DATA)
@@ -453,8 +462,13 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			MacPkt *mac = static_cast<MacPkt *>(msg);
 			int dest = mac->getDestAddr();
 			int src = mac->getSrcAddr();
-			if ((dest == myMacAddr) || (dest == L2BROADCAST))
+			if ((dest == myMacAddr) || (dest == L2BROADCAST)) {
 				sendUp(decapsMsg(mac));
+			} else {
+				delete msg;
+				msg = NULL;
+				mac = NULL;
+			}
 
 			cancelEvent(data_timeout);
 			if ((useMacAcks) && (dest == myMacAddr))
@@ -526,9 +540,8 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 		}
 		break;
 	}
-	debugEV << "Undefined event  of type " << msg->getKind() << "in state "
-		   << macState << endl;
-	endSimulation();
+	opp_error("Undefined event of type %d in state %d (Radio state %d)!",
+			  msg->getKind(), macState, phy->getRadioState());
 }
 
 
