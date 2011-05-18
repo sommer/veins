@@ -22,6 +22,15 @@
 			<add x:p0="Sensor Application Layer"/>
 		</combo>
 		
+		<label text="Network layer:"/>
+		<combo x:id="netwName" x:style="READ_ONLY|BORDER">
+			<add x:p0="BaseNetwLayer (No routing)"/>
+			<!-->
+			<add x:p0="Probabilistic broadcast"/>
+			<add x:p0="Adaptive probabilistic broadcast"/>
+			<-->
+		</combo>
+		
 		<label text="NIC protocol:"/>
 		<combo x:id="protocolName" x:style="READ_ONLY|BORDER">
 			<add x:p0="CSMA Generic"/>

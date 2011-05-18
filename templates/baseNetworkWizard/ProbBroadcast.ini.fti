@@ -1,0 +1,10 @@
+**.node[*].netwType = "ProbabilisticBroadcast"
+**.net.stats = false
+**.net.trace = false
+**.net.debug = false
+**.net.headerLength = 68bit
+**.net.bcperiod = 0.1s
+**.net.beta = 0.5
+**.net.maxNbBcast = 10
+**.net.maxFirstBcastBackoff = 9999
+**.net.timeInQueueAfterDeath = 1

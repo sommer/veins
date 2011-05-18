@@ -16,6 +16,14 @@
 <#assign applIni="BurstApplLayer.ini.fti">
 </#if>
 
+<#if netwName="Adaptive probabilistic broadcast">
+<#assign netwIni="AdaptiveProbBroadcast.ini.fti">
+<#elseif netwName="Probabilistic broadcast">
+<#assign netwIni="ProbBroadcast.ini.fti">
+<#else>
+<#assign netwIni="BaseNetwLayer.ini.fti">
+</#if>
+
 <#if mobilityName="Constant speed">
 <#assign mobIni="ConstSpeedMobility.ini.fti">
 <#else>
@@ -53,10 +61,7 @@ network = ${targetTypeName}
 <#include applIni>
 
 ################ NETW layer parameters ###################
-**.node[*].netwType = "BaseNetwLayer"
-**.node[*].net.debug = false
-**.node[*].net.stats = false
-**.node[*].net.headerLength = 32bit
+<#include netwIni>
 
 ################ Mobility parameters #####################
 <#include mobIni>
