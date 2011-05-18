@@ -15,7 +15,7 @@
 
 package org.mixim.examples.bmac;
 
-import org.mixim.modules.phy.PhyLayer;
+import org.mixim.modules.phy.PhyLayerBattery;
 import org.mixim.modules.mac.BMacLayer;
 
 //
@@ -24,6 +24,16 @@ import org.mixim.modules.mac.BMacLayer;
 //
 module NicBMAC
 {
+    parameters:
+        double sleepCurrent @unit(mA); // 20 µA
+		double rxCurrent @unit(mA);
+		double decodingCurrentDelta @unit(mA);
+		double txCurrent @unit(mA);
+		double setupRxCurrent @unit(mA);
+		double setupTxCurrent @unit(mA);
+		double rxTxCurrent @unit(mA);
+		double txRxCurrent @unit(mA);
+		
     gates:
         input upperGateIn; // to upper layers
         output upperGateOut; // from upper layers
@@ -36,7 +46,7 @@ module NicBMAC
             @display("p=96,87;i=block/layer");
         }
         
-        phy: PhyLayer {
+        phy: PhyLayerBattery {
             @display("p=106,157;i=block/process_s");
         }
 
