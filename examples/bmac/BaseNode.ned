@@ -2,7 +2,7 @@ package org.mixim.examples.bmac;
 
 import org.mixim.modules.power.battery.SimpleBattery;
 import org.mixim.modules.power.battery.BatteryStats;
-import org.mixim.modules.nic.NicCSMA;
+import org.mixim.modules.nic.NicBMAC;
 
 import org.mixim.base.modules.*;
 import org.mixim.modules.netw.ArpHost;

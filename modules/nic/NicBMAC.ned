@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package org.mixim.examples.bmac;
+package org.mixim.modules.nic;
 
 import org.mixim.modules.phy.PhyLayerBattery;
 import org.mixim.modules.mac.BMacLayer;
@@ -22,7 +22,7 @@ import org.mixim.modules.mac.BMacLayer;
 // This module implements a BMAC network interface card using
 // the "BMACLayer" MAC layer module
 //
-module NicBMAC
+module NicBMAC like INic
 {
     parameters:
         double sleepCurrent @unit(mA); // 20 µA
