@@ -37,7 +37,7 @@ module Host802154_2400MHz
         double numHosts; // total number of hosts in the network
         string netwType = default("DummyRoute"); //type of the network layer
 
-        @display("bgb=356,318,white;bgp=10,10");
+        @display("bgb=356,318,white;bgp=10,10;b=40,40,rect;i=device/usb");
     gates:
         input radioIn;
 
@@ -64,8 +64,7 @@ module Host802154_2400MHz
             parameters:
                 @display("p=86,159");
         }
-        transport: Aggregation {
-        }
+        transport: Aggregation;
         arp: ArpHost {
             parameters:
                 @display("p=202,186");
