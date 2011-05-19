@@ -27,6 +27,14 @@
 
 Define_Module(BaseMobility);
 
+BaseMobility::BaseMobility():
+		playgroundScaleX(1),
+		playgroundScaleY(1),
+		origDisplayWidth(0),
+		origDisplayHeight(0),
+		origIconSize(0)
+{}
+
 void BaseMobility::initialize(int stage)
 {
     BaseModule::initialize(stage);
@@ -93,6 +101,47 @@ void BaseMobility::initialize(int stage)
     }
     else if (stage == 1){
         coreEV << "initializing BaseMobility stage " << stage << endl;
+
+        //get playground scaling
+        if (world->getParentModule() != NULL )
+        {
+        	const cDisplayString& dispWorldOwner
+					= world->getParentModule()->getDisplayString();
+
+        	if( dispWorldOwner.containsTag("bgb") )
+			{
+        		double origPGWidth;
+        		double origPGHeight;
+        		// normally this should be equal to playground size
+				std::istringstream(dispWorldOwner.getTagArg("bgb", 0))
+						>> origPGWidth;
+				std::istringstream(dispWorldOwner.getTagArg("bgb", 1))
+						>> origPGHeight;
+
+				//bgb of zero means size isn't set manually
+				if(origPGWidth > 0) {
+					playgroundScaleX = origPGWidth / playgroundSizeX();
+				}
+				if(origPGHeight > 0) {
+					playgroundScaleY = origPGHeight / playgroundSizeY();
+				}
+			}
+        }
+
+        //get original display of host
+		cDisplayString& disp = hostPtr->getDisplayString();
+
+        //get host width and height
+		if (disp.containsTag("b")) {
+			std::istringstream(disp.getTagArg("b", 0)) >> origDisplayWidth;
+			std::istringstream(disp.getTagArg("b", 1)) >> origDisplayHeight;
+		}
+		//get hosts icon size
+		if (disp.containsTag("i")) {
+			// choose a appropriate icon size (only if a icon is specified)
+			origIconSize = iconSizeTagToSize(disp.getTagArg("is", 0));
+		}
+
         // print new host position on the screen and update bb info
         updatePosition();
 
@@ -106,7 +155,39 @@ void BaseMobility::initialize(int stage)
     }
 }
 
+int BaseMobility::iconSizeTagToSize(const char* tag)
+{
+	if(strcmp(tag, "vs") == 0) {
+		return 16;
+	} else if(strcmp(tag, "s") == 0) {
+		return 24;
+	} else if(strcmp(tag, "n") == 0 || strcmp(tag, "") == 0) {
+		return 40;
+	} else if(strcmp(tag, "l") == 0) {
+		return 60;
+	} else if(strcmp(tag, "vl") == 0) {
+		return 100;
+	}
 
+	return -1;
+}
+
+const char* BaseMobility::iconSizeToTag(double size)
+{
+	//returns the biggest icon smaller than the passed size (except sizes
+	//smaller than the smallest icon
+	if(size < 24) {
+		return "vs";
+	} else if(size < 40) {
+		return "s";
+	} else if(size < 60) {
+		return "n";
+	} else if(size < 100) {
+		return "l";
+	} else {
+		return "vl";
+	}
+}
 
 void BaseMobility::handleMessage(cMessage * msg)
 {
@@ -187,71 +268,48 @@ void BaseMobility::updatePosition() {
     {
     	std::ostringstream osDisplayTag;
 
-    	const int          iPrecis        = 0;   // maybe this can be defined by a parameter; if the p-tag will be parsed as double then we can define here the post comma digits ;)
-    	double             dScaleX        = 1.0; // for small playground sizes it maybe usefully to scale the playground
-    	double             dScaleY        = 1.0; // for better node positioning (because of integer-value parsing of p-tags)
+    	const int          iPrecis        = 5;
     	cDisplayString&    disp           = hostPtr->getDisplayString();
-
-    	if ( world->getParentModule() != NULL && world->getParentModule()->getDisplayString().containsTag("bgb") ) {
-    		const cDisplayString& dispWorldOwner = world->getParentModule()->getDisplayString();
-
-    		std::istringstream(dispWorldOwner.getTagArg("bgb", 0)) >> dScaleX; // normally this should be equal to playground X-size
-    		std::istringstream(dispWorldOwner.getTagArg("bgb", 1)) >> dScaleY; // normally this should be equal to playground Y-size
-
-    		dScaleX /= playgroundSizeX();
-    		dScaleY /= playgroundSizeY();
-
-    		// safety checks
-    		if (dScaleX <= 0.0)
-    			dScaleX = 1.0;
-    		if (dScaleY <= 0.0)
-    			dScaleY = 1.0;
-    	}
 
     	// setup output stream
     	osDisplayTag << std::fixed; osDisplayTag.precision(iPrecis);
 
-    	osDisplayTag << move.getStartPos().getX()*dScaleX;
+    	osDisplayTag << (move.getStartPos().getX() * playgroundScaleX);
     	disp.setTagArg("p", 0, osDisplayTag.str().data());
 
     	osDisplayTag.str(""); // reset
-    	osDisplayTag << move.getStartPos().getY()*dScaleY;
+    	osDisplayTag << (move.getStartPos().getY() * playgroundScaleY);
     	disp.setTagArg("p", 1, osDisplayTag.str().data());
 
     	if(!world->use2D() && scaleNodeByDepth)
     	{
-    		double dNormZ = 1.0 - move.getStartPos().getZ() / playgroundSizeZ();
+    		const double minScale = 0.25;
+    		const double maxScale = 1.0;
 
-    		if (disp.containsTag("b")) {
-    			double dMinWidth    = world->getPgs()->length() / 40 / dScaleX;
-    			double dWidth       = dMinWidth + dMinWidth * dNormZ;
-    			double dScaleHeight = 1.0;
-    			double dOldWidth    = 1.0;
-    			double dOldHeight   = 1.0;
+    		//scale host dependent on their z coordinate to simulate a depth
+    		//effect
+			//z-coordinate of zero maps to a scale of maxScale (very close)
+			//z-coordinate of playground size z maps to size of minScale (far away)
+    		double depthScale = minScale
+			                    + (maxScale - minScale)
+			                      * (1.0 - move.getStartPos().getZ()
+			                               / playgroundSizeZ());
 
-    			std::istringstream(disp.getTagArg("b", 0)) >> dOldWidth;
-    			std::istringstream(disp.getTagArg("b", 1)) >> dOldHeight;
+    		if (origDisplayWidth > 0.0 && origDisplayHeight > 0.0)
+    		{
+    			osDisplayTag.str(""); // reset
+				osDisplayTag << (origDisplayWidth * depthScale);
+				disp.setTagArg("b", 0, osDisplayTag.str().data());
 
-    			if (FWMath::round(dWidth*std::pow(10.0, iPrecis)) > 0 && dOldWidth > 0.0) {
-    				dScaleHeight = dOldHeight / dOldWidth;
-
-    				osDisplayTag.str(""); // reset
-    				osDisplayTag << dWidth;
-    				disp.setTagArg("b", 0, osDisplayTag.str().data());
-
-    				osDisplayTag.str(""); // reset
-    				osDisplayTag << (dWidth * dScaleHeight);
-    				disp.setTagArg("b", 1, osDisplayTag.str().data());
-    			}
+				osDisplayTag.str(""); // reset
+				osDisplayTag << (origDisplayHeight * depthScale);
+				disp.setTagArg("b", 1, osDisplayTag.str().data());
     		}
-    		if (disp.containsTag("i")) {
+
+    		if (origIconSize > 0) {
     			// choose a appropriate icon size (only if a icon is specified)
-    			if(dNormZ >= 0.666)
-    				disp.setTagArg("is", 0, "n");
-    			else if(dNormZ >= 0.333)
-    				disp.setTagArg("is", 0, "s");
-    			else
-    				disp.setTagArg("is", 0, "vs");
+				disp.setTagArg("is", 0,
+				               iconSizeToTag(origIconSize * depthScale));
     		}
     	}
     }

@@ -127,7 +127,21 @@ class BaseMobility : public BatteryAccess
      * used. */
     bool scaleNodeByDepth;
 
+    /** @brief Scaling of the playground in X direction.*/
+    double playgroundScaleX;
+    /** @brief Scaling of the playground in Y direction.*/
+    double playgroundScaleY;
+
+    /** @brief The original width the node is displayed width.*/
+    double origDisplayWidth;
+    /** @brief The original height the node is displayed width.*/
+    double origDisplayHeight;
+
+    /** @brief The original size of the icon of the node.*/
+    double origIconSize;
   public:
+
+    BaseMobility();
 
     /** @brief This modules should only receive self-messages
      *
@@ -156,6 +170,23 @@ class BaseMobility : public BatteryAccess
     virtual void finish(){};
 
   protected:
+    /**
+     * @brief Maps the passed icon size tag (is) to an actual size in pixels.
+     *
+     * @param tag - the icon size tag to get the pixel size for
+     * @return the size of the icon in pixels or -1 if the tag is unknown
+     */
+    virtual int iconSizeTagToSize(const char* tag);
+
+    /**
+	 * @brief Maps the passed size in pixels to an appropriate icon size
+	 * tag (is).
+	 *
+	 * @param size - the icon size to get an appropriate tag for
+	 * @return an icon size tag
+	 */
+	virtual const char* iconSizeToTag(double size);
+
     /** @brief Called upon arrival of a self messages
      *
      * The only self message possible is to indicate a new movement. If
