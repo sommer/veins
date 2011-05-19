@@ -56,6 +56,8 @@
 class  BMacLayer : public BaseMacLayer
 {
   public:
+	virtual ~BMacLayer();
+
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
 

@@ -109,11 +109,9 @@ void BMacLayer::initialize(int stage)
     }
 }
 
-void BMacLayer::finish() {
-    MacQueue::iterator it;
-    BaseMacLayer::finish();
-
-    cancelAndDelete(wakeup);
+BMacLayer::~BMacLayer()
+{
+	cancelAndDelete(wakeup);
 	cancelAndDelete(data_timeout);
 	cancelAndDelete(data_tx_over);
 	cancelAndDelete(stop_preambles);
@@ -125,11 +123,17 @@ void BMacLayer::finish() {
 	cancelAndDelete(ack_timeout);
 	cancelAndDelete(resend_data);
 
-    for(it = macQueue.begin(); it != macQueue.end(); ++it)
-    {
-        delete (*it);
-    }
-    macQueue.clear();
+	MacQueue::iterator it;
+	for(it = macQueue.begin(); it != macQueue.end(); ++it)
+	{
+		delete (*it);
+	}
+	macQueue.clear();
+}
+
+void BMacLayer::finish()
+{
+    BaseMacLayer::finish();
 
     // record stats
     if (stats)

@@ -1,4 +1,4 @@
-package org.mixim.examples.bmac;
+package org.mixim.modules.node;
 
 import org.mixim.modules.power.battery.SimpleBattery;
 import org.mixim.modules.power.battery.BatteryStats;
@@ -7,13 +7,13 @@ import org.mixim.modules.nic.NicBMAC;
 import org.mixim.base.modules.*;
 import org.mixim.modules.netw.ArpHost;
 
-module BaseNode
+module HostBMAC
 {
     parameters:
         string applType; //type of the application layer
         string netwType; //type of the network layer
         string mobType; //type of the mobility module
-        @display("bgb=244,294,white");
+        @display("bgb=244,294,white;i=device/usb;b=40,40,rect");
     gates:
         input radioIn; // gate for sendDirect
     submodules:

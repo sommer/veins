@@ -17,6 +17,7 @@ package org.mixim.examples.bmac;
 
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
+import org.mixim.modules.node.HostBMAC;
 
 network BMAC
 {
@@ -39,7 +40,7 @@ network BMAC
                 playgroundSizeZ = playgroundSizeZ;
                 @display("p=30,0;i=misc/globe");
         }
-        node[numNodes]: BaseNode {
+        node[numNodes]: HostBMAC {
             parameters:
                 @display("p=170,50;i=device/wifilaptop");
         }
