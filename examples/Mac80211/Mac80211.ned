@@ -68,8 +68,6 @@ network Mac80211
             netwType = "BaseNetwLayer";
             applType = "BurstApplLayer";
             mobType = "ConstSpeedMobility";
-            
-            @display("p=20,20;b=20,20,rect,yellow,,;i=device/wifilaptop");
         }
 
     connections allowunconnected:
