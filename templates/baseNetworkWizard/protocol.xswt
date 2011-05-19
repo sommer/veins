@@ -37,6 +37,7 @@
 			<add x:p0="802.11"/>
 			<add x:p0="CSMA 802.15.4"/>
 			<add x:p0="CSMA using old CSMAMacLayer"/>
+			<add x:p0="B-MAC"/>
 			<!-- <add x:p0="802.15.4"/> -->
 			<!-- <add x:p0="802.15.4a (UWB)"/> -->
 		</combo>
