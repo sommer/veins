@@ -328,6 +328,14 @@
 			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
+					<target name="makemake" path="modules/messages" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>MODE=debug CONFIGNAME=${ConfigName}</buildArguments>
+						<buildTarget>makefiles</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 					<target name="makefiled" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
 						<buildArguments>MODE=debug CONFIGNAME=${ConfigName}</buildArguments>
@@ -336,10 +344,10 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
-					<target name="makemake" path="modules/messages" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="all" path="examples" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
 						<buildArguments>MODE=debug CONFIGNAME=${ConfigName}</buildArguments>
-						<buildTarget>makefiles</buildTarget>
+						<buildTarget>all</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -671,6 +679,14 @@
 			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
+					<target name="makemake" path="modules/messages" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>MODE=debug CONFIGNAME=${ConfigName}</buildArguments>
+						<buildTarget>makefiles</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 					<target name="makefiled" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
 						<buildArguments>MODE=debug CONFIGNAME=${ConfigName}</buildArguments>
@@ -679,10 +695,10 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
-					<target name="makemake" path="modules/messages" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="all" path="examples" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
 						<buildArguments>MODE=debug CONFIGNAME=${ConfigName}</buildArguments>
-						<buildTarget>makefiles</buildTarget>
+						<buildTarget>all</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
