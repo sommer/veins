@@ -309,3 +309,9 @@
  * PhyLayerBattery and BurstApplicationLayerBattery are only two examples for
  * host modules which support power consumption and host state changes.
  */
+
+/**
+ * @defgroup MoBAN MoBAN - Classes providing a mobility model for Wireless Body Area Networks
+ *
+ * For more info see page \ref mobancpp
+ */

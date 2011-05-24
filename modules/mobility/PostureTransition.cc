@@ -101,6 +101,7 @@ int PostureTransition::addMatrix(std::string name, double** matrix, bool thisDef
 	if (thisDefault)
 		defaultMatrixID = matrixList.size()-1;
 
+	return 0;
 }
 
 /**
@@ -138,6 +139,8 @@ int PostureTransition::addSteadyState(std::string name, double* iVector)
 	mat->matrix = extractMatrixFromSteadyState(steady);
 
 	matrixList.push_back(mat);
+
+	return 0;
 }
 
 /**
@@ -175,6 +178,7 @@ bool PostureTransition::setAreaBoundry(int id, Coord lowBound, Coord highBound)
 
 	areaTypeList.at(id)->boundries.push_back(bound);
 
+	return true;
 }
 
 /**
@@ -210,6 +214,8 @@ bool PostureTransition::setTimeBoundry(int id, simtime_t lowBound, simtime_t hig
 	bound->high = highBound;
 
 	timeDomainList.at(id)->boundries.push_back(bound);
+
+	return true;
 }
 
 /**
@@ -285,6 +291,8 @@ bool PostureTransition::addCombination(std::string areaName,std::string timeName
 		opp_error ("Undefined matrix name is given in the combinations" );
 
 	combinationList.push_back(comb);
+
+	return true;
 }
 
 /**

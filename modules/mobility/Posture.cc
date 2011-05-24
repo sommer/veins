@@ -54,11 +54,11 @@ Posture::Posture(unsigned int ID, unsigned int num)
 	nodeSpeed =  new double[numNodes];
 
 	alphaMean = new double*[numNodes];
-	for (int i=0;i<numNodes;++i)
+	for (unsigned int i=0;i<numNodes;++i)
 		alphaMean[i] = new double[numNodes];
 
 	alphaSD = new double*[numNodes];
-	for (int i=0;i<numNodes;++i)
+	for (unsigned int i=0;i<numNodes;++i)
 		alphaSD[i] = new double[numNodes];
 }
 

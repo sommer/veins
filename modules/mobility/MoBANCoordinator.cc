@@ -85,7 +85,7 @@ void MoBANCoordinator::initialize(int stage) {
 		//Make the list of nodes belong to this WBAN.
 		unsigned int tempNum = 0;
 		unsigned int totalNumNodes = network->par("numNodes").longValue();
-		for (int i = 0; i < totalNumNodes; ++i) {
+		for (int i = 0; i < static_cast<int>(totalNumNodes); ++i) {
 			gHost = network->getSubmodule("node", i)->getSubmodule("mobility",0);
 			if (gHost->hasPar("coordinatorIndex"))
 				if (gHost->par("coordinatorIndex").longValue() == index) {
@@ -253,7 +253,7 @@ void MoBANCoordinator::selectPosture() {
 	double comp;
 	int currentP = currentPosture->getPostureID(); // it determines the column in the matrix
 
-	for (int i = 0; i < numPostures; ++i)
+	for (int i = 0; i < static_cast<int>(numPostures); ++i)
 	{
 		comp += markovMatrix[i][currentP];
 		if (randomValue < comp)
@@ -310,7 +310,7 @@ double MoBANCoordinator::selectSpeed() {
 bool MoBANCoordinator::isInsideWorld(Coord tPos) {
 	Coord absolutePosition;
 
-	for (int i = 0; i < numNodes; ++i) {
+	for (unsigned int i = 0; i < numNodes; ++i) {
 		absolutePosition = tPos + currentPosture->getPs(i)
 				+ currentPosture->getRadius(i);
 		if (!absolutePosition.isInBoundary(Coord(0, 0, 0), world->getPgs()))
@@ -335,7 +335,7 @@ void MoBANCoordinator::finish() {
 */
 void MoBANCoordinator::publishToNodes() {
 	BBMoBANMessage Refmove;
-	for (int i = 0; i < numNodes; ++i) {
+	for (unsigned int i = 0; i < numNodes; ++i) {
 		EV<< "Publish data for node:" << nodeIndex[i] << endl;
 
 		Refmove.position = currentPosture->getPs(i) + logicalCenter;
@@ -482,9 +482,9 @@ bool MoBANCoordinator::readPostureSpecificationFile() {
 	}
 
 	/* Report the obtained specification of the postures. */
-	for (int i = 0; i < numPostures; ++i) {
+	for (unsigned int i = 0; i < numPostures; ++i) {
 		EV<< "Information for the posture:"<<i<<" is"<<endl;
-		for (int j=0;j<numNodes;++j)
+		for (unsigned int j=0;j<numNodes;++j)
 		EV << "Node "<<j<< " position: "<<postureList[i]->getPs(j).info()<<
 		" and radius:"<<postureList[i]->getRadius(j)<<" and speed:"<<postureList[i]->getSpeed(j)<<endl;
 	}
@@ -592,7 +592,7 @@ bool MoBANCoordinator::readConfigurationFile() {
 
 	// make an empty matrix for the Markov Chain
     double** matrix = new double* [numPostures];
-	for (int i=0;i<numPostures;++i)
+	for (unsigned int i=0;i<numPostures;++i)
 		matrix[i] = new double [numPostures];
 
 	bool setDefault=false; // variable to remember if the default matrix is defined.
@@ -656,7 +656,7 @@ bool MoBANCoordinator::readConfigurationFile() {
 		EV << "Markov transition matrix "<< sstr << " :" <<endl;
 		for (int k=0;k < i ; ++k)
 		{
-			for (int f=0; f<numPostures ;++f)
+			for (unsigned int f=0; f<numPostures ;++f)
 				EV << matrix[k][f]<<" ";
 			EV << endl;
 		}

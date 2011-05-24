@@ -56,7 +56,7 @@
 #include <iostream>
 
 /**
- *\mainpage
+ *\page mobancpp MoBAN C++ reference
  * This is the C++ implementation reference for MoBAN, which is a configurable mobility model for wireless Body Area Networks. MoBANCoordinator and MoBANLocal
  * classes describe the behavior of the Coordinator module and local mobility module of the MoBAN, respectively. There are two more classes which are used in the
  * coordinator module.
@@ -69,7 +69,7 @@
  * Markov transition matrices, and the setups which specify which matrix should be used in a particular space-time combination. During the simulation run, the class provides
  * a function that determines the proper Markov matrix for a give time and location.
  *
- * @ingroup MoBAN Mobility Model
+ * @ingroup MoBAN
  * @author Majid Nabi
  *
 */
