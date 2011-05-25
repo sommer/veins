@@ -48,9 +48,18 @@ module Host802154_2400MHz
         }
         batteryStats: BatteryStats {
             @display("p=292,257;i=block/circle");
+            detail = default(false);
+            timeSeries = default(false);
         }
         battery: SimpleBattery {
             @display("p=292,186;i=block/control");
+            nominal = default(1000 mAh);
+            capacity = default(1000 mAh);
+            voltage = default(3 V);
+            resolution = default(60 s);
+            publishDelta = default(1);
+            publishTime = default(60 s);
+            numDevices = default(1);
         }
         mobility: BaseMobility {
             parameters:
