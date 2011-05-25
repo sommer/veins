@@ -46,9 +46,15 @@
 using namespace std;
 
 /**
- * @brief This class offers routing services using pairwise
- * algorithm to build N redundant spanning trees with the sink node
- * as root node.
+ * @brief Wiseroute is a simple loop-free routing algorithm that
+ * builds a routing tree from a central network point. It is especially
+ * useful for wireless sensor networks and convergecast traffic,
+ * hence its name (Wireless Sensors Routing).
+ * The sink (the device at the center of the network) broadcasts
+ * a route building message. Each network node that receives it
+ * selects the sink as parent in the routing tree, and rebroadcasts
+ * the route building message. This procedure maximizes the probability
+ * that all network nodes can join the network, and avoids loops.
  *
  * @ingroup netwLayer
  * @author Jerome Rousselot

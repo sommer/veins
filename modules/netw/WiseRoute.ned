@@ -25,6 +25,21 @@ package org.mixim.modules.netw;
 // **************************************************************************/
 import org.mixim.base.modules.BaseNetwLayer;
 
+// Wiseroute is a simple loop-free routing algorithm that
+// builds a routing tree from a central network point. It is especially
+// useful for wireless sensor networks and convergecast traffic,
+// hence its name (Wireless Sensors Routing).
+// The sink (the device at the center of the network) broadcasts
+// a route building message. Each network node that receives it
+// selects the sink as parent in the routing tree, and rebroadcasts
+// the route building message. This procedure maximizes the probability
+// that all network nodes can join the network, and avoids loops.
+// Parameter sinkAddress gives the sink network address, 
+// rssiThreshold is a threshold to avoid using bad links (with too low
+// RSSI values) for routing, and routeFloodsInterval should be set to
+// zero for all nodes except the sink. Each routeFloodsInterval, the
+// sink restarts the tree building procedure. Set it to a large value
+// if you do not want the tree to be rebuilt.
 simple WiseRoute extends BaseNetwLayer
 {
     parameters:
@@ -33,7 +48,7 @@ simple WiseRoute extends BaseNetwLayer
         bool trace = default(false);
      	bool useSimTracer = default(false);
      	
-        // sink node IP address (integer)
+        // sink node address (integer)
         int sinkAddress = default(0);
         // the sink directs the tree building procedure with periodic floods.
         // iterationDelay is the period between two floods.
@@ -48,12 +63,5 @@ simple WiseRoute extends BaseNetwLayer
         @display("i=block/fork");
         @class(WiseRoute);
 
-//   gates:
-//        input uppergateIn; // from application layer
-//        output uppergateOut; // to application layer
-//        output upperControlOut; // for control messages to upper layer
-//        input lowerControlIn;   // for control messages from mac layer
-//        input lowergateIn; // from MAC layer
-//        output lowergateOut; // to MAC layer
 }
 
