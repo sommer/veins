@@ -22,6 +22,10 @@
 <#assign netwIni="AdaptiveProbBroadcast.ini.fti">
 <#elseif netwName="Probabilistic broadcast">
 <#assign netwIni="ProbBroadcast.ini.fti">
+<#elseif netwName="Wise route">
+<#assign netwIni="WiseRoute.ini.fti">
+<#elseif netwName="Flooding">
+<#assign netwIni="Flooding.ini.fti">
 <#else>
 <#assign netwIni="BaseNetwLayer.ini.fti">
 </#if>

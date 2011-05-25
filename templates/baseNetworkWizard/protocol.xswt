@@ -12,7 +12,9 @@
 	</x:import>
 	<!-- Create a two-column layout -->
 	
-		
+	<layout x:class="GridLayout" numColumns="1"/>
+	<x:children>
+	<composite>
 	<layout x:class="GridLayout" numColumns="2"/>		
 	<x:children>
 		<label text="Application layer:"/>
@@ -25,6 +27,8 @@
 		<label text="Network layer:"/>
 		<combo x:id="netwName" x:style="READ_ONLY|BORDER">
 			<add x:p0="BaseNetwLayer (No routing)"/>
+			<add x:p0="Wise route"/>
+			<add x:p0="Flooding"/>
 			<!-->
 			<add x:p0="Probabilistic broadcast"/>
 			<add x:p0="Adaptive probabilistic broadcast"/>
@@ -53,5 +57,10 @@
 			<add x:p0="2-dimensional"/>
 			<add x:p0="3-dimensional"/>
 		</combo>
+		</x:children>
+	</composite>
+		<label text="Note: This wizzard only provides a convenient way to setup your"/>
+		<label text="simulation with the modules you want, it does not assure that the"/>
+		<label text="combination you choose and it's parameterisation makes sense."/>
 	</x:children>
 </xswt>
