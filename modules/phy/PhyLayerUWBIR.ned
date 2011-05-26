@@ -5,7 +5,7 @@ import org.mixim.base.phyLayer.BasePhyLayer;
 //
 // A physical layer that models an Ultra Wideband Impulse Radio wireless communication system.
 //
-// This class loads channel models and deliver frames to an UWB Decider. It is independent of the modulation technique,
+// This class loads channel models and delivers frames to an UWB Decider. It is independent of the modulation technique,
 // as long as the frames are represented using the same approach as in IEEE802154A.h (Maximum Pulse Amplitude Estimation).
 //
 // Several channel models are possible: Ghassemzadeh-LOS, Ghassemadeh-NLOS (see UWBIRStochasticPathlossModel.h)
@@ -19,24 +19,30 @@ import org.mixim.base.phyLayer.BasePhyLayer;
 // then add functionality in this module to load the new decider.
 // The same procedure applies for new channel models.
 //
-// To change the modulation, refer to UWBIRMac.h, IEEE802154A.h and UWBIRED.h.
+// To change the modulation, see UWBIRMac.h, IEEE802154A.h and UWBIRED.h.
 //
-// To implement optional modes of IEEE802154A, refer to IEEE802154A.h.
+// To implement optional modes of IEEE802154A, see IEEE802154A.h.
 //
-// Refer to the following publications for more information:
+// Citation of the following publication is appreciated if you use the MiXiM UWB PHY model
+// for a publication of your own.
+// J. Rousselot, J.-D. Decotignie, An ultra-wideband impulse radio PHY
+// layer model for network simulation. SIMULATION January 2011 vol. 87 no. 1-2 82-112.
 //
-// [1] An Ultra Wideband Impulse Radio PHY Layer Model for Network Simulation,
-// J. Rousselot, J.-D. Decotignie, Simulation: Transactions of the Society
-// for Computer Simulation, 2010 (to appear).
+// For more information, see also:
 //
-// http://sim.sagepub.com/archive/2010.dtl
+// [1] J. Rousselot, J.-D. Decotignie, An ultra-wideband impulse radio PHY
+// layer model for network simulation. SIMULATION January 2011 vol. 87 no.
+// 1-2 82-112. <a href="http://dx.doi.org/10.1177/0037549710377767">http://dx.doi.org/10.1177/0037549710377767</a>.
 //
-// [2]  A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
-// for Network Simulation, Jérôme Rousselot, Jean-Dominique Decotignie,
-// Second International Omnet++ Workshop,Simu'TOOLS, Rome, 6 Mar 09.
+// [2] J. Rousselot, Ultra Low Power Communication Protocols for UWB
+// Impulse Radio Wireless Sensor Networks. EPFL Thesis 4720, 2010. 
+// <a href="http://infoscience.epfl.ch/record/147987">http://infoscience.epfl.ch/record/147987</a>.
 //
-// http://portal.acm.org/citation.cfm?id=1537714
+// [3] J. Rousselot, J.-D. Decotignie, A High-Precision Ultra Wideband Impulse Radio Physical Layer Model
+// for Network Simulation. Second International Omnet++ Workshop,Simu'TOOLS, Rome, March 2009.
+// <a href="http://portal.acm.org/citation.cfm?id=1537714">http://portal.acm.org/citation.cfm?id=1537714</a>.
 //
+// @author Jérôme Rousselot
 simple PhyLayerUWBIR extends BasePhyLayer
 {
     parameters:

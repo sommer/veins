@@ -17,15 +17,11 @@
 /**
  * @brief This class extends the basic radio model.
  *
- * It monitors the radio power consumption, and adds a SYNC state before reception.
+ * It adds a SYNC state before reception.
  * The decider tells the uwb phy layer when it locks on a frame, and the uwb phy layer
  * then sets the uwb radio state into RX mode.
  * This is done through a private method so that the MAC can not change these states.
  * This is why this class is friend with PhyLayerUWBIR.
- *
- * Update: please note that the power consumption estimate now uses the energy framework,
- * integrated into mixim.
- * The power consumption code of this class will be removed and is deprecated.
  *
  * @ingroup ieee802154a
  * @ingroup phyLayer
