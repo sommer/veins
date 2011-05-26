@@ -628,9 +628,6 @@ void csma::executeMac(t_mac_event event, cMessage *msg) {
 void csma::manageQueue() {
 	if (macQueue.size() != 0) {
 		debugEV<< "(manageQueue) there are " << macQueue.size() << " packets to send, entering backoff wait state." << endl;
-		if(! backoffTimer->isScheduled())
-		startTimer(TIMER_BACKOFF);
-		updateMacState(BACKOFF_2);
 		if( transmissionAttemptInterruptedByRx) {
 			// resume a transmission cycle which was interrupted by
 			// a frame reception during CCA check
@@ -641,6 +638,10 @@ void csma::manageQueue() {
 			NB = 0;
 			//BE = macMinBE;
 		}
+		if(! backoffTimer->isScheduled()) {
+		  startTimer(TIMER_BACKOFF);
+		}
+		updateMacState(BACKOFF_2);
 	} else {
 		debugEV << "(manageQueue) no packets to send, entering IDLE state." << endl;
 		updateMacState(IDLE_1);
