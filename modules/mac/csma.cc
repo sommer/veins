@@ -255,6 +255,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 	case EV_FRAME_RECEIVED:
 		debugEV << "(15) FSM State IDLE_1, EV_FRAME_RECEIVED: setting up radio tx -> WAITSIFS." << endl;
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
+		nbRxFrames++;
 		delete msg;
 
 		if(useMACAcks) {
@@ -266,6 +267,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 
 	case EV_BROADCAST_RECEIVED:
 		debugEV << "(23) FSM State IDLE_1, EV_BROADCAST_RECEIVED: Nothing to do." << endl;
+		nbRxFrames++;
 		sendUp(decapsMsg(static_cast<MacPkt *>(msg)));
 		delete msg;
 		break;
@@ -759,7 +761,7 @@ void csma::handleLowerMsg(cMessage *msg) {
 	{
 		if(!useMACAcks) {
 			debugEV << "Received a data packet addressed to me." << endl;
-			nbRxFrames++;
+//			nbRxFrames++;
 			executeMac(EV_FRAME_RECEIVED, macPkt);
 		}
 		else {
@@ -773,7 +775,7 @@ void csma::handleLowerMsg(cMessage *msg) {
 				debugEV << "Received a data packet addressed to me,"
 				   << " preparing an ack..." << endl;
 
-				nbRxFrames++;
+//				nbRxFrames++;
 
 				if(ackMessage != NULL)
 					delete ackMessage;
