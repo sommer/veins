@@ -2,7 +2,7 @@
 <root>
 	<AnalogueModels>
 		<AnalogueModel type="BreakpointPathlossModel">
-		<!-- IEEE 802.15.4 path loss channel model -->
+		    <!-- IEEE 802.15.4 path loss channel model -->
 	    	<parameter name="alpha1" type="double" value="2"/>
 	    	<parameter name="L01" type="double" value="40.2"/>
 	    	<parameter name="breakpointDistance" type="double" value="8.0"/>
@@ -10,6 +10,12 @@
 	    	<parameter name="L02" type="double" value="58.8"/>
 	    	<parameter name="carrierFrequency" type="double" value="2.4E+9"/>
 	    </AnalogueModel>
+		<!-- we add a log-normal shadowing effect on top of the IEEE 802.15.4 path loss --> 
+		<AnalogueModel type="LogNormalShadowing">
+		<parameter name="mean" type="double" value="0.0"/>
+		<parameter name="stdDev" type="double" value="6"/>
+		<parameter name="interval" type="double" value="1"/>
+		</AnalogueModel>
 	</AnalogueModels>
 	
 	<Decider type="Decider802154Narrow">
