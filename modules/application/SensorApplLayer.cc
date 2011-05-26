@@ -39,6 +39,7 @@ void SensorApplLayer::initialize(int stage) {
 		debugEV<< "in initialize() stage 0...";
 		debug = par("debug");
 		stats = par("stats");
+		trace = par("trace");
 		nbPackets = par("nbPackets");
 		trafficParam = par("trafficParam");
 		initializationTime = par("initializationTime");
@@ -175,17 +176,24 @@ void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 		world->publishBBItem(catPacket, &packet, hostID);
 		if (stats) {
 			simtime_t theLatency = m->getArrivalTime() - m->getCreationTime();
-			hostsLatency(m->getSrcAddr()).collect(theLatency);
+			if(trace) {
+			  hostsLatency(m->getSrcAddr()).collect(theLatency);
+			  latenciesRaw.record(theLatency.dbl());
+			}
 			latency.collect(theLatency);
 			if (firstPacketGeneration < 0)
 				firstPacketGeneration = m->getCreationTime();
 			lastPacketReception = m->getArrivalTime();
-			debugEV<< "Received a data packet from host[" << m->getSrcAddr()
-			<< "], latency=" << theLatency
-			<< ", collected " << hostsLatency(m->getSrcAddr()).
-			getCount() << "mean is now: " << hostsLatency(m->getSrcAddr()).
-			getMean() << endl;
-			latenciesRaw.record(theLatency.dbl());
+			if(trace) {
+			  debugEV<< "Received a data packet from host[" << m->getSrcAddr()
+			  << "], latency=" << theLatency
+			  << ", collected " << hostsLatency(m->getSrcAddr()).
+			  getCount() << "mean is now: " << hostsLatency(m->getSrcAddr()).
+			  getMean() << endl;
+			} else {
+				  debugEV<< "Received a data packet from host[" << m->getSrcAddr()
+				  << "], latency=" << theLatency << endl;
+			}
 		}
 		delete msg;
 
@@ -251,16 +259,17 @@ void SensorApplLayer::sendData() {
 
 void SensorApplLayer::finish() {
 	if (stats) {
-		// output logs to scalar file
-		for (map<int, cStdDev>::iterator it = latencies.begin();
-			 it != latencies.end(); ++it)
-		{
-			char dispstring[12];
-			cStdDev aLatency = it->second;
-			sprintf(dispstring, "latency%d", it->first);
-			//dispstring
-			recordScalar(dispstring, aLatency.getMean(), "s");
-			aLatency.record();
+		if (trace) {
+			// output logs to scalar file
+			for (map<int, cStdDev>::iterator it = latencies.begin(); it
+					!= latencies.end(); ++it) {
+				char dispstring[12];
+				cStdDev aLatency = it->second;
+				sprintf(dispstring, "latency%d", it->first);
+				//dispstring
+				recordScalar(dispstring, aLatency.getMean(), "s");
+				aLatency.record();
+			}
 		}
 		recordScalar("activity duration", lastPacketReception
 				- firstPacketGeneration, "s");

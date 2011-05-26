@@ -95,6 +95,7 @@ protected:
   long nbPacketsSent;
   long nbPacketsReceived;
   bool stats;
+  bool trace;
   bool debug;
   bool broadcastPackets;
   map < int, cStdDev > latencies;

@@ -36,6 +36,7 @@ simple SensorApplLayer like IBaseApplLayer {
     parameters:
         bool debug = default(false); // debug switch
         bool stats = default(true);   // stats generation switch
+        bool trace = default(false);  // activates detailed logging (per source latencies and vector logging). stats must be true.
         bool broadcastPackets = default(false); // send packets in broadcast mode
         double nbPackets = default(0);
         int destAddr = default(0);
