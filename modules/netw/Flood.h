@@ -95,6 +95,12 @@ public:
     virtual void finish();    
 
 protected:
+
+    long nbDataPacketsReceived;
+    long nbDataPacketsSent;
+    long nbDataPacketsForwarded;
+    long nbHops;
+
     /** @brief Handle messages from upper layer */
     virtual void handleUpperMsg(cMessage *);
 

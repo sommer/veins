@@ -32,11 +32,11 @@ import org.mixim.base.modules.BaseNetwLayer;
 // (stores) already broadcasted messages in a list and does not
 // rebroadcast them again, if it gets another copy of that message.
 //
-// The maximum number of entires for that list can be defined in the
+// The maximum number of entries for that list can be defined in the
 // .ini file (@ref bcMaxEntries) as well as the time after which an entry
 // is deleted (@ref bcDelTime).
 //
-// If you prefere a memory-less version you can comment out the 
+// If you prefere a memory-less version you should set to false the 
 // <verbatim>plainFlooding</verbatim> bool parameter.
 //
 // @author Daniel Willkomm
@@ -48,12 +48,12 @@ simple Flood extends BaseNetwLayer
     parameters:
 //        bool debug = default(false); // debug switch
 //        double headerLength; // length of the network header
-        bool plainFlooding; // flag whether to use plain flooding
+        bool plainFlooding = default(true); // flag whether to use plain flooding
         // Max number of entries in the list of already broadcasted messages
-        double bcMaxEntries;
+        double bcMaxEntries = default(100);
         // Time after which an entry for an already broadcasted msg can be deleted
-        double bcDelTime;
-        double defaultTtl; // Default time-to-live (ttl) used for this module
+        double bcDelTime @unit(s) = default(100 s);
+        double defaultTtl = default(10); // Default time-to-live (ttl) used for this module expressed in  number of hops.
         @display("i=block/fork");
         @class(Flood);
 }

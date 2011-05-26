@@ -2,6 +2,7 @@
 <root>
 	<AnalogueModels>
 		<AnalogueModel type="BreakpointPathlossModel">
+		<!-- IEEE 802.15.4 path loss channel model -->
 	    	<parameter name="alpha1" type="double" value="2"/>
 	    	<parameter name="L01" type="double" value="40.2"/>
 	    	<parameter name="breakpointDistance" type="double" value="8.0"/>
