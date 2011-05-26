@@ -5,7 +5,7 @@
  *
  * copyright:   (C) 2009 CSEM SA, Neuchatel, Switzerland.
  *
- * description: Adaptor module that simply "translates" netwControlInfo to macControlInfo
+ * description: Placeholder module that simply "translates" netwControlInfo to macControlInfo
  *
  **************************************************************************/
 
@@ -31,7 +31,7 @@
 using namespace std;
 
 /**
- * @brief Adaptor module that simply "translates" netwControlInfo to macControlInfo
+ * @brief Placeholder module that simply "translates" netwControlInfo to macControlInfo
  *
  * @ingroup netwLayer
  * @author Jerome Rousselot

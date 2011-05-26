@@ -17,6 +17,13 @@ package org.mixim.modules.netw;
 
 import org.mixim.base.modules.BaseNetwLayer;
 
+// Multi-hop ad-hoc data dissemination protocol based on probabilistic broadcast.
+//
+// Depending on application parameters and network status, each packet will
+// go through a number of transmission attempts, each
+// with a certain probability. How number of transmissions
+// attempts and probability of forwarding are computed will
+// be derived from the simulations of this protocol.
 simple ProbabilisticBroadcast extends BaseNetwLayer
 {
     parameters:

@@ -24,8 +24,9 @@ package org.mixim.modules.netw;
 
 
 
-//
-// A simple flooding protocol
+import org.mixim.base.modules.BaseNetwLayer;
+
+// A simple flooding protocol for network-level broadcast.
 //
 // This implementation uses plain flooding, i.e. it "remembers"
 // (stores) already broadcasted messages in a list and does not
@@ -36,14 +37,12 @@ package org.mixim.modules.netw;
 // is deleted (@ref bcDelTime).
 //
 // If you prefere a memory-less version you can comment out the 
-// <verbatim> #define PLAINFLOODING </verbatim>
+// <verbatim>plainFlooding</verbatim> bool parameter.
 //
 // @author Daniel Willkomm
 //
 // ported to Mixim 2.0 by Theodoros Kapourniotis
 //
-import org.mixim.base.modules.BaseNetwLayer;
-
 simple Flood extends BaseNetwLayer
 {
     parameters:
@@ -57,11 +56,4 @@ simple Flood extends BaseNetwLayer
         double defaultTtl; // Default time-to-live (ttl) used for this module
         @display("i=block/fork");
         @class(Flood);
-//   gates:
-//        input uppergateIn; // from application layer
-//        output uppergateOut; // to application layer
-//       output upperControlOut; // for control messages to upper layer
-//        input lowergateIn; // from MAC layer
-//        input lowerControlIn;   // for control messages from mac layer
-//        output lowergateOut; // to MAC layer
 }

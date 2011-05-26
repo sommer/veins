@@ -69,6 +69,7 @@ void WiseRoute::initialize(int stage)
 		nbPureUnicastForwarded = 0;
 		nbGetRouteFailures = 0;
 		nbRoutesRecorded = 0;
+		nbHops = 0;
 		receivedRSSI.setName("receivedRSSI");
 		routeRSSI.setName("routeRSSI");
 		allReceivedRSSI.setName("allReceivedRSSI");
@@ -114,6 +115,7 @@ void WiseRoute::handleSelfMsg(cMessage* msg)
 		pkt->setFinalDestAddr(ipBcastAddr);
 		pkt->setSrcAddr(myNetwAddr);
 		pkt->setDestAddr(ipBcastAddr);
+		pkt->setNbHops(0);
 		floodTable.insert(make_pair(myNetwAddr, floodSeqNumber));
 		pkt->setSeqNum(floodSeqNumber);
 		floodSeqNumber++;
@@ -168,6 +170,7 @@ void WiseRoute::handleLowerMsg(cMessage* msg)
 //				((NetwToMacControlInfo*) netwMsg->getControlInfo())->setNextHopMac(macBcastAddr);
 				netwMsg->removeControlInfo();
 				netwMsg->setControlInfo(new NetwToMacControlInfo(macBcastAddr));
+				netwMsg->setNbHops(netwMsg->getNbHops()+1);
 				sendDown(netwMsg);
 				nbDataPacketsForwarded++;
 			}
@@ -189,6 +192,7 @@ void WiseRoute::handleLowerMsg(cMessage* msg)
 //				((NetwToMacControlInfo*) netwMsg->getControlInfo())->setNextHopMac(macBcastAddr);
 				netwMsg->removeControlInfo();
 				netwMsg->setControlInfo(new NetwToMacControlInfo(macBcastAddr));
+				netwMsg->setNbHops(netwMsg->getNbHops()+1);
 				sendDown(netwMsg);
 				nbDataPacketsForwarded++;
 				nbUnicastFloodForwarded++;
@@ -205,6 +209,7 @@ void WiseRoute::handleLowerMsg(cMessage* msg)
 //				((NetwToMacControlInfo*) netwMsg->getControlInfo())->setNextHopMac(arp->getMacAddr(nextHop));
 				netwMsg->removeControlInfo();
 				netwMsg->setControlInfo(new NetwToMacControlInfo(arp->getMacAddr(nextHop)));
+				netwMsg->setNbHops(netwMsg->getNbHops()+1);
 				sendDown(netwMsg);
 				nbDataPacketsForwarded++;
 				nbPureUnicastForwarded++;
@@ -243,6 +248,7 @@ void WiseRoute::handleUpperMsg(cMessage* msg)
 	pkt->setFinalDestAddr(finalDestAddr);
 	pkt->setInitialSrcAddr(myNetwAddr);
 	pkt->setSrcAddr(myNetwAddr);
+	pkt->setNbHops(0);
 
 	if (finalDestAddr == ipBcastAddr)
 		nextHopAddr = ipBcastAddr;
@@ -287,6 +293,7 @@ void WiseRoute::finish()
 		recordScalar("nbPureUnicastForwarded", nbPureUnicastForwarded);
 		recordScalar("nbGetRouteFailures", nbGetRouteFailures);
 		recordScalar("nbRoutesRecorded", nbRoutesRecorded);
+		recordScalar("meanNbHops", (double) nbHops / (double) nbDataPacketsReceived);
 	}
 }
 
@@ -335,6 +342,7 @@ cMessage* WiseRoute::decapsMsg(WiseRoutePkt *msg)
 {
 	cMessage *m = msg->decapsulate();
 	m->setControlInfo(new NetwControlInfo(msg->getSrcAddr()));
+	nbHops = nbHops + msg->getNbHops();
 	// delete the netw packet
 	delete msg;
 	return m;

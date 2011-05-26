@@ -15,4 +15,5 @@ message WiseRoutePkt extends NetwPkt
     int isFlood;
 	int finalDestAddr;   
  	int initialSrcAddr;
+ 	int nbHops;
 }

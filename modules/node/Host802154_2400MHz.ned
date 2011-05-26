@@ -14,8 +14,10 @@ import org.mixim.modules.power.battery.BatteryStats;
 
 //
 // This NED module defines a host using an IEEE 802.15.4 transceiver at 2.4GHz
-// for wireless communications. It can be used to simulate wireless sensor
-// networks. For instance, you can use it to compare your own MAC protocol to
+// for wireless communications, that can be used to simulate wireless sensor
+// networks. 
+//
+// For instance, you can use it to compare your own MAC protocol to
 // the 802.15.4 non beacon enabled MAC protocol, or to evaluate IEEE 802.15.4
 // wireless sensor networks. It is also a good starting point to define your
 // own Host file.
@@ -25,11 +27,9 @@ import org.mixim.modules.power.battery.BatteryStats;
 // Accurate Timeliness Simulations for Real-Time Wireless Sensor Networks,
 // J. Rousselot, J.-D. Decotignie, M. Aoun, P. van der Stok, R. Serna Oliver,
 // G. Fohler. In Proceedings of the 2009 Third UKSim European Symposium on Computer 
-// Modeling and Simulation. 
+// Modeling and Simulation. <a href="http://dx.doi.org/10.1109/EMS.2009.34">http://dx.doi.org/10.1109/EMS.2009.34</a>.
 //
 // @author Jérôme Rousselot
-//
-// <a href="http://dx.doi.org/10.1109/EMS.2009.34">http://dx.doi.org/10.1109/EMS.2009.34</a>
 //
 module Host802154_2400MHz
 {

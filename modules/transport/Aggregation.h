@@ -75,8 +75,8 @@ private:
 
 
 	    // counters
-	    int nbAggrPktSentDown;
-	    int nbAggrPktReceived;
+	    long nbAggrPktSentDown;
+	    long nbAggrPktReceived;
 };
 
 #endif /* AGGREGATION_H_ */

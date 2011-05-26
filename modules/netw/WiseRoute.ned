@@ -26,9 +26,9 @@ package org.mixim.modules.netw;
 import org.mixim.base.modules.BaseNetwLayer;
 
 // Wiseroute is a simple loop-free routing algorithm that
-// builds a routing tree from a central network point. It is especially
-// useful for wireless sensor networks and convergecast traffic,
-// hence its name (Wireless Sensors Routing).
+// builds a routing tree from a central network point, designed
+// for sensor networks and convergecast traffic.
+//
 // The sink (the device at the center of the network) broadcasts
 // a route building message. Each network node that receives it
 // selects the sink as parent in the routing tree, and rebroadcasts

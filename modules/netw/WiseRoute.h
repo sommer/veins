@@ -102,7 +102,6 @@ protected:
     int headerLength;
 
 
-
     /** @brief cached variable of my network address */
 //    int myNetwAddr;
     int macaddress;
@@ -137,6 +136,7 @@ protected:
     long nbPureUnicastForwarded;
     long nbGetRouteFailures;
     long nbRoutesRecorded;
+    long nbHops;
 
     cOutVector receivedRSSI;
     cOutVector routeRSSI;

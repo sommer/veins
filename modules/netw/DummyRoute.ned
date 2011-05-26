@@ -20,6 +20,7 @@ package org.mixim.modules.netw;
 
 import org.mixim.base.modules.BaseNetwLayer;
 
+// Placeholder module that simply "translates" netwControlInfo to macControlInfo.
 simple DummyRoute extends BaseNetwLayer
 {
     parameters:

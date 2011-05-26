@@ -2,7 +2,7 @@
  * ProbabilisticBroadcast.cc
  *
  *  Created on: Nov 26, 2008
- *      Author: Damien Piguet, Dimitris Kotsakos
+ *      Author: Damien Piguet, Dimitris Kotsakos, Jérôme Rousselot
  */
 
 #include "AdaptiveProbabilisticBroadcast.h"

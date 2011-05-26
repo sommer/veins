@@ -1,7 +1,7 @@
 /***************************************************************************
  * file:        SensorApplLayer.h
  *
- * author:      Amre El-Hoiydi, Jerome Rousselot
+ * author:      Amre El-Hoiydi, Jerome Rousselot, Ramon Serna Oliver
  *
  * copyright:   (C) 2007-2008 CSEM
  *
@@ -18,12 +18,10 @@
  **************************************************************************/
 
 #include "SensorApplLayer.h"
-#include <sstream>
+//#include <sstream>
 #include <BaseNetwLayer.h>
 #include <AddressingInterface.h>
 
-//#define SINK_ADDR 0
-//#define ALTERNATIVE_ADDR 6
 Define_Module(SensorApplLayer);
 
 /**
@@ -62,11 +60,11 @@ void SensorApplLayer::initialize(int stage) {
 
 		// get pointer to the world module
 
-		world = FindModule<BaseWorldUtility*>::findGlobalModule(); //check_and_cast<BaseWorldUtility*>(cSimulation::getActiveSimulation()->getModuleByPath("sim.world"));
+		world = FindModule<BaseWorldUtility*>::findGlobalModule();
 
 	} else if (stage == 1) {
 		debugEV << "in initialize() stage 1...";
-		// Application address configuration: equals to host IP address
+		// Application address configuration: equals to host address
 
 		cModule *netw = FindModule<BaseNetwLayer*>::findSubModule(findHost());
 		if(!netw) {
@@ -87,29 +85,15 @@ void SensorApplLayer::initialize(int stage) {
 		}
 		sentPackets = 0;
 		catPacket = world->getCategory(&packet);
-		// the sink does not generate packets to itself.
-		//     if (myAppAddr != SINK_ADDR)		// change rso (it does)
-		//scheduleNextPacket();
+
 		// first packet generation time is always chosen uniformly
 		// to avoid systematic collisions
-
-		// schedule first packet with a uniform distribution to avoid systematic collisions
 		if(nbPackets> 0)
 		scheduleAt(simTime() +uniform(initializationTime, initializationTime + trafficParam), delayTimer);
 
 		if (stats) {
-			cModule *host = getParentModule();
-			int nbNodes = host->size();
 			latenciesRaw.setName("rawLatencies");
 			latenciesRaw.setUnit("s");
-			/*
-			for (int i = 0; i < nbNodes; i++) {
-				std::ostringstream oss;
-				oss << i;
-				cStdDev aLatency(oss.str().c_str());
-				latencies.push_back(aLatency);
-			}
-			*/
 			latency.setName("latency");
 		}
 	}
@@ -167,9 +151,6 @@ void SensorApplLayer::scheduleNextPacket() {
 		}
 		debugEV << "Start timer for a new packet in " << waitTime << " seconds." <<
 		endl;
-		//drop(delayTimer);
-		//delete delayTimer;
-		//delayTimer = new cMessage( "delay-timer", SEND_DATA_TIMER );
 		scheduleAt(simTime() + waitTime, delayTimer);
 		debugEV << "...timer rescheduled." << endl;
 	} else {
@@ -177,9 +158,9 @@ void SensorApplLayer::scheduleNextPacket() {
 	}
 }
 
-			/**
-			 * Handling of messages arrived to destination
-			 **/
+/**
+ * @brief Handling of messages arrived to destination
+ **/
 void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 	ApplPkt *m;
 
@@ -192,12 +173,7 @@ void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 		packet.setNbPacketsReceived(1);
 		packet.setHost(myAppAddr);
 		world->publishBBItem(catPacket, &packet, hostID);
-		// debugEV << "Received a data packet from host["<<m->getSrcAddr()<<"]\n";
 		if (stats) {
-			//                      cStdDev latency = hostsLatency(m->getSrcAddr());
-			//                      latency.collect(m->getArrivalTime()-m->getCreationTime());
-			//                      testStat.collect(m->getArrivalTime()-m->getCreationTime());
-			//                      debugEV << "Received a data packet from host["<<m->getSrcAddr()<<"], latency=" <<  m->getArrivalTime()-m->getCreationTime() << ", collected " << latency.getCount() << "mean is now: " << latency.getMean() << endl;
 			simtime_t theLatency = m->getArrivalTime() - m->getCreationTime();
 			hostsLatency(m->getSrcAddr()).collect(theLatency);
 			latency.collect(theLatency);
@@ -221,14 +197,14 @@ void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 	}
 }
 
-			/**
-			 * A timer with kind = SEND_DATA_TIMER indicates that a new
-			 * data has to be send (@ref sendData).
-			 *
-			 * There are no other timer implemented for this module.
-			 *
-			 * @sa sendData
-			 **/
+/**
+ * @brief A timer with kind = SEND_DATA_TIMER indicates that a new
+ * data has to be send (@ref sendData).
+ *
+ * There are no other timers implemented for this module.
+ *
+ * @sa sendData
+ **/
 void SensorApplLayer::handleSelfMsg(cMessage * msg) {
 	switch (msg->getKind()) {
 	case SEND_DATA_TIMER:
@@ -244,29 +220,25 @@ void SensorApplLayer::handleSelfMsg(cMessage * msg) {
 void SensorApplLayer::handleLowerControl(cMessage * msg) {
 	delete msg;
 }
-		/**
-		 * This function creates a new data message and sends it down to
-		 * the network layer
-		 **/
+
+/**
+  * @brief This function creates a new data message and sends it down to
+  * the network layer
+ **/
 void SensorApplLayer::sendData() {
 	ApplPkt *pkt = new ApplPkt("Data", DATA_MESSAGE);
 
 	if(broadcastPackets) {
 		pkt->setDestAddr(L3BROADCAST);
-//	} else if (myAppAddr == SINK_ADDR) {
-//		pkt->setDestAddr(ALTERNATIVE_ADDR);
 	} else {
 		pkt->setDestAddr(destAddr);
 	}
-	// we use the host modules getIndex() as a appl address
 	pkt->setSrcAddr(myAppAddr);
 	pkt->setByteLength(headerLength);
-	// set the control info to tell the network layer the layer 3
-	// address;
+	// set the control info to tell the network layer the layer 3 address
 	pkt->setControlInfo(new NetwControlInfo(pkt->getDestAddr()));
 	debugEV<< "Sending data packet!\n";
 	sendDown(pkt);
-	//send(pkt, dataOut);
 	nbPacketsSent++;
 	packet.setPacketSent(true);
 	packet.setNbPacketsSent(1);
@@ -280,15 +252,11 @@ void SensorApplLayer::sendData() {
 void SensorApplLayer::finish() {
 	if (stats) {
 		// output logs to scalar file
-
 		for (map<int, cStdDev>::iterator it = latencies.begin();
 			 it != latencies.end(); ++it)
 		{
 			char dispstring[12];
 			cStdDev aLatency = it->second;
-
-			//debugEV << "Recording mean latency for node " << i << ": " << aLatency.getMean() << endl;
-			//recordScalar("mean_latency ", aLatency.getMean());
 			sprintf(dispstring, "latency%d", it->first);
 			//dispstring
 			recordScalar(dispstring, aLatency.getMean(), "s");

@@ -1,7 +1,7 @@
 /***************************************************************************
  * file:        SensorApplLayer.h
  *
- * author:      Amre El-Hoiydi
+ * author:      Amre El-Hoiydi, Jérôme Rousselot
  *
  * copyright:   (C) 2007 CSEM
  *
@@ -30,10 +30,6 @@
 #include "ApplPkt_m.h"
 #include "BaseApplLayer.h"
 #include "BaseWorldUtility.h"
-//#define NET_BROADCAST 65535
-
-//#include "cstat.h"
-//#include "BasicIPMacLayer.h"
 
 using namespace std;
 
