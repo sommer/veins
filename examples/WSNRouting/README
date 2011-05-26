@@ -1,0 +1,6 @@
+This example shows how to simulate wireless sensor networks.
+Three different routing protocols are considered, for
+different traffic types:
+convergecast, with Wiseroute.
+network-level broadcast, with flooding and probabilistic broadcast.
+ 
