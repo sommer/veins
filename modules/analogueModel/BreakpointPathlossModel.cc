@@ -2,28 +2,6 @@
 
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(BreakpointPathlossModel): "
 
-//void BreakpointPathlossModel::filterSignal(Signal& s){
-//
-//	/** Get start of the signal */
-//	simtime_t sStart = s.getSignalStart();
-//	simtime_t sEnd = s.getSignalLength() + sStart;
-//
-//	/** claim the Move pattern of the sender from the Signal */
-//	Coord sendersPos = s.getMove().getPositionAt(sStart);
-//	Coord myPos = myMove.getPositionAt(sStart);
-//
-//	/** Calculate the distance factor */
-//	double sqrDistance = useTorus ? myPos.sqrTorusDist(sendersPos, playgroundSize)
-//								  : myPos.sqrdist(sendersPos);
-//
-//	debugEV << "sqrdistance is: " << sqrDistance << endl;
-//
-//	if(sqrDistance <= breakpointDistance2) {
-//		closeRangeModel.filterSignal(s);
-//	} else {
-//		farRangeModel.filterSignal(s);
-//	}
-//}
 
 void BreakpointPathlossModel::filterSignal(Signal& s) {
 
@@ -47,16 +25,19 @@ void BreakpointPathlossModel::filterSignal(Signal& s) {
 	}
 
 	double attenuation = 1;
+	// PL(d) = PL0 + 10 alpha log10 (d/d0)
+	// 10 ^ { PL(d)/10 } = 10 ^{PL0 + 10 alpha log10 (d/d0)}/10
+	// 10 ^ { PL(d)/10 } = 10 ^ PL0/10 * 10 ^ { 10 log10 (d/d0)^alpha }/10
+	// 10 ^ { PL(d)/10 } = 10 ^ PL0/10 * 10 ^ { log10 (d/d0)^alpha }
+	// 10 ^ { PL(d)/10 } = 10 ^ PL0/10 * (d/d0)^alpha
 	if(distance < breakpointDistance) {
 		attenuation = attenuation * PL01_real;
-		attenuation = attenuation * pow(distance, -alpha1) / (4*M_PI);
+		attenuation = attenuation * pow(distance, alpha1);
 	} else {
 		attenuation = attenuation * PL02_real;
-		attenuation = attenuation * pow(distance, -alpha2) / (4*M_PI);
+		attenuation = attenuation * pow(distance/breakpointDistance, alpha2);
 	}
-	double wavelength = BaseWorldUtility::speedOfLight / carrierFrequency;
-	double aperture = (wavelength * wavelength) / (4*M_PI);
-	attenuation = aperture * attenuation;
+	attenuation = 1/attenuation;
 	debugEV << "attenuation is: " << attenuation << endl;
 
 	pathlosses.record(10*log10(attenuation)); // in dB

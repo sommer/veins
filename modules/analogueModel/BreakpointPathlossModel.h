@@ -11,6 +11,7 @@
 
 /**
  * @brief Basic implementation of a BreakpointPathlossModel.
+ * This class can be used to implement the ieee802154 path loss model.
  *
  * @ingroup analogueModels
  */
