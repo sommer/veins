@@ -18,7 +18,7 @@
  * TTL and criticality values for the message.
  *
  * @ingroup utils
- * @author Daniel Willkomm
+ * @author Damien Piguet
  **/
 class ProbBcastNetwControlInfo : public NetwControlInfo
 {

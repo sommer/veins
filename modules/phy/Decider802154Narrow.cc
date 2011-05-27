@@ -168,7 +168,9 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 	{
 		phy->sendUp(frame,
 					new DeciderResult802154Narrow(true, bitrate, snirMin, avgBER, rssi));
-		snirReceived.record(10*log10(snirMin));  // in dB
+		if(recordStats) {
+		  snirReceived.record(10*log10(snirMin));  // in dB
+		}
 	} else {
 		MacPkt* mac = static_cast<MacPkt*> (frame->decapsulate());
 		mac->setName("BIT_ERRORS");
@@ -179,7 +181,9 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 		PhyToMacControlInfo* cInfo = new PhyToMacControlInfo(result);
 		mac->setControlInfo(cInfo);
 		phy->sendControlMsg(mac);
-		snirDropped.record(10*log10(snirMin));  // in dB
+		if(recordStats) {
+		  snirDropped.record(10*log10(snirMin));  // in dB
+		}
 		if(hasInterference) {
 			nbFramesWithInterferenceDropped++;
 		} else {
@@ -225,8 +229,10 @@ double Decider802154Narrow::getBERFromSNR(double snr) {
 	} else {
 		opp_error("The selected modulation is not supported.");
 	}
-	berlog.record(ber);
-	snrlog.record(10*log10(snr));
+	if(recordStats) {
+	  berlog.record(ber);
+	  snrlog.record(10*log10(snr));
+	}
 	return std::max(ber, BER_LOWER_BOUND);
 }
 

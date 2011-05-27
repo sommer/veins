@@ -133,6 +133,19 @@ protected:
 	 **/
 	double beta;
 
+
+	/*
+	 * @brief Default time to live for packets to send.
+	 */
+	simtime_t timeToLive;
+
+	static long id_counter;
+
+	static long getNextID() {
+		long nextID = id_counter;
+		id_counter++;
+		return nextID;
+	}
 	/**
 	 * @brief Maximal number of broadcast attempts for each packet.
 	 * Read from omnetpp.ini
@@ -177,9 +190,11 @@ protected:
     int convertedMacBroadcastAddr;
 
     // variables for statistics
-    int nbReceivedPackets; // total number of received packets from lower layer
+    long nbDataPacketsReceived; // total number of received packets from lower layer
+    long nbDataPacketsSent;
+    long nbHops;
     int debugNbMessageKnown;
-    int nbForwardings;
+    long nbDataPacketsForwarded;
     // records the time packets take between submission to MAC layer and reception at
     // networking layer (over one hop).
     cOutVector oneHopLatencies;

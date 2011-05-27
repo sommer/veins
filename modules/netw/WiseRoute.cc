@@ -146,8 +146,10 @@ void WiseRoute::handleLowerMsg(cMessage* msg)
 	// Check whether the message is a flood and if it has to be forwarded.
 	floodTypes floodType = updateFloodTable(netwMsg->getIsFlood(), initialSrcAddr, finalDestAddr,
 										    netwMsg->getSeqNum());
-	allReceivedRSSI.record(rssi);
-	allReceivedBER.record(ber);
+	if(trace) {
+	  allReceivedRSSI.record(rssi);
+	  allReceivedBER.record(ber);
+	}
 	if (floodType == DUPLICATE) {
 		nbDuplicatedFloodsReceived++;
 		delete netwMsg;
@@ -302,8 +304,10 @@ void WiseRoute::updateRouteTable(int origin, int lastHop, double rssi, double be
 	tRouteTable::iterator pos;
 
 	pos = routeTable.find(origin);
-	receivedRSSI.record(rssi);
-	receivedBER.record(ber);
+	if(trace) {
+	  receivedRSSI.record(rssi);
+	  receivedBER.record(ber);
+	}
 	if (pos == routeTable.end()) {
 		// A route towards origin does not exist yet. Insert the currently discovered one
 		// only if the received RSSI is above the threshold.
@@ -313,15 +317,18 @@ void WiseRoute::updateRouteTable(int origin, int lastHop, double rssi, double be
 			// last hop from origin means next hop towards origin.
 			newEntry.nextHop = lastHop;
 			newEntry.rssi = rssi;
-			routeRSSI.record(rssi);
-			routeBER.record(ber);
+			if(trace) {
+			  routeRSSI.record(rssi);
+			  routeBER.record(ber);
+			}
 			routeTable.insert(make_pair(origin, newEntry));
 			if(useSimTracer) {
 			  tracer->logLink(myNetwAddr, lastHop);
 			}
 			nbRoutesRecorded++;
-			if (origin == 0)
+			if (origin == 0 && trace) {
 				nextHopSelectionForSink.record(lastHop);
+			}
 		}
 	}
 	else {

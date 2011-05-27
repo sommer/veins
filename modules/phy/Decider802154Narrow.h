@@ -83,6 +83,8 @@ protected:
 	/** @brief Helper function to compute BER from SNR using analytical formulas */
 	double n_choose_k(int n, int k);
 
+	bool recordStats;
+
 public:
 
 	/**
@@ -94,7 +96,7 @@ public:
 						bool debug,
 						int sfdLength,
 						double BER_LOWER_BOUND,
-						const std::string& modulation, int phyHeaderLength):
+						const std::string& modulation, int phyHeaderLength, bool recordStats):
 		BaseDecider(phy, 0, myIndex, debug),
 		sfdLength(sfdLength),
 		BER_LOWER_BOUND(BER_LOWER_BOUND),
@@ -103,7 +105,8 @@ public:
 		nbFramesWithInterference(0),
 		nbFramesWithoutInterference(0),
 		nbFramesWithInterferenceDropped(0),
-		nbFramesWithoutInterferenceDropped(0)
+		nbFramesWithoutInterferenceDropped(0),
+		recordStats(recordStats)
 	{
 		//TODO: publish initial rssi/channel state
 		//TODO: trace noise level, snr and rssi to vectors

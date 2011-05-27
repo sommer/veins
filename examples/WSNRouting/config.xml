@@ -17,7 +17,6 @@
 		<parameter name="interval" type="double" value="1"/>
 		</AnalogueModel>
 	</AnalogueModels>
-	
 	<Decider type="Decider802154Narrow">
 		<!--Length of Start Frame Delimiter (used to compute probability of successful 
 			synchronization)-->

@@ -11,11 +11,13 @@
 
 Define_Module(ProbabilisticBroadcast);
 
+long ProbabilisticBroadcast::id_counter = 0;
+
 void ProbabilisticBroadcast::initialize(int stage)
 {
 	BaseNetwLayer::initialize(stage);
 
-	if(stage == 1){
+	if(stage == 0){
 	    stats = par("stats");
 	    trace = par("trace");
 	    debug = par("debug");
@@ -24,13 +26,16 @@ void ProbabilisticBroadcast::initialize(int stage)
 		maxNbBcast = par("maxNbBcast");
 	    headerLength = par("headerLength");
 	    timeInQueueAfterDeath = par("timeInQueueAfterDeath");
+	    timeToLive = par("timeToLive");
 	    broadcastTimer = new cMessage("broadcastTimer");
 	    convertedMacBroadcastAddr = L2BROADCAST;
 	    maxFirstBcastBackoff = par("maxFirstBcastBackoff");
 	    oneHopLatencies.setName("oneHopLatencies");
-	    nbReceivedPackets = 0;
+	    nbDataPacketsReceived = 0;
+	    nbDataPacketsSent = 0;
 	    debugNbMessageKnown = 0;
-	    nbForwardings = 0;
+	    nbDataPacketsForwarded = 0;
+	    nbHops = 0;
 	}
 }
 
@@ -40,6 +45,7 @@ void ProbabilisticBroadcast::handleUpperMsg(cMessage* msg)
 
 	// encapsulate message in a network layer packet.
 	pkt = encapsMsg(msg);
+	nbDataPacketsSent++;
 	EV << "PBr: " << simTime() << " n"  << myNetwAddr << " handleUpperMsg(): Pkt ID = " << pkt->getId() << " TTL = " << pkt->getAppTtl() << endl;
 	// submit packet for first insertion in queue.
 	insertNewMessage(pkt, true);
@@ -51,12 +57,15 @@ void ProbabilisticBroadcast::handleLowerMsg(cMessage* msg)
 	double oneHopLatency;
 	ProbabilisticBroadcastPkt* m = check_and_cast<ProbabilisticBroadcastPkt*>(msg);
 	MacToNetwControlInfo* cInfo = check_and_cast<MacToNetwControlInfo*>(m->removeControlInfo());
-
+	m->setNbHops(m->getNbHops()+1);
 	macSrcAddr = cInfo->getLastHopMac();
 	delete cInfo;
-	++nbReceivedPackets;
+	++nbDataPacketsReceived;
+	nbHops = nbHops + m->getNbHops();
 	oneHopLatency = simTime().dbl() - m->getTimestamp().dbl();
-	oneHopLatencies.record(oneHopLatency);
+	if(trace) {
+	  oneHopLatencies.record(oneHopLatency);
+	}
 	// oneHopLatency gives us an estimate of how long the message spent in the MAC queue of
 	// its sender (compared to that, transmission delay is negligible). Use this value
 	// to update the TTL of the message. Dump it if it is dead.
@@ -145,14 +154,14 @@ void ProbabilisticBroadcast::handleSelfMsg(cMessage* msg)
 					EV << "PBr: " << simTime() << " n"  << myNetwAddr << "     Send packet down for sure." << endl;
 					pkt->setTimestamp();
 					sendDown(pkt);
-					++nbForwardings;
+					++nbDataPacketsForwarded;
 				}
 				else {
 					if (bernoulli(beta)) {
 						EV << "PBr: " << simTime() << " n"  << myNetwAddr << "     Bernoulli test result: TRUE. Send packet down." << endl;
 						pkt->setTimestamp();
 						sendDown(pkt);
-						++nbForwardings;
+						++nbDataPacketsForwarded;
 					}
 					else {
 						EV << "PBr: " << simTime() << " n"  << myNetwAddr << "     Bernoulli test result: FALSE" << endl;
@@ -199,9 +208,14 @@ void ProbabilisticBroadcast::finish()
 		delete msgDesc;
 	}
 	if (stats) {
-		recordScalar("nbReceivedPackets", nbReceivedPackets);
+		recordScalar("nbDataPacketsReceived", nbDataPacketsReceived);
 		recordScalar("debugNbMessageKnown", debugNbMessageKnown);
-		recordScalar("nbForwardings", nbForwardings);
+		recordScalar("nbDataPacketsForwarded", nbDataPacketsForwarded);
+		if(nbDataPacketsReceived > 0) {
+		  recordScalar("meanNbHops", (double) nbHops / (double) nbDataPacketsReceived);
+		} else {
+		  recordScalar("meanNbHops", 0);
+		}
 	}
 }
 
@@ -270,7 +284,8 @@ ProbabilisticBroadcastPkt* ProbabilisticBroadcast::encapsMsg(cMessage* message)
   assert(static_cast<cPacket*>(message));
   cPacket* msg = static_cast<cPacket*>(message);
 	ProbabilisticBroadcastPkt* pkt = new ProbabilisticBroadcastPkt(msg->getName(), DATA);
-	ProbBcastNetwControlInfo* cInfo = dynamic_cast<ProbBcastNetwControlInfo*>(msg->removeControlInfo());
+//	ProbBcastNetwControlInfo* cInfo = dynamic_cast<ProbBcastNetwControlInfo*>(msg->removeControlInfo());
+	cObject* cInfo = msg->removeControlInfo();
 	int bcastIpAddr = L3BROADCAST;
 
 	ASSERT(cInfo);
@@ -279,12 +294,8 @@ ProbabilisticBroadcastPkt* ProbabilisticBroadcast::encapsMsg(cMessage* message)
 	pkt->setDestAddr(bcastIpAddr);
 	pkt->setInitialSrcAddr(myNetwAddr);
 	pkt->setFinalDestAddr(bcastIpAddr);
-	// TTL and criticality are received from upper layer via control info.
-	pkt->setAppTtl(cInfo->getTtl());
-	pkt->setCriticality(cInfo->getCriticality());
-	// now create a unique identifier for the packet, based on the node's address and
-	// the current value of the generator.
-	pkt->setId(cInfo->getId());
+	pkt->setAppTtl(timeToLive);
+	pkt->setId(getNextID());
 	pkt->setControlInfo(new NetwToMacControlInfo(convertedMacBroadcastAddr));
 	//encapsulate the application packet
 	pkt->encapsulate(msg);
@@ -335,9 +346,6 @@ cMessage* ProbabilisticBroadcast::decapsMsg(ProbabilisticBroadcastPkt *msg)
 	ProbBcastNetwControlInfo* cInfo;
 
 	cMessage *m = msg->decapsulate();
-	cInfo = new ProbBcastNetwControlInfo(msg->getAppTtl(), msg->getCriticality(), msg->getId());
-	cInfo->setNetwAddr(msg->getInitialSrcAddr());
-	m->setControlInfo(cInfo);
 	// delete the network layer packet
 	delete msg;
 	return m;

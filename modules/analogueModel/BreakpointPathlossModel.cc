@@ -40,7 +40,9 @@ void BreakpointPathlossModel::filterSignal(Signal& s) {
 	attenuation = 1/attenuation;
 	debugEV << "attenuation is: " << attenuation << endl;
 
-	pathlosses.record(10*log10(attenuation)); // in dB
+	if(debug) {
+	  pathlosses.record(10*log10(attenuation)); // in dB
+	}
 
 	const DimensionSet& domain = DimensionSet::timeDomain;
 	Argument arg;	// default constructor initializes with a single dimension, time, and value 0 (offset from signal start)

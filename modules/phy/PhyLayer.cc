@@ -269,7 +269,7 @@ Decider* PhyLayer::initializeDecider802154Narrow(ParameterMap& params) {
 	int sfdLength = params["sfdLength"];
 	double berLowerBound = params["berLowerBound"];
 	std::string modulation = params["modulation"].stringValue();
-	return new Decider802154Narrow(this, findHost()->getIndex(), coreDebug, sfdLength, berLowerBound, modulation, headerLength);
+	return new Decider802154Narrow(this, findHost()->getIndex(), coreDebug, sfdLength, berLowerBound, modulation, headerLength, recordStats);
 }
 
 Decider* PhyLayer::initializeSNRThresholdDecider(ParameterMap& params)
