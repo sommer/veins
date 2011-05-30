@@ -84,23 +84,21 @@ void BaseConnectionManager::initialize(int stage)
 
 		//step 3 -	calculate the factor which maps the coordinate of a node
 		//			to the grid cell
-
-		if (gridDim.x == 1 &&							//if we use a 1x1 grid
-			gridDim.y == 1 &&							//every coordinate is
-			gridDim.z == 1) {							//mapped to (0,0, 0)
-			findDistance = Coord(std::max(playgroundSize->getX(),
-										  maxInterferenceDistance),
-								 std::max(playgroundSize->getY(),
-										  maxInterferenceDistance),
-								 std::max(playgroundSize->getZ(),
-										  maxInterferenceDistance));
-		} else {
-			//otherwise the factor is our playground divided by the number of
-			//cells
-			findDistance = Coord(playgroundSize->getX() / gridDim.x,
-								 playgroundSize->getY() / gridDim.y,
-								 playgroundSize->getZ() / gridDim.z);
-		}
+		//if we use a 1x1 grid every coordinate is mapped to (0,0, 0)
+		findDistance = Coord(std::max(playgroundSize->getX(),
+									  maxInterferenceDistance),
+							 std::max(playgroundSize->getY(),
+									  maxInterferenceDistance),
+							 std::max(playgroundSize->getZ(),
+									  maxInterferenceDistance));
+		//otherwise we divide the playground into cells of size of the maximum
+		//interference distance
+		if (gridDim.x != 1)
+			findDistance.setX(playgroundSize->getX() / gridDim.x);
+		if (gridDim.y != 1)
+			findDistance.setY(playgroundSize->getY() / gridDim.y);
+		if (gridDim.z != 1)
+			findDistance.setZ(playgroundSize->getZ() / gridDim.z);
 
 		//since the upper playground borders (at pg-size) are part of the
 		//playground we have to assure that they are mapped to a valid
