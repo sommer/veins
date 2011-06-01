@@ -29,10 +29,8 @@
 			<add x:p0="BaseNetwLayer (No routing)"/>
 			<add x:p0="Wise route"/>
 			<add x:p0="Flooding"/>
-			<!-->
 			<add x:p0="Probabilistic broadcast"/>
 			<add x:p0="Adaptive probabilistic broadcast"/>
-			<-->
 		</combo>
 		
 		<label text="NIC protocol:"/>

@@ -2,7 +2,3 @@
 #**.node[*].net.debug = true
 **.node[*].net.stats = true
 **.node[*].net.headerLength = 24 bit
-**.node[*].net.plainFlooding = true
-**.node[*].net.bcMaxEntries = 50
-**.node[*].net.bcDelTime = 5.2
-**.node[*].net.defaultTtl = 50
