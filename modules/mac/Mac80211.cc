@@ -389,6 +389,18 @@ void Mac80211::handleMsgNotForMe(cMessage *af, simtime_t duration)
         //    error("Gaack! I am changing the IFS on an ongoing contention");
         //}
 
+    	//handle broken cts and ACK frames
+    	if(state == WFCTS) {
+    		assert(timeout->isScheduled());
+    		cancelEvent(timeout);
+    		rtsTransmissionFailed();
+    	}
+    	else if(state == WFACK) {
+    		assert(timeout->isScheduled());
+			cancelEvent(timeout);
+    		dataTransmissionFailed();
+    	}
+
         currentIFS = EIFS;
     }
 
@@ -654,29 +666,39 @@ void Mac80211::handleNavTimer()
 }
 
 
+
+void Mac80211::dataTransmissionFailed()
+{
+	bool rtscts = rtsCts(fromUpperLayer.front());
+    if(rtscts){
+        longRetryCounter++;
+    }else{
+        shortRetryCounter++;
+    }
+    fromUpperLayer.front()->setRetry(true);
+    remainingBackoff = backoff(rtscts);
+}
+
+
+void Mac80211::rtsTransmissionFailed()
+{
+    longRetryCounter++;
+    remainingBackoff = backoff();
+}
+
 /**
  *  Handle the time out timer. Called by handleTimer(cMessage* msg)
  */
 void Mac80211::handleTimeoutTimer()
 {
-    bool rtscts = true;
     debugEV << simTime() << " handleTimeoutTimer " << stateName(state) << "\n";
     if(state == WFCTS) {
-        longRetryCounter++;
-        remainingBackoff = backoff();
+    	rtsTransmissionFailed();
     }
     else if(state == WFACK) {
-        if(rtsCts(fromUpperLayer.front())) {
-            longRetryCounter++;
-            fromUpperLayer.front()->setRetry(true);
-        }
-        else {
-            rtscts = false;
-            shortRetryCounter++;
-            fromUpperLayer.front()->setRetry(true);
-        }
-        remainingBackoff = backoff(rtscts);
+    	dataTransmissionFailed();
     }
+
     // if there's a packet to send and if the channel is free then
     // start a new contention period
     if (state != QUIET)

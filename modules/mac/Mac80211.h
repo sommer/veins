@@ -136,6 +136,10 @@ protected:
 
     void handleCTSframe(Mac80211Pkt*);
 
+    void dataTransmissionFailed();
+
+    void rtsTransmissionFailed();
+
     /** @brief send data frame */
     virtual void sendDATAframe(Mac80211Pkt*);
 
