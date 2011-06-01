@@ -3,12 +3,12 @@ Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 48
+Loading NED files from /home/karl/git-repo/mixim/modules: 54
 Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20110511-10:38:21-13720
+Assigned runID=Test1-0-20110601-13:55:06-5953
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -161,7 +161,7 @@ Passed: [app3] - Expected "Waiting for 0.00225s.": kind = 2224, arrival = 5.0263
 <!> Module NicTest.node[3].app: Switched channel while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!.
 
 Passed: [9] - B sender changes channel during transmission.
-** Event #215   T=5.02699   Elapsed: 0.005s (0m 00s)   ev/sec=0
+** Event #215   T=5.02699   Elapsed: 0.010s (0m 00s)   ev/sec=21400
 
 <!> No more events -- simulation ended at event #215, t=5.02699.
 
@@ -190,12 +190,12 @@ Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 48
+Loading NED files from /home/karl/git-repo/mixim/modules: 54
 Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20110511-10:38:21-13721
+Assigned runID=Test2-0-20110601-13:55:06-5954
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -303,7 +303,7 @@ Passed: [0.2] - B on Channel 1.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage ratio should be very good (over 1.0). - (1<=1.434854424963<=2)
-** Event #4613   T=0.201344   Elapsed: 0.097s (0m 00s)   ev/sec=47546.4
+** Event #4613   T=0.201344   Elapsed: 0.192s (0m 00s)   ev/sec=24020.8
 
 <!> No more events -- simulation ended at event #4613, t=0.201344.
 
@@ -323,12 +323,12 @@ Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 48
+Loading NED files from /home/karl/git-repo/mixim/modules: 54
 Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20110511-10:38:21-13722
+Assigned runID=Test3-0-20110601-13:55:07-5955
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -436,7 +436,7 @@ Passed: [0.2] - B on Channel 2.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage should be about the same as run 2. - (1<=1.434854424963<=2)
-** Event #4613   T=0.201344   Elapsed: 0.097s (0m 00s)   ev/sec=47546.4
+** Event #4613   T=0.201344   Elapsed: 0.224s (0m 00s)   ev/sec=20589.3
 
 <!> No more events -- simulation ended at event #4613, t=0.201344.
 
@@ -456,12 +456,12 @@ Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 48
+Loading NED files from /home/karl/git-repo/mixim/modules: 54
 Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20110511-10:38:21-13723
+Assigned runID=Test4-0-20110601-13:55:07-5956
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -578,9 +578,9 @@ Passed: [0.2] - B on Channel 1.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage ratio should be very bad (half of run 2). - (0.2<=0.754034240056<=0.8)
-** Event #6847   T=0.383404   Elapsed: 0.234s (0m 00s)   ev/sec=29256.4
+** Event #6845   T=0.383404   Elapsed: 0.550s (0m 00s)   ev/sec=12443.6
 
-<!> No more events -- simulation ended at event #6847, t=0.383404.
+<!> No more events -- simulation ended at event #6845, t=0.383404.
 
 
 Calling finish() at end of Run #0...
@@ -598,12 +598,12 @@ Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 48
+Loading NED files from /home/karl/git-repo/mixim/modules: 54
 Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration Test5, run #0...
 Scenario: $repetition=0
-Assigned runID=Test5-0-20110511-10:38:21-13724
+Assigned runID=Test5-0-20110601-13:55:08-5958
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -720,7 +720,7 @@ Passed: [0.2] - B on Channel 2.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage should be about same as run 2. - (1<=1.434854424963<=2)
-** Event #5813   T=0.201344   Elapsed: 0.164s (0m 00s)   ev/sec=35439
+** Event #5813   T=0.201344   Elapsed: 0.314s (0m 00s)   ev/sec=18509.6
 
 <!> No more events -- simulation ended at event #5813, t=0.201344.
 
