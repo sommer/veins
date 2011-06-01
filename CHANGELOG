@@ -2,7 +2,7 @@ v2.1
 + added WiseRoute and Flooding network layer modules ported for MiXiM by
   Theodoros Kapourniotis
 + added modules from MoBAN project from Majid Nabi, Marc Geilen and Twan Basten
-+ added BMAC layer implementation written by Anna FÃ¶rster
++ added BMAC layer implementation written by Anna Förster
 + added several more modules to choose from in "Basic MiXiM network" wizzard
 + new probabilistic broadcast routing modules
 + new packet error rate analogue model (PERModel) 
@@ -38,6 +38,12 @@ v2.1
 * fixed csma's exponential slot interval from [1,2^BE] to [0,2^BE]
 * fixed a bug in SimpleBattery where the capacity wasn't updated if publishing
   was disabled
+* fixed a bug in Mac80211 where duplicate packets where not detected when the
+  duplicate was sent because of bit errors in the corresponding ACK
+* fixed a bug in BaseConnectionManager with playgrounds where one dimension was
+  larger than the maximum interference distance and the other was smaller
+* fixed a bug in csma's nbRxCounter
+* fixed a bug in csma's backoff algorithm
 
 
 
