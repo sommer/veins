@@ -229,6 +229,10 @@ protected:
 	/** @brief Stores the useTorus flag of the WorldUtility */
 	bool useTorus;
 
+	/** @brief Stores if maximum interference distance should be displayed in
+	 * TkEnv.*/
+	bool drawMIR;
+
 	/** @brief Type for 1-dimensional array of NicEntries.*/
 	typedef std::vector<NicEntries> RowVector;
 	/** @brief Type for 2-dimensional array of NicEntries.*/

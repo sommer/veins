@@ -51,6 +51,9 @@ simple ConnectionManager
         double alpha;
         // minimum carrier frequency of the channel [Hz]
         double carrierFrequency @unit(Hz);
+        // should the maximum interference distance be displayed for each node?
+        bool drawMaxIntfDist = default(false);
+        
         @display("i=abstract/multicast");
 }
 

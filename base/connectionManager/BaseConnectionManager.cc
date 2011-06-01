@@ -24,6 +24,9 @@ void BaseConnectionManager::initialize(int stage)
 		else
 			coreDebug = false;
 
+		drawMIR = hasPar("drawMaxIntfDist")
+						? par("drawMaxIntfDist").boolValue() : false;
+
 		ccEV <<"initializing BaseConnectionManager\n";
 
 		BaseWorldUtility* world = FindModule<BaseWorldUtility*>
@@ -325,6 +328,10 @@ bool BaseConnectionManager::registerNic(cModule* nic,
 	registerNicExt(nicID);
 
 	updateConnections(nicID, nicPos, nicPos);
+
+	if(drawMIR) {
+		nic->getParentModule()->getDisplayString().setTagArg("r", 0, maxInterferenceDistance);
+	}
 
 	return sendDirect;
 }

@@ -20,6 +20,7 @@ v2.1
 + added more modulation models to Decider802154Narrow
 + changed BaseMobilities updatePosition function to support scaled play grounds
   (when the playground size does not match the size of the drawn playground)
++ added option to display maximum interference distance of nodes in tkenv
 * changed unit of acceleration in ned files from "mps2" to "mpss" since omnet
   can't handle numbers at the end
 * fixed SensorApplLayer to find world utility module and network layer address
