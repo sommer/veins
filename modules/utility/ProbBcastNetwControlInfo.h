@@ -30,8 +30,10 @@ protected:
 
 public:
     /** @brief Default constructor*/
-	ProbBcastNetwControlInfo(simtime_t vttl = 0, double vcriticality = 0.0, unsigned int vid = 0) :
+	ProbBcastNetwControlInfo(int addr = 0, simtime_t vttl = 0, double vcriticality = 0.0, unsigned int vid = 0) :
+		NetwControlInfo(addr),
 		ttl(vttl), criticality(vcriticality), id(vid) {};
+
     /** @brief Destructor*/
     virtual ~ProbBcastNetwControlInfo(){};
 

@@ -343,9 +343,8 @@ void ProbabilisticBroadcast::insertNewMessage(ProbabilisticBroadcastPkt* pkt, bo
 
 cMessage* ProbabilisticBroadcast::decapsMsg(ProbabilisticBroadcastPkt *msg)
 {
-	ProbBcastNetwControlInfo* cInfo;
-
 	cMessage *m = msg->decapsulate();
+	m->setControlInfo(new ProbBcastNetwControlInfo(msg->getSrcAddr()));
 	// delete the network layer packet
 	delete msg;
 	return m;
