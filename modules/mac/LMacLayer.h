@@ -24,6 +24,45 @@
 #include <BaseConnectionManager.h>
 #include <NetwToMacControlInfo.h>
 
+
+/**
+ * @brief Implementation of L-MAC (Lightweight Medium Access Protocol for
+ * Wireless Sensor Networks [van Hoesel 04] ).
+ *
+ * Each node has its own unique timeslot. Nodes can use their timeslots to
+ * transfer data without having to contend for the medium or having to deal
+ * with energy wasting collisions or retransmissions.
+ *
+ * During the first 5 full frames nodes will be waking up every controlDuration
+ * to setup the network first by assigning a different timeslot to each node.
+ * Normal packets will be queued, but will be send only after the setup phase.
+ *
+ * During its timeslot a node wakes up, checks the channel for a short random
+ * period (CCA) to check for possible collision in the slot and, if the
+ * channel is free, sends a control packet. If there is a collision it tries
+ * to change its timeslot to an empty one. After the transmission of the control
+ * packet it checks its packet queue and if its non-empty it sends a data
+ * packet.
+ *
+ * During a foreign timeslot a node wakes up, checks the channel for
+ * 2*controlDuration period for an incoming control packet and if there in
+ * nothing it goes back to sleep and conserves energy for the rest of the
+ * timeslot. If it receives a control packet addressed for itself it stays awake
+ * for the rest of the timeslot to receive the incoming data packet.
+ *
+ * The finite state machine of the protocol is given in the below figure:
+ *
+ *
+ *
+ * A paper describing the protocol is:
+ *
+ * L. van Hoesel and P. Havinga. A lightweight medium access
+ * protocol (LMAC) for wireless sensor networks. In Proceedings of the 3rd
+ * International Symposium on Information Processing in Sensor Networks (IPSN),
+ * pages 55–60, Berkeley, CA, February 2004. April.
+ *
+ *
+ **/
 class  LMacLayer : public BaseMacLayer
 {
   public:
