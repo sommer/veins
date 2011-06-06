@@ -1,12 +1,14 @@
 v2.1
++ added LMAC layer implementation written by Anna Förster and ported to MiXiM
+  by Theodoros Kapourniotis
 + added WiseRoute and Flooding network layer modules ported for MiXiM by
   Theodoros Kapourniotis
 + added modules from MoBAN project from Majid Nabi, Marc Geilen and Twan Basten
 + added BMAC layer implementation written by Anna Förster
-+ added several more modules to choose from in "Basic MiXiM network" wizzard
 + new probabilistic broadcast routing modules
 + new packet error rate analogue model (PERModel) 
 + new BreakPointPathloss analogue model
++ added several more modules to choose from in "Basic MiXiM network" wizzard
 + introduced "debugEV" which together with a modules "debug" parameter enables 
   per module debugging for end user modules
 + added preconfigured hosts for 802.11 and 802.15.4 protocol respectively
