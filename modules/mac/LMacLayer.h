@@ -66,7 +66,8 @@
 class  LMacLayer : public BaseMacLayer
 {
   public:
-
+	/** @brief Clean up messges.*/
+	virtual ~LMacLayer();
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
