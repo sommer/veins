@@ -513,6 +513,7 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 			attachSignal(data);
 			coreEV << "Sending down data packet\n";
 			sendDown(data);
+			delete macQueue.front();
 			macQueue.pop_front();
 			macState = SEND_DATA;
 			debugEV << "Old state: SEND_CONTROL, New state: SEND_DATA" << endl;
