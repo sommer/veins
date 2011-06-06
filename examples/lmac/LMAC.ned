@@ -17,6 +17,7 @@ package org.mixim.examples.lmac;
 
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
+import org.mixim.modules.node.HostLMAC;
 
 network LMAC
 {
@@ -39,7 +40,7 @@ network LMAC
                 playgroundSizeZ = playgroundSizeZ;
                 @display("p=30,0;i=misc/globe");
         }
-        node[numNodes]: BaseNode {
+        node[numNodes]: HostLMAC {
             parameters:
                 @display("p=170,50;i=device/wifilaptop");
         }
