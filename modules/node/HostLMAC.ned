@@ -1,4 +1,4 @@
-package org.mixim.examples.lmac;
+package org.mixim.modules.node;
 
 import org.mixim.modules.power.battery.SimpleBattery;
 import org.mixim.modules.power.battery.BatteryStats;
@@ -7,7 +7,10 @@ import org.mixim.modules.nic.NicLMAC;
 import org.mixim.base.modules.*;
 import org.mixim.modules.netw.ArpHost;
 
-module BaseNode
+//
+// Example host module using a LMAC Network interface card.
+//
+module HostLMAC
 {
     parameters:
         string applType; //type of the application layer
