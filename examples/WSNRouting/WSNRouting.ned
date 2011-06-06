@@ -20,6 +20,14 @@ import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
 import org.mixim.modules.node.Host802154_2400MHz;
 
+//
+// This example shows how to simulate wireless sensor networks.
+// Three different routing protocols are considered, for different traffic 
+// types:
+// convergecast, with Wiseroute;
+// network-level broadcast, with flooding;
+// and probabilistic broadcast.
+//
 network WSNRouting {
     parameters:
         double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
