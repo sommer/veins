@@ -56,6 +56,11 @@ most important being:
   http://linux3.dti.supsi.ch/~afoerste/downloads.html
   (c) by Anna Foerster (anna.foerster@ieee.org)
   
+- L-MAC layer (since MiXiM v2.1)
+  http://linux3.dti.supsi.ch/~afoerste/downloads.html
+  (c) by Anna Foerster (anna.foerster@ieee.org)
+  and ported to MiXiM by Theodoros Kapourniotis (kapourniotis@gmail.com)
+  
 - MoBAN - Mobility Model for Body Area Networks (since MiXiM v2.1)
   http://www.es.ele.tue.nl/nes/content/models.php
   (c) by Majid Nabi (m.nabi@tue.nl)
