@@ -7,6 +7,9 @@ import org.mixim.modules.nic.NicBMAC;
 import org.mixim.base.modules.*;
 import org.mixim.modules.netw.ArpHost;
 
+//
+// Example host module using a BMAC Network interface card.
+//
 module HostBMAC
 {
     parameters:
