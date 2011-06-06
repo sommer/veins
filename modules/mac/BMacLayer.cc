@@ -360,6 +360,7 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 			{
 				debugEV << "State WAIT_TX_DATA_OVER, message BMAC_DATA_TX_OVER,"
 						  " new state  SLEEP" << endl;
+				delete macQueue.front();
 				macQueue.pop_front();
 				// if something in the queue, wakeup soon.
 				if (macQueue.size() > 0)
@@ -392,6 +393,7 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 				debugEV << "State WAIT_ACK, message BMAC_ACK_TIMEOUT, new state"
 						  " SLEEP" << endl;
 				//drop the packet
+				delete macQueue.front();
 				macQueue.pop_front();
 				// if something in the queue, wakeup soon.
 				if (macQueue.size() > 0)
@@ -427,6 +429,7 @@ void BMacLayer::handleSelfMsg(cMessage *msg)
 				nbRecvdAcks++;
 				lastDataPktDestAddr = L2BROADCAST;
 				cancelEvent(ack_timeout);
+				delete macQueue.front();
 				macQueue.pop_front();
 				// if something in the queue, wakeup soon.
 				if (macQueue.size() > 0)
