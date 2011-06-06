@@ -52,16 +52,16 @@
  *
  * The finite state machine of the protocol is given in the below figure:
  *
- *
+ * \image html LMACFSM.jpg "State chart for LMAC layer"
  *
  * A paper describing the protocol is:
  *
  * L. van Hoesel and P. Havinga. A lightweight medium access
  * protocol (LMAC) for wireless sensor networks. In Proceedings of the 3rd
  * International Symposium on Information Processing in Sensor Networks (IPSN),
- * pages 55–60, Berkeley, CA, February 2004. April.
+ * pages 55-60, Berkeley, CA, February 2004. April.
  *
- *
+ * @ingroup macLayer
  **/
 class  LMacLayer : public BaseMacLayer
 {

@@ -14,14 +14,20 @@ package org.mixim.modules.mac;
 
 import org.mixim.base.modules.BaseMacLayer;
 
+//
+// Implementation of L-MAC (Lightweight Medium Access Protocol for
+// Wireless Sensor Networks)
+//
+// See C++ documentation for details
+//
 simple LMacLayer extends BaseMacLayer
 {
     parameters:
+        // enable per module debug
+        bool debug = default(false);
         // how long is a slot?
         double slotDuration @unit(s) = default(100ms);
         // length of MAC header
-//        double headerLength @unit(byte) = default(10byte);
-        // length of the MAC queue
         double queueLength = default(10);
         // default channel 
         double defaultChannel = default(0);
@@ -35,12 +41,4 @@ simple LMacLayer extends BaseMacLayer
         double txPower = default(50);
         
         @class(LMacLayer);
-
-//    gates:
-//        input uppergateIn;
-//        output uppergateOut;
-//        input lowergateIn;
-//        output lowergateOut;
-//        output upperControlOut; // for control messages to upper layer
-//        input lowerControlIn;   // for control messages from phy layer
 }
