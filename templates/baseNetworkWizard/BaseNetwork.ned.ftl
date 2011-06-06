@@ -10,6 +10,9 @@ import org.mixim.modules.node.${hostType};
 <#elseif protocolName=="B-MAC">
 <#assign hostType="HostBMAC">
 import org.mixim.modules.node.${hostType};
+<#elseif protocolName=="L-MAC">
+<#assign hostType="HostLMAC">
+import org.mixim.modules.node.${hostType};
 <#elseif protocolName=="CSMA 802.15.4">
 <#assign hostType="Host802154">
 <#else>

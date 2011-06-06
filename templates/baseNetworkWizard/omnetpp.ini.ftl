@@ -8,6 +8,8 @@
 <#assign nicIni="CSMAMacLayer.ini.fti">
 <#elseif protocolName=="B-MAC">
 <#assign nicIni="bmac.ini.fti">
+<#elseif protocolName=="L-MAC">
+<#assign nicIni="lmac.ini.fti">
 </#if>
 
 <#if applName="Traffic Generator">
