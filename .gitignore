@@ -37,5 +37,9 @@ examples/baseNetwork/baseNetwork
 examples/ieee802154Narrow/ieee802154Narrow
 examples/ieee802154a/ieee802154a
 examples/multiConnectionManager/multiConnectionManager
+examples/BaseMoBANNetwork/BaseMoBANNetwork
+examples/WSNRouting/WSNRouting
+examples/bmac/bmac
+examples/lmac/lmac
 **.vci
 
