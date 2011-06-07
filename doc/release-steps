@@ -30,6 +30,7 @@ steps will have to be done again.
    ("http://apps.sourceforge.net/trac/sourceforge/wiki/Release%20files%20for%20download")
  * upload CHANGELOG to sourceforge and set it as the releases release notes
  * update What changed site on Mixim wiki
+ * update download link at http://sourceforge.net/apps/trac/mixim/wiki/StepByStep
  
    
 == DoxyGen and NedDoc ==
