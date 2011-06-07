@@ -41,8 +41,8 @@ steps will have to be done again.
    * read "http://apps.sourceforge.net/trac/sourceforge/wiki/Shell%20service" 
      on how to get a shell for mixim on sourceforge
    * extract/copy compiled neddoc to "/home/groups/m/mi/mixim/htdocs/doc-x.x/"
-   * update symbolic link "/home/groups/m/mi/mixim/htdocs/doc/" to the new doc
-     path "/home/groups/m/mi/mixim/htdocs/doc-x.x/"
+   * update symbolic link "/home/project-web/mixim/htdocs/doc/" to the new doc
+     path "/home/project-web/mixim/htdocs/doc-x.x/"
    
 
  
