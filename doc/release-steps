@@ -17,7 +17,7 @@ if the check for errors unearth a problem you have to fix, all off the following
 steps will have to be done again.
 
  * create a clean archive of the revision to release by 
- 	"git archive -o MiXiM-x.x.tar.gz"
+ 	"git archive <branch> -o MiXiM-x.x.tar.gz"
  * open a new Omnet++ IDE with a clean workspace
  * import latest inet4mixnet
  * import mixim and mixnet from the just created archive
