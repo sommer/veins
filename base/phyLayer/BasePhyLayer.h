@@ -306,17 +306,17 @@ protected:
 	/**
 	 * @brief Handles incoming AirFrames with the state START_RECEIVE.
 	 */
-	void handleAirFrameStartReceive(AirFrame* msg);
+	virtual void handleAirFrameStartReceive(AirFrame* msg);
 
 	/**
 	 * @brief Handles incoming AirFrames with the state RECEIVING.
 	 */
-	void handleAirFrameReceiving(AirFrame* msg);
+	virtual void handleAirFrameReceiving(AirFrame* msg);
 
 	/**
 	 * @brief Handles incoming AirFrames with the state END_RECEIVE.
 	 */
-	void handleAirFrameEndReceive(AirFrame* msg);
+	virtual void handleAirFrameEndReceive(AirFrame* msg);
 
 	/*@}*/
 
@@ -356,7 +356,7 @@ protected:
 	/**
 	 * @brief Filters the passed Signal by every registered AnalogueModel.
 	 */
-	void filterSignal(Signal& s);
+	virtual void filterSignal(Signal& s);
 
 	/**
 	 * @brief Called the moment the simulated switching process of the Radio is finished.
