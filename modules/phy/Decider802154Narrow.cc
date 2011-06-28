@@ -214,7 +214,7 @@ double Decider802154Narrow::getBERFromSNR(double snr) {
 	double sum_k = 0;
 	if(modulation == "msk") {
 		// valid for IEEE 802.15.4 868 MHz BPSK modulation
-		ber = 0.5 *  erfc(sqrt(snr));
+		ber = 0.5 *  FWMath::erfc(sqrt(snr));
 	} else if (modulation == "oqpsk16") {
 		// valid for IEEE 802.15.4 2.45 GHz OQPSK modulation
 		for (int k = 2; k <= 16; k++) {
@@ -225,7 +225,7 @@ double Decider802154Narrow::getBERFromSNR(double snr) {
 		// valid for Bluetooth 4.0 PHY mandatory base rate 1 Mbps
 		// Please note that this is not the correct expression for
 		// the enhanced data rates (EDR), which uses another modulation.
-		ber = 0.5 * erfc(sqrt(0.5 * snr));
+		ber = 0.5 * FWMath::erfc(sqrt(0.5 * snr));
 	} else {
 		opp_error("The selected modulation is not supported.");
 	}

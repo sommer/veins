@@ -399,7 +399,7 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 
 	filterSignal(frame->getSignal());
 
-	if(decider and isKnownProtocolId(frame->getProtocolId())) {
+	if(decider && isKnownProtocolId(frame->getProtocolId())) {
 		frame->setState(RECEIVING);
 
 		//pass the AirFrame the first time to the Decider

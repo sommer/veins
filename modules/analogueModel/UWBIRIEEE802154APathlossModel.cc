@@ -20,6 +20,29 @@
 
 #include "UWBIRIEEE802154APathlossModel.h"
 
+const double UWBIRIEEE802154APathlossModel::PL0 = 0.000040738; // -43.9 dB
+const double UWBIRIEEE802154APathlossModel::pathloss_exponent = 1.79;
+const double UWBIRIEEE802154APathlossModel::meanL = 3;
+const double UWBIRIEEE802154APathlossModel::Lambda = 0.047E9;
+const double UWBIRIEEE802154APathlossModel::lambda1 = 1.54E9;
+const double UWBIRIEEE802154APathlossModel::lambda2 = 0.15E9;
+const double UWBIRIEEE802154APathlossModel::Beta = 0.095;
+const double UWBIRIEEE802154APathlossModel::Gamma = 22.61E-9;
+const double UWBIRIEEE802154APathlossModel::k_gamma = 0;
+const double UWBIRIEEE802154APathlossModel::gamma_0 = 12.53 * 0.001 * 0.001 * 0.01;
+const double UWBIRIEEE802154APathlossModel::sigma_cluster = 1.883649089; // 2.75 dB
+
+const double UWBIRIEEE802154APathlossModel::fc = 4.492E9; // mandatory band 3, center frequency, Hz
+const double UWBIRIEEE802154APathlossModel::BW = 500E6;  //  mandatory band 3, bandwidth, Hz
+const double UWBIRIEEE802154APathlossModel::fcMHz = 4492; // mandatory band 3, center frequency, MHz
+
+const double UWBIRIEEE802154APathlossModel::d0 = 1;
+
+    // antenna parameters
+const double UWBIRIEEE802154APathlossModel::ntx = 1;
+const double UWBIRIEEE802154APathlossModel::nrx = 1;
+
+
 const bool UWBIRIEEE802154APathlossModel::implemented_CMs[] = {
         		false, //  There is no Channel Model 0: start at 1
         		true,  //  CM1
@@ -378,6 +401,6 @@ double UWBIRIEEE802154APathlossModel::getPathloss(double fc, double BW) {
 }
 
 double UWBIRIEEE802154APathlossModel::Rayleigh(double param) {
-    return weibull(2, sqrt(2) * param);
+    return weibull(2, sqrt(2.0) * param);
 }
 

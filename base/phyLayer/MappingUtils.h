@@ -468,7 +468,7 @@ public:
 	/**
 	 * @brief This method isn't supported by an interpolated mapping.
 	 */
-	virtual const Argument& getNextPosition() const { assert(false); }
+	virtual const Argument& getNextPosition() const { assert(false); return *((Argument *)NULL); }
 };
 
 /**
@@ -1245,7 +1245,7 @@ public:
 	 * Constant complexity.
 	 */
     virtual bool hasNext() const {
-    	return valueIt.hasNext() or (subIterator and subIterator->hasNext() and valueIt.inRange());
+        return valueIt.hasNext() || (subIterator && subIterator->hasNext() && valueIt.inRange());
     }
 
 	/**

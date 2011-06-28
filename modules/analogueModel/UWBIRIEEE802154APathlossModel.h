@@ -137,27 +137,27 @@ protected:
     // channel statistical characterization parameters
     // (should be xml-ized)
     // First environment: Residential LOS
-    static const double PL0 = 0.000040738; // -43.9 dB
-    static const double pathloss_exponent = 1.79;
-    static const double meanL = 3;
-    static const double Lambda = 0.047E9;
-    static const double lambda1 = 1.54E9;
-    static const double lambda2 = 0.15E9;
-    static const double Beta = 0.095;
-    static const double Gamma = 22.61E-9;
-    static const double k_gamma = 0;
-    static const double gamma_0 = 12.53 * 0.001 * 0.001 * 0.01;
-    static const double sigma_cluster = 1.883649089; // 2.75 dB
+    static const double PL0; // -43.9 dB
+    static const double pathloss_exponent;
+    static const double meanL;
+    static const double Lambda;
+    static const double lambda1;
+    static const double lambda2;
+    static const double Beta;
+    static const double Gamma;
+    static const double k_gamma;
+    static const double gamma_0;
+    static const double sigma_cluster; // 2.75 dB
 
-    static const double fc = 4.492E9; // mandatory band 3, center frequency, Hz
-    static const double BW = 500E6;  //  mandatory band 3, bandwidth, Hz
-    static const double fcMHz = 4492; // mandatory band 3, center frequency, MHz
+    static const double fc; // mandatory band 3, center frequency, Hz
+    static const double BW;  //  mandatory band 3, bandwidth, Hz
+    static const double fcMHz; // mandatory band 3, center frequency, MHz
 
-    static const double d0 = 1;
+    static const double d0;
 
     // antenna parameters
-    static const double ntx = 1;
-    static const double nrx = 1;
+    static const double ntx;
+    static const double nrx;
 
 
     const Move* move;

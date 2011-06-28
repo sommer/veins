@@ -99,6 +99,14 @@ protected:
 		friend bool operator<(const simtime_t& t, const ListEntry& e) {
 			return (t < e.getTime());
 		}
+
+		/**
+		 * @brief overload of operator < for class ListEntry to be able to use the STL Algorithms
+		 * "lower_bound" and "upper_bound"
+		 */
+		friend bool operator<(const ListEntry& left, const ListEntry& right) {
+			return (left.getTime() < right.getTime());
+		}
 	};
 
 

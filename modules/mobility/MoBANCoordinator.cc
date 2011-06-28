@@ -250,7 +250,7 @@ void MoBANCoordinator::selectPosture() {
 
 	/* Using transition matrix to select the next posture */
 	double randomValue = uniform(0, 1);
-	double comp;
+	double comp = 0;
 	int currentP = currentPosture->getPostureID(); // it determines the column in the matrix
 
 	for (int i = 0; i < static_cast<int>(numPostures); ++i)

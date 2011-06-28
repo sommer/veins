@@ -11,13 +11,14 @@
 
 #include <stdio.h>
 #include <malloc.h>
+#include <assert.h>
 
 int _asprintf(char** buf, const char* format, ...)
 {
 	va_list ap;
 	int len;
 	int res;
-
+	assert(false); // this function is broken and it is not used right now
 	va_start(ap, format);
 	/* _vscprintf doesn't count the
 	 * null terminating string so we add 1. */

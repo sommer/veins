@@ -67,6 +67,10 @@ public:
 	bool operator()(const Key& v, const Pair& p) {
 		return v < p.first;
 	}
+
+	bool operator()(const Pair& left, const Pair& right) {
+		return left.first < right.first;
+	}
 };
 
 /**

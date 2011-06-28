@@ -54,19 +54,18 @@ class UWBIRStochasticPathlossModel : public AnalogueModel {
 
 public:
 
-    //static const double Gtx = 0.9, Grx = 0.9, ntx = 0.9, nrx = 0.9;
-    static const double Gtx = 1, Grx = 1, ntx = 1, nrx = 1;
+    static const double Gtx, Grx, ntx, nrx;
     double PL0; // 0.000008913; // -50.5 dB   0.000019953
-    static const double fc = 4492.8; // mandatory band 3, center frequency, MHz
-    static const double d0 = 1;
+    static const double fc; // mandatory band 3, center frequency, MHz
+    static const double d0;
     double mu_gamma, sigma_gamma; //1.7, 0.3
     double mu_sigma, sigma_sigma;
     double gamma, S, sigma;
     double n1, n2, n3;
     static double n1_limit, n2_limit;
 
-    static const double s_mu = 1.6, s_sigma = 0.5;
-    static const double kappa = 1;
+    static const double s_mu, s_sigma;
+    static const double kappa;
 
     bool isEnabled, shadowing;
 

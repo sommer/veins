@@ -19,6 +19,14 @@
 
 #include "UWBIRStochasticPathlossModel.h"
 
+//const double UWBIRStochasticPathlossModel::Gtx = 0.9, UWBIRStochasticPathlossModel::Grx = 0.9, UWBIRStochasticPathlossModel::ntx = 0.9, UWBIRStochasticPathlossModel::nrx = 0.9;
+const double UWBIRStochasticPathlossModel::Gtx = 1, UWBIRStochasticPathlossModel::Grx = 1, UWBIRStochasticPathlossModel::ntx = 1, UWBIRStochasticPathlossModel::nrx = 1;
+const double UWBIRStochasticPathlossModel::fc = 4492.8; // mandatory band 3, center frequency, MHz
+const double UWBIRStochasticPathlossModel::d0 = 1;
+
+const double UWBIRStochasticPathlossModel::s_mu = 1.6, UWBIRStochasticPathlossModel::s_sigma = 0.5;
+const double UWBIRStochasticPathlossModel::kappa = 1;
+
 double UWBIRStochasticPathlossModel::n1_limit = 1.25;
 double UWBIRStochasticPathlossModel::n2_limit = 2;
 
