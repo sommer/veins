@@ -267,19 +267,25 @@ void BaseMobility::updatePosition() {
     if(ev.isGUI())
     {
     	std::ostringstream osDisplayTag;
-
+#ifdef __APPLE__
+    	const int          iPrecis        = 0;
+#else
     	const int          iPrecis        = 5;
+#endif
     	cDisplayString&    disp           = hostPtr->getDisplayString();
 
     	// setup output stream
     	osDisplayTag << std::fixed; osDisplayTag.precision(iPrecis);
 
-    	osDisplayTag << (move.getStartPos().getX() * playgroundScaleX);
-    	disp.setTagArg("p", 0, osDisplayTag.str().data());
-
-    	osDisplayTag.str(""); // reset
-    	osDisplayTag << (move.getStartPos().getY() * playgroundScaleY);
-    	disp.setTagArg("p", 1, osDisplayTag.str().data());
+    	if (playgroundScaleX != 1.0) {
+    		osDisplayTag << (move.getStartPos().getX() * playgroundScaleX);
+    		disp.setTagArg("p", 0, osDisplayTag.str().data());
+    	}
+    	if (playgroundScaleY != 1.0) {
+    		osDisplayTag.str(""); // reset
+    		osDisplayTag << (move.getStartPos().getY() * playgroundScaleY);
+    		disp.setTagArg("p", 1, osDisplayTag.str().data());
+    	}
 
     	if(!world->use2D() && scaleNodeByDepth)
     	{
@@ -295,8 +301,7 @@ void BaseMobility::updatePosition() {
 			                      * (1.0 - move.getStartPos().getZ()
 			                               / playgroundSizeZ());
 
-    		if (origDisplayWidth > 0.0 && origDisplayHeight > 0.0)
-    		{
+    		if (origDisplayWidth > 0.0 && origDisplayHeight > 0.0) {
     			osDisplayTag.str(""); // reset
 				osDisplayTag << (origDisplayWidth * depthScale);
 				disp.setTagArg("b", 0, osDisplayTag.str().data());
