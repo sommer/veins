@@ -110,8 +110,8 @@ void BaseMobility::initialize(int stage)
 
         	if( dispWorldOwner.containsTag("bgb") )
 			{
-        		double origPGWidth;
-        		double origPGHeight;
+        		double origPGWidth = 0.0;
+        		double origPGHeight= 0.0;
         		// normally this should be equal to playground size
 				std::istringstream(dispWorldOwner.getTagArg("bgb", 0))
 						>> origPGWidth;
@@ -279,13 +279,20 @@ void BaseMobility::updatePosition() {
 
     	if (playgroundScaleX != 1.0) {
     		osDisplayTag << (move.getStartPos().getX() * playgroundScaleX);
-    		disp.setTagArg("p", 0, osDisplayTag.str().data());
     	}
+    	else {
+    		osDisplayTag << (move.getStartPos().getX());
+    	}
+   		disp.setTagArg("p", 0, osDisplayTag.str().data());
+
+   		osDisplayTag.str(""); // reset
     	if (playgroundScaleY != 1.0) {
-    		osDisplayTag.str(""); // reset
     		osDisplayTag << (move.getStartPos().getY() * playgroundScaleY);
-    		disp.setTagArg("p", 1, osDisplayTag.str().data());
     	}
+    	else {
+    		osDisplayTag << (move.getStartPos().getY());
+    	}
+   		disp.setTagArg("p", 1, osDisplayTag.str().data());
 
     	if(!world->use2D() && scaleNodeByDepth)
     	{
