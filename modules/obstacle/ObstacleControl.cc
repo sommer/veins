@@ -30,16 +30,20 @@ ObstacleControl::~ObstacleControl() {
 
 }
 
-void ObstacleControl::initialize() {
-	debug = par("debug");
-	enabled = par("enabled");
+void ObstacleControl::initialize(int stage) {
+	if (stage == 1)	{
+		debug = par("debug");
 
-	obstacles.clear();
-	drawnObstacles.clear();
-	cacheEntries.clear();
+		obstacles.clear();
+		cacheEntries.clear();
 
-	obstaclesXml = par("obstacles");
-	addFromXml(obstaclesXml);
+		annotations = AnnotationManagerAccess().getIfExists();
+		if (annotations) annotationGroup = annotations->createGroup("obstacles");
+
+		obstaclesXml = par("obstacles");
+
+		addFromXml(obstaclesXml);
+	}
 }
 
 void ObstacleControl::finish() {
@@ -61,16 +65,6 @@ void ObstacleControl::handleMessage(cMessage *msg) {
 
 void ObstacleControl::handleSelfMsg(cMessage *msg) {
 	error("ObstacleControl doesn't handle self-messages");
-}
-
-void ObstacleControl::handleParameterChange(const char *parname) {
-	if (parname && (std::string(parname) == "draw")) {
-		if (ev.isGUI() && par("draw")) {
-			drawObstacles();
-		} else {
-			expungeObstacles();
-		}
-	}
 }
 
 void ObstacleControl::addFromXml(cXMLElement* xml) {
@@ -128,7 +122,9 @@ void ObstacleControl::add(Obstacle obstacle) {
 			(obstacles[col])[row].push_back(o);
 		}
 	}
-	if (ev.isGUI() && par("draw")) draw(o);
+
+	// visualize using AnnotationManager
+	if (annotations) o->visualRepresentation = annotations->drawPolygon(o->getShape(), "red", annotationGroup);
 
 	cacheEntries.clear();
 }
@@ -146,99 +142,15 @@ void ObstacleControl::erase(const Obstacle* obstacle) {
 			}
 		}
 	}
-	expunge(obstacle);
+
+	if (annotations && obstacle->visualRepresentation) annotations->erase(obstacle->visualRepresentation);
 	delete obstacle;
 
 	cacheEntries.clear();
 }
 
-void ObstacleControl::draw(const Obstacle* obstacle) {
-	static int32_t nodeVectorIndex = -1;
-
-	if (drawnObstacles.find(obstacle) != drawnObstacles.end()) return;
-
-	ASSERT(obstacle->getShape().size() >= 2);
-	Coord lastCoords = *obstacle->getShape().rbegin();
-	for (std::vector<Coord>::const_iterator i = obstacle->getShape().begin(); i != obstacle->getShape().end(); ++i) {
-		Coord c1 = *i;
-		Coord c2 = lastCoords;
-		lastCoords = c1;
-
-		int w = abs(int(c2.getX()) - int(c1.getX()));
-		int h = abs(int(c2.getY()) - int(c1.getY()));
-		int px = 0;
-		if (c1.getX() <= c2.getX()) {
-			px = c1.getX() + 0.5*w;
-		} else {
-			px = c2.getX() + 0.5*w;
-			w = -w;
-		}
-		int py = 0;
-		if (c1.getY() <= c2.getY()) {
-			py = c1.getY() + 0.5*h;
-		} else {
-			py = c2.getY() + 0.5*h;
-			h = -h;
-		}
-
-		std::stringstream ss;
-		ss << "p=" << px << "," << py << ";b=" << w << ", " << h << ",polygon,red,black,1";
-		std::string displayString = ss.str();
-
-		cModule* parentmod = getParentModule();
-		if (!parentmod) error("Parent Module not found");
-
-		cModuleType* nodeType = cModuleType::get("org.mixim.modules.obstacle.ObstacleDummy");
-
-		//TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
-		nodeVectorIndex++;
-		cModule* mod = nodeType->create("obstacle", parentmod, nodeVectorIndex, nodeVectorIndex);
-		mod->finalizeParameters();
-		mod->getDisplayString().parse(displayString.c_str());
-		mod->buildInside();
-		mod->scheduleStart(simTime());
-
-		drawnObstacles[obstacle].push_back(mod);
-	}
-
-}
-
-void ObstacleControl::expunge(const Obstacle* obstacle) {
-	if (drawnObstacles.find(obstacle) == drawnObstacles.end()) return;
-	for (std::list<cModule*>::const_iterator i = drawnObstacles[obstacle].begin(); i != drawnObstacles[obstacle].end(); ++i) {
-		cModule* mod = *i;
-		mod->deleteModule();
-	}
-	drawnObstacles.erase(obstacle);
-}
-
-void ObstacleControl::drawObstacles() {
-	for (Obstacles::const_iterator i = obstacles.begin(); i != obstacles.end(); ++i) {
-		for (ObstacleGridRow::const_iterator j = i->begin(); j != i->end(); ++j) {
-			for (ObstacleGridCell::const_iterator k = j->begin(); k != j->end(); ++k) {
-				Obstacle* o = *k;
-				draw(o);
-			}
-		}
-	}
-}
-
-void ObstacleControl::expungeObstacles() {
-	for (Obstacles::const_iterator i = obstacles.begin(); i != obstacles.end(); ++i) {
-		for (ObstacleGridRow::const_iterator j = i->begin(); j != i->end(); ++j) {
-			for (ObstacleGridCell::const_iterator k = j->begin(); k != j->end(); ++k) {
-				Obstacle* o = *k;
-				expunge(o);
-			}
-		}
-	}
-}
-
 double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const {
 	Enter_Method_Silent();
-
-	// bail if we're ignoring all obstacles
-	if (!enabled) return 1;
 
 	// return cached result, if available
 	CacheKey cacheKey(senderPos, receiverPos);
@@ -248,8 +160,6 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
 	// calculate bounding box of transmission
 	Coord bboxP1 = Coord(std::min(senderPos.getX(), receiverPos.getX()), std::min(senderPos.getY(), receiverPos.getY()));
 	Coord bboxP2 = Coord(std::max(senderPos.getX(), receiverPos.getX()), std::max(senderPos.getY(), receiverPos.getY()));
-
-	bool draw = ev.isGUI() && par("draw");
 
 	size_t fromRow = std::max(0, int(bboxP1.getX() / GRIDCELL_SIZE));
 	size_t toRow = std::max(0, int(bboxP2.getX() / GRIDCELL_SIZE));
@@ -281,13 +191,7 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
 				factor *= o->calculateAttenuation(senderPos, receiverPos);
 
 				// draw a "hit!" bubble
-				if ((draw) && (factor != factorOld) && (drawnObstacles.find(o) != drawnObstacles.end())) {
-					const std::list<cModule*>& mods = drawnObstacles.find(o)->second;
-					if (mods.size() > 0) {
-						cModule* mod = *mods.begin();
-						mod->bubble("hit");
-					}
-				}
+				if (annotations && (factor != factorOld)) annotations->drawBubble(o->getBboxP1(), "hit");
 
 				// bail if attenuation is already extremely high
 				if (factor < 1e-30) break;

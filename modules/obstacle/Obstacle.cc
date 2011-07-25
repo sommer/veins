@@ -21,6 +21,7 @@
 #include "obstacle/Obstacle.h"
 
 Obstacle::Obstacle(std::string id, double attenuationPerWall, double attenuationPerMeter) :
+	visualRepresentation(0),
 	id(id),
 	attenuationPerWall(attenuationPerWall),
 	attenuationPerMeter(attenuationPerMeter) {

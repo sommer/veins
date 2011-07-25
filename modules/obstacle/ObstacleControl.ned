@@ -26,8 +26,6 @@ simple ObstacleControl
 {
     parameters:
         bool debug = default(false);  // emit debug messages?
-        bool enabled = default(true);  // when false all obstacles are ignored
-        volatile bool draw = default(false);  // draw obstacles?
         xml obstacles = default(emptyxmldoc("obstacles")); // obstacles to add at startup
         @display("i=misc/town");
         @labels(node);

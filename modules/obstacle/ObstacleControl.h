@@ -26,6 +26,7 @@
 #include <omnetpp.h>
 #include "Coord.h"
 #include "obstacle/Obstacle.h"
+#include "world/annotations/AnnotationManager.h"
 
 /**
  * ObstacleControl models obstacles that block radio transmissions.
@@ -38,20 +39,15 @@ class ObstacleControl : public cSimpleModule
 {
 	public:
 		~ObstacleControl();
-		void initialize();
+		void initialize(int stage);
+		int numInitStages() const { return 2; }
 		void finish();
 		void handleMessage(cMessage *msg);
 		void handleSelfMsg(cMessage *msg);
-		void handleParameterChange(const char *parname);
 
 		void addFromXml(cXMLElement* xml);
 		void add(Obstacle obstacle);
 		void erase(const Obstacle* obstacle);
-
-		void draw(const Obstacle* obstacle);
-		void expunge(const Obstacle* obstacle);
-		void drawObstacles();
-		void expungeObstacles();
 
 		/**
 		 * calculate additional attenuation by obstacles, return signal strength
@@ -86,15 +82,14 @@ class ObstacleControl : public cSimpleModule
 		typedef std::list<Obstacle*> ObstacleGridCell;
 		typedef std::vector<ObstacleGridCell> ObstacleGridRow;
 		typedef std::vector<ObstacleGridRow> Obstacles;
-		typedef std::map<const Obstacle*, std::list<cModule*> > DrawnObstacles;
 		typedef std::map<CacheKey, double> CacheEntries;
 
 		bool debug; /**< whether to emit debug messages */
-		bool enabled; /**< when false all obstacles are ignored */
 		cXMLElement* obstaclesXml; /**< obstacles to add at startup */
 
 		Obstacles obstacles;
-		DrawnObstacles drawnObstacles;
+		AnnotationManager* annotations;
+		AnnotationManager::Group* annotationGroup;
 		mutable CacheEntries cacheEntries;
 };
 

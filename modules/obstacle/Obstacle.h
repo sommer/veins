@@ -23,6 +23,7 @@
 
 #include <vector>
 #include "Coord.h"
+#include "world/annotations/AnnotationManager.h"
 
 /**
  * stores information about an Obstacle for ObstacleControl
@@ -39,6 +40,8 @@ class Obstacle {
 		const Coord getBboxP2() const;
 
 		double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const;
+
+		AnnotationManager::Annotation* visualRepresentation;
 
 	protected:
 		std::string id;

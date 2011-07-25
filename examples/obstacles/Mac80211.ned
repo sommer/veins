@@ -26,6 +26,7 @@ package org.mixim.examples.obstacles;
 
 import org.mixim.tests.power.Nic80211Test.Host;
 import org.mixim.modules.obstacle.ObstacleControl;
+import org.mixim.modules.world.annotations.AnnotationManager;
 import org.mixim.base.modules.BaseWorldUtility;
 import org.mixim.base.connectionManager.ConnectionManager;
 
@@ -68,6 +69,9 @@ network Mac80211
         }
         obstacles: ObstacleControl {
             @display("p=240,50");
+        }
+        annotations: AnnotationManager {
+            @display("p=260,50");
         }
         host[numHosts]: Host {
             @display("p=20,20;b=20,20,rect,yellow,,;i=device/wifilaptop");
