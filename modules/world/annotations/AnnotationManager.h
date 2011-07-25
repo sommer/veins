@@ -120,7 +120,7 @@ class AnnotationManager : public cSimpleModule
 class AnnotationManagerAccess
 {
 	public:
-		AnnotationManager* get() {
+		AnnotationManager* getIfExists() {
 			return FindModule<AnnotationManager*>::findGlobalModule();
 		};
 };
