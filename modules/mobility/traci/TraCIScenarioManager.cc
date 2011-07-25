@@ -281,7 +281,7 @@ void TraCIScenarioManager::init_traci() {
 		netbounds1 = TraCICoord(x1, y1);
 		netbounds2 = TraCICoord(x2, y2);
 		MYDEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
-		if ((traci2omnet(netbounds2).getX() > world->getPgs()->getX()) || (traci2omnet(netbounds2).getY() > world->getPgs()->getY())) MYDEBUG << "WARNING: Playground size (" << world->getPgs()->getX() << ", " << world->getPgs()->getY() << ") might be too small for vehicle at network bounds (" << traci2omnet(netbounds2).getX() << ", " << traci2omnet(netbounds2).getY() << ")" << endl;
+		if ((traci2omnet(netbounds2).getX() > world->getPgs()->getX()) || (traci2omnet(netbounds1).getY() > world->getPgs()->getY())) MYDEBUG << "WARNING: Playground size (" << world->getPgs()->getX() << ", " << world->getPgs()->getY() << ") might be too small for vehicle at network bounds (" << traci2omnet(netbounds2).getX() << ", " << traci2omnet(netbounds1).getY() << ")" << endl;
 	}
 
 	{
