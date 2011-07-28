@@ -52,8 +52,14 @@ void SimTracer::initialize(int stage)
     nbApplPacketsReceived = 0;
 
     // retrieve pointer to BaseWorldUtility module
-    world = check_and_cast<BaseWorldUtility*>(cSimulation::getActiveSimulation()->getModuleByPath("sim.world"));
-	  catPacket = world->subscribe(this, &packet, -1);
+    world = FindModule<BaseWorldUtility*>::findGlobalModule();
+    //world = check_and_cast<BaseWorldUtility*>(cSimulation::getActiveSimulation()->getModuleByPath("sim.world"));
+    if (world) {
+      catPacket = world->subscribe(this, &packet, -1);
+    }
+    else {
+      error("No BaseWorldUtility module found, please check your ned configuration.");
+    }
 
 //  } else if(stage == 1) {  // it seems that we are initialized only once. Why ?
   }

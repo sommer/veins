@@ -85,15 +85,20 @@ void WiseRoute::initialize(int stage)
 
 		if(useSimTracer) {
 		  // Get a handle to the tracer module
-		  const char *tracerModulePath = "sim.simTracer";
-		  cModule *modp = simulation.getModuleByPath(tracerModulePath);
-		  tracer = check_and_cast<SimTracer *>(modp);
-		}
-		// log node position
-		BaseMobility * mobility;
-		mobility = check_and_cast<BaseMobility*>(getParentModule()->getSubmodule("mobility"));
-		if(useSimTracer) {
-//		  tracer->logPosition(myNetwAddr, mobility->getX(), mobility->getY());
+		  tracer = FindModule<SimTracer*>::findGlobalModule(); 
+		  //const char *tracerModulePath = "sim.simTracer";
+		  //cModule *modp = simulation.getModuleByPath(tracerModulePath);
+		  //tracer = check_and_cast<SimTracer *>(modp);
+		  if (!tracer) {
+			error("No SimTracer module found, please check your ned configuration.");
+		  }
+		  // log node position
+		  // currently not used
+		  /*cModule* mobilityModule = getParentModule()->getSubmodule("mobility");
+		  if (mobilityModule) {
+			BaseMobility* mobility = check_and_cast<BaseMobility*>(mobilityModule);
+			tracer->logPosition(myNetwAddr, mobility->getX(), mobility->getY());
+		  }*/
 		}
 	}
 }
