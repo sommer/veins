@@ -88,14 +88,7 @@ void TraCIMobility::initialize(int stage)
 		statistics.initialize();
 		statistics.watch(*this);
 
-		if (!isPreInitialized) {
-			external_id = -1;
-			nextPos = move.getStartPos();
-			road_id = -1; 
-			speed = -1; 
-			angle = M_PI; 
-			move.setStart(Coord(-1, -1));
-		}
+		ASSERT(isPreInitialized);
 		isPreInitialized = false;
 
 		move.setStart(nextPos);
