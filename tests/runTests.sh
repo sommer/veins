@@ -29,3 +29,6 @@ cd ../radioState
 echo "---------Mapping (may take a while)-----------"
 cd ../mapping
 ./runTest.sh
+echo "----------TraCI (may take a while)------------"
+cd ../traci
+./runTest.sh
