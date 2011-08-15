@@ -41,7 +41,7 @@ simple SensorApplLayer like IBaseApplLayer {
         double nbPackets = default(0);
         int destAddr = default(0);
         string trafficType = default("periodic");  	// Can be one of: periodic, uniform or exponential
-        double trafficParam = default(1);			// the mean time between two packets
+        double trafficParam @unit(s) = default(1 s);			// the mean time between two packets
         double initializationTime @unit(s) = default( 1 min); // minimum time before generation of the first packet
 		int headerLength @unit(byte) = default(2 byte);
     gates:

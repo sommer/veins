@@ -7,7 +7,7 @@ simple TestApplication
         bool debug; // debug switch
         bool stats;   // stats switch
         bool trace; // trace switch
-        double trafficParam;   // mean time between packets (poisson arrival rate)
+        double trafficParam @unit(s);   // mean time between packets (poisson arrival rate)
         double nodeAddr;        // node address
 	double dstAddr;		// packet destination node address
         bool flood;                   // send packets continuously
