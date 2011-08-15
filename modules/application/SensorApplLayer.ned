@@ -44,7 +44,7 @@ simple SensorApplLayer like IBaseApplLayer {
         double trafficParam @unit(s) = default(1 s);			// the mean time between two packets
         double initializationTime @unit(s) = default( 1 min); // minimum time before generation of the first packet
 		int headerLength @unit(byte) = default(2 byte);
-        bool notAffectedByHostState = default(false);
+        bool notAffectedByHostState = default(true);
     gates:
         input lowerGateIn; // from network layer
         input lowerControlIn;
