@@ -263,7 +263,7 @@ protected:
 
 private:
 	/** @brief Manages the connections of a registered nic. */
-    void updateNicConnections(NicEntries& nmap, NicEntry* nic);
+    void updateNicConnections(NicEntries& nmap, NicEntries::mapped_type nic);
 
     /**
      * @brief Check connections of a nic in the grid
@@ -335,6 +335,17 @@ protected:
 	 * @param newPos the new position of the nic
 	 */
 	virtual void updateConnections(int nicID, const Coord* oldPos, const Coord* newPos);
+	/**
+	 * @brief Check if the two nic's are in range.
+	 *
+	 * This function will be used to decide if two nic's shall be connected or not. It
+	 * is simple to overload this function to enhance the decision for connection or not.
+	 *
+	 * @param pFromNic Nic source point which should be checked.
+	 * @param pToNic   Nic target point which should be checked.
+	 * @return true if the nic's are in range and can be connected, false if not.
+	 */
+	virtual bool isInRange(NicEntries::mapped_type pFromNic, NicEntries::mapped_type pToNic);
 
 public:
 
@@ -377,10 +388,10 @@ public:
 	void updateNicPos(int nicID, const Coord* newPos);
 
 	/** @brief Returns the ingates of all nics in range*/
-	const NicEntry::GateList& getGateList( int nicID);
+	const NicEntry::GateList& getGateList( int nicID) const;
 
 	/** @brief Returns the ingate of the with id==targetID, or 0 if not in range*/
-	const cGate* getOutGateTo(const NicEntry* nic, const NicEntry* targetNic);
+	const cGate* getOutGateTo(const NicEntry* nic, const NicEntry* targetNic) const;
 };
 
 #endif /*BASECONNECTIONMANAGER_H_*/
