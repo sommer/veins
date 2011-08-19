@@ -36,22 +36,29 @@ void BonnMotionMobility::initialize(int stage)
         if (nodeId == -1)
             nodeId = getParentModule()->getIndex();
 
-        const char *fname = par("traceFile");
+        const char*           fname  = par("traceFile");
         const BonnMotionFile *bmFile = BonnMotionFileCache::getInstance()->getFile(fname);
 
         vecp = bmFile->getLine(nodeId);
         if (!vecp)
             error("invalid nodeId %d -- no such line in file '%s'", nodeId, fname);
         vecpos = 0;
+        bIs3D  = par("is3D").boolValue();
+
+        if ((bIs3D && (vecp->size() % 4 != 0)) || (!bIs3D && (vecp->size() % 3 != 0)))
+        	opp_warning("nodeId %d -- missing bon-motion elements in '%s'", nodeId, fname);
 
         // obtain initial position
         const BonnMotionFile::Line& vec = *vecp;
-        if (vec.size()>=3){
-
-        	move.setStart(Coord(vec[1], vec[2]), vec[0]);
-
-			//vecpos += 3;
-			targetPos = move.getStartPos();
+        if (vec.size() >= (bIs3D ? 4 : 3)) {
+        	if (!bIs3D || world->use2D()) {
+        		move.setStart(Coord(vec[1], vec[2]), vec[0]);
+        	}
+        	else {
+        		move.setStart(Coord(vec[1], vec[2], vec[3]), vec[0]);
+        	}
+			//vecpos += (bIs3D ? 4 : 3);
+			targetPos  = move.getStartPos();
 			targetTime = simTime();
 			//stepTarget = move.startPos;
 
@@ -60,13 +67,6 @@ void BonnMotionMobility::initialize(int stage)
 			debugEV << "start pos: t=" << move.getStartTime() << move.getStartPos().info() << endl;
         }
     }
-    else
-	{
-		if(!world->use2D()) {
-			opp_warning("This mobility module does not yet support 3 dimensional movement."\
-						"Movements will probably be incorrect.");
-		}
-	}
 }
 
 BonnMotionMobility::~BonnMotionMobility()
@@ -78,17 +78,19 @@ void BonnMotionMobility::setTargetPosition()
 {
     const BonnMotionFile::Line& vec = *vecp;
 
-    if (vecpos+2 >= vec.size())
+    if (vecpos+(bIs3D ? 3 : 2) >= vec.size())
     {
-	move.setSpeed(0);
-	debugEV << "host is stationary now!!!\n";
+		move.setSpeed(0);
+		debugEV << "host is stationary now!!!\n";
         return;
     }
 
     targetTime = vec[vecpos];
     targetPos.setX(vec[vecpos+1]);
     targetPos.setY(vec[vecpos+2]);
-    vecpos += 3;
+    if (bIs3D && !world->use2D())
+        targetPos.setZ(vec[vecpos+3]);
+    vecpos    += (bIs3D ? 4 : 3);
 
     debugEV << "TARGET: t=" << targetTime << targetPos.info() << "\n";
 }

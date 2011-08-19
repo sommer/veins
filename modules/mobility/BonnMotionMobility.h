@@ -26,7 +26,6 @@
 /**
  * @brief Uses the BonnMotion native file format. See NED file for more info.
  *
- * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Andras Varga
  */
@@ -36,6 +35,7 @@ class  BonnMotionMobility : public LineSegmentsMobilityBase
     // state
     const BonnMotionFile::Line *vecp;
     unsigned vecpos;
+    bool     bIs3D;
 
   public:
     //Module_Class_Members(BonnMotionMobility, LineSegmentsMobilityBase, 0);

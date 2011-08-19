@@ -30,14 +30,13 @@ void CircleMobility::initialize(int stage)
 
     debugEV << "initializing CircleMobility stage " << stage << endl;
 
-
-
-
-    if (stage == 0)
-    {
+    if (stage == 0) {
         // read parameters
         center.setX(par("cx"));
         center.setY(par("cy"));
+        if(!world->use2D()) {
+        	center.setZ(par("cz"));
+        }
         r = par("r");
         ASSERT(r>0);
         angle = par("startAngle").doubleValue()/180.0*PI;
@@ -45,17 +44,15 @@ void CircleMobility::initialize(int stage)
         omega = move.getSpeed()/r;
 
         // calculate initial position
-        move.setStart( Coord(center.getX() + r * cos(angle), center.getY() + r * sin(angle)) );
+        if(!world->use2D()) {
+        	move.setStart( Coord(center.getX() + r * cos(angle), center.getY() + r * sin(angle), center.getZ()) );
+        }
+        else {
+        	move.setStart( Coord(center.getX() + r * cos(angle), center.getY() + r * sin(angle)) );
+        }
 
         targetPos = move.getStartPos();
     }
-    else
-	{
-		if(!world->use2D()) {
-			opp_warning("This mobility module does not yet support 3 dimensional movement."\
-						"Movements will probably be incorrect.");
-		}
-	}
 }
 
 

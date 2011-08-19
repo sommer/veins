@@ -25,15 +25,16 @@ import org.mixim.base.modules.BaseMobility;
 // Uses the native file format of BonnMotion (http://www.cs.uni-bonn.de/IV/BonnMotion/).
 //
 // The file is a plain text file, where every line describes the motion
-// of one host. A line consists of one or more (t, x, y) triplets of real
+// of one host. A line consists of one or more (t, x, y) triplets ((t, x, y, z) in 3D mode) of real
 // numbers, like:
 //
-// t1 x1 y1 t2 x2 y2 t3 x3 y3 t4 x4 y4 ...
+// t1 x1 y1    t2 x2 y2    t3 x3 y3    t4 x4 y4 ...
+// 3d mode:
+// t1 x1 y1 z1 t2 x2 y2 z2 t3 x3 y3 z3 t4 x4 y4 z4...
 //
 // The meaning is that the given node gets to (xk,yk) at tk. There's no
 // separate notation for wait, so x and y coordinates will be repeated there.
 //
-// NOTE: Does not yet support 3-dimensional movement.
 // @author Andras Varga
 //
 simple BonnMotionMobility extends BaseMobility
@@ -41,10 +42,11 @@ simple BonnMotionMobility extends BaseMobility
     parameters:
         @class(BonnMotionMobility);
         
-        bool debug; // debug switch
+        bool   debug; // debug switch
         string traceFile; // the BonnMotion trace file
         double nodeId; // selects line in trace file; -1 gets substituted to parent module's index
         double updateInterval @unit(s); // time interval to update the hosts position (in seconds)
+        bool   is3D = default(false);
 }
 
 

@@ -22,13 +22,6 @@
 
 void LineSegmentsMobilityBase::initialize(int stage) {
 	BaseMobility::initialize(stage);
-
-	if(stage == 1) {
-		if(!world->use2D()) {
-			opp_warning("This mobility module does not yet support 3-dimensional movement."\
-						"Movements will probably be incorrect.");
-		}
-	}
 }
 
 void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
@@ -44,7 +37,6 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
     // choose new targetTime and targetPos
     setTargetPosition();
 
-
     debugEV << "startPos: " << move.getStartPos().info() << " targetPos: " << targetPos.info() << endl;
 
     if (targetTime<now)
@@ -54,6 +46,8 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
         // end of movement
         stepSize.setX(0);
         stepSize.setY(0);
+        if (move.getStartPos().is3D())
+        	stepSize.setZ(0);
         debugEV << "speed < 0; stop moving!\n";
         delete msg;
     }
@@ -62,6 +56,8 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
     	debugEV << "warning, we are not moving!\n";
         stepSize.setX(0);
         stepSize.setY(0);
+        if (move.getStartPos().is3D())
+            stepSize.setZ(0);
         scheduleAt(std::max(targetTime,simTime()), msg);
     }
     else{
@@ -78,7 +74,7 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
 
 	move.setDirectionByTarget( targetPos );
 
-	stepSize = stepSize / numIntervals;
+	stepSize    = stepSize / numIntervals;
 	stepTarget += stepSize;
 
 	move.setSpeed(move.getStartPos().distance( targetPos ) / (targetTime - now ));

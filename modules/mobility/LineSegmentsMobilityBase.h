@@ -29,7 +29,6 @@
  * Subclasses must redefine setTargetPosition() which is supposed to set
  * a new target position and target time once the previous one is reached.
  *
- * NOTE: Does not yet support 3-dimensional movement.
  * @ingroup mobility
  * @author Andras Varga
  */

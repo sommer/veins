@@ -22,7 +22,6 @@ import org.mixim.base.modules.BaseMobility;
 //
 // Moves the node around a circle.
 //
-// NOTE: Does not yet support 3-dimensional movement.
 // @see ConnectionManager
 // @author Andras Varga
 //
@@ -33,6 +32,7 @@ simple CircleMobility extends BaseMobility
         bool debug; // debug switch
         double cx; // x coord of the center of the circle
         double cy; // y coord of the center of the circle
+        double cz = default(0); // z coord of the center of the circle
         double r; // radius of the circle
         double speed @unit(mps); // speed of the host (in m/s)
         double startAngle @unit(deg); // starting angle (degreees)
