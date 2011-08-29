@@ -52,14 +52,13 @@ class BaseLayer : public BatteryAccess
 
     /*@}*/
 
-    /** @brief Do we track statistics?*/
-    bool doStats;
     /** @brief Blackboard category for PassedMessage BBItems.*/
-    int  catPassedMsg;
-    /** @brief The last message passed through this layer.*/
-    PassedMessage *passedMsg;
+    int            catPassedMsg;
+    /** @brief The last message passed through this layer. This variable will be only not NULL if we are
+               in statistic recording mode.*/
+    PassedMessage* passedMsg;
     /** @brief This layers hosts id.*/
-    int  hostId;
+    int            hostId;
 
 public:
     //Module_Class_Members(BaseLayer, BaseModule, 0 );

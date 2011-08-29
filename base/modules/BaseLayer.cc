@@ -35,22 +35,21 @@
  **/
 void BaseLayer::initialize(int stage)
 {
-	BatteryAccess::initialize(stage);
+    BatteryAccess::initialize(stage);
     if(stage==0){
+        passedMsg = NULL;
         if (hasPar("stats") && par("stats").boolValue()) {
-            doStats = true;
             passedMsg = new PassedMessage();
-            catPassedMsg = utility->getCategory(passedMsg);
-            passedMsg->fromModule = getId();
-            hostId = findHost()->getId();
+            if (passedMsg != NULL) {
+                catPassedMsg          = utility->getCategory(passedMsg);
+                passedMsg->fromModule = getId();
+                hostId                = findHost()->getId();
+            }
         }
-        else {
-            doStats = false;
-        }
-        upperGateIn  = findGate("upperGateIn");
-        upperGateOut = findGate("upperGateOut");
-        lowerGateIn  = findGate("lowerGateIn");
-        lowerGateOut = findGate("lowerGateOut");
+        upperGateIn     = findGate("upperGateIn");
+        upperGateOut    = findGate("upperGateOut");
+        lowerGateIn     = findGate("lowerGateIn");
+        lowerGateOut    = findGate("lowerGateOut");
         upperControlIn  = findGate("upperControlIn");
         upperControlOut = findGate("upperControlOut");
         lowerControlIn  = findGate("lowerControlIn");
@@ -126,13 +125,14 @@ void BaseLayer::sendControlDown(cMessage *msg) {
 }
 
 void BaseLayer::recordPacket(PassedMessage::direction_t dir,
-                             PassedMessage::gates_t gate,
-                             const cMessage * msg) {
-    if (!doStats) return;
+                             PassedMessage::gates_t     gate,
+                             const cMessage*            msg) {
+    if (passedMsg == NULL)
+        return;
     passedMsg->direction = dir;
-    passedMsg->gateType = gate;
-    passedMsg->kind = msg->getKind();
-    passedMsg->name = msg->getName();
+    passedMsg->gateType  = gate;
+    passedMsg->kind      = msg->getKind();
+    passedMsg->name      = msg->getName();
     utility->publishBBItem(catPassedMsg, passedMsg, hostId);
 }
 
@@ -142,7 +142,7 @@ void BaseLayer::finish() {
 
 BaseLayer::~BaseLayer()
 {
-    if (doStats) {
+    if (passedMsg != NULL) {
         delete passedMsg;
     }
 }
