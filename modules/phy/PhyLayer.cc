@@ -14,6 +14,7 @@
 #include <SNRThresholdDecider.h>
 #include <JakesFading.h>
 #include <PERModel.h>
+#include <TwoRayInterferenceModel.h>
 
 Define_Module(PhyLayer);
 
@@ -38,6 +39,11 @@ AnalogueModel* PhyLayer::getAnalogueModelFromName(std::string name, ParameterMap
 	{
 		return initializePERModel(params);
 	}
+	else if (name == "TwoRayInterferenceModel")
+	{
+		return initializeTwoRayInterferenceModel(params);
+	}
+
 	return BasePhyLayer::getAnalogueModelFromName(name, params);
 }
 
@@ -158,6 +164,12 @@ AnalogueModel* PhyLayer::initializeBreakpointPathlossModel(ParameterMap& params)
 
 	return new BreakpointPathlossModel(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, &move, useTorus, playgroundSize, coreDebug);
 
+}
+
+AnalogueModel* PhyLayer::initializeTwoRayInterferenceModel(ParameterMap& params) {
+	double dielectricConstant= params["DielectricConstant"].doubleValue();
+
+	return new TwoRayInterferenceModel(&move, dielectricConstant, coreDebug);
 }
 
 AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){

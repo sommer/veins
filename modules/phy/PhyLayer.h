@@ -74,6 +74,12 @@ protected:
 	virtual AnalogueModel* initializePERModel(ParameterMap& params);
 
 	/**
+	 * @brief Creates and initializes a TwoRayInterferenceModel with the
+	 * passed parameter values.
+	 */
+	AnalogueModel* initializeTwoRayInterferenceModel(ParameterMap& params);
+
+	/**
 	 * @brief Creates and returns an instance of the Decider with the specified
 	 * name.
 	 *
