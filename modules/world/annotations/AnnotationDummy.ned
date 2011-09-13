@@ -1,5 +1,5 @@
 //
-// InlineXmlDoc - provides inline xml functions
+// AnnotationDummy - workaround to visualize annotations
 // Copyright (C) 2010 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
 //
 // This program is free software; you can redistribute it and/or
@@ -17,16 +17,14 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-#ifndef UTIL_INLINEXMLDOC_H
-#define UTIL_INLINEXMLDOC_H
+package org.mixim.modules.world.annotations;
 
-#include <omnetpp.h>
+//
+// workaround to visualize annotations
+//
+simple AnnotationDummy
+{
+    parameters:
+        @display("b=70,30,oval,red,black,4");
+}
 
-/**
- * emptyxmldoc("s") returns an empty XML document <s></s>
- *
- * @author Christoph Sommer
- */
-static cNEDValue nedf_emptyxmldoc(cComponent *context, cNEDValue argv[], int argc);
-
-#endif

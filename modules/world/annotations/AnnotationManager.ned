@@ -1,5 +1,5 @@
 //
-// InlineXmlDoc - provides inline xml functions
+// AnnotationManager - manages annotations on the OMNeT++ canvas
 // Copyright (C) 2010 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
 //
 // This program is free software; you can redistribute it and/or
@@ -17,16 +17,18 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-#ifndef UTIL_INLINEXMLDOC_H
-#define UTIL_INLINEXMLDOC_H
+package org.mixim.modules.world.annotations;
 
-#include <omnetpp.h>
+//
+// manages annotations on the OMNeT++ canvas
+//
+simple AnnotationManager
+{
+    parameters:
+        bool debug = default(false);  // emit debug messages?
+        volatile bool draw = default(false);  // draw annotations?
+        xml annotations = default(emptyxmldoc("annotations")); // annotations to add at startup
+        @display("i=msg/paperclip");
+        @labels(node);
+}
 
-/**
- * emptyxmldoc("s") returns an empty XML document <s></s>
- *
- * @author Christoph Sommer
- */
-static cNEDValue nedf_emptyxmldoc(cComponent *context, cNEDValue argv[], int argc);
-
-#endif

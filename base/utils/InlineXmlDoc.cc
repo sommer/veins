@@ -21,12 +21,12 @@
 
 Define_NED_Function2(nedf_emptyxmldoc, "xml emptyxmldoc(string s)", "strings", "returns an empty XML document <s></s>.");
 
-static cDynamicExpression::Value nedf_emptyxmldoc(cComponent *context, cDynamicExpression::Value argv[], int argc) {
+static cNEDValue nedf_emptyxmldoc(cComponent *context, cNEDValue argv[], int argc) {
 	if (argc != 1) throw cRuntimeError("emptyxmldoc(): takes exactly 1 argument");
-	std::string s = argv[0].s;
+	std::string s = argv[0].stdstringValue();
 
 	cXMLElement* root = new cXMLElement(s.c_str(), "inline", 0);
 
-	return cDynamicExpression::Value(root);
+	return cNEDValue(root);
 }
 
