@@ -27,6 +27,6 @@
  *
  * @author Christoph Sommer
  */
-static cDynamicExpression::Value nedf_emptyxmldoc(cComponent *context, cDynamicExpression::Value argv[], int argc);
+static cNEDValue nedf_emptyxmldoc(cComponent *context, cNEDValue argv[], int argc);
 
 #endif
