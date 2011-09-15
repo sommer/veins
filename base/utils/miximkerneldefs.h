@@ -1,0 +1,6 @@
+#ifndef MIXIMKERNELDEFS_H_
+#define MIXIMKERNELDEFS_H_
+
+#define MIXIM_VERSION 0x0201
+
+#endif

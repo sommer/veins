@@ -20,7 +20,8 @@ BasePhyLayer::BasePhyLayer():
 	decider(0),
 	radioSwitchingOverTimer(0),
 	txOverTimer(0),
-	world(0)
+	headerLength(-1),
+	world(NULL)
 {}
 
 template<class T> T BasePhyLayer::readPar(const char* parName, const T defaultValue){
@@ -48,41 +49,41 @@ void BasePhyLayer::initialize(int stage) {
 		gate("radioIn")->setDeliverOnReceptionStart(true);
 
 		//get gate ids
-		upperGateIn = findGate("upperGateIn");
-        upperGateOut = findGate("upperGateOut");
-        upperControlOut = findGate("upperControlOut");
-        upperControlIn = findGate("upperControlIn");
+		upperGateIn     = findGate("upperGateIn");
+		upperGateOut    = findGate("upperGateOut");
+		upperControlOut = findGate("upperControlOut");
+		upperControlIn  = findGate("upperControlIn");
 
 		//read simple ned-parameters
 		//	- initialize basic parameters
-        if(par("useThermalNoise").boolValue()) {
+		if(par("useThermalNoise").boolValue()) {
 			double thermalNoiseVal = FWMath::dBm2mW(par("thermalNoise").doubleValue());
 			thermalNoise = new ConstantSimpleConstMapping(DimensionSet::timeDomain,
-														  thermalNoiseVal);
+			                                              thermalNoiseVal);
 		} else {
 			thermalNoise = 0;
 		}
-        headerLength = par("headerLength").longValue();
-		sensitivity = par("sensitivity").doubleValue();
-		sensitivity = FWMath::dBm2mW(sensitivity);
-		maxTXPower = par("maxTXPower").doubleValue();
+		headerLength = par("headerLength").longValue();
+		sensitivity  = par("sensitivity").doubleValue();
+		sensitivity  = FWMath::dBm2mW(sensitivity);
+		maxTXPower   = par("maxTXPower").doubleValue();
 
-		recordStats = par("recordStats").boolValue();
+		recordStats  = par("recordStats").boolValue();
 
 		//	- initialize radio
 		radio = initializeRadio();
 
 		// get pointer to the world module
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
-        if (world == NULL) {
-            opp_error("Could not find BaseWorldUtility module");
-        }
+		if (world == NULL) {
+			opp_error("Could not find BaseWorldUtility module");
+		}
 
-        if(cc->hasPar("sat")
+		if(cc->hasPar("sat")
 		   && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
-            opp_error("Sensitivity can't be smaller than the "
-					  "signal attenuation threshold (sat) in ConnectionManager. "
-					  "Please adjust your omnetpp.ini file accordingly.");
+			opp_error("Sensitivity can't be smaller than the "
+			          "signal attenuation threshold (sat) in ConnectionManager. "
+			          "Please adjust your omnetpp.ini file accordingly.");
 		}
 
 //	} else if (stage == 1){
@@ -100,15 +101,15 @@ void BasePhyLayer::initialize(int stage) {
 }
 
 Radio* BasePhyLayer::initializeRadio() {
-	int initialRadioState = par("initialRadioState").longValue();
-	double radioMinAtt = par("radioMinAtt").doubleValue();
-	double radioMaxAtt = par("radioMaxAtt").doubleValue();
-	int nbRadioChannels = readPar("nbRadioChannels", 1);
-	int initialRadioChannel = readPar("initialRadioChannel", 0);
+	int    initialRadioState   = par("initialRadioState").longValue();
+	double radioMinAtt         = par("radioMinAtt").doubleValue();
+	double radioMaxAtt         = par("radioMaxAtt").doubleValue();
+	int    nbRadioChannels     = readPar("nbRadioChannels", 1);
+	int    initialRadioChannel = readPar("initialRadioChannel", 0);
 
 	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState,
-										 radioMinAtt, radioMaxAtt,
-										 initialRadioChannel, nbRadioChannels);
+	                                     radioMinAtt, radioMaxAtt,
+	                                     initialRadioChannel, nbRadioChannels);
 
 	//	- switch times to TX
 	simtime_t rxToTX = par("timeRXToTX").doubleValue();
@@ -146,7 +147,7 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 	cXMLElementList parameters = xmlData->getElementsByTagName("Parameter");
 
 	for(cXMLElementList::const_iterator it = parameters.begin();
-		it != parameters.end(); it++) {
+	    it != parameters.end(); it++) {
 
 		const char* name = (*it)->getAttribute("name");
 		const char* type = (*it)->getAttribute("type");
@@ -771,7 +772,9 @@ ChannelState BasePhyLayer::getChannelState() {
 
 int BasePhyLayer::getPhyHeaderLength() {
 	Enter_Method_Silent();
-	return par("headerLength").longValue();
+	if (headerLength < 0)
+		return par("headerLength").longValue();
+	return headerLength;
 }
 
 void BasePhyLayer::setCurrentRadioChannel(int newRadioChannel) {

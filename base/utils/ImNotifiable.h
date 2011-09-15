@@ -2,7 +2,7 @@
 #define IMNOTIFIABLE_H_
 
 #include <omnetpp.h>
-
+#include "miximkerneldefs.h"
 
 /**
  * @brief Contains detailed information about the items published using the

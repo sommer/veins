@@ -5,7 +5,7 @@
 
 Define_Module(PhyLayerUWBIR);
 
-//cDynamicExpression::Value (PhyLayerUWBIR::*ghassemzadehNLOSFPtr) (cComponent *context, cDynamicExpression::Value argv[], int argc) = &ghassemzadehNLOSFunc;
+//t_dynamic_expression_value (PhyLayerUWBIR::*ghassemzadehNLOSFPtr) (cComponent *context, t_dynamic_expression_value argv[], int argc) = &ghassemzadehNLOSFunc;
 PhyLayerUWBIR::fptr ghassemzadehNLOSFPtr = &PhyLayerUWBIR::ghassemzadehNLOSFunc;
 Define_NED_Function(ghassemzadehNLOSFPtr, "xml ghassemzadehNLOS()");
 

@@ -22,6 +22,7 @@
 #define _COORD_H
 
 #include <omnetpp.h>
+#include "miximkerneldefs.h"
 #include "FWMath.h"
 
 /**

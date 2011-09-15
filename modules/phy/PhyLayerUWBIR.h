@@ -82,6 +82,12 @@ class DeciderUWBIREDSync;
 #include "DeciderUWBIREDSyncOnAddress.h"
 #include "DeciderUWBIREDSync.h"
 
+#if (OMNETPP_VERSION >= 0x0402)
+	typedef cNEDValue 				  t_dynamic_expression_value;
+#else
+	typedef cDynamicExpression::Value t_dynamic_expression_value;
+#endif
+
 /**
  * @brief Physical layer that models an Ultra Wideband Impulse Radio wireless communication system.
  *
@@ -126,7 +132,7 @@ public:
     void finish();
 
     // this function allows to include common xml documents for ned parameters as ned functions
-    static cDynamicExpression::Value ghassemzadehNLOSFunc(cComponent *context, cDynamicExpression::Value argv[], int argc) {
+    static t_dynamic_expression_value ghassemzadehNLOSFunc(cComponent *context, t_dynamic_expression_value argv[], int argc) {
       const char * ghassemzadehnlosxml =
     		  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
     		  "<root>"
@@ -143,12 +149,12 @@ public:
     		  "</root>";
       cXMLParImpl xmlParser;
       xmlParser.parse(ghassemzadehnlosxml);  // from char* to xml
-      cDynamicExpression::Value parameters(xmlParser.xmlValue(NULL)); // from xml to Value
+      t_dynamic_expression_value parameters(xmlParser.xmlValue(NULL)); // from xml to Value
       return parameters;
     }
-    typedef cDynamicExpression::Value (*fptr) (cComponent *context, cDynamicExpression::Value argv[], int argc);
+    typedef t_dynamic_expression_value (*fptr) (cComponent *context, t_dynamic_expression_value argv[], int argc);
     static fptr ghassemzadehNLOSFPtr;
-    //static cDynamicExpression::Value (*ghassemzadehNLOSFPtr) (cComponent *context, cDynamicExpression::Value argv[], int argc);
+    //static t_dynamic_expression_value (*ghassemzadehNLOSFPtr) (cComponent *context, t_dynamic_expression_value argv[], int argc);
 
 
 
