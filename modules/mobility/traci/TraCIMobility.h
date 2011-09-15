@@ -123,7 +123,7 @@ class TraCIMobility : public BaseMobility
 		std::list<Coord> commandGetPolygonShape(std::string polyId) {
 			return getManager()->commandGetPolygonShape(polyId);
 		}
-		void commandSetPolygonShape(std::string polyId, std::list<std::pair<double, double> > points) {
+		void commandSetPolygonShape(std::string polyId, std::list<Coord> points) {
 			getManager()->commandSetPolygonShape(polyId, points);
 		}
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, std::string laneId, double emitPosition, double emitSpeed) {
