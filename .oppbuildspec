@@ -22,7 +22,8 @@
 <dir makemake-options="--make-so -o miximtestUtils -O out --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/testUtils" type="makemake"/>
 <dir makemake-options="-o WSNRouting -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/WSNRouting" type="makemake"/>
 <dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples" type="makemake"/>
-<dir makemake-options="--deep --make-so -o miximbase -O out --meta:export-library --meta:use-exported-libs" path="base" type="makemake"/>
+<dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="src" type="makemake"/>
+<dir makemake-options="--deep --make-so -o miximbase -O out --meta:export-library --meta:use-exported-libs" path="src/base" type="makemake"/>
 <dir makemake-options="-o multiConnectionManager -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/multiConnectionManager" type="makemake"/>
 <dir makemake-options="-o coord -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/coord" type="makemake"/>
 <dir makemake-options="-o deviceTest -O out -u CMDENV -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTest" type="makemake"/>
@@ -31,6 +32,6 @@
 <dir makemake-options="-o connectionManager -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/connectionManager" type="makemake"/>
 <dir makemake-options="--make-so -o powerTestUtils -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:use-exported-libs" path="tests/power/utils" type="makemake"/>
 <dir makemake-options="-o baseMobility -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/baseMobility" type="makemake"/>
-<dir makemake-options="--deep --make-so -o miximmodules -O out -lmiximbase --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="modules" type="makemake"/>
+<dir makemake-options="--deep --make-so -o miximmodules -O out -lmiximbase --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="src/modules" type="makemake"/>
 <dir makemake-options="-o blackboard -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/blackboard" type="makemake"/>
 </buildspec>

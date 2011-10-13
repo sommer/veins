@@ -327,7 +327,7 @@
 			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="makemake" path="modules/messages" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="makemake" path="src/modules/messages" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
 						<buildArguments>MODE=debug CONFIGNAME=${ConfigName}</buildArguments>
 						<buildTarget>makefiles</buildTarget>
@@ -677,7 +677,7 @@
 			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="makemake" path="modules/messages" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="makemake" path="src/modules/messages" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
 						<buildArguments>MODE=debug CONFIGNAME=${ConfigName}</buildArguments>
 						<buildTarget>makefiles</buildTarget>
