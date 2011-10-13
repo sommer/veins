@@ -44,7 +44,7 @@ void checkIterator(std::string msg, ConstMappingIterator& it,
 	if(hasNext){
 		try{
 			assertClose(msg + ": nextPos() at " + toString(arg), nextArg, it.getNextPosition());
-		}catch(NoNextIteratorException e){
+		}catch(NoNextIteratorException& e){
 			assertFalse("HasNext should be false on NoNextException.", hasNext);
 		}
 	}
@@ -69,7 +69,7 @@ void checkIteratorHard(std::string msg, ConstMappingIterator& it,
 	if(hasNext){
 		try{
 			assertEqual(msg + ": nextPos() at " + toString(arg), nextArg, it.getNextPosition());
-		}catch(NoNextIteratorException e){
+		}catch(NoNextIteratorException& e){
 			assertFalse("HasNext should be false on NoNextException.", hasNext);
 		}
 	}
@@ -125,9 +125,9 @@ void assertEqualNotSmaller(std::string msg, T& v1, T& v2){
 
 
 
-class OmnetTest:public SimpleTest {
+class MappingTest:public SimpleTest {
 protected:
-	std::map<double, std::map<simtime_t, Argument> > a;
+	std::map<Argument::mapped_type, std::map<simtime_t, Argument> > a;
 	std::map<simtime_t, Argument> t;
 	Dimension time;
 	Dimension freq;
@@ -155,20 +155,20 @@ protected:
 			return Argument(t);
 		}
 
-		Argument operator()(double v2, simtime_t t){
+		Argument operator()(Argument::mapped_type v2, simtime_t t){
 			Argument res(set2, t);
 			res.setArgValue(d2, v2);
 			return res;
 		}
 
-		Argument operator()(double v3, double v2, simtime_t t){
+		Argument operator()(Argument::mapped_type v3, Argument::mapped_type v2, simtime_t t){
 			Argument res(set3, t);
 			res.setArgValue(d2, v2);
 			res.setArgValue(d3, v3);
 			return res;
 		}
 
-		Argument operator()(Dimension other, double v2, simtime_t t){
+		Argument operator()(Dimension other, Argument::mapped_type v2, simtime_t t){
 			Argument res(t);
 			res.setArgValue(other, v2);
 			return res;
@@ -179,11 +179,11 @@ protected:
 
 	Mapping* createMappingBuffer;
 public:
-	OmnetTest():
+	MappingTest():
 		SimpleTest(),
 		time(Dimension::time_static()), freq("frequency"), channel(freq), space("space"),
 		A(freq, space), createMappingBuffer(0){
-		for(double i = 0.0; i <= 6.0; i+=0.25) {
+		for(Argument::mapped_type i = 0.0; i <= 6.0; i+=0.25) {
 			for(simtime_t j = 0.0; j <= 6.0; j+=0.25) {
 				a[i][j].setTime(j);
 				a[i][j].setArgValue(freq, i);
@@ -193,7 +193,7 @@ public:
 		t = a[3.0];
 	}
 
-	virtual ~OmnetTest() {
+	virtual ~MappingTest() {
 		if(createMappingBuffer)
 			delete createMappingBuffer;
 	}
@@ -501,8 +501,143 @@ protected:
 		delete res;
 	}
 
-	void testMultiFunction() {
+	void testMultiFunctionInfinity() {
+		DimensionSet dimSet(Dimension::time);
+		dimSet.addDimension(freq);
 
+		//ConstantSimpleConstMapping*	thermalNoiseS = new ConstantSimpleConstMapping(DimensionSet::timeDomain, FWMath::dBm2mW(-110.0));
+		MultiDimMapping<Linear>     NoiseMap(dimSet);
+		MultiDimMapping<Linear>     RecvPowerMap(dimSet);
+
+		/*
+		NoiseMap:
+		Mapping domain: time, frequency(1)
+		--------------+-------------------------------
+		o\t           | 140000.07 140000.07 140000.12
+		--------------+-------------------------------
+		5865000000.00 |   -110.00    -95.73    -95.73
+		5875000000.00 |   -110.00    -95.75    -95.75
+		--------------+-------------------------------
+		*/
+		NoiseMap.setValue(A(5865000000.00, 140.000070), FWMath::dBm2mW(-110.00));
+		NoiseMap.setValue(A(5865000000.00, 140.000071), FWMath::dBm2mW( -95.73));
+		NoiseMap.setValue(A(5865000000.00, 140.000120), FWMath::dBm2mW( -95.73));
+		NoiseMap.setValue(A(5875000000.00, 140.000070), FWMath::dBm2mW(-110.00));
+		NoiseMap.setValue(A(5875000000.00, 140.000071), FWMath::dBm2mW( -95.73));
+		NoiseMap.setValue(A(5875000000.00, 140.000120), FWMath::dBm2mW( -95.73));
+		std::cout << "NoiseMap is:" << std::endl; NoiseMap.print(std::cout); std::cout << std::endl;
+
+		/*
+		RecvPowerMap:
+		Mapping domain: time, frequency(1)
+		--------------+---------------------
+		o\t           | 140000.07 140000.11
+		--------------+---------------------
+		5895000000.00 |    -71.28    -71.28
+		5905000000.00 |    -71.29    -71.29
+		--------------+---------------------
+		*/
+		RecvPowerMap.setValue(A(5895000000.00, 140.000070), FWMath::dBm2mW(-71.28));
+		RecvPowerMap.setValue(A(5905000000.00, 140.000070), FWMath::dBm2mW(-71.29));
+		RecvPowerMap.setValue(A(5895000000.00, 140.000111), FWMath::dBm2mW(-71.28));
+		RecvPowerMap.setValue(A(5905000000.00, 140.000111), FWMath::dBm2mW(-71.29));
+		std::cout << "RecvPowerMap is:" << std::endl; RecvPowerMap.print(std::cout); std::cout << std::endl;
+
+		/*
+		snrMap
+		Mapping domain: time, frequency(1)
+		--------------+-----------------------------------------
+		o\t           | 140000.07 140000.07 140000.11 140000.12
+		--------------+-----------------------------------------
+		5865000000.00 |     38.72     24.45               24.45
+		5875000000.00 |     38.72     24.45               24.45
+		5895000000.00 |     38.72               24.45
+		5905000000.00 |     38.71               24.44
+		--------------+-----------------------------------------
+		*/
+		Mapping* SnrMap = MappingUtils::divide( RecvPowerMap, NoiseMap, 0 );
+		std::cout << "SnrMap ( RecvPowerMap / NoiseMap ) is:" << std::endl; SnrMap->print(std::cout); std::cout << std::endl;
+		delete SnrMap;
+
+		ConstantSimpleConstMapping*  ThermalMap = new ConstantSimpleConstMapping(DimensionSet::timeDomain,  FWMath::dBm2mW(-110));
+		Mapping*                     resultMap  = MappingUtils::createMapping(0.0, DimensionSet::timeDomain);
+		Mapping*                     RecvMap    = MappingUtils::createMapping(DimensionSet::timeFreqDomain);
+		Mapping*                     SignalMap  = MappingUtils::createMapping(DimensionSet::timeFreqDomain);
+		Mapping*                     delMap     = NULL;
+
+		ThermalMap->initializeArguments(A(140.000088221202));
+
+		resultMap = MappingUtils::add(*(delMap = resultMap), *ThermalMap, 0);
+		delete ThermalMap;
+		delete delMap;
+
+		RecvMap->setValue(A(5865000000.00,140.000097221202),FWMath::dBm2mW(-95.73));
+		RecvMap->setValue(A(5875000000.00,140.000097221202),FWMath::dBm2mW(-95.73));
+		RecvMap->setValue(A(5865000000.00,140.000123332313),FWMath::dBm2mW(-95.73));
+		RecvMap->setValue(A(5875000000.00,140.000123332313),FWMath::dBm2mW(-95.73));
+
+		resultMap = MappingUtils::add(*RecvMap, *(delMap = resultMap), 0);
+		delete RecvMap;
+		delete delMap;
+
+		/*
+		Noise Map
+		Mapping domain: time, frequency(1)
+		--------------+-------------------------------
+		o\t           | 140000.09 140000.10 140000.12
+		--------------+-------------------------------
+		5865000000.00 |    -95.57    -95.57    -95.57
+		5875000000.00 |    -95.57    -95.57    -95.57
+		--------------+-------------------------------
+		*/
+		std::cerr<< "Noise Map" << std::endl;
+		resultMap->print(std::cerr);
+		std::cerr<< std::endl;
+
+		SignalMap->setValue(A(5895000000.00,140.000068221202),FWMath::dBm2mW(-71.28));
+		SignalMap->setValue(A(5895000000.00,140.000114332313),FWMath::dBm2mW(-71.28 ));
+		SignalMap->setValue(A(5905000000.00,140.000068221202),FWMath::dBm2mW(-71.28));
+		SignalMap->setValue(A(5905000000.00,140.000114332313),FWMath::dBm2mW(-71.28 ));
+
+		/*
+		Signal Map
+		Mapping domain: time, frequency(1)
+		--------------+---------------------
+		o\t           | 140000.07 140000.11
+		--------------+---------------------
+		5895000000.00 |    -71.28    -71.28
+		5905000000.00 |    -71.28    -71.28
+		--------------+---------------------
+		*/
+		std::cerr << "Signal Map" << std::endl;
+		SignalMap->print(std::cerr);
+		std::cerr<< std::endl;
+
+		resultMap = MappingUtils::divide(*SignalMap, *(delMap = resultMap), 0);
+		delete SignalMap;
+		delete delMap;
+
+		/*
+		SNR Map
+		Mapping domain: time, frequency(1)
+		--------------+---------------------------------------------------
+		o\t           | 140000.07 140000.09 140000.10 140000.11 140000.12
+		--------------+---------------------------------------------------
+		5865000000.00 |               24.29     24.29               24.29
+		5875000000.00 |               24.29     24.29               24.29
+		5895000000.00 |       inf                           inf
+		5905000000.00 |       inf                           inf
+		--------------+---------------------------------------------------
+		*/
+		std::cerr<< "SNR Map (Signal Map / Noise Map)" << std::endl;
+		resultMap->print(std::cerr);
+		std::cerr<<std::endl;
+
+		delete resultMap;
+	}
+
+	void testMultiFunction() {
+		testMultiFunctionInfinity();
 		DimensionSet dimSet(Dimension::time);
 		dimSet.addDimension(channel);
 
@@ -1332,7 +1467,7 @@ protected:
 			TimeMapping f1;
 			TimeMapping f2;
 
-			std::cout << "--------TimeMapping [" << count << " entries]---------------------------------------------\n";
+			std::cout << "--------TimeMapping [" << count << " entries]---------------------------------------------" << std::endl;
 			std::cout << "Creating f1...\t\t\t\t";
 			std::flush(std::cout);
 
@@ -1341,7 +1476,7 @@ protected:
 				f1.setValue(Argument(j * 0.1), j * 0.1);
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Creating f2 ...\t\t\t\t";
 			std::flush(std::cout);
 			timer.start();
@@ -1349,14 +1484,14 @@ protected:
 				f2.setValue(Argument(j * 0.1), j * 0.1);
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Multiplying f1 with f2...\t\t";
 			std::flush(std::cout);
 			timer.start();
 			res = f1 * f2;
 			el = timer.elapsed();
 			delete res;
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 		}
 
 
@@ -1366,7 +1501,7 @@ protected:
 		pos.setArgValue(channel, 0.0);
 
 		{
-			std::cout << "--------MultiDimFunction [" << count << " entries]----------------------------------------\n";
+			std::cout << "--------MultiDimFunction [" << count << " entries]----------------------------------------" << std::endl;
 			std::cout << "Creating f7 ...\t\t\t\t";
 			MultiDimMapping f7(chTime);
 			MultiDimMapping f8(chTime);
@@ -1379,7 +1514,7 @@ protected:
 				f7.setValue(pos, j * 0.1);
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Creating f8 ...\t\t\t\t";
 			std::flush(std::cout);
 			timer.start();
@@ -1389,14 +1524,14 @@ protected:
 				f8.setValue(pos, j * 0.1);
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Multiplying f7 with f8...\t\t";
 			std::flush(std::cout);
 			timer.start();
 			res = f7 * f8;
 			el = timer.elapsed();
 			delete res;
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 		}
 
 		count = 35000 * factor;
@@ -1404,7 +1539,7 @@ protected:
 		count = hCount * hCount * hCount;
 
 		{
-			std::cout << "--------MultiDimFunction 3D [" << count << " entries]--------------------------------------\n";
+			std::cout << "--------MultiDimFunction 3D [" << count << " entries]--------------------------------------" << std::endl;
 			std::cout << "Creating f9 and f10...\t\t\t";
 			MultiDimMapping f9(spcChTime);
 			MultiDimMapping f10(spcChTime);
@@ -1425,14 +1560,14 @@ protected:
 				}
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / (count * 2) << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / (count * 2) << "us per entry)." << std::endl;
 
 			std::cout << "Multiplying f9 with f10...\t\t";
 			std::flush(std::cout);
 			timer.start();
 			res = f9 * f10;
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 
 			for(int s = 0; s < hCount; s++) {
 				pos.setArgValue(space, s * 0.1);
@@ -1453,7 +1588,7 @@ protected:
 		count = hCount * hCount;
 
 		{
-			std::cout << "--------TestSimpleConstMapping [" << count << " entries]----------------------------------\n";
+			std::cout << "--------TestSimpleConstMapping [" << count << " entries]----------------------------------" << std::endl;
 			std::cout << "Creating f13 ...\t\t\t\t";
 			Argument from(0.0);
 			from.setArgValue(channel, 0.0);
@@ -1466,20 +1601,20 @@ protected:
 			timer.start();
 			TestSimpleConstMapping f13(chTime, from, to, interval);
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Creating f14...\t\t\t\t";
 			std::flush(std::cout);
 			timer.start();
 			TestSimpleConstMapping f14(chTime, from, to, interval);
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Multiplying f13 with f14...\t\t";
 			std::flush(std::cout);
 			timer.start();
 			res = f13 * f14;
 			el = timer.elapsed();
 			delete res;
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 		}
 	}*/
 
@@ -1667,8 +1802,9 @@ protected:
 		//displayPassed = false;
 	}
 
-	void testOperatorAgainstInt64Simtime(){
-		std::cout << "---Int64 simtime tests---\n";
+	void testOperatorAgainstInt64Simtime() {
+		const char cSaveFill = std::cout.fill();
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " Int64 simtime tests " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 		TimeMapping<Linear> time1;
 		simtime_t t1 = 3.5;
@@ -1777,7 +1913,7 @@ protected:
 		delete it;
 		delete res;
 
-		std::cout << "---Int64 simtime tests done.---\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " Int64 simtime tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 	}
 
 	template<class Operator>
@@ -2183,12 +2319,13 @@ protected:
 		DimensionSet timeFreqSpaceBig(time, freq, space);
 		timeFreqSpaceBig.addDimension(bigDim);
 		DimensionSet timeBig(time, bigDim);
+		const char   cSaveFill = std::cout.fill();
 
-		std::cout << "--------TimeFreq^2.--------\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " TimeFreq^2. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 		testMappingMulBF(timeFreq, timeFreq);
-		std::cout << "--------Time * TimeBig.--------\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " Time * TimeBig. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 		testMappingMulBF(timeBig, DimensionSet(time));
-		std::cout << "--------timeSpace * timeFreqSpaceBig.--------\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " timeSpace * timeFreqSpaceBig. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 		testMappingMulBF(timeSpace, timeFreqSpaceBig);
 
 		//displayPassed = false;
@@ -2454,31 +2591,33 @@ protected:
 		//testDoubleCompareLess();
 
 	    testSimpleFunction<TimeMapping<Linear> >();
-	    std::cout << "--------TimeMapping tests done.---------------------------------------------------\n";
+	    const char cSaveFill = std::cout.fill();
+
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " TimeMapping tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testMultiFunction();
-	    std::cout << "--------MultiDimMapping tests done.-----------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " MultiDimMapping tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testInterpolationMethods();
-	    std::cout << "--------Interpolation methods tests done------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " Interpolation methods tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testSimpleConstmapping();
-	    std::cout << "--------SimpleConstMapping tests done.--------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " SimpleConstMapping tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testOperators();
-	    std::cout << "--------Operator tests done.------------------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " Operator tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testOutOfRange();
-	    std::cout << "--------Out of range tests done.--------------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " Out of range tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
-	    std::cout << "--------Various MappingUtils tests (may take a while)-----------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " Various MappingUtils tests (may take a while) " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 	    testMappingUtils();
-		std::cout << "--------Various MappingUtils tests done.------------------------------------------\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " Various MappingUtils tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
-	    //std::cout << "========Performance tests=========================================================\n";
+	    //std::cout << std::setw(80) << std::setfill('=') << std::internal << " Performance tests " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 	    //testPerformance();
 		testsExecuted = true;
 	}
 };
 
-Define_Module(OmnetTest);
+Define_Module(MappingTest);

@@ -276,7 +276,7 @@ void testIntersections() {
 }
 
 
-class OmnetTest:public SimpleTest {
+class ChannelInfoTest:public SimpleTest {
 protected:
 	void planTests() {
 		//tests for record flag of ChannelInfo
@@ -424,4 +424,4 @@ protected:
 	}
 };
 
-Define_Module(OmnetTest);
+Define_Module(ChannelInfoTest);

@@ -1,6 +1,6 @@
 package org.mixim.tests.mapping;
 
-simple OmnetTest
+simple MappingTest
 {
     @isNetwork(true);
 }

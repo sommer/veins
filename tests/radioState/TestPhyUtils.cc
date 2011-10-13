@@ -238,7 +238,7 @@ public:
 
 
 
-class OmnetTest:public SimpleTest {
+class RadioStateTest:public SimpleTest {
 private:
 	simtime_t initTime;
 	simtime_t offset;
@@ -250,7 +250,7 @@ private:
 	RSList variableList;
 
 public:
-	OmnetTest(){
+	RadioStateTest(){
 		initTime = 0.1;
 		offset = 0.1;
 	}
@@ -778,4 +778,4 @@ protected:
 	}
 };
 
-Define_Module(OmnetTest);
+Define_Module(RadioStateTest);

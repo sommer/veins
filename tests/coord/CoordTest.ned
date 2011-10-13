@@ -1,6 +1,6 @@
 package org.mixim.tests.coord;
 
-simple OmnetTest
+simple CoordTest
 {
     @isNetwork(true);
 }

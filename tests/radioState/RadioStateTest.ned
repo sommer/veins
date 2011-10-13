@@ -1,6 +1,6 @@
 package org.mixim.tests.radioState;
 
-simple OmnetTest
+simple RadioStateTest
 {
     @isNetwork(true);
 }

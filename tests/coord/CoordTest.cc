@@ -416,7 +416,7 @@ void testIsInRectangle() {
 	std::cout << "Is in rectangle test successful." << std::endl;
 }
 
-class OmnetTest:public SimpleTest {
+class CoordTest:public SimpleTest {
 protected:
 	void runTests() {
 		testConstructors();
@@ -430,5 +430,5 @@ protected:
 	}
 };
 
-Define_Module(OmnetTest);
+Define_Module(CoordTest);
 

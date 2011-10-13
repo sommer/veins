@@ -1,6 +1,6 @@
 package org.mixim.tests.channelInfo;
 
-simple OmnetTest
+simple ChannelInfoTest
 {
     @isNetwork(true);
 }
