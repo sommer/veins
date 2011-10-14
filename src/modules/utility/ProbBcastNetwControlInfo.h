@@ -8,6 +8,7 @@
 #ifndef IPACNETWCONTROLINFO_H_
 #define IPACNETWCONTROLINFO_H_
 
+#include "MiXiMDefs.h"
 #include "NetwControlInfo.h"
 
 /**
@@ -20,7 +21,7 @@
  * @ingroup utils
  * @author Damien Piguet
  **/
-class ProbBcastNetwControlInfo : public NetwControlInfo
+class MIXIM_API ProbBcastNetwControlInfo : public NetwControlInfo
 {
 protected:
     /** @brief netw address of the sending or receiving node*/

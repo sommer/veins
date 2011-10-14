@@ -14,22 +14,10 @@
 
 #include <omnetpp.h>
 
-//#include <fstream>
-#include "BaseLayer.h"
-#include "NetwPkt_m.h"
-#include "MacPkt_m.h"
-#include "BaseMacLayer.h"
-#include "SimTracer.h"
-#include "NetwControlInfo.h"
-#include "BaseMobility.h"
+#include "MiXiMDefs.h"
 #include "BaseNetwLayer.h"
 
-#include <map>
-#include <list>
-#include <math.h>
-
-using namespace std;
-
+class NetwPkt;
 /**
  * @brief Placeholder module that simply "translates" netwControlInfo to macControlInfo
  *
@@ -37,7 +25,7 @@ using namespace std;
  * @author Jerome Rousselot
  **/
 
-class DummyRoute : public BaseNetwLayer
+class MIXIM_API DummyRoute : public BaseNetwLayer
 {
 public:
     /** @brief Initialization of the module and some variables*/

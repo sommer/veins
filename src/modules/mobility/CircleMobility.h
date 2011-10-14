@@ -20,8 +20,8 @@
 #ifndef CIRCLE_MOBILITY_H
 #define CIRCLE_MOBILITY_H
 
+#include "MiXiMDefs.h"
 #include <BaseMobility.h>
-
 
 /**
  * @brief Circle movement model. See NED file for more info.
@@ -29,7 +29,7 @@
  * @ingroup mobility
  * @author Andras Varga
  */
-class  CircleMobility : public BaseMobility
+class MIXIM_API CircleMobility : public BaseMobility
 {
   protected:
     // configuration

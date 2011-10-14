@@ -1,6 +1,12 @@
 #include "DeciderUWBIRED.h"
+
 #include "PhyLayerUWBIR.h"
 #include "AirFrameUWBIR_m.h"
+#include "DeciderResultUWBIR.h"
+
+using std::map;
+using std::vector;
+using std::pair;
 
 const double DeciderUWBIRED::noiseVariance = 101.085E-12; // P=-116.9 dBW // 404.34E-12;   v²=s²=4kb T R B (T=293 K)
 const double DeciderUWBIRED::peakPulsePower = 1.3E-3; //1.3E-3 W peak power of pulse to reach  0dBm during burst; // peak instantaneous power of the transmitted pulse (A=0.6V) : 7E-3 W. But peak limit is 0 dBm

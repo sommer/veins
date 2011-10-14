@@ -20,9 +20,11 @@
  **************************************************************************/
 
 #include "NicEntryDebug.h"
-#include "ChannelAccess.h"
 
 #include <cassert>
+
+#include "ChannelAccess.h"
+#include "FindModule.h"
 
 #ifndef nicEV
 #define nicEV (ev.isDisabled()||!coreDebug) ? ev : ev << "NicEntry: "

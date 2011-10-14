@@ -1,6 +1,7 @@
 #ifndef PER_MODEL_H
 #define PER_MODEL_H
 
+#include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 
 /**
@@ -12,7 +13,7 @@
  *
  * @author Jérôme Rousselot <jerome.rousselot@csem.ch>
  */
-class PERModel : public AnalogueModel {
+class MIXIM_API PERModel : public AnalogueModel {
 protected:
 	double packetErrorRate;
 public:

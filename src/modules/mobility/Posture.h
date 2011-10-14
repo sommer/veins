@@ -40,10 +40,8 @@
  *
  **************************************************************************/
 
-
-
-#include <string.h>
-#include <BaseWorldUtility.h>
+#include "MiXiMDefs.h"
+#include "BaseWorldUtility.h"
 
 /**
  * @brief to store the specification of a posture on the MoBAN mobility model.
@@ -53,7 +51,7 @@
  * @ingroup MoBAN
  * @author Majid Nabi
  */
-class Posture {
+class MIXIM_API Posture {
 protected:
 
 	/** @brief Number of nodes existing in the WBAN */

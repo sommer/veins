@@ -28,6 +28,7 @@
 
 #include <cmath>
 
+#include "MiXiMDefs.h"
 
 #ifndef M_PI
 /** @brief Windows math.h doesn't define the PI variable so we have to do it
@@ -73,7 +74,7 @@
  * @ingroup utils
  * @author Christian Frank
  */
-class FWMath
+class MIXIM_API FWMath
 {
 public:
 

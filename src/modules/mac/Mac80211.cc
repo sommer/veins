@@ -16,18 +16,19 @@
  ***************************************************************************
  * part of:     framework implementation developed by tkn
  **************************************************************************/
-
-
 #include "Mac80211.h"
+
 #include "MacToPhyControlInfo.h"
-#include <MacToNetwControlInfo.h>
-#include <PhyToMacControlInfo.h>
-#include <NetwToMacControlInfo.h>
+#include "MacToNetwControlInfo.h"
+#include "PhyToMacControlInfo.h"
+#include "NetwToMacControlInfo.h"
 #include "SimpleAddress.h"
-#include <FWMath.h>
-#include <Decider80211.h>
-#include <DeciderResult80211.h>
-#include <BaseConnectionManager.h>
+#include "FWMath.h"
+#include "Decider80211.h"
+#include "DeciderResult80211.h"
+#include "BaseConnectionManager.h"
+#include "MacToPhyInterface.h"
+#include "ChannelSenseRequest_m.h"
 
 Define_Module(Mac80211);
 
@@ -296,6 +297,7 @@ void Mac80211::handleLowerControl(cMessage *msg)
     default:
     	ev << "Unhandled control message from physical layer: " << msg << endl;
     	delete msg;
+    	break;
     }
 }
 
@@ -320,6 +322,7 @@ void Mac80211::handleSelfMsg(cMessage * msg)
 
     default:
         error("unknown timer type");
+        break;
     }
 }
 
@@ -489,6 +492,7 @@ void Mac80211::handleMsgForMe(Mac80211Pkt *af)
         break;
     default:
         error("unknown state %d", state);
+        break;
     }
 }
 
@@ -740,6 +744,7 @@ void Mac80211::handleEndSifsTimer()
         break;
     default:
         error("logic error: end sifs timer when previously received packet is not RTS/CTS/DATA");
+        break;
     }
 
     // don't need previous frame any more
@@ -1126,6 +1131,7 @@ simtime_t Mac80211::timeOut(Mac80211MessageKinds type, double br)
         break;
     default:
         EV << "Unused frame type was given when calling timeOut(), this should not happen!\n";
+        break;
     }
     return time_out;
 }

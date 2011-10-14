@@ -3,6 +3,8 @@
 
 #include <list>
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
 #include "AirFrame_m.h"
 
 /**
@@ -39,7 +41,7 @@
  *
  * @ingroup phyLayer
  */
-class ChannelInfo {
+class MIXIM_API ChannelInfo {
 
 protected:
 

@@ -9,17 +9,10 @@
 #ifndef UWBIREDSYNCONADDRESS_H_
 #define UWBIREDSYNCONADDRESS_H_
 
-#include <vector>
-#include <map>
-#include <math.h>
-
+#include "MiXiMDefs.h"
 #include "Mapping.h"
 #include "AirFrame_m.h"
-#include "MacPkt_m.h"
-#include "Decider.h"
 #include "DeciderUWBIRED.h"
-
-using namespace std;
 
 class PhyLayerUWBIR;
 
@@ -55,7 +48,7 @@ class PhyLayerUWBIR;
  * @ingroup decider
 */
 
-class DeciderUWBIREDSyncOnAddress: public DeciderUWBIRED {
+class MIXIM_API DeciderUWBIREDSyncOnAddress: public DeciderUWBIRED {
 
 public:
 	DeciderUWBIREDSyncOnAddress(DeciderToPhyInterface* iface,

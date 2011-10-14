@@ -23,11 +23,11 @@
 #ifndef SIMPLE_NETW_LAYER_H
 #define SIMPLE_NETW_LAYER_H
 
-#include <BaseLayer.h>
+#include "MiXiMDefs.h"
+#include "BaseLayer.h"
 
-#include <ArpInterface.h>
-#include <NetwPkt_m.h>
-#include <SimpleAddress.h>
+class ArpInterface;
+class NetwPkt;
 
 /**
  * @brief Base class for the network layer
@@ -36,7 +36,7 @@
  * @ingroup baseModules
  * @author Daniel Willkomm
  **/
-class BaseNetwLayer : public BaseLayer
+class MIXIM_API BaseNetwLayer : public BaseLayer
 {
 public:
 	/** @brief Message kinds used by this layer.*/

@@ -26,24 +26,14 @@
 #ifndef wiseroute_h
 #define wiseroute_h
 
+#include <map>
 #include <omnetpp.h>
 
-#include <BaseNetwLayer.h>
-#include <BaseMobility.h>
-#include <fstream>
-#include "WiseRoutePkt_m.h"
-#include "MacPkt_m.h"
-#include "BaseMacLayer.h"
-#include "SimTracer.h"
-#include "NetwControlInfo.h"
-#include "NetwToMacControlInfo.h"
-#include "MacToNetwControlInfo.h"
+#include "MiXiMDefs.h"
+#include "BaseNetwLayer.h"
 
-#include <map>
-#include <list>
-#include <math.h>
-
-using namespace std;
+class SimTracer;
+class WiseRoutePkt;
 
 /**
  * @brief Wiseroute is a simple loop-free routing algorithm that
@@ -59,14 +49,14 @@ using namespace std;
  * @ingroup netwLayer
  * @author Jerome Rousselot
  **/
-class WiseRoute : public BaseNetwLayer
+class MIXIM_API WiseRoute : public BaseNetwLayer
 {
 public:
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
     virtual void finish();
 
-    ~WiseRoute();
+    virtual ~WiseRoute();
 
 protected:
 	enum messagesTypes {
@@ -89,8 +79,8 @@ protected:
 		double rssi;
 	} tRouteTableEntry;
 
-	typedef map<int, tRouteTableEntry> tRouteTable;
-	typedef multimap<int, unsigned long> tFloodTable;
+	typedef std::map<int, tRouteTableEntry> tRouteTable;
+	typedef std::multimap<int, unsigned long> tFloodTable;
 
 	tRouteTable routeTable;
 	tFloodTable floodTable;

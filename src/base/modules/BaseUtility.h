@@ -16,8 +16,10 @@
 #ifdef _MSC_VER
 #pragma warning(disable : 4786)
 #endif
+#include <string>
 
 #include <omnetpp.h>
+#include "MiXiMDefs.h"
 #include "Blackboard.h"
 #include "HostState.h"
 #include "Coord.h"
@@ -31,7 +33,7 @@
  * @author Andreas Koepke
  */
 
-class BaseUtility : public Blackboard,
+class MIXIM_API BaseUtility : public Blackboard,
 					public ImNotifiable
 {
 private:

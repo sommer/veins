@@ -40,10 +40,14 @@
  **************************************************************************/
 
 #include "MoBANCoordinator.h"
+
 #include <string>
 #include <stdio.h>
-#include <FWMath.h>
 #include <assert.h>
+
+#include "FWMath.h"
+#include "FindModule.h"
+#include "MoBANBBItem.h"
 
 Define_Module(MoBANCoordinator);
 

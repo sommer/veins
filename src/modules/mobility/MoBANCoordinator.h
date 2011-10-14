@@ -39,21 +39,16 @@
  *
  **************************************************************************/
 
-#include <sstream>
-#include <omnetpp.h>
-#include <BaseWorldUtility.h>
-#include <ImNotifiable.h>
-#include <FindModule.h>
-#include <HostState.h>
-#include <BaseUtility.h>
-#include "MoBANBBItem.h"
-#include "Posture.h"
-#include "PostureTransition.h"
-
-
 #include <cxmlelement.h>
 #include <vector>
-#include <iostream>
+
+#include <omnetpp.h>
+
+#include "MiXiMDefs.h"
+#include "BaseWorldUtility.h"
+#include "BaseUtility.h"
+#include "Posture.h"
+#include "PostureTransition.h"
 
 /**
  *\page mobancpp MoBAN C++ reference
@@ -90,7 +85,7 @@
  * @ingroup MoBAN
  * @author Majid Nabi
  */
-class MoBANCoordinator: public cSimpleModule
+class MIXIM_API MoBANCoordinator: public cSimpleModule
 {
   protected:
 

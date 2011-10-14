@@ -22,10 +22,13 @@
 #define MAC_80211_H
 
 #include <list>
-#include <BaseMacLayer.h>
-#include <Mac80211Pkt_m.h>
-#include <Consts80211.h>
-#include <ChannelSenseRequest_m.h>
+
+#include "MiXiMDefs.h"
+#include "BaseMacLayer.h"
+#include "Consts80211.h"
+
+#include "Mac80211Pkt_m.h"
+class ChannelSenseRequest;
 
 /**
  * @brief An implementation of the 802.11b MAC.
@@ -36,7 +39,7 @@
  * @ingroup ieee80211
  * @author David Raguin, Karl Wessel (port for MiXiM)
  */
-class  Mac80211 : public BaseMacLayer
+class MIXIM_API Mac80211 : public BaseMacLayer
 {
 public:
 
@@ -197,10 +200,10 @@ protected:
     void addNeighbor(Mac80211Pkt *af);
 
     /** @brief find a neighbor based on his address */
-    NeighborList::iterator findNeighbor(int id)  {
+    NeighborList::iterator findNeighbor(int address)  {
         NeighborList::iterator it;
         for(it = neighbors.begin(); it != neighbors.end(); ++it) {
-            if(it->address == id) break;
+            if(it->address == address) break;
         }
         return it;
     }

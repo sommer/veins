@@ -1,12 +1,14 @@
 #ifndef REPEATTIMER_CORE_H
 #define REPEATTIMER_CORE_H 1
 
-#include "BaseModule.h"
 #include <omnetpp.h>
+
+#include "BaseModule.h"
+#include "MiXiMDefs.h"
 
 class RepeatTimer;
 
-class RepeatTimerCore: public BaseModule
+class MIXIM_API RepeatTimerCore: public BaseModule
 {
 	public:
 		typedef void (cleanup)(void * data);

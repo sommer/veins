@@ -10,6 +10,7 @@
 
 #include <omnetpp.h>
 
+#include "MiXiMDefs.h"
 /**
  * @brief Interface for modules which assign L2 and L3 addresses for modules.
  *
@@ -27,7 +28,7 @@
  *
  * @author Karl Wessel
  */
-class AddressingInterface {
+class MIXIM_API AddressingInterface {
 public:
 	/** @brief Returns the L2 address for the passed mac.*/
     virtual int myMacAddr(cModule* mac) = 0;

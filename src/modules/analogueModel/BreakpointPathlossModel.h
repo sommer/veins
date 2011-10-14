@@ -1,10 +1,9 @@
 #ifndef BREAKPOINTPATHLOSSMODEL_H_
 #define BREAKPOINTPATHLOSSMODEL_H_
 
+#include "MiXiMDefs.h"
 #include "AnalogueModel.h"
-#include "Mapping.h"
-#include "BaseWorldUtility.h"
-//#include "SimplePathlossModel.h"
+
 #include <cstdlib>
 
 //class BreakpointPathlossModel;
@@ -15,7 +14,7 @@
  *
  * @ingroup analogueModels
  */
-class BreakpointPathlossModel : public AnalogueModel
+class MIXIM_API BreakpointPathlossModel : public AnalogueModel
 {
 protected:
 

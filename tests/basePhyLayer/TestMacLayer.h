@@ -3,10 +3,11 @@
 
 #include <omnetpp.h>
 #include "MacToPhyInterface.h"
-#include "MacToPhyControlInfo.h"
 #include "TestGlobals.h"
 #include "TestPhyLayer.h"
 #include "Signal_.h"
+
+class MacPkt;
 
 class TestMacLayer:public BaseModule, public TestModule
 {

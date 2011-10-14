@@ -23,8 +23,8 @@
 #ifndef MASS_MOBILITY_H
 #define MASS_MOBILITY_H
 
-#include <BaseMobility.h>
-
+#include "MiXiMDefs.h"
+#include "BaseMobility.h"
 
 /**
  * @brief Models the mobility of with mass, making random motions.
@@ -34,7 +34,7 @@
  * @ingroup mobility
  * @author Emin Ilker Cetinbas, Andras Varga
  */
-class  MassMobility : public BaseMobility
+class MIXIM_API MassMobility : public BaseMobility
 {
   protected:
     // config (see NED file for explanation)

@@ -1,6 +1,7 @@
 #ifndef PHYUTILS_H_
 #define PHYUTILS_H_
 
+#include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 #include "Mapping.h"
 
@@ -37,7 +38,7 @@ class RSAMMapping;
  *
  * @ingroup phyLayer
  */
-class RadioStateAnalogueModel : public AnalogueModel
+class MIXIM_API RadioStateAnalogueModel : public AnalogueModel
 {
 	friend class RSAMMapping;
 	friend class RSAMConstMappingIterator;
@@ -195,7 +196,7 @@ public:
  *
  * @ingroup phyLayer
  */
-class Radio
+class MIXIM_API Radio
 {
 public:
 	/**
@@ -426,7 +427,7 @@ protected:
  *
  * @ingroup phyLayer
  */
-class RSAMConstMappingIterator : public ConstMappingIterator
+class MIXIM_API RSAMConstMappingIterator : public ConstMappingIterator
 {
 protected:
 
@@ -563,7 +564,7 @@ public:
  *
  * @ingroup phyLayer
  */
-class RSAMMapping : public ConstMapping
+class MIXIM_API RSAMMapping : public ConstMapping
 {
 protected:
 

@@ -20,8 +20,13 @@
  ***************************************************************************/
 
 #include "AlohaMacLayer.h"
+
 #include <iostream>
-#include <NetwToMacControlInfo.h>
+
+#include "NetwToMacControlInfo.h"
+#include "UWBIRMacPkt_m.h"
+#include "UWBIRMacPkt.h"
+#include "MacToPhyInterface.h"
 
 using namespace std;
 

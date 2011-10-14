@@ -21,8 +21,8 @@
 #ifndef CONST_SPEED_MOBILITY_H
 #define CONST_SPEED_MOBILITY_H
 
-#include <BaseMobility.h>
-
+#include "MiXiMDefs.h"
+#include "BaseMobility.h"
 
 /**
  * @brief Controls all movement related things of a host
@@ -36,7 +36,7 @@
  * @author Steffen Sroka, Marc Loebbers, Daniel Willkomm
  * @sa ConnectionManager
  */
-class ConstSpeedMobility : public BaseMobility
+class MIXIM_API ConstSpeedMobility : public BaseMobility
 {
   protected:
     /** @name parameters to handle the movement of the host*/

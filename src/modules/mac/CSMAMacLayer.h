@@ -2,12 +2,9 @@
 #define CSMAMAC_LAYER_H
 
 #include <list>
-#include <PhyUtils.h>
-#include <BaseMacLayer.h>
-#include <BaseUtility.h>
-#include <MacPkt_m.h>
-#include <SimpleAddress.h>
-#include <MacToPhyInterface.h>
+
+#include "MiXiMDefs.h"
+#include "BaseMacLayer.h"
 
 
 /**

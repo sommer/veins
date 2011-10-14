@@ -2,6 +2,7 @@
 #define _CHANNELSTATE_H_
 
 #include <sstream>
+#include "MiXiMDefs.h"
 
 /**
  * @brief Provides information about the current state of the channel:
@@ -11,7 +12,8 @@
  *
  * @ingroup decider
  */
-class ChannelState {
+class MIXIM_API ChannelState
+{
 protected:
 
 	/** @brief defines if the channel is currently idle */

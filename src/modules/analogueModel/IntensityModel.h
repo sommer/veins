@@ -20,20 +20,20 @@
 #ifndef INTENSITYMODEL_H_
 #define INTENSITYMODEL_H_
 
+#include <math.h>
+
+#include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 #include "Mapping.h"
 #include "Signal_.h"
-#include "BaseWorldUtility.h"
-#include <math.h>
-
-#define PI 3.1415926
+#include "FWMath.h"
 
 /**
  * @brief TODO: Short description for this AnalogueModel
  *
  * @ingroup analogueModels
  */
-class IntensityModel : public AnalogueModel {
+class MIXIM_API IntensityModel : public AnalogueModel {
 
 public:
 	IntensityModel() { }
@@ -47,7 +47,7 @@ public:
 		double distance    = senderPos.distance(receiverPos);
 
 		Argument arg;
-		attMapping->setValue(arg, 4*PI*pow(distance, 2));
+		attMapping->setValue(arg, 4*M_PI*pow(distance, 2));
 		s.addAttenuation(attMapping);
 	}
 };

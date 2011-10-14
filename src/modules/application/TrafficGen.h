@@ -16,15 +16,17 @@
 #ifndef TRAFFICGEN_H_
 #define TRAFFICGEN_H_
 
-#include "BaseApplLayer.h"
-#include <BaseWorldUtility.h>
-
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
+#include "BaseApplLayer.h"
+
+class BaseWorldUtility;
 
 /**
  * @brief A module to generate a certain rate of traffic.
  */
-class TrafficGen : public BaseApplLayer
+class MIXIM_API TrafficGen : public BaseApplLayer
 {
 public:
 

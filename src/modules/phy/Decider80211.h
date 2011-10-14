@@ -8,8 +8,8 @@
 #ifndef DECIDER80211_H_
 #define DECIDER80211_H_
 
-#include <BaseDecider.h>
-#include <Consts80211.h>
+#include "MiXiMDefs.h"
+#include "BaseDecider.h"
 
 /**
  * @brief Decider for the 802.11 modules
@@ -26,7 +26,7 @@
  * @ingroup ieee80211
  * @author Marc L�bbers, David Raguin, Karl Wessel(port for MiXiM)
  */
-class Decider80211: public BaseDecider {
+class MIXIM_API Decider80211: public BaseDecider {
 public:
 	/** @brief Control message kinds used by this Decider.*/
 	enum Decider80211ControlKinds {

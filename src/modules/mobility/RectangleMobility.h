@@ -20,8 +20,8 @@
 #ifndef RECTANGLE_MOBILITY_H
 #define RECTANGLE_MOBILITY_H
 
-#include <BaseMobility.h>
-
+#include "MiXiMDefs.h"
+#include "BaseMobility.h"
 
 /**
  * @brief Rectangle movement model. See NED file for more info.
@@ -30,7 +30,7 @@
  * @ingroup mobility
  * @author Andras Varga
  */
-class  RectangleMobility : public BaseMobility
+class MIXIM_API RectangleMobility : public BaseMobility
 {
   protected:
     // configuration

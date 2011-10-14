@@ -21,10 +21,10 @@
 #ifndef ARP_HOST_H
 #define ARP_HOST_H
 
+#include "MiXiMDefs.h"
 #include <ArpInterface.h>
 #include <AddressingInterface.h>
 #include <BaseModule.h>
-#include <FindModule.h>
 
 /**
  * @brief A class to convert integer layer addresses
@@ -38,7 +38,7 @@
  *
  * @author Jerome Rousselot
  **/
-class ArpHost : public ArpInterface,
+class MIXIM_API ArpHost : public ArpInterface,
 				public AddressingInterface,
 				public BaseModule
 {

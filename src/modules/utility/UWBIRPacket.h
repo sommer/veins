@@ -19,9 +19,12 @@
 #ifndef BBUWBIRPACKET_H
 #define BBUWBIRPACKET_H
 
-#include <omnetpp.h>
-#include "ImNotifiable.h"
 #include <sstream>
+#include <string>
+#include <omnetpp.h>
+
+#include "MiXiMDefs.h"
+#include "ImNotifiable.h"
 
 /**
  * @brief Class that keeps track of the number of packets sent.
@@ -30,7 +33,7 @@
  * @author Andreas K�pke
  * @sa Blackboard
  */
-class  UWBIRPacket : public BBItem
+class MIXIM_API UWBIRPacket : public BBItem
 {
     BBITEM_METAINFO(BBItem)
 

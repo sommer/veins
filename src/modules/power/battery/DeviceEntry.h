@@ -19,6 +19,8 @@
 #ifndef DEVICEENTRY_H
 #define DEVICEENTRY_H
 
+#include "MiXiMDefs.h"
+
 /** @brief per-device/per-account record of battery consumption, is
  * passed to BatteryStats on finish()
  *
@@ -30,7 +32,7 @@
  *
  * @ingroup power
  */
-class DeviceEntry
+class MIXIM_API DeviceEntry
   {
   public:
 	/** @brief Name of the device.*/

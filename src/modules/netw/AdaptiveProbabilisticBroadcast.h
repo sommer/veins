@@ -8,10 +8,10 @@
 #ifndef ADAPTIVEPROBABILISTICBROADCAST_H_
 #define ADAPTIVEPROBABILISTICBROADCAST_H_
 
+#include <map>
+
+#include "MiXiMDefs.h"
 #include "ProbabilisticBroadcast.h"
-
-using namespace std;
-
 
 /**
  * @brief This class extends ProbabilisticBroadcast by adding
@@ -21,7 +21,7 @@ using namespace std;
  * @ingroup netwLayer
  * @author Dimitris Kotsakos, George Alyfantis, Damien Piguet
  **/
-class AdaptiveProbabilisticBroadcast : public ProbabilisticBroadcast
+class MIXIM_API AdaptiveProbabilisticBroadcast : public ProbabilisticBroadcast
 {
 public:
 
@@ -30,7 +30,7 @@ public:
     virtual void initialize(int);
 
 protected:
-	typedef map<int, cMessage*> NeighborMap;
+	typedef std::map<int, cMessage*> NeighborMap;
 
 	/** @brief Handle messages from lower layer */
 	virtual void handleLowerMsg(cMessage* msg);

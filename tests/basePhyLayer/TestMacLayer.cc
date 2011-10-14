@@ -1,5 +1,10 @@
 #include "TestMacLayer.h"
-#include <DeciderToPhyInterface.h>
+
+#include "DeciderToPhyInterface.h"
+#include "MacPkt_m.h"
+#include "FindModule.h"
+#include "MacToPhyControlInfo.h"
+
 Define_Module(TestMacLayer);
 
 //---omnetpp part----------------------

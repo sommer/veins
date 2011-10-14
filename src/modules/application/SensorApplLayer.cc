@@ -18,9 +18,14 @@
  **************************************************************************/
 
 #include "SensorApplLayer.h"
-//#include <sstream>
-#include <BaseNetwLayer.h>
-#include <AddressingInterface.h>
+
+#include "BaseNetwLayer.h"
+#include "AddressingInterface.h"
+#include "NetwControlInfo.h"
+#include "FindModule.h"
+#include "SimpleAddress.h"
+#include "BaseWorldUtility.h"
+#include "ApplPkt_m.h"
 
 Define_Module(SensorApplLayer);
 
@@ -102,14 +107,16 @@ void SensorApplLayer::initialize(int stage) {
 
 cStdDev& SensorApplLayer::hostsLatency(int hostAddress)
 {
-	  if(latencies.count(hostAddress) == 0) {
-		  std::ostringstream oss;
-		  oss << hostAddress;
-		  cStdDev aLatency(oss.str().c_str());
-		  latencies.insert(pair<int, cStdDev>(hostAddress, aLatency));
-	  }
+	using std::pair;
 
-	  return latencies[hostAddress];
+	if(latencies.count(hostAddress) == 0) {
+		std::ostringstream oss;
+		oss << hostAddress;
+		cStdDev aLatency(oss.str().c_str());
+		latencies.insert(pair<int, cStdDev>(hostAddress, aLatency));
+	}
+
+	return latencies[hostAddress];
 }
 
 void SensorApplLayer::initializeDistribution(const char* traffic) {
@@ -148,7 +155,7 @@ void SensorApplLayer::scheduleNextPacket() {
 			EV <<
 			"Cannot generate requested traffic type (unimplemented or unknown)."
 			<< endl;
-
+			break;
 		}
 		debugEV << "Start timer for a new packet in " << waitTime << " seconds." <<
 		endl;
@@ -202,6 +209,7 @@ void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 		default:
 		EV << "Error! got packet with unknown kind: " << msg->getKind() << endl;
 		delete msg;
+		break;
 	}
 }
 
@@ -222,6 +230,7 @@ void SensorApplLayer::handleSelfMsg(cMessage * msg) {
 	default:
 		EV<< "Unkown selfmessage! -> delete, kind: " << msg->getKind() << endl;
 		delete msg;
+		break;
 	}
 }
 
@@ -258,6 +267,7 @@ void SensorApplLayer::sendData() {
 }
 
 void SensorApplLayer::finish() {
+	using std::map;
 	if (stats) {
 		if (trace) {
 			// output logs to scalar file

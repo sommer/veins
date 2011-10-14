@@ -21,13 +21,19 @@
 
 
 #include "BaseMacLayer.h"
+
+#include <cassert>
+
+#include "Mapping.h"
+#include "Signal_.h"
+#include "MacToPhyInterface.h"
 #include "MacToNetwControlInfo.h"
 #include "NetwToMacControlInfo.h"
 #include "SimpleAddress.h"
 #include "AddressingInterface.h"
-#include <ChannelAccess.h>
-
-#include <cassert>
+#include "ChannelAccess.h"
+#include "FindModule.h"
+#include "MacPkt_m.h"
 
 Define_Module(BaseMacLayer);
 

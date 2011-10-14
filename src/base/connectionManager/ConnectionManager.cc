@@ -1,7 +1,7 @@
-#include <set>
+#include "ConnectionManager.h"
+
 #include <cmath>
 
-#include "ConnectionManager.h"
 #include "BaseWorldUtility.h"
 
 #ifndef ccEV

@@ -1,5 +1,6 @@
 
 #include "UWBIRMacPkt.h"
+
 #include <cassert>
 
 Register_Class(UWBIRMacPkt);
@@ -8,7 +9,7 @@ UWBIRMacPkt& UWBIRMacPkt::operator=(const UWBIRMacPkt& other) {
 	if (this==&other) return *this;
 	UWBIRMacPkt_Base::operator=(other);
 	bitValues.clear();
-   	list<bool>::const_iterator citer = other.bitValues.begin();
+   	std::list<bool>::const_iterator citer = other.bitValues.begin();
    	while(citer != other.bitValues.end()) {
    		bitValues.push_back(*citer);
    		citer++;

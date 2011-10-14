@@ -23,6 +23,7 @@
 #ifndef BURST_APPL_LAYER_BATTERY_H
 #define BURST_APPL_LAYER_BATTERY_H
 
+#include "MiXiMDefs.h"
 #include "BurstApplLayer.h"
 #include "HostState.h"
 
@@ -38,7 +39,7 @@
  * @ingroup applLayer
  * @author Daniel Willkomm
  **/
-class BurstApplLayerBattery : public BurstApplLayer
+class MIXIM_API BurstApplLayerBattery : public BurstApplLayer
 {
  public:
 

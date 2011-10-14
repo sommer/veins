@@ -20,6 +20,11 @@
 
 #include "UWBIRIEEE802154APathlossModel.h"
 
+#include <map>
+#include <limits>
+
+#include "IEEE802154A.h"
+
 const double UWBIRIEEE802154APathlossModel::PL0 = 0.000040738; // -43.9 dB
 const double UWBIRIEEE802154APathlossModel::pathloss_exponent = 1.79;
 const double UWBIRIEEE802154APathlossModel::meanL = 3;
@@ -179,6 +184,8 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& signal) {
     // and then attenuation is applied to all pulses.
 
 	// (1) Power Delay Profile realization
+	using std::max;
+	using std::pow;
 
     txPower    = signal.getTransmissionPower();
     newTxPower = new TimeMapping<Linear>(); //dynamic_cast<TimeMapping<Linear>*> (txPower->clone()); // create working copy
@@ -186,7 +193,7 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& signal) {
     // generate number of clusters for this channel (channel coherence time > packet air time)
     L = max(1, poisson(cfg.Lmean));
     // Choose block shadowing
-    S = pow(10,(normal(0, cfg.sigma_s)/10));
+    S = pow(10.,(normal(0, cfg.sigma_s)/10.));
 
     // Loop on each value of the original mapping and generate multipath echoes
     ConstMappingIterator* iter = txPower->createConstIterator();
@@ -207,12 +214,6 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& signal) {
     signal.setTransmissionPower(newTxPower);
 
 
-    // compute distance
-    Move   srcMove     = signal.getMove();
-    Coord  senderPos   = srcMove.getPositionAt(signal.getReceptionStart());
-    Coord  receiverPos = move->getPositionAt(signal.getReceptionStart());
-    double distance    = receiverPos.distance(senderPos);
-
 	// Total radiated power Prx at that distance  [W]
     //double attenuation = 0.5 * ntx * nrx * cfg.PL0 / pow(distance / d0, cfg.n);
     double attenuation = getPathloss(fc, BW);
@@ -228,6 +229,9 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& signal) {
 }
 
 void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
+	using std::map;
+	using std::numeric_limits;
+
 	// statistics
 	nbCalls = nbCalls + 1;
 	double power = 0;

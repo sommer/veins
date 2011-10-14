@@ -15,11 +15,12 @@
 
 
 #include <omnetpp.h>
-#include "BaseModule.h"
 
-#include "SimpleBattery.h"
-#include "BatteryState.h"
-#include "DeviceEntry.h"
+#include "MiXiMDefs.h"
+#include "BaseModule.h"
+#include "BaseBattery.h"
+
+class DeviceEntry;
 
 /**
  * @brief collects and formates statistical data from the battery
@@ -36,7 +37,7 @@
  *
  * @ingroup power
  */
-class BatteryStats : public BaseModule
+class MIXIM_API BatteryStats : public BaseModule
 {
 
 public:
@@ -61,7 +62,7 @@ protected:
 	/** @brief Enable tracking of output vectors?*/
 	int doTimeSeries;
 
-	/** @brief Blackboard category for the BatteryStats BBItem.*/
+	/** @brief Signal for the BatteryStats.*/
 	int batteryCat;
 
 	/** @name Tracked statistic values.*/

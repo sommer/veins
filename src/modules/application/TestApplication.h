@@ -1,17 +1,13 @@
 #ifndef TEST_APPLICATION_H
 #define TEST_APPLICATION_H
 
+#include <vector>
 #include <omnetpp.h>
-#include "BaseModule.h"
-#include "NetwControlInfo.h"
-#include "Signal_.h"
-#include "MacPkt_m.h"
-#include "ApplPkt_m.h"
-#include "AlohaMacLayer.h"
-#include "MacToPhyInterface.h"
-#include "Mapping.h"
 
-class TestApplication : public BaseModule {
+#include "MiXiMDefs.h"
+#include "BaseModule.h"
+
+class MIXIM_API TestApplication : public BaseModule {
 
 
     public:
@@ -44,7 +40,7 @@ class TestApplication : public BaseModule {
 
         // state variables
         int nbPacketsReceived;
-        vector < cStdDev > latencies;
+        std::vector < cStdDev > latencies;
         cOutVector latenciesRaw;
         cStdDev testStat;
 

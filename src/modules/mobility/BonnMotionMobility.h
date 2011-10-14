@@ -19,6 +19,7 @@
 #ifndef BONNMOTION_MOBILITY_H
 #define BONNMOTION_MOBILITY_H
 
+#include "MiXiMDefs.h"
 #include "LineSegmentsMobilityBase.h"
 #include "BonnMotionFileCache.h"
 
@@ -29,7 +30,7 @@
  * @ingroup mobility
  * @author Andras Varga
  */
-class  BonnMotionMobility : public LineSegmentsMobilityBase
+class MIXIM_API BonnMotionMobility : public LineSegmentsMobilityBase
 {
   protected:
     // state

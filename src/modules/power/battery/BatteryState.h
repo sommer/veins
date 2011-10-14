@@ -14,9 +14,12 @@
 #ifndef BATTERYSTATE_H
 #define BATTERYSTATE_H
 
-#include <omnetpp.h>
-#include "BaseUtility.h"
 #include <sstream>
+#include <string>
+#include <omnetpp.h>
+
+#include "MiXiMDefs.h"
+#include "ImNotifiable.h"
 
 /**
  * @brief residual capacity of battery
@@ -28,7 +31,7 @@
  * @ingroup blackboard
  * @ingroup power
  */
-class BatteryState : public BBItem
+class MIXIM_API BatteryState : public BBItem
 {
   BBITEM_METAINFO(BBItem);
 

@@ -21,9 +21,11 @@
 #include <vector>
 #include <list>
 
+#include "MiXiMDefs.h"
 #include "BaseMacLayer.h"
 #include <DroppedPacket.h>
-#include <MacPkt_m.h>
+
+class MacPkt;
 
 /**
  * @brief Implementation of B-MAC (called also Berkeley MAC, Low Power
@@ -54,7 +56,7 @@
  * @author Anna Foerster
  *
  */
-class  BMacLayer : public BaseMacLayer
+class MIXIM_API BMacLayer : public BaseMacLayer
 {
   public:
 	virtual ~BMacLayer();

@@ -8,21 +8,12 @@
 #ifndef PROBABILISTICBROADCAST_H_
 #define PROBABILISTICBROADCAST_H_
 
-#include <fstream>
 #include <set>
 #include <map>
 
+#include "MiXiMDefs.h"
 #include "ProbabilisticBroadcastPkt_m.h"
-#include "MacPkt_m.h"
-#include "BaseMacLayer.h"
-#include "SimTracer.h"
-#include "ProbBcastNetwControlInfo.h"
-#include "MacToNetwControlInfo.h"
-#include "NetwToMacControlInfo.h"
 #include "BaseNetwLayer.h"
-
-using namespace std;
-
 
 /**
  * @brief This class offers a data dissemination service using
@@ -33,7 +24,7 @@ using namespace std;
  * @ingroup netwLayer
  * @author Damien Piguet
  **/
-class ProbabilisticBroadcast : public BaseNetwLayer
+class MIXIM_API ProbabilisticBroadcast : public BaseNetwLayer
 {
 public:
 
@@ -63,8 +54,8 @@ protected:
 		                                        // time by its creator.
 	} tMsgDesc;
 
-	typedef set<unsigned int> MsgIdSet;
-	typedef multimap<simtime_t, tMsgDesc*> TimeMsgMap;
+	typedef std::set<unsigned int> MsgIdSet;
+	typedef std::multimap<simtime_t, tMsgDesc*> TimeMsgMap;
 
 	/** @brief Handle messages from upper layer */
     virtual void handleUpperMsg(cMessage* msg);

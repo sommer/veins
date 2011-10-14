@@ -1,9 +1,7 @@
 #ifndef CONNECTIONMANAGER_H_
 #define CONNECTIONMANAGER_H_
 
-#include <vector>
-#include <list>
-
+#include "MiXiMDefs.h"
 #include "BaseConnectionManager.h"
 
 /**
@@ -16,7 +14,7 @@
  *
  * @ingroup connectionManager
  */
-class ConnectionManager : public BaseConnectionManager
+class MIXIM_API ConnectionManager : public BaseConnectionManager
 {
 protected:
 

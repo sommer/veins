@@ -19,8 +19,11 @@
  **************************************************************************/
 
 #include "BaseModule.h"
-#include "BaseUtility.h"
+
 #include <cassert>
+
+#include "BaseUtility.h"
+#include "FindModule.h"
 
 BaseModule::BaseModule():
 	cSimpleModule(),

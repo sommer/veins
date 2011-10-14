@@ -1,5 +1,7 @@
 #include "DeciderUWBIREDSyncOnAddress.h"
+
 #include "DeciderUWBIRED.h"
+#include "MacPkt_m.h"
 
 DeciderUWBIREDSyncOnAddress::DeciderUWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
 				PhyLayerUWBIR* _uwbiface,

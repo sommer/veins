@@ -19,8 +19,8 @@
 #ifndef ANSIM_MOBILITY_H
 #define ANSIM_MOBILITY_H
 
+#include "MiXiMDefs.h"
 #include "LineSegmentsMobilityBase.h"
-
 
 /**
  * @brief Uses the \<position_change> elements of the ANSim tool's trace file.
@@ -30,7 +30,7 @@
  * @ingroup mobility
  * @author Andras Varga
  */
-class  ANSimMobility : public LineSegmentsMobilityBase
+class MIXIM_API ANSimMobility : public LineSegmentsMobilityBase
 {
   protected:
     // config

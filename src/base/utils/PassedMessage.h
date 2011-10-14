@@ -3,11 +3,12 @@
 #ifndef PASSED_MESSAGE_H
 #define PASSED_MESSAGE_H
 
-#include <string>
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
 #include "ImNotifiable.h"
 
-class PassedMessage : public BBItem {
+class MIXIM_API PassedMessage : public BBItem {
     BBITEM_METAINFO(BBItem);
  public:
     enum gates_t {

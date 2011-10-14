@@ -16,6 +16,7 @@
 #ifndef JAKESFADING_H_
 #define JAKESFADING_H_
 
+#include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 
 class JakesFading;
@@ -26,7 +27,7 @@ class JakesFading;
  * @ingroup analogueModels
  * @ingroup mapping
  */
-class JakesFadingMapping: public SimpleConstMapping {
+class MIXIM_API JakesFadingMapping: public SimpleConstMapping {
 protected:
 	static DimensionSet dimensions;
 
@@ -90,7 +91,7 @@ public:
  * @ingroup analogueModels
  * @author Hermann S. Lichte, Karl Wessel (port for MiXiM)
  */
-class JakesFading: public AnalogueModel {
+class MIXIM_API JakesFading: public AnalogueModel {
 protected:
 	friend class JakesFadingMapping;
 

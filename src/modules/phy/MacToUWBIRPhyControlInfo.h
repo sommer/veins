@@ -3,6 +3,7 @@
 #ifndef MACTOUWBIRPHYCONTROLINFO_
 #define MACTOUWBIRPHYCONTROLINFO_
 
+#include "MiXiMDefs.h"
 #include "MacToPhyControlInfo.h"
 #include "IEEE802154A.h"
 
@@ -14,7 +15,7 @@
  * @ingroup phyLayer
  * @ingroup macLayer
  */
-class MacToUWBIRPhyControlInfo: public MacToPhyControlInfo {
+class MIXIM_API MacToUWBIRPhyControlInfo: public MacToPhyControlInfo {
 protected:
 	IEEE802154A::config cfg;
 	public:

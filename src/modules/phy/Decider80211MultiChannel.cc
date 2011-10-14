@@ -6,7 +6,9 @@
  */
 
 #include "Decider80211MultiChannel.h"
+
 #include "DeciderResult80211.h"
+#include "Consts80211.h"
 
 Decider80211MultiChannel::Decider80211MultiChannel(DeciderToPhyInterface* phy,
 					double threshold,

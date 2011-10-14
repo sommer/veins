@@ -23,6 +23,8 @@
 
 #include <omnetpp.h>
 
+#include "MiXiMDefs.h"
+
 /**
  * @brief Control info to pass next hop L2 addr from netw to MAC layer
  *
@@ -36,7 +38,7 @@
  * @ingroup netwLayer
  * @author Daniel Willkomm
  **/
-class NetwToMacControlInfo : public cObject
+class MIXIM_API NetwToMacControlInfo : public cObject
 {
   protected:
     /** @brief MAC address of the sending or receiving node*/

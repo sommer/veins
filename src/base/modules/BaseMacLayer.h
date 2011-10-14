@@ -24,23 +24,27 @@
 #define BASE_MAC_LAYER_H
 
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
 #include "BaseLayer.h"
-//#include "BaseArp.h"
-#include <MacPkt_m.h>
-#include <MacToPhyInterface.h>
-#include <BaseConnectionManager.h>
+
+class BaseConnectionManager;
+class ConstMapping;
+class MacPkt;
+class MacToPhyInterface;
+class Mapping;
+class Signal;
 
 /**
  * @brief A very simple MAC module template which provides de- and
- * encapsulation of messages using the standard addresses and
- * NetwToMacControlInfo of MiXiM. It also provides basic handling of lower
- * layer messages.
+ * encapsulation of messages using the standard addresses. It also
+ * provides basic handling of lower layer messages.
  *
  * @ingroup macLayer
  * @ingroup baseModules
  * @author Daniel Willkomm, Karl Wessel
  */
-class BaseMacLayer : public BaseLayer
+class MIXIM_API BaseMacLayer : public BaseLayer
 {
 public:
 	/** @brief Message kinds used by this layer.*/

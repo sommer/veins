@@ -33,23 +33,13 @@
 #ifndef UWBIRMAC_H
 #define UWBIRMAC_H
 
+#include "MiXiMDefs.h"
 #include "BaseMacLayer.h"
-#include "Decider.h"
-#include "MacToPhyControlInfo.h"
-#include "PhyToMacControlInfo.h"
-#include "Signal_.h"
-#include "MacToPhyInterface.h"
-#include "UWBIRMacPkt_m.h"
 #include "IEEE802154A.h"
-#include "RadioUWBIR.h"
-#include "DeciderResultUWBIR.h"
 #include "Packet.h"
-#include "UWBIRMacPkt.h"
-#include <vector>
-#include <utility>
 
-using namespace std;
-
+class MacToPhyInterface;
+class UWBIRMacPkt;
 
 /**
  * @brief This class provides helper function for MAC modules that use the UWB-IR IEEE 802.15.4A model.
@@ -61,7 +51,7 @@ using namespace std;
  * @ingroup ieee802154a
  * @ingroup macLayer
  */
-class UWBIRMac : public BaseMacLayer {
+class MIXIM_API UWBIRMac : public BaseMacLayer {
 
 public:
 

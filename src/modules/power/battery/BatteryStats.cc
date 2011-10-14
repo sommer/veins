@@ -27,7 +27,13 @@
  * capacity.)
  */
 #include "BatteryStats.h"
+
 #include <iostream>
+
+#include "BatteryState.h"
+#include "FindModule.h"
+#include "DeviceEntry.h"
+#include "BaseUtility.h"
 
 Define_Module(BatteryStats);
 

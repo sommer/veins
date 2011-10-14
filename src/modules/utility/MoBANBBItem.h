@@ -39,9 +39,10 @@
  *
  **************************************************************************/
 
-#include <BaseWorldUtility.h>
+#include "MiXiMDefs.h"
+#include "ImNotifiable.h"
 
-class BBMoBANMessage : public BBItem {
+class MIXIM_API BBMoBANMessage : public BBItem {
     BBITEM_METAINFO(BBItem);
  public:
 	Coord position;

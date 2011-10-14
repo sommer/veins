@@ -33,9 +33,12 @@
 #include <sstream>
 #include <vector>
 #include <list>
+
+#include "MiXiMDefs.h"
 #include "BaseMacLayer.h"
-#include <DroppedPacket.h>
-#include <MacPkt_m.h>
+#include "DroppedPacket.h"
+
+class MacPkt;
 
 /**
  * @brief Generic CSMA Mac-Layer.
@@ -51,12 +54,12 @@
  *
  * \image html csmaFSM.png "CSMA Mac-Layer - finite state machine"
  */
-class  csma : public BaseMacLayer
+class MIXIM_API csma : public BaseMacLayer
 {
   public:
 
 
-	~csma();
+	virtual ~csma();
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);

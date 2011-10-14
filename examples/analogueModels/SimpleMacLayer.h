@@ -2,11 +2,12 @@
 #define SIMPLEMACLAYER_H_
 
 #include <omnetpp.h>
-#include "MacToPhyInterface.h"
-#include "MacToPhyControlInfo.h"
+
 #include "Signal_.h"
-#include "MacPkt_m.h"
 #include "BaseModule.h"
+
+class MacPkt;
+class MacToPhyInterface;
 
 /**
  * @brief A simple Mac layer implementation which only shows how to

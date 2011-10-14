@@ -1,13 +1,11 @@
 #include "BaseConnectionManager.h"
 
+#include <cassert>
+
 #include "NicEntryDebug.h"
 #include "NicEntryDirect.h"
-
 #include "BaseWorldUtility.h"
-
 #include "FindModule.h"
-
-#include <cassert>
 
 #ifndef ccEV
 #define ccEV (ev.isDisabled()||!coreDebug) ? ev : ev << getName() << ": "

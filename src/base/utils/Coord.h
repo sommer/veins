@@ -22,7 +22,7 @@
 #define _COORD_H
 
 #include <omnetpp.h>
-#include "miximkerneldefs.h"
+#include "MiXiMDefs.h"
 #include "FWMath.h"
 
 /**
@@ -59,7 +59,7 @@
  * @ingroup utils
  * @author Christian Frank
  */
-class Coord : public cObject
+class MIXIM_API Coord : public cObject
 {
 public:
 	/** @brief Constant representing an undefined value. */

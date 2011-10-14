@@ -13,17 +13,14 @@
 #define LMAC_LAYER_H
 
 #include <list>
-#include <DroppedPacket.h>
-#include <BaseMacLayer.h>
-#include <Blackboard.h>
-#include "LMacPkt_m.h"
-#include <SimpleAddress.h>
 
-#include "MacToPhyControlInfo.h"
-#include <BaseArp.h>
-#include <BaseConnectionManager.h>
-#include <NetwToMacControlInfo.h>
+#include "MiXiMDefs.h"
+#include "DroppedPacket.h"
+#include "BaseMacLayer.h"
+#include "PhyUtils.h"
+#include "BaseUtility.h"
 
+class LMacPkt;
 
 /**
  * @brief Implementation of L-MAC (Lightweight Medium Access Protocol for
@@ -63,7 +60,7 @@
  *
  * @ingroup macLayer
  **/
-class  LMacLayer : public BaseMacLayer
+class MIXIM_API  LMacLayer : public BaseMacLayer
 {
   public:
 	/** @brief Clean up messges.*/

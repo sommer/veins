@@ -18,7 +18,7 @@
 #include <cassert>
 #include <Packet.h>
 #include <BaseMacLayer.h>
-
+#include "FindModule.h"
 
 Define_Module(NetworkStackTrafficGen);
 

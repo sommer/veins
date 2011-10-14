@@ -1,7 +1,8 @@
 #ifndef SNRTHRESHOLDDECIDER_H_
 #define SNRTHRESHOLDDECIDER_H_
 
-#include <BaseDecider.h>
+#include "MiXiMDefs.h"
+#include "BaseDecider.h"
 
 /**
  * @brief Decider implementation which decides a signals
@@ -32,7 +33,7 @@
  *
  * @ingroup decider
  */
-class SNRThresholdDecider : public BaseDecider
+class MIXIM_API SNRThresholdDecider : public BaseDecider
 {
 protected:
 	/** @brief Threshold value for checking a SNR-map (SNR-threshold).*/

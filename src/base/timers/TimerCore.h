@@ -1,12 +1,14 @@
 #ifndef TIMER_CORE_H
 #define TIMER_CORE_H 1
 
-#include "BaseModule.h"
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
+#include "BaseModule.h"
 
 class Timer;
 
-class TimerCore: public BaseModule
+class MIXIM_API TimerCore: public BaseModule
 {
 	public:
 		typedef void (cleanup)(void * data);

@@ -28,9 +28,13 @@
 
 #include "ChannelAccess.h"
 
-#include "Move.h"
-
 #include <cassert>
+
+#include "Move.h"
+#include "FindModule.h"
+#include "BaseUtility.h"
+#include "BaseWorldUtility.h"
+#include "BaseConnectionManager.h"
 
 BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
 {

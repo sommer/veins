@@ -11,10 +11,12 @@
 
 #include "LMacLayer.h"
 
-//#include "NicControlType.h"
 #include "FWMath.h"
-
-
+#include "SimpleAddress.h"
+#include "NetwToMacControlInfo.h"
+#include "MacToPhyControlInfo.h"
+#include "MacToPhyInterface.h"
+#include "LMacPkt_m.h"
 
 Define_Module( LMacLayer )
 
@@ -583,6 +585,7 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 		break;
 	default:
 		opp_error("Unknown mac state: %d", macState);
+		break;
 	}
 }
 

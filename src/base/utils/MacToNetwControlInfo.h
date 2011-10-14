@@ -18,6 +18,8 @@
 
 #include <omnetpp.h>
 
+#include "MiXiMDefs.h"
+
 /**
  * @brief Stores control information from mac to upper layer.
  *
@@ -30,7 +32,7 @@
  *
  * @author Karl Wessel
  */
-class MacToNetwControlInfo : public cObject {
+class MIXIM_API MacToNetwControlInfo : public cObject {
 protected:
 	/** @brief The bit error rate for this packet.*/
 	double bitErrorRate;

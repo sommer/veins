@@ -22,9 +22,8 @@
 #ifndef ALOHA_MAC_LAYER_H
 #define ALOHA_MAC_LAYER_H
 
+#include "MiXiMDefs.h"
 #include "UWBIRMac.h"
-
-using namespace std;
 
 /**
  * @brief this class implements a basic Aloha MAC protocol for an UWB-IR
@@ -35,7 +34,7 @@ using namespace std;
  * @ingroup ieee802154a
  * @ingroup macLayer
  */
-class AlohaMacLayer : public UWBIRMac {
+class MIXIM_API AlohaMacLayer : public UWBIRMac {
 
 public:
 

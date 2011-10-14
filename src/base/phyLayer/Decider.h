@@ -9,8 +9,8 @@
 
 #include <omnetpp.h>
 
+#include "MiXiMDefs.h"
 #include "DeciderToPhyInterface.h"
-#include "Signal_.h"
 #include "ChannelSenseRequest_m.h"
 #include "ChannelState.h"
 
@@ -28,7 +28,7 @@
  *
  * @ingroup decider
  */
-class DeciderResult
+class MIXIM_API DeciderResult
 {
 protected:
 	/** Stores if the AirFrame for this result was received correct.*/
@@ -65,7 +65,7 @@ public:
  *
  * @ingroup decider
  */
-class Decider
+class MIXIM_API Decider
 {
 protected:
 	/** @brief A pointer to the physical layer of this Decider. */

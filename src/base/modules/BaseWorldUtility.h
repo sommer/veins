@@ -21,6 +21,7 @@
 #ifndef BASE_WORLD_UTIL_H
 #define BASE_WORLD_UTIL_H
 
+#include "MiXiMDefs.h"
 #include "Blackboard.h"
 #include "Coord.h"
 
@@ -31,7 +32,7 @@
  * @ingroup blackboard
  * @ingroup baseModules
  */
-class BaseWorldUtility : public Blackboard
+class MIXIM_API BaseWorldUtility : public Blackboard
 {
 protected:
 	/**

@@ -14,6 +14,7 @@
 #ifndef HOSTSTATE_H
 #define HOSTSTATE_H
 
+#include "MiXiMDefs.h"
 #include "ImNotifiable.h"
 
 /**
@@ -31,7 +32,7 @@
  * @ingroup power
  * @ingroup blackboard
  */
-class HostState : public BBItem
+class MIXIM_API HostState : public BBItem
 {
     BBITEM_METAINFO(BBItem)
 

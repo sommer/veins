@@ -24,8 +24,10 @@
 #ifndef _FLOOD_H_
 #define _FLOOD_H_
 
-#include <BaseNetwLayer.h>
 #include <list>
+
+#include "MiXiMDefs.h"
+#include "BaseNetwLayer.h"
 
 
 /**
@@ -47,7 +49,7 @@
  *
  * ported to Mixim 2.0 by Theodoros Kapourniotis
  **/
-class Flood : public BaseNetwLayer
+class MIXIM_API Flood : public BaseNetwLayer
 {
 protected:
     /** @brief Network layer sequence number*/

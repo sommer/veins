@@ -23,6 +23,7 @@
 #ifndef BURST_APPL_LAYER_H
 #define BURST_APPL_LAYER_H
 
+#include "MiXiMDefs.h"
 #include <TestApplLayer.h>
 
 
@@ -38,7 +39,7 @@
  * @ingroup applLayer
  * @author Daniel Willkomm
  **/
-class BurstApplLayer : public TestApplLayer
+class MIXIM_API BurstApplLayer : public TestApplLayer
 {
  public:
   /** @brief Initialize module parameters*/

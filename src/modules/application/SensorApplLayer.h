@@ -22,16 +22,13 @@
 #define SENSOR_APPL_LAYER_H
 
 #include <map>
-#include "BaseUtility.h"
+
+#include "MiXiMDefs.h"
 #include "BaseModule.h"
 #include "BaseLayer.h"
-#include "NetwControlInfo.h"
 #include "Packet.h"
-#include "ApplPkt_m.h"
-#include "BaseApplLayer.h"
-#include "BaseWorldUtility.h"
 
-using namespace std;
+class BaseWorldUtility;
 
 /**
  * @brief Test class for the application layer
@@ -51,7 +48,7 @@ using namespace std;
  * @ingroup applLayer
  * @author Amre El-Hoiydi, Jérôme Rousselot
  **/
-class SensorApplLayer:public BaseLayer
+class MIXIM_API SensorApplLayer:public BaseLayer
 {
 public:
 
@@ -60,7 +57,7 @@ public:
   virtual void initialize(int);
   virtual void finish();
 
-  ~SensorApplLayer();
+  virtual ~SensorApplLayer();
   
   SensorApplLayer(): packet(100) {} // we must specify a packet length for Packet.h
 
@@ -98,7 +95,7 @@ protected:
   bool trace;
   bool debug;
   bool broadcastPackets;
-  map < int, cStdDev > latencies;
+  std::map < int, cStdDev > latencies;
   cStdDev latency;
   cOutVector latenciesRaw;
   Packet packet; // informs the simulation of the number of packets sent and received by this node.

@@ -1,10 +1,14 @@
 
 
 #include "CSMAMacLayer.h"
+
 #include "FWMath.h"
 #include "MacToPhyControlInfo.h"
-#include <BaseArp.h>
-#include <BaseConnectionManager.h>
+#include "BaseConnectionManager.h"
+#include "SimpleAddress.h"
+#include "MacToPhyInterface.h"
+#include "MacPkt_m.h"
+#include "PhyUtils.h"
 
 Define_Module( CSMAMacLayer )
 

@@ -17,6 +17,8 @@
 #define __MIXIM_MULTICHANNELMAC80211_H_
 
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
 #include "Mac80211.h"
 
 /**
@@ -27,7 +29,7 @@
  *
  * @author Karl Wessel
  */
-class Mac80211MultiChannel : public Mac80211
+class MIXIM_API Mac80211MultiChannel : public Mac80211
 {
 protected:
     virtual void initialize(int stage);

@@ -2,6 +2,8 @@
 #define PHYTOMACCONTROLINFO_H_
 
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
 #include <Decider.h>
 
 /**
@@ -12,7 +14,7 @@
  * @ingroup phyLayer
  * @ingroup macLayer
  */
-class PhyToMacControlInfo: public cObject {
+class MIXIM_API PhyToMacControlInfo: public cObject {
 protected:
 	/** The result of the decider evaluation.*/
 	DeciderResult* result;

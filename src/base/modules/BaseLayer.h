@@ -23,6 +23,7 @@
 #ifndef BASE_LAYER_H
 #define BASE_LAYER_H
 
+#include "MiXiMDefs.h"
 #include "BatteryAccess.h"
 #include "PassedMessage.h"
 
@@ -35,7 +36,7 @@
  * @ingroup baseModules
  * @author Andreas Koepke
  */
-class BaseLayer : public BatteryAccess
+class MIXIM_API BaseLayer : public BatteryAccess
 {
  protected:
 
@@ -52,7 +53,7 @@ class BaseLayer : public BatteryAccess
 
     /*@}*/
 
-    /** @brief Blackboard category for PassedMessage BBItems.*/
+    /** @brief Signal for PassedMessage.*/
     int            catPassedMsg;
     /** @brief The last message passed through this layer. This variable will be only not NULL if we are
                in statistic recording mode.*/
@@ -61,6 +62,11 @@ class BaseLayer : public BatteryAccess
     int            hostId;
 
 public:
+    BaseLayer()
+        : BatteryAccess()
+        , passedMsg(NULL)
+    {}
+    virtual ~BaseLayer();
     //Module_Class_Members(BaseLayer, BaseModule, 0 );
 
     /** @brief Initialization of the module and some variables*/
@@ -71,7 +77,6 @@ public:
 
     /** @brief Called when the simulation has finished.*/
 	virtual void finish();
-	virtual ~BaseLayer();
 
 protected:
     /**
@@ -79,8 +84,8 @@ protected:
      * @brief Functions to be redefined by the programmer
      *
      * These are the functions provided to add own functionality to
-     * your modules. These functions are called whenever a blackboard
-     * message, a self message or a data message from the upper or
+     * your modules. These functions are called whenever
+     * a self message or a data message from the upper or
      * lower layer arrives respectively.
      *
      **/

@@ -25,6 +25,7 @@
 #include <omnetpp.h>
 #include <map>
 
+#include "MiXiMDefs.h"
 #include "Coord.h"
 
 class ChannelAccess;
@@ -38,7 +39,7 @@ class ChannelAccess;
  * @author Daniel Willkomm
  * @sa ConnectionManager
  */
-class NicEntry : public cObject
+class MIXIM_API NicEntry : public cObject
 {
 protected:
 	class NicEntryComparator {

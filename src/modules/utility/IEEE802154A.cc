@@ -23,7 +23,10 @@
  ***************************************************************************/
 
 #include "IEEE802154A.h"
+
 #include <cassert>
+
+using std::vector;
 
 // bit rate (850 kbps)
 const int IEEE802154A::mandatory_bitrate = 850000;
@@ -281,6 +284,7 @@ simtime_t IEEE802154A::getThdr() {
 		case PRF_OFF:
 			return 0;
 		}
+		break;
 	}
 	return 0;
 }
@@ -314,6 +318,7 @@ int IEEE802154A::getHoppingPos(int sym) {
 	case PRF_OFF:
 	default:
 		assert(0==1);  // unimplemented or invalid PRF value
+		break;
 	}
 	// assert(pos > -1 && pos < 8); // TODO: update to reflect number of hopping pos for current config
 	return pos;

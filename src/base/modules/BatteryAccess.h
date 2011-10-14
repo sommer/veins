@@ -8,6 +8,7 @@
 #ifndef BATTERYACCESS_H_
 #define BATTERYACCESS_H_
 
+#include "MiXiMDefs.h"
 #include "BaseModule.h"
 #include "BaseBattery.h"
 
@@ -19,7 +20,7 @@
  * @ingroup baseModules
  * @author Karl Wessel
  */
-class BatteryAccess: public BaseModule {
+class MIXIM_API BatteryAccess: public BaseModule {
 protected:
 	/** @brief Stores pointer to the battery module. */
 	BaseBattery* battery;

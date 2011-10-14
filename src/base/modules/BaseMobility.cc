@@ -21,9 +21,14 @@
 
 
 #include "BaseMobility.h"
+
+#include <sstream>
+
 #include "FWMath.h"
 #include "BorderMsg_m.h"
-#include <sstream>
+#include "FindModule.h"
+#include "BaseUtility.h"
+#include "BaseWorldUtility.h"
 
 Define_Module(BaseMobility);
 
@@ -245,6 +250,7 @@ void BaseMobility::handleBorderMsg(cMessage * msg)
 
     default:
     	error("Unknown BorderPolicy!");
+    	break;
     }
 
     fixIfHostGetsOutside();
@@ -355,6 +361,7 @@ void BaseMobility::reflectCoordinate(BorderHandling border, Coord& c)
     case NOWHERE:
     default:
 	    error("wrong border handling case!");
+	    break;
     }
 }
 
@@ -388,6 +395,7 @@ void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget,
     case NOWHERE:
     default:
 	    error("wrong border handling case!");
+	    break;
     }
 }
 
@@ -417,6 +425,7 @@ void BaseMobility::wrapIfOutside(BorderHandling wo,
     case NOWHERE:
     default:
 	    error("wrong border handling case!");
+	    break;
     }
 }
 
@@ -654,6 +663,7 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
     default:
         factor = 0;
         error("invalid state in goToBorder switch!");
+        break;
     }
 
     coreEV << "goToBorder: startPos: " << move.getStartPos().info()
@@ -740,6 +750,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget,
 
     default:
     	error("unknown BorderPolicy");
+    	break;
     }
 
     coreEV << "border handled, borderStep: "<< borderStep.info()

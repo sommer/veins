@@ -24,6 +24,8 @@
 
 #include <omnetpp.h>
 
+#include "MiXiMDefs.h"
+
 /**
  * @brief Control info netw messages
  *
@@ -39,7 +41,7 @@
  * @ingroup applLayer
  * @author Daniel Willkomm
  **/
-class NetwControlInfo : public cObject
+class MIXIM_API NetwControlInfo : public cObject
 {
   protected:
     /** @brief netw address of the sending or receiving node*/

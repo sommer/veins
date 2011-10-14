@@ -1,6 +1,7 @@
 #ifndef PATHLOSSMODEL_H_
 #define PATHLOSSMODEL_H_
 
+#include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 #include "Mapping.h"
 #include "BaseWorldUtility.h"
@@ -20,7 +21,7 @@ class SimplePathlossModel;
  * @ingroup analogueModels
  * @ingroup mapping
  */
-class SimplePathlossConstMapping : public SimpleConstMapping
+class MIXIM_API SimplePathlossConstMapping : public SimpleConstMapping
 {
 
 protected:
@@ -82,7 +83,7 @@ public:
  *
  * @ingroup analogueModels
  */
-class SimplePathlossModel : public AnalogueModel
+class MIXIM_API SimplePathlossModel : public AnalogueModel
 {
 protected:
 	friend class SimplePathlossConstMapping;

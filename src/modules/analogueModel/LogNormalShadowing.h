@@ -16,6 +16,7 @@
 #ifndef LOGNORMALSHADOWING_H_
 #define LOGNORMALSHADOWING_H_
 
+#include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 
 /**
@@ -39,7 +40,7 @@
  * @author Hermann S. Lichte, Karl Wessel (port for MiXiM)
  * @date 2007-08-15
  **/
-class LogNormalShadowing: public AnalogueModel {
+class MIXIM_API LogNormalShadowing: public AnalogueModel {
 protected:
 	/** @brief The dimensions of this analogue model*/
 	static DimensionSet dimensions;

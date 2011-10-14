@@ -7,6 +7,8 @@
 
 #include "BatteryAccess.h"
 
+#include "FindModule.h"
+
 BatteryAccess::BatteryAccess():
 	BaseModule(),
 	battery(NULL)

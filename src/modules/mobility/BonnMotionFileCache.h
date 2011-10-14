@@ -19,6 +19,7 @@
 #ifndef BONNMOTIONFILECACHE_H
 #define BONNMOTIONFILECACHE_H
 
+#include "MiXiMDefs.h"
 #include "BaseMobility.h"
 
 class BonnMotionFileCache;
@@ -29,7 +30,7 @@ class BonnMotionFileCache;
  *
  * @ingroup mobility
  */
-class  BonnMotionFile
+class MIXIM_API BonnMotionFile
 {
   public:
     typedef std::vector<double> Line;
@@ -50,7 +51,7 @@ class  BonnMotionFile
  * @ingroup mobility
  * @author Andras Varga
  */
-class  BonnMotionFileCache
+class MIXIM_API BonnMotionFileCache
 {
   protected:
     typedef std::map<std::string,BonnMotionFile> BMFileMap;

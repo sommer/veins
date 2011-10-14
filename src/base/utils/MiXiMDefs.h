@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2011 Michael Lindig
+// Copyright (C) 2004 Andras Varga
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -15,9 +15,18 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef MIXIMKERNELDEFS_H_
-#define MIXIMKERNELDEFS_H_
+#ifndef __MIXIM_MIXIMDEFS_H
+#define __MIXIM_MIXIMDEFS_H
 
-#define MIXIM_VERSION 0x0201
+#include <omnetpp.h>
+#include "miximkerneldefs.h"
+
+#if defined(MIXIM_EXPORT)
+#  define MIXIM_API OPP_DLLEXPORT
+#elif defined(MIXIM_IMPORT)
+#  define MIXIM_API OPP_DLLIMPORT
+#else
+#  define MIXIM_API
+#endif
 
 #endif

@@ -16,10 +16,12 @@
 #ifndef PHYLAYERBATTERY_H_
 #define PHYLAYERBATTERY_H_
 
+#include "MiXiMDefs.h"
 #include "PhyLayer.h"
-#include "Decider80211Battery.h"
 #include "HostState.h"
-#include "MacToPhyControlInfo.h"
+
+class MacToPhyControlInfo;
+class MacPkt;
 
 /**
  * @brief Extends PhyLayer by adding power consumption for tx, rx and idle.
@@ -50,7 +52,7 @@
  * @ingroup power
  * @ingroup phyLayer
  */
-class PhyLayerBattery : public PhyLayer{
+class MIXIM_API PhyLayerBattery : public PhyLayer{
 protected:
 	/** @brief Number of power consuming activities (accounts).*/
 	int numActivities;

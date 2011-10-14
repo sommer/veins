@@ -21,22 +21,21 @@
 #ifndef AGGREGATION_H_
 #define AGGREGATION_H_
 
-#include "BaseLayer.h"
-#include "ApplPkt_m.h"
 #include <omnetpp.h>
 #include <map>
-#include <vector>
-#include <utility>
+#include <list>
 
+#include "MiXiMDefs.h"
+#include "BaseLayer.h"
 
-using namespace std;
+class ApplPkt;
 
 /**
  * @brief this class aggregates the packets received from the application
  * layer and separates packet emissions by a time InterPacketDelay.
  *
  */
-class Aggregation: public BaseLayer {
+class MIXIM_API Aggregation: public BaseLayer {
 public:
 	Aggregation();
 	virtual void initialize(int);
@@ -51,12 +50,12 @@ private:
 	    // this type is used to store, for a network destination, the time
 	    // at which a packet was last sent to it, and the packets currently
 	    // queued for aggregation.
-	    typedef pair<simtime_t, list<ApplPkt*> > destInfo;
+	    typedef std::pair<simtime_t, std::list<ApplPkt*> > destInfo;
 
 	    // this map associates to each known netwok address
 	    // the time at which a packet was last sent to it, and a vector
 	    // of packets currently queued for it (waiting aggregation).
-	    map<int, destInfo> destInfos;
+	    std::map<int, destInfo> destInfos;
 
 	    // This message is used as a timer to perform aggregation
 	    cMessage* aggregationTimer;

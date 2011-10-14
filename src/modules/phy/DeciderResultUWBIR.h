@@ -2,8 +2,11 @@
 
 #ifndef UWBIRDECIDERRESULT_H
 #define UWBIRDECIDERRESULT_H
-#include "Decider.h"
+
 #include <vector>
+
+#include "MiXiMDefs.h"
+#include "Decider.h"
 
 /**
  * @brief This class stores results from an UWBIR Decider.
@@ -14,7 +17,7 @@
  * @ingroup ieee802154a
  * @ingroup decider
  */
-class DeciderResultUWBIR : public DeciderResult {
+class MIXIM_API DeciderResultUWBIR : public DeciderResult {
 public:
 	DeciderResultUWBIR(bool isCorrect, std::vector<bool>* _decodedBits, double snr): DeciderResult(isCorrect), decodedBits(_decodedBits), snr(snr) { }
 

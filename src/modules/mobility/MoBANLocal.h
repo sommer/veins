@@ -41,8 +41,8 @@
  **************************************************************************/
 
 
-#include <BaseMobility.h>
-#include "MoBANBBItem.h"
+#include "MiXiMDefs.h"
+#include "BaseMobility.h"
 
 /**
  * @brief This is the local mobility module of MoBAN. It should be instantiated in each node that belongs to a WBAN. The NED parameter "coordinatorIndex"
@@ -55,7 +55,7 @@
  * @ingroup MoBAN
  * @author Majid Nabi
  */
-class MoBANLocal : public BaseMobility
+class MIXIM_API MoBANLocal : public BaseMobility
 {
   protected:
 

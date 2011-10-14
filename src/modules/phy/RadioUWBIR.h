@@ -10,9 +10,9 @@
 #ifndef UWBIRRADIO_H_
 #define UWBIRRADIO_H_
 
+#include "MiXiMDefs.h"
 #include "PhyUtils.h"
-#include "BasePhyLayer.h"
-#include "UWBIRIEEE802154APathlossModel.h"
+#include "PhyLayerUWBIR.h"
 
 /**
  * @brief This class extends the basic radio model.
@@ -27,7 +27,7 @@
  * @ingroup phyLayer
  */
 
-class RadioUWBIR: public Radio {
+class MIXIM_API RadioUWBIR: public Radio {
 	friend class PhyLayerUWBIR;
 
 public:

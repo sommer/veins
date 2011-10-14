@@ -2,7 +2,7 @@
 #define IMNOTIFIABLE_H_
 
 #include <omnetpp.h>
-#include "miximkerneldefs.h"
+#include "MiXiMDefs.h"
 
 /**
  * @brief Contains detailed information about the items published using the
@@ -29,7 +29,7 @@
  * @ingroup blackboard
  * @author Andreas Koepke
  */
-class  BBItem : public cObject
+class MIXIM_API BBItem : public cObject
 {
  public:
 	/**
@@ -55,7 +55,7 @@ class  BBItem : public cObject
  * @author Andreas Koepke
  *
  */
-class  ImNotifiable
+class MIXIM_API ImNotifiable
 {
   public:
     /**

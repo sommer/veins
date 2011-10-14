@@ -8,7 +8,8 @@
 #ifndef DECIDERRESULT80211_H_
 #define DECIDERRESULT80211_H_
 
-#include <Decider.h>
+#include "MiXiMDefs.h"
+#include "Decider.h"
 
 /**
  * @brief Defines an extended DeciderResult for the 80211 protocol
@@ -17,7 +18,7 @@
  * @ingroup decider
  * @ingroup ieee80211
  */
-class DeciderResult80211 : public DeciderResult{
+class MIXIM_API DeciderResult80211 : public DeciderResult{
 protected:
 	/** @brief Stores the bit-rate of the transmission of the packet */
 	double bitrate;

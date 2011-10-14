@@ -1,5 +1,10 @@
 #include "SimpleMacLayer.h"
+
 #include "Mapping.h"
+#include "FindModule.h"
+#include "MacToPhyInterface.h"
+#include "MacToPhyControlInfo.h"
+#include "MacPkt_m.h"
 
 Define_Module(SimpleMacLayer);
 

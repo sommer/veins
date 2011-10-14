@@ -6,14 +6,16 @@
  */
 
 #include "PhyLayer.h"
-#include <Decider80211.h>
-#include <Decider802154Narrow.h>
-#include <SimplePathlossModel.h>
-#include <BreakpointPathlossModel.h>
-#include <LogNormalShadowing.h>
-#include <SNRThresholdDecider.h>
-#include <JakesFading.h>
-#include <PERModel.h>
+
+#include "Decider80211.h"
+#include "Decider802154Narrow.h"
+#include "SimplePathlossModel.h"
+#include "BreakpointPathlossModel.h"
+#include "LogNormalShadowing.h"
+#include "SNRThresholdDecider.h"
+#include "JakesFading.h"
+#include "PERModel.h"
+#include "BaseConnectionManager.h"
 
 Define_Module(PhyLayer);
 

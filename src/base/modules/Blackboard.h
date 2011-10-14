@@ -6,9 +6,10 @@
 #pragma warning(disable : 4786)
 #endif
 
-#include <omnetpp.h>
 #include <vector>
-#include <string>
+#include <omnetpp.h>
+
+#include "MiXiMDefs.h"
 #include "ImNotifiable.h"
 /**
  * @brief Provides a blackboard like information distribution.
@@ -57,7 +58,7 @@
  * @author Andreas Koepke
  */
 
-class Blackboard : public cSimpleModule
+class MIXIM_API Blackboard : public cSimpleModule
 {
 protected:
 

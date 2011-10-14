@@ -2,6 +2,8 @@
 #define FRAME_TIMER_GENERATOR_H 1
 
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
 #include "GlobalTime.h"
 
 class FrameTimer;
@@ -13,7 +15,7 @@ class FrameTimer;
  * the global time points, but eventually this could be implemented using 
  * the standard timers and a proper global time implementation */
 
-class FrameTimerGenerator: public cSimpleModule
+class MIXIM_API FrameTimerGenerator: public cSimpleModule
 {
 	protected:
 		FrameTimer *ft;

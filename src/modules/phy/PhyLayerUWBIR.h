@@ -65,22 +65,19 @@
 #ifndef UWBIR_PHY_LAYER_H
 #define UWBIR_PHY_LAYER_H
 
-#include "PhyLayerBattery.h"
+#include "MiXiMDefs.h"
+#include "BasePhyLayer.h"
 #include "RadioUWBIR.h"
 #include "UWBIRStochasticPathlossModel.h"
 #include "UWBIRIEEE802154APathlossModel.h"
 #include "HostState.h"
-#include "MacToPhyControlInfo.h"
 #include "BaseUtility.h"
 
 
-class DeciderUWBIRED;
 class DeciderUWBIREDSyncOnAddress;
 class DeciderUWBIREDSync;
 
 #include "DeciderUWBIRED.h"
-#include "DeciderUWBIREDSyncOnAddress.h"
-#include "DeciderUWBIREDSync.h"
 
 #if (OMNETPP_VERSION >= 0x0402)
 	typedef cNEDValue 				  t_dynamic_expression_value;
@@ -121,7 +118,7 @@ class DeciderUWBIREDSync;
  * @ingroup phyLayer
  * @ingroup power
  */
-class PhyLayerUWBIR : public BasePhyLayer
+class MIXIM_API PhyLayerUWBIR : public BasePhyLayer
 {
 	friend class DeciderUWBIRED;
 

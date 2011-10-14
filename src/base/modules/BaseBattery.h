@@ -2,6 +2,8 @@
 #define BASE_BATTERY_H
 
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
 #include "BaseModule.h"
 
 /**
@@ -19,7 +21,7 @@
  * @ingroup baseModules
  * @ingroup power
  */
-class DrawAmount {
+class MIXIM_API DrawAmount {
 public:
 	/** @brief The type of the amount to draw.*/
 	enum PowerType {
@@ -39,6 +41,8 @@ public:
 	DrawAmount(int type = CURRENT, double value = 0):
 		type(type),
 		value(value)
+	{}
+	virtual ~DrawAmount()
 	{}
 
 	/** @brief Returns the type of power drawn as PowerType. */
@@ -61,7 +65,7 @@ public:
  * @ingroup power
  * @see SimpleBattery
  */
-class BaseBattery : public BaseModule {
+class MIXIM_API BaseBattery : public BaseModule {
 public:
 	/**
 	 * @brief Registers a power draining device with this battery.

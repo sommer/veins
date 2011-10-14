@@ -8,14 +8,18 @@
  * description: Adaptor module that simply "translates" netwControlInfo to macControlInfo
  *
  **************************************************************************/
+#include "DummyRoute.h"
 
 #include <limits>
 #include <algorithm>
-
-#include "DummyRoute.h"
-#include "DummyRoutePkt_m.h"
-#include <NetwToMacControlInfo.h>
 #include <cassert>
+
+#include "DummyRoutePkt_m.h"
+#include "NetwToMacControlInfo.h"
+#include "NetwControlInfo.h"
+#include "SimpleAddress.h"
+#include "NetwPkt_m.h"
+#include "ArpInterface.h"
 
 Define_Module(DummyRoute);
 

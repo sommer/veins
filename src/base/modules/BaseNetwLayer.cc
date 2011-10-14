@@ -21,12 +21,17 @@
 
 
 #include "BaseNetwLayer.h"
+
+#include <cassert>
+
 #include "NetwControlInfo.h"
 #include "NetwToMacControlInfo.h"
 #include "BaseMacLayer.h"
 #include "AddressingInterface.h"
-
-#include <cassert>
+#include "SimpleAddress.h"
+#include "FindModule.h"
+#include "NetwPkt_m.h"
+#include "ArpInterface.h"
 
 Define_Module(BaseNetwLayer);
 
@@ -165,5 +170,6 @@ void BaseNetwLayer::handleLowerControl(cMessage* msg)
 		EV << "BaseNetwLayer does not handle control messages called "
 		   << msg->getName() << endl;
 		delete msg;
+		break;
 	}
 }

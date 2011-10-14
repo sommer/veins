@@ -8,6 +8,7 @@
 #ifndef BASEDECIDER_H_
 #define BASEDECIDER_H_
 
+#include "MiXiMDefs.h"
 #include "Decider.h"
 
 #define deciderEV (ev.isDisabled()||!debug) ? ev : ev << "[Host " << myIndex << "] - PhyLayer(Decider): "
@@ -37,7 +38,7 @@
  * @ingroup decider
  * @ingroup baseModules
  */
-class BaseDecider: public Decider {
+class MIXIM_API BaseDecider: public Decider {
 public:
 	/**
 	 * @brief The kinds of ControlMessages this Decider sends.

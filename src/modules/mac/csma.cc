@@ -24,22 +24,23 @@
  ***************************************************************************
  * part of:    Modifications to the MF-2 framework by CSEM
  **************************************************************************/
-
 #include "csma.h"
-#include "FWMath.h"
-#include <cassert>
-#include <BaseDecider.h>
-#include <DeciderResult802154Narrow.h>
-#include <BaseArp.h>
-#include <MacToPhyControlInfo.h>
-#include <PhyToMacControlInfo.h>
-#include <NetwToMacControlInfo.h>
-#include <MacToNetwControlInfo.h>
-#include <SimpleAddress.h>
-#include <BasePhyLayer.h>
 
-#include <BaseConnectionManager.h>
-//#include <Consts802154.h>
+#include <cassert>
+
+#include "FWMath.h"
+#include "BaseDecider.h"
+#include "DeciderResult802154Narrow.h"
+#include "BaseArp.h"
+#include "MacToPhyControlInfo.h"
+#include "PhyToMacControlInfo.h"
+#include "NetwToMacControlInfo.h"
+#include "MacToNetwControlInfo.h"
+#include "SimpleAddress.h"
+#include "BasePhyLayer.h"
+#include "BaseConnectionManager.h"
+#include "FindModule.h"
+#include "MacPkt_m.h"
 
 Define_Module(csma);
 
@@ -273,6 +274,7 @@ void csma::updateStatusIdle(t_mac_event event, cMessage *msg) {
 		break;
 	default:
 		fsmError(event, msg);
+		break;
 	}
 }
 
@@ -331,6 +333,7 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 		break;
 	default:
 		fsmError(event, msg);
+		break;
 	}
 }
 
@@ -432,6 +435,7 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 		break;
 	default:
 		fsmError(event, msg);
+		break;
 	}
 }
 
@@ -495,12 +499,14 @@ void csma::updateStatusWaitAck(t_mac_event event, cMessage *msg) {
 	case EV_BROADCAST_RECEIVED:
 	case EV_FRAME_RECEIVED:
 		sendUp(decapsMsg(static_cast<MacPkt*>(msg)));
+		break;
 	case EV_DUPLICATE_RECEIVED:
 		debugEV << "Error ! Received a frame during SIFS !" << endl;
 		delete msg;
 		break;
 	default:
 		fsmError(event, msg);
+		break;
 	}
 
 }
@@ -553,6 +559,7 @@ void csma::updateStatusSIFS(t_mac_event event, cMessage *msg) {
 		break;
 	default:
 		fsmError(event, msg);
+		break;
 	}
 }
 
@@ -621,6 +628,7 @@ void csma::executeMac(t_mac_event event, cMessage *msg) {
 			break;
 		default:
 			EV << "Error in CSMA FSM: an unknown state has been reached. macState=" << macState << endl;
+			break;
 		}
 	}
 }
@@ -717,6 +725,7 @@ simtime_t csma::scheduleBackoff() {
 	}
 	default:
 		error("Unknown backoff method!");
+		break;
 	}
 
 	nbBackoffs = nbBackoffs + 1;

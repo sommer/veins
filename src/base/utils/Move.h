@@ -21,13 +21,12 @@
 #define MOVE_H
 
 #include <string>
-#include <cmath>
 #include <cassert>
 
 #include <omnetpp.h>
 
 #include "Coord.h"
-#include "BaseUtility.h"
+#include "FWMath.h"
 #include "ImNotifiable.h"
 
 /**
@@ -39,7 +38,7 @@
  *
  * @author Andreas Koepke, Michael Swigulski
  **/
-class Move : public BBItem {
+class MIXIM_API Move : public BBItem {
 
 	/** @brief Provides BBItem meta information for this class.*/
     BBITEM_METAINFO(BBItem);

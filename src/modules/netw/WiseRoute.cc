@@ -23,12 +23,22 @@
  * ported to Mixim 2.0.1 by Theodoros Kapourniotis
  * last modification: 06/02/11
  **************************************************************************/
+#include "WiseRoute.h"
 
 #include <limits>
 #include <algorithm>
-
-#include "WiseRoute.h"
 #include <cassert>
+
+#include "NetwControlInfo.h"
+#include "NetwToMacControlInfo.h"
+#include "MacToNetwControlInfo.h"
+#include "SimpleAddress.h"
+#include "ArpInterface.h"
+#include "FindModule.h"
+#include "WiseRoutePkt_m.h"
+#include "SimTracer.h"
+
+using std::make_pair;
 
 Define_Module(WiseRoute);
 

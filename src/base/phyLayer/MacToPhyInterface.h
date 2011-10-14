@@ -3,6 +3,7 @@
 
 #include <omnetpp.h>
 
+#include "MiXiMDefs.h"
 #include "Signal_.h"
 #include "ChannelState.h"
 #include "PhyUtils.h"
@@ -14,7 +15,7 @@
  * @ingroup macLayer
  * @ingroup phyLayer
  */
-class MacToPhyInterface
+class MIXIM_API MacToPhyInterface
 {
 public:
 	/**

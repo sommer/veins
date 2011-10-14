@@ -16,6 +16,7 @@
 #ifndef DECIDER80211BATTERY_H_
 #define DECIDER80211BATTERY_H_
 
+#include "MiXiMDefs.h"
 #include "Decider80211.h"
 
 /**
@@ -26,7 +27,7 @@
  * @ingroup power
  * @ingroup ieee80211
  */
-class Decider80211Battery : public Decider80211 {
+class MIXIM_API Decider80211Battery : public Decider80211 {
 protected:
 	/**
 	 * @brief Stores the current delta in mA to draw during reception

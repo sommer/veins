@@ -25,11 +25,11 @@
 #ifndef _IEEE802154A_H
 #define	_IEEE802154A_H
 
-#include "Signal_.h"
 #include <vector>
 #include <utility>
 
-using namespace std;
+#include "MiXiMDefs.h"
+#include "Signal_.h"
 
 /**
  * @brief This class regroups static methods needed to generate
@@ -41,7 +41,7 @@ using namespace std;
  *
  * @ingroup ieee802154a
  */
-class IEEE802154A {
+class MIXIM_API IEEE802154A {
 public:
 	/**@brief bit rate (850 kbps) */
     static const int mandatory_bitrate;
@@ -158,7 +158,7 @@ public:
 
 
 
-    typedef std::pair<Signal *, vector<bool> * > signalAndData;
+    typedef std::pair<Signal *, std::vector<bool> * > signalAndData;
 
     /* @brief Sets the configuration of the IEEE802.15.4A standard.
      *  Use this (and the struct config) to implement optional modes of the standard. */

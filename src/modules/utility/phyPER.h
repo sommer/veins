@@ -19,15 +19,16 @@
 #define __PHYPER_H__
 
 #include <omnetpp.h>
-#include <BaseModule.h>
-#include <BaseUtility.h>
+
+#include "MiXiMDefs.h"
+#include "BaseModule.h"
 #include "Packet.h"
 #include "UWBIRPacket.h"
 
 /**
  * TODO - Generated class
  */
-class phyPER : public  BaseModule
+class MIXIM_API phyPER : public  BaseModule
 {
   protected:
     virtual void initialize(int stage);

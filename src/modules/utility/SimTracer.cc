@@ -19,10 +19,12 @@
  ***************************************************************************
  * part of:    Modifications to the MF-2 framework by CSEM
  **************************************************************************/
-
-
 #include "SimTracer.h"
 
+#include "FindModule.h"
+
+using std::map;
+using std::string;
 
 Define_Module(SimTracer);
 

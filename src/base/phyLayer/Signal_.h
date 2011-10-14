@@ -4,6 +4,7 @@
 #include <list>
 #include <omnetpp.h>
 
+#include "MiXiMDefs.h"
 #include "Move.h"
 #include "Mapping.h"
 
@@ -30,7 +31,7 @@
  *
  * @ingroup phyLayer
  */
-class Signal {
+class MIXIM_API Signal {
 public:
 	/**
 	 * @brief Shortcut type for a concatenated Mapping using multiply operator.

@@ -31,9 +31,17 @@
 //
 
 #include "UWBIRMac.h"
+
 #include <iostream>
 #include <math.h>
+
 #include "MacToUWBIRPhyControlInfo.h"
+#include "PhyToMacControlInfo.h"
+#include "DeciderResultUWBIR.h"
+#include "FindModule.h"
+#include "UWBIRMacPkt_m.h"
+#include "UWBIRMacPkt.h"
+#include "MacToPhyInterface.h"
 
 using namespace std;
 

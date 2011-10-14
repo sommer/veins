@@ -8,7 +8,7 @@
 #ifndef DECIDER80211MULTICHANNEL_H_
 #define DECIDER80211MULTICHANNEL_H_
 
-
+#include "MiXiMDefs.h"
 #include "Decider80211Battery.h"
 
 /**
@@ -26,7 +26,7 @@
  *
  * @author Karl Wessel
  */
-class Decider80211MultiChannel: public Decider80211Battery
+class MIXIM_API Decider80211MultiChannel: public Decider80211Battery
 {
 protected:
 	int currentChannel;

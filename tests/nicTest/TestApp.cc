@@ -16,6 +16,7 @@
 #include "TestApp.h"
 #include "NetwToMacControlInfo.h"
 #include "SimpleAddress.h"
+#include "FindModule.h"
 
 Define_Module(TestApp);
 

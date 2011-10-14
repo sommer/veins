@@ -1,5 +1,9 @@
 #include "PhyLayerUWBIR.h"
+
 #include <cassert>
+
+#include "DeciderUWBIREDSyncOnAddress.h"
+#include "DeciderUWBIREDSync.h"
 #include "MacToUWBIRPhyControlInfo.h"
 #include "AirFrameUWBIR_m.h"
 
@@ -299,6 +303,7 @@ void PhyLayerUWBIR::setSwitchingCurrent(int from, int to) {
 			// ! transitions between rx and sync should be immediate
 		default:
 			opp_error("Unknown radio switch! From RX to %d", to);
+			break;
 		}
 		break;
 
@@ -312,6 +317,7 @@ void PhyLayerUWBIR::setSwitchingCurrent(int from, int to) {
 			break;
 		default:
 			opp_error("Unknown radio switch! From TX to %d", to);
+			break;
 		}
 		break;
 
@@ -325,11 +331,13 @@ void PhyLayerUWBIR::setSwitchingCurrent(int from, int to) {
 			break;
 		default:
 			opp_error("Unknown radio switch! From SLEEP to %d", to);
+			break;
 		}
 		break;
 
 	default:
 		opp_error("Unknown radio state: %d", from);
+		break;
 	}
 
 	BatteryAccess::drawCurrent(current, act);
@@ -348,6 +356,7 @@ void PhyLayerUWBIR::setRadioCurrent(int rs) {
 		break;
 	case RadioUWBIR::SYNC:
 		BatteryAccess::drawCurrent(syncCurrent, SYNC_ACCT);
+		break;
 	default:
 		break;
 	}

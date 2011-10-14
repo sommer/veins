@@ -19,10 +19,11 @@
 #ifndef UNIT_DISK_H
 #define UNIT_DISK_H 1
 
+#include "MiXiMDefs.h"
 #include "ConnectionManager.h"
 
 //TODO: clean up UnitDisk code, maybe extends its ned file from baseConnectionManager
-class UnitDisk: public ConnectionManager
+class MIXIM_API UnitDisk: public ConnectionManager
 {
 protected:
 	/** @brief Holds the maximum interference range.*/

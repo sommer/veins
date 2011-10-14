@@ -18,9 +18,9 @@
  * description: application layer like the TestApplLayer but sends burst of
  *               messages
  **************************************************************************/
-
-
 #include "BurstApplLayerBattery.h"
+
+#include "ApplPkt_m.h"
 
 Define_Module(BurstApplLayerBattery);
 

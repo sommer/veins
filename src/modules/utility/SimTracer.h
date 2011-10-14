@@ -28,20 +28,18 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include <BaseWorldUtility.h>
-#include <BaseLayer.h>
-#include <ConnectionManager.h>
-#include "Packet.h"
-# include "ImNotifiable.h"
 
-using namespace std;
+#include "MiXiMDefs.h"
+#include "BaseWorldUtility.h"
+#include "Packet.h"
+#include "ImNotifiable.h"
 
 /**
  * @class SimTracer
  * @ingroup utils
  * @author Jerome Rousselot
  */
-class SimTracer:public cSimpleModule, ImNotifiable
+class MIXIM_API SimTracer:public cSimpleModule, ImNotifiable
 {
 
 public:
@@ -54,7 +52,7 @@ public:
   virtual void finish();
 
     /** @brief Called by any module wanting to log a nam event. */
-  void namLog(string namString);
+  void namLog(std::string namString);
 
   void radioEnergyLog(unsigned long mac, int state, simtime_t duration,
 		      double power, double newPower);
@@ -72,20 +70,20 @@ public:
   double getSinkPowerConsumption();
 
 protected:
-   ofstream namFile, radioEnergyFile, treeFile;;
-   vector < string > packetsColors;
+   std::ofstream namFile, radioEnergyFile, treeFile;;
+   std::vector < std::string > packetsColors;
    cOutVector goodputVec;
    cOutVector pSinkVec;
    cOutVector pSensorVec;
-   map < unsigned long, double >powerConsumptions;
+   std::map < unsigned long, double >powerConsumptions;
    int catPacket;
    Packet packet;
    long nbApplPacketsSent;
    long nbApplPacketsReceived;
    int catEnergy;
-   map < unsigned long, double >powerConsumptions2;
-   map < unsigned long, double >currPower;
-   map < unsigned long, simtime_t> lastUpdates;
+   std::map < unsigned long, double >powerConsumptions2;
+   std::map < unsigned long, double >currPower;
+   std::map < unsigned long, simtime_t> lastUpdates;
    BaseWorldUtility* world;
 };
 

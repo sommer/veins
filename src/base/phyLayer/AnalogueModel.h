@@ -1,6 +1,7 @@
 #ifndef ANALOGUEMODEL_
 #define ANALOGUEMODEL_
 
+#include "MiXiMDefs.h"
 #include "Signal_.h"
 
 /**
@@ -17,7 +18,7 @@
  *
  * @ingroup analogueModels
  */
-class AnalogueModel {
+class MIXIM_API AnalogueModel {
 
 public:
 	virtual ~AnalogueModel() {}

@@ -8,6 +8,7 @@
 #ifndef ARPINTERFACE_H_
 #define ARPINTERFACE_H_
 
+#include "MiXiMDefs.h"
 /**
  * @brief Interface every Address resolution protocol (ARP) module has to
  * implement.
@@ -19,7 +20,7 @@
  *
  * @author Karl Wessel
  */
-class ArpInterface {
+class MIXIM_API ArpInterface {
 public:
 	/** @brief returns a L2 address to a given L3 address.*/
     virtual int getMacAddr(const int netwAddr) = 0;

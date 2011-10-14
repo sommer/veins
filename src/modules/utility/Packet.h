@@ -19,9 +19,11 @@
 #ifndef BBPACKET_H
 #define BBPACKET_H
 
-#include <omnetpp.h>
-#include "ImNotifiable.h"
 #include <sstream>
+#include <omnetpp.h>
+
+#include "MiXiMDefs.h"
+#include "ImNotifiable.h"
 
 /**
  * @brief Class that keeps track of the number of packets sent.
@@ -32,7 +34,7 @@
  * @sa Blackboard
  */
 
-class  Packet : public BBItem
+class MIXIM_API Packet : public BBItem
 {
     BBITEM_METAINFO(BBItem);
 

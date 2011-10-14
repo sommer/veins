@@ -9,19 +9,12 @@
 #ifndef UWBIREDSYNC_H_
 #define UWBIREDSYNC_H_
 
-#include <vector>
-#include <map>
-#include <math.h>
-
+#include "MiXiMDefs.h"
 #include "Mapping.h"
-#include "AirFrame_m.h"
-#include "MacPkt_m.h"
-#include "Decider.h"
 #include "DeciderUWBIRED.h"
 
-using namespace std;
-
 class PhyLayerUWBIR;
+class Signal;
 
 /**
  * @brief  this Decider models a non-coherent energy-detection receiver
@@ -50,7 +43,7 @@ class PhyLayerUWBIR;
  * @ingroup ieee802154a
  * @ingroup decider
 */
-class DeciderUWBIREDSync: public DeciderUWBIRED {
+class MIXIM_API DeciderUWBIREDSync: public DeciderUWBIRED {
 public:
 	DeciderUWBIREDSync(DeciderToPhyInterface* iface,
 				PhyLayerUWBIR* _uwbiface,

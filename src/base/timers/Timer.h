@@ -3,6 +3,7 @@
 
 #include <omnetpp.h>
 
+#include "MiXiMDefs.h"
 #include "TimerCore.h"
 
 /* Usage:
@@ -36,7 +37,7 @@
  * }
  */
 
-class Timer
+class MIXIM_API Timer
 {
 	friend class TimerCore;
 	protected:

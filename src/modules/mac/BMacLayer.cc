@@ -14,12 +14,16 @@
 // 
 
 #include "BMacLayer.h"
+
 #include "FWMath.h"
 #include "MacToPhyControlInfo.h"
-#include <BaseArp.h>
-#include <BaseConnectionManager.h>
-#include <SimpleAddress.h>
-#include <NetwToMacControlInfo.h>
+#include "BaseArp.h"
+#include "BaseConnectionManager.h"
+#include "SimpleAddress.h"
+#include "NetwToMacControlInfo.h"
+#include "BaseUtility.h"
+#include "MacToPhyInterface.h"
+#include "MacPkt_m.h"
 
 Define_Module( BMacLayer )
 

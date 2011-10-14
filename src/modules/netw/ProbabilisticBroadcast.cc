@@ -4,10 +4,15 @@
  *  Created on: Nov 4, 2008
  *      Author: Damien Piguet
  */
+#include "ProbabilisticBroadcast.h"
 
 #include <cassert>
-#include "ProbabilisticBroadcast.h"
 #include "SimpleAddress.h"
+#include "MacToNetwControlInfo.h"
+#include "NetwToMacControlInfo.h"
+#include "ProbBcastNetwControlInfo.h"
+
+using std::make_pair;
 
 Define_Module(ProbabilisticBroadcast);
 

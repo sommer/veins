@@ -20,8 +20,9 @@
 #define TURTLE_MOBILITY_H
 
 #include <stack>
-#include "LineSegmentsMobilityBase.h"
 
+#include "MiXiMDefs.h"
+#include "LineSegmentsMobilityBase.h"
 
 /**
  * @brief LOGO-style movement model, with the script coming from XML.
@@ -31,7 +32,7 @@
  * @ingroup mobility
  * @author Andras Varga
  */
-class  TurtleMobility : public LineSegmentsMobilityBase
+class MIXIM_API TurtleMobility : public LineSegmentsMobilityBase
 {
   protected:
     // config

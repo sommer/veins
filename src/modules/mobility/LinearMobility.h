@@ -20,8 +20,8 @@
 #ifndef LINEAR_MOBILITY_H
 #define LINEAR_MOBILITY_H
 
-#include <BaseMobility.h>
-
+#include "MiXiMDefs.h"
+#include "BaseMobility.h"
 
 /**
  * @brief Linear movement model. See NED file for more info.
@@ -33,7 +33,7 @@
  * @ingroup mobility
  * @author Emin Ilker Cetinbas
  */
-class LinearMobility : public BaseMobility
+class MIXIM_API LinearMobility : public BaseMobility
 {
   protected:
     double angle;          ///< angle of linear motion

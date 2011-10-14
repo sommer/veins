@@ -19,8 +19,8 @@
 #ifndef LINESEGMENTS_MOBILITY_BASE_H
 #define LINESEGMENTS_MOBILITY_BASE_H
 
-#include <BaseMobility.h>
-
+#include "MiXiMDefs.h"
+#include "BaseMobility.h"
 
 /**
  * @brief Base class for mobility models where movement consists of
@@ -32,7 +32,7 @@
  * @ingroup mobility
  * @author Andras Varga
  */
-class LineSegmentsMobilityBase : public BaseMobility
+class MIXIM_API LineSegmentsMobilityBase : public BaseMobility
 {
   protected:
     /** @name parameters to handle the movement of the host*/

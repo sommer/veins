@@ -12,13 +12,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
-
 #include "TrafficGen.h"
-#include "NetwControlInfo.h"
-#include <cassert>
-#include <Packet.h>
-#include <BaseNetwLayer.h>
 
+#include <cassert>
+
+#include "NetwControlInfo.h"
+#include "Packet.h"
+#include "BaseNetwLayer.h"
+#include "FindModule.h"
+#include "BaseWorldUtility.h"
+#include "ApplPkt_m.h"
+#include "SimpleAddress.h"
 
 Define_Module(TrafficGen);
 
@@ -80,6 +84,7 @@ void TrafficGen::handleSelfMsg(cMessage *msg)
 	default:
 		EV << "Unkown selfmessage! -> delete, kind: "<<msg->getKind() <<endl;
 		delete msg;
+		break;
 	}
 }
 

@@ -21,13 +21,15 @@
  **************************************************************************/
 
 #include "Flood.h"
-#include <NetwPkt_m.h>
-#include "NetwControlInfo.h"
-#include "NetwToMacControlInfo.h"
+
 #include <cassert>
 
-Define_Module(Flood)
-;
+#include "NetwPkt_m.h"
+#include "NetwControlInfo.h"
+#include "NetwToMacControlInfo.h"
+#include "SimpleAddress.h"
+
+Define_Module(Flood);
 
 /**
  * Reads all parameters from the ini file. If a parameter is not

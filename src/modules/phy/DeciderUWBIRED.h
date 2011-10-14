@@ -11,20 +11,16 @@
 
 #include <vector>
 #include <map>
-#include <math.h>
 
+#include "MiXiMDefs.h"
 #include "Signal_.h"
 #include "Mapping.h"
 #include "AirFrame_m.h"
 #include "Decider.h"
-#include "DeciderResultUWBIR.h"
-#include "AlohaMacLayer.h"
 #include "IEEE802154A.h"
 #include "UWBIRPacket.h"
 #include "BaseUtility.h"
 #include "MacToPhyInterface.h"
-
-using namespace std;
 
 class PhyLayerUWBIR;
 
@@ -63,7 +59,7 @@ class PhyLayerUWBIR;
  * @ingroup ieee802154a
  * @ingroup decider
 */
-class DeciderUWBIRED: public Decider {
+class MIXIM_API DeciderUWBIRED: public Decider {
 private:
 	bool trace, stats;
 	long nbRandomBits;
@@ -74,6 +70,7 @@ private:
 	IEEE802154A::config cfg;
 	double snrLastPacket; /**@brief Stores the snr value of the last packet seen (see decodePacket) */
 protected:
+	typedef std::map<Signal*, int> tSignalMap;
 	double syncThreshold;
 	bool syncAlwaysSucceeds;
 	bool channelSensing;
@@ -83,7 +80,7 @@ protected:
 	int catUWBIRPacket;
 	BaseUtility* utility;
 	double epulseAggregate, enoiseAggregate;
-	map<Signal*, int> currentSignals;
+	tSignalMap currentSignals;
 	cOutVector receivedPulses;
 	cOutVector syncThresholds;
 	PhyLayerUWBIR* uwbiface;
@@ -96,10 +93,10 @@ protected:
 	enum {
 		FIRST, HEADER_OVER, SIGNAL_OVER
 	};
-	vector<ConstMapping*> receivingPowers;
+	std::vector<ConstMapping*> receivingPowers;
 	ConstMapping* signalPower; // = signal->getReceivingPower();
 	// store relative offsets between signals starts
-	vector<simtime_t> offsets;
+	std::vector<simtime_t> offsets;
 	AirFrameVector airFrameVector;
 	// Create an iterator for each potentially colliding airframe
 	AirFrameVector::iterator airFrameIter;
@@ -158,14 +155,14 @@ public:
 	virtual ChannelState getChannelState();
 
 protected:
-	bool decodePacket(Signal* signal, vector<bool> * receivedBits);
+	bool decodePacket(Signal* signal, std::vector<bool> * receivedBits);
 	simtime_t handleNewSignal(Signal* s);
-	simtime_t handleHeaderOver(map<Signal*, int>::iterator& it);
+	simtime_t handleHeaderOver(tSignalMap::iterator& it);
 	virtual bool attemptSync(Signal* signal);
 	simtime_t
-			handleSignalOver(map<Signal*, int>::iterator& it, AirFrame* frame);
+			handleSignalOver(tSignalMap::iterator& it, AirFrame* frame);
 	// first value is energy from signal, other value is total window energy
-	pair<double, double> integrateWindow(int symbol, simtime_t now,
+	std::pair<double, double> integrateWindow(int symbol, simtime_t now,
 			simtime_t burst, Signal* signal);
 
 	simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);

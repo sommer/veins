@@ -27,12 +27,13 @@
 #include <omnetpp.h>
 #include <vector>
 
+#include "MiXiMDefs.h"
 #include "BatteryAccess.h"
 #include "Move.h"
-#include "BaseWorldUtility.h"
-#include "AirFrame_m.h"
 
-#include "BaseConnectionManager.h"
+class NicEntry;
+class BaseConnectionManager;
+class BaseWorldUtility;
 
 /**
  * @brief Basic class for all physical layers, please don't touch!!
@@ -49,7 +50,7 @@
  * @ingroup phyLayer
  * @ingroup baseModules
  **/
-class ChannelAccess : public BatteryAccess
+class MIXIM_API ChannelAccess : public BatteryAccess
 {
 protected:
     /** @brief use sendDirect or not?*/

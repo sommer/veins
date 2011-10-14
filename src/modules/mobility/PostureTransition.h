@@ -40,11 +40,10 @@
  *
  **************************************************************************/
 
-
-#include <iostream>
 #include <omnetpp.h>
-#include <BaseWorldUtility.h>
-#include <sstream>
+
+#include "MiXiMDefs.h"
+#include "Coord.h"
 
 /**
  * @brief Class to provide spatial and temporal correlation in the posture selection process of the MoBAN mobility model.
@@ -59,7 +58,7 @@
  * @ingroup MoBAN
  * @author Majid Nabi
  */
-class PostureTransition {
+class MIXIM_API PostureTransition {
 protected:
 
 	/** @brief Number of postures. */

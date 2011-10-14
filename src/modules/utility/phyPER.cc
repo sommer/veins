@@ -17,6 +17,8 @@
 
 #include "phyPER.h"
 
+#include "BaseUtility.h"
+
 Define_Module(phyPER);
 
 void phyPER::initialize(int stage)

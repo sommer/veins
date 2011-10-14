@@ -1,6 +1,7 @@
 #ifndef MACTOPHYCONTROLINFO_H_
 #define MACTOPHYCONTROLINFO_H_
 
+#include "MiXiMDefs.h"
 #include "Signal_.h"
 
 /**
@@ -10,7 +11,7 @@
  * @ingroup phyLayer
  * @ingroup macLayer
  */
-class MacToPhyControlInfo: public cObject {
+class MIXIM_API MacToPhyControlInfo: public cObject {
 protected:
 	/** @brief A pointer to the signal representing the transmission.*/
 	Signal* signal;

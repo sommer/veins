@@ -1,23 +1,21 @@
 #ifndef BASEPHYLAYER_
 #define BASEPHYLAYER_
 
+#include <map>
+#include <vector>
+#include <string>
+
+#include "MiXiMDefs.h"
 #include "ChannelAccess.h"
 #include "DeciderToPhyInterface.h"
 #include "MacToPhyInterface.h"
 
-#include "AnalogueModel.h"
-
-#include "Decider.h"
 #include "ChannelInfo.h"
-#include "BaseWorldUtility.h"
 
-#include "MacPkt_m.h"
-
-#include <cxmlelement.h>
-#include <map>
-#include <vector>
-#include <iostream>
-
+class AnalogueModel;
+class Decider;
+class BaseWorldUtility;
+class cXMLElement;
 
 /**
  * @brief The BasePhyLayer represents the physical layer of a nic.
@@ -65,9 +63,9 @@
  * @ingroup phyLayer
  * @ingroup baseModules
  */
-class BasePhyLayer: public ChannelAccess,
-					public DeciderToPhyInterface,
-					public MacToPhyInterface {
+class MIXIM_API BasePhyLayer: public ChannelAccess,
+                              public DeciderToPhyInterface,
+                              public MacToPhyInterface {
 
 protected:
 

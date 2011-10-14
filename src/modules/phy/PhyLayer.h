@@ -8,6 +8,7 @@
 #ifndef PHYLAYER_H_
 #define PHYLAYER_H_
 
+#include "MiXiMDefs.h"
 #include "BasePhyLayer.h"
 
 /**
@@ -25,7 +26,7 @@
  *
  * @ingroup phyLayer
  */
-class PhyLayer: public BasePhyLayer {
+class MIXIM_API PhyLayer: public BasePhyLayer {
 protected:
 	enum ProtocolIds {
 		IEEE_80211 = 12123,

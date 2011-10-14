@@ -8,6 +8,7 @@
 #ifndef SIGNALINTERFACES_H_
 #define SIGNALINTERFACES_H_
 
+#include "MiXiMDefs.h"
 #include "MappingBase.h"
 
 class FilledUpMapping;
@@ -75,7 +76,7 @@ typedef BaseFilteredIterator<ConstMappingIterator> FilteredConstMappingIterator;
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-class FilteredMappingIterator : public BaseFilteredIterator<MappingIterator> {
+class MIXIM_API FilteredMappingIterator : public BaseFilteredIterator<MappingIterator> {
 public:
 	FilteredMappingIterator(MappingIterator* orig):
 		BaseFilteredIterator<MappingIterator>(orig) {}
@@ -367,7 +368,7 @@ public:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-class LinearIntplMappingIterator:public MappingIterator {
+class MIXIM_API LinearIntplMappingIterator:public MappingIterator {
 protected:
 	/** @brief Iterator for the left Mapping to interpolate.*/
 	ConstMappingIterator* leftIt;
@@ -478,7 +479,7 @@ public:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-class LinearIntplMapping:public Mapping {
+class MIXIM_API LinearIntplMapping:public Mapping {
 protected:
 	/** @brief The left mapping to interpolate.*/
 	ConstMapping* left;
@@ -784,7 +785,7 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-class ConstantSimpleConstMapping : public SimpleConstMapping {
+class MIXIM_API ConstantSimpleConstMapping : public SimpleConstMapping {
 protected:
 	double value;
 
@@ -828,7 +829,7 @@ public:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-class ConstMappingIteratorWrapper : public MappingIterator {
+class MIXIM_API ConstMappingIteratorWrapper : public MappingIterator {
 protected:
 	ConstMappingIterator* iterator;
 public:
@@ -870,7 +871,7 @@ public:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-class ConstMappingWrapper : public Mapping {
+class MIXIM_API ConstMappingWrapper : public Mapping {
 protected:
 	ConstMapping* mapping;
 
@@ -1606,7 +1607,7 @@ public:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-class FilledUpMappingIterator : public MultiDimMappingIterator<Linear>{
+class MIXIM_API FilledUpMappingIterator : public MultiDimMappingIterator<Linear>{
 public:
 	FilledUpMappingIterator(FilledUpMapping& mapping);
 
@@ -1630,7 +1631,7 @@ public:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-class FilledUpMapping : public MultiDimMapping<Linear> {
+class MIXIM_API FilledUpMapping : public MultiDimMapping<Linear> {
 //--------members----------
 public:
 	typedef std::set<double> KeySet;
@@ -1740,7 +1741,7 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-class MappingUtils {
+class MIXIM_API MappingUtils {
 public:
 	typedef std::list<ConstMapping*> MappingBuffer;
 private:
@@ -1963,7 +1964,7 @@ public:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-class ConcatConstMappingIterator : public FilteredConstMappingIterator{
+class MIXIM_API ConcatConstMappingIterator : public FilteredConstMappingIterator{
 //--------members----------
 protected:
 	ConstMapping* baseMapping;
@@ -2258,7 +2259,7 @@ public:
  * @ingroup mappingDetails
  * @author Karl Wessel
  */
-class ConstDelayedMapping: public BaseDelayedMapping<ConstMapping> {
+class MIXIM_API ConstDelayedMapping: public BaseDelayedMapping<ConstMapping> {
 public:
 	ConstDelayedMapping(ConstMapping* mapping, simtime_t delay):
 		BaseDelayedMapping<ConstMapping>(mapping, delay) {}
@@ -2279,7 +2280,7 @@ public:
  * @ingroup mappingDetails
  * @author Karl Wessel
  */
-class DelayedMapping: public BaseDelayedMapping<Mapping> {
+class MIXIM_API DelayedMapping: public BaseDelayedMapping<Mapping> {
 public:
 	DelayedMapping(Mapping* mapping, simtime_t delay):
 		BaseDelayedMapping<Mapping>(mapping, delay) {}
@@ -2304,9 +2305,9 @@ public:
 };
 
 
-Mapping* operator*(ConstMapping& f1, ConstMapping& f2);
-Mapping* operator/(ConstMapping& f1, ConstMapping& f2);
-Mapping* operator+(ConstMapping& f1, ConstMapping& f2);
-Mapping* operator-(ConstMapping& f1, ConstMapping& f2);
+MIXIM_API Mapping* operator*(ConstMapping& f1, ConstMapping& f2);
+MIXIM_API Mapping* operator/(ConstMapping& f1, ConstMapping& f2);
+MIXIM_API Mapping* operator+(ConstMapping& f1, ConstMapping& f2);
+MIXIM_API Mapping* operator-(ConstMapping& f1, ConstMapping& f2);
 
 #endif /* SIGNALINTERFACES_H_ */

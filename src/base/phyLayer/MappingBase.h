@@ -8,7 +8,10 @@
 #include <algorithm>
 #include <assert.h>
 #include <FWMath.h>
+#include <sstream>
+#include <iomanip>
 
+#include "MiXiMDefs.h"
 #include "Interpolation.h"
 
 
@@ -27,7 +30,7 @@
  * @author Karl Wessel
  * @ingroup mapping
  */
-class Dimension {
+class MIXIM_API Dimension {
 protected:
 	/** @brief Type for map from dimension name to ID.*/
 	typedef std::map<std::string, int>DimensionIDMap;
@@ -170,7 +173,7 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-class DimensionSet:public std::set<Dimension> {
+class MIXIM_API DimensionSet:public std::set<Dimension> {
 public:
 	/** @brief Shortcut to a DimensionSet which only contains time. */
 	static const DimensionSet timeDomain;
@@ -276,7 +279,7 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-class Argument{
+class MIXIM_API Argument{
 protected:
 
 	/** @brief Stores the time dimension in Omnets time type */
@@ -540,7 +543,7 @@ class NoNextIteratorException {};
  * @author Karl Wessel
  * @ingroup mapping
  */
-class ConstMappingIterator {
+class MIXIM_API ConstMappingIterator {
 public:
 	virtual ~ConstMappingIterator() {}
 
@@ -627,7 +630,7 @@ class Mapping;
  * @author Karl Wessel
  * @ingroup mapping
  */
-class ConstMapping {
+class MIXIM_API ConstMapping {
 protected:
 	/** @brief The dimensions of this mappings domain.*/
 	DimensionSet dimensions;
@@ -845,7 +848,7 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-class MappingIterator:public ConstMappingIterator {
+class MIXIM_API MappingIterator:public ConstMappingIterator {
 
 public:
 	virtual ~MappingIterator() {}
@@ -871,7 +874,7 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-class Mapping:public ConstMapping {
+class MIXIM_API Mapping:public ConstMapping {
 public:
 	/** @brief Types of interpolation methods for mappings.*/
 	enum InterpolationMethod {
@@ -999,7 +1002,7 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-class SimpleConstMappingIterator:public ConstMappingIterator {
+class MIXIM_API SimpleConstMappingIterator:public ConstMappingIterator {
 protected:
 	/** @brief The underlying ConstMapping to iterate over. */
 	ConstMapping* mapping;
@@ -1173,7 +1176,7 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-class SimpleConstMapping:public ConstMapping {
+class MIXIM_API SimpleConstMapping:public ConstMapping {
 protected:
 	/** @brief Type for a set of Arguments defining key entries.*/
 	typedef std::set<Argument> KeyEntrySet;

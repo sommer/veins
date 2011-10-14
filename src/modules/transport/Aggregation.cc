@@ -1,8 +1,12 @@
 #include "Aggregation.h"
-#include "AggrPkt.h"
+
 #include <iostream>
-#include <omnetpp.h>
 #include <cassert>
+
+#include "ApplPkt_m.h"
+#include "AggrPkt.h"
+
+using std::map;
 
 Define_Module(Aggregation);
 

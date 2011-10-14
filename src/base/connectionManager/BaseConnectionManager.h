@@ -1,6 +1,7 @@
 #ifndef BASECONNECTIONMANAGER_H_
 #define BASECONNECTIONMANAGER_H_
 
+#include "MiXiMDefs.h"
 #include "NicEntry.h"
 
 class ChannelAccess;
@@ -21,7 +22,7 @@ class ChannelAccess;
  * @author Christoph Sommer ("unregisterNic()"-method)
  * @sa ChannelAccess
  */
-class BaseConnectionManager : public cSimpleModule
+class MIXIM_API BaseConnectionManager : public cSimpleModule
 {
 private:
 	/**

@@ -2,6 +2,8 @@
 #define REPEAT_TIMER_H 1
 
 #include <omnetpp.h>
+
+#include "MiXiMDefs.h"
 #include "RepeatTimerCore.h"
 #include "BaseModule.h"
 
@@ -9,7 +11,7 @@
  * but with a fixed number of repeats.
  * For more info see: FrameTimer.(h|cc)
  */
-class RepeatTimer {
+class MIXIM_API RepeatTimer {
 	friend class RepeatTimerCore;
 protected:
 	RepeatTimerCore * core;

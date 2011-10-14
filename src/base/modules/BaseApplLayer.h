@@ -24,9 +24,9 @@
 #define BASE_APPL_LAYER_H
 
 #include <assert.h>
-#include "BaseLayer.h"
-#include "ApplPkt_m.h"
 
+#include "MiXiMDefs.h"
+#include "BaseLayer.h"
 
 /**
  * @brief Base class for the application layer

@@ -7,6 +7,10 @@
 
 #include "AdaptiveProbabilisticBroadcast.h"
 
+using std::map;
+using std::pair;
+using std::make_pair;
+
 Define_Module(AdaptiveProbabilisticBroadcast);
 
 void AdaptiveProbabilisticBroadcast::initialize(int stage)

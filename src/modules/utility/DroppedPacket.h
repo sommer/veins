@@ -20,9 +20,11 @@
 #ifndef DroppedPacket_H
 #define DroppedPacket_H
 
-#include <omnetpp.h>
-#include <BaseUtility.h>
 #include <sstream>
+#include <omnetpp.h>
+
+#include "MiXiMDefs.h"
+#include "ImNotifiable.h"
 
 /**
  * @brief May be published by MAC lyer to indicate why a packet was dropped
@@ -35,7 +37,7 @@
  * @ingroup utils
  * @author Andreas Koepke
  */
-class  DroppedPacket : public BBItem
+class MIXIM_API DroppedPacket : public BBItem
 {
     BBITEM_METAINFO(BBItem);
 

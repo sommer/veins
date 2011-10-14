@@ -6,8 +6,10 @@
  */
 
 #include "Decider80211.h"
-#include <DeciderResult80211.h>
-#include <Mac80211Pkt_m.h>
+
+#include "DeciderResult80211.h"
+#include "Mac80211Pkt_m.h"
+#include "Consts80211.h"
 
 Decider80211::Decider80211(	DeciderToPhyInterface* phy,
 							double threshold,
