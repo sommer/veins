@@ -199,7 +199,8 @@ protected:
 public:
 	static int psduLength;
 	static config cfg;
-	static const config cfg_mandatory_16M, cfg_mandatory_4M;
+	static const config cfg_mandatory_16M;
+    static const config cfg_mandatory_4M;
 
 	// Compute derived parameters
     static simtime_t getPhyMaxFrameDuration();

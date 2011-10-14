@@ -25,19 +25,19 @@ double SimplePathlossConstMapping::getValue(const Argument& pos) const
 
 
 
-void SimplePathlossModel::filterSignal(Signal& s){
+void SimplePathlossModel::filterSignal(Signal& signal){
 
 	/** Get start of the signal */
-	simtime_t sStart = s.getSignalStart();
-	simtime_t sEnd = s.getSignalLength() + sStart;
+	simtime_t sStart = signal.getReceptionStart();
+	simtime_t sEnd   = signal.getReceptionEnd();
 
 	/** claim the Move pattern of the sender from the Signal */
-	Coord sendersPos = s.getMove().getPositionAt(sStart);
-	Coord myPos = myMove.getPositionAt(sStart);
+	Coord sendersPos  = signal.getMove().getPositionAt(sStart);
+	Coord receiverPos = myMove.getPositionAt(sStart);
 
 	/** Calculate the distance factor */
-	double sqrDistance = useTorus ? myPos.sqrTorusDist(sendersPos, playgroundSize)
-								  : myPos.sqrdist(sendersPos);
+	double sqrDistance = useTorus ? receiverPos.sqrTorusDist(sendersPos, playgroundSize)
+								  : receiverPos.sqrdist(sendersPos);
 
 	splmEV << "sqrdistance is: " << sqrDistance << endl;
 
@@ -57,7 +57,7 @@ void SimplePathlossModel::filterSignal(Signal& s){
 	splmEV << "distance factor is: " << distFactor << endl;
 
 	//is our signal to attenuate defined over frequency?
-	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency);
+	bool hasFrequency = signal.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency);
 	splmEV << "Signal contains frequency dimension: " << (hasFrequency ? "yes" : "no") << endl;
 
 	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain : DimensionSet::timeDomain;
@@ -71,10 +71,10 @@ void SimplePathlossModel::filterSignal(Signal& s){
 													distFactor);
 
 	/* at last add the created attenuation mapping to the signal */
-	s.addAttenuation(attMapping);
+	signal.addAttenuation(attMapping);
 }
 
-double SimplePathlossModel::calcPathloss(const Coord& myPos, const Coord& sendersPos)
+double SimplePathlossModel::calcPathloss(const Coord& receiverPos, const Coord& sendersPos)
 {
 	/*
 	 * maybe we can reuse an already calculated value for the square-distance
@@ -85,10 +85,10 @@ double SimplePathlossModel::calcPathloss(const Coord& myPos, const Coord& sender
 
 	if (useTorus)
 	{
-		sqrdistance = myPos.sqrTorusDist(sendersPos, playgroundSize);
+		sqrdistance = receiverPos.sqrTorusDist(sendersPos, playgroundSize);
 	} else
 	{
-		sqrdistance = myPos.sqrdist(sendersPos);
+		sqrdistance = receiverPos.sqrdist(sendersPos);
 	}
 
 	splmEV << "sqrdistance is: " << sqrdistance << endl;

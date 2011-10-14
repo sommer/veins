@@ -28,14 +28,13 @@ void Decider80211MultiChannel::getChannelInfo(simtime_t start, simtime_t end, Ai
 {
 	Decider80211Battery::getChannelInfo(start, end, out);
 
-	for(AirFrameVector::iterator it = out.begin();
-		it != out.end(); ++it)
-	{
-		AirFrame* af = *it;
-		if(af->getChannel() != currentChannel) {
+	AirFrameVector::iterator it = out.begin();
+	while (it != out.end()) {
+		if((*it)->getChannel() != currentChannel) {
 			it = out.erase(it);
-			--it;
+			continue;
 		}
+		++it;
 	}
 }
 

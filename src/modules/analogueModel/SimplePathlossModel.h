@@ -150,7 +150,7 @@ public:
 	 * pathloss is calculated in SimplePathlossConstMappings "getValue()"
 	 * method.
 	 */
-	virtual double calcPathloss(const Coord& myPos, const Coord& sendersPos);
+	virtual double calcPathloss(const Coord& receiverPos, const Coord& sendersPos);
 };
 
 #endif /*PATHLOSSMODEL_H_*/

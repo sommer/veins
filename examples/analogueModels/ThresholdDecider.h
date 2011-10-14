@@ -48,7 +48,7 @@ protected:
 
 		log("First processing of this signal. Scheduling it to end of header to decide if Signal should be received.");
 		//we say that the length of the header is at 10% of the length of the signal
-		return s->getSignalStart() + 0.10 * s->getSignalLength();
+		return s->getReceptionStart() + 0.10 * s->getDuration();
 	}
 
 	/**
@@ -58,7 +58,7 @@ protected:
 		log("Second receive of a signal from Phy - Deciding if packet should be received - Let's try to receive it.");
 		//we don't really do something after the header, so we only update the next state
 		it->second = SIGNAL_OVER;
-		return it->first->getSignalStart() + it->first->getSignalLength();
+		return it->first->getReceptionEnd();
 	}
 
 	/**

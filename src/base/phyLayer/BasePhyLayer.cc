@@ -49,41 +49,41 @@ void BasePhyLayer::initialize(int stage) {
 		gate("radioIn")->setDeliverOnReceptionStart(true);
 
 		//get gate ids
-		upperGateIn     = findGate("upperGateIn");
-		upperGateOut    = findGate("upperGateOut");
-		upperControlOut = findGate("upperControlOut");
-		upperControlIn  = findGate("upperControlIn");
+		upperGateIn = findGate("upperGateIn");
+        upperGateOut = findGate("upperGateOut");
+        upperControlOut = findGate("upperControlOut");
+        upperControlIn = findGate("upperControlIn");
 
 		//read simple ned-parameters
 		//	- initialize basic parameters
-		if(par("useThermalNoise").boolValue()) {
+        if(par("useThermalNoise").boolValue()) {
 			double thermalNoiseVal = FWMath::dBm2mW(par("thermalNoise").doubleValue());
 			thermalNoise = new ConstantSimpleConstMapping(DimensionSet::timeDomain,
-			                                              thermalNoiseVal);
+														  thermalNoiseVal);
 		} else {
 			thermalNoise = 0;
 		}
-		headerLength = par("headerLength").longValue();
-		sensitivity  = par("sensitivity").doubleValue();
-		sensitivity  = FWMath::dBm2mW(sensitivity);
-		maxTXPower   = par("maxTXPower").doubleValue();
+        headerLength = par("headerLength").longValue();
+		sensitivity = par("sensitivity").doubleValue();
+		sensitivity = FWMath::dBm2mW(sensitivity);
+		maxTXPower = par("maxTXPower").doubleValue();
 
-		recordStats  = par("recordStats").boolValue();
+		recordStats = par("recordStats").boolValue();
 
 		//	- initialize radio
 		radio = initializeRadio();
 
 		// get pointer to the world module
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
-		if (world == NULL) {
-			opp_error("Could not find BaseWorldUtility module");
-		}
+        if (world == NULL) {
+            opp_error("Could not find BaseWorldUtility module");
+        }
 
-		if(cc->hasPar("sat")
+        if(cc->hasPar("sat")
 		   && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
-			opp_error("Sensitivity can't be smaller than the "
-			          "signal attenuation threshold (sat) in ConnectionManager. "
-			          "Please adjust your omnetpp.ini file accordingly.");
+            opp_error("Sensitivity can't be smaller than the "
+					  "signal attenuation threshold (sat) in ConnectionManager. "
+					  "Please adjust your omnetpp.ini file accordingly.");
 		}
 
 //	} else if (stage == 1){
@@ -101,15 +101,15 @@ void BasePhyLayer::initialize(int stage) {
 }
 
 Radio* BasePhyLayer::initializeRadio() {
-	int    initialRadioState   = par("initialRadioState").longValue();
-	double radioMinAtt         = par("radioMinAtt").doubleValue();
-	double radioMaxAtt         = par("radioMaxAtt").doubleValue();
-	int    nbRadioChannels     = readPar("nbRadioChannels", 1);
-	int    initialRadioChannel = readPar("initialRadioChannel", 0);
+	int initialRadioState = par("initialRadioState").longValue();
+	double radioMinAtt = par("radioMinAtt").doubleValue();
+	double radioMaxAtt = par("radioMaxAtt").doubleValue();
+	int nbRadioChannels = readPar("nbRadioChannels", 1);
+	int initialRadioChannel = readPar("initialRadioChannel", 0);
 
 	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState,
-	                                     radioMinAtt, radioMaxAtt,
-	                                     initialRadioChannel, nbRadioChannels);
+										 radioMinAtt, radioMaxAtt,
+										 initialRadioChannel, nbRadioChannels);
 
 	//	- switch times to TX
 	simtime_t rxToTX = par("timeRXToTX").doubleValue();
@@ -147,7 +147,7 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 	cXMLElementList parameters = xmlData->getElementsByTagName("Parameter");
 
 	for(cXMLElementList::const_iterator it = parameters.begin();
-	    it != parameters.end(); it++) {
+		it != parameters.end(); it++) {
 
 		const char* name = (*it)->getAttribute("name");
 		const char* type = (*it)->getAttribute("type");
@@ -393,10 +393,10 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 
 	if(usePropagationDelay) {
 		Signal& s = frame->getSignal();
-		simtime_t delay = simTime() - s.getSignalStart();
+		simtime_t delay = simTime() - s.getSendingStart();
 		s.setPropagationDelay(delay);
 	}
-	assert(frame->getSignal().getSignalStart() == simTime());
+	assert(frame->getSignal().getReceptionStart() == simTime());
 
 	filterSignal(frame->getSignal());
 
@@ -410,7 +410,7 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	} else {
 		Signal& signal = frame->getSignal();
 
-		simtime_t signalEndTime = signal.getSignalStart() + frame->getDuration();
+		simtime_t signalEndTime = signal.getReceptionStart() + frame->getDuration();
 		frame->setState(END_RECEIVE);
 
 		sendSelfMessage(frame, signalEndTime);
@@ -422,8 +422,8 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 	Signal& signal = frame->getSignal();
 	simtime_t nextHandleTime = decider->processSignal(frame);
 
-	assert(signal.getSignalLength() == frame->getDuration());
-	simtime_t signalEndTime = signal.getSignalStart() + frame->getDuration();
+	assert(signal.getDuration() == frame->getDuration());
+	simtime_t signalEndTime = signal.getReceptionStart() + frame->getDuration();
 
 	//check if this is the end of the receiving process
 	if(simTime() >= signalEndTime) {
@@ -523,8 +523,8 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	s->setMove(move);
 
 	// set the members
-	assert(s->getSignalLength() > 0);
-	frame->setDuration(s->getSignalLength());
+	assert(s->getDuration() > 0);
+	frame->setDuration(s->getDuration());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
 	//set priority of AirFrames above the normal priority to ensure
@@ -649,11 +649,8 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
 
 
 void BasePhyLayer::filterSignal(Signal& s) {
-	for(AnalogueModelList::const_iterator it = analogueModels.begin();
-		it != analogueModels.end(); it++) {
-
-		AnalogueModel* tmp = *it;
-		tmp->filterSignal(s);
+	for(AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++) {
+		(*it)->filterSignal(s);
 	}
 }
 
@@ -694,7 +691,7 @@ BasePhyLayer::~BasePhyLayer() {
 	 * get a pointer to the radios RSAM again to avoid deleting it,
 	 * it is not created by calling new (BasePhyLayer is not the owner)!
 	 */
-	AnalogueModel* rsamPointer = radio->getAnalogueModel();
+	AnalogueModel* rsamPointer = radio ? radio->getAnalogueModel() : NULL;
 
 	//free AnalogueModels
 	for(AnalogueModelList::iterator it = analogueModels.begin();

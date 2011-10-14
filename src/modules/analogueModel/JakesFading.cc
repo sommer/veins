@@ -83,16 +83,16 @@ JakesFading::~JakesFading() {
 	delete[] angleOfArrival;
 }
 
-void JakesFading::filterSignal(Signal& s)
+void JakesFading::filterSignal(Signal& signal)
 {
-	const Move& senderMove = s.getMove();
+	const Move& senderMove = signal.getMove();
 	double relSpeed = (senderMove.getDirection() * senderMove.getSpeed()
 					   - hostMove->getDirection() * hostMove->getSpeed()).length();
 
-	simtime_t start = s.getSignalStart();
-	simtime_t end = start + s.getSignalLength();
+	simtime_t start = signal.getReceptionStart();
+	simtime_t end   = signal.getReceptionEnd();
 
-	s.addAttenuation(new JakesFadingMapping(this, relSpeed,
+	signal.addAttenuation(new JakesFadingMapping(this, relSpeed,
 											Argument(start),
 											interval,
 											Argument(end)));

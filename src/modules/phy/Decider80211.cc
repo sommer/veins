@@ -32,7 +32,7 @@ simtime_t Decider80211::processNewSignal(AirFrame* frame) {
 	// get the receiving power of the Signal at start-time and center frequency
 	Signal& signal = frame->getSignal();
 	Argument start(DimensionSet::timeFreqDomain);
-	start.setTime(signal.getSignalStart());
+	start.setTime(signal.getReceptionStart());
 	start.setArgValue(Dimension::frequency_static(), centerFrequency);
 
 	double recvPower = signal.getReceivingPower()->getValue(start);
@@ -56,7 +56,7 @@ simtime_t Decider80211::processNewSignal(AirFrame* frame) {
 	//channel turned busy
 	setChannelIdleStatus(false);
 
-	return ( signal.getSignalStart() + signal.getSignalLength() );
+	return ( signal.getReceptionEnd());
 }
 
 double Decider80211::calcChannelSenseRSSI(simtime_t start, simtime_t end) {
@@ -87,8 +87,8 @@ DeciderResult* Decider80211::checkIfSignalOk(AirFrame* frame)
 	assert(snrMap);
 
 	Signal& s = frame->getSignal();
-	simtime_t start = s.getSignalStart();
-	simtime_t end = start + s.getSignalLength();
+	simtime_t start = s.getReceptionStart();
+	simtime_t end = s.getReceptionEnd();
 
 	start = start + RED_PHY_HEADER_DURATION; //its ok if the phy header is received only
 											 //partly - TODO: maybe solve this nicer

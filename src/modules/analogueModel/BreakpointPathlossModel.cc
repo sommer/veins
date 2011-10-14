@@ -3,19 +3,19 @@
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(BreakpointPathlossModel): "
 
 
-void BreakpointPathlossModel::filterSignal(Signal& s) {
+void BreakpointPathlossModel::filterSignal(Signal& signal) {
 
 	/** Get start of the signal */
-	simtime_t sStart = s.getSignalStart();
-	simtime_t sEnd = s.getSignalLength() + sStart;
+	simtime_t sStart = signal.getReceptionStart();
+	simtime_t sEnd   = signal.getReceptionEnd();
 
 	/** claim the Move pattern of the sender from the Signal */
-	Coord sendersPos = s.getMove().getPositionAt(sStart);
-	Coord myPos = myMove.getPositionAt(sStart);
+	Coord sendersPos  = signal.getMove().getPositionAt(sStart);
+	Coord receiverPos = myMove.getPositionAt(sStart);
 
 	/** Calculate the distance factor */
-	double distance = useTorus ? myPos.sqrTorusDist(sendersPos, playgroundSize)
-								  : myPos.sqrdist(sendersPos);
+	double distance = useTorus ? receiverPos.sqrTorusDist(sendersPos, playgroundSize)
+								  : receiverPos.sqrdist(sendersPos);
 	distance = sqrt(distance);
 	debugEV << "distance is: " << distance << endl;
 
@@ -44,11 +44,11 @@ void BreakpointPathlossModel::filterSignal(Signal& s) {
 	  pathlosses.record(10*log10(attenuation)); // in dB
 	}
 
-	const DimensionSet& domain = DimensionSet::timeDomain;
+	//const DimensionSet& domain = DimensionSet::timeDomain;
 	Argument arg;	// default constructor initializes with a single dimension, time, and value 0 (offset from signal start)
 	TimeMapping<Linear>* attMapping = new TimeMapping<Linear> ();	// mapping performs a linear interpolation from our single point -> constant
 	attMapping->setValue(arg, attenuation);
 
 	/* at last add the created attenuation mapping to the signal */
-	s.addAttenuation(attMapping);
+	signal.addAttenuation(attMapping);
 }

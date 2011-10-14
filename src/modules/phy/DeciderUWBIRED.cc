@@ -30,7 +30,7 @@ simtime_t DeciderUWBIRED::handleNewSignal(Signal* s) {
 
 	int currState = uwbiface->getRadioState();
 	if (tracking == 0 && currState == RadioUWBIR::SYNC) {
-		  simtime_t endOfHeader = s->getSignalStart()
+		  simtime_t endOfHeader = s->getReceptionStart()
 				+ IEEE802154A::mandatory_preambleLength;
 		  currentSignals[s] = HEADER_OVER;
 		  assert(endOfHeader> 0);
@@ -39,7 +39,7 @@ simtime_t DeciderUWBIRED::handleNewSignal(Signal* s) {
 		// we are already tracking an airframe, this is noise
 		// or we are transmitting, switching, or sleeping
 		currentSignals[s] = SIGNAL_OVER;
-		simtime_t endOfSignal = s->getSignalStart() + s->getSignalLength();
+		simtime_t endOfSignal = s->getReceptionEnd();
 		assert(endOfSignal> 0);
 		return endOfSignal;
 	}
@@ -96,9 +96,8 @@ simtime_t DeciderUWBIRED::handleHeaderOver(map<Signal*, int>::iterator& it) {
 	}
 	// in any case, look at that frame again when it is finished
 	it->second = SIGNAL_OVER;
-	simtime_t startOfSignal = it->first->getSignalStart();
-	simtime_t lengthOfSignal = it->first->getSignalLength();
-	simtime_t endOfSignal = startOfSignal + lengthOfSignal;
+	simtime_t startOfSignal = it->first->getReceptionStart();
+	simtime_t endOfSignal = it->first->getReceptionEnd();
 	assert(endOfSignal> 0);
 	return endOfSignal;
 }
@@ -110,13 +109,13 @@ bool DeciderUWBIRED::attemptSync(Signal* s) {
 
 	AirFrameVector syncVector;
 	// Retrieve all potentially colliding airFrames
-	phy->getChannelInfo(s->getSignalStart(), simTime(), syncVector);
+	phy->getChannelInfo(s->getReceptionStart(), simTime(), syncVector);
 
 	if(syncVector.size() > 1) {
 		// do not accept interferers
 		return false;
 	}
-	Argument posFirstPulse(IEEE802154A::tFirstSyncPulseMax + s->getSignalStart());
+	Argument posFirstPulse(IEEE802154A::tFirstSyncPulseMax + s->getReceptionStart());
 	mIt->jumpTo(posFirstPulse);
 	snrValue = std::abs(mIt->getValue()/getNoiseValue());
     syncThresholds.record(snrValue);
@@ -172,17 +171,16 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 	packetSamples = 0;
 
 	// Retrieve all potentially colliding airFrames
-	phy->getChannelInfo(signal->getSignalStart(), signal->getSignalStart()
-			+ signal->getSignalLength(), airFrameVector);
+	phy->getChannelInfo(signal->getReceptionStart(), signal->getReceptionEnd(), airFrameVector);
 
 	for (airFrameIter = airFrameVector.begin(); airFrameIter
 			!= airFrameVector.end(); ++airFrameIter) {
 		Signal & aSignal = (*airFrameIter)->getSignal();
-		offsets.push_back(signal->getSignalStart() - aSignal.getSignalStart());
+		offsets.push_back(signal->getReceptionStart() - aSignal.getReceptionStart());
 		ConstMapping* currPower = aSignal.getReceivingPower();
 		receivingPowers.push_back(currPower);
-		if (aSignal.getSignalStart() == signal->getSignalStart()
-				&& aSignal.getSignalLength() == signal->getSignalLength()) {
+		if (aSignal.getReceptionStart() == signal->getReceptionStart()
+				&& aSignal.getDuration() == signal->getDuration()) {
 			signalPower = currPower;
 		}
 	}
@@ -195,7 +193,7 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 	}
 
 	// times are absolute
-	offset = signal->getSignalStart() + cfg.preambleLength;
+	offset = signal->getReceptionStart() + cfg.preambleLength;
 	shift = cfg.shift_duration;
 	aSymbol = cfg.data_symbol_duration;
 	burst = cfg.burst_duration;
@@ -223,7 +221,7 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 	int symbol;
 	// Loop to decode each bit value
 	for (symbol = 0; cfg.preambleLength + symbol
-			* aSymbol < signal->getSignalLength(); symbol++) {
+			* aSymbol < signal->getDuration(); symbol++) {
 
 //		int hoppingPos = IEEE802154A::getHoppingPos(symbol);
 		int decodedBit;

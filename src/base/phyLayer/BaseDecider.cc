@@ -32,7 +32,7 @@ simtime_t BaseDecider::processNewSignal(AirFrame* frame) {
 
 	// get the receiving power of the Signal at start-time
 	Signal& signal = frame->getSignal();
-	double recvPower = signal.getReceivingPower()->getValue(Argument(signal.getSignalStart()));
+	double recvPower = signal.getReceivingPower()->getValue(Argument(signal.getReceptionStart()));
 
 	// check whether signal is strong enough to receive
 	if ( recvPower < sensitivity )
@@ -53,7 +53,7 @@ simtime_t BaseDecider::processNewSignal(AirFrame* frame) {
 	//channel turned busy
 	setChannelIdleStatus(false);
 
-	return ( signal.getSignalStart() + signal.getSignalLength() );
+	return signal.getReceptionEnd();
 }
 
 simtime_t BaseDecider::processSignalEnd(AirFrame* frame) {
@@ -219,8 +219,8 @@ Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
 	/* calculate Noise-Strength-Mapping */
 	Signal& signal = frame->getSignal();
 
-	simtime_t start = signal.getSignalStart();
-	simtime_t end = start + signal.getSignalLength();
+	simtime_t start = signal.getReceptionStart();
+	simtime_t end   = signal.getReceptionEnd();
 
 	Mapping* noiseMap = calculateRSSIMapping(start, end, frame);
 	assert(noiseMap);
@@ -297,8 +297,8 @@ Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
 		// Mapping* resultMapNew = Mapping::add( *(signal.getReceivingPower()), *resultMap, start, end );
 
 		deciderEV << "Adding mapping of Airframe with ID " << (*it)->getId()
-				<< ". Starts at " << signal.getSignalStart()
-				<< " and ends at " << signal.getSignalStart() + signal.getSignalLength() << endl;
+				<< ". Starts at " << signal.getReceptionStart()
+				<< " and ends at " << signal.getReceptionEnd() << endl;
 
 		Mapping* resultMapNew = MappingUtils::add( *recvPowerMap, *resultMap, 0.0 );
 

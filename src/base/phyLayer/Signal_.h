@@ -1,31 +1,30 @@
 #ifndef SIGNAL_H_
 #define SIGNAL_H_
 
+#include <list>
 #include <omnetpp.h>
+
 #include "Move.h"
 #include "Mapping.h"
-#include <list>
 
 /**
  * @brief The signal class stores the physical representation of the
  * signal of an AirFrame.
  *
  * This includes start, duration and propagation delay of the signal,
- * the sender hosts move pattern as well as Mappings which represent
- * the transmission power, bitrate, attenuations caused by effects of
- * the channel on the signal during its transmission and the
- * receiving power.
+ * Mappings which represent the transmission power, bitrate, attenuations
+ * caused by effects of the channel on the signal during its transmission
+ * and the receiving power.
  *
- * Note: Although the Signal itself has a startTime parameter the Mappings
- * it contains should use absolute time positions to store the values at
- * (NOT relative to the start time of the signal).
+ * Note: Although the Signal itself has a signalSendingStart parameter the
+ * Mappings it contains should use absolute time positions to store the values
+ * at (NOT relative to the start time of the signal).
  *
  * The Signal is created at the senders MAC layer which has to define
  * the TX-power- and the bitrate Mapping.
- * The sender hosts move pattern as well as start and duration is
- * added at the senders physical layer.
+ * Sending start time and duration is added at the sender's physical layer.
  * Attenuation Mappings are added to the Signal by the
- * AnalogueModels of the receivers physical layer.
+ * AnalogueModels of the receiver's physical layer.
  * The RX-power Mapping is calculated on demand by multiplying the
  * TX-power Mapping with every attenuation Mapping of the signal.
  *
@@ -44,12 +43,12 @@ public:
 
 protected:
 
-	/** @brief The start of the signal transmission.*/
-	simtime_t signalStart;
-	/** @brief The length of the signal transmission.*/
-	simtime_t signalLength;
+	/** @brief The start of the signal transmission at the sender module.*/
+	simtime_t sendingStart;
+	/** @brief The duration of the signal transmission.*/
+	simtime_t duration;
 	/** @brief The propagation delay of the transmission. */
-	simtime_t propDelay;
+	simtime_t propagationDelay;
 
 	/** @brief The movement of the sending host.*/
 	Move senderMovement;
@@ -78,7 +77,7 @@ protected:
 	 */
 	void markRcvPowerOutdated() {
 		if(rcvPower){
-			if(propDelay != 0) {
+			if(propagationDelay != 0) {
 				assert(rcvPower->getRefMapping() != power);
 				delete rcvPower->getRefMapping();
 			}
@@ -111,11 +110,28 @@ public:
 	~Signal();
 
 	/**
-	 * @brief Returns the point in time when the receiving of the Signal started.
-	 *
-	 * Already includes the propagation delay.
+	 * @brief Returns the point in time when the sending of the Signal started
+	 * at the sender module.
 	 */
-	simtime_t getSignalStart() const;
+	simtime_t getSendingStart() const;
+
+	/**
+	 * @brief Returns the point in time when the sending of the Signal ended
+	 * at the sender module.
+	 */
+	simtime_t getSendingEnd() const;
+
+	/**
+	 * @brief Returns the point in time when the receiving of the Signal started
+	 * at the receiver module. Already includes the propagation delay.
+	 */
+	simtime_t getReceptionStart() const;
+
+	/**
+	 * @brief Returns the point in time when the receiving of the Signal ended
+	 * at the receiver module. Already includes the propagation delay.
+	 */
+	simtime_t getReceptionEnd() const;
 
 	/**
 	 * @brief Returns the movement of the sending host.
@@ -128,9 +144,9 @@ public:
 	void setMove(Move& move);
 
 	/**
-	 * @brief Returns the length of the signal transmission.
+	 * @brief Returns the duration of the signal transmission.
 	 */
-	simtime_t getSignalLength() const;
+	simtime_t getDuration() const;
 
 	/**
 	 * @brief Returns the propagation delay of the signal.
@@ -223,8 +239,8 @@ public:
 		if(!rcvPower)
 		{
 			ConstMapping* tmp = power;
-			if(propDelay != 0) {
-				tmp = new ConstDelayedMapping(power, propDelay);
+			if(propagationDelay != 0) {
+				tmp = new ConstDelayedMapping(power, propagationDelay);
 			}
 			rcvPower = new MultipliedMapping(tmp,
 											  attenuations.begin(),

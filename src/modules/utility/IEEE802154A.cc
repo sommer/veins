@@ -148,14 +148,14 @@ IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
 	// and is thus very robust
 	unsigned int nbBits = IEEE802154A::psduLength * 8 + 48;
 	IEEE802154A::signalStart = signalStart.dbl();  // use the signalStart time value as a global offset for all Mapping values
-	simtime_t signalLength = cfg.preambleLength;
-	signalLength += static_cast<double> (nbBits) * cfg.data_symbol_duration;
-	Signal* s = new Signal(signalStart, signalLength);
+	simtime_t signalDuration = cfg.preambleLength;
+	signalDuration += static_cast<double> (nbBits) * cfg.data_symbol_duration;
+	Signal* s = new Signal(signalStart, signalDuration);
 	vector<bool>* bitValues = new vector<bool> ();
 
 	signalAndData res;
 	int bitValue;
-	// data start time relative to signal->getSignalStart();
+	// data start time relative to signal->getReceptionStart();
 	simtime_t dataStart = cfg.preambleLength; // = Tsync + Tsfd
 	TimeMapping<Linear>* mapping = new TimeMapping<Linear> ();
 	Argument* arg = new Argument();
@@ -261,7 +261,7 @@ void IEEE802154A::setBitRate(Signal* s) {
 	TimeMapping<Linear>* bitrate = new TimeMapping<Linear> ();
 	arg.setTime(IEEE802154A::signalStart); // absolute time (required for compatibility with MiXiM base RSAM code)
 	bitrate->setValue(arg, cfg.bitrate);
-	arg.setTime(s->getSignalLength());
+	arg.setTime(s->getDuration());
 	bitrate->setValue(arg, cfg.bitrate);
 	s->setBitrate(bitrate);
 }

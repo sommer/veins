@@ -174,13 +174,13 @@ const UWBIRIEEE802154APathlossModel::CMconfig UWBIRIEEE802154APathlossModel::CMc
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // CM9
 };
 
-void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
+void UWBIRIEEE802154APathlossModel::filterSignal(Signal& signal) {
     // We create a new "fake" txPower to add multipath taps
     // and then attenuation is applied to all pulses.
 
 	// (1) Power Delay Profile realization
 
-    txPower = s.getTransmissionPower();
+    txPower    = signal.getTransmissionPower();
     newTxPower = new TimeMapping<Linear>(); //dynamic_cast<TimeMapping<Linear>*> (txPower->clone()); // create working copy
     pulsesIter = newTxPower->createIterator(); // create an iterator that we will use many times in addEchoes
     // generate number of clusters for this channel (channel coherence time > packet air time)
@@ -204,16 +204,14 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
     }
     delete iter;
     delete pulsesIter;
-    s.setTransmissionPower(newTxPower);
+    signal.setTransmissionPower(newTxPower);
 
 
     // compute distance
-    Move srcMove = s.getMove();
-    Coord srcCoord, rcvCoord;
-    distance = 0;
-    srcCoord = srcMove.getPositionAt(s.getSignalStart());
-    rcvCoord = move->getPositionAt(s.getSignalStart());
-    distance = rcvCoord.distance(srcCoord);
+    Move   srcMove     = signal.getMove();
+    Coord  senderPos   = srcMove.getPositionAt(signal.getReceptionStart());
+    Coord  receiverPos = move->getPositionAt(signal.getReceptionStart());
+    double distance    = receiverPos.distance(senderPos);
 
 	// Total radiated power Prx at that distance  [W]
     //double attenuation = 0.5 * ntx * nrx * cfg.PL0 / pow(distance / d0, cfg.n);
@@ -223,9 +221,9 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& s) {
     //attenuation = attenuation /(4*PI*pow(distance, cfg.n));
     // create mapping
     SimpleTimeConstMapping* attMapping = new SimpleTimeConstMapping(
-    		attenuation, s.getSignalStart(), s.getSignalStart()+s.getSignalLength());
+    		attenuation, signal.getReceptionStart(), signal.getReceptionEnd());
 
-    s.addAttenuation(attMapping);
+    signal.addAttenuation(attMapping);
 
 }
 

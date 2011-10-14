@@ -38,15 +38,12 @@ double UWBIRStochasticPathlossModel::simtruncnormal(double mean, double stddev, 
     return res;
 }
 
-void UWBIRStochasticPathlossModel::filterSignal(Signal& s) {
+void UWBIRStochasticPathlossModel::filterSignal(Signal& signal) {
 
 	if (isEnabled) {
 		// Initialize objects and variables
 		TimeMapping<Linear>* attMapping = new TimeMapping<Linear> ();
 		Argument arg;
-		Move srcMove = s.getMove();
-		Coord srcCoord, rcvCoord;
-		double distance = 0;
 
 		// Generate channel.
 		// assume channel coherence during whole frame
@@ -60,15 +57,15 @@ void UWBIRStochasticPathlossModel::filterSignal(Signal& s) {
 		S = n2 * sigma;
 
 		// Determine distance between sender and receiver
-		srcCoord = srcMove.getPositionAt(s.getSignalStart());
-		rcvCoord = move->getPositionAt(s.getSignalStart());
-
-		distance = rcvCoord.distance(srcCoord);
+		Move   srcMove     = signal.getMove();
+		Coord  senderPos   = srcMove.getPositionAt(signal.getReceptionStart());
+		Coord  receiverPos = move->getPositionAt(signal.getReceptionStart());
+		double distance    = receiverPos.distance(senderPos);
 		/*
-		 srcPosX.record(srcCoord.getX());
-		 srcPosY.record(srcCoord.getY());
-		 dstPosX.record(rcvCoord.getX());
-		 dstPosY.record(rcvCoord.getY());
+		 srcPosX.record(senderPos.x);
+		 srcPosY.record(senderPos.y);
+		 dstPosX.record(receiverPos.x);
+		 dstPosY.record(receiverPos.y);
 		 distances.record(distance);
 		 */
 		// Compute pathloss
@@ -77,7 +74,7 @@ void UWBIRStochasticPathlossModel::filterSignal(Signal& s) {
 		//attenuation = attenuation / (4*PI*pow(distance, gamma));
 		// Store scalar mapping
 		attMapping->setValue(arg, attenuation);
-		s.addAttenuation(attMapping);
+		signal.addAttenuation(attMapping);
 	}
 }
 

@@ -15,7 +15,7 @@ DeciderUWBIREDSync::DeciderUWBIREDSync(DeciderToPhyInterface* iface,
 bool DeciderUWBIREDSync::attemptSync(Signal* s) {
 	syncVector.clear();
 	// Retrieve all potentially colliding airFrames
-	phy->getChannelInfo(s->getSignalStart(), s->getSignalStart()+IEEE802154A::mandatory_preambleLength,
+	phy->getChannelInfo(s->getReceptionStart(), s->getReceptionStart()+IEEE802154A::mandatory_preambleLength,
 			syncVector);
 	assert(syncVector.size() != 0);
 
@@ -26,14 +26,14 @@ bool DeciderUWBIREDSync::attemptSync(Signal* s) {
 	bool synchronized = false;
 	AirFrameVector::iterator it = syncVector.begin();
 	bool search = true;
-	simtime_t latestSyncStart = s->getSignalStart() + IEEE802154A::mandatory_preambleLength - tmin;
+	simtime_t latestSyncStart = s->getReceptionStart() + IEEE802154A::mandatory_preambleLength - tmin;
 	AirFrame* af = syncVector.front();
 	Signal & aSignal = af->getSignal();
 
 	while(search &&
-			!(aSignal.getSignalStart() == s->getSignalStart() &&
-					aSignal.getSignalLength() == s->getSignalLength())) {
-		if(aSignal.getSignalStart()+aSignal.getSignalLength() > latestSyncStart) {
+			!(aSignal.getReceptionStart() == s->getReceptionStart() &&
+					aSignal.getDuration() == s->getDuration())) {
+		if(aSignal.getReceptionEnd() > latestSyncStart) {
 			// CASE: the end of one of the previous signals goes too far
 			// and prevents synchronizing on the current frame.
 			search = false;
@@ -47,8 +47,8 @@ bool DeciderUWBIREDSync::attemptSync(Signal* s) {
 	if(search && it != syncVector.end()) {
 		// sync is possible but there is a frame beginning after our sync start
 		Signal & nextSignal = (*it)->getSignal();
-		if(nextSignal.getSignalStart() <
-				aSignal.getSignalStart()+aSignal.getSignalLength() + tmin) {
+		if(nextSignal.getReceptionStart() <
+				aSignal.getReceptionEnd() + tmin) {
 			// CASE: sync is not possible because next frame starts too early
 			search = false;
 		}
@@ -66,7 +66,7 @@ bool DeciderUWBIREDSync::evaluateEnergy(Signal* s) {
 	// Assumption: channel coherence time > signal duration
 	// Thus we can simply sample the first pulse of the received signal
 	ConstMapping* rxPower = s->getReceivingPower();
-	argSync.setTime(s->getSignalStart() + IEEE802154A::tFirstSyncPulseMax);
+	argSync.setTime(s->getReceptionStart() + IEEE802154A::tFirstSyncPulseMax);
 	// We could retrieve the pathloss through s->getAttenuation() but we must be careful:
 	// maybe the pathloss is not the only analogue model (e.g. RSAMAnalogueModel)
 	// If we get the pathloss, we can compute Eb/N0: Eb=1E-3*pathloss if we are at peak power

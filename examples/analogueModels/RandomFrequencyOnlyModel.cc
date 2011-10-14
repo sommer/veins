@@ -6,7 +6,7 @@
  * put some random attenuations over time and frequency into
  * the attenuation mapping.
  */
-void RandomFrequencyOnlyModel::filterSignal(Signal& s){
+void RandomFrequencyOnlyModel::filterSignal(Signal& signal){
 
 
 	/* At first get a new instance of the default Mapping implementation
@@ -29,12 +29,12 @@ void RandomFrequencyOnlyModel::filterSignal(Signal& s){
 
 	/* Get start and end of the signal to avoid unnecessary calculation
 	 * of attenuation.*/
-	simtime_t sStart = s.getSignalStart();
+	simtime_t sStart = signal.getReceptionStart();
 
 	// Since this mapping does not depend on time, we just set values for
 	// the first entry in time-dimension (start of the Signal)
 	/*
-	simtime_t sEnd = sStart + s.getSignalLength();
+	simtime_t sEnd = signal.getReceptionEnd();
 
 	simtime_t interval = 0.01; //lets use constant intervals for entries in time
 	*/
@@ -72,5 +72,5 @@ void RandomFrequencyOnlyModel::filterSignal(Signal& s){
 	attMapping->setValue(pos, att); //put the attenuation at the current position into the mapping
 
 	//at last add the created attenuation mapping to the signal
-	s.addAttenuation(attMapping);
+	signal.addAttenuation(attMapping);
 }

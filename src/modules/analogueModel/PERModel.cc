@@ -1,8 +1,8 @@
 #include "PERModel.h"
 
-void PERModel::filterSignal(Signal& s) {
-	simtime_t start = s.getSignalStart();
-	simtime_t end = start + s.getSignalLength();
+void PERModel::filterSignal(Signal& signal) {
+	simtime_t start = signal.getReceptionStart();
+	simtime_t end   = signal.getReceptionEnd();
 
 	double attenuationFactor = 1;  // no attenuation
 	if(packetErrorRate > 0 && uniform(0, 1) < packetErrorRate) {
@@ -12,7 +12,7 @@ void PERModel::filterSignal(Signal& s) {
 	TimeMapping<Linear>* attMapping = new TimeMapping<Linear> ();
 	Argument arg;
 	attMapping->setValue(arg, attenuationFactor);
-	s.addAttenuation(attMapping);
+	signal.addAttenuation(attMapping);
 }
 
 

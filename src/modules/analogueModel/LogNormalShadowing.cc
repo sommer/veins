@@ -27,11 +27,10 @@ double LogNormalShadowing::randomLogNormalGain() const {
 	return FWMath::dBm2mW(-1.0 * normal(mean, stdDev));
 }
 
-void LogNormalShadowing::filterSignal(Signal& s) {
-	simtime_t start = s.getSignalStart();
-	simtime_t end = start + s.getSignalLength();
-
-	Mapping* att = MappingUtils::createMapping(dimensions, Mapping::LINEAR);
+void LogNormalShadowing::filterSignal(Signal& signal) {
+	simtime_t start = signal.getReceptionStart();
+	simtime_t end   = signal.getReceptionEnd();
+	Mapping*  att   = MappingUtils::createMapping(dimensions, Mapping::LINEAR);
 
 	Argument pos;
 
@@ -41,5 +40,5 @@ void LogNormalShadowing::filterSignal(Signal& s) {
 		att->appendValue(pos, randomLogNormalGain());
 	}
 
-	s.addAttenuation(att);
+	signal.addAttenuation(att);
 }

@@ -22,7 +22,7 @@ simtime_t SNRThresholdDecider::processNewSignal(AirFrame* frame)
 	//Therefore we use MappingUtils "post"-method to ask for the receiving power
 	//at the correct position.
 	Signal& signal = frame->getSignal();
-	simtime_t receivingStart = MappingUtils::post(signal.getSignalStart());
+	simtime_t receivingStart = MappingUtils::post(signal.getReceptionStart());
 	double recvPower = signal.getReceivingPower()->getValue(Argument(receivingStart));
 
 	// check whether signal is strong enough to receive
@@ -41,7 +41,7 @@ simtime_t SNRThresholdDecider::processNewSignal(AirFrame* frame)
 	currentSignal.first = frame;
 	currentSignal.second = EXPECT_END;
 
-	return ( signal.getSignalStart() + signal.getSignalLength() );
+	return signal.getReceptionEnd();
 }
 
 // TODO: for now we check a larger mapping within an interval
@@ -174,8 +174,8 @@ simtime_t SNRThresholdDecider::processSignalEnd(AirFrame* frame)
 	assert(snrMap);
 
 	const Signal& signal = frame->getSignal();
-	simtime_t start = signal.getSignalStart();
-	simtime_t end = start + signal.getSignalLength();
+	simtime_t start = signal.getReceptionStart();
+	simtime_t end = signal.getReceptionEnd();
 
 	// NOTE: Since this decider does not consider the amount of time when the signal's SNR is
 	// below the threshold even the smallest (normally insignificant) drop causes this decider

@@ -33,9 +33,7 @@
  *
  *
  * @ingroup utils
- * @ingroup blackboard
- * @author Andreas K�pke
- * @sa Blackboard
+ * @author Andreas Koepke
  */
 class  DroppedPacket : public BBItem
 {

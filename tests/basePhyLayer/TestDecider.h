@@ -63,8 +63,8 @@ public:
 
 		const Signal& s = frame->getSignal();
 
-		simtime_t start = s.getSignalStart();
-		simtime_t end = s.getSignalStart() + s.getSignalLength();
+		simtime_t start = s.getReceptionStart();
+		simtime_t end = s.getReceptionEnd();
 
 		AirFrameVector interf;
 
@@ -95,12 +95,12 @@ public:
 
 		if(run == 7)
 		{
-			end = s.getSignalStart() + s.getSignalLength();
+			end = s.getReceptionEnd();
 		} else {
-			end = s.getSignalStart() + s.getSignalLength() * 0.1;
+			end = s.getReceptionStart() + s.getDuration() * 0.1;
 		}
 
-		if(time == s.getSignalStart()) {
+		if(time == s.getReceptionStart()) {
 			assertMessage("Scheduled AirFrame to end at phy.", RECEIVING_STATE,
 						  frame, end, "phy" + toString(myIndex));
 			assertMessage("Scheduled AirFrame to end.", RECEIVING_STATE,
@@ -115,7 +115,7 @@ public:
 		}
 
 		fail("Simtime(" + toString(time) + ") was neither signal start ("
-			 + toString(s.getSignalStart()) + ") nor end(" + toString(end)
+			 + toString(s.getReceptionStart()) + ") nor end(" + toString(end)
 			 + ").");
 
 		return -1;

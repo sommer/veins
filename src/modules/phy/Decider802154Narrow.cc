@@ -51,9 +51,9 @@ simtime_t Decider802154Narrow::processNewSignal(AirFrame* frame) {
 	currentSignal.first = frame;
 	currentSignal.second = EXPECT_HEADER;
 	Signal& s = frame->getSignal();
-	double bitrate = s.getBitrate()->getValue(Argument(s.getSignalStart()));
+	double bitrate = s.getBitrate()->getValue(Argument(s.getReceptionStart()));
 	simtime_t phyHeaderDuration = ((double) phyHeaderLength)/bitrate;
-	return s.getSignalStart() + phyHeaderDuration;
+	return s.getReceptionStart() + phyHeaderDuration;
 
 }
 
@@ -77,7 +77,7 @@ simtime_t Decider802154Narrow::processSignalHeader(AirFrame* frame)
 	// Inform the MAC that we started receiving a frame
 	phy->sendControlMsg(new cMessage("start_rx",RECEPTION_STARTED));
 	Signal& s = frame->getSignal();
-	return s.getSignalStart() + s.getSignalLength();
+	return s.getReceptionEnd();
 }
 
 simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
@@ -85,8 +85,8 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 	ConstMapping* snrMapping = calculateSnrMapping(frame);
 
 	Signal& s = frame->getSignal();
-	simtime_t start = s.getSignalStart();
-	simtime_t end = start + s.getSignalLength();
+	simtime_t start = s.getReceptionStart();
+	simtime_t end = s.getReceptionEnd();
 
 	AirFrameVector channel;
 	phy->getChannelInfo(start, end, channel);

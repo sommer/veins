@@ -41,12 +41,10 @@ public:
 		TimeMapping<Linear>* attMapping = new TimeMapping<Linear> ();
 
 		// Determine distance between sender and receiver
-		Move srcMove = s.getMove();
-		Coord srcCoord, rcvCoord;
-		double distance = 0;
-		srcCoord = srcMove.getPositionAt(s.getSignalStart());
-		rcvCoord = move->getPositionAt(s.getSignalStart());
-		distance = rcvCoord.distance(srcCoord);
+		Move   srcMove     = s.getMove();
+		Coord  senderPos   = srcMove.getPositionAt(s.getReceptionStart());
+		Coord  receiverPos = move->getPositionAt(s.getReceptionStart());
+		double distance    = senderPos.distance(receiverPos);
 
 		Argument arg;
 		attMapping->setValue(arg, 4*PI*pow(distance, 2));

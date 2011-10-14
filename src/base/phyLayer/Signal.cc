@@ -1,16 +1,16 @@
 #include "Signal_.h"
 
-Signal::Signal(simtime_t start, simtime_t length):
-	signalStart(start), signalLength(length),
-	propDelay(0),
+Signal::Signal(simtime_t sendingStart, simtime_t duration):
+	sendingStart(sendingStart), duration(duration),
+	propagationDelay(0),
 	power(0), bitrate(0),
 	txBitrate(0),
 	rcvPower(0)
 {}
 
 Signal::Signal(const Signal & o):
-	signalStart(o.signalStart), signalLength(o.signalLength),
-	propDelay(o.propDelay),
+	sendingStart(o.sendingStart), duration(o.duration),
+	propagationDelay(o.propagationDelay),
 	senderMovement(o.senderMovement),
 	power(0), bitrate(0),
 	txBitrate(0),
@@ -35,10 +35,10 @@ Signal::Signal(const Signal & o):
 }
 
 const Signal& Signal::operator=(const Signal& o) {
-	signalStart = o.signalStart;
-	signalLength = o.signalLength;
-	propDelay = o.propDelay;
-	senderMovement = o.senderMovement;
+	sendingStart     = o.sendingStart;
+	duration         = o.duration;
+	propagationDelay = o.propagationDelay;
+	senderMovement   = o.senderMovement;
 
 	markRcvPowerOutdated();
 
@@ -84,7 +84,7 @@ const Signal& Signal::operator=(const Signal& o) {
 Signal::~Signal()
 {
 	if(rcvPower){
-		if(propDelay != 0){
+		if(propagationDelay != 0){
 			assert(rcvPower->getRefMapping() != power);
 			delete rcvPower->getRefMapping();
 		}
@@ -108,29 +108,41 @@ Signal::~Signal()
 	}
 }
 
-simtime_t Signal::getSignalStart() const {
-	return signalStart + propDelay;
+simtime_t Signal::getSendingStart() const {
+	return sendingStart;
 }
 
-simtime_t Signal::getSignalLength() const{
-	return signalLength;
+simtime_t Signal::getSendingEnd() const {
+	return sendingStart + duration;
+}
+
+simtime_t Signal::getReceptionStart() const {
+	return sendingStart + propagationDelay;
+}
+
+simtime_t Signal::getReceptionEnd() const {
+	return sendingStart + propagationDelay + duration;
+}
+
+simtime_t Signal::getDuration() const{
+	return duration;
 }
 
 simtime_t Signal::getPropagationDelay() const {
-	return propDelay;
+	return propagationDelay;
 }
 
 void Signal::setPropagationDelay(simtime_t delay) {
-	assert(propDelay == 0);
+	assert(propagationDelay == 0);
 	assert(!txBitrate);
 
 	markRcvPowerOutdated();
 
-	propDelay = delay;
+	propagationDelay = delay;
 
 	if(bitrate) {
 		txBitrate = bitrate;
-		bitrate = new DelayedMapping(txBitrate, propDelay);
+		bitrate = new DelayedMapping(txBitrate, propagationDelay);
 	}
 }
 

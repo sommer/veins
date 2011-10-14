@@ -411,8 +411,8 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 
 
 	// set the members
-	assert(s->getSignalLength() > 0);
-	frame->setDuration(s->getSignalLength());
+	assert(s->getDuration() > 0);
+	frame->setDuration(s->getDuration());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
 	//set priority of AirFrames above the normal priority to ensure

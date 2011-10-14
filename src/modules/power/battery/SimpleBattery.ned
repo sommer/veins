@@ -34,7 +34,7 @@ simple SimpleBattery extends BaseBattery
         // capacity is updated at least every resolution time
         volatile double resolution @unit(s);
         
-        // (0..1): capacity is published to the blackboard each time it is
+        // (0..1): capacity is published each time it is
 		// observed to have changed by publishDelta * nominal_capacity
         volatile double publishDelta;
         

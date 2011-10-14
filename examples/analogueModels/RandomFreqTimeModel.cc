@@ -6,7 +6,7 @@
  * put some random attenuations over time and frequency into
  * the attenuation mapping.
  */
-void RandomFreqTimeModel::filterSignal(Signal& s){
+void RandomFreqTimeModel::filterSignal(Signal& signal){
 
 
 	/* At first get a new instance of the default Mapping implementation
@@ -30,8 +30,8 @@ void RandomFreqTimeModel::filterSignal(Signal& s){
 	/* Get start and end of the signal to avoid unnecessary calculation
 	 * of attenuation. (Normally we don't wan't to attenuate the signal
 	 * outside its start and end time since it probably isn't defined there.*/
-	simtime_t sStart = s.getSignalStart();
-	simtime_t sEnd = sStart + s.getSignalLength();
+	simtime_t sStart = signal.getReceptionStart();
+	simtime_t sEnd = signal.getReceptionEnd();
 
 	simtime_t interval = (sEnd - sStart) / 10.0; //lets divide it into 10 steps
 
@@ -67,5 +67,5 @@ void RandomFreqTimeModel::filterSignal(Signal& s){
 	}
 
 	//at last add the created attenuation mapping to the signal
-	s.addAttenuation(attMapping);
+	signal.addAttenuation(attMapping);
 }
