@@ -124,7 +124,7 @@ bool Posture::setPostureSpeed(double min, double max)
 	return true;
 }
 
-Coord  Posture::getPs(unsigned int i)
+Coord  Posture::getPs(unsigned int i) const
 {
 	if (i<numNodes)
 		return nodePs[i];
@@ -132,7 +132,7 @@ Coord  Posture::getPs(unsigned int i)
 	return Coord(-1,-1,-1);
 }
 
-double Posture::getAlphaMean(unsigned int i, unsigned int j)
+double Posture::getAlphaMean(unsigned int i, unsigned int j) const
 {
 	if (i<numNodes && j<numNodes)
 		return alphaMean[i][j];
@@ -140,7 +140,7 @@ double Posture::getAlphaMean(unsigned int i, unsigned int j)
 	return -1;
 }
 
-double Posture::getAlphaSD(unsigned int i, unsigned int j)
+double Posture::getAlphaSD(unsigned int i, unsigned int j) const
 {
 	if (i<numNodes && j<numNodes)
 		return alphaSD[i][j];
@@ -148,7 +148,7 @@ double Posture::getAlphaSD(unsigned int i, unsigned int j)
 	return -1;
 }
 
-double Posture::getRadius(unsigned int i)
+double Posture::getRadius(unsigned int i) const
 {
 	if (i<numNodes)
 		return nodeRadius[i];
@@ -156,7 +156,7 @@ double Posture::getRadius(unsigned int i)
 	return -1;
 }
 
-double Posture::getSpeed(unsigned int i)
+double Posture::getSpeed(unsigned int i) const
 {
 	if (i<numNodes)
 		return nodeSpeed[i];

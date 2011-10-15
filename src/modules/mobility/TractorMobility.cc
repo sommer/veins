@@ -76,7 +76,7 @@ void TractorMobility::makeMove()
 
 void TractorMobility::fixIfHostGetsOutside()
 {
-	Coord dummy(world->use2D());
+	Coord dummy = Coord::ZERO;
 	double dum;
 
 	handleIfOutside( RAISEERROR, targetPos, dummy, dummy, dum );
@@ -99,19 +99,19 @@ void TractorMobility::calculateXY()
 
 	if (moving_away) {
 		if (on_the_edge) {
-			targetPos.setX(x1 + (fmod(row_number, 2.0) < 1.0 ? row_length : (0)));
-            targetPos.setY(y1 + (FWMath::floorToZero(row_number) * row_width + row_position - row_length));
+			targetPos.x = (x1 + (fmod(row_number, 2.0) < 1.0 ? row_length : (0)));
+            targetPos.y = (y1 + (FWMath::floorToZero(row_number) * row_width + row_position - row_length));
 		} else {
-			targetPos.setX(x1 + (fmod(row_number, 2.0) < 1.0 ? row_position : (row_length - row_position)));
-			targetPos.setY(y1 + (FWMath::floorToZero(row_number) * row_width));
+			targetPos.x = (x1 + (fmod(row_number, 2.0) < 1.0 ? row_position : (row_length - row_position)));
+			targetPos.y = (y1 + (FWMath::floorToZero(row_number) * row_width));
 		}
 	} else {
 		if (on_the_edge) {
-			targetPos.setX(x1 + (fmod(row_number, 2.0) < 1.0 ? row_length : (0)));
-			targetPos.setY(y2 - ((FWMath::floorToZero(row_number) - rows) * row_width + row_position - row_length));
+			targetPos.x = (x1 + (fmod(row_number, 2.0) < 1.0 ? row_length : (0)));
+			targetPos.y = (y2 - ((FWMath::floorToZero(row_number) - rows) * row_width + row_position - row_length));
 		} else {
-			targetPos.setX(x1 + (fmod(row_number, 2.0) < 1.0 ? row_position : (row_length - row_position)));
-			targetPos.setY(y2 - ((FWMath::floorToZero(row_number) - rows) * row_width));
+			targetPos.x = (x1 + (fmod(row_number, 2.0) < 1.0 ? row_position : (row_length - row_position)));
+			targetPos.y = (y2 - ((FWMath::floorToZero(row_number) - rows) * row_width));
 		}
 	}
 

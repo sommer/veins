@@ -116,19 +116,20 @@ void BatteryStats::detail(DeviceEntry *devices, int numDevices)
   }
 }
 
-void BatteryStats::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
+void BatteryStats::receiveBBItem(int signalID, const BBItem *obj, int scopeModuleId)
 {
     Enter_Method_Silent();
-    BaseModule::receiveBBItem(category, details, scopeModuleId);
+    BaseModule::receiveBBItem(signalID, obj, scopeModuleId);
 
-    if (category == batteryCat) {
+    if (signalID == batteryCat) {
       double residualCapacity;
       double relativeCapacity;
 
       // battery time series never publishes capacity < 0, just 0
-      residualCapacity = ((BatteryState *)details)->getAbs();
+      const BatteryState* pBatState = dynamic_cast<const BatteryState*>(obj);
+      residualCapacity = pBatState->getAbs();
       residualVec.record(residualCapacity);
-      relativeCapacity = ((BatteryState *)details)->getRel();
+      relativeCapacity = pBatState->getRel();
       relativeVec.record(relativeCapacity);
 
       // for comparison, also get the estimated residual capacity

@@ -26,8 +26,7 @@
 #include "Coord.h"
 
 /**
- * @brief Provides information and utility methods as well as Blackboard
- * functionality for the whole simulation.
+ * @brief Provides information and utility methods for the whole simulation.
  *
  * @ingroup blackboard
  * @ingroup baseModules
@@ -70,9 +69,9 @@ protected:
     virtual void initializeIfNecessary();
 
 public:
-	BaseWorldUtility();
+    BaseWorldUtility();
 
-	virtual void initialize(int stage);
+    virtual void initialize(int stage);
 
     /**
      * @brief Returns the playgroundSize

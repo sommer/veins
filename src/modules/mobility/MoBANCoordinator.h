@@ -233,7 +233,7 @@ class MIXIM_API MoBANCoordinator: public cSimpleModule
    void stepMove();
 
    /** @brief Checks if all nodes of the WBAN are inside the simulation environment w	ith the given position of the logical center. */
-   bool isInsideWorld(Coord);
+   bool isInsideWorld(const Coord&) const;
 
    /** @brief Reading the input postures specification file and making the posture data base. */
    bool readPostureSpecificationFile();

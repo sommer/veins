@@ -6,10 +6,14 @@
  */
 
 #include "Decider802154Narrow.h"
-#include "DeciderResult802154Narrow.h"
-#include <MacPkt_m.h>
-#include <PhyToMacControlInfo.h>
+
 #include <cmath>
+
+#include "DeciderResult802154Narrow.h"
+#include "MacPkt_m.h"
+#include "PhyToMacControlInfo.h"
+#include "AirFrame_m.h"
+#include "Mapping.h"
 
 bool Decider802154Narrow::syncOnSFD(AirFrame* frame) {
 	double BER;

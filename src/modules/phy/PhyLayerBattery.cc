@@ -18,6 +18,7 @@
 #include "Decider80211MultiChannel.h"
 #include "MacToPhyControlInfo.h"
 #include "MacPkt_m.h"
+#include "BaseUtility.h"
 
 Define_Module(PhyLayerBattery);
 

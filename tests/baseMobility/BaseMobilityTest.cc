@@ -69,15 +69,14 @@ void BaseMobilityTest::initialize(int stage)
 		}
 
 		// setting values of playground size to member variables
-		xMax = pgs.getX();
-		yMax = pgs.getY();
-		if (!use2D) { zMax = pgs.getZ(); }
-		else { zMax = Coord::UNDEFINED; }
+		xMax = pgs.x;
+		yMax = pgs.y;
+		if (!use2D) { zMax = pgs.z; }
+		else { zMax = 0; }
 
 		xMin = 0.0;
 		yMin = 0.0;
-		if (!use2D) { zMin = 0.0; }
-		else { zMin = Coord::UNDEFINED; }
+		zMin = 0.0;
 
 		// some output
 		//note << "My Move-Info: " << move.info() << endl;
@@ -197,13 +196,13 @@ void BaseMobilityTest::testSimpleCIO()
 {
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
-	Coord stepTarget(false);
+	Coord stepTarget = Coord::ZERO;
 	double dist = 10.0;
 
 
 	ev << "Testing simple checkIfOutside... " << endl;
 
-	double m = move.getStartPos().getX();
+	double m = move.getStartPos().x;
 
 	// test X
 	stepTarget = getCoord(xMax+dist, m, m);
@@ -262,7 +261,7 @@ void BaseMobilityTest::testComplexCIO()
 {
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
-	Coord stepTarget(false);
+	Coord stepTarget= Coord::ZERO;
 	double dist = 30.0;
 
 	ev << "Testing complex checkIfOutside... " << endl;
@@ -370,7 +369,7 @@ void BaseMobilityTest::testBorderCIO()
 {
 	Coord origin = getCoord(0,0,0);
 	Coord borderStep = origin;
-	Coord stepTarget(false);
+	Coord stepTarget = Coord::ZERO;
 
 	double min = 0.0;
 	int bHandVal;

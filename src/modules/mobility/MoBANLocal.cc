@@ -88,9 +88,9 @@ void MoBANLocal::setTargetPosition()
 			z =  uniform(-1*radius, radius);
 		}
 
-		targetPos.setX(x);
-		targetPos.setY(y);
-		targetPos.setZ(z);
+		targetPos.x = (x);
+		targetPos.y = (y);
+		targetPos.z = (z);
 
 		currentRelativePosition = move.getStartPos()- referencePoint;
 		double distance = currentRelativePosition.distance(targetPos);
@@ -180,27 +180,27 @@ Coord MoBANLocal::insideWorld(Coord apoint)
 
 	Coord NearestBorder = apoint;
 
-	xmax = world->getPgs()->getX();
-	ymax = world->getPgs()->getY();
-	zmax = world->getPgs()->getZ();
+	xmax = world->getPgs()->x;
+	ymax = world->getPgs()->y;
+	zmax = world->getPgs()->z;
 
-	if (NearestBorder.getX() < 0)
-		NearestBorder.setX(0.0);
+	if (NearestBorder.x < 0)
+		NearestBorder.x = (0.0);
 
-	if (NearestBorder.getY() < 0)
-		NearestBorder.setY(0.0);
+	if (NearestBorder.y < 0)
+		NearestBorder.y = (0.0);
 
-	if (NearestBorder.getZ() < 0)
-		NearestBorder.setZ(0.0);
+	if (NearestBorder.z < 0)
+		NearestBorder.z = (0.0);
 
-	if (NearestBorder.getX() > xmax)
-		NearestBorder.setX(xmax);
+	if (NearestBorder.x > xmax)
+		NearestBorder.x = (xmax);
 
-	if (NearestBorder.getY() > ymax)
-		NearestBorder.setY(ymax);
+	if (NearestBorder.y > ymax)
+		NearestBorder.y = (ymax);
 
-	if (NearestBorder.getZ() > zmax)
-		NearestBorder.setZ(zmax);
+	if (NearestBorder.z > zmax)
+		NearestBorder.z = (zmax);
 
 	return NearestBorder;
 

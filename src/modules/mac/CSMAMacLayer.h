@@ -45,7 +45,7 @@
  * @ingroup csma
  * @author Marc L�bbers, Yosia Hadisusanto, Andreas Koepke, Karl Wessel
  */
-class  CSMAMacLayer : public BaseMacLayer
+class MIXIM_API CSMAMacLayer : public BaseMacLayer
 {
   public:
 	virtual ~CSMAMacLayer();

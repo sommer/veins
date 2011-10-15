@@ -86,20 +86,17 @@ void BaseConnectionManager::initialize(int stage)
 		//step 3 -	calculate the factor which maps the coordinate of a node
 		//			to the grid cell
 		//if we use a 1x1 grid every coordinate is mapped to (0,0, 0)
-			findDistance = Coord(std::max(playgroundSize->getX(),
-										  maxInterferenceDistance),
-								 std::max(playgroundSize->getY(),
-										  maxInterferenceDistance),
-								 std::max(playgroundSize->getZ(),
-										  maxInterferenceDistance));
+		findDistance = Coord(std::max(playgroundSize->x, maxInterferenceDistance),
+							 std::max(playgroundSize->y, maxInterferenceDistance),
+							 std::max(playgroundSize->z, maxInterferenceDistance));
 		//otherwise we divide the playground into cells of size of the maximum
 		//interference distance
 		if (gridDim.x != 1)
-			findDistance.setX(playgroundSize->getX() / gridDim.x);
+			findDistance.x = playgroundSize->x / gridDim.x;
 		if (gridDim.y != 1)
-			findDistance.setY(playgroundSize->getY() / gridDim.y);
+			findDistance.y = playgroundSize->y / gridDim.y;
 		if (gridDim.z != 1)
-			findDistance.setZ(playgroundSize->getZ() / gridDim.z);
+			findDistance.z = playgroundSize->z / gridDim.z;
 
 		//since the upper playground borders (at pg-size) are part of the
 		//playground we have to assure that they are mapped to a valid
@@ -110,10 +107,9 @@ void BaseConnectionManager::initialize(int stage)
 
 		//findDistance (equals cell size) has to be greater or equal
 		//maxInt-distance
-		assert(findDistance.getX() >= maxInterferenceDistance);
-		assert(findDistance.getY() >= maxInterferenceDistance);
-		assert(world->use2D()
-			   || findDistance.getZ() >= maxInterferenceDistance);
+		assert(findDistance.x >= maxInterferenceDistance);
+		assert(findDistance.y >= maxInterferenceDistance);
+		assert(findDistance.z >= maxInterferenceDistance);
 
 		//playGroundSize has to be part of the playGround
 		assert(GridCoord(*playgroundSize, findDistance).x == gridDim.x - 1);
@@ -226,9 +222,6 @@ void BaseConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion,
 												   GridCoord cell)
 {
 	for(int iz = (int)cell.z - 1; iz <= (int)cell.z + 1; iz++) {
-		if(iz != cell.z && cell.use2D) {
-			continue;
-		}
 		int cz = wrapIfTorus(iz, gridDim.z);
 		if(cz == -1) {
 			continue;
@@ -241,11 +234,7 @@ void BaseConnectionManager::fillUnionWithNeighbors(CoordSet& gridUnion,
 			for(int iy = (int)cell.y - 1; iy <= (int)cell.y + 1; iy++) {
 				int cy = wrapIfTorus(iy, gridDim.y);
 				if(cy != -1) {
-					if(cell.use2D) {
-						gridUnion.add(GridCoord(cx, cy));
-					} else {
-						gridUnion.add(GridCoord(cx, cy, cz));
-					}
+					gridUnion.add(GridCoord(cx, cy, cz));
 				}
 			}
 		}

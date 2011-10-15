@@ -11,6 +11,8 @@
 #include "MiXiMDefs.h"
 #include "Decider.h"
 
+class Mapping;
+
 #define deciderEV (ev.isDisabled()||!debug) ? ev : ev << "[Host " << myIndex << "] - PhyLayer(Decider): "
 
 /**
@@ -200,10 +202,7 @@ protected:
 	 * @brief Processes any Signal for which no state could be found.
 	 * (is an error case).
 	 */
-	virtual simtime_t processUnknownSignal(AirFrame* frame) {
-		opp_error("Unknown state for the AirFrame with ID %d", frame->getId());
-		return notAgain;
-	}
+	virtual simtime_t processUnknownSignal(AirFrame* frame);
 
 	/**
 	 * @brief Returns the SignalState for the passed AirFrame.

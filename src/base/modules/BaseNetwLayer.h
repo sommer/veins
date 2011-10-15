@@ -70,6 +70,15 @@ protected:
 
 public:
     //Module_Class_Members(BaseNetwLayer,BaseLayer,0);
+    BaseNetwLayer() 
+      : BaseLayer()
+      , arp(NULL)
+    {}
+
+    BaseNetwLayer(unsigned stacksize) 
+      : BaseLayer(stacksize)
+      , arp(NULL)
+    {}
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);

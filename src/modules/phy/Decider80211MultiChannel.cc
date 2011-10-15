@@ -9,6 +9,7 @@
 
 #include "DeciderResult80211.h"
 #include "Consts80211.h"
+#include "AirFrame_m.h"
 
 Decider80211MultiChannel::Decider80211MultiChannel(DeciderToPhyInterface* phy,
 					double threshold,

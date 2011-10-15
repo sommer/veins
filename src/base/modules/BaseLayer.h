@@ -50,20 +50,23 @@ class MIXIM_API BaseLayer : public BatteryAccess
     int upperControlOut;
     int lowerControlIn;
     int lowerControlOut;
-
     /*@}*/
 
     /** @brief Signal for PassedMessage.*/
-    int            catPassedMsg;
+    int  catPassedMsg;
     /** @brief The last message passed through this layer. This variable will be only not NULL if we are
                in statistic recording mode.*/
-    PassedMessage* passedMsg;
+    PassedMessage *passedMsg;
     /** @brief This layers hosts id.*/
-    int            hostId;
+    int  hostId;
 
 public:
     BaseLayer()
         : BatteryAccess()
+        , passedMsg(NULL)
+    {}
+    BaseLayer(unsigned stacksize)
+        : BatteryAccess(stacksize)
         , passedMsg(NULL)
     {}
     virtual ~BaseLayer();
@@ -76,7 +79,7 @@ public:
     virtual void handleMessage( cMessage* );
 
     /** @brief Called when the simulation has finished.*/
-	virtual void finish();
+    virtual void finish();
 
 protected:
     /**

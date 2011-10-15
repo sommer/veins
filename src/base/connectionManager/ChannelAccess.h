@@ -104,20 +104,20 @@ public:
 	 */
 	static BaseConnectionManager* getConnectionManager(cModule* nic);
 
-    /** @brief Register with ConnectionManager and subscribe to hostPos
-     *
+	/** @brief Register with ConnectionManager.
+	 *
 	 * Upon initialization ChannelAccess registers the nic parent module
 	 * to have all its connections handeled by ConnectionManager
 	 **/
-    virtual void initialize(int stage);
+	virtual void initialize(int stage);
 
-    /**
-     * @brief Called by Blackboard to inform of changes
-     *
+	/**
+	 * @brief Called by the signalling mechanism to inform of changes.
+	 *
 	 * ChannelAccess is subscribed to position changes and informs the
-	 * ConnectionManager
+	 * ConnectionManager.
 	 */
-    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+	virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 };
 
 #endif

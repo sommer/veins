@@ -61,7 +61,6 @@ void SensorApplLayer::initialize(int stage) {
 		initializeDistribution(traffic);
 
 		delayTimer = new cMessage("appDelay", SEND_DATA_TIMER);
-		// Blackboard stuff:
 		hostID = getParentModule()->getId();
 
 		// get pointer to the world module
@@ -289,7 +288,7 @@ void SensorApplLayer::finish() {
 		recordScalar("nbPacketsReceived", nbPacketsReceived);
 		latency.record();
 	}
-	BaseModule::finish();
+	cComponent::finish();
 }
 
 SensorApplLayer::~SensorApplLayer() {

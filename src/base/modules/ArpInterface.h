@@ -9,6 +9,7 @@
 #define ARPINTERFACE_H_
 
 #include "MiXiMDefs.h"
+
 /**
  * @brief Interface every Address resolution protocol (ARP) module has to
  * implement.

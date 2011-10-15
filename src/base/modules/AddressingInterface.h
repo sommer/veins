@@ -11,6 +11,7 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
+
 /**
  * @brief Interface for modules which assign L2 and L3 addresses for modules.
  *

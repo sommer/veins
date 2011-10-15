@@ -130,18 +130,18 @@ public:
 	double getMinSpeed();
 
 	/** @brief Returns the singular movement radius of a node in this posture. */
-	double getRadius(unsigned int);
+	double getRadius(unsigned int) const;
 
 	/** @brief Returns the singular movement speed of a node in this posture. */
-	double getSpeed(unsigned int);
+	double getSpeed(unsigned int) const;
 
 	/** @brief Returns the relative position of a node in this posture. */
-	Coord  getPs(unsigned int );
+	Coord  getPs(unsigned int ) const;
 
 	/** @brief Returns the mean value of a normal distribution for path lost coefficient of wave propagation between two nodes in this posture. */
-	double getAlphaMean(unsigned int , unsigned int);
+	double getAlphaMean(unsigned int , unsigned int) const;
 
 	/** @brief Returns the standard deviation of a normal distribution for path lost coefficient of wave propagation between two nodes in this posture. */
-	double getAlphaSD(unsigned int , unsigned int);
+	double getAlphaSD(unsigned int , unsigned int) const;
 
 };

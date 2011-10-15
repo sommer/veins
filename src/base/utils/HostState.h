@@ -14,6 +14,8 @@
 #ifndef HOSTSTATE_H
 #define HOSTSTATE_H
 
+#include <omnetpp.h>
+
 #include "MiXiMDefs.h"
 #include "ImNotifiable.h"
 

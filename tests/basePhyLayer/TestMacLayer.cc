@@ -449,6 +449,8 @@ void TestMacLayer::testChannelInfo(int stage) {
 		}
 		break;
 	}
+	case 1:
+	    break;
 	default:
 		fail("TestChannelInfo: Unknown stage.");
 		break;

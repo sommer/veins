@@ -157,10 +157,10 @@ void SimTracer::logPosition(int node, double x, double y)
 	treeFile << node << "[pos=\""<< x << ", " << y << "!\"];" << endl;
 }
 
-void SimTracer::receiveBBItem(int category, const BBItem * details,
+void SimTracer::receiveBBItem(int signalID, const BBItem * obj,
 	       int scopeModuleId) {
-	if (category == catPacket) {
-		packet = *(static_cast<const Packet*>(details));
+	if (signalID == catPacket) {
+		packet = *(static_cast<const Packet*>(obj));
 	//	nbApplPacketsSent = nbApplPacketsSent + packet.getNbPacketsSent();
 	//	nbApplPacketsReceived = nbApplPacketsReceived + packet.getNbPacketsReceived();
 		if(packet.isSent()) {

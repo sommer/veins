@@ -62,17 +62,17 @@ void BaseWorldUtility::initializeIfNecessary()
 							   par("playgroundSizeZ"));
 	}
 
-	if(playgroundSize.getX() <= 0) {
+	if(playgroundSize.x < 0) {
 		opp_error("Playground size in X direction is invalid: "\
-				  "(%f). Should be greater zero.", playgroundSize.getX());
+				  "(%f). Should be greater than or equal to zero.", playgroundSize.x);
 	}
-	if(playgroundSize.getY() <= 0) {
+	if(playgroundSize.y < 0) {
 		opp_error("Playground size in Y direction is invalid: "\
-				  "(%f). Should be greater zero.", playgroundSize.getY());
+				  "(%f). Should be greater than or equal to zero.", playgroundSize.y);
 	}
-	if(!use2DFlag && playgroundSize.getZ() <= 0) {
+	if(!use2DFlag && playgroundSize.z < 0) {
 		opp_error("Playground size in Z direction is invalid: "\
-				  "(%f). Should be greater zero (or use 2D mode).", playgroundSize.getZ());
+				  "(%f). Should be greater than or equal to zero.", playgroundSize.z);
 	}
 
 	useTorusFlag = par("useTorus");
@@ -87,12 +87,12 @@ Coord BaseWorldUtility::getRandomPosition()
 	initializeIfNecessary();
 
     if (use2DFlag) {
-        return Coord(uniform(0, playgroundSize.getX()),
-                     uniform(0, playgroundSize.getY()));
+        return Coord(uniform(0, playgroundSize.x),
+                     uniform(0, playgroundSize.y));
     } else {
-        return Coord(uniform(0, playgroundSize.getX()),
-                     uniform(0, playgroundSize.getY()),
-                     uniform(0, playgroundSize.getZ()));
+        return Coord(uniform(0, playgroundSize.x),
+                     uniform(0, playgroundSize.y),
+                     uniform(0, playgroundSize.z));
     }
 }
 

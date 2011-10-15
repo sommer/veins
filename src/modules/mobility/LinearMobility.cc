@@ -55,7 +55,7 @@ void LinearMobility::initialize(int stage)
 
 void LinearMobility::fixIfHostGetsOutside()
 {
-    Coord dummy(world->use2D());
+    Coord dummy = Coord::ZERO;
     handleIfOutside(WRAP, stepTarget, dummy, dummy, angle);
 }
 
@@ -70,8 +70,8 @@ void LinearMobility::makeMove()
 
     move.setStart(stepTarget, simTime());
 
-    stepTarget.setX(move.getStartPos().getX() + move.getSpeed() * cos(PI * angle / 180) * updateInterval.dbl());
-    stepTarget.setY(move.getStartPos().getY() + move.getSpeed() * sin(PI * angle / 180) * updateInterval.dbl());
+    stepTarget.x = (move.getStartPos().x + move.getSpeed() * cos(PI * angle / 180) * updateInterval.dbl());
+    stepTarget.y = (move.getStartPos().y + move.getSpeed() * sin(PI * angle / 180) * updateInterval.dbl());
 
     move.setDirectionByTarget(stepTarget);
 

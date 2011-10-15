@@ -40,7 +40,7 @@
  *
  * @author Daniel Willkomm
  **/
-class BaseApplLayer : public BaseLayer
+class MIXIM_API BaseApplLayer : public BaseLayer
 {
 public:
 	/** @brief The message kinds this layer uses.*/
@@ -63,6 +63,10 @@ protected:
 
 public:
 	//Module_Class_Members(BaseApplLayer, BaseLayer, 0);
+	BaseApplLayer() : BaseLayer()
+	{}
+	BaseApplLayer(unsigned stacksize) : BaseLayer(stacksize)
+	{}
 
 	/** @brief Initialization of the module and some variables*/
 	virtual void initialize(int);

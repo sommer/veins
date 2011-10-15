@@ -14,6 +14,11 @@ BatteryAccess::BatteryAccess():
 	battery(NULL)
 {}
 
+BatteryAccess::BatteryAccess(unsigned stacksize):
+	BaseModule(stacksize),
+	battery(NULL)
+{}
+
 void BatteryAccess::registerWithBattery(const std::string& name, int numAccounts) {
 	battery = FindModule<BaseBattery*>::findSubModule(findHost());
 

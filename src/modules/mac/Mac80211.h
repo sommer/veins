@@ -26,8 +26,8 @@
 #include "MiXiMDefs.h"
 #include "BaseMacLayer.h"
 #include "Consts80211.h"
-
 #include "Mac80211Pkt_m.h"
+
 class ChannelSenseRequest;
 
 /**
@@ -87,6 +87,7 @@ protected:
     typedef std::list<NeighborEntry> NeighborList;
 
   public:
+    Mac80211();
     virtual ~Mac80211();
 
     virtual void initialize(int);

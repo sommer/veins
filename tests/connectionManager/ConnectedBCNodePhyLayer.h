@@ -30,7 +30,7 @@ public:
 	}
 
 	virtual void finish() {
-		CMPhyLayer::finish();
+		cComponent::finish();
 
 		assertTrue("Broadcast should be answered by at least one node.",
 					broadcastAnswered);

@@ -7,6 +7,10 @@
 
 #include "BaseDecider.h"
 
+#include <cassert>
+
+#include "AirFrame_m.h"
+
 simtime_t BaseDecider::processSignal(AirFrame* frame) {
 
 	assert(frame);
@@ -68,6 +72,12 @@ simtime_t BaseDecider::processSignalEnd(AirFrame* frame) {
 
 	return notAgain;
 }
+
+simtime_t BaseDecider::processUnknownSignal(AirFrame* frame) {
+	opp_error("Unknown state for the AirFrame with ID %d", frame->getId());
+	return notAgain;
+}
+
 
 ChannelState BaseDecider::getChannelState() {
 

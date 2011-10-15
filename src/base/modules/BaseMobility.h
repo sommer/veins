@@ -143,6 +143,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
   public:
 
     BaseMobility();
+    BaseMobility(unsigned stacksize);
 
     /** @brief This modules should only receive self-messages
      *
@@ -235,13 +236,13 @@ class MIXIM_API BaseMobility : public BatteryAccess
     virtual void updatePosition();
 
     /** @brief Returns the width of the playground */
-    double playgroundSizeX() const  {return world->getPgs()->getX();}
+    double playgroundSizeX() const  {return world->getPgs()->x;}
 
     /** @brief Returns the height of the playground */
-    double playgroundSizeY() const  {return world->getPgs()->getY();}
+    double playgroundSizeY() const  {return world->getPgs()->y;}
 
     /** @brief Returns the height of the playground */
-    double playgroundSizeZ() const  {return world->getPgs()->getZ();}
+    double playgroundSizeZ() const  {return world->getPgs()->z;}
 
 	/** @brief Random position somewhere in the playground. DEPRECATED: Use BaseWorldUtility::getRandomPosition() instead */
 	Coord getRandomPosition() { return world->getRandomPosition();}

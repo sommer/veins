@@ -216,13 +216,13 @@ void MoBANCoordinator::mainProcess() {
     //show posture name in the graphical interface
 	if(ev.isGUI()){
 		char dis_str[100];
-		sprintf(dis_str,"p=%f,50;i=block/wheelbarrow;is=vs;t=%s Duration:%f",world->getPgs()->getX()+10+(index*30),currentPosture->getPostureName(),duration.dbl());
+		sprintf(dis_str,"p=%f,50;i=block/wheelbarrow;is=vs;t=%s Duration:%f",world->getPgs()->x+10+(index*30),currentPosture->getPostureName(),duration.dbl());
 		setDisplayString(dis_str);
 	}
 
     // write the move step into the output log file
 	if (currentPosture->isMobile())
-		fprintf(logfile,"%s %d %f %f %f %f \n",currentPosture->getPostureName(),currentPosture->getPostureID(), targetPos.getX(),targetPos.getY(),targetPos.getZ(),speed);
+		fprintf(logfile,"%s %d %f %f %f %f \n",currentPosture->getPostureName(),currentPosture->getPostureID(), targetPos.x,targetPos.y,targetPos.z,speed);
 	else
 		fprintf(logfile,"%s %d %f \n",currentPosture->getPostureName(),currentPosture->getPostureID(), duration.dbl());
 
@@ -287,12 +287,12 @@ simtime_t MoBANCoordinator::selectDuration() {
 Coord MoBANCoordinator::selectDestination() {
 	Coord res;
 	res = world->getRandomPosition();
-	res.setZ(logicalCenter.getZ()); // the z value remain the same
+	res.z = (logicalCenter.z); // the z value remain the same
 
 	//check if it is okay using CoverRadius
 	while (!isInsideWorld(res)) {
 		res = world->getRandomPosition();
-		res.setZ(logicalCenter.getZ());
+		res.z = (logicalCenter.z);
 	}
 
 	return res;
@@ -311,13 +311,19 @@ double MoBANCoordinator::selectSpeed() {
 /**
  * Checks if all nodes of the WBAN are inside the simulation environment with the given position of the logical center.
  */
-bool MoBANCoordinator::isInsideWorld(Coord tPos) {
+bool MoBANCoordinator::isInsideWorld(const Coord& tPos) const {
 	Coord absolutePosition;
 
 	for (unsigned int i = 0; i < numNodes; ++i) {
-		absolutePosition = tPos + currentPosture->getPs(i)
-				+ currentPosture->getRadius(i);
-		if (!absolutePosition.isInBoundary(Coord(0, 0, 0), world->getPgs()))
+		const double dRadius = currentPosture->getRadius(i);
+
+		absolutePosition = tPos + currentPosture->getPs(i);
+
+		absolutePosition.x += dRadius;
+		absolutePosition.y += dRadius;
+		absolutePosition.z += dRadius;
+
+		if (!absolutePosition.isInBoundary(Coord::ZERO, world->getPgs()))
 			return false;
 	}
 
@@ -695,13 +701,13 @@ bool MoBANCoordinator::readConfigurationFile() {
 				Coord minBound, maxBound;
 				for(cXMLElementList::const_iterator aBound = boundList.begin(); aBound != boundList.end(); aBound++)
 				{
-					str = (*aBound)->getAttribute("xMin"); minBound.setX(strtod(str, 0));
-					str = (*aBound)->getAttribute("yMin"); minBound.setY(strtod(str, 0));
-					str = (*aBound)->getAttribute("zMin"); minBound.setZ(strtod(str, 0));
+					str = (*aBound)->getAttribute("xMin"); minBound.x = (strtod(str, 0));
+					str = (*aBound)->getAttribute("yMin"); minBound.y = (strtod(str, 0));
+					str = (*aBound)->getAttribute("zMin"); minBound.z = (strtod(str, 0));
 
-					str = (*aBound)->getAttribute("xMax"); maxBound.setX(strtod(str, 0));
-					str = (*aBound)->getAttribute("yMax"); maxBound.setY(strtod(str, 0));
-					str = (*aBound)->getAttribute("zMax"); maxBound.setZ(strtod(str, 0));
+					str = (*aBound)->getAttribute("xMax"); maxBound.x = (strtod(str, 0));
+					str = (*aBound)->getAttribute("yMax"); maxBound.y = (strtod(str, 0));
+					str = (*aBound)->getAttribute("zMax"); maxBound.z = (strtod(str, 0));
 
 					transitions->setAreaBoundry(typeID,minBound,maxBound);
 					EV << "Low bound: "<< minBound.info() << endl;

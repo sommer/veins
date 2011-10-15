@@ -32,10 +32,10 @@ void CircleMobility::initialize(int stage)
 
     if (stage == 0) {
         // read parameters
-        center.setX(par("cx"));
-        center.setY(par("cy"));
+        center.x = (par("cx"));
+        center.y = (par("cy"));
         if(!world->use2D()) {
-        	center.setZ(par("cz"));
+        	center.z = (par("cz"));
         }
         r = par("r");
         ASSERT(r>0);
@@ -45,10 +45,10 @@ void CircleMobility::initialize(int stage)
 
         // calculate initial position
         if(!world->use2D()) {
-        	move.setStart( Coord(center.getX() + r * cos(angle), center.getY() + r * sin(angle), center.getZ()) );
+        	move.setStart( Coord(center.x + r * cos(angle), center.y + r * sin(angle), center.z) );
         }
         else {
-        	move.setStart( Coord(center.getX() + r * cos(angle), center.getY() + r * sin(angle)) );
+        	move.setStart( Coord(center.x + r * cos(angle), center.y + r * sin(angle)) );
         }
 
         targetPos = move.getStartPos();
@@ -61,8 +61,8 @@ void CircleMobility::makeMove()
     move.setStart(targetPos, simTime());
 
     angle += omega * updateInterval.dbl();
-    targetPos.setX(center.getX() + r * cos(angle));
-    targetPos.setY(center.getY() + r * sin(angle));
+    targetPos.x = (center.x + r * cos(angle));
+    targetPos.y = (center.y + r * sin(angle));
 
     move.setDirectionByTarget(targetPos);
 
@@ -71,7 +71,7 @@ void CircleMobility::makeMove()
 
 void CircleMobility::fixIfHostGetsOutside()
 {
-    Coord dummy(world->use2D());
+    Coord dummy = Coord::ZERO;
     double dum;
 
     handleIfOutside( WRAP, targetPos, center, dummy, dum);

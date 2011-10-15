@@ -27,7 +27,6 @@
 
 #include "MiXiMDefs.h"
 #include "ImNotifiable.h"
-
 #include "HostState.h"
 
 class BaseUtility;
@@ -124,6 +123,7 @@ protected:
 
   public:
     BaseModule();
+    BaseModule(unsigned stacksize);
 
     /** @brief Basic initialization for all modules */
     virtual void initialize(int);
@@ -166,7 +166,7 @@ protected:
      * In this base class just handle the host state switching and
      * some debug notifications
      */
-    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+    virtual void receiveBBItem(int signalID, const BBItem *obj, int scopeModuleId);
 };
 
 #endif

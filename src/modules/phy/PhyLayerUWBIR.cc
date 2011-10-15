@@ -6,6 +6,7 @@
 #include "DeciderUWBIREDSync.h"
 #include "MacToUWBIRPhyControlInfo.h"
 #include "AirFrameUWBIR_m.h"
+#include "BaseWorldUtility.h"
 
 Define_Module(PhyLayerUWBIR);
 

@@ -1,16 +1,13 @@
 #ifndef PHYUTILS_H_
 #define PHYUTILS_H_
 
+#include <cassert>
+#include <list>
+#include <omnetpp.h>
+
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 #include "Mapping.h"
-
-#include <omnetpp.h>
-#include <iostream>
-#include <assert.h>
-#include <list>
-
-
 
 class RSAMMapping;
 

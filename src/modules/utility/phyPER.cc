@@ -37,13 +37,13 @@ void phyPER::initialize(int stage)
 }
 
 
-void phyPER::receiveBBItem(int category, const BBItem * details, int scopeModuleId) {
-    if(category == catPacket) {
-    	packet = *(static_cast<const Packet*>(details));
+void phyPER::receiveBBItem(int signalID, const BBItem * obj, int scopeModuleId) {
+    if(signalID == catPacket) {
+    	packet = *(static_cast<const Packet*>(obj));
     	nbRx = static_cast<long>(packet.getNbPacketsReceived());
     	nbRxnoRS = static_cast<long>(packet.getNbPacketsReceivedNoRS());
-    } else if(category == catUWBIRPacket) {
-    	uwbirpacket = *(static_cast<const UWBIRPacket*>(details));
+    } else if(signalID == catUWBIRPacket) {
+    	uwbirpacket = *(static_cast<const UWBIRPacket*>(obj));
     	nbSyncAttempts = static_cast<long>(uwbirpacket.getNbSyncAttempts());
     	nbSyncSuccesses = uwbirpacket.getNbSyncSuccesses();
     }
@@ -51,5 +51,4 @@ void phyPER::receiveBBItem(int category, const BBItem * details, int scopeModule
       maiPER.record( static_cast<double>(nbRx) / nbSyncAttempts );
       maiPERnoRS.record( static_cast<double>(nbRxnoRS) / nbSyncAttempts );
     }
-
 }

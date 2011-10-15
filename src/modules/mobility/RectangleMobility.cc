@@ -92,7 +92,7 @@ void RectangleMobility::makeMove()
 
 void RectangleMobility::fixIfHostGetsOutside()
 {
-    Coord dummy(world->use2D());
+    Coord dummy = Coord::ZERO;
     double dum;
 
     handleIfOutside( RAISEERROR, targetPos, dummy, dummy, dum );
@@ -107,26 +107,26 @@ void RectangleMobility::calculateXY()
     if (d < corner1)
     {
         // top side
-        targetPos.setX(x1 + d);
-        targetPos.setY(y1);
+        targetPos.x = (x1 + d);
+        targetPos.y = (y1);
     }
     else if (d < corner2)
     {
         // right side
-        targetPos.setX(x2);
-        targetPos.setY(y1 + d - corner1);
+        targetPos.x = (x2);
+        targetPos.y = (y1 + d - corner1);
     }
     else if (d < corner3)
     {
         // bottom side
-        targetPos.setX(x2 - d + corner2);
-        targetPos.setY(y2);
+        targetPos.x = (x2 - d + corner2);
+        targetPos.y = (y2);
     }
     else
     {
         // left side
-        targetPos.setX(x1);
-        targetPos.setY(y2 - d + corner3);
+        targetPos.x = (x1);
+        targetPos.y = (y2 - d + corner3);
     }
 
     move.setDirectionByTarget(targetPos);

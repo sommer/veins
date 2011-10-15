@@ -86,10 +86,10 @@ void BonnMotionMobility::setTargetPosition()
     }
 
     targetTime = vec[vecpos];
-    targetPos.setX(vec[vecpos+1]);
-    targetPos.setY(vec[vecpos+2]);
+    targetPos.x = (vec[vecpos+1]);
+    targetPos.y = (vec[vecpos+2]);
     if (bIs3D && !world->use2D())
-        targetPos.setZ(vec[vecpos+3]);
+        targetPos.z = (vec[vecpos+3]);
     vecpos    += (bIs3D ? 4 : 3);
 
     debugEV << "TARGET: t=" << targetTime << targetPos.info() << "\n";
@@ -97,7 +97,7 @@ void BonnMotionMobility::setTargetPosition()
 
 void BonnMotionMobility::fixIfHostGetsOutside()
 {
-    Coord dummy(world->use2D());
+    Coord dummy = Coord::ZERO;
     double dum;
 
     handleIfOutside( RAISEERROR, stepTarget, dummy, dummy, dum );

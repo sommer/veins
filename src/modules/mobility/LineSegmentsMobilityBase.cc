@@ -44,20 +44,18 @@ void LineSegmentsMobilityBase::beginNextMove(cMessage *msg)
 
     if( move.getSpeed() <= 0 ){
         // end of movement
-        stepSize.setX(0);
-        stepSize.setY(0);
-        if (move.getStartPos().is3D())
-        	stepSize.setZ(0);
+        stepSize.x = (0);
+        stepSize.y = (0);
+        stepSize.z = (0);
         debugEV << "speed < 0; stop moving!\n";
         delete msg;
     }
     else if (targetPos==move.getStartPos()){
         // no movement, just wait
     	debugEV << "warning, we are not moving!\n";
-        stepSize.setX(0);
-        stepSize.setY(0);
-        if (move.getStartPos().is3D())
-            stepSize.setZ(0);
+        stepSize.x = (0);
+        stepSize.y = (0);
+        stepSize.z = (0);
         scheduleAt(std::max(targetTime,simTime()), msg);
     }
     else{

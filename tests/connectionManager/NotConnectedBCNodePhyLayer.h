@@ -30,7 +30,7 @@ public:
 	}
 
 	virtual void finish() {
-		CMPhyLayer::finish();
+		cComponent::finish();
 
 		assertFalse("Broadcast should not be answered by any node.",
 					broadcastAnswered);

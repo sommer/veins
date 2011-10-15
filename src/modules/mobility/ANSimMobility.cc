@@ -112,14 +112,14 @@ void ANSimMobility::extractDataFrom(cXMLElement *node)
     if (!endTimeStr || !xStr || !yStr)
         error("no content in <end_time>, <destination>/<xpos> or <ypos> element at %s", node->getSourceLocation());
 
-    targetTime = atof(endTimeStr);
-    targetPos.setX(atof(xStr));
-    targetPos.setY(atof(yStr));
+    targetTime  = atof(endTimeStr);
+    targetPos.x = (atof(xStr));
+    targetPos.y = (atof(yStr));
 }
 
 void ANSimMobility::fixIfHostGetsOutside()
 {
-    Coord dummy(world->use2D());
+    Coord dummy = Coord::ZERO;
     double dum;
     handleIfOutside( RAISEERROR, stepTarget, dummy, dummy, dum );
 }

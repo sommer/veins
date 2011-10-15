@@ -67,6 +67,10 @@ public:
  */
 class MIXIM_API BaseBattery : public BaseModule {
 public:
+	BaseBattery() : BaseModule()
+	{}
+	BaseBattery(unsigned stacksize) : BaseModule(stacksize)
+	{}
 	/**
 	 * @brief Registers a power draining device with this battery.
 	 *

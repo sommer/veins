@@ -30,8 +30,13 @@ BaseModule::BaseModule():
 	utility(NULL)
 {}
 
+BaseModule::BaseModule(unsigned stacksize):
+	cSimpleModule(stacksize),
+	utility(NULL)
+{}
+
 /**
- * Subscription to Blackboard should be in stage==0, and firing
+ * Subscription should be in stage==0, and firing
  * notifications in stage==1 or later.
  *
  * NOTE: You have to call this in the initialize() function of the
@@ -41,28 +46,23 @@ void BaseModule::initialize(int stage) {
     if (stage == 0) {
     	notAffectedByHostState = 	hasPar("notAffectedByHostState")
 								 && par("notAffectedByHostState").boolValue();
-
         hasPar("debug") ? debug = par("debug").boolValue() : debug = true;
+        cModule *host = findHost();
         utility = FindModule<BaseUtility*>::findSubModule(findHost());
-
         if(!utility) {
         	error("No BaseUtility module found!");
         } 
 
-        hostId = findHost()->getId();
-
-        /* host failure notification */
-		HostState hs;
-		hostStateCat = utility->subscribe(this, &hs, hostId);
+        hostId = host->getId();
+	HostState hs;
+	hostStateCat = utility->subscribe(this, &hs, hostId);
     }
 }
 
-void BaseModule::receiveBBItem(int category, const BBItem *details, int scopeModuleId) {
+void BaseModule::receiveBBItem(int signalID, const BBItem *obj, int scopeModuleId) {
 	Enter_Method_Silent();
-
-	if (category == hostStateCat) {
-
-		handleHostState(*(HostState*)details);
+	if (signalID == hostStateCat) {
+		handleHostState(*dynamic_cast<const HostState*>(obj));
 	}
 }
 

@@ -4,6 +4,12 @@
 #include <limits>
 #include <map>
 #include <algorithm>
+#include <assert.h>
+
+template<class T>
+bool definitelyLessThan(T a, T b, T epsilon = std::numeric_limits<T>::epsilon()) {
+    return (b - a) > ( (std::abs(a) < std::abs(b) ? std::abs(b) : std::abs(a)) * epsilon );
+}
 
 /**
  * @brief Represents an interpolated value of any type.
@@ -92,8 +98,8 @@ public:
 protected:
 
 	PairLess<Pair, Key> comp;
-	bool continueOutOfRange;
-	V outOfRangeVal;
+	bool                continueOutOfRange;
+	V                   outOfRangeVal;
 public:
 	NextSmaller():
 		continueOutOfRange(true) {}
@@ -244,10 +250,35 @@ public:
 		outOfRangeVal = oorv;
 	}
 
-	static double linearInterpolation(const Key& t,
-									  const Key& t0, const Key& t1,
-									  const V& v0, const V& v1){
-		return v0 + (v1 - v0) * (double)((t - t0) / (t1 - t0));
+	static V linearInterpolation(const Key& t,
+                                 const Key& t0, const Key& t1,
+                                 const V&   v0, const V&   v1) {
+		if (std::numeric_limits<V>::has_infinity) {
+			// we have possible infinity values, so that we can do some checks
+			const V    cInf     = std::numeric_limits<V>::infinity();
+			const bool bV0IsInf = (v0 == cInf) || (std::numeric_limits<V>::is_signed ? (v0 == -cInf) : false);
+
+			if ( bV0IsInf || (v1 == cInf) || (std::numeric_limits<V>::is_signed ? (v1 == -cInf) : false) ) {
+				if (std::numeric_limits<V>::is_signed && (v1 == -v0)) {
+					// v0 == +/-Inf and v1 == -/+Inf
+					if (std::numeric_limits<V>::has_quiet_NaN)
+						return std::numeric_limits<V>::quiet_NaN();
+					// mhhh!? No quiet_NaN available, so we fall back to old
+					// handling :(
+				}
+				else {
+					// the result should be infinity
+					return bV0IsInf ? v0 : v1;
+				}
+			}
+		}
+		assert(t0 <= t && t <= t1);
+		if (t0 == t1) {
+			assert(v0 == v1);
+			return v0;
+		}
+		//return v0 + (((v1 - v0) * (t - t0)) / (t1 - t0));
+		return v0 + (v1 - v0) * static_cast<V>((t - t0) / (t1 - t0));
 	}
 
 	interpolated operator()(const InputIterator& first,
@@ -564,14 +595,14 @@ template<class Key, class V,
 		 class Interpolator = NextSmaller<Key, V, typename std::map<Key, V>::value_type, typename std::map<Key, V>::const_iterator> >
 class InterpolateableMap:public std::map<Key, V> {
 public:
-	typedef std::map<Key, V> map_type;
+	typedef std::map<Key, V>                  map_type;
 	typedef typename map_type::const_iterator const_iterator;
-	typedef typename map_type::iterator iterator;
-	typedef typename map_type::value_type value_type;
+	typedef typename map_type::iterator       iterator;
+	typedef typename map_type::value_type     value_type;
 	typedef InterpolateableIterator<Key, V, map_type, Interpolator> intpl_iterator;
 	typedef ConstInterpolateableIterator<Key, V, const map_type,
 											typename map_type::const_iterator,
-											Interpolator> const_intpl_iterator;
+											Interpolator>           const_intpl_iterator;
 	typedef Interpolated<V> interpolated;
 
 protected:

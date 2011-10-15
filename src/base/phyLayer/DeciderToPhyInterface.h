@@ -12,9 +12,11 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
-#include "AirFrame_m.h"
-#include "BaseUtility.h"
-#include "BaseWorldUtility.h"
+
+class AirFrame;
+class BaseUtility;
+class BaseWorldUtility;
+class ConstMapping;
 
 /**
  * See Decider.h for definition of DeciderResult

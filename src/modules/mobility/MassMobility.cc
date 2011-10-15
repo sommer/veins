@@ -48,8 +48,8 @@ void MassMobility::initialize(int stage)
         move.setSpeed(par("speed"));
         currentAngle = uniform(0, 360);
 
-        step.setX(move.getSpeed() * cos(PI * currentAngle / 180) * updateInterval.dbl());
-        step.setY(move.getSpeed() * sin(PI * currentAngle / 180) * updateInterval.dbl());
+        step.x = (move.getSpeed() * cos(PI * currentAngle / 180) * updateInterval.dbl());
+        step.y = (move.getSpeed() * sin(PI * currentAngle / 180) * updateInterval.dbl());
 
     }
     else if( stage == 1 )
@@ -75,7 +75,7 @@ void MassMobility::initialize(int stage)
  */
 void MassMobility::handleSelfMsg(cMessage * msg)
 {
-    Coord dummy(world->use2D());
+    Coord dummy = Coord::ZERO;
 
     switch (msg->getKind()){
 		case MOVE_HOST:
@@ -84,8 +84,8 @@ void MassMobility::handleSelfMsg(cMessage * msg)
 		case MK_CHANGE_DIR:
 		currentAngle += changeAngleBy->doubleValue();
 
-		step.setX(move.getSpeed() * cos(PI * currentAngle / 180) * updateInterval.dbl());
-		step.setY(move.getSpeed() * sin(PI * currentAngle / 180) * updateInterval.dbl());
+		step.x = (move.getSpeed() * cos(PI * currentAngle / 180) * updateInterval.dbl());
+		step.y = (move.getSpeed() * sin(PI * currentAngle / 180) * updateInterval.dbl());
 
 		move.setDirectionByTarget(move.getStartPos() + step);
 
@@ -113,7 +113,7 @@ void MassMobility::makeMove()
 
 void MassMobility::fixIfHostGetsOutside()
 {
-    Coord dummy(world->use2D());
+    Coord dummy = Coord::ZERO;
 
     handleIfOutside( REFLECT, targetPos, dummy, step, currentAngle );
 }

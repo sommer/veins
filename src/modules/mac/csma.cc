@@ -41,6 +41,7 @@
 #include "BaseConnectionManager.h"
 #include "FindModule.h"
 #include "MacPkt_m.h"
+#include "BaseUtility.h"
 
 Define_Module(csma);
 

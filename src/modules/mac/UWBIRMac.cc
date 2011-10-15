@@ -42,6 +42,7 @@
 #include "UWBIRMacPkt_m.h"
 #include "UWBIRMacPkt.h"
 #include "MacToPhyInterface.h"
+#include "BaseUtility.h"
 
 using namespace std;
 

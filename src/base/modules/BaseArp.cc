@@ -51,11 +51,7 @@ int BaseArp::getMacAddr(const int netwAddr)
 /*
 int BaseArp::getNetwAddr(const int macAddr)
 {
-    if(coreDebug) {
-        Enter_Method("getNetwAddr(%d)",macAddr);
-    } else {
-        Enter_Method_Silent();
-    }
+    Enter_Method("getNetwAddr(%d)",macAddr);
     coreEV << "for host[" << simulation.getModule( macAddr )->getParentModule()->getIndex()
        << "]: macAddr " << macAddr << "; netw address "
        << simulation.getModule( macAddr )->getParentModule()->getSubmodule("nic")->getId() <<endl;

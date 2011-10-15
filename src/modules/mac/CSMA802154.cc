@@ -15,6 +15,8 @@
 
 #include "CSMA802154.h"
 
+#include <cassert>
+
 #include "DeciderResult802154Narrow.h"
 #include "PhyToMacControlInfo.h"
 #include "MacToNetwControlInfo.h"

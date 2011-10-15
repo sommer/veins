@@ -7,9 +7,13 @@
 
 #include "Decider80211.h"
 
+#include <cassert>
+
 #include "DeciderResult80211.h"
 #include "Mac80211Pkt_m.h"
 #include "Consts80211.h"
+#include "Mapping.h"
+#include "AirFrame_m.h"
 
 Decider80211::Decider80211(	DeciderToPhyInterface* phy,
 							double threshold,

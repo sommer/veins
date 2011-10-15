@@ -62,6 +62,7 @@ protected:
 
 public:
 	BatteryAccess();
+	BatteryAccess(unsigned stacksize);
 };
 
 #endif /* BATTERYACCESS_H_ */

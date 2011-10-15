@@ -7,6 +7,7 @@
 #include "ProbabilisticBroadcast.h"
 
 #include <cassert>
+
 #include "SimpleAddress.h"
 #include "MacToNetwControlInfo.h"
 #include "NetwToMacControlInfo.h"

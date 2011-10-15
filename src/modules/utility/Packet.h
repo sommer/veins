@@ -30,7 +30,7 @@
  *
  * @ingroup blackboard
  * @ingroup utils
- * @author Andreas K�pke, Karl Wessel
+ * @author Andreas Koepke, Karl Wessel
  * @sa Blackboard
  */
 
