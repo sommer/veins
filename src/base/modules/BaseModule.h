@@ -115,7 +115,7 @@ protected:
 	void switchHostState(HostState::States state);
 
     /** @brief Function to get a pointer to the host module*/
-    cModule *findHost(void);
+    const cModule* findHost(void) const;
     /** @brief Function to get the logging name of id*/
     //std::string getLogName(int);
 
@@ -151,12 +151,12 @@ protected:
      * host ned variable loggingName is specified). It can be used for
      * logging messages to simplify debugging in TKEnv.
      */
-    std::string logName(void);
+    std::string logName(void) const ;
 
     /**
      * @brief Get a reference to the local node module
      */
-    cModule * getNode(){
+    const cModule* getNode() const {
     	return findHost();
     };
 

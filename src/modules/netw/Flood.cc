@@ -29,6 +29,8 @@
 #include "NetwToMacControlInfo.h"
 #include "SimpleAddress.h"
 
+using std::endl;
+
 Define_Module(Flood);
 
 /**
@@ -152,7 +154,7 @@ void Flood::handleLowerMsg(cMessage* m) {
 			nbDataPacketsReceived++;
 		}
 		//broadcast message
-		else if( msg->getDestAddr() == L3BROADCAST ) {
+		else if( LAddress::isL3Broadcast(msg->getDestAddr()) ) {
 			//check ttl and rebroadcast
 			if( msg->getTtl() > 1 ) {
 				NetwPkt *dMsg;
@@ -160,7 +162,7 @@ void Flood::handleLowerMsg(cMessage* m) {
 				<<" > 1 -> rebroadcast msg & send to upper\n";
 				msg->setTtl( msg->getTtl()-1 );
 				dMsg = static_cast<NetwPkt*>(msg->dup());
-				dMsg->setControlInfo(new NetwToMacControlInfo(L2BROADCAST));
+				dMsg->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
 				sendDown(dMsg);
 				nbDataPacketsForwarded++;
 			}
@@ -181,8 +183,7 @@ void Flood::handleLowerMsg(cMessage* m) {
 				msg->setTtl( msg->getTtl()-1 );
 				// needs to set the next hop address again to broadcast
 				msg->removeControlInfo();
-				msg->setControlInfo(new NetwToMacControlInfo(L2BROADCAST));
-				//            EV << static_cast<NetwToMacControlInfo*>(msg->getControlInfo())->getNextHopMac() << "\n";
+				msg->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
 				sendDown( msg );
 				nbDataPacketsForwarded++;
 			}
@@ -240,8 +241,8 @@ bool Flood::notBroadcasted(NetwPkt* msg) {
 }
 
 NetwPkt* Flood::encapsMsg(cPacket *appPkt) {
-	int macAddr;
-	int netwAddr;
+	LAddress::L2Type macAddr;
+	LAddress::L3Type netwAddr;
 
 	EV<<"in encaps...\n";
 
@@ -253,7 +254,7 @@ NetwPkt* Flood::encapsMsg(cPacket *appPkt) {
     if(cInfo == 0){
 	EV << "warning: Application layer did not specifiy a destination L3 address\n"
 	   << "\tusing broadcast address instead\n";
-	netwAddr = L3BROADCAST;
+	netwAddr = LAddress::L3BROADCAST;
     } else {
 	EV <<"CInfo removed, netw addr="<< cInfo->getNetwAddr()<<endl;
         netwAddr = cInfo->getNetwAddr();
@@ -266,7 +267,7 @@ NetwPkt* Flood::encapsMsg(cPacket *appPkt) {
 
         EV << "sendDown: nHop=L3BROADCAST -> message has to be broadcasted"
            << " -> set destMac=L2BROADCAST\n";
-        macAddr = L2BROADCAST;
+        macAddr = LAddress::L2BROADCAST;
 
 
     pkt->setControlInfo(new NetwToMacControlInfo(macAddr));

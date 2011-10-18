@@ -121,7 +121,7 @@ public:
 		return -1;
 	}
 
-	~TestDecider() {
+	virtual ~TestDecider() {
 		finalize();
 	}
 };

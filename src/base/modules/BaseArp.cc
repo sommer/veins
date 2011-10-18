@@ -29,22 +29,22 @@ void BaseArp::initialize(int stage)
 	}
 }
 
-int BaseArp::getMacAddr(const int netwAddr)
+LAddress::L2Type BaseArp::getMacAddr(const LAddress::L3Type& netwAddr) const
 {
     if(coreDebug) {
         Enter_Method("getMacAddr(%d)",netwAddr);
     } else {
         Enter_Method_Silent();
     }
-    cModule* netwLayer = simulation.getModule( netwAddr );
+    cModule* netwLayer = simulation.getModule( static_cast<long>(netwAddr) );
     if(!netwLayer) {
     	opp_error("Invalid network address: %d! Could not find a module with "
 				  "that id.", netwAddr);
     }
-    int macAddr = netwLayer->getParentModule()->getSubmodule( "nic" )->getId();
+    LAddress::L2Type macAddr( netwLayer->getParentModule()->getSubmodule( "nic" )->getId() );
     coreEV << "for host[" << netwLayer->getParentModule()->getIndex()
        << "]: netwAddr " << netwAddr << "; MAC address "
-       << macAddr <<endl;
+       << macAddr << std::endl;
     return macAddr;
 }
 
@@ -59,11 +59,12 @@ int BaseArp::getNetwAddr(const int macAddr)
 }
 */
 
-int BaseArp::myNetwAddr(cModule* netw) {
-    return netw->getId();
+LAddress::L3Type BaseArp::myNetwAddr(const cModule* netw) const
+{
+    return LAddress::L3Type( netw->getId() );
 }
 
-int BaseArp::myMacAddr(cModule *mac)
+LAddress::L2Type BaseArp::myMacAddr(const cModule *mac) const
 {
-    return (mac->getParentModule())->getId();
+    return LAddress::L2Type( mac->getParentModule()->getId() );
 }

@@ -19,6 +19,11 @@
 // *              - subclass to create your own application layer packets
 // **************************************************************************/
 
+cplusplus {{
+    #include "SimpleAddress.h"
+}}
+
+class LAddress::L3Type extends void;
 
 // Basic application packet definition
 //
@@ -28,7 +33,6 @@
 // @author Daniel Willkomm
 packet ApplPkt
 {
-    int destAddr = -1; // destination address
-    int srcAddr = -1; // source address
-
+    LAddress::L3Type destAddr = LAddress::L3BROADCAST; // destination address
+    LAddress::L3Type srcAddr  = LAddress::L3BROADCAST; // source address
 }

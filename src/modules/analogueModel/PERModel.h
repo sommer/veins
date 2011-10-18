@@ -1,6 +1,8 @@
 #ifndef PER_MODEL_H
 #define PER_MODEL_H
 
+#include <cassert>
+
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 
@@ -20,7 +22,7 @@ public:
 	/** @brief The PERModel constructor takes as argument the packet error rate to apply (must be between 0 and 1). */
 	PERModel(double per): packetErrorRate(per) { assert(per <= 1 && per >= 0);}
 
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(AirFrame *frame);
 
 };
 

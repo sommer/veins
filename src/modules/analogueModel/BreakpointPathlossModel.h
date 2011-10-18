@@ -1,12 +1,11 @@
 #ifndef BREAKPOINTPATHLOSSMODEL_H_
 #define BREAKPOINTPATHLOSSMODEL_H_
 
-#include "MiXiMDefs.h"
-#include "AnalogueModel.h"
-
 #include <cstdlib>
 
-//class BreakpointPathlossModel;
+#include "MiXiMDefs.h"
+#include "AnalogueModel.h"
+#include "Move.h"
 
 /**
  * @brief Basic implementation of a BreakpointPathlossModel.
@@ -41,16 +40,16 @@ protected:
     /** @brief stores my Move pattern */
     const Move& myMove;
 
-	/** @brief Information needed about the playground */
-	const bool useTorus;
+    /** @brief Information needed about the playground */
+    const bool useTorus;
 
-	/** @brief The size of the playground.*/
-	const Coord& playgroundSize;
+    /** @brief The size of the playground.*/
+    const Coord& playgroundSize;
 
-	/** @brief Whether debug messages should be displayed. */
-	bool debug;
+    /** @brief Whether debug messages should be displayed. */
+    bool debug;
 
-	/** logs computed pathlosses. */
+    /** logs computed pathlosses. */
     cOutVector pathlosses;
 
 public:
@@ -88,10 +87,10 @@ public:
 	}
 
 	/**
-	 * @brief Filters a specified Signal by adding an attenuation
+	 * @brief Filters a specified AirFrame's Signal by adding an attenuation
 	 * over time to the Signal.
 	 */
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(AirFrame *frame);
 
 	virtual bool isActiveAtDestination() { return true; }
 

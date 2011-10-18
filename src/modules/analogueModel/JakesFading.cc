@@ -14,7 +14,9 @@
 //
 
 #include "JakesFading.h"
-#include <BaseWorldUtility.h>
+
+#include "BaseWorldUtility.h"
+#include "AirFrame_m.h"
 
 DimensionSet JakesFadingMapping::dimensions(Dimension::time_static());
 
@@ -83,8 +85,9 @@ JakesFading::~JakesFading() {
 	delete[] angleOfArrival;
 }
 
-void JakesFading::filterSignal(Signal& signal)
+void JakesFading::filterSignal(AirFrame *frame)
 {
+	Signal&     signal     = frame->getSignal();
 	const Move& senderMove = signal.getMove();
 	double relSpeed = (senderMove.getDirection() * senderMove.getSpeed()
 					   - hostMove->getDirection() * hostMove->getSpeed()).length();

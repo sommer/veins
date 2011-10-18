@@ -34,9 +34,9 @@ Define_Module(AlohaMacLayer);
 
 void AlohaMacLayer::initialize(int stage) {
 	UWBIRMac::initialize(stage);
-	if(stage == 1 && myMacAddr != 0) {
+	if(stage == 1 && myMacAddr != LAddress::L2NULL) {
             phy->setRadioState(Radio::TX);
-    } else if(stage == 1 && myMacAddr == 0) {
+    } else if(stage == 1 && myMacAddr == LAddress::L2NULL) {
             phy->setRadioState(Radio::RX);
     }
 }
@@ -95,21 +95,21 @@ void AlohaMacLayer::handleLowerMsg(cMessage *msg) {
     UWBIRMacPkt *mac = static_cast<UWBIRMacPkt *>(msg);
 
     if(validatePacket(mac)) {
-        int dest = mac->getDestAddr();
-        int src = mac->getSrcAddr();
+        const LAddress::L2Type& dest = mac->getDestAddr();
+        const LAddress::L2Type& src  = mac->getSrcAddr();
         if ((dest == myMacAddr)) {
         	debugEV << "message with mac addr " << src
                     << " for me (dest=" << dest
-                    << ") -> forward packet to upper layer\n";
+                    << ") -> forward packet to upper layer" << std::endl;
             sendUp(decapsMsg(mac));
         } else {
         	debugEV << "message with mac addr " << src
                     << " not for me (dest=" << dest
-                    << ") -> delete (my MAC=" << myMacAddr << ")\n";
+                    << ") -> delete (my MAC=" << myMacAddr << ")" << std::endl;
             delete mac;
         }
     } else {
-    	debugEV << "Errors in message ; dropping mac packet." << endl;
+    	debugEV << "Errors in message ; dropping mac packet." << std::endl;
         delete mac;
     }
 }

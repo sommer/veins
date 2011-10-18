@@ -1,10 +1,12 @@
 #include "BreakpointPathlossModel.h"
 
+#include "AirFrame_m.h"
+
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(BreakpointPathlossModel): "
 
 
-void BreakpointPathlossModel::filterSignal(Signal& signal) {
-
+void BreakpointPathlossModel::filterSignal(AirFrame *frame) {
+	Signal& signal   = frame->getSignal();
 	/** Get start of the signal */
 	simtime_t sStart = signal.getReceptionStart();
 	simtime_t sEnd   = signal.getReceptionEnd();

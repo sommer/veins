@@ -19,6 +19,8 @@
 
 #include "SensorApplLayer.h"
 
+#include <sstream>
+
 #include "BaseNetwLayer.h"
 #include "AddressingInterface.h"
 #include "NetwControlInfo.h"
@@ -52,7 +54,7 @@ void SensorApplLayer::initialize(int stage) {
 		headerLength = par("headerLength");
 		// application configuration
 		const char *traffic = par("trafficType");
-		destAddr = par("destAddr");
+		destAddr = LAddress::L3Type(par("destAddr").longValue());
 		nbPacketsSent = 0;
 		nbPacketsReceived = 0;
 		firstPacketGeneration = -1;
@@ -71,9 +73,10 @@ void SensorApplLayer::initialize(int stage) {
 		debugEV << "in initialize() stage 1...";
 		// Application address configuration: equals to host address
 
-		cModule *netw = FindModule<BaseNetwLayer*>::findSubModule(findHost());
+		const cModule *const pHost = findHost();
+		const cModule*       netw  = FindModule<BaseNetwLayer*>::findSubModule(pHost);
 		if(!netw) {
-			netw = findHost()->getSubmodule("netw");
+			netw = const_cast<cModule*>(pHost)->getSubmodule("netw");
 			if(!netw) {
 				opp_error("Could not find network layer module. This means "
 						  "either no network layer module is present or the "
@@ -81,12 +84,11 @@ void SensorApplLayer::initialize(int stage) {
 						  "BaseNetworkLayer.");
 			}
 		}
-		AddressingInterface* addrScheme = FindModule<AddressingInterface*>
-													::findSubModule(findHost());
+		const AddressingInterface *const addrScheme = FindModule<AddressingInterface*>::findSubModule(pHost);
 		if(addrScheme) {
 			myAppAddr = addrScheme->myNetwAddr(netw);
 		} else {
-			myAppAddr = netw->getId();
+			myAppAddr = LAddress::L3Type( netw->getId() );
 		}
 		sentPackets = 0;
 		catPacket = world->getCategory(&packet);
@@ -104,7 +106,7 @@ void SensorApplLayer::initialize(int stage) {
 	}
 }
 
-cStdDev& SensorApplLayer::hostsLatency(int hostAddress)
+cStdDev& SensorApplLayer::hostsLatency(const LAddress::L3Type& hostAddress)
 {
 	using std::pair;
 
@@ -112,7 +114,7 @@ cStdDev& SensorApplLayer::hostsLatency(int hostAddress)
 		std::ostringstream oss;
 		oss << hostAddress;
 		cStdDev aLatency(oss.str().c_str());
-		latencies.insert(pair<int, cStdDev>(hostAddress, aLatency));
+		latencies.insert(pair<LAddress::L3Type, cStdDev>(hostAddress, aLatency));
 	}
 
 	return latencies[hostAddress];
@@ -245,7 +247,7 @@ void SensorApplLayer::sendData() {
 	ApplPkt *pkt = new ApplPkt("Data", DATA_MESSAGE);
 
 	if(broadcastPackets) {
-		pkt->setDestAddr(L3BROADCAST);
+		pkt->setDestAddr(LAddress::L3BROADCAST);
 	} else {
 		pkt->setDestAddr(destAddr);
 	}
@@ -269,14 +271,13 @@ void SensorApplLayer::finish() {
 	using std::map;
 	if (stats) {
 		if (trace) {
+			std::stringstream osToStr(std::stringstream::out);
 			// output logs to scalar file
-			for (map<int, cStdDev>::iterator it = latencies.begin(); it
-					!= latencies.end(); ++it) {
-				char dispstring[12];
+			for (map<LAddress::L3Type, cStdDev>::iterator it = latencies.begin(); it != latencies.end(); ++it) {
 				cStdDev aLatency = it->second;
-				sprintf(dispstring, "latency%d", it->first);
-				//dispstring
-				recordScalar(dispstring, aLatency.getMean(), "s");
+
+				osToStr.str(""); osToStr << "latency" << it->first;
+				recordScalar(osToStr.str().c_str(), aLatency.getMean(), "s");
 				aLatency.record();
 			}
 		}

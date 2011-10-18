@@ -1,5 +1,7 @@
 #include "SimplePathlossModel.h"
 
+#include "AirFrame_m.h"
+
 #define splmEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimplePathlossModel): "
 
 SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimensions,
@@ -25,7 +27,9 @@ double SimplePathlossConstMapping::getValue(const Argument& pos) const
 
 
 
-void SimplePathlossModel::filterSignal(Signal& signal){
+void SimplePathlossModel::filterSignal(AirFrame *frame)
+{
+	Signal& signal = frame->getSignal();
 
 	/** Get start of the signal */
 	simtime_t sStart = signal.getReceptionStart();

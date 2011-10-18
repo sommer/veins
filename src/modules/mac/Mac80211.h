@@ -77,10 +77,10 @@ protected:
     /** @brief Data about a neighbor host.*/
     struct NeighborEntry {
     	/** @brief The neighbors address.*/
-        int address;
-        int fsc;
-        simtime_t age;
-        double bitrate;
+    	LAddress::L2Type address;
+        int              fsc;
+        simtime_t        age;
+        double           bitrate;
     };
 
     /** @brief Type for a list of NeighborEntries.*/
@@ -107,9 +107,6 @@ protected:
 	/** @brief Handle messages from lower layer */
 	virtual void handleLowerControl(cMessage*);
 
-
-    /** @brief Called by the Blackboard whenever a change occurs we're interested in */
-    //virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
 
     /** @brief handle end of contention */
     virtual void handleEndContentionTimer();
@@ -195,13 +192,13 @@ protected:
     void suspendContention();
 
     /** @brief figure out at which bitrate to send to this particular destination */
-    double retrieveBitrate(int destAddress);
+    double retrieveBitrate(const LAddress::L2Type& destAddress);
 
     /** @brief add a new entry to the neighbor list */
     void addNeighbor(Mac80211Pkt *af);
 
     /** @brief find a neighbor based on his address */
-    NeighborList::iterator findNeighbor(int address)  {
+    NeighborList::iterator findNeighbor(const LAddress::L2Type& address)  {
         NeighborList::iterator it;
         for(it = neighbors.begin(); it != neighbors.end(); ++it) {
             if(it->address == address) break;

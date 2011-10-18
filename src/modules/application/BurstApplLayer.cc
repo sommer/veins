@@ -22,6 +22,8 @@
 
 #include "BurstApplLayer.h"
 
+using std::endl;
+
 Define_Module(BurstApplLayer);
 
 // do some initialization
@@ -49,5 +51,6 @@ void BurstApplLayer::handleSelfMsg(cMessage *msg)
         break;
     default:
         EV <<" Unkown selfmessage! -> delete, kind: "<<msg->getKind()<<endl;
+        break;
     }
 }

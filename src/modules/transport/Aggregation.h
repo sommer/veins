@@ -27,6 +27,7 @@
 
 #include "MiXiMDefs.h"
 #include "BaseLayer.h"
+#include "SimpleAddress.h"
 
 class ApplPkt;
 
@@ -55,7 +56,7 @@ private:
 	    // this map associates to each known netwok address
 	    // the time at which a packet was last sent to it, and a vector
 	    // of packets currently queued for it (waiting aggregation).
-	    std::map<int, destInfo> destInfos;
+	    std::map<LAddress::L3Type, destInfo> destInfos;
 
 	    // This message is used as a timer to perform aggregation
 	    cMessage* aggregationTimer;
@@ -67,10 +68,10 @@ private:
 	    int nbMaxPacketsPerAggregation;
 
 	    // returns true if we can send now to this destination
-	    virtual bool isOkToSendNow(int dest);
+	    virtual bool isOkToSendNow(const LAddress::L3Type& dest);
 
 	    // sends aggregated packets to destination now
-	    void sendAggregatedPacketNow(int dest);
+	    void sendAggregatedPacketNow(const LAddress::L3Type& dest);
 
 
 	    // counters

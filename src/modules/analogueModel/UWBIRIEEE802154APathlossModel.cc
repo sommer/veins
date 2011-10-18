@@ -24,6 +24,7 @@
 #include <limits>
 
 #include "IEEE802154A.h"
+#include "AirFrame_m.h"
 
 const double UWBIRIEEE802154APathlossModel::PL0 = 0.000040738; // -43.9 dB
 const double UWBIRIEEE802154APathlossModel::pathloss_exponent = 1.79;
@@ -179,13 +180,15 @@ const UWBIRIEEE802154APathlossModel::CMconfig UWBIRIEEE802154APathlossModel::CMc
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // CM9
 };
 
-void UWBIRIEEE802154APathlossModel::filterSignal(Signal& signal) {
+void UWBIRIEEE802154APathlossModel::filterSignal(AirFrame *frame)
+{
+    Signal& signal = frame->getSignal();
     // We create a new "fake" txPower to add multipath taps
     // and then attenuation is applied to all pulses.
 
-	// (1) Power Delay Profile realization
-	using std::max;
-	using std::pow;
+    // (1) Power Delay Profile realization
+    using std::max;
+    using std::pow;
 
     txPower    = signal.getTransmissionPower();
     newTxPower = new TimeMapping<Linear>(); //dynamic_cast<TimeMapping<Linear>*> (txPower->clone()); // create working copy
@@ -229,12 +232,12 @@ void UWBIRIEEE802154APathlossModel::filterSignal(Signal& signal) {
 }
 
 void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
-	using std::map;
-	using std::numeric_limits;
+    using std::map;
+    using std::numeric_limits;
 
-	// statistics
-	nbCalls = nbCalls + 1;
-	double power = 0;
+    // statistics
+    nbCalls = nbCalls + 1;
+    double power = 0;
     // loop control variables
     bool moreTaps = true;
     arg.setTime(pulseStart + IEEE802154A::mandatory_pulse/2);

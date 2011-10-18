@@ -19,7 +19,7 @@ void BaseUtility::initialize(int stage) {
         hostState.set(HostState::ACTIVE);
 	}
 	else if(stage == 1) {
-		cModule* host = findHost();
+		const cModule *const host = findHost();
 		//check if necessary host modules are available
 		//mobility module
 		if(!FindModule<BaseMobility*>::findSubModule(host)) {
@@ -28,7 +28,7 @@ void BaseUtility::initialize(int stage) {
 	}
 }
 
-cModule *BaseUtility::findHost(void)
+const cModule* BaseUtility::findHost(void) const
 {
 	return FindModule<>::findHost(this);
 }
@@ -51,10 +51,11 @@ void BaseUtility::receiveBBItem(int category, const BBItem *details, int scopeMo
     }
 }
 
-std::string BaseUtility::logName(void)
+std::string BaseUtility::logName(void) const
 {
-    std::ostringstream ost;
-	cModule *parent = findHost();
+    std::ostringstream   ost;
+	const cModule *const parent = findHost();
+
 	parent->hasPar("logName") ?
 		ost << parent->par("logName").stringValue() : ost << parent->getName();
 	ost << "[" << parent->getIndex() << "]";

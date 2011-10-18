@@ -28,7 +28,7 @@
 
 #include "MiXiMDefs.h"
 #include "BaseNetwLayer.h"
-
+#include "SimpleAddress.h"
 
 /**
  * @brief A simple flooding protocol
@@ -63,11 +63,11 @@ protected:
 
     class Bcast {
     public:
-        unsigned long seqNum;
-        int srcAddr;
-        simtime_t delTime;
+        unsigned long    seqNum;
+        LAddress::L3Type srcAddr;
+        simtime_t        delTime;
     public:
-        Bcast(unsigned long n=0, int s=0,  simtime_t d=0) :
+        Bcast(unsigned long n=0, const LAddress::L3Type& s = LAddress::L3NULL,  simtime_t d=0) :
             seqNum(n), srcAddr(s), delTime(d) {
         }
     };

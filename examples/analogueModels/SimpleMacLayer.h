@@ -25,13 +25,13 @@ protected:
 	MacToPhyInterface* phy;
 
 	/** @brief Omnet gates.*/
-	int dataOut;
-	int dataIn;
+	int  dataOut;
+	int  dataIn;
 
-	int myIndex;
+	long myIndex;
 
 	/** @brief The index of the host the next packet should be send to. */
-	int nextReceiver;
+	long nextReceiver;
 
 	enum {
 		/** @brief Used as Message kind to identify MacPackets. */

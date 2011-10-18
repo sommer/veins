@@ -74,8 +74,9 @@ void TestApplLayer::handleLowerMsg( cMessage* msg )
         delete msg;
 	break;
     default:
-	EV <<"Error! got packet with unknown kind: " << msg->getKind()<<endl;
+    	EV <<"Error! got packet with unknown kind: " << msg->getKind()<<endl;
         delete msg;
+        break;
     }
 }
 
@@ -96,7 +97,8 @@ void TestApplLayer::handleSelfMsg(cMessage *msg) {
 	break;
     default:
     	EV << "Unknown selfmessage! -> delete, kind: "<<msg->getKind() <<endl;
-	delete msg;
+    	delete msg;
+    	break;
     }
 }
 
@@ -107,14 +109,14 @@ void TestApplLayer::handleSelfMsg(cMessage *msg) {
 void TestApplLayer::sendBroadcast()
 {
     ApplPkt *pkt = new ApplPkt("BROADCAST_MESSAGE", BROADCAST_MESSAGE);
-    pkt->setDestAddr(-1);
+    pkt->setDestAddr(LAddress::L3BROADCAST);
     // we use the host modules getIndex() as a appl address
     pkt->setSrcAddr( myApplAddr() );
     pkt->setBitLength(headerLength);
 
     // set the control info to tell the network layer the layer 3
     // address;
-    pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
+    pkt->setControlInfo( new NetwControlInfo(LAddress::L3BROADCAST) );
 
     coreEV << "Sending broadcast packet!\n";
     sendDown( pkt );
@@ -127,7 +129,7 @@ void TestApplLayer::sendReply(ApplPkt *msg)
     delay = uniform(0, 0.01);
 
     msg->setDestAddr(msg->getSrcAddr());
-    msg->setSrcAddr(myApplAddr());
+    msg->setSrcAddr (myApplAddr() );
     msg->setKind(BROADCAST_REPLY_MESSAGE);
     msg->setName("BROADCAST_REPLY_MESSAGE");
     sendDelayedDown(msg, delay);

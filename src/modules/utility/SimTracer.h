@@ -58,7 +58,11 @@ public:
 		      double power, double newPower);
 
   /** @brief Called by a routing protocol to log a link in a tree topology. */
-  void logLink(int parent, int child);
+  template<typename T>
+  void logLink(T parent, T child) {
+    treeFile << "   " << parent << " -- " << child << " ;" << endl;
+  }
+
   /** @brief Called by the MAC or NET layer to log the node position. */
   void logPosition(int node, double x, double y);
 

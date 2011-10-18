@@ -25,6 +25,7 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
+#include "SimpleAddress.h"
 
 /**
  * @brief Control info netw messages
@@ -45,22 +46,22 @@ class MIXIM_API NetwControlInfo : public cObject
 {
   protected:
     /** @brief netw address of the sending or receiving node*/
-    int netwAddr;
+    LAddress::L3Type netwAddr;
 
   public:
     /** @brief Default constructor*/
-    NetwControlInfo(int addr = 0) : netwAddr(addr) {};
+    NetwControlInfo(const LAddress::L3Type& addr = LAddress::L3NULL) : netwAddr(addr) {};
     /** @brief Destructor*/
     virtual ~NetwControlInfo(){};
 
     /** @brief Getter method*/
-    virtual const int getNetwAddr(){
-	return netwAddr;
+    virtual const LAddress::L3Type& getNetwAddr(){
+        return netwAddr;
     };
 
     /** @brief Setter method*/
-    virtual void setNetwAddr(const int addr){
-	netwAddr = addr;
+    virtual void setNetwAddr(const LAddress::L3Type& addr){
+        netwAddr = addr;
     };
 
 };

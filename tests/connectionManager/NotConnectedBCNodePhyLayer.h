@@ -14,6 +14,8 @@
 
 #include "CMPhyLayer.h"
 
+using std::endl;
+
 class NotConnectedBCNodePhyLayer : public CMPhyLayer
 {
 public:
@@ -25,7 +27,7 @@ public:
 		CMPhyLayer::initialize(stage);
 		if(stage==0){
 			broadcastAnswered = false;
-			scheduleAt(simTime() + 1.0 + (double)myAddr() * 0.1, new cMessage(0,10));
+			scheduleAt(simTime() + 1.0 + (static_cast<long>(myAddr())) * 0.1, new cMessage(0,10));
 		}
 	}
 
@@ -36,7 +38,7 @@ public:
 					broadcastAnswered);
 	}
 protected:
-	virtual void handleLowerMsg(int srcAddr) {
+	virtual void handleLowerMsg(const LAddress::L2Type& srcAddr) {
 		broadcastAnswered = true;
 		ev << "Not Connected BC-Node " << myAddr() << ": got answer message from " << srcAddr << endl;
 	}
@@ -44,7 +46,7 @@ protected:
 	virtual void handleSelfMsg() {
 		// we should send a broadcast packet ...
 		ev << "Not Connected BC-Node " << myAddr() << ": Sending broadcast packet!" << endl;
-		sendDown(-1);
+		sendDown(LAddress::L2BROADCAST);
 	}
 };
 

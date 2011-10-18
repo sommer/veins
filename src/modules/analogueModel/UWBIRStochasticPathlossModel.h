@@ -25,7 +25,7 @@
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 #include "Mapping.h"
-#include "Signal_.h"
+#include "Move.h"
 
 /**
  * @brief This AnalogueModel models implements the Ghassmezadeh stochastic UWB channel models.
@@ -54,6 +54,7 @@
 class MIXIM_API UWBIRStochasticPathlossModel : public AnalogueModel {
 
 public:
+    virtual ~UWBIRStochasticPathlossModel() {}
 
     static const double Gtx;
     static const double Grx;
@@ -92,7 +93,7 @@ public:
     	pathlosses.setName("pathloss");
     }
 
-    void filterSignal(Signal& s);
+    void filterSignal(AirFrame *frame);
 
 protected:
     double pathloss_exponent;

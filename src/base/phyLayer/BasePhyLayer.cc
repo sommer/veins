@@ -1,12 +1,13 @@
 #include "BasePhyLayer.h"
 
+#include <cxmlelement.h>
+
 #include "MacToPhyControlInfo.h"
 #include "PhyToMacControlInfo.h"
 #include "FindModule.h"
 #include "AnalogueModel.h"
 #include "Decider.h"
 #include "BaseWorldUtility.h"
-#include "cxmlelement.h"
 #include "BaseConnectionManager.h"
 
 //introduce BasePhyLayer as module to OMNet
@@ -401,7 +402,7 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	}
 	assert(frame->getSignal().getReceptionStart() == simTime());
 
-	filterSignal(frame->getSignal());
+	filterSignal(frame);
 
 	if(decider && isKnownProtocolId(frame->getProtocolId())) {
 		frame->setState(RECEIVING);
@@ -651,10 +652,9 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
 }
 
 
-void BasePhyLayer::filterSignal(Signal& s) {
-	for(AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++) {
-		(*it)->filterSignal(s);
-	}
+void BasePhyLayer::filterSignal(AirFrame *frame) {
+	for(AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++)
+		(*it)->filterSignal(frame);
 }
 
 //--Destruction--------------------------------

@@ -25,6 +25,7 @@
 
 #include "MiXiMDefs.h"
 #include "BaseLayer.h"
+#include "SimpleAddress.h"
 
 class ArpInterface;
 class NetwPkt;
@@ -63,7 +64,7 @@ protected:
     ArpInterface* arp;
 
     /** @brief cached variable of my networ address */
-    int myNetwAddr;
+    LAddress::L3Type myNetwAddr;
 
     /** @brief Enables debugging of this module.*/
     bool coreDebug;

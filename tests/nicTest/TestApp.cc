@@ -14,8 +14,8 @@
 // 
 
 #include "TestApp.h"
+
 #include "NetwToMacControlInfo.h"
-#include "SimpleAddress.h"
 #include "FindModule.h"
 
 Define_Module(TestApp);
@@ -56,7 +56,7 @@ void TestApp::finish()
 void TestApp::ping(int nr){
 	Enter_Method_Silent();
 	cPacket* p = new cPacket(("Ping Traffic #" + toString(nr)).c_str(), PING+nr, 5000);
-	NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(myIndex - 1);
+	NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(LAddress::L2Type(myIndex - 1));
 	p->setControlInfo(cInfo);
 	send(p, out);
 	assertMessage("Ping", PING+nr, in(0), in(5), "app" + toString(myIndex - 1));
@@ -66,7 +66,7 @@ void TestApp::ping(int nr){
 void TestApp::pong(){
 	Enter_Method_Silent();
 	cPacket* p = new cPacket("Ping Traffic", PONG, 5000);
-	NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(myIndex + 1);
+	NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(LAddress::L2Type(myIndex + 1));
 	p->setControlInfo(cInfo);
 	send(p, out);
 	assertMessage("Pong", PONG, in(0), in(5), "app" + toString(myIndex + 1));
@@ -82,7 +82,7 @@ void TestApp::testRun1(int stage)
 {
 	Enter_Method_Silent();
 	const double min = 0.0025;
-	const double max = 0.0037;
+	const double max = 0.0038; // Note: it was 0.0037 but it's unclear what did that mean
 
 	if(stage == 0) { //@app1
 //planTest("1.1", "A same channel but different time as B");
@@ -204,7 +204,7 @@ void TestApp::continueIn(simtime_t time){
 					simTime() + time);
 }
 
-void TestApp::sendPacket(int dest)
+void TestApp::sendPacket(const LAddress::L2Type& dest)
 {
 	cPacket* p = new cPacket("Test packet", TESTPACKET+myIndex, 5000);
 	NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(dest);

@@ -25,7 +25,7 @@
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 #include "Mapping.h"
-#include "Signal_.h"
+#include "AirFrame_m.h"
 #include "FWMath.h"
 
 /**
@@ -37,10 +37,12 @@ class MIXIM_API IntensityModel : public AnalogueModel {
 
 public:
 	IntensityModel() { }
-	void filterSignal(Signal& s) {
+	void filterSignal(AirFrame *frame) {
+		Signal&              s          = frame->getSignal();
 		TimeMapping<Linear>* attMapping = new TimeMapping<Linear> ();
 
 		// Determine distance between sender and receiver
+		assert(s.getReceptionStart() == simTime());
 		Move   srcMove     = s.getMove();
 		Coord  senderPos   = srcMove.getPositionAt(s.getReceptionStart());
 		Coord  receiverPos = move->getPositionAt(s.getReceptionStart());

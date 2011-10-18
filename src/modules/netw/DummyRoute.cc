@@ -21,6 +21,8 @@
 #include "NetwPkt_m.h"
 #include "ArpInterface.h"
 
+using std::endl;
+
 Define_Module(DummyRoute);
 
 void DummyRoute::initialize(int stage) {
@@ -65,8 +67,8 @@ void DummyRoute::finish() {
 }
 
 NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
-    int macAddr;
-    int netwAddr;
+    LAddress::L2Type macAddr;
+    LAddress::L3Type netwAddr;
 
     debugEV <<"in encaps...\n";
 
@@ -78,7 +80,7 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
     if(cInfo == 0){
 	  EV << "warning: Application layer did not specifiy a destination L3 address\n"
 	   << "\tusing broadcast address instead\n";
-	  netwAddr = L3BROADCAST;
+	  netwAddr = LAddress::L3BROADCAST;
     } else {
 	  debugEV <<"CInfo removed, netw addr="<< cInfo->getNetwAddr()<<endl;
         netwAddr = cInfo->getNetwAddr();
@@ -89,10 +91,10 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
     pkt->setSrcAddr(myNetwAddr);
     pkt->setDestAddr(netwAddr);
     debugEV << " netw "<< myNetwAddr << " sending packet" <<endl;
-    if(netwAddr == L3BROADCAST) {
+    if(LAddress::isL3Broadcast(netwAddr)) {
         debugEV << "sendDown: nHop=L3BROADCAST -> message has to be broadcasted"
            << " -> set destMac=L2BROADCAST\n";
-        macAddr = L2BROADCAST;
+        macAddr = LAddress::L2BROADCAST;
     }
     else{
         debugEV <<"sendDown: get the MAC address\n";

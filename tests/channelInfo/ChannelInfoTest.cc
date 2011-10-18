@@ -21,7 +21,7 @@
 #include <OmnetTestBase.h>
 
 /**
- * Unit test for isInRectangle method of class Coord
+ * Unit test for isInBoundary method of class Coord
  *
  * - test with one AirFrame
  * - test with removed AirFrame

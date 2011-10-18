@@ -13,9 +13,9 @@ void FrameTimerGenerator::init(FrameTimer *parent)
 		lookupname = strdup(parent->owner->par("GlobalTime"));
 	else
 		lookupname = strdup("GlobalTime");
-	gt = dynamic_cast<GlobalTime*>(parent->owner->getNode()->getSubmodule(lookupname));
+	gt = dynamic_cast<GlobalTime*>(const_cast<cModule*>(parent->owner->getNode())->getSubmodule(lookupname));
 	if (gt == NULL)
-		gt = dynamic_cast<GlobalTime*>(cModuleType::get(lookupname)->createScheduleInit(lookupname,parent->owner->getNode()));
+		gt = dynamic_cast<GlobalTime*>(cModuleType::get(lookupname)->createScheduleInit( lookupname, const_cast<cModule*>(parent->owner->getNode()) ));
 	free(lookupname);	
 
 	frames = new std::map<unsigned int,double>;

@@ -23,7 +23,6 @@
 
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
-#include "Signal_.h"
 #include "Move.h"
 #include "SimpleTimeConstMapping.h"
 
@@ -75,9 +74,9 @@ public:
     }
 
     /*
-     * @brief Applies the model to an incoming signal.
+     * @brief Applies the model to an incoming AirFrame's Signal.
      */
-    void filterSignal(Signal& s);
+    void filterSignal(AirFrame *frame);
 
     /*@brief Utility function to use a Rayleigh random variable
      *

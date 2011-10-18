@@ -14,6 +14,8 @@
 
 #include "CMPhyLayer.h"
 
+using std::endl;
+
 class ConnectedRNodePhyLayer : public CMPhyLayer
 {
 public:
@@ -34,7 +36,7 @@ public:
 		assertTrue("Should have received at least one broadcast.", broadcastReceived);
 	}
 protected:
-	virtual void handleLowerMsg( int srcAddr) {
+	virtual void handleLowerMsg( const LAddress::L2Type& srcAddr) {
 		broadcastReceived = true;
 
 		ev << "Connected R-Node " << myAddr() << ": got broadcast message from " << srcAddr << endl;

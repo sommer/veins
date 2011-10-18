@@ -19,6 +19,11 @@
 // *              - subclass to create your own network layer packets
 // **************************************************************************/
 
+cplusplus {{
+    #include "SimpleAddress.h"
+}}
+
+class LAddress::L3Type extends void;
 
 // A basic network layer packet definition
 //
@@ -32,9 +37,9 @@
 // @author Daniel Willkomm
 packet NetwPkt
 {
-    int destAddr;        // destination address
-    int srcAddr;         // source address
-    int ttl = 1; // time to live field (IP)
-    unsigned long seqNum = 0; // sequence number
+    LAddress::L3Type destAddr;   // destination address
+    LAddress::L3Type srcAddr;    // source address
+    int              ttl    = 1; // time to live field (IP)
+    unsigned long    seqNum = 0; // sequence number
 }
 

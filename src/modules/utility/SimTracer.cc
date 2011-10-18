@@ -145,13 +145,6 @@ void SimTracer::radioEnergyLog(unsigned long mac, int state,
   }
 }
 
-
-
-void SimTracer::logLink(int parent, int child)
-{
-  treeFile << "   " << parent << " -- " << child << " ;" << endl;
-}
-
 void SimTracer::logPosition(int node, double x, double y)
 {
 	treeFile << node << "[pos=\""<< x << ", " << y << "!\"];" << endl;

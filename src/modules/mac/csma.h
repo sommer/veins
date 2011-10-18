@@ -290,10 +290,10 @@ protected:
 
 	//sequence number for sending, map for the general case with more senders
 	//also in initialisation phase multiple potential parents
-	std::map<int, unsigned long> SeqNrParent; //parent -> sequence number
+	std::map<LAddress::L2Type, unsigned long> SeqNrParent; //parent -> sequence number
 
 	//sequence numbers for receiving
-	std::map<int, unsigned long> SeqNrChild; //child -> sequence number
+	std::map<LAddress::L2Type, unsigned long> SeqNrChild; //child -> sequence number
 
 };
 

@@ -1,9 +1,12 @@
 #include "PhyUtils.h"
 
+#include "AirFrame_m.h"
+
 using namespace std;
 
-void RadioStateAnalogueModel::filterSignal(Signal& signal)
+void RadioStateAnalogueModel::filterSignal(AirFrame *frame)
 {
+	Signal&      signal     = frame->getSignal();
 	simtime_t    start      = signal.getReceptionStart();
 	simtime_t    end        = signal.getReceptionEnd();
 	RSAMMapping* attMapping = new RSAMMapping(this, start, end);

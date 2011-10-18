@@ -19,6 +19,7 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
+#include "SimpleAddress.h"
 
 /**
  * @brief Stores control information from mac to upper layer.
@@ -38,7 +39,7 @@ protected:
 	double bitErrorRate;
 
 	/** @brief MAC address of the last hop of this packet.*/
-	long lastHopMac;
+	LAddress::L2Type lastHopMac;
 
 	/** @brief The received signal strength for this packet.*/
 	double rssi;
@@ -47,7 +48,7 @@ public:
 	/**
 	 * @brief Initializes with the passed last hop address and bit error rate.
 	 */
-	MacToNetwControlInfo(long lastHop, double ber = 0, double rssi = 0):
+	MacToNetwControlInfo(const LAddress::L2Type& lastHop, double ber = 0, double rssi = 0):
 		bitErrorRate(ber),
 		lastHopMac(lastHop),
 		rssi(rssi)
@@ -75,7 +76,7 @@ public:
 	/**
 	 * @brief Returns the MAC address of the packets last hop.
 	 */
-	long getLastHopMac() const {
+	LAddress::L2Type getLastHopMac() const {
 		return lastHopMac;
 	}
 
@@ -84,7 +85,7 @@ public:
 	 *
 	 * @param lastHop The last hops MAC address
 	 */
-	virtual void setLastHopMac(long lastHop) {
+	virtual void setLastHopMac(const LAddress::L2Type& lastHop) {
 		lastHopMac = lastHop;
 	}
 

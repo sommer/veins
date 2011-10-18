@@ -59,13 +59,13 @@ void BaseMacLayer::initialize(int stage)
     else if (stage==1)
     {
     	// see if there is an addressing module available
-		// otherwise use NIC modules id as MAC address
-		AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
-		if(addrScheme) {
-			myMacAddr = addrScheme->myMacAddr(this);
-		} else {
-			myMacAddr = getParentModule()->getId();
-		}
+        // otherwise use NIC modules id as MAC address
+        AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
+        if(addrScheme) {
+            myMacAddr = addrScheme->myMacAddr(this);
+        } else {
+            myMacAddr = LAddress::L2Type(getParentModule()->getId());
+        }
     }
 }
 
@@ -135,12 +135,12 @@ void BaseMacLayer::handleUpperMsg(cMessage *mac)
 
 void BaseMacLayer::handleLowerMsg(cMessage *msg)
 {
-    MacPkt *mac = static_cast<MacPkt *>(msg);
-    int dest = mac->getDestAddr();
-    int src = mac->getSrcAddr();
+    MacPkt*          mac  = static_cast<MacPkt *>(msg);
+    LAddress::L2Type dest = mac->getDestAddr();
+    LAddress::L2Type src  = mac->getSrcAddr();
 
     //only foward to upper layer if message is for me or broadcast
-    if((dest == myMacAddr) || (dest == L2BROADCAST)) {
+    if((dest == myMacAddr) || LAddress::isL2Broadcast(dest)) {
 		coreEV << "message with mac addr " << src
 			   << " for me (dest=" << dest
 			   << ") -> forward packet to upper layer\n";
@@ -225,10 +225,10 @@ Mapping* BaseMacLayer::createRectangleMapping(simtime_t start, simtime_t end, do
 }
 
 ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t start,
-														 simtime_t end,
-														 double centerFreq,
-														 double halfBandwidth,
-														 double value)
+                                                         simtime_t end,
+                                                         double    centerFreq,
+                                                         double    halfBandwidth,
+                                                         double    value)
 {
 	Mapping* res = MappingUtils::createMapping(0.0, DimensionSet::timeFreqDomain, Mapping::LINEAR);
 

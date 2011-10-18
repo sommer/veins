@@ -12,6 +12,7 @@
 
 #include "MiXiMDefs.h"
 #include "ProbabilisticBroadcast.h"
+#include "SimpleAddress.h"
 
 /**
  * @brief This class extends ProbabilisticBroadcast by adding
@@ -30,12 +31,12 @@ public:
     virtual void initialize(int);
 
 protected:
-	typedef std::map<int, cMessage*> NeighborMap;
+    typedef std::map<LAddress::L3Type, cMessage*> NeighborMap;
 
-	/** @brief Handle messages from lower layer */
-	virtual void handleLowerMsg(cMessage* msg);
+    /** @brief Handle messages from lower layer */
+    virtual void handleLowerMsg(cMessage* msg);
 
-	/** @brief Handle self messages */
+    /** @brief Handle self messages */
     virtual void handleSelfMsg(cMessage* msg);
 
     void updateNeighMap(ProbabilisticBroadcastPkt* m);

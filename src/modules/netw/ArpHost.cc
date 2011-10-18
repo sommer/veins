@@ -29,53 +29,46 @@ void ArpHost::initialize(int stage) {
 	}
 }
 
-int ArpHost::getMacAddr(const int netwAddr)
+LAddress::L2Type ArpHost::getMacAddr(const LAddress::L3Type& netwAddr) const
 {
-    if(debug) {
-        Enter_Method("getMacAddr(%d)",netwAddr);
-    } else {
-        Enter_Method_Silent();
-    }
+    Enter_Method_Silent();
     // modification by Jerome Rousselot, CSEM
     // assumes that addresses are equal to host IDs
     // and that mac addresses == net addresses
-    return netwAddr;
+    return LAddress::L2Type(netwAddr);
 //    debugEV << "for host[" << simulation.getModule( netwAddr )->getParentModule()->getIndex()
 //       << "]: netwAddr " << netwAddr << "; MAC address "
 //       << simulation.getModule( netwAddr )->getParentModule()->getSubmodule( "nic" )->getId() <<endl;
 //    return simulation.getModule(netwAddr)->getParentModule()->getSubmodule("nic")->getId();
 }
 
-int ArpHost::getNetwAddr(const int macAddr)
+LAddress::L3Type ArpHost::getNetwAddr(const LAddress::L2Type& macAddr) const
 {
-    if(debug) {
-        Enter_Method("getNetwAddr(%d)",macAddr);
-    } else {
-        Enter_Method_Silent();
-    }
+    Enter_Method_Silent();
     // modification by Jerome Rousselot, CSEM
     // assumes that addresses are equal to host IDs
     // and that mac addresses == net addresses
-    return macAddr;
+    return LAddress::L3Type(macAddr);
 //    debugEV << "for host[" << simulation.getModule( macAddr )->getParentModule()->getIndex()
 //       << "]: macAddr " << macAddr << "; netw address "
 //       << simulation.getModule( macAddr )->getParentModule()->getSubmodule("nic")->getId() <<endl;
 //    return simulation.getModule(macAddr)->getParentModule()->getSubmodule("netw")->getId();
 }
 
-int ArpHost::myNetwAddr(cModule* netw) {
+LAddress::L3Type ArpHost::myNetwAddr(const cModule* netw) const
+{
     // modification by Jerome Rousselot, CSEM
     // assumes that addresses are equal to host index.
     // and that mac addresses == net addresses
-	return netw->getParentModule()->getIndex()+offset;
+	return LAddress::L3Type(netw->getParentModule()->getIndex()+offset);
 //    return netw->getId();
 }
 
-int ArpHost::myMacAddr(cModule *mac)
+LAddress::L2Type ArpHost::myMacAddr(const cModule *mac) const
 {
     // modification by Jerome Rousselot, CSEM
 	// assumes that addresses are equal to host index.
     // and that mac addresses == net addresses
-	return mac->getParentModule()->getParentModule()->getIndex()+offset;
+	return LAddress::L2Type(mac->getParentModule()->getParentModule()->getIndex()+offset);
 //    return (mac->getParentModule())->getId();
 }

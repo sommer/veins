@@ -42,9 +42,6 @@
  **/
 class MIXIM_API LogNormalShadowing: public AnalogueModel {
 protected:
-	/** @brief The dimensions of this analogue model*/
-	static DimensionSet dimensions;
-
 	/** @brief Mean of the random attenuation in dB */
 	double mean;
 
@@ -75,7 +72,7 @@ public:
 	/**
 	 * @brief Calculates shadowing loss based on a normal gaussian function.
 	 */
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(AirFrame* frame);
 };
 
 #endif /* LOGNORMALSHADOWING_H_ */

@@ -352,9 +352,9 @@ protected:
 	virtual AirFrame *encapsMsg(cPacket *msg);
 
 	/**
-	 * @brief Filters the passed Signal by every registered AnalogueModel.
+	 * @brief Filters the passed AirFrame's Signal by every registered AnalogueModel.
 	 */
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(AirFrame *frame);
 
 	/**
 	 * @brief Called the moment the simulated switching process of the Radio is finished.

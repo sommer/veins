@@ -118,12 +118,22 @@ void BaseLayer::sendUp(cMessage *msg) {
 
 void BaseLayer::sendControlUp(cMessage *msg) {
     recordPacket(PassedMessage::OUTGOING,PassedMessage::UPPER_CONTROL,msg);
-    send(msg, upperControlOut);
+    if (gate(upperControlOut)->isPathOK())
+        send(msg, upperControlOut);
+    else {
+        EV << "BaseLayer: upperControlOut is not connected; dropping message" << std::endl;
+        delete msg;
+    }
 }
 
 void BaseLayer::sendControlDown(cMessage *msg) {
     recordPacket(PassedMessage::OUTGOING,PassedMessage::LOWER_CONTROL,msg);
-    send(msg, lowerControlOut);
+    if (gate(lowerControlOut)->isPathOK())
+        send(msg, lowerControlOut);
+    else {
+        EV << "BaseLayer: lowerControlOut is not connected; dropping message" << std::endl;
+        delete msg;
+    }
 }
 
 void BaseLayer::recordPacket(PassedMessage::direction_t dir,

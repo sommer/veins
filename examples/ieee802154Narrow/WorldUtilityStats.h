@@ -17,11 +17,10 @@
 #define __WORLDUTILITYSTATS_H__
 
 #include <omnetpp.h>
-#include <BaseWorldUtility.h>
+#include "BaseWorldUtility.h"
 
 /**
- * @brief Collects global statistics (like channel usage) from the
- * global blackboard.
+ * @brief Collects global statistics (like channel usage).
  *
  * @ingroup exampleIEEE802154Narrow
  */
@@ -29,7 +28,7 @@ class WorldUtilityStats : public BaseWorldUtility,
 						  public ImNotifiable
 {
 protected:
-	/** @brief BBItem category for Packets*/
+	/** @brief notifier ID for Packets*/
 	int catPacket;
 
 	/** @brief Stores the number of bits sent */
@@ -48,7 +47,7 @@ protected:
     virtual void initialize(int stage);
 
 public:
-	virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+	virtual void receiveBBItem(int signalID, const BBItem *obj, int scopeModuleId);
 
 	virtual void finish();
 };

@@ -31,6 +31,7 @@
 
 #include "MiXiMDefs.h"
 #include "BaseNetwLayer.h"
+#include "SimpleAddress.h"
 
 class SimTracer;
 class WiseRoutePkt;
@@ -75,12 +76,12 @@ protected:
 
 
 	typedef struct tRouteTableEntry {
-		int nextHop;
-		double rssi;
+		LAddress::L3Type nextHop;
+		double           rssi;
 	} tRouteTableEntry;
 
-	typedef std::map<int, tRouteTableEntry> tRouteTable;
-	typedef std::multimap<int, unsigned long> tFloodTable;
+	typedef std::map<LAddress::L3Type, tRouteTableEntry>        tRouteTable;
+	typedef std::multimap<tRouteTable::key_type, unsigned long> tFloodTable;
 
 	tRouteTable routeTable;
 	tFloodTable floodTable;
@@ -94,11 +95,11 @@ protected:
 
     /** @brief cached variable of my network address */
 //    int myNetwAddr;
-    int macaddress;
+    LAddress::L2Type macaddress;
 
-    int sinkAddress;
+    LAddress::L3Type sinkAddress;
 
-	bool useSimTracer;
+    bool useSimTracer;
 
     /** @brief Minimal received RSSI necessary for adding source to routing table. */
     double rssiThreshold;
@@ -166,7 +167,7 @@ protected:
      * The tuple provided in argument gives the next hop address to the origin.
      * The table is updated only if the RSSI value is above the threshold.
      */
-    virtual void updateRouteTable(int origin, int lastHop, double rssi, double ber);
+    virtual void updateRouteTable(const tRouteTable::key_type& origin, const LAddress::L3Type& lastHop, double rssi, double ber);
 
     /** @brief Decapsulate a message */
     cMessage* decapsMsg(WiseRoutePkt *msg);
@@ -174,10 +175,10 @@ protected:
     /** @brief update flood table. returns detected flood type (general or unicast flood to forward,
      *         duplicate flood to delete, unicast flood to me
      */
-    floodTypes updateFloodTable(bool isFlood, int srcAddr, int destAddr, unsigned long seqNum);
+    floodTypes updateFloodTable(bool isFlood, const tFloodTable::key_type& srcAddr, const tFloodTable::key_type& destAddr, unsigned long seqNum);
 
     /** @brief find a route to destination address. */
-    int getRoute(int destAddr, bool iAmOrigin = false);
+    tFloodTable::key_type getRoute(const tFloodTable::key_type& destAddr, bool iAmOrigin = false);
 };
 
 #endif

@@ -51,16 +51,10 @@ void BaseWorldUtility::initializeIfNecessary()
 	if(isInitialized)
 		return;
 
-	use2DFlag = par("use2D");
-
-	if (use2DFlag) {
-		playgroundSize = Coord(par("playgroundSizeX"),
-							   par("playgroundSizeY"));
-	} else {
-		playgroundSize = Coord(par("playgroundSizeX"),
-							   par("playgroundSizeY"),
-							   par("playgroundSizeZ"));
-	}
+	use2DFlag      = par("use2D");
+	playgroundSize = Coord(par("playgroundSizeX"),
+                               par("playgroundSizeY"),
+                               use2DFlag ? 0. : par("playgroundSizeZ"));
 
 	if(playgroundSize.x < 0) {
 		opp_error("Playground size in X direction is invalid: "\
@@ -86,13 +80,8 @@ Coord BaseWorldUtility::getRandomPosition()
 {
 	initializeIfNecessary();
 
-    if (use2DFlag) {
-        return Coord(uniform(0, playgroundSize.x),
-                     uniform(0, playgroundSize.y));
-    } else {
         return Coord(uniform(0, playgroundSize.x),
                      uniform(0, playgroundSize.y),
-                     uniform(0, playgroundSize.z));
-    }
+                     use2DFlag ? 0. : uniform(0, playgroundSize.z));
 }
 

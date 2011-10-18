@@ -60,10 +60,10 @@ public:
 	/**
 	 * @brief Has to be overriden by every implementation.
 	 *
-	 * Filters a specified Signal by adding an attenuation
+	 * Filters a specified AirFrame's Signal by adding an attenuation
 	 * over time to the Signal.
 	 */
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(AirFrame *frame);
 };
 
 #endif /*RANDOMFREQTIMEMODEL_H_*/

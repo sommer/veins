@@ -19,7 +19,7 @@ class FindModule
 		 *
 		 * Returns NULL if no matching submodule could be found.
 		 */
-		static T findSubModule(cModule *top)
+		static T findSubModule(const cModule *top)
 		{
 			T ret;
 			for (cModule::SubmoduleIterator i(top); !i.end(); i++)
@@ -49,16 +49,15 @@ class FindModule
 		 * Assumes that every host module is a direct sub module of the
 		 * simulation.
 		 */
-		static cModule* findHost(cModule *m) {
-			 cModule *parent = m->getParentModule();
-			cModule *node = m;
+		static const cModule* findHost(const cModule* m) {
+			const cModule *parent = m->getParentModule();
+			const cModule *node   = m;
 
 			// all nodes should be a sub module of the simulation which has no parent module!!!
-			while( parent->getParentModule() != NULL ){
-			node = parent;
-			parent = node->getParentModule();
+			while( parent->getParentModule() != NULL  ){
+				node   = parent;
+				parent = node->getParentModule();
 			}
-
 			return node;
 		}
 };

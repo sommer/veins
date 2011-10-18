@@ -45,7 +45,7 @@ private:
 
 protected:
 	/** @brief Function to get a pointer to the host module*/
-	cModule *findHost(void);
+	const cModule* findHost(void) const;
 
     /** @brief BBItem category number of Move*/
     int catMove;
@@ -64,7 +64,7 @@ protected:
      * host ned variable loggingName is specified). It can be used for
      * logging messages to simplify debugging in TKEnv.
      */
-    std::string logName(void);
+    std::string logName(void) const;
 
 public:
 

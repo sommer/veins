@@ -27,6 +27,7 @@
 #include "BaseModule.h"
 #include "BaseLayer.h"
 #include "Packet.h"
+#include "SimpleAddress.h"
 
 class BaseWorldUtility;
 
@@ -79,8 +80,8 @@ public:
 
 protected:
   cMessage * delayTimer;
-  int myAppAddr;
-  int destAddr;
+  LAddress::L3Type myAppAddr;
+  LAddress::L3Type destAddr;
   int sentPackets;
   simtime_t initializationTime;
   simtime_t firstPacketGeneration;
@@ -95,7 +96,7 @@ protected:
   bool trace;
   bool debug;
   bool broadcastPackets;
-  std::map < int, cStdDev > latencies;
+  std::map < LAddress::L3Type, cStdDev > latencies;
   cStdDev latency;
   cOutVector latenciesRaw;
   Packet packet; // informs the simulation of the number of packets sent and received by this node.
@@ -137,7 +138,7 @@ protected:
    * @param hostAddress the address of the host to return the statistics for.
    * @return A reference to the hosts latency statistics.
    */
-  cStdDev& hostsLatency(int hostAddress);
+  cStdDev& hostsLatency(const LAddress::L3Type& hostAddress);
 };
 
 #endif

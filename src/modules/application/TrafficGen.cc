@@ -103,14 +103,14 @@ void TrafficGen::handleLowerMsg(cMessage *msg)
 void TrafficGen::sendBroadcast()
 {
 	ApplPkt *pkt = new ApplPkt("BROADCAST_MESSAGE", TRAFFIC_GEN_PACKET);
-	pkt->setDestAddr(-1);
+	pkt->setDestAddr(LAddress::L3BROADCAST);
 	// we use the host modules getIndex() as a appl address
 	pkt->setSrcAddr( myApplAddr() );
 	pkt->setBitLength(headerLength);
 
 	// set the control info to tell the network layer the layer 3
 	// address;
-	pkt->setControlInfo( new NetwControlInfo(L3BROADCAST) );
+	pkt->setControlInfo( new NetwControlInfo(LAddress::L3BROADCAST) );
 
 	debugEV << "Sending broadcast packet!\n";
 	sendDown( pkt );

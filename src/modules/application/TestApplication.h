@@ -6,6 +6,7 @@
 
 #include "MiXiMDefs.h"
 #include "BaseModule.h"
+#include "SimpleAddress.h"
 
 class MIXIM_API TestApplication : public BaseModule {
 
@@ -28,7 +29,11 @@ class MIXIM_API TestApplication : public BaseModule {
         cMessage* delayTimer;
 
         // module parameters
-        int nbPackets, remainingPackets, headerLength, nodeAddr, dstAddr;
+        int nbPackets;
+        int remainingPackets;
+        int headerLength;
+        LAddress::L3Type nodeAddr;
+        LAddress::L3Type dstAddr;
         double trafficParam;
         bool debug, stats, trace;
         bool flood;

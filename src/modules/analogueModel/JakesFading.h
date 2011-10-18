@@ -18,6 +18,8 @@
 
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
+#include "Mapping.h"
+#include "Move.h"
 
 class JakesFading;
 
@@ -126,7 +128,7 @@ public:
 				simtime_t interval);
 	virtual ~JakesFading();
 
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(AirFrame *frame);
 };
 
 #endif /* JAKESFADING_H_ */

@@ -30,9 +30,9 @@ void Aggregation::initialize(int stage) {
 	}
 }
 
-bool Aggregation::isOkToSendNow(int dest) {
+bool Aggregation::isOkToSendNow(const LAddress::L3Type& dest) {
 	bool isOkToSendNow = false;
-    map<int, destInfo>::iterator iter = destInfos.find(dest);
+	map<LAddress::L3Type, destInfo>::iterator iter = destInfos.find(dest);
 	if(iter == destInfos.end()) {
 		// we can send directly if we meet this node for the first time
 		isOkToSendNow = true;
@@ -49,7 +49,7 @@ void Aggregation::handleUpperMsg(cMessage* msg) {
 	if (interPacketDelay == 0) {
 		sendDown(msg);
 	} else {
-		int dest = pkt->getDestAddr();
+		const LAddress::L3Type& dest = pkt->getDestAddr();
 		if (!isOkToSendNow(dest)) {
 			// store packet
 			destInfos[dest].second.push_back(pkt);
@@ -71,7 +71,7 @@ void Aggregation::handleUpperMsg(cMessage* msg) {
 	}
 }
 
-void Aggregation::sendAggregatedPacketNow(int dest) {
+void Aggregation::sendAggregatedPacketNow(const LAddress::L3Type& dest) {
   AggrPkt* aggr = new AggrPkt("AggregationPacket", 1);
   aggr->setBitLength(8);
   int nbAggr = 0;
@@ -112,7 +112,7 @@ void Aggregation::handleSelfMsg(cMessage* msg) {
 	ASSERT(msg == aggregationTimer);
 	// loop over all destinations
 	// and send their packets if the time has come
-	map<int, destInfo>::iterator iter = destInfos.begin();
+	map<LAddress::L3Type, destInfo>::const_iterator iter = destInfos.begin();
 	// simultaneously, compute next trigger time for aggregate timer (if required)
 	simtime_t nextTxTime = simTime() + 2*interPacketDelay;
 	while(iter != destInfos.end()) {
@@ -132,7 +132,7 @@ void Aggregation::handleSelfMsg(cMessage* msg) {
 void Aggregation::finish() {
 	// clean up memory
   cancelAndDelete(aggregationTimer);
-  map<int, destInfo>::iterator iter = destInfos.begin();
+  map<LAddress::L3Type, destInfo>::iterator iter = destInfos.begin();
   while(iter != destInfos.end()) {
 	  while(iter->second.second.size() > 0) {
 		  ApplPkt* pkt = iter->second.second.front();

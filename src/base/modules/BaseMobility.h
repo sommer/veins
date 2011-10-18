@@ -106,7 +106,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
     BaseWorldUtility *world;
 
     /** @brief Pointer to host module, to speed up repeated access*/
-    cModule* hostPtr;
+    const cModule* hostPtr;
     int hostId;
 
     /** @brief Stores the current position and move pattern of the host*/

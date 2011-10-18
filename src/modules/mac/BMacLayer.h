@@ -169,9 +169,9 @@ class MIXIM_API BMacLayer : public BaseMacLayer
 
 	/** @name Help variables for the acknowledgment process. */
 	/*@{*/
-	int lastDataPktSrcAddr;
-	int lastDataPktDestAddr;
-	int txAttempts;
+	LAddress::L2Type lastDataPktSrcAddr;
+	LAddress::L2Type lastDataPktDestAddr;
+	int              txAttempts;
 	/*@}*/
 
 

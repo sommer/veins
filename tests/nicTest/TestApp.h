@@ -20,6 +20,7 @@
 #include "../testUtils/TestModule.h"
 #include "BaseModule.h"
 #include "Mac80211MultiChannel.h"
+#include "SimpleAddress.h"
 
 /**
  * @brief Executes most of the tests by sending packets to other instances of
@@ -30,16 +31,16 @@ class TestApp : public BaseModule,
 {
 protected:
 
-	cGate* out;
-	int myIndex;
+	cGate*                out;
+	int                   myIndex;
 	Mac80211MultiChannel* mac;
-	int pingsSent;
-	simtime_t lastPong;
+	int                   pingsSent;
+	simtime_t             lastPong;
   protected:
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage *msg);
     virtual void finish();
-    void sendPacket(int dest = -1);
+    void sendPacket(const LAddress::L2Type& dest = LAddress::L2BROADCAST);
     void continueIn(simtime_t time);
     void switchChannel(int channel);
 

@@ -27,6 +27,7 @@
 
 #include "MiXiMDefs.h"
 #include "BaseLayer.h"
+#include "SimpleAddress.h"
 
 class BaseConnectionManager;
 class ConstMapping;
@@ -77,9 +78,9 @@ protected:
     int headerLength;
 
     /**
-     * @brief MAC address (simply module id)
+     * @brief MAC address.
      **/
-    int myMacAddr;
+    LAddress::L2Type myMacAddr;
 
     /** @brief debug this core module? */
     bool coreDebug;
@@ -106,6 +107,11 @@ public:
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
+
+    /**
+     * @brief Returns the MAC address of this MAC module.
+     */
+    const LAddress::L2Type& getMACAddress() { return myMacAddr; }
 
 protected:
 

@@ -9,8 +9,7 @@
 //# merchantability and fitness for a particular purpose.
 //#
 //######################################################################
-// test module only (subscribes to and records blackboard Host failure
-// notification
+// test module only (subscribes to and records Host failure notifications
 //
 // note that all modules that generate msgs should cancel them in
 // response to host failure

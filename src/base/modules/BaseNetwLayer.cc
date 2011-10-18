@@ -52,9 +52,9 @@ void BaseNetwLayer::initialize(int stage)
         if(addrScheme) {
         	myNetwAddr = addrScheme->myNetwAddr(this);
         } else {
-        	myNetwAddr = getId();
+        	myNetwAddr = LAddress::L3Type( getId() );
         }
-        coreEV << " myNetwAddr " << myNetwAddr << endl;
+        coreEV << " myNetwAddr " << myNetwAddr << std::endl;
     }
 }
 
@@ -76,8 +76,8 @@ cMessage* BaseNetwLayer::decapsMsg(NetwPkt *msg)
  * header fields.
  **/
 NetwPkt* BaseNetwLayer::encapsMsg(cPacket *appPkt) {
-    int macAddr;
-    int netwAddr;
+    LAddress::L2Type macAddr;
+    LAddress::L3Type netwAddr;
 
     coreEV <<"in encaps...\n";
 
@@ -89,20 +89,20 @@ NetwPkt* BaseNetwLayer::encapsMsg(cPacket *appPkt) {
     if(cInfo == 0){
 	EV << "warning: Application layer did not specifiy a destination L3 address\n"
 	   << "\tusing broadcast address instead\n";
-	netwAddr = L3BROADCAST;
+	netwAddr = LAddress::L3BROADCAST;
     } else {
-	coreEV <<"CInfo removed, netw addr="<< cInfo->getNetwAddr()<<endl;
+	coreEV <<"CInfo removed, netw addr="<< cInfo->getNetwAddr()<<std::endl;
         netwAddr = cInfo->getNetwAddr();
 	delete cInfo;
     }
 
     pkt->setSrcAddr(myNetwAddr);
     pkt->setDestAddr(netwAddr);
-    coreEV << " netw "<< myNetwAddr << " sending packet" <<endl;
-    if(netwAddr == L3BROADCAST) {
+    coreEV << " netw "<< myNetwAddr << " sending packet" <<std::endl;
+    if(LAddress::isL3Broadcast( netwAddr )) {
         coreEV << "sendDown: nHop=L3BROADCAST -> message has to be broadcasted"
            << " -> set destMac=L2BROADCAST\n";
-        macAddr = L2BROADCAST;
+        macAddr = LAddress::L2BROADCAST;
     }
     else{
         coreEV <<"sendDown: get the MAC address\n";
@@ -128,7 +128,7 @@ NetwPkt* BaseNetwLayer::encapsMsg(cPacket *appPkt) {
 void BaseNetwLayer::handleLowerMsg(cMessage* msg)
 {
     NetwPkt *m = static_cast<NetwPkt *>(msg);
-    coreEV << " handling packet from " << m->getSrcAddr() << endl;
+    coreEV << " handling packet from " << m->getSrcAddr() << std::endl;
     sendUp(decapsMsg(m));
 }
 
@@ -168,7 +168,7 @@ void BaseNetwLayer::handleLowerControl(cMessage* msg)
 		break;
 	default:
 		EV << "BaseNetwLayer does not handle control messages called "
-		   << msg->getName() << endl;
+		   << msg->getName() << std::endl;
 		delete msg;
 		break;
 	}

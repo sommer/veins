@@ -22,8 +22,8 @@ Define_Module( LMacLayer )
 
 #define myId (getParentModule()->getParentModule()->getId()-4)
 
-
-const int LMacLayer::LMAC_NO_RECEIVER = -2;
+const LAddress::L2Type LMacLayer::LMAC_NO_RECEIVER = LAddress::L2Type(-2);
+const LAddress::L2Type LMacLayer::LMAC_FREE_SLOT   = LAddress::L2BROADCAST;
 /**
  * Initialize the of the omnetpp.ini variables in stage 1. In stage
  * two subscribe to the RadioState.
@@ -170,8 +170,8 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 
 			for (int i = 0; i < numSlots; i++)
 			{
-				occSlotsDirect[i] = -1;
-				occSlotsAway[i] = -1;
+				occSlotsDirect[i] = LMAC_FREE_SLOT;
+				occSlotsAway[i]   = LMAC_FREE_SLOT;
 			}
 
 			if (myId >= reservedMobileSlots)
@@ -259,8 +259,8 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 		}
 		else if(msg->getKind() == LMAC_CONTROL)
 		{
-			LMacPkt *mac = static_cast<LMacPkt *>(msg);
-			int dest = mac->getDestAddr();
+			LMacPkt *const          mac  = static_cast<LMacPkt *>(msg);
+			const LAddress::L2Type& dest = mac->getDestAddr();
 			debugEV << " I have received a control packet from src " << mac->getSrcAddr() << " and dest " << dest << ".\n";
 			bool collision = false;
 			// if we are listening to the channel and receive anything, there is a collision in the slot.
@@ -270,12 +270,11 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 				collision = true;
 			}
 
-			for (int s = 0; s < numSlots; s++)
-				{
-					occSlotsAway[s] = mac->getOccupiedSlots(s);
-					debugEV << "Occupied slot " << s << ": " << occSlotsAway[s] << endl;
-					debugEV << "Occupied direct slot " << s << ": " << occSlotsDirect[s] << endl;
-				}
+			for (int s = 0; s < numSlots; s++) {
+				occSlotsAway[s] = mac->getOccupiedSlots(s);
+				debugEV << "Occupied slot " << s << ": " << occSlotsAway[s] << endl;
+				debugEV << "Occupied direct slot " << s << ": " << occSlotsDirect[s] << endl;
+			}
 
 			if (mac->getMySlot() >-1)
 			{
@@ -283,15 +282,15 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 				for (int i=0; i < numSlots; i++)
 				{
 					if (occSlotsDirect[i] == mac->getSrcAddr())
-						occSlotsDirect[i] = -1;
+						occSlotsDirect[i] = LMAC_FREE_SLOT;
 					if (occSlotsAway[i] == mac->getSrcAddr())
-						occSlotsAway[i] = -1;
+						occSlotsAway[i] = LMAC_FREE_SLOT;
 				}
-				occSlotsAway[mac->getMySlot()] = mac->getSrcAddr();
+				occSlotsAway[mac->getMySlot()]   = mac->getSrcAddr();
 				occSlotsDirect[mac->getMySlot()] = mac->getSrcAddr();
 			}
-				collision = collision || (mac->getMySlot() == mySlot);
-			if (((mySlot > -1) && (mac->getOccupiedSlots(mySlot) > -1) && (mac->getOccupiedSlots(mySlot) != myMacAddr)) || collision)
+			collision = collision || (mac->getMySlot() == mySlot);
+			if (((mySlot > -1) && (mac->getOccupiedSlots(mySlot) > LMAC_FREE_SLOT) && (mac->getOccupiedSlots(mySlot) != myMacAddr)) || collision)
 			{
 				debugEV << "My slot is taken by " << mac->getOccupiedSlots(mySlot) << ". I need to change it.\n";
 				findNewSlot();
@@ -303,7 +302,7 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 				findNewSlot();
 			}
 
-			if(dest == myMacAddr || dest == L2BROADCAST)
+			if(dest == myMacAddr || LAddress::isL2Broadcast(dest))
 			{
 				debugEV << "I need to stay awake.\n";
 				if (timeout->isScheduled())
@@ -325,8 +324,8 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 		//probably it never happens
 		else if(msg->getKind() == LMAC_DATA)
 		{
-			LMacPkt *mac = static_cast<LMacPkt *>(msg);
-			int dest = mac->getDestAddr();
+			LMacPkt *const          mac  = static_cast<LMacPkt *>(msg);
+			const LAddress::L2Type& dest = mac->getDestAddr();
 			bool collision = false;
 			// if we are listening to the channel and receive anything, there is a collision in the slot.
 			if (checkChannel->isScheduled())
@@ -335,7 +334,7 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 				collision = true;
 			}
 			debugEV << " I have received a data packet.\n";
-			if(dest == myMacAddr || dest == L2BROADCAST)
+			if(dest == myMacAddr || LAddress::isL2Broadcast(dest))
 			{
 				debugEV << "sending pkt to upper...\n";
 				sendUp(decapsMsg(mac));
@@ -376,9 +375,8 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 		}
 		else if(msg->getKind() == LMAC_CONTROL)
 		{
-
-			LMacPkt *mac = static_cast<LMacPkt *>(msg);
-			int dest = mac->getDestAddr();
+			LMacPkt *const          mac  = static_cast<LMacPkt *>(msg);
+			const LAddress::L2Type& dest = mac->getDestAddr();
 			debugEV << " I have received a control packet from src " << mac->getSrcAddr() << " and dest " << dest << ".\n";
 
 			bool collision = false;
@@ -399,16 +397,16 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 				for (int i=0; i < numSlots; i++)
 				{
 					if (occSlotsDirect[i] == mac->getSrcAddr())
-						occSlotsDirect[i] = -1;
+						occSlotsDirect[i] = LMAC_FREE_SLOT;
 					if (occSlotsAway[i] == mac->getSrcAddr())
-						occSlotsAway[i] = -1;
+						occSlotsAway[i] = LMAC_FREE_SLOT;
 				}
-				occSlotsAway[mac->getMySlot()] = mac->getSrcAddr();
+				occSlotsAway[mac->getMySlot()]   = mac->getSrcAddr();
 				occSlotsDirect[mac->getMySlot()] = mac->getSrcAddr();
 			}
 
 			collision = collision || (mac->getMySlot() == mySlot);
-			if (((mySlot > -1) && (mac->getOccupiedSlots(mySlot) > -1) && (mac->getOccupiedSlots(mySlot) != myMacAddr)) || collision)
+			if (((mySlot > -1) && (mac->getOccupiedSlots(mySlot) > LMAC_FREE_SLOT) && (mac->getOccupiedSlots(mySlot) != myMacAddr)) || collision)
 			{
 				debugEV << "My slot is taken by " << mac->getOccupiedSlots(mySlot) << ". I need to change it.\n";
 				findNewSlot();
@@ -420,7 +418,7 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 				findNewSlot();
 			}
 
-			if(dest == myMacAddr || dest == L2BROADCAST)
+			if(dest == myMacAddr || LAddress::isL2Broadcast(dest))
 			{
 				debugEV << "I need to stay awake.\n";
 				macState=WAIT_DATA;
@@ -552,10 +550,11 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 	case WAIT_DATA:
 		if(msg->getKind() == LMAC_DATA)
 		{
-			LMacPkt *mac = static_cast<LMacPkt *>(msg);
-			int dest = mac->getDestAddr();
+			LMacPkt *const          mac  = static_cast<LMacPkt *>(msg);
+			const LAddress::L2Type& dest = mac->getDestAddr();
+
 			debugEV << " I have received a data packet.\n";
-			if(dest == myMacAddr || dest == L2BROADCAST)
+			if(dest == myMacAddr || LAddress::isL2Broadcast(dest))
 			{
 				debugEV << "sending pkt to upper...\n";
 				sendUp(decapsMsg(mac));
@@ -652,14 +651,14 @@ void LMacLayer::findNewSlot()
 	int counter = 0;
 
 	mySlot = intrand((numSlots - reservedMobileSlots));
-	while ((occSlotsAway[mySlot] != -1) && (counter < (numSlots - reservedMobileSlots)))
+	while ((occSlotsAway[mySlot] != LMAC_FREE_SLOT) && (counter < (numSlots - reservedMobileSlots)))
 	{
 		counter++;
 		mySlot--;
 		if (mySlot < 0)
 			mySlot = (numSlots - reservedMobileSlots)-1;
 	}
-	if (occSlotsAway[mySlot] != -1)
+	if (occSlotsAway[mySlot] != LMAC_FREE_SLOT)
 	{
 		EV << "ERROR: I cannot find a free slot. Cannot send data.\n";
 		mySlot = -1;

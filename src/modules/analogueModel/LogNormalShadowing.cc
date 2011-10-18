@@ -15,7 +15,8 @@
 
 #include "LogNormalShadowing.h"
 
-DimensionSet LogNormalShadowing::dimensions(Dimension::time_static());
+#include "Mapping.h"
+#include "AirFrame_m.h"
 
 LogNormalShadowing::LogNormalShadowing(double mean, double stdDev, simtime_t interval):
 	mean(mean), stdDev(stdDev), interval(interval)
@@ -27,10 +28,11 @@ double LogNormalShadowing::randomLogNormalGain() const {
 	return FWMath::dBm2mW(-1.0 * normal(mean, stdDev));
 }
 
-void LogNormalShadowing::filterSignal(Signal& signal) {
-	simtime_t start = signal.getReceptionStart();
-	simtime_t end   = signal.getReceptionEnd();
-	Mapping*  att   = MappingUtils::createMapping(dimensions, Mapping::LINEAR);
+void LogNormalShadowing::filterSignal(AirFrame *frame) {
+	Signal&   signal = frame->getSignal();
+	simtime_t start  = signal.getReceptionStart();
+	simtime_t end    = signal.getReceptionEnd();
+	Mapping*  att    = MappingUtils::createMapping(DimensionSet::timeDomain, Mapping::LINEAR);
 
 	Argument pos;
 

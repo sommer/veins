@@ -135,14 +135,14 @@ public:
 	virtual ~RadioStateAnalogueModel() {}
 
 	/**
-	 * @brief Filters the Signal according to the RadioState (passively),
+	 * @brief Filters the AirFrame's Signal according to the RadioState (passively),
 	 * i.e. adding an appropriate instance of RSAMMapping to the Signal
 	 *
 	 * The Signal is added a new RSAMMapping that has a pointer to
 	 * this instance RadioStateAnalogueModel, hence the pointer is valid as long
 	 * as the Radio instance exists that has this RSAM as a member.
 	 */
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(AirFrame *frame);
 
 	/**
 	 * @brief sets tracking mode

@@ -220,13 +220,13 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 	}
 
 	if (name == "DeciderUWBIREDSyncOnAddress") {
-		int addr;
+		LAddress::L2Type addr;
 		it = params.find("addr");
 		if (it == params.end()) {
 			error(
 					"Could not find required int parameter <addr> in the decider xml configuration file.");
 		}
-		addr = it->second.longValue();
+		addr = LAddress::L2Type(it->second.longValue());
 		uwbdecider = new DeciderUWBIREDSyncOnAddress(this, this, syncThreshold,
 				syncAlwaysSucceeds, stats, trace, addr, alwaysFailOnDataInterference);
 	}

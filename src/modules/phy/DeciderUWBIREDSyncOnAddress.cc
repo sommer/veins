@@ -2,11 +2,12 @@
 
 #include "DeciderUWBIRED.h"
 #include "MacPkt_m.h"
+#include "AirFrame_m.h"
 
 DeciderUWBIREDSyncOnAddress::DeciderUWBIREDSyncOnAddress(DeciderToPhyInterface* iface,
 				PhyLayerUWBIR* _uwbiface,
 				double _syncThreshold, bool _syncAlwaysSucceeds, bool _stats,
-				bool _trace, int _addr, bool alwaysFailOnDataInterference) :
+				bool _trace, const LAddress::L2Type& _addr, bool alwaysFailOnDataInterference) :
 					DeciderUWBIRED(iface, _uwbiface,
 						_syncThreshold, _syncAlwaysSucceeds, _stats, _trace, alwaysFailOnDataInterference),
 						syncAddress(_addr) {

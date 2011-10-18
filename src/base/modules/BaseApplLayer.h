@@ -27,6 +27,7 @@
 
 #include "MiXiMDefs.h"
 #include "BaseLayer.h"
+#include "SimpleAddress.h"
 
 /**
  * @brief Base class for the application layer
@@ -147,8 +148,8 @@ protected:
 	 *
 	 * We use the node module index as application address
 	 **/
-	virtual const int myApplAddr() {
-		return getParentModule()->getIndex();
+	virtual const LAddress::L3Type myApplAddr() const {
+		return LAddress::L3Type( getParentModule()->getIndex() );
 	};
 
 };

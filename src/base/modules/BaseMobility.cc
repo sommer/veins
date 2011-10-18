@@ -33,7 +33,7 @@
 Define_Module(BaseMobility);
 
 BaseMobility::BaseMobility():
-                BatteryAccess(),
+		BatteryAccess(),
 		playgroundScaleX(1),
 		playgroundScaleY(1),
 		origDisplayWidth(0),
@@ -42,7 +42,7 @@ BaseMobility::BaseMobility():
 {}
 
 BaseMobility::BaseMobility(unsigned stacksize):
-                BatteryAccess(stacksize),
+		BatteryAccess(stacksize),
 		playgroundScaleX(1),
 		playgroundScaleY(1),
 		origDisplayWidth(0),
@@ -144,7 +144,7 @@ void BaseMobility::initialize(int stage)
         }
 
         //get original display of host
-		cDisplayString& disp = hostPtr->getDisplayString();
+		cDisplayString& disp = const_cast<cModule*>(hostPtr)->getDisplayString();
 
         //get host width and height
 		if (disp.containsTag("b")) {
@@ -288,7 +288,7 @@ void BaseMobility::updatePosition() {
 #else
     	const int          iPrecis        = 5;
 #endif
-    	cDisplayString&    disp           = hostPtr->getDisplayString();
+    	cDisplayString&    disp           = const_cast<cModule*>(hostPtr)->getDisplayString();
 
     	// setup output stream
     	osDisplayTag << std::fixed; osDisplayTag.precision(iPrecis);

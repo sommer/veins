@@ -9,6 +9,7 @@
 #define ARPINTERFACE_H_
 
 #include "MiXiMDefs.h"
+#include "SimpleAddress.h"
 
 /**
  * @brief Interface every Address resolution protocol (ARP) module has to
@@ -23,8 +24,8 @@
  */
 class MIXIM_API ArpInterface {
 public:
-	/** @brief returns a L2 address to a given L3 address.*/
-    virtual int getMacAddr(const int netwAddr) = 0;
+    /** @brief returns a L2 address to a given L3 address.*/
+    virtual LAddress::L2Type getMacAddr(const LAddress::L3Type& netwAddr) const = 0;
 };
 
 #endif /* ARPINTERFACE_H_ */

@@ -4,6 +4,8 @@
 #include "NetwControlInfo.h"
 #include "ApplPkt_m.h"
 
+using std::endl;
+
 Define_Module(TestApplication);
 
 void TestApplication::initialize(int stage) {
@@ -28,8 +30,8 @@ void TestApplication::initialize(int stage) {
 
         nbPackets         = par("nbPackets");
         trafficParam      = par("trafficParam").doubleValue();
-        nodeAddr          = par("nodeAddr");
-        dstAddr           = par("dstAddr");
+        nodeAddr          = LAddress::L3Type( par("nodeAddr").longValue() );
+        dstAddr           = LAddress::L3Type( par("dstAddr").longValue() );
         flood             = par("flood").boolValue();
         PAYLOAD_SIZE      = par("payloadSize"); // data field size
         PAYLOAD_SIZE      = PAYLOAD_SIZE * 8; // convert to bits

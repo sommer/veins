@@ -4,15 +4,14 @@
 
 
 cplusplus {{
-#include <MacPkt_m.h>
+#include "MacPkt_m.h"
 }}
 
-
 class MacPkt;
-
+class LAddress::L2Type extends void;
 
 message LMacPkt extends MacPkt
 {
-    int mySlot; // the node's current slot number
-    short occupiedSlots[]; // currently known occupied slots
+    int              mySlot;          // the node's current slot number
+    LAddress::L2Type occupiedSlots[]; // currently known occupied slots
 }

@@ -6,6 +6,8 @@
 #include "MacToPhyControlInfo.h"
 #include "MacPkt_m.h"
 
+using std::endl;
+
 Define_Module(SimpleMacLayer);
 
 //---omnetpp part----------------------
@@ -76,7 +78,7 @@ void SimpleMacLayer::handleTXOver() {
 void SimpleMacLayer::handleMacPkt(MacPkt* pkt) {
 
 	//if we got a Mac packet check if it was for us or not.
-	if(pkt->getDestAddr() == myIndex){
+	if(pkt->getDestAddr() == LAddress::L2Type(myIndex)){
 		log("Received MacPkt for me - broadcasting answer (but first change to TX mode)");
 		if(myIndex == 0)
 			nextReceiver = 1;
@@ -153,6 +155,6 @@ MacPkt* SimpleMacLayer::createMacPkt(simtime_t length) {
 	MacPkt* res = new MacPkt();
 	res->setControlInfo(ctrl);
 	res->setKind(TEST_MACPKT);
-	res->setDestAddr(nextReceiver);
+	res->setDestAddr(LAddress::L2Type(nextReceiver));
 	return res;
 }

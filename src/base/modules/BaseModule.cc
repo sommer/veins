@@ -47,15 +47,15 @@ void BaseModule::initialize(int stage) {
     	notAffectedByHostState = 	hasPar("notAffectedByHostState")
 								 && par("notAffectedByHostState").boolValue();
         hasPar("debug") ? debug = par("debug").boolValue() : debug = true;
-        cModule *host = findHost();
-        utility = FindModule<BaseUtility*>::findSubModule(findHost());
+        const cModule *const host = findHost();
+        utility = FindModule<BaseUtility*>::findSubModule(host);
         if(!utility) {
         	error("No BaseUtility module found!");
         } 
 
         hostId = host->getId();
-	HostState hs;
-	hostStateCat = utility->subscribe(this, &hs, hostId);
+        HostState hs;
+        hostStateCat = utility->subscribe(this, &hs, hostId);
     }
 }
 
@@ -86,7 +86,7 @@ void BaseModule::switchHostState(HostState::States state)
 	utility->publishBBItem(hostStateCat, &hostState, hostId);
 }
 
-cModule *BaseModule::findHost(void)
+const cModule* BaseModule::findHost(void) const
 {
    return FindModule<>::findHost(this);
 }
@@ -119,16 +119,16 @@ cModule *BaseModule::findHost(void)
 //};
 
 
-std::string BaseModule::logName(void)
+std::string BaseModule::logName(void) const
 {
-        std::ostringstream ost;
+	std::ostringstream ost;
 	if (hasPar("logName")) // let modules override
 	{
 		ost << par("logName").stringValue();
 	}
 	else
 	{
-		cModule *parent = findHost();
+		const cModule *const parent = findHost();
 		parent->hasPar("logName") ?
 			ost << parent->par("logName").stringValue() : ost << parent->getName();
 		ost << "[" << parent->getIndex() << "]";

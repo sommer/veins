@@ -8,14 +8,16 @@
 #ifndef SIMPLENETWLAYER_H_
 #define SIMPLENETWLAYER_H_
 
-#include <omnetpp.h>
 #include <cassert>
-#include <BaseModule.h>
-#include <NetwPkt_m.h>
-#include <SimpleAddress.h>
-#include <NetwToMacControlInfo.h>
-#include <MacToNetwControlInfo.h>
-#include <BaseMacLayer.h>
+#include <omnetpp.h>
+#include <sstream>
+
+#include "BaseModule.h"
+#include "NetwPkt_m.h"
+#include "SimpleAddress.h"
+#include "NetwToMacControlInfo.h"
+#include "MacToNetwControlInfo.h"
+#include "BaseMacLayer.h"
 
 /**
  * @brief This is an implementation of a simple network layer
@@ -47,7 +49,7 @@ protected:
 
 	int maxTtl;
 
-	int ip;
+	LAddress::L3Type ip;
 
 	int dataIn;
 	int dataOut;
@@ -56,7 +58,7 @@ protected:
 
 	unsigned long runningSeqNumber;
 
-	typedef std::map<int, int> RoutingTable;
+	typedef std::map<LAddress::L3Type, LAddress::L2Type> RoutingTable;
 
 	RoutingTable routingTable;
 
@@ -81,16 +83,16 @@ protected:
 		ev << "Broadcasting hello world.\n";
 		NetwPkt* helloWorld = new NetwPkt("helloWorld", HELLO_WORLD);
 
-		helloWorld->setDestAddr(L3BROADCAST);
+		helloWorld->setDestAddr(LAddress::L3BROADCAST);
 		helloWorld->setSrcAddr(ip);
 		helloWorld->setSeqNum(runningSeqNumber++);
 		helloWorld->setTtl(maxTtl);
 
-		NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(L2BROADCAST);
+		NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(LAddress::L2BROADCAST);
 
 		helloWorld->setControlInfo(cInfo);
 
-		getNode()->bubble("Hello World!");
+		const_cast<cModule*>(getNode())->bubble("Hello World!");
 
 		sendDown(helloWorld);
 	}
@@ -99,7 +101,7 @@ protected:
 		send(pkt, dataOut);
 	}
 
-	void forwardPacket(NetwPkt* pkt, int nextHop){
+	void forwardPacket(NetwPkt* pkt, const LAddress::L2Type& nextHop){
 		NetwPkt* fwd = new NetwPkt(pkt->getName(), pkt->getKind());
 
 		fwd->setDestAddr(pkt->getDestAddr());
@@ -117,7 +119,7 @@ protected:
 	void handleHelloWorld(NetwPkt* pkt){
 
 		//who said hello?
-		int srcIP = pkt->getSrcAddr();
+		const LAddress::L3Type& srcIP = pkt->getSrcAddr();
 
 		//we already know ourself...
 		if (srcIP == ip){
@@ -130,25 +132,26 @@ protected:
 			//if not add him with the mac address of the previous hop
 			MacToNetwControlInfo* cInfo = static_cast<MacToNetwControlInfo*>(pkt->getControlInfo());
 
-			int prevHop = cInfo->getLastHopMac();
+			const LAddress::L2Type& prevHop = cInfo->getLastHopMac();
 
 			routingTable[srcIP] = prevHop;
 
-			char buff[255];
-			sprintf(buff, "Got hello from %d", srcIP);
-			getNode()->bubble(buff);
-			ev << buff << endl;
+			std::stringstream osBuff(std::stringstream::out);
+			osBuff << "Got hello from " << srcIP;
+			const_cast<cModule*>(getNode())->bubble(osBuff.str().c_str());
+			ev << osBuff.str() << std::endl;
 		}
 
 		//if we are a switch and the time to live of the packet
 		//hasn't exceeded yet forward it
 		if(isSwitch){
 			if(pkt->getTtl() > 0) {
-				forwardPacket(pkt, L2BROADCAST);
-				char buff[255];
-				sprintf(buff, "%d said hello!", srcIP);
-				getNode()->bubble(buff);
-				ev << buff << endl;
+				forwardPacket(pkt, LAddress::L2BROADCAST);
+
+				std::stringstream osBuff(std::stringstream::out);
+				osBuff << srcIP << " said hello!";
+				const_cast<cModule*>(getNode())->bubble(osBuff.str().c_str());
+				ev << osBuff.str() << std::endl;
 			}
 		} else {
 			//otherwise reset the bored timer after when we will start jabbering
@@ -181,10 +184,10 @@ protected:
 
 		jabber->setControlInfo(cInfo);
 
-		char buff[255];
-		sprintf(buff, "Babbling with %d", it->first);
-		getNode()->bubble(buff);
-		ev << buff << endl;
+		std::stringstream osBuff(std::stringstream::out);
+		osBuff << "Babbling with " << it->first;
+		const_cast<cModule*>(getNode())->bubble(osBuff.str().c_str());
+		ev << osBuff.str() << std::endl;
 		sendDown(jabber);
 
 		scheduleJabbering();
@@ -196,27 +199,27 @@ protected:
 				assert(pkt->getTtl() > 0);
 				assert(routingTable.count(pkt->getDestAddr()) > 0);
 
-				int nextHop = routingTable[pkt->getDestAddr()];
+				LAddress::L2Type nextHop = routingTable[pkt->getDestAddr()];
 
-				char buff[255];
-				sprintf(buff, "%d babbles with %d", pkt->getSrcAddr(), pkt->getDestAddr());
-				getNode()->bubble(buff);
-				ev << buff << endl;
+				std::stringstream osBuff(std::stringstream::out);
+				osBuff << pkt->getSrcAddr() << " babbles with " << pkt->getDestAddr();
+				const_cast<cModule*>(getNode())->bubble(osBuff.str().c_str());
+				ev << osBuff.str() << std::endl;
 
 				forwardPacket(pkt, nextHop);
 			} else {
-				char buff[255];
-				sprintf(buff, "%d babbles with me. But I'm a serious switch, I do not babble...", pkt->getSrcAddr());
-				getNode()->bubble(buff);
-				ev << buff << endl;
+				std::stringstream osBuff(std::stringstream::out);
+				osBuff << pkt->getSrcAddr() << " babbles with me. But I'm a serious switch, I do not babble...";
+				const_cast<cModule*>(getNode())->bubble(osBuff.str().c_str());
+				ev << osBuff.str() << std::endl;
 			}
 		} else {
 			assert(pkt->getDestAddr() == ip);
 
-			char buff[255];
-			sprintf(buff, "Got babbling from %d", pkt->getSrcAddr());
-			getNode()->bubble(buff);
-			ev << buff << endl;
+			std::stringstream osBuff(std::stringstream::out);
+			osBuff << "Got babbling from " << pkt->getSrcAddr();
+			const_cast<cModule*>(getNode())->bubble(osBuff.str().c_str());
+			ev << osBuff.str() << std::endl;
 		}
 
 		delete pkt;
@@ -238,7 +241,7 @@ public:
 			if(isSwitch)
 				getParentModule()->getParentModule()->getDisplayString().setTagArg("i",0,"device/accesspoint");
 
-			ip = par("ip").longValue();
+			ip = LAddress::L3Type(par("ip").longValue());
 			maxTtl = par("maxTtl").longValue();
 			boredTime = par("boredTime").doubleValue();
 		} else if(stage == 1) {

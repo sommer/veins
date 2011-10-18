@@ -14,10 +14,12 @@
 //
 
 #include "NetworkStackTrafficGen.h"
-#include "NetwToMacControlInfo.h"
+
 #include <cassert>
-#include <Packet.h>
-#include <BaseMacLayer.h>
+
+#include "NetwToMacControlInfo.h"
+#include "Packet.h"
+#include "BaseMacLayer.h"
 #include "FindModule.h"
 
 Define_Module(NetworkStackTrafficGen);
@@ -37,7 +39,7 @@ void NetworkStackTrafficGen::initialize(int stage)
 		packetTime = par("packetTime");
 		pppt = par("packetsPerPacketTime");
 		burstSize = par("burstSize");
-		destination = par("destination");
+		destination = LAddress::L3Type(par("destination").longValue());
 
 		nbPacketDropped = 0;
 
@@ -86,6 +88,7 @@ void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 	default:
 		EV << "Unkown selfmessage! -> delete, kind: "<<msg->getKind() <<endl;
 		delete msg;
+		break;
 	}
 }
 
@@ -117,7 +120,7 @@ void NetworkStackTrafficGen::sendBroadcast()
 	pkt->setSrcAddr(myNetwAddr);
 	pkt->setDestAddr(destination);
 
-	pkt->setControlInfo(new NetwToMacControlInfo(destination));
+	pkt->setControlInfo(new NetwToMacControlInfo(LAddress::L2Type(destination)));
 
 	Packet p(packetLength, 0, 1);
 	world->publishBBItem(catPacket, &p, -1);
