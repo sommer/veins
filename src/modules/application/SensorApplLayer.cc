@@ -254,7 +254,7 @@ void SensorApplLayer::sendData() {
 	pkt->setSrcAddr(myAppAddr);
 	pkt->setByteLength(headerLength);
 	// set the control info to tell the network layer the layer 3 address
-	pkt->setControlInfo(new NetwControlInfo(pkt->getDestAddr()));
+	NetwControlInfo::setControlInfo(pkt, pkt->getDestAddr());
 	debugEV<< "Sending data packet!\n";
 	sendDown(pkt);
 	nbPacketsSent++;

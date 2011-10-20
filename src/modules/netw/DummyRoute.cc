@@ -15,11 +15,9 @@
 #include <cassert>
 
 #include "DummyRoutePkt_m.h"
-#include "NetwToMacControlInfo.h"
 #include "NetwControlInfo.h"
-#include "SimpleAddress.h"
-#include "NetwPkt_m.h"
 #include "ArpInterface.h"
+#include "NetwPkt_m.h"
 
 using std::endl;
 
@@ -50,16 +48,15 @@ void DummyRoute::handleLowerControl(cMessage *msg) {
 void DummyRoute::handleUpperMsg(cMessage* msg) {
 //	NetwControlInfo* cInfo =
 //			dynamic_cast<NetwControlInfo*> (msg->removeControlInfo());
-//	int nextHopMacAddr;
+//	LAddress::L2Type nextHopMacAddr;
 //	if (cInfo == 0) {
 //		EV<<"DummyRoute warning: Application layer did not specifiy a destination L3 address\n"
 //	       << "\tusing broadcast address instead\n";
-//		nextHopMacAddr = 0;
+//		nextHopMacAddr = LAddress::L2BROADCAST;
 //	} else {
-//		nextHopMacAddr = cInfo->getNetwAddr();
+//		nextHopMacAddr = arp->getMacAddr(cInfo->getNetwAddr());
 //	}
-//	nextHopMacAddr = cInfo->getNetwAddr();
-//	msg->setControlInfo(new NetwToMacControlInfo(nextHopMacAddr));
+//	LAddress::setL3ToL2ControlInfo(msg, myNetwAddr, nextHopMacAddr);
 	sendDown(encapsMsg(check_and_cast<cPacket*>(msg)));
 }
 
@@ -75,15 +72,15 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
     DummyRoutePkt *pkt = new DummyRoutePkt(appPkt->getName(), appPkt->getKind());
     pkt->setBitLength(headerLength);
 
-    NetwControlInfo* cInfo = dynamic_cast<NetwControlInfo*>(appPkt->removeControlInfo());
+    cObject* cInfo = appPkt->removeControlInfo();
 
-    if(cInfo == 0){
+    if(cInfo == NULL){
 	  EV << "warning: Application layer did not specifiy a destination L3 address\n"
 	   << "\tusing broadcast address instead\n";
 	  netwAddr = LAddress::L3BROADCAST;
     } else {
-	  debugEV <<"CInfo removed, netw addr="<< cInfo->getNetwAddr()<<endl;
-        netwAddr = cInfo->getNetwAddr();
+	  debugEV <<"CInfo removed, netw addr="<< NetwControlInfo::getAddressFromControlInfo( cInfo ) << endl;
+	  netwAddr = NetwControlInfo::getAddressFromControlInfo( cInfo );
 	  delete cInfo;
     }
 
@@ -101,7 +98,7 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
         macAddr = arp->getMacAddr(netwAddr);
     }
 
-    pkt->setControlInfo(new NetwToMacControlInfo(macAddr));
+    setDownControlInfo(pkt, macAddr);
 
     //encapsulate the application packet
     pkt->encapsulate(appPkt);
@@ -111,7 +108,7 @@ NetwPkt* DummyRoute::encapsMsg(cPacket *appPkt) {
 
 cMessage* DummyRoute::decapsMsg(NetwPkt *msg) {
 	cMessage *m = msg->decapsulate();
-	m->setControlInfo(new NetwControlInfo(msg->getSrcAddr()));
+	setUpControlInfo(m, msg->getSrcAddr());
 		// delete the netw packet
 	delete msg;
 	return m;

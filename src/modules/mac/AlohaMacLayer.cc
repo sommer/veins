@@ -23,7 +23,6 @@
 
 #include <iostream>
 
-#include "NetwToMacControlInfo.h"
 #include "UWBIRMacPkt_m.h"
 #include "UWBIRMacPkt.h"
 #include "MacToPhyInterface.h"
@@ -64,10 +63,10 @@ MacPkt* AlohaMacLayer::encapsMsg(cPacket *msg) {
 
     // copy dest address from the Control Info attached to the network
     // mesage by the network layer
-    NetwToMacControlInfo* cInfo = static_cast<NetwToMacControlInfo*>(msg->removeControlInfo());
+    cObject *const cInfo = msg->removeControlInfo();
 
-    debugEV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
-    encaps->setDestAddr(cInfo->getNextHopMac());
+    debugEV <<"CInfo removed, mac addr="<< getUpperDestinationFromControlInfo(cInfo) << endl;
+    encaps->setDestAddr(getUpperDestinationFromControlInfo(cInfo));
 
     //delete the control info
     delete cInfo;

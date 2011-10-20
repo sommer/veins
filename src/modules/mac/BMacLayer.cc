@@ -15,15 +15,16 @@
 
 #include "BMacLayer.h"
 
+#include <cassert>
+
 #include "FWMath.h"
 #include "MacToPhyControlInfo.h"
 #include "BaseArp.h"
 #include "BaseConnectionManager.h"
-#include "SimpleAddress.h"
-#include "NetwToMacControlInfo.h"
+#include "PhyUtils.h"
 #include "BaseUtility.h"
-#include "MacToPhyInterface.h"
 #include "MacPkt_m.h"
+#include "MacToPhyInterface.h"
 
 Define_Module( BMacLayer )
 
@@ -617,9 +618,6 @@ void BMacLayer::handleLowerControl(cMessage *msg)
     delete msg;
 }
 
-
-
-
 /**
  * Encapsulates the received network-layer packet into a MacPkt and set all
  * needed header fields.
@@ -642,13 +640,11 @@ bool BMacLayer::addToQueue(cMessage *msg)
 
 	MacPkt *macPkt = new MacPkt(msg->getName());
 	macPkt->setBitLength(headerLength);
-	NetwToMacControlInfo* cInfo
-			= static_cast<NetwToMacControlInfo*> (msg->removeControlInfo());
+	cObject *const cInfo = msg->removeControlInfo();
 	//EV<<"CSMA received a message from upper layer, name is "
 	//  << msg->getName() <<", CInfo removed, mac addr="
 	//  << cInfo->getNextHopMac()<<endl;
-	const LAddress::L2Type& dest = cInfo->getNextHopMac();
-	macPkt->setDestAddr(dest);
+	macPkt->setDestAddr(getUpperDestinationFromControlInfo(cInfo));
 	delete cInfo;
 	macPkt->setSrcAddr(myMacAddr);
 
@@ -666,11 +662,8 @@ void BMacLayer::attachSignal(MacPkt *macPkt)
 {
 	//calc signal duration
 	simtime_t duration = macPkt->getBitLength() / bitrate;
-	//create signal
-	Signal* s = createSignal(simTime(), duration, txPower, bitrate);
-	//create and initialize control info
-	MacToPhyControlInfo* ctrl = new MacToPhyControlInfo(s);
-	macPkt->setControlInfo(ctrl);
+	//create and initialize control info with new signal
+	setDownControlInfo(macPkt, createSignal(simTime(), duration, txPower, bitrate));
 }
 
 /**

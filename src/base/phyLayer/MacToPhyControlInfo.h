@@ -24,7 +24,7 @@ public:
 	 * NOTE: Once a signal is passed to the MacToPhyControlInfo,
 	 * 		 MacToPhyControlInfo takes the ownership of the Signal.
 	 */
-	MacToPhyControlInfo(Signal* signal = 0):
+	MacToPhyControlInfo(Signal* signal = NULL):
 		signal(signal) {}
 
 	/**
@@ -63,6 +63,42 @@ public:
 		signal = 0;
 		return tmp;
 	}
+
+    /**
+     * @brief Attaches a "control info" structure (object) to the message pMsg.
+     *
+     * This is most useful when passing packets between protocol layers
+     * of a protocol stack, the control info will contain the signal.
+     *
+     * The "control info" object will be deleted when the message is deleted.
+     * Only one "control info" structure can be attached (the second
+     * setL3ToL2ControlInfo() call throws an error).
+     *
+     * @param pMsg		The message where the "control info" shall be attached.
+     * @param pSignal	The signal which should be send.
+     */
+    static cObject *const setControlInfo(cMessage *const pMsg, Signal *const pSignal) {
+    	MacToPhyControlInfo *const cCtrlInfo = new MacToPhyControlInfo(pSignal);
+    	pMsg->setControlInfo(cCtrlInfo);
+
+    	return cCtrlInfo;
+    }
+    /**
+     * @brief extracts the signal from message "control info".
+     */
+    static Signal *const getSignal(cMessage *const pMsg) {
+    	return getSignalFromControlInfo(pMsg->getControlInfo());
+    }
+    /**
+     * @brief extracts the signal from "control info".
+     */
+    static Signal *const getSignalFromControlInfo(cObject *const pCtrlInfo) {
+    	MacToPhyControlInfo *const cCtrlInfo = dynamic_cast<MacToPhyControlInfo *const>(pCtrlInfo);
+
+    	if (cCtrlInfo)
+    		return cCtrlInfo->retrieveSignal();
+    	return NULL;
+    }
 };
 
 #endif /*MACTOPHYCONTROLINFO_H_*/

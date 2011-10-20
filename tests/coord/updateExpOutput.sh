@@ -1,7 +1,3 @@
 #/bin/bash
 
-./coord > exp-output
-
-
-
-
+./runTest.sh "update-exp-output"

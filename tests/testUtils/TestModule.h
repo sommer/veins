@@ -132,6 +132,7 @@ class AssertMsgInterval:public AssertMsgKind {
 protected:
 	simtime_t intvStart;
 	simtime_t intvEnd;
+	simtime_t msgArrivalTime;
 public:
 	AssertMsgInterval(std::string msg, int kind,
 					  simtime_t intvStart, simtime_t intvEnd,
@@ -139,7 +140,8 @@ public:
 					  bool continuesTests = false):
 		AssertMsgKind(msg, kind, intvStart, isPlanned, continuesTests),
 		intvStart(intvStart),
-		intvEnd(intvEnd)
+		intvEnd(intvEnd),
+		msgArrivalTime(0)
 	{}
 
 	virtual ~AssertMsgInterval() {}
@@ -149,9 +151,12 @@ public:
 	 * this AssertMsgInterval expects.
 	 */
 	virtual bool isMessage(cMessage* msg) {
-		return msg->getKind() == kind
-			   && intvStart <= msg->getArrivalTime()
-			   && msg->getArrivalTime() <= intvEnd;
+		if (msg->getKind() == kind) {
+			msgArrivalTime = msg->getArrivalTime();
+			return    intvStart      <= msgArrivalTime
+				   && msgArrivalTime <= intvEnd;
+		}
+		return false;
 	}
 
 	/**
@@ -160,7 +165,7 @@ public:
 	 */
 	virtual std::ostream& concat(std::ostream& o) const{
 		o << ": kind = " << kind
-		  << ", arrival = (" << intvStart << "<=t<=" << intvEnd << ")";
+		  << ", arrival = (" << intvStart << "<=t<=" << intvEnd << ") t was " << msgArrivalTime;
 		return o;
 	}
 };

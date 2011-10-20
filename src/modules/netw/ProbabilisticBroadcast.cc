@@ -9,9 +9,7 @@
 #include <cassert>
 
 #include "MacToNetwControlInfo.h"
-#include "NetwToMacControlInfo.h"
 #include "ProbBcastNetwControlInfo.h"
-#include "SimpleAddress.h"
 
 using std::make_pair;
 using std::endl;
@@ -61,10 +59,10 @@ void ProbabilisticBroadcast::handleLowerMsg(cMessage* msg)
 {
 	LAddress::L2Type macSrcAddr;
 	double oneHopLatency;
-	ProbabilisticBroadcastPkt* m = check_and_cast<ProbabilisticBroadcastPkt*>(msg);
-	MacToNetwControlInfo* cInfo = check_and_cast<MacToNetwControlInfo*>(m->removeControlInfo());
+	ProbabilisticBroadcastPkt* m     = check_and_cast<ProbabilisticBroadcastPkt*>(msg);
+	cObject*                   cInfo = m->removeControlInfo();
 	m->setNbHops(m->getNbHops()+1);
-	macSrcAddr = cInfo->getLastHopMac();
+	macSrcAddr = MacToNetwControlInfo::getAddressFromControlInfo( cInfo );
 	delete cInfo;
 	++nbDataPacketsReceived;
 	nbHops = nbHops + m->getNbHops();
@@ -92,7 +90,7 @@ void ProbabilisticBroadcast::handleLowerMsg(cMessage* msg)
 		// Unknown message. Insert message in queue with random backoff broadcast delay.
 		// Because we got the message from lower layer, we need to create and add a new
 		// control info with the MAC destination address = broadcast address.
-		m->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
+		setDownControlInfo(m, LAddress::L2BROADCAST);
 		// before inserting message, update source address (for this hop, not the initial source)
 		m->setSrcAddr(myNetwAddr);
 		insertNewMessage(m);
@@ -135,7 +133,7 @@ void ProbabilisticBroadcast::handleSelfMsg(cMessage* msg)
 				// queue, it will be considered as dead and discarded.
 				pktCopy = static_cast<ProbabilisticBroadcastPkt*>(pkt->dup());
 				// control info is not duplicated with the message, so we have to re-create one here.
-				pktCopy->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
+				setDownControlInfo(pktCopy, LAddress::L2BROADCAST);
 				// it the copy that is re-inserted into the queue so update the container accordingly
 				msgDesc->pkt = pktCopy;
 				// increment nbBcast field of the descriptor because at this point, it is sure that
@@ -287,8 +285,8 @@ ProbabilisticBroadcast::tMsgDesc* ProbabilisticBroadcast::popFirstMessageUpdateQ
 
 ProbabilisticBroadcastPkt* ProbabilisticBroadcast::encapsMsg(cMessage* message)
 {
-  assert(static_cast<cPacket*>(message));
-  cPacket* msg = static_cast<cPacket*>(message);
+	assert(static_cast<cPacket*>(message));
+	cPacket* msg = static_cast<cPacket*>(message);
 	ProbabilisticBroadcastPkt* pkt = new ProbabilisticBroadcastPkt(msg->getName(), DATA);
 //	ProbBcastNetwControlInfo* cInfo = dynamic_cast<ProbBcastNetwControlInfo*>(msg->removeControlInfo());
 	cObject* cInfo = msg->removeControlInfo();
@@ -301,7 +299,8 @@ ProbabilisticBroadcastPkt* ProbabilisticBroadcast::encapsMsg(cMessage* message)
 	pkt->setFinalDestAddr(LAddress::L3BROADCAST);
 	pkt->setAppTtl(timeToLive);
 	pkt->setId(getNextID());
-	pkt->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
+
+	setDownControlInfo(pkt, LAddress::L2BROADCAST);
 	//encapsulate the application packet
 	pkt->encapsulate(msg);
 

@@ -489,7 +489,6 @@ Running simulation...
 Passed: [phy0] - Expected "SWITCH_OVER to TX message at phy.": kind = 22001, arrival = 3.5s
 ** Event #2  T=3.5   tbpSim.node[0].nic.mac (TestMacLayer, id=13)
 Passed: [mac0] - Expected "SWITCH_OVER to TX message.": kind = 22001, arrival = 3.5s
-FAILED: TestChannelInfo: Unknown stage.
 ** Event #3  T=3.5   tbpSim.node[0].nic.phy (TestPhyLayer, id=12)
 Passed: [phy0] - Expected "MacPkt at Phy layer.": kind = 12121, arrival = 3.5s
 ** Event #4  T=3.5   tbpSim.node[1].nic.phy (TestPhyLayer, id=17)

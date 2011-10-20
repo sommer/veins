@@ -552,6 +552,20 @@ public:
 
 	/*@}*/
 
+	/**
+	 * @brief Attaches a "control info" (PhyToMac) structure (object) to the message pMsg.
+	 *
+	 * This is most useful when passing packets between protocol layers
+	 * of a protocol stack, the control info will contain the decider result.
+	 *
+	 * The "control info" object will be deleted when the message is deleted.
+	 * Only one "control info" structure can be attached (the second
+	 * setL3ToL2ControlInfo() call throws an error).
+	 *
+	 * @param pMsg		The message where the "control info" shall be attached.
+	 * @param pSrcAddr	The MAC address of the message receiver.
+	 */
+	 virtual cObject *const setUpControlInfo(cMessage *const pMsg, DeciderResult *const pDeciderResult);
 };
 
 #endif /*BASEPHYLAYER_*/

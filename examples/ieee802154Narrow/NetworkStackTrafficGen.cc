@@ -17,10 +17,10 @@
 
 #include <cassert>
 
-#include "NetwToMacControlInfo.h"
 #include "Packet.h"
 #include "BaseMacLayer.h"
 #include "FindModule.h"
+#include "NetwToMacControlInfo.h"
 
 Define_Module(NetworkStackTrafficGen);
 
@@ -120,7 +120,7 @@ void NetworkStackTrafficGen::sendBroadcast()
 	pkt->setSrcAddr(myNetwAddr);
 	pkt->setDestAddr(destination);
 
-	pkt->setControlInfo(new NetwToMacControlInfo(LAddress::L2Type(destination)));
+	NetwToMacControlInfo::setControlInfo(pkt, LAddress::L2BROADCAST);
 
 	Packet p(packetLength, 0, 1);
 	world->publishBBItem(catPacket, &p, -1);

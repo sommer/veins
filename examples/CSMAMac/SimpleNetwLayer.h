@@ -15,8 +15,8 @@
 #include "BaseModule.h"
 #include "NetwPkt_m.h"
 #include "SimpleAddress.h"
-#include "NetwToMacControlInfo.h"
 #include "MacToNetwControlInfo.h"
+#include "NetwToMacControlInfo.h"
 #include "BaseMacLayer.h"
 
 /**
@@ -40,7 +40,7 @@
  *
  * @ingroup exampleCSMA
  */
-class SimpleNetwLayer : public BaseModule{
+class SimpleNetwLayer : public BaseModule {
 //--------members----------
 protected:
 	bool isSwitch;
@@ -88,9 +88,7 @@ protected:
 		helloWorld->setSeqNum(runningSeqNumber++);
 		helloWorld->setTtl(maxTtl);
 
-		NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(LAddress::L2BROADCAST);
-
-		helloWorld->setControlInfo(cInfo);
+		NetwToMacControlInfo::setControlInfo(helloWorld, LAddress::L2BROADCAST);
 
 		const_cast<cModule*>(getNode())->bubble("Hello World!");
 
@@ -109,9 +107,7 @@ protected:
 		fwd->setSeqNum(pkt->getSeqNum());
 		fwd->setTtl(pkt->getTtl() - 1);
 
-		NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(nextHop);
-
-		fwd->setControlInfo(cInfo);
+		NetwToMacControlInfo::setControlInfo(fwd, nextHop);
 
 		sendDown(fwd);
 	}
@@ -180,9 +176,7 @@ protected:
 		jabber->setSeqNum(runningSeqNumber++);
 		jabber->setTtl(maxTtl);
 
-		NetwToMacControlInfo* cInfo = new NetwToMacControlInfo(it->second);
-
-		jabber->setControlInfo(cInfo);
+		NetwToMacControlInfo::setControlInfo(jabber, it->second);
 
 		std::stringstream osBuff(std::stringstream::out);
 		osBuff << "Babbling with " << it->first;

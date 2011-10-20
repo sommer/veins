@@ -13,22 +13,31 @@
  *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************/
-#include "SimpleAddress.h"
+#include "NetwToMacControlInfo.h"
 
 #include <cassert>
-
-const LAddress::L2Type LAddress::L2BROADCAST = 
 #ifdef MIXIM_INET
-    MACAddress::BROADCAST_ADDRESS;
+#include <Ieee802Ctrl_m.h>
+typedef Ieee802Ctrl           tNetwToMacControlInfoBase;
 #else
-    LAddress::L2Type(-1);
-#endif
-const LAddress::L2Type LAddress::L2NULL      = 
-#ifdef MIXIM_INET
-    LAddress::L2Type();
-#else
-    LAddress::L2Type(0);
+typedef NetwToMacControlInfo  tNetwToMacControlInfoBase;
 #endif
 
-const LAddress::L3Type LAddress::L3BROADCAST = LAddress::L3Type(-1);
-const LAddress::L3Type LAddress::L3NULL      = LAddress::L3Type(0);
+
+cObject *const NetwToMacControlInfo::setControlInfo(cMessage *const pMsg, const LAddress::L2Type& pDestAddr)
+{
+	tNetwToMacControlInfoBase *const cCtrlInfo = new tNetwToMacControlInfoBase();
+
+	cCtrlInfo->setDest(pDestAddr);
+	pMsg->setControlInfo(cCtrlInfo);
+
+	return cCtrlInfo;
+}
+
+const LAddress::L2Type& NetwToMacControlInfo::getDestFromControlInfo(const cObject *const pCtrlInfo)
+{
+	const tNetwToMacControlInfoBase *const cCtrlInfo = dynamic_cast<const tNetwToMacControlInfoBase *>(pCtrlInfo);
+
+	assert(cCtrlInfo);
+	return cCtrlInfo->getDest();
+}

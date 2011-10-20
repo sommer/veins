@@ -26,8 +26,6 @@
 
 #include "NetwPkt_m.h"
 #include "NetwControlInfo.h"
-#include "NetwToMacControlInfo.h"
-#include "SimpleAddress.h"
 
 using std::endl;
 
@@ -162,7 +160,7 @@ void Flood::handleLowerMsg(cMessage* m) {
 				<<" > 1 -> rebroadcast msg & send to upper\n";
 				msg->setTtl( msg->getTtl()-1 );
 				dMsg = static_cast<NetwPkt*>(msg->dup());
-				dMsg->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
+				setDownControlInfo(dMsg, LAddress::L2BROADCAST);
 				sendDown(dMsg);
 				nbDataPacketsForwarded++;
 			}
@@ -182,8 +180,10 @@ void Flood::handleLowerMsg(cMessage* m) {
 				<<" > 1 -> forward\n";
 				msg->setTtl( msg->getTtl()-1 );
 				// needs to set the next hop address again to broadcast
-				msg->removeControlInfo();
-				msg->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
+				cObject *const pCtrlInfo = msg->removeControlInfo();
+				if (pCtrlInfo != NULL)
+					delete pCtrlInfo;
+				setDownControlInfo(msg, LAddress::L2BROADCAST);
 				sendDown( msg );
 				nbDataPacketsForwarded++;
 			}
@@ -241,23 +241,23 @@ bool Flood::notBroadcasted(NetwPkt* msg) {
 }
 
 NetwPkt* Flood::encapsMsg(cPacket *appPkt) {
-	LAddress::L2Type macAddr;
-	LAddress::L3Type netwAddr;
+    LAddress::L2Type macAddr;
+    LAddress::L3Type netwAddr;
 
-	EV<<"in encaps...\n";
+    EV<<"in encaps...\n";
 
-	NetwPkt *pkt = new NetwPkt(appPkt->getName(), appPkt->getKind());
-	pkt->setBitLength(headerLength);
+    NetwPkt *pkt = new NetwPkt(appPkt->getName(), appPkt->getKind());
+    pkt->setBitLength(headerLength);
 
-	NetwControlInfo* cInfo = dynamic_cast<NetwControlInfo*>(appPkt->removeControlInfo());
+    cObject* cInfo = appPkt->removeControlInfo();
 
-    if(cInfo == 0){
+    if(cInfo == NULL){
 	EV << "warning: Application layer did not specifiy a destination L3 address\n"
 	   << "\tusing broadcast address instead\n";
 	netwAddr = LAddress::L3BROADCAST;
     } else {
-	EV <<"CInfo removed, netw addr="<< cInfo->getNetwAddr()<<endl;
-        netwAddr = cInfo->getNetwAddr();
+	EV <<"CInfo removed, netw addr="<< NetwControlInfo::getAddressFromControlInfo( cInfo ) <<endl;
+        netwAddr = NetwControlInfo::getAddressFromControlInfo( cInfo );
 	delete cInfo;
     }
 
@@ -265,12 +265,11 @@ NetwPkt* Flood::encapsMsg(cPacket *appPkt) {
     pkt->setDestAddr(netwAddr);
     EV << " netw "<< myNetwAddr << " sending packet" <<endl;
 
-        EV << "sendDown: nHop=L3BROADCAST -> message has to be broadcasted"
-           << " -> set destMac=L2BROADCAST\n";
-        macAddr = LAddress::L2BROADCAST;
+    EV << "sendDown: nHop=L3BROADCAST -> message has to be broadcasted"
+       << " -> set destMac=L2BROADCAST" << endl;
+    macAddr = LAddress::L2BROADCAST;
 
-
-    pkt->setControlInfo(new NetwToMacControlInfo(macAddr));
+    setDownControlInfo(pkt, macAddr);
 
     //encapsulate the application packet
     pkt->encapsulate(appPkt);

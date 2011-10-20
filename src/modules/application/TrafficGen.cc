@@ -110,9 +110,9 @@ void TrafficGen::sendBroadcast()
 
 	// set the control info to tell the network layer the layer 3
 	// address;
-	pkt->setControlInfo( new NetwControlInfo(LAddress::L3BROADCAST) );
+	NetwControlInfo::setControlInfo(pkt, LAddress::L3BROADCAST);
 
-	debugEV << "Sending broadcast packet!\n";
+	debugEV << "Sending broadcast packet!" << endl;
 	sendDown( pkt );
 }
 

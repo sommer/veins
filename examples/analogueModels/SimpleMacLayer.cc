@@ -151,9 +151,8 @@ MacPkt* SimpleMacLayer::createMacPkt(simtime_t length) {
 	s->setBitrate(bitrate);
 
 	//create and initialize control info
-	MacToPhyControlInfo* ctrl = new MacToPhyControlInfo(s);
 	MacPkt* res = new MacPkt();
-	res->setControlInfo(ctrl);
+	MacToPhyControlInfo::setControlInfo(res, s);
 	res->setKind(TEST_MACPKT);
 	res->setDestAddr(LAddress::L2Type(nextReceiver));
 	return res;

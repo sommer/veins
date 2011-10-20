@@ -147,9 +147,7 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet, IEEE802154A::config cfg) {
 	packet->setNbSymbols(nbSymbols);
 
 	// attach control info
-	MacToUWBIRPhyControlInfo* macPhycInfo = new MacToUWBIRPhyControlInfo(theSignal, IEEE802154A::getConfig());
-	packet->setControlInfo(macPhycInfo);
-
+	MacToUWBIRPhyControlInfo::setControlInfo(packet, theSignal, IEEE802154A::getConfig());
 }
 
 bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {

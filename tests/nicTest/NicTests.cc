@@ -282,6 +282,7 @@ void NicTests::onTestModuleMessage(std::string module, cMessage* msg){
     			break;
     		case 4:
     			testForRange("1", 0.2, 0.8, usage);
+    			break;
     		}
     	}
     } else if(msg->getKind() == BaseMacLayer::PACKET_DROPPED) {

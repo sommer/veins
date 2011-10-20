@@ -25,13 +25,13 @@
 #include <cassert>
 
 #include "NetwControlInfo.h"
-#include "NetwToMacControlInfo.h"
 #include "BaseMacLayer.h"
 #include "AddressingInterface.h"
 #include "SimpleAddress.h"
 #include "FindModule.h"
 #include "NetwPkt_m.h"
 #include "ArpInterface.h"
+#include "NetwToMacControlInfo.h"
 
 Define_Module(BaseNetwLayer);
 
@@ -64,7 +64,7 @@ void BaseNetwLayer::initialize(int stage)
 cMessage* BaseNetwLayer::decapsMsg(NetwPkt *msg)
 {
     cMessage *m = msg->decapsulate();
-    m->setControlInfo(new NetwControlInfo(msg->getSrcAddr()));
+    setUpControlInfo(m, msg->getSrcAddr());
     // delete the netw packet
     delete msg;
     return m;
@@ -84,15 +84,15 @@ NetwPkt* BaseNetwLayer::encapsMsg(cPacket *appPkt) {
     NetwPkt *pkt = new NetwPkt(appPkt->getName(), appPkt->getKind());
     pkt->setBitLength(headerLength);
 
-    NetwControlInfo* cInfo = dynamic_cast<NetwControlInfo*>(appPkt->removeControlInfo());
+    cObject* cInfo = appPkt->removeControlInfo();
 
-    if(cInfo == 0){
+    if(cInfo == NULL){
 	EV << "warning: Application layer did not specifiy a destination L3 address\n"
 	   << "\tusing broadcast address instead\n";
 	netwAddr = LAddress::L3BROADCAST;
     } else {
-	coreEV <<"CInfo removed, netw addr="<< cInfo->getNetwAddr()<<std::endl;
-        netwAddr = cInfo->getNetwAddr();
+	coreEV <<"CInfo removed, netw addr="<< NetwControlInfo::getAddressFromControlInfo( cInfo ) << std::endl;
+        netwAddr = NetwControlInfo::getAddressFromControlInfo( cInfo );
 	delete cInfo;
     }
 
@@ -109,7 +109,7 @@ NetwPkt* BaseNetwLayer::encapsMsg(cPacket *appPkt) {
         macAddr = arp->getMacAddr(netwAddr);
     }
 
-    pkt->setControlInfo(new NetwToMacControlInfo(macAddr));
+    setDownControlInfo(pkt, macAddr);
 
     //encapsulate the application packet
     pkt->encapsulate(appPkt);
@@ -172,4 +172,20 @@ void BaseNetwLayer::handleLowerControl(cMessage* msg)
 		delete msg;
 		break;
 	}
+}
+
+/**
+ * Attaches a "control info" structure (object) to the down message pMsg.
+ */
+cObject *const BaseNetwLayer::setDownControlInfo(cMessage *const pMsg, const LAddress::L2Type& pDestAddr)
+{
+	return NetwToMacControlInfo::setControlInfo(pMsg, pDestAddr);
+}
+
+/**
+ * Attaches a "control info" structure (object) to the up message pMsg.
+ */
+cObject *const BaseNetwLayer::setUpControlInfo(cMessage *const pMsg, const LAddress::L2Type& pSrcAddr)
+{
+	return NetwControlInfo::setControlInfo(pMsg, pSrcAddr);
 }

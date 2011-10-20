@@ -513,13 +513,9 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	// create the new AirFrame
 	AirFrame* frame = new AirFrame(macPkt->getName(), AIR_FRAME);
 
-	MacToPhyControlInfo* macToPhyCI = static_cast<MacToPhyControlInfo*>(ctrlInfo);
-
-
-
 	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
 	// We are now the new owner of this instance.
-	Signal* s = macToPhyCI->retrieveSignal();
+	Signal* s = MacToPhyControlInfo::getSignalFromControlInfo(ctrlInfo);
 	// make sure we really obtained a pointer to an instance
 	assert(s);
 
@@ -546,16 +542,9 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	delete s;
 	s = 0;
 
-
-
 	// delete the Control info
-	delete macToPhyCI;
-	macToPhyCI = 0;
+	delete ctrlInfo;
 	ctrlInfo = 0;
-
-
-
-
 
 	frame->encapsulate(macPkt);
 
@@ -825,9 +814,7 @@ void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult* result) {
 
 	assert(packet);
 
-	PhyToMacControlInfo* ctrlInfo = new PhyToMacControlInfo(result);
-
-	packet->setControlInfo(ctrlInfo);
+	setUpControlInfo(packet, result);
 
 	sendMacPktUp(packet);
 }
@@ -865,4 +852,12 @@ BaseWorldUtility* BasePhyLayer::getWorldUtility() {
 
 void BasePhyLayer::recordScalar(const char *name, double value, const char *unit) {
 	ChannelAccess::recordScalar(name, value, unit);
+}
+
+/**
+ * Attaches a "control info" (PhyToMac) structure (object) to the message pMsg.
+ */
+cObject *const BasePhyLayer::setUpControlInfo(cMessage *const pMsg, DeciderResult *const pDeciderResult)
+{
+	return PhyToMacControlInfo::setControlInfo(pMsg, pDeciderResult);
 }

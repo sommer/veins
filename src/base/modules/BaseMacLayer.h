@@ -193,6 +193,45 @@ protected:
      * @return pointer to the connection manager module
      */
     BaseConnectionManager* getConnectionManager();
+
+    /**
+     * @brief Extracts the MAC address from the "control info" structure (object).
+     *
+     * Extract the destination MAC address from the "control info" which was prev. set by NetwToMacControlInfo::setControlInfo().
+     *
+     * @param pCtrlInfo	The "control info" structure (object) prev. set by NetwToMacControlInfo::setControlInfo().
+     * @return The MAC address of message receiver.
+     */
+    virtual const LAddress::L2Type& getUpperDestinationFromControlInfo(const cObject *const pCtrlInfo);
+
+    /**
+     * @brief Attaches a "control info" (MacToNetw) structure (object) to the message pMsg.
+     *
+     * This is most useful when passing packets between protocol layers
+     * of a protocol stack, the control info will contain the destination MAC address.
+     *
+     * The "control info" object will be deleted when the message is deleted.
+     * Only one "control info" structure can be attached (the second
+     * setL3ToL2ControlInfo() call throws an error).
+     *
+     * @param pMsg		The message where the "control info" shall be attached.
+     * @param pSrcAddr	The MAC address of the message receiver.
+     */
+    virtual cObject *const setUpControlInfo(cMessage *const pMsg, const LAddress::L2Type& pSrcAddr);
+    /**
+     * @brief Attaches a "control info" (MacToPhy) structure (object) to the message pMsg.
+     *
+     * This is most useful when passing packets between protocol layers
+     * of a protocol stack, the control info will contain the signal.
+     *
+     * The "control info" object will be deleted when the message is deleted.
+     * Only one "control info" structure can be attached (the second
+     * setL3ToL2ControlInfo() call throws an error).
+     *
+     * @param pMsg		The message where the "control info" shall be attached.
+     * @param pSignal	The signal which should be send.
+     */
+    virtual cObject *const setDownControlInfo(cMessage *const pMsg, Signal *const pSignal);
 };
 
 #endif

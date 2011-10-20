@@ -32,11 +32,6 @@
 #include "BaseDecider.h"
 #include "DeciderResult802154Narrow.h"
 #include "BaseArp.h"
-#include "MacToPhyControlInfo.h"
-#include "PhyToMacControlInfo.h"
-#include "NetwToMacControlInfo.h"
-#include "MacToNetwControlInfo.h"
-#include "SimpleAddress.h"
 #include "BasePhyLayer.h"
 #include "BaseConnectionManager.h"
 #include "FindModule.h"
@@ -191,10 +186,9 @@ void csma::handleUpperMsg(cMessage *msg) {
 	//MacPkt *macPkt = encapsMsg(msg);
 	MacPkt *macPkt = new MacPkt(msg->getName());
 	macPkt->setBitLength(headerLength);
-	NetwToMacControlInfo* cInfo =
-			static_cast<NetwToMacControlInfo*> (msg->removeControlInfo());
-	debugEV<<"CSMA received a message from upper layer, name is " << msg->getName() <<", CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
-	const LAddress::L2Type& dest = cInfo->getNextHopMac();
+	cObject *const cInfo = msg->removeControlInfo();
+	debugEV<<"CSMA received a message from upper layer, name is " << msg->getName() <<", CInfo removed, mac addr="<< getUpperDestinationFromControlInfo(cInfo) << endl;
+	LAddress::L2Type dest = getUpperDestinationFromControlInfo(cInfo);
 	macPkt->setDestAddr(dest);
 	delete cInfo;
 	macPkt->setSrcAddr(myMacAddr);
@@ -340,10 +334,7 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 
 void csma::attachSignal(MacPkt* mac, simtime_t startTime) {
 	simtime_t duration = (mac->getBitLength() + phyHeaderLength)/bitrate;
-	Signal* s = createSignal(startTime, duration, txPower, bitrate);
-	MacToPhyControlInfo* cinfo = new MacToPhyControlInfo(s);
-
-	mac->setControlInfo(cinfo);
+	setDownControlInfo(mac, createSignal(startTime, duration, txPower, bitrate));
 }
 
 void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
@@ -879,9 +870,8 @@ void csma::handleLowerControl(cMessage *msg) {
 
 cPacket *csma::decapsMsg(MacPkt * macPkt) {
 	cPacket * msg = macPkt->decapsulate();
-	MacToNetwControlInfo* info = new MacToNetwControlInfo(macPkt->getSrcAddr());
+	setUpControlInfo(msg, macPkt->getSrcAddr());
 
-	msg->setControlInfo(info);
 	return msg;
 }
 

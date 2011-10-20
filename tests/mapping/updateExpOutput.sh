@@ -1,7 +1,3 @@
 #/bin/bash
 
-./mapping > exp-output
-
-
-
-
+./runTest.sh "update-exp-output"

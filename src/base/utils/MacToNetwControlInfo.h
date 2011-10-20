@@ -76,7 +76,7 @@ public:
 	/**
 	 * @brief Returns the MAC address of the packets last hop.
 	 */
-	LAddress::L2Type getLastHopMac() const {
+	const LAddress::L2Type& getLastHopMac() const {
 		return lastHopMac;
 	}
 
@@ -105,6 +105,37 @@ public:
 	void setRSSI(double _rssi) {
 		rssi = _rssi;
 	}
+
+    /**
+     * @brief Attaches a "control info" structure (object) to the message pMsg.
+     *
+     * This is most useful when passing packets between protocol layers
+     * of a protocol stack, the control info will contain the source MAC address.
+     *
+     * The "control info" object will be deleted when the message is deleted.
+     * Only one "control info" structure can be attached (the second
+     * setL3ToL2ControlInfo() call throws an error).
+     *
+     * @param pMsg		The message where the "control info" shall be attached.
+     * @param pSrcAddr	The MAC address of the message sender.
+     */
+    static cObject *const setControlInfo(cMessage *const pMsg, const LAddress::L2Type& pSrcAddr) {
+    	MacToNetwControlInfo *const cCtrlInfo = new MacToNetwControlInfo(pSrcAddr);
+    	pMsg->setControlInfo(cCtrlInfo);
+
+    	return cCtrlInfo;
+    }
+    static const LAddress::L2Type& getAddress(cMessage *const pMsg) {
+    	return getAddressFromControlInfo(pMsg->getControlInfo());
+    }
+    static const LAddress::L2Type& getAddressFromControlInfo(cObject *const pCtrlInfo) {
+    	MacToNetwControlInfo *const cCtrlInfo = dynamic_cast<MacToNetwControlInfo *const>(pCtrlInfo);
+
+    	if (cCtrlInfo)
+    		return cCtrlInfo->getLastHopMac();
+
+    	return LAddress::L2NULL;
+    }
 };
 
 #endif /* MACTONETWCONTROLINFO_H_ */

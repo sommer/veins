@@ -406,19 +406,14 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 	// create the new AirFrame
 	AirFrameUWBIR* frame = new AirFrameUWBIR("airframe", AIR_FRAME);
 
-	MacToUWBIRPhyControlInfo* macToPhyCI = static_cast<MacToUWBIRPhyControlInfo*>(ctrlInfo);
-
-
-
 	// Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
 	// We are now the new owner of this instance.
-	Signal* s = macToPhyCI->retrieveSignal();
+	Signal* s = MacToUWBIRPhyControlInfo::getSignalFromControlInfo(ctrlInfo);
 	// make sure we really obtained a pointer to an instance
 	assert(s);
 
 	// put host move pattern to Signal
 	s->setMove(move);
-
 
 	// set the members
 	assert(s->getDuration() > 0);
@@ -434,22 +429,15 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 	frame->setBitLength(headerLength);
 	frame->setId(world->getUniqueAirFrameId());
 	frame->setChannel(radio->getCurrentChannel());
-	frame->setCfg(macToPhyCI->getConfig());
-
-
+	frame->setCfg(MacToUWBIRPhyControlInfo::getConfigFromControlInfo(ctrlInfo));
 
 	// pointer and Signal not needed anymore
 	delete s;
 	s = 0;
 
-
-
-
 	// delete the Control info
-	delete macToPhyCI;
-	macToPhyCI = 0;
+	delete ctrlInfo;
 	ctrlInfo = 0;
-
 
 	frame->encapsulate(macPkt);
 

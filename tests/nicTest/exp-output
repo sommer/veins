@@ -1,14 +1,15 @@
-OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2011 Andras Varga, OpenSim Ltd.
+Version: 4.2, build: 110908-a25140a, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 54
-Loading NED files from /home/karl/git-repo/mixim/tests: 46
+Loading NED files from ..\..\src: 75
+Loading NED files from ..: 46
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\src: 75
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\tests: 46
 
 Preparing for running configuration Test1, run #0...
 Scenario: $repetition=0
-Assigned runID=Test1-0-20110601-13:55:06-5953
+Assigned runID=Test1-0-20111019-16:27:13-9508
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -17,46 +18,46 @@ channelcontrol:  using 1x1x1 grid
 channelcontrol: findDistance is (500,500,345.105)
 node[0]::Mac80211MultiChannel: Initializing stage 0
 node[0]::Mac80211MultiChannel:  fsc: 924231285
-node[0]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[0]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[0].nic.phy: No analogue models configuration found in configuration file..
 
 node[0]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[1]::Mac80211MultiChannel: Initializing stage 0
 node[1]::Mac80211MultiChannel:  fsc: 1537364731
-node[1]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[1]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[1].nic.phy: No analogue models configuration found in configuration file..
 
 node[1]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[2]::Mac80211MultiChannel: Initializing stage 0
 node[2]::Mac80211MultiChannel:  fsc: 1819583497
-node[2]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[2]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[2].nic.phy: No analogue models configuration found in configuration file..
 
 node[2]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[3]::Mac80211MultiChannel: Initializing stage 0
 node[3]::Mac80211MultiChannel:  fsc: 1650906866
-node[3]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[3]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[3].nic.phy: No analogue models configuration found in configuration file..
 
 node[3]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
-updatePosition:  HostMove  startPos: (250,200) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,200,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #12
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
-node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,200) direction: (0,0) startTime: 0 speed: 0
-node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
+node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,200,0) direction: (0,0,0) startTime: 0 speed: 0
+node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[0]::Mac80211MultiChannel: 0 random backoff = 0.00008
 
 <!> Module NicTest.node[0].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (150,200) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (150,200,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #19
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #19 and #12 are in range
 NicEntry: connecting nic #19 and #12
 NicEntry: found 0 already existing usable in-gates.
@@ -64,16 +65,16 @@ NicEntry: found 0 already existing usable out-gates.
 NicEntry: found 0 already existing usable in-gates.
 NicEntry: found 0 already existing usable out-gates.
 NicEntry: connecting nic #12 and #19
-node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (150,200) direction: (0,0) startTime: 0 speed: 0
-node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (150,200,0) direction: (0,0,0) startTime: 0 speed: 0
+node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[1]::Mac80211MultiChannel: 0 random backoff = 0.00046
 
 <!> Module NicTest.node[1].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (250,300) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,300,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #26
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #26 and #12 are in range
 NicEntry: connecting nic #26 and #12
 NicEntry: found 0 already existing usable in-gates.
@@ -82,16 +83,16 @@ NicEntry: connecting nic #12 and #26
 channelcontrol: nic #26 and #19 are in range
 NicEntry: connecting nic #26 and #19
 NicEntry: connecting nic #19 and #26
-node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,300) direction: (0,0) startTime: 0 speed: 0
-node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,300,0) direction: (0,0,0) startTime: 0 speed: 0
+node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[2]::Mac80211MultiChannel: 0 random backoff = 0.00012
 
 <!> Module NicTest.node[2].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (150,300) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (150,300,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #33
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #33 and #12 are in range
 NicEntry: connecting nic #33 and #12
 NicEntry: found 0 already existing usable in-gates.
@@ -103,8 +104,8 @@ NicEntry: connecting nic #19 and #33
 channelcontrol: nic #33 and #26 are in range
 NicEntry: connecting nic #33 and #26
 NicEntry: connecting nic #26 and #33
-node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (150,300) direction: (0,0) startTime: 0 speed: 0
-node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (150,300,0) direction: (0,0,0) startTime: 0 speed: 0
+node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[3]::Mac80211MultiChannel: 0 random backoff = 0.00048
 
 <!> Module NicTest.node[3].nic.phy: No battery module defined!.
@@ -132,38 +133,38 @@ Passed: [app3] - Expected module - Sending Host of pair B
 
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
-Passed: [app0] - Expected "[1.1] - A same channel but different time as B": kind = 22332, arrival = (0.0025<=t<=0.0037)
-Passed: [app2] - Expected "Com A at receiver B": kind = 22332, arrival = (0.0025<=t<=0.0037)
-Passed: [app3] - Expected "Com A at sender B": kind = 22332, arrival = (0.0025<=t<=0.0037)
-Passed: [app0] - Expected "Com B at receiver A": kind = 22334, arrival = (0.006152<=t<=0.007352)
-Passed: [app1] - Expected "Com B at sender A": kind = 22334, arrival = (0.006152<=t<=0.007352)
-Passed: [app2] - Expected "[1.2] - B same channel but different time as A": kind = 22334, arrival = (0.006152<=t<=0.007352)
+Passed: [app0] - Expected "[1.1] - A same channel but different time as B": kind = 22332, arrival = (0.0025<=t<=0.0038) t was 0.003652
+Passed: [app2] - Expected "Com A at receiver B": kind = 22332, arrival = (0.0025<=t<=0.0038) t was 0.003652
+Passed: [app3] - Expected "Com A at sender B": kind = 22332, arrival = (0.0025<=t<=0.0038) t was 0.003652
+Passed: [app0] - Expected "Com B at receiver A": kind = 22334, arrival = (0.006152<=t<=0.007452) t was 0.00655
+Passed: [app1] - Expected "Com B at sender A": kind = 22334, arrival = (0.006152<=t<=0.007452) t was 0.00655
+Passed: [app2] - Expected "[1.2] - B same channel but different time as A": kind = 22334, arrival = (0.006152<=t<=0.007452) t was 0.00655
 Passed: [app1] - Expected "Waiting for 0.0015s.": kind = 2224, arrival = 0.00805s
-Passed: [app0] - Expected "[2.1] - A same channel same time as B": kind = 22332, arrival = (0.00905<=t<=0.01025)
-Passed: [app2] - Expected "Com A at receiver B": kind = 22332, arrival = (0.00905<=t<=0.01025)
-Passed: [app3] - Expected "Com A at sender B": kind = 22332, arrival = (0.00905<=t<=0.01025)
-Passed: [app0] - Expected "Com B at receiver A": kind = 22334, arrival = (0.01155<=t<=0.01395)
-Passed: [app1] - Expected "Com B at sender A": kind = 22334, arrival = (0.01155<=t<=0.01395)
-Passed: [app2] - Expected "[2.2] - B same channel same time as A": kind = 22334, arrival = (0.01155<=t<=0.01395)
+Passed: [app0] - Expected "[2.1] - A same channel same time as B": kind = 22332, arrival = (0.00905<=t<=0.01035) t was 0.009908
+Passed: [app2] - Expected "Com A at receiver B": kind = 22332, arrival = (0.00905<=t<=0.01035) t was 0.009908
+Passed: [app3] - Expected "Com A at sender B": kind = 22332, arrival = (0.00905<=t<=0.01035) t was 0.009908
+Passed: [app0] - Expected "Com B at receiver A": kind = 22334, arrival = (0.01155<=t<=0.014149999999) t was 0.012786
+Passed: [app1] - Expected "Com B at sender A": kind = 22334, arrival = (0.01155<=t<=0.014149999999) t was 0.012786
+Passed: [app2] - Expected "[2.2] - B same channel same time as A": kind = 22334, arrival = (0.01155<=t<=0.014149999999) t was 0.012786
 Passed: [3] - Sender of B switches to different channel
 Passed: [app3] - Expected "Waiting for 5s.": kind = 2224, arrival = 5.012786s
 Passed: [4] - B different channel between sender and receiver
 Passed: [5] - Receiver of B switches to different channel
-Passed: [app2] - Expected "[6] - B sender and receiver back to same channel": kind = 22334, arrival = (5.015286<=t<=5.016486)
+Passed: [app2] - Expected "[6] - B sender and receiver back to same channel": kind = 22334, arrival = (5.015286<=t<=5.016586) t was 5.015664
 Passed: [app1] - Expected "Waiting for 0.0015s.": kind = 2224, arrival = 5.017164s
-Passed: [app0] - Expected "[7.1] - A different channel same time as B": kind = 22332, arrival = (5.018164<=t<=5.019364)
-Passed: [app2] - Expected "[7.2] - B different channel same time as A": kind = 22334, arrival = (5.019664<=t<=5.020864)
+Passed: [app0] - Expected "[7.1] - A different channel same time as B": kind = 22332, arrival = (5.018164<=t<=5.019464) t was 5.018722
+Passed: [app2] - Expected "[7.2] - B different channel same time as A": kind = 22334, arrival = (5.019664<=t<=5.020964) t was 5.020042
 Passed: [app3] - Expected "Waiting for 0.00225s.": kind = 2224, arrival = 5.022292s
-Passed: [app2] - Expected "Waiting for 0.00182s.": kind = 2224, arrival = 5.024112s
+Passed: [app2] - Expected "Waiting for 0.00193s.": kind = 2224, arrival = 5.024222s
 Passed: [8] - B receiver changes channel during reception.
-Passed: [app3] - Expected "Waiting for 0.00225s.": kind = 2224, arrival = 5.026362s
+Passed: [app3] - Expected "Waiting for 0.00225s.": kind = 2224, arrival = 5.026472s
 
 <!> Module NicTest.node[3].app: Switched channel while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!.
 
 Passed: [9] - B sender changes channel during transmission.
-** Event #215   T=5.02699   Elapsed: 0.010s (0m 00s)   ev/sec=21400
+** Event #215   T=5.0271   Elapsed: 0.049s (0m 00s)   ev/sec=4367.35
 
-<!> No more events -- simulation ended at event #215, t=5.02699.
+<!> No more events -- simulation ended at event #215, t=5.0271.
 
 
 Calling finish() at end of Run #0...
@@ -185,17 +186,18 @@ Passed: app2 - Test has been executed.
 Passed: app3 - Test has been executed.
 
 End.
-OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2011 Andras Varga, OpenSim Ltd.
+Version: 4.2, build: 110908-a25140a, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 54
-Loading NED files from /home/karl/git-repo/mixim/tests: 46
+Loading NED files from ..\..\src: 75
+Loading NED files from ..: 46
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\src: 75
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\tests: 46
 
 Preparing for running configuration Test2, run #0...
 Scenario: $repetition=0
-Assigned runID=Test2-0-20110601-13:55:06-5954
+Assigned runID=Test2-0-20111019-16:27:14-7824
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -204,46 +206,46 @@ channelcontrol:  using 1x1x1 grid
 channelcontrol: findDistance is (500,500,345.105)
 node[0]::Mac80211MultiChannel: Initializing stage 0
 node[0]::Mac80211MultiChannel:  fsc: 924231285
-node[0]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[0]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[0].nic.phy: No analogue models configuration found in configuration file..
 
 node[0]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[1]::Mac80211MultiChannel: Initializing stage 0
 node[1]::Mac80211MultiChannel:  fsc: 1537364731
-node[1]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[1]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[1].nic.phy: No analogue models configuration found in configuration file..
 
 node[1]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[2]::Mac80211MultiChannel: Initializing stage 0
 node[2]::Mac80211MultiChannel:  fsc: 1819583497
-node[2]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[2]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[2].nic.phy: No analogue models configuration found in configuration file..
 
 node[2]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[3]::Mac80211MultiChannel: Initializing stage 0
 node[3]::Mac80211MultiChannel:  fsc: 1650906866
-node[3]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[3]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[3].nic.phy: No analogue models configuration found in configuration file..
 
 node[3]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
-updatePosition:  HostMove  startPos: (50,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (50,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #12
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
-node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (50,50) direction: (0,0) startTime: 0 speed: 0
-node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
+node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (50,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[0]::Mac80211MultiChannel: 0 random backoff = 0.00008
 
 <!> Module NicTest.node[0].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #19
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #19 and #12 are in range
 NicEntry: connecting nic #19 and #12
 NicEntry: found 0 already existing usable in-gates.
@@ -251,26 +253,26 @@ NicEntry: found 0 already existing usable out-gates.
 NicEntry: found 0 already existing usable in-gates.
 NicEntry: found 0 already existing usable out-gates.
 NicEntry: connecting nic #12 and #19
-node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
-node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[1]::Mac80211MultiChannel: 0 random backoff = 0.00046
 
 <!> Module NicTest.node[1].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (250,450) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,450,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #26
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
-node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,450) direction: (0,0) startTime: 0 speed: 0
-node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
+node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,450,0) direction: (0,0,0) startTime: 0 speed: 0
+node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[2]::Mac80211MultiChannel: 0 random backoff = 0.00012
 
 <!> Module NicTest.node[2].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (450,450) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (450,450,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #33
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #33 and #26 are in range
 NicEntry: connecting nic #33 and #26
 NicEntry: found 0 already existing usable in-gates.
@@ -278,8 +280,8 @@ NicEntry: found 0 already existing usable out-gates.
 NicEntry: found 0 already existing usable in-gates.
 NicEntry: found 0 already existing usable out-gates.
 NicEntry: connecting nic #26 and #33
-node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (450,450) direction: (0,0) startTime: 0 speed: 0
-node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (450,450,0) direction: (0,0,0) startTime: 0 speed: 0
+node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[3]::Mac80211MultiChannel: 0 random backoff = 0.00048
 
 <!> Module NicTest.node[3].nic.phy: No battery module defined!.
@@ -303,7 +305,7 @@ Passed: [0.2] - B on Channel 1.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage ratio should be very good (over 1.0). - (1<=1.434854424963<=2)
-** Event #4613   T=0.201344   Elapsed: 0.192s (0m 00s)   ev/sec=24020.8
+** Event #4613   T=0.201344   Elapsed: 0.471s (0m 00s)   ev/sec=9791.93
 
 <!> No more events -- simulation ended at event #4613, t=0.201344.
 
@@ -318,17 +320,18 @@ Passed: app2 - Test has been executed.
 Passed: app3 - Test has been executed.
 
 End.
-OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2011 Andras Varga, OpenSim Ltd.
+Version: 4.2, build: 110908-a25140a, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 54
-Loading NED files from /home/karl/git-repo/mixim/tests: 46
+Loading NED files from ..\..\src: 75
+Loading NED files from ..: 46
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\src: 75
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\tests: 46
 
 Preparing for running configuration Test3, run #0...
 Scenario: $repetition=0
-Assigned runID=Test3-0-20110601-13:55:07-5955
+Assigned runID=Test3-0-20111019-16:27:15-4976
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -337,46 +340,46 @@ channelcontrol:  using 1x1x1 grid
 channelcontrol: findDistance is (500,500,345.105)
 node[0]::Mac80211MultiChannel: Initializing stage 0
 node[0]::Mac80211MultiChannel:  fsc: 924231285
-node[0]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[0]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[0].nic.phy: No analogue models configuration found in configuration file..
 
 node[0]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[1]::Mac80211MultiChannel: Initializing stage 0
 node[1]::Mac80211MultiChannel:  fsc: 1537364731
-node[1]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[1]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[1].nic.phy: No analogue models configuration found in configuration file..
 
 node[1]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[2]::Mac80211MultiChannel: Initializing stage 0
 node[2]::Mac80211MultiChannel:  fsc: 1819583497
-node[2]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[2]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[2].nic.phy: No analogue models configuration found in configuration file..
 
 node[2]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[3]::Mac80211MultiChannel: Initializing stage 0
 node[3]::Mac80211MultiChannel:  fsc: 1650906866
-node[3]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[3]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[3].nic.phy: No analogue models configuration found in configuration file..
 
 node[3]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
-updatePosition:  HostMove  startPos: (50,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (50,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #12
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
-node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (50,50) direction: (0,0) startTime: 0 speed: 0
-node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
+node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (50,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[0]::Mac80211MultiChannel: 0 random backoff = 0.00008
 
 <!> Module NicTest.node[0].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #19
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #19 and #12 are in range
 NicEntry: connecting nic #19 and #12
 NicEntry: found 0 already existing usable in-gates.
@@ -384,26 +387,26 @@ NicEntry: found 0 already existing usable out-gates.
 NicEntry: found 0 already existing usable in-gates.
 NicEntry: found 0 already existing usable out-gates.
 NicEntry: connecting nic #12 and #19
-node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
-node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[1]::Mac80211MultiChannel: 0 random backoff = 0.00046
 
 <!> Module NicTest.node[1].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (250,450) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,450,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #26
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
-node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,450) direction: (0,0) startTime: 0 speed: 0
-node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 2 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
+node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,450,0) direction: (0,0,0) startTime: 0 speed: 0
+node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 2 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[2]::Mac80211MultiChannel: 0 random backoff = 0.00012
 
 <!> Module NicTest.node[2].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (450,450) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (450,450,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #33
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #33 and #26 are in range
 NicEntry: connecting nic #33 and #26
 NicEntry: found 0 already existing usable in-gates.
@@ -411,8 +414,8 @@ NicEntry: found 0 already existing usable out-gates.
 NicEntry: found 0 already existing usable in-gates.
 NicEntry: found 0 already existing usable out-gates.
 NicEntry: connecting nic #26 and #33
-node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (450,450) direction: (0,0) startTime: 0 speed: 0
-node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 2 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (450,450,0) direction: (0,0,0) startTime: 0 speed: 0
+node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 2 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[3]::Mac80211MultiChannel: 0 random backoff = 0.00048
 
 <!> Module NicTest.node[3].nic.phy: No battery module defined!.
@@ -436,7 +439,7 @@ Passed: [0.2] - B on Channel 2.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage should be about the same as run 2. - (1<=1.434854424963<=2)
-** Event #4613   T=0.201344   Elapsed: 0.224s (0m 00s)   ev/sec=20589.3
+** Event #4613   T=0.201344   Elapsed: 0.488s (0m 00s)   ev/sec=9450.82
 
 <!> No more events -- simulation ended at event #4613, t=0.201344.
 
@@ -451,17 +454,18 @@ Passed: app2 - Test has been executed.
 Passed: app3 - Test has been executed.
 
 End.
-OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2011 Andras Varga, OpenSim Ltd.
+Version: 4.2, build: 110908-a25140a, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 54
-Loading NED files from /home/karl/git-repo/mixim/tests: 46
+Loading NED files from ..\..\src: 75
+Loading NED files from ..: 46
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\src: 75
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\tests: 46
 
 Preparing for running configuration Test4, run #0...
 Scenario: $repetition=0
-Assigned runID=Test4-0-20110601-13:55:07-5956
+Assigned runID=Test4-0-20111019-16:27:17-5976
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -470,46 +474,46 @@ channelcontrol:  using 1x1x1 grid
 channelcontrol: findDistance is (500,500,345.105)
 node[0]::Mac80211MultiChannel: Initializing stage 0
 node[0]::Mac80211MultiChannel:  fsc: 924231285
-node[0]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[0]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[0].nic.phy: No analogue models configuration found in configuration file..
 
 node[0]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[1]::Mac80211MultiChannel: Initializing stage 0
 node[1]::Mac80211MultiChannel:  fsc: 1537364731
-node[1]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[1]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[1].nic.phy: No analogue models configuration found in configuration file..
 
 node[1]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[2]::Mac80211MultiChannel: Initializing stage 0
 node[2]::Mac80211MultiChannel:  fsc: 1819583497
-node[2]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[2]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[2].nic.phy: No analogue models configuration found in configuration file..
 
 node[2]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[3]::Mac80211MultiChannel: Initializing stage 0
 node[3]::Mac80211MultiChannel:  fsc: 1650906866
-node[3]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[3]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[3].nic.phy: No analogue models configuration found in configuration file..
 
 node[3]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
-updatePosition:  HostMove  startPos: (50,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (50,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #12
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
-node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (50,50) direction: (0,0) startTime: 0 speed: 0
-node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
+node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (50,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[0]::Mac80211MultiChannel: 0 random backoff = 0.00008
 
 <!> Module NicTest.node[0].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #19
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #19 and #12 are in range
 NicEntry: connecting nic #19 and #12
 NicEntry: found 0 already existing usable in-gates.
@@ -517,16 +521,16 @@ NicEntry: found 0 already existing usable out-gates.
 NicEntry: found 0 already existing usable in-gates.
 NicEntry: found 0 already existing usable out-gates.
 NicEntry: connecting nic #12 and #19
-node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
-node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[1]::Mac80211MultiChannel: 0 random backoff = 0.00046
 
 <!> Module NicTest.node[1].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #26
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #26 and #12 are in range
 NicEntry: connecting nic #26 and #12
 NicEntry: found 0 already existing usable in-gates.
@@ -535,16 +539,16 @@ NicEntry: connecting nic #12 and #26
 channelcontrol: nic #26 and #19 are in range
 NicEntry: connecting nic #26 and #19
 NicEntry: connecting nic #19 and #26
-node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
-node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[2]::Mac80211MultiChannel: 0 random backoff = 0.00012
 
 <!> Module NicTest.node[2].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (450,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (450,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #33
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #33 and #19 are in range
 NicEntry: connecting nic #33 and #19
 NicEntry: found 0 already existing usable in-gates.
@@ -553,8 +557,8 @@ NicEntry: connecting nic #19 and #33
 channelcontrol: nic #33 and #26 are in range
 NicEntry: connecting nic #33 and #26
 NicEntry: connecting nic #26 and #33
-node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (450,50) direction: (0,0) startTime: 0 speed: 0
-node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (450,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[3]::Mac80211MultiChannel: 0 random backoff = 0.00048
 
 <!> Module NicTest.node[3].nic.phy: No battery module defined!.
@@ -578,7 +582,7 @@ Passed: [0.2] - B on Channel 1.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage ratio should be very bad (half of run 2). - (0.2<=0.754034240056<=0.8)
-** Event #6845   T=0.383404   Elapsed: 0.550s (0m 00s)   ev/sec=12443.6
+** Event #6845   T=0.383404   Elapsed: 1.165s (0m 01s)   ev/sec=5874.68
 
 <!> No more events -- simulation ended at event #6845, t=0.383404.
 
@@ -593,17 +597,18 @@ Passed: app2 - Test has been executed.
 Passed: app3 - Test has been executed.
 
 End.
-OMNeT++ Discrete Event Simulation  (C) 1992-2010 Andras Varga, OpenSim Ltd.
-Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+OMNeT++ Discrete Event Simulation  (C) 1992-2011 Andras Varga, OpenSim Ltd.
+Version: 4.2, build: 110908-a25140a, edition: Academic Public License -- NOT FOR COMMERCIAL USE
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
-Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 54
-Loading NED files from /home/karl/git-repo/mixim/tests: 46
+Loading NED files from ..\..\src: 75
+Loading NED files from ..: 46
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\src: 75
+Loading NED files from d:\Business\Projects\SuSAN\swsrc\MiXiM\tests: 46
 
 Preparing for running configuration Test5, run #0...
 Scenario: $repetition=0
-Assigned runID=Test5-0-20110601-13:55:08-5958
+Assigned runID=Test5-0-20111019-16:27:19-10364
 Setting up network `org.mixim.tests.nicTest.NicTest'...
 Initializing...
 channelcontrol: initializing BaseConnectionManager
@@ -612,46 +617,46 @@ channelcontrol:  using 1x1x1 grid
 channelcontrol: findDistance is (500,500,345.105)
 node[0]::Mac80211MultiChannel: Initializing stage 0
 node[0]::Mac80211MultiChannel:  fsc: 924231285
-node[0]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[0]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[0].nic.phy: No analogue models configuration found in configuration file..
 
 node[0]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[1]::Mac80211MultiChannel: Initializing stage 0
 node[1]::Mac80211MultiChannel:  fsc: 1537364731
-node[1]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[1]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[1].nic.phy: No analogue models configuration found in configuration file..
 
 node[1]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[2]::Mac80211MultiChannel: Initializing stage 0
 node[2]::Mac80211MultiChannel:  fsc: 1819583497
-node[2]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[2]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[2].nic.phy: No analogue models configuration found in configuration file..
 
 node[2]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
 node[3]::Mac80211MultiChannel: Initializing stage 0
 node[3]::Mac80211MultiChannel:  fsc: 1650906866
-node[3]::Mac80211MultiChannel: SIFS: 1e-05 DIFS: 5e-05 EIFS: 0.000364
+node[3]::Mac80211MultiChannel: SIFS: 1e-005 DIFS: 5e-005 EIFS: 0.000364
 
 <!> Module NicTest.node[3].nic.phy: No analogue models configuration found in configuration file..
 
 node[3]::PhyLayerBattery: Decider "Decider80211MultiChannel" loaded.
-updatePosition:  HostMove  startPos: (50,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (50,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #12
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
-node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (50,50) direction: (0,0) startTime: 0 speed: 0
-node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
+node[0]::PhyLayerBattery: new HostMove:  HostMove  startPos: (50,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[0]::Mac80211MultiChannel:  MAC Address: 0 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[0]::Mac80211MultiChannel: 0 random backoff = 0.00008
 
 <!> Module NicTest.node[0].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #19
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #19 and #12 are in range
 NicEntry: connecting nic #19 and #12
 NicEntry: found 0 already existing usable in-gates.
@@ -659,16 +664,16 @@ NicEntry: found 0 already existing usable out-gates.
 NicEntry: found 0 already existing usable in-gates.
 NicEntry: found 0 already existing usable out-gates.
 NicEntry: connecting nic #12 and #19
-node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
-node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[1]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[1]::Mac80211MultiChannel:  MAC Address: 1 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 1 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[1]::Mac80211MultiChannel: 0 random backoff = 0.00046
 
 <!> Module NicTest.node[1].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #26
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #26 and #12 are in range
 NicEntry: connecting nic #26 and #12
 NicEntry: found 0 already existing usable in-gates.
@@ -677,16 +682,16 @@ NicEntry: connecting nic #12 and #26
 channelcontrol: nic #26 and #19 are in range
 NicEntry: connecting nic #26 and #19
 NicEntry: connecting nic #19 and #26
-node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50) direction: (0,0) startTime: 0 speed: 0
-node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 2 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[2]::PhyLayerBattery: new HostMove:  HostMove  startPos: (250,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[2]::Mac80211MultiChannel:  MAC Address: 2 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 2 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[2]::Mac80211MultiChannel: 0 random backoff = 0.00012
 
 <!> Module NicTest.node[2].nic.phy: No battery module defined!.
 
-updatePosition:  HostMove  startPos: (450,50) direction: (0,0) startTime: 0 speed: 0
+updatePosition:  HostMove  startPos: (450,50,0) direction: (0,0,0) startTime: 0 speed: 0
 channelcontrol:  registering nic #33
-channelcontrol:  registering (ext) nic at loc (0,0)
-channelcontrol: Update cons in [(0,0)]
+channelcontrol:  registering (ext) nic at loc (0,0,0)
+channelcontrol: Update cons in [(0,0,0)]
 channelcontrol: nic #33 and #19 are in range
 NicEntry: connecting nic #33 and #19
 NicEntry: found 0 already existing usable in-gates.
@@ -695,8 +700,8 @@ NicEntry: connecting nic #19 and #33
 channelcontrol: nic #33 and #26 are in range
 NicEntry: connecting nic #33 and #26
 NicEntry: connecting nic #26 and #33
-node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (450,50) direction: (0,0) startTime: 0 speed: 0
-node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+06 channel: 2 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
+node[3]::PhyLayerBattery: new HostMove:  HostMove  startPos: (450,50,0) direction: (0,0,0) startTime: 0 speed: 0
+node[3]::Mac80211MultiChannel:  MAC Address: 3 rtsCtsThreshold: -1 bitrate: 2e+006 channel: 2 autoBitrate: 0 2MBit: 1.46 5.5MBit: 2.6 11MBit: 5.68 neighborhoodCacheSize 30 neighborhoodCacheMaxAge 100
 node[3]::Mac80211MultiChannel: 0 random backoff = 0.00048
 
 <!> Module NicTest.node[3].nic.phy: No battery module defined!.
@@ -720,7 +725,7 @@ Passed: [0.2] - B on Channel 2.
 Running simulation...
 ** Event #1   T=0   Elapsed: 0.000s (0m 00s)   ev/sec=0
 Passed: [1] - Channel usage should be about same as run 2. - (1<=1.434854424963<=2)
-** Event #5813   T=0.201344   Elapsed: 0.314s (0m 00s)   ev/sec=18509.6
+** Event #5813   T=0.201344   Elapsed: 0.791s (0m 00s)   ev/sec=7347.66
 
 <!> No more events -- simulation ended at event #5813, t=0.201344.
 

@@ -30,9 +30,7 @@
 #include <cassert>
 
 #include "NetwControlInfo.h"
-#include "NetwToMacControlInfo.h"
 #include "MacToNetwControlInfo.h"
-#include "SimpleAddress.h"
 #include "ArpInterface.h"
 #include "FindModule.h"
 #include "WiseRoutePkt_m.h"
@@ -133,7 +131,7 @@ void WiseRoute::handleSelfMsg(cMessage* msg)
 		pkt->setSeqNum(floodSeqNumber);
 		floodSeqNumber++;
 		pkt->setIsFlood(1);
-		pkt->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
+		setDownControlInfo(pkt, LAddress::L2BROADCAST);
 		sendDown(pkt);
 		nbFloodsSent++;
 		nbRouteFloodsSent++;
@@ -166,6 +164,7 @@ void WiseRoute::handleLowerMsg(cMessage* msg)
 		delete netwMsg;
 	}
 	else {
+		const cObject* pCtrlInfo = NULL;
 		// If the message is a route flood, update the routing table.
 		if (netwMsg->getKind() == ROUTE_FLOOD)
 			updateRouteTable(initialSrcAddr, srcAddr, rssi, ber);
@@ -180,9 +179,8 @@ void WiseRoute::handleLowerMsg(cMessage* msg)
 				// local hop source address.
 				msgCopy = check_and_cast<WiseRoutePkt*>(netwMsg->dup());
 				netwMsg->setSrcAddr(myNetwAddr);
-//				((NetwToMacControlInfo*) netwMsg->getControlInfo())->setNextHopMac(macBcastAddr);
-				netwMsg->removeControlInfo();
-				netwMsg->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
+				pCtrlInfo = netwMsg->removeControlInfo();
+				setDownControlInfo(netwMsg, LAddress::L2BROADCAST);
 				netwMsg->setNbHops(netwMsg->getNbHops()+1);
 				sendDown(netwMsg);
 				nbDataPacketsForwarded++;
@@ -202,9 +200,8 @@ void WiseRoute::handleLowerMsg(cMessage* msg)
 			// not for me. if flood, forward as flood. else select a route
 			if (floodType == FORWARD) {
 				netwMsg->setSrcAddr(myNetwAddr);
-//				((NetwToMacControlInfo*) netwMsg->getControlInfo())->setNextHopMac(macBcastAddr);
-				netwMsg->removeControlInfo();
-				netwMsg->setControlInfo(new NetwToMacControlInfo(LAddress::L2BROADCAST));
+				pCtrlInfo = netwMsg->removeControlInfo();
+				setDownControlInfo(netwMsg, LAddress::L2BROADCAST);
 				netwMsg->setNbHops(netwMsg->getNbHops()+1);
 				sendDown(netwMsg);
 				nbDataPacketsForwarded++;
@@ -219,14 +216,16 @@ void WiseRoute::handleLowerMsg(cMessage* msg)
 				}
 				netwMsg->setSrcAddr(myNetwAddr);
 				netwMsg->setDestAddr(nextHop);
-				netwMsg->removeControlInfo();
-				netwMsg->setControlInfo(new NetwToMacControlInfo(arp->getMacAddr(nextHop)));
+				pCtrlInfo = netwMsg->removeControlInfo();
+				setDownControlInfo(netwMsg, arp->getMacAddr(nextHop));
 				netwMsg->setNbHops(netwMsg->getNbHops()+1);
 				sendDown(netwMsg);
 				nbDataPacketsForwarded++;
 				nbPureUnicastForwarded++;
 			}
 		}
+		if (pCtrlInfo != NULL)
+			delete pCtrlInfo;
 	}
 }
 
@@ -241,18 +240,18 @@ void WiseRoute::handleUpperMsg(cMessage* msg)
 	LAddress::L3Type nextHopAddr;
 	LAddress::L2Type nextHopMacAddr;
 	WiseRoutePkt*    pkt   = new WiseRoutePkt(msg->getName(), DATA);
-	NetwControlInfo* cInfo = dynamic_cast<NetwControlInfo*>(msg->removeControlInfo());
+	cObject*         cInfo = msg->removeControlInfo();
 
 	pkt->setByteLength(headerLength);
 
-	if ( cInfo == 0 ) {
+	if ( cInfo == NULL ) {
 	    EV << "WiseRoute warning: Application layer did not specifiy a destination L3 address\n"
 	       << "\tusing broadcast address instead\n";
 	    finalDestAddr = LAddress::L3BROADCAST;
 	}
 	else {
-		EV <<"WiseRoute: CInfo removed, netw addr="<< cInfo->getNetwAddr() <<endl;
-		finalDestAddr = cInfo->getNetwAddr();
+		EV <<"WiseRoute: CInfo removed, netw addr="<< NetwControlInfo::getAddressFromControlInfo( cInfo ) <<endl;
+		finalDestAddr = NetwControlInfo::getAddressFromControlInfo( cInfo );
 		delete cInfo;
 	}
 
@@ -282,7 +281,7 @@ void WiseRoute::handleUpperMsg(cMessage* msg)
 		nbPureUnicastSent++;
 		nextHopMacAddr = arp->getMacAddr(nextHopAddr);
 	}
-	pkt->setControlInfo(new NetwToMacControlInfo(nextHopMacAddr));
+	setDownControlInfo(pkt, nextHopMacAddr);
 	assert(static_cast<cPacket*>(msg));
 	pkt->encapsulate(static_cast<cPacket*>(msg));
 	sendDown(pkt);
@@ -357,7 +356,7 @@ void WiseRoute::updateRouteTable(const LAddress::L3Type& origin, const LAddress:
 cMessage* WiseRoute::decapsMsg(WiseRoutePkt *msg)
 {
 	cMessage *m = msg->decapsulate();
-	m->setControlInfo(new NetwControlInfo(msg->getSrcAddr()));
+	setUpControlInfo(m, msg->getSrcAddr());
 	nbHops = nbHops + msg->getNbHops();
 	// delete the netw packet
 	delete msg;

@@ -3,9 +3,7 @@
 #include "CSMAMacLayer.h"
 
 #include "FWMath.h"
-#include "MacToPhyControlInfo.h"
 #include "BaseConnectionManager.h"
-#include "SimpleAddress.h"
 #include "MacToPhyInterface.h"
 #include "MacPkt_m.h"
 #include "PhyUtils.h"
@@ -303,12 +301,7 @@ MacPkt* CSMAMacLayer::encapsMsg(cPacket *pkt)
 	}
 
 	//create signal
-	Signal* s = createSignal(simTime(), duration, txPower, bitrate);
-
-	//create and initialize control info
-	MacToPhyControlInfo* ctrl = new MacToPhyControlInfo(s);
-
-	macPkt->setControlInfo(ctrl);
+	setDownControlInfo(macPkt, createSignal(simTime(), duration, txPower, bitrate));
 
 	return macPkt;
 }

@@ -68,7 +68,7 @@ public:
     /** @brief Returns a string with the value of the coordinate.*/
     std::string info() const {
         std::stringstream os;
-        os << this;
+        os << "(" << x << "," << y << "," << z << ")";
         return os.str();
     }
 

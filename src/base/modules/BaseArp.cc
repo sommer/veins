@@ -31,11 +31,7 @@ void BaseArp::initialize(int stage)
 
 LAddress::L2Type BaseArp::getMacAddr(const LAddress::L3Type& netwAddr) const
 {
-    if(coreDebug) {
-        Enter_Method("getMacAddr(%d)",netwAddr);
-    } else {
-        Enter_Method_Silent();
-    }
+    Enter_Method("getMacAddr(%d)",netwAddr);
     cModule* netwLayer = simulation.getModule( static_cast<long>(netwAddr) );
     if(!netwLayer) {
     	opp_error("Invalid network address: %d! Could not find a module with "

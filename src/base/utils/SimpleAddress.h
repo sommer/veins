@@ -20,6 +20,8 @@
 #ifndef SIMPLEADDRESS_H
 #define SIMPLEADDRESS_H
 
+#include <omnetpp.h>
+
 #ifdef MIXIM_INET
 #include <MACAddress.h>
 #endif

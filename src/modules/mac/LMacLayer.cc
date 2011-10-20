@@ -12,9 +12,6 @@
 #include "LMacLayer.h"
 
 #include "FWMath.h"
-#include "SimpleAddress.h"
-#include "NetwToMacControlInfo.h"
-#include "MacToPhyControlInfo.h"
 #include "MacToPhyInterface.h"
 #include "LMacPkt_m.h"
 
@@ -683,10 +680,10 @@ MacPkt *LMacLayer::encapsMsg(cMessage * msg)
 
     // copy dest address from the Control Info attached to the network
     // mesage by the network layer
-    NetwToMacControlInfo* cInfo = static_cast<NetwToMacControlInfo*>(msg->removeControlInfo());
+    cObject *const cInfo = msg->removeControlInfo();
 
-    debugEV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
-    pkt->setDestAddr(cInfo->getNextHopMac());
+    debugEV << "CInfo removed, mac addr=" << getUpperDestinationFromControlInfo(cInfo) << endl;
+    pkt->setDestAddr(getUpperDestinationFromControlInfo(cInfo));
 
     //delete the control info
     delete cInfo;
@@ -702,15 +699,11 @@ MacPkt *LMacLayer::encapsMsg(cMessage * msg)
 
 }
 
-
 void LMacLayer::attachSignal(MacPkt *macPkt)
 {
 	//calc signal duration
 	simtime_t duration = macPkt->getBitLength() / bitrate;
 	//create signal
-	Signal* s = createSignal(simTime(), duration, txPower, bitrate);
-	//create and initialize control info
-	MacToPhyControlInfo* ctrl = new MacToPhyControlInfo(s);
-	macPkt->setControlInfo(ctrl);
+	setDownControlInfo(macPkt, createSignal(simTime(), duration, txPower, bitrate));
 }
 

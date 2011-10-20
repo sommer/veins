@@ -29,7 +29,7 @@
 #include "MacToPhyInterface.h"
 #include "MacToNetwControlInfo.h"
 #include "NetwToMacControlInfo.h"
-#include "SimpleAddress.h"
+#include "MacToPhyControlInfo.h"
 #include "AddressingInterface.h"
 #include "ChannelAccess.h"
 #include "FindModule.h"
@@ -75,13 +75,12 @@ void BaseMacLayer::initialize(int stage)
 cPacket* BaseMacLayer::decapsMsg(MacPkt* msg)
 {
     cPacket *m = msg->decapsulate();
-    m->setControlInfo(new MacToNetwControlInfo(msg->getSrcAddr(), 0));
+    setUpControlInfo(m, msg->getSrcAddr());
     // delete the macPkt
     delete msg;
     coreEV << " message decapsulated " << endl;
     return m;
 }
-
 
 /**
  * Encapsulates the received NetwPkt into a MacPkt and set all needed
@@ -94,10 +93,10 @@ MacPkt* BaseMacLayer::encapsMsg(cPacket *netwPkt)
 
     // copy dest address from the Control Info attached to the network
     // message by the network layer
-    NetwToMacControlInfo* cInfo = static_cast<NetwToMacControlInfo*>(netwPkt->removeControlInfo());
+    cObject* cInfo = netwPkt->removeControlInfo();
 
-    coreEV <<"CInfo removed, mac addr="<< cInfo->getNextHopMac()<<endl;
-    pkt->setDestAddr(cInfo->getNextHopMac());
+    coreEV <<"CInfo removed, mac addr="<< getUpperDestinationFromControlInfo(cInfo) << endl;
+    pkt->setDestAddr(getUpperDestinationFromControlInfo(cInfo));
 
     //delete the control info
     delete cInfo;
@@ -255,5 +254,22 @@ BaseConnectionManager* BaseMacLayer::getConnectionManager() {
 	return ChannelAccess::getConnectionManager(nic);
 }
 
+const LAddress::L2Type& BaseMacLayer::getUpperDestinationFromControlInfo(const cObject *const pCtrlInfo) {
+	return NetwToMacControlInfo::getDestFromControlInfo(pCtrlInfo);
+}
 
+/**
+ * Attaches a "control info" (MacToNetw) structure (object) to the message pMsg.
+ */
+cObject *const BaseMacLayer::setUpControlInfo(cMessage *const pMsg, const LAddress::L3Type& pSrcAddr)
+{
+	return MacToNetwControlInfo::setControlInfo(pMsg, pSrcAddr);
+}
 
+/**
+ * Attaches a "control info" (MacToPhy) structure (object) to the message pMsg.
+ */
+cObject *const BaseMacLayer::setDownControlInfo(cMessage *const pMsg, Signal *const pSignal)
+{
+	return MacToPhyControlInfo::setControlInfo(pMsg, pSignal);
+}

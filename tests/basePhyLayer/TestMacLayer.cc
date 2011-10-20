@@ -1,5 +1,7 @@
 #include "TestMacLayer.h"
 
+#include <sstream>
+
 #include "DeciderToPhyInterface.h"
 #include "MacPkt_m.h"
 #include "FindModule.h"
@@ -452,7 +454,10 @@ void TestMacLayer::testChannelInfo(int stage) {
 	case 1:
 	    break;
 	default:
-		fail("TestChannelInfo: Unknown stage.");
+		std::stringstream sBuf;
+
+		sBuf << "TestChannelInfo: Unknown stage (" << stage << ").";
+		fail(sBuf.str());
 		break;
 	}
 	//displayPassed = false;
@@ -495,7 +500,10 @@ void TestMacLayer::testSending1(int stage, const cMessage* lastMsg) {
 		break;
 	}
 	default:
-		fail("Unknown stage");
+		std::stringstream sBuf;
+
+		sBuf << "Unknown stage (" << stage << ").";
+		fail(sBuf.str());
 		break;
 	}
 }
@@ -541,10 +549,8 @@ void TestMacLayer::sendDown(MacPkt* pkt) {
 }
 
 MacPkt* TestMacLayer::createMacPkt(simtime_t length) {
-	Signal* s = new Signal(simTime(), length);
-	MacToPhyControlInfo* ctrl = new MacToPhyControlInfo(s);
 	MacPkt* res = new MacPkt();
-	res->setControlInfo(ctrl);
 	res->setKind(TEST_MACPKT);
+	MacToPhyControlInfo::setControlInfo(res, new Signal(simTime(), length));
 	return res;
 }
