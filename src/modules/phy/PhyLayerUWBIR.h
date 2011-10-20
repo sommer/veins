@@ -71,7 +71,6 @@
 #include "UWBIRStochasticPathlossModel.h"
 #include "UWBIRIEEE802154APathlossModel.h"
 #include "HostState.h"
-#include "BaseUtility.h"
 
 
 class DeciderUWBIREDSyncOnAddress;

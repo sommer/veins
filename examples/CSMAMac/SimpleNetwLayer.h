@@ -227,8 +227,8 @@ public:
 	virtual void initialize(int stage){
 
 		if(stage == 0){
-			dataOut = findGate("lowerGateOut");
-			dataIn = findGate("lowerGateIn");
+			dataOut = findGate("lowerLayerOut");
+			dataIn = findGate("lowerLayerIn");
 
 			isSwitch = par("isSwitch").boolValue();
 

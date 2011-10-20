@@ -41,7 +41,7 @@ class MIXIM_API LAddress {
 public:
     /** @brief Type definition for a L2 (MAC) address.
      *
-     * The type should support initialization with long values and casting to long/double.
+     * The type should support initialization with long/string values and casting to long/double.
      * The type should be also support the ==,<, and > operators.
      */
 #ifdef MIXIM_INET

@@ -21,8 +21,8 @@ void TestMacLayer::initialize(int stage) {
 
 		myIndex = findHost()->getIndex();
 
-		dataOut = findGate("lowerGateOut");
-		dataIn = findGate("lowerGateIn");
+		dataOut = findGate("lowerLayerOut");
+		dataIn = findGate("lowerLayerIn");
 
 		controlOut = findGate("lowerControlOut");
 		controlIn = findGate("lowerControlIn");
@@ -235,7 +235,8 @@ void TestMacLayer::testRun5(int stage, const cMessage* msg)
 	switch (stage) {
 		case 0:
 			testGetChannelStateWithBD();
-			// NOTE: there is no break here!
+			testChannelSenseWithBD();
+			break;
 		case 1:
 			// testSwitchRadio(stage);
 			testChannelSenseWithBD();

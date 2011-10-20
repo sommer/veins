@@ -15,15 +15,9 @@
 
 package org.mixim.tests.nicTest;
 
-
-//
-// TODO auto-generated module
-//
 simple TestApp
 {
     gates:
         input in;
         output out;
-        input controlIn;
-        output controlOut;
 }

@@ -125,9 +125,9 @@ protected:
 	typedef std::map<std::string, cMsgPar> ParameterMap;
 
 	/** @brief The id of the in-data gate from the Mac layer */
-	int upperGateIn;
+	int upperLayerIn;
 	/** @brief The id of the out-data gate to the Mac layer */
-	int upperGateOut;
+	int upperLayerOut;
 	/** @brief The id of the out-control gate to the Mac layer */
 	int upperControlOut;
 	/** @brief The id of the in-control gate from the Mac layer */

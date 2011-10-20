@@ -351,7 +351,7 @@ void csma::updateStatusCCA(t_mac_event event, cMessage *msg) {
 			attachSignal(mac, simTime()+aTurnaroundTime);
 			//sendDown(msg);
 			// give time for the radio to be in Tx state before transmitting
-			sendDelayed(mac, aTurnaroundTime, lowerGateOut);
+			sendDelayed(mac, aTurnaroundTime, lowerLayerOut);
 			nbTxFrames++;
 		} else {
 			// Channel was busy, increment 802.15.4 backoff timers as specified.
@@ -533,7 +533,7 @@ void csma::updateStatusSIFS(t_mac_event event, cMessage *msg) {
 		attachSignal(ackMessage, simTime());
 		sendDown(ackMessage);
 		nbTxAcks++;
-		//		sendDelayed(ackMessage, aTurnaroundTime, lowergateOut);
+		//		sendDelayed(ackMessage, aTurnaroundTime, lowerLayerOut);
 		ackMessage = NULL;
 		break;
 	case EV_TIMER_BACKOFF:

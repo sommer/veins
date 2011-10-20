@@ -96,8 +96,8 @@ Passed: Check parameter "thermalNoise".
 Passed: Check if thermalNoise map returned by "getThermalNoise()" is of type ConstantSimpleConstMapping.
 Passed: Check value of ("getThermalNoise()"-mapping).
 Passed: Check value of ("getThermalNoise()"-mapping at a position).
-Passed: Check upperGateIn ID.
-Passed: Check upperGateOut ID.
+Passed: Check upperLayerIn ID.
+Passed: Check upperLayerOut ID.
 Passed: Check upperControlIn ID.
 Passed: Check upperControlOut ID.
 Passed: Switchtime SLEEP to RX.

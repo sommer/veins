@@ -43,5 +43,5 @@ void BaseApplLayer::initialize(int stage)
  **/
 void BaseApplLayer::sendDelayedDown(cMessage *msg, simtime_t delay) {
     recordPacket(PassedMessage::OUTGOING, PassedMessage::LOWER_DATA, msg);
-    sendDelayed(msg, delay, lowerGateOut);
+    sendDelayed(msg, delay, lowerLayerOut);
 }

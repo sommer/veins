@@ -17,8 +17,8 @@ module TestNic
         }
         mac: TestMacLayer;
     connections:
-        phy.upperGateOut --> mac.lowerGateIn;
-        phy.upperGateIn <-- mac.lowerGateOut;
+        phy.upperLayerOut --> mac.lowerLayerIn;
+        phy.upperLayerIn <-- mac.lowerLayerOut;
         phy.upperControlOut --> { @display("ls=red;m=m,50,50,75,0"); } --> mac.lowerControlIn;
         phy.upperControlIn <-- { @display("ls=red;m=m,25,0,25,0"); } <-- mac.lowerControlOut;
 

@@ -46,8 +46,8 @@ simple SensorApplLayer like IBaseApplLayer {
 		int headerLength @unit(byte) = default(2 byte);
         bool notAffectedByHostState = default(true);
     gates:
-        input lowerGateIn; // from network layer
+        input lowerLayerIn; // from network layer
         input lowerControlIn;
-        output lowerGateOut; // to network layer
+        output lowerLayerOut; // to network layer
         output lowerControlOut;
 }

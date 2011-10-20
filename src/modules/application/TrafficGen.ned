@@ -31,8 +31,8 @@ simple TrafficGen like IBaseApplLayer
         int burstSize = default(1);
         int headerLength @unit(bit);
     gates:
-    	input lowerGateIn; // from lower
-        output lowerGateOut; // to lower
+    	input lowerLayerIn; // from lower
+        output lowerLayerOut; // to lower
         input lowerControlIn; // control from lower
         output lowerControlOut; // control to lower
 }

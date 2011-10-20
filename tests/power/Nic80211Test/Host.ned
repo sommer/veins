@@ -13,17 +13,16 @@
 // 802.11 module
 package org.mixim.tests.power.Nic80211Test;
 
-import org.mixim.modules.application.BurstApplLayerBattery;
-import org.mixim.base.modules.BaseNetwLayer;
-import org.mixim.modules.nic.Nic80211Battery;
-import org.mixim.base.modules.BaseArp;
-import org.mixim.modules.mobility.ConstSpeedMobility;
-import org.mixim.modules.power.battery.SimpleBattery;
-import org.mixim.modules.power.battery.BatteryStats;
 import org.mixim.base.modules.BaseUtility;
+import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.BaseNetwLayer;
+import org.mixim.modules.application.BurstApplLayerBattery;
+import org.mixim.modules.nic.Nic80211Battery;
+import org.mixim.modules.power.battery.BatteryStats;
+import org.mixim.modules.power.battery.SimpleBattery;
+
 
 module Host
-
 {
     parameters:
         @display("bgb=250,250,white,,;bgp=10,10");
@@ -72,16 +71,15 @@ module Host
 
         }
     connections:
-        nic.upperGateOut --> net.lowerGateIn;
-        nic.upperGateIn <-- net.lowerGateOut;
+        nic.upperLayerOut --> net.lowerLayerIn;
+        nic.upperLayerIn <-- net.lowerLayerOut;
         nic.upperControlOut --> net.lowerControlIn;
         nic.upperControlIn <-- net.lowerControlOut;
 
-        net.upperGateOut --> appl.lowerGateIn;
-        net.upperGateIn <-- appl.lowerGateOut;
+        net.upperLayerOut --> appl.lowerLayerIn;
+        net.upperLayerIn <-- appl.lowerLayerOut;
         net.upperControlOut --> appl.lowerControlIn;
         net.upperControlIn <-- appl.lowerControlOut;
 
         radioIn --> nic.radioIn;
-
 }

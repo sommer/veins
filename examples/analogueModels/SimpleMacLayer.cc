@@ -22,8 +22,8 @@ void SimpleMacLayer::initialize(int stage) {
 		dimensions.addDimension(Dimension::time);
 		dimensions.addDimension(Dimension::frequency);
 
-		dataOut = findGate("lowerGateOut");
-		dataIn = findGate("lowerGateIn");
+		dataOut = findGate("lowerLayerOut");
+		dataIn = findGate("lowerLayerIn");
 
 		phy = FindModule<MacToPhyInterface*>::findSubModule(this->getParentModule());
 

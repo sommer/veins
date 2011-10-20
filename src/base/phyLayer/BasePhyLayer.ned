@@ -34,13 +34,13 @@ simple BasePhyLayer
         
         double radioMinAtt = default(1.0); //radios gain factor (attenuation) while receiving
         double radioMaxAtt = default(0.0); //radios gain factor (attenuation) while not receiving
-        
+
         int nbRadioChannels = default(1);  // Number of available radio channels. Defaults to single channel radio.
 		int initialRadioChannel = default(0);  // Initial radio channel.
 
     gates:
-        input upperGateIn; 	// from the MAC layer
-        output upperGateOut; 	// to the MAC layer
+        input upperLayerIn; 	// from the MAC layer
+        output upperLayerOut; 	// to the MAC layer
 
         input upperControlIn; 	// control from the MAC layer        
         output upperControlOut; 	// control to the MAC layer

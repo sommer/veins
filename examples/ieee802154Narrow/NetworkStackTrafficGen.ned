@@ -28,8 +28,8 @@ simple NetworkStackTrafficGen
     	int packetLength @unit("bit"); // length of the generated packet (in bits)
     	int destination = default(-1);
     gates:
-    	input lowerGateIn; // from NIC
-        output lowerGateOut; // to NIC
+        input lowerLayerIn; // from NIC
+        output lowerLayerOut; // to NIC
         input lowerControlIn; // control from NIC
         output lowerControlOut; // control to NIC
 }

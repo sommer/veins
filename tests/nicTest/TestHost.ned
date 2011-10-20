@@ -1,9 +1,9 @@
 package org.mixim.tests.nicTest;
 
-import org.mixim.modules.netw.ArpHost;
+import org.mixim.modules.nic.IWirelessNic;
 import org.mixim.base.modules.BaseMobility;
 import org.mixim.base.modules.BaseUtility;
-import org.mixim.modules.nic.INic;
+import org.mixim.modules.netw.ArpHost;
 
 module TestHost
 {
@@ -28,22 +28,15 @@ module TestHost
             parameters:
                 @display("b=32,30;p=60,166");
         }
-
-        nic: <nicType> like INic {
+        nic: <nicType> like IWirelessNic {
             parameters:
                 @display("b=32,30;p=60,166;i=iface");
         }
         arpHost: ArpHost {
             @display("p=36,59");
         }
-    connections:
-
+    connections allowunconnected:
         radioIn --> nic.radioIn;
-
-
-        app.out --> nic.upperGateIn;
-        app.controlOut --> nic.upperControlIn;
-        app.in <-- nic.upperGateOut;
-        app.controlIn <-- nic.upperControlOut;
+        app.out --> nic.upperLayerIn;
+        app.in <-- nic.upperLayerOut;
 }
-

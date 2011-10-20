@@ -57,8 +57,8 @@ void TestPhyLayer::testInitialisation() {
 	assertEqual("Check value of (\"getThermalNoise()\"-mapping at a position).", FWMath::dBm2mW(1.0), thNoise->getValue(Argument(1.5)));
 
 
-	assertTrue("Check upperGateIn ID.", upperGateIn != -1);
-	assertTrue("Check upperGateOut ID.", upperGateOut != -1);
+	assertTrue("Check upperLayerIn ID.", upperLayerIn != -1);
+	assertTrue("Check upperLayerOut ID.", upperLayerOut != -1);
 	assertTrue("Check upperControlIn ID.", upperControlIn != -1);
 	assertTrue("Check upperControlOut ID.", upperControlOut != -1);
 

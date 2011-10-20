@@ -12,11 +12,11 @@
 // empty host to test energy framework.  see README.txt for details.
 package org.mixim.tests.power.deviceTest;
 
-import org.mixim.tests.power.utils.DeviceDutySimple;
-import org.mixim.modules.power.battery.SimpleBattery;
-import org.mixim.tests.power.utils.Subscriber;
-import org.mixim.modules.power.battery.BatteryStats;
 import org.mixim.base.modules.BaseUtility;
+import org.mixim.tests.power.utils.DeviceDutySimple;
+import org.mixim.tests.power.utils.Subscriber;
+import org.mixim.modules.power.battery.SimpleBattery;
+import org.mixim.modules.power.battery.BatteryStats;
 
 module SimpleHost
 {

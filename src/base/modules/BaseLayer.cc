@@ -45,13 +45,13 @@ void BaseLayer::initialize(int stage)
             if (passedMsg != NULL) {
                 catPassedMsg          = utility->getCategory(passedMsg);
                 passedMsg->fromModule = getId();
-                hostId                = findHost()->getId();
             }
+            hostId = findHost()->getId();
         }
-        upperGateIn     = findGate("upperGateIn");
-        upperGateOut    = findGate("upperGateOut");
-        lowerGateIn     = findGate("lowerGateIn");
-        lowerGateOut    = findGate("lowerGateOut");
+        upperLayerIn  = findGate("upperLayerIn");
+        upperLayerOut = findGate("upperLayerOut");
+        lowerLayerIn  = findGate("lowerLayerIn");
+        lowerLayerOut = findGate("lowerLayerOut");
         upperControlIn  = findGate("upperControlIn");
         upperControlOut = findGate("upperControlOut");
         lowerControlIn  = findGate("lowerControlIn");
@@ -75,7 +75,7 @@ void BaseLayer::handleMessage(cMessage* msg)
 {
     if (msg->isSelfMessage()){
         handleSelfMsg(msg);
-    } else if(msg->getArrivalGateId()==upperGateIn) {
+    } else if(msg->getArrivalGateId()==upperLayerIn) {
         recordPacket(PassedMessage::INCOMING,PassedMessage::UPPER_DATA,msg);
         handleUpperMsg(msg);
     } else if(msg->getArrivalGateId()==upperControlIn) {
@@ -84,7 +84,7 @@ void BaseLayer::handleMessage(cMessage* msg)
     } else if(msg->getArrivalGateId()==lowerControlIn){
         recordPacket(PassedMessage::INCOMING,PassedMessage::LOWER_CONTROL,msg);
         handleLowerControl(msg);
-    } else if(msg->getArrivalGateId()==lowerGateIn) {
+    } else if(msg->getArrivalGateId()==lowerLayerIn) {
         recordPacket(PassedMessage::INCOMING,PassedMessage::LOWER_DATA,msg);
         handleLowerMsg(msg);
     }
@@ -108,12 +108,12 @@ void BaseLayer::handleMessage(cMessage* msg)
 
 void BaseLayer::sendDown(cMessage *msg) {
     recordPacket(PassedMessage::OUTGOING,PassedMessage::LOWER_DATA,msg);
-    send(msg, lowerGateOut);
+    send(msg, lowerLayerOut);
 }
 
 void BaseLayer::sendUp(cMessage *msg) {
     recordPacket(PassedMessage::OUTGOING,PassedMessage::UPPER_DATA,msg);
-    send(msg, upperGateOut);
+    send(msg, upperLayerOut);
 }
 
 void BaseLayer::sendControlUp(cMessage *msg) {

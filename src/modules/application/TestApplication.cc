@@ -15,8 +15,8 @@ void TestApplication::initialize(int stage) {
     if (stage == 0) {
         // begin by connecting the gates
         // to allow messages exchange
-        dataOut = findGate("lowerGateOut");
-        dataIn  = findGate("lowerGateIn");
+        dataOut = findGate("lowerLayerOut");
+        dataIn = findGate("lowerLayerIn");
         ctrlOut = findGate("lowerControlOut");
         ctrlIn  = findGate("lowerControlIn");
 

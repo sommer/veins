@@ -53,21 +53,21 @@ void BasePhyLayer::initialize(int stage) {
 		gate("radioIn")->setDeliverOnReceptionStart(true);
 
 		//get gate ids
-		upperGateIn = findGate("upperGateIn");
-        upperGateOut = findGate("upperGateOut");
-        upperControlOut = findGate("upperControlOut");
-        upperControlIn = findGate("upperControlIn");
+		upperLayerIn = findGate("upperLayerIn");
+		upperLayerOut = findGate("upperLayerOut");
+		upperControlOut = findGate("upperControlOut");
+		upperControlIn = findGate("upperControlIn");
 
 		//read simple ned-parameters
 		//	- initialize basic parameters
-        if(par("useThermalNoise").boolValue()) {
+		if(par("useThermalNoise").boolValue()) {
 			double thermalNoiseVal = FWMath::dBm2mW(par("thermalNoise").doubleValue());
 			thermalNoise = new ConstantSimpleConstMapping(DimensionSet::timeDomain,
 														  thermalNoiseVal);
 		} else {
 			thermalNoise = 0;
 		}
-        headerLength = par("headerLength").longValue();
+		headerLength = par("headerLength").longValue();
 		sensitivity = par("sensitivity").doubleValue();
 		sensitivity = FWMath::dBm2mW(sensitivity);
 		maxTXPower = par("maxTXPower").doubleValue();
@@ -342,7 +342,7 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
 		handleSelfMessage(msg);
 
 	//MacPkts <- MacToPhyControlInfo
-	} else if(msg->getArrivalGateId() == upperGateIn) {
+	} else if(msg->getArrivalGateId() == upperLayerIn) {
 		handleUpperMessage(msg);
 
 	//controlmessages
@@ -625,7 +625,7 @@ void BasePhyLayer::sendControlMessageUp(cMessage* msg) {
 }
 
 void BasePhyLayer::sendMacPktUp(cMessage* pkt) {
-	send(pkt, upperGateOut);
+	send(pkt, upperLayerOut);
 }
 
 void BasePhyLayer::sendMessageDown(AirFrame* msg) {

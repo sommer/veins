@@ -23,6 +23,7 @@
 #include "BaseMacLayer.h"
 
 #include <cassert>
+#include <sstream>
 
 #include "Mapping.h"
 #include "Signal_.h"
@@ -56,15 +57,22 @@ void BaseMacLayer::initialize(int stage)
 
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
     }
-    else if (stage==1)
-    {
+    else if (stage==1) {
     	// see if there is an addressing module available
         // otherwise use NIC modules id as MAC address
         AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
         if(addrScheme) {
             myMacAddr = addrScheme->myMacAddr(this);
         } else {
-            myMacAddr = LAddress::L2Type(getParentModule()->getId());
+            const char *addressString = par("address").stringValue();
+            if (!strcmp(addressString, "auto"))
+                myMacAddr = LAddress::L2Type(getParentModule()->getId());
+            else
+                myMacAddr = LAddress::L2Type(addressString);
+            // use streaming operator for string conversion, this makes it more
+            // independent from the myMacAddr type
+            std::ostringstream oSS; oSS << myMacAddr;
+            par("address").setStringValue(oSS.str());
         }
     }
 }

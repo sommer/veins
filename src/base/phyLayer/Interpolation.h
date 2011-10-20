@@ -251,8 +251,8 @@ public:
 	}
 
 	static V linearInterpolation(const Key& t,
-                                 const Key& t0, const Key& t1,
-                                 const V&   v0, const V&   v1) {
+	                             const Key& t0, const Key& t1,
+	                             const V&   v0, const V&   v1) {
 		if (std::numeric_limits<V>::has_infinity) {
 			// we have possible infinity values, so that we can do some checks
 			const V    cInf     = std::numeric_limits<V>::infinity();
@@ -277,8 +277,9 @@ public:
 			assert(v0 == v1);
 			return v0;
 		}
+		const V mu = static_cast<V>( (t - t0) / (t1 - t0) );
+		return v0 * (static_cast<V>(1) - mu) + v1 * mu;
 		//return v0 + (((v1 - v0) * (t - t0)) / (t1 - t0));
-		return v0 + (v1 - v0) * static_cast<V>((t - t0) / (t1 - t0));
 	}
 
 	interpolated operator()(const InputIterator& first,

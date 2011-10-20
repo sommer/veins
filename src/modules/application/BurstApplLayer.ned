@@ -44,8 +44,8 @@ simple BurstApplLayer like IBaseApplLayer
     	int headerLength @unit("bit"); // length of the application message header (in bits)
     	int burstSize; // size of the burst
     gates:
-    	input lowerGateIn; // from network layer
-        output lowerGateOut; // to network layer
+    	input lowerLayerIn; // from network layer
+        output lowerLayerOut; // to network layer
         input lowerControlIn; // control from network layer
         output lowerControlOut; // control to network layer
 }

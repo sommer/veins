@@ -66,7 +66,6 @@ class BaseUtility;
  * its sub class "BatteryAccess" which extends BaseModule by several
  * methods for accessing the battery module.
  *
- * @see BaseUtility
  * @see BatteryAccess
  *
  * @ingroup baseModules
