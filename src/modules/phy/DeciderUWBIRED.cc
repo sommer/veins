@@ -8,8 +8,9 @@ using std::map;
 using std::vector;
 using std::pair;
 
-const double DeciderUWBIRED::noiseVariance = 101.085E-12; // P=-116.9 dBW // 404.34E-12;   v²=s²=4kb T R B (T=293 K)
-const double DeciderUWBIRED::peakPulsePower = 1.3E-3; //1.3E-3 W peak power of pulse to reach  0dBm during burst; // peak instantaneous power of the transmitted pulse (A=0.6V) : 7E-3 W. But peak limit is 0 dBm
+const double          DeciderUWBIRED::noiseVariance        = 101.085E-12; // P=-116.9 dBW // 404.34E-12;   v²=s²=4kb T R B (T=293 K)
+const double          DeciderUWBIRED::peakPulsePower       = 1.3E-3; //1.3E-3 W peak power of pulse to reach  0dBm during burst; // peak instantaneous power of the transmitted pulse (A=0.6V) : 7E-3 W. But peak limit is 0 dBm
+const simsignalwrap_t DeciderUWBIRED::catUWBIRPacketSignal = simsignalwrap_t(MIXIM_SIGNAL_UWBIRPACKET_NAME);
 
 simtime_t DeciderUWBIRED::processSignal(AirFrame* frame) {
 	Signal* s = &frame->getSignal();
@@ -97,7 +98,7 @@ simtime_t DeciderUWBIRED::handleHeaderOver(map<Signal*, int>::iterator& it) {
 			phy->sendControlMsg(syncFailureNotification);
 
 		}
-		utility->publishBBItem(catUWBIRPacket, &packet, -1); // scope = all == host
+		uwbiface->emit(catUWBIRPacketSignal, &packet);
 
 	}
 	// in any case, look at that frame again when it is finished

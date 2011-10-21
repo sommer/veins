@@ -20,4 +20,6 @@ simple TestApp
     gates:
         input in;
         output out;
+        input controlIn;
+        output controlOut;
 }

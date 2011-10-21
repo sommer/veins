@@ -97,10 +97,10 @@ void BaseMobilityTest::initialize(int stage)
 
 void BaseMobilityTest::testInitialisation() {
 	assertTrue("World pointer initialised.", world != 0);
-	assertTrue("Base utility pointer initialised.", utility != 0);
+	//assertTrue("Base utility pointer initialised.", utility != 0);
 
-	assertTrue("Host pointer initialised.", hostPtr != 0);
-	assertTrue("Host ID and host pointer matches.", hostPtr->getId() == hostId);
+	//assertTrue("Host pointer initialised.", hostPtr != 0);
+	//assertTrue("Host ID and host pointer matches.", hostPtr->getId() == hostId);
 }
 
 // handling incoming messages

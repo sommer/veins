@@ -178,9 +178,6 @@ class MIXIM_API BMacLayer : public BaseMacLayer
 	/** @brief Inspect reasons for dropped packets */
 	DroppedPacket droppedPacket;
 
-	/** @brief Category for dropped packets from BB */
-	int catDroppedPacket;
-
 	/** @brief publish dropped packets nic wide */
 	int nicId;
 

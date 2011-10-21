@@ -14,7 +14,6 @@
 #include "MiXiMDefs.h"
 
 class AirFrame;
-class BaseUtility;
 class BaseWorldUtility;
 class ConstMapping;
 
@@ -114,11 +113,6 @@ public:
 	 * Does nothing if no Battery module in simulation is present.
 	 */
 	virtual void drawCurrent(double amount, int activity) = 0;
-
-	/**
-	 * @brief Returns a pointer to the hosts utility-module.
-	 */
-	virtual BaseUtility* getUtility() = 0;
 
 	/**
 	 * @brief Returns a pointer to the simulations world-utility-module.

@@ -18,7 +18,6 @@
 #include "DroppedPacket.h"
 #include "BaseMacLayer.h"
 #include "PhyUtils.h"
-#include "BaseUtility.h"
 #include "SimpleAddress.h"
 
 class LMacPkt;

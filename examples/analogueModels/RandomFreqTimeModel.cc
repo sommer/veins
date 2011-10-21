@@ -6,7 +6,7 @@
  * put some random attenuations over time and frequency into
  * the attenuation mapping.
  */
-void RandomFreqTimeModel::filterSignal(AirFrame *frame) {
+void RandomFreqTimeModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {
 	Signal& signal = frame->getSignal();
 
 	/* At first get a new instance of the default Mapping implementation

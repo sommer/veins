@@ -5,7 +5,6 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
-#include "Move.h"
 #include "Mapping.h"
 
 /**
@@ -50,9 +49,6 @@ protected:
 	simtime_t duration;
 	/** @brief The propagation delay of the transmission. */
 	simtime_t propagationDelay;
-
-	/** @brief The movement of the sending host.*/
-	Move senderMovement;
 
 	/** @brief Stores the function which describes the power of the signal*/
 	ConstMapping* power;
@@ -133,16 +129,6 @@ public:
 	 * at the receiver module. Already includes the propagation delay.
 	 */
 	simtime_t getReceptionEnd() const;
-
-	/**
-	 * @brief Returns the movement of the sending host.
-	 */
-	Move getMove() const;
-
-	/**
-	 * @brief Sets the movement of the sending host.
-	 */
-	void setMove(Move& move);
 
 	/**
 	 * @brief Returns the duration of the signal transmission.

@@ -13,16 +13,11 @@ Setting up network `sim'...
 Initializing...
 Initializing module sim, stage 0
 Initializing module sim.node[0], stage 0
-Initializing module sim.node[0].blackboard, stage 0
 Initializing module sim.node[0].statechanger, stage 0
 Initializing module sim.node[0].statevisualize, stage 0
 Initializing module sim.node[0].stateview, stage 0
 Initializing module sim.node[0].testparam, stage 0
 Initializing module sim.world, stage 0
-Initializing module sim.node[0].blackboard, stage 1
-
-<!> Module sim.node[0].blackboard: No mobility module found in host with index 0!.
-
 Initializing module sim.node[0].statechanger, stage 1
 StateVisualize::receiveBBItem Host state changed to SLEEP
 StateView::receiveBBItem Host state changed to SLEEP
@@ -30,44 +25,40 @@ TestStateSub::receiveBBItem test param changed to BLUE
 Initializing module sim.node[0].statevisualize, stage 1
 Initializing module sim.node[0].stateview, stage 1
 Initializing module sim.node[0].testparam, stage 1
-Initializing module sim.world, stage 1
-
-<!> Module sim.world: Could not find a connection manager module in the network!.
-
 
 Running simulation...
-** Event #1  T=1   sim.node[0].statechanger (StateChanger, id=5)
+** Event #1  T=1   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to DEAD
 StateView::receiveBBItem Host state changed to DEAD
 TestStateSub::receiveBBItem test param changed to RED
-** Event #2  T=2   sim.node[0].statechanger (StateChanger, id=5)
+** Event #2  T=2   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to AWAKE
 StateView::receiveBBItem Host state changed to AWAKE
 TestStateSub::receiveBBItem test param changed to GREEN
-** Event #3  T=3   sim.node[0].statechanger (StateChanger, id=5)
+** Event #3  T=3   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to SLEEP
 StateView::receiveBBItem Host state changed to SLEEP
 TestStateSub::receiveBBItem test param changed to BLUE
-** Event #4  T=4   sim.node[0].statechanger (StateChanger, id=5)
+** Event #4  T=4   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to DEAD
 StateView::receiveBBItem Host state changed to DEAD
 TestStateSub::receiveBBItem test param changed to RED
-** Event #5  T=5   sim.node[0].stateview (StateView, id=7)
+** Event #5  T=5   sim.node[0].stateview (StateView, id=6)
 StateView::handleMessage unsubscribed HostState
-** Event #6  T=5   sim.node[0].statechanger (StateChanger, id=5)
+** Event #6  T=5   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to AWAKE
 TestStateSub::receiveBBItem test param changed to GREEN
-** Event #7  T=6   sim.node[0].testparam (TestStateSub, id=8)
+** Event #7  T=6   sim.node[0].testparam (TestStateSub, id=7)
 TestStatSub::handleMessage unsubscribed TestParam
-** Event #8  T=6   sim.node[0].statechanger (StateChanger, id=5)
+** Event #8  T=6   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to SLEEP
-** Event #9  T=7   sim.node[0].statechanger (StateChanger, id=5)
+** Event #9  T=7   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to DEAD
-** Event #10  T=8   sim.node[0].statechanger (StateChanger, id=5)
+** Event #10  T=8   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to AWAKE
-** Event #11  T=9   sim.node[0].statechanger (StateChanger, id=5)
+** Event #11  T=9   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to SLEEP
-** Event #12  T=10   sim.node[0].statechanger (StateChanger, id=5)
+** Event #12  T=10   sim.node[0].statechanger (StateChanger, id=4)
 StateVisualize::receiveBBItem Host state changed to DEAD
 
 <!> No more events -- simulation ended at event #13, t=10.

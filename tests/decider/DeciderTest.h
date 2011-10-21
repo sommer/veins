@@ -418,9 +418,6 @@ protected:
 	// flag to signal whether sendUp() has been called by decider
 	bool sendUpCalled;
 
-	// dummy move
-	Move move;
-
 	// minimal world for testing purposes
 	TestWorld* world;
 
@@ -556,11 +553,6 @@ public:
 	 * Does nothing if no Battery module in simulation is present.
 	 */
 	virtual void drawCurrent(double amount, int activity);
-
-	/**
-	 * @brief Returns a pointer to the hosts utility-module.
-	 */
-	virtual BaseUtility* getUtility();
 
 	/**
 	 * @brief Returns a pointer to the simulations world-utility-module.

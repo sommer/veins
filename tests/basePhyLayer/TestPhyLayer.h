@@ -17,7 +17,7 @@ private:
 		TestAnalogueModel(double attenuation):
 			att(attenuation) {}
 
-		void filterSignal(AirFrame* frame) {
+		void filterSignal(AirFrame*, const Coord&, const Coord&) {
 			return;
 		}
 	};

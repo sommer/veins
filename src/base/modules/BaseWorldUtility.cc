@@ -25,15 +25,13 @@
 Define_Module(BaseWorldUtility);
 
 
-const double BaseWorldUtility::speedOfLight = 299792458.0; //metres per second
+const double BaseWorldUtility::speedOfLight = 299792458.0; ///< meters per second
 
 BaseWorldUtility::BaseWorldUtility():
 		isInitialized(false)
 {}
 
 void BaseWorldUtility::initialize(int stage) {
-	Blackboard::initialize(stage);
-
 	if (stage == 0) {
         initializeIfNecessary();
 	}
@@ -52,9 +50,9 @@ void BaseWorldUtility::initializeIfNecessary()
 		return;
 
 	use2DFlag      = par("use2D");
-	playgroundSize = Coord(par("playgroundSizeX"),
-                               par("playgroundSizeY"),
-                               use2DFlag ? 0. : par("playgroundSizeZ"));
+	playgroundSize = Coord(par("playgroundSizeX").doubleValue(),
+                               par("playgroundSizeY").doubleValue(),
+                               use2DFlag ? 0. : par("playgroundSizeZ").doubleValue());
 
 	if(playgroundSize.x < 0) {
 		opp_error("Playground size in X direction is invalid: "\

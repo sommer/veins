@@ -27,10 +27,11 @@
 #include "FWMath.h"
 #include "BorderMsg_m.h"
 #include "FindModule.h"
-#include "BaseUtility.h"
 #include "BaseWorldUtility.h"
 
 Define_Module(BaseMobility);
+
+const simsignalwrap_t BaseMobility::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
 
 BaseMobility::BaseMobility():
 		BatteryAccess(),
@@ -53,7 +54,6 @@ BaseMobility::BaseMobility(unsigned stacksize):
 void BaseMobility::initialize(int stage)
 {
     BaseModule::initialize(stage);
-
     if (stage == 0){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
@@ -69,11 +69,6 @@ void BaseMobility::initialize(int stage)
             error("Could not find BaseWorldUtility module");
 
         coreEV << "initializing BaseUtility stage " << stage << endl; // for node position
-
-        //get a pointer to the host
-        hostPtr = findHost();
-        hostId = hostPtr->getId();
-
 
         if (hasPar("updateInterval")) {
         	updateInterval = par("updateInterval");
@@ -109,10 +104,6 @@ void BaseMobility::initialize(int stage)
         // set speed and direction of the Move
         move.setSpeed(0);
         move.setDirectionByVector(Coord::ZERO);
-
-        //get BBItem category for Move
-        moveCategory = utility->getCategory(&move);
-
     }
     else if (stage == 1){
         coreEV << "initializing BaseMobility stage " << stage << endl;
@@ -144,7 +135,7 @@ void BaseMobility::initialize(int stage)
         }
 
         //get original display of host
-		cDisplayString& disp = const_cast<cModule*>(hostPtr)->getDisplayString();
+		cDisplayString& disp = findHost()->getDisplayString();
 
         //get host width and height
 		if (disp.containsTag("b")) {
@@ -278,7 +269,7 @@ void BaseMobility::updatePosition() {
     EV << "updatePosition: " << move.info() << endl;
 
     //publish the the new move
-    utility->publishBBItem(moveCategory, &move, hostId);
+    emit(mobilityStateChangedSignal, this);
 
     if(ev.isGUI())
     {
@@ -288,7 +279,7 @@ void BaseMobility::updatePosition() {
 #else
     	const int          iPrecis        = 5;
 #endif
-    	cDisplayString&    disp           = const_cast<cModule*>(hostPtr)->getDisplayString();
+    	cDisplayString&    disp           = findHost()->getDisplayString();
 
     	// setup output stream
     	osDisplayTag << std::fixed; osDisplayTag.precision(iPrecis);

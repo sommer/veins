@@ -26,6 +26,7 @@
 #include "StateView.h"
 #include "TestHostState.h"
 #include "TestParam.h"
+#include "StateChanger.h"
 
 Define_Module( StateView );
 
@@ -33,8 +34,7 @@ void StateView::initialize(int stage)
 {
     BaseModule::initialize(stage);
     if(stage == 0) {
-        TestHostState s;
-        catHostState = utility->subscribe(this, &s, -1);
+        findHost()->subscribe(StateChanger::catHostState, this);
     } else if(stage == 1) {
         scheduleAt(simTime() + 5.0, new cMessage("unsubscribe memo"));
     }
@@ -43,17 +43,17 @@ void StateView::initialize(int stage)
 void StateView::handleMessage( cMessage* m)
 {
     TestParam h;
-    utility->unsubscribe(this, catHostState);
+    findHost()->unsubscribe(StateChanger::catHostState, this);
     ev << "StateView::handleMessage "
        << "unsubscribed HostState" << std::endl;
-    utility->unsubscribe(this, utility->getCategory(&h));
+    findHost()->unsubscribe(StateChanger::catTestParam, this);
     delete m;
 }
 
-void StateView::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
+void StateView::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
 {
-    Enter_Method("receiveBBItem(%s)", details->info().c_str());
-    const TestHostState *s = dynamic_cast<const TestHostState *>(details);
+    Enter_Method("receiveBBItem(%s)", obj->info().c_str());
+    const TestHostState *s = dynamic_cast<const TestHostState *>(obj);
     if(s == 0) error("StateView::receiveBBItem could not read details");
 
     if(s->getState() == TestHostState::DEAD) {

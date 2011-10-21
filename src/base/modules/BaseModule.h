@@ -26,10 +26,7 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
-#include "ImNotifiable.h"
 #include "HostState.h"
-
-class BaseUtility;
 
 #ifndef debugEV
 #define debugEV_clear (ev.isDisabled()||!debug) ? ev : ev
@@ -73,54 +70,47 @@ class BaseUtility;
  * @author Steffen Sroka
  * @author Andreas Koepke
  */
-class MIXIM_API BaseModule: public cSimpleModule, public ImNotifiable {
+class MIXIM_API BaseModule: public cSimpleModule, public cListener {
   protected:
-    /** @brief Cached pointer to the utility module*/
-    BaseUtility *utility;
-
     /** @brief Debug switch for all other modules*/
     bool debug;
 
-	/** @brief Stores if this module is affected by changes in the
-	 * hosts state. If not explicitly set this module has to capture
-	 * changes in the host state.*/
-	bool notAffectedByHostState;
+    /** @brief Stores if this module is affected by changes in the
+     * hosts state. If not explicitly set this module has to capture
+     * changes in the host state.*/
+    bool notAffectedByHostState;
 
-	/** @brief Stores the category of the HostState*/
-	int hostStateCat;
-
-	/** @brief The hosts id. */
-	int hostId;
+    /** @brief Stores the category of the HostState*/
+    const static simsignalwrap_t catHostStateSignal;
 protected:
 
-	/**
-	 * @brief Called whenever the hosts state changes.
-	 *
-	 * Default implementation of this method throws an error whenever the host
-	 * state changes and the "notAffectedbyHostState" variable is not explicitly
-	 * set. This is because every module of a host has to make sure to react
-	 * well to changes in the host state. Or it has to explicitly set its
-	 * parameter "notAffectedbyHostState" to true.
-	 */
-	virtual void handleHostState(const HostState& state);
+    /**
+     * @brief Called whenever the hosts state changes.
+     *
+     * Default implementation of this method throws an error whenever the host
+     * state changes and the "notAffectedbyHostState" variable is not explicitly
+     * set. This is because every module of a host has to make sure to react
+     * well to changes in the host state. Or it has to explicitly set its
+     * parameter "notAffectedbyHostState" to true.
+     */
+    virtual void handleHostState(const HostState& state);
 
-	/**
-	 * @brief Switches the host to the passed state.
-	 *
-	 * If the hosts state is switched to anything else than "ACTIVE" every
-	 * module of the host has to handle this explicitly (see method
-	 * "handleHostState()")!
-	 */
-	void switchHostState(HostState::States state);
+    /**
+     * @brief Switches the host to the passed state.
+     *
+     * If the hosts state is switched to anything else than "ACTIVE" every
+     * module of the host has to handle this explicitly (see method
+     * "handleHostState()")!
+     */
+    void switchHostState(HostState::States state);
 
     /** @brief Function to get a pointer to the host module*/
-    const cModule* findHost(void) const;
+    cModule *const findHost(void);
+    const cModule *const findHost(void) const;
     /** @brief Function to get the logging name of id*/
     //std::string getLogName(int);
-
-
-
   public:
+
     BaseModule();
     BaseModule(unsigned stacksize);
 
@@ -155,7 +145,7 @@ protected:
     /**
      * @brief Get a reference to the local node module
      */
-    const cModule* getNode() const {
+    const cModule *const getNode() const {
     	return findHost();
     };
 
@@ -165,7 +155,7 @@ protected:
      * In this base class just handle the host state switching and
      * some debug notifications
      */
-    virtual void receiveBBItem(int signalID, const BBItem *obj, int scopeModuleId);
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 };
 
 #endif

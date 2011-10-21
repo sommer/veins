@@ -56,9 +56,6 @@ protected:
 	/** @brief The remainign apckets to send for the current burst.*/
 	int remainingBurst;
 
-	/** @brief Signal for Packet category.*/
-	int catPacket;
-
 	/** @brief Tracks the number of packets dropped so far.*/
 	long nbPacketDropped;
 

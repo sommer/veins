@@ -18,8 +18,6 @@
  * description: basic MAC layer class
  *              subclass to create your own MAC layer
  **************************************************************************/
-
-
 #ifndef BASE_MAC_LAYER_H
 #define BASE_MAC_LAYER_H
 
@@ -48,28 +46,29 @@ class Signal;
 class MIXIM_API BaseMacLayer : public BaseLayer
 {
 public:
-	/** @brief Message kinds used by this layer.*/
-	enum BaseMacMessageKinds {
-		/** Stores the id on which classes extending BaseMac should
-		 * continue their own message kinds.*/
-		LAST_BASE_MAC_MESSAGE_KIND = 23000,
-	};
-	/** @brief Control message kinds used by this layer.*/
-	enum BaseMacControlKinds {
-		/** Indicates the end of a transmission*/
-		TX_OVER = 23500,
-		/** Tells the netw layer that a packet to be sent has been dropped.*/
-		PACKET_DROPPED,
-		/** Stores the id on which classes extending BaseMac should
-		 * continue their own control kinds.*/
-		LAST_BASE_MAC_CONTROL_KIND,
-	};
+    /** @brief Message kinds used by this layer.*/
+    enum BaseMacMessageKinds {
+        /** Stores the id on which classes extending BaseMac should
+         * continue their own message kinds.*/
+        LAST_BASE_MAC_MESSAGE_KIND = 23000,
+    };
+    /** @brief Control message kinds used by this layer.*/
+    enum BaseMacControlKinds {
+        /** Indicates the end of a transmission*/
+        TX_OVER = 23500,
+        /** Tells the netw layer that a packet to be sent has been dropped.*/
+        PACKET_DROPPED,
+        /** Stores the id on which classes extending BaseMac should
+         * continue their own control kinds.*/
+        LAST_BASE_MAC_CONTROL_KIND,
+    };
+
 protected:
 
-	/** @brief Handler to the physical layer.*/
-	MacToPhyInterface* phy;
+    /** @brief Handler to the physical layer.*/
+    MacToPhyInterface* phy;
 
-	/** @brief Pointer to the arp module*/
+    /** @brief Pointer to the arp module*/
     //BaseArp* arp;
 
     /**
@@ -114,6 +113,11 @@ public:
     const LAddress::L2Type& getMACAddress() { return myMacAddr; }
 
 protected:
+
+    /**
+     * @brief Registers this bridge's NIC with INET's InterfaceTable.
+     */
+    virtual void registerInterface();
 
     /**
      * @brief Handle messages comming from the network layer
@@ -175,11 +179,11 @@ protected:
     Mapping* createConstantMapping(simtime_t start, simtime_t end, double value);
 
     /**
-	 * @brief Creates a simple Mapping with a constant curve
-	 * progression at the passed value and discontinuities at the boundaries.
-	 *
-	 * Used by "createSignal" to create the power mapping.
-	 */
+     * @brief Creates a simple Mapping with a constant curve
+     * progression at the passed value and discontinuities at the boundaries.
+     *
+     * Used by "createSignal" to create the power mapping.
+     */
     Mapping* createRectangleMapping(simtime_t start, simtime_t end, double value);
 
     /**

@@ -22,17 +22,17 @@
 
 #include <cassert>
 
-#include "BaseUtility.h"
 #include "FindModule.h"
 
+// Could not initialize simsignal_t it here!? I got the POST_MODEL_CHANGE id!?
+const simsignalwrap_t BaseModule::catHostStateSignal = simsignalwrap_t(MIXIM_SIGNAL_HOSTSTATE_NAME);
+
 BaseModule::BaseModule():
-	cSimpleModule(),
-	utility(NULL)
+	cSimpleModule()
 {}
 
 BaseModule::BaseModule(unsigned stacksize):
-	cSimpleModule(stacksize),
-	utility(NULL)
+	cSimpleModule(stacksize)
 {}
 
 /**
@@ -47,22 +47,20 @@ void BaseModule::initialize(int stage) {
     	notAffectedByHostState = 	hasPar("notAffectedByHostState")
 								 && par("notAffectedByHostState").boolValue();
         hasPar("debug") ? debug = par("debug").boolValue() : debug = true;
-        const cModule *const host = findHost();
-        utility = FindModule<BaseUtility*>::findSubModule(host);
-        if(!utility) {
-        	error("No BaseUtility module found!");
-        } 
-
-        hostId = host->getId();
-        HostState hs;
-        hostStateCat = utility->subscribe(this, &hs, hostId);
+        findHost()->subscribe(catHostStateSignal, this);
     }
 }
 
-void BaseModule::receiveBBItem(int signalID, const BBItem *obj, int scopeModuleId) {
+void BaseModule::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj) {
 	Enter_Method_Silent();
-	if (signalID == hostStateCat) {
-		handleHostState(*dynamic_cast<const HostState*>(obj));
+	if (signalID == catHostStateSignal) {
+		const HostState *const pHostState = dynamic_cast<const HostState *const>(obj);
+		if (pHostState) {
+			handleHostState(*pHostState);
+		}
+		else {
+			opp_warning("Got catHostStateSignal but obj was not a HostState pointer?");
+		}
 	}
 }
 
@@ -83,12 +81,17 @@ void BaseModule::handleHostState(const HostState& state)
 void BaseModule::switchHostState(HostState::States state)
 {
 	HostState hostState(state);
-	utility->publishBBItem(hostStateCat, &hostState, hostId);
+	emit(catHostStateSignal, &hostState);
 }
 
-const cModule* BaseModule::findHost(void) const
+cModule *const BaseModule::findHost(void)
 {
-   return FindModule<>::findHost(this);
+	return FindModule<>::findHost(this);
+}
+
+const cModule *const BaseModule::findHost(void) const
+{
+	return FindModule<>::findHost(this);
 }
 
 

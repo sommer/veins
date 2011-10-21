@@ -66,7 +66,7 @@ AnalogueModel* PhyLayer::initializeJakesFading(ParameterMap& params){
 		}
 	}
 
-	return new JakesFading(fadingPaths, delayRMS, &move, carrierFrequency, interval);
+	return new JakesFading(fadingPaths, delayRMS, carrierFrequency, interval);
 }
 
 AnalogueModel* PhyLayer::initializeBreakpointPathlossModel(ParameterMap& params) {
@@ -158,7 +158,7 @@ AnalogueModel* PhyLayer::initializeBreakpointPathlossModel(ParameterMap& params)
 		opp_error("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
 	}
 
-	return new BreakpointPathlossModel(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, &move, useTorus, playgroundSize, coreDebug);
+	return new BreakpointPathlossModel(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, useTorus, playgroundSize, coreDebug);
 
 }
 
@@ -234,7 +234,7 @@ AnalogueModel* PhyLayer::initializeSimplePathlossModel(ParameterMap& params){
 		}
 	}
 
-	return new SimplePathlossModel(alpha, carrierFrequency, &move, useTorus, playgroundSize, coreDebug);
+	return new SimplePathlossModel(alpha, carrierFrequency, useTorus, playgroundSize, coreDebug);
 
 }
 

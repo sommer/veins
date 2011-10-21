@@ -14,23 +14,13 @@ Initializing...
 Initializing module bmSim, stage 0
 Initializing module bmSim.world, stage 0
 Initializing module bmSim.node[0], stage 0
-Initializing module bmSim.node[0].blackboard, stage 0
 Initializing module bmSim.node[0].mobility, stage 0
 Initializing module bmSim.node2[0], stage 0
-Initializing module bmSim.node2[0].blackboard, stage 0
 Initializing module bmSim.node2[0].mobility, stage 0
-Initializing module bmSim.world, stage 1
-
-<!> Module bmSim.world: Could not find a connection manager module in the network!.
-
-Initializing module bmSim.node[0].blackboard, stage 1
 Initializing module bmSim.node[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (60,60,60) direction: (0,0,0) startTime: 0 speed: 0
 Starting tests...
 Passed: World pointer initialised.
-Passed: Base utility pointer initialised.
-Passed: Host pointer initialised.
-Passed: Host ID and host pointer matches.
 Testing simple checkIfOutside... 
 Passed: Step: (60,0,0)
 Passed: Step: (-60,0,0)
@@ -342,7 +332,6 @@ Passed: Step to border: (60,0,60)
 Passed: Step to border: (0,0,60)
 Passed: Step to border: (0,60,60)
 Passed: Step to border: (60,60,60)
-Initializing module bmSim.node2[0].blackboard, stage 1
 Initializing module bmSim.node2[0].mobility, stage 1
 updatePosition:  HostMove  startPos: (102.953,72.3316,101.312) direction: (0,0,0) startTime: 0 speed: 0.1
 Passed: In our test every handleIfOutside should find a collission.

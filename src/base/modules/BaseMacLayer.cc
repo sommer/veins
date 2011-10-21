@@ -64,17 +64,58 @@ void BaseMacLayer::initialize(int stage)
         if(addrScheme) {
             myMacAddr = addrScheme->myMacAddr(this);
         } else {
-            const char *addressString = par("address").stringValue();
-            if (!strcmp(addressString, "auto"))
+            const std::string addressString = par("address").stringValue();
+            if (addressString.empty() || addressString == "auto")
                 myMacAddr = LAddress::L2Type(getParentModule()->getId());
             else
-                myMacAddr = LAddress::L2Type(addressString);
+                myMacAddr = LAddress::L2Type(addressString.c_str());
             // use streaming operator for string conversion, this makes it more
             // independent from the myMacAddr type
             std::ostringstream oSS; oSS << myMacAddr;
             par("address").setStringValue(oSS.str());
         }
+        registerInterface();
     }
+}
+
+void BaseMacLayer::registerInterface()
+{
+#ifdef MIXIM_INET
+    IInterfaceTable *ift = InterfaceTableAccess().getIfExists();
+    if (ift) {
+        cModule* nic = getParentModule();
+        InterfaceEntry *e = new InterfaceEntry();
+
+        // interface name: NIC module's name without special
+        // characters ([])
+        char *interfaceName = new char[strlen(nic->getFullName()) + 1];
+        char *d = interfaceName;
+        for (const char *s = nic->getFullName(); *s; s++)
+            if (isalnum(*s))
+                *d++ = *s;
+        *d = '\0';
+
+        e->setName(interfaceName);
+        delete [] interfaceName;
+
+        // this MAC address must be the same as the one in BaseMacLayer
+        e->setMACAddress(myMacAddr);
+
+        // generate interface identifier for IPv6
+        e->setInterfaceToken(myMacAddr.formInterfaceIdentifier());
+
+        // MTU on 802.11 = ?
+        e->setMtu(1500);            // FIXME
+
+        // capabilities
+        e->setBroadcast(true);
+        e->setMulticast(true);
+        e->setPointToPoint(false);
+
+        // add
+        ift->addInterface(e, this);
+    }
+#endif
 }
 
 /**

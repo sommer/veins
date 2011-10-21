@@ -9,7 +9,7 @@
  * @ingroup baseUtils
  * @ingroup utils
  */
-template<typename T = cModule*>
+template<typename T = cModule *const>
 class FindModule
 {
 	public:
@@ -19,18 +19,18 @@ class FindModule
 		 *
 		 * Returns NULL if no matching submodule could be found.
 		 */
-		static T findSubModule(const cModule *top)
+		static T findSubModule(const cModule *const top)
 		{
-			T ret;
-			for (cModule::SubmoduleIterator i(top); !i.end(); i++)
-			{
-				cModule *sub = i();
-				ret = dynamic_cast<T>(sub);
-				if (ret!=NULL)
-					return ret;
-				ret = findSubModule(sub);
-				if (ret!=NULL)
-					return ret;
+			for (cModule::SubmoduleIterator i(top); !i.end(); i++) {
+				cModule *const sub = i();
+				// this allows also a return type of read only pointer: const cModule *const
+				T dCastRet = dynamic_cast<T>(sub);
+				if (dCastRet != NULL)
+					return dCastRet;
+				// this allows also a return type of read only pointer: const cModule *const
+				T recFnd = findSubModule(sub);
+				if (recFnd != NULL)
+					return recFnd;
 			}
 			return NULL;
 		}
@@ -49,16 +49,52 @@ class FindModule
 		 * Assumes that every host module is a direct sub module of the
 		 * simulation.
 		 */
-		static const cModule* findHost(const cModule* m) {
-			const cModule *parent = m->getParentModule();
-			const cModule *node   = m;
+		static cModule *const findHost(cModule *const m) {
+			cModule* parent = m != NULL ? m->getParentModule() : NULL;
+			cModule* node   = m;
 
 			// all nodes should be a sub module of the simulation which has no parent module!!!
-			while( parent->getParentModule() != NULL  ){
+			while( parent != NULL && parent->getParentModule() != NULL  ) {
 				node   = parent;
 				parent = node->getParentModule();
 			}
 			return node;
+		}
+		// the constness version
+		static const cModule *const findHost(const cModule *const m) {
+			const cModule* parent = m != NULL ? m->getParentModule() : NULL;
+			const cModule* node   = m;
+
+			// all nodes should be a sub module of the simulation which has no parent module!!!
+			while( parent != NULL && parent->getParentModule() != NULL  ) {
+				node   = parent;
+				parent = node->getParentModule();
+			}
+			return node;
+		}
+};
+
+/**
+ * @brief Finds and returns the pointer to a module of type T.
+ * Uses FindModule<>::findSubModule(), FindModule<>::findHost(). See usage e.g. at ChannelAccess.
+ */
+template<typename T = cModule>
+class AccessModuleWrap
+{
+	public:
+		typedef T wrapType;
+    private:
+		T* pModule;
+	public:
+		AccessModuleWrap() : pModule(NULL)
+		{}
+
+		T *const get(cModule *const from = NULL)
+		{
+			if (!pModule) {
+				pModule = FindModule<T*>::findSubModule( FindModule<>::findHost(from != NULL ? from : simulation.getContextModule()) );
+			}
+			return pModule;
 		}
 };
 

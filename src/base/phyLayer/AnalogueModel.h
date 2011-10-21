@@ -2,6 +2,7 @@
 #define ANALOGUEMODEL_
 
 #include "MiXiMDefs.h"
+#include "Coord.h"
 
 class AirFrame;
 
@@ -29,8 +30,12 @@ public:
 	 *
 	 * Filters a specified AirFrame's Signal by adding an attenuation
 	 * over time to the Signal.
+	 *
+	 * @param frame			The incomming frame.
+	 * @param sendersPos	The position of the frame sender.
+	 * @param receiverPos	The position of frame receiver.
 	 */
-	virtual void filterSignal(AirFrame *frame) = 0;
+	virtual void filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) = 0;
 };
 
 #endif /*ANALOGUEMODEL_*/

@@ -63,20 +63,18 @@ void SensorApplLayer::initialize(int stage) {
 		initializeDistribution(traffic);
 
 		delayTimer = new cMessage("appDelay", SEND_DATA_TIMER);
-		hostID = getParentModule()->getId();
 
 		// get pointer to the world module
-
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
 
 	} else if (stage == 1) {
 		debugEV << "in initialize() stage 1...";
 		// Application address configuration: equals to host address
 
-		const cModule *const pHost = findHost();
-		const cModule*       netw  = FindModule<BaseNetwLayer*>::findSubModule(pHost);
+		cModule *const pHost = findHost();
+		const cModule* netw  = FindModule<BaseNetwLayer*>::findSubModule(pHost);
 		if(!netw) {
-			netw = const_cast<cModule*>(pHost)->getSubmodule("netw");
+			netw = pHost->getSubmodule("netw");
 			if(!netw) {
 				opp_error("Could not find network layer module. This means "
 						  "either no network layer module is present or the "
@@ -91,12 +89,11 @@ void SensorApplLayer::initialize(int stage) {
 			myAppAddr = LAddress::L3Type( netw->getId() );
 		}
 		sentPackets = 0;
-		catPacket = world->getCategory(&packet);
 
 		// first packet generation time is always chosen uniformly
 		// to avoid systematic collisions
 		if(nbPackets> 0)
-		scheduleAt(simTime() +uniform(initializationTime, initializationTime + trafficParam), delayTimer);
+			scheduleAt(simTime() +uniform(initializationTime, initializationTime + trafficParam), delayTimer);
 
 		if (stats) {
 			latenciesRaw.setName("rawLatencies");
@@ -181,7 +178,7 @@ void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 		packet.setNbPacketsSent(0);
 		packet.setNbPacketsReceived(1);
 		packet.setHost(myAppAddr);
-		world->publishBBItem(catPacket, &packet, hostID);
+		emit(BaseLayer::catPacketSignal, &packet);
 		if (stats) {
 			simtime_t theLatency = m->getArrivalTime() - m->getCreationTime();
 			if(trace) {
@@ -262,7 +259,7 @@ void SensorApplLayer::sendData() {
 	packet.setNbPacketsSent(1);
 	packet.setNbPacketsReceived(0);
 	packet.setHost(myAppAddr);
-	world->publishBBItem(catPacket, &packet, hostID);
+	emit(BaseLayer::catPacketSignal, &packet);
 	sentPackets++;
 	scheduleNextPacket();
 }

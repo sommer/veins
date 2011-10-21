@@ -12,7 +12,6 @@
 // empty host to test energy framework.  see README.txt for details.
 package org.mixim.tests.power.deviceTest;
 
-import org.mixim.base.modules.BaseUtility;
 import org.mixim.tests.power.utils.DeviceDutySimple;
 import org.mixim.tests.power.utils.Subscriber;
 import org.mixim.modules.power.battery.SimpleBattery;
@@ -23,10 +22,6 @@ module SimpleHost
     parameters:
         @display("bgb=250,250,$color,,;bgp=10,10");
     submodules:
-        blackboard: BaseUtility {
-            parameters:
-                @display("p=50,30;b=30,25");
-        }
         device: DeviceDutySimple {
             parameters:
                 @display("p=200,160;b=30,25");

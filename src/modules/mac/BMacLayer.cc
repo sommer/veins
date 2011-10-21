@@ -22,7 +22,6 @@
 #include "BaseArp.h"
 #include "BaseConnectionManager.h"
 #include "PhyUtils.h"
-#include "BaseUtility.h"
 #include "MacPkt_m.h"
 #include "MacToPhyInterface.h"
 
@@ -67,8 +66,6 @@ void BMacLayer::initialize(int stage)
 		// init the dropped packet info
 		droppedPacket.setReason(DroppedPacket::NONE);
 		nicId = getParentModule()->getId();
-
-		catDroppedPacket = utility->getCategory(&droppedPacket);
 		WATCH(macState);
     }
 
@@ -632,7 +629,7 @@ bool BMacLayer::addToQueue(cMessage *msg)
 		msg->setKind(PACKET_DROPPED);
 		sendControlUp(msg);
 		droppedPacket.setReason(DroppedPacket::QUEUE);
-		utility->publishBBItem(catDroppedPacket, &droppedPacket, nicId);
+		emit(BaseLayer::catDroppedPacketSignal, &droppedPacket);
 		nbDroppedDataPackets++;
 
 		return false;
@@ -674,8 +671,7 @@ void BMacLayer::changeDisplayColor(BMAC_COLORS color)
 {
 	if (!animation)
 		return;
-	cDisplayString& dispStr
-			= const_cast<cModule*>(findHost())->getDisplayString();
+	cDisplayString& dispStr = findHost()->getDisplayString();
 	//b=40,40,rect,black,black,2"
 	if (color == GREEN)
 		dispStr.setTagArg("b", 3, "green");

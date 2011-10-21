@@ -48,8 +48,6 @@ protected:
 	int remainingBurst;
 	LAddress::L3Type destination;
 
-	int catPacket;
-
 	long nbPacketDropped;
 
 

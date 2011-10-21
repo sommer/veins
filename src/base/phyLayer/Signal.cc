@@ -11,7 +11,6 @@ Signal::Signal(simtime_t sendingStart, simtime_t duration):
 Signal::Signal(const Signal & o):
 	sendingStart(o.sendingStart), duration(o.duration),
 	propagationDelay(o.propagationDelay),
-	senderMovement(o.senderMovement),
 	power(0), bitrate(0),
 	txBitrate(0),
 	rcvPower(0)
@@ -38,7 +37,6 @@ const Signal& Signal::operator=(const Signal& o) {
 	sendingStart     = o.sendingStart;
 	duration         = o.duration;
 	propagationDelay = o.propagationDelay;
-	senderMovement   = o.senderMovement;
 
 	markRcvPowerOutdated();
 
@@ -164,12 +162,4 @@ void Signal::setBitrate(Mapping *bitrate)
 		delete this->bitrate;
 
 	this->bitrate = bitrate;
-}
-
-void Signal::setMove(Move& move) {
-	senderMovement = move;
-}
-
-Move Signal::getMove() const{
-	return senderMovement;
 }

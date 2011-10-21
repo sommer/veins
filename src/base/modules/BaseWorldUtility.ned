@@ -4,15 +4,15 @@ package org.mixim.base.modules;
 // Provides utility methods and information used by
 // the whole network as well as simulation wide
 // black board functionality.
-simple BaseWorldUtility extends Blackboard
+simple BaseWorldUtility
 {
     parameters:
         @class(BaseWorldUtility);
         double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
         double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
         double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
-        bool useTorus;                  // use the playground as torus?
-        bool use2D;                    // use a 2-dimensional world?
+        bool   useTorus;                 // use the playground as torus?
+        bool   use2D = default(false);   // use a 2-dimensional world?
         @display("i=misc/globe");
 }
 

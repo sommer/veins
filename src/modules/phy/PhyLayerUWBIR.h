@@ -174,7 +174,7 @@ protected:
     /**
      * called by the signalling mechanism to inform of changes
      */
-    virtual void receiveBBItem(int signalID, const BBItem *obj, int scopeModuleId);
+    void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 
     virtual void handleAirFrame(cMessage* msg);
 

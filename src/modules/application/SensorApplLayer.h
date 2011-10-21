@@ -100,8 +100,6 @@ protected:
   cStdDev latency;
   cOutVector latenciesRaw;
   Packet packet; // informs the simulation of the number of packets sent and received by this node.
-  int catPacket;
-  int hostID;
   int headerLength;
   BaseWorldUtility* world;
 

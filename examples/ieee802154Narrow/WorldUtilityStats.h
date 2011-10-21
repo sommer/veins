@@ -25,12 +25,9 @@
  * @ingroup exampleIEEE802154Narrow
  */
 class WorldUtilityStats : public BaseWorldUtility,
-						  public ImNotifiable
+						  public cListener
 {
 protected:
-	/** @brief notifier ID for Packets*/
-	int catPacket;
-
 	/** @brief Stores the number of bits sent */
 	double bitsSent;
 	/** @brief Stores the number of bits received */
@@ -47,7 +44,7 @@ protected:
     virtual void initialize(int stage);
 
 public:
-	virtual void receiveBBItem(int signalID, const BBItem *obj, int scopeModuleId);
+	virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 
 	virtual void finish();
 };

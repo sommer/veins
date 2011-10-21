@@ -17,7 +17,6 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
-#include "ImNotifiable.h"
 
 /**
  * @brief HostState is published by the battery to announce host failure
@@ -32,12 +31,9 @@
  * restart).
  *
  * @ingroup power
- * @ingroup blackboard
  */
-class MIXIM_API HostState : public BBItem
+class MIXIM_API HostState : public cObject
 {
-    BBITEM_METAINFO(BBItem)
-
 public:
     /**
      * @brief Possible host states.

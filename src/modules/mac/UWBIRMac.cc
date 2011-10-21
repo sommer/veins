@@ -42,7 +42,6 @@
 #include "UWBIRMacPkt_m.h"
 #include "UWBIRMacPkt.h"
 #include "MacToPhyInterface.h"
-#include "BaseUtility.h"
 
 using namespace std;
 
@@ -54,14 +53,12 @@ void UWBIRMac::initialize(int stage) {
 		debug = par("debug").boolValue();
 		stats = par("stats").boolValue();
 		trace = par("trace").boolValue();
-		prf = par("PRF");
+		prf   = par("PRF");
 		assert(prf == 4 || prf == 16);
 		packetsAlwaysValid = par("packetsAlwaysValid");
-		rsDecoder = par("RSDecoder").boolValue();
-		phy = FindModule<MacToPhyInterface*>::findSubModule(
-				this->getParentModule());
+		rsDecoder          = par("RSDecoder").boolValue();
+		phy = FindModule<MacToPhyInterface*>::findSubModule( this->getParentModule() );
 		initCounters();
-		catPacket = utility->getCategory(&packet);
 	}
 }
 
@@ -201,7 +198,7 @@ bool UWBIRMac::validatePacket(UWBIRMacPkt *mac) {
 			success.record(1);
 			nbReceivedPacketsRS++;
 			packet.setNbPacketsReceived(packet.getNbPacketsReceived()+1);
-			utility->publishBBItem(catPacket, &packet, -1);
+			emit(BaseLayer::catPacketSignal, &packet);
 		} else {
 			success.record(0);
 			nbFramesDropped++;

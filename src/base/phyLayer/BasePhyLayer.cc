@@ -519,9 +519,6 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	// make sure we really obtained a pointer to an instance
 	assert(s);
 
-	// put host move pattern to Signal
-	s->setMove(move);
-
 	// set the members
 	assert(s->getDuration() > 0);
 	frame->setDuration(s->getDuration());
@@ -642,8 +639,21 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
 
 
 void BasePhyLayer::filterSignal(AirFrame *frame) {
+	if (analogueModels.empty())
+		return;
+
+	ChannelAccess *const senderModule   = dynamic_cast<ChannelAccess *const>(frame->getSenderModule());
+	ChannelAccess *const receiverModule = dynamic_cast<ChannelAccess *const>(frame->getArrivalModule());
+	//const simtime_t      sStart         = frame->getSignal().getReceptionStart();
+
+	assert(senderModule); assert(receiverModule);
+
+	/** claim the Move pattern of the sender from the Signal */
+	Coord           sendersPos  = senderModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
+	Coord           receiverPos = receiverModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
+
 	for(AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++)
-		(*it)->filterSignal(frame);
+		(*it)->filterSignal(frame, sendersPos, receiverPos);
 }
 
 //--Destruction--------------------------------
@@ -840,10 +850,6 @@ void BasePhyLayer::rescheduleMessage(cMessage* msg, simtime_t t) {
 
 void BasePhyLayer::drawCurrent(double amount, int activity) {
 	BatteryAccess::drawCurrent(amount, activity);
-}
-
-BaseUtility* BasePhyLayer::getUtility() {
-	return utility;
 }
 
 BaseWorldUtility* BasePhyLayer::getWorldUtility() {

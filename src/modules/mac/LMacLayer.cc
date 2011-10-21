@@ -136,7 +136,7 @@ void LMacLayer::handleUpperMsg(cMessage *msg)
         mac->setKind(PACKET_DROPPED);
         sendControlUp(mac);
         droppedPacket.setReason(DroppedPacket::QUEUE);
-        utility->publishBBItem(catDroppedPacket, &droppedPacket, nicId);
+        emit(catDroppedPacket, &droppedPacket);
 		debugEV <<  "ERROR: Queue is full, forced to delete.\n";
     }
 }

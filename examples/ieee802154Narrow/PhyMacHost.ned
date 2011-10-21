@@ -1,6 +1,5 @@
 package org.mixim.examples.ieee802154Narrow;
 
-import org.mixim.base.modules.BaseUtility;
 import org.mixim.base.modules.BaseMobility;
 import org.mixim.base.modules.BaseArp;
 import org.mixim.modules.nic.Nic802154_TI_CC2420;
@@ -22,10 +21,6 @@ module PhyMacHost
         }
         battery: SimpleBattery {
             @display("p=171,206;i=block/control");
-        }
-        utility: BaseUtility {
-            parameters:
-                @display("p=205,146;i=block/blackboard");
         }
         mobility: BaseMobility {
             parameters:

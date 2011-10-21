@@ -31,17 +31,14 @@ void TrafficGen::initialize(int stage)
 	BaseApplLayer::initialize(stage);
 
 	if(stage == 0) {
-		world = FindModule<BaseWorldUtility*>::findGlobalModule();
-		delayTimer = new cMessage("delay-timer", SEND_PACKET_TIMER);
+		world           = FindModule<BaseWorldUtility*>::findGlobalModule();
+		delayTimer      = new cMessage("delay-timer", SEND_PACKET_TIMER);
 
-		packetTime = par("packetTime");
-		pppt = par("packetsPerPacketTime");
-		burstSize = par("burstSize");
+		packetTime      = par("packetTime");
+		pppt            = par("packetsPerPacketTime");
+		burstSize       = par("burstSize");
 
 		nbPacketDropped = 0;
-
-		Packet p(1);
-		catPacket = world->getCategory(&p);
 	} else if (stage == 1) {
 		if(burstSize > 0) {
 			remainingBurst = burstSize;
@@ -93,7 +90,7 @@ void TrafficGen::handleLowerMsg(cMessage *msg)
 {
 	cPacket* pkt = static_cast<cPacket*>(msg);
 	Packet p(pkt->getBitLength(), 1, 0);
-	world->publishBBItem(catPacket, &p, -1);
+	emit(BaseLayer::catPacketSignal, &p);
 
 	delete msg;
 	msg = 0;

@@ -251,17 +251,11 @@ class MIXIM_API csma : public BaseMacLayer
     /** @brief Inspect reasons for dropped packets */
     DroppedPacket droppedPacket;
 
-    /** @brief plus category from BB */
-    int catDroppedPacket;
-
     /** @brief publish dropped packets nic wide */
     int nicId;
 
     /** @brief The bit length of the ACK packet.*/
     int ackLength;
-
-    /** @brief This MAC layers MAC address.*/
-    //int macaddress;
 
 
 protected:

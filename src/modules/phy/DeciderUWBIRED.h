@@ -19,7 +19,6 @@
 #include "Decider.h"
 #include "IEEE802154A.h"
 #include "UWBIRPacket.h"
-#include "BaseUtility.h"
 #include "MacToPhyInterface.h"
 
 class PhyLayerUWBIR;
@@ -77,8 +76,6 @@ protected:
 	bool synced;
 	bool alwaysFailOnDataInterference;
 	UWBIRPacket packet;
-	int catUWBIRPacket;
-	BaseUtility* utility;
 	double epulseAggregate, enoiseAggregate;
 	tSignalMap currentSignals;
 	cOutVector receivedPulses;
@@ -104,8 +101,10 @@ protected:
 	typedef ConcatConstMapping<std::multiplies<double> > MultipliedMapping;
 
 public:
-	const static double noiseVariance; // P=-116.9 dBW // 404.34E-12;   v²=s²=4kb T R B (T=293 K)
-	const static double peakPulsePower; //1.3E-3 W peak power of pulse to reach  0dBm during burst; // peak instantaneous power of the transmitted pulse (A=0.6V) : 7E-3 W. But peak limit is 0 dBm
+	/** @brief Signal for emitting UWBIR packets. */
+	const static simsignalwrap_t catUWBIRPacketSignal;
+	const static double          noiseVariance; // P=-116.9 dBW // 404.34E-12;   v²=s²=4kb T R B (T=293 K)
+	const static double          peakPulsePower; //1.3E-3 W peak power of pulse to reach  0dBm during burst; // peak instantaneous power of the transmitted pulse (A=0.6V) : 7E-3 W. But peak limit is 0 dBm
 
 	DeciderUWBIRED(DeciderToPhyInterface* iface,
 			PhyLayerUWBIR* _uwbiface,
@@ -117,12 +116,10 @@ public:
 				syncAlwaysSucceeds(_syncAlwaysSucceeds),
 				channelSensing(false), synced(false), alwaysFailOnDataInterference(alwaysFailOnDataInterference),
 				uwbiface(_uwbiface), tracking(0), nbFramesWithInterference(0), nbFramesWithoutInterference(0),
-				nbCancelReceptions(0), nbFinishTrackingFrames(0), nbFinishNoiseFrames(0){
-
+				nbCancelReceptions(0), nbFinishTrackingFrames(0), nbFinishNoiseFrames(0)
+	{
 		receivedPulses.setName("receivedPulses");
 		syncThresholds.setName("syncThresholds");
-		utility = iface->getUtility();
-		catUWBIRPacket = utility->getCategory(&packet);
 	};
 
 	virtual simtime_t processSignal(AirFrame* frame);

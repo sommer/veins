@@ -32,9 +32,6 @@
 
 package org.mixim.tests.baseMobility;
 
-import org.mixim.base.modules.BaseUtility;
-
-
 module TestHost
 
 {
@@ -44,10 +41,6 @@ module TestHost
 
 
     submodules:
-        blackboard: BaseUtility {
-            parameters:
-                @display("p=130,60;b=25,25,,black,,");
-        }
         mobility: BaseMobilityTest {
             parameters:
                 borderPolicy = borderPolicy;

@@ -7,7 +7,6 @@ Define_Module(DeciderTest);
 DeciderTest::DeciderTest() : decider(0)
 {
 	// initializing members for testing
-	move = Move();
 	world = new TestWorld();
 
 	// set controlling things (initial states)
@@ -127,9 +126,6 @@ AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t payloadStart
 	//Mapping* bypassMap = createConstantMapping(start, end, noAttenuation);
 	//s->addAttenuation(bypassMap);
 
-	// put host move pattern to Signal
-	s->setMove(move);
-
 	// create the new AirFrame
 	AirFrame* frame = new AirFrame(0, MacToPhyInterface::AIR_FRAME);
 
@@ -158,9 +154,6 @@ AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t end, double 
 	// just a bypass attenuation, that has no effect on the TXpower
 	//Mapping* bypassMap = createConstantMapping(start, end, noAttenuation);
 	//s->addAttenuation(bypassMap);
-
-	// put host move pattern to Signal
-	s->setMove(move);
 
 	// create the new AirFrame
 	AirFrame* frame = new AirFrame(0, MacToPhyInterface::AIR_FRAME);
@@ -558,9 +551,6 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 	//s->addAttenuation(bypassMap);
 
 	// --- Phy-Layer's tasks
-
-	// put host move pattern to Signal
-	s->setMove(move);
 
 	// create the new AirFrame
 	AirFrame* frame = new AirFrame(0, MacToPhyInterface::AIR_FRAME);
@@ -1734,11 +1724,6 @@ void DeciderTest::cancelScheduledMessage(cMessage* msg)
 void DeciderTest::drawCurrent(double amount, int activity)
 {
 	return;
-}
-
-BaseUtility* DeciderTest::getUtility()
-{
-	return 0;
 }
 
 BaseWorldUtility* DeciderTest::getWorldUtility()

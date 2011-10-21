@@ -142,7 +142,7 @@ AnalogueModel* PhyLayerUWBIR::createUWBIRStochasticPathlossModel(
 	}
 
 	uwbpathloss = new UWBIRStochasticPathlossModel(PL0, mu_gamma, sigma_gamma,
-			mu_sigma, sigma_sigma, &move, isEnabled, shadowing);
+			mu_sigma, sigma_sigma, isEnabled, shadowing);
 
 	return uwbpathloss;
 
@@ -170,7 +170,7 @@ AnalogueModel* PhyLayerUWBIR::createUWBIRIEEE802154APathlossModel(ParameterMap &
 		shadowing = it->second.boolValue();
 	}
 
-	ieee802154AChannel = new UWBIRIEEE802154APathlossModel(CM, threshold, &move, shadowing);
+	ieee802154AChannel = new UWBIRIEEE802154APathlossModel(CM, threshold, shadowing);
 	return ieee802154AChannel;
 }
 
@@ -248,22 +248,21 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 	return uwbdecider;
 }
 
-void PhyLayerUWBIR::receiveBBItem(int category, const BBItem *details,
-		int scopeModuleId) {
+void PhyLayerUWBIR::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
+{
 	Enter_Method_Silent();
-	ChannelAccess::receiveBBItem(category, details, scopeModuleId);
-	if (category == catMove) {
+	ChannelAccess::receiveSignal(source, signalID, obj);
+	if (signalID == mobilityStateChangedSignal) {
 		coreEV<< "Received move information in uwbphylayer." << endl;
-
 	}
 }
 
 void PhyLayerUWBIR::handleAirFrame(cMessage* msg) {
-	if (utility->getHostState().get() == HostState::FAILED) {
+	/*if (utility->getHostState().get() == HostState::FAILED) {
 		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
-	}
+	}*/
 	BasePhyLayer::handleAirFrame(msg);
 }
 
@@ -411,9 +410,6 @@ AirFrame *PhyLayerUWBIR::encapsMsg(cPacket *macPkt)
 	Signal* s = MacToUWBIRPhyControlInfo::getSignalFromControlInfo(ctrlInfo);
 	// make sure we really obtained a pointer to an instance
 	assert(s);
-
-	// put host move pattern to Signal
-	s->setMove(move);
 
 	// set the members
 	assert(s->getDuration() > 0);

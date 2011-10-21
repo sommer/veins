@@ -1,7 +1,6 @@
 package org.mixim.tests.basePhyLayer;
 
 import org.mixim.base.modules.BaseMobility;
-import org.mixim.base.modules.BaseUtility;
 
 
 module TestHost
@@ -13,10 +12,6 @@ module TestHost
         input radioIn;
 
     submodules:
-        utility: BaseUtility {
-            parameters:
-                @display("p=130,60;b=25,25,,black,,");
-        }
         mobility: BaseMobility {
             parameters:
                 @display("p=130,130;i=cogwheel2");

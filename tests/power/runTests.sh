@@ -8,7 +8,7 @@ do
  if [ -d "${BasePath}/$f" -a -f "${BasePath}/$f/runTests.sh" ]; then
   echo "--- $f ---"
   ( cd "${BasePath}/$f" && \
-    ./runTests.sh )
+    ./runTests.sh >run.log )
  fi
 done
 echo '==== Checking results of tests ===='

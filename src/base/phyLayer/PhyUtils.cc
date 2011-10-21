@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void RadioStateAnalogueModel::filterSignal(AirFrame *frame)
+void RadioStateAnalogueModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos)
 {
 	Signal&      signal     = frame->getSignal();
 	simtime_t    start      = signal.getReceptionStart();

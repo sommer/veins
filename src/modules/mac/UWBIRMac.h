@@ -70,7 +70,6 @@ protected:
     double totalRxBits, errRxBits; // double and not long as we divide one by the other to get the BER
     MacToPhyInterface* phy;
     Packet packet;
-    int catPacket;
     int prf; // pulse repetition frequency
     cOutVector packetsBER;
     cOutVector dataLengths;

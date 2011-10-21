@@ -6,10 +6,8 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
-#include "ImNotifiable.h"
 
-class MIXIM_API PassedMessage : public BBItem {
-    BBITEM_METAINFO(BBItem);
+class MIXIM_API PassedMessage : public cObject {
  public:
     enum gates_t {
         UPPER_DATA,

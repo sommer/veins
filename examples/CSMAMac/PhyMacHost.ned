@@ -1,7 +1,6 @@
 package org.mixim.examples.CSMAMac;
 
 import org.mixim.base.modules.BaseMobility;
-import org.mixim.base.modules.BaseUtility;
 import org.mixim.base.modules.BaseArp;
 
 
@@ -9,16 +8,11 @@ module PhyMacHost
 {
     parameters:
         double numHosts; // total number of hosts in the network
-
         @display("bgb=180,200,white,,;bgp=10,10");
     gates:
         input radioIn;
 
     submodules:
-        utility: BaseUtility {
-            parameters:
-                @display("p=130,60;i=block/blackboard");
-        }
         mobility: BaseMobility {
             parameters:
                 @display("p=130,130;i=block/cogwheel");

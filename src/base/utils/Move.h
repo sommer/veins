@@ -27,25 +27,21 @@
 
 #include "Coord.h"
 #include "FWMath.h"
-#include "ImNotifiable.h"
 
 /**
  * @brief Class to store object position and movement
  *
  * @ingroup baseUtils
  * @ingroup utils
- * @ingroup blackboard
  *
  * @author Andreas Koepke, Michael Swigulski
  **/
-class MIXIM_API Move : public BBItem {
-
-	/** @brief Provides BBItem meta information for this class.*/
-    BBITEM_METAINFO(BBItem);
-
+class MIXIM_API Move : public cObject {
 protected:
     /** @brief Start position of the host (in meters)**/
     Coord startPos;
+    /** @brief Last position which was set. */
+    Coord lastPos;
     /** @brief start time at which host started at startPos **/
     simtime_t startTime;
     /** @brief direction the host is moving to, must be normalized **/
@@ -54,6 +50,13 @@ protected:
     double speed;
 
 public:
+    Move()
+    	: startPos()
+    	, lastPos(0.0,0.0,DBL_MAX)
+    	, startTime()
+    	, direction()
+    	, speed(0.0)
+    {}
 
     /**
      * @brief Returns the current speed.
@@ -82,7 +85,7 @@ public:
 	/**
 	 * @brief Returns start time, i.e. time point of the start at start position.
 	 */
-	simtime_t getStartTime() const
+	simtime_t_cref getStartTime() const
 	{
 		return startTime;
 	}
@@ -90,9 +93,10 @@ public:
 	/**
 	 * @brief Sets start position (components in meters) and start time.
 	 */
-	void setStart(const Coord& startPos, simtime_t startTime)
+	void setStart(const Coord& startPos, simtime_t_cref startTime)
 	{
-		this->startPos = startPos;
+		this->lastPos   = startPos;
+		this->startPos  = startPos;
 		this->startTime = startTime;
 	}
 
@@ -149,13 +153,19 @@ public:
      * an unintended result.
      *
      */
-    virtual Coord getPositionAt(simtime_t actualTime) const
+    virtual Coord getPositionAt(simtime_t_cref actualTime = simTime()) const
     {
     	// if speed is very close to 0.0, the host is practically standing still
     	if ( FWMath::close(speed, 0.0) ) return startPos;
 
     	// otherwise: actualPos = startPos + ( direction * v * t )
     	return startPos + ( direction * speed * SIMTIME_DBL(actualTime - startTime) );
+    }
+    virtual const Coord& getCurrentPosition() const
+    {
+    	if (lastPos.z != DBL_MAX)
+    		return lastPos;
+    	return startPos;
     }
 
 public:

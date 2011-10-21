@@ -29,22 +29,19 @@ void NetworkStackTrafficGen::initialize(int stage)
 	BaseLayer::initialize(stage);
 
 	if(stage == 0) {
-		world = FindModule<BaseWorldUtility*>::findGlobalModule();
-		delayTimer = new cMessage("delay-timer", SEND_BROADCAST_TIMER);
+		world        = FindModule<BaseWorldUtility*>::findGlobalModule();
+		delayTimer   = new cMessage("delay-timer", SEND_BROADCAST_TIMER);
 
-		arp = FindModule<BaseArp*>::findSubModule(findHost());
-		myNetwAddr = arp->myNetwAddr(this);
+		arp          = FindModule<BaseArp*>::findSubModule(findHost());
+		myNetwAddr   = arp->myNetwAddr(this);
 
 		packetLength = par("packetLength");
-		packetTime = par("packetTime");
-		pppt = par("packetsPerPacketTime");
-		burstSize = par("burstSize");
-		destination = LAddress::L3Type(par("destination").longValue());
+		packetTime   = par("packetTime");
+		pppt         = par("packetsPerPacketTime");
+		burstSize    = par("burstSize");
+		destination  = LAddress::L3Type(par("destination").longValue());
 
 		nbPacketDropped = 0;
-
-		Packet p(1);
-		catPacket = world->getCategory(&p);
 	} else if (stage == 1) {
 		if(burstSize > 0) {
 			remainingBurst = burstSize;
@@ -96,7 +93,7 @@ void NetworkStackTrafficGen::handleSelfMsg(cMessage *msg)
 void NetworkStackTrafficGen::handleLowerMsg(cMessage *msg)
 {
 	Packet p(packetLength, 1, 0);
-	world->publishBBItem(catPacket, &p, -1);
+	emit(BaseMacLayer::catPacketSignal, &p);
 
 	delete msg;
 	msg = 0;
@@ -123,7 +120,7 @@ void NetworkStackTrafficGen::sendBroadcast()
 	NetwToMacControlInfo::setControlInfo(pkt, LAddress::L2BROADCAST);
 
 	Packet p(packetLength, 0, 1);
-	world->publishBBItem(catPacket, &p, -1);
+	emit(BaseMacLayer::catPacketSignal, &p);
 
 	sendDown(pkt);
 }

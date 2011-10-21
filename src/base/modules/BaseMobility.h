@@ -105,15 +105,11 @@ class MIXIM_API BaseMobility : public BatteryAccess
     /** @brief Pointer to BaseWorldUtility -- these two must know each other */
     BaseWorldUtility *world;
 
-    /** @brief Pointer to host module, to speed up repeated access*/
-    const cModule* hostPtr;
-    int hostId;
-
     /** @brief Stores the current position and move pattern of the host*/
     Move move;
 
     /** @brief Store the category of HostMove */
-    int moveCategory;
+    const static simsignalwrap_t mobilityStateChangedSignal;
 
     /** @brief Time interval (in seconds) to update the hosts position*/
     simtime_t updateInterval;
@@ -171,6 +167,16 @@ class MIXIM_API BaseMobility : public BatteryAccess
     /** @brief Delete dynamically allocated objects*/
     virtual void finish(){};
 
+    /** @brief Returns the current position at the current simulation time. */
+    virtual Coord getCurrentPosition(/*simtime_t_cref stWhen = simTime()*/) {
+    	//return move.getPositionAt(stWhen);
+    	return move.getStartPos();
+    }
+
+    /** @brief Returns the current speed at the current simulation time. */
+    virtual Coord getCurrentSpeed() {
+    	return move.getDirection() * move.getSpeed();
+    }
   protected:
     /**
      * @brief Maps the passed icon size tag (is) to an actual size in pixels.
@@ -196,7 +202,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
      *
      * every time a self message arrives makeMove is called to handle the
      * movement. Afterward updatePosition updates the position with the
-     * blackboard and the display.
+     * display.
      */
     virtual void handleSelfMsg( cMessage* );
 

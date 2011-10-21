@@ -22,16 +22,14 @@
 #define BASE_WORLD_UTIL_H
 
 #include "MiXiMDefs.h"
-#include "Blackboard.h"
 #include "Coord.h"
 
 /**
  * @brief Provides information and utility methods for the whole simulation.
  *
- * @ingroup blackboard
  * @ingroup baseModules
  */
-class MIXIM_API BaseWorldUtility : public Blackboard
+class MIXIM_API BaseWorldUtility : public cSimpleModule
 {
 protected:
 	/**
@@ -56,7 +54,7 @@ protected:
     bool isInitialized;
 
 public:
-    /** @brief Speed of light */
+    /** @brief Speed of light in meters per second. */
 	static const double speedOfLight;
 
 protected:

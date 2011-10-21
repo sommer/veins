@@ -1,13 +1,26 @@
 #/bin/bash
 
-export PATH="$PATH:../../src/base:../../src/modules:../testUtils:."
+export PATH="${PATH}:../../src/base:../../src/modules:../testUtils:."
 export NEDPATH="../../src:.."
+LIBSREF=( '-l' '../../src/base/miximbase' \
+          '-l' '../testUtils/miximtestUtils' \
+          '-l' '../../src/modules/miximmodules' )
 
-./nicTest -c Test1 >  out.tmp 2>  err.tmp
-./nicTest -c Test2 >> out.tmp 2>> err.tmp
-./nicTest -c Test3 >> out.tmp 2>> err.tmp
-./nicTest -c Test4 >> out.tmp 2>> err.tmp
-./nicTest -c Test5 >> out.tmp 2>> err.tmp
+lCombined='tests'
+lSingle='nicTest'
+if [ ! -e ${lSingle} -a ! -e ${lSingle}.exe ]; then
+    if [ -e ../${lCombined}.exe ]; then
+        ln -s ../${lCombined}.exe ${lSingle}.exe
+    elif [ -e ../${lCombined} ]; then
+        ln -s ../${lCombined}     ${lSingle}
+    fi
+fi
+
+./${lSingle} -c Test1 "${LIBSREF[@]}" >  out.tmp 2>  err.tmp
+./${lSingle} -c Test2 "${LIBSREF[@]}" >> out.tmp 2>> err.tmp
+./${lSingle} -c Test3 "${LIBSREF[@]}" >> out.tmp 2>> err.tmp
+./${lSingle} -c Test4 "${LIBSREF[@]}" >> out.tmp 2>> err.tmp
+./${lSingle} -c Test5 "${LIBSREF[@]}" >> out.tmp 2>> err.tmp
 
 diff -I '^Assigned runID=' \
      -I '^Loading NED files from' \
@@ -18,7 +31,7 @@ diff -I '^Assigned runID=' \
      -w exp-output out.tmp >diff.log 2>/dev/null
 
 if [ -s diff.log ]; then
-    cat diff.log
+    echo "FAILED counted $(( 1 + $(grep -c -e '^---$' diff.log) )) differences where #<=$(grep -c -e '^<' diff.log) and #>=$(grep -c -e '^>' diff.log); see $(basename $(cd $(dirname $0);pwd) )/diff.log"
     [ "$1" = "update-exp-output" ] && \
         cat out.tmp >exp-output
     exit 1

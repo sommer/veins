@@ -533,11 +533,6 @@ public:
 	virtual void drawCurrent(double amount, int activity);
 
 	/**
-	 * @brief Returns a pointer to the hosts utility-module.
-	 */
-	virtual BaseUtility* getUtility();
-
-	/**
 	 * @brief Returns a pointer to the simulations world-utility-module.
 	 */
 	virtual BaseWorldUtility* getWorldUtility();
