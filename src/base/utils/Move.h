@@ -110,7 +110,7 @@ public:
 	}
 
 	/**
-	 * @brief Returns the direction vector.
+	 * @brief Returns the direction vector (which is unit less, because of normalization).
 	 */
 	const Coord& getDirection() const
 	{

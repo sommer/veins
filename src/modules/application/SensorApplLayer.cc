@@ -133,7 +133,7 @@ void SensorApplLayer::initializeDistribution(const char* traffic) {
 void SensorApplLayer::scheduleNextPacket() {
 	if (nbPackets > sentPackets && trafficType != 0) { // We must generate packets
 
-		simtime_t waitTime = -1;
+		simtime_t waitTime = SIMTIME_ZERO-1;
 
 		switch (trafficType) {
 		case PERIODIC:

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <assert.h>
 
-void ChannelInfo::addAirFrame(AirFrame* frame, simtime_t startTime)
+void ChannelInfo::addAirFrame(AirFrame* frame, simtime_t_cref startTime)
 {
 	assert(airFrameStarts.count(frame) == 0);
 
@@ -14,7 +14,7 @@ void ChannelInfo::addAirFrame(AirFrame* frame, simtime_t startTime)
 	}
 
 	//calculate endTime of AirFrame
-	simtime_t endTime = startTime + frame->getDuration();
+	simtime_t_cref endTime = startTime + frame->getDuration();
 
 	//add AirFrame to active AirFrames
 	activeAirFrames[endTime].push_back(AirFrameTimePair(startTime, frame));
@@ -30,7 +30,7 @@ simtime_t ChannelInfo::findEarliestInfoPoint()
 	//TODO: check for a more efficient way to find out that earliest time-point
 
 	// make a variable for the earliest-start-time of all remaining AirFrames
-	simtime_t earliestStart = 0;
+	simtime_t earliestStart = SIMTIME_ZERO;
 	AirFrameStartMap::const_iterator it = airFrameStarts.begin();
 
 	// if there is an entry for an AirFrame
@@ -57,10 +57,10 @@ simtime_t ChannelInfo::removeAirFrame(AirFrame* frame)
 	assert(airFrameStarts.count(frame) > 0);
 
 	//get start of AirFrame
-	simtime_t startTime = airFrameStarts[frame];
+	simtime_t_cref startTime = airFrameStarts[frame];
 
 	//calculate end time
-	simtime_t endTime = startTime + frame->getDuration();
+	simtime_t_cref endTime   = startTime + frame->getDuration();
 
 	//remove this AirFrame from active AirFrames
 	deleteAirFrame(activeAirFrames, frame, startTime, endTime);
@@ -84,22 +84,22 @@ void ChannelInfo::assertNoIntersections() {
 	for(AirFrameMatrix::iterator it1 = inactiveAirFrames.begin();
 		it1 != inactiveAirFrames.end(); ++it1)
 	{
-		simtime_t e0 = it1->first;
+		simtime_t_cref e0 = it1->first;
 		for(AirFrameTimeList::iterator it2 = it1->second.begin();
 			it2 != it1->second.end(); ++it2)
 		{
-			simtime_t s0 = it2->first;
+			simtime_t_cref s0 = it2->first;
 
 			bool intersects = (recordStartTime > -1 && recordStartTime <= e0);
 
 			for(AirFrameMatrix::iterator it3 = activeAirFrames.begin();
 				it3 != activeAirFrames.end() && !intersects; ++it3)
 			{
-				simtime_t e1 = it3->first;
+				simtime_t_cref e1 = it3->first;
 				for(AirFrameTimeList::iterator it4 = it3->second.begin();
 					it4 != it3->second.end() && !intersects; ++it4)
 				{
-					simtime_t s1 = it4->first;
+					simtime_t_cref s1 = it4->first;
 
 					if(e0 >= s1 && s0 <= e1)
 						intersects = true;
@@ -112,7 +112,7 @@ void ChannelInfo::assertNoIntersections() {
 
 void ChannelInfo::deleteAirFrame(AirFrameMatrix& airFrames,
 								 AirFrame* frame,
-								 simtime_t startTime, simtime_t endTime)
+								 simtime_t_cref startTime, simtime_t_cref endTime)
 {
 	AirFrameMatrix::iterator listIt = airFrames.find(endTime);
 	AirFrameTimeList* list = &listIt->second;
@@ -133,8 +133,8 @@ void ChannelInfo::deleteAirFrame(AirFrameMatrix& airFrames,
 	assert(false);
 }
 
-bool ChannelInfo::canDiscardInterval(simtime_t startTime,
-									 simtime_t endTime)
+bool ChannelInfo::canDiscardInterval(simtime_t_cref startTime,
+									 simtime_t_cref endTime)
 {
 	assert(recordStartTime >= 0 || recordStartTime == -1);
 
@@ -145,8 +145,8 @@ bool ChannelInfo::canDiscardInterval(simtime_t startTime,
 		   && !isIntersecting(activeAirFrames, startTime, endTime);
 }
 
-void ChannelInfo::checkAndCleanInterval(simtime_t startTime,
-										 simtime_t endTime)
+void ChannelInfo::checkAndCleanInterval(simtime_t_cref startTime,
+                                        simtime_t_cref endTime)
 {
 
 
@@ -158,8 +158,8 @@ void ChannelInfo::checkAndCleanInterval(simtime_t startTime,
 	AirFrame* inactiveIntersect = inactiveIntersectIt.next();
 	while(inactiveIntersect != 0)
 	{
-		simtime_t currentStart = airFrameStarts[inactiveIntersect];
-		simtime_t currentEnd = currentStart + inactiveIntersect->getDuration();
+		simtime_t_cref currentStart = airFrameStarts[inactiveIntersect];
+		simtime_t_cref currentEnd   = currentStart + inactiveIntersect->getDuration();
 
 		if(canDiscardInterval(currentStart, currentEnd))
 		{
@@ -174,9 +174,9 @@ void ChannelInfo::checkAndCleanInterval(simtime_t startTime,
 	}
 }
 
-void ChannelInfo::addToInactives(AirFrame* frame,
-								 simtime_t startTime,
-								 simtime_t endTime)
+void ChannelInfo::addToInactives(AirFrame*      frame,
+								 simtime_t_cref startTime,
+								 simtime_t_cref endTime)
 {
 	// At first, check if some inactive AirFrames can be removed because the
 	// AirFrame to in-activate was the last one they intersected with.
@@ -195,14 +195,14 @@ void ChannelInfo::addToInactives(AirFrame* frame,
 }
 
 bool ChannelInfo::isIntersecting(const AirFrameMatrix& airFrames,
-								 simtime_t from, simtime_t to) const
+								 simtime_t_cref from, simtime_t_cref to) const
 {
 	ConstIntersectionIterator it(&airFrames, from, to);
 	return (it.next() != 0);
 }
 
 void ChannelInfo::getIntersections( const AirFrameMatrix& airFrames,
-									simtime_t from, simtime_t to,
+									simtime_t_cref from, simtime_t_cref to,
 									AirFrameVector& outVector) const
 {
 	ConstIntersectionIterator it(&airFrames, from, to);
@@ -215,7 +215,7 @@ void ChannelInfo::getIntersections( const AirFrameMatrix& airFrames,
 	}
 }
 
-void ChannelInfo::getAirFrames(simtime_t from, simtime_t to,
+void ChannelInfo::getAirFrames(simtime_t_cref from, simtime_t_cref to,
 							   AirFrameVector& out) const
 {
 	//check for intersecting inactive AirFrames

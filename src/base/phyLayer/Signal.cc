@@ -1,6 +1,6 @@
 #include "Signal_.h"
 
-Signal::Signal(simtime_t sendingStart, simtime_t duration):
+Signal::Signal(simtime_t_cref sendingStart, simtime_t_cref duration):
 	sendingStart(sendingStart), duration(duration),
 	propagationDelay(0),
 	power(0), bitrate(0),
@@ -106,7 +106,7 @@ Signal::~Signal()
 	}
 }
 
-simtime_t Signal::getSendingStart() const {
+simtime_t_cref Signal::getSendingStart() const {
 	return sendingStart;
 }
 
@@ -122,15 +122,15 @@ simtime_t Signal::getReceptionEnd() const {
 	return sendingStart + propagationDelay + duration;
 }
 
-simtime_t Signal::getDuration() const{
+simtime_t_cref Signal::getDuration() const{
 	return duration;
 }
 
-simtime_t Signal::getPropagationDelay() const {
+simtime_t_cref Signal::getPropagationDelay() const {
 	return propagationDelay;
 }
 
-void Signal::setPropagationDelay(simtime_t delay) {
+void Signal::setPropagationDelay(simtime_t_cref delay) {
 	assert(propagationDelay == 0);
 	assert(!txBitrate);
 

@@ -81,11 +81,11 @@ const DimensionSet DimensionSet::timeFreqDomain(Dimension::time_static(), Dimens
 
 //--Argument implementation---------------------------
 
-Argument::Argument(simtime_t timeVal):
+Argument::Argument(simtime_t_cref timeVal):
 	time(timeVal), values(), count(0)
 {}
 
-Argument::Argument(const DimensionSet & dims, simtime_t timeVal):
+Argument::Argument(const DimensionSet & dims, simtime_t_cref timeVal):
 	time(timeVal), values(), count(0)
 {
 	DimensionSet::const_iterator it = dims.begin();
@@ -100,12 +100,12 @@ Argument::Argument(const DimensionSet & dims, simtime_t timeVal):
 	}
 }
 
-simtime_t Argument::getTime() const
+simtime_t_cref Argument::getTime() const
 {
 	return time;
 }
 
-void Argument::setTime(simtime_t time)
+void Argument::setTime(simtime_t_cref time)
 {
 	this->time = time;
 }
@@ -393,9 +393,9 @@ SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping*            
 void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& to, const Argument& step, Argument& pos)
 {
 	//get iteration borders and steps
-	const simtime_t& fromT = from.getTime();
-	const simtime_t& toT   = to.getTime();
-	const simtime_t& stepT = step.getTime();
+	simtime_t_cref fromT = from.getTime();
+	simtime_t_cref toT   = to.getTime();
+	simtime_t_cref stepT = step.getTime();
 
 	//iterate over interval without the end of the interval
 	for(simtime_t t = fromT; t < toT; t += stepT){

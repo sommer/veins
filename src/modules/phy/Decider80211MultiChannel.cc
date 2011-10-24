@@ -27,7 +27,7 @@ Decider80211MultiChannel::Decider80211MultiChannel(DeciderToPhyInterface* phy,
 
 Decider80211MultiChannel::~Decider80211MultiChannel() {}
 
-void Decider80211MultiChannel::getChannelInfo(simtime_t start, simtime_t end, AirFrameVector& out)
+void Decider80211MultiChannel::getChannelInfo(simtime_t_cref start, simtime_t_cref end, AirFrameVector& out)
 {
 	Decider80211Battery::getChannelInfo(start, end, out);
 

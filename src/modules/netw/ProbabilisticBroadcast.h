@@ -81,7 +81,7 @@ protected:
      *  @param bcastDelay relative (to now) simulator time of next broadcast attempt.
      *  @param msg descriptor of the message to insert in the queue.
      **/
-	virtual void insertMessage(simtime_t bcastDelay, tMsgDesc* msgDesc);
+	virtual void insertMessage(simtime_t_cref bcastDelay, tMsgDesc* msgDesc);
 
 	/** @brief Returns the descriptor of the first message in the queue,
 	 *         then remove its pointer from the queue and its id from the

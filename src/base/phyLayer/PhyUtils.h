@@ -86,7 +86,7 @@ protected:
 		 * @brief overload of operator < for class ListEntry to be able to use the STL Algorithms
 		 * "lower_bound" and "upper_bound"
 		 */
-		friend bool operator<(const ListEntry& e, const simtime_t& t) {
+		friend bool operator<(const ListEntry& e, simtime_t_cref t) {
 			return (e.getTime() < t);
 		}
 
@@ -94,7 +94,7 @@ protected:
 		 * @brief overload of operator < for class ListEntry to be able to use the STL Algorithms
 		 * "lower_bound" and "upper_bound"
 		 */
-		friend bool operator<(const simtime_t& t, const ListEntry& e) {
+		friend bool operator<(simtime_t_cref t, const ListEntry& e) {
 			return (t < e.getTime());
 		}
 
@@ -160,14 +160,14 @@ public:
 	 *
 	 * THIS SHOULD BE THE ONLY WAY TO DELETE ENTRIES IN THE RECEIVING LIST
 	 */
-	void cleanUpUntil(simtime_t t);
+	void cleanUpUntil(simtime_t_cref t);
 
 	/**
 	 * @brief Stores an entry of the form "time-point/attenuation (from now on)"
 	 *
 	 * Intended to be used by the Radio
 	 */
-	void writeRecvEntry(simtime_t time, double value);
+	void writeRecvEntry(simtime_t_cref time, double value);
 
 
 
@@ -296,14 +296,14 @@ public:
 	 *
 	 * The actual simtime must be passed, to create properly RSAMEntry
 	 */
-	virtual simtime_t switchTo(int newState, simtime_t now);
+	virtual simtime_t switchTo(int newState, simtime_t_cref now);
 
 	/**
 	 * @brief function called by PhyLayer in order to make an entry in the switch times matrix,
 	 * i.e. set the time for switching from one state to another
 	 *
 	 */
-	virtual void setSwitchTime(int from, int to, simtime_t time);
+	virtual void setSwitchTime(int from, int to, simtime_t_cref time);
 
 	/**
 	 * @brief Returns the state the Radio is currently in
@@ -323,7 +323,7 @@ public:
 	 *
 	 * The actual simtime must be passed, to create properly RSAMEntry
 	 */
-	virtual void endSwitch(simtime_t now);
+	virtual void endSwitch(simtime_t_cref now);
 
 	/**
 	 * @brief Returns a pointer to the RadioStateAnalogueModel
@@ -339,7 +339,7 @@ public:
 	 * @brief discards information in the RadioStateAnalogueModel before given time-point
 	 *
 	 */
-	virtual void cleanAnalogueModelUntil(simtime_t t) {
+	virtual void cleanAnalogueModelUntil(simtime_t_cref t) {
 		rsam.cleanUpUntil(t);
 	}
 
@@ -397,7 +397,7 @@ protected:
 	/**
 	 * @brief responsible for making entries to the RSAM
 	 */
-	virtual void makeRSAMEntry(simtime_t time, int state)
+	virtual void makeRSAMEntry(simtime_t_cref time, int state)
 	{
 		rsam.writeRecvEntry(time, mapStateToAtt(state));
 	}
@@ -450,8 +450,8 @@ public:
 
 	/** @brief Initializes the iterator with the passed values.*/
 	RSAMConstMappingIterator(const RadioStateAnalogueModel* rsam,
-							 simtime_t signalStart,
-							simtime_t signalEnd);
+							 simtime_t_cref signalStart,
+							 simtime_t_cref signalEnd);
 
 	virtual ~RSAMConstMappingIterator() {}
 
@@ -540,7 +540,7 @@ public:
 	 * @brief Iterates to valid entry for timepoint t over all zero-time switches
 	 * starting from the current position of iterator it
 	 */
-	virtual void iterateToOverZeroSwitches(simtime_t t);
+	virtual void iterateToOverZeroSwitches(simtime_t_cref t);
 
 }; // end class RSAMConstMappingIterator
 
@@ -578,8 +578,8 @@ public:
 	 *
 	 */
 	RSAMMapping(const RadioStateAnalogueModel* rsam,
-				simtime_t signalStart,
-				simtime_t signalEnd) :
+				simtime_t_cref signalStart,
+				simtime_t_cref signalEnd) :
 		ConstMapping(),
 		rsam(rsam),
 		signalStart(signalStart),

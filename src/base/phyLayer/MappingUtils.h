@@ -1941,17 +1941,17 @@ public:
 	 */
 	static void addDiscontinuity(Mapping* m,
 								 const Argument& pos, const Argument::mapped_type& value,
-								 simtime_t limitTime, const Argument::mapped_type& limitValue);
+								 simtime_t_cref limitTime, const Argument::mapped_type& limitValue);
 
 	/**
 	 * @brief returns the closest value of simtime before passed value
 	 */
-	static simtime_t pre(simtime_t t);
+	static simtime_t pre(simtime_t_cref t);
 
 	/**
 	 * @brief returns the closest value of simtime after passed values
 	 */
-	static simtime_t post(simtime_t t);
+	static simtime_t post(simtime_t_cref t);
 };
 
 
@@ -2141,7 +2141,7 @@ protected:
 	}
 
 public:
-	BaseDelayedIterator(Iterator* it, simtime_t delay):
+	BaseDelayedIterator(Iterator* it, simtime_t_cref delay):
 		Base(it), delay(delay) {
 
 		updatePosition();
@@ -2216,7 +2216,7 @@ protected:
 	}
 
 public:
-	BaseDelayedMapping(Base* mapping, simtime_t delay):
+	BaseDelayedMapping(Base* mapping, simtime_t_cref delay):
 		Base(mapping->getDimensionSet()), mapping(mapping), delay(delay) {}
 
 	virtual ~BaseDelayedMapping() {}
@@ -2236,14 +2236,14 @@ public:
 	/**
 	 * @brief Returns the delay used by this mapping.
 	 */
-	virtual simtime_t getDelay() const {
+	virtual simtime_t_cref getDelay() const {
 		return delay;
 	}
 
 	/**
 	 * @brief Changes the delay to the passed value.
 	 */
-	virtual void delayMapping(simtime_t d) {
+	virtual void delayMapping(simtime_t_cref d) {
 		delay = d;
 	}
 };
@@ -2259,7 +2259,7 @@ public:
  */
 class MIXIM_API ConstDelayedMapping: public BaseDelayedMapping<ConstMapping> {
 public:
-	ConstDelayedMapping(ConstMapping* mapping, simtime_t delay):
+	ConstDelayedMapping(ConstMapping* mapping, simtime_t_cref delay):
 		BaseDelayedMapping<ConstMapping>(mapping, delay) {}
 
 	virtual ~ConstDelayedMapping() {}
@@ -2280,7 +2280,7 @@ public:
  */
 class MIXIM_API DelayedMapping: public BaseDelayedMapping<Mapping> {
 public:
-	DelayedMapping(Mapping* mapping, simtime_t delay):
+	DelayedMapping(Mapping* mapping, simtime_t_cref delay):
 		BaseDelayedMapping<Mapping>(mapping, delay) {}
 
 	virtual ~DelayedMapping() {}

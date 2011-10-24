@@ -195,7 +195,7 @@ simtime_t BaseDecider::canAnswerCSR(const CSRInfo& requestInfo)
 	return requestInfo.second + requestInfo.first->getSenseTimeout();
 }
 
-double BaseDecider::calcChannelSenseRSSI(simtime_t start, simtime_t end) {
+double BaseDecider::calcChannelSenseRSSI(simtime_t_cref start, simtime_t_cref end) {
 	Mapping* rssiMap = calculateRSSIMapping(start, end);
 
 	// the sensed RSSI-value is the maximum value between (and including) the interval-borders
@@ -246,15 +246,15 @@ Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
 	return snrMap;
 }
 
-void BaseDecider::getChannelInfo(simtime_t start, simtime_t end,
+void BaseDecider::getChannelInfo(simtime_t_cref start, simtime_t_cref end,
 								 AirFrameVector& out)
 {
 	phy->getChannelInfo(start, end, out);
 }
 
-Mapping* BaseDecider::calculateRSSIMapping(	simtime_t start,
-										simtime_t end,
-										AirFrame* exclude)
+Mapping* BaseDecider::calculateRSSIMapping(	simtime_t_cref start,
+                                            simtime_t_cref end,
+                                            AirFrame*      exclude)
 {
 	if(exclude)
 		deciderEV << "Creating RSSI map excluding AirFrame with id " << exclude->getId() << endl;

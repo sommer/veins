@@ -239,7 +239,7 @@ bool ProbabilisticBroadcast::debugMessageKnown(unsigned int msgId)
 	return pos != debugMsgIdSet.end();
 }
 
-void ProbabilisticBroadcast::insertMessage(simtime_t bcastDelay, tMsgDesc* msgDesc)
+void ProbabilisticBroadcast::insertMessage(simtime_t_cref bcastDelay, tMsgDesc* msgDesc)
 {
 	TimeMsgMap::iterator pos;
 	simtime_t bcastTime = simTime() + bcastDelay;

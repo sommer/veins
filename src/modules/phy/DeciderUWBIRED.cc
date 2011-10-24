@@ -280,13 +280,13 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
  * 16 pulse peak positions of the voltage measured by the receiver ADC.
  */
 pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
-		simtime_t now, simtime_t burst, Signal* signal) {
+		simtime_t_cref pNow, simtime_t_cref burst, Signal* signal) {
 	std::pair<double, double> energy;
 	energy.first = 0; // stores SNIR
 	energy.second = 0; // stores total captured window energy
 	vector<ConstMapping*>::iterator mappingIter;
 	Argument arg;
-	simtime_t windowEnd = now + burst;
+	simtime_t windowEnd = pNow + burst;
 
 	double burstsnr = 0;
 	// Triangular baseband pulses
@@ -296,7 +296,7 @@ pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
 
 	// we sample one point per pulse
 	// caller has already set our time reference ("now") at the peak of the pulse
-	for (; now < windowEnd; now += cfg.pulse_duration) {
+	for (simtime_t now = pNow; now < windowEnd; now += cfg.pulse_duration) {
 		double signalValue = 0;	// electric field from tracked signal [V/m²]
 		double resPower = 0;		// electric field at antenna = combination of all arriving electric fields [V/m²]
 		double vEfield = 0;		// voltage at antenna caused by electric field Efield [V]

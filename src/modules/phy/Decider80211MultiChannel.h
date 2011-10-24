@@ -41,7 +41,7 @@ protected:
 	 * @param end The end of the interval to collect AirFrames from.
 	 * @param out The output vector in which to put the AirFrames.
 	 */
-	virtual void getChannelInfo(simtime_t start, simtime_t end,
+	virtual void getChannelInfo(simtime_t_cref start, simtime_t_cref end,
 								AirFrameVector& out);
 
 	/**

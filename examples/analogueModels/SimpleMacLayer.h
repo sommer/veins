@@ -47,7 +47,7 @@ protected:
 	 * @brief Creates a Mapping with the passed value at the passed position in freqency
 	 * and time.
 	 * */
-	Mapping* createMapping(simtime_t time, simtime_t length, double freqFrom, double freqTo, double value);
+	Mapping* createMapping(simtime_t_cref time, simtime_t_cref length, double freqFrom, double freqTo, double value);
 
 	void handleMacPkt(MacPkt* pkt);
 	void handleTXOver();
@@ -62,7 +62,7 @@ protected:
 	/**
 	 * @brief Creates the answer packet.
 	 */
-	MacPkt* createMacPkt(simtime_t length);
+	MacPkt* createMacPkt(simtime_t_cref length);
 
 	void log(std::string msg);
 

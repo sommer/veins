@@ -7,14 +7,12 @@ using namespace std;
 void RadioStateAnalogueModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos)
 {
 	Signal&      signal     = frame->getSignal();
-	simtime_t    start      = signal.getReceptionStart();
-	simtime_t    end        = signal.getReceptionEnd();
-	RSAMMapping* attMapping = new RSAMMapping(this, start, end);
+	RSAMMapping* attMapping = new RSAMMapping(this, signal.getReceptionStart(), signal.getReceptionEnd());
 
 	signal.addAttenuation(attMapping);
 }
 
-void RadioStateAnalogueModel::cleanUpUntil(simtime_t t)
+void RadioStateAnalogueModel::cleanUpUntil(simtime_t_cref t)
 {
 	// assert that list is not empty
 	assert(!radioStateAttenuation.empty());
@@ -66,7 +64,7 @@ void RadioStateAnalogueModel::cleanUpUntil(simtime_t t)
 
 }
 
-void RadioStateAnalogueModel::writeRecvEntry(simtime_t time, double value)
+void RadioStateAnalogueModel::writeRecvEntry(simtime_t_cref time, double value)
 {
 	// bugfixed on 08.04.2008
 	assert( (radioStateAttenuation.empty()) || (time >= radioStateAttenuation.back().getTime()) );
@@ -138,7 +136,7 @@ Radio::~Radio()
 	swTimes = 0;
 }
 
-simtime_t Radio::switchTo(int newState, simtime_t now)
+simtime_t Radio::switchTo(int newState, simtime_t_cref now)
 {
 	// state to switch to must be in a valid range, i.e. 0 <= newState < numRadioStates
 	assert(0 <= newState && newState < numRadioStates);
@@ -170,7 +168,7 @@ simtime_t Radio::switchTo(int newState, simtime_t now)
 	return swTimes[lastState][nextState];
 }
 
-void Radio::setSwitchTime(int from, int to, simtime_t time)
+void Radio::setSwitchTime(int from, int to, simtime_t_cref time)
 {
 	// assert parameters are in valid range
 	assert(time >= 0.0);
@@ -185,7 +183,7 @@ void Radio::setSwitchTime(int from, int to, simtime_t time)
 	return;
 }
 
-void Radio::endSwitch(simtime_t now)
+void Radio::endSwitch(simtime_t_cref now)
 {
 	// make sure we are currently switching
 	assert(state == SWITCHING);
@@ -205,8 +203,8 @@ void Radio::endSwitch(simtime_t now)
 
 RSAMConstMappingIterator::RSAMConstMappingIterator
 							(const RadioStateAnalogueModel* rsam,
-							 simtime_t signalStart,
-							 simtime_t signalEnd) :
+							 simtime_t_cref signalStart,
+							 simtime_t_cref signalEnd) :
 	rsam(rsam),
 	signalStart(signalStart),
 	signalEnd(signalEnd)
@@ -221,7 +219,7 @@ RSAMConstMappingIterator::RSAMConstMappingIterator
 void RSAMConstMappingIterator::jumpTo(const Argument& pos)
 {
 	// extract the time-component from the argument
-	simtime_t t = pos.getTime();
+	simtime_t_cref t = pos.getTime();
 
 	assert( !(rsam->radioStateAttenuation.empty()) &&
 			!(t < rsam->radioStateAttenuation.front().getTime()) );
@@ -253,7 +251,7 @@ void RSAMConstMappingIterator::setNextPosition()
 			assert(it->getTime() <= position.getTime() && position.getTime() < it2->getTime());
 
 			//point in time for the "pre step" of the next real key entry
-			simtime_t preTime = MappingUtils::pre(it2->getTime());
+			simtime_t_cref preTime = MappingUtils::pre(it2->getTime());
 
 			if(position.getTime() == preTime) {
 				nextPosition.setTime(it2->getTime());
@@ -273,7 +271,7 @@ void RSAMConstMappingIterator::setNextPosition()
 void RSAMConstMappingIterator::iterateTo(const Argument& pos)
 {
 	// extract the time component from the passed Argument
-	simtime_t t = pos.getTime();
+	simtime_t_cref t = pos.getTime();
 
 	// ERROR CASE: iterating to a position before (time) the beginning of the mapping is forbidden
 	assert( !(rsam->radioStateAttenuation.empty()) &&
@@ -299,8 +297,8 @@ void RSAMConstMappingIterator::iterateTo(const Argument& pos)
 
 bool RSAMConstMappingIterator::inRange() const
 {
-	simtime_t t = position.getTime();
-	simtime_t lastEntryTime = std::max(rsam->radioStateAttenuation.back().getTime(), signalStart);
+	simtime_t_cref t             = position.getTime();
+	simtime_t_cref lastEntryTime = std::max(rsam->radioStateAttenuation.back().getTime(), signalStart);
 
 	return 	signalStart <= t
 			&& t <= signalEnd
@@ -322,7 +320,7 @@ bool RSAMConstMappingIterator::hasNext() const
 			|| (it2 != rsam->radioStateAttenuation.end() && it2->getTime() <= signalEnd);
 }
 
-void RSAMConstMappingIterator::iterateToOverZeroSwitches(simtime_t t)
+void RSAMConstMappingIterator::iterateToOverZeroSwitches(simtime_t_cref t)
 {
 	if( it != rsam->radioStateAttenuation.end() && !(t < it->getTime()) )
 	{
@@ -345,7 +343,7 @@ void RSAMConstMappingIterator::iterateToOverZeroSwitches(simtime_t t)
 double RSAMMapping::getValue(const Argument& pos) const
 {
 	// extract the time-component from the argument
-	simtime_t t = pos.getTime();
+	simtime_t_cref t = pos.getTime();
 
 	// assert that t is not before the first timepoint in the RSAM
 	// and receiving list is not empty

@@ -111,7 +111,7 @@ void SimpleMacLayer::sendDown(MacPkt* pkt) {
 	send(pkt, dataOut);
 }
 
-Mapping* SimpleMacLayer::createMapping(simtime_t time, simtime_t length, double freqFrom, double freqTo, double value){
+Mapping* SimpleMacLayer::createMapping(simtime_t_cref time, simtime_t_cref length, double freqFrom, double freqTo, double value){
 	//create mapping for frequency and time
 	Mapping* m = MappingUtils::createMapping(0.0, dimensions, Mapping::LINEAR);
 
@@ -138,7 +138,7 @@ Mapping* SimpleMacLayer::createMapping(simtime_t time, simtime_t length, double 
 	return m;
 }
 
-MacPkt* SimpleMacLayer::createMacPkt(simtime_t length) {
+MacPkt* SimpleMacLayer::createMacPkt(simtime_t_cref length) {
 	//create signal with start at current simtime and passed length
 	Signal* s = new Signal(simTime(), length);
 

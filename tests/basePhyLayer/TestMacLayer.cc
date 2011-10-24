@@ -524,7 +524,7 @@ void TestMacLayer::testGetChannelStateWithBD()
 
 //---utilities------------------------------
 
-void TestMacLayer::continueIn(simtime_t time){
+void TestMacLayer::continueIn(simtime_t_cref time){
 	scheduleAt(simTime() + time, new cMessage(0, 23242));
 	waitForMessage(	"Waiting for " + toString(time) + "s.",
 					23242,
@@ -549,7 +549,7 @@ void TestMacLayer::sendDown(MacPkt* pkt) {
 	send(pkt, dataOut);
 }
 
-MacPkt* TestMacLayer::createMacPkt(simtime_t length) {
+MacPkt* TestMacLayer::createMacPkt(simtime_t_cref length) {
 	MacPkt* res = new MacPkt();
 	res->setKind(TEST_MACPKT);
 	MacToPhyControlInfo::setControlInfo(res, new Signal(simTime(), length));

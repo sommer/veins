@@ -6,14 +6,13 @@
 #include <set>
 #include <string>
 #include <algorithm>
-#include <assert.h>
-#include <FWMath.h>
+#include <cassert>
 #include <sstream>
 #include <iomanip>
 
 #include "MiXiMDefs.h"
 #include "Interpolation.h"
-
+#include "FWMath.h"
 
 /**
  * @brief Specifies a dimension for mappings (like time, frequency, etc.)
@@ -325,24 +324,24 @@ public:
 	 * @brief Initialize this argument with the passed value for
 	 * the time dimension.
 	 */
-	Argument(simtime_t timeVal = 0);
+	Argument(simtime_t_cref timeVal = 0);
 
 	/**
 	 * @brief Initializes the Argument with the dimensions of the
 	 * passed DimensionSet set to zero, and the passed value for the
 	 * time (or zero, if omitted).
 	 */
-	Argument(const DimensionSet& dims, simtime_t timeVal = 0);
+	Argument(const DimensionSet& dims, simtime_t_cref timeVal = SIMTIME_ZERO);
 
 	/**
 	 * @brief Returns the time value of this argument.
 	 */
-	simtime_t getTime() const;
+	simtime_t_cref getTime() const;
 
 	/**
 	 * @brief Changes the time value of this argument.
 	 */
-	void setTime(simtime_t time);
+	void setTime(simtime_t_cref time);
 
 	/**
 	 * @brief Returns true if this Argument has a value for the
@@ -653,7 +652,7 @@ private:
 		return osToStr.str();
 	}
 
-	std::string toString(simtime_t v, unsigned int length) {
+	std::string toString(simtime_t_cref v, unsigned int length) {
 		return toString(SIMTIME_DBL(v), length);
 	}
 
@@ -835,7 +834,7 @@ public:
 					assert(*fIt == it->getPosition().getArgValue(otherDim));
 				}
 
-				while( tIt != timePositions.end() && definitelyLessThan(SIMTIME_DBL(*tIt), SIMTIME_DBL(it->getPosition().getTime())) ) {
+				while( tIt != timePositions.end() && *tIt < it->getPosition().getTime() ) {
 					// blank item because the header time does not match
 					++tIt;
 					out << std::setw(iMaxHeaderItemLen+1) << "";

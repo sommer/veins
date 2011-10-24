@@ -87,7 +87,7 @@ public:
 	/**
 	 * @brief Initializes a signal with the specified start and length.
 	 */
-	Signal(simtime_t start = -1.0, simtime_t length = -1.0);
+	Signal(simtime_t_cref start = -1.0, simtime_t_cref length = -1.0);
 
 	/**
 	 * @brief Overwrites the copy constructor to make sure that the
@@ -110,7 +110,7 @@ public:
 	 * @brief Returns the point in time when the sending of the Signal started
 	 * at the sender module.
 	 */
-	simtime_t getSendingStart() const;
+	simtime_t_cref getSendingStart() const;
 
 	/**
 	 * @brief Returns the point in time when the sending of the Signal ended
@@ -133,19 +133,19 @@ public:
 	/**
 	 * @brief Returns the duration of the signal transmission.
 	 */
-	simtime_t getDuration() const;
+	simtime_t_cref getDuration() const;
 
 	/**
 	 * @brief Returns the propagation delay of the signal.
 	 */
-	simtime_t getPropagationDelay() const;
+	simtime_t_cref getPropagationDelay() const;
 
 	/**
 	 * @brief Sets the propagation delay of the signal.
 	 *
 	 * This should be only set by the sending physical layer.
 	 */
-	void setPropagationDelay(simtime_t delay);
+	void setPropagationDelay(simtime_t_cref delay);
 
 	/**
 	 * @brief Sets the function representing the transmission power

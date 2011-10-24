@@ -171,7 +171,7 @@ protected:
 		return 10.0 * log10(v);
 	}
 
-	template<class T>
+	template<typename T>
 	std::string toString(T v, unsigned int length){
 		char* tmp = new char[255];
 		sprintf(tmp, "%.2f", v);
@@ -183,7 +183,7 @@ protected:
 		return result;
 	}
 
-	std::string toString(simtime_t v, unsigned int length){
+	std::string toString(simtime_t_cref v, unsigned int length){
 		return toString(SIMTIME_DBL(v), length);
 	}
 

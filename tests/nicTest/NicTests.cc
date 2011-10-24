@@ -240,8 +240,8 @@ void NicTests::runTests(int run, int stage, cMessage* msg)
 }
 
 void NicTests::testForRange(	std::string test,
-							simtime_t from, simtime_t to,
-							simtime_t act)
+							simtime_t_cref from, simtime_t_cref to,
+							simtime_t_cref act)
 {
 	std::string testMsg = executePlannedTest(test);
 	if(from <= act && act <= to) {

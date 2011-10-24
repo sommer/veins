@@ -67,7 +67,7 @@ protected:
         LAddress::L3Type srcAddr;
         simtime_t        delTime;
     public:
-        Bcast(unsigned long n=0, const LAddress::L3Type& s = LAddress::L3NULL,  simtime_t d=0) :
+        Bcast(unsigned long n=0, const LAddress::L3Type& s = LAddress::L3NULL,  simtime_t_cref d=SIMTIME_ZERO) :
             seqNum(n), srcAddr(s), delTime(d) {
         }
     };

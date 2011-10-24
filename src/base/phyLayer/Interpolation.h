@@ -6,11 +6,6 @@
 #include <algorithm>
 #include <assert.h>
 
-template<class T>
-bool definitelyLessThan(T a, T b, T epsilon = std::numeric_limits<T>::epsilon()) {
-    return (b - a) > ( (std::abs(a) < std::abs(b) ? std::abs(b) : std::abs(a)) * epsilon );
-}
-
 /**
  * @brief Represents an interpolated value of any type.
  *

@@ -112,7 +112,7 @@ protected:
     virtual void handleEndContentionTimer();
 
     /** @brief handle a message that is not for me or errornous*/
-    void handleMsgNotForMe(cMessage *af, simtime_t duration);
+    void handleMsgNotForMe(cMessage *af, simtime_t_cref duration);
     /** @brief handle a message that was meant for me*/
     void handleMsgForMe(Mac80211Pkt*);
     // ** @brief handle a Broadcast message*/
@@ -227,12 +227,12 @@ protected:
      *
      * Used during contend state to check if the channel is free.
      */
-    void senseChannelWhileIdle(simtime_t duration);
+    void senseChannelWhileIdle(simtime_t_cref duration);
 
     /**
      * @brief Creates the signal to be used for a packet to be sent.
      */
-    Signal* createSignal(simtime_t start, simtime_t length, double power, double bitrate);
+    Signal* createSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate);
 
 protected:
 

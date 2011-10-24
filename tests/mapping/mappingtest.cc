@@ -8,16 +8,16 @@
 
 
 
-void assertEqualSilent(std::string msg, double target, simtime_t actual) {
+void assertEqualSilent(std::string msg, double target, simtime_t_cref actual) {
 
 	assertEqualSilent(msg, target, SIMTIME_DBL(actual));
 }
 
-void assertClose(std::string msg, double target, simtime_t actual){
+void assertClose(std::string msg, double target, simtime_t_cref actual){
 	assertClose(msg, target, SIMTIME_DBL(actual));
 }
 
-void assertClose(std::string msg, simtime_t target, double actual){
+void assertClose(std::string msg, simtime_t_cref target, double actual){
 	assertClose(msg, SIMTIME_DBL(target), actual);
 }
 
@@ -146,29 +146,28 @@ protected:
 		ArgFactory(Dimension d2, Dimension d3):
 			time(Dimension::time_static()), d2(d2), d3(d3), set2(time, d2), set3(time, d2, d3) {}
 
-		Argument operator()(simtime_t t){
+		Argument operator()(simtime_t_cref t){
 			return Argument(t);
 		}
 
-		Argument operator[](simtime_t t){
-			t.setRaw(t.raw() - 1);
-			return Argument(t);
+		Argument operator[](simtime_t_cref t){
+			return Argument(MappingUtils::pre(t));
 		}
 
-		Argument operator()(Argument::mapped_type v2, simtime_t t){
+		Argument operator()(Argument::mapped_type v2, simtime_t_cref t){
 			Argument res(set2, t);
 			res.setArgValue(d2, v2);
 			return res;
 		}
 
-		Argument operator()(Argument::mapped_type v3, Argument::mapped_type v2, simtime_t t){
+		Argument operator()(Argument::mapped_type v3, Argument::mapped_type v2, simtime_t_cref t){
 			Argument res(set3, t);
 			res.setArgValue(d2, v2);
 			res.setArgValue(d3, v3);
 			return res;
 		}
 
-		Argument operator()(Dimension other, Argument::mapped_type v2, simtime_t t){
+		Argument operator()(Dimension other, Argument::mapped_type v2, simtime_t_cref t){
 			Argument res(t);
 			res.setArgValue(other, v2);
 			return res;
@@ -184,7 +183,7 @@ public:
 		time(Dimension::time_static()), freq("frequency"), channel(freq), space("space"),
 		A(freq, space), createMappingBuffer(0){
 		for(Argument::mapped_type i = 0.0; i <= 6.0; i+=0.25) {
-			for(simtime_t j = 0.0; j <= 6.0; j+=0.25) {
+			for(simtime_t j = SIMTIME_ZERO; j <= 6.0; j+=0.25) {
 				a[i][j].setTime(j);
 				a[i][j].setArgValue(freq, i);
 			}
@@ -1710,7 +1709,7 @@ protected:
 		std::map<double, std::map<simtime_t, Argument> > a;
 
 		for(double i = 0.0; i <= 5.5; i+=0.25) {
-			for(simtime_t j = 0.0; j <= 5.5; j+=0.25) {
+			for(simtime_t j = SIMTIME_ZERO; j <= 5.5; j+=0.25) {
 				A(i, j).setTime(j);
 				A(i, j).setArgValue(freq, i);
 			}
@@ -1719,7 +1718,7 @@ protected:
 		f = new TestSimpleConstMapping(freqTime, A(2, 1.5), A(4, 4), A(1, 0.5));
 
 		for(double i = 0.0; i <= 5.5; i+=0.25) {
-			for(simtime_t j = 0.0; j <= 5.5; j+=0.25) {
+			for(simtime_t j = SIMTIME_ZERO; j <= 5.5; j+=0.25) {
 				assertEqual("Get value of fully initialized freq-time-mapping.", j, f->getValue(A(i, j)));
 			}
 		}
@@ -1971,7 +1970,7 @@ protected:
 
 
 
-	Mapping* createTestMapping(simtime_t from, simtime_t to, int entries){
+	Mapping* createTestMapping(simtime_t_cref from, simtime_t_cref to, int entries){
 		Mapping* result = new TimeMapping<Linear>();
 
 		if(entries > 1){

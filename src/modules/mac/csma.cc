@@ -329,7 +329,7 @@ void csma::updateStatusBackoff(t_mac_event event, cMessage *msg) {
 	}
 }
 
-void csma::attachSignal(MacPkt* mac, simtime_t startTime) {
+void csma::attachSignal(MacPkt* mac, simtime_t_cref startTime) {
 	simtime_t duration = (mac->getBitLength() + phyHeaderLength)/bitrate;
 	setDownControlInfo(mac, createSignal(startTime, duration, txPower, bitrate));
 }

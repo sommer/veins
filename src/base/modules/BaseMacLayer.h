@@ -168,7 +168,7 @@ protected:
      * transmission-power is still zero at the exact start and end.
      * Please see the method MappingUtils::addDiscontinuity for the reason.
      */
-    virtual Signal* createSignal(simtime_t start, simtime_t length, double power, double bitrate);
+    virtual Signal* createSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate);
 
     /**
      * @brief Creates a simple Mapping with a constant curve
@@ -176,7 +176,7 @@ protected:
      *
      * Used by "createSignal" to create the bitrate mapping.
      */
-    Mapping* createConstantMapping(simtime_t start, simtime_t end, double value);
+    Mapping* createConstantMapping(simtime_t_cref start, simtime_t_cref end, double value);
 
     /**
      * @brief Creates a simple Mapping with a constant curve
@@ -184,13 +184,13 @@ protected:
      *
      * Used by "createSignal" to create the power mapping.
      */
-    Mapping* createRectangleMapping(simtime_t start, simtime_t end, double value);
+    Mapping* createRectangleMapping(simtime_t_cref start, simtime_t_cref end, double value);
 
     /**
      * @brief Creates a Mapping defined over time and frequency with
      * constant power in a certain frequency band.
      */
-    ConstMapping* createSingleFrequencyMapping(simtime_t start, simtime_t end, double centerFreq, double bandWith, double value);
+    ConstMapping* createSingleFrequencyMapping(simtime_t_cref start, simtime_t_cref end, double centerFreq, double bandWith, double value);
 
     /**
      * @brief Returns a pointer to this MACs NICs ConnectionManager module.

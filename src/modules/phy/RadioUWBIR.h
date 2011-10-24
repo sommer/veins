@@ -56,7 +56,7 @@ public:
 	 * reception, transmission and sleep.
 	 */
 
-	virtual simtime_t switchTo(int newState, simtime_t now) {
+	virtual simtime_t switchTo(int newState, simtime_t_cref now) {
 		// state must be one of sleep, receive or transmit (not sync)
 		//assert(newState != Radio::SYNC);
 		if(newState == state || (newState == RadioUWBIR::RX && state == RadioUWBIR::SYNC)) {
@@ -70,7 +70,7 @@ public:
 		}
 	}
 
-	virtual simtime_t reallySwitchTo(int newState, simtime_t now) {
+	virtual simtime_t reallySwitchTo(int newState, simtime_t_cref now) {
 		// set the nextState to the newState and the current state to SWITCHING
 		nextState = newState;
 		int lastState = state;
@@ -104,7 +104,7 @@ private:
 	 * @brief Called by the decider through the phy layer to announce that
 	 * the radio has locked on a frame and is attempting reception.
 	 */
-	virtual void startReceivingFrame(simtime_t now) {
+	virtual void startReceivingFrame(simtime_t_cref now) {
 		assert(state == RadioUWBIR::SYNC);
 		state = RadioUWBIR::SWITCHING;
 		nextState = RadioUWBIR::RX;
@@ -115,7 +115,7 @@ private:
 		 * the radio has finished receiving a frame and is attempting to
 		 * synchronize on incoming frames.
 		 */
-	virtual void finishReceivingFrame(simtime_t now) {
+	virtual void finishReceivingFrame(simtime_t_cref now) {
 		assert(state == RadioUWBIR::RX);
 		state = RadioUWBIR::SWITCHING;
 		nextState = RadioUWBIR::SYNC;

@@ -341,7 +341,7 @@ protected:
 	/**
 	 * @brief Schedule self message to passed point in time.
 	 */
-	void sendSelfMessage(cMessage* msg, simtime_t time);
+	void sendSelfMessage(cMessage* msg, simtime_t_cref time);
 
 	/*@}*/
 
@@ -467,7 +467,7 @@ public:
 	 * @brief Fills the passed AirFrameVector with all AirFrames that intersect
 	 * with the time interval [from, to]
 	 */
-	virtual void getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out);
+	virtual void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out);
 
 	/**
 	 * @brief Returns a Mapping which defines the thermal noise in
@@ -482,7 +482,7 @@ public:
 	 * Override this method if you want to define a more complex
 	 * thermal noise.
 	 */
-	virtual ConstMapping* getThermalNoise(simtime_t from, simtime_t to);
+	virtual ConstMapping* getThermalNoise(simtime_t_cref from, simtime_t_cref to);
 
 	/**
 	 * @brief Called by the Decider to send a control message to the MACLayer
@@ -524,7 +524,7 @@ public:
 	 * earlier than it has returned to the PhyLayer the last time the Decider
 	 * handled that message.
 	 */
-	virtual void rescheduleMessage(cMessage* msg, simtime_t t);
+	virtual void rescheduleMessage(cMessage* msg, simtime_t_cref t);
 
 	/**
 	 * @brief Does nothing. For an actual power supporting

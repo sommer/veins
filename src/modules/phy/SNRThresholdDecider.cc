@@ -50,7 +50,7 @@ simtime_t SNRThresholdDecider::processNewSignal(AirFrame* frame)
 }
 
 // TODO: for now we check a larger mapping within an interval
-bool SNRThresholdDecider::checkIfAboveThreshold(Mapping* map, simtime_t start, simtime_t end)
+bool SNRThresholdDecider::checkIfAboveThreshold(Mapping* map, simtime_t_cref start, simtime_t_cref end)
 {
 	assert(map);
 

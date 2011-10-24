@@ -115,7 +115,7 @@ void DeciderTest::removeAirFrameFromPool(AirFrame* af)
 	assertTrue("AirFrame to remove has to be in pool.",false);
 }
 
-AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t payloadStart, simtime_t end,
+AirFrame *DeciderTest::addAirFrameToPool(simtime_t_cref start, simtime_t_cref payloadStart, simtime_t_cref end,
 										 double headerPower, double payloadPower)
 {
 	// create Signal containing TXpower- and bitrate-mapping
@@ -145,7 +145,7 @@ AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t payloadStart
 	return frame;
 }
 
-AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t end, double power)
+AirFrame *DeciderTest::addAirFrameToPool(simtime_t_cref start, simtime_t_cref end, double power)
 {
 	// create Signal containing TXpower- and bitrate-mapping
 	Signal* s = createSignal(start, end, power, 16.0);
@@ -593,12 +593,12 @@ void DeciderTest::passAirFramesOnChannel(AirFrameVector& out)
  *
  *
  */
-Signal* DeciderTest::createSignal(simtime_t start,
-									simtime_t length,
+Signal* DeciderTest::createSignal(simtime_t_cref start,
+									simtime_t_cref length,
 									std::pair<double, double> power,
 									std::pair<double, double> bitrate,
 									int index,
-									simtime_t payloadStart = -1)
+									simtime_t_cref payloadStart = -1)
 {
 	simtime_t end = start + length;
 	//create signal with start at current simtime and passed length
@@ -641,8 +641,8 @@ Signal* DeciderTest::createSignal(simtime_t start,
 	return s;
 }
 
-Signal* DeciderTest::createSignal(simtime_t start, simtime_t payLoadStart,
-									simtime_t end,
+Signal* DeciderTest::createSignal(simtime_t_cref start, simtime_t_cref payLoadStart,
+									simtime_t_cref end,
 									double headerPower,
 									double payloadPower,
 									double bitrate)
@@ -672,8 +672,8 @@ Signal* DeciderTest::createSignal(simtime_t start, simtime_t payLoadStart,
 	return s;
 }
 
-Signal* DeciderTest::createSignal(simtime_t start,
-									simtime_t end,
+Signal* DeciderTest::createSignal(simtime_t_cref start,
+									simtime_t_cref end,
 									double power,
 									double bitrate)
 {
@@ -702,7 +702,7 @@ Signal* DeciderTest::createSignal(simtime_t start,
 	return s;
 }
 
-Mapping* DeciderTest::createConstantMapping(simtime_t start, simtime_t end, double value)
+Mapping* DeciderTest::createConstantMapping(simtime_t_cref start, simtime_t_cref end, double value)
 {
 	//create mapping over time
 	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time), Mapping::LINEAR);
@@ -722,11 +722,11 @@ Mapping* DeciderTest::createConstantMapping(simtime_t start, simtime_t end, doub
 	return m;
 }
 
-Mapping* DeciderTest::createHeaderPayloadMapping(	simtime_t start,
-													simtime_t payloadStart,
-													simtime_t end,
-													double headerValue,
-													double payloadValue)
+Mapping* DeciderTest::createHeaderPayloadMapping(	simtime_t_cref start,
+													simtime_t_cref payloadStart,
+													simtime_t_cref end,
+													double         headerValue,
+													double         payloadValue)
 {
 	//create mapping over time
 	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time), Mapping::LINEAR);
@@ -762,7 +762,7 @@ Mapping* DeciderTest::createHeaderPayloadMapping(	simtime_t start,
 /**
  * SPECIAL TESTING IMPLEMENTATION: PLEASE REFER TO HEADER-FILE!
  */
-void DeciderTest::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out)
+void DeciderTest::getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out)
 {
 
 	switch (currentTestCase) {
@@ -1711,9 +1711,9 @@ std::string DeciderTest::log(std::string msg) {
 }
 
 
-ConstMapping* DeciderTest::getThermalNoise(simtime_t from, simtime_t to)
+ConstMapping* DeciderTest::getThermalNoise(simtime_t_cref from, simtime_t_cref to)
 {
-	return 0;
+	return NULL;
 }
 
 void DeciderTest::cancelScheduledMessage(cMessage* msg)
@@ -1737,7 +1737,7 @@ void DeciderTest::recordScalar(const char *name, double value, const char *unit)
 }
 
 
-void DeciderTest::rescheduleMessage(cMessage* msg, simtime_t t)
+void DeciderTest::rescheduleMessage(cMessage* msg, simtime_t_cref t)
 {
 	ChannelSenseRequest* req = dynamic_cast<ChannelSenseRequest*>(msg);
 	assertTrue("Rescheduled message is a ChannelSenseRequest.", req != 0);

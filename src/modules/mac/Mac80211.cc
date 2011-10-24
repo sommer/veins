@@ -130,7 +130,7 @@ void Mac80211::initialize(int stage)
     }
 }
 
-void Mac80211::senseChannelWhileIdle(simtime_t duration) {
+void Mac80211::senseChannelWhileIdle(simtime_t_cref duration) {
 	if(contention->isScheduled()) {
 		error("Cannot start a new channel sense request because already sensing the channel!");
 	}
@@ -338,7 +338,7 @@ void Mac80211::handleSelfMsg(cMessage * msg)
  *  occured the node must defer for EIFS.  Called by
  *  handleLowerMsg()
  */
-void Mac80211::handleMsgNotForMe(cMessage *af, simtime_t duration)
+void Mac80211::handleMsgNotForMe(cMessage *af, simtime_t_cref duration)
 {
 	debugEV << "handle msg not for me " << af->getName() << "\n";
 
@@ -1020,7 +1020,7 @@ void Mac80211::testMaxAttempts()
     }
 }
 
-Signal* Mac80211::createSignal(	simtime_t start, simtime_t length,
+Signal* Mac80211::createSignal(	simtime_t_cref start, simtime_t_cref length,
 								double power, double bitrate)
 {
 	simtime_t end = start + length;

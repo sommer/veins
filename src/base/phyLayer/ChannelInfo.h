@@ -106,7 +106,7 @@ protected:
 		 * @brief Creates an iterator for the specified interval at the
 		 * specified AirFrameMatrix.
 		 */
-		BaseIntersectionIterator(C* airFrames, simtime_t from, simtime_t to) :
+		BaseIntersectionIterator(C* airFrames, simtime_t_cref from, simtime_t_cref to) :
 			intervals(airFrames), from(from), to(to)
 		{
 			// begin at the smallest end-time-entry fulfilling the intersection
@@ -192,8 +192,8 @@ protected:
 		 * specified AirFrameMatrix.
 		 */
 		IntersectionIterator(AirFrameMatrix* airFrames,
-							 simtime_t from,
-							 simtime_t to) :
+							 simtime_t_cref  from,
+							 simtime_t_cref  to) :
 			Base(airFrames, from, to)
 		{}
 
@@ -284,7 +284,7 @@ protected:
 	 * passed as parameter.
 	 */
 	void getIntersections( const AirFrameMatrix& airFrames,
-						   simtime_t from, simtime_t to,
+						   simtime_t_cref from, simtime_t_cref to,
 						   AirFrameVector& outVector) const;
 
 	/**
@@ -292,7 +292,7 @@ protected:
 	 * AirFrameMatrix which intersect with the given interval.
 	 */
 	bool isIntersecting( const AirFrameMatrix& airFrames,
-						 simtime_t from, simtime_t to) const;
+						 simtime_t_cref from, simtime_t_cref to) const;
 
 	/**
 	 * @brief Moves a previously active AirFrame to the inactive AirFrames.
@@ -303,14 +303,14 @@ protected:
 	 * It also checks if the AirFrame to in-activate still intersect with at
 	 * least one active AirFrame before it is moved to inactive AirFrames.
 	 */
-	void addToInactives(AirFrame* a, simtime_t startTime, simtime_t endTime);
+	void addToInactives(AirFrame* a, simtime_t_cref startTime, simtime_t_cref endTime);
 
 	/**
 	 * @brief Deletes an AirFrame from an AirFrameMatrix.
 	 */
 	void deleteAirFrame(AirFrameMatrix& airFrames,
 			 			AirFrame* a,
-			 			simtime_t startTime, simtime_t endTime);
+			 			simtime_t_cref startTime, simtime_t_cref endTime);
 
 	/**
 	 * @brief Returns the start time of the odlest AirFrame on the channel.
@@ -327,7 +327,7 @@ protected:
 	 * @param startTime The start of the interval to check
 	 * @param endTime The end of the interval to check
 	 */
-	void checkAndCleanInterval(simtime_t startTime, simtime_t endTime);
+	void checkAndCleanInterval(simtime_t_cref startTime, simtime_t_cref endTime);
 
 	/**
 	 * @brief Returns true if all information inside the passed interval can be
@@ -341,7 +341,7 @@ protected:
 	 * @return returns true if any information for the passed interval can be
 	 * discarded.
 	 */
-	bool canDiscardInterval(simtime_t startTime, simtime_t endTime);
+	bool canDiscardInterval(simtime_t_cref startTime, simtime_t_cref endTime);
 
 	/**
 	 * @brief Checks if any information up from the passed start time can be
@@ -349,7 +349,7 @@ protected:
 	 *
 	 * @param startTime The start of the interval to check
 	 */
-	void checkAndCleanFrom(simtime_t start) {
+	void checkAndCleanFrom(simtime_t_cref start) {
 		//nothing to do
 		if(inactiveAirFrames.empty())
 			return;
@@ -374,7 +374,7 @@ public:
 	 * parameter startTime holds the time the receiving of the AirFrame has
 	 * started in seconds.
 	 */
-	void addAirFrame(AirFrame* a, simtime_t startTime);
+	void addAirFrame(AirFrame* a, simtime_t_cref startTime);
 
 	/**
 	 * @brief Tells the ChannelInfo that an AirFrame is over.
@@ -396,7 +396,7 @@ public:
 	 * An AirFrame is called active if it has been added but not yet removed
 	 * from ChannelInfo.
 	 */
-	void getAirFrames(simtime_t from, simtime_t to, AirFrameVector& out) const;
+	void getAirFrames(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out) const;
 
 	/**
 	 * @brief Returns the current time-point from that information concerning
@@ -423,7 +423,7 @@ public:
 	 * @param start The point in time from which to keep all channel information
 	 * stored.
 	 */
-	void startRecording(simtime_t start)
+	void startRecording(simtime_t_cref start)
 	{
 		// clean up until old record start
 		if(recordStartTime > -1) {

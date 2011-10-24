@@ -18,7 +18,7 @@ protected:
 	simtime_t senseStart;
 
 protected:
-	void assertMessage(std::string msg, int state, AirFrame* frame, simtime_t arrival, std::string dest = "") {
+	void assertMessage(std::string msg, int state, AirFrame* frame, simtime_t_cref arrival, std::string dest = "") {
 		TestModule::assertMessage(new AssertAirFrame(msg, state, arrival, frame), dest);
 	}
 

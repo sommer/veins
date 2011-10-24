@@ -273,7 +273,7 @@ protected:
 	void manageQueue();
 	void updateMacState(t_mac_states newMacState);
 
-	void attachSignal(MacPkt* mac, simtime_t startTime);
+	void attachSignal(MacPkt* mac, simtime_t_cref startTime);
 	void manageMissingAck(t_mac_event event, cMessage *msg);
 	void startTimer(t_mac_timer timer);
 

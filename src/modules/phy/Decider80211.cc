@@ -65,7 +65,7 @@ simtime_t Decider80211::processNewSignal(AirFrame* frame) {
 	return ( signal.getReceptionEnd());
 }
 
-double Decider80211::calcChannelSenseRSSI(simtime_t start, simtime_t end) {
+double Decider80211::calcChannelSenseRSSI(simtime_t_cref start, simtime_t_cref end) {
 	Mapping* rssiMap = calculateRSSIMapping(start, end);
 
 	Argument min(DimensionSet::timeFreqDomain);

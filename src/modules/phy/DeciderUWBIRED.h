@@ -159,8 +159,8 @@ protected:
 	simtime_t
 			handleSignalOver(tSignalMap::iterator& it, AirFrame* frame);
 	// first value is energy from signal, other value is total window energy
-	std::pair<double, double> integrateWindow(int symbol, simtime_t now,
-			simtime_t burst, Signal* signal);
+	std::pair<double, double> integrateWindow(int symbol, simtime_t_cref now,
+			simtime_t_cref burst, Signal* signal);
 
 	simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);
 

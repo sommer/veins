@@ -52,7 +52,7 @@ protected:
 	 *
 	 *
 	 */
-	virtual bool checkIfAboveThreshold(Mapping* map, simtime_t start, simtime_t end);
+	virtual bool checkIfAboveThreshold(Mapping* map, simtime_t_cref start, simtime_t_cref end);
 
 	/**
 	 * @brief Processes a new Signal. Returns the time it wants to

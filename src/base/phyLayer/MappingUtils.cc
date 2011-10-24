@@ -332,7 +332,7 @@ Argument::mapped_type MappingUtils::findMin(ConstMapping& m, const Argument& min
 
 void MappingUtils::addDiscontinuity(Mapping* m,
 									const Argument& pos, const Argument::mapped_type& value,
-									simtime_t limitTime, const Argument::mapped_type& limitValue)
+									simtime_t_cref limitTime, const Argument::mapped_type& limitValue)
 {
 	// asserts/preconditions
 	// make sure the time really differs at the discontinuity
@@ -349,20 +349,24 @@ void MappingUtils::addDiscontinuity(Mapping* m,
 	m->setValue(limitPos, limitValue);
 }
 
-simtime_t MappingUtils::pre(simtime_t t)
+simtime_t MappingUtils::pre(simtime_t_cref t)
 {
-	t.setRaw(t.raw() - 1);
+	assert(SIMTIME_RAW(t) > SIMTIME_RAW(SIMTIME_ZERO));
 
-	return t;
+	simtime_t stRes = SIMTIME_ZERO;
+	stRes.setRaw(SIMTIME_RAW(t) - 1);
+
+	return stRes;
 }
 
-simtime_t MappingUtils::post(simtime_t t)
+simtime_t MappingUtils::post(simtime_t_cref t)
 {
-	assert(t.raw() < simtime_t::getMaxTime().raw());
+	assert(SIMTIME_RAW(t) < SIMTIME_RAW(MAXTIME));
 
-	t.setRaw(t.raw() + 1);
+	simtime_t stRes = SIMTIME_ZERO;
+	stRes.setRaw(SIMTIME_RAW(t) + 1);
 
-	return t;
+	return stRes;
 }
 
 

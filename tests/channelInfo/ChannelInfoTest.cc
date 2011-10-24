@@ -409,7 +409,7 @@ protected:
 	}
 
 	int numAirFramesOnChannel(ChannelInfo& ch,
-							  simtime_t from = 0.0, simtime_t to = 999999.0)
+							  simtime_t_cref from = SIMTIME_ZERO, simtime_t_cref to = 999999.0)
 	{
 		ChannelInfo::AirFrameVector v;
 		ch.getAirFrames(from, to, v);
@@ -422,6 +422,7 @@ protected:
 		testRecordingFlag();
 		testsExecuted = true;
 	}
+	virtual ~ChannelInfoTest() {}
 };
 
 Define_Module(ChannelInfoTest);

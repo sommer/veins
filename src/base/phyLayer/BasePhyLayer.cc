@@ -630,7 +630,7 @@ void BasePhyLayer::sendMessageDown(AirFrame* msg) {
 	sendToChannel(msg);
 }
 
-void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t time) {
+void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t_cref time) {
 	//TODO: maybe delete this method because it doesn't makes much sense,
 	//		or change it to "scheduleIn(msg, timeDelta)" which schedules
 	//		a message to +timeDelta from current time
@@ -796,11 +796,11 @@ int BasePhyLayer::getNbRadioChannels() {
 
 //--DeciderToPhyInterface implementation------------
 
-void BasePhyLayer::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) {
+void BasePhyLayer::getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out) {
 	channelInfo.getAirFrames(from, to, out);
 }
 
-ConstMapping* BasePhyLayer::getThermalNoise(simtime_t from, simtime_t to) {
+ConstMapping* BasePhyLayer::getThermalNoise(simtime_t_cref from, simtime_t_cref to) {
 	if(thermalNoise)
 		thermalNoise->initializeArguments(Argument(from));
 
@@ -843,7 +843,7 @@ void BasePhyLayer::cancelScheduledMessage(cMessage* msg) {
 	}
 }
 
-void BasePhyLayer::rescheduleMessage(cMessage* msg, simtime_t t) {
+void BasePhyLayer::rescheduleMessage(cMessage* msg, simtime_t_cref t) {
 	cancelScheduledMessage(msg);
 	scheduleAt(t, msg);
 }

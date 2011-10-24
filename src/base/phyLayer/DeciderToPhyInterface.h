@@ -52,7 +52,7 @@ public:
 	 * @brief Fills the passed AirFrameVector with all AirFrames that intersect
 	 * with the time interval [from, to]
 	 */
-	virtual void getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out) = 0;
+	virtual void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out) = 0;
 
 	/**
 	 * @brief Returns a Mapping which defines the thermal noise in
@@ -61,7 +61,7 @@ public:
 	 * The implementing class of this method keeps ownership of the
 	 * Mapping.
 	 */
-	virtual ConstMapping* getThermalNoise(simtime_t from, simtime_t to) = 0;
+	virtual ConstMapping* getThermalNoise(simtime_t_cref from, simtime_t_cref to) = 0;
 
 	/**
 	 * @brief Called by the Decider to send a control message to the MACLayer
@@ -104,7 +104,7 @@ public:
 	 * earlier than it has returned to the PhyLayer the last time the Decider
 	 * handled that message.
 	 */
-	virtual void rescheduleMessage(cMessage* msg, simtime_t t) = 0;
+	virtual void rescheduleMessage(cMessage* msg, simtime_t_cref t) = 0;
 
 	/**
 	 * @brief Enables the Decider to draw Power from the

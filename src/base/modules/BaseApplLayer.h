@@ -141,7 +141,7 @@ protected:
 	/*@}*/
 
 	/** @brief Sends a message delayed to the lower layer*/
-	void sendDelayedDown(cMessage *, simtime_t);
+	void sendDelayedDown(cMessage *, simtime_t_cref);
 
 	/**
 	 * @brief Return my application layer address

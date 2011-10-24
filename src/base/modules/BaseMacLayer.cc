@@ -50,9 +50,10 @@ void BaseMacLayer::initialize(int stage)
     if(stage==0)
     {
     	// get handle to phy layer
-        phy = FindModule<MacToPhyInterface*>::findSubModule(getParentModule());
-
-        headerLength= par("headerLength");
+        if ((phy = FindModule<MacToPhyInterface*>::findSubModule(getParentModule())) == NULL) {
+        	error("Could not find a PHY module.");
+        }
+        headerLength    = par("headerLength");
         phyHeaderLength = phy->getPhyHeaderLength();
 
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
@@ -217,7 +218,7 @@ void BaseMacLayer::handleLowerControl(cMessage* msg)
 	}
 }
 
-Signal* BaseMacLayer::createSignal(simtime_t start, simtime_t length, double power, double bitrate)
+Signal* BaseMacLayer::createSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate)
 {
 	simtime_t end = start + length;
 	//create signal with start at current simtime and passed length
@@ -234,7 +235,7 @@ Signal* BaseMacLayer::createSignal(simtime_t start, simtime_t length, double pow
 	return s;
 }
 
-Mapping* BaseMacLayer::createConstantMapping(simtime_t start, simtime_t end, double value)
+Mapping* BaseMacLayer::createConstantMapping(simtime_t_cref start, simtime_t_cref end, double value)
 {
 	//create mapping over time
 	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet::timeDomain, Mapping::LINEAR);
@@ -254,7 +255,7 @@ Mapping* BaseMacLayer::createConstantMapping(simtime_t start, simtime_t end, dou
 	return m;
 }
 
-Mapping* BaseMacLayer::createRectangleMapping(simtime_t start, simtime_t end, double value)
+Mapping* BaseMacLayer::createRectangleMapping(simtime_t_cref start, simtime_t_cref end, double value)
 {
 	//create mapping over time
 	Mapping* m = MappingUtils::createMapping(DimensionSet::timeDomain, Mapping::LINEAR);
@@ -272,11 +273,11 @@ Mapping* BaseMacLayer::createRectangleMapping(simtime_t start, simtime_t end, do
 	return m;
 }
 
-ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t start,
-                                                         simtime_t end,
-                                                         double    centerFreq,
-                                                         double    halfBandwidth,
-                                                         double    value)
+ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t_cref start,
+                                                         simtime_t_cref end,
+                                                         double         centerFreq,
+                                                         double         halfBandwidth,
+                                                         double         value)
 {
 	Mapping* res = MappingUtils::createMapping(0.0, DimensionSet::timeFreqDomain, Mapping::LINEAR);
 
