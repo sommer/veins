@@ -51,7 +51,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="out/|inet" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+<entry excluding="out/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -401,7 +401,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="out/|inet" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+<entry excluding="out/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
