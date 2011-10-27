@@ -24,7 +24,6 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
-#include "ImNotifiable.h"
 
 /**
  * @brief May be published by MAC lyer to indicate why a packet was dropped
@@ -37,10 +36,8 @@
  * @ingroup utils
  * @author Andreas Koepke
  */
-class MIXIM_API DroppedPacket : public BBItem
+class MIXIM_API  DroppedPacket : public cObject
 {
-    BBITEM_METAINFO(BBItem);
-
  public:
     /** @brief Possible Reasons */
     enum Reasons
@@ -68,7 +65,7 @@ public:
     }
 
     /** @brief Constructor*/
-    DroppedPacket(Reasons r=NONE) : BBItem(), reason(r) {
+    DroppedPacket(Reasons r=NONE) : cObject(), reason(r) {
     };
 
     /** @brief Enables inspection */

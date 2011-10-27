@@ -30,11 +30,13 @@
 
 #include <cassert>
 
-#include "Move.h"
 #include "FindModule.h"
-#include "BaseUtility.h"
 #include "BaseWorldUtility.h"
 #include "BaseConnectionManager.h"
+
+using std::endl;
+
+const simsignalwrap_t ChannelAccess::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
 
 BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
 {
@@ -58,12 +60,11 @@ void ChannelAccess::initialize( int stage )
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
-        cModule* nic = getParentModule();
-		cc = getConnectionManager(nic);
+        findHost()->subscribe(mobilityStateChangedSignal, this);
 
-        if( cc == 0 ) error("Could not find connectionmanager module");
-        // subscribe to position changes
-        catMove = utility->subscribe(this, &move, findHost()->getId());
+        cModule* nic = getParentModule();
+        cc = getConnectionManager(nic);
+        if( cc == NULL ) error("Could not find connectionmanager module");
         isRegistered = false;
     }
 
@@ -80,7 +81,7 @@ void ChannelAccess::sendToChannel(cPacket *msg)
     if(useSendDirect){
         // use Andras stuff
         if( i != gateList.end() ){
-        	simtime_t delay = 0;
+        	simtime_t delay = SIMTIME_ZERO;
             for(; i != --gateList.end(); ++i){
             	//calculate delay (Propagation) to this receiving nic
             	delay = calculatePropagationDelay(i->first);
@@ -111,7 +112,7 @@ void ChannelAccess::sendToChannel(cPacket *msg)
         // use our stuff
         coreEV <<"sendToChannel: sending to gates\n";
         if( i != gateList.end() ){
-        	simtime_t delay = 0;
+        	simtime_t delay = SIMTIME_ZERO;
             for(; i != --gateList.end(); ++i){
             	//calculate delay (Propagation) to this receiving nic
 				delay = calculatePropagationDelay(i->first);
@@ -131,44 +132,38 @@ void ChannelAccess::sendToChannel(cPacket *msg)
     }
 }
 
-
-void ChannelAccess::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
-{
-	BatteryAccess::receiveBBItem(category, details, scopeModuleId);
-
-    if(category == catMove)
-    {
-        Move m(*static_cast<const Move*>(details));
-
-        if(isRegistered) {
-            cc->updateNicPos(getParentModule()->getId(), &m.getStartPos());
-        }
-        else {
-            // register the nic with ConnectionManager
-            // returns true, if sendDirect is used
-            useSendDirect = cc->registerNic(getParentModule(), this, &m.getStartPos());
-            isRegistered = true;
-        }
-        move = m;
-        coreEV<<"new HostMove: "<<move.info()<<endl;
-    }
-}
-
 simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic) {
 	if(!usePropagationDelay)
 		return 0;
 
-	//receiver host move
-	const Move& recvPos = nic->chAccess->move;
+	ChannelAccess *const senderModule   = this;
+	ChannelAccess *const receiverModule = nic->chAccess;
+	//const simtime_t_cref sStart         = simTime();
 
-	// this is the time point when the transmission starts
-	simtime_t actualTime = simTime();
+	assert(senderModule); assert(receiverModule);
+
+	/** claim the Move pattern of the sender from the Signal */
+	Coord           sendersPos  = senderModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
+	Coord           receiverPos = receiverModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
 
 	// this time-point is used to calculate the distance between sending and receiving host
-	double distance = move.getPositionAt(actualTime).distance(recvPos.getPositionAt(actualTime));
-
-	simtime_t delay = distance / BaseWorldUtility::speedOfLight;
-	return delay;
+	return receiverPos.distance(sendersPos) / BaseWorldUtility::speedOfLight;
 }
 
+void ChannelAccess::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
+{
+    if(signalID == mobilityStateChangedSignal) {
+    	ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
+        Coord                        pos      = mobility->getCurrentPosition();
 
+        if(isRegistered) {
+            cc->updateNicPos(getParentModule()->getId(), &pos);
+        }
+        else {
+            // register the nic with ConnectionManager
+            // returns true, if sendDirect is used
+            useSendDirect = cc->registerNic(getParentModule(), this, &pos);
+            isRegistered  = true;
+        }
+    }
+}

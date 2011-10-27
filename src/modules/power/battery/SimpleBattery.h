@@ -97,7 +97,6 @@ protected:
 
 	/** @name publishing of capacity to BatteryStats via the BB. */
 	/*@{*/
-	int batteryCat;
 	cMessage *publish;
 	double publishDelta;
 	simtime_t publishTime;
@@ -109,8 +108,6 @@ protected:
 	/** @name publish of host failure notification
 	 * @brief everyone should subscribe to this*/
 	/*@{*/
-	int scopeHost;
-	int hostStateCat;
 	HostState hostState;
 	/*@}*/
 

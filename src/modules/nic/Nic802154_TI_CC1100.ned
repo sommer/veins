@@ -19,8 +19,8 @@
 // **************************************************************************/
 package org.mixim.modules.nic;
 
-import org.mixim.modules.phy.PhyLayerBattery;
 import org.mixim.modules.mac.CSMA802154;
+import org.mixim.modules.phy.PhyLayerBattery;
 
 
 //
@@ -31,7 +31,7 @@ import org.mixim.modules.mac.CSMA802154;
 // "Nic802154_TI_CC2420_Decider.xml" from "modules/nic/" to your simulation directory.
 // @author Jerome Rousselot
 //
-module Nic802154_TI_CC1100 like INic
+module Nic802154_TI_CC1100 like IWirelessNic
 {
 	parameters:
         string connectionManagerName = default("");   //name of the ConnectionManager module
@@ -46,9 +46,9 @@ module Nic802154_TI_CC1100 like INic
 		double txRxCurrent @unit(mA) = 17 mA;
 	
     gates:
-        input upperGateIn; // from upper layers
+        input upperLayerIn; // from upper layers
         input radioIn; // to receive AirFrames
-        output upperGateOut; // to upper layers
+        output upperLayerOut; // to upper layers
         output upperControlOut; // control connection
         input upperControlIn;
 
@@ -85,14 +85,14 @@ module Nic802154_TI_CC1100 like INic
 
         radioIn --> phy.radioIn;
 
-        phy.upperGateIn <-- { @display("m=m,25,0,25,0"); } <-- mac.lowerGateOut;
-        phy.upperGateOut --> { @display("m=m,73,0,50,50"); } --> mac.lowerGateIn;
+        phy.upperLayerIn <-- { @display("m=m,25,0,25,0"); } <-- mac.lowerLayerOut;
+        phy.upperLayerOut --> { @display("m=m,73,0,50,50"); } --> mac.lowerLayerIn;
         phy.upperControlOut --> mac.lowerControlIn;
         phy.upperControlIn <-- mac.lowerControlOut;
 
-        mac.upperGateOut --> upperGateOut;
+        mac.upperLayerOut --> upperLayerOut;
         mac.upperControlOut --> upperControlOut;
-        mac.upperGateIn <-- upperGateIn;
+        mac.upperLayerIn <-- upperLayerIn;
 		mac.upperControlIn <-- upperControlIn;
 }
 

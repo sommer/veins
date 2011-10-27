@@ -23,7 +23,6 @@
 
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
-#include "Move.h"
 #include "SimpleTimeConstMapping.h"
 
 /**
@@ -62,9 +61,9 @@ public:
 	/*
 	 * @brief Default constructor.
 	 */
-    UWBIRIEEE802154APathlossModel(int _channelModel, double _threshold, const Move* _move, bool shadowing=true):
+    UWBIRIEEE802154APathlossModel(int _channelModel, double _threshold, bool shadowing=true):
     	channelModel(_channelModel), tapThreshold(_threshold), doShadowing(shadowing),
-    	doSmallScaleShadowing(false), move(_move), nbCalls(0)  {
+    	doSmallScaleShadowing(false), nbCalls(0)  {
     	// Check that this model is supported
     	assert(implemented_CMs[channelModel]);
     	// load the model parameters
@@ -72,11 +71,12 @@ public:
     	averagePowers.setName("averagePower");
     	pathlosses.setName("pathloss");
     }
+    virtual ~UWBIRIEEE802154APathlossModel() {}
 
     /*
      * @brief Applies the model to an incoming AirFrame's Signal.
      */
-    void filterSignal(AirFrame *frame);
+    void filterSignal(AirFrame *, const Coord&, const Coord&);
 
     /*@brief Utility function to use a Rayleigh random variable
      *
@@ -153,8 +153,6 @@ protected:
     static const double ntx;
     static const double nrx;
 
-
-    const Move* move;
     TimeMapping<Linear>* newTxPower;
     ConstMapping* txPower;
     Argument arg;
@@ -180,7 +178,7 @@ protected:
     /*
      * Generates taps for the considered pulse, with the current channel parameters
      */
-    void addEchoes(simtime_t pulseStart);
+    void addEchoes(simtime_t_cref pulseStart);
 
     /*
      * @brief Computes the pathloss as a function of center frequency and bandwidth given in MHz

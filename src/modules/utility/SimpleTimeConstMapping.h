@@ -38,10 +38,11 @@ public:
 	/** @brief Constructs the mapping with the value _myValue, in the
 	 * time interval [start, stop].
 	 */
-	SimpleTimeConstMapping(double _myValue, simtime_t _start, simtime_t _stop):
+	SimpleTimeConstMapping(double _myValue, simtime_t_cref _start, simtime_t_cref _stop):
 		SimpleConstMapping(DimensionSet(Dimension::time)), myValue(_myValue), start(_start), stop(_stop) {
 		initializeArguments(Argument(_start), Argument(_stop), Argument(1));
 	}
+	virtual ~SimpleTimeConstMapping() {}
 
 	/**
 	 * @brief Returns a constant.

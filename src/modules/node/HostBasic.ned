@@ -1,7 +1,10 @@
 package org.mixim.modules.node;
 
-import org.mixim.base.modules.*;
-import org.mixim.modules.nic.INic;
+import org.mixim.modules.nic.IWirelessNic;
+import org.mixim.base.modules.IBaseMobility;
+import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.IBaseApplLayer;
+import org.mixim.base.modules.IBaseNetwLayer;
 
 //
 // Example host module for a basic MiXiM host with configurable NIC, network 
@@ -18,10 +21,6 @@ module HostBasic
     gates:
         input radioIn; // gate for sendDirect
     submodules:
-        utility: BaseUtility {
-            parameters:
-                @display("p=130,38;b=24,24,rect,black;i=block/blackboard");
-        }
         arp: BaseArp {
             parameters:
                 @display("p=130,108;b=24,24,rect,blue;i=block/process");
@@ -38,18 +37,18 @@ module HostBasic
             parameters:
                 @display("p=60,108;i=block/layer");
         }
-        nic: <nicType> like INic {
+        nic: <nicType> like IWirelessNic {
             parameters:
                 @display("p=60,166;i=block/ifcard");
         }
     connections:
-        nic.upperGateOut --> net.lowerGateIn;
-        nic.upperGateIn <-- net.lowerGateOut;
-        nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
-        nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
+        nic.upperLayerOut --> net.lowerLayerIn;
+        nic.upperLayerIn <-- net.lowerLayerOut;
+        // nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
+        // nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        net.upperGateOut --> appl.lowerGateIn;
-        net.upperGateIn <-- appl.lowerGateOut;
+        net.upperLayerOut --> appl.lowerLayerIn;
+        net.upperLayerIn <-- appl.lowerLayerOut;
         net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
         net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 

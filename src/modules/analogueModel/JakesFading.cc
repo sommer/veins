@@ -17,6 +17,7 @@
 
 #include "BaseWorldUtility.h"
 #include "AirFrame_m.h"
+#include "ChannelAccess.h"
 
 DimensionSet JakesFadingMapping::dimensions(Dimension::time_static());
 
@@ -63,11 +64,9 @@ double JakesFadingMapping::getValue(const Argument& pos) const {
 }
 
 
-JakesFading::JakesFading(int fadingPaths, simtime_t delayRMS,
-						 Move* hostMove, double carrierFrequency,
-						 simtime_t interval):
+JakesFading::JakesFading(int fadingPaths, simtime_t_cref delayRMS,
+						 double carrierFrequency, simtime_t_cref interval):
 	fadingPaths(fadingPaths),
-	hostMove(hostMove),
 	carrierFrequency(carrierFrequency),
 	interval(interval)
 {
@@ -85,18 +84,15 @@ JakesFading::~JakesFading() {
 	delete[] angleOfArrival;
 }
 
-void JakesFading::filterSignal(AirFrame *frame)
+void JakesFading::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos)
 {
-	Signal&     signal     = frame->getSignal();
-	const Move& senderMove = signal.getMove();
-	double relSpeed = (senderMove.getDirection() * senderMove.getSpeed()
-					   - hostMove->getDirection() * hostMove->getSpeed()).length();
-
-	simtime_t start = signal.getReceptionStart();
-	simtime_t end   = signal.getReceptionEnd();
+	Signal&                signal           = frame->getSignal();
+	ChannelMobilityPtrType senderMobility   = dynamic_cast<ChannelAccess *>(frame->getSenderModule())->getMobilityModule();
+	ChannelMobilityPtrType receiverMobility = dynamic_cast<ChannelAccess *>(frame->getArrivalModule())->getMobilityModule();
+	const double           relSpeed         = (senderMobility->getCurrentSpeed() - receiverMobility->getCurrentSpeed()).length();
 
 	signal.addAttenuation(new JakesFadingMapping(this, relSpeed,
-											Argument(start),
-											interval,
-											Argument(end)));
+	                                             Argument(signal.getReceptionStart()),
+	                                             interval,
+	                                             Argument(signal.getReceptionEnd())));
 }

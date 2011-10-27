@@ -37,16 +37,14 @@ class MIXIM_API IntensityModel : public AnalogueModel {
 
 public:
 	IntensityModel() { }
-	void filterSignal(AirFrame *frame) {
+	virtual ~IntensityModel() { }
+	void filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {
 		Signal&              s          = frame->getSignal();
 		TimeMapping<Linear>* attMapping = new TimeMapping<Linear> ();
 
 		// Determine distance between sender and receiver
 		assert(s.getReceptionStart() == simTime());
-		Move   srcMove     = s.getMove();
-		Coord  senderPos   = srcMove.getPositionAt(s.getReceptionStart());
-		Coord  receiverPos = move->getPositionAt(s.getReceptionStart());
-		double distance    = senderPos.distance(receiverPos);
+		double distance    = sendersPos.distance(receiverPos);
 
 		Argument arg;
 		attMapping->setValue(arg, 4*M_PI*pow(distance, 2));

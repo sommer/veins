@@ -138,7 +138,7 @@ protected:
     double** extractMatrixFromSteadyState(double* );
 
     /** @brief Gets a time and finds the ID of the containing time domain if there is. If not, return -1. */
-    int findTimeDomain(simtime_t );
+    int findTimeDomain(simtime_t_cref );
 
     /** @brief Gets a location and finds the ID of the containing area type if there is. If not, return -1. */
     int findAreaType(Coord);
@@ -190,12 +190,12 @@ public:
 	int addTimeDomain(std::string);
 
 	/** @brief Adds the given boundary to the existing time domain specified by the given ID . */
-	bool setTimeBoundry(int, simtime_t, simtime_t);
+	bool setTimeBoundry(int, simtime_t_cref, simtime_t_cref);
 
     /** @brief Adds a space-time combination to the list. */
 	bool addCombination(std::string, std::string, std::string);
 
     /** @brief Gets a time and location, and returns the corresponding Markov transition matrix. */
-	double** getMatrix(simtime_t, Coord);
+	double** getMatrix(simtime_t_cref, Coord);
 
 };

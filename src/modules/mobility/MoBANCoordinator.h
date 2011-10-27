@@ -46,7 +46,6 @@
 
 #include "MiXiMDefs.h"
 #include "BaseWorldUtility.h"
-#include "BaseUtility.h"
 #include "Posture.h"
 #include "PostureTransition.h"
 
@@ -79,7 +78,7 @@
  * After the initialization phase, the MoBAN coordinator decides about the posture and the position of the Logical center of the group (WBAN).
  * The absolute position of the reference point of each belonging node is calculated by adding the current position of the logical center
  * by the reference point of that node in the selected posture. The coordinator publish the position of the reference point as well as
- * the speed and the radius of the local movement of nodes to their blackboards.
+ * the speed and the radius of the local movement of nodes to their signaling systems.
  *
  * @ingroup mobility
  * @ingroup MoBAN
@@ -88,12 +87,8 @@
 class MIXIM_API MoBANCoordinator: public cSimpleModule
 {
   protected:
-
 	/** @brief Debug switch for all other modules*/
     bool debug;
-
-    /** @brief Pointer to the BaseUtility */
-	 BaseUtility *utility;
 
     /** @brief Pointer to the BaseWorldUtility */
 	 BaseWorldUtility *world;
@@ -244,7 +239,7 @@ class MIXIM_API MoBANCoordinator: public cSimpleModule
    /** @brief Reads the previously logged mobility pattern and make mobility pattern data base.*/
    bool readMobilityPatternFile();
 
-   /** @brief Publishes the reference point and other information of the posture to the blackboard of the belonging nodes.*/
+   /** @brief Publishes the reference point and other information of the posture to the signaling system of the belonging nodes.*/
    void publishToNodes();
 
 };

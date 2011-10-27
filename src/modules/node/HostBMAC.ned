@@ -1,11 +1,12 @@
 package org.mixim.modules.node;
 
-import org.mixim.modules.power.battery.SimpleBattery;
-import org.mixim.modules.power.battery.BatteryStats;
-import org.mixim.modules.nic.NicBMAC;
-
-import org.mixim.base.modules.*;
+import org.mixim.base.modules.IBaseMobility;
+import org.mixim.base.modules.IBaseApplLayer;
+import org.mixim.base.modules.IBaseNetwLayer;
 import org.mixim.modules.netw.ArpHost;
+import org.mixim.modules.nic.NicBMAC;
+import org.mixim.modules.power.battery.BatteryStats;
+import org.mixim.modules.power.battery.SimpleBattery;
 
 //
 // Example host module using a BMAC Network interface card.
@@ -20,10 +21,6 @@ module HostBMAC
     gates:
         input radioIn; // gate for sendDirect
     submodules:
-        utility: BaseUtility {
-            parameters:
-                @display("p=186,38;b=24,24,rect,black;i=block/blackboard");
-        }
         arp: ArpHost {
             parameters:
                 @display("p=186,101;b=24,24,rect,blue;i=block/process");
@@ -51,13 +48,13 @@ module HostBMAC
             @display("p=212,232");
         }
     connections:
-        nic.upperGateOut --> net.lowerGateIn;
-        nic.upperGateIn <-- net.lowerGateOut;
+        nic.upperLayerOut --> net.lowerLayerIn;
+        nic.upperLayerIn <-- net.lowerLayerOut;
         nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
         nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        net.upperGateOut --> appl.lowerGateIn;
-        net.upperGateIn <-- appl.lowerGateOut;
+        net.upperLayerOut --> appl.lowerLayerIn;
+        net.upperLayerIn <-- appl.lowerLayerOut;
         net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
         net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 

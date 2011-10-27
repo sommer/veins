@@ -19,7 +19,6 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
-#include "ImNotifiable.h"
 
 /**
  * @brief residual capacity of battery
@@ -28,13 +27,10 @@
  * non-statistics modules.  Value may be read as absolute or relative
  * (to nominal) capacity.
  *
- * @ingroup blackboard
  * @ingroup power
  */
-class MIXIM_API BatteryState : public BBItem
+class MIXIM_API BatteryState : public cObject
 {
-  BBITEM_METAINFO(BBItem);
-
 protected:
   /** @brief nominal battery capacity in mW-s (mA-s at nominal voltage) */
   double nominal;
@@ -48,7 +44,7 @@ public:
      * capacity.
      */
 	BatteryState(double n=-1) :
-		BBItem(), nominal(n)
+		cObject(), nominal(n)
 	{};
 
 	/** @brief Residual capacity of battery (relative to nominal capacity). */

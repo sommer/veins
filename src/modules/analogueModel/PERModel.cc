@@ -2,7 +2,7 @@
 
 #include "AirFrame_m.h"
 
-void PERModel::filterSignal(AirFrame *frame) {
+void PERModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {
 	Signal&   signal = frame->getSignal();
 	simtime_t start  = signal.getReceptionStart();
 	simtime_t end    = signal.getReceptionEnd();

@@ -27,9 +27,21 @@
 #include <omnetpp.h>
 #include <vector>
 
+#ifdef MIXIM_INET
+#include <MobilityAccess.h> // INET
+typedef MobilityAccess ChannelMobilityAccessType;
+typedef IMobility*     ChannelMobilityPtrType;
+#endif
+
 #include "MiXiMDefs.h"
 #include "BatteryAccess.h"
-#include "Move.h"
+
+#ifndef MIXIM_INET
+#include "FindModule.h"
+#include "BaseMobility.h"
+typedef AccessModuleWrap<BaseMobility>                ChannelMobilityAccessType;
+typedef typename ChannelMobilityAccessType::wrapType* ChannelMobilityPtrType;
+#endif
 
 class NicEntry;
 class BaseConnectionManager;
@@ -50,30 +62,28 @@ class BaseWorldUtility;
  * @ingroup phyLayer
  * @ingroup baseModules
  **/
-class MIXIM_API ChannelAccess : public BatteryAccess
+class MIXIM_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType
 {
 protected:
-    /** @brief use sendDirect or not?*/
-    bool useSendDirect;
+	/** @brief A signal used to subscribe to mobility state changes. */
+	const static simsignalwrap_t mobilityStateChangedSignal;
 
-    /** @brief Pointer to the PropagationModel module*/
-    BaseConnectionManager* cc;
+	/** @brief use sendDirect or not?*/
+	bool useSendDirect;
 
-    /** @brief debug this core module? */
-    bool coreDebug;
+	/** @brief Pointer to the PropagationModel module*/
+	BaseConnectionManager* cc;
+
+	/** @brief debug this core module? */
+	bool coreDebug;
 
 	/** @brief Defines if the physical layer should simulate propagation delay.*/
 	bool usePropagationDelay;
 
-    /** @brief Last move of this host */
-    Move move;
-    /** @brief category number given by bb for RSSI */
-    int catMove;
+	/** @brief Is this module already registered with ConnectionManager? */
+	bool isRegistered;
 
-    /** @brief Is this module already registered with ConnectionManager? */
-    bool isRegistered;
-
-    /** @brief Pointer to the World Utility, to obtain some global information*/
+	/** @brief Pointer to the World Utility, to obtain some global information*/
 	BaseWorldUtility* world;
 
 protected:
@@ -117,7 +127,12 @@ public:
 	 * ChannelAccess is subscribed to position changes and informs the
 	 * ConnectionManager.
 	 */
-	virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+	virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
+
+	/**
+	 * @brief Returns the host's mobility module.
+	 */
+	virtual ChannelMobilityPtrType getMobilityModule() { return ChannelMobilityAccessType::get(this); }
 };
 
 #endif

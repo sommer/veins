@@ -49,7 +49,7 @@
  * determine to which WBAN (MoBANCoordinator) it belongs.
  * The current implementation uses the Random Walk Mobility Model (RWMM) for individual (local) movement with a sphere around the node, with given speed
  * and sphere radius of the current posture. The reference point of the node it the current posture, the sphere radius, and the speed is given by the
- * corresponding coordinator through the blackboard. RWMM determines the location of node at ant time relative to the given reference point.
+ * corresponding coordinator through the signaling system. RWMM determines the location of node at ant time relative to the given reference point.
  *
  * @ingroup mobility
  * @ingroup MoBAN
@@ -59,13 +59,13 @@ class MIXIM_API MoBANLocal : public BaseMobility
 {
   protected:
 
-    /** @brief Reference point of the node in the current posture. It is gotten from the MoBAN coordinator through blackboard */
+    /** @brief Reference point of the node in the current posture. It is gotten from the MoBAN coordinator through signaling system */
     Coord referencePoint;
 
-    /** @brief The radius of local mobility of the node in the current posture. It is gotten from the MoBAN coordinator through blackboard. */
+    /** @brief The radius of local mobility of the node in the current posture. It is gotten from the MoBAN coordinator through signaling system. */
     double radius;
 
-    /** @brief The speed of local mobility of the node in the current posture. It is gotten from the MoBAN coordinator through blackboard. */
+    /** @brief The speed of local mobility of the node in the current posture. It is gotten from the MoBAN coordinator through signaling system. */
     double speed;
 
 	/** @brief parameters to handle the movement of the host*/
@@ -84,10 +84,9 @@ class MIXIM_API MoBANLocal : public BaseMobility
     /** @brief The relative position of the node in the next step */
     Coord stepTarget;
 
-    /** @brief Variable to keep the category of the information that the coordinator publishes to the blackboard*/
-    int catRefMove;
-
   public:
+    /** @brief Variable to keep the category of the information that the coordinator publishes. */
+    const static simsignalwrap_t catBBMoBANMsgSignal;
 
     /** @brief Initializes the parameters of the local mobility module.*/
     virtual void initialize(int);
@@ -100,8 +99,8 @@ class MIXIM_API MoBANLocal : public BaseMobility
     /** @brief Selects a target position for the next move and set the corresponding variables*/
 	virtual void setTargetPosition();
 
-    /** @brief Function which is called when something is written to the blackboard of this node */
-    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+    /** @brief Function which is called when something is written to the signaling system of this node */
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 
     /** @brief Gets a position and return the nearest point inside the simulation area if the point is outside the area*/
     Coord insideWorld(Coord apoint);

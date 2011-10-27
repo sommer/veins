@@ -17,7 +17,6 @@ cplusplus {{
 
 class MacPkt;
 
-
 //
 // Defines all fields of an 802.11 MAC frame
 //

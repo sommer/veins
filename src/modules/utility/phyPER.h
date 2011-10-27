@@ -26,7 +26,6 @@
 #include "UWBIRPacket.h"
 
 /**
- * TODO - Generated class
  */
 class MIXIM_API phyPER : public  BaseModule
 {
@@ -34,21 +33,23 @@ class MIXIM_API phyPER : public  BaseModule
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage *msg) { };
 
-    int catPacket, catUWBIRPacket;
-    long nbSyncAttempts, nbSyncSuccesses, nbRx, nbRxnoRS;
+    long        nbSyncAttempts;
+    long        nbSyncSuccesses;
+    long        nbRx;
+    long        nbRxnoRS;
 
-    Packet packet;
+    Packet      packet;
     UWBIRPacket uwbirpacket;
 
-    cOutVector maiPER, maiPERnoRS;
+    cOutVector  maiPER;
+    cOutVector  maiPERnoRS;
 
   public:
 
     phyPER(): packet(100) {}
 
-	/** @brief Called by the Blackboard whenever a change occurs we're interested in */
-	virtual void receiveBBItem(int category, const BBItem * details, int scopeModuleId);
-
+	/** @brief Called by the signaling mechanism whenever a change occurs we're interested in */
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 };
 
 #endif

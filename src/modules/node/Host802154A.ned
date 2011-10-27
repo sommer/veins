@@ -1,19 +1,18 @@
 package org.mixim.modules.node;
 
 import org.mixim.base.modules.BaseMobility;
-import org.mixim.base.modules.BaseUtility;
 import org.mixim.modules.application.TestApplication;
-import org.mixim.modules.netw.DummyRoute;
 import org.mixim.modules.netw.ArpHost;
-import org.mixim.modules.utility.phyPER;
+import org.mixim.modules.netw.DummyRoute;
 import org.mixim.modules.nic.Nic802154A;
-import org.mixim.modules.power.battery.SimpleBattery;
 import org.mixim.modules.power.battery.BatteryStats;
+import org.mixim.modules.power.battery.SimpleBattery;
+import org.mixim.modules.utility.phyPER;
 
 //
 // This host NED module models a host using an IEEE 802.15.4A correlation receiver.
 // 
-// @author JÃ©rÃ´me Rousselot
+// @author Jérôme Rousselot
 // 
 // Citation of the following publication is appreciated if you use the MiXiM UWB PHY model
 // for a publication of your own.
@@ -38,16 +37,11 @@ module Host802154A
 {
     parameters:
         double numHosts; // total number of hosts in the network
-
         @display("bgb=356,318,white;bgp=10,10");
     gates:
         input radioIn;
 
     submodules:
-        utility: BaseUtility {
-            parameters:
-                @display("p=292,60;i=block/blackboard");
-        }
         stats: phyPER {
             @display("p=202,257");
         }
@@ -80,13 +74,13 @@ module Host802154A
         }
 
     connections:
-        net.lowerGateOut --> nic.upperGateIn;
-        net.lowerGateIn <-- nic.upperGateOut;
+        net.lowerLayerOut --> nic.upperLayerIn;
+        net.lowerLayerIn <-- nic.upperLayerOut;
         net.lowerControlOut --> nic.upperControlIn;
         net.lowerControlIn <-- nic.upperControlOut;
 
-        net.upperGateOut --> app.lowerGateIn;
-        net.upperGateIn <-- app.lowerGateOut;
+        net.upperLayerOut --> app.lowerLayerIn;
+        net.upperLayerIn <-- app.lowerLayerOut;
         net.upperControlOut --> app.lowerControlIn;
         net.upperControlIn <-- app.lowerControlOut;
 

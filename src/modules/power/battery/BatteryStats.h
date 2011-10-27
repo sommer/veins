@@ -41,16 +41,19 @@ class MIXIM_API BatteryStats : public BaseModule
 {
 
 public:
+	/** @brief Signal for the BatteryStats.*/
+	const static simsignalwrap_t catBatteryStateSignal;
+
 	virtual void initialize( int );
 	virtual void handleMessage( cMessage* );
-	virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+	virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 	virtual void finish();
 
 	/** @brief invoked by the Battery Module's finish()
 	 *
 	 * (should not rely on BatteryStats::finish() to clean up resources
 	 */
-	virtual void summary( double, double, simtime_t );
+	virtual void summary( double, double, simtime_t_cref );
 	/** @brief invoked by the Battery Module's at finish()
 	 *
 	 * (should not rely on BatteryStats::finish() to clean up resources
@@ -61,9 +64,6 @@ protected:
 	int doDetail;
 	/** @brief Enable tracking of output vectors?*/
 	int doTimeSeries;
-
-	/** @brief Signal for the BatteryStats.*/
-	int batteryCat;
 
 	/** @name Tracked statistic values.*/
 	/*@{*/

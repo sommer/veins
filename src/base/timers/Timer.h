@@ -59,7 +59,7 @@ class MIXIM_API Timer
 		@param index Timer number to set.
 		@param when Time in seconds in the future to fire the timer
 	 */
-	void setTimer(unsigned int index, simtime_t when){checkCT();ct->setTimer(index,when);}
+	void setTimer(unsigned int index, simtime_t_cref when){checkCT();ct->setTimer(index,when);}
 
 	/** Set a timer to fire at a point in the future.
 	    Auto-generates a timer id. This will not be an id allocated to any other existing timer
@@ -67,7 +67,7 @@ class MIXIM_API Timer
 		@param when Time in seconds in the future to fire the timer
 		@return Timer id
 	 */
-	unsigned int setTimer(simtime_t when){checkCT();return ct->setTimer(when);}
+	unsigned int setTimer(simtime_t_cref when){checkCT();return ct->setTimer(when);}
 
 	/** Cancel an existing timer set by @b setTimer()
 		If the timer has not been set, or has already fires, this does nothing

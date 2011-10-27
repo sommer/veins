@@ -25,7 +25,6 @@
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 #include "Mapping.h"
-#include "Move.h"
 
 /**
  * @brief This AnalogueModel models implements the Ghassmezadeh stochastic UWB channel models.
@@ -82,9 +81,9 @@ public:
     int myIndex;
     std::string myName;
 
-    UWBIRStochasticPathlossModel(double _PL0, double _mu_gamma, double _sigma_gamma, double _mu_sigma, double _sigma_sigma, const Move* _move, bool _enabled, bool _shadowing=true) :
-    PL0(_PL0), mu_gamma(_mu_gamma), sigma_gamma(_sigma_gamma), mu_sigma(_mu_sigma), sigma_sigma(_sigma_sigma), isEnabled(_enabled), shadowing(_shadowing), frequency("frequency"),
-     move(_move) {
+    UWBIRStochasticPathlossModel(double _PL0, double _mu_gamma, double _sigma_gamma, double _mu_sigma, double _sigma_sigma, bool _enabled, bool _shadowing=true) :
+    PL0(_PL0), mu_gamma(_mu_gamma), sigma_gamma(_sigma_gamma), mu_sigma(_mu_sigma), sigma_sigma(_sigma_sigma), isEnabled(_enabled), shadowing(_shadowing), frequency("frequency")
+    {
     	distances.setName("distances");
     	srcPosX.setName("srcPosX");
     	srcPosY.setName("srcPosY");
@@ -93,13 +92,12 @@ public:
     	pathlosses.setName("pathloss");
     }
 
-    void filterSignal(AirFrame *frame);
+    void filterSignal(AirFrame *, const Coord&, const Coord&);
 
 protected:
     double pathloss_exponent;
     double fading;
     Dimension frequency;
-    const Move* move;
     cOutVector pathlosses;  // outputs computed pathlosses. Allows to compute Eb = Epulse*pathloss for Eb/N0 computations. (N0 is the noise sampled by the receiver)
 
     double getNarrowBandFreeSpacePathloss(double fc, double distance);

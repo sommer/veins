@@ -15,14 +15,14 @@
 
 package org.mixim.modules.nic;
 
-import org.mixim.modules.phy.PhyLayerBattery;
 import org.mixim.modules.mac.BMacLayer;
+import org.mixim.modules.phy.PhyLayerBattery;
 
 //
 // This module implements a BMAC network interface card using
 // the "BMACLayer" MAC layer module
 //
-module NicBMAC like INic
+module NicBMAC like IWirelessNic
 {
     parameters:
         double sleepCurrent @unit(mA); // 20 µA
@@ -35,8 +35,8 @@ module NicBMAC like INic
 		double txRxCurrent @unit(mA);
 		
     gates:
-        input upperGateIn; // to upper layers
-        output upperGateOut; // from upper layers
+        input upperLayerIn; // to upper layers
+        output upperLayerOut; // from upper layers
         output upperControlOut; // control information 
         input upperControlIn; // control information 
 		input radioIn; // radioIn gate for sendDirect
@@ -51,13 +51,13 @@ module NicBMAC like INic
         }
 
     connections:
-        mac.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperGateOut;
-        mac.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- upperGateIn;
+        mac.upperLayerOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperLayerOut;
+        mac.upperLayerIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- upperLayerIn;
         mac.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> upperControlOut;
         mac.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- upperControlIn;
 
-        phy.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerGateIn;
-        phy.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- mac.lowerGateOut;
+        phy.upperLayerOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerLayerIn;
+        phy.upperLayerIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- mac.lowerLayerOut;
         phy.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> mac.lowerControlIn;
         phy.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- mac.lowerControlOut;
 

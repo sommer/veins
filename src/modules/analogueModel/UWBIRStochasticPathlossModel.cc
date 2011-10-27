@@ -41,7 +41,7 @@ double UWBIRStochasticPathlossModel::simtruncnormal(double mean, double stddev, 
     return res;
 }
 
-void UWBIRStochasticPathlossModel::filterSignal(AirFrame *frame)
+void UWBIRStochasticPathlossModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos)
 {
 	if (isEnabled) {
 		Signal& signal = frame->getSignal();
@@ -61,10 +61,7 @@ void UWBIRStochasticPathlossModel::filterSignal(AirFrame *frame)
 		S = n2 * sigma;
 
 		// Determine distance between sender and receiver
-		Move   srcMove     = signal.getMove();
-		Coord  senderPos   = srcMove.getPositionAt(signal.getReceptionStart());
-		Coord  receiverPos = move->getPositionAt(signal.getReceptionStart());
-		double distance    = receiverPos.distance(senderPos);
+		double distance    = receiverPos.distance(sendersPos);
 		/*
 		 srcPosX.record(senderPos.x);
 		 srcPosY.record(senderPos.y);

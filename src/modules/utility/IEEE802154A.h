@@ -176,7 +176,7 @@ public:
      * The returned structure is a pair. Its first component is the Signal*,
      * and the second component is a vector of bool with the the generated bit values.
      * */
-    static signalAndData generateIEEE802154AUWBSignal(simtime_t signalStart, bool allZeros=false);
+    static signalAndData generateIEEE802154AUWBSignal(simtime_t_cref signalStart, bool allZeros=false);
 
     static simtime_t getMaxFrameDuration();
 
@@ -189,9 +189,9 @@ protected:
 	static void generateSyncPreamble(Mapping* mapping, Argument* arg);
 	static void generateSFD(Mapping* mapping, Argument* arg);
 	static void generatePhyHeader(Mapping* mapping, Argument* arg);
-    static void generateBurst(Mapping* mapping, Argument* arg, simtime_t burstStart, short polarity);
+    static void generateBurst(Mapping* mapping, Argument* arg, simtime_t_cref burstStart, short polarity);
     static void generatePulse(Mapping* mapping, Argument* arg, short polarity,
-    		double peak=IEEE802154A::maxPulse, simtime_t chip=IEEE802154A::mandatory_pulse);
+    		double peak=IEEE802154A::maxPulse, simtime_t_cref chip=IEEE802154A::mandatory_pulse);
     static void setBitRate(Signal* s);
     static int s(int n);
 

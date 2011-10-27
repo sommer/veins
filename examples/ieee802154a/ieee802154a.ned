@@ -2,7 +2,6 @@ package org.mixim.examples.ieee802154a;
 
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
-import org.mixim.base.modules.BaseUtility;
 import org.mixim.modules.node.Host802154A;
 
 //

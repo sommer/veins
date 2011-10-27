@@ -289,7 +289,7 @@ protected:
 	 * time at module with the passed name. If the module name is ommited the message is
 	 * expected at this module.
 	 */
-	void assertMessage(std::string msg, int kind, simtime_t arrival, std::string destination = "");
+	void assertMessage(std::string msg, int kind, simtime_t_cref arrival, std::string destination = "");
 	
 	/**
 	 * Asserts the arrival of a message with the specified kind in the specified
@@ -298,7 +298,7 @@ protected:
 	 * If the module name is ommited the message is expected at this module.
 	 */
 	void assertMessage(	std::string msg, int kind,
-						simtime_t intvStart, simtime_t intvEnd,
+						simtime_t_cref intvStart, simtime_t_cref intvEnd,
 						std::string destination = "");
 
 	/**
@@ -312,7 +312,7 @@ protected:
 	 * 						if omitted this module is used as destination
 	 */
 	void testForMessage(std::string testName,
-						int kind, simtime_t arrival,
+						int kind, simtime_t_cref arrival,
 						std::string destination = "");
 	/**
 	 * @brief Analog for "assertMessage" method but for a previously planned
@@ -329,14 +329,14 @@ protected:
 	 */
 	void testForMessage(std::string testName,
 						int kind,
-						simtime_t intvStart, simtime_t intvEnd,
+						simtime_t_cref intvStart, simtime_t_cref intvEnd,
 						std::string destination = "");
 
 	/**
 	 * @brief Does the same as "assertMessage" plus it calls the
 	 * "continueTest()"-method when the message arrives.
 	 */
-	void waitForMessage(std::string msg, int kind, simtime_t arrival, std::string destination = "");
+	void waitForMessage(std::string msg, int kind, simtime_t_cref arrival, std::string destination = "");
 	
 	/**
 	 * @brief Analog for "waitForMessage" method but for a previously planned
@@ -349,7 +349,7 @@ protected:
 	 * 						if omitted this module is used as destination
 	 */
 	void testAndWaitForMessage(	std::string testName,
-								int kind, simtime_t arrival,
+								int kind, simtime_t_cref arrival,
 								std::string destination = "");
 
 	/**
@@ -367,7 +367,7 @@ protected:
 	 */
 	void testAndWaitForMessage(	std::string testName,
 								int kind,
-								simtime_t intvStart, simtime_t intvEnd,
+								simtime_t_cref intvStart, simtime_t_cref intvEnd,
 								std::string destination = "");
 
 	/**

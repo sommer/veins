@@ -32,14 +32,13 @@
 #include "MiXiMDefs.h"
 #include "BaseWorldUtility.h"
 #include "Packet.h"
-#include "ImNotifiable.h"
 
 /**
  * @class SimTracer
  * @ingroup utils
  * @author Jerome Rousselot
  */
-class MIXIM_API SimTracer:public cSimpleModule, ImNotifiable
+class MIXIM_API SimTracer: public cSimpleModule, cListener
 {
 
 public:
@@ -54,7 +53,7 @@ public:
     /** @brief Called by any module wanting to log a nam event. */
   void namLog(std::string namString);
 
-  void radioEnergyLog(unsigned long mac, int state, simtime_t duration,
+  void radioEnergyLog(unsigned long mac, int state, simtime_t_cref duration,
 		      double power, double newPower);
 
   /** @brief Called by a routing protocol to log a link in a tree topology. */
@@ -64,10 +63,10 @@ public:
   }
 
   /** @brief Called by the MAC or NET layer to log the node position. */
-  void logPosition(int node, double x, double y);
+  void logPosition(int node, double x, double y, double z = 0.0);
 
-  /** @brief Called by the Blackboard whenever a change occurs we're interested in */
-  virtual void receiveBBItem(int category, const BBItem * details, int scopeModuleId);
+  /** @brief Called by the signaling mechanism whenever a change occurs we're interested in */
+  virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 
   double getAvgSensorPowerConsumption();
 
@@ -80,7 +79,6 @@ protected:
    cOutVector pSinkVec;
    cOutVector pSensorVec;
    std::map < unsigned long, double >powerConsumptions;
-   int catPacket;
    Packet packet;
    long nbApplPacketsSent;
    long nbApplPacketsReceived;

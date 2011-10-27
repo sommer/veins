@@ -1,6 +1,9 @@
 package org.mixim.examples.baseNetwork;
 
-import org.mixim.base.modules.*;
+import org.mixim.base.modules.IBaseMobility;
+import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.IBaseApplLayer;
+import org.mixim.base.modules.IBaseNetwLayer;
 
 module BaseNode
 {
@@ -12,10 +15,6 @@ module BaseNode
     gates:
         input radioIn; // gate for sendDirect
     submodules:
-        utility: BaseUtility {
-            parameters:
-                @display("p=130,38;b=24,24,rect,black;i=block/blackboard");
-        }
         arp: BaseArp {
             parameters:
                 @display("p=130,108;b=24,24,rect,blue;i=block/process");
@@ -37,13 +36,13 @@ module BaseNode
                 @display("p=60,166;i=block/ifcard");
         }
     connections:
-        nic.upperGateOut --> net.lowerGateIn;
-        nic.upperGateIn <-- net.lowerGateOut;
+        nic.upperLayerOut --> net.lowerLayerIn;
+        nic.upperLayerIn <-- net.lowerLayerOut;
         nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
         nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        net.upperGateOut --> appl.lowerGateIn;
-        net.upperGateIn <-- appl.lowerGateOut;
+        net.upperLayerOut --> appl.lowerLayerIn;
+        net.upperLayerIn <-- appl.lowerLayerOut;
         net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
         net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 

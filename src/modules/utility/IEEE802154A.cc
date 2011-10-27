@@ -146,7 +146,7 @@ simtime_t IEEE802154A::getMaxFrameDuration() {
 }
 
 IEEE802154A::signalAndData IEEE802154A::generateIEEE802154AUWBSignal(
-		simtime_t signalStart, bool allZeros) {
+		simtime_t_cref signalStart, bool allZeros) {
 	// 48 R-S parity bits, the 2 symbols phy header is not modeled as it includes its own parity bits
 	// and is thus very robust
 	unsigned int nbBits = IEEE802154A::psduLength * 8 + 48;
@@ -235,7 +235,7 @@ void IEEE802154A::generatePhyHeader(Mapping* mapping, Argument* arg) {
 }
 
 void IEEE802154A::generatePulse(Mapping* mapping, Argument* arg,
-		short polarity, double peak, simtime_t chip) {
+		short polarity, double peak, simtime_t_cref chip) {
 	assert(polarity == -1 || polarity == +1);
 	arg->setTime(arg->getTime() + IEEE802154A::signalStart);  // adjust argument so that we use absolute time values in Mapping
 	mapping->setValue(*arg, 0);
@@ -247,7 +247,7 @@ void IEEE802154A::generatePulse(Mapping* mapping, Argument* arg,
 }
 
 void IEEE802154A::generateBurst(Mapping* mapping, Argument* arg,
-		simtime_t burstStart, short polarity) {
+		simtime_t_cref burstStart, short polarity) {
 	assert(burstStart < cfg.preambleLength+(psduLength*8+48+2)*cfg.data_symbol_duration);
 	// 1. Start point = zeros
 	simtime_t offset = burstStart;
@@ -325,7 +325,7 @@ int IEEE802154A::getHoppingPos(int sym) {
 }
 
 simtime_t IEEE802154A::getPhyMaxFrameDuration() {
-	simtime_t phyMaxFrameDuration = 0;
+	simtime_t phyMaxFrameDuration = SIMTIME_ZERO;
 	simtime_t TSHR, TPHR, TPSDU, TCCApreamble;
 	TSHR = IEEE802154A::getThdr();
 	TPHR = IEEE802154A::getThdr();

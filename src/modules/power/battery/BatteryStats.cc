@@ -33,14 +33,14 @@
 #include "BatteryState.h"
 #include "FindModule.h"
 #include "DeviceEntry.h"
-#include "BaseUtility.h"
 
 Define_Module(BatteryStats);
+
+const simsignalwrap_t BatteryStats::catBatteryStateSignal = simsignalwrap_t(MIXIM_SIGNAL_BATTERY_CHANGE_NAME);
 
 void BatteryStats::initialize(int stage)
 {
   BaseModule::initialize(stage);
-
   if (stage==0) {
     doDetail = 0;
     doDetail = par("detail").boolValue();
@@ -50,11 +50,8 @@ void BatteryStats::initialize(int stage)
     doTimeSeries = par("timeSeries").boolValue();
     debugEV << "show timeSeries = " << doTimeSeries << endl;
 
-    batteryCat = -1;
     if (doTimeSeries) {
-      int scopeHost = (this->findHost())->getId();
-      BatteryState bs;
-      batteryCat = utility->subscribe(this, &bs, scopeHost);
+      findHost()->subscribe(catBatteryStateSignal, this);
 
       // suggest enabling only residualVec (omnetpp.ini), unless
       // others are of interest
@@ -84,7 +81,7 @@ void BatteryStats::handleMessage(cMessage *msg)
 
 // summary() and detail() are invoked by Battery's finish() method
 
-void BatteryStats::summary(double init, double final, simtime_t lifetime)
+void BatteryStats::summary(double init, double final, simtime_t_cref lifetime)
 {
   Enter_Method_Silent();
   recordScalar("nominal", init, "mW-s");
@@ -116,12 +113,12 @@ void BatteryStats::detail(DeviceEntry *devices, int numDevices)
   }
 }
 
-void BatteryStats::receiveBBItem(int signalID, const BBItem *obj, int scopeModuleId)
+void BatteryStats::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
 {
     Enter_Method_Silent();
-    BaseModule::receiveBBItem(signalID, obj, scopeModuleId);
+    BaseModule::receiveSignal(source, signalID, obj);
 
-    if (signalID == batteryCat) {
+    if (signalID == catBatteryStateSignal) {
       double residualCapacity;
       double relativeCapacity;
 

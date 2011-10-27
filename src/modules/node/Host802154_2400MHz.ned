@@ -1,16 +1,13 @@
 package org.mixim.modules.node;
 
 import org.mixim.base.modules.BaseMobility;
-import org.mixim.base.modules.BaseUtility;
-import org.mixim.modules.application.SensorApplLayer;
-import org.mixim.modules.netw.DummyRoute;
 import org.mixim.base.modules.IBaseNetwLayer;
+import org.mixim.modules.application.SensorApplLayer;
 import org.mixim.modules.netw.ArpHost;
-import org.mixim.modules.transport.Aggregation;
-import org.mixim.modules.utility.phyPER;
 import org.mixim.modules.nic.Nic802154_TI_CC2420;
-import org.mixim.modules.power.battery.SimpleBattery;
 import org.mixim.modules.power.battery.BatteryStats;
+import org.mixim.modules.power.battery.SimpleBattery;
+import org.mixim.modules.transport.Aggregation;
 
 //
 // This NED module defines a host using an IEEE 802.15.4 transceiver at 2.4GHz
@@ -29,23 +26,18 @@ import org.mixim.modules.power.battery.BatteryStats;
 // G. Fohler. In Proceedings of the 2009 Third UKSim European Symposium on Computer 
 // Modeling and Simulation. <a href="http://dx.doi.org/10.1109/EMS.2009.34">http://dx.doi.org/10.1109/EMS.2009.34</a>.
 //
-// @author JÃ©rÃ´me Rousselot
+// @author Jérôme Rousselot
 //
 module Host802154_2400MHz
 {
     parameters:
         double numHosts; // total number of hosts in the network
         string netwType = default("DummyRoute"); //type of the network layer
-
         @display("bgb=356,318,white;bgp=10,10;b=40,40,rect;i=device/usb");
     gates:
         input radioIn;
 
     submodules:
-        utility: BaseUtility {
-            parameters:
-                @display("p=292,60;i=block/blackboard");
-        }
         batteryStats: BatteryStats {
             @display("p=292,257;i=block/circle");
             detail = default(false);
@@ -85,18 +77,18 @@ module Host802154_2400MHz
         }
 
     connections:
-        net.lowerGateOut --> nic.upperGateIn;
-        net.lowerGateIn <-- nic.upperGateOut;
+        net.lowerLayerOut --> nic.upperLayerIn;
+        net.lowerLayerIn <-- nic.upperLayerOut;
         net.lowerControlOut --> nic.upperControlIn;
         net.lowerControlIn <-- nic.upperControlOut;
 
-        net.upperGateOut --> transport.lowerGateIn;
-        net.upperGateIn <-- transport.lowerGateOut;
+        net.upperLayerOut --> transport.lowerLayerIn;
+        net.upperLayerIn <-- transport.lowerLayerOut;
         net.upperControlOut --> transport.lowerControlIn;
         net.upperControlIn <-- transport.lowerControlOut;
 
-        transport.upperGateOut --> app.lowerGateIn;
-        transport.upperGateIn <-- app.lowerGateOut;
+        transport.upperLayerOut --> app.lowerLayerIn;
+        transport.upperLayerIn <-- app.lowerLayerOut;
         transport.upperControlOut --> app.lowerControlIn;
         transport.upperControlIn <-- app.lowerControlOut;
 

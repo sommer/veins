@@ -3,10 +3,8 @@ cplusplus {{
 #include "ChannelState.h"
 }}
 
-
-
-
 class noncobject ChannelState;
+class noncobject simtime_t;
 
 enum SenseMode {
     UNTIL_IDLE = 1;		//sense until channel is busy or timeout is reached

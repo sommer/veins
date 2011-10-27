@@ -27,17 +27,9 @@ double SimplePathlossConstMapping::getValue(const Argument& pos) const
 
 
 
-void SimplePathlossModel::filterSignal(AirFrame *frame)
+void SimplePathlossModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos)
 {
 	Signal& signal = frame->getSignal();
-
-	/** Get start of the signal */
-	simtime_t sStart = signal.getReceptionStart();
-	simtime_t sEnd   = signal.getReceptionEnd();
-
-	/** claim the Move pattern of the sender from the Signal */
-	Coord sendersPos  = signal.getMove().getPositionAt(sStart);
-	Coord receiverPos = myMove.getPositionAt(sStart);
 
 	/** Calculate the distance factor */
 	double sqrDistance = useTorus ? receiverPos.sqrTorusDist(sendersPos, playgroundSize)

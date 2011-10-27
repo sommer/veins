@@ -31,7 +31,7 @@ protected:
 
 public:
     /** @brief Default constructor*/
-	ProbBcastNetwControlInfo(const LAddress::L3Type& addr = LAddress::L3NULL, simtime_t vttl = 0, double vcriticality = 0.0, unsigned int vid = 0) :
+	ProbBcastNetwControlInfo(const LAddress::L3Type& addr = LAddress::L3NULL, simtime_t_cref vttl = 0, double vcriticality = 0.0, unsigned int vid = 0) :
 		NetwControlInfo(addr),
 		ttl(vttl), criticality(vcriticality), id(vid) {};
 
@@ -44,7 +44,7 @@ public:
     };
 
     /** @brief Setter method*/
-    virtual void setTtl(const simtime_t vttl){
+    virtual void setTtl(simtime_t_cref vttl){
     	ttl = vttl;
     };
 

@@ -5,15 +5,8 @@
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(BreakpointPathlossModel): "
 
 
-void BreakpointPathlossModel::filterSignal(AirFrame *frame) {
-	Signal& signal   = frame->getSignal();
-	/** Get start of the signal */
-	simtime_t sStart = signal.getReceptionStart();
-	simtime_t sEnd   = signal.getReceptionEnd();
-
-	/** claim the Move pattern of the sender from the Signal */
-	Coord sendersPos  = signal.getMove().getPositionAt(sStart);
-	Coord receiverPos = myMove.getPositionAt(sStart);
+void BreakpointPathlossModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {
+	Signal& signal = frame->getSignal();
 
 	/** Calculate the distance factor */
 	double distance = useTorus ? receiverPos.sqrTorusDist(sendersPos, playgroundSize)

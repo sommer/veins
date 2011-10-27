@@ -1,7 +1,7 @@
 package org.mixim.modules.nic;
 
-import org.mixim.modules.phy.PhyLayerUWBIR;
 import org.mixim.modules.mac.AlohaMacLayer;
+import org.mixim.modules.phy.PhyLayerUWBIR;
 
 //
 // This NIC interface simulates an IEEE 802.15.4A UWB PHY
@@ -24,7 +24,7 @@ import org.mixim.modules.mac.AlohaMacLayer;
 // <a href="http://infoscience.epfl.ch/record/147987">http://infoscience.epfl.ch/record/147987</a> 
 //
 
-module Nic802154A like INic
+module Nic802154A like IWirelessNic
 {
     parameters:
         string connectionManagerName; 	//name of the ConnectionManager module
@@ -42,9 +42,9 @@ module Nic802154A like INic
         @display("bgb=101,150,white,,;bgp=10,10");
     gates:
         input radioIn; // radioIn gate for sendDirect
-        input upperGateIn; // uppergateIn for incoming messages from network layer
+        input upperLayerIn; // upperLayerIn for incoming messages from network layer
         input upperControlIn; // uppergateCtrlIn for incoming control messages from network layer
-        output upperGateOut; // uppergateOut to send data messages to network layer
+        output upperLayerOut; // upperLayerOut to send data messages to network layer
         output upperControlOut; // uppergateCtrlOut to send control messages to network layer
 
     submodules:
@@ -60,16 +60,16 @@ module Nic802154A like INic
                 @display("p=60,45;b=80,30,rect,white,,");
         }
     connections:
-        phy.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerGateIn;
-        phy.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- mac.lowerGateOut;
+        phy.upperLayerOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerLayerIn;
+        phy.upperLayerIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- mac.lowerLayerOut;
         phy.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> mac.lowerControlIn;
         phy.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- mac.lowerControlOut;
 
         radioIn --> phy.radioIn;
 
-        upperGateIn --> mac.upperGateIn;
+        upperLayerIn --> mac.upperLayerIn;
         upperControlIn --> mac.upperControlIn;
-        upperGateOut <-- mac.upperGateOut;
+        upperLayerOut <-- mac.upperLayerOut;
         upperControlOut <-- mac.upperControlOut;
 
 }

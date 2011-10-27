@@ -23,22 +23,17 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
-#include "ImNotifiable.h"
 #include "SimpleAddress.h"
 
 /**
  * @brief Class that keeps track of the number of packets sent.
  *
- * @ingroup blackboard
  * @ingroup utils
  * @author Andreas Koepke, Karl Wessel
- * @sa Blackboard
  */
 
-class MIXIM_API Packet : public BBItem
+class MIXIM_API  Packet : public cObject
 {
-    BBITEM_METAINFO(BBItem);
-
 protected:
     /** @brief number of packets generated. */
     long             nbPacketsReceived;
@@ -53,7 +48,7 @@ public:
 
     /** @brief Constructor*/
     Packet(long bitLength, long rcvd=0, long sent=0) :
-	 BBItem(), nbPacketsReceived(rcvd), nbPacketsReceivedNoRS(rcvd), 
+	 cObject(), nbPacketsReceived(rcvd), nbPacketsReceivedNoRS(rcvd),
 	 nbPacketsSent(sent), packetBitLength(bitLength), sent(true), host(0) {
     };
 

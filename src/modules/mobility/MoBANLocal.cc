@@ -42,15 +42,15 @@
 #include "MoBANLocal.h"
 
 #include "FWMath.h"
-#include "BaseUtility.h"
 #include "MoBANBBItem.h"
 
 Define_Module(MoBANLocal);
 
+const simsignalwrap_t MoBANLocal::catBBMoBANMsgSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBANMSG_NAME);
+
 void MoBANLocal::initialize(int stage)
 {
     BaseMobility::initialize(stage);
-
     if (stage == 0) {
 
 		speed = 1;
@@ -59,8 +59,7 @@ void MoBANLocal::initialize(int stage)
         step = -1;
         stepSize = Coord(0,0,0);
 
-        BBMoBANMessage groupMove;        // subscribe to blackboard to receive items published by the MoBAN coordinator
-        catRefMove = utility->subscribe(this, &groupMove, findHost()->getId());
+        findHost()->subscribe(catBBMoBANMsgSignal, this);
     }
     else if( stage == 1 ){
     	referencePoint = move.getStartPos();
@@ -147,14 +146,14 @@ void MoBANLocal::makeMove()
 }
 
 /**
-* This function is called once something is written to the blackboard of this node. If the written item has specific category dedicated for the
+* This function is called once something is written to the signaling system of this node. If the written item has specific category dedicated for the
 * type that MoBAN coordinator writes, the item will be read and the corresponding variables are set.
 */
-void MoBANLocal::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
+void MoBANLocal::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
 {
-    if(category == catRefMove)
+    if(signalID == catBBMoBANMsgSignal)
     {
-    	BBMoBANMessage m(*static_cast<const BBMoBANMessage*>(details));
+    	BBMoBANMessage m(*static_cast<const BBMoBANMessage*>(obj));
     	referencePoint= m.position;
 
     	speed = m.speed;

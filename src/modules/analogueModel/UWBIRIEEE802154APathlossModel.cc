@@ -180,7 +180,7 @@ const UWBIRIEEE802154APathlossModel::CMconfig UWBIRIEEE802154APathlossModel::CMc
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // CM9
 };
 
-void UWBIRIEEE802154APathlossModel::filterSignal(AirFrame *frame)
+void UWBIRIEEE802154APathlossModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos)
 {
     Signal& signal = frame->getSignal();
     // We create a new "fake" txPower to add multipath taps
@@ -217,7 +217,7 @@ void UWBIRIEEE802154APathlossModel::filterSignal(AirFrame *frame)
     signal.setTransmissionPower(newTxPower);
 
 
-	// Total radiated power Prx at that distance  [W]
+    // Total radiated power Prx at that distance  [W]
     //double attenuation = 0.5 * ntx * nrx * cfg.PL0 / pow(distance / d0, cfg.n);
     double attenuation = getPathloss(fc, BW);
     pathlosses.record(attenuation);
@@ -231,7 +231,7 @@ void UWBIRIEEE802154APathlossModel::filterSignal(AirFrame *frame)
 
 }
 
-void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
+void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t_cref pulseStart) {
     using std::map;
     using std::numeric_limits;
 
@@ -245,8 +245,8 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
     if(doShadowing) {
     	pulseEnergy = pulseEnergy - S;
     }
-    simtime_t tau_kl = 0;
-    simtime_t fromClusterStart = 0;
+    simtime_t tau_kl = SIMTIME_ZERO;
+    simtime_t fromClusterStart = SIMTIME_ZERO;
     // start time of cluster number "cluster"
     clusterStart = 0;
     gamma_l = cfg.gamma_0;
@@ -258,7 +258,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t pulseStart) {
     double mfactor = 0;
     double mmean = 0, msigma = 0;
     bool firstTap = true;
-    simtime_t echoEnd = 0;
+    simtime_t echoEnd = SIMTIME_ZERO;
     for (int cluster = 0; cluster < L; cluster++) {
         while (moreTaps) {
             // modify newTxPower

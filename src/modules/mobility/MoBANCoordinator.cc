@@ -48,6 +48,7 @@
 #include "FWMath.h"
 #include "FindModule.h"
 #include "MoBANBBItem.h"
+#include "MoBANLocal.h"
 
 Define_Module(MoBANCoordinator);
 
@@ -341,7 +342,7 @@ void MoBANCoordinator::finish() {
 }
 
 /**
- * Publishes the reference point and other information of the posture to the blackboard of the belonging nodes.
+ * Publishes the reference point and other information of the posture to the signaling system of the belonging nodes.
 */
 void MoBANCoordinator::publishToNodes() {
 	BBMoBANMessage Refmove;
@@ -352,11 +353,9 @@ void MoBANCoordinator::publishToNodes() {
 		Refmove.radius = currentPosture->getRadius(i);
 		Refmove.speed = currentPosture->getSpeed(i);
 
-		utility = FindModule<BaseUtility*>::findSubModule(network->getSubmodule("node",nodeIndex[i]));
-			utility->publishBBItem(utility->getCategory(&Refmove), &Refmove, network->getSubmodule("node",nodeIndex[i])->getId());
-
-		}
+		emit(MoBANLocal::catBBMoBANMsgSignal, &Refmove);
 	}
+}
 
 /**
  * This function reads the input mobility pattern file and make a list of the mobility patterns.

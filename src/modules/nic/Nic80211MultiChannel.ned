@@ -29,7 +29,7 @@ import org.mixim.modules.phy.PhyLayerBattery;
 // @see Mac80211MultiChannel, Decider80211MultiChannel
 // @author Karl Wessel
 //
-module Nic80211MultiChannel like INic
+module Nic80211MultiChannel like IWirelessNic
 {
     parameters:
         //name of the ConnectionManager module
@@ -46,8 +46,8 @@ module Nic80211MultiChannel like INic
         double onCurrent @unit(mA) = default(0);
     
     gates:
-        input upperGateIn; // to upper layers
-        output upperGateOut; // from upper layers
+        input upperLayerIn; // to upper layers
+        output upperLayerOut; // from upper layers
         output upperControlOut; // control information 
         input upperControlIn; // control information 
         input radioIn; // radioIn gate for sendDirect
@@ -86,13 +86,13 @@ module Nic80211MultiChannel like INic
         }
 
     connections:
-        mac.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperGateOut;
-        mac.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- upperGateIn;
+        mac.upperLayerOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperLayerOut;
+        mac.upperLayerIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- upperLayerIn;
         mac.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> upperControlOut;
         mac.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- upperControlIn;
 
-        phy.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerGateIn;
-        phy.upperGateIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- mac.lowerGateOut;
+        phy.upperLayerOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerLayerIn;
+        phy.upperLayerIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- mac.lowerLayerOut;
         phy.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> mac.lowerControlIn;
         phy.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- mac.lowerControlOut;
 

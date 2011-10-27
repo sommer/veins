@@ -65,14 +65,14 @@ public:
 	 * distributed attenuation values as well as the inteval in which
 	 * to define key entries in (accuracy of the model).
 	 */
-	LogNormalShadowing(double mean, double stdDev, simtime_t interval);
+	LogNormalShadowing(double mean, double stdDev, simtime_t_cref interval);
 
 	virtual ~LogNormalShadowing();
 
 	/**
 	 * @brief Calculates shadowing loss based on a normal gaussian function.
 	 */
-	virtual void filterSignal(AirFrame* frame);
+	virtual void filterSignal(AirFrame*, const Coord&, const Coord&);
 };
 
 #endif /* LOGNORMALSHADOWING_H_ */

@@ -207,7 +207,7 @@ int PostureTransition::addTimeDomain(std::string name)
 /**
  * This function gets an index of an existing time domain and adds the given boundary to the boundary list of that time domain.
 */
-bool PostureTransition::setTimeBoundry(int id, simtime_t lowBound, simtime_t highBound)
+bool PostureTransition::setTimeBoundry(int id, simtime_t_cref lowBound, simtime_t_cref highBound)
 {
 	TimeBound* bound=new TimeBound;
 	bound->low = lowBound;
@@ -300,7 +300,7 @@ bool PostureTransition::addCombination(std::string areaName,std::string timeName
  * looks for the first fitting combination. If found, it returns the specified Markov transition matrix for that combination as its output.
  * If no combination is found, it returns the default matrix.
 */
-double** PostureTransition::getMatrix(simtime_t iTime, Coord iLocation)
+double** PostureTransition::getMatrix(simtime_t_cref iTime, Coord iLocation)
 {
 	int timeID,locationID,matrixID;
 
@@ -329,7 +329,7 @@ double** PostureTransition::getMatrix(simtime_t iTime, Coord iLocation)
  * Looks for the first containing time domain for the given time instance. It return the Id of the found time domain. If no time domain
  * is found which contains the given time instance, it returns -1.
 */
-int PostureTransition::findTimeDomain(simtime_t iTime)
+int PostureTransition::findTimeDomain(simtime_t_cref iTime)
 {
 	int timeID=0;
 	TimeDomainList::const_iterator timeIt;

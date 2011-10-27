@@ -3,9 +3,6 @@ cplusplus {{
 #include "Signal_.h"
 }}
 
-
-
-
 class noncobject Signal;
 
 //
