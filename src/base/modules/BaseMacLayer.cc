@@ -25,6 +25,10 @@
 #include <cassert>
 #include <sstream>
 
+#ifdef MIXIM_INET
+#include <InterfaceTableAccess.h>
+#endif
+
 #include "Mapping.h"
 #include "Signal_.h"
 #include "MacToPhyInterface.h"
@@ -311,7 +315,7 @@ const LAddress::L2Type& BaseMacLayer::getUpperDestinationFromControlInfo(const c
 /**
  * Attaches a "control info" (MacToNetw) structure (object) to the message pMsg.
  */
-cObject *const BaseMacLayer::setUpControlInfo(cMessage *const pMsg, const LAddress::L3Type& pSrcAddr)
+cObject *const BaseMacLayer::setUpControlInfo(cMessage *const pMsg, const LAddress::L2Type& pSrcAddr)
 {
 	return MacToNetwControlInfo::setControlInfo(pMsg, pSrcAddr);
 }

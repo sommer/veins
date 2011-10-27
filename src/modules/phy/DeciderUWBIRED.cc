@@ -124,7 +124,7 @@ bool DeciderUWBIRED::attemptSync(Signal* s) {
 	}
 	Argument posFirstPulse(IEEE802154A::tFirstSyncPulseMax + s->getReceptionStart());
 	mIt->jumpTo(posFirstPulse);
-	snrValue = std::abs(mIt->getValue()/getNoiseValue());
+	snrValue = fabs(mIt->getValue()/getNoiseValue());
     syncThresholds.record(snrValue);
     if(snrValue > syncThreshold) {
     	return true;

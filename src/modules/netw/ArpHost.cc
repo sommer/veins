@@ -48,7 +48,11 @@ LAddress::L3Type ArpHost::getNetwAddr(const LAddress::L2Type& macAddr) const
     // modification by Jerome Rousselot, CSEM
     // assumes that addresses are equal to host IDs
     // and that mac addresses == net addresses
+#ifdef MIXIM_INET
+    return LAddress::L3Type(macAddr.getInt());
+#else
     return LAddress::L3Type(macAddr);
+#endif
 //    debugEV << "for host[" << simulation.getModule( macAddr )->getParentModule()->getIndex()
 //       << "]: macAddr " << macAddr << "; netw address "
 //       << simulation.getModule( macAddr )->getParentModule()->getSubmodule("nic")->getId() <<endl;

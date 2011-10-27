@@ -185,7 +185,7 @@ cObject *const BaseNetwLayer::setDownControlInfo(cMessage *const pMsg, const LAd
 /**
  * Attaches a "control info" structure (object) to the up message pMsg.
  */
-cObject *const BaseNetwLayer::setUpControlInfo(cMessage *const pMsg, const LAddress::L2Type& pSrcAddr)
+cObject *const BaseNetwLayer::setUpControlInfo(cMessage *const pMsg, const LAddress::L3Type& pSrcAddr)
 {
 	return NetwControlInfo::setControlInfo(pMsg, pSrcAddr);
 }

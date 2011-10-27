@@ -1,12 +1,32 @@
 #/bin/bash
 
-export PATH="${PATH}:../../src/base:../../src/modules:../testUtils:."
-export NEDPATH="../../src:.."
-LIBSREF=( '-l' '../../src/base/miximbase' \
-          '-l' '../testUtils/miximtestUtils' \
-          '-l' '../../src/modules/miximmodules' )
+lPATH='.'
+LIBSREF=( )
+lINETPath='../../../inet/src'
+for lP in '../../src' \
+          '../../src/base' \
+          '../../src/modules' \
+          '../testUtils' \
+          "$lINETPath"; do
+    for pr in 'mixim' 'inet'; do
+        if [ -d "$lP" ] && [ -f "${lP}/lib${pr}$(basename $lP).so" -o -f "${lP}/lib${pr}$(basename $lP).dll" ]; then
+            lPATH="${lP}:$lPATH"
+            LIBSREF=( '-l' "${lP}/${pr}$(basename $lP)" "${LIBSREF[@]}" )
+        elif [ -d "$lP" ] && [ -f "${lP}/lib${pr}.so" -o -f "${lP}/lib${pr}.dll" ]; then
+            lPATH="${lP}:$lPATH"
+            LIBSREF=( '-l' "${lP}/${pr}" "${LIBSREF[@]}" )
+        fi
+    done
+done
+PATH="${PATH}:${lPATH}" #needed for windows
+LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${lPATH}"
+NEDPATH="../../src:.."
+[ -d "$lINETPath" ] && NEDPATH="${NEDPATH}:$lINETPath"
+export PATH
+export NEDPATH
+export LD_LIBRARY_PATH
 
-lCombined='tests'
+lCombined='miximtests'
 lSingle='basePhyLayer'
 if [ ! -e ${lSingle} -a ! -e ${lSingle}.exe ]; then
     if [ -e ../${lCombined}.exe ]; then
