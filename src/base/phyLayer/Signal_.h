@@ -232,7 +232,7 @@ public:
 			rcvPower = new MultipliedMapping(tmp,
 											  attenuations.begin(),
 											  attenuations.end(),
-											  false, 0.0);
+											  false, Argument::MappedZero);
 		}
 
 		return rcvPower;

@@ -15,10 +15,12 @@ FilledUpMappingIterator::FilledUpMappingIterator(FilledUpMapping& mapping, const
 	MultiDimMappingIterator<Linear>(mapping, pos) {}
 
 
+const Argument::mapped_type MappingUtils::cMinNotFound =  std::numeric_limits<Argument::mapped_type>::infinity();
+const Argument::mapped_type MappingUtils::cMaxNotFound = -std::numeric_limits<Argument::mapped_type>::infinity();
 
 MappingUtils::MappingBuffer MappingUtils::mappingBuffer;
 
-ConstMapping* MappingUtils::createCompatibleMapping(ConstMapping& src, ConstMapping& dst){
+MappingUtils::MappingBuffer::value_type MappingUtils::createCompatibleMapping(const ConstMapping& src, const ConstMapping& dst){
 	typedef FilledUpMapping::KeySet KeySet;
 	typedef FilledUpMapping::KeyMap KeyMap;
 
@@ -28,14 +30,11 @@ ConstMapping* MappingUtils::createCompatibleMapping(ConstMapping& src, ConstMapp
 	const DimensionSet& dstDims = dst.getDimensionSet();
 
 	DimensionSet::const_reverse_iterator srcDimIt = srcDims.rbegin();
-	for (DimensionSet::const_reverse_iterator dstDimIt = dstDims.rbegin();
-		 dstDimIt != dstDims.rend(); ++dstDimIt)
-	{
+	for (DimensionSet::const_reverse_iterator dstDimIt = dstDims.rbegin(); dstDimIt != dstDims.rend(); ++dstDimIt) {
 		while(srcDimIt != srcDims.rend() && *srcDimIt > *dstDimIt)
 			++srcDimIt;
-		if(*srcDimIt != *dstDimIt){
-			keys.insert(keys.end(),
-						KeyMap::value_type(*dstDimIt, KeySet()));
+		if(*srcDimIt != *dstDimIt) {
+			keys.insert(keys.end(), KeyMap::value_type(*dstDimIt, KeySet()));
 		}
 	}
 
@@ -50,9 +49,7 @@ ConstMapping* MappingUtils::createCompatibleMapping(ConstMapping& src, ConstMapp
 	}
 
 	do{
-		for (KeyMap::iterator keyDimIt = keys.begin();
-			 keyDimIt != keys.end(); ++keyDimIt)
-		{
+		for (KeyMap::iterator keyDimIt = keys.begin(); keyDimIt != keys.end(); ++keyDimIt) {
 			keyDimIt->second.insert(dstIt->getPosition().getArgValue(keyDimIt->first));
 		}
 
@@ -60,11 +57,11 @@ ConstMapping* MappingUtils::createCompatibleMapping(ConstMapping& src, ConstMapp
 			break;
 
 		dstIt->next();
-	}while(true);
+	} while(true);
 
 	delete dstIt;
 
-	ConstMapping* res = setMappingBuffer(new FilledUpMapping(&src, dstDims, &keys));
+	MappingBuffer::value_type res = setMappingBuffer(new FilledUpMapping(&src, dstDims, &keys));
 	return res;
 }
 
@@ -88,8 +85,7 @@ bool MappingUtils::iterateToNext(ConstMappingIterator* it1, ConstMappingIterator
 	}
 }
 
-Mapping* MappingUtils::createMapping(const DimensionSet& domain,
-								  Mapping::InterpolationMethod intpl) {
+Mapping* MappingUtils::createMapping(const DimensionSet& domain, Mapping::InterpolationMethod intpl) {
 	assert(domain.hasDimension(Dimension::time));
 
 	if(domain.size() == 1){
@@ -121,9 +117,7 @@ Mapping* MappingUtils::createMapping(const DimensionSet& domain,
 	}
 }
 
-Mapping* MappingUtils::createMapping(const Argument::mapped_type& outOfRangeVal,
-								const DimensionSet& domain,
-								Mapping::InterpolationMethod intpl) {
+Mapping* MappingUtils::createMapping(Mapping::argument_value_cref_t outOfRangeVal, const DimensionSet& domain, Mapping::InterpolationMethod intpl) {
 	assert(domain.hasDimension(Dimension::time));
 
 	if(domain.size() == 1){
@@ -157,46 +151,44 @@ Mapping* MappingUtils::createMapping(const Argument::mapped_type& outOfRangeVal,
 
 Mapping* MappingUtils::multiply(ConstMapping &f1, ConstMapping &f2)
 {
-	return applyElementWiseOperator(f1, f2, std::multiplies<Argument::mapped_type>());
+	return applyElementWiseOperator(f1, f2, std::multiplies<Mapping::argument_value_t>());
 }
 
 Mapping* MappingUtils::divide(ConstMapping &f1, ConstMapping &f2)
 {
-	return applyElementWiseOperator(f1, f2, std::divides<Argument::mapped_type>());
+	return applyElementWiseOperator(f1, f2, std::divides<Mapping::argument_value_t>());
 }
 
 Mapping* MappingUtils::add(ConstMapping &f1, ConstMapping &f2)
 {
-	return applyElementWiseOperator(f1, f2, std::plus<Argument::mapped_type>());
+	return applyElementWiseOperator(f1, f2, std::plus<Mapping::argument_value_t>());
 }
 
 Mapping* MappingUtils::subtract(ConstMapping &f1, ConstMapping &f2)
 {
-	return applyElementWiseOperator(f1, f2, std::minus<Argument::mapped_type>());
+	return applyElementWiseOperator(f1, f2, std::minus<Mapping::argument_value_t>());
 }
 
 
-
-Mapping* MappingUtils::multiply(ConstMapping &f1, ConstMapping &f2, const Argument::mapped_type& outOfRangeVal)
+Mapping* MappingUtils::multiply(ConstMapping &f1, ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
 {
-	return applyElementWiseOperator(f1, f2, std::multiplies<Argument::mapped_type>(), outOfRangeVal, false);
+	return applyElementWiseOperator(f1, f2, std::multiplies<Mapping::argument_value_t>(), outOfRangeVal, false);
 }
 
-Mapping* MappingUtils::divide(ConstMapping &f1, ConstMapping &f2, const Argument::mapped_type& outOfRangeVal)
+Mapping* MappingUtils::divide(ConstMapping &f1, ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
 {
-	return applyElementWiseOperator(f1, f2, std::divides<Argument::mapped_type>(), outOfRangeVal, false);
+	return applyElementWiseOperator(f1, f2, std::divides<Mapping::argument_value_t>(), outOfRangeVal, false);
 }
 
-Mapping* MappingUtils::add(ConstMapping &f1, ConstMapping &f2, const Argument::mapped_type& outOfRangeVal)
+Mapping* MappingUtils::add(ConstMapping &f1, ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
 {
-	return applyElementWiseOperator(f1, f2, std::plus<Argument::mapped_type>(), outOfRangeVal, false);
+	return applyElementWiseOperator(f1, f2, std::plus<Mapping::argument_value_t>(), outOfRangeVal, false);
 }
 
-Mapping* MappingUtils::subtract(ConstMapping &f1, ConstMapping &f2, const Argument::mapped_type& outOfRangeVal)
+Mapping* MappingUtils::subtract(ConstMapping &f1, ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
 {
-	return applyElementWiseOperator(f1, f2, std::minus<Argument::mapped_type>(), outOfRangeVal, false);
+	return applyElementWiseOperator(f1, f2, std::minus<Mapping::argument_value_t>(), outOfRangeVal, false);
 }
-
 
 
 Mapping* operator*(ConstMapping& f1, ConstMapping& f2) {
@@ -216,123 +208,173 @@ Mapping* operator-(ConstMapping& f1, ConstMapping& f2) {
 }
 
 
-Argument::mapped_type MappingUtils::findMax(ConstMapping& m) {
-	ConstMappingIterator* it = m.createConstIterator();
-
-	Argument::mapped_type res = -DBL_MAX;
+Mapping::argument_value_t MappingUtils::findMax(ConstMapping& m, Argument::mapped_type_cref cRetNotFound /*= cMaxNotFound*/) {
+	ConstMappingIterator*     it       = m.createConstIterator();
+	bool                      bIsFirst = true;
+	Mapping::argument_value_t res;
 
 	while(it->inRange()){
-		const Argument::mapped_type& val = it->getValue();
-		if(val > res)
-			res = val;
+		Mapping::argument_value_cref_t val = it->getValue();
+		if(bIsFirst || val > res) {
+			res      = val;
+			bIsFirst = false;
+		}
 
+		//std::cerr << "findMax(): " << val << " @ " << it->getPosition() << "; max is now: " << res << std::endl;
 		if(!it->hasNext())
 			break;
 
 		it->next();
 	}
 	delete it;
+	if (bIsFirst) {
+		// no maximum available, maybe map is empty
+		return cRetNotFound;
+	}
 	return res;
 }
 
-Argument::mapped_type MappingUtils::findMax(ConstMapping& m, const Argument& min, const Argument& max){
+Mapping::argument_value_t MappingUtils::findMax(ConstMapping& m, const Argument& pRangeFrom, const Argument& pRangeTo, Argument::mapped_type_cref cRetNotFound /*= cMaxNotFound*/){
 	//the passed interval should define a value for every dimension
 	//of the mapping.
-	assert(min.getDimensions().isSubSet(m.getDimensionSet()));
-	assert(max.getDimensions().isSubSet(m.getDimensionSet()));
+	assert(pRangeFrom.getDimensions().isSubSet(m.getDimensionSet()));
+	assert(pRangeTo.getDimensions().isSubSet(m.getDimensionSet()));
 
-	ConstMappingIterator* it  = m.createConstIterator(min);
-	Argument::mapped_type res = it->getValue();
+	ConstMappingIterator*     it       = m.createConstIterator(pRangeFrom);
+	bool                      bIsFirst = true;
+	Mapping::argument_value_t res;
 
-	while(it->hasNext() && it->getNextPosition().compare(max, m.getDimensionSet()) < 0){
+	//std::cerr << "findMax(m, " << pRangeFrom << ", " << pRangeTo << "): Map is" << std::endl << m;
+	if (it->inRange()) {
+		res      = it->getValue();
+		bIsFirst = false;
+		//std::cerr << "findMax(...):  " << " @ " << it->getPosition() << "; max is at beginning: " << res << std::endl;
+	}
+	while(it->hasNext() && it->getNextPosition().compare(pRangeTo, m.getDimensionSet()) < 0){
 		it->next();
 
-		const Argument& next = it->getPosition();
-		bool inRange = next.getTime() >= min.getTime() && next.getTime() <= max.getTime();
+		const Argument& next    = it->getPosition();
+		bool            inRange = next.getTime() >= pRangeFrom.getTime() && next.getTime() <= pRangeTo.getTime();
 		if(inRange) {
 			for(Argument::const_iterator itA = next.begin(); itA != next.end(); ++itA) {
-				if(itA->second < min.getArgValue(itA->first) || itA->second > max.getArgValue(itA->first)) {
+				if(itA->second < pRangeFrom.getArgValue(itA->first) || itA->second > pRangeTo.getArgValue(itA->first)) {
 					inRange = false;
 					break;
 				}
 			}
 		}
-
 		if(inRange) {
-			const Argument::mapped_type& val = it->getValue();
-			if(val > res)
-				res = val;
+			Mapping::argument_value_cref_t val = it->getValue();
+			if(bIsFirst || val > res) {
+				res      = val;
+				bIsFirst = false;
+			}
+			//std::cerr << "findMax(...): " << val << " @ " << it->getPosition() << "; max is now: " << res << std::endl;
 		}
 	}
-	it->iterateTo(max);
-	const Argument::mapped_type& val = it->getValue();
-	if(val > res)
-		res = val;
-
+	it->iterateTo(pRangeTo);
+	if (it->inRange()) {
+		Mapping::argument_value_cref_t val = it->getValue();
+		if(bIsFirst || val > res) {
+			res      = val;
+			bIsFirst = false;
+		}
+		//std::cerr << "findMax(...): " << val << " @ " << it->getPosition() << "; max is finally: " << res << std::endl;
+	}
 	delete it;
+	if (bIsFirst) {
+		// no minimum available
+		return cRetNotFound;
+	}
 	return res;
 }
 
-Argument::mapped_type MappingUtils::findMin(ConstMapping& m) {
-	ConstMappingIterator* it  = m.createConstIterator();
-	Argument::mapped_type res = DBL_MAX;
+Mapping::argument_value_t MappingUtils::findMin(const ConstMapping& m, Argument::mapped_type_cref cRetNotFound /*= cMinNotFound*/) {
+	ConstMappingIterator*     it       = m.createConstIterator();
+	bool                      bIsFirst = true;
+	Mapping::argument_value_t res;
 
-	while(it->inRange()){
-		const Argument::mapped_type& val = it->getValue();
-		if(val < res)
-			res = val;
+	while(it->inRange()) {
+		Mapping::argument_value_cref_t val = it->getValue();
+		if(bIsFirst || val < res) {
+			res      = val;
+			bIsFirst = false;
+		}
 
+		//std::cerr << "findMin(): " << val << " @ " << it->getPosition() << "; min is now: " << res << std::endl;
 		if(!it->hasNext())
 			break;
 
 		it->next();
 	}
 	delete it;
+	if (bIsFirst) {
+		// no minimum available, maybe map is empty
+		return cRetNotFound;
+	}
 	return res;
 }
 
-Argument::mapped_type MappingUtils::findMin(ConstMapping& m, const Argument& min, const Argument& max){
+Mapping::argument_value_t MappingUtils::findMin(const ConstMapping& m, const Argument& pRangeFrom, const Argument& pRangeTo, Argument::mapped_type_cref cRetNotFound /*= cMinNotFound*/) {
 
 	//the passed interval should define a value for every dimension
 	//of the mapping.
-	assert(min.getDimensions().isSubSet(m.getDimensionSet()));
-	assert(max.getDimensions().isSubSet(m.getDimensionSet()));
+	assert(pRangeFrom.getDimensions().isSubSet(m.getDimensionSet()));
+	assert(pRangeTo.getDimensions().isSubSet(m.getDimensionSet()));
 
-	ConstMappingIterator* it  = m.createConstIterator(min);
-	Argument::mapped_type res = it->getValue();
+	Mapping::argument_value_t res;
+	bool                      bIsFirst = true;
+	ConstMappingIterator*     it       = m.createConstIterator(pRangeFrom);
 
-	while(it->hasNext() && it->getNextPosition().compare(max, m.getDimensionSet()) < 0){
+	//std::cerr << "findMin(m, " << pRangeFrom << ", " << pRangeTo << "): Map is" << std::endl << m;
+	if (it->inRange()) {
+		res      = it->getValue();
+		bIsFirst = false;
+		//std::cerr << "findMin(...):  " << " @ " << it->getPosition() << "; min is at beginning: " << res << std::endl;
+	}
+	while(it->hasNext() && it->getNextPosition().compare(pRangeTo, m.getDimensionSet()) < 0) {
 		it->next();
 
-		const Argument& next = it->getPosition();
-		bool inRange = next.getTime() >= min.getTime() && next.getTime() <= max.getTime();
+		const Argument& next    = it->getPosition();
+		bool            inRange = pRangeFrom.getTime() <= next.getTime()  && next.getTime() <= pRangeTo.getTime();
 		if(inRange) {
 			for(Argument::const_iterator itA = next.begin(); itA != next.end(); ++itA) {
-				if(itA->second < min.getArgValue(itA->first) || itA->second > max.getArgValue(itA->first)) {
+				if(pRangeFrom.getArgValue(itA->first) > itA->second || itA->second > pRangeTo.getArgValue(itA->first)) {
 					inRange = false;
 					break;
 				}
 			}
 		}
-
 		if(inRange) {
-			const Argument::mapped_type& val = it->getValue();
-			if(val < res)
-				res = val;
+			Mapping::argument_value_cref_t val = it->getValue();
+			if(bIsFirst || val < res) {
+				res      = val;
+				bIsFirst = false;
+			}
+			//std::cerr << "findMin(...): " << val << " @ " << it->getPosition() << "; min is now: " << res << std::endl;
 		}
 	}
-	it->iterateTo(max);
-	const Argument::mapped_type& val = it->getValue();
-	if(val < res)
-		res = val;
+	it->iterateTo(pRangeTo);
+	if (it->inRange()) {
+		Mapping::argument_value_cref_t val = it->getValue();
+		if(bIsFirst || val < res) {
+			res      = val;
+			bIsFirst = false;
+		}
+		//std::cerr << "findMin(...): " << val << " @ " << it->getPosition() << "; min is finally: " << res << std::endl;
+	}
 	delete it;
+	if (bIsFirst) {
+		// no minimum available
+		return cRetNotFound;
+	}
 	return res;
 }
 
 
 void MappingUtils::addDiscontinuity(Mapping* m,
-									const Argument& pos, const Argument::mapped_type& value,
-									simtime_t_cref limitTime, const Argument::mapped_type& limitValue)
+                                    const Argument& pos, Mapping::argument_value_cref_t value,
+                                    simtime_t_cref limitTime, Mapping::argument_value_cref_t limitValue)
 {
 	// asserts/preconditions
 	// make sure the time really differs at the discontinuity
@@ -353,20 +395,20 @@ simtime_t MappingUtils::pre(simtime_t_cref t)
 {
 	assert(SIMTIME_RAW(t) > SIMTIME_RAW(SIMTIME_ZERO));
 
-	simtime_t stRes = SIMTIME_ZERO;
-	stRes.setRaw(SIMTIME_RAW(t) - 1);
+	simtime_t stPre = SIMTIME_ZERO;
+	stPre.setRaw(SIMTIME_RAW(t) - 1);
 
-	return stRes;
+	return stPre;
 }
 
 simtime_t MappingUtils::post(simtime_t_cref t)
 {
 	assert(SIMTIME_RAW(t) < SIMTIME_RAW(MAXTIME));
 
-	simtime_t stRes = SIMTIME_ZERO;
-	stRes.setRaw(SIMTIME_RAW(t) + 1);
+	simtime_t stPost = SIMTIME_ZERO;
+	stPost.setRaw(SIMTIME_RAW(t) + 1);
 
-	return stRes;
+	return stPost;
 }
 
 
@@ -393,7 +435,7 @@ Mapping* Mapping::subtract(ConstMapping &f1, ConstMapping &f2, const Argument& f
 */
 
 
-LinearIntplMappingIterator::LinearIntplMappingIterator(ConstMappingIterator* leftIt, ConstMappingIterator* rightIt, const Argument::mapped_type& f):
+LinearIntplMappingIterator::LinearIntplMappingIterator(ConstMappingIterator* leftIt, ConstMappingIterator* rightIt, Mapping::argument_value_cref_t f):
 	leftIt(leftIt), rightIt(rightIt), factor(f) {
 
 	assert(leftIt->getPosition() == rightIt->getPosition());

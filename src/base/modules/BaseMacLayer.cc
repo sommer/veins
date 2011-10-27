@@ -235,10 +235,10 @@ Signal* BaseMacLayer::createSignal(simtime_t_cref start, simtime_t_cref length, 
 	return s;
 }
 
-Mapping* BaseMacLayer::createConstantMapping(simtime_t_cref start, simtime_t_cref end, double value)
+Mapping* BaseMacLayer::createConstantMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet::timeDomain, Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeDomain, Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);
@@ -255,7 +255,7 @@ Mapping* BaseMacLayer::createConstantMapping(simtime_t_cref start, simtime_t_cre
 	return m;
 }
 
-Mapping* BaseMacLayer::createRectangleMapping(simtime_t_cref start, simtime_t_cref end, double value)
+Mapping* BaseMacLayer::createRectangleMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value)
 {
 	//create mapping over time
 	Mapping* m = MappingUtils::createMapping(DimensionSet::timeDomain, Mapping::LINEAR);
@@ -263,23 +263,23 @@ Mapping* BaseMacLayer::createRectangleMapping(simtime_t_cref start, simtime_t_cr
 	//set position Argument
 	Argument startPos(start);
 	//set discontinuity at position
-	MappingUtils::addDiscontinuity(m, startPos, 0.0, MappingUtils::post(start), value);
+	MappingUtils::addDiscontinuity(m, startPos, Argument::MappedZero, MappingUtils::post(start), value);
 
 	//set position Argument
 	Argument endPos(end);
 	//set discontinuity at position
-	MappingUtils::addDiscontinuity(m, endPos, 0.0, MappingUtils::pre(end), value);
+	MappingUtils::addDiscontinuity(m, endPos, Argument::MappedZero, MappingUtils::pre(end), value);
 
 	return m;
 }
 
-ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t_cref start,
-                                                         simtime_t_cref end,
-                                                         double         centerFreq,
-                                                         double         halfBandwidth,
-                                                         double         value)
+ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t_cref             start,
+                                                         simtime_t_cref             end,
+                                                         Argument::mapped_type_cref centerFreq,
+                                                         Argument::mapped_type_cref halfBandwidth,
+                                                         Argument::mapped_type_cref value)
 {
-	Mapping* res = MappingUtils::createMapping(0.0, DimensionSet::timeFreqDomain, Mapping::LINEAR);
+	Mapping* res = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeFreqDomain, Mapping::LINEAR);
 
 	Argument pos(DimensionSet::timeFreqDomain);
 

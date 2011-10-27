@@ -109,7 +109,7 @@ protected:
 			printMapping(*aIt);
 			++count;
 
-			ConstMapping* tmp = MappingUtils::multiply(*receivingPower, **aIt, 0.0);
+			ConstMapping* tmp = MappingUtils::multiply(*receivingPower, **aIt, Argument::MappedZero);
 			delete receivingPower;
 			receivingPower = tmp;
 

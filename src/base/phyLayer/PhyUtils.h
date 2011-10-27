@@ -52,12 +52,12 @@ protected:
 	{
 	protected:
 		/** @brief The pair representing the time stamp.*/
-		std::pair<simtime_t, double> basicTimestamp;
+		std::pair<simtime_t, Argument::mapped_type> basicTimestamp;
 
 	public:
 		/** @brief Initializes the entry with the passed values.*/
-		ListEntry(simtime_t time, double value) {
-			basicTimestamp = std::pair<simtime_t, double> (time, value);
+		ListEntry(simtime_t_cref time, Argument::mapped_type_cref value) {
+			basicTimestamp = std::make_pair(time, value);
 		}
 
 		virtual ~ListEntry() {}
@@ -68,17 +68,17 @@ protected:
 		}
 
 		/** @brief Sets the time of the entry.*/
-		void setTime(simtime_t time) {
+		void setTime(simtime_t_cref time) {
 			basicTimestamp.first = time;
 		}
 
 		/** @brief Returns the value of the entry.*/
-		double getValue() const {
+		Argument::mapped_type getValue() const {
 			return basicTimestamp.second;
 		}
 
 		/** @brief Sets the value of the entry.*/
-		void setValue(double value) {
+		void setValue(Argument::mapped_type_cref value) {
 			basicTimestamp.second = value;
 		}
 
@@ -123,9 +123,9 @@ public:
 	 *
 	 * Default setting is: tracking off
 	 */
-	RadioStateAnalogueModel(double initValue,
+	RadioStateAnalogueModel(Argument::mapped_type_cref initValue,
 							bool currentlyTracking = false,
-							simtime_t initTime = 0)
+							simtime_t_cref initTime = SIMTIME_ZERO)
 		: currentlyTracking(currentlyTracking)
 	{
 		// put the initial time-stamp to the list
@@ -167,7 +167,7 @@ public:
 	 *
 	 * Intended to be used by the Radio
 	 */
-	void writeRecvEntry(simtime_t_cref time, double value);
+	void writeRecvEntry(simtime_t_cref time, Argument::mapped_type_cref value);
 
 
 
@@ -240,9 +240,9 @@ protected:
 	simtime_t** swTimes;
 
 	/** @brief Constant to store the minimum attenuation for a Radio instance.*/
-	const double minAtt;
+	const Argument::mapped_type minAtt;
 	/** @brief Constant to store the maximum attenuation for a Radio instance.*/
-	const double maxAtt;
+	const Argument::mapped_type maxAtt;
 
 	/**
 	 * @brief The corresponding RadioStateAnalogueModel.
@@ -271,8 +271,8 @@ public:
 	 */
 	static Radio* createNewRadio(bool recordStats = false,
 								 int initialState = RX,
-								 double minAtt = 1.0,
-								 double maxAtt = 0.0,
+								 Argument::mapped_type_cref minAtt = Argument::MappedOne,
+								 Argument::mapped_type_cref maxAtt = Argument::MappedZero,
 								 int currentChannel=0, int nbChannels=1)
 	{
 		return new Radio(NUM_RADIO_STATES,
@@ -391,7 +391,7 @@ protected:
 	Radio(int numRadioStates,
 		  bool recordStats,
 		  int initialState = RX,
-		  double minAtt = 1.0, double maxAtt = 0.0,
+		  Argument::mapped_type_cref minAtt = Argument::MappedOne, Argument::mapped_type_cref maxAtt = Argument::MappedZero,
 		  int currentChannel = 0, int nbChannels = 1);
 
 	/**
@@ -406,7 +406,7 @@ protected:
 	 * @brief maps RadioState to attenuation, the Radios receiving characteristic
 	 *
 	 */
-	virtual double mapStateToAtt(int state)
+	virtual Argument::mapped_type_cref mapStateToAtt(int state)
 	{
 		if (state == RX) {
 			return minAtt;
@@ -531,7 +531,7 @@ public:
 	 * @brief Returns the value of the function at the current
 	 * position.
 	 */
-	virtual double getValue() const {
+	virtual argument_value_t getValue() const {
 		return it->getValue();
 	}
 
@@ -600,13 +600,13 @@ public:
 	 * In this case we have a function: simtime_t -> attenuation
 	 *
 	 */
-	virtual double getValue(const Argument& pos) const;
+	virtual argument_value_t getValue(const Argument& pos) const;
 
 	/**
 	 * @brief Returns a pointer of a new Iterator which is able to iterate
 	 * over the function.
 	 */
-	virtual ConstMappingIterator* createConstIterator()
+	virtual ConstMappingIterator* createConstIterator() const
 	{
 		return new RSAMConstMappingIterator(rsam, signalStart, signalEnd);
 	}
@@ -616,7 +616,7 @@ public:
 	 * over the function. The iterator starts at the passed position.
 	 *
 	 */
-	virtual ConstMappingIterator* createConstIterator(const Argument& pos);
+	virtual ConstMappingIterator* createConstIterator(const Argument& pos) const;
 
 	virtual ConstMapping* constClone() const {
 		return new RSAMMapping(*this);

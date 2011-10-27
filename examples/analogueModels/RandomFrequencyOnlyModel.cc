@@ -26,7 +26,7 @@ void RandomFrequencyOnlyModel::filterSignal(AirFrame *frame, const Coord& sender
 	 * makes sence in most cases, using NEAREST whould make more sense
 	 * for frequency.
 	 */
-	Mapping* attMapping = MappingUtils::createMapping(1.0, dimensions, Mapping::LINEAR);
+	Mapping* attMapping = MappingUtils::createMapping(Argument::MappedOne, dimensions, Mapping::LINEAR);
 
 	/* Get start and end of the signal to avoid unnecessary calculation
 	 * of attenuation.*/

@@ -27,7 +27,10 @@ class FilledUpMapping;
  * @ingroup mappingDetails
  */
 template<class Base>
-class BaseFilteredIterator : public Base{
+class BaseFilteredIterator : public Base {
+public:
+	typedef typename Base::argument_value_t      argument_value_t;
+	typedef typename Base::argument_value_cref_t argument_value_cref_t;
 protected:
 	Base* origIterator;
 
@@ -55,7 +58,7 @@ public:
 
 	virtual const Argument& getPosition() const { return origIterator->getPosition(); }
 
-	virtual Argument::mapped_type getValue() const { return origIterator->getValue(); }
+	virtual argument_value_t getValue() const { return origIterator->getValue(); }
 };
 
 /**
@@ -83,7 +86,7 @@ public:
 
 	virtual ~FilteredMappingIterator() {}
 
-	virtual void setValue(const Argument::mapped_type& value) { origIterator->setValue(value); }
+	virtual void setValue(argument_value_cref_t value) { origIterator->setValue(value); }
 };
 
 
@@ -94,20 +97,19 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-template<template <class Key, class Value, class Pair, class Iterator> class Interpolator>
+template<template <typename> class Interpolator>
 class TimeMappingIterator:public MappingIterator {
 protected:
-	/** @brief The std::map the InterpolateableMap is based on.*/
-	typedef std::map<simtime_t, Argument::mapped_type> MapType;
+	/** @brief The templated InterpolateableMap the underlying Mapping uses std::map as storage type.*/
+	typedef InterpolateableMap< Interpolator< std::map<simtime_t, argument_value_t> > >
+	                                                             interpolator_map_type;
 
-	/** @brief The templated InterpolateableMap the underlying Mapping uses.*/
-	typedef typename InterpolateableMap<simtime_t, MapType::mapped_type,
-							   Interpolator<simtime_t, MapType::mapped_type,
-											MapType::value_type,
-											MapType::const_iterator> >::intpl_iterator IteratorType;
+	typedef typename interpolator_map_type::mapped_type          mapped_type;
+	typedef typename interpolator_map_type::iterator_intpl       iterator;
+	typedef typename interpolator_map_type::const_iterator_intpl const_iterator;
 
 	/** @brief Stores the current position iterator inside the Mapping.*/
-	IteratorType valueIt;
+	iterator     valueIt;
 
 	/** @brief Stores the current position of the iterator.*/
 	Argument     position;
@@ -131,7 +133,7 @@ public:
 	/**
 	 * @brief Initializes the Iterator to use the passed InterpolateableMapIterator.
 	 */
-	TimeMappingIterator(IteratorType it, bool isStepMapping):
+	TimeMappingIterator(const iterator& it, bool isStepMapping):
 		valueIt(it), isStepMapping(isStepMapping), atPreStep(false) {
 
 		position.setTime(valueIt.getPosition());
@@ -227,7 +229,7 @@ public:
 	 *
 	 * This method has constant complexity.
 	 */
-	virtual MapType::mapped_type getValue() const {
+	virtual mapped_type getValue() const {
 		return *valueIt.getValue();
 	}
 
@@ -260,7 +262,7 @@ public:
 	 *
 	 * This method has constant complexity.
 	 */
-	virtual void setValue(const MapType::mapped_type& value) {
+	virtual void setValue(argument_value_cref_t value) {
 		valueIt.setValue(value);
 	}
 };
@@ -273,20 +275,20 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-template<template <class Key, class Value, class Pair, class Iterator> class Interpolator>
+template<template <typename> class Interpolator>
 class TimeMapping:public Mapping {
 protected:
-	/** @brief The type of the std::map used by the InterpolateableMap.*/
-	typedef std::map<simtime_t, Argument::mapped_type> MapType;
+	/** @brief The templated InterpolateableMap the underlying Mapping uses std::map as storage type.*/
+	typedef InterpolateableMap< Interpolator< std::map<simtime_t, argument_value_t> > >
+	                                                             interpolator_map_type;
 
-	/** @brief Defines the used InterpolateableMap and its template-parameters.*/
-	typedef InterpolateableMap<simtime_t, MapType::mapped_type,
-							   Interpolator<simtime_t, MapType::mapped_type,
-											MapType::value_type,
-											MapType::const_iterator> > ValueMap;
+	typedef typename interpolator_map_type::mapped_type          mapped_type;
+	typedef typename interpolator_map_type::mapped_cref_type     mapped_cref_type;
+	typedef typename interpolator_map_type::iterator_intpl       iterator;
+	typedef typename interpolator_map_type::const_iterator_intpl const_iterator;
 
 	/** @brief Stores the key-entries defining the function.*/
-	ValueMap entries;
+	interpolator_map_type entries;
 
 	/**
 	 * @brief Stores if this mapping represents a step function.
@@ -308,7 +310,7 @@ public:
 	/**
 	 * @brief Initializes the Mapping with the passed Interpolation method.
 	 */
-	TimeMapping(const MapType::mapped_type& outOfRangeVal, InterpolationMethod intpl = LINEAR):
+	TimeMapping(mapped_cref_type outOfRangeVal, InterpolationMethod intpl = LINEAR):
 		Mapping(), entries(outOfRangeVal), isStepMapping(intpl == STEPS) {}
 
 	/**
@@ -322,7 +324,7 @@ public:
 	 *
 	 * This method has logarithmic complexity.
 	 */
-	virtual Argument::mapped_type getValue(const Argument& pos) const {
+	virtual argument_value_t getValue(const Argument& pos) const {
 		return *entries.getIntplValue(pos.getTime());
 	}
 
@@ -332,7 +334,7 @@ public:
 	 *
 	 * This method has logarithmic complexity.
 	 */
-	virtual void setValue(const Argument& pos, const Argument::mapped_type& value) {
+	virtual void setValue(const Argument& pos, argument_value_cref_t value) {
 		entries[pos.getTime()] = value;
 	}
 
@@ -377,14 +379,14 @@ protected:
 
 	/** @brief The factor defining how strong the left and the right Mapping
 	 * affect the interpolation.*/
-	Argument::mapped_type factor;
+	argument_value_t      factor;
 
 public:
 	/**
 	 * @brief Initializes the Iterator with the passed Iterators of the mappings to
 	 * Interpolate and the their interpolation-factor.
 	 */
-	LinearIntplMappingIterator(ConstMappingIterator* leftIt, ConstMappingIterator* rightIt, const Argument::mapped_type& f);
+	LinearIntplMappingIterator(ConstMappingIterator* leftIt, ConstMappingIterator* rightIt, argument_value_cref_t f);
 
 	/**
 	 * @brief Deletes the left and the right mapping iterator.
@@ -416,7 +418,7 @@ public:
 	/**
 	 * @brief This method isn't supported by an interpolated Mapping.
 	 */
-	virtual void setValue(const Argument::mapped_type& value) { assert(false); }
+	virtual void setValue(argument_value_cref_t value) { assert(false); }
 
 	/**
 	 * @brief Lets the iterator point to the passed position.
@@ -451,9 +453,9 @@ public:
 	 *
 	 * This method has constant complexity.
 	 */
-	virtual Argument::mapped_type getValue() const {
-		const Argument::mapped_type& v0 = leftIt->getValue();
-		const Argument::mapped_type& v1 = rightIt->getValue();
+	virtual argument_value_t getValue() const {
+		argument_value_cref_t v0 = leftIt->getValue();
+		argument_value_cref_t v1 = rightIt->getValue();
 		return v0 + (v1 - v0) * factor;
 	}
 
@@ -482,13 +484,13 @@ public:
 class MIXIM_API LinearIntplMapping:public Mapping {
 protected:
 	/** @brief The left mapping to interpolate.*/
-	ConstMapping* left;
+	const ConstMapping* left;
 	/** @brief The right mapping to interpolate*/
-	ConstMapping* right;
+	const ConstMapping* right;
 
 	/** @brief The interpolation factor determining the linear interpolation
 	 * between left and right mapping.*/
-	Argument::mapped_type factor;
+	argument_value_t    factor;
 
 public:
 
@@ -496,7 +498,7 @@ public:
 	 * @brief Initializes the LinearIntplMapping with the passed left and right
 	 * Mapping to interpolate by the passed interpolation value.
 	 */
-	LinearIntplMapping(ConstMapping* left = 0, ConstMapping* right = 0, const Argument::mapped_type& f = 0.0):
+	LinearIntplMapping(const ConstMapping *const left = NULL, const ConstMapping *const right = NULL, argument_value_cref_t f = Argument::MappedZero):
 		left(left), right(right), factor(f) {}
 
 	/**
@@ -511,12 +513,12 @@ public:
 	 *
 	 * v = left + (right - left) * intplFactor
 	 */
-	virtual Argument::mapped_type getValue(const Argument& pos) const {
+	virtual argument_value_t getValue(const Argument& pos) const {
 		assert(left);
 		assert(right);
 
-		const Argument::mapped_type& v0 = left->getValue(pos);
-		const Argument::mapped_type& v1 = right->getValue(pos);
+		argument_value_cref_t v0 = left->getValue(pos);
+		argument_value_cref_t v1 = right->getValue(pos);
 		return v0 + (v1 - v0) * factor;
 	}
 
@@ -547,7 +549,7 @@ public:
 	/**
 	 * @brief This method is not supported!
 	 */
-	virtual void setValue(const Argument& pos, const Argument::mapped_type& value) { assert(false); }
+	virtual void setValue(const Argument& pos, argument_value_cref_t value) { assert(false); }
 };
 
 /**
@@ -564,17 +566,22 @@ public:
 template<>
 class Interpolated<Mapping*> {
 protected:
+	typedef Mapping*          value_type;
+	typedef const value_type& value_cref_type;
+	typedef value_type&       value_ref_type;
+	typedef value_type*       value_ptr_type;
+
 	/** @brief Holds the temporary InterpolatedMapping if necessary.*/
 	LinearIntplMapping mapping;
 
 	/** @brief A pointer to the Mapping this class represents.*/
-	Mapping* value;
+	value_type value;
 
 	/** @brief Stores if we use the temporary IntplMapping or a external pointer.*/
-	bool isPointer;
+	bool       isPointer;
 public:
 	/** @brief Stores if the underlying Mapping is interpolated or not.*/
-	bool isInterpolated;
+	bool       isInterpolated;
 
 public:
 	/**
@@ -594,20 +601,15 @@ public:
 	 *
 	 * The passed pointer has to be valid as long as this instance exists.
 	 */
-	Interpolated(Mapping* m, bool isIntpl = true):
-		mapping(), value(m), isPointer(true), isInterpolated(isIntpl) {}
+	Interpolated(value_type v, bool isIntpl = true):
+		mapping(), value(v), isPointer(true), isInterpolated(isIntpl) {}
 
 	/**
 	 * @brief Copy-constructor which assures that the internal storage is used correctly.
 	 */
-	Interpolated(const Interpolated<Mapping*>& o):
-		mapping() {
-
-		isInterpolated = o.isInterpolated;
-		isPointer = o.isPointer;
-		if(isPointer){
-			value = o.value;
-		} else {
+	Interpolated(const Interpolated<value_type>& o):
+		mapping(), value(o.value), isPointer(o.isPointer), isInterpolated(o.isInterpolated) {
+		if(!isPointer) {
 			mapping = o.mapping;
 			value = &mapping;
 		}
@@ -617,14 +619,13 @@ public:
 	 * @brief Assignment operator which assures that the internal storage is copied
 	 * correctly.
 	 */
-	const Interpolated<Mapping*>& operator=(const Interpolated<Mapping*>& o){
+	const Interpolated<value_type>& operator=(const Interpolated<value_type>& o){
 		isInterpolated = o.isInterpolated;
-		isPointer = o.isPointer;
-		if(isPointer){
-			value = o.value;
-		} else {
+		isPointer      = o.isPointer;
+		value          = o.value;
+		if(!isPointer) {
 			mapping = o.mapping;
-			value = &mapping;
+			value   = &mapping;
 		}
 		return *this;
 	}
@@ -633,7 +634,7 @@ public:
 	 * @brief Dereferences this Interpolated to the represented value (works like
 	 * dereferencing an std::iterator).
 	 */
-	Mapping*& operator*() {
+	value_ref_type operator*() {
 		return value;
 	}
 
@@ -641,7 +642,7 @@ public:
 	 * @brief Dereferences this Interpolated to the represented value (works like
 	 * dereferencing an std::iterator).
 	 */
-	Mapping** operator->() {
+	value_ptr_type operator->() {
 		return &value;
 	}
 
@@ -650,7 +651,7 @@ public:
 	 * the represented Mapping is the same as well as the "isInterpolated"
 	 * value.
 	 */
-	bool operator==(const Interpolated<Mapping*>& other) {
+	bool operator==(const Interpolated<value_type>& other) const {
 		return value == other.value && isInterpolated == other.isInterpolated;
 	}
 
@@ -659,7 +660,7 @@ public:
 	 * the represented Mapping differs or the "isInterpolated"
 	 * value.
 	 */
-	bool operator!=(const Interpolated<Mapping*>& other) {
+	bool operator!=(const Interpolated<value_type>& other) const {
 		return value != other.value || isInterpolated != other.isInterpolated;
 	}
 };
@@ -672,59 +673,31 @@ public:
  * @ingroup mappingDetails
  */
 template<>
-class Linear<Argument::mapped_type, Mapping*, std::map<Argument::mapped_type, Mapping*>::value_type, std::map<Argument::mapped_type, Mapping*>::const_iterator> {
-public:
-	/** @brief Iterator type of the mapping over which to interpolate.*/
-	typedef std::map<Argument::mapped_type, Mapping*>::const_iterator InputIterator;
-
-	/** @brief Interpolated type used as return value.*/
-	typedef Interpolated<Mapping*>                                    interpolated;
+class Linear< std::map<Argument::mapped_type, Mapping*> > : public InterpolatorBase< std::map<Argument::mapped_type, Mapping*> >  {
 protected:
+	typedef InterpolatorBase< std::map<Argument::mapped_type, Mapping*> > base_class_type;
 
-	/** @brief Comparison class for the values of the map to interpolate over.*/
-	PairLess<std::map<Argument::mapped_type, Mapping*>::value_type, Argument::mapped_type> comp;
-
-
-	bool continueOutOfRange;
-	Mapping* outOfRangeVal;
+public:
+	typedef typename base_class_type::storage_type     storage_type;
+	typedef typename base_class_type::container_type   container_type;
+	typedef typename base_class_type::key_type         key_type;
+	typedef typename base_class_type::key_cref_type    key_cref_type;
+	typedef typename base_class_type::mapped_type      mapped_type;
+	typedef typename base_class_type::mapped_cref_type mapped_cref_type;
+	typedef typename base_class_type::pair_type        pair_type;
+	typedef typename base_class_type::iterator         iterator;
+	typedef typename base_class_type::const_iterator   const_iterator;
+	typedef typename base_class_type::comparator_type  comparator_type;
+	typedef typename base_class_type::interpolated     interpolated;
 
 public:
 	Linear():
-		continueOutOfRange(true) {}
+		base_class_type() {}
 
-	Linear(Mapping* oorv):
-		continueOutOfRange(false), outOfRangeVal(oorv) {}
+	Linear(mapped_cref_type oorv):
+		base_class_type(oorv) {}
 
-	void setOutOfRangeVal(Mapping* oorv) { outOfRangeVal = oorv; }
-
-	/**
-	 * @brief calculates the linear interpolation factor used for the created
-	 * LinearIntplMappings.
-	 */
-	static Argument::mapped_type linearInterpolationFactor(const Argument::mapped_type& t,
-                                                           const Argument::mapped_type& t0, const Argument::mapped_type& t1){
-		return (t - t0) / (t1 - t0);
-	}
-
-	/**
-	 * @brief Functor operator of this class which linear interpolates the value
-	 * at the passed position using the values between the passed Iterators.
-	 *
-	 * The returned instance of interpolated represents the result. Which can be
-	 * either an actual entry of the interpolated map (if the position two
-	 * interpolate was exactly that. Or it can be an interpolated value, if the
-	 * passed position was between two entries of the map.
-	 * This state can be retrieved with the "isInterpolated"-Member of the returned
-	 * "interpolated".
-	 */
-	interpolated operator()(const InputIterator&         first,
-						 	const InputIterator&         last,
-						 	const Argument::mapped_type& pos) const{
-
-		InputIterator right = std::upper_bound(first, last, pos, comp);
-
-		return operator()(first, last, pos, right);
-	}
+	virtual ~Linear() {}
 
 	/**
 	 * @brief Functor operator of this class which linear interpolates the value
@@ -740,38 +713,42 @@ public:
 	 * This state can be retrieved with the "isInterpolated"-Member of the returned
 	 * "interpolated".
 	 */
-	interpolated operator()(const InputIterator&         first,
-						 	const InputIterator&         last,
-						 	const Argument::mapped_type& pos,
-						 	InputIterator                upperBound) const{
-		if(first == last){
-			if(continueOutOfRange)
-				return interpolated(0);
-			else
-				return interpolated(outOfRangeVal);
+	virtual
+	interpolated operator()(const const_iterator&  first,
+	                        const const_iterator&  last,
+	                        key_cref_type          pos,
+	                        const_iterator         upperBound) const{
+		if(first == last) {
+			return base_class_type::outOfRangeVal;
 		}
-
 		if(upperBound == first){
-			if(continueOutOfRange)
-				return interpolated(upperBound->second);
-			else
-				return interpolated(outOfRangeVal);
+			return asInterpolated(upperBound->second, true);
 		}
 
-		InputIterator right = upperBound;
-		InputIterator left = --upperBound;
+		const_iterator right = upperBound;
+		const_iterator left  = --upperBound;
 
 		if(left->first == pos)
-			return interpolated(left->second, false);
+			return asInterpolated(left->second, false, false);
 
 		if(right == last){
-			if(continueOutOfRange)
-				return interpolated(left->second);
-			else
-				return interpolated(outOfRangeVal);
+			return asInterpolated(left->second, true);
 		}
 
 		return interpolated(LinearIntplMapping(left->second, right->second, linearInterpolationFactor(pos, left->first, right->first)));
+	}
+
+protected:
+	/**
+	 * @brief calculates the linear interpolation factor used for the created
+	 * LinearIntplMappings.
+	 */
+	static key_type linearInterpolationFactor(key_cref_type t, key_cref_type t0, key_cref_type t1){
+		assert(t0 <= t && t <= t1);
+		if (t0 == t1) {
+			return Argument::MappedZero;
+		}
+		return (t - t0) / (t1 - t0);
 	}
 };
 
@@ -785,32 +762,32 @@ public:
  */
 class MIXIM_API ConstantSimpleConstMapping : public SimpleConstMapping {
 protected:
-	Argument::mapped_type value;
+	argument_value_t value;
 
 public:
-	ConstantSimpleConstMapping(const DimensionSet& dims, const Argument::mapped_type& val):
+	ConstantSimpleConstMapping(const DimensionSet& dims, argument_value_cref_t val):
 		SimpleConstMapping(dims), value(val) {}
 
-	ConstantSimpleConstMapping(const DimensionSet&          dims,
-							   const Argument&              key,
-							   const Argument::mapped_type& val):
+	ConstantSimpleConstMapping(const DimensionSet&   dims,
+							   const Argument&       key,
+							   argument_value_cref_t val):
 		SimpleConstMapping(dims, key), value(val) {}
 
-	virtual Argument::mapped_type getValue(const Argument& pos) const {
+	virtual argument_value_t getValue(const Argument& pos) const {
 		return value;
 	}
 
 	/**
 	 * @brief Returns the value of this constant mapping.
 	 */
-	const Argument::mapped_type getValue() const {
+	const argument_value_t getValue() const {
 		return value;
 	}
 
 	/**
 	 * @brief Sets the value of this constant mapping.
 	 */
-	void setValue(const Argument::mapped_type& val) { value = val; }
+	void setValue(argument_value_cref_t val) { value = val; }
 
 	ConstMapping* constClone() const  {
 		return new ConstantSimpleConstMapping(dimensions, value);
@@ -829,7 +806,7 @@ public:
  */
 class MIXIM_API ConstMappingIteratorWrapper : public MappingIterator {
 protected:
-	ConstMappingIterator* iterator;
+	ConstMappingIterator *const iterator;
 public:
 	ConstMappingIteratorWrapper(ConstMappingIterator* it):
 		iterator(it) {}
@@ -839,7 +816,7 @@ public:
 			delete iterator;
 	}
 
-	virtual void setValue(const Argument::mapped_type& value) { assert(false); }
+	virtual void setValue(argument_value_cref_t value) { assert(false); }
 
 	virtual const Argument& getNextPosition() const { return iterator->getNextPosition(); }
 
@@ -857,7 +834,7 @@ public:
 
 	virtual const Argument& getPosition() const { return iterator->getPosition(); }
 
-	virtual Argument::mapped_type getValue() const { return iterator->getValue(); }
+	virtual argument_value_t getValue() const { return iterator->getValue(); }
 };
 
 /**
@@ -871,13 +848,13 @@ public:
  */
 class MIXIM_API ConstMappingWrapper : public Mapping {
 protected:
-	ConstMapping* mapping;
+	const ConstMapping* mapping;
 
 public:
-	ConstMappingWrapper(ConstMapping* m):
+	ConstMappingWrapper(const ConstMapping* m):
 		Mapping(m->getDimensionSet()), mapping(m) {}
 
-	virtual void setValue(const Argument& pos, const Argument::mapped_type& value) { assert(false); }
+	virtual void setValue(const Argument& pos, argument_value_cref_t value) { assert(false); }
 
 	virtual MappingIterator* createIterator() {
 		return new ConstMappingIteratorWrapper(mapping->createConstIterator());
@@ -887,13 +864,13 @@ public:
 		return new ConstMappingIteratorWrapper(mapping->createConstIterator(pos));
 	}
 
-	virtual Argument::mapped_type getValue(const Argument& pos) const { return mapping->getValue(pos); }
+	virtual argument_value_t getValue(const Argument& pos) const { return mapping->getValue(pos); }
 
-	virtual ConstMappingIterator* createConstIterator() {
+	virtual ConstMappingIterator* createConstIterator() const {
 		return mapping->createConstIterator();
 	}
 
-	virtual ConstMappingIterator* createConstIterator(const Argument& pos) {
+	virtual ConstMappingIterator* createConstIterator(const Argument& pos) const {
 		return mapping->createConstIterator(pos);
 	}
 
@@ -904,9 +881,7 @@ public:
 	}
 };
 
-template<template <class Key, class Value,
-					class Pair,
-					class iterator> class Interpolator>
+template<template <typename> class Interpolator>
 class MultiDimMapping;
 
 /**
@@ -928,28 +903,26 @@ class MultiDimMapping;
  * @author Karl Wessel
  * @ingroup mapping
  */
-template<template <class Key, class Value,
-					class Pair,
-					class iterator> class Interpolator>
+template<template <typename> class Interpolator>
 class MultiDimMappingIterator:public MappingIterator {
 protected:
-	/** @brief The type of the InterpolateableMap used by the underlying Mapping.*/
-	typedef InterpolateableMap<Argument::mapped_type, Mapping*,
-							   Interpolator<Argument::mapped_type, Mapping*,
-										    std::map<Argument::mapped_type, Mapping*>::value_type,
-										    std::map<Argument::mapped_type, Mapping*>::const_iterator> > MapType;
-	/** @brief Iterator type of the used InterpolateableMap type.*/
-	typedef typename MapType::intpl_iterator IteratorType;
+	/** @brief The templated InterpolateableMap the underlying Mapping uses std::map as storage type.*/
+	typedef InterpolateableMap< Interpolator< std::map<argument_value_t, Mapping*> > >
+	                                                             interpolator_map_type;
+
+	typedef typename interpolator_map_type::interpolated         interpolated;
+	typedef typename interpolator_map_type::iterator_intpl       iterator;
+	typedef typename interpolator_map_type::const_iterator_intpl const_iterator;
 
 	/** @brief The MultiDimmapping to iterate over.*/
-	MultiDimMapping<Interpolator>& mapping;
+	const MultiDimMapping<Interpolator>& mapping;
 
 	/** @brief Iterator storing the current position inside the underlying Mappings
 	 * sub-mapping map.*/
-	IteratorType valueIt;
+	iterator                             valueIt;
 
 	/** @brief The sub-mapping of the sub-mapping map at the current position.*/
-	typename MapType::interpolated subMapping;
+	interpolated                         subMapping;
 
 	/** @brief An iterator for the sub-mapping which points two the current position
 	 * in the next dimensions.*/
@@ -971,7 +944,7 @@ protected:
 	 * dimension this Iterator represents has changed.
 	 */
 	void updateSubIterator(const Argument& pos) {
-		typename MapType::interpolated subM = valueIt.getValue();
+		interpolated subM = valueIt.getValue();
 		if(subM != subMapping) {
 			if(subIterator)
 				delete subIterator;
@@ -995,7 +968,7 @@ protected:
 	 * dimension this Iterator represents has changed.
 	 */
 	void updateSubIterator() {
-		typename MapType::interpolated subM = valueIt.getValue();
+		interpolated subM = valueIt.getValue();
 		if(subM != subMapping) {
 			if(subIterator)
 				delete subIterator;
@@ -1053,7 +1026,7 @@ public:
 		mapping(mapping),
 		valueIt(mapping.entries.beginIntpl()),
 		subMapping(0), subIterator(0),
-		position(){
+		position() {
 
 		subMapping = valueIt.getValue();
 		if(!subMapping.isInterpolated && *subMapping) {
@@ -1076,7 +1049,7 @@ public:
 		mapping(mapping),
 		valueIt(mapping.entries.findIntpl(pos.getArgValue(mapping.myDimension))),
 		subMapping(0), subIterator(0),
-		position(){
+		position() {
 
 		subMapping = valueIt.getValue();
 		if(*subMapping){
@@ -1105,8 +1078,8 @@ public:
 	 * Has logarithmic complexity in number of dimensions and number of
 	 * entries inside each dimension.
 	 */
-		void jumpTo(const Argument& pos){
-		const Argument::mapped_type& argVal = pos.getArgValue(mapping.myDimension);
+	void jumpTo(const Argument& pos){
+		argument_value_cref_t argVal = pos.getArgValue(mapping.myDimension);
 
 		if(argVal != valueIt.getPosition() && pos.hasArgVal(mapping.myDimension)) {
 			valueIt.jumpTo(argVal);
@@ -1132,7 +1105,7 @@ public:
 	 * complexity for position close together.
 	 */
 	void iterateTo(const Argument& pos){
-		const Argument::mapped_type& argVal = pos.getArgValue(mapping.myDimension);
+		argument_value_cref_t argVal = pos.getArgValue(mapping.myDimension);
 
 		if(argVal != valueIt.getPosition() && pos.hasArgVal(mapping.myDimension)) {
 			valueIt.iterateTo(argVal);
@@ -1212,11 +1185,11 @@ public:
 	 *
 	 * Has constant complexity.
 	 */
-	virtual Argument::mapped_type getValue() const {
+	virtual argument_value_t getValue() const {
 		if(subIterator)
 			return subIterator->getValue();
 		else
-			return Argument::mapped_type(0);
+			return Argument::MappedZero;
 	}
 
 	/**
@@ -1253,7 +1226,7 @@ public:
 	 *
 	 * Constant complexity.
 	 */
-	virtual void setValue(const Argument::mapped_type& value){
+	virtual void setValue(argument_value_cref_t value){
 		if(subMapping.isInterpolated) {
 			valueIt.setValue(mapping.createSubSignal());
 			updateSubIterator(position);
@@ -1279,16 +1252,17 @@ public:
  * @author Karl Wessel
  * @ingroup mapping
  */
-template<template <class Key, class Value,
-					class Pair,
-					class iterator> class Interpolator>
+template<template <typename> class Interpolator>
 class MultiDimMapping:public Mapping {
 protected:
-	/** @brief The type of the used InterpolateableMap.*/
-	typedef InterpolateableMap<Argument::mapped_type, Mapping*,
-							   Interpolator<Argument::mapped_type, Mapping*,
-										    std::map<Argument::mapped_type, Mapping*>::value_type,
-										    std::map<Argument::mapped_type, Mapping*>::const_iterator> > SubFunctionMap;
+	/** @brief The templated InterpolateableMap the underlying Mapping uses std::map as storage type.*/
+	typedef InterpolateableMap< Interpolator< std::map<argument_value_t, Mapping*> > >
+	                                                             interpolator_map_type;
+
+	typedef typename interpolator_map_type::mapped_type          mapped_type;
+	typedef typename interpolator_map_type::mapped_cref_type     mapped_cref_type;
+	typedef typename interpolator_map_type::iterator_intpl       iterator;
+	typedef typename interpolator_map_type::const_iterator_intpl const_iterator;
 
 	/**
 	 * @brief Returned by the Interpolator if the mapping is accessed outside
@@ -1303,14 +1277,14 @@ protected:
 	ConstMappingWrapper* wrappedOORMapping;
 
 	/** @brief Stores the sub-mappings for the dimension this instance represents.*/
-	SubFunctionMap entries;
+	interpolator_map_type       entries;
 
 	/** @brief The dimension this instance represents.*/
 	Dimension myDimension;
 
-	friend class MultiDimMappingIterator<Interpolator>;
-
 	bool isMaster;
+
+	friend class MultiDimMappingIterator<Interpolator>;
 
 protected:
 	/**
@@ -1371,7 +1345,7 @@ protected:
 	 * @brief Internal helper method which creates a new sub-mapping for this
 	 * MultiDimMapping instance.
 	 */
-	Mapping* createSubSignal() const{
+	mapped_type createSubSignal() const{
 		DimensionSet::const_iterator it = dimensions.find(myDimension);
 		Dimension nextDim = *(--it);
 		if(wrappedOORMapping == 0) {
@@ -1383,9 +1357,7 @@ protected:
 			if(nextDim == Dimension::time)
 				return new TimeMapping<Interpolator>(outOfRangeMapping->getValue());
 			else
-				return new MultiDimMapping<Interpolator>(dimensions, nextDim,
-										   outOfRangeMapping,
-										   wrappedOORMapping, LINEAR);
+				return new MultiDimMapping<Interpolator>(dimensions, nextDim, outOfRangeMapping, wrappedOORMapping, LINEAR);
 		}
 	}
 
@@ -1393,24 +1365,17 @@ protected:
 		DimensionSet::const_iterator dimIt = dimensions.find(myDimension);
 		Dimension nextDim = *(--dimIt);
 
-		if(nextDim == Dimension::time_static())
-		{
-			for(typename SubFunctionMap::iterator it = entries.begin();
-				it != entries.end(); it++)
-			{
+		if(nextDim == Dimension::time_static()) {
+			for(typename interpolator_map_type::iterator it = entries.begin(); it != entries.end(); ++it) {
 				it->second = new TimeMapping<Interpolator>(*(static_cast<TimeMapping<Interpolator>*>(it->second)));
 			}
-		} else
-		{
-			for(typename SubFunctionMap::iterator it = entries.begin();
-				it != entries.end(); it++)
-			{
+		}
+		else {
+			for(typename interpolator_map_type::iterator it = entries.begin(); it != entries.end(); ++it) {
 				if(outOfRangeMapping == 0) {
 					it->second = new MultiDimMapping<Interpolator>(*(static_cast<MultiDimMapping<Interpolator>*>(it->second)));
 				} else {
-					it->second = new MultiDimMapping<Interpolator>(*(static_cast<MultiDimMapping<Interpolator>*>(it->second)),
-													 outOfRangeMapping,
-													 wrappedOORMapping);
+					it->second = new MultiDimMapping<Interpolator>(*(static_cast<MultiDimMapping<Interpolator>*>(it->second)), outOfRangeMapping, wrappedOORMapping);
 				}
 			}
 		}
@@ -1437,7 +1402,7 @@ public:
 	 *
 	 * Also takes the interpolation-method but is not used yet.
 	 */
-	MultiDimMapping(const DimensionSet& myDims, const Argument::mapped_type& oorv, InterpolationMethod intpl = STEPS):
+	MultiDimMapping(const DimensionSet& myDims, argument_value_cref_t oorv, InterpolationMethod intpl = STEPS):
 		Mapping(myDims),
 		outOfRangeMapping(new ConstantSimpleConstMapping(myDims, oorv)),
 		wrappedOORMapping(new ConstMappingWrapper(outOfRangeMapping)),
@@ -1474,9 +1439,7 @@ public:
 	 * copied instead of only their the pointers.
 	 */
 	const MultiDimMapping& operator=(const MultiDimMapping<Interpolator>& o){
-		for(typename SubFunctionMap::iterator it = entries.begin();
-			it != entries.end(); it++) {
-
+		for(typename interpolator_map_type::const_iterator it = entries.begin(); it != entries.end(); ++it) {
 			if(it->second)
 				delete it->second;
 		}
@@ -1508,20 +1471,18 @@ public:
 	 * @brief Frees the memory for the sub mappings.
 	 */
 	virtual ~MultiDimMapping() {
-    	for(typename SubFunctionMap::iterator it = entries.begin();
-    		it != entries.end(); it++) {
+		for(typename interpolator_map_type::const_iterator it = entries.begin(); it != entries.end(); ++it) {
+    			if(it->second)
+    				delete it->second;
+    		}
 
-    		if(it->second)
-    			delete it->second;
-    	}
-
-    	if(isMaster) {
-    		if(outOfRangeMapping)
-    			delete outOfRangeMapping;
-    		if(wrappedOORMapping)
-    			delete wrappedOORMapping;
-    	}
-    }
+		if(isMaster) {
+			if(outOfRangeMapping)
+				delete outOfRangeMapping;
+			if(wrappedOORMapping)
+				delete wrappedOORMapping;
+		}
+	}
 
 	/**
 	 * @brief Returns the value of this Mapping at position specified
@@ -1530,14 +1491,14 @@ public:
 	 * Has logarithmic complexity over the number of dimensions and the number of
 	 * entries per dimension.
 	 */
-	virtual Argument::mapped_type getValue(const Argument& pos) const {
+	virtual argument_value_t getValue(const Argument& pos) const {
 		assert(pos.hasArgVal(myDimension));
-		const Argument::mapped_type& argVal = pos.getArgValue(myDimension);
+		argument_value_cref_t argVal = pos.getArgValue(myDimension);
 
-		Interpolated<Mapping*> subM = entries.getIntplValue(argVal);
+		typename interpolator_map_type::interpolated subM = entries.getIntplValue(argVal);
 
 		if(!(*subM))
-			return Argument::mapped_type(0);
+			return Argument::MappedZero;
 
 		return (*subM)->getValue(pos);
 	}
@@ -1549,17 +1510,16 @@ public:
 	 * Has logarithmic complexity over the number of dimensions and the number of
 	 * entries per dimension.
 	 */
-	virtual void setValue(const Argument& pos, const Argument::mapped_type& value) {
-		const Argument::mapped_type& argVal = pos.getArgValue(myDimension);
+	virtual void setValue(const Argument& pos, argument_value_cref_t value) {
+		argument_value_cref_t argVal = pos.getArgValue(myDimension);
 
-	    typename SubFunctionMap::iterator posIt = entries.lower_bound(argVal);
+		typename interpolator_map_type::iterator posIt = entries.lower_bound(argVal);
 
 		if(posIt == entries.end() || posIt->first != argVal) {
-			Mapping* subF = createSubSignal();
-	    	posIt = entries.insert(posIt, typename SubFunctionMap::value_type(argVal, subF));
-	    }
+			posIt = entries.insert(posIt, std::make_pair(argVal, createSubSignal()));
+		}
 
-	    posIt->second->setValue(pos, value);
+		posIt->second->setValue(pos, value);
 	}
 
 	/**
@@ -1591,10 +1551,6 @@ public:
 	Dimension getDimension() { return myDimension; }
 };
 
-
-
-
-
 /**
  * @brief MappingIterator implementation for FilledUpMappings.
  *
@@ -1611,7 +1567,7 @@ public:
 
 	FilledUpMappingIterator(FilledUpMapping& mapping, const Argument& pos);
 
-	virtual void setValue(const Argument::mapped_type& value) {
+	virtual void setValue(argument_value_cref_t value) {
 		assert(false);
 	}
 };
@@ -1632,8 +1588,8 @@ public:
 class MIXIM_API FilledUpMapping : public MultiDimMapping<Linear> {
 //--------members----------
 public:
-	typedef std::set<Argument::mapped_type> KeySet;
-	typedef std::map<Dimension, KeySet >    KeyMap;
+	typedef std::set<argument_value_t>   KeySet;
+	typedef std::map<Dimension, KeySet > KeyMap;
 protected:
 	Mapping*      fillRef;
 	const KeyMap* keys;
@@ -1651,7 +1607,7 @@ protected:
 		for (KeySet::const_iterator keyIt = it->second.begin();
 			 keyIt != it->second.end(); ++keyIt)
 		{
-			entries.insert(entries.end(), SubFunctionMap::value_type(*keyIt, fillRef));
+			entries.insert(entries.end(), std::make_pair(*keyIt, fillRef));
 		}
 	}
 
@@ -1670,7 +1626,7 @@ protected:
 			return new FilledUpMapping(dimensions, nextDim, keys, LINEAR);
 	}
 public:
-	FilledUpMapping(ConstMapping* source, const DimensionSet& dims, const KeyMap* keys):
+	FilledUpMapping(const ConstMapping* source, const DimensionSet& dims, const KeyMap* keys):
 		MultiDimMapping<Linear>(dims), fillRef(0), keys(keys)
 	{
 		ConstMappingIterator* it = source->createConstIterator();
@@ -1701,7 +1657,7 @@ public:
 		}
 	}
 
-	virtual void appendValue(const Argument& pos, const Argument::mapped_type& value) {
+	virtual void appendValue(const Argument& pos, argument_value_cref_t value) {
 		assert(keys != 0);
 
 		if(fillRef != 0)
@@ -1710,13 +1666,13 @@ public:
 		}
 		else
 		{
-			const Argument::mapped_type& argVal = pos.getArgValue(myDimension);
+			argument_value_cref_t argVal = pos.getArgValue(myDimension);
 
-			SubFunctionMap::iterator posIt = entries.lower_bound(argVal);
+			typename interpolator_map_type::iterator posIt = entries.lower_bound(argVal);
 
 			if(posIt == entries.end() || posIt->first != argVal) {
 				Mapping* subF = createSubSignal();
-				posIt = entries.insert(posIt, SubFunctionMap::value_type(argVal, subF));
+				posIt = entries.insert(posIt, std::make_pair(argVal, subF));
 			}
 
 			posIt->second->appendValue(pos, value);
@@ -1741,12 +1697,24 @@ public:
  */
 class MIXIM_API MappingUtils {
 public:
-	typedef std::list<ConstMapping*> MappingBuffer;
+	typedef std::list<const ConstMapping*> MappingBuffer;
+
+	/** @brief The default value for findMin() functions if it does not find a minimum element.
+	 *
+	 * It will be initialized with the infinity value.
+	 */
+	const static Argument::mapped_type cMinNotFound;
+	/** @brief The default value for findMax() functions if it does not find a maximum element.
+	 *
+	 * It will be initialized with the negative infinity value.
+	 */
+	const static Argument::mapped_type cMaxNotFound;
+
 private:
 	static MappingBuffer mappingBuffer;
 
 private:
-	static void freeMappingBuffer(ConstMapping* m){
+	static void freeMappingBuffer(MappingBuffer::value_type m) {
 		MappingBuffer::iterator it = std::find(mappingBuffer.begin(), mappingBuffer.end(), m);
 		if(it != mappingBuffer.end()){
 			delete m;
@@ -1754,13 +1722,13 @@ private:
 		}
 	}
 
-	static ConstMapping* setMappingBuffer(ConstMapping* mapping){
+	static MappingBuffer::value_type setMappingBuffer(MappingBuffer::value_type mapping) {
 
 		mappingBuffer.push_front(mapping);
 		return mapping;
 	}
 
-	static ConstMapping* createCompatibleMapping(ConstMapping& src, ConstMapping& dst);
+	static MappingBuffer::value_type createCompatibleMapping(const ConstMapping& src, const ConstMapping& dst);
 
 	static bool iterateToNext(ConstMappingIterator* it1, ConstMappingIterator* it2);
 
@@ -1781,7 +1749,7 @@ public:
 	 *
 	 * Note: The interpolation method is always linear, at the moment.
 	 */
-	static Mapping* createMapping(const Argument::mapped_type& outOfRangeValue,
+	static Mapping* createMapping(Mapping::argument_value_cref_t outOfRangeValue,
 								  const DimensionSet& domain = DimensionSet(Dimension::time_static()),
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
 
@@ -1796,12 +1764,13 @@ public:
 
 	template<class Operator>
 	static Mapping* applyElementWiseOperator(ConstMapping& f1, ConstMapping& f2, Operator op,
-			                                 const Argument::mapped_type& outOfRangeVal = Argument::mapped_type(0),
-											 bool contOutOfRange = true){
+	                                         Mapping::argument_value_cref_t outOfRangeVal  = Argument::MappedZero,
+	                                         bool                           contOutOfRange = true) {
 
+		using std::operator<<;
 
-		ConstMapping* f2Comp = createCompatibleMapping(f2, f1);
-		ConstMapping* f1Comp = createCompatibleMapping(f1, f2);
+		MappingBuffer::value_type f2Comp = createCompatibleMapping(f2, f1);
+		MappingBuffer::value_type f1Comp = createCompatibleMapping(f1, f2);
 
 		const DimensionSet& domain = f1Comp->getDimensionSet();
 
@@ -1833,7 +1802,7 @@ public:
 		while(itF1->inRange() || itF2->inRange()) {
 			assert(itF1->getPosition().isSamePosition(itF2->getPosition()));
 
-			const Argument::mapped_type& prod = op(itF1->getValue(), itF2->getValue());
+			Mapping::argument_value_cref_t prod = op(itF1->getValue(), itF2->getValue());
 			//result->setValue(itF1->getPosition(), prod);
 			itRes->setValue(prod);
 
@@ -1869,16 +1838,20 @@ public:
 	static Mapping* subtract(ConstMapping& f1, ConstMapping& f2);
 	static Mapping* divide(ConstMapping& f1, ConstMapping& f2);
 
-	static Mapping* multiply(ConstMapping& f1, ConstMapping& f2, const Argument::mapped_type& outOfRangeVal);
-	static Mapping* add(ConstMapping& f1, ConstMapping& f2, const Argument::mapped_type& outOfRangeVal);
-	static Mapping* subtract(ConstMapping& f1, ConstMapping& f2, const Argument::mapped_type& outOfRangeVal);
-	static Mapping* divide(ConstMapping& f1, ConstMapping& f2, const Argument::mapped_type& outOfRangeVal);
+	static Mapping* multiply(ConstMapping& f1, ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
+	static Mapping* add(ConstMapping& f1, ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
+	static Mapping* subtract(ConstMapping& f1, ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
+	static Mapping* divide(ConstMapping& f1, ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
 
 	/**
 	 * @brief Iterates over the passed mapping and returns value at the key entry
 	 * with the highest value.
+	 *
+	 * @param m            The map where the maximum value shall be searched.
+	 * @param cRetNotFound The value which shall be returned if no maximum was found (default MappingUtils::cMaxNotFound).
+	 * @return The value at the key entry with the highest value or <tt>cRetNotFound</tt> if map is empty.
 	 */
-	static Argument::mapped_type findMax(ConstMapping& m);
+	static Argument::mapped_type findMax(ConstMapping& m, Argument::mapped_type_cref cRetNotFound = cMaxNotFound);
 
 	/**
 	 * @brief Iterates over the passed mapping and returns the value at the key
@@ -1889,14 +1862,24 @@ public:
 	 * which position in each dimension is bigger or equal than the value of the min
 	 * parameter in that dimension and smaller or equal than max parameter in
 	 * that dimension.
+	 *
+	 * @param m            The map where the maximum value shall be searched.
+	 * @param min          The beginning of search range.
+	 * @param max          The end of search range.
+	 * @param cRetNotFound The value which shall be returned if no maximum was found (default MappingUtils::cMaxNotFound).
+	 * @return The value at the key entry with the highest value or <tt>cRetNotFound</tt> if map is empty or no element in range [min,max].
 	 */
-	static Argument::mapped_type findMax(ConstMapping& m, const Argument& min, const Argument& max);
+	static Argument::mapped_type findMax(ConstMapping& m, const Argument& min, const Argument& max, Argument::mapped_type_cref cRetNotFound = cMaxNotFound);
 
 	/**
 	 * @brief Iterates over the passed mapping and returns value at the key entry
 	 * with the smallest value.
+	 *
+	 * @param m            The map where the minimum value shall be searched.
+	 * @param cRetNotFound The value which shall be returned if no minimum was found (default MappingUtils::cMinNotFound).
+	 * @return The value at the key entry with the lowest value or <tt>cRetNotFound</tt> if map is empty.
 	 */
-	static Argument::mapped_type findMin(ConstMapping& m);
+	static Argument::mapped_type findMin(const ConstMapping& m, Argument::mapped_type_cref cRetNotFound = cMinNotFound);
 
 	/**
 	 * @brief Iterates over the passed mapping and returns the value at the key
@@ -1907,8 +1890,14 @@ public:
 	 * which position in each dimension is bigger or equal than the value of the min
 	 * parameter in that dimension and smaller or equal than max parameter in
 	 * that dimension.
+	 *
+	 * @param m            The map where the minimum value shall be searched.
+	 * @param min          The beginning of search range.
+	 * @param max          The end of search range.
+	 * @param cRetNotFound The value which shall be returned if no minimum was found (default MappingUtils::cMinNotFound).
+	 * @return The value at the key entry with the highest value or <tt>cRetNotFound</tt> if map is empty or no element in range [min,max].
 	 */
-	static Argument::mapped_type findMin(ConstMapping& m, const Argument& min, const Argument& max);
+	static Argument::mapped_type findMin(const ConstMapping& m, const Argument& min, const Argument& max, Argument::mapped_type_cref cRetNotFound = cMinNotFound);
 
 
 	/*
@@ -1940,8 +1929,8 @@ public:
 	 *
 	 */
 	static void addDiscontinuity(Mapping* m,
-								 const Argument& pos, const Argument::mapped_type& value,
-								 simtime_t_cref limitTime, const Argument::mapped_type& limitValue);
+								 const Argument& pos, Argument::mapped_type_cref value,
+								 simtime_t_cref limitTime, Argument::mapped_type_cref limitValue);
 
 	/**
 	 * @brief returns the closest value of simtime before passed value
@@ -2007,10 +1996,10 @@ public:
 	 */
 	template<class Iterator>
 	ConcatConstMapping(ConstMapping* refMapping,
-					   Iterator first, Iterator last,
-					   bool continueOutOfRange = true,
-					   const Argument::mapped_type& oorValue = Argument::mapped_type(0),
-					   Operator op = Operator()):
+	                   Iterator first, Iterator last,
+	                   bool continueOutOfRange = true,
+	                   Argument::mapped_type_cref oorValue = Argument::mapped_type(0),
+	                   Operator op = Operator()):
 		ConstMapping(refMapping->getDimensionSet()),
 		refMapping(refMapping),
 		continueOutOfRange(continueOutOfRange),
@@ -2028,9 +2017,9 @@ public:
 	 * and another Mapping to concatenate.
 	 */
 	ConcatConstMapping(ConstMapping* refMapping, ConstMapping* other,
-					   bool continueOutOfRange = true,
-					   const Argument::mapped_type& oorValue = Argument::mapped_type(0),
-					   Operator op = Operator()):
+	                   bool continueOutOfRange = true,
+	                   Argument::mapped_type_cref oorValue = Argument::mapped_type(0),
+	                   Operator op = Operator()):
 		ConstMapping(refMapping->getDimensionSet()),
 		refMapping(refMapping),
 		continueOutOfRange(continueOutOfRange),
@@ -2064,7 +2053,7 @@ public:
 	/**
 	 * @brief Returns the concatenated Mapping.
 	 */
-	Mapping* createConcatenatedMapping(){
+	Mapping* createConcatenatedMapping() const {
 		assert(!mappings.empty());
 
 		MappingSet::const_iterator it = mappings.begin();
@@ -2082,14 +2071,14 @@ public:
 		return result;
 	}
 
-	virtual ConstMappingIterator* createConstIterator() {
+	virtual ConstMappingIterator* createConstIterator() const {
 		if(mappings.empty()) {
 			return refMapping->createConstIterator();
 		}
 		return new ConcatConstMappingIterator(createConcatenatedMapping());
 	}
 
-	virtual ConstMappingIterator* createConstIterator(const Argument& pos) {
+	virtual ConstMappingIterator* createConstIterator(const Argument& pos) const {
 		if(mappings.empty()) {
 			return refMapping->createConstIterator(pos);
 		}
@@ -2221,15 +2210,15 @@ public:
 
 	virtual ~BaseDelayedMapping() {}
 
-	virtual Argument::mapped_type getValue(const Argument& pos) const {
+	virtual typename Base::argument_value_t getValue(const Argument& pos) const {
 		return mapping->getValue(delayPosition(pos));
 	}
 
-	virtual ConstMappingIterator* createConstIterator() {
+	virtual ConstMappingIterator* createConstIterator() const {
 		return new ConstDelayedMappingIterator(mapping->createConstIterator(), delay);
 	}
 
-	virtual ConstMappingIterator* createConstIterator(const Argument& pos) {
+	virtual ConstMappingIterator* createConstIterator(const Argument& pos) const {
 		return new ConstDelayedMappingIterator(mapping->createConstIterator(delayPosition(pos)), delay);
 	}
 
@@ -2285,7 +2274,7 @@ public:
 
 	virtual ~DelayedMapping() {}
 
-	virtual void setValue(const Argument& pos, const Argument::mapped_type& value) {
+	virtual void setValue(const Argument& pos, Argument::mapped_type_cref value) {
 		mapping->setValue(delayPosition(pos), value);
 	}
 

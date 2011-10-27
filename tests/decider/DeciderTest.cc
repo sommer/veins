@@ -705,7 +705,7 @@ Signal* DeciderTest::createSignal(simtime_t_cref start,
 Mapping* DeciderTest::createConstantMapping(simtime_t_cref start, simtime_t_cref end, double value)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time), Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(Argument::MappedZero, DimensionSet(Dimension::time), Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);
@@ -729,7 +729,7 @@ Mapping* DeciderTest::createHeaderPayloadMapping(	simtime_t_cref start,
 													double         payloadValue)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time), Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(Argument::MappedZero, DimensionSet(Dimension::time), Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);

@@ -35,6 +35,7 @@
 #include "FindModule.h"
 #include "WiseRoutePkt_m.h"
 #include "SimTracer.h"
+#include "ChannelAccess.h"
 
 using std::make_pair;
 
@@ -101,12 +102,11 @@ void WiseRoute::initialize(int stage)
 			error("No SimTracer module found, please check your ned configuration.");
 		  }
 		  // log node position
-		  // currently not used
-		  /*cModule* mobilityModule = getParentModule()->getSubmodule("mobility");
-		  if (mobilityModule) {
-			BaseMobility* mobility = check_and_cast<BaseMobility*>(mobilityModule);
-			tracer->logPosition(myNetwAddr, mobility->getX(), mobility->getY());
-		  }*/
+		  ChannelMobilityPtrType ptrMobility = ChannelMobilityAccessType().get();
+		  if (ptrMobility) {
+		    Coord pos = ptrMobility->getCurrentPosition();
+		    tracer->logPosition(myNetwAddr, pos.x, pos.y, pos.z);
+		  }
 		}
 	}
 }

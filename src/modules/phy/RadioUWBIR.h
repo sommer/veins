@@ -85,16 +85,14 @@ public:
 
 protected:
 
-	RadioUWBIR(int numRadioStates,bool recordStats, int initialState, double minAtt = 1.0, double maxAtt = 0.0)
+	RadioUWBIR(int numRadioStates,bool recordStats, int initialState, Argument::mapped_type_cref minAtt = Argument::MappedOne, Argument::mapped_type_cref maxAtt = Argument::MappedZero)
 	:Radio(numRadioStates, recordStats, initialState, minAtt, maxAtt) {	}
 
-	virtual double mapStateToAtt(int state)
+	virtual Argument::mapped_type_cref mapStateToAtt(int state)
 	{
-		if (state == RadioUWBIR::RX || state == RadioUWBIR::SYNC)
-		{
+		if (state == RadioUWBIR::RX || state == RadioUWBIR::SYNC) {
 			return minAtt;
-		} else
-		{
+		} else {
 			return maxAtt;
 		}
 	}

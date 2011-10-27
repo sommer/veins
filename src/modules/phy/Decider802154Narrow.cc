@@ -14,6 +14,7 @@
 #include "PhyToMacControlInfo.h"
 #include "AirFrame_m.h"
 #include "Mapping.h"
+#include "FWMath.h"
 
 bool Decider802154Narrow::syncOnSFD(AirFrame* frame) {
 	double BER;

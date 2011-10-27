@@ -26,12 +26,11 @@
 #include "MiXiMDefs.h"
 #include "BaseLayer.h"
 #include "SimpleAddress.h"
+#include "MappingBase.h"
 
 class BaseConnectionManager;
-class ConstMapping;
 class MacPkt;
 class MacToPhyInterface;
-class Mapping;
 class Signal;
 
 /**
@@ -176,7 +175,7 @@ protected:
      *
      * Used by "createSignal" to create the bitrate mapping.
      */
-    Mapping* createConstantMapping(simtime_t_cref start, simtime_t_cref end, double value);
+    Mapping* createConstantMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value);
 
     /**
      * @brief Creates a simple Mapping with a constant curve
@@ -184,13 +183,13 @@ protected:
      *
      * Used by "createSignal" to create the power mapping.
      */
-    Mapping* createRectangleMapping(simtime_t_cref start, simtime_t_cref end, double value);
+    Mapping* createRectangleMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value);
 
     /**
      * @brief Creates a Mapping defined over time and frequency with
      * constant power in a certain frequency band.
      */
-    ConstMapping* createSingleFrequencyMapping(simtime_t_cref start, simtime_t_cref end, double centerFreq, double bandWith, double value);
+    ConstMapping* createSingleFrequencyMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref centerFreq, Argument::mapped_type_cref bandWith, Argument::mapped_type_cref value);
 
     /**
      * @brief Returns a pointer to this MACs NICs ConnectionManager module.

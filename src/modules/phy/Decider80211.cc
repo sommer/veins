@@ -14,6 +14,7 @@
 #include "Consts80211.h"
 #include "Mapping.h"
 #include "AirFrame_m.h"
+#include "FWMath.h"
 
 Decider80211::Decider80211(	DeciderToPhyInterface* phy,
 							double threshold,
@@ -75,10 +76,9 @@ double Decider80211::calcChannelSenseRSSI(simtime_t_cref start, simtime_t_cref e
 	max.setTime(end);
 	max.setArgValue(Dimension::frequency_static(), centerFrequency + 11e6);
 
-	double rssi = MappingUtils::findMax(*rssiMap, min, max);
+	Mapping::argument_value_t rssi = MappingUtils::findMax(*rssiMap, min, max, Argument::MappedZero /* the value if no maximum will be found */);
 
 	delete rssiMap;
-
 	return rssi;
 }
 
@@ -105,7 +105,7 @@ DeciderResult* Decider80211::checkIfSignalOk(AirFrame* frame)
 	max.setTime(end);
 	max.setArgValue(Dimension::frequency_static(), centerFrequency + 11e6);
 
-	double snirMin = MappingUtils::findMin(*snrMap, min, max);
+	Mapping::argument_value_t snirMin = MappingUtils::findMin(*snrMap, min, max, Argument::MappedZero /* the value if no minimum will be found */);
 
 	deciderEV << " snrMin: " << snirMin << endl;
 

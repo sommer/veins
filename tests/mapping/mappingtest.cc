@@ -5,7 +5,7 @@
 //#include "Time.h"
 #include "../testUtils/asserts.h"
 #include "../testUtils/OmnetTestBase.h"
-
+#include "FWMath.h"
 
 
 void assertEqualSilent(std::string msg, double target, simtime_t_cref actual) {
@@ -524,7 +524,7 @@ protected:
 		NoiseMap.setValue(A(5875000000.00, 140.000070), FWMath::dBm2mW(-110.00));
 		NoiseMap.setValue(A(5875000000.00, 140.000071), FWMath::dBm2mW( -95.73));
 		NoiseMap.setValue(A(5875000000.00, 140.000120), FWMath::dBm2mW( -95.73));
-		std::cout << "NoiseMap is:" << std::endl; NoiseMap.print(std::cout); std::cout << std::endl;
+		std::cerr << "NoiseMap is:" << std::endl << NoiseMap << std::endl;
 
 		/*
 		RecvPowerMap:
@@ -540,7 +540,7 @@ protected:
 		RecvPowerMap.setValue(A(5905000000.00, 140.000070), FWMath::dBm2mW(-71.29));
 		RecvPowerMap.setValue(A(5895000000.00, 140.000111), FWMath::dBm2mW(-71.28));
 		RecvPowerMap.setValue(A(5905000000.00, 140.000111), FWMath::dBm2mW(-71.29));
-		std::cout << "RecvPowerMap is:" << std::endl; RecvPowerMap.print(std::cout); std::cout << std::endl;
+		std::cerr << "RecvPowerMap is:" << std::endl << RecvPowerMap << std::endl;
 
 		/*
 		snrMap
@@ -555,7 +555,7 @@ protected:
 		--------------+-----------------------------------------
 		*/
 		Mapping* SnrMap = MappingUtils::divide( RecvPowerMap, NoiseMap, 0 );
-		std::cout << "SnrMap ( RecvPowerMap / NoiseMap ) is:" << std::endl; SnrMap->print(std::cout); std::cout << std::endl;
+		std::cout << "SnrMap ( RecvPowerMap / NoiseMap ) is:" << std::endl << *SnrMap << std::endl;
 		delete SnrMap;
 
 		ConstantSimpleConstMapping*  ThermalMap = new ConstantSimpleConstMapping(DimensionSet::timeDomain,  FWMath::dBm2mW(-110));
@@ -589,9 +589,7 @@ protected:
 		5875000000.00 |    -95.57    -95.57    -95.57
 		--------------+-------------------------------
 		*/
-		std::cerr<< "Noise Map" << std::endl;
-		resultMap->print(std::cerr);
-		std::cerr<< std::endl;
+		std::cerr<< "Noise Map" << std::endl << *resultMap << std::endl;
 
 		SignalMap->setValue(A(5895000000.00,140.000068221202),FWMath::dBm2mW(-71.28));
 		SignalMap->setValue(A(5895000000.00,140.000114332313),FWMath::dBm2mW(-71.28 ));
@@ -608,9 +606,7 @@ protected:
 		5905000000.00 |    -71.28    -71.28
 		--------------+---------------------
 		*/
-		std::cerr << "Signal Map" << std::endl;
-		SignalMap->print(std::cerr);
-		std::cerr<< std::endl;
+		std::cerr << "Signal Map" << std::endl << *SignalMap << std::endl;
 
 		resultMap = MappingUtils::divide(*SignalMap, *(delMap = resultMap), 0);
 		delete SignalMap;
@@ -628,9 +624,10 @@ protected:
 		5905000000.00 |       inf                           inf
 		--------------+---------------------------------------------------
 		*/
-		std::cerr<< "SNR Map (Signal Map / Noise Map)" << std::endl;
-		resultMap->print(std::cerr);
-		std::cerr<<std::endl;
+		std::cerr << "SNR Map (Signal Map / Noise Map)" << std::endl << *resultMap << std::endl;
+
+		std::cerr << "SNR Map findMin = " << FWMath::mW2dBm( MappingUtils::findMin(*resultMap) ) << std::endl;
+		std::cerr << "SNR Map findMax = " << FWMath::mW2dBm( MappingUtils::findMax(*resultMap) ) << std::endl;
 
 		delete resultMap;
 	}
@@ -2433,18 +2430,18 @@ protected:
 		Mapping* multi1 = MappingUtils::createMapping(timeFreqSpace);
 
 		//global
-		assertEqual("Empty timed mapping max(global).", -DBL_MAX, MappingUtils::findMax(*timed1));
-		assertEqual("Empty timed mapping min(global).", DBL_MAX, MappingUtils::findMin(*timed1));
+		assertEqual("Empty timed mapping max(global).", MappingUtils::cMaxNotFound, MappingUtils::findMax(*timed1));
+		assertEqual("Empty timed mapping min(global).", MappingUtils::cMinNotFound, MappingUtils::findMin(*timed1));
 		//local
-		assertEqual("Empty timed mapping max(local).", 0.0, MappingUtils::findMax(*timed1, A(1), A(2)));
-		assertEqual("Empty timed mapping min(local).", 0.0, MappingUtils::findMin(*timed1, A(1), A(2)));
+		assertEqual("Empty timed mapping max(local).", MappingUtils::cMaxNotFound, MappingUtils::findMax(*timed1, A(1), A(2)));
+		assertEqual("Empty timed mapping min(local).", MappingUtils::cMinNotFound, MappingUtils::findMin(*timed1, A(1), A(2)));
 
 		//global
-		assertEqual("Empty multidim mapping max(global).", -DBL_MAX, MappingUtils::findMax(*multi1));
-		assertEqual("Empty multidim mapping min(global).", DBL_MAX, MappingUtils::findMin(*multi1));
+		assertEqual("Empty multidim mapping max(global).", MappingUtils::cMaxNotFound, MappingUtils::findMax(*multi1));
+		assertEqual("Empty multidim mapping min(global).", MappingUtils::cMinNotFound, MappingUtils::findMin(*multi1));
 		//local - is not yet implemented
-		//assertEqual("Empty multidim mapping max(local).", DBL_MIN, MappingUtils::findMax(*multi1, A(1,1,1), A(2,2,2)));
-		//assertEqual("Empty multidim mapping min(local).", DBL_MAX, MappingUtils::findMin(*multi1, A(1,1,1), A(2,2,2)));
+		assertEqual("Empty multidim mapping max(local).", MappingUtils::cMaxNotFound, MappingUtils::findMax(*multi1, A(1,1,1), A(2,2,2)));
+		assertEqual("Empty multidim mapping min(local).", MappingUtils::cMinNotFound, MappingUtils::findMin(*multi1, A(1,1,1), A(2,2,2)));
 
 		//- one element mapping
 		timed1->setValue(A(1), 2);
@@ -2454,23 +2451,23 @@ protected:
 		assertEqual("One element timed mapping max(global).", 2, MappingUtils::findMax(*timed1));
 		assertEqual("One element timed mapping min(global).", 2, MappingUtils::findMin(*timed1));
 		//local
-		assertEqual("One element timed mapping max(local) before element.", 0.0, MappingUtils::findMax(*timed1, A(0), A(0.5)));
-		assertEqual("One element timed mapping min(local) before element.", 0.0, MappingUtils::findMin(*timed1, A(0), A(0.5)));
+		assertEqual("One element timed mapping max(local) before element.", MappingUtils::cMaxNotFound, MappingUtils::findMax(*timed1, A(0), A(0.5)));
+		assertEqual("One element timed mapping min(local) before element.", 0.0, MappingUtils::findMin(*timed1, A(0), A(0.5), 0.0));
 		assertEqual("One element timed mapping max(local) around element.", 2, MappingUtils::findMax(*timed1, A(1), A(1)));
 		assertEqual("One element timed mapping min(local) around element.", 2, MappingUtils::findMin(*timed1, A(1), A(1)));
-		assertEqual("One element timed mapping max(local) after element.", 0.0, MappingUtils::findMax(*timed1, A(2), A(3)));
-		assertEqual("One element timed mapping min(local) after element.", 0.0, MappingUtils::findMin(*timed1, A(2), A(3)));
+		assertEqual("One element timed mapping max(local) after element.", MappingUtils::cMaxNotFound, MappingUtils::findMax(*timed1, A(2), A(3)));
+		assertEqual("One element timed mapping min(local) after element.", MappingUtils::cMinNotFound, MappingUtils::findMin(*timed1, A(2), A(3)));
 
 		//global
 		assertEqual("One element multidim mapping max(global).", 2, MappingUtils::findMax(*multi1));
 		assertEqual("One element multidim mapping min(global).", 2, MappingUtils::findMin(*multi1));
 		//local - is not yet implemented
-//		assertEqual("One element multidim mapping max(local) before element.", DBL_MIN, MappingUtils::findMax(*multi1, A(0,0,0), A(0.5,2,2)));
-//		assertEqual("One element multidim mapping min(local) before element.", DBL_MAX, MappingUtils::findMin(*multi1, A(0,0,0), A(0.5,2,2)));
-//		assertEqual("One element multidim mapping max(local) around element.", 2, MappingUtils::findMax(*multi1, A(1,1,1), A(1,1,1)));
-//		assertEqual("One element multidim mapping min(local) around element.", 2, MappingUtils::findMin(*multi1, A(1,1,0), A(1,1,1)));
-//		assertEqual("One element multidim mapping max(local) after element.", DBL_MIN, MappingUtils::findMax(*multi1, A(2,0,0), A(3,2,2)));
-//		assertEqual("One element multidim mapping min(local) after element.", DBL_MAX, MappingUtils::findMin(*multi1, A(2,0,0), A(3,2,2)));
+		assertEqual("One element multidim mapping max(local) before element.", MappingUtils::cMaxNotFound, MappingUtils::findMax(*multi1, A(0,0,0), A(0.5,2,2)));
+		assertEqual("One element multidim mapping min(local) before element.", MappingUtils::cMinNotFound, MappingUtils::findMin(*multi1, A(0,0,0), A(0.5,2,2)));
+		assertEqual("One element multidim mapping max(local) around element.", 2, MappingUtils::findMax(*multi1, A(1,1,1), A(1,1,1)));
+		assertEqual("One element multidim mapping min(local) around element.", 2, MappingUtils::findMin(*multi1, A(1,1,0), A(1,1,1)));
+		assertEqual("One element multidim mapping max(local) after element.", MappingUtils::cMaxNotFound, MappingUtils::findMax(*multi1, A(2,0,0), A(3,2,2)));
+		assertEqual("One element multidim mapping min(local) after element.", MappingUtils::cMinNotFound, MappingUtils::findMin(*multi1, A(2,0,0), A(3,2,2)));
 
 		//Timed mapping multi element tests
 		timed1->setValue(A(2), 2);  /**/ timed1->setValue(A(3), 2);

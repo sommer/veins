@@ -2,8 +2,10 @@
 #include <assert.h>
 //---Dimension implementation-----------------------------
 
-const Dimension Dimension::time      = Dimension::time_static();
-const Dimension Dimension::frequency = Dimension::frequency_static();
+const Dimension             Dimension::time      = Dimension::time_static();
+const Dimension             Dimension::frequency = Dimension::frequency_static();
+const Argument::mapped_type Argument::MappedZero = Argument::mapped_type(0);
+const Argument::mapped_type Argument::MappedOne  = Argument::mapped_type(1);
 
 Dimension::DimensionIdType& Dimension::nextFreeID () {
 	static Dimension::DimensionIdType* nextID = new Dimension::DimensionIdType(1);
@@ -82,21 +84,18 @@ const DimensionSet DimensionSet::timeFreqDomain(Dimension::time_static(), Dimens
 //--Argument implementation---------------------------
 
 Argument::Argument(simtime_t_cref timeVal):
-	time(timeVal), values(), count(0)
+	time(timeVal), values()
 {}
 
 Argument::Argument(const DimensionSet & dims, simtime_t_cref timeVal):
-	time(timeVal), values(), count(0)
+	time(timeVal), values()
 {
 	DimensionSet::const_iterator it = dims.begin();
 
 	assert((*it) == Dimension::time_static());
 
-	it++;
-	while(it != dims.end()) {
-		values[count] = Argument::value_type(*it, 0);
-		count++;
-		it++;
+	for ( ++it; it != dims.end(); ++it) {
+		values.push_back( Argument::value_type(*it, Argument::MappedZero) );
 	}
 }
 
@@ -154,24 +153,24 @@ bool Argument::hasArgVal(const Argument::key_type& dim) const{
 	return find(dim) != end();
 }
 
-double Argument::getArgValue(const Argument::key_type & dim) const
+Argument::mapped_type Argument::getArgValue(const Argument::key_type & dim) const
 {
 	const_iterator it = find(dim);
 
 	if(it == end())
-		return double();
+		return mapped_type();
 
 	return it->second;
 }
 
-void Argument::setArgValue(const Argument::key_type & dim, const Argument::mapped_type& value)
+void Argument::setArgValue(const Argument::key_type & dim, Argument::mapped_type_cref value)
 {
 	assert(!(dim == Dimension::time_static()));
 
 	insertValue(begin(), dim, value);
 }
 
-Argument::iterator Argument::insertValue(iterator pos, const Argument::key_type& dim, const Argument::mapped_type& value, bool ignoreUnknown){
+Argument::iterator Argument::insertValue(iterator pos, const Argument::key_type& dim, Argument::mapped_type_cref value, bool ignoreUnknown){
 	while(pos != end() && !(dim < pos->first)){
 
 		if(pos->first == dim){
@@ -185,17 +184,9 @@ Argument::iterator Argument::insertValue(iterator pos, const Argument::key_type&
 		return pos;
 
 	if(pos == end()){
-		count++;
-		*pos = Argument::value_type(dim, value);
+		values.push_back( Argument::value_type(dim, value) );
 	} else {
-		count++;
-		iterator             tmpPos = pos;
-		Argument::value_type n      = *tmpPos;
-
-		*tmpPos = Argument::value_type(dim, value);
-		while(++tmpPos != end()){
-			std::swap(n, *tmpPos);
-		}
+		values.insert(pos, Argument::value_type(dim, value));
 	}
 
 	return pos;
@@ -212,7 +203,7 @@ void Argument::setArgValues(const Argument& o, bool ingoreUnknown){
 
 bool Argument::isSamePosition(const Argument & o) const
 {
-	if(count < o.count){
+	if(values.size() < o.values.size()){
 		return false;
 	}
 
@@ -220,11 +211,11 @@ bool Argument::isSamePosition(const Argument & o) const
 		return false;
 	}
 
-	if(o.count == 0)
+	if(o.values.empty())
 		return true;
 
 	const_iterator itO = o.begin();
-	const_iterator it = begin();
+	const_iterator it  = begin();
 
 	while (it != end())
 	{
@@ -245,18 +236,18 @@ bool Argument::isSamePosition(const Argument & o) const
 	return false;
 }
 
-bool Argument::isClose(const Argument& o, Argument::mapped_type epsilon) const{
-	if(count != o.count)
+bool Argument::isClose(const Argument& o, Argument::mapped_type_cref epsilon) const{
+	if(values.size() != o.values.size())
 		return false;
 
-	if(std::abs(SIMTIME_DBL(time - o.time)) > epsilon)
+	if(fabs(SIMTIME_DBL(time - o.time)) > epsilon)
 		return false;
 
 	const_iterator itO = o.begin();
 	for(const_iterator it = begin();
-		it != end(); it++) {
+		it != end() && itO != o.end(); it++) {
 
-		if(!(it->first == itO->first) || (std::abs( it->second - itO->second ) > epsilon)){
+		if(!(it->first == itO->first) || (fabs( it->second - itO->second ) > epsilon)){
 			return false;
 		}
 		itO++;
@@ -267,7 +258,7 @@ bool Argument::isClose(const Argument& o, Argument::mapped_type epsilon) const{
 
 bool Argument::operator==(const Argument & o) const
 {
-	if(count != o.count)
+	if(values.size() != o.values.size())
 		return false;
 
 	if(time != o.time)
@@ -275,7 +266,7 @@ bool Argument::operator==(const Argument & o) const
 
 	const_iterator itO = o.begin();
 	for(const_iterator it = begin();
-		it != end(); it++) {
+		it != end() && itO != o.end(); it++) {
 
 		if(!(it->first == itO->first) || (it->second != itO->second)){
 			return false;
@@ -287,14 +278,8 @@ bool Argument::operator==(const Argument & o) const
 }
 
 void Argument::operator=(const Argument& o){
-	count = o.count;
-
-	memcpy(values, o.values, sizeof(Argument::value_type) * count);
-	//for(unsigned int i = 0; i < count; i++)
-	//	values[i] = o.values[i];
-
-	time = o.time;
-
+	values = o.values;
+	time   = o.time;
 }
 
 bool Argument::operator<(const Argument & o) const
@@ -316,8 +301,8 @@ int Argument::compare(const Argument& o, const DimensionSet& dims) const
 {
 	DimensionSet::const_reverse_iterator rIt = dims.rbegin();
 
-	long ind  = static_cast<long>(count)   - 1;
-	long indO = static_cast<long>(o.count) - 1;
+	value_list_type::const_reverse_iterator it  = values.rbegin();
+	value_list_type::const_reverse_iterator itO = o.values.rbegin();
 
 	//iterate through passed dimensions and compare arguments in these dimensions
 	while(rIt != dims.rend()){
@@ -331,13 +316,13 @@ int Argument::compare(const Argument& o, const DimensionSet& dims) const
 		}
 
 		//iterate indices to the passed dimensions or the next smaller
-		while(ind  >= 0 && dim < values[ind].first)
-			--ind;
-		while(indO >= 0 && dim < o.values[indO].first)
-			--indO;
+		while(it  != values.rend()   && dim < it->first)
+			++it;
+		while(itO != o.values.rend() && dim < itO->first)
+			++itO;
 
 		//if the last dimensions could not be found compare the time
-		if(ind < 0 || indO < 0) {
+		if(it == values.rend() || itO == o.values.rend()) {
 			if (time == o.time)
 				return 0;
 			return (time < o.time) ? -1 : 1;
@@ -345,9 +330,9 @@ int Argument::compare(const Argument& o, const DimensionSet& dims) const
 
 		//if both Arguments are defined in the current dimensions
 		//compare them (otherwise we assume them equal and continue)
-		if(values[ind].first == dim && o.values[indO].first == dim){
-			if (values[ind].second != o.values[indO].second)
-				return (values[ind].second < o.values[indO].second) ? -1 : 1;
+		if(it->first == dim && itO->first == dim){
+			if (it->second != itO->second)
+				return (it->second < itO->second) ? -1 : 1;
 		}
 		++rIt;
 	}
@@ -356,7 +341,7 @@ int Argument::compare(const Argument& o, const DimensionSet& dims) const
 
 //---Mapping implementation---------------------------------------
 
-SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping*                                  mapping,
+SimpleConstMappingIterator::SimpleConstMappingIterator(const ConstMapping*                            mapping,
                                                        const SimpleConstMappingIterator::KeyEntrySet* keyEntries,
                                                        const Argument&                                start)
 	: mapping(mapping)
@@ -378,7 +363,7 @@ SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping*            
 	nextEntry = keyEntries->upper_bound(position);
 }
 
-SimpleConstMappingIterator::SimpleConstMappingIterator(ConstMapping*                                  mapping,
+SimpleConstMappingIterator::SimpleConstMappingIterator(const ConstMapping*                            mapping,
                                                        const SimpleConstMappingIterator::KeyEntrySet* keyEntries)
 	: mapping(mapping)
 	, dimensions(mapping->getDimensionSet())
@@ -420,12 +405,12 @@ void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& 
 	bool nextIsTime = (*curDim == Dimension::time_static());
 
 	//get our iteration borders and steps
-	const Argument::mapped_type& fromD = from.getArgValue(d);
-	const Argument::mapped_type& toD   = to.getArgValue(d);
-	const Argument::mapped_type& stepD = step.getArgValue(d);
+	argument_value_cref_t fromD = from.getArgValue(d);
+	argument_value_cref_t toD   = to.getArgValue(d);
+	argument_value_cref_t stepD = step.getArgValue(d);
 
 	//iterate over interval without the last entry
-	for(Argument::mapped_type i = fromD; i < toD; i += stepD){
+	for(argument_value_t i = fromD; i < toD; i += stepD){
 		pos.setArgValue(d, i); //update position
 
 		//call iteration over sub dimension

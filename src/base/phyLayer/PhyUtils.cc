@@ -64,7 +64,7 @@ void RadioStateAnalogueModel::cleanUpUntil(simtime_t_cref t)
 
 }
 
-void RadioStateAnalogueModel::writeRecvEntry(simtime_t_cref time, double value)
+void RadioStateAnalogueModel::writeRecvEntry(simtime_t_cref time, Argument::mapped_type_cref value)
 {
 	// bugfixed on 08.04.2008
 	assert( (radioStateAttenuation.empty()) || (time >= radioStateAttenuation.back().getTime()) );
@@ -85,7 +85,7 @@ void RadioStateAnalogueModel::writeRecvEntry(simtime_t_cref time, double value)
 Radio::Radio(int numRadioStates,
 			 bool recordStats,
 			 int initialState,
-			 double minAtt, double maxAtt,
+			 Argument::mapped_type_cref minAtt, Argument::mapped_type_cref maxAtt,
 			 int currentChannel, int nbChannels):
 	state(initialState), nextState(initialState),
 	numRadioStates(numRadioStates),
@@ -333,14 +333,7 @@ void RSAMConstMappingIterator::iterateToOverZeroSwitches(simtime_t_cref t)
 	}
 }
 
-
-
-
-
-
-
-
-double RSAMMapping::getValue(const Argument& pos) const
+RSAMMapping::argument_value_t RSAMMapping::getValue(const Argument& pos) const
 {
 	// extract the time-component from the argument
 	simtime_t_cref t = pos.getTime();
@@ -362,7 +355,7 @@ double RSAMMapping::getValue(const Argument& pos) const
 	return it->getValue();
 }
 
-ConstMappingIterator* RSAMMapping::createConstIterator(const Argument& pos)
+ConstMappingIterator* RSAMMapping::createConstIterator(const Argument& pos) const
 {
 	RSAMConstMappingIterator* rsamCMI
 		= new RSAMConstMappingIterator(rsam, signalStart, signalEnd);

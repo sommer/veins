@@ -133,7 +133,7 @@ void SensorApplLayer::initializeDistribution(const char* traffic) {
 void SensorApplLayer::scheduleNextPacket() {
 	if (nbPackets > sentPackets && trafficType != 0) { // We must generate packets
 
-		simtime_t waitTime = SIMTIME_ZERO-1;
+		simtime_t waitTime = SIMTIME_ZERO;
 
 		switch (trafficType) {
 		case PERIODIC:
@@ -153,6 +153,7 @@ void SensorApplLayer::scheduleNextPacket() {
 			EV <<
 			"Cannot generate requested traffic type (unimplemented or unknown)."
 			<< endl;
+			return; // don not schedule
 			break;
 		}
 		debugEV << "Start timer for a new packet in " << waitTime << " seconds." <<

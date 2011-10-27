@@ -113,7 +113,7 @@ void SimpleMacLayer::sendDown(MacPkt* pkt) {
 
 Mapping* SimpleMacLayer::createMapping(simtime_t_cref time, simtime_t_cref length, double freqFrom, double freqTo, double value){
 	//create mapping for frequency and time
-	Mapping* m = MappingUtils::createMapping(0.0, dimensions, Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(Argument::MappedZero, dimensions, Mapping::LINEAR);
 
 	//set position Argument
 	Argument pos(dimensions, time);
