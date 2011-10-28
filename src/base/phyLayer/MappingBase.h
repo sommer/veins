@@ -361,7 +361,7 @@ public:
 	 * Returns zero if no value with the specified dimension
 	 * is set for this argument.
 	 */
-	mapped_type getArgValue(const Argument::key_type& dim) const;
+	mapped_type_cref getArgValue(const Argument::key_type& dim) const;
 
 	/**
 	 * @brief Changes the value for the specified dimension.
@@ -768,14 +768,22 @@ public:
 	/**
 	 * @brief Prints the Mapping to an output stream.
 	 *
-	 * This implementation is still pretty ugly, but it does
-	 * the job.
+	 * @param out           The output stream to print.
+	 * @param lTimeScale    The scaling factor for the time header values (default 1000).
+	 * @param lLeftColScale The scaling factor for the left column values (default 1, unscaled).
+	 * @param sTableHead    The header string for the left column (default: "o\\ms").
+	 * @param pOnlyDim      Pointer to a specific dimension which should be used as the left column (should not be the Dimension::time).
 	 */
 	template<class stream>
-	void print(stream& out) const {
+	stream& print(stream&                out,
+	              argument_value_cref_t  lTimeScale    = argument_value_t(1000),
+	              argument_value_cref_t  lLeftColScale = Argument::MappedOne,
+	              const std::string&     sTableHead    = std::string("o\\ms"),
+	              const Dimension *const pOnlyDim      = NULL) const {
 		const ConstMapping&      m = *this;
 		DimensionSet::value_type otherDim;
 		const DimensionSet&      dims = m.getDimensionSet();
+		bool                     bOnlyDimFound = false;
 
 		using std::operator<<;
 
@@ -783,7 +791,10 @@ public:
 		bool              bTimeIsIn = false;
 		for(DimensionSet::iterator it = dims.begin(); it != dims.end(); ++it) {
 			if(*it != Dimension::time) {
-				otherDim = *it;
+				if (pOnlyDim && *it == *pOnlyDim) {
+					otherDim      = *it;
+					bOnlyDimFound = pOnlyDim != NULL;
+				}
 				if (!osDimHead.str().empty())
 					osDimHead << ", ";
 				osDimHead << *it;
@@ -805,24 +816,33 @@ public:
 
 		if(!it->inRange()) {
 			out << "Mapping is empty." << endl;
-			return;
+			return out;
 		}
 
 		Argument min = it->getPosition();
 		Argument max = it->getPosition();
 
 		typedef std::set<simtime_t>         t_time_container_type;
-		typedef std::set<argument_value_t>	t_value_container_type;
+		typedef std::set<argument_value_t>  t_value_container_type;
 
 		t_time_container_type  timePositions;
 		t_value_container_type otherPositions;
-		std::size_t            iMaxHeaderItemLen = m.toString(it->getPosition().getTime() * 1000, 2).length();
-		std::size_t            iMaxLeftItemLen   = 5;
+		std::size_t            iMaxHeaderItemLen = m.toString(it->getPosition().getTime() * lTimeScale, 2).length();
+		std::size_t            iMaxLeftItemLen   = 5 > sTableHead.length() ? 5 : sTableHead.length();
+		const bool             bIs2Dim           = dims.size() == 2;
 
+		if (bIs2Dim && bOnlyDimFound)
+			bOnlyDimFound = false; // we have only the time and the requested dimension (fallback to normal case)
 		timePositions.insert(it->getPosition().getTime());
-		if(dims.size() == 2){
-			otherPositions.insert(it->getPosition().begin()->second);
-			iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(it->getPosition().begin()->second, 2).length());
+		if(bIs2Dim || bOnlyDimFound) {
+			if (bOnlyDimFound && it->getPosition().hasArgVal(otherDim)) {
+				otherPositions.insert(it->getPosition().getArgValue(otherDim));
+				iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(it->getPosition().getArgValue(otherDim)*lLeftColScale, 2).length());
+			}
+			else if (!bOnlyDimFound) {
+				otherPositions.insert(it->getPosition().begin()->second);
+				iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(it->getPosition().begin()->second*lLeftColScale, 2).length());
+			}
 		}
 
 		while(it->hasNext()) {
@@ -834,12 +854,17 @@ public:
 
 			timePositions.insert(pos.getTime());
 
-			iMaxHeaderItemLen = std::max(iMaxHeaderItemLen, m.toString(pos.getTime() * 1000, 2).length());
+			iMaxHeaderItemLen = std::max(iMaxHeaderItemLen, m.toString(pos.getTime() * lTimeScale, 2).length());
 
+			if (bOnlyDimFound && pos.hasArgVal(otherDim)) {
+				iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(pos.getArgValue(otherDim)*lLeftColScale, 2).length());
+			}
 			for(Argument::const_iterator itA = pos.begin(); itA != pos.end(); ++itA) {
-				if(dims.size() == 2) {
-					otherPositions.insert(itA->second);
-					iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(itA->second, 2).length());
+				if(bIs2Dim || bOnlyDimFound) {
+					if (!bOnlyDimFound || itA->first == otherDim) {
+						otherPositions.insert(itA->second);
+						iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(itA->second*lLeftColScale, 2).length());
+					}
 				}
 				min.setArgValue(itA->first, std::min(min.getArgValue(itA->first), itA->second));
 				max.setArgValue(itA->first, std::max(max.getArgValue(itA->first), itA->second));
@@ -847,9 +872,17 @@ public:
 		}
 		delete it;
 
-		if(dims.size() > 2) {
-			out << "domain - min=" << min << " max=" << max << endl;
-			return;
+		if(!bIs2Dim && !bOnlyDimFound) {
+			if (!bOnlyDimFound && pOnlyDim != NULL) {
+				out << "map contains no " << pOnlyDim->getName() << " dimension!" << endl;
+			}
+			else
+				out << "domain - min=" << min << " max=" << max << endl;
+			return out;
+		}
+		if (bOnlyDimFound && otherPositions.empty()) {
+			out << "Defines no own key entries for " << pOnlyDim->getName() << " dimension! That does NOT mean it doesn't define any attenuation." << endl;
+			return out;
 		}
 
 		t_time_container_type::const_iterator tIt;
@@ -864,7 +897,7 @@ public:
 		osBorder << std::setw(iMaxLeftItemLen) << "" << osBorder.fill() << "+" << osBorder.fill() << std::setw(osHeader.str().length()) << "";
 
 		out << osBorder.str() << std::endl;
-		out << std::setw(iMaxLeftItemLen) << std::left << "o\\t" << out.fill() << "|" << out.fill();
+		out << std::setw(iMaxLeftItemLen) << std::left << sTableHead << out.fill() << "|" << out.fill();
 		out << osHeader.str() << std::endl;
 		out << osBorder.str() << std::endl;
 
@@ -883,11 +916,11 @@ public:
 			t_value_container_type::const_iterator fIt = otherPositions.begin();
 
 			tIt = timePositions.begin();
-			out << m.toString(*fIt, iMaxLeftItemLen) << out.fill() << "|" << out.fill();
+			out << m.toString((*fIt)*lLeftColScale, iMaxLeftItemLen) << out.fill() << "|" << out.fill();
 			while(it->inRange()) {
 				if(*fIt != it->getPosition().getArgValue(otherDim)) {
 					++fIt;
-					out << std::endl << m.toString(*fIt, iMaxLeftItemLen) << out.fill() << "|" << out.fill();
+					out << std::endl << m.toString((*fIt)*lLeftColScale, iMaxLeftItemLen) << out.fill() << "|" << out.fill();
 					tIt = timePositions.begin();
 					assert(*fIt == it->getPosition().getArgValue(otherDim));
 				}
@@ -911,10 +944,10 @@ public:
 			}
 		}
 		out << std::endl << osBorder.str() << std::endl;
+		return out;
 	}
 	friend std::ostream& operator<<(std::ostream& out, const ConstMapping& rMapToPrint) {
-		rMapToPrint.print(out);
-		return (out);
+		return rMapToPrint.print(out);
 	}
 };
 

@@ -1,3 +1,16 @@
+v2.2
++ Supports only OMNeT++ 4.2
++ modified deciders filterSignal method, parameters now are AirFrame pointer and
+  the senders and receivers positions
++ completly removed the BaseUtility and Blackboard; MiXiM uses now the OMNNeT++
+  signaling handling (registerSignal, subscribe, emit, ...)
+  receiveBBItem(...) methods should be replaced by receiveSignal(...).
++ Introduced new 2 types for MACAddress and NetwAddress, see SimpleAddress.h
+  This should solve some problems with inproper handling of same address type
+  for different layers.
++ added some value tests for infinity in mapping interpolation. (David Eckhoff)
++ Ned INic definition was renamed to IWirelessNic
+
 v2.1
 + added LMAC layer implementation written by Anna Förster and ported to MiXiM
   by Theodoros Kapourniotis
@@ -48,9 +61,6 @@ v2.1
 * fixed a bug in csma's nbRxCounter
 * fixed a bug in csma's backoff algorithm
 
-
-
-
 v2.0
 + introduced Mixnet - compatibility modules for using MiXiM NICs within INET 
   networks
@@ -61,7 +71,6 @@ v2.0
 * fixed a problem with ChannelInfo where it throw away channel information 
   although it was still needed to answer a ChannelSenseRequest
 * fixed not canceled CCA timer on backoff (bug tracker id: 3083767)
-
 
 v1.2
 + added port of 802154 narrowband phy and mac layer of mobility-fw2 for omnet 4

@@ -191,64 +191,7 @@ protected:
 	 * @brief Quick and ugly printing of a two dimensional mapping.
 	 */
 	void printMapping(ConstMapping* m){
-		Dimension frequency("frequency");
-		//const DimensionSet& dims = m->getDimensionSet();
-
-		std::set<simtime_t> timeEntries;
-		std::set<double> freqEntries;
-
-		std::map<double, std::set<simtime_t> > entries;
-
-		ConstMappingIterator* it = m->createConstIterator();
-
-		while(it->inRange()){
-			entries[it->getPosition().getArgValue(frequency)].insert(it->getPosition().getTime());
-			timeEntries.insert(it->getPosition().getTime());
-			freqEntries.insert(it->getPosition().getArgValue(frequency));
-
-			if(!it->hasNext())
-				break;
-
-			it->next();
-		}
-
-		delete it;
-
-		ev << "--------+---------------------------------------------------------" << endl;
-		ev << "GHz \\ms | ";
-		for(std::set<simtime_t>::const_iterator tIt = timeEntries.begin();
-			tIt != timeEntries.end(); ++tIt){
-			ev << toString(*tIt * 1000, 6) << " ";
-		}
-		ev << endl;
-		ev << "--------+---------------------------------------------------------" << endl;
-		if(freqEntries.begin() == freqEntries.end()) {
-			ev << "        | Defines no own key entries." << endl;
-			ev << "        | That does NOT mean it doesn't define any attenuation." << endl;
-		}
-		else {
-			Argument pos;
-			for(std::set<double>::const_iterator fIt = freqEntries.begin();
-				fIt != freqEntries.end(); ++fIt){
-				ev << toString((*fIt)/1e9, 5) << "   | ";
-				pos.setArgValue(frequency, *fIt);
-
-				std::map<double, std::set<simtime_t> >::iterator tmpIt = entries.find(*fIt);
-
-				for(std::set<simtime_t>::const_iterator tIt = timeEntries.begin();
-					tIt != timeEntries.end(); ++tIt){
-
-					if(tmpIt != entries.end() && tmpIt->second.find(*tIt) != tmpIt->second.end()){
-						pos.setTime(*tIt);
-						ev << toString(toDecibel(m->getValue(pos)), 6) << " ";
-					} else {
-						ev << "       ";
-					}
-				}
-				ev << endl;
-			}
-		}
-		ev << "--------+---------------------------------------------------------" << endl;
+		m->print(ev.getOStream(), 1000., 1e-9, "GHz\\ms", &Dimension::frequency);
 	}
 
 public:

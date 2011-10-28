@@ -153,12 +153,12 @@ bool Argument::hasArgVal(const Argument::key_type& dim) const{
 	return find(dim) != end();
 }
 
-Argument::mapped_type Argument::getArgValue(const Argument::key_type & dim) const
+Argument::mapped_type_cref Argument::getArgValue(const Argument::key_type & dim) const
 {
 	const_iterator it = find(dim);
 
 	if(it == end())
-		return mapped_type();
+		return MappedZero;
 
 	return it->second;
 }

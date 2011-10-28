@@ -18,6 +18,7 @@ out
 doc/doxy
 doc/neddoc
 doc/index.html
+src/*.so
 src/base/*.so
 src/modules/*.so
 Makefile
@@ -25,7 +26,11 @@ ieee802154a/ieee802154a
 results
 examples/**/figures
 examples/**/.tkenvrc
-examples/**/MiXiM
+examples/**/miximexamples
+tests/miximtests
+tests/**/out.tmp
+tests/**/err.tmp
+tests/**/diff.log
 tests/baseMobility/baseMobility
 tests/basePhyLayer/basePhyLayer
 tests/blackboard/blackboard
