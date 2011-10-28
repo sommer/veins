@@ -795,6 +795,9 @@ public:
 					otherDim      = *it;
 					bOnlyDimFound = pOnlyDim != NULL;
 				}
+				else if (!pOnlyDim) {
+					otherDim      = *it;
+				}
 				if (!osDimHead.str().empty())
 					osDimHead << ", ";
 				osDimHead << *it;
