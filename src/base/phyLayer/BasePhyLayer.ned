@@ -5,7 +5,7 @@ package org.mixim.base.phyLayer;
 simple BasePhyLayer
 {
     parameters:
-        bool coreDebug; //debug switch for core framework
+        bool coreDebug   = default(false); //debug switch for core framework
         
         bool recordStats = default(false); //enable/disable tracking of statistics (eg. cOutvectors)
         int headerLength = default(0) @unit(bit); //defines the length of the phy header (/preamble)
@@ -20,23 +20,23 @@ simple BasePhyLayer
 		double sensitivity @unit(dBm);	//The sensitivity of the physical layer [dBm]
         double maxTXPower @unit(mW);	//The maximum transimission power of the physical layer [mW]
 
-        //switchTimes [s]:
-        double timeRXToTX = default(0) @unit(s);
-        double timeRXToSleep = default(0) @unit(s);
+        //# switch times [s]:
+        double timeRXToTX       = default(0) @unit(s); // Elapsed time to switch from receive to send state
+        double timeRXToSleep    = default(0) @unit(s); // Elapsed time to switch from receive to sleep state
 
-        double timeTXToRX = default(0) @unit(s);
-        double timeTXToSleep = default(0) @unit(s);
+        double timeTXToRX       = default(0) @unit(s); // Elapsed time to switch from send to receive state
+        double timeTXToSleep    = default(0) @unit(s); // Elapsed time to switch from send to sleep state
 
-        double timeSleepToRX = default(0) @unit(s);
-        double timeSleepToTX = default(0) @unit(s);
+        double timeSleepToRX    = default(0) @unit(s); // Elapsed time to switch from sleep to receive state
+        double timeSleepToTX    = default(0) @unit(s); // Elapsed time to switch from sleep to send state
 
-        int initialRadioState = default(0); //state the radio is initially in
+        int initialRadioState   = default(0);   // State the radio is initially in (0=RX, 1=TX, 2=Sleep) 
         
         double radioMinAtt = default(1.0); //radios gain factor (attenuation) while receiving
         double radioMaxAtt = default(0.0); //radios gain factor (attenuation) while not receiving
 
         int nbRadioChannels = default(1);  // Number of available radio channels. Defaults to single channel radio.
-		int initialRadioChannel = default(0);  // Initial radio channel.
+	int initialRadioChannel = default(0);  // Initial radio channel.
 
     gates:
         input upperLayerIn; 	// from the MAC layer

@@ -276,15 +276,32 @@ Mapping* BaseDecider::calculateRSSIMapping( simtime_t_cref start,
 
 	// otherwise, iterate over all AirFrames (except exclude)
 	// and sum up their receiving-power-mappings
-	AirFrameVector::iterator it;
-	for (it = airFrames.begin(); it != airFrames.end(); it++)
-	{
+	for (AirFrameVector::const_iterator it = airFrames.begin(); it != airFrames.end(); ++it) {
 		// the vector should not contain pointers to 0
 		assert (*it != 0);
 
 		// if iterator points to exclude (that includes the default-case 'exclude == 0')
 		// then skip this AirFrame
-		if ( *it == exclude ) continue;
+		if ( *it == exclude ) {
+			if (thermalNoise) {
+				// suggested by David Eckhoff:
+				// Instead of ignoring the want-to-receive AirFrame when
+				// building up the NoiseMap i add the thermalNoise for the time and
+				// frequencies of this airframe. There's probably a better way to do it but
+				// i did it like this:
+				const ConstMapping *const recvPowerMap = (*it)->getSignal().getReceivingPower();
+
+				if (recvPowerMap) {
+					Mapping* rcvPowerPlusThermalNoise = MappingUtils::add(      *recvPowerMap,             *thermalNoise );
+					Mapping* resultMapNew             = MappingUtils::subtract( *rcvPowerPlusThermalNoise, *recvPowerMap );
+
+					delete rcvPowerPlusThermalNoise;
+					delete resultMap;
+					resultMap = resultMapNew;
+				}
+			}
+			continue;
+		}
 
 		// otherwise get the Signal and its receiving-power-mapping
 		Signal& signal = (*it)->getSignal();
@@ -296,7 +313,7 @@ Mapping* BaseDecider::calculateRSSIMapping( simtime_t_cref start,
 		// and add the Signal's receiving-power-mapping to resultMap in [start, end],
 		// the operation Mapping::add returns a pointer to a new Mapping
 
-		ConstMapping* recvPowerMap = signal.getReceivingPower();
+		const ConstMapping *const recvPowerMap = signal.getReceivingPower();
 		assert(recvPowerMap);
 
 		// Mapping* resultMapNew = Mapping::add( *(signal.getReceivingPower()), *resultMap, start, end );

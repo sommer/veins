@@ -1754,7 +1754,7 @@ public:
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
 
 	template<class Operator>
-	static Mapping* applyElementWiseOperator(ConstMapping& f1, ConstMapping& f2,
+	static Mapping* applyElementWiseOperator(const ConstMapping& f1, const ConstMapping& f2,
 											 const Argument& intvlStart,
 											 const Argument& intvlEnd,
 											 Operator op){
@@ -1763,7 +1763,7 @@ public:
 	}
 
 	template<class Operator>
-	static Mapping* applyElementWiseOperator(ConstMapping& f1, ConstMapping& f2, Operator op,
+	static Mapping* applyElementWiseOperator(const ConstMapping& f1, const ConstMapping& f2, Operator op,
 	                                         Mapping::argument_value_cref_t outOfRangeVal  = Argument::MappedZero,
 	                                         bool                           contOutOfRange = true) {
 
@@ -1833,15 +1833,15 @@ public:
 	 * The domain of the second Mapping has to be a subset of the domain of
 	 * the first mapping.
 	 */
-	static Mapping* multiply(ConstMapping& f1, ConstMapping& f2);
-	static Mapping* add(ConstMapping& f1, ConstMapping& f2);
-	static Mapping* subtract(ConstMapping& f1, ConstMapping& f2);
-	static Mapping* divide(ConstMapping& f1, ConstMapping& f2);
+	static Mapping* multiply(const ConstMapping& f1, const ConstMapping& f2);
+	static Mapping* add(const ConstMapping& f1, const ConstMapping& f2);
+	static Mapping* subtract(const ConstMapping& f1, const ConstMapping& f2);
+	static Mapping* divide(const ConstMapping& f1, const ConstMapping& f2);
 
-	static Mapping* multiply(ConstMapping& f1, ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
-	static Mapping* add(ConstMapping& f1, ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
-	static Mapping* subtract(ConstMapping& f1, ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
-	static Mapping* divide(ConstMapping& f1, ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
+	static Mapping* multiply(const ConstMapping& f1, const ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
+	static Mapping* add(const ConstMapping& f1, const ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
+	static Mapping* subtract(const ConstMapping& f1, const ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
+	static Mapping* divide(const ConstMapping& f1, const ConstMapping& f2, Mapping::argument_value_cref_t outOfRangeVal);
 
 	/**
 	 * @brief Iterates over the passed mapping and returns value at the key entry
@@ -1851,7 +1851,7 @@ public:
 	 * @param cRetNotFound The value which shall be returned if no maximum was found (default MappingUtils::cMaxNotFound).
 	 * @return The value at the key entry with the highest value or <tt>cRetNotFound</tt> if map is empty.
 	 */
-	static Argument::mapped_type findMax(ConstMapping& m, Argument::mapped_type_cref cRetNotFound = cMaxNotFound);
+	static Argument::mapped_type findMax(const ConstMapping& m, Argument::mapped_type_cref cRetNotFound = cMaxNotFound);
 
 	/**
 	 * @brief Iterates over the passed mapping and returns the value at the key
@@ -1869,7 +1869,7 @@ public:
 	 * @param cRetNotFound The value which shall be returned if no maximum was found (default MappingUtils::cMaxNotFound).
 	 * @return The value at the key entry with the highest value or <tt>cRetNotFound</tt> if map is empty or no element in range [min,max].
 	 */
-	static Argument::mapped_type findMax(ConstMapping& m, const Argument& min, const Argument& max, Argument::mapped_type_cref cRetNotFound = cMaxNotFound);
+	static Argument::mapped_type findMax(const ConstMapping& m, const Argument& min, const Argument& max, Argument::mapped_type_cref cRetNotFound = cMaxNotFound);
 
 	/**
 	 * @brief Iterates over the passed mapping and returns value at the key entry
@@ -2292,9 +2292,9 @@ public:
 };
 
 
-MIXIM_API Mapping* operator*(ConstMapping& f1, ConstMapping& f2);
-MIXIM_API Mapping* operator/(ConstMapping& f1, ConstMapping& f2);
-MIXIM_API Mapping* operator+(ConstMapping& f1, ConstMapping& f2);
-MIXIM_API Mapping* operator-(ConstMapping& f1, ConstMapping& f2);
+MIXIM_API Mapping* operator*(const ConstMapping& f1, const ConstMapping& f2);
+MIXIM_API Mapping* operator/(const ConstMapping& f1, const ConstMapping& f2);
+MIXIM_API Mapping* operator+(const ConstMapping& f1, const ConstMapping& f2);
+MIXIM_API Mapping* operator-(const ConstMapping& f1, const ConstMapping& f2);
 
 #endif /* SIGNALINTERFACES_H_ */

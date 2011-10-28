@@ -4,7 +4,7 @@ package org.mixim.base.modules;
 simple BaseArp
 {
     parameters:
-        bool notAffectedByHostState = true;
+        bool notAffectedByHostState = default(true);
         bool coreDebug; // debug switch for the core framework
 }
 

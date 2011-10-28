@@ -65,7 +65,7 @@ bool DeciderUWBIREDSync::attemptSync(Signal* s) {
 bool DeciderUWBIREDSync::evaluateEnergy(Signal* s) {
 	// Assumption: channel coherence time > signal duration
 	// Thus we can simply sample the first pulse of the received signal
-	ConstMapping* rxPower = s->getReceivingPower();
+	const ConstMapping *const rxPower = s->getReceivingPower();
 	argSync.setTime(s->getReceptionStart() + IEEE802154A::tFirstSyncPulseMax);
 	// We could retrieve the pathloss through s->getAttenuation() but we must be careful:
 	// maybe the pathloss is not the only analogue model (e.g. RSAMAnalogueModel)

@@ -111,8 +111,8 @@ simtime_t DeciderUWBIRED::handleHeaderOver(map<Signal*, int>::iterator& it) {
 
 bool DeciderUWBIRED::attemptSync(Signal* s) {
 	double snrValue;
-	ConstMapping* power = s->getReceivingPower();
-	ConstMappingIterator* mIt = power->createConstIterator();
+	const ConstMapping *const power = s->getReceivingPower();
+	ConstMappingIterator*     mIt   = power->createConstIterator();
 
 	AirFrameVector syncVector;
 	// Retrieve all potentially colliding airFrames
@@ -184,7 +184,7 @@ bool DeciderUWBIRED::decodePacket(Signal* signal,
 			!= airFrameVector.end(); ++airFrameIter) {
 		Signal & aSignal = (*airFrameIter)->getSignal();
 		offsets.push_back(signal->getReceptionStart() - aSignal.getReceptionStart());
-		ConstMapping* currPower = aSignal.getReceivingPower();
+		ConstMapping *const currPower = aSignal.getReceivingPower();
 		receivingPowers.push_back(currPower);
 		if (aSignal.getReceptionStart() == signal->getReceptionStart()
 				&& aSignal.getDuration() == signal->getDuration()) {
@@ -313,7 +313,7 @@ pair<double, double> DeciderUWBIRED::integrateWindow(int symbol,
 		for (airFrameIter = airFrameVector.begin(); airFrameIter
 				!= airFrameVector.end(); ++airFrameIter) {
 			Signal & aSignal = (*airFrameIter)->getSignal();
-			ConstMapping* currPower = aSignal.getReceivingPower();
+			const ConstMapping *const currPower = aSignal.getReceivingPower();
 			double measure = currPower->getValue(arg)*peakPulsePower; //TODO: de-normalize (peakPulsePower should be in AirFrame or in Signal, to be set at run-time)
 //			measure = measure * uniform(0, +1); // random point of Efield at sampling (due to pulse waveform and self interference)
 			if (currPower == signalPower) {

@@ -4,10 +4,12 @@ moduleinterface IWirelessNic
 {
     @display("i=block/ifcard");
     gates:
-        input radioIn; // radioIn gate for sendDirect
-        input upperLayerIn; // uppergateIn for incoming messages from network layer
-        input upperControlIn; // uppergateCtrlIn for incoming control messages from network layer
-        output upperLayerOut; // uppergateOut to send data messages to network layer
-        output upperControlOut; // uppergateCtrlOut to send control messages to network layer
-
+        input  radioIn @labels(AirFrame); // radioIn gate for sendDirect
+        input  upperLayerIn;              // gate for incoming messages from network layer
+        output upperLayerOut;             // gate to send data messages to network layer
+        
+        //# following gates are not defined in INET
+        
+        input  upperControlIn;            // control gate for incoming control messages from network layer
+        output upperControlOut;           // control gate to send control messages to network layer
 }

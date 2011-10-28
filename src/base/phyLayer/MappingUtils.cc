@@ -149,66 +149,66 @@ Mapping* MappingUtils::createMapping(Mapping::argument_value_cref_t outOfRangeVa
 	}
 }
 
-Mapping* MappingUtils::multiply(ConstMapping &f1, ConstMapping &f2)
+Mapping* MappingUtils::multiply(const ConstMapping &f1, const ConstMapping &f2)
 {
 	return applyElementWiseOperator(f1, f2, std::multiplies<Mapping::argument_value_t>());
 }
 
-Mapping* MappingUtils::divide(ConstMapping &f1, ConstMapping &f2)
+Mapping* MappingUtils::divide(const ConstMapping &f1, const ConstMapping &f2)
 {
 	return applyElementWiseOperator(f1, f2, std::divides<Mapping::argument_value_t>());
 }
 
-Mapping* MappingUtils::add(ConstMapping &f1, ConstMapping &f2)
+Mapping* MappingUtils::add(const ConstMapping &f1, const ConstMapping &f2)
 {
 	return applyElementWiseOperator(f1, f2, std::plus<Mapping::argument_value_t>());
 }
 
-Mapping* MappingUtils::subtract(ConstMapping &f1, ConstMapping &f2)
+Mapping* MappingUtils::subtract(const ConstMapping &f1, const ConstMapping &f2)
 {
 	return applyElementWiseOperator(f1, f2, std::minus<Mapping::argument_value_t>());
 }
 
 
-Mapping* MappingUtils::multiply(ConstMapping &f1, ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
+Mapping* MappingUtils::multiply(const ConstMapping &f1, const ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
 {
 	return applyElementWiseOperator(f1, f2, std::multiplies<Mapping::argument_value_t>(), outOfRangeVal, false);
 }
 
-Mapping* MappingUtils::divide(ConstMapping &f1, ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
+Mapping* MappingUtils::divide(const ConstMapping &f1, const ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
 {
 	return applyElementWiseOperator(f1, f2, std::divides<Mapping::argument_value_t>(), outOfRangeVal, false);
 }
 
-Mapping* MappingUtils::add(ConstMapping &f1, ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
+Mapping* MappingUtils::add(const ConstMapping &f1, const ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
 {
 	return applyElementWiseOperator(f1, f2, std::plus<Mapping::argument_value_t>(), outOfRangeVal, false);
 }
 
-Mapping* MappingUtils::subtract(ConstMapping &f1, ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
+Mapping* MappingUtils::subtract(const ConstMapping &f1, const ConstMapping &f2, Mapping::argument_value_cref_t outOfRangeVal)
 {
 	return applyElementWiseOperator(f1, f2, std::minus<Mapping::argument_value_t>(), outOfRangeVal, false);
 }
 
 
-Mapping* operator*(ConstMapping& f1, ConstMapping& f2) {
+Mapping* operator*(const ConstMapping& f1, const ConstMapping& f2) {
 	return MappingUtils::multiply(f1, f2);
 }
 
-Mapping* operator/(ConstMapping& f1, ConstMapping& f2) {
+Mapping* operator/(const ConstMapping& f1, const ConstMapping& f2) {
 	return MappingUtils::divide(f1, f2);
 }
 
-Mapping* operator+(ConstMapping& f1, ConstMapping& f2) {
+Mapping* operator+(const ConstMapping& f1, const ConstMapping& f2) {
 	return MappingUtils::add(f1, f2);
 }
 
-Mapping* operator-(ConstMapping& f1, ConstMapping& f2) {
+Mapping* operator-(const ConstMapping& f1,const  ConstMapping& f2) {
 	return MappingUtils::subtract(f1, f2);
 }
 
 
-Mapping::argument_value_t MappingUtils::findMax(ConstMapping& m, Argument::mapped_type_cref cRetNotFound /*= cMaxNotFound*/) {
+Mapping::argument_value_t MappingUtils::findMax(const ConstMapping& m, Argument::mapped_type_cref cRetNotFound /*= cMaxNotFound*/) {
 	ConstMappingIterator*     it       = m.createConstIterator();
 	bool                      bIsFirst = true;
 	Mapping::argument_value_t res;
@@ -234,7 +234,7 @@ Mapping::argument_value_t MappingUtils::findMax(ConstMapping& m, Argument::mappe
 	return res;
 }
 
-Mapping::argument_value_t MappingUtils::findMax(ConstMapping& m, const Argument& pRangeFrom, const Argument& pRangeTo, Argument::mapped_type_cref cRetNotFound /*= cMaxNotFound*/){
+Mapping::argument_value_t MappingUtils::findMax(const ConstMapping& m, const Argument& pRangeFrom, const Argument& pRangeTo, Argument::mapped_type_cref cRetNotFound /*= cMaxNotFound*/){
 	//the passed interval should define a value for every dimension
 	//of the mapping.
 	assert(pRangeFrom.getDimensions().isSubSet(m.getDimensionSet()));
