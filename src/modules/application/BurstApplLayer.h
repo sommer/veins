@@ -49,8 +49,14 @@ class MIXIM_API BurstApplLayer : public TestApplLayer
   /** @brief Handle self messages such as timer... */
   virtual void handleSelfMsg(cMessage*);
 
+  /** @brief Handle messages from lower layer */
+  virtual void handleLowerMsg(cMessage*);
+
   /** @brief Number of messages to send in a burst*/
-  int burstSize;
+  int  burstSize;
+  /** @brief If true, send a unicast BROADCAST_REPLY message to each
+   * received BROADCAST message. */
+  bool bSendReply;
 };
 
 #endif

@@ -283,7 +283,7 @@ Mapping* BaseDecider::calculateRSSIMapping( simtime_t_cref start,
 		// if iterator points to exclude (that includes the default-case 'exclude == 0')
 		// then skip this AirFrame
 		if ( *it == exclude ) {
-			if (thermalNoise) {
+			if (thermalNoise && exclude) {
 				// suggested by David Eckhoff:
 				// Instead of ignoring the want-to-receive AirFrame when
 				// building up the NoiseMap i add the thermalNoise for the time and

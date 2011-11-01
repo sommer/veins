@@ -8,8 +8,11 @@ v2.2
 + Introduced new 2 types for MACAddress and NetwAddress, see SimpleAddress.h
   This should solve some problems with inproper handling of same address type
   for different layers.
-+ added some value tests for infinity in mapping interpolation. (David Eckhoff)
++ Added some value tests for infinity in mapping interpolation. (David Eckhoff)
+  Merge thermalNoise into attenuattion map for excluded AirFrame.
 + Ned INic definition was renamed to IWirelessNic
++ Add sendReply switch to BurstApplLayer, to disable send reply for 
+  BROADCAST_MESSAGE's.
 
 v2.1
 + added LMAC layer implementation written by Anna Förster and ported to MiXiM

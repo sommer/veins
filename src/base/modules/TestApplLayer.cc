@@ -25,6 +25,7 @@
 #include "SimpleAddress.h"
 #include "ApplPkt_m.h"
 
+using std::endl;
 
 TestApplLayer::TestApplLayer()
 {
@@ -51,7 +52,6 @@ void TestApplLayer::initialize(int stage)
     }
 }
 
-
 /**
  * There are two kinds of messages that can arrive at this module: The
  * first (kind = BROADCAST_MESSAGE) is a broadcast packet from a
@@ -65,12 +65,12 @@ void TestApplLayer::handleLowerMsg( cMessage* msg )
     switch( msg->getKind() ){
     case BROADCAST_MESSAGE:
         m = static_cast<ApplPkt *>(msg);
-        coreEV << "Received a broadcast packet from host["<<m->getSrcAddr()<<"] -> sending reply\n";
+        coreEV << "Received a broadcast packet from host["<<m->getSrcAddr()<<"] -> sending reply" << endl;
         sendReply(m);
         break;
     case BROADCAST_REPLY_MESSAGE:
         m = static_cast<ApplPkt *>(msg);
-        coreEV << "Received reply from host["<<m->getSrcAddr()<<"]; delete msg\n";
+        coreEV << "Received reply from host["<<m->getSrcAddr()<<"]; delete msg" << endl;
         delete msg;
 	break;
     default:

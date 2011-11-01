@@ -22,6 +22,8 @@
 
 #include "BurstApplLayer.h"
 
+#include "ApplPkt_m.h"
+
 using std::endl;
 
 Define_Module(BurstApplLayer);
@@ -36,6 +38,10 @@ void BurstApplLayer::initialize(int stage)
             burstSize = par("burstSize");
         else
             burstSize = 3;
+        if(hasPar("burstReply"))
+        	bSendReply = par("burstReply");
+        else
+        	bSendReply = true;
     }
 }
 
@@ -54,3 +60,22 @@ void BurstApplLayer::handleSelfMsg(cMessage *msg)
         break;
     }
 }
+
+/**
+ * There are two kinds of messages that can arrive at this module: The
+ * first (kind = BROADCAST_MESSAGE) is a broadcast packet from a
+ * neighbor node to which we have to send a reply (if bSendReply is true). The second (kind =
+ * BROADCAST_REPLY_MESSAGE) is a reply to a broadcast packet that we
+ * have send and just causes some output before it is deleted
+ */
+void BurstApplLayer::handleLowerMsg( cMessage* msg )
+{
+	if ( !bSendReply && msg->getKind() == BROADCAST_MESSAGE) {
+		ApplPkt *m  = static_cast<ApplPkt *>(msg);
+		coreEV << "Received a broadcast packet from host["<<m->getSrcAddr()<<"] -> delete message, no reply" << endl;
+		delete msg;
+		return;
+	}
+	TestApplLayer::handleLowerMsg(msg);
+}
+
