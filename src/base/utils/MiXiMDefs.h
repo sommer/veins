@@ -42,6 +42,10 @@ public:
 	  : ssChangeSignal(SIMSIGNAL_NULL)
 	  , sSignalName(pSignalName)
 	{}
+	simsignalwrap_t(const simsignalwrap_t& pCpy)
+	  : ssChangeSignal(pCpy.ssChangeSignal)
+	  , sSignalName(pCpy.sSignalName)
+	{}
 
 	/** Cast operator to simsignal_t, we initialize the signal here if it is empty ;). */
 	operator simsignal_t () const {
