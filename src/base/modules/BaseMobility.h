@@ -146,7 +146,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * Dispatches border messages to handleBorderMsg() and all other
      * self-messages to handleSelfMsg()
      */
-    void handleMessage(cMessage *msg);
+    virtual void handleMessage(cMessage *msg);
 
     /** @brief Initializes mobility model parameters.
      *
@@ -168,13 +168,13 @@ class MIXIM_API BaseMobility : public BatteryAccess
     virtual void finish(){};
 
     /** @brief Returns the current position at the current simulation time. */
-    virtual Coord getCurrentPosition(/*simtime_t_cref stWhen = simTime()*/) {
+    virtual Coord getCurrentPosition(/*simtime_t_cref stWhen = simTime()*/) const {
     	//return move.getPositionAt(stWhen);
     	return move.getStartPos();
     }
 
     /** @brief Returns the current speed at the current simulation time. */
-    virtual Coord getCurrentSpeed() {
+    virtual Coord getCurrentSpeed() const {
     	return move.getDirection() * move.getSpeed();
     }
   protected:

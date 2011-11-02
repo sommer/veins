@@ -35,6 +35,7 @@ const simsignalwrap_t BaseMobility::mobilityStateChangedSignal = simsignalwrap_t
 
 BaseMobility::BaseMobility():
 		BatteryAccess(),
+		move(),
 		playgroundScaleX(1),
 		playgroundScaleY(1),
 		origDisplayWidth(0),
@@ -44,6 +45,7 @@ BaseMobility::BaseMobility():
 
 BaseMobility::BaseMobility(unsigned stacksize):
 		BatteryAccess(stacksize),
+		move(),
 		playgroundScaleX(1),
 		playgroundScaleY(1),
 		origDisplayWidth(0),

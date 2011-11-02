@@ -176,8 +176,6 @@ protected:
      */
     void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 
-    virtual void handleAirFrame(cMessage* msg);
-
     virtual void switchRadioToRX() {
     	Enter_Method_Silent();
     	uwbradio->startReceivingFrame(simTime());

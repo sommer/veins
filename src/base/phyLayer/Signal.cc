@@ -1,6 +1,9 @@
 #include "Signal_.h"
 
+#include <cassert>
+
 Signal::Signal(simtime_t_cref sendingStart, simtime_t_cref duration):
+	senderModuleID(-1), senderFromGateID(-1), receiverModuleID(-1), receiverToGateID(-1),
 	sendingStart(sendingStart), duration(duration),
 	propagationDelay(0),
 	power(0), bitrate(0),
@@ -9,6 +12,7 @@ Signal::Signal(simtime_t_cref sendingStart, simtime_t_cref duration):
 {}
 
 Signal::Signal(const Signal & o):
+	senderModuleID(o.senderModuleID), senderFromGateID(o.senderFromGateID), receiverModuleID(o.receiverModuleID), receiverToGateID(o.receiverToGateID),
 	sendingStart(o.sendingStart), duration(o.duration),
 	propagationDelay(o.propagationDelay),
 	power(0), bitrate(0),
@@ -37,6 +41,10 @@ const Signal& Signal::operator=(const Signal& o) {
 	sendingStart     = o.sendingStart;
 	duration         = o.duration;
 	propagationDelay = o.propagationDelay;
+	senderModuleID   = o.senderModuleID;
+	senderFromGateID = o.senderFromGateID;
+	receiverModuleID = o.receiverModuleID;
+	receiverToGateID = o.receiverToGateID;
 
 	markRcvPowerOutdated();
 
@@ -162,4 +170,32 @@ void Signal::setBitrate(Mapping *bitrate)
 		delete this->bitrate;
 
 	this->bitrate = bitrate;
+}
+
+cGate *Signal::getSendingGate() const
+{
+    if (senderFromGateID < 0) return NULL;
+    cModule *const mod = getSendingModule();
+    return !mod ? NULL : mod->gate(senderFromGateID);
+}
+
+cGate *Signal::getReceptionGate() const
+{
+    if (receiverToGateID < 0) return NULL;
+    cModule *const mod = getReceptionModule();
+    return !mod ? NULL : mod->gate(receiverToGateID);
+}
+
+void Signal::setReceptionSenderInfo(const cMessage *const pMsg)
+{
+	if (!pMsg)
+		return;
+
+	assert(senderModuleID < 0);
+
+	senderModuleID   = pMsg->getSenderModuleId();
+	senderFromGateID = pMsg->getSenderGateId();
+
+	receiverModuleID = pMsg->getArrivalModuleId();
+	receiverToGateID = pMsg->getArrivalGateId();
 }

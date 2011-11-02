@@ -15,6 +15,8 @@ Define_Module(BasePhyLayer);
 
 short BasePhyLayer::airFramePriority = 10;
 
+Coord NoMobiltyPos = Coord::ZERO;
+
 //--Initialization----------------------------------
 
 BasePhyLayer::BasePhyLayer():
@@ -402,6 +404,7 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	}
 	assert(frame->getSignal().getReceptionStart() == simTime());
 
+	frame->getSignal().setReceptionSenderInfo(frame);
 	filterSignal(frame);
 
 	if(decider && isKnownProtocolId(frame->getProtocolId())) {
@@ -649,8 +652,11 @@ void BasePhyLayer::filterSignal(AirFrame *frame) {
 	assert(senderModule); assert(receiverModule);
 
 	/** claim the Move pattern of the sender from the Signal */
-	Coord           sendersPos  = senderModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
-	Coord           receiverPos = receiverModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
+	ChannelMobilityPtrType sendersMobility  = senderModule   ? senderModule->getMobilityModule()   : NULL;
+	ChannelMobilityPtrType receiverMobility = receiverModule ? receiverModule->getMobilityModule() : NULL;
+
+	const Coord sendersPos  = sendersMobility  ? sendersMobility->getCurrentPosition(/*sStart*/) : NoMobiltyPos;
+	const Coord receiverPos = receiverMobility ? receiverMobility->getCurrentPosition(/*sStart*/): NoMobiltyPos;
 
 	for(AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++)
 		(*it)->filterSignal(frame, sendersPos, receiverPos);

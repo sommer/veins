@@ -27,7 +27,7 @@
 #define nicEV (ev.isDisabled()||!coreDebug) ? ev : ev << "NicEntry: "
 #endif
 
-
+using std::endl;
 
 void NicEntryDirect::connectTo(NicEntry* other)
 {

@@ -257,15 +257,6 @@ void PhyLayerUWBIR::receiveSignal(cComponent *source, simsignal_t signalID, cObj
 	}
 }
 
-void PhyLayerUWBIR::handleAirFrame(cMessage* msg) {
-	/*if (utility->getHostState().get() == HostState::FAILED) {
-		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
-		delete msg;
-		return;
-	}*/
-	BasePhyLayer::handleAirFrame(msg);
-}
-
 void PhyLayerUWBIR::finishRadioSwitching() {
 	BasePhyLayer::finishRadioSwitching();
 	setRadioCurrent(radio->getCurrentState());

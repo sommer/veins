@@ -30,6 +30,7 @@
 #define nicEV (ev.isDisabled()||!coreDebug) ? ev : ev << "NicEntry: "
 #endif
 
+using std::endl;
 
 void NicEntryDebug::connectTo(NicEntry* other) {
 	nicEV<<"connecting nic #"<<nicId<< " and #"<<other->nicId<<endl;
@@ -148,7 +149,7 @@ cGate* NicEntryDebug::requestInGate(void) {
 		cGate *phyGate;
 
 		// to avoid unnecessary dynamic_casting we check for a "phy"-named submodule first
-		if ((phyModule = static_cast<ChannelAccess *> (nicPtr->getSubmodule("phy"))) == NULL)
+		if ((phyModule = dynamic_cast<ChannelAccess *> (nicPtr->getSubmodule("phy"))) == NULL)
 			phyModule = FindModule<ChannelAccess*>::findSubModule(nicPtr);
 		assert(phyModule != 0);
 
@@ -201,7 +202,7 @@ cGate* NicEntryDebug::requestOutGate(void) {
 		cGate *phyGate;
 
 		// to avoid unnecessary dynamic_casting we check for a "phy"-named submodule first
-		if ((phyModule = static_cast<ChannelAccess *> (nicPtr->getSubmodule("phy"))) == NULL)
+		if ((phyModule = dynamic_cast<ChannelAccess *> (nicPtr->getSubmodule("phy"))) == NULL)
 			phyModule = FindModule<ChannelAccess*>::findSubModule(nicPtr);
 		assert(phyModule != 0);
 

@@ -13,6 +13,12 @@ v2.2
 + Ned INic definition was renamed to IWirelessNic
 + Add sendReply switch to BurstApplLayer, to disable send reply for 
   BROADCAST_MESSAGE's.
++ Renamed introduced timing info methods in Signal ( getSignalLength() ->
+  getDuration(); getSignalStart() -> getReceptionStart(); getSignalStart() + 
+  getSignalLength() -> getReceptionEnd() )
++ Signal now contains infos about the sending/receiption module/gate (getSendingModule;
+  getReceiptionModule). The info will be extracted/saved from AirFrame in BasePhyLayer at
+  receiving.
 
 v2.1
 + added LMAC layer implementation written by Anna Förster and ported to MiXiM

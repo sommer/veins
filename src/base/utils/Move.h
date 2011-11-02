@@ -57,6 +57,13 @@ public:
     	, direction()
     	, speed(0.0)
     {}
+    Move(const Move& mSrc)
+    	: startPos(mSrc.startPos)
+    	, lastPos(mSrc.lastPos)
+    	, startTime(mSrc.startTime)
+    	, direction(mSrc.direction)
+    	, speed(mSrc.speed)
+    {}
 
     /**
      * @brief Returns the current speed.

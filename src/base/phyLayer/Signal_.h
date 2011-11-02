@@ -42,7 +42,14 @@ public:
 	typedef std::list<ConstMapping*> ConstMappingList;
 
 protected:
-
+	/** @brief Sender module id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
+	int senderModuleID;
+	/** @brief Sender gate id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
+	int senderFromGateID;
+	/** @brief Receiver module id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
+	int receiverModuleID;
+	/** @brief Receiver gate id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
+	int receiverToGateID;
 	/** @brief The start of the signal transmission at the sender module.*/
 	simtime_t sendingStart;
 	/** @brief The duration of the signal transmission.*/
@@ -237,6 +244,37 @@ public:
 
 		return rcvPower;
 	}
+
+	/**
+	 * Returns a pointer to the arrival module. It returns NULL if the signal
+	 * has not been sent/received yet, or if the module was deleted
+	 * in the meantime.
+	 */
+	cModule *getReceptionModule() const {return receiverModuleID < 0 ? NULL : simulation.getModule(receiverModuleID);}
+
+	/**
+	 * Returns pointers to the gate from which the signal was sent and
+	 * on which gate it arrived. A NULL pointer is returned
+	 * for new (unsent) signal.
+	 */
+	cGate *getReceptionGate() const;
+
+	/**
+	 * Returns a pointer to the sender module. It returns NULL if the signal
+	 * has not been sent/received yet, or if the sender module got deleted
+	 * in the meantime.
+	 */
+	cModule *getSendingModule() const {return senderModuleID < 0 ? NULL : simulation.getModule(senderModuleID);}
+
+	/**
+	 * Returns pointers to the gate from which the signal was sent and
+	 * on which gate it arrived. A NULL pointer is returned
+	 * for new (unsent) signal.
+	 */
+	cGate *getSendingGate() const;
+
+	/** @brief Saves the arrival sender module information form message. */
+	void setReceptionSenderInfo(const cMessage *const pMsg);
 };
 
 #endif /*SIGNAL_H_*/
