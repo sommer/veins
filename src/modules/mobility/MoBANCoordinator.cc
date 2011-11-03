@@ -217,7 +217,7 @@ void MoBANCoordinator::mainProcess() {
     //show posture name in the graphical interface
 	if(ev.isGUI()){
 		char dis_str[100];
-		sprintf(dis_str,"p=%f,50;i=block/wheelbarrow;is=vs;t=%s Duration:%f",world->getPgs()->x+10+(index*30),currentPosture->getPostureName(),duration.dbl());
+		sprintf(dis_str,"p=%f,50;i=block/wheelbarrow;is=vs;t=%s Duration:%f",world->getPgs()->x+10+(index*30),currentPosture->getPostureName(),SIMTIME_DBL(duration));
 		setDisplayString(dis_str);
 	}
 
@@ -225,7 +225,7 @@ void MoBANCoordinator::mainProcess() {
 	if (currentPosture->isMobile())
 		fprintf(logfile,"%s %d %f %f %f %f \n",currentPosture->getPostureName(),currentPosture->getPostureID(), targetPos.x,targetPos.y,targetPos.z,speed);
 	else
-		fprintf(logfile,"%s %d %f \n",currentPosture->getPostureName(),currentPosture->getPostureID(), duration.dbl());
+		fprintf(logfile,"%s %d %f \n",currentPosture->getPostureName(),currentPosture->getPostureID(), SIMTIME_DBL(duration));
 
 
 	EV << "New posture : " << currentPosture->getPostureName() << endl;

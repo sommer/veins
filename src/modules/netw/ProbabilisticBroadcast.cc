@@ -58,7 +58,6 @@ void ProbabilisticBroadcast::handleUpperMsg(cMessage* msg)
 void ProbabilisticBroadcast::handleLowerMsg(cMessage* msg)
 {
 	LAddress::L2Type macSrcAddr;
-	double oneHopLatency;
 	ProbabilisticBroadcastPkt* m     = check_and_cast<ProbabilisticBroadcastPkt*>(msg);
 	cObject*                   cInfo = m->removeControlInfo();
 	m->setNbHops(m->getNbHops()+1);
@@ -66,9 +65,8 @@ void ProbabilisticBroadcast::handleLowerMsg(cMessage* msg)
 	delete cInfo;
 	++nbDataPacketsReceived;
 	nbHops = nbHops + m->getNbHops();
-	oneHopLatency = simTime().dbl() - m->getTimestamp().dbl();
 	if(trace) {
-	  oneHopLatencies.record(oneHopLatency);
+	  oneHopLatencies.record(SIMTIME_DBL(simTime() - m->getTimestamp()));
 	}
 	// oneHopLatency gives us an estimate of how long the message spent in the MAC queue of
 	// its sender (compared to that, transmission delay is negligible). Use this value

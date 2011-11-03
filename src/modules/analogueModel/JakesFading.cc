@@ -44,9 +44,9 @@ double JakesFadingMapping::getValue(const Argument& pos) const {
 		// Phase shift due to Doppler => t-selectivity.
 		double phi_d = model->angleOfArrival[i] * doppler_shift;
 		// Phase shift due to delay spread => f-selectivity.
-		double phi_i = model->delay[i].dbl() * f;
+		double phi_i = SIMTIME_DBL(model->delay[i]) * f;
 		// Calculate resulting phase due to t-selective and f-selective fading.
-		double phi = 2.00 * M_PI * (phi_d * t.dbl() - phi_i);
+		double phi = 2.00 * M_PI * (phi_d * SIMTIME_DBL(t) - phi_i);
 
 		// One ring model/Clarke's model plus f-selectivity according to Cavers:
 		// Due to isotropic antenna gain pattern on all paths only a^2 can be received on all paths.

@@ -45,11 +45,11 @@ void MassMobility::initialize(int stage)
         changeAngleBy = &par("changeAngleBy");
 
         // initial speed and angle
-        move.setSpeed(par("speed"));
+        move.setSpeed(par("speed").doubleValue());
         currentAngle = uniform(0, 360);
 
-        step.x = (move.getSpeed() * cos(PI * currentAngle / 180) * updateInterval.dbl());
-        step.y = (move.getSpeed() * sin(PI * currentAngle / 180) * updateInterval.dbl());
+        step.x = (move.getSpeed() * cos(PI * currentAngle / 180) * SIMTIME_DBL(updateInterval));
+        step.y = (move.getSpeed() * sin(PI * currentAngle / 180) * SIMTIME_DBL(updateInterval));
 
     }
     else if( stage == 1 )

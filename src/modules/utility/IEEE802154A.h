@@ -46,19 +46,19 @@ public:
 	/**@brief bit rate (850 kbps) */
     static const int mandatory_bitrate;
     /**@brief mandatory data symbol length (1025 ns) */
-    static const_simtime_t mandatory_symbol;
+    static const double mandatory_symbol;
     /**@brief 0.5 * mandatory_symbol (0.5 ms) */
-    static const_simtime_t mandatory_timeShift;
+    static const double mandatory_timeShift;
     /**@brief mandatory pulse duration ( = 1 / bandwidth = 2 ns) */
-    static const_simtime_t mandatory_pulse;
+    static const double mandatory_pulse;
     /**@brief burst duration */
-    static const_simtime_t mandatory_burst;
+    static const double mandatory_burst;
     /**@brief number of consecutive pulses forming a burst */
     static const int mandatory_pulses_per_burst;
     /**@brief Center frequency of band 3 in UWB lower band (500 MHz wide channel) */
     static const double mandatory_centerFreq; // in MHz !
     /**@brief default sync preamble length */
-    static const_simtime_t mandatory_preambleLength;
+    static const double mandatory_preambleLength;
     /**@brief Total triangular pulse peak energy in mW (0 dBm / 50 MHz over 500 MHz) */
     static const double maxPulse;
 
@@ -68,7 +68,7 @@ public:
 
     static const short shortSFD[8];
 
-    static const_simtime_t MaxFrameDuration;
+    static const double MaxFrameDuration;
 
 
 
@@ -85,7 +85,7 @@ public:
 	/**@brief sync preamble spreading factor L */
 	static const short spreadingdL = 16;
 	/**@brief duration of a synchronization preamble symbol */
-	static const_simtime_t Tpsym;
+	static const double Tpsym;
 
 	/**@brief bit length of a Reed-Solomon symbol */
 	static const short RSSymbolLength = 6;
@@ -96,7 +96,7 @@ public:
 	static const int MaxPSDULength = 128;
 
 	/**@brief Position of the first pulse max in the frame. */
-	static const_simtime_t tFirstSyncPulseMax;
+	static const double tFirstSyncPulseMax;
 
     enum UWBPRF {
     	PRF_OFF,

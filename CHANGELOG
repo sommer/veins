@@ -2,7 +2,7 @@ v2.2
 + Supports only OMNeT++ 4.2
 + modified deciders filterSignal method, parameters now are AirFrame pointer and
   the senders and receivers positions
-+ completly removed the BaseUtility and Blackboard; MiXiM uses now the OMNNeT++
++ completly removed BaseUtility and Blackboard; MiXiM uses now the OMNNeT++
   signaling handling (registerSignal, subscribe, emit, ...)
   receiveBBItem(...) methods should be replaced by receiveSignal(...).
 + Introduced new 2 types for MACAddress and NetwAddress, see SimpleAddress.h
@@ -19,6 +19,8 @@ v2.2
 + Signal now contains infos about the sending/receiption module/gate (getSendingModule;
   getReceiptionModule). The info will be extracted/saved from AirFrame in BasePhyLayer at
   receiving.
++ Changed [Lower/Upper]Gate to [Lower/Upper]Layer.
++ handleAirFrame method gots an AirFrame as parameter, instead of cMessage.
 
 v2.1
 + added LMAC layer implementation written by Anna Förster and ported to MiXiM

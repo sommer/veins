@@ -188,8 +188,14 @@ void SimpleBattery::draw(int deviceID, DrawAmount& amount, int activity)
 		" mW-s, activity = " << activity << endl;
 
 		// deduct a fixed energy cost
-		devices[deviceID].accts[activity] += energy;
-		residualCapacity -= energy;
+		if (residualCapacity >= energy) {
+			devices[deviceID].accts[activity] += energy;
+			residualCapacity -= energy;
+		}
+		else if (residualCapacity != 0.0) {
+			devices[deviceID].accts[activity] += energy;
+			residualCapacity                   = 0.0;
+		}
 
 		// update the residual capacity (ongoing current draw), mostly
 		// to check whether to publish (or perish)
@@ -241,7 +247,9 @@ void SimpleBattery::deductAndCheck() {
 		return;
 	}
 
-	simtime_t now = simTime();
+	const simtime_t now        = simTime();
+	const simtime_t tDeltaT    = now - lastUpdateTime;
+	const double    dVoltDelta = voltage * SIMTIME_DBL(tDeltaT);
 
 	// If device[i] has never drawn current (e.g. because the device
 	// hasn't been used yet or only uses ENERGY) the currentActivity is
@@ -252,11 +260,16 @@ void SimpleBattery::deductAndCheck() {
 	for (int i = 0; i < numDevices; i++) {
 		int currentActivity = devices[i].currentActivity;
 		if (currentActivity > -1) {
-			double energy = devices[i].draw * voltage * (now - lastUpdateTime).dbl();
+			const double energy = devices[i].draw * dVoltDelta;
 			if (energy > 0) {
-				devices[i].accts[currentActivity] += energy;
-				devices[i].times[currentActivity] += (now - lastUpdateTime);
-				residualCapacity -= energy;
+				if (residualCapacity >= energy || residualCapacity != 0.0) {
+					devices[i].accts[currentActivity] += energy;
+					devices[i].times[currentActivity] += tDeltaT;
+				}
+				if (residualCapacity >= energy)
+					residualCapacity -= energy;
+				else if (residualCapacity != 0.0)
+					residualCapacity = 0;
 			}
 		}
 	}
@@ -290,7 +303,6 @@ void SimpleBattery::deductAndCheck() {
 
 	// battery is not depleted, continue
 	else {
-
 		batteryState->set(residualCapacity);
 
 		// publish the battery capacity if it changed by more than delta
@@ -357,7 +369,7 @@ void SimpleBattery::finish() {
 		simtime_t sum = 0;
 		for (int j = 0; j < devices[i].numAccts; j++)
 		sum += devices[i].times[j];
-		if (FWMath::round(sum.dbl() * 1000000) - FWMath::round(simTime().dbl() * 1000000) != 0)
+		if (FWMath::round(SIMTIME_DBL(sum) * 1000000) - FWMath::round(SIMTIME_DBL(simTime()) * 1000000) != 0)
 		{
 			EV << "WARNING: device " << devices[i].name << " total time " << sum
 			<< " != sim time " << simTime() << " (may not matter)" << endl;

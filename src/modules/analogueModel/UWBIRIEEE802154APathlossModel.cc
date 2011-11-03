@@ -277,8 +277,8 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t_cref pulseStart) {
             if(firstTap) {
             	mfactor = cfg.m_0;
             } else {
-            	mmean = cfg.m_0 - cfg.k_m*tau_kl.dbl();
-            	msigma = cfg.var_m_0 - cfg.var_k_m*tau_kl.dbl();
+            	mmean = cfg.m_0 - cfg.k_m*SIMTIME_DBL(tau_kl);
+            	msigma = cfg.var_m_0 - cfg.var_k_m*SIMTIME_DBL(tau_kl);
             	mfactor = normal(mmean, msigma);
             }
             /*
@@ -306,7 +306,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t_cref pulseStart) {
             		double oldValue = pulsesIter->getValue();
             		currentPoint = pulsesIter->getPosition().getTime();
             		// interpolate current echo point
-            		double echoValue = ((currentPoint - echoStart)/(0.5*IEEE802154A::mandatory_pulse)).dbl();
+            		double echoValue = SIMTIME_DBL((currentPoint - echoStart)/(0.5*IEEE802154A::mandatory_pulse));
             		echoValue = echoValue * finalTapEnergy;
             		intermediatePoints[currentPoint] = echoValue + oldValue;
             	} else if(raising && pulsesIter->getNextPosition().getTime() >= echoPeak) {
@@ -324,7 +324,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t_cref pulseStart) {
             		double oldValue = pulsesIter->getValue();
             		currentPoint = pulsesIter->getPosition().getTime();
             		// interpolate current echo point
-            		double echoValue = 1 - ((currentPoint - echoPeak)/(0.5*IEEE802154A::mandatory_pulse)).dbl();
+            		double echoValue = 1 - SIMTIME_DBL((currentPoint - echoPeak)/(0.5*IEEE802154A::mandatory_pulse));
             		echoValue = echoValue * finalTapEnergy;
             		intermediatePoints[currentPoint] = echoValue + oldValue;
             	} else if (!raising && pulsesIter->getNextPosition().getTime() >= echoEnd) {
@@ -354,9 +354,9 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t_cref pulseStart) {
             }
             tau_kl += mix1 * cfg.Beta + (1 - cfg.Beta) * mix2;
             //fromClusterStart += tau_kl;
-            tapEnergy = gamma_l.dbl() * ((1 - cfg.Beta) * cfg.lambda_1 + cfg.Beta * cfg.lambda_2 + 1);
+            tapEnergy = SIMTIME_DBL(gamma_l) * ((1 - cfg.Beta) * cfg.lambda_1 + cfg.Beta * cfg.lambda_2 + 1);
             tapEnergy = Omega_l / tapEnergy;
-            tapEnergy = tapEnergy * exp(-tau_kl.dbl() / gamma_l.dbl());
+            tapEnergy = tapEnergy * exp(-SIMTIME_DBL(tau_kl) / SIMTIME_DBL(gamma_l));
             tapEnergy = sqrt(tapEnergy);
             if (tapEnergy < tapThreshold) {
                 moreTaps = false;
@@ -369,7 +369,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t_cref pulseStart) {
           clusterStart = clusterStart + nextClusterStart; // sum(x_n) over n=1..cluster
           gamma_l = cfg.k_gamma * clusterStart + cfg.gamma_0;
           Mcluster = normal(0, cfg.sigma_cluster);
-          Omega_l = pow(10, (10 * log( exp( -clusterStart.dbl() / cfg.Gamma ) ) + Mcluster) / 10);
+          Omega_l = pow(10, (10 * log( exp( -SIMTIME_DBL(clusterStart) / cfg.Gamma ) ) + Mcluster) / 10);
           // new constraint to increase speed
           if(Omega_l > 0.1) {
             moreTaps = true;

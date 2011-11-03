@@ -63,19 +63,19 @@ const int MAC80211_HEADER_LENGTH = 272;
 /** @brief Standard time values
     @{ */
 /** @brief Slot time  */
-const const_simtime_t ST = 20E-6;
+const double ST = 20E-6;
 /** @brief Short interframe space
  *  between DATA and ACK
  */
-const const_simtime_t SIFS = 10E-6;
+const double SIFS = 10E-6;
 /** @brief Distributed interframe space
  * medium must be clear for this time in DCF
  */
-const const_simtime_t DIFS = 2*ST + SIFS;
+const double DIFS = 2*ST + SIFS;
 /** @brief extended interframe space
  *  whenever a corrupted frame is received, defer actions for this time
  */
-const const_simtime_t EIFS = SIFS + DIFS +  (PHY_HEADER_LENGTH + LENGTH_ACK)/BITRATE_HEADER;
+const double EIFS = SIFS + DIFS +  (PHY_HEADER_LENGTH + LENGTH_ACK)/BITRATE_HEADER;
 
 /** @brief We have to stop transmitting somewhen.
  *

@@ -1389,7 +1389,7 @@ void DeciderTest::executeSNRNewTestCase()
 			setExpectedCSRAnswer(true, tmpAF1Power);
 			handleTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertEqual("UNTIL_IDLE request on idle channel should be answered immediately.",
-						-1.0, handleTime.dbl());
+						-1.0, SIMTIME_DBL(handleTime));
 			delete testChannelSense;
 
 
@@ -1402,7 +1402,7 @@ void DeciderTest::executeSNRNewTestCase()
 
 			handleTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertEqual("UNTIL_BUSY request on idle channel can't be answered yet.",
-						testTime + senseLength, handleTime.dbl());
+						testTime + senseLength, SIMTIME_DBL(handleTime));
 
 			updateSimTime(t3);
 
@@ -1428,7 +1428,7 @@ void DeciderTest::executeSNRNewTestCase()
 
 			handleTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertEqual("UNTIL_BUSY request on idle channel can't be answered yet.",
-						testTime + senseLength, handleTime.dbl());
+						testTime + senseLength, SIMTIME_DBL(handleTime));
 
 			updateSimTime(testTime + senseLength);
 

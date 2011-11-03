@@ -128,13 +128,13 @@ void TestApplication::handleMessage(cMessage * msg) {
 
         if (stats) {
             simtime_t theLatency = msg->getArrivalTime() - msg->getCreationTime();
-            latencies[m->getSrcAddr()].collect(theLatency.dbl());
-            testStat.collect(theLatency.dbl());
+            latencies[m->getSrcAddr()].collect(SIMTIME_DBL(theLatency));
+            testStat.collect(SIMTIME_DBL(theLatency));
         }
 
         if (trace) {
             simtime_t theLatency = msg->getArrivalTime() - msg->getCreationTime();
-            latenciesRaw.record(theLatency.dbl());
+            latenciesRaw.record(SIMTIME_DBL(theLatency));
         }
 
         delete msg;

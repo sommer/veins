@@ -124,7 +124,7 @@ void csma::initialize(int stage) {
 				opp_warning("Parameter \"aTurnaroundTime\" (%f) does not match"
 							" the radios RX to TX switching time (%f)! It"
 							" should be equal or bigger",
-							aTurnaroundTime.dbl(), rxToTx.dbl());
+							SIMTIME_DBL(aTurnaroundTime), SIMTIME_DBL(rxToTx));
 			}
 		}
 

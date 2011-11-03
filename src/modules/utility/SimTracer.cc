@@ -74,7 +74,7 @@ double SimTracer::getAvgSensorPowerConsumption() {
 	map < unsigned long, double >::iterator iter = powerConsumptions.begin(); // address, powerConsumption
 	for (; iter != powerConsumptions.end(); iter++) {	// iterate over all nodes power consumptions
 		  double eval = iter->second;
-		  eval = eval +  (simTime()-lastUpdates[iter->first]).dbl()*currPower[iter->first];
+		  eval = eval +  SIMTIME_DBL(simTime()-lastUpdates[iter->first])*currPower[iter->first];
 		  eval = eval * 1000 / simTime();
 		  if(iter->first != 0) {
 			  nbSensors++;
@@ -87,7 +87,7 @@ double SimTracer::getAvgSensorPowerConsumption() {
 
 double SimTracer::getSinkPowerConsumption() {
   double sinkP = powerConsumptions[0];
-  sinkP = sinkP + (simTime() - lastUpdates[0]).dbl() * currPower[0];
+  sinkP = sinkP + SIMTIME_DBL(simTime() - lastUpdates[0]) * currPower[0];
   sinkP = sinkP * 1000 / simTime();
   return sinkP;
 }
@@ -135,7 +135,7 @@ void SimTracer::radioEnergyLog(unsigned long mac, int state,
   if (powerConsumptions.count(mac) == 0) {
     powerConsumptions[mac] = 0;
   }
-  powerConsumptions[mac] = powerConsumptions[mac] + power * duration.dbl();
+  powerConsumptions[mac] = powerConsumptions[mac] + power * SIMTIME_DBL(duration);
   currPower[mac] = newPower;
   lastUpdates[mac] = simTime();
   if(mac != 0) {

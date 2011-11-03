@@ -320,7 +320,7 @@ double** PostureTransition::getMatrix(simtime_t_cref iTime, Coord iLocation)
 		}
 	}
 
-	EV << "The corresponding Markov matrix for time" << iTime.dbl() <<" and location " << iLocation.info() << " is: " << matrixList.at(matrixID)->name << endl;
+	EV << "The corresponding Markov matrix for time" << iTime <<" and location " << iLocation.info() << " is: " << matrixList.at(matrixID)->name << endl;
 
 	return matrixList.at(matrixID)->matrix;
 }

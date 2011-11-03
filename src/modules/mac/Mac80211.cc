@@ -1136,7 +1136,7 @@ void Mac80211::suspendContention()  {
         }
         else {
             double remainingSlots;
-            remainingSlots = (contention->getSenseTimeout() - quietTime).dbl()/ST;
+            remainingSlots = SIMTIME_DBL(contention->getSenseTimeout() - quietTime)/ST;
 
             // Distinguish between (if) case where contention is
             // suspended after an integer number of slots and we

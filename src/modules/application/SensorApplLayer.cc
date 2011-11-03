@@ -184,7 +184,7 @@ void SensorApplLayer::handleLowerMsg(cMessage * msg) {
 			simtime_t theLatency = m->getArrivalTime() - m->getCreationTime();
 			if(trace) {
 			  hostsLatency(m->getSrcAddr()).collect(theLatency);
-			  latenciesRaw.record(theLatency.dbl());
+			  latenciesRaw.record(SIMTIME_DBL(theLatency));
 			}
 			latency.collect(theLatency);
 			if (firstPacketGeneration < 0)

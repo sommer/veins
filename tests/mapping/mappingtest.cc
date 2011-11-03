@@ -1973,11 +1973,11 @@ protected:
 		if(entries > 1){
 			simtime_t stepsize = (to - from) / (entries - 1);
 			for(int i = 0; i < entries - 1; i++){
-				result->setValue(A(from + stepsize * i), (from + stepsize * i).dbl());
+				result->setValue(A(from + stepsize * i), SIMTIME_DBL(from + stepsize * i));
 			}
 		}
 
-		result->setValue(A(to), to.dbl());
+		result->setValue(A(to), SIMTIME_DBL(to));
 
 		return result;
 	}
@@ -1989,11 +1989,11 @@ protected:
 
 		for(int i = 0; i < keyCount; i++){
 			if(i == 0 && startWrong){
-				createMappingBuffer->setValue(*keys, keys->getTime().dbl() * (keys + 1)->getTime().dbl());
+				createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * SIMTIME_DBL((keys + 1)->getTime()));
 			} else if(i == keyCount - 1 && endWrong) {
-				createMappingBuffer->setValue(*keys, keys->getTime().dbl() * (keys - 1)->getTime().dbl());
+				createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * SIMTIME_DBL((keys - 1)->getTime()));
 			} else
-				createMappingBuffer->setValue(*keys, keys->getTime().dbl() * keys->getTime().dbl());
+				createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * SIMTIME_DBL(keys->getTime()));
 			++keys;
 		}
 
@@ -2008,7 +2008,7 @@ protected:
 		createMappingBuffer = MappingUtils::createMapping(dims, Mapping::LINEAR);
 
 		for(int i = 0; i < keyCount; i++){
-			createMappingBuffer->setValue(*keys, keys->getTime().dbl() * value);
+			createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * value);
 			++keys;
 		}
 
@@ -2021,7 +2021,7 @@ protected:
 		createMappingBuffer = MappingUtils::createMapping(dims, Mapping::LINEAR);
 
 		for(int i = 0; i < keyCount; i++){
-			createMappingBuffer->setValue(*keys, keys->getTime().dbl() * *other);
+			createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * *other);
 			++keys;
 			++other;
 		}

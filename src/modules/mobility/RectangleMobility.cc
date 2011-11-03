@@ -42,7 +42,7 @@ void RectangleMobility::initialize(int stage)
         x2 = par("x2");
         y2 = par("y2");
 
-        move.setSpeed(par("speed"));
+        move.setSpeed(par("speed").doubleValue());
 
         // calculate helper vars
         double dx = x2-x1;
@@ -81,7 +81,7 @@ void RectangleMobility::initialize(int stage)
 
 void RectangleMobility::makeMove()
 {
-    d += move.getSpeed() * updateInterval.dbl();
+    d += move.getSpeed() * SIMTIME_DBL(updateInterval);
     while (d<0) d+=corner4;
     while (d>=corner4) d-=corner4;
 

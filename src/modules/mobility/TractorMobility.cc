@@ -41,7 +41,7 @@ void TractorMobility::initialize(int stage)
 		y2 = par("y2");
 		rows = par("rows");
 
-		move.setSpeed(par("speed"));
+		move.setSpeed(par("speed").doubleValue());
 
 		dx = x2-x1;
 		dy = y2-y1;
@@ -67,7 +67,7 @@ void TractorMobility::initialize(int stage)
 
 void TractorMobility::makeMove()
 {
-	position += move.getSpeed() * updateInterval.dbl();
+	position += move.getSpeed() * SIMTIME_DBL(updateInterval);
 
 	calculateXY();
 

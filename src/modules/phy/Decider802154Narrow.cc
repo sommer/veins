@@ -137,7 +137,7 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 		if (noErrors) {
 			snrDuration = nextTime - curTime;
 
-			int nbBits = int (snrDuration.dbl() * bitrate);
+			int nbBits = int (SIMTIME_DBL(snrDuration) * bitrate);
 
 			// non-coherent detection of m-ary orthogonal signals in an AWGN
 			// Channel
@@ -149,7 +149,7 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 
 			ber = std::max(getBERFromSNR(snr), BER_LOWER_BOUND);
 			avgBER = ber*nbBits;
-			snirAvg = snirAvg + snr*snrDuration.dbl();
+			snirAvg = snirAvg + snr*SIMTIME_DBL(snrDuration);
 
 			if(ber < bestBER) {
 				bestBER = ber;

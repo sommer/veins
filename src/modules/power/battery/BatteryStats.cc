@@ -87,7 +87,7 @@ void BatteryStats::summary(double init, double final, simtime_t_cref lifetime)
   recordScalar("nominal", init, "mW-s");
   recordScalar("total", init - final, "mW-s");
   recordScalar("lifetime", lifetime, "s");
-  recordScalar("Mean power consumption", (init - final)/simTime().dbl(), "mW");
+  recordScalar("Mean power consumption", (init - final)/SIMTIME_DBL(simTime()), "mW");
 }
 
 void BatteryStats::detail(DeviceEntry *devices, int numDevices)
