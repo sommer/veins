@@ -140,7 +140,7 @@ protected:
 	 *
 	 * Calls the base classes overriden method for normal handling.
 	 */
-	virtual void handleAirFrame(cMessage* msg);
+	virtual void handleAirFrame(AirFrame* frame);
 
 	/**
 	 * @brief Captures changes in host state.
