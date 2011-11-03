@@ -566,7 +566,7 @@ bool MoBANCoordinator::readConfigurationFile() {
 		str = tempTag->getAttribute("min"); min = strtod(str, 0);
 		str = tempTag->getAttribute("max"); max = strtod(str, 0);
 
-		minDuration = FWMath::max(updateInterval.dbl(),min); // the minimum should be bigger than the update interval.
+		minDuration = FWMath::max(SIMTIME_DBL(updateInterval),min); // the minimum should be bigger than the update interval.
 		maxDuration = FWMath::max(min,max);
 	}
 	EV << "Posture duration range: ("<< minDuration << " , " << maxDuration << ")" << endl;
@@ -747,7 +747,7 @@ bool MoBANCoordinator::readConfigurationFile() {
 					str = (*aBound)->getAttribute("tMax"); maxTime = strtod(str,0);
 
 					transitions->setTimeBoundry(typeID,minTime,maxTime);
-					EV << "Low bound: ("<< minTime.dbl() << ", " << maxTime << ")" << endl;
+					EV << "Low bound: ("<< minTime << ", " << maxTime << ")" << endl;
 				}
 			}
 	}

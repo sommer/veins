@@ -84,8 +84,8 @@ void MassMobility::handleSelfMsg(cMessage * msg)
 		case MK_CHANGE_DIR:
 		currentAngle += changeAngleBy->doubleValue();
 
-		step.x = (move.getSpeed() * cos(PI * currentAngle / 180) * updateInterval.dbl());
-		step.y = (move.getSpeed() * sin(PI * currentAngle / 180) * updateInterval.dbl());
+		step.x = (move.getSpeed() * cos(PI * currentAngle / 180) * SIMTIME_DBL(updateInterval));
+		step.y = (move.getSpeed() * sin(PI * currentAngle / 180) * SIMTIME_DBL(updateInterval));
 
 		move.setDirectionByTarget(move.getStartPos() + step);
 

@@ -95,8 +95,7 @@ void SimpleBattery::initialize(int stage) {
 		devices = new DeviceEntry[numDevices];
 		lastUpdateTime = simTime();
 	}
-
-	if (stage == 1) {
+	else if (stage == 1) {
 		hostState.set(HostState::ACTIVE);
 		emit(catHostStateSignal, &hostState);
 
@@ -321,7 +320,7 @@ void SimpleBattery::deductAndCheck() {
 	// Return open circuit battery voltage.  in SimpleBattery, the open
 	// circuit voltage is fixed
 
-double SimpleBattery::getVoltage() {
+double SimpleBattery::getVoltage() const {
 	Enter_Method_Silent();
 	return voltage;
 }
@@ -332,7 +331,7 @@ double SimpleBattery::getVoltage() {
 
 // Use getAbs() rather than residualCapacity, which can become negative
 
-double SimpleBattery::estimateResidualAbs() {
+double SimpleBattery::estimateResidualAbs() const {
 	Enter_Method_Silent();
 	double value = std::max(0.0, residualCapacity);
 	return value;
@@ -341,7 +340,7 @@ double SimpleBattery::estimateResidualAbs() {
 // Return host's own estimate of residual capacity (relative to
 // nominal capacity).
 
-double SimpleBattery::estimateResidualRelative() {
+double SimpleBattery::estimateResidualRelative() const {
 	Enter_Method_Silent();
 	double value = std::max(0.0, residualCapacity);
 	return value / nominalCapacity;

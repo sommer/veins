@@ -353,7 +353,7 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
 
 	//AirFrames
 	} else if(msg->getKind() == AIR_FRAME){
-		handleAirFrame(msg);
+		handleAirFrame(static_cast<AirFrame*>(msg));
 
 	//unknown message
 	} else {
@@ -362,9 +362,7 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
 	}
 }
 
-void BasePhyLayer::handleAirFrame(cMessage* msg) {
-	AirFrame* frame = static_cast<AirFrame*>(msg);
-
+void BasePhyLayer::handleAirFrame(AirFrame* frame) {
 	//TODO: ask jerome to set air frame priority in his UWBIRPhy
 	//assert(frame->getSchedulingPriority() == airFramePriority);
 
@@ -605,7 +603,7 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg) {
 
 	//AirFrame
 	case AIR_FRAME:
-		handleAirFrame(msg);
+		handleAirFrame(static_cast<AirFrame*>(msg));
 		break;
 
 	//ChannelSenseRequest

@@ -40,7 +40,7 @@ void CircleMobility::initialize(int stage)
         r = par("r");
         ASSERT(r>0);
         angle = par("startAngle").doubleValue()/180.0*PI;
-        move.setSpeed(par("speed"));
+        move.setSpeed(par("speed").doubleValue());
         omega = move.getSpeed()/r;
 
         // calculate initial position

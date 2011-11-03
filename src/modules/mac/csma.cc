@@ -717,7 +717,7 @@ simtime_t csma::scheduleBackoff() {
 	}
 
 	nbBackoffs = nbBackoffs + 1;
-	backoffValues = backoffValues + backoffTime.dbl();
+	backoffValues = backoffValues + SIMTIME_DBL(backoffTime);
 
 	return backoffTime + simTime();
 }

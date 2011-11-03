@@ -96,11 +96,11 @@ void PhyLayerBattery::drawCurrent(double amount, int activity) {
 }
 
 void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
-	/*if (utility->getHostState().get() == HostState::FAILED) {
+	if (battery && battery->getState() != HostState::ACTIVE) {
 		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
 		delete msg;
 		return;
-	}*/
+	}
 
 	MacPkt* pkt = static_cast<MacPkt*>(msg);
 	MacToPhyControlInfo* cInfo = static_cast<MacToPhyControlInfo*>(pkt->getControlInfo());
@@ -114,30 +114,20 @@ void PhyLayerBattery::handleUpperMessage(cMessage* msg) {
 	PhyLayer::handleUpperMessage(msg);
 }
 
-void PhyLayerBattery::handleAirFrame(cMessage* msg) {
-	/*if (utility->getHostState().get() == HostState::FAILED) {
-		coreEV<< "host has FAILED, dropping msg " << msg->getName() << endl;
-		delete msg;
+void PhyLayerBattery::handleAirFrame(AirFrame* frame) {
+	if (battery && battery->getState() != HostState::ACTIVE) {
+		coreEV<< "host has FAILED, dropping air frame msg " << frame->getName() << endl;
+		delete frame;
 		return;
-	}*/
-
-	PhyLayer::handleAirFrame(msg);
-
-
+	}
+	PhyLayer::handleAirFrame(frame);
 }
 
 void PhyLayerBattery::handleHostState(const HostState& state) {
-	// handles only battery consumption
-
-	HostState::States hostState = state.get();
-
-	switch (hostState) {
-	case HostState::FAILED:
-		EV<< "t = " << simTime() << " host state FAILED" << endl;
+	if (state.get() != HostState::ACTIVE && radio->getCurrentState() != Radio::SLEEP) {
+		coreEV<< "host is no longer in active state (maybe FAILED, SLEEP, OFF or BROKEN), force into sleep state!" << endl;
+		setRadioState(Radio::SLEEP);
 		// it would be good to create a radioState OFF, as well
-		break;
-	default:
-		break;
 	}
 }
 
@@ -148,7 +138,6 @@ void PhyLayerBattery::finishRadioSwitching() {
 }
 
 void PhyLayerBattery::setSwitchingCurrent(int from, int to) {
-	int act = SWITCHING_ACCT;
 	double current = 0;
 
 	switch(from) {
@@ -199,7 +188,7 @@ void PhyLayerBattery::setSwitchingCurrent(int from, int to) {
 		break;
 	}
 
-	BatteryAccess::drawCurrent(current, act);
+	BatteryAccess::drawCurrent(current, SWITCHING_ACCT);
 }
 
 void PhyLayerBattery::setRadioCurrent(int rs) {
@@ -223,14 +212,18 @@ simtime_t PhyLayerBattery::setRadioState(int rs) {
 	Enter_Method_Silent();
 	int prevState = radio->getCurrentState();
 
+	if (battery) {
+		if (battery && battery->getState() != HostState::ACTIVE && rs != Radio::SLEEP && prevState != rs) {
+			coreEV << "can not switch radio state, host is not in active state!" << endl;
+			return -1;
+		}
+	}
+
 	simtime_t endSwitch = PhyLayer::setRadioState(rs);
 
-	if(endSwitch > 0) {
-
+	if(endSwitch >= 0) {
 		if(radio->getCurrentState() == Radio::SWITCHING) {
 			setSwitchingCurrent(prevState, rs);
-		} else {
-			setRadioCurrent(radio->getCurrentState());
 		}
 	}
 

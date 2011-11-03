@@ -270,7 +270,7 @@ protected:
 	/**
 	 * @brief Handles messages received from the channel (probably AirFrames).
 	 */
-	virtual void handleAirFrame(cMessage* msg);
+	virtual void handleAirFrame(AirFrame* frame);
 
 	/**
 	 * @brief Handles messages received from the upper layer through the

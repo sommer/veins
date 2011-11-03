@@ -56,13 +56,13 @@ public:
 	 */
 	/*@{*/
 	/** @brief get voltage (future support for non-voltage regulated h/w */
-	double getVoltage();
+	double getVoltage() const;
 	/** @brief current state of charge of the battery, relative to its
 	 * rated nominal capacity [0..1]
 	 */
-	double estimateResidualRelative();
+	double estimateResidualRelative() const;
 	/** @brief current state of charge of the battery (mW-s) */
-	double estimateResidualAbs();
+	double estimateResidualAbs() const;
 	/*@}*/
 
 	/**
@@ -75,6 +75,10 @@ public:
 	 * a defined current in mA over time, depending on passed DrawAmount.
 	 */
 	virtual void draw(int drainID, DrawAmount& amount, int activity);
+
+	virtual HostState::States getState() const {
+		return hostState.get();
+	}
 
 protected:
 

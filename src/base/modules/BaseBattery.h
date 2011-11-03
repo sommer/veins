@@ -5,6 +5,7 @@
 
 #include "MiXiMDefs.h"
 #include "BaseModule.h"
+#include "HostState.h"
 
 /**
  * @brief Defines the amount of power drawn by a device from
@@ -46,9 +47,9 @@ public:
 	{}
 
 	/** @brief Returns the type of power drawn as PowerType. */
-	virtual int getType() { return type; }
+	virtual int getType() const { return type; }
 	/** @brief Returns the actual amount of power drawn. */
-	virtual double getValue() { return value; }
+	virtual double getValue() const { return value; }
 
 	/** @brief Sets the type of power drawn. */
 	virtual void setType(int t) { type = t; }
@@ -106,13 +107,15 @@ public:
 	 */
 	/*@{*/
 	/** @brief get voltage (future support for non-voltage regulated h/w */
-	virtual double getVoltage() = 0;
+	virtual double getVoltage() const = 0;
 	/** @brief current state of charge of the battery, relative to its
 	 * rated nominal capacity [0..1]
 	 */
-	virtual double estimateResidualRelative() = 0;
+	virtual double estimateResidualRelative() const = 0;
 	/** @brief current state of charge of the battery (mW-s) */
-	virtual double estimateResidualAbs() = 0;
+	virtual double estimateResidualAbs() const = 0;
+	/** @brief Current state of the battery. */
+	virtual HostState::States getState() const = 0;
 	/*@}*/
 };
 
