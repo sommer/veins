@@ -103,7 +103,7 @@ protected:
 	/** @brief The templated InterpolateableMap the underlying Mapping uses std::map as storage type.*/
 	typedef InterpolateableMap< Interpolator< std::map<simtime_t, argument_value_t> > >
 	                                                             interpolator_map_type;
-
+	typedef typename interpolator_map_type::interpolator_type    interpolator_type;
 	typedef typename interpolator_map_type::mapped_type          mapped_type;
 	typedef typename interpolator_map_type::iterator_intpl       iterator;
 	typedef typename interpolator_map_type::const_iterator_intpl const_iterator;
@@ -117,14 +117,22 @@ protected:
 	/** @brief Stores the next position a call of "next()" would jump to.*/
 	Argument     nextPosition;
 
+	/**
+	 * @brief Stores if this mapping represents a step function.
+	 *
+	 * Assures that the steps are considered when iterating the mapping
+	 * by adding a second key-entry as short as possible before every
+	 * key entry set by the user. The additional key-entry defines the
+	 * value the mapping has just before the key entry the user added.
+	 */
 	bool         isStepMapping;
 
 	bool         atPreStep;
 protected:
-	void updateNextPos(){
+	void updateNextPos() {
 		simtime_t t = valueIt.getNextPosition();
-		if(isStepMapping && !atPreStep){
-			t.setRaw(t.raw() - 1);
+		if(isStepMapping && !atPreStep) {
+			t.setRaw(SIMTIME_RAW(t) - 1);
 		}
 		nextPosition.setTime(t);
 	}
@@ -133,9 +141,11 @@ public:
 	/**
 	 * @brief Initializes the Iterator to use the passed InterpolateableMapIterator.
 	 */
-	TimeMappingIterator(const iterator& it, bool isStepMapping):
-		valueIt(it), isStepMapping(isStepMapping), atPreStep(false) {
+	TimeMappingIterator(const iterator& it):
+		valueIt(it), isStepMapping(it.getInterpolator().isStepping()), atPreStep(false) {
+		interpolator_type UsedInterpolator;
 
+		isStepMapping = UsedInterpolator.isStepping();
 		position.setTime(valueIt.getPosition());
 		updateNextPos();
 	}
@@ -281,7 +291,7 @@ protected:
 	/** @brief The templated InterpolateableMap the underlying Mapping uses std::map as storage type.*/
 	typedef InterpolateableMap< Interpolator< std::map<simtime_t, argument_value_t> > >
 	                                                             interpolator_map_type;
-
+	typedef typename interpolator_map_type::interpolator_type    interpolator_type;
 	typedef typename interpolator_map_type::mapped_type          mapped_type;
 	typedef typename interpolator_map_type::mapped_cref_type     mapped_cref_type;
 	typedef typename interpolator_map_type::iterator_intpl       iterator;
@@ -289,29 +299,19 @@ protected:
 
 	/** @brief Stores the key-entries defining the function.*/
 	interpolator_map_type entries;
-
-	/**
-	 * @brief Stores if this mapping represents a step function.
-	 *
-	 * Assures that the steps are considered when iterating the mapping
-	 * by adding a second key-entry as short as possible before every
-	 * key entry set by the user. The additional key-entry defines the
-	 * value the mapping has just before the key entry the user added.
-	 */
-	bool isStepMapping;
 public:
 
 	/**
 	 * @brief Initializes the Mapping with the passed Interpolation method.
 	 */
-	TimeMapping(InterpolationMethod intpl = LINEAR):
-		Mapping(), entries(), isStepMapping(intpl == STEPS) {}
+	TimeMapping():
+		Mapping(), entries() {}
 
 	/**
 	 * @brief Initializes the Mapping with the passed Interpolation method.
 	 */
-	TimeMapping(mapped_cref_type outOfRangeVal, InterpolationMethod intpl = LINEAR):
-		Mapping(), entries(outOfRangeVal), isStepMapping(intpl == STEPS) {}
+	TimeMapping(mapped_cref_type outOfRangeVal):
+		Mapping(), entries(outOfRangeVal) {}
 
 	/**
 	 * @brief returns a deep copy of this mapping instance.
@@ -346,7 +346,7 @@ public:
 	 * pointer if it isn't used anymore.
 	 */
 	virtual MappingIterator* createIterator() {
-		return new TimeMappingIterator<Interpolator>(entries.beginIntpl(), isStepMapping);
+		return new TimeMappingIterator<Interpolator>(entries.beginIntpl());
 	}
 
 	/**
@@ -357,7 +357,7 @@ public:
 	 * pointer if it isn't used anymore.
 	 */
 	virtual MappingIterator* createIterator(const Argument& pos) {
-		return new TimeMappingIterator<Interpolator>(entries.findIntpl(pos.getTime()), isStepMapping);
+		return new TimeMappingIterator<Interpolator>(entries.findIntpl(pos.getTime()));
 	}
 };
 
@@ -519,7 +519,8 @@ public:
 
 		argument_value_cref_t v0 = left->getValue(pos);
 		argument_value_cref_t v1 = right->getValue(pos);
-		return v0 + (v1 - v0) * factor;
+		//return v0 + (v1 - v0) * factor;
+		return v0 * (Argument::MappedOne - factor) + v1 * factor;
 	}
 
 	/**
@@ -743,12 +744,12 @@ protected:
 	 * @brief calculates the linear interpolation factor used for the created
 	 * LinearIntplMappings.
 	 */
-	static key_type linearInterpolationFactor(key_cref_type t, key_cref_type t0, key_cref_type t1){
-		assert(t0 <= t && t <= t1);
+	static ConstMapping::argument_value_t linearInterpolationFactor(key_cref_type t, key_cref_type t0, key_cref_type t1){
+		assert( (t0 <= t && t <= t1) || (t0 >= t && t >= t1) );
 		if (t0 == t1) {
-			return Argument::MappedZero;
+			return 0;
 		}
-		return (t - t0) / (t1 - t0);
+		return cast_it<ConstMapping::argument_value_t>( (t - t0) / (t1 - t0) );
 	}
 };
 
@@ -1258,7 +1259,7 @@ protected:
 	/** @brief The templated InterpolateableMap the underlying Mapping uses std::map as storage type.*/
 	typedef InterpolateableMap< Interpolator< std::map<argument_value_t, Mapping*> > >
 	                                                             interpolator_map_type;
-
+	typedef typename interpolator_map_type::interpolator_type    interpolator_type;
 	typedef typename interpolator_map_type::mapped_type          mapped_type;
 	typedef typename interpolator_map_type::mapped_cref_type     mapped_cref_type;
 	typedef typename interpolator_map_type::iterator_intpl       iterator;
@@ -1295,7 +1296,7 @@ protected:
 	 *
 	 * This constructor is only used internally to create the sub-mappings.
 	 */
-	MultiDimMapping(const DimensionSet& myDims, Dimension myDim, InterpolationMethod intpl = STEPS):
+	MultiDimMapping(const DimensionSet& myDims, Dimension myDim):
 			Mapping(myDims),
 			outOfRangeMapping(0),
 			wrappedOORMapping(0),
@@ -1313,8 +1314,7 @@ protected:
 	 */
 	MultiDimMapping(const DimensionSet& myDims, Dimension myDim,
 					ConstantSimpleConstMapping* oorm,
-					ConstMappingWrapper* wrappedoorm,
-					InterpolationMethod intpl = STEPS):
+					ConstMappingWrapper* wrappedoorm):
 			Mapping(myDims),
 			outOfRangeMapping(oorm),
 			wrappedOORMapping(wrappedoorm),
@@ -1346,32 +1346,31 @@ protected:
 	 * MultiDimMapping instance.
 	 */
 	mapped_type createSubSignal() const{
-		DimensionSet::const_iterator it = dimensions.find(myDimension);
-		Dimension nextDim = *(--it);
+		const Dimension& nextDim = *(--dimensions.find(myDimension));
 		if(wrappedOORMapping == 0) {
 			if(nextDim == Dimension::time)
 				return new TimeMapping<Interpolator>();
 			else
-				return new MultiDimMapping<Interpolator>(dimensions, nextDim, LINEAR);
+				return new MultiDimMapping<Interpolator>(dimensions, nextDim);
 		} else {
 			if(nextDim == Dimension::time)
 				return new TimeMapping<Interpolator>(outOfRangeMapping->getValue());
 			else
-				return new MultiDimMapping<Interpolator>(dimensions, nextDim, outOfRangeMapping, wrappedOORMapping, LINEAR);
+				return new MultiDimMapping<Interpolator>(dimensions, nextDim, outOfRangeMapping, wrappedOORMapping);
 		}
 	}
 
 	void copySubMappings(const MultiDimMapping& o){
-		DimensionSet::const_iterator dimIt = dimensions.find(myDimension);
-		Dimension nextDim = *(--dimIt);
+		const typename interpolator_map_type::iterator itEnd   = entries.end();
+		Dimension                                      nextDim = *(--dimensions.find(myDimension));
 
-		if(nextDim == Dimension::time_static()) {
-			for(typename interpolator_map_type::iterator it = entries.begin(); it != entries.end(); ++it) {
+		if(nextDim == Dimension::time) {
+			for(typename interpolator_map_type::iterator it = entries.begin(); it != itEnd; ++it) {
 				it->second = new TimeMapping<Interpolator>(*(static_cast<TimeMapping<Interpolator>*>(it->second)));
 			}
 		}
 		else {
-			for(typename interpolator_map_type::iterator it = entries.begin(); it != entries.end(); ++it) {
+			for(typename interpolator_map_type::iterator it = entries.begin(); it != itEnd; ++it) {
 				if(outOfRangeMapping == 0) {
 					it->second = new MultiDimMapping<Interpolator>(*(static_cast<MultiDimMapping<Interpolator>*>(it->second)));
 				} else {
@@ -1387,7 +1386,7 @@ public:
 	 *
 	 * Also takes the interpolation-method but is not used yet.
 	 */
-	MultiDimMapping(const DimensionSet& myDims, InterpolationMethod intpl = STEPS):
+	MultiDimMapping(const DimensionSet& myDims):
 		Mapping(myDims),
 		outOfRangeMapping(0),
 		wrappedOORMapping(0),
@@ -1402,7 +1401,7 @@ public:
 	 *
 	 * Also takes the interpolation-method but is not used yet.
 	 */
-	MultiDimMapping(const DimensionSet& myDims, argument_value_cref_t oorv, InterpolationMethod intpl = STEPS):
+	MultiDimMapping(const DimensionSet& myDims, argument_value_cref_t oorv):
 		Mapping(myDims),
 		outOfRangeMapping(new ConstantSimpleConstMapping(myDims, oorv)),
 		wrappedOORMapping(new ConstMappingWrapper(outOfRangeMapping)),
@@ -1422,15 +1421,13 @@ public:
 		wrappedOORMapping(o.wrappedOORMapping),
 		entries(o.entries),
 		myDimension(o.myDimension),
-		isMaster(true){
+		isMaster(true) {
 
 		if(outOfRangeMapping != 0){
 			outOfRangeMapping = new ConstantSimpleConstMapping(dimensions, o.outOfRangeMapping->getValue());
 			wrappedOORMapping = new ConstMappingWrapper(outOfRangeMapping);
 			entries.setOutOfRangeVal(wrappedOORMapping);
 		}
-
-
 		copySubMappings(o);
 	}
 
@@ -1439,17 +1436,18 @@ public:
 	 * copied instead of only their the pointers.
 	 */
 	const MultiDimMapping& operator=(const MultiDimMapping<Interpolator>& o){
-		for(typename interpolator_map_type::const_iterator it = entries.begin(); it != entries.end(); ++it) {
+		const typename interpolator_map_type::const_iterator itEnd = entries.end();
+		for(typename interpolator_map_type::const_iterator it = entries.begin(); it != itEnd; ++it) {
 			if(it->second)
 				delete it->second;
 		}
 
-		dimensions = o.dimensions;
-		entries = o.entries;
-		myDimension = o.myDimension;
+		dimensions        = o.dimensions;
+		entries           = o.entries;
+		myDimension       = o.myDimension;
 		outOfRangeMapping = o.outOfRangeMapping;
 		wrappedOORMapping = o.wrappedOORMapping;
-		isMaster = true;
+		isMaster          = true;
 
 		if(outOfRangeMapping != 0){
 			outOfRangeMapping = new ConstantSimpleConstMapping(dimensions, o.outOfRangeMapping->getValue());
@@ -1471,10 +1469,11 @@ public:
 	 * @brief Frees the memory for the sub mappings.
 	 */
 	virtual ~MultiDimMapping() {
-		for(typename interpolator_map_type::const_iterator it = entries.begin(); it != entries.end(); ++it) {
-    			if(it->second)
-    				delete it->second;
-    		}
+		const typename interpolator_map_type::const_iterator itEnd = entries.end();
+		for(typename interpolator_map_type::const_iterator it = entries.begin(); it != itEnd; ++it) {
+			if (it->second)
+				delete it->second;
+    	}
 
 		if(isMaster) {
 			if(outOfRangeMapping)
@@ -1493,9 +1492,8 @@ public:
 	 */
 	virtual argument_value_t getValue(const Argument& pos) const {
 		assert(pos.hasArgVal(myDimension));
-		argument_value_cref_t argVal = pos.getArgValue(myDimension);
-
-		typename interpolator_map_type::interpolated subM = entries.getIntplValue(argVal);
+		argument_value_cref_t                        argVal = pos.getArgValue(myDimension);
+		typename interpolator_map_type::interpolated subM   = entries.getIntplValue(argVal);
 
 		if(!(*subM))
 			return Argument::MappedZero;
@@ -1511,14 +1509,12 @@ public:
 	 * entries per dimension.
 	 */
 	virtual void setValue(const Argument& pos, argument_value_cref_t value) {
-		argument_value_cref_t argVal = pos.getArgValue(myDimension);
+		argument_value_cref_t                    argVal = pos.getArgValue(myDimension);
+		typename interpolator_map_type::iterator posIt  = entries.lower_bound(argVal);
 
-		typename interpolator_map_type::iterator posIt = entries.lower_bound(argVal);
-
-		if(posIt == entries.end() || posIt->first != argVal) {
+		if(posIt == entries.end() || (entries.key_comp()(argVal, posIt->first))) {
 			posIt = entries.insert(posIt, std::make_pair(argVal, createSubSignal()));
 		}
-
 		posIt->second->setValue(pos, value);
 	}
 
@@ -1592,62 +1588,56 @@ public:
 	typedef std::map<Dimension, KeySet > KeyMap;
 protected:
 	Mapping*      fillRef;
-	const KeyMap* keys;
+	const KeyMap& keys;
 
 //--------methods----------
 protected:
 	void fillRefIfNecessary() {
-		KeyMap::const_iterator it = keys->find(myDimension);
+		const KeyMap::const_iterator itEnd = keys.end();
+		KeyMap::const_iterator       it    = keys.find(myDimension);
 
-		if(it == keys->end())
+		if(it == itEnd)
 			return;
 
 		fillRef = createSubSignal();
 
-		for (KeySet::const_iterator keyIt = it->second.begin();
-			 keyIt != it->second.end(); ++keyIt)
-		{
+		const KeySet::const_iterator keyItEnd = it->second.end();
+		for (KeySet::const_iterator keyIt = it->second.begin(); keyIt != keyItEnd; ++keyIt) {
 			entries.insert(entries.end(), std::make_pair(*keyIt, fillRef));
 		}
 	}
 
-	FilledUpMapping(const DimensionSet& myDims, Dimension myDim, const KeyMap* keys, InterpolationMethod intpl = STEPS):
-		MultiDimMapping<Linear>(myDims, myDim, intpl), fillRef(0), keys(keys)
+	FilledUpMapping(const DimensionSet& myDims, Dimension myDim, const KeyMap& rkeys):
+		MultiDimMapping<Linear>(myDims, myDim), fillRef(0), keys(rkeys)
 	{
 		fillRefIfNecessary();
 	}
 
 	Mapping* createSubSignal() const{
-		DimensionSet::const_iterator it = dimensions.find(myDimension);
-		Dimension nextDim = *(--it);
+		const Dimension& nextDim = *(--dimensions.find(myDimension));
 		if(nextDim == Dimension::time)
-			return new TimeMapping<Linear>();
+			return MultiDimMapping<Linear>::createSubSignal();
 		else
-			return new FilledUpMapping(dimensions, nextDim, keys, LINEAR);
+			return new FilledUpMapping(dimensions, nextDim, keys);
 	}
 public:
-	FilledUpMapping(const ConstMapping* source, const DimensionSet& dims, const KeyMap* keys):
-		MultiDimMapping<Linear>(dims), fillRef(0), keys(keys)
+	FilledUpMapping(const ConstMapping* source, const DimensionSet& dims, const KeyMap& rkeys):
+		MultiDimMapping<Linear>(dims), fillRef(0), keys(rkeys)
 	{
 		ConstMappingIterator* it = source->createConstIterator();
 
-		if(it->inRange())
-		{
+		if(it->inRange()) {
 			fillRefIfNecessary();
 
-			while(it->inRange()){
+			while(it->inRange()) {
 				appendValue(it->getPosition(), it->getValue());
 
 				if(!it->hasNext())
 					break;
-
 				it->next();
 			}
 		}
-
 		delete it;
-
-		keys = 0;
 	}
 
 	virtual ~FilledUpMapping(){
@@ -1658,26 +1648,17 @@ public:
 	}
 
 	virtual void appendValue(const Argument& pos, argument_value_cref_t value) {
-		assert(keys != 0);
-
-		if(fillRef != 0)
-		{
+		if(fillRef != 0) {
 			fillRef->appendValue(pos, value);
+			return;
 		}
-		else
-		{
-			argument_value_cref_t argVal = pos.getArgValue(myDimension);
+		argument_value_cref_t                    argVal = pos.getArgValue(myDimension);
+		typename interpolator_map_type::iterator posIt  = entries.lower_bound(argVal);
 
-			typename interpolator_map_type::iterator posIt = entries.lower_bound(argVal);
-
-			if(posIt == entries.end() || posIt->first != argVal) {
-				Mapping* subF = createSubSignal();
-				posIt = entries.insert(posIt, std::make_pair(argVal, subF));
-			}
-
-			posIt->second->appendValue(pos, value);
+		if(posIt == entries.end() || (entries.key_comp()(argVal, posIt->first))) {
+			posIt = entries.insert(posIt, std::make_pair(argVal, createSubSignal()));
 		}
-
+		posIt->second->appendValue(pos, value);
 	}
 
 	virtual MappingIterator* createIterator() {
@@ -1711,24 +1692,7 @@ public:
 	const static Argument::mapped_type cMaxNotFound;
 
 private:
-	static MappingBuffer mappingBuffer;
-
-private:
-	static void freeMappingBuffer(MappingBuffer::value_type m) {
-		MappingBuffer::iterator it = std::find(mappingBuffer.begin(), mappingBuffer.end(), m);
-		if(it != mappingBuffer.end()){
-			delete m;
-			mappingBuffer.erase(it);
-		}
-	}
-
-	static MappingBuffer::value_type setMappingBuffer(MappingBuffer::value_type mapping) {
-
-		mappingBuffer.push_front(mapping);
-		return mapping;
-	}
-
-	static MappingBuffer::value_type createCompatibleMapping(const ConstMapping& src, const ConstMapping& dst);
+	static const ConstMapping *const createCompatibleMapping(const ConstMapping& src, const ConstMapping& dst);
 
 	static bool iterateToNext(ConstMappingIterator* it1, ConstMappingIterator* it2);
 
@@ -1740,7 +1704,7 @@ public:
 	 *
 	 * Note: The interpolation method is always linear, at the moment.
 	 */
-	static Mapping* createMapping(const DimensionSet& domain = DimensionSet(Dimension::time_static()),
+	static Mapping* createMapping(const DimensionSet& domain = DimensionSet(Dimension::time),
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
 
 	/**
@@ -1750,7 +1714,7 @@ public:
 	 * Note: The interpolation method is always linear, at the moment.
 	 */
 	static Mapping* createMapping(Mapping::argument_value_cref_t outOfRangeValue,
-								  const DimensionSet& domain = DimensionSet(Dimension::time_static()),
+								  const DimensionSet& domain = DimensionSet(Dimension::time),
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
 
 	template<class Operator>
@@ -1769,21 +1733,18 @@ public:
 
 		using std::operator<<;
 
-		MappingBuffer::value_type f2Comp = createCompatibleMapping(f2, f1);
-		MappingBuffer::value_type f1Comp = createCompatibleMapping(f1, f2);
+		const ConstMapping *const f2Comp = createCompatibleMapping(f2, f1);
+		const ConstMapping *const f1Comp = createCompatibleMapping(f1, f2);
 
 		const DimensionSet& domain = f1Comp->getDimensionSet();
+		Mapping *const      result = (contOutOfRange) ? MappingUtils::createMapping(domain) : MappingUtils::createMapping(outOfRangeVal, domain);
 
-		Mapping* result = 0;
-		if(contOutOfRange)
-			result = MappingUtils::createMapping(domain);
-		else
-			result = MappingUtils::createMapping(outOfRangeVal, domain);
+		ConstMappingIterator *const itF1       = f1Comp->createConstIterator();
+		ConstMappingIterator *const itF2       = f2Comp->createConstIterator();
+		const bool                  bF1InRange = itF1->inRange();
+		const bool                  bF2InRange = itF2->inRange();
 
-		ConstMappingIterator* itF1 = f1Comp->createConstIterator();
-		ConstMappingIterator* itF2 = f2Comp->createConstIterator();
-
-		if(!itF1->inRange() && !itF2->inRange()){
+		if(!bF1InRange && !bF2InRange){
 			delete itF1;
 			delete itF2;
 			return result;
@@ -1791,7 +1752,7 @@ public:
 
 		MappingIterator* itRes = 0;
 
-		if(itF1->inRange() && (!itF2->inRange() || itF1->getPosition() < itF2->getPosition())){
+		if(bF1InRange && (!bF2InRange || itF1->getPosition() < itF2->getPosition())){
 			itF2->jumpTo(itF1->getPosition());
 		} else {
 			itF1->jumpTo(itF2->getPosition());
@@ -1816,8 +1777,10 @@ public:
 		delete itF2;
 		delete itRes;
 
-		freeMappingBuffer(f2Comp);
-		freeMappingBuffer(f1Comp);
+		if (&f2 != f2Comp)
+			delete (f2Comp);
+		if (&f1 != f1Comp)
+			delete (f1Comp);
 
 		return result;
 	}
@@ -2006,7 +1969,7 @@ public:
 		oorValue(oorValue),
 		op(op)
 	{
-		while(first != last){
+		while(first != last) {
 			mappings.push_back(*first);
 			++first;
 		}
@@ -2038,12 +2001,10 @@ public:
 	}
 
 	virtual Argument::mapped_type getValue(const Argument& pos) const {
-		MappingSet::const_iterator it  = mappings.begin();
-		Argument::mapped_type      res = refMapping->getValue(pos);
+		const MappingSet::const_iterator itEnd = mappings.end();
+		Argument::mapped_type            res   = refMapping->getValue(pos);
 
-		for (MappingSet::const_iterator it = mappings.begin();
-			 it != mappings.end(); ++it)
-		{
+		for (MappingSet::const_iterator it = mappings.begin(); it != itEnd; ++it) {
 			res = op(res, (*it)->getValue(pos));
 		}
 
@@ -2056,12 +2017,13 @@ public:
 	Mapping* createConcatenatedMapping() const {
 		assert(!mappings.empty());
 
-		MappingSet::const_iterator it = mappings.begin();
+		MappingSet::const_iterator       it    = mappings.begin();
+		const MappingSet::const_iterator itEnd = mappings.end();
 
 		Mapping* result = MappingUtils::applyElementWiseOperator(*refMapping, **it, op,
 																 oorValue, continueOutOfRange);
 
-		while(++it != mappings.end()){
+		while(++it != itEnd) {
 			Mapping* buf = result;
 			result = MappingUtils::applyElementWiseOperator(*buf, **it, op,
 															oorValue, continueOutOfRange);

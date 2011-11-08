@@ -57,7 +57,7 @@ simple MassMobility extends BaseMobility
 {
     parameters:
         @class(MassMobility);
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
         volatile double changeInterval @unit(s); // frequency of changing speed and angle (can be random) [s]
         volatile double changeAngleBy @unit(deg); // change angle by this much (can be random) [deg]
         volatile double speed @unit(mps); // speed (can be random, updated every changeInterval) [m/s]

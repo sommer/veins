@@ -120,7 +120,8 @@ void assertEqualNotSmaller(std::string msg, T& v1, T& v2){
 	assertEqual(msg, v1, v2);
 	assertFalse(msg, v1 < v2);
 	assertFalse(msg, v2 < v1);
-	assertEqual(msg, 0, v1.compare(v2, v1.getDimensions()));
+	DimensionSet v1Dims = v1.getDimensions();
+	assertEqual(msg, 0, v1.compare(v2, &v1Dims));
 }
 
 
@@ -144,7 +145,7 @@ protected:
 		DimensionSet set3;
 	public:
 		ArgFactory(Dimension d2, Dimension d3):
-			time(Dimension::time_static()), d2(d2), d3(d3), set2(time, d2), set3(time, d2, d3) {}
+			time(Dimension::time), d2(d2), d3(d3), set2(time, d2), set3(time, d2, d3) {}
 
 		Argument operator()(simtime_t_cref t){
 			return Argument(t);
@@ -180,7 +181,7 @@ protected:
 public:
 	MappingTest():
 		SimpleTest(),
-		time(Dimension::time_static()), freq("frequency"), channel(freq), space("space"),
+		time(Dimension::time), freq("frequency"), channel(freq), space("space"),
 		A(freq, space), createMappingBuffer(0){
 		for(Argument::mapped_type i = 0.0; i <= 6.0; i+=0.25) {
 			for(simtime_t j = SIMTIME_ZERO; j <= 6.0; j+=0.25) {
@@ -234,6 +235,7 @@ protected:
 
 	void testArg() {
 		Argument a1(10.2);
+		DimensionSet a1Dims = a1.getDimensions();
 
 		assertClose("Check initial time value of a1.", 10.2, a1.getTime());
 
@@ -241,18 +243,21 @@ protected:
 		assertEqualSilent("Check time value of a1 after setTimeValue.", -4.2, a1.getTime());
 
 		Argument a2(-4.2);
+		DimensionSet a2Dims = a2.getDimensions();
+
 		assertEqualNotSmaller("a1 and a2 should be equal.", a1, a2);
 
 		a2.setTime(-4.3);
 		assertTrue("a2 with smaller time should be smaller than a1", a2 < a1);
-		assertTrue("a2 with smaller time should be compared smaller than a1", a2.compare(a1, a1.getDimensions()) < 0);
+		assertTrue("a2 with smaller time should be compared smaller than a1", a2.compare(a1, &a1Dims) < 0);
 
 		a2.setTime(0.0);
 		assertTrue("a1 with smaller time should be smaller than a2", a1 < a2);
-		assertTrue("a1 with smaller time should be compared smaller than a2", a1.compare(a2, a1.getDimensions()) < 0);
+		assertTrue("a1 with smaller time should be compared smaller than a2", a1.compare(a2, &a1Dims) < 0);
 
 
 		a1.setArgValue(freq, 2.5);
+		a1Dims = a1.getDimensions();
 		assertEqualSilent("time dimension should still have same value.", -4.2, a1.getTime());
 		assertEqualSilent("Check frequency dimension value.", 2.5, a1.getArgValue(freq));
 
@@ -261,23 +266,23 @@ protected:
 		//assertFalse("a1 and a2 with same time and implicit same freq should not be smaller.", a1 < a2);
 		assertTrue("a1 and a2 with same time and implicit same freq should be same.", a1.isSamePosition(a2));
 		assertFalse("a1 and a2 with same time and implicit same freq should not be equal.", a1 == a2);
-		assertEqual("a1 and a2 with same time and implicit same freq should be compared same.", 0, a1.compare(a2, a2.getDimensions()));
+		assertEqual("a1 and a2 with same time and implicit same freq should be compared same.", 0, a1.compare(a2, &a2Dims));
 
 		a1.setArgValue(freq, -2.2);
 		//assertFalse("a1 and a2 with same time and implicit same freq should still not be smaller.", a1 < a2);
-		assertEqual("a1 and a2 with same time and implicit same freq should still be compared same.", 0, a1.compare(a2, a2.getDimensions()));
+		assertEqual("a1 and a2 with same time and implicit same freq should still be compared same.", 0, a1.compare(a2, &a2Dims));
 		assertTrue("a1 and a2 with same time and implicit same freq should still be same.", a1.isSamePosition(a2));
 		assertFalse("a1 and a2 with same time and implicit same freq should still not be equal.", a1 == a2);
 
 		a2.setTime(-5);
 		//assertFalse("a1 with bigger time and implicit equal freq should not be smaller.", a1 < a2);
-		assertTrue("a1 with bigger time and implicit equal freq should be compared bigger.", a1.compare(a2, a2.getDimensions()) > 0);
+		assertTrue("a1 with bigger time and implicit equal freq should be compared bigger.", a1.compare(a2, &a2Dims) > 0);
 		assertFalse("a1 with bigger time and implicit equal freq should not be same.", a1.isSamePosition(a2));
 		assertFalse("a1 with bigger time and implicit equal freq should not be equal.", a1 == a2);
 
 		a1.setTime(-6);
 		//assertTrue("a1 with smaller time and implicit equal freq should be smaller.", a1 < a2);
-		assertTrue("a1 with smaller time and implicit equal freq should be compared smaller.", a1.compare(a2, a2.getDimensions()) < 0);
+		assertTrue("a1 with smaller time and implicit equal freq should be compared smaller.", a1.compare(a2, &a2Dims) < 0);
 		assertFalse("a1 with smaller time and implicit equal freq should not be same.", a1.isSamePosition(a2));
 		assertFalse("a1 with smaller time and implicit equal freq should not be equal.", a1 == a2);
 
@@ -285,39 +290,40 @@ protected:
 		a1.setArgValue(freq, 2.5);
 		a2.setTime(-4.2);
 		a2.setArgValue(freq, 2.5);
+		a2Dims = a2.getDimensions();
 
 		assertEqual("a1 and a2 with same time and freq should be equal.", a1, a2);
-		assertEqual("a1 and a2 with same time and freq should be compared equal.", 0, a1.compare(a2, a1.getDimensions()));
+		assertEqual("a1 and a2 with same time and freq should be compared equal.", 0, a1.compare(a2, &a1Dims));
 
 		a2.setTime(-4.3);
 		assertTrue("a2 with smaller time and same freq should be smaller than a1", a2 < a1);
-		assertTrue("a2 with smaller time and same freq should be compared smaller than a1", a2.compare(a1, a1.getDimensions()) < 0);
+		assertTrue("a2 with smaller time and same freq should be compared smaller than a1", a2.compare(a1, &a1Dims) < 0);
 		assertFalse("a2 with smaller time and same freq should not be equal with a1.", a1 == a2);
 
 		a2.setTime(0.0);
-		assertTrue("a1 with smaller time and same freq should be compared smaller than a2", a1.compare(a2, a2.getDimensions()) < 0);
+		assertTrue("a1 with smaller time and same freq should be compared smaller than a2", a1.compare(a2, &a2Dims) < 0);
 		assertTrue("a1 with smaller time and same freq should be smaller than a2", a1 < a2);
 		assertFalse("a1 with smaller time and same freq should not be equal with a2.", a1 == a2);
 
 		a2.setTime(-4.2);
 		a2.setArgValue(freq, 2.0);
-		assertTrue("a2 with smaller freq should be smaller than a1", a2.compare(a1, a1.getDimensions()) < 0);
+		assertTrue("a2 with smaller freq should be smaller than a1", a2.compare(a1, &a1Dims) < 0);
 		assertTrue("a2 with smaller freq should be smaller than a1", a2 < a1);
 		assertFalse("a2 with smaller freq should not be equal with a1.", a1 == a2);
 
 		a2.setArgValue(freq, 3.0);
-		assertTrue("a1 with smaller freq should be smaller than a2", a1.compare(a2, a2.getDimensions()) < 0);
+		assertTrue("a1 with smaller freq should be smaller than a2", a1.compare(a2, &a2Dims) < 0);
 		assertTrue("a1 with smaller freq should be smaller than a2", a1 < a2);
 		assertFalse("a1 with smaller freq should not be equal with a2.", a1 == a2);
 
 		a2.setTime(-20.0);
-		assertTrue("a1 with smaller freq should still be smaller than a2 with smaller time", a2.compare(a1, a2.getDimensions()) > 0);
+		assertTrue("a1 with smaller freq should still be smaller than a2 with smaller time", a2.compare(a1, &a2Dims) > 0);
 		assertTrue("a1 with smaller freq should still be smaller than a2 with smaller time", a1 < a2);
 		assertFalse("a1 with smaller freq should not be equal with a2 with smaller time.", a1 == a2);
 
 		a2.setTime(40.0);
 		a2.setArgValue(freq, 2.2);
-		assertTrue("a2 with smaller freq should still be smaller than a1 with smaller time", a1.compare(a2, a2.getDimensions()) > 0);
+		assertTrue("a2 with smaller freq should still be smaller than a1 with smaller time", a1.compare(a2, &a2Dims) > 0);
 		assertTrue("a2 with smaller freq should still be smaller than a1 with smaller time", a2 < a1);
 		assertFalse("a2 with smaller freq should not be equal with a1 with smaller time.", a1 == a2);
 
@@ -633,7 +639,7 @@ protected:
 	}
 
 	void testMultiFunction() {
-		testMultiFunctionInfinity();
+		//testMultiFunctionInfinity();
 		DimensionSet dimSet(Dimension::time);
 		dimSet.addDimension(channel);
 

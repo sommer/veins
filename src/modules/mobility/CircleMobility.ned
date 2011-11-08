@@ -29,7 +29,7 @@ simple CircleMobility extends BaseMobility
 {
     parameters:
         @class(CircleMobility);
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
         double cx; // x coord of the center of the circle
         double cy; // y coord of the center of the circle
         double cz = default(0); // z coord of the center of the circle

@@ -40,7 +40,7 @@ simtime_t Decider80211::processNewSignal(AirFrame* frame) {
 	Signal& signal = frame->getSignal();
 	Argument start(DimensionSet::timeFreqDomain);
 	start.setTime(signal.getReceptionStart());
-	start.setArgValue(Dimension::frequency_static(), centerFrequency);
+	start.setArgValue(Dimension::frequency, centerFrequency);
 
 	double recvPower = signal.getReceivingPower()->getValue(start);
 
@@ -71,10 +71,10 @@ double Decider80211::calcChannelSenseRSSI(simtime_t_cref start, simtime_t_cref e
 
 	Argument min(DimensionSet::timeFreqDomain);
 	min.setTime(start);
-	min.setArgValue(Dimension::frequency_static(), centerFrequency - 11e6);
+	min.setArgValue(Dimension::frequency, centerFrequency - 11e6);
 	Argument max(DimensionSet::timeFreqDomain);
 	max.setTime(end);
-	max.setArgValue(Dimension::frequency_static(), centerFrequency + 11e6);
+	max.setArgValue(Dimension::frequency, centerFrequency + 11e6);
 
 	Mapping::argument_value_t rssi = MappingUtils::findMax(*rssiMap, min, max, Argument::MappedZero /* the value if no maximum will be found */);
 
@@ -100,10 +100,10 @@ DeciderResult* Decider80211::checkIfSignalOk(AirFrame* frame)
 											 //partly - TODO: maybe solve this nicer
 	Argument min(DimensionSet::timeFreqDomain);
 	min.setTime(start);
-	min.setArgValue(Dimension::frequency_static(), centerFrequency - 11e6);
+	min.setArgValue(Dimension::frequency, centerFrequency - 11e6);
 	Argument max(DimensionSet::timeFreqDomain);
 	max.setTime(end);
-	max.setArgValue(Dimension::frequency_static(), centerFrequency + 11e6);
+	max.setArgValue(Dimension::frequency, centerFrequency + 11e6);
 
 	Mapping::argument_value_t snirMin = MappingUtils::findMin(*snrMap, min, max, Argument::MappedZero /* the value if no minimum will be found */);
 

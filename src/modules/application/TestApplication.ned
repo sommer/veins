@@ -4,9 +4,9 @@ simple TestApplication
 
 {
     parameters:
-        bool debug; // debug switch
-        bool stats;   // stats switch
-        bool trace; // trace switch
+        bool   debug = default(false); // debug switch
+        bool   stats = default(false);   // stats switch
+        bool   trace = default(false); // trace switch
         double trafficParam @unit(s);   // mean time between packets (poisson arrival rate)
         double nodeAddr;        // node address
 	double dstAddr;		// packet destination node address

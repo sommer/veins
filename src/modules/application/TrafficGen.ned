@@ -27,7 +27,7 @@ simple TrafficGen like IBaseApplLayer
     parameters:
         double packetTime @unit(s); // the time a packet needs to be transmitted
         double packetsPerPacketTime; // the packets to generate per packet time (regulates traffic)
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
         int burstSize = default(1);
         int headerLength @unit(bit);
     gates:

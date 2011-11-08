@@ -117,7 +117,7 @@ public:
 	/**
 	 * @brief Returns true if the ids of the two dimensions are equal.
 	 */
-	bool operator==(const Dimension& other) const;
+	bool operator==(const Dimension& other) const { return id == other.id; }
 
 	/**
 	 * @brief Returns true if the id of the other dimension is
@@ -125,7 +125,7 @@ public:
 	 *
 	 * This is needed to be able to use Dimension as a key in std::map.
 	 */
-	bool operator<(const Dimension& other) const;
+	bool operator<(const Dimension& other) const  { return id  < other.id; }
 
 	/** @brief Sorting operator by dimension ID.*/
 	bool operator<=(const Dimension& other) const { return id <= other.id; }
@@ -292,19 +292,19 @@ public:
 	/** @brief One value of a Argument value. */
 	const static mapped_type         MappedOne;
 protected:
-	typedef std::pair<key_type, mapped_type> value_type;
-	typedef std::list<value_type>			 value_list_type;
+	typedef std::map<key_type, mapped_type> container_type;
+	typedef container_type::value_type      value_type;
 	/** @brief Stores the time dimension in Omnet's time type */
-	simtime_t       time;
+	simtime_t      time;
 
 	/** @brief Maps the dimensions of this Argument to their values. */
-	value_list_type values;
+	container_type values;
 
 public:
 	/** @brief Iterator type for this set.*/
-	typedef value_list_type::iterator       iterator;
+	typedef container_type::iterator       iterator;
 	/** @brief Const-iterator type for this set.*/
-	typedef value_list_type::const_iterator const_iterator;
+	typedef container_type::const_iterator const_iterator;
 
 protected:
 	/**
@@ -320,8 +320,26 @@ protected:
 	 *
 	 * The method returns the position inside the array the value was inserted.
 	 */
-	iterator insertValue(iterator pos, const Argument::key_type& dim, Argument::mapped_type_cref value, bool ignoreUnknown = false);
+	inline iterator insertValue(iterator pos, const Argument::value_type& valPair, iterator& itEnd, bool ignoreUnknown = false);
 
+	template<typename IteratorType>
+	class key_iterator : public IteratorType
+	{
+	public:
+	    typedef typename IteratorType::value_type::first_type& reference;
+	    typedef typename IteratorType::value_type::first_type* pointer;
+
+	    key_iterator(const IteratorType& other) : IteratorType(other) {} ;
+
+	    const reference operator *() const
+	    {
+	        return IteratorType::operator*().first;
+	    }
+	    const pointer  operator ->() const
+	    {
+	        return &IteratorType::operator->()->first;
+	    }
+	};
 public:
 	/**
 	 * @brief Initialize this argument with the passed value for
@@ -437,7 +455,7 @@ public:
 	 *
 	 * See "operator<" for definition of smaller, equal and bigger.
 	 */
-	int compare(const Argument& o, const DimensionSet& dims) const;
+	int compare(const Argument& o, const DimensionSet *const dims = NULL) const;
 
 	/**
 	 * @brief Returns the dimensions this argument is defined over
@@ -447,10 +465,11 @@ public:
 	 * dimensions inside this Argument.
 	 */
 	DimensionSet getDimensions() const {
-		DimensionSet res(Dimension::time_static());
+		typedef key_iterator<const_iterator> key_const_iterator;
 
-		for (const_iterator it = begin(); it != end(); ++it)
-			res.addDimension(it->first);
+		DimensionSet res(Dimension::time);
+
+		res.insert(key_const_iterator(values.begin()), key_const_iterator(values.end()));
 
 		return res;
 	}
@@ -466,7 +485,7 @@ public:
 		out << "(" << d.time;
 
 		for (const_iterator it = d.begin(); it != d.end(); ++it) {
-			out << ", " << it->second;
+			out << ", " << it->second << "@" << it->first;
 		}
     	return (out << ")");
     }
@@ -678,6 +697,7 @@ class MIXIM_API ConstMapping {
 public:
 	typedef Argument::mapped_type      argument_value_t;
 	typedef Argument::mapped_type_cref argument_value_cref_t;
+
 protected:
 	/** @brief The dimensions of this mappings domain.*/
 	DimensionSet dimensions;
@@ -705,7 +725,7 @@ public:
 	 * @brief Initializes the ConstMapping with a the time dimension as domain.
 	 */
 	ConstMapping():
-		dimensions(Dimension::time_static()) {}
+		dimensions(Dimension::time) {}
 
 	/**
 	 * @brief Initializes the ConstMapping with the passed DimensionSet as
@@ -716,7 +736,7 @@ public:
 	ConstMapping(const DimensionSet& dimSet):
 		dimensions(dimSet) {
 
-		assert(dimSet.hasDimension(Dimension::time_static()));
+		assert(dimSet.hasDimension(Dimension::time));
 	}
 
 	virtual ~ConstMapping() {}
@@ -787,9 +807,10 @@ public:
 
 		using std::operator<<;
 
-		std::stringstream osDimHead(std::stringstream::out);
-		bool              bTimeIsIn = false;
-		for(DimensionSet::iterator it = dims.begin(); it != dims.end(); ++it) {
+		std::stringstream            osDimHead(std::stringstream::out);
+		bool                         bTimeIsIn = false;
+		const DimensionSet::iterator dimsEnd   = dims.end();
+		for(DimensionSet::iterator it = dims.begin(); it != dimsEnd; ++it) {
 			if(*it != Dimension::time) {
 				if (pOnlyDim && *it == *pOnlyDim) {
 					otherDim      = *it;
@@ -838,9 +859,10 @@ public:
 			bOnlyDimFound = false; // we have only the time and the requested dimension (fallback to normal case)
 		timePositions.insert(it->getPosition().getTime());
 		if(bIs2Dim || bOnlyDimFound) {
-			if (bOnlyDimFound && it->getPosition().hasArgVal(otherDim)) {
+			Argument::const_iterator posValIt;
+			if (bOnlyDimFound && (posValIt = it->getPosition().find(otherDim)) != it->getPosition().end()) {
 				otherPositions.insert(it->getPosition().getArgValue(otherDim));
-				iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(it->getPosition().getArgValue(otherDim)*lLeftColScale, 2).length());
+				iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(posValIt->second*lLeftColScale, 2).length());
 			}
 			else if (!bOnlyDimFound) {
 				otherPositions.insert(it->getPosition().begin()->second);
@@ -850,7 +872,9 @@ public:
 
 		while(it->hasNext()) {
 			it->next();
-			const Argument& pos = it->getPosition();
+			const Argument&                pos         = it->getPosition();
+			const Argument::const_iterator posValItEnd = pos.end();
+			Argument::const_iterator       posValIt;
 
 			min.setTime(std::min(min.getTime(), pos.getTime()));
 			max.setTime(std::max(max.getTime(), pos.getTime()));
@@ -859,10 +883,10 @@ public:
 
 			iMaxHeaderItemLen = std::max(iMaxHeaderItemLen, m.toString(pos.getTime() * lTimeScale, 2).length());
 
-			if (bOnlyDimFound && pos.hasArgVal(otherDim)) {
-				iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(pos.getArgValue(otherDim)*lLeftColScale, 2).length());
+			if (bOnlyDimFound && (posValIt = pos.find(otherDim)) != posValItEnd) {
+				iMaxLeftItemLen = std::max(iMaxLeftItemLen, m.toString(posValIt->second*lLeftColScale, 2).length());
 			}
-			for(Argument::const_iterator itA = pos.begin(); itA != pos.end(); ++itA) {
+			for(Argument::const_iterator itA = pos.begin(); itA != posValItEnd; ++itA) {
 				if(bIs2Dim || bOnlyDimFound) {
 					if (!bOnlyDimFound || itA->first == otherDim) {
 						otherPositions.insert(itA->second);
@@ -888,12 +912,13 @@ public:
 			return out;
 		}
 
-		t_time_container_type::const_iterator tIt;
-		std::stringstream                     osBorder(std::stringstream::out);
-		std::stringstream                     osHeader(std::stringstream::out);
-		mixim::math::mW2dBm<argument_value_t> fctor2dBm;
+		t_time_container_type::const_iterator       tIt;
+		const t_time_container_type::const_iterator tItEnd = timePositions.end();
+		std::stringstream                           osBorder(std::stringstream::out);
+		std::stringstream                           osHeader(std::stringstream::out);
+		mixim::math::mW2dBm<argument_value_t>       fctor2dBm;
 
-		for(tIt = timePositions.begin(); tIt != timePositions.end(); ++tIt) {
+		for(tIt = timePositions.begin(); tIt != tItEnd; ++tIt) {
 			osHeader << m.toString(*tIt * 1000, iMaxHeaderItemLen) << osHeader.fill();
 		}
 		osBorder.fill('-');
@@ -928,12 +953,12 @@ public:
 					assert(*fIt == it->getPosition().getArgValue(otherDim));
 				}
 
-				while( tIt != timePositions.end() && *tIt < it->getPosition().getTime() ) {
+				while( tIt != tItEnd && *tIt < it->getPosition().getTime() ) {
 					// blank item because the header time does not match
 					++tIt;
 					out << std::setw(iMaxHeaderItemLen+1) << "";
 				}
-				if ( tIt != timePositions.end() ) {
+				if ( tIt != tItEnd ) {
 					// jump to next header item
 					++tIt;
 				}
@@ -1220,9 +1245,9 @@ public:
 	 */
 	virtual void iterateTo(const Argument& pos) {
 		position.setArgValues(pos, true);
-		while(nextEntry != keyEntries->end() && !(position < *nextEntry))
+		const KeyEntrySet::const_iterator keyEntriesEnd = keyEntries->end();
+		while(nextEntry != keyEntriesEnd && !(position < *nextEntry))
 			++nextEntry;
-
 	}
 
 	/**

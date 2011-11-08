@@ -55,7 +55,7 @@ simple MoBANLocal extends BaseMobility
 {
     parameters:
     	@class(MoBANLocal);
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
         double updateInterval @unit(s); // Time interval to update the hosts position (seconds)
         int coordinatorIndex; // The index of the belonging coordinator module
 }

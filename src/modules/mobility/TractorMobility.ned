@@ -41,7 +41,7 @@ simple TractorMobility extends BaseMobility
 {
     parameters:
         @class(TractorMobility);
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
         double x1 @unit(m); // rectangle is denoted by the (x1,y1) and (x2,y2) coords [m]
         double y1 @unit(m); // rectangle is denoted by the (x1,y1) and (x2,y2) coords [m]
         double x2 @unit(m); // rectangle is denoted by the (x1,y1) and (x2,y2) coords [m]

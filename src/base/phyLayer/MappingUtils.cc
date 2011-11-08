@@ -18,27 +18,24 @@ FilledUpMappingIterator::FilledUpMappingIterator(FilledUpMapping& mapping, const
 const Argument::mapped_type MappingUtils::cMinNotFound =  std::numeric_limits<Argument::mapped_type>::infinity();
 const Argument::mapped_type MappingUtils::cMaxNotFound = -std::numeric_limits<Argument::mapped_type>::infinity();
 
-MappingUtils::MappingBuffer MappingUtils::mappingBuffer;
-
-MappingUtils::MappingBuffer::value_type MappingUtils::createCompatibleMapping(const ConstMapping& src, const ConstMapping& dst){
+const ConstMapping *const MappingUtils::createCompatibleMapping(const ConstMapping& src, const ConstMapping& dst){
 	typedef FilledUpMapping::KeySet KeySet;
 	typedef FilledUpMapping::KeyMap KeyMap;
 
-	KeyMap              keys;
+	KeyMap                                     DimensionIndizes;
 
-	const DimensionSet& srcDims = src.getDimensionSet();
-	const DimensionSet& dstDims = dst.getDimensionSet();
+	const DimensionSet&                        srcDims    = src.getDimensionSet();
+	const DimensionSet&                        dstDims    = dst.getDimensionSet();
 
-	DimensionSet::const_reverse_iterator srcDimIt = srcDims.rbegin();
-	for (DimensionSet::const_reverse_iterator dstDimIt = dstDims.rbegin(); dstDimIt != dstDims.rend(); ++dstDimIt) {
-		while(srcDimIt != srcDims.rend() && *srcDimIt > *dstDimIt)
-			++srcDimIt;
-		if(*srcDimIt != *dstDimIt) {
-			keys.insert(keys.end(), KeyMap::value_type(*dstDimIt, KeySet()));
+	const DimensionSet::const_iterator         srcDimsEnd = srcDims.end();
+	const DimensionSet::const_reverse_iterator dstDimsEnd = dstDims.rend();
+	for (DimensionSet::const_reverse_iterator  dstDimIt   = dstDims.rbegin(); dstDimIt != dstDimsEnd; ++dstDimIt) {
+		if(srcDims.find(*dstDimIt) == srcDimsEnd) {
+			DimensionIndizes.insert(DimensionIndizes.end(), KeyMap::value_type(*dstDimIt, KeySet()));
 		}
 	}
 
-	if(keys.empty())
+	if(DimensionIndizes.empty())
 		return &src;
 
 	ConstMappingIterator* dstIt = dst.createConstIterator();
@@ -48,21 +45,20 @@ MappingUtils::MappingBuffer::value_type MappingUtils::createCompatibleMapping(co
 		return &src;
 	}
 
-	do{
-		for (KeyMap::iterator keyDimIt = keys.begin(); keyDimIt != keys.end(); ++keyDimIt) {
+	const KeyMap::iterator keysEnd = DimensionIndizes.end();
+	do {
+		for (KeyMap::iterator keyDimIt = DimensionIndizes.begin(); keyDimIt != keysEnd; ++keyDimIt) {
 			keyDimIt->second.insert(dstIt->getPosition().getArgValue(keyDimIt->first));
 		}
 
 		if(!dstIt->hasNext())
 			break;
-
 		dstIt->next();
 	} while(true);
 
 	delete dstIt;
 
-	MappingBuffer::value_type res = setMappingBuffer(new FilledUpMapping(&src, dstDims, &keys));
-	return res;
+	return new FilledUpMapping(&src, dstDims, DimensionIndizes);
 }
 
 bool MappingUtils::iterateToNext(ConstMappingIterator* it1, ConstMappingIterator* it2){
@@ -91,26 +87,26 @@ Mapping* MappingUtils::createMapping(const DimensionSet& domain, Mapping::Interp
 	if(domain.size() == 1){
 		switch(intpl){
 		case Mapping::LINEAR:
-			return new TimeMapping<Linear>(intpl);
+			return new TimeMapping<Linear>();
 			break;
 		case Mapping::NEAREST:
-			return new TimeMapping<Nearest>(intpl);
+			return new TimeMapping<Nearest>();
 			break;
 		case Mapping::STEPS:
-			return new TimeMapping<NextSmaller>(intpl);
+			return new TimeMapping<NextSmaller>();
 			break;
 		}
 		return 0;
 	} else {
 		switch(intpl){
 		case Mapping::LINEAR:
-			return new MultiDimMapping<Linear>(domain, intpl);
+			return new MultiDimMapping<Linear>(domain);
 			break;
 		case Mapping::NEAREST:
-			return new MultiDimMapping<Nearest>(domain, intpl);
+			return new MultiDimMapping<Nearest>(domain);
 			break;
 		case Mapping::STEPS:
-			return new MultiDimMapping<NextSmaller>(domain, intpl);
+			return new MultiDimMapping<NextSmaller>(domain);
 			break;
 		}
 		return 0;
@@ -123,26 +119,26 @@ Mapping* MappingUtils::createMapping(Mapping::argument_value_cref_t outOfRangeVa
 	if(domain.size() == 1){
 		switch(intpl){
 		case Mapping::LINEAR:
-			return new TimeMapping<Linear>(outOfRangeVal, intpl);
+			return new TimeMapping<Linear>(outOfRangeVal);
 			break;
 		case Mapping::NEAREST:
-			return new TimeMapping<Nearest>(outOfRangeVal, intpl);
+			return new TimeMapping<Nearest>(outOfRangeVal);
 			break;
 		case Mapping::STEPS:
-			return new TimeMapping<NextSmaller>(outOfRangeVal, intpl);
+			return new TimeMapping<NextSmaller>(outOfRangeVal);
 			break;
 		}
 		return 0;
 	} else {
 		switch(intpl){
 		case Mapping::LINEAR:
-			return new MultiDimMapping<Linear>(domain, outOfRangeVal, intpl);
+			return new MultiDimMapping<Linear>(domain, outOfRangeVal);
 			break;
 		case Mapping::NEAREST:
-			return new MultiDimMapping<Nearest>(domain, outOfRangeVal, intpl);
+			return new MultiDimMapping<Nearest>(domain, outOfRangeVal);
 			break;
 		case Mapping::STEPS:
-			return new MultiDimMapping<NextSmaller>(domain, outOfRangeVal, intpl);
+			return new MultiDimMapping<NextSmaller>(domain, outOfRangeVal);
 			break;
 		}
 		return 0;
@@ -235,10 +231,11 @@ Mapping::argument_value_t MappingUtils::findMax(const ConstMapping& m, Argument:
 }
 
 Mapping::argument_value_t MappingUtils::findMax(const ConstMapping& m, const Argument& pRangeFrom, const Argument& pRangeTo, Argument::mapped_type_cref cRetNotFound /*= cMaxNotFound*/){
+	const DimensionSet& rDimSet = m.getDimensionSet();
 	//the passed interval should define a value for every dimension
 	//of the mapping.
-	assert(pRangeFrom.getDimensions().isSubSet(m.getDimensionSet()));
-	assert(pRangeTo.getDimensions().isSubSet(m.getDimensionSet()));
+	assert(pRangeFrom.getDimensions().isSubSet(rDimSet));
+	assert(pRangeTo.getDimensions().isSubSet(rDimSet));
 
 	ConstMappingIterator*     it       = m.createConstIterator(pRangeFrom);
 	bool                      bIsFirst = true;
@@ -250,14 +247,15 @@ Mapping::argument_value_t MappingUtils::findMax(const ConstMapping& m, const Arg
 		bIsFirst = false;
 		//std::cerr << "findMax(...):  " << " @ " << it->getPosition() << "; max is at beginning: " << res << std::endl;
 	}
-	while(it->hasNext() && it->getNextPosition().compare(pRangeTo, m.getDimensionSet()) < 0){
+	while(it->hasNext() && it->getNextPosition().compare(pRangeTo, &rDimSet) < 0){
 		it->next();
 
 		const Argument& next    = it->getPosition();
-		bool            inRange = next.getTime() >= pRangeFrom.getTime() && next.getTime() <= pRangeTo.getTime();
+		bool            inRange = pRangeFrom.getTime() <= next.getTime() && next.getTime() <= pRangeTo.getTime();
 		if(inRange) {
-			for(Argument::const_iterator itA = next.begin(); itA != next.end(); ++itA) {
-				if(itA->second < pRangeFrom.getArgValue(itA->first) || itA->second > pRangeTo.getArgValue(itA->first)) {
+			const Argument::const_iterator itAEnd = next.end();
+			for(Argument::const_iterator itA = next.begin(); itA != itAEnd; ++itA) {
+				if(pRangeFrom.getArgValue(itA->first) > itA->second || itA->second > pRangeTo.getArgValue(itA->first)) {
 					inRange = false;
 					break;
 				}
@@ -316,11 +314,11 @@ Mapping::argument_value_t MappingUtils::findMin(const ConstMapping& m, Argument:
 }
 
 Mapping::argument_value_t MappingUtils::findMin(const ConstMapping& m, const Argument& pRangeFrom, const Argument& pRangeTo, Argument::mapped_type_cref cRetNotFound /*= cMinNotFound*/) {
-
+	const DimensionSet& rDimSet = m.getDimensionSet();
 	//the passed interval should define a value for every dimension
 	//of the mapping.
-	assert(pRangeFrom.getDimensions().isSubSet(m.getDimensionSet()));
-	assert(pRangeTo.getDimensions().isSubSet(m.getDimensionSet()));
+	assert(pRangeFrom.getDimensions().isSubSet(rDimSet));
+	assert(pRangeTo.getDimensions().isSubSet(rDimSet));
 
 	Mapping::argument_value_t res;
 	bool                      bIsFirst = true;
@@ -332,13 +330,14 @@ Mapping::argument_value_t MappingUtils::findMin(const ConstMapping& m, const Arg
 		bIsFirst = false;
 		//std::cerr << "findMin(...):  " << " @ " << it->getPosition() << "; min is at beginning: " << res << std::endl;
 	}
-	while(it->hasNext() && it->getNextPosition().compare(pRangeTo, m.getDimensionSet()) < 0) {
+	while(it->hasNext() && it->getNextPosition().compare(pRangeTo, &rDimSet) < 0) {
 		it->next();
 
 		const Argument& next    = it->getPosition();
 		bool            inRange = pRangeFrom.getTime() <= next.getTime()  && next.getTime() <= pRangeTo.getTime();
 		if(inRange) {
-			for(Argument::const_iterator itA = next.begin(); itA != next.end(); ++itA) {
+			const Argument::const_iterator itAEnd = next.end();
+			for(Argument::const_iterator itA = next.begin(); itA != itAEnd; ++itA) {
 				if(pRangeFrom.getArgValue(itA->first) > itA->second || itA->second > pRangeTo.getArgValue(itA->first)) {
 					inRange = false;
 					break;

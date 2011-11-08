@@ -169,6 +169,9 @@ public:
 		return operator()(first, last, pos, right);
 	}
 
+	/** @brief Represents the interpolator a stepping function. */
+	virtual bool isStepping() const {return false;}
+
 	/**
 	 * @brief Functor operator of this class which interpolates the value
 	 * at the passed position using the values between the passed Iterators.
@@ -271,6 +274,9 @@ public:
 		upperBound--;
 		return asInterpolated(upperBound->second, false, !(upperBound->first == pos));
 	}
+
+	/** @brief Represents the interpolator a stepping function. */
+	virtual bool isStepping() const {return true;}
 };
 
 /**
@@ -686,6 +692,9 @@ public:
 		return position;
 	}
 
+	const interpolator_type&  getInterpolator() const {
+		return interpolate;
+	}
 };
 
 /**

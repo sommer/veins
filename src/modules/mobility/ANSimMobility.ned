@@ -31,7 +31,7 @@ simple ANSimMobility extends BaseMobility
 {
     parameters:
         @class(ANSimMobility);
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
         xml ansimTrace; // the ANSim trace file in XML
         double nodeId; // <position_change> elements to match; 
                                // -1 gets substituted to parent module's index

@@ -24,7 +24,7 @@ simple SimpleBattery extends BaseBattery
 {    
     parameters:
         @class(SimpleBattery);
-        bool debug;
+        bool debug = default(false);
         // nominal battery capacity
         volatile double nominal @unit(mAh);
         // battery capacity

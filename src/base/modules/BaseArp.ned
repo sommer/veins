@@ -5,6 +5,6 @@ simple BaseArp
 {
     parameters:
         bool notAffectedByHostState = default(true);
-        bool coreDebug; // debug switch for the core framework
+        bool coreDebug = default(false); // debug switch for the core framework
 }
 

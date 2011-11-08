@@ -18,5 +18,5 @@ package org.mixim.tests.power.utils;
 simple Subscriber
 {
     parameters:
-        bool debug;
+        bool debug = default(false);
 }

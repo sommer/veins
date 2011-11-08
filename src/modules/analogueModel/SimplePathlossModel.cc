@@ -10,7 +10,7 @@ SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimen
 	SimpleConstMapping(dimensions),
 	distFactor(distFactor),
 	model(model),
-	hasFrequency(dimensions.hasDimension(Dimension::frequency_static()))
+	hasFrequency(dimensions.hasDimension(Dimension::frequency))
 {
 }
 

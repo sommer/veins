@@ -23,7 +23,7 @@ simple NetworkStackTrafficGen
     parameters:
         double packetTime @unit(s);
         double packetsPerPacketTime;
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
         int burstSize = default(1);
     	int packetLength @unit("bit"); // length of the generated packet (in bits)
     	int destination = default(-1);

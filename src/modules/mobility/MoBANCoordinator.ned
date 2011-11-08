@@ -57,7 +57,7 @@ simple MoBANCoordinator
 {
     parameters:
     	@class(MoBANCoordinator);
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
        
         double updateInterval @unit(s); // Time interval to update the nodes position (seconds).
         

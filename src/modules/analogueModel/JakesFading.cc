@@ -19,7 +19,7 @@
 #include "AirFrame_m.h"
 #include "ChannelAccess.h"
 
-DimensionSet JakesFadingMapping::dimensions(Dimension::time_static());
+DimensionSet JakesFadingMapping::dimensions(Dimension::time);
 
 double JakesFadingMapping::getValue(const Argument& pos) const {
 	double f = model->carrierFrequency;

@@ -117,7 +117,7 @@ simple TurtleMobility extends BaseMobility
 {
     parameters:
         @class(TurtleMobility);
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
         xml turtleScript; // describes the movement
         double updateInterval @unit(s); // time interval to update the hosts position (in seconds)
 }

@@ -42,7 +42,7 @@ simple BonnMotionMobility extends BaseMobility
     parameters:
         @class(BonnMotionMobility);
         
-        bool   debug; // debug switch
+        bool   debug = default(false); // debug switch
         string traceFile; // the BonnMotion trace file
         double nodeId; // selects line in trace file; -1 gets substituted to parent module's index
         double updateInterval @unit(s); // time interval to update the hosts position (in seconds)

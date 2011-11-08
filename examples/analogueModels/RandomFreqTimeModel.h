@@ -49,7 +49,7 @@ public:
 	 */
 	RandomFreqTimeModel(int seed = 23):
 		frequency("frequency"),
-		dimensions(Dimension::time_static(), frequency) {
+		dimensions(Dimension::time, frequency) {
 
 		//sets the seed for random number generation. The PhyLayer
 		//(which created the analogue models) gets the seed from the

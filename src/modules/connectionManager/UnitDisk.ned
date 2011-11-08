@@ -22,7 +22,7 @@ package org.mixim.modules.connectionManager;
 simple UnitDisk
 {
     parameters:
-        bool debug; // debug switch
+        bool   debug = default(false); // debug switch
         double radioRange;
 
         // below are unused here, but needed for BasePhyLayer
