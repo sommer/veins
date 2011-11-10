@@ -1,4 +1,3 @@
-#/bin/bash
+#!/bin/sh
 
-./traci $@ | egrep -i "^(Pass|FAIL)"
-
+./traci -u Cmdenv "$@" | egrep -i "^(Pass|FAIL)"
