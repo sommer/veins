@@ -1,8 +1,5 @@
 package org.mixim.modules.nic;
 
-import org.mixim.modules.mac.AlohaMacLayer;
-import org.mixim.modules.phy.PhyLayerUWBIR;
-
 //
 // This NIC interface simulates an IEEE 802.15.4A UWB PHY
 // transceiver. The MAC does not attempt to be standard 
@@ -23,54 +20,24 @@ import org.mixim.modules.phy.PhyLayerUWBIR;
 // J. Rousselot. EPFL thesis 4720, 2010.
 // <a href="http://infoscience.epfl.ch/record/147987">http://infoscience.epfl.ch/record/147987</a> 
 //
-
-module Nic802154A like IWirelessNic
+module Nic802154A extends WirelessNicBattery
 {
     parameters:
-        string connectionManagerName; 	//name of the ConnectionManager module
-        // power consumption from boards (at 3.3V)
-	    double sleepCurrent @unit(mA) = .00303 mA; // 0.021 µA
-		double rxCurrent @unit(mA) = 9.1 mA;
-		double syncCurrent @unit(mA) = 30.3 mA;
-		double txCurrent @unit(mA) = 0.303 mA;
-		double setupRxCurrent @unit(mA) = 9.1 mA;
-		double setupTxCurrent @unit(mA) = 0.303 mA;
-		double rxTxCurrent @unit(mA) = 9.1 mA; 
-		double txRxCurrent @unit(mA) = 9.1 mA; 
+        macType = default("AlohaMacLayer");
+        phyType = default("PhyLayerUWBIR");
         
+        // power consumption from boards (at 3.3V)
+        sleepCurrent = .00303 mA; // 0.021 µA
+        rxCurrent  = 9.1 mA;
+        txCurrent = 0.303 mA;
+        setupRxCurrent = 9.1 mA;
+        setupTxCurrent = 0.303 mA;
+        rxTxCurrent = 9.1 mA; 
+        txRxCurrent = 9.1 mA; 
+        decodingCurrentDelta = 0.0 mA; //not used
+        double syncCurrent @unit(mA) = default(30.3 mA);
 
-        @display("bgb=101,150,white,,;bgp=10,10");
-    gates:
-        input radioIn; // radioIn gate for sendDirect
-        input upperLayerIn; // upperLayerIn for incoming messages from network layer
-        input upperControlIn; // uppergateCtrlIn for incoming control messages from network layer
-        output upperLayerOut; // upperLayerOut to send data messages to network layer
-        output upperControlOut; // uppergateCtrlOut to send control messages to network layer
-
-    submodules:
-        phy: PhyLayerUWBIR {
-            parameters:
-                @display("p=60,120;b=80,30,rect,white,,");
-                initialRadioState = 4; // initializes radio state to SYNC
-
-        }
-        mac: AlohaMacLayer {
-            parameters:
-                maxRetries = 3;
-                @display("p=60,45;b=80,30,rect,white,,");
-        }
-    connections:
-        phy.upperLayerOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerLayerIn;
-        phy.upperLayerIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- mac.lowerLayerOut;
-        phy.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> mac.lowerControlIn;
-        phy.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- mac.lowerControlOut;
-
-        radioIn --> phy.radioIn;
-
-        upperLayerIn --> mac.upperLayerIn;
-        upperControlIn --> mac.upperControlIn;
-        upperLayerOut <-- mac.upperLayerOut;
-        upperControlOut <-- mac.upperControlOut;
-
+        phy.initialRadioState = 4; // initializes radio state to SYNC
+        mac.maxRetries = 3;
 }
 

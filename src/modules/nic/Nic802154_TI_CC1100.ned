@@ -19,10 +19,6 @@
 // **************************************************************************/
 package org.mixim.modules.nic;
 
-import org.mixim.modules.mac.CSMA802154;
-import org.mixim.modules.phy.PhyLayerBattery;
-
-
 //
 // This NIC implements a TI CC1100 network interface card
 // using the CSMA protocol as specified in IEEE 802.15.4-2006.
@@ -31,68 +27,37 @@ import org.mixim.modules.phy.PhyLayerBattery;
 // "Nic802154_TI_CC2420_Decider.xml" from "modules/nic/" to your simulation directory.
 // @author Jerome Rousselot
 //
-module Nic802154_TI_CC1100 like IWirelessNic
+module Nic802154_TI_CC1100 extends WirelessNicBattery
 {
-	parameters:
-        string connectionManagerName = default("");   //name of the ConnectionManager module
-	    // power consumption from boards (at 3V)
-	    double sleepCurrent @unit(mA) = 0.02mA; // 20 µA
-		double rxCurrent @unit(mA) = 16.4 mA;
-		double decodingCurrentDelta @unit(mA) = 0 mA;
-		double txCurrent @unit(mA) = 17 mA;
-		double setupRxCurrent @unit(mA) = 8.2mA;
-		double setupTxCurrent @unit(mA) = 8.2mA;
-		double rxTxCurrent @unit(mA) = 17 mA;
-		double txRxCurrent @unit(mA) = 17 mA;
-	
-    gates:
-        input upperLayerIn; // from upper layers
-        input radioIn; // to receive AirFrames
-        output upperLayerOut; // to upper layers
-        output upperControlOut; // control connection
-        input upperControlIn;
-
-    submodules:
-        phy: PhyLayerBattery {
-            parameters:
-                decider = xmldoc("Nic802154_TI_CC1100_Decider.xml");
-				analogueModels = default(xmldoc("config.xml"));
-                //publishRSSIAlways = false;
-				sensitivity = -100 dBm;
-                headerLength = 48 bit; // ieee 802.15.4
-                thermalNoise = -110 dBm;
-                maxTXPower = 1 mW;
-                initialRadioState = 0;
-                // From TI CC1100 datasheet rev. C
-                timeSleepToRX = 0.00108 s;
-                timeSleepToTX = 0.00108 s;
-                timeRXToTX = 0.000010 s;
-                timeTXToRX = 0.000022 s;
-                timeRXToSleep = 0 s;
-                timeTXToSleep = 0 s;
-                @display("p=96,236;i=block/wrxtx");
-
-        }
-        mac: CSMA802154 {
-            parameters:
-                rxSetupTime = 0.00108 s;
-				
-                @display("p=96,87;i=block/layer");
-
-        }
+    parameters:
+        macType = default("CSMA802154");
         
-    connections:
+        // power consumption from boards (at 3V)
+        sleepCurrent         = 0.02mA; // 20 µA
+        rxCurrent            = 16.4 mA;
+        decodingCurrentDelta = 0 mA;
+        txCurrent            = 17 mA;
+        setupRxCurrent       = 8.2mA;
+        setupTxCurrent       = 8.2mA;
+        rxTxCurrent          = 17 mA;
+        txRxCurrent          = 17 mA;
 
-        radioIn --> phy.radioIn;
+        phy.decider       = xmldoc("Nic802154_TI_CC1100_Decider.xml");
+        phy.analogueModels= default(xmldoc("config.xml"));
+        //publishRSSIAlways = false;
+        phy.sensitivity   = -100 dBm;
+        phy.headerLength  = 48 bit; // ieee 802.15.4
+        phy.thermalNoise  = -110 dBm;
+        phy.maxTXPower    = 1 mW;
+        phy.initialRadioState = 0;
+        // From TI CC1100 datasheet rev. C
+        phy.timeSleepToRX = 0.00108 s;
+        phy.timeSleepToTX = 0.00108 s;
+        phy.timeRXToTX    = 0.000010 s;
+        phy.timeTXToRX    = 0.000022 s;
+        phy.timeRXToSleep = 0 s;
+        phy.timeTXToSleep = 0 s;
 
-        phy.upperLayerIn <-- { @display("m=m,25,0,25,0"); } <-- mac.lowerLayerOut;
-        phy.upperLayerOut --> { @display("m=m,73,0,50,50"); } --> mac.lowerLayerIn;
-        phy.upperControlOut --> mac.lowerControlIn;
-        phy.upperControlIn <-- mac.lowerControlOut;
-
-        mac.upperLayerOut --> upperLayerOut;
-        mac.upperControlOut --> upperControlOut;
-        mac.upperLayerIn <-- upperLayerIn;
-		mac.upperControlIn <-- upperControlIn;
+        mac.rxSetupTime   = 0.00108 s;
 }
 

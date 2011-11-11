@@ -259,6 +259,7 @@ double TurtleMobility::getValue(const char *s)
     if (strchr(s,'$'))
     {
         char strMaxX[32], strMaxY[32];
+        char strMinX[]="0.0", strMinY[]="0.0";
         sprintf(strMaxX, "%g", playgroundSizeX()-1);
         sprintf(strMaxY, "%g", playgroundSizeY()-1);
 
@@ -268,14 +269,23 @@ double TurtleMobility::getValue(const char *s)
             str.replace(pos, sizeof("$MAXX")-1, strMaxX);
         while ((pos = str.find("$MAXY")) != std::string::npos)
             str.replace(pos, sizeof("$MAXY")-1, strMaxY);
+        while ((pos = str.find("$MINX")) != std::string::npos)
+            str.replace(pos, sizeof("$MINX")-1, strMinX);
+        while ((pos = str.find("$MINY")) != std::string::npos)
+            str.replace(pos, sizeof("$MINY")-1, strMinY);
         s = str.c_str();
     }
 
-    // then use cMsgPar to evaluate the string
-    cMsgPar tmp;
-    if (!tmp.parse(s,'?'))
-        error("wrong value '%s' around %s", s, nextStatement->getSourceLocation());
-    return tmp.doubleValue();
+    // then use cDynamicExpression to evaluate the string
+    try {
+        cDynamicExpression expr;
+        expr.parse(s);
+        return expr.doubleValue(this);
+    }
+    catch (std::exception& e) {
+        throw cRuntimeError(this, "wrong value '%s' around %s: %s", s,
+                nextStatement->getSourceLocation(), e.what());
+    }
 }
 
 void TurtleMobility::gotoNextStatement()

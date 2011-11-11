@@ -2,7 +2,7 @@ package org.mixim.base.phyLayer;
 
 // Basic physical layer module.
 // See the class "BasePhyLayer" documentation.
-simple BasePhyLayer
+simple BasePhyLayer like IWirelessPhy
 {
     parameters:
         bool coreDebug   = default(false); //debug switch for core framework
@@ -36,7 +36,7 @@ simple BasePhyLayer
         double radioMaxAtt = default(0.0); //radios gain factor (attenuation) while not receiving
 
         int nbRadioChannels = default(1);  // Number of available radio channels. Defaults to single channel radio.
-	int initialRadioChannel = default(0);  // Initial radio channel.
+		int initialRadioChannel = default(0);  // Initial radio channel.
 
     gates:
         input upperLayerIn; 	// from the MAC layer

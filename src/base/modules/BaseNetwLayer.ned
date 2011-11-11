@@ -8,6 +8,6 @@ simple BaseNetwLayer extends BaseLayer like IBaseNetwLayer
         
         bool coreDebug = default(false); // debug switch for core framework
         bool stats = default(false); // stats switch
-        double headerLength @unit(bit); // length of the network packet header (in bits)
+        int  headerLength @unit(bit); // length of the network packet header (in bits)
 }
 

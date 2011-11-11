@@ -18,9 +18,6 @@
 // **************************************************************************/
 package org.mixim.modules.nic;
 
-import org.mixim.modules.mac.Mac80211MultiChannel;
-import org.mixim.modules.phy.PhyLayerBattery;
-
 //
 // This NIC implements an 802.11 network interface card with multi channel 
 // support and power consumption.
@@ -29,73 +26,37 @@ import org.mixim.modules.phy.PhyLayerBattery;
 // @see Mac80211MultiChannel, Decider80211MultiChannel
 // @author Karl Wessel
 //
-module Nic80211MultiChannel like IWirelessNic
+module Nic80211MultiChannel extends WirelessNicBattery
 {
     parameters:
-        //name of the ConnectionManager module
-        string connectionManagerName = default("");   
+        macType = default("Mac80211MultiChannel");
+        
     	@display("i=block/ifcard");
-    	double sleepCurrent @unit(mA);
-        double rxCurrent @unit(mA);
-        double decodingCurrentDelta @unit(mA);
-        double txCurrent @unit(mA);
-        double setupRxCurrent @unit(mA);
-        double setupTxCurrent @unit(mA);
-        double rxTxCurrent @unit(mA);
-        double txRxCurrent @unit(mA);
         double onCurrent @unit(mA) = default(0);
     
-    gates:
-        input upperLayerIn; // to upper layers
-        output upperLayerOut; // from upper layers
-        output upperControlOut; // control information 
-        input upperControlIn; // control information 
-        input radioIn; // radioIn gate for sendDirect
+        mac.queueLength             = default(20);
+        mac.bitrate                 = default(2E+6bps);            
+        mac.autoBitrate             = default(false);
+        // values if no fading is modelled, gives at most 1% packet error rate
+        mac.snr2Mbit                = default(1.46dB); 
+        mac.snr5Mbit                = default(2.6dB);
+        mac.snr11Mbit               = default(5.68dB);
+        mac.neighborhoodCacheSize   = default(30);
+        mac.neighborhoodCacheMaxAge = default(100s);
+        mac.txPower                 = default(110.11mW);
 
-    submodules:
-        mac: Mac80211MultiChannel {
-            queueLength = default(20);
-            bitrate = default(2E+6bps);            
-            autoBitrate = default(false);
-            // values if no fading is modelled, gives at most 1% packet error rate
-			snr2Mbit = default(1.46dB); 
-			snr5Mbit = default(2.6dB);
-			snr11Mbit = default(5.68dB);
-			neighborhoodCacheSize = default(30);
-			neighborhoodCacheMaxAge = default(100s);
-			txPower = default(110.11mW);
+        phy.headerLength        = 192bit;
+        phy.sensitivity         = default(-119.5dBm);
+        phy.decider             = default(xmldoc("Nic80211MultiChannel_Decider.xml"));
+        phy.nbRadioChannels     = default(15);
+        phy.initialRadioChannel = default(1);
             
-            @display("p=96,87;i=block/layer");
-        }
-
-        phy: PhyLayerBattery {
-            headerLength = 192bit;
-            sensitivity = default(-119.5dBm);
-            decider = default(xmldoc("Nic80211MultiChannel_Decider.xml"));
-            nbRadioChannels = default(15);
-            initialRadioChannel = default(1);
-            
-            //Mac80211 does not support switching times
-            timeRXToTX = 0s;
-            timeRXToSleep = 0s;
-            timeTXToRX = 0s;
-            timeTXToSleep = 0s;
-            timeSleepToRX = 0s;
-            timeSleepToTX = 0s;
-            @display("p=96,158;i=block/process;is=n");
-        }
-
-    connections:
-        mac.upperLayerOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperLayerOut;
-        mac.upperLayerIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- upperLayerIn;
-        mac.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> upperControlOut;
-        mac.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- upperControlIn;
-
-        phy.upperLayerOut --> { @display("ls=black;m=m,25,50,25,0"); } --> mac.lowerLayerIn;
-        phy.upperLayerIn <-- { @display("ls=black;m=m,15,50,15,0"); } <-- mac.lowerLayerOut;
-        phy.upperControlOut --> { @display("ls=red;m=m,75,50,75,0"); } --> mac.lowerControlIn;
-        phy.upperControlIn <-- { @display("ls=red;m=m,85,0,85,0"); } <-- mac.lowerControlOut;
-
-        radioIn --> phy.radioIn;
+        //Mac80211 does not support switching times
+        phy.timeRXToTX          = 0s;
+        phy.timeRXToSleep       = 0s;
+        phy.timeTXToRX          = 0s;
+        phy.timeTXToSleep       = 0s;
+        phy.timeSleepToRX       = 0s;
+        phy.timeSleepToTX       = 0s;
 }
 

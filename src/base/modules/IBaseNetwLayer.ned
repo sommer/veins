@@ -5,7 +5,7 @@ moduleinterface IBaseNetwLayer
 {
     parameters:
         bool stats; // stats switch
-        double headerLength @unit("bit"); // length of the network packet header (in bits)
+        int  headerLength @unit("bit"); // length of the network packet header (in bits)
     gates:
         input upperLayerIn; // from application layer
         output upperLayerOut; // to application layer

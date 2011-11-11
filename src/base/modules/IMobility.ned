@@ -1,7 +1,7 @@
 package org.mixim.base.modules;
 
 // Interface for mobility modules
-moduleinterface IBaseMobility
+moduleinterface IMobility
 {
     parameters:
         double x; // x coordinate of the nodes' position (-1 = random)

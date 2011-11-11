@@ -17,11 +17,8 @@ Define_NED_Function(ghassemzadehNLOSFPtr, "xml ghassemzadehNLOS()");
 void PhyLayerUWBIR::initialize(int stage) {
 	BasePhyLayer::initialize(stage);
 	if (stage == 0) {
+		numActivities = hasPar("numActivities") ? par("numActivities").longValue() : 6;
 
-
-		numActivities = 6;
-
-		// Power consumption (from PhyLayerBattery)
 		/* parameters belong to the NIC, not just phy layer
 		 *
 		 * if/when variable transmit power is supported, txCurrent
@@ -248,33 +245,18 @@ Decider* PhyLayerUWBIR::getDeciderFromName(std::string name, ParameterMap& param
 	return uwbdecider;
 }
 
-void PhyLayerUWBIR::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
-{
-	Enter_Method_Silent();
-	ChannelAccess::receiveSignal(source, signalID, obj);
-	if (signalID == mobilityStateChangedSignal) {
-		coreEV<< "Received move information in uwbphylayer." << endl;
+void PhyLayerUWBIR::handleHostState(const HostState& state) {
+	if (state.get() != HostState::ACTIVE && radio->getCurrentState() != Radio::SLEEP) {
+		coreEV<< "host is no longer in active state (maybe FAILED, SLEEP, OFF or BROKEN), force into sleep state!" << endl;
+		setRadioState(Radio::SLEEP);
+		// it would be good to create a radioState OFF, as well
 	}
 }
 
 void PhyLayerUWBIR::finishRadioSwitching() {
 	BasePhyLayer::finishRadioSwitching();
+
 	setRadioCurrent(radio->getCurrentState());
-}
-
-void PhyLayerUWBIR::handleHostState(const HostState& state) {
-	// handles only battery consumption
-
-	HostState::States hostState = state.get();
-
-	switch (hostState) {
-	case HostState::FAILED:
-		EV<< "t = " << simTime() << " host state FAILED" << endl;
-		// it would be good to create a radioState OFF, as well
-		break;
-	default:
-		break;
-	}
 }
 
 void PhyLayerUWBIR::setSwitchingCurrent(int from, int to) {

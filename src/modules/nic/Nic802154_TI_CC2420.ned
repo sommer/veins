@@ -22,10 +22,6 @@
 
 package org.mixim.modules.nic;
 
-import org.mixim.modules.mac.CSMA802154;
-import org.mixim.modules.phy.PhyLayerBattery;
-
-
 //
 // This NIC implements a Texas Instruments CC 2420 802.15.4 network interface card
 // using the CSMA protocol as specified in IEEE 802.15.4-2006.
@@ -34,73 +30,34 @@ import org.mixim.modules.phy.PhyLayerBattery;
 //"Nic802154_TI_CC2420_Decider.xml" from "modules/nic/" to your simulation directory.
 // @author Jerome Rousselot
 //
-module Nic802154_TI_CC2420 like IWirelessNic
+module Nic802154_TI_CC2420 extends WirelessNicBattery
 {
     parameters:
-        string connectionManagerName = default("");   //name of the ConnectionManager module
+        macType = default("CSMA802154");
+        
         // power consumption from boards (at 3.3V)
-	    double sleepCurrent @unit(mA) = 0.000021mA; // 0.021 µA
-		double rxCurrent @unit(mA) = 18.8 mA;
-		double decodingCurrentDelta @unit(mA) = 0 mA;
-		double txCurrent @unit(mA) = 17.4 mA;
-		double setupRxCurrent @unit(mA) = 0.6391mA; // 0.002109 W = (ESetupPower+ESetupXtal+ETxCalibrate)/TSetupTx
-		double setupTxCurrent @unit(mA) = 0.6845mA; // 0.002259 W = (ESetupPower+ESetupXtal+ERxCalibrate)/TSetupRx
-		double rxTxCurrent @unit(mA) = 18.8 mA; // Upper bound
-		double txRxCurrent @unit(mA) = 18.8 mA; // idem
-		
-    gates:
-        input upperLayerIn; // from upper layers
-        input radioIn; // to receive AirFrames
-        output upperLayerOut; // to upper layers
-        output upperControlOut; // control connection
-        input upperControlIn;
+        sleepCurrent         = 0.000021mA; // 0.021 µA
+        rxCurrent            = 18.8 mA;
+        decodingCurrentDelta = 0 mA;
+        txCurrent            = 17.4 mA;
+        setupRxCurrent       = 0.6391mA; // 0.002109 W = (ESetupPower+ESetupXtal+ETxCalibrate)/TSetupTx
+        setupTxCurrent       = 0.6845mA; // 0.002259 W = (ESetupPower+ESetupXtal+ERxCalibrate)/TSetupRx
+        rxTxCurrent          = 18.8 mA; // Upper bound
+        txRxCurrent          = 18.8 mA; // idem
 
-    submodules:
-        phy: PhyLayerBattery {
-            parameters:
-                decider = xmldoc("Nic802154_TI_CC2420_Decider.xml");
-                //publishRSSIAlways = false;
-                headerLength = 48 bit; // ieee 802.15.4                
-                thermalNoise = -110 dBm;
-                // From TI CC1100 datasheet rev. C
-                timeSleepToRX = 0.001792 s;
-                timeSleepToTX = 0.001792 s;
-                timeRXToTX = 0.000192 s;
-                timeTXToRX = 0.000192 s;
-                timeRXToSleep = 0 s;
-                timeTXToSleep = 0 s;
-                // power consumption from boards
-//                sleepPower = 0.0000000693 W; // 0.021 microA * 3.3 V
-//                rxPower = 0.06204 W;   // 18.8 mA * 3.3 V
-//                txPower = 0.05742 W;   // 17.4 mA * 3.3 V
-//                rxTxPower = 0.06204 W; // Upper bound : 18.8 mA * 3.3 V
-//                txRxPower = 0.06204 W; // idem
-//                setupTxPower = 0.002109 W; // (ESetupPower+ESetupXtal+ETxCalibrate)/TSetupTx
-//                setupRxPower = 0.002259 W; // (ESetupPower+ESetupXtal+ERxCalibrate)/TSetupRx
-                @display("p=96,236;i=block/wrxtx");
+        phy.decider = xmldoc("Nic802154_TI_CC2420_Decider.xml");
+        //publishRSSIAlways = false;
+        phy.headerLength = 48 bit; // ieee 802.15.4                
+        phy.thermalNoise = -110 dBm;
+        // From TI CC1100 datasheet rev. C
+        phy.timeSleepToRX = 0.001792 s;
+        phy.timeSleepToTX = 0.001792 s;
+        phy.timeRXToTX = 0.000192 s;
+        phy.timeTXToRX = 0.000192 s;
+        phy.timeRXToSleep = 0 s;
+        phy.timeTXToSleep = 0 s;
 
-        }
-        mac: CSMA802154 {
-            parameters:
-                rxSetupTime = 0.001792 s;
-                txPower = default(1 mW);
-				
-                @display("p=96,87;i=block/layer");
-
-        }
-    connections:
-
-        radioIn --> phy.radioIn;
-
-        phy.upperLayerIn <-- { @display("m=m,25,0,25,0"); } <-- mac.lowerLayerOut;
-        phy.upperLayerOut --> { @display("m=m,73,0,50,50"); } --> mac.lowerLayerIn;
-        phy.upperControlOut --> mac.lowerControlIn;
-        phy.upperControlIn <-- mac.lowerControlOut;
-
-        mac.upperLayerOut --> upperLayerOut;
-        mac.upperControlOut --> upperControlOut;
-        mac.upperLayerIn <-- upperLayerIn;
-        mac.upperControlIn <-- upperControlIn;
-
+        mac.rxSetupTime = 0.001792 s;
+        mac.txPower = default(1 mW);
 }
 

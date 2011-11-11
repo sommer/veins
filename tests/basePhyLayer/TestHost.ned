@@ -1,28 +1,17 @@
 package org.mixim.tests.basePhyLayer;
 
-import org.mixim.base.modules.BaseMobility;
+import org.mixim.modules.node.WirelessNode;
 
-
-module TestHost
+module TestHost extends WirelessNode
 {
     parameters:
-        double numHosts; // total number of hosts in the network
-        @display("bgb=180,200,white,,;bgp=10,10");
-    gates:
-        input radioIn;
+        nicType = "org.mixim.tests.basePhyLayer.TestNic";
+        applicationType = "";
+        
+        netwl.headerLength = 12bit;
+        
+        int numHosts; // total number of hosts in the network
 
-    submodules:
-        mobility: BaseMobility {
-            parameters:
-                @display("p=130,130;i=cogwheel2");
-        }
-        nic: TestNic {
-            parameters:
-                @display("b=32,30;p=60,166;i=iface");
-        }
-    connections:
-
-        radioIn --> nic.radioIn;
-
+    connections allowunconnected:
 }
 

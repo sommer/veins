@@ -13,21 +13,22 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package org.mixim.examples.ieee802154Narrow;
-
-import org.mixim.base.modules.BaseNetwLayer;
+package org.mixim.modules.nic;
 
 //
-// TODO auto-generated module
+// Basic wireless nic definition
 //
-simple NetworkStackTrafficGen extends BaseNetwLayer
+module WirelessNicBattery extends WirelessNic
 {
     parameters:
-        @class(NetworkStackTrafficGen);
-        double packetTime @unit(s);
-        double packetsPerPacketTime;
-        bool debug = default(false); // debug switch
-        int burstSize = default(1);
-    	int packetLength @unit("bit"); // length of the generated packet (in bits)
-    	int destination = default(-1);
+        phyType = default("org.mixim.modules.phy.PhyLayerBattery");
+
+        double sleepCurrent @unit(mA);
+        double rxCurrent @unit(mA);
+        double decodingCurrentDelta @unit(mA);
+        double txCurrent @unit(mA);
+        double setupRxCurrent @unit(mA);
+        double setupTxCurrent @unit(mA);
+        double rxTxCurrent @unit(mA);
+        double txRxCurrent @unit(mA);
 }

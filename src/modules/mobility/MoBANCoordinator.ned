@@ -41,7 +41,7 @@ package org.mixim.modules.mobility;
 //*
 //**************************************************************************/
 
-
+import org.mixim.base.modules.BaseMobility;
 
 // This is the coordinator module of the MoBAN mobility model. It should be instantiated in the top level simulation network in MiXiM, once per WBAN.
 // The coordinator module is the main module that provides the group mobility and correlation between nodes in a WBAN.
@@ -53,10 +53,13 @@ package org.mixim.modules.mobility;
 // The absolute position of the reference point of each belonging node is calculated by adding the current position of the logical center
 // by the reference point of that node in the selected posture. The coordinator publish the position of the reference point as well as
 // the speed and the radius of the local movement of nodes to their blackboards.
-simple MoBANCoordinator
+simple MoBANCoordinator extends BaseMobility
 {
     parameters:
     	@class(MoBANCoordinator);
+    	x = 20;
+    	y = 20;
+    	z = 0;
         bool debug = default(false); // debug switch
        
         double updateInterval @unit(s); // Time interval to update the nodes position (seconds).

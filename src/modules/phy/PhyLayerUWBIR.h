@@ -122,7 +122,6 @@ class MIXIM_API PhyLayerUWBIR : public BasePhyLayer
 	friend class DeciderUWBIRED;
 
 public:
-	void initialize(int stage);
         PhyLayerUWBIR() : uwbpathloss(0), ieee802154AChannel(0) {}
 
     void finish();
@@ -171,10 +170,6 @@ protected:
     virtual Radio* initializeRadio();
 
     RadioUWBIR* uwbradio;
-    /**
-     * called by the signalling mechanism to inform of changes
-     */
-    void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 
     virtual void switchRadioToRX() {
     	Enter_Method_Silent();
@@ -187,8 +182,6 @@ protected:
     	uwbradio->finishReceivingFrame(simTime());
     	setRadioCurrent(radio->getCurrentState());
     }
-
-    virtual simtime_t setRadioState(int rs);
 
 	/** @brief Number of power consuming activities (accounts).*/
 	int numActivities;
@@ -215,8 +208,11 @@ protected:
 		IEEE_802154_UWB = 3200,
 	};
 
+	/** @brief Updates the actual current drawn for the passed state.*/
 	virtual void setRadioCurrent(int rs);
 
+	/** @brief Updates the actual current drawn for switching between
+	 * the passed states.*/
 	virtual void setSwitchingCurrent(int from, int to);
 
 	/**
@@ -232,6 +228,13 @@ protected:
 	 */
 	virtual void finishRadioSwitching();
 
+public:
+	virtual void initialize(int stage);
+
+	/**
+	 * @brief Captures radio switches to adjust power consumption.
+	 */
+	virtual simtime_t setRadioState(int rs);
 };
 
 #endif

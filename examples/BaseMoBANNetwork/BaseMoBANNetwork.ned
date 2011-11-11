@@ -41,53 +41,31 @@ package org.mixim.examples.BaseMoBANNetwork;
 //*
 //**************************************************************************/
 
-
-
-import org.mixim.base.connectionManager.ConnectionManager;
-import org.mixim.base.modules.BaseWorldUtility;
-import org.mixim.examples.baseNetwork.*;
-import org.mixim.modules.mobility.*;
+import org.mixim.base.modules.BaseNetwork;
+import org.mixim.modules.node.WirelessNode;
+import org.mixim.modules.mobility.MoBANCoordinator;
 
 //
 // This network is exactly the same as baseNetwork existing among the examples of MiXiM, but the desired number of MoBAN coordinator modules have been added.
 // Some nodes of type BaseNode use MoBANLocal module as their mobility module. Then those nodes will be considered as WBAN nodes. 
 // Those node have a parameter named "coordinatorIndex" that determines to which WBAN (coordinator) the node belongs.  
 //
-network BaseMoBANNetwork
+network BaseMoBANNetwork extends BaseNetwork
 {
     parameters:
-        double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
-        double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
-        double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
-        double numNodes; // total number of nodes in the network, either ordinary nodes or WBAN nodes 
+        int numNodes; // total number of nodes in the network, either ordinary nodes or WBAN nodes 
         int numMoBAN; // total number of MoBAN coordinators (WBAN instances)
 
-        @display("bgb=$playgroundSizeX,$playgroundSizeY,white;bgp=0,0");
     submodules:
-        connectionManager: ConnectionManager {
+        node[numNodes]: WirelessNode {
             parameters:
-                @display("p=70,0;i=abstract/multicast;;is=vs");
+                @display("p=139,59;b=8,8,oval,red");
+                nicType = default("NicCSMA");
         }
-        
-        world: BaseWorldUtility {
-            parameters:
-                playgroundSizeX = playgroundSizeX;
-                playgroundSizeY = playgroundSizeY;
-                playgroundSizeZ = playgroundSizeZ;
-                @display("p=100,0;i=misc/globe;is=vs");
-        }
-        
-        node[numNodes]: BaseNode {
-            parameters:
-                @display("p=2,6;b=8,8,oval,red,,");
-        }
-        
-        MoBANCoor[numMoBAN]: MoBANCoordinator {
-        	parameters:
-                 @display("p=170,120;i=block/wheelbarrow");
-        }
-         
-    connections allowunconnected:
 
+        MoBANCoor[numMoBAN]: MoBANCoordinator {
+            parameters:
+                @display("p=139,130;i=block/wheelbarrow");
+        }
 }
 

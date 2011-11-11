@@ -24,8 +24,7 @@
 // **************************************************************************/
 package org.mixim.examples.Mac80211;
 
-import org.mixim.base.connectionManager.ConnectionManager;
-import org.mixim.base.modules.BaseWorldUtility;
+import org.mixim.base.modules.BaseNetwork;
 import org.mixim.modules.node.Host80211;
 //
 //This example shows how to use MiXiMs 802.11 protocol implementation. 
@@ -41,36 +40,16 @@ import org.mixim.modules.node.Host80211;
 //
 //The default configuration in omnetpp.ini uses no propagation delay.
 //
-network Mac80211
+network Mac80211 extends BaseNetwork
 {
     parameters:
-        double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
-        double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
-        double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
-        double numHosts; // total number of hosts in the network  
-
-        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=10,50");
+        int numHosts; // total number of hosts in the network  
 
     submodules:
-        world: BaseWorldUtility {
-            parameters:
-                playgroundSizeX = playgroundSizeX;
-                playgroundSizeY = playgroundSizeY;
-                playgroundSizeZ = playgroundSizeZ;
-                @display("p=171,27;i=misc/globe");
-
-        }
-        connectionManager: ConnectionManager {
-            parameters:
-                @display("p=66,25;b=42,42,rect,green;i=abstract/multicast");
-        }
         host[numHosts]: Host80211 {
-            netwType = "BaseNetwLayer";
-            applType = "BurstApplLayer";
-            mobType = "ConstSpeedMobility";
+            @display("p=137,95");
         }
 
     connections allowunconnected:
     // all connections and gates are to be generated dynamically
-
 }

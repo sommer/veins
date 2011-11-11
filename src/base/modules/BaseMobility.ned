@@ -6,7 +6,7 @@ package org.mixim.base.modules;
 // pattern (means only a position, no movement).
 // Mobility modules which extend from this module
 // will define more complex movement patterns.
-simple BaseMobility like IBaseMobility
+simple BaseMobility like IMobility
 {
     parameters:
         bool notAffectedByHostState = default(true);

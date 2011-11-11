@@ -1,14 +1,11 @@
 package org.mixim.tests.basePhyLayer;
 
-simple TestMacLayer
+import org.mixim.base.modules.BaseMacLayer;
+
+simple TestMacLayer extends BaseMacLayer
 {
-    gates:
-
-        input lowerLayerIn; 	// from the Phy layer
-        output lowerLayerOut; 	// to the Phy layer
-
-        input lowerControlIn; 	// control from the Phy layer        
-        output lowerControlOut; 	// control to the Phy layer
-
+    parameters:
+        @class(TestMacLayer);
+        headerLength = 16bit;
 }
 

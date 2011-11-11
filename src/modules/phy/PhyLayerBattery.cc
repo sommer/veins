@@ -44,7 +44,6 @@ void PhyLayerBattery::initialize(int stage) {
 	} else {
 		registerWithBattery("physical layer", numActivities);
 		setRadioCurrent(radio->getCurrentState());
-		//BatteryAccess::drawCurrent(rxCurrent, RX_ACCT);
 	}
 }
 

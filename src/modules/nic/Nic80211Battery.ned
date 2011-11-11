@@ -26,9 +26,6 @@
 
 package org.mixim.modules.nic;
 
-import org.mixim.modules.mac.Mac80211;
-import org.mixim.modules.phy.PhyLayerBattery;
-
 //
 // Based on Nic80211
 //
@@ -40,70 +37,36 @@ import org.mixim.modules.phy.PhyLayerBattery;
 // parameters: note that the NIC module owns the hardware parameters
 // to allow external access/alternate implementations.
 //
-module Nic80211Battery like IWirelessNic
+module Nic80211Battery extends WirelessNicBattery
 {
     parameters:
-        string connectionManagerName = default("");   //name of the ConnectionManager module
-        double sleepCurrent @unit(mA);
-        double rxCurrent @unit(mA);
-        double decodingCurrentDelta @unit(mA);
-        double txCurrent @unit(mA);
-        double setupRxCurrent @unit(mA);
-        double setupTxCurrent @unit(mA);
-        double rxTxCurrent @unit(mA);
-        double txRxCurrent @unit(mA);
+        macType = default("Mac80211");
 
         @display("i=block/ifcard");
-    gates:
-        input upperLayerIn; // to upper layers
-        output upperLayerOut; // from upper layers
-        output upperControlOut; // control information 
-        input upperControlIn; // control information 
-        input radioIn; // radioIn gate for sendDirect
 
-    submodules:
-        mac: Mac80211 {
-            parameters:
-                queueLength = default(20);
-                bitrate = default(2E+6bps);            
-                autoBitrate = default(false);
-                // values if no fading is modelled, gives at most 1% packet error rate
-    			snr2Mbit = default(1.46dB); 
-    			snr5Mbit = default(2.6dB);
-    			snr11Mbit = default(5.68dB);
-    			neighborhoodCacheSize = default(30);
-    			neighborhoodCacheMaxAge = default(100s);
-    			txPower = default(110.11mW);
-                @display("p=96,87;i=block/layer");
-        }
-        phy: PhyLayerBattery {
-            parameters:
-                headerLength = 192bit;
-                sensitivity = default(-119.5dBm);
-                decider = default(xmldoc("Nic80211_Decider.xml"));
-                initialRadioChannel = default(1);
-                nbRadioChannels = default(15); //1 to 14, 0 is invalid
-                
-                //Mac80211 does not support switching times
-                timeRXToTX = 0s;
-                timeRXToSleep = 0s;
-                timeTXToRX = 0s;
-                timeTXToSleep = 0s;
-                timeSleepToRX = 0s;
-                timeSleepToTX = 0s;
-                @display("p=106,157;i=block/process_s");
-        }
+        mac.queueLength             = default(20);
+        mac.bitrate                 = default(2E+6bps);            
+        mac.autoBitrate             = default(false);
+        // values if no fading is modelled, gives at most 1% packet error rate
+    	mac.snr2Mbit                = default(1.46dB); 
+    	mac.snr5Mbit                = default(2.6dB);
+    	mac.snr11Mbit               = default(5.68dB);
+    	mac.neighborhoodCacheSize   = default(30);
+    	mac.neighborhoodCacheMaxAge = default(100s);
+    	mac.txPower                 = default(110.11mW);
 
-    connections:
-        radioIn --> phy.radioIn;
-        phy.upperLayerIn <-- { @display("m=m,25,0,25,0"); } <-- mac.lowerLayerOut;
-        phy.upperLayerOut --> { @display("m=m,73,0,50,50"); } --> mac.lowerLayerIn;
-        phy.upperControlOut --> mac.lowerControlIn;
-        phy.upperControlIn <-- mac.lowerControlOut;
-
-        mac.upperLayerOut --> upperLayerOut;
-        mac.upperControlOut --> upperControlOut;
-        mac.upperLayerIn <-- upperLayerIn;
-        mac.upperControlIn <-- upperControlIn;
+        phy.headerLength        = 192bit;
+        phy.sensitivity         = default(-119.5dBm);
+        phy.decider             = default(xmldoc("Nic80211_Decider.xml"));
+        phy.initialRadioChannel = default(1);
+        phy.nbRadioChannels     = default(15); //1 to 14, 0 is invalid
+        
+        //Mac80211 does not support switching times
+        phy.timeRXToTX          = 0s;
+        phy.timeRXToSleep       = 0s;
+        phy.timeTXToRX          = 0s;
+        phy.timeTXToSleep       = 0s;
+        phy.timeSleepToRX       = 0s;
+        phy.timeSleepToTX       = 0s;
 }
 

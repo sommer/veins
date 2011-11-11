@@ -20,6 +20,7 @@ package org.mixim.modules.transport;
 // **************************************************************************/
 
 import org.mixim.base.modules.BaseLayer;
+import org.mixim.base.modules.IBaseNetwLayer;
 
 //
 // This module aggregates application level packets in larger packets.
@@ -33,14 +34,14 @@ import org.mixim.base.modules.BaseLayer;
 // The module can be bypassed by setting interPacketDelay to 0.
 //
 // @author Jérôme Rousselot
-simple Aggregation extends BaseLayer
+simple Aggregation extends BaseLayer like IBaseNetwLayer
 {
     parameters:
-        bool trace = default(false);
-        bool stats = default(true);
-        int headerLength @unit(byte) = default(2 byte);
-        double interPacketDelay @unit(s) = default(0 s); // this class does not send more than two packets to the same destination in a time interPacketDelay to the lower layer. It is deactivated if this value is set to 0.
-        int nbMaxPacketsPerAggregation = default(10); // maximum number of packets to aggregate per sending
         @class(Aggregation);
+        bool   trace = default(false);
+        bool   stats = default(true);
+        int    headerLength @unit(byte)   = default(2 byte);
+        double interPacketDelay @unit(s)  = default(0 s); // this class does not send more than two packets to the same destination in a time interPacketDelay to the lower layer. It is deactivated if this value is set to 0.
+        int    nbMaxPacketsPerAggregation = default(10); // maximum number of packets to aggregate per sending
 }
 

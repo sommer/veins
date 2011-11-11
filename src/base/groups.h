@@ -145,11 +145,7 @@
  *
  * \image html MiximBasics.png
  *
- * BaseUtility is responsible for broadcasting information (BBItems) between the different modules
- * which have to implement the ImNotifiable interface.
- *
- * BaseMobility is responsible for position and movement of a host and provides this information
- * as Move for other modules by using BaseUtility.
+ * BaseMobility is responsible for position and movement of a host.
  *
  * BaseConnectionManager is responsible for keeping track of the hosts which are
  * in range of every other host.
