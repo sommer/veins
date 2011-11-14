@@ -1,6 +1,6 @@
 package org.mixim.tests.nicTest;
 
-import org.mixim.modules.nic.IWirelessNic;
+import org.mixim.modules.nic.IWirelessNicUpperCtrl;
 import org.mixim.base.modules.BaseMobility;
 import org.mixim.modules.netw.ArpHost;
 
@@ -21,7 +21,7 @@ module TestHost
             parameters:
                 @display("b=32,30;p=60,166");
         }
-        nic: <nicType> like IWirelessNic {
+        nic: <nicType> like IWirelessNicUpperCtrl {
             parameters:
                 @display("b=32,30;p=60,166;i=iface");
         }

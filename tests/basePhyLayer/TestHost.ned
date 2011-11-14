@@ -1,12 +1,11 @@
 package org.mixim.tests.basePhyLayer;
 
-import org.mixim.modules.node.WirelessNode;
+import org.mixim.modules.node.WirelessNodeNetwl;
 
-module TestHost extends WirelessNode
+module TestHost extends WirelessNodeNetwl
 {
     parameters:
         nicType = "org.mixim.tests.basePhyLayer.TestNic";
-        applicationType = "";
         
         netwl.headerLength = 12bit;
         

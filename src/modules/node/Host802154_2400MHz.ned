@@ -19,7 +19,7 @@ package org.mixim.modules.node;
 //
 // @author Jérôme Rousselot
 //
-module Host802154_2400MHz extends WirelessNodeBattery
+module Host802154_2400MHz extends WirelessNodeBatteryPlusTran
 {
     parameters:
         double numHosts; // total number of hosts in the network

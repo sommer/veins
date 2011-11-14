@@ -1,11 +1,10 @@
 package org.mixim.examples.ieee802154Narrow;
 
-import org.mixim.modules.node.WirelessNodeBattery;
+import org.mixim.modules.node.WirelessNodeBatteryNetwl;
 
-module PhyMacHost extends WirelessNodeBattery
+module PhyMacHost extends WirelessNodeBatteryNetwl
 {
     parameters:
-        applicationType = "";
         networkType = "org.mixim.examples.ieee802154Narrow.NetworkStackTrafficGen";
         nicType = "Nic802154_TI_CC2420";
         double numHosts; // total number of hosts in the network

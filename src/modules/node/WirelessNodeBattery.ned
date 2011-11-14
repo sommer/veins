@@ -19,3 +19,29 @@ module WirelessNodeBattery extends WirelessNode
             @display("p=140,170;i=block/plug,#FF8000");
         }
 }
+
+module WirelessNodeBatteryPlusTran extends WirelessNodePlusTran
+{
+    parameters:
+        @display("bgb=210,450,white;i=device/palm;b=40,40,rect");
+    submodules:
+        batteryStats: BatteryStats {
+            @display("p=140,240;i=block/table,#FF8040");
+        }
+        battery: SimpleBattery {
+            @display("p=140,170;i=block/plug,#FF8000");
+        }
+}
+
+module WirelessNodeBatteryNetwl extends WirelessNodeNetwl
+{
+    parameters:
+        @display("bgb=210,450,white;i=device/palm;b=40,40,rect");
+    submodules:
+        batteryStats: BatteryStats {
+            @display("p=140,240;i=block/table,#FF8040");
+        }
+        battery: SimpleBattery {
+            @display("p=140,170;i=block/plug,#FF8000");
+        }
+}
