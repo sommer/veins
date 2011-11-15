@@ -91,11 +91,11 @@ simtime_t DeciderUWBIRED::handleHeaderOver(map<Signal*, int>::iterator& it) {
 			packet.setNbSyncSuccesses(packet.getNbSyncSuccesses() + 1);
 			// notify MAC layer through PHY layer
 			cMessage* syncSuccessfulNotification = new cMessage("Ctrl_PHY2MAC_Sync_Success", SYNC_SUCCESS);
-			phy->sendControlMsg(syncSuccessfulNotification);
+			phy->sendControlMsgToMac(syncSuccessfulNotification);
 		} else {
 			nbFailedSyncs = nbFailedSyncs + 1;
 			cMessage* syncFailureNotification = new cMessage("Ctrl_PHY2MAC_Sync_Failure", SYNC_FAILURE);
-			phy->sendControlMsg(syncFailureNotification);
+			phy->sendControlMsgToMac(syncFailureNotification);
 
 		}
 		uwbiface->emit(catUWBIRPacketSignal, &packet);
@@ -361,7 +361,7 @@ simtime_t DeciderUWBIRED::handleChannelSenseRequest(ChannelSenseRequest* request
 	if (channelSensing) {
 		// send back the channel state
 		request->setResult(new ChannelState(synced, 0)); // bogus rssi value (0)
-		phy->sendControlMsg(request);
+		phy->sendControlMsgToMac(request);
 		channelSensing = false;
 		return -1; // do not call me back ; I have finished
 	} else {

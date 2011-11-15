@@ -118,33 +118,22 @@ Radio* BasePhyLayer::initializeRadio() {
 										 initialRadioChannel, nbRadioChannels);
 
 	//	- switch times to TX
-	simtime_t rxToTX = par("timeRXToTX").doubleValue();
-	simtime_t sleepToTX = par("timeSleepToTX").doubleValue();
-
 	//if no RX to TX defined asume same time as sleep to TX
-	radio->setSwitchTime(Radio::RX, Radio::TX, par("timeRXToTX").doubleValue());
+	radio->setSwitchTime(Radio::RX, Radio::TX, (hasPar("timeRXToTX") ? par("timeRXToTX") : par("timeSleepToTX")).doubleValue());
 	//if no sleep to TX defined asume same time as RX to TX
-	radio->setSwitchTime(Radio::SLEEP, Radio::TX, par("timeSleepToTX").doubleValue());
+	radio->setSwitchTime(Radio::SLEEP, Radio::TX, (hasPar("timeSleepToTX") ? par("timeSleepToTX") : par("timeRXToTX")).doubleValue());
 
-
-	//		- switch times to RX
-	simtime_t txToRX = par("timeTXToRX").doubleValue();
-	simtime_t sleepToRX = par("timeSleepToRX").doubleValue();
-
+	//	- switch times to RX
 	//if no TX to RX defined asume same time as sleep to RX
-	radio->setSwitchTime(Radio::TX, Radio::RX, par("timeTXToRX").doubleValue());
+	radio->setSwitchTime(Radio::TX, Radio::RX, (hasPar("timeTXToRX") ? par("timeTXToRX") : par("timeSleepToRX")).doubleValue());
 	//if no sleep to RX defined asume same time as TX to RX
-	radio->setSwitchTime(Radio::SLEEP, Radio::RX, par("timeSleepToRX").doubleValue());
+	radio->setSwitchTime(Radio::SLEEP, Radio::RX, (hasPar("timeSleepToRX") ? par("timeSleepToRX") : par("timeTXToRX")).doubleValue());
 
-
-	//		- switch times to sleep
-	simtime_t txToSleep = par("timeTXToSleep").doubleValue();
-	simtime_t rxToSleep = par("timeRXToSleep").doubleValue();
-
+	//	- switch times to sleep
 	//if no TX to sleep defined asume same time as RX to sleep
-	radio->setSwitchTime(Radio::TX, Radio::SLEEP, par("timeTXToSleep").doubleValue());
+	radio->setSwitchTime(Radio::TX, Radio::SLEEP, (hasPar("timeTXToSleep") ? par("timeTXToSleep") : par("timeRXToSleep")).doubleValue());
 	//if no RX to sleep defined asume same time as TX to sleep
-	radio->setSwitchTime(Radio::RX, Radio::SLEEP, par("timeRXToSleep").doubleValue());
+	radio->setSwitchTime(Radio::RX, Radio::SLEEP, (hasPar("timeRXToSleep") ? par("timeRXToSleep") : par("timeTXToSleep")).doubleValue());
 
 	return radio;
 }
@@ -244,7 +233,6 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 
 Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
 {
-
 	return 0;
 }
 
@@ -332,8 +320,6 @@ AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, Paramete
 
 	return 0;
 }
-
-
 
 //--Message handling--------------------------------------
 
@@ -592,7 +578,7 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg) {
 	//transmission over
 	case TX_OVER:
 		assert(msg == txOverTimer);
-		sendControlMsg(new cMessage("Transmission over", TX_OVER));
+		sendControlMsgToMac(new cMessage("Transmission over", TX_OVER));
 		break;
 
 	//radio switch over
@@ -736,7 +722,7 @@ int BasePhyLayer::getRadioState() {
 void BasePhyLayer::finishRadioSwitching()
 {
 	radio->endSwitch(simTime());
-	sendControlMsg(new cMessage("Radio switching over", RADIO_SWITCHING_OVER));
+	sendControlMsgToMac(new cMessage("Radio switching over", RADIO_SWITCHING_OVER));
 }
 
 simtime_t BasePhyLayer::setRadioState(int rs) {
@@ -811,7 +797,7 @@ ConstMapping* BasePhyLayer::getThermalNoise(simtime_t_cref from, simtime_t_cref 
 	return thermalNoise;
 }
 
-void BasePhyLayer::sendControlMsg(cMessage* msg) {
+void BasePhyLayer::sendControlMsgToMac(cMessage* msg) {
 	if(msg->getKind() == CHANNEL_SENSE_REQUEST) {
 		if(channelInfo.isRecording()) {
 			channelInfo.stopRecording();

@@ -22,11 +22,12 @@ package org.mixim.modules.node;
 module Host802154_2400MHz extends WirelessNodeBatteryPlusTran
 {
     parameters:
-        double numHosts; // total number of hosts in the network
+        int numHosts; // total number of hosts in the network
 
         applicationType = default("SensorApplLayer");
         transportType   = default("Aggregation");
         nicType         = default("Nic802154_TI_CC2420");  //type of used nic
+        arpType         = default("org.mixim.modules.netw.ArpHost");
 
         batteryStats.detail = default(false);
         batteryStats.timeSeries = default(false);

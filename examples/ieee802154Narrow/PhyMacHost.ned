@@ -7,7 +7,7 @@ module PhyMacHost extends WirelessNodeBatteryNetwl
     parameters:
         networkType = "org.mixim.examples.ieee802154Narrow.NetworkStackTrafficGen";
         nicType = "Nic802154_TI_CC2420";
-        double numHosts; // total number of hosts in the network
+        int numHosts; // total number of hosts in the network
 
     connections allowunconnected:
 }

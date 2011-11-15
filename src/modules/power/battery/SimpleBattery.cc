@@ -21,6 +21,7 @@
 
 #include "FWMath.h"
 #include "BatteryStats.h"
+#include "FindModule.h"
 
 Define_Module(SimpleBattery);
 
@@ -94,6 +95,8 @@ void SimpleBattery::initialize(int stage) {
 
 		devices = new DeviceEntry[numDevices];
 		lastUpdateTime = simTime();
+
+		host = findHost();
 	}
 	else if (stage == 1) {
 		hostState.set(HostState::ACTIVE);
@@ -187,14 +190,14 @@ void SimpleBattery::draw(int deviceID, DrawAmount& amount, int activity)
 		" mW-s, activity = " << activity << endl;
 
 		// deduct a fixed energy cost
-		if (residualCapacity >= energy) {
-			devices[deviceID].accts[activity] += energy;
-			residualCapacity -= energy;
-		}
-		else if (residualCapacity != 0.0) {
-			devices[deviceID].accts[activity] += energy;
-			residualCapacity                   = 0.0;
-		}
+
+		devices[deviceID].accts[activity] += energy;
+		residualCapacity                  -= energy;
+
+		if (residualCapacity > nominalCapacity)
+			residualCapacity = nominalCapacity;
+		else if (residualCapacity < 0.0)
+			residualCapacity = 0;
 
 		// update the residual capacity (ongoing current draw), mostly
 		// to check whether to publish (or perish)
@@ -246,6 +249,7 @@ void SimpleBattery::deductAndCheck() {
 		return;
 	}
 
+	const double    dLastResCap= residualCapacity;
 	const simtime_t now        = simTime();
 	const simtime_t tDeltaT    = now - lastUpdateTime;
 	const double    dVoltDelta = voltage * SIMTIME_DBL(tDeltaT);
@@ -260,23 +264,45 @@ void SimpleBattery::deductAndCheck() {
 		int currentActivity = devices[i].currentActivity;
 		if (currentActivity > -1) {
 			const double energy = devices[i].draw * dVoltDelta;
-			if (energy > 0) {
+			if (energy != 0) {
 				if (residualCapacity >= energy || residualCapacity != 0.0) {
 					devices[i].accts[currentActivity] += energy;
 					devices[i].times[currentActivity] += tDeltaT;
 				}
-				if (residualCapacity >= energy)
-					residualCapacity -= energy;
-				else if (residualCapacity != 0.0)
-					residualCapacity = 0;
+				residualCapacity -= energy;
 			}
 		}
 	}
 
 	lastUpdateTime = now;
 
-	debugEV<< simTime() << ": residual capacity = "
-	<< residualCapacity << endl;
+	if (residualCapacity > nominalCapacity)
+		residualCapacity = nominalCapacity;
+	else if (residualCapacity < 0.0)
+		residualCapacity = 0;
+
+	if (dLastResCap != residualCapacity) {
+		debugEV<< simTime() << " residual capacity = " << residualCapacity << " fill state is " << estimateResidualRelative()*100.0 << "%" << endl;
+	}
+	// update display
+	if (host && ev.isGUI()) {
+		const double dCapacityRatio = estimateResidualRelative();
+		if((dCapacityRatio < 0.8) && (dCapacityRatio > 0.6)) {
+			host->getDisplayString().setTagArg("i2",0,"status/battery_80");
+		}
+		else if((dCapacityRatio < 0.6) && (dCapacityRatio > 0.4)) {
+			host->getDisplayString().setTagArg("i2",0,"status/battery_60");
+		}
+		else if((dCapacityRatio < 0.4) && (dCapacityRatio > 0.2)) {
+			host->getDisplayString().setTagArg("i2",0,"status/battery_40");
+		}
+		else if((dCapacityRatio < 0.2) && (dCapacityRatio > 0.0)) {
+			host->getDisplayString().setTagArg("i2",0,"status/battery_20");
+		}
+		else if (residualCapacity <= 0.0 ) {
+			host->getDisplayString().setTagArg("i2",0,"status/battery_0");
+		}
+	}
 
 	// battery is depleted
 	if (residualCapacity <= 0.0 ) {
@@ -375,16 +401,16 @@ void SimpleBattery::finish() {
 		}
 	}
 
-	cModule *statsModule = getParentModule()->getSubmodule("batteryStats");
-	if (statsModule) {
-		BatteryStats *batteryStats = check_and_cast<BatteryStats *>(statsModule);
-		batteryStats->summary(capacity, residualCapacity, lifetime);
-		batteryStats->detail(devices, numDevices);
+	if (host) {
+		BatteryStats *statsModule = FindModule<BatteryStats*>::findSubModule(host);
+		if (statsModule) {
+			statsModule->summary(capacity, residualCapacity, lifetime);
+			statsModule->detail(devices, numDevices);
+		}
+		else {
+			opp_warning("No BatteryStats module found, no statistic summary/details available.");
+		}
 	}
-	else {
-		error("No batteryStats module found, please check your Host.ned");
-	}
-
 	cComponent::finish();
 }
 

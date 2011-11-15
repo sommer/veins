@@ -18,6 +18,7 @@
 #include <cassert>
 
 #include "DeciderResult802154Narrow.h"
+#include "Decider802154Narrow.h"
 #include "PhyToMacControlInfo.h"
 #include "MacToNetwControlInfo.h"
 #include "MacPkt_m.h"
@@ -48,4 +49,13 @@ cPacket *CSMA802154::decapsMsg(MacPkt * macPkt) {
 	cInfo->setRSSI(rssi);
 
 	return msg;
+}
+
+void CSMA802154::handleLowerControl(cMessage *msg) {
+	if (msg->getKind() == Decider802154Narrow::RECEPTION_STARTED) {
+		debugEV<< "control message: RECEIVING AirFrame" << endl;
+		delete msg;
+		return;
+	}
+	csma::handleLowerControl(msg);
 }

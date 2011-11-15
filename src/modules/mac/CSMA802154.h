@@ -37,6 +37,9 @@ protected:
     virtual void initialize(int stage);
 
     virtual cPacket *decapsMsg(MacPkt * macPkt);
+
+    /** @brief Handle control messages from lower layer */
+    virtual void handleLowerControl(cMessage *msg);
 };
 
 #endif

@@ -100,7 +100,7 @@ void TestApplication::handleMessage(cMessage * msg) {
 			msg->setBitLength(PAYLOAD_SIZE);
 			msg->setSrcAddr(nodeAddr);
 			msg->setDestAddr(dstAddr);
-			NetwControlInfo::setControlInfo(msg, LAddress::L3NULL);
+			NetwControlInfo::setControlInfo(msg, dstAddr);
 			if (debug) {
 				debugEV << " sending down new data message to Aloha MAC layer for radio transmission." << endl;
 			}

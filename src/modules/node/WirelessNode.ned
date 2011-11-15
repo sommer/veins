@@ -2,7 +2,7 @@ package org.mixim.modules.node;
 
 import org.mixim.base.modules.IMobility;
 import org.mixim.modules.nic.IWirelessNicUpperCtrl;
-import org.mixim.base.modules.BaseArp;
+import org.mixim.base.modules.IBaseArp;
 import org.mixim.base.modules.IBaseApplLayer;
 import org.mixim.base.modules.IBaseNetwLayer;
 
@@ -11,6 +11,7 @@ module WirelessNodeNetwl
     parameters:
         string networkType = default("BaseNetwLayer");       //type of the network layer
         string mobilityType = default("ConstSpeedMobility"); //type of the mobility module
+        string arpType = default("BaseArp"); //type of address resolution module
         string nicType;
         @display("bgb=210,450,white;i=device/palm;b=40,40,rect");
 
@@ -18,9 +19,8 @@ module WirelessNodeNetwl
         input radioIn; // gate for sendDirect
 
     submodules:
-        arp: BaseArp {
-            parameters:
-                @display("p=140,100;b=24,24,rect,blue;i=block/process");
+        arp: <arpType> like IBaseArp {
+                @display("p=140,100;i=block/network2");
         }
         mobility: <mobilityType> like IMobility {
             parameters:

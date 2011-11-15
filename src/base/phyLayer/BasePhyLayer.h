@@ -490,7 +490,7 @@ public:
 	 * This function can be used to answer a ChannelSenseRequest to the MACLayer
 	 *
 	 */
-	virtual void sendControlMsg(cMessage* msg);
+	virtual void sendControlMsgToMac(cMessage* msg);
 
 	/**
 	 * @brief Called to send an AirFrame with DeciderResult to the MACLayer

@@ -10,7 +10,7 @@ import org.mixim.modules.power.battery.SimpleBattery;
 module WirelessNodeBattery extends WirelessNode
 {
     parameters:
-        @display("bgb=210,450,white;i=device/palm;b=40,40,rect");
+        @display("bgb=210,450,white;i=device/palm;i2=status/battery;b=40,40,rect");
     submodules:
         batteryStats: BatteryStats {
             @display("p=140,240;i=block/table,#FF8040");
@@ -23,7 +23,7 @@ module WirelessNodeBattery extends WirelessNode
 module WirelessNodeBatteryPlusTran extends WirelessNodePlusTran
 {
     parameters:
-        @display("bgb=210,450,white;i=device/palm;b=40,40,rect");
+        @display("bgb=210,450,white;i=device/palm;i2=status/battery;b=40,40,rect");
     submodules:
         batteryStats: BatteryStats {
             @display("p=140,240;i=block/table,#FF8040");
@@ -36,7 +36,7 @@ module WirelessNodeBatteryPlusTran extends WirelessNodePlusTran
 module WirelessNodeBatteryNetwl extends WirelessNodeNetwl
 {
     parameters:
-        @display("bgb=210,450,white;i=device/palm;b=40,40,rect");
+        @display("bgb=210,450,white;i=device/palm;i2=status/battery;b=40,40,rect");
     submodules:
         batteryStats: BatteryStats {
             @display("p=140,240;i=block/table,#FF8040");

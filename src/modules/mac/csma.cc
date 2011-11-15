@@ -30,7 +30,6 @@
 
 #include "FWMath.h"
 #include "BaseDecider.h"
-#include "DeciderResult802154Narrow.h"
 #include "BaseArp.h"
 #include "BasePhyLayer.h"
 #include "BaseConnectionManager.h"

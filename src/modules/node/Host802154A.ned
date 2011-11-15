@@ -30,6 +30,7 @@ module Host802154A extends WirelessNodeBattery
 {
     parameters:
         applicationType = default("org.mixim.modules.application.TestApplication");
+        arpType = default("org.mixim.modules.netw.ArpHost");
         nicType = default("org.mixim.modules.nic.Nic802154A");
         networkType = default("org.mixim.modules.netw.DummyRoute");
         int numHosts; // total number of hosts in the network

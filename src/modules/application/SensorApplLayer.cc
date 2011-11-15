@@ -74,7 +74,7 @@ void SensorApplLayer::initialize(int stage) {
 		cModule *const pHost = findHost();
 		const cModule* netw  = FindModule<BaseNetwLayer*>::findSubModule(pHost);
 		if(!netw) {
-			netw = pHost->getSubmodule("netw");
+			netw = pHost->getSubmodule("netwl");
 			if(!netw) {
 				opp_error("Could not find network layer module. This means "
 						  "either no network layer module is present or the "

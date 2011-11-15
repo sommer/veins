@@ -192,7 +192,7 @@ simtime_t Decider80211::processSignalEnd(AirFrame* frame)
 		Mac80211Pkt* mac = static_cast<Mac80211Pkt*>(frame->decapsulate());
 		mac->setName("ERROR");
 		mac->setKind(BITERROR);
-		phy->sendControlMsg(mac);
+		phy->sendControlMsgToMac(mac);
 		delete result;
 	}
 

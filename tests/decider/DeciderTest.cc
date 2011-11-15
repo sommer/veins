@@ -851,7 +851,7 @@ void DeciderTest::getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFram
 /**
  * SPECIAL TESTING IMPLEMENTATION: PLEASE REFER TO HEADER-FILE!
  */
-void DeciderTest::sendControlMsg(cMessage* msg)
+void DeciderTest::sendControlMsgToMac(cMessage* msg)
 {
 
 	ChannelSenseRequest* req = dynamic_cast<ChannelSenseRequest*>(msg);

@@ -1,7 +1,10 @@
 package org.mixim.base.modules;
 
+moduleinterface IBaseArp {
+}
+
 // Module which is responsible for Addressresolution
-simple BaseArp
+simple BaseArp like IBaseArp
 {
     parameters:
         bool notAffectedByHostState = default(true);

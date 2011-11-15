@@ -80,7 +80,7 @@ simtime_t Decider802154Narrow::processSignalHeader(AirFrame* frame)
 
 	//TODO: publish rssi and channel state
 	// Inform the MAC that we started receiving a frame
-	phy->sendControlMsg(new cMessage("start_rx",RECEPTION_STARTED));
+	phy->sendControlMsgToMac(new cMessage("start_rx",RECEPTION_STARTED));
 	Signal& s = frame->getSignal();
 	return s.getReceptionEnd();
 }
@@ -182,7 +182,7 @@ simtime_t Decider802154Narrow::processSignalEnd(AirFrame* frame)
 		mac->setKind(PACKET_DROPPED);
 
 		PhyToMacControlInfo::setControlInfo(mac, new DeciderResult802154Narrow(false, bitrate, snirMin, avgBER, rssi));
-		phy->sendControlMsg(mac);
+		phy->sendControlMsgToMac(mac);
 		if(recordStats) {
 		  snirDropped.record(10*log10(snirMin));  // in dB
 		}

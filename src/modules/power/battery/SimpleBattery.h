@@ -139,6 +139,8 @@ protected:
 	};
 
 	simtime_t lastUpdateTime;
+	/** @brief Pointer to host module */
+	cModule* 	host;
 	virtual void deductAndCheck();
 };
 

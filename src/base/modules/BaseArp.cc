@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "BaseArp.h"
+#include "FindModule.h"
 
 Define_Module(BaseArp);
 
@@ -32,28 +33,28 @@ void BaseArp::initialize(int stage)
 LAddress::L2Type BaseArp::getMacAddr(const LAddress::L3Type& netwAddr) const
 {
     Enter_Method("getMacAddr(%d)",netwAddr);
-    cModule* netwLayer = simulation.getModule( static_cast<long>(netwAddr) );
+    cModule *const netwLayer = simulation.getModule( static_cast<int>(netwAddr) );
     if(!netwLayer) {
     	opp_error("Invalid network address: %d! Could not find a module with "
 				  "that id.", netwAddr);
     }
-    LAddress::L2Type macAddr( netwLayer->getParentModule()->getSubmodule( "nic" )->getId() );
-    coreEV << "for host[" << netwLayer->getParentModule()->getIndex()
-       << "]: netwAddr " << netwAddr << "; MAC address "
-       << macAddr << std::endl;
-    return macAddr;
+    cModule *const pNetwlHost = FindModule<cModule*>::findHost(netwLayer);
+    if (pNetwlHost) {
+    	const cModule *const pNic = pNetwlHost->getSubmodule( "nic" );
+		LAddress::L2Type macAddr( pNic ? pNic->getId() : pNetwlHost->getId() );
+    	if (pNic) {
+			coreEV << "for host[" << pNetwlHost->getIndex()
+			       << "]: netwAddr " << netwAddr << "; MAC address "
+			       << macAddr << std::endl;
+    	}
+    	else {
+    		opp_error("Network address: %d is not from a host module with wireless nic!", netwAddr);
+    	}
+		return macAddr;
+    }
+    opp_error("Network address: %d is not from a host module!", netwAddr);
+    return LAddress::L2NULL;
 }
-
-/*
-int BaseArp::getNetwAddr(const int macAddr)
-{
-    Enter_Method("getNetwAddr(%d)",macAddr);
-    coreEV << "for host[" << simulation.getModule( macAddr )->getParentModule()->getIndex()
-       << "]: macAddr " << macAddr << "; netw address "
-       << simulation.getModule( macAddr )->getParentModule()->getSubmodule("nic")->getId() <<endl;
-    return simulation.getModule(macAddr)->getParentModule()->getSubmodule("netw")->getId();
-}
-*/
 
 LAddress::L3Type BaseArp::myNetwAddr(const cModule* netw) const
 {

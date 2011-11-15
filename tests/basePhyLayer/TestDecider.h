@@ -50,7 +50,7 @@ public:
 			DeciderToPhyInterface::AirFrameVector v;
 			phy->getChannelInfo(senseStart, time, v);
 			request->setResult(ChannelState(v.empty()));
-			phy->sendControlMsg(request);
+			phy->sendControlMsgToMac(request);
 			return -1.0;
 		}
 	}

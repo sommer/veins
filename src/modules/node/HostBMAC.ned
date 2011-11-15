@@ -6,5 +6,6 @@ package org.mixim.modules.node;
 module HostBMAC extends WirelessNodeBattery
 {
     parameters:
+        arpType = default("org.mixim.modules.netw.ArpHost");
         nicType = default("org.mixim.modules.nic.NicBMAC");
 }

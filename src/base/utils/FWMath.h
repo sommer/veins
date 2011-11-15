@@ -91,8 +91,8 @@ public:
      */
     static double div(double dividend, double divisor) {
         double i;
-        double f;
-        f=modf(dividend/divisor, &i);
+        /*double f;
+        f=*/modf(dividend/divisor, &i);
         return i;
     }
 

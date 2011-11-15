@@ -62,7 +62,7 @@ void BaseMacLayer::initialize(int stage)
 
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
     }
-    else if (stage==1) {
+    if (myMacAddr == LAddress::L2NULL) {
     	// see if there is an addressing module available
         // otherwise use NIC modules id as MAC address
         AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());

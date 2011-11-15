@@ -212,7 +212,7 @@ void BaseDecider::answerCSR(CSRInfo& requestInfo) {
 	// put the sensing-result to the request and
 	// send it to the Mac-Layer as Control-message (via Interface)
 	requestInfo.first->setResult( ChannelState(isChannelIdle, rssiValue) );
-	phy->sendControlMsg(requestInfo.first);
+	phy->sendControlMsgToMac(requestInfo.first);
 
 	requestInfo.first = 0;
 	requestInfo.second = -1;

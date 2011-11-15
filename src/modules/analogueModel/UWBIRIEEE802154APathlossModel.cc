@@ -245,7 +245,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t_cref pulseStart) {
     	pulseEnergy = pulseEnergy - S;
     }
     simtime_t tau_kl = SIMTIME_ZERO;
-    simtime_t fromClusterStart = SIMTIME_ZERO;
+    //simtime_t fromClusterStart = SIMTIME_ZERO;
     // start time of cluster number "cluster"
     clusterStart = 0;
     gamma_l = cfg.gamma_0;
@@ -254,7 +254,7 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t_cref pulseStart) {
     // tapEnergy values are normalized
     double tapEnergy = sqrt( Omega_l / ( cfg.gamma_0 * ( (1-cfg.Beta)*cfg.lambda_1 + cfg.Beta*cfg.lambda_2 + 1 ) ) );
     // nakagami fading parameters
-    double mfactor = 0;
+    //double mfactor = 0;
     double mmean = 0, msigma = 0;
     bool firstTap = true;
     simtime_t echoEnd = SIMTIME_ZERO;
@@ -274,12 +274,12 @@ void UWBIRIEEE802154APathlossModel::addEchoes(simtime_t_cref pulseStart) {
             newTxPower->setValue(arg, pValueStart);
             bool raising = true;
 
-            if(firstTap) {
-            	mfactor = cfg.m_0;
-            } else {
+            if(!firstTap) {
+            	/*mfactor = cfg.m_0;
+            } else {*/
             	mmean = cfg.m_0 - cfg.k_m*SIMTIME_DBL(tau_kl);
             	msigma = cfg.var_m_0 - cfg.var_k_m*SIMTIME_DBL(tau_kl);
-            	mfactor = normal(mmean, msigma);
+            	//mfactor = normal(mmean, msigma);
             }
             /*
             if(doSmallScaleShadowing) {
