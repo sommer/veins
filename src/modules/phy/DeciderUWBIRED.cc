@@ -103,7 +103,7 @@ simtime_t DeciderUWBIRED::handleHeaderOver(map<Signal*, int>::iterator& it) {
 	}
 	// in any case, look at that frame again when it is finished
 	it->second = SIGNAL_OVER;
-	simtime_t startOfSignal = it->first->getReceptionStart();
+	//simtime_t startOfSignal = it->first->getReceptionStart();
 	simtime_t endOfSignal = it->first->getReceptionEnd();
 	assert(endOfSignal> 0);
 	return endOfSignal;

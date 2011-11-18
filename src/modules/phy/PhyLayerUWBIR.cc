@@ -51,8 +51,8 @@ Radio* PhyLayerUWBIR::initializeRadio() {
 	uwbradio = RadioUWBIR::createNewUWBIRRadio(initialRadioState, recordStats, radioMinAtt, radioMaxAtt);
 
 	//	- switch times to TX
-	simtime_t rxToTX = readPar("timeRXToTX", 0.0);
-	simtime_t sleepToTX = readPar("timeSleepToTX", 0.0);
+	//simtime_t rxToTX = readPar("timeRXToTX", 0.0);
+	//simtime_t sleepToTX = readPar("timeSleepToTX", 0.0);
 
 	// Radio timers
 	// From Sleep mode

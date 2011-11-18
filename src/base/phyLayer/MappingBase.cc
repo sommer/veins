@@ -263,7 +263,6 @@ int Argument::compare(const Argument& o, const DimensionSet *const dims /*= NULL
 	DimensionSet::const_iterator                 DimItLast; if (dims != NULL) DimItLast = dims->end();
 	const DimensionSet::const_iterator           DimItEnd  = DimItLast;
 
-	const container_type::const_iterator         itEnd  = values.end();
 	const container_type::const_reverse_iterator rItEnd = values.rend();
 	const container_type::const_iterator         itEndO = o.values.end();
 	container_type::const_reverse_iterator       rIt;

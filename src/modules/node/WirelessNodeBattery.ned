@@ -20,7 +20,7 @@ module WirelessNodeBattery extends WirelessNode
         }
 }
 
-module WirelessNodeBatteryPlusTran extends WirelessNodePlusTran
+module WirelessNodeBatteryNetwl extends WirelessNodeNetwl
 {
     parameters:
         @display("bgb=210,450,white;i=device/palm;i2=status/battery;b=40,40,rect");
@@ -33,7 +33,7 @@ module WirelessNodeBatteryPlusTran extends WirelessNodePlusTran
         }
 }
 
-module WirelessNodeBatteryNetwl extends WirelessNodeNetwl
+module WirelessNodeBatteryPlusTran extends WirelessNodePlusTran
 {
     parameters:
         @display("bgb=210,450,white;i=device/palm;i2=status/battery;b=40,40,rect");

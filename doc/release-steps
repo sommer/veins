@@ -1,4 +1,5 @@
 == Check for errors ==
+ * update version number in src/base/utils/miximkerneldefs.h
  * new clean checkout of MiXiM
  * make sure "makemakefiles" is up to date
  * make sure CHANGELOG is up to date 

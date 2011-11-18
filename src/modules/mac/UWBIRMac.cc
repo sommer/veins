@@ -128,7 +128,7 @@ void UWBIRMac::prepareData(UWBIRMacPkt* packet, IEEE802154A::config cfg) {
 			sentPulses.recordWithTimestamp(simTime()
 					+ iter->getPosition().getTime(), iter->getValue());
 			iter->next();
-			simtime_t t = simTime() + iter->getPosition().getTime();
+			//simtime_t t = simTime() + iter->getPosition().getTime();
 			//debugEV << "nbItemsTx=" << nbItems << ", t= " << t <<  ", value=" << iter->getValue() << "." << endl;
 		}
 	}

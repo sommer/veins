@@ -56,8 +56,8 @@ void LMacLayer::initialize(int stage)
     }
 
     else if(stage == 1) {
-        int channel;
-        channel = hasPar("defaultChannel") ? par("defaultChannel") : 0;
+        //int channel;
+        //channel = hasPar("defaultChannel") ? par("defaultChannel") : 0;
 
         debugEV << "queueLength = " << queueLength
            << " slotDuration = " << slotDuration
@@ -323,12 +323,12 @@ void LMacLayer::handleSelfMsg(cMessage *msg)
 		{
 			LMacPkt *const          mac  = static_cast<LMacPkt *>(msg);
 			const LAddress::L2Type& dest = mac->getDestAddr();
-			bool collision = false;
+			//bool collision = false;
 			// if we are listening to the channel and receive anything, there is a collision in the slot.
 			if (checkChannel->isScheduled())
 			{
 				cancelEvent(checkChannel);
-				collision = true;
+				//collision = true;
 			}
 			debugEV << " I have received a data packet.\n";
 			if(dest == myMacAddr || LAddress::isL2Broadcast(dest))

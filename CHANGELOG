@@ -1,5 +1,6 @@
 v2.2
-+ Supports only OMNeT++ 4.2
++ It is mainly a maintenance release whith focus on INET integration.
++ adjusted the OMNeT++ 4.2 API changes
 + modified deciders filterSignal method, parameters now are AirFrame pointer and
   the senders and receivers positions
 + completly removed BaseUtility and Blackboard; MiXiM uses now the OMNNeT++
@@ -10,7 +11,8 @@ v2.2
   for different layers.
 + Added some value tests for infinity in mapping interpolation. (David Eckhoff)
   Merge thermalNoise into attenuattion map for excluded AirFrame.
-+ Ned INic definition was renamed to IWirelessNic
++ Ned INic definition was renamed to IWirelessNicUpperCtl (like INET IWirelessNic plus
+  upper control gates)
 + Add sendReply switch to BurstApplLayer, to disable send reply for 
   BROADCAST_MESSAGE's.
 + Renamed introduced timing info methods in Signal ( getSignalLength() ->
@@ -21,6 +23,8 @@ v2.2
   receiving.
 + Changed [Lower/Upper]Gate to [Lower/Upper]Layer.
 + handleAirFrame method gots an AirFrame as parameter, instead of cMessage.
++ renamed BasePhyLayer::sendControlMsg to BasePhyLayer::sendControlMsgToMac
++ refactored the NED files to simplify the usage and to make it more generic
 
 v2.1
 + added LMAC layer implementation written by Anna Förster and ported to MiXiM

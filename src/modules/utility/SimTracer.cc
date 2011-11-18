@@ -37,8 +37,8 @@ void SimTracer::initialize(int stage)
   cSimpleModule::initialize(stage);
   if (stage == 0) {
 	char treeName[250];
-	int n;
-	n = sprintf(treeName, "results/tree-%d.txt",
+	/*int n;
+	n =*/ sprintf(treeName, "results/tree-%d.txt",
 	cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getActiveRunNumber());
     treeFile.open(treeName);
     if (!treeFile) {

@@ -18,7 +18,7 @@
 #ifndef MIXIMKERNELDEFS_H_
 #define MIXIMKERNELDEFS_H_
 
-#define MIXIM_VERSION 0x0201
+#define MIXIM_VERSION 0x0202
 
 #define MIXIM_SIGNAL_PACKET_NAME          "org.mixim.modules.utility.packet"
 #define MIXIM_SIGNAL_UWBIRPACKET_NAME     "org.mixim.modules.utility.uwbirpacket"
