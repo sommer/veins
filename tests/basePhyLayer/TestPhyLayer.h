@@ -6,9 +6,7 @@
 #include "TestDecider.h"
 
 #include <list>
-//#include <utility>
 
-//TODO: remove decider test code from files (has been moved to own test)
 class TestPhyLayer:public BasePhyLayer, public TestModule {
 private:
 
@@ -19,14 +17,14 @@ private:
 		TestAnalogueModel(double attenuation):
 			att(attenuation) {}
 
-		void filterSignal(Signal& s) {
+		void filterSignal(AirFrame*, const Coord&, const Coord&) {
 			return;
 		}
 	};
 protected:
-	int run;
 
 	int myIndex;
+	int protocolID;
 
 	// prepared RSSI mapping for testing purposes
 	Mapping* testRSSIMap;
@@ -35,7 +33,8 @@ protected:
 
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 
-	void testInitialisation();
+	virtual bool isKnownProtocolId(int id);
+	virtual int myProtocolId();
 
 public:
 	virtual void initialize(int stage);
@@ -43,6 +42,8 @@ public:
 	virtual void handleMessage(cMessage* msg);
 
 	virtual ~TestPhyLayer();
+
+	void testInitialisation();
 
 };
 

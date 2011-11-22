@@ -32,7 +32,7 @@ module Highway
     submodules:
         connectionManager: ConnectionManager {
             parameters:
-                @display("p=150,0;i=abstract/multicast");   
+                @display("p=150,0;i=abstract/multicast");
         }
         world: BaseWorldUtility {
             parameters:
@@ -45,7 +45,7 @@ module Highway
             parameters:
                 @display("p=512,128");
         }
-        
+
     connections allowunconnected:
 }
 

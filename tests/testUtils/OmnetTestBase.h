@@ -3,6 +3,7 @@
 
 #include "asserts.h"
 #include <omnetpp.h>
+#include "miximkerneldefs.h"
 
 /**
  * @brief Utility class to providing basic functionality for every test module
@@ -10,7 +11,7 @@
  * @author Karl Wessel
  */
 class TestModuleBase {
-private:
+protected:
 	typedef std::map<std::string, std::string> TestPlan;
 	typedef std::map<std::string, bool> CheckList;
 	CheckList executedTests;
@@ -37,6 +38,28 @@ public:
 	 * @param description A description what this test case covers.
 	 */
 	void planTest(std::string name, std::string description);
+
+	/**
+	 * @brief Marks the previously planned test with the passed name as executed
+	 * and passed.
+	 *
+	 * Meant to be used for "Meta"-tests which do not have a particular
+	 * assertion to pass but consist of a set of other tests.
+	 *
+	 * @param name The identifier of the planned test to execute
+	 */
+	void testPassed(std::string name);
+
+	/**
+	 * @brief Marks the previously planned test with the passed name as executed
+	 * but failed.
+	 *
+	 * Meant to be used for "Meta"-tests which do not have a particular
+	 * assertion to pass but consist of a set of other tests.
+	 *
+	 * @param name The identifier of the planned test to execute
+	 */
+	void testFailed(std::string name);
 
 	/**
 	 * @brief Executes the previously planned test with the passed name by
@@ -76,6 +99,24 @@ public:
 		std::string desc = executePlannedTest(name);
 
 		assertEqual(desc, expected, actual);
+	}
+
+	/**
+	 * @brief Executes the previously planned test with the passed name by
+	 * asserting the passed "actual" value close to the passed "expected" value.
+	 *
+	 * Analog to "assertClose" but for planned test cases.
+	 *
+	 * @param name The identifier of the planned test to execute
+	 * @param expected The expected value of the parameter "actual"
+	 * @param actual The actual value which is asserted to be close to the
+	 * "expected" parameter
+	 */
+	template<class T1, class T2>
+	void testForClose(std::string name, T1 expected, T2 actual) {
+		std::string desc = executePlannedTest(name);
+
+		assertClose(desc, expected, actual);
 	}
 
 	/**

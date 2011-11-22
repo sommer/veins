@@ -46,20 +46,6 @@ protected:
 	 */
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 
-
-public:
-	virtual void initialize(int stage);
-
-	/**
-	 * @brief Normally a subclassed phy layer doesn't has to implement
-	 * this method. We are only doing this to display some messages
-	 * telling the current state.
-	 *
-	 * Note: IF a subclass overrides this method it should make sure to
-	 * call the base method.
-	 */
-	virtual void handleMessage(cMessage* msg);
-
 	void log(std::string msg);
 
 	/**
@@ -74,6 +60,19 @@ public:
 		o << v;
 		return o.str();
 	};
+
+public:
+	virtual void initialize(int stage);
+
+	/**
+	 * @brief Normally a sub-classed phy-layer doesn't has to implement
+	 * this method. We are only doing this to display some messages
+	 * telling the current state.
+	 *
+	 * Note: IF a subclass overrides this method it should make sure to
+	 * call the base method.
+	 */
+	virtual void handleMessage(cMessage* msg);
 };
 
 #endif /*TESTPHYLAYER_H_*/

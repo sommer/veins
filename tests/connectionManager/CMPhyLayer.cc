@@ -30,7 +30,7 @@ void CMPhyLayer::handleMessage(cMessage *msg)
 		handleSelfMsg();
 	} else {
 		MacPkt* m = static_cast<MacPkt*>(msg);
-		if(m->getDestAddr() == myAddr() || m->getDestAddr() == -1){
+		if(m->getDestAddr() == myAddr() || LAddress::isL2Broadcast(m->getDestAddr())){
 			handleLowerMsg(m->getSrcAddr());
 		}
 	}

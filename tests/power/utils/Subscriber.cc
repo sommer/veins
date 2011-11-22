@@ -64,5 +64,5 @@ void Subscriber::handleHostState(const HostState& hostState)
 
 void Subscriber::finish()
 {
-  BaseModule::finish();
+  cComponent::finish();
 }

@@ -15,7 +15,7 @@
  *              in the top level directory
  ***************************************************************************
  * part of:     testsuite of framework
- * description: vsiualizes state read from blackboard
+ * description: vsiualizes state read from signaling system
  ***************************************************************************
  * changelog:   $Revision: 1.3 $
  *              last modified:   $Date: 2004/02/09 13:59:33 $
@@ -26,13 +26,11 @@
 #ifndef STATE_VISUALIZE_H
 #define STATE_VISUALIZE_H
 
-#include <BaseUtility.h>
-#include <BaseModule.h>
+#include "BaseModule.h"
 
 class StateVisualize : public BaseModule
 {
 private:
-    int catHostState;
     cModule *host;
 
 public:
@@ -40,7 +38,7 @@ public:
     virtual ~StateVisualize();
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage*);
-    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 };
 
 #endif

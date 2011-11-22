@@ -16,17 +16,12 @@ import org.mixim.tests.power.utils.DeviceDuty;
 import org.mixim.tests.power.utils.DeviceDutySimple;
 import org.mixim.modules.power.battery.SimpleBattery;
 import org.mixim.modules.power.battery.BatteryStats;
-import org.mixim.base.modules.BaseUtility;
 
 module SimpleHost
 {
     parameters:
         @display("bgb=250,250,$color,,;bgp=10,10");
     submodules:
-        blackboard: BaseUtility {
-            parameters:
-                @display("p=50,30;b=30,25");
-        }
         firstDevice: DeviceDutySimple {
             parameters:
                 @display("p=200,160;b=30,25");

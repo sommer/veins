@@ -1,5 +1,12 @@
 #include "SimpleMacLayer.h"
+
 #include "Mapping.h"
+#include "FindModule.h"
+#include "MacToPhyInterface.h"
+#include "MacToPhyControlInfo.h"
+#include "MacPkt_m.h"
+
+using std::endl;
 
 Define_Module(SimpleMacLayer);
 
@@ -15,8 +22,8 @@ void SimpleMacLayer::initialize(int stage) {
 		dimensions.addDimension(Dimension::time);
 		dimensions.addDimension(Dimension::frequency);
 
-		dataOut = findGate("lowerGateOut");
-		dataIn = findGate("lowerGateIn");
+		dataOut = findGate("lowerLayerOut");
+		dataIn = findGate("lowerLayerIn");
 
 		phy = FindModule<MacToPhyInterface*>::findSubModule(this->getParentModule());
 
@@ -71,7 +78,7 @@ void SimpleMacLayer::handleTXOver() {
 void SimpleMacLayer::handleMacPkt(MacPkt* pkt) {
 
 	//if we got a Mac packet check if it was for us or not.
-	if(pkt->getDestAddr() == myIndex){
+	if(pkt->getDestAddr() == LAddress::L2Type(myIndex)){
 		log("Received MacPkt for me - broadcasting answer (but first change to TX mode)");
 		if(myIndex == 0)
 			nextReceiver = 1;
@@ -104,9 +111,9 @@ void SimpleMacLayer::sendDown(MacPkt* pkt) {
 	send(pkt, dataOut);
 }
 
-Mapping* SimpleMacLayer::createMapping(simtime_t time, simtime_t length, double freqFrom, double freqTo, double value){
+Mapping* SimpleMacLayer::createMapping(simtime_t_cref time, simtime_t_cref length, double freqFrom, double freqTo, double value){
 	//create mapping for frequency and time
-	Mapping* m = MappingUtils::createMapping(0.0, dimensions, Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(Argument::MappedZero, dimensions, Mapping::LINEAR);
 
 	//set position Argument
 	Argument pos(dimensions, time);
@@ -131,7 +138,7 @@ Mapping* SimpleMacLayer::createMapping(simtime_t time, simtime_t length, double 
 	return m;
 }
 
-MacPkt* SimpleMacLayer::createMacPkt(simtime_t length) {
+MacPkt* SimpleMacLayer::createMacPkt(simtime_t_cref length) {
 	//create signal with start at current simtime and passed length
 	Signal* s = new Signal(simTime(), length);
 
@@ -144,10 +151,9 @@ MacPkt* SimpleMacLayer::createMacPkt(simtime_t length) {
 	s->setBitrate(bitrate);
 
 	//create and initialize control info
-	MacToPhyControlInfo* ctrl = new MacToPhyControlInfo(s);
 	MacPkt* res = new MacPkt();
-	res->setControlInfo(ctrl);
+	MacToPhyControlInfo::setControlInfo(res, s);
 	res->setKind(TEST_MACPKT);
-	res->setDestAddr(nextReceiver);
+	res->setDestAddr(LAddress::L2Type(nextReceiver));
 	return res;
 }

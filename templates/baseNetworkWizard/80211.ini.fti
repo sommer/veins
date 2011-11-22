@@ -1,54 +1,24 @@
-##############################################################################
-#       Parameters for the ConnectionManager                                 #
-##############################################################################
+##########################################################
+#       Parameters for the ConnectionManager             #
+##########################################################
 **.connectionManager.carrierFrequency = 2.412e9Hz  # [Hz]
 
 # max transmission power [mW]
-**.connectionManager.pMax = 100mW  # [mW]
+**.connectionManager.pMax = 110.11mW  # [mW]
 # signal attenuation threshold [dBm]
-**.connectionManager.sat = -84dBm  # [dBm]
+**.connectionManager.sat = -100dBm  # [dBm]
 # path loss coefficient alpha
 **.connectionManager.alpha = 3.0
 **.connectionManager.sendDirect = false
 
-##############################################################################
-#       Parameters for the Mac Layer                                         #
-##############################################################################
+##########################################################
+#       Parameters for the Host                          #
+##########################################################
 
-# debug switch
-**.mac.headerLength = 272 bit
-**.mac.queueLength = 14
-**.mac.bitrate = 2E+6bps# in bits/second
-**.mac.defaultChannel = 0
-**.mac.autoBitrate = false
-
-### values if no fading is modelled, gives at most 1% packet error rate
-**.mac.snr2Mbit = 1.46dB  # [dB]
-**.mac.snr5Mbit = 2.6dB  # [dB]
-**.mac.snr11Mbit = 5.68dB  # [dB]
-
-**.mac.rtsCtsThreshold = 400
-**.mac.neighborhoodCacheSize = 30
-**.mac.neighborhoodCacheMaxAge = 100s  # [s]
-
-**.mac.txPower = 100mW  # [mW]
-**.mac.centerFrequency = 2.412e9Hz
-
-##############################################################################
-#       Parameters for the Phy                                               #
-##############################################################################
-
+############# Phy parameters #############################
 **.phy.usePropagationDelay = false
-**.phy.thermalNoise = -100dBm  # [dBm]
+**.phy.thermalNoise = -110dBm  # [dBm]
 **.phy.useThermalNoise = true
 **.phy.analogueModels = xmldoc("config.xml")
 **.phy.decider = xmldoc("config.xml")
-**.phy.sensitivity = -84dBm  # [dBm]
-**.phy.maxTXPower = 100.0mW
-**.phy.timeRXToTX = 0s
-**.phy.timeRXToSleep = 0s
-**.phy.timeTXToRX = 0s
-**.phy.timeTXToSleep = 0s
-**.phy.timeSleepToRX = 0s
-**.phy.timeSleepToTX = 0s
-**.phy.initialRadioState = 0
+**.phy.maxTXPower = 110.11mW

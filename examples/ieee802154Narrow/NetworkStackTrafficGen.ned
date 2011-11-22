@@ -15,21 +15,19 @@
 
 package org.mixim.examples.ieee802154Narrow;
 
+import org.mixim.base.modules.BaseNetwLayer;
+
 //
 // TODO auto-generated module
 //
-simple NetworkStackTrafficGen
+simple NetworkStackTrafficGen extends BaseNetwLayer
 {
     parameters:
+        @class(NetworkStackTrafficGen);
         double packetTime @unit(s);
         double packetsPerPacketTime;
-        bool debug; // debug switch
+        bool debug = default(false); // debug switch
         int burstSize = default(1);
     	int packetLength @unit("bit"); // length of the generated packet (in bits)
     	int destination = default(-1);
-    gates:
-    	input lowerGateIn; // from NIC
-        output lowerGateOut; // to NIC
-        input lowerControlIn; // control from NIC
-        output lowerControlOut; // control to NIC
 }

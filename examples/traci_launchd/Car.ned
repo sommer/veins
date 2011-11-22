@@ -25,19 +25,15 @@ module Car
     parameters:
         string applType; //type of the application layer
         string netwType; //type of the network layer
-        string mobType; //type of the mobility module
+        string mobilityType; //type of the mobility module
     gates:
         input radioIn; // gate for sendDirect
     submodules:
-        utility: BaseUtility {
-            parameters:
-                @display("p=130,38;b=24,24,rect,black;i=block/blackboard");
-        }
         arp: BaseArp {
             parameters:
                 @display("p=130,108;b=24,24,rect,blue;i=block/process");
         }
-        mobility: <mobType> like IBaseMobility {
+        mobility: <mobilityType> like IMobility {
             parameters:
                 @display("p=130,172;i=block/cogwheel");
         }
@@ -54,13 +50,13 @@ module Car
                 @display("p=60,166;i=block/ifcard");
         }
     connections:
-        nic.upperGateOut --> net.lowerGateIn;
-        nic.upperGateIn <-- net.lowerGateOut;
+        nic.upperLayerOut --> net.lowerLayerIn;
+        nic.upperLayerIn <-- net.lowerLayerOut;
         nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> net.lowerControlIn;
         nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- net.lowerControlOut;
 
-        net.upperGateOut --> appl.lowerGateIn;
-        net.upperGateIn <-- appl.lowerGateOut;
+        net.upperLayerOut --> appl.lowerLayerIn;
+        net.upperLayerIn <-- appl.lowerLayerOut;
         net.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
         net.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 

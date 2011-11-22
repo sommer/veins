@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>MiXiM</name>
-	<comment></comment>
+	<name>mixim</name>
+	<comment>Version 2.2</comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -20,10 +20,6 @@
 			<triggers>clean,full,incremental,</triggers>
 			<arguments>
 				<dictionary>
-					<key>?children?</key>
-					<value>?name?=outputEntries\|?children?=?name?=entry\\\\\\\|\\\|\||</value>
-				</dictionary>
-				<dictionary>
 					<key>?name?</key>
 					<value></value>
 				</dictionary>
@@ -37,7 +33,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
-					<value>MODE=debug CONFIGNAME=${ConfigName}</value>
+					<value>MODE=release CONFIGNAME=${ConfigName}</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildCommand</key>

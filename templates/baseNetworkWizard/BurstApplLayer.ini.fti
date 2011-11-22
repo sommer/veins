@@ -1,0 +1,4 @@
+**.node[*].applType = "BurstApplLayer"
+**.node[*].appl.debug = false
+**.node[*].appl.headerLength = 512bit
+**.node[*].appl.burstSize = 3

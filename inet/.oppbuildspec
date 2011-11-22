@@ -1,7 +1,0 @@
-<buildspec version="4.0">
-<dir makemake-options="--deep --nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="." type="custom"/>
-<dir makemake-options="-o testCase -O out -u CMDENV -lmixnet --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mixnetWorldUtility" type="makemake"/>
-<dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests" type="makemake"/>
-<dir makemake-options="-o testCase -O out -u CMDENV -lmixnet --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mixnetBridge" type="makemake"/>
-<dir makemake-options="--deep --make-so -o mixnet -O out --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="src" type="makemake"/>
-</buildspec>

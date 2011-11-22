@@ -27,6 +27,9 @@
 
 Define_Module( StateChanger );
 
+const simsignalwrap_t StateChanger::catHostState = simsignalwrap_t("testCatHostState");
+const simsignalwrap_t StateChanger::catTestParam = simsignalwrap_t("testCatTestParam");
+
 void StateChanger::initialize(int stage)
 {
     BaseModule::initialize(stage);
@@ -36,12 +39,10 @@ void StateChanger::initialize(int stage)
         scheduleAt(simTime() + 1.0, change_timer);
     }
     else if(stage == 1) {
-        catHostState = utility->getCategory(&hs);
-        catTestParam = utility->getCategory(&tp);
         hs.setState(TestHostState::SLEEP);
         tp.setState(TestParam::BLUE);
-        utility->publishBBItem(catHostState, &hs, getParentModule()->getId());
-        utility->publishBBItem(catTestParam, &tp, getParentModule()->getId());
+        emit(catHostState, &hs);
+        emit(catTestParam, &tp);
     }
 }
 
@@ -66,8 +67,8 @@ void StateChanger::handleMessage(cMessage* msg)
 		tp.setState(TestParam::GREEN);
 		break;
 	}
-        utility->publishBBItem(catHostState, &hs, getParentModule()->getId());
-        utility->publishBBItem(catTestParam, &tp, getParentModule()->getId());
+    emit(catHostState, &hs);
+    emit(catTestParam, &tp);
 	if(state_counter < 10) scheduleAt(simTime() + 1.0, change_timer);
     } else {
 	error(" StateChanger::handleMessage got wrong message");

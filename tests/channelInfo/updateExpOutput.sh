@@ -1,7 +1,3 @@
 #/bin/bash
 
-./channelInfo > exp-output
-
-
-
-
+./runTest.sh "update-exp-output"

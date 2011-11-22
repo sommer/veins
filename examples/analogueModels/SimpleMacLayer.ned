@@ -1,14 +1,10 @@
 package org.mixim.examples.analogueModels;
 
-simple SimpleMacLayer
+import org.mixim.base.modules.BaseMacLayer;
+
+simple SimpleMacLayer extends BaseMacLayer
 {
-    gates:
-
-        input lowerGateIn; 	// from the Phy layer
-        output lowerGateOut; 	// to the Phy layer
-
-        input lowerControlIn; 	// control from the Phy layer        
-        output lowerControlOut; 	// control to the Phy layer
-
+    parameters:
+        @class(SimpleMacLayer);
 }
 

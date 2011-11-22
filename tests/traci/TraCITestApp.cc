@@ -1,22 +1,22 @@
-/*
- *  Copyright (C) 2009 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
- *
- *  Documentation for these modules is at http://veins.car2x.org/
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+//
+// Copyright (C) 2006-2011 Christoph Sommer <christoph.sommer@uibk.ac.at>
+//
+// Documentation for these modules is at http://veins.car2x.org/
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
 
 #include "../testUtils/asserts.h"
 #include "../testUtils/OmnetTestBase.h"
@@ -25,14 +25,15 @@
 
 Define_Module(TraCITestApp);
 
+const simsignalwrap_t TraCITestApp::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
+
 void TraCITestApp::initialize(int stage) {
 	BaseApplLayer::initialize(stage);
 	if (stage == 0) {
 		debug = par("debug");
 		testNumber = par("testNumber");
-		Move move;
-		catMove = utility->subscribe(this, &move, findHost()->getId());
 		traci = TraCIMobilityAccess().get(getParentModule());
+		findHost()->subscribe(mobilityStateChangedSignal, this);
 
 		visitedEdges.clear();
 		hasStopped = false;
@@ -51,12 +52,8 @@ void TraCITestApp::handleLowerMsg(cMessage* msg) {
 	delete msg;
 }
 
-void TraCITestApp::receiveBBItem(int category, const BBItem *details, int scopeModuleId) {
-	BaseApplLayer::receiveBBItem(category, details, scopeModuleId);
-
-	Enter_Method_Silent();
-
-	if (category == catMove) {
+void TraCITestApp::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj) {
+	if (signalID == mobilityStateChangedSignal) {
 		handlePositionUpdate();
 	}
 }
@@ -149,28 +146,28 @@ void TraCITestApp::handlePositionUpdate() {
 	if (testNumber == testCounter++) {
 		if (t == 1) {
 			std::list<std::string> polys = traci->commandGetPolygonIds();
-			assertEqual("(commandGetPolygonIds) number is 1", polys.size(), (uint8_t)1);
+			assertEqual("(commandGetPolygonIds) number is 1", polys.size(), (size_t)1);
 			assertEqual("(commandGetPolygonIds) id is correct", *polys.begin(), "poly0");
 			std::string typeId = traci->commandGetPolygonTypeId("poly0");
 			assertEqual("(commandGetPolygonTypeId) typeId is correct", typeId, "type0");
 			std::list<Coord> shape = traci->commandGetPolygonShape("poly0");
-			assertClose("(commandGetPolygonShape) shape x coordinate is correct", 130.0, shape.begin()->getX());
-			assertClose("(commandGetPolygonShape) shape y coordinate is correct", 81.65, shape.begin()->getY());
+			assertClose("(commandGetPolygonShape) shape x coordinate is correct", 130.0, shape.begin()->x);
+			assertClose("(commandGetPolygonShape) shape y coordinate is correct", 81.65, shape.begin()->y);
 		}
 	}
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
 			std::list<Coord> shape1 = traci->commandGetPolygonShape("poly0");
-			assertClose("(commandGetPolygonShape) shape x coordinate is correct", 130.0, shape1.begin()->getX());
-			assertClose("(commandGetPolygonShape) shape y coordinate is correct", 81.65, shape1.begin()->getY());
+			assertClose("(commandGetPolygonShape) shape x coordinate is correct", 130.0, shape1.begin()->x);
+			assertClose("(commandGetPolygonShape) shape y coordinate is correct", 81.65, shape1.begin()->y);
 			std::list<Coord> shape2 = shape1;
-			shape2.begin()->setX(135);
-			shape2.begin()->setY(85);
+			shape2.begin()->x = 135;
+			shape2.begin()->y = 85;
 			traci->commandSetPolygonShape("poly0", shape2);
 			std::list<Coord> shape3 = traci->commandGetPolygonShape("poly0");
-			assertClose("(commandSetPolygonShape) shape x coordinate was changed", 135.0, shape3.begin()->getX());
-			assertClose("(commandSetPolygonShape) shape y coordinate was changed", 85.0, shape3.begin()->getY());
+			assertClose("(commandSetPolygonShape) shape x coordinate was changed", 135.0, shape3.begin()->x);
+			assertClose("(commandSetPolygonShape) shape y coordinate was changed", 85.0, shape3.begin()->y);
 		}
 	}
 

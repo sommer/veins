@@ -31,8 +31,8 @@ simple TraCITestApp like IBaseApplLayer
 
 		@display("i=block/app2");
 	gates:
-		input lowerGateIn; // from network layer
-		output lowerGateOut; // to network layer
+		input lowerLayerIn; // from network layer
+		output lowerLayerOut; // to network layer
 		input lowerControlIn; // control from network layer
 		output lowerControlOut; // control to network layer
 }

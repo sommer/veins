@@ -23,20 +23,20 @@ public:
 
 	virtual void initialize(int stage) {
 		CMPhyLayer::initialize(stage);
-		if(stage==0){
+		if(stage==0) {
 			broadcastAnswered = false;
-			scheduleAt(simTime() + 1.0 + myAddr() * 0., new cMessage(0,10));
+			scheduleAt(simTime() + 1.0, new cMessage(0,10));
 		}
 	}
 
 	virtual void finish() {
-		CMPhyLayer::finish();
+		cComponent::finish();
 
 		assertTrue("Broadcast should be answered by at least one node.",
 					broadcastAnswered);
 	}
 protected:
-	virtual void handleLowerMsg(int srcAddr) {
+	virtual void handleLowerMsg(const LAddress::L2Type& srcAddr) {
 		broadcastAnswered = true;
 		ev << "Connected BC-Node " << myAddr() << ": got answer message from " << srcAddr << endl;
 	}
@@ -44,7 +44,7 @@ protected:
 	virtual void handleSelfMsg() {
 		// we should send a broadcast packet ...
 		ev << "Connected BC-Node " << myAddr() << ": Sending broadcast packet!" << endl;
-		sendDown(-1);
+		sendDown(LAddress::L2BROADCAST);
 	}
 };
 

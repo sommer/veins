@@ -12,8 +12,9 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 41
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
 Assigned runID=General-0-20101005-14:49:51-6361
-Setting up network `OmnetTest'...
+Setting up network `ChannelInfoTest'...
 Initializing...
+Initializing module ChannelInfoTest, stage 0
 Passed: Planning new test case:1.1
 Passed: Planning new test case:1.2
 Passed: Planning new test case:1.3
@@ -108,12 +109,6 @@ Passed: [2.3] - Forwarding recording time after AirFrame ends
 Passed: [3.3] - Stop recording after AirFrame removed and cleared.
 
 Running simulation...
-** Event #1   T=0   Elapsed: 0.000s (0m 00s)
-     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 12   present: 0   in FES: 0
-** Event #1   T=0   Elapsed: 0.000s (0m 00s)
-     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 12   present: 0   in FES: 0
 
 <!> No more events -- simulation ended at event #1, t=0.
 

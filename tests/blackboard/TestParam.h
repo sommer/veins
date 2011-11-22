@@ -26,12 +26,10 @@
 #ifndef TESTPARAM_H
 #define TESTPARAM_H
 
-#include <ImNotifiable.h>
+#include <omnetpp.h>
 
-class TestParam : public BBItem
+class TestParam : public cObject
 {
-    BBITEM_METAINFO(BBItem)
-        
 public:
     enum States 
         {
@@ -48,7 +46,7 @@ public:
     States getState() const { return state; }
     void setState(States s) { state = s; }
     
-    TestParam(States s=BLUE) : BBItem(), state(s){};
+    TestParam(States s=BLUE) : cObject(), state(s){};
 };
 
 

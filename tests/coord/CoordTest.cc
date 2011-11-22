@@ -82,91 +82,59 @@ const double BIGGER = 7.0;
  * unit test for constructors of class Coord
  *
  * - test default constructor
- * - test Coord(bool use2D)
  * - test Coord(x, y)
  * - test Coord(x, y, z)
  * - test Coord(Coord* other)
  * - test Coord(Coord& other)
  *
  * assumes correctness of following methods:
- * - getX(), getY(), getZ()
  * - operator=()
- * - is2D(), is3D()
  */
 void testConstructors() {
     
     // test default constructor
     Coord testCoord;
-    assertTrue("Default constructor creates 3D-Coord.", testCoord.is3D());
-    assertFalse("Default constructor creates no 2D-Coord.", testCoord.is2D());
-    assertClose("x-value of default coordinate.", 0.0, testCoord.getX());
-    assertClose("y-value of default coordinate.", 0.0, testCoord.getY());
-    assertClose("z-value of default coordinate.", 0.0, testCoord.getZ());
-
-    //test Coord(bool use2D)
-    testCoord = Coord(false);
-    assertTrue("Coord(false) constructor creates 3D-Coord.", testCoord.is3D());
-    assertFalse("Coord(false) constructor creates no 2D-Coord.", testCoord.is2D());
-    assertClose("x-value of Coord(false).", 0.0, testCoord.getX());
-    assertClose("y-value of Coord(false).", 0.0, testCoord.getY());
-    assertClose("z-value of Coord(false).", 0.0, testCoord.getZ());
-
-    testCoord = Coord(true);
-    assertFalse("Coord(true) constructor creates no 3D-Coord.", testCoord.is3D());
-    assertTrue("Coord(true) constructor creates 2D-Coord.", testCoord.is2D());
-    assertClose("x-value of Coord(false).", 0.0, testCoord.getX());
-    assertClose("y-value of Coord(false).", 0.0, testCoord.getY());
-    assertClose("z-value of Coord(false).", Coord::UNDEFINED, testCoord.getZ());
+    assertClose("x-value of default coordinate.", 0.0, testCoord.x);
+    assertClose("y-value of default coordinate.", 0.0, testCoord.y);
+    assertClose("z-value of default coordinate.", 0.0, testCoord.z);
     
     //test Coord(x, y)
     
     testCoord = Coord(X, Y);
-    assertFalse("Coord(x, y) constructor creates no 3D-Coord.", testCoord.is3D());
-    assertTrue("Coord(x, y) constructor creates 2D-Coord.", testCoord.is2D());
-    assertClose("x-value of Coord(x, y).", X, testCoord.getX());
-    assertClose("y-value of Coord(x, y).", Y, testCoord.getY());
-    assertClose("z-value of Coord(x, y).", Coord::UNDEFINED, testCoord.getZ());
+    assertClose("x-value of Coord(x, y).", X, testCoord.x);
+    assertClose("y-value of Coord(x, y).", Y, testCoord.y);
+    assertClose("z-value of Coord(x, y).", 0.0, testCoord.z);
     
     //test Coord(x, y, z)
     
     testCoord = Coord(X, Y, Z);
-    assertTrue("Coord(x, y, z) constructor creates 3D-Coord.", testCoord.is3D());
-    assertFalse("Coord(x, y, z) constructor creates no 2D-Coord.", testCoord.is2D());
-    assertClose("x-value of Coord(x, y, z).", X, testCoord.getX());
-    assertClose("y-value of Coord(x, y, z).", Y, testCoord.getY());
-    assertClose("z-value of Coord(x, y, z).", Z, testCoord.getZ());
+    assertClose("x-value of Coord(x, y, z).", X, testCoord.x);
+    assertClose("y-value of Coord(x, y, z).", Y, testCoord.y);
+    assertClose("z-value of Coord(x, y, z).", Z, testCoord.z);
     
     //test Coord(Coord* other)
     //test Coord(Coord& other)
     Coord testCoord2(&testCoord);
-    assertTrue("(3D)Coord(Coord* other) constructor same dimension as other.",
-                testCoord.is3D() == testCoord2.is3D());
-    assertClose("x-value of (3D)Coord(Coord* other).", testCoord.getX(), testCoord2.getX());
-    assertClose("y-value of (3D)Coord(Coord* other).", testCoord.getY(), testCoord2.getY());
-    assertClose("z-value of (3D)Coord(Coord* other).", testCoord.getZ(), testCoord2.getZ());
+    assertClose("x-value of (3D)Coord(Coord* other).", testCoord.x, testCoord2.x);
+    assertClose("y-value of (3D)Coord(Coord* other).", testCoord.y, testCoord2.y);
+    assertClose("z-value of (3D)Coord(Coord* other).", testCoord.z, testCoord2.z);
 
     testCoord2 = Coord(testCoord);
-    assertTrue("Coord(Coord& other) constructor same dimension as other.",
-                testCoord.is3D() == testCoord2.is3D());
-    assertClose("x-value of (3D)Coord(Coord& other).", testCoord.getX(), testCoord2.getX());
-    assertClose("y-value of (3D)Coord(Coord& other).", testCoord.getY(), testCoord2.getY());
-    assertClose("z-value of (3D)Coord(Coord& other).", testCoord.getZ(), testCoord2.getZ());
+    assertClose("x-value of (3D)Coord(Coord& other).", testCoord.x, testCoord2.x);
+    assertClose("y-value of (3D)Coord(Coord& other).", testCoord.y, testCoord2.y);
+    assertClose("z-value of (3D)Coord(Coord& other).", testCoord.z, testCoord2.z);
 
     testCoord = Coord(X, Y);
     testCoord2 = Coord(&testCoord);
-    assertTrue("(2D)Coord(Coord* other) constructor same dimension as other.",
-                testCoord.is3D() == testCoord2.is3D());
-    assertClose("x-value of (2D)Coord(Coord* other).", testCoord.getX(), testCoord2.getX());
-    assertClose("y-value of (2D)Coord(Coord* other).", testCoord.getY(), testCoord2.getY());
-    assertClose("z-value of (2D)Coord(Coord* other).", testCoord.getZ(), testCoord2.getZ());
+    assertClose("x-value of (2D)Coord(Coord* other).", testCoord.x, testCoord2.x);
+    assertClose("y-value of (2D)Coord(Coord* other).", testCoord.y, testCoord2.y);
+    assertClose("z-value of (2D)Coord(Coord* other).", testCoord.z, testCoord2.z);
 
     
     testCoord2 = Coord(testCoord);
-    assertTrue("(2D)Coord(Coord& other) constructor same dimension as other.",
-                testCoord.is3D() == testCoord2.is3D());
-    assertClose("x-value of (2D)Coord(Coord& other).", testCoord.getX(), testCoord2.getX());
-    assertClose("y-value of (2D)Coord(Coord& other).", testCoord.getY(), testCoord2.getY());
-    assertClose("z-value of (2D)Coord(Coord& other).", testCoord.getZ(), testCoord2.getZ());
+    assertClose("x-value of (2D)Coord(Coord& other).", testCoord.x, testCoord2.x);
+    assertClose("y-value of (2D)Coord(Coord& other).", testCoord.y, testCoord2.y);
+    assertClose("z-value of (2D)Coord(Coord& other).", testCoord.z, testCoord2.z);
 
     std::cout << "Constructor tests successful." << std::endl;
     
@@ -177,7 +145,7 @@ void testConstructors() {
  *
  * - test plus, minus, scalar multiplication
  * - test in 2D/3D
- * - preserve UNDEFINED of z at 2D
+ * - preserve the value 0 for z at 2D
  */
 void testOperators() {
 
@@ -186,28 +154,24 @@ void testOperators() {
 	Coord b(X2, Y2, Z2);
 
 	Coord erg = a + b;
-	assertTrue("3D: Result of a + b is 3D", erg.is3D());
-	assertClose("3D: x-value of a + b", SUM_X, erg.getX());
-	assertClose("3D: y-value of a + b", SUM_Y, erg.getY());
-	assertClose("3D: z-value of a + b", SUM_Z, erg.getZ());
+	assertClose("3D: x-value of a + b", SUM_X, erg.x);
+	assertClose("3D: y-value of a + b", SUM_Y, erg.y);
+	assertClose("3D: z-value of a + b", SUM_Z, erg.z);
 
 	erg = a - b;
-	assertTrue("3D: Result of a - b is 3D", erg.is3D());
-	assertClose("3D: x-value of a - b", DIFF_X, erg.getX());
-	assertClose("3D: y-value of a - b", DIFF_Y, erg.getY());
-	assertClose("3D: z-value of a - b", DIFF_Z, erg.getZ());
+	assertClose("3D: x-value of a - b", DIFF_X, erg.x);
+	assertClose("3D: y-value of a - b", DIFF_Y, erg.y);
+	assertClose("3D: z-value of a - b", DIFF_Z, erg.z);
 
 	erg = a * FAKT;
-	assertTrue("3D: Result of a * faktor is 3D", erg.is3D());
-	assertClose("3D: x-value of a * faktor", FAK_X, erg.getX());
-	assertClose("3D: y-value of a * faktor", FAK_Y, erg.getY());
-	assertClose("3D: z-value of a * faktor", FAK_Z, erg.getZ());
+	assertClose("3D: x-value of a * faktor", FAK_X, erg.x);
+	assertClose("3D: y-value of a * faktor", FAK_Y, erg.y);
+	assertClose("3D: z-value of a * faktor", FAK_Z, erg.z);
 
     erg = a / (1.0 / FAKT);
-	assertTrue("3D: Result of a / (1 / faktor) is 3D", erg.is3D());
-	assertClose("3D: x-value of a / (1 / faktor)", FAK_X, erg.getX());
-	assertClose("3D: y-value of a / (1 / faktor)", FAK_Y, erg.getY());
-	assertClose("3D: z-value of a / (1 / faktor)", FAK_Z, erg.getZ());
+	assertClose("3D: x-value of a / (1 / faktor)", FAK_X, erg.x);
+	assertClose("3D: y-value of a / (1 / faktor)", FAK_Y, erg.y);
+	assertClose("3D: z-value of a / (1 / faktor)", FAK_Z, erg.z);
 
     //2D
 
@@ -215,28 +179,24 @@ void testOperators() {
 	b = Coord(X2, Y2);
 
     erg = a + b;
-	assertTrue("2D: Result of a + b is 2D", erg.is2D());
-	assertClose("2D: x-value of a + b", SUM_X, erg.getX());
-	assertClose("2D: y-value of a + b", SUM_Y, erg.getY());
-	assertClose("2D: z-value UNDEFINED of a + b", Coord::UNDEFINED, erg.getZ());
+	assertClose("2D: x-value of a + b", SUM_X, erg.x);
+	assertClose("2D: y-value of a + b", SUM_Y, erg.y);
+	assertClose("2D: z-value 0 of a + b", 0.0, erg.z);
 
 	erg = a - b;
-	assertTrue("2D: Result of a - b is 2D", erg.is2D());
-	assertClose("2D: x-value of a - b", DIFF_X, erg.getX());
-	assertClose("2D: y-value of a - b", DIFF_Y, erg.getY());
-	assertClose("2D: z-value UNDEFINED of a - b", Coord::UNDEFINED, erg.getZ());
+	assertClose("2D: x-value of a - b", DIFF_X, erg.x);
+	assertClose("2D: y-value of a - b", DIFF_Y, erg.y);
+	assertClose("2D: z-value 0 of a - b", 0.0, erg.z);
 
 	erg = a * FAKT;
-	assertTrue("2D: Result of a * faktor is 2D", erg.is2D());
-	assertClose("2D: x-value of a * faktor", FAK_X, erg.getX());
-	assertClose("2D: y-value of a * faktor", FAK_Y, erg.getY());
-	assertClose("2D: z-value UNDEFINED of a * faktor", Coord::UNDEFINED, erg.getZ());
+	assertClose("2D: x-value of a * faktor", FAK_X, erg.x);
+	assertClose("2D: y-value of a * faktor", FAK_Y, erg.y);
+	assertClose("2D: z-value 0 of a * faktor", 0.0, erg.z);
 
     erg = a / (1.0 / FAKT);
-	assertTrue("2D: Result of a / (1 / faktor) is 2D", erg.is2D());
-	assertClose("2D: x-value of a / (1 / faktor)", FAK_X, erg.getX());
-	assertClose("2D: y-value of a / (1 / faktor)", FAK_Y, erg.getY());
-	assertClose("2D: z-value UNDEFINED of a / (1 / faktor)", Coord::UNDEFINED, erg.getZ());
+	assertClose("2D: x-value of a / (1 / faktor)", FAK_X, erg.x);
+	assertClose("2D: y-value of a / (1 / faktor)", FAK_Y, erg.y);
+	assertClose("2D: z-value 0 of a / (1 / faktor)", 0.0, erg.z);
 
 	std::cout << "Operator tests successful." << std::endl;
 }
@@ -292,7 +252,7 @@ void testLength() {
     assertClose("3D: square length of (x, y, z)-vector.", XYZ_SQUARE_LENGTH, a.squareLength());
 
     //2D
-    a = Coord(true);
+    a = Coord();
     assertClose("2D: length of origin-vector.", 0.0, a.length());
     assertClose("2D: square length of origin-vector.", 0.0, a.squareLength());
 
@@ -353,70 +313,70 @@ void testDistance() {
 }
 
 /**
- * Unit test for isInRectangle method of class Coord
+ * Unit test for isInBoundary method of class Coord
  *
  * - test at playground border(should be inside)
  * - test outside playground
  * - test inside playground
  * - test 2D/3D
  */
-void testIsInRectangle() {
+void testIsInBoundary() {
 
 	//3D
 	Coord upperLeftPG;
 	Coord lowerRightPG(PG_X, PG_Y, PG_Z);
 
 	Coord inside(INSIDE, INSIDE, INSIDE);
-	assertTrue("3D: inside is inside of playground.", inside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertTrue("3D: inside is inside of playground.", inside.isInBoundary(upperLeftPG, lowerRightPG));
 
 	Coord border(BORDER, INSIDE, INSIDE);
-	assertTrue("3D: border-x is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+	assertTrue("3D: border-x is inside of playground.", border.isInBoundary(upperLeftPG, lowerRightPG));
 	border = Coord(INSIDE, BORDER, INSIDE);
-	assertTrue("3D: border-y is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+	assertTrue("3D: border-y is inside of playground.", border.isInBoundary(upperLeftPG, lowerRightPG));
 	border = Coord(INSIDE, INSIDE, BORDER);
-	assertTrue("3D: border-z is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+	assertTrue("3D: border-z is inside of playground.", border.isInBoundary(upperLeftPG, lowerRightPG));
 
 	Coord outside(SMALLER, INSIDE, INSIDE);
-	assertFalse("3D: smaller-x is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertFalse("3D: smaller-x is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));
 	outside = Coord(INSIDE, SMALLER, INSIDE);
-	assertFalse("3D: smaller-y is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertFalse("3D: smaller-y is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));
 	outside = Coord(INSIDE, INSIDE, SMALLER);
-	assertFalse("3D: smaller-z is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertFalse("3D: smaller-z is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));
 
 	outside = Coord(BIGGER, INSIDE, INSIDE);
-	assertFalse("3D: bigger-x is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertFalse("3D: bigger-x is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));
 	outside = Coord(INSIDE, BIGGER, INSIDE);
-	assertFalse("3D: bigger-y is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertFalse("3D: bigger-y is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));
 	outside = Coord(INSIDE, INSIDE, BIGGER);
-	assertFalse("3D: bigger-z is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertFalse("3D: bigger-z is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));
 
 
 	//2D
-	upperLeftPG = Coord(true);
+	upperLeftPG = Coord();
 	lowerRightPG = Coord(PG_X, PG_Y);
 
 	inside = Coord(INSIDE, INSIDE);
-	assertTrue("2D: inside is inside of playground.", inside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertTrue("2D: inside is inside of playground.", inside.isInBoundary(upperLeftPG, lowerRightPG));
 
 	border = Coord(BORDER, INSIDE);
-	assertTrue("2D: border-x is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+	assertTrue("2D: border-x is inside of playground.", border.isInBoundary(upperLeftPG, lowerRightPG));
 	border = Coord(INSIDE, BORDER);
-	assertTrue("2D: border-y is inside of playground.", border.isInRectangle(upperLeftPG, lowerRightPG));
+	assertTrue("2D: border-y is inside of playground.", border.isInBoundary(upperLeftPG, lowerRightPG));
 	
 	outside = Coord(SMALLER, INSIDE);
-	assertFalse("2D: smaller-x is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertFalse("2D: smaller-x is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));
 	outside = Coord(INSIDE, SMALLER);
-	assertFalse("2D: smaller-y is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertFalse("2D: smaller-y is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));
 	
 	outside = Coord(BIGGER, INSIDE);
-	assertFalse("2D: bigger-x is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));
+	assertFalse("2D: bigger-x is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));
 	outside = Coord(INSIDE, BIGGER);
-	assertFalse("2D: bigger-y is outside of playground.", outside.isInRectangle(upperLeftPG, lowerRightPG));	
+	assertFalse("2D: bigger-y is outside of playground.", outside.isInBoundary(upperLeftPG, lowerRightPG));	
 
 	std::cout << "Is in rectangle test successful." << std::endl;
 }
 
-class OmnetTest:public SimpleTest {
+class CoordTest:public SimpleTest {
 protected:
 	void runTests() {
 		testConstructors();
@@ -424,11 +384,11 @@ protected:
 	    testCompareOperators();
 	    testLength();
 	    testDistance();
-	    testIsInRectangle();
+	    testIsInBoundary();
 
 	    testsExecuted = true;
 	}
 };
 
-Define_Module(OmnetTest);
+Define_Module(CoordTest);
 

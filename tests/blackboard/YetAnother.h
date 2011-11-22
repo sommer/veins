@@ -26,13 +26,10 @@
 #ifndef YETANOTHER_H
 #define YETANOTHER_H
 
-#include <ImNotifiable.h>
 #include "TestParam.h"
 
 class YetAnother : public TestParam
 {
-    BBITEM_METAINFO(TestParam);
-
  public:    
     YetAnother() : TestParam() { }
     const char* getDesc() {

@@ -1,7 +1,3 @@
 #/bin/bash
 
-./radioState > exp-output 
-
-
-
-
+./runTest.sh "update-exp-output"

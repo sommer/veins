@@ -1,3 +1,0 @@
-/**
-\mainpage Mixnet API Reference
- */
