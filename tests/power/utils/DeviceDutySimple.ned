@@ -26,7 +26,7 @@ simple DeviceDutySimple
 
 {
     parameters:
-        bool debug;
+        bool debug = default(false);
         volatile double period @unit(s);
         volatile double dutyCycle;
         volatile double current;

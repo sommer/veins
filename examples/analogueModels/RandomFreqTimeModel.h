@@ -49,7 +49,7 @@ public:
 	 */
 	RandomFreqTimeModel(int seed = 23):
 		frequency("frequency"),
-		dimensions(Dimension::time_static(), frequency) {
+		dimensions(Dimension::time, frequency) {
 
 		//sets the seed for random number generation. The PhyLayer
 		//(which created the analogue models) gets the seed from the
@@ -60,10 +60,10 @@ public:
 	/**
 	 * @brief Has to be overriden by every implementation.
 	 *
-	 * Filters a specified Signal by adding an attenuation
+	 * Filters a specified AirFrame's Signal by adding an attenuation
 	 * over time to the Signal.
 	 */
-	virtual void filterSignal(Signal& s);
+	virtual void filterSignal(AirFrame *, const Coord&, const Coord&);
 };
 
 #endif /*RANDOMFREQTIMEMODEL_H_*/

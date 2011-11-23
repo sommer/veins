@@ -3,8 +3,9 @@
 
 import org.mixim.modules.mac.CSMAMacLayer;
 import org.mixim.modules.phy.PhyLayer;
+import org.mixim.modules.nic.INic;
 
-module CSMANic 
+module CSMANic like INic
 {
     gates:
         input upperGateIn; // to upper layers
@@ -21,8 +22,6 @@ module CSMANic
         phy: PhyLayer {
             @display("p=106,157;i=block/process_s");
         }
-		//radio: SingleChannelRadio;
-	    // display: "p=200,30;b=30,25";
 
     connections:
         mac.upperGateOut --> { @display("ls=black;m=m,25,50,25,0"); } --> upperGateOut;

@@ -126,5 +126,5 @@ void DeviceDutySimple::finish() {
 	cancelAndDelete(on);
 	cancelAndDelete(off);
 
-	BatteryAccess::finish();
+	cComponent::finish();
 }

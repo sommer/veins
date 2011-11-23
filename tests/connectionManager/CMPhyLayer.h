@@ -33,11 +33,11 @@ class CMPhyLayer : public ChannelAccess
 
 protected:
 
-	int myAddr(){
-		return findHost()->getIndex();
+	LAddress::L2Type myAddr() {
+		return LAddress::L2Type( findHost()->getIndex() );
 	};
 
-	void sendDown(int destAddr) {
+	void sendDown(const LAddress::L2Type& destAddr) {
 		MacPkt* m = new MacPkt;
 		m->setDestAddr(destAddr);
 		m->setSrcAddr(myAddr());
@@ -63,7 +63,7 @@ public:
     virtual void handleMessage( cMessage* );
 
 	virtual void handleSelfMsg() { assertFalse("This phy layer expects no self-msg!", true); }
-	virtual void handleLowerMsg(int srcAddr) { assertFalse("This phy layer expects no msg!", true); }
+	virtual void handleLowerMsg(const LAddress::L2Type& srcAddr) { assertFalse("This phy layer expects no msg!", true); }
 
 protected:
 

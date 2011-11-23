@@ -15,7 +15,7 @@
  *              in the top level directory
  ***************************************************************************
  * part of:     testsuite of framework
- * description: vsiualizes state read from blackboard
+ * description: vsiualizes state read from signaling system
  ***************************************************************************
  * changelog:   $Revision: 1.2 $
  *              last modified:   $Date: 2004/02/09 13:59:33 $
@@ -26,20 +26,18 @@
 #ifndef TESTSTATESUB_H
 #define TESTSTATESUB_H
 
-#include <BaseModule.h>
-#include <BaseUtility.h>
+#include "BaseModule.h"
 
 class TestStateSub : public BaseModule
 {
 private:
-    int catTestParam;
     cModule *host;
 
 public:
     //Module_Class_Members(TestStateSub, BaseModule, 0);
     virtual void initialize(int stage);
     virtual void handleMessage( cMessage* );
-    virtual void receiveBBItem(int category, const BBItem *details, int scopeModuleId);
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
 };
 
 #endif

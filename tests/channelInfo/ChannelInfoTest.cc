@@ -21,7 +21,7 @@
 #include <OmnetTestBase.h>
 
 /**
- * Unit test for isInRectangle method of class Coord
+ * Unit test for isInBoundary method of class Coord
  *
  * - test with one AirFrame
  * - test with removed AirFrame
@@ -276,7 +276,7 @@ void testIntersections() {
 }
 
 
-class OmnetTest:public SimpleTest {
+class ChannelInfoTest:public SimpleTest {
 protected:
 	void planTests() {
 		//tests for record flag of ChannelInfo
@@ -409,7 +409,7 @@ protected:
 	}
 
 	int numAirFramesOnChannel(ChannelInfo& ch,
-							  simtime_t from = 0.0, simtime_t to = 999999.0)
+							  simtime_t_cref from = SIMTIME_ZERO, simtime_t_cref to = 999999.0)
 	{
 		ChannelInfo::AirFrameVector v;
 		ch.getAirFrames(from, to, v);
@@ -422,6 +422,7 @@ protected:
 		testRecordingFlag();
 		testsExecuted = true;
 	}
+	virtual ~ChannelInfoTest() {}
 };
 
-Define_Module(OmnetTest);
+Define_Module(ChannelInfoTest);
