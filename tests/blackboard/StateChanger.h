@@ -27,21 +27,23 @@
 #define STATE_CHANGER_H
 
 #include <omnetpp.h>
-#include <BaseUtility.h>
+
 #include "TestHostState.h"
 #include "TestParam.h"
 #include "YetAnother.h"
-#include <BaseModule.h>
+#include "BaseModule.h"
 
 class StateChanger : public BaseModule
 {
+public:
+    const static simsignalwrap_t catHostState;
+    const static simsignalwrap_t catTestParam;
+
 private:
     cMessage *change_timer;
     unsigned int state_counter;
     TestHostState hs;
     YetAnother tp;
-    int catHostState;
-    int catTestParam;
 
 public:
     //Module_Class_Members(StateChanger, BaseModule, 0);

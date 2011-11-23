@@ -16,13 +16,13 @@
 #ifndef NETWORKSTACKTRAFFICGEN_H_
 #define NETWORKSTACKTRAFFICGEN_H_
 
+#include <omnetpp.h>
+
 #include "NetwPkt_m.h"
 #include "SimpleAddress.h"
 #include "BaseLayer.h"
 #include "BaseArp.h"
-#include <BaseWorldUtility.h>
-
-#include <omnetpp.h>
+#include "BaseWorldUtility.h"
 
 /**
  * @brief A module to generate traffic for the NIC, used for testing purposes.
@@ -46,15 +46,13 @@ protected:
 	double pppt;
 	int burstSize;
 	int remainingBurst;
-	long destination;
-
-	int catPacket;
+	LAddress::L3Type destination;
 
 	long nbPacketDropped;
 
 
 	BaseArp* arp;
-	int myNetwAddr;
+	LAddress::L3Type myNetwAddr;
 
 	cMessage *delayTimer;
 

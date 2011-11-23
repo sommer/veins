@@ -1,11 +1,20 @@
 for f in *.vec 
 do
- echo $f diff:
- diff -B -I '^version.*' -I '^run.*' -I '^attr.*' -I '^vector.*' $f valid/$f
+ if [ -f "$f" ]; then
+  echo "diff $f valid/$f"
+  diff -I '^version' -I '^run' -I '^attr' -I '^vector' -w "$f" "valid/$f"
+  rm -f "$f"
+ fi
 done
-cd results
-for f in *.sca
-do
- echo $f diff:
- diff -B -I '^version.*' -I '^run.*' -I '^attr.*' -I '^vector.*' $f ../valid/$f
-done
+if [ -d results ]; then
+ cd results
+ for f in *.sca
+ do
+  if [ -f "$f" ]; then
+   echo "diff $f ../valid/$f"
+   diff -I '^version' -I '^run' -I '^attr' -I '^vector' -w "$f" "../valid/$f"
+  fi
+ done
+ cd ..
+ rm -rf results
+fi

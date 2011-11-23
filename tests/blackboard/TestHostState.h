@@ -25,12 +25,10 @@
 #ifndef TESTHOSTSTATE_H
 #define TESTHOSTSTATE_H
 
-#include "ImNotifiable.h"
+#include <omnetpp.h>
 
-class TestHostState : public BBItem
+class TestHostState : public cObject
 {
-    BBITEM_METAINFO(BBItem)
-
 public:
     enum States
         {

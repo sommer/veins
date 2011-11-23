@@ -1,3 +1,2 @@
-examples_dir: modules_dir
-tests_dir: modules_dir
-modules_dir: base_dir
+tests_dir: src__base_dir src__modules_dir
+examples_dir: src_base_dir src__modules_dir

@@ -32,6 +32,20 @@ void TestModuleBase::planTest(std::string name, std::string description)
 	plannedTests[name] = description;
 }
 
+void TestModuleBase::testPassed(std::string name)
+{
+	std::string desc = executePlannedTest(name);
+
+	pass(desc);
+}
+
+void TestModuleBase::testFailed(std::string name)
+{
+	std::string desc = executePlannedTest(name);
+
+	fail(desc);
+}
+
 void TestModuleBase::testForTrue(std::string name, bool v)
 {
 	std::string desc = executePlannedTest(name);

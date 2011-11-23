@@ -1,18 +1,16 @@
 package org.mixim.examples.ieee802154Narrow;
 
 import org.mixim.base.connectionManager.ConnectionManager;
-import org.mixim.base.modules.BaseWorldUtility;
+
 
 //
 //This example shows how to use MiXiMs implementation of the ieee802154
-//narrow band protocol. It also provides an example on using the global 
-//blackboard provided by BaseWorldUtility.
+//narrow band protocol.
 //
 //The network consist of the "WorldUtilityStats" which extends from 
 //BaseWorldUtility to collect some global statistics as well as the 
 //usual ConnectionManager and a number of host.
-//The hosts contain a special Traffic generation layer (also shows how 
-//to publish global statistics to the global blackboard) which lies 
+//The hosts contain a special Traffic generation layer which lies 
 //directly above the NIC which moreover consist of the "csma"-mac 
 //layer module and the PhyLayer. The PhyLayer uses "Decider802154Narrow"
 //as a decider.

@@ -1,13 +1,13 @@
 #include "RandomFreqTimeModel.h"
 
-
+#include "AirFrame_m.h"
 /**
  * @brief The actual filtering method. This implementation just
  * put some random attenuations over time and frequency into
  * the attenuation mapping.
  */
-void RandomFreqTimeModel::filterSignal(Signal& s){
-
+void RandomFreqTimeModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {
+	Signal& signal = frame->getSignal();
 
 	/* At first get a new instance of the default Mapping implementation
 	 * which is able to represent our attenuation mapping.
@@ -30,8 +30,8 @@ void RandomFreqTimeModel::filterSignal(Signal& s){
 	/* Get start and end of the signal to avoid unnecessary calculation
 	 * of attenuation. (Normally we don't wan't to attenuate the signal
 	 * outside its start and end time since it probably isn't defined there.*/
-	simtime_t sStart = s.getSignalStart();
-	simtime_t sEnd = sStart + s.getSignalLength();
+	simtime_t sStart = signal.getReceptionStart();
+	simtime_t sEnd = signal.getReceptionEnd();
 
 	simtime_t interval = (sEnd - sStart) / 10.0; //lets divide it into 10 steps
 
@@ -67,5 +67,5 @@ void RandomFreqTimeModel::filterSignal(Signal& s){
 	}
 
 	//at last add the created attenuation mapping to the signal
-	s.addAttenuation(attMapping);
+	signal.addAttenuation(attMapping);
 }

@@ -4,6 +4,24 @@ ${bannerComment}
 
 <#if nedPackageName!="">package ${nedPackageName};</#if>
 
+<#if protocolName=="802.11">
+<#assign hostType="Host80211">
+import org.mixim.modules.node.${hostType};
+<#elseif protocolName=="B-MAC">
+<#assign hostType="HostBMAC">
+import org.mixim.modules.node.${hostType};
+<#elseif protocolName=="L-MAC">
+<#assign hostType="HostLMAC">
+import org.mixim.modules.node.${hostType};
+<#elseif protocolName=="CSMA 802.15.4">
+<#assign hostType="Host802154">
+<#else>
+<#assign hostType="HostBasic">
+import org.mixim.modules.node.${hostType};
+</#if>
+
+
+
 import org.mixim.base.connectionManager.ConnectionManager;
 import org.mixim.base.modules.BaseWorldUtility;
 
@@ -28,10 +46,7 @@ network ${targetTypeName}
                 playgroundSizeZ = playgroundSizeZ;
                 @display("p=30,0;i=misc/globe");
         }
-        node[numNodes]: BaseNode {
-            parameters:
-                @display("p=170,50;i=device/wifilaptop");
-        }
+		node[numNodes]: ${hostType} {}
     connections allowunconnected:
 
 }

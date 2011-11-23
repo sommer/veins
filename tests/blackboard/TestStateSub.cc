@@ -25,6 +25,7 @@
 
 #include "TestStateSub.h"
 #include "TestParam.h"
+#include "StateChanger.h"
 
 Define_Module( TestStateSub );
 
@@ -32,8 +33,7 @@ void TestStateSub::initialize(int stage)
 {
     BaseModule::initialize(stage);
     if(stage == 0) {
-        TestParam s;
-        catTestParam = utility->subscribe(this, &s);
+        findHost()->subscribe(StateChanger::catTestParam, this);
     } else if(stage == 1) {
         scheduleAt(simTime() + 6.0, new cMessage("unsubscribe memo"));
     }
@@ -41,16 +41,16 @@ void TestStateSub::initialize(int stage)
  
 void TestStateSub::handleMessage( cMessage* m)
 {
-    utility->unsubscribe(this, catTestParam);
+	findHost()->unsubscribe(StateChanger::catTestParam, this);
     ev << "TestStatSub::handleMessage "
        << "unsubscribed TestParam" << std::endl;
     delete m;
 }
 
-void TestStateSub::receiveBBItem(int category, const BBItem *details, int scopeModuleId) 
+void TestStateSub::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
 {
-    Enter_Method("receiveBBItem(%s)", details->info().c_str());
-    const TestParam *s = dynamic_cast<const TestParam *>(details);
+    Enter_Method("receiveBBItem(%s)", obj->info().c_str());
+    const TestParam *s = dynamic_cast<const TestParam *>(obj);
     if(s == 0) error("TestStateSub::receiveBBItem could not read details");
 
     if(s->getState() == TestParam::RED) {

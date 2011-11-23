@@ -3,12 +3,12 @@ Version: 4.1, build: 100611-4b63c38, edition: Academic Public License -- NOT FOR
 See the license for distribution terms and warranty disclaimer
 Setting up Cmdenv...
 Loading NED files from /home/karl/git-repo/mixim/base: 17
-Loading NED files from /home/karl/git-repo/mixim/modules: 40
-Loading NED files from /home/karl/git-repo/mixim/tests: 41
+Loading NED files from /home/karl/git-repo/mixim/modules: 48
+Loading NED files from /home/karl/git-repo/mixim/tests: 46
 
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
-Assigned runID=General-0-20100630-16:46:06-12155
+Assigned runID=General-0-20110511-10:38:49-13736
 Setting up network `DeciderTest'...
 Signal for TestAirFrame1 created with header/payload power: 1/0
 [ Test] - Creating TestAirFrame 1 done.
@@ -23,6 +23,7 @@ Signal for TestAirFrame5 created with header/payload power: 32/16
 Signal for TestAirFrame6 created with header/payload power: 1/0
 [ Test] - Creating TestAirFrame 6 done.
 Initializing...
+Initializing module DeciderTest, stage 0
 Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
 Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
 Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
@@ -397,12 +398,6 @@ Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: UNTIL_BUSY request was answered because of busy payload.
 
 Running simulation...
-** Event #1   T=0   Elapsed: 0.000s (0m 00s)
-     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 64   present: 3   in FES: 0
-** Event #1   T=0   Elapsed: 0.000s (0m 00s)
-     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 64   present: 3   in FES: 0
 
 <!> No more events -- simulation ended at event #1, t=0.
 

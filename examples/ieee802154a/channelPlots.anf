@@ -12,6 +12,11 @@
         <properties name="X.Axis.Min" value="4.999"/>
         <properties name="X.Axis.Max" value="5.001"/>
       </items>
+      <items xsi:type="scave:LineChart" name="CM2 - Zoomed" lineNameFormat="">
+        <properties name="Axes.Grid" value="All"/>
+        <properties name="X.Axis.Min" value="5.00011489"/>
+        <properties name="X.Axis.Max" value="5.00011498"/>
+      </items>
     </datasets>
     <datasets name="Ghassemzadeh LOS">
       <items xsi:type="scave:Add" filterPattern="attr:Channel(ghassemzadeh-los) AND name(receivedPulses) " type="VECTOR"/>
@@ -19,6 +24,11 @@
         <properties name="Axes.Grid" value="All"/>
         <properties name="X.Axis.Min" value="4.999"/>
         <properties name="X.Axis.Max" value="5.001"/>
+      </items>
+      <items xsi:type="scave:LineChart" name="Ghassemzadeh LOS - Zoomed" lineNameFormat="">
+        <properties name="Axes.Grid" value="All"/>
+        <properties name="X.Axis.Min" value="5.0006164215"/>
+        <properties name="X.Axis.Max" value="5.0006164237"/>
       </items>
     </datasets>
     <datasets name="ber">
@@ -31,9 +41,15 @@
         <properties name="X.Axis.Min" value="4.999"/>
         <properties name="X.Axis.Max" value="5.001"/>
       </items>
+      <items xsi:type="scave:LineChart" name="CM1 - Zoomed" lineNameFormat="">
+        <properties name="Axes.Grid" value="All"/>
+        <properties name="X.Axis.Min" value="5.0008582"/>
+        <properties name="X.Axis.Max" value="5.00085824"/>
+      </items>
     </datasets>
   </datasets>
   <chartSheets>
     <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.3/@items.1"/>
+    <chartSheets name="Zoomed" charts="//@datasets/@datasets.3/@items.2 //@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.2"/>
   </chartSheets>
 </scave:Analysis>

@@ -1,4 +1,5 @@
 #include "TestPhyLayer.h"
+
 #include "../testUtils/asserts.h"
 
 Define_Module(TestPhyLayer);
@@ -7,9 +8,7 @@ void TestPhyLayer::initialize(int stage) {
 	if(stage == 0)
 	{
 		myIndex = findHost()->getIndex();
-
-		run = simulation.getSystemModule()->par("run");
-
+		protocolID = par("protocol").longValue();
 	}
 
 	//call BasePhy's initialize
@@ -18,12 +17,15 @@ void TestPhyLayer::initialize(int stage) {
 	//run basic tests
 	if(stage == 0) {
 		init("phy" + toString(myIndex));
-
-
-
-	} else if(stage == 1) {
-		testInitialisation();
 	}
+}
+
+bool TestPhyLayer::isKnownProtocolId(int id) {
+	return id == protocolID;
+}
+
+int TestPhyLayer::myProtocolId() {
+	return protocolID;
 }
 
 void TestPhyLayer::handleMessage(cMessage* msg) {
@@ -37,8 +39,8 @@ TestPhyLayer::~TestPhyLayer() {
 }
 
 void TestPhyLayer::testInitialisation() {
-	if(run == 6)
-		return;
+	Enter_Method_Silent();
+
 	//run dependend tests
 	assertFalse("Check parameter \"usePropagationDelay\".", usePropagationDelay);
 
@@ -56,8 +58,8 @@ void TestPhyLayer::testInitialisation() {
 	assertEqual("Check value of (\"getThermalNoise()\"-mapping at a position).", FWMath::dBm2mW(1.0), thNoise->getValue(Argument(1.5)));
 
 
-	assertTrue("Check upperGateIn ID.", upperGateIn != -1);
-	assertTrue("Check upperGateOut ID.", upperGateOut != -1);
+	assertTrue("Check upperLayerIn ID.", upperLayerIn != -1);
+	assertTrue("Check upperLayerOut ID.", upperLayerOut != -1);
 	assertTrue("Check upperControlIn ID.", upperControlIn != -1);
 	assertTrue("Check upperControlOut ID.", upperControlOut != -1);
 
@@ -124,6 +126,7 @@ void TestPhyLayer::testInitialisation() {
 	assertNotEqual("Check initialisation of radioSwitchOver timer", (void*)0, radioSwitchingOverTimer);
 	assertEqual("Check kind of radioSwitchOver timer", RADIO_SWITCHING_OVER, radioSwitchingOverTimer->getKind());
 
+	testPassed("0");
 }
 
 

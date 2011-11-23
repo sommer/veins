@@ -24,11 +24,10 @@
 // **************************************************************************/
 package org.mixim.examples.obstacles;
 
-import org.mixim.tests.power.Nic80211Test.Host;
+import org.mixim.base.modules.BaseNetwork;
+import org.mixim.modules.node.Host80211;
 import org.mixim.modules.obstacle.ObstacleControl;
 import org.mixim.modules.world.annotations.AnnotationManager;
-import org.mixim.base.modules.BaseWorldUtility;
-import org.mixim.base.connectionManager.ConnectionManager;
 
 //
 //This example shows how to use MiXiMs 802.11 protocol implementation. 
@@ -44,40 +43,22 @@ import org.mixim.base.connectionManager.ConnectionManager;
 //
 //The default configuration in omnetpp.ini uses no propagation delay.
 //
-network Mac80211
+network Mac80211 extends BaseNetwork
 {
     parameters:
-        double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
-        double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
-        double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
-        double numHosts; // total number of hosts in the network  
-
-        @display("p=0,0;b=$playgroundSizeX,$playgroundSizeY,rect;o=white");
+        int numHosts; // total number of hosts in the network  
 
     submodules:
-        world: BaseWorldUtility {
-            parameters:
-                playgroundSizeX = playgroundSizeX;
-                playgroundSizeY = playgroundSizeY;
-                playgroundSizeZ = playgroundSizeZ;
-                @display("p=100,0;i=misc/globe");
-
-        }
-        connectionManager: ConnectionManager {
-            parameters:
-                @display("p=50,25;b=42,42,rect,green,,;i=abstract/multicast");
-        }
         obstacles: ObstacleControl {
             @display("p=240,50");
         }
         annotations: AnnotationManager {
             @display("p=260,50");
         }
-        host[numHosts]: Host {
-            @display("p=20,20;b=20,20,rect,yellow,,;i=device/wifilaptop");
+        host[numHosts]: Host80211 {
+            @display("p=137,95");
         }
 
     connections allowunconnected:
     // all connections and gates are to be generated dynamically
-
 }

@@ -14,8 +14,11 @@ protected:
 	simtime_t arrival;
 	int state;
 public:
-	AssertAirFrame(std::string msg,int state, simtime_t arrival, AirFrame* frame = 0, TestModule* cModule = 0, int cState = 0):
-		AssertMessage(msg, false, cModule, cState),
+	AssertAirFrame(	std::string msg, int state,
+					simtime_t arrival,
+					AirFrame* frame = 0,
+					bool continuesTests = false):
+		AssertMessage(msg, false, continuesTests),
 		pointer(frame), arrival(arrival), state(state)
 	{}
 	

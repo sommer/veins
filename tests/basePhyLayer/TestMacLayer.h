@@ -3,10 +3,11 @@
 
 #include <omnetpp.h>
 #include "MacToPhyInterface.h"
-#include "MacToPhyControlInfo.h"
 #include "TestGlobals.h"
 #include "TestPhyLayer.h"
 #include "Signal_.h"
+
+class MacPkt;
 
 class TestMacLayer:public BaseModule, public TestModule
 {
@@ -23,38 +24,8 @@ protected:
 
 	int run;
 
-
-	enum {
-		TEST_START = 0,
-
-		RUN1_TEST_START = 1000,
-		RUN1_TEST_ON_RX,
-		RUN1_TEST_ON_SLEEP,
-
-		RUN2_TEST_START = 2000,
-		RUN2_SWITCH_TO_TX,
-		RUN2_DURING_SENDING,
-
-		RUN3_TEST_START = 3000,
-		RUN3_TEST_ON_TX,
-		RUN3_TEST_RECEIVE,
-		RUN3_TEST_ON_DECIDER1,
-		RUN3_TEST_ON_DECIDER2,
-		RUN3_TEST_ON_DECIDER3,
-
-		RUN5_TEST_START = 5000,
-		RUN5_TEST_ON_RX,
-
-		RUN6_TEST_START = 6000,
-		RUN6_TEST_ON_TX,
-		RUN6_TEST_ON_DECIDER1,
-		RUN6_TEST_ON_CSR_RESULT_1,
-		RUN6_TEST_ON_CSR_RESULT_2,
-		RUN6_TEST_ON_CSR_RESULT_3,
-	};
-
 protected:
-	void planTests();
+
 
 public:
 	//---Omnetpp parts-------------------------------
@@ -70,57 +41,49 @@ public:
 	}
 
 	//---Testhandling and test redirection-----------
-	/**
-	 * This method is called when a message arrives which ahs been awaited
-	 * with the "waitForMessage()"-method.
-	 * This method should be implemented by every subclass which wants
-	 * to eb able to handle asserted messages.
-	 */
-	virtual void onAssertedMessage(int state, const cMessage* msg);
 
 	/**
 	 * Redirects test handling to the "testRunx()"-methods
 	 * dependend on the current run.
 	 */
-	void runTests(int state, const cMessage* msg = 0);
+	void runTests(int run, int state, const cMessage* msg = 0);
 
 	/**
-	 * Testhandling for run 1:
-	 * - check switchRadio() method of MacToPhyInterface
-	 * - check sending on not TX mode
+	 * @brief Test handling for run 1:
+	 *
+	 * @see "BasePhyTests::planTests()" for details
 	 */
 	void testRun1(int stage, const cMessage* msg = 0);
 	/**
-	 * Testhandling for run 2:
+	 * @brief Test handling for run 2:
 	 * - check sending on already sending
 	 */
 	void testRun2(int stage, const cMessage* msg = 0);
 	/**
-	 * Testhandling for run 3:
+	 * @brief Test handling for run 3:
 	 * - check valid sending of a packet to 3 recipients
 	 */
 	void testRun3(int stage, const cMessage* msg = 0);
 
 	/**
-	 * Testhandling for run 5:
+	 * @brief Test handling for run 5:
 	 *
 	 */
 	void testRun5(int stage, const cMessage* msg = 0);
 
 	/**
-	 * Testhandling for run 6:
+	 * @brief Test handling for run 6:
 	 *
-	 * see "planTests()" for details
+	 * @see "BasePhyTests::planTests()" for details
 	 */
 	void testRun6(int stage, const cMessage* msg = 0);
 
-	//---run 1 tests------------------------------
-	void testGetChannelState();
-	void testSwitchRadio(int stage);
-	void testChannelSense();
-	void testSendingOnNotTX();
-
-	//---run 2 tests------------------------------
+	/**
+	 * @brief Test handling for run 7:
+	 *
+	 * @see "BasePhyTests::planTests()" for details
+	 */
+	void testRun7(int stage, const cMessage* msg = 0);
 
 	//---run 3 tests------------------------------
 	void testChannelInfo(int stage);
@@ -131,10 +94,18 @@ public:
 	void testGetChannelStateWithBD();
 
 	//---utilities--------------------------------
-	void continueIn(simtime_t time, int nextStage);
-	void waitForTX(int nextStage);
+	/**
+	 * @brief Continue with the next stage after the passed amount of seconds.
+	 *
+	 * @param time The amount of seconds to wait
+	 */
+	void continueIn(simtime_t_cref time);
+
+	void waitForTX();
 	void sendDown(MacPkt* pkt);
-	MacPkt* createMacPkt(simtime_t length);
+	void testForChannelSenseRequest(std::string test,
+								    ChannelSenseRequest* req);
+	MacPkt* createMacPkt(simtime_t_cref length);
 };
 
 #endif /*TESTMACLAYER_H_*/

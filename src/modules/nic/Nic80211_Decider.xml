@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<Decider type="Decider80211">
+		<!-- SNR threshold [NOT dB]-->
+		<parameter name="threshold" type="double" value="0.12589254117942"/>
+	</Decider>
+</root>

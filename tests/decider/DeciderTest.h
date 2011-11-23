@@ -278,12 +278,12 @@ protected:
 	 * Signal for the MacToPhyControlInfo without needing to care
 	 * about creating Mappings.
 	 */
-	virtual Signal* createSignal(simtime_t start,
-									simtime_t length,
+	virtual Signal* createSignal(simtime_t_cref start,
+									simtime_t_cref length,
 									std::pair<double, double> power,
 									std::pair<double, double> bitrate,
 									int index,
-									simtime_t payloadStart);
+									simtime_t_cref payloadStart);
 
 	/**
 	 * @brief Creates a simple Signal defined over time with the
@@ -293,14 +293,14 @@ protected:
 	 * Signal for the MacToPhyControlInfo without needing to care
 	 * about creating Mappings.
 	 */
-	virtual Signal* createSignal(simtime_t start,
-									simtime_t length,
+	virtual Signal* createSignal(simtime_t_cref start,
+									simtime_t_cref length,
 									double power,
 									double bitrate);
 
-	virtual Signal* createSignal(simtime_t start,
-								 simtime_t payloadStart,
-								 simtime_t end,
+	virtual Signal* createSignal(simtime_t_cref start,
+								 simtime_t_cref payloadStart,
+								 simtime_t_cref end,
 								 double powerHeader,
 								 double powerPayload,
 								 double bitrate);
@@ -311,7 +311,7 @@ protected:
 	 *
 	 * Used by "createSignal" to create the power and bitrate mapping.
 	 */
-	Mapping* createConstantMapping(simtime_t start, simtime_t end, double value);
+	Mapping* createConstantMapping(simtime_t_cref start, simtime_t_cref end, double value);
 
 
 	/**
@@ -324,9 +324,9 @@ protected:
 	 * Used by "createSignal" to create the power and bitrate mapping.
 	 *
 	 */
-	Mapping* createHeaderPayloadMapping(simtime_t start,
-										simtime_t payloadStart,
-										simtime_t end,
+	Mapping* createHeaderPayloadMapping(simtime_t_cref start,
+										simtime_t_cref payloadStart,
+										simtime_t_cref end,
 										double headerValue,
 										double payloadValue);
 
@@ -418,9 +418,6 @@ protected:
 	// flag to signal whether sendUp() has been called by decider
 	bool sendUpCalled;
 
-	// dummy move
-	Move move;
-
 	// minimal world for testing purposes
 	TestWorld* world;
 
@@ -430,11 +427,10 @@ protected:
 	 *
 	 * Works only for arguments t > 0;
 	 */
-	simtime_t pre(simtime_t t)
+	simtime_t pre(simtime_t_cref t)
 	{
-		if (t.raw() > 0)
-			t.setRaw(t.raw() - 1);
-
+		if (SIMTIME_RAW(t) > 0)
+			return MappingUtils::pre(t);
 		return t;
 	}
 	/**
@@ -442,11 +438,10 @@ protected:
 	 *
 	 * Works only for arguments t > 0;
 	 */
-	simtime_t post(simtime_t t)
+	simtime_t post(simtime_t_cref t)
 	{
-		if (t.raw() > 0)
-			t.setRaw(t.raw() + 1);
-
+		if (SIMTIME_RAW(t) > 0)
+			return MappingUtils::post(t);
 		return t;
 	}
 
@@ -456,20 +451,20 @@ protected:
 	 *
 	 * @param t - the new test time
 	 */
-	void updateSimTime(simtime_t t) {
+	void updateSimTime(simtime_t_cref t) {
 		testTime = t;
 		fillAirFramesOnChannel();
 	}
 
-	ChannelSenseRequest* createCSR(simtime_t duration, int mode) {
+	ChannelSenseRequest* createCSR(simtime_t_cref duration, int mode) {
 		ChannelSenseRequest* tmp = new ChannelSenseRequest();
 		tmp->setSenseMode(mode);
 		tmp->setSenseTimeout(duration);
 		return tmp;
 	}
 
-	AirFrame* addAirFrameToPool(simtime_t start, simtime_t end, double power);
-	AirFrame* addAirFrameToPool(simtime_t start, simtime_t payloadStart, simtime_t end,
+	AirFrame* addAirFrameToPool(simtime_t_cref start, simtime_t_cref end, double power);
+	AirFrame* addAirFrameToPool(simtime_t_cref start, simtime_t_cref payloadStart, simtime_t_cref end,
 								double headerPower, double payloadPower);
 	void removeAirFrameFromPool(AirFrame* af);
 
@@ -480,7 +475,7 @@ protected:
 		expChannelState = ChannelState(expIsIdle, expRSSI);
 	}
 
-	void setExpectedReschedule(simtime_t newTime) {
+	void setExpectedReschedule(simtime_t_cref newTime) {
 		expectReschedule = true;
 		expRescheduleTime = newTime;
 	}
@@ -498,7 +493,7 @@ public:
 	 * @brief Fills the passed AirFrameVector with all AirFrames that intersect
 	 * with the time interval [from, to]
 	 */
-	virtual void getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out);
+	virtual void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out);
 
 	/**
 	 * @brief Called by the decider to send a control message to the MACLayer
@@ -506,7 +501,7 @@ public:
 	 * This function can be used to answer a ChannelSenseRequest to the MACLayer
 	 *
 	 */
-	virtual void sendControlMsg(cMessage* msg);
+	virtual void sendControlMsgToMac(cMessage* msg);
 
 	/**
 	 * @brief Called to send an AirFrame with DeciderResult to the MACLayer
@@ -537,7 +532,7 @@ public:
 	 * The implementing class of this method keeps ownership of the
 	 * Mapping.
 	 */
-	virtual ConstMapping* getThermalNoise(simtime_t from, simtime_t to);
+	virtual ConstMapping* getThermalNoise(simtime_t_cref from, simtime_t_cref to);
 
 	/**
 	 * @brief Tells the PhyLayer to cancel a scheduled message (AirFrame or
@@ -556,11 +551,6 @@ public:
 	 * Does nothing if no Battery module in simulation is present.
 	 */
 	virtual void drawCurrent(double amount, int activity);
-
-	/**
-	 * @brief Returns a pointer to the hosts utility-module.
-	 */
-	virtual BaseUtility* getUtility();
 
 	/**
 	 * @brief Returns a pointer to the simulations world-utility-module.
@@ -586,7 +576,9 @@ public:
 	 * earlier than it has returned to the PhyLayer the last time the Decider
 	 * handled that message.
 	 */
-	virtual void rescheduleMessage(cMessage* msg, simtime_t t);
+	virtual void rescheduleMessage(cMessage* msg, simtime_t_cref t);
+
+	virtual int getCurrentRadioChannel()  { return -1; }
 
 
 	//---------SimpleTest implementation-----------

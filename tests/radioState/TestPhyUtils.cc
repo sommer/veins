@@ -206,7 +206,7 @@ public:
 	DiagRSAM(double initValue, bool currentlyTracking)
 		: RadioStateAnalogueModel(initValue, currentlyTracking) {}
 
-	DiagRSAM(double initValue, bool currentlyTracking, simtime_t initTime)
+	DiagRSAM(double initValue, bool currentlyTracking, simtime_t_cref initTime)
 			: RadioStateAnalogueModel(initValue, currentlyTracking, initTime) {}
 
 	bool getTrackingFlag() { return currentlyTracking; }
@@ -238,7 +238,7 @@ public:
 
 
 
-class OmnetTest:public SimpleTest {
+class RadioStateTest:public SimpleTest {
 private:
 	simtime_t initTime;
 	simtime_t offset;
@@ -250,11 +250,11 @@ private:
 	RSList variableList;
 
 public:
-	OmnetTest(){
+	RadioStateTest(){
 		initTime = 0.1;
 		offset = 0.1;
 	}
-
+	virtual ~RadioStateTest() {}
 
 private:
 
@@ -538,7 +538,7 @@ private:
 		checkIterator(msg, it, hasNext, inRange, arg, nextArg, val, f);
 	}
 
-	simtime_t incrTime(simtime_t t)
+	simtime_t incrTime(simtime_t_cref t)
 	{
 		return t + 1;
 	}
@@ -778,4 +778,4 @@ protected:
 	}
 };
 
-Define_Module(OmnetTest);
+Define_Module(RadioStateTest);

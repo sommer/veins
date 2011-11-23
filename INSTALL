@@ -1,5 +1,5 @@
-This file contains the general installation hints 
-to compile and start using MiXiM.
+This file contains the general installation hints to compile and start using
+MiXiM.
 
 
 Requirements
@@ -19,7 +19,14 @@ Installation
 
 From the Omnet++ IDE
 --------------------
-This should be the same for every operating system.
+The MiXiM archive contains two projects: MiXiM and Mixnet. 
+Mixnet is only important if you want to use MiXiM together with the INET
+framework. If you already know that you'll need Mixnet you can import it
+together with MiXiM during the following steps. If you are not sure just ignore
+it, you can always install it later separately. For more details on Mixnet take
+a look at its README file in MiXiM's "inet" folder.
+
+The following steps should be the same for every operating system.
 
 1. Choose "File->Import" from the menu.
 
@@ -28,10 +35,12 @@ and proceed with "Next".
 
 3. Choose "Select archive file" and select the MiXiM archive file.
 
-4. "MiXiM" should appear in the "Projects" list below. Import it by clicking on
-"Finish".
+4. "MiXiM" and "Mixnet" should appear in the "Projects" list below. Remove the
+check before "Mixnet" if you are not sure whether you need it. You can always
+install it later separately. 
+At last click "Finish". 
 
-5. Build MiXiM (Ctrl+B)
+5. To build MiXiM right-click on the project and choose "Build Project".
 
 6. Run an example:
 	1. Choose an example from the examples directory.
