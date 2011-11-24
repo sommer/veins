@@ -16,8 +16,7 @@
 package org.mixim.examples.WSNRouting;
 
 
-import org.mixim.base.connectionManager.ConnectionManager;
-import org.mixim.base.modules.BaseWorldUtility;
+import org.mixim.base.modules.BaseNetwork;
 import org.mixim.modules.node.Host802154_2400MHz;
 
 //
@@ -28,32 +27,17 @@ import org.mixim.modules.node.Host802154_2400MHz;
 // network-level broadcast, with flooding;
 // and probabilistic broadcast.
 //
-network WSNRouting {
+network WSNRouting extends BaseNetwork
+{
     parameters:
-        double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
-        double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
-        double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
-        double numHosts; // total number of hosts in the network
+        int numHosts; // total number of hosts in the network
 
-        @display("bgb=$playgroundSizeX,$playgroundSizeY,white,,;bgp=10,50");
     submodules:
-        connectionManager: ConnectionManager {
-            parameters:
-                @display("p=225,40;b=42,42,rect,yellow;i=abstract/multicast");
-
-        }
-        world: BaseWorldUtility {
-            parameters:
-                playgroundSizeX = playgroundSizeX;
-                playgroundSizeY = playgroundSizeY;
-                playgroundSizeZ = playgroundSizeZ;
-                @display("p=30,0;i=misc/globe");
-        }
         node[numHosts]: Host802154_2400MHz {
             parameters:
                 numHosts = numHosts;
-                @display("p=75,130;b=42,42,rect,yellow;i=device/wifilaptop");
+                @display("p=158,99;b=42,42,rect,yellow;i=device/wifilaptop");
 
-        }    
-        connections allowunconnected:
+        }
+    connections allowunconnected:
 }

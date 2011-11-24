@@ -16,9 +16,7 @@
 package org.mixim.tests.nicTest;
 
 import org.mixim.tests.testUtils.TestManager;
-//
-// TODO auto-generated module
-//
+
 simple NicTests extends TestManager
 {
     parameters:

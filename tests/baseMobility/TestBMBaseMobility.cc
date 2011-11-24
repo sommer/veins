@@ -190,7 +190,7 @@ void TestBMBaseMobility::finish()
 }
 
 
-void TestBMBaseMobility::assertRightTime(simtime_t expected) {
+void TestBMBaseMobility::assertRightTime(simtime_t_cref expected) {
 	if(fabs(expected - simTime()) < 0.00001) {
 		ev << "Passed: Check for correct arrival time of border message " << testStage << endl;
 	} else {

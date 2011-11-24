@@ -7,7 +7,6 @@ Define_Module(DeciderTest);
 DeciderTest::DeciderTest() : decider(0)
 {
 	// initializing members for testing
-	move = Move();
 	world = new TestWorld();
 
 	// set controlling things (initial states)
@@ -116,7 +115,7 @@ void DeciderTest::removeAirFrameFromPool(AirFrame* af)
 	assertTrue("AirFrame to remove has to be in pool.",false);
 }
 
-AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t payloadStart, simtime_t end,
+AirFrame *DeciderTest::addAirFrameToPool(simtime_t_cref start, simtime_t_cref payloadStart, simtime_t_cref end,
 										 double headerPower, double payloadPower)
 {
 	// create Signal containing TXpower- and bitrate-mapping
@@ -127,14 +126,11 @@ AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t payloadStart
 	//Mapping* bypassMap = createConstantMapping(start, end, noAttenuation);
 	//s->addAttenuation(bypassMap);
 
-	// put host move pattern to Signal
-	s->setMove(move);
-
 	// create the new AirFrame
 	AirFrame* frame = new AirFrame(0, MacToPhyInterface::AIR_FRAME);
 
 	// set the members
-	frame->setDuration(s->getSignalLength());
+	frame->setDuration(s->getDuration());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
 
@@ -149,7 +145,7 @@ AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t payloadStart
 	return frame;
 }
 
-AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t end, double power)
+AirFrame *DeciderTest::addAirFrameToPool(simtime_t_cref start, simtime_t_cref end, double power)
 {
 	// create Signal containing TXpower- and bitrate-mapping
 	Signal* s = createSignal(start, end, power, 16.0);
@@ -159,14 +155,11 @@ AirFrame *DeciderTest::addAirFrameToPool(simtime_t start, simtime_t end, double 
 	//Mapping* bypassMap = createConstantMapping(start, end, noAttenuation);
 	//s->addAttenuation(bypassMap);
 
-	// put host move pattern to Signal
-	s->setMove(move);
-
 	// create the new AirFrame
 	AirFrame* frame = new AirFrame(0, MacToPhyInterface::AIR_FRAME);
 
 	// set the members
-	frame->setDuration(s->getSignalLength());
+	frame->setDuration(s->getDuration());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
 
@@ -434,8 +427,7 @@ void DeciderTest::fillAirFramesOnChannel()
 	{
 		Signal& s = (*it)->getSignal();
 
-		if(s.getSignalStart() <= testTime
-		   && testTime <= s.getSignalStart() + s.getSignalLength())
+		if(s.getReceptionStart() <= testTime && testTime <= s.getReceptionEnd())
 		{
 			airFramesOnChannel.push_back(*it);
 		}
@@ -469,7 +461,7 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 {
 	// parameters needed
 	simtime_t signalStart = -1;
-	simtime_t signalLength = -1;
+	simtime_t signalDuration = -1;
 	// values for header/payload
 	std::pair<double, double> transmissionPower(0, 0);
 	std::pair<double, double> bitrate(0, 0);
@@ -479,31 +471,31 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 	switch (i) {
 		case 1:
 			signalStart = t1;
-			signalLength = (t7-t1);
+			signalDuration = (t7-t1);
 			transmissionPower.first = TXpower1;
 			bitrate.first = bitrate9600;
 			break;
 		case 2:
 			signalStart = t3;
-			signalLength = (t9-t3);
+			signalDuration = (t9-t3);
 			transmissionPower.first = TXpower2;
 			bitrate.first = bitrate9600;
 			break;
 		case 3:
 			signalStart = t3;
-			signalLength = (t5-t3);
+			signalDuration = (t5-t3);
 			transmissionPower.first = TXpower3;
 			bitrate.first = bitrate9600;
 			break;
 		case 4:
 			signalStart = t5;
-			signalLength = (t6-t5);
+			signalDuration = (t6-t5);
 			transmissionPower.first = TXpower4;
 			bitrate.first = bitrate9600;
 			break;
 		case 5:
 			signalStart = t1;
-			signalLength = (t5-t1);
+			signalDuration = (t5-t1);
 
 			switch (currentTestCase) {
 				case TEST_SNR_THRESHOLD_ACCEPT:
@@ -541,7 +533,7 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 			break;
 		case 6:
 			signalStart = t0;
-			signalLength = (t1-t0);
+			signalDuration = (t1-t0);
 			transmissionPower.first = TXpower6;
 			bitrate.first = bitrate9600;
 			break;
@@ -552,22 +544,19 @@ AirFrame* DeciderTest::createTestAirFrame(int i)
 	// --- Mac-Layer's tasks
 
 	// create Signal containing TXpower- and bitrate-mapping
-	Signal* s = createSignal(signalStart, signalLength, transmissionPower, bitrate, i, payloadStart);
+	Signal* s = createSignal(signalStart, signalDuration, transmissionPower, bitrate, i, payloadStart);
 
 	// just a bypass attenuation, that has no effect on the TXpower
-	//Mapping* bypassMap = createConstantMapping(signalStart, signalStart + signalLength, noAttenuation);
+	//Mapping* bypassMap = createConstantMapping(signalStart, signalStart + signalDuration, noAttenuation);
 	//s->addAttenuation(bypassMap);
 
 	// --- Phy-Layer's tasks
-
-	// put host move pattern to Signal
-	s->setMove(move);
 
 	// create the new AirFrame
 	AirFrame* frame = new AirFrame(0, MacToPhyInterface::AIR_FRAME);
 
 	// set the members
-	frame->setDuration(s->getSignalLength());
+	frame->setDuration(s->getDuration());
 	// copy the signal into the AirFrame
 	frame->setSignal(*s);
 
@@ -604,12 +593,12 @@ void DeciderTest::passAirFramesOnChannel(AirFrameVector& out)
  *
  *
  */
-Signal* DeciderTest::createSignal(simtime_t start,
-									simtime_t length,
+Signal* DeciderTest::createSignal(simtime_t_cref start,
+									simtime_t_cref length,
 									std::pair<double, double> power,
 									std::pair<double, double> bitrate,
 									int index,
-									simtime_t payloadStart = -1)
+									simtime_t_cref payloadStart = -1)
 {
 	simtime_t end = start + length;
 	//create signal with start at current simtime and passed length
@@ -652,8 +641,8 @@ Signal* DeciderTest::createSignal(simtime_t start,
 	return s;
 }
 
-Signal* DeciderTest::createSignal(simtime_t start, simtime_t payLoadStart,
-									simtime_t end,
+Signal* DeciderTest::createSignal(simtime_t_cref start, simtime_t_cref payLoadStart,
+									simtime_t_cref end,
 									double headerPower,
 									double payloadPower,
 									double bitrate)
@@ -683,8 +672,8 @@ Signal* DeciderTest::createSignal(simtime_t start, simtime_t payLoadStart,
 	return s;
 }
 
-Signal* DeciderTest::createSignal(simtime_t start,
-									simtime_t end,
+Signal* DeciderTest::createSignal(simtime_t_cref start,
+									simtime_t_cref end,
 									double power,
 									double bitrate)
 {
@@ -713,10 +702,10 @@ Signal* DeciderTest::createSignal(simtime_t start,
 	return s;
 }
 
-Mapping* DeciderTest::createConstantMapping(simtime_t start, simtime_t end, double value)
+Mapping* DeciderTest::createConstantMapping(simtime_t_cref start, simtime_t_cref end, double value)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time), Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(Argument::MappedZero, DimensionSet(Dimension::time), Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);
@@ -733,14 +722,14 @@ Mapping* DeciderTest::createConstantMapping(simtime_t start, simtime_t end, doub
 	return m;
 }
 
-Mapping* DeciderTest::createHeaderPayloadMapping(	simtime_t start,
-													simtime_t payloadStart,
-													simtime_t end,
-													double headerValue,
-													double payloadValue)
+Mapping* DeciderTest::createHeaderPayloadMapping(	simtime_t_cref start,
+													simtime_t_cref payloadStart,
+													simtime_t_cref end,
+													double         headerValue,
+													double         payloadValue)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(0.0, DimensionSet(Dimension::time), Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(Argument::MappedZero, DimensionSet(Dimension::time), Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);
@@ -773,7 +762,7 @@ Mapping* DeciderTest::createHeaderPayloadMapping(	simtime_t start,
 /**
  * SPECIAL TESTING IMPLEMENTATION: PLEASE REFER TO HEADER-FILE!
  */
-void DeciderTest::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& out)
+void DeciderTest::getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out)
 {
 
 	switch (currentTestCase) {
@@ -810,8 +799,8 @@ void DeciderTest::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& o
 
 				// test whether Decider asks for the duration-interval of the processed AirFrame
 				assertTrue( "Decider demands ChannelInfo for the duration of the AirFrame",
-						(from == signal.getSignalStart()) &&
-						(to == (signal.getSignalStart() + signal.getSignalLength())) );
+						(from == signal.getReceptionStart()) &&
+						(to == signal.getReceptionEnd()) );
 
 				assertEqual( "Decider demands ChannelInfo for current test-timepoint (end of AirFrame)", getSimTime() , to);
 
@@ -862,7 +851,7 @@ void DeciderTest::getChannelInfo(simtime_t from, simtime_t to, AirFrameVector& o
 /**
  * SPECIAL TESTING IMPLEMENTATION: PLEASE REFER TO HEADER-FILE!
  */
-void DeciderTest::sendControlMsg(cMessage* msg)
+void DeciderTest::sendControlMsgToMac(cMessage* msg)
 {
 
 	ChannelSenseRequest* req = dynamic_cast<ChannelSenseRequest*>(msg);
@@ -1079,8 +1068,7 @@ void DeciderTest::executeSNRNewTestCase()
 			ev << log("Trying to receive TestAirFrame 3") << endl;
 			nextHandoverTime = decider->processSignal(TestAF3);
 			Signal& signal3 = TestAF3->getSignal();
-			assertTrue("TestAirFrame 3 can be received, end-time is returned",
-					(nextHandoverTime == signal3.getSignalStart() + signal3.getSignalLength()));
+			assertTrue("TestAirFrame 3 can be received, end-time is returned", (nextHandoverTime == signal3.getReceptionEnd()));
 
 
 			// try to receive another AirFrame at the same time, whose signal not too weak
@@ -1145,8 +1133,7 @@ void DeciderTest::executeSNRNewTestCase()
 			ev << log("Trying to immediately receive TestAirFrame 4") << endl;
 			nextHandoverTime = decider->processSignal(TestAF4);
 			Signal& signal4 = TestAF4->getSignal();
-			assertTrue("TestAirFrame 4 can be received, end-time is returned",
-					(nextHandoverTime == signal4.getSignalStart() + signal4.getSignalLength()));
+			assertTrue("TestAirFrame 4 can be received, end-time is returned", (nextHandoverTime == signal4.getReceptionEnd()));
 
 
 
@@ -1402,7 +1389,7 @@ void DeciderTest::executeSNRNewTestCase()
 			setExpectedCSRAnswer(true, tmpAF1Power);
 			handleTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertEqual("UNTIL_IDLE request on idle channel should be answered immediately.",
-						-1.0, handleTime.dbl());
+						-1.0, SIMTIME_DBL(handleTime));
 			delete testChannelSense;
 
 
@@ -1415,7 +1402,7 @@ void DeciderTest::executeSNRNewTestCase()
 
 			handleTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertEqual("UNTIL_BUSY request on idle channel can't be answered yet.",
-						testTime + senseLength, handleTime.dbl());
+						testTime + senseLength, SIMTIME_DBL(handleTime));
 
 			updateSimTime(t3);
 
@@ -1441,7 +1428,7 @@ void DeciderTest::executeSNRNewTestCase()
 
 			handleTime = decider->handleChannelSenseRequest(testChannelSense);
 			assertEqual("UNTIL_BUSY request on idle channel can't be answered yet.",
-						testTime + senseLength, handleTime.dbl());
+						testTime + senseLength, SIMTIME_DBL(handleTime));
 
 			updateSimTime(testTime + senseLength);
 
@@ -1724,9 +1711,9 @@ std::string DeciderTest::log(std::string msg) {
 }
 
 
-ConstMapping* DeciderTest::getThermalNoise(simtime_t from, simtime_t to)
+ConstMapping* DeciderTest::getThermalNoise(simtime_t_cref from, simtime_t_cref to)
 {
-	return 0;
+	return NULL;
 }
 
 void DeciderTest::cancelScheduledMessage(cMessage* msg)
@@ -1737,11 +1724,6 @@ void DeciderTest::cancelScheduledMessage(cMessage* msg)
 void DeciderTest::drawCurrent(double amount, int activity)
 {
 	return;
-}
-
-BaseUtility* DeciderTest::getUtility()
-{
-	return 0;
 }
 
 BaseWorldUtility* DeciderTest::getWorldUtility()
@@ -1755,7 +1737,7 @@ void DeciderTest::recordScalar(const char *name, double value, const char *unit)
 }
 
 
-void DeciderTest::rescheduleMessage(cMessage* msg, simtime_t t)
+void DeciderTest::rescheduleMessage(cMessage* msg, simtime_t_cref t)
 {
 	ChannelSenseRequest* req = dynamic_cast<ChannelSenseRequest*>(msg);
 	assertTrue("Rescheduled message is a ChannelSenseRequest.", req != 0);

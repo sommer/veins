@@ -78,7 +78,7 @@ protected:
 
 	void assertFalse(std::string msg, bool value) { assertTrue(msg, !value); }
 	
-	void assertRightTime(simtime_t expected);
+	void assertRightTime(simtime_t_cref expected);
 	
 	void assertRightMove(Move& expected);
 	

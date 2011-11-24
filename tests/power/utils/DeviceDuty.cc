@@ -183,7 +183,7 @@ DeviceDuty::~DeviceDuty() {
 }
 
 void DeviceDuty::finish() {
-	BatteryAccess::finish();
+	cComponent::finish();
 	cancelAndDelete(on0);
 	cancelAndDelete(gap01);
 	cancelAndDelete(on1);

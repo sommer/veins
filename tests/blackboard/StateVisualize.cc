@@ -25,6 +25,7 @@
 
 #include "StateVisualize.h"
 #include "TestHostState.h"
+#include "StateChanger.h"
 
 Define_Module( StateVisualize );
 
@@ -32,8 +33,7 @@ void StateVisualize::initialize(int stage)
 {
     BaseModule::initialize(stage);
     if(stage == 0) {
-        TestHostState s;
-        catHostState = utility->subscribe(this, &s);
+        findHost()->subscribe(StateChanger::catHostState, this);
     }
 }
 
@@ -42,11 +42,11 @@ void StateVisualize::handleMessage( cMessage* m)
     error("StateVisualize::handleMessage called");
 }
 
-void StateVisualize::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
+void StateVisualize::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
 {
-    Enter_Method("receiveBBItem(%s)", details->info().c_str());
-    if(category == catHostState) {
-        const TestHostState *s = dynamic_cast<const TestHostState *>(details);
+    Enter_Method("receiveBBItem(%s)", obj->info().c_str());
+    if(signalID == StateChanger::catHostState) {
+        const TestHostState *s = dynamic_cast<const TestHostState *>(obj);
         if(s == 0)
             error("StateVisualize::handleMessage could not read value from Blackboard");
 

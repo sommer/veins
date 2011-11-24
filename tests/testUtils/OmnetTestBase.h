@@ -3,6 +3,7 @@
 
 #include "asserts.h"
 #include <omnetpp.h>
+#include "miximkerneldefs.h"
 
 /**
  * @brief Utility class to providing basic functionality for every test module

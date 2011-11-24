@@ -111,7 +111,7 @@ protected:
     void onTestModuleMessage(std::string module, cMessage* msg);
 
     void testForRange(std::string test,
-    				  simtime_t from, simtime_t to, simtime_t act);
+    				  simtime_t_cref from, simtime_t_cref to, simtime_t_cref act);
 public:
     NicTests():
     	numPings(100),

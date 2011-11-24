@@ -48,7 +48,7 @@ protected:
 
 		log("First processing of this signal. Scheduling it to end of header to decide if Signal should be received.");
 		//we say that the length of the header is at 10% of the length of the signal
-		return s->getSignalStart() + 0.10 * s->getSignalLength();
+		return s->getReceptionStart() + 0.10 * s->getDuration();
 	}
 
 	/**
@@ -58,7 +58,7 @@ protected:
 		log("Second receive of a signal from Phy - Deciding if packet should be received - Let's try to receive it.");
 		//we don't really do something after the header, so we only update the next state
 		it->second = SIGNAL_OVER;
-		return it->first->getSignalStart() + it->first->getSignalLength();
+		return it->first->getReceptionEnd();
 	}
 
 	/**
@@ -109,7 +109,7 @@ protected:
 			printMapping(*aIt);
 			++count;
 
-			ConstMapping* tmp = MappingUtils::multiply(*receivingPower, **aIt, 0.0);
+			ConstMapping* tmp = MappingUtils::multiply(*receivingPower, **aIt, Argument::MappedZero);
 			delete receivingPower;
 			receivingPower = tmp;
 
@@ -171,7 +171,7 @@ protected:
 		return 10.0 * log10(v);
 	}
 
-	template<class T>
+	template<typename T>
 	std::string toString(T v, unsigned int length){
 		char* tmp = new char[255];
 		sprintf(tmp, "%.2f", v);
@@ -183,7 +183,7 @@ protected:
 		return result;
 	}
 
-	std::string toString(simtime_t v, unsigned int length){
+	std::string toString(simtime_t_cref v, unsigned int length){
 		return toString(SIMTIME_DBL(v), length);
 	}
 
@@ -191,64 +191,7 @@ protected:
 	 * @brief Quick and ugly printing of a two dimensional mapping.
 	 */
 	void printMapping(ConstMapping* m){
-		Dimension frequency("frequency");
-		//const DimensionSet& dims = m->getDimensionSet();
-
-		std::set<simtime_t> timeEntries;
-		std::set<double> freqEntries;
-
-		std::map<double, std::set<simtime_t> > entries;
-
-		ConstMappingIterator* it = m->createConstIterator();
-
-		while(it->inRange()){
-			entries[it->getPosition().getArgValue(frequency)].insert(it->getPosition().getTime());
-			timeEntries.insert(it->getPosition().getTime());
-			freqEntries.insert(it->getPosition().getArgValue(frequency));
-
-			if(!it->hasNext())
-				break;
-
-			it->next();
-		}
-
-		delete it;
-
-		ev << "--------+---------------------------------------------------------" << endl;
-		ev << "GHz \\ms | ";
-		for(std::set<simtime_t>::const_iterator tIt = timeEntries.begin();
-			tIt != timeEntries.end(); ++tIt){
-			ev << toString(*tIt * 1000, 6) << " ";
-		}
-		ev << endl;
-		ev << "--------+---------------------------------------------------------" << endl;
-		if(freqEntries.begin() == freqEntries.end()) {
-			ev << "        | Defines no own key entries." << endl;
-			ev << "        | That does NOT mean it doesn't define any attenuation." << endl;
-		}
-		else {
-			Argument pos;
-			for(std::set<double>::const_iterator fIt = freqEntries.begin();
-				fIt != freqEntries.end(); ++fIt){
-				ev << toString((*fIt)/1e9, 5) << "   | ";
-				pos.setArgValue(frequency, *fIt);
-
-				std::map<double, std::set<simtime_t> >::iterator tmpIt = entries.find(*fIt);
-
-				for(std::set<simtime_t>::const_iterator tIt = timeEntries.begin();
-					tIt != timeEntries.end(); ++tIt){
-
-					if(tmpIt != entries.end() && tmpIt->second.find(*tIt) != tmpIt->second.end()){
-						pos.setTime(*tIt);
-						ev << toString(toDecibel(m->getValue(pos)), 6) << " ";
-					} else {
-						ev << "       ";
-					}
-				}
-				ev << endl;
-			}
-		}
-		ev << "--------+---------------------------------------------------------" << endl;
+		m->print(ev.getOStream(), 1000., 1e-9, "GHz\\ms", &Dimension::frequency);
 	}
 
 public:

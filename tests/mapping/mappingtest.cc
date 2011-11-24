@@ -5,19 +5,19 @@
 //#include "Time.h"
 #include "../testUtils/asserts.h"
 #include "../testUtils/OmnetTestBase.h"
+#include "FWMath.h"
 
 
-
-void assertEqualSilent(std::string msg, double target, simtime_t actual) {
+void assertEqualSilent(std::string msg, double target, simtime_t_cref actual) {
 
 	assertEqualSilent(msg, target, SIMTIME_DBL(actual));
 }
 
-void assertClose(std::string msg, double target, simtime_t actual){
+void assertClose(std::string msg, double target, simtime_t_cref actual){
 	assertClose(msg, target, SIMTIME_DBL(actual));
 }
 
-void assertClose(std::string msg, simtime_t target, double actual){
+void assertClose(std::string msg, simtime_t_cref target, double actual){
 	assertClose(msg, SIMTIME_DBL(target), actual);
 }
 
@@ -44,7 +44,7 @@ void checkIterator(std::string msg, ConstMappingIterator& it,
 	if(hasNext){
 		try{
 			assertClose(msg + ": nextPos() at " + toString(arg), nextArg, it.getNextPosition());
-		}catch(NoNextIteratorException e){
+		}catch(NoNextIteratorException& e){
 			assertFalse("HasNext should be false on NoNextException.", hasNext);
 		}
 	}
@@ -69,7 +69,7 @@ void checkIteratorHard(std::string msg, ConstMappingIterator& it,
 	if(hasNext){
 		try{
 			assertEqual(msg + ": nextPos() at " + toString(arg), nextArg, it.getNextPosition());
-		}catch(NoNextIteratorException e){
+		}catch(NoNextIteratorException& e){
 			assertFalse("HasNext should be false on NoNextException.", hasNext);
 		}
 	}
@@ -120,14 +120,15 @@ void assertEqualNotSmaller(std::string msg, T& v1, T& v2){
 	assertEqual(msg, v1, v2);
 	assertFalse(msg, v1 < v2);
 	assertFalse(msg, v2 < v1);
-	assertEqual(msg, 0, v1.compare(v2, v1.getDimensions()));
+	DimensionSet v1Dims = v1.getDimensions();
+	assertEqual(msg, 0, v1.compare(v2, &v1Dims));
 }
 
 
 
-class OmnetTest:public SimpleTest {
+class MappingTest:public SimpleTest {
 protected:
-	std::map<double, std::map<simtime_t, Argument> > a;
+	std::map<Argument::mapped_type, std::map<simtime_t, Argument> > a;
 	std::map<simtime_t, Argument> t;
 	Dimension time;
 	Dimension freq;
@@ -144,31 +145,30 @@ protected:
 		DimensionSet set3;
 	public:
 		ArgFactory(Dimension d2, Dimension d3):
-			time(Dimension::time_static()), d2(d2), d3(d3), set2(time, d2), set3(time, d2, d3) {}
+			time(Dimension::time), d2(d2), d3(d3), set2(time, d2), set3(time, d2, d3) {}
 
-		Argument operator()(simtime_t t){
+		Argument operator()(simtime_t_cref t){
 			return Argument(t);
 		}
 
-		Argument operator[](simtime_t t){
-			t.setRaw(t.raw() - 1);
-			return Argument(t);
+		Argument operator[](simtime_t_cref t){
+			return Argument(MappingUtils::pre(t));
 		}
 
-		Argument operator()(double v2, simtime_t t){
+		Argument operator()(Argument::mapped_type v2, simtime_t_cref t){
 			Argument res(set2, t);
 			res.setArgValue(d2, v2);
 			return res;
 		}
 
-		Argument operator()(double v3, double v2, simtime_t t){
+		Argument operator()(Argument::mapped_type v3, Argument::mapped_type v2, simtime_t_cref t){
 			Argument res(set3, t);
 			res.setArgValue(d2, v2);
 			res.setArgValue(d3, v3);
 			return res;
 		}
 
-		Argument operator()(Dimension other, double v2, simtime_t t){
+		Argument operator()(Dimension other, Argument::mapped_type v2, simtime_t_cref t){
 			Argument res(t);
 			res.setArgValue(other, v2);
 			return res;
@@ -179,12 +179,12 @@ protected:
 
 	Mapping* createMappingBuffer;
 public:
-	OmnetTest():
+	MappingTest():
 		SimpleTest(),
-		time(Dimension::time_static()), freq("frequency"), channel(freq), space("space"),
+		time(Dimension::time), freq("frequency"), channel(freq), space("space"),
 		A(freq, space), createMappingBuffer(0){
-		for(double i = 0.0; i <= 6.0; i+=0.25) {
-			for(simtime_t j = 0.0; j <= 6.0; j+=0.25) {
+		for(Argument::mapped_type i = 0.0; i <= 6.0; i+=0.25) {
+			for(simtime_t j = SIMTIME_ZERO; j <= 6.0; j+=0.25) {
 				a[i][j].setTime(j);
 				a[i][j].setArgValue(freq, i);
 			}
@@ -193,7 +193,7 @@ public:
 		t = a[3.0];
 	}
 
-	virtual ~OmnetTest() {
+	virtual ~MappingTest() {
 		if(createMappingBuffer)
 			delete createMappingBuffer;
 	}
@@ -235,6 +235,7 @@ protected:
 
 	void testArg() {
 		Argument a1(10.2);
+		DimensionSet a1Dims = a1.getDimensions();
 
 		assertClose("Check initial time value of a1.", 10.2, a1.getTime());
 
@@ -242,18 +243,21 @@ protected:
 		assertEqualSilent("Check time value of a1 after setTimeValue.", -4.2, a1.getTime());
 
 		Argument a2(-4.2);
+		DimensionSet a2Dims = a2.getDimensions();
+
 		assertEqualNotSmaller("a1 and a2 should be equal.", a1, a2);
 
 		a2.setTime(-4.3);
 		assertTrue("a2 with smaller time should be smaller than a1", a2 < a1);
-		assertTrue("a2 with smaller time should be compared smaller than a1", a2.compare(a1, a1.getDimensions()) < 0);
+		assertTrue("a2 with smaller time should be compared smaller than a1", a2.compare(a1, &a1Dims) < 0);
 
 		a2.setTime(0.0);
 		assertTrue("a1 with smaller time should be smaller than a2", a1 < a2);
-		assertTrue("a1 with smaller time should be compared smaller than a2", a1.compare(a2, a1.getDimensions()) < 0);
+		assertTrue("a1 with smaller time should be compared smaller than a2", a1.compare(a2, &a1Dims) < 0);
 
 
 		a1.setArgValue(freq, 2.5);
+		a1Dims = a1.getDimensions();
 		assertEqualSilent("time dimension should still have same value.", -4.2, a1.getTime());
 		assertEqualSilent("Check frequency dimension value.", 2.5, a1.getArgValue(freq));
 
@@ -262,23 +266,23 @@ protected:
 		//assertFalse("a1 and a2 with same time and implicit same freq should not be smaller.", a1 < a2);
 		assertTrue("a1 and a2 with same time and implicit same freq should be same.", a1.isSamePosition(a2));
 		assertFalse("a1 and a2 with same time and implicit same freq should not be equal.", a1 == a2);
-		assertEqual("a1 and a2 with same time and implicit same freq should be compared same.", 0, a1.compare(a2, a2.getDimensions()));
+		assertEqual("a1 and a2 with same time and implicit same freq should be compared same.", 0, a1.compare(a2, &a2Dims));
 
 		a1.setArgValue(freq, -2.2);
 		//assertFalse("a1 and a2 with same time and implicit same freq should still not be smaller.", a1 < a2);
-		assertEqual("a1 and a2 with same time and implicit same freq should still be compared same.", 0, a1.compare(a2, a2.getDimensions()));
+		assertEqual("a1 and a2 with same time and implicit same freq should still be compared same.", 0, a1.compare(a2, &a2Dims));
 		assertTrue("a1 and a2 with same time and implicit same freq should still be same.", a1.isSamePosition(a2));
 		assertFalse("a1 and a2 with same time and implicit same freq should still not be equal.", a1 == a2);
 
 		a2.setTime(-5);
 		//assertFalse("a1 with bigger time and implicit equal freq should not be smaller.", a1 < a2);
-		assertTrue("a1 with bigger time and implicit equal freq should be compared bigger.", a1.compare(a2, a2.getDimensions()) > 0);
+		assertTrue("a1 with bigger time and implicit equal freq should be compared bigger.", a1.compare(a2, &a2Dims) > 0);
 		assertFalse("a1 with bigger time and implicit equal freq should not be same.", a1.isSamePosition(a2));
 		assertFalse("a1 with bigger time and implicit equal freq should not be equal.", a1 == a2);
 
 		a1.setTime(-6);
 		//assertTrue("a1 with smaller time and implicit equal freq should be smaller.", a1 < a2);
-		assertTrue("a1 with smaller time and implicit equal freq should be compared smaller.", a1.compare(a2, a2.getDimensions()) < 0);
+		assertTrue("a1 with smaller time and implicit equal freq should be compared smaller.", a1.compare(a2, &a2Dims) < 0);
 		assertFalse("a1 with smaller time and implicit equal freq should not be same.", a1.isSamePosition(a2));
 		assertFalse("a1 with smaller time and implicit equal freq should not be equal.", a1 == a2);
 
@@ -286,39 +290,40 @@ protected:
 		a1.setArgValue(freq, 2.5);
 		a2.setTime(-4.2);
 		a2.setArgValue(freq, 2.5);
+		a2Dims = a2.getDimensions();
 
 		assertEqual("a1 and a2 with same time and freq should be equal.", a1, a2);
-		assertEqual("a1 and a2 with same time and freq should be compared equal.", 0, a1.compare(a2, a1.getDimensions()));
+		assertEqual("a1 and a2 with same time and freq should be compared equal.", 0, a1.compare(a2, &a1Dims));
 
 		a2.setTime(-4.3);
 		assertTrue("a2 with smaller time and same freq should be smaller than a1", a2 < a1);
-		assertTrue("a2 with smaller time and same freq should be compared smaller than a1", a2.compare(a1, a1.getDimensions()) < 0);
+		assertTrue("a2 with smaller time and same freq should be compared smaller than a1", a2.compare(a1, &a1Dims) < 0);
 		assertFalse("a2 with smaller time and same freq should not be equal with a1.", a1 == a2);
 
 		a2.setTime(0.0);
-		assertTrue("a1 with smaller time and same freq should be compared smaller than a2", a1.compare(a2, a2.getDimensions()) < 0);
+		assertTrue("a1 with smaller time and same freq should be compared smaller than a2", a1.compare(a2, &a2Dims) < 0);
 		assertTrue("a1 with smaller time and same freq should be smaller than a2", a1 < a2);
 		assertFalse("a1 with smaller time and same freq should not be equal with a2.", a1 == a2);
 
 		a2.setTime(-4.2);
 		a2.setArgValue(freq, 2.0);
-		assertTrue("a2 with smaller freq should be smaller than a1", a2.compare(a1, a1.getDimensions()) < 0);
+		assertTrue("a2 with smaller freq should be smaller than a1", a2.compare(a1, &a1Dims) < 0);
 		assertTrue("a2 with smaller freq should be smaller than a1", a2 < a1);
 		assertFalse("a2 with smaller freq should not be equal with a1.", a1 == a2);
 
 		a2.setArgValue(freq, 3.0);
-		assertTrue("a1 with smaller freq should be smaller than a2", a1.compare(a2, a2.getDimensions()) < 0);
+		assertTrue("a1 with smaller freq should be smaller than a2", a1.compare(a2, &a2Dims) < 0);
 		assertTrue("a1 with smaller freq should be smaller than a2", a1 < a2);
 		assertFalse("a1 with smaller freq should not be equal with a2.", a1 == a2);
 
 		a2.setTime(-20.0);
-		assertTrue("a1 with smaller freq should still be smaller than a2 with smaller time", a2.compare(a1, a2.getDimensions()) > 0);
+		assertTrue("a1 with smaller freq should still be smaller than a2 with smaller time", a2.compare(a1, &a2Dims) > 0);
 		assertTrue("a1 with smaller freq should still be smaller than a2 with smaller time", a1 < a2);
 		assertFalse("a1 with smaller freq should not be equal with a2 with smaller time.", a1 == a2);
 
 		a2.setTime(40.0);
 		a2.setArgValue(freq, 2.2);
-		assertTrue("a2 with smaller freq should still be smaller than a1 with smaller time", a1.compare(a2, a2.getDimensions()) > 0);
+		assertTrue("a2 with smaller freq should still be smaller than a1 with smaller time", a1.compare(a2, &a2Dims) > 0);
 		assertTrue("a2 with smaller freq should still be smaller than a1 with smaller time", a2 < a1);
 		assertFalse("a2 with smaller freq should not be equal with a1 with smaller time.", a1 == a2);
 
@@ -501,8 +506,140 @@ protected:
 		delete res;
 	}
 
-	void testMultiFunction() {
+	void testMultiFunctionInfinity() {
+		DimensionSet dimSet(Dimension::time);
+		dimSet.addDimension(freq);
 
+		//ConstantSimpleConstMapping*	thermalNoiseS = new ConstantSimpleConstMapping(DimensionSet::timeDomain, FWMath::dBm2mW(-110.0));
+		MultiDimMapping<Linear>     NoiseMap(dimSet);
+		MultiDimMapping<Linear>     RecvPowerMap(dimSet);
+
+		/*
+		NoiseMap:
+		Mapping domain: time, frequency(1)
+		--------------+-------------------------------
+		o\t           | 140000.07 140000.07 140000.12
+		--------------+-------------------------------
+		5865000000.00 |   -110.00    -95.73    -95.73
+		5875000000.00 |   -110.00    -95.75    -95.75
+		--------------+-------------------------------
+		*/
+		NoiseMap.setValue(A(5865000000.00, 140.000070), FWMath::dBm2mW(-110.00));
+		NoiseMap.setValue(A(5865000000.00, 140.000071), FWMath::dBm2mW( -95.73));
+		NoiseMap.setValue(A(5865000000.00, 140.000120), FWMath::dBm2mW( -95.73));
+		NoiseMap.setValue(A(5875000000.00, 140.000070), FWMath::dBm2mW(-110.00));
+		NoiseMap.setValue(A(5875000000.00, 140.000071), FWMath::dBm2mW( -95.73));
+		NoiseMap.setValue(A(5875000000.00, 140.000120), FWMath::dBm2mW( -95.73));
+		std::cerr << "NoiseMap is:" << std::endl << NoiseMap << std::endl;
+
+		/*
+		RecvPowerMap:
+		Mapping domain: time, frequency(1)
+		--------------+---------------------
+		o\t           | 140000.07 140000.11
+		--------------+---------------------
+		5895000000.00 |    -71.28    -71.28
+		5905000000.00 |    -71.29    -71.29
+		--------------+---------------------
+		*/
+		RecvPowerMap.setValue(A(5895000000.00, 140.000070), FWMath::dBm2mW(-71.28));
+		RecvPowerMap.setValue(A(5905000000.00, 140.000070), FWMath::dBm2mW(-71.29));
+		RecvPowerMap.setValue(A(5895000000.00, 140.000111), FWMath::dBm2mW(-71.28));
+		RecvPowerMap.setValue(A(5905000000.00, 140.000111), FWMath::dBm2mW(-71.29));
+		std::cerr << "RecvPowerMap is:" << std::endl << RecvPowerMap << std::endl;
+
+		/*
+		snrMap
+		Mapping domain: time, frequency(1)
+		--------------+-----------------------------------------
+		o\t           | 140000.07 140000.07 140000.11 140000.12
+		--------------+-----------------------------------------
+		5865000000.00 |     38.72     24.45               24.45
+		5875000000.00 |     38.72     24.45               24.45
+		5895000000.00 |     38.72               24.45
+		5905000000.00 |     38.71               24.44
+		--------------+-----------------------------------------
+		*/
+		Mapping* SnrMap = MappingUtils::divide( RecvPowerMap, NoiseMap, 0 );
+		std::cout << "SnrMap ( RecvPowerMap / NoiseMap ) is:" << std::endl << *SnrMap << std::endl;
+		delete SnrMap;
+
+		ConstantSimpleConstMapping*  ThermalMap = new ConstantSimpleConstMapping(DimensionSet::timeDomain,  FWMath::dBm2mW(-110));
+		Mapping*                     resultMap  = MappingUtils::createMapping(0.0, DimensionSet::timeDomain);
+		Mapping*                     RecvMap    = MappingUtils::createMapping(DimensionSet::timeFreqDomain);
+		Mapping*                     SignalMap  = MappingUtils::createMapping(DimensionSet::timeFreqDomain);
+		Mapping*                     delMap     = NULL;
+
+		ThermalMap->initializeArguments(A(140.000088221202));
+
+		resultMap = MappingUtils::add(*(delMap = resultMap), *ThermalMap, 0);
+		delete ThermalMap;
+		delete delMap;
+
+		RecvMap->setValue(A(5865000000.00,140.000097221202),FWMath::dBm2mW(-95.73));
+		RecvMap->setValue(A(5875000000.00,140.000097221202),FWMath::dBm2mW(-95.73));
+		RecvMap->setValue(A(5865000000.00,140.000123332313),FWMath::dBm2mW(-95.73));
+		RecvMap->setValue(A(5875000000.00,140.000123332313),FWMath::dBm2mW(-95.73));
+
+		resultMap = MappingUtils::add(*RecvMap, *(delMap = resultMap), 0);
+		delete RecvMap;
+		delete delMap;
+
+		/*
+		Noise Map
+		Mapping domain: time, frequency(1)
+		--------------+-------------------------------
+		o\t           | 140000.09 140000.10 140000.12
+		--------------+-------------------------------
+		5865000000.00 |    -95.57    -95.57    -95.57
+		5875000000.00 |    -95.57    -95.57    -95.57
+		--------------+-------------------------------
+		*/
+		std::cerr<< "Noise Map" << std::endl << *resultMap << std::endl;
+
+		SignalMap->setValue(A(5895000000.00,140.000068221202),FWMath::dBm2mW(-71.28));
+		SignalMap->setValue(A(5895000000.00,140.000114332313),FWMath::dBm2mW(-71.28 ));
+		SignalMap->setValue(A(5905000000.00,140.000068221202),FWMath::dBm2mW(-71.28));
+		SignalMap->setValue(A(5905000000.00,140.000114332313),FWMath::dBm2mW(-71.28 ));
+
+		/*
+		Signal Map
+		Mapping domain: time, frequency(1)
+		--------------+---------------------
+		o\t           | 140000.07 140000.11
+		--------------+---------------------
+		5895000000.00 |    -71.28    -71.28
+		5905000000.00 |    -71.28    -71.28
+		--------------+---------------------
+		*/
+		std::cerr << "Signal Map" << std::endl << *SignalMap << std::endl;
+
+		resultMap = MappingUtils::divide(*SignalMap, *(delMap = resultMap), 0);
+		delete SignalMap;
+		delete delMap;
+
+		/*
+		SNR Map
+		Mapping domain: time, frequency(1)
+		--------------+---------------------------------------------------
+		o\t           | 140000.07 140000.09 140000.10 140000.11 140000.12
+		--------------+---------------------------------------------------
+		5865000000.00 |               24.29     24.29               24.29
+		5875000000.00 |               24.29     24.29               24.29
+		5895000000.00 |       inf                           inf
+		5905000000.00 |       inf                           inf
+		--------------+---------------------------------------------------
+		*/
+		std::cerr << "SNR Map (Signal Map / Noise Map)" << std::endl << *resultMap << std::endl;
+
+		std::cerr << "SNR Map findMin = " << FWMath::mW2dBm( MappingUtils::findMin(*resultMap) ) << std::endl;
+		std::cerr << "SNR Map findMax = " << FWMath::mW2dBm( MappingUtils::findMax(*resultMap) ) << std::endl;
+
+		delete resultMap;
+	}
+
+	void testMultiFunction() {
+		//testMultiFunctionInfinity();
 		DimensionSet dimSet(Dimension::time);
 		dimSet.addDimension(channel);
 
@@ -1332,7 +1469,7 @@ protected:
 			TimeMapping f1;
 			TimeMapping f2;
 
-			std::cout << "--------TimeMapping [" << count << " entries]---------------------------------------------\n";
+			std::cout << "--------TimeMapping [" << count << " entries]---------------------------------------------" << std::endl;
 			std::cout << "Creating f1...\t\t\t\t";
 			std::flush(std::cout);
 
@@ -1341,7 +1478,7 @@ protected:
 				f1.setValue(Argument(j * 0.1), j * 0.1);
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Creating f2 ...\t\t\t\t";
 			std::flush(std::cout);
 			timer.start();
@@ -1349,14 +1486,14 @@ protected:
 				f2.setValue(Argument(j * 0.1), j * 0.1);
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Multiplying f1 with f2...\t\t";
 			std::flush(std::cout);
 			timer.start();
 			res = f1 * f2;
 			el = timer.elapsed();
 			delete res;
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 		}
 
 
@@ -1366,7 +1503,7 @@ protected:
 		pos.setArgValue(channel, 0.0);
 
 		{
-			std::cout << "--------MultiDimFunction [" << count << " entries]----------------------------------------\n";
+			std::cout << "--------MultiDimFunction [" << count << " entries]----------------------------------------" << std::endl;
 			std::cout << "Creating f7 ...\t\t\t\t";
 			MultiDimMapping f7(chTime);
 			MultiDimMapping f8(chTime);
@@ -1379,7 +1516,7 @@ protected:
 				f7.setValue(pos, j * 0.1);
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Creating f8 ...\t\t\t\t";
 			std::flush(std::cout);
 			timer.start();
@@ -1389,14 +1526,14 @@ protected:
 				f8.setValue(pos, j * 0.1);
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Multiplying f7 with f8...\t\t";
 			std::flush(std::cout);
 			timer.start();
 			res = f7 * f8;
 			el = timer.elapsed();
 			delete res;
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 		}
 
 		count = 35000 * factor;
@@ -1404,7 +1541,7 @@ protected:
 		count = hCount * hCount * hCount;
 
 		{
-			std::cout << "--------MultiDimFunction 3D [" << count << " entries]--------------------------------------\n";
+			std::cout << "--------MultiDimFunction 3D [" << count << " entries]--------------------------------------" << std::endl;
 			std::cout << "Creating f9 and f10...\t\t\t";
 			MultiDimMapping f9(spcChTime);
 			MultiDimMapping f10(spcChTime);
@@ -1425,14 +1562,14 @@ protected:
 				}
 			}
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / (count * 2) << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / (count * 2) << "us per entry)." << std::endl;
 
 			std::cout << "Multiplying f9 with f10...\t\t";
 			std::flush(std::cout);
 			timer.start();
 			res = f9 * f10;
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 
 			for(int s = 0; s < hCount; s++) {
 				pos.setArgValue(space, s * 0.1);
@@ -1453,7 +1590,7 @@ protected:
 		count = hCount * hCount;
 
 		{
-			std::cout << "--------TestSimpleConstMapping [" << count << " entries]----------------------------------\n";
+			std::cout << "--------TestSimpleConstMapping [" << count << " entries]----------------------------------" << std::endl;
 			std::cout << "Creating f13 ...\t\t\t\t";
 			Argument from(0.0);
 			from.setArgValue(channel, 0.0);
@@ -1466,20 +1603,20 @@ protected:
 			timer.start();
 			TestSimpleConstMapping f13(chTime, from, to, interval);
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Creating f14...\t\t\t\t";
 			std::flush(std::cout);
 			timer.start();
 			TestSimpleConstMapping f14(chTime, from, to, interval);
 			el = timer.elapsed();
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 			std::cout << "Multiplying f13 with f14...\t\t";
 			std::flush(std::cout);
 			timer.start();
 			res = f13 * f14;
 			el = timer.elapsed();
 			delete res;
-			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry).\n";
+			std::cout << "done. Took " << el << "ms(" << el * 1000.0 / count << "us per entry)." << std::endl;
 		}
 	}*/
 
@@ -1575,7 +1712,7 @@ protected:
 		std::map<double, std::map<simtime_t, Argument> > a;
 
 		for(double i = 0.0; i <= 5.5; i+=0.25) {
-			for(simtime_t j = 0.0; j <= 5.5; j+=0.25) {
+			for(simtime_t j = SIMTIME_ZERO; j <= 5.5; j+=0.25) {
 				A(i, j).setTime(j);
 				A(i, j).setArgValue(freq, i);
 			}
@@ -1584,7 +1721,7 @@ protected:
 		f = new TestSimpleConstMapping(freqTime, A(2, 1.5), A(4, 4), A(1, 0.5));
 
 		for(double i = 0.0; i <= 5.5; i+=0.25) {
-			for(simtime_t j = 0.0; j <= 5.5; j+=0.25) {
+			for(simtime_t j = SIMTIME_ZERO; j <= 5.5; j+=0.25) {
 				assertEqual("Get value of fully initialized freq-time-mapping.", j, f->getValue(A(i, j)));
 			}
 		}
@@ -1667,8 +1804,9 @@ protected:
 		//displayPassed = false;
 	}
 
-	void testOperatorAgainstInt64Simtime(){
-		std::cout << "---Int64 simtime tests---\n";
+	void testOperatorAgainstInt64Simtime() {
+		const char cSaveFill = std::cout.fill();
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " Int64 simtime tests " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 		TimeMapping<Linear> time1;
 		simtime_t t1 = 3.5;
@@ -1733,7 +1871,7 @@ protected:
 
 		Argument pos0(0.5);
 
-		TestSimpleConstMapping simple1(DimensionSet(Dimension::time));
+		TestSimpleConstMapping simple1(DimensionSet::timeDomain);
 
 		simple1.initializeArguments(pos0, pos1, pos1);
 
@@ -1777,7 +1915,7 @@ protected:
 		delete it;
 		delete res;
 
-		std::cout << "---Int64 simtime tests done.---\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " Int64 simtime tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 	}
 
 	template<class Operator>
@@ -1835,17 +1973,17 @@ protected:
 
 
 
-	Mapping* createTestMapping(simtime_t from, simtime_t to, int entries){
+	Mapping* createTestMapping(simtime_t_cref from, simtime_t_cref to, int entries){
 		Mapping* result = new TimeMapping<Linear>();
 
 		if(entries > 1){
 			simtime_t stepsize = (to - from) / (entries - 1);
 			for(int i = 0; i < entries - 1; i++){
-				result->setValue(A(from + stepsize * i), (from + stepsize * i).dbl());
+				result->setValue(A(from + stepsize * i), SIMTIME_DBL(from + stepsize * i));
 			}
 		}
 
-		result->setValue(A(to), to.dbl());
+		result->setValue(A(to), SIMTIME_DBL(to));
 
 		return result;
 	}
@@ -1857,11 +1995,11 @@ protected:
 
 		for(int i = 0; i < keyCount; i++){
 			if(i == 0 && startWrong){
-				createMappingBuffer->setValue(*keys, keys->getTime().dbl() * (keys + 1)->getTime().dbl());
+				createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * SIMTIME_DBL((keys + 1)->getTime()));
 			} else if(i == keyCount - 1 && endWrong) {
-				createMappingBuffer->setValue(*keys, keys->getTime().dbl() * (keys - 1)->getTime().dbl());
+				createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * SIMTIME_DBL((keys - 1)->getTime()));
 			} else
-				createMappingBuffer->setValue(*keys, keys->getTime().dbl() * keys->getTime().dbl());
+				createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * SIMTIME_DBL(keys->getTime()));
 			++keys;
 		}
 
@@ -1876,7 +2014,7 @@ protected:
 		createMappingBuffer = MappingUtils::createMapping(dims, Mapping::LINEAR);
 
 		for(int i = 0; i < keyCount; i++){
-			createMappingBuffer->setValue(*keys, keys->getTime().dbl() * value);
+			createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * value);
 			++keys;
 		}
 
@@ -1889,7 +2027,7 @@ protected:
 		createMappingBuffer = MappingUtils::createMapping(dims, Mapping::LINEAR);
 
 		for(int i = 0; i < keyCount; i++){
-			createMappingBuffer->setValue(*keys, keys->getTime().dbl() * *other);
+			createMappingBuffer->setValue(*keys, SIMTIME_DBL(keys->getTime()) * *other);
 			++keys;
 			++other;
 		}
@@ -2109,7 +2247,7 @@ protected:
 		unsigned int numDims = domain.size();
 
 		//for each entry i
-		for(int i = 0; i < pow(size, numDims); ++i) {
+		for(int i = 0; i < pow((double)size, numDims); ++i) {
 			Argument pos(domain);
 			int d = numDims; 	//the current dimension counter
 			int remain = i; //stores the remainder used to convert the entry
@@ -2120,13 +2258,13 @@ protected:
 			for(DimensionSet::iterator it = domain.begin(); it != domain.end(); ++it)
 			{
 				--d;
-				unsigned int coord = floor(remain / pow(size, d));
+				unsigned int coord = floor(remain / pow((double)size, d));
 				val *= coord + 1;
 				if(it == domain.begin())
 					pos.setTime((double)coord + offset);
 				else
 					pos.setArgValue(*it, (double)coord + offset);
-				remain = remain % (int)pow(size, d);
+				remain = remain % (int)pow((double)size, d);
 			}
 			res->setValue(pos, val);
 		}
@@ -2183,12 +2321,13 @@ protected:
 		DimensionSet timeFreqSpaceBig(time, freq, space);
 		timeFreqSpaceBig.addDimension(bigDim);
 		DimensionSet timeBig(time, bigDim);
+		const char   cSaveFill = std::cout.fill();
 
-		std::cout << "--------TimeFreq^2.--------\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " TimeFreq^2. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 		testMappingMulBF(timeFreq, timeFreq);
-		std::cout << "--------Time * TimeBig.--------\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " Time * TimeBig. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 		testMappingMulBF(timeBig, DimensionSet(time));
-		std::cout << "--------timeSpace * timeFreqSpaceBig.--------\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " timeSpace * timeFreqSpaceBig. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 		testMappingMulBF(timeSpace, timeFreqSpaceBig);
 
 		//displayPassed = false;
@@ -2297,18 +2436,18 @@ protected:
 		Mapping* multi1 = MappingUtils::createMapping(timeFreqSpace);
 
 		//global
-		assertEqual("Empty timed mapping max(global).", -DBL_MAX, MappingUtils::findMax(*timed1));
-		assertEqual("Empty timed mapping min(global).", DBL_MAX, MappingUtils::findMin(*timed1));
+		assertEqual("Empty timed mapping max(global).", MappingUtils::cMaxNotFound, MappingUtils::findMax(*timed1));
+		assertEqual("Empty timed mapping min(global).", MappingUtils::cMinNotFound, MappingUtils::findMin(*timed1));
 		//local
-		assertEqual("Empty timed mapping max(local).", 0.0, MappingUtils::findMax(*timed1, A(1), A(2)));
-		assertEqual("Empty timed mapping min(local).", 0.0, MappingUtils::findMin(*timed1, A(1), A(2)));
+		assertEqual("Empty timed mapping max(local).", MappingUtils::cMaxNotFound, MappingUtils::findMax(*timed1, A(1), A(2)));
+		assertEqual("Empty timed mapping min(local).", MappingUtils::cMinNotFound, MappingUtils::findMin(*timed1, A(1), A(2)));
 
 		//global
-		assertEqual("Empty multidim mapping max(global).", -DBL_MAX, MappingUtils::findMax(*multi1));
-		assertEqual("Empty multidim mapping min(global).", DBL_MAX, MappingUtils::findMin(*multi1));
+		assertEqual("Empty multidim mapping max(global).", MappingUtils::cMaxNotFound, MappingUtils::findMax(*multi1));
+		assertEqual("Empty multidim mapping min(global).", MappingUtils::cMinNotFound, MappingUtils::findMin(*multi1));
 		//local - is not yet implemented
-		//assertEqual("Empty multidim mapping max(local).", DBL_MIN, MappingUtils::findMax(*multi1, A(1,1,1), A(2,2,2)));
-		//assertEqual("Empty multidim mapping min(local).", DBL_MAX, MappingUtils::findMin(*multi1, A(1,1,1), A(2,2,2)));
+		assertEqual("Empty multidim mapping max(local).", MappingUtils::cMaxNotFound, MappingUtils::findMax(*multi1, A(1,1,1), A(2,2,2)));
+		assertEqual("Empty multidim mapping min(local).", MappingUtils::cMinNotFound, MappingUtils::findMin(*multi1, A(1,1,1), A(2,2,2)));
 
 		//- one element mapping
 		timed1->setValue(A(1), 2);
@@ -2318,23 +2457,23 @@ protected:
 		assertEqual("One element timed mapping max(global).", 2, MappingUtils::findMax(*timed1));
 		assertEqual("One element timed mapping min(global).", 2, MappingUtils::findMin(*timed1));
 		//local
-		assertEqual("One element timed mapping max(local) before element.", 0.0, MappingUtils::findMax(*timed1, A(0), A(0.5)));
-		assertEqual("One element timed mapping min(local) before element.", 0.0, MappingUtils::findMin(*timed1, A(0), A(0.5)));
+		assertEqual("One element timed mapping max(local) before element.", MappingUtils::cMaxNotFound, MappingUtils::findMax(*timed1, A(0), A(0.5)));
+		assertEqual("One element timed mapping min(local) before element.", 0.0, MappingUtils::findMin(*timed1, A(0), A(0.5), 0.0));
 		assertEqual("One element timed mapping max(local) around element.", 2, MappingUtils::findMax(*timed1, A(1), A(1)));
 		assertEqual("One element timed mapping min(local) around element.", 2, MappingUtils::findMin(*timed1, A(1), A(1)));
-		assertEqual("One element timed mapping max(local) after element.", 0.0, MappingUtils::findMax(*timed1, A(2), A(3)));
-		assertEqual("One element timed mapping min(local) after element.", 0.0, MappingUtils::findMin(*timed1, A(2), A(3)));
+		assertEqual("One element timed mapping max(local) after element.", MappingUtils::cMaxNotFound, MappingUtils::findMax(*timed1, A(2), A(3)));
+		assertEqual("One element timed mapping min(local) after element.", MappingUtils::cMinNotFound, MappingUtils::findMin(*timed1, A(2), A(3)));
 
 		//global
 		assertEqual("One element multidim mapping max(global).", 2, MappingUtils::findMax(*multi1));
 		assertEqual("One element multidim mapping min(global).", 2, MappingUtils::findMin(*multi1));
 		//local - is not yet implemented
-//		assertEqual("One element multidim mapping max(local) before element.", DBL_MIN, MappingUtils::findMax(*multi1, A(0,0,0), A(0.5,2,2)));
-//		assertEqual("One element multidim mapping min(local) before element.", DBL_MAX, MappingUtils::findMin(*multi1, A(0,0,0), A(0.5,2,2)));
-//		assertEqual("One element multidim mapping max(local) around element.", 2, MappingUtils::findMax(*multi1, A(1,1,1), A(1,1,1)));
-//		assertEqual("One element multidim mapping min(local) around element.", 2, MappingUtils::findMin(*multi1, A(1,1,0), A(1,1,1)));
-//		assertEqual("One element multidim mapping max(local) after element.", DBL_MIN, MappingUtils::findMax(*multi1, A(2,0,0), A(3,2,2)));
-//		assertEqual("One element multidim mapping min(local) after element.", DBL_MAX, MappingUtils::findMin(*multi1, A(2,0,0), A(3,2,2)));
+		assertEqual("One element multidim mapping max(local) before element.", MappingUtils::cMaxNotFound, MappingUtils::findMax(*multi1, A(0,0,0), A(0.5,2,2)));
+		assertEqual("One element multidim mapping min(local) before element.", MappingUtils::cMinNotFound, MappingUtils::findMin(*multi1, A(0,0,0), A(0.5,2,2)));
+		assertEqual("One element multidim mapping max(local) around element.", 2, MappingUtils::findMax(*multi1, A(1,1,1), A(1,1,1)));
+		assertEqual("One element multidim mapping min(local) around element.", 2, MappingUtils::findMin(*multi1, A(1,1,0), A(1,1,1)));
+		assertEqual("One element multidim mapping max(local) after element.", MappingUtils::cMaxNotFound, MappingUtils::findMax(*multi1, A(2,0,0), A(3,2,2)));
+		assertEqual("One element multidim mapping min(local) after element.", MappingUtils::cMinNotFound, MappingUtils::findMin(*multi1, A(2,0,0), A(3,2,2)));
 
 		//Timed mapping multi element tests
 		timed1->setValue(A(2), 2);  /**/ timed1->setValue(A(3), 2);
@@ -2454,31 +2593,33 @@ protected:
 		//testDoubleCompareLess();
 
 	    testSimpleFunction<TimeMapping<Linear> >();
-	    std::cout << "--------TimeMapping tests done.---------------------------------------------------\n";
+	    const char cSaveFill = std::cout.fill();
+
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " TimeMapping tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testMultiFunction();
-	    std::cout << "--------MultiDimMapping tests done.-----------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " MultiDimMapping tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testInterpolationMethods();
-	    std::cout << "--------Interpolation methods tests done------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " Interpolation methods tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testSimpleConstmapping();
-	    std::cout << "--------SimpleConstMapping tests done.--------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " SimpleConstMapping tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testOperators();
-	    std::cout << "--------Operator tests done.------------------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " Operator tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
 	    testOutOfRange();
-	    std::cout << "--------Out of range tests done.--------------------------------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " Out of range tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
-	    std::cout << "--------Various MappingUtils tests (may take a while)-----------------------------\n";
+	    std::cout << std::setw(80) << std::setfill('-') << std::internal << " Various MappingUtils tests (may take a while) " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 	    testMappingUtils();
-		std::cout << "--------Various MappingUtils tests done.------------------------------------------\n";
+		std::cout << std::setw(80) << std::setfill('-') << std::internal << " Various MappingUtils tests done. " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 
-	    //std::cout << "========Performance tests=========================================================\n";
+	    //std::cout << std::setw(80) << std::setfill('=') << std::internal << " Performance tests " << std::setw(48) << "" << std::setfill(cSaveFill) << std::endl; std::cout.flush();
 	    //testPerformance();
 		testsExecuted = true;
 	}
 };
 
-Define_Module(OmnetTest);
+Define_Module(MappingTest);

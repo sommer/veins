@@ -49,7 +49,7 @@ network = ${targetTypeName}
 **.**.coreDebug = false
 **.playgroundSizeX = 300m
 **.playgroundSizeY = 300m
-**.playgroundSizeZ = 300m #ignored when use2D
+**.playgroundSizeZ = 300m
 **.numNodes = 5
 
 ##########################################################
@@ -76,27 +76,27 @@ network = ${targetTypeName}
 
 **.node[0].mobility.x = 150
 **.node[0].mobility.y = 200
-**.node[0].mobility.z = 250 #ignored when use2D
+**.node[0].mobility.z = 250
 
 **.node[1].mobility.x = 250
 **.node[1].mobility.y = 100
-**.node[1].mobility.z = 100 #ignored when use2D
+**.node[1].mobility.z = 100
 
 **.node[2].mobility.x = 250
 **.node[2].mobility.y = 200
-**.node[2].mobility.z = 200 #ignored when use2D
+**.node[2].mobility.z = 200
 
 **.node[3].mobility.x = 50
 **.node[3].mobility.y = 100
-**.node[3].mobility.z = 110 #ignored when use2D
+**.node[3].mobility.z = 110
 
 **.node[4].mobility.x = 150
 **.node[4].mobility.y = 180
-**.node[4].mobility.z = 100 #ignored when use2D
+**.node[4].mobility.z = 100
 
 **.node[5].mobility.x = 50
 **.node[5].mobility.y = 200
-**.node[5].mobility.z = 10 #ignored when use2D
+**.node[5].mobility.z = 10
 
 
 

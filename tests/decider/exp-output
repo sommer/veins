@@ -23,6 +23,7 @@ Signal for TestAirFrame5 created with header/payload power: 32/16
 Signal for TestAirFrame6 created with header/payload power: 1/0
 [ Test] - Creating TestAirFrame 6 done.
 Initializing...
+Initializing module DeciderTest, stage 0
 Passed: [TestBaseDecider] - Member 'myIndex' has been initialized properly by passed value.
 Passed: [TestBaseDecider] - pointer to DeciderToPhyInterface has been set properly
 Passed: [TestBaseDecider] - snr-threshold and receiving-sensitivity have been set properly
@@ -397,12 +398,6 @@ Passed: ChannelSense results RSSI value match expected results RSSI value.
 Passed: UNTIL_BUSY request was answered because of busy payload.
 
 Running simulation...
-** Event #1   T=0   Elapsed: 0.000s (0m 00s)
-     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 64   present: 3   in FES: 0
-** Event #1   T=0   Elapsed: 0.000s (0m 00s)
-     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
-     Messages:  created: 64   present: 3   in FES: 0
 
 <!> No more events -- simulation ended at event #1, t=0.
 

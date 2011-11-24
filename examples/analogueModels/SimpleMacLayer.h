@@ -2,11 +2,12 @@
 #define SIMPLEMACLAYER_H_
 
 #include <omnetpp.h>
-#include "MacToPhyInterface.h"
-#include "MacToPhyControlInfo.h"
+
 #include "Signal_.h"
-#include "MacPkt_m.h"
 #include "BaseModule.h"
+
+class MacPkt;
+class MacToPhyInterface;
 
 /**
  * @brief A simple Mac layer implementation which only shows how to
@@ -24,13 +25,13 @@ protected:
 	MacToPhyInterface* phy;
 
 	/** @brief Omnet gates.*/
-	int dataOut;
-	int dataIn;
+	int  dataOut;
+	int  dataIn;
 
-	int myIndex;
+	long myIndex;
 
 	/** @brief The index of the host the next packet should be send to. */
-	int nextReceiver;
+	long nextReceiver;
 
 	enum {
 		/** @brief Used as Message kind to identify MacPackets. */
@@ -46,7 +47,7 @@ protected:
 	 * @brief Creates a Mapping with the passed value at the passed position in freqency
 	 * and time.
 	 * */
-	Mapping* createMapping(simtime_t time, simtime_t length, double freqFrom, double freqTo, double value);
+	Mapping* createMapping(simtime_t_cref time, simtime_t_cref length, double freqFrom, double freqTo, double value);
 
 	void handleMacPkt(MacPkt* pkt);
 	void handleTXOver();
@@ -61,7 +62,7 @@ protected:
 	/**
 	 * @brief Creates the answer packet.
 	 */
-	MacPkt* createMacPkt(simtime_t length);
+	MacPkt* createMacPkt(simtime_t_cref length);
 
 	void log(std::string msg);
 

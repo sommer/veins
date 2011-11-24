@@ -90,7 +90,7 @@ void TestModule::assertMessage(AssertMessage* assert, std::string destination) {
 
 
 void TestModule::assertMessage(	std::string msg, 
-								int kind, simtime_t arrival, 
+								int kind, simtime_t_cref arrival,
 								std::string destination)
 {
 	
@@ -100,7 +100,7 @@ void TestModule::assertMessage(	std::string msg,
 
 void TestModule::assertMessage(	std::string msg,
 								int kind,
-								simtime_t intvStart, simtime_t intvEnd,
+								simtime_t_cref intvStart, simtime_t_cref intvEnd,
 								std::string destination)
 {
 
@@ -109,7 +109,7 @@ void TestModule::assertMessage(	std::string msg,
 }
 
 void TestModule::testForMessage(std::string testName,
-								int kind, simtime_t arrival,
+								int kind, simtime_t_cref arrival,
 								std::string destination)
 {
 
@@ -119,7 +119,7 @@ void TestModule::testForMessage(std::string testName,
 
 void TestModule::testForMessage(std::string testName,
 								int kind,
-								simtime_t intvStart, simtime_t intvEnd,
+								simtime_t_cref intvStart, simtime_t_cref intvEnd,
 								std::string destination)
 {
 
@@ -130,7 +130,7 @@ void TestModule::testForMessage(std::string testName,
 
 
 void TestModule::waitForMessage(std::string msg,
-								int kind, simtime_t arrival, 
+								int kind, simtime_t_cref arrival,
 								std::string destination) {
 	
 	assertNewMessage(new AssertMsgKind(msg,
@@ -142,7 +142,7 @@ void TestModule::waitForMessage(std::string msg,
 }
 
 void TestModule::testAndWaitForMessage(	std::string testName,
-										int kind, simtime_t arrival,
+										int kind, simtime_t_cref arrival,
 										std::string destination)
 {
 
@@ -152,7 +152,7 @@ void TestModule::testAndWaitForMessage(	std::string testName,
 
 void TestModule::testAndWaitForMessage(	std::string testName,
 										int kind,
-										simtime_t intvStart, simtime_t intvEnd,
+										simtime_t_cref intvStart, simtime_t_cref intvEnd,
 										std::string destination)
 {
 

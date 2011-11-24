@@ -9,82 +9,54 @@ Loading NED files from /home/karl/git-repo/mixim/tests: 41
 Preparing for running configuration General, run #0...
 Scenario: $repetition=0
 Assigned runID=General-0-20100616-13:39:24-4973
-Setting up network `OmnetTest'...
+Setting up network `CoordTest'...
 Initializing...
-Passed: Default constructor creates 3D-Coord.
-Passed: Default constructor creates no 2D-Coord.
 Passed: x-value of default coordinate.
 Passed: y-value of default coordinate.
 Passed: z-value of default coordinate.
-Passed: Coord(false) constructor creates 3D-Coord.
-Passed: Coord(false) constructor creates no 2D-Coord.
-Passed: x-value of Coord(false).
-Passed: y-value of Coord(false).
-Passed: z-value of Coord(false).
-Passed: Coord(true) constructor creates no 3D-Coord.
-Passed: Coord(true) constructor creates 2D-Coord.
-Passed: x-value of Coord(false).
-Passed: y-value of Coord(false).
-Passed: z-value of Coord(false).
-Passed: Coord(x, y) constructor creates no 3D-Coord.
-Passed: Coord(x, y) constructor creates 2D-Coord.
 Passed: x-value of Coord(x, y).
 Passed: y-value of Coord(x, y).
 Passed: z-value of Coord(x, y).
-Passed: Coord(x, y, z) constructor creates 3D-Coord.
-Passed: Coord(x, y, z) constructor creates no 2D-Coord.
 Passed: x-value of Coord(x, y, z).
 Passed: y-value of Coord(x, y, z).
 Passed: z-value of Coord(x, y, z).
-Passed: (3D)Coord(Coord* other) constructor same dimension as other.
 Passed: x-value of (3D)Coord(Coord* other).
 Passed: y-value of (3D)Coord(Coord* other).
 Passed: z-value of (3D)Coord(Coord* other).
-Passed: Coord(Coord& other) constructor same dimension as other.
 Passed: x-value of (3D)Coord(Coord& other).
 Passed: y-value of (3D)Coord(Coord& other).
 Passed: z-value of (3D)Coord(Coord& other).
-Passed: (2D)Coord(Coord* other) constructor same dimension as other.
 Passed: x-value of (2D)Coord(Coord* other).
 Passed: y-value of (2D)Coord(Coord* other).
 Passed: z-value of (2D)Coord(Coord* other).
-Passed: (2D)Coord(Coord& other) constructor same dimension as other.
 Passed: x-value of (2D)Coord(Coord& other).
 Passed: y-value of (2D)Coord(Coord& other).
 Passed: z-value of (2D)Coord(Coord& other).
 Constructor tests successful.
-Passed: 3D: Result of a + b is 3D
 Passed: 3D: x-value of a + b
 Passed: 3D: y-value of a + b
 Passed: 3D: z-value of a + b
-Passed: 3D: Result of a - b is 3D
 Passed: 3D: x-value of a - b
 Passed: 3D: y-value of a - b
 Passed: 3D: z-value of a - b
-Passed: 3D: Result of a * faktor is 3D
 Passed: 3D: x-value of a * faktor
 Passed: 3D: y-value of a * faktor
 Passed: 3D: z-value of a * faktor
-Passed: 3D: Result of a / (1 / faktor) is 3D
 Passed: 3D: x-value of a / (1 / faktor)
 Passed: 3D: y-value of a / (1 / faktor)
 Passed: 3D: z-value of a / (1 / faktor)
-Passed: 2D: Result of a + b is 2D
 Passed: 2D: x-value of a + b
 Passed: 2D: y-value of a + b
-Passed: 2D: z-value UNDEFINED of a + b
-Passed: 2D: Result of a - b is 2D
+Passed: 2D: z-value 0 of a + b
 Passed: 2D: x-value of a - b
 Passed: 2D: y-value of a - b
-Passed: 2D: z-value UNDEFINED of a - b
-Passed: 2D: Result of a * faktor is 2D
+Passed: 2D: z-value 0 of a - b
 Passed: 2D: x-value of a * faktor
 Passed: 2D: y-value of a * faktor
-Passed: 2D: z-value UNDEFINED of a * faktor
-Passed: 2D: Result of a / (1 / faktor) is 2D
+Passed: 2D: z-value 0 of a * faktor
 Passed: 2D: x-value of a / (1 / faktor)
 Passed: 2D: y-value of a / (1 / faktor)
-Passed: 2D: z-value UNDEFINED of a / (1 / faktor)
+Passed: 2D: z-value 0 of a / (1 / faktor)
 Operator tests successful.
 Passed: 3D: a == b
 Passed: 3D: a != b

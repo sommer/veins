@@ -1,4 +1,3 @@
 #/bin/bash
 
-./blackboard > exp-output
-
+./runTest.sh "update-exp-output"

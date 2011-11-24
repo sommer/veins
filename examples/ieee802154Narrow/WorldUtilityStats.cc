@@ -15,13 +15,13 @@
 
 #include "WorldUtilityStats.h"
 #include "Packet.h"
+#include "BaseLayer.h"
 
 Define_Module(WorldUtilityStats);
 
 void WorldUtilityStats::initialize(int stage)
 {
 	BaseWorldUtility::initialize(stage);
-
 	if(stage == 0) {
 		recordVectors = par("recordVectors");
 		bitrate = par("bitrate");
@@ -30,8 +30,7 @@ void WorldUtilityStats::initialize(int stage)
 		bitsReceived = 0;
 
 		//register for global stats to collect
-		Packet tmp(10);
-		catPacket = subscribe(this, &tmp);
+		subscribe(BaseLayer::catPacketSignal, this);
 
 		sent.setName("Bits generated");
 		rcvd.setName("Bits received");
@@ -39,13 +38,12 @@ void WorldUtilityStats::initialize(int stage)
 }
 
 
-void WorldUtilityStats::receiveBBItem(int category, const BBItem *details, int scopeModuleId)
+void WorldUtilityStats::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
 {
 	Enter_Method_Silent();
-
-	if(category == catPacket)
+	if(signalID == BaseLayer::catPacketSignal)
 	{
-		const Packet* p = static_cast<const Packet*>(details);
+		const Packet* p = static_cast<const Packet*>(obj);
 		double nbBitsSent = p->getNbBitsSent();
 		double nbBitsRcvd = p->getNbBitsReceived();
 		bitsSent += nbBitsSent;

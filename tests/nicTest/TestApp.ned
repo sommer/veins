@@ -15,10 +15,6 @@
 
 package org.mixim.tests.nicTest;
 
-
-//
-// TODO auto-generated module
-//
 simple TestApp
 {
     gates:

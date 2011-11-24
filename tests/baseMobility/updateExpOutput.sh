@@ -1,4 +1,3 @@
 #/bin/bash
 
-./baseMobility -c Test1 > exp-output
-
+./runTest.sh "update-exp-output"

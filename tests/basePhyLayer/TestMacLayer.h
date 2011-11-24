@@ -3,10 +3,11 @@
 
 #include <omnetpp.h>
 #include "MacToPhyInterface.h"
-#include "MacToPhyControlInfo.h"
 #include "TestGlobals.h"
 #include "TestPhyLayer.h"
 #include "Signal_.h"
+
+class MacPkt;
 
 class TestMacLayer:public BaseModule, public TestModule
 {
@@ -98,13 +99,13 @@ public:
 	 *
 	 * @param time The amount of seconds to wait
 	 */
-	void continueIn(simtime_t time);
+	void continueIn(simtime_t_cref time);
 
 	void waitForTX();
 	void sendDown(MacPkt* pkt);
 	void testForChannelSenseRequest(std::string test,
 								    ChannelSenseRequest* req);
-	MacPkt* createMacPkt(simtime_t length);
+	MacPkt* createMacPkt(simtime_t_cref length);
 };
 
 #endif /*TESTMACLAYER_H_*/

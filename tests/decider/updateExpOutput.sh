@@ -1,9 +1,3 @@
 #/bin/bash
 
-./decider > exp-output
-
-
-
-
-
-
+./runTest.sh "update-exp-output"

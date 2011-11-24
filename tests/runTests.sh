@@ -1,34 +1,52 @@
 #/bin/bash
 
-
-
-echo ----------------Blackboard--------------------
-cd blackboard
-./runTest.sh
-echo -------------ConnectionManager----------------
-cd ../connectionManager
-./runTest.sh
-echo ----------------BaseMobility------------------
-cd ../baseMobility
-./runTest.sh
-echo ----------------BasePhyLayer------------------
-cd ../basePhyLayer
-./runTest.sh
-echo ----------------DeciderTest------------------
-cd ../decider
-./runTest.sh
-echo -------------------Coord----------------------
-cd ../coord
-./runTest.sh
-echo ----------------ChannelInfo-------------------
-cd ../channelInfo
-./runTest.sh
-echo -----------------RadioState-------------------
-cd ../radioState
-./runTest.sh
-echo "---------------NICTests(80211)----------------"
-cd ../nicTest
-./runTest.sh
-echo "---------Mapping (may take a while)-----------"
-cd ../mapping
-./runTest.sh
+if [ -d blackboard ]; then
+    echo '----------------Blackboard--------------------'
+    ( ( cd blackboard >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
+if [ -d connectionManager ]; then
+    echo '-------------ConnectionManager----------------'
+    ( ( cd connectionManager >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
+if [ -d baseMobility ]; then
+    echo '----------------BaseMobility------------------'
+    ( ( cd baseMobility >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
+if [ -d basePhyLayer ]; then
+    echo '----------------BasePhyLayer------------------'
+    ( ( cd basePhyLayer >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
+if [ -d decider ]; then
+    echo '----------------DeciderTest-------------------'
+    ( ( cd decider >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
+if [ -d coord ]; then
+    echo '-------------------Coord----------------------'
+    ( ( cd coord >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
+if [ -d channelInfo ]; then
+    echo '----------------ChannelInfo-------------------'
+    ( ( cd channelInfo >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
+if [ -d radioState ]; then
+    echo '-----------------RadioState-------------------'
+    ( ( cd radioState >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
+if [ -d nicTest ]; then
+    echo '---------------NICTests(80211)----------------'
+    ( ( cd nicTest >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
+if [ -d mapping ]; then
+    echo '---------Mapping (may take a while)-----------'
+    ( ( cd mapping >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi
