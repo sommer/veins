@@ -32,6 +32,9 @@ void TwoRayInterferenceModel::filterSignal(AirFrame *frame, const Coord& senderP
 	const Coord senderPos2D(senderPos.x, senderPos.y);
 	const Coord receiverPos2D(receiverPos.x, receiverPos.y);
 
+	ASSERT(senderPos.z > 0); // make sure send antenna is above ground
+	ASSERT(receiverPos.z > 0); // make sure receive antenna is above ground
+
 	double d = senderPos2D.distance(receiverPos2D);
 	double ht = senderPos.z, hr = receiverPos.z;
 
