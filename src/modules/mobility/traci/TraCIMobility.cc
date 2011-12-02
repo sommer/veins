@@ -90,7 +90,7 @@ void TraCIMobility::initialize(int stage)
 		ASSERT(isPreInitialized);
 		isPreInitialized = false;
 
-		move.setStart(nextPos);
+		move.setStart(Coord(nextPos.x, nextPos.y, move.getCurrentPosition().z)); // keep z position
 		move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
 		move.setSpeed(speed);
 
@@ -158,7 +158,7 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
 	this->road_id = road_id;
 	this->speed = speed;
 	this->angle = angle;
-	move.setStart(position);
+	move.setStart(Coord(position.x, position.y, move.getCurrentPosition().z)); // keep z position
 	move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
 	move.setSpeed(speed);
 
@@ -190,7 +190,7 @@ void TraCIMobility::changePosition()
 		simtime_t updateInterval = simTime() - this->lastUpdate;
 		this->lastUpdate = simTime();
 
-		double distance = move.getStartPos().distance(nextPos);
+		double distance = move.getStartPos().distance(Coord(nextPos.x, nextPos.y, move.getCurrentPosition().z));
 		statistics.totalDistance += distance;
 		statistics.totalTime += updateInterval;
 		if (speed != -1) {
@@ -211,7 +211,7 @@ void TraCIMobility::changePosition()
 		}
 	}
 
-	move.setStart(nextPos);
+	move.setStart(Coord(nextPos.x, nextPos.y, move.getCurrentPosition().z)); // keep z position
 	move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
 	move.setSpeed(speed);
 	if (ev.isGUI()) updateDisplayString();
