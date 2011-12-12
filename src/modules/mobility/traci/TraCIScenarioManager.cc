@@ -123,10 +123,12 @@ std::string TraCIScenarioManager::receiveTraCIMessage() {
 			int receivedBytes = ::recv(MYSOCKET, reinterpret_cast<char*>(&buf2) + bytesRead, sizeof(uint32_t) - bytesRead, 0);
 			if (receivedBytes > 0) {
 				bytesRead += receivedBytes;
+			} else if (receivedBytes == 0) {
+				error("Connection to TraCI server closed unexpectedly. Check your server's log");
 			} else {
-				if (errno == EINTR) continue;
-				if (errno == EAGAIN) continue;
-				error("Could not read %d bytes from TraCI server, got only %d: %s", sizeof(uint32_t), bytesRead, strerror(sock_errno()));
+				if (sock_errno() == EINTR) continue;
+				if (sock_errno() == EAGAIN) continue;
+				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
 			}
 		}
 		TraCIBuffer(std::string(buf2, sizeof(uint32_t))) >> msgLength;
@@ -141,10 +143,12 @@ std::string TraCIScenarioManager::receiveTraCIMessage() {
 			int receivedBytes = ::recv(MYSOCKET, reinterpret_cast<char*>(&buf) + bytesRead, bufLength - bytesRead, 0);
 			if (receivedBytes > 0) {
 				bytesRead += receivedBytes;
+			} else if (receivedBytes == 0) {
+				error("Connection to TraCI server closed unexpectedly. Check your server's log");
 			} else {
-				if (errno == EINTR) continue;
-				if (errno == EAGAIN) continue;
-				error("Could not read %d bytes from TraCI server, got only %d: %s", bufLength, bytesRead, strerror(errno));
+				if (sock_errno() == EINTR) continue;
+				if (sock_errno() == EAGAIN) continue;
+				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
 			}
 		}
 	}
@@ -158,14 +162,32 @@ void TraCIScenarioManager::sendTraCIMessage(std::string buf) {
 		uint32_t msgLength = sizeof(uint32_t) + buf.length();
 		TraCIBuffer buf2 = TraCIBuffer();
 		buf2 << msgLength;
-		size_t sentBytes = ::send(MYSOCKET, buf2.str().c_str(), sizeof(uint32_t), 0);
-		if (sentBytes != sizeof(uint32_t)) error("Could not write %d bytes to TraCI server, sent only %d: %s", sizeof(uint32_t), sentBytes, strerror(errno));
+		uint32_t bytesWritten = 0;
+		while (bytesWritten < sizeof(uint32_t)) {
+			size_t sentBytes = ::send(MYSOCKET, buf2.str().c_str() + bytesWritten, sizeof(uint32_t) - bytesWritten, 0);
+			if (sentBytes > 0) {
+				bytesWritten += sentBytes;
+			} else {
+				if (sock_errno() == EINTR) continue;
+				if (sock_errno() == EAGAIN) continue;
+				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
+			}
+		}
 	}
 
 	{
 		MYDEBUG << "Writing TraCI message of " << buf.length() << " bytes" << endl;
-		size_t sentBytes = ::send(MYSOCKET, buf.c_str(), buf.length(), 0);
-		if (sentBytes != buf.length()) error("Could not write %d bytes to TraCI server, sent only %d: %s", buf.length(), sentBytes, strerror(errno));
+		uint32_t bytesWritten = 0;
+		while (bytesWritten < buf.length()) {
+			size_t sentBytes = ::send(MYSOCKET, buf.c_str() + bytesWritten, buf.length() - bytesWritten, 0);
+			if (sentBytes > 0) {
+				bytesWritten += sentBytes;
+			} else {
+				if (sock_errno() == EINTR) continue;
+				if (sock_errno() == EAGAIN) continue;
+				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
+			}
+		}
 	}
 }
 
@@ -234,7 +256,9 @@ void TraCIScenarioManager::connect() {
 	MYSOCKET = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (MYSOCKET < 0) error("Could not create socket to connect to TraCI server");
 
-	if (::connect(MYSOCKET, (sockaddr const*) &address, sizeof(address)) < 0) error("Could not connect to TraCI server");
+	if (::connect(MYSOCKET, (sockaddr const*) &address, sizeof(address)) < 0) {
+		error("Could not connect to TraCI server. Make sure it is running and not behind a firewall. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
+	}
 
 	{
 		int x = 1;
