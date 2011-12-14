@@ -34,4 +34,10 @@
 <dir makemake-options="-o mapping -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mapping" type="makemake"/>
 <dir makemake-options="-o deviceTestAccts -O out -u CMDENV -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTestAccts" type="makemake"/>
 <dir makemake-options="-o analogueModels -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/analogueModels" type="makemake"/>
+<dir makemake-options="-o traci_launchd -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/traci_launchd" type="makemake"/>
+<dir makemake-options="-o traci -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/traci" type="makemake"/>
+<dir makemake-options="-o ieee80211p -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/ieee80211p" type="makemake"/>
+<dir makemake-options="-o obstacles -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/obstacles" type="makemake"/>
+<dir makemake-options="-o twoRayInterference -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/twoRayInterference" type="makemake"/>
+<dir makemake-options="-o veins -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/veins" type="makemake"/>
 </buildspec>

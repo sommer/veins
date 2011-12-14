@@ -50,3 +50,8 @@ if [ -d mapping ]; then
     ( ( cd mapping >/dev/null 2>&1 && \
     ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
 fi
+if [ -d traci ]; then
+    echo '---------TraCI (may take a while)-----------'
+    ( ( cd traci >/dev/null 2>&1 && \
+    ./runTest.sh $1 ) && echo "PASSED" ) || echo "FAILED"
+fi

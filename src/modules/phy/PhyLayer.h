@@ -19,6 +19,7 @@
  * - SimplePathlossModel
  * - LogNormalShadowing
  * - JakesFading
+ * - SimpleObstacleModel
  *
  * Knows the following Deciders
  * - Decider80211
@@ -40,6 +41,7 @@ protected:
 	 * - SimplePathlossModel
 	 * - LogNormalShadowing
 	 * - JakesFading
+	 * - SimpleObstacleModel
 	 */
 	virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
 
@@ -67,12 +69,24 @@ protected:
 	 */
 	virtual AnalogueModel* initializeBreakpointPathlossModel(ParameterMap& params);
 
+    /**
+	 * @brief Creates and initializes a SimpleObstacleShadowing with the
+	 * passed parameter values.
+	 */
+	AnalogueModel* initializeSimpleObstacleShadowing(ParameterMap& params);
+
 	/**
 	 * @brief Creates a simple Packet Error Rate model that attenuates a percentage
 	 * of the packets to zero, and does not attenuate the other packets.
 	 *
 	 */
 	virtual AnalogueModel* initializePERModel(ParameterMap& params);
+
+	/**
+	 * @brief Creates and initializes a TwoRayInterferenceModel with the
+	 * passed parameter values.
+	 */
+	AnalogueModel* initializeTwoRayInterferenceModel(ParameterMap& params);
 
 	/**
 	 * @brief Creates and returns an instance of the Decider with the specified
