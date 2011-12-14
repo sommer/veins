@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<AnalogueModels>
+		<AnalogueModel type="TwoRayInterferenceModel">
+			<parameter name="DielectricConstant" type="double" value="1.02"/>
+		</AnalogueModel>
+		<AnalogueModel type="SimpleObstacleShadowing">
+			<parameter name="carrierFrequency" type="double" value="5.890e+9"/>
+		</AnalogueModel>
+	</AnalogueModels>
+	<Decider type="Decider80211p">
+		<!-- The center frequency on which the phy listens-->
+		<parameter name="centerFrequency" type="double" value="5.890e9"/>
+	</Decider>
+</root>
