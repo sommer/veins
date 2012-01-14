@@ -570,6 +570,145 @@ void TraCIScenarioManager::commandSetPolygonShape(std::string polyId, std::list<
 	ASSERT(obuf.eof());
 }
 
+void TraCIScenarioManager::commandAddPolygon(std::string polyId, std::string polyType, const TraCIScenarioManager::Color& color, bool filled, int32_t layer, std::list<Coord> points) {
+	TraCIBuffer p;
+
+	p << static_cast<uint8_t>(ADD) << polyId;
+	p << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(5);
+	p << static_cast<uint8_t>(TYPE_STRING) << polyType;
+	p << static_cast<uint8_t>(TYPE_COLOR) << color.red << color.green << color.blue << color.alpha;
+	p << static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(filled);
+	p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
+	p << static_cast<uint8_t>(TYPE_POLYGON) << static_cast<uint8_t>(points.size());
+	for (std::list<Coord>::const_iterator i = points.begin(); i != points.end(); ++i) {
+		TraCICoord pos = omnet2traci(*i);
+		p << static_cast<double>(pos.x) << static_cast<double>(pos.y);
+	}
+
+	TraCIBuffer buf = queryTraCI(CMD_SET_POLYGON_VARIABLE, p);
+	ASSERT(buf.eof());
+}
+
+std::list<std::string> TraCIScenarioManager::commandGetLaneIds() {
+	std::list<std::string> res;
+
+	std::string objectId = "";
+	TraCIBuffer buf = queryTraCI(CMD_GET_LANE_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(ID_LIST) << objectId);
+
+	// read additional RESPONSE_GET_POLYGON_VARIABLE sent back in response
+	uint8_t cmdLength; buf >> cmdLength;
+	if (cmdLength == 0) {
+		uint32_t cmdLengthX;
+		buf >> cmdLengthX;
+	}
+	uint8_t commandId; buf >> commandId;
+	ASSERT(commandId == RESPONSE_GET_LANE_VARIABLE);
+	uint8_t varId; buf >> varId;
+	ASSERT(varId == ID_LIST);
+
+	// lane ID is not used when getting all lanes
+	std::string laneId_r; buf >> laneId_r;
+	uint8_t resType_r; buf >> resType_r;
+	ASSERT(resType_r == TYPE_STRINGLIST);
+	uint32_t count; buf >> count;
+	for (uint32_t i = 0; i < count; i++) {
+		std::string id; buf >> id;
+		res.push_back(id);
+	}
+
+	ASSERT(buf.eof());
+
+	return res;
+}
+
+std::list<Coord> TraCIScenarioManager::commandGetLaneShape(std::string laneId) {
+	std::list<Coord> res;
+
+	TraCIBuffer buf = queryTraCI(CMD_GET_LANE_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SHAPE) << laneId);
+
+	// read additional RESPONSE_GET_POLYGON_VARIABLE sent back in response
+	uint8_t cmdLength; buf >> cmdLength;
+	if (cmdLength == 0) {
+		uint32_t cmdLengthX;
+		buf >> cmdLengthX;
+	}
+	uint8_t commandId; buf >> commandId;
+	ASSERT(commandId == RESPONSE_GET_LANE_VARIABLE);
+	uint8_t varId; buf >> varId;
+	ASSERT(varId == VAR_SHAPE);
+	std::string laneId_r; buf >> laneId_r;
+	ASSERT(laneId_r == laneId);
+	uint8_t resType_r; buf >> resType_r;
+	ASSERT(resType_r == TYPE_POLYGON);
+	uint8_t count; buf >> count;
+	for (uint8_t i = 0; i < count; i++) {
+		double x; buf >> x;
+		double y; buf >> y;
+		Coord pos = traci2omnet(TraCICoord(x, y));
+		res.push_back(pos);
+	}
+
+	ASSERT(buf.eof());
+
+	return res;
+}
+
+std::list<std::string> TraCIScenarioManager::commandGetJunctionIds() {
+	std::list<std::string> res;
+
+	std::string objectId = "";
+	TraCIBuffer buf = queryTraCI(CMD_GET_JUNCTION_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(ID_LIST) << objectId);
+
+	// read additional RESPONSE_GET_JUNCTION_VARIABLE sent back in response
+	uint8_t cmdLength; buf >> cmdLength;
+	if (cmdLength == 0) {
+		uint32_t cmdLengthX;
+		buf >> cmdLengthX;
+	}
+	uint8_t commandId; buf >> commandId;
+	ASSERT(commandId == RESPONSE_GET_JUNCTION_VARIABLE);
+	uint8_t varId; buf >> varId;
+	ASSERT(varId == ID_LIST);
+	std::string junctionId_r; buf >> junctionId_r;
+	uint8_t resType_r; buf >> resType_r;
+	ASSERT(resType_r == TYPE_STRINGLIST);
+	uint32_t count; buf >> count;
+	for (uint32_t i = 0; i < count; i++) {
+		std::string id; buf >> id;
+		res.push_back(id);
+	}
+
+	ASSERT(buf.eof());
+
+	return res;
+}
+
+Coord TraCIScenarioManager::commandGetJunctionPosition(std::string junctionId) {
+	std::string res;
+
+	TraCIBuffer buf = queryTraCI(CMD_GET_JUNCTION_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_POSITION) << junctionId);
+
+	// read additional RESPONSE_GET_JUNCTION_VARIABLE sent back in response
+	uint8_t cmdLength; buf >> cmdLength;
+	if (cmdLength == 0) {
+		uint32_t cmdLengthX;
+		buf >> cmdLengthX;
+	}
+	uint8_t commandId; buf >> commandId;
+	ASSERT(commandId == RESPONSE_GET_JUNCTION_VARIABLE);
+	uint8_t varId; buf >> varId;
+	ASSERT(varId == VAR_POSITION);
+	std::string junctionId_r; buf >> junctionId_r;
+	ASSERT(junctionId_r == junctionId);
+	uint8_t resType_r; buf >> resType_r;
+	ASSERT(resType_r == POSITION_2D);
+	double x; buf >> x;
+	double y; buf >> y;
+	ASSERT(buf.eof());
+
+	return traci2omnet(TraCICoord(x, y));
+}
+
 bool TraCIScenarioManager::commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, std::string laneId, float emitPosition, float emitSpeed) {
 	bool success = false;
 	TraCIBuffer buf = queryTraCIOptional(CMD_ADDVEHICLE, TraCIBuffer() << vehicleId << vehicleTypeId << routeId << laneId << emitPosition << emitSpeed, success);

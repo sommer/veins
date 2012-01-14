@@ -46,6 +46,17 @@
 class TraCIScenarioManager : public cSimpleModule
 {
 	public:
+		/**
+		 * TraCI compatible color container
+		 */
+		struct Color {
+			Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) : red(red), green(green), blue(blue), alpha(alpha) {}
+			uint8_t red;
+			uint8_t green;
+			uint8_t blue;
+			uint8_t alpha;
+		};
+
 		~TraCIScenarioManager();
 		virtual int numInitStages() const { return std::max(cSimpleModule::numInitStages(), 2); }
 		virtual void initialize(int stage);
@@ -65,6 +76,11 @@ class TraCIScenarioManager : public cSimpleModule
 		std::string commandGetPolygonTypeId(std::string polyId);
 		std::list<Coord> commandGetPolygonShape(std::string polyId);
 		void commandSetPolygonShape(std::string polyId, std::list<Coord> points);
+		void commandAddPolygon(std::string polyId, std::string polyType, const Color& color, bool filled, int32_t layer, std::list<Coord> points);
+		std::list<std::string> commandGetLaneIds();
+		std::list<Coord> commandGetLaneShape(std::string polyId);
+		std::list<std::string> commandGetJunctionIds();
+		Coord commandGetJunctionPosition(std::string junctionId);
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, std::string laneId, float emitPosition, float emitSpeed);
 
 		const std::map<std::string, cModule*>& getManagedHosts() {
