@@ -499,91 +499,15 @@ void TraCIScenarioManager::commandSetTrafficLightPhaseIndex(std::string trafficL
 }
 
 std::list<std::string> TraCIScenarioManager::commandGetPolygonIds() {
-	std::list<std::string> res;
-
-	std::string objectId = "";
-	TraCIBuffer buf = queryTraCI(CMD_GET_POLYGON_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(ID_LIST) << objectId);
-
-	// read additional RESPONSE_GET_POLYGON_VARIABLE sent back in response
-	uint8_t cmdLength; buf >> cmdLength;
-	if (cmdLength == 0) {
-		uint32_t cmdLengthX;
-		buf >> cmdLengthX;
-	}
-	uint8_t commandId; buf >> commandId;
-	ASSERT(commandId == RESPONSE_GET_POLYGON_VARIABLE);
-	uint8_t varId; buf >> varId;
-	ASSERT(varId == ID_LIST);
-	std::string polyId_r; buf >> polyId_r;
-	uint8_t resType_r; buf >> resType_r;
-	ASSERT(resType_r == TYPE_STRINGLIST);
-	uint32_t count; buf >> count;
-	for (uint32_t i = 0; i < count; i++) {
-		std::string id; buf >> id;
-		res.push_back(id);
-	}
-
-	ASSERT(buf.eof());
-
-	return res;
+	return genericGetStringList(CMD_GET_POLYGON_VARIABLE, "", ID_LIST, RESPONSE_GET_POLYGON_VARIABLE);
 }
 
 std::string TraCIScenarioManager::commandGetPolygonTypeId(std::string polyId) {
-	std::string res;
-
-	TraCIBuffer buf = queryTraCI(CMD_GET_POLYGON_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_TYPE) << polyId);
-
-	// read additional RESPONSE_GET_POLYGON_VARIABLE sent back in response
-	uint8_t cmdLength; buf >> cmdLength;
-	if (cmdLength == 0) {
-		uint32_t cmdLengthX;
-		buf >> cmdLengthX;
-	}
-	uint8_t commandId; buf >> commandId;
-	ASSERT(commandId == RESPONSE_GET_POLYGON_VARIABLE);
-	uint8_t varId; buf >> varId;
-	ASSERT(varId == VAR_TYPE);
-	std::string polyId_r; buf >> polyId_r;
-	ASSERT(polyId_r == polyId);
-	uint8_t resType_r; buf >> resType_r;
-	ASSERT(resType_r == TYPE_STRING);
-	buf >> res;
-
-	ASSERT(buf.eof());
-
-	return res;
+	return genericGetString(CMD_GET_POLYGON_VARIABLE, polyId, VAR_TYPE, RESPONSE_GET_POLYGON_VARIABLE);
 }
 
 std::list<Coord> TraCIScenarioManager::commandGetPolygonShape(std::string polyId) {
-	std::list<Coord> res;
-
-	TraCIBuffer buf = queryTraCI(CMD_GET_POLYGON_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SHAPE) << polyId);
-
-	// read additional RESPONSE_GET_POLYGON_VARIABLE sent back in response
-	uint8_t cmdLength; buf >> cmdLength;
-	if (cmdLength == 0) {
-		uint32_t cmdLengthX;
-		buf >> cmdLengthX;
-	}
-	uint8_t commandId; buf >> commandId;
-	ASSERT(commandId == RESPONSE_GET_POLYGON_VARIABLE);
-	uint8_t varId; buf >> varId;
-	ASSERT(varId == VAR_SHAPE);
-	std::string polyId_r; buf >> polyId_r;
-	ASSERT(polyId_r == polyId);
-	uint8_t resType_r; buf >> resType_r;
-	ASSERT(resType_r == TYPE_POLYGON);
-	uint8_t count; buf >> count;
-	for (uint8_t i = 0; i < count; i++) {
-		double x; buf >> x;
-		double y; buf >> y;
-		Coord pos = traci2omnet(TraCICoord(x, y));
-		res.push_back(pos);
-	}
-
-	ASSERT(buf.eof());
-
-	return res;
+	return genericGetCoordList(CMD_GET_POLYGON_VARIABLE, polyId, VAR_SHAPE, RESPONSE_GET_POLYGON_VARIABLE);
 }
 
 void TraCIScenarioManager::commandSetPolygonShape(std::string polyId, std::list<Coord> points) {
@@ -618,69 +542,12 @@ void TraCIScenarioManager::commandAddPolygon(std::string polyId, std::string pol
 }
 
 std::list<std::string> TraCIScenarioManager::commandGetLaneIds() {
-	std::list<std::string> res;
-
-	std::string objectId = "";
-	TraCIBuffer buf = queryTraCI(CMD_GET_LANE_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(ID_LIST) << objectId);
-
-	// read additional RESPONSE_GET_POLYGON_VARIABLE sent back in response
-	uint8_t cmdLength; buf >> cmdLength;
-	if (cmdLength == 0) {
-		uint32_t cmdLengthX;
-		buf >> cmdLengthX;
-	}
-	uint8_t commandId; buf >> commandId;
-	ASSERT(commandId == RESPONSE_GET_LANE_VARIABLE);
-	uint8_t varId; buf >> varId;
-	ASSERT(varId == ID_LIST);
-
-	// lane ID is not used when getting all lanes
-	std::string laneId_r; buf >> laneId_r;
-	uint8_t resType_r; buf >> resType_r;
-	ASSERT(resType_r == TYPE_STRINGLIST);
-	uint32_t count; buf >> count;
-	for (uint32_t i = 0; i < count; i++) {
-		std::string id; buf >> id;
-		res.push_back(id);
-	}
-
-	ASSERT(buf.eof());
-
-	return res;
+	return genericGetStringList(CMD_GET_LANE_VARIABLE, "", ID_LIST, RESPONSE_GET_LANE_VARIABLE);
 }
 
 std::list<Coord> TraCIScenarioManager::commandGetLaneShape(std::string laneId) {
-	std::list<Coord> res;
-
-	TraCIBuffer buf = queryTraCI(CMD_GET_LANE_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SHAPE) << laneId);
-
-	// read additional RESPONSE_GET_POLYGON_VARIABLE sent back in response
-	uint8_t cmdLength; buf >> cmdLength;
-	if (cmdLength == 0) {
-		uint32_t cmdLengthX;
-		buf >> cmdLengthX;
-	}
-	uint8_t commandId; buf >> commandId;
-	ASSERT(commandId == RESPONSE_GET_LANE_VARIABLE);
-	uint8_t varId; buf >> varId;
-	ASSERT(varId == VAR_SHAPE);
-	std::string laneId_r; buf >> laneId_r;
-	ASSERT(laneId_r == laneId);
-	uint8_t resType_r; buf >> resType_r;
-	ASSERT(resType_r == TYPE_POLYGON);
-	uint8_t count; buf >> count;
-	for (uint8_t i = 0; i < count; i++) {
-		double x; buf >> x;
-		double y; buf >> y;
-		Coord pos = traci2omnet(TraCICoord(x, y));
-		res.push_back(pos);
-	}
-
-	ASSERT(buf.eof());
-
-	return res;
+	return genericGetCoordList(CMD_GET_LANE_VARIABLE, laneId, VAR_SHAPE, RESPONSE_GET_LANE_VARIABLE);
 }
-
 
 std::string TraCIScenarioManager::commandGetLaneEdgeId(std::string laneId) {
 	return genericGetString(CMD_GET_LANE_VARIABLE, laneId, LANE_EDGE_ID, RESPONSE_GET_LANE_VARIABLE);
@@ -699,59 +566,11 @@ double TraCIScenarioManager::commandGetLaneMeanSpeed(std::string laneId) {
 }
 
 std::list<std::string> TraCIScenarioManager::commandGetJunctionIds() {
-	std::list<std::string> res;
-
-	std::string objectId = "";
-	TraCIBuffer buf = queryTraCI(CMD_GET_JUNCTION_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(ID_LIST) << objectId);
-
-	// read additional RESPONSE_GET_JUNCTION_VARIABLE sent back in response
-	uint8_t cmdLength; buf >> cmdLength;
-	if (cmdLength == 0) {
-		uint32_t cmdLengthX;
-		buf >> cmdLengthX;
-	}
-	uint8_t commandId; buf >> commandId;
-	ASSERT(commandId == RESPONSE_GET_JUNCTION_VARIABLE);
-	uint8_t varId; buf >> varId;
-	ASSERT(varId == ID_LIST);
-	std::string junctionId_r; buf >> junctionId_r;
-	uint8_t resType_r; buf >> resType_r;
-	ASSERT(resType_r == TYPE_STRINGLIST);
-	uint32_t count; buf >> count;
-	for (uint32_t i = 0; i < count; i++) {
-		std::string id; buf >> id;
-		res.push_back(id);
-	}
-
-	ASSERT(buf.eof());
-
-	return res;
+	return genericGetStringList(CMD_GET_JUNCTION_VARIABLE, "", ID_LIST, RESPONSE_GET_JUNCTION_VARIABLE);
 }
 
 Coord TraCIScenarioManager::commandGetJunctionPosition(std::string junctionId) {
-	std::string res;
-
-	TraCIBuffer buf = queryTraCI(CMD_GET_JUNCTION_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_POSITION) << junctionId);
-
-	// read additional RESPONSE_GET_JUNCTION_VARIABLE sent back in response
-	uint8_t cmdLength; buf >> cmdLength;
-	if (cmdLength == 0) {
-		uint32_t cmdLengthX;
-		buf >> cmdLengthX;
-	}
-	uint8_t commandId; buf >> commandId;
-	ASSERT(commandId == RESPONSE_GET_JUNCTION_VARIABLE);
-	uint8_t varId; buf >> varId;
-	ASSERT(varId == VAR_POSITION);
-	std::string junctionId_r; buf >> junctionId_r;
-	ASSERT(junctionId_r == junctionId);
-	uint8_t resType_r; buf >> resType_r;
-	ASSERT(resType_r == POSITION_2D);
-	double x; buf >> x;
-	double y; buf >> y;
-	ASSERT(buf.eof());
-
-	return traci2omnet(TraCICoord(x, y));
+	return genericGetCoord(CMD_GET_JUNCTION_VARIABLE, junctionId, VAR_POSITION, RESPONSE_GET_JUNCTION_VARIABLE);
 }
 
 bool TraCIScenarioManager::commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, std::string laneId, float emitPosition, float emitSpeed) {
@@ -884,6 +703,35 @@ std::string TraCIScenarioManager::genericGetString(uint8_t commandId, std::strin
 	return res;
 }
 
+Coord TraCIScenarioManager::genericGetCoord(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId) {
+
+	uint8_t resultTypeId = POSITION_2D;
+	double x;
+	double y;
+
+	TraCIBuffer buf = queryTraCI(commandId, TraCIBuffer() << variableId << objectId);
+
+	uint8_t cmdLength; buf >> cmdLength;
+	if (cmdLength == 0) {
+		uint32_t cmdLengthX;
+		buf >> cmdLengthX;
+	}
+	uint8_t commandId_r; buf >> commandId_r;
+	ASSERT(commandId_r == responseId);
+	uint8_t varId; buf >> varId;
+	ASSERT(varId == variableId);
+	std::string objectId_r; buf >> objectId_r;
+	ASSERT(objectId_r == objectId);
+	uint8_t resType_r; buf >> resType_r;
+	ASSERT(resType_r == resultTypeId);
+	buf >> x;
+	buf >> y;
+
+	ASSERT(buf.eof());
+
+	return traci2omnet(TraCICoord(x, y));
+}
+
 double TraCIScenarioManager::genericGetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId) {
 
 	uint8_t resultTypeId = TYPE_DOUBLE;
@@ -935,6 +783,39 @@ std::list<std::string> TraCIScenarioManager::genericGetStringList(uint8_t comman
 	for (uint32_t i = 0; i < count; i++) {
 		std::string id; buf >> id;
 		res.push_back(id);
+	}
+
+	ASSERT(buf.eof());
+
+	return res;
+}
+
+std::list<Coord> TraCIScenarioManager::genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId) {
+
+	uint8_t resultTypeId = TYPE_POLYGON;
+	std::list<Coord> res;
+
+	TraCIBuffer buf = queryTraCI(commandId, TraCIBuffer() << variableId << objectId);
+
+	uint8_t cmdLength; buf >> cmdLength;
+	if (cmdLength == 0) {
+		uint32_t cmdLengthX;
+		buf >> cmdLengthX;
+	}
+	uint8_t commandId_r; buf >> commandId_r;
+	ASSERT(commandId_r == responseId);
+	uint8_t varId; buf >> varId;
+	ASSERT(varId == variableId);
+	std::string objectId_r; buf >> objectId_r;
+	ASSERT(objectId_r == objectId);
+	uint8_t resType_r; buf >> resType_r;
+	ASSERT(resType_r == resultTypeId);
+	uint8_t count; buf >> count;
+	for (uint32_t i = 0; i < count; i++) {
+		double x; buf >> x;
+		double y; buf >> y;
+		Coord pos = traci2omnet(TraCICoord(x, y));
+		res.push_back(pos);
 	}
 
 	ASSERT(buf.eof());
