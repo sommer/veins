@@ -78,7 +78,7 @@ class TraCIScenarioManager : public cSimpleModule
 		void commandSetPolygonShape(std::string polyId, std::list<Coord> points);
 		void commandAddPolygon(std::string polyId, std::string polyType, const Color& color, bool filled, int32_t layer, std::list<Coord> points);
 		std::list<std::string> commandGetLaneIds();
-		std::list<Coord> commandGetLaneShape(std::string polyId);
+		std::list<Coord> commandGetLaneShape(std::string laneId);
 		std::list<std::string> commandGetJunctionIds();
 		Coord commandGetJunctionPosition(std::string junctionId);
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, std::string laneId, float emitPosition, float emitSpeed);
