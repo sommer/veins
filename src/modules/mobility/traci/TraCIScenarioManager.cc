@@ -652,7 +652,7 @@ bool TraCIScenarioManager::isInRegionOfInterest(const TraCICoord& position, std:
 }
 
 uint32_t TraCIScenarioManager::getCurrentTimeMs() {
-	return static_cast<uint32_t>(round((simTime() * 1000).dbl()));
+	return static_cast<uint32_t>(round(simTime().dbl() * 1000));
 }
 
 void TraCIScenarioManager::executeOneTimestep() {
