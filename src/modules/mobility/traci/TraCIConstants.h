@@ -569,6 +569,13 @@
 // remove an instance (poi, polygon)
 #define REMOVE 0x81
 
+// vehicle removal reason
+#define NOTIFICATION_TELEPORT 0
+#define NOTIFICATION_PARKING 1
+#define NOTIFICATION_ARRIVED 2
+#define NOTIFICATION_VAPORIZED 3
+#define NOTIFICATION_TELEPORT_ARRIVED 4
+
 // convert coordinates
 #define POSITION_CONVERSION 0x82
 

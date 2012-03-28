@@ -106,6 +106,14 @@ class TraCIMobility : public BaseMobility
 		void commandChangeRoute(std::string roadId, double travelTime) {
 			getManager()->commandChangeRoute(getExternalId(), roadId, travelTime);
 		}
+
+		void commandNewRoute(std::string roadId) {
+		    getManager()->commandNewRoute(getExternalId(), roadId);
+		}
+		void commandParkVehicle() {
+			getManager()->commandSetVehicleParking(getExternalId());
+		}
+
 		double commandDistanceRequest(Coord position1, Coord position2, bool returnDrivingDistance) {
 			return getManager()->commandDistanceRequest(position1, position2, returnDrivingDistance);
 		}
