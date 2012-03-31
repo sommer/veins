@@ -290,15 +290,15 @@ Mapping* BaseDecider::calculateRSSIMapping( simtime_t_cref start,
 				// frequencies of this airframe. There's probably a better way to do it but
 				// i did it like this:
 				const ConstMapping *const recvPowerMap = (*it)->getSignal().getReceivingPower();
-
 				if (recvPowerMap) {
 					Mapping* rcvPowerPlusThermalNoise = MappingUtils::add(      *recvPowerMap,             *thermalNoise );
 					Mapping* resultMapNew             = MappingUtils::subtract( *rcvPowerPlusThermalNoise, *recvPowerMap );
-
 					delete rcvPowerPlusThermalNoise;
+					Mapping* resultMapTmp = MappingUtils::add(*resultMap,*resultMapNew);
 					delete resultMap;
-					resultMap = resultMapNew;
-				}
+					delete resultMapNew;
+					resultMap = resultMapTmp;
+					}
 			}
 			continue;
 		}

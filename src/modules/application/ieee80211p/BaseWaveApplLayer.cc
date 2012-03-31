@@ -33,7 +33,7 @@ void BaseWaveApplLayer::initialize(int stage) {
 		myId = getId();
 
 		headerLength = par("headerLength").longValue();
-
+		double maxOffset = par("maxOffset").doubleValue();
 		sendBeacons = par("sendBeacons").boolValue();
 		beaconLengthBits = par("beaconLengthBits").longValue();
 		beaconPriority = par("beaconPriority").longValue();
@@ -48,6 +48,7 @@ void BaseWaveApplLayer::initialize(int stage) {
 		//simulate asynchronous channel access
 		double offSet = dblrand() * (par("beaconInterval").doubleValue()/2);
 		offSet = offSet + floor(offSet/0.050)*0.050;
+		individualOffset = dblrand() * maxOffset;
 
 		if (sendBeacons) {
 			scheduleAt(simTime() + offSet, sendBeaconEvt);
@@ -98,25 +99,17 @@ void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
 
 void BaseWaveApplLayer::handleLowerMsg(cMessage* msg) {
 
-	Mac80211Pkt* mac = dynamic_cast<Mac80211Pkt*>(msg);
-	ASSERT(mac);
+	WaveShortMessage* wsm = dynamic_cast<WaveShortMessage*>(msg);
+	ASSERT(wsm);
 
-	WaveShortMessage*  wsm =  dynamic_cast<WaveShortMessage*>(mac->decapsulate());
-	if (wsm != NULL) {
-
-		if (std::string(wsm->getName()) == "beacon") {
-			onBeacon(wsm);
-		}
-		else if (std::string(wsm->getName()) == "data") {
-			onData(wsm);
-		}
-		else {
-			ASSERT(false);
-		}
-		delete(wsm);
+	if (std::string(wsm->getName()) == "beacon") {
+		onBeacon(wsm);
+	}
+	else if (std::string(wsm->getName()) == "data") {
+		onData(wsm);
 	}
 	else {
-		DBG << "unknown message received\n";
+		DBG << "unknown message (" << wsm->getName() << ")  received\n";
 	}
 	delete(msg);
 }
@@ -137,11 +130,16 @@ void BaseWaveApplLayer::handleSelfMsg(cMessage* msg) {
 }
 
 void BaseWaveApplLayer::sendWSM(WaveShortMessage* wsm) {
-	sendDown(wsm);
+	sendDelayedDown(wsm,individualOffset);
 }
 
 void BaseWaveApplLayer::finish() {
-	cancelAndDelete(sendBeaconEvt);
+	if (sendBeaconEvt->isScheduled()) {
+		cancelAndDelete(sendBeaconEvt);
+	}
+	else {
+		delete sendBeaconEvt;
+	}
 }
 
 BaseWaveApplLayer::~BaseWaveApplLayer() {

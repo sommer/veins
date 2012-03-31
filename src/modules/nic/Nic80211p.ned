@@ -21,7 +21,6 @@
 package org.mixim.modules.nic;
 
 import org.mixim.modules.phy.PhyLayer80211p;
-import org.mixim.modules.mac.ieee80211p.Mac80211p;
 import org.mixim.modules.mac.ieee80211p.Mac1609_4;
 
 module Nic80211p
@@ -38,10 +37,6 @@ module Nic80211p
             @display("p=69,218;i=block/process_s");
         }
 
-        mac80211p: Mac80211p {
-            @display("p=69,153");
-        }
-
         mac1609_4: Mac1609_4 {
             @display("p=69,82");
         }
@@ -50,21 +45,16 @@ module Nic80211p
 
         radioIn --> phy80211p.radioIn;
 
-        mac80211p.lowerControlOut --> phy80211p.upperControlIn;
-        mac80211p.lowerLayerOut --> phy80211p.upperLayerIn;
-        phy80211p.upperLayerOut --> mac80211p.lowerLayerIn;
-        phy80211p.upperControlOut --> mac80211p.lowerControlIn;
-
+        mac1609_4.lowerControlOut --> phy80211p.upperControlIn;
+        mac1609_4.lowerLayerOut --> phy80211p.upperLayerIn;
+        phy80211p.upperLayerOut --> mac1609_4.lowerLayerIn;
+        phy80211p.upperControlOut --> mac1609_4.lowerControlIn;
+        
         mac1609_4.upperControlIn <-- upperControlIn;
         mac1609_4.upperLayerIn <-- upperLayerIn;
 
         mac1609_4.upperLayerOut --> upperLayerOut;
         mac1609_4.upperControlOut --> upperControlOut;
-
-        mac1609_4.lowerLayerIn <-- mac80211p.upperLayerOut;
-        mac1609_4.lowerLayerOut --> mac80211p.upperLayerIn;
-        mac1609_4.lowerControlOut --> mac80211p.upperControlIn;
-        mac1609_4.lowerControlIn <-- mac80211p.upperControlOut;
 }
 
 

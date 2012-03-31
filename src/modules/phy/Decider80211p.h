@@ -28,19 +28,21 @@
 
 #include <BaseDecider.h>
 #include <Consts80211p.h>
+#include <Mac80211pToPhy11pInterface.h>
+#include <Decider80211pToPhy80211pInterface.h>
 
-#ifndef DBG
-#define DBG EV
+#ifndef DBG_D11P
+#define DBG_D11P EV
 #endif
-//#define DBG std::cerr << "[" << simTime().raw() << "] " << myPath
+//#define DBG_D11P std::cerr << "[" << simTime().raw() << "] " << myPath << ".Dec "
 
-class Decider80211p: public BaseDecider
-{
+class Decider80211p: public BaseDecider {
 	public:
 		enum Decider80211ControlKinds {
 			NOTHING = 22100,
 			BITERROR,       //the phy has recognized a bit error in the packet
-			LAST_DECIDER_80211_CONTROL_KIND
+			LAST_DECIDER_80211_CONTROL_KIND,
+			RECWHILESEND
 		};
 	protected:
 		// threshold value for checking a SNR-map (SNR-threshold)
@@ -52,6 +54,8 @@ class Decider80211p: public BaseDecider
 		double myBusyTime;
 		double myStartTime;
 		std::string myPath;
+		Decider80211pToPhy80211pInterface* phy11p;
+		std::map<AirFrame*,int> signalStates;
 
 	protected:
 
@@ -98,8 +102,6 @@ class Decider80211p: public BaseDecider
 		 * @brief Initializes the Decider with a pointer to its PhyLayer and
 		 * specific values for threshold and sensitivity
 		 */
-		void changeFrequency(double freq);
-
 		Decider80211p(DeciderToPhyInterface* phy,
 		              double sensitivity,
 		              double centerFrequency,
@@ -109,6 +111,8 @@ class Decider80211p: public BaseDecider
 			centerFrequency(centerFrequency),
 			myBusyTime(0),
 			myStartTime(simTime().dbl()) {
+			phy11p = dynamic_cast<Decider80211pToPhy80211pInterface*>(phy);
+			assert(phy11p);
 
 		}
 
@@ -116,7 +120,14 @@ class Decider80211p: public BaseDecider
 			this->myPath = myPath;
 		}
 
+		bool cca(simtime_t_cref, AirFrame*);
+		int getSignalState(AirFrame* frame);
 		virtual ~Decider80211p();
+
+		void changeFrequency(double freq);
+
+		void setChannelIdleStatus(bool isIdle);
+
 };
 
 #endif /* DECIDER80211_H_ */

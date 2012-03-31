@@ -32,6 +32,7 @@ simple BaseWaveApplLayer like IBaseApplLayer
         int beaconPriority = default(3); //the access category of the beacon messages
         volatile double beaconInterval = default(1s) @unit(s); //the intervall between 2 beacon messages
 
+        double maxOffset = default(0s) @unit(s); //the maximum delay of messages sent down to avoid synchronous channel access
         bool sendData = default(false); //whether this applayer should send data
         int dataLengthBits = default(1024bit) @unit(bit); //the length of a data packet
         bool dataOnSch = default(true); //tells the applayer whether to use a service channel for datapackets or the control channel
