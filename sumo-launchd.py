@@ -255,13 +255,16 @@ def run_sumo(runpath, sumo_command, shlex, config_file_name, remote_port, seed, 
             sumo_status = "Undef"
 
     except OSError, e:
-        sumo_status = "Execution failed (%s)" % e
+        sumo_status = "Could not start SUMO (%s): %s" % (" ".join(cmd), e)
 
     except exceptions.SystemExit:
         sumo_status = "Premature launch script exit"
 
     except exceptions.KeyboardInterrupt:
         sumo_status = "Keyboard interrupt."
+
+    except socket.error, e:
+        sumo_status = "Could not connect to SUMO (%s). Might be protected by a personal firewall or crashed before a connection could be established." % e
 
     except:
         raise

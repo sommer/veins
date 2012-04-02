@@ -18,6 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#include <algorithm>
+
 #include "../testUtils/asserts.h"
 #include "../testUtils/OmnetTestBase.h"
 
@@ -168,6 +170,47 @@ void TraCITestApp::handlePositionUpdate() {
 			std::list<Coord> shape3 = traci->commandGetPolygonShape("poly0");
 			assertClose("(commandSetPolygonShape) shape x coordinate was changed", 135.0, shape3.begin()->x);
 			assertClose("(commandSetPolygonShape) shape y coordinate was changed", 85.0, shape3.begin()->y);
+		}
+	}
+
+	if (testNumber == testCounter++) {
+		if (t == 30) {
+			std::list<Coord> points;
+			points.push_back(Coord(100, 100));
+			points.push_back(Coord(200, 100));
+			points.push_back(Coord(200, 200));
+			points.push_back(Coord(100, 200));
+			traci->getManager()->commandAddPolygon("testPoly", "testType", TraCIScenarioManager::Color(1, 1, 1, 1), true, 1, points);
+		}
+		if (t == 31) {
+			std::list<std::string> polys = traci->commandGetPolygonIds();
+			assertEqual("(commandAddPolygon) number is 2", polys.size(), (size_t)2);
+			assertTrue("(commandAddPolygon) ids contain added", std::find(polys.begin(), polys.end(), std::string("testPoly")) != polys.end());
+			std::string typeId = traci->commandGetPolygonTypeId("testPoly");
+			assertEqual("(commandAddPolygon) typeId is correct", typeId, "testType");
+			std::list<Coord> shape = traci->commandGetPolygonShape("testPoly");
+			assertClose("(commandAddPolygon) shape x coordinate is correct", 100.0, shape.begin()->x);
+			assertClose("(commandAddPolygon) shape y coordinate is correct", 100.0, shape.begin()->y);
+		}
+	}
+
+	if (testNumber == testCounter++) {
+		if (t == 30) {
+			std::list<std::string> lanes = traci->getManager()->commandGetLaneIds();
+			assertTrue("(commandGetLaneIds) returns test lane", std::find(lanes.begin(), lanes.end(), "10_0") != lanes.end());
+			std::list<Coord> shape = traci->getManager()->commandGetLaneShape("10_0");
+			assertClose("(commandGetLaneShape) shape x coordinate is correct", 523.35, shape.begin()->x);
+			assertClose("(commandGetLaneShape) shape y coordinate is correct", 80.83, shape.begin()->y);
+		}
+	}
+
+	if (testNumber == testCounter++) {
+		if (t == 30) {
+			std::list<std::string> junctions = traci->getManager()->commandGetJunctionIds();
+			assertTrue("(commandGetJunctionIds) returns test junction", std::find(junctions.begin(), junctions.end(), "1") != junctions.end());
+			Coord pos = traci->getManager()->commandGetJunctionPosition("1");
+			assertClose("(commandGetJunctionPosition) shape x coordinate is correct", 25.0, pos.x);
+			assertClose("(commandGetJunctionPosition) shape y coordinate is correct", 75.0, pos.y);
 		}
 	}
 
