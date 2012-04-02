@@ -20,25 +20,21 @@
 
 package org.mixim.examples.ieee80211p;
 
-import org.mixim.base.modules.BaseWorldUtility;
-import org.mixim.base.connectionManager.ConnectionManager;
+import org.mixim.base.modules.BaseNetwork;
 
-import org.mixim.modules.mobility.traci.TraCIScenarioManagerLaunchd;
 //
 // TODO auto-generated module
 //
-network net
+network net extends BaseNetwork
 {
+    parameters:
+        int numHosts;
+
     submodules:
-        baseWorldUtility: BaseWorldUtility {
-            @display("p=70,20");
+        host[numHosts]: Host80211p {
+            @display("p=137,95");
         }
-        connectionManager: ConnectionManager {
-            @display("p=70,91");
-        }
-        manager: TraCIScenarioManagerLaunchd {
-            @display("p=512,128");
-        }
-   
+
     connections allowunconnected:
+    // all connections and gates are to be generated dynamically
 }

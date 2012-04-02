@@ -29,5 +29,4 @@ packet Mac80211Pkt extends MacPkt
     int sequenceControl;
     bool retry;
     simtime_t duration; 	//the expected remaining duration the current transaction 
-						//(RTS->CTS->DATA->ACK) between two macs will occupy the channel 
 }

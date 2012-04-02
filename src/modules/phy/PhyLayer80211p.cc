@@ -45,6 +45,8 @@ void PhyLayer80211p::initialize(int stage) {
 		if (par("headerLength").longValue() != PHY_HDR_TOTAL_LENGTH) {
 		opp_error("The header length of the 802.11p standard is 46bit, please change your omnetpp.ini accordingly by either setting it to 46bit or removing the entry");
 		}
+		//erase the RadioStateAnalogueModel
+		analogueModels.erase(analogueModels.begin());
 	}
 }
 
@@ -351,3 +353,47 @@ void PhyLayer80211p::changeListeningFrequency(double freq) {
 	assert(dec);
 	dec->changeFrequency(freq);
 }
+void PhyLayer80211p::handleSelfMessage(cMessage* msg) {
+
+	switch(msg->getKind()) {
+	//transmission overBasePhyLayer::
+	case TX_OVER: {
+		assert(msg == txOverTimer);
+		sendControlMsgToMac(new cMessage("Transmission over", TX_OVER));
+		//check if there is another packet on the chan, and change the chan-state to idle
+		Decider80211p* dec = dynamic_cast<Decider80211p*>(decider);
+		assert(dec);
+		if (dec->cca(simTime(),NULL)) {
+			//chan is idle
+			DBG << "Channel idle after transmit!\n";
+			dec->setChannelIdleStatus(true);
+
+		}
+		else {
+			DBG << "Channel not yet idle after transmit!\n";
+		}
+		break;
+	}
+	//radio switch over
+	case RADIO_SWITCHING_OVER:
+		assert(msg == radioSwitchingOverTimer);
+		BasePhyLayer::finishRadioSwitching();
+		break;
+
+	//AirFrame
+	case AIR_FRAME:
+		BasePhyLayer::handleAirFrame(static_cast<AirFrame*>(msg));
+		break;
+
+	//ChannelSenseRequest
+	case CHANNEL_SENSE_REQUEST:
+		BasePhyLayer::handleChannelSenseRequest(msg);
+		break;
+
+	default:
+		break;
+	}
+}
+int PhyLayer80211p::getRadioState() {
+	return BasePhyLayer::getRadioState();
+};

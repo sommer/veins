@@ -20,18 +20,37 @@
 
 package org.mixim.modules.mac.ieee80211p;
 
-simple Mac1609_4
+import org.mixim.base.modules.BaseMacLayer;
+
+simple Mac1609_4 extends BaseMacLayer
 {
-     parameters:
+    parameters:
+        @class(Mac1609_4);
         int serviceChannel = default(1); //the service channel this maclayer listens on
-        int headerLength @unit(bit) = default(272 bit);
-    gates:
-        output upperLayerOut; // to upper layer
-        output upperControlOut; // control to upper layer
-        output lowerControlOut; // control to lower layer
-        output lowerLayerOut; // to lower layer
-        input lowerLayerIn; // from lower layer
-        input lowerControlIn; // control from lower layer
-        input upperControlIn;
-        input upperLayerIn;
+        
+        // debug switch
+        bool debug = default(false);
+
+        // length of MAC header, header is already added at 1609_4
+        headerLength @unit(bit) = default(0 bit);
+
+        // bit rate 
+        double bitrate @unit(bps) = default(18 Mbps);
+
+        // little asynchronization between cars
+        double syncOffset @unit(s) = default(0.0003s);
+
+        //tx power [mW]
+        double txPower @unit(mW);
+
+        // only used when usage of MAC acks is enabled
+        double macMaxFrameRetries = default(3);
+
+        //backoff method to use: constant, linear or exponential
+        string backoffMethod = default("linear");
+
+        // maximum backoffs
+        double macMaxCSMABackoffs = default(5);
+        
+        int queueSize = default(0);
 }

@@ -29,7 +29,13 @@
 #include <SNRThresholdDecider.h>
 #include <JakesFading.h>
 #include <BaseConnectionManager.h>
+#include "Decider80211pToPhy80211pInterface.h"
 #include <Move.h>
+
+#ifndef DBG
+#define DBG EV
+#endif
+//#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
 
 /**
  * @brief Provides initialisation for several AnalogueModels and Deciders
@@ -47,7 +53,8 @@
  * @ingroup phyLayer
  */
 class PhyLayer80211p	: 	public BasePhyLayer,
-	public Mac80211pToPhy11pInterface
+	public Mac80211pToPhy11pInterface,
+	public Decider80211pToPhy80211pInterface
 
 {
 	public:
@@ -124,8 +131,10 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		 */
 		virtual Decider* initializeDecider80211p(ParameterMap& params);
 
-		void changeListeningFrequency(double freq);
+		virtual void changeListeningFrequency(double freq);
 
+		virtual void handleSelfMessage(cMessage* msg);
+		virtual int getRadioState();
 };
 
 #endif /* PHYLAYER80211P_H_ */

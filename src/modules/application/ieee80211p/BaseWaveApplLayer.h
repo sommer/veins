@@ -32,7 +32,7 @@
 #ifndef DBG
 #define DBG EV
 #endif
-//#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath()
+//#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
 
 class BaseWaveApplLayer : public BaseApplLayer {
 
@@ -69,6 +69,7 @@ class BaseWaveApplLayer : public BaseApplLayer {
 		int beaconPriority;
 		bool sendData;
 		bool sendBeacons;
+		simtime_t individualOffset;
 		int dataLengthBits;
 		bool dataOnSch;
 		int dataPriority;

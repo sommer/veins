@@ -30,15 +30,9 @@
 #include <AirFrame_m.h>
 
 simtime_t Decider80211p::processNewSignal(AirFrame* frame) {
-	if (currentSignal.first != 0) {
-		DBG << "Already receiving another AirFrame!" << endl;
-		return notAgain;
-	}
 
 	// get the receiving power of the Signal at start-time and center frequency
 	Signal& signal = frame->getSignal();
-
-	DBG << "Receiving Power" << endl;
 
 	Argument start(DimensionSet::timeFreqDomain);
 	start.setTime(signal.getReceptionStart());
@@ -46,29 +40,39 @@ simtime_t Decider80211p::processNewSignal(AirFrame* frame) {
 
 	double recvPower = signal.getReceivingPower()->getValue(start);
 
-	// check whether signal is strong enough to receive
-	DBG << "Decider currently on freq: " << centerFrequency << endl;
 	if (recvPower < sensitivity) {
-		DBG << "Signal is to weak (" << recvPower << " < " << sensitivity
-		    << ") -> do not receive." << endl;
-		// Signal too weak, we can't receive it, tell PhyLayer that we don't want it again
 		return notAgain;
 	}
+	else {
+		signalStates[frame] = EXPECT_END;
 
-	// Signal is strong enough, receive this Signal and schedule it
-	DBG << "Signal is strong enough (" << recvPower << " > " << sensitivity
-	    << ") -> Trying to receive AirFrame." << endl;
+		setChannelIdleStatus(false);
 
-	currentSignal.first = frame;
-	currentSignal.second = EXPECT_END;
+		if (phy11p->getRadioState() == Radio::TX) {
+			signalStates[frame] = EXPECT_END;
+			frame->setBitError(true);
+			DBG_D11P << "AirFrame: " << frame->getId() << " (" << recvPower << ") received, while already sending. Setting BitErrors to true" << endl;
+		}
+		else {
 
-	//measure communication density
-	myBusyTime += signal.getDuration().dbl();
+			DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << endl;
 
-	//channel turned busy
-	setChannelIdleStatus(false);
+			//channel turned busy
+			//measure communication density
+			myBusyTime += signal.getDuration().dbl();
+		}
+		return signal.getReceptionEnd();
+	}
+}
 
-	return signal.getReceptionEnd();
+int Decider80211p::getSignalState(AirFrame* frame) {
+
+	if (signalStates.find(frame) == signalStates.end()) {
+		return NEW;
+	}
+	else {
+		return signalStates[frame];
+	}
 }
 
 double Decider80211p::calcChannelSenseRSSI(simtime_t_cref start, simtime_t_cref end) {
@@ -117,11 +121,11 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame) {
 	DeciderResult80211* result = 0;
 
 	if (packetOk(snirMin, frame->getBitLength(), payloadBitrate)) {
-		DBG << "Packet is fine! We can decode it" << std::endl;
+		DBG_D11P << "Packet is fine! We can decode it" << std::endl;
 		result = new DeciderResult80211(true, payloadBitrate, snirMin);
 	}
 	else {
-		DBG << "Packet has bit Errors. Lost " << std::endl;
+		DBG_D11P << "Packet has bit Errors. Lost " << std::endl;
 		result = new DeciderResult80211(false, payloadBitrate, snirMin);
 	}
 
@@ -171,38 +175,130 @@ bool Decider80211p::packetOk(double snirMin, int lengthMPDU, double bitrate) {
 	}
 }
 
+
+bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude) {
+	AirFrameVector airFrames;
+
+	// collect all AirFrames that intersect with [start, end]
+	getChannelInfo(time, time, airFrames);
+
+	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeDomain);
+
+	//add thermal noise
+	ConstMapping* thermalNoise = phy->getThermalNoise(time, time);
+	if (thermalNoise) {
+		Mapping* tmp = resultMap;
+		resultMap = MappingUtils::add(*resultMap, *thermalNoise);
+		delete tmp;
+	}
+
+	// otherwise, iterate over all AirFrames (except exclude)
+	// and sum up their receiving-power-mappings
+	for (AirFrameVector::const_iterator it = airFrames.begin(); it != airFrames.end(); ++it) {
+		if (*it == exclude) {
+			continue;
+		}
+		// the vector should not contain pointers to 0
+		assert(*it != 0);
+
+		// if iterator points to exclude (that includes the default-case 'exclude == 0')
+		// then skip this AirFrame
+
+		// otherwise get the Signal and its receiving-power-mapping
+		Signal& signal = (*it)->getSignal();
+
+		// backup pointer to result map
+		// Mapping* resultMapOld = resultMap;
+
+		// TODO1.1: for testing purposes, for now we don't specify an interval
+		// and add the Signal's receiving-power-mapping to resultMap in [start, end],
+		// the operation Mapping::add returns a pointer to a new Mapping
+
+		const ConstMapping* const recvPowerMap = signal.getReceivingPower();
+		assert(recvPowerMap);
+
+		// Mapping* resultMapNew = Mapping::add( *(signal.getReceivingPower()), *resultMap, start, end );
+
+		Mapping* resultMapNew = MappingUtils::add(*recvPowerMap, *resultMap, Argument::MappedZero);
+
+		// discard old mapping
+		delete resultMap;
+		resultMap = resultMapNew;
+		resultMapNew = 0;
+	}
+
+	Argument min(DimensionSet::timeFreqDomain);
+	min.setTime(time);
+	min.setArgValue(Dimension::frequency_static(), centerFrequency - 5e6);
+
+	DBG_D11P << MappingUtils::findMin(*resultMap, min, min) << " > " << sensitivity << " = " << (bool)(MappingUtils::findMin(*resultMap, min, min) > sensitivity) << std::endl;
+	bool isChannelIdle = MappingUtils::findMin(*resultMap, min, min) < sensitivity;
+	delete resultMap;
+	return isChannelIdle;
+}
+
+
 simtime_t Decider80211p::processSignalEnd(AirFrame* frame) {
 	// here the Signal is finally processed
 
-	// first collect all necessary information
-	DeciderResult* result = checkIfSignalOk(frame);
+	bool whileSending = false;
 
-	// check if the snrMapping is above the Decider's specific threshold,
-	// i.e. the Decider has received it correctly
+	//remove this frame from our current signals
+	signalStates.erase(frame);
+
+	DeciderResult* result;
+
+
+	if (frame->hasBitError() || phy11p->getRadioState() == Radio::TX) {
+		//this frame was received while sending
+		whileSending = true;
+		result = new DeciderResult80211(false,0,0);
+	}
+	else {
+		// check if the snrMapping is above the Decider's specific threshold,
+		// i.e. the Decider has received it correctly
+		result = checkIfSignalOk(frame);
+	}
+
 	if (result->isSignalCorrect()) {
-		DBG << "packet was received correctly, it is now handed to upper layer...\n";
+		DBG_D11P << "packet was received correctly, it is now handed to upper layer...\n";
 		// go on with processing this AirFrame, send it to the Mac-Layer
 		phy->sendUp(frame, result);
 	}
 	else {
-		DBG << "packet was not received correctly, sending it as control message to upper layer\n";
-		Mac80211Pkt* mac;
-		mac = static_cast<Mac80211Pkt*>(frame->decapsulate());
-		mac->setName("ERROR");
-		mac->setKind(BITERROR);
-		phy->sendControlMsgToMac(mac);
+		DBG_D11P << "packet was not received correctly, sending it as control message to upper layer\n";
+		if (whileSending) {
+			phy->sendControlMsgToMac(new cMessage("Error",RECWHILESEND));
+		}
+		else {
+			phy->sendControlMsgToMac(new cMessage("Error",BITERROR));
+		}
 		delete result;
 	}
 
-	// we have processed this AirFrame and we prepare to receive the next one
-	currentSignal.first = 0;
-
-	//channel is idle now
-	setChannelIdleStatus(true);
-
+	if (phy11p->getRadioState() == Radio::TX) {
+		DBG_D11P << "I'm currently sending\n";
+	}
+	//check if channel is idle now
+	else if (cca(simTime(), frame) == false) {
+		DBG_D11P << "Channel not yet idle!\n";
+	}
+	else {
+		//might have been idle before (when the packet rxpower was below sens)
+		if (isChannelIdle != true) {
+			DBG_D11P << "Channel idle now!\n";
+			setChannelIdleStatus(true);
+		}
+	}
 	return notAgain;
 }
 
+void Decider80211p::setChannelIdleStatus(bool isIdle) {
+	isChannelIdle = isIdle;
+	channelStateChanged();
+	if (isIdle) phy->sendControlMsgToMac(new cMessage("ChannelStatus",Mac80211pToPhy11pInterface::CHANNEL_IDLE));
+	else phy->sendControlMsgToMac(new cMessage("ChannelStatus",Mac80211pToPhy11pInterface::CHANNEL_BUSY));
+}
 
 void Decider80211p::changeFrequency(double freq) {
 	centerFrequency = freq;

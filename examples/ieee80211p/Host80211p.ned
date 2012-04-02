@@ -19,43 +19,44 @@
 //
 
 package org.mixim.examples.ieee80211p;
-import org.mixim.modules.mobility.traci.TraCIMobility;
 
-import org.mixim.modules.application.ieee80211p.TestWaveApplLayer;
-import org.mixim.base.modules.BaseArp;
-
+import org.mixim.base.modules.IMobility;
+import org.mixim.base.modules.IBaseApplLayer;
 import org.mixim.modules.nic.Nic80211p;
+import org.mixim.modules.application.ieee80211p.TestWaveApplLayer;
 
-
-module Node
+//
+// Example host module using an 802.11p Network interface card.
+//
+module Host80211p
 {
     parameters:
-        @display("p=10,10;b=4,4,rect;o=white");
+        string applicationType = default("TestWaveApplLayer");
+        string mobilityType = default("ConstSpeedMobility");
+        @display("i=device/smallrouter");
 
     gates:
         input radioIn; // gate for sendDirect
 
     submodules:
-        appl: TestWaveApplLayer {
-            @display("p=90,50;b=100,20,rect");
+        mobility: <mobilityType> like IMobility {
+            parameters:
+                @display("p=140,30;i=block/cogwheel");
         }
-
-        arp: BaseArp {
-            @display("p=257,28;b=30,25");
-        }
-
         nic: Nic80211p {
-            @display("p=90,150;b=100,20,rect");
+            parameters:
+                @display("p=70,380;i=block/wrxtx,#008000");
+        }
+        appl: <applicationType> like IBaseApplLayer {
+            parameters:
+                @display("p=70,30;i=app");
         }
 
-        mobility: TraCIMobility {
-            @display("p=130,172;i=block/cogwheel");
-        }
-    connections:
+    connections allowunconnected:
         nic.upperLayerOut --> appl.lowerLayerIn;
         nic.upperLayerIn <-- appl.lowerLayerOut;
-        nic.upperControlOut --> appl.lowerControlIn;
-        nic.upperControlIn <-- appl.lowerControlOut;
+        nic.upperControlOut --> { @display("ls=red;m=m,70,0,70,0"); } --> appl.lowerControlIn;
+        nic.upperControlIn <-- { @display("ls=red;m=m,70,0,70,0"); } <-- appl.lowerControlOut;
 
         radioIn --> nic.radioIn;
 }
