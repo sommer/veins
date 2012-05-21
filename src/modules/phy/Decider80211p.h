@@ -18,13 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-/*
- * Based on Decider80211.h from Karl Wessel
- * and modifications by Christopher Saloman
- */
-
-#ifndef DECIDER80211_H_
-#define DECIDER80211_H_
+#ifndef DECIDER80211p_H_
+#define DECIDER80211p_H_
 
 #include <BaseDecider.h>
 #include <Consts80211p.h>
@@ -36,6 +31,20 @@
 #endif
 //#define DBG_D11P std::cerr << "[" << simTime().raw() << "] " << myPath << ".Dec "
 
+/**
+ * @brief
+ * Based on Decider80211.h from Karl Wessel
+ * and modifications by Christopher Saloman
+ *
+ * @author David Eckhoff
+ *
+ * @ingroup decider
+ *
+ * @see BaseWaveApplLayer
+ * @see Mac1609_4
+ * @see PhyLayer80211p
+ * @see Decider80211p
+ */
 class Decider80211p: public BaseDecider {
 	public:
 		enum Decider80211ControlKinds {
@@ -130,4 +139,4 @@ class Decider80211p: public BaseDecider {
 
 };
 
-#endif /* DECIDER80211_H_ */
+#endif /* DECIDER80211p_H_ */

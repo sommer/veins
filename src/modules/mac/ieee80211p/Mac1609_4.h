@@ -18,14 +18,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-/**
- * @brief Module that manages timeslots for CCH and SCH listening and sending.
- *
- * @class Mac1609_4
- * @author Christopher Saloman
- * @author David Eckhoff : rewrote complete model
- */
-
 #ifndef ___MAC1609_4_H_
 #define ___MAC1609_4_H_
 
@@ -33,14 +25,8 @@
 #include <omnetpp.h>
 #include <queue>
 #include <BaseLayer.h>
-#include <Mac80211pToPhy11pInterface.h>
-#include <Mac1609_4To80211pControlInfo.h>
-#include <MacToPhyInterface.h>
-#include <NetwToMacControlInfo.h>
-#include <Mac80211pToPhy11pInterface.h>
 #include <MacToPhyControlInfo.h>
 #include <PhyLayer80211p.h>
-#include <Mac80211pToMac1609_4Interface.h>
 #include <WaveAppToMac1609_4Interface.h>
 #include <Consts80211p.h>
 #include "FindModule.h"
@@ -56,6 +42,20 @@
 //#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
 //#define DBG2 std::cerr << "[" << simTime().raw() << "] " << "EDCA "
 
+/**
+ * @brief
+ * Manages timeslots for CCH and SCH listening and sending.
+ *
+ * @author Christopher Saloman
+ * @author David Eckhoff : rewrote complete model
+ *
+ * @ingroup macLayer
+ *
+ * @see BaseWaveApplLayer
+ * @see Mac1609_4
+ * @see PhyLayer80211p
+ * @see Decider80211p
+ */
 class Mac1609_4 : public BaseMacLayer,
 	public WaveAppToMac1609_4Interface {
 

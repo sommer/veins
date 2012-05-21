@@ -21,6 +21,11 @@
 package org.mixim.modules.application.ieee80211p;
 import org.mixim.base.modules.IBaseApplLayer;
 
+//
+// Minimal WAVE application example.
+//
+// @author David Eckhoff
+//
 simple TestWaveApplLayer extends BaseWaveApplLayer
 {
     parameters:

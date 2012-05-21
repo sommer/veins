@@ -21,6 +21,16 @@
 package org.mixim.modules.application.ieee80211p;
 import org.mixim.base.modules.IBaseApplLayer;
 
+//
+// WAVE application layer base class.
+//
+// @author David Eckhoff
+//
+// @see BaseWaveApplLayer
+// @see Nic80211p
+// @see Mac1609_4
+// @see PhyLayer80211p
+//
 simple BaseWaveApplLayer like IBaseApplLayer
 {
     parameters:

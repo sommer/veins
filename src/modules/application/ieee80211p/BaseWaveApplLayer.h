@@ -34,6 +34,19 @@
 #endif
 //#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
 
+/**
+ * @brief
+ * WAVE application layer base class.
+ *
+ * @author David Eckhoff
+ *
+ * @ingroup applLayer
+ *
+ * @see BaseWaveApplLayer
+ * @see Mac1609_4
+ * @see PhyLayer80211p
+ * @see Decider80211p
+ */
 class BaseWaveApplLayer : public BaseApplLayer {
 
 	public:

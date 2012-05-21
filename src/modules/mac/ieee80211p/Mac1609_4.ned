@@ -22,6 +22,16 @@ package org.mixim.modules.mac.ieee80211p;
 
 import org.mixim.base.modules.BaseMacLayer;
 
+//
+// Manages timeslots for CCH and SCH listening and sending.
+//
+// @author Christopher Saloman
+// @author David Eckhoff : rewrote complete model
+//
+// @see BaseWaveApplLayer
+// @see Nic80211p
+// @see PhyLayer80211p
+//
 simple Mac1609_4 extends BaseMacLayer
 {
     parameters:
