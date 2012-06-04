@@ -58,6 +58,7 @@ void TraCIScenarioManager::initialize(int stage) {
 	moduleType = par("moduleType").stdstringValue();
 	moduleName = par("moduleName").stdstringValue();
 	moduleDisplayString = par("moduleDisplayString").stdstringValue();
+	penetrationRate = par("penetrationRate").doubleValue();
 	host = par("host").stdstringValue();
 	port = par("port");
 	autoShutdown = par("autoShutdown");
@@ -601,6 +602,14 @@ bool TraCIScenarioManager::commandAddVehicle(std::string vehicleId, std::string 
 void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle) {
 	if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
 
+	double option1 = hosts.size() / (hosts.size() + unEquippedHosts.size() + 1.0);
+	double option2 = (hosts.size() + 1) / (hosts.size() + unEquippedHosts.size() + 1.0);
+
+	if (fabs(option1 - penetrationRate) < fabs(option2 - penetrationRate)) {
+	    unEquippedHosts.insert(nodeId);
+	    return;
+	}
+
 	int32_t nodeVectorIndex = nextNodeVectorIndex++;
 
 	cModule* parentmod = getParentModule();
@@ -639,6 +648,11 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 cModule* TraCIScenarioManager::getManagedModule(std::string nodeId) {
 	if (hosts.find(nodeId) == hosts.end()) return 0;
 	return hosts[nodeId];
+}
+
+bool TraCIScenarioManager::isModuleUnequipped(std::string nodeId) {
+    if (unEquippedHosts.find(nodeId) == unEquippedHosts.end()) return false;
+    return true;
 }
 
 void TraCIScenarioManager::deleteModule(std::string nodeId) {
@@ -947,6 +961,10 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 				cModule* mod = getManagedModule(idstring);
 				if (mod) deleteModule(idstring);
 
+				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
+					unEquippedHosts.erase(idstring);
+				}
+
 			}
 
 			if ((count > 0) && (count >= activeVehicleCount) && autoShutdown) autoShutdownTriggered = true;
@@ -1067,6 +1085,14 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 			deleteModule(objectId);
 			MYDEBUG << "Vehicle #" << objectId << " left region of interest" << endl;
 		}
+		else if(unEquippedHosts.find(objectId) != unEquippedHosts.end()) {
+			unEquippedHosts.erase(objectId);
+			MYDEBUG << "Vehicle (unequipped) # " << objectId<< " left region of interest" << endl;
+		}
+		return;
+	}
+
+	if (isModuleUnequipped(objectId)) {
 		return;
 	}
 

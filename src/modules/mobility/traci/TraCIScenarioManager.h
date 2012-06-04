@@ -237,6 +237,7 @@ class TraCIScenarioManager : public cSimpleModule
 		int port;
 		bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
 		int margin;
+		double penetrationRate;
 		std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
 		std::list<std::pair<TraCICoord, TraCICoord> > roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
 
@@ -246,6 +247,7 @@ class TraCIScenarioManager : public cSimpleModule
 
 		size_t nextNodeVectorIndex; /**< next OMNeT++ module vector index to use */
 		std::map<std::string, cModule*> hosts; /**< vector of all hosts managed by us */
+		std::set<std::string> unEquippedHosts;
 		std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
 		uint32_t activeVehicleCount; /**< number of vehicles reported as active by TraCI server */
 		bool autoShutdownTriggered;
@@ -264,6 +266,8 @@ class TraCIScenarioManager : public cSimpleModule
 		void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
 		cModule* getManagedModule(std::string nodeId); /**< returns a pointer to the managed module named moduleName, or 0 if no module can be found */
 		void deleteModule(std::string nodeId);
+
+		bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
 
 		/**
 		 * returns whether a given position lies within the simulation's region of interest.
