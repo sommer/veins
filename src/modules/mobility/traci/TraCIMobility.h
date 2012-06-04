@@ -65,7 +65,7 @@ class TraCIMobility : public BaseMobility
 
 		virtual void handleSelfMsg(cMessage *msg);
 		virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
-		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
+		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, TraCIScenarioManager::VehicleSignal signals = TraCIScenarioManager::VEH_SIGNAL_UNDEF);
 		virtual void changePosition();
 		virtual void updateDisplayString();
 		virtual void setExternalId(std::string external_id) {
@@ -85,6 +85,10 @@ class TraCIMobility : public BaseMobility
 		virtual double getSpeed() const {
 			if (speed == -1) throw cRuntimeError("TraCIMobility::getSpeed called with no speed set yet");
 			return speed;
+		}
+		virtual TraCIScenarioManager::VehicleSignal getSignals() const {
+			if (signals == -1) throw cRuntimeError("TraCIMobility::getSignals called with no signals set yet");
+			return signals;
 		}
 		/**
 		 * returns angle in rads, 0 being east, with -M_PI <= angle < M_PI.
@@ -157,6 +161,7 @@ class TraCIMobility : public BaseMobility
 		std::string road_id; /**< updated by nextPosition() */
 		double speed; /**< updated by nextPosition() */
 		double angle; /**< updated by nextPosition() */
+		TraCIScenarioManager::VehicleSignal signals; /**<updated by nextPosition() */
 
 		cMessage* startAccidentMsg;
 		cMessage* stopAccidentMsg;

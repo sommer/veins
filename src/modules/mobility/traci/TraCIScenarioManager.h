@@ -57,6 +57,25 @@ class TraCIScenarioManager : public cSimpleModule
 			uint8_t alpha;
 		};
 
+		enum VehicleSignal {
+			VEH_SIGNAL_UNDEF = -1,
+			VEH_SIGNAL_NONE = 0,
+			VEH_SIGNAL_BLINKER_RIGHT = 1,
+			VEH_SIGNAL_BLINKER_LEFT = 2,
+			VEH_SIGNAL_BLINKER_EMERGENCY = 4,
+			VEH_SIGNAL_BRAKELIGHT = 8,
+			VEH_SIGNAL_FRONTLIGHT = 16,
+			VEH_SIGNAL_FOGLIGHT = 32,
+			VEH_SIGNAL_HIGHBEAM = 64,
+			VEH_SIGNAL_BACKDRIVE = 128,
+			VEH_SIGNAL_WIPER = 256,
+			VEH_SIGNAL_DOOR_OPEN_LEFT = 512,
+			VEH_SIGNAL_DOOR_OPEN_RIGHT = 1024,
+			VEH_SIGNAL_EMERGENCY_BLUE = 2048,
+			VEH_SIGNAL_EMERGENCY_RED = 4096,
+			VEH_SIGNAL_EMERGENCY_YELLOW = 8192
+		};
+
 		~TraCIScenarioManager();
 		virtual int numInitStages() const { return std::max(cSimpleModule::numInitStages(), 2); }
 		virtual void initialize(int stage);

@@ -52,6 +52,7 @@ void TraCIScenarioManager::initialize(int stage) {
 		return;
 	}
 
+
 	debug = par("debug");
 	updateInterval = par("updateInterval");
 	moduleType = par("moduleType").stdstringValue();
@@ -881,13 +882,14 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId) {
 	uint32_t beginTime = 0;
 	uint32_t endTime = 0x7FFFFFFF;
 	std::string objectId = vehicleId;
-	uint8_t variableNumber = 4;
+	uint8_t variableNumber = 5;
 	uint8_t variable1 = VAR_POSITION;
 	uint8_t variable2 = VAR_ROAD_ID;
 	uint8_t variable3 = VAR_SPEED;
 	uint8_t variable4 = VAR_ANGLE;
+	uint8_t variable5 = VAR_SIGNALS;
 
-	TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4);
+	TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5);
 	processSubcriptionResult(buf);
 	ASSERT(buf.eof());
 }
@@ -971,6 +973,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	std::string edge;
 	double speed;
 	double angle_traci;
+	int signals;
 	int numRead = 0;
 
 	uint8_t variableNumber_resp; buf >> variableNumber_resp;
@@ -1034,6 +1037,11 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 			ASSERT(varType == TYPE_DOUBLE);
 			buf >> angle_traci;
 			numRead++;
+		} else if (variable1_resp == VAR_SIGNALS) {
+			uint8_t varType; buf >> varType;
+			ASSERT(varType == TYPE_INTEGER);
+			buf >> signals;
+			numRead++;
 		} else {
 			error("Received unhandled vehicle subscription result");
 		}
@@ -1043,7 +1051,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	if (!isSubscribed) return;
 
 	// make sure we got updates for all 4 attributes
-	if (numRead != 4) return;
+	if (numRead != 5) return;
 
 	Coord p = traci2omnet(TraCICoord(px, py));
 	if ((p.x < 0) || (p.y < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
