@@ -54,7 +54,10 @@ void TraCIScenarioManager::initialize(int stage) {
 
 
 	debug = par("debug");
+	connectAt = par("connectAt");
+	firstStepAt = par("firstStepAt");
 	updateInterval = par("updateInterval");
+	if (firstStepAt == -1) firstStepAt = connectAt + updateInterval;
 	moduleType = par("moduleType").stdstringValue();
 	moduleName = par("moduleName").stdstringValue();
 	moduleDisplayString = par("moduleDisplayString").stdstringValue();
@@ -96,20 +99,19 @@ void TraCIScenarioManager::initialize(int stage) {
 	activeVehicleCount = 0;
 	autoShutdownTriggered = false;
 
-	executeOneTimestepTrigger = new cMessage("step");
-	scheduleAt(0, executeOneTimestepTrigger);
-
 	world = FindModule<BaseWorldUtility*>::findGlobalModule();
 	if (world == NULL) error("Could not find BaseWorldUtility module");
 
 	cc = FindModule<BaseConnectionManager*>::findGlobalModule();
 	if (cc == NULL) error("Could not find BaseConnectionManager module");
 
-
-	MYDEBUG << "TraCIScenarioManager connecting to TraCI server" << endl;
 	socketPtr = 0;
-	connect();
-	init_traci();
+
+	ASSERT(firstStepAt > connectAt);
+	connectAndStartTrigger = new cMessage("connect");
+	scheduleAt(connectAt, connectAndStartTrigger);
+	executeOneTimestepTrigger = new cMessage("step");
+	scheduleAt(firstStepAt, executeOneTimestepTrigger);
 
 	MYDEBUG << "initialized TraCIScenarioManager" << endl;
 }
@@ -232,6 +234,8 @@ TraCIScenarioManager::TraCIBuffer TraCIScenarioManager::queryTraCIOptional(uint8
 }
 
 void TraCIScenarioManager::connect() {
+	MYDEBUG << "TraCIScenarioManager connecting to TraCI server" << endl;
+
 	if (initsocketlibonce() != 0) error("Could not init socketlib");
 
 	in_addr addr;
@@ -356,6 +360,11 @@ void TraCIScenarioManager::handleMessage(cMessage *msg) {
 }
 
 void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
+	if (msg == connectAndStartTrigger) {
+		connect();
+		init_traci();
+		return;
+	}
 	if (msg == executeOneTimestepTrigger) {
 		executeOneTimestep();
 		return;
@@ -691,7 +700,7 @@ void TraCIScenarioManager::executeOneTimestep() {
 
 	uint32_t targetTime = getCurrentTimeMs();
 
-	if (targetTime > 0) {
+	if (targetTime > round(connectAt.dbl() * 1000)) {
 		TraCIBuffer buf = queryTraCI(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
 
 		uint32_t count; buf >> count;

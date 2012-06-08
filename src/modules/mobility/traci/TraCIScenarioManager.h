@@ -229,7 +229,9 @@ class TraCIScenarioManager : public cSimpleModule
 		};
 
 		bool debug; /**< whether to emit debug messages */
-		simtime_t updateInterval; /**< time interval to update the host's position */
+		simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
+		simtime_t firstStepAt; /**< when to start synchronizing with the TraCI server (-1: immediately after connecting) */
+		simtime_t updateInterval; /**< time interval of hosts' position updates */
 		std::string moduleType; /**< module type to be used in the simulation for each managed vehicle */
 		std::string moduleName; /**< module name to be used in the simulation for each managed vehicle */
 		std::string moduleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
@@ -251,6 +253,7 @@ class TraCIScenarioManager : public cSimpleModule
 		std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
 		uint32_t activeVehicleCount; /**< number of vehicles reported as active by TraCI server */
 		bool autoShutdownTriggered;
+		cMessage* connectAndStartTrigger; /**< self-message scheduled for when to connect to TraCI server and start running */
 		cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
 
 		BaseWorldUtility* world;
