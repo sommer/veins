@@ -189,7 +189,6 @@ void TraCIMobility::changePosition()
 	// keep statistics (relative to last step)
 	if (statistics.startTime != simTime()) {
 		simtime_t updateInterval = simTime() - this->lastUpdate;
-		this->lastUpdate = simTime();
 
 		double distance = move.getStartPos().distance(Coord(nextPos.x, nextPos.y, move.getCurrentPosition().z));
 		statistics.totalDistance += distance;
@@ -211,6 +210,7 @@ void TraCIMobility::changePosition()
 			speed = -1;
 		}
 	}
+	this->lastUpdate = simTime();
 
 	move.setStart(Coord(nextPos.x, nextPos.y, move.getCurrentPosition().z)); // keep z position
 	move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
