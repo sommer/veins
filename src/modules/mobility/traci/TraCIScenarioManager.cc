@@ -1077,7 +1077,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	// bail out if we didn't want to receive these subscription results
 	if (!isSubscribed) return;
 
-	// make sure we got updates for all 4 attributes
+	// make sure we got updates for all attributes
 	if (numRead != 5) return;
 
 	Coord p = traci2omnet(TraCICoord(px, py));
