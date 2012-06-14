@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2006-2011 Christoph Sommer <christoph.sommer@uibk.ac.at>
+// Copyright (C) 2006-2012 Christoph Sommer <christoph.sommer@uibk.ac.at>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -34,14 +34,21 @@
 #include "FindModule.h"
 
 /**
- * TraCIScenarioManager connects OMNeT++ to a TraCI server running road traffic simulations.
- * It sets up and controls simulation experiments, moving nodes with the help
- * of a TraCIMobility module.
+ * @brief
+ * Creates and moves nodes controlled by a TraCI server.
  *
- * Last tested with SUMO r5488 (2008-04-30)
- * https://sumo.svn.sourceforge.net/svnroot/sumo/trunk/sumo
+ * If the server is a SUMO road traffic simulation, you can use the
+ * TraCIScenarioManagerLaunchd module and sumo-launchd.py script instead.
  *
- * @author Christoph Sommer
+ * All nodes created thus must have a TraCIMobility submodule.
+ *
+ * See the Veins website <a href="http://veins.car2x.org/"> for a tutorial, documentation, and publications </a>.
+ *
+ * @author Christoph Sommer, David Eckhoff, Falko Dressler, Zheng Yao, Tobias Mayer, Alvaro Torres Cortes, Luca Bedogni
+ *
+ * @see TraCIMobility
+ * @see TraCIScenarioManagerLaunchd
+ *
  */
 class TraCIScenarioManager : public cSimpleModule
 {
