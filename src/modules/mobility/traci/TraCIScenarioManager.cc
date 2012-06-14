@@ -43,6 +43,7 @@
 Define_Module(TraCIScenarioManager);
 
 TraCIScenarioManager::~TraCIScenarioManager() {
+	cancelAndDelete(connectAndStartTrigger);
 	cancelAndDelete(executeOneTimestepTrigger);
 }
 
