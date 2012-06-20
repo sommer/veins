@@ -1,3 +1,23 @@
+//
+// Copyright (C) 2006-2012 Christoph Sommer <christoph.sommer@uibk.ac.at>
+//
+// Documentation for these modules is at http://veins.car2x.org/
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+
 #ifndef SIMPLEOBSTACLEFADING_H_
 #define SIMPLEOBSTACLEFADING_H_
 
@@ -12,10 +32,15 @@
 #include <cstdlib>
 
 /**
- * @brief Basic implementation of a SimpleObstacleShadowing that uses
- * SimplePathlossConstMapping (that is subclassed from SimpleConstMapping) as attenuation-Mapping.
+ * @brief
+ * Uses an ObstacleControl module to calculate attenuation by obstacles.
  *
  * @ingroup analogueModels
+ *
+ * @author Christoph Sommer
+ *
+ * @see Obstacle
+ * @see ObstacleControl
  */
 class SimpleObstacleShadowing : public AnalogueModel
 {
@@ -24,8 +49,8 @@ protected:
 	/** @brief reference to global ObstacleControl instance */
 	ObstacleControl& obstacleControl;
 
-    /** @brief carrier frequency needed for calculation */
-    double carrierFrequency;
+	/** @brief carrier frequency needed for calculation */
+	double carrierFrequency;
 
 	/** @brief Information needed about the playground */
 	const bool useTorus;
@@ -59,4 +84,4 @@ public:
 	virtual void filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos);
 };
 
-#endif /*PATHLOSSMODEL_H_*/
+#endif
