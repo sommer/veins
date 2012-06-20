@@ -39,7 +39,7 @@
  *
  * See the Veins website <a href="http://veins.car2x.org/"> for a tutorial, documentation, and publications </a>.
  *
- * @author Christoph Sommer, David Eckhoff, Luca Bedogni, Bastian Halmos
+ * @author Christoph Sommer, David Eckhoff, Luca Bedogni, Bastian Halmos, Stefan Joerer
  *
  * @see TraCIScenarioManager
  * @see TraCIScenarioManagerLaunchd
@@ -80,6 +80,9 @@ class TraCIMobility : public BaseMobility
 		virtual std::string getExternalId() const {
 			if (external_id == "") throw cRuntimeError("TraCIMobility::getExternalId called with no external_id set yet");
 			return external_id;
+		}
+		virtual double getAntennaPositionOffset() const {
+			return antennaPositionOffset;
 		}
 		virtual Coord getPositionAt(const simtime_t& t) const {
 			return move.getPositionAt(t) ;
@@ -161,9 +164,10 @@ class TraCIMobility : public BaseMobility
 		bool isPreInitialized; /**< true if preInitialize() has been called immediately before initialize() */
 
 		std::string external_id; /**< updated by setExternalId() */
+		double antennaPositionOffset; /**< front offset for the antenna on this car */
 
 		simtime_t lastUpdate; /**< updated by nextPosition() */
-		Coord nextPos; /**< updated by nextPosition() */
+		Coord roadPosition; /**< position of front bumper, updated by nextPosition() */
 		std::string road_id; /**< updated by nextPosition() */
 		double speed; /**< updated by nextPosition() */
 		double angle; /**< updated by nextPosition() */
@@ -183,6 +187,11 @@ class TraCIMobility : public BaseMobility
 		 * @returns emission in g/s
 		 */
 		double calculateCO2emission(double v, double a) const;
+
+		/**
+		 * Calculates where the antenna of this car is, given its front bumper position
+		 */
+		Coord calculateAntennaPosition(const Coord& vehiclePos) const;
 };
 
 class TraCIMobilityAccess

@@ -30,7 +30,7 @@ import org.mixim.base.modules.BaseMobility;
 //
 // See the Veins website <a href="http://veins.car2x.org/"> for a tutorial, documentation, and publications </a>.
 //
-// @author Christoph Sommer, David Eckhoff, Luca Bedogni, Bastian Halmos
+// @author Christoph Sommer, David Eckhoff, Luca Bedogni, Bastian Halmos, Stefan Joerer
 //
 // @see TraCIScenarioManager
 // @see TraCIScenarioManagerLaunchd
@@ -41,6 +41,7 @@ simple TraCIMobility extends BaseMobility
 		@class(TraCIMobility);
         @display("i=block/cogwheel");
         bool debug = default(false);  // debug switch
+        double antennaPositionOffset @unit("m") = default(0.0m); // position offset of the antenna of the front of the car
         int accidentCount = default(0);  // number of accidents
         double accidentStart @unit("s") = default(uniform(30s,60s));  // time until first accident, relative to departure time
         volatile double accidentDuration @unit("s") = default(uniform(30s,60s));  // duration of accident
