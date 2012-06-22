@@ -55,7 +55,16 @@ simtime_t Decider80211p::processNewSignal(AirFrame* frame) {
 		}
 		else {
 
-			DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << endl;
+			if (!curSyncFrame) {
+				//NIC is not yet synced to any frame, so lock and try to decode this frame
+				curSyncFrame = frame;
+				DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << endl;
+			}
+			else {
+				//NIC is currently trying to decode another frame. this frame will be simply treated as interference
+				DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Already synced to another AirFrame. Treating AirFrame as interference." << endl;
+			}
+
 
 			//channel turned busy
 			//measure communication density
@@ -255,9 +264,21 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* frame) {
 		result = new DeciderResult80211(false,0,0);
 	}
 	else {
-		// check if the snrMapping is above the Decider's specific threshold,
-		// i.e. the Decider has received it correctly
-		result = checkIfSignalOk(frame);
+
+		//first check whether this is the frame NIC is currently synced on
+		if (frame == curSyncFrame) {
+			// check if the snrMapping is above the Decider's specific threshold,
+			// i.e. the Decider has received it correctly
+			result = checkIfSignalOk(frame);
+
+			//after having tried to decode the frame, the NIC is no more synced to the frame
+			//and it is ready for syncing on a new one
+			curSyncFrame = 0;
+		}
+		else {
+			//if this is not the frame we are synced on, we cannot receive it
+			result = new DeciderResult80211(false, 0, 0);
+		}
 	}
 
 	if (result->isSignalCorrect()) {
