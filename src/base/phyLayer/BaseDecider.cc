@@ -266,15 +266,7 @@ Mapping* BaseDecider::calculateRSSIMapping( simtime_t_cref start,
 	// create an empty mapping
 	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeDomain);
 
-	//add thermal noise
-	ConstMapping* thermalNoise = phy->getThermalNoise(start, end);
-	if(thermalNoise) {
-		Mapping* tmp = resultMap;
-		resultMap = MappingUtils::add(*resultMap, *thermalNoise);
-		delete tmp;
-	}
-
-	// otherwise, iterate over all AirFrames (except exclude)
+	// iterate over all AirFrames (except exclude)
 	// and sum up their receiving-power-mappings
 	for (AirFrameVector::const_iterator it = airFrames.begin(); it != airFrames.end(); ++it) {
 		// the vector should not contain pointers to 0
@@ -283,23 +275,6 @@ Mapping* BaseDecider::calculateRSSIMapping( simtime_t_cref start,
 		// if iterator points to exclude (that includes the default-case 'exclude == 0')
 		// then skip this AirFrame
 		if ( *it == exclude ) {
-			if (thermalNoise && exclude) {
-				// suggested by David Eckhoff:
-				// Instead of ignoring the want-to-receive AirFrame when
-				// building up the NoiseMap i add the thermalNoise for the time and
-				// frequencies of this airframe. There's probably a better way to do it but
-				// i did it like this:
-				const ConstMapping *const recvPowerMap = (*it)->getSignal().getReceivingPower();
-				if (recvPowerMap) {
-					Mapping* rcvPowerPlusThermalNoise = MappingUtils::add(      *recvPowerMap,             *thermalNoise );
-					Mapping* resultMapNew             = MappingUtils::subtract( *rcvPowerPlusThermalNoise, *recvPowerMap );
-					delete rcvPowerPlusThermalNoise;
-					Mapping* resultMapTmp = MappingUtils::add(*resultMap,*resultMapNew);
-					delete resultMap;
-					delete resultMapNew;
-					resultMap = resultMapTmp;
-					}
-			}
 			continue;
 		}
 
@@ -330,6 +305,29 @@ Mapping* BaseDecider::calculateRSSIMapping( simtime_t_cref start,
 		resultMapNew = 0;
 	}
 
+	// add thermal noise
+	ConstMapping* thermalNoise = phy->getThermalNoise(start, end);
+	if (thermalNoise) {
+		// FIXME: workaround needed to make *really* sure that the resultMap is defined for the range of the exclude-frame
+		const ConstMapping* excludePwr = exclude ? exclude->getSignal().getReceivingPower() : 0;
+		if (excludePwr) {
+			Mapping* p1 = resultMap;
+			// p2 = exclude + thermal
+			Mapping* p2 = MappingUtils::add(*excludePwr, *thermalNoise);
+			// p3 = p2 - exclude
+			Mapping* p3 = MappingUtils::subtract(*p2, *excludePwr);
+			// result = result + p3
+			resultMap = MappingUtils::add(*resultMap, *p3);
+			delete p3;
+			delete p2;
+			delete p1;
+		}
+		else {
+			Mapping* p1 = resultMap;
+			resultMap = MappingUtils::add(*resultMap, *thermalNoise);
+			delete p1;
+		}
+	}
 	return resultMap;
 }
 
