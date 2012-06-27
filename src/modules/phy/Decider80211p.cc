@@ -193,15 +193,8 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude) {
 
 	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeDomain);
 
-	//add thermal noise
-	ConstMapping* thermalNoise = phy->getThermalNoise(time, time);
-	if (thermalNoise) {
-		Mapping* tmp = resultMap;
-		resultMap = MappingUtils::add(*resultMap, *thermalNoise);
-		delete tmp;
-	}
 
-	// otherwise, iterate over all AirFrames (except exclude)
+	// iterate over all AirFrames (except exclude)
 	// and sum up their receiving-power-mappings
 	for (AirFrameVector::const_iterator it = airFrames.begin(); it != airFrames.end(); ++it) {
 		if (*it == exclude) {
@@ -234,6 +227,14 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude) {
 		delete resultMap;
 		resultMap = resultMapNew;
 		resultMapNew = 0;
+	}
+
+	//add thermal noise
+	ConstMapping* thermalNoise = phy->getThermalNoise(time, time);
+	if (thermalNoise) {
+		Mapping* tmp = resultMap;
+		resultMap = MappingUtils::add(*resultMap, *thermalNoise);
+		delete tmp;
 	}
 
 	Argument min(DimensionSet::timeFreqDomain);
