@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <stdlib.h>
+#include <math.h>
 
 extern bool haltOnFails;
 extern bool displayPassed;
