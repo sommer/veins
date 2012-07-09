@@ -1653,7 +1653,7 @@ public:
 			return;
 		}
 		argument_value_cref_t                    argVal = pos.getArgValue(myDimension);
-		typename interpolator_map_type::iterator posIt  = entries.lower_bound(argVal);
+		interpolator_map_type::iterator posIt  = entries.lower_bound(argVal);
 
 		if(posIt == entries.end() || (entries.key_comp()(argVal, posIt->first))) {
 			posIt = entries.insert(posIt, std::make_pair(argVal, createSubSignal()));
