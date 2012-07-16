@@ -65,43 +65,47 @@ void Mac1609_4::initialize(int stage) {
 		myEDCA[type_SCH]->createQueue(6,CWMIN_11P,CWMAX_11P,AC_BE);
 		myEDCA[type_SCH]->createQueue(9,CWMIN_11P,CWMAX_11P,AC_BK);
 
-		//set the initial service channel
-		switch (par("serviceChannel").longValue()) {
-			case 1: mySCH = Channels::SCH1; break;
-			case 2: mySCH = Channels::SCH2; break;
-			case 3: mySCH = Channels::SCH3; break;
-			case 4: mySCH = Channels::SCH4; break;
-			default: opp_error("Service Channel must be between 1 and 4"); break;
-		}
-
-		if (par("serviceChannel").longValue() == -1) {
-			mySCH = (getParentModule()->getParentModule()->getIndex() % 2) ?
-			        Channels::SCH1 : Channels::SCH2;
+		useSCH = par("useServiceChannel").boolValue();
+		if (useSCH) {
+			//set the initial service channel
+			switch (par("serviceChannel").longValue()) {
+				case 1: mySCH = Channels::SCH1; break;
+				case 2: mySCH = Channels::SCH2; break;
+				case 3: mySCH = Channels::SCH3; break;
+				case 4: mySCH = Channels::SCH4; break;
+				default: opp_error("Service Channel must be between 1 and 4"); break;
+			}
 		}
 
 		headerLength = par("headerLength");
 
-		nextChannelSwitch = new cMessage("Channel Switch");
 		nextMacEvent = new cMessage("next Mac Event");
 
-		//introduce a little asynchronization between radios, but no more than .3 milliseconds
-		uint64_t currenTime = simTime().raw();
-		uint64_t switchingTime = (uint64_t)(SWITCHING_INTERVAL_11P
-		                                    * simTime().getScale());
-		double timeToNextSwitch = (double)(switchingTime
-		                                   - (currenTime % switchingTime)) / simTime().getScale();
+		if (useSCH) {
+			// introduce a little asynchronization between radios, but no more than .3 milliseconds
+			uint64_t currenTime = simTime().raw();
+			uint64_t switchingTime = (uint64_t)(SWITCHING_INTERVAL_11P
+							    * simTime().getScale());
+			double timeToNextSwitch = (double)(switchingTime
+							   - (currenTime % switchingTime)) / simTime().getScale();
+			if ((currenTime / switchingTime) % 2 == 0) {
+				setActiveChannel(type_CCH);
+			}
+			else {
+				setActiveChannel(type_SCH);
+			}
 
-
-		simtime_t offset = dblrand() * par("syncOffset").doubleValue();
-		scheduleAt(simTime() + offset + timeToNextSwitch,
-		           nextChannelSwitch);
-
-		if ((currenTime / switchingTime) % 2 == 0) {
-			setActiveChannel(type_CCH);
+			// channel switching active
+			nextChannelSwitch = new cMessage("Channel Switch");
+			simtime_t offset = dblrand() * par("syncOffset").doubleValue();
+			scheduleAt(simTime() + offset + timeToNextSwitch, nextChannelSwitch);
 		}
 		else {
-			setActiveChannel(type_SCH);
+			// no channel switching
+			nextChannelSwitch = 0;
+			setActiveChannel(type_CCH);
 		}
+
 
 		//stats
 		statsReceivedPackets = 0;
@@ -122,6 +126,7 @@ void Mac1609_4::initialize(int stage) {
 
 void Mac1609_4::handleSelfMsg(cMessage* msg) {
 	if (msg == nextChannelSwitch) {
+		ASSERT(useSCH);
 
 		scheduleAt(simTime() + SWITCHING_INTERVAL_11P, nextChannelSwitch);
 
@@ -160,13 +165,12 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 		mac->setSrcAddr(myMacAddress);
 		mac->encapsulate(pktToSend->dup());
 
-		simtime_t timeLeft = timeLeftInSlot();
 		simtime_t sendingDuration = RADIODELAY_11P +  PHY_HDR_PREAMBLE_DURATION +
 		                            PHY_HDR_PLCPSIGNAL_DURATION +
 		                            ((mac->getBitLength() + PHY_HDR_PSDU_HEADER_LENGTH)/bitrate);
-
-		DBG << "Sending duration will be" << sendingDuration << " Time in this slot left: " << timeLeft << std::endl;
-		if (timeLeft > sendingDuration) {
+		DBG << "Sending duration will be" << sendingDuration << std::endl;
+		if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
+			if (useSCH) DBG << " Time in this slot left: " << timeLeftInSlot() << std::endl;
 			// give time for the radio to be in Tx state before transmitting
 			phy->setRadioState(Radio::TX);
 
@@ -213,6 +217,7 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 
 	//rewrite SCH channel to actual SCH the Mac1609_4 is set to
 	if (thisMsg->getChannelNumber() == Channels::SCH1) {
+		ASSERT(useSCH);
 		thisMsg->setChannelNumber(mySCH);
 		chan = type_SCH;
 	}
@@ -245,7 +250,7 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 		simtime_t nextEvent = myEDCA[chan]->startContent(lastIdle,guardActive());
 
 		if (nextEvent != -1) {
-			if (nextEvent <= nextChannelSwitch->getArrivalTime())   {
+			if ((!useSCH) || (nextEvent <= nextChannelSwitch->getArrivalTime())) {
 				if (nextMacEvent->isScheduled()) {
 					cancelEvent(nextMacEvent);
 				}
@@ -314,7 +319,7 @@ void Mac1609_4::handleLowerControl(cMessage* msg) {
 
 void Mac1609_4::setActiveChannel(t_channel state) {
 	activeChannel = state;
-	assert(state == type_CCH || state == type_SCH);
+	assert(state == type_CCH || (useSCH && state == type_SCH));
 }
 
 void Mac1609_4::finish() {
@@ -336,7 +341,7 @@ void Mac1609_4::finish() {
 	else {
 		delete nextMacEvent;
 	}
-	if (nextChannelSwitch->isScheduled())
+	if (nextChannelSwitch && nextChannelSwitch->isScheduled())
 		cancelAndDelete(nextChannelSwitch);
 
 	//stats
@@ -392,6 +397,7 @@ Signal* Mac1609_4::createSignal(simtime_t start, simtime_t length, double power,
 
 /* checks if guard is active */
 bool Mac1609_4::guardActive() const {
+	if (!useSCH) return false;
 	if (simTime().dbl() - nextChannelSwitch->getSendingTime() <= GUARD_INTERVAL_11P)
 		return true;
 	return false;
@@ -399,6 +405,7 @@ bool Mac1609_4::guardActive() const {
 
 /* returns the time until the guard is over */
 simtime_t Mac1609_4::timeLeftTillGuardOver() const {
+	ASSERT(useSCH);
 	simtime_t sTime = simTime();
 	if (sTime - nextChannelSwitch->getSendingTime() <= GUARD_INTERVAL_11P) {
 		return GUARD_INTERVAL_11P
@@ -410,11 +417,13 @@ simtime_t Mac1609_4::timeLeftTillGuardOver() const {
 
 /* returns the time left in this channel window */
 simtime_t Mac1609_4::timeLeftInSlot() const {
+	ASSERT(useSCH);
 	return nextChannelSwitch->getArrivalTime() - simTime();
 }
 
 /* Will change the Service Channel on which the mac layer is listening and sending */
 void Mac1609_4::changeServiceChannel(int cN) {
+	ASSERT(useSCH);
 	if (cN != Channels::SCH1 && cN != Channels::SCH2 && cN != Channels::SCH3 && cN != Channels::SCH4) {
 		opp_error("This Service Channel doesnt exit: %d",cN);
 	}
@@ -732,7 +741,9 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 	if (afterSwitch) {
 		//	delay = GUARD_INTERVAL_11P;
 	}
-	delay = timeLeftTillGuardOver();
+	if (useSCH) {
+		delay += timeLeftTillGuardOver();
+	}
 
 	//channel turned idle! lets start contention!
 	lastIdle = delay + simTime();
@@ -745,7 +756,7 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 
 		simtime_t nextEvent = myEDCA[activeChannel]->startContent(lastIdle,guardActive());
 		if (nextEvent != -1) {
-			if (nextEvent < nextChannelSwitch->getArrivalTime()) {
+			if ((!useSCH) || (nextEvent < nextChannelSwitch->getArrivalTime())) {
 				scheduleAt(nextEvent,nextMacEvent);
 				DBG << "next Event is at " << nextMacEvent->getArrivalTime().raw() << std::endl;
 			}

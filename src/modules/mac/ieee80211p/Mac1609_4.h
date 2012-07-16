@@ -203,6 +203,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 		int headerLength;
 
+		bool useSCH;
 		int mySCH;
 
 		std::map<t_channel,EDCA*> myEDCA;
