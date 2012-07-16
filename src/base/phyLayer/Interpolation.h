@@ -825,7 +825,7 @@ public:
 		return it;
 	}
 
-	iterator_intpl findIntpl(key_cref_type pos) {
+	iterator_intpl findIntpl(key_cref_type pos)  __attribute__ ((noinline)) {
 		iterator_intpl it(*this, interpolate);
 
 		it.jumpTo(pos);
