@@ -338,7 +338,7 @@ void TraCIScenarioManager::init_traci() {
 				std::string typeId = commandGetPolygonTypeId(id);
 				if (typeId == "building") {
 					std::list<Coord> coords = commandGetPolygonShape(id);
-					Obstacle obs(id, 10, 1); // building gets attenuation of 50 dB per wall, 1dB per meter
+					Obstacle obs(id, 9, .4); // each building gets attenuation of 9 dB per wall, 0.4 dB per meter
 					std::vector<Coord> shape;
 					std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
 					obs.setShape(shape);
