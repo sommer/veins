@@ -268,6 +268,10 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 			cancelEvent(nextMacEvent);
 		}
 	}
+	if (num == 1 && idleChannel == false && myEDCA[chan]->myQueues[ac].currentBackoff == 0 && chan == activeChannel) {
+		myEDCA[chan]->backoff(ac);
+	}
+
 }
 
 void Mac1609_4::handleLowerControl(cMessage* msg) {
@@ -559,6 +563,7 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 			if (guardActive == true && iter->second.currentBackoff == 0) {
 				//cw is not increased
 				iter->second.currentBackoff = intuniform(0,iter->second.cwCur);
+				statsNumBackoff++;
 			}
 
 			simtime_t DIFS;
@@ -645,21 +650,13 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 			}
 			DBG2 << "Updating backoff for Queue " << iter->first << ": " << oldBackoff << " -> " << iter->second.currentBackoff << info <<std::endl;
 		}
-
-		if (iter->second.queue.size() != 0 && allowBackoff == true) {
-
-			assert(iter->second.currentBackoff  >= 0);
-			if (iter->second.currentBackoff == 0) {
-				//ecdf was ready to send but channel turned busy -> backoff
-				statsNumBackoff++;
-				//do not double cw
-				//only do this when the channel was busy due to external senders; virtual contention is handled in initiateTransmit
-				iter->second.currentBackoff = intuniform(0,iter->second.cwCur);
-				statsSlotsBackoff += iter->second.currentBackoff;
-				DBG2 << "Channel turned busy when i was ready to send. Going into backoff: " << iter->second.currentBackoff << "\n";
-			}
-		}
 	}
+}
+void Mac1609_4::EDCA::backoff(t_access_category ac) {
+	myQueues[ac].currentBackoff = intuniform(0,myQueues[ac].cwCur);
+	statsSlotsBackoff += myQueues[ac].currentBackoff;
+	statsNumBackoff++;
+	DBG2 << "Going into Backoff because channel was busy when new packet arrived from upperLayer\n";
 }
 
 void Mac1609_4::EDCA::postTransmit(t_access_category ac) {
@@ -668,6 +665,8 @@ void Mac1609_4::EDCA::postTransmit(t_access_category ac) {
 	myQueues[ac].cwCur = myQueues[ac].cwMin;
 	//post transmit backoff
 	myQueues[ac].currentBackoff = intuniform(0,myQueues[ac].cwCur);
+	statsSlotsBackoff += myQueues[ac].currentBackoff;
+	statsNumBackoff++;
 	DBG2 << "Queue " << ac << " will go into post-transmit backoff for " << myQueues[ac].currentBackoff << " slots\n";
 }
 

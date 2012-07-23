@@ -96,7 +96,7 @@ class Mac1609_4 : public BaseMacLayer,
 				 */
 				int createQueue(int aifsn, int cwMin, int cwMax,t_access_category);
 				int queuePacket(t_access_category AC,WaveShortMessage* cmsg);
-
+				void backoff(t_access_category ac);
 				simtime_t startContent(simtime_t idleSince, bool guardActive);
 				void stopContent(bool allowBackoff, bool generateTxOp);
 				void postTransmit(t_access_category);
