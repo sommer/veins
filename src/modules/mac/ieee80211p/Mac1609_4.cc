@@ -232,6 +232,7 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 
 	//packet was dropped in Mac
 	if (num == -1) {
+		statsDroppedPackets++;
 		return;
 	}
 
