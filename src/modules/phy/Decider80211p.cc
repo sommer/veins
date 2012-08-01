@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2011 David Eckhoff <eckhoff@cs.fau.de>
+// Copyright (C) 2012 Bastian Bloessl, Stefan Joerer, Michele Segata <{bloessl,joerer,segata}@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -102,10 +103,81 @@ double Decider80211p::calcChannelSenseRSSI(simtime_t_cref start, simtime_t_cref 
 	return rssi;
 }
 
+void Decider80211p::calculateSinrAndSnrMapping(AirFrame* frame, Mapping **sinrMap, Mapping **snrMap) {
+
+	/* calculate Noise-Strength-Mapping */
+	Signal& signal = frame->getSignal();
+
+	simtime_t start = signal.getReceptionStart();
+	simtime_t end   = signal.getReceptionEnd();
+
+	//call BaseDecider function to get Noise plus Interference mapping
+	Mapping* noiseInterferenceMap = calculateRSSIMapping(start, end, frame);
+	assert(noiseInterferenceMap);
+	//call calculateNoiseRSSIMapping() to get Noise only mapping
+	Mapping* noiseMap = calculateNoiseRSSIMapping(start, end, frame);
+	assert(noiseMap);
+	//get power map for frame currently under reception
+	ConstMapping* recvPowerMap = signal.getReceivingPower();
+	assert(recvPowerMap);
+
+	//TODO: handle noise of zero (must not devide with zero!)
+	*sinrMap = MappingUtils::divide( *recvPowerMap, *noiseInterferenceMap, Argument::MappedZero );
+	*snrMap = MappingUtils::divide( *recvPowerMap, *noiseMap, Argument::MappedZero );
+
+	delete noiseInterferenceMap;
+	noiseInterferenceMap = 0;
+	delete noiseMap;
+	noiseMap = 0;
+
+}
+
+Mapping* Decider80211p::calculateNoiseRSSIMapping(simtime_t_cref start, simtime_t_cref end, AirFrame *exclude) {
+
+	// create an empty mapping
+	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeDomain);
+
+	// add thermal noise
+	ConstMapping* thermalNoise = phy->getThermalNoise(start, end);
+	if (thermalNoise) {
+		// FIXME: workaround needed to make *really* sure that the resultMap is defined for the range of the exclude-frame
+		const ConstMapping* excludePwr = exclude ? exclude->getSignal().getReceivingPower() : 0;
+		if (excludePwr) {
+			Mapping* p1 = resultMap;
+			// p2 = exclude + thermal
+			Mapping* p2 = MappingUtils::add(*excludePwr, *thermalNoise);
+			// p3 = p2 - exclude
+			Mapping* p3 = MappingUtils::subtract(*p2, *excludePwr);
+			// result = result + p3
+			resultMap = MappingUtils::add(*resultMap, *p3);
+			delete p3;
+			delete p2;
+			delete p1;
+		}
+		else {
+			Mapping* p1 = resultMap;
+			resultMap = MappingUtils::add(*resultMap, *thermalNoise);
+			delete p1;
+		}
+	}
+
+	return resultMap;
+
+}
 
 DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame) {
-	Mapping* snrMap = calculateSnrMapping(frame);
-	assert(snrMap);
+
+	Mapping* sinrMap = 0;
+	Mapping *snrMap = 0;
+
+	if (collectCollisionStats) {
+		calculateSinrAndSnrMapping(frame, &sinrMap, &snrMap);
+		assert(snrMap);
+	}
+	else {
+		sinrMap = calculateSnrMapping(frame);
+	}
+	assert(sinrMap);
 
 	Signal& s = frame->getSignal();
 	simtime_t start = s.getReceptionStart();
@@ -120,7 +192,16 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame) {
 	max.setTime(end);
 	max.setArgValue(Dimension::frequency_static(), centerFrequency + 5e6);
 
-	double snirMin = MappingUtils::findMin(*snrMap, min, max);
+	double snirMin = MappingUtils::findMin(*sinrMap, min, max);
+	double snrMin;
+	if (collectCollisionStats) {
+		snrMin = MappingUtils::findMin(*snrMap, min, max);
+	}
+	else {
+		//just set to any value. if collectCollisionStats != true
+		//it will be ignored by packetOk
+		snrMin = 1e200;
+	}
 
 	ConstMappingIterator* bitrateIt = s.getBitrate()->createConstIterator();
 	bitrateIt->next(); //iterate to payload bitrate indicator
@@ -129,34 +210,59 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame) {
 
 	DeciderResult80211* result = 0;
 
-	if (packetOk(snirMin, frame->getBitLength(), payloadBitrate)) {
-		DBG_D11P << "Packet is fine! We can decode it" << std::endl;
-		result = new DeciderResult80211(true, payloadBitrate, snirMin);
-	}
-	else {
-		DBG_D11P << "Packet has bit Errors. Lost " << std::endl;
-		result = new DeciderResult80211(false, payloadBitrate, snirMin);
+	enum PACKET_OK_RESULT decision;
+
+	switch (packetOk(snirMin, snrMin, frame->getBitLength(), payloadBitrate)) {
+
+		case DECODED:
+			DBG_D11P << "Packet is fine! We can decode it" << std::endl;
+			result = new DeciderResult80211(true, payloadBitrate, snirMin);
+			break;
+
+		case NOT_DECODED:
+			if (!collectCollisionStats) {
+				DBG_D11P << "Packet has bit Errors. Lost " << std::endl;
+			}
+			else {
+				DBG_D11P << "Packet has bit Errors due to low power. Lost " << std::endl;
+			}
+			result = new DeciderResult80211(false, payloadBitrate, snirMin);
+			break;
+
+		case COLLISION:
+			DBG_D11P << "Packet has bit Errors due to collision. Lost " << std::endl;
+			collisions++;
+			result = new DeciderResult80211(false, payloadBitrate, snirMin);
+			break;
+
+		default:
+			ASSERT2(false, "Impossible packet result returned by packetOk(). Check the code.");
+			break;
+
 	}
 
-	delete snrMap;
+	delete sinrMap;
+	if (snrMap)
+		delete snrMap;
 	return result;
 }
 
-bool Decider80211p::packetOk(double snirMin, int lengthMPDU, double bitrate) {
+enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double snirMin, double snrMin, int lengthMPDU, double bitrate) {
 
 	//the lengthMPDU includes the PHY_SIGNAL_LENGTH + PHY_PSDU_HEADER + Payload, while the first is sent with PHY_HEADER_BANDWIDTH
 
-	double packetOk;
+	double packetOkSinr;
+	double packetOkSnr;
 
 	if (bitrate == 18E+6) {
 		//According to P. Fuxjaeger et al. "IEEE 802.11p Transmission Using GNURadio"
 		double ber = std::min(0.5 , 1.5 * erfc(0.45 * sqrt(snirMin)));
-		packetOk = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
+		packetOkSinr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
 	}
 	else if (bitrate == 6E+6) {
 		//According to K. Sjoeberg et al. "Measuring and Using the RSSI of IEEE 802.11p"
 		double ber = std::min(0.5 , 8 * erfc(0.75 *sqrt(snirMin)));
-		packetOk = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
+		packetOkSinr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
 	}
 	else {
 		opp_error("Currently this 11p-Model only provides accurate BER models for 6Mbit and 18Mbit. Please use one of these frequencies for now.");
@@ -166,21 +272,87 @@ bool Decider80211p::packetOk(double snirMin, int lengthMPDU, double bitrate) {
 	double berHeader = 0.5 * exp(-snirMin * 10E+6 / PHY_HDR_BANDWIDTH);
 	double headerNoError = pow(1.0 - berHeader, PHY_HDR_PLCPSIGNAL_LENGTH);
 
+	double headerNoErrorSnr;
+	//compute PER also for SNR only
+	if (collectCollisionStats) {
+		if (bitrate == 18E+6) {
+			//According to P. Fuxjaeger et al. "IEEE 802.11p Transmission Using GNURadio"
+			double ber = std::min(0.5, 1.5 * erfc(0.45 * sqrt(snrMin)));
+			packetOkSnr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
+		}
+		else if (bitrate == 6E+6) {
+			//According to K. Sjoeberg et al. "Measuring and Using the RSSI of IEEE 802.11p"
+			double ber = std::min(0.5, 8 * erfc(0.75 * sqrt(snrMin)));
+			packetOkSnr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
+		}
+
+		double berHeader = 0.5 * exp(-snrMin * 10E+6 / PHY_HDR_BANDWIDTH);
+		headerNoErrorSnr = pow(1.0 - berHeader, PHY_HDR_PLCPSIGNAL_LENGTH);
+
+		//the probability of correct reception without considering the interference
+		//MUST be greater or equal than when consider it
+		assert(packetOkSnr >= packetOkSinr);
+		assert(headerNoErrorSnr >= headerNoError);
+
+	}
+
 	//probability of no bit error in the PLCP header
 
 	double rand = dblrand();
 
-	if (rand > headerNoError)
-		return false;
+	if (!collectCollisionStats) {
+		if (rand > headerNoError)
+			return NOT_DECODED;
+	}
+	else {
+
+		if (rand > headerNoError) {
+			//ups, we have a header error. is that due to interference?
+			if (rand > headerNoErrorSnr) {
+				//no. we would have not been able to receive that even
+				//without interference
+				return NOT_DECODED;
+			}
+			else {
+				//yes. we would have decoded that without interference
+				return COLLISION;
+			}
+
+		}
+
+	}
 
 	//probability of no bit error in the rest of the packet
 
 	rand = dblrand();
 
-	if (rand > packetOk)
-		return false;
+	if (!collectCollisionStats) {
+		if (rand > packetOkSinr) {
+			return NOT_DECODED;
+		}
+		else {
+			return DECODED;
+		}
+	}
 	else {
-		return true;
+
+		if (rand > packetOkSinr) {
+			//ups, we have an error in the payload. is that due to interference?
+			if (rand > packetOkSnr) {
+				//no. we would have not been able to receive that even
+				//without interference
+				return NOT_DECODED;
+			}
+			else {
+				//yes. we would have decoded that without interference
+				return COLLISION;
+			}
+
+		}
+		else {
+			return DECODED;
+		}
+
 	}
 }
 
@@ -326,7 +498,13 @@ void Decider80211p::changeFrequency(double freq) {
 	centerFrequency = freq;
 }
 
-Decider80211p::~Decider80211p() {
-	double totalTime = simTime().dbl() - myStartTime;
-	phy->recordScalar("busyTime",myBusyTime/totalTime);
-};
+void Decider80211p::finish() {
+	simtime_t totalTime = simTime() - myStartTime;
+	phy->recordScalar("busyTime", myBusyTime / totalTime.dbl());
+	if (collectCollisionStats) {
+		phy->recordScalar("ncollisions", collisions);
+	}
+}
+
+Decider80211p::~Decider80211p() {}
+;
