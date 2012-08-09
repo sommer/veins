@@ -45,6 +45,9 @@ class AnnotationManager : public cSimpleModule
 
 				Group* group;
 				mutable std::list<cModule*> dummyObjects;
+				mutable std::list<std::string> traciPoiIds;
+				mutable std::list<std::string> traciLineIds;
+				mutable std::list<std::string> traciPolygonsIds;
 		};
 
 		class Point : public Annotation {

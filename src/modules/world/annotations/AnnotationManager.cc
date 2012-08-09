@@ -21,6 +21,7 @@
 #include <cmath>
 
 #include "world/annotations/AnnotationManager.h"
+#include "mobility/traci/TraCIScenarioManager.h"
 
 Define_Module(AnnotationManager);
 
@@ -314,12 +315,26 @@ void AnnotationManager::show(const Annotation* annotation) {
 			// no corresponding TkEnv representation
 		}
 
+		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
+		if (traci && traci->isConnected()) {
+			std::stringstream nameBuilder; nameBuilder << o->text << " " << ev.getUniqueNumber();
+			traci->commandAddPoi(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(o->color), 6, o->pos);
+			annotation->traciPoiIds.push_back(nameBuilder.str());
+		}
 	}
 	else if (const Line* l = dynamic_cast<const Line*>(annotation)) {
 
 		if (ev.isGUI()) {
 			cModule* mod = createDummyModuleLine(l->p1, l->p2, l->color);
 			annotation->dummyObjects.push_back(mod);
+		}
+
+		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
+		if (traci && traci->isConnected()) {
+			std::list<Coord> coords; coords.push_back(l->p1); coords.push_back(l->p2);
+			std::stringstream nameBuilder; nameBuilder << "Annotation" << ev.getUniqueNumber();
+			traci->commandAddPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(l->color), false, 5, coords);
+			annotation->traciLineIds.push_back(nameBuilder.str());
 		}
 	}
 	else if (const Polygon* p = dynamic_cast<const Polygon*>(annotation)) {
@@ -338,6 +353,13 @@ void AnnotationManager::show(const Annotation* annotation) {
 			}
 		}
 
+		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
+		if (traci && traci->isConnected()) {
+			std::stringstream nameBuilder; nameBuilder << "Annotation" << ev.getUniqueNumber();
+			traci->commandAddPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(p->color), false, 4, p->coords);
+			annotation->traciPolygonsIds.push_back(nameBuilder.str());
+		}
+
 	}
 	else {
 		error("unknown Annotation type");
@@ -351,6 +373,25 @@ void AnnotationManager::hide(const Annotation* annotation) {
 		mod->deleteModule();
 	}
 	annotation->dummyObjects.clear();
+
+	TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
+	if (traci && traci->isConnected()) {
+		for (std::list<std::string>::const_iterator i = annotation->traciPolygonsIds.begin(); i != annotation->traciPolygonsIds.end(); ++i) {
+			std::string id = *i;
+			traci->commandRemovePolygon(id, 3);
+		}
+		annotation->traciPolygonsIds.clear();
+		for (std::list<std::string>::const_iterator i = annotation->traciLineIds.begin(); i != annotation->traciLineIds.end(); ++i) {
+			std::string id = *i;
+			traci->commandRemovePolygon(id, 4);
+		}
+		annotation->traciLineIds.clear();
+		for (std::list<std::string>::const_iterator i = annotation->traciPoiIds.begin(); i != annotation->traciPoiIds.end(); ++i) {
+			std::string id = *i;
+			traci->commandRemovePoi(id, 5);
+		}
+		annotation->traciPoiIds.clear();
+	}
 }
 
 void AnnotationManager::showAll(Group* group) {
