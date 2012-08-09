@@ -90,6 +90,8 @@ class TraCIScenarioManager : public cSimpleModule
 		virtual void handleMessage(cMessage *msg);
 		virtual void handleSelfMsg(cMessage *msg);
 
+		bool isConnected() const { return (socketPtr); }
+
 		std::pair<uint32_t, std::string> commandGetVersion();
 		void commandSetSpeedMode(std::string nodeId, int32_t bitset);
 		void commandSetSpeed(std::string nodeId, double speed);
