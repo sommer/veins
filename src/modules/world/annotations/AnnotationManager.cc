@@ -70,7 +70,7 @@ void AnnotationManager::handleSelfMsg(cMessage *msg) {
 
 void AnnotationManager::handleParameterChange(const char *parname) {
 	if (parname && (std::string(parname) == "draw")) {
-		if (ev.isGUI() && par("draw")) {
+		if (par("draw")) {
 			showAll();
 		} else {
 			hideAll();
@@ -148,7 +148,7 @@ AnnotationManager::Line* AnnotationManager::drawLine(Coord p1, Coord p2, std::st
 
 	annotations.push_back(l);
 
-	if (ev.isGUI() && par("draw")) show(l);
+	if (par("draw")) show(l);
 
 	return l;
 }
@@ -159,7 +159,7 @@ AnnotationManager::Polygon* AnnotationManager::drawPolygon(std::list<Coord> coor
 
 	annotations.push_back(p);
 
-	if (ev.isGUI() && par("draw")) show(p);
+	if (par("draw")) show(p);
 
 	return p;
 }
@@ -240,21 +240,26 @@ void AnnotationManager::show(const Annotation* annotation) {
 	if (annotation->dummyObjects.size() > 0) return;
 
 	if (const Line* l = dynamic_cast<const Line*>(annotation)) {
-		cModule* mod = createDummyModuleLine(l->p1, l->p2, l->color);
 
-		annotation->dummyObjects.push_back(mod);
+		if (ev.isGUI()) {
+			cModule* mod = createDummyModuleLine(l->p1, l->p2, l->color);
+			annotation->dummyObjects.push_back(mod);
+		}
 	}
 	else if (const Polygon* p = dynamic_cast<const Polygon*>(annotation)) {
 
 		ASSERT(p->coords.size() >= 2);
-		Coord lastCoords = *p->coords.rbegin();
-		for (std::list<Coord>::const_iterator i = p->coords.begin(); i != p->coords.end(); ++i) {
-			Coord c1 = *i;
-			Coord c2 = lastCoords;
-			lastCoords = c1;
 
-			cModule* mod = createDummyModuleLine(c1, c2, p->color);
-			annotation->dummyObjects.push_back(mod);
+		if (ev.isGUI()) {
+			Coord lastCoords = *p->coords.rbegin();
+			for (std::list<Coord>::const_iterator i = p->coords.begin(); i != p->coords.end(); ++i) {
+				Coord c1 = *i;
+				Coord c2 = lastCoords;
+				lastCoords = c1;
+
+				cModule* mod = createDummyModuleLine(c1, c2, p->color);
+				annotation->dummyObjects.push_back(mod);
+			}
 		}
 
 	}
