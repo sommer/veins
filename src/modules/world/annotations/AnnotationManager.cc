@@ -96,7 +96,22 @@ void AnnotationManager::addFromXml(cXMLElement* xml) {
 
 		std::string tag = e->getTagName();
 
-		if (tag == "line") {
+		if (tag == "point") {
+			ASSERT(e->getAttribute("text"));
+			std::string text = e->getAttribute("text");
+			ASSERT(e->getAttribute("color"));
+			std::string color = e->getAttribute("color");
+			ASSERT(e->getAttribute("shape"));
+			std::string shape = e->getAttribute("shape");
+			std::vector<std::string> points = cStringTokenizer(shape.c_str(), " ").asVector();
+			ASSERT(points.size() == 2);
+
+			std::vector<double> p1a = cStringTokenizer(points[0].c_str(), ",").asDoubleVector();
+			ASSERT(p1a.size() == 2);
+
+			drawPoint(Coord(p1a[0], p1a[1]), color, text);
+		}
+		else if (tag == "line") {
 			ASSERT(e->getAttribute("color"));
 			std::string color = e->getAttribute("color");
 			ASSERT(e->getAttribute("shape"));
@@ -140,6 +155,17 @@ AnnotationManager::Group* AnnotationManager::createGroup(std::string title) {
 	groups.push_back(group);
 
 	return group;
+}
+
+AnnotationManager::Point* AnnotationManager::drawPoint(Coord p, std::string color, std::string text, Group* group) {
+	Point* o = new Point(p, color, text);
+	o->group = group;
+
+	annotations.push_back(o);
+
+	if (par("draw")) show(o);
+
+	return o;
 }
 
 AnnotationManager::Line* AnnotationManager::drawLine(Coord p1, Coord p2, std::string color, Group* group) {
@@ -239,7 +265,14 @@ void AnnotationManager::show(const Annotation* annotation) {
 
 	if (annotation->dummyObjects.size() > 0) return;
 
-	if (const Line* l = dynamic_cast<const Line*>(annotation)) {
+	if (const Point* o = dynamic_cast<const Point*>(annotation)) {
+
+		if (ev.isGUI()) {
+			// no corresponding TkEnv representation
+		}
+
+	}
+	else if (const Line* l = dynamic_cast<const Line*>(annotation)) {
 
 		if (ev.isGUI()) {
 			cModule* mod = createDummyModuleLine(l->p1, l->p2, l->color);

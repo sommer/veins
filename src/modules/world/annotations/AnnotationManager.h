@@ -54,6 +54,19 @@ class AnnotationManager : public cSimpleModule
 				mutable std::list<cModule*> dummyObjects;
 		};
 
+		class Point : public Annotation {
+			public:
+				Point(Coord pos, std::string color, std::string text) : pos(pos), color(color), text(text) {}
+				virtual ~Point() {}
+
+			protected:
+				friend class AnnotationManager;
+
+				Coord pos;
+				std::string color;
+				std::string text;
+		};
+
 		class Line : public Annotation {
 			public:
 				Line(Coord p1, Coord p2, std::string color) : p1(p1), p2(p2), color(color) {}
@@ -99,6 +112,7 @@ class AnnotationManager : public cSimpleModule
 
 		void addFromXml(cXMLElement* xml);
 		Group* createGroup(std::string title = "untitled");
+		Point* drawPoint(Coord p, std::string color, std::string text, Group* group = 0);
 		Line* drawLine(Coord p1, Coord p2, std::string color, Group* group = 0);
 		Polygon* drawPolygon(std::list<Coord> coords, std::string color, Group* group = 0);
 		Polygon* drawPolygon(std::vector<Coord> coords, std::string color, Group* group = 0);
