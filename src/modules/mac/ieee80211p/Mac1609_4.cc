@@ -599,13 +599,7 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 			nextEvent == -1? nextEvent =  possibleNextEvent : nextEvent = std::min(nextEvent,possibleNextEvent);
 		}
 	}
-	if (nextEvent != -1) {
-		return nextEvent;
-	}
-	else {
-		return -1;
-	}
-
+	return nextEvent;
 }
 
 void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
