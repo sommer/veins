@@ -62,10 +62,10 @@ class Mac1609_4 : public BaseMacLayer,
 	public:
 
 		enum t_access_category {
-			AC_BK = 3,
-			AC_BE = 2,
-			AC_VI = 1,
-			AC_VO = 0
+			AC_BK = 0,
+			AC_BE = 1,
+			AC_VI = 2,
+			AC_VO = 3
 		};
 
 		class EDCA {
