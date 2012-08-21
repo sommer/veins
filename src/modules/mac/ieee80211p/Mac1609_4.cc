@@ -31,14 +31,12 @@ void Mac1609_4::initialize(int stage) {
 		             getParentModule()->getParentModule());
 		assert(phy);
 
-		macMaxCSMABackoffs = par("macMaxCSMABackoffs");
 
 		txPower = par("txPower").doubleValue();
 		bitrate = par("bitrate");
 		checkBitrate(bitrate);
 
 		//mac-adresses
-		myNicId = getParentModule()->getId();
 		myMacAddress = intuniform(0,0xFFFFFFFE);
 
 		//create frequency mappings

@@ -58,14 +58,5 @@ simple Mac1609_4 extends BaseMacLayer
         //tx power [mW]
         double txPower @unit(mW);
 
-        // only used when usage of MAC acks is enabled
-        double macMaxFrameRetries = default(3);
-
-        //backoff method to use: constant, linear or exponential
-        string backoffMethod = default("linear");
-
-        // maximum backoffs
-        double macMaxCSMABackoffs = default(5);
-        
         int queueSize = default(0);
 }

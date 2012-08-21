@@ -112,7 +112,6 @@ class Mac1609_4 : public BaseMacLayer,
 				int numQueues;
 				uint32_t maxQueueSize;
 				simtime_t lastStart; //when we started the last contention;
-				simtime_t delayedStart; //if the guard or any other delay is currently included in our waiting time
 				t_channel channelType;
 				long statsNumInternalContention;
 				long statsNumBackoff;
@@ -187,19 +186,8 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief access category of last sent packet */
 		t_access_category lastAC;
 
-		/** @brief Physical parameters as defined in 802.11p*/
-		double dot4SyncTolerance;
-		double dot4MaxChSwitchTime;
-		double dot4CchInterval;
-		double dot4SchInterval;
-
 		/** @brief Stores the frequencies in Hz that are associated to the channel numbers.*/
 		std::map<int,double> frequency;
-
-		int packets_arrived;
-		int packets_received;
-		int packets_successfully_sent;
-		int intervalTooShort;
 
 		int headerLength;
 
@@ -222,9 +210,6 @@ class Mac1609_4 : public BaseMacLayer,
 		long statsNumBackoff;
 		long statsSlotsBackoff;
 
-		/** @brief publish dropped packets nic wide */
-		int myNicId;
-
 		/** @brief This MAC layers MAC address.*/
 		int myMacAddress;
 
@@ -234,8 +219,6 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief the bit rate at which we transmit */
 		double bitrate;
 
-		/** @brief the maximun number of backoffs before dropping */
-		int macMaxCSMABackoffs;
 
 		Mac80211pToPhy11pInterface* phy11p;
 };
