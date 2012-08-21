@@ -31,6 +31,8 @@ void Mac1609_4::initialize(int stage) {
 		             getParentModule()->getParentModule());
 		assert(phy);
 
+		//this is required to circumvent double precision issues with constants from CONST80211p.h
+		assert(simTime().getScaleExp() == -12);
 
 		txPower = par("txPower").doubleValue();
 		bitrate = par("bitrate");
@@ -82,8 +84,7 @@ void Mac1609_4::initialize(int stage) {
 		if (useSCH) {
 			// introduce a little asynchronization between radios, but no more than .3 milliseconds
 			uint64_t currenTime = simTime().raw();
-			uint64_t switchingTime = (uint64_t)(SWITCHING_INTERVAL_11P
-							    * simTime().getScale());
+			uint64_t switchingTime = SWITCHING_INTERVAL_11P.raw();
 			double timeToNextSwitch = (double)(switchingTime
 							   - (currenTime % switchingTime)) / simTime().getScale();
 			if ((currenTime / switchingTime) % 2 == 0) {
@@ -546,7 +547,7 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 
 	simtime_t nextEvent = -1;
 
-	simtime_t idleTime = std::max(0.0,(simTime() - idleSince).dbl());
+	simtime_t idleTime = SimTime().setRaw(std::max((int64_t)0,(simTime() - idleSince).raw()));;
 
 	lastStart = idleSince;
 
@@ -565,12 +566,10 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 				statsNumBackoff++;
 			}
 
-			simtime_t DIFS;
-			DIFS.setRaw(iter->second.aifsn * SimTime(SLOTLENGTH_11P).raw() + SimTime(SIFS_11P).raw());
+			simtime_t DIFS = iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P;
 
 			//the next possible time to send can be in the past if the channel was idle for a long time, meaning we COULD have sent earlier if we had a packet
-			simtime_t possibleNextEvent;
-			possibleNextEvent.setRaw(SimTime(DIFS).raw() + iter->second.currentBackoff * SimTime(SLOTLENGTH_11P).raw());
+			simtime_t possibleNextEvent = DIFS + iter->second.currentBackoff * SLOTLENGTH_11P;
 
 			DBG2 << "Waiting Time for Queue " << iter->first <<  ":" << possibleNextEvent.raw() << "=" << iter->second.aifsn << " * "  << SimTime(SLOTLENGTH_11P).raw() << " + " << SimTime(SIFS_11P).raw() << "+" << iter->second.currentBackoff << "*" << SimTime(SLOTLENGTH_11P).raw() << " - " << idleTime << std::endl;
 
@@ -578,12 +577,12 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 				DBG2 << "Could have already send if we had it earlier\n";
 				//we could have already sent. round up to next boundary
 				simtime_t base = idleSince + DIFS;
-				possibleNextEvent.setRaw(simTime().raw() - ((simTime().raw() - base.raw()) % SimTime(SLOTLENGTH_11P).raw()) + SimTime(SLOTLENGTH_11P).raw());
+				possibleNextEvent =  simTime() - simtime_t().setRaw((simTime() - base).raw() % SLOTLENGTH_11P.raw()) + SLOTLENGTH_11P;
 			}
 			else {
 				//we are gonna send in the future
 				DBG2 << "Sending in the future\n";
-				possibleNextEvent.setRaw(idleSince.raw() + possibleNextEvent.raw());
+				possibleNextEvent =  idleSince + possibleNextEvent;
 			}
 			nextEvent == -1? nextEvent =  possibleNextEvent : nextEvent = std::min(nextEvent,possibleNextEvent);
 		}
@@ -624,7 +623,7 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 				iter->second.currentBackoff--;
 
 				//check how many slots we waited after the first DIFS
-				int passedSlots = (int)((passedTime.raw() - SimTime(iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P).raw()) / SimTime(SLOTLENGTH_11P).raw());
+				int passedSlots = (int)((passedTime - SimTime(iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P)) / SLOTLENGTH_11P);
 
 				DBG2 << "Passed slots after DIFS: " << passedSlots << std::endl;
 
