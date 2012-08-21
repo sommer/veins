@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2011 David Eckhoff <eckhoff@cs.fau.de>
+// Copyright (C) 2012 David Eckhoff <eckhoff@cs.fau.de>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -38,8 +38,11 @@
  * @brief
  * Manages timeslots for CCH and SCH listening and sending.
  *
- * @author Christopher Saloman
  * @author David Eckhoff : rewrote complete model
+ * @author Christoph Sommer : features and bug fixes
+ * @author Michele Segata : features and bug fixes
+ * @author Stefan Joerer : features and bug fixes
+ * @author Christopher Saloman: initial version
  *
  * @ingroup macLayer
  *
