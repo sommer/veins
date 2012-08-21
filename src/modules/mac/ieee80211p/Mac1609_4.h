@@ -108,9 +108,12 @@ class Mac1609_4 : public BaseMacLayer,
 				uint32_t maxQueueSize;
 				simtime_t lastStart; //when we started the last contention;
 				t_channel channelType;
+
+				/** @brief Stats */
 				long statsNumInternalContention;
 				long statsNumBackoff;
 				long statsSlotsBackoff;
+
 				/** @brief Id for debug messages */
 				std::string myId;
 		};
@@ -176,6 +179,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 		/** @brief Last time the channel went idle */
 		simtime_t lastIdle;
+		simtime_t lastBusy;
 
 		/** @brief Current state of the channel selecting operation.*/
 		t_channel activeChannel;
@@ -206,6 +210,7 @@ class Mac1609_4 : public BaseMacLayer,
 		long statsNumInternalContention;
 		long statsNumBackoff;
 		long statsSlotsBackoff;
+		simtime_t statsTotalBusyTime;
 
 		/** @brief This MAC layers MAC address.*/
 		int myMacAddress;

@@ -124,8 +124,10 @@ void Mac1609_4::initialize(int stage) {
 		statsNumInternalContention = 0;
 		statsNumBackoff = 0;
 		statsSlotsBackoff = 0;
+		statsTotalBusyTime = 0;
 
 		idleChannel = true;
+		lastBusy = simTime();
 		channelIdle(true);
 	}
 }
@@ -367,6 +369,7 @@ void Mac1609_4::finish() {
 	recordScalar("TimesIntoBackoff",statsNumBackoff);
 	recordScalar("SlotsBackoff",statsSlotsBackoff);
 	recordScalar("NumInternalContention",statsNumInternalContention);
+	recordScalar("totalBusyTime",statsTotalBusyTime.dbl());
 
 }
 
@@ -705,6 +708,8 @@ void Mac1609_4::channelBusySelf(bool generateTxOp) {
 	idleChannel = false;
 	DBG << "Channel turned busy: Switch or Self-Send\n";
 
+	lastBusy = simTime();
+
 	//channel turned busy
 	if (nextMacEvent->isScheduled() == true) {
 		cancelEvent(nextMacEvent);
@@ -722,6 +727,7 @@ void Mac1609_4::channelBusy() {
 	//the channel turned busy because someone else is sending
 	idleChannel = false;
 	DBG << "Channel turned busy: External sender\n";
+	lastBusy = simTime();
 
 	//channel turned busy
 	if (nextMacEvent->isScheduled() == true) {
@@ -753,6 +759,7 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 
 	//channel turned idle! lets start contention!
 	lastIdle = delay + simTime();
+	statsTotalBusyTime += simTime() - lastBusy;
 
 	if (nextMacEvent->isScheduled() == true) {
 		opp_error("channel turned idle but contention timer was scheduled!");
