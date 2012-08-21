@@ -140,14 +140,14 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 
 		switch (activeChannel) {
 			case type_CCH:
-				DBG << "CCH --> SCH" << std::endl;
+				DBG_MAC << "CCH --> SCH" << std::endl;
 				channelBusySelf(false);
 				setActiveChannel(type_SCH);
 				channelIdle(true);
 				phy11p->changeListeningFrequency(frequency[mySCH]);
 				break;
 			case type_SCH:
-				DBG << "SCH --> CCH" << std::endl;
+				DBG_MAC << "SCH --> CCH" << std::endl;
 				channelBusySelf(false);
 				setActiveChannel(type_CCH);
 				channelIdle(true);
@@ -165,7 +165,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 
 		lastAC = mapPriority(pktToSend->getPriority());
 
-		DBG << "MacEvent received. Trying to send packet with priority" << lastAC << std::endl;
+		DBG_MAC << "MacEvent received. Trying to send packet with priority" << lastAC << std::endl;
 
 		//send the packet
 		Mac80211Pkt* mac = new Mac80211Pkt(pktToSend->getName(), pktToSend->getKind());
@@ -176,9 +176,9 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 		simtime_t sendingDuration = RADIODELAY_11P +  PHY_HDR_PREAMBLE_DURATION +
 		                            PHY_HDR_PLCPSIGNAL_DURATION +
 		                            ((mac->getBitLength() + PHY_HDR_PSDU_HEADER_LENGTH)/bitrate);
-		DBG << "Sending duration will be" << sendingDuration << std::endl;
+		DBG_MAC << "Sending duration will be" << sendingDuration << std::endl;
 		if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
-			if (useSCH) DBG << " Time in this slot left: " << timeLeftInSlot() << std::endl;
+			if (useSCH) DBG_MAC << " Time in this slot left: " << timeLeftInSlot() << std::endl;
 			// give time for the radio to be in Tx state before transmitting
 			phy->setRadioState(Radio::TX);
 
@@ -188,12 +188,12 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 			attachSignal(mac, simTime()+RADIODELAY_11P, freq);
 			MacToPhyControlInfo* phyInfo = dynamic_cast<MacToPhyControlInfo*>(mac->getControlInfo());
 			assert(phyInfo);
-			DBG << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
+			DBG_MAC << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
 			sendDelayed(mac, RADIODELAY_11P, lowerLayerOut);
 			statsSentPackets++;
 		}
 		else {   //not enough time left now
-			DBG << "Too little Time left. This packet cannot be send in this slot." << std::endl;
+			DBG_MAC << "Too little Time left. This packet cannot be send in this slot." << std::endl;
 			statsNumTooLittleTime++;
 			//revoke TXOP
 			myEDCA[activeChannel]->revokeTxOPs();
@@ -217,7 +217,7 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 
 	t_access_category ac = mapPriority(thisMsg->getPriority());
 
-	DBG << "Received a message from upper layer for channel "
+	DBG_MAC << "Received a message from upper layer for channel "
 	    << thisMsg->getChannelNumber() << " Access Category (Priority):  "
 	    << ac << std::endl;
 
@@ -245,13 +245,13 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 	}
 
 	//if this packet is not at the front of a new queue we dont have to reevaluate times
-	DBG << "sorted packet into queue of EDCA " << chan << " this packet is now at position: " << num << std::endl;
+	DBG_MAC << "sorted packet into queue of EDCA " << chan << " this packet is now at position: " << num << std::endl;
 
 	if (chan == activeChannel) {
-		DBG << "this packet is for the currently active channel\n";
+		DBG_MAC << "this packet is for the currently active channel\n";
 	}
 	else {
-		DBG << "this packet is NOT for the currently active channel\n";
+		DBG_MAC << "this packet is NOT for the currently active channel\n";
 	}
 
 	if (num == 1 && idleChannel == true && chan == activeChannel) {
@@ -264,10 +264,10 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 					cancelEvent(nextMacEvent);
 				}
 				scheduleAt(nextEvent,nextMacEvent);
-				DBG << "Updated nextMacEvent:" << nextMacEvent->getArrivalTime().raw() << std::endl;
+				DBG_MAC << "Updated nextMacEvent:" << nextMacEvent->getArrivalTime().raw() << std::endl;
 			}
 			else {
-				DBG << "Too little time in this interval. Will not schedule nextMacEvent\n";
+				DBG_MAC << "Too little time in this interval. Will not schedule nextMacEvent\n";
 				//it is possible that this queue has an txop. we have to revoke it
 				myEDCA[activeChannel]->revokeTxOPs();
 				statsNumTooLittleTime++;
@@ -286,7 +286,7 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 void Mac1609_4::handleLowerControl(cMessage* msg) {
 	if (msg->getKind() == MacToPhyInterface::TX_OVER) {
 
-		DBG << "Successfully transmitted a packet on " << lastAC << "\n";
+		DBG_MAC << "Successfully transmitted a packet on " << lastAC << "\n";
 
 		phy->setRadioState(Radio::RX);
 
@@ -308,21 +308,21 @@ void Mac1609_4::handleLowerControl(cMessage* msg) {
 	}
 	else if (msg->getKind() == Decider80211p::BITERROR) {
 		statsSNIRLostPackets++;
-		DBG << "A packet was not received due to biterrors" << std::endl;
+		DBG_MAC << "A packet was not received due to biterrors" << std::endl;
 	}
 	else if (msg->getKind() == Decider80211p::RECWHILESEND) {
 		statsTXRXLostPackets++;
-		DBG << "A packet was not received because we were sending while receiving" << std::endl;
+		DBG_MAC << "A packet was not received because we were sending while receiving" << std::endl;
 	}
 	else if (msg->getKind() == MacToPhyInterface::RADIO_SWITCHING_OVER) {
-		DBG << "Phylayer said radio switching is done" << std::endl;
+		DBG_MAC << "Phylayer said radio switching is done" << std::endl;
 	}
 	else if (msg->getKind() == BaseDecider::PACKET_DROPPED) {
 		phy->setRadioState(Radio::RX);
-		DBG << "Phylayer said packet was dropped" << std::endl;
+		DBG_MAC << "Phylayer said packet was dropped" << std::endl;
 	}
 	else {
-		DBG << "Invalid control message type (type=NOTHING) : name="
+		DBG_MAC << "Invalid control message type (type=NOTHING) : name="
 		    << msg->getName() << " modulesrc="
 		    << msg->getSenderModule()->getFullPath() << "." << endl;
 		assert(false);
@@ -459,13 +459,13 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 
 	long dest = macPkt->getDestAddr();
 
-	DBG << "Received frame name= " << macPkt->getName()
+	DBG_MAC << "Received frame name= " << macPkt->getName()
 	    << ", myState=" << " src=" << macPkt->getSrcAddr()
 	    << " dst=" << macPkt->getDestAddr() << " myAddr="
 	    << myMacAddress << endl;
 
 	if (macPkt->getDestAddr() == myMacAddress) {
-		DBG << "Received a data packet addressed to me." << endl;
+		DBG_MAC << "Received a data packet addressed to me." << endl;
 		statsReceivedPackets++;
 		sendUp(wsm);
 	}
@@ -474,7 +474,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 		sendUp(wsm);
 	}
 	else {
-		DBG << "Packet not for me, deleting...\n";
+		DBG_MAC << "Packet not for me, deleting...\n";
 		delete wsm;
 	}
 	delete macPkt;
@@ -700,7 +700,7 @@ void Mac1609_4::channelBusySelf(bool generateTxOp) {
 
 	if (!idleChannel) return;
 	idleChannel = false;
-	DBG << "Channel turned busy: Switch or Self-Send\n";
+	DBG_MAC << "Channel turned busy: Switch or Self-Send\n";
 
 	lastBusy = simTime();
 
@@ -720,7 +720,7 @@ void Mac1609_4::channelBusy() {
 
 	//the channel turned busy because someone else is sending
 	idleChannel = false;
-	DBG << "Channel turned busy: External sender\n";
+	DBG_MAC << "Channel turned busy: External sender\n";
 	lastBusy = simTime();
 
 	//channel turned busy
@@ -735,7 +735,7 @@ void Mac1609_4::channelBusy() {
 
 void Mac1609_4::channelIdle(bool afterSwitch) {
 
-	DBG << "Channel turned idle: Switch: " << afterSwitch << std::endl;
+	DBG_MAC << "Channel turned idle: Switch: " << afterSwitch << std::endl;
 
 	//if (idleChannel) return;
 
@@ -765,16 +765,16 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 		if (nextEvent != -1) {
 			if ((!useSCH) || (nextEvent < nextChannelSwitch->getArrivalTime())) {
 				scheduleAt(nextEvent,nextMacEvent);
-				DBG << "next Event is at " << nextMacEvent->getArrivalTime().raw() << std::endl;
+				DBG_MAC << "next Event is at " << nextMacEvent->getArrivalTime().raw() << std::endl;
 			}
 			else {
-				DBG << "Too little time in this interval. will not schedule macEvent\n";
+				DBG_MAC << "Too little time in this interval. will not schedule macEvent\n";
 				statsNumTooLittleTime++;
 				myEDCA[activeChannel]->revokeTxOPs();
 			}
 		}
 		else {
-			DBG << "I don't have any new events in this EDCA sub system" << std::endl;
+			DBG_MAC << "I don't have any new events in this EDCA sub system" << std::endl;
 		}
 	}
 }
