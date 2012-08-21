@@ -50,6 +50,8 @@ void BaseWaveApplLayer::initialize(int stage) {
 		offSet = offSet + floor(offSet/0.050)*0.050;
 		individualOffset = dblrand() * maxOffset;
 
+		findHost()->subscribe(mobilityStateChangedSignal, this);
+
 		if (sendBeacons) {
 			scheduleAt(simTime() + offSet, sendBeaconEvt);
 		}
