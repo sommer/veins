@@ -28,8 +28,8 @@ void Mac1609_4::initialize(int stage) {
 	if (stage == 0) {
 
 		phy11p = FindModule<Mac80211pToPhy11pInterface*>::findSubModule(
-		             getParentModule()->getParentModule());
-		assert(phy);
+		             getParentModule());
+		assert(phy11p);
 
 		//this is required to circumvent double precision issues with constants from CONST80211p.h
 		assert(simTime().getScaleExp() == -12);
