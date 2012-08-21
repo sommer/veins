@@ -21,6 +21,9 @@
 #include "Mac1609_4.h"
 #include <iterator>
 
+#define DBG_MAC EV
+//#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
+
 Define_Module(Mac1609_4);
 
 void Mac1609_4::initialize(int stage) {
@@ -40,7 +43,7 @@ void Mac1609_4::initialize(int stage) {
 
 		//mac-adresses
 		myMacAddress = intuniform(0,0xFFFFFFFE);
-
+		myId = getParentModule()->getParentModule()->getFullPath();
 		//create frequency mappings
 		frequency.insert(std::pair<int, double>(Channels::CRIT_SOL, 5.86e9));
 		frequency.insert(std::pair<int, double>(Channels::SCH1, 5.87e9));
@@ -53,6 +56,8 @@ void Mac1609_4::initialize(int stage) {
 		//create two edca systems
 
 		myEDCA[type_CCH] = new EDCA(type_CCH,par("queueSize").longValue());
+		myEDCA[type_CCH]->myId = myId;
+		myEDCA[type_CCH]->myId.append(" CCH");
 
 		myEDCA[type_CCH]->createQueue(2,(((CWMIN_11P+1)/4)-1),(((CWMIN_11P +1)/2)-1),AC_VO);
 		myEDCA[type_CCH]->createQueue(3,(((CWMIN_11P+1)/2)-1),CWMIN_11P,AC_VI);
@@ -60,6 +65,8 @@ void Mac1609_4::initialize(int stage) {
 		myEDCA[type_CCH]->createQueue(9,CWMIN_11P,CWMAX_11P,AC_BK);
 
 		myEDCA[type_SCH] = new EDCA(type_SCH,par("queueSize").longValue());
+		myEDCA[type_SCH]->myId = myId;
+		myEDCA[type_SCH]->myId.append(" SCH");
 		myEDCA[type_SCH]->createQueue(2,(((CWMIN_11P+1)/4)-1),(((CWMIN_11P +1)/2)-1),AC_VO);
 		myEDCA[type_SCH]->createQueue(3,(((CWMIN_11P+1)/2)-1),CWMIN_11P,AC_VI);
 		myEDCA[type_SCH]->createQueue(6,CWMIN_11P,CWMAX_11P,AC_BE);
@@ -511,13 +518,13 @@ WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
 
 	simtime_t idleTime = simTime() - lastIdle;
 
-	DBG2 << "Initiating transmit at " << simTime() << ". I've been idle since " << idleTime << std::endl;
+	DBG_MAC << "Initiating transmit at " << simTime() << ". I've been idle since " << idleTime << std::endl;
 
 	for (std::map<t_access_category, EDCAQueue>::iterator iter = myQueues.begin(); iter != myQueues.end(); iter++) {
 		if (iter->second.queue.size() != 0) {
 			if (idleTime >= iter->second.aifsn* SLOTLENGTH_11P + SIFS_11P && iter->second.txOP == true) {
 
-				DBG2 << "Queue " << iter->first << " is ready to send!\n";
+				DBG_MAC << "Queue " << iter->first << " is ready to send!\n";
 
 				iter->second.txOP = false;
 				//this queue is ready to send
@@ -530,7 +537,7 @@ WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
 					statsNumInternalContention++;
 					iter->second.cwCur = std::min(iter->second.cwMax,iter->second.cwCur*2);
 					iter->second.currentBackoff = intuniform(0,iter->second.cwCur);
-					DBG2 << "Internal contention for queue " << iter->first  << " : "<< iter->second.currentBackoff << ". Increase cwCur to " << iter->second.cwCur << "\n";
+					DBG_MAC << "Internal contention for queue " << iter->first  << " : "<< iter->second.currentBackoff << ". Increase cwCur to " << iter->second.cwCur << "\n";
 				}
 			}
 		}
@@ -544,7 +551,7 @@ WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
 
 simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 
-	DBG2 << "Restarting contention." << std::endl;
+	DBG_MAC << "Restarting contention." << std::endl;
 
 	simtime_t nextEvent = -1;
 
@@ -552,7 +559,7 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 
 	lastStart = idleSince;
 
-	DBG2 << "Channel is already idle for:" << SimTime(idleTime.dbl()).raw() << " since " << idleSince.raw() << std::endl;
+	DBG_MAC << "Channel is already idle for:" << idleTime << " since " << idleSince << std::endl;
 
 	//this returns the nearest possible event in this EDCA subsystem after a busy channel
 
@@ -572,17 +579,18 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 			//the next possible time to send can be in the past if the channel was idle for a long time, meaning we COULD have sent earlier if we had a packet
 			simtime_t possibleNextEvent = DIFS + iter->second.currentBackoff * SLOTLENGTH_11P;
 
-			DBG2 << "Waiting Time for Queue " << iter->first <<  ":" << possibleNextEvent.raw() << "=" << iter->second.aifsn << " * "  << SimTime(SLOTLENGTH_11P).raw() << " + " << SimTime(SIFS_11P).raw() << "+" << iter->second.currentBackoff << "*" << SimTime(SLOTLENGTH_11P).raw() << " - " << idleTime << std::endl;
+
+			DBG_MAC << "Waiting Time for Queue " << iter->first <<  ":" << possibleNextEvent << "=" << iter->second.aifsn << " * "  << SLOTLENGTH_11P << " + " << SIFS_11P << "+" << iter->second.currentBackoff << "*" << SLOTLENGTH_11P << "; Idle time: " << idleTime << std::endl;
 
 			if (idleTime > possibleNextEvent) {
-				DBG2 << "Could have already send if we had it earlier\n";
+				DBG_MAC << "Could have already send if we had it earlier\n";
 				//we could have already sent. round up to next boundary
 				simtime_t base = idleSince + DIFS;
 				possibleNextEvent =  simTime() - simtime_t().setRaw((simTime() - base).raw() % SLOTLENGTH_11P.raw()) + SLOTLENGTH_11P;
 			}
 			else {
 				//we are gonna send in the future
-				DBG2 << "Sending in the future\n";
+				DBG_MAC << "Sending in the future\n";
 				possibleNextEvent =  idleSince + possibleNextEvent;
 			}
 			nextEvent == -1? nextEvent =  possibleNextEvent : nextEvent = std::min(nextEvent,possibleNextEvent);
@@ -600,11 +608,11 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 	//update all Queues
 
-	DBG2 << "Stopping Contention at " << simTime().raw() << "\n";
+	DBG_MAC << "Stopping Contention at " << simTime().raw() << "\n";
 
 	simtime_t passedTime = simTime() - lastStart;
 
-	DBG2 << "Channel was idle for " << passedTime << "\n";
+	DBG_MAC << "Channel was idle for " << passedTime << "\n";
 
 	lastStart = -1; //indicate that there was no last start
 
@@ -626,7 +634,7 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 				//check how many slots we waited after the first DIFS
 				int passedSlots = (int)((passedTime - SimTime(iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P)) / SLOTLENGTH_11P);
 
-				DBG2 << "Passed slots after DIFS: " << passedSlots << std::endl;
+				DBG_MAC << "Passed slots after DIFS: " << passedSlots << std::endl;
 
 
 				if (iter->second.queue.size() == 0) {
@@ -647,7 +655,7 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 
 				}
 			}
-			DBG2 << "Updating backoff for Queue " << iter->first << ": " << oldBackoff << " -> " << iter->second.currentBackoff << info <<std::endl;
+			DBG_MAC << "Updating backoff for Queue " << iter->first << ": " << oldBackoff << " -> " << iter->second.currentBackoff << info <<std::endl;
 		}
 	}
 }
@@ -655,7 +663,7 @@ void Mac1609_4::EDCA::backoff(t_access_category ac) {
 	myQueues[ac].currentBackoff = intuniform(0,myQueues[ac].cwCur);
 	statsSlotsBackoff += myQueues[ac].currentBackoff;
 	statsNumBackoff++;
-	DBG2 << "Going into Backoff because channel was busy when new packet arrived from upperLayer\n";
+	DBG_MAC << "Going into Backoff because channel was busy when new packet arrived from upperLayer\n";
 }
 
 void Mac1609_4::EDCA::postTransmit(t_access_category ac) {
@@ -666,7 +674,7 @@ void Mac1609_4::EDCA::postTransmit(t_access_category ac) {
 	myQueues[ac].currentBackoff = intuniform(0,myQueues[ac].cwCur);
 	statsSlotsBackoff += myQueues[ac].currentBackoff;
 	statsNumBackoff++;
-	DBG2 << "Queue " << ac << " will go into post-transmit backoff for " << myQueues[ac].currentBackoff << " slots\n";
+	DBG_MAC << "Queue " << ac << " will go into post-transmit backoff for " << myQueues[ac].currentBackoff << " slots\n";
 }
 
 void Mac1609_4::EDCA::cleanUp() {

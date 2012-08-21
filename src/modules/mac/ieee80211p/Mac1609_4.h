@@ -34,14 +34,6 @@
 #include <WaveShortMessage_m.h>
 #include <BaseMacLayer.h>
 
-#ifndef DBG
-#define DBG EV
-#endif
-
-#define DBG2 EV
-//#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
-//#define DBG2 std::cerr << "[" << simTime().raw() << "] " << "EDCA "
-
 /**
  * @brief
  * Manages timeslots for CCH and SCH listening and sending.
@@ -116,6 +108,8 @@ class Mac1609_4 : public BaseMacLayer,
 				long statsNumInternalContention;
 				long statsNumBackoff;
 				long statsSlotsBackoff;
+				/** @brief Id for debug messages */
+				std::string myId;
 		};
 
 	public:
@@ -219,6 +213,8 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief the bit rate at which we transmit */
 		double bitrate;
 
+		/** @brief Id for debug messages */
+		std::string myId;
 
 		Mac80211pToPhy11pInterface* phy11p;
 };
