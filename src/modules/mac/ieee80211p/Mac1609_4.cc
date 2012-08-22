@@ -735,7 +735,12 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 
 	DBG_MAC << "Channel turned idle: Switch: " << afterSwitch << std::endl;
 
-	//if (idleChannel) return;
+	if (nextMacEvent->isScheduled() == true) {
+		//this rare case can happen when another node's time has such a big offset that the node sent a packet although we already changed the channel
+		//the workaround is not trivial and requires a lot of changes to the phy and decider
+		return;
+		//opp_error("channel turned idle but contention timer was scheduled!");
+	}
 
 	idleChannel = true;
 
@@ -753,27 +758,21 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 	lastIdle = delay + simTime();
 	statsTotalBusyTime += simTime() - lastBusy;
 
-	if (nextMacEvent->isScheduled() == true) {
-		opp_error("channel turned idle but contention timer was scheduled!");
-	}
-	else {
-		//get next Event from current EDCA subsystem
-
-		simtime_t nextEvent = myEDCA[activeChannel]->startContent(lastIdle,guardActive());
-		if (nextEvent != -1) {
-			if ((!useSCH) || (nextEvent < nextChannelSwitch->getArrivalTime())) {
-				scheduleAt(nextEvent,nextMacEvent);
-				DBG_MAC << "next Event is at " << nextMacEvent->getArrivalTime().raw() << std::endl;
-			}
-			else {
-				DBG_MAC << "Too little time in this interval. will not schedule macEvent\n";
-				statsNumTooLittleTime++;
-				myEDCA[activeChannel]->revokeTxOPs();
-			}
+	//get next Event from current EDCA subsystem
+	simtime_t nextEvent = myEDCA[activeChannel]->startContent(lastIdle,guardActive());
+	if (nextEvent != -1) {
+		if ((!useSCH) || (nextEvent < nextChannelSwitch->getArrivalTime())) {
+			scheduleAt(nextEvent,nextMacEvent);
+			DBG_MAC << "next Event is at " << nextMacEvent->getArrivalTime().raw() << std::endl;
 		}
 		else {
-			DBG_MAC << "I don't have any new events in this EDCA sub system" << std::endl;
+			DBG_MAC << "Too little time in this interval. will not schedule macEvent" << std::endl;
+			statsNumTooLittleTime++;
+			myEDCA[activeChannel]->revokeTxOPs();
 		}
+	}
+	else {
+		DBG_MAC << "I don't have any new events in this EDCA sub system" << std::endl;
 	}
 }
 
