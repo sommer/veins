@@ -52,18 +52,18 @@ simtime_t Decider80211p::processNewSignal(AirFrame* frame) {
 		if (phy11p->getRadioState() == Radio::TX) {
 			signalStates[frame] = EXPECT_END;
 			frame->setBitError(true);
-			DBG_D11P << "AirFrame: " << frame->getId() << " (" << recvPower << ") received, while already sending. Setting BitErrors to true" << endl;
+			DBG_D11P << "AirFrame: " << frame->getId() << " (" << recvPower << ") received, while already sending. Setting BitErrors to true" << std::endl;
 		}
 		else {
 
 			if (!curSyncFrame) {
 				//NIC is not yet synced to any frame, so lock and try to decode this frame
 				curSyncFrame = frame;
-				DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << endl;
+				DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << std::endl;
 			}
 			else {
 				//NIC is currently trying to decode another frame. this frame will be simply treated as interference
-				DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Already synced to another AirFrame. Treating AirFrame as interference." << endl;
+				DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Already synced to another AirFrame. Treating AirFrame as interference." << std::endl;
 			}
 
 
@@ -209,8 +209,6 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame) {
 	delete bitrateIt;
 
 	DeciderResult80211* result = 0;
-
-	enum PACKET_OK_RESULT decision;
 
 	switch (packetOk(snirMin, snrMin, frame->getBitLength(), payloadBitrate)) {
 

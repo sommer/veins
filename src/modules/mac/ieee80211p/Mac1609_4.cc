@@ -218,8 +218,8 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 	t_access_category ac = mapPriority(thisMsg->getPriority());
 
 	DBG_MAC << "Received a message from upper layer for channel "
-	    << thisMsg->getChannelNumber() << " Access Category (Priority):  "
-	    << ac << std::endl;
+	        << thisMsg->getChannelNumber() << " Access Category (Priority):  "
+	        << ac << std::endl;
 
 	t_channel chan;
 
@@ -248,10 +248,10 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 	DBG_MAC << "sorted packet into queue of EDCA " << chan << " this packet is now at position: " << num << std::endl;
 
 	if (chan == activeChannel) {
-		DBG_MAC << "this packet is for the currently active channel\n";
+		DBG_MAC << "this packet is for the currently active channel" << std::endl;
 	}
 	else {
-		DBG_MAC << "this packet is NOT for the currently active channel\n";
+		DBG_MAC << "this packet is NOT for the currently active channel" << std::endl;
 	}
 
 	if (num == 1 && idleChannel == true && chan == activeChannel) {
@@ -267,7 +267,7 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 				DBG_MAC << "Updated nextMacEvent:" << nextMacEvent->getArrivalTime().raw() << std::endl;
 			}
 			else {
-				DBG_MAC << "Too little time in this interval. Will not schedule nextMacEvent\n";
+				DBG_MAC << "Too little time in this interval. Will not schedule nextMacEvent" << std::endl;
 				//it is possible that this queue has an txop. we have to revoke it
 				myEDCA[activeChannel]->revokeTxOPs();
 				statsNumTooLittleTime++;
@@ -286,7 +286,7 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 void Mac1609_4::handleLowerControl(cMessage* msg) {
 	if (msg->getKind() == MacToPhyInterface::TX_OVER) {
 
-		DBG_MAC << "Successfully transmitted a packet on " << lastAC << "\n";
+		DBG_MAC << "Successfully transmitted a packet on " << lastAC << std::endl;
 
 		phy->setRadioState(Radio::RX);
 
@@ -322,9 +322,7 @@ void Mac1609_4::handleLowerControl(cMessage* msg) {
 		DBG_MAC << "Phylayer said packet was dropped" << std::endl;
 	}
 	else {
-		DBG_MAC << "Invalid control message type (type=NOTHING) : name="
-		    << msg->getName() << " modulesrc="
-		    << msg->getSenderModule()->getFullPath() << "." << endl;
+		DBG_MAC << "Invalid control message type (type=NOTHING) : name=" << msg->getName() << " modulesrc=" << msg->getSenderModule()->getFullPath() << "." << std::endl;
 		assert(false);
 	}
 	delete msg;
@@ -460,12 +458,12 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 	long dest = macPkt->getDestAddr();
 
 	DBG_MAC << "Received frame name= " << macPkt->getName()
-	    << ", myState=" << " src=" << macPkt->getSrcAddr()
-	    << " dst=" << macPkt->getDestAddr() << " myAddr="
-	    << myMacAddress << endl;
+	        << ", myState=" << " src=" << macPkt->getSrcAddr()
+	        << " dst=" << macPkt->getDestAddr() << " myAddr="
+	        << myMacAddress << std::endl;
 
 	if (macPkt->getDestAddr() == myMacAddress) {
-		DBG_MAC << "Received a data packet addressed to me." << endl;
+		DBG_MAC << "Received a data packet addressed to me." << std::endl;
 		statsReceivedPackets++;
 		sendUp(wsm);
 	}
@@ -474,7 +472,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 		sendUp(wsm);
 	}
 	else {
-		DBG_MAC << "Packet not for me, deleting...\n";
+		DBG_MAC << "Packet not for me, deleting..." << std::endl;
 		delete wsm;
 	}
 	delete macPkt;
@@ -527,7 +525,7 @@ WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
 		if (iter->second.queue.size() != 0) {
 			if (idleTime >= iter->second.aifsn* SLOTLENGTH_11P + SIFS_11P && iter->second.txOP == true) {
 
-				DBG_MAC << "Queue " << iter->first << " is ready to send!\n";
+				DBG_MAC << "Queue " << iter->first << " is ready to send!" << std::endl;
 
 				iter->second.txOP = false;
 				//this queue is ready to send
@@ -540,7 +538,7 @@ WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
 					statsNumInternalContention++;
 					iter->second.cwCur = std::min(iter->second.cwMax,iter->second.cwCur*2);
 					iter->second.currentBackoff = intuniform(0,iter->second.cwCur);
-					DBG_MAC << "Internal contention for queue " << iter->first  << " : "<< iter->second.currentBackoff << ". Increase cwCur to " << iter->second.cwCur << "\n";
+					DBG_MAC << "Internal contention for queue " << iter->first  << " : "<< iter->second.currentBackoff << ". Increase cwCur to " << iter->second.cwCur << std::endl;
 				}
 			}
 		}
@@ -586,14 +584,14 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 			DBG_MAC << "Waiting Time for Queue " << iter->first <<  ":" << possibleNextEvent << "=" << iter->second.aifsn << " * "  << SLOTLENGTH_11P << " + " << SIFS_11P << "+" << iter->second.currentBackoff << "*" << SLOTLENGTH_11P << "; Idle time: " << idleTime << std::endl;
 
 			if (idleTime > possibleNextEvent) {
-				DBG_MAC << "Could have already send if we had it earlier\n";
+				DBG_MAC << "Could have already send if we had it earlier" << std::endl;
 				//we could have already sent. round up to next boundary
 				simtime_t base = idleSince + DIFS;
 				possibleNextEvent =  simTime() - simtime_t().setRaw((simTime() - base).raw() % SLOTLENGTH_11P.raw()) + SLOTLENGTH_11P;
 			}
 			else {
 				//we are gonna send in the future
-				DBG_MAC << "Sending in the future\n";
+				DBG_MAC << "Sending in the future" << std::endl;
 				possibleNextEvent =  idleSince + possibleNextEvent;
 			}
 			nextEvent == -1? nextEvent =  possibleNextEvent : nextEvent = std::min(nextEvent,possibleNextEvent);
@@ -605,11 +603,11 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 	//update all Queues
 
-	DBG_MAC << "Stopping Contention at " << simTime().raw() << "\n";
+	DBG_MAC << "Stopping Contention at " << simTime().raw() << std::endl;
 
 	simtime_t passedTime = simTime() - lastStart;
 
-	DBG_MAC << "Channel was idle for " << passedTime << "\n";
+	DBG_MAC << "Channel was idle for " << passedTime << std::endl;
 
 	lastStart = -1; //indicate that there was no last start
 
@@ -660,7 +658,7 @@ void Mac1609_4::EDCA::backoff(t_access_category ac) {
 	myQueues[ac].currentBackoff = intuniform(0,myQueues[ac].cwCur);
 	statsSlotsBackoff += myQueues[ac].currentBackoff;
 	statsNumBackoff++;
-	DBG_MAC << "Going into Backoff because channel was busy when new packet arrived from upperLayer\n";
+	DBG_MAC << "Going into Backoff because channel was busy when new packet arrived from upperLayer" << std::endl;
 }
 
 void Mac1609_4::EDCA::postTransmit(t_access_category ac) {
@@ -671,7 +669,7 @@ void Mac1609_4::EDCA::postTransmit(t_access_category ac) {
 	myQueues[ac].currentBackoff = intuniform(0,myQueues[ac].cwCur);
 	statsSlotsBackoff += myQueues[ac].currentBackoff;
 	statsNumBackoff++;
-	DBG_MAC << "Queue " << ac << " will go into post-transmit backoff for " << myQueues[ac].currentBackoff << " slots\n";
+	DBG_MAC << "Queue " << ac << " will go into post-transmit backoff for " << myQueues[ac].currentBackoff << " slots" << std::endl;
 }
 
 void Mac1609_4::EDCA::cleanUp() {
@@ -696,11 +694,11 @@ void Mac1609_4::EDCA::revokeTxOPs() {
 void Mac1609_4::channelBusySelf(bool generateTxOp) {
 
 	//the channel turned busy because we're sending. we don't want our queues to go into backoff
-	//virtual contention is already handled in initiateTransmission
+	//internal contention is already handled in initiateTransmission
 
 	if (!idleChannel) return;
 	idleChannel = false;
-	DBG_MAC << "Channel turned busy: Switch or Self-Send\n";
+	DBG_MAC << "Channel turned busy: Switch or Self-Send" << std::endl;
 
 	lastBusy = simTime();
 
@@ -720,7 +718,7 @@ void Mac1609_4::channelBusy() {
 
 	//the channel turned busy because someone else is sending
 	idleChannel = false;
-	DBG_MAC << "Channel turned busy: External sender\n";
+	DBG_MAC << "Channel turned busy: External sender" << std::endl;
 	lastBusy = simTime();
 
 	//channel turned busy
