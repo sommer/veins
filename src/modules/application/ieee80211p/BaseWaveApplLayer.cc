@@ -27,10 +27,10 @@ void BaseWaveApplLayer::initialize(int stage) {
 
 	if (stage==0) {
 		myMac = FindModule<WaveAppToMac1609_4Interface*>::findSubModule(
-		            getParentModule()->getParentModule());
+		            getParentModule());
 		assert(myMac);
 
-		myId = getId();
+		myId = getParentModule()->getIndex();
 
 		headerLength = par("headerLength").longValue();
 		double maxOffset = par("maxOffset").doubleValue();
@@ -142,6 +142,9 @@ void BaseWaveApplLayer::finish() {
 	else {
 		delete sendBeaconEvt;
 	}
+
+	findHost()->unsubscribe(mobilityStateChangedSignal, this);
+
 }
 
 BaseWaveApplLayer::~BaseWaveApplLayer() {
