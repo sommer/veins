@@ -29,6 +29,14 @@
 #endif
 //#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath()
 
+/**
+ * @brief
+ * Minimal WAVE application example.
+ *
+ * @author David Eckhoff
+ *
+ * @ingroup applLayer
+ */
 class TestWaveApplLayer  : 	public BaseWaveApplLayer {
 	public:
 

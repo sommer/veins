@@ -22,9 +22,13 @@ package org.mixim.modules.phy;
 
 import org.mixim.base.phyLayer.BasePhyLayer;
 
-// Physical layer module which knows how to initialize the Deciders
-// and AnalogueModels from the modules directory.
-
+//
+// Adaptation of the PhyLayer class for 802.11p.
+//
+// @see BaseWaveApplLayer
+// @see Nic80211p
+// @see Mac1609_4
+//
 simple PhyLayer80211p extends BasePhyLayer
 {
     parameters:

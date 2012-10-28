@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2006-2011 Christoph Sommer <christoph.sommer@uibk.ac.at>
+// Copyright (C) 2006-2012 Christoph Sommer <christoph.sommer@uibk.ac.at>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -32,13 +32,19 @@
 
 /**
  * @brief
- * TraCIMobility is a mobility module for hosts controlled by TraCIScenarioManager.
- * It receives position and state updates from an external module and updates
- * the parent module accordingly.
- * See NED file for more info.
+ * Used in modules created by the TraCIScenarioManager.
+ *
+ * This module relies on the TraCIScenarioManager for state updates
+ * and can not be used on its own.
+ *
+ * See the Veins website <a href="http://veins.car2x.org/"> for a tutorial, documentation, and publications </a>.
+ *
+ * @author Christoph Sommer, David Eckhoff, Luca Bedogni, Bastian Halmos, Stefan Joerer
+ *
+ * @see TraCIScenarioManager
+ * @see TraCIScenarioManagerLaunchd
  *
  * @ingroup mobility
- * @author Christoph Sommer
  */
 class TraCIMobility : public BaseMobility
 {
@@ -65,7 +71,7 @@ class TraCIMobility : public BaseMobility
 
 		virtual void handleSelfMsg(cMessage *msg);
 		virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
-		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
+		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, TraCIScenarioManager::VehicleSignal signals = TraCIScenarioManager::VEH_SIGNAL_UNDEF);
 		virtual void changePosition();
 		virtual void updateDisplayString();
 		virtual void setExternalId(std::string external_id) {
@@ -74,6 +80,9 @@ class TraCIMobility : public BaseMobility
 		virtual std::string getExternalId() const {
 			if (external_id == "") throw cRuntimeError("TraCIMobility::getExternalId called with no external_id set yet");
 			return external_id;
+		}
+		virtual double getAntennaPositionOffset() const {
+			return antennaPositionOffset;
 		}
 		virtual Coord getPositionAt(const simtime_t& t) const {
 			return move.getPositionAt(t) ;
@@ -85,6 +94,10 @@ class TraCIMobility : public BaseMobility
 		virtual double getSpeed() const {
 			if (speed == -1) throw cRuntimeError("TraCIMobility::getSpeed called with no speed set yet");
 			return speed;
+		}
+		virtual TraCIScenarioManager::VehicleSignal getSignals() const {
+			if (signals == -1) throw cRuntimeError("TraCIMobility::getSignals called with no signals set yet");
+			return signals;
 		}
 		/**
 		 * returns angle in rads, 0 being east, with -M_PI <= angle < M_PI.
@@ -151,12 +164,14 @@ class TraCIMobility : public BaseMobility
 		bool isPreInitialized; /**< true if preInitialize() has been called immediately before initialize() */
 
 		std::string external_id; /**< updated by setExternalId() */
+		double antennaPositionOffset; /**< front offset for the antenna on this car */
 
 		simtime_t lastUpdate; /**< updated by nextPosition() */
-		Coord nextPos; /**< updated by nextPosition() */
+		Coord roadPosition; /**< position of front bumper, updated by nextPosition() */
 		std::string road_id; /**< updated by nextPosition() */
 		double speed; /**< updated by nextPosition() */
 		double angle; /**< updated by nextPosition() */
+		TraCIScenarioManager::VehicleSignal signals; /**<updated by nextPosition() */
 
 		cMessage* startAccidentMsg;
 		cMessage* stopAccidentMsg;
@@ -172,6 +187,11 @@ class TraCIMobility : public BaseMobility
 		 * @returns emission in g/s
 		 */
 		double calculateCO2emission(double v, double a) const;
+
+		/**
+		 * Calculates where the antenna of this car is, given its front bumper position
+		 */
+		Coord calculateAntennaPosition(const Coord& vehiclePos) const;
 };
 
 class TraCIMobilityAccess

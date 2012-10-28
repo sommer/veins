@@ -22,13 +22,10 @@
 
 Define_Module(TraCIDemo11p);
 
-const simsignalwrap_t TraCIDemo11p::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
-
 void TraCIDemo11p::initialize(int stage) {
 	BaseWaveApplLayer::initialize(stage);
 	if (stage == 0) {
 		traci = TraCIMobilityAccess().get(getParentModule());
-		findHost()->subscribe(mobilityStateChangedSignal, this);
 
 		sentMessage = false;
 		lastDroveAt = simTime();
@@ -51,14 +48,9 @@ void TraCIDemo11p::sendMessage() {
 }
 
 
-void TraCIDemo11p::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj) {
-	Enter_Method_Silent();
-	if (signalID == mobilityStateChangedSignal) {
-		handlePositionUpdate();
-	}
-}
+void TraCIDemo11p::handlePositionUpdate(cObject* obj) {
+	BaseWaveApplLayer::handlePositionUpdate(obj);
 
-void TraCIDemo11p::handlePositionUpdate() {
 	// stopped for for at least 10s?
 	if (traci->getSpeed() < 1) {
 		if (simTime() - lastDroveAt >= 10) {

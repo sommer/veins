@@ -22,12 +22,27 @@ package org.mixim.modules.mac.ieee80211p;
 
 import org.mixim.base.modules.BaseMacLayer;
 
+//
+// Manages timeslots for CCH and SCH listening and sending.
+//
+// @author Christopher Saloman
+// @author David Eckhoff : rewrote complete model
+//
+// @see BaseWaveApplLayer
+// @see Nic80211p
+// @see PhyLayer80211p
+//
 simple Mac1609_4 extends BaseMacLayer
 {
     parameters:
         @class(Mac1609_4);
-        int serviceChannel = default(1); //the service channel this maclayer listens on
-        
+
+        // cycle between an SCH and the CCH (or stay on CCH all the time)
+        bool useServiceChannel = default(true);
+
+        // the service channel this maclayer listens on
+        int serviceChannel = default(1);
+
         // debug switch
         bool debug = default(false);
 
@@ -43,14 +58,5 @@ simple Mac1609_4 extends BaseMacLayer
         //tx power [mW]
         double txPower @unit(mW);
 
-        // only used when usage of MAC acks is enabled
-        double macMaxFrameRetries = default(3);
-
-        //backoff method to use: constant, linear or exponential
-        string backoffMethod = default("linear");
-
-        // maximum backoffs
-        double macMaxCSMABackoffs = default(5);
-        
         int queueSize = default(0);
 }

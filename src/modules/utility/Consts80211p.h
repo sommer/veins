@@ -77,19 +77,19 @@ const double PHY_HDR_BANDWIDTH = 3000000;
  *
  * as defined in Table 17-15 OFDM PHY characteristics in the IEEE 802.11-2007 standard
  */
-const const_simtime_t SLOTLENGTH_11P = 13e-6;
+const SimTime SLOTLENGTH_11P = SimTime().setRaw(13000000UL);
 
 /** @brief Short interframe space
  *
  * as defined in Table 17-15 OFDM PHY characteristics in the IEEE 802.11-2007 standard
  */
-const const_simtime_t SIFS_11P = 32e-6;
+const SimTime SIFS_11P = SimTime().setRaw(32000000UL);
 
 /** @brief Time it takes to switch from Rx to Tx Mode
  *
  * as defined in Table 17-15 OFDM PHY characteristics in the IEEE 802.11-2007 standard
  */
-const const_simtime_t RADIODELAY_11P  = 1e-6;
+const SimTime RADIODELAY_11P = SimTime().setRaw(1000000UL);
 
 /** @brief Contention Window minimal size
  *
@@ -107,14 +107,14 @@ const unsigned CWMAX_11P = 1023;
  *
  * as defined in Table H.1 in the IEEE 1609.4-2010 standard
  */
-const const_simtime_t SWITCHING_INTERVAL_11P = 50e-3;
+const SimTime SWITCHING_INTERVAL_11P = SimTime().setRaw(50000000000UL);
 
 /** @brief 1609.4 slot length
  *
  * as defined in Table H.1 in the IEEE 1609.4-2010 standard
  * It is the sum of SyncTolerance and MaxChSwitchTime as defined in 6.2.5 in the IEEE 1609.4-2010 Standard
  */
-const const_simtime_t GUARD_INTERVAL_11P = 4e-3;
+const SimTime GUARD_INTERVAL_11P = SimTime().setRaw(4000000000UL);
 
 
 /** @brief Channels as reserved by the FCC

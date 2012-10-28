@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2011 David Eckhoff <eckhoff@cs.fau.de>
+// Copyright (C) 2012 David Eckhoff <eckhoff@cs.fau.de>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -18,14 +18,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-/**
- * @brief Module that manages timeslots for CCH and SCH listening and sending.
- *
- * @class Mac1609_4
- * @author Christopher Saloman
- * @author David Eckhoff : rewrote complete model
- */
-
 #ifndef ___MAC1609_4_H_
 #define ___MAC1609_4_H_
 
@@ -33,14 +25,8 @@
 #include <omnetpp.h>
 #include <queue>
 #include <BaseLayer.h>
-#include <Mac80211pToPhy11pInterface.h>
-#include <Mac1609_4To80211pControlInfo.h>
-#include <MacToPhyInterface.h>
-#include <NetwToMacControlInfo.h>
-#include <Mac80211pToPhy11pInterface.h>
 #include <MacToPhyControlInfo.h>
 #include <PhyLayer80211p.h>
-#include <Mac80211pToMac1609_4Interface.h>
 #include <WaveAppToMac1609_4Interface.h>
 #include <Consts80211p.h>
 #include "FindModule.h"
@@ -48,24 +34,33 @@
 #include <WaveShortMessage_m.h>
 #include <BaseMacLayer.h>
 
-#ifndef DBG
-#define DBG EV
-#endif
-
-#define DBG2 EV
-//#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
-//#define DBG2 std::cerr << "[" << simTime().raw() << "] " << "EDCA "
-
+/**
+ * @brief
+ * Manages timeslots for CCH and SCH listening and sending.
+ *
+ * @author David Eckhoff : rewrote complete model
+ * @author Christoph Sommer : features and bug fixes
+ * @author Michele Segata : features and bug fixes
+ * @author Stefan Joerer : features and bug fixes
+ * @author Christopher Saloman: initial version
+ *
+ * @ingroup macLayer
+ *
+ * @see BaseWaveApplLayer
+ * @see Mac1609_4
+ * @see PhyLayer80211p
+ * @see Decider80211p
+ */
 class Mac1609_4 : public BaseMacLayer,
 	public WaveAppToMac1609_4Interface {
 
 	public:
 
 		enum t_access_category {
-			AC_BK = 3,
-			AC_BE = 2,
-			AC_VI = 1,
-			AC_VO = 0
+			AC_BK = 0,
+			AC_BE = 1,
+			AC_VI = 2,
+			AC_VO = 3
 		};
 
 		class EDCA {
@@ -96,7 +91,7 @@ class Mac1609_4 : public BaseMacLayer,
 				 */
 				int createQueue(int aifsn, int cwMin, int cwMax,t_access_category);
 				int queuePacket(t_access_category AC,WaveShortMessage* cmsg);
-
+				void backoff(t_access_category ac);
 				simtime_t startContent(simtime_t idleSince, bool guardActive);
 				void stopContent(bool allowBackoff, bool generateTxOp);
 				void postTransmit(t_access_category);
@@ -112,11 +107,15 @@ class Mac1609_4 : public BaseMacLayer,
 				int numQueues;
 				uint32_t maxQueueSize;
 				simtime_t lastStart; //when we started the last contention;
-				simtime_t delayedStart; //if the guard or any other delay is currently included in our waiting time
 				t_channel channelType;
+
+				/** @brief Stats */
 				long statsNumInternalContention;
 				long statsNumBackoff;
 				long statsSlotsBackoff;
+
+				/** @brief Id for debug messages */
+				std::string myId;
 		};
 
 	public:
@@ -180,6 +179,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 		/** @brief Last time the channel went idle */
 		simtime_t lastIdle;
+		simtime_t lastBusy;
 
 		/** @brief Current state of the channel selecting operation.*/
 		t_channel activeChannel;
@@ -187,22 +187,12 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief access category of last sent packet */
 		t_access_category lastAC;
 
-		/** @brief Physical parameters as defined in 802.11p*/
-		double dot4SyncTolerance;
-		double dot4MaxChSwitchTime;
-		double dot4CchInterval;
-		double dot4SchInterval;
-
 		/** @brief Stores the frequencies in Hz that are associated to the channel numbers.*/
 		std::map<int,double> frequency;
 
-		int packets_arrived;
-		int packets_received;
-		int packets_successfully_sent;
-		int intervalTooShort;
-
 		int headerLength;
 
+		bool useSCH;
 		int mySCH;
 
 		std::map<t_channel,EDCA*> myEDCA;
@@ -220,9 +210,7 @@ class Mac1609_4 : public BaseMacLayer,
 		long statsNumInternalContention;
 		long statsNumBackoff;
 		long statsSlotsBackoff;
-
-		/** @brief publish dropped packets nic wide */
-		int myNicId;
+		simtime_t statsTotalBusyTime;
 
 		/** @brief This MAC layers MAC address.*/
 		int myMacAddress;
@@ -233,8 +221,8 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief the bit rate at which we transmit */
 		double bitrate;
 
-		/** @brief the maximun number of backoffs before dropping */
-		int macMaxCSMABackoffs;
+		/** @brief Id for debug messages */
+		std::string myId;
 
 		Mac80211pToPhy11pInterface* phy11p;
 };

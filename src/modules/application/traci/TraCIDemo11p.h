@@ -32,9 +32,6 @@ class TraCIDemo11p : public BaseWaveApplLayer {
 		virtual void initialize(int stage);
 
 	protected:
-		static const simsignalwrap_t mobilityStateChangedSignal;
-
-	protected:
 		TraCIMobility* traci;
 		simtime_t lastDroveAt;
 		bool sentMessage;
@@ -43,9 +40,7 @@ class TraCIDemo11p : public BaseWaveApplLayer {
 		virtual void onBeacon(WaveShortMessage* wsm);
 		virtual void onData(WaveShortMessage* wsm);
 		void sendMessage();
-
-		virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj);
-		void handlePositionUpdate();
+		virtual void handlePositionUpdate(cObject* obj);
 };
 
 #endif

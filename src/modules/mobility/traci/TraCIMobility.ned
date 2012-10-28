@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2006-2011 Christoph Sommer <christoph.sommer@uibk.ac.at>
+// Copyright (C) 2006-2012 Christoph Sommer <christoph.sommer@uibk.ac.at>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -23,9 +23,17 @@ package org.mixim.modules.mobility.traci;
 import org.mixim.base.modules.BaseMobility;
 
 //
-// TraCIMobility is a mobility module for hosts controlled by TraCIScenarioManager.
-// It receives position and state updates from an external module and updates
-// the parent module accordingly.
+// Used in modules created by the TraCIScenarioManager.
+//
+// This module relies on the TraCIScenarioManager for state updates
+// and can not be used on its own.
+//
+// See the Veins website <a href="http://veins.car2x.org/"> for a tutorial, documentation, and publications </a>.
+//
+// @author Christoph Sommer, David Eckhoff, Luca Bedogni, Bastian Halmos, Stefan Joerer
+//
+// @see TraCIScenarioManager
+// @see TraCIScenarioManagerLaunchd
 //
 simple TraCIMobility extends BaseMobility
 {
@@ -33,6 +41,7 @@ simple TraCIMobility extends BaseMobility
 		@class(TraCIMobility);
         @display("i=block/cogwheel");
         bool debug = default(false);  // debug switch
+        double antennaPositionOffset @unit("m") = default(0.0m); // position offset of the antenna of the front of the car
         int accidentCount = default(0);  // number of accidents
         double accidentStart @unit("s") = default(uniform(30s,60s));  // time until first accident, relative to departure time
         volatile double accidentDuration @unit("s") = default(uniform(30s,60s));  // duration of accident

@@ -38,19 +38,15 @@
 //#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
 
 /**
- * @brief Provides initialisation for several AnalogueModels and Deciders
- * from modules directory.
- *
- * Knows the following AnalogueModels:
- * - SimplePathlossModel
- * - LogNormalShadowing
- * - JakesFading
- *
- * Knows the following Deciders
- * - Decider80211
- * - SNRThresholdDecider
+ * @brief
+ * Adaptation of the PhyLayer class for 802.11p.
  *
  * @ingroup phyLayer
+ *
+ * @see BaseWaveApplLayer
+ * @see Mac1609_4
+ * @see PhyLayer80211p
+ * @see Decider80211p
  */
 class PhyLayer80211p	: 	public BasePhyLayer,
 	public Mac80211pToPhy11pInterface,

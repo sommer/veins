@@ -18,21 +18,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-/**
- * @brief Interface between WaveApplication Layer and Mac1609_4
- *
- * @class Mac1609_4
- * @ingroup Mac1609_4
- * @author David Eckhoff
- */
-
 #include <NetwToMacControlInfo.h>
 #include <Consts80211p.h>
 
 #ifndef ___WAVEAPPTOMAC1609_4INTERFACE_H_
 #define ___WAVEAPPTOMAC1609_4INTERFACE_H_
 
-
+/**
+ * @brief
+ * Interface between WaveApplication Layer and Mac1609_4
+ *
+ * @author David Eckhoff
+ *
+ * @ingroup macLayer
+ */
 class WaveAppToMac1609_4Interface {
 	public:
 

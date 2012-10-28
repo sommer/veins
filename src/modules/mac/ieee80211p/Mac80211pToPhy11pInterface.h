@@ -18,20 +18,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-/**
- * @brief Interface between Mac802.11p and Phy11p.
- *
- * @class Mac80211p
- * @ingroup Mac80211p
- * @author Christopher Saloman
- * @author David Eckhoff
- */
-
 #ifndef MAC80211PTOPHY11PINTERFACE_H_
 #define MAC80211PTOPHY11PINTERFACE_H_
 
 #include <MacToPhyInterface.h>
 
+/**
+ * @brief
+ * Interface of PhyLayer80211p exposed to Mac1609_4.
+ *
+ * @author Christopher Saloman
+ * @author David Eckhoff
+ *
+ * @ingroup phyLayer
+ */
 class Mac80211pToPhy11pInterface {
 	public:
 		enum BasePhyMessageKinds {

@@ -23,6 +23,15 @@ package org.mixim.modules.nic;
 import org.mixim.modules.phy.PhyLayer80211p;
 import org.mixim.modules.mac.ieee80211p.Mac1609_4;
 
+//
+// This NIC implements an 802.11p network interface card.
+//
+// @author David Eckhoff
+//
+// @see BaseWaveApplLayer
+// @see Mac1609_4
+// @see PhyLayer80211p
+//
 module Nic80211p
 {
     gates:

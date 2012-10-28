@@ -4,5 +4,5 @@
 // Documentation for these modules is at http://veins.car2x.org/
 //
 
-This is Veins 2.0-rc2
+This is Veins 2.0
 
