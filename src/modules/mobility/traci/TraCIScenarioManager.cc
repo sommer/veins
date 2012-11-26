@@ -118,7 +118,7 @@ void TraCIScenarioManager::initialize(int stage) {
 }
 
 std::string TraCIScenarioManager::receiveTraCIMessage() {
-	if (!socketPtr) error("Connection to TraCI server lost");
+	if (!socketPtr) error("Not connected to TraCI server");
 
 	uint32_t msgLength;
 	{
@@ -161,7 +161,7 @@ std::string TraCIScenarioManager::receiveTraCIMessage() {
 }
 
 void TraCIScenarioManager::sendTraCIMessage(std::string buf) {
-	if (!socketPtr) error("Connection to TraCI server lost");
+	if (!socketPtr) error("Not connected to TraCI server");
 
 	{
 		uint32_t msgLength = sizeof(uint32_t) + buf.length();
