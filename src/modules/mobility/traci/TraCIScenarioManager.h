@@ -347,7 +347,9 @@ class TraCIScenarioManager : public cSimpleModule
 };
 
 template<> void TraCIScenarioManager::TraCIBuffer::write(std::string inv);
+template<> void TraCIScenarioManager::TraCIBuffer::write(TraCIScenarioManager::TraCICoord inv);
 template<> std::string TraCIScenarioManager::TraCIBuffer::read();
+template<> TraCIScenarioManager::TraCICoord TraCIScenarioManager::TraCIBuffer::read();
 
 class TraCIScenarioManagerAccess
 {

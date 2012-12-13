@@ -78,6 +78,10 @@ void TraCITestApp::handlePositionUpdate() {
 		if (t == 11) {
 			assertClose("(commandSetSpeed) vehicle has stopped", 0.0, traci->getSpeed());
 		}
+		if (t == 12) {
+			traci->commandSetSpeedMode(0xff);
+			traci->commandSetSpeed(-1);
+		}
 	}
 
 	if (testNumber == testCounter++) {
@@ -110,8 +114,8 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			assertClose("(commandDistanceRequest, air)", 859.4556417, traci->commandDistanceRequest(Coord(25,7030), Coord(883,6980), false));
-			assertClose("(commandDistanceRequest, driving)", 845.93, traci->commandDistanceRequest(Coord(25,7030), Coord(883,6980), true));
+			assertClose("(commandDistanceRequest, air)", 859., floor(traci->commandDistanceRequest(Coord(25,7030), Coord(883,6980), false)));
+			assertClose("(commandDistanceRequest, driving)", 847., floor(traci->commandDistanceRequest(Coord(25,7030), Coord(883,6980), true)));
 		}
 	}
 
@@ -136,7 +140,7 @@ void TraCITestApp::handlePositionUpdate() {
 	}
 
 	if (testNumber == testCounter++) {
-		if (t == 1) {
+		if (t >= 1) {
 			traci->getManager()->commandSetTrafficLightPhaseIndex("10", 4);
 		}
 		if (t == 30) {
@@ -199,8 +203,8 @@ void TraCITestApp::handlePositionUpdate() {
 			std::list<std::string> lanes = traci->getManager()->commandGetLaneIds();
 			assertTrue("(commandGetLaneIds) returns test lane", std::find(lanes.begin(), lanes.end(), "10_0") != lanes.end());
 			std::list<Coord> shape = traci->getManager()->commandGetLaneShape("10_0");
-			assertClose("(commandGetLaneShape) shape x coordinate is correct", 523.35, shape.begin()->x);
-			assertClose("(commandGetLaneShape) shape y coordinate is correct", 80.83, shape.begin()->y);
+			assertClose("(commandGetLaneShape) shape x coordinate is correct", 523., floor(shape.begin()->x));
+			assertClose("(commandGetLaneShape) shape y coordinate is correct", 79., floor(shape.begin()->y));
 		}
 	}
 

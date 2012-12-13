@@ -279,7 +279,7 @@ void TraCIScenarioManager::init_traci() {
 		uint32_t apiVersion = version.first;
 		std::string serverVersion = version.second;
 
-		if ((apiVersion == 2) || (apiVersion == 3)) {
+		if ((apiVersion == 3) || (apiVersion == 5)) {
 			MYDEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
 		}
 		else {
@@ -482,17 +482,21 @@ void TraCIScenarioManager::commandChangeRoute(std::string nodeId, std::string ro
 }
 
 double TraCIScenarioManager::commandDistanceRequest(Coord position1, Coord position2, bool returnDrivingDistance) {
+	uint8_t variable = DISTANCE_REQUEST;
+	std::string simId = "sim0";
+	uint8_t variableType = TYPE_COMPOUND;
+	int32_t count = 3;
 	TraCICoord p1 = omnet2traci(position1);
 	TraCICoord p2 = omnet2traci(position2);
-	TraCIBuffer buf = queryTraCI(CMD_DISTANCEREQUEST, TraCIBuffer() << static_cast<uint8_t>(POSITION_2D) << double(p1.x) << double(p1.y) << static_cast<uint8_t>(POSITION_2D) << double(p2.x) << double(p2.y) << static_cast<uint8_t>(returnDrivingDistance ? REQUEST_DRIVINGDIST : REQUEST_AIRDIST));
+	uint8_t dType = static_cast<uint8_t>(returnDrivingDistance ? REQUEST_DRIVINGDIST : REQUEST_AIRDIST);
 
-	uint8_t cmdLength; buf >> cmdLength;
-	uint8_t commandId; buf >> commandId;
-	ASSERT(commandId == CMD_DISTANCEREQUEST);
-
-	uint8_t flag; buf >> flag;
-	ASSERT(flag == static_cast<uint8_t>(returnDrivingDistance ? REQUEST_DRIVINGDIST : REQUEST_AIRDIST));
-
+	// query road network boundaries
+	TraCIBuffer buf = queryTraCI(CMD_GET_SIM_VARIABLE, TraCIBuffer() << variable << simId << variableType << count << p1 << p2 << dType);
+	uint8_t cmdLength_resp; buf >> cmdLength_resp;
+	uint8_t commandId_resp; buf >> commandId_resp; ASSERT(commandId_resp == RESPONSE_GET_SIM_VARIABLE);
+	uint8_t variableId_resp; buf >> variableId_resp; ASSERT(variableId_resp == variable);
+	std::string simId_resp; buf >> simId_resp; ASSERT(simId_resp == simId);
+	uint8_t typeId_resp; buf >> typeId_resp; ASSERT(typeId_resp == TYPE_DOUBLE);
 	double distance; buf >> distance;
 
 	ASSERT(buf.eof());
@@ -1176,6 +1180,12 @@ template<> void TraCIScenarioManager::TraCIBuffer::write(std::string inv) {
 	for (size_t i = 0; i < length; ++i) write<char> (inv[i]);
 }
 
+template<> void TraCIScenarioManager::TraCIBuffer::write(TraCICoord inv) {
+	write<uint8_t>(POSITION_2D);
+	write<double>(inv.x);
+	write<double>(inv.y);
+}
+
 template<> std::string TraCIScenarioManager::TraCIBuffer::read() {
 	uint32_t length = read<uint32_t> ();
 	if (length == 0) return std::string();
@@ -1185,5 +1195,16 @@ template<> std::string TraCIScenarioManager::TraCIBuffer::read() {
 	obuf[length] = 0;
 
 	return std::string(obuf, length);
+}
+
+template<> TraCIScenarioManager::TraCICoord TraCIScenarioManager::TraCIBuffer::read() {
+	uint8_t posType = read<uint8_t>();
+	ASSERT(posType == POSITION_2D);
+
+	TraCICoord p;
+	p.x = read<double>();
+	p.y = read<double>();
+
+	return p;
 }
 
