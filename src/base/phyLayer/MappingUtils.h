@@ -679,17 +679,17 @@ protected:
 	typedef InterpolatorBase< std::map<Argument::mapped_type, Mapping*> > base_class_type;
 
 public:
-	typedef typename base_class_type::storage_type     storage_type;
-	typedef typename base_class_type::container_type   container_type;
-	typedef typename base_class_type::key_type         key_type;
-	typedef typename base_class_type::key_cref_type    key_cref_type;
-	typedef typename base_class_type::mapped_type      mapped_type;
-	typedef typename base_class_type::mapped_cref_type mapped_cref_type;
-	typedef typename base_class_type::pair_type        pair_type;
-	typedef typename base_class_type::iterator         iterator;
-	typedef typename base_class_type::const_iterator   const_iterator;
-	typedef typename base_class_type::comparator_type  comparator_type;
-	typedef typename base_class_type::interpolated     interpolated;
+	typedef base_class_type::storage_type     storage_type;
+	typedef base_class_type::container_type   container_type;
+	typedef base_class_type::key_type         key_type;
+	typedef base_class_type::key_cref_type    key_cref_type;
+	typedef base_class_type::mapped_type      mapped_type;
+	typedef base_class_type::mapped_cref_type mapped_cref_type;
+	typedef base_class_type::pair_type        pair_type;
+	typedef base_class_type::iterator         iterator;
+	typedef base_class_type::const_iterator   const_iterator;
+	typedef base_class_type::comparator_type  comparator_type;
+	typedef base_class_type::interpolated     interpolated;
 
 public:
 	Linear():
