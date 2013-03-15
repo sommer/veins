@@ -48,6 +48,10 @@ simtime_t Decider80211p::processNewSignal(AirFrame* msg) {
 	if (recvPower < sensitivity) {
 		//annotate the frame, so that we won't try decoding it at its end
 		frame->setUnderSensitivity(true);
+		//check channel busy status. a superposition of low power frames might turn channel status to busy
+		if (cca(simTime(), NULL) == false) {
+			setChannelIdleStatus(false);
+		}
 		return signal.getReceptionEnd();
 	}
 	else {
