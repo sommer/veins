@@ -28,9 +28,11 @@
 #include <DeciderResult80211.h>
 #include <Mac80211Pkt_m.h>
 #include <Signal_.h>
-#include <AirFrame_m.h>
+#include <AirFrame11p_m.h>
 
-simtime_t Decider80211p::processNewSignal(AirFrame* frame) {
+simtime_t Decider80211p::processNewSignal(AirFrame* msg) {
+
+	AirFrame11p *frame = check_and_cast<AirFrame11p *>(msg);
 
 	// get the receiving power of the Signal at start-time and center frequency
 	Signal& signal = frame->getSignal();
@@ -39,19 +41,26 @@ simtime_t Decider80211p::processNewSignal(AirFrame* frame) {
 	start.setTime(signal.getReceptionStart());
 	start.setArgValue(Dimension::frequency_static(), centerFrequency);
 
+	signalStates[frame] = EXPECT_END;
+
 	double recvPower = signal.getReceivingPower()->getValue(start);
 
 	if (recvPower < sensitivity) {
-		return notAgain;
+		//annotate the frame, so that we won't try decoding it at its end
+		frame->setUnderSensitivity(true);
+		//check channel busy status. a superposition of low power frames might turn channel status to busy
+		if (cca(simTime(), NULL) == false) {
+			setChannelIdleStatus(false);
+		}
+		return signal.getReceptionEnd();
 	}
 	else {
-		signalStates[frame] = EXPECT_END;
 
 		setChannelIdleStatus(false);
 
 		if (phy11p->getRadioState() == Radio::TX) {
-			signalStates[frame] = EXPECT_END;
 			frame->setBitError(true);
+			frame->setWasTransmitting(true);
 			DBG_D11P << "AirFrame: " << frame->getId() << " (" << recvPower << ") received, while already sending. Setting BitErrors to true" << std::endl;
 		}
 		else {
@@ -418,7 +427,10 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude) {
 }
 
 
-simtime_t Decider80211p::processSignalEnd(AirFrame* frame) {
+simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
+
+	AirFrame11p *frame = check_and_cast<AirFrame11p *>(msg);
+
 	// here the Signal is finally processed
 
 	bool whileSending = false;
@@ -428,8 +440,11 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* frame) {
 
 	DeciderResult* result;
 
-
-	if (frame->hasBitError() || phy11p->getRadioState() == Radio::TX) {
+	if (frame->getUnderSensitivity()) {
+		//this frame was not even detected by the radio card
+		result = new DeciderResult80211(false,0,0);
+	}
+	else if (frame->getWasTransmitting() || phy11p->getRadioState() == Radio::TX) {
 		//this frame was received while sending
 		whileSending = true;
 		result = new DeciderResult80211(false,0,0);
@@ -458,11 +473,15 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* frame) {
 		phy->sendUp(frame, result);
 	}
 	else {
-		DBG_D11P << "packet was not received correctly, sending it as control message to upper layer\n";
-		if (whileSending) {
+		if (frame->getUnderSensitivity()) {
+			DBG_D11P << "packet was not detected by the card. power was under sensitivity threshold\n";
+		}
+		else if (whileSending) {
+			DBG_D11P << "packet was received while sending, sending it as control message to upper layer\n";
 			phy->sendControlMsgToMac(new cMessage("Error",RECWHILESEND));
 		}
 		else {
+			DBG_D11P << "packet was not received correctly, sending it as control message to upper layer\n";
 			phy->sendControlMsgToMac(new cMessage("Error",BITERROR));
 		}
 		delete result;

@@ -127,6 +127,12 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		 */
 		virtual Decider* initializeDecider80211p(ParameterMap& params);
 
+		/**
+		 * @brief This function encapsulates messages from the upper layer into an
+		 * AirFrame and sets all necessary attributes.
+		 */
+		virtual AirFrame *encapsMsg(cPacket *msg);
+
 		virtual void changeListeningFrequency(double freq);
 
 		virtual void handleSelfMessage(cMessage* msg);
