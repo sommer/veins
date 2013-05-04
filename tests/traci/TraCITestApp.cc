@@ -140,8 +140,8 @@ void TraCITestApp::handlePositionUpdate() {
 	}
 
 	if (testNumber == testCounter++) {
-		if (t >= 1) {
-			traci->getManager()->commandSetTrafficLightPhaseIndex("10", 4);
+		if (t == 1) {
+			traci->getManager()->commandSetTrafficLightPhaseIndex("10", 2);
 		}
 		if (t == 30) {
 			assertTrue("(commandSetTrafficLightPhaseIndex) vehicle is at 31", roadId == "31");

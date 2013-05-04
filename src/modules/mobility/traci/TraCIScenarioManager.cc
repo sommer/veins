@@ -419,7 +419,7 @@ void TraCIScenarioManager::commandNewRoute(std::string nodeId, std::string roadI
 void TraCIScenarioManager::commandSetVehicleParking(std::string nodeId) {
 	uint8_t variableId = REMOVE;
 	uint8_t variableType = TYPE_BYTE;
-	uint8_t value = NOTIFICATION_PARKING;
+	uint8_t value = REMOVE_PARKING;
 	TraCIBuffer buf = queryTraCI(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << value);
 	ASSERT(buf.eof());
 }

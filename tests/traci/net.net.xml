@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on Wed Dec  5 12:44:22 2012 by SUMO netconvert Version 0.16.0
+<!-- generated on Sat May  4 18:30:20 2013 by SUMO netconvert Version 0.17.0
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.sf.net/xsd/netconvertConfiguration.xsd">
@@ -18,7 +18,6 @@
         <tls.set value="10"/>
         <tls.green.time value="999"/>
         <tls.yellow.time value="1"/>
-        <tls.half-offset value="10"/>
     </tls_building>
 
 </configuration>
@@ -735,7 +734,7 @@
         <lane id="9_0" index="0" speed="21.72" length="43.80" shape="401.65,53.10 401.65,96.90"/>
     </edge>
 
-    <tlLogic id="10" type="static" programID="0" offset="1003.50">
+    <tlLogic id="10" type="static" programID="0" offset="0">
         <phase duration="999" state="GggGGgrrr"/>
         <phase duration="1" state="yggyygrrr"/>
         <phase duration="6" state="rGGrrGrrr"/>
@@ -744,8 +743,7 @@
         <phase duration="1" state="rrrrrryyy"/>
     </tlLogic>
 
-    <junction id="1" type="unregulated" x="0.00" y="51.65" incLanes="" intLanes="" shape="-0.00,51.60 -0.00,48.40">
-    </junction>
+    <junction id="1" type="unregulated" x="0.00" y="51.65" incLanes="" intLanes="" shape="-0.00,51.60 -0.00,48.40"/>
     <junction id="10" type="traffic_light" x="300.00" y="51.65" incLanes="67_0 66_0 31_0" intLanes=":10_0_0 :10_9_0 :10_10_0 :10_3_0 :10_4_0 :10_11_0 :10_6_0 :10_7_0 :10_12_0" shape="296.75,53.10 303.25,53.10 304.75,51.60 304.75,48.40 303.25,46.90 296.75,46.90 295.25,48.40 295.25,51.60">
         <request index="0" response="111000000" foes="111100000" cont="0"/>
         <request index="1" response="110011000" foes="110011000" cont="1"/>
@@ -924,8 +922,7 @@
         <request index="0" response="10" foes="10" cont="0"/>
         <request index="1" response="00" foes="01" cont="0"/>
     </junction>
-    <junction id="34" type="unregulated" x="1100.00" y="51.65" incLanes="55_0" intLanes="" shape="1100.00,48.40 1100.00,51.60">
-    </junction>
+    <junction id="34" type="unregulated" x="1100.00" y="51.65" incLanes="55_0" intLanes="" shape="1100.00,48.40 1100.00,51.60"/>
     <junction id="4" type="priority" x="100.00" y="51.65" incLanes="63_0 62_0 25_0" intLanes=":4_0_0 :4_1_0 :4_2_0 :4_3_0 :4_4_0 :4_5_0 :4_6_0 :4_7_0 :4_8_0" shape="96.75,53.10 103.25,53.10 104.75,51.60 104.75,48.40 103.25,46.90 96.75,46.90 95.25,48.40 95.25,51.60">
         <request index="0" response="111000000" foes="111100000" cont="0"/>
         <request index="1" response="110011000" foes="110011000" cont="0"/>
@@ -971,7 +968,7 @@
         <request index="3" response="0000" foes="0011" cont="0"/>
     </junction>
 
-    <junction id=":10_9_0" type="internal" x="301.65" y="50.28" incLanes=":10_1_0 66_0" intLanes=":10_3_0 :10_4_0 :10_7_0 :10_8_0"/>
+    <junction id=":10_9_0" type="internal" x="301.65" y="50.28" incLanes=":10_1_0 31_0 66_0" intLanes=":10_3_0 :10_4_0 :10_7_0 :10_8_0"/>
     <junction id=":10_10_0" type="internal" x="300.00" y="51.45" incLanes=":10_2_0 31_0 66_0" intLanes=":10_4_0 :10_8_0"/>
     <junction id=":10_11_0" type="internal" x="300.00" y="48.55" incLanes=":10_5_0 31_0 67_0" intLanes=":10_0_0 :10_6_0"/>
     <junction id=":10_12_0" type="internal" x="298.35" y="50.28" incLanes=":10_8_0" intLanes=":10_0_0 :10_1_0 :10_2_0 :10_4_0"/>
