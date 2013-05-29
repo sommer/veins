@@ -574,6 +574,41 @@ void TraCIScenarioManager::commandAddPolygon(std::string polyId, std::string pol
 	ASSERT(buf.eof());
 }
 
+void TraCIScenarioManager::commandRemovePolygon(std::string polyId, int32_t layer) {
+	TraCIBuffer p;
+
+	p << static_cast<uint8_t>(REMOVE) << polyId;
+	p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
+
+	TraCIBuffer buf = queryTraCI(CMD_SET_POLYGON_VARIABLE, p);
+	ASSERT(buf.eof());
+}
+
+void TraCIScenarioManager::commandAddPoi(std::string poiId, std::string poiType, const TraCIScenarioManager::Color& color, int32_t layer, Coord pos) {
+	TraCIBuffer p;
+
+	TraCICoord traciPos = omnet2traci(pos);
+	p << static_cast<uint8_t>(ADD) << poiId;
+	p << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(4);
+	p << static_cast<uint8_t>(TYPE_STRING) << poiType;
+	p << static_cast<uint8_t>(TYPE_COLOR) << color.red << color.green << color.blue << color.alpha;
+	p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
+	p << static_cast<uint8_t>(POSITION_2D) << traciPos.x << traciPos.y;
+
+	TraCIBuffer buf = queryTraCI(CMD_SET_POI_VARIABLE, p);
+	ASSERT(buf.eof());
+}
+
+void TraCIScenarioManager::commandRemovePoi(std::string poiId, int32_t layer) {
+	TraCIBuffer p;
+
+	p << static_cast<uint8_t>(REMOVE) << poiId;
+	p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
+
+	TraCIBuffer buf = queryTraCI(CMD_SET_POI_VARIABLE, p);
+	ASSERT(buf.eof());
+}
+
 std::list<std::string> TraCIScenarioManager::commandGetLaneIds() {
 	return genericGetStringList(CMD_GET_LANE_VARIABLE, "", ID_LIST, RESPONSE_GET_LANE_VARIABLE);
 }
