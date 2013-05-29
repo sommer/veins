@@ -33,6 +33,7 @@ class TraCIDemo11p : public BaseWaveApplLayer {
 
 	protected:
 		TraCIMobility* traci;
+		AnnotationManager* annotations;
 		simtime_t lastDroveAt;
 		bool sentMessage;
 

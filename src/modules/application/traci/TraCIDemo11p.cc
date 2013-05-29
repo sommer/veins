@@ -26,6 +26,8 @@ void TraCIDemo11p::initialize(int stage) {
 	BaseWaveApplLayer::initialize(stage);
 	if (stage == 0) {
 		traci = TraCIMobilityAccess().get(getParentModule());
+		annotations = AnnotationManagerAccess().getIfExists();
+		ASSERT(annotations);
 
 		sentMessage = false;
 		lastDroveAt = simTime();
@@ -38,6 +40,7 @@ void TraCIDemo11p::onBeacon(WaveShortMessage* wsm) {
 void TraCIDemo11p::onData(WaveShortMessage* wsm) {
 	findHost()->getDisplayString().updateWith("r=16,green");
 	if (!sentMessage) sendMessage();
+	annotations->scheduleErase(1, annotations->drawLine(wsm->getSenderPos(), traci->getPositionAt(simTime()), "blue"));
 }
 
 void TraCIDemo11p::sendMessage() {
