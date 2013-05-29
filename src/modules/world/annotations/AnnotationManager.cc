@@ -23,15 +23,16 @@
 
 #include "world/annotations/AnnotationManager.h"
 
-
 Define_Module(AnnotationManager);
 
-AnnotationManager::~AnnotationManager() {
-
+namespace {
+	const short EVT_SCHEDULED_ERASE = 3;
 }
 
 void AnnotationManager::initialize() {
 	debug = par("debug");
+
+	scheduledEraseEvts.clear();
 
 	annotations.clear();
 	groups.clear();
@@ -42,6 +43,14 @@ void AnnotationManager::initialize() {
 
 void AnnotationManager::finish() {
 	hideAll();
+}
+
+AnnotationManager::~AnnotationManager() {
+	while (scheduledEraseEvts.begin() != scheduledEraseEvts.end()) {
+		cancelAndDelete(*scheduledEraseEvts.begin());
+		scheduledEraseEvts.erase(scheduledEraseEvts.begin());
+	}
+	scheduledEraseEvts.clear();
 
 	while (annotations.begin() != annotations.end()) {
 		delete *annotations.begin();
@@ -54,6 +63,7 @@ void AnnotationManager::finish() {
 		groups.erase(groups.begin());
 	}
 	groups.clear();
+
 }
 
 void AnnotationManager::handleMessage(cMessage *msg) {
@@ -65,7 +75,19 @@ void AnnotationManager::handleMessage(cMessage *msg) {
 }
 
 void AnnotationManager::handleSelfMsg(cMessage *msg) {
-	error("AnnotationManager doesn't handle self-messages");
+
+	if (msg->getKind() == EVT_SCHEDULED_ERASE) {
+		Annotation* a = static_cast<Annotation*>(msg->getContextPointer());
+		ASSERT(a);
+
+		erase(a);
+
+		scheduledEraseEvts.remove(msg);
+		delete msg;
+		return;
+	}
+
+	error("unknown self message type");
 }
 
 void AnnotationManager::handleParameterChange(const char *parname) {
@@ -214,6 +236,28 @@ void AnnotationManager::erase(const Annotation* annotation) {
 	hide(annotation);
 	annotations.remove(const_cast<Annotation*>(annotation));
 	delete annotation;
+}
+
+void AnnotationManager::eraseAll(Group* group) {
+	for (Annotations::iterator i = annotations.begin(); i != annotations.end(); ) {
+		if ((!group) || ((*i)->group == group)) {
+			erase(*i++);
+		} else {
+			i++;
+		}
+	}
+}
+
+void AnnotationManager::scheduleErase(simtime_t deltaT, Annotation* annotation) {
+	Enter_Method_Silent();
+
+	cMessage* evt = new cMessage("erase", EVT_SCHEDULED_ERASE);
+	evt->setContextPointer(annotation);
+
+	scheduleAt(simTime() + deltaT, evt);
+
+	scheduledEraseEvts.push_back(evt);
+
 }
 
 cModule* AnnotationManager::createDummyModule(std::string displayString) {

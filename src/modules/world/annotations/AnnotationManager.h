@@ -118,6 +118,8 @@ class AnnotationManager : public cSimpleModule
 		Polygon* drawPolygon(std::vector<Coord> coords, std::string color, Group* group = 0);
 		void drawBubble(Coord p1, std::string text);
 		void erase(const Annotation* annotation);
+		void eraseAll(Group* group = 0);
+		void scheduleErase(simtime_t deltaT, Annotation* annotation);
 
 		cModule* createDummyModule(std::string displayString);
 		cModule* createDummyModuleLine(Coord p1, Coord p2, std::string color);
@@ -133,6 +135,8 @@ class AnnotationManager : public cSimpleModule
 
 		bool debug; /**< whether to emit debug messages */
 		cXMLElement* annotationsXml; /**< annotations to add at startup */
+
+		std::list<cMessage*> scheduledEraseEvts;
 
 		Annotations annotations;
 		Groups groups;
