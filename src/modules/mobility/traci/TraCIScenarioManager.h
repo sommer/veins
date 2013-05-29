@@ -32,6 +32,8 @@
 #include "BaseWorldUtility.h"
 #include "BaseConnectionManager.h"
 #include "FindModule.h"
+#include "obstacle/ObstacleControl.h"
+#include "mobility/traci/TraCIColor.h"
 
 /**
  * @brief
@@ -53,16 +55,6 @@
 class TraCIScenarioManager : public cSimpleModule
 {
 	public:
-		/**
-		 * TraCI compatible color container
-		 */
-		struct Color {
-			Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) : red(red), green(green), blue(blue), alpha(alpha) {}
-			uint8_t red;
-			uint8_t green;
-			uint8_t blue;
-			uint8_t alpha;
-		};
 
 		enum VehicleSignal {
 			VEH_SIGNAL_UNDEF = -1,
@@ -113,9 +105,9 @@ class TraCIScenarioManager : public cSimpleModule
 		std::string commandGetPolygonTypeId(std::string polyId);
 		std::list<Coord> commandGetPolygonShape(std::string polyId);
 		void commandSetPolygonShape(std::string polyId, std::list<Coord> points);
-		void commandAddPolygon(std::string polyId, std::string polyType, const Color& color, bool filled, int32_t layer, std::list<Coord> points);
+		void commandAddPolygon(std::string polyId, std::string polyType, const TraCIColor& color, bool filled, int32_t layer, std::list<Coord> points);
 		void commandRemovePolygon(std::string polyId, int32_t layer);
-		void commandAddPoi(std::string poiId, std::string poiType, const Color& color, int32_t layer, Coord pos);
+		void commandAddPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, Coord pos);
 		void commandRemovePoi(std::string poiId, int32_t layer);
 		std::list<std::string> commandGetLaneIds();
 		std::list<Coord> commandGetLaneShape(std::string laneId);

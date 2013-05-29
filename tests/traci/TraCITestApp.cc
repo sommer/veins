@@ -184,7 +184,7 @@ void TraCITestApp::handlePositionUpdate() {
 			points.push_back(Coord(200, 100));
 			points.push_back(Coord(200, 200));
 			points.push_back(Coord(100, 200));
-			traci->getManager()->commandAddPolygon("testPoly", "testType", TraCIScenarioManager::Color(1, 1, 1, 1), true, 1, points);
+			traci->getManager()->commandAddPolygon("testPoly", "testType", TraCIColor::fromTkColor("red"), true, 1, points);
 		}
 		if (t == 31) {
 			std::list<std::string> polys = traci->commandGetPolygonIds();

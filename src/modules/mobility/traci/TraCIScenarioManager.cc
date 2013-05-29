@@ -555,7 +555,7 @@ void TraCIScenarioManager::commandSetPolygonShape(std::string polyId, std::list<
 	ASSERT(obuf.eof());
 }
 
-void TraCIScenarioManager::commandAddPolygon(std::string polyId, std::string polyType, const TraCIScenarioManager::Color& color, bool filled, int32_t layer, std::list<Coord> points) {
+void TraCIScenarioManager::commandAddPolygon(std::string polyId, std::string polyType, const TraCIColor& color, bool filled, int32_t layer, std::list<Coord> points) {
 	TraCIBuffer p;
 
 	p << static_cast<uint8_t>(ADD) << polyId;
@@ -584,7 +584,7 @@ void TraCIScenarioManager::commandRemovePolygon(std::string polyId, int32_t laye
 	ASSERT(buf.eof());
 }
 
-void TraCIScenarioManager::commandAddPoi(std::string poiId, std::string poiType, const TraCIScenarioManager::Color& color, int32_t layer, Coord pos) {
+void TraCIScenarioManager::commandAddPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, Coord pos) {
 	TraCIBuffer p;
 
 	TraCICoord traciPos = omnet2traci(pos);
