@@ -40,7 +40,7 @@ class TraCIDemo11p : public BaseWaveApplLayer {
 	protected:
 		virtual void onBeacon(WaveShortMessage* wsm);
 		virtual void onData(WaveShortMessage* wsm);
-		void sendMessage();
+		void sendMessage(std::string blockedRoadId);
 		virtual void handlePositionUpdate(cObject* obj);
 };
 
