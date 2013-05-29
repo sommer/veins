@@ -22,15 +22,16 @@
 
 #include "world/annotations/AnnotationManager.h"
 
-
 Define_Module(AnnotationManager);
 
-AnnotationManager::~AnnotationManager() {
-
+namespace {
+	const short EVT_SCHEDULED_ERASE = 3;
 }
 
 void AnnotationManager::initialize() {
 	debug = par("debug");
+
+	scheduledEraseEvts.clear();
 
 	annotations.clear();
 	groups.clear();
@@ -41,6 +42,14 @@ void AnnotationManager::initialize() {
 
 void AnnotationManager::finish() {
 	hideAll();
+}
+
+AnnotationManager::~AnnotationManager() {
+	while (scheduledEraseEvts.begin() != scheduledEraseEvts.end()) {
+		cancelAndDelete(*scheduledEraseEvts.begin());
+		scheduledEraseEvts.erase(scheduledEraseEvts.begin());
+	}
+	scheduledEraseEvts.clear();
 
 	while (annotations.begin() != annotations.end()) {
 		delete *annotations.begin();
@@ -53,6 +62,7 @@ void AnnotationManager::finish() {
 		groups.erase(groups.begin());
 	}
 	groups.clear();
+
 }
 
 void AnnotationManager::handleMessage(cMessage *msg) {
@@ -64,12 +74,24 @@ void AnnotationManager::handleMessage(cMessage *msg) {
 }
 
 void AnnotationManager::handleSelfMsg(cMessage *msg) {
-	error("AnnotationManager doesn't handle self-messages");
+
+	if (msg->getKind() == EVT_SCHEDULED_ERASE) {
+		Annotation* a = static_cast<Annotation*>(msg->getContextPointer());
+		ASSERT(a);
+
+		erase(a);
+
+		scheduledEraseEvts.remove(msg);
+		delete msg;
+		return;
+	}
+
+	error("unknown self message type");
 }
 
 void AnnotationManager::handleParameterChange(const char *parname) {
 	if (parname && (std::string(parname) == "draw")) {
-		if (ev.isGUI() && par("draw")) {
+		if (par("draw")) {
 			showAll();
 		} else {
 			hideAll();
@@ -95,7 +117,22 @@ void AnnotationManager::addFromXml(cXMLElement* xml) {
 
 		std::string tag = e->getTagName();
 
-		if (tag == "line") {
+		if (tag == "point") {
+			ASSERT(e->getAttribute("text"));
+			std::string text = e->getAttribute("text");
+			ASSERT(e->getAttribute("color"));
+			std::string color = e->getAttribute("color");
+			ASSERT(e->getAttribute("shape"));
+			std::string shape = e->getAttribute("shape");
+			std::vector<std::string> points = cStringTokenizer(shape.c_str(), " ").asVector();
+			ASSERT(points.size() == 2);
+
+			std::vector<double> p1a = cStringTokenizer(points[0].c_str(), ",").asDoubleVector();
+			ASSERT(p1a.size() == 2);
+
+			drawPoint(Coord(p1a[0], p1a[1]), color, text);
+		}
+		else if (tag == "line") {
 			ASSERT(e->getAttribute("color"));
 			std::string color = e->getAttribute("color");
 			ASSERT(e->getAttribute("shape"));
@@ -141,13 +178,24 @@ AnnotationManager::Group* AnnotationManager::createGroup(std::string title) {
 	return group;
 }
 
+AnnotationManager::Point* AnnotationManager::drawPoint(Coord p, std::string color, std::string text, Group* group) {
+	Point* o = new Point(p, color, text);
+	o->group = group;
+
+	annotations.push_back(o);
+
+	if (par("draw")) show(o);
+
+	return o;
+}
+
 AnnotationManager::Line* AnnotationManager::drawLine(Coord p1, Coord p2, std::string color, Group* group) {
 	Line* l = new Line(p1, p2, color);
 	l->group = group;
 
 	annotations.push_back(l);
 
-	if (ev.isGUI() && par("draw")) show(l);
+	if (par("draw")) show(l);
 
 	return l;
 }
@@ -158,7 +206,7 @@ AnnotationManager::Polygon* AnnotationManager::drawPolygon(std::list<Coord> coor
 
 	annotations.push_back(p);
 
-	if (ev.isGUI() && par("draw")) show(p);
+	if (par("draw")) show(p);
 
 	return p;
 }
@@ -187,6 +235,28 @@ void AnnotationManager::erase(const Annotation* annotation) {
 	hide(annotation);
 	annotations.remove(const_cast<Annotation*>(annotation));
 	delete annotation;
+}
+
+void AnnotationManager::eraseAll(Group* group) {
+	for (Annotations::iterator i = annotations.begin(); i != annotations.end(); ) {
+		if ((!group) || ((*i)->group == group)) {
+			erase(*i++);
+		} else {
+			i++;
+		}
+	}
+}
+
+void AnnotationManager::scheduleErase(simtime_t deltaT, Annotation* annotation) {
+	Enter_Method_Silent();
+
+	cMessage* evt = new cMessage("erase", EVT_SCHEDULED_ERASE);
+	evt->setContextPointer(annotation);
+
+	scheduleAt(simTime() + deltaT, evt);
+
+	scheduledEraseEvts.push_back(evt);
+
 }
 
 cModule* AnnotationManager::createDummyModule(std::string displayString) {
@@ -238,22 +308,34 @@ void AnnotationManager::show(const Annotation* annotation) {
 
 	if (annotation->dummyObjects.size() > 0) return;
 
-	if (const Line* l = dynamic_cast<const Line*>(annotation)) {
-		cModule* mod = createDummyModuleLine(l->p1, l->p2, l->color);
+	if (const Point* o = dynamic_cast<const Point*>(annotation)) {
 
-		annotation->dummyObjects.push_back(mod);
+		if (ev.isGUI()) {
+			// no corresponding TkEnv representation
+		}
+
+	}
+	else if (const Line* l = dynamic_cast<const Line*>(annotation)) {
+
+		if (ev.isGUI()) {
+			cModule* mod = createDummyModuleLine(l->p1, l->p2, l->color);
+			annotation->dummyObjects.push_back(mod);
+		}
 	}
 	else if (const Polygon* p = dynamic_cast<const Polygon*>(annotation)) {
 
 		ASSERT(p->coords.size() >= 2);
-		Coord lastCoords = *p->coords.rbegin();
-		for (std::list<Coord>::const_iterator i = p->coords.begin(); i != p->coords.end(); ++i) {
-			Coord c1 = *i;
-			Coord c2 = lastCoords;
-			lastCoords = c1;
 
-			cModule* mod = createDummyModuleLine(c1, c2, p->color);
-			annotation->dummyObjects.push_back(mod);
+		if (ev.isGUI()) {
+			Coord lastCoords = *p->coords.rbegin();
+			for (std::list<Coord>::const_iterator i = p->coords.begin(); i != p->coords.end(); ++i) {
+				Coord c1 = *i;
+				Coord c2 = lastCoords;
+				lastCoords = c1;
+
+				cModule* mod = createDummyModuleLine(c1, c2, p->color);
+				annotation->dummyObjects.push_back(mod);
+			}
 		}
 
 	}
