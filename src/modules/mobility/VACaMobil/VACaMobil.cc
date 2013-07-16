@@ -121,7 +121,7 @@ void VACaMobil::handleMessage(cMessage *msg)
             rsuInitialized = true;
         }
     }
-    ASSERT(canAddCar);
+    ASSERT2(canAddCar, "A new car cannot be added, check the number of routes");
 }
 
 void VACaMobil::retrieveInitialInformation(){
