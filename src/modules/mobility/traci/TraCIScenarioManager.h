@@ -256,6 +256,7 @@ class TraCIScenarioManager : public cSimpleModule
 		std::set<std::string> unEquippedHosts;
 		std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
 		uint32_t activeVehicleCount; /**< number of vehicles reported as active by TraCI server */
+		uint32_t teleportedVehiclesCount; /**< number of vehicles reported as teleported by TraCI server*/
 		bool autoShutdownTriggered;
 		cMessage* connectAndStartTrigger; /**< self-message scheduled for when to connect to TraCI server and start running */
 		cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */

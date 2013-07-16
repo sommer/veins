@@ -99,6 +99,7 @@ void TraCIScenarioManager::initialize(int stage) {
 	hosts.clear();
 	subscribedVehicles.clear();
 	activeVehicleCount = 0;
+	teleportedVehiclesCount = 0;
 	autoShutdownTriggered = false;
 
 	world = FindModule<BaseWorldUtility*>::findGlobalModule();
@@ -314,13 +315,14 @@ void TraCIScenarioManager::init_traci() {
 		uint32_t beginTime = 0;
 		uint32_t endTime = 0x7FFFFFFF;
 		std::string objectId = "";
-		uint8_t variableNumber = 5;
+		uint8_t variableNumber = 6;
 		uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
 		uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
 		uint8_t variable3 = VAR_TIME_STEP;
 		uint8_t variable4 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
 		uint8_t variable5 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
-		TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5);
+        uint8_t variable6 = VAR_MIN_EXPECTED_VEHICLES;
+		TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3  << variable4 << variable5 << variable6);
 		processSubcriptionResult(buf);
 		ASSERT(buf.eof());
 	}
@@ -991,6 +993,7 @@ void TraCIScenarioManager::unsubscribeFromVehicleVariables(std::string vehicleId
 }
 
 void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuffer& buf) {
+    int carsAlreadyDeleted = 0;
 	uint8_t variableNumber_resp; buf >> variableNumber_resp;
 	for (uint8_t j = 0; j < variableNumber_resp; ++j) {
 		uint8_t variable1_resp; buf >> variable1_resp;
@@ -1020,6 +1023,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
 			MYDEBUG << "TraCI reports " << count << " arrived vehicles." << endl;
+            carsAlreadyDeleted = 0;
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;
 
@@ -1031,6 +1035,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 				// check if this object has been deleted already (e.g. because it was outside the ROI)
 				cModule* mod = getManagedModule(idstring);
 				if (mod) deleteModule(idstring);
+                else carsAlreadyDeleted++;
 
 				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
 					unEquippedHosts.erase(idstring);
@@ -1039,27 +1044,30 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			}
 
 			if ((count > 0) && (count >= activeVehicleCount) && autoShutdown) autoShutdownTriggered = true;
-			activeVehicleCount -= count;
+            activeVehicleCount -= (count - carsAlreadyDeleted);
+            teleportedVehiclesCount -= carsAlreadyDeleted; //FIXME: Esto es importante y falta en la principal.
 
 		} else if (variable1_resp == VAR_TELEPORT_STARTING_VEHICLES_IDS) {
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
 			MYDEBUG << "TraCI reports " << count << " vehicles starting to teleport." << endl;
+            carsAlreadyDeleted = 0;
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;
 
 				// check if this object has been deleted already (e.g. because it was outside the ROI)
 				cModule* mod = getManagedModule(idstring);
 				if (mod) deleteModule(idstring);
+                else carsAlreadyDeleted++;
 
 				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
 					unEquippedHosts.erase(idstring);
 				}
 
 			}
-
-			activeVehicleCount -= count;
+            teleportedVehiclesCount += count;
+            activeVehicleCount -= (count - carsAlreadyDeleted);
 
 		} else if (variable1_resp == VAR_TELEPORT_ENDING_VEHICLES_IDS) {
 			uint8_t varType; buf >> varType;
@@ -1071,8 +1079,26 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 				// adding modules is handled on the fly when entering/leaving the ROI
 			}
 
+            teleportedVehiclesCount -= count;
 			activeVehicleCount += count;
 
+        } else if (variable1_resp == VAR_MIN_EXPECTED_VEHICLES) {
+            uint8_t varType; buf >> varType;
+            ASSERT(varType == TYPE_INTEGER);
+            uint32_t count; buf >> count;
+
+            //printf("[MV] active %d | teleport %d | count %d\n", activeVehicleCount, teleportedVehiclesCount, count);
+
+
+        } else if (variable1_resp == VAR_LOADED_VEHICLES_IDS) {
+            uint8_t varType; buf >> varType;
+            ASSERT(varType == TYPE_STRINGLIST);
+            uint32_t count; buf >> count;
+            MYDEBUG << "TraCI reports " << count << " loaded vehicles." << endl;
+            for (uint32_t i = 0; i < count; ++i) {
+                std::string idstring; buf >> idstring;
+                // adding modules is handled on the fly when entering/leaving the ROI
+            }
 		} else if (variable1_resp == VAR_TIME_STEP) {
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_INTEGER);
