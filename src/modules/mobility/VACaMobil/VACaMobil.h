@@ -47,7 +47,7 @@ class VACaMobil : public TraCIScenarioManagerLaunchd
     virtual void handleMessage(cMessage *msg);
     virtual void finish();
   private:
-    int meanNumberOfCars;
+    int userMean;
     int carHysteresisValue;
     int warmUpSeconds;
     int vehicleSequenceId;
@@ -57,17 +57,17 @@ class VACaMobil : public TraCIScenarioManagerLaunchd
     bool getStats;
 
     //Variables needed for normal adding cars function
-    uint32_t carsToAchieve;
-    int timeLimitToAdd;
+    uint32_t targetNumber;
+    double timeLimitToAdd;
     simtime_t lastDowntime;
-    bool goingDown;
+    bool tooManyCars;
 
     const char *vRates;
 
     bool initialized;
 
-    int acumMedia;
-    int countMedia;
+    int totalActualMean;
+    int countActualMean;
 
     simsignal_t onSimulationCarsSignal;
     int onSimulationCars;
@@ -77,14 +77,7 @@ class VACaMobil : public TraCIScenarioManagerLaunchd
     std::map<std::string, std::list<std::string>* > *edges;
     std::set<Typerate, Comp> vehicles;
 
-    std::vector<Coord> rsusLocation;
-    std::vector<std::string> rsusNames;
-    std::string namePrefix;
-    uint nRandomRsu;
-    bool rsuInitialized;
 
-    std::map<std::pair<int, int>, int > * heatmapArea;
-    std::map<std::string, int > * heatmapRoads;
 
     void retrieveInitialInformation();
     void retrieveVehicleInformation();
@@ -93,24 +86,17 @@ class VACaMobil : public TraCIScenarioManagerLaunchd
     std::list<std::string> commandGetVehicleIds();
     Coord commandGetPosition(std::string nodeId);
 
-    virtual int isGoingToAddCar(void);
+    virtual int carsToAdd(void);
     virtual bool warmupPeriodAddCars(void);
     bool AddCarsUntil(double finalTime, int carsToAddAtTheEnd);
 
     virtual bool addCar(void);
     virtual bool addCarWholeMap(void);
-    virtual std::string getVehicleType(void);
-    virtual std::string getRouteName(void);
+    virtual std::string getRandomVehicleType(void);
+    virtual std::string getRandomRoute(void);
     virtual std::string getNextRoute(void);
-    virtual std::string getLaneName(std::string routeName);
-    virtual std::list<std::string> getLaneNames(std::string routeName);
-
-    void parseRsu();
-    void createRsu(Coord pos, std::string name);
-    void generateRandomRsus(uint n);
-    void placeRsus();
-
-    virtual void updateHeatmaps();
+    virtual std::string getRandomLaneFromRoute(std::string routeName);
+    virtual std::list<std::string> getFirstEdgeLanes(std::string routeName);
 
 
 };

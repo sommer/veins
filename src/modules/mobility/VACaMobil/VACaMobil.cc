@@ -18,9 +18,6 @@
 #include <iostream>
 #include <fstream>
 #include "BaseMobility.h"
-#define DENSITY 1
-#define HEATMAP_AREA "area.dat"
-#define HEATMAP_ROADS "roads.dat"
 
 Define_Module(VACaMobil);
 
@@ -30,22 +27,15 @@ void VACaMobil::initialize(int stage)
     if(stage == 1){
         vehicleSequenceId = 0;
         lastReturnedRoute = 0;
-        carsToAchieve = 0;
+        targetNumber = 0;
         initialized = false;
         lastDowntime = simTime();
 
-        acumMedia = 0;
-        countMedia = 0;
-        getStats = par("getStatistics").boolValue();
-
-        if(getStats){
-            heatmapArea = new std::map<std::pair<int, int>, int >();
-            heatmapRoads = new std::map<std::string, int >();
-        }
-
+        totalActualMean = 0;
+        countActualMean = 0;
         vRates = par("vehicleRates").stdstringValue().c_str();
-        meanNumberOfCars = (int) par("meanNumberOfCars").doubleValue();
-        meanNumberOfCars = (meanNumberOfCars >= 0) ? meanNumberOfCars : 0;
+        userMean = (int) par("meanNumberOfCars").doubleValue();
+        userMean = (userMean >= 0) ? userMean : 0;
         carHysteresisValue = (int) par("carHysteresisValue").doubleValue();
         carHysteresisValue = (carHysteresisValue >= 0) ? carHysteresisValue : 0;
 
@@ -59,26 +49,20 @@ void VACaMobil::initialize(int stage)
                 warmUpSeconds = minimalWarmupTime;
             }
         }
-        goingDown = false;
+        tooManyCars = false;
 
         WATCH(activeVehicleCount);
         WATCH(onSimulationCars);
         WATCH(warmUpSeconds);
-        WATCH(carsToAchieve);
-        WATCH(goingDown);
+        WATCH(targetNumber);
+        WATCH(tooManyCars);
 
         onSimulationCarsSignal = registerSignal("onSimulationCarsSignal");
-
-        nRandomRsu = par("nRandomRsu");
-        namePrefix = par("rsuPrefix").stringValue();
-
-        rsuInitialized = false;
     }
 }
 
 void VACaMobil::handleMessage(cMessage *msg)
 {
-
     TraCIScenarioManagerLaunchd::handleMessage(msg);
     bool canAddCar = true;
     onSimulationCars = activeVehicleCount + teleportedVehiclesCount;
@@ -92,59 +76,43 @@ void VACaMobil::handleMessage(cMessage *msg)
             if(simTime() <= warmUpSeconds){
                 canAddCar = warmupPeriodAddCars();
             } else {
-                int numberOfCarsToAdd = isGoingToAddCar();
+                int numberOfCarsToAdd = carsToAdd();
                 if(numberOfCarsToAdd > 0){
-                    canAddCar = AddCarsUntil(0,meanNumberOfCars - carHysteresisValue);
+                    canAddCar = AddCarsUntil(0,userMean - carHysteresisValue);
                     onSimulationCars = activeVehicleCount + teleportedVehiclesCount;
-                    canAddCar = AddCarsUntil(timeLimitToAdd, carsToAchieve);
+                    canAddCar = AddCarsUntil(timeLimitToAdd, targetNumber);
                 }
             }
         }
         onSimulationCars = activeVehicleCount + teleportedVehiclesCount;
-     //   ASSERT(onSimulationCars > meanNumberOfCars - carHysteresisValue);
-     //   ASSERT(onSimulationCars < meanNumberOfCars + carHysteresisValue);
-        acumMedia = acumMedia + onSimulationCars;
-        countMedia++;
+        ASSERT(onSimulationCars >= (userMean - carHysteresisValue) || (onSimulationCars <= userMean + carHysteresisValue));
+        totalActualMean = totalActualMean + onSimulationCars;
+        countActualMean++;
         emit(onSimulationCarsSignal, onSimulationCars);
-
-        if(simTime() > warmUpSeconds && getStats){
-            updateHeatmaps();
-        }
-
-        if(!rsuInitialized){
-            if( nRandomRsu > 0){
-                generateRandomRsus(nRandomRsu);
-            }
-
-            parseRsu();
-            placeRsus();
-            rsuInitialized = true;
-        }
     }
     ASSERT2(canAddCar, "A new car cannot be added, check the number of routes");
 }
 
 void VACaMobil::retrieveInitialInformation(){
 
-    //Recuperamos las rutas
+    //Get routes from SUMO
     std::list<std::string> routeIds = commandGetRouteIds();
     routeNames.clear();
     routeNames.reserve(routeIds.size());
     routeNames.insert(routeNames.end(),routeIds.begin(),routeIds.end());
 
-    //printf("Recuperadas %d rutas\n", routeIds.size());
+    EV << "Found " << routeIds.size() << " routes"<< endl;
+
     routes = new std::map<std::string, std::list<std::string> >();
     for(std::list<std::string>::iterator it = routeIds.begin(); it != routeIds.end();it++){
         std::string route = *it;
         std::list<std::string> edgeList = commandGetRouteEdgeIds(route);
         routes->insert(std::make_pair(route, edgeList));
-        //printf("Ruta %s %d\n", route.c_str(), edgeList.size());
     }
     EV << routes->size() << " routes added.\n";
 
-    //Recuperamos las lanes y las ordenamos por edges
+    //Get lanes from SUMO
     std::list<std::string> laneIds = commandGetLaneIds();
-    //printf("Recuperadas %d lanes\n", laneIds.size());
     edges = new std::map<std::string, std::list<std::string>* >();
     for(std::list<std::string>::iterator it = laneIds.begin(); it != laneIds.end();it++){
         std::string lane = *it;
@@ -159,182 +127,58 @@ void VACaMobil::retrieveInitialInformation(){
         }
         lanes->push_back(lane);
         edges->insert(std::make_pair(edge, lanes));
-        //printf("Edge %s %s\n", edge.c_str(), lane.c_str());
     }
     EV << edges->size() << " edges added.\n";
 
     retrieveVehicleInformation();
-
 }
 
 /*
- * Encapsulates all the vehicle retrieval information from parameters
+ * Get information from traci
  * Sorts vehicles by probability and also normalizes it.
  */
 void VACaMobil::retrieveVehicleInformation()
 {
-    //Parseamos la información de los tipos de vehículos
-        cStringTokenizer tokenizer(vRates);
-        const char *token;
+    //Get the different vehicles types defined in SUMO and assign them a probability
+    cStringTokenizer tokenizer(vRates);
+    const char *token;
 
-        std::list<std::string> vehiclesTraCI = commandGetVehicleIds();
-        //printf("Recuperados %d vehiculos\n", vehiclesTraCI.size());
-        double totalRate = 0;
-        std::list<Typerate> vehicles;
-        std::list<std::string>::iterator it = vehiclesTraCI.begin();
-        while (it != vehiclesTraCI.end()){
-            std::string type = *it;
-            double rate = 0;
-            const char * substr;
-            if((substr = strstr(vRates, type.c_str())) != NULL){
-                char * finalPtr;
-                substr = substr + strlen(type.c_str()) + 1;
-                cStringTokenizer minitokenizer(substr);
-                rate = strtod(minitokenizer.nextToken(), &finalPtr);
-            } else {
-               token = tokenizer.nextToken();
-               char * finalPtr;
-               while (token != NULL && strstr(token, "=") != NULL){
-                   token = tokenizer.nextToken();
-               }
-               if(token != NULL){
-                   rate = strtod(token, &finalPtr);
-               }
+    std::list<std::string> vehiclesTraCI = commandGetVehicleIds();
+    double totalRate = 0;
+    std::list<Typerate> vehicles;
+    std::list<std::string>::iterator it = vehiclesTraCI.begin();
+    while (it != vehiclesTraCI.end()){
+        std::string type = *it;
+        double rate = 0;
+        const char * substr;
+        if((substr = strstr(vRates, type.c_str())) != NULL){
+            char * finalPtr;
+            substr = substr + strlen(type.c_str()) + 1;
+            cStringTokenizer minitokenizer(substr);
+            rate = strtod(minitokenizer.nextToken(), &finalPtr);
+        } else {
+            token = tokenizer.nextToken();
+            char * finalPtr;
+            while (token != NULL && strstr(token, "=") != NULL){
+                token = tokenizer.nextToken();
             }
-            //printf("Vehiculo %s %f\n", type.c_str(), rate);
-            vehicles.push_back(Typerate{type, rate});
-            totalRate = totalRate + rate;
-            it++;
-        }
-        EV << vehicles.size() << " vehicles added.\n";
-
-        //Ordenando los vehículos
-        std::list<Typerate>::iterator itVehicles;
-        for( itVehicles = vehicles.begin(); itVehicles != vehicles.end(); itVehicles++){
-            Typerate aux = *itVehicles;
-            aux.rate = aux.rate / totalRate;
-            this->vehicles.insert(aux);
-        }
-
-        //Mostrando los vehiculos por pantalla
-//        std::set<struct typerate>::iterator itaux;
-//        for( itaux = this->vehicles.begin(); itaux != this->vehicles.end(); itaux++){
-//            struct typerate aux = *itaux;
-//            printf("Vehiculo %s %f\n", aux.type.c_str(), aux.rate);
-//        }
-}
-
-void VACaMobil::parseRsu()
-{
-    cXMLElement* rsuPlacement = par("rsuPlacement").xmlValue();
-    std::string rootTag = rsuPlacement->getTagName();
-    ASSERT(rootTag == "poas");
-    cXMLElementList rsusList = rsuPlacement->getElementsByTagName("poa");
-
-    for (cXMLElementList::const_iterator i = rsusList.begin(); i != rsusList.end(); ++i) {
-        cXMLElement* e = *i;
-        std::string id;
-
-        double x;
-        double y;
-
-        ASSERT(e->getAttribute("id"));
-        id = e->getAttribute("id");
-        ASSERT(e->getAttribute("x"));
-        x = atof(e->getAttribute("x"));
-        ASSERT(e->getAttribute("y"));
-        y = atof(e->getAttribute("y"));
-
-        Coord omnetLoc = traci2omnet(TraCICoord(x,y));
-
-        rsusLocation.push_back(omnetLoc);
-        rsusNames.push_back(id);
-    }
-}
-
-void VACaMobil::createRsu(Coord pos, std::string name)
-{
-    cModule *parent = getParentModule();
-    std::string type = par("rsuModule");
-    cModuleType* moduleType = cModuleType::get(type.c_str());
-    if (!moduleType) error("Module Type \"%s\" not found", type.c_str());
-    cModule *mod = moduleType->create(name.c_str(), parent);
-    mod->finalizeParameters();
-    mod->buildInside();
-
-    // pre-initialize TraCIMobility
-    for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-        cModule* submod = iter();
-        BaseMobility* mm = dynamic_cast<BaseMobility*>(submod);
-        if (!mm) continue;
-        mm->par("x") = pos.x;
-        mm->par("y") = pos.y;
-        mm->par("z") = 0;
-    }
-
-    mod->callInitialize();
-}
-
-void VACaMobil::generateRandomRsus(uint n)
-{
-    Coord omnetNetbounds1 = traci2omnet(netbounds1);
-    Coord omnetNetbounds2 = traci2omnet(netbounds2);
-    std::list<std::string> junctionList = commandGetJunctionIds();
-    std::list<Coord> junctionLocations;
-    for(std::list<std::string>::iterator i = junctionList.begin(); i != junctionList.end(); i++){
-        junctionLocations.push_back(commandGetJunctionPosition(*i));
-    }
-
-    for(uint i=0; i <n ; i++){
-        Coord desiredCoord;
-        desiredCoord.x = uniform(omnetNetbounds1.x, omnetNetbounds2.x);
-        desiredCoord.y = uniform(omnetNetbounds1.y, omnetNetbounds2.y);
-        Coord finalCoord = *junctionLocations.begin();
-        double minDistance = desiredCoord.distance(*junctionLocations.begin());
-        for(std::list<Coord>::iterator iter= ++junctionLocations.begin(); iter != junctionLocations.end(); iter++){
-            double distance = desiredCoord.distance(*iter);
-            if( distance< minDistance){
-                minDistance= distance;
-                finalCoord = *iter;
+            if(token != NULL){
+                rate = strtod(token, &finalPtr);
             }
         }
-        char name[20];
-        snprintf(name, sizeof(name), "randomRsu%d", i);
-        rsusLocation.push_back(finalCoord);
-        rsusNames.push_back(name);
+        EV << "Vehicle"<< type.c_str()<< rate;
+        vehicles.push_back(Typerate{type, rate});
+        totalRate = totalRate + rate;
+        it++;
     }
-}
+    EV << vehicles.size() << " vehicles added.\n";
 
-void VACaMobil::placeRsus()
-{
-    ASSERT(rsusLocation.size() == rsusNames.size());
-    for(uint i = 0; i < rsusLocation.size(); i++){
-        std::string prefix = namePrefix;
-        createRsu(rsusLocation.at(i), prefix.append(rsusNames.at(i)));
-    }
-}
-
-void VACaMobil::updateHeatmaps(){
-    std::map<std::string, cModule*>::iterator it;
-    for(it = hosts.begin(); it != hosts.end(); it++){
-        std::string id = it->first;
-        //Roads
-        std::string currentEdge = this->commandGetEdgeId(id);
-        std::map<std::string,  int >::iterator eit = this->heatmapRoads->find(currentEdge);
-        if(eit != this->heatmapRoads->end()){
-            eit->second++;
-        } else {
-            this->heatmapRoads->insert(std::make_pair(currentEdge, 1));
-        }
-        //Area
-        Coord pos = this->commandGetPosition(id);
-        std::pair<int,int> currentij = std::make_pair(pos.x / DENSITY, pos.y / DENSITY);
-        std::map<std::pair<int,int>,  int >::iterator ait = this->heatmapArea->find(currentij);
-        if(ait != this->heatmapArea->end()){
-            ait->second++;
-        } else {
-            this->heatmapArea->insert(std::make_pair(currentij, 1));
-        }
+    //Sort vehicles
+    std::list<Typerate>::iterator itVehicles;
+    for( itVehicles = vehicles.begin(); itVehicles != vehicles.end(); itVehicles++){
+        Typerate aux = *itVehicles;
+        aux.rate = aux.rate / totalRate;
+        this->vehicles.insert(aux);
     }
 }
 
@@ -360,107 +204,70 @@ std::list<std::string> VACaMobil::commandGetVehicleIds(){
  * This function returns the number of cars to add.
  * Linear probability of introducing a new car, directly related with the distance to the "meanCars - Hysteresis" value
  */
-int VACaMobil::isGoingToAddCar(void) {
-    int addCarCount = 0;
+int VACaMobil::carsToAdd(void) {
+    int newCars = 0;
 
-    uint32_t upperCarValue = meanNumberOfCars+carHysteresisValue;
-    uint32_t lowerCarValue = meanNumberOfCars-carHysteresisValue;
-    lowerCarValue = (0 > lowerCarValue) ? 0 : lowerCarValue;
+    uint32_t upperBound = userMean+carHysteresisValue;
+    uint32_t lowerBound = userMean-carHysteresisValue;
+    lowerBound = (0 > lowerBound) ? 0 : lowerBound;
 
-    //This two ifs are the easy part as are deterministic.
-    bool conditionAchieved = false;
-    if(goingDown && (carsToAchieve >= (unsigned int)onSimulationCars)) {
-        conditionAchieved = true;
-    } else {
-        if(!goingDown && (carsToAchieve <= (unsigned int)onSimulationCars) ){
-            conditionAchieved = true;
-        }
+    //Check .
+    bool getNewTarget;
+    if(tooManyCars && (targetNumber >= (unsigned int)onSimulationCars)) {
+        getNewTarget = true;
+    }
+    else if(!tooManyCars && (targetNumber <= (unsigned int)onSimulationCars)){
+            getNewTarget = true;
+    }
+    else{
+        getNewTarget = false;
     }
 
-    if(conditionAchieved || carsToAchieve <= lowerCarValue) {
-        double myMeanNumberOfCars = meanNumberOfCars + (meanNumberOfCars - (acumMedia/(double) countMedia));
+    if(getNewTarget || targetNumber <= lowerBound) {
+        double actualMean = (totalActualMean/(double) countActualMean);
+        double biasedMean = userMean + (userMean - actualMean);//slightly biased mean, to quickly converge to desired values
 
-        carsToAchieve = (int)(normal(myMeanNumberOfCars, carHysteresisValue/3.0)+0.5); //Stdev is carHystereis divided by three to achieve a good number of cars inside the correct values.
+        targetNumber = (int)(normal(biasedMean, carHysteresisValue/3.0)+0.5); //+0.5 to round up, the number of vehicles must be an integer
 
-        carsToAchieve = (carsToAchieve > upperCarValue) ? upperCarValue : carsToAchieve;
-        carsToAchieve = (carsToAchieve < lowerCarValue) ? lowerCarValue : carsToAchieve;
+        targetNumber = (targetNumber > upperBound) ? upperBound : targetNumber;
+        targetNumber = (targetNumber < lowerBound) ? lowerBound : targetNumber;
 
-        int extraTime = (int)floor(simTime().dbl() - lastDowntime.dbl());
-        extraTime = (extraTime < 1) ? 1 : extraTime;
-        timeLimitToAdd = (int)ceil(simTime().dbl()) + extraTime;
+        //define the "introducing new cars" interval duration
+        double intervalDuration = simTime().dbl() - lastDowntime.dbl();//Get the last "idle" interval duration
+        timeLimitToAdd = simTime().dbl() + intervalDuration;
 
-        addCarCount = carsToAchieve - onSimulationCars;
+        newCars = targetNumber - onSimulationCars;
 
         lastDowntime = simTime();
-        goingDown = (addCarCount < 0);
-
-        //std::cout << "Cars to Achieve " << carsToAchieve << " addCarCount "<< addCarCount << std::endl;
-
+        tooManyCars = (newCars < 0);
     } else {
-        addCarCount = carsToAchieve - onSimulationCars;
+        newCars = targetNumber - onSimulationCars;
     }
-    //std::cout << "Cars to Achieve " << carsToAchieve << " addCarCount "<< addCarCount << " On simulation cars " << onSimulationCars << " VehicleCount "<< activeVehicleCount << " Teleported "<< teleportedVehiclesCount << std::endl;
-
-
-    return addCarCount;
+    return newCars;
 }
-
-/*
-int CarGeneratorManager::isGoingToAddCar(void) {
-    int addCarCount = 0;
-
-    uint32_t upperCarValue = meanNumberOfCars+carHysteresisValue;
-    uint32_t lowerCarValue = meanNumberOfCars-carHysteresisValue;
-
-    //This two ifs are the easy part as are deterministic.
-    if(onSimulationCars >= upperCarValue) {
-        addCarCount = 0;
-    } else {
-        if(onSimulationCars <= lowerCarValue) {
-            addCarCount = lowerCarValue - onSimulationCars;
-        } else {
-            if(countMedia > 0 && meanNumberOfCars > acumMedia / countMedia){
-                int carEstimatedValue = onSimulationCars - lowerCarValue;
-
-                int probability = uniform(0,upperCarValue-lowerCarValue);
-
-                if(probability > carEstimatedValue) {
-                    addCarCount = 1;
-                } else {
-                    addCarCount = 0;
-                }
-            } else {
-                addCarCount = 0;
-            }
-        }
-    }
-
-    return addCarCount;
-}
-*/
 
 /*
  * This function adds the necessary cars at the warmup period
  */
 bool VACaMobil::warmupPeriodAddCars() {
 
-    return AddCarsUntil(warmUpSeconds, meanNumberOfCars);
+    return AddCarsUntil(warmUpSeconds, userMean);
 }
 
 /*
- * This function adds cars in a controlled way
+ * Add (objectiveNumber-currentNumberOfCars)/(finalTime-simTime()) cars every step between simTime and finalTime
  */
-bool VACaMobil::AddCarsUntil(double finalTime, int carsToAddAtTheEnd) {
+bool VACaMobil::AddCarsUntil(double finalTime, int objectiveNumber) {
     bool sucess = true;
 
     double remainingTime = finalTime - simTime().dbl();
-    int remainingCarsToAdd = carsToAddAtTheEnd - onSimulationCars;
+    int remainingCarsToAdd = objectiveNumber - onSimulationCars;
 
     int carsToAdd;
     int steps;
-    steps = round(remainingTime / updateInterval.dbl());
+    steps = remainingTime / updateInterval.dbl();
     if(steps > 0) {
-        carsToAdd = round((remainingCarsToAdd)/steps);
+        carsToAdd = round((remainingCarsToAdd)/(double)steps);
     } else {
         carsToAdd = remainingCarsToAdd;
     }
@@ -474,7 +281,8 @@ bool VACaMobil::AddCarsUntil(double finalTime, int carsToAddAtTheEnd) {
 
 
 /*
- *Adds a car if there is a place in the map where it can be placed
+ * Add a new vehicle using any of the defined routes
+ * if not possible return false
  */
 bool VACaMobil::addCarWholeMap(void) {
     bool carAdded = false;
@@ -483,13 +291,13 @@ bool VACaMobil::addCarWholeMap(void) {
     sprintf(vehicleString,"vehicleRandom%d", ++vehicleSequenceId);
 
     //Get vehicleType
-    std::string actualType = getVehicleType();
+    std::string actualType = getRandomVehicleType();
 
-    std::string actualRoute = getRouteName();
+    std::string actualRoute = getRandomRoute();
 
     int firstRoute = lastReturnedRoute;
     do {
-        std::list<std::string> lanes = getLaneNames(actualRoute);
+        std::list<std::string> lanes = getFirstEdgeLanes(actualRoute);
         for(std::list<std::string>::iterator laneIterator = lanes.begin(); laneIterator != lanes.end() && !carAdded; laneIterator++) {
             carAdded = TraCIScenarioManager::commandAddVehicle(vehicleString, actualType.c_str(), actualRoute.c_str(), laneIterator->c_str(), 0.0, 0.0);
         }
@@ -501,7 +309,7 @@ bool VACaMobil::addCarWholeMap(void) {
 
 /*
  * Tries to add a car.
- * Returns true or false indicating whether if its successfull or not.
+ * Returns true or false indicating whether if it was successful or not.
  */
 bool VACaMobil::addCar()
 {
@@ -509,23 +317,23 @@ bool VACaMobil::addCar()
     sprintf(vehicleString,"vehicleRandom%d", ++vehicleSequenceId);
 
     //Get vehicleType
-    std::string actualType = getVehicleType();
+    std::string actualType = getRandomVehicleType();
 
     //Get route
-    std::string actualRoute = getRouteName();
+    std::string actualRoute = getRandomRoute();
 
     //Get lane
-    std::string actualLane = getLaneName(actualRoute);
+    std::string actualLane = getRandomLaneFromRoute(actualRoute);
 
     //Add car
     return TraCIScenarioManager::commandAddVehicle(vehicleString, actualType.c_str(), actualRoute.c_str(), actualLane.c_str(), 0.0, 0.0);
 }
 
 /*
- * Retuns the string containing the ID Name of one of the different vehicle types
+ * Returns the string containing the ID Name of one of the different vehicle types
  * considering the defined probabilities
  */
-std::string VACaMobil::getVehicleType(void)
+std::string VACaMobil::getRandomVehicleType(void)
 {
 
     double probability = uniform(0,1);
@@ -546,9 +354,9 @@ std::string VACaMobil::getVehicleType(void)
 }
 
 /*
- * Retuns the string containing the ID Name of one of the different routes
+ * Returns the string containing the ID Name of one of the different routes
  */
-std::string VACaMobil::getRouteName(void)
+std::string VACaMobil::getRandomRoute(void)
 {
     double probability = uniform(0,routeNames.size());
     int routeSelected = (int)probability % routeNames.size();
@@ -569,11 +377,11 @@ std::string VACaMobil::getNextRoute(void) {
 }
 
 /*
- * Retuns the string containing the ID Name of one lane at the first edge of the route "routeName"
+ * Returns the string containing the ID Name of one lane at the first edge of the route "routeName"
  */
-std::string VACaMobil::getLaneName(std::string routeName)
+std::string VACaMobil::getRandomLaneFromRoute(std::string routeName)
 {
-    std::list<std::string> lanes = getLaneNames(routeName);
+    std::list<std::string> lanes = getFirstEdgeLanes(routeName);
 
     int laneNumber = lanes.size();
 
@@ -595,7 +403,7 @@ std::string VACaMobil::getLaneName(std::string routeName)
 /*
  * Returns a list of lane Ids corresponding to the first edge of the route
  */
-std::list<std::string> VACaMobil::getLaneNames(std::string routeName) {
+std::list<std::string> VACaMobil::getFirstEdgeLanes(std::string routeName) {
     std::string firstEdge = routes->find(routeName)->second.front();
     std::list<std::string> lanes = *(edges->find(firstEdge)->second);
 
@@ -604,24 +412,5 @@ std::list<std::string> VACaMobil::getLaneNames(std::string routeName) {
 
 void VACaMobil::finish(){
     TraCIScenarioManagerLaunchd::finish();
-    if(getStats){
-        std::string prefix = par("statFiles").stringValue();
-        std::ofstream f1(prefix.append(HEATMAP_ROADS).c_str());
-        std::map<std::string, int >::iterator eit;
-        for(eit = this->heatmapRoads->begin(); eit != this->heatmapRoads->end(); eit++){
-            f1 << eit->first << " " << eit->second << endl;
-        }
-        f1.close();
-
-        prefix = par("statFiles").stringValue();
-        std::ofstream f2(prefix.append(HEATMAP_AREA).c_str());
-        std::map<std::pair<int, int>, int >::iterator ait;
-        for(ait= this->heatmapArea->begin(); ait != this->heatmapArea->end(); ait++){
-            for(int i=0; i< ait->second; i++){
-                f2 << ait->first.first << " " << ait->first.second << endl;
-            }
-        }
-        f2.close();
-    }
 }
 
