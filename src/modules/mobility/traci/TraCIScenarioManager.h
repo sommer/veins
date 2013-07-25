@@ -75,6 +75,16 @@ class TraCIScenarioManager : public cSimpleModule
 			VEH_SIGNAL_EMERGENCY_YELLOW = 8192
 		};
 
+        /**
+         * Coord equivalent for storing TraCI coordinates
+         */
+        struct TraCICoord {
+            TraCICoord() : x(0), y(0) {}
+            TraCICoord(double x, double y) : x(x), y(y) {}
+            double x;
+            double y;
+        };
+
 		~TraCIScenarioManager();
 		virtual int numInitStages() const { return std::max(cSimpleModule::numInitStages(), 2); }
 		virtual void initialize(int stage);
@@ -122,18 +132,22 @@ class TraCIScenarioManager : public cSimpleModule
 		const std::map<std::string, cModule*>& getManagedHosts() {
 			return hosts;
 		}
-
+        /**
+         * convert TraCI coordinates to OMNeT++ coordinates
+         */
+        Coord traci2omnet(TraCICoord coord) const;
+        /**
+         * convert OMNeT++ coordinates to TraCI coordinates
+         */
+        TraCICoord omnet2traci(Coord coord) const;
+        /*
+         * Return the netbounds
+         */
+        std::vector<Coord> getNetBounds() const;
+        const simtime_t& getFirstStepAt() const {
+            return firstStepAt;
+        }
 	protected:
-		/**
-		 * Coord equivalent for storing TraCI coordinates
-		 */
-		struct TraCICoord {
-			TraCICoord() : x(0), y(0) {}
-			TraCICoord(double x, double y) : x(x), y(y) {}
-			double x;
-			double y;
-		};
-
 		/**
 		 * Byte-buffer that stores values in TraCI byte-order
 		 */
@@ -316,16 +330,6 @@ class TraCIScenarioManager : public cSimpleModule
 		double genericGetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
 		std::list<std::string> genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
 		std::list<Coord> genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
-
-		/**
-		 * convert TraCI coordinates to OMNeT++ coordinates
-		 */
-		Coord traci2omnet(TraCICoord coord) const;
-
-		/**
-		 * convert OMNeT++ coordinates to TraCI coordinates
-		 */
-		TraCICoord omnet2traci(Coord coord) const;
 
 		/**
 		 * convert TraCI angle to OMNeT++ angle (in rad)

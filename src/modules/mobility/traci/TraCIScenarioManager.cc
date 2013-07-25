@@ -1242,6 +1242,14 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 
 }
 
+std::vector<Coord> TraCIScenarioManager::getNetBounds() const {
+    std::vector<Coord> omnetBounds;
+    omnetBounds.push_back(traci2omnet(netbounds1));
+    omnetBounds.push_back(traci2omnet(netbounds2));
+    return omnetBounds;
+
+}
+
 void TraCIScenarioManager::processSubcriptionResult(TraCIBuffer& buf) {
 	uint8_t cmdLength_resp; buf >> cmdLength_resp;
 	uint32_t cmdLengthExt_resp; buf >> cmdLengthExt_resp;

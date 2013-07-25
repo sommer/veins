@@ -25,6 +25,7 @@ import org.mixim.base.modules.BaseWorldUtility;
 import org.mixim.modules.mobility.VACaMobil.VACaMobil;
 import org.mixim.modules.obstacle.ObstacleControl;
 import org.mixim.modules.world.annotations.AnnotationManager;
+import org.mixim.modules.mobility.VACaMobil.RSUManager;
 
 module Highway
 {
@@ -54,6 +55,8 @@ module Highway
         manager: VACaMobil {
             parameters:
                 @display("p=512,128");
+        }
+        rsuManager: RSUManager{
         }
 
     connections allowunconnected:

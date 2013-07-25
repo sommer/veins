@@ -11,9 +11,9 @@ simple BaseMobility like IMobility
     parameters:
         bool notAffectedByHostState = default(true);
         bool coreDebug = default(false); // debug switch for the core framework
-        double x; // x coordinate of the nodes' position (-1 = random)
-        double y; // y coordinate of the nodes' position (-1 = random)
-        double z; // z coordinate of the nodes' position (-1 = random)
+        double x = default(-1); // x coordinate of the nodes' position (-1 = random)
+        double y = default(-1); // y coordinate of the nodes' position (-1 = random)
+        double z = default(0); // z coordinate of the nodes' position (-1 = random)
         @display("i=block/cogwheel");
 }
 
