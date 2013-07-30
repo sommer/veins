@@ -677,8 +677,8 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 	double option2 = (hosts.size() + 1) / (hosts.size() + unEquippedHosts.size() + 1.0);
 
 	if (fabs(option1 - penetrationRate) < fabs(option2 - penetrationRate)) {
-	    unEquippedHosts.insert(nodeId);
-	    return;
+		unEquippedHosts.insert(nodeId);
+		return;
 	}
 
 	int32_t nodeVectorIndex = nextNodeVectorIndex++;
@@ -722,8 +722,8 @@ cModule* TraCIScenarioManager::getManagedModule(std::string nodeId) {
 }
 
 bool TraCIScenarioManager::isModuleUnequipped(std::string nodeId) {
-    if (unEquippedHosts.find(nodeId) == unEquippedHosts.end()) return false;
-    return true;
+	if (unEquippedHosts.find(nodeId) == unEquippedHosts.end()) return false;
+	return true;
 }
 
 void TraCIScenarioManager::deleteModule(std::string nodeId) {
