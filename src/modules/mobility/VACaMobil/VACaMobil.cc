@@ -19,6 +19,12 @@
 #include <fstream>
 #include "BaseMobility.h"
 
+EXECUTE_ON_STARTUP(
+    cEnum *e = cEnum::find("ChooseVACaMobilMode");
+    if (!e) enums.getInstance()->add(e = new cEnum("ChooseVACaMobilMode"));
+    e->insert(VACaMobil::STEADYSTATE, "SteadyState");
+    e->insert(VACaMobil::RANDOM, "RandomGeneration");
+);
 Define_Module(VACaMobil);
 
 void VACaMobil::initialize(int stage)
@@ -30,6 +36,22 @@ void VACaMobil::initialize(int stage)
         targetNumber = 0;
         initialized = false;
         lastDowntime = simTime();
+
+        RandomMode = false;
+        const char *ModeStr = par("chooseVACaMobilMode").stringValue();
+        int Mode = cEnum::get("ChooseVACaMobilMode")->lookup(ModeStr);
+
+        if (Mode == -1)
+               throw cRuntimeError("Invalid chooseVACaMobilMode: '%s'", ModeStr);
+        if(Mode == VACaMobil::RANDOM) {
+            RandomMode = true;
+        }
+
+        RandomAddVehicle = NULL;
+
+        if(RandomMode) {
+            RandomAddVehicle = new cMessage("AddVehicle");
+        }
 
         totalActualMean = 0;
         countActualMean = 0;
@@ -63,7 +85,12 @@ void VACaMobil::initialize(int stage)
 
 void VACaMobil::handleMessage(cMessage *msg)
 {
+    if (msg == RandomAddVehicle) {
+            addCarWholeMap();
+            scheduleAt(simTime().dbl()+par("interArrivalTime").doubleValue(), RandomAddVehicle);
+    } else {
     TraCIScenarioManagerLaunchd::handleMessage(msg);
+    }
     bool canAddCar = true;
     onSimulationCars = activeVehicleCount + teleportedVehiclesCount;
 
@@ -72,7 +99,11 @@ void VACaMobil::handleMessage(cMessage *msg)
             if(!initialized) {
                 retrieveInitialInformation();
                 initialized = true;
+                if(RandomMode) {
+                    scheduleAt(simTime(), RandomAddVehicle);
             }
+            }
+            if(!RandomMode) {
             if(simTime() <= warmUpSeconds){
                 canAddCar = warmupPeriodAddCars();
             } else {
@@ -85,12 +116,16 @@ void VACaMobil::handleMessage(cMessage *msg)
             }
         }
         onSimulationCars = activeVehicleCount + teleportedVehiclesCount;
-        ASSERT(onSimulationCars >= (userMean - carHysteresisValue) || (onSimulationCars <= userMean + carHysteresisValue));
+            ASSERT(!RandomMode || onSimulationCars >= (userMean - carHysteresisValue) || (onSimulationCars <= userMean + carHysteresisValue));
         totalActualMean = totalActualMean + onSimulationCars;
         countActualMean++;
         emit(onSimulationCarsSignal, onSimulationCars);
     }
+        
+    }
+    if(!RandomMode) {
     ASSERT2(canAddCar, "A new car cannot be added, check the number of routes");
+}
 }
 
 void VACaMobil::retrieveInitialInformation(){
@@ -144,6 +179,10 @@ void VACaMobil::retrieveVehicleInformation()
     const char *token;
 
     std::list<std::string> vehiclesTraCI = commandGetVehicleIds();
+        if(debug) {
+            EV << "Found "<< vehiclesTraCI.size() << " vehicles."<< std::endl;
+            EV << "VRATES " << vRates << std::endl;
+        }
     double totalRate = 0;
     std::list<Typerate> vehicles;
     std::list<std::string>::iterator it = vehiclesTraCI.begin();
@@ -293,6 +332,7 @@ bool VACaMobil::addCarWholeMap(void) {
     //Get vehicleType
     std::string actualType = getRandomVehicleType();
 
+    EV << "Adding new vehicle: Type=" << actualType.c_str() << std::endl;
     std::string actualRoute = getRandomRoute();
 
     int firstRoute = lastReturnedRoute;
@@ -411,6 +451,10 @@ std::list<std::string> VACaMobil::getFirstEdgeLanes(std::string routeName) {
 }
 
 void VACaMobil::finish(){
+    if(RandomMode && RandomAddVehicle != NULL) {
+        cancelAndDelete(RandomAddVehicle);
+        RandomAddVehicle = NULL;
+    }
     TraCIScenarioManagerLaunchd::finish();
 }
 

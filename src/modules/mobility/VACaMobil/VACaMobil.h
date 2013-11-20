@@ -41,6 +41,11 @@ class Comp {
  */
 class VACaMobil : public TraCIScenarioManagerLaunchd
 {
+public:
+    enum ChooseVACaMobilMode
+    {
+        STEADYSTATE = 1, RANDOM
+    };
   protected:
     virtual int numInitStages() const { return std::max(TraCIScenarioManagerLaunchd::numInitStages(), 2); }
     virtual void initialize(int stage);
@@ -62,6 +67,11 @@ class VACaMobil : public TraCIScenarioManagerLaunchd
     simtime_t lastDowntime;
     bool tooManyCars;
 
+
+     //Inter Arrival Time Mode related Variables
+    bool RandomMode;
+    //Message used to addCars when working in highway mode.
+    cMessage* RandomAddVehicle;
     const char *vRates;
 
     bool initialized;

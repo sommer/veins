@@ -37,9 +37,11 @@ simple VACaMobil extends TraCIScenarioManagerLaunchd
     @class("VACaMobil");
     
     string vehicleRates = default("");
+    string chooseVACaMobilMode @enum("SteadyState","RandomGeneration") = default("SteadyState"); 
     int meanNumberOfCars = default(0);
     int carHysteresisValue = default(0);
     int warmUpSeconds @unit(s) = default(-1s); //With a value lower than firstStepAt uses simulation.getWarmupPeriod()
+    volatile double interArrivalTime @unit(s) = default(1s);
     
     bool getStatistics = default(false); //If set to true it generates some kind-of heat maps
     string statFiles = default("");
