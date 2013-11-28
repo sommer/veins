@@ -26,6 +26,8 @@
 
 Define_Module(TraCIMobility);
 
+const simsignalwrap_t TraCIMobility::parkingStateChangedSignal = simsignalwrap_t(TRACI_SIGNAL_PARKING_CHANGE_NAME);
+
 namespace {
 	const double MY_INFINITY = (std::numeric_limits<double>::has_infinity ? std::numeric_limits<double>::infinity() : std::numeric_limits<double>::max());
 
@@ -101,6 +103,8 @@ void TraCIMobility::initialize(int stage)
 		WATCH(road_id);
 		WATCH(speed);
 		WATCH(angle);
+
+		isParking = false;
 
 		startAccidentMsg = 0;
 		stopAccidentMsg = 0;
@@ -231,6 +235,11 @@ void TraCIMobility::changePosition()
 	if (ev.isGUI()) updateDisplayString();
 	fixIfHostGetsOutside();
 	updatePosition();
+}
+void TraCIMobility::changeParkingState(bool newState)
+{
+    isParking = newState;
+    emit(parkingStateChangedSignal, this);
 }
 
 void TraCIMobility::updateDisplayString() {

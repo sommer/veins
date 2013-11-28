@@ -20,6 +20,8 @@
 
 #include "application/traci/TraCIDemo11p.h"
 
+const simsignalwrap_t TraCIDemo11p::parkingStateChangedSignal = simsignalwrap_t(TRACI_SIGNAL_PARKING_CHANGE_NAME);
+
 Define_Module(TraCIDemo11p);
 
 void TraCIDemo11p::initialize(int stage) {
@@ -31,6 +33,9 @@ void TraCIDemo11p::initialize(int stage) {
 
 		sentMessage = false;
 		lastDroveAt = simTime();
+		findHost()->subscribe(parkingStateChangedSignal, this);
+		isParking = false;
+		sendWhileParking = par("sendWhileParking").boolValue();
 	}
 }
 
@@ -53,8 +58,27 @@ void TraCIDemo11p::sendMessage(std::string blockedRoadId) {
 	wsm->setWsmData(blockedRoadId.c_str());
 	sendWSM(wsm);
 }
-
-
+void TraCIDemo11p::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj) {
+	Enter_Method_Silent();
+	if (signalID == mobilityStateChangedSignal) {
+		handlePositionUpdate(obj);
+	}
+	else if (signalID == parkingStateChangedSignal) {
+		handleParkingUpdate(obj);
+	}
+}
+void TraCIDemo11p::handleParkingUpdate(cObject* obj) {
+	isParking = traci->getParkingState();
+	if (sendWhileParking == false) {
+		if (isParking == true) {
+			(FindModule<BaseConnectionManager*>::findGlobalModule())->unregisterNic(this->getParentModule()->getSubmodule("nic"));
+		}
+		else {
+			Coord pos = traci->getCurrentPosition();
+			(FindModule<BaseConnectionManager*>::findGlobalModule())->registerNic(this->getParentModule()->getSubmodule("nic"), (ChannelAccess*) this->getParentModule()->getSubmodule("nic")->getSubmodule("phy80211p"), &pos);
+		}
+	}
+}
 void TraCIDemo11p::handlePositionUpdate(cObject* obj) {
 	BaseWaveApplLayer::handlePositionUpdate(obj);
 
@@ -69,4 +93,7 @@ void TraCIDemo11p::handlePositionUpdate(cObject* obj) {
 		lastDroveAt = simTime();
 	}
 }
-
+void TraCIDemo11p::sendWSM(WaveShortMessage* wsm) {
+	if (isParking && !sendWhileParking) return;
+	sendDelayedDown(wsm,individualOffset);
+}

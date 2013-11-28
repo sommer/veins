@@ -99,6 +99,8 @@ void TraCIScenarioManager::initialize(int stage) {
 	hosts.clear();
 	subscribedVehicles.clear();
 	activeVehicleCount = 0;
+	parkingVehicleCount = 0;
+	drivingVehicleCount = 0;
 	autoShutdownTriggered = false;
 
 	world = FindModule<BaseWorldUtility*>::findGlobalModule();
@@ -314,13 +316,15 @@ void TraCIScenarioManager::init_traci() {
 		uint32_t beginTime = 0;
 		uint32_t endTime = 0x7FFFFFFF;
 		std::string objectId = "";
-		uint8_t variableNumber = 5;
+		uint8_t variableNumber = 7;
 		uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
 		uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
 		uint8_t variable3 = VAR_TIME_STEP;
 		uint8_t variable4 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
 		uint8_t variable5 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
-		TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5);
+		uint8_t variable6 = VAR_PARKING_STARTING_VEHICLES_IDS;
+		uint8_t variable7 = VAR_PARKING_ENDING_VEHICLES_IDS;
+		TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7);
 		processSubcriptionResult(buf);
 		ASSERT(buf.eof());
 	}
@@ -1019,6 +1023,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			}
 
 			activeVehicleCount += count;
+			drivingVehicleCount += count;
 
 		} else if (variable1_resp == VAR_ARRIVED_VEHICLES_IDS) {
 			uint8_t varType; buf >> varType;
@@ -1045,6 +1050,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 
 			if ((count > 0) && (count >= activeVehicleCount) && autoShutdown) autoShutdownTriggered = true;
 			activeVehicleCount -= count;
+			drivingVehicleCount -= count;
 
 		} else if (variable1_resp == VAR_TELEPORT_STARTING_VEHICLES_IDS) {
 			uint8_t varType; buf >> varType;
@@ -1065,6 +1071,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			}
 
 			activeVehicleCount -= count;
+			drivingVehicleCount -= count;
 
 		} else if (variable1_resp == VAR_TELEPORT_ENDING_VEHICLES_IDS) {
 			uint8_t varType; buf >> varType;
@@ -1077,6 +1084,47 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			}
 
 			activeVehicleCount += count;
+			drivingVehicleCount += count;
+
+		} else if (variable1_resp == VAR_PARKING_STARTING_VEHICLES_IDS) {
+			uint8_t varType; buf >> varType;
+			ASSERT(varType == TYPE_STRINGLIST);
+			uint32_t count; buf >> count;
+			MYDEBUG << "TraCI reports " << count << " vehicles starting to park." << endl;
+			for (uint32_t i = 0; i < count; ++i) {
+				std::string idstring; buf >> idstring;
+
+
+				cModule* mod = getManagedModule(idstring);
+				for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
+					cModule* submod = iter();
+					TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
+					if (!mm) continue;
+					mm->changeParkingState(true);
+				}
+			}
+
+			parkingVehicleCount += count;
+			drivingVehicleCount -= count;
+
+		} else if (variable1_resp == VAR_PARKING_ENDING_VEHICLES_IDS) {
+			uint8_t varType; buf >> varType;
+			ASSERT(varType == TYPE_STRINGLIST);
+			uint32_t count; buf >> count;
+			MYDEBUG << "TraCI reports " << count << " vehicles ending to park." << endl;
+			for (uint32_t i = 0; i < count; ++i) {
+				std::string idstring; buf >> idstring;
+
+				cModule* mod = getManagedModule(idstring);
+				for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
+					cModule* submod = iter();
+					TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
+					if (!mm) continue;
+					mm->changeParkingState(false);
+				}
+			}
+			parkingVehicleCount -= count;
+			drivingVehicleCount += count;
 
 		} else if (variable1_resp == VAR_TIME_STEP) {
 			uint8_t varType; buf >> varType;
@@ -1119,7 +1167,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
 			MYDEBUG << "TraCI reports " << count << " active vehicles." << endl;
-			ASSERT(count == activeVehicleCount);
+			ASSERT(count == drivingVehicleCount);
 			std::set<std::string> drivingVehicles;
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;

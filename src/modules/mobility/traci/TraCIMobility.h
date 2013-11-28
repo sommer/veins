@@ -21,6 +21,8 @@
 #ifndef MOBILITY_TRACI_TRACIMOBILITY_H
 #define MOBILITY_TRACI_TRACIMOBILITY_H
 
+#define TRACI_SIGNAL_PARKING_CHANGE_NAME "parkingStateChanged"
+
 #include <string>
 #include <fstream>
 #include <list>
@@ -73,6 +75,7 @@ class TraCIMobility : public BaseMobility
 		virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
 		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, TraCIScenarioManager::VehicleSignal signals = TraCIScenarioManager::VEH_SIGNAL_UNDEF);
 		virtual void changePosition();
+		virtual void changeParkingState(bool);
 		virtual void updateDisplayString();
 		virtual void setExternalId(std::string external_id) {
 			this->external_id = external_id;
@@ -86,6 +89,9 @@ class TraCIMobility : public BaseMobility
 		}
 		virtual Coord getPositionAt(const simtime_t& t) const {
 			return move.getPositionAt(t) ;
+		}
+		virtual bool getParkingState() const {
+		    return isParking;
 		}
 		virtual std::string getRoadId() const {
 			if (road_id == "") throw cRuntimeError("TraCIMobility::getRoadId called with no road_id set yet");
@@ -177,6 +183,11 @@ class TraCIMobility : public BaseMobility
 		cMessage* stopAccidentMsg;
 		mutable TraCIScenarioManager* manager;
 		double last_speed;
+
+		const static simsignalwrap_t parkingStateChangedSignal;
+
+		bool isParking;
+
 
 		virtual void fixIfHostGetsOutside(); /**< called after each read to check for (and handle) invalid positions */
 

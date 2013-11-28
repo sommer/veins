@@ -652,6 +652,18 @@
 // ids of arrived vehicles (get: simulation)
 #define VAR_ARRIVED_VEHICLES_IDS 0x7a
 
+// number of vehicles starting to park (get: simulation)
+#define VAR_PARKING_STARTING_VEHICLES_NUMBER 0x6c
+
+// ids of vehicles starting to park (get: simulation)
+#define VAR_PARKING_STARTING_VEHICLES_IDS 0x6d
+
+// number of vehicles ending to park (get: simulation)
+#define VAR_PARKING_ENDING_VEHICLES_NUMBER 0x6e
+
+// ids of vehicles ending to park (get: simulation)
+#define VAR_PARKING_ENDING_VEHICLES_IDS 0x6f
+
 // delta t (get: simulation)
 #define VAR_DELTA_T 0x7b
 
