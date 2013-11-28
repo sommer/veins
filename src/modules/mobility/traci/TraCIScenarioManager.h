@@ -75,6 +75,13 @@ class TraCIScenarioManager : public cSimpleModule
 			VEH_SIGNAL_EMERGENCY_YELLOW = 8192
 		};
 
+		enum DepartDefs {
+			DEPART_NOW = 2,
+			DEPART_LANE_BEST_FREE = 5,
+			DEPART_POS_BASE = 4,
+			DEPART_SPEED_MAX = 3
+		};
+
 		~TraCIScenarioManager();
 		virtual int numInitStages() const { return std::max(cSimpleModule::numInitStages(), 2); }
 		virtual void initialize(int stage);
@@ -117,7 +124,7 @@ class TraCIScenarioManager : public cSimpleModule
 		double commandGetLaneMeanSpeed(std::string laneId);
 		std::list<std::string> commandGetJunctionIds();
 		Coord commandGetJunctionPosition(std::string junctionId);
-		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, std::string laneId, float emitPosition, float emitSpeed);
+		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -DEPART_NOW, double emitPosition = -DEPART_POS_BASE, double emitSpeed = -DEPART_SPEED_MAX, int8_t emitLane = -DEPART_LANE_BEST_FREE);
 
 		const std::map<std::string, cModule*>& getManagedHosts() {
 			return hosts;

@@ -10942,6 +10942,6 @@ Licensed under the Creative Commons Attribution-ShareAlike 2.0 license <http://c
     <connection from=":cluster_347349857_347349858_15" to="-31241816#1" fromLane="0" toLane="0" via=":cluster_347349857_347349858_19_0" dir="s" state="M"/>
     <connection from=":cluster_347349857_347349858_19" to="-31241816#1" fromLane="0" toLane="0" dir="s" state="M"/>
 
-    <roundabout nodes="25504677 25504680 25504689 25504695"/>
+    <roundabout nodes="25504677 25504680 25504689 25504695" edges="4900041#0 4900041#1 4900041#2 4900041#3"/>
 
 </net>
