@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+
+"""
+Creates Makefile(s) for building Veins.
+"""
+
+import os
+import sys
+from subprocess import check_call
+from logging import warning, error
+from optparse import OptionParser
+import fnmatch
+
+
+# Option handling
+parser = OptionParser()
+parser.add_option("--with-inet", dest="inet", help="link Veins with a version of the INET Framework installed in PATH [default: do not link with INET]", metavar="PATH")
+(options, args) = parser.parse_args()
+
+if args:
+    warning("Superfluous command line arguments: \"%s\"" % " ".join(args))
+
+if options.inet:
+    inet_src_path = os.path.join(options.inet, 'src')
+    if not os.path.isdir(inet_src_path):
+        error('Path to INET not found: %s' % inet_src_path)
+        sys.exit(1)
+
+if not os.path.isdir('out'):
+    os.mkdir('out')
+
+flags_inet = []
+ned_paths = []
+if options.inet:
+    inet_header_dirs = set()
+    for root, dirnames, filenames in os.walk(inet_src_path):
+        for filename in fnmatch.filter(filenames, '*.h'):
+            inet_header_dirs.add(os.path.relpath(os.path.dirname(os.path.join(root, filename)), 'src'))
+    inet_includes = ['-I'+s for s in inet_header_dirs]
+    inet_link=["-L"+os.path.join(os.path.relpath(options.inet, 'src'), 'src'), "-linet"]
+    inet_defs=["-DINET_IMPORT", "-DWITH_INET"]
+
+    flags_inet = inet_includes + inet_link + inet_defs
+    run_libs = [os.path.relpath(os.path.join(options.inet, 'src', 'inet')), os.path.join('src', 'veins')]
+    run_neds = [os.path.relpath(os.path.join(options.inet, 'src')), 'src']
+
+
+else:
+    flags_inet = ['-X' + os.path.join('src', 'inet')]
+    run_libs = [os.path.join('src', 'veins')]
+    run_neds = ['src']
+
+f = open(os.path.join('out', 'config.py'), 'w')
+f.write('run_libs = %s\n' % repr(run_libs))
+f.write('run_neds = %s\n' % repr(run_neds))
+f.close()
+
+check_call(['env', 'opp_makemake', '-f', '--deep', '--make-so', '-o', 'veins', '-O', 'out'] + flags_inet, cwd='src')
+
+print 'Configure done. You can now run "make".'
+

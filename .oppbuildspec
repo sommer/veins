@@ -1,42 +1,4 @@
 <buildspec version="4.0">
-<dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power" type="makemake"/>
-<dir makemake-options="-o Mac80211 -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/Mac80211" type="makemake"/>
-<dir makemake-options="-o multiConnectionManager -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/multiConnectionManager" type="makemake"/>
-<dir makemake-options="-o deviceTestAll -O out -u CMDENV -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTestAll" type="makemake"/>
-<dir makemake-options="-o channelInfo -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/channelInfo" type="makemake"/>
-<dir makemake-options="-o CSMAMac -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/CSMAMac" type="makemake"/>
-<dir makemake-options="-o decider -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/decider" type="makemake"/>
-<dir makemake-options="-o blackboard -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/blackboard" type="makemake"/>
-<dir makemake-options="-o coord -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/coord" type="makemake"/>
-<dir makemake-options="-o bmac -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/bmac" type="makemake"/>
-<dir makemake-options="--make-so -o powerTestUtils -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:use-exported-libs" path="tests/power/utils" type="makemake"/>
-<dir makemake-options="-o basePhyLayer -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/basePhyLayer" type="makemake"/>
-<dir makemake-options="-o radioState -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/radioState" type="makemake"/>
-<dir makemake-options="-o connectionManager -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/connectionManager" type="makemake"/>
-<dir makemake-options="-o deviceTest -O out -u CMDENV -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTest" type="makemake"/>
-<dir makemake-options="-o lmac -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/lmac" type="makemake"/>
-<dir makemake-options="-o BaseMoBANNetwork -O out --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/BaseMoBANNetwork" type="makemake"/>
-<dir makemake-options="-o deviceTestMulti -O out -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTestMulti" type="makemake"/>
-<dir makemake-options="-o ieee802154a -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/ieee802154a" type="makemake"/>
-<dir makemake-options="-o Nic80211Test -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/Nic80211Test" type="makemake"/>
-<dir makemake-options="--make-so -o miximtestUtils -O out --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/testUtils" type="makemake"/>
-<dir makemake-options="-o baseNetwork -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/baseNetwork" type="makemake"/>
-<dir makemake-options="--nolink -O out --meta:recurse --meta:export-library --meta:use-exported-libs" path="." type="makemake"/>
-<dir makemake-options="-o WSNRouting -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/WSNRouting" type="makemake"/>
-<dir makemake-options="-o ieee802154Narrow -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/ieee802154Narrow" type="makemake"/>
-<dir makemake-options="--deep --make-so -o miximbase -O out --meta:export-library --meta:use-exported-libs" path="src/base" type="makemake"/>
-<dir makemake-options="--deep --make-so -o miximmodules -O out -lmiximbase --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="src/modules" type="makemake"/>
-<dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples" type="makemake"/>
-<dir makemake-options="--nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests" type="makemake"/>
-<dir makemake-options="-o baseMobility -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/baseMobility" type="makemake"/>
-<dir makemake-options="-o nicTest -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/nicTest" type="makemake"/>
-<dir makemake-options="-o mapping -O out -u Cmdenv -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/mapping" type="makemake"/>
-<dir makemake-options="-o deviceTestAccts -O out -u CMDENV -lpowerTestUtils -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/power/deviceTestAccts" type="makemake"/>
-<dir makemake-options="-o analogueModels -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/analogueModels" type="makemake"/>
-<dir makemake-options="-o traci_launchd -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/traci_launchd" type="makemake"/>
-<dir makemake-options="-o traci -O out -u CMDENV -lmiximbase -lmiximmodules -lmiximtestUtils --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="tests/traci" type="makemake"/>
-<dir makemake-options="-o ieee80211p -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/ieee80211p" type="makemake"/>
-<dir makemake-options="-o obstacles -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/obstacles" type="makemake"/>
-<dir makemake-options="-o twoRayInterference -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/twoRayInterference" type="makemake"/>
-<dir makemake-options="-o veins -O out -lmiximbase -lmiximmodules --meta:auto-include-path --meta:export-library --meta:use-exported-libs" path="examples/veins" type="makemake"/>
+<dir makemake-options="--deep --make-so -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs --meta:feature-cflags --meta:feature-ldflags" path="src" type="makemake"/>
+<dir makemake-options="--deep --nolink -O out --meta:recurse --meta:auto-include-path --meta:export-library --meta:use-exported-libs --meta:feature-cflags --meta:feature-ldflags" path="." type="custom"/>
 </buildspec>

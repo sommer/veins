@@ -37,8 +37,8 @@
 class MIXIM_API Coord : public cObject
 {
 public:
-	/** @brief Constant with all values set to 0. */
-	static const Coord ZERO;
+    /** @brief Constant with all values set to 0. */
+    static const Coord ZERO;
 
 public:
     /** @name x, y and z coordinate of the position. */
@@ -47,6 +47,9 @@ public:
     double y;
     double z;
     /*@}*/
+
+private:
+  void copy(const Coord& other) { x = other.x; y = other.y; z = other.z; }
 
 public:
     /** @brief Default constructor. */
@@ -57,53 +60,45 @@ public:
     Coord(double x, double y, double z = 0.0)
         : x(x), y(y), z(z) {}
 
-    /** @brief Initializes coordinate from other coordinate.*/
-    Coord( const Coord& pos )
-        : cObject(pos), x(pos.x), y(pos.y), z(pos.z) {}
+    /** @brief Initializes coordinate from other coordinate. */
+    Coord(const Coord& other)
+        : cObject(other) { copy(other); }
 
-    /** @brief Initializes coordinate from other coordinate.*/
-    Coord( const Coord* pos )
-        : cObject(*pos), x(pos->x), y(pos->y), z(pos->z) {}
-
-    /** @brief Returns a string with the value of the coordinate.*/
-    std::string info() const {
-        std::stringstream os;
-        os << "(" << x << "," << y << "," << z << ")";
-        return os.str();
-    }
+    /** @brief Returns a string with the value of the coordinate. */
+    std::string info() const;
 
     /** @brief Adds two coordinate vectors. */
     friend Coord operator+(const Coord& a, const Coord& b) {
-        Coord tmp = a;
+        Coord tmp(a);
         tmp += b;
         return tmp;
     }
 
     /** @brief Subtracts two coordinate vectors. */
     friend Coord operator-(const Coord& a, const Coord& b) {
-        Coord tmp = a;
+        Coord tmp(a);
         tmp -= b;
         return tmp;
     }
 
-    /** @brief Multiplies a coordinate vector by a real number.*/
+    /** @brief Multiplies a coordinate vector by a real number. */
     friend Coord operator*(const Coord& a, double f) {
-		Coord tmp = a;
-		tmp *= f;
+        Coord tmp(a);
+        tmp *= f;
         return tmp;
     }
 
-    /** @brief Divides a coordinate vector by a real number.*/
+    /** @brief Divides a coordinate vector by a real number. */
     friend Coord operator/(const Coord& a, double f) {
-		Coord tmp = a;
-		tmp /= f;
+        Coord tmp(a);
+        tmp /= f;
         return tmp;
     }
 
     /**
      * @brief Multiplies this coordinate vector by a real number.
      */
-    Coord operator*=(double f) {
+    Coord& operator*=(double f) {
         x *= f;
         y *= f;
         z *= f;
@@ -113,7 +108,7 @@ public:
     /**
      * @brief Divides this coordinate vector by a real number.
      */
-    Coord operator/=(double f) {
+    Coord& operator/=(double f) {
         x /= f;
         y /= f;
         z /= f;
@@ -123,7 +118,7 @@ public:
     /**
      * @brief Adds coordinate vector 'a' to this.
      */
-    Coord operator+=(const Coord& a) {
+    Coord& operator+=(const Coord& a) {
         x += a.x;
         y += a.y;
         z += a.z;
@@ -131,21 +126,21 @@ public:
     }
 
     /**
-     * @brief Assigns coordinate vector 'a' to this.
+     * @brief Assigns coordinate vector 'other' to this.
      *
      * This operator can change the dimension of the coordinate.
      */
-    Coord operator=(const Coord& a) {
-        x = a.x;
-        y = a.y;
-        z = a.z;
+    Coord& operator=(const Coord& other) {
+        if (this == &other) return *this;
+        cObject::operator=(other);
+        copy(other);
         return *this;
     }
 
     /**
      * @brief Subtracts coordinate vector 'a' from this.
      */
-    Coord operator-=(const Coord& a) {
+    Coord& operator-=(const Coord& a) {
         x -= a.x;
         y -= a.y;
         z -= a.z;
@@ -175,16 +170,16 @@ public:
     /**
      * @brief Returns the distance to Coord 'a'.
      */
-    double distance( const Coord& a ) const {
-        Coord dist=*this-a;
+    double distance(const Coord& a) const {
+        Coord dist(*this - a);
         return dist.length();
     }
 
     /**
      * @brief Returns distance^2 to Coord 'a' (omits calling square root).
      */
-    double sqrdist( const Coord& a ) const {
-        Coord dist=*this-a;
+    double sqrdist(const Coord& a) const {
+        Coord dist(*this - a);
         return dist.squareLength();
     }
 
@@ -215,11 +210,11 @@ public:
      * @param lowerBound The upper bound of the rectangle.
      * @param upperBound The lower bound of the rectangle.
      */
-     bool isInBoundary(const Coord& lowerBound, const Coord& upperBound) const {
+    bool isInBoundary(const Coord& lowerBound, const Coord& upperBound) const {
         return  lowerBound.x <= x && x <= upperBound.x &&
                 lowerBound.y <= y && y <= upperBound.y &&
                 lowerBound.z <= z && z <= upperBound.z;
-     }
+    }
 
     /**
      * @brief Returns the minimal coordinates.
@@ -244,6 +239,12 @@ public:
 inline std::ostream& operator<<(std::ostream& os, const Coord& coord)
 {
     return os << "(" << coord.x << "," << coord.y << "," << coord.z << ")";
+}
+
+inline std::string Coord::info() const {
+    std::stringstream os;
+    os << *this;
+    return os.str();
 }
 
 #endif

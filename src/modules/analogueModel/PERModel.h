@@ -6,6 +6,8 @@
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 
+using Veins::AirFrame;
+
 /**
  * @brief This class applies a parameterized packet error rate
  * to incoming packets. This allows the user to easily

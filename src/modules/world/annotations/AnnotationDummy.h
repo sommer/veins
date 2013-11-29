@@ -27,6 +27,7 @@
  *
  * @author Christoph Sommer
  */
+namespace Veins {
 class AnnotationDummy : public cSimpleModule
 {
 	public:
@@ -34,5 +35,6 @@ class AnnotationDummy : public cSimpleModule
 
 	protected:
 };
+}
 
 #endif

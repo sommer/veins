@@ -24,6 +24,7 @@
 
 #include <sstream>
 
+#include "Coord.h"
 #include "FWMath.h"
 #include "BorderMsg_m.h"
 #include "FindModule.h"
@@ -32,6 +33,16 @@
 Define_Module(BaseMobility);
 
 const simsignalwrap_t BaseMobility::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
+
+namespace {
+    bool isInBoundary(Coord c, Coord lowerBound, Coord upperBound) {
+        return  lowerBound.x <= c.x && c.x <= upperBound.x &&
+                lowerBound.y <= c.y && c.y <= upperBound.y &&
+                lowerBound.z <= c.z && c.z <= upperBound.z;
+    }
+
+}
+
 
 BaseMobility::BaseMobility():
 		BatteryAccess(),
@@ -99,7 +110,7 @@ void BaseMobility::initialize(int stage)
 		coreEV << "start pos: " << move.getStartPos().info() << endl;
 
         //check whether position is within the playground
-        if (!move.getStartPos().isInBoundary(Coord::ZERO, world->getPgs())) {
+        if (!isInBoundary(move.getStartPos(), Coord::ZERO, *world->getPgs())) {
             error("node position specified in omnetpp.ini exceeds playgroundsize");
         }
 

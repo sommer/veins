@@ -1,15 +1,26 @@
 <features cppSourceRoots="src">
     <feature
-        id="MiXiM_INET"
-        name="MiXiM-INET Bridge"
-        description = "MiXiM using INET framework."
+        id="WITHOUT_INET"
+        name="Without INET Framework (standalone, default)"
+        description = ""
+        initiallyEnabled = "true"
+        requires = ""
+        labels = ""
+        nedPackages = ""
+        extraSourceFolders = "src/inet"
+        compileFlags = ""
+        linkerFlags = ""
+        />
+    <feature
+        id="WITH_INET"
+        name="With INET Framework (do not forget to add INET to 'project references')"
+        description = ""
         initiallyEnabled = "false"
         requires = ""
         labels = ""
-        nedPackages = "
-                      "
+        nedPackages = ""
         extraSourceFolders = ""
-        compileFlags = "-DMIXIM_INET"
+        compileFlags = "-DWITH_INET"
         linkerFlags = ""
         />
 </features>

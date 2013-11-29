@@ -20,13 +20,13 @@
 
 #define MIXIM_VERSION 0x0202
 
-#define MIXIM_SIGNAL_PACKET_NAME          "org.mixim.modules.utility.packet"
-#define MIXIM_SIGNAL_UWBIRPACKET_NAME     "org.mixim.modules.utility.uwbirpacket"
-#define MIXIM_SIGNAL_DROPPEDPACKET_NAME   "org.mixim.modules.utility.droppedpacket"
-#define MIXIM_SIGNAL_PASSEDMSG_NAME       "org.mixim.base.utils.passedmsg"
-#define MIXIM_SIGNAL_HOSTSTATE_NAME       "org.mixim.base.utils.hoststate"
-#define MIXIM_SIGNAL_MOBILITY_CHANGE_NAME "mobilityStateChanged"
-#define MIXIM_SIGNAL_BATTERY_CHANGE_NAME  "org.mixim.modules.power.battery.batterystate"
-#define MIXIM_SIGNAL_MOBANMSG_NAME        "org.mixim.modules.utility.bbmobanmessage"
+#define MIXIM_SIGNAL_PACKET_NAME          "org.car2x.veins.modules.utility.packet"
+#define MIXIM_SIGNAL_UWBIRPACKET_NAME     "org.car2x.veins.modules.utility.uwbirpacket"
+#define MIXIM_SIGNAL_DROPPEDPACKET_NAME   "org.car2x.veins.modules.utility.droppedpacket"
+#define MIXIM_SIGNAL_PASSEDMSG_NAME       "org.car2x.veins.base.utils.passedmsg"
+#define MIXIM_SIGNAL_HOSTSTATE_NAME       "org.car2x.veins.base.utils.hoststate"
+#define MIXIM_SIGNAL_MOBILITY_CHANGE_NAME "veinsmobilityStateChanged"
+#define MIXIM_SIGNAL_BATTERY_CHANGE_NAME  "org.car2x.veins.modules.power.battery.batterystate"
+#define MIXIM_SIGNAL_MOBANMSG_NAME        "org.car2x.veins.modules.utility.bbmobanmessage"
 
 #endif

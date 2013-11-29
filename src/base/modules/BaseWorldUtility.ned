@@ -1,4 +1,4 @@
-package org.mixim.base.modules;
+package org.car2x.veins.base.modules;
 
 // Basic utility module for the whole network.
 // Provides utility methods and information used by

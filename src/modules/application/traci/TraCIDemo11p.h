@@ -22,7 +22,10 @@
 #define TraCIDemo11p_H
 
 #include "BaseWaveApplLayer.h"
-#include "mobility/traci/TraCIMobility.h"
+#include "modules/mobility/traci/TraCIMobility.h"
+
+using Veins::TraCIMobility;
+using Veins::AnnotationManager;
 
 /**
  * Small IVC Demo using 11p

@@ -21,7 +21,7 @@
 #ifndef PHYLAYER80211P_H_
 #define PHYLAYER80211P_H_
 
-#include <PhyLayer.h>
+#include <BasePhyLayer.h>
 #include "Mac80211pToPhy11pInterface.h"
 #include <Decider80211p.h>
 #include <SimplePathlossModel.h>
@@ -31,6 +31,8 @@
 #include <BaseConnectionManager.h>
 #include "Decider80211pToPhy80211pInterface.h"
 #include <Move.h>
+
+using Veins::AirFrame;
 
 #ifndef DBG
 #define DBG EV

@@ -1,3 +1,10 @@
+Veins 2.1-bis:
+
++ Veins is now a fork of MiXiM (instead of a very long patch). 
+
+
+Below is the change log of MiXiM (the basis of Veins):
+
 v2.2
 + It is mainly a maintenance release whith focus on INET integration.
 + adjusted the OMNeT++ 4.2 API changes

@@ -16,12 +16,11 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-package org.mixim.tests.traci;
+package org.car2x.veins.tests.traci;
 
-import org.mixim.base.connectionManager.ConnectionManager;
-import org.mixim.base.modules.BaseWorldUtility;
-import org.mixim.modules.mobility.traci.TraCIScenarioManagerLaunchd;
-import org.mixim.tests.traci.TraCITestApp;
+import org.car2x.veins.base.connectionManager.ConnectionManager;
+import org.car2x.veins.base.modules.BaseWorldUtility;
+import org.car2x.veins.modules.mobility.traci.TraCIScenarioManagerLaunchd;
 
 module Highway
 {

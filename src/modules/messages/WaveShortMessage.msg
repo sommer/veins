@@ -19,7 +19,7 @@
 //
 
 cplusplus {{
-#include <Coord.h>
+#include "Coord.h"
 }}
 
 class noncobject Coord;

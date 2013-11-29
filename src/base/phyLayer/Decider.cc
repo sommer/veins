@@ -1,5 +1,7 @@
 #include "Decider.h"
 
+using Veins::AirFrame;
+
 
 bool DeciderResult::isSignalCorrect() const {
 	return isCorrect;

@@ -18,7 +18,9 @@
 //
 
 #include <set>
-#include "obstacle/Obstacle.h"
+#include "modules/obstacle/Obstacle.h"
+
+using Veins::Obstacle;
 
 Obstacle::Obstacle(std::string id, double attenuationPerWall, double attenuationPerMeter) :
 	visualRepresentation(0),

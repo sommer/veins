@@ -13,7 +13,11 @@
 
 #include "MiXiMDefs.h"
 
+namespace Veins {
 class AirFrame;
+}
+using Veins::AirFrame;
+
 class BaseWorldUtility;
 class ConstMapping;
 

@@ -18,8 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.mixim.modules.application.ieee80211p;
-import org.mixim.base.modules.IBaseApplLayer;
+package org.car2x.veins.modules.application.ieee80211p;
+import org.car2x.veins.base.modules.IBaseApplLayer;
 
 //
 // WAVE application layer base class.

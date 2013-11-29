@@ -1,8 +1,11 @@
 #include "PhyUtils.h"
 
-#include "AirFrame_m.h"
+#include "base/messages/AirFrame_m.h"
+
+using Veins::AirFrame;
 
 using namespace std;
+using Veins::Radio;
 
 void RadioStateAnalogueModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos)
 {

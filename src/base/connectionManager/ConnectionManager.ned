@@ -18,7 +18,7 @@
 // **************************************************************************/
 
 
-package org.mixim.base.connectionManager;
+package org.car2x.veins.base.connectionManager;
 
 // Module to control all connection related stuff
 //

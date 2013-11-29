@@ -4,7 +4,9 @@
 #include "MiXiMDefs.h"
 #include "NicEntry.h"
 
+namespace Veins {
 class ChannelAccess;
+}
 
 /**
  * @brief Module to control the channel and handle all connection

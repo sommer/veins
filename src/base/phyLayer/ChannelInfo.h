@@ -5,7 +5,9 @@
 #include <omnetpp.h>
 
 #include "MiXiMDefs.h"
-#include "AirFrame_m.h"
+#include "base/messages/AirFrame_m.h"
+
+using Veins::AirFrame;
 
 /**
  * @brief This class is used by the BasePhyLayer to keep track of the AirFrames

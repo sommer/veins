@@ -36,9 +36,11 @@
 #include "NetwToMacControlInfo.h"
 #include "MacToPhyControlInfo.h"
 #include "AddressingInterface.h"
-#include "ChannelAccess.h"
+#include "base/connectionManager/ChannelAccess.h"
 #include "FindModule.h"
 #include "MacPkt_m.h"
+
+using Veins::ChannelAccess;
 
 Define_Module(BaseMacLayer);
 

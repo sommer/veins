@@ -1,0 +1,2 @@
+#!/bin/sh
+gdb --args opp_run -l../../src/veins -l ../../../inet/src/inet -n"../../src/base;../../src/modules;../../../inet/src;.." "$@"

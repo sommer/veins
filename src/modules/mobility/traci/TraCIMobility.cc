@@ -22,9 +22,11 @@
 #include <iostream>
 #include <sstream>
 
-#include "mobility/traci/TraCIMobility.h"
+#include "modules/mobility/traci/TraCIMobility.h"
 
-Define_Module(TraCIMobility);
+using Veins::TraCIMobility;
+
+Define_Module(Veins::TraCIMobility);
 
 const simsignalwrap_t TraCIMobility::parkingStateChangedSignal = simsignalwrap_t(TRACI_SIGNAL_PARKING_CHANGE_NAME);
 

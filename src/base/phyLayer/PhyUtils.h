@@ -9,6 +9,8 @@
 #include "AnalogueModel.h"
 #include "Mapping.h"
 
+using Veins::AirFrame;
+
 class RSAMMapping;
 
 /**
@@ -193,6 +195,7 @@ public:
  *
  * @ingroup phyLayer
  */
+namespace Veins {
 class MIXIM_API Radio
 {
 public:
@@ -416,7 +419,7 @@ protected:
 		}
 	}
 }; // end class Radio
-
+}
 
 
 /**

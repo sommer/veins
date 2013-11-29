@@ -18,8 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef MOBILITY_TRACI_TRACIMOBILITY_H
-#define MOBILITY_TRACI_TRACIMOBILITY_H
+#ifndef VEINS_MOBILITY_TRACI_TRACIMOBILITY_H
+#define VEINS_MOBILITY_TRACI_TRACIMOBILITY_H
 
 #define TRACI_SIGNAL_PARKING_CHANGE_NAME "parkingStateChanged"
 
@@ -30,7 +30,7 @@
 
 #include <BaseMobility.h>
 #include "FindModule.h"
-#include "mobility/traci/TraCIScenarioManager.h"
+#include "modules/mobility/traci/TraCIScenarioManager.h"
 
 /**
  * @brief
@@ -48,6 +48,7 @@
  *
  * @ingroup mobility
  */
+namespace Veins {
 class TraCIMobility : public BaseMobility
 {
 	public:
@@ -204,7 +205,9 @@ class TraCIMobility : public BaseMobility
 		 */
 		Coord calculateAntennaPosition(const Coord& vehiclePos) const;
 };
+}
 
+namespace Veins {
 class TraCIMobilityAccess
 {
 	public:
@@ -214,7 +217,7 @@ class TraCIMobilityAccess
 			return traci;
 		};
 };
-
+}
 
 #endif
 

@@ -6,7 +6,7 @@
 #include <string>
 
 #include "MiXiMDefs.h"
-#include "ChannelAccess.h"
+#include "base/connectionManager/ChannelAccess.h"
 #include "DeciderToPhyInterface.h"
 #include "MacToPhyInterface.h"
 
@@ -16,6 +16,10 @@ class AnalogueModel;
 class Decider;
 class BaseWorldUtility;
 class cXMLElement;
+
+using Veins::AirFrame;
+using Veins::ChannelAccess;
+using Veins::Radio;
 
 /**
  * @brief The BasePhyLayer represents the physical layer of a nic.

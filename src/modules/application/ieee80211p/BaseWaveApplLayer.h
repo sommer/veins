@@ -24,9 +24,8 @@
 #include <map>
 #include <BaseApplLayer.h>
 #include <Consts80211p.h>
-#include <Mac80211Pkt_m.h>
 #include <WaveShortMessage_m.h>
-#include <ChannelAccess.h>
+#include "base/connectionManager/ChannelAccess.h"
 #include <WaveAppToMac1609_4Interface.h>
 
 #ifndef DBG

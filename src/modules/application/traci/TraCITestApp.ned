@@ -18,9 +18,9 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.mixim.tests.traci;
+package org.car2x.veins.modules.application.traci;
 
-import org.mixim.base.modules.IBaseApplLayer;
+import org.car2x.veins.base.modules.IBaseApplLayer;
 
 simple TraCITestApp like IBaseApplLayer
 {
@@ -30,6 +30,7 @@ simple TraCITestApp like IBaseApplLayer
 		int testNumber;  // number of test to run (-1: no test)
 
 		@display("i=block/app2");
+		@class("Veins::TraCITestApp");
 	gates:
 		input lowerLayerIn; // from network layer
 		output lowerLayerOut; // to network layer

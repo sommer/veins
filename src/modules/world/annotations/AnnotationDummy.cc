@@ -17,7 +17,9 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-#include "world/annotations/AnnotationDummy.h"
+#include "modules/world/annotations/AnnotationDummy.h"
+
+using Veins::AnnotationDummy;
 
 Define_Module(AnnotationDummy);
 

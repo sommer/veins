@@ -1,4 +1,4 @@
-package org.mixim.base.modules;
+package org.car2x.veins.base.modules;
 
 // Interface for application layer modules
 moduleinterface IBaseApplLayer

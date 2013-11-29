@@ -18,8 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "mobility/traci/TraCIScenarioManagerLaunchd.h"
-#include "mobility/traci/TraCIConstants.h"
+#include "modules/mobility/traci/TraCIScenarioManagerLaunchd.h"
+#include "modules/mobility/traci/TraCIConstants.h"
 #define CMD_FILE_SEND 0x75
 
 #include <sstream>
@@ -28,7 +28,9 @@
 
 #define MYDEBUG EV
 
-Define_Module(TraCIScenarioManagerLaunchd);
+using Veins::TraCIScenarioManagerLaunchd;
+
+Define_Module(Veins::TraCIScenarioManagerLaunchd);
 
 TraCIScenarioManagerLaunchd::~TraCIScenarioManagerLaunchd()
 {

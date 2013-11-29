@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-package org.mixim.modules.obstacle;
+package org.car2x.veins.modules.obstacle;
 
 //
 // ObstacleControl models obstacles that block radio transmissions
@@ -27,6 +27,7 @@ simple ObstacleControl
     parameters:
         bool debug = default(false);  // emit debug messages?
         xml obstacles = default(xml("<obstacles/>")); // obstacles to add at startup
+	    @class(Veins::ObstacleControl);
         @display("i=misc/town");
         @labels(node);
 }

@@ -1,6 +1,8 @@
 #include "BreakpointPathlossModel.h"
 
-#include "AirFrame_m.h"
+#include "base/messages/AirFrame_m.h"
+
+using Veins::AirFrame;
 
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(BreakpointPathlossModel): "
 

@@ -18,9 +18,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.mixim.modules.mobility.traci;
+package org.car2x.veins.modules.mobility.traci;
 
-import org.mixim.base.modules.BaseMobility;
+import org.car2x.veins.base.modules.BaseMobility;
 
 //
 // Used in modules created by the TraCIScenarioManager.
@@ -38,7 +38,7 @@ import org.mixim.base.modules.BaseMobility;
 simple TraCIMobility extends BaseMobility
 {
     parameters:
-		@class(TraCIMobility);
+		@class(Veins::TraCIMobility);
         @display("i=block/cogwheel");
         bool debug = default(false);  // debug switch
         double antennaPositionOffset @unit("m") = default(0.0m); // position offset of the antenna of the front of the car

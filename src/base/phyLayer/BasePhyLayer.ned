@@ -1,4 +1,4 @@
-package org.mixim.base.phyLayer;
+package org.car2x.veins.base.phyLayer;
 
 // Basic physical layer module.
 // See the class "BasePhyLayer" documentation.

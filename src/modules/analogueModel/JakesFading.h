@@ -20,6 +20,8 @@
 #include "AnalogueModel.h"
 #include "Mapping.h"
 
+using Veins::AirFrame;
+
 class JakesFading;
 
 /**

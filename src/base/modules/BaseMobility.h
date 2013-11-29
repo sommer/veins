@@ -29,6 +29,8 @@
 #include "Move.h"
 #include "BaseWorldUtility.h"
 
+using Veins::BatteryAccess;
+
 /**
  * @brief Base module for all mobility modules.
  *

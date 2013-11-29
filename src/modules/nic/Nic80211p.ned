@@ -18,10 +18,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.mixim.modules.nic;
+package org.car2x.veins.modules.nic;
 
-import org.mixim.modules.phy.PhyLayer80211p;
-import org.mixim.modules.mac.ieee80211p.Mac1609_4;
+import org.car2x.veins.modules.phy.PhyLayer80211p;
+import org.car2x.veins.modules.mac.ieee80211p.Mac1609_4;
 
 //
 // This NIC implements an 802.11p network interface card.

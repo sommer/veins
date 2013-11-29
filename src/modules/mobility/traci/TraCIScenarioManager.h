@@ -18,8 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef WORLD_TRACI_TRACISCENARIOMANAGER_H
-#define WORLD_TRACI_TRACISCENARIOMANAGER_H
+#ifndef VEINS_WORLD_TRACI_TRACISCENARIOMANAGER_H
+#define VEINS_WORLD_TRACI_TRACISCENARIOMANAGER_H
 
 #include <map>
 #include <list>
@@ -32,8 +32,8 @@
 #include "BaseWorldUtility.h"
 #include "BaseConnectionManager.h"
 #include "FindModule.h"
-#include "obstacle/ObstacleControl.h"
-#include "mobility/traci/TraCIColor.h"
+#include "modules/obstacle/ObstacleControl.h"
+#include "modules/mobility/traci/TraCIColor.h"
 
 /**
  * @brief
@@ -52,6 +52,7 @@
  * @see TraCIScenarioManagerLaunchd
  *
  */
+namespace Veins {
 class TraCIScenarioManager : public cSimpleModule
 {
 	public:
@@ -350,13 +351,18 @@ class TraCIScenarioManager : public cSimpleModule
 		void processSimSubscription(std::string objectId, TraCIBuffer& buf);
 		void processVehicleSubscription(std::string objectId, TraCIBuffer& buf);
 		void processSubcriptionResult(TraCIBuffer& buf);
-};
 
+};
+}
+
+namespace Veins {
 template<> void TraCIScenarioManager::TraCIBuffer::write(std::string inv);
 template<> void TraCIScenarioManager::TraCIBuffer::write(TraCIScenarioManager::TraCICoord inv);
 template<> std::string TraCIScenarioManager::TraCIBuffer::read();
 template<> TraCIScenarioManager::TraCICoord TraCIScenarioManager::TraCIBuffer::read();
+}
 
+namespace Veins {
 class TraCIScenarioManagerAccess
 {
 	public:
@@ -364,5 +370,6 @@ class TraCIScenarioManagerAccess
 			return FindModule<TraCIScenarioManager*>::findGlobalModule();
 		};
 };
+}
 
 #endif

@@ -2,8 +2,10 @@
 
 #include <cassert>
 
-#include "AirFrame_m.h"
+#include "base/messages/AirFrame_m.h"
 #include "Mapping.h"
+
+using Veins::AirFrame;
 
 simtime_t SNRThresholdDecider::processNewSignal(AirFrame* frame)
 {

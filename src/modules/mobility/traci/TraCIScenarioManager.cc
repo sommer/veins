@@ -36,12 +36,15 @@
 
 #define MYDEBUG EV
 
-#include "mobility/traci/TraCIScenarioManager.h"
-#include "mobility/traci/TraCIConstants.h"
-#include "mobility/traci/TraCIMobility.h"
-#include "obstacle/ObstacleControl.h"
+#include "modules/mobility/traci/TraCIScenarioManager.h"
+#include "modules/mobility/traci/TraCIConstants.h"
+#include "modules/mobility/traci/TraCIMobility.h"
+#include "modules/obstacle/ObstacleControl.h"
+#include "modules/mobility/traci/TraCIScenarioManagerInet.h"
 
-Define_Module(TraCIScenarioManager);
+using Veins::TraCIScenarioManager;
+
+Define_Module(Veins::TraCIScenarioManager);
 
 TraCIScenarioManager::~TraCIScenarioManager() {
 	cancelAndDelete(connectAndStartTrigger);
@@ -708,6 +711,7 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 	// pre-initialize TraCIMobility
 	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
 		cModule* submod = iter();
+		ifInetTraCIMobilityCallPreInitialize(submod, nodeId, position, road_id, speed, angle);
 		TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
 		if (!mm) continue;
 		mm->preInitialize(nodeId, position, road_id, speed, angle);
@@ -1260,6 +1264,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 		// module existed - update position
 		for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
 			cModule* submod = iter();
+			ifInetTraCIMobilityCallNextPosition(submod, p, edge, speed, angle);
 			TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
 			if (!mm) continue;
 			MYDEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << endl;

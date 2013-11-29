@@ -13,6 +13,8 @@
 
 class Mapping;
 
+using Veins::AirFrame;
+
 #define deciderEV (ev.isDisabled()||!debug) ? ev : ev << "[Host " << myIndex << "] - PhyLayer(Decider): "
 
 /**

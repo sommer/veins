@@ -28,7 +28,10 @@
 #include "MiXiMDefs.h"
 #include "Coord.h"
 
+namespace Veins {
 class ChannelAccess;
+}
+using Veins::ChannelAccess;
 
 
 /**

@@ -30,6 +30,9 @@
 #include <Signal_.h>
 #include <AirFrame11p_m.h>
 
+using Veins::AirFrame;
+using Veins::Radio;
+
 simtime_t Decider80211p::processNewSignal(AirFrame* msg) {
 
 	AirFrame11p *frame = check_and_cast<AirFrame11p *>(msg);

@@ -1,6 +1,8 @@
 #include "SimplePathlossModel.h"
 
-#include "AirFrame_m.h"
+#include "base/messages/AirFrame_m.h"
+
+using Veins::AirFrame;
 
 #define splmEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimplePathlossModel): "
 

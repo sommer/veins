@@ -1,6 +1,8 @@
 #include "PERModel.h"
 
-#include "AirFrame_m.h"
+#include "base/messages/AirFrame_m.h"
+
+using Veins::AirFrame;
 
 void PERModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {
 	Signal&   signal = frame->getSignal();

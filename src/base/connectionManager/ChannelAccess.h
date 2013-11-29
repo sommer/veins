@@ -62,6 +62,7 @@ class BaseWorldUtility;
  * @ingroup phyLayer
  * @ingroup baseModules
  **/
+namespace Veins {
 class MIXIM_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType
 {
 protected:
@@ -134,6 +135,7 @@ public:
 	 */
 	virtual ChannelMobilityPtrType getMobilityModule() { return ChannelMobilityAccessType::get(this); }
 };
+}
 
 #endif
 

@@ -16,7 +16,9 @@
 #include "LogNormalShadowing.h"
 
 #include "Mapping.h"
-#include "AirFrame_m.h"
+#include "base/messages/AirFrame_m.h"
+
+using Veins::AirFrame;
 
 LogNormalShadowing::LogNormalShadowing(double mean, double stdDev, simtime_t_cref interval):
 	mean(mean), stdDev(stdDev), interval(interval)

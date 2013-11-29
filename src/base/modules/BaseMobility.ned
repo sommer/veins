@@ -1,4 +1,4 @@
-package org.mixim.base.modules;
+package org.car2x.veins.base.modules;
 
 // Module which is responsible for mobility
 // related information like position and movement

@@ -11,6 +11,34 @@
 #define ccEV (ev.isDisabled()||!coreDebug) ? ev : ev << getName() << ": "
 #endif
 
+namespace {
+    /**
+     * On a torus the end and the begin of the axes are connected so you
+     * get a circle. On a circle the distance between two points can't be greater
+     * than half of the circumference.
+     * If the normal distance between two points on one axis is bigger than
+     * half of the size there must be a "shorter way" over the border on this axis
+     */
+    static double dist(double coord1, double coord2, double size) {
+        double difference = fabs(coord1 - coord2);
+        if (difference == 0)
+            // NOTE: event if size is zero
+            return 0;
+        else {
+            assert(size != 0);
+            double dist = FWMath::modulo(difference, size);
+            return std::min(dist, size - dist);
+        }
+    }
+
+    double sqrTorusDist(Coord c, Coord b, Coord size) {
+        double xDist = dist(c.x, b.x, size.x);
+        double yDist = dist(c.y, b.y, size.y);
+        double zDist = dist(c.z, b.z, size.z);
+        return xDist * xDist + yDist * yDist + zDist * zDist;
+    }
+}
+
 void BaseConnectionManager::initialize(int stage)
 {
 	//BaseModule::initialize(stage);
@@ -246,7 +274,7 @@ bool BaseConnectionManager::isInRange(BaseConnectionManager::NicEntries::mapped_
 	double dDistance = 0.0;
 
     if(useTorus) {
-    	dDistance = pFromNic->pos.sqrTorusDist(pToNic->pos, playgroundSize);
+    	dDistance = sqrTorusDist(pFromNic->pos, pToNic->pos, *playgroundSize);
     } else {
     	dDistance = pFromNic->pos.sqrdist(pToNic->pos);
     }
@@ -306,7 +334,7 @@ bool BaseConnectionManager::registerNic(cModule* nic,
 	nicEntry->nicPtr = nic;
 	nicEntry->nicId = nicID;
 	nicEntry->hostId = nic->getParentModule()->getId();
-	nicEntry->pos = nicPos;
+	nicEntry->pos = *nicPos;
 	nicEntry->chAccess = chAccess;
 
 	// add to map
@@ -379,7 +407,7 @@ void BaseConnectionManager::updateNicPos(int nicID, const Coord* newPos)
 		error("No nic with this ID (%d) is registered with this ConnectionManager.", nicID);
 
     Coord oldPos = ItNic->second->pos;
-    ItNic->second->pos = newPos;
+    ItNic->second->pos = *newPos;
 
 	updateConnections(nicID, &oldPos, newPos);
 }

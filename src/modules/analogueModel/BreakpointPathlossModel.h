@@ -6,6 +6,8 @@
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 
+using Veins::AirFrame;
+
 /**
  * @brief Basic implementation of a BreakpointPathlossModel.
  * This class can be used to implement the ieee802154 path loss model.

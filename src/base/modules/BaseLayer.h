@@ -27,6 +27,8 @@
 #include "BatteryAccess.h"
 #include "PassedMessage.h"
 
+using Veins::BatteryAccess;
+
 /**
  * @brief A very simple layer template
  *

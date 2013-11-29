@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package org.mixim.base.modules;
+package org.car2x.veins.base.modules;
 
 //
 // Base module for all layer modules. Defines the in and out gates

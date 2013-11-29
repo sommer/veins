@@ -14,6 +14,8 @@
 #include "ChannelSenseRequest_m.h"
 #include "ChannelState.h"
 
+using Veins::AirFrame;
+
 
 
 /**

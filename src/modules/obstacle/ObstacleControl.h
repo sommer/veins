@@ -25,8 +25,8 @@
 
 #include <omnetpp.h>
 #include "Coord.h"
-#include "obstacle/Obstacle.h"
-#include "world/annotations/AnnotationManager.h"
+#include "modules/obstacle/Obstacle.h"
+#include "modules/world/annotations/AnnotationManager.h"
 
 /**
  * ObstacleControl models obstacles that block radio transmissions.
@@ -35,6 +35,7 @@
  * Transmissions that cross one of the polygon's lines will have
  * their receive power set to zero.
  */
+namespace Veins {
 class ObstacleControl : public cSimpleModule
 {
 	public:
@@ -92,7 +93,9 @@ class ObstacleControl : public cSimpleModule
 		AnnotationManager::Group* annotationGroup;
 		mutable CacheEntries cacheEntries;
 };
+}
 
+namespace Veins {
 class ObstacleControlAccess
 {
 	public:
@@ -103,6 +106,7 @@ class ObstacleControlAccess
 			return dynamic_cast<ObstacleControl*>(simulation.getModuleByPath("obstacles"));
 		}
 };
+}
 
 #endif
 

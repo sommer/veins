@@ -20,12 +20,16 @@
 
 #include <algorithm>
 
-#include "../testUtils/asserts.h"
-#include "../testUtils/OmnetTestBase.h"
+#include "asserts.h"
 
-#include "TraCITestApp.h"
+#include "application/traci/TraCITestApp.h"
 
-Define_Module(TraCITestApp);
+using Veins::TraCIMobility;
+using Veins::TraCIMobilityAccess;
+
+using Veins::TraCITestApp;
+
+Define_Module(Veins::TraCITestApp);
 
 const simsignalwrap_t TraCITestApp::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
 

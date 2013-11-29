@@ -23,7 +23,7 @@
 
 #include <omnetpp.h>
 
-#include "mobility/traci/TraCIScenarioManager.h"
+#include "modules/mobility/traci/TraCIScenarioManager.h"
 
 /**
  * @brief
@@ -42,6 +42,7 @@
  * @see TraCIScenarioManager
  *
  */
+namespace Veins {
 class TraCIScenarioManagerLaunchd : public TraCIScenarioManager
 {
 	public:
@@ -57,7 +58,9 @@ class TraCIScenarioManagerLaunchd : public TraCIScenarioManager
 
 		virtual void init_traci();
 };
+}
 
+namespace Veins {
 class TraCIScenarioManagerLaunchdAccess
 {
 	public:
@@ -65,5 +68,6 @@ class TraCIScenarioManagerLaunchdAccess
 			return FindModule<TraCIScenarioManagerLaunchd*>::findGlobalModule();
 		};
 };
+}
 
 #endif

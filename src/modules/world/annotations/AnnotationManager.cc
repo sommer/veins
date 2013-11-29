@@ -20,10 +20,14 @@
 #include <sstream>
 #include <cmath>
 
-#include "world/annotations/AnnotationManager.h"
-#include "mobility/traci/TraCIScenarioManager.h"
+#include "modules/world/annotations/AnnotationManager.h"
+#include "modules/mobility/traci/TraCIScenarioManager.h"
 
-Define_Module(AnnotationManager);
+Define_Module(Veins::AnnotationManager);
+
+using Veins::TraCIScenarioManager;
+using Veins::TraCIScenarioManagerAccess;
+using Veins::AnnotationManager;
 
 namespace {
 	const short EVT_SCHEDULED_ERASE = 3;
@@ -266,7 +270,7 @@ cModule* AnnotationManager::createDummyModule(std::string displayString) {
 	cModule* parentmod = getParentModule();
 	if (!parentmod) error("Parent Module not found");
 
-	cModuleType* nodeType = cModuleType::get("org.mixim.modules.world.annotations.AnnotationDummy");
+	cModuleType* nodeType = cModuleType::get("org.car2x.veins.modules.world.annotations.AnnotationDummy");
 
 	//TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
 	nodeVectorIndex++;

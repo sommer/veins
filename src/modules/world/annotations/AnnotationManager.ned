@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-package org.mixim.modules.world.annotations;
+package org.car2x.veins.modules.world.annotations;
 
 //
 // manages annotations on the OMNeT++ canvas
@@ -30,5 +30,6 @@ simple AnnotationManager
         xml annotations = default(xml("<annotations/>")); // annotations to add at startup
         @display("i=msg/paperclip");
         @labels(node);
+        @class(Veins::AnnotationManager);
 }
 

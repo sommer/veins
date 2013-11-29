@@ -10,6 +10,8 @@
 #include "BaseWorldUtility.h"
 #include "BaseConnectionManager.h"
 
+using Veins::AirFrame;
+
 //introduce BasePhyLayer as module to OMNet
 Define_Module(BasePhyLayer);
 

@@ -27,6 +27,8 @@
 #include <Mac80211pToPhy11pInterface.h>
 #include <Decider80211pToPhy80211pInterface.h>
 
+using Veins::AirFrame;
+
 #ifndef DBG_D11P
 #define DBG_D11P EV
 #endif

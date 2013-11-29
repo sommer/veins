@@ -25,6 +25,8 @@
 #include "BaseWorldUtility.h"
 #include "MappingBase.h"
 
+using Veins::AirFrame;
+
 /**
  * @brief
  * Extended version of Two-Ray Ground path loss model.

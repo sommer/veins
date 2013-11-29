@@ -27,11 +27,14 @@
 #include <omnetpp.h>
 
 #include "BaseApplLayer.h"
-#include "mobility/traci/TraCIMobility.h"
+#include "modules/mobility/traci/TraCIMobility.h"
+
+using Veins::TraCIMobility;
 
 /**
  * FIXME
  */
+namespace Veins {
 class TraCITestApp : public BaseApplLayer {
 	public:
 		int numInitStages() const { return std::max(BaseApplLayer::numInitStages(), 1); }
@@ -58,5 +61,6 @@ class TraCITestApp : public BaseApplLayer {
 
 		void handlePositionUpdate();
 };
+}
 
 #endif

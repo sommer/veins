@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.mixim.modules.mobility.traci;
+package org.car2x.veins.modules.mobility.traci;
 
 //
 // Extends the TraCIScenarioManager for use with sumo-launchd.py and SUMO.
@@ -39,6 +39,7 @@ simple TraCIScenarioManagerLaunchd
 {
     parameters:
         @display("i=block/network2");
+        @class(Veins::TraCIScenarioManagerLaunchd);
         bool debug = default(false);  // emit debug messages?
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)
         double firstStepAt @unit("s") = default(-1s);  // when to start synchronizing with the TraCI server (-1: immediately after connecting)

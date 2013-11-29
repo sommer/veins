@@ -1,4 +1,4 @@
-package org.mixim.base.modules;
+package org.car2x.veins.base.modules;
 
 // Base module for every mac layer module
 simple BaseMacLayer extends BaseLayer like IWirelessMac

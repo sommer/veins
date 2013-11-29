@@ -21,10 +21,11 @@
 #include <map>
 #include <set>
 
-#include "obstacle/ObstacleControl.h"
+#include "modules/obstacle/ObstacleControl.h"
 
+using Veins::ObstacleControl;
 
-Define_Module(ObstacleControl);
+Define_Module(Veins::ObstacleControl);
 
 ObstacleControl::~ObstacleControl() {
 

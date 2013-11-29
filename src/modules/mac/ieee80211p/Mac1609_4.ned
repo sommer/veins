@@ -18,9 +18,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.mixim.modules.mac.ieee80211p;
+package org.car2x.veins.modules.mac.ieee80211p;
 
-import org.mixim.base.modules.BaseMacLayer;
+import org.car2x.veins.base.modules.BaseMacLayer;
 
 //
 // Manages timeslots for CCH and SCH listening and sending.

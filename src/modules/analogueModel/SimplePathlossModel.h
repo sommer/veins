@@ -8,6 +8,8 @@
 #include "Mapping.h"
 #include "BaseWorldUtility.h"
 
+using Veins::AirFrame;
+
 class SimplePathlossModel;
 
 /**

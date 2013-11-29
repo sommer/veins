@@ -30,6 +30,7 @@
 /**
  * manages annotations on the OMNeT++ canvas.
  */
+namespace Veins {
 class AnnotationManager : public cSimpleModule
 {
 	public:
@@ -137,7 +138,9 @@ class AnnotationManager : public cSimpleModule
 		Annotations annotations;
 		Groups groups;
 };
+}
 
+namespace Veins {
 class AnnotationManagerAccess
 {
 	public:
@@ -145,6 +148,7 @@ class AnnotationManagerAccess
 			return FindModule<AnnotationManager*>::findGlobalModule();
 		};
 };
+}
 
 #endif
 

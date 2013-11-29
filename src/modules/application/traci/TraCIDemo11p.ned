@@ -18,8 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.mixim.modules.application.traci;
-import org.mixim.modules.application.ieee80211p.BaseWaveApplLayer;
+package org.car2x.veins.modules.application.traci;
+import org.car2x.veins.modules.application.ieee80211p.BaseWaveApplLayer;
 
 simple TraCIDemo11p extends BaseWaveApplLayer
 {

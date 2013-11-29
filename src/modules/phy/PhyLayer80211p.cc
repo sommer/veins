@@ -38,6 +38,8 @@
 #include "AirFrame11p_m.h"
 #include "MacToPhyControlInfo.h"
 
+using Veins::ObstacleControlAccess;
+
 Define_Module(PhyLayer80211p);
 
 /** This is needed to circumvent a bug in MiXiM that allows different header length interpretations for receiving and sending airframes*/

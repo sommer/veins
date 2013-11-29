@@ -19,6 +19,8 @@
 #include "MiXiMDefs.h"
 #include "AnalogueModel.h"
 
+using Veins::AirFrame;
+
 /**
  * @brief Channel state implementing log-normal shadowing.
  *

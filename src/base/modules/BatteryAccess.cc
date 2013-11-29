@@ -9,6 +9,8 @@
 
 #include "FindModule.h"
 
+using Veins::BatteryAccess;
+
 BatteryAccess::BatteryAccess():
 	BaseModule(),
 	battery(NULL)

@@ -4,6 +4,8 @@
 #include "MiXiMDefs.h"
 #include "BaseDecider.h"
 
+using Veins::AirFrame;
+
 /**
  * @brief Decider implementation which decides a signals
  * correctness by checking its SNR against a threshold.

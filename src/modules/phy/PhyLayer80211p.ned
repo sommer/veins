@@ -18,9 +18,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.mixim.modules.phy;
+package org.car2x.veins.modules.phy;
 
-import org.mixim.base.phyLayer.BasePhyLayer;
+import org.car2x.veins.base.phyLayer.BasePhyLayer;
 
 //
 // Adaptation of the PhyLayer class for 802.11p.

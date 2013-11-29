@@ -4,10 +4,13 @@
 #include "AnalogueModel.h"
 #include "Mapping.h"
 #include "BaseWorldUtility.h"
-#include "ObstacleControl.h"
+#include "modules/obstacle/ObstacleControl.h"
 #include <Move.h>
 #include <Signal_.h>
-#include <AirFrame_m.h>
+#include "base/messages/AirFrame_m.h"
+
+using Veins::AirFrame;
+using Veins::ObstacleControl;
 
 #include <cstdlib>
 

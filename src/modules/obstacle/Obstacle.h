@@ -23,11 +23,12 @@
 
 #include <vector>
 #include "Coord.h"
-#include "world/annotations/AnnotationManager.h"
+#include "modules/world/annotations/AnnotationManager.h"
 
 /**
  * stores information about an Obstacle for ObstacleControl
  */
+namespace Veins {
 class Obstacle {
 	public:
 		typedef std::vector<Coord> Coords;
@@ -51,5 +52,6 @@ class Obstacle {
 		Coord bboxP1;
 		Coord bboxP2;
 };
+}
 
 #endif

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-package org.mixim.modules.world.annotations;
+package org.car2x.veins.modules.world.annotations;
 
 //
 // workaround to visualize annotations
@@ -26,5 +26,6 @@ simple AnnotationDummy
 {
     parameters:
         @display("b=70,30,oval,red,black,4");
+        @class(Veins::AnnotationDummy);
 }
 

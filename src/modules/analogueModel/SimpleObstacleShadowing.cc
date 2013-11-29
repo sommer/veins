@@ -1,5 +1,7 @@
 #include "SimpleObstacleShadowing.h"
 
+using Veins::AirFrame;
+
 #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimpleObstacleShadowing): "
 
 #if 0

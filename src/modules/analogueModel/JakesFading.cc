@@ -16,8 +16,11 @@
 #include "JakesFading.h"
 
 #include "BaseWorldUtility.h"
-#include "AirFrame_m.h"
-#include "ChannelAccess.h"
+#include "base/messages/AirFrame_m.h"
+#include "base/connectionManager/ChannelAccess.h"
+
+using Veins::AirFrame;
+using Veins::ChannelAccess;
 
 DimensionSet JakesFadingMapping::dimensions(Dimension::time);
 

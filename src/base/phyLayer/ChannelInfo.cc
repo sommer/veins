@@ -3,6 +3,8 @@
 #include <iostream>
 #include <assert.h>
 
+using Veins::AirFrame;
+
 void ChannelInfo::addAirFrame(AirFrame* frame, simtime_t_cref startTime)
 {
 	assert(airFrameStarts.count(frame) == 0);
