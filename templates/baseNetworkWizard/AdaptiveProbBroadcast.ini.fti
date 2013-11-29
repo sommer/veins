@@ -1,3 +1,0 @@
-**.node[*].netwType = "AdaptiveProbabilisticBroadcast"
-**.node[*].net.stats = true
-**.node[*].net.headerLength = 24 bit

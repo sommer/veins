@@ -1,3 +1,0 @@
-**.node[*].mobType = "BaseMobility"
-**.node[*].mobility.debug = false
-**.node[*].mobility.updateInterval = 0.1s

@@ -1,1 +1,0 @@
-<#if nedPackageName!="">package ${nedPackageName};</#if>

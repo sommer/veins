@@ -1,6 +1,0 @@
-**.node[*].applType = "TrafficGen"
-**.node[*].appl.debug = false
-**.node[*].appl.headerLength = 512bit
-**.node[*].appl.burstSize = 1
-**.node[*].appl.packetTime = (600/15000) * 1s #should be the maximum paket size divided by minimum bitrate
-**.node[*].appl.packetsPerPacketTime = 1/5

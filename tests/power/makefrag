@@ -1,7 +1,0 @@
-# preserve default target
-all: $(TARGET)
-
-deviceTest_dir deviceTestAccts_dir deviceTestAll_dir deviceTestMulti_dir Nic80211Test_dir: utils_dir
-
-.PHONY: utils
-

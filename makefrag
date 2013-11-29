@@ -1,4 +1,0 @@
-all: Makefile
-tests_dir: src__base_dir src__modules_dir
-examples_dir: src__base_dir src__modules_dir
-src__modules_dir: src__base_dir

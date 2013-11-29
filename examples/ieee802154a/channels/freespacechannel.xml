@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<root>
-	<AnalogueModels>
-	   <!-- <AnalogueModel type="UWBIRIEEE802154APathlossModel"> -->
-		<AnalogueModel type="UWBIRFreeSpacePathlossModel">
-	    </AnalogueModel>
-	</AnalogueModels>
-</root>
-
