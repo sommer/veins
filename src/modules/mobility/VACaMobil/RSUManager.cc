@@ -14,8 +14,7 @@
 // 
 
 #include "RSUManager.h"
-#include "BaseMobility.h"
-#include "error.h"
+
 
 Define_Module(RSUManager);
 
@@ -110,7 +109,7 @@ void RSUManager::createRsu(Coord pos, std::string name)
     mod->callInitialize();
 }
 
-void RSUManager::generateRandomRsus(uint n)
+void RSUManager::generateRandomRsus(unsigned int n)
 {
     std::vector<Coord> netBounds = manager->getNetBounds();
     std::list<std::string> junctionList = manager->commandGetJunctionIds();
@@ -119,7 +118,7 @@ void RSUManager::generateRandomRsus(uint n)
         junctionLocations.push_back(manager->commandGetJunctionPosition(*i));
     }
 
-    for(uint i=0; i <n ; i++){
+    for(unsigned int i=0; i <n ; i++){
         Coord desiredCoord;
         desiredCoord.x = uniform(netBounds.at(0).x, netBounds.at(1).x);
         desiredCoord.y = uniform(netBounds.at(0).y, netBounds.at(1).y);
@@ -142,7 +141,7 @@ void RSUManager::generateRandomRsus(uint n)
 void RSUManager::placeRsu()
 {
     ASSERT(rsusLocation.size() == rsusNames.size());
-    for(uint i = 0; i < rsusLocation.size(); i++){
+    for(unsigned int i = 0; i < rsusLocation.size(); i++){
         std::string prefix = namePrefix;
         createRsu(rsusLocation.at(i), prefix.append(rsusNames.at(i)));
     }

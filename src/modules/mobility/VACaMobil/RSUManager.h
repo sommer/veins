@@ -18,7 +18,7 @@
 
 #include <cmodule.h>
 #include <TraCIScenarioManager.h>
-
+#include "BaseMobility.h"
 
 class RSUManager: public cSimpleModule {
 public:
@@ -32,13 +32,13 @@ private:
   std::vector<Coord> rsusLocation;
   std::vector<std::string> rsusNames;
   TraCIScenarioManager *manager;
-  uint nRandomRsu;
+  unsigned int nRandomRsu;
   std::string namePrefix;
   cMessage *start;
   bool rsuInitialized;
   void parseRsu();
   void createRsu(Coord pos, std::string name);
-  void generateRandomRsus(uint n);
+  void generateRandomRsus(unsigned int n);
   void placeRsu();
 };
 
