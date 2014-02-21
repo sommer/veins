@@ -92,7 +92,7 @@ class TraCIMobility : public BaseMobility
 			return move.getPositionAt(t) ;
 		}
 		virtual bool getParkingState() const {
-		    return isParking;
+			return isParking;
 		}
 		virtual std::string getRoadId() const {
 			if (road_id == "") throw cRuntimeError("TraCIMobility::getRoadId called with no road_id set yet");
@@ -126,14 +126,12 @@ class TraCIMobility : public BaseMobility
 		void commandChangeRoute(std::string roadId, double travelTime) {
 			getManager()->commandChangeRoute(getExternalId(), roadId, travelTime);
 		}
-
 		void commandNewRoute(std::string roadId) {
-		    getManager()->commandNewRoute(getExternalId(), roadId);
+			getManager()->commandNewRoute(getExternalId(), roadId);
 		}
 		void commandParkVehicle() {
 			getManager()->commandSetVehicleParking(getExternalId());
 		}
-
 		double commandDistanceRequest(Coord position1, Coord position2, bool returnDrivingDistance) {
 			return getManager()->commandDistanceRequest(position1, position2, returnDrivingDistance);
 		}
