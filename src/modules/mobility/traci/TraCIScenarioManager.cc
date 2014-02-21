@@ -899,6 +899,33 @@ double TraCIScenarioManager::genericGetDouble(uint8_t commandId, std::string obj
 	return res;
 }
 
+int32_t TraCIScenarioManager::genericGetInt(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId) {
+
+	uint8_t resultTypeId = TYPE_INTEGER;
+	int32_t res;
+
+	TraCIBuffer buf = queryTraCI(commandId, TraCIBuffer() << variableId << objectId);
+
+	uint8_t cmdLength; buf >> cmdLength;
+	if (cmdLength == 0) {
+		uint32_t cmdLengthX;
+		buf >> cmdLengthX;
+	}
+	uint8_t commandId_r; buf >> commandId_r;
+	ASSERT(commandId_r == responseId);
+	uint8_t varId; buf >> varId;
+	ASSERT(varId == variableId);
+	std::string objectId_r; buf >> objectId_r;
+	ASSERT(objectId_r == objectId);
+	uint8_t resType_r; buf >> resType_r;
+	ASSERT(resType_r == resultTypeId);
+	buf >> res;
+
+	ASSERT(buf.eof());
+
+	return res;
+}
+
 std::list<std::string> TraCIScenarioManager::genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId) {
 
 	uint8_t resultTypeId = TYPE_STRINGLIST;
