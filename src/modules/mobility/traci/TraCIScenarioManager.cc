@@ -372,6 +372,7 @@ void TraCIScenarioManager::finish() {
 		executeOneTimestepTrigger = 0;
 	}
 	if (socketPtr) {
+		TraCIBuffer buf = queryTraCI(CMD_CLOSE, TraCIBuffer());
 		closesocket(MYSOCKET);
 		delete &MYSOCKET;
 		socketPtr = 0;
