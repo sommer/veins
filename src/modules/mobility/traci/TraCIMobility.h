@@ -123,6 +123,9 @@ class TraCIMobility : public BaseMobility
 		void commandSetSpeed(double speed) {
 			getManager()->commandSetSpeed(getExternalId(), speed);
 		}
+		void commandSlowDown(double speed, int duration) {
+			getManager()->commandSlowDown(getExternalId(),speed,duration);
+		}
 		void commandChangeRoute(std::string roadId, double travelTime) {
 			getManager()->commandChangeRoute(getExternalId(), roadId, travelTime);
 		}
@@ -152,6 +155,12 @@ class TraCIMobility : public BaseMobility
 		}
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -TraCIScenarioManager::DEPART_NOW, double emitPosition = -TraCIScenarioManager::DEPART_POS_BASE, double emitSpeed = -TraCIScenarioManager::DEPART_SPEED_MAX, int8_t emitLane = -TraCIScenarioManager::DEPART_LANE_BEST_FREE) {
 			return getManager()->commandAddVehicle(vehicleId, vehicleTypeId, routeId, emitTime_st, emitPosition, emitSpeed, emitLane);
+		}
+		int commandGetLaneIndex() {
+			return getManager()->commandGetLaneIndex(getExternalId());
+		}
+		std::string commandGetLaneId() {
+			return getManager()->commandGetLaneId(getExternalId());
 		}
 		bool commandChangeVehicleRoute(std::list<std::string> edges) {
 			return getManager()->commandChangeVehicleRoute(getExternalId(), edges);

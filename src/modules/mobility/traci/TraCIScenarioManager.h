@@ -95,6 +95,7 @@ class TraCIScenarioManager : public cSimpleModule
 		std::pair<uint32_t, std::string> commandGetVersion();
 		void commandSetSpeedMode(std::string nodeId, int32_t bitset);
 		void commandSetSpeed(std::string nodeId, double speed);
+		void commandSlowDown(std::string nodeId, double speed, int time);
 		void commandNewRoute(std::string nodeId, std::string roadId);
 		void commandSetVehicleParking(std::string nodeId);
 		double commandGetEdgeCurrentTravelTime(std::string edgeId) ;
@@ -125,6 +126,7 @@ class TraCIScenarioManager : public cSimpleModule
 		double commandGetLaneLength(std::string laneId);
 		double commandGetLaneMaxSpeed(std::string laneId);
 		double commandGetLaneMeanSpeed(std::string laneId);
+		int32_t commandGetLaneIndex(std::string nodeId);
 		std::list<std::string> commandGetJunctionIds();
 		Coord commandGetJunctionPosition(std::string junctionId);
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -DEPART_NOW, double emitPosition = -DEPART_POS_BASE, double emitSpeed = -DEPART_SPEED_MAX, int8_t emitLane = -DEPART_LANE_BEST_FREE);

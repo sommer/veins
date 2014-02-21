@@ -437,6 +437,16 @@ void TraCIScenarioManager::commandSetSpeed(std::string nodeId, double speed) {
 	ASSERT(buf.eof());
 }
 
+void TraCIScenarioManager::commandSlowDown(std::string nodeId, double speed, int32_t time) {
+	uint8_t variableId = CMD_SLOWDOWN;
+	uint8_t variableType = TYPE_COMPOUND;
+	int32_t count = 2;
+	uint8_t speedType = TYPE_DOUBLE;
+	uint8_t durationType = TYPE_INTEGER;
+	TraCIBuffer buf = queryTraCI(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << speedType << speed << durationType << time);
+	ASSERT(buf.eof());
+}
+
 void TraCIScenarioManager::commandNewRoute(std::string nodeId, std::string roadId) {
 	uint8_t variableId = LANE_EDGE_ID;
 	uint8_t variableType = TYPE_STRING;
@@ -470,6 +480,10 @@ std::string TraCIScenarioManager::commandGetCurrentEdgeOnRoute(std::string nodeI
 
 std::string TraCIScenarioManager::commandGetLaneId(std::string nodeId) {
 	return genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_LANE_ID, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
+int32_t TraCIScenarioManager::commandGetLaneIndex(std::string nodeId) {
+	return genericGetInt(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_LANE_INDEX, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
 double TraCIScenarioManager::commandGetLanePosition(std::string nodeId) {
