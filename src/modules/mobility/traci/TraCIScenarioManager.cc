@@ -451,6 +451,14 @@ void TraCIScenarioManager::commandSetVehicleParking(std::string nodeId) {
 	ASSERT(buf.eof());
 }
 
+double TraCIScenarioManager::commandGetEdgeCurrentTravelTime(std::string edgeId) {
+	return genericGetDouble(CMD_GET_EDGE_VARIABLE, edgeId, VAR_CURRENT_TRAVELTIME, RESPONSE_GET_EDGE_VARIABLE);
+}
+
+double TraCIScenarioManager::commandGetEdgeMeanSpeed(std::string edgeId) {
+	return genericGetDouble(CMD_GET_EDGE_VARIABLE, edgeId, LAST_STEP_MEAN_SPEED, RESPONSE_GET_EDGE_VARIABLE);
+}
+
 std::string TraCIScenarioManager::commandGetEdgeId(std::string nodeId) {
 	return genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_ROAD_ID, RESPONSE_GET_VEHICLE_VARIABLE);
 }
@@ -679,6 +687,23 @@ bool TraCIScenarioManager::commandAddVehicle(std::string vehicleId, std::string 
 	ASSERT(buf.eof());
 
 	return success;
+}
+
+bool TraCIScenarioManager::commandChangeVehicleRoute(std::string nodeId, std::list<std::string> edges) {
+	if (commandGetEdgeId(nodeId).find(':') != std::string::npos) return false;
+	if (edges.front().compare(commandGetEdgeId(nodeId)) != 0) return false;
+	uint8_t variableId = VAR_ROUTE;
+	uint8_t variableType = TYPE_STRINGLIST;
+	TraCIBuffer buf;
+	buf << variableId << nodeId << variableType;
+	int32_t numElem = edges.size();
+	buf << numElem;
+	for (std::list<std::string>::const_iterator i = edges.begin(); i != edges.end(); ++i) {
+		buf << static_cast<std::string>(*i);
+	}
+	TraCIBuffer obuf = queryTraCI(CMD_SET_VEHICLE_VARIABLE, buf);
+	ASSERT(obuf.eof());
+	return true;
 }
 
 // name: host;Car;i=vehicle.gif

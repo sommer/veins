@@ -97,6 +97,8 @@ class TraCIScenarioManager : public cSimpleModule
 		void commandSetSpeed(std::string nodeId, double speed);
 		void commandNewRoute(std::string nodeId, std::string roadId);
 		void commandSetVehicleParking(std::string nodeId);
+		double commandGetEdgeCurrentTravelTime(std::string edgeId) ;
+		double commandGetEdgeMeanSpeed(std::string edgeId) ;
 		std::string commandGetEdgeId(std::string nodeId);
 		std::string commandGetCurrentEdgeOnRoute(std::string nodeId);
 		std::string commandGetLaneId(std::string nodeId);
@@ -126,6 +128,10 @@ class TraCIScenarioManager : public cSimpleModule
 		std::list<std::string> commandGetJunctionIds();
 		Coord commandGetJunctionPosition(std::string junctionId);
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -DEPART_NOW, double emitPosition = -DEPART_POS_BASE, double emitSpeed = -DEPART_SPEED_MAX, int8_t emitLane = -DEPART_LANE_BEST_FREE);
+		bool commandChangeVehicleRoute(std::string nodeId, std::list<std::string> edges);
+		bool getAutoShutdownTriggered() {
+			return autoShutdownTriggered;
+		}
 
 		const std::map<std::string, cModule*>& getManagedHosts() {
 			return hosts;

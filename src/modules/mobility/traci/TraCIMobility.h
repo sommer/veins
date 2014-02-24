@@ -153,6 +153,10 @@ class TraCIMobility : public BaseMobility
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -TraCIScenarioManager::DEPART_NOW, double emitPosition = -TraCIScenarioManager::DEPART_POS_BASE, double emitSpeed = -TraCIScenarioManager::DEPART_SPEED_MAX, int8_t emitLane = -TraCIScenarioManager::DEPART_LANE_BEST_FREE) {
 			return getManager()->commandAddVehicle(vehicleId, vehicleTypeId, routeId, emitTime_st, emitPosition, emitSpeed, emitLane);
 		}
+		bool commandChangeVehicleRoute(std::list<std::string> edges) {
+			return getManager()->commandChangeVehicleRoute(getExternalId(), edges);
+		}
+
 
 	protected:
 		bool debug; /**< whether to emit debug messages */
