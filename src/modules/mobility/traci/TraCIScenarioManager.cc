@@ -748,6 +748,11 @@ std::pair<double, double> TraCIScenarioManager::commandPositionConversionLonLat(
 	return std::make_pair(convPosLon, convPosLat);
 }
 
+std::pair<double, double> TraCIScenarioManager::commandPositionConversionLonLat(const Coord& coord)
+{
+    return commandPositionConversionLonLat(omnet2traci(coord));
+}
+
 // name: host;Car;i=vehicle.gif
 void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle) {
 	if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");

@@ -131,6 +131,7 @@ class TraCIScenarioManager : public cSimpleModule
 		Coord commandGetJunctionPosition(std::string junctionId);
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -DEPART_NOW, double emitPosition = -DEPART_POS_BASE, double emitSpeed = -DEPART_SPEED_MAX, int8_t emitLane = -DEPART_LANE_BEST_FREE);
 		bool commandChangeVehicleRoute(std::string nodeId, std::list<std::string> edges);
+		std::pair<double, double> commandPositionConversionLonLat(const Coord&);
 		bool getAutoShutdownTriggered() {
 			return autoShutdownTriggered;
 		}
