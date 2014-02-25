@@ -355,6 +355,11 @@ class TraCIScenarioManager : public cSimpleModule
 		 */
 		double omnet2traciAngle(double angle) const;
 
+		/**
+		 * Convert TraCI coord to a pair of longitude and latitude
+		 */
+		std::pair<double, double> commandPositionConversionLonLat(const TraCICoord&);
+
 		void subscribeToVehicleVariables(std::string vehicleId);
 		void unsubscribeFromVehicleVariables(std::string vehicleId);
 		void processSimSubscription(std::string objectId, TraCIBuffer& buf);

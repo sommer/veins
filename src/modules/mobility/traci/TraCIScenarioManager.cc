@@ -721,6 +721,33 @@ bool TraCIScenarioManager::commandChangeVehicleRoute(std::string nodeId, std::li
 	return true;
 }
 
+std::pair<double, double> TraCIScenarioManager::commandPositionConversionLonLat(const TraCICoord& coord)
+{
+	TraCIBuffer request;
+	request << static_cast<uint8_t>(POSITION_CONVERSION) << std::string("sim0")
+			<< static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(2)
+			<< static_cast<uint8_t>(POSITION_2D) << coord.x << coord.y
+			<< static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(POSITION_LON_LAT);
+	TraCIBuffer response = queryTraCI(CMD_GET_SIM_VARIABLE, request);
+
+	uint8_t cmdLength; response >> cmdLength;
+	if (cmdLength == 0) {
+		uint32_t cmdLengthX;
+		response >> cmdLengthX;
+	}
+	uint8_t responseId; response >> responseId;
+	ASSERT(responseId == RESPONSE_GET_SIM_VARIABLE);
+	uint8_t variable; response >> variable;
+	ASSERT(variable == POSITION_CONVERSION);
+	std::string id; response >> id;
+	uint8_t convPosType; response >> convPosType;
+	ASSERT(convPosType == POSITION_LON_LAT);
+	double convPosLon; response >> convPosLon;
+	double convPosLat; response >> convPosLat;
+
+	return std::make_pair(convPosLon, convPosLat);
+}
+
 // name: host;Car;i=vehicle.gif
 void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle) {
 	if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
