@@ -25,6 +25,7 @@
 #include <list>
 #include <sstream>
 #include <iomanip>
+#include <queue>
 
 #include <omnetpp.h>
 
@@ -130,6 +131,9 @@ class TraCIScenarioManager : public cSimpleModule
 		std::list<std::string> commandGetJunctionIds();
 		Coord commandGetJunctionPosition(std::string junctionId);
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -DEPART_NOW, double emitPosition = -DEPART_POS_BASE, double emitSpeed = -DEPART_SPEED_MAX, int8_t emitLane = -DEPART_LANE_BEST_FREE);
+		std::string commandGetVehicleTypeId(std::string nodeId);
+		std::list<std::string> commandGetVehicleTypeIds();
+		std::list<std::string> commandGetRouteIds();
 		bool commandChangeVehicleRoute(std::string nodeId, std::list<std::string> edges);
 		std::pair<double, double> commandPositionConversionLonLat(const Coord&);
 		bool getAutoShutdownTriggered() {
@@ -258,6 +262,18 @@ class TraCIScenarioManager : public cSimpleModule
 		std::string moduleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
 		std::string host;
 		int port;
+
+		uint32_t vehicleNameCounter;
+		cMessage* myAddVehicleTimer;
+		std::vector<std::string> vehicleTypeIds;
+		std::map<int, std::queue<std::string> > vehicleInsertQueue;
+		std::set<std::string> queuedVehicles;
+		std::vector<std::string> routeIds;
+		int vehicleRngIndex;
+		int numVehicles;
+
+		cRNG* mobRng;
+
 		bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
 		int margin;
 		double penetrationRate;
@@ -360,6 +376,16 @@ class TraCIScenarioManager : public cSimpleModule
 		 * Convert TraCI coord to a pair of longitude and latitude
 		 */
 		std::pair<double, double> commandPositionConversionLonLat(const TraCICoord&);
+
+		/**
+		 * adds a new vehicle to the queue which are tried to be inserted at the next SUMO time step;
+		 */
+		void insertNewVehicle();
+
+		/**
+		 * tries to add all vehicles in the vehicle queue to SUMO;
+		 */
+		void insertVehicles();
 
 		void subscribeToVehicleVariables(std::string vehicleId);
 		void unsubscribeFromVehicleVariables(std::string vehicleId);

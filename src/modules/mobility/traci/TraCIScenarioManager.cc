@@ -74,6 +74,13 @@ void TraCIScenarioManager::initialize(int stage) {
 	std::string roiRoads_s = par("roiRoads");
 	std::string roiRects_s = par("roiRects");
 
+	vehicleNameCounter = 0;
+	vehicleRngIndex = par("vehicleRngIndex");
+	numVehicles = par("numVehicles").longValue();
+	mobRng = getRNG(vehicleRngIndex);
+
+	myAddVehicleTimer = new cMessage("myAddVehicleTimer");
+
 	// parse roiRoads
 	roiRoads.clear();
 	std::istringstream roiRoads_i(roiRoads_s);
@@ -380,6 +387,11 @@ void TraCIScenarioManager::finish() {
 	while (hosts.begin() != hosts.end()) {
 		deleteModule(hosts.begin()->first);
 	}
+	if (myAddVehicleTimer->isScheduled()) {
+		cancelEvent(myAddVehicleTimer);
+		delete myAddVehicleTimer;
+		myAddVehicleTimer = 0;
+	}
 }
 
 void TraCIScenarioManager::handleMessage(cMessage *msg) {
@@ -397,6 +409,28 @@ void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 		return;
 	}
 	if (msg == executeOneTimestepTrigger) {
+		if (simTime() > 1) {
+			if (vehicleTypeIds.size()==0) {
+				std::list<std::string> vehTypes = commandGetVehicleTypeIds();
+				for (std::list<std::string>::const_iterator i = vehTypes.begin(); i != vehTypes.end(); ++i) {
+					if (i->compare("DEFAULT_VEHTYPE")!=0) {
+						MYDEBUG  << *i << std::endl;
+						vehicleTypeIds.push_back(*i);
+					}
+				}
+			}
+			if (routeIds.size()==0) {
+				std::list<std::string> routes = commandGetRouteIds();
+				for (std::list<std::string>::const_iterator i = routes.begin(); i != routes.end(); ++i) {
+					std::string routeId = *i;
+					MYDEBUG << routeId << std::endl;
+					routeIds.push_back(routeId);
+				}
+			}
+			for (int i = activeVehicleCount + queuedVehicles.size(); i< numVehicles; i++) {
+				insertNewVehicle();
+			}
+		}
 		executeOneTimestep();
 		return;
 	}
@@ -460,6 +494,14 @@ void TraCIScenarioManager::commandSetVehicleParking(std::string nodeId) {
 	uint8_t value = REMOVE_PARKING;
 	TraCIBuffer buf = queryTraCI(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << value);
 	ASSERT(buf.eof());
+}
+
+std::list<std::string> TraCIScenarioManager::commandGetVehicleTypeIds() {
+	return genericGetStringList(CMD_GET_VEHICLETYPE_VARIABLE, "", ID_LIST, RESPONSE_GET_VEHICLETYPE_VARIABLE);
+}
+
+std::list<std::string> TraCIScenarioManager::commandGetRouteIds() {
+	return genericGetStringList(CMD_GET_ROUTE_VARIABLE, "", ID_LIST, RESPONSE_GET_ROUTE_VARIABLE);
 }
 
 double TraCIScenarioManager::commandGetEdgeCurrentTravelTime(std::string edgeId) {
@@ -755,8 +797,12 @@ std::pair<double, double> TraCIScenarioManager::commandPositionConversionLonLat(
 
 // name: host;Car;i=vehicle.gif
 void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle) {
+
 	if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
 
+	if (queuedVehicles.find(nodeId) != queuedVehicles.end()) {
+	    queuedVehicles.erase(nodeId);
+	}
 	double option1 = hosts.size() / (hosts.size() + unEquippedHosts.size() + 1.0);
 	double option2 = (hosts.size() + 1) / (hosts.size() + unEquippedHosts.size() + 1.0);
 
@@ -848,6 +894,7 @@ void TraCIScenarioManager::executeOneTimestep() {
 	uint32_t targetTime = getCurrentTimeMs();
 
 	if (targetTime > round(connectAt.dbl() * 1000)) {
+		insertVehicles();
 		TraCIBuffer buf = queryTraCI(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
 
 		uint32_t count; buf >> count;
@@ -861,6 +908,44 @@ void TraCIScenarioManager::executeOneTimestep() {
 
 }
 
+void TraCIScenarioManager::insertNewVehicle() {
+	int vehTypeId = mobRng->intRand(vehicleTypeIds.size());
+	std::string type = vehicleTypeIds[vehTypeId];
+	int routeId = mobRng->intRand(routeIds.size());
+	vehicleInsertQueue[routeId].push(type);
+}
+
+void TraCIScenarioManager::insertVehicles() {
+
+	for (std::map<int, std::queue<std::string> >::iterator i = vehicleInsertQueue.begin(); i != vehicleInsertQueue.end(); ) {
+		std::string route = routeIds[i->first];
+		MYDEBUG << "process " << route << std::endl;
+		std::queue<std::string> vehicles = i->second;
+		while (!i->second.empty()) {
+			bool suc = false;
+			std::string type = i->second.front();
+			std::stringstream veh;
+			veh << type << "_" << vehicleNameCounter;
+			MYDEBUG << "trying to add " << veh.str() << " with " << route << " vehicle type " << type << std::endl;
+
+			suc = commandAddVehicle(veh.str(), type, route, simTime());
+			if (!suc) {
+				i->second.pop();
+			}
+			else {
+				MYDEBUG << "successful inserted " << veh.str() << std::endl;
+				queuedVehicles.insert(veh.str());
+				i->second.pop();
+				vehicleNameCounter++;
+			}
+		}
+		std::map<int, std::queue<std::string> >::iterator tmp = i;
+		++tmp;
+		vehicleInsertQueue.erase(i);
+		i = tmp;
+
+	}
+}
 
 std::string TraCIScenarioManager::genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId) {
 
