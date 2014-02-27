@@ -96,6 +96,7 @@ class TraCIScenarioManager : public cSimpleModule
 		std::pair<uint32_t, std::string> commandGetVersion();
 		void commandSetSpeedMode(std::string nodeId, int32_t bitset);
 		void commandSetSpeed(std::string nodeId, double speed);
+		void commandSetColor(std::string nodeId, TraCIColor& color);
 		void commandSlowDown(std::string nodeId, double speed, int time);
 		void commandNewRoute(std::string nodeId, std::string roadId);
 		void commandSetVehicleParking(std::string nodeId);

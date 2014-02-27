@@ -123,6 +123,9 @@ class TraCIMobility : public BaseMobility
 		void commandSetSpeed(double speed) {
 			getManager()->commandSetSpeed(getExternalId(), speed);
 		}
+		void commandSetColor(TraCIColor color) {
+			getManager()->commandSetColor(getExternalId(), color);
+		}
 		void commandSlowDown(double speed, int duration) {
 			getManager()->commandSlowDown(getExternalId(),speed,duration);
 		}

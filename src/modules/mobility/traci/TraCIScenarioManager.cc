@@ -477,6 +477,15 @@ void TraCIScenarioManager::commandSetSpeed(std::string nodeId, double speed) {
 	ASSERT(buf.eof());
 }
 
+void TraCIScenarioManager::commandSetColor(std::string nodeId, TraCIColor& color) {
+	TraCIBuffer p;
+	p << static_cast<uint8_t>(VAR_COLOR);
+	p << nodeId;
+	p << static_cast<uint8_t>(TYPE_COLOR) << color.red << color.green << color.blue << color.alpha;
+	TraCIBuffer buf = queryTraCI(CMD_SET_VEHICLE_VARIABLE, p);
+	ASSERT(buf.eof());
+}
+
 void TraCIScenarioManager::commandSlowDown(std::string nodeId, double speed, int32_t time) {
 	uint8_t variableId = CMD_SLOWDOWN;
 	uint8_t variableType = TYPE_COMPOUND;
