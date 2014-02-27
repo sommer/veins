@@ -423,7 +423,13 @@ void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 				std::list<std::string> routes = commandGetRouteIds();
 				for (std::list<std::string>::const_iterator i = routes.begin(); i != routes.end(); ++i) {
 					std::string routeId = *i;
-					MYDEBUG << routeId << std::endl;
+					if (par("useRouteDistributions").boolValue() == true) {
+						if (std::count(routeId.begin(), routeId.end(), '#') >= 1) {
+							MYDEBUG << "Omitting route " << routeId << " as it seems to be a member of a route distribution (found '#' in name)" << std::endl;
+							continue;
+						}
+					}
+					MYDEBUG << "Adding " << routeId << " to list of possible routes" << std::endl;
 					routeIds.push_back(routeId);
 				}
 			}
