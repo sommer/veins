@@ -43,6 +43,7 @@
 #include "modules/mobility/traci/TraCIScenarioManagerInet.h"
 
 using Veins::TraCIScenarioManager;
+using Veins::TraCIBuffer;
 
 Define_Module(Veins::TraCIScenarioManager);
 
@@ -218,7 +219,7 @@ std::string TraCIScenarioManager::makeTraCICommand(uint8_t commandId, TraCIBuffe
 	return (TraCIBuffer() << len << commandId).str() + buf.str();
 }
 
-TraCIScenarioManager::TraCIBuffer TraCIScenarioManager::queryTraCI(uint8_t commandId, const TraCIBuffer& buf) {
+TraCIBuffer TraCIScenarioManager::queryTraCI(uint8_t commandId, const TraCIBuffer& buf) {
 	sendTraCIMessage(makeTraCICommand(commandId, buf));
 
 	TraCIBuffer obuf(receiveTraCIMessage());
@@ -233,7 +234,7 @@ TraCIScenarioManager::TraCIBuffer TraCIScenarioManager::queryTraCI(uint8_t comma
 	return obuf;
 }
 
-TraCIScenarioManager::TraCIBuffer TraCIScenarioManager::queryTraCIOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg) {
+TraCIBuffer TraCIScenarioManager::queryTraCIOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg) {
 	sendTraCIMessage(makeTraCICommand(commandId, buf));
 
 	TraCIBuffer obuf(receiveTraCIMessage());
@@ -1484,39 +1485,5 @@ void TraCIScenarioManager::processSubcriptionResult(TraCIBuffer& buf) {
 	else {
 		error("Received unhandled subscription result");
 	}
-}
-
-template<> void TraCIScenarioManager::TraCIBuffer::write(std::string inv) {
-	uint32_t length = inv.length();
-	write<uint32_t> (length);
-	for (size_t i = 0; i < length; ++i) write<char> (inv[i]);
-}
-
-template<> void TraCIScenarioManager::TraCIBuffer::write(TraCICoord inv) {
-	write<uint8_t>(POSITION_2D);
-	write<double>(inv.x);
-	write<double>(inv.y);
-}
-
-template<> std::string TraCIScenarioManager::TraCIBuffer::read() {
-	uint32_t length = read<uint32_t> ();
-	if (length == 0) return std::string();
-	char obuf[length + 1];
-
-	for (size_t i = 0; i < length; ++i) read<char> (obuf[i]);
-	obuf[length] = 0;
-
-	return std::string(obuf, length);
-}
-
-template<> TraCIScenarioManager::TraCICoord TraCIScenarioManager::TraCIBuffer::read() {
-	uint8_t posType = read<uint8_t>();
-	ASSERT(posType == POSITION_2D);
-
-	TraCICoord p;
-	p.x = read<double>();
-	p.y = read<double>();
-
-	return p;
 }
 

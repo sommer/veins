@@ -23,8 +23,6 @@
 
 #include <map>
 #include <list>
-#include <sstream>
-#include <iomanip>
 #include <queue>
 
 #include <omnetpp.h>
@@ -34,6 +32,7 @@
 #include "BaseConnectionManager.h"
 #include "FindModule.h"
 #include "modules/obstacle/ObstacleControl.h"
+#include "modules/mobility/traci/TraCIBuffer.h"
 #include "modules/mobility/traci/TraCIColor.h"
 
 /**
@@ -156,104 +155,6 @@ class TraCIScenarioManager : public cSimpleModule
 			double y;
 		};
 
-		/**
-		 * Byte-buffer that stores values in TraCI byte-order
-		 */
-		class TraCIBuffer {
-			public:
-				TraCIBuffer() : buf() {
-					buf_index = 0;
-				}
-
-				TraCIBuffer(std::string buf) : buf(buf) {
-					buf_index = 0;
-				}
-
-				template<typename T> T read() {
-					T buf_to_return;
-					unsigned char *p_buf_to_return = reinterpret_cast<unsigned char*>(&buf_to_return);
-
-					if (isBigEndian()) {
-						for (size_t i=0; i<sizeof(buf_to_return); ++i) {
-							if (eof()) throw cRuntimeError("Attempted to read past end of byte buffer");
-							p_buf_to_return[i] = buf[buf_index++];
-						}
-					} else {
-						for (size_t i=0; i<sizeof(buf_to_return); ++i) {
-							if (eof()) throw cRuntimeError("Attempted to read past end of byte buffer");
-							p_buf_to_return[sizeof(buf_to_return)-1-i] = buf[buf_index++];
-						}
-					}
-
-					return buf_to_return;
-				}
-
-				template<typename T> void write(T inv) {
-					unsigned char *p_buf_to_send = reinterpret_cast<unsigned char*>(&inv);
-
-					if (isBigEndian()) {
-						for (size_t i=0; i<sizeof(inv); ++i) {
-							buf += p_buf_to_send[i];
-						}
-					} else {
-						for (size_t i=0; i<sizeof(inv); ++i) {
-							buf += p_buf_to_send[sizeof(inv)-1-i];
-						}
-					}
-				}
-
-				template<typename T> T read(T& out) {
-					out = read<T>();
-					return out;
-				}
-
-				template<typename T> TraCIBuffer& operator >>(T& out) {
-					out = read<T>();
-					return *this;
-				}
-
-				template<typename T> TraCIBuffer& operator <<(const T& inv) {
-					write(inv);
-					return *this;
-				}
-
-				bool eof() const {
-					return buf_index == buf.length();
-				}
-
-				void set(std::string buf) {
-					this->buf = buf;
-					buf_index = 0;
-				}
-
-				void clear() {
-					set("");
-				}
-
-				std::string str() const {
-					return buf;
-				}
-
-				std::string hexStr() const {
-					std::stringstream ss;
-					for (std::string::const_iterator i = buf.begin() + buf_index; i != buf.end(); ++i) {
-						if (i != buf.begin()) ss << " ";
-						ss << std::hex << std::setw(2) << std::setfill('0') << (int)(uint8_t)*i;
-					}
-					return ss.str();
-				}
-
-			protected:
-				bool isBigEndian() {
-					short a = 0x0102;
-					unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
-					return (p_a[0] == 0x01);
-				}
-
-				std::string buf;
-				size_t buf_index;
-		};
-
 		bool debug; /**< whether to emit debug messages */
 		simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
 		simtime_t firstStepAt; /**< when to start synchronizing with the TraCI server (-1: immediately after connecting) */
@@ -326,7 +227,7 @@ class TraCIScenarioManager : public cSimpleModule
 		/**
 		 * sends a single command via TraCI, expects no reply, returns true if successful
 		 */
-		TraCIScenarioManager::TraCIBuffer queryTraCIOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg = 0);
+		TraCIBuffer queryTraCIOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg = 0);
 
 		/**
 		 * returns byte-buffer containing a TraCI command with optional parameters
@@ -395,13 +296,6 @@ class TraCIScenarioManager : public cSimpleModule
 		void processSubcriptionResult(TraCIBuffer& buf);
 
 };
-}
-
-namespace Veins {
-template<> void TraCIScenarioManager::TraCIBuffer::write(std::string inv);
-template<> void TraCIScenarioManager::TraCIBuffer::write(TraCIScenarioManager::TraCICoord inv);
-template<> std::string TraCIScenarioManager::TraCIBuffer::read();
-template<> TraCIScenarioManager::TraCICoord TraCIScenarioManager::TraCIBuffer::read();
 }
 
 namespace Veins {
