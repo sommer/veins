@@ -34,6 +34,7 @@
 #include "modules/obstacle/ObstacleControl.h"
 #include "modules/mobility/traci/TraCIBuffer.h"
 #include "modules/mobility/traci/TraCIColor.h"
+#include "modules/mobility/traci/TraCICoord.h"
 
 /**
  * @brief
@@ -145,16 +146,6 @@ class TraCIScenarioManager : public cSimpleModule
 		}
 
 	protected:
-		/**
-		 * Coord equivalent for storing TraCI coordinates
-		 */
-		struct TraCICoord {
-			TraCICoord() : x(0), y(0) {}
-			TraCICoord(double x, double y) : x(x), y(y) {}
-			double x;
-			double y;
-		};
-
 		bool debug; /**< whether to emit debug messages */
 		simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
 		simtime_t firstStepAt; /**< when to start synchronizing with the TraCI server (-1: immediately after connecting) */

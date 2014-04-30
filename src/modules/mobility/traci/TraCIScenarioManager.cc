@@ -44,6 +44,7 @@
 
 using Veins::TraCIScenarioManager;
 using Veins::TraCIBuffer;
+using Veins::TraCICoord;
 
 Define_Module(Veins::TraCIScenarioManager);
 
@@ -1141,7 +1142,7 @@ Coord TraCIScenarioManager::traci2omnet(TraCICoord coord) const {
 	return Coord(coord.x - netbounds1.x + margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
 }
 
-TraCIScenarioManager::TraCICoord TraCIScenarioManager::omnet2traci(Coord coord) const {
+TraCICoord TraCIScenarioManager::omnet2traci(Coord coord) const {
 	return TraCICoord(coord.x + netbounds1.x - margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
 }
 
