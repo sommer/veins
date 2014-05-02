@@ -147,6 +147,16 @@ class TraCIScenarioManager : public cSimpleModule
 			return hosts;
 		}
 
+		/**
+		 * convert TraCI coordinates to OMNeT++ coordinates
+		 */
+		Coord traci2omnet(TraCICoord coord) const;
+
+		/**
+		 * convert OMNeT++ coordinates to TraCI coordinates
+		 */
+		TraCICoord omnet2traci(Coord coord) const;
+
 	protected:
 		bool debug; /**< whether to emit debug messages */
 		simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
@@ -220,16 +230,6 @@ class TraCIScenarioManager : public cSimpleModule
 		int32_t genericGetInt(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
 		std::list<std::string> genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
 		std::list<Coord> genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
-
-		/**
-		 * convert TraCI coordinates to OMNeT++ coordinates
-		 */
-		Coord traci2omnet(TraCICoord coord) const;
-
-		/**
-		 * convert OMNeT++ coordinates to TraCI coordinates
-		 */
-		TraCICoord omnet2traci(Coord coord) const;
 
 		/**
 		 * convert TraCI angle to OMNeT++ angle (in rad)
