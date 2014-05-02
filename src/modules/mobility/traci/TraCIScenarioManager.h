@@ -34,6 +34,7 @@
 #include "modules/obstacle/ObstacleControl.h"
 #include "modules/mobility/traci/TraCIBuffer.h"
 #include "modules/mobility/traci/TraCIColor.h"
+#include "modules/mobility/traci/TraCIConnection.h"
 #include "modules/mobility/traci/TraCICoord.h"
 
 /**
@@ -77,6 +78,7 @@ class TraCIScenarioManager : public cSimpleModule
 			VEH_SIGNAL_EMERGENCY_YELLOW = 8192
 		};
 
+		TraCIScenarioManager();
 		enum DepartDefs {
 			DEPART_NOW = 2,
 			DEPART_LANE_BEST_FREE = 5,
@@ -91,7 +93,7 @@ class TraCIScenarioManager : public cSimpleModule
 		virtual void handleMessage(cMessage *msg);
 		virtual void handleSelfMsg(cMessage *msg);
 
-		bool isConnected() const { return (socketPtr); }
+		bool isConnected() const { return (connection); }
 
 		std::pair<uint32_t, std::string> commandGetVersion();
 		void commandSetSpeedMode(std::string nodeId, int32_t bitset);
@@ -173,7 +175,7 @@ class TraCIScenarioManager : public cSimpleModule
 		std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
 		std::list<std::pair<TraCICoord, TraCICoord> > roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
 
-		void* socketPtr;
+		TraCIConnection* connection;
 		TraCICoord netbounds1; /* network boundaries as reported by TraCI (x1, y1) */
 		TraCICoord netbounds2; /* network boundaries as reported by TraCI (x2, y2) */
 
@@ -195,7 +197,6 @@ class TraCIScenarioManager : public cSimpleModule
 
 		void executeOneTimestep(); /**< read and execute all commands for the next timestep */
 
-		void connect();
 		virtual void init_traci();
 
 		void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
@@ -209,31 +210,6 @@ class TraCIScenarioManager : public cSimpleModule
 		 * Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI
 		 */
 		bool isInRegionOfInterest(const TraCICoord& position, std::string road_id, double speed, double angle);
-
-		/**
-		 * sends a single command via TraCI, checks status response, returns additional responses
-		 */
-		TraCIBuffer queryTraCI(uint8_t commandId, const TraCIBuffer& buf = TraCIBuffer());
-
-		/**
-		 * sends a single command via TraCI, expects no reply, returns true if successful
-		 */
-		TraCIBuffer queryTraCIOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg = 0);
-
-		/**
-		 * returns byte-buffer containing a TraCI command with optional parameters
-		 */
-		std::string makeTraCICommand(uint8_t commandId, TraCIBuffer buf = TraCIBuffer());
-
-		/**
-		 * sends a message via TraCI (after adding the header)
-		 */
-		void sendTraCIMessage(std::string buf);
-
-		/**
-		 * receives a message via TraCI (and strips the header)
-		 */
-		std::string receiveTraCIMessage();
 
 		/**
 		 * commonly employed technique to get string values via TraCI

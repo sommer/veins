@@ -88,9 +88,9 @@ void TraCIScenarioManagerLaunchd::init_traci() {
 
 	TraCIBuffer buf;
 	buf << std::string("sumo-launchd.launch.xml") << contents;
-	sendTraCIMessage(makeTraCICommand(CMD_FILE_SEND, buf));
+	connection->sendMessage(makeTraCICommand(CMD_FILE_SEND, buf));
 
-	TraCIBuffer obuf(receiveTraCIMessage());
+	TraCIBuffer obuf(connection->receiveMessage());
 	uint8_t cmdLength; obuf >> cmdLength;
 	uint8_t commandResp; obuf >> commandResp; if (commandResp != CMD_FILE_SEND) error("Expected response to command %d, but got one for command %d", CMD_FILE_SEND, commandResp);
 	uint8_t result; obuf >> result;

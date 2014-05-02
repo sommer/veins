@@ -23,16 +23,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-#define WANT_WINSOCK2
-#include <platdep/sockets.h>
-#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
-#include <ws2tcpip.h>
-#else
-#include <netinet/tcp.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#endif
-#define MYSOCKET (*(SOCKET*)socketPtr)
 
 #define MYDEBUG EV
 
@@ -47,6 +37,10 @@ using Veins::TraCIBuffer;
 using Veins::TraCICoord;
 
 Define_Module(Veins::TraCIScenarioManager);
+
+TraCIScenarioManager::TraCIScenarioManager() : connection(0)
+{
+}
 
 TraCIScenarioManager::~TraCIScenarioManager() {
 	cancelAndDelete(connectAndStartTrigger);
@@ -121,8 +115,6 @@ void TraCIScenarioManager::initialize(int stage) {
 	cc = FindModule<BaseConnectionManager*>::findGlobalModule();
 	if (cc == NULL) error("Could not find BaseConnectionManager module");
 
-	socketPtr = 0;
-
 	ASSERT(firstStepAt > connectAt);
 	connectAndStartTrigger = new cMessage("connect");
 	scheduleAt(connectAt, connectAndStartTrigger);
@@ -130,162 +122,6 @@ void TraCIScenarioManager::initialize(int stage) {
 	scheduleAt(firstStepAt, executeOneTimestepTrigger);
 
 	MYDEBUG << "initialized TraCIScenarioManager" << endl;
-}
-
-std::string TraCIScenarioManager::receiveTraCIMessage() {
-	if (!socketPtr) error("Not connected to TraCI server");
-
-	uint32_t msgLength;
-	{
-		char buf2[sizeof(uint32_t)];
-		uint32_t bytesRead = 0;
-		while (bytesRead < sizeof(uint32_t)) {
-			int receivedBytes = ::recv(MYSOCKET, reinterpret_cast<char*>(&buf2) + bytesRead, sizeof(uint32_t) - bytesRead, 0);
-			if (receivedBytes > 0) {
-				bytesRead += receivedBytes;
-			} else if (receivedBytes == 0) {
-				error("Connection to TraCI server closed unexpectedly. Check your server's log");
-			} else {
-				if (sock_errno() == EINTR) continue;
-				if (sock_errno() == EAGAIN) continue;
-				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
-			}
-		}
-		TraCIBuffer(std::string(buf2, sizeof(uint32_t))) >> msgLength;
-	}
-
-	uint32_t bufLength = msgLength - sizeof(msgLength);
-	char buf[bufLength];
-	{
-		MYDEBUG << "Reading TraCI message of " << bufLength << " bytes" << endl;
-		uint32_t bytesRead = 0;
-		while (bytesRead < bufLength) {
-			int receivedBytes = ::recv(MYSOCKET, reinterpret_cast<char*>(&buf) + bytesRead, bufLength - bytesRead, 0);
-			if (receivedBytes > 0) {
-				bytesRead += receivedBytes;
-			} else if (receivedBytes == 0) {
-				error("Connection to TraCI server closed unexpectedly. Check your server's log");
-			} else {
-				if (sock_errno() == EINTR) continue;
-				if (sock_errno() == EAGAIN) continue;
-				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
-			}
-		}
-	}
-	return std::string(buf, bufLength);
-}
-
-void TraCIScenarioManager::sendTraCIMessage(std::string buf) {
-	if (!socketPtr) error("Not connected to TraCI server");
-
-	{
-		uint32_t msgLength = sizeof(uint32_t) + buf.length();
-		TraCIBuffer buf2 = TraCIBuffer();
-		buf2 << msgLength;
-		uint32_t bytesWritten = 0;
-		while (bytesWritten < sizeof(uint32_t)) {
-			size_t sentBytes = ::send(MYSOCKET, buf2.str().c_str() + bytesWritten, sizeof(uint32_t) - bytesWritten, 0);
-			if (sentBytes > 0) {
-				bytesWritten += sentBytes;
-			} else {
-				if (sock_errno() == EINTR) continue;
-				if (sock_errno() == EAGAIN) continue;
-				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
-			}
-		}
-	}
-
-	{
-		MYDEBUG << "Writing TraCI message of " << buf.length() << " bytes" << endl;
-		uint32_t bytesWritten = 0;
-		while (bytesWritten < buf.length()) {
-			size_t sentBytes = ::send(MYSOCKET, buf.c_str() + bytesWritten, buf.length() - bytesWritten, 0);
-			if (sentBytes > 0) {
-				bytesWritten += sentBytes;
-			} else {
-				if (sock_errno() == EINTR) continue;
-				if (sock_errno() == EAGAIN) continue;
-				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
-			}
-		}
-	}
-}
-
-std::string TraCIScenarioManager::makeTraCICommand(uint8_t commandId, TraCIBuffer buf) {
-	if (sizeof(uint8_t) + sizeof(uint8_t) + buf.str().length() > 0xFF) {
-		uint32_t len = sizeof(uint8_t) + sizeof(uint32_t) + sizeof(uint8_t) + buf.str().length();
-		return (TraCIBuffer() << static_cast<uint8_t>(0) << len << commandId).str() + buf.str();
-	}
-	uint8_t len = sizeof(uint8_t) + sizeof(uint8_t) + buf.str().length();
-	return (TraCIBuffer() << len << commandId).str() + buf.str();
-}
-
-TraCIBuffer TraCIScenarioManager::queryTraCI(uint8_t commandId, const TraCIBuffer& buf) {
-	sendTraCIMessage(makeTraCICommand(commandId, buf));
-
-	TraCIBuffer obuf(receiveTraCIMessage());
-	uint8_t cmdLength; obuf >> cmdLength;
-	uint8_t commandResp; obuf >> commandResp;
-	ASSERT(commandResp == commandId);
-	uint8_t result; obuf >> result;
-	std::string description; obuf >> description;
-	if (result == RTYPE_NOTIMPLEMENTED) error("TraCI server reported command 0x%2x not implemented (\"%s\"). Might need newer version.", commandId, description.c_str());
-	if (result == RTYPE_ERR) error("TraCI server reported error executing command 0x%2x (\"%s\").", commandId, description.c_str());
-	ASSERT(result == RTYPE_OK);
-	return obuf;
-}
-
-TraCIBuffer TraCIScenarioManager::queryTraCIOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg) {
-	sendTraCIMessage(makeTraCICommand(commandId, buf));
-
-	TraCIBuffer obuf(receiveTraCIMessage());
-	uint8_t cmdLength; obuf >> cmdLength;
-	uint8_t commandResp; obuf >> commandResp;
-	ASSERT(commandResp == commandId);
-	uint8_t result; obuf >> result;
-	std::string description; obuf >> description;
-	success = (result == RTYPE_OK);
-	if (errorMsg) *errorMsg = description;
-	return obuf;
-}
-
-void TraCIScenarioManager::connect() {
-	MYDEBUG << "TraCIScenarioManager connecting to TraCI server" << endl;
-
-	if (initsocketlibonce() != 0) error("Could not init socketlib");
-
-	in_addr addr;
-	struct hostent* host_ent;
-	struct in_addr saddr;
-
-	saddr.s_addr = inet_addr(host.c_str());
-	if (saddr.s_addr != static_cast<unsigned int>(-1)) {
-		addr = saddr;
-	} else if ((host_ent = gethostbyname(host.c_str()))) {
-		addr = *((struct in_addr*) host_ent->h_addr_list[0]);
-	} else {
-		error("Invalid TraCI server address: %s", host.c_str());
-		return;
-	}
-
-	sockaddr_in address;
-	memset((char*) &address, 0, sizeof(address));
-	address.sin_family = AF_INET;
-	address.sin_port = htons(port);
-	address.sin_addr.s_addr = addr.s_addr;
-
-	socketPtr = new SOCKET();
-	MYSOCKET = ::socket(AF_INET, SOCK_STREAM, 0);
-	if (MYSOCKET < 0) error("Could not create socket to connect to TraCI server");
-
-	if (::connect(MYSOCKET, (sockaddr const*) &address, sizeof(address)) < 0) {
-		error("Could not connect to TraCI server. Make sure it is running and not behind a firewall. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
-	}
-
-	{
-		int x = 1;
-		::setsockopt(MYSOCKET, IPPROTO_TCP, TCP_NODELAY, (const char*) &x, sizeof(x));
-	}
 }
 
 void TraCIScenarioManager::init_traci() {
@@ -305,7 +141,7 @@ void TraCIScenarioManager::init_traci() {
 
 	{
 		// query road network boundaries
-		TraCIBuffer buf = queryTraCI(CMD_GET_SIM_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_NET_BOUNDING_BOX) << std::string("sim0"));
+		TraCIBuffer buf = connection->query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_NET_BOUNDING_BOX) << std::string("sim0"));
 		uint8_t cmdLength_resp; buf >> cmdLength_resp;
 		uint8_t commandId_resp; buf >> commandId_resp; ASSERT(commandId_resp == RESPONSE_GET_SIM_VARIABLE);
 		uint8_t variableId_resp; buf >> variableId_resp; ASSERT(variableId_resp == VAR_NET_BOUNDING_BOX);
@@ -336,7 +172,7 @@ void TraCIScenarioManager::init_traci() {
 		uint8_t variable5 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
 		uint8_t variable6 = VAR_PARKING_STARTING_VEHICLES_IDS;
 		uint8_t variable7 = VAR_PARKING_ENDING_VEHICLES_IDS;
-		TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7);
+		TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7);
 		processSubcriptionResult(buf);
 		ASSERT(buf.eof());
 	}
@@ -348,7 +184,7 @@ void TraCIScenarioManager::init_traci() {
 		std::string objectId = "";
 		uint8_t variableNumber = 1;
 		uint8_t variable1 = ID_LIST;
-		TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1);
+		TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1);
 		processSubcriptionResult(buf);
 		ASSERT(buf.eof());
 	}
@@ -380,11 +216,10 @@ void TraCIScenarioManager::finish() {
 		delete executeOneTimestepTrigger;
 		executeOneTimestepTrigger = 0;
 	}
-	if (socketPtr) {
-		TraCIBuffer buf = queryTraCI(CMD_CLOSE, TraCIBuffer());
-		closesocket(MYSOCKET);
-		delete &MYSOCKET;
-		socketPtr = 0;
+	if (connection) {
+		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
+		delete connection;
+		connection = 0;
 	}
 	while (hosts.begin() != hosts.end()) {
 		deleteModule(hosts.begin()->first);
@@ -406,7 +241,7 @@ void TraCIScenarioManager::handleMessage(cMessage *msg) {
 
 void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 	if (msg == connectAndStartTrigger) {
-		connect();
+		connection = TraCIConnection::connect(host.c_str(), port);
 		init_traci();
 		return;
 	}
@@ -912,7 +747,7 @@ void TraCIScenarioManager::executeOneTimestep() {
 
 	if (targetTime > round(connectAt.dbl() * 1000)) {
 		insertVehicles();
-		TraCIBuffer buf = queryTraCI(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
+		TraCIBuffer buf = connection->query(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
 
 		uint32_t count; buf >> count;
 		MYDEBUG << "Getting " << count << " subscription results" << endl;
@@ -1188,7 +1023,7 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId) {
 	uint8_t variable4 = VAR_ANGLE;
 	uint8_t variable5 = VAR_SIGNALS;
 
-	TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5);
+	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5);
 	processSubcriptionResult(buf);
 	ASSERT(buf.eof());
 }
@@ -1200,7 +1035,7 @@ void TraCIScenarioManager::unsubscribeFromVehicleVariables(std::string vehicleId
 	std::string objectId = vehicleId;
 	uint8_t variableNumber = 0;
 
-	TraCIBuffer buf = queryTraCI(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber);
+	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber);
 	ASSERT(buf.eof());
 }
 
