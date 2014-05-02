@@ -50,10 +50,6 @@ struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
 
 Define_Module(Veins::TraCIScenarioManager);
 
-TraCIScenarioManager::TraCIScenarioManager() : connection(0)
-{
-}
-
 TraCIScenarioManager::~TraCIScenarioManager() {
 	cancelAndDelete(connectAndStartTrigger);
 	cancelAndDelete(executeOneTimestepTrigger);
@@ -228,12 +224,11 @@ void TraCIScenarioManager::finish() {
 		delete executeOneTimestepTrigger;
 		executeOneTimestepTrigger = 0;
 	}
-	if (connection) {
+	if (connection.get() != 0) {
 		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
 		delete commandIfc;
 		commandIfc = 0;
-		delete connection;
-		connection = 0;
+		connection.reset();
 	}
 	while (hosts.begin() != hosts.end()) {
 		deleteModule(hosts.begin()->first);

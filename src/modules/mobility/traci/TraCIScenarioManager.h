@@ -21,6 +21,7 @@
 #ifndef VEINS_WORLD_TRACI_TRACISCENARIOMANAGER_H
 #define VEINS_WORLD_TRACI_TRACISCENARIOMANAGER_H
 
+#include <memory>
 #include <map>
 #include <list>
 #include <queue>
@@ -81,7 +82,6 @@ class TraCIScenarioManager : public cSimpleModule
 			VEH_SIGNAL_EMERGENCY_YELLOW = 8192
 		};
 
-		TraCIScenarioManager();
 		~TraCIScenarioManager();
 		virtual int numInitStages() const { return std::max(cSimpleModule::numInitStages(), 2); }
 		virtual void initialize(int stage);
@@ -89,7 +89,7 @@ class TraCIScenarioManager : public cSimpleModule
 		virtual void handleMessage(cMessage *msg);
 		virtual void handleSelfMsg(cMessage *msg);
 
-		bool isConnected() const { return (connection); }
+		bool isConnected() const { return connection.get() != 0; }
 
 		TraCICommandInterface* getCommandInterface() const { return commandIfc; }
 
@@ -141,7 +141,7 @@ class TraCIScenarioManager : public cSimpleModule
 		std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
 		std::list<std::pair<TraCICoord, TraCICoord> > roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
 
-		TraCIConnection* connection;
+		std::auto_ptr<TraCIConnection> connection;
 		TraCICommandInterface* commandIfc;
 		TraCICoord netbounds1; /* network boundaries as reported by TraCI (x1, y1) */
 		TraCICoord netbounds2; /* network boundaries as reported by TraCI (x2, y2) */

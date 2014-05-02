@@ -35,7 +35,7 @@ TraCIConnection::~TraCIConnection() {
 	}
 }
 
-TraCIConnection* TraCIConnection::connect(const char* host, int port) {
+std::auto_ptr<TraCIConnection> TraCIConnection::connect(const char* host, int port) {
 	MYDEBUG << "TraCIScenarioManager connecting to TraCI server" << endl;
 
 	if (initsocketlibonce() != 0) error("Could not init socketlib");
@@ -51,7 +51,7 @@ TraCIConnection* TraCIConnection::connect(const char* host, int port) {
 		addr = *((struct in_addr*) host_ent->h_addr_list[0]);
 	} else {
 		error("Invalid TraCI server address: %s", host);
-		return 0;
+		return std::auto_ptr<TraCIConnection>(0);
 	}
 
 	sockaddr_in address;
@@ -73,7 +73,7 @@ TraCIConnection* TraCIConnection::connect(const char* host, int port) {
 		::setsockopt(*socketPtr, IPPROTO_TCP, TCP_NODELAY, (const char*) &x, sizeof(x));
 	}
 
-	return new TraCIConnection(socketPtr);
+	return std::auto_ptr<TraCIConnection>(new TraCIConnection(socketPtr));
 }
 
 void TraCIConnection::error(const char* format, ...) {

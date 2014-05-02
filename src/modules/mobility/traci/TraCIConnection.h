@@ -2,6 +2,7 @@
 #define VEINS_MOBILITY_TRACI_TRACICONNECTION_H_
 
 #include "modules/mobility/traci/TraCIBuffer.h"
+#include <memory>
 #include <stdint.h>
 
 namespace Veins {
@@ -9,7 +10,7 @@ namespace Veins {
 class TraCIConnection
 {
 	public:
-		static TraCIConnection* connect(const char* host, int port);
+		static std::auto_ptr<TraCIConnection> connect(const char* host, int port);
 		~TraCIConnection();
 
 		/**
