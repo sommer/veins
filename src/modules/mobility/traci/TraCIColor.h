@@ -23,6 +23,8 @@
 
 #include <omnetpp.h>
 
+namespace Veins {
+
 /**
  * TraCI compatible color container
  */
@@ -37,6 +39,8 @@ class TraCIColor {
 		uint8_t blue;
 		uint8_t alpha;
 };
+
+}
 
 #endif
 

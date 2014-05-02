@@ -31,6 +31,7 @@
 #include <BaseMobility.h>
 #include "FindModule.h"
 #include "modules/mobility/traci/TraCIScenarioManager.h"
+#include "modules/mobility/traci/TraCICommandInterface.h"
 
 /**
  * @brief
@@ -117,56 +118,59 @@ class TraCIMobility : public BaseMobility
 			if (!manager) manager = TraCIScenarioManagerAccess().get();
 			return manager;
 		}
+		virtual TraCICommandInterface* getCommandInterface() const {
+			return getManager()->getCommandInterface();
+		}
 		void commandSetSpeedMode(int32_t bitset) {
-			getManager()->commandSetSpeedMode(getExternalId(), bitset);
+			getCommandInterface()->setSpeedMode(getExternalId(), bitset);
 		}
 		void commandSetSpeed(double speed) {
-			getManager()->commandSetSpeed(getExternalId(), speed);
+			getCommandInterface()->setSpeed(getExternalId(), speed);
 		}
-		void commandSetColor(TraCIColor color) {
-			getManager()->commandSetColor(getExternalId(), color);
+		void commandSetColor(const TraCIColor& color) {
+			getCommandInterface()->setColor(getExternalId(), color);
 		}
 		void commandSlowDown(double speed, int duration) {
-			getManager()->commandSlowDown(getExternalId(),speed,duration);
+			getCommandInterface()->slowDown(getExternalId(),speed,duration);
 		}
 		void commandChangeRoute(std::string roadId, double travelTime) {
-			getManager()->commandChangeRoute(getExternalId(), roadId, travelTime);
+			getCommandInterface()->changeRoute(getExternalId(), roadId, travelTime);
 		}
 		void commandNewRoute(std::string roadId) {
-			getManager()->commandNewRoute(getExternalId(), roadId);
+			getCommandInterface()->newRoute(getExternalId(), roadId);
 		}
 		void commandParkVehicle() {
-			getManager()->commandSetVehicleParking(getExternalId());
+			getCommandInterface()->setVehicleParking(getExternalId());
 		}
 		double commandDistanceRequest(Coord position1, Coord position2, bool returnDrivingDistance) {
-			return getManager()->commandDistanceRequest(position1, position2, returnDrivingDistance);
+			return getCommandInterface()->distanceRequest(getManager()->omnet2traci(position1), getManager()->omnet2traci(position2), returnDrivingDistance);
 		}
 		void commandStopNode(std::string roadId, double pos, uint8_t laneid, double radius, double waittime) {
-			return getManager()->commandStopNode(getExternalId(), roadId, pos, laneid, radius, waittime);
+			getCommandInterface()->stopNode(getExternalId(), roadId, pos, laneid, radius, waittime);
 		}
 		std::list<std::string> commandGetPolygonIds() {
-			return getManager()->commandGetPolygonIds();
+			return getCommandInterface()->getPolygonIds();
 		}
 		std::string commandGetPolygonTypeId(std::string polyId) {
-			return getManager()->commandGetPolygonTypeId(polyId);
+			return getCommandInterface()->getPolygonTypeId(polyId);
 		}
 		std::list<Coord> commandGetPolygonShape(std::string polyId) {
-			return getManager()->commandGetPolygonShape(polyId);
+			return getManager()->traci2omnet(getCommandInterface()->getPolygonShape(polyId));
 		}
 		void commandSetPolygonShape(std::string polyId, std::list<Coord> points) {
-			getManager()->commandSetPolygonShape(polyId, points);
+			getCommandInterface()->setPolygonShape(polyId, getManager()->omnet2traci(points));
 		}
-		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -TraCIScenarioManager::DEPART_NOW, double emitPosition = -TraCIScenarioManager::DEPART_POS_BASE, double emitSpeed = -TraCIScenarioManager::DEPART_SPEED_MAX, int8_t emitLane = -TraCIScenarioManager::DEPART_LANE_BEST_FREE) {
-			return getManager()->commandAddVehicle(vehicleId, vehicleTypeId, routeId, emitTime_st, emitPosition, emitSpeed, emitLane);
+		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -TraCICommandInterface::DEPART_NOW, double emitPosition = -TraCICommandInterface::DEPART_POS_BASE, double emitSpeed = -TraCICommandInterface::DEPART_SPEED_MAX, int8_t emitLane = -TraCICommandInterface::DEPART_LANE_BEST_FREE) {
+			return getCommandInterface()->addVehicle(vehicleId, vehicleTypeId, routeId, emitTime_st, emitPosition, emitSpeed, emitLane);
 		}
 		int commandGetLaneIndex() {
-			return getManager()->commandGetLaneIndex(getExternalId());
+			return getCommandInterface()->getLaneIndex(getExternalId());
 		}
 		std::string commandGetLaneId() {
-			return getManager()->commandGetLaneId(getExternalId());
+			return getCommandInterface()->getLaneId(getExternalId());
 		}
 		bool commandChangeVehicleRoute(std::list<std::string> edges) {
-			return getManager()->commandChangeVehicleRoute(getExternalId(), edges);
+			return getCommandInterface()->changeVehicleRoute(getExternalId(), edges);
 		}
 
 
