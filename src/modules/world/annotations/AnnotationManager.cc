@@ -22,6 +22,7 @@
 
 #include "modules/world/annotations/AnnotationManager.h"
 #include "modules/mobility/traci/TraCIScenarioManager.h"
+#include "modules/mobility/traci/TraCICommandInterface.h"
 
 Define_Module(Veins::AnnotationManager);
 
@@ -322,7 +323,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
 		if (traci && traci->isConnected()) {
 			std::stringstream nameBuilder; nameBuilder << o->text << " " << ev.getUniqueNumber();
-			traci->commandAddPoi(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(o->color), 6, o->pos);
+			traci->getCommandInterface()->addPoi(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(o->color), 6, traci->omnet2traci(o->pos));
 			annotation->traciPoiIds.push_back(nameBuilder.str());
 		}
 	}
@@ -337,7 +338,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 		if (traci && traci->isConnected()) {
 			std::list<Coord> coords; coords.push_back(l->p1); coords.push_back(l->p2);
 			std::stringstream nameBuilder; nameBuilder << "Annotation" << ev.getUniqueNumber();
-			traci->commandAddPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(l->color), false, 5, coords);
+			traci->getCommandInterface()->addPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(l->color), false, 5, traci->omnet2traci(coords));
 			annotation->traciLineIds.push_back(nameBuilder.str());
 		}
 	}
@@ -360,7 +361,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
 		if (traci && traci->isConnected()) {
 			std::stringstream nameBuilder; nameBuilder << "Annotation" << ev.getUniqueNumber();
-			traci->commandAddPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(p->color), false, 4, p->coords);
+			traci->getCommandInterface()->addPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(p->color), false, 4, traci->omnet2traci(p->coords));
 			annotation->traciPolygonsIds.push_back(nameBuilder.str());
 		}
 
@@ -382,17 +383,17 @@ void AnnotationManager::hide(const Annotation* annotation) {
 	if (traci && traci->isConnected()) {
 		for (std::list<std::string>::const_iterator i = annotation->traciPolygonsIds.begin(); i != annotation->traciPolygonsIds.end(); ++i) {
 			std::string id = *i;
-			traci->commandRemovePolygon(id, 3);
+			traci->getCommandInterface()->removePolygon(id, 3);
 		}
 		annotation->traciPolygonsIds.clear();
 		for (std::list<std::string>::const_iterator i = annotation->traciLineIds.begin(); i != annotation->traciLineIds.end(); ++i) {
 			std::string id = *i;
-			traci->commandRemovePolygon(id, 4);
+			traci->getCommandInterface()->removePolygon(id, 4);
 		}
 		annotation->traciLineIds.clear();
 		for (std::list<std::string>::const_iterator i = annotation->traciPoiIds.begin(); i != annotation->traciPoiIds.end(); ++i) {
 			std::string id = *i;
-			traci->commandRemovePoi(id, 5);
+			traci->getCommandInterface()->removePoi(id, 5);
 		}
 		annotation->traciPoiIds.clear();
 	}

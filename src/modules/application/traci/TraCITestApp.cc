@@ -23,6 +23,7 @@
 #include "asserts.h"
 
 #include "application/traci/TraCITestApp.h"
+#include "mobility/traci/TraCIColor.h"
 
 using Veins::TraCIMobility;
 using Veins::TraCIMobilityAccess;
@@ -135,7 +136,7 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			traci->getManager()->commandSetTrafficLightProgram("10", "myProgramRed");
+			traci->getCommandInterface()->setTrafficLightProgram("10", "myProgramRed");
 		}
 		if (t == 30) {
 			assertTrue("(commandSetTrafficLightProgram) vehicle is at 31", roadId == "31");
@@ -145,8 +146,8 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			traci->getManager()->commandSetTrafficLightProgram("10", "myProgramGreenRed");
-			traci->getManager()->commandSetTrafficLightPhaseIndex("10", 1);
+			traci->getCommandInterface()->setTrafficLightProgram("10", "myProgramGreenRed");
+			traci->getCommandInterface()->setTrafficLightPhaseIndex("10", 1);
 		}
 		if (t == 30) {
 			assertTrue("(commandSetTrafficLightPhaseIndex) vehicle is at 31", roadId == "31");
@@ -189,7 +190,7 @@ void TraCITestApp::handlePositionUpdate() {
 			points.push_back(Coord(200, 100));
 			points.push_back(Coord(200, 200));
 			points.push_back(Coord(100, 200));
-			traci->getManager()->commandAddPolygon("testPoly", "testType", TraCIColor::fromTkColor("red"), true, 1, points);
+			traci->getCommandInterface()->addPolygon("testPoly", "testType", TraCIColor::fromTkColor("red"), true, 1, traci->getManager()->omnet2traci(points));
 		}
 		if (t == 31) {
 			std::list<std::string> polys = traci->commandGetPolygonIds();
@@ -205,19 +206,21 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 30) {
-			std::list<std::string> lanes = traci->getManager()->commandGetLaneIds();
+			std::list<std::string> lanes = traci->getCommandInterface()->getLaneIds();
 			assertTrue("(commandGetLaneIds) returns test lane", std::find(lanes.begin(), lanes.end(), "10_0") != lanes.end());
-			std::list<Coord> shape = traci->getManager()->commandGetLaneShape("10_0");
-			assertClose("(commandGetLaneShape) shape x coordinate is correct", 523., floor(shape.begin()->x));
-			assertClose("(commandGetLaneShape) shape y coordinate is correct", 79., floor(shape.begin()->y));
+			std::list<TraCICoord> shape = traci->getCommandInterface()->getLaneShape("10_0");
+			Coord shape_front_coord = traci->getManager()->traci2omnet(shape.front());
+			assertClose("(commandGetLaneShape) shape x coordinate is correct", 523., floor(shape_front_coord.x));
+			assertClose("(commandGetLaneShape) shape y coordinate is correct", 79., floor(shape_front_coord.y));
 		}
 	}
 
 	if (testNumber == testCounter++) {
 		if (t == 30) {
-			std::list<std::string> junctions = traci->getManager()->commandGetJunctionIds();
+			std::list<std::string> junctions = traci->getCommandInterface()->getJunctionIds();
 			assertTrue("(commandGetJunctionIds) returns test junction", std::find(junctions.begin(), junctions.end(), "1") != junctions.end());
-			Coord pos = traci->getManager()->commandGetJunctionPosition("1");
+			TraCICoord traci_pos = traci->getCommandInterface()->getJunctionPosition("1");
+			Coord pos = traci->getManager()->traci2omnet(traci_pos);
 			assertClose("(commandGetJunctionPosition) shape x coordinate is correct", 25.0, pos.x);
 			assertClose("(commandGetJunctionPosition) shape y coordinate is correct", 75.0, pos.y);
 		}
@@ -225,7 +228,7 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 28) {
-			bool r = traci->getManager()->commandAddVehicle("testVehicle0", "vtype0", "route0");
+			bool r = traci->getCommandInterface()->addVehicle("testVehicle0", "vtype0", "route0");
 			assertTrue("(commandAddVehicle) command reports success", r);
 		}
 		if (t == 30) {

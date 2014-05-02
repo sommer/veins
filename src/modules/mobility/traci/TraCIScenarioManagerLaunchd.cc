@@ -19,6 +19,7 @@
 //
 
 #include "modules/mobility/traci/TraCIScenarioManagerLaunchd.h"
+#include "modules/mobility/traci/TraCICommandInterface.h"
 #include "modules/mobility/traci/TraCIConstants.h"
 #define CMD_FILE_SEND 0x75
 
@@ -75,7 +76,7 @@ void TraCIScenarioManagerLaunchd::finish()
 
 void TraCIScenarioManagerLaunchd::init_traci() {
 	{
-		std::pair<uint32_t, std::string> version = TraCIScenarioManager::commandGetVersion();
+		std::pair<uint32_t, std::string> version = getCommandInterface()->getVersion();
 		uint32_t apiVersion = version.first;
 		std::string serverVersion = version.second;
 
