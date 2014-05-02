@@ -226,8 +226,7 @@ void TraCIScenarioManager::finish() {
 	}
 	if (connection.get() != 0) {
 		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
-		delete commandIfc;
-		commandIfc = 0;
+		commandIfc.reset();
 		connection.reset();
 	}
 	while (hosts.begin() != hosts.end()) {
@@ -251,7 +250,7 @@ void TraCIScenarioManager::handleMessage(cMessage *msg) {
 void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 	if (msg == connectAndStartTrigger) {
 		connection = TraCIConnection::connect(host.c_str(), port);
-		commandIfc = new TraCICommandInterface(*connection);
+		commandIfc.reset(new TraCICommandInterface(*connection));
 		init_traci();
 		return;
 	}

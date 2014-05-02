@@ -91,7 +91,7 @@ class TraCIScenarioManager : public cSimpleModule
 
 		bool isConnected() const { return connection.get() != 0; }
 
-		TraCICommandInterface* getCommandInterface() const { return commandIfc; }
+		TraCICommandInterface* getCommandInterface() const { return commandIfc.get(); }
 
 		bool getAutoShutdownTriggered() {
 			return autoShutdownTriggered;
@@ -142,7 +142,7 @@ class TraCIScenarioManager : public cSimpleModule
 		std::list<std::pair<TraCICoord, TraCICoord> > roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
 
 		std::auto_ptr<TraCIConnection> connection;
-		TraCICommandInterface* commandIfc;
+		std::auto_ptr<TraCICommandInterface> commandIfc;
 		TraCICoord netbounds1; /* network boundaries as reported by TraCI (x1, y1) */
 		TraCICoord netbounds2; /* network boundaries as reported by TraCI (x2, y2) */
 
