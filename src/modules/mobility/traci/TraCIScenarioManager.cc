@@ -19,6 +19,7 @@
 //
 
 #include <fstream>
+#include <functional>
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
@@ -35,6 +36,16 @@
 using Veins::TraCIScenarioManager;
 using Veins::TraCIBuffer;
 using Veins::TraCICoord;
+
+struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
+	traci2omnet_functor(const TraCIScenarioManager& m) : manager(m) {}
+
+	Coord operator()(const TraCICoord& coord) const {
+		return manager.traci2omnet(coord);
+	}
+
+	const TraCIScenarioManager& manager;
+};
 
 Define_Module(Veins::TraCIScenarioManager);
 
@@ -977,8 +988,21 @@ Coord TraCIScenarioManager::traci2omnet(TraCICoord coord) const {
 	return Coord(coord.x - netbounds1.x + margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
 }
 
+std::list<Coord> TraCIScenarioManager::traci2omnet(const std::list<TraCICoord>& list) const {
+	std::list<Coord> result;
+	std::transform(list.begin(), list.end(), std::back_inserter(result), traci2omnet_functor(*this));
+	return result;
+}
+
 TraCICoord TraCIScenarioManager::omnet2traci(Coord coord) const {
 	return TraCICoord(coord.x + netbounds1.x - margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
+}
+
+std::list<TraCICoord> TraCIScenarioManager::omnet2traci(const std::list<Coord>& list) const {
+	std::list<TraCICoord> result;
+	std::transform(list.begin(), list.end(), std::back_inserter(result),
+			std::bind1st(std::mem_fun<TraCICoord, TraCIScenarioManager, Coord>(&TraCIScenarioManager::omnet2traci), this));
+	return result;
 }
 
 double TraCIScenarioManager::traci2omnetAngle(double angle) const {

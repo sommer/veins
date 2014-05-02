@@ -151,11 +151,13 @@ class TraCIScenarioManager : public cSimpleModule
 		 * convert TraCI coordinates to OMNeT++ coordinates
 		 */
 		Coord traci2omnet(TraCICoord coord) const;
+		std::list<Coord> traci2omnet(const std::list<TraCICoord>&) const;
 
 		/**
 		 * convert OMNeT++ coordinates to TraCI coordinates
 		 */
 		TraCICoord omnet2traci(Coord coord) const;
+		std::list<TraCICoord> omnet2traci(const std::list<Coord>&) const;
 
 	protected:
 		bool debug; /**< whether to emit debug messages */
