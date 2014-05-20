@@ -35,3 +35,7 @@ run debug memcheck: % : src/scripts/%.in.py out/config.py
 
 doxy:
 	doxygen doxy.cfg
+
+doxyshow: doxy
+	xdg-open doc/doxy/index.html
+
