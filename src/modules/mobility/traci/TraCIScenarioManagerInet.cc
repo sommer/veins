@@ -3,7 +3,7 @@
 #ifdef WITH_INET
 
 #define WITH_TRACI
-#include "mobility/models/TraCIMobility.h"
+#include "mobility/single/TraCIMobility.h"
 
 void ifInetTraCIMobilityCallPreInitialize(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle) {
     ::TraCIMobility* inetmm = dynamic_cast< ::TraCIMobility*>(mod);

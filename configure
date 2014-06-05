@@ -20,19 +20,27 @@ parser.add_option("--with-inet", dest="inet", help="link Veins with a version of
 if args:
     warning("Superfluous command line arguments: \"%s\"" % " ".join(args))
 
-if options.inet:
-    inet_src_path = os.path.join(options.inet, 'src')
-    if not os.path.isdir(inet_src_path):
-        error('Path to INET not found: %s' % inet_src_path)
-        sys.exit(1)
 
-if not os.path.isdir('out'):
-    os.mkdir('out')
+# Start with default flags
+makemake_flags = ['-f', '--deep', '--make-so', '-o', 'veins', '-O', 'out']
+run_libs = [os.path.join('src', 'veins')]
+run_neds = ['src']
 
-flags_inet = []
-ned_paths = []
+
+# Add flags for INET
 if options.inet:
+    fname = os.path.join(options.inet, 'Version')
+    try:
+        with open(fname, 'r') as file:
+            version = file.read().rstrip()
+            if not version == 'inet-2.3.0':
+                warning('Unsupported INET Version. Expecting inet-2.3.0, found "%s"' % version)
+    except IOError as e:
+       error('Could not determine INET Version: %s' % (fname, e))
+       sys.exit(1)
+
     inet_header_dirs = set()
+    inet_src_path = os.path.join(options.inet, 'src')
     for root, dirnames, filenames in os.walk(inet_src_path):
         for filename in fnmatch.filter(filenames, '*.h'):
             inet_header_dirs.add(os.path.relpath(os.path.dirname(os.path.join(root, filename)), 'src'))
@@ -40,22 +48,23 @@ if options.inet:
     inet_link=["-L"+os.path.join(os.path.relpath(options.inet, 'src'), 'src'), "-linet"]
     inet_defs=["-DINET_IMPORT", "-DWITH_INET"]
 
-    flags_inet = inet_includes + inet_link + inet_defs
-    run_libs = [os.path.relpath(os.path.join(options.inet, 'src', 'inet')), os.path.join('src', 'veins')]
-    run_neds = [os.path.relpath(os.path.join(options.inet, 'src')), 'src']
-
-
+    makemake_flags += inet_includes + inet_link + inet_defs
+    run_libs = [os.path.relpath(os.path.join(options.inet, 'src', 'inet'))] + run_libs
+    run_neds = [os.path.relpath(os.path.join(options.inet, 'src'))] + run_neds
 else:
-    flags_inet = ['-X' + os.path.join('src', 'inet')]
-    run_libs = [os.path.join('src', 'veins')]
-    run_neds = ['src']
+    makemake_flags += ['-X' + os.path.join('src', 'inet')]
+
+
+# Start creating files
+if not os.path.isdir('out'):
+    os.mkdir('out')
 
 f = open(os.path.join('out', 'config.py'), 'w')
 f.write('run_libs = %s\n' % repr(run_libs))
 f.write('run_neds = %s\n' % repr(run_neds))
 f.close()
 
-check_call(['env', 'opp_makemake', '-f', '--deep', '--make-so', '-o', 'veins', '-O', 'out'] + flags_inet, cwd='src')
+check_call(['env', 'opp_makemake'] + makemake_flags, cwd='src')
 
 print 'Configure done. You can now run "make".'
 
