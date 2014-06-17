@@ -173,6 +173,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 		mac->setSrcAddr(myMacAddress);
 		mac->encapsulate(pktToSend->dup());
 
+		//todo: round up to length of full symbol
 		simtime_t sendingDuration = RADIODELAY_11P +  PHY_HDR_PREAMBLE_DURATION +
 		                            PHY_HDR_PLCPSIGNAL_DURATION +
 		                            ((mac->getBitLength() + PHY_HDR_PSDU_HEADER_LENGTH)/bitrate);
@@ -373,6 +374,7 @@ void Mac1609_4::finish() {
 
 void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency) {
 
+	//todo: round up to length of full symbol
 	int macPktlen = mac->getBitLength();
 	simtime_t duration =
 	    PHY_HDR_PREAMBLE_DURATION +
