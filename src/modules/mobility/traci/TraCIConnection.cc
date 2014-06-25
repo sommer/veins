@@ -38,7 +38,7 @@ TraCIConnection::~TraCIConnection() {
 TraCIConnection* TraCIConnection::connect(const char* host, int port) {
 	MYDEBUG << "TraCIScenarioManager connecting to TraCI server" << endl;
 
-	if (initsocketlibonce() != 0) error("Could not init socketlib");
+	if (initsocketlibonce() != 0) opp_error("Could not init socketlib");
 
 	in_addr addr;
 	struct hostent* host_ent;
@@ -50,7 +50,7 @@ TraCIConnection* TraCIConnection::connect(const char* host, int port) {
 	} else if ((host_ent = gethostbyname(host))) {
 		addr = *((struct in_addr*) host_ent->h_addr_list[0]);
 	} else {
-		error("Invalid TraCI server address: %s", host);
+		opp_error("Invalid TraCI server address: %s", host);
 		return 0;
 	}
 
@@ -62,10 +62,10 @@ TraCIConnection* TraCIConnection::connect(const char* host, int port) {
 
 	SOCKET* socketPtr = new SOCKET();
 	*socketPtr = ::socket(AF_INET, SOCK_STREAM, 0);
-	if (*socketPtr < 0) error("Could not create socket to connect to TraCI server");
+	if (*socketPtr < 0) opp_error("Could not create socket to connect to TraCI server");
 
 	if (::connect(*socketPtr, (sockaddr const*) &address, sizeof(address)) < 0) {
-		error("Could not connect to TraCI server. Make sure it is running and not behind a firewall. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
+		opp_error("Could not connect to TraCI server. Make sure it is running and not behind a firewall. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
 	}
 
 	{
@@ -74,13 +74,6 @@ TraCIConnection* TraCIConnection::connect(const char* host, int port) {
 	}
 
 	return new TraCIConnection(socketPtr);
-}
-
-void TraCIConnection::error(const char* format, ...) {
-	va_list argptr;
-	va_start(argptr, format);
-	throw cRuntimeError(format, argptr);
-	va_end(argptr);
 }
 
 TraCIBuffer TraCIConnection::query(uint8_t commandId, const TraCIBuffer& buf) {
@@ -92,8 +85,8 @@ TraCIBuffer TraCIConnection::query(uint8_t commandId, const TraCIBuffer& buf) {
 	ASSERT(commandResp == commandId);
 	uint8_t result; obuf >> result;
 	std::string description; obuf >> description;
-	if (result == RTYPE_NOTIMPLEMENTED) error("TraCI server reported command 0x%2x not implemented (\"%s\"). Might need newer version.", commandId, description.c_str());
-	if (result == RTYPE_ERR) error("TraCI server reported error executing command 0x%2x (\"%s\").", commandId, description.c_str());
+	if (result == RTYPE_NOTIMPLEMENTED) opp_error("TraCI server reported command 0x%2x not implemented (\"%s\"). Might need newer version.", commandId, description.c_str());
+	if (result == RTYPE_ERR) opp_error("TraCI server reported error executing command 0x%2x (\"%s\").", commandId, description.c_str());
 	ASSERT(result == RTYPE_OK);
 	return obuf;
 }
@@ -113,7 +106,7 @@ TraCIBuffer TraCIConnection::queryOptional(uint8_t commandId, const TraCIBuffer&
 }
 
 std::string TraCIConnection::receiveMessage() {
-	if (!socketPtr) error("Not connected to TraCI server");
+	if (!socketPtr) opp_error("Not connected to TraCI server");
 
 	uint32_t msgLength;
 	{
@@ -124,11 +117,11 @@ std::string TraCIConnection::receiveMessage() {
 			if (receivedBytes > 0) {
 				bytesRead += receivedBytes;
 			} else if (receivedBytes == 0) {
-				error("Connection to TraCI server closed unexpectedly. Check your server's log");
+				opp_error("Connection to TraCI server closed unexpectedly. Check your server's log");
 			} else {
 				if (sock_errno() == EINTR) continue;
 				if (sock_errno() == EAGAIN) continue;
-				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
+				opp_error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
 			}
 		}
 		TraCIBuffer(std::string(buf2, sizeof(uint32_t))) >> msgLength;
@@ -144,11 +137,11 @@ std::string TraCIConnection::receiveMessage() {
 			if (receivedBytes > 0) {
 				bytesRead += receivedBytes;
 			} else if (receivedBytes == 0) {
-				error("Connection to TraCI server closed unexpectedly. Check your server's log");
+				opp_error("Connection to TraCI server closed unexpectedly. Check your server's log");
 			} else {
 				if (sock_errno() == EINTR) continue;
 				if (sock_errno() == EAGAIN) continue;
-				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
+				opp_error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
 			}
 		}
 	}
@@ -156,7 +149,7 @@ std::string TraCIConnection::receiveMessage() {
 }
 
 void TraCIConnection::sendMessage(std::string buf) {
-	if (!socketPtr) error("Not connected to TraCI server");
+	if (!socketPtr) opp_error("Not connected to TraCI server");
 
 	{
 		uint32_t msgLength = sizeof(uint32_t) + buf.length();
@@ -170,7 +163,7 @@ void TraCIConnection::sendMessage(std::string buf) {
 			} else {
 				if (sock_errno() == EINTR) continue;
 				if (sock_errno() == EAGAIN) continue;
-				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
+				opp_error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
 			}
 		}
 	}
@@ -185,7 +178,7 @@ void TraCIConnection::sendMessage(std::string buf) {
 			} else {
 				if (sock_errno() == EINTR) continue;
 				if (sock_errno() == EAGAIN) continue;
-				error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
+				opp_error("Connection to TraCI server lost. Check your server's log. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
 			}
 		}
 	}

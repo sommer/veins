@@ -34,7 +34,6 @@ class TraCIConnection
 
 	private:
 		TraCIConnection(void*);
-		static void error(const char* format, ...);
 
 		void* socketPtr;
 };
