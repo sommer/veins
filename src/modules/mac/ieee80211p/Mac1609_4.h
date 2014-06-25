@@ -168,7 +168,9 @@ class Mac1609_4 : public BaseMacLayer,
 		void channelBusySelf(bool generateTxOp);
 		void channelIdle(bool afterSwitch = false);
 
-		void checkBitrate(int bitrate)  const;
+		void setParametersForBitrate(int bitrate);
+
+		simtime_t getFrameDuration(int payloadLengthBits) const;
 
 	protected:
 		/** @brief Self message to indicate that the current channel shall be switched.*/
@@ -220,6 +222,9 @@ class Mac1609_4 : public BaseMacLayer,
 
 		/** @brief the bit rate at which we transmit */
 		double bitrate;
+
+		/** @brief N_DBPS, derived from bitrate, for frame length calculation */
+		double n_dbps;
 
 		/** @brief Id for debug messages */
 		std::string myId;

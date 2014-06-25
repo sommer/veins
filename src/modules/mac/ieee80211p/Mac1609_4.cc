@@ -39,7 +39,8 @@ void Mac1609_4::initialize(int stage) {
 
 		txPower = par("txPower").doubleValue();
 		bitrate = par("bitrate");
-		checkBitrate(bitrate);
+		n_dbps = 0;
+		setParametersForBitrate(bitrate);
 
 		//mac-adresses
 		myMacAddress = intuniform(0,0xFFFFFFFE);
@@ -173,10 +174,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 		mac->setSrcAddr(myMacAddress);
 		mac->encapsulate(pktToSend->dup());
 
-		//todo: round up to length of full symbol
-		simtime_t sendingDuration = RADIODELAY_11P +  PHY_HDR_PREAMBLE_DURATION +
-		                            PHY_HDR_PLCPSIGNAL_DURATION +
-		                            ((mac->getBitLength() + PHY_HDR_PSDU_HEADER_LENGTH)/bitrate);
+		simtime_t sendingDuration = RADIODELAY_11P + getFrameDuration(mac->getBitLength());
 		DBG_MAC << "Sending duration will be" << sendingDuration << std::endl;
 		if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
 			if (useSCH) DBG_MAC << " Time in this slot left: " << timeLeftInSlot() << std::endl;
@@ -374,12 +372,7 @@ void Mac1609_4::finish() {
 
 void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency) {
 
-	//todo: round up to length of full symbol
-	int macPktlen = mac->getBitLength();
-	simtime_t duration =
-	    PHY_HDR_PREAMBLE_DURATION +
-	    PHY_HDR_PLCPSIGNAL_DURATION +
-	    ((macPktlen + PHY_HDR_PSDU_HEADER_LENGTH)/bitrate);
+	simtime_t duration = getFrameDuration(mac->getBitLength());
 
 	Signal* s = createSignal(startTime, duration, txPower, bitrate, frequency);
 	MacToPhyControlInfo* cinfo = new MacToPhyControlInfo(s);
@@ -778,10 +771,21 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 	}
 }
 
-void Mac1609_4::checkBitrate(int bitrate) const {
-	for (unsigned int i = 0; i < sizeof(BITRATES_80211P); i++) {
-		if (bitrate == BITRATES_80211P[i]) return;
+void Mac1609_4::setParametersForBitrate(int bitrate) {
+	for (unsigned int i = 0; i < NUM_BITRATES_80211P; i++) {
+		if (bitrate == BITRATES_80211P[i]) {
+			n_dbps = N_DBPS_80211P[i];
+			return;
+		}
 	}
 	opp_error("Chosen Bitrate is not valid for 802.11p: Valid rates are: 3Mbps, 4.5Mbps, 6Mbps, 9Mbps, 12Mbps, 18Mbps, 24Mbps and 27Mbps. Please adjust your omnetpp.ini file accordingly.");
+}
+
+
+simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits) const {
+	// calculate frame duration according to Equation (17-29) of the IEEE 802.11-2007 standard
+	simtime_t duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil( (16 + payloadLengthBits + 6)/(n_dbps) );
+
+	return duration;
 }
 
