@@ -27,6 +27,7 @@ module Car
 {
     parameters:
         string applType; //type of the application layer
+        string nicType = default("Nic80211p"); // type of network interface card
         string veinsmobilityType; //type of the mobility module
     gates:
         input veinsradioIn; // gate for sendDirect
@@ -36,7 +37,7 @@ module Car
                 @display("p=60,50");
         }
 
-        nic: Nic80211p {
+        nic: <nicType> like org.car2x.veins.modules.nic.INic80211p {
             parameters:
                 @display("p=60,166");
         }
