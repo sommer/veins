@@ -32,7 +32,7 @@ import org.car2x.veins.modules.mac.ieee80211p.Mac1609_4;
 // @see Mac1609_4
 // @see PhyLayer80211p
 //
-module Nic80211p
+module Nic80211p like INic80211p
 {
     gates:
         input upperLayerIn; // to upper layers
