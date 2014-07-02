@@ -32,13 +32,13 @@ import org.car2x.veins.modules.mac.ieee80211p.Mac1609_4;
 // @see Mac1609_4
 // @see PhyLayer80211p
 //
-module Nic80211p
+module Nic80211p like INic80211p
 {
     gates:
         input upperLayerIn; // to upper layers
         output upperLayerOut; // from upper layers
-        output upperControlOut; // control information 
-        input upperControlIn; // control information 
+        output upperControlOut; // control information
+        input upperControlIn; // control information
         input radioIn; // radioIn gate for sendDirect
 
     submodules:
@@ -51,7 +51,6 @@ module Nic80211p
         }
 
     connections:
-
         radioIn --> phy80211p.radioIn;
 
         mac1609_4.lowerControlOut --> phy80211p.upperControlIn;
@@ -65,5 +64,3 @@ module Nic80211p
         mac1609_4.upperLayerOut --> upperLayerOut;
         mac1609_4.upperControlOut --> upperControlOut;
 }
-
-
