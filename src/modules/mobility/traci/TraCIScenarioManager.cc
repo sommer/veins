@@ -50,13 +50,23 @@ struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
 
 Define_Module(Veins::TraCIScenarioManager);
 
-TraCIScenarioManager::TraCIScenarioManager() : connection(0)
+TraCIScenarioManager::TraCIScenarioManager() :
+		myAddVehicleTimer(0),
+		mobRng(0),
+		connection(0),
+		connectAndStartTrigger(0),
+		executeOneTimestepTrigger(0),
+		world(0),
+		cc(0)
 {
 }
 
 TraCIScenarioManager::~TraCIScenarioManager() {
 	cancelAndDelete(connectAndStartTrigger);
 	cancelAndDelete(executeOneTimestepTrigger);
+	cancelAndDelete(myAddVehicleTimer);
+	delete commandIfc;
+	delete connection;
 }
 
 void TraCIScenarioManager::initialize(int stage) {
@@ -223,25 +233,11 @@ void TraCIScenarioManager::init_traci() {
 }
 
 void TraCIScenarioManager::finish() {
-	if (executeOneTimestepTrigger->isScheduled()) {
-		cancelEvent(executeOneTimestepTrigger);
-		delete executeOneTimestepTrigger;
-		executeOneTimestepTrigger = 0;
-	}
 	if (connection) {
 		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
-		delete commandIfc;
-		commandIfc = 0;
-		delete connection;
-		connection = 0;
 	}
 	while (hosts.begin() != hosts.end()) {
 		deleteModule(hosts.begin()->first);
-	}
-	if (myAddVehicleTimer->isScheduled()) {
-		cancelEvent(myAddVehicleTimer);
-		delete myAddVehicleTimer;
-		myAddVehicleTimer = 0;
 	}
 }
 
