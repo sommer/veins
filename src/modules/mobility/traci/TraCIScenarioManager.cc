@@ -65,6 +65,8 @@ TraCIScenarioManager::~TraCIScenarioManager() {
 	cancelAndDelete(connectAndStartTrigger);
 	cancelAndDelete(executeOneTimestepTrigger);
 	cancelAndDelete(myAddVehicleTimer);
+	delete commandIfc;
+	delete connection;
 }
 
 void TraCIScenarioManager::initialize(int stage) {
@@ -233,10 +235,6 @@ void TraCIScenarioManager::init_traci() {
 void TraCIScenarioManager::finish() {
 	if (connection) {
 		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
-		delete commandIfc;
-		commandIfc = 0;
-		delete connection;
-		connection = 0;
 	}
 	while (hosts.begin() != hosts.end()) {
 		deleteModule(hosts.begin()->first);
