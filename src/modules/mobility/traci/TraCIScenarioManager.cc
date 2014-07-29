@@ -231,11 +231,6 @@ void TraCIScenarioManager::init_traci() {
 }
 
 void TraCIScenarioManager::finish() {
-	if (executeOneTimestepTrigger->isScheduled()) {
-		cancelEvent(executeOneTimestepTrigger);
-		delete executeOneTimestepTrigger;
-		executeOneTimestepTrigger = 0;
-	}
 	if (connection) {
 		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
 		delete commandIfc;
@@ -245,11 +240,6 @@ void TraCIScenarioManager::finish() {
 	}
 	while (hosts.begin() != hosts.end()) {
 		deleteModule(hosts.begin()->first);
-	}
-	if (myAddVehicleTimer->isScheduled()) {
-		cancelEvent(myAddVehicleTimer);
-		delete myAddVehicleTimer;
-		myAddVehicleTimer = 0;
 	}
 }
 
