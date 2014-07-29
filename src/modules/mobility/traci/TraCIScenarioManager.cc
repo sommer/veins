@@ -50,7 +50,14 @@ struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
 
 Define_Module(Veins::TraCIScenarioManager);
 
-TraCIScenarioManager::TraCIScenarioManager() : connection(0)
+TraCIScenarioManager::TraCIScenarioManager() :
+		myAddVehicleTimer(0),
+		mobRng(0),
+		connection(0),
+		connectAndStartTrigger(0),
+		executeOneTimestepTrigger(0),
+		world(0),
+		cc(0)
 {
 }
 
