@@ -10,6 +10,7 @@ doc/neddoc
 /debug
 /memcheck
 
+*.pyc
 /out
 
 tests/**/results
