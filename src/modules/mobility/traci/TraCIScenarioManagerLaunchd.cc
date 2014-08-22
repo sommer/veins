@@ -80,9 +80,12 @@ void TraCIScenarioManagerLaunchd::init_traci() {
 		uint32_t apiVersion = version.first;
 		std::string serverVersion = version.second;
 
-		ASSERT(apiVersion == 1);
-
-		MYDEBUG << "TraCI launchd reports version \"" << serverVersion << "\"" << endl;
+		if ((apiVersion == 1)) {
+			MYDEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
+		}
+		else {
+			error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using the version of sumo-launchd that ships with Veins.", serverVersion.c_str(), apiVersion);
+		}
 	}
 
 	std::string contents = launchConfig->tostr(0);
