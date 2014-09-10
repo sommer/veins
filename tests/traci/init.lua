@@ -2,6 +2,8 @@
 -- TraCI Dissector for Wireshark
 -- Copyright (C) 2013 Christoph Sommer <christoph.sommer@uibk.ac.at>
 --
+-- Include from (or copy to) ~/.wireshark/init.lua
+--
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU General Public License
 -- as published by the Free Software Foundation; either version 2
