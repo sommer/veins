@@ -407,8 +407,14 @@ void TraCIScenarioManager::executeOneTimestep() {
 }
 
 void TraCIScenarioManager::insertNewVehicle() {
-	int vehTypeId = mobRng->intRand(vehicleTypeIds.size());
-	std::string type = vehicleTypeIds[vehTypeId];
+	std::string type;
+	if (vehicleTypeIds.size()) {
+		int vehTypeId = mobRng->intRand(vehicleTypeIds.size());
+		type = vehicleTypeIds[vehTypeId];
+	}
+	else {
+		type = "DEFAULT_VEHTYPE";
+	}
 	int routeId = mobRng->intRand(routeIds.size());
 	vehicleInsertQueue[routeId].push(type);
 }
