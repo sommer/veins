@@ -295,6 +295,9 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double snirMin, dou
 			double ber = std::min(0.5, 8 * erfc(0.75 * sqrt(snrMin)));
 			packetOkSnr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
 		}
+		else {
+			opp_error("Currently this 11p-Model only provides accurate BER models for 6Mbit and 18Mbit. Please use one of these frequencies for now.");
+		}
 
 		double berHeader = 0.5 * exp(-snrMin * 10E+6 / PHY_HDR_BANDWIDTH);
 		headerNoErrorSnr = pow(1.0 - berHeader, PHY_HDR_PLCPSIGNAL_LENGTH);

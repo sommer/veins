@@ -152,7 +152,7 @@ void TraCIScenarioManager::init_traci() {
 		uint32_t apiVersion = version.first;
 		std::string serverVersion = version.second;
 
-		if ((apiVersion == 8)) {
+		if (apiVersion == 8) {
 			MYDEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
 		}
 		else {
@@ -237,7 +237,7 @@ void TraCIScenarioManager::finish() {
 		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
 	}
 	while (hosts.begin() != hosts.end()) {
-		deleteModule(hosts.begin()->first);
+		deleteManagedModule(hosts.begin()->first);
 	}
 }
 
@@ -355,7 +355,7 @@ bool TraCIScenarioManager::isModuleUnequipped(std::string nodeId) {
 	return true;
 }
 
-void TraCIScenarioManager::deleteModule(std::string nodeId) {
+void TraCIScenarioManager::deleteManagedModule(std::string nodeId) {
 	cModule* mod = getManagedModule(nodeId);
 	if (!mod) error("no vehicle with Id \"%s\" found", nodeId.c_str());
 
@@ -571,7 +571,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 
 				// check if this object has been deleted already (e.g. because it was outside the ROI)
 				cModule* mod = getManagedModule(idstring);
-				if (mod) deleteModule(idstring);
+				if (mod) deleteManagedModule(idstring);
 
 				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
 					unEquippedHosts.erase(idstring);
@@ -593,7 +593,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 
 				// check if this object has been deleted already (e.g. because it was outside the ROI)
 				cModule* mod = getManagedModule(idstring);
-				if (mod) deleteModule(idstring);
+				if (mod) deleteManagedModule(idstring);
 
 				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
 					unEquippedHosts.erase(idstring);
@@ -769,7 +769,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	bool inRoi = isInRegionOfInterest(TraCICoord(px, py), edge, speed, angle);
 	if (!inRoi) {
 		if (mod) {
-			deleteModule(objectId);
+			deleteManagedModule(objectId);
 			MYDEBUG << "Vehicle #" << objectId << " left region of interest" << endl;
 		}
 		else if(unEquippedHosts.find(objectId) != unEquippedHosts.end()) {

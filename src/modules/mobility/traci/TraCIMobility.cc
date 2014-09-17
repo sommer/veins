@@ -32,13 +32,6 @@ const simsignalwrap_t TraCIMobility::parkingStateChangedSignal = simsignalwrap_t
 
 namespace {
 	const double MY_INFINITY = (std::numeric_limits<double>::has_infinity ? std::numeric_limits<double>::infinity() : std::numeric_limits<double>::max());
-
-	double roadIdAsDouble(std::string road_id) {
-		std::istringstream iss(road_id);
-		double d;
-		if (!(iss >> d)) return MY_INFINITY;
-		return d;
-	}
 }
 
 void TraCIMobility::Statistics::initialize()

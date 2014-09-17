@@ -8,7 +8,7 @@
 
 namespace Veins {
 
-class TraCICoord;
+struct TraCICoord;
 
 bool isBigEndian();
 

@@ -168,7 +168,7 @@ class TraCIScenarioManager : public cSimpleModule
 
 		void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
 		cModule* getManagedModule(std::string nodeId); /**< returns a pointer to the managed module named moduleName, or 0 if no module can be found */
-		void deleteModule(std::string nodeId);
+		void deleteManagedModule(std::string nodeId);
 
 		bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
 
