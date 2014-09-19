@@ -21,6 +21,8 @@
 #include "Mac1609_4.h"
 #include <iterator>
 
+#include "DeciderResult80211.h"
+#include "PhyToMacControlInfo.h"
 #define DBG_MAC EV
 //#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
 
@@ -36,6 +38,9 @@ void Mac1609_4::initialize(int stage) {
 
 		//this is required to circumvent double precision issues with constants from CONST80211p.h
 		assert(simTime().getScaleExp() == -12);
+
+		sigChannelBusy = registerSignal("sigChannelBusy");
+		sigCollision = registerSignal("sigCollision");
 
 		txPower = par("txPower").doubleValue();
 		bitrate = par("bitrate");
@@ -306,7 +311,7 @@ void Mac1609_4::handleLowerControl(cMessage* msg) {
 	else if (msg->getKind() == Mac80211pToPhy11pInterface::CHANNEL_IDLE) {
 		channelIdle();
 	}
-	else if (msg->getKind() == Decider80211p::BITERROR) {
+	else if (msg->getKind() == Decider80211p::BITERROR || msg->getKind() == Decider80211p::COLLISION) {
 		statsSNIRLostPackets++;
 		DBG_MAC << "A packet was not received due to biterrors" << std::endl;
 	}
@@ -325,6 +330,11 @@ void Mac1609_4::handleLowerControl(cMessage* msg) {
 		DBG_MAC << "Invalid control message type (type=NOTHING) : name=" << msg->getName() << " modulesrc=" << msg->getSenderModule()->getFullPath() << "." << std::endl;
 		assert(false);
 	}
+
+	if (msg->getKind() == Decider80211p::COLLISION) {
+		emit(sigCollision, true);
+	}
+
 	delete msg;
 }
 
@@ -454,6 +464,12 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 	ASSERT(macPkt);
 
 	WaveShortMessage*  wsm =  dynamic_cast<WaveShortMessage*>(macPkt->decapsulate());
+
+	//pass information about received frame to the upper layers
+	DeciderResult80211 *macRes = dynamic_cast<DeciderResult80211 *>(PhyToMacControlInfo::getDeciderResult(msg));
+	ASSERT(macRes);
+	DeciderResult80211 *res = new DeciderResult80211(*macRes);
+	wsm->setControlInfo(new PhyToMacControlInfo(res));
 
 	long dest = macPkt->getDestAddr();
 
@@ -710,6 +726,8 @@ void Mac1609_4::channelBusySelf(bool generateTxOp) {
 		//the edca subsystem was not doing anything anyway.
 	}
 	myEDCA[activeChannel]->stopContent(false, generateTxOp);
+
+	emit(sigChannelBusy, true);
 }
 
 void Mac1609_4::channelBusy() {
@@ -729,6 +747,8 @@ void Mac1609_4::channelBusy() {
 		//the edca subsystem was not doing anything anyway.
 	}
 	myEDCA[activeChannel]->stopContent(true,false);
+
+	emit(sigChannelBusy, true);
 }
 
 void Mac1609_4::channelIdle(bool afterSwitch) {
@@ -774,6 +794,9 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 	else {
 		DBG_MAC << "I don't have any new events in this EDCA sub system" << std::endl;
 	}
+
+	emit(sigChannelBusy, false);
+
 }
 
 void Mac1609_4::checkBitrate(int bitrate) const {

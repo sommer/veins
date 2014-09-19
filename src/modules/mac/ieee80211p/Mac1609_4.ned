@@ -59,4 +59,10 @@ simple Mac1609_4 extends BaseMacLayer
         double txPower @unit(mW);
 
         int queueSize = default(0);
+
+        // signal informing interested application about channel busy state
+        @signal[sigChannelBusy](type=bool);
+        // signal informing interested application about a collision
+        @signal[sigCollision](type=bool);
+
 }

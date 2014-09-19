@@ -225,6 +225,11 @@ class Mac1609_4 : public BaseMacLayer,
 		std::string myId;
 
 		Mac80211pToPhy11pInterface* phy11p;
+
+		//tell to anybody which is interested when the channel turns busy or idle
+		simsignal_t sigChannelBusy;
+		//tell to anybody which is interested when a collision occurred
+		simsignal_t sigCollision;
 };
 
 #endif /* ___MAC1609_4_H_*/
