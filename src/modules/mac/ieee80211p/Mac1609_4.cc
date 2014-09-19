@@ -459,6 +459,10 @@ void Mac1609_4::changeServiceChannel(int cN) {
 	}
 }
 
+void Mac1609_4::setCCAThreshold(double ccaThreshold_dBm) {
+	phy11p->setCCAThreshold(ccaThreshold_dBm);
+}
+
 void Mac1609_4::handleLowerMsg(cMessage* msg) {
 	Mac80211Pkt* macPkt = static_cast<Mac80211Pkt*>(msg);
 	ASSERT(macPkt);

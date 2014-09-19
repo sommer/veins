@@ -43,6 +43,8 @@ Define_Module(PhyLayer80211p);
 /** This is needed to circumvent a bug in MiXiM that allows different header length interpretations for receiving and sending airframes*/
 void PhyLayer80211p::initialize(int stage) {
 	if (stage == 0) {
+		//get ccaThreshold before calling BasePhyLayer::initialize() which instantiates the deciders
+		ccaThreshold = pow(10, par("ccaThreshold").doubleValue() / 10);
 		collectCollisionStatistics = par("collectCollisionStatistics").boolValue();
 	}
 	BasePhyLayer::initialize(stage);
@@ -453,3 +455,11 @@ AirFrame *PhyLayer80211p::encapsMsg(cPacket *macPkt)
 int PhyLayer80211p::getRadioState() {
 	return BasePhyLayer::getRadioState();
 };
+
+
+void PhyLayer80211p::setCCAThreshold(double ccaThreshold_dBm) {
+	ccaThreshold = pow(10, ccaThreshold_dBm / 10);
+}
+double PhyLayer80211p::getCCAThreshold() {
+	return 10 * log10(ccaThreshold);
+}

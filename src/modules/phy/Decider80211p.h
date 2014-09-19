@@ -58,6 +58,23 @@ class Decider80211p: public BaseDecider {
 		// threshold value for checking a SNR-map (SNR-threshold)
 		double snrThreshold;
 
+		/** @brief Power level threshold used to declare channel busy if
+		 * preamble portion is missed (802.11-2012 18.3.10.6
+		 * CCA requirements). Notice that in 18.3.10.6, the mandatory CCA threshold
+		 * for a 10 MHz channel is -65 dBm. However, there is another threshold
+		 * called CCA-ED which requirements are defined in D.2.5. For a 10 MHz
+		 * channel, CCA-ED threshold shall be -75 dBm. CCA-ED is required for
+		 * certain operating classes that shall implement CCA-ED behavior.
+		 * According to Table E-4 however, 802.11p channels should not implement
+		 * it, so the correct threshold is -65 dBm.
+		 * When considering ETSI ITS G5 (ETSI TS 102 687) things change again.
+		 * Indeed, the DCC Sensitivity Control (DSC) part of the DCC algorithm
+		 * changes the CCA threshold depending on the state. Values are listed
+		 * in Table A.3: minimum value is -95 dBm, maximum value is -65 dBm,
+		 * and default value is -85 dBm.
+		 */
+		double ccaThreshold;
+
 		/** @brief The center frequency on which the decider listens for signals */
 		double centerFrequency;
 
@@ -161,11 +178,13 @@ class Decider80211p: public BaseDecider {
 		 */
 		Decider80211p(DeciderToPhyInterface* phy,
 		              double sensitivity,
+		              double ccaThreshold,
 		              double centerFrequency,
 		              int myIndex = -1,
 		              bool collectCollisionStatistics = false,
 		              bool debug = false):
 			BaseDecider(phy, sensitivity, myIndex, debug),
+			ccaThreshold(ccaThreshold),
 			centerFrequency(centerFrequency),
 			myBusyTime(0),
 			myStartTime(simTime().dbl()),
@@ -186,6 +205,16 @@ class Decider80211p: public BaseDecider {
 		virtual ~Decider80211p();
 
 		void changeFrequency(double freq);
+
+		/**
+		 * @brief returns the CCA threshold in dBm
+		 */
+		double getCCAThreshold();
+
+		/**
+		 * @brief sets the CCA threshold
+		 */
+		void setCCATreshold(double ccaThreshold_dBm);
 
 		void setChannelIdleStatus(bool isIdle);
 

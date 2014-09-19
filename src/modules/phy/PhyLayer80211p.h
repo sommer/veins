@@ -55,7 +55,19 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 {
 	public:
 		void initialize(int stage);
+		/**
+		 * @brief Set the carrier sense threshold
+		 * @param ccaThreshold_dBm the cca threshold in dBm
+		 */
+		void setCCAThreshold(double ccaThreshold_dBm);
+		/**
+		 * @brief Return the cca threshold in dBm
+		 */
+		double getCCAThreshold();
 	protected:
+
+		/** @brief CCA threshold. See Decider80211p for details */
+		double ccaThreshold;
 
 		/** @brief enable/disable detection of packet collisions */
 		bool collectCollisionStatistics;

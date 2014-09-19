@@ -123,6 +123,12 @@ class Mac1609_4 : public BaseMacLayer,
 
 		void changeServiceChannel(int channelNumber);
 
+		/**
+		 * @brief Change the phy layer carrier sense threshold.
+		 *
+		 * @param ccaThreshold_dBm the cca threshold in dBm
+		 */
+		void setCCAThreshold(double ccaThreshold_dBm);
 
 	protected:
 		/** @brief States of the channel selecting operation.*/

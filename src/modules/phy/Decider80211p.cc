@@ -426,8 +426,8 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude) {
 	min.setTime(time);
 	min.setArgValue(Dimension::frequency_static(), centerFrequency - 5e6);
 
-	DBG_D11P << MappingUtils::findMin(*resultMap, min, min) << " > " << sensitivity << " = " << (bool)(MappingUtils::findMin(*resultMap, min, min) > sensitivity) << std::endl;
-	bool isChannelIdle = MappingUtils::findMin(*resultMap, min, min) < sensitivity;
+	DBG_D11P << MappingUtils::findMin(*resultMap, min, min) << " > " << ccaThreshold << " = " << (bool)(MappingUtils::findMin(*resultMap, min, min) > ccaThreshold) << std::endl;
+	bool isChannelIdle = MappingUtils::findMin(*resultMap, min, min) < ccaThreshold;
 	delete resultMap;
 	return isChannelIdle;
 }
@@ -531,6 +531,14 @@ void Decider80211p::setChannelIdleStatus(bool isIdle) {
 
 void Decider80211p::changeFrequency(double freq) {
 	centerFrequency = freq;
+}
+
+double Decider80211p::getCCAThreshold() {
+	return 10 * log10(ccaThreshold);
+}
+
+void Decider80211p::setCCATreshold(double ccaThreshold_dBm) {
+	ccaThreshold = pow(10, ccaThreshold_dBm / 10);
 }
 
 void Decider80211p::finish() {
