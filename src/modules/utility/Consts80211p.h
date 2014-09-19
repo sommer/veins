@@ -71,7 +71,7 @@ const int PHY_HDR_PSDU_HEADER_LENGTH = PHY_HDR_TOTAL_LENGTH - PHY_HDR_PLCPSIGNAL
  * as defined in Table 17.4 Timing-related parameters in the IEEE 802.11-2007 standard
  * 24 bits in 8e-6 seconds
  */
-const double PHY_HDR_BANDWIDTH = 3000000;
+const double PHY_HDR_BITRATE = 3000000;
 
 /** @brief Slot Time for 10 MHz channel spacing
  *

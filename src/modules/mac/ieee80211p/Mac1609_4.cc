@@ -23,6 +23,8 @@
 
 #include "DeciderResult80211.h"
 #include "PhyToMacControlInfo.h"
+#include "PhyControlMessage_m.h"
+
 #define DBG_MAC EV
 //#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
 
@@ -178,9 +180,34 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 		mac->setSrcAddr(myMacAddress);
 		mac->encapsulate(pktToSend->dup());
 
+		enum PHY_MCS mcs;
+		double txPower_mW;
+		double datarate;
+		PhyControlMessage *controlInfo = dynamic_cast<PhyControlMessage *>(pktToSend->getControlInfo());
+		if (controlInfo) {
+			//if MCS is not specified, just use the default one
+			mcs = (enum PHY_MCS)controlInfo->getMcs();
+			if (mcs != MCS_DEFAULT) {
+				datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
+			}
+			else {
+				datarate = bitrate;
+			}
+			//apply the same principle to tx power
+			txPower_mW = controlInfo->getTxPower_mW();
+			if (txPower_mW < 0) {
+				txPower_mW = txPower;
+			}
+		}
+		else {
+			mcs = MCS_DEFAULT;
+			txPower_mW = txPower;
+			datarate = bitrate;
+		}
+
 		simtime_t sendingDuration = RADIODELAY_11P +  PHY_HDR_PREAMBLE_DURATION +
 		                            PHY_HDR_PLCPSIGNAL_DURATION +
-		                            ((mac->getBitLength() + PHY_HDR_PSDU_HEADER_LENGTH)/bitrate);
+		                            ((mac->getBitLength() + PHY_HDR_PSDU_HEADER_LENGTH)/datarate);
 		DBG_MAC << "Sending duration will be" << sendingDuration << std::endl;
 		if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
 			if (useSCH) DBG_MAC << " Time in this slot left: " << timeLeftInSlot() << std::endl;
@@ -190,7 +217,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 
 			double freq = (activeChannel == type_CCH) ? frequency[Channels::CCH] : frequency[mySCH];
 
-			attachSignal(mac, simTime()+RADIODELAY_11P, freq);
+			attachSignal(mac, simTime()+RADIODELAY_11P, freq, datarate, txPower_mW);
 			MacToPhyControlInfo* phyInfo = dynamic_cast<MacToPhyControlInfo*>(mac->getControlInfo());
 			assert(phyInfo);
 			DBG_MAC << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
@@ -381,15 +408,15 @@ void Mac1609_4::finish() {
 
 }
 
-void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency) {
+void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, double datarate, double txPower_mW) {
 
 	int macPktlen = mac->getBitLength();
 	simtime_t duration =
 	    PHY_HDR_PREAMBLE_DURATION +
 	    PHY_HDR_PLCPSIGNAL_DURATION +
-	    ((macPktlen + PHY_HDR_PSDU_HEADER_LENGTH)/bitrate);
+	    ((macPktlen + PHY_HDR_PSDU_HEADER_LENGTH)/datarate);
 
-	Signal* s = createSignal(startTime, duration, txPower, bitrate, frequency);
+	Signal* s = createSignal(startTime, duration, txPower_mW, datarate, frequency);
 	MacToPhyControlInfo* cinfo = new MacToPhyControlInfo(s);
 
 	mac->setControlInfo(cinfo);
@@ -457,6 +484,14 @@ void Mac1609_4::changeServiceChannel(int cN) {
 		//otherwise it will switch to the new SCH upon next channel switch
 		phy11p->changeListeningFrequency(frequency[mySCH]);
 	}
+}
+
+void Mac1609_4::setTxPower(double txPower_mW) {
+	txPower = txPower_mW;
+}
+void Mac1609_4::setMCS(enum PHY_MCS mcs) {
+	ASSERT2(mcs != MCS_DEFAULT, "invalid MCS selected");
+	bitrate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
 }
 
 void Mac1609_4::setCCAThreshold(double ccaThreshold_dBm) {

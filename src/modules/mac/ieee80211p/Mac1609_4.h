@@ -34,6 +34,8 @@
 #include <WaveShortMessage_m.h>
 #include <BaseMacLayer.h>
 
+#include "ConstsPhy.h"
+
 /**
  * @brief
  * Manages timeslots for CCH and SCH listening and sending.
@@ -124,6 +126,21 @@ class Mac1609_4 : public BaseMacLayer,
 		void changeServiceChannel(int channelNumber);
 
 		/**
+		 * @brief Change the default tx power the NIC card is using
+		 *
+		 * @param txPower_mW the tx power to be set in mW
+		 */
+		void setTxPower(double txPower_mW);
+
+		/**
+		 * @brief Change the default MCS the NIC card is using
+		 *
+		 * @param mcs the default modulation and coding scheme
+		 * to use
+		 */
+		void setMCS(enum PHY_MCS mcs);
+
+		/**
 		 * @brief Change the phy layer carrier sense threshold.
 		 *
 		 * @param ccaThreshold_dBm the cca threshold in dBm
@@ -164,7 +181,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 		bool guardActive() const;
 
-		void attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency);
+		void attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, double datarate, double txPower_mW);
 		Signal* createSignal(simtime_t start, simtime_t length, double power, double bitrate, double frequency);
 
 		/** @brief maps a application layer priority (up) to an EDCA access category. */

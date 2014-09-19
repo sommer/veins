@@ -29,6 +29,8 @@
 #include <Mac80211Pkt_m.h>
 #include <Signal_.h>
 #include <AirFrame11p_m.h>
+#include "NistErrorRate.h"
+#include "ConstsPhy.h"
 
 simtime_t Decider80211p::processNewSignal(AirFrame* msg) {
 
@@ -267,40 +269,18 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double snirMin, dou
 	double packetOkSinr;
 	double packetOkSnr;
 
-	if (bitrate == 18E+6) {
-		//According to P. Fuxjaeger et al. "IEEE 802.11p Transmission Using GNURadio"
-		double ber = std::min(0.5 , 1.5 * erfc(0.45 * sqrt(snirMin)));
-		packetOkSinr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
-	}
-	else if (bitrate == 6E+6) {
-		//According to K. Sjoeberg et al. "Measuring and Using the RSSI of IEEE 802.11p"
-		double ber = std::min(0.5 , 8 * erfc(0.75 *sqrt(snirMin)));
-		packetOkSinr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
-	}
-	else {
-		opp_error("Currently this 11p-Model only provides accurate BER models for 6Mbit and 18Mbit. Please use one of these frequencies for now.");
-	}
+	//compute success rate depending on mcs and bw
+	packetOkSinr = NistErrorRate::getChunkSuccessRate(bitrate, BW_OFDM_10_MHZ, snirMin, lengthMPDU);
 
-	//check if header is broken, BER model for PSK taken from MiXiM 2.2
-	double berHeader = 0.5 * exp(-snirMin * 10E+6 / PHY_HDR_BANDWIDTH);
-	double headerNoError = pow(1.0 - berHeader, PHY_HDR_PLCPSIGNAL_LENGTH);
+	//check if header is broken
+	double headerNoError = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BW_OFDM_10_MHZ, snirMin, PHY_HDR_PLCPSIGNAL_LENGTH);
 
 	double headerNoErrorSnr;
 	//compute PER also for SNR only
 	if (collectCollisionStats) {
-		if (bitrate == 18E+6) {
-			//According to P. Fuxjaeger et al. "IEEE 802.11p Transmission Using GNURadio"
-			double ber = std::min(0.5, 1.5 * erfc(0.45 * sqrt(snrMin)));
-			packetOkSnr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
-		}
-		else if (bitrate == 6E+6) {
-			//According to K. Sjoeberg et al. "Measuring and Using the RSSI of IEEE 802.11p"
-			double ber = std::min(0.5, 8 * erfc(0.75 * sqrt(snrMin)));
-			packetOkSnr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
-		}
 
-		double berHeader = 0.5 * exp(-snrMin * 10E+6 / PHY_HDR_BANDWIDTH);
-		headerNoErrorSnr = pow(1.0 - berHeader, PHY_HDR_PLCPSIGNAL_LENGTH);
+		packetOkSnr = NistErrorRate::getChunkSuccessRate(bitrate, BW_OFDM_10_MHZ, snrMin, lengthMPDU);
+		headerNoErrorSnr = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BW_OFDM_10_MHZ, snrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
 
 		//the probability of correct reception without considering the interference
 		//MUST be greater or equal than when consider it
