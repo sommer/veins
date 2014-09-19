@@ -57,6 +57,9 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		void initialize(int stage);
 	protected:
 
+		/** @brief enable/disable detection of packet collisions */
+		bool collectCollisionStatistics;
+
 		enum ProtocolIds {
 			IEEE_80211 = 12123
 		};

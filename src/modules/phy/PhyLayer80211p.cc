@@ -42,6 +42,9 @@ Define_Module(PhyLayer80211p);
 
 /** This is needed to circumvent a bug in MiXiM that allows different header length interpretations for receiving and sending airframes*/
 void PhyLayer80211p::initialize(int stage) {
+	if (stage == 0) {
+		collectCollisionStatistics = par("collectCollisionStatistics").boolValue();
+	}
 	BasePhyLayer::initialize(stage);
 	if (stage == 0) {
 		if (par("headerLength").longValue() != PHY_HDR_TOTAL_LENGTH) {
@@ -346,7 +349,7 @@ AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& p
 
 Decider* PhyLayer80211p::initializeDecider80211p(ParameterMap& params) {
 	double centerFreq = params["centerFrequency"];
-	Decider80211p* dec = new Decider80211p(this, sensitivity, centerFreq, findHost()->getIndex(), coreDebug);
+	Decider80211p* dec = new Decider80211p(this, sensitivity, ccaThreshold, centerFreq, findHost()->getIndex(), collectCollisionStatistics, coreDebug);
 	dec->setPath(getParentModule()->getFullPath());
 	return dec;
 }
