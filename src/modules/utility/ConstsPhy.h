@@ -23,9 +23,7 @@
 
 #include <omnetpp.h>
 #include <cmath>
-#ifndef FP_EQUALS
-#define FP_EQUALS(x,y) (fabs(x-y) < 1e-6)
-#endif
+#include <stdint.h>
 
 /** @brief Modulation and coding scheme to be used for transmission */
 enum PHY_MCS {
@@ -49,11 +47,11 @@ enum Bandwidth {
 };
 
 /** @brief Given bandwidth and MCS returns datarate in bits per second */
-inline double getOfdmDatarate(enum PHY_MCS mcs, enum Bandwidth bw) {
+inline uint64_t getOfdmDatarate(enum PHY_MCS mcs, enum Bandwidth bw) {
 	//divide datarate by div, depending on bandwidth
-	unsigned int div;
+	uint64_t div;
 	//datarate to be returned
-	double dr;
+	uint64_t dr;
 	switch (bw) {
 	case BW_OFDM_5_MHZ:
 		div = 4;
@@ -99,8 +97,8 @@ inline double getOfdmDatarate(enum PHY_MCS mcs, enum Bandwidth bw) {
 }
 
 /** @brief returns the number of databits per ofdm symbol */
-inline unsigned int getNDBPS(enum PHY_MCS mcs) {
-	unsigned int ndbps;
+inline uint32_t getNDBPS(enum PHY_MCS mcs) {
+	uint32_t ndbps;
 	switch (mcs) {
 	case MCS_OFDM_BPSK_R_1_2:
 		ndbps = 24;
@@ -134,7 +132,7 @@ inline unsigned int getNDBPS(enum PHY_MCS mcs) {
 }
 
 /** @brief returns the bandwidth in Hz */
-inline unsigned int getBandwidth(enum Bandwidth bw) {
+inline uint64_t getBandwidth(enum Bandwidth bw) {
 	switch (bw) {
 	case BW_OFDM_5_MHZ:
 		return 5000000;
@@ -150,82 +148,82 @@ inline unsigned int getBandwidth(enum Bandwidth bw) {
 }
 
 /** @brief returns encoding given datarate */
-inline enum PHY_MCS getMCS(double datarate, enum Bandwidth bw) {
+inline enum PHY_MCS getMCS(uint64_t datarate, enum Bandwidth bw) {
 	if (bw == BW_OFDM_10_MHZ) {
-		if (FP_EQUALS(datarate, 3E6)) {
+		if (datarate == 3000000) {
 			return MCS_OFDM_BPSK_R_1_2;
 		}
-		if (FP_EQUALS(datarate, 4.5E6)) {
+		if (datarate == 4500000) {
 			return MCS_OFDM_BPSK_R_3_4;
 		}
-		if (FP_EQUALS(datarate, 6E6)) {
+		if (datarate == 6000000) {
 			return MCS_OFDM_QPSK_R_1_2;
 		}
-		if (FP_EQUALS(datarate, 9E6)) {
+		if (datarate == 9000000) {
 			return MCS_OFDM_QPSK_R_3_4;
 		}
-		if (FP_EQUALS(datarate, 12E6)) {
+		if (datarate == 12000000) {
 			return MCS_OFDM_QAM16_R_1_2;
 		}
-		if (FP_EQUALS(datarate, 18E6)) {
+		if (datarate == 18000000) {
 			return MCS_OFDM_QAM16_R_3_4;
 		}
-		if (FP_EQUALS(datarate, 24E6)) {
+		if (datarate == 24000000) {
 			return MCS_OFDM_QAM64_R_2_3;
 		}
-		if (FP_EQUALS(datarate, 27E6)) {
+		if (datarate == 27000000) {
 			return MCS_OFDM_QAM64_R_3_4;
 		}
 	}
 	if (bw == BW_OFDM_20_MHZ) {
-		if (FP_EQUALS(datarate, 6E6)) {
+		if (datarate == 6000000) {
 			return MCS_OFDM_BPSK_R_1_2;
 		}
-		if (FP_EQUALS(datarate, 9E6)) {
+		if (datarate == 9000000) {
 			return MCS_OFDM_BPSK_R_3_4;
 		}
-		if (FP_EQUALS(datarate, 12E6)) {
+		if (datarate == 12000000) {
 			return MCS_OFDM_QPSK_R_1_2;
 		}
-		if (FP_EQUALS(datarate, 18E6)) {
+		if (datarate == 18000000) {
 			return MCS_OFDM_QPSK_R_3_4;
 		}
-		if (FP_EQUALS(datarate, 24E6)) {
+		if (datarate == 24000000) {
 			return MCS_OFDM_QAM16_R_1_2;
 		}
-		if (FP_EQUALS(datarate, 36E6)) {
+		if (datarate == 36000000) {
 			return MCS_OFDM_QAM16_R_3_4;
 		}
-		if (FP_EQUALS(datarate, 48E6)) {
+		if (datarate == 48000000) {
 			return MCS_OFDM_QAM64_R_2_3;
 		}
-		if (FP_EQUALS(datarate, 54E6)) {
+		if (datarate == 54000000) {
 			return MCS_OFDM_QAM64_R_3_4;
 		}
 	}
 	if (bw == BW_OFDM_5_MHZ) {
-		if (FP_EQUALS(datarate, 1.5E6)) {
+		if (datarate == 1500000) {
 			return MCS_OFDM_BPSK_R_1_2;
 		}
-		if (FP_EQUALS(datarate, 2.25E6)) {
+		if (datarate == 2250000) {
 			return MCS_OFDM_BPSK_R_3_4;
 		}
-		if (FP_EQUALS(datarate, 3E6)) {
+		if (datarate == 3000000) {
 			return MCS_OFDM_QPSK_R_1_2;
 		}
-		if (FP_EQUALS(datarate, 4.5E6)) {
+		if (datarate == 4500000) {
 			return MCS_OFDM_QPSK_R_3_4;
 		}
-		if (FP_EQUALS(datarate, 6E6)) {
+		if (datarate == 6000000) {
 			return MCS_OFDM_QAM16_R_1_2;
 		}
-		if (FP_EQUALS(datarate, 9E6)) {
+		if (datarate == 9000000) {
 			return MCS_OFDM_QAM16_R_3_4;
 		}
-		if (FP_EQUALS(datarate, 12E6)) {
+		if (datarate == 12000000) {
 			return MCS_OFDM_QAM64_R_2_3;
 		}
-		if (FP_EQUALS(datarate, 13.5E6)) {
+		if (datarate == 13500000) {
 			return MCS_OFDM_QAM64_R_3_4;
 		}
 	}

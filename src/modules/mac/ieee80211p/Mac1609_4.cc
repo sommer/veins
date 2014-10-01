@@ -45,7 +45,7 @@ void Mac1609_4::initialize(int stage) {
 		sigCollision = registerSignal("sigCollision");
 
 		txPower = par("txPower").doubleValue();
-		bitrate = par("bitrate");
+		bitrate = par("bitrate").longValue();
 		n_dbps = 0;
 		setParametersForBitrate(bitrate);
 
@@ -183,7 +183,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 
 		enum PHY_MCS mcs;
 		double txPower_mW;
-		double datarate;
+		uint64_t datarate;
 		PhyControlMessage *controlInfo = dynamic_cast<PhyControlMessage *>(pktToSend->getControlInfo());
 		if (controlInfo) {
 			//if MCS is not specified, just use the default one
@@ -407,7 +407,7 @@ void Mac1609_4::finish() {
 
 }
 
-void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, double datarate, double txPower_mW) {
+void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW) {
 
 	simtime_t duration = getFrameDuration(mac->getBitLength());
 
@@ -417,7 +417,7 @@ void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequ
 	mac->setControlInfo(cinfo);
 }
 
-Signal* Mac1609_4::createSignal(simtime_t start, simtime_t length, double power, double bitrate, double frequency) {
+Signal* Mac1609_4::createSignal(simtime_t start, simtime_t length, double power, uint64_t bitrate, double frequency) {
 	simtime_t end = start + length;
 	//create signal with start at current simtime and passed length
 	Signal* s = new Signal(start, length);
@@ -834,7 +834,7 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 
 }
 
-void Mac1609_4::setParametersForBitrate(double bitrate) {
+void Mac1609_4::setParametersForBitrate(uint64_t bitrate) {
 	for (unsigned int i = 0; i < NUM_BITRATES_80211P; i++) {
 		if (bitrate == BITRATES_80211P[i]) {
 			n_dbps = N_DBPS_80211P[i];
@@ -852,7 +852,7 @@ simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) c
         duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil( (16 + payloadLengthBits + 6)/(n_dbps) );
     }
     else {
-        unsigned int ndbps = getNDBPS(mcs);
+        uint32_t ndbps = getNDBPS(mcs);
         duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil( (16 + payloadLengthBits + 6)/(ndbps) );
     }
 

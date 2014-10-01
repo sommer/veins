@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <omnetpp.h>
 #include <queue>
+#include <stdint.h>
 #include <BaseLayer.h>
 #include <MacToPhyControlInfo.h>
 #include <PhyLayer80211p.h>
@@ -181,8 +182,8 @@ class Mac1609_4 : public BaseMacLayer,
 
 		bool guardActive() const;
 
-		void attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, double datarate, double txPower_mW);
-		Signal* createSignal(simtime_t start, simtime_t length, double power, double bitrate, double frequency);
+		void attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW);
+		Signal* createSignal(simtime_t start, simtime_t length, double power, uint64_t bitrate, double frequency);
 
 		/** @brief maps a application layer priority (up) to an EDCA access category. */
 		t_access_category mapPriority(int prio);
@@ -191,7 +192,7 @@ class Mac1609_4 : public BaseMacLayer,
 		void channelBusySelf(bool generateTxOp);
 		void channelIdle(bool afterSwitch = false);
 
-		void setParametersForBitrate(double bitrate);
+		void setParametersForBitrate(uint64_t bitrate);
 
 		simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_DEFAULT) const;
 
@@ -244,7 +245,7 @@ class Mac1609_4 : public BaseMacLayer,
 		double txPower;
 
 		/** @brief the bit rate at which we transmit */
-		double bitrate;
+		uint64_t bitrate;
 
 		/** @brief N_DBPS, derived from bitrate, for frame length calculation */
 		double n_dbps;
