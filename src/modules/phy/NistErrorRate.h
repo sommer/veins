@@ -51,28 +51,28 @@ private:
 	 * \param snr snr value
 	 * \return BER of BPSK at the given SNR
 	 */
-	static double GetBpskBer (double snr);
+	static double getBpskBer (double snr);
 	/**
 	 * Return BER of QPSK at the given SNR.
 	 *
 	 * \param snr snr value
 	 * \return BER of QPSK at the given SNR
 	 */
-	static double GetQpskBer (double snr);
+	static double getQpskBer (double snr);
 	/**
 	 * Return BER of QAM16 at the given SNR.
 	 *
 	 * \param snr snr value
 	 * \return BER of QAM16 at the given SNR
 	 */
-	static double Get16QamBer (double snr);
+	static double get16QamBer (double snr);
 	/**
 	 * Return BER of QAM64 at the given SNR.
 	 *
 	 * \param snr snr value
 	 * \return BER of QAM64 at the given SNR
 	 */
-	static double Get64QamBer (double snr);
+	static double get64QamBer (double snr);
 	/**
 	 * Return BER of BPSK at the given SNR after applying FEC.
 	 *
@@ -81,7 +81,7 @@ private:
 	 * \param bValue
 	 * \return BER of BPSK at the given SNR after applying FEC
 	 */
-	static double GetFecBpskBer (double snr, uint32_t nbits, uint32_t bValue);
+	static double getFecBpskBer (double snr, uint32_t nbits, uint32_t bValue);
 	/**
 	 * Return BER of QPSK at the given SNR after applying FEC.
 	 *
@@ -90,7 +90,7 @@ private:
 	 * \param bValue
 	 * \return BER of QPSK at the given SNR after applying FEC
 	 */
-	static double GetFecQpskBer (double snr, uint32_t nbits, uint32_t bValue);
+	static double getFecQpskBer (double snr, uint32_t nbits, uint32_t bValue);
 	/**
 	 * Return BER of QAM16 at the given SNR after applying FEC.
 	 *
@@ -99,7 +99,7 @@ private:
 	 * \param bValue
 	 * \return BER of QAM16 at the given SNR after applying FEC
 	 */
-	static double GetFec16QamBer (double snr, uint32_t nbits, uint32_t bValue);
+	static double getFec16QamBer (double snr, uint32_t nbits, uint32_t bValue);
 	/**
 	 * Return BER of QAM64 at the given SNR after applying FEC.
 	 *
@@ -108,7 +108,7 @@ private:
 	 * \param bValue
 	 * \return BER of QAM64 at the given SNR after applying FEC
 	 */
-	static double GetFec64QamBer (double snr, uint32_t nbits, uint32_t bValue);
+	static double getFec64QamBer (double snr, uint32_t nbits, uint32_t bValue);
 };
 
 #endif /* NIST_ERROR_RATE_H */

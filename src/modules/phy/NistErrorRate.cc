@@ -26,37 +26,37 @@ NistErrorRate::NistErrorRate ()
 }
 
 double
-NistErrorRate::GetBpskBer (double snr)
+NistErrorRate::getBpskBer (double snr)
 {
 	double z = std::sqrt (snr);
 	double ber = 0.5 * erfc (z);
 	return ber;
 }
 double
-NistErrorRate::GetQpskBer (double snr)
+NistErrorRate::getQpskBer (double snr)
 {
 	double z = std::sqrt (snr / 2.0);
 	double ber = 0.5 * erfc (z);
 	return ber;
 }
 double
-NistErrorRate::Get16QamBer (double snr)
+NistErrorRate::get16QamBer (double snr)
 {
 	double z = std::sqrt (snr / (5.0 * 2.0));
 	double ber = 0.75 * 0.5 * erfc (z);
 	return ber;
 }
 double
-NistErrorRate::Get64QamBer (double snr)
+NistErrorRate::get64QamBer (double snr)
 {
 	double z = std::sqrt (snr / (21.0 * 2.0));
 	double ber = 7.0 / 12.0 * 0.5 * erfc (z);
 	return ber;
 }
 double
-NistErrorRate::GetFecBpskBer (double snr, uint32_t nbits, uint32_t bValue)
+NistErrorRate::getFecBpskBer (double snr, uint32_t nbits, uint32_t bValue)
 {
-	double ber = GetBpskBer (snr);
+	double ber = getBpskBer (snr);
 	if (ber == 0.0)
 		{
 			return 1.0;
@@ -67,9 +67,9 @@ NistErrorRate::GetFecBpskBer (double snr, uint32_t nbits, uint32_t bValue)
 	return pms;
 }
 double
-NistErrorRate::GetFecQpskBer (double snr, uint32_t nbits, uint32_t bValue)
+NistErrorRate::getFecQpskBer (double snr, uint32_t nbits, uint32_t bValue)
 {
-	double ber = GetQpskBer (snr);
+	double ber = getQpskBer (snr);
 	if (ber == 0.0)
 		{
 			return 1.0;
@@ -138,9 +138,9 @@ NistErrorRate::calculatePe (double p, uint32_t bValue)
 }
 
 double
-NistErrorRate::GetFec16QamBer (double snr, uint32_t nbits, uint32_t bValue)
+NistErrorRate::getFec16QamBer (double snr, uint32_t nbits, uint32_t bValue)
 {
-	double ber = Get16QamBer (snr);
+	double ber = get16QamBer (snr);
 	if (ber == 0.0)
 		{
 			return 1.0;
@@ -151,9 +151,9 @@ NistErrorRate::GetFec16QamBer (double snr, uint32_t nbits, uint32_t bValue)
 	return pms;
 }
 double
-NistErrorRate::GetFec64QamBer (double snr, uint32_t nbits, uint32_t bValue)
+NistErrorRate::getFec64QamBer (double snr, uint32_t nbits, uint32_t bValue)
 {
-	double ber = Get64QamBer (snr);
+	double ber = get64QamBer (snr);
 	if (ber == 0.0)
 		{
 			return 1.0;
@@ -173,28 +173,28 @@ NistErrorRate::getChunkSuccessRate (unsigned int datarate, enum Bandwidth bw, do
 	//compute success rate depending on mcs
 	switch (mcs) {
 	case MCS_OFDM_BPSK_R_1_2:
-		return GetFecBpskBer(snr_mW, nbits, 1);
+		return getFecBpskBer(snr_mW, nbits, 1);
 		break;
 	case MCS_OFDM_BPSK_R_3_4:
-		return GetFecBpskBer(snr_mW, nbits, 3);
+		return getFecBpskBer(snr_mW, nbits, 3);
 		break;
 	case MCS_OFDM_QPSK_R_1_2:
-		return GetFecQpskBer(snr_mW, nbits, 1);
+		return getFecQpskBer(snr_mW, nbits, 1);
 		break;
 	case MCS_OFDM_QPSK_R_3_4:
-		return GetFecQpskBer(snr_mW, nbits, 3);
+		return getFecQpskBer(snr_mW, nbits, 3);
 		break;
 	case MCS_OFDM_QAM16_R_1_2:
-		return GetFec16QamBer(snr_mW, nbits, 1);
+		return getFec16QamBer(snr_mW, nbits, 1);
 		break;
 	case MCS_OFDM_QAM16_R_3_4:
-		return GetFec16QamBer(snr_mW, nbits, 3);
+		return getFec16QamBer(snr_mW, nbits, 3);
 		break;
 	case MCS_OFDM_QAM64_R_2_3:
-		return GetFec64QamBer(snr_mW, nbits, 2);
+		return getFec64QamBer(snr_mW, nbits, 2);
 		break;
 	case MCS_OFDM_QAM64_R_3_4:
-		return GetFec64QamBer(snr_mW, nbits, 3);
+		return getFec64QamBer(snr_mW, nbits, 3);
 		break;
 	default:
 		ASSERT2(false, "Invalid MCS chosen");
