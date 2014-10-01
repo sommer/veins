@@ -34,4 +34,9 @@ simple PhyLayer80211p extends BasePhyLayer
     parameters:
         @class(PhyLayer80211p);
         headerLength @unit(bit)  = default(46 bit); //defines the length of the phy header (SIGNAL without PREAMBLE)
+        //defines the CCA threshold
+        double ccaThreshold @unit(dBm) = default(-65 dBm);
+        //enables/disables collection of statistics about collision. notice that
+        //enabling this feature increases simulation time
+        bool collectCollisionStatistics = default(false);
 }

@@ -21,12 +21,14 @@
 #ifndef CONSTANTS_802_11p
 #define CONSTANTS_802_11p
 
+#include <stdint.h>
+
 /** @brief Bit rates for 802.11p
  *
  * as defined in Table 17-14 MIB attribute default values/ranges in the IEEE 802.11-2007 standard
  */
-const double NUM_BITRATES_80211P = 8;
-const double BITRATES_80211P[] = {
+const uint64_t NUM_BITRATES_80211P = 8;
+const uint64_t BITRATES_80211P[] = {
 	3000000,
 	4500000,
 	6000000,
@@ -41,7 +43,7 @@ const double BITRATES_80211P[] = {
  *
  * as defined in Table 17-3 in the IEEE 802.11-2007 standard
  */
-const double N_DBPS_80211P[] = {
+const uint32_t N_DBPS_80211P[] = {
 	24,
 	36,
 	48,
@@ -93,7 +95,7 @@ const int PHY_HDR_PSDU_HEADER_LENGTH = PHY_HDR_TOTAL_LENGTH - PHY_HDR_PLCPSIGNAL
  * as defined in Table 17.4 Timing-related parameters in the IEEE 802.11-2007 standard
  * 24 bits in 8e-6 seconds
  */
-const double PHY_HDR_BANDWIDTH = 3000000;
+const uint64_t PHY_HDR_BITRATE = 3000000;
 
 /** @brief Slot Time for 10 MHz channel spacing
  *

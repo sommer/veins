@@ -29,6 +29,8 @@
 #include <Mac80211Pkt_m.h>
 #include <Signal_.h>
 #include <AirFrame11p_m.h>
+#include "NistErrorRate.h"
+#include "ConstsPhy.h"
 
 using Veins::AirFrame;
 using Veins::Radio;
@@ -195,6 +197,12 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame) {
 	simtime_t start = s.getReceptionStart();
 	simtime_t end = s.getReceptionEnd();
 
+	//compute receive power
+	Argument st(DimensionSet::timeFreqDomain);
+	st.setTime(s.getReceptionStart());
+	st.setArgValue(Dimension::frequency_static(), centerFrequency);
+	double recvPower_dBm = 10*log10(s.getReceivingPower()->getValue(st));
+
 	start = start + PHY_HDR_PREAMBLE_DURATION; //its ok if something in the training phase is broken
 
 	Argument min(DimensionSet::timeFreqDomain);
@@ -226,7 +234,7 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame) {
 
 		case DECODED:
 			DBG_D11P << "Packet is fine! We can decode it" << std::endl;
-			result = new DeciderResult80211(true, payloadBitrate, snirMin);
+			result = new DeciderResult80211(true, payloadBitrate, snirMin, recvPower_dBm, false);
 			break;
 
 		case NOT_DECODED:
@@ -236,13 +244,13 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame) {
 			else {
 				DBG_D11P << "Packet has bit Errors due to low power. Lost " << std::endl;
 			}
-			result = new DeciderResult80211(false, payloadBitrate, snirMin);
+			result = new DeciderResult80211(false, payloadBitrate, snirMin, recvPower_dBm, false);
 			break;
 
 		case COLLISION:
 			DBG_D11P << "Packet has bit Errors due to collision. Lost " << std::endl;
 			collisions++;
-			result = new DeciderResult80211(false, payloadBitrate, snirMin);
+			result = new DeciderResult80211(false, payloadBitrate, snirMin, recvPower_dBm, true);
 			break;
 
 		default:
@@ -264,43 +272,18 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double snirMin, dou
 	double packetOkSinr;
 	double packetOkSnr;
 
-	if (bitrate == 18E+6) {
-		//According to P. Fuxjaeger et al. "IEEE 802.11p Transmission Using GNURadio"
-		double ber = std::min(0.5 , 1.5 * erfc(0.45 * sqrt(snirMin)));
-		packetOkSinr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
-	}
-	else if (bitrate == 6E+6) {
-		//According to K. Sjoeberg et al. "Measuring and Using the RSSI of IEEE 802.11p"
-		double ber = std::min(0.5 , 8 * erfc(0.75 *sqrt(snirMin)));
-		packetOkSinr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
-	}
-	else {
-		opp_error("Currently this 11p-Model only provides accurate BER models for 6Mbit and 18Mbit. Please use one of these frequencies for now.");
-	}
+	//compute success rate depending on mcs and bw
+	packetOkSinr = NistErrorRate::getChunkSuccessRate(bitrate, BW_OFDM_10_MHZ, snirMin, lengthMPDU);
 
-	//check if header is broken, BER model for PSK taken from MiXiM 2.2
-	double berHeader = 0.5 * exp(-snirMin * 10E+6 / PHY_HDR_BANDWIDTH);
-	double headerNoError = pow(1.0 - berHeader, PHY_HDR_PLCPSIGNAL_LENGTH);
+	//check if header is broken
+	double headerNoError = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BW_OFDM_10_MHZ, snirMin, PHY_HDR_PLCPSIGNAL_LENGTH);
 
 	double headerNoErrorSnr;
 	//compute PER also for SNR only
 	if (collectCollisionStats) {
-		if (bitrate == 18E+6) {
-			//According to P. Fuxjaeger et al. "IEEE 802.11p Transmission Using GNURadio"
-			double ber = std::min(0.5, 1.5 * erfc(0.45 * sqrt(snrMin)));
-			packetOkSnr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
-		}
-		else if (bitrate == 6E+6) {
-			//According to K. Sjoeberg et al. "Measuring and Using the RSSI of IEEE 802.11p"
-			double ber = std::min(0.5, 8 * erfc(0.75 * sqrt(snrMin)));
-			packetOkSnr = pow(1 - ber, lengthMPDU - PHY_HDR_PLCPSIGNAL_LENGTH);
-		}
-		else {
-			opp_error("Currently this 11p-Model only provides accurate BER models for 6Mbit and 18Mbit. Please use one of these frequencies for now.");
-		}
 
-		double berHeader = 0.5 * exp(-snrMin * 10E+6 / PHY_HDR_BANDWIDTH);
-		headerNoErrorSnr = pow(1.0 - berHeader, PHY_HDR_PLCPSIGNAL_LENGTH);
+		packetOkSnr = NistErrorRate::getChunkSuccessRate(bitrate, BW_OFDM_10_MHZ, snrMin, lengthMPDU);
+		headerNoErrorSnr = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BW_OFDM_10_MHZ, snrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
 
 		//the probability of correct reception without considering the interference
 		//MUST be greater or equal than when consider it
@@ -426,8 +409,8 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude) {
 	min.setTime(time);
 	min.setArgValue(Dimension::frequency_static(), centerFrequency - 5e6);
 
-	DBG_D11P << MappingUtils::findMin(*resultMap, min, min) << " > " << sensitivity << " = " << (bool)(MappingUtils::findMin(*resultMap, min, min) > sensitivity) << std::endl;
-	bool isChannelIdle = MappingUtils::findMin(*resultMap, min, min) < sensitivity;
+	DBG_D11P << MappingUtils::findMin(*resultMap, min, min) << " > " << ccaThreshold << " = " << (bool)(MappingUtils::findMin(*resultMap, min, min) > ccaThreshold) << std::endl;
+	bool isChannelIdle = MappingUtils::findMin(*resultMap, min, min) < ccaThreshold;
 	delete resultMap;
 	return isChannelIdle;
 }
@@ -438,6 +421,13 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
 	AirFrame11p *frame = check_and_cast<AirFrame11p *>(msg);
 
 	// here the Signal is finally processed
+	Signal& signal = frame->getSignal();
+
+	Argument start(DimensionSet::timeFreqDomain);
+	start.setTime(signal.getReceptionStart());
+	start.setArgValue(Dimension::frequency_static(), centerFrequency);
+
+	double recvPower_dBm = 10*log10(signal.getReceivingPower()->getValue(start));
 
 	bool whileSending = false;
 
@@ -448,12 +438,12 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
 
 	if (frame->getUnderSensitivity()) {
 		//this frame was not even detected by the radio card
-		result = new DeciderResult80211(false,0,0);
+		result = new DeciderResult80211(false,0,0,recvPower_dBm);
 	}
 	else if (frame->getWasTransmitting() || phy11p->getRadioState() == Radio::TX) {
 		//this frame was received while sending
 		whileSending = true;
-		result = new DeciderResult80211(false,0,0);
+		result = new DeciderResult80211(false,0,0,recvPower_dBm);
 	}
 	else {
 
@@ -469,7 +459,7 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
 		}
 		else {
 			//if this is not the frame we are synced on, we cannot receive it
-			result = new DeciderResult80211(false, 0, 0);
+			result = new DeciderResult80211(false, 0, 0,recvPower_dBm);
 		}
 	}
 
@@ -488,7 +478,12 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
 		}
 		else {
 			DBG_D11P << "packet was not received correctly, sending it as control message to upper layer\n";
-			phy->sendControlMsgToMac(new cMessage("Error",BITERROR));
+			if (((DeciderResult80211 *)result)->isCollision()) {
+				phy->sendControlMsgToMac(new cMessage("Error", Decider80211p::COLLISION));
+			}
+			else {
+				phy->sendControlMsgToMac(new cMessage("Error",BITERROR));
+			}
 		}
 		delete result;
 	}
@@ -519,6 +514,14 @@ void Decider80211p::setChannelIdleStatus(bool isIdle) {
 
 void Decider80211p::changeFrequency(double freq) {
 	centerFrequency = freq;
+}
+
+double Decider80211p::getCCAThreshold() {
+	return 10 * log10(ccaThreshold);
+}
+
+void Decider80211p::setCCATreshold(double ccaThreshold_dBm) {
+	ccaThreshold = pow(10, ccaThreshold_dBm / 10);
 }
 
 void Decider80211p::finish() {

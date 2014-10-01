@@ -41,6 +41,7 @@ class Mac80211pToPhy11pInterface {
 
 	public:
 		virtual void changeListeningFrequency(double freq) = 0;
+		virtual void setCCAThreshold(double ccaThreshold_dBm) = 0;
 		virtual ~Mac80211pToPhy11pInterface() {};
 };
 

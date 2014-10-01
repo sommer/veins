@@ -21,6 +21,10 @@
 #include "Mac1609_4.h"
 #include <iterator>
 
+#include "DeciderResult80211.h"
+#include "PhyToMacControlInfo.h"
+#include "PhyControlMessage_m.h"
+
 #define DBG_MAC EV
 //#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
 
@@ -36,6 +40,9 @@ void Mac1609_4::initialize(int stage) {
 
 		//this is required to circumvent double precision issues with constants from CONST80211p.h
 		assert(simTime().getScaleExp() == -12);
+
+		sigChannelBusy = registerSignal("sigChannelBusy");
+		sigCollision = registerSignal("sigCollision");
 
 		txPower = par("txPower").doubleValue();
 		bitrate = par("bitrate");
@@ -174,7 +181,32 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 		mac->setSrcAddr(myMacAddress);
 		mac->encapsulate(pktToSend->dup());
 
-		simtime_t sendingDuration = RADIODELAY_11P + getFrameDuration(mac->getBitLength());
+		enum PHY_MCS mcs;
+		double txPower_mW;
+		double datarate;
+		PhyControlMessage *controlInfo = dynamic_cast<PhyControlMessage *>(pktToSend->getControlInfo());
+		if (controlInfo) {
+			//if MCS is not specified, just use the default one
+			mcs = (enum PHY_MCS)controlInfo->getMcs();
+			if (mcs != MCS_DEFAULT) {
+				datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
+			}
+			else {
+				datarate = bitrate;
+			}
+			//apply the same principle to tx power
+			txPower_mW = controlInfo->getTxPower_mW();
+			if (txPower_mW < 0) {
+				txPower_mW = txPower;
+			}
+		}
+		else {
+			mcs = MCS_DEFAULT;
+			txPower_mW = txPower;
+			datarate = bitrate;
+		}
+
+		simtime_t sendingDuration = RADIODELAY_11P + getFrameDuration(mac->getBitLength(), mcs);
 		DBG_MAC << "Sending duration will be" << sendingDuration << std::endl;
 		if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
 			if (useSCH) DBG_MAC << " Time in this slot left: " << timeLeftInSlot() << std::endl;
@@ -184,7 +216,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 
 			double freq = (activeChannel == type_CCH) ? frequency[Channels::CCH] : frequency[mySCH];
 
-			attachSignal(mac, simTime()+RADIODELAY_11P, freq);
+			attachSignal(mac, simTime()+RADIODELAY_11P, freq, datarate, txPower_mW);
 			MacToPhyControlInfo* phyInfo = dynamic_cast<MacToPhyControlInfo*>(mac->getControlInfo());
 			assert(phyInfo);
 			DBG_MAC << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
@@ -305,7 +337,7 @@ void Mac1609_4::handleLowerControl(cMessage* msg) {
 	else if (msg->getKind() == Mac80211pToPhy11pInterface::CHANNEL_IDLE) {
 		channelIdle();
 	}
-	else if (msg->getKind() == Decider80211p::BITERROR) {
+	else if (msg->getKind() == Decider80211p::BITERROR || msg->getKind() == Decider80211p::COLLISION) {
 		statsSNIRLostPackets++;
 		DBG_MAC << "A packet was not received due to biterrors" << std::endl;
 	}
@@ -324,6 +356,11 @@ void Mac1609_4::handleLowerControl(cMessage* msg) {
 		DBG_MAC << "Invalid control message type (type=NOTHING) : name=" << msg->getName() << " modulesrc=" << msg->getSenderModule()->getFullPath() << "." << std::endl;
 		assert(false);
 	}
+
+	if (msg->getKind() == Decider80211p::COLLISION) {
+		emit(sigCollision, true);
+	}
+
 	delete msg;
 }
 
@@ -370,11 +407,11 @@ void Mac1609_4::finish() {
 
 }
 
-void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency) {
+void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, double datarate, double txPower_mW) {
 
 	simtime_t duration = getFrameDuration(mac->getBitLength());
 
-	Signal* s = createSignal(startTime, duration, txPower, bitrate, frequency);
+	Signal* s = createSignal(startTime, duration, txPower_mW, datarate, frequency);
 	MacToPhyControlInfo* cinfo = new MacToPhyControlInfo(s);
 
 	mac->setControlInfo(cinfo);
@@ -444,11 +481,30 @@ void Mac1609_4::changeServiceChannel(int cN) {
 	}
 }
 
+void Mac1609_4::setTxPower(double txPower_mW) {
+	txPower = txPower_mW;
+}
+void Mac1609_4::setMCS(enum PHY_MCS mcs) {
+	ASSERT2(mcs != MCS_DEFAULT, "invalid MCS selected");
+	bitrate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
+	setParametersForBitrate(bitrate);
+}
+
+void Mac1609_4::setCCAThreshold(double ccaThreshold_dBm) {
+	phy11p->setCCAThreshold(ccaThreshold_dBm);
+}
+
 void Mac1609_4::handleLowerMsg(cMessage* msg) {
 	Mac80211Pkt* macPkt = static_cast<Mac80211Pkt*>(msg);
 	ASSERT(macPkt);
 
 	WaveShortMessage*  wsm =  dynamic_cast<WaveShortMessage*>(macPkt->decapsulate());
+
+	//pass information about received frame to the upper layers
+	DeciderResult80211 *macRes = dynamic_cast<DeciderResult80211 *>(PhyToMacControlInfo::getDeciderResult(msg));
+	ASSERT(macRes);
+	DeciderResult80211 *res = new DeciderResult80211(*macRes);
+	wsm->setControlInfo(new PhyToMacControlInfo(res));
 
 	long dest = macPkt->getDestAddr();
 
@@ -705,6 +761,8 @@ void Mac1609_4::channelBusySelf(bool generateTxOp) {
 		//the edca subsystem was not doing anything anyway.
 	}
 	myEDCA[activeChannel]->stopContent(false, generateTxOp);
+
+	emit(sigChannelBusy, true);
 }
 
 void Mac1609_4::channelBusy() {
@@ -724,6 +782,8 @@ void Mac1609_4::channelBusy() {
 		//the edca subsystem was not doing anything anyway.
 	}
 	myEDCA[activeChannel]->stopContent(true,false);
+
+	emit(sigChannelBusy, true);
 }
 
 void Mac1609_4::channelIdle(bool afterSwitch) {
@@ -769,9 +829,12 @@ void Mac1609_4::channelIdle(bool afterSwitch) {
 	else {
 		DBG_MAC << "I don't have any new events in this EDCA sub system" << std::endl;
 	}
+
+	emit(sigChannelBusy, false);
+
 }
 
-void Mac1609_4::setParametersForBitrate(int bitrate) {
+void Mac1609_4::setParametersForBitrate(double bitrate) {
 	for (unsigned int i = 0; i < NUM_BITRATES_80211P; i++) {
 		if (bitrate == BITRATES_80211P[i]) {
 			n_dbps = N_DBPS_80211P[i];
@@ -782,9 +845,16 @@ void Mac1609_4::setParametersForBitrate(int bitrate) {
 }
 
 
-simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits) const {
-	// calculate frame duration according to Equation (17-29) of the IEEE 802.11-2007 standard
-	simtime_t duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil( (16 + payloadLengthBits + 6)/(n_dbps) );
+simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const {
+    simtime_t duration;
+    if (mcs == MCS_DEFAULT) {
+        // calculate frame duration according to Equation (17-29) of the IEEE 802.11-2007 standard
+        duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil( (16 + payloadLengthBits + 6)/(n_dbps) );
+    }
+    else {
+        unsigned int ndbps = getNDBPS(mcs);
+        duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil( (16 + payloadLengthBits + 6)/(ndbps) );
+    }
 
 	return duration;
 }
