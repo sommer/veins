@@ -406,8 +406,10 @@ void AnnotationManager::show(const Annotation* annotation) {
 
 void AnnotationManager::hide(const Annotation* annotation) {
 #if OMNETPP_CANVAS_VERSION == 0x20140709
-	delete annotationLayer->removeFigure(annotation->figure);
-	annotation->figure = 0;
+	if (annotation->figure) {
+		delete annotationLayer->removeFigure(annotation->figure);
+		annotation->figure = 0;
+	}
 #else
 	for (std::list<cModule*>::const_iterator i = annotation->dummyObjects.begin(); i != annotation->dummyObjects.end(); ++i) {
 		cModule* mod = *i;
