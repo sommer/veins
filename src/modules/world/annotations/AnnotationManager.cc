@@ -344,7 +344,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 #if OMNETPP_CANVAS_VERSION == 0x20140709
 			cLineFigure* figure = new cLineFigure();
 			figure->setStart(cFigure::Point(l->p1.x, l->p1.y));
-			figure->setEnd(cFigure::Point(l->p1.x, l->p1.y));
+			figure->setEnd(cFigure::Point(l->p2.x, l->p2.y));
 			figure->setLineColor(cFigure::Color::byName(l->color.c_str()));
 			annotation->figure = figure;
 			annotationLayer->addFigure(annotation->figure);
