@@ -101,18 +101,6 @@ class TraCIScenarioManager : public cSimpleModule
 			return hosts;
 		}
 
-		/**
-		 * convert TraCI coordinates to OMNeT++ coordinates
-		 */
-		Coord traci2omnet(TraCICoord coord) const;
-		std::list<Coord> traci2omnet(const std::list<TraCICoord>&) const;
-
-		/**
-		 * convert OMNeT++ coordinates to TraCI coordinates
-		 */
-		TraCICoord omnet2traci(Coord coord) const;
-		std::list<TraCICoord> omnet2traci(const std::list<Coord>&) const;
-
 	protected:
 		bool debug; /**< whether to emit debug messages */
 		simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
@@ -136,15 +124,12 @@ class TraCIScenarioManager : public cSimpleModule
 		cRNG* mobRng;
 
 		bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
-		int margin;
 		double penetrationRate;
 		std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
 		std::list<std::pair<TraCICoord, TraCICoord> > roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
 
 		TraCIConnection* connection;
 		TraCICommandInterface* commandIfc;
-		TraCICoord netbounds1; /* network boundaries as reported by TraCI (x1, y1) */
-		TraCICoord netbounds2; /* network boundaries as reported by TraCI (x2, y2) */
 
 		size_t nextNodeVectorIndex; /**< next OMNeT++ module vector index to use */
 		std::map<std::string, cModule*> hosts; /**< vector of all hosts managed by us */
@@ -177,16 +162,6 @@ class TraCIScenarioManager : public cSimpleModule
 		 * Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI
 		 */
 		bool isInRegionOfInterest(const TraCICoord& position, std::string road_id, double speed, double angle);
-
-		/**
-		 * convert TraCI angle to OMNeT++ angle (in rad)
-		 */
-		double traci2omnetAngle(double angle) const;
-
-		/**
-		 * convert OMNeT++ angle (in rad) to TraCI angle
-		 */
-		double omnet2traciAngle(double angle) const;
 
 		/**
 		 * adds a new vehicle to the queue which are tried to be inserted at the next SUMO time step;

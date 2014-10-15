@@ -27,10 +27,11 @@ Define_Module(TraCIDemoRSU11p);
 void TraCIDemoRSU11p::initialize(int stage) {
 	BaseWaveApplLayer::initialize(stage);
 	if (stage == 0) {
-	    mobi = dynamic_cast<BaseMobility*> (getParentModule()->getSubmodule("mobility"));
-	    ASSERT(mobi);
-	    annotations = AnnotationManagerAccess().getIfExists();
-	    ASSERT(annotations);
+		mobi = dynamic_cast<BaseMobility*> (getParentModule()->getSubmodule("mobility"));
+		ASSERT(mobi);
+		annotations = AnnotationManagerAccess().getIfExists();
+		ASSERT(annotations);
+		sentMessage = false;
 	}
 }
 

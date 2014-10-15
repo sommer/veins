@@ -23,8 +23,10 @@
 
 #include "BaseWaveApplLayer.h"
 #include "modules/mobility/traci/TraCIMobility.h"
+#include "modules/mobility/traci/TraCICommandInterface.h"
 
 using Veins::TraCIMobility;
+using Veins::TraCICommandInterface;
 using Veins::AnnotationManager;
 
 /**
@@ -35,7 +37,9 @@ class TraCIDemo11p : public BaseWaveApplLayer {
 		virtual void initialize(int stage);
 		virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj);
 	protected:
-		TraCIMobility* traci;
+		TraCIMobility* mobility;
+		TraCICommandInterface* traci;
+		TraCICommandInterface::Vehicle* traciVehicle;
 		AnnotationManager* annotations;
 		simtime_t lastDroveAt;
 		bool sentMessage;

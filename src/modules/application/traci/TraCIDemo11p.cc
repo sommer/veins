@@ -30,7 +30,9 @@ Define_Module(TraCIDemo11p);
 void TraCIDemo11p::initialize(int stage) {
 	BaseWaveApplLayer::initialize(stage);
 	if (stage == 0) {
-		traci = TraCIMobilityAccess().get(getParentModule());
+		mobility = TraCIMobilityAccess().get(getParentModule());
+		traci = mobility->getCommandInterface();
+		traciVehicle = mobility->getVehicleCommandInterface();
 		annotations = AnnotationManagerAccess().getIfExists();
 		ASSERT(annotations);
 
@@ -47,9 +49,9 @@ void TraCIDemo11p::onBeacon(WaveShortMessage* wsm) {
 
 void TraCIDemo11p::onData(WaveShortMessage* wsm) {
 	findHost()->getDisplayString().updateWith("r=16,green");
-	annotations->scheduleErase(1, annotations->drawLine(wsm->getSenderPos(), traci->getPositionAt(simTime()), "blue"));
+	annotations->scheduleErase(1, annotations->drawLine(wsm->getSenderPos(), mobility->getPositionAt(simTime()), "blue"));
 
-	if (traci->getRoadId()[0] != ':') traci->commandChangeRoute(wsm->getWsmData(), 9999);
+	if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getWsmData(), 9999);
 	if (!sentMessage) sendMessage(wsm->getWsmData());
 }
 
@@ -71,13 +73,13 @@ void TraCIDemo11p::receiveSignal(cComponent* source, simsignal_t signalID, cObje
 	}
 }
 void TraCIDemo11p::handleParkingUpdate(cObject* obj) {
-	isParking = traci->getParkingState();
+	isParking = mobility->getParkingState();
 	if (sendWhileParking == false) {
 		if (isParking == true) {
 			(FindModule<BaseConnectionManager*>::findGlobalModule())->unregisterNic(this->getParentModule()->getSubmodule("nic"));
 		}
 		else {
-			Coord pos = traci->getCurrentPosition();
+			Coord pos = mobility->getCurrentPosition();
 			(FindModule<BaseConnectionManager*>::findGlobalModule())->registerNic(this->getParentModule()->getSubmodule("nic"), (ChannelAccess*) this->getParentModule()->getSubmodule("nic")->getSubmodule("phy80211p"), &pos);
 		}
 	}
@@ -86,10 +88,10 @@ void TraCIDemo11p::handlePositionUpdate(cObject* obj) {
 	BaseWaveApplLayer::handlePositionUpdate(obj);
 
 	// stopped for for at least 10s?
-	if (traci->getSpeed() < 1) {
+	if (mobility->getSpeed() < 1) {
 		if (simTime() - lastDroveAt >= 10) {
 			findHost()->getDisplayString().updateWith("r=16,red");
-			if (!sentMessage) sendMessage(traci->getRoadId());
+			if (!sentMessage) sendMessage(mobility->getRoadId());
 		}
 	}
 	else {

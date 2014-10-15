@@ -19,7 +19,6 @@
 //
 
 #include <fstream>
-#include <functional>
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
@@ -37,16 +36,6 @@
 using Veins::TraCIScenarioManager;
 using Veins::TraCIBuffer;
 using Veins::TraCICoord;
-
-struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
-	traci2omnet_functor(const TraCIScenarioManager& m) : manager(m) {}
-
-	Coord operator()(const TraCICoord& coord) const {
-		return manager.traci2omnet(coord);
-	}
-
-	const TraCIScenarioManager& manager;
-};
 
 Define_Module(Veins::TraCIScenarioManager);
 
@@ -88,7 +77,6 @@ void TraCIScenarioManager::initialize(int stage) {
 	host = par("host").stdstringValue();
 	port = par("port");
 	autoShutdown = par("autoShutdown");
-	margin = par("margin");
 	std::string roiRoads_s = par("roiRoads");
 	std::string roiRects_s = par("roiRects");
 
@@ -175,10 +163,11 @@ void TraCIScenarioManager::init_traci() {
 		double y2; buf >> y2;
 		ASSERT(buf.eof());
 
-		netbounds1 = TraCICoord(x1, y1);
-		netbounds2 = TraCICoord(x2, y2);
+		TraCICoord netbounds1 = TraCICoord(x1, y1);
+		TraCICoord netbounds2 = TraCICoord(x2, y2);
 		MYDEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
-		if ((traci2omnet(netbounds2).x > world->getPgs()->x) || (traci2omnet(netbounds1).y > world->getPgs()->y)) MYDEBUG << "WARNING: Playground size (" << world->getPgs()->x << ", " << world->getPgs()->y << ") might be too small for vehicle at network bounds (" << traci2omnet(netbounds2).x << ", " << traci2omnet(netbounds1).y << ")" << endl;
+		connection->setNetbounds(netbounds1, netbounds2, par("margin"));
+		if ((connection->traci2omnet(netbounds2).x > world->getPgs()->x) || (connection->traci2omnet(netbounds1).y > world->getPgs()->y)) MYDEBUG << "WARNING: Playground size (" << world->getPgs()->x << ", " << world->getPgs()->y << ") might be too small for vehicle at network bounds (" << connection->traci2omnet(netbounds2).x << ", " << connection->traci2omnet(netbounds1).y << ")" << endl;
 	}
 
 	{
@@ -218,14 +207,15 @@ void TraCIScenarioManager::init_traci() {
 			std::list<std::string> ids = getCommandInterface()->getPolygonIds();
 			for (std::list<std::string>::iterator i = ids.begin(); i != ids.end(); ++i) {
 				std::string id = *i;
-				std::string typeId = getCommandInterface()->getPolygonTypeId(id);
+				std::string typeId = getCommandInterface()->polygon(id).getTypeId();
 				if (typeId == "building") {
-					std::list<TraCICoord> coords = getCommandInterface()->getPolygonShape(id);
+					std::list<Coord> coords = getCommandInterface()->polygon(id).getShape();
 					Obstacle obs(id, 9, .4); // each building gets attenuation of 9 dB per wall, 0.4 dB per meter
 					std::vector<Coord> shape;
-					std::transform(coords.begin(), coords.end(), std::back_inserter(shape), traci2omnet_functor(*this));
+					std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
 					obs.setShape(shape);
 					obstacles->add(obs);
+
 				}
 			}
 		}
@@ -262,7 +252,7 @@ void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 				std::list<std::string> vehTypes = getCommandInterface()->getVehicleTypeIds();
 				for (std::list<std::string>::const_iterator i = vehTypes.begin(); i != vehTypes.end(); ++i) {
 					if (i->compare("DEFAULT_VEHTYPE")!=0) {
-						MYDEBUG  << *i << std::endl;
+						MYDEBUG << *i << std::endl;
 						vehicleTypeIds.push_back(*i);
 					}
 				}
@@ -299,7 +289,7 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 	if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
 
 	if (queuedVehicles.find(nodeId) != queuedVehicles.end()) {
-	    queuedVehicles.erase(nodeId);
+		queuedVehicles.erase(nodeId);
 	}
 	double option1 = hosts.size() / (hosts.size() + unEquippedHosts.size() + 1.0);
 	double option2 = (hosts.size() + 1) / (hosts.size() + unEquippedHosts.size() + 1.0);
@@ -449,57 +439,6 @@ void TraCIScenarioManager::insertVehicles() {
 		i = tmp;
 
 	}
-}
-
-Coord TraCIScenarioManager::traci2omnet(TraCICoord coord) const {
-	return Coord(coord.x - netbounds1.x + margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
-}
-
-std::list<Coord> TraCIScenarioManager::traci2omnet(const std::list<TraCICoord>& list) const {
-	std::list<Coord> result;
-	std::transform(list.begin(), list.end(), std::back_inserter(result), traci2omnet_functor(*this));
-	return result;
-}
-
-TraCICoord TraCIScenarioManager::omnet2traci(Coord coord) const {
-	return TraCICoord(coord.x + netbounds1.x - margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
-}
-
-std::list<TraCICoord> TraCIScenarioManager::omnet2traci(const std::list<Coord>& list) const {
-	std::list<TraCICoord> result;
-	std::transform(list.begin(), list.end(), std::back_inserter(result),
-			std::bind1st(std::mem_fun<TraCICoord, TraCIScenarioManager, Coord>(&TraCIScenarioManager::omnet2traci), this));
-	return result;
-}
-
-double TraCIScenarioManager::traci2omnetAngle(double angle) const {
-
-	// rotate angle so 0 is east (in TraCI's angle interpretation 0 is south)
-	angle = angle - 90;
-
-	// convert to rad
-	angle = angle * M_PI / 180.0;
-
-	// normalize angle to -M_PI <= angle < M_PI
-	while (angle < -M_PI) angle += 2 * M_PI;
-	while (angle >= M_PI) angle -= 2 * M_PI;
-
-	return angle;
-}
-
-double TraCIScenarioManager::omnet2traciAngle(double angle) const {
-
-	// convert to degrees
-	angle = angle * 180 / M_PI;
-
-	// rotate angle so 0 is south (in OMNeT++'s angle interpretation 0 is east)
-	angle = angle + 90;
-
-	// normalize angle to -180 <= angle < 180
-	while (angle < -180) angle += 360;
-	while (angle >= 180) angle -= 360;
-
-	return angle;
 }
 
 void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId) {
@@ -758,10 +697,10 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	// make sure we got updates for all attributes
 	if (numRead != 5) return;
 
-	Coord p = traci2omnet(TraCICoord(px, py));
+	Coord p = connection->traci2omnet(TraCICoord(px, py));
 	if ((p.x < 0) || (p.y < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
 
-	double angle = traci2omnetAngle(angle_traci);
+	double angle = connection->traci2omnetAngle(angle_traci);
 
 	cModule* mod = getManagedModule(objectId);
 

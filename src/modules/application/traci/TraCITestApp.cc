@@ -39,7 +39,9 @@ void TraCITestApp::initialize(int stage) {
 	if (stage == 0) {
 		debug = par("debug");
 		testNumber = par("testNumber");
-		traci = TraCIMobilityAccess().get(getParentModule());
+		mobility = TraCIMobilityAccess().get(getParentModule());
+		traci = mobility->getCommandInterface();
+		traciVehicle = mobility->getVehicleCommandInterface();
 		findHost()->subscribe(mobilityStateChangedSignal, this);
 
 		visitedEdges.clear();
@@ -67,32 +69,32 @@ void TraCITestApp::receiveSignal(cComponent *source, simsignal_t signalID, cObje
 
 void TraCITestApp::handlePositionUpdate() {
 	const simtime_t t = simTime();
-	const std::string roadId = traci->getRoadId();
+	const std::string roadId = mobility->getRoadId();
 	visitedEdges.insert(roadId);
 
 	int testCounter = 0;
 
 	if (testNumber == testCounter++) {
 		if (t == 9) {
-			assertTrue("(commandSetSpeed) vehicle is driving", traci->getSpeed() > 25);
+			assertTrue("(commandSetSpeed) vehicle is driving", mobility->getSpeed() > 25);
 		}
 		if (t == 10) {
-			traci->commandSetSpeedMode(0x00);
-			traci->commandSetSpeed(0);
+			traciVehicle->setSpeedMode(0x00);
+			traciVehicle->setSpeed(0);
 		}
 		if (t == 11) {
-			assertClose("(commandSetSpeed) vehicle has stopped", 0.0, traci->getSpeed());
+			assertClose("(commandSetSpeed) vehicle has stopped", 0.0, mobility->getSpeed());
 		}
 		if (t == 12) {
-			traci->commandSetSpeedMode(0xff);
-			traci->commandSetSpeed(-1);
+			traciVehicle->setSpeedMode(0xff);
+			traciVehicle->setSpeed(-1);
 		}
 	}
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			traci->commandChangeRoute("42", 9999);
-			traci->commandChangeRoute("43", 9999);
+			traciVehicle->changeRoute("42", 9999);
+			traciVehicle->changeRoute("43", 9999);
 		}
 		if (t == 30) {
 			assertTrue("(commandChangeRoute, 9999) vehicle avoided 42", visitedEdges.find("42") == visitedEdges.end());
@@ -103,12 +105,12 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			traci->commandChangeRoute("42", 9999);
-			traci->commandChangeRoute("43", 9999);
+			traciVehicle->changeRoute("42", 9999);
+			traciVehicle->changeRoute("43", 9999);
 		}
 		if (t == 3) {
-			traci->commandChangeRoute("42", -1);
-			traci->commandChangeRoute("44", 9999);
+			traciVehicle->changeRoute("42", -1);
+			traciVehicle->changeRoute("44", 9999);
 		}
 		if (t == 30) {
 			assertTrue("(commandChangeRoute, -1) vehicle took 42", visitedEdges.find("42") != visitedEdges.end());
@@ -119,50 +121,50 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			assertClose("(commandDistanceRequest, air)", 859., floor(traci->commandDistanceRequest(Coord(25,7030), Coord(883,6980), false)));
-			assertClose("(commandDistanceRequest, driving)", 847., floor(traci->commandDistanceRequest(Coord(25,7030), Coord(883,6980), true)));
+			assertClose("(commandDistanceRequest, air)", 859., floor(traci->getDistance(Coord(25,7030), Coord(883,6980), false)));
+			assertClose("(commandDistanceRequest, driving)", 847., floor(traci->getDistance(Coord(25,7030), Coord(883,6980), true)));
 		}
 	}
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			traci->commandStopNode("43", 20, 0, 10, 30);
+			traci->vehicle(mobility->getExternalId()).stopAt("43", 20, 0, 10, 30);
 		}
 		if (t == 30) {
 			assertTrue("(commandStopNode) vehicle is at 43", roadId == "43");
-			assertClose("(commandStopNode) vehicle is stopped", 0.0, traci->getSpeed());
+			assertClose("(commandStopNode) vehicle is stopped", 0.0, mobility->getSpeed());
 		}
 	}
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			traci->getCommandInterface()->setTrafficLightProgram("10", "myProgramRed");
+			traci->trafficlight("10").setProgram("myProgramRed");
 		}
 		if (t == 30) {
 			assertTrue("(commandSetTrafficLightProgram) vehicle is at 31", roadId == "31");
-			assertClose("(commandSetTrafficLightProgram) vehicle is stopped", 0.0, traci->getSpeed());
+			assertClose("(commandSetTrafficLightProgram) vehicle is stopped", 0.0, mobility->getSpeed());
 		}
 	}
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			traci->getCommandInterface()->setTrafficLightProgram("10", "myProgramGreenRed");
-			traci->getCommandInterface()->setTrafficLightPhaseIndex("10", 1);
+			traci->trafficlight("10").setProgram("myProgramGreenRed");
+			traci->trafficlight("10").setPhaseIndex(1);
 		}
 		if (t == 30) {
 			assertTrue("(commandSetTrafficLightPhaseIndex) vehicle is at 31", roadId == "31");
-			assertClose("(commandSetTrafficLightPhaseIndex) vehicle is stopped", 0.0, traci->getSpeed());
+			assertClose("(commandSetTrafficLightPhaseIndex) vehicle is stopped", 0.0, mobility->getSpeed());
 		}
 	}
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			std::list<std::string> polys = traci->commandGetPolygonIds();
+			std::list<std::string> polys = traci->getPolygonIds();
 			assertEqual("(commandGetPolygonIds) number is 1", polys.size(), (size_t)1);
 			assertEqual("(commandGetPolygonIds) id is correct", *polys.begin(), "poly0");
-			std::string typeId = traci->commandGetPolygonTypeId("poly0");
+			std::string typeId = traci->polygon("poly0").getTypeId();
 			assertEqual("(commandGetPolygonTypeId) typeId is correct", typeId, "type0");
-			std::list<Coord> shape = traci->commandGetPolygonShape("poly0");
+			std::list<Coord> shape = traci->polygon("poly0").getShape();
 			assertClose("(commandGetPolygonShape) shape x coordinate is correct", 130.0, shape.begin()->x);
 			assertClose("(commandGetPolygonShape) shape y coordinate is correct", 81.65, shape.begin()->y);
 		}
@@ -170,14 +172,14 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 1) {
-			std::list<Coord> shape1 = traci->commandGetPolygonShape("poly0");
+			std::list<Coord> shape1 = traci->polygon("poly0").getShape();
 			assertClose("(commandGetPolygonShape) shape x coordinate is correct", 130.0, shape1.begin()->x);
 			assertClose("(commandGetPolygonShape) shape y coordinate is correct", 81.65, shape1.begin()->y);
 			std::list<Coord> shape2 = shape1;
 			shape2.begin()->x = 135;
 			shape2.begin()->y = 85;
-			traci->commandSetPolygonShape("poly0", shape2);
-			std::list<Coord> shape3 = traci->commandGetPolygonShape("poly0");
+			traci->polygon("poly0").setShape(shape2);
+			std::list<Coord> shape3 = traci->polygon("poly0").getShape();
 			assertClose("(commandSetPolygonShape) shape x coordinate was changed", 135.0, shape3.begin()->x);
 			assertClose("(commandSetPolygonShape) shape y coordinate was changed", 85.0, shape3.begin()->y);
 		}
@@ -190,15 +192,15 @@ void TraCITestApp::handlePositionUpdate() {
 			points.push_back(Coord(200, 100));
 			points.push_back(Coord(200, 200));
 			points.push_back(Coord(100, 200));
-			traci->getCommandInterface()->addPolygon("testPoly", "testType", TraCIColor::fromTkColor("red"), true, 1, traci->getManager()->omnet2traci(points));
+			traci->addPolygon("testPoly", "testType", TraCIColor::fromTkColor("red"), true, 1, points);
 		}
 		if (t == 31) {
-			std::list<std::string> polys = traci->commandGetPolygonIds();
+			std::list<std::string> polys = traci->getPolygonIds();
 			assertEqual("(commandAddPolygon) number is 2", polys.size(), (size_t)2);
 			assertTrue("(commandAddPolygon) ids contain added", std::find(polys.begin(), polys.end(), std::string("testPoly")) != polys.end());
-			std::string typeId = traci->commandGetPolygonTypeId("testPoly");
+			std::string typeId = traci->polygon("testPoly").getTypeId();
 			assertEqual("(commandAddPolygon) typeId is correct", typeId, "testType");
-			std::list<Coord> shape = traci->commandGetPolygonShape("testPoly");
+			std::list<Coord> shape = traci->polygon("testPoly").getShape();
 			assertClose("(commandAddPolygon) shape x coordinate is correct", 100.0, shape.begin()->x);
 			assertClose("(commandAddPolygon) shape y coordinate is correct", 100.0, shape.begin()->y);
 		}
@@ -206,10 +208,9 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 30) {
-			std::list<std::string> lanes = traci->getCommandInterface()->getLaneIds();
+			std::list<std::string> lanes = traci->getLaneIds();
 			assertTrue("(commandGetLaneIds) returns test lane", std::find(lanes.begin(), lanes.end(), "10_0") != lanes.end());
-			std::list<TraCICoord> shape = traci->getCommandInterface()->getLaneShape("10_0");
-			Coord shape_front_coord = traci->getManager()->traci2omnet(shape.front());
+			Coord shape_front_coord = traci->lane("10_0").getShape().front();
 			assertClose("(commandGetLaneShape) shape x coordinate is correct", 523., floor(shape_front_coord.x));
 			assertClose("(commandGetLaneShape) shape y coordinate is correct", 79., floor(shape_front_coord.y));
 		}
@@ -217,10 +218,9 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 30) {
-			std::list<std::string> junctions = traci->getCommandInterface()->getJunctionIds();
+			std::list<std::string> junctions = traci->getJunctionIds();
 			assertTrue("(commandGetJunctionIds) returns test junction", std::find(junctions.begin(), junctions.end(), "1") != junctions.end());
-			TraCICoord traci_pos = traci->getCommandInterface()->getJunctionPosition("1");
-			Coord pos = traci->getManager()->traci2omnet(traci_pos);
+			Coord pos = traci->junction("1").getPosition();
 			assertClose("(commandGetJunctionPosition) shape x coordinate is correct", 25.0, pos.x);
 			assertClose("(commandGetJunctionPosition) shape y coordinate is correct", 75.0, pos.y);
 		}
@@ -228,12 +228,12 @@ void TraCITestApp::handlePositionUpdate() {
 
 	if (testNumber == testCounter++) {
 		if (t == 28) {
-			bool r = traci->getCommandInterface()->addVehicle("testVehicle0", "vtype0", "route0");
+			bool r = traci->addVehicle("testVehicle0", "vtype0", "route0");
 			assertTrue("(commandAddVehicle) command reports success", r);
 		}
 		if (t == 30) {
-			std::map<std::string, cModule*>::const_iterator i = traci->getManager()->getManagedHosts().find("testVehicle0");
-			bool r = (i != traci->getManager()->getManagedHosts().end());
+			std::map<std::string, cModule*>::const_iterator i = mobility->getManager()->getManagedHosts().find("testVehicle0");
+			bool r = (i != mobility->getManager()->getManagedHosts().end());
 			assertTrue("(commandAddVehicle) vehicle now driving", r);
 			const cModule* mod = i->second;
 			const TraCIMobility* traci2 = FindModule<TraCIMobility*>::findSubModule(const_cast<cModule*>(mod));

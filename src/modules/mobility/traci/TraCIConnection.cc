@@ -1,6 +1,3 @@
-#include "TraCIConnection.h"
-#include "TraCIConstants.h"
-
 #define WANT_WINSOCK2
 #include <platdep/sockets.h>
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
@@ -13,10 +10,25 @@
 
 #include <cenvir.h>
 #include <cexception.h>
+#include <algorithm>
+#include <functional>
+
+#include "TraCIConnection.h"
+#include "TraCIConstants.h"
 
 #define MYDEBUG EV
 
 namespace Veins {
+
+struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
+	traci2omnet_functor(const TraCIConnection& owner) : owner(owner) {}
+
+	Coord operator()(const TraCICoord& coord) const {
+		return owner.traci2omnet(coord);
+	}
+
+	const TraCIConnection& owner;
+};
 
 SOCKET socket(void* ptr)
 {
@@ -191,6 +203,62 @@ std::string makeTraCICommand(uint8_t commandId, const TraCIBuffer& buf) {
 	}
 	uint8_t len = sizeof(uint8_t) + sizeof(uint8_t) + buf.str().length();
 	return (TraCIBuffer() << len << commandId).str() + buf.str();
+}
+
+void TraCIConnection::setNetbounds(TraCICoord netbounds1, TraCICoord netbounds2, int margin) {
+	this->netbounds1 = netbounds1;
+	this->netbounds2 = netbounds2;
+	this->margin = margin;
+}
+
+Coord TraCIConnection::traci2omnet(TraCICoord coord) const {
+	return Coord(coord.x - netbounds1.x + margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
+}
+
+std::list<Coord> TraCIConnection::traci2omnet(const std::list<TraCICoord>& list) const {
+	std::list<Coord> result;
+	std::transform(list.begin(), list.end(), std::back_inserter(result), traci2omnet_functor(*this));
+	return result;
+}
+
+TraCICoord TraCIConnection::omnet2traci(Coord coord) const {
+	return TraCICoord(coord.x + netbounds1.x - margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
+}
+
+std::list<TraCICoord> TraCIConnection::omnet2traci(const std::list<Coord>& list) const {
+	std::list<TraCICoord> result;
+	std::transform(list.begin(), list.end(), std::back_inserter(result), std::bind1st(std::mem_fun<TraCICoord, TraCIConnection, Coord>(&TraCIConnection::omnet2traci), this));
+	return result;
+}
+
+double TraCIConnection::traci2omnetAngle(double angle) const {
+
+	// rotate angle so 0 is east (in TraCI's angle interpretation 0 is south)
+	angle = angle - 90;
+
+	// convert to rad
+	angle = angle * M_PI / 180.0;
+
+	// normalize angle to -M_PI <= angle < M_PI
+	while (angle < -M_PI) angle += 2 * M_PI;
+	while (angle >= M_PI) angle -= 2 * M_PI;
+
+	return angle;
+}
+
+double TraCIConnection::omnet2traciAngle(double angle) const {
+
+	// convert to degrees
+	angle = angle * 180 / M_PI;
+
+	// rotate angle so 0 is south (in OMNeT++'s angle interpretation 0 is east)
+	angle = angle + 90;
+
+	// normalize angle to -180 <= angle < 180
+	while (angle < -180) angle += 360;
+	while (angle >= 180) angle -= 360;
+
+	return angle;
 }
 
 }

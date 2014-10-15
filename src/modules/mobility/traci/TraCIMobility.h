@@ -69,7 +69,10 @@ class TraCIMobility : public BaseMobility
 				void recordScalars(cSimpleModule& module);
 		};
 
-		TraCIMobility() : BaseMobility(), isPreInitialized(false) {}
+		TraCIMobility() : BaseMobility(), isPreInitialized(false), manager(0), commandInterface(0), vehicleCommandInterface(0) {}
+		~TraCIMobility() {
+			delete vehicleCommandInterface;
+		}
 		virtual void initialize(int);
 		virtual void finish();
 
@@ -119,58 +122,12 @@ class TraCIMobility : public BaseMobility
 			return manager;
 		}
 		virtual TraCICommandInterface* getCommandInterface() const {
-			return getManager()->getCommandInterface();
+			if (!commandInterface) commandInterface = getManager()->getCommandInterface();
+			return commandInterface;
 		}
-		void commandSetSpeedMode(int32_t bitset) {
-			getCommandInterface()->setSpeedMode(getExternalId(), bitset);
-		}
-		void commandSetSpeed(double speed) {
-			getCommandInterface()->setSpeed(getExternalId(), speed);
-		}
-		void commandSetColor(const TraCIColor& color) {
-			getCommandInterface()->setColor(getExternalId(), color);
-		}
-		void commandSlowDown(double speed, int duration) {
-			getCommandInterface()->slowDown(getExternalId(),speed,duration);
-		}
-		void commandChangeRoute(std::string roadId, double travelTime) {
-			getCommandInterface()->changeRoute(getExternalId(), roadId, travelTime);
-		}
-		void commandNewRoute(std::string roadId) {
-			getCommandInterface()->newRoute(getExternalId(), roadId);
-		}
-		void commandParkVehicle() {
-			getCommandInterface()->setVehicleParking(getExternalId());
-		}
-		double commandDistanceRequest(Coord position1, Coord position2, bool returnDrivingDistance) {
-			return getCommandInterface()->distanceRequest(getManager()->omnet2traci(position1), getManager()->omnet2traci(position2), returnDrivingDistance);
-		}
-		void commandStopNode(std::string roadId, double pos, uint8_t laneid, double radius, double waittime) {
-			getCommandInterface()->stopNode(getExternalId(), roadId, pos, laneid, radius, waittime);
-		}
-		std::list<std::string> commandGetPolygonIds() {
-			return getCommandInterface()->getPolygonIds();
-		}
-		std::string commandGetPolygonTypeId(std::string polyId) {
-			return getCommandInterface()->getPolygonTypeId(polyId);
-		}
-		std::list<Coord> commandGetPolygonShape(std::string polyId) {
-			return getManager()->traci2omnet(getCommandInterface()->getPolygonShape(polyId));
-		}
-		void commandSetPolygonShape(std::string polyId, std::list<Coord> points) {
-			getCommandInterface()->setPolygonShape(polyId, getManager()->omnet2traci(points));
-		}
-		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -TraCICommandInterface::DEPART_NOW, double emitPosition = -TraCICommandInterface::DEPART_POS_BASE, double emitSpeed = -TraCICommandInterface::DEPART_SPEED_MAX, int8_t emitLane = -TraCICommandInterface::DEPART_LANE_BEST_FREE) {
-			return getCommandInterface()->addVehicle(vehicleId, vehicleTypeId, routeId, emitTime_st, emitPosition, emitSpeed, emitLane);
-		}
-		int commandGetLaneIndex() {
-			return getCommandInterface()->getLaneIndex(getExternalId());
-		}
-		std::string commandGetLaneId() {
-			return getCommandInterface()->getLaneId(getExternalId());
-		}
-		bool commandChangeVehicleRoute(std::list<std::string> edges) {
-			return getCommandInterface()->changeVehicleRoute(getExternalId(), edges);
+		virtual TraCICommandInterface::Vehicle* getVehicleCommandInterface() const {
+			if (!vehicleCommandInterface) vehicleCommandInterface = new TraCICommandInterface::Vehicle(getCommandInterface()->vehicle(getExternalId()));
+			return vehicleCommandInterface;
 		}
 
 
@@ -201,6 +158,8 @@ class TraCIMobility : public BaseMobility
 		cMessage* startAccidentMsg;
 		cMessage* stopAccidentMsg;
 		mutable TraCIScenarioManager* manager;
+		mutable TraCICommandInterface* commandInterface;
+		mutable TraCICommandInterface::Vehicle* vehicleCommandInterface;
 		double last_speed;
 
 		const static simsignalwrap_t parkingStateChangedSignal;
