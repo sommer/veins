@@ -137,11 +137,6 @@ def forward_connection(client_socket, server_socket, process):
             finally:
                 client_socket.send(data)
 
-        rc = process.poll()
-        if (rc != None):
-            do_exit = True
-            break
-
     logging.debug("Done with proxy mode")
 
 
