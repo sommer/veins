@@ -22,9 +22,9 @@ if args:
 
 
 # Start with default flags
-makemake_flags = ['-f', '--deep', '--make-so', '-o', 'veins', '-O', 'out']
+makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-o', 'veins', '-O', 'out']
 run_libs = [os.path.join('src', 'veins')]
-run_neds = ['src']
+run_neds = [os.path.join('src', 'veins')]
 
 
 # Add flags for INET
@@ -51,8 +51,6 @@ if options.inet:
     makemake_flags += inet_includes + inet_link + inet_defs
     run_libs = [os.path.relpath(os.path.join(options.inet, 'src', 'inet'))] + run_libs
     run_neds = [os.path.relpath(os.path.join(options.inet, 'src'))] + run_neds
-else:
-    makemake_flags += ['-X' + os.path.join('src', 'inet')]
 
 
 # Start creating files
