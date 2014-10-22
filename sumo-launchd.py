@@ -114,10 +114,8 @@ def forward_connection(client_socket, server_socket, process):
         (r, w, e) = select.select([client_socket, server_socket], [], [client_socket, server_socket], 1)
         if client_socket in e:
             do_exit = True
-            break
         if server_socket in e:
             do_exit = True
-            break
         if client_socket in r:
             try:
                 data = client_socket.recv(65535)
