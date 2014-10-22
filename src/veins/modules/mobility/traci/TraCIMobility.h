@@ -28,7 +28,7 @@
 #include <list>
 #include <stdexcept>
 
-#include <veins/base/modules/BaseMobility.h>
+#include "veins/base/modules/BaseMobility.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"

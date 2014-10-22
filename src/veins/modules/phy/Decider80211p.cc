@@ -24,11 +24,11 @@
  * and modifications by Christopher Saloman
  */
 
-#include <veins/modules/phy/Decider80211p.h>
-#include <veins/modules/phy/DeciderResult80211.h>
-#include <veins/modules/messages/Mac80211Pkt_m.h>
-#include <veins/base/phyLayer/Signal_.h>
-#include <veins/modules/messages/AirFrame11p_m.h>
+#include "veins/modules/phy/Decider80211p.h"
+#include "veins/modules/phy/DeciderResult80211.h"
+#include "veins/modules/messages/Mac80211Pkt_m.h"
+#include "veins/base/phyLayer/Signal_.h"
+#include "veins/modules/messages/AirFrame11p_m.h"
 #include "veins/modules/phy/NistErrorRate.h"
 #include "veins/modules/utility/ConstsPhy.h"
 

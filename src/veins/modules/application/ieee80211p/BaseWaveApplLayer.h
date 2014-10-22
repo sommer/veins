@@ -22,11 +22,11 @@
 #define BASEWAVEAPPLLAYER_H_
 
 #include <map>
-#include <veins/base/modules/BaseApplLayer.h>
-#include <veins/modules/utility/Consts80211p.h>
-#include <veins/modules/messages/WaveShortMessage_m.h>
+#include "veins/base/modules/BaseApplLayer.h"
+#include "veins/modules/utility/Consts80211p.h"
+#include "veins/modules/messages/WaveShortMessage_m.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
-#include <veins/modules/mac/ieee80211p/WaveAppToMac1609_4Interface.h>
+#include "veins/modules/mac/ieee80211p/WaveAppToMac1609_4Interface.h"
 
 #ifndef DBG
 #define DBG EV

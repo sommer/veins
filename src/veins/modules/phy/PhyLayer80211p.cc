@@ -34,7 +34,7 @@
 #include "veins/modules/analogueModel/SimpleObstacleShadowing.h"
 #include "veins/modules/analogueModel/TwoRayInterferenceModel.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
-#include <veins/modules/utility/Consts80211p.h>
+#include "veins/modules/utility/Consts80211p.h"
 #include "veins/modules/messages/AirFrame11p_m.h"
 #include "veins/base/phyLayer/MacToPhyControlInfo.h"
 
