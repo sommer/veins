@@ -27,21 +27,13 @@
 #include <omnetpp.h>
 #include <vector>
 
-#ifdef MIXIM_INET
-#include <MobilityAccess.h> // INET
-typedef MobilityAccess ChannelMobilityAccessType;
-typedef IMobility*     ChannelMobilityPtrType;
-#endif
-
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/modules/BatteryAccess.h"
 
-#ifndef MIXIM_INET
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/modules/BaseMobility.h"
 typedef AccessModuleWrap<BaseMobility>                ChannelMobilityAccessType;
 typedef ChannelMobilityAccessType::wrapType* ChannelMobilityPtrType;
-#endif
 
 class NicEntry;
 class BaseConnectionManager;

@@ -25,10 +25,6 @@
 #include <cassert>
 #include <sstream>
 
-#ifdef MIXIM_INET
-#include <InterfaceTableAccess.h>
-#endif
-
 #include "veins/base/phyLayer/Mapping.h"
 #include "veins/base/phyLayer/Signal_.h"
 #include "veins/base/phyLayer/MacToPhyInterface.h"
@@ -87,42 +83,6 @@ void BaseMacLayer::initialize(int stage)
 
 void BaseMacLayer::registerInterface()
 {
-#ifdef MIXIM_INET
-    IInterfaceTable *ift = InterfaceTableAccess().getIfExists();
-    if (ift) {
-        cModule* nic = getParentModule();
-        InterfaceEntry *e = new InterfaceEntry();
-
-        // interface name: NIC module's name without special
-        // characters ([])
-        char *interfaceName = new char[strlen(nic->getFullName()) + 1];
-        char *d = interfaceName;
-        for (const char *s = nic->getFullName(); *s; s++)
-            if (isalnum(*s))
-                *d++ = *s;
-        *d = '\0';
-
-        e->setName(interfaceName);
-        delete [] interfaceName;
-
-        // this MAC address must be the same as the one in BaseMacLayer
-        e->setMACAddress(myMacAddr);
-
-        // generate interface identifier for IPv6
-        e->setInterfaceToken(myMacAddr.formInterfaceIdentifier());
-
-        // MTU on 802.11 = ?
-        e->setMtu(1500);            // FIXME
-
-        // capabilities
-        e->setBroadcast(true);
-        e->setMulticast(true);
-        e->setPointToPoint(false);
-
-        // add
-        ift->addInterface(e, this);
-    }
-#endif
 }
 
 /**

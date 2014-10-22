@@ -22,10 +22,6 @@
 
 #include <omnetpp.h>
 
-#ifdef MIXIM_INET
-#include <MACAddress.h>
-#endif
-
 #include "veins/base/utils/MiXiMDefs.h"
 
 /** @brief Layer address handling helper function.
@@ -44,11 +40,7 @@ public:
      * The type should support initialization with long/string values and casting to long/double.
      * The type should be also support the ==,<, and > operators.
      */
-#ifdef MIXIM_INET
-    typedef MACAddress L2Type;
-#else
     typedef long L2Type;
-#endif
     /** @brief Type definition for a L3 (Network) address.
      *
      * The type should support initialization with long values and casting to long/double.
@@ -72,11 +64,7 @@ public:
      * @return True if pSrcAddr is a braodcast address.
      */
     static inline bool isL2Broadcast(const L2Type& pSrcAddr) {
-#ifdef MIXIM_INET
-        return pSrcAddr.isBroadcast();
-#else
         return pSrcAddr == L2BROADCAST;
-#endif
     }
     /**
      * @brief Test if a L3 address (pSrcAddr) is a broadcast address.
