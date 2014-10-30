@@ -461,6 +461,7 @@ int PhyLayer80211p::getRadioState() {
 
 void PhyLayer80211p::setCCAThreshold(double ccaThreshold_dBm) {
 	ccaThreshold = pow(10, ccaThreshold_dBm / 10);
+	((Decider80211p *)decider)->setCCAThreshold(ccaThreshold_dBm);
 }
 double PhyLayer80211p::getCCAThreshold() {
 	return 10 * log10(ccaThreshold);
