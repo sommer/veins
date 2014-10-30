@@ -520,7 +520,7 @@ double Decider80211p::getCCAThreshold() {
 	return 10 * log10(ccaThreshold);
 }
 
-void Decider80211p::setCCATreshold(double ccaThreshold_dBm) {
+void Decider80211p::setCCAThreshold(double ccaThreshold_dBm) {
 	ccaThreshold = pow(10, ccaThreshold_dBm / 10);
 }
 

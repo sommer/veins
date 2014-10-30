@@ -217,7 +217,7 @@ class Decider80211p: public BaseDecider {
 		/**
 		 * @brief sets the CCA threshold
 		 */
-		void setCCATreshold(double ccaThreshold_dBm);
+		void setCCAThreshold(double ccaThreshold_dBm);
 
 		void setChannelIdleStatus(bool isIdle);
 
