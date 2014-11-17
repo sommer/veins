@@ -208,6 +208,27 @@ class TraCICommandInterface
 		// Vehicletype methods
 		std::list<std::string> getVehicleTypeIds();
 
+		// GuiView methods
+		class GuiView {
+			public:
+				GuiView(TraCICommandInterface* traci, std::string viewId) : traci(traci), viewId(viewId) {
+					connection = &traci->connection;
+				}
+
+				void setScheme(std::string name);
+				void setZoom(double zoom);
+				void setBoundary(Coord p1, Coord p2);
+				void takeScreenshot(std::string filename = "");
+
+			protected:
+				TraCICommandInterface* traci;
+				TraCIConnection* connection;
+				std::string viewId;
+		};
+		GuiView guiView(std::string viewId) {
+			return GuiView(this, viewId);
+		}
+
 
 	private:
 		TraCIConnection& connection;

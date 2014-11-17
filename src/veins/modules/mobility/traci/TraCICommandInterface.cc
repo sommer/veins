@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "veins/modules/mobility/traci/TraCIBuffer.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConnection.h"
@@ -366,6 +368,46 @@ std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord) {
 	double convPosLat; response >> convPosLat;
 
 	return std::make_pair(convPosLon, convPosLat);
+}
+
+void TraCICommandInterface::GuiView::setScheme(std::string name) {
+	TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_SCHEMA) << viewId << static_cast<uint8_t>(TYPE_STRING) << name);
+	ASSERT(buf.eof());
+}
+
+void TraCICommandInterface::GuiView::setZoom(double zoom) {
+	TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_ZOOM) << viewId << static_cast<uint8_t>(TYPE_DOUBLE) << zoom);
+	ASSERT(buf.eof());
+}
+
+void TraCICommandInterface::GuiView::setBoundary(Coord p1_, Coord p2_) {
+	TraCICoord p1 = connection->omnet2traci(p1_);
+	TraCICoord p2 = connection->omnet2traci(p2_);
+
+	TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_BOUNDARY) << viewId << static_cast<uint8_t>(TYPE_BOUNDINGBOX) << p1.x << p1.y << p2.x << p2.y);
+	ASSERT(buf.eof());
+}
+
+
+void TraCICommandInterface::GuiView::takeScreenshot(std::string filename) {
+	if (filename == "") {
+		// get absolute path of results/ directory
+		const char* myResultsDir = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RESULTDIR);
+		char* s = realpath(myResultsDir, 0);
+		std::string absolutePath = s;
+		free(s);
+
+		// get run id
+		const char* myRunID = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
+
+		// build filename from this
+		char ss[512];
+		snprintf(ss, sizeof(ss), "%s/screenshot-%s-@%08.2f.png", absolutePath.c_str(), myRunID, simTime().dbl());
+		filename = ss;
+	}
+
+	TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << static_cast<uint8_t>(TYPE_STRING) << filename);
+	ASSERT(buf.eof());
 }
 
 std::string TraCICommandInterface::genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId) {
