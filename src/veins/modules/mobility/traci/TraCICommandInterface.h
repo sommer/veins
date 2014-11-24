@@ -52,7 +52,7 @@ class TraCICommandInterface
 				void changeRoute(std::string roadId, double travelTime);
 				void stopAt(std::string roadId, double pos, uint8_t laneid, double radius, double waittime);
 				int32_t getLaneIndex();
-				std::string getVehicleTypeId();
+				std::string getTypeId();
 				bool changeVehicleRoute(const std::list<std::string>& roads);
 
 			protected:
