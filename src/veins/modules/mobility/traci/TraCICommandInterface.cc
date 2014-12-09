@@ -6,6 +6,10 @@
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
 
+#ifdef _WIN32
+#define realpath(N,R) _fullpath((R),(N),_MAX_PATH)
+#endif /* _WIN32 */
+
 namespace Veins {
 
 TraCICommandInterface::TraCICommandInterface(TraCIConnection& c) : connection(c)

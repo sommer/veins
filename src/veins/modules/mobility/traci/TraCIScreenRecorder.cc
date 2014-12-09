@@ -22,6 +22,10 @@
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
+#ifdef _WIN32
+#define realpath(N,R) _fullpath((R),(N),_MAX_PATH)
+#endif /* _WIN32 */
+
 using Veins::TraCIScreenRecorder;
 
 Define_Module(Veins::TraCIScreenRecorder);
@@ -62,6 +66,10 @@ void TraCIScreenRecorder::handleMessage(cMessage *msg) {
 	if (filenameTemplate == "") {
 		const char* myRunID = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
 		filenameTemplate = "screenshot-" + std::string(myRunID) + "-@%08.2f.png";
+		#ifdef _WIN32
+		// replace ':' with '-'
+		for (std::string::iterator i = filenameTemplate.begin(); i != filenameTemplate.end(); ++i) if (*i == ':') *i = '-';
+		#endif /* _WIN32 */
 	}
 
 	// assemble filename
