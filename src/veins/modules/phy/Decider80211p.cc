@@ -492,7 +492,9 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
 		DBG_D11P << "I'm currently sending\n";
 	}
 	//check if channel is idle now
-	else if (cca(simTime(), frame) == false) {
+	//we declare channel busy if CCA tells us so, or if we are currently
+	//decoding a frame
+	else if (cca(simTime(), frame) == false || currentSignal.first != 0) {
 		DBG_D11P << "Channel not yet idle!\n";
 	}
 	else {
