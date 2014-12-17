@@ -91,9 +91,6 @@ class Decider80211p: public BaseDecider {
 		double myBusyTime;
 		double myStartTime;
 
-		/** @brief Frame that the NIC card is currently trying to decode */
-		AirFrame *curSyncFrame;
-
 		std::string myPath;
 		Decider80211pToPhy80211pInterface* phy11p;
 		std::map<AirFrame*,int> signalStates;
@@ -191,7 +188,6 @@ class Decider80211p: public BaseDecider {
 			centerFrequency(centerFrequency),
 			myBusyTime(0),
 			myStartTime(simTime().dbl()),
-			curSyncFrame(0),
 			collectCollisionStats(collectCollisionStatistics),
 			collisions(0) {
 			phy11p = dynamic_cast<Decider80211pToPhy80211pInterface*>(phy);

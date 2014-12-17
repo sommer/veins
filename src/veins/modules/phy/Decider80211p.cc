@@ -70,9 +70,9 @@ simtime_t Decider80211p::processNewSignal(AirFrame* msg) {
 		}
 		else {
 
-			if (!curSyncFrame) {
+			if (!currentSignal.first) {
 				//NIC is not yet synced to any frame, so lock and try to decode this frame
-				curSyncFrame = frame;
+				currentSignal.first = frame;
 				DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << std::endl;
 			}
 			else {
@@ -448,14 +448,14 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
 	else {
 
 		//first check whether this is the frame NIC is currently synced on
-		if (frame == curSyncFrame) {
+		if (frame == currentSignal.first) {
 			// check if the snrMapping is above the Decider's specific threshold,
 			// i.e. the Decider has received it correctly
 			result = checkIfSignalOk(frame);
 
 			//after having tried to decode the frame, the NIC is no more synced to the frame
 			//and it is ready for syncing on a new one
-			curSyncFrame = 0;
+			currentSignal.first = 0;
 		}
 		else {
 			//if this is not the frame we are synced on, we cannot receive it
