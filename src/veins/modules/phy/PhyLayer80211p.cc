@@ -47,6 +47,7 @@ void PhyLayer80211p::initialize(int stage) {
 	if (stage == 0) {
 		//get ccaThreshold before calling BasePhyLayer::initialize() which instantiates the deciders
 		ccaThreshold = pow(10, par("ccaThreshold").doubleValue() / 10);
+		allowTxDuringRx = par("allowTxDuringRx").boolValue();
 		collectCollisionStatistics = par("collectCollisionStatistics").boolValue();
 	}
 	BasePhyLayer::initialize(stage);
@@ -353,7 +354,7 @@ AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& p
 
 Decider* PhyLayer80211p::initializeDecider80211p(ParameterMap& params) {
 	double centerFreq = params["centerFrequency"];
-	Decider80211p* dec = new Decider80211p(this, sensitivity, ccaThreshold, centerFreq, findHost()->getIndex(), collectCollisionStatistics, coreDebug);
+	Decider80211p* dec = new Decider80211p(this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics, coreDebug);
 	dec->setPath(getParentModule()->getFullPath());
 	return dec;
 }
@@ -458,6 +459,11 @@ int PhyLayer80211p::getRadioState() {
 	return BasePhyLayer::getRadioState();
 };
 
+simtime_t PhyLayer80211p::setRadioState(int rs) {
+	if (rs == Radio::TX)
+		decider->switchToTx();
+	return BasePhyLayer::setRadioState(rs);
+}
 
 void PhyLayer80211p::setCCAThreshold(double ccaThreshold_dBm) {
 	ccaThreshold = pow(10, ccaThreshold_dBm / 10);

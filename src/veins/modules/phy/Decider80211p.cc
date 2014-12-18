@@ -526,6 +526,25 @@ void Decider80211p::setCCAThreshold(double ccaThreshold_dBm) {
 	ccaThreshold = pow(10, ccaThreshold_dBm / 10);
 }
 
+void Decider80211p::switchToTx() {
+	if (currentSignal.first != 0) {
+		//we are currently trying to receive a frame.
+		if (allowTxDuringRx) {
+			//if the above layer decides to transmit anyhow, we need to abort reception
+			AirFrame11p *currentFrame = dynamic_cast<AirFrame11p *>(currentSignal.first);
+			assert(currentFrame);
+			//flag the frame as "while transmitting"
+			currentFrame->setWasTransmitting(true);
+			currentFrame->setBitError(true);
+			//forget about the signal
+			currentSignal.first = 0;
+		}
+		else {
+			opp_error("Decider80211p: mac layer requested phy to transmit a frame while currently receiving another");
+		}
+	}
+}
+
 void Decider80211p::finish() {
 	simtime_t totalTime = simTime() - myStartTime;
 	phy->recordScalar("busyTime", myBusyTime / totalTime.dbl());

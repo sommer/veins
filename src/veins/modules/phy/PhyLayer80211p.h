@@ -74,6 +74,12 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		/** @brief enable/disable detection of packet collisions */
 		bool collectCollisionStatistics;
 
+		/** @brief allows/disallows interruption of current reception for txing
+		 *
+		 * See detailed description in Decider80211p
+		 */
+		bool allowTxDuringRx;
+
 		enum ProtocolIds {
 			IEEE_80211 = 12123
 		};
@@ -154,6 +160,7 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 
 		virtual void handleSelfMessage(cMessage* msg);
 		virtual int getRadioState();
+		virtual simtime_t setRadioState(int rs);
 };
 
 #endif /* PHYLAYER80211P_H_ */

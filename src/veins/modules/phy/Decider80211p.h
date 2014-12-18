@@ -85,6 +85,19 @@ class Decider80211p: public BaseDecider {
 		 */
 		double ccaThreshold;
 
+		/** @brief allows/disallows interruption of current reception for txing
+		 *
+		 * For a standard 802.11 MAC, starting a transmission while currently
+		 * receiving a frame is forbidden, as the channel is in a BUSY state.
+		 * For research purposes, however, one might use a custom MAC layer on
+		 * top of an 802.11p OFDM PHY, and decide to interrupt an ongoing
+		 * reception to start a transmission, whatever the reason. If the
+		 * following variable is set to false, simulation will be terminated
+		 * if this occurs. If not, simulation will continue, aborting current
+		 * reception.
+		 */
+		bool allowTxDuringRx;
+
 		/** @brief The center frequency on which the decider listens for signals */
 		double centerFrequency;
 
@@ -179,12 +192,14 @@ class Decider80211p: public BaseDecider {
 		Decider80211p(DeciderToPhyInterface* phy,
 		              double sensitivity,
 		              double ccaThreshold,
+		              bool allowTxDuringRx,
 		              double centerFrequency,
 		              int myIndex = -1,
 		              bool collectCollisionStatistics = false,
 		              bool debug = false):
 			BaseDecider(phy, sensitivity, myIndex, debug),
 			ccaThreshold(ccaThreshold),
+			allowTxDuringRx(allowTxDuringRx),
 			centerFrequency(centerFrequency),
 			myBusyTime(0),
 			myStartTime(simTime().dbl()),
@@ -223,6 +238,17 @@ class Decider80211p: public BaseDecider {
 		 * the output file
 		 */
 		virtual void finish();
+
+		/**
+		 * @brief Notifies the decider that phy layer is starting a transmission.
+		 *
+		 * This helps the decider interrupting a current reception. In a standard
+		 * 802.11 MAC, this should never happen, but in other MAC layers you might
+		 * decide to interrupt an ongoing reception and start transmitting. Thank
+		 * to this method, the decider can flag the ongoing frame as non received
+		 * because of the transmission.
+		 */
+		virtual void switchToTx();
 
 };
 

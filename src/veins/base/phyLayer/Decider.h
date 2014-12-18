@@ -135,6 +135,17 @@ public:
 	 */
 	virtual void channelChanged(int newChannel) {}
 
+	/**
+	 * @brief Notifies the decider that phy layer is starting a transmission.
+	 *
+	 * This helps the decider interrupting a current reception. In a standard
+	 * 802.11 MAC, this should never happen, but in other MAC layers you might
+	 * decide to interrupt an ongoing reception and start transmitting. Thank
+	 * to this method, the decider can flag the ongoing frame as non received
+	 * because of the transmission.
+	 */
+	virtual void switchToTx() {}
+
 };
 
 

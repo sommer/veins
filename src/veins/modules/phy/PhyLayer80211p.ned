@@ -39,4 +39,7 @@ simple PhyLayer80211p extends BasePhyLayer
         //enables/disables collection of statistics about collision. notice that
         //enabling this feature increases simulation time
         bool collectCollisionStatistics = default(false);
+        //decides whether aborting the simulation or not if the MAC layer
+        //requires phy to transmit a frame while currently receiveing another
+        bool allowTxDuringRx = default(false);
 }
