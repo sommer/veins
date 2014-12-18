@@ -1,0 +1,238 @@
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+// Part of my Master of Engineering thesis project.
+// Copyright (C) 2014 Daniel Febrian Sengkey <danielsengkey.cio13@mail.ugm.ac.id>
+// Department of Electrical Engineering and Information Technology, Gadjah Mada University
+// Yogyakarta, INDONESIA
+//
+// Most parts of this file was derived from TraCIDemo11p.{cc,h} of Veins 3.0 by Dr.-Ing. Christoph Sommer
+
+#include "veins/modules/application/traci/TraCITDE.h"
+
+using Veins::TraCIMobilityAccess;
+using Veins::AnnotationManagerAccess;
+
+const simsignalwrap_t TraCITDE::parkingStateChangedSignal = simsignalwrap_t(TRACI_SIGNAL_PARKING_CHANGE_NAME);
+
+Define_Module(TraCITDE);
+
+void TraCITDE::initialize(int stage) {
+    BaseWaveApplLayer::initialize(stage);
+    if (stage == 0) {
+        mobility = TraCIMobilityAccess().get(getParentModule());
+        traci = mobility->getCommandInterface();
+        traciVehicle = mobility->getVehicleCommandInterface();
+        annotations = AnnotationManagerAccess().getIfExists();
+        ASSERT(annotations);
+
+        sentMessage = false;
+        lastDroveAt = simTime();
+        findHost()->subscribe(parkingStateChangedSignal, this);
+        isParking = false;
+        sendWhileParking = par("sendWhileParking").boolValue();
+
+        debugAppTDE = par("debugAppTDE").boolValue();
+
+        myType = getMyType();
+//        getTypeEvt = new cMessage("identify", GET_MY_TYPE);
+//        scheduleAt((simTime() + 0.00001), getTypeEvt);
+    }
+
+    /** @brief registering all signals for the statistics output */
+    vehNumberLV = registerSignal("detectedVehiclesLV");
+    vehNumberHV = registerSignal("detectedVehiclesHV");
+    vehNumberMC = registerSignal("detectedVehiclesMC");
+
+    /** @brief initialized the number of detected vehicles with 0 in the beginning.
+     * Please note that every single type of detected vehicle number is stored within single variable.
+     * @TODO Create an array of this when there is array support in .ned files.
+     */
+    currentNumberofDetectedLV = 0;
+    currentNumberofDetectedHV = 0;
+    currentNumberofDetectedMC = 0;
+
+    /** @brief Total detected vehicle set to 0 */
+    currentNumberofTotalDetectedVehicles = 0;
+
+    /** @brief initializing vehicles array with -1 to prevent conflict with node id within simulation.
+     * Store self id in the first index.
+     */
+    for (int i=0; i < maxVehicles; i++)
+    {
+        listedVehicles[i].id = -1;
+        listedVehicles[i].vType = "undefined";
+    }
+}
+
+void TraCITDE::onBeacon(WaveShortMessage* wsm) {
+    // Set the first vehicle type as itself
+    if (listedVehicles[0].vType=="undefined") {
+        if(!myType.empty()) append2List(myId, 0, simTime(), myType);
+        else DBG << "App Error: myType is UNSET.";
+    }
+
+    EV << "### REPORT OF VEHICLE WITH ID " << myId << ", type " << myType <<" ###" << endl;
+    EV << "Received BEACON from " << wsm->getSenderAddress() << " on " << wsm->getArrivalTime() << " type " << wsm->getWsmData() << "."<< endl;
+
+    if (indexedCar(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles)==false) {
+            append2List(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles,  wsm->getArrivalTime(), wsm->getWsmData());
+        }
+    else updateLastSeenTime(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles, wsm->getArrivalTime());
+    if (debugAppTDE==true) showInfo(currentNumberofTotalDetectedVehicles);
+    EV << "########## END OF REPORT ##########" << endl;
+
+    /** @brief emit detected vehicle numbers to  its  registered signal, respectively*/
+    emit(vehNumberLV, currentNumberofDetectedLV);
+    emit(vehNumberHV, currentNumberofDetectedHV);
+    emit(vehNumberMC, currentNumberofDetectedMC);
+}
+
+void TraCITDE::onData(WaveShortMessage* wsm) {
+    findHost()->getDisplayString().updateWith("r=16,green");
+    annotations->scheduleErase(1, annotations->drawLine(wsm->getSenderPos(), mobility->getPositionAt(simTime()), "blue"));
+
+    EV << "Received DATA from " << wsm->getSenderAddress() << " on " << wsm->getArrivalTime() << endl;
+
+    if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getWsmData(), 9999);
+    if (!sentMessage) sendMessage(wsm->getWsmData());
+}
+
+void TraCITDE::sendMessage(std::string blockedRoadId) {
+    sentMessage = true;
+
+    t_channel channel = dataOnSch ? type_SCH : type_CCH;
+    WaveShortMessage* wsm = prepareWSM("data", dataLengthBits, channel, dataPriority, -1,2);
+    wsm->setWsmData(blockedRoadId.c_str());
+    sendWSM(wsm);
+}
+void TraCITDE::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj) {
+    Enter_Method_Silent();
+    if (signalID == mobilityStateChangedSignal) {
+        handlePositionUpdate(obj);
+    }
+    else if (signalID == parkingStateChangedSignal) {
+        handleParkingUpdate(obj);
+    }
+}
+void TraCITDE::handleParkingUpdate(cObject* obj) {
+    isParking = mobility->getParkingState();
+    if (sendWhileParking == false) {
+        if (isParking == true) {
+            (FindModule<BaseConnectionManager*>::findGlobalModule())->unregisterNic(this->getParentModule()->getSubmodule("nic"));
+        }
+        else {
+            Coord pos = mobility->getCurrentPosition();
+            (FindModule<BaseConnectionManager*>::findGlobalModule())->registerNic(this->getParentModule()->getSubmodule("nic"), (ChannelAccess*) this->getParentModule()->getSubmodule("nic")->getSubmodule("phy80211p"), &pos);
+        }
+    }
+}
+void TraCITDE::handlePositionUpdate(cObject* obj) {
+    BaseWaveApplLayer::handlePositionUpdate(obj);
+
+    // stopped for for at least 10s?
+    if (mobility->getSpeed() < 1) {
+        if (simTime() - lastDroveAt >= 10) {
+            findHost()->getDisplayString().updateWith("r=16,red");
+            if (!sentMessage) sendMessage(mobility->getRoadId());
+        }
+    }
+    else {
+        lastDroveAt = simTime();
+    }
+}
+void TraCITDE::sendWSM(WaveShortMessage* wsm) {
+    if (isParking && !sendWhileParking) return;
+    sendDelayedDown(wsm,individualOffset);
+}
+
+/* Following lines of methods are those I built, (some are overloaded) in regards of my thesis */
+bool TraCITDE::indexedCar(short carId, short counter) {
+    int i;
+    bool indexedStatus = false;
+    for(i=0; i < counter; i++) {
+        if(listedVehicles[i].id == carId) {
+            indexedStatus = true;
+
+            break;
+        } //endif
+    } //endfor
+    if (indexedStatus) EV << "Vehicle with ID = " << carId << " is already indexed." << endl;
+    else EV << "Vehicle with ID = " << carId << " is still unindexed." << endl;
+    return indexedStatus;
+} //end method
+
+void TraCITDE::append2List(short carId, short firstEmptyArrayIndex, simtime_t messageTime, std::string vType) {
+    listedVehicles[firstEmptyArrayIndex].id = carId;
+    listedVehicles[firstEmptyArrayIndex].lastSeenAt = messageTime;
+    listedVehicles[firstEmptyArrayIndex].vType = vType;
+    EV << "Appending car with id " << carId <<" type "<< myType << " to the list of known vehicle." <<endl;
+
+    /* @brief Increase related counting variable
+     * The total number always increased for each vehicle
+     */
+    if (vType == "LV") currentNumberofDetectedLV++;
+    if (vType == "HV") currentNumberofDetectedHV++;
+    if (vType == "MC") currentNumberofDetectedMC++;
+    currentNumberofTotalDetectedVehicles++;
+}
+
+void TraCITDE::showInfo(short counter){
+    EV << "Listed vehicles are:"<<endl;
+    for(int i=0; i < counter; i++) EV << listedVehicles[i].id << "\ttype\t" << listedVehicles[i].vType << "\tat\t" << listedVehicles[i].lastSeenAt << endl;
+    EV << endl;
+
+    EV << "Number of detected light vehicles\t: " << currentNumberofDetectedLV << endl;
+    EV << "Number of detected heavy vehicles\t: " << currentNumberofDetectedHV << endl;
+    EV << "Number of detected motorcycles\t: " << currentNumberofDetectedMC << endl;
+    EV << "Total number of detected vehicle\t: " << currentNumberofTotalDetectedVehicles << endl;
+}
+
+void TraCITDE::updateLastSeenTime(short carId, short counter, simtime_t messageTime){
+    int i;
+    for (i=1; i< counter; i++) {
+        if (listedVehicles[i].id == carId) {
+            EV << "Updating record for vehicle with ID " << carId << " with previously last seen at " << listedVehicles[i].lastSeenAt << ", now lastSeenAt = " << messageTime <<"."<<endl;
+            listedVehicles[i].lastSeenAt = messageTime;
+            break;
+        }
+    }
+}
+
+ std::string TraCITDE::getMyType() {
+     return traciVehicle->getTypeId();
+ }
+
+ void TraCITDE::handleSelfMsg(cMessage* msg) {
+     switch (msg->getKind()) {
+         case SEND_BEACON_EVT: {
+             WaveShortMessage* beacon = prepareWSM("beacon", beaconLengthBits, type_CCH, beaconPriority, 0, -1);
+             beacon->setWsmData(getMyType().c_str());
+             sendWSM(beacon);
+             scheduleAt(simTime() + par("beaconInterval").doubleValue(), sendBeaconEvt);
+             break;
+         }
+//         case GET_MY_TYPE: {
+//             myType = getMyType();
+//             EV << "Node "<< myId << " detected self-type: " << myType << endl;
+//             break;
+//         }
+         default: {
+             if (msg)
+                 DBG << "APP: Error: Got Self Message of unknown kind! Name: " << msg->getName() << endl;
+             break;
+         }
+     }
+ }
