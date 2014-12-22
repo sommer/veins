@@ -46,35 +46,40 @@ void TraCITDE::initialize(int stage) {
 
         debugAppTDE = par("debugAppTDE").boolValue();
 
-        myType = getMyType();
-//        getTypeEvt = new cMessage("identify", GET_MY_TYPE);
-//        scheduleAt((simTime() + 0.00001), getTypeEvt);
+        myType = traciVehicle->getTypeId();
+
+        /** @brief registering all signals for the statistics output */
+        vehNumberLV = registerSignal("detectedVehiclesLV");
+        vehNumberHV = registerSignal("detectedVehiclesHV");
+        vehNumberMC = registerSignal("detectedVehiclesMC");
+        myTypeInt = registerSignal("vTypeCode");
+
+        /** @brief initialized the number of detected vehicles with 0 in the beginning.
+         * Please note that every single type of detected vehicle number is stored within single variable.
+         * @TODO Create an array of this when there is array support in .ned files.
+         */
+        currentNumberofDetectedLV = 0;
+        currentNumberofDetectedHV = 0;
+        currentNumberofDetectedMC = 0;
+
+        /** @brief Total detected vehicle set to 0 */
+        currentNumberofTotalDetectedVehicles = 0;
+
+        /** @brief initializing vehicles array with -1 to prevent conflict with node id within simulation.
+         * Store self id in the first index.
+         */
+        for (int i=0; i < maxVehicles; i++)
+        {
+            listedVehicles[i].id = -1;
+            listedVehicles[i].vType = "undefined";
+        }
     }
 
-    /** @brief registering all signals for the statistics output */
-    vehNumberLV = registerSignal("detectedVehiclesLV");
-    vehNumberHV = registerSignal("detectedVehiclesHV");
-    vehNumberMC = registerSignal("detectedVehiclesMC");
-
-    /** @brief initialized the number of detected vehicles with 0 in the beginning.
-     * Please note that every single type of detected vehicle number is stored within single variable.
-     * @TODO Create an array of this when there is array support in .ned files.
-     */
-    currentNumberofDetectedLV = 0;
-    currentNumberofDetectedHV = 0;
-    currentNumberofDetectedMC = 0;
-
-    /** @brief Total detected vehicle set to 0 */
-    currentNumberofTotalDetectedVehicles = 0;
-
-    /** @brief initializing vehicles array with -1 to prevent conflict with node id within simulation.
-     * Store self id in the first index.
-     */
-    for (int i=0; i < maxVehicles; i++)
-    {
-        listedVehicles[i].id = -1;
-        listedVehicles[i].vType = "undefined";
-    }
+    /** @brief storing vTypeInt in scalar */
+    if(myType.compare("LV")==0) vTypeInt = LV;
+    if(myType.compare("HV")==0) vTypeInt = HV;
+    if(myType.compare("MC")==0) vTypeInt = MC;
+    emit(myTypeInt, vTypeInt);
 }
 
 void TraCITDE::onBeacon(WaveShortMessage* wsm) {
@@ -95,9 +100,9 @@ void TraCITDE::onBeacon(WaveShortMessage* wsm) {
     EV << "########## END OF REPORT ##########" << endl;
 
     /** @brief emit detected vehicle numbers to  its  registered signal, respectively*/
-    emit(vehNumberLV, currentNumberofDetectedLV);
-    emit(vehNumberHV, currentNumberofDetectedHV);
-    emit(vehNumberMC, currentNumberofDetectedMC);
+    if(strcmp(wsm->getWsmData(),"LV")) emit(vehNumberLV, currentNumberofDetectedLV);
+    if(strcmp(wsm->getWsmData(),"HV"))emit(vehNumberHV, currentNumberofDetectedHV);
+    if(strcmp(wsm->getWsmData(),"MC"))emit(vehNumberMC, currentNumberofDetectedMC);
 }
 
 void TraCITDE::onData(WaveShortMessage* wsm) {
@@ -211,15 +216,11 @@ void TraCITDE::updateLastSeenTime(short carId, short counter, simtime_t messageT
     }
 }
 
- std::string TraCITDE::getMyType() {
-     return traciVehicle->getTypeId();
- }
-
- void TraCITDE::handleSelfMsg(cMessage* msg) {
+void TraCITDE::handleSelfMsg(cMessage* msg) {
      switch (msg->getKind()) {
          case SEND_BEACON_EVT: {
              WaveShortMessage* beacon = prepareWSM("beacon", beaconLengthBits, type_CCH, beaconPriority, 0, -1);
-             beacon->setWsmData(getMyType().c_str());
+             beacon->setWsmData(myType.c_str());
              sendWSM(beacon);
              scheduleAt(simTime() + par("beaconInterval").doubleValue(), sendBeaconEvt);
              break;
