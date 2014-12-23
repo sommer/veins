@@ -106,9 +106,11 @@ class TraCIScenarioManager : public cSimpleModule
 		simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
 		simtime_t firstStepAt; /**< when to start synchronizing with the TraCI server (-1: immediately after connecting) */
 		simtime_t updateInterval; /**< time interval of hosts' position updates */
-		std::string moduleType; /**< module type to be used in the simulation for each managed vehicle */
-		std::string moduleName; /**< module name to be used in the simulation for each managed vehicle */
-		std::string moduleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
+		//maps from vehicle type to moduleType, moduleName, and moduleDisplayString
+		typedef std::map<std::string, std::string> TypeMapping;
+		TypeMapping moduleType; /**< module type to be used in the simulation for each managed vehicle */
+		TypeMapping moduleName; /**< module name to be used in the simulation for each managed vehicle */
+		TypeMapping moduleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
 		std::string host;
 		int port;
 
@@ -178,6 +180,18 @@ class TraCIScenarioManager : public cSimpleModule
 		void processSimSubscription(std::string objectId, TraCIBuffer& buf);
 		void processVehicleSubscription(std::string objectId, TraCIBuffer& buf);
 		void processSubcriptionResult(TraCIBuffer& buf);
+
+		/**
+		 * parses the vector of module types in ini file
+		 *
+		 * in case of inconsistencies the function kills the simulation
+		 */
+		void parseModuleTypes();
+
+		/**
+		 * transforms a list of mappings of an omnetpp.ini parameter in a list
+		 */
+		TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
 
 };
 }

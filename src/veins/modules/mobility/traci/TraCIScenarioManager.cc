@@ -58,6 +58,128 @@ TraCIScenarioManager::~TraCIScenarioManager() {
 	delete connection;
 }
 
+TraCIScenarioManager::TypeMapping TraCIScenarioManager::parseMappings(std::string parameter, std::string parameterName, bool allowEmpty) {
+
+	/**
+	 * possible syntaxes
+	 *
+	 * "a"          : assign module type "a" to all nodes (for backward compatibility)
+	 * "a=b"        : assign module type "b" to vehicle type "a". the presence of any other vehicle type in the simulation will cause the simulation to stop
+	 * "a=b c=d"    : assign module type "b" to vehicle type "a" and "d" to "c". the presence of any other vehicle type in the simulation will cause the simulation to stop
+	 * "a=b c=d *=e": everything which is not of vehicle type "a" or "b", assign module type "e"
+	 * "a=b c="     : for vehicle type "c" no module should be instantiated
+	 * "a=b c=d *=" : everything which is not of vehicle type a or c should not be instantiated
+	 *
+	 */
+
+	unsigned int i;
+	TypeMapping map;
+
+	//tokenizer to split into mappings ("a=b c=d", -> ["a=b", "c=d"])
+	cStringTokenizer typesTz(parameter.c_str(), " ");
+	//get all mappings
+	std::vector<std::string> typeMappings = typesTz.asVector();
+	//and check that there exists at least one
+	if (typeMappings.size() == 0) {
+		if (!allowEmpty)
+			opp_error("parameter \"%s\" is empty", parameterName.c_str());
+		else
+			return map;
+	}
+
+	//loop through all mappings
+	for (i = 0; i < typeMappings.size(); i++) {
+
+		//tokenizer to find the mapping from vehicle type to module type
+		std::string typeMapping = typeMappings[i];
+		cStringTokenizer typeMappingTz(typeMapping.c_str(), "=");
+		std::vector<std::string> mapping = typeMappingTz.asVector();
+
+		if (mapping.size() == 1) {
+			//we are where there is no actual assignment
+			//"a": this is good
+			//"a b=c": this is not
+			if (typeMappings.size() != 1)
+				//stop simulation with an error
+				opp_error("parameter \"%s\" includes multiple mappings, but \"%s\" is not mapped to any vehicle type", parameterName.c_str(), mapping[0].c_str());
+			else
+				//all vehicle types should be instantiated with this module type
+				map["*"] = mapping[0];
+		}
+		else {
+
+			//check that mapping is valid (a=b and not like a=b=c)
+			if (mapping.size() != 2)
+				opp_error("invalid syntax for mapping \"%s\" for parameter \"%s\"", typeMapping.c_str(), parameterName.c_str());
+			//check that the mapping does not already exist
+			if (map.find(mapping[0]) != map.end())
+				opp_error("duplicated mapping for vehicle type \"%s\" for parameter \"%s\"", mapping[0].c_str(), parameterName.c_str());
+
+			//finally save the mapping
+			map[mapping[0]] = mapping[1];
+
+		}
+
+	}
+
+	return map;
+
+}
+
+void TraCIScenarioManager::parseModuleTypes() {
+
+	TypeMapping::iterator i;
+	std::vector<std::string> typeKeys, nameKeys, displayStringKeys;
+
+	std::string moduleTypes = par("moduleType").stdstringValue();
+	std::string moduleNames = par("moduleName").stdstringValue();
+	std::string moduleDisplayStrings = par("moduleDisplayString").stdstringValue();
+
+	moduleType = parseMappings(moduleTypes, "moduleType", false);
+	moduleName = parseMappings(moduleNames, "moduleName", false);
+	moduleDisplayString = parseMappings(moduleDisplayStrings, "moduleDisplayString", true);
+
+	//perform consistency check. for each vehicle type in moduleType there must be a vehicle type
+	//in moduleName (and in moduleDisplayString if moduleDisplayString is not empty)
+
+	//get all the keys
+	for (i = moduleType.begin(); i != moduleType.end(); i++)
+		typeKeys.push_back(i->first);
+	for (i = moduleName.begin(); i != moduleName.end(); i++)
+		nameKeys.push_back(i->first);
+	for (i = moduleDisplayString.begin(); i != moduleDisplayString.end(); i++)
+		displayStringKeys.push_back(i->first);
+
+	//sort them (needed for intersection)
+	std::sort(typeKeys.begin(), typeKeys.end());
+	std::sort(nameKeys.begin(), nameKeys.end());
+	std::sort(displayStringKeys.begin(), displayStringKeys.end());
+
+	std::vector<std::string> intersection;
+
+	//perform set intersection
+	std::set_intersection(
+	    typeKeys.begin(), typeKeys.end(),
+	    nameKeys.begin(), nameKeys.end(),
+	    std::back_inserter(intersection)
+	);
+	if (intersection.size() != typeKeys.size() || intersection.size() != nameKeys.size())
+		opp_error("keys of mappings of moduleType and moduleName are not the same");
+
+	if (displayStringKeys.size() == 0)
+		return;
+
+	intersection.clear();
+	std::set_intersection(
+	    typeKeys.begin(), typeKeys.end(),
+	    displayStringKeys.begin(), displayStringKeys.end(),
+	    std::back_inserter(intersection)
+	);
+	if (intersection.size() != displayStringKeys.size())
+		opp_error("keys of mappings of moduleType and moduleName are not the same");
+
+}
+
 void TraCIScenarioManager::initialize(int stage) {
 	cSimpleModule::initialize(stage);
 	if (stage != 1) {
@@ -70,9 +192,7 @@ void TraCIScenarioManager::initialize(int stage) {
 	firstStepAt = par("firstStepAt");
 	updateInterval = par("updateInterval");
 	if (firstStepAt == -1) firstStepAt = connectAt + updateInterval;
-	moduleType = par("moduleType").stdstringValue();
-	moduleName = par("moduleName").stdstringValue();
-	moduleDisplayString = par("moduleDisplayString").stdstringValue();
+	parseModuleTypes();
 	penetrationRate = par("penetrationRate").doubleValue();
 	host = par("host").stdstringValue();
 	port = par("port");
@@ -724,8 +844,43 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 
 	if (!mod) {
 		// no such module - need to create
-		addModule(objectId, moduleType, moduleName, moduleDisplayString, p, edge, speed, angle);
-		MYDEBUG << "Added vehicle #" << objectId << endl;
+		std::string vType = commandIfc->vehicle(objectId).getTypeId();
+		std::string mType, mName, mDisplayString;
+		TypeMapping::iterator iType, iName, iDisplayString;
+
+		TypeMapping::iterator i;
+		iType = moduleType.find(vType);
+		if (iType == moduleType.end()) {
+			iType = moduleType.find("*");
+			if (iType == moduleType.end())
+				opp_error("cannot find a module type for vehicle type \"%s\"", vType.c_str());
+		}
+		mType = iType->second;
+		//search for module name
+		iName = moduleName.find(vType);
+		if (iName == moduleName.end()) {
+			iName = moduleName.find(std::string("*"));
+			if (iName == moduleName.end())
+				opp_error("cannot find a module name for vehicle type \"%s\"", vType.c_str());
+		}
+		mName = iName->second;
+		if (moduleDisplayString.size() != 0) {
+			iDisplayString = moduleDisplayString.find(vType);
+			if (iDisplayString == moduleDisplayString.end()) {
+				iDisplayString = moduleDisplayString.find("*");
+				if (iDisplayString == moduleDisplayString.end())
+					opp_error("cannot find a module display string for vehicle type \"%s\"", vType.c_str());
+			}
+			mDisplayString = iDisplayString->second;
+		}
+		else {
+			mDisplayString = "";
+		}
+
+		if (mType != "") {
+			addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle);
+			MYDEBUG << "Added vehicle #" << objectId << endl;
+		}
 	} else {
 		// module existed - update position
 		for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
