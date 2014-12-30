@@ -30,10 +30,10 @@ simple TraCITDE extends BaseWaveApplLayer
         @signal[vTypeCode](type="short");
         
         //Recording statistics from the model
-        @statistic[currentNumberofDetectedLV](title="Detected Light Vehicles"; source="detectedVehiclesLV"; record=stats,vector);
-        @statistic[currentNumberofDetectedHV](title="Detected Heavy Vehicles"; source="detectedVehiclesHV"; record=stats,vector);
-        @statistic[currentNumberofDetectedMC](title="Detected Motorcycles"; source="detectedVehiclesMC"; record=stats,vector);
-        @statistic[vTypeID](title="Vehicle Type Code"; source="vTypeCode"; record=min);
+        @statistic[currentNumberofDetectedLV](title="Detected Light Vehicles"; source="detectedVehiclesLV"; record=vector);
+        @statistic[currentNumberofDetectedHV](title="Detected Heavy Vehicles"; source="detectedVehiclesHV"; record=vector);
+        @statistic[currentNumberofDetectedMC](title="Detected Motorcycles"; source="detectedVehiclesMC"; record=vector);
+        @statistic[vTypeID](title="Vehicle Type Code"; source="vTypeCode"; record=min,vector);
         
         //Registering the class
         @class(TraCITDE);
