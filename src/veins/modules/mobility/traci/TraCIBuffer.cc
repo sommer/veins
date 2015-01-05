@@ -75,10 +75,4 @@ template<> TraCICoord TraCIBuffer::read() {
 	return p;
 }
 
-bool isBigEndian() {
-	short a = 0x0102;
-	unsigned char *p_a = reinterpret_cast<unsigned char*>(&a);
-	return (p_a[0] == 0x01);
-}
-
 }

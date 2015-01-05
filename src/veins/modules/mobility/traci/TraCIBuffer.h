@@ -10,7 +10,27 @@ namespace Veins {
 
 struct TraCICoord;
 
-bool isBigEndian();
+namespace detail {
+
+template<unsigned> struct size_trait;
+
+template<> struct size_trait<1> {
+	typedef uint8_t type;
+};
+
+template<> struct size_trait<2> {
+	typedef uint16_t type;
+};
+
+template<> struct size_trait<4> {
+	typedef uint32_t type;
+};
+
+template<> struct size_trait<8> {
+	typedef uint64_t type;
+};
+
+} // namespace detail
 
 /**
  * Byte-buffer that stores values in TraCI byte-order
@@ -21,35 +41,37 @@ class TraCIBuffer {
 		TraCIBuffer(std::string buf);
 
 		template<typename T> T read() {
-			T buf_to_return;
-			unsigned char *p_buf_to_return = reinterpret_cast<unsigned char*>(&buf_to_return);
+			union {
+				typename detail::size_trait<sizeof(T)>::type uint;
+				T t;
+			} output;
+			output.uint = 0;
 
-			if (isBigEndian()) {
-				for (size_t i=0; i<sizeof(buf_to_return); ++i) {
-					if (eof()) throw cRuntimeError("Attempted to read past end of byte buffer");
-					p_buf_to_return[i] = buf[buf_index++];
-				}
-			} else {
-				for (size_t i=0; i<sizeof(buf_to_return); ++i) {
-					if (eof()) throw cRuntimeError("Attempted to read past end of byte buffer");
-					p_buf_to_return[sizeof(buf_to_return)-1-i] = buf[buf_index++];
+			if (buf_index + sizeof(output) <= buf.length()) {
+				for (size_t i = 0; i < sizeof(output); ++i) {
+					output.uint <<= 8;
+					output.uint |= buf[buf_index++] & 0xff;
 				}
 			}
+			else {
+				throw cRuntimeError("Attempted to read past end of byte buffer");
+			}
 
-			return buf_to_return;
+			return output.t;
 		}
 
 		template<typename T> void write(T inv) {
-			unsigned char *p_buf_to_send = reinterpret_cast<unsigned char*>(&inv);
+			union {
+				typename detail::size_trait<sizeof(T)>::type uint;
+				T t;
+			} input;
+			input.t = inv;
 
-			if (isBigEndian()) {
-				for (size_t i=0; i<sizeof(inv); ++i) {
-					buf += p_buf_to_send[i];
-				}
-			} else {
-				for (size_t i=0; i<sizeof(inv); ++i) {
-					buf += p_buf_to_send[sizeof(inv)-1-i];
-				}
+			buf.append(sizeof(input), '\0');
+			std::string::reverse_iterator it = buf.rbegin();
+			for (size_t i = 0; i < sizeof(input); ++i) {
+				*it++ = static_cast<uint8_t>(input.uint);
+				input.uint >>= 8;
 			}
 		}
 
