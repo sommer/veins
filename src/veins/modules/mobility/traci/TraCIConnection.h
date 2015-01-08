@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 #include "veins/modules/mobility/traci/TraCIBuffer.h"
-#include "veins/modules/mobility/traci/TraCICoord.h"
-#include "veins/base/utils/Coord.h"
 
 namespace Veins {
 
@@ -12,7 +10,6 @@ class TraCIConnection
 {
 	public:
 		static TraCIConnection* connect(const char* host, int port);
-		void setNetbounds(TraCICoord netbounds1, TraCICoord netbounds2, int margin);
 		~TraCIConnection();
 
 		/**
@@ -35,36 +32,10 @@ class TraCIConnection
 		 */
 		std::string receiveMessage();
 
-		/**
-		 * convert TraCI angle to OMNeT++ angle (in rad)
-		 */
-		double traci2omnetAngle(double angle) const;
-
-		/**
-		 * convert OMNeT++ angle (in rad) to TraCI angle
-		 */
-		double omnet2traciAngle(double angle) const;
-
-		/**
-		 * convert TraCI coordinates to OMNeT++ coordinates
-		 */
-		Coord traci2omnet(TraCICoord coord) const;
-		std::list<Coord> traci2omnet(const std::list<TraCICoord>&) const;
-
-		/**
-		 * convert OMNeT++ coordinates to TraCI coordinates
-		 */
-		TraCICoord omnet2traci(Coord coord) const;
-		std::list<TraCICoord> omnet2traci(const std::list<Coord>&) const;
-
 	private:
 		TraCIConnection(void*);
 
 		void* socketPtr;
-		TraCICoord netbounds1; /* network boundaries as reported by TraCI (x1, y1) */
-		TraCICoord netbounds2; /* network boundaries as reported by TraCI (x2, y2) */
-		int margin;
-
 };
 
 /**
