@@ -172,7 +172,7 @@ double TraCICommandInterface::getDistance(const Coord& p1, const Coord& p2, bool
 	uint8_t dType = static_cast<uint8_t>(returnDrivingDistance ? REQUEST_DRIVINGDIST : REQUEST_AIRDIST);
 
 	// query road network boundaries
-	TraCIBuffer buf = connection.query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << variable << simId << variableType << count << connection.omnet2traci(p1) << connection.omnet2traci(p2) << dType);
+	TraCIBuffer buf = connection.query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << variable << simId << variableType << count << netbounds.omnet2traci(p1) << netbounds.omnet2traci(p2) << dType);
 	uint8_t cmdLength_resp; buf >> cmdLength_resp;
 	uint8_t commandId_resp; buf >> commandId_resp; ASSERT(commandId_resp == RESPONSE_GET_SIM_VARIABLE);
 	uint8_t variableId_resp; buf >> variableId_resp; ASSERT(variableId_resp == variable);
@@ -229,7 +229,7 @@ void TraCICommandInterface::Polygon::setShape(const std::list<Coord>& points) {
 	uint8_t count = static_cast<uint8_t>(points.size());
 	buf << static_cast<uint8_t>(VAR_SHAPE) << polyId << static_cast<uint8_t>(TYPE_POLYGON) << count;
 	for (std::list<Coord>::const_iterator i = points.begin(); i != points.end(); ++i) {
-		const TraCICoord& pos = connection->omnet2traci(*i);
+		const TraCICoord& pos = traci->netBoundary().omnet2traci(*i);
 		buf << static_cast<double>(pos.x) << static_cast<double>(pos.y);
 	}
 	TraCIBuffer obuf = connection->query(CMD_SET_POLYGON_VARIABLE, buf);
@@ -247,7 +247,7 @@ void TraCICommandInterface::addPolygon(std::string polyId, std::string polyType,
 	p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
 	p << static_cast<uint8_t>(TYPE_POLYGON) << static_cast<uint8_t>(points.size());
 	for (std::list<Coord>::const_iterator i = points.begin(); i != points.end(); ++i) {
-		const TraCICoord& pos = connection.omnet2traci(*i);
+		const TraCICoord& pos = netbounds.omnet2traci(*i);
 		p << static_cast<double>(pos.x) << static_cast<double>(pos.y);
 	}
 
@@ -265,16 +265,15 @@ void TraCICommandInterface::Polygon::remove(int32_t layer) {
 	ASSERT(buf.eof());
 }
 
-void TraCICommandInterface::addPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, const Coord& pos_) {
+void TraCICommandInterface::addPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, const Coord& pos) {
 	TraCIBuffer p;
 
-	TraCICoord pos = connection.omnet2traci(pos_);
 	p << static_cast<uint8_t>(ADD) << poiId;
 	p << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(4);
 	p << static_cast<uint8_t>(TYPE_STRING) << poiType;
 	p << static_cast<uint8_t>(TYPE_COLOR) << color.red << color.green << color.blue << color.alpha;
 	p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
-	p << pos;
+	p << netbounds.omnet2traci(pos);
 
 	TraCIBuffer buf = connection.query(CMD_SET_POI_VARIABLE, p);
 	ASSERT(buf.eof());
@@ -356,7 +355,7 @@ std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord) {
 	TraCIBuffer request;
 	request << static_cast<uint8_t>(POSITION_CONVERSION) << std::string("sim0")
 			<< static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(2)
-			<< connection.omnet2traci(coord)
+			<< netbounds.omnet2traci(coord)
 			<< static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(POSITION_LON_LAT);
 	TraCIBuffer response = connection.query(CMD_GET_SIM_VARIABLE, request);
 
@@ -389,8 +388,8 @@ void TraCICommandInterface::GuiView::setZoom(double zoom) {
 }
 
 void TraCICommandInterface::GuiView::setBoundary(Coord p1_, Coord p2_) {
-	TraCICoord p1 = connection->omnet2traci(p1_);
-	TraCICoord p2 = connection->omnet2traci(p2_);
+	TraCICoord p1 = traci->netBoundary().omnet2traci(p1_);
+	TraCICoord p2 = traci->netBoundary().omnet2traci(p2_);
 
 	TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_BOUNDARY) << viewId << static_cast<uint8_t>(TYPE_BOUNDINGBOX) << p1.x << p1.y << p2.x << p2.y);
 	ASSERT(buf.eof());
@@ -470,7 +469,7 @@ Coord TraCICommandInterface::genericGetCoord(uint8_t commandId, std::string obje
 
 	ASSERT(buf.eof());
 
-	return connection.traci2omnet(TraCICoord(x, y));
+	return netbounds.traci2omnet(TraCICoord(x, y));
 }
 
 double TraCICommandInterface::genericGetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId) {
@@ -582,7 +581,7 @@ std::list<Coord> TraCICommandInterface::genericGetCoordList(uint8_t commandId, s
 	for (uint32_t i = 0; i < count; i++) {
 		double x; buf >> x;
 		double y; buf >> y;
-		res.push_back(connection.traci2omnet(TraCICoord(x, y)));
+		res.push_back(netbounds.traci2omnet(TraCICoord(x, y)));
 	}
 
 	ASSERT(buf.eof());
