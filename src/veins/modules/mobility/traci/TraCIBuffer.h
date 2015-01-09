@@ -49,7 +49,7 @@ class TraCIBuffer {
 
 			if (buf_index + sizeof(output) <= buf.length()) {
 				for (size_t i = 0; i < sizeof(output); ++i) {
-					output.uint <<= 8;
+					if (sizeof(T) > 1) output.uint <<= 8;
 					output.uint |= buf[buf_index++] & 0xff;
 				}
 			}
@@ -71,7 +71,7 @@ class TraCIBuffer {
 			std::string::reverse_iterator it = buf.rbegin();
 			for (size_t i = 0; i < sizeof(input); ++i) {
 				*it++ = static_cast<uint8_t>(input.uint);
-				input.uint >>= 8;
+				if (sizeof(T) > 1) input.uint >>= 8;
 			}
 		}
 
