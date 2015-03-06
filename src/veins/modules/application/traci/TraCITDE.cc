@@ -59,8 +59,13 @@ void TraCITDE::initialize(int stage) {
          * @TODO Create an array of this when there is array support in .ned files.
          */
         currentNumberofDetectedLV = 0;
+        emit(vehNumberLV, currentNumberofDetectedLV);
+
         currentNumberofDetectedHV = 0;
+        emit(vehNumberHV, currentNumberofDetectedHV);
+
         currentNumberofDetectedMC = 0;
+        emit(vehNumberMC, currentNumberofDetectedMC);
 
         /** @brief Total detected vehicle set to 0 */
         currentNumberofTotalDetectedVehicles = 0;
@@ -73,36 +78,56 @@ void TraCITDE::initialize(int stage) {
             listedVehicles[i].id = -1;
             listedVehicles[i].vType = "undefined";
         }
-    }
+        if (debugAppTDE==true) showInfo(currentNumberofTotalDetectedVehicles);
 
-    /** @brief storing vTypeInt in scalar */
-    if(myType.compare("LV")==0) vTypeInt = LV;
-    if(myType.compare("HV")==0) vTypeInt = HV;
-    if(myType.compare("MC")==0) vTypeInt = MC;
-    emit(myTypeInt, vTypeInt);
+                /** @brief storing vTypeInt in scalar */
+                if(myType.compare("MC")==0) {
+                    vTypeInt = MC;
+//                    currentNumberofDetectedMC++;
+//                    emit(vehNumberMC, currentNumberofDetectedMC);
+                }
+                else if(myType.compare("LV")==0) {
+                    vTypeInt = LV;
+//                    currentNumberofDetectedLV++;
+//                    emit(vehNumberLV, currentNumberofDetectedLV);
+                }
+                else if(myType.compare("HV")==0) {
+                    vTypeInt = HV;
+//                    currentNumberofDetectedHV++;
+//                    emit(vehNumberHV, currentNumberofDetectedHV);
+                }
+
+        if(debugAppTDE==true) EV << "[" << myId << "] My type is " << myType << ", storing scalar type with " << vTypeInt << endl;
+        emit(myTypeInt, vTypeInt);
+
+        // Set the first vehicle type as itself
+        if (listedVehicles[0].vType=="undefined") {
+            if(!myType.empty()) append2List(myId, 0, simTime(), myType);
+            else DBG << "App Error: myType is UNSET.";
+        }
+
+        else DBG << "APP: Error: Unknown type: " << myType << endl;
+
+        if (debugAppTDE==true) showInfo(currentNumberofTotalDetectedVehicles);
+    }
 }
 
 void TraCITDE::onBeacon(WaveShortMessage* wsm) {
-    // Set the first vehicle type as itself
-    if (listedVehicles[0].vType=="undefined") {
-        if(!myType.empty()) append2List(myId, 0, simTime(), myType);
-        else DBG << "App Error: myType is UNSET.";
-    }
-
     EV << "### REPORT OF VEHICLE WITH ID " << myId << ", type " << myType <<" ###" << endl;
     EV << "Received BEACON from " << wsm->getSenderAddress() << " on " << wsm->getArrivalTime() << " type " << wsm->getWsmData() << "."<< endl;
 
     if (indexedCar(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles)==false) {
-            append2List(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles,  wsm->getArrivalTime(), wsm->getWsmData());
-        }
+        append2List(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles,  wsm->getArrivalTime(), wsm->getWsmData());
+    }
     else updateLastSeenTime(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles, wsm->getArrivalTime());
     if (debugAppTDE==true) showInfo(currentNumberofTotalDetectedVehicles);
     EV << "########## END OF REPORT ##########" << endl;
 
     /** @brief emit detected vehicle numbers to  its  registered signal, respectively*/
-    if(strcmp(wsm->getWsmData(),"LV")) emit(vehNumberLV, currentNumberofDetectedLV);
-    if(strcmp(wsm->getWsmData(),"HV"))emit(vehNumberHV, currentNumberofDetectedHV);
-    if(strcmp(wsm->getWsmData(),"MC"))emit(vehNumberMC, currentNumberofDetectedMC);
+//    if(strcmp(wsm->getWsmData(),"MC")) emit(vehNumberMC, currentNumberofDetectedMC);
+//    else if(strcmp(wsm->getWsmData(),"LV")) emit(vehNumberLV, currentNumberofDetectedLV);
+//    else if(strcmp(wsm->getWsmData(),"HV")) emit(vehNumberHV, currentNumberofDetectedHV);
+//    else DBG << "Unknown vehicle type" << wsm->getWsmData() << endl;
 }
 
 void TraCITDE::onData(WaveShortMessage* wsm) {
@@ -183,14 +208,16 @@ void TraCITDE::append2List(short carId, short firstEmptyArrayIndex, simtime_t me
     listedVehicles[firstEmptyArrayIndex].id = carId;
     listedVehicles[firstEmptyArrayIndex].lastSeenAt = messageTime;
     listedVehicles[firstEmptyArrayIndex].vType = vType;
-    EV << "Appending car with id " << carId <<" type "<< myType << " to the list of known vehicle." <<endl;
+    EV << "Appending car with id " << carId <<" type "<< vType << " to the list of known vehicle." <<endl;
 
     /* @brief Increase related counting variable
      * The total number always increased for each vehicle
      */
-    if (vType == "LV") currentNumberofDetectedLV++;
-    if (vType == "HV") currentNumberofDetectedHV++;
-    if (vType == "MC") currentNumberofDetectedMC++;
+    if (vType == "MC") { currentNumberofDetectedMC++; emit(vehNumberMC, currentNumberofDetectedMC); }
+    if (vType == "LV") { currentNumberofDetectedLV++; emit(vehNumberLV, currentNumberofDetectedLV); }
+    if (vType == "HV") { currentNumberofDetectedHV++; emit(vehNumberHV, currentNumberofDetectedHV); }
+
+    else DBG << "Unknown vehicle type" << vType << endl;
     currentNumberofTotalDetectedVehicles++;
 }
 
