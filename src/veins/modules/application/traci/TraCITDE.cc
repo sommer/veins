@@ -45,6 +45,7 @@ void TraCITDE::initialize(int stage) {
         sendWhileParking = par("sendWhileParking").boolValue();
 
         debugAppTDE = par("debugAppTDE").boolValue();
+        statInterval = par("statInterval").doubleValue();
 
         myType = traciVehicle->getTypeId();
 
@@ -59,16 +60,15 @@ void TraCITDE::initialize(int stage) {
          * @TODO Create an array of this when there is array support in .ned files.
          */
         currentNumberofDetectedLV = 0;
-        emit(vehNumberLV, currentNumberofDetectedLV);
-
         currentNumberofDetectedHV = 0;
-        emit(vehNumberHV, currentNumberofDetectedHV);
-
         currentNumberofDetectedMC = 0;
-        emit(vehNumberMC, currentNumberofDetectedMC);
 
         /** @brief Total detected vehicle set to 0 */
         currentNumberofTotalDetectedVehicles = 0;
+
+        /** Scheduling the first statistics signals update */
+        updateStatMsg = new cMessage("statistics update", UPDATE_STATS);
+        scheduleAt(simTime() + statInterval, updateStatMsg);
 
         /** @brief initializing vehicles array with -1 to prevent conflict with node id within simulation.
          * Store self id in the first index.
@@ -122,12 +122,6 @@ void TraCITDE::onBeacon(WaveShortMessage* wsm) {
     else updateLastSeenTime(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles, wsm->getArrivalTime());
     if (debugAppTDE==true) showInfo(currentNumberofTotalDetectedVehicles);
     EV << "########## END OF REPORT ##########" << endl;
-
-    /** @brief emit detected vehicle numbers to  its  registered signal, respectively*/
-//    if(strcmp(wsm->getWsmData(),"MC")) emit(vehNumberMC, currentNumberofDetectedMC);
-//    else if(strcmp(wsm->getWsmData(),"LV")) emit(vehNumberLV, currentNumberofDetectedLV);
-//    else if(strcmp(wsm->getWsmData(),"HV")) emit(vehNumberHV, currentNumberofDetectedHV);
-//    else DBG << "Unknown vehicle type" << wsm->getWsmData() << endl;
 }
 
 void TraCITDE::onData(WaveShortMessage* wsm) {
@@ -213,11 +207,11 @@ void TraCITDE::append2List(short carId, short firstEmptyArrayIndex, simtime_t me
     /* @brief Increase related counting variable
      * The total number always increased for each vehicle
      */
-    if (vType == "MC") { currentNumberofDetectedMC++; emit(vehNumberMC, currentNumberofDetectedMC); }
-    if (vType == "LV") { currentNumberofDetectedLV++; emit(vehNumberLV, currentNumberofDetectedLV); }
-    if (vType == "HV") { currentNumberofDetectedHV++; emit(vehNumberHV, currentNumberofDetectedHV); }
-
+    if (vType == "MC") { currentNumberofDetectedMC++; /* emit(vehNumberMC, currentNumberofDetectedMC); */ }
+    if (vType == "LV") { currentNumberofDetectedLV++; /* emit(vehNumberLV, currentNumberofDetectedLV); */ }
+    if (vType == "HV") { currentNumberofDetectedHV++; /* emit(vehNumberHV, currentNumberofDetectedHV); */ }
     else DBG << "Unknown vehicle type" << vType << endl;
+
     currentNumberofTotalDetectedVehicles++;
 }
 
@@ -243,6 +237,13 @@ void TraCITDE::updateLastSeenTime(short carId, short counter, simtime_t messageT
     }
 }
 
+void TraCITDE::updateStats() {
+    if(debugAppTDE==true) EV << "Updating statistics record" << endl;
+    emit(vehNumberMC, currentNumberofDetectedMC);
+    emit(vehNumberLV, currentNumberofDetectedLV);
+    emit(vehNumberHV, currentNumberofDetectedHV);
+}
+
 void TraCITDE::handleSelfMsg(cMessage* msg) {
      switch (msg->getKind()) {
          case SEND_BEACON_EVT: {
@@ -250,6 +251,11 @@ void TraCITDE::handleSelfMsg(cMessage* msg) {
              beacon->setWsmData(myType.c_str());
              sendWSM(beacon);
              scheduleAt(simTime() + par("beaconInterval").doubleValue(), sendBeaconEvt);
+             break;
+         }
+         case UPDATE_STATS: {
+             updateStats();
+             scheduleAt(simTime() + statInterval, updateStatMsg);
              break;
          }
 //         case GET_MY_TYPE: {

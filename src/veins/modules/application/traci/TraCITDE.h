@@ -59,9 +59,18 @@ private:
      */
     enum vType { MC, LV, HV };
 
+    /** Interval for statistics signals update */
+    double   statInterval;
+    cMessage* updateStatMsg;
+
 public:
     virtual void initialize(int stage);
     virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj);
+    enum WaveApplMessageKinds {
+        SERVICE_PROVIDER = LAST_BASE_APPL_MESSAGE_KIND,
+        SEND_BEACON_EVT,
+        UPDATE_STATS
+    };
 
 protected:
     TraCIMobility* mobility;
@@ -142,6 +151,9 @@ protected:
 
     /** Overloading handleSelfMsg to include vType */
     virtual void handleSelfMsg(cMessage* msg);
+
+    /** Handling regular update of statistics signals */
+    virtual void updateStats();
 };
 
 #endif
