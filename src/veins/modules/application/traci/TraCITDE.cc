@@ -253,37 +253,41 @@ void TraCITDE::updateStats() {
 }
 
 /** delete timed out vehicle from the list and restructure the array */
-void TraCITDE::deleteAndRestructureArray(short nodeIndex) {
-    short i;
-    if(listedVehicles[nodeIndex].id != myId){
-    /** Decreasing counters */
-    if (listedVehicles[nodeIndex].vType == "MC") currentNumberofDetectedMC--;
-    if (listedVehicles[nodeIndex].vType == "LV") currentNumberofDetectedLV--;
-    if (listedVehicles[nodeIndex].vType == "HV") currentNumberofDetectedHV--;
-    currentNumberofTotalDetectedVehicles--;
+void TraCITDE::deleteAndRestructureArray() {
+    int i,j;
+    bool lastNodeChecked = false;
 
-    EV << "NODE " << myId << ": Deleting node with ID: " << listedVehicles[nodeIndex].id <<", type: " << listedVehicles[nodeIndex].vType << endl;
-    for (i=nodeIndex; i<currentNumberofTotalDetectedVehicles; i++) listedVehicles[i] = listedVehicles[i+1];
-    } else {
-        EV << "Illegal operation: deleting myself from list." << endl;
-    }
-    if(debugAppTDE) showInfo(currentNumberofTotalDetectedVehicles);
-}
+    DBG << "NODE ID " << myId <<" Entering method: deleteAndRestructureArray()" << endl;
+    //do {
+        for (i=1; i<currentNumberofTotalDetectedVehicles; i++) {
+            if(debugAppTDE) EV << "Checking last seen time for list index [" << i << "], ID: " << listedVehicles[i].id << endl;
 
-/** Search for timed-out vehicle in the list, returning node ID of timed out vehicle */
-short TraCITDE::searchForTimedOutVehicle() {
-    short i;
-    short returnedNodeIndex;
+            if (listedVehicles[i].lastSeenAt < (simTime()-timeoutInterval)) {
+                EV << "Found timed out node in index. ID: " << listedVehicles[i].id
+                        << ", type " << listedVehicles[i].vType
+                        << " was last seen at " << listedVehicles[i].lastSeenAt
+                        << " while current time is " << simTime() << "." << endl;
 
-    for (i=1; i<=currentNumberofTotalDetectedVehicles; i++) {
-        EV << "Checking DB for node with index " << i << endl;
-        if (listedVehicles[i].lastSeenAt < (simTime()-timeoutInterval)) {
-            EV << "NODE " << myId << ": Found obsolete item in list. ID " << listedVehicles[i].id << ", type: " << listedVehicles[i].vType << ". Last seen at: " << listedVehicles[i].lastSeenAt << " current simulation time is: " << simTime() << endl;
-            returnedNodeIndex = i;
-            break;
+                if (listedVehicles[i].vType == "MC") {
+                    currentNumberofDetectedMC--;
+                } else if (listedVehicles[i].vType == "LV") {
+                    currentNumberofDetectedLV--;
+                } else if (listedVehicles[i].vType == "HV") {
+                    currentNumberofDetectedHV--;
+                } else EV << "Node ID: " << myId << "Unknown vehicle type from node: " << listedVehicles[i].id << endl;
+
+                for (j=i; j<currentNumberofTotalDetectedVehicles; j++) {
+                    listedVehicles[j] = listedVehicles[j+1];
+                }
+                currentNumberofTotalDetectedVehicles--;
+                //if(i==currentNumberofTotalDetectedVehicles)lastNodeChecked = true;
+                //break;
+            }
         }
-    }
-    return returnedNodeIndex;
+
+        if(debugAppTDE) showInfo(currentNumberofTotalDetectedVehicles);
+
+    //} while(!lastNodeChecked);
 }
 
 void TraCITDE::handleSelfMsg(cMessage* msg) {
@@ -301,7 +305,7 @@ void TraCITDE::handleSelfMsg(cMessage* msg) {
         break;
     }
     case CHECK_TIMEOUT: {
-        if(currentNumberofTotalDetectedVehicles>1) deleteAndRestructureArray(searchForTimedOutVehicle());
+        if(currentNumberofTotalDetectedVehicles>1) deleteAndRestructureArray();
         scheduleAt(simTime() + timeoutMsgInterval, timeoutMsg);
         break;
     }

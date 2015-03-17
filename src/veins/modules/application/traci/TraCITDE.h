@@ -160,11 +160,8 @@ protected:
     /** Handling regular update of statistics signals */
     virtual void updateStats();
 
-    /** Search for timed-out vehicle in the list, returning node ID of timed out vehicle */
-    virtual short searchForTimedOutVehicle();
-
     /** delete timed out vehicle from the list and restructure the array */
-    virtual void deleteAndRestructureArray(short nodeIndex);
+    virtual void deleteAndRestructureArray();
 };
 
 #endif
