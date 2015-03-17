@@ -63,13 +63,19 @@ private:
     double   statInterval;
     cMessage* updateStatMsg;
 
+    /** @brief Timeout for registering a node in list */
+    simtime_t timeoutInterval;
+    double timeoutMsgInterval;
+    cMessage* timeoutMsg;
+
 public:
     virtual void initialize(int stage);
     virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj);
     enum WaveApplMessageKinds {
         SERVICE_PROVIDER = LAST_BASE_APPL_MESSAGE_KIND,
         SEND_BEACON_EVT,
-        UPDATE_STATS
+        UPDATE_STATS,
+        CHECK_TIMEOUT
     };
 
 protected:
@@ -108,7 +114,6 @@ protected:
     /** @brief variable storing vehicle type. Will be feed to scalar later */
     vType vTypeInt;
 
-protected:
     /** @brief Method to execute while receiving a beacon */
     virtual void onBeacon(WaveShortMessage* wsm);
 
@@ -154,6 +159,12 @@ protected:
 
     /** Handling regular update of statistics signals */
     virtual void updateStats();
+
+    /** Search for timed-out vehicle in the list, returning node ID of timed out vehicle */
+    virtual short searchForTimedOutVehicle();
+
+    /** delete timed out vehicle from the list and restructure the array */
+    virtual void deleteAndRestructureArray(short nodeIndex);
 };
 
 #endif

@@ -46,6 +46,8 @@ void TraCITDE::initialize(int stage) {
 
         debugAppTDE = par("debugAppTDE").boolValue();
         statInterval = par("statInterval").doubleValue();
+        timeoutInterval = (simtime_t) par("timeoutInterval").doubleValue();
+        timeoutMsgInterval = par("timeoutMsgInterval").doubleValue();
 
         myType = traciVehicle->getTypeId();
 
@@ -70,6 +72,10 @@ void TraCITDE::initialize(int stage) {
         updateStatMsg = new cMessage("statistics update", UPDATE_STATS);
         scheduleAt(simTime() + statInterval, updateStatMsg);
 
+        if(timeoutInterval>0){
+            timeoutMsg = new cMessage("check for timed out node", CHECK_TIMEOUT);
+            scheduleAt(simTime() + timeoutMsgInterval, timeoutMsg);
+        }
         /** @brief initializing vehicles array with -1 to prevent conflict with node id within simulation.
          * Store self id in the first index.
          */
@@ -80,22 +86,22 @@ void TraCITDE::initialize(int stage) {
         }
         if (debugAppTDE==true) showInfo(currentNumberofTotalDetectedVehicles);
 
-                /** @brief storing vTypeInt in scalar */
-                if(myType.compare("MC")==0) {
-                    vTypeInt = MC;
-//                    currentNumberofDetectedMC++;
-//                    emit(vehNumberMC, currentNumberofDetectedMC);
-                }
-                else if(myType.compare("LV")==0) {
-                    vTypeInt = LV;
-//                    currentNumberofDetectedLV++;
-//                    emit(vehNumberLV, currentNumberofDetectedLV);
-                }
-                else if(myType.compare("HV")==0) {
-                    vTypeInt = HV;
-//                    currentNumberofDetectedHV++;
-//                    emit(vehNumberHV, currentNumberofDetectedHV);
-                }
+        /** @brief storing vTypeInt in scalar */
+        if(myType.compare("MC")==0) {
+            vTypeInt = MC;
+            //                    currentNumberofDetectedMC++;
+            //                    emit(vehNumberMC, currentNumberofDetectedMC);
+        }
+        else if(myType.compare("LV")==0) {
+            vTypeInt = LV;
+            //                    currentNumberofDetectedLV++;
+            //                    emit(vehNumberLV, currentNumberofDetectedLV);
+        }
+        else if(myType.compare("HV")==0) {
+            vTypeInt = HV;
+            //                    currentNumberofDetectedHV++;
+            //                    emit(vehNumberHV, currentNumberofDetectedHV);
+        }
 
         if(debugAppTDE==true) EV << "[" << myId << "] My type is " << myType << ", storing scalar type with " << vTypeInt << endl;
         emit(myTypeInt, vTypeInt);
@@ -210,14 +216,16 @@ void TraCITDE::append2List(short carId, short firstEmptyArrayIndex, simtime_t me
     if (vType == "MC") { currentNumberofDetectedMC++; /* emit(vehNumberMC, currentNumberofDetectedMC); */ }
     if (vType == "LV") { currentNumberofDetectedLV++; /* emit(vehNumberLV, currentNumberofDetectedLV); */ }
     if (vType == "HV") { currentNumberofDetectedHV++; /* emit(vehNumberHV, currentNumberofDetectedHV); */ }
-    else DBG << "Unknown vehicle type" << vType << endl;
-
+    /*
+     * @TODO Find out why this line failed to act as expected.
+     *else DBG << "Unknown vehicle type" << vType << endl;
+     */
     currentNumberofTotalDetectedVehicles++;
 }
 
 void TraCITDE::showInfo(short counter){
     EV << "Listed vehicles are:"<<endl;
-    for(int i=0; i < counter; i++) EV << listedVehicles[i].id << "\ttype\t" << listedVehicles[i].vType << "\tat\t" << listedVehicles[i].lastSeenAt << endl;
+    for(int i=0; i < counter; i++) EV << "[" << i << "] " << listedVehicles[i].id << "\ttype\t" << listedVehicles[i].vType << "\tat\t" << listedVehicles[i].lastSeenAt << endl;
     EV << endl;
 
     EV << "Number of detected light vehicles\t: " << currentNumberofDetectedLV << endl;
@@ -244,29 +252,63 @@ void TraCITDE::updateStats() {
     emit(vehNumberHV, currentNumberofDetectedHV);
 }
 
+/** delete timed out vehicle from the list and restructure the array */
+void TraCITDE::deleteAndRestructureArray(short nodeIndex) {
+    short i;
+    if(listedVehicles[nodeIndex].id != myId){
+    /** Decreasing counters */
+    if (listedVehicles[nodeIndex].vType == "MC") currentNumberofDetectedMC--;
+    if (listedVehicles[nodeIndex].vType == "LV") currentNumberofDetectedLV--;
+    if (listedVehicles[nodeIndex].vType == "HV") currentNumberofDetectedHV--;
+    currentNumberofTotalDetectedVehicles--;
+
+    EV << "NODE " << myId << ": Deleting node with ID: " << listedVehicles[nodeIndex].id <<", type: " << listedVehicles[nodeIndex].vType << endl;
+    for (i=nodeIndex; i<currentNumberofTotalDetectedVehicles; i++) listedVehicles[i] = listedVehicles[i+1];
+    } else {
+        EV << "Illegal operation: deleting myself from list." << endl;
+    }
+    if(debugAppTDE) showInfo(currentNumberofTotalDetectedVehicles);
+}
+
+/** Search for timed-out vehicle in the list, returning node ID of timed out vehicle */
+short TraCITDE::searchForTimedOutVehicle() {
+    short i;
+    short returnedNodeIndex;
+
+    for (i=1; i<=currentNumberofTotalDetectedVehicles; i++) {
+        EV << "Checking DB for node with index " << i << endl;
+        if (listedVehicles[i].lastSeenAt < (simTime()-timeoutInterval)) {
+            EV << "NODE " << myId << ": Found obsolete item in list. ID " << listedVehicles[i].id << ", type: " << listedVehicles[i].vType << ". Last seen at: " << listedVehicles[i].lastSeenAt << " current simulation time is: " << simTime() << endl;
+            returnedNodeIndex = i;
+            break;
+        }
+    }
+    return returnedNodeIndex;
+}
+
 void TraCITDE::handleSelfMsg(cMessage* msg) {
-     switch (msg->getKind()) {
-         case SEND_BEACON_EVT: {
-             WaveShortMessage* beacon = prepareWSM("beacon", beaconLengthBits, type_CCH, beaconPriority, 0, -1);
-             beacon->setWsmData(myType.c_str());
-             sendWSM(beacon);
-             scheduleAt(simTime() + par("beaconInterval").doubleValue(), sendBeaconEvt);
-             break;
-         }
-         case UPDATE_STATS: {
-             updateStats();
-             scheduleAt(simTime() + statInterval, updateStatMsg);
-             break;
-         }
-//         case GET_MY_TYPE: {
-//             myType = getMyType();
-//             EV << "Node "<< myId << " detected self-type: " << myType << endl;
-//             break;
-//         }
-         default: {
-             if (msg)
-                 DBG << "APP: Error: Got Self Message of unknown kind! Name: " << msg->getName() << endl;
-             break;
-         }
-     }
- }
+    switch (msg->getKind()) {
+    case SEND_BEACON_EVT: {
+        WaveShortMessage* beacon = prepareWSM("beacon", beaconLengthBits, type_CCH, beaconPriority, 0, -1);
+        beacon->setWsmData(myType.c_str());
+        sendWSM(beacon);
+        scheduleAt(simTime() + par("beaconInterval").doubleValue(), sendBeaconEvt);
+        break;
+    }
+    case UPDATE_STATS: {
+        updateStats();
+        scheduleAt(simTime() + statInterval, updateStatMsg);
+        break;
+    }
+    case CHECK_TIMEOUT: {
+        if(currentNumberofTotalDetectedVehicles>1) deleteAndRestructureArray(searchForTimedOutVehicle());
+        scheduleAt(simTime() + timeoutMsgInterval, timeoutMsg);
+        break;
+    }
+    default: {
+        if (msg)
+            DBG << "APP: Error: Got Self Message of unknown kind! Name: " << msg->getName() << endl;
+        break;
+    }
+    }
+}
