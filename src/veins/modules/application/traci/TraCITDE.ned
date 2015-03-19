@@ -42,6 +42,7 @@ simple TraCITDE extends BaseWaveApplLayer
         //Additional parameters
         bool sendWhileParking  = default(false); //send messages when the car is parked
         bool debugAppTDE = default(false); //print TDE application messages
+        bool enableTDE = default(false);
         double statInterval @unit("s") = default(0.1s);
         double timeoutInterval @unit("s") = default(10s);
         double timeoutMsgInterval @unit("s") = default(1s); //checking every seconds

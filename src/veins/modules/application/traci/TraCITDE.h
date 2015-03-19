@@ -14,11 +14,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Part of my Master of Engineering thesis project.
-// Copyright (C) 2014 Daniel Febrian Sengkey <danielsengkey.cio13@mail.ugm.ac.id>
+// Copyright (C) 2015 Daniel Febrian Sengkey <danielsengkey.cio13@mail.ugm.ac.id>
 // Department of Electrical Engineering, Gadjah Mada University
 // Yogyakarta, INDONESIA
 //
-// Most parts of this file was derived from TraCIDemo11p.{cc,h} of Veins 3.0 by Dr.-Ing. Christoph Sommer#ifndef TraCITDE_H
+// Most parts of this file was derived from TraCIDemo11p.{cc,h} of Veins by Dr.-Ing. Christoph Sommer
 
 #ifndef TraCITDE_H
 #define TraCITDE_H
@@ -52,7 +52,12 @@ private:
         std::string vType;
         simtime_t lastSeenAt;
     };
+
+    /** @brief controlling vehicle list information */
     bool debugAppTDE;
+
+    /** @brief enable/disable traffic density estimation */
+    bool enableTDE;
 
     /** @brief Declaring enumerated values for each type of vehicle.
      * This values have no use with application layer but important for post-processing.
@@ -69,6 +74,8 @@ private:
     cMessage* timeoutMsg;
 
 public:
+//    ~TraCITDE();
+    virtual void finish();
     virtual void initialize(int stage);
     virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj);
     enum WaveApplMessageKinds {
