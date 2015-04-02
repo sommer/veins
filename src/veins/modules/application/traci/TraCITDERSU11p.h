@@ -69,15 +69,21 @@ private:
 
     /** @brief Timeout for registering a node in list */
     simtime_t timeoutInterval;
+
+    /** @brief Time limit (s) before a node deleted from the list */
     double timeoutMsgInterval;
     cMessage* timeoutMsg;
 
 	public:
         virtual void finish();
 		virtual void initialize(int stage);
-	    enum WaveApplMessageKinds {
+
+		/** @brief Enumerated values for handling self messages. */
+		enum WaveApplMessageKinds {
 	        UPDATE_STATS,
-	        CHECK_TIMEOUT
+	        CHECK_TIMEOUT,
+	        CHECK_ROAD,
+	        INTERVENTION_TEST
 	    };
 
 	protected:
@@ -105,11 +111,95 @@ private:
 		    /** @brief variable  that stores total number of detected vehicles */
 		    currentNumberofTotalDetectedVehicles;
 
-		    /** @brief variable containing the vehicle type */
-		    std::string myType;
+		    /** @brief Passenger car equivalent for motorcycle. */
+		    double pceMC;
+
+		    /* @brief Passenger car equivalent for light vehicle. */
+		    double pceLV;
+
+		    /** @brief Passenger car equivalent for heavy vehicle. */
+		    double pceHV;
+
+//		    /** @brief variable containing the vehicle type */
+//		    std::string myType;
 
 		    /** @brief variable storing vehicle type. Will be feed to scalar later */
 		    vType vTypeInt;
+
+		    /** @brief Road basic capacity, value for a single lane. Symbolized as C0 in MKJI */
+		    double basicCapacity;
+
+		    /** @brief Correction factor for road width (FCw).*/
+		    double correctionFactorWidth;
+
+		    /** @brief Correction factor for side friction (FCsf).*/
+		    double correctionFactorSideFriction;
+
+		    /** @brief Correction factor for city size (FCcs).*/
+		    double correctionFactorCitySize;
+
+		    /** @brief Road capacity, based on calculation of previous variables. */
+		    double roadCapacity;
+
+		    /** @brief Number of lanes */
+		    double numLanes;
+
+		    /** @brief Time slot for calculation. Division between update (monitoring interval) and number of seconds in an hour. */
+		    double timeSlot;
+
+		    /**
+		     * @brief A function to calculate road capacity. During initialization this method will be called to initialized related variable.
+		     * @param[in] bc basic capacity
+		     * @param[in] cfw correction factor for width of the road
+		     * @param[in] csf correction factor for side friction
+		     * @param[in] cfcs correction factor for city size
+		     * @param[out] Edge capacity in passenger car unit (pce)
+		     *
+		     *@return Value of the edge capacity
+		     */
+		    double calculateCapacity(double bc, double cfw, double csf, double cfcs, double numLanes);
+
+            /**
+             *  @brief Traffic volume. Number of vehicle per time unit, updated regularly
+             *  @param[in] nMC current number of indexed motorcycles
+             *  @param[in] nLV current number of indexed light vehicles
+             *  @param[in] nHV current number of indexed heavy vehicles
+             *
+             *   @return Traffic volume at the time t in passenger car unit
+             */
+            double trafficVolume();
+
+            /** @brief Signal for recording traffic volume */
+            simsignal_t trafficVolumeSignal;
+
+            /** @brief Time interval for congestion information update */
+            simtime_t updateRoadConditionInterval;
+
+            /** @brief Self message for road condition update */
+            cMessage* RoadConditionUpdateMsg;
+
+            /** @brief Road condition information */
+            void updateRoadCondition();
+
+		    /**
+		     * @brief VCRatio. Ratio between volume and capacity
+		     * @param[in] volume Traffic volume which collected regularly
+		     * @param[out] VCRatio Value of ratio between traffic volume and road capacity.
+		     */
+		    double VCRatio(double volume);
+		    simsignal_t VCRatioSignal;
+
+		    /** @brief Road ID where this RSU is located. */
+		    std::string roadId;
+
+		    /** @brief Enable this variable to test the traffic intervention. */
+		    bool trafficInterventionTestEnabled;
+
+		    /** @brief When the intervention will start? */
+		    simtime_t interventionTime;
+
+		    /** @brief Self-message for scheduled intervention. */
+		    cMessage* scheduledIntervention;
 
 		    /** @brief Method to execute while receiving a beacon */
 		    virtual void onBeacon(WaveShortMessage* wsm);

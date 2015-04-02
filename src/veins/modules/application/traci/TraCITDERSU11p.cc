@@ -43,19 +43,56 @@ void TraCITDERSU11p::initialize(int stage) {
         statInterval = par("statInterval").doubleValue();
         timeoutInterval = (simtime_t) par("timeoutInterval").doubleValue();
         timeoutMsgInterval = par("timeoutMsgInterval").doubleValue();
+        updateRoadConditionInterval = (simtime_t) par("roadCondUpdateInterval").doubleValue();
+        timeSlot = 3600/par("roadCondUpdateInterval").doubleValue();
+        EV << "Time slot: " << timeSlot << endl;
 
-        /** @brief registering all signals for the statistics output */
+        /** Traffic intervention testing. */
+        trafficInterventionTestEnabled = par("interventionTest").boolValue();
+        interventionTime = (simtime_t) par("interventionTime").doubleValue();
+
+        /** Scheduling intervention for testing purpose. */
+        if(trafficInterventionTestEnabled) {
+            scheduledIntervention = new cMessage("scheduled intervention", INTERVENTION_TEST);
+            scheduleAt(interventionTime, scheduledIntervention);
+        }
+
+        /** Assigning passenger car equivalent to related variables. */
+        pceMC = par("pceMC").doubleValue();
+        pceLV = par("pceLV").doubleValue();
+        pceHV = par("pceHV").doubleValue();
+
+        /** Assigning road properties, and calculate road capacity */
+        basicCapacity = par("basicCapacity").doubleValue();
+        correctionFactorWidth = par("CFWidth").doubleValue();
+        correctionFactorSideFriction = par("CFSideFriction").doubleValue();
+        correctionFactorCitySize = par("CFCitySize").doubleValue();
+        numLanes = par("numberOfLanes").doubleValue();
+        roadCapacity = calculateCapacity(basicCapacity, correctionFactorWidth, correctionFactorSideFriction, correctionFactorCitySize, numLanes);
+        roadId = par("roadId").stringValue();
+
+        EV << "RSU located at " << roadId << ", road capacity per-" << updateRoadConditionInterval << " seconds is " <<  roadCapacity << endl;
+
+        /** registering all signals for the statistics output */
         vehNumberLV = registerSignal("detectedVehiclesLV");
         vehNumberHV = registerSignal("detectedVehiclesHV");
         vehNumberMC = registerSignal("detectedVehiclesMC");
+        trafficVolumeSignal = registerSignal("trafficVolume");
+        VCRatioSignal = registerSignal("VCRatio");
 
         /** @brief Total detected vehicle set to 0 */
         currentNumberofTotalDetectedVehicles = 0;
 
         /** Scheduling the first statistics signals update */
         if(enableTDE) {
+            /** Schedule self message for statistics recording */
             updateStatMsg = new cMessage("statistics update", UPDATE_STATS);
             scheduleAt(simTime() + statInterval, updateStatMsg);
+
+            /** Schedule self message for road condition update. */
+            RoadConditionUpdateMsg = new cMessage("Update road condition information", CHECK_ROAD);
+            scheduleAt(simTime() + updateRoadConditionInterval, RoadConditionUpdateMsg);
+
             if(timeoutInterval>0){
                 timeoutMsg = new cMessage("check for timed out node", CHECK_TIMEOUT);
                 scheduleAt(simTime() + timeoutMsgInterval, timeoutMsg);
@@ -75,13 +112,14 @@ void TraCITDERSU11p::initialize(int stage) {
 }
 
 void TraCITDERSU11p::onBeacon(WaveShortMessage* wsm) {
-    EV << "### REPORT OF RSU WITH ID " << myId << ", type " << myType <<" ###" << endl;
+    EV << "### REPORT OF RSU WITH ID " << myId << " ###" << endl;
     EV << "Received BEACON from " << wsm->getSenderAddress() << " on " << wsm->getArrivalTime() << " type " << wsm->getWsmData() << "."<< endl;
-    if((enableTDE)&&((wsm->getWsmData()=="MC")||(wsm->getWsmData()=="LV")||(wsm->getWsmData()=="HV"))) {
+
+    if((enableTDE) && ((strcmp(wsm->getWsmData(),"MC")==0)||(strcmp(wsm->getWsmData(),"LV")==0)||(strcmp(wsm->getWsmData(),"HV")==0)))
+    {
         if (indexedCar(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles)==false) {
             append2List(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles,  wsm->getArrivalTime(), wsm->getWsmData());
-        }
-        else updateLastSeenTime(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles, wsm->getArrivalTime());
+        } else updateLastSeenTime(wsm->getSenderAddress(), currentNumberofTotalDetectedVehicles, wsm->getArrivalTime());
         if (debugAppTDE==true) showInfo(currentNumberofTotalDetectedVehicles);
     }
     EV << "########## END OF REPORT ##########" << endl;
@@ -200,6 +238,54 @@ void TraCITDERSU11p::deleteAndRestructureArray() {
     if(debugAppTDE) showInfo(currentNumberofTotalDetectedVehicles);
 }
 
+double TraCITDERSU11p::calculateCapacity(double bc, double cfw, double csf, double cfcs, double numLanes) {
+    double capacity;
+
+    //Calculation based on formula in MKJI.
+    //Also available in Tamin's book, pp. 107.
+    DBG << "App: basicCapacity " << basicCapacity << endl;
+    DBG << "App: numLanes " << numLanes << endl;
+    DBG << "App: correctionFactorWidth " << correctionFactorWidth << endl;
+    DBG << "App: correctionFactorSideFriction " << correctionFactorSideFriction << endl;
+    DBG << "App: correctionFactorCitySize " << correctionFactorCitySize << endl;
+    capacity = (basicCapacity*numLanes*correctionFactorWidth*correctionFactorSideFriction*correctionFactorCitySize)/timeSlot;
+
+    return capacity;
+}
+
+double TraCITDERSU11p::trafficVolume() {
+    double volume;
+
+    volume = (currentNumberofDetectedMC*pceMC) + (currentNumberofDetectedLV*pceLV) + (currentNumberofDetectedHV*pceHV);
+    return volume;
+}
+
+double TraCITDERSU11p::VCRatio(double volume) {
+    double vcr;
+
+    //Calculate VC ratio
+    vcr = volume/roadCapacity;
+
+    return vcr;
+}
+
+void TraCITDERSU11p::updateRoadCondition() {
+    double currentVolume;
+    double vcr;
+
+    currentVolume = trafficVolume();
+    vcr = VCRatio(currentVolume);
+    EV << "At [" << simTime() << "], Current volume is " << currentVolume << " and VC Ratio is " << vcr << endl;
+    emit(trafficVolumeSignal, currentVolume);
+    emit(VCRatioSignal, vcr);
+
+    if(vcr>0.84) {
+        EV << "VC Ratio threshold exceeded. Broadcasting message." << endl;
+        sentMessage = false;
+        sendMessage(roadId);
+    }
+}
+
 void TraCITDERSU11p::handleSelfMsg(cMessage* msg) {
     switch (msg->getKind()) {
     case UPDATE_STATS: {
@@ -208,8 +294,18 @@ void TraCITDERSU11p::handleSelfMsg(cMessage* msg) {
         break;
     }
     case CHECK_TIMEOUT: {
-        if((currentNumberofTotalDetectedVehicles>1)&&enableTDE) deleteAndRestructureArray();
+        if(enableTDE) deleteAndRestructureArray();
         scheduleAt(simTime() + timeoutMsgInterval, timeoutMsg);
+        break;
+    }
+    case CHECK_ROAD: {
+        updateRoadCondition();
+        scheduleAt(simTime() + updateRoadConditionInterval, RoadConditionUpdateMsg);
+        break;
+    }
+    case INTERVENTION_TEST: {
+        EV << "Testing traffic intervention!" << endl;
+        sendMessage(roadId);
         break;
     }
     default: {
@@ -237,6 +333,18 @@ void TraCITDERSU11p::finish() {
         cancelAndDelete(updateStatMsg);
     } else {
         delete updateStatMsg;
+    }
+
+    if(RoadConditionUpdateMsg->isScheduled()) {
+        cancelAndDelete(RoadConditionUpdateMsg);
+    } else {
+        delete RoadConditionUpdateMsg;
+    }
+
+    if(scheduledIntervention->isScheduled()) {
+        cancelAndDelete(scheduledIntervention);
+    } else {
+        delete scheduledIntervention;
     }
     findHost()->unsubscribe(mobilityStateChangedSignal, this);
 
