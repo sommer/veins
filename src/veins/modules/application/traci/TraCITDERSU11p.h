@@ -44,7 +44,7 @@ using Veins::AnnotationManager;
 class TraCITDERSU11p : public BaseWaveApplLayer {
 private:
     /** @brief data collector  for storing number of detected vehicles*/
-    simsignal_t vehNumberLV, vehNumberHV, vehNumberMC;
+    simsignal_t vehNumberLV, vehNumberHV, vehNumberMC, vehNumberTotal;
 
     struct knownVehicle {
         int id;

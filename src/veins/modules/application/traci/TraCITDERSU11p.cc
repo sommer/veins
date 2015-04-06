@@ -77,6 +77,7 @@ void TraCITDERSU11p::initialize(int stage) {
         vehNumberLV = registerSignal("detectedVehiclesLV");
         vehNumberHV = registerSignal("detectedVehiclesHV");
         vehNumberMC = registerSignal("detectedVehiclesMC");
+        vehNumberTotal = registerSignal("detectedVehiclesTotal");
         trafficVolumeSignal = registerSignal("trafficVolume");
         VCRatioSignal = registerSignal("VCRatio");
 
@@ -205,6 +206,7 @@ void TraCITDERSU11p::updateStats() {
     emit(vehNumberMC, currentNumberofDetectedMC);
     emit(vehNumberLV, currentNumberofDetectedLV);
     emit(vehNumberHV, currentNumberofDetectedHV);
+    emit(vehNumberTotal, currentNumberofTotalDetectedVehicles);
 }
 
 /** delete timed out vehicle from the list and restructure the array */
