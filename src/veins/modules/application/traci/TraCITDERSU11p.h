@@ -93,10 +93,10 @@ private:
 
 	protected:
 		/** @brief maximum number of listed vehicles for each node */
-		    static const short maxVehicles = 100;
+		    static const short maxVehicles = 1000;
 
 		    /** @brief array of listed vehicles */
-		    knownVehicle listedVehicles[100];
+		    knownVehicle listedVehicles[1000];
 
 		    short
 		    /** @brief counting variable for light vehicle */

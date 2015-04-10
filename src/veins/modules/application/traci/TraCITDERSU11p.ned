@@ -39,8 +39,9 @@ simple TraCITDERSU11p extends BaseWaveApplLayer
     @statistic[currentNumberofDetectedLV](title="Detected Light Vehicles"; source="detectedVehiclesLV"; record=vector);
     @statistic[currentNumberofDetectedHV](title="Detected Heavy Vehicles"; source="detectedVehiclesHV"; record=vector);
     @statistic[currentNumberofDetectedMC](title="Detected Motorcycles"; source="detectedVehiclesMC"; record=vector);
-    @statistic[currentVolume](title="Traffic Volume"; source="trafficVolumeSignal"; record=vector);
-    @statistic[vcr](title="Volume to Capacity Ratio"; source="VCRatioSignal"; record=vector);
+    @statistic[currentNumberofTotalDetectedVehicles](title="Total Detected Vehicles"; source="detectedVehiclesTotal"; record=vector);
+    @statistic[currentVolume](title="Traffic Volume"; source="trafficVolume"; record=vector);
+    @statistic[vcr](title="Volume to Capacity Ratio"; source="VCRatio"; record=vector);
     
     bool debugAppTDE = default(false); //print TDE application messages
     bool enableTDE = default(false);

@@ -97,10 +97,15 @@ void TraCITDE::initialize(int stage) {
         } else if(myType.compare("HV")==0) {
             vTypeInt = HV;
         } else {
-            DBG << "Unknown vehicle type!";
+            DBG << "Unknown vehicle type!" << endl;
+            vTypeInt = NA;
             enableTDE = false;
             sendBeacons = false;
-            cancelAndDelete(sendBeaconEvt);
+            if (sendBeaconEvt->isScheduled()) {
+                cancelAndDelete(sendBeaconEvt);
+            } else {
+                delete sendBeaconEvt;
+            }
         }
 
         if(debugAppTDE==true) EV << "[" << myId << "] My type is " << myType << ", storing scalar type with " << vTypeInt << endl;
@@ -175,10 +180,10 @@ void TraCITDE::handlePositionUpdate(cObject* obj) {
 
     // stopped for for at least 10s?
     if (mobility->getSpeed() < 1) {
-//        if (simTime() - lastDroveAt >= 10) {
-//            findHost()->getDisplayString().updateWith("r=16,red");
-//            if (!sentMessage) sendMessage(mobility->getRoadId());
-//        }
+        //        if (simTime() - lastDroveAt >= 10) {
+        //            findHost()->getDisplayString().updateWith("r=16,red");
+        //            if (!sentMessage) sendMessage(mobility->getRoadId());
+        //        }
     }
     else {
         lastDroveAt = simTime();
@@ -309,11 +314,13 @@ void TraCITDE::handleSelfMsg(cMessage* msg) {
 }
 
 void TraCITDE::finish() {
-//    if (sendBeaconEvt->isScheduled()) {
-//        cancelAndDelete(sendBeaconEvt);
-//    } else {
-//        delete sendBeaconEvt;
-//    }
+    if(vTypeInt!=NA) {
+        if (sendBeaconEvt->isScheduled()) {
+            cancelAndDelete(sendBeaconEvt);
+        } else {
+            delete sendBeaconEvt;
+        }
+    }
     if(enableTDE) {
         if (timeoutMsg->isScheduled()) {
             cancelAndDelete(timeoutMsg);

@@ -62,7 +62,7 @@ private:
     /** @brief Declaring enumerated values for each type of vehicle.
      * This values have no use with application layer but important for post-processing.
      */
-    enum vType { MC, LV, HV };
+    enum vType { MC, LV, HV, NA };
 
     /** Interval for statistics signals update */
     double   statInterval;

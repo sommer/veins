@@ -81,8 +81,23 @@ void TraCITDERSU11p::initialize(int stage) {
         trafficVolumeSignal = registerSignal("trafficVolume");
         VCRatioSignal = registerSignal("VCRatio");
 
+        /** @brief Detected MC set to 0 */
+        currentNumberofDetectedMC = 0;
+
+        /** @brief Detected LV set to 0 */
+        currentNumberofDetectedLV = 0;
+
+        /** @brief Detected HV set to 0 */
+        currentNumberofDetectedHV = 0;
+
         /** @brief Total detected vehicle set to 0 */
         currentNumberofTotalDetectedVehicles = 0;
+
+        /** @brief Calling update statistics to record condition at t=0 */
+        updateStats();
+
+        /** @brief Calling update road condition to record condition at t=0 */
+        updateRoadCondition();
 
         /** Scheduling the first statistics signals update */
         if(enableTDE) {
@@ -109,7 +124,7 @@ void TraCITDERSU11p::initialize(int stage) {
             listedVehicles[i].vType = "undefined";
         }
         if (debugAppTDE==true) showInfo(currentNumberofTotalDetectedVehicles);
-	}
+    }
 }
 
 void TraCITDERSU11p::onBeacon(WaveShortMessage* wsm) {
@@ -127,24 +142,24 @@ void TraCITDERSU11p::onBeacon(WaveShortMessage* wsm) {
 }
 
 void TraCITDERSU11p::onData(WaveShortMessage* wsm) {
-	findHost()->getDisplayString().updateWith("r=16,green");
+    findHost()->getDisplayString().updateWith("r=16,green");
 
-	annotations->scheduleErase(1, annotations->drawLine(wsm->getSenderPos(), mobi->getCurrentPosition(), "blue"));
+    annotations->scheduleErase(1, annotations->drawLine(wsm->getSenderPos(), mobi->getCurrentPosition(), "blue"));
 
-	EV << "Received DATA from " << wsm->getSenderAddress() << " on " << wsm->getArrivalTime() << endl;
+    EV << "Received DATA from " << wsm->getSenderAddress() << " on " << wsm->getArrivalTime() << endl;
 
-	if (!sentMessage) sendMessage(wsm->getWsmData());
+    if (!sentMessage) sendMessage(wsm->getWsmData());
 }
 
 void TraCITDERSU11p::sendMessage(std::string blockedRoadId) {
-	sentMessage = true;
-	t_channel channel = dataOnSch ? type_SCH : type_CCH;
-	WaveShortMessage* wsm = prepareWSM("data", dataLengthBits, channel, dataPriority, -1,2);
-	wsm->setWsmData(blockedRoadId.c_str());
-	sendWSM(wsm);
+    sentMessage = true;
+    t_channel channel = dataOnSch ? type_SCH : type_CCH;
+    WaveShortMessage* wsm = prepareWSM("data", dataLengthBits, channel, dataPriority, -1,2);
+    wsm->setWsmData(blockedRoadId.c_str());
+    sendWSM(wsm);
 }
 void TraCITDERSU11p::sendWSM(WaveShortMessage* wsm) {
-	sendDelayedDown(wsm,individualOffset);
+    sendDelayedDown(wsm,individualOffset);
 }
 
 /* Following lines of methods are those I built, (some are overloaded) in regards of my thesis */
@@ -192,7 +207,7 @@ void TraCITDERSU11p::showInfo(short counter){
 
 void TraCITDERSU11p::updateLastSeenTime(short carId, short counter, simtime_t messageTime){
     int i;
-    for (i=1; i< counter; i++) {
+    for (i=0; i< counter; i++) {
         if (listedVehicles[i].id == carId) {
             EV << "Updating record for vehicle with ID " << carId << " with previously last seen at " << listedVehicles[i].lastSeenAt << ", now lastSeenAt = " << messageTime <<"."<<endl;
             listedVehicles[i].lastSeenAt = messageTime;
@@ -213,7 +228,7 @@ void TraCITDERSU11p::updateStats() {
 void TraCITDERSU11p::deleteAndRestructureArray() {
     int i,j;
 
-    for (i=1; i<currentNumberofTotalDetectedVehicles; i++) {
+    for (i=0; i<currentNumberofTotalDetectedVehicles; i++) {
         if(debugAppTDE) EV << "Checking last seen time for list index [" << i << "], ID: " << listedVehicles[i].id << endl;
 
         if (listedVehicles[i].lastSeenAt < (simTime()-timeoutInterval)) {
@@ -343,10 +358,12 @@ void TraCITDERSU11p::finish() {
         delete RoadConditionUpdateMsg;
     }
 
-    if(scheduledIntervention->isScheduled()) {
-        cancelAndDelete(scheduledIntervention);
-    } else {
-        delete scheduledIntervention;
+    if(trafficInterventionTestEnabled){
+        if(scheduledIntervention->isScheduled()) {
+            cancelAndDelete(scheduledIntervention);
+        } else {
+            delete scheduledIntervention;
+        }
     }
     findHost()->unsubscribe(mobilityStateChangedSignal, this);
 
