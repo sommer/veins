@@ -38,8 +38,15 @@ void TraCITDERSU11p::initialize(int stage) {
         ASSERT(annotations);
         sentMessage = false;
 
+        /** Show application debug message? */
         debugAppTDE = par("debugAppTDE").boolValue();
+
+        /** Enable traffic density estimation */
         enableTDE = par("enableTDE").boolValue();
+
+        /** Vehicle classification? */
+        enableClassification = par("enableClassification").boolValue();
+
         statInterval = par("statInterval").doubleValue();
         timeoutInterval = (simtime_t) par("timeoutInterval").doubleValue();
         timeoutMsgInterval = par("timeoutMsgInterval").doubleValue();
@@ -273,7 +280,12 @@ double TraCITDERSU11p::calculateCapacity(double bc, double cfw, double csf, doub
 double TraCITDERSU11p::trafficVolume() {
     double volume;
 
-    volume = (currentNumberofDetectedMC*pceMC) + (currentNumberofDetectedLV*pceLV) + (currentNumberofDetectedHV*pceHV);
+    /**
+     * If vehicle classification is enabled, then calculate traffic volume by multiplying a vehicle type with its passenger car equivalent.
+     * If vehicle classification is disabled, then traffic volume is equal to current number of detected vehicle since all type will be multiplied with 1.0
+     */
+    if(enableClassification) volume = (currentNumberofDetectedMC*pceMC) + (currentNumberofDetectedLV*pceLV) + (currentNumberofDetectedHV*pceHV);
+    else volume = currentNumberofTotalDetectedVehicles;
     return volume;
 }
 

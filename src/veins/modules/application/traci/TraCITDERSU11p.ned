@@ -44,7 +44,9 @@ simple TraCITDERSU11p extends BaseWaveApplLayer
     @statistic[vcr](title="Volume to Capacity Ratio"; source="VCRatio"; record=vector);
     
     bool debugAppTDE = default(false); //print TDE application messages
-    bool enableTDE = default(false);
+    bool enableTDE = default(true);
+    bool enableClassification = default(true);
+    
     double statInterval @unit("s") = default(0.1s);
     double timeoutInterval @unit("s") = default(10s);
     double timeoutMsgInterval @unit("s") = default(1s); //checking every seconds

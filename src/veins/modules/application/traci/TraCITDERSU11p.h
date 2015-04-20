@@ -58,6 +58,9 @@ private:
     /** @brief enable/disable traffic density estimation */
     bool enableTDE;
 
+    /** @brief enable/disable vehicle classification */
+    bool enableClassification;
+
     /** @brief Declaring enumerated values for each type of vehicle.
      * This values have no use with application layer but important for post-processing.
      */
