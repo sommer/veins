@@ -43,9 +43,11 @@ void TraCITDERSU11p::initialize(int stage) {
 
         /** Enable traffic density estimation */
         enableTDE = par("enableTDE").boolValue();
+        if(enableTDE) EV << "Traffic density estimation is enabled" << endl;
 
         /** Vehicle classification? */
         enableClassification = par("enableClassification").boolValue();
+        if(enableClassification) EV << "Vehicle classification is enabled" << endl;
 
         statInterval = par("statInterval").doubleValue();
         timeoutInterval = (simtime_t) par("timeoutInterval").doubleValue();
