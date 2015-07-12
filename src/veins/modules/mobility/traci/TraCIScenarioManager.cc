@@ -469,7 +469,10 @@ void TraCIScenarioManager::deleteManagedModule(std::string nodeId) {
 	cModule* mod = getManagedModule(nodeId);
 	if (!mod) error("no vehicle with Id \"%s\" found", nodeId.c_str());
 
-	cc->unregisterNic(mod->getSubmodule("nic"));
+	cModule* nic = mod->getSubmodule("nic");
+	if (nic) {
+	    cc->unregisterNic(nic);
+	}
 
 	hosts.erase(nodeId);
 	mod->callFinish();
