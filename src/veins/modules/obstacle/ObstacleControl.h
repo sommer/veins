@@ -47,8 +47,12 @@ class ObstacleControl : public cSimpleModule
 		void handleSelfMsg(cMessage *msg);
 
 		void addFromXml(cXMLElement* xml);
+		void addFromTypeAndShape(std::string id, std::string typeId, std::vector<Coord> shape);
 		void add(Obstacle obstacle);
 		void erase(const Obstacle* obstacle);
+		bool isTypeSupported(std::string type);
+		double getAttenuationPerCut(std::string type);
+		double getAttenuationPerMeter(std::string type);
 
 		/**
 		 * calculate additional attenuation by obstacles, return signal strength
@@ -91,6 +95,8 @@ class ObstacleControl : public cSimpleModule
 		Obstacles obstacles;
 		AnnotationManager* annotations;
 		AnnotationManager::Group* annotationGroup;
+		std::map<std::string, double> perCut;
+		std::map<std::string, double> perMeter;
 		mutable CacheEntries cacheEntries;
 };
 }

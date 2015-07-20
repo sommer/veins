@@ -33,12 +33,15 @@ class Obstacle {
 	public:
 		typedef std::vector<Coord> Coords;
 
-		Obstacle(std::string id, double attenuationPerWall, double attenuationPerMeter);
+		Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter);
 
 		void setShape(Coords shape);
 		const Coords& getShape() const;
 		const Coord getBboxP1() const;
 		const Coord getBboxP2() const;
+
+		std::string getType() const;
+		std::string getId() const;
 
 		double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const;
 
@@ -46,8 +49,9 @@ class Obstacle {
 
 	protected:
 		std::string id;
-		double attenuationPerWall; /**< in dB. Consumer Wi-Fi vs. an exterior wall will give approx. 50 dB */
-		double attenuationPerMeter; /**< in dB / m. Consumer Wi-Fi vs. an interior hollow wall will give approx. 5 dB */
+		std::string type;
+		double attenuationPerCut; /**< in dB. attenuation per exterior border of obstacle */
+		double attenuationPerMeter; /**< in dB / m. to account for attenuation caused by interior of obstacle */
 		Coords coords;
 		Coord bboxP1;
 		Coord bboxP2;

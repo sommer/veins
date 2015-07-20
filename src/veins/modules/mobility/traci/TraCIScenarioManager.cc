@@ -328,15 +328,11 @@ void TraCIScenarioManager::init_traci() {
 			for (std::list<std::string>::iterator i = ids.begin(); i != ids.end(); ++i) {
 				std::string id = *i;
 				std::string typeId = getCommandInterface()->polygon(id).getTypeId();
-				if (typeId == "building") {
-					std::list<Coord> coords = getCommandInterface()->polygon(id).getShape();
-					Obstacle obs(id, 9, .4); // each building gets attenuation of 9 dB per wall, 0.4 dB per meter
-					std::vector<Coord> shape;
-					std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
-					obs.setShape(shape);
-					obstacles->add(obs);
-
-				}
+				if (!obstacles->isTypeSupported(typeId)) continue;
+				std::list<Coord> coords = getCommandInterface()->polygon(id).getShape();
+				std::vector<Coord> shape;
+				std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
+				obstacles->addFromTypeAndShape(id, typeId, shape);
 			}
 		}
 	}

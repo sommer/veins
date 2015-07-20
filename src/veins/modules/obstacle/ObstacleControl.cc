@@ -70,43 +70,72 @@ void ObstacleControl::handleSelfMsg(cMessage *msg) {
 
 void ObstacleControl::addFromXml(cXMLElement* xml) {
 	std::string rootTag = xml->getTagName();
-	ASSERT (rootTag == "obstacles");
+	if (rootTag != "obstacles") {
+		opp_error("Obstacle definition root tag was \"%s\", but expected \"obstacles\"", rootTag.c_str());
+	}
 
 	cXMLElementList list = xml->getChildren();
 	for (cXMLElementList::const_iterator i = list.begin(); i != list.end(); ++i) {
 		cXMLElement* e = *i;
 
 		std::string tag = e->getTagName();
-		ASSERT(tag == "poly");
 
-		// <poly id="building#0" type="building" color="#F00" shape="16,0 8,13.8564 -8,13.8564 -16,0 -8,-13.8564 8,-13.8564" />
-		ASSERT(e->getAttribute("id"));
-		std::string id = e->getAttribute("id");
-		ASSERT(e->getAttribute("type"));
-		std::string type = e->getAttribute("type");
-		ASSERT(e->getAttribute("color"));
-		std::string color = e->getAttribute("color");
-		ASSERT(e->getAttribute("shape"));
-		std::string shape = e->getAttribute("shape");
+		if (tag == "type") {
+			// <type id="building" db-per-cut="9" db-per-meter="0.4" />
 
-		double attenuationPerWall = 50; /**< in dB */
-		double attenuationPerMeter = 1; /**< in dB / m */
-		if (type == "building") { attenuationPerWall = 50; attenuationPerMeter = 1; }
-		else error("unknown obstacle type: %s", type.c_str());
-		Obstacle obs(id, attenuationPerWall, attenuationPerMeter);
-		std::vector<Coord> sh;
-		cStringTokenizer st(shape.c_str());
-		while (st.hasMoreTokens()) {
-			std::string xy = st.nextToken();
-			std::vector<double> xya = cStringTokenizer(xy.c_str(), ",").asDoubleVector();
-			ASSERT(xya.size() == 2);
-			sh.push_back(Coord(xya[0], xya[1]));
+			ASSERT(e->getAttribute("id"));
+			std::string id = e->getAttribute("id");
+			ASSERT(e->getAttribute("db-per-cut"));
+			std::string perCutParS = e->getAttribute("db-per-cut");
+			double perCutPar = strtod(perCutParS.c_str(), 0);
+			ASSERT(e->getAttribute("db-per-meter"));
+			std::string perMeterParS = e->getAttribute("db-per-meter");
+			double perMeterPar = strtod(perMeterParS.c_str(), 0);
+
+			perCut[id] = perCutPar;
+			perMeter[id] = perMeterPar;
+
 		}
-		obs.setShape(sh);
-		add(obs);
+		else if (tag == "poly") {
+
+			// <poly id="building#0" type="building" color="#F00" shape="16,0 8,13.8564 -8,13.8564 -16,0 -8,-13.8564 8,-13.8564" />
+			ASSERT(e->getAttribute("id"));
+			std::string id = e->getAttribute("id");
+			ASSERT(e->getAttribute("type"));
+			std::string type = e->getAttribute("type");
+			ASSERT(e->getAttribute("color"));
+			std::string color = e->getAttribute("color");
+			ASSERT(e->getAttribute("shape"));
+			std::string shape = e->getAttribute("shape");
+
+			Obstacle obs(id, type, getAttenuationPerCut(type), getAttenuationPerMeter(type));
+			std::vector<Coord> sh;
+			cStringTokenizer st(shape.c_str());
+			while (st.hasMoreTokens()) {
+				std::string xy = st.nextToken();
+				std::vector<double> xya = cStringTokenizer(xy.c_str(), ",").asDoubleVector();
+				ASSERT(xya.size() == 2);
+				sh.push_back(Coord(xya[0], xya[1]));
+			}
+			obs.setShape(sh);
+			add(obs);
+		}
+		else {
+			opp_error("Found unknown tag in obstacle definition: \"%s\"", tag.c_str());
+		}
+
 
 	}
 
+}
+
+void ObstacleControl::addFromTypeAndShape(std::string id, std::string typeId, std::vector<Coord> shape) {
+	if (!isTypeSupported(typeId)) {
+		opp_error("Unsupported obstacle type: \"%s\"", typeId.c_str());
+	}
+	Obstacle obs(id, typeId, getAttenuationPerCut(typeId), getAttenuationPerMeter(typeId));
+	obs.setShape(shape);
+	add(obs);
 }
 
 void ObstacleControl::add(Obstacle obstacle) {
@@ -152,6 +181,13 @@ void ObstacleControl::erase(const Obstacle* obstacle) {
 
 double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const {
 	Enter_Method_Silent();
+
+	if ((perCut.size() == 0) || (perMeter.size() == 0)) {
+		opp_error("Unable to use SimpleObstacleShadowing: No obstacle types have been configured");
+	}
+	if (obstacles.size() == 0) {
+		opp_error("Unable to use SimpleObstacleShadowing: No obstacles have been added");
+	}
 
 	// return cached result, if available
 	CacheKey cacheKey(senderPos, receiverPos);
@@ -206,4 +242,25 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
 	cacheEntries[cacheKey] = factor;
 
 	return factor;
+}
+
+double ObstacleControl::getAttenuationPerCut(std::string type) {
+	if (perCut.find(type) != perCut.end()) return perCut[type];
+	else {
+		error("Obstacle type %s unknown", type.c_str());
+		return -1;
+	}
+}
+
+double ObstacleControl::getAttenuationPerMeter(std::string type) {
+	if (perMeter.find(type) != perMeter.end()) return perMeter[type];
+	else {
+		error("Obstacle type %s unknown", type.c_str());
+		return -1;
+	}
+}
+
+bool ObstacleControl::isTypeSupported(std::string type) {
+	//the type of obstacle is supported if there are attenuation values for borders and interior
+	return (perCut.find(type) != perCut.end()) && (perMeter.find(type) != perMeter.end());
 }

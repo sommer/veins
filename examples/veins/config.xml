@@ -7,6 +7,9 @@
 		</AnalogueModel>
 		<AnalogueModel type="SimpleObstacleShadowing">
 			<parameter name="carrierFrequency" type="double" value="5.890e+9"/>
+			<obstacles>
+				<type id="building" db-per-cut="9" db-per-meter="0.4" />
+			</obstacles>
 		</AnalogueModel>
 	</AnalogueModels>
 	<Decider type="Decider80211p">

@@ -22,10 +22,11 @@
 
 using Veins::Obstacle;
 
-Obstacle::Obstacle(std::string id, double attenuationPerWall, double attenuationPerMeter) :
+Obstacle::Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter) :
 	visualRepresentation(0),
 	id(id),
-	attenuationPerWall(attenuationPerWall),
+	type(type),
+	attenuationPerCut(attenuationPerCut),
 	attenuationPerMeter(attenuationPerMeter) {
 }
 
@@ -92,7 +93,7 @@ namespace {
 
 double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const {
 
-	// if obstacles has neither walls nor matter: bail.
+	// if obstacles has neither borders nor matter: bail.
 	if (getShape().size() < 2) return 1;
 
 	// get a list of points (in [0, 1]) along the line between sender and receiver where the beam intersects with this obstacle
@@ -113,13 +114,13 @@ double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& recei
 
 	}
 
-	// if beam interacts with neither walls nor matter: bail.
+	// if beam interacts with neither borders nor matter: bail.
 	bool senderInside = isPointInObstacle(senderPos, *this);
 	bool receiverInside = isPointInObstacle(receiverPos, *this);
 	if (!doesIntersect && !senderInside && !receiverInside) return 1;
 
-	// remember number of walls before messing with intersection points
-	double numWalls = intersectAt.size();
+	// remember number of cuts before messing with intersection points
+	double numCuts = intersectAt.size();
 
 	// for distance calculation, make sure every other pair of points marks transition through matter and void, respectively.
 	if (senderInside) intersectAt.insert(0);
@@ -136,6 +137,14 @@ double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& recei
 
 	// calculate attenuation
 	double totalDistance = senderPos.distance(receiverPos);
-	double attenuation = (attenuationPerWall * numWalls) + (attenuationPerMeter * fractionInObstacle * totalDistance);
+	double attenuation = (attenuationPerCut * numCuts) + (attenuationPerMeter * fractionInObstacle * totalDistance);
 	return pow(10.0, -attenuation/10.0);
+}
+
+std::string Obstacle::getType() const {
+	return type;
+}
+
+std::string Obstacle::getId() const {
+	return id;
 }
