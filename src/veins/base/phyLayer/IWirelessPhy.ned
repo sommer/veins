@@ -15,7 +15,6 @@ moduleinterface IWirelessPhy
         xml decider;					//Specification of the decider to use and its parameters
 
 		double sensitivity @unit(dBm);	//The sensitivity of the physical layer [dBm]
-        double maxTXPower @unit(mW);	//The maximum transimission power of the physical layer [mW]
 
         //# switch times [s]:
         double timeRXToTX @unit(s); // Elapsed time to switch from receive to send state

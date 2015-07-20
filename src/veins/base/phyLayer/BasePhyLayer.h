@@ -95,9 +95,6 @@ protected:
 	/** @brief Defines the strength of the thermal noise.*/
 	ConstantSimpleConstMapping* thermalNoise;
 
-	/** @brief The maximum transmission power a message can be send with */
-	double maxTXPower;
-
 	/** @brief The sensitivity describes the minimum strength a signal must have to be received.*/
 	double sensitivity;
 

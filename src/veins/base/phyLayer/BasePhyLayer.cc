@@ -74,7 +74,6 @@ void BasePhyLayer::initialize(int stage) {
 		headerLength = par("headerLength").longValue();
 		sensitivity = par("sensitivity").doubleValue();
 		sensitivity = FWMath::dBm2mW(sensitivity);
-		maxTXPower = par("maxTXPower").doubleValue();
 
 		recordStats = par("recordStats").boolValue();
 
