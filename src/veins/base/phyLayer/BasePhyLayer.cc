@@ -255,7 +255,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 
 	if(newAnalogueModel == 0)
 	{
-		opp_warning("Could not find an analogue model with the name \"%s\".", s.c_str());
+		throw new cException("Could not find an analogue model with the name \"%s\".", s.c_str());
 	}
 	else
 	{
@@ -264,14 +264,14 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 
 
 	if(xmlConfig == 0) {
-		opp_warning("No analogue models configuration file specified.");
+		throw new cException("No analogue models configuration file specified.");
 		return;
 	}
 
 	cXMLElementList analogueModelList = xmlConfig->getElementsByTagName("AnalogueModel");
 
 	if(analogueModelList.empty()) {
-		opp_warning("No analogue models configuration found in configuration file.");
+		throw new cException("No analogue models configuration found in configuration file.");
 		return;
 	}
 
@@ -286,7 +286,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 		const char* name = analogueModelData->getAttribute("type");
 
 		if(name == 0) {
-			opp_warning("Could not read name of analogue model.");
+			throw new cException("Could not read name of analogue model.");
 			continue;
 		}
 
@@ -296,7 +296,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 		AnalogueModel* newAnalogueModel = getAnalogueModelFromName(name, params);
 
 		if(newAnalogueModel == 0) {
-			opp_warning("Could not find an analogue model with the name \"%s\".", name);
+			throw new cException("Could not find an analogue model with the name \"%s\".", name);
 			continue;
 		}
 
@@ -732,7 +732,7 @@ simtime_t BasePhyLayer::setRadioState(int rs) {
 	assert(radio);
 
 	if(txOverTimer && txOverTimer->isScheduled()) {
-		opp_warning("Switched radio while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
+		throw new cException("Switched radio while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
 	}
 
 	simtime_t switchTime = radio->switchTo(rs, simTime());
@@ -770,7 +770,7 @@ int BasePhyLayer::getPhyHeaderLength() {
 
 void BasePhyLayer::setCurrentRadioChannel(int newRadioChannel) {
 	if(txOverTimer && txOverTimer->isScheduled()) {
-		opp_warning("Switched channel while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
+		throw new cException("Switched channel while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
 	}
 
 	radio->setCurrentChannel(newRadioChannel);

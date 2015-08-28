@@ -39,7 +39,7 @@ void BaseWorldUtility::initialize(int stage) {
 		//check if necessary modules are there
 		//Connection Manager
 		if(!FindModule<BaseConnectionManager*>::findGlobalModule()) {
-			opp_warning("Could not find a connection manager module in the network!");
+			throw new cException("Could not find a connection manager module in the network!");
 		}
 	}
 }
