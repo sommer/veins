@@ -37,6 +37,8 @@
 
 #include "veins/modules/utility/ConstsPhy.h"
 
+class Mac1609_4;
+
 /**
  * @brief
  * Manages timeslots for CCH and SCH listening and sending.
@@ -84,7 +86,7 @@ class Mac1609_4 : public BaseMacLayer,
 						};
 				};
 
-				EDCA(t_channel channelType,int maxQueueLength = 0):numQueues(0),maxQueueSize(maxQueueLength),channelType(channelType) {
+				EDCA(t_channel channelType,Mac1609_4* my_mac,int maxQueueLength = 0): numQueues(0),maxQueueSize(maxQueueLength),channelType(channelType),myMac(my_mac) {
 					statsNumInternalContention = 0;
 					statsNumBackoff = 0;
 					statsSlotsBackoff = 0;
@@ -119,6 +121,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 				/** @brief Id for debug messages */
 				std::string myId;
+        Mac1609_4* myMac;
 		};
 
 	public:

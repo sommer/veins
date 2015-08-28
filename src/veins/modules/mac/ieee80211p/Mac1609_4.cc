@@ -63,7 +63,7 @@ void Mac1609_4::initialize(int stage) {
 
 		//create two edca systems
 
-		myEDCA[type_CCH] = new EDCA(type_CCH,par("queueSize").longValue());
+		myEDCA[type_CCH] = new EDCA(type_CCH,this,par("queueSize").longValue());
 		myEDCA[type_CCH]->myId = myId;
 		myEDCA[type_CCH]->myId.append(" CCH");
 
@@ -72,7 +72,7 @@ void Mac1609_4::initialize(int stage) {
 		myEDCA[type_CCH]->createQueue(6,CWMIN_11P,CWMAX_11P,AC_BE);
 		myEDCA[type_CCH]->createQueue(9,CWMIN_11P,CWMAX_11P,AC_BK);
 
-		myEDCA[type_SCH] = new EDCA(type_SCH,par("queueSize").longValue());
+		myEDCA[type_SCH] = new EDCA(type_SCH,this,par("queueSize").longValue());
 		myEDCA[type_SCH]->myId = myId;
 		myEDCA[type_SCH]->myId.append(" SCH");
 		myEDCA[type_SCH]->createQueue(2,(((CWMIN_11P+1)/4)-1),(((CWMIN_11P +1)/2)-1),AC_VO);
@@ -588,7 +588,7 @@ WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
 
 					statsNumInternalContention++;
 					iter->second.cwCur = std::min(iter->second.cwMax,iter->second.cwCur*2);
-					iter->second.currentBackoff = intuniform(0,iter->second.cwCur);
+					iter->second.currentBackoff = myMac->intuniform(0,iter->second.cwCur);
 					DBG_MAC << "Internal contention for queue " << iter->first  << " : "<< iter->second.currentBackoff << ". Increase cwCur to " << iter->second.cwCur << std::endl;
 				}
 			}
@@ -622,7 +622,7 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 
 			if (guardActive == true && iter->second.currentBackoff == 0) {
 				//cw is not increased
-				iter->second.currentBackoff = intuniform(0,iter->second.cwCur);
+				iter->second.currentBackoff = myMac->intuniform(0,iter->second.cwCur);
 				statsNumBackoff++;
 			}
 
@@ -706,7 +706,7 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 	}
 }
 void Mac1609_4::EDCA::backoff(t_access_category ac) {
-	myQueues[ac].currentBackoff = intuniform(0,myQueues[ac].cwCur);
+	myQueues[ac].currentBackoff = myMac->intuniform(0,myQueues[ac].cwCur);
 	statsSlotsBackoff += myQueues[ac].currentBackoff;
 	statsNumBackoff++;
 	DBG_MAC << "Going into Backoff because channel was busy when new packet arrived from upperLayer" << std::endl;
@@ -717,7 +717,7 @@ void Mac1609_4::EDCA::postTransmit(t_access_category ac) {
 	myQueues[ac].queue.pop();
 	myQueues[ac].cwCur = myQueues[ac].cwMin;
 	//post transmit backoff
-	myQueues[ac].currentBackoff = intuniform(0,myQueues[ac].cwCur);
+	myQueues[ac].currentBackoff = myMac->intuniform(0,myQueues[ac].cwCur);
 	statsSlotsBackoff += myQueues[ac].currentBackoff;
 	statsNumBackoff++;
 	DBG_MAC << "Queue " << ac << " will go into post-transmit backoff for " << myQueues[ac].currentBackoff << " slots" << std::endl;
