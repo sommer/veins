@@ -41,7 +41,7 @@ class FindModule
 		 *
 		 * Returns NULL if no module of this type could be found.
 		 */
-		static T findGlobalModule() {return findSubModule(simulation.getSystemModule());}
+		static T findGlobalModule() {return findSubModule(getSimulation()->getSystemModule());}
 
 		/**
 		 * @brief Returns a pointer to the host module of the passed module.
@@ -92,7 +92,7 @@ class AccessModuleWrap
 		T *const get(cModule *const from = NULL)
 		{
 			if (!pModule) {
-				pModule = FindModule<T*>::findSubModule( FindModule<>::findHost(from != NULL ? from : simulation.getContextModule()) );
+				pModule = FindModule<T*>::findSubModule( FindModule<>::findHost(from != NULL ? from : getSimulation()->getContextModule()) );
 			}
 			return pModule;
 		}
