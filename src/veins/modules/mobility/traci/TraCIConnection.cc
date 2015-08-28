@@ -8,8 +8,8 @@
 #include <arpa/inet.h>
 #endif
 
-#include <cenvir.h>
-#include <cexception.h>
+#include <omnetpp/cenvir.h>
+#include <omnetpp/cexception.h>
 #include <algorithm>
 #include <functional>
 

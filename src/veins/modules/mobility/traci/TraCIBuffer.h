@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <string>
 
-#include <cexception.h>
+#include <omnetpp/cexception.h>
 
 namespace Veins {
 

@@ -19,6 +19,7 @@
 #define __MIXIM_MIXIMDEFS_H
 
 #include <omnetpp.h>
+#include <omnetpp/clistener.h>
 #include "veins/base/utils/miximkerneldefs.h"
 
 #if defined(MIXIM_EXPORT)

@@ -15,7 +15,6 @@
 class AnalogueModel;
 class Decider;
 class BaseWorldUtility;
-class cXMLElement;
 
 using Veins::AirFrame;
 using Veins::ChannelAccess;

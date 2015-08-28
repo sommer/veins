@@ -1,6 +1,6 @@
 #include "veins/base/phyLayer/BasePhyLayer.h"
 
-#include <cxmlelement.h>
+#include <omnetpp/cxmlelement.h>
 
 #include "veins/base/phyLayer/MacToPhyControlInfo.h"
 #include "veins/base/phyLayer/PhyToMacControlInfo.h"
