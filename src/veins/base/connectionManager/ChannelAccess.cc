@@ -45,7 +45,7 @@ BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
 						 ? nic->par("connectionManagerName").stringValue()
 						 : "";
 	if (cmName != ""){
-		cModule* ccModule = simulation.getModuleByPath(cmName.c_str());
+		cModule* ccModule = cSimulation::getActiveSimulation()->getModuleByPath(cmName.c_str());
 
 		return dynamic_cast<BaseConnectionManager *>(ccModule);
 	}
