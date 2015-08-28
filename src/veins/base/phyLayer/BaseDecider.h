@@ -15,7 +15,7 @@ class Mapping;
 
 using Veins::AirFrame;
 
-#define deciderEV (ev.isDisabled()||!debug) ? ev : ev << "[Host " << myIndex << "] - PhyLayer(Decider): "
+#define deciderEV (getEnvir()->isDisabled()||!debug) ? EV : EV << "[Host " << myIndex << "] - PhyLayer(Decider): "
 
 /**
  * @brief Provides some base functionality for most common deciders.

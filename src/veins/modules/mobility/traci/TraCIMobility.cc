@@ -227,7 +227,7 @@ void TraCIMobility::changePosition()
 	move.setStart(Coord(nextPos.x, nextPos.y, move.getCurrentPosition().z)); // keep z position
 	move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
 	move.setSpeed(speed);
-	if (ev.isGUI()) updateDisplayString();
+	if (getEnvir()->isGUI()) updateDisplayString();
 	fixIfHostGetsOutside();
 	updatePosition();
 }

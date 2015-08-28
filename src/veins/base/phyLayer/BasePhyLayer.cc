@@ -150,7 +150,7 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 		const char* type = (*it)->getAttribute("type");
 		const char* value = (*it)->getAttribute("value");
 		if(name == 0 || type == 0 || value == 0) {
-			ev << "Invalid parameter, could not find name, type or value." << endl;
+			EV << "Invalid parameter, could not find name, type or value." << endl;
 			continue;
 		}
 
@@ -173,7 +173,7 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 			param.setLongValue(strtol(value, 0, 0));
 
 		} else {
-			ev << "Unknown parameter type: \"" << sType << "\"" << endl;
+			EV << "Unknown parameter type: \"" << sType << "\"" << endl;
 			continue;
 		}
 
@@ -345,7 +345,7 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
 
 	//unknown message
 	} else {
-		ev << "Unknown message received." << endl;
+		EV << "Unknown message received." << endl;
 		delete msg;
 	}
 }
@@ -569,7 +569,7 @@ void BasePhyLayer::handleUpperControlMessage(cMessage* msg){
 		handleChannelSenseRequest(msg);
 		break;
 	default:
-		ev << "Received unknown control message from upper layer!" << endl;
+		EV << "Received unknown control message from upper layer!" << endl;
 		break;
 	}
 }

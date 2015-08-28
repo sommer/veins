@@ -2,7 +2,7 @@
 
 using Veins::AirFrame;
 
-#define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimpleObstacleShadowing): "
+#define debugEV (getEnvir()->isDisabled()||!debug) ? EV : EV << "PhyLayer(SimpleObstacleShadowing): "
 
 #if 0
 SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimensions,

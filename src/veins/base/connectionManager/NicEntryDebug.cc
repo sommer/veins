@@ -27,7 +27,7 @@
 #include "veins/base/utils/FindModule.h"
 
 #ifndef nicEV
-#define nicEV (ev.isDisabled()||!coreDebug) ? ev : ev << "NicEntry: "
+#define nicEV (getEnvir()->isDisabled()||!coreDebug) ? EV : EV << "NicEntry: "
 #endif
 
 using std::endl;

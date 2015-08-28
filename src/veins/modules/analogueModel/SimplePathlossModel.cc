@@ -4,7 +4,7 @@
 
 using Veins::AirFrame;
 
-#define splmEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimplePathlossModel): "
+#define splmEV (getEnvir()->isDisabled()||!debug) ? EV : EV << "PhyLayer(SimplePathlossModel): "
 
 SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimensions,
 													   SimplePathlossModel* model,
