@@ -84,12 +84,12 @@ void BasePhyLayer::initialize(int stage) {
 		// get pointer to the world module
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
         if (world == NULL) {
-            opp_error("Could not find BaseWorldUtility module");
+            throw new cException("Could not find BaseWorldUtility module");
         }
 
         if(cc->hasPar("sat")
 		   && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
-            opp_error("Sensitivity can't be smaller than the "
+            throw new cException("Sensitivity can't be smaller than the "
 					  "signal attenuation threshold (sat) in ConnectionManager. "
 					  "Please adjust your omnetpp.ini file accordingly.");
 		}
@@ -195,19 +195,19 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	decider = 0;
 
 	if(xmlConfig == 0) {
-		opp_error("No decider configuration file specified.");
+		throw new cException("No decider configuration file specified.");
 		return;
 	}
 
 	cXMLElementList deciderList = xmlConfig->getElementsByTagName("Decider");
 
 	if(deciderList.empty()) {
-		opp_error("No decider configuration found in configuration file.");
+		throw new cException("No decider configuration found in configuration file.");
 		return;
 	}
 
 	if(deciderList.size() > 1) {
-		opp_error("More than one decider configuration found in configuration file.");
+		throw new cException("More than one decider configuration found in configuration file.");
 		return;
 	}
 
@@ -216,7 +216,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	const char* name = deciderData->getAttribute("type");
 
 	if(name == 0) {
-		opp_error("Could not read type of decider from configuration file.");
+		throw new cException("Could not read type of decider from configuration file.");
 		return;
 	}
 
@@ -226,7 +226,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	decider = getDeciderFromName(name, params);
 
 	if(decider == 0) {
-		opp_error("Could not find a decider with the name \"%s\".", name);
+		throw new cException("Could not find a decider with the name \"%s\".", name);
 		return;
 	}
 
@@ -368,7 +368,7 @@ void BasePhyLayer::handleAirFrame(AirFrame* frame) {
 		break;
 
 	default:
-		opp_error( "Unknown AirFrame state: %s", frame->getState());
+		throw new cException( "Unknown AirFrame state: %s", frame->getState());
 		break;
 	}
 }
@@ -432,7 +432,7 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 
 	//invalid point in time
 	} else if(nextHandleTime < simTime() || nextHandleTime > signalEndTime) {
-		opp_error("Invalid next handle time returned by Decider. Expected a value between current simulation time (%.2f) and end of signal (%.2f) but got %.2f",
+		throw new cException("Invalid next handle time returned by Decider. Expected a value between current simulation time (%.2f) and end of signal (%.2f) but got %.2f",
 								SIMTIME_DBL(simTime()), SIMTIME_DBL(signalEndTime), SIMTIME_DBL(nextHandleTime));
 	}
 
@@ -466,7 +466,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
 	{
         delete msg;
         msg = 0;
-		opp_error("Error: message for sending received, but radio not in state TX");
+		throw new cException("Error: message for sending received, but radio not in state TX");
 	}
 
 	// check if not already sending
@@ -474,7 +474,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
 	{
         delete msg;
         msg = 0;
-		opp_error("Error: message for sending received, but radio already sending");
+		throw new cException("Error: message for sending received, but radio already sending");
 	}
 
 	// build the AirFrame to send
@@ -554,7 +554,7 @@ void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
 			channelInfo.startRecording(simTime());
 		}
 	} else if(nextHandleTime >= 0.0){
-		opp_error("Next handle time of ChannelSenseRequest returned by the Decider is smaller then current simulation time: %.2f",
+		throw new cException("Next handle time of ChannelSenseRequest returned by the Decider is smaller then current simulation time: %.2f",
 				SIMTIME_DBL(nextHandleTime));
 	}
 

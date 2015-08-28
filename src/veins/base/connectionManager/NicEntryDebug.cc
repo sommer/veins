@@ -80,7 +80,7 @@ int NicEntryDebug::collectGates(const char* pattern, GateStack& gates)
 	{
 		cGate* hostGate = host->gate(gateName);
 		if(hostGate->isConnectedOutside()) {
-			opp_error("Gate %s is still connected but not registered with this "
+			throw new cException("Gate %s is still connected but not registered with this "
 					  "NicEntry. Either the last NicEntry for this NIC did not "
 					  "clean up correctly or another gate creation module is "
 					  "interfering with this one!", gateName);

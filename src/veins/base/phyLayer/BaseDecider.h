@@ -185,7 +185,7 @@ protected:
 	 * Default implementation does not handle signal headers.
 	 */
 	virtual simtime_t processSignalHeader(AirFrame* frame) {
-		opp_error("BaseDecider does not handle Signal headers!");
+		throw new cException("BaseDecider does not handle Signal headers!");
 		return notAgain;
 	}
 

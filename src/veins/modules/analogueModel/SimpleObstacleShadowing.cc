@@ -35,7 +35,7 @@ SimpleObstacleShadowing::SimpleObstacleShadowing(ObstacleControl& obstacleContro
 	playgroundSize(playgroundSize),
 	debug(debug)
 {
-	if (useTorus) opp_error("SimpleObstacleShadowing does not work on torus-shaped playgrounds");
+	if (useTorus) throw new cException("SimpleObstacleShadowing does not work on torus-shaped playgrounds");
 }
 
 

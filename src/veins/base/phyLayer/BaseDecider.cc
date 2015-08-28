@@ -76,7 +76,7 @@ simtime_t BaseDecider::processSignalEnd(AirFrame* frame) {
 }
 
 simtime_t BaseDecider::processUnknownSignal(AirFrame* frame) {
-	opp_error("Unknown state for the AirFrame with ID %d", frame->getId());
+	throw new cException("Unknown state for the AirFrame with ID %d", frame->getId());
 	return notAgain;
 }
 
@@ -100,7 +100,7 @@ simtime_t BaseDecider::handleChannelSenseRequest(ChannelSenseRequest* request) {
 	}
 
 	if (currentChannelSenseRequest.first != request) {
-		opp_error("Got a new ChannelSenseRequest while already handling another one!");
+		throw new cException("Got a new ChannelSenseRequest while already handling another one!");
 		return notAgain;
 	}
 

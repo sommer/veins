@@ -30,7 +30,7 @@ class MIXIM_API PassedMessage : public cObject {
         case LOWER_DATA: s = "LOWER_DATA"; break;
         case LOWER_CONTROL: s = "LOWER_CONTROL"; break;
         default:
-            opp_error("PassedMessage::gateToString: got invalid value");
+            throw new cException("PassedMessage::gateToString: got invalid value");
             s = 0;
             break;
         }
