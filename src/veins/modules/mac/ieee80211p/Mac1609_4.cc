@@ -25,8 +25,8 @@
 #include "veins/base/phyLayer/PhyToMacControlInfo.h"
 #include "veins/modules/messages/PhyControlMessage_m.h"
 
-#define DBG_MAC EV
-//#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
+//#define DBG_MAC EV //TODO use this debug environment and/or find a way to define it for Mac1609_4::EDCA
+#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
 
 Define_Module(Mac1609_4);
 
