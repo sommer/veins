@@ -25,8 +25,8 @@
 #include "veins/base/phyLayer/PhyToMacControlInfo.h"
 #include "veins/modules/messages/PhyControlMessage_m.h"
 
-//#define DBG_MAC EV //TODO use this debug environment and/or find a way to define it for Mac1609_4::EDCA
-#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
+#define DBG_MAC EV
+//#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
 
 Define_Module(Mac1609_4);
 
@@ -564,6 +564,7 @@ Mac1609_4::t_access_category Mac1609_4::mapPriority(int prio) {
 }
 
 WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
+  EV_STATICCONTEXT
 
 	//iterate through the queues to return the packet we want to send
 	WaveShortMessage* pktToSend = NULL;
@@ -602,6 +603,7 @@ WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
 }
 
 simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
+  EV_STATICCONTEXT
 
 	DBG_MAC << "Restarting contention." << std::endl;
 
@@ -652,6 +654,7 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 }
 
 void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
+  EV_STATICCONTEXT
 	//update all Queues
 
 	DBG_MAC << "Stopping Contention at " << simTime().raw() << std::endl;
@@ -706,6 +709,7 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 	}
 }
 void Mac1609_4::EDCA::backoff(t_access_category ac) {
+  EV_STATICCONTEXT
 	myQueues[ac].currentBackoff = myMac->intuniform(0,myQueues[ac].cwCur);
 	statsSlotsBackoff += myQueues[ac].currentBackoff;
 	statsNumBackoff++;
@@ -713,6 +717,7 @@ void Mac1609_4::EDCA::backoff(t_access_category ac) {
 }
 
 void Mac1609_4::EDCA::postTransmit(t_access_category ac) {
+  EV_STATICCONTEXT
 	delete myQueues[ac].queue.front();
 	myQueues[ac].queue.pop();
 	myQueues[ac].cwCur = myQueues[ac].cwMin;
