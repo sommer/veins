@@ -10,7 +10,7 @@ void PERModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coor
 	//simtime_t end    = signal.getReceptionEnd();
 
 	double attenuationFactor = 1;  // no attenuation
-	if(packetErrorRate > 0 && uniform(0, 1) < packetErrorRate) {
+	if(packetErrorRate > 0 && uniform(getEnvir()->getRNG(0), 0, 1) < packetErrorRate) {
 		attenuationFactor = 0;  // absorb all energy so that the receveir cannot receive anything
 	}
 

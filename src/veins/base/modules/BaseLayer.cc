@@ -96,14 +96,14 @@ void BaseLayer::handleMessage(cMessage* msg)
          * it would be wrong to forward the message to one of these gates,
          * as they actually don't exist, so raise an error instead.
          */
-        opp_error("No self message and no gateID?? Check configuration.");
+        throw new cException("No self message and no gateID?? Check configuration.");
     } else {
         /* msg->getArrivalGateId() should be valid, but it isn't recognized
          * here. This could signal the case that this class is extended
          * with extra gates, but handleMessage() isn't overridden to
          * check for the new gate(s).
          */
-        opp_error("Unknown gateID?? Check configuration or override handleMessage().");
+        throw new cException("Unknown gateID?? Check configuration or override handleMessage().");
     }
 }
 

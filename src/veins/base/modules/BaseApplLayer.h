@@ -127,14 +127,14 @@ protected:
 	 */
 	virtual void handleUpperMsg(cMessage *msg) {
 		assert(false);
-		opp_error("Application has no upper layers!");
+		throw new cException("Application has no upper layers!");
 		delete msg;
 	}
 
 	/** @brief Handle control messages from upper layer */
 	virtual void handleUpperControl(cMessage *msg) {
 		assert(false);
-		opp_error("Application has no upper layers!");
+		throw new cException("Application has no upper layers!");
 		delete msg;
 	}
 

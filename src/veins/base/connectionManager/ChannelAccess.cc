@@ -34,6 +34,7 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
+#include <omnetpp.h>
 using std::endl;
 
 const simsignalwrap_t ChannelAccess::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
@@ -44,7 +45,7 @@ BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
 						 ? nic->par("connectionManagerName").stringValue()
 						 : "";
 	if (cmName != ""){
-		cModule* ccModule = simulation.getModuleByPath(cmName.c_str());
+		cModule* ccModule = cSimulation::getActiveSimulation()->getModuleByPath(cmName.c_str());
 
 		return dynamic_cast<BaseConnectionManager *>(ccModule);
 	}

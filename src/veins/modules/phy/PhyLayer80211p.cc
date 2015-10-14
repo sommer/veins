@@ -53,7 +53,7 @@ void PhyLayer80211p::initialize(int stage) {
 	BasePhyLayer::initialize(stage);
 	if (stage == 0) {
 		if (par("headerLength").longValue() != PHY_HDR_TOTAL_LENGTH) {
-		opp_error("The header length of the 802.11p standard is 46bit, please change your omnetpp.ini accordingly by either setting it to 46bit or removing the entry");
+		throw new cException("The header length of the 802.11p standard is 46bit, please change your omnetpp.ini accordingly by either setting it to 46bit or removing the entry");
 		}
 		//erase the RadioStateAnalogueModel
 		analogueModels.erase(analogueModels.begin());
@@ -137,7 +137,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
 		if(cc->hasPar("alpha") && alpha1 < cc->par("alpha").doubleValue())
 		{
 	        // throw error
-			opp_error("TestPhyLayer::createPathLossModel(): alpha can't be smaller than specified in \
+			throw new cException("TestPhyLayer::createPathLossModel(): alpha can't be smaller than specified in \
 	               ConnectionManager. Please adjust your config.xml file accordingly");
 		}
 	}
@@ -160,7 +160,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
 		if(cc->hasPar("alpha") && alpha2 < cc->par("alpha").doubleValue())
 		{
 	        // throw error
-			opp_error("TestPhyLayer::createPathLossModel(): alpha can't be smaller than specified in \
+			throw new cException("TestPhyLayer::createPathLossModel(): alpha can't be smaller than specified in \
 	               ConnectionManager. Please adjust your config.xml file accordingly");
 		}
 	}
@@ -185,7 +185,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
 		if(cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue())
 		{
 			// throw error
-			opp_error("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
+			throw new cException("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
 	               ConnectionManager. Please adjust your config.xml file accordingly");
 		}
 	}
@@ -205,7 +205,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
 	}
 
 	if(alpha1 ==-1 || alpha2==-1 || breakpointDistance==-1 || L01==-1 || L02==-1) {
-		opp_error("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
+		throw new cException("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
 	}
 
 	return new BreakpointPathlossModel(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, useTorus, playgroundSize, coreDebug);
@@ -239,7 +239,7 @@ AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& param
 		if(cc->hasPar("alpha") && alpha < cc->par("alpha").doubleValue())
 		{
 	        // throw error
-			opp_error("TestPhyLayer::createPathLossModel(): alpha can't be smaller than specified in \
+			throw new cException("TestPhyLayer::createPathLossModel(): alpha can't be smaller than specified in \
 	               ConnectionManager. Please adjust your config.xml file accordingly");
 		}
 	}
@@ -271,7 +271,7 @@ AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& param
 		if(cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue())
 		{
 			// throw error
-			opp_error("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
+			throw new cException("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
 	               ConnectionManager. Please adjust your config.xml file accordingly");
 		}
 	}
@@ -329,7 +329,7 @@ AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& p
 		if(cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue())
 		{
 			// throw error
-			opp_error("initializeSimpleObstacleShadowing(): carrierFrequency can't be smaller than specified in ConnectionManager. Please adjust your config.xml file accordingly");
+			throw new cException("initializeSimpleObstacleShadowing(): carrierFrequency can't be smaller than specified in ConnectionManager. Please adjust your config.xml file accordingly");
 		}
 	}
 	else // carrierFrequency has not been specified in config.xml
@@ -348,7 +348,7 @@ AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& p
 	}
 
 	ObstacleControl* obstacleControlP = ObstacleControlAccess().getIfExists();
-	if (!obstacleControlP) opp_error("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
+	if (!obstacleControlP) throw new cException("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
 	return new SimpleObstacleShadowing(*obstacleControlP, carrierFrequency, useTorus, playgroundSize, coreDebug);
 }
 

@@ -782,6 +782,6 @@ TraCIColor TraCIColor::fromTkColor(std::string tkColorName) {
 	if (tkColorName == "yellow3")                return TraCIColor(205, 205, 0, 255);
 	if (tkColorName == "yellow4")                return TraCIColor(139, 139, 0, 255);
 	if (tkColorName == "YellowGreen")            return TraCIColor(154, 205, 50, 255);
-	opp_error("unknown color name ", tkColorName.c_str());
+	throw new cException("unknown color name ", tkColorName.c_str());
 	return TraCIColor(255, 0, 0, 255);
 }

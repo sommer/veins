@@ -294,7 +294,7 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double snirMin, dou
 
 	//probability of no bit error in the PLCP header
 
-	double rand = dblrand();
+	double rand = dblrand(getEnvir()->getRNG(0));
 
 	if (!collectCollisionStats) {
 		if (rand > headerNoError)
@@ -320,7 +320,7 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double snirMin, dou
 
 	//probability of no bit error in the rest of the packet
 
-	rand = dblrand();
+	rand = dblrand(getEnvir()->getRNG(0));
 
 	if (!collectCollisionStats) {
 		if (rand > packetOkSinr) {
