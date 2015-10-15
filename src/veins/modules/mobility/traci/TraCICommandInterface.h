@@ -5,6 +5,7 @@
 #include <string>
 #include <stdint.h>
 
+#include "veins/modules/mobility/traci/TraCIBoundary.h"
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/base/utils/Coord.h"
 
@@ -229,9 +230,11 @@ class TraCICommandInterface
 			return GuiView(this, viewId);
 		}
 
+		TraCIBoundary& netBoundary() { return netbounds; }
 
 	private:
 		TraCIConnection& connection;
+		TraCIBoundary netbounds;
 
 		std::string genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
 		Coord genericGetCoord(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);

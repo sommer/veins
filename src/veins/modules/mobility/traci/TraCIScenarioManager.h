@@ -173,6 +173,11 @@ class TraCIScenarioManager : public cSimpleModule
 		 */
 		void insertVehicles();
 
+		/**
+		 * query road network boundaries from SUMO
+		 */
+		virtual void queryNetworkBoundary();
+
 		void subscribeToVehicleVariables(std::string vehicleId);
 		void unsubscribeFromVehicleVariables(std::string vehicleId);
 		void processSimSubscription(std::string objectId, TraCIBuffer& buf);

@@ -149,26 +149,7 @@ void TraCIScenarioManager::init_traci() {
 
 	}
 
-	{
-		// query road network boundaries
-		TraCIBuffer buf = connection->query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_NET_BOUNDING_BOX) << std::string("sim0"));
-		uint8_t cmdLength_resp; buf >> cmdLength_resp;
-		uint8_t commandId_resp; buf >> commandId_resp; ASSERT(commandId_resp == RESPONSE_GET_SIM_VARIABLE);
-		uint8_t variableId_resp; buf >> variableId_resp; ASSERT(variableId_resp == VAR_NET_BOUNDING_BOX);
-		std::string simId; buf >> simId;
-		uint8_t typeId_resp; buf >> typeId_resp; ASSERT(typeId_resp == TYPE_BOUNDINGBOX);
-		double x1; buf >> x1;
-		double y1; buf >> y1;
-		double x2; buf >> x2;
-		double y2; buf >> y2;
-		ASSERT(buf.eof());
-
-		TraCICoord netbounds1 = TraCICoord(x1, y1);
-		TraCICoord netbounds2 = TraCICoord(x2, y2);
-		MYDEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
-		connection->setNetbounds(netbounds1, netbounds2, par("margin"));
-		if ((connection->traci2omnet(netbounds2).x > world->getPgs()->x) || (connection->traci2omnet(netbounds1).y > world->getPgs()->y)) MYDEBUG << "WARNING: Playground size (" << world->getPgs()->x << ", " << world->getPgs()->y << ") might be too small for vehicle at network bounds (" << connection->traci2omnet(netbounds2).x << ", " << connection->traci2omnet(netbounds1).y << ")" << endl;
-	}
+	queryNetworkBoundary();
 
 	{
 		// subscribe to list of departed and arrived vehicles, as well as simulation time
@@ -281,7 +262,28 @@ void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 	error("TraCIScenarioManager received unknown self-message");
 }
 
+void TraCIScenarioManager::queryNetworkBoundary() {
+	TraCIBuffer buf = connection->query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_NET_BOUNDING_BOX) << std::string("sim0"));
+	uint8_t cmdLength_resp; buf >> cmdLength_resp;
+	uint8_t commandId_resp; buf >> commandId_resp; ASSERT(commandId_resp == RESPONSE_GET_SIM_VARIABLE);
+	uint8_t variableId_resp; buf >> variableId_resp; ASSERT(variableId_resp == VAR_NET_BOUNDING_BOX);
+	std::string simId; buf >> simId;
+	uint8_t typeId_resp; buf >> typeId_resp; ASSERT(typeId_resp == TYPE_BOUNDINGBOX);
+	double x1; buf >> x1;
+	double y1; buf >> y1;
+	double x2; buf >> x2;
+	double y2; buf >> y2;
+	ASSERT(buf.eof());
 
+	TraCICoord netbounds1 = TraCICoord(x1, y1);
+	TraCICoord netbounds2 = TraCICoord(x2, y2);
+	MYDEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
+	commandIfc->netBoundary().set(netbounds1, netbounds2, par("margin"));
+	if (commandIfc->netBoundary().within(*world->getPgs())) {
+		const Coord& netbounds = commandIfc->netBoundary().max();
+		MYDEBUG << "WARNING: Playground size (" << world->getPgs()->x << ", " << world->getPgs()->y << ") might be too small for vehicle at network bounds (" << netbounds.x << ", " << netbounds.y << ")" << endl;
+	}
+}
 
 // name: host;Car;i=vehicle.gif
 void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle) {
@@ -697,10 +699,10 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	// make sure we got updates for all attributes
 	if (numRead != 5) return;
 
-	Coord p = connection->traci2omnet(TraCICoord(px, py));
+	Coord p = commandIfc->netBoundary().traci2omnet(TraCICoord(px, py));
 	if ((p.x < 0) || (p.y < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
 
-	double angle = connection->traci2omnetAngle(angle_traci);
+	double angle = commandIfc->netBoundary().traci2omnetAngle(angle_traci);
 
 	cModule* mod = getManagedModule(objectId);
 
