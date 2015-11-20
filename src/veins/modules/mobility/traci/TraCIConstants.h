@@ -8,13 +8,16 @@
 /// @author  Tino Morenz
 /// @author  Michael Behrisch
 /// @author  Christoph Sommer
+/// @author  Mario Krumnow
+/// @author  Jakob Erdmann
+/// @author  Laura Bieker
 /// @date    2007/10/24
 /// @version $Id$
 ///
 /// holds codes used for TraCI
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -31,7 +34,7 @@
 // ****************************************
 // VERSION
 // ****************************************
-#define TRACI_VERSION 7
+#define TRACI_VERSION 10
 
 
 // ****************************************
@@ -75,34 +78,18 @@
 // response: subscribe induction loop (e1) variable
 #define RESPONSE_SUBSCRIBE_INDUCTIONLOOP_VARIABLE 0xe0
 
-
-// command: subscribe areal detector (e2) context
-#define CMD_SUBSCRIBE_AREAL_DETECTOR_CONTEXT 0x8D
-// response: subscribe areal detector (e2) context
-#define RESPONSE_SUBSCRIBE_AREAL_DETECTOR_CONTEXT 0x9D
-// command: get areal detector (e2) variable
-#define CMD_GET_AREAL_DETECTOR_VARIABLE 0x8E
-// response: get areal detector (e3) variable
-#define RESPONSE_GET_AREAL_DETECTOR_VARIABLE 0x9E
-// command: subscribe areal detector (e2) variable
-#define CMD_SUBSCRIBE_AREAL_DETECTOR_VARIABLE 0x8F
-// response: subscribe areal detector (e2) variable
-#define RESPONSE_SUBSCRIBE_AREAL_DETECTOR_VARIABLE 0x9F
-
-
-// command: subscribe areal detector (e3) context
+// command: subscribe multi-entry/multi-exit detector (e3) context
 #define CMD_SUBSCRIBE_MULTI_ENTRY_EXIT_DETECTOR_CONTEXT 0x81
-// response: subscribe areal detector (e3) context
+// response: subscribe multi-entry/multi-exit detector (e3) context
 #define RESPONSE_SUBSCRIBE_MULTI_ENTRY_EXIT_DETECTOR_CONTEXT 0x91
 // command: get multi-entry/multi-exit detector (e3) variable
 #define CMD_GET_MULTI_ENTRY_EXIT_DETECTOR_VARIABLE 0xa1
-// response: get areal detector (e3) variable
+// response: get multi-entry/multi-exit detector (e3) variable
 #define RESPONSE_GET_MULTI_ENTRY_EXIT_DETECTOR_VARIABLE 0xb1
 // command: subscribe multi-entry/multi-exit detector (e3) variable
 #define CMD_SUBSCRIBE_MULTI_ENTRY_EXIT_DETECTOR_VARIABLE 0xd1
-// response: subscribe areal detector (e3) variable
+// response: subscribe multi-entry/multi-exit detector (e3) variable
 #define RESPONSE_SUBSCRIBE_MULTI_ENTRY_EXIT_DETECTOR_VARIABLE 0xe1
-
 
 // command: subscribe traffic lights context
 #define CMD_SUBSCRIBE_TL_CONTEXT 0x82
@@ -269,6 +256,34 @@
 // response: subscribe GUI variable
 #define RESPONSE_SUBSCRIBE_GUI_VARIABLE 0xec
 
+// command: subscribe areal detector (e2) context
+#define CMD_SUBSCRIBE_AREAL_DETECTOR_CONTEXT 0x8d
+// response: subscribe areal detector (e2) context
+#define RESPONSE_SUBSCRIBE_AREAL_DETECTOR_CONTEXT 0x9d
+// command: get areal detector (e2) variable
+#define CMD_GET_AREAL_DETECTOR_VARIABLE 0xad
+// response: get areal detector (e2) variable
+#define RESPONSE_GET_AREAL_DETECTOR_VARIABLE 0xbd
+// command: subscribe areal detector (e2) variable
+#define CMD_SUBSCRIBE_AREAL_DETECTOR_VARIABLE 0xdd
+// response: subscribe areal detector (e2) variable
+#define RESPONSE_SUBSCRIBE_AREAL_DETECTOR_VARIABLE 0xed
+
+// command: subscribe person context
+#define CMD_SUBSCRIBE_PERSON_CONTEXT 0x8e
+// response: subscribe person context
+#define RESPONSE_SUBSCRIBE_PERSON_CONTEXT 0x9e
+// command: get person variable
+#define CMD_GET_PERSON_VARIABLE 0xae
+// response: get person variable
+#define RESPONSE_GET_PERSON_VARIABLE 0xbe
+// command: set person variable
+#define CMD_SET_PERSON_VARIABLE 0xce
+// command: subscribe person variable
+#define CMD_SUBSCRIBE_PERSON_VARIABLE 0xde
+// response: subscribe person variable
+#define RESPONSE_SUBSCRIBE_PERSON_VARIABLE 0xee
+
 
 // ****************************************
 // POSITION REPRESENTATIONS
@@ -368,6 +383,16 @@
 // vehicle finished route during teleport
 #define REMOVE_TELEPORT_ARRIVED 0x04
 
+// ****************************************
+// PERSON/CONTAINER STAGES
+// ****************************************
+// person walking / container transhiping
+#define STAGE_WALKING 0x00
+// person riding / container being transported
+#define STAGE_DRIVING 0x01
+// person / container stopping
+#define STAGE_WAITING 0x02
+
 
 // ****************************************
 // VARIABLE TYPES (for CMD_GET_*_VARIABLE)
@@ -390,7 +415,7 @@
 // last step vehicle number (get: induction loops, multi-entry/multi-exit detector, lanes, edges)
 #define LAST_STEP_MEAN_SPEED 0x11
 
-// last step vehicle number (get: induction loops, multi-entry/multi-exit detector, lanes, edges)
+// last step vehicle list (get: induction loops, multi-entry/multi-exit detector, lanes, edges)
 #define LAST_STEP_VEHICLE_ID_LIST 0x12
 
 // last step occupancy (get: induction loops, lanes, edges)
@@ -413,6 +438,9 @@
 
 // last step jam length in meters
 #define JAM_LENGTH_METERS 0x19
+
+// last step person list (get: edges)
+#define LAST_STEP_PERSON_ID_LIST 0x1a
 
 
 // traffic light states, encoded as rRgGyYoO tuple (get: traffic lights)
@@ -451,6 +479,9 @@
 // assumed time to next switch (get: traffic lights)
 #define TL_NEXT_SWITCH 0x2d
 
+// current state, using external signal names (get: traffic lights)
+#define TL_EXTERNAL_STATE 0x2e
+
 
 
 // outgoing link number (get: lanes)
@@ -475,13 +506,16 @@
 // maximum allowed/possible speed (get: vehicle types, lanes, set: edges, lanes)
 #define VAR_MAXSPEED 0x41
 
-// position (2D) (get: vehicle, poi, set: poi)
+// position (2D) (get: vehicle, poi, inductionloop, areadetector; set: poi)
 #define VAR_POSITION 0x42
+
+// position (3D) (get: vehicle, poi, set: poi)
+#define VAR_POSITION3D 0x39
 
 // angle (get: vehicle)
 #define VAR_ANGLE 0x43
 
-// angle (get: vehicle types, lanes, set: lanes)
+// angle (get: vehicle types, lanes, arealdetector, set: lanes)
 #define VAR_LENGTH 0x44
 
 // color (get: vehicles, vehicle types, polygons, pois)
@@ -520,7 +554,7 @@
 // road id (get: vehicles)
 #define VAR_ROAD_ID 0x50
 
-// lane id (get: vehicles)
+// lane id (get: vehicles, inductionloop, arealdetector)
 #define VAR_LANE_ID 0x51
 
 // lane index (get: vehicles)
@@ -614,7 +648,14 @@
 // current person number (get: vehicle)
 #define VAR_PERSON_NUMBER 0x67
 
+// number of persons waiting at a defined bus stop (get: simulation)
 #define VAR_BUS_STOP_WAITING 0x67
+
+// current leader together with gap (get: vehicle)
+#define VAR_LEADER 0x68
+
+// edge index in current route (get: vehicle)
+#define VAR_ROUTE_INDEX 0x69
 
 //current waiting time (get: vehicle, lane)
 #define VAR_WAITING_TIME 0x7a
@@ -652,18 +693,6 @@
 // ids of arrived vehicles (get: simulation)
 #define VAR_ARRIVED_VEHICLES_IDS 0x7a
 
-// number of vehicles starting to park (get: simulation)
-#define VAR_PARKING_STARTING_VEHICLES_NUMBER 0x6c
-
-// ids of vehicles starting to park (get: simulation)
-#define VAR_PARKING_STARTING_VEHICLES_IDS 0x6d
-
-// number of vehicles ending to park (get: simulation)
-#define VAR_PARKING_ENDING_VEHICLES_NUMBER 0x6e
-
-// ids of vehicles ending to park (get: simulation)
-#define VAR_PARKING_ENDING_VEHICLES_IDS 0x6f
-
 // delta t (get: simulation)
 #define VAR_DELTA_T 0x7b
 
@@ -700,13 +729,15 @@
 // clears the simulation of all not inserted vehicles (set: simulation)
 #define CMD_CLEAR_PENDING_VEHICLES 0x94
 
+// sets/retrieves abstract parameter
+#define VAR_PARAMETER 0x7e
 
 
 
 // add an instance (poi, polygon, vehicle, route)
 #define ADD 0x80
 
-// remove an instance (poi, polygon)
+// remove an instance (poi, polygon, vehicle)
 #define REMOVE 0x81
 
 // convert coordinates
@@ -718,6 +749,9 @@
 //the current driving distance
 #define VAR_DISTANCE 0x84
 
+// add a fully specified instance (vehicle)
+#define ADD_FULL 0x85
+
 // force rerouting based on travel time (vehicles)
 #define CMD_REROUTE_TRAVELTIME 0x90
 
@@ -727,6 +761,14 @@
 // validates current route (vehicles)
 #define VAR_ROUTE_VALID 0x92
 
+// retrieve information regarding the current person/container stage
+#define VAR_STAGE 0xc0
+
+// retrieve information regarding the next edge including crossings and walkingAreas (pedestrians only)
+#define VAR_NEXT_EDGE 0xc1
+
+// retrieve the number of stages (person, container)
+#define VAR_NUM_STAGES 0xc2
 
 // zoom
 #define VAR_VIEW_ZOOM 0xa0
