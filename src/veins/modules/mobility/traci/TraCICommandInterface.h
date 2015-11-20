@@ -72,6 +72,7 @@ class TraCICommandInterface
 
 				void setSpeedMode(int32_t bitset);
 				void setSpeed(double speed);
+				void setMaxSpeed(double speed);
 				void setColor(const TraCIColor& color);
 				void slowDown(double speed, int time);
 				void newRoute(std::string roadId);
@@ -79,6 +80,7 @@ class TraCICommandInterface
 				std::string getRoadId();
 				std::string getCurrentRoadOnRoute();
 				std::string getLaneId();
+				double getMaxSpeed();
 				double getLanePosition();
 				std::list<std::string> getPlannedRoadIds();
 				std::string getRouteId();
