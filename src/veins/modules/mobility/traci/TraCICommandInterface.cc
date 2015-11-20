@@ -49,6 +49,13 @@ void TraCICommandInterface::Vehicle::setSpeed(double speed) {
 	ASSERT(buf.eof());
 }
 
+void TraCICommandInterface::Vehicle::setMaxSpeed(double speed) {
+	uint8_t variableId = VAR_MAXSPEED;
+	uint8_t variableType = TYPE_DOUBLE;
+	TraCIBuffer buf = traci->connection.query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << speed);
+	ASSERT(buf.eof());
+}
+
 void TraCICommandInterface::Vehicle::setColor(const TraCIColor& color) {
 	TraCIBuffer p;
 	p << static_cast<uint8_t>(VAR_COLOR);
@@ -117,6 +124,10 @@ int32_t TraCICommandInterface::Vehicle::getLaneIndex() {
 
 std::string TraCICommandInterface::Vehicle::getTypeId() {
 	return traci->genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_TYPE, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
+double TraCICommandInterface::Vehicle::getMaxSpeed() {
+	return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_MAXSPEED, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
 double TraCICommandInterface::Vehicle::getLanePosition() {
