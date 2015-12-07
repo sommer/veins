@@ -28,7 +28,6 @@
 #include <omnetpp.h>
 
 #include "veins/base/utils/Coord.h"
-#include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/obstacle/ObstacleControl.h"
@@ -153,7 +152,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		cMessage* connectAndStartTrigger; /**< self-message scheduled for when to connect to TraCI server and start running */
 		cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
 
-		BaseWorldUtility* world;
 		BaseConnectionManager* cc;
 
 		uint32_t getCurrentTimeMs(); /**< get current simulation time (in ms) */

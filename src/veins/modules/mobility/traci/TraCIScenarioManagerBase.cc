@@ -43,7 +43,6 @@ TraCIScenarioManagerBase::TraCIScenarioManagerBase() :
 		connection(0),
 		connectAndStartTrigger(0),
 		executeOneTimestepTrigger(0),
-		world(0),
 		cc(0)
 {
 }
@@ -237,9 +236,6 @@ void TraCIScenarioManagerBase::initialize(int stage) {
 	drivingVehicleCount = 0;
 	autoShutdownTriggered = false;
 
-	world = FindModule<BaseWorldUtility*>::findGlobalModule();
-	if (world == NULL) error("Could not find BaseWorldUtility module");
-
 	cc = FindModule<BaseConnectionManager*>::findGlobalModule();
 	if (cc == NULL) error("Could not find BaseConnectionManager module");
 
@@ -403,10 +399,6 @@ void TraCIScenarioManagerBase::queryNetworkBoundary() {
 	TraCICoord netbounds2 = TraCICoord(x2, y2);
 	MYDEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
 	commandIfc->netBoundary().set(netbounds1, netbounds2, par("margin"));
-	if (commandIfc->netBoundary().within(*world->getPgs())) {
-		const Coord& netbounds = commandIfc->netBoundary().max();
-		MYDEBUG << "WARNING: Playground size (" << world->getPgs()->x << ", " << world->getPgs()->y << ") might be too small for vehicle at network bounds (" << netbounds.x << ", " << netbounds.y << ")" << endl;
-	}
 }
 
 // name: host;Car;i=vehicle.gif

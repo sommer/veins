@@ -5,8 +5,18 @@
 
 namespace Veins {
 
+// forward declarations
+class TraCIWorldListener;
+
 class TraCIScenarioManager : public TraCIScenarioManagerBase
 {
+        public:
+		TraCIScenarioManager();
+		~TraCIScenarioManager();
+		void initialize(int stage);
+
+        private:
+		TraCIWorldListener* worldListener;
 };
 
 class TraCIScenarioManagerAccess
