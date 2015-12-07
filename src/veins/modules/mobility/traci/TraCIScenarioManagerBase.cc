@@ -36,6 +36,9 @@ using Veins::TraCIScenarioManagerBase;
 using Veins::TraCIBuffer;
 using Veins::TraCICoord;
 
+static const uint32_t beginTimeMin = 0;
+static const uint32_t endTimeMax = 0x7FFFFFFF;
+
 TraCIScenarioManagerBase::TraCIScenarioManagerBase() :
 		myAddVehicleTimer(0),
 		mobRng(0),
@@ -522,20 +525,26 @@ void TraCIScenarioManagerBase::insertVehicles() {
 
 void TraCIScenarioManagerBase::subscribeSimulationVariables() {
 	// subscribe to list of departed and arrived vehicles, as well as simulation time
-	uint32_t beginTime = 0;
-	uint32_t endTime = 0x7FFFFFFF;
-	std::string objectId = "";
-	uint8_t variableNumber = 7;
-	uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
-	uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
-	uint8_t variable3 = VAR_TIME_STEP;
-	uint8_t variable4 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
-	uint8_t variable5 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
-	uint8_t variable6 = VAR_PARKING_STARTING_VEHICLES_IDS;
-	uint8_t variable7 = VAR_PARKING_ENDING_VEHICLES_IDS;
-	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7);
-	processSubcriptionResult(buf);
-	ASSERT(buf.eof());
+	static const std::string objectIdIgnored = "";
+	static const uint8_t variables[] = {
+		VAR_DEPARTED_VEHICLES_IDS,
+		VAR_ARRIVED_VEHICLES_IDS,
+		VAR_TIME_STEP,
+		VAR_TELEPORT_STARTING_VEHICLES_IDS,
+		VAR_TELEPORT_ENDING_VEHICLES_IDS,
+		VAR_PARKING_STARTING_VEHICLES_IDS,
+		VAR_PARKING_ENDING_VEHICLES_IDS
+	};
+	static const uint8_t variableNumber = sizeof(variables);
+
+	TraCIBuffer request;
+	request << beginTimeMin << endTimeMax << objectIdIgnored << variableNumber;
+	for (unsigned i = 0; i < sizeof(variables); ++i) {
+	    request << variables[i];
+	}
+	TraCIBuffer response = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, request);
+	processSubcriptionResult(response);
+	ASSERT(response.eof());
 }
 
 void TraCIScenarioManagerBase::subscribeVehicleList() {
