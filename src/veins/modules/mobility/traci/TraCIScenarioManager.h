@@ -199,9 +199,7 @@ class TraCIScenarioManager : public cSimpleModule
 		TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
 
 };
-}
 
-namespace Veins {
 class TraCIScenarioManagerAccess
 {
 	public:
@@ -209,6 +207,7 @@ class TraCIScenarioManagerAccess
 			return FindModule<TraCIScenarioManager*>::findGlobalModule();
 		};
 };
-}
+
+} // namespace Veins
 
 #endif
