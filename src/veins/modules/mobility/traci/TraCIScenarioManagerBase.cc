@@ -264,18 +264,7 @@ void TraCIScenarioManagerBase::init_traci() {
 
 	queryNetworkBoundary();
 	subscribeSimulationVariables();
-
-	{
-		// subscribe to list of vehicle ids
-		uint32_t beginTime = 0;
-		uint32_t endTime = 0x7FFFFFFF;
-		std::string objectId = "";
-		uint8_t variableNumber = 1;
-		uint8_t variable1 = ID_LIST;
-		TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1);
-		processSubcriptionResult(buf);
-		ASSERT(buf.eof());
-	}
+	subscribeVehicleList();
 
 	for (std::list<TraCIListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
 		TraCIListener* listener = *it;
@@ -545,6 +534,18 @@ void TraCIScenarioManagerBase::subscribeSimulationVariables() {
 	uint8_t variable6 = VAR_PARKING_STARTING_VEHICLES_IDS;
 	uint8_t variable7 = VAR_PARKING_ENDING_VEHICLES_IDS;
 	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7);
+	processSubcriptionResult(buf);
+	ASSERT(buf.eof());
+}
+
+void TraCIScenarioManagerBase::subscribeVehicleList() {
+	// subscribe to list of vehicle ids
+	uint32_t beginTime = 0;
+	uint32_t endTime = 0x7FFFFFFF;
+	std::string objectId = "";
+	uint8_t variableNumber = 1;
+	uint8_t variable1 = ID_LIST;
+	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1);
 	processSubcriptionResult(buf);
 	ASSERT(buf.eof());
 }
