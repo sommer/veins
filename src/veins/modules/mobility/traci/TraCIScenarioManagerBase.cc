@@ -549,14 +549,15 @@ void TraCIScenarioManagerBase::subscribeSimulationVariables() {
 
 void TraCIScenarioManagerBase::subscribeVehicleList() {
 	// subscribe to list of vehicle ids
-	uint32_t beginTime = 0;
-	uint32_t endTime = 0x7FFFFFFF;
-	std::string objectId = "";
-	uint8_t variableNumber = 1;
-	uint8_t variable1 = ID_LIST;
-	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1);
-	processSubcriptionResult(buf);
-	ASSERT(buf.eof());
+	static const std::string objectIdIgnored = "";
+	static const uint8_t variableNumber = 1;
+	static const uint8_t variable = ID_LIST;
+
+	TraCIBuffer request;
+	request << beginTimeMin << endTimeMax << objectIdIgnored << variableNumber << variable;
+	TraCIBuffer response = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, request);
+	processSubcriptionResult(response);
+	ASSERT(response.eof());
 }
 
 void TraCIScenarioManagerBase::subscribeToVehicleVariables(std::string vehicleId) {
