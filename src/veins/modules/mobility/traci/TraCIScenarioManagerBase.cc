@@ -180,7 +180,7 @@ void TraCIScenarioManagerBase::parseModuleTypes() {
 
 void TraCIScenarioManagerBase::initialize(int stage) {
 	cSimpleModule::initialize(stage);
-	if (stage != 1) {
+	if (stage != INIT_BASE) {
 		return;
 	}
 

@@ -81,9 +81,15 @@ class TraCIScenarioManagerBase : public cSimpleModule
 			VEH_SIGNAL_EMERGENCY_YELLOW = 8192
 		};
 
+		enum InitStages {
+			INIT_BASE = 0,
+			INIT_LISTENER = 1,
+			INIT_LAST = INIT_LISTENER
+		};
+
 		TraCIScenarioManagerBase();
 		virtual ~TraCIScenarioManagerBase();
-		virtual int numInitStages() const { return std::max(cSimpleModule::numInitStages(), 2); }
+		virtual int numInitStages() const { return INIT_LAST + 1; }
 		virtual void initialize(int stage);
 		virtual void finish();
 		virtual void handleMessage(cMessage *msg);
