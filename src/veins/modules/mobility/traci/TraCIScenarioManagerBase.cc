@@ -30,7 +30,6 @@
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
-#include "veins/modules/obstacle/ObstacleControl.h"
 #include "veins/modules/mobility/traci/TraCIScenarioManagerInet.h"
 
 using Veins::TraCIScenarioManagerBase;
@@ -293,23 +292,6 @@ void TraCIScenarioManagerBase::init_traci() {
 		TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1);
 		processSubcriptionResult(buf);
 		ASSERT(buf.eof());
-	}
-
-	ObstacleControl* obstacles = ObstacleControlAccess().getIfExists();
-	if (obstacles) {
-		{
-			// get list of polygons
-			std::list<std::string> ids = getCommandInterface()->getPolygonIds();
-			for (std::list<std::string>::iterator i = ids.begin(); i != ids.end(); ++i) {
-				std::string id = *i;
-				std::string typeId = getCommandInterface()->polygon(id).getTypeId();
-				if (!obstacles->isTypeSupported(typeId)) continue;
-				std::list<Coord> coords = getCommandInterface()->polygon(id).getShape();
-				std::vector<Coord> shape;
-				std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
-				obstacles->addFromTypeAndShape(id, typeId, shape);
-			}
-		}
 	}
 
 	for (std::list<TraCIListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {

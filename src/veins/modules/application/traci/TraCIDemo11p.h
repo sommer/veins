@@ -24,6 +24,7 @@
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
+#include "veins/modules/world/annotations/AnnotationManager.h"
 
 using Veins::TraCIMobility;
 using Veins::TraCICommandInterface;

@@ -6,6 +6,7 @@
 namespace Veins {
 
 // forward declarations
+class TraCIObstacleListener;
 class TraCIWorldListener;
 
 class TraCIScenarioManager : public TraCIScenarioManagerBase
@@ -17,6 +18,7 @@ class TraCIScenarioManager : public TraCIScenarioManagerBase
 
         private:
 		TraCIWorldListener* worldListener;
+		TraCIObstacleListener* obstacleListener;
 };
 
 class TraCIScenarioManagerAccess
