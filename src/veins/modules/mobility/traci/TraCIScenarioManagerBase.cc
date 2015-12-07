@@ -263,24 +263,7 @@ void TraCIScenarioManagerBase::init_traci() {
 	}
 
 	queryNetworkBoundary();
-
-	{
-		// subscribe to list of departed and arrived vehicles, as well as simulation time
-		uint32_t beginTime = 0;
-		uint32_t endTime = 0x7FFFFFFF;
-		std::string objectId = "";
-		uint8_t variableNumber = 7;
-		uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
-		uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
-		uint8_t variable3 = VAR_TIME_STEP;
-		uint8_t variable4 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
-		uint8_t variable5 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
-		uint8_t variable6 = VAR_PARKING_STARTING_VEHICLES_IDS;
-		uint8_t variable7 = VAR_PARKING_ENDING_VEHICLES_IDS;
-		TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7);
-		processSubcriptionResult(buf);
-		ASSERT(buf.eof());
-	}
+	subscribeSimulationVariables();
 
 	{
 		// subscribe to list of vehicle ids
@@ -546,6 +529,24 @@ void TraCIScenarioManagerBase::insertVehicles() {
 		i = tmp;
 
 	}
+}
+
+void TraCIScenarioManagerBase::subscribeSimulationVariables() {
+	// subscribe to list of departed and arrived vehicles, as well as simulation time
+	uint32_t beginTime = 0;
+	uint32_t endTime = 0x7FFFFFFF;
+	std::string objectId = "";
+	uint8_t variableNumber = 7;
+	uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
+	uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
+	uint8_t variable3 = VAR_TIME_STEP;
+	uint8_t variable4 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
+	uint8_t variable5 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
+	uint8_t variable6 = VAR_PARKING_STARTING_VEHICLES_IDS;
+	uint8_t variable7 = VAR_PARKING_ENDING_VEHICLES_IDS;
+	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7);
+	processSubcriptionResult(buf);
+	ASSERT(buf.eof());
 }
 
 void TraCIScenarioManagerBase::subscribeToVehicleVariables(std::string vehicleId) {

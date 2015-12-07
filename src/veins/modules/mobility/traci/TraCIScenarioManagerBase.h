@@ -186,6 +186,7 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		 */
 		virtual void queryNetworkBoundary();
 
+		void subscribeSimulationVariables();
 		void subscribeToVehicleVariables(std::string vehicleId);
 		void unsubscribeFromVehicleVariables(std::string vehicleId);
 		void processSimSubscription(std::string objectId, TraCIBuffer& buf);
