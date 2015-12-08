@@ -349,30 +349,33 @@ void TraCIScenarioManagerBase::subscribeVehicleList() {
 
 void TraCIScenarioManagerBase::subscribeToVehicleVariables(std::string vehicleId) {
 	// subscribe to some attributes of the vehicle
-	uint32_t beginTime = 0;
-	uint32_t endTime = 0x7FFFFFFF;
-	std::string objectId = vehicleId;
-	uint8_t variableNumber = 5;
-	uint8_t variable1 = VAR_POSITION;
-	uint8_t variable2 = VAR_ROAD_ID;
-	uint8_t variable3 = VAR_SPEED;
-	uint8_t variable4 = VAR_ANGLE;
-	uint8_t variable5 = VAR_SIGNALS;
+	static const uint8_t variables[] = {
+		VAR_POSITION,
+		VAR_ROAD_ID,
+		VAR_SPEED,
+		VAR_ANGLE,
+		VAR_SIGNALS
+	};
+	static const uint8_t variableNumber = sizeof(variables);
 
-	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5);
-	processSubcriptionResult(buf);
-	ASSERT(buf.eof());
+	TraCIBuffer request;
+	request << beginTimeMin << endTimeMax << vehicleId << variableNumber;
+	for (unsigned i = 0; i < variableNumber; ++i) {
+		request << variables[i];
+	}
+	TraCIBuffer response = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, request);
+	processSubcriptionResult(response);
+	ASSERT(response.eof());
 }
 
 void TraCIScenarioManagerBase::unsubscribeFromVehicleVariables(std::string vehicleId) {
-	// subscribe to some attributes of the vehicle
-	uint32_t beginTime = 0;
-	uint32_t endTime = 0x7FFFFFFF;
-	std::string objectId = vehicleId;
+	// unsubscribe from all vehicle attributes
 	uint8_t variableNumber = 0;
 
-	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber);
-	ASSERT(buf.eof());
+	TraCIBuffer request;
+	request << beginTimeMin << endTimeMax << vehicleId << variableNumber;
+	TraCIBuffer response = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, request);
+	ASSERT(response.eof());
 }
 
 void TraCIScenarioManagerBase::processSimSubscription(std::string objectId, TraCIBuffer& buf) {
