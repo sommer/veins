@@ -40,7 +40,6 @@ simple TraCIScenarioManagerLaunchd
     parameters:
         @display("i=block/network2");
         @class(Veins::TraCIScenarioManagerLaunchd);
-        bool debug = default(false);  // emit debug messages?
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)
         double firstStepAt @unit("s") = default(-1s);  // when to start synchronizing with the TraCI server (-1: immediately after connecting)
         double updateInterval @unit("s") = default(1s);  // time interval of hosts' position updates
