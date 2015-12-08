@@ -39,6 +39,7 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/mobility/traci/VehicleSignal.h"
+#include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 
 namespace Veins {
 
@@ -120,9 +121,7 @@ protected:
 
     bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
     double penetrationRate;
-    std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
-    std::list<std::pair<TraCICoord, TraCICoord>> roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
-
+    TraCIRegionOfInterest roi; /**< Can return whether a given position lies within the simulation's region of interest. Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI */
     double areaSum;
 
     AnnotationManager* annotations;
@@ -157,12 +156,6 @@ protected:
     void deleteManagedModule(std::string nodeId);
 
     bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
-
-    /**
-     * returns whether a given position lies within the simulation's region of interest.
-     * Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI
-     */
-    bool isInRegionOfInterest(const TraCICoord& position, std::string road_id, double speed, double angle);
 
     void subscribeToVehicleVariables(std::string vehicleId);
     void unsubscribeFromVehicleVariables(std::string vehicleId);

@@ -251,48 +251,12 @@ void TraCIScenarioManager::initialize(int stage)
     host = par("host").stdstringValue();
     port = par("port");
     autoShutdown = par("autoShutdown");
-    std::string roiRoads_s = par("roiRoads");
-    std::string roiRects_s = par("roiRects");
 
     annotations = AnnotationManagerAccess().getIfExists();
 
-    // parse roiRoads
-    roiRoads.clear();
-    std::istringstream roiRoads_i(roiRoads_s);
-    std::string road;
-    while (std::getline(roiRoads_i, road, ' ')) {
-        roiRoads.push_back(road);
-    }
-
-    // parse roiRects
-    roiRects.clear();
-    std::istringstream roiRects_i(roiRects_s);
-    std::string rect;
-    while (std::getline(roiRects_i, rect, ' ')) {
-        std::istringstream rect_i(rect);
-        double x1;
-        rect_i >> x1;
-        ASSERT(rect_i);
-        char c1;
-        rect_i >> c1;
-        ASSERT(rect_i);
-        double y1;
-        rect_i >> y1;
-        ASSERT(rect_i);
-        char c2;
-        rect_i >> c2;
-        ASSERT(rect_i);
-        double x2;
-        rect_i >> x2;
-        ASSERT(rect_i);
-        char c3;
-        rect_i >> c3;
-        ASSERT(rect_i);
-        double y2;
-        rect_i >> y2;
-        ASSERT(rect_i);
-        roiRects.push_back(std::pair<TraCICoord, TraCICoord>(TraCICoord(x1, y1), TraCICoord(x2, y2)));
-    }
+    roi.clear();
+    roi.addRoads(par("roiRoads"));
+    roi.addRectangles(par("roiRects"));
 
     areaSum = 0;
     nextNodeVectorIndex = 0;
@@ -431,9 +395,9 @@ void TraCIScenarioManager::init_traci()
     emit(traciInitializedSignal, true);
 
     // draw and calculate area of rois
-    for (std::list<std::pair<TraCICoord, TraCICoord>>::const_iterator roi = roiRects.begin(), end = roiRects.end(); roi != end; ++roi) {
-        TraCICoord first = roi->first;
-        TraCICoord second = roi->second;
+    for (std::list<std::pair<TraCICoord, TraCICoord>>::const_iterator r = roi.getRectangles().begin(), end = roi.getRectangles().end(); r != end; ++r) {
+        TraCICoord first = r->first;
+        TraCICoord second = r->second;
 
         std::list<Coord> pol;
 
@@ -602,22 +566,6 @@ void TraCIScenarioManager::deleteManagedModule(std::string nodeId)
     hosts.erase(nodeId);
     mod->callFinish();
     mod->deleteModule();
-}
-
-bool TraCIScenarioManager::isInRegionOfInterest(const TraCICoord& position, std::string road_id, double speed, double angle)
-{
-    if ((roiRoads.size() == 0) && (roiRects.size() == 0)) return true;
-    if (roiRoads.size() > 0) {
-        for (std::list<std::string>::const_iterator i = roiRoads.begin(); i != roiRoads.end(); ++i) {
-            if (road_id == *i) return true;
-        }
-    }
-    if (roiRects.size() > 0) {
-        for (std::list<std::pair<TraCICoord, TraCICoord>>::const_iterator i = roiRects.begin(); i != roiRects.end(); ++i) {
-            if ((position.x >= i->first.x) && (position.y >= i->first.y) && (position.x <= i->second.x) && (position.y <= i->second.y)) return true;
-        }
-    }
-    return false;
 }
 
 void TraCIScenarioManager::executeOneTimestep()
@@ -1055,7 +1003,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
     cModule* mod = getManagedModule(objectId);
 
     // is it in the ROI?
-    bool inRoi = isInRegionOfInterest(TraCICoord(px, py), edge, speed, angle);
+    bool inRoi = !roi.hasConstraints() ? true : (roi.onAnyRectangle(TraCICoord(px, py)) || roi.partOfRoads(edge));
     if (!inRoi) {
         if (mod) {
             deleteManagedModule(objectId);
