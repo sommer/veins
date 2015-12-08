@@ -165,6 +165,7 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		 */
 		virtual void queryNetworkBoundary();
 
+		void checkApiCompatibility();
 		void subscribeSimulationVariables();
 		void subscribeVehicleList();
 		void subscribeToVehicleVariables(std::string vehicleId);

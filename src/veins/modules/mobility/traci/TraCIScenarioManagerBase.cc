@@ -104,20 +104,7 @@ void TraCIScenarioManagerBase::initialize(int stage) {
 }
 
 void TraCIScenarioManagerBase::init_traci() {
-	{
-		std::pair<uint32_t, std::string> version = getCommandInterface()->getVersion();
-		uint32_t apiVersion = version.first;
-		std::string serverVersion = version.second;
-
-		if ((apiVersion == 10) || (apiVersion == 11)) {
-			MYDEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
-		}
-		else {
-			error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using SUMO 0.26.0", serverVersion.c_str(), apiVersion);
-		}
-
-	}
-
+	checkApiCompatibility();
 	queryNetworkBoundary();
 	subscribeSimulationVariables();
 	subscribeVehicleList();
@@ -307,6 +294,19 @@ void TraCIScenarioManagerBase::insertVehicles() {
 		vehicleInsertQueue.erase(i);
 		i = tmp;
 
+	}
+}
+
+void TraCIScenarioManagerBase::checkApiCompatibility()
+{
+	std::pair<uint32_t, std::string> version = getCommandInterface()->getVersion();
+	uint32_t apiVersion = version.first;
+	std::string serverVersion = version.second;
+
+	if ((apiVersion == 10) || (apiVersion == 11)) {
+		MYDEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
+	} else {
+		error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using SUMO 0.26.0.", serverVersion.c_str(), apiVersion);
 	}
 }
 
