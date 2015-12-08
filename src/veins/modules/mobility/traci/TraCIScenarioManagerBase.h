@@ -35,6 +35,7 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/mobility/traci/TraCIListener.h"
+#include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 
 /**
  * @brief
@@ -134,8 +135,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 
 		bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
 		double penetrationRate;
-		std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
-		std::list<std::pair<TraCICoord, TraCICoord> > roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
 
 		TraCIConnection* connection;
 		TraCICommandInterface* commandIfc;
@@ -164,12 +163,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		void deleteManagedModule(std::string nodeId);
 
 		bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
-
-		/**
-		 * returns whether a given position lies within the simulation's region of interest.
-		 * Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI
-		 */
-		bool isInRegionOfInterest(const TraCICoord& position, std::string road_id, double speed, double angle);
 
 		/**
 		 * adds a new vehicle to the queue which are tried to be inserted at the next SUMO time step;
@@ -208,6 +201,7 @@ class TraCIScenarioManagerBase : public cSimpleModule
 
 	private:
 		std::list<TraCIListener*> listeners;
+		TraCIRegionOfInterest roi;
 };
 
 } // namespace Veins
