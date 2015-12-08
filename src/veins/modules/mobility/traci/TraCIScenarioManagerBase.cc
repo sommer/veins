@@ -40,7 +40,6 @@ static const uint32_t beginTimeMin = 0;
 static const uint32_t endTimeMax = 0x7FFFFFFF;
 
 TraCIScenarioManagerBase::TraCIScenarioManagerBase() :
-		myAddVehicleTimer(0),
 		mobRng(0),
 		connection(0),
 		connectAndStartTrigger(0),
@@ -51,7 +50,6 @@ TraCIScenarioManagerBase::TraCIScenarioManagerBase() :
 TraCIScenarioManagerBase::~TraCIScenarioManagerBase() {
 	cancelAndDelete(connectAndStartTrigger);
 	cancelAndDelete(executeOneTimestepTrigger);
-	cancelAndDelete(myAddVehicleTimer);
 	delete commandIfc;
 	delete connection;
 }
@@ -81,8 +79,6 @@ void TraCIScenarioManagerBase::initialize(int stage) {
 	vehicleRngIndex = par("vehicleRngIndex");
 	numVehicles = par("numVehicles").longValue();
 	mobRng = getRNG(vehicleRngIndex);
-
-	myAddVehicleTimer = new cMessage("myAddVehicleTimer");
 
 	roi.clear();
 	roi.addRoads(par("roiRoads"));

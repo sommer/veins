@@ -115,7 +115,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		int port;
 
 		uint32_t vehicleNameCounter;
-		cMessage* myAddVehicleTimer;
 		std::vector<std::string> vehicleTypeIds;
 		std::map<int, std::queue<std::string> > vehicleInsertQueue;
 		std::set<std::string> queuedVehicles;
