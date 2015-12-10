@@ -74,7 +74,7 @@ void TraCIScenarioManagerBase::initialize(int stage) {
 	firstStepAt = par("firstStepAt");
 	updateInterval = par("updateInterval");
 	if (firstStepAt == -1) firstStepAt = connectAt + updateInterval;
-	penetrationRate = par("penetrationRate").doubleValue();
+	penetration.setTargetPenetration(par("penetrationRate").doubleValue());
 	host = par("host").stdstringValue();
 	port = par("port");
 	autoShutdown = par("autoShutdown");
@@ -175,21 +175,10 @@ void TraCIScenarioManagerBase::addModule(const std::string& nodeId, const TraCIN
 	if (nodes->get(nodeId)) error("tried adding duplicate module");
 	vehicleInserter->dequeVehicle(nodeId);
 
-	double option1 = nodes->size() / (nodes->size() + unEquippedHosts.size() + 1.0);
-	double option2 = (nodes->size() + 1) / (nodes->size() + unEquippedHosts.size() + 1.0);
-
-	if (fabs(option1 - penetrationRate) < fabs(option2 - penetrationRate)) {
-		unEquippedHosts.insert(nodeId);
-		return;
+	if (!penetration.becomesUnequipped(nodeId, nodes->size())) {
+		const std::string& vType = getCommandInterface()->vehicle(nodeId).getTypeId();
+		nodes->add(nodeId, nodeData, vType, simTime() + updateInterval);
 	}
-
-	const std::string& vType = getCommandInterface()->vehicle(nodeId).getTypeId();
-	nodes->add(nodeId, nodeData, vType, simTime() + updateInterval);
-}
-
-bool TraCIScenarioManagerBase::isModuleUnequipped(std::string nodeId) {
-	if (unEquippedHosts.find(nodeId) == unEquippedHosts.end()) return false;
-	return true;
 }
 
 void TraCIScenarioManagerBase::executeOneTimestep() {
@@ -340,11 +329,7 @@ void TraCIScenarioManagerBase::processSimSubscription(std::string objectId, TraC
 				// check if this object has been deleted already (e.g. because it was outside the ROI)
 				cModule* mod = nodes->get(idstring);
 				if (mod) nodes->remove(idstring);
-
-				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
-					unEquippedHosts.erase(idstring);
-				}
-
+				penetration.removeIfUnequipped(idstring);
 			}
 
 			if ((count > 0) && (count >= activeVehicleCount) && autoShutdown) autoShutdownTriggered = true;
@@ -362,11 +347,7 @@ void TraCIScenarioManagerBase::processSimSubscription(std::string objectId, TraC
 				// check if this object has been deleted already (e.g. because it was outside the ROI)
 				cModule* mod = nodes->get(idstring);
 				if (mod) nodes->remove(idstring);
-
-				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
-					unEquippedHosts.erase(idstring);
-				}
-
+				penetration.removeIfUnequipped(idstring);
 			}
 
 			activeVehicleCount -= count;
@@ -545,15 +526,13 @@ void TraCIScenarioManagerBase::processVehicleSubscription(std::string objectId, 
 		if (mod) {
 			nodes->remove(objectId);
 			MYDEBUG << "Vehicle #" << objectId << " left region of interest" << endl;
-		}
-		else if(unEquippedHosts.find(objectId) != unEquippedHosts.end()) {
-			unEquippedHosts.erase(objectId);
+		} else if (penetration.removeIfUnequipped(objectId)) {
 			MYDEBUG << "Vehicle (unequipped) # " << objectId<< " left region of interest" << endl;
 		}
 		return;
 	}
 
-	if (isModuleUnequipped(objectId)) {
+	if (penetration.isUnequipped(objectId)) {
 		return;
 	}
 

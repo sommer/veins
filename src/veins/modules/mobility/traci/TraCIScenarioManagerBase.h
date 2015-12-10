@@ -36,6 +36,7 @@
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/mobility/traci/TraCIListener.h"
 #include "veins/modules/mobility/traci/TraCINodeManager.h"
+#include "veins/modules/mobility/traci/TraCIPenetration.h"
 #include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 
 /**
@@ -116,12 +117,10 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		int port;
 
 		bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
-		double penetrationRate;
 
 		TraCIConnection* connection;
 		TraCICommandInterface* commandIfc;
 
-		std::set<std::string> unEquippedHosts;
 		std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
 		unsigned activeVehicleCount; /**< number of vehicles, be it parking or driving **/
 		unsigned parkingVehicleCount; /**< number of parking vehicles, derived from parking start/end events */
@@ -135,8 +134,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		virtual void init_traci();
 
 		void addModule(const std::string& nodeId, const TraCINodeManager::NodeData&);
-
-		bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
 
 		/**
 		 * query road network boundaries from SUMO
@@ -159,6 +156,7 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		TraCIRegionOfInterest roi;
 		TraCINodeManager* nodes;
 		TraCIVehicleInserter* vehicleInserter;
+		TraCIPenetration penetration;
 };
 
 } // namespace Veins
