@@ -32,6 +32,7 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
+#include "veins/modules/mobility/traci/TraCIVehicleSignals.h"
 
 /**
  * @brief
@@ -78,7 +79,7 @@ class TraCIMobility : public BaseMobility
 
 		virtual void handleSelfMsg(cMessage *msg);
 		virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
-		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, TraCIScenarioManager::VehicleSignal signals = TraCIScenarioManager::VEH_SIGNAL_UNDEF);
+		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, TraCIVehicleSignal signals = TraCIVehicleSignal());
 		virtual void changePosition();
 		virtual void changeParkingState(bool);
 		virtual void updateDisplayString();
@@ -106,8 +107,8 @@ class TraCIMobility : public BaseMobility
 			if (speed == -1) throw cRuntimeError("TraCIMobility::getSpeed called with no speed set yet");
 			return speed;
 		}
-		virtual TraCIScenarioManager::VehicleSignal getSignals() const {
-			if (signals == -1) throw cRuntimeError("TraCIMobility::getSignals called with no signals set yet");
+		virtual TraCIVehicleSignal getSignals() const {
+			if (!signals) throw cRuntimeError("TraCIMobility::getSignals called with no signals set yet");
 			return signals;
 		}
 		/**
@@ -153,7 +154,7 @@ class TraCIMobility : public BaseMobility
 		std::string road_id; /**< updated by nextPosition() */
 		double speed; /**< updated by nextPosition() */
 		double angle; /**< updated by nextPosition() */
-		TraCIScenarioManager::VehicleSignal signals; /**<updated by nextPosition() */
+		TraCIVehicleSignal signals; /**<updated by nextPosition() */
 
 		cMessage* startAccidentMsg;
 		cMessage* stopAccidentMsg;
