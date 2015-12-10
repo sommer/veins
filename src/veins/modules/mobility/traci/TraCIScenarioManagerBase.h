@@ -123,9 +123,9 @@ class TraCIScenarioManagerBase : public cSimpleModule
 
 		std::set<std::string> unEquippedHosts;
 		std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
-		uint32_t activeVehicleCount; /**< number of vehicles, be it parking or driving **/
-		uint32_t parkingVehicleCount; /**< number of parking vehicles, derived from parking start/end events */
-		uint32_t drivingVehicleCount; /**< number of driving, as reported by sumo */
+		unsigned activeVehicleCount; /**< number of vehicles, be it parking or driving **/
+		unsigned parkingVehicleCount; /**< number of parking vehicles, derived from parking start/end events */
+		unsigned drivingVehicleCount; /**< number of driving, as reported by sumo */
 		bool autoShutdownTriggered;
 		cMessage* connectAndStartTrigger; /**< self-message scheduled for when to connect to TraCI server and start running */
 		cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */

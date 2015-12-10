@@ -41,6 +41,9 @@ using Veins::TraCICoord;
 
 TraCIScenarioManagerBase::TraCIScenarioManagerBase() :
 		connection(0),
+		activeVehicleCount(0),
+		parkingVehicleCount(0),
+		drivingVehicleCount(0),
 		connectAndStartTrigger(0),
 		executeOneTimestepTrigger(0),
 		vehicleInserter(0)
