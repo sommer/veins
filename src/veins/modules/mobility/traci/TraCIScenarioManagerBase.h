@@ -139,8 +139,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		cMessage* connectAndStartTrigger; /**< self-message scheduled for when to connect to TraCI server and start running */
 		cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
 
-		uint32_t getCurrentTimeMs(); /**< get current simulation time (in ms) */
-
 		void executeOneTimestep(); /**< read and execute all commands for the next timestep */
 
 		virtual void init_traci();

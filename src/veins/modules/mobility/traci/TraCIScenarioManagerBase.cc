@@ -31,13 +31,12 @@
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/modules/mobility/traci/TraCINodeManager.h"
+#include "veins/modules/mobility/traci/TraCITime.h"
 
 using Veins::TraCIScenarioManagerBase;
 using Veins::TraCIBuffer;
 using Veins::TraCICoord;
 
-static const uint32_t beginTimeMin = 0;
-static const uint32_t endTimeMax = 0x7FFFFFFF;
 
 TraCIScenarioManagerBase::TraCIScenarioManagerBase() :
 		mobRng(0),
@@ -219,19 +218,13 @@ bool TraCIScenarioManagerBase::isModuleUnequipped(std::string nodeId) {
 	return true;
 }
 
-uint32_t TraCIScenarioManagerBase::getCurrentTimeMs() {
-	return static_cast<uint32_t>(round(simTime().dbl() * 1000));
-}
-
 void TraCIScenarioManagerBase::executeOneTimestep() {
+	MYDEBUG << "Triggering TraCI server simulation advance to t=" << simTime() << endl;
 
-	MYDEBUG << "Triggering TraCI server simulation advance to t=" << simTime() <<endl;
-
-	uint32_t targetTime = getCurrentTimeMs();
-
-	if (targetTime > round(connectAt.dbl() * 1000)) {
+	const simtime_t now = simTime();
+	if (now >= connectAt) {
 		insertVehicles();
-		TraCIBuffer buf = connection->query(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
+		TraCIBuffer buf = connection->query(CMD_SIMSTEP2, TraCIBuffer() << TraCITime::from(now));
 
 		uint32_t count; buf >> count;
 		MYDEBUG << "Getting " << count << " subscription results" << endl;
@@ -240,7 +233,7 @@ void TraCIScenarioManagerBase::executeOneTimestep() {
 		}
 	}
 
-	if (!autoShutdownTriggered) scheduleAt(simTime()+updateInterval, executeOneTimestepTrigger);
+	if (!autoShutdownTriggered) scheduleAt(now + updateInterval, executeOneTimestepTrigger);
 
 	for (std::list<TraCIListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
 		TraCIListener* listener = *it;
@@ -321,7 +314,7 @@ void TraCIScenarioManagerBase::subscribeSimulationVariables() {
 	static const uint8_t variableNumber = sizeof(variables);
 
 	TraCIBuffer request;
-	request << beginTimeMin << endTimeMax << objectIdIgnored << variableNumber;
+	request << TraCITime::min() << TraCITime::max() << objectIdIgnored << variableNumber;
 	for (unsigned i = 0; i < sizeof(variables); ++i) {
 	    request << variables[i];
 	}
@@ -337,7 +330,7 @@ void TraCIScenarioManagerBase::subscribeVehicleList() {
 	static const uint8_t variable = ID_LIST;
 
 	TraCIBuffer request;
-	request << beginTimeMin << endTimeMax << objectIdIgnored << variableNumber << variable;
+	request << TraCITime::min() << TraCITime::max() << objectIdIgnored << variableNumber << variable;
 	TraCIBuffer response = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, request);
 	processSubcriptionResult(response);
 	ASSERT(response.eof());
@@ -355,7 +348,7 @@ void TraCIScenarioManagerBase::subscribeToVehicleVariables(std::string vehicleId
 	static const uint8_t variableNumber = sizeof(variables);
 
 	TraCIBuffer request;
-	request << beginTimeMin << endTimeMax << vehicleId << variableNumber;
+	request << TraCITime::min() << TraCITime::max() << vehicleId << variableNumber;
 	for (unsigned i = 0; i < variableNumber; ++i) {
 		request << variables[i];
 	}
@@ -369,7 +362,7 @@ void TraCIScenarioManagerBase::unsubscribeFromVehicleVariables(std::string vehic
 	uint8_t variableNumber = 0;
 
 	TraCIBuffer request;
-	request << beginTimeMin << endTimeMax << vehicleId << variableNumber;
+	request << TraCITime::min() << TraCITime::max() << vehicleId << variableNumber;
 	TraCIBuffer response = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, request);
 	ASSERT(response.eof());
 }
@@ -506,8 +499,7 @@ void TraCIScenarioManagerBase::processSimSubscription(std::string objectId, TraC
 			ASSERT(varType == TYPE_INTEGER);
 			uint32_t serverTimestep; buf >> serverTimestep;
 			MYDEBUG << "TraCI reports current time step as " << serverTimestep << "ms." << endl;
-			uint32_t omnetTimestep = getCurrentTimeMs();
-			ASSERT(omnetTimestep == serverTimestep);
+			ASSERT(TraCITime::from(simTime()) == serverTimestep);
 
 		} else {
 			error("Received unhandled sim subscription result");
