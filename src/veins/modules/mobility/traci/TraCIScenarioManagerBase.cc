@@ -516,6 +516,7 @@ void TraCIScenarioManagerBase::processVehicleSubscription(std::string objectId, 
 	data.angle = commandIfc->netBoundary().traci2omnetAngle(angle_traci);
 	data.speed = speed;
 	data.road_id = edge;
+	data.signals = static_cast<TraCIVehicleSignal::SignalFlags>(signals);
 
 	cModule* mod = nodes->get(objectId);
 

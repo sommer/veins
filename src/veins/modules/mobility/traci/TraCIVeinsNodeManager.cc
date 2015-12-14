@@ -55,7 +55,7 @@ void TraCIVeinsNodeManager::update(const std::string& nodeId, const NodeData& da
 		TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
 		if (mm) {
 			EV << "module " << nodeId << " moving to " << data.position.x << "," << data.position.y << endl;
-			mm->nextPosition(data.position, data.road_id, data.speed, data.angle);
+			mm->nextPosition(data.position, data.road_id, data.speed, data.angle, data.signals);
 		}
 	}
 }

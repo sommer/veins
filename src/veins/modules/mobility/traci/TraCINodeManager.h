@@ -2,6 +2,7 @@
 #define VEINS_WORLD_TRACI_TRACINODEMANAGER_H
 
 #include "veins/base/utils/Coord.h"
+#include "veins/modules/mobility/traci/TraCIVehicleSignals.h"
 #include <string>
 #include <omnetpp.h>
 
@@ -17,6 +18,7 @@ class TraCINodeManager
 			std::string road_id;
 			double speed;
 			double angle;
+			TraCIVehicleSignal signals;
 		};
 
 		virtual void add(const std::string& nodeId, const NodeData&, const std::string& vehicleType, simtime_t) = 0;
