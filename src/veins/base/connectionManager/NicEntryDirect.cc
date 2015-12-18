@@ -24,7 +24,7 @@
 #include "veins/base/connectionManager/ChannelAccess.h"
 
 #ifndef nicEV
-#define nicEV (getEnvir()->isDisabled()||!coreDebug) ? EV : EV << "NicEntry: "
+#define nicEV EV << "NicEntry: "
 #endif
 
 using std::endl;

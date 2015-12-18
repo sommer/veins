@@ -1,8 +1,7 @@
 #ifndef FIND_MODULE_H
 #define FIND_MODULE_H
 
-#include <omnetpp.h>
-using namespace omnetpp;
+#include "veins/base/utils/MiXiMDefs.h"
 
 /**
  * @brief Provides method templates to find omnet modules.
@@ -23,7 +22,7 @@ class FindModule
 		static T findSubModule(const cModule *const top)
 		{
 			for (cModule::SubmoduleIterator i(top); !i.end(); i++) {
-				cModule *const sub = *i;
+				cModule *const sub = i();
 				// this allows also a return type of read only pointer: const cModule *const
 				T dCastRet = dynamic_cast<T>(sub);
 				if (dCastRet != NULL)

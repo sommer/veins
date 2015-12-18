@@ -4,7 +4,7 @@
 
 using Veins::AirFrame;
 
-#define debugEV (getEnvir()->isDisabled()||!debug) ? EV : EV << "PhyLayer(BreakpointPathlossModel): "
+#define debugEV EV << "PhyLayer(BreakpointPathlossModel): "
 
 
 void BreakpointPathlossModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {

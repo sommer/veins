@@ -25,7 +25,7 @@ void BatteryAccess::registerWithBattery(const std::string& name, int numAccounts
 	battery = FindModule<BaseBattery*>::findSubModule(findHost());
 
 	if(!battery) {
-		throw cException("No battery module defined!");
+		throw cRuntimeError("No battery module defined!");
 	} else {
 		deviceID = battery->registerDevice(name, numAccounts);
 	}

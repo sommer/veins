@@ -327,7 +327,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 
 	if (const Point* o = dynamic_cast<const Point*>(annotation)) {
 
-		if (getEnvir()->isGUI()) {
+		if (hasGUI()) {
 			// no corresponding TkEnv representation
 		}
 
@@ -340,7 +340,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 	}
 	else if (const Line* l = dynamic_cast<const Line*>(annotation)) {
 
-		if (getEnvir()->isGUI()) {
+		if (hasGUI()) {
 #if OMNETPP_CANVAS_VERSION == 0x20140709
 			cLineFigure* figure = new cLineFigure();
 			figure->setStart(cFigure::Point(l->p1.x, l->p1.y));
@@ -366,7 +366,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 
 		ASSERT(p->coords.size() >= 2);
 
-		if (getEnvir()->isGUI()) {
+		if (hasGUI()) {
 #if OMNETPP_CANVAS_VERSION == 0x20140709
 			cPolygonFigure* figure = new cPolygonFigure();
 			std::vector<cFigure::Point> points;

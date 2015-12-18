@@ -294,7 +294,7 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double snirMin, dou
 
 	//probability of no bit error in the PLCP header
 
-	double rand = dblrand(getEnvir()->getRNG(0));
+	double rand = RNGCONTEXT dblrand();
 
 	if (!collectCollisionStats) {
 		if (rand > headerNoError)
@@ -320,7 +320,7 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double snirMin, dou
 
 	//probability of no bit error in the rest of the packet
 
-	rand = dblrand(getEnvir()->getRNG(0));
+	rand = RNGCONTEXT dblrand();
 
 	if (!collectCollisionStats) {
 		if (rand > packetOkSinr) {
@@ -540,7 +540,7 @@ void Decider80211p::switchToTx() {
 			currentSignal.first = 0;
 		}
 		else {
-			throw cException("Decider80211p: mac layer requested phy to transmit a frame while currently receiving another");
+			throw cRuntimeError("Decider80211p: mac layer requested phy to transmit a frame while currently receiving another");
 		}
 	}
 }

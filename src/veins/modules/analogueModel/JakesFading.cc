@@ -75,8 +75,8 @@ JakesFading::JakesFading(int fadingPaths, simtime_t_cref delayRMS,
 	delay = new simtime_t[fadingPaths];
 
 	for (int i = 0; i < fadingPaths; i++) {
-		angleOfArrival[i] = cos(uniform(getEnvir()->getRNG(0), 0, M_PI));
-		delay[i] = exponential(getEnvir()->getRNG(0), delayRMS.dbl());
+		angleOfArrival[i] = cos(RNGCONTEXT uniform(0, M_PI));
+		delay[i] = (RNGCONTEXT exponential(delayRMS));
 	}
 }
 

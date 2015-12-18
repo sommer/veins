@@ -15,7 +15,7 @@ class Mapping;
 
 using Veins::AirFrame;
 
-#define deciderEV (getEnvir()->isDisabled()||!debug) ? EV : EV << "[Host " << myIndex << "] - PhyLayer(Decider): "
+#define deciderEV EV << "[Host " << myIndex << "] - PhyLayer(Decider): "
 
 /**
  * @brief Provides some base functionality for most common deciders.
@@ -185,7 +185,7 @@ protected:
 	 * Default implementation does not handle signal headers.
 	 */
 	virtual simtime_t processSignalHeader(AirFrame* frame) {
-		throw cException("BaseDecider does not handle Signal headers!");
+		throw cRuntimeError("BaseDecider does not handle Signal headers!");
 		return notAgain;
 	}
 

@@ -19,7 +19,54 @@
 #define __MIXIM_MIXIMDEFS_H
 
 #include <omnetpp.h>
+
+namespace omnetpp { }
+using namespace omnetpp;
+
 #include "veins/base/utils/miximkerneldefs.h"
+
+// OMNeT 5 compatibility
+// Around OMNeT++ 5.0 beta 2, the "ev" and "simulation" macros were eliminated, and replaced
+// by the functions/methods getEnvir() and getSimulation(), the INET codebase updated.
+// The following lines let the code compile with earlier OMNeT++ versions as well.
+#ifdef ev
+inline cEnvir *getEnvir() {return cSimulation::getActiveEnvir();}
+inline cSimulation *getSimulation() {return cSimulation::getActiveSimulation();}
+inline bool hasGUI() {return cSimulation::getActiveEnvir()->isGUI();}
+#endif  //ev
+
+// new OMNeT++ 5 logging macros
+#if OMNETPP_VERSION < 0x500
+#  define EV_FATAL                 EV << "FATAL: "
+#  define EV_ERROR                 EV << "ERROR: "
+#  define EV_WARN                  EV << "WARN: "
+#  define EV_INFO                  EV
+#  define EV_DETAIL                EV << "DETAIL: "
+#  define EV_DEBUG                 EV << "DEBUG: "
+#  define EV_TRACE                 EV << "TRACE: "
+#  define EV_FATAL_C(category)     EV << "[" << category << "] FATAL: "
+#  define EV_ERROR_C(category)     EV << "[" << category << "] ERROR: "
+#  define EV_WARN_C(category)      EV << "[" << category << "] WARN: "
+#  define EV_INFO_C(category)      EV << "[" << category << "] "
+#  define EV_DETAIL_C(category)    EV << "[" << category << "] DETAIL: "
+#  define EV_DEBUG_C(category)     EV << "[" << category << "] DEBUG: "
+#  define EV_TRACE_C(category)     EV << "[" << category << "] TRACE: "
+#  define EV_STATICCONTEXT         /* Empty */
+#endif    // OMNETPP_VERSION < 0x500
+
+// Around OMNeT++ 5.0 beta 2, random variate generation functions like exponential() became
+// members of cComponent. By prefixing calls with the following macro you can make the code
+// compile with earlier OMNeT++ versions as well.
+#if OMNETPP_BUILDNUM >= 1002
+#define RNGCONTEXT  (cSimulation::getActiveSimulation()->getContext())->
+#else
+#define RNGCONTEXT
+#endif
+
+// Around OMNeT++ 5.0 beta 3, MAXTIME was renamed to SIMTIME_MAX
+#if OMNETPP_BUILDNUM < 1005
+#define SIMTIME_MAX MAXTIME
+#endif
 
 #if defined(MIXIM_EXPORT)
 #  define MIXIM_API OPP_DLLEXPORT
@@ -28,8 +75,6 @@
 #else
 #  define MIXIM_API
 #endif
-
-using namespace omnetpp;
 
 /**
  * @brief Helper function to initialize signal change identifier on use and
@@ -59,8 +104,7 @@ public:
 			ASSERT(sSignalName);
 			sRunId = getRunId();
 			ssChangeSignal = cComponent::registerSignal(sSignalName);
-
-			// opp_warning("%d = cComponent::registerSignal(\"%s\")", ssChangeSignal, sSignalName);
+			// throw cRuntimeError("%d = cComponent::registerSignal(\"%s\")", ssChangeSignal, sSignalName);
 		}
 		return ssChangeSignal;
 	}

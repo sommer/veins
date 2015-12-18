@@ -5,7 +5,7 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 
 #ifndef ccEV
-#define ccEV (getEnvir()->isDisabled()||!coreDebug) ? EV : EV << getName() << ": "
+#define ccEV EV << getName() << ": "
 #endif
 
 Define_Module( ConnectionManager );

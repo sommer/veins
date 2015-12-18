@@ -283,7 +283,7 @@ void BaseMobility::updatePosition() {
     //publish the the new move
     emit(mobilityStateChangedSignal, this);
 
-    if(getEnvir()->isGUI())
+    if(hasGUI())
     {
     	std::ostringstream osDisplayTag;
 #ifdef __APPLE__

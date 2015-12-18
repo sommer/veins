@@ -59,7 +59,7 @@ void BaseModule::receiveSignal(cComponent *source, simsignal_t signalID, cObject
 			handleHostState(*pHostState);
 		}
 		else {
-			throw cException("Got catHostStateSignal but obj was not a HostState pointer?");
+			throw cRuntimeError("Got catHostStateSignal but obj was not a HostState pointer?");
 		}
 	}
 }

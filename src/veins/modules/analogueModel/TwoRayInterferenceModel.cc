@@ -23,7 +23,7 @@
 
 using Veins::AirFrame;
 
-#define debugEV (getEnvir()->isDisabled()||!debug) ? EV : EV << "PhyLayer(TwoRayInterferenceModel): "
+#define debugEV EV << "PhyLayer(TwoRayInterferenceModel): "
 
 void TwoRayInterferenceModel::filterSignal(AirFrame *frame, const Coord& senderPos, const Coord& receiverPos) {
 	Signal& s = frame->getSignal();
