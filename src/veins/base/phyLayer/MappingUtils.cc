@@ -392,20 +392,20 @@ void MappingUtils::addDiscontinuity(Mapping* m,
 
 simtime_t MappingUtils::pre(simtime_t_cref t)
 {
-	assert(SIMTIME_RAW(t) > SIMTIME_RAW(SIMTIME_ZERO));
+	assert(t.raw() > SIMTIME_ZERO.raw());
 
 	simtime_t stPre = SIMTIME_ZERO;
-	stPre.setRaw(SIMTIME_RAW(t) - 1);
+	stPre.setRaw(t.raw() - 1);
 
 	return stPre;
 }
 
 simtime_t MappingUtils::post(simtime_t_cref t)
 {
-	assert(SIMTIME_RAW(t) < SIMTIME_RAW(MAXTIME));
+	assert(t.raw() < SIMTIME_MAX.raw());
 
 	simtime_t stPost = SIMTIME_ZERO;
-	stPost.setRaw(SIMTIME_RAW(t) + 1);
+	stPost.setRaw(t.raw() + 1);
 
 	return stPost;
 }

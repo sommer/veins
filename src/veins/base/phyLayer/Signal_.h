@@ -250,7 +250,7 @@ public:
 	 * has not been sent/received yet, or if the module was deleted
 	 * in the meantime.
 	 */
-	cModule *getReceptionModule() const {return receiverModuleID < 0 ? NULL : simulation.getModule(receiverModuleID);}
+	cModule *getReceptionModule() const {return receiverModuleID < 0 ? NULL : getSimulation()->getModule(receiverModuleID);}
 
 	/**
 	 * Returns pointers to the gate from which the signal was sent and
@@ -264,7 +264,7 @@ public:
 	 * has not been sent/received yet, or if the sender module got deleted
 	 * in the meantime.
 	 */
-	cModule *getSendingModule() const {return senderModuleID < 0 ? NULL : simulation.getModule(senderModuleID);}
+	cModule *getSendingModule() const {return senderModuleID < 0 ? NULL : getSimulation()->getModule(senderModuleID);}
 
 	/**
 	 * Returns pointers to the gate from which the signal was sent and

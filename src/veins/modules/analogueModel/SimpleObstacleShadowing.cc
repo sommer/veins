@@ -2,7 +2,7 @@
 
 using Veins::AirFrame;
 
-#define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(SimpleObstacleShadowing): "
+#define debugEV (getEnvir()->isDisabled()||!debug) ? EV : EV << "PhyLayer(SimpleObstacleShadowing): "
 
 #if 0
 SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimensions,
@@ -35,7 +35,7 @@ SimpleObstacleShadowing::SimpleObstacleShadowing(ObstacleControl& obstacleContro
 	playgroundSize(playgroundSize),
 	debug(debug)
 {
-	if (useTorus) opp_error("SimpleObstacleShadowing does not work on torus-shaped playgrounds");
+	if (useTorus) throw cException("SimpleObstacleShadowing does not work on torus-shaped playgrounds");
 }
 
 

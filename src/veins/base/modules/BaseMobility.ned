@@ -14,6 +14,7 @@ simple BaseMobility like IMobility
         double x; // x coordinate of the nodes' position (-1 = random)
         double y; // y coordinate of the nodes' position (-1 = random)
         double z; // z coordinate of the nodes' position (-1 = random)
+	@signal[veinsmobilityStateChanged](type="BaseMobility");
         @display("i=block/cogwheel");
 }
 

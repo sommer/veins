@@ -22,6 +22,7 @@
 #define WORLD_TRACI_TRACISCREENRECORDER_H
 
 #include <omnetpp.h>
+using namespace omnetpp;
 
 /**
  * @brief

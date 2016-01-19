@@ -8,7 +8,7 @@
 #include "veins/base/utils/FindModule.h"
 
 #ifndef ccEV
-#define ccEV (ev.isDisabled()||!coreDebug) ? ev : ev << getName() << ": "
+#define ccEV (getEnvir()->isDisabled()||!coreDebug) ? EV : EV << getName() << ": "
 #endif
 
 namespace {
