@@ -29,13 +29,13 @@
 #include "veins/base/utils/HostState.h"
 
 #ifndef debugEV
-#define debugEV_clear (ev.isDisabled()||!debug) ? ev : ev
-#define debugEV (ev.isDisabled()||!debug) ? ev : ev << logName() << "::" << getClassName() << ": "
+#define debugEV_clear (getEnvir()->isDisabled()||!debug) ? EV : EV
+#define debugEV (getEnvir()->isDisabled()||!debug) ? EV : EV << logName() << "::" << getClassName() << ": "
 #endif
 
 #ifndef coreEV
-#define coreEV_clear (ev.isDisabled()||!coreDebug) ? ev : ev
-#define coreEV (ev.isDisabled()||!coreDebug) ? ev : ev << logName() << "::" << getClassName() <<": "
+#define coreEV_clear (getEnvir()->isDisabled()||!coreDebug) ? EV : EV
+#define coreEV (getEnvir()->isDisabled()||!coreDebug) ? EV : EV << logName() << "::" << getClassName() <<": "
 #endif
 
 /**

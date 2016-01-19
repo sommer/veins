@@ -29,6 +29,8 @@
 #  define MIXIM_API
 #endif
 
+using namespace omnetpp;
+
 /**
  * @brief Helper function to initialize signal change identifier on use and
  *        not on initializing static sections.
@@ -57,6 +59,7 @@ public:
 			ASSERT(sSignalName);
 			sRunId = getRunId();
 			ssChangeSignal = cComponent::registerSignal(sSignalName);
+
 			// opp_warning("%d = cComponent::registerSignal(\"%s\")", ssChangeSignal, sSignalName);
 		}
 		return ssChangeSignal;

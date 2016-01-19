@@ -2,6 +2,7 @@
 #define FIND_MODULE_H
 
 #include <omnetpp.h>
+using namespace omnetpp;
 
 /**
  * @brief Provides method templates to find omnet modules.
@@ -22,7 +23,7 @@ class FindModule
 		static T findSubModule(const cModule *const top)
 		{
 			for (cModule::SubmoduleIterator i(top); !i.end(); i++) {
-				cModule *const sub = i();
+				cModule *const sub = *i;
 				// this allows also a return type of read only pointer: const cModule *const
 				T dCastRet = dynamic_cast<T>(sub);
 				if (dCastRet != NULL)
@@ -41,7 +42,7 @@ class FindModule
 		 *
 		 * Returns NULL if no module of this type could be found.
 		 */
-		static T findGlobalModule() {return findSubModule(simulation.getSystemModule());}
+		static T findGlobalModule() {return findSubModule(getSimulation()->getSystemModule());}
 
 		/**
 		 * @brief Returns a pointer to the host module of the passed module.
@@ -92,7 +93,7 @@ class AccessModuleWrap
 		T *const get(cModule *const from = NULL)
 		{
 			if (!pModule) {
-				pModule = FindModule<T*>::findSubModule( FindModule<>::findHost(from != NULL ? from : simulation.getContextModule()) );
+				pModule = FindModule<T*>::findSubModule( FindModule<>::findHost(from != NULL ? from : getSimulation()->getContextModule()) );
 			}
 			return pModule;
 		}

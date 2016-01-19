@@ -109,7 +109,7 @@ class ObstacleControlAccess
 		}
 
 		ObstacleControl* getIfExists() {
-			return dynamic_cast<ObstacleControl*>(simulation.getModuleByPath("obstacles"));
+			return dynamic_cast<ObstacleControl*>(getSimulation()->getModuleByPath("obstacles"));
 		}
 };
 }

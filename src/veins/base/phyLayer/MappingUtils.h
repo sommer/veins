@@ -132,7 +132,7 @@ protected:
 	void updateNextPos() {
 		simtime_t t = valueIt.getNextPosition();
 		if(isStepMapping && !atPreStep) {
-			t.setRaw(SIMTIME_RAW(t) - 1);
+			t.setRaw(t.raw() - 1);
 		}
 		nextPosition.setTime(t);
 	}

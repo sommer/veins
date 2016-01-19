@@ -27,7 +27,7 @@ LogNormalShadowing::LogNormalShadowing(double mean, double stdDev, simtime_t_cre
 LogNormalShadowing::~LogNormalShadowing() {}
 
 double LogNormalShadowing::randomLogNormalGain() const {
-	return FWMath::dBm2mW(-1.0 * normal(mean, stdDev));
+	return FWMath::dBm2mW(-1.0 * normal(getEnvir()->getRNG(0), mean, stdDev));
 }
 
 void LogNormalShadowing::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {
