@@ -233,8 +233,8 @@ std::list<TraCICoord> TraCIConnection::omnet2traci(const std::list<Coord>& list)
 
 double TraCIConnection::traci2omnetAngle(double angle) const {
 
-	// rotate angle so 0 is east (in TraCI's angle interpretation 0 is south)
-	angle = angle - 90;
+	// rotate angle so 0 is east (in TraCI's angle interpretation 0 is north, 90 is east)
+	angle = 90 - angle;
 
 	// convert to rad
 	angle = angle * M_PI / 180.0;
@@ -251,8 +251,8 @@ double TraCIConnection::omnet2traciAngle(double angle) const {
 	// convert to degrees
 	angle = angle * 180 / M_PI;
 
-	// rotate angle so 0 is south (in OMNeT++'s angle interpretation 0 is east)
-	angle = angle + 90;
+	// rotate angle so 0 is south (in OMNeT++'s angle interpretation 0 is in positive x direction, 90 is in positive y direction)
+	angle = 90 - angle;
 
 	// normalize angle to -180 <= angle < 180
 	while (angle < -180) angle += 360;
