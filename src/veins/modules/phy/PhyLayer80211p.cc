@@ -217,6 +217,8 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
 }
 
 AnalogueModel* PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& params) {
+	ASSERT(params.count("DielectricConstant") == 1);
+
 	double dielectricConstant= params["DielectricConstant"].doubleValue();
 
 	return new TwoRayInterferenceModel(dielectricConstant, coreDebug);
