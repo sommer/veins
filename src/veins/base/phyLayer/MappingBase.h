@@ -326,16 +326,16 @@ protected:
 	class key_iterator : public IteratorType
 	{
 	public:
-	    typedef typename IteratorType::value_type::first_type& reference;
-	    typedef typename IteratorType::value_type::first_type* pointer;
+	    typedef typename IteratorType::value_type::first_type const& reference;
+	    typedef typename IteratorType::value_type::first_type const* pointer;
 
 	    key_iterator(const IteratorType& other) : IteratorType(other) {} ;
 
-	    const reference operator *() const
+	    reference operator *() const
 	    {
 	        return IteratorType::operator*().first;
 	    }
-	    const pointer  operator ->() const
+	    pointer operator ->() const
 	    {
 	        return &IteratorType::operator->()->first;
 	    }
