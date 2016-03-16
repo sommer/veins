@@ -177,7 +177,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 
 		//send the packet
 		Mac80211Pkt* mac = new Mac80211Pkt(pktToSend->getName(), pktToSend->getKind());
-		mac->setDestAddr(LAddress::L2BROADCAST);
+		mac->setDestAddr(LAddress::L2BROADCAST());
 		mac->setSrcAddr(myMacAddress);
 		mac->encapsulate(pktToSend->dup());
 
@@ -426,7 +426,7 @@ Signal* Mac1609_4::createSignal(simtime_t start, simtime_t length, double power,
 	ConstMapping* txPowerMapping = createSingleFrequencyMapping(start, end, frequency, 5.0e6, power);
 	s->setTransmissionPower(txPowerMapping);
 
-	Mapping* bitrateMapping = MappingUtils::createMapping(DimensionSet::timeDomain, Mapping::STEPS);
+	Mapping* bitrateMapping = MappingUtils::createMapping(DimensionSet::timeDomain(), Mapping::STEPS);
 
 	Argument pos(start);
 	bitrateMapping->setValue(pos, bitrate);
@@ -518,7 +518,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 		statsReceivedPackets++;
 		sendUp(wsm);
 	}
-	else if (dest == LAddress::L2BROADCAST) {
+	else if (dest == LAddress::L2BROADCAST()) {
 		statsReceivedBroadcasts++;
 		sendUp(wsm);
 	}

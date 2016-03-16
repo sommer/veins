@@ -2,11 +2,6 @@
 #include <assert.h>
 //---Dimension implementation-----------------------------
 
-const Dimension             Dimension::time      = Dimension::time_static();
-const Dimension             Dimension::frequency = Dimension::frequency_static();
-const Argument::mapped_type Argument::MappedZero = Argument::mapped_type(0);
-const Argument::mapped_type Argument::MappedOne  = Argument::mapped_type(1);
-
 Dimension::DimensionIdType& Dimension::nextFreeID () {
 	static Dimension::DimensionIdType* nextID = new Dimension::DimensionIdType(1);
 	return *nextID;
@@ -24,18 +19,6 @@ Dimension::DimensionNameMap& Dimension::dimensionNames() {
 	//static initialization
 	static DimensionNameMap* names = new DimensionNameMap();
 	return *names;
-}
-
-Dimension& Dimension::time_static() {
-	//use "construct-on-first-use" idiom to ensure correct order of
-	//static initialization
-	static Dimension* time = new Dimension("time");
-	return *time;
-}
-
-Dimension& Dimension::frequency_static() {
-	static Dimension* freq = new Dimension("frequency");
-	return *freq;
 }
 
 Dimension::DimensionIdType Dimension::getDimensionID(const Dimension::DimensionNameType& name)
@@ -64,10 +47,6 @@ Dimension::Dimension(const Dimension::DimensionNameType& name)
 	: id(getDimensionID(name))
 {}
 
-//--DimensionSet implementation ----------------------
-const DimensionSet DimensionSet::timeDomain(Dimension::time);
-const DimensionSet DimensionSet::timeFreqDomain(Dimension::time, Dimension::frequency);
-
 //--Argument implementation---------------------------
 
 Argument::Argument(simtime_t_cref timeVal):
@@ -80,10 +59,10 @@ Argument::Argument(const DimensionSet & dims, simtime_t_cref timeVal):
 	DimensionSet::const_iterator       it    = dims.begin();
 	const DimensionSet::const_iterator itEnd = dims.end();
 
-	assert((*it) == Dimension::time);
+	assert((*it) == Dimension::time());
 
 	for ( ++it; it != itEnd; ++it) {
-		values.insert( Argument::value_type(*it, Argument::MappedZero) );
+		values.insert( Argument::value_type(*it, Argument::MappedZero()) );
 	}
 }
 
@@ -98,25 +77,25 @@ void Argument::setTime(simtime_t_cref time)
 }
 
 Argument::iterator Argument::find(const Argument::key_type& dim){
-	assert(!(dim == Dimension::time));
+	assert(!(dim == Dimension::time()));
 
 	return values.find(dim);
 }
 
 Argument::const_iterator Argument::find(const Argument::key_type& dim) const{
-	assert(!(dim == Dimension::time));
+	assert(!(dim == Dimension::time()));
 
 	return values.find(dim);
 }
 
 Argument::iterator Argument::lower_bound(const Argument::key_type& dim){
-	assert(!(dim == Dimension::time));
+	assert(!(dim == Dimension::time()));
 
 	return values.lower_bound(dim);
 }
 
 Argument::const_iterator Argument::lower_bound(const Argument::key_type& dim) const{
-	assert(!(dim == Dimension::time));
+	assert(!(dim == Dimension::time()));
 
 	return values.lower_bound(dim);
 }
@@ -130,14 +109,14 @@ Argument::mapped_type_cref Argument::getArgValue(const Argument::key_type & dim)
 	const_iterator it = find(dim);
 
 	if(it == values.end())
-		return MappedZero;
+		return MappedZero();
 
 	return it->second;
 }
 
 void Argument::setArgValue(const Argument::key_type& dim, Argument::mapped_type_cref value)
 {
-	assert(!(dim == Dimension::time));
+	assert(!(dim == Dimension::time()));
 
 	iterator pos = values.lower_bound(dim);
 	if(pos != values.end() && !(values.key_comp()(dim, pos->first))) {
@@ -296,7 +275,7 @@ int Argument::compare(const Argument& o, const DimensionSet *const dims /*= NULL
 		if (rIt->second != itO->second)
 			return (rIt->second < itO->second) ? -1 : 1;
 	}
-	if (dims == NULL || (dims->find(Dimension::time) != DimItEnd || (!bDidCompare && !dims->empty()))) {
+	if (dims == NULL || (dims->find(Dimension::time()) != DimItEnd || (!bDidCompare && !dims->empty()))) {
 		if (time == o.time)
 			return 0;
 		return (time < o.time) ? -1 : 1;
@@ -367,7 +346,7 @@ void SimpleConstMapping::createKeyEntries(const Argument& from, const Argument& 
 
 	//increase iterator to next dimension (means curDim now stores the next dimension)
 	--curDim;
-	bool nextIsTime = (*curDim == Dimension::time);
+	bool nextIsTime = (*curDim == Dimension::time());
 
 	//get our iteration borders and steps
 	argument_value_cref_t fromD = from.getArgValue(d);
@@ -402,7 +381,7 @@ void SimpleConstMapping::initializeArguments(const Argument& min,
 	DimensionSet::const_iterator dimIt = --(dimensions.end());
 	Argument                     pos   = min;
 
-	if(*dimIt == Dimension::time)
+	if(*dimIt == Dimension::time())
 		createKeyEntries(min, max, interval, pos);
 	else
 		createKeyEntries(min, max, interval, dimIt, pos);

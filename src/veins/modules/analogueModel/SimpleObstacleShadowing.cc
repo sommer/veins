@@ -19,10 +19,10 @@ double SimplePathlossConstMapping::getValue(const Argument& pos) const
 {
 	double freq = model->carrierFrequency;
 	if(hasFrequency) {
-		assert(pos.hasArgVal(Dimension::frequency));
-		freq = pos.getArgValue(Dimension::frequency);
+		assert(pos.hasArgVal(Dimension::frequency()));
+		freq = pos.getArgValue(Dimension::frequency());
 	}
-	double wavelength = BaseWorldUtility::speedOfLight / freq;
+	double wavelength = BaseWorldUtility::speedOfLight() / freq;
 	return (wavelength * wavelength) * distFactor;
 }
 #endif
@@ -46,8 +46,8 @@ void SimpleObstacleShadowing::filterSignal(AirFrame *frame, const Coord& senders
 
 	debugEV << "value is: " << factor << endl;
 
-	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency);
-	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain : DimensionSet::timeDomain;
+	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency());
+	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain() : DimensionSet::timeDomain();
 	ConstantSimpleConstMapping* attMapping = new ConstantSimpleConstMapping(domain, factor);
 	s.addAttenuation(attMapping);
 }

@@ -60,7 +60,7 @@ void BaseMacLayer::initialize(int stage)
 
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
     }
-    if (myMacAddr == LAddress::L2NULL) {
+    if (myMacAddr == LAddress::L2NULL()) {
     	// see if there is an addressing module available
         // otherwise use NIC modules id as MAC address
         AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
@@ -204,7 +204,7 @@ Signal* BaseMacLayer::createSignal(simtime_t_cref start, simtime_t_cref length, 
 Mapping* BaseMacLayer::createConstantMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeDomain, Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(Argument::MappedZero(), DimensionSet::timeDomain(), Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);
@@ -224,17 +224,17 @@ Mapping* BaseMacLayer::createConstantMapping(simtime_t_cref start, simtime_t_cre
 Mapping* BaseMacLayer::createRectangleMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value)
 {
 	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(DimensionSet::timeDomain, Mapping::LINEAR);
+	Mapping* m = MappingUtils::createMapping(DimensionSet::timeDomain(), Mapping::LINEAR);
 
 	//set position Argument
 	Argument startPos(start);
 	//set discontinuity at position
-	MappingUtils::addDiscontinuity(m, startPos, Argument::MappedZero, MappingUtils::post(start), value);
+	MappingUtils::addDiscontinuity(m, startPos, Argument::MappedZero(), MappingUtils::post(start), value);
 
 	//set position Argument
 	Argument endPos(end);
 	//set discontinuity at position
-	MappingUtils::addDiscontinuity(m, endPos, Argument::MappedZero, MappingUtils::pre(end), value);
+	MappingUtils::addDiscontinuity(m, endPos, Argument::MappedZero(), MappingUtils::pre(end), value);
 
 	return m;
 }
@@ -245,18 +245,18 @@ ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t_cref         
                                                          Argument::mapped_type_cref halfBandwidth,
                                                          Argument::mapped_type_cref value)
 {
-	Mapping* res = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeFreqDomain, Mapping::LINEAR);
+	Mapping* res = MappingUtils::createMapping(Argument::MappedZero(), DimensionSet::timeFreqDomain(), Mapping::LINEAR);
 
-	Argument pos(DimensionSet::timeFreqDomain);
+	Argument pos(DimensionSet::timeFreqDomain());
 
-	pos.setArgValue(Dimension::frequency, centerFreq - halfBandwidth);
+	pos.setArgValue(Dimension::frequency(), centerFreq - halfBandwidth);
 	pos.setTime(start);
 	res->setValue(pos, value);
 
 	pos.setTime(end);
 	res->setValue(pos, value);
 
-	pos.setArgValue(Dimension::frequency, centerFreq + halfBandwidth);
+	pos.setArgValue(Dimension::frequency(), centerFreq + halfBandwidth);
 	res->setValue(pos, value);
 
 	pos.setTime(start);

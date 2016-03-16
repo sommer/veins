@@ -25,8 +25,6 @@
 Define_Module(BaseWorldUtility);
 
 
-const double BaseWorldUtility::speedOfLight = 299792458.0; ///< meters per second
-
 BaseWorldUtility::BaseWorldUtility():
 		isInitialized(false)
 {}

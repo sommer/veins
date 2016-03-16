@@ -90,7 +90,9 @@ protected:
 	 * the same time as an AirFrame starts (or ends). Depending on which message
 	 * is handled first the result of ChannelSenseRequest would differ.
 	 */
-	static short airFramePriority;
+	static short airFramePriority() {
+		return 10;
+	}
 
 	/** @brief Defines the strength of the thermal noise.*/
 	ConstantSimpleConstMapping* thermalNoise;

@@ -134,7 +134,7 @@ public:
     	if (cCtrlInfo)
     		return cCtrlInfo->getLastHopMac();
 
-    	return LAddress::L2NULL;
+    	return LAddress::L2NULL();
     }
 };
 

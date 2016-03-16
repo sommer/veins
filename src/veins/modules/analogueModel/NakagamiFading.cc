@@ -82,8 +82,8 @@ void NakagamiFading::filterSignal(AirFrame *frame, const Coord& senderPos, const
 	debugEV << "factor is: " << factor << " (i.e. " << FWMath::mW2dBm(factor) << " dB)" << endl;
 
 	// create (and add) mapping that reflects this factor
-	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency);
-	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain : DimensionSet::timeDomain;
+	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency());
+	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain() : DimensionSet::timeDomain();
 	ConstantSimpleConstMapping* attMapping = new ConstantSimpleConstMapping(domain, factor);
 	s.addAttenuation(attMapping);
 }

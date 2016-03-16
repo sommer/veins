@@ -34,7 +34,7 @@ void LogNormalShadowing::filterSignal(AirFrame *frame, const Coord& sendersPos, 
 	Signal&   signal = frame->getSignal();
 	simtime_t start  = signal.getReceptionStart();
 	simtime_t end    = signal.getReceptionEnd();
-	Mapping*  att    = MappingUtils::createMapping(DimensionSet::timeDomain, Mapping::LINEAR);
+	Mapping*  att    = MappingUtils::createMapping(DimensionSet::timeDomain(), Mapping::LINEAR);
 
 	Argument pos;
 

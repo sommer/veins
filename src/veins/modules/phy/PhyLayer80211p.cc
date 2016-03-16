@@ -447,7 +447,7 @@ AirFrame *PhyLayer80211p::encapsMsg(cPacket *macPkt)
 	//channel consistency (before any thing else happens at a time
 	//point t make sure that the channel has removed every AirFrame
 	//ended at t and added every AirFrame started at t)
-	frame->setSchedulingPriority(airFramePriority);
+	frame->setSchedulingPriority(airFramePriority());
 	frame->setProtocolId(myProtocolId());
 	frame->setBitLength(headerLength);
 	frame->setId(world->getUniqueAirFrameId());

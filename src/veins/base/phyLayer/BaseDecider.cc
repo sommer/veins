@@ -201,7 +201,7 @@ double BaseDecider::calcChannelSenseRSSI(simtime_t_cref start, simtime_t_cref en
 	Mapping* rssiMap = calculateRSSIMapping(start, end);
 
 	// the sensed RSSI-value is the maximum value between (and including) the interval-borders
-	Mapping::argument_value_t rssi = MappingUtils::findMax(*rssiMap, Argument(start), Argument(end), Argument::MappedZero /* the value if no maximum will be found */);
+	Mapping::argument_value_t rssi = MappingUtils::findMax(*rssiMap, Argument(start), Argument(end), Argument::MappedZero() /* the value if no maximum will be found */);
 
 	delete rssiMap;
 	return rssi;
@@ -235,7 +235,7 @@ Mapping* BaseDecider::calculateSnrMapping(AirFrame* frame)
 	assert(recvPowerMap);
 
 	//TODO: handle noise of zero (must not devide with zero!)
-	Mapping* snrMap = MappingUtils::divide( *recvPowerMap, *noiseMap, Argument::MappedZero );
+	Mapping* snrMap = MappingUtils::divide( *recvPowerMap, *noiseMap, Argument::MappedZero() );
 
 	delete noiseMap;
 	noiseMap = 0;
@@ -266,7 +266,7 @@ Mapping* BaseDecider::calculateRSSIMapping( simtime_t_cref start,
 	//TODO: create a "MappingUtils:createMappingFrom()"-method and use it here instead
 	//of abusing the add method
 	// create an empty mapping
-	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeDomain);
+	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero(), DimensionSet::timeDomain());
 
 	// iterate over all AirFrames (except exclude)
 	// and sum up their receiving-power-mappings
@@ -299,7 +299,7 @@ Mapping* BaseDecider::calculateRSSIMapping( simtime_t_cref start,
 				<< ". Starts at " << signal.getReceptionStart()
 				<< " and ends at " << signal.getReceptionEnd() << endl;
 
-		Mapping* resultMapNew = MappingUtils::add( *recvPowerMap, *resultMap, Argument::MappedZero );
+		Mapping* resultMapNew = MappingUtils::add( *recvPowerMap, *resultMap, Argument::MappedZero() );
 
 		// discard old mapping
 		delete resultMap;

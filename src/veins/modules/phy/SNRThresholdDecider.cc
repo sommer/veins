@@ -139,7 +139,7 @@ simtime_t SNRThresholdDecider::canAnswerCSR(const CSRInfo& requestInfo) {
 	ConstMapping* rssiMapping = calculateRSSIMapping(now, requestTimeout);
 
 	//this Decider only works for time-only signals
-	assert(rssiMapping->getDimensionSet() == DimensionSet::timeDomain);
+	assert(rssiMapping->getDimensionSet() == DimensionSet::timeDomain());
 
 	ConstMappingIterator* it = rssiMapping->createConstIterator(Argument(now));
 

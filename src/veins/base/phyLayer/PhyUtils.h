@@ -274,8 +274,8 @@ public:
 	 */
 	static Radio* createNewRadio(bool recordStats = false,
 								 int initialState = RX,
-								 Argument::mapped_type_cref minAtt = Argument::MappedOne,
-								 Argument::mapped_type_cref maxAtt = Argument::MappedZero,
+								 Argument::mapped_type_cref minAtt = Argument::MappedOne(),
+								 Argument::mapped_type_cref maxAtt = Argument::MappedZero(),
 								 int currentChannel=0, int nbChannels=1)
 	{
 		return new Radio(NUM_RADIO_STATES,
@@ -394,7 +394,7 @@ protected:
 	Radio(int numRadioStates,
 		  bool recordStats,
 		  int initialState = RX,
-		  Argument::mapped_type_cref minAtt = Argument::MappedOne, Argument::mapped_type_cref maxAtt = Argument::MappedZero,
+		  Argument::mapped_type_cref minAtt = Argument::MappedOne(), Argument::mapped_type_cref maxAtt = Argument::MappedZero(),
 		  int currentChannel = 0, int nbChannels = 1);
 
 	/**

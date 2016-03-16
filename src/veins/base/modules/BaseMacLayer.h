@@ -97,12 +97,12 @@ public:
     BaseMacLayer() 
       : BaseLayer()
       , phy(NULL)
-      , myMacAddr(LAddress::L2NULL)
+      , myMacAddr(LAddress::L2NULL())
     {}
     BaseMacLayer(unsigned stacksize) 
       : BaseLayer(stacksize)
       , phy(NULL)
-      , myMacAddr(LAddress::L2NULL)
+      , myMacAddr(LAddress::L2NULL())
     {}
 
     /** @brief Initialization of the module and some variables*/

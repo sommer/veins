@@ -239,7 +239,7 @@ public:
 			rcvPower = new MultipliedMapping(tmp,
 											  attenuations.begin(),
 											  attenuations.end(),
-											  false, Argument::MappedZero);
+											  false, Argument::MappedZero());
 		}
 
 		return rcvPower;

@@ -498,7 +498,7 @@ public:
 	 * @brief Initializes the LinearIntplMapping with the passed left and right
 	 * Mapping to interpolate by the passed interpolation value.
 	 */
-	LinearIntplMapping(const ConstMapping *const left = NULL, const ConstMapping *const right = NULL, argument_value_cref_t f = Argument::MappedZero):
+	LinearIntplMapping(const ConstMapping *const left = NULL, const ConstMapping *const right = NULL, argument_value_cref_t f = Argument::MappedZero()):
 		left(left), right(right), factor(f) {}
 
 	/**
@@ -520,7 +520,7 @@ public:
 		argument_value_cref_t v0 = left->getValue(pos);
 		argument_value_cref_t v1 = right->getValue(pos);
 		//return v0 + (v1 - v0) * factor;
-		return v0 * (Argument::MappedOne - factor) + v1 * factor;
+		return v0 * (Argument::MappedOne() - factor) + v1 * factor;
 	}
 
 	/**
@@ -1190,7 +1190,7 @@ public:
 		if(subIterator)
 			return subIterator->getValue();
 		else
-			return Argument::MappedZero;
+			return Argument::MappedZero();
 	}
 
 	/**
@@ -1348,12 +1348,12 @@ protected:
 	mapped_type createSubSignal() const{
 		const Dimension& nextDim = *(--dimensions.find(myDimension));
 		if(wrappedOORMapping == 0) {
-			if(nextDim == Dimension::time)
+			if(nextDim == Dimension::time())
 				return new TimeMapping<Interpolator>();
 			else
 				return new MultiDimMapping<Interpolator>(dimensions, nextDim);
 		} else {
-			if(nextDim == Dimension::time)
+			if(nextDim == Dimension::time())
 				return new TimeMapping<Interpolator>(outOfRangeMapping->getValue());
 			else
 				return new MultiDimMapping<Interpolator>(dimensions, nextDim, outOfRangeMapping, wrappedOORMapping);
@@ -1364,7 +1364,7 @@ protected:
 		const typename interpolator_map_type::iterator itEnd   = entries.end();
 		Dimension                                      nextDim = *(--dimensions.find(myDimension));
 
-		if(nextDim == Dimension::time) {
+		if(nextDim == Dimension::time()) {
 			for(typename interpolator_map_type::iterator it = entries.begin(); it != itEnd; ++it) {
 				it->second = new TimeMapping<Interpolator>(*(static_cast<TimeMapping<Interpolator>*>(it->second)));
 			}
@@ -1496,7 +1496,7 @@ public:
 		typename interpolator_map_type::interpolated subM   = entries.getIntplValue(argVal);
 
 		if(!(*subM))
-			return Argument::MappedZero;
+			return Argument::MappedZero();
 
 		return (*subM)->getValue(pos);
 	}
@@ -1615,7 +1615,7 @@ protected:
 
 	Mapping* createSubSignal() const{
 		const Dimension& nextDim = *(--dimensions.find(myDimension));
-		if(nextDim == Dimension::time)
+		if(nextDim == Dimension::time())
 			return MultiDimMapping<Linear>::createSubSignal();
 		else
 			return new FilledUpMapping(dimensions, nextDim, keys);
@@ -1684,12 +1684,16 @@ public:
 	 *
 	 * It will be initialized with the infinity value.
 	 */
-	const static Argument::mapped_type cMinNotFound;
+	const static Argument::mapped_type cMinNotFound() {
+		return std::numeric_limits<Argument::mapped_type>::infinity();
+	}
 	/** @brief The default value for findMax() functions if it does not find a maximum element.
 	 *
 	 * It will be initialized with the negative infinity value.
 	 */
-	const static Argument::mapped_type cMaxNotFound;
+	const static Argument::mapped_type cMaxNotFound() {
+		return -std::numeric_limits<Argument::mapped_type>::infinity();
+	}
 
 private:
 	static const ConstMapping *const createCompatibleMapping(const ConstMapping& src, const ConstMapping& dst);
@@ -1704,7 +1708,7 @@ public:
 	 *
 	 * Note: The interpolation method is always linear, at the moment.
 	 */
-	static Mapping* createMapping(const DimensionSet& domain = DimensionSet(Dimension::time),
+	static Mapping* createMapping(const DimensionSet& domain = DimensionSet(Dimension::time()),
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
 
 	/**
@@ -1714,7 +1718,7 @@ public:
 	 * Note: The interpolation method is always linear, at the moment.
 	 */
 	static Mapping* createMapping(Mapping::argument_value_cref_t outOfRangeValue,
-								  const DimensionSet& domain = DimensionSet(Dimension::time),
+								  const DimensionSet& domain = DimensionSet(Dimension::time()),
 								  Mapping::InterpolationMethod intpl = Mapping::LINEAR);
 
 	template<class Operator>
@@ -1728,7 +1732,7 @@ public:
 
 	template<class Operator>
 	static Mapping* applyElementWiseOperator(const ConstMapping& f1, const ConstMapping& f2, Operator op,
-	                                         Mapping::argument_value_cref_t outOfRangeVal  = Argument::MappedZero,
+	                                         Mapping::argument_value_cref_t outOfRangeVal  = Argument::MappedZero(),
 	                                         bool                           contOutOfRange = true) {
 
 		using std::operator<<;
@@ -1814,7 +1818,7 @@ public:
 	 * @param cRetNotFound The value which shall be returned if no maximum was found (default MappingUtils::cMaxNotFound).
 	 * @return The value at the key entry with the highest value or <tt>cRetNotFound</tt> if map is empty.
 	 */
-	static Argument::mapped_type findMax(const ConstMapping& m, Argument::mapped_type_cref cRetNotFound = cMaxNotFound);
+	static Argument::mapped_type findMax(const ConstMapping& m, Argument::mapped_type_cref cRetNotFound = cMaxNotFound());
 
 	/**
 	 * @brief Iterates over the passed mapping and returns the value at the key
@@ -1832,7 +1836,7 @@ public:
 	 * @param cRetNotFound The value which shall be returned if no maximum was found (default MappingUtils::cMaxNotFound).
 	 * @return The value at the key entry with the highest value or <tt>cRetNotFound</tt> if map is empty or no element in range [min,max].
 	 */
-	static Argument::mapped_type findMax(const ConstMapping& m, const Argument& min, const Argument& max, Argument::mapped_type_cref cRetNotFound = cMaxNotFound);
+	static Argument::mapped_type findMax(const ConstMapping& m, const Argument& min, const Argument& max, Argument::mapped_type_cref cRetNotFound = cMaxNotFound());
 
 	/**
 	 * @brief Iterates over the passed mapping and returns value at the key entry
@@ -1842,7 +1846,7 @@ public:
 	 * @param cRetNotFound The value which shall be returned if no minimum was found (default MappingUtils::cMinNotFound).
 	 * @return The value at the key entry with the lowest value or <tt>cRetNotFound</tt> if map is empty.
 	 */
-	static Argument::mapped_type findMin(const ConstMapping& m, Argument::mapped_type_cref cRetNotFound = cMinNotFound);
+	static Argument::mapped_type findMin(const ConstMapping& m, Argument::mapped_type_cref cRetNotFound = cMinNotFound());
 
 	/**
 	 * @brief Iterates over the passed mapping and returns the value at the key
@@ -1860,7 +1864,7 @@ public:
 	 * @param cRetNotFound The value which shall be returned if no minimum was found (default MappingUtils::cMinNotFound).
 	 * @return The value at the key entry with the highest value or <tt>cRetNotFound</tt> if map is empty or no element in range [min,max].
 	 */
-	static Argument::mapped_type findMin(const ConstMapping& m, const Argument& min, const Argument& max, Argument::mapped_type_cref cRetNotFound = cMinNotFound);
+	static Argument::mapped_type findMin(const ConstMapping& m, const Argument& min, const Argument& max, Argument::mapped_type_cref cRetNotFound = cMinNotFound());
 
 
 	/*

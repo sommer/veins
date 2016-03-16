@@ -72,16 +72,21 @@ protected:
 	/** @brief The unique id of the dimension this instance represents.*/
 	DimensionIdType id;
 
-protected:
 
 public:
 	/** @brief Shortcut to the time Dimension, same as 'Dimension("time")',
 	 * but spares the parsing of a string.*/
-	static const Dimension time;
+	static const Dimension& time() {
+		static Dimension o("time");
+		return o;
+	}
 
 	/** @brief Shortcut to the frequency Dimension, same as 'Dimension("frequency")',
 	 * but spares the parsing of a string.*/
-	static const Dimension frequency;
+	static const Dimension& frequency() {
+		static Dimension o("frequency");
+		return o;
+	}
 
 public:
 	Dimension():
@@ -93,26 +98,6 @@ public:
 	 * dimension with the passed name.
 	 */
 	Dimension(const DimensionNameType& name);
-
-	/**
-	 * @brief Shortcut to the time Dimension, same as 'Dimension("time")',
-	 * but spares the parsing of a string.
-	 *
-	 * This method should be used instead of the static "time" member
-	 * when used during initialization of static variables since it assures
-	 * the correct order of initialization.
-	 * */
-	static Dimension& time_static();
-
-	/**
-	 * @brief Shortcut to the frequency Dimension, same as 'Dimension("frequency")',
-	 * but spares the parsing of a string.
-	 *
-	 * This method should be used instead of the static "frequency" member
-	 * when used during initialization of static variables since it assures
-	 * the correct order of initialization.
-	 */
-	static Dimension& frequency_static();
 
 	/**
 	 * @brief Returns true if the ids of the two dimensions are equal.
@@ -178,10 +163,16 @@ public:
 class MIXIM_API DimensionSet:public std::set<Dimension> {
 public:
 	/** @brief Shortcut to a DimensionSet which only contains time. */
-	static const DimensionSet timeDomain;
+	static const DimensionSet& timeDomain() {
+		static DimensionSet o(Dimension::time());
+		return o;
+	}
 
 	/** @brief Shortcut to a DimensionSet which contains time and frequency. */
-	static const DimensionSet timeFreqDomain;
+	static const DimensionSet& timeFreqDomain() {
+		static DimensionSet o(Dimension::time(), Dimension::frequency());
+		return o;
+	}
 public:
 	/**
 	 * @brief Default constructor creates an empty DimensionSet
@@ -288,9 +279,15 @@ public:
 	typedef const mapped_type        mapped_type_cref;
 
 	/** @brief Zero value of a Argument value. */
-	const static mapped_type         MappedZero;
+	const static mapped_type&         MappedZero() {
+		static Argument::mapped_type o(0);
+		return o;
+	}
 	/** @brief One value of a Argument value. */
-	const static mapped_type         MappedOne;
+	const static mapped_type&         MappedOne() {
+		static Argument::mapped_type o(1);
+		return o;
+	}
 protected:
 	typedef std::map<key_type, mapped_type> container_type;
 	typedef container_type::value_type      value_type;
@@ -467,7 +464,7 @@ public:
 	DimensionSet getDimensions() const {
 		typedef key_iterator<const_iterator> key_const_iterator;
 
-		DimensionSet res(Dimension::time);
+		DimensionSet res(Dimension::time());
 
 		res.insert(key_const_iterator(values.begin()), key_const_iterator(values.end()));
 
@@ -725,7 +722,7 @@ public:
 	 * @brief Initializes the ConstMapping with a the time dimension as domain.
 	 */
 	ConstMapping():
-		dimensions(Dimension::time) {}
+		dimensions(Dimension::time()) {}
 
 	/**
 	 * @brief Initializes the ConstMapping with the passed DimensionSet as
@@ -736,7 +733,7 @@ public:
 	ConstMapping(const DimensionSet& dimSet):
 		dimensions(dimSet) {
 
-		assert(dimSet.hasDimension(Dimension::time));
+		assert(dimSet.hasDimension(Dimension::time()));
 	}
 
 	virtual ~ConstMapping() {}
@@ -797,7 +794,7 @@ public:
 	template<class stream>
 	stream& print(stream&                out,
 	              argument_value_cref_t  lTimeScale    = argument_value_t(1000),
-	              argument_value_cref_t  lLeftColScale = Argument::MappedOne,
+	              argument_value_cref_t  lLeftColScale = Argument::MappedOne(),
 	              const std::string&     sTableHead    = std::string("o\\ms"),
 	              const Dimension *const pOnlyDim      = NULL) const {
 		const ConstMapping&      m = *this;
@@ -811,7 +808,7 @@ public:
 		bool                         bTimeIsIn = false;
 		const DimensionSet::iterator dimsEnd   = dims.end();
 		for(DimensionSet::iterator it = dims.begin(); it != dimsEnd; ++it) {
-			if(*it != Dimension::time) {
+			if(*it != Dimension::time()) {
 				if (pOnlyDim && *it == *pOnlyDim) {
 					otherDim      = *it;
 					bOnlyDimFound = pOnlyDim != NULL;

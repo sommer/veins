@@ -49,13 +49,25 @@ public:
     typedef long L3Type;
 
     /** @brief Broadcast address for L2 addresses. */
-    static const L2Type L2BROADCAST;
+    static const L2Type& L2BROADCAST() {
+        static L2Type o(-1);
+	return o;
+    }
     /** @brief NULL address for L2 addresses. */
-    static const L2Type L2NULL;
+    static const L2Type& L2NULL() {
+        static L2Type o(0);
+	return o;
+    }
     /** @brief Broadcast address for L3 addresses. */
-    static const L3Type L3BROADCAST;
+    static const L3Type& L3BROADCAST() {
+        static L3Type o(-1);
+	return o;
+    }
     /** @brief NULL address for L3 addresses. */
-    static const L3Type L3NULL;
+    static const L3Type& L3NULL() {
+        static L3Type o(0);
+	return o;
+    }
 public:
     /**
      * @brief Test if a L2 address (pSrcAddr) is a broadcast address.
@@ -64,7 +76,7 @@ public:
      * @return True if pSrcAddr is a braodcast address.
      */
     static inline bool isL2Broadcast(const L2Type& pSrcAddr) {
-        return pSrcAddr == L2BROADCAST;
+        return pSrcAddr == L2BROADCAST();
     }
     /**
      * @brief Test if a L3 address (pSrcAddr) is a broadcast address.
@@ -73,7 +85,7 @@ public:
      * @return True if pSrcAddr is a braodcast address.
      */
     static inline bool isL3Broadcast(const L3Type& pSrcAddr) {
-        return pSrcAddr == L3BROADCAST;
+        return pSrcAddr == L3BROADCAST();
     }
 };
 

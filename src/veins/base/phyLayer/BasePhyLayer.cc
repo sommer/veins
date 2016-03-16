@@ -15,8 +15,6 @@ using Veins::AirFrame;
 //introduce BasePhyLayer as module to OMNet
 Define_Module(BasePhyLayer);
 
-short BasePhyLayer::airFramePriority = 10;
-
 Coord NoMobiltyPos = Coord::ZERO;
 
 //--Initialization----------------------------------
@@ -66,7 +64,7 @@ void BasePhyLayer::initialize(int stage) {
 		//	- initialize basic parameters
 		if(par("useThermalNoise").boolValue()) {
 			double thermalNoiseVal = FWMath::dBm2mW(par("thermalNoise").doubleValue());
-			thermalNoise = new ConstantSimpleConstMapping(DimensionSet::timeDomain,
+			thermalNoise = new ConstantSimpleConstMapping(DimensionSet::timeDomain(),
 														  thermalNoiseVal);
 		} else {
 			thermalNoise = 0;
@@ -351,7 +349,7 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
 
 void BasePhyLayer::handleAirFrame(AirFrame* frame) {
 	//TODO: ask jerome to set air frame priority in his UWBIRPhy
-	//assert(frame->getSchedulingPriority() == airFramePriority);
+	//assert(frame->getSchedulingPriority() == airFramePriority());
 
 	switch(frame->getState()) {
 	case START_RECEIVE:
@@ -516,7 +514,7 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	//channel consistency (before any thing else happens at a time
 	//point t make sure that the channel has removed every AirFrame
 	//ended at t and added every AirFrame started at t)
-	frame->setSchedulingPriority(airFramePriority);
+	frame->setSchedulingPriority(airFramePriority());
 	frame->setProtocolId(myProtocolId());
 	frame->setBitLength(headerLength);
 	frame->setId(world->getUniqueAirFrameId());

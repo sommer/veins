@@ -42,9 +42,9 @@ simtime_t Decider80211p::processNewSignal(AirFrame* msg) {
 	// get the receiving power of the Signal at start-time and center frequency
 	Signal& signal = frame->getSignal();
 
-	Argument start(DimensionSet::timeFreqDomain);
+	Argument start(DimensionSet::timeFreqDomain());
 	start.setTime(signal.getReceptionStart());
-	start.setArgValue(Dimension::frequency_static(), centerFrequency);
+	start.setArgValue(Dimension::frequency(), centerFrequency);
 
 	signalStates[frame] = EXPECT_END;
 
@@ -103,12 +103,12 @@ double Decider80211p::calcChannelSenseRSSI(simtime_t_cref start, simtime_t_cref 
 
 	Mapping* rssiMap = calculateRSSIMapping(start, end);
 
-	Argument min(DimensionSet::timeFreqDomain);
+	Argument min(DimensionSet::timeFreqDomain());
 	min.setTime(start);
-	min.setArgValue(Dimension::frequency_static(), centerFrequency - 5e6);
-	Argument max(DimensionSet::timeFreqDomain);
+	min.setArgValue(Dimension::frequency(), centerFrequency - 5e6);
+	Argument max(DimensionSet::timeFreqDomain());
 	max.setTime(end);
-	max.setArgValue(Dimension::frequency_static(), centerFrequency + 5e6);
+	max.setArgValue(Dimension::frequency(), centerFrequency + 5e6);
 
 	double rssi = MappingUtils::findMax(*rssiMap, min, max);
 
@@ -136,8 +136,8 @@ void Decider80211p::calculateSinrAndSnrMapping(AirFrame* frame, Mapping **sinrMa
 	assert(recvPowerMap);
 
 	//TODO: handle noise of zero (must not devide with zero!)
-	*sinrMap = MappingUtils::divide( *recvPowerMap, *noiseInterferenceMap, Argument::MappedZero );
-	*snrMap = MappingUtils::divide( *recvPowerMap, *noiseMap, Argument::MappedZero );
+	*sinrMap = MappingUtils::divide( *recvPowerMap, *noiseInterferenceMap, Argument::MappedZero() );
+	*snrMap = MappingUtils::divide( *recvPowerMap, *noiseMap, Argument::MappedZero() );
 
 	delete noiseInterferenceMap;
 	noiseInterferenceMap = 0;
@@ -149,7 +149,7 @@ void Decider80211p::calculateSinrAndSnrMapping(AirFrame* frame, Mapping **sinrMa
 Mapping* Decider80211p::calculateNoiseRSSIMapping(simtime_t_cref start, simtime_t_cref end, AirFrame *exclude) {
 
 	// create an empty mapping
-	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeDomain);
+	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero(), DimensionSet::timeDomain());
 
 	// add thermal noise
 	ConstMapping* thermalNoise = phy->getThermalNoise(start, end);
@@ -198,19 +198,19 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame) {
 	simtime_t end = s.getReceptionEnd();
 
 	//compute receive power
-	Argument st(DimensionSet::timeFreqDomain);
+	Argument st(DimensionSet::timeFreqDomain());
 	st.setTime(s.getReceptionStart());
-	st.setArgValue(Dimension::frequency_static(), centerFrequency);
+	st.setArgValue(Dimension::frequency(), centerFrequency);
 	double recvPower_dBm = 10*log10(s.getReceivingPower()->getValue(st));
 
 	start = start + PHY_HDR_PREAMBLE_DURATION; //its ok if something in the training phase is broken
 
-	Argument min(DimensionSet::timeFreqDomain);
+	Argument min(DimensionSet::timeFreqDomain());
 	min.setTime(start);
-	min.setArgValue(Dimension::frequency_static(), centerFrequency - 5e6);
-	Argument max(DimensionSet::timeFreqDomain);
+	min.setArgValue(Dimension::frequency(), centerFrequency - 5e6);
+	Argument max(DimensionSet::timeFreqDomain());
 	max.setTime(end);
-	max.setArgValue(Dimension::frequency_static(), centerFrequency + 5e6);
+	max.setArgValue(Dimension::frequency(), centerFrequency + 5e6);
 
 	double snirMin = MappingUtils::findMin(*sinrMap, min, max);
 	double snrMin;
@@ -359,7 +359,7 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude) {
 	// collect all AirFrames that intersect with [start, end]
 	getChannelInfo(time, time, airFrames);
 
-	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero, DimensionSet::timeDomain);
+	Mapping* resultMap = MappingUtils::createMapping(Argument::MappedZero(), DimensionSet::timeDomain());
 
 
 	// iterate over all AirFrames (except exclude)
@@ -389,7 +389,7 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude) {
 
 		// Mapping* resultMapNew = Mapping::add( *(signal.getReceivingPower()), *resultMap, start, end );
 
-		Mapping* resultMapNew = MappingUtils::add(*recvPowerMap, *resultMap, Argument::MappedZero);
+		Mapping* resultMapNew = MappingUtils::add(*recvPowerMap, *resultMap, Argument::MappedZero());
 
 		// discard old mapping
 		delete resultMap;
@@ -405,9 +405,9 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude) {
 		delete tmp;
 	}
 
-	Argument min(DimensionSet::timeFreqDomain);
+	Argument min(DimensionSet::timeFreqDomain());
 	min.setTime(time);
-	min.setArgValue(Dimension::frequency_static(), centerFrequency - 5e6);
+	min.setArgValue(Dimension::frequency(), centerFrequency - 5e6);
 
 	DBG_D11P << MappingUtils::findMin(*resultMap, min, min) << " > " << ccaThreshold << " = " << (bool)(MappingUtils::findMin(*resultMap, min, min) > ccaThreshold) << std::endl;
 	bool isChannelIdle = MappingUtils::findMin(*resultMap, min, min) < ccaThreshold;
@@ -423,9 +423,9 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
 	// here the Signal is finally processed
 	Signal& signal = frame->getSignal();
 
-	Argument start(DimensionSet::timeFreqDomain);
+	Argument start(DimensionSet::timeFreqDomain());
 	start.setTime(signal.getReceptionStart());
-	start.setArgValue(Dimension::frequency_static(), centerFrequency);
+	start.setArgValue(Dimension::frequency(), centerFrequency);
 
 	double recvPower_dBm = 10*log10(signal.getReceivingPower()->getValue(start));
 

@@ -55,7 +55,9 @@ protected:
 
 public:
     /** @brief Speed of light in meters per second. */
-	static const double speedOfLight;
+	static const double speedOfLight() {
+		return 299792458.0; ///< meters per second
+	}
 
 protected:
     /**

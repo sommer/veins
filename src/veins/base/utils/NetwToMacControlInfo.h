@@ -47,7 +47,7 @@ class MIXIM_API NetwToMacControlInfo : public cObject
 
   public:
     /** @brief Default constructor*/
-    NetwToMacControlInfo(const LAddress::L2Type& addr = LAddress::L2NULL)
+    NetwToMacControlInfo(const LAddress::L2Type& addr = LAddress::L2NULL())
       : cObject()
       , nextHopMac(addr)
     {
