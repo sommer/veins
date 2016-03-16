@@ -36,7 +36,7 @@ if options.inet:
             if not version == 'inet-2.3.0':
                 warning('Unsupported INET Version. Expecting inet-2.3.0, found "%s"' % version)
     except IOError as e:
-        error('Could not determine INET Version: %s' % (fname, e))
+        error('Could not determine INET Version (from file %s): %s. Check the path to INET and the INET version (should be 2.3.0)' % (fname, e))
         sys.exit(1)
 
     inet_header_dirs = set()
