@@ -8,7 +8,6 @@ Runs Veins simulation in current directory
 
 import sys
 import os
-from subprocess import check_call
 
 def relpath(s):
     veins_root = os.path.dirname(os.path.realpath(__file__))
@@ -23,5 +22,5 @@ ned_flags = ['-n' + ';'.join(run_neds)]
 prefix = ['gdb', '--args']
 cmdline = prefix + ['opp_run'] + lib_flags + ned_flags + sys.argv[1:]
 
-check_call(['env'] + cmdline)
+os.execvp('env', ['env'] + cmdline)
 
