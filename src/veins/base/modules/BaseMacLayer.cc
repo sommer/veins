@@ -184,7 +184,7 @@ void BaseMacLayer::handleLowerControl(cMessage* msg)
 	}
 }
 
-Signal* BaseMacLayer::createSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate)
+Signal* BaseMacLayer::createSimpleSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate)
 {
 	simtime_t end = start + length;
 	//create signal with start at current simtime and passed length

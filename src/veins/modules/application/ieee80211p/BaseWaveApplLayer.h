@@ -53,7 +53,7 @@ class BaseWaveApplLayer : public BaseApplLayer {
 		virtual void initialize(int stage);
 		virtual void finish();
 
-		virtual  void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj);
+		virtual  void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details);
 
 		enum WaveApplMessageKinds {
 			SERVICE_PROVIDER = LAST_BASE_APPL_MESSAGE_KIND,

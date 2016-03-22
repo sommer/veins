@@ -63,7 +63,7 @@ void TraCIDemo11p::sendMessage(std::string blockedRoadId) {
 	wsm->setWsmData(blockedRoadId.c_str());
 	sendWSM(wsm);
 }
-void TraCIDemo11p::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj) {
+void TraCIDemo11p::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details) {
 	Enter_Method_Silent();
 	if (signalID == mobilityStateChangedSignal) {
 		handlePositionUpdate(obj);

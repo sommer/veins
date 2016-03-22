@@ -71,7 +71,7 @@ void NakagamiFading::filterSignal(AirFrame *frame, const Coord& senderPos, const
 	}
 
 	// calculate average RX power
-	double recvPower_mW = gamma_d(m, sendPower_mW/1000 / m) * 1000.0;
+	double recvPower_mW = (RNGCONTEXT gamma_d(m, sendPower_mW/1000 / m)) * 1000.0;
 	if (recvPower_mW > sendPower_mW) {
 		recvPower_mW = sendPower_mW;
 	}

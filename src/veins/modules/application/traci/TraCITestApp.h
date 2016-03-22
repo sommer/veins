@@ -61,7 +61,7 @@ class TraCITestApp : public BaseApplLayer {
 		void handleSelfMsg(cMessage*);
 		void handleLowerMsg(cMessage*);
 
-		void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
+		void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details);
 
 		void handlePositionUpdate();
 };

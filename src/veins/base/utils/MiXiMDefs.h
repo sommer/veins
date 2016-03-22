@@ -68,6 +68,14 @@ inline bool hasGUI() {return cSimulation::getActiveEnvir()->isGUI();}
 #define SIMTIME_MAX MAXTIME
 #endif
 
+// Around OMNeT++ 5, SubmoduleIterator changed from using () to * to get the module
+#if OMNETPP_VERSION < 0x500
+#define SUBMODULE_ITERATOR_TO_MODULE(x) x()
+#else
+#define SUBMODULE_ITERATOR_TO_MODULE(x) *x
+#endif
+
+
 #if defined(MIXIM_EXPORT)
 #  define MIXIM_API OPP_DLLEXPORT
 #elif defined(MIXIM_IMPORT)

@@ -169,13 +169,13 @@ protected:
      * transmission-power is still zero at the exact start and end.
      * Please see the method MappingUtils::addDiscontinuity for the reason.
      */
-    virtual Signal* createSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate);
+    virtual Signal* createSimpleSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate);
 
     /**
      * @brief Creates a simple Mapping with a constant curve
      * progression at the passed value.
      *
-     * Used by "createSignal" to create the bitrate mapping.
+     * Used by "createSimpleSignal" to create the bitrate mapping.
      */
     Mapping* createConstantMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value);
 
@@ -183,7 +183,7 @@ protected:
      * @brief Creates a simple Mapping with a constant curve
      * progression at the passed value and discontinuities at the boundaries.
      *
-     * Used by "createSignal" to create the power mapping.
+     * Used by "createSimpleSignal" to create the power mapping.
      */
     Mapping* createRectangleMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value);
 

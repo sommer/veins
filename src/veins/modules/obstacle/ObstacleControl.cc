@@ -71,7 +71,7 @@ void ObstacleControl::handleSelfMsg(cMessage *msg) {
 void ObstacleControl::addFromXml(cXMLElement* xml) {
 	std::string rootTag = xml->getTagName();
 	if (rootTag != "obstacles") {
-		opp_error("Obstacle definition root tag was \"%s\", but expected \"obstacles\"", rootTag.c_str());
+		throw cRuntimeError("Obstacle definition root tag was \"%s\", but expected \"obstacles\"", rootTag.c_str());
 	}
 
 	cXMLElementList list = xml->getChildren();
@@ -121,7 +121,7 @@ void ObstacleControl::addFromXml(cXMLElement* xml) {
 			add(obs);
 		}
 		else {
-			opp_error("Found unknown tag in obstacle definition: \"%s\"", tag.c_str());
+			throw cRuntimeError("Found unknown tag in obstacle definition: \"%s\"", tag.c_str());
 		}
 
 
@@ -131,7 +131,7 @@ void ObstacleControl::addFromXml(cXMLElement* xml) {
 
 void ObstacleControl::addFromTypeAndShape(std::string id, std::string typeId, std::vector<Coord> shape) {
 	if (!isTypeSupported(typeId)) {
-		opp_error("Unsupported obstacle type: \"%s\"", typeId.c_str());
+		throw cRuntimeError("Unsupported obstacle type: \"%s\"", typeId.c_str());
 	}
 	Obstacle obs(id, typeId, getAttenuationPerCut(typeId), getAttenuationPerMeter(typeId));
 	obs.setShape(shape);
@@ -183,10 +183,10 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
 	Enter_Method_Silent();
 
 	if ((perCut.size() == 0) || (perMeter.size() == 0)) {
-		opp_error("Unable to use SimpleObstacleShadowing: No obstacle types have been configured");
+		throw cRuntimeError("Unable to use SimpleObstacleShadowing: No obstacle types have been configured");
 	}
 	if (obstacles.size() == 0) {
-		opp_error("Unable to use SimpleObstacleShadowing: No obstacles have been added");
+		throw cRuntimeError("Unable to use SimpleObstacleShadowing: No obstacles have been added");
 	}
 
 	// return cached result, if available

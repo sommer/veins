@@ -150,7 +150,7 @@ simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic) {
 	return receiverPos.distance(sendersPos) / BaseWorldUtility::speedOfLight();
 }
 
-void ChannelAccess::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
+void ChannelAccess::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details)
 {
     if(signalID == mobilityStateChangedSignal) {
     	ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);

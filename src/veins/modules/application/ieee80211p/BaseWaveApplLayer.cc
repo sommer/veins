@@ -87,7 +87,7 @@ WaveShortMessage*  BaseWaveApplLayer::prepareWSM(std::string name, int lengthBit
 	return wsm;
 }
 
-void BaseWaveApplLayer::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj) {
+void BaseWaveApplLayer::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details) {
 	Enter_Method_Silent();
 	if (signalID == mobilityStateChangedSignal) {
 		handlePositionUpdate(obj);

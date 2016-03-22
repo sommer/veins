@@ -164,7 +164,11 @@ protected:
      * In this base class just handle the host state switching and
      * some debug notifications
      */
-    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);
+    using cListener::receiveSignal;
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details);
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj) {
+        receiveSignal(source, signalID, obj, 0);
+    }
 };
 
 #endif

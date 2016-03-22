@@ -40,7 +40,7 @@ class AnnotationManager : public cSimpleModule
 			public:
 				Annotation()
 					: group(0)
-#if OMNETPP_CANVAS_VERSION == 0x20140709
+#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 					, figure(0)
 #endif
 				{}
@@ -51,7 +51,7 @@ class AnnotationManager : public cSimpleModule
 
 				Group* group;
 
-#if OMNETPP_CANVAS_VERSION == 0x20140709
+#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 				mutable cFigure* figure;
 #else
 				mutable std::list<cModule*> dummyObjects;
@@ -130,7 +130,7 @@ class AnnotationManager : public cSimpleModule
 		void eraseAll(Group* group = 0);
 		void scheduleErase(simtime_t deltaT, Annotation* annotation);
 
-#if OMNETPP_CANVAS_VERSION == 0x20140709
+#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 #else
 		cModule* createDummyModule(std::string displayString);
 		cModule* createDummyModuleLine(Coord p1, Coord p2, std::string color);
@@ -153,7 +153,7 @@ class AnnotationManager : public cSimpleModule
 		Annotations annotations;
 		Groups groups;
 
-#if OMNETPP_CANVAS_VERSION == 0x20140709
+#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 		cGroupFigure* annotationLayer;
 #endif
 

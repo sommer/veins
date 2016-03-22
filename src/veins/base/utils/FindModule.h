@@ -22,7 +22,7 @@ class FindModule
 		static T findSubModule(const cModule *const top)
 		{
 			for (cModule::SubmoduleIterator i(top); !i.end(); i++) {
-				cModule *const sub = i();
+				cModule *const sub = SUBMODULE_ITERATOR_TO_MODULE(i);
 				// this allows also a return type of read only pointer: const cModule *const
 				T dCastRet = dynamic_cast<T>(sub);
 				if (dCastRet != NULL)
