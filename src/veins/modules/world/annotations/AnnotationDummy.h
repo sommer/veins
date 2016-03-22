@@ -21,7 +21,7 @@
 #define WORLD_ANNOTATION_ANNOTATIONDUMMY_H
 
 #include <omnetpp.h>
-
+using namespace omnetpp;
 /**
  * AnnotationDummy is just a workaround to visualize annotations
  *

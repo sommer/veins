@@ -27,7 +27,7 @@
 #include "veins/base/utils/FindModule.h"
 
 #ifndef nicEV
-#define nicEV (ev.isDisabled()||!coreDebug) ? ev : ev << "NicEntry: "
+#define nicEV (getEnvir()->isDisabled()||!coreDebug) ? EV : EV << "NicEntry: "
 #endif
 
 using std::endl;
@@ -80,7 +80,7 @@ int NicEntryDebug::collectGates(const char* pattern, GateStack& gates)
 	{
 		cGate* hostGate = host->gate(gateName);
 		if(hostGate->isConnectedOutside()) {
-			opp_error("Gate %s is still connected but not registered with this "
+			throw cException("Gate %s is still connected but not registered with this "
 					  "NicEntry. Either the last NicEntry for this NIC did not "
 					  "clean up correctly or another gate creation module is "
 					  "interfering with this one!", gateName);

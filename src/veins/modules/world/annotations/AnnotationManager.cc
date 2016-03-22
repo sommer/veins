@@ -327,20 +327,20 @@ void AnnotationManager::show(const Annotation* annotation) {
 
 	if (const Point* o = dynamic_cast<const Point*>(annotation)) {
 
-		if (ev.isGUI()) {
+		if (getEnvir()->isGUI()) {
 			// no corresponding TkEnv representation
 		}
 
 		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
 		if (traci && traci->isConnected()) {
-			std::stringstream nameBuilder; nameBuilder << o->text << " " << ev.getUniqueNumber();
+			std::stringstream nameBuilder; nameBuilder << o->text << " " << getEnvir()->getUniqueNumber();
 			traci->getCommandInterface()->addPoi(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(o->color), 6, o->pos);
 			annotation->traciPoiIds.push_back(nameBuilder.str());
 		}
 	}
 	else if (const Line* l = dynamic_cast<const Line*>(annotation)) {
 
-		if (ev.isGUI()) {
+		if (getEnvir()->isGUI()) {
 #if OMNETPP_CANVAS_VERSION == 0x20140709
 			cLineFigure* figure = new cLineFigure();
 			figure->setStart(cFigure::Point(l->p1.x, l->p1.y));
@@ -357,7 +357,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
 		if (traci && traci->isConnected()) {
 			std::list<Coord> coords; coords.push_back(l->p1); coords.push_back(l->p2);
-			std::stringstream nameBuilder; nameBuilder << "Annotation" << ev.getUniqueNumber();
+			std::stringstream nameBuilder; nameBuilder << "Annotation" << getEnvir()->getUniqueNumber();
 			traci->getCommandInterface()->addPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(l->color), false, 5, coords);
 			annotation->traciLineIds.push_back(nameBuilder.str());
 		}
@@ -366,7 +366,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 
 		ASSERT(p->coords.size() >= 2);
 
-		if (ev.isGUI()) {
+		if (getEnvir()->isGUI()) {
 #if OMNETPP_CANVAS_VERSION == 0x20140709
 			cPolygonFigure* figure = new cPolygonFigure();
 			std::vector<cFigure::Point> points;
@@ -393,7 +393,7 @@ void AnnotationManager::show(const Annotation* annotation) {
 
 		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
 		if (traci && traci->isConnected()) {
-			std::stringstream nameBuilder; nameBuilder << "Annotation" << ev.getUniqueNumber();
+			std::stringstream nameBuilder; nameBuilder << "Annotation" << getEnvir()->getUniqueNumber();
 			traci->getCommandInterface()->addPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(p->color), false, 4, p->coords);
 			annotation->traciPolygonsIds.push_back(nameBuilder.str());
 		}

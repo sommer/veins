@@ -1,6 +1,6 @@
 #include "veins/base/phyLayer/BasePhyLayer.h"
 
-#include <cxmlelement.h>
+#include <omnetpp/cxmlelement.h>
 
 #include "veins/base/phyLayer/MacToPhyControlInfo.h"
 #include "veins/base/phyLayer/PhyToMacControlInfo.h"
@@ -81,12 +81,12 @@ void BasePhyLayer::initialize(int stage) {
 		// get pointer to the world module
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
         if (world == NULL) {
-            opp_error("Could not find BaseWorldUtility module");
+            throw cException("Could not find BaseWorldUtility module");
         }
 
         if(cc->hasPar("sat")
 		   && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
-            opp_error("Sensitivity can't be smaller than the "
+            throw cException("Sensitivity can't be smaller than the "
 					  "signal attenuation threshold (sat) in ConnectionManager. "
 					  "Please adjust your omnetpp.ini file accordingly.");
 		}
@@ -147,7 +147,7 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 		const char* type = (*it)->getAttribute("type");
 		const char* value = (*it)->getAttribute("value");
 		if(name == 0 || type == 0 || value == 0) {
-			ev << "Invalid parameter, could not find name, type or value." << endl;
+			EV << "Invalid parameter, could not find name, type or value." << endl;
 			continue;
 		}
 
@@ -170,7 +170,7 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 			param.setLongValue(strtol(value, 0, 0));
 
 		} else {
-			ev << "Unknown parameter type: \"" << sType << "\"" << endl;
+			EV << "Unknown parameter type: \"" << sType << "\"" << endl;
 			continue;
 		}
 
@@ -192,19 +192,19 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	decider = 0;
 
 	if(xmlConfig == 0) {
-		opp_error("No decider configuration file specified.");
+		throw cException("No decider configuration file specified.");
 		return;
 	}
 
 	cXMLElementList deciderList = xmlConfig->getElementsByTagName("Decider");
 
 	if(deciderList.empty()) {
-		opp_error("No decider configuration found in configuration file.");
+		throw cException("No decider configuration found in configuration file.");
 		return;
 	}
 
 	if(deciderList.size() > 1) {
-		opp_error("More than one decider configuration found in configuration file.");
+		throw cException("More than one decider configuration found in configuration file.");
 		return;
 	}
 
@@ -213,7 +213,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	const char* name = deciderData->getAttribute("type");
 
 	if(name == 0) {
-		opp_error("Could not read type of decider from configuration file.");
+		throw cException("Could not read type of decider from configuration file.");
 		return;
 	}
 
@@ -223,7 +223,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig) {
 	decider = getDeciderFromName(name, params);
 
 	if(decider == 0) {
-		opp_error("Could not find a decider with the name \"%s\".", name);
+		throw cException("Could not find a decider with the name \"%s\".", name);
 		return;
 	}
 
@@ -252,7 +252,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 
 	if(newAnalogueModel == 0)
 	{
-		opp_warning("Could not find an analogue model with the name \"%s\".", s.c_str());
+		throw cException("Could not find an analogue model with the name \"%s\".", s.c_str());
 	}
 	else
 	{
@@ -261,14 +261,14 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 
 
 	if(xmlConfig == 0) {
-		opp_warning("No analogue models configuration file specified.");
+		throw cException("No analogue models configuration file specified.");
 		return;
 	}
 
 	cXMLElementList analogueModelList = xmlConfig->getElementsByTagName("AnalogueModel");
 
 	if(analogueModelList.empty()) {
-		opp_warning("No analogue models configuration found in configuration file.");
+		throw cException("No analogue models configuration found in configuration file.");
 		return;
 	}
 
@@ -283,7 +283,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 		const char* name = analogueModelData->getAttribute("type");
 
 		if(name == 0) {
-			opp_warning("Could not read name of analogue model.");
+			throw cException("Could not read name of analogue model.");
 			continue;
 		}
 
@@ -293,7 +293,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 		AnalogueModel* newAnalogueModel = getAnalogueModelFromName(name, params);
 
 		if(newAnalogueModel == 0) {
-			opp_warning("Could not find an analogue model with the name \"%s\".", name);
+			throw cException("Could not find an analogue model with the name \"%s\".", name);
 			continue;
 		}
 
@@ -342,7 +342,7 @@ void BasePhyLayer::handleMessage(cMessage* msg) {
 
 	//unknown message
 	} else {
-		ev << "Unknown message received." << endl;
+		EV << "Unknown message received." << endl;
 		delete msg;
 	}
 }
@@ -365,7 +365,7 @@ void BasePhyLayer::handleAirFrame(AirFrame* frame) {
 		break;
 
 	default:
-		opp_error( "Unknown AirFrame state: %s", frame->getState());
+		throw cException( "Unknown AirFrame state: %s", frame->getState());
 		break;
 	}
 }
@@ -429,7 +429,7 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame) {
 
 	//invalid point in time
 	} else if(nextHandleTime < simTime() || nextHandleTime > signalEndTime) {
-		opp_error("Invalid next handle time returned by Decider. Expected a value between current simulation time (%.2f) and end of signal (%.2f) but got %.2f",
+		throw cException("Invalid next handle time returned by Decider. Expected a value between current simulation time (%.2f) and end of signal (%.2f) but got %.2f",
 								SIMTIME_DBL(simTime()), SIMTIME_DBL(signalEndTime), SIMTIME_DBL(nextHandleTime));
 	}
 
@@ -463,7 +463,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
 	{
         delete msg;
         msg = 0;
-		opp_error("Error: message for sending received, but radio not in state TX");
+		throw cException("Error: message for sending received, but radio not in state TX");
 	}
 
 	// check if not already sending
@@ -471,7 +471,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
 	{
         delete msg;
         msg = 0;
-		opp_error("Error: message for sending received, but radio already sending");
+		throw cException("Error: message for sending received, but radio already sending");
 	}
 
 	// build the AirFrame to send
@@ -551,7 +551,7 @@ void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
 			channelInfo.startRecording(simTime());
 		}
 	} else if(nextHandleTime >= 0.0){
-		opp_error("Next handle time of ChannelSenseRequest returned by the Decider is smaller then current simulation time: %.2f",
+		throw cException("Next handle time of ChannelSenseRequest returned by the Decider is smaller then current simulation time: %.2f",
 				SIMTIME_DBL(nextHandleTime));
 	}
 
@@ -566,7 +566,7 @@ void BasePhyLayer::handleUpperControlMessage(cMessage* msg){
 		handleChannelSenseRequest(msg);
 		break;
 	default:
-		ev << "Received unknown control message from upper layer!" << endl;
+		EV << "Received unknown control message from upper layer!" << endl;
 		break;
 	}
 }
@@ -729,7 +729,7 @@ simtime_t BasePhyLayer::setRadioState(int rs) {
 	assert(radio);
 
 	if(txOverTimer && txOverTimer->isScheduled()) {
-		opp_warning("Switched radio while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
+		throw cException("Switched radio while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
 	}
 
 	simtime_t switchTime = radio->switchTo(rs, simTime());
@@ -767,7 +767,7 @@ int BasePhyLayer::getPhyHeaderLength() {
 
 void BasePhyLayer::setCurrentRadioChannel(int newRadioChannel) {
 	if(txOverTimer && txOverTimer->isScheduled()) {
-		opp_warning("Switched channel while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
+		throw cException("Switched channel while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!");
 	}
 
 	radio->setCurrentChannel(newRadioChannel);
