@@ -65,17 +65,34 @@ TraCIConnection* TraCIConnection::connect(const char* host, int port) {
 	}
 
 	sockaddr_in address;
-	memset((char*) &address, 0, sizeof(address));
+	sockaddr* address_p = (sockaddr*)&address;
+	memset(address_p, 0, sizeof(address));
 	address.sin_family = AF_INET;
 	address.sin_port = htons(port);
 	address.sin_addr.s_addr = addr.s_addr;
 
 	SOCKET* socketPtr = new SOCKET();
-	*socketPtr = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (*socketPtr < 0) throw cRuntimeError("Could not create socket to connect to TraCI server");
 
-	if (::connect(*socketPtr, (sockaddr const*) &address, sizeof(address)) < 0) {
-		throw cRuntimeError("Could not connect to TraCI server. Make sure it is running and not behind a firewall. Error message: %d: %s", sock_errno(), strerror(sock_errno()));
+	for (int tries=1; tries <= 10; ++tries) {
+		*socketPtr = ::socket(AF_INET, SOCK_STREAM, 0);
+		if (::connect(*socketPtr, address_p, sizeof(address)) >= 0) break;
+		closesocket(socket(socketPtr));
+
+		std::stringstream ss;
+		ss << "Could not connect to TraCI server; error message: " << sock_errno() << ": " << strerror(sock_errno());
+		std::string msg = ss.str();
+
+		int sleepDuration = tries*.25 + 1;
+
+		if (tries >= 10) {
+			throw cRuntimeError(msg.c_str());
+		}
+		else if (tries == 3) {
+			EV_WARN << msg << " -- Will retry in " << sleepDuration << " second(s)." << std::endl;
+		}
+
+		sleep(sleepDuration);
 	}
 
 	{
