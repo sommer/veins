@@ -249,7 +249,7 @@ double TraCIConnection::omnet2traciAngle(double angle) const {
 	// convert to degrees
 	angle = angle * 180 / M_PI;
 
-	// rotate angle so 0 is south (in OMNeT++'s angle interpretation 0 is in positive x direction, 90 is in positive y direction)
+	// rotate angle so 0 is south (in OMNeT++'s angle interpretation 0 is east, 90 is north)
 	angle = 90 - angle;
 
 	// normalize angle to -180 <= angle < 180
