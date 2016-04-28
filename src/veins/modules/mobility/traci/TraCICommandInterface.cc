@@ -164,6 +164,10 @@ void TraCICommandInterface::Vehicle::changeRoute(std::string roadId, double trav
 	}
 }
 
+double TraCICommandInterface::Vehicle::getLength() {
+	return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_LENGTH, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
 double TraCICommandInterface::getDistance(const Coord& p1, const Coord& p2, bool returnDrivingDistance) {
 	uint8_t variable = DISTANCE_REQUEST;
 	std::string simId = "sim0";
