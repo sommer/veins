@@ -315,6 +315,11 @@ void TraCIScenarioManagerBase::init_traci() {
 			}
 		}
 	}
+
+	for (std::list<TraCIListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
+		TraCIListener* listener = *it;
+		listener->init();
+	}
 }
 
 void TraCIScenarioManagerBase::finish() {
@@ -323,6 +328,11 @@ void TraCIScenarioManagerBase::finish() {
 	}
 	while (hosts.begin() != hosts.end()) {
 		deleteManagedModule(hosts.begin()->first);
+	}
+
+	for (std::list<TraCIListener*>::reverse_iterator it = listeners.rbegin(); it != listeners.rend(); ++it) {
+		TraCIListener* listener = *it;
+		listener->close();
 	}
 }
 
@@ -513,6 +523,10 @@ void TraCIScenarioManagerBase::executeOneTimestep() {
 
 	if (!autoShutdownTriggered) scheduleAt(simTime()+updateInterval, executeOneTimestepTrigger);
 
+	for (std::list<TraCIListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
+		TraCIListener* listener = *it;
+		listener->step();
+	}
 }
 
 void TraCIScenarioManagerBase::insertNewVehicle() {
@@ -907,3 +921,6 @@ void TraCIScenarioManagerBase::processSubcriptionResult(TraCIBuffer& buf) {
 	}
 }
 
+void TraCIScenarioManagerBase::addListener(TraCIListener* listener) {
+	listeners.push_back(listener);
+}

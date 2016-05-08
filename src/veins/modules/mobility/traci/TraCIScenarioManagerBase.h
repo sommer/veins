@@ -36,6 +36,7 @@
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
+#include "veins/modules/mobility/traci/TraCIListener.h"
 
 /**
  * @brief
@@ -106,6 +107,8 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		const std::map<std::string, cModule*>& getManagedHosts() {
 			return hosts;
 		}
+
+		void addListener(TraCIListener*);
 
 	protected:
 		bool debug; /**< whether to emit debug messages */
@@ -204,6 +207,8 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		 */
 		TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
 
+	private:
+		std::list<TraCIListener*> listeners;
 };
 
 } // namespace Veins
