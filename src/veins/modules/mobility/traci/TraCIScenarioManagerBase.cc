@@ -32,6 +32,7 @@
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/modules/mobility/traci/TraCINodeManager.h"
 #include "veins/modules/mobility/traci/TraCITime.h"
+#include "veins/modules/mobility/traci/TraCIVehicleInserter.h"
 
 using Veins::TraCIScenarioManagerBase;
 using Veins::TraCIBuffer;
@@ -39,10 +40,10 @@ using Veins::TraCICoord;
 
 
 TraCIScenarioManagerBase::TraCIScenarioManagerBase() :
-		mobRng(0),
 		connection(0),
 		connectAndStartTrigger(0),
-		executeOneTimestepTrigger(0)
+		executeOneTimestepTrigger(0),
+		vehicleInserter(0)
 {
 }
 
@@ -51,6 +52,7 @@ TraCIScenarioManagerBase::~TraCIScenarioManagerBase() {
 	cancelAndDelete(executeOneTimestepTrigger);
 	delete commandIfc;
 	delete connection;
+	delete vehicleInserter;
 }
 
 void TraCIScenarioManagerBase::initialize(int stage) {
@@ -73,11 +75,6 @@ void TraCIScenarioManagerBase::initialize(int stage) {
 	host = par("host").stdstringValue();
 	port = par("port");
 	autoShutdown = par("autoShutdown");
-
-	vehicleNameCounter = 0;
-	vehicleRngIndex = par("vehicleRngIndex");
-	numVehicles = par("numVehicles").longValue();
-	mobRng = getRNG(vehicleRngIndex);
 
 	roi.clear();
 	roi.addRoads(par("roiRoads"));
@@ -103,6 +100,10 @@ void TraCIScenarioManagerBase::init_traci() {
 	queryNetworkBoundary();
 	subscribeSimulationVariables();
 	subscribeVehicleList();
+
+	vehicleInserter = new TraCIVehicleInserter(commandIfc, getRNG(par("vehicleRngIndex")));
+	vehicleInserter->useRouteDistributions(par("useRouteDistributions"));
+	vehicleInserter->setTargetVehicles(par("numVehicles"));
 
 	for (std::list<TraCIListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
 		TraCIListener* listener = *it;
@@ -141,34 +142,6 @@ void TraCIScenarioManagerBase::handleSelfMsg(cMessage *msg) {
 		return;
 	}
 	if (msg == executeOneTimestepTrigger) {
-		if (simTime() > 1) {
-			if (vehicleTypeIds.size()==0) {
-				std::list<std::string> vehTypes = getCommandInterface()->getVehicleTypeIds();
-				for (std::list<std::string>::const_iterator i = vehTypes.begin(); i != vehTypes.end(); ++i) {
-					if (i->compare("DEFAULT_VEHTYPE")!=0) {
-						MYDEBUG << *i << std::endl;
-						vehicleTypeIds.push_back(*i);
-					}
-				}
-			}
-			if (routeIds.size()==0) {
-				std::list<std::string> routes = getCommandInterface()->getRouteIds();
-				for (std::list<std::string>::const_iterator i = routes.begin(); i != routes.end(); ++i) {
-					std::string routeId = *i;
-					if (par("useRouteDistributions").boolValue() == true) {
-						if (std::count(routeId.begin(), routeId.end(), '#') >= 1) {
-							MYDEBUG << "Omitting route " << routeId << " as it seems to be a member of a route distribution (found '#' in name)" << std::endl;
-							continue;
-						}
-					}
-					MYDEBUG << "Adding " << routeId << " to list of possible routes" << std::endl;
-					routeIds.push_back(routeId);
-				}
-			}
-			for (int i = activeVehicleCount + queuedVehicles.size(); i< numVehicles; i++) {
-				insertNewVehicle();
-			}
-		}
 		executeOneTimestep();
 		return;
 	}
@@ -197,10 +170,8 @@ void TraCIScenarioManagerBase::queryNetworkBoundary() {
 // name: host;Car;i=vehicle.gif
 void TraCIScenarioManagerBase::addModule(const std::string& nodeId, const TraCINodeManager::NodeData& nodeData) {
 	if (nodes->get(nodeId)) error("tried adding duplicate module");
+	vehicleInserter->dequeVehicle(nodeId);
 
-	if (queuedVehicles.find(nodeId) != queuedVehicles.end()) {
-		queuedVehicles.erase(nodeId);
-	}
 	double option1 = nodes->size() / (nodes->size() + unEquippedHosts.size() + 1.0);
 	double option2 = (nodes->size() + 1) / (nodes->size() + unEquippedHosts.size() + 1.0);
 
@@ -223,7 +194,9 @@ void TraCIScenarioManagerBase::executeOneTimestep() {
 
 	const simtime_t now = simTime();
 	if (now >= connectAt) {
-		insertVehicles();
+		if (now > 1.0) {
+			vehicleInserter->enqueueVehicles(activeVehicleCount, now);
+		}
 		TraCIBuffer buf = connection->query(CMD_SIMSTEP2, TraCIBuffer() << TraCITime::from(now));
 
 		uint32_t count; buf >> count;
@@ -238,51 +211,6 @@ void TraCIScenarioManagerBase::executeOneTimestep() {
 	for (std::list<TraCIListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
 		TraCIListener* listener = *it;
 		listener->step();
-	}
-}
-
-void TraCIScenarioManagerBase::insertNewVehicle() {
-	std::string type;
-	if (vehicleTypeIds.size()) {
-		int vehTypeId = mobRng->intRand(vehicleTypeIds.size());
-		type = vehicleTypeIds[vehTypeId];
-	}
-	else {
-		type = "DEFAULT_VEHTYPE";
-	}
-	int routeId = mobRng->intRand(routeIds.size());
-	vehicleInsertQueue[routeId].push(type);
-}
-
-void TraCIScenarioManagerBase::insertVehicles() {
-
-	for (std::map<int, std::queue<std::string> >::iterator i = vehicleInsertQueue.begin(); i != vehicleInsertQueue.end(); ) {
-		std::string route = routeIds[i->first];
-		MYDEBUG << "process " << route << std::endl;
-		std::queue<std::string> vehicles = i->second;
-		while (!i->second.empty()) {
-			bool suc = false;
-			std::string type = i->second.front();
-			std::stringstream veh;
-			veh << type << "_" << vehicleNameCounter;
-			MYDEBUG << "trying to add " << veh.str() << " with " << route << " vehicle type " << type << std::endl;
-
-			suc = getCommandInterface()->addVehicle(veh.str(), type, route, simTime());
-			if (!suc) {
-				i->second.pop();
-			}
-			else {
-				MYDEBUG << "successful inserted " << veh.str() << std::endl;
-				queuedVehicles.insert(veh.str());
-				i->second.pop();
-				vehicleNameCounter++;
-			}
-		}
-		std::map<int, std::queue<std::string> >::iterator tmp = i;
-		++tmp;
-		vehicleInsertQueue.erase(i);
-		i = tmp;
-
 	}
 }
 

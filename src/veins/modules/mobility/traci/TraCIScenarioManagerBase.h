@@ -58,6 +58,7 @@
 namespace Veins {
 
 class TraCICommandInterface;
+class TraCIVehicleInserter;
 
 class TraCIScenarioManagerBase : public cSimpleModule
 {
@@ -114,16 +115,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		std::string host;
 		int port;
 
-		uint32_t vehicleNameCounter;
-		std::vector<std::string> vehicleTypeIds;
-		std::map<int, std::queue<std::string> > vehicleInsertQueue;
-		std::set<std::string> queuedVehicles;
-		std::vector<std::string> routeIds;
-		int vehicleRngIndex;
-		int numVehicles;
-
-		cRNG* mobRng;
-
 		bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
 		double penetrationRate;
 
@@ -148,16 +139,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
 
 		/**
-		 * adds a new vehicle to the queue which are tried to be inserted at the next SUMO time step;
-		 */
-		void insertNewVehicle();
-
-		/**
-		 * tries to add all vehicles in the vehicle queue to SUMO;
-		 */
-		void insertVehicles();
-
-		/**
 		 * query road network boundaries from SUMO
 		 */
 		virtual void queryNetworkBoundary();
@@ -177,6 +158,7 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		std::list<TraCIListener*> listeners;
 		TraCIRegionOfInterest roi;
 		TraCINodeManager* nodes;
+		TraCIVehicleInserter* vehicleInserter;
 };
 
 } // namespace Veins
