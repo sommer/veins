@@ -35,7 +35,7 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/mobility/traci/TraCIListener.h"
-#include "veins/modules/mobility/traci/TraCIModuleMapper.h"
+#include "veins/modules/mobility/traci/TraCINodeManager.h"
 #include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 
 /**
@@ -104,18 +104,14 @@ class TraCIScenarioManagerBase : public cSimpleModule
 			return autoShutdownTriggered;
 		}
 
-		const std::map<std::string, cModule*>& getManagedHosts() {
-			return hosts;
-		}
-
 		void addListener(TraCIListener*);
+		cModule* getModule(const std::string&);
 
 	protected:
 		bool debug; /**< whether to emit debug messages */
 		simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
 		simtime_t firstStepAt; /**< when to start synchronizing with the TraCI server (-1: immediately after connecting) */
 		simtime_t updateInterval; /**< time interval of hosts' position updates */
-		TraCIModuleMapper moduleMapper;
 		std::string host;
 		int port;
 
@@ -136,8 +132,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		TraCIConnection* connection;
 		TraCICommandInterface* commandIfc;
 
-		size_t nextNodeVectorIndex; /**< next OMNeT++ module vector index to use */
-		std::map<std::string, cModule*> hosts; /**< vector of all hosts managed by us */
 		std::set<std::string> unEquippedHosts;
 		std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
 		uint32_t activeVehicleCount; /**< number of vehicles, be it parking or driving **/
@@ -147,17 +141,13 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		cMessage* connectAndStartTrigger; /**< self-message scheduled for when to connect to TraCI server and start running */
 		cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
 
-		BaseConnectionManager* cc;
-
 		uint32_t getCurrentTimeMs(); /**< get current simulation time (in ms) */
 
 		void executeOneTimestep(); /**< read and execute all commands for the next timestep */
 
 		virtual void init_traci();
 
-		void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
-		cModule* getManagedModule(std::string nodeId); /**< returns a pointer to the managed module named moduleName, or 0 if no module can be found */
-		void deleteManagedModule(std::string nodeId);
+		void addModule(const std::string& nodeId, const TraCINodeManager::NodeData&);
 
 		bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
 
@@ -184,16 +174,12 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		void processVehicleSubscription(std::string objectId, TraCIBuffer& buf);
 		void processSubcriptionResult(TraCIBuffer& buf);
 
-		/**
-		 * parses the vector of module types in ini file
-		 *
-		 * in case of inconsistencies the function kills the simulation
-		 */
-		void parseModuleTypes();
+		void setNodeManager(TraCINodeManager* _nodes) { nodes = _nodes; }
 
 	private:
 		std::list<TraCIListener*> listeners;
 		TraCIRegionOfInterest roi;
+		TraCINodeManager* nodes;
 };
 
 } // namespace Veins

@@ -30,7 +30,7 @@
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
-#include "veins/modules/mobility/traci/TraCIScenarioManagerInet.h"
+#include "veins/modules/mobility/traci/TraCINodeManager.h"
 
 using Veins::TraCIScenarioManagerBase;
 using Veins::TraCIBuffer;
@@ -44,8 +44,7 @@ TraCIScenarioManagerBase::TraCIScenarioManagerBase() :
 		mobRng(0),
 		connection(0),
 		connectAndStartTrigger(0),
-		executeOneTimestepTrigger(0),
-		cc(0)
+		executeOneTimestepTrigger(0)
 {
 }
 
@@ -57,16 +56,14 @@ TraCIScenarioManagerBase::~TraCIScenarioManagerBase() {
 	delete connection;
 }
 
-void TraCIScenarioManagerBase::parseModuleTypes() {
-	const std::string moduleTypes = par("moduleType").stdstringValue();
-	const std::string moduleNames = par("moduleName").stdstringValue();
-	const std::string moduleDisplayStrings = par("moduleDisplayString").stdstringValue();
-
-	moduleMapper.parseConfig(moduleTypes, moduleNames, moduleDisplayStrings);
-}
-
 void TraCIScenarioManagerBase::initialize(int stage) {
 	cSimpleModule::initialize(stage);
+
+	if (stage == INIT_LAST) {
+		if (!nodes) {
+			error("No TraCINodeManager has been configured during INIT_BASE");
+		}
+	}
 	if (stage != INIT_BASE) {
 		return;
 	}
@@ -77,7 +74,6 @@ void TraCIScenarioManagerBase::initialize(int stage) {
 	firstStepAt = par("firstStepAt");
 	updateInterval = par("updateInterval");
 	if (firstStepAt == -1) firstStepAt = connectAt + updateInterval;
-	parseModuleTypes();
 	penetrationRate = par("penetrationRate").doubleValue();
 	host = par("host").stdstringValue();
 	port = par("port");
@@ -94,16 +90,11 @@ void TraCIScenarioManagerBase::initialize(int stage) {
 	roi.addRoads(par("roiRoads"));
 	roi.addRectangles(par("roiRects"));
 
-	nextNodeVectorIndex = 0;
-	hosts.clear();
 	subscribedVehicles.clear();
 	activeVehicleCount = 0;
 	parkingVehicleCount = 0;
 	drivingVehicleCount = 0;
 	autoShutdownTriggered = false;
-
-	cc = FindModule<BaseConnectionManager*>::findGlobalModule();
-	if (cc == NULL) error("Could not find BaseConnectionManager module");
 
 	ASSERT(firstStepAt > connectAt);
 	connectAndStartTrigger = new cMessage("connect");
@@ -143,8 +134,9 @@ void TraCIScenarioManagerBase::finish() {
 	if (connection) {
 		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
 	}
-	while (hosts.begin() != hosts.end()) {
-		deleteManagedModule(hosts.begin()->first);
+
+	if (nodes) {
+		nodes->finish();
 	}
 
 	for (std::list<TraCIListener*>::reverse_iterator it = listeners.rbegin(); it != listeners.rend(); ++it) {
@@ -223,79 +215,27 @@ void TraCIScenarioManagerBase::queryNetworkBoundary() {
 }
 
 // name: host;Car;i=vehicle.gif
-void TraCIScenarioManagerBase::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle) {
-
-	if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
+void TraCIScenarioManagerBase::addModule(const std::string& nodeId, const TraCINodeManager::NodeData& nodeData) {
+	if (nodes->get(nodeId)) error("tried adding duplicate module");
 
 	if (queuedVehicles.find(nodeId) != queuedVehicles.end()) {
 		queuedVehicles.erase(nodeId);
 	}
-	double option1 = hosts.size() / (hosts.size() + unEquippedHosts.size() + 1.0);
-	double option2 = (hosts.size() + 1) / (hosts.size() + unEquippedHosts.size() + 1.0);
+	double option1 = nodes->size() / (nodes->size() + unEquippedHosts.size() + 1.0);
+	double option2 = (nodes->size() + 1) / (nodes->size() + unEquippedHosts.size() + 1.0);
 
 	if (fabs(option1 - penetrationRate) < fabs(option2 - penetrationRate)) {
 		unEquippedHosts.insert(nodeId);
 		return;
 	}
 
-	int32_t nodeVectorIndex = nextNodeVectorIndex++;
-
-	cModule* parentmod = getParentModule();
-	if (!parentmod) error("Parent Module not found");
-
-	cModuleType* nodeType = cModuleType::get(type.c_str());
-	if (!nodeType) error("Module Type \"%s\" not found", type.c_str());
-
-	//TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
-	cModule* mod = nodeType->create(name.c_str(), parentmod, nodeVectorIndex, nodeVectorIndex);
-	mod->finalizeParameters();
-	mod->getDisplayString().parse(displayString.c_str());
-	mod->buildInside();
-	mod->scheduleStart(simTime() + updateInterval);
-
-	// pre-initialize TraCIMobility
-	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-		cModule* submod = SUBMODULE_ITERATOR_TO_MODULE(iter);
-		ifInetTraCIMobilityCallPreInitialize(submod, nodeId, position, road_id, speed, angle);
-		TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
-		if (!mm) continue;
-		mm->preInitialize(nodeId, position, road_id, speed, angle);
-	}
-
-	mod->callInitialize();
-	hosts[nodeId] = mod;
-
-	// post-initialize TraCIMobility
-	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-		cModule* submod = SUBMODULE_ITERATOR_TO_MODULE(iter);
-		TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
-		if (!mm) continue;
-		mm->changePosition();
-	}
-}
-
-cModule* TraCIScenarioManagerBase::getManagedModule(std::string nodeId) {
-	if (hosts.find(nodeId) == hosts.end()) return 0;
-	return hosts[nodeId];
+	const std::string& vType = getCommandInterface()->vehicle(nodeId).getTypeId();
+	nodes->add(nodeId, nodeData, vType, simTime() + updateInterval);
 }
 
 bool TraCIScenarioManagerBase::isModuleUnequipped(std::string nodeId) {
 	if (unEquippedHosts.find(nodeId) == unEquippedHosts.end()) return false;
 	return true;
-}
-
-void TraCIScenarioManagerBase::deleteManagedModule(std::string nodeId) {
-	cModule* mod = getManagedModule(nodeId);
-	if (!mod) error("no vehicle with Id \"%s\" found", nodeId.c_str());
-
-	cModule* nic = mod->getSubmodule("nic");
-	if (nic) {
-	    cc->unregisterNic(nic);
-	}
-
-	hosts.erase(nodeId);
-	mod->callFinish();
-	mod->deleteModule();
 }
 
 uint32_t TraCIScenarioManagerBase::getCurrentTimeMs() {
@@ -477,8 +417,8 @@ void TraCIScenarioManagerBase::processSimSubscription(std::string objectId, TraC
 				}
 
 				// check if this object has been deleted already (e.g. because it was outside the ROI)
-				cModule* mod = getManagedModule(idstring);
-				if (mod) deleteManagedModule(idstring);
+				cModule* mod = nodes->get(idstring);
+				if (mod) nodes->remove(idstring);
 
 				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
 					unEquippedHosts.erase(idstring);
@@ -499,8 +439,8 @@ void TraCIScenarioManagerBase::processSimSubscription(std::string objectId, TraC
 				std::string idstring; buf >> idstring;
 
 				// check if this object has been deleted already (e.g. because it was outside the ROI)
-				cModule* mod = getManagedModule(idstring);
-				if (mod) deleteManagedModule(idstring);
+				cModule* mod = nodes->get(idstring);
+				if (mod) nodes->remove(idstring);
 
 				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
 					unEquippedHosts.erase(idstring);
@@ -533,7 +473,7 @@ void TraCIScenarioManagerBase::processSimSubscription(std::string objectId, TraC
 				std::string idstring; buf >> idstring;
 
 
-				cModule* mod = getManagedModule(idstring);
+				cModule* mod = nodes->get(idstring);
 				for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
 					cModule* submod = SUBMODULE_ITERATOR_TO_MODULE(iter);
 					TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
@@ -553,7 +493,7 @@ void TraCIScenarioManagerBase::processSimSubscription(std::string objectId, TraC
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;
 
-				cModule* mod = getManagedModule(idstring);
+				cModule* mod = nodes->get(idstring);
 				for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
 					cModule* submod = SUBMODULE_ITERATOR_TO_MODULE(iter);
 					TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
@@ -665,19 +605,25 @@ void TraCIScenarioManagerBase::processVehicleSubscription(std::string objectId, 
 	// make sure we got updates for all attributes
 	if (numRead != 5) return;
 
-	Coord p = commandIfc->netBoundary().traci2omnet(TraCICoord(px, py));
-	if ((p.x < 0) || (p.y < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
+	TraCINodeManager::NodeData data;
+	data.position = commandIfc->netBoundary().traci2omnet(TraCICoord(px, py));
+	if ((data.position.x < 0) || (data.position.y < 0)) {
+		error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)",
+			px, py, data.position.x, data.position.y);
+	}
 
-	double angle = commandIfc->netBoundary().traci2omnetAngle(angle_traci);
+	data.angle = commandIfc->netBoundary().traci2omnetAngle(angle_traci);
+	data.speed = speed;
+	data.road_id = edge;
 
-	cModule* mod = getManagedModule(objectId);
+	cModule* mod = nodes->get(objectId);
 
 	// is it in the ROI?
 	bool inRoi = !roi.hasConstraints() ? true :
 		roi.onAnyRectangle(TraCICoord(px, py)) || roi.partOfRoads(edge);
 	if (!inRoi) {
 		if (mod) {
-			deleteManagedModule(objectId);
+			nodes->remove(objectId);
 			MYDEBUG << "Vehicle #" << objectId << " left region of interest" << endl;
 		}
 		else if(unEquippedHosts.find(objectId) != unEquippedHosts.end()) {
@@ -693,24 +639,12 @@ void TraCIScenarioManagerBase::processVehicleSubscription(std::string objectId, 
 
 	if (!mod) {
 		// no such module - need to create
-		std::string vType = commandIfc->vehicle(objectId).getTypeId();
-		TraCIModuleMapper::ModuleConfig moduleConfig = moduleMapper.getModuleConfig(vType);
-		if (moduleConfig.type != "") {
-			addModule(objectId, moduleConfig.type, moduleConfig.name, moduleConfig.displayString, p, edge, speed, angle);
-			MYDEBUG << "Added vehicle #" << objectId << endl;
-		}
+		addModule(objectId, data);
+		MYDEBUG << "Added vehicle #" << objectId << endl;
 	} else {
 		// module existed - update position
-		for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-			cModule* submod = SUBMODULE_ITERATOR_TO_MODULE(iter);
-			ifInetTraCIMobilityCallNextPosition(submod, p, edge, speed, angle);
-			TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
-			if (!mm) continue;
-			MYDEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << endl;
-			mm->nextPosition(p, edge, speed, angle);
-		}
+		nodes->update(objectId, data);
 	}
-
 }
 
 void TraCIScenarioManagerBase::processSubcriptionResult(TraCIBuffer& buf) {
@@ -728,4 +662,8 @@ void TraCIScenarioManagerBase::processSubcriptionResult(TraCIBuffer& buf) {
 
 void TraCIScenarioManagerBase::addListener(TraCIListener* listener) {
 	listeners.push_back(listener);
+}
+
+cModule* TraCIScenarioManagerBase::getModule(const std::string& id) {
+	return nodes->get(id);
 }
