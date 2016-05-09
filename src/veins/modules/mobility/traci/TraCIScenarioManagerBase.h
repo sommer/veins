@@ -35,6 +35,7 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/mobility/traci/TraCIListener.h"
+#include "veins/modules/mobility/traci/TraCIModuleMapper.h"
 #include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 
 /**
@@ -114,11 +115,7 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
 		simtime_t firstStepAt; /**< when to start synchronizing with the TraCI server (-1: immediately after connecting) */
 		simtime_t updateInterval; /**< time interval of hosts' position updates */
-		//maps from vehicle type to moduleType, moduleName, and moduleDisplayString
-		typedef std::map<std::string, std::string> TypeMapping;
-		TypeMapping moduleType; /**< module type to be used in the simulation for each managed vehicle */
-		TypeMapping moduleName; /**< module name to be used in the simulation for each managed vehicle */
-		TypeMapping moduleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
+		TraCIModuleMapper moduleMapper;
 		std::string host;
 		int port;
 
@@ -193,11 +190,6 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		 * in case of inconsistencies the function kills the simulation
 		 */
 		void parseModuleTypes();
-
-		/**
-		 * transforms a list of mappings of an omnetpp.ini parameter in a list
-		 */
-		TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
 
 	private:
 		std::list<TraCIListener*> listeners;
