@@ -17,6 +17,7 @@ void TraCIVehicleInserter::retrieveVehicleTypes()
 {
 	std::list<std::string> types = cmd->getVehicleTypeIds();
 	types.remove("DEFAULT_VEHTYPE");
+	types.remove("DEFAULT_PEDTYPE");
 	vehicleTypeIds.assign(types.begin(), types.end());
 
 	if (!ev.isDisabled()) {
