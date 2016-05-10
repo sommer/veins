@@ -130,6 +130,7 @@ class TraCIScenarioManagerBase : public cSimpleModule
 		void processSubcriptionResult(TraCIBuffer& buf);
 
 		void setNodeManager(TraCINodeManager* _nodes) { nodes = _nodes; }
+		TraCINodeManager* getNodeManager() const { return nodes; }
 
 	private:
 		std::list<TraCIListener*> listeners;
