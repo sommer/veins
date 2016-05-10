@@ -35,7 +35,7 @@ package org.car2x.veins.modules.mobility.traci;
 // @see TraCIMobility
 // @see TraCIScenarioManager
 //
-simple TraCIScenarioManagerLaunchd
+simple TraCIScenarioManagerLaunchd like ITraCIScenarioManager
 {
     parameters:
         @display("i=block/network2");
