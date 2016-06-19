@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2006-2011 Christoph Sommer <christoph.sommer@uibk.ac.at>
+// Copyright (C) 2016 David Eckhoff <david.eckhoff@fau.de>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,40 +20,17 @@
 
 #include "veins/modules/application/traci/TraCIDemoRSU11p.h"
 
-using Veins::AnnotationManagerAccess;
-
 Define_Module(TraCIDemoRSU11p);
 
-void TraCIDemoRSU11p::initialize(int stage) {
-	BaseWaveApplLayer::initialize(stage);
-	if (stage == 0) {
-		mobi = dynamic_cast<BaseMobility*> (getParentModule()->getSubmodule("mobility"));
-		ASSERT(mobi);
-		annotations = AnnotationManagerAccess().getIfExists();
-		ASSERT(annotations);
-		sentMessage = false;
-	}
+void TraCIDemoRSU11p::onWSA(WaveServiceAdvertisment* wsa) {
+    //if this RSU receives a WSA for service 42, it will tune to the chan
+    if (wsa->getPsid() == 42) {
+        mac->changeServiceChannel(wsa->getTargetChannel());
+    }
 }
 
-void TraCIDemoRSU11p::onBeacon(WaveShortMessage* wsm) {
-
-}
-
-void TraCIDemoRSU11p::onData(WaveShortMessage* wsm) {
-	findHost()->getDisplayString().updateWith("r=16,green");
-
-	annotations->scheduleErase(1, annotations->drawLine(wsm->getSenderPos(), mobi->getCurrentPosition(), "blue"));
-
-	if (!sentMessage) sendMessage(wsm->getWsmData());
-}
-
-void TraCIDemoRSU11p::sendMessage(std::string blockedRoadId) {
-	sentMessage = true;
-	t_channel channel = dataOnSch ? type_SCH : type_CCH;
-	WaveShortMessage* wsm = prepareWSM("data", dataLengthBits, channel, dataPriority, -1,2);
-	wsm->setWsmData(blockedRoadId.c_str());
-	sendWSM(wsm);
-}
-void TraCIDemoRSU11p::sendWSM(WaveShortMessage* wsm) {
-	sendDelayedDown(wsm,individualOffset);
+void TraCIDemoRSU11p::onWSM(WaveShortMessage* wsm) {
+    //this rsu repeats the received traffic update in 2 seconds plus some random delay
+    wsm->setSenderAddress(myId);
+    sendDelayedDown(wsm->dup(), 2 + uniform(0.01,0.2));
 }

@@ -20,6 +20,8 @@
 
 cplusplus {{
 #include "veins/base/utils/Coord.h"
+
+
 }}
 
 class noncobject Coord;
@@ -47,6 +49,5 @@ packet WaveShortMessage {
 	int senderAddress = 0;
 	int recipientAddress = -1;
 	int serial = 0;
-	Coord senderPos;
 	simtime_t timestamp = 0;
 }

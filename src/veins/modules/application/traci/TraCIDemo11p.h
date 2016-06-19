@@ -22,37 +22,34 @@
 #define TraCIDemo11p_H
 
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
-#include "veins/modules/mobility/traci/TraCIMobility.h"
-#include "veins/modules/mobility/traci/TraCICommandInterface.h"
-
-using Veins::TraCIMobility;
-using Veins::TraCICommandInterface;
-using Veins::AnnotationManager;
 
 /**
- * Small IVC Demo using 11p
+ * @brief
+ * A tutorial demo for TraCI. When the car is stopped for longer than 10 seconds
+ * it will send a message out to other cars containing the blocked road id.
+ * Receiving cars will then trigger a reroute via TraCI.
+ * When channel switching between SCH and CCH is enabled on the MAC, the message is
+ * instead send out on a service channel following a WAVE Service Advertisement
+ * on the CCH.
+ *
+ * @author Christoph Sommer : initial DemoApp
+ * @author David Eckhoff : rewriting, moving functionality to BaseWaveApplLayer, adding WSA
+ *
  */
+
 class TraCIDemo11p : public BaseWaveApplLayer {
 	public:
 		virtual void initialize(int stage);
-		virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details);
 	protected:
-		TraCIMobility* mobility;
-		TraCICommandInterface* traci;
-		TraCICommandInterface::Vehicle* traciVehicle;
-		AnnotationManager* annotations;
 		simtime_t lastDroveAt;
 		bool sentMessage;
-		bool isParking;
-		bool sendWhileParking;
-		static const simsignalwrap_t parkingStateChangedSignal;
+		int currentSubscribedServiceId;
 	protected:
-		virtual void onBeacon(WaveShortMessage* wsm);
-		virtual void onData(WaveShortMessage* wsm);
-		void sendMessage(std::string blockedRoadId);
+        virtual void onWSM(WaveShortMessage* wsm);
+        virtual void onWSA(WaveServiceAdvertisment* wsa);
+
+        virtual void handleSelfMsg(cMessage* msg);
 		virtual void handlePositionUpdate(cObject* obj);
-		virtual void handleParkingUpdate(cObject* obj);
-		virtual void sendWSM(WaveShortMessage* wsm);
 };
 
 #endif

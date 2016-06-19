@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2012 David Eckhoff <eckhoff@cs.fau.de>
+// Copyright (C) 2016 David Eckhoff <david.eckhoff@fau.de>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -72,7 +72,6 @@ void Mac1609_4::initialize(int stage) {
 		myEDCA[type_CCH] = new EDCA(this, type_CCH,par("queueSize").longValue());
 		myEDCA[type_CCH]->myId = myId;
 		myEDCA[type_CCH]->myId.append(" CCH");
-
 		myEDCA[type_CCH]->createQueue(2,(((CWMIN_11P+1)/4)-1),(((CWMIN_11P +1)/2)-1),AC_VO);
 		myEDCA[type_CCH]->createQueue(3,(((CWMIN_11P+1)/2)-1),CWMIN_11P,AC_VI);
 		myEDCA[type_CCH]->createQueue(6,CWMIN_11P,CWMAX_11P,AC_BE);
@@ -103,7 +102,6 @@ void Mac1609_4::initialize(int stage) {
 		nextMacEvent = new cMessage("next Mac Event");
 
 		if (useSCH) {
-			// introduce a little asynchronization between radios, but no more than .3 milliseconds
 			uint64_t currenTime = simTime().raw();
 			uint64_t switchingTime = SWITCHING_INTERVAL_11P.raw();
 			double timeToNextSwitch = (double)(switchingTime
@@ -117,6 +115,7 @@ void Mac1609_4::initialize(int stage) {
 
 			// channel switching active
 			nextChannelSwitch = new cMessage("Channel Switch");
+			//add a little bit of offset between all vehicles, but no more than syncOffset
 			simtime_t offset = dblrand() * par("syncOffset").doubleValue();
 			scheduleAt(simTime() + offset + timeToNextSwitch, nextChannelSwitch);
 		}
@@ -850,6 +849,17 @@ void Mac1609_4::setParametersForBitrate(uint64_t bitrate) {
 	throw cRuntimeError("Chosen Bitrate is not valid for 802.11p: Valid rates are: 3Mbps, 4.5Mbps, 6Mbps, 9Mbps, 12Mbps, 18Mbps, 24Mbps and 27Mbps. Please adjust your omnetpp.ini file accordingly.");
 }
 
+bool Mac1609_4::isChannelSwitchingActive() {
+    return useSCH;
+}
+
+simtime_t Mac1609_4::getSwitchingInterval() {
+    return SWITCHING_INTERVAL_11P;
+}
+
+bool Mac1609_4::isCurrentChannelCCH() {
+    return (activeChannel ==  type_CCH);
+}
 
 simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const {
     simtime_t duration;

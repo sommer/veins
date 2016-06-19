@@ -35,18 +35,25 @@ simple BaseWaveApplLayer like IBaseApplLayer
 {
     parameters:
         bool debug = default(false); //whether to print debug output
+
         int headerLength = default(88bit) @unit(bit); //header length of the application
 
-        bool sendBeacons = default(false); //tell the applayer to periodically send beacons
+        bool sendBeacons = default(true); //tell the applayer to periodically send beacons
         int beaconLengthBits = default(256bit) @unit(bit); //the length of a beacon packet
         int beaconPriority = default(3); //the access category of the beacon messages
-        volatile double beaconInterval = default(1s) @unit(s); //the intervall between 2 beacon messages
+        double beaconInterval = default(1s) @unit(s); //the intervall between 2 beacon messages
 
-        double maxOffset = default(0s) @unit(s); //the maximum delay of messages sent down to avoid synchronous channel access
-        bool sendData = default(false); //whether this applayer should send data
         int dataLengthBits = default(1024bit) @unit(bit); //the length of a data packet
-        bool dataOnSch = default(true); //tells the applayer whether to use a service channel for datapackets or the control channel
-        int dataPriority = default(3); //the access category for data packets
+        bool dataOnSch = default(false); //tells the applayer whether to use a service channel for datapackets or the control channel
+        int dataPriority = default(3); //the default access category for data packets
+
+        bool avoidBeaconSynchronization = default(true); //don't start beaconing directly after node was created but delay to avoid artifical synchronization
+
+        bool sendWSA = default(false);
+        int wsaLengthBits = default(250bit) @unit(bit);
+        double wsaInterval =  default(1s) @unit(s);
+
+        bool communicateWhileParked = default(false); //whether the car should communicate when it is parked in SUMO
 
     gates:
         input lowerLayerIn; // from mac layer

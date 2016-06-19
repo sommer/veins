@@ -54,6 +54,7 @@
  * @see PhyLayer80211p
  * @see Decider80211p
  */
+
 class Mac1609_4 : public BaseMacLayer,
 	public WaveAppToMac1609_4Interface {
 
@@ -126,6 +127,15 @@ class Mac1609_4 : public BaseMacLayer,
 
 	public:
 		~Mac1609_4() { };
+
+		/**
+		 * @brief return true if alternate access is enabled
+		 */
+		bool isChannelSwitchingActive();
+
+		simtime_t getSwitchingInterval();
+
+		bool isCurrentChannelCCH();
 
 		void changeServiceChannel(int channelNumber);
 

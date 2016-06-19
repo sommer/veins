@@ -18,32 +18,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "veins/base/utils/NetwToMacControlInfo.h"
-#include "veins/modules/utility/Consts80211p.h"
+cplusplus {{
+#include "veins/base/utils/Coord.h"
+#include "veins/modules/messages/WaveShortMessage_m.h"
+}}
 
-#ifndef ___WAVEAPPTOMAC1609_4INTERFACE_H_
-#define ___WAVEAPPTOMAC1609_4INTERFACE_H_
+class WaveShortMessage;
+class noncobject Coord;
 
-/**
- * @brief
- * Interface between WaveApplication Layer and Mac1609_4
- *
- * @author David Eckhoff
- *
- * @ingroup macLayer
- */
-class WaveAppToMac1609_4Interface {
-    public:
-
-        virtual bool isChannelSwitchingActive() = 0;
-
-        virtual simtime_t getSwitchingInterval() =  0;
-
-        virtual bool isCurrentChannelCCH() = 0;
-
-        virtual void changeServiceChannel(int channelNumber) = 0;
-
-        virtual ~WaveAppToMac1609_4Interface() {} ;
-};
-
-#endif /* ___WAVEAPPTOMAC1609_4INTERFACE_H_ */
+packet BasicSafetyMessage extends WaveShortMessage {
+	Coord senderPos;
+	Coord senderSpeed;
+}
