@@ -259,17 +259,13 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 
 	t_channel chan;
 
-	//rewrite SCH channel to actual SCH the Mac1609_4 is set to
-	if (thisMsg->getChannelNumber() == Channels::SCH1) {
+	if (thisMsg->getChannelNumber() == Channels::CCH) {
+	    chan = type_CCH;
+	}
+	else {
 		ASSERT(useSCH);
 		thisMsg->setChannelNumber(mySCH);
 		chan = type_SCH;
-	}
-
-
-	//put this packet in its queue
-	if (thisMsg->getChannelNumber() == Channels::CCH) {
-		chan = type_CCH;
 	}
 
 	int num = myEDCA[chan]->queuePacket(ac,thisMsg);
