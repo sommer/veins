@@ -1,7 +1,9 @@
 #include "veins/modules/mobility/traci/TraCIModuleMapper.h"
-#include <cexception.h>
-#include <cstringtokenizer.h>
+#include <omnetpp.h>
 #include <vector>
+
+namespace omnetpp { }
+using namespace omnetpp;
 
 namespace Veins {
 

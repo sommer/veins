@@ -3,6 +3,9 @@
 #include <sstream>
 #include <omnetpp.h>
 
+namespace omnetpp { }
+using namespace omnetpp;
+
 namespace Veins {
 
 void TraCIRegionOfInterest::addRoads(const std::string& roads)
@@ -28,7 +31,7 @@ void TraCIRegionOfInterest::addRectangles(const std::string& rects)
 		char c3; rectStream >> c3;
 		double y2; rectStream >> y2;
 		if (rectStream.good()) {
-			opp_error("Parsing ROI rectangle failed");
+			throw cRuntimeError("Parsing ROI rectangle failed");
 		}
 		roiRects.push_back(std::pair<TraCICoord, TraCICoord>(TraCICoord(x1, y1), TraCICoord(x2, y2)));
 	}

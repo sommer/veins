@@ -20,11 +20,9 @@ void TraCIVehicleInserter::retrieveVehicleTypes()
 	types.remove("DEFAULT_PEDTYPE");
 	vehicleTypeIds.assign(types.begin(), types.end());
 
-	if (!ev.isDisabled()) {
-		typedef std::vector<std::string>::const_iterator iter_t;
-		for (iter_t it = vehicleTypeIds.begin(); it != vehicleTypeIds.end(); ++it) {
-			EV << *it << std::endl;
-		}
+	typedef std::vector<std::string>::const_iterator iter_t;
+	for (iter_t it = vehicleTypeIds.begin(); it != vehicleTypeIds.end(); ++it) {
+		EV << *it << std::endl;
 	}
 }
 

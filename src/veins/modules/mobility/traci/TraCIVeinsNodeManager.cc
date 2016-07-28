@@ -3,6 +3,9 @@
 #include "veins/modules/mobility/traci/TraCIVeinsNodeManager.h"
 #include "veins/modules/mobility/traci/TraCIScenarioManagerInet.h"
 
+namespace omnetpp { }
+using namespace omnetpp;
+
 namespace Veins {
 
 TraCIVeinsNodeManager::TraCIVeinsNodeManager(const TraCIModuleMapper* mapper, cModule* parent, BaseConnectionManager* cc) :
@@ -17,7 +20,7 @@ void TraCIVeinsNodeManager::add(const std::string& nodeId, const NodeData& data,
 
 	cModuleType* moduleType = cModuleType::get(moduleConfig.type.c_str());
 	if (!moduleType)
-		opp_error("module type \"%\" not found", moduleConfig.type.c_str());
+		throw cRuntimeError("module type \"%\" not found", moduleConfig.type.c_str());
 
 	cModule* node = moduleType->create(moduleConfig.name.c_str(), moduleParent, moduleIndex, moduleIndex);
 	node->finalizeParameters();
@@ -42,7 +45,7 @@ void TraCIVeinsNodeManager::remove(const std::string& nodeId)
 		node->callFinish();
 		node->deleteModule();
 	} else {
-		opp_error("no vehicle with id \"%s\" found", nodeId.c_str());
+		throw cRuntimeError("no vehicle with id \"%s\" found", nodeId.c_str());
 	}
 }
 
