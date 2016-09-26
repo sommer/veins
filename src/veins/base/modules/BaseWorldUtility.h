@@ -41,7 +41,7 @@ protected:
 	 **/
     Coord playgroundSize;
 
-    /** @brief Should the playground be treatend as a torus?*/
+    /** @brief Should the playground be treated as a torus?*/
     bool useTorusFlag;
 
     /** @brief Should the world be 2-dimensional? */
