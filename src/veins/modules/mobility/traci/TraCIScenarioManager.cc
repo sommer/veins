@@ -67,8 +67,8 @@ TraCIScenarioManager::TypeMapping TraCIScenarioManager::parseMappings(std::strin
 	 * "a=b"        : assign module type "b" to vehicle type "a". the presence of any other vehicle type in the simulation will cause the simulation to stop
 	 * "a=b c=d"    : assign module type "b" to vehicle type "a" and "d" to "c". the presence of any other vehicle type in the simulation will cause the simulation to stop
 	 * "a=b c=d *=e": everything which is not of vehicle type "a" or "b", assign module type "e"
-	 * "a=b c="     : for vehicle type "c" no module should be instantiated
-	 * "a=b c=d *=" : everything which is not of vehicle type a or c should not be instantiated
+	 * "a=b c=0"    : for vehicle type "c" no module should be instantiated
+	 * "a=b c=d *=0": everything which is not of vehicle type a or c should not be instantiated
 	 *
 	 */
 
@@ -876,7 +876,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 			mDisplayString = "";
 		}
 
-		if (mType != "") {
+		if (mType != "0") {
 			addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle);
 			MYDEBUG << "Added vehicle #" << objectId << endl;
 		}
