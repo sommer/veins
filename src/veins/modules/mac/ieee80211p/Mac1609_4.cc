@@ -588,7 +588,7 @@ WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
 					//there was already another packet ready. we have to go increase cw and go into backoff. It's called internal contention and its wonderful
 
 					statsNumInternalContention++;
-					iter->second.cwCur = std::min(iter->second.cwMax,iter->second.cwCur*2);
+					iter->second.cwCur = std::min(iter->second.cwMax,(iter->second.cwCur+1)*2-1);
 					iter->second.currentBackoff = OWNER intuniform(0,iter->second.cwCur);
 					DBG_MAC << "Internal contention for queue " << iter->first  << " : "<< iter->second.currentBackoff << ". Increase cwCur to " << iter->second.cwCur << std::endl;
 				}
