@@ -359,6 +359,17 @@ bool TraCICommandInterface::Vehicle::changeVehicleRoute(const std::list<std::str
 	return true;
 }
 
+void TraCICommandInterface::Vehicle::changeLane(uint8_t laneIndex, int32_t duration) {
+    uint8_t variableId = CMD_CHANGELANE;
+    uint8_t variableType = TYPE_COMPOUND;
+    int32_t count = 2;
+    uint8_t laneIndexT = TYPE_BYTE;
+    uint8_t timeT = TYPE_INT;
+    int32_t time = duration*1000; //seconds to milliseconds
+    TraCIBuffer buf = connection->query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << laneIndexT << laneIndex << durationT << duration );
+    ASSERT(buf.eof());
+}
+
 std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord) {
 	TraCIBuffer request;
 	request << static_cast<uint8_t>(POSITION_CONVERSION) << std::string("sim0")
