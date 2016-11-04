@@ -40,6 +40,7 @@ class TraCICommandInterface
 				void setSpeedMode(int32_t bitset);
 				void setSpeed(double speed);
 				void setColor(const TraCIColor& color);
+                void setLaneChangeMode(int32_t bitset);
 				void slowDown(double speed, int time);
 				void newRoute(std::string roadId);
 				void setParking();

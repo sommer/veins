@@ -58,6 +58,13 @@ void TraCICommandInterface::Vehicle::setColor(const TraCIColor& color) {
 	ASSERT(buf.eof());
 }
 
+void TraCICommandInterface::Vehicle::setLaneChangeMode(int32_t bitset) {
+    uint8_t variableId = VAR_LANECHANGE_MODE;
+    uint8_t variableType = TYPE_INTEGER;
+    TraCIBuffer buf = traci->connection.query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << bitset);
+    ASSERT(buf.eof());
+}
+
 void TraCICommandInterface::Vehicle::slowDown(double speed, int32_t time) {
 	uint8_t variableId = CMD_SLOWDOWN;
 	uint8_t variableType = TYPE_COMPOUND;
