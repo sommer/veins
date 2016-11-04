@@ -2,6 +2,7 @@ src/Makefile
 src/*.so
 src/**/*_m.h
 src/**/*_m.cc
+src/**/*.dylib
 
 doc/doxy
 doc/neddoc
@@ -20,3 +21,5 @@ tests/**/err.tmp
 examples/**/results
 examples/**/.tkenvrc
 examples/**/valgrind.out
+
+.csettings
