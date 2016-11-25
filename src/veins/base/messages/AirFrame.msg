@@ -1,9 +1,11 @@
 
 cplusplus {{
 #include "veins/base/phyLayer/Signal_.h"
+#include "veins/base/utils/POA.h"
 }}
 
 class noncobject Signal;
+class noncobject POA;
 
 //
 // Format of the packets that are sent to the channel
@@ -32,7 +34,10 @@ namespace Veins;
 packet AirFrame
 {
     Signal signal;		// Contains the physical data of this AirFrame
-
+        
+    POA poa;			// contains a POA object with the position, orientation and antenna (pointer)
+    						// of the sender
+    
     simtime_t duration;	// time the AirFrames takes to be transmited (without propagation delay)
 
     int state = 1; 		// state of the AirFrames, used by the physical layer

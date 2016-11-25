@@ -1,8 +1,13 @@
 #include "veins/base/phyLayer/BasePhyLayer.h"
 
+#include <string>
+#include <sstream>
+#include <vector>
 #include "veins/base/phyLayer/MacToPhyControlInfo.h"
 #include "veins/base/phyLayer/PhyToMacControlInfo.h"
 #include "veins/base/utils/FindModule.h"
+#include "veins/base/utils/POA.h"
+#include "veins/modules/phy/SampledAntenna1D.h"
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/phyLayer/Decider.h"
 #include "veins/base/modules/BaseWorldUtility.h"
@@ -95,6 +100,10 @@ void BasePhyLayer::initialize(int stage) {
 		initializeAnalogueModels(par("analogueModels").xmlValue());
 		//	- decider parameters
 		initializeDecider(par("decider").xmlValue());
+		//  - antenna parameters
+		initializeAntenna(par("antenna").xmlValue());
+
+
 
 		//initialise timer messages
 		radioSwitchingOverTimer = new cMessage("radio switching over", RADIO_SWITCHING_OVER);
@@ -224,6 +233,106 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 {
 	return 0;
 }
+
+
+//-----Antenna initialization----------------------
+
+void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig) {
+    antenna = 0;
+
+    if(xmlConfig == 0) {
+        throw cRuntimeError("No antenna configuration file specified.");
+    }
+
+    cXMLElementList antennaList = xmlConfig->getElementsByTagName("Antenna");
+
+    if(antennaList.empty()) {
+        throw cRuntimeError("No antenna configuration found in configuration file.");
+    }
+
+    cXMLElement* antennaData;
+    if(antennaList.size() > 1) {
+        int num = intuniform(0, antennaList.size() - 1);
+        antennaData = antennaList[num];
+    } else {
+        antennaData = antennaList.front();
+    }
+
+    const char* name = antennaData->getAttribute("type");
+
+    if(name == 0) {
+        throw cRuntimeError("Could not read type of antenna from configuration file.");
+    }
+
+    ParameterMap params;
+    getParametersFromXML(antennaData, params);
+
+    antenna = getAntennaFromName(name, params);
+
+    if(antenna == 0) {
+        throw cRuntimeError("Could not find an antenna with the name \"%s\".", name);
+    }
+
+    const char* id = antennaData->getAttribute("id");
+    coreEV << "Antenna \"" << name << "\" with ID \"" << id << "\" loaded." << endl;
+}
+
+std::shared_ptr<Antenna> BasePhyLayer::getAntennaFromName(std::string name, ParameterMap& params) {
+    if (name == "SampledAntenna1D") {
+        return initializeSampledAntenna1D(params);
+    }
+
+    return std::make_shared<Antenna>();
+}
+
+std::shared_ptr<Antenna> BasePhyLayer::initializeSampledAntenna1D(ParameterMap& params) {
+    // get samples of the modeled antenna and put them in a vector
+    ParameterMap::iterator it = params.find("samples");
+    std::vector<double> values;
+    if (it != params.end())
+    {
+        std::string buf;
+        std::stringstream samplesStream(it->second.stringValue());
+        while (samplesStream >> buf){
+            values.push_back(stod(buf));
+        }
+    } else {
+        throw cRuntimeError("BasePhyLayer::initializeSampledAntenna1D(): No samples specified for this antenna. \
+                           Please adjust your xml file accordingly.");
+    }
+
+    // get optional random offsets for the antenna's samples
+    it = params.find("random-offsets");
+    std::string offsetType = "";
+    std::vector<double> offsetParams;
+    if (it != params.end())
+    {
+        std::string buf;
+        std::stringstream offsetStream(it->second.stringValue());
+        offsetStream >> offsetType;
+        while (offsetStream >> buf){
+            offsetParams.push_back(stod(buf));
+        }
+    }
+
+    // get optional random rotation of the whole pattern
+    it = params.find("random-rotation");
+    std::string rotationType = "";
+    std::vector<double> rotationParams;
+    if (it != params.end())
+    {
+        std::string buf;
+        std::stringstream rotationStream(it->second.stringValue());
+        rotationStream >> rotationType;
+        while (rotationStream >> buf){
+            rotationParams.push_back(stod(buf));
+        }
+    }
+
+    return std::make_shared<SampledAntenna1D>(values, offsetType, offsetParams, rotationType, rotationParams, this->getRNG(0));
+}
+
+
 
 
 //-----AnalogueModels initialization----------------
@@ -464,6 +573,17 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
 
 	AirFrame* frame = encapsMsg(static_cast<cPacket*>(msg));
 
+	// Prepare a POA object and attach it to the created Airframe
+    BaseMobility* sendersMobility = ChannelMobilityAccessType::get(this->getParentModule());
+    assert(sendersMobility);
+    Coord pos  = sendersMobility->getCurrentPosition();
+    Coord orient = sendersMobility->getCurrentOrientation();
+	POA* poa = new POA(pos, orient, antenna);
+	frame->setPoa(*poa);
+	// the frame is now owner of the POA object
+	delete poa;
+	poa = 0;
+
 	// make sure there is no self message of kind TX_OVER scheduled
 	// and schedule the actual one
 	assert (!txOverTimer->isScheduled());
@@ -609,6 +729,26 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t_cref time) {
 
 
 void BasePhyLayer::filterSignal(AirFrame *frame) {
+    // determine antenna gains first
+    // get POA from frame with the sender's position, orientation and antenna
+    POA& senderPOA = frame->getPoa();
+    // get own mobility module
+    BaseMobility* ownMobility = ChannelMobilityAccessType::get(this->getParentModule());
+    assert(ownMobility);
+    Coord ownPos  = ownMobility->getCurrentPosition();
+    Coord ownOrient = ownMobility->getCurrentOrientation();
+    // compute gains at sender and receiver antenna
+    double ownGain = antenna->getGain(ownPos, ownOrient, senderPOA.pos);
+    double otherGain = senderPOA.antenna->getGain(senderPOA.pos, senderPOA.orientation, ownPos);
+
+    coreEV << "Sender's antenna gain: " << otherGain << endl;
+    coreEV << "Own (receiver's) antenna gain: " << ownGain << endl;
+    // add the resulting total gain to the attenuations list using a ConstantSimpleConstMapping
+    bool hasFrequency = frame->getSignal().getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency());
+    const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain() : DimensionSet::timeDomain();
+    frame->getSignal().addAttenuation(new ConstantSimpleConstMapping(domain, ownGain*otherGain));
+
+    // go on with AnalogueModels
 	if (analogueModels.empty())
 		return;
 

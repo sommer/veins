@@ -175,9 +175,17 @@ class MIXIM_API BaseMobility : public BatteryAccess
     	return move.getStartPos();
     }
 
+    virtual Coord getCurrentOrientation() const {
+        return move.getOrientation();
+    }
+
     /** @brief Returns the current speed at the current simulation time. */
     virtual Coord getCurrentSpeed() const {
     	return move.getDirection() * move.getSpeed();
+    }
+
+    virtual Coord getCurrentDirection() const {
+        return move.getDirection();
     }
   protected:
     /**

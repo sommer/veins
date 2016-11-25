@@ -1,8 +1,6 @@
 //***************************************************************************
 // * file:        ConnectionManager.ned
 // *
-// * author:      Steffen Sroka, Daniel Willkomm, Karl Wessel, Michael Swigulski
-// *
 // * copyright:   (C) 2004 Telecommunication Networks Group (TKN) at
 // *              Technische Universitaet Berlin, Germany.
 // *
@@ -27,13 +25,11 @@ package org.car2x.veins.base.connectionManager;
 // periodically communicates with the mobility module and
 // ChannelAccess.
 //
-// The four parameters pMax, sat, alpha, and carrierFrequency are used
-// to calculate the interference distance between nodes. The values used
-// here in ConnectionManager are used to calculate the upper bound,
-// i.e. they can be redifined in the analogue models, but never such
+// The value maxInterfDist used here in ConnectionManager defines the upper bound of any transmission,
+// i.e. it can be redifined in the analogue models, but never such
 // that the maximal interference distance is exeeded.
 //       
-// @author Steffen Sroka, Daniel Willkomm, Karl Wessel
+// @author Steffen Sroka, Daniel Willkomm, Karl Wessel, Alexander Brummer, Christoph Sommer
 // @see MobilityBase
 //
 simple ConnectionManager
@@ -43,14 +39,9 @@ simple ConnectionManager
         bool coreDebug;
         // send directly to the node or create separate gates for every connection
         bool sendDirect;
-        // maximum sending power used for this network [mW]
-        double pMax @unit(mW);
-        // minimum signal attenuation threshold [dBm]
-        double sat @unit(dBm);
-        // minimum path loss coefficient
-        double alpha;
-        // minimum carrier frequency of the channel [Hz]
-        double carrierFrequency @unit(Hz);
+        // maximum interference distance [m]
+        double maxInterfDist @unit(m);
+        
         // should the maximum interference distance be displayed for each node?
         bool drawMaxIntfDist = default(false);
         

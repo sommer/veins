@@ -4,11 +4,13 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
 #include "veins/base/phyLayer/MacToPhyInterface.h"
+#include "veins/base/phyLayer/Antenna.h"
 
 #include "veins/base/phyLayer/ChannelInfo.h"
 
@@ -28,19 +30,20 @@ using Veins::Radio;
  * OMNeT channels and is able to send messages to other physical
  * layers through sub-classing from ChannelAcces.
  *
- * The BasePhyLayer encapsulates two sub modules.
+ * The BasePhyLayer encapsulates three sub modules.
  * The AnalogueModels, which are responsible for simulating
  * the attenuation of received signals and the Decider which
  * provides the main functionality of the physical layer like
  * signal classification (noise or not noise) and demodulation
- * (calculating transmission errors).
+ * (calculating transmission errors). Furthermore, the Antenna
+ * used for gain calculation is managed by the BasePhyLayer.
  *
  * The BasePhyLayer itself is responsible for the OMNeT
  * depended parts of the physical layer which are the following:
  *
  * Module initialization:
- * - read ned-parameters and initialize module, Decider and
- *   AnalogueModels.
+ * - read ned-parameters and initialize module, Decider,
+ * AnalogueModels and Antenna.
  *
  * Message handling:
  * - receive messages from mac layer and hand them to the Decider
@@ -111,6 +114,14 @@ protected:
 
 	/** @brief The state machine storing the current radio state (TX, RX, SLEEP).*/
 	Radio* radio;
+
+	/**
+	 * @brief Shared pointer to the Antenna used for this node. It needs to be a shared
+	 * pointer as a possible receiver could still need the antenna for gain calculation
+	 * even if this node has already disappeared. The antenna will be deleted when nothing
+	 * is pointing to it any more.
+	 */
+	std::shared_ptr<Antenna> antenna;
 
 	/** @brief Pointer to the decider module. */
 	Decider* decider;
@@ -187,7 +198,11 @@ private:
 	 */
 	void initializeDecider(cXMLElement* xmlConfig);
 
-
+	/**
+	 * @brief Initializes the Antenna with the data from the
+	 * passed XML-config data.
+	 */
+	void initializeAntenna(cXMLElement* xmlConfig);
 
 protected:
 
@@ -267,6 +282,26 @@ protected:
 	virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 
 	/**
+	 * @brief Creates and returns an instance of the Antenna with the specified name
+	 * as a shared pointer.
+	 *
+	 * This method is called during initialization to load the Antenna specified. If no
+	 * special antenna has been specified, an object of the base Antenna class is
+	 * instantiated, representing an isotropic antenna.
+	 */
+	virtual std::shared_ptr<Antenna> getAntennaFromName(std::string name, ParameterMap& params);
+
+	/**
+     * @brief Creates and returns an instance of the SampledAntenna1D class as a
+     * shared pointer.
+     *
+     * The given parameters (i.e. samples and optional randomness parameters) are
+     * evaluated and given to the antenna's constructor.
+     */
+	virtual std::shared_ptr<Antenna> initializeSampledAntenna1D(ParameterMap& params);
+
+
+	/**
 	 * @name Handle Messages
 	 **/
 	/*@{ */
@@ -277,7 +312,8 @@ protected:
 
 	/**
 	 * @brief Handles messages received from the upper layer through the
-	 * data gate.
+	 * data gate. Also, attaches a POA object to the created Airframe containing
+	 * information needed by the receiver for antenna gain calculation.
 	 */
 	virtual void handleUpperMessage(cMessage* msg);
 
@@ -356,6 +392,7 @@ protected:
 
 	/**
 	 * @brief Filters the passed AirFrame's Signal by every registered AnalogueModel.
+	 * Moreover, the antenna gains are calculated and added to the signal.
 	 */
 	virtual void filterSignal(AirFrame *frame);
 

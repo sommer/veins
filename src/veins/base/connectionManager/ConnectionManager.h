@@ -21,10 +21,6 @@ protected:
 	/**
 	 * @brief Calculate interference distance
 	 *
-	 * Calculation of the interference distance based on the transmitter
-	 * power, wavelength, pathloss coefficient and a threshold for the
-	 * minimal receive Power
-	 *
 	 * You may want to overwrite this function in order to do your own
 	 * interference calculation
 	 */

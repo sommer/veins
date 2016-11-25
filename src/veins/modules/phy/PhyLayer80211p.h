@@ -98,6 +98,12 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		AnalogueModel* initializeSimplePathlossModel(ParameterMap& params);
 
 		/**
+		 * @brief Creates and initializes an AntennaModel with the
+		 * passed parameter values.
+		 */
+		AnalogueModel* initializeAntennaModel(ParameterMap& params);
+
+		/**
 		 * @brief Creates and initializes a LogNormalShadowing with the
 		 * passed parameter values.
 		 */
