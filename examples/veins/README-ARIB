@@ -1,0 +1,19 @@
+Veins tutorial example with ARIB STD-T109.
+
+This simulation requires sumo-launchd to be started and listening for 
+connections on a TCP socket, e.g. using "~/src/veins/sumo-launchd.py -vv".
+
+# Implementation
+The implementation of the ARIB T109 MAC layer is located in <root>/src/veins/modules/mac/aribt109.
+There, all necessary files can be found.
+
+## Architecture
+The MAC layer consists of two different implementations distinguishing between RSUs (base stations) and vehicles (mobile stations).
+Both share a common abstract base class which contains functionality utilized in both implementations.
+The MAC layer combines the CSMA/CA functionalitiy from IEEE 802.11p MAC and the IVC-RVC layer from ARIB T109 which utilizes the TDMA scheme.
+
+# NOTES
+
+The current version is only compatible with OMNeT++ 5.
+
+Run with "./run -f arib.ini".
