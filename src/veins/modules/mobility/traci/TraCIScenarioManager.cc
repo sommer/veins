@@ -260,11 +260,11 @@ void TraCIScenarioManager::init_traci() {
 		uint32_t apiVersion = version.first;
 		std::string serverVersion = version.second;
 
-		if ((apiVersion == 10) || (apiVersion == 11)) {
+		if ((apiVersion == 10) || (apiVersion == 11) || (apiVersion == 13)) {
 			MYDEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
 		}
 		else {
-			error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using SUMO 0.26.0", serverVersion.c_str(), apiVersion);
+			error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using SUMO 0.28.0", serverVersion.c_str(), apiVersion);
 		}
 
 	}
