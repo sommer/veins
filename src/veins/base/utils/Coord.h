@@ -18,18 +18,12 @@
  **************************************************************************/
 
 
-// if we're linking with the INET Framework, Coord.h is provided by there...
-#ifdef WITH_INET
-#include "base/Coord.h"
-#else
-// ...otherwise we provide our own in this file.
-
 #ifndef _COORD_H
 #define _COORD_H
 
 #include <omnetpp.h>
 #include "veins/base/utils/MiXiMDefs.h"
-#include "FWMath.h"
+#include "veins/base/utils/FWMath.h"
 
 
 /**
@@ -254,6 +248,3 @@ inline std::string Coord::info() const {
 }
 
 #endif
-
-
-#endif  // WITH_INET

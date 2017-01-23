@@ -17,11 +17,6 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-// if we're linking with the INET Framework, FWMath.h is provided by there...
-#ifdef WITH_INET
-#else
-// ...otherwise we provide our own in this file.
-
 #ifndef FWMATH_H
 #define FWMATH_H
 
@@ -174,5 +169,3 @@ class MIXIM_API FWMath {
 };
 
 #endif
-
-#endif  // WITH_INET

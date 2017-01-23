@@ -17,11 +17,6 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-// if we're linking with the INET Framework, Coord.cc is provided by there...
-#ifdef WITH_INET
-#else
-// ...otherwise we provide our own in this file.
-
 #include "assert.h"
 #include "Coord.h"
 
@@ -52,5 +47,3 @@ double Coord::sqrTorusDist(const Coord& b, const Coord& size) const {
     double zDist = dist(z, b.z, size.z);
     return xDist * xDist + yDist * yDist + zDist * zDist;
 }
-
-#endif  // WITH_INET
