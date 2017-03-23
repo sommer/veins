@@ -18,14 +18,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-cplusplus {{
-#include "veins/base/utils/Coord.h"
-
-
-}}
-
-class noncobject Coord;
-
 packet WaveShortMessage {
 	//Version of the Wave Short Message
 	int wsmVersion = 0;

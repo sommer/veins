@@ -540,7 +540,7 @@ int Mac1609_4::EDCA::queuePacket(t_access_category ac,WaveShortMessage* msg) {
 	return myQueues[ac].queue.size();
 }
 
-int Mac1609_4::EDCA::createQueue(int aifsn, int cwMin, int cwMax,t_access_category ac) {
+void Mac1609_4::EDCA::createQueue(int aifsn, int cwMin, int cwMax,t_access_category ac) {
 
 	if (myQueues.find(ac) != myQueues.end()) {
 		throw cRuntimeError("You can only add one queue per Access Category per EDCA subsystem");
@@ -548,8 +548,6 @@ int Mac1609_4::EDCA::createQueue(int aifsn, int cwMin, int cwMax,t_access_catego
 
 	EDCAQueue newQueue(aifsn,cwMin,cwMax,ac);
 	myQueues[ac] = newQueue;
-
-	return ++numQueues;
 }
 
 Mac1609_4::t_access_category Mac1609_4::mapPriority(int prio) {
