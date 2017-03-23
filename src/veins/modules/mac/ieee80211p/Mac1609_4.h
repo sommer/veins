@@ -60,6 +60,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 	public:
 
+		// Access categories in increasing order of priority (see IEEE Std 802.11-2012, Table 9-1)
 		enum t_access_category {
 			AC_BK = 0,
 			AC_BE = 1,
