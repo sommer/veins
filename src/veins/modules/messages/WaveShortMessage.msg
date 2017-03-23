@@ -27,8 +27,8 @@ packet WaveShortMessage {
 	int channelNumber;
 	//Data rate with which this packet was sent
 	int dataRate = 1;
-	//Power Level with which this packet was sent
-	int priority = 3;
+	//User priority with which this packet was sent (note the AC mapping rules in Mac1609_4::mapUserPriority)
+	int userPriority = 7;
 	//Unique number to identify the service
 	int psid = 0;
 	//Provider Service Context

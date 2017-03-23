@@ -196,7 +196,7 @@ class Mac1609_4 : public BaseMacLayer,
 		Signal* createSignal(simtime_t start, simtime_t length, double power, uint64_t bitrate, double frequency);
 
 		/** @brief maps a application layer priority (up) to an EDCA access category. */
-		t_access_category mapPriority(int prio);
+		t_access_category mapUserPriority(int prio);
 
 		void channelBusy();
 		void channelBusySelf(bool generateTxOp);

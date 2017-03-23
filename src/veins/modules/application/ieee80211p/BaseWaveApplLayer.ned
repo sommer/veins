@@ -40,12 +40,12 @@ simple BaseWaveApplLayer like IBaseApplLayer
 
         bool sendBeacons = default(true); //tell the applayer to periodically send beacons
         int beaconLengthBits = default(256bit) @unit(bit); //the length of a beacon packet
-        int beaconPriority = default(3); //the access category of the beacon messages
+        int beaconUserPriority = default(7); //the user priority (UP) of the beacon messages
         double beaconInterval = default(1s) @unit(s); //the intervall between 2 beacon messages
 
         int dataLengthBits = default(1024bit) @unit(bit); //the length of a data packet
         bool dataOnSch = default(false); //tells the applayer whether to use a service channel for datapackets or the control channel
-        int dataPriority = default(3); //the default access category for data packets
+        int dataUserPriority = default(7); //the default user priority (UP) for data packets
 
         bool avoidBeaconSynchronization = default(true); //don't start beaconing directly after node was created but delay to avoid artifical synchronization
 

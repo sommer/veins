@@ -176,7 +176,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 		channelBusySelf(true);
 		WaveShortMessage* pktToSend = myEDCA[activeChannel]->initiateTransmit(lastIdle);
 
-		lastAC = mapPriority(pktToSend->getPriority());
+		lastAC = mapUserPriority(pktToSend->getUserPriority());
 
 		DBG_MAC << "MacEvent received. Trying to send packet with priority" << lastAC << std::endl;
 
@@ -251,7 +251,7 @@ void Mac1609_4::handleUpperMsg(cMessage* msg) {
 		error("WaveMac only accepts WaveShortMessages");
 	}
 
-	t_access_category ac = mapPriority(thisMsg->getPriority());
+	t_access_category ac = mapUserPriority(thisMsg->getUserPriority());
 
 	DBG_MAC << "Received a message from upper layer for channel "
 	        << thisMsg->getChannelNumber() << " Access Category (Priority):  "
@@ -550,13 +550,17 @@ void Mac1609_4::EDCA::createQueue(int aifsn, int cwMin, int cwMax,t_access_categ
 	myQueues[ac] = newQueue;
 }
 
-Mac1609_4::t_access_category Mac1609_4::mapPriority(int prio) {
-	//dummy mapping function
+Mac1609_4::t_access_category Mac1609_4::mapUserPriority(int prio) {
+	// Map user priority to access category, based on IEEE Std 802.11-2012, Table 9-1
 	switch (prio) {
-		case 0: return AC_BK;
-		case 1: return AC_BE;
-		case 2: return AC_VI;
-		case 3: return AC_VO;
+		case 1: return AC_BK;
+		case 2: return AC_BK;
+		case 0: return AC_BE;
+		case 3: return AC_BE;
+		case 4: return AC_VI;
+		case 5: return AC_VI;
+		case 6: return AC_VO;
+		case 7: return AC_VO;
 		default: throw cRuntimeError("MacLayer received a packet with unknown priority"); break;
 	}
 	return AC_VO;

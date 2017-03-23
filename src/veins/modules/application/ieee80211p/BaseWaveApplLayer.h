@@ -156,13 +156,13 @@ class BaseWaveApplLayer : public BaseApplLayer {
 
         /* BSM (beacon) settings */
         uint32_t beaconLengthBits;
-        uint32_t  beaconPriority;
+        uint32_t  beaconUserPriority;
         simtime_t beaconInterval;
         bool sendBeacons;
 
         /* WSM (data) settings */
         uint32_t  dataLengthBits;
-        uint32_t  dataPriority;
+        uint32_t  dataUserPriority;
         bool dataOnSch;
 
         /* WSA settings */

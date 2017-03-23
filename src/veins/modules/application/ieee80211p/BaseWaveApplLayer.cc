@@ -53,12 +53,12 @@ void BaseWaveApplLayer::initialize(int stage) {
         headerLength = par("headerLength").longValue();
         sendBeacons = par("sendBeacons").boolValue();
         beaconLengthBits = par("beaconLengthBits").longValue();
-        beaconPriority = par("beaconPriority").longValue();
+        beaconUserPriority = par("beaconUserPriority").longValue();
         beaconInterval =  par("beaconInterval");
 
         dataLengthBits = par("dataLengthBits").longValue();
         dataOnSch = par("dataOnSch").boolValue();
-        dataPriority = par("dataPriority").longValue();
+        dataUserPriority = par("dataUserPriority").longValue();
 
         wsaInterval = par("wsaInterval").doubleValue();
         communicateWhileParked = par("communicateWhileParked").boolValue();
@@ -167,7 +167,7 @@ void BaseWaveApplLayer::populateWSM(WaveShortMessage* wsm, int rcvId, int serial
         bsm->setPsid(-1);
         bsm->setChannelNumber(Channels::CCH);
         bsm->addBitLength(beaconLengthBits);
-        wsm->setPriority(beaconPriority);
+        wsm->setUserPriority(beaconUserPriority);
     }
     else if (WaveServiceAdvertisment* wsa = dynamic_cast<WaveServiceAdvertisment*>(wsm)) {
         wsa->setChannelNumber(Channels::CCH);
@@ -179,7 +179,7 @@ void BaseWaveApplLayer::populateWSM(WaveShortMessage* wsm, int rcvId, int serial
         if (dataOnSch) wsm->setChannelNumber(Channels::SCH1); //will be rewritten at Mac1609_4 to actual Service Channel. This is just so no controlInfo is needed
         else wsm->setChannelNumber(Channels::CCH);
         wsm->addBitLength(dataLengthBits);
-        wsm->setPriority(dataPriority);
+        wsm->setUserPriority(dataUserPriority);
     }
 }
 
