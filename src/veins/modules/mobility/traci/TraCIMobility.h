@@ -81,7 +81,6 @@ class TraCIMobility : public BaseMobility
 		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, TraCIScenarioManager::VehicleSignal signals = TraCIScenarioManager::VEH_SIGNAL_UNDEF);
 		virtual void changePosition();
 		virtual void changeParkingState(bool);
-		virtual void updateDisplayString();
 		virtual void setExternalId(std::string external_id) {
 			this->external_id = external_id;
 		}

@@ -45,12 +45,16 @@ simple TraCIScenarioManagerForker
         string moduleName = default("node");  // module name to be used in the simulation for each managed vehicle
         // module displayString to be used in the simulation for each managed vehicle
         // display strings key-value pairs needs to be protected with single quotes, as they use an = sign as the type mappings. For example
+        // <pre>
         // *.manager.moduleDisplayString = "'i=block/process'"
         // *.manager.moduleDisplayString = "a='i=block/process' b='i=misc/sun'"
+        // </pre>
         //
         // moduleDisplayString can also be left empty:
+        // <pre>
         // *.manager.moduleDisplayString = ""
-        string moduleDisplayString = default("");
+        // </pre>
+        string moduleDisplayString = default("*='i=veins/node/car;is=vs'");
         string host = default("localhost");  // sumo-launchd.py server hostname
         bool autoShutdown = default(true);  // Shutdown module as soon as no more vehicles are in the simulation
         int margin = default(25);  // margin to add to all received vehicle positions
