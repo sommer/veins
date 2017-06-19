@@ -47,7 +47,14 @@ simple TraCIScenarioManagerLaunchd
         double updateInterval @unit("s") = default(1s);  // time interval of hosts' position updates
         string moduleType = default("org.car2x.veins.nodes.Car");  // module type to be used in the simulation for each managed vehicle
         string moduleName = default("node");  // module name to be used in the simulation for each managed vehicle
-        string moduleDisplayString = default("");  // module displayString to be used in the simulation for each managed vehicle
+        // module displayString to be used in the simulation for each managed vehicle
+        // display strings key-value pairs needs to be protected with single quotes, as they use an = sign as the type mappings. For example
+        // *.manager.moduleDisplayString = "'i=block/process'"
+        // *.manager.moduleDisplayString = "a='i=block/process' b='i=misc/sun'"
+        //
+        // moduleDisplayString can also be left empty:
+        // *.manager.moduleDisplayString = ""
+        string moduleDisplayString = default("");
         string host = default("localhost");  // sumo-launchd.py server hostname
         int port = default(9999);  // sumo-launchd.py server port
         xml launchConfig; // launch configuration to send to sumo-launchd.py

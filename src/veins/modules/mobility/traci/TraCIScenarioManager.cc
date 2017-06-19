@@ -57,6 +57,52 @@ TraCIScenarioManager::~TraCIScenarioManager() {
 	delete connection;
 }
 
+std::vector<std::string> getMapping(std::string el) {
+
+	//search for string protection characters '
+	char protection = '\'';
+	size_t first = el.find(protection);
+	size_t second;
+	size_t eq;
+	std::string type, value;
+	std::vector<std::string> mapping;
+
+	if (first == std::string::npos) {
+		//there's no string protection, simply split by '='
+		cStringTokenizer stk(el.c_str(), "=");
+		mapping = stk.asVector();
+	}
+	else {
+		//if there's string protection, we need to find a matching delimiter
+		second = el.find(protection, first + 1);
+		//ensure that a matching delimiter exists, and that it is at the end
+		if (second == std::string::npos || second != el.size() - 1)
+			throw cRuntimeError("invalid syntax for mapping \"%s\"", el.c_str());
+
+		//take the value of the mapping as the text within the quotes
+		value = el.substr(first + 1, second - first - 1);
+
+		if (first == 0) {
+			//if the string starts with a quote, there's only the value
+			mapping.push_back(value);
+		}
+		else {
+			//search for the equal sign
+			eq = el.find('=');
+			//this must be the character before the quote
+			if (eq == std::string::npos || eq != first - 1) {
+				throw cRuntimeError("invalid syntax for mapping \"%s\"", el.c_str());
+			}
+			else {
+				type = el.substr(0, eq);
+			}
+			mapping.push_back(type);
+			mapping.push_back(value);
+		}
+	}
+	return mapping;
+}
+
 TraCIScenarioManager::TypeMapping TraCIScenarioManager::parseMappings(std::string parameter, std::string parameterName, bool allowEmpty) {
 
 	/**
@@ -69,6 +115,12 @@ TraCIScenarioManager::TypeMapping TraCIScenarioManager::parseMappings(std::strin
 	 * "a=b c=0"    : for vehicle type "c" no module should be instantiated
 	 * "a=b c=d *=0": everything which is not of vehicle type a or c should not be instantiated
 	 *
+	 * For display strings key-value pairs needs to be protected with single quotes, as they use an = sign as the type mappings. For example
+	 * *.manager.moduleDisplayString = "'i=block/process'"
+	 * *.manager.moduleDisplayString = "a='i=block/process' b='i=misc/sun'"
+	 *
+	 * moduleDisplayString can also be left empty:
+	 * *.manager.moduleDisplayString = ""
 	 */
 
 	unsigned int i;
@@ -91,8 +143,8 @@ TraCIScenarioManager::TypeMapping TraCIScenarioManager::parseMappings(std::strin
 
 		//tokenizer to find the mapping from vehicle type to module type
 		std::string typeMapping = typeMappings[i];
-		cStringTokenizer typeMappingTz(typeMapping.c_str(), "=");
-		std::vector<std::string> mapping = typeMappingTz.asVector();
+
+		std::vector<std::string> mapping = getMapping(typeMapping);
 
 		if (mapping.size() == 1) {
 			//we are where there is no actual assignment
