@@ -14,7 +14,7 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 
-#define MYDEBUG EV
+#define MYDEBUG EV_DEBUG
 
 namespace Veins {
 

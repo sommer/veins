@@ -8,7 +8,7 @@
 #include "veins/base/utils/FindModule.h"
 
 #ifndef ccEV
-#define ccEV EV << getName() << ": "
+#define ccEV EV_DEBUG << getName() << ": "
 #endif
 
 namespace {

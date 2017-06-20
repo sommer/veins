@@ -24,7 +24,7 @@
 #include "veins/base/connectionManager/ChannelAccess.h"
 
 #ifndef nicEV
-#define nicEV EV << "NicEntry: "
+#define nicEV EV_DEBUG << "NicEntry: "
 #endif
 
 using std::endl;

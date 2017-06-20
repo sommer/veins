@@ -5,7 +5,7 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 
 #ifndef ccEV
-#define ccEV EV << getName() << ": "
+#define ccEV EV_DEBUG << getName() << ": "
 #endif
 
 Define_Module( ConnectionManager );
