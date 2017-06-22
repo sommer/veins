@@ -495,7 +495,9 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 	//TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
 	cModule* mod = nodeType->create(name.c_str(), parentmod, nodeVectorIndex, nodeVectorIndex);
 	mod->finalizeParameters();
-	mod->getDisplayString().parse(displayString.c_str());
+	if (displayString.length() > 0) {
+		mod->getDisplayString().parse(displayString.c_str());
+	}
 	mod->buildInside();
 	mod->scheduleStart(simTime() + updateInterval);
 
