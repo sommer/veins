@@ -1,5 +1,6 @@
 src/Makefile
 src/*.so
+src/*.dll
 src/**/*_m.h
 src/**/*_m.cc
 
@@ -14,11 +15,13 @@ doc/neddoc
 
 tests/**/results
 tests/**/.tkenvrc
+tests/**/.qtenvrc
 tests/**/out.tmp
 tests/**/err.tmp
 
 examples/**/results
 examples/**/.tkenvrc
+examples/**/.qtenvrc
 examples/**/.cmdenv-log
 examples/**/valgrind.out
 
@@ -32,5 +35,6 @@ subprojects/veins_inet/debug
 subprojects/veins_inet/memcheck
 subprojects/veins_inet/examples/**/results
 subprojects/veins_inet/examples/**/.tkenvrc
+subprojects/veins_inet/examples/**/.qtenvrc
 subprojects/veins_inet/examples/**/.cmdenv-log
 subprojects/veins_inet/examples/**/valgrind.out
