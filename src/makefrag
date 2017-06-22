@@ -1,0 +1,10 @@
+#
+# on windows we have to link with the ws2_32 (winsock2) library as it is no longer added to the omnetpp system libraries by default (as of OMNeT++ 5.1)
+# copied from INET Framework (inet-3.6.0) makefrag
+#
+ifeq ($(PLATFORM),win32.x86_64)
+  LIBS += -lws2_32
+  DEFINES += -DINET_EXPORT
+  ENABLE_AUTO_IMPORT=-Wl,--enable-auto-import
+  LDFLAGS := $(filter-out $(ENABLE_AUTO_IMPORT), $(LDFLAGS))
+endif
