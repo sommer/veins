@@ -26,6 +26,7 @@
 #ifndef Veins_VeinsInetMobility_h
 #define Veins_VeinsInetMobility_h
 
+#undef INET_IMPORT
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/geometry/common/Coord.h"
 #include "inet/common/geometry/common/EulerAngles.h"

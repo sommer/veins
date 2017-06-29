@@ -23,6 +23,7 @@
 // Based on inet::MobilityBase of INET Framework v3.4.0
 //
 
+#undef INET_IMPORT
 #include "inet/common/INETMath.h"
 #include "veins_inet/VeinsInetMobility.h"
 #include "inet/visualizer/mobility/MobilityCanvasVisualizer.h"
