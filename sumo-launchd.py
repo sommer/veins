@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 #
 # sumo-launchd.py -- SUMO launcher daemon for use with TraCI clients
