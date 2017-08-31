@@ -611,6 +611,11 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename) {
 	ASSERT(buf.eof());
 }
 
+void TraCICommandInterface::GuiView::trackVehicle(std::string vehicleId) {
+	TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_TRACK_VEHICLE) << viewId << static_cast<uint8_t>(TYPE_STRING) << vehicleId);
+	ASSERT(buf.eof());
+}
+
 std::string TraCICommandInterface::genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId) {
 	uint8_t resultTypeId = TYPE_STRING;
 	std::string res;

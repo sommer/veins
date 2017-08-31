@@ -269,6 +269,7 @@ class TraCICommandInterface
 				void setZoom(double zoom);
 				void setBoundary(Coord p1, Coord p2);
 				void takeScreenshot(std::string filename = "");
+				void trackVehicle(std::string vehicleId);
 
 			protected:
 				TraCICommandInterface* traci;
