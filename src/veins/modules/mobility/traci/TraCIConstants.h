@@ -75,7 +75,7 @@
 // response: subscribe induction loop (e1) variable
 #define RESPONSE_SUBSCRIBE_INDUCTIONLOOP_VARIABLE 0xe0
 
-
+/*
 // command: subscribe areal detector (e2) context
 #define CMD_SUBSCRIBE_AREAL_DETECTOR_CONTEXT 0x8D
 // response: subscribe areal detector (e2) context
@@ -88,7 +88,20 @@
 #define CMD_SUBSCRIBE_AREAL_DETECTOR_VARIABLE 0x8F
 // response: subscribe areal detector (e2) variable
 #define RESPONSE_SUBSCRIBE_AREAL_DETECTOR_VARIABLE 0x9F
+*/
 
+// command: subscribe areal detector (e2) context
+#define CMD_SUBSCRIBE_LANEAREA_CONTEXT 0x8d
+// response: subscribe areal detector (e2) context
+#define RESPONSE_SUBSCRIBE_LANEAREA_CONTEXT 0x9d
+// command: get areal detector (e2) variable
+#define CMD_GET_LANEAREA_VARIABLE 0xad
+// response: get areal detector (e2) variable
+#define RESPONSE_GET_LANEAREA_VARIABLE 0xbd
+// command: subscribe areal detector (e2) variable
+#define CMD_SUBSCRIBE_LANEAREA_VARIABLE 0xdd
+// response: subscribe areal detector (e2) variable
+#define RESPONSE_SUBSCRIBE_LANEAREA_VARIABLE 0xed
 
 // command: subscribe areal detector (e3) context
 #define CMD_SUBSCRIBE_MULTI_ENTRY_EXIT_DETECTOR_CONTEXT 0x81
