@@ -162,7 +162,6 @@ void BaseWaveApplLayer::populateWSM(WaveShortMessage* wsm, int rcvId, int serial
 
     if (BasicSafetyMessage* bsm = dynamic_cast<BasicSafetyMessage*>(wsm) ) {
         bsm->setSenderPos(curPosition);
-        bsm->setSenderPos(curPosition);
         bsm->setSenderSpeed(curSpeed);
         bsm->setPsid(-1);
         bsm->setChannelNumber(Channels::CCH);
