@@ -146,6 +146,8 @@ class TraCIScenarioManager : public cSimpleModule
 
 		BaseWorldUtility* world;
 		BaseConnectionManager* cc;
+		std::map<const TraCIMobility*, const VehicleObstacle*> vehicleObstacles;
+		ObstacleControl* obstacleControl;
 
 		uint32_t getCurrentTimeMs(); /**< get current simulation time (in ms) */
 
