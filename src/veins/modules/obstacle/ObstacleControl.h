@@ -28,6 +28,10 @@
 #include "veins/modules/obstacle/Obstacle.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
 
+#include "veins/base/utils/Move.h"
+#include "veins/base/phyLayer/Signal_.h"
+#include "veins/modules/obstacle/VehicleObstacle.h"
+
 /**
  * ObstacleControl models obstacles that block radio transmissions.
  *
@@ -58,6 +62,14 @@ class ObstacleControl : public cSimpleModule
 		 * calculate additional attenuation by obstacles, return signal strength
 		 */
 		double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const;
+
+		const VehicleObstacle* add(VehicleObstacle obstacle);
+		void erase(const VehicleObstacle* obstacle);
+
+		/**
+		 * calculate attenuation factor that is due to vehicles
+		*/
+		double calculateVehicleAttenuation(const Coord& senderPos, const Coord& receiverPos, const Signal& s) const;
 
 	protected:
 		struct CacheKey {
@@ -98,6 +110,11 @@ class ObstacleControl : public cSimpleModule
 		std::map<std::string, double> perCut;
 		std::map<std::string, double> perMeter;
 		mutable CacheEntries cacheEntries;
+
+		typedef std::list<VehicleObstacle*> VehicleObstacles;
+		VehicleObstacles vehicleObstacles;
+		AnnotationManager::Group* vehicleAnnotationGroup;
+		void drawVehicleObstacles(const simtime_t& t) const;
 };
 }
 

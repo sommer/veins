@@ -294,6 +294,9 @@ void TraCIScenarioManager::initialize(int stage) {
 
 	cc = FindModule<BaseConnectionManager*>::findGlobalModule();
 
+	obstacleControl = FindModule<ObstacleControl*>::findGlobalModule();
+	if (obstacleControl == NULL) error("Could not find ObstacleControl module");
+
 	ASSERT(firstStepAt > connectAt);
 	connectAndStartTrigger = new cMessage("connect");
 	scheduleAt(connectAt, connectAndStartTrigger);
@@ -486,6 +489,11 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 
 	int32_t nodeVectorIndex = nextNodeVectorIndex++;
 
+	// FIXME: vehicle sizes are hardcoded
+	double length = 4.6;
+	double height = 1.5;
+	double width =  1.8;
+
 	cModule* parentmod = getParentModule();
 	if (!parentmod) error("Parent Module not found");
 
@@ -512,6 +520,10 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 		TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
 		if (!mm) continue;
 		mm->changePosition();
+
+		double offset = mm->getAntennaPositionOffset();
+		const VehicleObstacle* vo = obstacleControl->add(VehicleObstacle(mm, length, offset, width, height));
+		vehicleObstacles[mm] = vo;
 	}
 }
 
@@ -532,6 +544,14 @@ void TraCIScenarioManager::deleteManagedModule(std::string nodeId) {
 	cModule* nic = mod->getSubmodule("nic");
 	if (cc && nic) {
 		cc->unregisterNic(nic);
+	}
+	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
+		cModule* submod = iter();
+		TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
+		if (!mm) continue;
+		auto vo = vehicleObstacles.find(mm);
+		ASSERT(vo != vehicleObstacles.end());
+		obstacleControl->erase(vo->second);
 	}
 
 	hosts.erase(nodeId);

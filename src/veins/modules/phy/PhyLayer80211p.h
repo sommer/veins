@@ -128,6 +128,12 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		AnalogueModel* initializeSimpleObstacleShadowing(ParameterMap& params);
 
 		/**
+		 * @brief Creates and initializes a VehicleObstacleShadowing with the
+		 * passed parameter values.
+		 */
+		AnalogueModel* initializeVehicleObstacleShadowing(ParameterMap& params);
+
+		/**
 		 * @brief Creates a simple Packet Error Rate model that attenuates a percentage
 		 * of the packets to zero, and does not attenuate the other packets.
 		 *
