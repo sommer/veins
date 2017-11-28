@@ -489,11 +489,6 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 
 	int32_t nodeVectorIndex = nextNodeVectorIndex++;
 
-	// FIXME: vehicle sizes are hardcoded
-	double length = 4.6;
-	double height = 1.5;
-	double width =  1.8;
-
 	cModule* parentmod = getParentModule();
 	if (!parentmod) error("Parent Module not found");
 
@@ -513,6 +508,10 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 
 	mod->callInitialize();
 	hosts[nodeId] = mod;
+
+	double length = getCommandInterface()->vehicle(nodeId).getLength(); // 4.6
+	double height = getCommandInterface()->vehicle(nodeId).getHeight(); // 1.5
+	double width = getCommandInterface()->vehicle(nodeId).getWidth(); // 1.8
 
 	// post-initialize TraCIMobility
 	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {

@@ -54,6 +54,9 @@ class TraCICommandInterface
 				int32_t getLaneIndex();
 				std::string getTypeId();
 				bool changeVehicleRoute(const std::list<std::string>& roads);
+                double getLength();
+                double getHeight();
+                double getWidth();
 
 			protected:
 				TraCICommandInterface* traci;

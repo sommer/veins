@@ -127,6 +127,18 @@ std::list<std::string> TraCICommandInterface::Vehicle::getPlannedRoadIds() {
 	return traci->genericGetStringList(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_EDGES, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
+double TraCICommandInterface::Vehicle::getLength(){
+	return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_LENGTH, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
+double TraCICommandInterface::Vehicle::getHeight(){
+	return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_HEIGHT, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
+double TraCICommandInterface::Vehicle::getWidth(){
+	return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_WIDTH, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
 std::string TraCICommandInterface::Vehicle::getRouteId() {
 	return traci->genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_ROUTE_ID, RESPONSE_GET_VEHICLE_VARIABLE);
 }
