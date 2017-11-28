@@ -71,6 +71,11 @@ class ObstacleControl : public cSimpleModule
 		*/
 		double calculateVehicleAttenuation(const Coord& senderPos, const Coord& receiverPos, const Signal& s) const;
 
+        /**
+         * Set carrier frequency
+         */
+        void setCarrierFrequency(const double frequency);
+
 	protected:
 		struct CacheKey {
 			const Coord senderPos;
@@ -110,6 +115,7 @@ class ObstacleControl : public cSimpleModule
 		std::map<std::string, double> perCut;
 		std::map<std::string, double> perMeter;
 		mutable CacheEntries cacheEntries;
+        double carrierFrequency;
 
 		typedef std::list<VehicleObstacle*> VehicleObstacles;
 		VehicleObstacles vehicleObstacles;

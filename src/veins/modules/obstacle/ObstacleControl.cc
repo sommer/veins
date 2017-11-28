@@ -30,8 +30,6 @@
 using Veins::ObstacleControl;
 using Veins::VehicleObstacle;
 
-#define EV std::cerr
-
 Define_Module(Veins::ObstacleControl);
 
 ObstacleControl::~ObstacleControl() {
@@ -460,7 +458,6 @@ double ObstacleControl::calculateVehicleAttenuation(const Coord& senderPos, cons
 					annotations->drawLine(senderPos, hitPos, "red", vehicleAnnotationGroup);
 			}
 		}
-
 	}
 	EV << "senderHeight: " << senderHeight << endl;
 	EV << "receiverHeight: " << receiverHeight << endl;
@@ -473,7 +470,7 @@ double ObstacleControl::calculateVehicleAttenuation(const Coord& senderPos, cons
 	potentialObstacles.insert(potentialObstacles.begin(), std::make_pair(0, senderHeight));
 	potentialObstacles.push_back(std::make_pair(senderPos.distance(receiverPos), receiverHeight));
 
-	double attenuationDB = getVehicleAttenuation(potentialObstacles, 5.9);  // FIXME: 5.9 is hardcoded
+	double attenuationDB = getVehicleAttenuation(potentialObstacles, carrierFrequency);
 
 	EV << "t=" << simTime() << ": Attenuation by vehicles is " << attenuationDB << " dB" << std::endl;
 
@@ -571,4 +568,9 @@ void ObstacleControl::drawVehicleObstacles(const simtime_t& t) const {
 		VehicleObstacle* o = *i;
 		annotations->drawPolygon(o->getShape(), "black", vehicleAnnotationGroup);
 	}
+}
+
+void ObstacleControl::setCarrierFrequency(const double cf) {
+  //TODO sanity checks
+  carrierFrequency = cf;
 }

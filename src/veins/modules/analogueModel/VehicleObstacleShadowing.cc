@@ -9,6 +9,7 @@ VehicleObstacleShadowing::VehicleObstacleShadowing(ObstacleControl& obstacleCont
 	playgroundSize(playgroundSize),
 	debug(debug)
 {
+    obstacleControl.setCarrierFrequency(carrierFrequency);
 	if (useTorus) throw cRuntimeError("VehicleObstacleShadowing does not work on torus-shaped playgrounds");
 }
 
