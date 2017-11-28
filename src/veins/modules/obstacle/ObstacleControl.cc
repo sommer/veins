@@ -459,6 +459,15 @@ double ObstacleControl::calculateVehicleAttenuation(const Coord& senderPos, cons
 			}
 		}
 	}
+
+    //FIXME default heights for an RSU (because this is not in the set of vehicles or obstacles iterated over above)
+    if (std::isnan(senderHeight)) {
+      senderHeight = 5;
+    }
+    if (std::isnan(receiverHeight)) {
+      receiverHeight = 5;
+    }
+
 	EV << "senderHeight: " << senderHeight << endl;
 	EV << "receiverHeight: " << receiverHeight << endl;
 	ASSERT(!std::isnan(senderHeight));
