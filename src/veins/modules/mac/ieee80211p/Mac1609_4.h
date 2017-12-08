@@ -78,7 +78,7 @@ class Mac1609_4 : public BaseMacLayer,
 						int cwMin; //minimum contention window
 						int cwMax; //maximum contention size
 						int cwCur; //current contention window
-						int currentBackoff; //current Backoff value for this queue
+						int64_t currentBackoff; //current Backoff value for this queue
 						bool txOP;
 
 						EDCAQueue() {	};

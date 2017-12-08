@@ -672,7 +672,7 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 		if (iter->second.currentBackoff != 0 || iter->second.queue.size() != 0) {
 			//check how many slots we already waited until the chan became busy
 
-			int oldBackoff = iter->second.currentBackoff;
+			int64_t oldBackoff = iter->second.currentBackoff;
 
 			std::string info;
 			if (passedTime < iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P) {
@@ -684,7 +684,7 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 				iter->second.currentBackoff--;
 
 				//check how many slots we waited after the first DIFS
-				int passedSlots = (int)((passedTime - SimTime(iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P)) / SLOTLENGTH_11P);
+				int64_t passedSlots = (int64_t)((passedTime - SimTime(iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P)) / SLOTLENGTH_11P);
 
 				DBG_MAC << "Passed slots after DIFS: " << passedSlots << std::endl;
 
