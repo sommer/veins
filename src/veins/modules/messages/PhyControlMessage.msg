@@ -21,7 +21,7 @@
 //
 message PhyControlMessage {
     //modulation and coding scheme to be used (see enum TxMCS in ConstsPhy.h)
-    int mcs;
+    int mcs = -1;
     //transmission power to be used in mW
-    double txPower_mW;
+    double txPower_mW = -1;
 }
