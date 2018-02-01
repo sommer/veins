@@ -471,7 +471,7 @@ public:
 	/**
 	 * @brief This method isn't supported by an interpolated mapping.
 	 */
-	virtual const Argument& getNextPosition() const { assert(false); return *((Argument *)NULL); }
+	virtual const Argument& getNextPosition() const { throw std::logic_error("Not implemented!"); }
 };
 
 /**
