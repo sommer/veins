@@ -4,7 +4,7 @@
 ADDL_TARGETS =
 ifeq ($(wildcard out/config.py),)
 else
-    ADDL_TARGETS += run debug memcheck
+    ADDL_TARGETS += run debug memcheck test
 endif
 
 # default target
@@ -12,7 +12,7 @@ all: src/Makefile $(ADDL_TARGETS)
 	@cd src && $(MAKE)
 
 # command line scripts
-run debug memcheck: % : src/scripts/%.in.py out/config.py
+run debug memcheck test: % : src/scripts/%.in.py out/config.py
 	@echo "Creating script \"./$@\""
 	@head -n1 "$<" > "$@"
 	@cat out/config.py >> "$@"
@@ -35,13 +35,14 @@ makefiles:
 
 clean: src/Makefile
 	cd src && $(MAKE) clean
-	rm -f run debug memcheck
+	rm -f run debug memcheck test
 
 cleanall: src/Makefile
 	cd src && $(MAKE) MODE=release clean
 	cd src && $(MAKE) MODE=debug clean
 	rm -f src/Makefile
-	rm -f run debug memcheck
+	rm -f src/catch_testing_dynamic
+	rm -f run debug memcheck test
 
 src/Makefile:
 	@echo

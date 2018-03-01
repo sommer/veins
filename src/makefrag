@@ -8,3 +8,27 @@ ifeq ($(PLATFORM),win32.x86_64)
   ENABLE_AUTO_IMPORT=-Wl,--enable-auto-import
   LDFLAGS := $(filter-out $(ENABLE_AUTO_IMPORT), $(LDFLAGS))
 endif
+
+#
+# testing configutation
+#
+
+# remove test case files from normal object list
+TESTOBJS := $(filter $(O)/tests/%,$(OBJS))
+OBJS := $(filter-out $(O)/tests/%,$(OBJS))
+
+# make sure testing gets built too
+all: testing
+
+# collect testing binaries here
+testing: $(O)/catch_testing_dynamic
+#testing: $(O)/catch_testing_static
+
+$(O)/catch_testing_dynamic: $(TESTOBJS) $(O)/$(TARGET)
+	$(qecho) "linking dynamic testing file $@"
+	$(Q)$(CXX) -o $@ $(TESTOBJS) -lveins $(LIBS) $(OMNETPP_LIBS) $(LDFLAGS) -L$(O)
+	$(Q)$(LN) $(O)/catch_testing_dynamic .
+
+$(O)/catch_testing_static: $(OBJS) $(TESTOBJS)
+	$(qecho) "linking static testing file $@"
+	$(Q)$(CXX) -o $@ $(OBJS) $(TESTOBJS) $(LIBS) $(OMNETPP_LIBS) $(LDFLAGS)
