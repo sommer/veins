@@ -17,11 +17,31 @@ class TraCICommandInterface
 	public:
 		TraCICommandInterface(TraCIConnection&);
 
-		enum DepartDefs {
-			DEPART_NOW = 2,
-			DEPART_LANE_BEST_FREE = 5,
-			DEPART_POS_BASE = 4,
-			DEPART_SPEED_MAX = 3
+		enum DepartTime {
+			DEPART_TIME_TRIGGERED = -1,
+			DEPART_TIME_CONTAINER_TRIGGERED = -2,
+			DEPART_TIME_NOW = -3, // Not yet documented and fully implemented (Sumo 0.30.0) 
+		};
+
+		enum DepartSpeed {
+			DEPART_SPEED_RANDOM = -2,
+			DEPART_SPEED_MAX = -3,
+		};
+
+		enum DepartPosition {
+			DEPART_POSITION_RANDOM = -2,
+			DEPART_POSITION_FREE = -3,
+			DEPART_POSITION_BASE = -4,
+			DEPART_POSITION_LAST = -5,
+			DEPART_POSITION_RANDOM_FREE = -6,
+		};
+
+		enum DepartLane {
+			DEPART_LANE_RANDOM = -2, // A random lane
+			DEPART_LANE_FREE = -3, // The least occupied lane
+			DEPART_LANE_ALLOWED = -4, // The least occupied lane which allows continuation
+			DEPART_LANE_BEST = -5, // The least occupied of the best lanes
+			DEPART_LANE_FIRST = -6, // The rightmost valid 
 		};
 
 		// General methods that do not deal with a particular object in the simulation
@@ -30,7 +50,20 @@ class TraCICommandInterface
 		double getDistance(const Coord& position1, const Coord& position2, bool returnDrivingDistance);
 
 		// Vehicle methods
-		bool addVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -DEPART_NOW, double emitPosition = -DEPART_POS_BASE, double emitSpeed = -DEPART_SPEED_MAX, int8_t emitLane = -DEPART_LANE_BEST_FREE);
+		/**
+		 * @brief Adds a vehicle to the simulation.
+		 *
+		 * @param vehicleId The new vehicle's ID.
+		 * @param vehicleTypeId The new vehicle's type identifier.
+		 * @param routeId Identifier of the new vehicle's route.
+		 * @param emitTime_st Time at which to spawn the new vehicle or a value from DepartTime.
+		 * @param emitPosition Position of the new vehicle on its lane. Valid values are between 0 and 1 (start and
+		 * 					   end of edge) and special values from DepartPosition. 
+		 * @param emitSpeed Speed in meters per second of the new vehicle. Also accepts special values from DepartSpeed.
+		 * @param emitLane The new vehicle's lane. Special Also accepts special values from DepartLane.
+		 * @return Success indication
+		 */
+		bool addVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st=DEPART_TIME_TRIGGERED, double emitPosition=DEPART_POSITION_BASE, double emitSpeed=DEPART_SPEED_MAX, int8_t emitLane=DEPART_LANE_BEST);
 		class Vehicle {
 			public:
 				Vehicle(TraCICommandInterface* traci, std::string nodeId) : traci(traci), nodeId(nodeId) {
