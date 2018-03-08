@@ -50,7 +50,7 @@ simple Mac1609_4 extends BaseMacLayer
         headerLength @unit(bit) = default(0 bit);
 
         // bit rate 
-        double bitrate @unit(bps) = default(6 Mbps);
+        int bitrate @unit(bps) = default(6 Mbps);
 
         // maximum artificial asynchronization between cars to avoid synchronization effects
         double syncOffset @unit(s) = default(0.0003s);
