@@ -26,6 +26,13 @@ examples/**/.qtenvrc
 examples/**/.cmdenv-log
 examples/**/valgrind.out
 
+subprojects/veins_catch/out
+subprojects/veins_catch/src/*.dll
+subprojects/veins_catch/src/*.dylib
+subprojects/veins_catch/src/*.so
+subprojects/veins_catch/src/Makefile
+subprojects/veins_catch/src/veins_catch
+
 subprojects/veins_inet/src/Makefile
 subprojects/veins_inet/src/*.so
 subprojects/veins_inet/src/*.dll
