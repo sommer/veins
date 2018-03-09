@@ -1,6 +1,7 @@
 src/Makefile
 src/*.so
 src/*.dll
+src/*.dylib
 src/**/*_m.h
 src/**/*_m.cc
 
@@ -28,6 +29,7 @@ examples/**/valgrind.out
 subprojects/veins_inet/src/Makefile
 subprojects/veins_inet/src/*.so
 subprojects/veins_inet/src/*.dll
+subprojects/veins_inet/src/*.dylib
 subprojects/veins_inet/src/**/*_m.h
 subprojects/veins_inet/src/**/*_m.cc
 subprojects/veins_inet/out
