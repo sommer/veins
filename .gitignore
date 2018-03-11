@@ -1,4 +1,5 @@
 src/Makefile
+src/catch_testing_dynamic
 src/*.so
 src/*.dll
 src/*.dylib
@@ -11,6 +12,7 @@ doc/neddoc
 /run
 /debug
 /memcheck
+/test
 
 /out
 
