@@ -7,7 +7,7 @@ Creates Makefile(s) for building Veins_INET.
 import os
 import sys
 import subprocess
-from logging import warning, error
+from logging import info, warning, error
 from optparse import OptionParser
 
 
@@ -85,4 +85,4 @@ f.close()
 
 subprocess.check_call(['env', 'opp_makemake'] + makemake_flags, cwd='src')
 
-print 'Configure done. You can now run "make".'
+info('Configure done. You can now run "make".')
