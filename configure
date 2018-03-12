@@ -11,6 +11,9 @@ from logging import info, warning, error
 from optparse import OptionParser
 
 
+if sys.version_info[0] == 3:
+    warning("Warning: running configure with python3 might result in subtle errors.")
+
 # Option handling
 parser = OptionParser()
 parser.add_option("--with-inet", dest="inet", help='Option discontinued in favor of a subproject in subprojects/veins_inet/')
