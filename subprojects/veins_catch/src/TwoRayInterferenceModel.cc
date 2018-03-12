@@ -5,20 +5,26 @@
 
 // Helper methods
 namespace {
-    cSimulation* sim;
+    class DummySimulation {
+    public:
+        DummySimulation(cNullEnvir* envir)
+            : simulation("DummySimulation", envir)
+        {
+            // envir is stored and deleted automatically by omnet++
+            cSimulation::setActiveSimulation(&simulation);
+            SimTime::setScaleExp(-9);
+        }
+        ~DummySimulation()
+        {
+            cSimulation::setActiveSimulation(nullptr);
+        }
+    private:
+        cStaticFlag csf;
+        cSimulation simulation;
+    }; // end DummySimulation
 
-    void createDummySimulation() {
-        cNullEnvir* env = new cNullEnvir(0, 0, 0);
-        sim = new cSimulation("Dummy Simulation", env);
-        cSimulation::setActiveSimulation(sim);
-        SimTime::setScaleExp(-9);
-    }
 
-    void destroyDummySimulation() {
-        cSimulation::setActiveSimulation(nullptr);
-    }
-
-    AirFrame* createAirframe(double centerFreq, double bandwidth, simtime_t start, simtime_t length, double power) {
+    AirFrame createAirframe(double centerFreq, double bandwidth, simtime_t start, simtime_t length, double power) {
         Signal s(start, length);
         Mapping* txPowerMapping = MappingUtils::createMapping(Argument::MappedZero(), DimensionSet::timeFreqDomain(), Mapping::LINEAR);
         Argument pos(DimensionSet::timeFreqDomain());
@@ -33,8 +39,8 @@ namespace {
         txPowerMapping->setValue(pos, power);
         s.setTransmissionPower(txPowerMapping);
 
-        AirFrame* frame = new AirFrame();
-        frame->setSignal(s);
+        AirFrame frame;
+        frame.setSignal(s);
         return frame;
     }
 }
@@ -42,12 +48,12 @@ namespace {
 
 SCENARIO("TwoRayInterferenceModel", "[analogueModel]") {
 
-    createDummySimulation();
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr));
 
     GIVEN("An AirFrame at 2.4e9 sent from (0,0)") {
-
-        AirFrame* frame = createAirframe(2.4e9, 10e6, 0, .001, 1);
-        Signal& s = frame->getSignal();
+    
+        AirFrame frame = createAirframe(2.4e9, 10e6, 0, .001, 1);
+        Signal& s = frame.getSignal();
         TwoRayInterferenceModel tri(1.02, false);
         Argument start(DimensionSet::timeFreqDomain());
         start.setTime(0);
@@ -60,7 +66,7 @@ SCENARIO("TwoRayInterferenceModel", "[analogueModel]") {
             Coord receiverPos(10, 0, 2);
 
             THEN("TwoRayInterferenceModel drops power from 1 to 959.5e-9") {
-                tri.filterSignal(frame, senderPos, receiverPos);
+                tri.filterSignal(&frame, senderPos, receiverPos);
                 REQUIRE(s.getReceivingPower()->getValue(start) == Approx(959.5e-9).epsilon(.01));
             }
         }
@@ -69,14 +75,10 @@ SCENARIO("TwoRayInterferenceModel", "[analogueModel]") {
             Coord receiverPos(100, 0, 2);
 
             THEN("TwoRayInterferenceModel drops power from 1 to 20.3e-9") {
-                tri.filterSignal(frame, senderPos, receiverPos);
+                tri.filterSignal(&frame, senderPos, receiverPos);
                 REQUIRE(s.getReceivingPower()->getValue(start) == Approx(20.3e-9).epsilon(.01));
             }
         }
 
-        delete frame;
     }
-
-    destroyDummySimulation();
-
 }
