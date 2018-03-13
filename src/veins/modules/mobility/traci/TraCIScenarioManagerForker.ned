@@ -37,6 +37,7 @@ simple TraCIScenarioManagerForker
     parameters:
         @display("i=block/network2");
         @class(Veins::TraCIScenarioManagerForker);
+        @signal[traciInitialized](type=bool);
         bool debug = default(false);  // emit debug messages?
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)
         double firstStepAt @unit("s") = default(-1s);  // when to start synchronizing with the TraCI server (-1: immediately after connecting)
