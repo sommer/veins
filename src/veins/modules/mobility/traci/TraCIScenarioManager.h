@@ -81,6 +81,8 @@ class TraCIScenarioManager : public cSimpleModule
 			VEH_SIGNAL_EMERGENCY_YELLOW = 8192
 		};
 
+		static const std::string TRACI_INITIALIZED_SIGNAL_NAME;
+
 		TraCIScenarioManager();
 		~TraCIScenarioManager();
 		virtual int numInitStages() const { return std::max(cSimpleModule::numInitStages(), 2); }
@@ -195,6 +197,8 @@ class TraCIScenarioManager : public cSimpleModule
 		 */
 		TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
 
+	private:
+		const omnetpp::simsignal_t traciInitializedSignal;
 };
 }
 

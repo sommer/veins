@@ -38,6 +38,8 @@ using Veins::TraCICoord;
 
 Define_Module(Veins::TraCIScenarioManager);
 
+const std::string TraCIScenarioManager::TRACI_INITIALIZED_SIGNAL_NAME = "traciInitialized";
+
 TraCIScenarioManager::TraCIScenarioManager() :
 		myAddVehicleTimer(0),
 		mobRng(0),
@@ -45,7 +47,8 @@ TraCIScenarioManager::TraCIScenarioManager() :
 		connectAndStartTrigger(0),
 		executeOneTimestepTrigger(0),
 		world(0),
-		cc(0)
+		cc(0),
+		traciInitializedSignal(registerSignal(TRACI_INITIALIZED_SIGNAL_NAME.c_str()))
 {
 }
 
@@ -387,6 +390,8 @@ void TraCIScenarioManager::init_traci() {
 			}
 		}
 	}
+
+	emit(traciInitializedSignal, true);
 }
 
 void TraCIScenarioManager::finish() {
