@@ -7,6 +7,7 @@
 
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/base/utils/Coord.h"
+#include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 
 namespace Veins {
 
@@ -74,6 +75,7 @@ class TraCICommandInterface
 				void setSpeed(double speed);
 				void setMaxSpeed(double speed);
 				void setColor(const TraCIColor& color);
+		        TraCIColor getColor() const;
 				void slowDown(double speed, int time);
 				void newRoute(std::string roadId);
 				void setParking();
@@ -143,15 +145,27 @@ class TraCICommandInterface
 		}
 
 		// Trafficlight methods
+		std::list<std::string> getTrafficlightIds();
 		class Trafficlight {
 			public:
 				Trafficlight(TraCICommandInterface* traci, std::string trafficLightId) : traci(traci), trafficLightId(trafficLightId) {
 					connection = &traci->connection;
 				}
+				std::string getCurrentState() const;
+				int32_t getDefaultCurrentPhaseDuration() const;
+				std::list<std::string> getControlledLanes() const;
+				std::list<std::list<TraCITrafficLightLink> > getControlledLinks() const;
+				int32_t getCurrentPhaseIndex() const;
+				std::string getCurrentProgramID() const;
+				TraCITrafficLightProgram getProgramDefinition() const;
+				int32_t getAssumedNextSwitchTime() const;
 
 				void setProgram(std::string program);
 				void setPhaseIndex(int32_t index);
-
+				void setState(std::string state);
+			    void setPhaseDuration(int32_t duration); /**< set remaining duration of current phase in milliseconds */
+				void setProgramDefinition(TraCITrafficLightProgram::Logic program,
+				                int32_t programNr);
 			protected:
 				TraCICommandInterface* traci;
 				TraCIConnection* connection;
@@ -275,6 +289,10 @@ class TraCICommandInterface
 		int32_t genericGetInt(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
 		std::list<std::string> genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
 		std::list<Coord> genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
+
+
+	    TraCIColor genericGetColor(uint8_t commandId, std::string objectId,
+	            uint8_t variableId, uint8_t responseId);
 };
 
 }

@@ -101,6 +101,12 @@ class TraCIMobility : public BaseMobility
 			if (road_id == "") throw cRuntimeError("TraCIMobility::getRoadId called with no road_id set yet");
 			return road_id;
 		}
+		virtual int getLaneNr() const {
+		    return getVehicleCommandInterface()->getLaneIndex();
+		}
+		virtual double getLanePosition() const {
+		    return getVehicleCommandInterface()->getLanePosition();
+		}
 		virtual double getSpeed() const {
 			if (speed == -1) throw cRuntimeError("TraCIMobility::getSpeed called with no speed set yet");
 			return speed;

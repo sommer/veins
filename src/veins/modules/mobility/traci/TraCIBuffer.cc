@@ -32,6 +32,18 @@ std::string TraCIBuffer::str() const {
 	return buf;
 }
 
+template<> std::vector<std::string> TraCIBuffer::readTypeChecked(int expectedTraCIType) {
+	ASSERT(read<uint8_t>() == static_cast<uint8_t>(expectedTraCIType));
+	int32_t nrOfElements = read<uint8_t>();
+
+	std::vector<std::string> result;
+	result.reserve(nrOfElements);
+	for (int32_t i = 0; i < nrOfElements; ++i) {
+		result.emplace_back(read<std::string>());
+	}
+	return result;
+}
+
 std::string TraCIBuffer::hexStr() const {
 	std::stringstream ss;
 	for (std::string::const_iterator i = buf.begin() + buf_index; i != buf.end(); ++i) {
