@@ -114,6 +114,12 @@ class TraCIScenarioManager : public cSimpleModule
 		std::string host;
 		int port;
 
+	    std::string trafficLightModuleType; /**< module type to be used in the simulation for each managed traffic light */
+	    std::string trafficLightModuleName; /**< module name to be used in the simulation for each managed traffic light */
+	    std::string trafficLightModuleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
+	    std::vector<std::string> trafficLightModuleIds; /**< list of traffic light module ids that is subscribed to (whitelist) */
+
+
 		uint32_t vehicleNameCounter;
 		cMessage* myAddVehicleTimer;
 		std::vector<std::string> vehicleTypeIds;
@@ -135,6 +141,7 @@ class TraCIScenarioManager : public cSimpleModule
 
 		size_t nextNodeVectorIndex; /**< next OMNeT++ module vector index to use */
 		std::map<std::string, cModule*> hosts; /**< vector of all hosts managed by us */
+	    std::map<std::string, cModule*> trafficLights; /**< vector of all traffic lights managed by us */
 		std::set<std::string> unEquippedHosts;
 		std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
 		uint32_t activeVehicleCount; /**< number of vehicles, be it parking or driving **/
@@ -183,6 +190,10 @@ class TraCIScenarioManager : public cSimpleModule
 		void processVehicleSubscription(std::string objectId, TraCIBuffer& buf);
 		void processSubcriptionResult(TraCIBuffer& buf);
 
+		void subscribeToTrafficLightVariables(std::string tlId);
+		void unsubscribeFromTrafficLightVariables(std::string tlId);
+		void processTrafficLightSubscription(std::string objectId,
+		            TraCIBuffer& buf);
 		/**
 		 * parses the vector of module types in ini file
 		 *
