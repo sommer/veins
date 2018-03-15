@@ -53,6 +53,32 @@ class TraCIBuffer {
 			}
 		}
 
+        void writeBuffer(const unsigned char *buffer, size_t size) {
+            if (isBigEndian()) {
+                for (size_t i=0; i<size; ++i) {
+                    buf += buffer[i];
+                }
+            } else {
+                for (size_t i=0; i<size; ++i) {
+                    buf += buffer[size-1-i];
+                }
+            }
+        }
+
+        void readBuffer(unsigned char *buffer, size_t size) {
+            if (isBigEndian()) {
+                for (size_t i=0; i<size; ++i) {
+                    if (eof()) throw cRuntimeError("Attempted to read past end of byte buffer");
+                    buffer[i] = buf[buf_index++];
+                }
+            } else {
+                for (size_t i=0; i<size; ++i) {
+                    if (eof()) throw cRuntimeError("Attempted to read past end of byte buffer");
+                    buffer[size-1-i] = buf[buf_index++];
+                }
+            }
+        }
+
 		template<typename T> T read(T& out) {
 			out = read<T>();
 			return out;
@@ -68,6 +94,17 @@ class TraCIBuffer {
 			return *this;
 		}
 
+        /**
+         * @brief
+         * read and check type, then read and return an item from the buffer
+         */
+        template <typename T> T readTypeChecked(int expectedTraCIType) {
+            uint8_t read_type(read<uint8_t>());
+            ASSERT(read_type == static_cast<uint8_t>(expectedTraCIType));
+            return read<T>();
+        }
+
+
 		bool eof() const;
 		void set(std::string buf);
 		void clear();
@@ -78,7 +115,7 @@ class TraCIBuffer {
 		std::string buf;
 		size_t buf_index;
 };
-
+template<> std::vector<std::string> TraCIBuffer::readTypeChecked(int expectedTraCIType);
 template<> void TraCIBuffer::write(std::string inv);
 template<> void TraCIBuffer::write(TraCICoord inv);
 template<> std::string TraCIBuffer::read();
