@@ -388,8 +388,9 @@ void TraCIScenarioManager::init_traci() {
 	if (!trafficLightModuleType.empty() && !trafficLightModuleIds.empty()) {
 		// initialize traffic lights
 		cModule* parentmod = getParentModule();
-		if (!parentmod)
+		if (!parentmod) {
 			error("Parent Module not found (for traffic light creation)");
+		}
 		cModuleType* tlModuleType = cModuleType::get(trafficLightModuleType.c_str());
 
 		// query traffic lights via TraCI
@@ -398,8 +399,10 @@ void TraCIScenarioManager::init_traci() {
 		int cnt = 0;
 		for (std::list<std::string>::iterator i = trafficLightIds.begin(); i != trafficLightIds.end(); ++i) {
 			std::string tlId = *i;
-			if (std::find(trafficLightModuleIds.begin(), trafficLightModuleIds.end(), tlId) == trafficLightModuleIds.end())
+			if (std::find(trafficLightModuleIds.begin(), trafficLightModuleIds.end(), tlId) == trafficLightModuleIds.end())	{
 				continue; // filter only selected elements
+			}
+
 			Coord position = getCommandInterface()->junction(tlId).getPosition();
 
 			cModule *module = tlModuleType->create(trafficLightModuleName.c_str(), parentmod, nrOfTrafficLights, cnt);
@@ -754,7 +757,7 @@ void TraCIScenarioManager::processTrafficLightSubscription(std::string objectId,
 		uint8_t isokay;
 		buf >> isokay;
 		if (isokay != RTYPE_OK) {
-			std::string description = buf.readTypeChecked<std::string>(
+			std::string description = buf.readTypeChecked<std::string> (
 			TYPE_STRING);
 			if (isokay == RTYPE_NOTIMPLEMENTED) {
 				error("TraCI server reported subscribing to 0x%2x not implemented (\"%s\"). Might need newer version.", response_type, description.c_str());

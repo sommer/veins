@@ -217,12 +217,6 @@ void TraCICommandInterface::Vehicle::stopAt(std::string roadId, double pos, uint
 	ASSERT(buf.eof());
 }
 
-/*****************
- *
- */
-
-
-
 std::list<std::string> TraCICommandInterface::getTrafficlightIds() {
 	return genericGetStringList(CMD_GET_TL_VARIABLE, "", ID_LIST, RESPONSE_GET_TL_VARIABLE);
 }
@@ -247,7 +241,7 @@ std::list<std::list<TraCITrafficLightLink> > TraCICommandInterface::Trafficlight
 	uint8_t responseId = RESPONSE_GET_TL_VARIABLE;
 
 	TraCIBuffer buf = connection->query(commandId, TraCIBuffer() << variableId << objectId);
-    // generic header
+	// generic header
 	uint8_t cmdLength;
 	buf >> cmdLength;
 	if (cmdLength == 0) {
@@ -330,13 +324,13 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
 	ASSERT(resType_r == resultTypeId);
 
 	int32_t compoundSize;
-	buf >> compoundSize;			 // nr of fields in the compound
+	buf >> compoundSize; // nr of fields in the compound
 	int32_t nrOfLogics = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // nr of logics in the compound
 
 	TraCITrafficLightProgram program(trafficLightId);
 	for (int32_t i = 0; i < nrOfLogics; ++i) {
 		TraCITrafficLightProgram::Logic logic;
-		logic.id = buf.readTypeChecked<std::string>(TYPE_STRING);  // program ID
+		logic.id = buf.readTypeChecked<std::string>(TYPE_STRING); // program ID
 		logic.type = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // (sub)type - currently just a 0
 		logic.parameter = buf.readTypeChecked<int32_t>(TYPE_COMPOUND); // (sub)parameter - currently just a 0
 		logic.currentPhase = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // phase index
@@ -366,7 +360,7 @@ void TraCICommandInterface::Trafficlight::setState(std::string state) {
 
 void TraCICommandInterface::Trafficlight::setPhaseDuration(int32_t duration) {
 	TraCIBuffer buf = connection->query(CMD_SET_TL_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(TL_PHASE_DURATION) << trafficLightId << static_cast<uint8_t>(TYPE_INTEGER) << duration);
-    ASSERT(buf.eof());
+	ASSERT(buf.eof());
 }
 
 void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLightProgram::Logic logic, int32_t logicNr) {
@@ -400,10 +394,6 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
 	TraCIBuffer obuf = connection->query(CMD_SET_TL_VARIABLE, inbuf);
 	ASSERT(obuf.eof());
 }
-/****************
- *
- */
-
 
 void TraCICommandInterface::Trafficlight::setProgram(std::string program) {
 	TraCIBuffer buf = connection->query(CMD_SET_TL_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(TL_PROGRAM) << trafficLightId << static_cast<uint8_t>(TYPE_STRING) << program);

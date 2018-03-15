@@ -18,40 +18,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include <veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h>
+package org.car2x.veins.base.modules;
 
-using Veins::TraCITrafficLightProgram;
-
-bool TraCITrafficLightProgram::Phase::isGreenPhase() const
+moduleinterface ITrafficLightApplLayer  extends IBaseApplLayer
 {
-	// implementation taken from SUMO MSPhaseDefinition.cc
-	if (state.find_first_of("gG") == std::string::npos) {
-		return false;
-	}
-	if (state.find_first_of("yY") != std::string::npos) {
-		return false;
-	}
-	return true;
-}
-
-
-TraCITrafficLightProgram::TraCITrafficLightProgram(std::string id):
-	id(id),
-	logics()
-{
-}
-
-void TraCITrafficLightProgram::addLogic(const Logic& logic)
-{
-	logics[logic.id] = logic;
-}
-
-TraCITrafficLightProgram::Logic TraCITrafficLightProgram::getLogic(const std::string& lid) const
-{
-	return logics.at(lid);
-}
-
-bool TraCITrafficLightProgram::hasLogic(const std::string& lid) const
-{
-	return logics.find(lid) != logics.end();
+	parameters:
+		gates:
+		inout logic;
 }

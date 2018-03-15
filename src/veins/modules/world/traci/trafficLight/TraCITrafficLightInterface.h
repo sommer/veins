@@ -1,17 +1,22 @@
 //
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Copyright (C) 2015-2018 Dominik Buse <dbuse@mail.uni-paderborn.de>
+//
+// Documentation for these modules is at http://veins.car2x.org/
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
 
 #ifndef TRACITRAFFICLIGHTINTERFACE_H_
 #define TRACITRAFFICLIGHTINTERFACE_H_
@@ -21,17 +26,16 @@
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 
-
-
 namespace Veins {
+
 class TraCITrafficLightInterface: public cSimpleModule {
 public:
+
 	TraCITrafficLightInterface();
 	virtual ~TraCITrafficLightInterface();
 
 	/** Set parameters for connection to TraCI */
-	virtual void preInitialize(const std::string& external_id, const Coord& position,
-							   const simtime_t& updateInterval);
+	virtual void preInitialize(const std::string& external_id, const Coord& position, const simtime_t& updateInterval);
 
 	virtual void setExternalId(const std::string& external_id)
 	{
@@ -45,25 +49,27 @@ public:
 	}
 	virtual TraCIScenarioManager* getManager() const
 	{
-		if (!manager)
+		if (!manager) {
 			manager = TraCIScenarioManagerAccess().get();
+		}
 		return manager;
 	}
 	virtual TraCICommandInterface* getCommandInterface() const
 	{
-		if (!commandInterface)
+		if (!commandInterface) {
 			commandInterface = getManager()->getCommandInterface();
+		}
 		return commandInterface;
 	}
 	virtual TraCICommandInterface::Trafficlight* getTlCommandInterface() const
 	{
-		if (!tlCommandInterface)
+		if (!tlCommandInterface) {
 			tlCommandInterface = new TraCICommandInterface::Trafficlight(getCommandInterface(), external_id);
+		}
 		return tlCommandInterface;
 	}
 
 	virtual std::list< std::list<TraCITrafficLightLink> > getControlledLinks();
-	//virtual std::list< std::list<TraCITrafficLightLink> > getControlledLanes();
 	virtual Coord getPosition() const;
 	virtual TraCITrafficLightProgram::Logic getCurrentLogic() const;
 	virtual std::string getCurrentLogicId() const;
@@ -102,7 +108,7 @@ protected:
 
 	TraCITrafficLightProgram programDefinition; /**< full definition of program (all logics) */
 	std::list< std::list<TraCITrafficLightLink> > controlledLinks; /**< controlledLinks[signal][link] */
-   // std::list< std::list<TraCITrafficLightLink> > controlledLanes; /**< controlledLanes[signal][link] */
+	// std::list< std::list<TraCITrafficLightLink> > controlledLanes; /**< controlledLanes[signal][link] */
 	std::string currentLogicId; /**< id of the currently active logic */
 	int currentPhaseNr; /**< current phase of the current program */
 	simtime_t nextSwitchTime; /**< predicted next phase switch time (absolute timestamp) */
