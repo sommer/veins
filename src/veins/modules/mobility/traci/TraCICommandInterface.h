@@ -162,8 +162,7 @@ class TraCICommandInterface
 				void setPhaseIndex(int32_t index); /**< set/switch to different phase within the program  */
 				void setState(std::string state);
 				void setPhaseDuration(int32_t duration); /**< set remaining duration of current phase in milliseconds */
-				void setProgramDefinition(TraCITrafficLightProgram::Logic program,
-				int32_t programNr);
+				void setProgramDefinition(TraCITrafficLightProgram::Logic program, int32_t programNr);
 			protected:
 				TraCICommandInterface* traci;
 				TraCIConnection* connection;
