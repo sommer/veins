@@ -37,32 +37,27 @@ public:
 	/** Set parameters for connection to TraCI */
 	virtual void preInitialize(const std::string& external_id, const Coord& position, const simtime_t& updateInterval);
 
-	virtual void setExternalId(const std::string& external_id)
-	{
+	virtual void setExternalId(const std::string& external_id) {
 		this->external_id = external_id;
 	}
-	virtual std::string getExternalId() const
-	{
+	virtual std::string getExternalId() const {
 		if (external_id == "")
 			throw cRuntimeError("TraCITrafficLightInterface::getExternalId called with no external_id set yet");
 		return external_id;
 	}
-	virtual TraCIScenarioManager* getManager() const
-	{
+	virtual TraCIScenarioManager* getManager() const {
 		if (!manager) {
 			manager = TraCIScenarioManagerAccess().get();
 		}
 		return manager;
 	}
-	virtual TraCICommandInterface* getCommandInterface() const
-	{
+	virtual TraCICommandInterface* getCommandInterface() const {
 		if (!commandInterface) {
 			commandInterface = getManager()->getCommandInterface();
 		}
 		return commandInterface;
 	}
-	virtual TraCICommandInterface::Trafficlight* getTlCommandInterface() const
-	{
+	virtual TraCICommandInterface::Trafficlight* getTlCommandInterface() const {
 		if (!tlCommandInterface) {
 			tlCommandInterface = new TraCICommandInterface::Trafficlight(getCommandInterface(), external_id);
 		}

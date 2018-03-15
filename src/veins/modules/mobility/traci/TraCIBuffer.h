@@ -103,6 +103,7 @@ class TraCIBuffer {
 		std::string buf;
 		size_t buf_index;
 };
+
 template<> std::vector<std::string> TraCIBuffer::readTypeChecked(int expectedTraCIType);
 template<> void TraCIBuffer::write(std::string inv);
 template<> void TraCIBuffer::write(TraCICoord inv);

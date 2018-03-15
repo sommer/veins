@@ -8,6 +8,7 @@
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
+
 namespace Veins {
 
 class TraCIConnection;
@@ -149,6 +150,7 @@ class TraCICommandInterface
 				Trafficlight(TraCICommandInterface* traci, std::string trafficLightId) : traci(traci), trafficLightId(trafficLightId) {
 					connection = &traci->connection;
 				}
+
 				std::string getCurrentState() const;
 				int32_t getDefaultCurrentPhaseDuration() const;
 				std::list<std::string> getControlledLanes() const;
@@ -163,6 +165,7 @@ class TraCICommandInterface
 				void setState(std::string state);
 				void setPhaseDuration(int32_t duration); /**< set remaining duration of current phase in milliseconds */
 				void setProgramDefinition(TraCITrafficLightProgram::Logic program, int32_t programNr);
+
 			protected:
 				TraCICommandInterface* traci;
 				TraCIConnection* connection;
