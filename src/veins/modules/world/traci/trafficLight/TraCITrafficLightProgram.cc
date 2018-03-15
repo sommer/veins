@@ -35,23 +35,17 @@ bool TraCITrafficLightProgram::Phase::isGreenPhase() const
 }
 
 
-TraCITrafficLightProgram::TraCITrafficLightProgram(std::string id):
-	id(id),
-	logics()
-{
+TraCITrafficLightProgram::TraCITrafficLightProgram(std::string id): id(id), logics() {
 }
 
-void TraCITrafficLightProgram::addLogic(const Logic& logic)
-{
+void TraCITrafficLightProgram::addLogic(const Logic& logic) {
 	logics[logic.id] = logic;
 }
 
-TraCITrafficLightProgram::Logic TraCITrafficLightProgram::getLogic(const std::string& lid) const
-{
+TraCITrafficLightProgram::Logic TraCITrafficLightProgram::getLogic(const std::string& lid) const {
 	return logics.at(lid);
 }
 
-bool TraCITrafficLightProgram::hasLogic(const std::string& lid) const
-{
+bool TraCITrafficLightProgram::hasLogic(const std::string& lid) const {
 	return logics.find(lid) != logics.end();
 }

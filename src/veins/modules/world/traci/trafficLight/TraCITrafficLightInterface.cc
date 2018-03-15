@@ -44,61 +44,49 @@ TraCITrafficLightInterface::TraCITrafficLightInterface():
 {
 }
 
-TraCITrafficLightInterface::~TraCITrafficLightInterface()
-{
+TraCITrafficLightInterface::~TraCITrafficLightInterface() {
 	delete tlCommandInterface;
 }
 
-void TraCITrafficLightInterface::preInitialize(const std::string& external_id, const Coord& position,
-		const simtime_t& updateInterval)
-{
+void TraCITrafficLightInterface::preInitialize(const std::string& external_id, const Coord& position, const simtime_t& updateInterval) {
 	isPreInitialized = true;
 	this->updateInterval = updateInterval;
 	setExternalId(external_id);
 	this->position = position;
 }
 
-Coord TraCITrafficLightInterface::getPosition() const
-{
+Coord TraCITrafficLightInterface::getPosition() const {
 	return this->position;
 }
-std::list<std::list<TraCITrafficLightLink> > TraCITrafficLightInterface::getControlledLinks()
-{
+std::list<std::list<TraCITrafficLightLink> > TraCITrafficLightInterface::getControlledLinks() {
 	return controlledLinks;
 }
 
-TraCITrafficLightProgram::Logic TraCITrafficLightInterface::getCurrentLogic() const
-{
+TraCITrafficLightProgram::Logic TraCITrafficLightInterface::getCurrentLogic() const {
 	return programDefinition.getLogic(currentLogicId);
 }
 
-std::string TraCITrafficLightInterface::getCurrentLogicId() const
-{
+std::string TraCITrafficLightInterface::getCurrentLogicId() const {
 	return currentLogicId;
 }
 
-int TraCITrafficLightInterface::getCurrentPhaseId() const
-{
+int TraCITrafficLightInterface::getCurrentPhaseId() const {
 	return currentPhaseNr;
 }
 
-TraCITrafficLightProgram::Phase TraCITrafficLightInterface::getCurrentPhase() const
-{
+TraCITrafficLightProgram::Phase TraCITrafficLightInterface::getCurrentPhase() const {
 	return getCurrentLogic().phases[currentPhaseNr];
 }
 
-simtime_t TraCITrafficLightInterface::getAssumedNextSwitch() const
-{
+simtime_t TraCITrafficLightInterface::getAssumedNextSwitch() const {
 	return nextSwitchTime;
 }
 
-simtime_t TraCITrafficLightInterface::getRemainingDuration() const
-{
+simtime_t TraCITrafficLightInterface::getRemainingDuration() const {
 	return nextSwitchTime - simTime();
 }
 
-std::string TraCITrafficLightInterface::getCurrentState() const
-{
+std::string TraCITrafficLightInterface::getCurrentState() const {
 	if(isInOnlineSignalState()) {
 		return currentSignalState;
 	}
@@ -107,24 +95,19 @@ std::string TraCITrafficLightInterface::getCurrentState() const
 	}
 }
 
-bool TraCITrafficLightInterface::isInOnlineSignalState() const
-{
+bool TraCITrafficLightInterface::isInOnlineSignalState() const {
 	return inOnlineSignalState;
 }
 
-void TraCITrafficLightInterface::setProgramDefinition(const TraCITrafficLightProgram& programDefinition)
-{
+void TraCITrafficLightInterface::setProgramDefinition(const TraCITrafficLightProgram& programDefinition) {
 	this->programDefinition = programDefinition;
 }
 
-void TraCITrafficLightInterface::setControlledLinks(const std::list< std::list<TraCITrafficLightLink> >&
-		controlledLinks)
-{
+void TraCITrafficLightInterface::setControlledLinks(const std::list< std::list<TraCITrafficLightLink> >& controlledLinks) {
 	this->controlledLinks = controlledLinks;
 }
 
-void TraCITrafficLightInterface::setCurrentLogicById(const std::string& logicId, bool setSumo)
-{
+void TraCITrafficLightInterface::setCurrentLogicById(const std::string& logicId, bool setSumo) {
 	if(setSumo) {
 		ASSERT(logicId != "online");
 		if(!programDefinition.hasLogic(logicId)) {
@@ -143,8 +126,7 @@ void TraCITrafficLightInterface::setCurrentLogicById(const std::string& logicId,
 	}
 }
 
-void TraCITrafficLightInterface::setCurrentPhaseByNr(const unsigned int phaseNr, bool setSumo)
-{
+void TraCITrafficLightInterface::setCurrentPhaseByNr(const unsigned int phaseNr, bool setSumo) {
 	if(setSumo) {
 		if(phaseNr >= getCurrentLogic().phases.size()) {
 			error("Cannot set current phase to %d: current logic has only %d Phases (TraCITrafficLightInterface %s)",
@@ -161,8 +143,7 @@ void TraCITrafficLightInterface::setCurrentPhaseByNr(const unsigned int phaseNr,
 	currentPhaseNr = phaseNr;
 }
 
-void TraCITrafficLightInterface::setCurrentState(const std::string& state, bool setSumo)
-{
+void TraCITrafficLightInterface::setCurrentState(const std::string& state, bool setSumo) {
 	if(setSumo) {
 		tlCommandInterface->setState(state);
 		const std::string newValueInSumo = tlCommandInterface->getCurrentState();
@@ -175,8 +156,7 @@ void TraCITrafficLightInterface::setCurrentState(const std::string& state, bool 
 	currentSignalState = state;
 }
 
-void TraCITrafficLightInterface::setNextSwitch(const simtime_t& newNextSwitch, bool setSumo)
-{
+void TraCITrafficLightInterface::setNextSwitch(const simtime_t& newNextSwitch, bool setSumo) {
 	// FIXME: not working reliably - use setRemainingDuration instead!
 	// round to be feasible for SUMO
 	simtime_t nextSwitch = ceil(newNextSwitch, updateInterval, 0);
@@ -198,8 +178,7 @@ void TraCITrafficLightInterface::setNextSwitch(const simtime_t& newNextSwitch, b
 	nextSwitchTime = nextSwitch;
 }
 
-void TraCITrafficLightInterface::setRemainingDuration(const simtime_t& rawRemainingDuration, bool setSumo)
-{
+void TraCITrafficLightInterface::setRemainingDuration(const simtime_t& rawRemainingDuration, bool setSumo) {
 	ASSERT(rawRemainingDuration >= 0);
 	// round (up) to match sumo time steps
 	simtime_t veinsTimeNow(simTime());
@@ -221,8 +200,7 @@ void TraCITrafficLightInterface::setRemainingDuration(const simtime_t& rawRemain
 	nextSwitchTime = nextSwitchInVeins;
 }
 
-void TraCITrafficLightInterface::initialize()
-{
+void TraCITrafficLightInterface::initialize() {
 	ASSERT(isPreInitialized);
 	isPreInitialized = false;
 	setProgramDefinition(getTlCommandInterface()->getProgramDefinition());
@@ -233,8 +211,7 @@ void TraCITrafficLightInterface::initialize()
 	currentSignalState = getTlCommandInterface()->getCurrentState();
 }
 
-void TraCITrafficLightInterface::handleMessage(cMessage* msg)
-{
+void TraCITrafficLightInterface::handleMessage(cMessage* msg) {
 	if(msg->isSelfMessage()) {
 		// not in use (yet)
 	} else if(msg->arrivedOn("logic$i")) {
@@ -243,8 +220,7 @@ void TraCITrafficLightInterface::handleMessage(cMessage* msg)
 	delete msg;
 }
 
-void TraCITrafficLightInterface::handleChangeCommandMessage(cMessage* msg)
-{
+void TraCITrafficLightInterface::handleChangeCommandMessage(cMessage* msg) {
 	TraCITrafficLightMessage* tmMsg = check_and_cast<TraCITrafficLightMessage*>(msg);
 	switch(tmMsg->getChangedAttribute()) {
 	case TrafficLightAtrributeType::LOGICID:
@@ -265,8 +241,7 @@ void TraCITrafficLightInterface::handleChangeCommandMessage(cMessage* msg)
 	}
 }
 
-void TraCITrafficLightInterface::sendChangeMsg(int changedAttribute, const std::string newValue, const std::string oldValue)
-{
+void TraCITrafficLightInterface::sendChangeMsg(int changedAttribute, const std::string newValue, const std::string oldValue) {
 	Enter_Method_Silent();
 	TraCITrafficLightMessage *pMsg = new TraCITrafficLightMessage("TrafficLightChangeMessage");
 	pMsg->setTlId(external_id.c_str());

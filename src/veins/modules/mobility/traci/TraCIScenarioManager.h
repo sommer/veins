@@ -121,7 +121,6 @@ class TraCIScenarioManager : public cSimpleModule
 		std::string trafficLightModuleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
 		std::vector<std::string> trafficLightModuleIds; /**< list of traffic light module ids that is subscribed to (whitelist) */
 
-
 		uint32_t vehicleNameCounter;
 		cMessage* myAddVehicleTimer;
 		std::vector<std::string> vehicleTypeIds;
@@ -191,7 +190,6 @@ class TraCIScenarioManager : public cSimpleModule
 		void processSimSubscription(std::string objectId, TraCIBuffer& buf);
 		void processVehicleSubscription(std::string objectId, TraCIBuffer& buf);
 		void processSubcriptionResult(TraCIBuffer& buf);
-
 
 		void subscribeToTrafficLightVariables(std::string tlId);
 		void unsubscribeFromTrafficLightVariables(std::string tlId);
