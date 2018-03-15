@@ -22,6 +22,7 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
+#include <iterator>
 
 
 #define MYDEBUG EV
@@ -31,10 +32,12 @@
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/modules/obstacle/ObstacleControl.h"
+#include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 
 using Veins::TraCIScenarioManager;
 using Veins::TraCIBuffer;
 using Veins::TraCICoord;
+using Veins::TraCITrafficLightInterface;
 
 Define_Module(Veins::TraCIScenarioManager);
 
@@ -240,6 +243,13 @@ void TraCIScenarioManager::initialize(int stage) {
 		return;
 	}
 
+	trafficLightModuleType = par("trafficLightModuleType").stdstringValue();
+	trafficLightModuleName = par("trafficLightModuleName").stdstringValue();
+	trafficLightModuleDisplayString = par("trafficLightModuleDisplayString").stdstringValue();
+	trafficLightModuleIds.clear();
+	std::istringstream filterstream(par("trafficLightFilter").stdstringValue());
+	std::copy(std::istream_iterator<std::string>(filterstream), std::istream_iterator<std::string>(), std::back_inserter(trafficLightModuleIds));
+
 
 	debug = par("debug");
 	connectAt = par("connectAt");
@@ -288,6 +298,7 @@ void TraCIScenarioManager::initialize(int stage) {
 	nextNodeVectorIndex = 0;
 	hosts.clear();
 	subscribedVehicles.clear();
+	trafficLights.clear();
 	activeVehicleCount = 0;
 	parkingVehicleCount = 0;
 	drivingVehicleCount = 0;
@@ -373,6 +384,49 @@ void TraCIScenarioManager::init_traci() {
 		processSubcriptionResult(buf);
 		ASSERT(buf.eof());
 	}
+
+	if (!trafficLightModuleType.empty() && !trafficLightModuleIds.empty()) {
+		// initialize traffic lights
+		cModule* parentmod = getParentModule();
+		if (!parentmod)
+			error("Parent Module not found (for traffic light creation)");
+		cModuleType* tlModuleType = cModuleType::get(trafficLightModuleType.c_str());
+
+		// query traffic lights via TraCI
+		std::list<std::string> trafficLightIds = getCommandInterface()->getTrafficlightIds();
+		size_t nrOfTrafficLights = trafficLightIds.size();
+		int cnt = 0;
+		for (std::list<std::string>::iterator i = trafficLightIds.begin(); i != trafficLightIds.end(); ++i) {
+			std::string tlId = *i;
+			if (std::find(trafficLightModuleIds.begin(), trafficLightModuleIds.end(), tlId) == trafficLightModuleIds.end())
+				continue; // filter only selected elements
+			Coord position = getCommandInterface()->junction(tlId).getPosition();
+
+			cModule *module = tlModuleType->create(trafficLightModuleName.c_str(), parentmod, nrOfTrafficLights, cnt);
+			module->par("externalId") = tlId;
+			module->finalizeParameters();
+			module->getDisplayString().parse(trafficLightModuleDisplayString.c_str());
+			module->buildInside();
+			module->scheduleStart(simTime() + updateInterval);
+
+			cModule *tlIfSubmodule = module->getSubmodule("tlInterface");
+			// initialize traffic light interface with current program
+			TraCITrafficLightInterface *tlIfModule = dynamic_cast<TraCITrafficLightInterface*>(tlIfSubmodule);
+			tlIfModule->preInitialize(tlId, position, updateInterval);
+
+			// initialize mobility for positioning
+			cModule *mobiSubmodule = module->getSubmodule("mobility");
+			mobiSubmodule->par("x") = position.x;
+			mobiSubmodule->par("y") = position.y;
+			mobiSubmodule->par("z") = position.z;
+
+			module->callInitialize();
+			trafficLights[tlId] = module;
+			subscribeToTrafficLightVariables(tlId); // subscribe after module is in trafficLights
+			cnt++;
+		}
+	}
+
 
 	ObstacleControl* obstacles = ObstacleControlAccess().getIfExists();
 	if (obstacles) {
@@ -655,6 +709,82 @@ void TraCIScenarioManager::unsubscribeFromVehicleVariables(std::string vehicleId
 
 	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber);
 	ASSERT(buf.eof());
+}
+void TraCIScenarioManager::subscribeToTrafficLightVariables(std::string tlId) {
+	// subscribe to some attributes of the traffic light system
+	uint32_t beginTime = 0;
+	uint32_t endTime = 0x7FFFFFFF;
+	std::string objectId = tlId;
+	uint8_t variableNumber = 4;
+	uint8_t variable1 = TL_CURRENT_PHASE;
+	uint8_t variable2 = TL_CURRENT_PROGRAM;
+	uint8_t variable3 = TL_NEXT_SWITCH;
+	uint8_t variable4 = TL_RED_YELLOW_GREEN_STATE;
+
+	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_TL_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4);
+	processSubcriptionResult(buf);
+	ASSERT(buf.eof());
+}
+
+void TraCIScenarioManager::unsubscribeFromTrafficLightVariables(std::string tlId) {
+	// unsubscribe from some attributes of the traffic light system
+	// this method is mainly for completeness as traffic lights are not supposed to be removed at runtime
+
+	uint32_t beginTime = 0;
+	uint32_t endTime = 0x7FFFFFFF;
+	std::string objectId = tlId;
+	uint8_t variableNumber = 0;
+
+	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_TL_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber);
+	ASSERT(buf.eof());
+}
+
+void TraCIScenarioManager::processTrafficLightSubscription(std::string objectId,TraCIBuffer& buf) {
+	cModule* tlIfSubmodule = trafficLights[objectId]->getSubmodule( "tlInterface");
+	TraCITrafficLightInterface *tlIfModule = dynamic_cast<TraCITrafficLightInterface*>(tlIfSubmodule);
+	if (!tlIfModule) {
+		error("Could not find traffic light module %s", objectId.c_str());
+	}
+
+	uint8_t variableNumber_resp;
+	buf >> variableNumber_resp;
+	for (uint8_t j = 0; j < variableNumber_resp; ++j) {
+		uint8_t response_type;
+		buf >> response_type;
+		uint8_t isokay;
+		buf >> isokay;
+		if (isokay != RTYPE_OK) {
+			std::string description = buf.readTypeChecked<std::string>(
+			TYPE_STRING);
+			if (isokay == RTYPE_NOTIMPLEMENTED) {
+				error("TraCI server reported subscribing to 0x%2x not implemented (\"%s\"). Might need newer version.", response_type, description.c_str());
+			} else {
+				error("TraCI server reported error subscribing to variable 0x%2x (\"%s\").", response_type, description.c_str());
+			}
+
+		}
+		switch (response_type) {
+			case TL_CURRENT_PHASE:
+				tlIfModule->setCurrentPhaseByNr(buf.readTypeChecked<int32_t>(TYPE_INTEGER), false);
+				break;
+
+			case TL_CURRENT_PROGRAM:
+				tlIfModule->setCurrentLogicById(buf.readTypeChecked<std::string>(TYPE_STRING), false);
+				break;
+
+			case TL_NEXT_SWITCH:
+				tlIfModule->setNextSwitch(SimTime(buf.readTypeChecked<int32_t>(TYPE_INTEGER), SIMTIME_MS), false);
+				break;
+
+			case TL_RED_YELLOW_GREEN_STATE:
+				tlIfModule->setCurrentState(buf.readTypeChecked<std::string>(TYPE_STRING), false);
+				break;
+
+			default:
+				error("Received unhandled traffic light subscription result; type: 0x%02x", response_type);
+				break;
+		}
+	}
 }
 
 void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuffer& buf) {
@@ -965,6 +1095,7 @@ void TraCIScenarioManager::processSubcriptionResult(TraCIBuffer& buf) {
 
 	if (commandId_resp == RESPONSE_SUBSCRIBE_VEHICLE_VARIABLE) processVehicleSubscription(objectId_resp, buf);
 	else if (commandId_resp == RESPONSE_SUBSCRIBE_SIM_VARIABLE) processSimSubscription(objectId_resp, buf);
+	else if (commandId_resp == RESPONSE_SUBSCRIBE_TL_VARIABLE) processTrafficLightSubscription(objectId_resp, buf);
 	else {
 		error("Received unhandled subscription result");
 	}

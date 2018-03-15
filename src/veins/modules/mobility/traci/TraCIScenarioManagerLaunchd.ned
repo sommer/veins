@@ -60,6 +60,10 @@ simple TraCIScenarioManagerLaunchd
         // *.manager.moduleDisplayString = ""
         // </pre>
         string moduleDisplayString = default("*='i=veins/node/car;is=vs'");
+        string trafficLightModuleType = default("");  // module type to be used in the simulation for each managed traffic light
+        string trafficLightModuleName = default("tls");  // module name to be used in the simulation for each managed traffic light
+        string trafficLightModuleDisplayString = default("i=misc/node2;is=vs;r=0,,#707070,1");  // module displayString to be used in the simulation for each managed traffic light
+        string trafficLightFilter = default("");  // filter string to select which tls shall be subscribed, list sumo IDs separated by spaces
         string host = default("localhost");  // sumo-launchd.py server hostname
         int port = default(9999);  // sumo-launchd.py server port
         xml launchConfig; // launch configuration to send to sumo-launchd.py
