@@ -137,6 +137,9 @@ class TraCIScenarioManager : public cSimpleModule
 		std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
 		std::list<std::pair<TraCICoord, TraCICoord> > roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
 
+		double areaSum;
+
+		AnnotationManager* annotations;
 		TraCIConnection* connection;
 		TraCICommandInterface* commandIfc;
 
