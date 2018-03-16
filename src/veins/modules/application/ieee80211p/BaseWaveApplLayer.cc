@@ -122,7 +122,7 @@ simtime_t BaseWaveApplLayer::computeAsynchronousSendingTime(simtime_t interval, 
     simtime_t nextCCH;
 
     /*
-     * start event earlierst in next CCH  (or SCH) interval. For alignment, first find the next CCH interval
+     * start event earliest in next CCH (or SCH) interval. For alignment, first find the next CCH interval
      * To find out next CCH, go back to start of current interval and add two or one intervals
      * depending on type of current interval
      */
