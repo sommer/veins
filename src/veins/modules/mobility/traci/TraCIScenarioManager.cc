@@ -38,6 +38,7 @@ using Veins::TraCIScenarioManager;
 using Veins::TraCIBuffer;
 using Veins::TraCICoord;
 using Veins::TraCITrafficLightInterface;
+using Veins::AnnotationManagerAccess;
 
 Define_Module(Veins::TraCIScenarioManager);
 
@@ -250,7 +251,6 @@ void TraCIScenarioManager::initialize(int stage) {
 	std::istringstream filterstream(par("trafficLightFilter").stdstringValue());
 	std::copy(std::istream_iterator<std::string>(filterstream), std::istream_iterator<std::string>(), std::back_inserter(trafficLightModuleIds));
 
-
 	debug = par("debug");
 	connectAt = par("connectAt");
 	firstStepAt = par("firstStepAt");
@@ -270,6 +270,8 @@ void TraCIScenarioManager::initialize(int stage) {
 	mobRng = getRNG(vehicleRngIndex);
 
 	myAddVehicleTimer = new cMessage("myAddVehicleTimer");
+
+	annotations = AnnotationManagerAccess().getIfExists();
 
 	// parse roiRoads
 	roiRoads.clear();
@@ -295,6 +297,7 @@ void TraCIScenarioManager::initialize(int stage) {
 		roiRects.push_back(std::pair<TraCICoord, TraCICoord>(TraCICoord(x1, y1), TraCICoord(x2, y2)));
 	}
 
+	areaSum = 0;
 	nextNodeVectorIndex = 0;
 	hosts.clear();
 	subscribedVehicles.clear();
@@ -449,6 +452,35 @@ void TraCIScenarioManager::init_traci() {
 	}
 
 	emit(traciInitializedSignal, true);
+
+	// draw and calculate area of rois
+	for (std::list<std::pair<TraCICoord, TraCICoord> >::const_iterator roi = roiRects.begin(), end = roiRects.end(); roi != end; ++roi) {
+		TraCICoord first = roi->first;
+		TraCICoord second = roi->second;
+
+		std::list<Coord> pol;
+
+		Coord a = connection->traci2omnet(first);
+		Coord b = connection->traci2omnet(TraCICoord(first.x,second.y));
+		Coord c = connection->traci2omnet(second);
+		Coord d = connection->traci2omnet(TraCICoord(second.x,first.y));
+
+		pol.push_back(a);
+		pol.push_back(b);
+		pol.push_back(c);
+		pol.push_back(d);
+
+		// draw polygon for region of interest
+		if (annotations) {
+			annotations->drawPolygon(pol, "black");
+		}
+
+		// calculate region area
+		double ab = a.distance(b);
+		double ad = a.distance(d);
+		double area = ab * ad;
+		areaSum += area;
+	}
 }
 
 void TraCIScenarioManager::finish() {
@@ -458,6 +490,8 @@ void TraCIScenarioManager::finish() {
 	while (hosts.begin() != hosts.end()) {
 		deleteManagedModule(hosts.begin()->first);
 	}
+
+	recordScalar("roiArea", areaSum);
 }
 
 void TraCIScenarioManager::handleMessage(cMessage *msg) {
