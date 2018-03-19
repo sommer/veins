@@ -656,7 +656,7 @@ void TraCIScenarioManager::executeOneTimestep() {
 
 	uint32_t targetTime = simTime().inUnit(SIMTIME_MS);
 
-	if (targetTime > round(connectAt.dbl() * 1000)) {
+	if (isConnected()) {
 		insertVehicles();
 		TraCIBuffer buf = connection->query(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
 
