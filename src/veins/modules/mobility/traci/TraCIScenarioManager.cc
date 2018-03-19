@@ -650,15 +650,11 @@ bool TraCIScenarioManager::isInRegionOfInterest(const TraCICoord& position, std:
 	return false;
 }
 
-uint32_t TraCIScenarioManager::getCurrentTimeMs() {
-	return static_cast<uint32_t>(round(simTime().dbl() * 1000));
-}
-
 void TraCIScenarioManager::executeOneTimestep() {
 
 	MYDEBUG << "Triggering TraCI server simulation advance to t=" << simTime() <<endl;
 
-	uint32_t targetTime = getCurrentTimeMs();
+	uint32_t targetTime = simTime().inUnit(SIMTIME_MS);
 
 	if (targetTime > round(connectAt.dbl() * 1000)) {
 		insertVehicles();
@@ -956,7 +952,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			ASSERT(varType == TYPE_INTEGER);
 			uint32_t serverTimestep; buf >> serverTimestep;
 			MYDEBUG << "TraCI reports current time step as " << serverTimestep << "ms." << endl;
-			uint32_t omnetTimestep = getCurrentTimeMs();
+			uint32_t omnetTimestep = simTime().inUnit(SIMTIME_MS);
 			ASSERT(omnetTimestep == serverTimestep);
 
 		} else {
