@@ -42,7 +42,6 @@ Define_Module(Veins::TraCIScenarioManager);
 const std::string TraCIScenarioManager::TRACI_INITIALIZED_SIGNAL_NAME = "traciInitialized";
 
 TraCIScenarioManager::TraCIScenarioManager() :
-		myAddVehicleTimer(0),
 		mobRng(0),
 		connection(0),
 		connectAndStartTrigger(0),
@@ -56,7 +55,6 @@ TraCIScenarioManager::TraCIScenarioManager() :
 TraCIScenarioManager::~TraCIScenarioManager() {
 	cancelAndDelete(connectAndStartTrigger);
 	cancelAndDelete(executeOneTimestepTrigger);
-	cancelAndDelete(myAddVehicleTimer);
 	delete commandIfc;
 	delete connection;
 }
@@ -265,8 +263,6 @@ void TraCIScenarioManager::initialize(int stage) {
 	vehicleRngIndex = par("vehicleRngIndex");
 	numVehicles = par("numVehicles").longValue();
 	mobRng = getRNG(vehicleRngIndex);
-
-	myAddVehicleTimer = new cMessage("myAddVehicleTimer");
 
 	annotations = AnnotationManagerAccess().getIfExists();
 

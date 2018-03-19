@@ -122,7 +122,6 @@ class TraCIScenarioManager : public cSimpleModule
 		std::vector<std::string> trafficLightModuleIds; /**< list of traffic light module ids that is subscribed to (whitelist) */
 
 		uint32_t vehicleNameCounter;
-		cMessage* myAddVehicleTimer;
 		std::vector<std::string> vehicleTypeIds;
 		std::map<int, std::queue<std::string> > vehicleInsertQueue;
 		std::set<std::string> queuedVehicles;
