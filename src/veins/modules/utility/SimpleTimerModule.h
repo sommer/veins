@@ -52,10 +52,10 @@ class SimpleTimerModule : public omnetpp::cSimpleModule
 				return start <= time && (end < 0 || end >= time);
 			}
 
-			omnetpp::simtime_t start; //! Time of the Timer's first occurence.
-			omnetpp::simtime_t end; //! Last possible time a Timer will trigger. Negative values encode never-ending Timers.
-			omnetpp::simtime_t period; //! Time between events.
-			std::function<void()> callback; //! The function to be called when the Timer is triggered.
+			omnetpp::simtime_t start; ///< Time of the Timer's first occurence.
+			omnetpp::simtime_t end; ///< Last possible time a Timer will trigger. Negative values encode never-ending Timers.
+			omnetpp::simtime_t period; ///< Time between events.
+			std::function<void()> callback; ///< The function to be called when the Timer is triggered.
 		};
 
 		typedef std::map<TimerMessage*, const TimerSpec> TimerList;
@@ -65,8 +65,8 @@ class SimpleTimerModule : public omnetpp::cSimpleModule
 		 * Possible interpretations of a time value.
 		 */
 		enum class TimeInterpretation {
-			RELATIVE_TIME, //! Time will be interpreted relative to the current one.
-			ABSOLUTE_TIME //! Time describes a fixed point in time, independent of the current clock.
+			RELATIVE_TIME, ///< Time will be interpreted relative to the current one.
+			ABSOLUTE_TIME ///< Time describes a fixed point in time, independent of the current clock.
 		};
 
 		/**
@@ -115,7 +115,7 @@ class SimpleTimerModule : public omnetpp::cSimpleModule
 		void cancelTimer(Timer timer);
 
 	private:
-		TimerList timers_; //! A list of all Timers which are currently active.
+		TimerList timers_; ///< A list of all Timers which are currently active.
 };
 
 } // namespace Veins
