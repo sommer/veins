@@ -24,9 +24,6 @@
 #include <stdexcept>
 #include <iterator>
 
-
-#define MYDEBUG EV
-
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
@@ -317,7 +314,7 @@ void TraCIScenarioManager::initialize(int stage) {
 	executeOneTimestepTrigger = new cMessage("step");
 	scheduleAt(firstStepAt, executeOneTimestepTrigger);
 
-	MYDEBUG << "initialized TraCIScenarioManager" << endl;
+	EV_DEBUG << "initialized TraCIScenarioManager" << endl;
 }
 
 void TraCIScenarioManager::init_traci() {
@@ -327,7 +324,7 @@ void TraCIScenarioManager::init_traci() {
 		std::string serverVersion = version.second;
 
 		if ((apiVersion == 10) || (apiVersion == 11) || (apiVersion == 13) || (apiVersion == 14) || (apiVersion == 15)) {
-			MYDEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
+			EV_DEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
 		}
 		else {
 			error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using SUMO 0.30.0", serverVersion.c_str(), apiVersion);
@@ -351,10 +348,10 @@ void TraCIScenarioManager::init_traci() {
 
 		TraCICoord netbounds1 = TraCICoord(x1, y1);
 		TraCICoord netbounds2 = TraCICoord(x2, y2);
-		MYDEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
+		EV_DEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
 		connection->setNetbounds(netbounds1, netbounds2, par("margin"));
 		if (world && ((connection->traci2omnet(netbounds2).x > world->getPgs()->x) || (connection->traci2omnet(netbounds1).y > world->getPgs()->y))) {
-			MYDEBUG << "WARNING: Playground size (" << world->getPgs()->x << ", " << world->getPgs()->y << ") might be too small for vehicle at network bounds (" << connection->traci2omnet(netbounds2).x << ", " << connection->traci2omnet(netbounds1).y << ")" << endl;
+			EV_DEBUG << "WARNING: Playground size (" << world->getPgs()->x << ", " << world->getPgs()->y << ") might be too small for vehicle at network bounds (" << connection->traci2omnet(netbounds2).x << ", " << connection->traci2omnet(netbounds1).y << ")" << endl;
 		}
 	}
 
@@ -515,7 +512,7 @@ void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 				std::list<std::string> vehTypes = getCommandInterface()->getVehicleTypeIds();
 				for (std::list<std::string>::const_iterator i = vehTypes.begin(); i != vehTypes.end(); ++i) {
 					if (i->compare("DEFAULT_VEHTYPE")!=0) {
-						MYDEBUG << *i << std::endl;
+						EV_DEBUG << *i << std::endl;
 						vehicleTypeIds.push_back(*i);
 					}
 				}
@@ -526,11 +523,11 @@ void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 					std::string routeId = *i;
 					if (par("useRouteDistributions").boolValue() == true) {
 						if (std::count(routeId.begin(), routeId.end(), '#') >= 1) {
-							MYDEBUG << "Omitting route " << routeId << " as it seems to be a member of a route distribution (found '#' in name)" << std::endl;
+							EV_DEBUG << "Omitting route " << routeId << " as it seems to be a member of a route distribution (found '#' in name)" << std::endl;
 							continue;
 						}
 					}
-					MYDEBUG << "Adding " << routeId << " to list of possible routes" << std::endl;
+					EV_DEBUG << "Adding " << routeId << " to list of possible routes" << std::endl;
 					routeIds.push_back(routeId);
 				}
 			}
@@ -652,7 +649,7 @@ bool TraCIScenarioManager::isInRegionOfInterest(const TraCICoord& position, std:
 
 void TraCIScenarioManager::executeOneTimestep() {
 
-	MYDEBUG << "Triggering TraCI server simulation advance to t=" << simTime() <<endl;
+	EV_DEBUG << "Triggering TraCI server simulation advance to t=" << simTime() <<endl;
 
 	uint32_t targetTime = simTime().inUnit(SIMTIME_MS);
 
@@ -661,7 +658,7 @@ void TraCIScenarioManager::executeOneTimestep() {
 		TraCIBuffer buf = connection->query(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
 
 		uint32_t count; buf >> count;
-		MYDEBUG << "Getting " << count << " subscription results" << endl;
+		EV_DEBUG << "Getting " << count << " subscription results" << endl;
 		for (uint32_t i = 0; i < count; ++i) {
 			processSubcriptionResult(buf);
 		}
@@ -688,21 +685,21 @@ void TraCIScenarioManager::insertVehicles() {
 
 	for (std::map<int, std::queue<std::string> >::iterator i = vehicleInsertQueue.begin(); i != vehicleInsertQueue.end(); ) {
 		std::string route = routeIds[i->first];
-		MYDEBUG << "process " << route << std::endl;
+		EV_DEBUG << "process " << route << std::endl;
 		std::queue<std::string> vehicles = i->second;
 		while (!i->second.empty()) {
 			bool suc = false;
 			std::string type = i->second.front();
 			std::stringstream veh;
 			veh << type << "_" << vehicleNameCounter;
-			MYDEBUG << "trying to add " << veh.str() << " with " << route << " vehicle type " << type << std::endl;
+			EV_DEBUG << "trying to add " << veh.str() << " with " << route << " vehicle type " << type << std::endl;
 
 			suc = getCommandInterface()->addVehicle(veh.str(), type, route, simTime());
 			if (!suc) {
 				i->second.pop();
 			}
 			else {
-				MYDEBUG << "successful inserted " << veh.str() << std::endl;
+				EV_DEBUG << "successful inserted " << veh.str() << std::endl;
 				queuedVehicles.insert(veh.str());
 				i->second.pop();
 				vehicleNameCounter++;
@@ -837,7 +834,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
-			MYDEBUG << "TraCI reports " << count << " departed vehicles." << endl;
+			EV_DEBUG << "TraCI reports " << count << " departed vehicles." << endl;
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;
 				// adding modules is handled on the fly when entering/leaving the ROI
@@ -850,7 +847,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
-			MYDEBUG << "TraCI reports " << count << " arrived vehicles." << endl;
+			EV_DEBUG << "TraCI reports " << count << " arrived vehicles." << endl;
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;
 
@@ -877,7 +874,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
-			MYDEBUG << "TraCI reports " << count << " vehicles starting to teleport." << endl;
+			EV_DEBUG << "TraCI reports " << count << " vehicles starting to teleport." << endl;
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;
 
@@ -898,7 +895,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
-			MYDEBUG << "TraCI reports " << count << " vehicles ending teleport." << endl;
+			EV_DEBUG << "TraCI reports " << count << " vehicles ending teleport." << endl;
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;
 				// adding modules is handled on the fly when entering/leaving the ROI
@@ -911,7 +908,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
-			MYDEBUG << "TraCI reports " << count << " vehicles starting to park." << endl;
+			EV_DEBUG << "TraCI reports " << count << " vehicles starting to park." << endl;
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;
 
@@ -932,7 +929,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
-			MYDEBUG << "TraCI reports " << count << " vehicles ending to park." << endl;
+			EV_DEBUG << "TraCI reports " << count << " vehicles ending to park." << endl;
 			for (uint32_t i = 0; i < count; ++i) {
 				std::string idstring; buf >> idstring;
 
@@ -951,7 +948,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_INTEGER);
 			uint32_t serverTimestep; buf >> serverTimestep;
-			MYDEBUG << "TraCI reports current time step as " << serverTimestep << "ms." << endl;
+			EV_DEBUG << "TraCI reports current time step as " << serverTimestep << "ms." << endl;
 			uint32_t omnetTimestep = simTime().inUnit(SIMTIME_MS);
 			ASSERT(omnetTimestep == serverTimestep);
 
@@ -987,7 +984,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_STRINGLIST);
 			uint32_t count; buf >> count;
-			MYDEBUG << "TraCI reports " << count << " active vehicles." << endl;
+			EV_DEBUG << "TraCI reports " << count << " active vehicles." << endl;
 			ASSERT(count == activeVehicleCount);
 			std::set<std::string> drivingVehicles;
 			for (uint32_t i = 0; i < count; ++i) {
@@ -1060,11 +1057,11 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	if (!inRoi) {
 		if (mod) {
 			deleteManagedModule(objectId);
-			MYDEBUG << "Vehicle #" << objectId << " left region of interest" << endl;
+			EV_DEBUG << "Vehicle #" << objectId << " left region of interest" << endl;
 		}
 		else if(unEquippedHosts.find(objectId) != unEquippedHosts.end()) {
 			unEquippedHosts.erase(objectId);
-			MYDEBUG << "Vehicle (unequipped) # " << objectId<< " left region of interest" << endl;
+			EV_DEBUG << "Vehicle (unequipped) # " << objectId<< " left region of interest" << endl;
 		}
 		return;
 	}
@@ -1110,11 +1107,11 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 
 		if (mType != "0") {
 			addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle, VehicleSignal(signals));
-			MYDEBUG << "Added vehicle #" << objectId << endl;
+			EV_DEBUG << "Added vehicle #" << objectId << endl;
 		}
 	} else {
 		// module existed - update position
-		MYDEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << endl;
+		EV_DEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << endl;
 		updateModulePosition(mod, p, edge, speed, angle, VehicleSignal(signals));
 	}
 
