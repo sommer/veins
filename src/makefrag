@@ -8,3 +8,7 @@ ifeq ($(PLATFORM),win32.x86_64)
   ENABLE_AUTO_IMPORT=-Wl,--enable-auto-import
   LDFLAGS := $(filter-out $(ENABLE_AUTO_IMPORT), $(LDFLAGS))
 endif
+
+# link in protobuf libraries and headers generated from .proto files
+LIBS+= -lprotobuf
+INCLUDE_PATH += -Iprotobuf

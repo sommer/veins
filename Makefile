@@ -36,6 +36,7 @@ makefiles:
 clean: src/Makefile
 	cd src && $(MAKE) clean
 	rm -f run debug memcheck
+	rm -rf src/protobuf
 
 cleanall: src/Makefile
 	cd src && $(MAKE) MODE=release clean
