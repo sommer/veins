@@ -44,6 +44,24 @@ f.write('run_libs = %s\n' % repr(run_libs))
 f.write('run_neds = %s\n' % repr(run_neds))
 f.close()
 
+# compile protobuf proto files
+proto_cppout = 'src/protobuf'
+proto_source_dirs = [
+    # add paths to proto files here
+]
+if not os.path.isdir(proto_cppout):
+    os.mkdir(proto_cppout)
+for proto_source in proto_source_dirs:
+    protoc_flags = ['--proto_path', proto_source, '--cpp_out', proto_cppout]
+    # recursivly find proto files
+    protoc_files = [
+        os.path.join(path, fname)
+        for (path, _, fnames) in os.walk(proto_source)
+        for fname in fnames
+        if fname.endswith('.proto')
+    ]
+    subprocess.check_call(['env', 'protoc'] + protoc_flags + protoc_files)
+
 subprocess.check_call(['env', 'opp_makemake'] + makemake_flags, cwd='src')
 
 info('Configure done. You can now run "make".')

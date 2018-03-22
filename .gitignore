@@ -4,6 +4,7 @@ src/*.dll
 src/*.dylib
 src/**/*_m.h
 src/**/*_m.cc
+src/protobuf
 
 doc/doxy
 doc/neddoc
