@@ -269,6 +269,10 @@ class TraCICommandInterface
 				void setZoom(double zoom);
 				void setBoundary(Coord p1, Coord p2);
 				void takeScreenshot(std::string filename = "");
+
+				/**
+				 * Track the vehicle identified by vehicleId in the Sumo GUI.
+				 */
 				void trackVehicle(std::string vehicleId);
 
 			protected:
