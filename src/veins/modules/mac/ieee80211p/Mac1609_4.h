@@ -123,7 +123,18 @@ class Mac1609_4 : public BaseMacLayer,
 		};
 
 	public:
-		~Mac1609_4() { };
+		Mac1609_4() : nextMacEvent(nullptr), nextChannelSwitch(nullptr) {}
+		~Mac1609_4() {
+			if (nextMacEvent) {
+				cancelAndDelete(nextMacEvent);
+				nextMacEvent = nullptr;
+			}
+
+			if (nextChannelSwitch) {
+				cancelAndDelete(nextChannelSwitch);
+				nextChannelSwitch= nullptr;
+			}
+		};
 
 		/**
 		 * @brief return true if alternate access is enabled

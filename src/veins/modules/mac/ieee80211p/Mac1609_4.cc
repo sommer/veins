@@ -383,15 +383,6 @@ void Mac1609_4::finish() {
 
 	myEDCA.clear();
 
-	if (nextMacEvent->isScheduled()) {
-		cancelAndDelete(nextMacEvent);
-	}
-	else {
-		delete nextMacEvent;
-	}
-	if (nextChannelSwitch && nextChannelSwitch->isScheduled())
-		cancelAndDelete(nextChannelSwitch);
-
 	//stats
 	recordScalar("ReceivedUnicastPackets",statsReceivedPackets);
 	recordScalar("ReceivedBroadcasts",statsReceivedBroadcasts);
