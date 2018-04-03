@@ -399,6 +399,18 @@ void Mac1609_4::finish() {
 
 }
 
+Mac1609_4::~Mac1609_4() {
+	if (nextMacEvent) {
+		cancelAndDelete(nextMacEvent);
+		nextMacEvent = nullptr;
+	}
+
+	if (nextChannelSwitch) {
+		cancelAndDelete(nextChannelSwitch);
+		nextChannelSwitch= nullptr;
+	}
+};
+
 void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW) {
 
 	simtime_t duration = getFrameDuration(mac->getBitLength());
