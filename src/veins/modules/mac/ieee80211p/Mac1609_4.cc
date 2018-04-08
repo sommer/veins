@@ -383,15 +383,6 @@ void Mac1609_4::finish() {
 
 	myEDCA.clear();
 
-	if (nextMacEvent->isScheduled()) {
-		cancelAndDelete(nextMacEvent);
-	}
-	else {
-		delete nextMacEvent;
-	}
-	if (nextChannelSwitch && nextChannelSwitch->isScheduled())
-		cancelAndDelete(nextChannelSwitch);
-
 	//stats
 	recordScalar("ReceivedUnicastPackets",statsReceivedPackets);
 	recordScalar("ReceivedBroadcasts",statsReceivedBroadcasts);
@@ -407,6 +398,18 @@ void Mac1609_4::finish() {
 	recordScalar("totalBusyTime",statsTotalBusyTime.dbl());
 
 }
+
+Mac1609_4::~Mac1609_4() {
+	if (nextMacEvent) {
+		cancelAndDelete(nextMacEvent);
+		nextMacEvent = nullptr;
+	}
+
+	if (nextChannelSwitch) {
+		cancelAndDelete(nextChannelSwitch);
+		nextChannelSwitch= nullptr;
+	}
+};
 
 void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW) {
 
