@@ -36,6 +36,15 @@ public:
 		/** @brief Stores the id on which classes extending BasePhy should
 		 * continue their own kinds.*/
 		LAST_BASE_PHY_KIND,
+		/** @brief PHY-RXSTART.indication. Used in ack procedure for unicast
+		 */
+		PHY_RX_START,
+		/** @brief PHY-RXEND.indication and Rx was successful
+		 */
+		PHY_RX_END_WITH_SUCCESS,
+		/** @brief PHY-RXEND.indication and Rx failed
+		 */
+		PHY_RX_END_WITH_FAILURE,
 	};
 
 public:
