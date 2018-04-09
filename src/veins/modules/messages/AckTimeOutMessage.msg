@@ -19,8 +19,8 @@
 //
 
 message AckTimeOutMessage {
-    // Unique id which is same as the uniqueid assigned to unicast packet in mac
-    unsigned long uniqueId = -1;
+    // The corresponding WSM's tree id
+    unsigned long wsmId = -1;
     // Access category on which the AckTimer is set
     int ac = -1;
 }

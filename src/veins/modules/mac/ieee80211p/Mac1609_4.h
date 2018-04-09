@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <omnetpp.h>
 #include <queue>
+#include <memory>
 #include <stdint.h>
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/phyLayer/MacToPhyControlInfo.h"
@@ -34,7 +35,7 @@
 #include "veins/modules/messages/Mac80211Pkt_m.h"
 #include "veins/modules/messages/WaveShortMessage_m.h"
 #include "veins/modules/messages/AckTimeOutMessage_m.h"
-#include "veins/modules/messages/WaveShortMessageACK_m.h"
+#include "veins/modules/messages/Mac80211Ack_m.h"
 #include "veins/base/modules/BaseMacLayer.h"
 
 #include "veins/modules/utility/ConstsPhy.h"
@@ -198,6 +199,8 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief Set a state for the channel selecting operation.*/
 		void setActiveChannel(t_channel state);
 
+		void sendFrame(Mac80211Pkt* frame, omnetpp::simtime_t delay, double frequency, uint64_t datarate, double txPower_mW);
+
 		simtime_t timeLeftInSlot() const;
 		simtime_t timeLeftTillGuardOver() const;
 
@@ -217,8 +220,9 @@ class Mac1609_4 : public BaseMacLayer,
 
 		simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_DEFAULT) const;
 
-		void sendACK(int recpAddress, unsigned long uniqueNumber);
-		void handleACK(WaveShortMessageACK* ack);
+		void sendAck(int recpAddress, unsigned long wsmId);
+		void handleUnicast(std::unique_ptr<WaveShortMessage> wsm);
+		void handleAck(const Mac80211Ack* ack);
 		void handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg);
 		void handleRetransmit(t_access_category ac);
 	protected:
@@ -241,6 +245,9 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief pointer to last sent packet */
 		WaveShortMessage* lastWSM;
 
+		/** @brief pointer to last sent mac frame */
+		std::unique_ptr<Mac80211Pkt> lastMac;
+
 		/** @brief Stores the frequencies in Hz that are associated to the channel numbers.*/
 		std::map<int,double> frequency;
 
@@ -257,6 +264,7 @@ class Mac1609_4 : public BaseMacLayer,
 		long statsReceivedPackets;
 		long statsReceivedBroadcasts;
 		long statsSentPackets;
+		long statsSentAcks;
 		long statsTXRXLostPackets;
 		long statsSNIRLostPackets;
 		long statsDroppedPackets;
@@ -281,8 +289,7 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief Id for debug messages */
 		std::string myId;
 
-		bool useACKs;
-		bool simulateErrorsInACK;
+		bool useAcks;
 		double ackErrorRate;
 		int dot11RTSThreshold;
 		int dot11ShortRetryLimit;

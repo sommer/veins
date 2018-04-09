@@ -19,10 +19,10 @@
 //
 
 cplusplus {{
-	#include "veins/modules/messages/WaveShortMessage_m.h"
+	#include "veins/modules/messages/Mac80211Pkt_m.h"
 }}
-class WaveShortMessage;
+class Mac80211Pkt;
 
-packet WaveShortMessageACK extends WaveShortMessage {
-    bool isAck = true;
+packet Mac80211Ack extends Mac80211Pkt {
+    unsigned long messageId; // The ID of the aknowledged packet
 }
