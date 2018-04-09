@@ -34,13 +34,14 @@
 
 /**
  * @brief
- * WAVE application layer base class.
+ * Sample unicast application
  *
  * @author David Eckhoff
+ * @author Gurjashan Pannu
  *
  * @ingroup applLayer
  *
- * @see BaseWaveApplLayer
+ * @see UnicastApplLayer
  * @see Mac1609_4
  * @see PhyLayer80211p
  * @see Decider80211p

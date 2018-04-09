@@ -84,10 +84,6 @@ WaveShortMessage* UnicastApplLayer::prepareWSM(std::string name, int lengthBits,
 	wsm->setRecipientAddress(rcvId);
 	wsm->setSerial(serial);
 	wsm->setUniqueId(getSimulation()->getUniqueNumber());
-
-	if (sendUnicast && name == "unicast") {
-		wsm->setIsUnicast(true);
-	}
 	return wsm;
 }
 

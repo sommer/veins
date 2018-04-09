@@ -22,11 +22,12 @@ package org.car2x.veins.modules.application.unicast;
 import org.car2x.veins.base.modules.IBaseApplLayer;
 
 //
-// WAVE application layer base class.
+// Sample unicast application 
 //
 // @author David Eckhoff
+// @author Gurjashan Pannu
 //
-// @see BaseWaveApplLayer
+// @see UnicastApplLayer
 // @see Nic80211p
 // @see Mac1609_4
 // @see PhyLayer80211p

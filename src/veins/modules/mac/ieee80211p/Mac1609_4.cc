@@ -209,7 +209,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 
 		//send the packet
 		Mac80211Pkt* mac = new Mac80211Pkt(pktToSend->getName(), pktToSend->getKind());
-		if (pktToSend->getIsUnicast()) {
+		if (pktToSend->getRecipientAddress() != -1) {
 			mac->setDestAddr(pktToSend->getRecipientAddress());
 		} else {
 			mac->setDestAddr(LAddress::L2BROADCAST());
@@ -259,7 +259,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 			sendDelayed(mac, RADIODELAY_11P, lowerLayerOut);
 
 			// schedule ack timeout for unicast packets
-			if (pktToSend->getIsUnicast() && useACKs) {
+			if (pktToSend->getRecipientAddress() != -1 && useACKs) {
 				waitUntilAckRXorTimeout = true;
 				// PHY-RXSTART.indication should be received within ackWaitTime
 				// sifs + slot + rx_delay: see 802.11-2012 9.3.2.8 (32us + 13us + 49us = 94us)
@@ -578,7 +578,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 	if (macPkt->getDestAddr() == myMacAddress) {
 
 		bool sendWsmUp = true;
-		if (wsm->getIsUnicast()) {
+		if (wsm->getRecipientAddress() != -1) {
 			WaveShortMessageACK* ack = dynamic_cast<WaveShortMessageACK*>(wsm);
 			if (ack) {
 				// We received an ACK
@@ -832,7 +832,7 @@ void Mac1609_4::EDCA::postTransmit(t_access_category ac, WaveShortMessage* wsm, 
 		// We sent an acknowledgment. Do nothing.
 		return;
 	}
-	bool holBlocking = wsm->getIsUnicast() && useAcks;
+	bool holBlocking = (wsm->getRecipientAddress() != -1) && useAcks;
 	if (holBlocking) {
 		//mac->waitUntilAckRXorTimeout = true; // set in handleselfmsg()
 		// Head of line blocking, wait until ack timeout
@@ -1014,7 +1014,6 @@ void Mac1609_4::sendACK(int recpAddress, unsigned long uniqueNumber) {
 	ack->setRecipientAddress(recpAddress);
 	ack->setUniqueId(uniqueNumber);
 	ack->setBitLength(ackLength);
-	ack->setIsUnicast(true);
 
 	// send the packet
 	Mac80211Pkt* mac = new Mac80211Pkt(ack->getName(), ack->getKind());
