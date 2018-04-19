@@ -33,9 +33,6 @@ public:
 		CHANNEL_SENSE_REQUEST,
 		/** @brief AirFrame kind */
 		AIR_FRAME,
-		/** @brief Stores the id on which classes extending BasePhy should
-		 * continue their own kinds.*/
-		LAST_BASE_PHY_KIND,
 		/** @brief PHY-RXSTART.indication. Used in ack procedure for unicast
 		 */
 		PHY_RX_START,
@@ -45,6 +42,9 @@ public:
 		/** @brief PHY-RXEND.indication and Rx failed
 		 */
 		PHY_RX_END_WITH_FAILURE,
+		/** @brief Stores the id on which classes extending BasePhy should
+		 * continue their own kinds.*/
+		LAST_BASE_PHY_KIND,
 	};
 
 public:
