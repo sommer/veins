@@ -63,7 +63,6 @@ void Mac1609_4::initialize(int stage) {
 		dot11LongRetryLimit = par("dot11LongRetryLimit");
 		ackLength = par("ackLength");
 		useACKs = par("useAcks").boolValue();
-		simulateErrorsInACK = par("simulateErrorsInACK").boolValue();
 		ackErrorRate = par("ackErrorRate").doubleValue();
 		rxStartIndication = false;
 		ignoreChannelState = false;
@@ -600,9 +599,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 				}
 			} else {
 				if (useACKs) {
-					if (!simulateErrorsInACK || dblrand(1) > ackErrorRate) {
-						sendACK(wsm->getSenderAddress(), wsm->getUniqueId());
-					}
+					sendACK(wsm->getSenderAddress(), wsm->getUniqueId());
 				}
 				std::set<unsigned long>::iterator itr = handledUnicastToApp.find(wsm->getUniqueId());
 				if (itr != handledUnicastToApp.end()) {

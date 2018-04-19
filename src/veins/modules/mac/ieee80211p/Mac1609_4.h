@@ -282,7 +282,6 @@ class Mac1609_4 : public BaseMacLayer,
 		std::string myId;
 
 		bool useACKs;
-		bool simulateErrorsInACK;
 		double ackErrorRate;
 		int dot11RTSThreshold;
 		int dot11ShortRetryLimit;
