@@ -220,7 +220,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 		void sendAck(int recpAddress, unsigned long uniqueNumber);
 		void handleUnicast(std::unique_ptr<WaveShortMessage> wsm);
-		void handleAck(WaveShortMessageACK* ack);
+		void handleAck(std::unique_ptr<WaveShortMessageACK> ack);
 		void handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg);
 		void handleRetransmit(t_access_category ac);
 	protected:

@@ -561,14 +561,12 @@ void Mac1609_4::setCCAThreshold(double ccaThreshold_dBm) {
 }
 
 void Mac1609_4::handleLowerMsg(cMessage* msg) {
-	Mac80211Pkt* macPkt = static_cast<Mac80211Pkt*>(msg);
-	ASSERT(macPkt);
+	Mac80211Pkt* macPkt = check_and_cast<Mac80211Pkt*>(msg);
 
-	WaveShortMessage*  wsm =  dynamic_cast<WaveShortMessage*>(macPkt->decapsulate());
+	unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
 
 	//pass information about received frame to the upper layers
-	DeciderResult80211 *macRes = dynamic_cast<DeciderResult80211 *>(PhyToMacControlInfo::getDeciderResult(msg));
-	ASSERT(macRes);
+	DeciderResult80211 *macRes = check_and_cast<DeciderResult80211 *>(PhyToMacControlInfo::getDeciderResult(msg));
 	DeciderResult80211 *res = new DeciderResult80211(*macRes);
 	wsm->setControlInfo(new PhyToMacControlInfo(res));
 
@@ -579,32 +577,19 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 	        << " dst=" << macPkt->getDestAddr() << " myAddr="
 	        << myMacAddress << std::endl;
 
-	if (macPkt->getDestAddr() == myMacAddress) {
-
-		bool sendWsmUp = true;
-		if (wsm->getRecipientAddress() != -1) {
-			WaveShortMessageACK* ack = dynamic_cast<WaveShortMessageACK*>(wsm);
-			if (ack) {
-				// We received an ACK
-				sendWsmUp = false;
-				if (useAcks) {
-					handleAck(ack);
-				}
-			} else {
-				handleUnicast(unique_ptr<WaveShortMessage>(wsm));
+	if (dest == myMacAddress) {
+		if (dynamic_cast<WaveShortMessageACK*>(wsm.get())) {
+			if (useAcks) {
+				handleAck(unique_ptr<WaveShortMessageACK>(dynamic_cast<WaveShortMessageACK*>(wsm.release())));
 			}
+		} else {
+			handleUnicast(std::move(wsm));
 		}
-		if (!sendWsmUp) {
-			delete wsm;
-		}
-	}
-	else if (dest == LAddress::L2BROADCAST()) {
+	} else if (dest == LAddress::L2BROADCAST()) {
 		statsReceivedBroadcasts++;
-		sendUp(wsm);
-	}
-	else {
-		DBG_MAC << "Packet not for me, deleting..." << std::endl;
-		delete wsm;
+		sendUp(wsm.release());
+	} else {
+		DBG_MAC << "Packet not for me" << std::endl;
 	}
 	delete macPkt;
 
@@ -1039,14 +1024,14 @@ void Mac1609_4::handleUnicast(unique_ptr<WaveShortMessage> wsm) {
 	}
 }
 
-void Mac1609_4::handleAck(WaveShortMessageACK* ack) {
+void Mac1609_4::handleAck(unique_ptr<WaveShortMessageACK> ack) {
 	ASSERT2(rxStartIndication, "Not expecting ack");
 	phy11p->notifyMacAboutRxStart(false);
 	rxStartIndication = false;
 
 	t_channel chan = type_CCH;
 	bool queueUnblocked = false;
-	for (std::map<t_access_category, EDCA::EDCAQueue>::iterator iter = myEDCA[chan]->myQueues.begin(); iter != myEDCA[chan]->myQueues.end(); iter++) {
+	for (auto iter = myEDCA[chan]->myQueues.begin(); iter != myEDCA[chan]->myQueues.end(); iter++) {
 		if (iter->second.queue.size() > 0 && iter->second.waitForAck && (iter->second.waitOnUnicastID == ack->getUniqueId())) {
 			WaveShortMessage* wsm = iter->second.queue.front();
 			iter->second.queue.pop();
@@ -1068,7 +1053,6 @@ void Mac1609_4::handleAck(WaveShortMessageACK* ack) {
 	} else {
 		waitUntilAckRXorTimeout = false;
 	}
-	// handleLowerMsg() deletes the ack after processing
 }
 
 void Mac1609_4::handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg) {
