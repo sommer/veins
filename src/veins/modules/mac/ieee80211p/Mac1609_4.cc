@@ -263,7 +263,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 				waitUntilAckRXorTimeout = true;
 				// PHY-RXSTART.indication should be received within ackWaitTime
 				// sifs + slot + rx_delay: see 802.11-2012 9.3.2.8 (32us + 13us + 49us = 94us)
-				simtime_t ackWaitTime = SimTime().setRaw(94000000UL);
+				simtime_t ackWaitTime(94, SIMTIME_US);
 				// update id in the retransmit timer
 				myEDCA[activeChannel]->myQueues[lastAC].ackTimeOut->setUniqueId(pktToSend->getUniqueId());
 				simtime_t timeOut = sendingDuration + ackWaitTime;
