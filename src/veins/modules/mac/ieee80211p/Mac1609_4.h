@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <omnetpp.h>
 #include <queue>
+#include <memory>
 #include <stdint.h>
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/phyLayer/MacToPhyControlInfo.h"
@@ -218,6 +219,7 @@ class Mac1609_4 : public BaseMacLayer,
 		simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_DEFAULT) const;
 
 		void sendAck(int recpAddress, unsigned long uniqueNumber);
+		void handleUnicast(std::unique_ptr<WaveShortMessage> wsm);
 		void handleAck(WaveShortMessageACK* ack);
 		void handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg);
 		void handleRetransmit(t_access_category ac);

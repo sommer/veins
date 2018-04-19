@@ -27,6 +27,8 @@
 #include "veins/modules/messages/AckTimeOutMessage_m.h"
 #include "veins/modules/messages/WaveShortMessageACK_m.h"
 
+using std::unique_ptr;
+
 #if OMNETPP_VERSION >= 0x500
 #define OWNER owner->
 #else
@@ -589,25 +591,10 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 					handleAck(ack);
 				}
 			} else {
-				if (useAcks) {
-					sendAck(wsm->getSenderAddress(), wsm->getUniqueId());
-				}
-				std::set<unsigned long>::iterator itr = handledUnicastToApp.find(wsm->getUniqueId());
-				if (itr != handledUnicastToApp.end()) {
-					// We have handled this unicast earlier.
-					// This scenario is possible in case the last ACK that we sent got lost
-					sendWsmUp = false;
-				} else {
-					sendWsmUp = true;
-					handledUnicastToApp.insert(wsm->getUniqueId());
-				}
+				handleUnicast(unique_ptr<WaveShortMessage>(wsm));
 			}
 		}
-		if (sendWsmUp) {
-			DBG_MAC << "Received a data packet addressed to me." << std::endl;
-			statsReceivedPackets++;
-			sendUp(wsm);
-		} else {
+		if (!sendWsmUp) {
 			delete wsm;
 		}
 	}
@@ -1039,6 +1026,19 @@ void Mac1609_4::sendAck(int recpAddress, unsigned long uniqueNumber) {
 	scheduleAt(simTime() + SIFS_11P, stopIgnoreChannelStateMsg);
 }
 
+void Mac1609_4::handleUnicast(unique_ptr<WaveShortMessage> wsm) {
+	if (useAcks) {
+		sendAck(wsm->getSenderAddress(), wsm->getUniqueId());
+	}
+
+	if (handledUnicastToApp.find(wsm->getUniqueId()) == handledUnicastToApp.end()) {
+		handledUnicastToApp.insert(wsm->getUniqueId());
+		DBG_MAC << "Received a data packet addressed to me." << std::endl;
+		statsReceivedPackets++;
+		sendUp(wsm.release());
+	}
+}
+
 void Mac1609_4::handleAck(WaveShortMessageACK* ack) {
 	ASSERT2(rxStartIndication, "Not expecting ack");
 	phy11p->notifyMacAboutRxStart(false);
@@ -1147,4 +1147,3 @@ void Mac1609_4::handleRetransmit(t_access_category ac) {
 		scheduleAt(nextEvent, nextMacEvent);
 	}
 }
-
