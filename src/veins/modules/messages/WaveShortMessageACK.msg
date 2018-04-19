@@ -25,4 +25,6 @@ class WaveShortMessage;
 
 packet WaveShortMessageACK extends WaveShortMessage {
     bool isAck = true;
+    // The corresponding WSM's tree id
+    unsigned long wsmId = -1;
 }

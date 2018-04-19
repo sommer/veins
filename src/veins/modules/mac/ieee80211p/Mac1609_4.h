@@ -218,7 +218,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 		simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_DEFAULT) const;
 
-		void sendAck(int recpAddress, unsigned long uniqueNumber);
+		void sendAck(int recpAddress, unsigned long wsmId);
 		void handleUnicast(std::unique_ptr<WaveShortMessage> wsm);
 		void handleAck(std::unique_ptr<WaveShortMessageACK> ack);
 		void handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg);

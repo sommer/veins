@@ -266,7 +266,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 				// sifs + slot + rx_delay: see 802.11-2012 9.3.2.8 (32us + 13us + 49us = 94us)
 				simtime_t ackWaitTime(94, SIMTIME_US);
 				// update id in the retransmit timer
-				myEDCA[activeChannel]->myQueues[lastAC].ackTimeOut->setUniqueId(pktToSend->getUniqueId());
+				myEDCA[activeChannel]->myQueues[lastAC].ackTimeOut->setWsmId(pktToSend->getTreeId());
 				simtime_t timeOut = sendingDuration + ackWaitTime;
 				scheduleAt(simTime() + timeOut, myEDCA[activeChannel]->myQueues[lastAC].ackTimeOut);
 			}
@@ -800,7 +800,7 @@ void Mac1609_4::EDCA::postTransmit(t_access_category ac, WaveShortMessage* wsm, 
 		//mac->waitUntilAckRXorTimeout = true; // set in handleselfmsg()
 		// Head of line blocking, wait until ack timeout
 		myQueues[ac].waitForAck = true;
-		myQueues[ac].waitOnUnicastID = wsm->getUniqueId();
+		myQueues[ac].waitOnUnicastID = wsm->getTreeId();
 		((Mac1609_4*)owner)->phy11p->notifyMacAboutRxStart(true);
 	} else {
 		myQueues[ac].waitForAck = false;
@@ -966,7 +966,7 @@ simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) c
 }
 
 // Unicast
-void Mac1609_4::sendAck(int recpAddress, unsigned long uniqueNumber) {
+void Mac1609_4::sendAck(int recpAddress, unsigned long wsmId) {
 	// 802.11-2012 9.3.2.8
 	// send an ACK after SIFS without regard of busy/ idle state of channel
 	ignoreChannelState = true;
@@ -975,7 +975,7 @@ void Mac1609_4::sendAck(int recpAddress, unsigned long uniqueNumber) {
 	lastWSM = ack;
 	ack->setSenderAddress(myMacAddress);
 	ack->setRecipientAddress(recpAddress);
-	ack->setUniqueId(uniqueNumber);
+	ack->setWsmId(wsmId);
 	ack->setBitLength(ackLength);
 
 	// send the packet
@@ -1013,11 +1013,11 @@ void Mac1609_4::sendAck(int recpAddress, unsigned long uniqueNumber) {
 
 void Mac1609_4::handleUnicast(unique_ptr<WaveShortMessage> wsm) {
 	if (useAcks) {
-		sendAck(wsm->getSenderAddress(), wsm->getUniqueId());
+		sendAck(wsm->getSenderAddress(), wsm->getTreeId());
 	}
 
-	if (handledUnicastToApp.find(wsm->getUniqueId()) == handledUnicastToApp.end()) {
-		handledUnicastToApp.insert(wsm->getUniqueId());
+	if (handledUnicastToApp.find(wsm->getTreeId()) == handledUnicastToApp.end()) {
+		handledUnicastToApp.insert(wsm->getTreeId());
 		DBG_MAC << "Received a data packet addressed to me." << std::endl;
 		statsReceivedPackets++;
 		sendUp(wsm.release());
@@ -1032,7 +1032,7 @@ void Mac1609_4::handleAck(unique_ptr<WaveShortMessageACK> ack) {
 	t_channel chan = type_CCH;
 	bool queueUnblocked = false;
 	for (auto iter = myEDCA[chan]->myQueues.begin(); iter != myEDCA[chan]->myQueues.end(); iter++) {
-		if (iter->second.queue.size() > 0 && iter->second.waitForAck && (iter->second.waitOnUnicastID == ack->getUniqueId())) {
+		if (iter->second.queue.size() > 0 && iter->second.waitForAck && (iter->second.waitOnUnicastID == ack->getWsmId())) {
 			WaveShortMessage* wsm = iter->second.queue.front();
 			iter->second.queue.pop();
 			delete wsm;
@@ -1049,7 +1049,7 @@ void Mac1609_4::handleAck(unique_ptr<WaveShortMessageACK> ack) {
 		}
 	}
 	if (!queueUnblocked) {
-		throw cRuntimeError("Could not find WSM in EDCA queues with uniqueID received in ACK");
+		throw cRuntimeError("Could not find WSM in EDCA queues with WSM ID received in ACK");
 	} else {
 		waitUntilAckRXorTimeout = false;
 	}
