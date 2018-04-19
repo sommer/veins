@@ -102,7 +102,7 @@ void Mac1609_4::initialize(int stage) {
 
 		useSCH = par("useServiceChannel").boolValue();
 		if (useSCH) {
-			if (useACKs) throw cRuntimeError("Unicast model does not support channel switching yet :(");
+			if (useACKs) throw cRuntimeError("Unicast model does not support channel switching");
 			//set the initial service channel
 			switch (par("serviceChannel").longValue()) {
 				case 1: mySCH = Channels::SCH1; break;
