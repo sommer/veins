@@ -217,8 +217,8 @@ class Mac1609_4 : public BaseMacLayer,
 
 		simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_DEFAULT) const;
 
-		void sendACK(int recpAddress, unsigned long uniqueNumber);
-		void handleACK(WaveShortMessageACK* ack);
+		void sendAck(int recpAddress, unsigned long uniqueNumber);
+		void handleAck(WaveShortMessageACK* ack);
 		void handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg);
 		void handleRetransmit(t_access_category ac);
 	protected:
@@ -281,7 +281,7 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief Id for debug messages */
 		std::string myId;
 
-		bool useACKs;
+		bool useAcks;
 		double ackErrorRate;
 		int dot11RTSThreshold;
 		int dot11ShortRetryLimit;
