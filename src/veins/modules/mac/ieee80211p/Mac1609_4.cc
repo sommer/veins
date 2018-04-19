@@ -586,16 +586,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 				// We received an ACK
 				sendWsmUp = false;
 				if (useAcks) {
-					if (rxStartIndication) {
-						// We were expecting an ack
-						phy11p->notifyMacAboutRxStart(false);
-						rxStartIndication = false;
-						handleAck(ack);
-					} else {
-						if (dest == myMacAddress) {
-							throw cRuntimeError("Not expecting ack, still received one!! Should never occur...");
-						}
-					}
+					handleAck(ack);
 				}
 			} else {
 				if (useAcks) {
@@ -1049,6 +1040,10 @@ void Mac1609_4::sendAck(int recpAddress, unsigned long uniqueNumber) {
 }
 
 void Mac1609_4::handleAck(WaveShortMessageACK* ack) {
+	ASSERT2(rxStartIndication, "Not expecting ack");
+	phy11p->notifyMacAboutRxStart(false);
+	rxStartIndication = false;
+
 	t_channel chan = type_CCH;
 	bool queueUnblocked = false;
 	for (std::map<t_access_category, EDCA::EDCAQueue>::iterator iter = myEDCA[chan]->myQueues.begin(); iter != myEDCA[chan]->myQueues.end(); iter++) {
