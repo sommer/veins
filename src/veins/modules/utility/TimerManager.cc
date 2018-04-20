@@ -147,7 +147,7 @@ bool TimerManager::handleMessage(omnetpp::cMessage *message) {
   return true;
 }
 
-TimerManager::TimerMessage *TimerManager::create(TimerSpecification timerSpecification, const std::string name) {
+TimerManager::TimerHandle TimerManager::create(TimerSpecification timerSpecification, const std::string name) {
   ASSERT(timerSpecification.valid());
   timerSpecification.finalize();
 
@@ -158,8 +158,8 @@ TimerManager::TimerMessage *TimerManager::create(TimerSpecification timerSpecifi
   return ret.first->first;
 }
 
-void TimerManager::cancel(TimerManager::TimerMessage *timerMessage) {
-  auto timer = timers_.find(timerMessage);
+void TimerManager::cancel(TimerManager::TimerHandle handle) {
+  auto timer = timers_.find(handle);
   if (timer != timers_.end()) {
     parent_->cancelEvent(timer->first);
     timers_.erase(timer);

@@ -158,7 +158,7 @@ private:
 };
 
 class TimerManager {
-public:
+private:
   /**
    * A message which is used for triggering Timers.
    *
@@ -169,7 +169,9 @@ public:
     TimerMessage(const std::string &name) : omnetpp::cMessage(name.c_str()) {}
   };
 
+public:
   using TimerList = std::map<TimerMessage *, const TimerSpecification>;
+  using TimerHandle = TimerMessage*;
 
   TimerManager(omnetpp::cSimpleModule *parent);
 
@@ -193,21 +195,21 @@ public:
    *
    * @param timerSpecification Parameters for the new timer
    * @param name The timer's name
-   * @return A handle for the timer. Note that deleting the returned message manually will result in errorneous behavior.
+   * @return A handle for the timer.
    *
    * @see cancel
    * @see TimerSpecification
    */
-  TimerMessage *create(TimerSpecification timerSpecification, std::string name = "");
+  TimerHandle create(TimerSpecification timerSpecification, std::string name = "");
 
   /**
    * Cancel a timer.
    *
    * Prevents any future executions of the given timer. Expired timers are silently ignored.
    *
-   * @param timer_message The message of the timer which is canceled.
+   * @param timerHandle A handle which identifies the timer.
    */
-  void cancel(TimerMessage *timerMessage);
+  void cancel(TimerHandle handle);
 
 private:
   TimerList timers_;                     ///< List of all active Timers.
