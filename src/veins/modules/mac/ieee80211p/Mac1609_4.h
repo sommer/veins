@@ -264,6 +264,7 @@ class Mac1609_4 : public BaseMacLayer,
 		long statsReceivedPackets;
 		long statsReceivedBroadcasts;
 		long statsSentPackets;
+		long statsSentAcks;
 		long statsTXRXLostPackets;
 		long statsSNIRLostPackets;
 		long statsDroppedPackets;

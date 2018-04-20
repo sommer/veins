@@ -148,6 +148,7 @@ void Mac1609_4::initialize(int stage) {
 		statsReceivedPackets = 0;
 		statsReceivedBroadcasts = 0;
 		statsSentPackets = 0;
+		statsSentAcks = 0;
 		statsTXRXLostPackets = 0;
 		statsSNIRLostPackets = 0;
 		statsDroppedPackets = 0;
@@ -445,6 +446,7 @@ void Mac1609_4::finish() {
 	recordScalar("ReceivedUnicastPackets",statsReceivedPackets);
 	recordScalar("ReceivedBroadcasts",statsReceivedBroadcasts);
 	recordScalar("SentPackets",statsSentPackets);
+	recordScalar("SentAcknowledgements",statsSentAcks);
 	recordScalar("SNIRLostPackets",statsSNIRLostPackets);
 	recordScalar("RXTXLostPackets",statsTXRXLostPackets);
 	recordScalar("TotalLostPackets",statsSNIRLostPackets+statsTXRXLostPackets);
@@ -481,7 +483,9 @@ void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, double frequency,
 	lastMac.reset(frame->dup());
 	sendDelayed(frame, delay, lowerLayerOut);
 
-	if (!dynamic_cast<Mac80211Ack*>(frame)) {
+	if (dynamic_cast<Mac80211Ack*>(frame)) {
+		statsSentAcks += 1;
+	} else {
 		statsSentPackets += 1;
 	}
 }
