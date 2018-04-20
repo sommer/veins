@@ -25,7 +25,6 @@
 #include "veins/base/phyLayer/PhyToMacControlInfo.h"
 #include "veins/modules/messages/PhyControlMessage_m.h"
 #include "veins/modules/messages/AckTimeOutMessage_m.h"
-#include "veins/modules/messages/WaveShortMessageACK_m.h"
 
 using std::unique_ptr;
 
@@ -202,6 +201,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 		//we actually came to the point where we can send a packet
 		channelBusySelf(true);
 		WaveShortMessage* pktToSend = myEDCA[activeChannel]->initiateTransmit(lastIdle);
+		ASSERT(pktToSend);
 
 		lastAC = mapUserPriority(pktToSend->getUserPriority());
 		lastWSM = pktToSend;
@@ -257,6 +257,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 			MacToPhyControlInfo* phyInfo = dynamic_cast<MacToPhyControlInfo*>(mac->getControlInfo());
 			assert(phyInfo);
 			DBG_MAC << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
+			lastMac.reset(mac->dup());
 			sendDelayed(mac, RADIODELAY_11P, lowerLayerOut);
 
 			// schedule ack timeout for unicast packets
@@ -376,9 +377,11 @@ void Mac1609_4::handleLowerControl(cMessage* msg) {
 
 		phy->setRadioState(Radio::RX);
 
-		//message was sent
-		//update EDCA queue. go into post-transmit backoff and set cwCur to cwMin
-		myEDCA[activeChannel]->postTransmit(lastAC, lastWSM, useAcks);
+		if (!dynamic_cast<Mac80211Ack*>(lastMac.get())) {
+			//message was sent
+			//update EDCA queue. go into post-transmit backoff and set cwCur to cwMin
+			myEDCA[activeChannel]->postTransmit(lastAC, lastWSM, useAcks);
+		}
 		//channel just turned idle.
 		//don't set the chan to idle. the PHY layer decides, not us.
 
@@ -563,12 +566,9 @@ void Mac1609_4::setCCAThreshold(double ccaThreshold_dBm) {
 void Mac1609_4::handleLowerMsg(cMessage* msg) {
 	Mac80211Pkt* macPkt = check_and_cast<Mac80211Pkt*>(msg);
 
-	unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
-
 	//pass information about received frame to the upper layers
 	DeciderResult80211 *macRes = check_and_cast<DeciderResult80211 *>(PhyToMacControlInfo::getDeciderResult(msg));
 	DeciderResult80211 *res = new DeciderResult80211(*macRes);
-	wsm->setControlInfo(new PhyToMacControlInfo(res));
 
 	long dest = macPkt->getDestAddr();
 
@@ -578,15 +578,19 @@ void Mac1609_4::handleLowerMsg(cMessage* msg) {
 	        << myMacAddress << std::endl;
 
 	if (dest == myMacAddress) {
-		if (dynamic_cast<WaveShortMessageACK*>(wsm.get())) {
+		if (auto* ack = dynamic_cast<Mac80211Ack*>(macPkt)) {
 			if (useAcks) {
-				handleAck(unique_ptr<WaveShortMessageACK>(dynamic_cast<WaveShortMessageACK*>(wsm.release())));
+				handleAck(ack);
 			}
 		} else {
+			unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
+			wsm->setControlInfo(new PhyToMacControlInfo(res));
 			handleUnicast(std::move(wsm));
 		}
 	} else if (dest == LAddress::L2BROADCAST()) {
 		statsReceivedBroadcasts++;
+		unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
+		wsm->setControlInfo(new PhyToMacControlInfo(res));
 		sendUp(wsm.release());
 	} else {
 		DBG_MAC << "Packet not for me" << std::endl;
@@ -791,10 +795,6 @@ void Mac1609_4::EDCA::backoff(t_access_category ac) {
 }
 
 void Mac1609_4::EDCA::postTransmit(t_access_category ac, WaveShortMessage* wsm, bool useAcks) {
-	if (dynamic_cast<WaveShortMessageACK*>(wsm)) {
-		// We sent an acknowledgment. Do nothing.
-		return;
-	}
 	bool holBlocking = (wsm->getRecipientAddress() != -1) && useAcks;
 	if (holBlocking) {
 		//mac->waitUntilAckRXorTimeout = true; // set in handleselfmsg()
@@ -971,18 +971,13 @@ void Mac1609_4::sendAck(int recpAddress, unsigned long wsmId) {
 	// send an ACK after SIFS without regard of busy/ idle state of channel
 	ignoreChannelState = true;
 	channelBusySelf(true);
-	WaveShortMessageACK* ack = new WaveShortMessageACK("ACK");
-	lastWSM = ack;
-	ack->setSenderAddress(myMacAddress);
-	ack->setRecipientAddress(recpAddress);
-	ack->setWsmId(wsmId);
-	ack->setBitLength(ackLength);
 
 	// send the packet
-	Mac80211Pkt* mac = new Mac80211Pkt(ack->getName(), ack->getKind());
+	auto* mac = new Mac80211Ack("ACK");
 	mac->setDestAddr(recpAddress);
 	mac->setSrcAddr(myMacAddress);
-	mac->encapsulate(ack->dup());
+	mac->setMessageId(wsmId);
+	mac->setBitLength(ackLength);
 
 	enum PHY_MCS mcs;
 	double txPower_mW;
@@ -1007,6 +1002,7 @@ void Mac1609_4::sendAck(int recpAddress, unsigned long wsmId) {
 	assert(phyInfo);
 
 	DBG_MAC << "Sending an ack. Frequency " << freq << " at time : " << simTime() + SIFS_11P << std::endl;
+	lastMac.reset(mac->dup());
 	sendDelayed(mac, SIFS_11P, lowerLayerOut);
 	scheduleAt(simTime() + SIFS_11P, stopIgnoreChannelStateMsg);
 }
@@ -1024,7 +1020,7 @@ void Mac1609_4::handleUnicast(unique_ptr<WaveShortMessage> wsm) {
 	}
 }
 
-void Mac1609_4::handleAck(unique_ptr<WaveShortMessageACK> ack) {
+void Mac1609_4::handleAck(const Mac80211Ack* ack) {
 	ASSERT2(rxStartIndication, "Not expecting ack");
 	phy11p->notifyMacAboutRxStart(false);
 	rxStartIndication = false;
@@ -1032,7 +1028,7 @@ void Mac1609_4::handleAck(unique_ptr<WaveShortMessageACK> ack) {
 	t_channel chan = type_CCH;
 	bool queueUnblocked = false;
 	for (auto iter = myEDCA[chan]->myQueues.begin(); iter != myEDCA[chan]->myQueues.end(); iter++) {
-		if (iter->second.queue.size() > 0 && iter->second.waitForAck && (iter->second.waitOnUnicastID == ack->getWsmId())) {
+		if (iter->second.queue.size() > 0 && iter->second.waitForAck && (iter->second.waitOnUnicastID == ack->getMessageId())) {
 			WaveShortMessage* wsm = iter->second.queue.front();
 			iter->second.queue.pop();
 			delete wsm;

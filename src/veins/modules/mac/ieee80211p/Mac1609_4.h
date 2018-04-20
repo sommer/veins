@@ -35,7 +35,7 @@
 #include "veins/modules/messages/Mac80211Pkt_m.h"
 #include "veins/modules/messages/WaveShortMessage_m.h"
 #include "veins/modules/messages/AckTimeOutMessage_m.h"
-#include "veins/modules/messages/WaveShortMessageACK_m.h"
+#include "veins/modules/messages/Mac80211Ack_m.h"
 #include "veins/base/modules/BaseMacLayer.h"
 
 #include "veins/modules/utility/ConstsPhy.h"
@@ -220,7 +220,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 		void sendAck(int recpAddress, unsigned long wsmId);
 		void handleUnicast(std::unique_ptr<WaveShortMessage> wsm);
-		void handleAck(std::unique_ptr<WaveShortMessageACK> ack);
+		void handleAck(const Mac80211Ack* ack);
 		void handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg);
 		void handleRetransmit(t_access_category ac);
 	protected:
@@ -242,6 +242,9 @@ class Mac1609_4 : public BaseMacLayer,
 
 		/** @brief pointer to last sent packet */
 		WaveShortMessage* lastWSM;
+
+		/** @brief pointer to last sent mac frame */
+		std::unique_ptr<Mac80211Pkt> lastMac;
 
 		/** @brief Stores the frequencies in Hz that are associated to the channel numbers.*/
 		std::map<int,double> frequency;
