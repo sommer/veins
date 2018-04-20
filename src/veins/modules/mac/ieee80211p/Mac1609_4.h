@@ -199,6 +199,8 @@ class Mac1609_4 : public BaseMacLayer,
 		/** @brief Set a state for the channel selecting operation.*/
 		void setActiveChannel(t_channel state);
 
+		void sendFrame(Mac80211Pkt* frame, omnetpp::simtime_t delay, double frequency, uint64_t datarate, double txPower_mW);
+
 		simtime_t timeLeftInSlot() const;
 		simtime_t timeLeftTillGuardOver() const;
 

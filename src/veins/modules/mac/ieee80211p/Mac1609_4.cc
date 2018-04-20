@@ -27,6 +27,8 @@
 #include "veins/modules/messages/AckTimeOutMessage_m.h"
 
 using std::unique_ptr;
+using omnetpp::simtime_t;
+using omnetpp::simTime;
 
 #if OMNETPP_VERSION >= 0x500
 #define OWNER owner->
@@ -247,18 +249,11 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 		DBG_MAC << "Sending duration will be" << sendingDuration << std::endl;
 		if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
 			if (useSCH) DBG_MAC << " Time in this slot left: " << timeLeftInSlot() << std::endl;
-			// give time for the radio to be in Tx state before transmitting
-			phy->setRadioState(Radio::TX);
-
 
 			double freq = (activeChannel == type_CCH) ? frequency[Channels::CCH] : frequency[mySCH];
 
-			attachSignal(mac, simTime()+RADIODELAY_11P, freq, datarate, txPower_mW);
-			MacToPhyControlInfo* phyInfo = dynamic_cast<MacToPhyControlInfo*>(mac->getControlInfo());
-			assert(phyInfo);
 			DBG_MAC << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
-			lastMac.reset(mac->dup());
-			sendDelayed(mac, RADIODELAY_11P, lowerLayerOut);
+			sendFrame(mac, RADIODELAY_11P, freq, datarate, txPower_mW);
 
 			// schedule ack timeout for unicast packets
 			if (pktToSend->getRecipientAddress() != -1 && useAcks) {
@@ -271,8 +266,6 @@ void Mac1609_4::handleSelfMsg(cMessage* msg) {
 				simtime_t timeOut = sendingDuration + ackWaitTime;
 				scheduleAt(simTime() + timeOut, myEDCA[activeChannel]->myQueues[lastAC].ackTimeOut);
 			}
-
-			statsSentPackets++;
 		}
 		else {   //not enough time left now
 			DBG_MAC << "Too little Time left. This packet cannot be send in this slot." << std::endl;
@@ -475,6 +468,23 @@ Mac1609_4::~Mac1609_4() {
 		nextChannelSwitch= nullptr;
 	}
 };
+
+void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, double frequency, uint64_t datarate, double txPower_mW) {
+	phy->setRadioState(Radio::TX); // give time for the radio to be in Tx state before transmitting
+
+	delay = std::max(delay, RADIODELAY_11P); // wait at least for the radio to switch
+
+	attachSignal(frame, simTime() + delay, frequency, datarate, txPower_mW);
+	MacToPhyControlInfo* phyInfo = dynamic_cast<MacToPhyControlInfo*>(frame->getControlInfo());
+	ASSERT(phyInfo);
+
+	lastMac.reset(frame->dup());
+	sendDelayed(frame, delay, lowerLayerOut);
+
+	if (!dynamic_cast<Mac80211Ack*>(frame)) {
+		statsSentPackets += 1;
+	}
+}
 
 void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW) {
 
@@ -967,6 +977,7 @@ simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) c
 
 // Unicast
 void Mac1609_4::sendAck(int recpAddress, unsigned long wsmId) {
+	ASSERT(useAcks);
 	// 802.11-2012 9.3.2.8
 	// send an ACK after SIFS without regard of busy/ idle state of channel
 	ignoreChannelState = true;
@@ -979,31 +990,18 @@ void Mac1609_4::sendAck(int recpAddress, unsigned long wsmId) {
 	mac->setMessageId(wsmId);
 	mac->setBitLength(ackLength);
 
-	enum PHY_MCS mcs;
-	double txPower_mW;
-	uint64_t datarate;
-	mcs = MCS_DEFAULT;
-	datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
-	txPower_mW = txPower;
+	enum PHY_MCS mcs = MCS_DEFAULT;
+	uint64_t datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
 
 	simtime_t sendingDuration = RADIODELAY_11P + getFrameDuration(mac->getBitLength(), mcs);
 	DBG_MAC << "Ack sending duration will be " << sendingDuration << std::endl;
-	// give time for the radio to be in Tx state before transmitting
-	phy->setRadioState(Radio::TX);
 
 	// TODO: check ack procedure when channel switching is allowed
 	// double freq = (activeChannel == type_CCH) ? frequency[Channels::CCH] : frequency[mySCH];
 	double freq = frequency[Channels::CCH];
 
-	// since RADIODELAY_11P < SIFS_11P,
-	// by the time (after SIFS_11P) we want to send an ACK, our radio will already be in TX mode
-	attachSignal(mac, simTime()+SIFS_11P, freq, datarate, txPower_mW);
-	MacToPhyControlInfo* phyInfo = dynamic_cast<MacToPhyControlInfo*>(mac->getControlInfo());
-	assert(phyInfo);
-
 	DBG_MAC << "Sending an ack. Frequency " << freq << " at time : " << simTime() + SIFS_11P << std::endl;
-	lastMac.reset(mac->dup());
-	sendDelayed(mac, SIFS_11P, lowerLayerOut);
+	sendFrame(mac, SIFS_11P, freq, datarate, txPower);
 	scheduleAt(simTime() + SIFS_11P, stopIgnoreChannelStateMsg);
 }
 
