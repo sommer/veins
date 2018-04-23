@@ -74,6 +74,9 @@ simtime_t Decider80211p::processNewSignal(AirFrame* msg) {
 				//NIC is not yet synced to any frame, so lock and try to decode this frame
 				currentSignal.first = frame;
 				DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << std::endl;
+				if (notifyRxStart) {
+					phy->sendControlMsgToMac(new cMessage("RxStartStatus",MacToPhyInterface::PHY_RX_START));
+				}
 			}
 			else {
 				//NIC is currently trying to decode another frame. this frame will be simply treated as interference
@@ -467,6 +470,9 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
 	if (result->isSignalCorrect()) {
 		DBG_D11P << "packet was received correctly, it is now handed to upper layer...\n";
 		// go on with processing this AirFrame, send it to the Mac-Layer
+		if (notifyRxStart) {
+			phy->sendControlMsgToMac(new cMessage("RxStartStatus",MacToPhyInterface::PHY_RX_END_WITH_SUCCESS));
+		}
 		phy->sendUp(frame, result);
 	}
 	else {
@@ -479,6 +485,10 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg) {
 		}
 		else {
 			DBG_D11P << "packet was not received correctly, sending it as control message to upper layer\n";
+			if (notifyRxStart) {
+				phy->sendControlMsgToMac(new cMessage("RxStartStatus",MacToPhyInterface::PHY_RX_END_WITH_FAILURE));
+			}
+
 			if (((DeciderResult80211 *)result)->isCollision()) {
 				phy->sendControlMsgToMac(new cMessage("Error", Decider80211p::COLLISION));
 			}
@@ -525,6 +535,10 @@ double Decider80211p::getCCAThreshold() {
 
 void Decider80211p::setCCAThreshold(double ccaThreshold_dBm) {
 	ccaThreshold = pow(10, ccaThreshold_dBm / 10);
+}
+
+void Decider80211p::setNotifyRxStart(bool enable) {
+	notifyRxStart = enable;
 }
 
 void Decider80211p::switchToTx() {

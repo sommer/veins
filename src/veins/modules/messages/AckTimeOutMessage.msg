@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2011 David Eckhoff <eckhoff@cs.fau.de>
+// Copyright (C) 2018 Gurjashan Pannu <pannu@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -18,33 +18,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef MAC80211PTOPHY11PINTERFACE_H_
-#define MAC80211PTOPHY11PINTERFACE_H_
-
-#include "veins/base/phyLayer/MacToPhyInterface.h"
-
-/**
- * @brief
- * Interface of PhyLayer80211p exposed to Mac1609_4.
- *
- * @author Christopher Saloman
- * @author David Eckhoff
- *
- * @ingroup phyLayer
- */
-class Mac80211pToPhy11pInterface {
-	public:
-		enum BasePhyMessageKinds {
-			CHANNEL_IDLE,
-			CHANNEL_BUSY,
-		};
-
-	public:
-		virtual void changeListeningFrequency(double freq) = 0;
-		virtual void setCCAThreshold(double ccaThreshold_dBm) = 0;
-		virtual void notifyMacAboutRxStart(bool enable) = 0;
-		virtual void requestChannelStatusIfIdle() = 0;
-		virtual ~Mac80211pToPhy11pInterface() {};
-};
-
-#endif /* MAC80211PTOPHY11PINTERFACE_H_ */
+message AckTimeOutMessage {
+    // Unique id which is same as the uniqueid assigned to unicast packet in mac
+    unsigned long uniqueId = -1;
+    // Access category on which the AckTimer is set
+    int ac = -1;
+}

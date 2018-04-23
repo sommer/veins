@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+	<copy file="static_car.net.xml" />
+	<copy file="static_car.rou.xml" />
+	<copy file="static_car.sumo.cfg" type="config" />
+</launch>

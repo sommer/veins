@@ -487,3 +487,17 @@ void PhyLayer80211p::setCCAThreshold(double ccaThreshold_dBm) {
 double PhyLayer80211p::getCCAThreshold() {
 	return 10 * log10(ccaThreshold);
 }
+
+void PhyLayer80211p::notifyMacAboutRxStart(bool enable) {
+    ((Decider80211p *)decider)->setNotifyRxStart(enable);
+}
+
+void PhyLayer80211p::requestChannelStatusIfIdle() {
+    Enter_Method_Silent();
+    Decider80211p* dec = (Decider80211p*)decider;
+    if (dec->cca(simTime(),NULL)) {
+        //chan is idle
+        DBG << "Request channel status: channel idle!\n";
+        dec->setChannelIdleStatus(true);
+    }
+}

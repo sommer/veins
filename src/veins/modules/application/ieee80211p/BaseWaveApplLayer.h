@@ -83,7 +83,7 @@ class BaseWaveApplLayer : public BaseApplLayer {
         virtual void handleSelfMsg(cMessage* msg);
 
         /** @brief sets all the necessary fields in the WSM, BSM, or WSA. */
-        virtual void populateWSM(WaveShortMessage*  wsm, int rcvId=0, int serial=0);
+        virtual void populateWSM(WaveShortMessage*  wsm, int rcvId=-1, int serial=0);
 
         /** @brief this function is called upon receiving a WaveShortMessage */
         virtual void onWSM(WaveShortMessage* wsm) { };

@@ -42,4 +42,7 @@ packet WaveShortMessage {
 	int recipientAddress = -1;
 	int serial = 0;
 	simtime_t timestamp = 0;
+
+	// unique id (in simulation) assigned to the packet
+	unsigned long uniqueId = 0;
 }
