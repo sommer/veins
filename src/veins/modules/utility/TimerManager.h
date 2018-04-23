@@ -30,6 +30,14 @@ namespace Veins {
 class TimerManager;
 
 /**
+ * A message which is used for triggering Timers.
+ *
+ * Its implementation is empty as it is only used to differentiate from other
+ * messages.
+ */
+struct TimerMessage;
+
+/**
  * A class which specifies a Timer.
  *
  * This includes timing information as well as its callback.
@@ -39,6 +47,9 @@ public:
   /**
    * Create a new TimerSpecification.
    *
+   * The created timer is invalid, an interval is missing for it to be usable.
+   * By default, the timer starts running immediately and triggers first after the first time after the interval.
+   * After that, it will continue to run until the simulation ends, calling the callback after the interval has elapsed.
    * In order to create a timer, this needs to be passed to TimerManager::create.
    *
    * @param callback The callback which is executed when the timer is triggered.
@@ -50,14 +61,14 @@ public:
   /**
    * Set the period between two timer occurences.
    */
-  TimerSpecification &setInterval(omnetpp::simtime_t interval);
+  TimerSpecification &interval(omnetpp::simtime_t interval);
 
   /**
    * Set the number of repetitions.
    *
    * @note You cannot use both this and setAbsoluteEnd or setRelativeEnd.
    */
-  TimerSpecification &setRepititions(size_t n);
+  TimerSpecification &repititions(size_t n);
 
   /**
    * Set the timer's start time.
@@ -68,7 +79,7 @@ public:
    *
    * @note You cannot use this in conjunction with setRepition
    */
-  TimerSpecification &setRelativeStart(omnetpp::simtime_t start);
+  TimerSpecification &relativeStart(omnetpp::simtime_t start);
 
   /**
    * Set the timer's start time.
@@ -79,16 +90,7 @@ public:
    *
    * @note You cannot use this in conjunction with setRepition
    */
-  TimerSpecification &setAbsoluteStart(omnetpp::simtime_t start);
-
-  /**
-   * Set the timer to start immediately.
-   *
-   * The specified timer will start immediately but skip its first execution. In order to include the first execution, use setRelativeStart(0).
-   *
-   * Any previously set start time will be overwritten.
-   */
-  TimerSpecification &setImmediateStart();
+  TimerSpecification &absoluteStart(omnetpp::simtime_t start);
 
   /**
    * Set the timer's end time.
@@ -97,7 +99,7 @@ public:
    *
    * @param end The relative end time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer until one second has passed.
    */
-  TimerSpecification &setRelativeEnd(omnetpp::simtime_t end);
+  TimerSpecification &relativeEnd(omnetpp::simtime_t end);
 
   /**
    * Set the timer's end time.
@@ -106,24 +108,28 @@ public:
    *
    * @param end The absolute end time. The latest possible occurence is at this time. Values before the current start time will prevent any executions.
    */
-  TimerSpecification &setAbsoluteEnd(omnetpp::simtime_t end);
+  TimerSpecification &absoluteEnd(omnetpp::simtime_t end);
 
   /**
    * Set the timer to be open ended.
    *
    * Any previously set end time will be overwritten.
    */
-  TimerSpecification &setOpenEnd();
+  TimerSpecification &openEnd();
 
   /**
    * Sets the timer to execute once in a given time.
+   *
+   * Any previously set start time, end time, and interval  will be overwritten.
    */
-  TimerSpecification &setOneshotIn(omnetpp::simtime_t in);
+  TimerSpecification &oneshotIn(omnetpp::simtime_t in);
 
   /**
    * Sets the timer to execute once at a given time.
+   *
+   * Any previously set start time, end time, and interval  will be overwritten.
    */
-  TimerSpecification &setOneshotAt(omnetpp::simtime_t at);
+  TimerSpecification &oneshotAt(omnetpp::simtime_t at);
 
 private:
   friend TimerManager;
@@ -140,6 +146,7 @@ private:
   void finalize();
 
   /**
+   * Checks validity of this specification, i.e., whether all necessary information is set.
    */
   bool valid() const { return period_ != -1; }
 
@@ -159,24 +166,14 @@ private:
 
 class TimerManager {
 private:
-  /**
-   * A message which is used for triggering Timers.
-   *
-   * Its implementation is empty as it is only used to differentiate from other
-   * messages.
-   */
-  struct TimerMessage : public omnetpp::cMessage {
-    TimerMessage(const std::string &name) : omnetpp::cMessage(name.c_str()) {}
-  };
-
 public:
-  using TimerList = std::map<TimerMessage *, const TimerSpecification>;
-  using TimerHandle = TimerMessage*;
+  using TimerHandle = TimerMessage *;
+  using TimerList = std::map<TimerHandle, const TimerSpecification>;
 
   TimerManager(omnetpp::cSimpleModule *parent);
 
   /**
-   * Deletes this module.
+   * Destroy this module.
    *
    * All associated events will be cancelled and the corresponding messages deleted.
    */

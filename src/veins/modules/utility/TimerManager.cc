@@ -22,63 +22,63 @@
 using omnetpp::simTime;
 using omnetpp::simtime_t;
 using Veins::TimerManager;
+using Veins::TimerMessage;
 using Veins::TimerSpecification;
 
-TimerSpecification::TimerSpecification(std::function<void()> callback)
-	: start_mode_(StartMode::IMMEDIATE), end_mode_(EndMode::OPEN), period_(-1), callback_(callback) {}
+struct Veins::TimerMessage : public omnetpp::cMessage {
+  TimerMessage(const std::string &name) : omnetpp::cMessage(name.c_str()) {}
+};
 
-TimerSpecification &TimerSpecification::setInterval(simtime_t interval) {
+TimerSpecification::TimerSpecification(std::function<void()> callback)
+    : start_mode_(StartMode::IMMEDIATE), end_mode_(EndMode::OPEN), period_(-1), callback_(callback) {}
+
+TimerSpecification &TimerSpecification::interval(simtime_t interval) {
   ASSERT(interval > 0);
   period_ = interval;
   return *this;
 }
 
-TimerSpecification &TimerSpecification::setRelativeStart(simtime_t start) {
+TimerSpecification &TimerSpecification::relativeStart(simtime_t start) {
   start_mode_ = StartMode::RELATIVE;
   start_ = start;
   return *this;
 }
 
-TimerSpecification &TimerSpecification::setAbsoluteStart(simtime_t start) {
+TimerSpecification &TimerSpecification::absoluteStart(simtime_t start) {
   start_mode_ = StartMode::ABSOLUTE;
   start_ = start;
   return *this;
 }
 
-TimerSpecification &TimerSpecification::setImmediateStart() {
-  start_mode_ = StartMode::IMMEDIATE;
-  return *this;
-}
-
-TimerSpecification &TimerSpecification::setRelativeEnd(simtime_t end) {
+TimerSpecification &TimerSpecification::relativeEnd(simtime_t end) {
   end_mode_ = EndMode::RELATIVE;
   end_time_ = end;
   return *this;
 }
 
-TimerSpecification &TimerSpecification::setAbsoluteEnd(simtime_t end) {
+TimerSpecification &TimerSpecification::absoluteEnd(simtime_t end) {
   end_mode_ = EndMode::ABSOLUTE;
   end_time_ = end;
   return *this;
 }
 
-TimerSpecification &TimerSpecification::setRepititions(size_t n) {
+TimerSpecification &TimerSpecification::repititions(size_t n) {
   end_mode_ = EndMode::REPITITION;
   end_count_ = n;
   return *this;
 }
 
-TimerSpecification &TimerSpecification::setOpenEnd() {
+TimerSpecification &TimerSpecification::openEnd() {
   end_mode_ = EndMode::OPEN;
   return *this;
 }
 
-TimerSpecification &TimerSpecification::setOneshotIn(omnetpp::simtime_t in) {
-	return this->setRelativeStart(in).setInterval(1).setRepititions(1);
+TimerSpecification &TimerSpecification::oneshotIn(omnetpp::simtime_t in) {
+  return this->relativeStart(in).interval(1).repititions(1);
 }
 
-TimerSpecification &TimerSpecification::setOneshotAt(omnetpp::simtime_t at) {
-  return this->setAbsoluteStart(at).setInterval(1).setRepititions(1);
+TimerSpecification &TimerSpecification::oneshotAt(omnetpp::simtime_t at) {
+  return this->absoluteStart(at).interval(1).repititions(1);
 }
 
 void TimerSpecification::finalize() {
@@ -110,7 +110,10 @@ void TimerSpecification::finalize() {
 }
 
 bool TimerSpecification::validOccurence(simtime_t time) const {
-	return time >= start_ && (time <= end_time_ || end_mode_ == EndMode::OPEN) && omnetpp::fmod(time - start_, period_) == 0;
+  const bool afterStart = time >= start_;
+  const bool beforeEnd = time <= end_time_;
+  const bool atPeriod = omnetpp::fmod(time - start_, period_) == 0;
+  return afterStart && (beforeEnd || end_mode_ == EndMode::OPEN) && atPeriod;
 }
 
 TimerManager::TimerManager(omnetpp::cSimpleModule *parent) : parent_(parent) { ASSERT(parent_); }
@@ -122,7 +125,7 @@ TimerManager::~TimerManager() {
 }
 
 bool TimerManager::handleMessage(omnetpp::cMessage *message) {
-  auto *timerMessage = dynamic_cast<TimerManager::TimerMessage *>(message);
+  auto *timerMessage = dynamic_cast<TimerMessage *>(message);
   if (!timerMessage) {
     return false;
   }
@@ -151,7 +154,7 @@ TimerManager::TimerHandle TimerManager::create(TimerSpecification timerSpecifica
   ASSERT(timerSpecification.valid());
   timerSpecification.finalize();
 
-  const auto ret = timers_.insert(std::make_pair(new TimerManager::TimerMessage(name), timerSpecification));
+  const auto ret = timers_.insert(std::make_pair(new TimerMessage(name), std::move(timerSpecification)));
   ASSERT(ret.second);
   parent_->scheduleAt(ret.first->second.start_, ret.first->first);
 
