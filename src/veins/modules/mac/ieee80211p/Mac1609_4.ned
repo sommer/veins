@@ -61,6 +61,15 @@ simple Mac1609_4 extends BaseMacLayer
         //the maximum queue size of an EDCA queue in the MAC. 0 for unlimited. Queue strategy is "drop if full"
         int queueSize = default(0);
 
+        // unicast parameters
+        int dot11RTSThreshold @unit(bit) = default(12000bit);
+        int dot11ShortRetryLimit = default(7);
+        int dot11LongRetryLimit = default(4);
+        int ackLength @unit(bit) = default(112bit);
+        bool useAcks = default(false);
+        bool simulateErrorsInACK = default(false);
+        double ackErrorRate = default(0.20);
+
         // signal informing interested application about channel busy state
         @signal[sigChannelBusy](type=bool);
         // signal informing interested application about a collision
