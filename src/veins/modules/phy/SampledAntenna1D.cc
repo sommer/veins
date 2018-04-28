@@ -13,7 +13,7 @@ SampledAntenna1D::SampledAntenna1D(std::vector<double>& values, std::string offs
     // use Mapping to store the samples (interpolates automatically)
     samples = MappingUtils::createMapping();
     Argument pos;
-    double dist = 360.0/values.size();
+    double dist = (2*M_PI)/values.size();
 
     // instantiate a random number generator for sample offsets if one is specified
     cRandom* offsetGen = 0;
@@ -47,12 +47,17 @@ SampledAntenna1D::SampledAntenna1D(std::vector<double>& values, std::string offs
     if (rotationGen != 0)
         delete rotationGen;
 
+    // transform to rad
+    rotation *= (M_PI/180);
+
     // populate the mapping
     for (unsigned int i = 0; i < values.size(); i++) {
         pos.setTime(dist*i);
         double offset = 0;
         if (offsetGen != 0) {
             offset = offsetGen->draw();
+            // transform to rad
+            offset *= (M_PI/180);
         }
         samples->setValue(pos, (values[i] + offset));
     }
@@ -62,7 +67,7 @@ SampledAntenna1D::SampledAntenna1D(std::vector<double>& values, std::string offs
     // assign the value of 0 degrees to 360 degrees as well to assure correct interpolation
     pos.setTime(0);
     double value0 = samples->getValue(pos);
-    pos.setTime(360);
+    pos.setTime(2*M_PI);
     samples->setValue(pos, value0);
 }
 
@@ -73,21 +78,16 @@ SampledAntenna1D::~SampledAntenna1D() {
 double SampledAntenna1D::getGain(Coord ownPos, Coord ownOrient, Coord otherPos) {
     // get the line of sight vector
     Coord los = otherPos - ownPos;
-    // calculate angle using scalar product
-    double numerator = ownOrient.x*los.x + ownOrient.y*los.y;
-    double denominator = sqrt(ownOrient.x*ownOrient.x + ownOrient.y*ownOrient.y)*sqrt(los.x*los.x + los.y*los.y);
-    double angle = acos(numerator/denominator)/M_PI*180.0;
-    // check if angle is mathematically negative
-    if (los.y*ownOrient.x - los.x*ownOrient.y < 0) {
-        angle = 360 - angle;
-    }
+    // calculate angle using atan2
+    double angle = atan2(los.y, los.x) - atan2(ownOrient.y, ownOrient.x);
 
-    // apply possible rotation and check if angle is still within [0, 360]
+    // apply possible rotation
     angle -= rotation;
+
+    // make sure angle is within [0, 2*M_PI)
+    angle = fmod(angle, 2*M_PI);
     if (angle < 0)
-        angle = angle + (floor(-angle/360) + 1)*360;
-    else if (angle > 360)
-        angle = angle - floor(angle/360)*360;
+        angle += 2*M_PI;
 
     // return value at the calculated angle
     Argument pos(angle);
@@ -96,6 +96,6 @@ double SampledAntenna1D::getGain(Coord ownPos, Coord ownOrient, Coord otherPos) 
 }
 
 double SampledAntenna1D::getLastAngle() {
-    return lastAngle;
+    return lastAngle/M_PI*180.0;
 }
 
