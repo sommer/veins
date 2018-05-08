@@ -2,8 +2,10 @@
 #define VEINS_MOBILITY_TRACI_TRACICONNECTION_H_
 
 #include <stdint.h>
+#include <memory>
 #include "veins/modules/mobility/traci/TraCIBuffer.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
+#include <veins/modules/mobility/traci/TraCICoordinateTransformation.h>
 #include "veins/base/utils/Coord.h"
 
 namespace Veins {
@@ -61,10 +63,7 @@ class TraCIConnection
 		TraCIConnection(void*);
 
 		void* socketPtr;
-		TraCICoord netbounds1; /* network boundaries as reported by TraCI (x1, y1) */
-		TraCICoord netbounds2; /* network boundaries as reported by TraCI (x2, y2) */
-		int margin;
-
+		std::unique_ptr<TraCICoordinateTransformation> coordinateTransformation;
 };
 
 /**
