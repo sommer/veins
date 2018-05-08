@@ -319,7 +319,7 @@ void TraCIScenarioManager::init_traci() {
 		uint32_t apiVersion = version.first;
 		std::string serverVersion = version.second;
 
-		if ((apiVersion == 10) || (apiVersion == 11) || (apiVersion == 13) || (apiVersion == 14) || (apiVersion == 15)) {
+		if ((apiVersion == 10) || (apiVersion == 11) || (apiVersion == 13) || (apiVersion == 14) || (apiVersion == 15 || (apiVersion == 16)) || (apiVersion == 17)) {
 			EV_DEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
 		}
 		else {
