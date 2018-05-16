@@ -31,6 +31,8 @@
 #include "veins/modules/obstacle/ObstacleControl.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 
+#define LENGTH 4.5 // assumed vehicle length
+
 using Veins::TraCIScenarioManager;
 using Veins::TraCIBuffer;
 using Veins::TraCICoord;
@@ -57,6 +59,7 @@ TraCIScenarioManager::~TraCIScenarioManager() {
 	cancelAndDelete(executeOneTimestepTrigger);
 	delete commandIfc;
 	delete connection;
+	delete[] hostsGrid;
 }
 
 std::vector<std::string> getMapping(std::string el) {
@@ -259,6 +262,8 @@ void TraCIScenarioManager::initialize(int stage) {
 	std::string roiRoads_s = par("roiRoads");
 	std::string roiRects_s = par("roiRects");
 
+	carCellSize = par("carCellSize").doubleValue();
+
 	vehicleNameCounter = 0;
 	vehicleRngIndex = par("vehicleRngIndex");
 	numVehicles = par("numVehicles").longValue();
@@ -292,7 +297,7 @@ void TraCIScenarioManager::initialize(int stage) {
 
 	areaSum = 0;
 	nextNodeVectorIndex = 0;
-	hosts.clear();
+	hostModules.clear();
 	subscribedVehicles.clear();
 	trafficLights.clear();
 	activeVehicleCount = 0;
@@ -303,6 +308,19 @@ void TraCIScenarioManager::initialize(int stage) {
 	world = FindModule<BaseWorldUtility*>::findGlobalModule();
 
 	cc = FindModule<BaseConnectionManager*>::findGlobalModule();
+
+	// determine the size of the car grid based on the playground size and the grid granularity
+	if (carCellSize != 0.0) {
+		carGridCols = (int)ceil(world->getPgs()->x/carCellSize);
+		carGridRows = (int)ceil(world->getPgs()->y/carCellSize);
+	} else {
+		carGridCols = 1;
+		carGridRows = 1;
+	}
+	// use 1D array for storage and initialize with empty maps
+	int n = carGridCols*carGridRows;
+	hostsGrid = new std::map<std::string, HostPos*>[n];
+	std::fill_n(hostsGrid, n, std::map<std::string, HostPos*>());
 
 	ASSERT(firstStepAt > connectAt);
 	connectAndStartTrigger = new cMessage("connect");
@@ -395,7 +413,7 @@ void TraCIScenarioManager::init_traci() {
 		int cnt = 0;
 		for (std::list<std::string>::iterator i = trafficLightIds.begin(); i != trafficLightIds.end(); ++i) {
 			std::string tlId = *i;
-			if (std::find(trafficLightModuleIds.begin(), trafficLightModuleIds.end(), tlId) == trafficLightModuleIds.end())	{
+			if (std::find(trafficLightModuleIds.begin(), trafficLightModuleIds.end(), tlId) == trafficLightModuleIds.end()) {
 				continue; // filter only selected elements
 			}
 
@@ -480,8 +498,8 @@ void TraCIScenarioManager::finish() {
 	if (connection) {
 		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
 	}
-	while (hosts.begin() != hosts.end()) {
-		deleteManagedModule(hosts.begin()->first);
+	while (hostModules.begin() != hostModules.end()) {
+		deleteManagedModule(hostModules.begin()->first);
 	}
 
 	recordScalar("roiArea", areaSum);
@@ -537,39 +555,39 @@ void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 	error("TraCIScenarioManager received unknown self-message");
 }
 
-void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals) {
+void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, double elev_angle, VehicleSignal signals) {
 	// pre-initialize TraCIMobility
 	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
 		cModule* submod = SUBMODULE_ITERATOR_TO_MODULE(iter);
 		TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
 		if (!mm) continue;
-		mm->preInitialize(nodeId, position, road_id, speed, angle);
+		mm->preInitialize(nodeId, position, road_id, speed, angle, elev_angle);
 	}
 }
 
-void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals) {
+void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, double elev_angle, VehicleSignal signals) {
 	// update position in TraCIMobility
 	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
 		cModule* submod = SUBMODULE_ITERATOR_TO_MODULE(iter);
 		TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
 		if (!mm) continue;
-		mm->nextPosition(p, edge, speed, angle, signals);
+		mm->nextPosition(p, edge, speed, angle, elev_angle, signals);
 	}
 }
 
 // name: host;Car;i=vehicle.gif
-void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle, VehicleSignal signals) {
+void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle, double elev_angle, VehicleSignal signals) {
 
-	if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
+	if (hostModules.find(nodeId) != hostModules.end()) error("tried adding duplicate module");
 
 	if (queuedVehicles.find(nodeId) != queuedVehicles.end()) {
 		queuedVehicles.erase(nodeId);
 	}
-	double option1 = hosts.size() / (hosts.size() + unEquippedHosts.size() + 1.0);
-	double option2 = (hosts.size() + 1) / (hosts.size() + unEquippedHosts.size() + 1.0);
+	double option1 = hostModules.size() / (hostModules.size() + unequippedHostPositions.size() + 1.0);
+	double option2 = (hostModules.size() + 1) / (hostModules.size() + unequippedHostPositions.size() + 1.0);
 
 	if (fabs(option1 - penetrationRate) < fabs(option2 - penetrationRate)) {
-		unEquippedHosts.insert(nodeId);
+		addToHostPosMap(unequippedHostPositions, nodeId, position, angle, elev_angle);
 		return;
 	}
 
@@ -590,10 +608,11 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 	mod->buildInside();
 	mod->scheduleStart(simTime() + updateInterval);
 
-	preInitializeModule(mod, nodeId, position, road_id, speed, angle, signals);
+	preInitializeModule(mod, nodeId, position, road_id, speed, angle, elev_angle, signals);
 
 	mod->callInitialize();
-	hosts[nodeId] = mod;
+	addToHostPosMap(equippedHostPositions, nodeId, position, angle, elev_angle);
+	hostModules[nodeId] = mod;
 
 	// post-initialize TraCIMobility
 	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
@@ -605,13 +624,60 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 }
 
 cModule* TraCIScenarioManager::getManagedModule(std::string nodeId) {
-	if (hosts.find(nodeId) == hosts.end()) return 0;
-	return hosts[nodeId];
+	if (hostModules.find(nodeId) == hostModules.end()) return 0;
+	return hostModules[nodeId];
 }
 
 bool TraCIScenarioManager::isModuleUnequipped(std::string nodeId) {
-	if (unEquippedHosts.find(nodeId) == unEquippedHosts.end()) return false;
+	if (unequippedHostPositions.find(nodeId) == unequippedHostPositions.end()) return false;
 	return true;
+}
+
+void TraCIScenarioManager::addToHostPosMap(std::map<std::string, HostPos>& hostPosMap, std::string nodeId, const Coord& position, double angle, double elev_angle) {
+	hostPosMap[nodeId] = std::make_tuple(position, Coord(cos(elev_angle)*cos(angle), -cos(elev_angle)*sin(angle), sin(elev_angle)), std::vector<GridCoord>());
+	std::vector<GridCoord>& cells = std::get<2>(hostPosMap[nodeId]);
+	size_t fromRow = 0, toRow = 0, fromCol = 0, toCol = 0;
+	if (carCellSize != 0.0) {
+		fromRow = std::max(0, (int)((position.y - LENGTH)/carCellSize));
+		toRow = std::min((int)(world->getPgs()->y/carCellSize), (int)((position.y + LENGTH)/carCellSize));
+		fromCol = std::max(0, (int)((position.x - LENGTH)/carCellSize));
+		toCol = std::min((int)(world->getPgs()->x/carCellSize), (int)((position.x + LENGTH)/carCellSize));
+	}
+	for (size_t row = fromRow; row <= toRow; ++row) {
+		for (size_t col = fromCol; col <= toCol; ++col) {
+			(hostsGrid[row*carGridCols + col])[nodeId] = &hostPosMap[nodeId];
+			cells.push_back(GridCoord(col, row));
+		}
+	}
+}
+
+void TraCIScenarioManager::updateHostPosMap(std::map<std::string, HostPos>& hostPosMap, std::string nodeId, const Coord& position, double angle, double elev_angle) {
+	HostPos& hostTuple = hostPosMap[nodeId];
+	std::get<0>(hostTuple) = position;
+	std::get<1>(hostTuple) = Coord(cos(elev_angle)*cos(angle), -cos(elev_angle)*sin(angle), sin(elev_angle));
+	std::vector<GridCoord>& cells = std::get<2>(hostTuple);
+	for (GridCoord const g : cells) {
+		(hostsGrid[g.y*carGridCols + g.x]).erase(nodeId);
+	}
+	cells.clear();
+	size_t fromRow = std::max(0, (int)((position.y - LENGTH)/carCellSize));
+	size_t toRow = std::min((int)(world->getPgs()->y/carCellSize), (int)((position.y + LENGTH)/carCellSize));
+	size_t fromCol = std::max(0, (int)((position.x - LENGTH)/carCellSize));
+	size_t toCol = std::min((int)(world->getPgs()->x/carCellSize), (int)((position.x + LENGTH)/carCellSize));
+	for (size_t row = fromRow; row <= toRow; ++row) {
+		for (size_t col = fromCol; col <= toCol; ++col) {
+			(hostsGrid[row*carGridCols + col])[nodeId] = &hostTuple;
+			cells.push_back(GridCoord(col, row));
+		}
+	}
+}
+
+void TraCIScenarioManager::eraseFromHostPosMap(std::map<std::string, HostPos>& hostPosMap, std::string nodeId) {
+	std::vector<GridCoord>& cells = std::get<2>(hostPosMap[nodeId]);
+	for (GridCoord const g : cells) {
+		(hostsGrid[g.y*carGridCols + g.x]).erase(nodeId);
+	}
+	hostPosMap.erase(nodeId);
 }
 
 void TraCIScenarioManager::deleteManagedModule(std::string nodeId) {
@@ -623,7 +689,8 @@ void TraCIScenarioManager::deleteManagedModule(std::string nodeId) {
 		cc->unregisterNic(nic);
 	}
 
-	hosts.erase(nodeId);
+	hostModules.erase(nodeId);
+	eraseFromHostPosMap(equippedHostPositions, nodeId);
 	mod->callFinish();
 	mod->deleteModule();
 }
@@ -714,14 +781,15 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId) {
 	uint32_t beginTime = 0;
 	uint32_t endTime = 0x7FFFFFFF;
 	std::string objectId = vehicleId;
-	uint8_t variableNumber = 5;
-	uint8_t variable1 = VAR_POSITION;
+	uint8_t variableNumber = 6;
+	uint8_t variable1 = VAR_POSITION3D;
 	uint8_t variable2 = VAR_ROAD_ID;
 	uint8_t variable3 = VAR_SPEED;
 	uint8_t variable4 = VAR_ANGLE;
-	uint8_t variable5 = VAR_SIGNALS;
+	uint8_t variable5 = VAR_SLOPE;
+	uint8_t variable6 = VAR_SIGNALS;
 
-	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5);
+	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6);
 	processSubcriptionResult(buf);
 	ASSERT(buf.eof());
 }
@@ -736,6 +804,7 @@ void TraCIScenarioManager::unsubscribeFromVehicleVariables(std::string vehicleId
 	TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber);
 	ASSERT(buf.eof());
 }
+
 void TraCIScenarioManager::subscribeToTrafficLightVariables(std::string tlId) {
 	// subscribe to some attributes of the traffic light system
 	uint32_t beginTime = 0;
@@ -856,8 +925,8 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 				cModule* mod = getManagedModule(idstring);
 				if (mod) deleteManagedModule(idstring);
 
-				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
-					unEquippedHosts.erase(idstring);
+				if(unequippedHostPositions.find(idstring) != unequippedHostPositions.end()) {
+					eraseFromHostPosMap(unequippedHostPositions, idstring);
 				}
 
 			}
@@ -878,8 +947,8 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 				cModule* mod = getManagedModule(idstring);
 				if (mod) deleteManagedModule(idstring);
 
-				if(unEquippedHosts.find(idstring) != unEquippedHosts.end()) {
-					unEquippedHosts.erase(idstring);
+				if(unequippedHostPositions.find(idstring) != unequippedHostPositions.end()) {
+					eraseFromHostPosMap(unequippedHostPositions, idstring);
 				}
 
 			}
@@ -958,9 +1027,11 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	bool isSubscribed = (subscribedVehicles.find(objectId) != subscribedVehicles.end());
 	double px;
 	double py;
+	double pz;
 	std::string edge;
 	double speed;
 	double angle_traci;
+	double elev_angle;
 	int signals;
 	int numRead = 0;
 
@@ -1004,11 +1075,12 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 				unsubscribeFromVehicleVariables(*i);
 			}
 
-		} else if (variable1_resp == VAR_POSITION) {
+		} else if (variable1_resp == VAR_POSITION3D) {
 			uint8_t varType; buf >> varType;
-			ASSERT(varType == POSITION_2D);
+			ASSERT(varType == POSITION_3D);
 			buf >> px;
 			buf >> py;
+			buf >> pz;
 			numRead++;
 		} else if (variable1_resp == VAR_ROAD_ID) {
 			uint8_t varType; buf >> varType;
@@ -1025,6 +1097,11 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 			ASSERT(varType == TYPE_DOUBLE);
 			buf >> angle_traci;
 			numRead++;
+		} else if (variable1_resp == VAR_SLOPE) {
+			uint8_t varType; buf >> varType;
+			ASSERT(varType == TYPE_DOUBLE);
+			buf >> elev_angle;
+			numRead++;
 		} else if (variable1_resp == VAR_SIGNALS) {
 			uint8_t varType; buf >> varType;
 			ASSERT(varType == TYPE_INTEGER);
@@ -1039,12 +1116,13 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 	if (!isSubscribed) return;
 
 	// make sure we got updates for all attributes
-	if (numRead != 5) return;
+	if (numRead != 6) return;
 
-	Coord p = connection->traci2omnet(TraCICoord(px, py));
+	Coord p = connection->traci2omnet(TraCICoord(px, py, pz));
 	if ((p.x < 0) || (p.y < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
 
 	double angle = connection->traci2omnetAngle(angle_traci);
+	elev_angle = elev_angle*M_PI/180.0;
 
 	cModule* mod = getManagedModule(objectId);
 
@@ -1055,14 +1133,16 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 			deleteManagedModule(objectId);
 			EV_DEBUG << "Vehicle #" << objectId << " left region of interest" << endl;
 		}
-		else if(unEquippedHosts.find(objectId) != unEquippedHosts.end()) {
-			unEquippedHosts.erase(objectId);
+		else if(unequippedHostPositions.find(objectId) != unequippedHostPositions.end()) {
+			eraseFromHostPosMap(unequippedHostPositions, objectId);
 			EV_DEBUG << "Vehicle (unequipped) # " << objectId<< " left region of interest" << endl;
 		}
 		return;
 	}
 
 	if (isModuleUnequipped(objectId)) {
+		if (carCellSize != 0.0)
+			updateHostPosMap(unequippedHostPositions, objectId, p, angle, elev_angle);
 		return;
 	}
 
@@ -1102,13 +1182,15 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
 		}
 
 		if (mType != "0") {
-			addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle, VehicleSignal(signals));
+			addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle, elev_angle, VehicleSignal(signals));
 			EV_DEBUG << "Added vehicle #" << objectId << endl;
 		}
 	} else {
 		// module existed - update position
-		EV_DEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << endl;
-		updateModulePosition(mod, p, edge, speed, angle, VehicleSignal(signals));
+		EV_DEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << "," << p.z << endl;
+		if (carCellSize != 0.0)
+			updateHostPosMap(equippedHostPositions, objectId, p, angle, elev_angle);
+		updateModulePosition(mod, p, edge, speed, angle, elev_angle, VehicleSignal(signals));
 	}
 
 }

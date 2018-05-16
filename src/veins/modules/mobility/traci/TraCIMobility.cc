@@ -74,10 +74,12 @@ void TraCIMobility::initialize(int stage)
 
 		debug = par("debug");
 		antennaPositionOffset = par("antennaPositionOffset");
+		antennaHeight = par("antennaHeight");
 		accidentCount = par("accidentCount");
 
 		currentPosXVec.setName("posx");
 		currentPosYVec.setName("posy");
+		currentPosZVec.setName("posz");
 		currentSpeedVec.setName("speed");
 		currentAccelerationVec.setName("acceleration");
 		currentCO2EmissionVec.setName("co2emission");
@@ -89,15 +91,16 @@ void TraCIMobility::initialize(int stage)
 		isPreInitialized = false;
 
 		Coord nextPos = calculateAntennaPosition(roadPosition);
-		nextPos.z = move.getCurrentPosition().z;
+		//nextPos.z = move.getCurrentPosition().z;
 
 		move.setStart(nextPos);
-		move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
+		move.setDirectionByVector(Coord(cos(elev_angle)*cos(angle), -cos(elev_angle)*sin(angle), sin(elev_angle)));
 		move.setSpeed(speed);
 
 		WATCH(road_id);
 		WATCH(speed);
 		WATCH(angle);
+		WATCH(elev_angle);
 
 		isParking = false;
 
@@ -153,7 +156,7 @@ void TraCIMobility::handleSelfMsg(cMessage *msg)
 	}
 }
 
-void TraCIMobility::preInitialize(std::string external_id, const Coord& position, std::string road_id, double speed, double angle)
+void TraCIMobility::preInitialize(std::string external_id, const Coord& position, std::string road_id, double speed, double angle, double elev_angle)
 {
 	this->external_id = external_id;
 	this->lastUpdate = 0;
@@ -161,26 +164,28 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
 	this->road_id = road_id;
 	this->speed = speed;
 	this->angle = angle;
+	this->elev_angle = elev_angle;
 	this->antennaPositionOffset = par("antennaPositionOffset");
 
 	Coord nextPos = calculateAntennaPosition(roadPosition);
-	nextPos.z = move.getCurrentPosition().z;
+	//nextPos.z = move.getCurrentPosition().z;
 
 	move.setStart(nextPos);
-	move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
+    move.setDirectionByVector(Coord(cos(elev_angle)*cos(angle), -cos(elev_angle)*sin(angle), sin(elev_angle)));
 	move.setSpeed(speed);
 
 	isPreInitialized = true;
 }
 
-void TraCIMobility::nextPosition(const Coord& position, std::string road_id, double speed, double angle, TraCIScenarioManager::VehicleSignal signals)
+void TraCIMobility::nextPosition(const Coord& position, std::string road_id, double speed, double angle, double elev_angle, TraCIScenarioManager::VehicleSignal signals)
 {
-	if (debug) EV << "nextPosition " << position.x << " " << position.y << " " << road_id << " " << speed << " " << angle << std::endl;
+	if (debug) EV << "nextPosition " << position.x << " " << position.y << " " << position.z << " " << road_id << " " << speed << " " << angle << " " << elev_angle << std::endl;
 	isPreInitialized = false;
 	this->roadPosition = position;
 	this->road_id = road_id;
 	this->speed = speed;
 	this->angle = angle;
+	this->elev_angle = elev_angle;
 	this->signals = signals;
 
 	changePosition();
@@ -194,9 +199,10 @@ void TraCIMobility::changePosition()
 	// keep statistics (for current step)
 	currentPosXVec.record(move.getStartPos().x);
 	currentPosYVec.record(move.getStartPos().y);
+	currentPosZVec.record(move.getStartPos().z);
 
 	Coord nextPos = calculateAntennaPosition(roadPosition);
-	nextPos.z = move.getCurrentPosition().z;
+	//nextPos.z = move.getCurrentPosition().z;
 
 	// keep statistics (relative to last step)
 	if (statistics.startTime != simTime()) {
@@ -224,8 +230,8 @@ void TraCIMobility::changePosition()
 	}
 	this->lastUpdate = simTime();
 
-	move.setStart(Coord(nextPos.x, nextPos.y, move.getCurrentPosition().z)); // keep z position
-	move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
+	move.setStart(Coord(nextPos.x, nextPos.y, nextPos.z));
+    move.setDirectionByVector(Coord(cos(elev_angle)*cos(angle), -cos(elev_angle)*sin(angle), sin(elev_angle)));
 	move.setSpeed(speed);
 	fixIfHostGetsOutside();
 	updatePosition();
@@ -287,9 +293,11 @@ double TraCIMobility::calculateCO2emission(double v, double a) const {
 
 Coord TraCIMobility::calculateAntennaPosition(const Coord& vehiclePos) const {
 	Coord corPos;
-	if (antennaPositionOffset >= 0.001) {
-		//calculate antenna position of vehicle according to antenna offset
-		corPos = Coord(vehiclePos.x - antennaPositionOffset*cos(angle), vehiclePos.y + antennaPositionOffset*sin(angle), vehiclePos.z);
+	if (antennaPositionOffset >= 0.001 || antennaHeight >= 0.001) {
+	    double apparentOffset = antennaPositionOffset*cos(elev_angle) + antennaHeight*sin(elev_angle);
+		//calculate antenna position of vehicle according to antenna offset and antenna height
+		corPos = Coord(vehiclePos.x - apparentOffset*cos(angle), vehiclePos.y + apparentOffset*sin(angle),
+		        vehiclePos.z - antennaPositionOffset*sin(elev_angle) + antennaHeight*cos(elev_angle));
 	} else {
 		corPos = Coord(vehiclePos.x, vehiclePos.y, vehiclePos.z);
 	}

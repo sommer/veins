@@ -468,6 +468,8 @@
 // list of not allowed vehicle classes (get&set: lanes)
 #define LANE_DISALLOWED 0x35
 
+// slope (get: edge, lane, vehicle, person)
+#define VAR_SLOPE 0x36
 
 // speed (get: vehicle)
 #define VAR_SPEED 0x40
@@ -477,6 +479,9 @@
 
 // position (2D) (get: vehicle, poi, set: poi)
 #define VAR_POSITION 0x42
+
+// position (3D) (get: vehicle, poi, set: poi)
+#define VAR_POSITION3D 0x39
 
 // angle (get: vehicle)
 #define VAR_ANGLE 0x43

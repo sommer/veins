@@ -24,8 +24,8 @@ if args:
 
 
 # Start with default flags
-makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-o', 'veins', '-O', 'out']
-run_libs = [os.path.join('src', 'veins')]
+makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-I', '/usr/include/gdal', '-o', 'veins', '-O', 'out']
+run_libs = ["/usr/lib/gdal", os.path.join('src', 'veins')]
 run_neds = [os.path.join('src', 'veins')]
 
 

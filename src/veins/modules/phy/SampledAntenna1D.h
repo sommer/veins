@@ -82,7 +82,8 @@ public:
      */
     double getGain(Coord ownPos, Coord ownOrient, Coord otherPos);
 
-    double getLastAngle();
+    double getLastAzi();
+    double getLastEle();
 
 private:
     /**

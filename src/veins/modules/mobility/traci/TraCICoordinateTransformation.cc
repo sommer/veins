@@ -38,7 +38,8 @@ TraCICoord TraCICoordinateTransformation::omnet2traci(const OmnetCoord& coord) c
 {
     return {
         coord.x + topleft.x - margin,
-        dimensions.y - (coord.y - topleft.y) + margin
+        dimensions.y - (coord.y - topleft.y) + margin,
+        coord.z
     };
 }
 
@@ -74,7 +75,8 @@ OmnetCoord TraCICoordinateTransformation::traci2omnet(const TraCICoord& coord) c
 {
     return {
         coord.x - topleft.x + margin,
-        dimensions.y - (coord.y - topleft.y) + margin
+        dimensions.y - (coord.y - topleft.y) + margin,
+        coord.z
     };
 }
 

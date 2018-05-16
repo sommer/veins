@@ -1,0 +1,569 @@
+<!--
+Luxembourg SUMO Traffic (LuST) Scenario
+This project is licensed under the terms of the MIT license.
+Author: Lara CODECA [codeca@gmail.com]
+-->
+
+<add>
+	<busStop id="10" lane="-32940#0_0" startPos="202.435562991" endPos="212.435562991" line=" AVL---_1 AVL---_12" />
+	<busStop id="102" lane="-31912#1_0" startPos="177.605137482" endPos="187.605137482" line=" AVL---_J1" />
+	<busStop id="103" lane="--31912#1_0" startPos="29.2519535535" endPos="39.2519535535" line=" AVL---_J1" />
+	<busStop id="104" lane="--31768#2_0" startPos="116.629170906" endPos="126.629170906" line=" AVL---_8" />
+	<busStop id="105" lane="-31768#2_0" startPos="142.908207429" endPos="152.908207429" line=" AVL---_8" />
+	<busStop id="106" lane="--31228_0" startPos="46.5341003162" endPos="56.5341003162" line=" AVL---_12 AVL---_25" />
+	<busStop id="107" lane="-31228_0" startPos="98.8665393753" endPos="108.866539375" line=" AVL---_12 AVL---_25" />
+	<busStop id="11" lane="--32940#0_0" startPos="102.993688104" endPos="112.993688104" line=" AVL---_1 AVL---_12" />
+	<busStop id="110" lane="--30358#2_0" startPos="119.060291735" endPos="129.060291735" line=" AVL---_8 CBBS___BuS_1" />
+	<busStop id="111" lane="-30358#2_0" startPos="56.4568300211" endPos="66.4568300211" line=" AVL---_8 CBBS___BuS_1" />
+	<busStop id="112" lane="--32660_0" startPos="96.6376417901" endPos="106.63764179" line=" AVL---_18 AVL---_25" />
+	<busStop id="113" lane="-32660_0" startPos="74.3628640567" endPos="84.3628640567" line=" AVL---_18 AVL---_25" />
+	<busStop id="116" lane="--32638#0_0" startPos="81.4759247432" endPos="91.4759247432" line=" AVL---_3 AVL---_CN_3" />
+	<busStop id="117" lane="-32638#0_0" startPos="65.5504514084" endPos="75.5504514084" line=" AVL---_3 AVL---_CN_3" />
+	<busStop id="118" lane="--30608#1_0" startPos="689.061811156" endPos="699.061811156" line=" RGM---_114" />
+	<busStop id="119" lane="-30608#1_0" startPos="56.3788389591" endPos="66.3788389591" line=" RGM---_114" />
+	<busStop id="12" lane="-31410_0" startPos="402.782608768" endPos="412.782608768" line=" CBBS___BuS_1" />
+	<busStop id="120" lane="--31152#0_0" startPos="259.769872359" endPos="269.769872359" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="121" lane="-31152#0_0" startPos="82.0574006033" endPos="92.0574006033" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="122" lane="--31152#1_0" startPos="80.1705175428" endPos="90.1705175428" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="123" lane="-31152#1_0" startPos="38.0473904843" endPos="48.0473904843" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="124" lane="--32652#9_0" startPos="41.2012834563" endPos="51.2012834563" line=" AVL---_19 AVL---_CN_1" />
+	<busStop id="125" lane="-32652#9_0" startPos="89.3212467882" endPos="99.3212467882" line=" AVL---_19 AVL---_CN_1" />
+	<busStop id="126" lane="--32648_0" startPos="81.6025937174" endPos="91.6025937174" line=" AVL---_2 AVL---_4" />
+	<busStop id="127" lane="-32648_0" startPos="103.413126137" endPos="113.413126137" line=" AVL---_2 AVL---_4" />
+	<busStop id="128" lane="-32340#3_0" startPos="36.3463615701" endPos="46.3463615701" line=" AVL---_1 AVL---_12 AVL---_18 AVL---_25 AVL---_CN_4" />
+	<busStop id="129" lane="--32340#3_0" startPos="30.7174726099" endPos="40.7174726099" line=" AVL---_1 AVL---_12 AVL---_18 AVL---_25 AVL---_CN_4" />
+	<busStop id="13" lane="--31410_0" startPos="345.666402293" endPos="355.666402293" line=" CBBS___BuS_1" />
+	<busStop id="130" lane="--31992#5_0" startPos="25.4866345317" endPos="35.4866345317" line=" AVL---_12 AVL---_8 AVL---_CN_2" />
+	<busStop id="131" lane="-31992#5_0" startPos="92.7556388977" endPos="102.755638898" line=" AVL---_12 AVL---_8 AVL---_CN_2" />
+	<busStop id="132" lane="-32574_0" startPos="148.304995448" endPos="158.304995448" line=" AVL---_2 AVL---_4 AVL---_CN_2" />
+	<busStop id="133" lane="--32278#6_0" startPos="658.335551005" endPos="668.335551005" line=" AVL---_1 AVL---_16 AVL---_CN_4" />
+	<busStop id="134" lane="-32278#6_0" startPos="337.375447577" endPos="347.375447577" line=" AVL---_1 AVL---_16 AVL---_CN_4" />
+	<busStop id="135" lane="--30528#13_0" startPos="30.146002373" endPos="40.146002373" line=" AVL---_1 AVL---_10 AVL---_11 AVL---_13 AVL---_14 AVL---_15 AVL---_16 AVL---_18 AVL---_2 AVL---_20 AVL---_21 AVL---_23 AVL---_3 AVL---_4 AVL---_5 AVL---_6 AVL---_8 AVL---_9 AVL---_CN_1 AVL---_CN_3 AVL---_J2 RGM---_120" />
+	<busStop id="136" lane="-30528#13_0" startPos="29.0688296018" endPos="39.0688296018" line=" AVL---_1 AVL---_10 AVL---_11 AVL---_13 AVL---_14 AVL---_15 AVL---_16 AVL---_18 AVL---_2 AVL---_20 AVL---_21 AVL---_23 AVL---_3 AVL---_4 AVL---_5 AVL---_6 AVL---_8 AVL---_9 AVL---_CN_1 AVL---_CN_3 AVL---_J2 RGM---_120" />
+	<busStop id="137" lane="--31066#3_0" startPos="36.8275046714" endPos="46.8275046714" line=" AVL---_2" />
+	<busStop id="138" lane="-31066#3_0" startPos="48.1514105505" endPos="58.1514105505" line=" AVL---_2" />
+	<busStop id="139" lane="-30244#4_0" startPos="49.2328959225" endPos="59.2328959225" line=" AVL---_7" />
+	<busStop id="140" lane="--30244#4_0" startPos="96.3898452267" endPos="106.389845227" line=" AVL---_7" />
+	<busStop id="141" lane="--31258#0_0" startPos="122.437978131" endPos="132.437978131" line=" AVL---_18 AVL---_25" />
+	<busStop id="142" lane="-31258#0_0" startPos="211.759981926" endPos="221.759981926" line=" AVL---_18 AVL---_25" />
+	<busStop id="145" lane="-32432#2_0" startPos="27.2671149248" endPos="37.2671149248" line=" AVL---_15" />
+	<busStop id="146" lane="--32432#2_0" startPos="372.444885464" endPos="382.444885464" line=" AVL---_15" />
+	<busStop id="147" lane="-32964#8_0" startPos="53.0470216223" endPos="63.0470216223" line=" AVL---_3 AVL---_CN_3" />
+	<busStop id="148" lane="--32964#8_0" startPos="50.4827582188" endPos="60.4827582188" line=" AVL---_3 AVL---_CN_3" />
+	<busStop id="149" lane="-32964#3_0" startPos="43.6393474666" endPos="53.6393474666" line=" AVL---_3 AVL---_CN_3 AVL---_J1" />
+	<busStop id="150" lane="--32964#3_0" startPos="109.922359498" endPos="119.922359498" line=" AVL---_3 AVL---_CN_3 AVL---_J1" />
+	<busStop id="151" lane="-30528#4_0" startPos="50.3512488537" endPos="60.3512488537" line=" AVL---_1 AVL---_16 RGM---_120" />
+	<busStop id="152" lane="--30528#4_0" startPos="129.734733954" endPos="139.734733954" line=" AVL---_1 AVL---_16 RGM---_120" />
+	<busStop id="153" lane="-30404#0_0" startPos="39.4750519648" endPos="49.4750519648" line=" AVL---_7" />
+	<busStop id="154" lane="--30404#0_0" startPos="40.1306384609" endPos="50.1306384609" line=" AVL---_7" />
+	<busStop id="155" lane="--31134#1_0" startPos="549.105466299" endPos="559.105466299" line=" AVL---_25 AVL---_9 AVL---_CN_1" />
+	<busStop id="156" lane="-31134#1_0" startPos="54.7951439565" endPos="64.7951439565" line=" AVL---_25 AVL---_9 AVL---_CN_1" />
+	<busStop id="159" lane="-30856#17_0" startPos="97.6150637964" endPos="107.615063796" line=" AVL---_9 RGM---_114" />
+	<busStop id="160" lane="--30856#17_0" startPos="247.352989303" endPos="257.352989303" line=" AVL---_9 RGM---_114" />
+	<busStop id="161" lane="--31668#3_0" startPos="391.183371295" endPos="401.183371295" line=" AVL---_8" />
+	<busStop id="162" lane="-31668#3_0" startPos="399.656664932" endPos="409.656664932" line=" AVL---_8" />
+	<busStop id="163" lane="-32730#5_0" startPos="211.696200331" endPos="221.696200331" line=" AVL---_2" />
+	<busStop id="164" lane="--32730#5_0" startPos="72.7202872535" endPos="82.7202872535" line=" AVL---_2" />
+	<busStop id="165" lane="--31834#1_0" startPos="101.495891788" endPos="111.495891788" line=" AVL---_21 AVL---_3 AVL---_8 AVL---_J2" />
+	<busStop id="166" lane="-31834#1_0" startPos="140.288121165" endPos="150.288121165" line=" AVL---_21 AVL---_3 AVL---_8 AVL---_J2" />
+	<busStop id="167" lane="-31940#6_0" startPos="179.706265041" endPos="189.706265041" line=" AVL---_8" />
+	<busStop id="168" lane="--31940#6_0" startPos="486.861181461" endPos="496.861181461" line=" AVL---_8" />
+	<busStop id="169" lane="--32064#1_0" startPos="79.4946337768" endPos="89.4946337768" line=" AVL---_15" />
+	<busStop id="170" lane="-32064#1_0" startPos="103.304026257" endPos="113.304026257" line=" AVL---_15" />
+	<busStop id="171" lane="--30444#1_0" startPos="31.7884810848" endPos="41.7884810848" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="172" lane="-30444#1_0" startPos="32.1923756799" endPos="42.1923756799" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="173" lane="--31022#0_0" startPos="42.2842792168" endPos="52.2842792168" line=" AVL---_21 AVL---_24" />
+	<busStop id="174" lane="-31022#0_0" startPos="52.9457775793" endPos="62.9457775793" line=" AVL---_21 AVL---_24" />
+	<busStop id="175" lane="-30950_0" startPos="484.754531276" endPos="494.754531276" line=" AVL---_18 AVL---_2" />
+	<busStop id="176" lane="--30950_0" startPos="160.61054672" endPos="170.61054672" line=" AVL---_18 AVL---_2" />
+	<busStop id="179" lane="--30872#6_0" startPos="42.8075818165" endPos="52.8075818165" line=" AVL---_12" />
+	<busStop id="180" lane="-30872#6_0" startPos="38.9087213592" endPos="48.9087213592" line=" AVL---_12" />
+	<busStop id="181" lane="--32084#1_0" startPos="102.502062432" endPos="112.502062432" line=" AVL---_5" />
+	<busStop id="182" lane="-32084#1_0" startPos="54.1131156811" endPos="64.1131156811" line=" AVL---_5" />
+	<busStop id="184" lane="-31070#3_0" startPos="40.5999661165" endPos="50.5999661165" line=" AVL---_7 AVL---_CN_4" />
+	<busStop id="185" lane="--31070#3_0" startPos="321.510805993" endPos="331.510805993" line=" AVL---_7 AVL---_CN_4" />
+	<busStop id="186" lane="-32410#1_0" startPos="30.4391132845" endPos="40.4391132845" line=" AVL---_20 AVL---_CN_1 AVL---_J1" />
+	<busStop id="187" lane="--32410#1_0" startPos="25.6131509594" endPos="35.6131509594" line=" AVL---_20 AVL---_CN_1 AVL---_J1" />
+	<busStop id="188" lane="-32482#5_0" startPos="207.858821579" endPos="217.858821579" line=" CBBS___BuS_1" />
+	<busStop id="189" lane="--32482#5_0" startPos="48.1029960095" endPos="58.1029960095" line=" CBBS___BuS_1" />
+	<busStop id="19" lane="-30856#18_0" startPos="82.4476364294" endPos="92.4476364294" line=" AVL---_9 RGM---_114" />
+	<busStop id="190" lane="-32432#7_0" startPos="43.1566414704" endPos="53.1566414704" line=" AVL---_15" />
+	<busStop id="191" lane="--32432#7_0" startPos="305.215805411" endPos="315.215805411" line=" AVL---_15" />
+	<busStop id="192" lane="--32674#4_0" startPos="900.877954243" endPos="910.877954243" line=" AVL---_9 AVL---_CN_1" />
+	<busStop id="193" lane="-32674#4_0" startPos="685.437681993" endPos="695.437681993" line=" AVL---_9 AVL---_CN_1" />
+	<busStop id="195" lane="--31496#5_0" startPos="175.227393547" endPos="185.227393547" line=" AVL---_6 AVL---_7" />
+	<busStop id="196" lane="-31496#5_0" startPos="283.221813373" endPos="293.221813373" line=" AVL---_6 AVL---_7" />
+	<busStop id="197" lane="--30856#1_0" startPos="35.8740422206" endPos="45.8740422206" line=" AVL---_14" />
+	<busStop id="198" lane="-30856#1_0" startPos="443.884145477" endPos="453.884145477" line=" AVL---_14" />
+	<busStop id="199" lane="-31594#0_0" startPos="157.194366362" endPos="167.194366362" line=" AVL---_23" />
+	<busStop id="2" lane="-30856#2_0" startPos="87.4399734287" endPos="97.4399734287" line=" AVL---_14" />
+	<busStop id="20" lane="--30856#18_0" startPos="288.969646077" endPos="298.969646077" line=" AVL---_9 RGM---_114" />
+	<busStop id="200" lane="--31594#0_0" startPos="50.6595331133" endPos="60.6595331133" line=" AVL---_23" />
+	<busStop id="201" lane="-30534#3_0" startPos="372.544014229" endPos="382.544014229" line=" AVL---_13 AVL---_J1" />
+	<busStop id="202" lane="--30534#3_0" startPos="31.6793892629" endPos="41.6793892629" line=" AVL---_13 AVL---_J1" />
+	<busStop id="205" lane="--32652#8_0" startPos="54.2493460318" endPos="64.2493460318" line=" AVL---_19" />
+	<busStop id="206" lane="-32652#8_0" startPos="51.8838349868" endPos="61.8838349868" line=" AVL---_19" />
+	<busStop id="207" lane="-30622#1_0" startPos="38.9127916008" endPos="48.9127916008" line=" CBBS___BuS_2" />
+	<busStop id="208" lane="--30622#1_0" startPos="45.4067222361" endPos="55.4067222361" line=" CBBS___BuS_2" />
+	<busStop id="21" lane="--31496#6_0" startPos="75.7707661146" endPos="85.7707661146" line=" AVL---_6 AVL---_7" />
+	<busStop id="211" lane="--32674#4_0" startPos="1353.46519952" endPos="1363.46519952" line=" AVL---_9 AVL---_CN_1" />
+	<busStop id="212" lane="-32674#4_0" startPos="232.850436714" endPos="242.850436714" line=" AVL---_9 AVL---_CN_1" />
+	<busStop id="215" lane="-30892#21_0" startPos="43.456319573" endPos="53.456319573" line=" AVL---_14 AVL---_21 AVL---_24 AVL---_4 AVL---_CN_3" />
+	<busStop id="216" lane="--30892#21_0" startPos="111.908157028" endPos="121.908157028" line=" AVL---_14 AVL---_21 AVL---_24 AVL---_4 AVL---_CN_3" />
+	<busStop id="217" lane="--31648#1_0" startPos="126.297245063" endPos="136.297245063" line=" AVL---_10 AVL---_11 AVL---_12 AVL---_13 AVL---_14 AVL---_18 AVL---_19 AVL---_2 AVL---_20 AVL---_21 AVL---_23 AVL---_3 AVL---_4 AVL---_5 AVL---_7 AVL---_8 AVL---_9 AVL---_CN_1 AVL---_CN_2 AVL---_CN_3 AVL---_CN_4 AVL---_J1 AVL---_J2 CNA____NBNA" />
+	<busStop id="218" lane="-31648#1_0" startPos="30.7095405501" endPos="40.7095405501" line=" AVL---_10 AVL---_11 AVL---_12 AVL---_13 AVL---_14 AVL---_18 AVL---_19 AVL---_2 AVL---_20 AVL---_21 AVL---_23 AVL---_3 AVL---_4 AVL---_5 AVL---_7 AVL---_8 AVL---_9 AVL---_CN_1 AVL---_CN_2 AVL---_CN_3 AVL---_CN_4 AVL---_J1 AVL---_J2 CNA____NBNA" />
+	<busStop id="219" lane="--32730#0_0" startPos="259.107432255" endPos="269.107432255" line=" AVL---_2" />
+	<busStop id="22" lane="-31496#6_0" startPos="80.7326604259" endPos="90.7326604259" line=" AVL---_6 AVL---_7" />
+	<busStop id="220" lane="-32730#0_0" startPos="358.953678929" endPos="368.953678929" line=" AVL---_2" />
+	<busStop id="221" lane="--30592#0_0" startPos="29.1296328626" endPos="39.1296328626" line=" CBBS___BuS_1" />
+	<busStop id="222" lane="-30592#0_0" startPos="28.0902503448" endPos="38.0902503448" line=" CBBS___BuS_1" />
+	<busStop id="223" lane="-32532_0" startPos="47.1840184904" endPos="57.1840184904" line=" AVL---_21 AVL---_24" />
+	<busStop id="224" lane="--32322_0" startPos="80.4993303382" endPos="90.4993303382" line=" AVL---_21 AVL---_24" />
+	<busStop id="225" lane="-30850#9_0" startPos="147.760483778" endPos="157.760483778" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="226" lane="-30380_0" startPos="230.67210779" endPos="240.67210779" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="227" lane="--30648#15_0" startPos="329.536008046" endPos="339.536008046" line=" AVL---_10 AVL---_11 AVL---_5 AVL---_CN_4" />
+	<busStop id="228" lane="-30648#15_0" startPos="366.48098698" endPos="376.48098698" line=" AVL---_10 AVL---_11 AVL---_5 AVL---_CN_4" />
+	<busStop id="229" lane="--31066#7_0" startPos="267.679013633" endPos="277.679013633" line=" AVL---_18" />
+	<busStop id="23" lane="--32740#1_0" startPos="37.5468326704" endPos="47.5468326704" line=" AVL---_25" />
+	<busStop id="230" lane="-31066#7_0" startPos="333.998881468" endPos="343.998881468" line=" AVL---_18" />
+	<busStop id="231" lane="--31562#0_0" startPos="66.0272784301" endPos="76.0272784301" line=" CBBS___BuS_2" />
+	<busStop id="232" lane="-31562#0_0" startPos="160.566843506" endPos="170.566843506" line=" CBBS___BuS_2" />
+	<busStop id="233" lane="--31668#6_0" startPos="148.080105562" endPos="158.080105562" line=" AVL---_8" />
+	<busStop id="234" lane="-31668#6_0" startPos="78.9622133939" endPos="88.9622133939" line=" AVL---_8" />
+	<busStop id="235" lane="--30842#4_0" startPos="23.1398378731" endPos="33.1398378731" line=" AVL---_15" />
+	<busStop id="236" lane="-30842#4_0" startPos="25.614366824" endPos="35.614366824" line=" AVL---_15" />
+	<busStop id="239" lane="--32924#0_0" startPos="53.6291318513" endPos="63.6291318513" line=" AVL---_20 AVL---_CN_1 AVL---_J1 CNA____NBNA" />
+	<busStop id="24" lane="-32740#1_0" startPos="31.772486791" endPos="41.772486791" line=" AVL---_25" />
+	<busStop id="240" lane="-32924#0_0" startPos="306.600836634" endPos="316.600836634" line=" AVL---_20 AVL---_CN_1 AVL---_J1 CNA____NBNA" />
+	<busStop id="241" lane="-30856#7_0" startPos="52.6881283654" endPos="62.6881283654" line=" AVL---_CN_1" />
+	<busStop id="242" lane="--30856#7_0" startPos="47.3709808852" endPos="57.3709808852" line=" AVL---_CN_1" />
+	<busStop id="243" lane="-31966#12_0" startPos="54.4013348897" endPos="64.4013348897" line=" AVL---_4 AVL---_CN_3" />
+	<busStop id="244" lane="--31966#12_0" startPos="34.2334694672" endPos="44.2334694672" line=" AVL---_4 AVL---_CN_3" />
+	<busStop id="245" lane="--32638#5_0" startPos="31.0491019911" endPos="41.0491019911" line=" AVL---_5 AVL---_6 AVL---_CN_3" />
+	<busStop id="246" lane="-32638#5_0" startPos="33.0845821928" endPos="43.0845821928" line=" AVL---_5 AVL---_6 AVL---_CN_3" />
+	<busStop id="247" lane="-30628#2_0" startPos="44.2878257591" endPos="54.2878257591" line=" AVL---_5 AVL---_6" />
+	<busStop id="248" lane="-30892#25_0" startPos="235.901432924" endPos="245.901432924" line=" AVL---_18 AVL---_21 AVL---_24" />
+	<busStop id="249" lane="--30892#25_0" startPos="95.8514587084" endPos="105.851458708" line=" AVL---_18 AVL---_21 AVL---_24" />
+	<busStop id="252" lane="--31496#1_0" startPos="370.252466786" endPos="380.252466786" line=" AVL---_6" />
+	<busStop id="253" lane="-31496#1_0" startPos="106.254479177" endPos="116.254479177" line=" AVL---_6" />
+	<busStop id="254" lane="--30856#1_0" startPos="358.687523412" endPos="368.687523412" line=" AVL---_CN_1" />
+	<busStop id="255" lane="-30856#1_0" startPos="121.070664286" endPos="131.070664286" line=" AVL---_CN_1" />
+	<busStop id="256" lane="-31942#1_0" startPos="66.4656349" endPos="76.4656349" line=" AVL---_18 AVL---_25" />
+	<busStop id="257" lane="--31942#1_0" startPos="215.40726574" endPos="225.40726574" line=" AVL---_18 AVL---_25" />
+	<busStop id="258" lane="-30528#9_0" startPos="37.9086291813" endPos="47.9086291813" line=" AVL---_1 AVL---_10 AVL---_11 AVL---_13 AVL---_14 AVL---_15 AVL---_16 AVL---_18 AVL---_2 AVL---_20 AVL---_21 AVL---_23 AVL---_3 AVL---_4 AVL---_5 AVL---_6 AVL---_8 AVL---_9 AVL---_CN_1 AVL---_CN_3 AVL---_J1 AVL---_J2 RGM---_120" />
+	<busStop id="259" lane="--30528#9_0" startPos="37.2307941773" endPos="47.2307941773" line=" AVL---_1 AVL---_10 AVL---_11 AVL---_13 AVL---_14 AVL---_15 AVL---_16 AVL---_18 AVL---_2 AVL---_20 AVL---_21 AVL---_23 AVL---_3 AVL---_4 AVL---_5 AVL---_6 AVL---_8 AVL---_9 AVL---_CN_1 AVL---_CN_3 AVL---_J1 AVL---_J2 RGM---_120" />
+	<busStop id="260" lane="-31070#7_0" startPos="117.413876867" endPos="127.413876867" line=" AVL---_12 AVL---_18 AVL---_25 AVL---_7 AVL---_CN_4" />
+	<busStop id="261" lane="--31070#7_0" startPos="80.4859378586" endPos="90.4859378586" line=" AVL---_12 AVL---_18 AVL---_25 AVL---_7 AVL---_CN_4" />
+	<busStop id="262" lane="--31330_0" startPos="51.0462259113" endPos="61.0462259113" line=" AVL---_2 AVL---_4 AVL---_CN_2" />
+	<busStop id="263" lane="-31330_0" startPos="177.373158467" endPos="187.373158467" line=" AVL---_2 AVL---_4 AVL---_CN_2" />
+	<busStop id="264" lane="--30358#0_0" startPos="55.906184439" endPos="65.906184439" line=" AVL---_8" />
+	<busStop id="265" lane="-30358#0_0" startPos="60.8018353296" endPos="70.8018353296" line=" AVL---_8" />
+	<busStop id="266" lane="-31100#0_0" startPos="126.535084748" endPos="136.535084748" line=" AVL---_15" />
+	<busStop id="269" lane="--31768#7_0" startPos="298.311980941" endPos="308.311980941" line=" AVL---_8" />
+	<busStop id="27" lane="-31988_0" startPos="723.316918679" endPos="733.316918679" line=" AVL---_25 AVL---_5" />
+	<busStop id="270" lane="-31768#7_0" startPos="97.8980288646" endPos="107.898028865" line=" AVL---_8" />
+	<busStop id="271" lane="--32664#0_0" startPos="41.9707264099" endPos="51.9707264099" line=" AVL---_15" />
+	<busStop id="272" lane="-32664#0_0" startPos="40.6266633964" endPos="50.6266633964" line=" AVL---_15" />
+	<busStop id="277" lane="--32278#5_0" startPos="151.036987555" endPos="161.036987555" line=" AVL---_1 AVL---_16 AVL---_CN_4 C80---_CFB C82---_CFB NBSKMS_Nightbus RGM---_120" />
+	<busStop id="278" lane="-32278#5_0" startPos="698.383747278" endPos="708.383747278" line=" AVL---_1 AVL---_16 AVL---_CN_4 C80---_CFB C82---_CFB NBSKMS_Nightbus RGM---_120" />
+	<busStop id="279" lane="--31496#5_0" startPos="402.540234348" endPos="412.540234348" line=" AVL---_6 AVL---_7" />
+	<busStop id="28" lane="--31988_0" startPos="38.190604663" endPos="48.190604663" line=" AVL---_25 AVL---_5" />
+	<busStop id="280" lane="-31496#5_0" startPos="55.9089725723" endPos="65.9089725723" line=" AVL---_6 AVL---_7" />
+	<busStop id="281" lane="-32968#2_0" startPos="79.6820336589" endPos="89.6820336589" line=" AVL---_8" />
+	<busStop id="282" lane="--32968#2_0" startPos="86.2550100643" endPos="96.2550100643" line=" AVL---_8" />
+	<busStop id="283" lane="-30534#3_0" startPos="134.923854711" endPos="144.923854711" line=" AVL---_13 AVL---_J1" />
+	<busStop id="284" lane="--30534#3_0" startPos="269.29954878" endPos="279.29954878" line=" AVL---_13 AVL---_J1" />
+	<busStop id="285" lane="-30730#3_0" startPos="167.791524836" endPos="177.791524836" line=" AVL---_13" />
+	<busStop id="286" lane="--30730#3_0" startPos="152.642663403" endPos="162.642663403" line=" AVL---_13" />
+	<busStop id="287" lane="--32750#7_0" startPos="40.9436008135" endPos="50.9436008135" line=" AVL---_6 AVL---_CN_2" />
+	<busStop id="288" lane="-32750#7_0" startPos="82.9387217453" endPos="92.9387217453" line=" AVL---_6 AVL---_CN_2" />
+	<busStop id="289" lane="-32776#4_0" startPos="36.3011189964" endPos="46.3011189964" line=" AVL---_8" />
+	<busStop id="29" lane="-32966#0_0" startPos="51.5498331468" endPos="61.5498331468" line=" AVL---_14" />
+	<busStop id="290" lane="--32776#4_0" startPos="45.654031821" endPos="55.654031821" line=" AVL---_8" />
+	<busStop id="291" lane="--30648#5_0" startPos="110.338286293" endPos="120.338286293" line=" AVL---_10 AVL---_11" />
+	<busStop id="292" lane="-30648#5_0" startPos="47.681200938" endPos="57.681200938" line=" AVL---_10 AVL---_11" />
+	<busStop id="293" lane="--31244#1_0" startPos="121.009870087" endPos="131.009870087" line=" AVL---_21 AVL---_24" />
+	<busStop id="294" lane="-31244#1_0" startPos="117.107322985" endPos="127.107322985" line=" AVL---_21 AVL---_24" />
+	<busStop id="295" lane="--31818#22_0" startPos="51.782469443" endPos="61.782469443" line=" AVL---_3 AVL---_5 AVL---_6" />
+	<busStop id="296" lane="-31818#22_0" startPos="81.3636956611" endPos="91.3636956611" line=" AVL---_3 AVL---_5 AVL---_6" />
+	<busStop id="297" lane="-31602#1_0" startPos="39.8517965909" endPos="49.8517965909" line=" AVL---_15" />
+	<busStop id="298" lane="--31602#1_0" startPos="32.1208075425" endPos="42.1208075425" line=" AVL---_15" />
+	<busStop id="299" lane="-30856#10_0" startPos="192.032308513" endPos="202.032308513" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="3" lane="--30856#2_0" startPos="535.020586271" endPos="545.020586271" line=" AVL---_14" />
+	<busStop id="30" lane="--32966#0_0" startPos="47.1235845031" endPos="57.1235845031" line=" AVL---_14" />
+	<busStop id="300" lane="--30856#10_0" startPos="66.4435285214" endPos="76.4435285214" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="303" lane="--30432#4_0" startPos="36.6853944041" endPos="46.6853944041" line=" AVL---_3" />
+	<busStop id="304" lane="-30432#4_0" startPos="35.2606503889" endPos="45.2606503889" line=" AVL---_3" />
+	<busStop id="305" lane="--31196#1_0" startPos="18.5487019514" endPos="28.5487019514" line=" AVL---_5 AVL---_6" />
+	<busStop id="306" lane="-31196#1_0" startPos="17.7751385217" endPos="27.7751385217" line=" AVL---_5 AVL---_6" />
+	<busStop id="307" lane="--30860#6_0" startPos="28.3223466539" endPos="38.3223466539" line=" AVL---_19 AVL---_2 AVL---_4" />
+	<busStop id="308" lane="-30860#6_0" startPos="39.1973131297" endPos="49.1973131297" line=" AVL---_19 AVL---_2 AVL---_4" />
+	<busStop id="309" lane="-31462#3_0" startPos="34.6900196244" endPos="44.6900196244" line=" AVL---_18" />
+	<busStop id="31" lane="--32652#3_0" startPos="29.0709535276" endPos="39.0709535276" line=" AVL---_19 AVL---_3" />
+	<busStop id="310" lane="--31462#3_0" startPos="193.224047104" endPos="203.224047104" line=" AVL---_18" />
+	<busStop id="311" lane="--32278#5_0" startPos="797.177712526" endPos="807.177712526" line=" AVL---_1 AVL---_16 AVL---_CN_4 C80---_CFB C82---_CFB NBSKMS_Nightbus RGM---_120" />
+	<busStop id="312" lane="-32278#5_0" startPos="52.2430223071" endPos="62.2430223071" line=" AVL---_1 AVL---_16 AVL---_CN_4 C80---_CFB C82---_CFB NBSKMS_Nightbus RGM---_120" />
+	<busStop id="313" lane="--30528#36_0" startPos="20.8770008698" endPos="30.8770008698" line=" AVL---_3" />
+	<busStop id="314" lane="-30528#36_0" startPos="23.5472727503" endPos="33.5472727503" line=" AVL---_3" />
+	<busStop id="315" lane="--30646#4_0" startPos="41.5054327857" endPos="51.5054327857" line=" AVL---_3 AVL---_CN_2" />
+	<busStop id="316" lane="-30646#4_0" startPos="60.8120465806" endPos="70.8120465806" line=" AVL---_3 AVL---_CN_2" />
+	<busStop id="317" lane="--32646#0_0" startPos="53.7891771855" endPos="63.7891771855" line=" AVL---_14" />
+	<busStop id="318" lane="-32646#0_0" startPos="42.4425305328" endPos="52.4425305328" line=" AVL---_14" />
+	<busStop id="319" lane="--32750#4_0" startPos="30.2680634357" endPos="40.2680634357" line=" AVL---_6 AVL---_CN_2" />
+	<busStop id="32" lane="-32652#3_0" startPos="29.647512377" endPos="39.647512377" line=" AVL---_19 AVL---_3" />
+	<busStop id="320" lane="-32750#4_0" startPos="27.6842674965" endPos="37.6842674965" line=" AVL---_6 AVL---_CN_2" />
+	<busStop id="321" lane="-31952#16_0" startPos="322.655664389" endPos="332.655664389" line=" AVL---_21 AVL---_J2" />
+	<busStop id="322" lane="--31952#16_0" startPos="284.11166721" endPos="294.11166721" line=" AVL---_21 AVL---_J2" />
+	<busStop id="323" lane="--32730#0_0" startPos="562.776065465" endPos="572.776065465" line=" AVL---_2 AVL---_CN_3" />
+	<busStop id="324" lane="-32730#0_0" startPos="55.2850457192" endPos="65.2850457192" line=" AVL---_2 AVL---_CN_3" />
+	<busStop id="325" lane="-30314#0_0" startPos="172.986866761" endPos="182.986866761" line=" AVL---_8 CBBS___BuS_1" />
+	<busStop id="326" lane="--30314#0_0" startPos="79.3333722961" endPos="89.3333722961" line=" AVL---_8 CBBS___BuS_1" />
+	<busStop id="327" lane="-31492#0_0" startPos="78.0209660365" endPos="88.0209660365" line=" AVL---_10 AVL---_11 AVL---_5 AVL---_CN_4" />
+	<busStop id="328" lane="--31492#0_0" startPos="302.187053635" endPos="312.187053635" line=" AVL---_10 AVL---_11 AVL---_5 AVL---_CN_4" />
+	<busStop id="329" lane="--31952#5_0" startPos="117.508740822" endPos="127.508740822" line=" AVL---_21" />
+	<busStop id="33" lane="--30850#5_0" startPos="18.4527350919" endPos="28.4527350919" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="330" lane="-31952#5_0" startPos="210.872735374" endPos="220.872735374" line=" AVL---_21" />
+	<busStop id="331" lane="--32750#3_0" startPos="115.826440642" endPos="125.826440642" line=" AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="332" lane="-32750#3_0" startPos="37.1000974899" endPos="47.1000974899" line=" AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="334" lane="--32674#7_0" startPos="30.4826764337" endPos="40.4826764337" line=" AVL---_14 AVL---_19 AVL---_9 AVL---_CN_1" />
+	<busStop id="335" lane="-32674#7_0" startPos="277.518743576" endPos="287.518743576" line=" AVL---_14 AVL---_19 AVL---_9 AVL---_CN_1" />
+	<busStop id="336" lane="--32924#14_0" startPos="167.891584919" endPos="177.891584919" line=" AVL---_7" />
+	<busStop id="337" lane="-32924#14_0" startPos="44.4323344994" endPos="54.4323344994" line=" AVL---_7" />
+	<busStop id="338" lane="--31708#1_0" startPos="361.740744582" endPos="371.740744582" line=" AVL---_25" />
+	<busStop id="339" lane="-31708#1_0" startPos="35.4445473216" endPos="45.4445473216" line=" AVL---_25" />
+	<busStop id="34" lane="-30850#5_0" startPos="21.0505264434" endPos="31.0505264434" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="340" lane="-32432#0_0" startPos="392.370703859" endPos="402.370703859" line=" AVL---_15" />
+	<busStop id="341" lane="--32432#0_0" startPos="196.636519916" endPos="206.636519916" line=" AVL---_15" />
+	<busStop id="342" lane="-31818#16_0" startPos="26.9685556312" endPos="36.9685556312" line=" AVL---_5 AVL---_6 AVL---_CN_3" />
+	<busStop id="343" lane="--31818#16_0" startPos="29.7105939013" endPos="39.7105939013" line=" AVL---_5 AVL---_6 AVL---_CN_3" />
+	<busStop id="344" lane="-31340#2_0" startPos="20.7852210684" endPos="30.7852210684" line=" AVL---_CN_3" />
+	<busStop id="345" lane="--31340#2_0" startPos="21.347302057" endPos="31.347302057" line=" AVL---_CN_3" />
+	<busStop id="348" lane="--31966#1_0" startPos="30.9292158564" endPos="40.9292158564" line=" AVL---_2 AVL---_4" />
+	<busStop id="349" lane="-31966#1_0" startPos="184.14229146" endPos="194.14229146" line=" AVL---_2 AVL---_4" />
+	<busStop id="35" lane="-32432#2_0" startPos="345.728984233" endPos="355.728984233" line=" AVL---_15" />
+	<busStop id="352" lane="--30766#9_0" startPos="100.628926794" endPos="110.628926794" line=" AVL---_12" />
+	<busStop id="353" lane="-30766#9_0" startPos="121.217245792" endPos="131.217245792" line=" AVL---_12" />
+	<busStop id="354" lane="--30856#9_0" startPos="132.391189228" endPos="142.391189228" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="355" lane="-30856#9_0" startPos="152.598950098" endPos="162.598950098" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="356" lane="-32364#4_0" startPos="29.2295901721" endPos="39.2295901721" line=" AVL---_5" />
+	<busStop id="357" lane="--32364#4_0" startPos="57.4220897457" endPos="67.4220897457" line=" AVL---_5" />
+	<busStop id="358" lane="--31496#2_0" startPos="214.551730372" endPos="224.551730372" line=" AVL---_6" />
+	<busStop id="359" lane="-31496#2_0" startPos="74.5058212481" endPos="84.5058212481" line=" AVL---_6" />
+	<busStop id="36" lane="--32432#2_0" startPos="53.9830161555" endPos="63.9830161555" line=" AVL---_15" />
+	<busStop id="364" lane="-31364#6_0" startPos="22.6933100522" endPos="32.6933100522" line=" AVL---_19" />
+	<busStop id="365" lane="--31364#6_0" startPos="21.9344799602" endPos="31.9344799602" line=" AVL---_19" />
+	<busStop id="370" lane="-31272#3_0" startPos="184.148121106" endPos="194.148121106" line=" AVL---_1 AVL---_14 AVL---_21 AVL---_4 AVL---_CN_1" />
+	<busStop id="371" lane="--31272#3_0" startPos="43.6998641299" endPos="53.6998641299" line=" AVL---_1 AVL---_14 AVL---_21 AVL---_4 AVL---_CN_1" />
+	<busStop id="372" lane="--30432#7_0" startPos="144.589084449" endPos="154.589084449" line=" AVL---_3" />
+	<busStop id="373" lane="-30432#7_0" startPos="99.893751417" endPos="109.893751417" line=" AVL---_3" />
+	<busStop id="374" lane="--31466#2_0" startPos="115.79326668" endPos="125.79326668" line=" AVL---_7" />
+	<busStop id="375" lane="-31466#2_0" startPos="1067.4485283" endPos="1077.4485283" line=" AVL---_7" />
+	<busStop id="376" lane="-30358#16_0" startPos="99.8203485127" endPos="109.820348513" line=" AVL---_6 CBBS___BuS_1" />
+	<busStop id="377" lane="--30358#16_0" startPos="59.4443404307" endPos="69.4443404307" line=" AVL---_6 CBBS___BuS_1" />
+	<busStop id="380" lane="-31768#1_0" startPos="104.388243339" endPos="114.388243339" line=" AVL---_8" />
+	<busStop id="381" lane="--31768#1_0" startPos="188.461374007" endPos="198.461374007" line=" AVL---_8" />
+	<busStop id="382" lane="--30844#0_0" startPos="51.4505786688" endPos="61.4505786688" line=" CBBS___BuS_1 CBBS___BuS_2" />
+	<busStop id="383" lane="-30844#0_0" startPos="772.784168822" endPos="782.784168822" line=" CBBS___BuS_1 CBBS___BuS_2" />
+	<busStop id="384" lane="--31496#11_0" startPos="62.7821014374" endPos="72.7821014374" line=" AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="385" lane="-31496#11_0" startPos="81.3476110144" endPos="91.3476110144" line=" AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="386" lane="--31952#9_0" startPos="109.526756654" endPos="119.526756654" line=" AVL---_21 AVL---_J2" />
+	<busStop id="387" lane="-31952#9_0" startPos="55.9954567968" endPos="65.9954567968" line=" AVL---_21 AVL---_J2" />
+	<busStop id="388" lane="--32230#7_0" startPos="69.7896835678" endPos="79.7896835678" line=" AVL---_19" />
+	<busStop id="389" lane="-32230#7_0" startPos="76.3486938314" endPos="86.3486938314" line=" AVL---_19" />
+	<busStop id="392" lane="-31564#1_0" startPos="56.0229496487" endPos="66.0229496487" line=" AVL---_15" />
+	<busStop id="393" lane="--31564#1_0" startPos="131.206714138" endPos="141.206714138" line=" AVL---_15" />
+	<busStop id="396" lane="-31966#10_0" startPos="35.4923630548" endPos="45.4923630548" line=" AVL---_4 AVL---_CN_3" />
+	<busStop id="397" lane="--31966#10_0" startPos="269.90783414" endPos="279.90783414" line=" AVL---_4 AVL---_CN_3" />
+	<busStop id="398" lane="--31992#1_0" startPos="52.8715948713" endPos="62.8715948713" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="399" lane="-31992#1_0" startPos="58.4502295896" endPos="68.4502295896" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="4" lane="-31952#13_0" startPos="49.1734871261" endPos="59.1734871261" line=" AVL---_21 AVL---_J2" />
+	<busStop id="400" lane="--30358#4_0" startPos="23.3628148073" endPos="33.3628148073" line=" CBBS___BuS_1" />
+	<busStop id="401" lane="-30358#4_0" startPos="39.6287357888" endPos="49.6287357888" line=" CBBS___BuS_1" />
+	<busStop id="402" lane="-31818#14_0" startPos="45.930007402" endPos="55.930007402" line=" AVL---_5 AVL---_6" />
+	<busStop id="403" lane="--31818#14_0" startPos="144.639185177" endPos="154.639185177" line=" AVL---_5 AVL---_6" />
+	<busStop id="404" lane="-30244#2_0" startPos="28.0449127211" endPos="38.0449127211" line=" AVL---_7" />
+	<busStop id="405" lane="--30244#2_0" startPos="100.054575353" endPos="110.054575353" line=" AVL---_7" />
+	<busStop id="406" lane="-32042#0_0" startPos="195.362421951" endPos="205.362421951" line=" CBBS___BuS_2" />
+	<busStop id="407" lane="--32042#0_0" startPos="52.7299930887" endPos="62.7299930887" line=" CBBS___BuS_2" />
+	<busStop id="408" lane="-32964#11_0" startPos="15.7008548195" endPos="25.7008548195" line=" AVL---_13 AVL---_3 AVL---_CN_3 AVL---_J1" />
+	<busStop id="409" lane="--32964#11_0" startPos="21.9505416171" endPos="31.9505416171" line=" AVL---_13 AVL---_3 AVL---_CN_3 AVL---_J1" />
+	<busStop id="410" lane="--32674#3_0" startPos="305.42737288" endPos="315.42737288" line=" AVL---_25 AVL---_9 AVL---_CN_1" />
+	<busStop id="411" lane="-32674#3_0" startPos="285.856364799" endPos="295.856364799" line=" AVL---_25 AVL---_9 AVL---_CN_1" />
+	<busStop id="412" lane="-31364#5_0" startPos="151.437696163" endPos="161.437696163" line=" AVL---_19" />
+	<busStop id="413" lane="--31364#5_0" startPos="229.117214301" endPos="239.117214301" line=" AVL---_19" />
+	<busStop id="414" lane="-30892#24_0" startPos="82.0208110031" endPos="92.0208110031" line=" AVL---_14 AVL---_18 AVL---_21 AVL---_24 AVL---_CN_3" />
+	<busStop id="415" lane="--30892#24_0" startPos="63.6992664402" endPos="73.6992664402" line=" AVL---_14 AVL---_18 AVL---_21 AVL---_24 AVL---_CN_3" />
+	<busStop id="416" lane="-32750#12_0" startPos="61.7909841628" endPos="71.7909841628" line=" AVL---_12 AVL---_15 AVL---_17 AVL---_6 AVL---_7" />
+	<busStop id="417" lane="--32750#12_0" startPos="56.3204151566" endPos="66.3204151566" line=" AVL---_12 AVL---_15 AVL---_17 AVL---_6 AVL---_7" />
+	<busStop id="418" lane="-32364#1_0" startPos="32.078035044" endPos="42.078035044" line=" AVL---_5" />
+	<busStop id="419" lane="--32364#1_0" startPos="22.6738628726" endPos="32.6738628726" line=" AVL---_5" />
+	<busStop id="42" lane="--32730#2_0" startPos="90.9007908527" endPos="100.900790853" line=" AVL---_2" />
+	<busStop id="422" lane="--32674#2_0" startPos="429.807786019" endPos="439.807786019" line=" AVL---_25 AVL---_9 AVL---_CN_1" />
+	<busStop id="423" lane="-32674#2_0" startPos="68.4408995968" endPos="78.4408995968" line=" AVL---_25 AVL---_9 AVL---_CN_1" />
+	<busStop id="424" lane="-31952#16_0" startPos="523.407697512" endPos="533.407697512" line=" AVL---_21 AVL---_J2" />
+	<busStop id="425" lane="--31952#16_0" startPos="83.3596340873" endPos="93.3596340873" line=" AVL---_21 AVL---_J2" />
+	<busStop id="426" lane="--31668#4_0" startPos="285.005981531" endPos="295.005981531" line=" AVL---_8" />
+	<busStop id="427" lane="-31668#4_0" startPos="39.2225562905" endPos="49.2225562905" line=" AVL---_8" />
+	<busStop id="428" lane="--31452#0_0" startPos="330.153686829" endPos="340.153686829" line=" AVL---_18" />
+	<busStop id="429" lane="-31452#0_0" startPos="1475.03882051" endPos="1485.03882051" line=" AVL---_18" />
+	<busStop id="43" lane="-32730#2_0" startPos="65.8234475881" endPos="75.8234475881" line=" AVL---_2" />
+	<busStop id="430" lane="-30468#1_0" startPos="312.306735459" endPos="322.306735459" line=" AVL---_J2" />
+	<busStop id="431" lane="--30468#1_0" startPos="50.7913154373" endPos="60.7913154373" line=" AVL---_J2" />
+	<busStop id="432" lane="--31668#2_0" startPos="202.221114074" endPos="212.221114074" line=" AVL---_8" />
+	<busStop id="433" lane="-31668#2_0" startPos="61.3684557697" endPos="71.3684557697" line=" AVL---_8" />
+	<busStop id="434" lane="--31466#2_0" startPos="581.676660197" endPos="591.676660197" line=" AVL---_7" />
+	<busStop id="435" lane="-31466#2_0" startPos="601.565134783" endPos="611.565134783" line=" AVL---_7" />
+	<busStop id="436" lane="--31668#3_0" startPos="647.034100811" endPos="657.034100811" line=" AVL---_8" />
+	<busStop id="437" lane="-31668#3_0" startPos="143.805935416" endPos="153.805935416" line=" AVL---_8" />
+	<busStop id="438" lane="-31364#11_0" startPos="120.358181194" endPos="130.358181194" line=" AVL---_19" />
+	<busStop id="439" lane="--31364#11_0" startPos="110.58153922" endPos="120.58153922" line=" AVL---_19" />
+	<busStop id="44" lane="-32080#2_0" startPos="292.883812218" endPos="302.883812218" line=" AVL---_5 AVL---_6" />
+	<busStop id="440" lane="--31966#7_0" startPos="37.1336202261" endPos="47.1336202261" line=" AVL---_4 AVL---_CN_3" />
+	<busStop id="441" lane="-31966#7_0" startPos="53.8621478615" endPos="63.8621478615" line=" AVL---_4 AVL---_CN_3" />
+	<busStop id="444" lane="--30850#0_0" startPos="58.545264151" endPos="68.545264151" line=" AVL---_13 AVL---_5 AVL---_CN_4" />
+	<busStop id="445" lane="-30850#0_0" startPos="56.9536307163" endPos="66.9536307163" line=" AVL---_13 AVL---_5 AVL---_CN_4" />
+	<busStop id="446" lane="-32432#0_0" startPos="125.064027125" endPos="135.064027125" line=" AVL---_15" />
+	<busStop id="447" lane="--32432#0_0" startPos="463.943196649" endPos="473.943196649" line=" AVL---_15" />
+	<busStop id="448" lane="-31462#0_0" startPos="213.434094557" endPos="223.434094557" line=" AVL---_18" />
+	<busStop id="449" lane="--31462#0_0" startPos="101.808043931" endPos="111.808043931" line=" AVL---_18" />
+	<busStop id="45" lane="--32080#2_0" startPos="61.8773203793" endPos="71.8773203793" line=" AVL---_5 AVL---_6" />
+	<busStop id="450" lane="-30348#3_0" startPos="29.0231791382" endPos="39.0231791382" line=" AVL---_2 AVL---_CN_3" />
+	<busStop id="451" lane="--30348#3_0" startPos="24.0725097045" endPos="34.0725097045" line=" AVL---_2 AVL---_CN_3" />
+	<busStop id="452" lane="--31966#3_0" startPos="91.2459106037" endPos="101.245910604" line=" AVL---_4" />
+	<busStop id="453" lane="-31966#3_0" startPos="211.37994562" endPos="221.37994562" line=" AVL---_4" />
+	<busStop id="454" lane="-31070#4_0" startPos="65.1577785559" endPos="75.1577785559" line=" AVL---_18 AVL---_25 AVL---_7 AVL---_CN_4" />
+	<busStop id="455" lane="--31070#4_0" startPos="227.969454247" endPos="237.969454247" line=" AVL---_18 AVL---_25 AVL---_7 AVL---_CN_4" />
+	<busStop id="456" lane="-31272#1_0" startPos="55.2525623657" endPos="65.2525623657" line=" AVL---_21 AVL---_4 AVL---_CN_1" />
+	<busStop id="457" lane="--31272#1_0" startPos="53.6161241276" endPos="63.6161241276" line=" AVL---_21 AVL---_4 AVL---_CN_1" />
+	<busStop id="458" lane="-31868#1_0" startPos="58.4684343925" endPos="68.4684343925" line=" AVL---_21" />
+	<busStop id="459" lane="--31868#1_0" startPos="63.0104122697" endPos="73.0104122697" line=" AVL---_21" />
+	<busStop id="46" lane="-30856#5_0" startPos="224.560111924" endPos="234.560111924" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="460" lane="-30468#1_0" startPos="155.467686882" endPos="165.467686882" line=" AVL---_J2" />
+	<busStop id="461" lane="--30468#1_0" startPos="207.630364015" endPos="217.630364015" line=" AVL---_J2" />
+	<busStop id="462" lane="--30856#1_0" startPos="439.467803532" endPos="449.467803532" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="463" lane="-30856#1_0" startPos="40.2903841657" endPos="50.2903841657" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="464" lane="--31952#2_0" startPos="29.2051319658" endPos="39.2051319658" line=" AVL---_21" />
+	<busStop id="465" lane="-31952#2_0" startPos="11.767894933" endPos="21.767894933" line=" AVL---_21" />
+	<busStop id="466" lane="-31272#4_0" startPos="127.756259689" endPos="137.756259689" line=" AVL---_1" />
+	<busStop id="467" lane="--31272#4_0" startPos="51.2243390785" endPos="61.2243390785" line=" AVL---_1" />
+	<busStop id="468" lane="-31410_0" startPos="596.562083057" endPos="606.562083057" line=" CBBS___BuS_1" />
+	<busStop id="469" lane="--31410_0" startPos="151.886928004" endPos="161.886928004" line=" CBBS___BuS_1" />
+	<busStop id="47" lane="--30856#5_0" startPos="66.2400114917" endPos="76.2400114917" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="470" lane="-31952#16_0" startPos="53.7851959916" endPos="63.7851959916" line=" AVL---_21 AVL---_J2" />
+	<busStop id="471" lane="--31952#16_0" startPos="552.982135607" endPos="562.982135607" line=" AVL---_21 AVL---_J2" />
+	<busStop id="472" lane="--32638#6_0" startPos="43.2231897265" endPos="53.2231897265" line=" AVL---_5 AVL---_6 AVL---_CN_3" />
+	<busStop id="473" lane="-32638#6_0" startPos="157.394408043" endPos="167.394408043" line=" AVL---_5 AVL---_6 AVL---_CN_3" />
+	<busStop id="474" lane="--31066#6_0" startPos="40.0190368313" endPos="50.0190368313" line=" AVL---_18" />
+	<busStop id="475" lane="-31066#6_0" startPos="45.85170842" endPos="55.85170842" line=" AVL---_18" />
+	<busStop id="480" lane="-32592#0_0" startPos="122.811839501" endPos="132.811839501" line=" AVL---_19 AVL---_20" />
+	<busStop id="481" lane="--32592#0_0" startPos="26.9282137916" endPos="36.9282137916" line=" AVL---_19 AVL---_20" />
+	<busStop id="482" lane="-31022#1_0" startPos="299.297773204" endPos="309.297773204" line=" AVL---_21 AVL---_24" />
+	<busStop id="483" lane="--31022#1_0" startPos="127.872767235" endPos="137.872767235" line=" AVL---_21 AVL---_24" />
+	<busStop id="484" lane="--31858#1_0" startPos="58.9307755567" endPos="68.9307755567" line=" AVL---_15" />
+	<busStop id="485" lane="-31858#1_0" startPos="54.5057751649" endPos="64.5057751649" line=" AVL---_15" />
+	<busStop id="486" lane="-30856#14_0" startPos="116.096959176" endPos="126.096959176" line=" AVL---_14 AVL---_25 AVL---_CN_1" />
+	<busStop id="487" lane="--30856#14_0" startPos="118.879437251" endPos="128.879437251" line=" AVL---_14 AVL---_25 AVL---_CN_1" />
+	<busStop id="490" lane="-31988_0" startPos="37.8610571812" endPos="47.8610571812" line=" AVL---_25 AVL---_5" />
+	<busStop id="491" lane="--31988_0" startPos="723.64646616" endPos="733.64646616" line=" AVL---_25 AVL---_5" />
+	<busStop id="492" lane="--32966#7_0" startPos="52.6006553378" endPos="62.6006553378" line=" AVL---_14" />
+	<busStop id="493" lane="-32966#7_0" startPos="40.2600448176" endPos="50.2600448176" line=" AVL---_14" />
+	<busStop id="494" lane="--30516#0_0" startPos="55.158540283" endPos="65.158540283" line=" AVL---_12 AVL---_25" />
+	<busStop id="495" lane="-30516#0_0" startPos="259.33459439" endPos="269.33459439" line=" AVL---_12 AVL---_25" />
+	<busStop id="496" lane="-32786#3_0" startPos="78.6502746144" endPos="88.6502746144" line=" AVL---_15" />
+	<busStop id="497" lane="--32786#3_0" startPos="130.050284591" endPos="140.050284591" line=" AVL---_15" />
+	<busStop id="498" lane="--30850#7_0" startPos="145.793165345" endPos="155.793165345" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="499" lane="-30850#7_0" startPos="272.111516967" endPos="282.111516967" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="5" lane="--31952#13_0" startPos="67.7373099858" endPos="77.7373099858" line=" AVL---_21 AVL---_J2" />
+	<busStop id="50" lane="-31320#2_0" startPos="48.4253603028" endPos="58.4253603028" line=" AVL---_21 AVL---_4 AVL---_CN_1" />
+	<busStop id="500" lane="-32638#10_0" startPos="26.8563314801" endPos="36.8563314801" line=" AVL---_CN_3" />
+	<busStop id="501" lane="--32638#10_0" startPos="38.7070606174" endPos="48.7070606174" line=" AVL---_CN_3" />
+	<busStop id="502" lane="--30766#4_0" startPos="57.7853794158" endPos="67.7853794158" line=" AVL---_12" />
+	<busStop id="503" lane="-30766#4_0" startPos="58.9685989466" endPos="68.9685989466" line=" AVL---_12" />
+	<busStop id="504" lane="--30694#5_0" startPos="10.1163326242" endPos="20.1163326242" line=" AVL---_3" />
+	<busStop id="505" lane="-30694#5_0" startPos="8.62154791308" endPos="18.6215479131" line=" AVL---_3" />
+	<busStop id="506" lane="--31496#3_0" startPos="310.671521273" endPos="320.671521273" line=" AVL---_6" />
+	<busStop id="507" lane="-31496#3_0" startPos="47.8520652708" endPos="57.8520652708" line=" AVL---_6" />
+	<busStop id="508" lane="-30710#0_0" startPos="35.3790286235" endPos="45.3790286235" line=" AVL---_2 AVL---_4 AVL---_CN_2" />
+	<busStop id="509" lane="--30648#7_0" startPos="143.660812056" endPos="153.660812056" line=" AVL---_10 AVL---_11" />
+	<busStop id="51" lane="--30646#3_0" startPos="51.2104856854" endPos="61.2104856854" line=" AVL---_3 AVL---_CN_2" />
+	<busStop id="510" lane="-30648#7_0" startPos="42.0228063452" endPos="52.0228063452" line=" AVL---_10 AVL---_11" />
+	<busStop id="511" lane="-32080#2_0" startPos="56.7841940101" endPos="66.7841940101" line=" AVL---_5 AVL---_6" />
+	<busStop id="512" lane="--32080#2_0" startPos="297.976938587" endPos="307.976938587" line=" AVL---_5 AVL---_6" />
+	<busStop id="514" lane="-30856#2_0" startPos="579.734638875" endPos="589.734638875" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="515" lane="--30856#2_0" startPos="42.7259208249" endPos="52.7259208249" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="516" lane="--30648#9_0" startPos="61.2375082786" endPos="71.2375082786" line=" AVL---_10 AVL---_11" />
+	<busStop id="517" lane="-30648#9_0" startPos="79.1540026218" endPos="89.1540026218" line=" AVL---_10 AVL---_11" />
+	<busStop id="518" lane="-31056#2_0" startPos="42.9258087669" endPos="52.9258087669" line=" AVL---_3 AVL---_CN_2" />
+	<busStop id="519" lane="--31056#2_0" startPos="45.3182477416" endPos="55.3182477416" line=" AVL---_3 AVL---_CN_2" />
+	<busStop id="52" lane="-30646#3_0" startPos="36.9842072068" endPos="46.9842072068" line=" AVL---_3 AVL---_CN_2" />
+	<busStop id="520" lane="--30928_0" startPos="63.0585658372" endPos="73.0585658372" line=" AVL---_19 AVL---_3 AVL---_CN_2" />
+	<busStop id="521" lane="-30928_0" startPos="188.255211564" endPos="198.255211564" line=" AVL---_19 AVL---_3 AVL---_CN_2" />
+	<busStop id="522" lane="-31272#7_0" startPos="87.1417657439" endPos="97.1417657439" line=" AVL---_1 AVL---_CN_1" />
+	<busStop id="523" lane="--31272#7_0" startPos="196.361550828" endPos="206.361550828" line=" AVL---_1 AVL---_CN_1" />
+	<busStop id="524" lane="--31668#4_0" startPos="98.3903375425" endPos="108.390337543" line=" AVL---_8" />
+	<busStop id="525" lane="-31668#4_0" startPos="225.838200279" endPos="235.838200279" line=" AVL---_8" />
+	<busStop id="526" lane="--31708#0_0" startPos="197.829580401" endPos="207.829580401" line=" AVL---_25" />
+	<busStop id="527" lane="-31708#0_0" startPos="192.775480044" endPos="202.775480044" line=" AVL---_25" />
+	<busStop id="528" lane="--30358#9_0" startPos="46.6765995014" endPos="56.6765995014" line=" CBBS___BuS_1" />
+	<busStop id="529" lane="-30358#9_0" startPos="40.4499675625" endPos="50.4499675625" line=" CBBS___BuS_1" />
+	<busStop id="53" lane="--31496#9_0" startPos="60.6411821278" endPos="70.6411821278" line=" AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="530" lane="--30306#2_0" startPos="32.333207566" endPos="42.333207566" line=" CBBS___BuS_1" />
+	<busStop id="531" lane="-30306#2_0" startPos="34.4252730986" endPos="44.4252730986" line=" CBBS___BuS_1" />
+	<busStop id="532" lane="--30648#4_0" startPos="148.480230816" endPos="158.480230816" line=" AVL---_10 AVL---_11" />
+	<busStop id="533" lane="-30648#4_0" startPos="84.2854841758" endPos="94.2854841758" line=" AVL---_10 AVL---_11" />
+	<busStop id="534" lane="-30358#12_0" startPos="55.0019595571" endPos="65.0019595571" line=" AVL---_6 AVL---_7 CBBS___BuS_1" />
+	<busStop id="535" lane="--30358#12_0" startPos="49.6315573776" endPos="59.6315573776" line=" AVL---_6 AVL---_7 CBBS___BuS_1" />
+	<busStop id="536" lane="--30844#0_0" startPos="645.321553026" endPos="655.321553026" line=" CBBS___BuS_2" />
+	<busStop id="537" lane="-30844#0_0" startPos="178.913194465" endPos="188.913194465" line=" CBBS___BuS_2" />
+	<busStop id="538" lane="-31610#3_0" startPos="53.1753988492" endPos="63.1753988492" line=" AVL---_12" />
+	<busStop id="539" lane="--31610#3_0" startPos="69.8752875995" endPos="79.8752875995" line=" AVL---_12" />
+	<busStop id="54" lane="-31496#9_0" startPos="177.376903524" endPos="187.376903524" line=" AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="540" lane="-32432#5_0" startPos="99.8121291464" endPos="109.812129146" line=" AVL---_15" />
+	<busStop id="541" lane="--32432#5_0" startPos="53.0517708614" endPos="63.0517708614" line=" AVL---_15" />
+	<busStop id="542" lane="-31952#17_0" startPos="278.561408178" endPos="288.561408178" line=" AVL---_21 AVL---_J2" />
+	<busStop id="543" lane="--31952#17_0" startPos="120.835247858" endPos="130.835247858" line=" AVL---_21 AVL---_J2" />
+	<busStop id="544" lane="-30516#3_0" startPos="32.7680552922" endPos="42.7680552922" line=" AVL---_12 AVL---_25" />
+	<busStop id="545" lane="--30516#3_0" startPos="39.1891955008" endPos="49.1891955008" line=" AVL---_12 AVL---_25" />
+	<busStop id="546" lane="--31798_0" startPos="78.5536445331" endPos="88.5536445331" line=" AVL---_19" />
+	<busStop id="547" lane="-31798_0" startPos="291.818575989" endPos="301.818575989" line=" AVL---_19" />
+	<busStop id="548" lane="-31818#15_0" startPos="61.1219626555" endPos="71.1219626555" line=" AVL---_5 AVL---_6" />
+	<busStop id="549" lane="--31818#15_0" startPos="79.4798048903" endPos="89.4798048903" line=" AVL---_5 AVL---_6" />
+	<busStop id="550" lane="-32750#11_0" startPos="49.5779459364" endPos="59.5779459364" line=" AVL---_12 AVL---_15 AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="551" lane="--32750#11_0" startPos="223.075920157" endPos="233.075920157" line=" AVL---_12 AVL---_15 AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="552" lane="--30766#6_0" startPos="56.4495741719" endPos="66.4495741719" line=" AVL---_12" />
+	<busStop id="553" lane="-30766#6_0" startPos="200.157461331" endPos="210.157461331" line=" AVL---_12" />
+	<busStop id="554" lane="-32878#2_0" startPos="36.8546578729" endPos="46.8546578729" line=" AVL---_8" />
+	<busStop id="555" lane="--32878#2_0" startPos="31.8314054384" endPos="41.8314054384" line=" AVL---_8" />
+	<busStop id="556" lane="--32674#9_0" startPos="401.023762945" endPos="411.023762945" line=" AVL---_14 AVL---_19 AVL---_9 AVL---_CN_1 CNA____NBNA" />
+	<busStop id="557" lane="-32674#9_0" startPos="38.0174983119" endPos="48.0174983119" line=" AVL---_14 AVL---_19 AVL---_9 AVL---_CN_1 CNA____NBNA" />
+	<busStop id="558" lane="--30528#25_0" startPos="38.686882497" endPos="48.686882497" line=" AVL---_16" />
+	<busStop id="559" lane="-30528#25_0" startPos="40.2276689235" endPos="50.2276689235" line=" AVL---_16" />
+	<busStop id="560" lane="--31648#3_0" startPos="39.5198129384" endPos="49.5198129384" line=" AVL---_10 AVL---_11 AVL---_14 AVL---_19 AVL---_20 AVL---_5 AVL---_9 AVL---_CN_1 AVL---_CN_4 CNA____NBNA" />
+	<busStop id="561" lane="-31648#3_0" startPos="49.4823843016" endPos="59.4823843016" line=" AVL---_10 AVL---_11 AVL---_14 AVL---_19 AVL---_20 AVL---_5 AVL---_9 AVL---_CN_1 AVL---_CN_4 CNA____NBNA" />
+	<busStop id="562" lane="-30856#0_0" startPos="35.8274104017" endPos="45.8274104017" line=" AVL---_CN_1" />
+	<busStop id="563" lane="--30856#0_0" startPos="183.316184695" endPos="193.316184695" line=" AVL---_CN_1" />
+	<busStop id="568" lane="--31768#3_0" startPos="156.253265529" endPos="166.253265529" line=" AVL---_8" />
+	<busStop id="569" lane="-31768#3_0" startPos="251.069578903" endPos="261.069578903" line=" AVL---_8" />
+	<busStop id="57" lane="--32674#4_0" startPos="1566.21098571" endPos="1576.21098571" line=" AVL---_9 AVL---_CN_1 CNA____NBNA" />
+	<busStop id="570" lane="--31496#14_0" startPos="80.6882065923" endPos="90.6882065923" line=" AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="571" lane="-31496#14_0" startPos="83.2420395225" endPos="93.2420395225" line=" AVL---_6 AVL---_7 AVL---_CN_2" />
+	<busStop id="572" lane="--30648#13_0" startPos="29.008850032" endPos="39.008850032" line=" AVL---_10 AVL---_11 AVL---_19 AVL---_21 AVL---_5 AVL---_CN_4" />
+	<busStop id="573" lane="-30648#13_0" startPos="115.079730892" endPos="125.079730892" line=" AVL---_10 AVL---_11 AVL---_19 AVL---_21 AVL---_5 AVL---_CN_4" />
+	<busStop id="574" lane="--30684#2_0" startPos="193.961625669" endPos="203.961625669" line=" AVL---_12" />
+	<busStop id="575" lane="-30684#2_0" startPos="117.185176857" endPos="127.185176857" line=" AVL---_12" />
+	<busStop id="576" lane="--31768#5_0" startPos="88.2794867123" endPos="98.2794867123" line=" AVL---_8" />
+	<busStop id="577" lane="-31768#5_0" startPos="101.32065333" endPos="111.32065333" line=" AVL---_8" />
+	<busStop id="578" lane="--30766#6_0" startPos="181.550357999" endPos="191.550357999" line=" AVL---_12" />
+	<busStop id="579" lane="-30766#6_0" startPos="75.0566775044" endPos="85.0566775044" line=" AVL---_12" />
+	<busStop id="58" lane="-32674#4_0" startPos="20.1046505251" endPos="30.1046505251" line=" AVL---_9 AVL---_CN_1 CNA____NBNA" />
+	<busStop id="580" lane="--31290#7_0" startPos="16.1004850107" endPos="26.1004850107" line=" AVL---_3" />
+	<busStop id="581" lane="-31290#7_0" startPos="15.9279548768" endPos="25.9279548768" line=" AVL---_3" />
+	<busStop id="582" lane="--31966#3_0" startPos="249.198413045" endPos="259.198413045" line=" AVL---_4" />
+	<busStop id="583" lane="-31966#3_0" startPos="53.4274431788" endPos="63.4274431788" line=" AVL---_4" />
+	<busStop id="584" lane="-30872#1_0" startPos="40.7824361872" endPos="50.7824361872" line=" AVL---_12" />
+	<busStop id="585" lane="--30872#1_0" startPos="46.4208637563" endPos="56.4208637563" line=" AVL---_12" />
+	<busStop id="586" lane="-30348#5_0" startPos="107.006532878" endPos="117.006532878" line=" AVL---_2 AVL---_CN_3" />
+	<busStop id="587" lane="--30348#5_0" startPos="51.8868538532" endPos="61.8868538532" line=" AVL---_2 AVL---_CN_3" />
+	<busStop id="588" lane="-32452_0" startPos="125.675809041" endPos="135.675809041" line=" AVL---_18 AVL---_25" />
+	<busStop id="589" lane="--32452_0" startPos="154.862912576" endPos="164.862912576" line=" AVL---_18 AVL---_25" />
+	<busStop id="590" lane="-32964#6_0" startPos="35.5656500323" endPos="45.5656500323" line=" AVL---_3 AVL---_CN_3" />
+	<busStop id="591" lane="--32964#6_0" startPos="44.7205048138" endPos="54.7205048138" line=" AVL---_3 AVL---_CN_3" />
+	<busStop id="594" lane="-30534#7_0" startPos="16.1132505361" endPos="26.1132505361" line=" AVL---_J1" />
+	<busStop id="595" lane="--30534#7_0" startPos="16.738953105" endPos="26.738953105" line=" AVL---_J1" />
+	<busStop id="596" lane="-30978_0" startPos="229.52661442" endPos="239.52661442" line=" AVL---_16" />
+	<busStop id="597" lane="--30978_0" startPos="578.215869781" endPos="588.215869781" line=" AVL---_16" />
+	<busStop id="598" lane="-30348#2_0" startPos="57.5269037017" endPos="67.5269037017" line=" AVL---_2" />
+	<busStop id="599" lane="--30348#2_0" startPos="52.7219169337" endPos="62.7219169337" line=" AVL---_2" />
+	<busStop id="6" lane="-32272_0" startPos="119.990793362" endPos="129.990793362" line=" AVL---_7" />
+	<busStop id="600" lane="--32966#6_0" startPos="177.273038893" endPos="187.273038893" line=" AVL---_14" />
+	<busStop id="601" lane="-32966#6_0" startPos="64.6430933303" endPos="74.6430933303" line=" AVL---_14" />
+	<busStop id="602" lane="-32432#8_0" startPos="42.2282912109" endPos="52.2282912109" line=" AVL---_15" />
+	<busStop id="603" lane="--32432#8_0" startPos="448.781018086" endPos="458.781018086" line=" AVL---_15" />
+	<busStop id="604" lane="-30856#2_0" startPos="203.057863737" endPos="213.057863737" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="605" lane="--30856#2_0" startPos="419.402695963" endPos="429.402695963" line=" AVL---_14 AVL---_CN_1" />
+	<busStop id="606" lane="--32278#1_0" startPos="65.9949395945" endPos="75.9949395945" line=" AVL---_1 AVL---_16 AVL---_18 AVL---_CN_4 C82---_CFB CNA____NBNA NBSKMS_Nightbus RGM---_120" />
+	<busStop id="607" lane="-32278#1_0" startPos="74.2991133938" endPos="84.2991133938" line=" AVL---_1 AVL---_16 AVL---_18 AVL---_CN_4 C82---_CFB CNA____NBNA NBSKMS_Nightbus RGM---_120" />
+	<busStop id="608" lane="-31952#10_0" startPos="360.509873954" endPos="370.509873954" line=" AVL---_21 AVL---_J2" />
+	<busStop id="609" lane="--31952#10_0" startPos="50.065628391" endPos="60.065628391" line=" AVL---_21 AVL---_J2" />
+	<busStop id="61" lane="--30528#22_0" startPos="50.8202038468" endPos="60.8202038468" line=" AVL---_16 AVL---_5 AVL---_6" />
+	<busStop id="612" lane="--31648#2_0" startPos="40.9710157165" endPos="50.9710157165" line=" AVL---_12 AVL---_13 AVL---_18 AVL---_19 AVL---_2 AVL---_4 AVL---_7 AVL---_CN_1 AVL---_CN_2" />
+	<busStop id="613" lane="-31648#2_0" startPos="138.121380171" endPos="148.121380171" line=" AVL---_12 AVL---_13 AVL---_18 AVL---_19 AVL---_2 AVL---_4 AVL---_7 AVL---_CN_1 AVL---_CN_2" />
+	<busStop id="616" lane="-31988_0" startPos="392.729216099" endPos="402.729216099" line=" AVL---_25 AVL---_5" />
+	<busStop id="617" lane="--31988_0" startPos="368.778307242" endPos="378.778307242" line=" AVL---_25 AVL---_5" />
+	<busStop id="618" lane="--31502_0" startPos="56.7645866973" endPos="66.7645866973" line=" AVL---_16" />
+	<busStop id="619" lane="-31502_0" startPos="178.889423115" endPos="188.889423115" line=" AVL---_16" />
+	<busStop id="62" lane="-30528#22_0" startPos="73.4971233944" endPos="83.4971233944" line=" AVL---_16 AVL---_5 AVL---_6" />
+	<busStop id="620" lane="-31068#1_0" startPos="162.645552966" endPos="172.645552966" line=" AVL---_1 AVL---_12 AVL---_13 AVL---_16 AVL---_18 AVL---_19 AVL---_2 AVL---_4 AVL---_7 AVL---_CN_1 AVL---_CN_2 AVL---_CN_4 C80---_CFB C82---_CFB RGM---_120" />
+	<busStop id="621" lane="--31068#1_0" startPos="98.7275941821" endPos="108.727594182" line=" AVL---_1 AVL---_12 AVL---_13 AVL---_16 AVL---_18 AVL---_19 AVL---_2 AVL---_4 AVL---_7 AVL---_CN_1 AVL---_CN_2 AVL---_CN_4 C80---_CFB C82---_CFB RGM---_120" />
+	<busStop id="622" lane="-32776#2_0" startPos="83.5794133898" endPos="93.5794133898" line=" AVL---_8" />
+	<busStop id="623" lane="--32776#2_0" startPos="154.10852076" endPos="164.10852076" line=" AVL---_8" />
+	<busStop id="624" lane="--31496#0_0" startPos="121.256820161" endPos="131.256820161" line=" AVL---_6" />
+	<busStop id="625" lane="-31496#0_0" startPos="827.056588526" endPos="837.056588526" line=" AVL---_6" />
+	<busStop id="626" lane="--32584#4_0" startPos="27.9634641043" endPos="37.9634641043" line=" AVL---_3" />
+	<busStop id="627" lane="-32584#4_0" startPos="32.4433045096" endPos="42.4433045096" line=" AVL---_3" />
+	<busStop id="628" lane="--31066#5_0" startPos="76.526430002" endPos="86.526430002" line=" AVL---_2" />
+	<busStop id="629" lane="-31066#5_0" startPos="93.8839801945" endPos="103.883980195" line=" AVL---_2" />
+	<busStop id="63" lane="--30648#2_0" startPos="66.553177603" endPos="76.553177603" line=" AVL---_10 AVL---_11" />
+	<busStop id="630" lane="-30978_0" startPos="714.887823718" endPos="724.887823718" line=" AVL---_16" />
+	<busStop id="631" lane="--30978_0" startPos="92.8546604822" endPos="102.854660482" line=" AVL---_16" />
+	<busStop id="632" lane="-31272#8_0" startPos="232.602555396" endPos="242.602555396" line=" AVL---_1 AVL---_17 AVL---_24 AVL---_CN_1" />
+	<busStop id="633" lane="--31272#8_0" startPos="72.8570849638" endPos="82.8570849638" line=" AVL---_1 AVL---_17 AVL---_24 AVL---_CN_1" />
+	<busStop id="634" lane="-31070#5_0" startPos="132.841270652" endPos="142.841270652" line=" AVL---_13 AVL---_18 AVL---_25 AVL---_7 AVL---_CN_4" />
+	<busStop id="635" lane="--31070#5_0" startPos="96.3723447387" endPos="106.372344739" line=" AVL---_13 AVL---_18 AVL---_25 AVL---_7 AVL---_CN_4" />
+	<busStop id="637" lane="--32432#10_0" startPos="122.749304224" endPos="132.749304224" line=" AVL---_15" />
+	<busStop id="638" lane="-32432#10_0" startPos="85.7676459543" endPos="95.7676459543" line=" AVL---_15" />
+	<busStop id="639" lane="-31812_0" startPos="152.539037928" endPos="162.539037928" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="64" lane="-30648#2_0" startPos="56.4662044948" endPos="66.4662044948" line=" AVL---_10 AVL---_11" />
+	<busStop id="640" lane="--31812_0" startPos="141.162869423" endPos="151.162869423" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="641" lane="-30892#8_0" startPos="38.6710547493" endPos="48.6710547493" line=" AVL---_15 AVL---_7 AVL---_CN_3" />
+	<busStop id="642" lane="--30892#8_0" startPos="34.9541719116" endPos="44.9541719116" line=" AVL---_15 AVL---_7 AVL---_CN_3" />
+	<busStop id="643" lane="-30892#15_0" startPos="28.364081582" endPos="38.364081582" line=" AVL---_17 AVL---_CN_3" />
+	<busStop id="644" lane="--30892#15_0" startPos="31.8736535495" endPos="41.8736535495" line=" AVL---_17 AVL---_CN_3" />
+	<busStop id="645" lane="-32864#1_0" startPos="45.1532294893" endPos="55.1532294893" line=" AVL---_12 AVL---_13" />
+	<busStop id="646" lane="-31070#9_0" startPos="289.50771274" endPos="299.50771274" line=" AVL---_12 AVL---_18 AVL---_7" />
+	<busStop id="647" lane="--31070#9_0" startPos="237.895051373" endPos="247.895051373" line=" AVL---_12 AVL---_18 AVL---_7" />
+	<busStop id="648" lane="--30850#4_0" startPos="179.885568435" endPos="189.885568435" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="649" lane="-30850#4_0" startPos="46.3366324639" endPos="56.3366324639" line=" AVL---_13 AVL---_25 AVL---_CN_4" />
+	<busStop id="65" lane="--32924#10_0" startPos="48.0886842056" endPos="58.0886842056" line=" AVL---_7" />
+	<busStop id="650" lane="--30726_0" startPos="46.384623002" endPos="56.384623002" line=" AVL---_2 AVL---_4" />
+	<busStop id="651" lane="-30726_0" startPos="38.6529460519" endPos="48.6529460519" line=" AVL---_2 AVL---_4" />
+	<busStop id="652" lane="--31230#4_0" startPos="79.3633794822" endPos="89.3633794822" line=" AVL---_20" />
+	<busStop id="653" lane="-31230#4_0" startPos="69.0303448138" endPos="79.0303448138" line=" AVL---_20" />
+	<busStop id="654" lane="--31452#0_0" startPos="1248.1726338" endPos="1258.1726338" line=" AVL---_18" />
+	<busStop id="655" lane="-31452#0_0" startPos="557.019873535" endPos="567.019873535" line=" AVL---_18" />
+	<busStop id="656" lane="-31814_0" startPos="56.0720444461" endPos="66.0720444461" line=" AVL---_2" />
+	<busStop id="66" lane="-32924#10_0" startPos="50.9166432392" endPos="60.9166432392" line=" AVL---_7" />
+	<busStop id="67" lane="--31466#2_0" startPos="1099.73400553" endPos="1109.73400553" line=" AVL---_7" />
+	<busStop id="68" lane="-31466#2_0" startPos="83.5077894476" endPos="93.5077894476" line=" AVL---_7" />
+	<busStop id="69" lane="--32278#4_0" startPos="446.149759487" endPos="456.149759487" line=" AVL---_1 AVL---_16 AVL---_CN_4 RGM---_120" />
+	<busStop id="7" lane="--32272_0" startPos="157.929756158" endPos="167.929756158" line=" AVL---_7" />
+	<busStop id="70" lane="-32278#4_0" startPos="95.1141182685" endPos="105.114118268" line=" AVL---_1 AVL---_16 AVL---_CN_4 RGM---_120" />
+	<busStop id="71" lane="--31066#8_0" startPos="112.506020925" endPos="122.506020925" line=" AVL---_4 AVL---_CN_3" />
+	<busStop id="72" lane="-31066#8_0" startPos="99.6660665951" endPos="109.666066595" line=" AVL---_4 AVL---_CN_3" />
+	<busStop id="73" lane="--32674#2_0" startPos="50.2001330778" endPos="60.2001330778" line=" AVL---_25 AVL---_9 AVL---_CN_1" />
+	<busStop id="74" lane="-32674#2_0" startPos="448.048552538" endPos="458.048552538" line=" AVL---_25 AVL---_9 AVL---_CN_1" />
+	<busStop id="75" lane="--30648#8_0" startPos="277.450967385" endPos="287.450967385" line=" AVL---_10 AVL---_11" />
+	<busStop id="76" lane="-30648#8_0" startPos="192.277445341" endPos="202.277445341" line=" AVL---_10 AVL---_11" />
+	<busStop id="77" lane="-32966#3_0" startPos="40.1070777458" endPos="50.1070777458" line=" AVL---_14" />
+	<busStop id="78" lane="--32966#3_0" startPos="35.1360814268" endPos="45.1360814268" line=" AVL---_14" />
+	<busStop id="79" lane="-32574_0" startPos="42.8365581185" endPos="52.8365581185" line=" AVL---_CN_1" />
+	<busStop id="8" lane="--31952#14_0" startPos="123.920190044" endPos="133.920190044" line=" AVL---_21 AVL---_J2" />
+	<busStop id="80" lane="--30528#16_0" startPos="60.7091938987" endPos="70.7091938987" line=" AVL---_14 AVL---_15 AVL---_18 AVL---_2 AVL---_21 AVL---_4 AVL---_5 AVL---_6 AVL---_CN_1" />
+	<busStop id="81" lane="-30528#16_0" startPos="96.0661399902" endPos="106.06613999" line=" AVL---_14 AVL---_15 AVL---_18 AVL---_2 AVL---_21 AVL---_4 AVL---_5 AVL---_6 AVL---_CN_1" />
+	<busStop id="82" lane="--31992#3_0" startPos="34.0199370377" endPos="44.0199370377" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="83" lane="-31992#3_0" startPos="32.3251155076" endPos="42.3251155076" line=" AVL---_8 AVL---_CN_2" />
+	<busStop id="84" lane="--32150_0" startPos="19.5316022849" endPos="29.5316022849" line=" AVL---_16" />
+	<busStop id="85" lane="-32150_0" startPos="24.1248896775" endPos="34.1248896775" line=" AVL---_16" />
+	<busStop id="86" lane="--32278#6_0" startPos="309.430268627" endPos="319.430268627" line=" AVL---_1 AVL---_13 AVL---_16 AVL---_CN_4 C80---_CFB C82---_CFB RGM---_120" />
+	<busStop id="87" lane="-32278#6_0" startPos="686.280729955" endPos="696.280729955" line=" AVL---_1 AVL---_13 AVL---_16 AVL---_CN_4 C80---_CFB C82---_CFB RGM---_120" />
+	<busStop id="88" lane="--31818#20_0" startPos="36.2954914098" endPos="46.2954914098" line=" AVL---_5 AVL---_6 AVL---_CN_3" />
+	<busStop id="89" lane="-31818#20_0" startPos="34.4282777448" endPos="44.4282777448" line=" AVL---_5 AVL---_6 AVL---_CN_3" />
+	<busStop id="9" lane="-31952#14_0" startPos="271.655947811" endPos="281.655947811" line=" AVL---_21 AVL---_J2" />
+	<busStop id="90" lane="--31768#0_0" startPos="196.646543829" endPos="206.646543829" line=" AVL---_8" />
+	<busStop id="91" lane="-31768#0_0" startPos="43.284131483" endPos="53.284131483" line=" AVL---_8" />
+	<busStop id="93" lane="-30414_0" startPos="85.8339407293" endPos="95.8339407293" line=" AVL---_25" />
+	<busStop id="94" lane="-32002_0" startPos="14.6208292595" endPos="24.6208292595" line=" AVL---_19 AVL---_4 AVL---_CN_2" />
+	<busStop id="95" lane="--32002_0" startPos="13.8341084405" endPos="23.8341084405" line=" AVL---_19 AVL---_4 AVL---_CN_2" />
+	<busStop id="96" lane="--32674#4_0" startPos="121.095733915" endPos="131.095733915" line=" AVL---_9 AVL---_CN_1" />
+	<busStop id="97" lane="-32674#4_0" startPos="1465.21990232" endPos="1475.21990232" line=" AVL---_9 AVL---_CN_1" />
+</add>

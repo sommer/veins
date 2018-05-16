@@ -300,6 +300,14 @@ protected:
      */
 	virtual std::shared_ptr<Antenna> initializeSampledAntenna1D(ParameterMap& params);
 
+	/**
+     * @brief Creates and returns an instance of the SampledAntenna2D class as a
+     * shared pointer.
+     *
+     * The given parameters (i.e. samples and optional randomness parameters for both
+     * principal planes) are evaluated and given to the antenna's constructor.
+     */
+    virtual std::shared_ptr<Antenna> initializeSampledAntenna2D(ParameterMap& params);
 
 	/**
 	 * @name Handle Messages

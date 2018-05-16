@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Luxembourg SUMO Traffic (LuST) Scenario
+This project is licensed under the terms of the MIT license.
+Author: Lara CODECA [codeca@gmail.com]
+-->
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo-sim.org/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="lust3d.net.xml"/>
+        <route-files value="buslines.rou.xml local.0.rou.xml local.1.rou.xml local.2.rou.xml transit.rou.xml"/>
+        <additional-files value="vtypes.add.xml busstops.add.xml e1detectors.add.xml lust3d.poly.xml"/>
+    </input>
+
+    <output>
+        <summary-output value="dua.actuated.summary.xml"/>
+        <tripinfo-output value="dua.actuated.tripinfo.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <step-length value="1"/>
+    </time>
+
+    <processing>
+        <ignore-junction-blocker value="20"/>
+        <time-to-teleport value="600"/>
+        <max-depart-delay value="600"/>
+        <routing-algorithm value="dijkstra"/>
+    </processing>
+
+    <routing>
+        <device.rerouting.probability value="0.70"/>
+        <device.rerouting.period value="300"/>
+        <device.rerouting.pre-period value="300"/>
+    </routing>
+
+    <report>
+        <verbose value="true"/>
+        <log value="dua.actuated.log"/>
+    </report>
+
+</configuration>

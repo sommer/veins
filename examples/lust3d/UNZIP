@@ -1,0 +1,2 @@
+Before running the simulation, you have to unzip the elevation model files first (DTMfiles.zip).
+The file DTM.tif is the original dataset. DTMconverted.tif is the converted version which has been used to generate the 3D SUMO network file and which is accessed from within Veins when the simulation is running.

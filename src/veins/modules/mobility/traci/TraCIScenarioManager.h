@@ -28,6 +28,7 @@
 #include <omnetpp.h>
 
 #include "veins/base/utils/Coord.h"
+#include "veins/base/utils/GridCoord.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 #include "veins/base/utils/FindModule.h"
@@ -54,6 +55,9 @@
  * @see TraCIScenarioManagerLaunchd
  *
  */
+
+typedef std::tuple<Coord, Coord, std::vector<GridCoord>> HostPos;
+
 namespace Veins {
 
 class TraCICommandInterface;
@@ -100,8 +104,19 @@ class TraCIScenarioManager : public cSimpleModule
 		}
 
 		const std::map<std::string, cModule*>& getManagedHosts() {
-			return hosts;
+			return hostModules;
 		}
+
+		std::map<std::string, std::tuple<Coord, Coord, std::vector<GridCoord>>>& getUnequippedHosts() {
+            return unequippedHostPositions;
+        }
+
+		std::map<std::string, HostPos*>* getHostsGrid() {
+		    return hostsGrid;
+		}
+		size_t carGridCols;
+		size_t carGridRows;
+		double carCellSize;
 
 	protected:
 		bool debug; /**< whether to emit debug messages */
@@ -143,8 +158,10 @@ class TraCIScenarioManager : public cSimpleModule
 		TraCICommandInterface* commandIfc;
 
 		size_t nextNodeVectorIndex; /**< next OMNeT++ module vector index to use */
-		std::map<std::string, cModule*> hosts; /**< vector of all hosts managed by us */
-		std::set<std::string> unEquippedHosts;
+		std::map<std::string, cModule*> hostModules; /**< vector of all hosts managed by us */
+		std::map<std::string, HostPos> unequippedHostPositions; /**< vector of all unequipped hosts' positions */
+		std::map<std::string, HostPos> equippedHostPositions; /**< vector of all equipped hosts' positions */
+		std::map<std::string, HostPos*>* hostsGrid; /**< array representing all hosts as located in the grid */
 		std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
 		std::map<std::string, cModule*> trafficLights; /**< vector of all traffic lights managed by us */
 		uint32_t activeVehicleCount; /**< number of vehicles, be it parking or driving **/
@@ -161,13 +178,16 @@ class TraCIScenarioManager : public cSimpleModule
 
 		virtual void init_traci();
 
-		virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals);
-		virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals);
-		void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, VehicleSignal signals = VehicleSignal::VEH_SIGNAL_UNDEF);
+		virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, double elev_angle, VehicleSignal signals);
+		virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, double elev_angle, VehicleSignal signals);
+		void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, double elev_angle = -1, VehicleSignal signals = VehicleSignal::VEH_SIGNAL_UNDEF);
 		cModule* getManagedModule(std::string nodeId); /**< returns a pointer to the managed module named moduleName, or 0 if no module can be found */
 		void deleteManagedModule(std::string nodeId);
 
 		bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
+		void addToHostPosMap(std::map<std::string, HostPos>& hostPosMap, std::string nodeId, const Coord& position, double angle, double elev_angle); /**<adds a host with the given values to the given map*/
+		void updateHostPosMap(std::map<std::string, HostPos>& hostPosMap, std::string nodeId, const Coord& position, double angle, double elev_angle); /**<updates a host with the given values in the given map*/
+		void eraseFromHostPosMap(std::map<std::string, HostPos>& hostPosMap, std::string nodeId); /**<deletes a host from the given map*/
 
 		/**
 		 * returns whether a given position lies within the simulation's region of interest.

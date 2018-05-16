@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- debug config -->
+<launch>
+	<copy file="lust3d.net.xml" />
+	<copy file="buslines.rou.xml" />
+	<copy file="local.0.rou.xml" />
+	<copy file="local.1.rou.xml" />
+	<copy file="local.2.rou.xml" />
+	<copy file="transit.rou.xml" />
+	<copy file="vtypes.add.xml" />
+	<copy file="busstops.add.xml" />
+	<copy file="e1detectors.add.xml" />
+	<copy file="lust3d.poly.xml" />
+	<copy file="dua.actuated.sumocfg" type="config" />
+</launch>
+

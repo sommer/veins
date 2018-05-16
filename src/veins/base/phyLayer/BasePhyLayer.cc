@@ -8,6 +8,7 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/utils/POA.h"
 #include "veins/modules/phy/SampledAntenna1D.h"
+#include "veins/modules/phy/SampledAntenna2D.h"
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/phyLayer/Decider.h"
 #include "veins/base/modules/BaseWorldUtility.h"
@@ -108,7 +109,6 @@ void BasePhyLayer::initialize(int stage) {
 		//initialise timer messages
 		radioSwitchingOverTimer = new cMessage("radio switching over", RADIO_SWITCHING_OVER);
 		txOverTimer = new cMessage("transmission over", TX_OVER);
-
 	}
 }
 
@@ -280,6 +280,8 @@ void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig) {
 std::shared_ptr<Antenna> BasePhyLayer::getAntennaFromName(std::string name, ParameterMap& params) {
     if (name == "SampledAntenna1D") {
         return initializeSampledAntenna1D(params);
+    } else if (name == "SampledAntenna2D") {
+        return initializeSampledAntenna2D(params);
     }
 
     return std::make_shared<Antenna>();
@@ -330,6 +332,99 @@ std::shared_ptr<Antenna> BasePhyLayer::initializeSampledAntenna1D(ParameterMap& 
     }
 
     return std::make_shared<SampledAntenna1D>(values, offsetType, offsetParams, rotationType, rotationParams, this->getRNG(0));
+}
+
+std::shared_ptr<Antenna> BasePhyLayer::initializeSampledAntenna2D(ParameterMap& params) {
+    // get azimuth samples of the modeled antenna and put them in a vector
+    ParameterMap::iterator it = params.find("azi-samples");
+    std::vector<double> aziValues;
+    if (it != params.end())
+    {
+        std::string buf;
+        std::stringstream aziSamplesStream(it->second.stringValue());
+        while (aziSamplesStream >> buf){
+            aziValues.push_back(stod(buf));
+        }
+    } else {
+        throw cRuntimeError("BasePhyLayer::initializeSampledAntenna2D(): No azimuth samples specified for this antenna. \
+                           Please adjust your xml file accordingly.");
+    }
+
+    // get optional random offsets for the antenna's azimuth samples
+    it = params.find("azi-random-offsets");
+    std::string aziOffsetType = "";
+    std::vector<double> aziOffsetParams;
+    if (it != params.end())
+    {
+        std::string buf;
+        std::stringstream aziOffsetStream(it->second.stringValue());
+        aziOffsetStream >> aziOffsetType;
+        while (aziOffsetStream >> buf){
+            aziOffsetParams.push_back(stod(buf));
+        }
+    }
+
+    // get optional random rotation of the whole azimuth pattern
+    it = params.find("azi-random-rotation");
+    std::string aziRotationType = "";
+    std::vector<double> aziRotationParams;
+    if (it != params.end())
+    {
+        std::string buf;
+        std::stringstream aziRotationStream(it->second.stringValue());
+        aziRotationStream >> aziRotationType;
+        while (aziRotationStream >> buf){
+            aziRotationParams.push_back(stod(buf));
+        }
+    }
+
+
+    // get elevation samples of the modeled antenna and put them in a vector
+    it = params.find("ele-samples");
+    std::vector<double> eleValues;
+    if (it != params.end())
+    {
+        std::string buf;
+        std::stringstream eleSamplesStream(it->second.stringValue());
+        while (eleSamplesStream >> buf){
+            eleValues.push_back(stod(buf));
+        }
+    } else {
+        throw cRuntimeError("BasePhyLayer::initializeSampledAntenna2D(): No elevation samples specified for this antenna. \
+                           Please adjust your xml file accordingly.");
+    }
+
+    // get optional random offsets for the antenna's elevation samples
+    it = params.find("ele-random-offsets");
+    std::string eleOffsetType = "";
+    std::vector<double> eleOffsetParams;
+    if (it != params.end())
+    {
+        std::string buf;
+        std::stringstream eleOffsetStream(it->second.stringValue());
+        eleOffsetStream >> eleOffsetType;
+        while (eleOffsetStream >> buf){
+            eleOffsetParams.push_back(stod(buf));
+        }
+    }
+
+    // get optional random rotation of the whole azimuth pattern
+    it = params.find("ele-random-rotation");
+    std::string eleRotationType = "";
+    std::vector<double> eleRotationParams;
+    if (it != params.end())
+    {
+        std::string buf;
+        std::stringstream eleRotationStream(it->second.stringValue());
+        eleRotationStream >> eleRotationType;
+        while (eleRotationStream >> buf){
+            eleRotationParams.push_back(stod(buf));
+        }
+    }
+
+
+    return std::make_shared<SampledAntenna2D>(aziValues, aziOffsetType, aziOffsetParams, aziRotationType, aziRotationParams,
+            eleValues, eleOffsetType, eleOffsetParams, eleRotationType, eleRotationParams, this->getRNG(0));
 }
 
 

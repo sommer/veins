@@ -42,6 +42,7 @@ simple TraCIScenarioManager
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)
         double firstStepAt @unit("s") = default(-1s);  // when to start synchronizing with the TraCI server (-1: immediately after connecting)
         double updateInterval @unit("s") = default(1s);  // time interval of hosts' position updates
+        double carCellSize @unit("m") = default(100m); // length of a single cell of the grid that all cars are organized in (state 0m if grid shall not be used)
         string moduleType = default("org.car2x.veins.nodes.Car");  // module type to be used in the simulation for each managed vehicle
         string moduleName = default("node");  // module name to be used in the simulation for each managed vehicle
         // module displayString to be used in the simulation for each managed vehicle

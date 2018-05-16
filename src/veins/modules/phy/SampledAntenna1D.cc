@@ -95,7 +95,10 @@ double SampledAntenna1D::getGain(Coord ownPos, Coord ownOrient, Coord otherPos) 
     return FWMath::dBm2mW(samples->getValue(pos));
 }
 
-double SampledAntenna1D::getLastAngle() {
-    return lastAngle/M_PI*180.0;
+double SampledAntenna1D::getLastAzi() {
+    return lastAngle/M_PI*180.0;;
 }
 
+double SampledAntenna1D::getLastEle() {
+    return -1.0;
+}

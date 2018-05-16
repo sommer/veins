@@ -77,8 +77,8 @@ class TraCIMobility : public BaseMobility
 		virtual void finish();
 
 		virtual void handleSelfMsg(cMessage *msg);
-		virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
-		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, TraCIScenarioManager::VehicleSignal signals = TraCIScenarioManager::VEH_SIGNAL_UNDEF);
+		virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, double elev_angle = -1);
+		virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, double elev_angle = -1, TraCIScenarioManager::VehicleSignal signals = TraCIScenarioManager::VEH_SIGNAL_UNDEF);
 		virtual void changePosition();
 		virtual void changeParkingState(bool);
 		virtual void setExternalId(std::string external_id) {
@@ -136,6 +136,7 @@ class TraCIMobility : public BaseMobility
 
 		cOutVector currentPosXVec; /**< vector plotting posx */
 		cOutVector currentPosYVec; /**< vector plotting posy */
+		cOutVector currentPosZVec; /**< vector plotting posz */
 		cOutVector currentSpeedVec; /**< vector plotting speed */
 		cOutVector currentAccelerationVec; /**< vector plotting acceleration */
 		cOutVector currentCO2EmissionVec; /**< vector plotting current CO2 emission */
@@ -146,12 +147,14 @@ class TraCIMobility : public BaseMobility
 
 		std::string external_id; /**< updated by setExternalId() */
 		double antennaPositionOffset; /**< front offset for the antenna on this car */
+		double antennaHeight; /**< height of the antenna above the ground */
 
 		simtime_t lastUpdate; /**< updated by nextPosition() */
 		Coord roadPosition; /**< position of front bumper, updated by nextPosition() */
 		std::string road_id; /**< updated by nextPosition() */
 		double speed; /**< updated by nextPosition() */
 		double angle; /**< updated by nextPosition() */
+		double elev_angle; /**< updated by nextPosition() */
 		TraCIScenarioManager::VehicleSignal signals; /**<updated by nextPosition() */
 
 		cMessage* startAccidentMsg;
