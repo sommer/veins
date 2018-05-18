@@ -134,7 +134,7 @@ class Mac1609_4 : public BaseMacLayer,
 		};
 
 	public:
-		Mac1609_4() : nextMacEvent(nullptr), nextChannelSwitch(nullptr) {}
+		Mac1609_4() : nextChannelSwitch(nullptr), nextMacEvent(nullptr) {}
 		~Mac1609_4();
 
 		/**
