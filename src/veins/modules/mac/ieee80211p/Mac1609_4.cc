@@ -667,7 +667,7 @@ WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle) {
 	// As t_access_category is sorted by priority, we iterate back to front.
 	// This realizes the behavior documented in IEEE Std 802.11-2012 Section 9.2.4.2; that is, "data frames from the higher priority AC" win an internal collision.
 	// The phrase "EDCAF of higher UP" of IEEE Std 802.11-2012 Section 9.19.2.3 is assumed to be meaningless.
-	for (std::map<t_access_category, EDCAQueue>::reverse_iterator iter = myQueues.rbegin(); iter != myQueues.rend(); iter++) {
+	for (auto iter = myQueues.rbegin(); iter != myQueues.rend(); iter++) {
 		if (iter->second.queue.size() != 0 && !iter->second.waitForAck) {
 			if (idleTime >= iter->second.aifsn* SLOTLENGTH_11P + SIFS_11P && iter->second.txOP == true) {
 
@@ -710,24 +710,26 @@ simtime_t Mac1609_4::EDCA::startContent(simtime_t idleSince,bool guardActive) {
 
 	//this returns the nearest possible event in this EDCA subsystem after a busy channel
 
-	for (std::map<t_access_category, EDCAQueue>::iterator iter = myQueues.begin(); iter != myQueues.end(); iter++) {
-		if (iter->second.queue.size() != 0 && !iter->second.waitForAck) {
+	for (auto&& p : myQueues) {
+		auto &accessCategory = p.first;
+		auto &edcaQueue = p.second;
+		if (edcaQueue.queue.size() != 0 && !edcaQueue.waitForAck) {
 
 			/* 1609_4 says that when attempting to send (backoff == 0) when guard is active, a random backoff is invoked */
 
-			if (guardActive == true && iter->second.currentBackoff == 0) {
+			if (guardActive == true && edcaQueue.currentBackoff == 0) {
 				//cw is not increased
-				iter->second.currentBackoff = OWNER intuniform(0,iter->second.cwCur);
+				edcaQueue.currentBackoff = OWNER intuniform(0,edcaQueue.cwCur);
 				statsNumBackoff++;
 			}
 
-			simtime_t DIFS = iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P;
+			simtime_t DIFS = edcaQueue.aifsn * SLOTLENGTH_11P + SIFS_11P;
 
 			//the next possible time to send can be in the past if the channel was idle for a long time, meaning we COULD have sent earlier if we had a packet
-			simtime_t possibleNextEvent = DIFS + iter->second.currentBackoff * SLOTLENGTH_11P;
+			simtime_t possibleNextEvent = DIFS + edcaQueue.currentBackoff * SLOTLENGTH_11P;
 
 
-			DBG_MAC << "Waiting Time for Queue " << iter->first <<  ":" << possibleNextEvent << "=" << iter->second.aifsn << " * "  << SLOTLENGTH_11P << " + " << SIFS_11P << "+" << iter->second.currentBackoff << "*" << SLOTLENGTH_11P << "; Idle time: " << idleTime << std::endl;
+			DBG_MAC << "Waiting Time for Queue " << accessCategory <<  ":" << possibleNextEvent << "=" << edcaQueue.aifsn << " * "  << SLOTLENGTH_11P << " + " << SIFS_11P << "+" << edcaQueue.currentBackoff << "*" << SLOTLENGTH_11P << "; Idle time: " << idleTime << std::endl;
 
 			if (idleTime > possibleNextEvent) {
 				DBG_MAC << "Could have already send if we had it earlier" << std::endl;
@@ -757,46 +759,48 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp) {
 
 	lastStart = -1; //indicate that there was no last start
 
-	for (std::map<t_access_category, EDCAQueue>::iterator iter = myQueues.begin(); iter != myQueues.end(); iter++) {
-		if ((iter->second.currentBackoff != 0 || iter->second.queue.size() != 0) && !iter->second.waitForAck) {
+	for (auto&& p : myQueues) {
+		auto &accessCategory = p.first;
+		auto &edcaQueue = p.second;
+		if ((edcaQueue.currentBackoff != 0 || edcaQueue.queue.size() != 0) && !edcaQueue.waitForAck) {
 			//check how many slots we already waited until the chan became busy
 
-			int64_t oldBackoff = iter->second.currentBackoff;
+			int64_t oldBackoff = edcaQueue.currentBackoff;
 
 			std::string info;
-			if (passedTime < iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P) {
+			if (passedTime < edcaQueue.aifsn * SLOTLENGTH_11P + SIFS_11P) {
 				//we didnt even make it one DIFS :(
 				info.append(" No DIFS");
 			}
 			else {
 				//decrease the backoff by one because we made it longer than one DIFS
-				iter->second.currentBackoff--;
+				edcaQueue.currentBackoff -= 1;
 
 				//check how many slots we waited after the first DIFS
-				int64_t passedSlots = (int64_t)((passedTime - SimTime(iter->second.aifsn * SLOTLENGTH_11P + SIFS_11P)) / SLOTLENGTH_11P);
+				int64_t passedSlots = (int64_t)((passedTime - SimTime(edcaQueue.aifsn * SLOTLENGTH_11P + SIFS_11P)) / SLOTLENGTH_11P);
 
 				DBG_MAC << "Passed slots after DIFS: " << passedSlots << std::endl;
 
 
-				if (iter->second.queue.size() == 0) {
+				if (edcaQueue.queue.size() == 0) {
 					//this can be below 0 because of post transmit backoff -> backoff on empty queues will not generate macevents,
 					//we dont want to generate a txOP for empty queues
-					iter->second.currentBackoff -= std::min(iter->second.currentBackoff,passedSlots);
+					edcaQueue.currentBackoff -= std::min(edcaQueue.currentBackoff,passedSlots);
 					info.append(" PostCommit Over");
 				}
 				else {
-					iter->second.currentBackoff -= passedSlots;
-					if (iter->second.currentBackoff <= -1) {
+					edcaQueue.currentBackoff -= passedSlots;
+					if (edcaQueue.currentBackoff <= -1) {
 						if (generateTxOp) {
-							iter->second.txOP = true; info.append(" TXOP");
+							edcaQueue.txOP = true; info.append(" TXOP");
 						}
 						//else: this packet couldnt be sent because there was too little time. we could have generated a txop, but the channel switched
-						iter->second.currentBackoff = 0;
+						edcaQueue.currentBackoff = 0;
 					}
 
 				}
 			}
-			DBG_MAC << "Updating backoff for Queue " << iter->first << ": " << oldBackoff << " -> " << iter->second.currentBackoff << info <<std::endl;
+			DBG_MAC << "Updating backoff for Queue " << accessCategory << ": " << oldBackoff << " -> " << edcaQueue.currentBackoff << info <<std::endl;
 		}
 	}
 }
@@ -839,10 +843,11 @@ void Mac1609_4::EDCA::cleanUp() {
 }
 
 void Mac1609_4::EDCA::revokeTxOPs() {
-	for (std::map<t_access_category, EDCAQueue>::iterator iter = myQueues.begin(); iter != myQueues.end(); iter++) {
-		if (iter->second.txOP == true) {
-			iter->second.txOP = false;
-			iter->second.currentBackoff = 0;
+	for (auto&& p : myQueues) {
+		auto &edcaQueue = p.second;
+		if (edcaQueue.txOP == true) {
+			edcaQueue.txOP = false;
+			edcaQueue.currentBackoff = 0;
 		}
 	}
 }
@@ -1028,19 +1033,21 @@ void Mac1609_4::handleAck(const Mac80211Ack* ack) {
 
 	t_channel chan = type_CCH;
 	bool queueUnblocked = false;
-	for (auto iter = myEDCA[chan]->myQueues.begin(); iter != myEDCA[chan]->myQueues.end(); iter++) {
-		if (iter->second.queue.size() > 0 && iter->second.waitForAck && (iter->second.waitOnUnicastID == ack->getMessageId())) {
-			WaveShortMessage* wsm = iter->second.queue.front();
-			iter->second.queue.pop();
+	for (auto&& p : myEDCA[chan]->myQueues) {
+		auto &accessCategory = p.first;
+		auto &edcaQueue = p.second;
+		if (edcaQueue.queue.size() > 0 && edcaQueue.waitForAck && (edcaQueue.waitOnUnicastID == ack->getMessageId())) {
+			WaveShortMessage* wsm = edcaQueue.queue.front();
+			edcaQueue.queue.pop();
 			delete wsm;
-			myEDCA[chan]->myQueues[iter->first].cwCur = myEDCA[chan]->myQueues[iter->first].cwMin;
-			myEDCA[chan]->backoff(iter->first);
-			iter->second.ssrc = 0;
-			iter->second.slrc = 0;
-			iter->second.waitForAck = false;
-			iter->second.waitOnUnicastID = -1;
-			if (myEDCA[chan]->myQueues[iter->first].ackTimeOut->isScheduled()) {
-				cancelEvent(myEDCA[chan]->myQueues[iter->first].ackTimeOut);
+			myEDCA[chan]->myQueues[accessCategory].cwCur = myEDCA[chan]->myQueues[accessCategory].cwMin;
+			myEDCA[chan]->backoff(accessCategory);
+			edcaQueue.ssrc = 0;
+			edcaQueue.slrc = 0;
+			edcaQueue.waitForAck = false;
+			edcaQueue.waitOnUnicastID = -1;
+			if (myEDCA[chan]->myQueues[accessCategory].ackTimeOut->isScheduled()) {
+				cancelEvent(myEDCA[chan]->myQueues[accessCategory].ackTimeOut);
 			}
 			queueUnblocked = true;
 		}
