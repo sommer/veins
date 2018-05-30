@@ -90,20 +90,13 @@ class Mac1609_4 : public BaseMacLayer,
 						unsigned long waitOnUnicastID; // unique id of unicast on which station is waiting
 						AckTimeOutMessage* ackTimeOut; // timer for retransmission on receiving no ACK
 
-						EDCAQueue() {	};
-						EDCAQueue(int aifsn,int cwMin, int cwMax, t_access_category ac):aifsn(aifsn),cwMin(cwMin),cwMax(cwMax),cwCur(cwMin),currentBackoff(0),txOP(false),ssrc(0),slrc(0),waitForAck(false),waitOnUnicastID(-1) {
-							ackTimeOut = new AckTimeOutMessage("AckTimeOut");
-							ackTimeOut->setKind(ac);
-						};
+						EDCAQueue() {}
+						EDCAQueue(int aifsn,int cwMin, int cwMax, t_access_category ac);
 				};
 
-				EDCA(cModule *owner, t_channel channelType,int maxQueueLength = 0):owner(owner),maxQueueSize(maxQueueLength),channelType(channelType) {
-					statsNumInternalContention = 0;
-					statsNumBackoff = 0;
-					statsSlotsBackoff = 0;
-				};
-				const cObject *getThisPtr() const  {return NULL;}
-				const char *getClassName() const {return "Mac1609_4::EDCA"; }
+				EDCA(cModule *owner, t_channel channelType, int maxQueueLength = 0);
+				const cObject *getThisPtr() const  { return nullptr; }
+				const char *getClassName() const { return "Mac1609_4::EDCA"; }
 				void createQueue(int aifsn, int cwMin, int cwMax,t_access_category);
 				int queuePacket(t_access_category AC,WaveShortMessage* cmsg);
 				void backoff(t_access_category ac);
@@ -119,7 +112,7 @@ class Mac1609_4 : public BaseMacLayer,
 
 			public:
 				cModule *owner;
-				std::map<t_access_category,EDCAQueue> myQueues;
+				std::map<t_access_category, EDCAQueue> myQueues;
 				uint32_t maxQueueSize;
 				simtime_t lastStart; //when we started the last contention;
 				t_channel channelType;

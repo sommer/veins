@@ -442,20 +442,19 @@ void Mac1609_4::finish() {
 	myEDCA.clear();
 
 	//stats
-	recordScalar("ReceivedUnicastPackets",statsReceivedPackets);
-	recordScalar("ReceivedBroadcasts",statsReceivedBroadcasts);
-	recordScalar("SentPackets",statsSentPackets);
-	recordScalar("SentAcknowledgements",statsSentAcks);
-	recordScalar("SNIRLostPackets",statsSNIRLostPackets);
-	recordScalar("RXTXLostPackets",statsTXRXLostPackets);
-	recordScalar("TotalLostPackets",statsSNIRLostPackets+statsTXRXLostPackets);
-	recordScalar("DroppedPacketsInMac",statsDroppedPackets);
-	recordScalar("TooLittleTime",statsNumTooLittleTime);
-	recordScalar("TimesIntoBackoff",statsNumBackoff);
-	recordScalar("SlotsBackoff",statsSlotsBackoff);
-	recordScalar("NumInternalContention",statsNumInternalContention);
-	recordScalar("totalBusyTime",statsTotalBusyTime.dbl());
-
+	recordScalar("ReceivedUnicastPackets", statsReceivedPackets);
+	recordScalar("ReceivedBroadcasts", statsReceivedBroadcasts);
+	recordScalar("SentPackets", statsSentPackets);
+	recordScalar("SentAcknowledgements", statsSentAcks);
+	recordScalar("SNIRLostPackets", statsSNIRLostPackets);
+	recordScalar("RXTXLostPackets", statsTXRXLostPackets);
+	recordScalar("TotalLostPackets", statsSNIRLostPackets+statsTXRXLostPackets);
+	recordScalar("DroppedPacketsInMac", statsDroppedPackets);
+	recordScalar("TooLittleTime", statsNumTooLittleTime);
+	recordScalar("TimesIntoBackoff", statsNumBackoff);
+	recordScalar("SlotsBackoff", statsSlotsBackoff);
+	recordScalar("NumInternalContention", statsNumInternalContention);
+	recordScalar("totalBusyTime", statsTotalBusyTime.dbl());
 }
 
 Mac1609_4::~Mac1609_4() {
@@ -466,7 +465,7 @@ Mac1609_4::~Mac1609_4() {
 
 	if (nextChannelSwitch) {
 		cancelAndDelete(nextChannelSwitch);
-		nextChannelSwitch= nullptr;
+		nextChannelSwitch = nullptr;
 	}
 };
 
@@ -842,6 +841,14 @@ void Mac1609_4::EDCA::cleanUp() {
 	myQueues.clear();
 }
 
+Mac1609_4::EDCA::EDCA(cModule *owner, t_channel channelType, int maxQueueLength)
+	: owner(owner),
+	  maxQueueSize(maxQueueLength),
+	  channelType(channelType),
+	  statsNumInternalContention(0),
+	  statsNumBackoff(0),
+	  statsSlotsBackoff(0) {}
+
 void Mac1609_4::EDCA::revokeTxOPs() {
 	for (auto&& p : myQueues) {
 		auto &edcaQueue = p.second;
@@ -1134,4 +1141,19 @@ void Mac1609_4::handleRetransmit(t_access_category ac) {
 		simtime_t nextEvent = myEDCA[type_CCH]->startContent(lastIdle, guardActive());
 		scheduleAt(nextEvent, nextMacEvent);
 	}
+}
+
+Mac1609_4::EDCA::EDCAQueue::EDCAQueue(int aifsn,int cwMin, int cwMax, t_access_category ac)
+	: aifsn(aifsn),
+	  cwMin(cwMin),
+	  cwMax(cwMax),
+	  cwCur(cwMin),
+	  currentBackoff(0),
+	  txOP(false),
+	  ssrc(0),
+	  slrc(0),
+	  waitForAck(false),
+	  waitOnUnicastID(-1),
+	  ackTimeOut(new AckTimeOutMessage("AckTimeOut")) {
+	ackTimeOut->setKind(ac);
 }
