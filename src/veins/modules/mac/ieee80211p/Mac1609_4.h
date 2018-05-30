@@ -256,7 +256,7 @@ class Mac1609_4 : public BaseMacLayer,
 		bool useSCH;
 		int mySCH;
 
-		std::map<t_channel,EDCA*> myEDCA;
+		std::map<t_channel, std::unique_ptr<EDCA>> myEDCA;
 
 		bool idleChannel;
 

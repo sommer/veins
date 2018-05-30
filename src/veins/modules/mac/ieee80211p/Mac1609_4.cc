@@ -86,7 +86,7 @@ void Mac1609_4::initialize(int stage) {
 
 		//create two edca systems
 
-		myEDCA[type_CCH] = new EDCA(this, type_CCH,par("queueSize").longValue());
+		myEDCA[type_CCH] = std::unique_ptr<EDCA>(new EDCA(this, type_CCH,par("queueSize").longValue()));
 		myEDCA[type_CCH]->myId = myId;
 		myEDCA[type_CCH]->myId.append(" CCH");
 		myEDCA[type_CCH]->createQueue(2,(((CWMIN_11P+1)/4)-1),(((CWMIN_11P +1)/2)-1),AC_VO);
@@ -94,7 +94,7 @@ void Mac1609_4::initialize(int stage) {
 		myEDCA[type_CCH]->createQueue(6,CWMIN_11P,CWMAX_11P,AC_BE);
 		myEDCA[type_CCH]->createQueue(9,CWMIN_11P,CWMAX_11P,AC_BK);
 
-		myEDCA[type_SCH] = new EDCA(this, type_SCH,par("queueSize").longValue());
+		myEDCA[type_SCH] = std::unique_ptr<EDCA>(new EDCA(this, type_SCH,par("queueSize").longValue()));
 		myEDCA[type_SCH]->myId = myId;
 		myEDCA[type_SCH]->myId.append(" SCH");
 		myEDCA[type_SCH]->createQueue(2,(((CWMIN_11P+1)/4)-1),(((CWMIN_11P +1)/2)-1),AC_VO);
@@ -437,7 +437,6 @@ void Mac1609_4::finish() {
 		statsNumBackoff += iter->second->statsNumBackoff;
 		statsSlotsBackoff += iter->second->statsSlotsBackoff;
 		iter->second->cleanUp();
-		delete iter->second;
 	}
 
 	myEDCA.clear();
