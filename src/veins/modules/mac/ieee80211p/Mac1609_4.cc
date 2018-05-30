@@ -430,18 +430,12 @@ void Mac1609_4::setActiveChannel(t_channel state) {
 }
 
 void Mac1609_4::finish() {
-	//clean up queues.
-
-	for (std::map<t_channel,EDCA*>::iterator iter = myEDCA.begin(); iter != myEDCA.end(); iter++) {
-		statsNumInternalContention += iter->second->statsNumInternalContention;
-		statsNumBackoff += iter->second->statsNumBackoff;
-		statsSlotsBackoff += iter->second->statsSlotsBackoff;
-		iter->second->cleanUp();
+	for (auto&& p : myEDCA) {
+		statsNumInternalContention += p.second->statsNumInternalContention;
+		statsNumBackoff += p.second->statsNumBackoff;
+		statsSlotsBackoff += p.second->statsSlotsBackoff;
 	}
 
-	myEDCA.clear();
-
-	//stats
 	recordScalar("ReceivedUnicastPackets", statsReceivedPackets);
 	recordScalar("ReceivedBroadcasts", statsReceivedBroadcasts);
 	recordScalar("SentPackets", statsSentPackets);
@@ -466,6 +460,11 @@ Mac1609_4::~Mac1609_4() {
 	if (nextChannelSwitch) {
 		cancelAndDelete(nextChannelSwitch);
 		nextChannelSwitch = nullptr;
+	}
+
+	if (stopIgnoreChannelStateMsg) {
+		cancelAndDelete(stopIgnoreChannelStateMsg);
+		stopIgnoreChannelStateMsg = nullptr;
 	}
 };
 
@@ -831,23 +830,23 @@ void Mac1609_4::EDCA::postTransmit(t_access_category ac, WaveShortMessage* wsm, 
 	}
 }
 
-void Mac1609_4::EDCA::cleanUp() {
-	for (std::map<t_access_category, EDCAQueue>::iterator iter = myQueues.begin(); iter != myQueues.end(); iter++) {
-		while (iter->second.queue.size() != 0) {
-			delete iter->second.queue.front();
-			iter->second.queue.pop();
-		}
-	}
-	myQueues.clear();
-}
-
-Mac1609_4::EDCA::EDCA(cModule *owner, t_channel channelType, int maxQueueLength)
+Mac1609_4::EDCA::EDCA(cSimpleModule *owner, t_channel channelType, int maxQueueLength)
 	: owner(owner),
 	  maxQueueSize(maxQueueLength),
 	  channelType(channelType),
 	  statsNumInternalContention(0),
 	  statsNumBackoff(0),
 	  statsSlotsBackoff(0) {}
+
+Mac1609_4::EDCA::~EDCA() {
+	for (auto &q : myQueues) {
+		auto& ackTimeout = q.second.ackTimeOut;
+		if (ackTimeout) {
+			owner->cancelAndDelete(ackTimeout);
+			ackTimeout = nullptr;
+		}
+	}
+}
 
 void Mac1609_4::EDCA::revokeTxOPs() {
 	for (auto&& p : myQueues) {
@@ -1156,4 +1155,12 @@ Mac1609_4::EDCA::EDCAQueue::EDCAQueue(int aifsn,int cwMin, int cwMax, t_access_c
 	  waitOnUnicastID(-1),
 	  ackTimeOut(new AckTimeOutMessage("AckTimeOut")) {
 	ackTimeOut->setKind(ac);
+}
+
+Mac1609_4::EDCA::EDCAQueue::~EDCAQueue() {
+	while (!queue.empty()) {
+		delete queue.front();
+		queue.pop();
+	}
+	// ackTimeOut needs to be deleted in EDCA
 }
