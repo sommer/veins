@@ -319,13 +319,13 @@ void TraCIScenarioManager::init_traci() {
 		uint32_t apiVersion = version.first;
 		std::string serverVersion = version.second;
 
-		if ((apiVersion == 10) || (apiVersion == 11) || (apiVersion == 13) || (apiVersion == 14) || (apiVersion == 15 || (apiVersion == 16)) || (apiVersion == 17)) {
-			EV_DEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
-		}
-		else {
+		const std::vector<uint32_t> allowedVersions({10, 11, 13, 14, 15, 16, 17});
+
+		if (std::find(allowedVersions.begin(), allowedVersions.end(), apiVersion) == allowedVersions.end()) {
 			error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using SUMO 0.30.0", serverVersion.c_str(), apiVersion);
 		}
 
+		EV_DEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
 	}
 
 	{
