@@ -92,9 +92,11 @@ class Mac1609_4 : public BaseMacLayer,
 
 						EDCAQueue() {}
 						EDCAQueue(int aifsn,int cwMin, int cwMax, t_access_category ac);
+						~EDCAQueue();
 				};
 
-				EDCA(cModule *owner, t_channel channelType, int maxQueueLength = 0);
+				EDCA(cSimpleModule *owner, t_channel channelType, int maxQueueLength = 0);
+				~EDCA();
 				const cObject *getThisPtr() const  { return nullptr; }
 				const char *getClassName() const { return "Mac1609_4::EDCA"; }
 				void createQueue(int aifsn, int cwMin, int cwMax,t_access_category);
@@ -105,13 +107,11 @@ class Mac1609_4 : public BaseMacLayer,
 				void postTransmit(t_access_category, WaveShortMessage* wsm, bool useAcks);
 				void revokeTxOPs();
 
-				void cleanUp();
-
 				/** @brief return the next packet to send, send all lower Queues into backoff */
 				WaveShortMessage* initiateTransmit(simtime_t idleSince);
 
 			public:
-				cModule *owner;
+				cSimpleModule *owner;
 				std::map<t_access_category, EDCAQueue> myQueues;
 				uint32_t maxQueueSize;
 				simtime_t lastStart; //when we started the last contention;
