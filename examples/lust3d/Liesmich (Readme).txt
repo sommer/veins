@@ -1,43 +1,43 @@
 **********************************************************************
-*      DIGITALES LiDAR GELƒNDEMODELL VON LUXEMBURG, Version 20m      *
+*      DIGITALES LiDAR GEL√ÑNDEMODELL VON LUXEMBURG, Version 20m      *
 **********************************************************************
 
 
 * Zusammengestellt und resampled von Sonny
 * E-Mail:  sonnyy7@gmail.com
 * Website: http://data.opendataportal.at/dataset/dtm-luxembourg
-* Alternativ gibt es auf der Website das Gel‰ndemodell auch noch in anderen Rasterweiten.
+* Alternativ gibt es auf der Website das Gel√§ndemodell auch noch in anderen Rasterweiten.
 
 ======================================================================================
 
 
-Dieses digitale Hˆhenmodell (hier ein digitales Gel‰ndemodell DGM - im Gegensatz zu einem digitalen Oberfl‰chenmodell DOM) verwendet per pr‰ziser LiDAR Technik erzeugte Gel‰ndemodelle als Datengrundlage. Diese wurden mittels Airborne Laserscan (ALS)-Befliegungen vermessen. Deshalb der groﬂe Vorteil dieses Modells: Die Abweichungen der Gel‰ndehˆhen in diesem Modell im Vergleich zu den Laserhˆhen der Quelldaten, speziell in bergigem und h¸geligem Terrain, sind deutlich geringer als jene der verbreiteten SRTM-Kacheln.
+Dieses digitale H√∂henmodell (hier ein digitales Gel√§ndemodell DGM - im Gegensatz zu einem digitalen Oberfl√§chenmodell DOM) verwendet per pr√§ziser LiDAR Technik erzeugte Gel√§ndemodelle als Datengrundlage. Diese wurden mittels Airborne Laserscan (ALS)-Befliegungen vermessen. Deshalb der gro√üe Vorteil dieses Modells: Die Abweichungen der Gel√§ndeh√∂hen in diesem Modell im Vergleich zu den Laserh√∂hen der Quelldaten, speziell in bergigem und h√ºgeligem Terrain, sind deutlich geringer als jene der verbreiteten SRTM-Kacheln.
 
-Alle Einzel-Dateien wurden neben- bzw. ¸bereinander gelegt und mit 20 Meter (Version 20m) bzw. 50 Meter (Version 50m) Pixelabstand resampled.
+Alle Einzel-Dateien wurden neben- bzw. √ºbereinander gelegt und mit 20 Meter (Version 20m) bzw. 50 Meter (Version 50m) Pixelabstand resampled.
 
-Als Dateiformat wurde das relativ verbreitete GeoTIFF-Format gew‰hlt. Zus‰tzlich habe ich noch 2 passende Projektionsdateien .prj und .tfw beigef¸gt
+Als Dateiformat wurde das relativ verbreitete GeoTIFF-Format gew√§hlt. Zus√§tzlich habe ich noch 2 passende Projektionsdateien .prj und .tfw beigef√ºgt
 
 
 PROJEKTION und DATEIFORMAT
 **************************
 
 - Koordinatenreferenzsystem: EPSG:25832
-- Geod‰tisches Datum: ETRS89
+- Geod√§tisches Datum: ETRS89
 - Koordinatensystem: UTM Zone 32
-- Horizontale Auflˆsung: 20 Meter (Version 20m) bzw. 50 Meter (Version 50m)
-- Vertikale Auflˆsung: 0.1 Meter
+- Horizontale Aufl√∂sung: 20 Meter (Version 20m) bzw. 50 Meter (Version 50m)
+- Vertikale Aufl√∂sung: 0.1 Meter
 - Dateiformat: GeoTIFF, 32-bit Floating Point, vertical unit: Meter, compression: Deflate
 
 
 QUELLEN und LIZENZ
 ******************
 
-Dieses Gel‰ndemodell ist OFFEN, FREI und KOSTENLOS verwendbar, unterliegt aber der LIZENZ: Creative Commons Namensnennung 4.0 (CC BY 4.0), siehe https://creativecommons.org/licenses/by/4.0/deed.de
+Dieses Gel√§ndemodell ist OFFEN, FREI und KOSTENLOS verwendbar, unterliegt aber der LIZENZ: Creative Commons Namensnennung 4.0 (CC BY 4.0), siehe https://creativecommons.org/licenses/by/4.0/deed.de
 
-Ihr d¸rft daher dessen Daten vervielf‰ltigen, verbreiten, ˆffentlich zug‰nglich machen, auch kommerziell nutzen, sowie Abwandlungen und Bearbeitungen des Inhalts anfertigen. Ihr solltet bei Verwendung meinen Namen (Sonny), sowie Kontaktemail und Website (siehe ganz oben) erw‰hnen, herzlichen Dank!
+Ihr d√ºrft daher dessen Daten vervielf√§ltigen, verbreiten, √∂ffentlich zug√§nglich machen, auch kommerziell nutzen, sowie Abwandlungen und Bearbeitungen des Inhalts anfertigen. Ihr solltet bei Verwendung meinen Namen (Sonny), sowie Kontaktemail und Website (siehe ganz oben) erw√§hnen, herzlichen Dank!
 
 
-F¸r dieses Gel‰ndemodell wurden ausschlieﬂlich FREIE Opendata Quelldaten verwendet:
+F√ºr dieses Gel√§ndemodell wurden ausschlie√ülich FREIE Opendata Quelldaten verwendet:
 
 - Luxembourg Administration du cadastre et de la topographie: DGM 5 Meter (BD-L-MNT5)
 https://data.public.lu/en/datasets/bd-l-mnt5/

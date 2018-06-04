@@ -171,7 +171,7 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
 	//nextPos.z = move.getCurrentPosition().z;
 
 	move.setStart(nextPos);
-    move.setDirectionByVector(Coord(cos(elev_angle)*cos(angle), -cos(elev_angle)*sin(angle), sin(elev_angle)));
+	move.setDirectionByVector(Coord(cos(elev_angle)*cos(angle), -cos(elev_angle)*sin(angle), sin(elev_angle)));
 	move.setSpeed(speed);
 
 	isPreInitialized = true;
@@ -231,7 +231,7 @@ void TraCIMobility::changePosition()
 	this->lastUpdate = simTime();
 
 	move.setStart(Coord(nextPos.x, nextPos.y, nextPos.z));
-    move.setDirectionByVector(Coord(cos(elev_angle)*cos(angle), -cos(elev_angle)*sin(angle), sin(elev_angle)));
+	move.setDirectionByVector(Coord(cos(elev_angle)*cos(angle), -cos(elev_angle)*sin(angle), sin(elev_angle)));
 	move.setSpeed(speed);
 	fixIfHostGetsOutside();
 	updatePosition();
