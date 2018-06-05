@@ -30,7 +30,7 @@ struct Veins::TimerMessage : public omnetpp::cMessage {
 };
 
 TimerSpecification::TimerSpecification(std::function<void()> callback)
-    : start_mode_(StartMode::IMMEDIATE), end_mode_(EndMode::OPEN), period_(-1), callback_(callback) {}
+    : start_mode_(StartMode::immediate), end_mode_(EndMode::open), period_(-1), callback_(callback) {}
 
 TimerSpecification &TimerSpecification::interval(simtime_t interval) {
   ASSERT(interval > 0);
@@ -39,37 +39,37 @@ TimerSpecification &TimerSpecification::interval(simtime_t interval) {
 }
 
 TimerSpecification &TimerSpecification::relativeStart(simtime_t start) {
-  start_mode_ = StartMode::RELATIVE;
+  start_mode_ = StartMode::relative;
   start_ = start;
   return *this;
 }
 
 TimerSpecification &TimerSpecification::absoluteStart(simtime_t start) {
-  start_mode_ = StartMode::ABSOLUTE;
+  start_mode_ = StartMode::absolute;
   start_ = start;
   return *this;
 }
 
 TimerSpecification &TimerSpecification::relativeEnd(simtime_t end) {
-  end_mode_ = EndMode::RELATIVE;
+  end_mode_ = EndMode::relative;
   end_time_ = end;
   return *this;
 }
 
 TimerSpecification &TimerSpecification::absoluteEnd(simtime_t end) {
-  end_mode_ = EndMode::ABSOLUTE;
+  end_mode_ = EndMode::absolute;
   end_time_ = end;
   return *this;
 }
 
 TimerSpecification &TimerSpecification::repititions(size_t n) {
-  end_mode_ = EndMode::REPITITION;
+  end_mode_ = EndMode::repetition;
   end_count_ = n;
   return *this;
 }
 
 TimerSpecification &TimerSpecification::openEnd() {
-  end_mode_ = EndMode::OPEN;
+  end_mode_ = EndMode::open;
   return *this;
 }
 
@@ -83,28 +83,28 @@ TimerSpecification &TimerSpecification::oneshotAt(omnetpp::simtime_t at) {
 
 void TimerSpecification::finalize() {
   switch (start_mode_) {
-  case StartMode::RELATIVE:
+  case StartMode::relative:
     start_ += simTime();
-    start_mode_ = StartMode::ABSOLUTE;
+    start_mode_ = StartMode::absolute;
     break;
-  case StartMode::ABSOLUTE:
+  case StartMode::absolute:
     break;
-  case StartMode::IMMEDIATE:
+  case StartMode::immediate:
     start_ = simTime() + period_;
     break;
   }
 
   switch (end_mode_) {
-  case EndMode::RELATIVE:
+  case EndMode::relative:
     end_time_ += simTime();
-    end_mode_ = EndMode::ABSOLUTE;
+    end_mode_ = EndMode::absolute;
     break;
-  case EndMode::ABSOLUTE:
+  case EndMode::absolute:
     break;
-  case EndMode::REPITITION:
+  case EndMode::repetition:
     end_time_ = start_ + ((end_count_ - 1) * period_);
-    end_mode_ = EndMode::ABSOLUTE;
-  case EndMode::OPEN:
+    end_mode_ = EndMode::absolute;
+  case EndMode::open:
     break;
   }
 }
@@ -113,7 +113,7 @@ bool TimerSpecification::validOccurence(simtime_t time) const {
   const bool afterStart = time >= start_;
   const bool beforeEnd = time <= end_time_;
   const bool atPeriod = omnetpp::fmod(time - start_, period_) == 0;
-  return afterStart && (beforeEnd || end_mode_ == EndMode::OPEN) && atPeriod;
+  return afterStart && (beforeEnd || end_mode_ == EndMode::open) && atPeriod;
 }
 
 TimerManager::TimerManager(omnetpp::cSimpleModule *parent) : parent_(parent) { ASSERT(parent_); }
