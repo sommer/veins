@@ -134,13 +134,13 @@ public:
 private:
   friend TimerManager;
 
-  enum class StartMode { RELATIVE, ABSOLUTE, IMMEDIATE };
-  enum class EndMode { RELATIVE, ABSOLUTE, REPITITION, OPEN };
+  enum class StartMode { relative, absolute, immediate };
+  enum class EndMode { relative, absolute, repetition, open };
 
   /**
    * Finalizes this instance such that its values are independent of current simulation time.
    *
-   * After calling this function, start_mode_ is guaranteed to be StartMode::ABSOLUTE and end_mode_ to be EndMode::ABSOLUTE or EndMode::OPEN.
+   * After calling this function, start_mode_ is guaranteed to be StartMode::absolute and end_mode_ to be EndMode::absolute or EndMode::open.
    * Cannot be called on TimerSpecifications
    */
   void finalize();
@@ -158,8 +158,8 @@ private:
   StartMode start_mode_;           ///< Interpretation of start time._
   omnetpp::simtime_t start_;       ///< Time of the Timer's first occurence. Interpretation depends on start_mode_.
   EndMode end_mode_;               ///< Interpretation of end time._
-  unsigned end_count_;             ///< Number of repititions of the timer. Only valid when end_mode_ == REPITITION.
-  omnetpp::simtime_t end_time_;    ///< Last possible occurence of the timer. Only valid when end_mode_ != REPITITION.
+  unsigned end_count_;             ///< Number of repititions of the timer. Only valid when end_mode_ == repetition.
+  omnetpp::simtime_t end_time_;    ///< Last possible occurence of the timer. Only valid when end_mode_ != repetition.
   omnetpp::simtime_t period_;      ///< Time between events.
   std::function<void()> callback_; ///< The function to be called when the Timer is triggered.
 };
