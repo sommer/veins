@@ -184,7 +184,7 @@ void TraCIConnection::sendMessage(std::string buf) {
 		buf2 << msgLength;
 		uint32_t bytesWritten = 0;
 		while (bytesWritten < sizeof(uint32_t)) {
-			size_t sentBytes = ::send(socket(socketPtr), buf2.str().c_str() + bytesWritten, sizeof(uint32_t) - bytesWritten, 0);
+			ssize_t sentBytes = ::send(socket(socketPtr), buf2.str().c_str() + bytesWritten, sizeof(uint32_t) - bytesWritten, 0);
 			if (sentBytes > 0) {
 				bytesWritten += sentBytes;
 			} else {
@@ -199,7 +199,7 @@ void TraCIConnection::sendMessage(std::string buf) {
 		MYDEBUG << "Writing TraCI message of " << buf.length() << " bytes" << endl;
 		uint32_t bytesWritten = 0;
 		while (bytesWritten < buf.length()) {
-			size_t sentBytes = ::send(socket(socketPtr), buf.c_str() + bytesWritten, buf.length() - bytesWritten, 0);
+			ssize_t sentBytes = ::send(socket(socketPtr), buf.c_str() + bytesWritten, buf.length() - bytesWritten, 0);
 			if (sentBytes > 0) {
 				bytesWritten += sentBytes;
 			} else {
