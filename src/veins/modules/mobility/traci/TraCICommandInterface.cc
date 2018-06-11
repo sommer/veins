@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <stdlib.h>
 
 #include "veins/modules/mobility/traci/TraCIBuffer.h"
@@ -104,6 +105,13 @@ double TraCICommandInterface::Road::getCurrentTravelTime() {
 
 double TraCICommandInterface::Road::getMeanSpeed() {
 	return traci->genericGetDouble(CMD_GET_EDGE_VARIABLE, roadId, LAST_STEP_MEAN_SPEED, RESPONSE_GET_EDGE_VARIABLE);
+}
+
+const std::string TraCICommandInterface::Road::internalPrefix = ":";
+
+bool TraCICommandInterface::Road::isInternal() const {
+	const auto prefixStart = std::mismatch(internalPrefix.begin(), internalPrefix.end(), roadId.begin()).first;
+	return (prefixStart == internalPrefix.end());
 }
 
 std::string TraCICommandInterface::Vehicle::getRoadId() {
@@ -505,6 +513,13 @@ double TraCICommandInterface::Lane::getMaxSpeed() {
 
 double TraCICommandInterface::Lane::getMeanSpeed() {
 	return traci->genericGetDouble(CMD_GET_LANE_VARIABLE, laneId, LAST_STEP_MEAN_SPEED, RESPONSE_GET_LANE_VARIABLE);
+}
+
+const std::string TraCICommandInterface::Lane::internalPrefix = ":";
+
+bool TraCICommandInterface::Lane::isInternal() const {
+	const auto prefixStart = std::mismatch(internalPrefix.begin(), internalPrefix.end(), laneId.begin()).first;
+	return (prefixStart == internalPrefix.end());
 }
 
 std::list<std::string> TraCICommandInterface::getJunctionIds() {

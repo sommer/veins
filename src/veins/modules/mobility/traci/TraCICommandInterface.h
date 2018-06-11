@@ -110,11 +110,15 @@ class TraCICommandInterface
 
 				double getCurrentTravelTime();
 				double getMeanSpeed();
+				bool isInternal() const;
 
 			protected:
 				TraCICommandInterface* traci;
 				TraCIConnection* connection;
 				std::string roadId;
+
+			private:
+				static const std::string internalPrefix;
 		};
 		Road road(std::string roadId) {
 			return Road(this, roadId);
@@ -133,11 +137,15 @@ class TraCICommandInterface
 				double getLength();
 				double getMaxSpeed();
 				double getMeanSpeed();
+				bool isInternal() const;
 
 			protected:
 				TraCICommandInterface* traci;
 				TraCIConnection* connection;
 				std::string laneId;
+
+			private:
+				static const std::string internalPrefix;
 		};
 		Lane lane(std::string laneId) {
 			return Lane(this, laneId);
