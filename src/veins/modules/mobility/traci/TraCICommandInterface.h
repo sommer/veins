@@ -99,6 +99,8 @@ class TraCICommandInterface
 				double getFuelConsumption() const;
 				double getNoiseEmission() const;
 				double getElectricityConsumption() const;
+				double getWaitingTime() const;
+				double getAccumulatedWaitingTime() const;
 
 			protected:
 				TraCICommandInterface* traci;
