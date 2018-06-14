@@ -91,6 +91,14 @@ class TraCICommandInterface
 				std::string getTypeId();
 				bool changeVehicleRoute(const std::list<std::string>& roads);
 				double getLength();
+				double getCO2Emissions() const;
+				double getCOEmissions() const;
+				double getHCEmissions() const;
+				double getPMxEmissions() const;
+				double getNOxEmissions() const;
+				double getFuelConsumption() const;
+				double getNoiseEmission() const;
+				double getElectricityConsumption() const;
 
 			protected:
 				TraCICommandInterface* traci;
