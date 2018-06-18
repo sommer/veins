@@ -48,6 +48,15 @@ class TraCICommandInterface
 		// General methods that do not deal with a particular object in the simulation
 		std::pair<uint32_t, std::string> getVersion();
 		std::pair<double, double> getLonLat(const Coord&);
+
+		/**
+		 * Get the distance between two arbitrary positions.
+		 *
+		 * @param position1 OMNeT coordinate of first position
+		 * @param position2 OMNeT coordinate of second position
+		 * @param returnDrivingDistance whether to return the driving distance or the air distance
+		 * @return the distance between the two positions
+		 */
 		double getDistance(const Coord& position1, const Coord& position2, bool returnDrivingDistance);
 
 		// Vehicle methods
