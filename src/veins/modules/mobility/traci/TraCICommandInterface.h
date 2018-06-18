@@ -156,7 +156,23 @@ class TraCICommandInterface
 				 * @return the vehicle's electricity consumption, -1001 in case of error
 				 */
 				double getElectricityConsumption() const;
+
+				/**
+				 * Get the vehicle's waiting time in s.
+				 * The waiting time of a vehicle is defined as the time (in seconds) spent with a speed below 0.1m/s since the last time it was faster than 0.1m/s.
+				 * (basically, the waiting time of a vehicle is reset to 0 every time it moves).
+				 * A vehicle that is stopping intentionally with a <stop> does not accumulate waiting time.
+				 *
+				 * @return the vehicle's waiting time
+				 */
 				double getWaitingTime() const;
+
+				/**
+				 * Get the vehicle's accumulated waiting time in s within the previous time interval.
+				 * The length of the interval is configurable and 100s per default.
+				 *
+				 * @return the accumulated waiting time
+				 */
 				double getAccumulatedWaitingTime() const;
 
 			protected:
