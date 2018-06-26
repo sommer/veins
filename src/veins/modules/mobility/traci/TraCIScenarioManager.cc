@@ -43,7 +43,8 @@ const std::string TraCIScenarioManager::TRACI_INITIALIZED_SIGNAL_NAME = "traciIn
 
 TraCIScenarioManager::TraCIScenarioManager() :
 		mobRng(0),
-		connection(0),
+		connection(nullptr),
+		commandIfc(nullptr),
 		connectAndStartTrigger(0),
 		executeOneTimestepTrigger(0),
 		world(0),
@@ -55,8 +56,6 @@ TraCIScenarioManager::TraCIScenarioManager() :
 TraCIScenarioManager::~TraCIScenarioManager() {
 	cancelAndDelete(connectAndStartTrigger);
 	cancelAndDelete(executeOneTimestepTrigger);
-	delete commandIfc;
-	delete connection;
 }
 
 std::vector<std::string> getMapping(std::string el) {
@@ -497,8 +496,8 @@ void TraCIScenarioManager::handleMessage(cMessage *msg) {
 
 void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
 	if (msg == connectAndStartTrigger) {
-		connection = TraCIConnection::connect(host.c_str(), port);
-		commandIfc = new TraCICommandInterface(*connection);
+		connection.reset(TraCIConnection::connect(host.c_str(), port));
+		commandIfc.reset(new TraCICommandInterface(*connection));
 		init_traci();
 		return;
 	}
