@@ -54,6 +54,9 @@ TraCIScenarioManager::TraCIScenarioManager() :
 }
 
 TraCIScenarioManager::~TraCIScenarioManager() {
+	if (connection) {
+		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
+	}
 	cancelAndDelete(connectAndStartTrigger);
 	cancelAndDelete(executeOneTimestepTrigger);
 }
@@ -476,9 +479,6 @@ void TraCIScenarioManager::init_traci() {
 }
 
 void TraCIScenarioManager::finish() {
-	if (connection) {
-		TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
-	}
 	while (hosts.begin() != hosts.end()) {
 		deleteManagedModule(hosts.begin()->first);
 	}
