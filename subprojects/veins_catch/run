@@ -1,0 +1,13 @@
+#!/usr/bin/env python2
+"""
+Wrapper around veins_catch binary
+"""
+
+import sys
+import os
+
+prefix = []
+cmdline = prefix + [os.path.join('src', 'veins_catch')] + sys.argv[1:]
+
+os.execvp('env', ['env'] + cmdline)
+
