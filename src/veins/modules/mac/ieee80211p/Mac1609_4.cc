@@ -56,7 +56,7 @@ void Mac1609_4::initialize(int stage) {
 		sigCollision = registerSignal("sigCollision");
 
 		txPower = par("txPower").doubleValue();
-		bitrate = par("bitrate").longValue();
+		bitrate = par("bitrate");
 		n_dbps = 0;
 		setParametersForBitrate(bitrate);
 
@@ -86,7 +86,7 @@ void Mac1609_4::initialize(int stage) {
 
 		//create two edca systems
 
-		myEDCA[type_CCH] = std::unique_ptr<EDCA>(new EDCA(this, type_CCH,par("queueSize").longValue()));
+		myEDCA[type_CCH] = std::unique_ptr<EDCA>(new EDCA(this, type_CCH,par("queueSize")));
 		myEDCA[type_CCH]->myId = myId;
 		myEDCA[type_CCH]->myId.append(" CCH");
 		myEDCA[type_CCH]->createQueue(2,(((CWMIN_11P+1)/4)-1),(((CWMIN_11P +1)/2)-1),AC_VO);
@@ -94,7 +94,7 @@ void Mac1609_4::initialize(int stage) {
 		myEDCA[type_CCH]->createQueue(6,CWMIN_11P,CWMAX_11P,AC_BE);
 		myEDCA[type_CCH]->createQueue(9,CWMIN_11P,CWMAX_11P,AC_BK);
 
-		myEDCA[type_SCH] = std::unique_ptr<EDCA>(new EDCA(this, type_SCH,par("queueSize").longValue()));
+		myEDCA[type_SCH] = std::unique_ptr<EDCA>(new EDCA(this, type_SCH,par("queueSize")));
 		myEDCA[type_SCH]->myId = myId;
 		myEDCA[type_SCH]->myId.append(" SCH");
 		myEDCA[type_SCH]->createQueue(2,(((CWMIN_11P+1)/4)-1),(((CWMIN_11P +1)/2)-1),AC_VO);
@@ -106,7 +106,8 @@ void Mac1609_4::initialize(int stage) {
 		if (useSCH) {
 			if (useAcks) throw cRuntimeError("Unicast model does not support channel switching");
 			//set the initial service channel
-			switch (par("serviceChannel").longValue()) {
+			int serviceChannel = par("serviceChannel");
+			switch (serviceChannel) {
 				case 1: mySCH = Channels::SCH1; break;
 				case 2: mySCH = Channels::SCH2; break;
 				case 3: mySCH = Channels::SCH3; break;

@@ -72,7 +72,7 @@ void BasePhyLayer::initialize(int stage) {
 		} else {
 			thermalNoise = 0;
 		}
-		headerLength = par("headerLength").longValue();
+		headerLength = par("headerLength");
 		sensitivity = par("sensitivity").doubleValue();
 		sensitivity = FWMath::dBm2mW(sensitivity);
 
@@ -113,7 +113,7 @@ void BasePhyLayer::initialize(int stage) {
 }
 
 Radio* BasePhyLayer::initializeRadio() {
-	int initialRadioState = par("initialRadioState").longValue();
+	int initialRadioState = par("initialRadioState");
 	double radioMinAtt = par("radioMinAtt").doubleValue();
 	double radioMaxAtt = par("radioMaxAtt").doubleValue();
 	int nbRadioChannels = readPar("nbRadioChannels", 1);
@@ -885,7 +885,7 @@ ChannelState BasePhyLayer::getChannelState() {
 int BasePhyLayer::getPhyHeaderLength() {
 	Enter_Method_Silent();
 	if (headerLength < 0)
-		return par("headerLength").longValue();
+		return par("headerLength");
 	return headerLength;
 }
 

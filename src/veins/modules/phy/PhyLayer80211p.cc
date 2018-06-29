@@ -53,7 +53,8 @@ void PhyLayer80211p::initialize(int stage) {
 	}
 	BasePhyLayer::initialize(stage);
 	if (stage == 0) {
-		if (par("headerLength").longValue() != PHY_HDR_TOTAL_LENGTH) {
+		int headerLength = par("headerLength");
+		if (headerLength != PHY_HDR_TOTAL_LENGTH) {
 		throw cRuntimeError("The header length of the 802.11p standard is 46bit, please change your omnetpp.ini accordingly by either setting it to 46bit or removing the entry");
 		}
 		//erase the RadioStateAnalogueModel
@@ -106,7 +107,7 @@ AnalogueModel* PhyLayer80211p::initializeLogNormalShadowing(ParameterMap& params
 }
 
 AnalogueModel* PhyLayer80211p::initializeJakesFading(ParameterMap& params) {
-	int fadingPaths = params["fadingPaths"].longValue();
+	int fadingPaths = params["fadingPaths"];
 	simtime_t delayRMS = params["delayRMS"].doubleValue();
 	simtime_t interval = params["interval"].doubleValue();
 

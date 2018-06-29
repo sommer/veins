@@ -50,15 +50,15 @@ void BaseWaveApplLayer::initialize(int stage) {
         myId = getParentModule()->getId();
 
         //read parameters
-        headerLength = par("headerLength").longValue();
+        headerLength = par("headerLength");
         sendBeacons = par("sendBeacons").boolValue();
-        beaconLengthBits = par("beaconLengthBits").longValue();
-        beaconUserPriority = par("beaconUserPriority").longValue();
+        beaconLengthBits = par("beaconLengthBits");
+        beaconUserPriority = par("beaconUserPriority");
         beaconInterval =  par("beaconInterval");
 
-        dataLengthBits = par("dataLengthBits").longValue();
+        dataLengthBits = par("dataLengthBits");
         dataOnSch = par("dataOnSch").boolValue();
-        dataUserPriority = par("dataUserPriority").longValue();
+        dataUserPriority = par("dataUserPriority");
 
         wsaInterval = par("wsaInterval").doubleValue();
         communicateWhileParked = par("communicateWhileParked").boolValue();
