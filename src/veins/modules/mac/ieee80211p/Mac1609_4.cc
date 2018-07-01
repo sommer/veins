@@ -30,11 +30,7 @@ using std::unique_ptr;
 using omnetpp::simtime_t;
 using omnetpp::simTime;
 
-#if OMNETPP_VERSION >= 0x500
 #define OWNER owner->
-#else
-#define OWNER
-#endif
 
 #define DBG_MAC EV
 //#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
