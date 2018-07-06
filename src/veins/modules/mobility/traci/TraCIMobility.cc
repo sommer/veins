@@ -232,6 +232,7 @@ void TraCIMobility::changePosition()
 }
 
 void TraCIMobility::changeParkingState(bool newState) {
+	Enter_Method_Silent();
 	isParking = newState;
 	emit(parkingStateChangedSignal, this);
 }

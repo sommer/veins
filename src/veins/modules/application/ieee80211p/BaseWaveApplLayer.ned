@@ -53,8 +53,6 @@ simple BaseWaveApplLayer like IBaseApplLayer
         int wsaLengthBits = default(250bit) @unit(bit);
         double wsaInterval =  default(1s) @unit(s);
 
-        bool communicateWhileParked = default(false); //whether the car should communicate when it is parked in SUMO
-
     gates:
         input lowerLayerIn; // from mac layer
         output lowerLayerOut; // to mac layer

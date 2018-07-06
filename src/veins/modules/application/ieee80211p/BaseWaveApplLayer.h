@@ -152,7 +152,6 @@ class BaseWaveApplLayer : public BaseApplLayer {
 
         /* support for parking currently only works with TraCI */
         bool isParked;
-        bool communicateWhileParked;
 
         /* BSM (beacon) settings */
         uint32_t beaconLengthBits;

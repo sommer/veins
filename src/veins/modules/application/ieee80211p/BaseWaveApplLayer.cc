@@ -61,7 +61,6 @@ void BaseWaveApplLayer::initialize(int stage) {
         dataUserPriority = par("dataUserPriority");
 
         wsaInterval = par("wsaInterval").doubleValue();
-        communicateWhileParked = par("communicateWhileParked").boolValue();
         currentOfferedServiceId = -1;
 
         isParked = false;
@@ -199,17 +198,7 @@ void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
 }
 
 void BaseWaveApplLayer::handleParkingUpdate(cObject* obj) {
-    //this code should only run when used with TraCI
     isParked = mobility->getParkingState();
-    if (communicateWhileParked == false) {
-        if (isParked == true) {
-            (FindModule<BaseConnectionManager*>::findGlobalModule())->unregisterNic(this->getParentModule()->getSubmodule("nic"));
-        }
-        else {
-            Coord pos = mobility->getCurrentPosition();
-            (FindModule<BaseConnectionManager*>::findGlobalModule())->registerNic(this->getParentModule()->getSubmodule("nic"), (ChannelAccess*) this->getParentModule()->getSubmodule("nic")->getSubmodule("phy80211p"), &pos);
-        }
-    }
 }
 
 void BaseWaveApplLayer::handleLowerMsg(cMessage* msg) {
@@ -305,8 +294,6 @@ void BaseWaveApplLayer::sendDelayedDown(cMessage* msg, simtime_t delay) {
 }
 
 void BaseWaveApplLayer::checkAndTrackPacket(cMessage* msg) {
-    if (isParked && !communicateWhileParked) error("Attempted to transmit a message while parked, but this is forbidden by current configuration");
-
     if (dynamic_cast<BasicSafetyMessage*>(msg)) {
         DBG_APP << "sending down a BSM" << std::endl;
         generatedBSMs++;

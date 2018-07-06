@@ -39,6 +39,7 @@ simple TraCIMobility extends BaseMobility
 {
     parameters:
         @class(Veins::TraCIMobility);
+        @signal[parkingStateChanged](type=Veins::TraCIMobility);
         @display("i=block/cogwheel");
         bool debug = default(false);  // debug switch
         double antennaPositionOffset @unit("m") = default(0.0m);  // position offset of the antenna of the front of the car
