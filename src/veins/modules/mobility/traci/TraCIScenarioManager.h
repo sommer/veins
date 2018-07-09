@@ -22,6 +22,7 @@
 #define VEINS_WORLD_TRACI_TRACISCENARIOMANAGER_H
 
 #include <map>
+#include <memory>
 #include <list>
 #include <queue>
 
@@ -91,9 +92,9 @@ class TraCIScenarioManager : public cSimpleModule
 		virtual void handleMessage(cMessage *msg);
 		virtual void handleSelfMsg(cMessage *msg);
 
-		bool isConnected() const { return (connection); }
+		bool isConnected() const { return static_cast<bool>(connection); }
 
-		TraCICommandInterface* getCommandInterface() const { return commandIfc; }
+		TraCICommandInterface* getCommandInterface() const { return commandIfc.get(); }
 
 		bool getAutoShutdownTriggered() {
 			return autoShutdownTriggered;
@@ -139,8 +140,8 @@ class TraCIScenarioManager : public cSimpleModule
 		double areaSum;
 
 		AnnotationManager* annotations;
-		TraCIConnection* connection;
-		TraCICommandInterface* commandIfc;
+		std::unique_ptr<TraCIConnection> connection;
+		std::unique_ptr<TraCICommandInterface> commandIfc;
 
 		size_t nextNodeVectorIndex; /**< next OMNeT++ module vector index to use */
 		std::map<std::string, cModule*> hosts; /**< vector of all hosts managed by us */

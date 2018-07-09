@@ -42,11 +42,9 @@ void AnnotationManager::initialize() {
 	annotations.clear();
 	groups.clear();
 
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 	annotationLayer = new cGroupFigure();
 	cCanvas* canvas = getParentModule()->getCanvas();
 	canvas->addFigure(annotationLayer, canvas->findFigure("submodules"));
-#endif
 
 	annotationsXml = par("annotations");
 	addFromXml(annotationsXml);
@@ -271,59 +269,8 @@ void AnnotationManager::scheduleErase(simtime_t deltaT, Annotation* annotation) 
 
 }
 
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
-#else
-cModule* AnnotationManager::createDummyModule(std::string displayString) {
-	static int32_t nodeVectorIndex = -1;
-
-	cModule* parentmod = getParentModule();
-	if (!parentmod) error("Parent Module not found");
-
-	cModuleType* nodeType = cModuleType::get("org.car2x.veins.modules.world.annotations.AnnotationDummy");
-
-	//TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
-	nodeVectorIndex++;
-	cModule* mod = nodeType->create("annotation", parentmod, nodeVectorIndex, nodeVectorIndex);
-	mod->finalizeParameters();
-	mod->getDisplayString().parse(displayString.c_str());
-	mod->buildInside();
-	mod->scheduleStart(simTime());
-
-	return mod;
-}
-
-cModule* AnnotationManager::createDummyModuleLine(Coord p1, Coord p2, std::string color) {
-	double w = std::abs(p2.x - p1.x);
-	double h = std::abs(p2.y - p1.y);
-	double px = 0;
-	if (p1.x <= p2.x) {
-		px = p1.x + 0.5 * w;
-	} else {
-		px = p2.x + 0.5 * w;
-		w = -w;
-	}
-	double py = 0;
-	if (p1.y <= p2.y) {
-		py = p1.y + 0.5 * h;
-	} else {
-		py = p2.y + 0.5 * h;
-		h = -h;
-	}
-
-	std::stringstream ss;
-	ss << "p=" << px << "," << py << ";b=" << w << ", " << h << ",polygon," << color << "," << color << ",1";
-	std::string displayString = ss.str();
-
-	return createDummyModule(displayString);
-}
-#endif
-
 void AnnotationManager::show(const Annotation* annotation) {
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 	if (annotation->figure) return;
-#else
-	if (annotation->dummyObjects.size() > 0) return;
-#endif
 
 	if (const Point* o = dynamic_cast<const Point*>(annotation)) {
 
@@ -341,23 +288,14 @@ void AnnotationManager::show(const Annotation* annotation) {
 	else if (const Line* l = dynamic_cast<const Line*>(annotation)) {
 
 		if (hasGUI()) {
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 			cLineFigure* figure = new cLineFigure();
 			figure->setStart(cFigure::Point(l->p1.x, l->p1.y));
 			figure->setEnd(cFigure::Point(l->p2.x, l->p2.y));
 			figure->setLineColor(
-#if OMNETPP_VERSION < 0x500
-					cFigure::Color::byName
-#else
 					cFigure::Color
-#endif
 					(l->color.c_str()));
 			annotation->figure = figure;
 			annotationLayer->addFigure(annotation->figure);
-#else
-			cModule* mod = createDummyModuleLine(l->p1, l->p2, l->color);
-			annotation->dummyObjects.push_back(mod);
-#endif
 		}
 
 		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
@@ -373,7 +311,6 @@ void AnnotationManager::show(const Annotation* annotation) {
 		ASSERT(p->coords.size() >= 2);
 
 		if (hasGUI()) {
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 			cPolygonFigure* figure = new cPolygonFigure();
 			std::vector<cFigure::Point> points;
 			for (std::list<Coord>::const_iterator i = p->coords.begin(); i != p->coords.end(); ++i) {
@@ -381,26 +318,11 @@ void AnnotationManager::show(const Annotation* annotation) {
 			}
 			figure->setPoints(points);
 			figure->setLineColor(
-#if OMNETPP_VERSION < 0x500
-					cFigure::Color::byName
-#else
 					cFigure::Color
-#endif
 					(p->color.c_str()));
 			figure->setFilled(false);
 			annotation->figure = figure;
 			annotationLayer->addFigure(annotation->figure);
-#else
-			Coord lastCoords = *p->coords.rbegin();
-			for (std::list<Coord>::const_iterator i = p->coords.begin(); i != p->coords.end(); ++i) {
-				Coord c1 = *i;
-				Coord c2 = lastCoords;
-				lastCoords = c1;
-
-				cModule* mod = createDummyModuleLine(c1, c2, p->color);
-				annotation->dummyObjects.push_back(mod);
-			}
-#endif
 		}
 
 		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
@@ -417,18 +339,10 @@ void AnnotationManager::show(const Annotation* annotation) {
 }
 
 void AnnotationManager::hide(const Annotation* annotation) {
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 	if (annotation->figure) {
 		delete annotationLayer->removeFigure(annotation->figure);
 		annotation->figure = 0;
 	}
-#else
-	for (std::list<cModule*>::const_iterator i = annotation->dummyObjects.begin(); i != annotation->dummyObjects.end(); ++i) {
-		cModule* mod = *i;
-		mod->deleteModule();
-	}
-	annotation->dummyObjects.clear();
-#endif
 
 	TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
 	if (traci && traci->isConnected()) {

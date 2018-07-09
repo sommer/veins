@@ -18,11 +18,6 @@ typedef unsigned int uint32_t;
 typedef unsigned short uint16_t;
 typedef unsigned char uint8_t;
 
-#define snprintf _snprintf
-#define asprintf _asprintf
- 
-int _asprintf(char**, const char*, ...);
-
 #endif /* _WIN32 */
  
 #endif /* __WINSUPPORT_H */

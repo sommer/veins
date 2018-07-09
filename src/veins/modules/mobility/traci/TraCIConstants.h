@@ -622,6 +622,9 @@
 // current time step (get: simulation)
 #define VAR_TIME_STEP 0x70
 
+// current electricity consumption of a node (get: vehicle, lane, edge)
+#define VAR_ELECTRICITYCONSUMPTION 0x71
+
 // number of loaded vehicles (get: simulation)
 #define VAR_LOADED_VEHICLES_NUMBER 0x71
 
@@ -717,6 +720,9 @@
 
 //the current driving distance
 #define VAR_DISTANCE 0x84
+
+// the accumulated waiting time (vehicle)
+#define VAR_WAITING_TIME_ACCUMULATED 0x87
 
 // force rerouting based on travel time (vehicles)
 #define CMD_REROUTE_TRAVELTIME 0x90

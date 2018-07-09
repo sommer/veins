@@ -184,7 +184,7 @@ void TraCIConnection::sendMessage(std::string buf) {
 		buf2 << msgLength;
 		uint32_t bytesWritten = 0;
 		while (bytesWritten < sizeof(uint32_t)) {
-			size_t sentBytes = ::send(socket(socketPtr), buf2.str().c_str() + bytesWritten, sizeof(uint32_t) - bytesWritten, 0);
+			ssize_t sentBytes = ::send(socket(socketPtr), buf2.str().c_str() + bytesWritten, sizeof(uint32_t) - bytesWritten, 0);
 			if (sentBytes > 0) {
 				bytesWritten += sentBytes;
 			} else {
@@ -199,7 +199,7 @@ void TraCIConnection::sendMessage(std::string buf) {
 		MYDEBUG << "Writing TraCI message of " << buf.length() << " bytes" << endl;
 		uint32_t bytesWritten = 0;
 		while (bytesWritten < buf.length()) {
-			size_t sentBytes = ::send(socket(socketPtr), buf.c_str() + bytesWritten, buf.length() - bytesWritten, 0);
+			ssize_t sentBytes = ::send(socket(socketPtr), buf.c_str() + bytesWritten, buf.length() - bytesWritten, 0);
 			if (sentBytes > 0) {
 				bytesWritten += sentBytes;
 			} else {
@@ -221,59 +221,37 @@ std::string makeTraCICommand(uint8_t commandId, const TraCIBuffer& buf) {
 }
 
 void TraCIConnection::setNetbounds(TraCICoord netbounds1, TraCICoord netbounds2, int margin) {
-	this->netbounds1 = netbounds1;
-	this->netbounds2 = netbounds2;
-	this->margin = margin;
+	coordinateTransformation.reset(new TraCICoordinateTransformation(netbounds1, netbounds2, margin));
 }
 
 Coord TraCIConnection::traci2omnet(TraCICoord coord) const {
-	return Coord(coord.x - netbounds1.x + margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
+	ASSERT(coordinateTransformation.get());
+	return coordinateTransformation->traci2omnet(coord);
 }
 
 std::list<Coord> TraCIConnection::traci2omnet(const std::list<TraCICoord>& list) const {
-	std::list<Coord> result;
-	std::transform(list.begin(), list.end(), std::back_inserter(result), traci2omnet_functor(*this));
-	return result;
+	ASSERT(coordinateTransformation.get());
+	return coordinateTransformation->traci2omnet(list);
 }
 
 TraCICoord TraCIConnection::omnet2traci(Coord coord) const {
-	return TraCICoord(coord.x + netbounds1.x - margin, (netbounds2.y - netbounds1.y) - (coord.y - netbounds1.y) + margin);
+	ASSERT(coordinateTransformation.get());
+	return coordinateTransformation->omnet2traci(coord);
 }
 
 std::list<TraCICoord> TraCIConnection::omnet2traci(const std::list<Coord>& list) const {
-	std::list<TraCICoord> result;
-	std::transform(list.begin(), list.end(), std::back_inserter(result), std::bind1st(std::mem_fun<TraCICoord, TraCIConnection, Coord>(&TraCIConnection::omnet2traci), this));
-	return result;
+	ASSERT(coordinateTransformation.get());
+	return coordinateTransformation->omnet2traci(list);
 }
 
 double TraCIConnection::traci2omnetAngle(double angle) const {
-
-	// rotate angle so 0 is east (in TraCI's angle interpretation 0 is north, 90 is east)
-	angle = 90 - angle;
-
-	// convert to rad
-	angle = angle * M_PI / 180.0;
-
-	// normalize angle to -M_PI <= angle < M_PI
-	while (angle < -M_PI) angle += 2 * M_PI;
-	while (angle >= M_PI) angle -= 2 * M_PI;
-
-	return angle;
+	ASSERT(coordinateTransformation.get());
+	return coordinateTransformation->traci2omnetAngle(angle);
 }
 
 double TraCIConnection::omnet2traciAngle(double angle) const {
-
-	// convert to degrees
-	angle = angle * 180 / M_PI;
-
-	// rotate angle so 0 is south (in OMNeT++'s angle interpretation 0 is east, 90 is north)
-	angle = 90 - angle;
-
-	// normalize angle to -180 <= angle < 180
-	while (angle < -180) angle += 360;
-	while (angle >= 180) angle -= 360;
-
-	return angle;
+	ASSERT(coordinateTransformation.get());
+	return coordinateTransformation->omnet2traciAngle(angle);
 }
 
 }

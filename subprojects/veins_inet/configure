@@ -40,7 +40,7 @@ if options.veins:
 
     veins_header_dirs = [os.path.join(os.path.relpath(options.veins, 'src'), 'src')]
     veins_includes = ['-I' + s for s in veins_header_dirs]
-    veins_link = ["-L" + os.path.join(os.path.relpath(options.veins, 'src'), 'src'), "-lveins"]
+    veins_link = ["-L" + os.path.join(os.path.relpath(options.veins, 'src'), 'src'), "-lveins$(D)"]
     veins_defs = []
 
     makemake_flags += veins_includes + veins_link + veins_defs
@@ -51,10 +51,10 @@ if options.veins:
 # Add flags for INET
 if options.inet:
     fname = os.path.join(options.inet, '_scripts/get_version')
-    expect_version = ('3.4.0', '3.5.0', '3.6.0')
+    expect_version = ['3.6.4']
     try:
         print 'Running "%s" to determine INET version.' % fname
-        version = subprocess.check_output(fname).strip()
+        version = subprocess.check_output(['env', fname]).strip()
         if not version in expect_version:
             print ''
             print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
@@ -69,7 +69,7 @@ if options.inet:
 
     inet_header_dirs = [os.path.join(os.path.relpath(options.inet, 'src'), 'src')]
     inet_includes = ['-I' + s for s in inet_header_dirs]
-    inet_link = ["-L" + os.path.join(os.path.relpath(options.inet, 'src'), 'src'), "-lINET"]
+    inet_link = ["-L" + os.path.join(os.path.relpath(options.inet, 'src'), 'src'), "-lINET$(D)"]
     inet_defs = ["-DINET_IMPORT"]
 
     makemake_flags += inet_includes + inet_link + inet_defs

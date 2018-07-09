@@ -40,9 +40,7 @@ class AnnotationManager : public cSimpleModule
 			public:
 				Annotation()
 					: group(0)
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 					, figure(0)
-#endif
 				{}
 				virtual ~Annotation() {}
 
@@ -51,11 +49,7 @@ class AnnotationManager : public cSimpleModule
 
 				Group* group;
 
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 				mutable cFigure* figure;
-#else
-				mutable std::list<cModule*> dummyObjects;
-#endif
 
 				mutable std::list<std::string> traciPoiIds;
 				mutable std::list<std::string> traciLineIds;
@@ -130,12 +124,6 @@ class AnnotationManager : public cSimpleModule
 		void eraseAll(Group* group = 0);
 		void scheduleErase(simtime_t deltaT, Annotation* annotation);
 
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
-#else
-		cModule* createDummyModule(std::string displayString);
-		cModule* createDummyModuleLine(Coord p1, Coord p2, std::string color);
-#endif
-
 		void show(const Annotation* annotation);
 		void hide(const Annotation* annotation);
 		void showAll(Group* group = 0);
@@ -153,10 +141,7 @@ class AnnotationManager : public cSimpleModule
 		Annotations annotations;
 		Groups groups;
 
-#if OMNETPP_CANVAS_VERSION == 0x20140709 || OMNETPP_VERSION >= 0x500
 		cGroupFigure* annotationLayer;
-#endif
-
 };
 }
 

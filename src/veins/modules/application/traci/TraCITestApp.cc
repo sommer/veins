@@ -246,5 +246,11 @@ void TraCITestApp::handlePositionUpdate() {
 			assertEqual("(Vehicle::getTypeId) is vtype0", traciVehicle->getTypeId(), "vtype0");
 		}
 	}
+
+	if (testNumber == testCounter++) {
+		if (t == 1) {
+			assertEqual("(TraCIMobility::getAngleRad) returns 0 (east)", mobility->getAngleRad(), 0);
+		}
+	}
 }
 
