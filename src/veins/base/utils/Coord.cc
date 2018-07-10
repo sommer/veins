@@ -17,8 +17,10 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#include "assert.h"
-#include "Coord.h"
+#include <assert.h>
+#include "veins/base/utils/Coord.h"
+
+using namespace Veins;
 
 const Coord Coord::ZERO = Coord(0.0, 0.0, 0.0);
 

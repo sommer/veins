@@ -24,6 +24,8 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/utils/Coord.h"
 
+namespace Veins {
+
 /**
  * @brief Provides information and utility methods for the whole simulation.
  *
@@ -116,5 +118,7 @@ public:
     	return airFrameId++;
     }
  };
+
+} // namespace Veins
 
 #endif

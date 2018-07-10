@@ -11,11 +11,9 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/Decider.h"
 
-class Mapping;
+namespace Veins {
 
 using Veins::AirFrame;
-
-#define deciderEV EV << "[Host " << myIndex << "] - PhyLayer(Decider): "
 
 /**
  * @brief Provides some base functionality for most common deciders.
@@ -317,5 +315,7 @@ protected:
 											simtime_t_cref end,
 											AirFrame*      exclude = NULL);
 };
+
+} // namespace Veins
 
 #endif /* BASEDECIDER_H_ */

@@ -14,9 +14,8 @@
 #include "veins/base/utils/MiXiMDefs.h"
 
 namespace Veins {
+
 class AirFrame;
-}
-using Veins::AirFrame;
 
 class BaseWorldUtility;
 class ConstMapping;
@@ -137,5 +136,7 @@ public:
 	/** @brief Returns the channel currently used by the radio. */
 	virtual int getCurrentRadioChannel() = 0;
 };
+
+} // namespace Veins
 
 #endif /*DECIDER_TO_PHY_INTERFACE_H_*/

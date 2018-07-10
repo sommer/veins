@@ -32,12 +32,9 @@
 #include "veins/modules/phy/Decider80211pToPhy80211pInterface.h"
 #include "veins/base/utils/Move.h"
 
-using Veins::AirFrame;
+namespace Veins {
 
-#ifndef DBG
-#define DBG EV
-#endif
-//#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
+using Veins::AirFrame;
 
 /**
  * @brief
@@ -183,5 +180,7 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		virtual int getRadioState();
 		virtual simtime_t setRadioState(int rs);
 };
+
+} // namespace Veins
 
 #endif /* PHYLAYER80211P_H_ */

@@ -18,6 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+namespace Veins;
+
 packet WaveShortMessage {
 	//Version of the Wave Short Message
 	int wsmVersion = 0;

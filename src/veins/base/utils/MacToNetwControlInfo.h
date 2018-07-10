@@ -21,6 +21,8 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/utils/SimpleAddress.h"
 
+namespace Veins {
+
 /**
  * @brief Stores control information from mac to upper layer.
  *
@@ -137,5 +139,7 @@ public:
     	return LAddress::L2NULL();
     }
 };
+
+} // namespace Veins
 
 #endif /* MACTONETWCONTROLINFO_H_ */

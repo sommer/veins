@@ -2,6 +2,8 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
+using namespace Veins;
+
 using Veins::AirFrame;
 
 #define splmEV EV << "PhyLayer(SimplePathlossModel): "

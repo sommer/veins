@@ -7,6 +7,8 @@
 
 #include "veins/base/utils/MiXiMDefs.h"
 
+namespace Veins {
+
 class MIXIM_API PassedMessage : public cObject {
  public:
     enum gates_t {
@@ -47,6 +49,8 @@ class MIXIM_API PassedMessage : public cObject {
     int kind;
     const char* name;
 };
+
+} // namespace Veins
 
 #endif
 

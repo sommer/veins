@@ -32,6 +32,15 @@
 #include "veins/modules/phy/NistErrorRate.h"
 #include "veins/modules/utility/ConstsPhy.h"
 
+
+#ifndef DBG_D11P
+#define DBG_D11P EV
+#endif
+//#define DBG_D11P std::cerr << "[" << simTime().raw() << "] " << myPath << ".Dec "
+
+
+using namespace Veins;
+
 using Veins::AirFrame;
 using Veins::Radio;
 

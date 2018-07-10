@@ -11,6 +11,8 @@
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
+
+namespace Veins {
 #include "veins/base/messages/ChannelSenseRequest_m.h"
 #include "veins/base/phyLayer/ChannelState.h"
 
@@ -148,5 +150,6 @@ public:
 
 };
 
+} // namespace Veins
 
 #endif /*DECIDER_H_*/

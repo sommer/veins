@@ -3,6 +3,8 @@
 #include <iostream>
 #include <assert.h>
 
+using namespace Veins;
+
 using Veins::AirFrame;
 
 void ChannelInfo::addAirFrame(AirFrame* frame, simtime_t_cref startTime)

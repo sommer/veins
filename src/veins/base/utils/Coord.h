@@ -26,6 +26,8 @@
 #include "veins/base/utils/FWMath.h"
 
 
+namespace Veins {
+
 /**
  * @brief Class for storing 3D coordinates.
  *
@@ -246,5 +248,7 @@ inline std::string Coord::info() const {
     os << *this;
     return os.str();
 }
+
+} // namespace Veins
 
 #endif

@@ -8,6 +8,8 @@
 
 using Veins::AirFrame;
 
+namespace Veins {
+
 /**
  * @brief Basic implementation of a BreakpointPathlossModel.
  * This class can be used to implement the ieee802154 path loss model.
@@ -92,5 +94,7 @@ public:
 	virtual bool isActiveAtOrigin() { return false; }
 
 };
+
+} // namespace Veins
 
 #endif /*BREAKPOINTPATHLOSSMODEL_H_*/

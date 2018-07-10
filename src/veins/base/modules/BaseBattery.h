@@ -7,6 +7,8 @@
 #include "veins/base/modules/BaseModule.h"
 #include "veins/base/utils/HostState.h"
 
+namespace Veins {
+
 /**
  * @brief Defines the amount of power drawn by a device from
  * a power source.
@@ -119,6 +121,8 @@ public:
 	/*@}*/
 };
 
+
+} // namespace Veins
 
 
 #endif

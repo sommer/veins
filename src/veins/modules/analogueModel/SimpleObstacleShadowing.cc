@@ -1,5 +1,7 @@
 #include "veins/modules/analogueModel/SimpleObstacleShadowing.h"
 
+using namespace Veins;
+
 using Veins::AirFrame;
 
 #define debugEV EV << "PhyLayer(SimpleObstacleShadowing): "

@@ -23,6 +23,8 @@
 #include "veins/base/modules/BaseApplLayer.h"
 #include "veins/base/utils/PassedMessage.h"
 
+using namespace Veins;
+
 /**
  * First we have to initialize the module from which we derived ours,
  * in this case BaseLayer.

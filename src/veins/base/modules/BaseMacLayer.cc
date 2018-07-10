@@ -36,9 +36,14 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/messages/MacPkt_m.h"
 
-using Veins::ChannelAccess;
+#ifndef coreEV
+#define coreEV_clear EV
+#define coreEV EV << logName() << "::" << getClassName() << ": "
+#endif
 
-Define_Module(BaseMacLayer);
+using namespace Veins;
+
+Define_Module(Veins::BaseMacLayer);
 
 /**
  * First we have to initialize the module from which we derived ours,

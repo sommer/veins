@@ -23,6 +23,8 @@
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
+
+namespace Veins {
 #include "veins/base/phyLayer/MappingBase.h"
 
 using Veins::AirFrame;
@@ -84,5 +86,7 @@ class TwoRayInterferenceModel: public AnalogueModel {
 		/** @brief Whether debug messages should be displayed. */
 		bool debug;
 };
+
+} // namespace Veins
 
 #endif /* ANALOGUEMODEL_TWORAYINTERFERENCEMODEL_H */

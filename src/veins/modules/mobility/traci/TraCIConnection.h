@@ -5,7 +5,7 @@
 #include <memory>
 #include "veins/modules/mobility/traci/TraCIBuffer.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
-#include <veins/modules/mobility/traci/TraCICoordinateTransformation.h>
+#include "veins/modules/mobility/traci/TraCICoordinateTransformation.h"
 #include "veins/base/utils/Coord.h"
 
 namespace Veins {

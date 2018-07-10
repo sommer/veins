@@ -14,14 +14,15 @@
 
 #include "veins/base/phyLayer/ChannelInfo.h"
 
-class AnalogueModel;
+namespace Veins {
+
 class Decider;
 class BaseWorldUtility;
 //class omnetpp::cXMLElement;
 
-using Veins::AirFrame;
-using Veins::ChannelAccess;
-using Veins::Radio;
+class AirFrame;
+class ChannelAccess;
+class Radio;
 
 /**
  * @brief The BasePhyLayer represents the physical layer of a nic.
@@ -602,5 +603,7 @@ public:
 	 */
 	 virtual cObject *const setUpControlInfo(cMessage *const pMsg, DeciderResult *const pDeciderResult);
 };
+
+} // namespace Veins
 
 #endif /*BASEPHYLAYER_*/

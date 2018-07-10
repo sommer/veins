@@ -3,6 +3,8 @@
 #include "veins/modules/analogueModel/TwoRayInterferenceModel.h"
 #include "veins/base/messages/AirFrame_m.h"
 
+using namespace Veins;
+
 // Helper methods
 namespace {
     class DummySimulation {

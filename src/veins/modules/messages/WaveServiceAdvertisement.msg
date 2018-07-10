@@ -23,6 +23,8 @@ cplusplus {{
 #include "veins/modules/messages/WaveShortMessage_m.h"
 }}
 
+namespace Veins;
+
 class WaveShortMessage;
 class noncobject Coord;
 

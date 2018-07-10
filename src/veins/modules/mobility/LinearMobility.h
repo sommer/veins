@@ -22,6 +22,8 @@
 
 #include "veins/base/modules/BaseMobility.h"
 
+namespace Veins {
+
 /**
  * @brief Linear movement model. See NED file for more info.
  *
@@ -51,6 +53,8 @@ class MIXIM_API LinearMobility : public BaseMobility
 
     virtual void fixIfHostGetsOutside();
 };
+
+} // namespace Veins
 
 #endif
 

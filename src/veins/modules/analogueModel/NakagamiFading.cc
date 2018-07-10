@@ -28,6 +28,8 @@
 //#define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(NakagamiFading): "
 #define debugEV std::cerr << "PhyLayer(NakagamiFading): "
 
+using namespace Veins;
+
 /**
  * Simple Nakagami-m fading (based on a constant factor across all time and frequencies).
  */

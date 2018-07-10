@@ -15,6 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
+namespace Veins;
+
 //
 // Defines a control message that can be associated with a MAC frame to set
 // transmission power and datarate on a per packet basis

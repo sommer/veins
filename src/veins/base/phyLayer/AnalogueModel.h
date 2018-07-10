@@ -5,8 +5,9 @@
 #include "veins/base/utils/Coord.h"
 
 namespace Veins {
+
 class AirFrame;
-}
+
 using Veins::AirFrame;
 
 /**
@@ -40,5 +41,7 @@ public:
 	 */
 	virtual void filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) = 0;
 };
+
+} // namespace Veins
 
 #endif /*ANALOGUEMODEL_*/

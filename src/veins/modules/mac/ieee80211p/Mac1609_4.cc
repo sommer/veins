@@ -26,6 +26,8 @@
 #include "veins/modules/messages/PhyControlMessage_m.h"
 #include "veins/modules/messages/AckTimeOutMessage_m.h"
 
+using namespace Veins;
+
 using std::unique_ptr;
 using omnetpp::simtime_t;
 using omnetpp::simTime;
@@ -35,7 +37,7 @@ using omnetpp::simTime;
 #define DBG_MAC EV
 //#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
 
-Define_Module(Mac1609_4);
+Define_Module(Veins::Mac1609_4);
 
 void Mac1609_4::initialize(int stage) {
 	BaseMacLayer::initialize(stage);

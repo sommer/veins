@@ -3,6 +3,8 @@
 
 #include "veins/base/utils/MiXiMDefs.h"
 
+namespace Veins {
+
 /**
  * @brief Provides method templates to find omnet modules.
  *
@@ -97,5 +99,7 @@ class AccessModuleWrap
 			return pModule;
 		}
 };
+
+} // namespace Veins
 
 #endif

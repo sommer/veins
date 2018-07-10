@@ -20,7 +20,9 @@
 
 #include "veins/modules/application/traci/TraCIDemoRSU11p.h"
 
-Define_Module(TraCIDemoRSU11p);
+using namespace Veins;
+
+Define_Module(Veins::TraCIDemoRSU11p);
 
 void TraCIDemoRSU11p::onWSA(WaveServiceAdvertisment* wsa) {
     //if this RSU receives a WSA for service 42, it will tune to the chan

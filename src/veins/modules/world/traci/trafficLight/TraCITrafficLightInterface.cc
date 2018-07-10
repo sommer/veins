@@ -21,6 +21,8 @@
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 #include "veins/modules/messages/TraCITrafficLightMessage_m.h"
 
+using namespace Veins;
+
 using Veins::TraCITrafficLightInterface;
 using Veins::TraCITrafficLightProgram;
 using Veins::TraCITrafficLightLink;

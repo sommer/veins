@@ -32,12 +32,14 @@
 
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/modules/BaseMobility.h"
+
+namespace Veins {
 typedef AccessModuleWrap<BaseMobility>                ChannelMobilityAccessType;
 typedef ChannelMobilityAccessType::wrapType* ChannelMobilityPtrType;
-
 class NicEntry;
 class BaseConnectionManager;
 class BaseWorldUtility;
+}
 
 /**
  * @brief Basic class for all physical layers, please don't touch!!

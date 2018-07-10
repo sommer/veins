@@ -23,6 +23,8 @@
 
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 
+namespace Veins {
+
 /**
  * Small RSU Demo using 11p
  */
@@ -31,5 +33,7 @@ class TraCIDemoRSU11p : public BaseWaveApplLayer {
 		virtual void onWSM(WaveShortMessage* wsm);
 		virtual void onWSA(WaveServiceAdvertisment* wsa);
 };
+
+} // namespace Veins
 
 #endif

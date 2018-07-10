@@ -28,6 +28,8 @@
 #include "veins/base/utils/SimpleAddress.h"
 #include "veins/base/phyLayer/MappingBase.h"
 
+namespace Veins {
+
 class BaseConnectionManager;
 class MacPkt;
 class MacToPhyInterface;
@@ -238,5 +240,7 @@ protected:
      */
     virtual cObject *const setDownControlInfo(cMessage *const pMsg, Signal *const pSignal);
 };
+
+} // namespace Veins
 
 #endif

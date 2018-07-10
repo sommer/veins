@@ -8,6 +8,8 @@
 
 using Veins::AirFrame;
 
+namespace Veins {
+
 /**
  * @brief This class applies a parameterized packet error rate
  * to incoming packets. This allows the user to easily
@@ -27,5 +29,7 @@ public:
 	virtual void filterSignal(AirFrame *, const Coord&, const Coord&);
 
 };
+
+} // namespace Veins
 
 #endif

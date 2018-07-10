@@ -9,6 +9,8 @@
 #include "veins/base/phyLayer/PhyUtils.h"
 
 
+namespace Veins {
+
 /**
  * @brief Defines the methods provided by the phy to the mac layer.
  *
@@ -103,5 +105,7 @@ public:
 	/** @brief Returns the number of channels available on this radio. */
 	virtual int getNbRadioChannels() = 0;
 };
+
+} // namespace Veins
 
 #endif /*MACTOPHYINTERFACE_H_*/

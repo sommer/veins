@@ -39,9 +39,22 @@
 #include "veins/modules/messages/AirFrame11p_m.h"
 #include "veins/base/phyLayer/MacToPhyControlInfo.h"
 
+#ifndef coreEV
+#define coreEV_clear EV
+#define coreEV EV << logName() << "::" << getClassName() << ": "
+#endif
+
+#ifndef DBG
+#define DBG EV
+#endif
+//#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
+
+
+using namespace Veins;
+
 using Veins::ObstacleControlAccess;
 
-Define_Module(PhyLayer80211p);
+Define_Module(Veins::PhyLayer80211p);
 
 /** This is needed to circumvent a bug in MiXiM that allows different header length interpretations for receiving and sending airframes*/
 void PhyLayer80211p::initialize(int stage) {

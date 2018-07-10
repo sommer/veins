@@ -6,6 +6,8 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/Decider.h"
 
+namespace Veins {
+
 /**
  * @brief Controlinfo for packets which are send from Physical
  * layer to the MAC layer.
@@ -79,5 +81,7 @@ public:
     	return NULL;
     }
 };
+
+} // namespace Veins
 
 #endif /*PHYTOMACCONTROLINFO_H_*/

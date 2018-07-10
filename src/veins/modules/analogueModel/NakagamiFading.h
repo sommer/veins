@@ -27,6 +27,8 @@
 #include "veins/base/phyLayer/MappingBase.h"
 #include "veins/base/messages/AirFrame_m.h"
 
+namespace Veins {
+
 /**
  * @brief
  * A simple model to account for fast fading using the Nakagami Distribution.
@@ -64,5 +66,7 @@ class NakagamiFading: public AnalogueModel {
 		/** @brief Whether debug messages should be displayed. */
 		bool debug;
 };
+
+} // namespace Veins
 
 #endif /* ANALOGUEMODEL_NAKAGAMIFADING_H */

@@ -13,6 +13,8 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/utils/SimpleAddress.h"
 
+namespace Veins {
+
 /**
  * @brief Interface for modules which assign L2 and L3 addresses for modules.
  *
@@ -38,5 +40,7 @@ public:
     /** @brief Returns the L3 address for the passed net.*/
     virtual LAddress::L3Type myNetwAddr(const cModule* netw) const = 0;
 };
+
+} // namespace Veins
 
 #endif /* ADDRESSINGINTERFACE_H_ */

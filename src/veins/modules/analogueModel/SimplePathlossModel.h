@@ -8,6 +8,8 @@
 #include "veins/base/phyLayer/Mapping.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 
+namespace Veins {
+
 using Veins::AirFrame;
 
 class SimplePathlossModel;
@@ -150,5 +152,7 @@ public:
 	 */
 	virtual double calcPathloss(const Coord& receiverPos, const Coord& sendersPos);
 };
+
+} // namespace Veins
 
 #endif /*PATHLOSSMODEL_H_*/

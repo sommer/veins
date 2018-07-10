@@ -8,6 +8,7 @@
 #include "veins/modules/phy/SampledAntenna1D.h"
 #include "veins/base/utils/FWMath.h"
 
+using namespace Veins;
 
 SampledAntenna1D::SampledAntenna1D(std::vector<double>& values, std::string offsetType, std::vector<double>& offsetParams, std::string rotationType, std::vector<double>& rotationParams, cRNG* rng){
     // use Mapping to store the samples (interpolates automatically)

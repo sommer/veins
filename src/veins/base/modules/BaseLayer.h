@@ -27,6 +27,8 @@
 #include "veins/base/modules/BatteryAccess.h"
 #include "veins/base/utils/PassedMessage.h"
 
+namespace Veins {
+
 using Veins::BatteryAccess;
 
 /**
@@ -166,5 +168,7 @@ protected:
 //	void printPackets(std::map<MsgType,std::map<int,std::pair<char *,int>* > *> *use, bool in);
     /*@}*/
 };
+
+} // namespace Veins
 
 #endif

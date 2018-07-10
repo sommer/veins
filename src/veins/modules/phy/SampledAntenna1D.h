@@ -12,6 +12,8 @@
 #include "veins/base/phyLayer/MappingUtils.h"
 #include <vector>
 
+namespace Veins {
+
 /**
  * @brief
  * This class represents an antenna whose gain is calculated from given samples in the horizontal plane.
@@ -98,5 +100,7 @@ private:
 
     double lastAngle;
 };
+
+} // namespace Veins
 
 #endif /* SRC_VEINS_MODULES_PHY_SAMPLEDANTENNA1D_H_ */

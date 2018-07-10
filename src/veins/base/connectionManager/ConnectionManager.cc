@@ -8,7 +8,9 @@
 #define ccEV EV_DEBUG << getName() << ": "
 #endif
 
-Define_Module( ConnectionManager );
+using namespace Veins;
+
+Define_Module(Veins::ConnectionManager);
 
 double ConnectionManager::calcInterfDist()
 {

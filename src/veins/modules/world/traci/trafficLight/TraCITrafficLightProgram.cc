@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include <veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h>
+#include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 
 using Veins::TraCITrafficLightProgram;
 

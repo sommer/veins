@@ -2,6 +2,7 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
+using namespace Veins;
 using Veins::AirFrame;
 
 void PERModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {

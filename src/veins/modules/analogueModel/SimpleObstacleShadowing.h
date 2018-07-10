@@ -14,6 +14,8 @@ using Veins::ObstacleControl;
 
 #include <cstdlib>
 
+namespace Veins {
+
 /**
  * @brief Basic implementation of a SimpleObstacleShadowing that uses
  * SimplePathlossConstMapping (that is subclassed from SimpleConstMapping) as attenuation-Mapping.
@@ -61,5 +63,7 @@ public:
 	 */
 	virtual void filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos);
 };
+
+} // namespace Veins
 
 #endif /*PATHLOSSMODEL_H_*/

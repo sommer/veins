@@ -9,6 +9,8 @@
 
 using Veins::AirFrame;
 
+namespace Veins {
+
 /**
  * @brief This class is used by the BasePhyLayer to keep track of the AirFrames
  * on the channel.
@@ -471,5 +473,7 @@ public:
 		return airFrameStarts.empty();
 	}
 };
+
+} // namespace Veins
 
 #endif /*CHANNELINFO_H_*/

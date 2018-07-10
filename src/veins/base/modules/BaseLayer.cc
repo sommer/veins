@@ -28,6 +28,8 @@
 
 #include <assert.h>
 
+using namespace Veins;
+
 const simsignalwrap_t BaseLayer::catPassedMsgSignal     = simsignalwrap_t(MIXIM_SIGNAL_PASSEDMSG_NAME);
 const simsignalwrap_t BaseLayer::catPacketSignal        = simsignalwrap_t(MIXIM_SIGNAL_PACKET_NAME);
 const simsignalwrap_t BaseLayer::catDroppedPacketSignal = simsignalwrap_t(MIXIM_SIGNAL_DROPPEDPACKET_NAME);

@@ -13,10 +13,16 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
+#ifndef coreEV
+#define coreEV_clear EV
+#define coreEV EV << logName() << "::" << getClassName() << ": "
+#endif
+
+using namespace Veins;
+
 using Veins::AirFrame;
 
-//introduce BasePhyLayer as module to OMNet
-Define_Module(BasePhyLayer);
+Define_Module(Veins::BasePhyLayer);
 
 Coord NoMobiltyPos = Coord::ZERO;
 

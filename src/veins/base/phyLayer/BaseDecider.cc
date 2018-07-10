@@ -11,6 +11,9 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
+#define deciderEV EV << "[Host " << myIndex << "] - PhyLayer(Decider): "
+
+using namespace Veins;
 using Veins::AirFrame;
 
 simtime_t BaseDecider::processSignal(AirFrame* frame) {

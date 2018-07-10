@@ -13,9 +13,12 @@
  *              For further information see file COPYING
  *              in the top level directory
  ***************************************************************************/
-#include "veins/base/utils/NetwToMacControlInfo.h"
 
 #include <cassert>
+#include "veins/base/utils/NetwToMacControlInfo.h"
+
+using namespace Veins;
+
 typedef NetwToMacControlInfo  tNetwToMacControlInfoBase;
 
 

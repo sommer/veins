@@ -20,6 +20,8 @@
 #include <set>
 #include "veins/modules/obstacle/Obstacle.h"
 
+using namespace Veins;
+
 using Veins::Obstacle;
 
 Obstacle::Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter) :

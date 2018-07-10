@@ -23,6 +23,8 @@
 
 #include "veins/base/phyLayer/MacToPhyInterface.h"
 
+namespace Veins {
+
 /**
  * @brief
  * Interface of PhyLayer80211p exposed to Mac1609_4.
@@ -46,5 +48,7 @@ class Mac80211pToPhy11pInterface {
 		virtual void requestChannelStatusIfIdle() = 0;
 		virtual ~Mac80211pToPhy11pInterface() {};
 };
+
+} // namespace Veins
 
 #endif /* MAC80211PTOPHY11PINTERFACE_H_ */

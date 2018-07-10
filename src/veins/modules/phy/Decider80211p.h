@@ -27,12 +27,9 @@
 #include "veins/modules/mac/ieee80211p/Mac80211pToPhy11pInterface.h"
 #include "veins/modules/phy/Decider80211pToPhy80211pInterface.h"
 
-using Veins::AirFrame;
+namespace Veins {
 
-#ifndef DBG_D11P
-#define DBG_D11P EV
-#endif
-//#define DBG_D11P std::cerr << "[" << simTime().raw() << "] " << myPath << ".Dec "
+using Veins::AirFrame;
 
 /**
  * @brief
@@ -260,5 +257,7 @@ class Decider80211p: public BaseDecider {
 		void setNotifyRxStart(bool enable);
 
 };
+
+} // namespace Veins
 
 #endif /* DECIDER80211p_H_ */

@@ -29,6 +29,8 @@
 #include "veins/base/utils/Move.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 
+namespace Veins {
+
 using Veins::BatteryAccess;
 
 /**
@@ -394,6 +396,8 @@ class MIXIM_API BaseMobility : public BatteryAccess
     /*@}*/
 
 };
+
+} // namespace Veins
 
 #endif
 

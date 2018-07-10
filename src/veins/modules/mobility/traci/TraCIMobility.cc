@@ -24,6 +24,8 @@
 
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 
+using namespace Veins;
+
 using Veins::TraCIMobility;
 
 Define_Module(Veins::TraCIMobility);

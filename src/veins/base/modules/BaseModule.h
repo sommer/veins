@@ -28,15 +28,7 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/utils/HostState.h"
 
-#ifndef debugEV
-#define debugEV_clear EV
-#define debugEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
-#ifndef coreEV
-#define coreEV_clear EV
-#define coreEV EV << logName() << "::" << getClassName() << ": "
-#endif
+namespace Veins {
 
 /**
  * @brief Base class for all simple modules of a host.
@@ -170,5 +162,7 @@ protected:
         receiveSignal(source, signalID, obj, 0);
     }
 };
+
+} // namespace Veins
 
 #endif

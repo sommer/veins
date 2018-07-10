@@ -4,6 +4,8 @@ cplusplus {{
 #include "veins/base/utils/POA.h"
 }}
 
+namespace Veins;
+
 class noncobject Signal;
 class noncobject POA;
 
@@ -30,7 +32,6 @@ class noncobject POA;
 // If you need more fields for whatever reason, please do NOT create
 // your own packet! Just extend (subclass) this packet format 
 //
-namespace Veins;
 packet AirFrame
 {
     Signal signal;		// Contains the physical data of this AirFrame

@@ -1,7 +1,7 @@
 #include "veins/base/phyLayer/Decider.h"
 
+using namespace Veins;
 using Veins::AirFrame;
-
 
 bool DeciderResult::isSignalCorrect() const {
 	return isCorrect;

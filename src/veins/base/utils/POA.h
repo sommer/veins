@@ -12,6 +12,7 @@
 #include "veins/base/utils/Coord.h"
 #include <memory>
 
+namespace Veins {
 
 /**
  * @brief Container class used to attach data to Airframe s which are
@@ -45,6 +46,6 @@ public:
     virtual ~POA(){};
 };
 
-
+} // namespace Veins
 
 #endif /* POA_H_ */
