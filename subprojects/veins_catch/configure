@@ -37,7 +37,7 @@ if options.veins:
 
     veins_header_dirs = [os.path.join(os.path.relpath(options.veins, 'src'), 'src')]
     veins_includes = ['-I' + s for s in veins_header_dirs]
-    veins_link = ["-L" + os.path.join(os.path.relpath(options.veins, 'src'), 'src'), "-lveins"]
+    veins_link = ["-L" + os.path.join(os.path.relpath(options.veins, 'src'), 'src'), "-lveins$(D)"]
     veins_defs = []
 
     makemake_flags += veins_includes + veins_link + veins_defs

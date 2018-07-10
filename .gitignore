@@ -30,6 +30,7 @@ subprojects/veins_catch/src/*.dylib
 subprojects/veins_catch/src/*.so
 subprojects/veins_catch/src/Makefile
 subprojects/veins_catch/src/veins_catch
+subprojects/veins_catch/src/veins_catch_dbg
 
 subprojects/veins_inet/src/Makefile
 subprojects/veins_inet/src/*.so
