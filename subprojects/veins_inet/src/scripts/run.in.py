@@ -15,7 +15,7 @@ def relpath(s):
 
 parser = argparse.ArgumentParser('Run a Veins simulation')
 parser.add_argument('-d', '--debug', action='store_true', help='Run using opp_run_dbg (instead of opp_run)')
-parser.add_argument('-t', '--tool', metavar='TOOL', dest='tool', choices=['gdb', 'memcheck'], help='Wrap opp_run execution in TOOL (gdb or memcheck)')
+parser.add_argument('-t', '--tool', metavar='TOOL', dest='tool', choices=['lldb', 'gdb', 'memcheck'], help='Wrap opp_run execution in TOOL (lldb, gdb or memcheck)')
 parser.add_argument('-v', '--verbose', action='store_true', help='Print command line before executing')
 parser.add_argument('--', dest='arguments', help='Arguments to pass to opp_run')
 args, omnet_args = parser.parse_known_args()
@@ -33,6 +33,8 @@ lib_flags = ['-l%s' % s for s in run_libs]
 ned_flags = ['-n' + ';'.join(run_neds)]
 
 prefix = []
+if args.tool == 'lldb':
+    prefix = ['lldb', '--']
 if args.tool == 'gdb':
     prefix = ['gdb', '--args']
 if args.tool == 'memcheck':
