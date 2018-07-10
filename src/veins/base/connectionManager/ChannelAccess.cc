@@ -34,7 +34,13 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
+#ifndef coreEV
+#define coreEV_clear EV
+#define coreEV EV << logName() << "::" << getClassName() << ": "
+#endif
+
 using std::endl;
+using namespace Veins;
 
 const simsignalwrap_t ChannelAccess::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
 

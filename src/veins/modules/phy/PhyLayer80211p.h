@@ -25,19 +25,13 @@
 #include "veins/modules/mac/ieee80211p/Mac80211pToPhy11pInterface.h"
 #include "veins/modules/phy/Decider80211p.h"
 #include "veins/modules/analogueModel/SimplePathlossModel.h"
-#include "veins/modules/analogueModel/LogNormalShadowing.h"
-#include "veins/modules/phy/SNRThresholdDecider.h"
-#include "veins/modules/analogueModel/JakesFading.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 #include "veins/modules/phy/Decider80211pToPhy80211pInterface.h"
 #include "veins/base/utils/Move.h"
 
-using Veins::AirFrame;
+namespace Veins {
 
-#ifndef DBG
-#define DBG EV
-#endif
-//#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
+using Veins::AirFrame;
 
 /**
  * @brief
@@ -113,18 +107,6 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		AnalogueModel* initializeAntennaModel(ParameterMap& params);
 
 		/**
-		 * @brief Creates and initializes a LogNormalShadowing with the
-		 * passed parameter values.
-		 */
-		AnalogueModel* initializeLogNormalShadowing(ParameterMap& params);
-
-		/**
-		 * @brief Creates and initializes a JakesFading with the
-		 * passed parameter values.
-		 */
-		AnalogueModel* initializeJakesFading(ParameterMap& params);
-
-		/**
 		 * @brief Creates and initializes a BreakpointPathlossModel with the
 		 * passed parameter values.
 		 */
@@ -162,7 +144,6 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		 * Is able to initialize the following Deciders:
 		 *
 		 * - Decider80211p
-		 * - SNRThresholdDecider
 		 */
 		virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
 
@@ -183,5 +164,7 @@ class PhyLayer80211p	: 	public BasePhyLayer,
 		virtual int getRadioState();
 		virtual simtime_t setRadioState(int rs);
 };
+
+} // namespace Veins
 
 #endif /* PHYLAYER80211P_H_ */

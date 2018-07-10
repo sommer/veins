@@ -28,6 +28,7 @@
 #endif
 
 using std::endl;
+using namespace Veins;
 
 void NicEntryDirect::connectTo(NicEntry* other)
 {

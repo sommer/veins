@@ -20,7 +20,9 @@
 
 #include "veins/modules/application/traci/TraCIDemo11p.h"
 
-Define_Module(TraCIDemo11p);
+using namespace Veins;
+
+Define_Module(Veins::TraCIDemo11p);
 
 void TraCIDemo11p::initialize(int stage) {
     BaseWaveApplLayer::initialize(stage);

@@ -26,6 +26,8 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/utils/SimpleAddress.h"
 
+namespace Veins {
+
 /**
  * @brief Control info to pass next hop L2 addr from netw to MAC layer
  *
@@ -97,5 +99,7 @@ class MIXIM_API NetwToMacControlInfo : public cObject
     static const LAddress::L2Type& getDestFromControlInfo(const cObject *const pCtrlInfo);
 };
 
+
+} // namespace Veins
 
 #endif

@@ -27,6 +27,8 @@
 #include <map>
 #include <vector>
 
+namespace Veins {
+
 /**
  * @brief NicEntry is used by ConnectionManager to store the necessary
  * information for each nic
@@ -139,5 +141,7 @@ class NicEntryDebug: public NicEntry
 	 **/
     virtual void disconnectFrom(NicEntry* other);
 };
+
+} // namespace Veins
 
 #endif

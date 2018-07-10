@@ -26,6 +26,8 @@
 
 using namespace omnetpp;
 
+namespace Veins {
+
 /**
  * @brief
  * This is a stub for a typical Veins application layer.
@@ -48,5 +50,7 @@ class MyVeinsApp : public BaseWaveApplLayer {
         virtual void handleSelfMsg(cMessage* msg);
         virtual void handlePositionUpdate(cObject* obj);
     };
+
+} // namespace Veins
 
 #endif

@@ -22,7 +22,9 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
-Define_Module(BaseWorldUtility);
+using namespace Veins;
+
+Define_Module(Veins::BaseWorldUtility);
 
 
 BaseWorldUtility::BaseWorldUtility():

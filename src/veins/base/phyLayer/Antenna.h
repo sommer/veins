@@ -10,6 +10,8 @@
 
 #include "veins/base/utils/Coord.h"
 
+namespace Veins {
+
 /**
  * @brief The Antenna class is the base class of all antenna models.
  *
@@ -48,5 +50,7 @@ public:
 
     virtual double getLastAngle(){return -1.0;};
 };
+
+} // namespace Veins
 
 #endif /* ANTENNA_H_ */

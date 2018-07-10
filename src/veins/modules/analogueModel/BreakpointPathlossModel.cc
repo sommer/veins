@@ -2,13 +2,14 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
+
+using namespace Veins;
 using Veins::AirFrame;
 
 #define debugEV EV << "PhyLayer(BreakpointPathlossModel): "
 
 
-void BreakpointPathlossModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos) {
-	Signal& signal = frame->getSignal();
+void BreakpointPathlossModel::filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos) {
 
 	/** Calculate the distance factor */
 	double distance = useTorus ? receiverPos.sqrTorusDist(sendersPos, playgroundSize)
@@ -41,11 +42,5 @@ void BreakpointPathlossModel::filterSignal(AirFrame *frame, const Coord& senders
 	  pathlosses.record(10*log10(attenuation)); // in dB
 	}
 
-	//const DimensionSet& domain = DimensionSet::timeDomain;
-	Argument arg;	// default constructor initializes with a single dimension, time, and value 0 (offset from signal start)
-	TimeMapping<Linear>* attMapping = new TimeMapping<Linear> ();	// mapping performs a linear interpolation from our single point -> constant
-	attMapping->setValue(arg, attenuation);
-
-	/* at last add the created attenuation mapping to the signal */
-	signal.addAttenuation(attMapping);
+	signal->addUniformAttenuation(attenuation);
 }

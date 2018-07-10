@@ -1,8 +1,9 @@
-
 cplusplus {{
-#include "veins/base/phyLayer/Signal_.h"
+#include "veins/base/toolbox/Signal.h"
 #include "veins/base/utils/POA.h"
 }}
+
+namespace Veins;
 
 class noncobject Signal;
 class noncobject POA;
@@ -23,14 +24,10 @@ class noncobject POA;
 // priority than normal to ensure channel consistency. This means that before anything else happens
 // at a time point t every AirFrame which ended at t has been removed and
 // every AirFrame started at t has been added to the channel.
-// An example where this matters is a ChannelSenseRequest which ends at
-// the same time as an AirFrame starts (or ends). Depending on which message
-// is handled first the result of ChannelSenseRequest would differ.
 //
 // If you need more fields for whatever reason, please do NOT create
 // your own packet! Just extend (subclass) this packet format 
 //
-namespace Veins;
 packet AirFrame
 {
     Signal signal;		// Contains the physical data of this AirFrame

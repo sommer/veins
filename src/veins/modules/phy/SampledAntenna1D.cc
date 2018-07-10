@@ -1,19 +1,31 @@
-/*
- * SampledAntenna1D.cc
- *
- *  Created on: Jun 19, 2016
- *      Author: Alexander Brummer
- */
+//
+// Copyright (C) 2016 Alexander Brummer
+// Copyright (C) 2018 Fabian Bronner <fabian.bronner@ccs-labs.org>
+//
+// Documentation for these modules is at http://veins.car2x.org/
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
 
 #include "veins/modules/phy/SampledAntenna1D.h"
 #include "veins/base/utils/FWMath.h"
 
+using namespace Veins;
 
-SampledAntenna1D::SampledAntenna1D(std::vector<double>& values, std::string offsetType, std::vector<double>& offsetParams, std::string rotationType, std::vector<double>& rotationParams, cRNG* rng){
-    // use Mapping to store the samples (interpolates automatically)
-    samples = MappingUtils::createMapping();
-    Argument pos;
-    double dist = (2*M_PI)/values.size();
+SampledAntenna1D::SampledAntenna1D(std::vector<double>& values, std::string offsetType, std::vector<double>& offsetParams, std::string rotationType, std::vector<double>& rotationParams, cRNG* rng) : antennaGains(values.size()+1) {
+    distance = (2*M_PI)/values.size();
 
     // instantiate a random number generator for sample offsets if one is specified
     cRandom* offsetGen = 0;
@@ -50,29 +62,24 @@ SampledAntenna1D::SampledAntenna1D(std::vector<double>& values, std::string offs
     // transform to rad
     rotation *= (M_PI/180);
 
-    // populate the mapping
+    // copy values and apply offset
     for (unsigned int i = 0; i < values.size(); i++) {
-        pos.setTime(dist*i);
         double offset = 0;
         if (offsetGen != 0) {
             offset = offsetGen->draw();
             // transform to rad
             offset *= (M_PI/180);
         }
-        samples->setValue(pos, (values[i] + offset));
+        antennaGains[i] = values[i] + offset;
     }
     if (offsetGen != 0)
         delete offsetGen;
 
-    // assign the value of 0 degrees to 360 degrees as well to assure correct interpolation
-    pos.setTime(0);
-    double value0 = samples->getValue(pos);
-    pos.setTime(2*M_PI);
-    samples->setValue(pos, value0);
+    // assign the value of 0 degrees to 360 degrees as well to assure correct interpolation (size allocated already before)
+    antennaGains[values.size()] = antennaGains[0];
 }
 
 SampledAntenna1D::~SampledAntenna1D() {
-    delete samples;
 }
 
 double SampledAntenna1D::getGain(Coord ownPos, Coord ownOrient, Coord otherPos) {
@@ -89,10 +96,20 @@ double SampledAntenna1D::getGain(Coord ownPos, Coord ownOrient, Coord otherPos) 
     if (angle < 0)
         angle += 2*M_PI;
 
-    // return value at the calculated angle
-    Argument pos(angle);
-    lastAngle = angle;
-    return FWMath::dBm2mW(samples->getValue(pos));
+    // calculate antennaGain
+    size_t baseElement = angle/distance;
+    double offset = (angle-(baseElement*distance))/distance;
+
+    // make sure to not address an element out of antennaGains (baseElement == lastElement implies that offset is zero)
+    assert((baseElement < antennaGains.size()) && (baseElement != antennaGains.size()-1 || offset == 0));
+
+    double gainValue = antennaGains[baseElement];
+    if(offset > 0)
+    {
+        gainValue += offset*(antennaGains[baseElement+1]-antennaGains[baseElement]);
+    }
+
+    return FWMath::dBm2mW(gainValue);
 }
 
 double SampledAntenna1D::getLastAngle() {

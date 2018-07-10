@@ -11,8 +11,8 @@
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
-#include "veins/base/messages/ChannelSenseRequest_m.h"
-#include "veins/base/phyLayer/ChannelState.h"
+
+namespace Veins {
 
 using Veins::AirFrame;
 
@@ -95,29 +95,6 @@ public:
 	virtual simtime_t processSignal(AirFrame* frame);
 
 	/**
-	 * @brief A function that returns information about the channel state
-	 *
-	 * It is an alternative for the MACLayer in order to obtain information
-	 * immediately (in contrast to sending a ChannelSenseRequest,
-	 * i.e. sending a cMessage over the OMNeT-control-channel)
-	 */
-	virtual ChannelState getChannelState();
-
-	/**
-	 * @brief This function is called by the PhyLayer to hand over a
-	 * ChannelSenseRequest.
-	 *
-	 * The MACLayer is able to send a ChannelSenseRequest to the PhyLayer
-	 * that calls this function with it and is returned a time point when to
-	 * re-call this function with the specific ChannelSenseRequest.
-	 *
-	 * The Decider puts the result (ChannelState) to the ChannelSenseRequest
-	 * and "answers" by calling the "sendControlMsg"-function on the
-	 * DeciderToPhyInterface, i.e. telling the PhyLayer to send it back.
-	 */
-	virtual simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);
-
-	/**
 	 * @brief Method to be called by an OMNeT-module during its own finish(),
 	 * to enable a decider to do some things.
 	 */
@@ -148,5 +125,6 @@ public:
 
 };
 
+} // namespace Veins
 
 #endif /*DECIDER_H_*/

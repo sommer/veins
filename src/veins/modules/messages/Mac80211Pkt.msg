@@ -14,6 +14,7 @@ cplusplus {{
 #include "veins/base/messages/MacPkt_m.h"
 }}
 
+namespace Veins;
 
 class MacPkt;
 

@@ -9,6 +9,7 @@ package org.car2x.veins.base.modules;
 simple BaseMobility like IMobility
 {
     parameters:
+        @class(Veins::BaseMobility);
         bool notAffectedByHostState = default(true);
         bool coreDebug = default(false); // debug switch for the core framework
         double x; // x coordinate of the nodes' position (-1 = random)

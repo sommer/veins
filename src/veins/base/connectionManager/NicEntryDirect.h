@@ -25,6 +25,8 @@
 #include "veins/base/connectionManager/NicEntry.h"
 
 
+namespace Veins {
+
 /**
  * @brief NicEntry is used by ConnectionManager to store the necessary
  * information for each nic
@@ -65,5 +67,7 @@ class NicEntryDirect: public NicEntry
      */
     virtual void disconnectFrom(NicEntry*);
 };
+
+} // namespace Veins
 
 #endif

@@ -11,6 +11,8 @@
 #define ccEV EV_DEBUG << getName() << ": "
 #endif
 
+using namespace Veins;
+
 namespace {
     /**
      * On a torus the end and the begin of the axes are connected so you

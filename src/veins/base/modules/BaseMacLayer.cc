@@ -25,8 +25,7 @@
 #include <cassert>
 #include <sstream>
 
-#include "veins/base/phyLayer/Mapping.h"
-#include "veins/base/phyLayer/Signal_.h"
+#include "veins/base/toolbox/Signal.h"
 #include "veins/base/phyLayer/MacToPhyInterface.h"
 #include "veins/base/utils/MacToNetwControlInfo.h"
 #include "veins/base/utils/NetwToMacControlInfo.h"
@@ -36,9 +35,14 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/messages/MacPkt_m.h"
 
-using Veins::ChannelAccess;
+#ifndef coreEV
+#define coreEV_clear EV
+#define coreEV EV << logName() << "::" << getClassName() << ": "
+#endif
 
-Define_Module(BaseMacLayer);
+using namespace Veins;
+
+Define_Module(Veins::BaseMacLayer);
 
 /**
  * First we have to initialize the module from which we derived ours,
@@ -55,6 +59,9 @@ void BaseMacLayer::initialize(int stage)
         if ((phy = FindModule<MacToPhyInterface*>::findSubModule(getParentModule())) == NULL) {
         	error("Could not find a PHY module.");
         }
+
+        overallSpectrum = nullptr;
+
         headerLength    = par("headerLength");
         phyHeaderLength = phy->getPhyHeaderLength();
 
@@ -186,83 +193,17 @@ void BaseMacLayer::handleLowerControl(cMessage* msg)
 
 Signal* BaseMacLayer::createSimpleSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate)
 {
-	simtime_t end = start + length;
 	//create signal with start at current simtime and passed length
-	Signal* s = new Signal(start, length);
+	Signal* s = new Signal(overallSpectrum, start, length);
 
-	//create and set tx power mapping
-	Mapping* txPowerMapping = createRectangleMapping(start, end, power);
-	s->setTransmissionPower(txPowerMapping);
+	(*s)[0] = power;
+	s->setBitrate(bitrate);
 
-	//create and set bitrate mapping
-	Mapping* bitrateMapping = createConstantMapping(start, end, bitrate);
-	s->setBitrate(bitrateMapping);
+	s->setCenterFrequencyIndex(0);
+	s->setDataStart(0);
+	s->setDataEnd(0);
 
 	return s;
-}
-
-Mapping* BaseMacLayer::createConstantMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value)
-{
-	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(Argument::MappedZero(), DimensionSet::timeDomain(), Mapping::LINEAR);
-
-	//set position Argument
-	Argument startPos(start);
-
-	//set mapping at position
-	m->setValue(startPos, value);
-
-	//set position Argument
-	Argument endPos(end);
-
-	//set mapping at position
-	m->setValue(endPos, value);
-
-	return m;
-}
-
-Mapping* BaseMacLayer::createRectangleMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value)
-{
-	//create mapping over time
-	Mapping* m = MappingUtils::createMapping(DimensionSet::timeDomain(), Mapping::LINEAR);
-
-	//set position Argument
-	Argument startPos(start);
-	//set discontinuity at position
-	MappingUtils::addDiscontinuity(m, startPos, Argument::MappedZero(), MappingUtils::post(start), value);
-
-	//set position Argument
-	Argument endPos(end);
-	//set discontinuity at position
-	MappingUtils::addDiscontinuity(m, endPos, Argument::MappedZero(), MappingUtils::pre(end), value);
-
-	return m;
-}
-
-ConstMapping* BaseMacLayer::createSingleFrequencyMapping(simtime_t_cref             start,
-                                                         simtime_t_cref             end,
-                                                         Argument::mapped_type_cref centerFreq,
-                                                         Argument::mapped_type_cref halfBandwidth,
-                                                         Argument::mapped_type_cref value)
-{
-	Mapping* res = MappingUtils::createMapping(Argument::MappedZero(), DimensionSet::timeFreqDomain(), Mapping::LINEAR);
-
-	Argument pos(DimensionSet::timeFreqDomain());
-
-	pos.setArgValue(Dimension::frequency(), centerFreq - halfBandwidth);
-	pos.setTime(start);
-	res->setValue(pos, value);
-
-	pos.setTime(end);
-	res->setValue(pos, value);
-
-	pos.setArgValue(Dimension::frequency(), centerFreq + halfBandwidth);
-	res->setValue(pos, value);
-
-	pos.setTime(start);
-	res->setValue(pos, value);
-
-	return res;
 }
 
 BaseConnectionManager* BaseMacLayer::getConnectionManager() {

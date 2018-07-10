@@ -2,37 +2,14 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
+using namespace Veins;
+
 using Veins::AirFrame;
 
 #define splmEV EV << "PhyLayer(SimplePathlossModel): "
 
-SimplePathlossConstMapping::SimplePathlossConstMapping(const DimensionSet& dimensions,
-													   SimplePathlossModel* model,
-													   const double distFactor) :
-	SimpleConstMapping(dimensions),
-	distFactor(distFactor),
-	model(model),
-	hasFrequency(dimensions.hasDimension(Dimension::frequency()))
+void SimplePathlossModel::filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos)
 {
-}
-
-double SimplePathlossConstMapping::getValue(const Argument& pos) const
-{
-	double freq = model->carrierFrequency;
-	if(hasFrequency) {
-		assert(pos.hasArgVal(Dimension::frequency()));
-		freq = pos.getArgValue(Dimension::frequency());
-	}
-	double wavelength = BaseWorldUtility::speedOfLight() / freq;
-	return (wavelength * wavelength) * distFactor;
-}
-
-
-
-void SimplePathlossModel::filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos)
-{
-	Signal& signal = frame->getSignal();
-
 	/** Calculate the distance factor */
 	double sqrDistance = useTorus ? receiverPos.sqrTorusDist(sendersPos, playgroundSize)
 								  : receiverPos.sqrdist(sendersPos);
@@ -44,9 +21,7 @@ void SimplePathlossModel::filterSignal(AirFrame *frame, const Coord& sendersPos,
 		return;
 	}
 
-	// wavelength in meters (this is only used for debug purposes here
-	// the actual effect of the wavelength on the attenuation is
-	// calculated in SimplePathlossConstMappings "getValue()" method).
+	// wavelength in meters
 	double wavelength = (BaseWorldUtility::speedOfLight()/carrierFrequency);
 	splmEV << "wavelength is: " << wavelength << endl;
 
@@ -54,22 +29,13 @@ void SimplePathlossModel::filterSignal(AirFrame *frame, const Coord& sendersPos,
 	double distFactor = pow(sqrDistance, -pathLossAlphaHalf) / (16.0 * M_PI * M_PI);
 	splmEV << "distance factor is: " << distFactor << endl;
 
-	//is our signal to attenuate defined over frequency?
-	bool hasFrequency = signal.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency());
-	splmEV << "Signal contains frequency dimension: " << (hasFrequency ? "yes" : "no") << endl;
+	for(uint16_t i=signal->getRelativeStart();i<signal->getRelativeEnd();i++)
+	{
+		double wavelength = BaseWorldUtility::speedOfLight() / signal->getAbsoluteFreqAt(i);
+		double attenuation = (wavelength * wavelength) * distFactor;
 
-	const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain() : DimensionSet::timeDomain();
-
-	//create the Attenuation mapping which takes the distance factor as parameter
-	//to calculate the attenuation from this and the frequency used for the transmission
-	//see the classes "getValue()" for more
-	SimplePathlossConstMapping* attMapping = new SimplePathlossConstMapping(
-													domain,
-													this,
-													distFactor);
-
-	/* at last add the created attenuation mapping to the signal */
-	signal.addAttenuation(attMapping);
+		signal->addAttenuation(i, attenuation);
+	}
 }
 
 double SimplePathlossModel::calcPathloss(const Coord& receiverPos, const Coord& sendersPos)

@@ -4,10 +4,11 @@
 #include <omnetpp.h>
 
 #include "veins/base/utils/MiXiMDefs.h"
-#include "veins/base/phyLayer/Signal_.h"
-#include "veins/base/phyLayer/ChannelState.h"
+#include "veins/base/toolbox/Signal.h"
 #include "veins/base/phyLayer/PhyUtils.h"
 
+
+namespace Veins {
 
 /**
  * @brief Defines the methods provided by the phy to the mac layer.
@@ -29,8 +30,6 @@ public:
 		TX_OVER = 22000,
 		/** @brief Indicates the end of a radio switch. */
 		RADIO_SWITCHING_OVER,
-		/** @brief Channel sense control message between Mac and Phy.*/
-		CHANNEL_SENSE_REQUEST,
 		/** @brief AirFrame kind */
 		AIR_FRAME,
 		/** @brief PHY-RXSTART.indication. Used in ack procedure for unicast
@@ -76,15 +75,6 @@ public:
 	virtual simtime_t setRadioState(int rs) = 0;
 
 	/**
-	 * @brief Returns the current state of the channel. See ChannelState
-	 * for details.
-	 *
-	 * NOTE: Channel state information is not available until initialization
-	 *       is over and the simulation has started.
-	 */
-	virtual ChannelState getChannelState() = 0;
-
-	/**
 	 * @brief Returns the length of the phy header in bits.
 	 *
 	 * Since the MAC layer has to create the signal for
@@ -103,5 +93,7 @@ public:
 	/** @brief Returns the number of channels available on this radio. */
 	virtual int getNbRadioChannels() = 0;
 };
+
+} // namespace Veins
 
 #endif /*MACTOPHYINTERFACE_H_*/

@@ -29,8 +29,8 @@
 #include "veins/base/utils/Coord.h"
 
 namespace Veins {
+
 class ChannelAccess;
-}
 using Veins::ChannelAccess;
 
 
@@ -126,5 +126,7 @@ protected:
     };
 
 };
+
+} // namespace Veins
 
 #endif

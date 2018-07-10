@@ -9,6 +9,8 @@
 
 using Veins::AirFrame;
 
+namespace Veins {
+
 /**
  * @brief This class is used by the BasePhyLayer to keep track of the AirFrames
  * on the channel.
@@ -36,9 +38,9 @@ using Veins::AirFrame;
  * 		 This also affects "getAirFrames" in the way that you may only ask for
  * 		 intervals which lie before the "current time" of ChannelInfo.
  *
- * A state-machine-diagram for Radio, RadioStateAnalogueModel and ChannelInfo
+ * A state-machine-diagram for Radio and ChannelInfo
  * showing how they work together under control of BasePhyLayer as well as some
- * documentation on how RadioStateAnalogueModel works is available
+ * documentation is available
  * in @ref phyLayer.
  *
  * @ingroup phyLayer
@@ -471,5 +473,7 @@ public:
 		return airFrameStarts.empty();
 	}
 };
+
+} // namespace Veins
 
 #endif /*CHANNELINFO_H_*/

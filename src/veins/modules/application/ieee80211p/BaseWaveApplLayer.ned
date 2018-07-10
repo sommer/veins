@@ -34,6 +34,7 @@ import org.car2x.veins.base.modules.IBaseApplLayer;
 simple BaseWaveApplLayer like IBaseApplLayer
 {
     parameters:
+        @class(Veins::BaseWaveApplLayer);
         bool debug = default(false); //whether to print debug output
 
         int headerLength = default(88bit) @unit(bit); //header length of the application

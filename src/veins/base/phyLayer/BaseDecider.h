@@ -11,11 +11,9 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/Decider.h"
 
-class Mapping;
+namespace Veins {
 
 using Veins::AirFrame;
-
-#define deciderEV EV << "[Host " << myIndex << "] - PhyLayer(Decider): "
 
 /**
  * @brief Provides some base functionality for most common deciders.
@@ -23,12 +21,6 @@ using Veins::AirFrame;
  * Forwards the AirFrame from "processSignal" to "processNewSignal",
  * "processSignalHeader" or "processSignalEnd" depending on the
  * state for that AirFrame returned by "getSignalState".
- *
- * Provides answering of ChannelSenseRequests (instantaneous and over time).
- *
- * Subclasses should define when they consider the channel as idle by
- * calling "setChannelIdleStatus" because BaseDecider uses that to
- * answer ChannelSenseRequests.
  *
  * If a subclassing Decider only tries to receive one signal at a time
  * it can use BaseDeciders "currentSignal" member which is a pair of
@@ -82,24 +74,6 @@ protected:
 	/** @brief Stores the idle state of the channel.*/
 	bool isChannelIdle;
 
-	/** @brief Data about an currently ongoing ChannelSenseRequest. */
-	typedef struct{
-		ChannelSenseRequest* first;
-		simtime_t second;
-		simtime_t canAnswerAt;
-
-		ChannelSenseRequest* getRequest() const { return first; }
-		void setRequest(ChannelSenseRequest* request) { first = request; }
-		simtime_t_cref getSenseStart() const { return second; }
-		void setSenseStart(simtime_t_cref start) { second = start; }
-		simtime_t_cref getAnswerTime() const { return canAnswerAt; }
-		void setAnswerTime(simtime_t_cref answerAt) { canAnswerAt = answerAt; }
-	} CSRInfo;
-
-	/** @brief pointer to the currently running ChannelSenseRequest and its
-	 * start-time */
-	CSRInfo currentChannelSenseRequest;
-
 	/** @brief index for this Decider-instance given by Phy-Layer (mostly
 	 * Host-index) */
 	int myIndex;
@@ -124,9 +98,6 @@ public:
 	{
 		currentSignal.first = 0;
 		currentSignal.second = NEW;
-		currentChannelSenseRequest.first = 0;
-		currentChannelSenseRequest.second = -1;
-		currentChannelSenseRequest.canAnswerAt = -1;
 	}
 
 	virtual ~BaseDecider() {}
@@ -139,30 +110,6 @@ public:
 	 * again.
 	 */
 	virtual simtime_t processSignal(AirFrame* frame);
-
-	/**
-	 * @brief A function that returns information about the channel state
-	 *
-	 * It is an alternative for the MACLayer in order to obtain information
-	 * immediately (in contrast to sending a ChannelSenseRequest,
-	 * i.e. sending a cMessage over the OMNeT-control-channel)
-	 */
-	virtual ChannelState getChannelState();
-
-	/**
-	 * @brief This function is called by the PhyLayer to hand over a
-	 * ChannelSenseRequest.
-	 *
-	 * The MACLayer is able to send a ChannelSenseRequest to the PhyLayer
-	 * that calls this function with it and is returned a time point when to
-	 * re-call this function with the specific ChannelSenseRequest.
-	 *
-	 * The Decider puts the result (ChannelState) to the ChannelSenseRequest
-	 * and "answers" by calling the "sendControlMsg"-function on the
-	 * DeciderToPhyInterface, i.e. telling the PhyLayer to send it back.
-	 */
-	virtual simtime_t handleChannelSenseRequest(ChannelSenseRequest* request);
-
 
 
 protected:
@@ -216,64 +163,9 @@ protected:
 	virtual int getSignalState(AirFrame* frame);
 
 	/**
-	 * @brief Handles a new incoming ChannelSenseRequest and returns the next
-	 * (or latest) time to handle the request again.
-	 */
-	virtual simtime_t handleNewSenseRequest(ChannelSenseRequest* request);
-
-	/**
-	 * @brief Handles the timeout or end of a ChannelSenseRequest by calculating
-	 * the ChannelState and returning the request to the mac layer.
-	 *
-	 * If this handler is reached the decider has to be able to answer the
-	 * request. Either because the timeout is reached or because the
-	 * channel state changed accordingly.
-	 */
-	virtual void handleSenseRequestEnd(CSRInfo& requestInfo);
-
-	/**
 	 * @brief Changes the "isIdle"-status to the passed value.
-	 *
-	 * This method further checks if there are any ChannelSenseRequests
-	 * which can be answered because of the idle state changed.
 	 */
 	virtual void setChannelIdleStatus(bool isIdle);
-
-	/**
-	 * @brief Returns point in time when the ChannelSenseRequest of the passed
-	 * CSRInfo can be answered (e.g. because channel state changed or timeout
-	 * is reached).
-	 */
-	virtual simtime_t canAnswerCSR(const CSRInfo& requestInfo);
-
-	/**
-	 * @brief Calculates the RSSI value for the passed interval.
-	 *
-	 * This method is called by BaseDecider when it answers a
-	 * ChannelSenseRequest or calculates the channel state. Can be overridden
-	 * by sub classing Deciders.
-	 *
-	 * Default implementation returns the maximum RSSI value inside the
-	 * passed interval.
-	 */
-	virtual double calcChannelSenseRSSI(simtime_t_cref start, simtime_t_cref end);
-
-	/**
-	 * @brief Answers the ChannelSenseRequest (CSR) from the passed CSRInfo.
-	 *
-	 * Calculates the rssi value and the channel idle state and sends the CSR
-	 * together with the result back to the mac layer.
-	 */
-	virtual void answerCSR(CSRInfo& requestInfo);
-
-	/**
-	 * @brief Checks if the changed channel state enables us to answer
-	 * any ongoing ChannelSenseRequests.
-	 *
-	 * This method is ment to update only an already ongoing
-	 * ChannelSenseRequests it can't handle a new one.
-	 */
-	virtual void channelStateChanged();
 
 	/**
 	 * @brief Collects the AirFrame on the channel during the passed interval.
@@ -290,32 +182,8 @@ protected:
 	virtual void getChannelInfo(simtime_t_cref start, simtime_t_cref end,
 								AirFrameVector& out);
 
-	//------Utility methods------------
-
-	/**
-	 * @brief Calculates a SNR-Mapping for a Signal.
-	 *
-	 * A Noise-Strength-Mapping is calculated (by using the
-	 * "calculateRSSIMapping()"-method) for the time-interval
-	 * of the Signal and the Signal-Strength-Mapping is divided by the
-	 * Noise-Strength-Mapping.
-	 *
-	 * Note: 'divided' means here the special element-wise operation on
-	 * mappings.
-	 */
-	virtual Mapping* calculateSnrMapping(AirFrame* frame);
-
-	/**
-	 * @brief Calculates a RSSI-Mapping (or Noise-Strength-Mapping) for a
-	 * Signal.
-	 *
-	 * This method can be used to calculate a RSSI-Mapping in case the parameter
-	 * exclude is omitted OR to calculate a Noise-Strength-Mapping in case the
-	 * AirFrame of the received Signal is passed as parameter exclude.
-	 */
-	virtual Mapping* calculateRSSIMapping(	simtime_t_cref start,
-											simtime_t_cref end,
-											AirFrame*      exclude = NULL);
 };
+
+} // namespace Veins
 
 #endif /* BASEDECIDER_H_ */

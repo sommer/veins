@@ -14,14 +14,15 @@
 
 #include "veins/base/phyLayer/ChannelInfo.h"
 
-class AnalogueModel;
+namespace Veins {
+
 class Decider;
 class BaseWorldUtility;
 //class omnetpp::cXMLElement;
 
-using Veins::AirFrame;
-using Veins::ChannelAccess;
-using Veins::Radio;
+class AirFrame;
+class ChannelAccess;
+class Radio;
 
 /**
  * @brief The BasePhyLayer represents the physical layer of a nic.
@@ -70,9 +71,10 @@ using Veins::Radio;
  * @ingroup phyLayer
  * @ingroup baseModules
  */
-class MIXIM_API BasePhyLayer: public ChannelAccess,
-                              public DeciderToPhyInterface,
-                              public MacToPhyInterface {
+
+typedef std::vector<AnalogueModel*> AnalogueModelList;
+
+class MIXIM_API BasePhyLayer: public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
 
 protected:
 
@@ -88,17 +90,13 @@ protected:
 	 * channel consistency. This means that before anything else happens
 	 * at a time point t every AirFrame which ended at t has been removed and
 	 * every AirFrame started at t has been added to the channel.
-	 *
-	 * An example where this matters is a ChannelSenseRequest which ends at
-	 * the same time as an AirFrame starts (or ends). Depending on which message
-	 * is handled first the result of ChannelSenseRequest would differ.
 	 */
 	static short airFramePriority() {
 		return 10;
 	}
 
 	/** @brief Defines the strength of the thermal noise.*/
-	ConstantSimpleConstMapping* thermalNoise;
+	double thermalNoiseValue;
 
 	/** @brief The sensitivity describes the minimum strength a signal must have to be received.*/
 	double sensitivity;
@@ -126,11 +124,10 @@ protected:
 	/** @brief Pointer to the decider module. */
 	Decider* decider;
 
-	/** @brief Used to store the AnalogueModels to be used as filters.*/
-	typedef std::vector<AnalogueModel*> AnalogueModelList;
-
 	/** @brief List of the analogue models to use.*/
 	AnalogueModelList analogueModels;
+	/** @brief List of the analogue models to use for thresholding mechanism.*/
+	AnalogueModelList analogueModelsThresholding;
 
 	/**
 	 * @brief Used at initialisation to pass the parameters
@@ -213,8 +210,7 @@ protected:
 	 * is returned.
 	 *
 	 * @param parName 		- the name of the ned-parameter
-	 * @param defaultValue 	- the value to be returned if the parameter
-	 * 				  		  couldn't be found
+	 * @param defaultValue 	- the value to be returned if the parameter couldn't be found
 	 */
 	template<class T> T readPar(const char* parName, const T defaultValue);
 
@@ -292,12 +288,12 @@ protected:
 	virtual std::shared_ptr<Antenna> getAntennaFromName(std::string name, ParameterMap& params);
 
 	/**
-     * @brief Creates and returns an instance of the SampledAntenna1D class as a
-     * shared pointer.
-     *
-     * The given parameters (i.e. samples and optional randomness parameters) are
-     * evaluated and given to the antenna's constructor.
-     */
+	 * @brief Creates and returns an instance of the SampledAntenna1D class as a
+	 * shared pointer.
+	 *
+	 * The given parameters (i.e. samples and optional randomness parameters) are
+	 * evaluated and given to the antenna's constructor.
+	 */
 	virtual std::shared_ptr<Antenna> initializeSampledAntenna1D(ParameterMap& params);
 
 
@@ -327,13 +323,6 @@ protected:
 	 * @brief Handles self scheduled messages.
 	 */
 	virtual void handleSelfMessage(cMessage* msg);
-
-	/**
-	 * @brief Handles reception of a ChannelSenseRequest by forwarding it
-	 * to the decider and scheduling it to the point in time
-	 * returned by the decider.
-	 */
-	virtual void handleChannelSenseRequest(cMessage* msg);
 
 	/**
 	 * @brief Handles incoming AirFrames with the state FIRST_RECEIVE.
@@ -469,13 +458,6 @@ public:
 	virtual simtime_t setRadioState(int rs);
 
 	/**
-	 * @brief Returns the current state of the channel.
-	 *
-	 * See ChannelState for details.
-	 */
-	virtual ChannelState getChannelState();
-
-	/**
 	 * @brief Returns the length of the phy header in bits.
 	 *
 	 * Since the MAC layer has to create the signal for
@@ -510,25 +492,13 @@ public:
 	virtual void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out);
 
 	/**
-	 * @brief Returns a Mapping which defines the thermal noise in
+	 * @brief Returns a constant which defines the thermal noise in
 	 * the passed time frame (in mW).
-	 *
-	 * The implementing class of this method keeps ownership of the
-	 * Mapping.
-	 *
-	 * This implementation returns a constant mapping with the value
-	 * of the "thermalNoise" module parameter
-	 *
-	 * Override this method if you want to define a more complex
-	 * thermal noise.
 	 */
-	virtual ConstMapping* getThermalNoise(simtime_t_cref from, simtime_t_cref to);
+	virtual double getThermalNoiseValue();
 
 	/**
 	 * @brief Called by the Decider to send a control message to the MACLayer
-	 *
-	 * This function can be used to answer a ChannelSenseRequest to the MACLayer
-	 *
 	 */
 	virtual void sendControlMsgToMac(cMessage* msg);
 
@@ -602,5 +572,7 @@ public:
 	 */
 	 virtual cObject *const setUpControlInfo(cMessage *const pMsg, DeciderResult *const pDeciderResult);
 };
+
+} // namespace Veins
 
 #endif /*BASEPHYLAYER_*/

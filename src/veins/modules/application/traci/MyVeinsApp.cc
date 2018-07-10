@@ -18,9 +18,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "MyVeinsApp.h"
+#include "veins/modules/application/traci/MyVeinsApp.h"
 
-Define_Module(MyVeinsApp);
+using namespace Veins;
+
+Define_Module(Veins::MyVeinsApp);
 
 void MyVeinsApp::initialize(int stage) {
     BaseWaveApplLayer::initialize(stage);

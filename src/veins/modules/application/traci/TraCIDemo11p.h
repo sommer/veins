@@ -23,6 +23,8 @@
 
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 
+namespace Veins {
+
 /**
  * @brief
  * A tutorial demo for TraCI. When the car is stopped for longer than 10 seconds
@@ -51,5 +53,7 @@ class TraCIDemo11p : public BaseWaveApplLayer {
         virtual void handleSelfMsg(cMessage* msg);
 		virtual void handlePositionUpdate(cObject* obj);
 };
+
+} // namespace Veins
 
 #endif

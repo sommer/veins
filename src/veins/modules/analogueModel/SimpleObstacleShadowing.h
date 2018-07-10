@@ -2,11 +2,10 @@
 #define SIMPLEOBSTACLEFADING_H_
 
 #include "veins/base/phyLayer/AnalogueModel.h"
-#include "veins/base/phyLayer/Mapping.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/modules/obstacle/ObstacleControl.h"
 #include "veins/base/utils/Move.h"
-#include "veins/base/phyLayer/Signal_.h"
+#include "veins/base/toolbox/Signal.h"
 #include "veins/base/messages/AirFrame_m.h"
 
 using Veins::AirFrame;
@@ -14,9 +13,10 @@ using Veins::ObstacleControl;
 
 #include <cstdlib>
 
+namespace Veins {
+
 /**
- * @brief Basic implementation of a SimpleObstacleShadowing that uses
- * SimplePathlossConstMapping (that is subclassed from SimpleConstMapping) as attenuation-Mapping.
+ * @brief Basic implementation of a SimpleObstacleShadowing
  *
  * @ingroup analogueModels
  */
@@ -27,8 +27,8 @@ protected:
 	/** @brief reference to global ObstacleControl instance */
 	ObstacleControl& obstacleControl;
 
-    /** @brief carrier frequency needed for calculation */
-    double carrierFrequency;
+	/** @brief carrier frequency needed for calculation */
+	double carrierFrequency;
 
 	/** @brief Information needed about the playground */
 	const bool useTorus;
@@ -59,7 +59,9 @@ public:
 	 * @brief Filters a specified Signal by adding an attenuation
 	 * over time to the Signal.
 	 */
-	virtual void filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos);
+	virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos);
 };
+
+} // namespace Veins
 
 #endif /*PATHLOSSMODEL_H_*/

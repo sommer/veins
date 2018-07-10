@@ -13,6 +13,8 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/Decider.h"
 
+namespace Veins {
+
 /**
  * @brief Defines an extended DeciderResult for the 80211 protocol
  * which stores the bit-rate of the transmission.
@@ -69,5 +71,7 @@ public:
 	 */
 	double getRecvPower_dBm() const { return recvPower_dBm; }
 };
+
+} // namespace Veins
 
 #endif /* DECIDERRESULT80211_H_ */

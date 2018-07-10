@@ -26,7 +26,9 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/utils/SimpleAddress.h"
-#include "veins/base/phyLayer/MappingBase.h"
+#include "veins/base/toolbox/Spectrum.h"
+
+namespace Veins {
 
 class BaseConnectionManager;
 class MacPkt;
@@ -91,6 +93,11 @@ protected:
      * phy header.
      */
     int phyHeaderLength;
+
+    /**
+     * The underlying spectrum (definition of interesting freqs) for all signals
+     */
+    SpectrumPtr overallSpectrum;
 
 public:
     //Module_Class_Members( BaseMacLayer, BaseLayer, 0 );
@@ -159,39 +166,9 @@ protected:
      * passed parameters.
      *
      * Convenience method to be able to create the appropriate
-     * Signal for the MacToPhyControlInfo without needing to care
-     * about creating Mappings.
-     *
-     * NOTE: The created signal's transmission-power is a rectangular function.
-     * This method uses MappingUtils::addDiscontinuity to represent the discontinuities
-     * at the beginning and end of this rectangular function.
-     * Because of this the created mapping which represents the signal's
-     * transmission-power is still zero at the exact start and end.
-     * Please see the method MappingUtils::addDiscontinuity for the reason.
+     * Signal for the MacToPhyControlInfo
      */
     virtual Signal* createSimpleSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate);
-
-    /**
-     * @brief Creates a simple Mapping with a constant curve
-     * progression at the passed value.
-     *
-     * Used by "createSimpleSignal" to create the bitrate mapping.
-     */
-    Mapping* createConstantMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value);
-
-    /**
-     * @brief Creates a simple Mapping with a constant curve
-     * progression at the passed value and discontinuities at the boundaries.
-     *
-     * Used by "createSimpleSignal" to create the power mapping.
-     */
-    Mapping* createRectangleMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref value);
-
-    /**
-     * @brief Creates a Mapping defined over time and frequency with
-     * constant power in a certain frequency band.
-     */
-    ConstMapping* createSingleFrequencyMapping(simtime_t_cref start, simtime_t_cref end, Argument::mapped_type_cref centerFreq, Argument::mapped_type_cref bandWith, Argument::mapped_type_cref value);
 
     /**
      * @brief Returns a pointer to this MACs NICs ConnectionManager module.
@@ -238,5 +215,7 @@ protected:
      */
     virtual cObject *const setDownControlInfo(cMessage *const pMsg, Signal *const pSignal);
 };
+
+} // namespace Veins
 
 #endif

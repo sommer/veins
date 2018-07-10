@@ -14,12 +14,10 @@
 #include "veins/base/utils/MiXiMDefs.h"
 
 namespace Veins {
+
 class AirFrame;
-}
-using Veins::AirFrame;
 
 class BaseWorldUtility;
-class ConstMapping;
 
 /**
  * See Decider.h for definition of DeciderResult
@@ -35,8 +33,7 @@ class DeciderResult;
  * 		- get the list of AirFrames that intersect with a specific time interval (to
  * 			calculate SNR)
  * 		- tell the BasePhyLayer to hand an AirFrame up to the MACLayer
- * 		- tell the BasePhyLayer to send a control message to the MACLayer (to answer
- * 			a ChannelSenseRequest)
+ * 		- tell the BasePhyLayer to send a control message to the MACLayer
  *
  * @ingroup decider
  */
@@ -59,19 +56,13 @@ public:
 	virtual void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out) = 0;
 
 	/**
-	 * @brief Returns a Mapping which defines the thermal noise in
+	 * @brief Returns a constant which defines the thermal noise in
 	 * the passed time frame (in mW).
-	 *
-	 * The implementing class of this method keeps ownership of the
-	 * Mapping.
 	 */
-	virtual ConstMapping* getThermalNoise(simtime_t_cref from, simtime_t_cref to) = 0;
+	virtual double getThermalNoiseValue() = 0;
 
 	/**
 	 * @brief Called by the Decider to send a control message to the MACLayer
-	 *
-	 * This function can be used to answer a ChannelSenseRequest to the MACLayer
-	 *
 	 */
 	virtual void sendControlMsgToMac(cMessage* msg) = 0;
 
@@ -137,5 +128,7 @@ public:
 	/** @brief Returns the channel currently used by the radio. */
 	virtual int getCurrentRadioChannel() = 0;
 };
+
+} // namespace Veins
 
 #endif /*DECIDER_TO_PHY_INTERFACE_H_*/

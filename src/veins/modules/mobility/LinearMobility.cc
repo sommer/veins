@@ -17,11 +17,18 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-#include "LinearMobility.h"
+#include "veins/modules/mobility/LinearMobility.h"
 
 #include <omnetpp.h>
 
-Define_Module(LinearMobility);
+#ifndef debugEV
+#define debugEV_clear EV
+#define debugEV EV << logName() << "::" << getClassName() << ": "
+#endif
+
+using namespace Veins;
+
+Define_Module(Veins::LinearMobility);
 
 void LinearMobility::initialize(int stage)
 {

@@ -31,6 +31,7 @@
 #endif
 
 using std::endl;
+using namespace Veins;
 
 void NicEntryDebug::connectTo(NicEntry* other) {
 	nicEV<<"connecting nic #"<<nicId<< " and #"<<other->nicId<<endl;

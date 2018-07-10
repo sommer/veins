@@ -21,12 +21,13 @@
 #include "veins/modules/analogueModel/TwoRayInterferenceModel.h"
 #include "veins/base/messages/AirFrame_m.h"
 
+using namespace Veins;
+
 using Veins::AirFrame;
 
 #define debugEV EV << "PhyLayer(TwoRayInterferenceModel): "
 
-void TwoRayInterferenceModel::filterSignal(AirFrame *frame, const Coord& senderPos, const Coord& receiverPos) {
-	Signal& s = frame->getSignal();
+void TwoRayInterferenceModel::filterSignal(Signal *signal, const Coord& senderPos, const Coord& receiverPos) {
 
 	const Coord senderPos2D(senderPos.x, senderPos.y);
 	const Coord receiverPos2D(receiverPos.x, receiverPos.y);
@@ -47,30 +48,14 @@ void TwoRayInterferenceModel::filterSignal(AirFrame *frame, const Coord& senderP
 	double gamma = (sin_theta - sqrt(epsilon_r - pow(cos_theta,2)))/
 		(sin_theta + sqrt(epsilon_r - pow(cos_theta,2)));
 
-	//is the signal defined to attenuate over frequency?
-	bool hasFrequency = s.getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency());
-	debugEV << "Signal contains frequency dimension: " << (hasFrequency ? "yes" : "no") << endl;
+	for(uint16_t i=signal->getRelativeStart();i<signal->getRelativeEnd();i++) {
+		double freq = signal->getAbsoluteFreqAt(i);
+		double lambda = BaseWorldUtility::speedOfLight() / freq;
+		double phi = ( 2*M_PI/lambda * (d_dir - d_ref) );
+		double att = pow(4 * M_PI * (d/lambda) * 1/(sqrt((pow((1 + gamma * cos(phi)),2) + pow(gamma,2) * pow(sin(phi),2)))), 2);
 
-	assert(hasFrequency);
+		debugEV << "Add attenuation for (freq, lambda, phi, gamma, att) = (" << freq << ", " << lambda << ", " << phi << ", " << gamma << ", " << (1/att) << ", " << FWMath::mW2dBm(att) << ")" << endl;
 
-	debugEV << "Add TwoRayInterferenceModel attenuation (gamma, d, d_dir, d_ref) = (" << gamma << ", " << d << ", " << d_dir << ", " << d_ref << ")" << endl;
-
-        s.addAttenuation(new TwoRayInterferenceModel::Mapping(gamma, d, d_dir, d_ref, debug));
+		signal->addAttenuation(i, 1/att);
+	}
 }
-
-double TwoRayInterferenceModel::Mapping::getValue(const Argument& pos) const {
-
-	assert(pos.hasArgVal(Dimension::frequency()));
-	double freq = pos.getArgValue(Dimension::frequency());
-	double lambda = BaseWorldUtility::speedOfLight() / freq;
-	double phi =  ( 2*M_PI/lambda * (d_dir - d_ref) );
-	double att = pow(4 * M_PI * (d/lambda) *
-				1/(sqrt(
-					(pow((1 + gamma * cos(phi)),2)
-					+ pow(gamma,2) * pow(sin(phi),2))
-				))
-			, 2);
-	debugEV << "Add attenuation for (freq, lambda, phi, gamma, att) = (" << freq << ", " << lambda << ", " << phi << ", " << gamma << ", " << (1/att) << ", " << FWMath::mW2dBm(att) << ")" << endl;
-	return 1/att;
-}
-

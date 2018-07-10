@@ -23,6 +23,8 @@ cplusplus {{
 #include "veins/base/utils/SimpleAddress.h"
 }}
 
+namespace Veins;
+
 class LAddress::L2Type extends void;
 
 // A basic MAC (Media Access Control) packet format definition

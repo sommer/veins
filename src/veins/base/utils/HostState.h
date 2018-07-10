@@ -18,6 +18,8 @@
 
 #include "veins/base/utils/MiXiMDefs.h"
 
+namespace Veins {
+
 /**
  * @brief HostState is published by the battery to announce host failure
  *
@@ -98,5 +100,7 @@ public:
 		return ost.str();
 	}
 };
+
+} // namespace Veins
 
 #endif

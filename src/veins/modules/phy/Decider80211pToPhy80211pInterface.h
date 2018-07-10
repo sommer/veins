@@ -21,6 +21,8 @@
 #ifndef DECIDER80211PTOPHY80211PINTERFACE_H_
 #define DECIDER80211PTOPHY80211PINTERFACE_H_
 
+namespace Veins {
+
 /**
  * @brief
  * Interface of PhyLayer80211p exposed to Decider80211p.
@@ -34,5 +36,7 @@ public:
 	virtual ~Decider80211pToPhy80211pInterface() {};
 	virtual int getRadioState()=0;
 };
+
+} // namespace Veins
 
 #endif /* DECIDER80211PTOPHY80211PINTERFACE_H_ */

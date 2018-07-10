@@ -27,6 +27,8 @@
 
 #include "veins/base/utils/Coord.h"
 
+namespace Veins {
+
 /**
  * @brief Class to store object position and movement
  *
@@ -226,6 +228,8 @@ public:
         return ost.str();
     }
 };
+
+} // namespace Veins
 
 #endif
 

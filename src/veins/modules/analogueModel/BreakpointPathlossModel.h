@@ -8,6 +8,8 @@
 
 using Veins::AirFrame;
 
+namespace Veins {
+
 /**
  * @brief Basic implementation of a BreakpointPathlossModel.
  * This class can be used to implement the ieee802154 path loss model.
@@ -85,12 +87,14 @@ public:
 	 * @brief Filters a specified AirFrame's Signal by adding an attenuation
 	 * over time to the Signal.
 	 */
-	virtual void filterSignal(AirFrame *, const Coord&, const Coord&);
+	virtual void filterSignal(Signal *, const Coord&, const Coord&);
 
 	virtual bool isActiveAtDestination() { return true; }
 
 	virtual bool isActiveAtOrigin() { return false; }
 
 };
+
+} // namespace Veins
 
 #endif /*BREAKPOINTPATHLOSSMODEL_H_*/

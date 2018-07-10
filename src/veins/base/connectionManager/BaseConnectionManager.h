@@ -5,8 +5,8 @@
 #include "veins/base/connectionManager/NicEntry.h"
 
 namespace Veins {
+
 class ChannelAccess;
-}
 
 /**
  * @brief Module to control the channel and handle all connection
@@ -386,5 +386,7 @@ public:
 	/** @brief Returns the ingate of the with id==targetID, or 0 if not in range*/
 	const cGate* getOutGateTo(const NicEntry* nic, const NicEntry* targetNic) const;
 };
+
+} // namespace Veins
 
 #endif /*BASECONNECTIONMANAGER_H_*/
