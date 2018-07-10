@@ -30,7 +30,7 @@ Coord NoMobiltyPos = Coord::ZERO;
 
 BasePhyLayer::BasePhyLayer():
 	protocolId(GENERIC),
-	thermalNoise(0),
+	thermalNoiseValue(0),
 	radio(0),
 	decider(0),
 	radioSwitchingOverTimer(0),
@@ -63,20 +63,15 @@ void BasePhyLayer::initialize(int stage) {
 		// if using sendDirect, make sure that messages arrive without delay
 		gate("radioIn")->setDeliverOnReceptionStart(true);
 
-		//get gate ids
 		upperLayerIn = findGate("upperLayerIn");
 		upperLayerOut = findGate("upperLayerOut");
 		upperControlOut = findGate("upperControlOut");
 		upperControlIn = findGate("upperControlIn");
 
-		//read simple ned-parameters
-		//	- initialize basic parameters
 		if(par("useThermalNoise").boolValue()) {
-			double thermalNoiseVal = FWMath::dBm2mW(par("thermalNoise").doubleValue());
-			thermalNoise = new ConstantSimpleConstMapping(DimensionSet::timeDomain(),
-														  thermalNoiseVal);
+			thermalNoiseValue = FWMath::dBm2mW(par("thermalNoise").doubleValue());
 		} else {
-			thermalNoise = 0;
+			thermalNoiseValue = 0;
 		}
 		headerLength = par("headerLength");
 		sensitivity = par("sensitivity").doubleValue();
@@ -84,50 +79,32 @@ void BasePhyLayer::initialize(int stage) {
 
 		recordStats = par("recordStats").boolValue();
 
-		//	- initialize radio
 		radio = initializeRadio();
 
-		// get pointer to the world module
 		world = FindModule<BaseWorldUtility*>::findGlobalModule();
-        if (world == NULL) {
-            throw cRuntimeError("Could not find BaseWorldUtility module");
-        }
-
-        if(cc->hasPar("sat")
-		   && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
-            throw cRuntimeError("Sensitivity can't be smaller than the "
-					  "signal attenuation threshold (sat) in ConnectionManager. "
-					  "Please adjust your omnetpp.ini file accordingly.");
+		if (world == NULL) {
+			throw cRuntimeError("Could not find BaseWorldUtility module");
 		}
 
-//	} else if (stage == 1){
-		//read complex(xml) ned-parameters
-		//	- analogue model parameters
+		if(cc->hasPar("sat") && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
+			throw cRuntimeError("Sensitivity can't be smaller than the signal attenuation threshold (sat) in ConnectionManager. Please adjust your omnetpp.ini file accordingly.");
+		}
+
 		initializeAnalogueModels(par("analogueModels").xmlValue());
-		//	- decider parameters
 		initializeDecider(par("decider").xmlValue());
-		//  - antenna parameters
 		initializeAntenna(par("antenna").xmlValue());
 
-
-
-		//initialise timer messages
 		radioSwitchingOverTimer = new cMessage("radio switching over", RADIO_SWITCHING_OVER);
 		txOverTimer = new cMessage("transmission over", TX_OVER);
-
 	}
 }
 
 Radio* BasePhyLayer::initializeRadio() {
 	int initialRadioState = par("initialRadioState");
-	double radioMinAtt = par("radioMinAtt").doubleValue();
-	double radioMaxAtt = par("radioMaxAtt").doubleValue();
 	int nbRadioChannels = readPar("nbRadioChannels", 1);
 	int initialRadioChannel = readPar("initialRadioChannel", 0);
 
-	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState,
-										 radioMinAtt, radioMaxAtt,
-										 initialRadioChannel, nbRadioChannels);
+	Radio* radio = Radio::createNewRadio(recordStats, initialRadioState, initialRadioChannel, nbRadioChannels);
 
 	//	- switch times to TX
 	//if no RX to TX defined asume same time as sleep to TX
@@ -170,16 +147,12 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 		//parse type of parameter and set value
 		if (sType == "bool") {
 			param.setBoolValue(sValue == "true" || sValue == "1");
-
 		} else if (sType == "double") {
 			param.setDoubleValue(strtod(value, 0));
-
 		} else if (sType == "string") {
 			param.setStringValue(value);
-
 		} else if (sType == "long") {
 			param.setLongValue(strtol(value, 0, 0));
-
 		} else {
 			throw cRuntimeError("Unknown parameter type: '%s'", sType.c_str());
 		}
@@ -244,98 +217,98 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
 //-----Antenna initialization----------------------
 
 void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig) {
-    antenna = 0;
+	antenna = 0;
 
-    if(xmlConfig == 0) {
-        throw cRuntimeError("No antenna configuration file specified.");
-    }
+	if(xmlConfig == 0) {
+		throw cRuntimeError("No antenna configuration file specified.");
+	}
 
-    cXMLElementList antennaList = xmlConfig->getElementsByTagName("Antenna");
+	cXMLElementList antennaList = xmlConfig->getElementsByTagName("Antenna");
 
-    if(antennaList.empty()) {
-        throw cRuntimeError("No antenna configuration found in configuration file.");
-    }
+	if(antennaList.empty()) {
+		throw cRuntimeError("No antenna configuration found in configuration file.");
+	}
 
-    cXMLElement* antennaData;
-    if(antennaList.size() > 1) {
-        int num = intuniform(0, antennaList.size() - 1);
-        antennaData = antennaList[num];
-    } else {
-        antennaData = antennaList.front();
-    }
+	cXMLElement* antennaData;
+	if(antennaList.size() > 1) {
+		int num = intuniform(0, antennaList.size() - 1);
+		antennaData = antennaList[num];
+	} else {
+		antennaData = antennaList.front();
+	}
 
-    const char* name = antennaData->getAttribute("type");
+	const char* name = antennaData->getAttribute("type");
 
-    if(name == 0) {
-        throw cRuntimeError("Could not read type of antenna from configuration file.");
-    }
+	if(name == 0) {
+		throw cRuntimeError("Could not read type of antenna from configuration file.");
+	}
 
-    ParameterMap params;
-    getParametersFromXML(antennaData, params);
+	ParameterMap params;
+	getParametersFromXML(antennaData, params);
 
-    antenna = getAntennaFromName(name, params);
+	antenna = getAntennaFromName(name, params);
 
-    if(antenna == 0) {
-        throw cRuntimeError("Could not find an antenna with the name \"%s\".", name);
-    }
+	if(antenna == 0) {
+		throw cRuntimeError("Could not find an antenna with the name \"%s\".", name);
+	}
 
-    const char* id = antennaData->getAttribute("id");
-    coreEV << "Antenna \"" << name << "\" with ID \"" << id << "\" loaded." << endl;
+	const char* id = antennaData->getAttribute("id");
+	coreEV << "Antenna \"" << name << "\" with ID \"" << id << "\" loaded." << endl;
 }
 
 std::shared_ptr<Antenna> BasePhyLayer::getAntennaFromName(std::string name, ParameterMap& params) {
-    if (name == "SampledAntenna1D") {
-        return initializeSampledAntenna1D(params);
-    }
+	if (name == "SampledAntenna1D") {
+		return initializeSampledAntenna1D(params);
+	}
 
-    return std::make_shared<Antenna>();
+	return std::make_shared<Antenna>();
 }
 
 std::shared_ptr<Antenna> BasePhyLayer::initializeSampledAntenna1D(ParameterMap& params) {
-    // get samples of the modeled antenna and put them in a vector
-    ParameterMap::iterator it = params.find("samples");
-    std::vector<double> values;
-    if (it != params.end())
-    {
-        std::string buf;
-        std::stringstream samplesStream(it->second.stringValue());
-        while (samplesStream >> buf){
-            values.push_back(stod(buf));
-        }
-    } else {
-        throw cRuntimeError("BasePhyLayer::initializeSampledAntenna1D(): No samples specified for this antenna. \
-                           Please adjust your xml file accordingly.");
-    }
+	// get samples of the modeled antenna and put them in a vector
+	ParameterMap::iterator it = params.find("samples");
+	std::vector<double> values;
+	if (it != params.end())
+	{
+		std::string buf;
+		std::stringstream samplesStream(it->second.stringValue());
+		while (samplesStream >> buf){
+			values.push_back(stod(buf));
+		}
+	} else {
+		throw cRuntimeError("BasePhyLayer::initializeSampledAntenna1D(): No samples specified for this antenna. \
+				Please adjust your xml file accordingly.");
+	}
 
-    // get optional random offsets for the antenna's samples
-    it = params.find("random-offsets");
-    std::string offsetType = "";
-    std::vector<double> offsetParams;
-    if (it != params.end())
-    {
-        std::string buf;
-        std::stringstream offsetStream(it->second.stringValue());
-        offsetStream >> offsetType;
-        while (offsetStream >> buf){
-            offsetParams.push_back(stod(buf));
-        }
-    }
+	// get optional random offsets for the antenna's samples
+	it = params.find("random-offsets");
+	std::string offsetType = "";
+	std::vector<double> offsetParams;
+	if (it != params.end())
+	{
+		std::string buf;
+		std::stringstream offsetStream(it->second.stringValue());
+		offsetStream >> offsetType;
+		while (offsetStream >> buf){
+			offsetParams.push_back(stod(buf));
+		}
+	}
 
-    // get optional random rotation of the whole pattern
-    it = params.find("random-rotation");
-    std::string rotationType = "";
-    std::vector<double> rotationParams;
-    if (it != params.end())
-    {
-        std::string buf;
-        std::stringstream rotationStream(it->second.stringValue());
-        rotationStream >> rotationType;
-        while (rotationStream >> buf){
-            rotationParams.push_back(stod(buf));
-        }
-    }
+	// get optional random rotation of the whole pattern
+	it = params.find("random-rotation");
+	std::string rotationType = "";
+	std::vector<double> rotationParams;
+	if (it != params.end())
+	{
+		std::string buf;
+		std::stringstream rotationStream(it->second.stringValue());
+		rotationStream >> rotationType;
+		while (rotationStream >> buf){
+			rotationParams.push_back(stod(buf));
+		}
+	}
 
-    return std::make_shared<SampledAntenna1D>(values, offsetType, offsetParams, rotationType, rotationParams, this->getRNG(0));
+	return std::make_shared<SampledAntenna1D>(values, offsetType, offsetParams, rotationType, rotationParams, this->getRNG(0));
 }
 
 
@@ -344,26 +317,6 @@ std::shared_ptr<Antenna> BasePhyLayer::initializeSampledAntenna1D(ParameterMap& 
 //-----AnalogueModels initialization----------------
 
 void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
-
-	/*
-	* first of all, attach the AnalogueModel that represents the RadioState
-	* to the AnalogueModelList as first element.
-	*/
-
-	std::string s("RadioStateAnalogueModel");
-	ParameterMap p;
-
-	AnalogueModel* newAnalogueModel = getAnalogueModelFromName(s, p);
-
-	if(newAnalogueModel == 0)
-	{
-		throw cRuntimeError("Could not find an analogue model with the name \"%s\".", s.c_str());
-	}
-	else
-	{
-		analogueModels.push_back(newAnalogueModel);
-	}
-
 
 	if(xmlConfig == 0) {
 		throw cRuntimeError("No analogue models configuration file specified.");
@@ -377,13 +330,12 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 
 	// iterate over all AnalogueModel-entries, get a new AnalogueModel instance and add
 	// it to analogueModels
-	for(cXMLElementList::const_iterator it = analogueModelList.begin();
-		it != analogueModelList.end(); it++) {
-
+	for(cXMLElementList::const_iterator it = analogueModelList.begin(); it != analogueModelList.end(); it++) {
 
 		cXMLElement* analogueModelData = *it;
 
 		const char* name = analogueModelData->getAttribute("type");
+		const char* thresholdingFlag = analogueModelData->getAttribute("thresholding");
 
 		if(name == 0) {
 			throw cRuntimeError("Could not read name of analogue model.");
@@ -399,25 +351,21 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig) {
 		}
 
 		// attach the new AnalogueModel to the AnalogueModelList
-		analogueModels.push_back(newAnalogueModel);
+		if(thresholdingFlag && std::string(thresholdingFlag) == "true") {
+			analogueModelsThresholding.push_back(newAnalogueModel);
+		}
+		else {
+			analogueModels.push_back(newAnalogueModel);
+		}
 
 		coreEV << "AnalogueModel \"" << name << "\" loaded." << endl;
 
 	} // end iterator loop
 
-
 }
 
 AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params) {
-
 	// add default analogue models here
-
-	// case "RSAM", pointer is valid as long as the radio exists
-	if (name == "RadioStateAnalogueModel")
-	{
-		return radio->getAnalogueModel();
-	}
-
 	return 0;
 }
 
@@ -472,10 +420,6 @@ void BasePhyLayer::handleAirFrame(AirFrame* frame) {
 
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame) {
 	coreEV << "Received new AirFrame " << frame << " from channel." << endl;
-
-	if(channelInfo.isChannelEmpty()) {
-		radio->setTrackingModeTo(true);
-	}
 
 	channelInfo.addAirFrame(frame, simTime());
 	assert(!channelInfo.isChannelEmpty());
@@ -544,33 +488,28 @@ void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame) {
 	simtime_t earliestInfoPoint = channelInfo.removeAirFrame(frame);
 
 	/* clean information in the radio until earliest time-point
-	*  of information in the ChannelInfo,
-	*  since this time-point might have changed due to removal of
-	*  the AirFrame
-	*/
+	 * of information in the ChannelInfo,
+	 * since this time-point might have changed due to removal of
+	 * the AirFrame
+	 */
 	if(channelInfo.isChannelEmpty()) {
 		earliestInfoPoint = simTime();
-		radio->setTrackingModeTo(false);
 	}
-
-	radio->cleanAnalogueModelUntil(earliestInfoPoint);
 }
 
 void BasePhyLayer::handleUpperMessage(cMessage* msg){
 
 	// check if Radio is in TX state
-	if (radio->getCurrentState() != Radio::TX)
-	{
-        delete msg;
-        msg = 0;
+	if (radio->getCurrentState() != Radio::TX) {
+		delete msg;
+		msg = 0;
 		throw cRuntimeError("Error: message for sending received, but radio not in state TX");
 	}
 
 	// check if not already sending
-	if(txOverTimer->isScheduled())
-	{
-        delete msg;
-        msg = 0;
+	if(txOverTimer->isScheduled()) {
+		delete msg;
+		msg = 0;
 		throw cRuntimeError("Error: message for sending received, but radio already sending");
 	}
 
@@ -580,10 +519,10 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg){
 	AirFrame* frame = encapsMsg(static_cast<cPacket*>(msg));
 
 	// Prepare a POA object and attach it to the created Airframe
-    BaseMobility* sendersMobility = ChannelMobilityAccessType::get(this->getParentModule());
-    assert(sendersMobility);
-    Coord pos  = sendersMobility->getCurrentPosition();
-    Coord orient = sendersMobility->getCurrentOrientation();
+	BaseMobility* sendersMobility = ChannelMobilityAccessType::get(this->getParentModule());
+	assert(sendersMobility);
+	Coord pos = sendersMobility->getCurrentPosition();
+	Coord orient = sendersMobility->getCurrentOrientation();
 	POA* poa = new POA(pos, orient, antenna);
 	frame->setPoa(*poa);
 	// the frame is now owner of the POA object
@@ -649,36 +588,9 @@ AirFrame *BasePhyLayer::encapsMsg(cPacket *macPkt)
 	return frame;
 }
 
-void BasePhyLayer::handleChannelSenseRequest(cMessage* msg) {
-	ChannelSenseRequest* senseReq = static_cast<ChannelSenseRequest*>(msg);
-
-	simtime_t nextHandleTime = decider->handleChannelSenseRequest(senseReq);
-
-	if(nextHandleTime >= simTime()) { //schedule request for next handling
-		sendSelfMessage(msg, nextHandleTime);
-
-		//don't throw away any AirFrames while ChannelSenseRequest is active
-		if(!channelInfo.isRecording()) {
-			channelInfo.startRecording(simTime());
-		}
-	} else if(nextHandleTime >= 0.0){
-		throw cRuntimeError("Next handle time of ChannelSenseRequest returned by the Decider is smaller then current simulation time: %.2f",
-				SIMTIME_DBL(nextHandleTime));
-	}
-
-	// else, i.e. nextHandleTime < 0.0, the Decider doesn't want to handle
-	// the request again
-}
-
 void BasePhyLayer::handleUpperControlMessage(cMessage* msg){
 
-	switch(msg->getKind()) {
-	case CHANNEL_SENSE_REQUEST:
-		handleChannelSenseRequest(msg);
-		break;
-	default:
-		throw cRuntimeError("Received unknown control message from upper layer!");
-	}
+	throw cRuntimeError("Received unknown control message from upper layer!");
 }
 
 void BasePhyLayer::handleSelfMessage(cMessage* msg) {
@@ -699,11 +611,6 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg) {
 	//AirFrame
 	case AIR_FRAME:
 		handleAirFrame(static_cast<AirFrame*>(msg));
-		break;
-
-	//ChannelSenseRequest
-	case CHANNEL_SENSE_REQUEST:
-		handleChannelSenseRequest(msg);
 		break;
 
 	default:
@@ -735,44 +642,47 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t_cref time) {
 
 
 void BasePhyLayer::filterSignal(AirFrame *frame) {
-    // determine antenna gains first
-    // get POA from frame with the sender's position, orientation and antenna
-    POA& senderPOA = frame->getPoa();
-    // get own mobility module
-    BaseMobility* ownMobility = ChannelMobilityAccessType::get(this->getParentModule());
-    assert(ownMobility);
-    Coord ownPos  = ownMobility->getCurrentPosition();
-    Coord ownOrient = ownMobility->getCurrentOrientation();
-    // compute gains at sender and receiver antenna
-    double ownGain = antenna->getGain(ownPos, ownOrient, senderPOA.pos);
-    double otherGain = senderPOA.antenna->getGain(senderPOA.pos, senderPOA.orientation, ownPos);
+	// determine antenna gains first
+	// get POA from frame with the sender's position, orientation and antenna
+	POA& senderPOA = frame->getPoa();
+	// get own mobility module
+	BaseMobility* ownMobility = ChannelMobilityAccessType::get(this->getParentModule());
+	assert(ownMobility);
+	Coord ownPos = ownMobility->getCurrentPosition();
+	Coord ownOrient = ownMobility->getCurrentOrientation();
+	// compute gains at sender and receiver antenna
+	double ownGain = antenna->getGain(ownPos, ownOrient, senderPOA.pos);
+	double otherGain = senderPOA.antenna->getGain(senderPOA.pos, senderPOA.orientation, ownPos);
 
-    coreEV << "Sender's antenna gain: " << otherGain << endl;
-    coreEV << "Own (receiver's) antenna gain: " << ownGain << endl;
-    // add the resulting total gain to the attenuations list using a ConstantSimpleConstMapping
-    bool hasFrequency = frame->getSignal().getTransmissionPower()->getDimensionSet().hasDimension(Dimension::frequency());
-    const DimensionSet& domain = hasFrequency ? DimensionSet::timeFreqDomain() : DimensionSet::timeDomain();
-    frame->getSignal().addAttenuation(new ConstantSimpleConstMapping(domain, ownGain*otherGain));
+	coreEV << "Sender's antenna gain: " << otherGain << endl;
+	coreEV << "Own (receiver's) antenna gain: " << ownGain << endl;
 
-    // go on with AnalogueModels
-	if (analogueModels.empty())
+	// add the resulting total gain to the attenuations list
+	frame->getSignal().addUniformAttenuation(ownGain*otherGain);
+
+	// go on with AnalogueModels
+	if (analogueModels.empty() && analogueModelsThresholding.empty())
 		return;
 
-	ChannelAccess *const senderModule   = dynamic_cast<ChannelAccess *const>(frame->getSenderModule());
+	ChannelAccess *const senderModule = dynamic_cast<ChannelAccess *const>(frame->getSenderModule());
 	ChannelAccess *const receiverModule = dynamic_cast<ChannelAccess *const>(frame->getArrivalModule());
-	//const simtime_t      sStart         = frame->getSignal().getReceptionStart();
 
 	assert(senderModule); assert(receiverModule);
 
 	/** claim the Move pattern of the sender from the Signal */
-	ChannelMobilityPtrType sendersMobility  = senderModule   ? senderModule->getMobilityModule()   : NULL;
+	ChannelMobilityPtrType sendersMobility = senderModule ? senderModule->getMobilityModule() : NULL;
 	ChannelMobilityPtrType receiverMobility = receiverModule ? receiverModule->getMobilityModule() : NULL;
 
-	const Coord sendersPos  = sendersMobility  ? sendersMobility->getCurrentPosition(/*sStart*/) : NoMobiltyPos;
+	const Coord sendersPos = sendersMobility ? sendersMobility->getCurrentPosition(/*sStart*/) : NoMobiltyPos;
 	const Coord receiverPos = receiverMobility ? receiverMobility->getCurrentPosition(/*sStart*/): NoMobiltyPos;
 
+	frame->getSignal().setSenderPos(sendersPos);
+	frame->getSignal().setReceiverPos(receiverPos);
+	frame->getSignal().setAnalogueModelList(&analogueModelsThresholding);
+	//frame->getSignal().applyAllAnalogueModels();
+
 	for(AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++)
-		(*it)->filterSignal(frame, sendersPos, receiverPos);
+		(*it)->filterSignal(&frame->getSignal(), sendersPos, receiverPos);
 }
 
 //--Destruction--------------------------------
@@ -795,12 +705,7 @@ BasePhyLayer::~BasePhyLayer() {
 		cancelAndDelete(txOverTimer);
 	}
 	if(radioSwitchingOverTimer) {
-        cancelAndDelete(radioSwitchingOverTimer);
-	}
-
-	//free thermal noise mapping
-	if(thermalNoise) {
-		delete thermalNoise;
+		cancelAndDelete(radioSwitchingOverTimer);
 	}
 
 	//free Decider
@@ -808,24 +713,19 @@ BasePhyLayer::~BasePhyLayer() {
 		delete decider;
 	}
 
-	/*
-	 * get a pointer to the radios RSAM again to avoid deleting it,
-	 * it is not created by calling new (BasePhyLayer is not the owner)!
-	 */
-	AnalogueModel* rsamPointer = radio ? radio->getAnalogueModel() : NULL;
-
-	//free AnalogueModels
+	//free AnalogueModels (RSAM cannot be part of the thresholding-list)
 	for(AnalogueModelList::iterator it = analogueModels.begin();
 		it != analogueModels.end(); it++) {
 
 		AnalogueModel* tmp = *it;
 
-		// do not delete the RSAM, it's not allocated by new!
-		if (tmp == rsamPointer)
-		{
-			rsamPointer = 0;
-			continue;
+		if(tmp != 0) {
+			delete tmp;
 		}
+	}
+
+	for(AnalogueModelList::iterator it = analogueModelsThresholding.begin(); it != analogueModelsThresholding.end(); it++) {
+		AnalogueModel* tmp = *it;
 
 		if(tmp != 0) {
 			delete tmp;
@@ -834,8 +734,7 @@ BasePhyLayer::~BasePhyLayer() {
 
 
 	// free radio
-	if(radio != 0)
-	{
+	if(radio != 0) {
 		delete radio;
 	}
 }
@@ -882,12 +781,6 @@ simtime_t BasePhyLayer::setRadioState(int rs) {
 	return switchTime;
 }
 
-ChannelState BasePhyLayer::getChannelState() {
-	Enter_Method_Silent();
-	assert(decider);
-	return decider->getChannelState();
-}
-
 int BasePhyLayer::getPhyHeaderLength() {
 	Enter_Method_Silent();
 	if (headerLength < 0)
@@ -919,19 +812,11 @@ void BasePhyLayer::getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFra
 	channelInfo.getAirFrames(from, to, out);
 }
 
-ConstMapping* BasePhyLayer::getThermalNoise(simtime_t_cref from, simtime_t_cref to) {
-	if(thermalNoise)
-		thermalNoise->initializeArguments(Argument(from));
-
-	return thermalNoise;
+double BasePhyLayer::getThermalNoiseValue() {
+	return thermalNoiseValue;
 }
 
 void BasePhyLayer::sendControlMsgToMac(cMessage* msg) {
-	if(msg->getKind() == CHANNEL_SENSE_REQUEST) {
-		if(channelInfo.isRecording()) {
-			channelInfo.stopRecording();
-		}
-	}
 	sendControlMessageUp(msg);
 }
 
@@ -957,8 +842,7 @@ void BasePhyLayer::cancelScheduledMessage(cMessage* msg) {
 	if(msg->isScheduled()){
 		cancelEvent(msg);
 	} else {
-		EV << "Warning: Decider wanted to cancel a scheduled message but message"
-		   << " wasn't actually scheduled. Message is: " << msg << endl;
+		EV << "Warning: Decider wanted to cancel a scheduled message but message" << " wasn't actually scheduled. Message is: " << msg << endl;
 	}
 }
 

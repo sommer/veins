@@ -1,6 +1,7 @@
 //
 // Copyright (C) 2011 David Eckhoff <eckhoff@cs.fau.de>
 // Copyright (C) 2012 Bastian Bloessl, Stefan Joerer, Michele Segata <{bloessl,joerer,segata}@ccs-labs.org>
+// Copyright (C) 2018 Fabian Bronner <fabian.bronner@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -147,42 +148,6 @@ class Decider80211p: public BaseDecider {
 		/** @brief computes if packet is ok or has errors*/
 		enum PACKET_OK_RESULT packetOk(double snirMin, double snrMin, int lengthMPDU, double bitrate);
 
-		/**
-		 * @brief Calculates the RSSI value for the passed ChannelSenseRequest.
-		 *
-		 * This method is called by BaseDecider when it answers a ChannelSenseRequest
-		 * and can be overridden by sub classing Deciders.
-		 *
-		 * Returns the maximum RSSI value inside the ChannelSenseRequest time
-		 * interval and the channel the Decider currently listens to.
-		 */
-		virtual double calcChannelSenseRSSI(simtime_t_cref min, simtime_t_cref max);
-
-		/**
-		 * @brief Calculates a SNR-Mapping for a Signal.
-		 *
-		 * This method works as the calculateSnrMapping of the BaseDecider class,
-		 * but it return the mapping for both SNR and SINR. This method is used
-		 * to determine the frame reception probability for both SNR and SINR
-		 * values. In this way we can determine (still probabilistically) if
-		 * a frame has been dropped due to low signal power or due to a collision
-		 *
-		 */
-		virtual void calculateSinrAndSnrMapping(AirFrame* frame, Mapping **sinrMap, Mapping **snrMap);
-
-		/**
-		 * @brief Calculates a RSSI-Mapping (or Noise-Strength-Mapping) for a
-		 * Signal.
-		 *
-		 * This method is taken from the BaseDecider and changed in order to
-		 * compute the RSSI mapping taking into account only thermal noise
-		 *
-		 * This method can be used to calculate a RSSI-Mapping in case the parameter
-		 * exclude is omitted OR to calculate a Noise-Strength-Mapping in case the
-		 * AirFrame of the received Signal is passed as parameter exclude.
-		 */
-		Mapping* calculateNoiseRSSIMapping(simtime_t_cref start, simtime_t_cref end, AirFrame *frame);
-
 	public:
 
 		/**
@@ -208,7 +173,6 @@ class Decider80211p: public BaseDecider {
 			notifyRxStart(false) {
 			phy11p = dynamic_cast<Decider80211pToPhy80211pInterface*>(phy);
 			assert(phy11p);
-
 		}
 
 		void setPath(std::string myPath) {
@@ -255,7 +219,6 @@ class Decider80211p: public BaseDecider {
 		 * @brief notify PHY-RXSTART.indication
 		 */
 		void setNotifyRxStart(bool enable);
-
 };
 
 } // namespace Veins

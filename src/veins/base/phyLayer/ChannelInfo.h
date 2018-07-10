@@ -38,9 +38,9 @@ namespace Veins {
  * 		 This also affects "getAirFrames" in the way that you may only ask for
  * 		 intervals which lie before the "current time" of ChannelInfo.
  *
- * A state-machine-diagram for Radio, RadioStateAnalogueModel and ChannelInfo
+ * A state-machine-diagram for Radio and ChannelInfo
  * showing how they work together under control of BasePhyLayer as well as some
- * documentation on how RadioStateAnalogueModel works is available
+ * documentation is available
  * in @ref phyLayer.
  *
  * @ingroup phyLayer

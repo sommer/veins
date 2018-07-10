@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2016 David Eckhoff <david.eckhoff@fau.de>
+// Copyright (C) 2018 Fabian Bronner <fabian.bronner@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -81,6 +82,15 @@ void Mac1609_4::initialize(int stage) {
 		frequency.insert(std::pair<int, double>(Channels::SCH3, 5.90e9));
 		frequency.insert(std::pair<int, double>(Channels::SCH4, 5.91e9));
 		frequency.insert(std::pair<int, double>(Channels::HPPS, 5.92e9));
+
+		//Initialize spectrum for signal representation here
+		Freqs freqs;
+		for(auto channel : frequency) {
+			freqs.push_back(channel.second - 5e6);
+			freqs.push_back(channel.second);
+			freqs.push_back(channel.second + 5e6);
+		}
+		overallSpectrum = Spectrum::getInstance(freqs);
 
 		//create two edca systems
 
@@ -497,23 +507,21 @@ void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequ
 }
 
 Signal* Mac1609_4::createSignal(simtime_t start, simtime_t length, double power, uint64_t bitrate, double frequency) {
-	simtime_t end = start + length;
-	//create signal with start at current simtime and passed length
-	Signal* s = new Signal(start, length);
 
-	//create and set tx power mapping
-	ConstMapping* txPowerMapping = createSingleFrequencyMapping(start, end, frequency, 5.0e6, power);
-	s->setTransmissionPower(txPowerMapping);
+	Signal* s = new Signal(overallSpectrum, start, length);
 
-	Mapping* bitrateMapping = MappingUtils::createMapping(DimensionSet::timeDomain(), Mapping::STEPS);
+	size_t freqIndex = s->getSpectrum()->indexOf(frequency);
 
-	Argument pos(start);
-	bitrateMapping->setValue(pos, bitrate);
+	(*s)[freqIndex-1] = power;
+	(*s)[freqIndex] = power;
+	(*s)[freqIndex+1] = power;
 
-	pos.setTime(phyHeaderLength / bitrate);
-	bitrateMapping->setValue(pos, bitrate);
+	s->setBitrate(bitrate);
 
-	s->setBitrate(bitrateMapping);
+	s->setDataStart(freqIndex-1);
+	s->setDataEnd(freqIndex+1);
+
+	s->setCenterFrequencyIndex(freqIndex);
 
 	return s;
 }

@@ -25,7 +25,6 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 
 namespace Veins {
-#include "veins/base/phyLayer/MappingBase.h"
 
 using Veins::AirFrame;
 
@@ -51,35 +50,10 @@ class TwoRayInterferenceModel: public AnalogueModel {
 
 		virtual ~TwoRayInterferenceModel() {}
 
-	virtual void filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos);
+	virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos);
 
 
 	protected:
-
-		class Mapping: public SimpleConstMapping {
-			protected:
-				double gamma;
-				double d;
-				double d_dir;
-				double d_ref;
-				double lambda;
-				bool debug;
-			public:
-				Mapping(double gamma, double distance, double directDistance, double reflDistance, bool debug)
-					: SimpleConstMapping(DimensionSet::timeFreqDomain()),
-					gamma(gamma),
-					d(distance),
-					d_dir(directDistance),
-					d_ref(reflDistance),
-					debug(debug) {}
-
-				virtual double getValue(const Argument& pos) const;
-
-				ConstMapping* constClone() const {
-					return new Mapping(*this);
-				}
-		};
-
 		/** @brief stores the dielectric constant used for calculation */
 		double epsilon_r;
 

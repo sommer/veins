@@ -28,8 +28,6 @@
 #include "veins/modules/phy/Decider80211p.h"
 #include "veins/modules/analogueModel/SimplePathlossModel.h"
 #include "veins/modules/analogueModel/BreakpointPathlossModel.h"
-#include "veins/modules/analogueModel/LogNormalShadowing.h"
-#include "veins/modules/analogueModel/JakesFading.h"
 #include "veins/modules/analogueModel/PERModel.h"
 #include "veins/modules/analogueModel/SimpleObstacleShadowing.h"
 #include "veins/modules/analogueModel/TwoRayInterferenceModel.h"
@@ -70,8 +68,6 @@ void PhyLayer80211p::initialize(int stage) {
 		if (headerLength != PHY_HDR_TOTAL_LENGTH) {
 		throw cRuntimeError("The header length of the 802.11p standard is 46bit, please change your omnetpp.ini accordingly by either setting it to 46bit or removing the entry");
 		}
-		//erase the RadioStateAnalogueModel
-		analogueModels.erase(analogueModels.begin());
 	}
 }
 
@@ -79,14 +75,6 @@ AnalogueModel* PhyLayer80211p::getAnalogueModelFromName(std::string name, Parame
 
 	if (name == "SimplePathlossModel") {
 		return initializeSimplePathlossModel(params);
-	}
-	else if (name == "LogNormalShadowing")
-	{
-		return initializeLogNormalShadowing(params);
-	}
-	else if (name == "JakesFading")
-	{
-		return initializeJakesFading(params);
 	}
 	else if(name == "BreakpointPathlossModel")
 	{
@@ -109,32 +97,6 @@ AnalogueModel* PhyLayer80211p::getAnalogueModelFromName(std::string name, Parame
 		return initializeNakagamiFading(params);
 	}
 	return BasePhyLayer::getAnalogueModelFromName(name, params);
-}
-
-AnalogueModel* PhyLayer80211p::initializeLogNormalShadowing(ParameterMap& params) {
-	double mean = params["mean"].doubleValue();
-	double stdDev = params["stdDev"].doubleValue();
-	simtime_t interval = params["interval"].doubleValue();
-
-	return new LogNormalShadowing(mean, stdDev, interval);
-}
-
-AnalogueModel* PhyLayer80211p::initializeJakesFading(ParameterMap& params) {
-	int fadingPaths = params["fadingPaths"];
-	simtime_t delayRMS = params["delayRMS"].doubleValue();
-	simtime_t interval = params["interval"].doubleValue();
-
-	double carrierFrequency = 5.890e+9;
-	if (params.count("carrierFrequency") > 0) {
-		carrierFrequency = params["carrierFrequency"];
-	}
-	else {
-		if (cc->hasPar("carrierFrequency")) {
-			carrierFrequency = cc->par("carrierFrequency").doubleValue();
-		}
-	}
-
-	return new JakesFading(fadingPaths, delayRMS, carrierFrequency, interval);
 }
 
 AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& params) {
@@ -423,11 +385,6 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg) {
 	//AirFrame
 	case AIR_FRAME:
 		BasePhyLayer::handleAirFrame(static_cast<AirFrame*>(msg));
-		break;
-
-	//ChannelSenseRequest
-	case CHANNEL_SENSE_REQUEST:
-		BasePhyLayer::handleChannelSenseRequest(msg);
 		break;
 
 	default:

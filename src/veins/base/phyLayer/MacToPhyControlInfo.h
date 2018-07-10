@@ -2,7 +2,7 @@
 #define MACTOPHYCONTROLINFO_H_
 
 #include "veins/base/utils/MiXiMDefs.h"
-#include "veins/base/phyLayer/Signal_.h"
+#include "veins/base/toolbox/Signal.h"
 
 namespace Veins {
 

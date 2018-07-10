@@ -9,7 +9,6 @@
 #define SRC_VEINS_MODULES_PHY_SAMPLEDANTENNA1D_H_
 
 #include "veins/base/phyLayer/Antenna.h"
-#include "veins/base/phyLayer/MappingUtils.h"
 #include <vector>
 
 namespace Veins {
@@ -88,9 +87,10 @@ public:
 
 private:
     /**
-     * @brief Mapping which is used to store the antenna's samples. Provides automatic linear interpolation.
+     * @brief Used to store the antenna's samples.
      */
-    Mapping* samples;
+    std::vector<double> antennaGains;
+    double distance;
 
     /**
      * @brief An optional random rotation of the antenna is stored in this field and applied every time

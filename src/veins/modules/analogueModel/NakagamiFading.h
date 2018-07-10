@@ -24,7 +24,6 @@
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
-#include "veins/base/phyLayer/MappingBase.h"
 #include "veins/base/messages/AirFrame_m.h"
 
 namespace Veins {
@@ -52,7 +51,7 @@ class NakagamiFading: public AnalogueModel {
 
 		virtual ~NakagamiFading() {}
 
-	virtual void filterSignal(AirFrame *frame, const Coord& sendersPos, const Coord& receiverPos);
+	virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos);
 
 
 	protected:

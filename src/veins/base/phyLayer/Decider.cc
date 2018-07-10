@@ -14,13 +14,3 @@ simtime_t Decider::processSignal(AirFrame* s) {
 
 	return -1;
 }
-
-ChannelState Decider::getChannelState() {
-
-	return ChannelState();
-}
-
-simtime_t Decider::handleChannelSenseRequest(ChannelSenseRequest* request) {
-
-	return -1;
-}
