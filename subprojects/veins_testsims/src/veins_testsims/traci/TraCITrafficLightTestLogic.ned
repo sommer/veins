@@ -18,34 +18,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#pragma once
+package org.car2x.veins.subprojects.veins_testsims.traci;
 
-#include "veins/veins.h"
+import org.car2x.veins.base.modules.ITrafficLightLogic;
 
-#include <veins/modules/world/traci/trafficLight/logics/TraCITrafficLightAbstractLogic.h>
-#include "veins/base/utils/FindModule.h"
-#include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
-
-namespace Veins {
-class TraCITrafficLightSimpleLogic : public TraCITrafficLightAbstractLogic {
-
-public:
-    using signalScheme = std::string;
-
-protected:
-    virtual void handleApplMsg(cMessage* msg);
-    virtual void handleTlIfMsg(TraCITrafficLightMessage* tlMsg);
-    virtual void handlePossibleSwitch();
-};
-
-class TraCITrafficLightSimpleLogicAccess {
-public:
-    TraCITrafficLightSimpleLogic* get(cModule* host)
-    {
-        TraCITrafficLightSimpleLogic* traci = FindModule<TraCITrafficLightSimpleLogic*>::findSubModule(host);
-        ASSERT(traci);
-        return traci;
-    };
-};
-
-} // namespace Veins
+simple TraCITrafficLightTestLogic like ITrafficLightLogic 
+{
+    parameters:
+        @class(Veins::TraCITrafficLightTestLogic);
+        @display("i=block/classifier");
+    gates:
+        inout interface;
+        inout applLayer;
+}

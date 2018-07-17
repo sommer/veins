@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2015-2018 Dominik Buse <dbuse@mail.uni-paderborn.de>
+// Copyright (C) 2018 Tobias Hardes <hardes@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -22,30 +22,25 @@
 
 #include "veins/veins.h"
 
-#include <veins/modules/world/traci/trafficLight/logics/TraCITrafficLightAbstractLogic.h>
-#include "veins/base/utils/FindModule.h"
-#include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
+#include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
+#include "veins/modules/mobility/traci/TraCIMobility.h"
+#include "veins/modules/mobility/traci/TraCICommandInterface.h"
+
+using Veins::TraCICommandInterface;
+using Veins::TraCIMobility;
 
 namespace Veins {
-class TraCITrafficLightSimpleLogic : public TraCITrafficLightAbstractLogic {
 
-public:
-    using signalScheme = std::string;
-
+class TraCITrafficLightApp : public DemoBaseApplLayer {
 protected:
-    virtual void handleApplMsg(cMessage* msg);
-    virtual void handleTlIfMsg(TraCITrafficLightMessage* tlMsg);
-    virtual void handlePossibleSwitch();
-};
+    /** @brief this function is called upon receiving a BasicSafetyMessage, also referred to as a beacon  */
+    virtual void onBSM(DemoSafetyMessage* bsm);
 
-class TraCITrafficLightSimpleLogicAccess {
-public:
-    TraCITrafficLightSimpleLogic* get(cModule* host)
-    {
-        TraCITrafficLightSimpleLogic* traci = FindModule<TraCITrafficLightSimpleLogic*>::findSubModule(host);
-        ASSERT(traci);
-        return traci;
-    };
+    /** @brief handle messages from below and calls the onWSM, onBSM, and onWSA functions accordingly */
+    virtual void handleLowerMsg(cMessage* msg);
+
+    /** @brief Called every time a message arrives*/
+    virtual void handleMessage(cMessage* msg);
 };
 
 } // namespace Veins
