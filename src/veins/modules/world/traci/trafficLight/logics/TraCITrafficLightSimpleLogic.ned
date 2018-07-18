@@ -29,5 +29,4 @@ simple TraCITrafficLightSimpleLogic like ITrafficLightLogic {
 	gates:
 		inout interface;
 		inout applLayer;
-		input inductionLoop[] @loose;
 }
