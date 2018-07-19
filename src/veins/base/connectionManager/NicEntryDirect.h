@@ -49,14 +49,14 @@ class NicEntryDirect: public NicEntry
 
     /** @brief Connect two nics
      *
-	 * Establish unidirectional connection with other nic
-	 *
-	 * @param other reference to remote nic (other NicEntry)
-	 *
-	 * This function acquires an in gate at the remote nic and an out
-	 * gate at this nic, connects the two and updates the freeInGate,
-	 * freeOutGate and outConns data sets.
-	 */
+     * Establish unidirectional connection with other nic
+     *
+     * @param other reference to remote nic (other NicEntry)
+     *
+     * This function acquires an in gate at the remote nic and an out
+     * gate at this nic, connects the two and updates the freeInGate,
+     * freeOutGate and outConns data sets.
+     */
     virtual void connectTo(NicEntry*);
 
     /** @brief Disconnect two nics

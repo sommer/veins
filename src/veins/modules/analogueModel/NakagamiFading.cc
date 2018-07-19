@@ -35,37 +35,37 @@ using namespace Veins;
  */
 void NakagamiFading::filterSignal(Signal *signal, const Coord& senderPos, const Coord& receiverPos) {
 
-	debugEV << "Add NakagamiFading ..." << endl;
+    debugEV << "Add NakagamiFading ..." << endl;
 
 
-	// get average TX power
-	// FIXME: really use average power (instead of max)
-	debugEV << "Finding max TX power ..." << endl;
-	double sendPower_mW = signal->getRelativeMax();
-	debugEV << "TX power is " << FWMath::mW2dBm(sendPower_mW) << " dBm" << endl;
+    // get average TX power
+    // FIXME: really use average power (instead of max)
+    debugEV << "Finding max TX power ..." << endl;
+    double sendPower_mW = signal->getRelativeMax();
+    debugEV << "TX power is " << FWMath::mW2dBm(sendPower_mW) << " dBm" << endl;
 
-	// get m value
-	double m = this->m;
-	{
-		const Coord senderPos2D(senderPos.x, senderPos.y);
-		const Coord receiverPos2D(receiverPos.x, receiverPos.y);
-		double d = senderPos2D.distance(receiverPos2D);
-		if (!constM) {
-			m = (d < DIS_THRESHOLD) ? M_CLOSE : M_FAR;
-		}
-	}
+    // get m value
+    double m = this->m;
+    {
+        const Coord senderPos2D(senderPos.x, senderPos.y);
+        const Coord receiverPos2D(receiverPos.x, receiverPos.y);
+        double d = senderPos2D.distance(receiverPos2D);
+        if (!constM) {
+            m = (d < DIS_THRESHOLD) ? M_CLOSE : M_FAR;
+        }
+    }
 
-	// calculate average RX power
-	double recvPower_mW = (RNGCONTEXT gamma_d(m, sendPower_mW/1000 / m)) * 1000.0;
-	if (recvPower_mW > sendPower_mW) {
-		recvPower_mW = sendPower_mW;
-	}
-	debugEV << "RX power is " << FWMath::mW2dBm(recvPower_mW) << " dBm" << endl;
+    // calculate average RX power
+    double recvPower_mW = (RNGCONTEXT gamma_d(m, sendPower_mW/1000 / m)) * 1000.0;
+    if (recvPower_mW > sendPower_mW) {
+        recvPower_mW = sendPower_mW;
+    }
+    debugEV << "RX power is " << FWMath::mW2dBm(recvPower_mW) << " dBm" << endl;
 
-	// infer average attenuation
-	double factor = recvPower_mW/sendPower_mW;
-	debugEV << "factor is: " << factor << " (i.e. " << FWMath::mW2dBm(factor) << " dB)" << endl;
+    // infer average attenuation
+    double factor = recvPower_mW/sendPower_mW;
+    debugEV << "factor is: " << factor << " (i.e. " << FWMath::mW2dBm(factor) << " dB)" << endl;
 
-	signal->addUniformAttenuation(factor);
+    signal->addUniformAttenuation(factor);
 }
 

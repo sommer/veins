@@ -24,14 +24,14 @@ using Veins::TraCITrafficLightProgram;
 
 bool TraCITrafficLightProgram::Phase::isGreenPhase() const
 {
-	// implementation taken from SUMO MSPhaseDefinition.cc
-	if (state.find_first_of("gG") == std::string::npos) {
-		return false;
-	}
-	if (state.find_first_of("yY") != std::string::npos) {
-		return false;
-	}
-	return true;
+    // implementation taken from SUMO MSPhaseDefinition.cc
+    if (state.find_first_of("gG") == std::string::npos) {
+        return false;
+    }
+    if (state.find_first_of("yY") != std::string::npos) {
+        return false;
+    }
+    return true;
 }
 
 
@@ -39,13 +39,13 @@ TraCITrafficLightProgram::TraCITrafficLightProgram(std::string id): id(id), logi
 }
 
 void TraCITrafficLightProgram::addLogic(const Logic& logic) {
-	logics[logic.id] = logic;
+    logics[logic.id] = logic;
 }
 
 TraCITrafficLightProgram::Logic TraCITrafficLightProgram::getLogic(const std::string& lid) const {
-	return logics.at(lid);
+    return logics.at(lid);
 }
 
 bool TraCITrafficLightProgram::hasLogic(const std::string& lid) const {
-	return logics.find(lid) != logics.end();
+    return logics.find(lid) != logics.end();
 }

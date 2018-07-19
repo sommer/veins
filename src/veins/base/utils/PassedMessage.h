@@ -13,9 +13,9 @@ class MIXIM_API PassedMessage : public cObject {
  public:
     enum gates_t {
         UPPER_DATA,
-	UPPER_CONTROL,
-	LOWER_DATA,
-	LOWER_CONTROL
+    UPPER_CONTROL,
+    LOWER_DATA,
+    LOWER_CONTROL
     };
 
     enum direction_t {

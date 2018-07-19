@@ -87,21 +87,21 @@ class MIXIM_API BaseMobility : public BatteryAccess
         MOVE_HOST = 21311,
         MOVE_TO_BORDER,
         /** Stores the id on which classes extending BaseMobility should
-		 * continue their own kinds.*/
-		LAST_BASE_MOBILITY_KIND,
+         * continue their own kinds.*/
+        LAST_BASE_MOBILITY_KIND,
     };
 
     /**
      * @brief Specifies which border actually has been reached
      */
     enum BorderHandling {
-    	NOWHERE,   ///< not outside the playground
+        NOWHERE,   ///< not outside the playground
         X_SMALLER, ///< x smaller than 0
-		X_BIGGER,  ///< x bigger or equal than playground size
-		Y_SMALLER, ///< y smaller than 0
-		Y_BIGGER,  ///< y bigger or equal than playground size
-		Z_SMALLER, ///< z smaller than 0
-		Z_BIGGER   ///< z bigger or equal than playground size
+        X_BIGGER,  ///< x bigger or equal than playground size
+        Y_SMALLER, ///< y smaller than 0
+        Y_BIGGER,  ///< y bigger or equal than playground size
+        Z_SMALLER, ///< z smaller than 0
+        Z_BIGGER   ///< z bigger or equal than playground size
     };
 
   protected:
@@ -173,8 +173,8 @@ class MIXIM_API BaseMobility : public BatteryAccess
 
     /** @brief Returns the current position at the current simulation time. */
     virtual Coord getCurrentPosition(/*simtime_t_cref stWhen = simTime()*/) const {
-    	//return move.getPositionAt(stWhen);
-    	return move.getStartPos();
+        //return move.getPositionAt(stWhen);
+        return move.getStartPos();
     }
 
     virtual Coord getCurrentOrientation() const {
@@ -183,7 +183,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
 
     /** @brief Returns the current speed at the current simulation time. */
     virtual Coord getCurrentSpeed() const {
-    	return move.getDirection() * move.getSpeed();
+        return move.getDirection() * move.getSpeed();
     }
 
     virtual Coord getCurrentDirection() const {
@@ -199,13 +199,13 @@ class MIXIM_API BaseMobility : public BatteryAccess
     virtual int iconSizeTagToSize(const char* tag);
 
     /**
-	 * @brief Maps the passed size in pixels to an appropriate icon size
-	 * tag (is).
-	 *
-	 * @param size - the icon size to get an appropriate tag for
-	 * @return an icon size tag
-	 */
-	virtual const char* iconSizeToTag(double size);
+     * @brief Maps the passed size in pixels to an appropriate icon size
+     * tag (is).
+     *
+     * @param size - the icon size to get an appropriate tag for
+     * @return an icon size tag
+     */
+    virtual const char* iconSizeToTag(double size);
 
     /** @brief Called upon arrival of a self messages
      *
@@ -239,7 +239,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * You should call fixIfHostGetsOutside here for border handling
      */
     virtual void makeMove(){
-    	error("BaseMobility does not move the host");
+        error("BaseMobility does not move the host");
     };
 
     /** @brief Update the position information for this node
@@ -262,8 +262,8 @@ class MIXIM_API BaseMobility : public BatteryAccess
     /** @brief Returns the height of the playground */
     double playgroundSizeZ() const  {return world->getPgs()->z;}
 
-	/** @brief Random position somewhere in the playground. DEPRECATED: Use BaseWorldUtility::getRandomPosition() instead */
-	Coord getRandomPosition() { return world->getRandomPosition();}
+    /** @brief Random position somewhere in the playground. DEPRECATED: Use BaseWorldUtility::getRandomPosition() instead */
+    Coord getRandomPosition() { return world->getRandomPosition();}
 
     /**
      * @name Border handling
@@ -276,31 +276,31 @@ class MIXIM_API BaseMobility : public BatteryAccess
 
     /** @brief Main border handling function
      *
-	 * This function takes the BorderPolicy and all variables to be
-	 * modified in case a border is reached and invokes the appropriate
-	 * action. Pass dummy variables if you do not need them.
-	 *
-	 * The supported border policies are REFLECT, WRAP, PLACERANDOMLY, and
-	 * RAISEERROR.
-	 *
-	 * The policy and stepTarget are mandatory parameters to
-	 * pass. stepTarget is used to check whether the host actually moved
-	 * outside the playground.
-	 *
-	 * Additional parameters to pass (in case of non atomic movements) can
-	 * be targetPos (the target the host is moving to) and step (the size
-	 * of a step).
-	 *
-	 * Angle is the direction in which the host is moving.
-	 *
-	 * @param policy BorderPolicy to use
-	 * @param stepTarget target position of the next step of the host
-	 * @param targetPos target position of the host (for non atomic movement)
-	 * @param step step size of the host (for non atomic movement)
-	 * @param angle direction in which the host is moving
-	 *
-	 * @return true if host was outside, false otherwise.
-	 */
+     * This function takes the BorderPolicy and all variables to be
+     * modified in case a border is reached and invokes the appropriate
+     * action. Pass dummy variables if you do not need them.
+     *
+     * The supported border policies are REFLECT, WRAP, PLACERANDOMLY, and
+     * RAISEERROR.
+     *
+     * The policy and stepTarget are mandatory parameters to
+     * pass. stepTarget is used to check whether the host actually moved
+     * outside the playground.
+     *
+     * Additional parameters to pass (in case of non atomic movements) can
+     * be targetPos (the target the host is moving to) and step (the size
+     * of a step).
+     *
+     * Angle is the direction in which the host is moving.
+     *
+     * @param policy BorderPolicy to use
+     * @param stepTarget target position of the next step of the host
+     * @param targetPos target position of the host (for non atomic movement)
+     * @param step step size of the host (for non atomic movement)
+     * @param angle direction in which the host is moving
+     *
+     * @return true if host was outside, false otherwise.
+     */
     bool handleIfOutside(BorderPolicy, Coord&, Coord&, Coord&, double&);
 
     /**
@@ -316,7 +316,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * @sa HandleIfOutside
      */
     virtual void fixIfHostGetsOutside(){
-    	error("fixIfHostGetsOutside has to be redefined by the user");
+        error("fixIfHostGetsOutside has to be redefined by the user");
     };
 
     /**

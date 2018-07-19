@@ -30,23 +30,23 @@ VeinsInetManager::~VeinsInetManager() {
 }
 
 void VeinsInetManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals) {
-	// pre-initialize VeinsInetMobility
-	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-		cModule* submod = *iter;
-		VeinsInetMobility* inetmm = dynamic_cast<VeinsInetMobility*>(submod);
-		if (!inetmm) return;
-		inetmm->preInitialize(nodeId, inet::Coord(position.x, position.y), road_id, speed, angle);
-	}
+    // pre-initialize VeinsInetMobility
+    for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
+        cModule* submod = *iter;
+        VeinsInetMobility* inetmm = dynamic_cast<VeinsInetMobility*>(submod);
+        if (!inetmm) return;
+        inetmm->preInitialize(nodeId, inet::Coord(position.x, position.y), road_id, speed, angle);
+    }
 }
 
 void VeinsInetManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals) {
-	// update position in VeinsInetMobility
-	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-		cModule* submod = *iter;
-		VeinsInetMobility *inetmm = dynamic_cast<VeinsInetMobility*>(submod);
-		if (!inetmm) return;
-		inetmm->nextPosition(inet::Coord(p.x, p.y), edge, speed, angle);
-	}
+    // update position in VeinsInetMobility
+    for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
+        cModule* submod = *iter;
+        VeinsInetMobility *inetmm = dynamic_cast<VeinsInetMobility*>(submod);
+        if (!inetmm) return;
+        inetmm->nextPosition(inet::Coord(p.x, p.y), edge, speed, angle);
+    }
 }
 
 

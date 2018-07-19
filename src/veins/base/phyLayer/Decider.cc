@@ -4,13 +4,13 @@ using namespace Veins;
 using Veins::AirFrame;
 
 bool DeciderResult::isSignalCorrect() const {
-	return isCorrect;
+    return isCorrect;
 }
 
 Decider::Decider(DeciderToPhyInterface* phy):
-	phy(phy), notAgain(-1) {}
+    phy(phy), notAgain(-1) {}
 
 simtime_t Decider::processSignal(AirFrame* s) {
 
-	return -1;
+    return -1;
 }

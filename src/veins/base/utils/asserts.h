@@ -15,8 +15,8 @@ extern bool displayPassed;
  * expected value and the passed actual value.
  */
 template<class T, class T2> void fail(std::string msg, T expected, T2 actual) {
-	std::cout << "FAILED: " << msg << ": value was '" << actual 
-		<< "' instead of '" << expected << "'" << std::endl;
+    std::cout << "FAILED: " << msg << ": value was '" << actual 
+        << "' instead of '" << expected << "'" << std::endl;
 }
 
 /**
@@ -45,10 +45,10 @@ void assertFalse(std::string msg, bool value);
  */
 template<class T> void assertClose(std::string msg, T target, T actual) {
     if (fabs(target - actual) > 0.0000001) {
-    	fail(msg, target, actual);
-	} else {
-		pass(msg);
-	}
+        fail(msg, target, actual);
+    } else {
+        pass(msg);
+    }
 }
 
 /**
@@ -57,10 +57,10 @@ template<class T> void assertClose(std::string msg, T target, T actual) {
  */
 template<class T, class T2> void assertEqual(std::string msg, T target, T2 actual) {
     if (target == actual) {
-    	pass(msg);
-	} else {
-		fail(msg, target, actual);
-	}
+        pass(msg);
+    } else {
+        fail(msg, target, actual);
+    }
 }
 
 /**
@@ -69,10 +69,10 @@ template<class T, class T2> void assertEqual(std::string msg, T target, T2 actua
  */
 template<class T, class T2> void assertEqualSilent(std::string msg, T target, T2 actual) {
     if (target == actual) {
-    	pass(msg);
-	} else {
-		fail(msg);
-	}
+        pass(msg);
+    } else {
+        fail(msg);
+    }
 }
 
 /**
@@ -81,10 +81,10 @@ template<class T, class T2> void assertEqualSilent(std::string msg, T target, T2
  */
 template<class T, class T2> void assertNotEqual(std::string msg, T target, T2 actual) {
     if (target != actual) {
-    	pass(msg);
-	} else {
-		fail(msg, target, actual);
-	}
+        pass(msg);
+    } else {
+        fail(msg, target, actual);
+    }
 }
 
 /**
@@ -95,9 +95,9 @@ template<class T, class T2> void assertNotEqual(std::string msg, T target, T2 ac
  * std::ostream& operator<<(std::ostream& o, const T& v)
  */
 template<class T> std::string toString(const T& v) {
-	std::ostringstream o;
-	o << v;
-	return o.str();
+    std::ostringstream o;
+    o << v;
+    return o.str();
 };
 
 #endif /*ASSERTS_H_*/

@@ -31,21 +31,21 @@ namespace Veins {
 class TraCITrafficLightSimpleLogic: public TraCITrafficLightAbstractLogic {
 
 public:
-	using signalScheme = std::string;
+    using signalScheme = std::string;
 protected:
-	virtual void handleApplMsg(cMessage *msg);
-	virtual void handleTlIfMsg(TraCITrafficLightMessage *tlMsg);
-	virtual void handlePossibleSwitch();
+    virtual void handleApplMsg(cMessage *msg);
+    virtual void handleTlIfMsg(TraCITrafficLightMessage *tlMsg);
+    virtual void handlePossibleSwitch();
 };
 
 class TraCITrafficLightSimpleLogicAccess {
 public:
-	TraCITrafficLightSimpleLogic* get(cModule* host)
-	{
-		TraCITrafficLightSimpleLogic* traci = FindModule<TraCITrafficLightSimpleLogic*>::findSubModule(host);
-		ASSERT(traci);
-		return traci;
-	};
+    TraCITrafficLightSimpleLogic* get(cModule* host)
+    {
+        TraCITrafficLightSimpleLogic* traci = FindModule<TraCITrafficLightSimpleLogic*>::findSubModule(host);
+        ASSERT(traci);
+        return traci;
+    };
 };
 
 } // namespace

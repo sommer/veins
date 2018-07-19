@@ -131,7 +131,7 @@ protected:
      * itself in stage 0.
      */
     virtual int numInitStages() const {
-    	return 2;
+        return 2;
     }
 
     /**
@@ -147,7 +147,7 @@ protected:
      * @brief Get a reference to the local node module
      */
     const cModule *const getNode() const {
-    	return findHost();
+        return findHost();
     };
 
     /**

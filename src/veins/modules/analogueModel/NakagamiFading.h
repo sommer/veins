@@ -43,27 +43,27 @@ namespace Veins {
  */
 class NakagamiFading: public AnalogueModel {
 
-	public:
-		NakagamiFading(bool constM, double m, bool debug) :
-		    constM(constM),
-		    m(m),
-			debug(debug) {}
+    public:
+        NakagamiFading(bool constM, double m, bool debug) :
+            constM(constM),
+            m(m),
+            debug(debug) {}
 
-		virtual ~NakagamiFading() {}
+        virtual ~NakagamiFading() {}
 
-	virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos);
+    virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos);
 
 
-	protected:
+    protected:
 
-		/** @brief Whether to use a constant m or a m based on distance */
-		bool constM;
+        /** @brief Whether to use a constant m or a m based on distance */
+        bool constM;
 
-		/** @brief The value of the coefficient m */
-		double m;
+        /** @brief The value of the coefficient m */
+        double m;
 
-		/** @brief Whether debug messages should be displayed. */
-		bool debug;
+        /** @brief Whether debug messages should be displayed. */
+        bool debug;
 };
 
 } // namespace Veins

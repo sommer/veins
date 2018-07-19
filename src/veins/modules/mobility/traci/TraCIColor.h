@@ -29,15 +29,15 @@ namespace Veins {
  * TraCI compatible color container
  */
 class TraCIColor {
-	public:
-		TraCIColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
-		static TraCIColor fromTkColor(std::string tkColorName);
+    public:
+        TraCIColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
+        static TraCIColor fromTkColor(std::string tkColorName);
 
-	public:
-		uint8_t red;
-		uint8_t green;
-		uint8_t blue;
-		uint8_t alpha;
+    public:
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+        uint8_t alpha;
 };
 
 }

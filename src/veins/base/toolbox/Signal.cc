@@ -26,970 +26,970 @@
 namespace Veins {
 
 Signal::Signal():
-	spectrum(0), values(0), numAbsoluteValues(0), numRelativeValues(0), numDataValues(0), relativeOffset(0), dataOffset(0), centerFrequencyIndex(0),
-	timingUsed(false), sendingStart(0), duration(0), propagationDelay(0),
-	analogueModelList(0), numAnalogueModelsApplied(0), senderPos(0, 0), receiverPos(0, 0),
-	bitrate(0),
-	senderModuleID(-1), senderFromGateID(-1), receiverModuleID(-1), receiverToGateID(-1)
+    spectrum(0), values(0), numAbsoluteValues(0), numRelativeValues(0), numDataValues(0), relativeOffset(0), dataOffset(0), centerFrequencyIndex(0),
+    timingUsed(false), sendingStart(0), duration(0), propagationDelay(0),
+    analogueModelList(0), numAnalogueModelsApplied(0), senderPos(0, 0), receiverPos(0, 0),
+    bitrate(0),
+    senderModuleID(-1), senderFromGateID(-1), receiverModuleID(-1), receiverToGateID(-1)
 {
-	//
+    //
 }
 
 Signal::Signal(const Signal& other):
-	spectrum(other.spectrum), numAbsoluteValues(other.numAbsoluteValues), numRelativeValues(other.numRelativeValues),
-	numDataValues(other.numDataValues), relativeOffset(other.relativeOffset), dataOffset(other.dataOffset), centerFrequencyIndex(other.centerFrequencyIndex),
-	timingUsed(other.timingUsed), sendingStart(other.sendingStart), duration(other.duration), propagationDelay(other.propagationDelay),
-	analogueModelList(other.analogueModelList), numAnalogueModelsApplied(other.numAnalogueModelsApplied), senderPos(other.senderPos), receiverPos(other.receiverPos),
-	bitrate(other.bitrate),
-	senderModuleID(other.senderModuleID), senderFromGateID(other.senderFromGateID), receiverModuleID(other.receiverModuleID), receiverToGateID(other.receiverToGateID)
+    spectrum(other.spectrum), numAbsoluteValues(other.numAbsoluteValues), numRelativeValues(other.numRelativeValues),
+    numDataValues(other.numDataValues), relativeOffset(other.relativeOffset), dataOffset(other.dataOffset), centerFrequencyIndex(other.centerFrequencyIndex),
+    timingUsed(other.timingUsed), sendingStart(other.sendingStart), duration(other.duration), propagationDelay(other.propagationDelay),
+    analogueModelList(other.analogueModelList), numAnalogueModelsApplied(other.numAnalogueModelsApplied), senderPos(other.senderPos), receiverPos(other.receiverPos),
+    bitrate(other.bitrate),
+    senderModuleID(other.senderModuleID), senderFromGateID(other.senderFromGateID), receiverModuleID(other.receiverModuleID), receiverToGateID(other.receiverToGateID)
 {
-	values = new double[spectrum->getNumFreqs()]{0};
-	std::copy(other.getAbsoluteValues(), other.getAbsoluteValues()+numAbsoluteValues, values);
+    values = new double[spectrum->getNumFreqs()]{0};
+    std::copy(other.getAbsoluteValues(), other.getAbsoluteValues()+numAbsoluteValues, values);
 }
 
 Signal::Signal(SpectrumPtr spec):
-	spectrum(spec), numAbsoluteValues(spec->getNumFreqs()), numRelativeValues(0), numDataValues(0), relativeOffset(0), dataOffset(0), centerFrequencyIndex(0),
-	timingUsed(false), sendingStart(0), duration(0), propagationDelay(0),
-	analogueModelList(0), numAnalogueModelsApplied(0), senderPos(0, 0), receiverPos(0, 0),
-	bitrate(0),
-	senderModuleID(-1), senderFromGateID(-1), receiverModuleID(-1), receiverToGateID(-1)
+    spectrum(spec), numAbsoluteValues(spec->getNumFreqs()), numRelativeValues(0), numDataValues(0), relativeOffset(0), dataOffset(0), centerFrequencyIndex(0),
+    timingUsed(false), sendingStart(0), duration(0), propagationDelay(0),
+    analogueModelList(0), numAnalogueModelsApplied(0), senderPos(0, 0), receiverPos(0, 0),
+    bitrate(0),
+    senderModuleID(-1), senderFromGateID(-1), receiverModuleID(-1), receiverToGateID(-1)
 {
-	values = new double[numAbsoluteValues]{0};
+    values = new double[numAbsoluteValues]{0};
 }
 
 Signal::Signal(SpectrumPtr spec, simtime_t start, simtime_t dur):
-	spectrum (spec), numAbsoluteValues(spec->getNumFreqs()), numRelativeValues(0), numDataValues(0), relativeOffset(0), dataOffset(0), centerFrequencyIndex(0),
-	timingUsed(true), sendingStart(start), duration(dur), propagationDelay(0),
-	analogueModelList(0), numAnalogueModelsApplied(0), senderPos(0, 0), receiverPos(0, 0),
-	bitrate(0),
-	senderModuleID(-1), senderFromGateID(-1), receiverModuleID(-1), receiverToGateID(-1)
+    spectrum (spec), numAbsoluteValues(spec->getNumFreqs()), numRelativeValues(0), numDataValues(0), relativeOffset(0), dataOffset(0), centerFrequencyIndex(0),
+    timingUsed(true), sendingStart(start), duration(dur), propagationDelay(0),
+    analogueModelList(0), numAnalogueModelsApplied(0), senderPos(0, 0), receiverPos(0, 0),
+    bitrate(0),
+    senderModuleID(-1), senderFromGateID(-1), receiverModuleID(-1), receiverToGateID(-1)
 {
-	values = new double[numAbsoluteValues]{0};
+    values = new double[numAbsoluteValues]{0};
 }
 
 Signal::~Signal()
 {
-	if(values)
-		delete[] values;
+    if(values)
+        delete[] values;
 }
 
 double& Signal::operator[] (size_t index)
 {
 #ifndef PREFER_VECTORIZATION
-	includeAbsoluteIndex(index);
+    includeAbsoluteIndex(index);
 #endif
 
-	return values[index];
+    return values[index];
 }
 
 const double& Signal::operator[] (size_t index) const
 {
-	return values[index];
+    return values[index];
 }
 
 double& Signal::operator() (double freq)
 {
-	size_t index = spectrum->indexOf(freq);
+    size_t index = spectrum->indexOf(freq);
 
-	includeAbsoluteIndex(index);
+    includeAbsoluteIndex(index);
 
-	return values[index];
+    return values[index];
 }
 
 double Signal::operator() (double freq) const
 {
-	size_t index = spectrum->indexOf(freq);
+    size_t index = spectrum->indexOf(freq);
 
-	return values[index];
+    return values[index];
 }
 
 SpectrumPtr Signal::getSpectrum() const
 {
-	return spectrum;
+    return spectrum;
 }
 
 double Signal::getAbsoluteFreqAt(size_t freqIndex) const
 {
-	return spectrum->freqAt(freqIndex);
+    return spectrum->freqAt(freqIndex);
 }
 
 double Signal::getRelativeFreqAt(size_t freqIndex) const
 {
-	return spectrum->freqAt(freqIndex + relativeOffset);
+    return spectrum->freqAt(freqIndex + relativeOffset);
 }
 
 double Signal::getDataFreqAt(size_t freqIndex) const
 {
-	return spectrum->freqAt(freqIndex + dataOffset);
+    return spectrum->freqAt(freqIndex + dataOffset);
 }
 
 size_t Signal::getRelativeStart() const
 {
-	return relativeOffset;
+    return relativeOffset;
 }
 
 size_t Signal::getDataStart() const
 {
-	return dataOffset;
+    return dataOffset;
 }
 
 size_t Signal::getRelativeEnd() const
 {
-	return relativeOffset + numRelativeValues;
+    return relativeOffset + numRelativeValues;
 }
 
 size_t Signal::getDataEnd() const
 {
-	return dataOffset + numDataValues;
+    return dataOffset + numDataValues;
 }
 
 void Signal::setDataStart(size_t index)
 {
-	dataOffset = index;
+    dataOffset = index;
 }
 
 void Signal::setDataEnd(size_t index)
 {
-	numDataValues = 1+index-dataOffset;
+    numDataValues = 1+index-dataOffset;
 }
 
 void Signal::setDataNumValues(size_t num)
 {
-	numDataValues = num;
+    numDataValues = num;
 }
 
 double* Signal::getAbsoluteValues() const
 {
-	return values;
+    return values;
 }
 
 double* Signal::getRelativeValues() const
 {
-	return values + relativeOffset;
+    return values + relativeOffset;
 }
 
 double* Signal::getDataValues() const
 {
-	return values + dataOffset;
+    return values + dataOffset;
 }
 
 size_t Signal::getNumAbsoluteValues() const
 {
-	return numAbsoluteValues;
+    return numAbsoluteValues;
 }
 
 size_t Signal::getNumRelativeValues() const
 {
-	return numRelativeValues;
+    return numRelativeValues;
 }
 
 size_t Signal::getNumDataValues() const
 {
-	return numDataValues;
+    return numDataValues;
 }
 
 size_t Signal::getRelativeOffset() const
 {
-	return relativeOffset;
+    return relativeOffset;
 }
 
 size_t Signal::getDataOffset() const
 {
-	return dataOffset;
+    return dataOffset;
 }
 
 void Signal::setAbsolute(size_t index, double value)
 {
-	includeAbsoluteIndex(index);
+    includeAbsoluteIndex(index);
 
-	values[index] = value;
+    values[index] = value;
 }
 
 void Signal::setRelative(size_t index, double value)
 {
-	values[index + relativeOffset] = value;
+    values[index + relativeOffset] = value;
 }
 
 void Signal::setData(size_t index, double value)
 {
-	values[index + dataOffset] = value;
+    values[index + dataOffset] = value;
 }
 
 void Signal::setAtFreq(double freq, double value)
 {
-	size_t index = spectrum->indexOf(freq);
+    size_t index = spectrum->indexOf(freq);
 
-	includeAbsoluteIndex(index);
+    includeAbsoluteIndex(index);
 
-	values[index] = value;
+    values[index] = value;
 }
 
 double Signal::getAbsolute(size_t index) const
 {
-	return values[index];
+    return values[index];
 }
 
 double Signal::getRelative(size_t index) const
 {
-	return values[index + relativeOffset];
+    return values[index + relativeOffset];
 }
 
 double Signal::getData(size_t index) const
 {
-	return values[index + dataOffset];
+    return values[index + dataOffset];
 }
 
 double Signal::getAtFreq(double freq) const
 {
-	size_t index = spectrum->indexOf(freq);
-	return values[index];
+    size_t index = spectrum->indexOf(freq);
+    return values[index];
 }
 
 void Signal::setCenterFrequencyIndex(size_t index)
 {
-	centerFrequencyIndex = index;
+    centerFrequencyIndex = index;
 }
 
 size_t Signal::getCenterFrequencyIndex() const
 {
-	return centerFrequencyIndex;
+    return centerFrequencyIndex;
 }
 
 double Signal::getAtCenterFrequency() const
 {
-	return values[centerFrequencyIndex];
+    return values[centerFrequencyIndex];
 }
 
 bool Signal::greaterAtCenterFrequency(double threshold)
 {
-	if(values[centerFrequencyIndex] < threshold)
-		return false;
+    if(values[centerFrequencyIndex] < threshold)
+        return false;
 
-	uint16_t maxAnalogueModels = analogueModelList->size();
+    uint16_t maxAnalogueModels = analogueModelList->size();
 
-	while(numAnalogueModelsApplied < maxAnalogueModels)
-	{
-		//Apply filter here
-		(*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
-		numAnalogueModelsApplied++;
+    while(numAnalogueModelsApplied < maxAnalogueModels)
+    {
+        //Apply filter here
+        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
+        numAnalogueModelsApplied++;
 
-		if(values[centerFrequencyIndex] < threshold)
-			return false;
-	}
-	return true;
+        if(values[centerFrequencyIndex] < threshold)
+            return false;
+    }
+    return true;
 }
 
 bool Signal::smallerAtCenterFrequency(double threshold)
 {
-	if(values[centerFrequencyIndex] < threshold)
-		return true;
+    if(values[centerFrequencyIndex] < threshold)
+        return true;
 
-	uint16_t maxAnalogueModels = analogueModelList->size();
+    uint16_t maxAnalogueModels = analogueModelList->size();
 
-	while(numAnalogueModelsApplied < maxAnalogueModels)
-	{
-		//Apply filter here
-		(*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
-		numAnalogueModelsApplied++;
+    while(numAnalogueModelsApplied < maxAnalogueModels)
+    {
+        //Apply filter here
+        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
+        numAnalogueModelsApplied++;
 
-		if(values[centerFrequencyIndex] < threshold)
-			return true;
-	}
-	return false;
+        if(values[centerFrequencyIndex] < threshold)
+            return true;
+    }
+    return false;
 }
 
 uint16_t Signal::getNumAnalogueModelsApplied() const
 {
-	return numAnalogueModelsApplied;
+    return numAnalogueModelsApplied;
 }
 
 void Signal::applyAnalogueModel(uint16_t index)
 {
-	uint16_t maxAnalogueModels = analogueModelList->size();
+    uint16_t maxAnalogueModels = analogueModelList->size();
 
-	if(index >= maxAnalogueModels || index < numAnalogueModelsApplied)
-		return;
+    if(index >= maxAnalogueModels || index < numAnalogueModelsApplied)
+        return;
 
-	(*analogueModelList)[index]->filterSignal(this, senderPos, receiverPos);
-	numAnalogueModelsApplied++;
+    (*analogueModelList)[index]->filterSignal(this, senderPos, receiverPos);
+    numAnalogueModelsApplied++;
 }
 
 void Signal::applyAllAnalogueModels()
 {
-	uint16_t maxAnalogueModels = analogueModelList->size();
-	while(numAnalogueModelsApplied < maxAnalogueModels)
-	{
-		(*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
+    uint16_t maxAnalogueModels = analogueModelList->size();
+    while(numAnalogueModelsApplied < maxAnalogueModels)
+    {
+        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
 
-		numAnalogueModelsApplied++;
-	}
+        numAnalogueModelsApplied++;
+    }
 }
 
 void Signal::setAnalogueModelList(AnalogueModelList* list)
 {
-	analogueModelList = list;
+    analogueModelList = list;
 }
 
 void Signal::setSenderPos(Coord pos)
 {
-	senderPos = pos;
+    senderPos = pos;
 }
 
 void Signal::setReceiverPos(Coord pos)
 {
-	receiverPos = pos;
+    receiverPos = pos;
 }
 
 AnalogueModelList* Signal::getAnalogueModelList() const
 {
-	return analogueModelList;
+    return analogueModelList;
 }
 
 size_t Signal::getNumAnalogueModels() const
 {
-	return analogueModelList->size();
+    return analogueModelList->size();
 }
 
 Coord Signal::getSenderPos() const
 {
-	return senderPos;
+    return senderPos;
 }
 
 Coord Signal::getReceiverPos() const
 {
-	return receiverPos;
+    return receiverPos;
 }
 
 void Signal::setSendingStart(simtime_t start)
 {
-	sendingStart = start;
-	timingUsed = true;
+    sendingStart = start;
+    timingUsed = true;
 }
 
 void Signal::setDuration(simtime_t dur)
 {
-	duration = dur;
-	timingUsed = true;
+    duration = dur;
+    timingUsed = true;
 }
 
 void Signal::setPropagationDelay(simtime_t_cref delay)
 {
-	propagationDelay = delay;
+    propagationDelay = delay;
 }
 
 void Signal::setTiming(simtime_t start, simtime_t dur)
 {
-	sendingStart = start;
-	duration = dur;
-	timingUsed = true;
+    sendingStart = start;
+    duration = dur;
+    timingUsed = true;
 }
 
 simtime_t_cref Signal::getSendingStart() const
 {
-	return sendingStart;
+    return sendingStart;
 }
 
 simtime_t Signal::getSendingEnd() const
 {
-	return sendingStart + duration;
+    return sendingStart + duration;
 }
 
 simtime_t Signal::getReceptionStart() const
 {
-	return sendingStart + propagationDelay;
+    return sendingStart + propagationDelay;
 }
 
 simtime_t Signal::getReceptionEnd() const
 {
-	return sendingStart + propagationDelay + duration;
+    return sendingStart + propagationDelay + duration;
 }
 
 simtime_t_cref Signal::getDuration() const
 {
-	return duration;
+    return duration;
 }
 
 simtime_t_cref Signal::getPropagationDelay() const
 {
-	return propagationDelay;
+    return propagationDelay;
 }
 
 bool Signal::hasTiming() const
 {
-	return timingUsed;
+    return timingUsed;
 }
 
 double Signal::getRelativeMin() const
 {
-	return *(std::min_element(values+relativeOffset, values+relativeOffset+numRelativeValues));
+    return *(std::min_element(values+relativeOffset, values+relativeOffset+numRelativeValues));
 }
 
 double Signal::getDataMin() const
 {
-	return *(std::min_element(values+dataOffset, values+dataOffset+numDataValues));
+    return *(std::min_element(values+dataOffset, values+dataOffset+numDataValues));
 }
 
 double Signal::getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const
 {
-	return *(std::min_element(values+freqIndexLow, values+freqIndexHigh));
+    return *(std::min_element(values+freqIndexLow, values+freqIndexHigh));
 }
 
 double Signal::getRelativeMax() const
 {
-	return *(std::max_element(values+relativeOffset, values+relativeOffset+numRelativeValues));
+    return *(std::max_element(values+relativeOffset, values+relativeOffset+numRelativeValues));
 }
 
 double Signal::getDataMax() const
 {
-	return *(std::max_element(values+dataOffset, values+dataOffset+numDataValues));
+    return *(std::max_element(values+dataOffset, values+dataOffset+numDataValues));
 }
 
 double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
 {
-	return *(std::max_element(values+freqIndexLow, values+freqIndexHigh));
+    return *(std::max_element(values+freqIndexLow, values+freqIndexHigh));
 }
 
 void Signal::print() const
 {
-	if(timingUsed)
-		std::cout << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
+    if(timingUsed)
+        std::cout << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
 
-	for(uint16_t i=getRelativeStart();i<getRelativeEnd();i++)
-	{
-		std::cout << spectrum->freqAt(i) << ":\t " << values[i] << std::endl;
-	}
+    for(uint16_t i=getRelativeStart();i<getRelativeEnd();i++)
+    {
+        std::cout << spectrum->freqAt(i) << ":\t " << values[i] << std::endl;
+    }
 
-	std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
 }
 
 void Signal::printAbsolute() const
 {
-	std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
 
-	if(timingUsed)
-		std::cout << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
+    if(timingUsed)
+        std::cout << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
 
-	for(uint16_t i=0;i<numAbsoluteValues;i++)
-	{
-		std::cout << spectrum->freqAt(i) << ":\t " << values[i] << std::endl;
-	}
+    for(uint16_t i=0;i<numAbsoluteValues;i++)
+    {
+        std::cout << spectrum->freqAt(i) << ":\t " << values[i] << std::endl;
+    }
 }
 
 Signal& Signal::operator= (const double value)
 {
-	for(size_t i = 0; i < numAbsoluteValues; i++)
-	{
-		values[i] = value;
-	}
-	return *this;
+    for(size_t i = 0; i < numAbsoluteValues; i++)
+    {
+        values[i] = value;
+    }
+    return *this;
 }
 
 Signal& Signal::operator= (const Signal& other)
 {
-	if(this == &other)
-		return *this;
+    if(this == &other)
+        return *this;
 
-	senderModuleID = other.senderModuleID;
-	senderFromGateID = other.senderFromGateID;
-	receiverModuleID = other.receiverModuleID;
-	receiverToGateID = other.receiverToGateID;
+    senderModuleID = other.senderModuleID;
+    senderFromGateID = other.senderFromGateID;
+    receiverModuleID = other.receiverModuleID;
+    receiverToGateID = other.receiverToGateID;
 
-	spectrum = other.getSpectrum();
+    spectrum = other.getSpectrum();
 
-	relativeOffset = other.getRelativeOffset();
-	dataOffset = other.getDataOffset();
+    relativeOffset = other.getRelativeOffset();
+    dataOffset = other.getDataOffset();
 
-	centerFrequencyIndex = other.getCenterFrequencyIndex();
+    centerFrequencyIndex = other.getCenterFrequencyIndex();
 
-	numAbsoluteValues = other.getNumAbsoluteValues();
-	numRelativeValues = other.getNumRelativeValues();
-	numDataValues = other.getNumDataValues();
+    numAbsoluteValues = other.getNumAbsoluteValues();
+    numRelativeValues = other.getNumRelativeValues();
+    numDataValues = other.getNumDataValues();
 
-	//TODO: Check if new spectrum has changed and new one is larger
-	if(values)
-		delete[] values;
-	values = new double[spectrum->getNumFreqs()]{0};
+    //TODO: Check if new spectrum has changed and new one is larger
+    if(values)
+        delete[] values;
+    values = new double[spectrum->getNumFreqs()]{0};
 
-	std::copy(other.getAbsoluteValues(), other.getAbsoluteValues()+numAbsoluteValues, values);
+    std::copy(other.getAbsoluteValues(), other.getAbsoluteValues()+numAbsoluteValues, values);
 
-	analogueModelList = other.getAnalogueModelList();
-	numAnalogueModelsApplied = other.getNumAnalogueModelsApplied();
-	senderPos = other.getSenderPos();
-	receiverPos = other.getReceiverPos();
+    analogueModelList = other.getAnalogueModelList();
+    numAnalogueModelsApplied = other.getNumAnalogueModelsApplied();
+    senderPos = other.getSenderPos();
+    receiverPos = other.getReceiverPos();
 
-	timingUsed = other.hasTiming();
-	sendingStart = other.getSendingStart();
-	duration = other.getDuration();
-	propagationDelay = other.getPropagationDelay();
+    timingUsed = other.hasTiming();
+    sendingStart = other.getSendingStart();
+    duration = other.getDuration();
+    propagationDelay = other.getPropagationDelay();
 
-	bitrate = other.getBitrate();
+    bitrate = other.getBitrate();
 
-	return *this;
+    return *this;
 }
 
 Signal& Signal::operator+= (const Signal& other)
 {
-	assert(this->getSpectrum() == other.getSpectrum());
+    assert(this->getSpectrum() == other.getSpectrum());
 
-	size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
-	size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
+    size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
+    size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
 
-	for(size_t i= lowIndex; i < highIndex; i++)
-	{
-		(*this)[i] += other[i];
-	}
-	return *this;
+    for(size_t i= lowIndex; i < highIndex; i++)
+    {
+        (*this)[i] += other[i];
+    }
+    return *this;
 }
 
 Signal& Signal::operator+= (const double value)
 {
-	for(size_t i = 0; i < numAbsoluteValues; i++)
-	{
-		(*this)[i] += value;
-	}
-	return *this;
+    for(size_t i = 0; i < numAbsoluteValues; i++)
+    {
+        (*this)[i] += value;
+    }
+    return *this;
 }
 
 Signal& Signal::operator-= (const Signal& other)
 {
-	assert(this->getSpectrum() == other.getSpectrum());
+    assert(this->getSpectrum() == other.getSpectrum());
 
-	size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
-	size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
+    size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
+    size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
 
-	for(size_t i= lowIndex; i < highIndex; i++)
-	{
-		(*this)[i] -= other[i];
-	}
-	return *this;
+    for(size_t i= lowIndex; i < highIndex; i++)
+    {
+        (*this)[i] -= other[i];
+    }
+    return *this;
 }
 
 Signal& Signal::operator-= (const double value)
 {
-	for(size_t i = 0; i < numAbsoluteValues; i++)
-	{
-		(*this)[i] -= value;
-	}
-	return *this;
+    for(size_t i = 0; i < numAbsoluteValues; i++)
+    {
+        (*this)[i] -= value;
+    }
+    return *this;
 }
 
 Signal& Signal::operator*= (const Signal& other)
 {
-	assert(this->getSpectrum() == other.getSpectrum());
+    assert(this->getSpectrum() == other.getSpectrum());
 
-	size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
-	size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
+    size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
+    size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
 
-	for(size_t i= lowIndex; i < highIndex; i++)
-	{
-		(*this)[i] *= other[i];
-	}
-	return *this;
+    for(size_t i= lowIndex; i < highIndex; i++)
+    {
+        (*this)[i] *= other[i];
+    }
+    return *this;
 }
 
 Signal& Signal::operator*= (const double value)
 {
-	for(size_t i = 0; i < numAbsoluteValues; i++)
-	{
-		(*this)[i] *= value;
-	}
-	return *this;
+    for(size_t i = 0; i < numAbsoluteValues; i++)
+    {
+        (*this)[i] *= value;
+    }
+    return *this;
 }
 
 Signal& Signal::operator/= (const Signal& other)
 {
-	assert(this->getSpectrum() == other.getSpectrum());
+    assert(this->getSpectrum() == other.getSpectrum());
 
-	size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
-	size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
+    size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
+    size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
 
-	for(size_t i= lowIndex; i < highIndex; i++)
-	{
-		(*this)[i] /= other[i];
-	}
-	return *this;
+    for(size_t i= lowIndex; i < highIndex; i++)
+    {
+        (*this)[i] /= other[i];
+    }
+    return *this;
 }
 
 Signal& Signal::operator/= (const double value)
 {
-	for(size_t i = 0; i < numAbsoluteValues; i++)
-	{
-		(*this)[i] /= value;
-	}
-	return *this;
+    for(size_t i = 0; i < numAbsoluteValues; i++)
+    {
+        (*this)[i] /= value;
+    }
+    return *this;
 }
 
 Signal& Signal::operator<<= (uint16_t n)
 {
-	if(n>relativeOffset || n==0)
-		return *this;
+    if(n>relativeOffset || n==0)
+        return *this;
 
-	size_t i = relativeOffset;
-	while(i<relativeOffset+numRelativeValues)
-	{
-		values[i-n] = values[i];
-		values[i] = 0; //Fill with 0s
-		i++;
-	}
+    size_t i = relativeOffset;
+    while(i<relativeOffset+numRelativeValues)
+    {
+        values[i-n] = values[i];
+        values[i] = 0; //Fill with 0s
+        i++;
+    }
 
-	relativeOffset -= n;
-	dataOffset -= n;
+    relativeOffset -= n;
+    dataOffset -= n;
 
-	return *this;
+    return *this;
 }
 
 Signal& Signal::operator>>= (uint16_t n)
 {
-	if(n>numAbsoluteValues - (relativeOffset+numRelativeValues) || n==0)
-		return *this;
+    if(n>numAbsoluteValues - (relativeOffset+numRelativeValues) || n==0)
+        return *this;
 
-	size_t i = relativeOffset+numRelativeValues;
-	while(i>0)
-	{
-		i--;
-		values[i+n] = values[i];
-		values[i] = 0; //Fill with 0s
-	}
+    size_t i = relativeOffset+numRelativeValues;
+    while(i>0)
+    {
+        i--;
+        values[i+n] = values[i];
+        values[i] = 0; //Fill with 0s
+    }
 
-	relativeOffset += n;
-	dataOffset += n;
+    relativeOffset += n;
+    dataOffset += n;
 
-	return *this;
+    return *this;
 }
 
 Signal operator+ (const Signal& lhs, const Signal& rhs)
 {
-	assert(lhs.getSpectrum() == rhs.getSpectrum());
+    assert(lhs.getSpectrum() == rhs.getSpectrum());
 
-	Signal temp(lhs.getSpectrum());
+    Signal temp(lhs.getSpectrum());
 
 #ifndef PREFER_VECTORIZATION
-	//Default version
-	size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
-	size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
+    //Default version
+    size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
+    size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
 
-	for(size_t i = lowIndex; i < highIndex; i++)
-	{
-		temp[i] = lhs[i] + rhs[i];
-	}
+    for(size_t i = lowIndex; i < highIndex; i++)
+    {
+        temp[i] = lhs[i] + rhs[i];
+    }
 #else
-	//Optimized for vectorizing
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs[i] + rhs[i];
-	}
+    //Optimized for vectorizing
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs[i] + rhs[i];
+    }
 #endif
 
-	return temp;
+    return temp;
 }
 
 Signal operator+ (const Signal& lhs, double rhs)
 {
-	Signal temp(lhs.getSpectrum());
+    Signal temp(lhs.getSpectrum());
 
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs[i] + rhs;
-	}
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs[i] + rhs;
+    }
 
-	return temp;
+    return temp;
 }
 
 Signal operator+ (double lhs, const Signal& rhs)
 {
-	Signal temp(rhs.getSpectrum());
+    Signal temp(rhs.getSpectrum());
 
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs + rhs[i];
-	}
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs + rhs[i];
+    }
 
-	return temp;
+    return temp;
 }
 
 Signal operator- (const Signal& lhs, const Signal& rhs)
 {
-	assert(lhs.getSpectrum() == rhs.getSpectrum());
+    assert(lhs.getSpectrum() == rhs.getSpectrum());
 
-	Signal temp(lhs.getSpectrum());
+    Signal temp(lhs.getSpectrum());
 
 #ifndef PREFER_VECTORIZATION
-	//Default version
-	size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
-	size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
+    //Default version
+    size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
+    size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
 
-	for(size_t i = lowIndex; i < highIndex; i++)
-	{
-		temp[i] = lhs[i] - rhs[i];
-	}
+    for(size_t i = lowIndex; i < highIndex; i++)
+    {
+        temp[i] = lhs[i] - rhs[i];
+    }
 #else
-	//Optimized for vectorizing
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs[i] - rhs[i];
-	}
+    //Optimized for vectorizing
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs[i] - rhs[i];
+    }
 #endif
 
-	return temp;
+    return temp;
 }
 
 Signal operator- (const Signal& lhs, double rhs)
 {
-	Signal temp(lhs.getSpectrum());
+    Signal temp(lhs.getSpectrum());
 
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs[i] - rhs;
-	}
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs[i] - rhs;
+    }
 
-	return temp;
+    return temp;
 }
 
 Signal operator- (double lhs, const Signal& rhs)
 {
-	Signal temp(rhs.getSpectrum());
+    Signal temp(rhs.getSpectrum());
 
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs - rhs[i];
-	}
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs - rhs[i];
+    }
 
-	return temp;
+    return temp;
 }
 
 Signal operator* (const Signal& lhs, const Signal& rhs)
 {
-	assert(lhs.getSpectrum() == rhs.getSpectrum());
+    assert(lhs.getSpectrum() == rhs.getSpectrum());
 
-	Signal temp(lhs.getSpectrum());
+    Signal temp(lhs.getSpectrum());
 
 #ifndef PREFER_VECTORIZATION
-	//Default version
-	size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
-	size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
+    //Default version
+    size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
+    size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
 
-	for(size_t i = lowIndex; i < highIndex; i++)
-	{
-		temp[i] = lhs[i] * rhs[i];
-	}
+    for(size_t i = lowIndex; i < highIndex; i++)
+    {
+        temp[i] = lhs[i] * rhs[i];
+    }
 #else
-	//Optimized for vectorizing
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs[i] * rhs[i];
-	}
+    //Optimized for vectorizing
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs[i] * rhs[i];
+    }
 #endif
 
-	return temp;
+    return temp;
 }
 
 Signal operator* (const Signal& lhs, double rhs)
 {
-	Signal temp(lhs.getSpectrum());
+    Signal temp(lhs.getSpectrum());
 
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs[i] * rhs;
-	}
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs[i] * rhs;
+    }
 
-	return temp;
+    return temp;
 }
 
 Signal operator* (double lhs, const Signal& rhs)
 {
-	Signal temp(rhs.getSpectrum());
+    Signal temp(rhs.getSpectrum());
 
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs * rhs[i];
-	}
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs * rhs[i];
+    }
 
-	return temp;
+    return temp;
 }
 
 Signal operator/ (const Signal& lhs, const Signal& rhs)
 {
-	assert(lhs.getSpectrum() == rhs.getSpectrum());
+    assert(lhs.getSpectrum() == rhs.getSpectrum());
 
-	Signal temp(lhs.getSpectrum());
+    Signal temp(lhs.getSpectrum());
 
 #ifndef PREFER_VECTORIZATION
-	//Default version
-	size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
-	size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
+    //Default version
+    size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
+    size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
 
-	for(size_t i = lowIndex; i < highIndex; i++)
-	{
-		temp[i] = lhs[i] / rhs[i];
-	}
+    for(size_t i = lowIndex; i < highIndex; i++)
+    {
+        temp[i] = lhs[i] / rhs[i];
+    }
 #else
-	//Optimized for vectorizing
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs[i] / rhs[i];
-	}
+    //Optimized for vectorizing
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs[i] / rhs[i];
+    }
 #endif
 
-	return temp;
+    return temp;
 }
 
 Signal operator/ (const Signal& lhs, double rhs)
 {
-	Signal temp(lhs.getSpectrum());
+    Signal temp(lhs.getSpectrum());
 
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs[i] / rhs;
-	}
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs[i] / rhs;
+    }
 
-	return temp;
+    return temp;
 }
 
 Signal operator/ (double lhs, const Signal& rhs)
 {
-	Signal temp(rhs.getSpectrum());
+    Signal temp(rhs.getSpectrum());
 
-	for(size_t i = 0; i < temp.numAbsoluteValues; i++)
-	{
-		temp[i] = lhs / rhs[i];
-	}
+    for(size_t i = 0; i < temp.numAbsoluteValues; i++)
+    {
+        temp[i] = lhs / rhs[i];
+    }
 
-	return temp;
+    return temp;
 }
 
 Signal Signal::operator<< (uint16_t n)
 {
-	Signal temp = *(this);
-	return temp<<=n;
+    Signal temp = *(this);
+    return temp<<=n;
 }
 
 Signal Signal::operator>> (uint16_t n)
 {
-	Signal temp = *(this);
-	return temp>>=n;
+    Signal temp = *(this);
+    return temp>>=n;
 }
 
 void Signal::toFile(std::string path) const
 {
-	std::fstream file;
-	file.open(path.c_str(), std::ios::out|std::ios::app);
+    std::fstream file;
+    file.open(path.c_str(), std::ios::out|std::ios::app);
 
-	if(!file.good())
-		return;
+    if(!file.good())
+        return;
 
-	file << "signal:" << getReceptionStart() << "," << duration << ":";
+    file << "signal:" << getReceptionStart() << "," << duration << ":";
 
-	size_t last = getRelativeEnd();
+    size_t last = getRelativeEnd();
 
-	for(size_t i=getRelativeStart();i<last;i++)
-	{
-		file << values[i];
-		if(i!=last-1)
-			file << ",";
-	}
-	file << std::endl;
+    for(size_t i=getRelativeStart();i<last;i++)
+    {
+        file << values[i];
+        if(i!=last-1)
+            file << ",";
+    }
+    file << std::endl;
 
-	file.close();
+    file.close();
 }
 
 uint64_t Signal::getBitrate() const
 {
-	return bitrate;
+    return bitrate;
 }
 
 void Signal::setBitrate(uint64_t rate)
 {
-	bitrate = rate;
+    bitrate = rate;
 }
 
 void Signal::includeAbsoluteIndex(size_t freqIndex)
 {
-	//No value so far
-	if(numRelativeValues==0)
-	{
-		numRelativeValues = 1;
-		relativeOffset = freqIndex;
-	}
+    //No value so far
+    if(numRelativeValues==0)
+    {
+        numRelativeValues = 1;
+        relativeOffset = freqIndex;
+    }
 
-	//value right outside of values
-	if(freqIndex >= relativeOffset+numRelativeValues)
-	{
-		numRelativeValues += freqIndex+1-(relativeOffset+numRelativeValues);
-	}
-	//value left outside of values
-	else if(freqIndex < relativeOffset)
-	{
-		numRelativeValues += relativeOffset-freqIndex;
-		relativeOffset = freqIndex;
-	}
+    //value right outside of values
+    if(freqIndex >= relativeOffset+numRelativeValues)
+    {
+        numRelativeValues += freqIndex+1-(relativeOffset+numRelativeValues);
+    }
+    //value left outside of values
+    else if(freqIndex < relativeOffset)
+    {
+        numRelativeValues += relativeOffset-freqIndex;
+        relativeOffset = freqIndex;
+    }
 }
 
 cModule* Signal::getReceptionModule() const
 {
-	return receiverModuleID < 0 ? NULL : getSimulation()->getModule(receiverModuleID);
+    return receiverModuleID < 0 ? NULL : getSimulation()->getModule(receiverModuleID);
 }
 
 cGate* Signal::getReceptionGate() const
 {
-	if(receiverToGateID < 0)
-		return NULL;
+    if(receiverToGateID < 0)
+        return NULL;
 
-	cModule *const mod = getReceptionModule();
-	return !mod ? NULL : mod->gate(receiverToGateID);
+    cModule *const mod = getReceptionModule();
+    return !mod ? NULL : mod->gate(receiverToGateID);
 }
 
 cModule* Signal::getSendingModule() const
 {
-	return senderModuleID < 0 ? NULL : getSimulation()->getModule(senderModuleID);
+    return senderModuleID < 0 ? NULL : getSimulation()->getModule(senderModuleID);
 }
 
 cGate* Signal::getSendingGate() const
 {
-	if(senderFromGateID < 0)
-		return NULL;
+    if(senderFromGateID < 0)
+        return NULL;
 
-	cModule *const mod = getSendingModule();
-	return !mod ? NULL : mod->gate(senderFromGateID);
+    cModule *const mod = getSendingModule();
+    return !mod ? NULL : mod->gate(senderFromGateID);
 }
 
 void Signal::setReceptionSenderInfo(const cMessage *const pMsg)
 {
-	if (!pMsg)
-		return;
+    if (!pMsg)
+        return;
 
-	assert(senderModuleID < 0);
+    assert(senderModuleID < 0);
 
-	senderModuleID   = pMsg->getSenderModuleId();
-	senderFromGateID = pMsg->getSenderGateId();
+    senderModuleID   = pMsg->getSenderModuleId();
+    senderFromGateID = pMsg->getSenderGateId();
 
-	receiverModuleID = pMsg->getArrivalModuleId();
-	receiverToGateID = pMsg->getArrivalGateId();
+    receiverModuleID = pMsg->getArrivalModuleId();
+    receiverToGateID = pMsg->getArrivalGateId();
 }
 
 void Signal::addAttenuation(uint16_t freqIndex, double factor)
 {
-	values[freqIndex] *= factor;
+    values[freqIndex] *= factor;
 }
 
 void Signal::addUniformAttenuation(double factor)
 {
-	for(uint16_t i=relativeOffset;i<relativeOffset+numRelativeValues;i++)
-	{
-		values[i] *= factor;
-	}
+    for(uint16_t i=relativeOffset;i<relativeOffset+numRelativeValues;i++)
+    {
+        values[i] *= factor;
+    }
 }
 
 /***********************/
 
 simtime_t calculateStart(const Signal& lhs, const Signal& rhs)
 {
-	return std::max(lhs.sendingStart, rhs.sendingStart);
+    return std::max(lhs.sendingStart, rhs.sendingStart);
 }
 
 simtime_t calculateDuration(const Signal& lhs, const Signal& rhs)
 {
-	simtime_t temp = std::min(lhs.sendingStart+lhs.duration, rhs.sendingStart+rhs.duration) - std::max(lhs.sendingStart, rhs.sendingStart);
-	return (temp > 0) ? temp : 0;
+    simtime_t temp = std::min(lhs.sendingStart+lhs.duration, rhs.sendingStart+rhs.duration) - std::max(lhs.sendingStart, rhs.sendingStart);
+    return (temp > 0) ? temp : 0;
 }
 
 } // namespace Veins

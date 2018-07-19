@@ -29,6 +29,6 @@ class WaveShortMessage;
 class noncobject Coord;
 
 packet BasicSafetyMessage extends WaveShortMessage {
-	Coord senderPos;
-	Coord senderSpeed;
+    Coord senderPos;
+    Coord senderSpeed;
 }

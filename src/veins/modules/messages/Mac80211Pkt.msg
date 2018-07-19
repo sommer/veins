@@ -29,5 +29,5 @@ packet Mac80211Pkt extends MacPkt
     int informationDS; //part of the Frame Control field
     int sequenceControl;
     bool retry;
-    simtime_t duration; 	//the expected remaining duration the current transaction 
+    simtime_t duration;     //the expected remaining duration the current transaction 
 }

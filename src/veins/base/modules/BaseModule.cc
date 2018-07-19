@@ -40,11 +40,11 @@ using namespace Veins;
 const simsignalwrap_t BaseModule::catHostStateSignal = simsignalwrap_t(MIXIM_SIGNAL_HOSTSTATE_NAME);
 
 BaseModule::BaseModule():
-	cSimpleModule()
+    cSimpleModule()
 {}
 
 BaseModule::BaseModule(unsigned stacksize):
-	cSimpleModule(stacksize)
+    cSimpleModule(stacksize)
 {}
 
 /**
@@ -56,54 +56,54 @@ BaseModule::BaseModule(unsigned stacksize):
  */
 void BaseModule::initialize(int stage) {
     if (stage == 0) {
-    	notAffectedByHostState = 	hasPar("notAffectedByHostState")
-								 && par("notAffectedByHostState").boolValue();
+        notAffectedByHostState =     hasPar("notAffectedByHostState")
+                                 && par("notAffectedByHostState").boolValue();
         hasPar("debug") ? debug = par("debug").boolValue() : debug = true;
         findHost()->subscribe(catHostStateSignal, this);
     }
 }
 
 void BaseModule::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details) {
-	Enter_Method_Silent();
-	if (signalID == catHostStateSignal) {
-		const HostState *const pHostState = dynamic_cast<const HostState *const>(obj);
-		if (pHostState) {
-			handleHostState(*pHostState);
-		}
-		else {
-			throw cRuntimeError("Got catHostStateSignal but obj was not a HostState pointer?");
-		}
-	}
+    Enter_Method_Silent();
+    if (signalID == catHostStateSignal) {
+        const HostState *const pHostState = dynamic_cast<const HostState *const>(obj);
+        if (pHostState) {
+            handleHostState(*pHostState);
+        }
+        else {
+            throw cRuntimeError("Got catHostStateSignal but obj was not a HostState pointer?");
+        }
+    }
 }
 
 void BaseModule::handleHostState(const HostState& state)
 {
-	if(notAffectedByHostState)
-		return;
+    if(notAffectedByHostState)
+        return;
 
-	if(state.get() != HostState::ACTIVE) {
-		error("Hosts state changed to something else than active which"
-			  " is not handled by this module. Either handle this state"
-			  " correctly or if this module really isn't affected by the"
-			  " hosts state set the parameter \"notAffectedByHostState\""
-			  " of this module to true.");
-	}
+    if(state.get() != HostState::ACTIVE) {
+        error("Hosts state changed to something else than active which"
+              " is not handled by this module. Either handle this state"
+              " correctly or if this module really isn't affected by the"
+              " hosts state set the parameter \"notAffectedByHostState\""
+              " of this module to true.");
+    }
 }
 
 void BaseModule::switchHostState(HostState::States state)
 {
-	HostState hostState(state);
-	emit(catHostStateSignal, &hostState);
+    HostState hostState(state);
+    emit(catHostStateSignal, &hostState);
 }
 
 cModule *const BaseModule::findHost(void)
 {
-	return FindModule<>::findHost(this);
+    return FindModule<>::findHost(this);
 }
 
 const cModule *const BaseModule::findHost(void) const
 {
-	return FindModule<>::findHost(this);
+    return FindModule<>::findHost(this);
 }
 
 
@@ -136,18 +136,18 @@ const cModule *const BaseModule::findHost(void) const
 
 std::string BaseModule::logName(void) const
 {
-	std::ostringstream ost;
-	if (hasPar("logName")) // let modules override
-	{
-		ost << par("logName").stringValue();
-	}
-	else
-	{
-		const cModule *const parent = findHost();
-		parent->hasPar("logName") ?
-			ost << parent->par("logName").stringValue() : ost << parent->getName();
-		ost << "[" << parent->getIndex() << "]";
-	}
-	return ost.str();
+    std::ostringstream ost;
+    if (hasPar("logName")) // let modules override
+    {
+        ost << par("logName").stringValue();
+    }
+    else
+    {
+        const cModule *const parent = findHost();
+        parent->hasPar("logName") ?
+            ost << parent->par("logName").stringValue() : ost << parent->getName();
+        ost << "[" << parent->getIndex() << "]";
+    }
+    return ost.str();
 }
 

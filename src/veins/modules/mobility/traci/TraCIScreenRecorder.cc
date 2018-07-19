@@ -32,75 +32,75 @@ Define_Module(Veins::TraCIScreenRecorder);
 
 void TraCIScreenRecorder::initialize(int stage)
 {
-	if (stage == 0) {
-		takeScreenshot = new cMessage("take screenshot");
-		takeScreenshot->setSchedulingPriority(1); // this schedules screenshots after TraCI timesteps
-		scheduleAt(par("start"), takeScreenshot);
-		return;
-	}
+    if (stage == 0) {
+        takeScreenshot = new cMessage("take screenshot");
+        takeScreenshot->setSchedulingPriority(1); // this schedules screenshots after TraCI timesteps
+        scheduleAt(par("start"), takeScreenshot);
+        return;
+    }
 }
 
 void TraCIScreenRecorder::handleMessage(cMessage *msg) {
-	ASSERT(msg == takeScreenshot);
+    ASSERT(msg == takeScreenshot);
 
-	// get dirname
-	const char* dirname = par("dirname").stringValue();
-	if (std::string(dirname) == "") {
-		dirname = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RESULTDIR);
-	}
+    // get dirname
+    const char* dirname = par("dirname").stringValue();
+    if (std::string(dirname) == "") {
+        dirname = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RESULTDIR);
+    }
 
-	// get absolute path of dirname (the TraCI server might be running in a different directory than OMNeT++)
-	std::string dirname_abs;
-	{
-		char* s = realpath(dirname, 0);
-		if (!s) {
-			perror("cannot open output directory");
-			error("cannot open output directory '%s'", dirname);
-		}
-		dirname_abs = s;
-		free(s);
-	}
+    // get absolute path of dirname (the TraCI server might be running in a different directory than OMNeT++)
+    std::string dirname_abs;
+    {
+        char* s = realpath(dirname, 0);
+        if (!s) {
+            perror("cannot open output directory");
+            error("cannot open output directory '%s'", dirname);
+        }
+        dirname_abs = s;
+        free(s);
+    }
 
-	// get filename template
-	std::string filenameTemplate = par("filenameTemplate").stdstringValue();
-	if (filenameTemplate == "") {
-		const char* myRunID = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
-		filenameTemplate = "screenshot-" + std::string(myRunID) + "-@%08.2f.png";
-		#ifdef _WIN32
-		// replace ':' with '-'
-		for (std::string::iterator i = filenameTemplate.begin(); i != filenameTemplate.end(); ++i) if (*i == ':') *i = '-';
-		#endif /* _WIN32 */
-	}
+    // get filename template
+    std::string filenameTemplate = par("filenameTemplate").stdstringValue();
+    if (filenameTemplate == "") {
+        const char* myRunID = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
+        filenameTemplate = "screenshot-" + std::string(myRunID) + "-@%08.2f.png";
+        #ifdef _WIN32
+        // replace ':' with '-'
+        for (std::string::iterator i = filenameTemplate.begin(); i != filenameTemplate.end(); ++i) if (*i == ':') *i = '-';
+        #endif /* _WIN32 */
+    }
 
-	// assemble filename
-	std::string filename;
-	{
-		std::string tmpl = dirname_abs + "/" + filenameTemplate;
-		char buf[1024];
-		snprintf(buf, 1024, tmpl.c_str(), simTime().dbl());
-		buf[1023] = 0;
-		filename = buf;
-	}
+    // assemble filename
+    std::string filename;
+    {
+        std::string tmpl = dirname_abs + "/" + filenameTemplate;
+        char buf[1024];
+        snprintf(buf, 1024, tmpl.c_str(), simTime().dbl());
+        buf[1023] = 0;
+        filename = buf;
+    }
 
-	// take screenshot
-	TraCIScenarioManager* manager = TraCIScenarioManagerAccess().get();
-	ASSERT(manager);
-	TraCICommandInterface* traci = manager->getCommandInterface();
-	if (!traci) {
-		error("Cannot create screenshot: TraCI is not connected yet");
-	}
-	TraCICommandInterface::GuiView view = traci->guiView(par("viewName"));
-	view.takeScreenshot(filename);
+    // take screenshot
+    TraCIScenarioManager* manager = TraCIScenarioManagerAccess().get();
+    ASSERT(manager);
+    TraCICommandInterface* traci = manager->getCommandInterface();
+    if (!traci) {
+        error("Cannot create screenshot: TraCI is not connected yet");
+    }
+    TraCICommandInterface::GuiView view = traci->guiView(par("viewName"));
+    view.takeScreenshot(filename);
 
-	// schedule next screenshot
-	simtime_t stop = par("stop");
-	if ((stop == -1) || (simTime() < stop)) {
-		scheduleAt(simTime() + par("interval"), takeScreenshot);
-	}
+    // schedule next screenshot
+    simtime_t stop = par("stop");
+    if ((stop == -1) || (simTime() < stop)) {
+        scheduleAt(simTime() + par("interval"), takeScreenshot);
+    }
 }
 
 void TraCIScreenRecorder::finish()
 {
-	cancelAndDelete(takeScreenshot);
+    cancelAndDelete(takeScreenshot);
 }
 

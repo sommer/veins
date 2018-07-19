@@ -24,19 +24,19 @@ using Veins::AirFrame;
 class MIXIM_API AnalogueModel {
 
 public:
-	virtual ~AnalogueModel() {}
+    virtual ~AnalogueModel() {}
 
-	/**
-	 * @brief Has to be overriden by every implementation.
-	 *
-	 * Filters a specified AirFrame's Signal by adding an attenuation
-	 * over time to the Signal.
-	 *
-	 * @param signal		The signal to filter.
-	 * @param sendersPos	The position of the frame sender.
-	 * @param receiverPos	The position of frame receiver.
-	 */
-	virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos) = 0;
+    /**
+     * @brief Has to be overriden by every implementation.
+     *
+     * Filters a specified AirFrame's Signal by adding an attenuation
+     * over time to the Signal.
+     *
+     * @param signal        The signal to filter.
+     * @param sendersPos    The position of the frame sender.
+     * @param receiverPos    The position of frame receiver.
+     */
+    virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos) = 0;
 };
 
 } // namespace Veins

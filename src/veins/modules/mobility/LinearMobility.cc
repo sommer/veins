@@ -32,26 +32,26 @@ Define_Module(Veins::LinearMobility);
 
 void LinearMobility::initialize(int stage)
 {
-	BaseMobility::initialize(stage);
+    BaseMobility::initialize(stage);
 
-	debugEV << "initializing LinearMobility stage " << stage << endl;
+    debugEV << "initializing LinearMobility stage " << stage << endl;
 
-	if (stage == 0){
-		move.setSpeed(par("speed").doubleValue());
-		acceleration = par("acceleration");
-		angle = par("angle");
-		angle = fmod(angle,360);
-	}
-	else if(stage == 1){
-		stepTarget = move.getStartPos();
-	}
+    if (stage == 0){
+        move.setSpeed(par("speed").doubleValue());
+        acceleration = par("acceleration");
+        angle = par("angle");
+        angle = fmod(angle,360);
+    }
+    else if(stage == 1){
+        stepTarget = move.getStartPos();
+    }
 }
 
 
 void LinearMobility::fixIfHostGetsOutside()
 {
-	Coord dummy = Coord::ZERO;
-	handleIfOutside(WRAP, stepTarget, dummy, dummy, angle);
+    Coord dummy = Coord::ZERO;
+    handleIfOutside(WRAP, stepTarget, dummy, dummy, angle);
 }
 
 
@@ -61,19 +61,19 @@ void LinearMobility::fixIfHostGetsOutside()
  */
 void LinearMobility::makeMove()
 {
-	debugEV << "start makeMove " << move.info() << endl;
+    debugEV << "start makeMove " << move.info() << endl;
 
-	move.setStart(stepTarget, simTime());
+    move.setStart(stepTarget, simTime());
 
-	stepTarget.x = (move.getStartPos().x + move.getSpeed() * cos(M_PI * angle / 180) * SIMTIME_DBL(updateInterval));
-	stepTarget.y = (move.getStartPos().y + move.getSpeed() * sin(M_PI * angle / 180) * SIMTIME_DBL(updateInterval));
+    stepTarget.x = (move.getStartPos().x + move.getSpeed() * cos(M_PI * angle / 180) * SIMTIME_DBL(updateInterval));
+    stepTarget.y = (move.getStartPos().y + move.getSpeed() * sin(M_PI * angle / 180) * SIMTIME_DBL(updateInterval));
 
-	move.setDirectionByTarget(stepTarget);
+    move.setDirectionByTarget(stepTarget);
 
-	debugEV << "new stepTarget: " << stepTarget.info() << endl;
+    debugEV << "new stepTarget: " << stepTarget.info() << endl;
 
-	// accelerate
-	move.setSpeed(move.getSpeed() + acceleration * SIMTIME_DBL(updateInterval));
+    // accelerate
+    move.setSpeed(move.getSpeed() + acceleration * SIMTIME_DBL(updateInterval));
 
-	fixIfHostGetsOutside();
+    fixIfHostGetsOutside();
 }

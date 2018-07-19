@@ -21,9 +21,9 @@
 package org.car2x.veins.modules.world.traci.trafficLight;
 
 simple TraCITrafficLightInterface {
-	parameters:
-		@class(Veins::TraCITrafficLightInterface);
-		@display("i=block/layer");
-	gates:
-		inout logic;
+    parameters:
+        @class(Veins::TraCITrafficLightInterface);
+        @display("i=block/layer");
+    gates:
+        inout logic;
 }

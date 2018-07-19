@@ -25,14 +25,14 @@ using Veins::TraCITrafficLightSimpleLogic;
 Define_Module(Veins::TraCITrafficLightSimpleLogic);
 
 void TraCITrafficLightSimpleLogic::handleApplMsg(cMessage *msg) {
-	delete msg; // just drop it
+    delete msg; // just drop it
 }
 
 
 void TraCITrafficLightSimpleLogic::handleTlIfMsg(TraCITrafficLightMessage *tlMsg) {
-	delete tlMsg; // just drop it
+    delete tlMsg; // just drop it
 }
 
 void TraCITrafficLightSimpleLogic::handlePossibleSwitch() {
-	// do nothing - just let it happen
+    // do nothing - just let it happen
 }

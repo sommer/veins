@@ -65,17 +65,17 @@ class NicEntryDebug: public NicEntry
   protected:
     /**
      * @brief Returns a free in gate of the nic
-	 *
-	 * This checks the list of free in gates, if one is available it is
-	 * returned. Otherwise, a new in gate is added to the nic.
-	 */
+     *
+     * This checks the list of free in gates, if one is available it is
+     * returned. Otherwise, a new in gate is added to the nic.
+     */
     cGate* requestInGate(void);
 
     /**
      * @brief Returns a free out gate of the nic
      *
-	 * returns a free out gate. If none is available it is created. See
-	 * NicEntry::requestInGate for a detailed description
+     * returns a free out gate. If none is available it is created. See
+     * NicEntry::requestInGate for a detailed description
      */
     cGate* requestOutGate(void);
 
@@ -108,10 +108,10 @@ class NicEntryDebug: public NicEntry
      * @brief Constructor, initializes all members
      */
     NicEntryDebug(bool debug) :
-    	NicEntry(debug),
-    	inCnt(0),
-    	outCnt(0),
-    	checkFreeGates(true)
+        NicEntry(debug),
+        inCnt(0),
+        outCnt(0),
+        checkFreeGates(true)
     {};
 
     /**
@@ -135,10 +135,10 @@ class NicEntryDebug: public NicEntry
     /**
      * @brief Disconnect two nics
      *
-	 * Release unidirectional connection with other nic
-	 *
-	 * @param other reference to remote nic (other NicEntry)
-	 **/
+     * Release unidirectional connection with other nic
+     *
+     * @param other reference to remote nic (other NicEntry)
+     **/
     virtual void disconnectFrom(NicEntry* other);
 };
 

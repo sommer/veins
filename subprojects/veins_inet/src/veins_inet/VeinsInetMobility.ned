@@ -29,18 +29,18 @@ package org.car2x.veins.subprojects.veins_inet;
 
 simple VeinsInetMobility like IMobility
 {
-	parameters:
-		@class(Veins::VeinsInetMobility);
-		@signal[mobilityStateChanged](type=Veins::VeinsInetMobility);
-		@display("i=block/cogwheel");
+    parameters:
+        @class(Veins::VeinsInetMobility);
+        @signal[mobilityStateChanged](type=Veins::VeinsInetMobility);
+        @display("i=block/cogwheel");
 
-		bool visualizeMobility = default(true);
-		string visualRepresentation = default("^");
+        bool visualizeMobility = default(true);
+        string visualRepresentation = default("^");
 
-		double constraintAreaMinX @unit(m) = default(-1m/0); // min x position of the constraint area, unconstrained by default (negative infinity)
-		double constraintAreaMinY @unit(m) = default(-1m/0); // min y position of the constraint area, unconstrained by default (negative infinity)
-		double constraintAreaMinZ @unit(m) = default(-1m/0); // min z position of the constraint area, unconstrained by default (negative infinity)
-		double constraintAreaMaxX @unit(m) = default(1m/0); // max x position of the constraint area, unconstrained by default (positive infinity)
-		double constraintAreaMaxY @unit(m) = default(1m/0); // max y position of the constraint area, unconstrained by default (positive infinity)
-		double constraintAreaMaxZ @unit(m) = default(1m/0); // max z position of the constraint area, unconstrained by default (positive infinity)
+        double constraintAreaMinX @unit(m) = default(-1m/0); // min x position of the constraint area, unconstrained by default (negative infinity)
+        double constraintAreaMinY @unit(m) = default(-1m/0); // min y position of the constraint area, unconstrained by default (negative infinity)
+        double constraintAreaMinZ @unit(m) = default(-1m/0); // min z position of the constraint area, unconstrained by default (negative infinity)
+        double constraintAreaMaxX @unit(m) = default(1m/0); // max x position of the constraint area, unconstrained by default (positive infinity)
+        double constraintAreaMaxY @unit(m) = default(1m/0); // max y position of the constraint area, unconstrained by default (positive infinity)
+        double constraintAreaMaxZ @unit(m) = default(1m/0); // max z position of the constraint area, unconstrained by default (positive infinity)
 }

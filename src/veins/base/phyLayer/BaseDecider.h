@@ -36,151 +36,151 @@ using Veins::AirFrame;
  */
 class MIXIM_API BaseDecider: public Decider {
 public:
-	/**
-	 * @brief The kinds of ControlMessages this Decider sends.
-	 *
-	 * Sub-classing decider should begin their own kind enumeration
-	 * at the value of "LAST_BASE_DECIDER_CONTROL_KIND".
-	 */
-	enum BaseDeciderControlKinds {
-		/** @brief The phy has recognized a bit error in the packet.*/
-		PACKET_DROPPED = 22100,
-		/** @brief Sub-classing decider should begin their own kinds at this
-		 * value.*/
-		LAST_BASE_DECIDER_CONTROL_KIND
-	};
+    /**
+     * @brief The kinds of ControlMessages this Decider sends.
+     *
+     * Sub-classing decider should begin their own kind enumeration
+     * at the value of "LAST_BASE_DECIDER_CONTROL_KIND".
+     */
+    enum BaseDeciderControlKinds {
+        /** @brief The phy has recognized a bit error in the packet.*/
+        PACKET_DROPPED = 22100,
+        /** @brief Sub-classing decider should begin their own kinds at this
+         * value.*/
+        LAST_BASE_DECIDER_CONTROL_KIND
+    };
 
 protected:
 
-	/** @brief The current state of processing for a signal*/
-	enum SignalState {
-		/** @brief Signal is received the first time. */
-		NEW,
-		/** @brief Waiting for the header of the signal. */
-		EXPECT_HEADER,
-		/** @brief Waiting for the end of the signal. */
-		EXPECT_END,
-	};
+    /** @brief The current state of processing for a signal*/
+    enum SignalState {
+        /** @brief Signal is received the first time. */
+        NEW,
+        /** @brief Waiting for the header of the signal. */
+        EXPECT_HEADER,
+        /** @brief Waiting for the end of the signal. */
+        EXPECT_END,
+    };
 
-	/** @brief sensitivity value for receiving an AirFrame */
-	double sensitivity;
+    /** @brief sensitivity value for receiving an AirFrame */
+    double sensitivity;
 
-	/** @brief Pair of a AirFrame and the state it is in. */
-	typedef std::pair<AirFrame*, int> ReceivedSignal;
+    /** @brief Pair of a AirFrame and the state it is in. */
+    typedef std::pair<AirFrame*, int> ReceivedSignal;
 
-	/** @brief pointer to the currently received AirFrame */
-	ReceivedSignal currentSignal;
+    /** @brief pointer to the currently received AirFrame */
+    ReceivedSignal currentSignal;
 
-	/** @brief Stores the idle state of the channel.*/
-	bool isChannelIdle;
+    /** @brief Stores the idle state of the channel.*/
+    bool isChannelIdle;
 
-	/** @brief index for this Decider-instance given by Phy-Layer (mostly
-	 * Host-index) */
-	int myIndex;
+    /** @brief index for this Decider-instance given by Phy-Layer (mostly
+     * Host-index) */
+    int myIndex;
 
-	/** @brief toggles display of debugging messages */
-	bool debug;
-
-public:
-	/**
-	 * @brief Initializes the decider with the passed values.
-	 *
-	 * Needs a pointer to its physical layer, the sensitivity, the index of the
-	 * host and the debug flag.
-	 */
-	BaseDecider(DeciderToPhyInterface* phy, double sensitivity,
-				int myIndex, bool debug):
-		Decider(phy),
-		sensitivity(sensitivity),
-		isChannelIdle(true),
-		myIndex(myIndex),
-		debug(debug)
-	{
-		currentSignal.first = 0;
-		currentSignal.second = NEW;
-	}
-
-	virtual ~BaseDecider() {}
+    /** @brief toggles display of debugging messages */
+    bool debug;
 
 public:
-	/**
-	 * @brief Processes an AirFrame given by the PhyLayer
-	 *
-	 * Returns the time point when the decider wants to be given the AirFrame
-	 * again.
-	 */
-	virtual simtime_t processSignal(AirFrame* frame);
+    /**
+     * @brief Initializes the decider with the passed values.
+     *
+     * Needs a pointer to its physical layer, the sensitivity, the index of the
+     * host and the debug flag.
+     */
+    BaseDecider(DeciderToPhyInterface* phy, double sensitivity,
+                int myIndex, bool debug):
+        Decider(phy),
+        sensitivity(sensitivity),
+        isChannelIdle(true),
+        myIndex(myIndex),
+        debug(debug)
+    {
+        currentSignal.first = 0;
+        currentSignal.second = NEW;
+    }
+
+    virtual ~BaseDecider() {}
+
+public:
+    /**
+     * @brief Processes an AirFrame given by the PhyLayer
+     *
+     * Returns the time point when the decider wants to be given the AirFrame
+     * again.
+     */
+    virtual simtime_t processSignal(AirFrame* frame);
 
 
 protected:
-	/**
-	 * @brief Processes a new Signal. Returns the time it wants to
-	 * handle the signal again.
-	 *
-	 * Default implementation checks if the signals receiving power
-	 * is above the sensitivity of the radio and we are not already trying
-	 * to receive another AirFrame. If thats the case it waits for the end
-	 * of the signal.
-	 */
-	virtual simtime_t processNewSignal(AirFrame* frame);
+    /**
+     * @brief Processes a new Signal. Returns the time it wants to
+     * handle the signal again.
+     *
+     * Default implementation checks if the signals receiving power
+     * is above the sensitivity of the radio and we are not already trying
+     * to receive another AirFrame. If thats the case it waits for the end
+     * of the signal.
+     */
+    virtual simtime_t processNewSignal(AirFrame* frame);
 
-	/**
-	 * @brief Processes the end of the header of a received Signal.
-	 *
-	 * Returns the time it wants to handle the signal again.
-	 *
-	 * Default implementation does not handle signal headers.
-	 */
-	virtual simtime_t processSignalHeader(AirFrame* frame) {
-		throw cRuntimeError("BaseDecider does not handle Signal headers!");
-		return notAgain;
-	}
+    /**
+     * @brief Processes the end of the header of a received Signal.
+     *
+     * Returns the time it wants to handle the signal again.
+     *
+     * Default implementation does not handle signal headers.
+     */
+    virtual simtime_t processSignalHeader(AirFrame* frame) {
+        throw cRuntimeError("BaseDecider does not handle Signal headers!");
+        return notAgain;
+    }
 
-	/**
-	 * @brief Processes the end of a received Signal.
-	 *
-	 * Returns the time it wants to handle the signal again
-	 * (most probably notAgain).
-	 *
-	 * Default implementation just decides every signal as correct and passes it
-	 * to the upper layer.
-	 */
-	virtual simtime_t processSignalEnd(AirFrame* frame);
+    /**
+     * @brief Processes the end of a received Signal.
+     *
+     * Returns the time it wants to handle the signal again
+     * (most probably notAgain).
+     *
+     * Default implementation just decides every signal as correct and passes it
+     * to the upper layer.
+     */
+    virtual simtime_t processSignalEnd(AirFrame* frame);
 
-	/**
-	 * @brief Processes any Signal for which no state could be found.
-	 * (is an error case).
-	 */
-	virtual simtime_t processUnknownSignal(AirFrame* frame);
+    /**
+     * @brief Processes any Signal for which no state could be found.
+     * (is an error case).
+     */
+    virtual simtime_t processUnknownSignal(AirFrame* frame);
 
-	/**
-	 * @brief Returns the SignalState for the passed AirFrame.
-	 *
-	 * The default implementation checks if the passed AirFrame
-	 * is the "currentSignal" and returns its state or if not
-	 * "NEW".
-	 */
-	virtual int getSignalState(AirFrame* frame);
+    /**
+     * @brief Returns the SignalState for the passed AirFrame.
+     *
+     * The default implementation checks if the passed AirFrame
+     * is the "currentSignal" and returns its state or if not
+     * "NEW".
+     */
+    virtual int getSignalState(AirFrame* frame);
 
-	/**
-	 * @brief Changes the "isIdle"-status to the passed value.
-	 */
-	virtual void setChannelIdleStatus(bool isIdle);
+    /**
+     * @brief Changes the "isIdle"-status to the passed value.
+     */
+    virtual void setChannelIdleStatus(bool isIdle);
 
-	/**
-	 * @brief Collects the AirFrame on the channel during the passed interval.
-	 *
-	 * Forwards to DeciderToPhyInterfaces "getChannelInfo" method.
-	 * Subclassing deciders can override this method to filter the returned
-	 * AirFrames for their own criteria, for example by removing AirFrames on
-	 * another not interferring channel.
-	 *
-	 * @param start The start of the interval to collect AirFrames from.
-	 * @param end The end of the interval to collect AirFrames from.
-	 * @param out The output vector in which to put the AirFrames.
-	 */
-	virtual void getChannelInfo(simtime_t_cref start, simtime_t_cref end,
-								AirFrameVector& out);
+    /**
+     * @brief Collects the AirFrame on the channel during the passed interval.
+     *
+     * Forwards to DeciderToPhyInterfaces "getChannelInfo" method.
+     * Subclassing deciders can override this method to filter the returned
+     * AirFrames for their own criteria, for example by removing AirFrames on
+     * another not interferring channel.
+     *
+     * @param start The start of the interval to collect AirFrames from.
+     * @param end The end of the interval to collect AirFrames from.
+     * @param out The output vector in which to put the AirFrames.
+     */
+    virtual void getChannelInfo(simtime_t_cref start, simtime_t_cref end,
+                                AirFrameVector& out);
 
 };
 

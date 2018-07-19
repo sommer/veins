@@ -40,18 +40,18 @@ namespace Veins {
  */
 
 class TraCIDemo11p : public BaseWaveApplLayer {
-	public:
-		virtual void initialize(int stage);
-	protected:
-		simtime_t lastDroveAt;
-		bool sentMessage;
-		int currentSubscribedServiceId;
-	protected:
+    public:
+        virtual void initialize(int stage);
+    protected:
+        simtime_t lastDroveAt;
+        bool sentMessage;
+        int currentSubscribedServiceId;
+    protected:
         virtual void onWSM(WaveShortMessage* wsm);
         virtual void onWSA(WaveServiceAdvertisment* wsa);
 
         virtual void handleSelfMsg(cMessage* msg);
-		virtual void handlePositionUpdate(cObject* obj);
+        virtual void handlePositionUpdate(cObject* obj);
 };
 
 } // namespace Veins

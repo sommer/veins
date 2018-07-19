@@ -146,12 +146,12 @@ protected:
     virtual void handleLowerMsg(cMessage *msg);
 
     virtual void handleSelfMsg(cMessage* msg){
-	error("BaseMacLayer does not handle self messages");
+    error("BaseMacLayer does not handle self messages");
     };
     virtual void handleLowerControl(cMessage* msg);
 
     virtual void handleUpperControl(cMessage* msg){
-	error("BaseMacLayer does not handle control messages from upper layers");
+    error("BaseMacLayer does not handle control messages from upper layers");
     };
 
 
@@ -181,7 +181,7 @@ protected:
      *
      * Extract the destination MAC address from the "control info" which was prev. set by NetwToMacControlInfo::setControlInfo().
      *
-     * @param pCtrlInfo	The "control info" structure (object) prev. set by NetwToMacControlInfo::setControlInfo().
+     * @param pCtrlInfo    The "control info" structure (object) prev. set by NetwToMacControlInfo::setControlInfo().
      * @return The MAC address of message receiver.
      */
     virtual const LAddress::L2Type& getUpperDestinationFromControlInfo(const cObject *const pCtrlInfo);
@@ -196,8 +196,8 @@ protected:
      * Only one "control info" structure can be attached (the second
      * setL3ToL2ControlInfo() call throws an error).
      *
-     * @param pMsg		The message where the "control info" shall be attached.
-     * @param pSrcAddr	The MAC address of the message receiver.
+     * @param pMsg        The message where the "control info" shall be attached.
+     * @param pSrcAddr    The MAC address of the message receiver.
      */
     virtual cObject *const setUpControlInfo(cMessage *const pMsg, const LAddress::L2Type& pSrcAddr);
     /**
@@ -210,8 +210,8 @@ protected:
      * Only one "control info" structure can be attached (the second
      * setL3ToL2ControlInfo() call throws an error).
      *
-     * @param pMsg		The message where the "control info" shall be attached.
-     * @param pSignal	The signal which should be send.
+     * @param pMsg        The message where the "control info" shall be attached.
+     * @param pSignal    The signal which should be send.
      */
     virtual cObject *const setDownControlInfo(cMessage *const pMsg, Signal *const pSignal);
 };

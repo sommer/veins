@@ -45,28 +45,28 @@
 namespace Veins {
 class TraCIScenarioManagerLaunchd : public TraCIScenarioManager
 {
-	public:
+    public:
 
-		virtual ~TraCIScenarioManagerLaunchd();
-		virtual void initialize(int stage);
-		virtual void finish();
+        virtual ~TraCIScenarioManagerLaunchd();
+        virtual void initialize(int stage);
+        virtual void finish();
 
-	protected:
+    protected:
 
-		cXMLElement* launchConfig; /**< launch configuration to send to sumo-launchd */
-		int seed; /**< seed value to set in launch configuration, if missing (-1: current run number) */
+        cXMLElement* launchConfig; /**< launch configuration to send to sumo-launchd */
+        int seed; /**< seed value to set in launch configuration, if missing (-1: current run number) */
 
-		virtual void init_traci();
+        virtual void init_traci();
 };
 }
 
 namespace Veins {
 class TraCIScenarioManagerLaunchdAccess
 {
-	public:
-		TraCIScenarioManagerLaunchd* get() {
-			return FindModule<TraCIScenarioManagerLaunchd*>::findGlobalModule();
-		};
+    public:
+        TraCIScenarioManagerLaunchd* get() {
+            return FindModule<TraCIScenarioManagerLaunchd*>::findGlobalModule();
+        };
 };
 }
 

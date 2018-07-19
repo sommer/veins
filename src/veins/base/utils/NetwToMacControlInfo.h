@@ -45,7 +45,7 @@ class MIXIM_API NetwToMacControlInfo : public cObject
 {
   protected:
     /** @brief MAC address of the sending or receiving node*/
-	LAddress::L2Type nextHopMac;
+    LAddress::L2Type nextHopMac;
 
   public:
     /** @brief Default constructor*/
@@ -60,18 +60,18 @@ class MIXIM_API NetwToMacControlInfo : public cObject
 
     /** @brief Getter method */
     virtual const LAddress::L2Type& getNextHopMac() const {
-    	return nextHopMac;
+        return nextHopMac;
     };
     virtual const LAddress::L2Type& getDest() const {
-    	return nextHopMac;
+        return nextHopMac;
     };
 
     /** @brief Setter method */
     virtual void setNextHopMac(const LAddress::L2Type& addr) {
-    	nextHopMac = addr;
+        nextHopMac = addr;
     };
     virtual void setDest(const LAddress::L2Type& addr) {
-    	nextHopMac = addr;
+        nextHopMac = addr;
     };
 
     /**
@@ -84,8 +84,8 @@ class MIXIM_API NetwToMacControlInfo : public cObject
      * Only one "control info" structure can be attached (the second
      * setL3ToL2ControlInfo() call throws an error).
      *
-     * @param pMsg		The message where the "control info" shall be attached.
-     * @param pDestAddr	The MAC address of the message receiver.
+     * @param pMsg        The message where the "control info" shall be attached.
+     * @param pDestAddr    The MAC address of the message receiver.
      */
     static cObject *const setControlInfo(cMessage *const pMsg, const LAddress::L2Type& pDestAddr);
     /**
@@ -93,7 +93,7 @@ class MIXIM_API NetwToMacControlInfo : public cObject
      *
      * Extract the destination MAC address from the "control info" which was prev. set by NetwToMacControlInfo::setControlInfo().
      *
-     * @param pCtrlInfo	The "control info" structure (object) prev. set by NetwToMacControlInfo::setControlInfo().
+     * @param pCtrlInfo    The "control info" structure (object) prev. set by NetwToMacControlInfo::setControlInfo().
      * @return The MAC address of message receiver.
      */
     static const LAddress::L2Type& getDestFromControlInfo(const cObject *const pCtrlInfo);

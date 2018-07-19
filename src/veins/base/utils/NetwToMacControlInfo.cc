@@ -24,18 +24,18 @@ typedef NetwToMacControlInfo  tNetwToMacControlInfoBase;
 
 cObject *const NetwToMacControlInfo::setControlInfo(cMessage *const pMsg, const LAddress::L2Type& pDestAddr)
 {
-	tNetwToMacControlInfoBase *const cCtrlInfo = new tNetwToMacControlInfoBase();
+    tNetwToMacControlInfoBase *const cCtrlInfo = new tNetwToMacControlInfoBase();
 
-	cCtrlInfo->setDest(pDestAddr);
-	pMsg->setControlInfo(cCtrlInfo);
+    cCtrlInfo->setDest(pDestAddr);
+    pMsg->setControlInfo(cCtrlInfo);
 
-	return cCtrlInfo;
+    return cCtrlInfo;
 }
 
 const LAddress::L2Type& NetwToMacControlInfo::getDestFromControlInfo(const cObject *const pCtrlInfo)
 {
-	const tNetwToMacControlInfoBase *const cCtrlInfo = dynamic_cast<const tNetwToMacControlInfoBase *>(pCtrlInfo);
+    const tNetwToMacControlInfoBase *const cCtrlInfo = dynamic_cast<const tNetwToMacControlInfoBase *>(pCtrlInfo);
 
-	assert(cCtrlInfo);
-	return cCtrlInfo->getDest();
+    assert(cCtrlInfo);
+    return cCtrlInfo->getDest();
 }

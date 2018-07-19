@@ -46,43 +46,43 @@ using namespace omnetpp;
  */
 class MIXIM_API simsignalwrap_t {
 private:
-	mutable volatile simsignal_t ssChangeSignal;
-	const char *const            sSignalName;
-	mutable const char *         sRunId;
+    mutable volatile simsignal_t ssChangeSignal;
+    const char *const            sSignalName;
+    mutable const char *         sRunId;
 public:
-	simsignalwrap_t(const char *const pSignalName)
-	  : ssChangeSignal(SIMSIGNAL_NULL)
-	  , sSignalName(pSignalName)
-	  , sRunId(NULL)
-	{}
-	simsignalwrap_t(const simsignalwrap_t& pCpy)
-	  : ssChangeSignal(pCpy.ssChangeSignal)
-	  , sSignalName(pCpy.sSignalName)
-	  , sRunId(pCpy.sRunId)
-	{}
+    simsignalwrap_t(const char *const pSignalName)
+      : ssChangeSignal(SIMSIGNAL_NULL)
+      , sSignalName(pSignalName)
+      , sRunId(NULL)
+    {}
+    simsignalwrap_t(const simsignalwrap_t& pCpy)
+      : ssChangeSignal(pCpy.ssChangeSignal)
+      , sSignalName(pCpy.sSignalName)
+      , sRunId(pCpy.sRunId)
+    {}
 
-	/** Cast operator to simsignal_t, we initialize the signal here if it is empty ;). */
-	operator simsignal_t () const {
-		// if this signal was never used (or if this is a new run): register the signal
-		if ((ssChangeSignal == SIMSIGNAL_NULL) || (getRunId() != sRunId)) {
-			ASSERT(sSignalName);
-			sRunId = getRunId();
-			ssChangeSignal = cComponent::registerSignal(sSignalName);
-			// throw cRuntimeError("%d = cComponent::registerSignal(\"%s\")", ssChangeSignal, sSignalName);
-		}
-		return ssChangeSignal;
-	}
+    /** Cast operator to simsignal_t, we initialize the signal here if it is empty ;). */
+    operator simsignal_t () const {
+        // if this signal was never used (or if this is a new run): register the signal
+        if ((ssChangeSignal == SIMSIGNAL_NULL) || (getRunId() != sRunId)) {
+            ASSERT(sSignalName);
+            sRunId = getRunId();
+            ssChangeSignal = cComponent::registerSignal(sSignalName);
+            // throw cRuntimeError("%d = cComponent::registerSignal(\"%s\")", ssChangeSignal, sSignalName);
+        }
+        return ssChangeSignal;
+    }
 protected:
-	const char* getRunId() const {
-		return cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
-	}
+    const char* getRunId() const {
+        return cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
+    }
 private:
-	// not allowed
-	simsignalwrap_t()
-	  : ssChangeSignal(SIMSIGNAL_NULL)
-	  , sSignalName(NULL)
-	  , sRunId(NULL)
-	{}
+    // not allowed
+    simsignalwrap_t()
+      : ssChangeSignal(SIMSIGNAL_NULL)
+      , sSignalName(NULL)
+      , sRunId(NULL)
+    {}
 };
 
 #endif

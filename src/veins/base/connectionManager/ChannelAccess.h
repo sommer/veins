@@ -60,74 +60,74 @@ namespace Veins {
 class MIXIM_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType
 {
 protected:
-	/** @brief A signal used to subscribe to mobility state changes. */
-	const static simsignalwrap_t mobilityStateChangedSignal;
+    /** @brief A signal used to subscribe to mobility state changes. */
+    const static simsignalwrap_t mobilityStateChangedSignal;
 
-	/** @brief use sendDirect or not?*/
-	bool useSendDirect;
+    /** @brief use sendDirect or not?*/
+    bool useSendDirect;
 
-	/** @brief Pointer to the PropagationModel module*/
-	BaseConnectionManager* cc;
+    /** @brief Pointer to the PropagationModel module*/
+    BaseConnectionManager* cc;
 
-	/** @brief debug this core module? */
-	bool coreDebug;
+    /** @brief debug this core module? */
+    bool coreDebug;
 
-	/** @brief Defines if the physical layer should simulate propagation delay.*/
-	bool usePropagationDelay;
+    /** @brief Defines if the physical layer should simulate propagation delay.*/
+    bool usePropagationDelay;
 
-	/** @brief Is this module already registered with ConnectionManager? */
-	bool isRegistered;
+    /** @brief Is this module already registered with ConnectionManager? */
+    bool isRegistered;
 
-	/** @brief Pointer to the World Utility, to obtain some global information*/
-	BaseWorldUtility* world;
+    /** @brief Pointer to the World Utility, to obtain some global information*/
+    BaseWorldUtility* world;
 
 protected:
-	/**
-	 * @brief Calculates the propagation delay to the passed receiving nic.
-	 */
-	simtime_t calculatePropagationDelay(const NicEntry* nic);
+    /**
+     * @brief Calculates the propagation delay to the passed receiving nic.
+     */
+    simtime_t calculatePropagationDelay(const NicEntry* nic);
 
-	/** @brief Sends a message to all nics connected to this one.
-	 *
-	 * This function has to be called whenever a packet is supposed to be
-	 * sent to the channel. Don't try to figure out what gates you have
-	 * and which ones are connected, this function does this for you!
-	 *
-	 * depending on which ConnectionManager module is used, the messages are
-	 * send via sendDirect() or to the respective gates.
-	 **/
-	void sendToChannel(cPacket *msg);
+    /** @brief Sends a message to all nics connected to this one.
+     *
+     * This function has to be called whenever a packet is supposed to be
+     * sent to the channel. Don't try to figure out what gates you have
+     * and which ones are connected, this function does this for you!
+     *
+     * depending on which ConnectionManager module is used, the messages are
+     * send via sendDirect() or to the respective gates.
+     **/
+    void sendToChannel(cPacket *msg);
 
 public:
-	/**
-	 * @brief Returns a pointer to the ConnectionManager responsible for the
-	 * passed NIC module.
-	 *
-	 * @param nic a pointer to a NIC module
-	 * @return a pointer to a connection manager module or NULL if an error
-	 * occurred
-	 */
-	static BaseConnectionManager* getConnectionManager(cModule* nic);
+    /**
+     * @brief Returns a pointer to the ConnectionManager responsible for the
+     * passed NIC module.
+     *
+     * @param nic a pointer to a NIC module
+     * @return a pointer to a connection manager module or NULL if an error
+     * occurred
+     */
+    static BaseConnectionManager* getConnectionManager(cModule* nic);
 
-	/** @brief Register with ConnectionManager.
-	 *
-	 * Upon initialization ChannelAccess registers the nic parent module
-	 * to have all its connections handeled by ConnectionManager
-	 **/
-	virtual void initialize(int stage);
+    /** @brief Register with ConnectionManager.
+     *
+     * Upon initialization ChannelAccess registers the nic parent module
+     * to have all its connections handeled by ConnectionManager
+     **/
+    virtual void initialize(int stage);
 
-	/**
-	 * @brief Called by the signalling mechanism to inform of changes.
-	 *
-	 * ChannelAccess is subscribed to position changes and informs the
-	 * ConnectionManager.
-	 */
-	virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details);
+    /**
+     * @brief Called by the signalling mechanism to inform of changes.
+     *
+     * ChannelAccess is subscribed to position changes and informs the
+     * ConnectionManager.
+     */
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details);
 
-	/**
-	 * @brief Returns the host's mobility module.
-	 */
-	virtual ChannelMobilityPtrType getMobilityModule() { return ChannelMobilityAccessType::get(this); }
+    /**
+     * @brief Returns the host's mobility module.
+     */
+    virtual ChannelMobilityPtrType getMobilityModule() { return ChannelMobilityAccessType::get(this); }
 };
 }
 

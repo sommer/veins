@@ -54,140 +54,140 @@ protected:
 
 public:
     Move()
-    	: startPos()
-    	, lastPos(0.0,0.0,DBL_MAX)
-    	, startTime()
+        : startPos()
+        , lastPos(0.0,0.0,DBL_MAX)
+        , startTime()
         , orientation()
-    	, direction()
-    	, speed(0.0)
+        , direction()
+        , speed(0.0)
     {}
     Move(const Move& mSrc)
-    	: startPos(mSrc.startPos)
-    	, lastPos(mSrc.lastPos)
-    	, startTime(mSrc.startTime)
+        : startPos(mSrc.startPos)
+        , lastPos(mSrc.lastPos)
+        , startTime(mSrc.startTime)
         , orientation(mSrc.orientation)
-    	, direction(mSrc.direction)
-    	, speed(mSrc.speed)
+        , direction(mSrc.direction)
+        , speed(mSrc.speed)
     {}
 
     /**
      * @brief Returns the current speed.
      */
     double getSpeed() const
-	{
-		return speed;
-	}
+    {
+        return speed;
+    }
 
     /**
-	 * @brief Sets the current speed in meters per second.
-	 */
-	void setSpeed(double speed)
-	{
-		this->speed = speed;
-	}
+     * @brief Sets the current speed in meters per second.
+     */
+    void setSpeed(double speed)
+    {
+        this->speed = speed;
+    }
 
-	/**
-	 * @brief Returns the start position.
-	 */
-	const Coord& getStartPos() const
-	{
-		return startPos;
-	}
+    /**
+     * @brief Returns the start position.
+     */
+    const Coord& getStartPos() const
+    {
+        return startPos;
+    }
 
-	/**
-	 * @brief Returns start time, i.e. time point of the start at start position.
-	 */
-	simtime_t_cref getStartTime() const
-	{
-		return startTime;
-	}
+    /**
+     * @brief Returns start time, i.e. time point of the start at start position.
+     */
+    simtime_t_cref getStartTime() const
+    {
+        return startTime;
+    }
 
-	/**
-	 * @brief Sets start position (components in meters) and start time.
-	 */
-	void setStart(const Coord& startPos, simtime_t_cref startTime)
-	{
-		this->lastPos   = startPos;
-		this->startPos  = startPos;
-		this->startTime = startTime;
-	}
+    /**
+     * @brief Sets start position (components in meters) and start time.
+     */
+    void setStart(const Coord& startPos, simtime_t_cref startTime)
+    {
+        this->lastPos   = startPos;
+        this->startPos  = startPos;
+        this->startTime = startTime;
+    }
 
-	/**
-	 * @brief Sets start position to passed value (components in meters),
-	 * start time will be set to current simulation-time.
-	 */
-	void setStart(const Coord& startPos)
-	{
-		setStart(startPos, simTime());
-	}
+    /**
+     * @brief Sets start position to passed value (components in meters),
+     * start time will be set to current simulation-time.
+     */
+    void setStart(const Coord& startPos)
+    {
+        setStart(startPos, simTime());
+    }
 
-	/**
-	 * @brief Returns the direction vector (which is unit less, because of normalization).
-	 */
-	const Coord& getDirection() const
-	{
-		return direction;
-	}
+    /**
+     * @brief Returns the direction vector (which is unit less, because of normalization).
+     */
+    const Coord& getDirection() const
+    {
+        return direction;
+    }
 
-	/**
-	 * @brief Returns the orientation vector, i.e. the direction the host is pointing in.
-	 * The difference to direction is that the x and y components are never both 0, which
-	 * is important for the calculation of the antenna gain. At simulation start, it is
-	 * initialized with a (user defined) value. If the host stops during simulation,
-	 * the last direction is stored in the orientation field.
-	 */
-	const Coord& getOrientation() const {
-	    return orientation;
-	}
+    /**
+     * @brief Returns the orientation vector, i.e. the direction the host is pointing in.
+     * The difference to direction is that the x and y components are never both 0, which
+     * is important for the calculation of the antenna gain. At simulation start, it is
+     * initialized with a (user defined) value. If the host stops during simulation,
+     * the last direction is stored in the orientation field.
+     */
+    const Coord& getOrientation() const {
+        return orientation;
+    }
 
-	/**
-	 * @brief Sets the orientation to the passed vector. At least one of the x or y
-	 * component has to be nonzero.
-	 */
-	void setOrientationByVector(const Coord& orientation) {
-	    assert(orientation.x != 0 || orientation.y != 0);
-	    this->orientation = orientation;
-	}
+    /**
+     * @brief Sets the orientation to the passed vector. At least one of the x or y
+     * component has to be nonzero.
+     */
+    void setOrientationByVector(const Coord& orientation) {
+        assert(orientation.x != 0 || orientation.y != 0);
+        this->orientation = orientation;
+    }
 
-	/**
-	 * @brief Sets the direction to the passed vector,
-	 * which must be already normalized or the 0-vector.
-	 */
-	void setDirectionByVector(const Coord& direction)
-	{
-		assert(	FWMath::close(direction.squareLength(), 1.0)
-				|| FWMath::close(direction.squareLength(), 0.0));
-		this->direction = direction;
+    /**
+     * @brief Sets the direction to the passed vector,
+     * which must be already normalized or the 0-vector.
+     */
+    void setDirectionByVector(const Coord& direction)
+    {
+        assert(    FWMath::close(direction.squareLength(), 1.0)
+                || FWMath::close(direction.squareLength(), 0.0));
+        this->direction = direction;
 
-		// only if one of the x or y components is nonzero, also set orientation to
-		// the given value
-		if (direction.x != 0 || direction.y != 0) {
-		    setOrientationByVector(direction);
-		}
-	}
-
-	/**
-	 * @brief Sets the direction to the normalized vector pointing
-	 * from the current start position to the passed target point.
-	 *
-	 * NOTE: The target point must not be the current start position
-	 * or too close to it.
-	 */
-	void setDirectionByTarget(const Coord& target)
-	{
-    	direction = target - startPos;
-
-    	assert( !FWMath::close(direction.length(), 0.0) );
-    	direction /= direction.length();
-
-    	// only if one of the x or y components is nonzero, also set orientation to
-        // the new direction
-    	if (direction.x != 0 || direction.y != 0) {
+        // only if one of the x or y components is nonzero, also set orientation to
+        // the given value
+        if (direction.x != 0 || direction.y != 0) {
             setOrientationByVector(direction);
         }
     }
 
-	/**
+    /**
+     * @brief Sets the direction to the normalized vector pointing
+     * from the current start position to the passed target point.
+     *
+     * NOTE: The target point must not be the current start position
+     * or too close to it.
+     */
+    void setDirectionByTarget(const Coord& target)
+    {
+        direction = target - startPos;
+
+        assert( !FWMath::close(direction.length(), 0.0) );
+        direction /= direction.length();
+
+        // only if one of the x or y components is nonzero, also set orientation to
+        // the new direction
+        if (direction.x != 0 || direction.y != 0) {
+            setOrientationByVector(direction);
+        }
+    }
+
+    /**
      * @brief Returns the position of the Move (Host) at the specified point in time.
      * It is intended to be passed simTime() as actualTime and returns the actual position.
      *
@@ -199,17 +199,17 @@ public:
      */
     virtual Coord getPositionAt(simtime_t_cref actualTime = simTime()) const
     {
-    	// if speed is very close to 0.0, the host is practically standing still
-    	if ( FWMath::close(speed, 0.0) ) return startPos;
+        // if speed is very close to 0.0, the host is practically standing still
+        if ( FWMath::close(speed, 0.0) ) return startPos;
 
-    	// otherwise: actualPos = startPos + ( direction * v * t )
-    	return startPos + ( direction * speed * SIMTIME_DBL(actualTime - startTime) );
+        // otherwise: actualPos = startPos + ( direction * v * t )
+        return startPos + ( direction * speed * SIMTIME_DBL(actualTime - startTime) );
     }
     virtual const Coord& getCurrentPosition() const
     {
-    	if (lastPos.z != DBL_MAX)
-    		return lastPos;
-    	return startPos;
+        if (lastPos.z != DBL_MAX)
+            return lastPos;
+        return startPos;
     }
 
 public:

@@ -45,14 +45,14 @@ using Veins::ChannelAccess;
 class MIXIM_API NicEntry : public cObject
 {
 protected:
-	class NicEntryComparator {
-	  public:
-		bool operator() (const NicEntry* nic1, const NicEntry* nic2) const {
-			return nic1->nicId < nic2->nicId;
-		}
-	};
+    class NicEntryComparator {
+      public:
+        bool operator() (const NicEntry* nic1, const NicEntry* nic2) const {
+            return nic1->nicId < nic2->nicId;
+        }
+    };
   public:
-	/** @brief Type for map from NicEntry pointer to a gate.*/
+    /** @brief Type for map from NicEntry pointer to a gate.*/
     typedef std::map<const NicEntry*, cGate*, NicEntryComparator> GateList;
 
     /** @brief module id of the nic for which information is stored*/
@@ -104,7 +104,7 @@ protected:
 
     /** @brief return the actual gateList*/
     const GateList& getGateList(){
-    	return outConns;
+        return outConns;
     }
 
     /** @brief Checks if this nic is connected to the "other" nic*/
@@ -122,7 +122,7 @@ protected:
      */
     const cGate* getOutGateTo(const NicEntry* to)
     {
-    	return outConns[to];
+        return outConns[to];
     };
 
 };

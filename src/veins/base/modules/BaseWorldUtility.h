@@ -34,13 +34,13 @@ namespace Veins {
 class MIXIM_API BaseWorldUtility : public cSimpleModule
 {
 protected:
-	/**
-	 * @brief Size of the area the nodes are in (in meters)
-	 *
-	 * Note: The playground is in the range [0, playground size].
-	 * Meaning the upper borders (at pg-size) as well as the lower
-	 * borders (at 0) are part of the playground.
-	 **/
+    /**
+     * @brief Size of the area the nodes are in (in meters)
+     *
+     * Note: The playground is in the range [0, playground size].
+     * Meaning the upper borders (at pg-size) as well as the lower
+     * borders (at 0) are part of the playground.
+     **/
     Coord playgroundSize;
 
     /** @brief Should the playground be treated as a torus?*/
@@ -57,9 +57,9 @@ protected:
 
 public:
     /** @brief Speed of light in meters per second. */
-	static const double speedOfLight() {
-		return 299792458.0; ///< meters per second
-	}
+    static const double speedOfLight() {
+        return 299792458.0; ///< meters per second
+    }
 
 protected:
     /**
@@ -79,43 +79,43 @@ public:
      * @brief Returns the playgroundSize
      *
      * Note: The playground is in the range [0, playground size].
-	 * Meaning the upper borders (at pg-size) as well as the lower
-	 * borders (at 0) are part of the playground.
+     * Meaning the upper borders (at pg-size) as well as the lower
+     * borders (at 0) are part of the playground.
      **/
     const Coord* getPgs(){
-    	initializeIfNecessary();
+        initializeIfNecessary();
         return &playgroundSize;
     };
 
     /** @brief Returns true if our playground represents a torus (borders are connected)*/
     bool useTorus(){
-    	initializeIfNecessary();
-    	return useTorusFlag;
+        initializeIfNecessary();
+        return useTorusFlag;
     };
 
-	/** @brief Random position somewhere in the playground */
-	virtual Coord getRandomPosition();
+    /** @brief Random position somewhere in the playground */
+    virtual Coord getRandomPosition();
 
     /** @brief Returns true if the world is 2-dimensional */
     bool use2D()
     {
-    	initializeIfNecessary();
-    	return use2DFlag;
+        initializeIfNecessary();
+        return use2DFlag;
     }
 
     /** @brief Returns an Id for an AirFrame, at the moment simply an incremented long-value */
     long getUniqueAirFrameId()
     {
-    	initializeIfNecessary();
+        initializeIfNecessary();
 
-    	// if counter has done one complete cycle and will be set to a value it already had
-    	if (airFrameId == -1){
-    		// print a warning
-    		EV << "WARNING: AirFrameId-Counter has done one complete cycle."
-    		<< " AirFrameIds are repeating now and may not be unique anymore." << endl;
-    	}
+        // if counter has done one complete cycle and will be set to a value it already had
+        if (airFrameId == -1){
+            // print a warning
+            EV << "WARNING: AirFrameId-Counter has done one complete cycle."
+            << " AirFrameIds are repeating now and may not be unique anymore." << endl;
+        }
 
-    	return airFrameId++;
+        return airFrameId++;
     }
  };
 

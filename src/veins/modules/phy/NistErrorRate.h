@@ -32,83 +32,83 @@ class NistErrorRate
 {
 public:
 
-	NistErrorRate ();
+    NistErrorRate ();
 
-	static double getChunkSuccessRate (unsigned int datarate, enum Bandwidth bw, double snr_mW, uint32_t nbits);
+    static double getChunkSuccessRate (unsigned int datarate, enum Bandwidth bw, double snr_mW, uint32_t nbits);
 
 private:
-	/**
-	 * Return the coded BER for the given p and b.
-	 *
-	 * \param p
-	 * \param bValue
-	 * \return BER
-	 */
-	static double calculatePe (double p, uint32_t bValue);
-	/**
-	 * Return BER of BPSK at the given SNR.
-	 *
-	 * \param snr snr value
-	 * \return BER of BPSK at the given SNR
-	 */
-	static double getBpskBer (double snr);
-	/**
-	 * Return BER of QPSK at the given SNR.
-	 *
-	 * \param snr snr value
-	 * \return BER of QPSK at the given SNR
-	 */
-	static double getQpskBer (double snr);
-	/**
-	 * Return BER of QAM16 at the given SNR.
-	 *
-	 * \param snr snr value
-	 * \return BER of QAM16 at the given SNR
-	 */
-	static double get16QamBer (double snr);
-	/**
-	 * Return BER of QAM64 at the given SNR.
-	 *
-	 * \param snr snr value
-	 * \return BER of QAM64 at the given SNR
-	 */
-	static double get64QamBer (double snr);
-	/**
-	 * Return BER of BPSK at the given SNR after applying FEC.
-	 *
-	 * \param snr snr value
-	 * \param nbits the number of bits in the chunk
-	 * \param bValue
-	 * \return BER of BPSK at the given SNR after applying FEC
-	 */
-	static double getFecBpskBer (double snr, uint32_t nbits, uint32_t bValue);
-	/**
-	 * Return BER of QPSK at the given SNR after applying FEC.
-	 *
-	 * \param snr snr value
-	 * \param nbits the number of bits in the chunk
-	 * \param bValue
-	 * \return BER of QPSK at the given SNR after applying FEC
-	 */
-	static double getFecQpskBer (double snr, uint32_t nbits, uint32_t bValue);
-	/**
-	 * Return BER of QAM16 at the given SNR after applying FEC.
-	 *
-	 * \param snr snr value
-	 * \param nbits the number of bits in the chunk
-	 * \param bValue
-	 * \return BER of QAM16 at the given SNR after applying FEC
-	 */
-	static double getFec16QamBer (double snr, uint32_t nbits, uint32_t bValue);
-	/**
-	 * Return BER of QAM64 at the given SNR after applying FEC.
-	 *
-	 * \param snr snr value
-	 * \param nbits the number of bits in the chunk
-	 * \param bValue
-	 * \return BER of QAM64 at the given SNR after applying FEC
-	 */
-	static double getFec64QamBer (double snr, uint32_t nbits, uint32_t bValue);
+    /**
+     * Return the coded BER for the given p and b.
+     *
+     * \param p
+     * \param bValue
+     * \return BER
+     */
+    static double calculatePe (double p, uint32_t bValue);
+    /**
+     * Return BER of BPSK at the given SNR.
+     *
+     * \param snr snr value
+     * \return BER of BPSK at the given SNR
+     */
+    static double getBpskBer (double snr);
+    /**
+     * Return BER of QPSK at the given SNR.
+     *
+     * \param snr snr value
+     * \return BER of QPSK at the given SNR
+     */
+    static double getQpskBer (double snr);
+    /**
+     * Return BER of QAM16 at the given SNR.
+     *
+     * \param snr snr value
+     * \return BER of QAM16 at the given SNR
+     */
+    static double get16QamBer (double snr);
+    /**
+     * Return BER of QAM64 at the given SNR.
+     *
+     * \param snr snr value
+     * \return BER of QAM64 at the given SNR
+     */
+    static double get64QamBer (double snr);
+    /**
+     * Return BER of BPSK at the given SNR after applying FEC.
+     *
+     * \param snr snr value
+     * \param nbits the number of bits in the chunk
+     * \param bValue
+     * \return BER of BPSK at the given SNR after applying FEC
+     */
+    static double getFecBpskBer (double snr, uint32_t nbits, uint32_t bValue);
+    /**
+     * Return BER of QPSK at the given SNR after applying FEC.
+     *
+     * \param snr snr value
+     * \param nbits the number of bits in the chunk
+     * \param bValue
+     * \return BER of QPSK at the given SNR after applying FEC
+     */
+    static double getFecQpskBer (double snr, uint32_t nbits, uint32_t bValue);
+    /**
+     * Return BER of QAM16 at the given SNR after applying FEC.
+     *
+     * \param snr snr value
+     * \param nbits the number of bits in the chunk
+     * \param bValue
+     * \return BER of QAM16 at the given SNR after applying FEC
+     */
+    static double getFec16QamBer (double snr, uint32_t nbits, uint32_t bValue);
+    /**
+     * Return BER of QAM64 at the given SNR after applying FEC.
+     *
+     * \param snr snr value
+     * \param nbits the number of bits in the chunk
+     * \param bValue
+     * \return BER of QAM64 at the given SNR after applying FEC
+     */
+    static double getFec64QamBer (double snr, uint32_t nbits, uint32_t bValue);
 };
 
 #endif /* NIST_ERROR_RATE_H */

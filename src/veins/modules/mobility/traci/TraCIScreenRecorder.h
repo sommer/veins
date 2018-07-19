@@ -42,15 +42,15 @@
 namespace Veins {
 class TraCIScreenRecorder : public cSimpleModule
 {
-	public:
+    public:
 
-		virtual void initialize(int stage);
-		virtual void handleMessage(cMessage *msg);
-		virtual void finish();
+        virtual void initialize(int stage);
+        virtual void handleMessage(cMessage *msg);
+        virtual void finish();
 
-	protected:
+    protected:
 
-		cMessage* takeScreenshot;
+        cMessage* takeScreenshot;
 };
 }
 

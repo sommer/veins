@@ -55,9 +55,9 @@ void BaseMacLayer::initialize(int stage)
 
     if(stage==0)
     {
-    	// get handle to phy layer
+        // get handle to phy layer
         if ((phy = FindModule<MacToPhyInterface*>::findSubModule(getParentModule())) == NULL) {
-        	error("Could not find a PHY module.");
+            error("Could not find a PHY module.");
         }
 
         overallSpectrum = nullptr;
@@ -68,7 +68,7 @@ void BaseMacLayer::initialize(int stage)
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
     }
     if (myMacAddr == LAddress::L2NULL()) {
-    	// see if there is an addressing module available
+        // see if there is an addressing module available
         // otherwise use NIC modules id as MAC address
         AddressingInterface* addrScheme = FindModule<AddressingInterface*>::findSubModule(findHost());
         if(addrScheme) {
@@ -143,7 +143,7 @@ MacPkt* BaseMacLayer::encapsMsg(cPacket *netwPkt)
  **/
 void BaseMacLayer::handleUpperMsg(cMessage *mac)
 {
-	assert(dynamic_cast<cPacket*>(mac));
+    assert(dynamic_cast<cPacket*>(mac));
     sendDown(encapsMsg(static_cast<cPacket*>(mac)));
 }
 
@@ -163,56 +163,56 @@ void BaseMacLayer::handleLowerMsg(cMessage *msg)
 
     //only foward to upper layer if message is for me or broadcast
     if((dest == myMacAddr) || LAddress::isL2Broadcast(dest)) {
-		coreEV << "message with mac addr " << src
-			   << " for me (dest=" << dest
-			   << ") -> forward packet to upper layer\n";
-		sendUp(decapsMsg(mac));
+        coreEV << "message with mac addr " << src
+               << " for me (dest=" << dest
+               << ") -> forward packet to upper layer\n";
+        sendUp(decapsMsg(mac));
     }
     else{
-		coreEV << "message with mac addr " << src
-			   << " not for me (dest=" << dest
-			   << ") -> delete (my MAC="<<myMacAddr<<")\n";
-		delete mac;
+        coreEV << "message with mac addr " << src
+               << " not for me (dest=" << dest
+               << ") -> delete (my MAC="<<myMacAddr<<")\n";
+        delete mac;
     }
 }
 
 void BaseMacLayer::handleLowerControl(cMessage* msg)
 {
-	switch (msg->getKind())
-	{
-		case MacToPhyInterface::TX_OVER:
-			msg->setKind(TX_OVER);
-			sendControlUp(msg);
-			break;
-		default:
-			EV << "BaseMacLayer does not handle control messages of this type (name was "<<msg->getName()<<")\n";
-			delete msg;
-			break;
-	}
+    switch (msg->getKind())
+    {
+        case MacToPhyInterface::TX_OVER:
+            msg->setKind(TX_OVER);
+            sendControlUp(msg);
+            break;
+        default:
+            EV << "BaseMacLayer does not handle control messages of this type (name was "<<msg->getName()<<")\n";
+            delete msg;
+            break;
+    }
 }
 
 Signal* BaseMacLayer::createSimpleSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate)
 {
-	//create signal with start at current simtime and passed length
-	Signal* s = new Signal(overallSpectrum, start, length);
+    //create signal with start at current simtime and passed length
+    Signal* s = new Signal(overallSpectrum, start, length);
 
-	(*s)[0] = power;
-	s->setBitrate(bitrate);
+    (*s)[0] = power;
+    s->setBitrate(bitrate);
 
-	s->setCenterFrequencyIndex(0);
-	s->setDataStart(0);
-	s->setDataEnd(0);
+    s->setCenterFrequencyIndex(0);
+    s->setDataStart(0);
+    s->setDataEnd(0);
 
-	return s;
+    return s;
 }
 
 BaseConnectionManager* BaseMacLayer::getConnectionManager() {
-	cModule* nic = getParentModule();
-	return ChannelAccess::getConnectionManager(nic);
+    cModule* nic = getParentModule();
+    return ChannelAccess::getConnectionManager(nic);
 }
 
 const LAddress::L2Type& BaseMacLayer::getUpperDestinationFromControlInfo(const cObject *const pCtrlInfo) {
-	return NetwToMacControlInfo::getDestFromControlInfo(pCtrlInfo);
+    return NetwToMacControlInfo::getDestFromControlInfo(pCtrlInfo);
 }
 
 /**
@@ -220,7 +220,7 @@ const LAddress::L2Type& BaseMacLayer::getUpperDestinationFromControlInfo(const c
  */
 cObject *const BaseMacLayer::setUpControlInfo(cMessage *const pMsg, const LAddress::L2Type& pSrcAddr)
 {
-	return MacToNetwControlInfo::setControlInfo(pMsg, pSrcAddr);
+    return MacToNetwControlInfo::setControlInfo(pMsg, pSrcAddr);
 }
 
 /**
@@ -228,5 +228,5 @@ cObject *const BaseMacLayer::setUpControlInfo(cMessage *const pMsg, const LAddre
  */
 cObject *const BaseMacLayer::setDownControlInfo(cMessage *const pMsg, Signal *const pSignal)
 {
-	return MacToPhyControlInfo::setControlInfo(pMsg, pSignal);
+    return MacToPhyControlInfo::setControlInfo(pMsg, pSignal);
 }

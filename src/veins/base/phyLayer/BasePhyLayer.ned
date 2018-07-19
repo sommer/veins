@@ -11,18 +11,18 @@ simple BasePhyLayer like IWirelessPhy
         bool recordStats = default(false); //enable/disable tracking of statistics (eg. cOutvectors)
         int headerLength = default(0) @unit(bit); //defines the length of the phy header (/preamble)
         
-        bool usePropagationDelay;		//Should transmission delay be simulated?
-        double thermalNoise @unit(dBm);	//the strength of the thermal noise [dBm]
-        bool useThermalNoise;			//should thermal noise be considered?
+        bool usePropagationDelay;        //Should transmission delay be simulated?
+        double thermalNoise @unit(dBm);    //the strength of the thermal noise [dBm]
+        bool useThermalNoise;            //should thermal noise be considered?
 
-		
-		xml antenna = default(xml("<root><Antenna type=\"IsotropicAntenna\"></Antenna></root>"));
-		
-		
-        xml analogueModels; 			//Specification of the analogue models to use and their parameters
-        xml decider;					//Specification of the decider to use and its parameters
+        
+        xml antenna = default(xml("<root><Antenna type=\"IsotropicAntenna\"></Antenna></root>"));
+        
+        
+        xml analogueModels;             //Specification of the analogue models to use and their parameters
+        xml decider;                    //Specification of the decider to use and its parameters
 
-		double sensitivity @unit(dBm);	//The sensitivity of the physical layer [dBm]
+        double sensitivity @unit(dBm);    //The sensitivity of the physical layer [dBm]
 
         //# switch times [s]:
         double timeRXToTX       = default(0) @unit(s); // Elapsed time to switch from receive to send state
@@ -40,14 +40,14 @@ simple BasePhyLayer like IWirelessPhy
         double radioMaxAtt = default(0.0); //radios gain factor (attenuation) while not receiving
 
         int nbRadioChannels = default(1);  // Number of available radio channels. Defaults to single channel radio.
-		int initialRadioChannel = default(0);  // Initial radio channel.
+        int initialRadioChannel = default(0);  // Initial radio channel.
 
     gates:
-        input upperLayerIn; 	// from the MAC layer
-        output upperLayerOut; 	// to the MAC layer
+        input upperLayerIn;     // from the MAC layer
+        output upperLayerOut;     // to the MAC layer
 
-        input upperControlIn; 	// control from the MAC layer        
-        output upperControlOut; 	// control to the MAC layer
+        input upperControlIn;     // control from the MAC layer        
+        output upperControlOut;     // control to the MAC layer
 
         input radioIn; // for sendDirect from other physical layers
 

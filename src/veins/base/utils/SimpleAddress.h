@@ -51,22 +51,22 @@ public:
     /** @brief Broadcast address for L2 addresses. */
     static const L2Type& L2BROADCAST() {
         static L2Type o(-1);
-	return o;
+    return o;
     }
     /** @brief NULL address for L2 addresses. */
     static const L2Type& L2NULL() {
         static L2Type o(0);
-	return o;
+    return o;
     }
     /** @brief Broadcast address for L3 addresses. */
     static const L3Type& L3BROADCAST() {
         static L3Type o(-1);
-	return o;
+    return o;
     }
     /** @brief NULL address for L3 addresses. */
     static const L3Type& L3NULL() {
         static L3Type o(0);
-	return o;
+    return o;
     }
 public:
     /**

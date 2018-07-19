@@ -25,47 +25,47 @@ using namespace omnetpp;
 
 
 TraCITrafficLightAbstractLogic::TraCITrafficLightAbstractLogic():
-	cSimpleModule(),
-	switchTimer(nullptr)
+    cSimpleModule(),
+    switchTimer(nullptr)
 {
 }
 
 TraCITrafficLightAbstractLogic::~TraCITrafficLightAbstractLogic()
 {
-	cancelAndDelete(switchTimer);
+    cancelAndDelete(switchTimer);
 }
 
 void TraCITrafficLightAbstractLogic::initialize()
 {
-	switchTimer = new cMessage("trySwitch");
+    switchTimer = new cMessage("trySwitch");
 }
 
 void TraCITrafficLightAbstractLogic::handleMessage(cMessage *msg)
 {
-	if(msg->isSelfMessage()) {
-		handleSelfMsg(msg);
-	} else if(msg->arrivedOn("interface$i")) {
-		TraCITrafficLightMessage* tlMsg = check_and_cast<TraCITrafficLightMessage*>(msg);
-		// always check for changed switch time and (re-)schedule switch handler if so
-		if(tlMsg->getChangedAttribute() == TrafficLightAtrributeType::SWITCHTIME) {
-			// schedule handler right before the switch
-			cancelEvent(switchTimer);
-			// make sure the message is not scheduled to the past
-			simtime_t nextTick = std::max(SimTime(std::stoi(tlMsg->getNewValue()), SIMTIME_MS), simTime());
-			scheduleAt(nextTick, switchTimer);
-		}
-		// defer further handling to subclass implementation
-		handleTlIfMsg(tlMsg);
-	} else if (msg->arrivedOn("applLayer$i")) {
-		handleApplMsg(msg);
-	} else {
-		error("Unknown message arrived on %s", msg->getArrivalGate()->getName());
-	}
+    if(msg->isSelfMessage()) {
+        handleSelfMsg(msg);
+    } else if(msg->arrivedOn("interface$i")) {
+        TraCITrafficLightMessage* tlMsg = check_and_cast<TraCITrafficLightMessage*>(msg);
+        // always check for changed switch time and (re-)schedule switch handler if so
+        if(tlMsg->getChangedAttribute() == TrafficLightAtrributeType::SWITCHTIME) {
+            // schedule handler right before the switch
+            cancelEvent(switchTimer);
+            // make sure the message is not scheduled to the past
+            simtime_t nextTick = std::max(SimTime(std::stoi(tlMsg->getNewValue()), SIMTIME_MS), simTime());
+            scheduleAt(nextTick, switchTimer);
+        }
+        // defer further handling to subclass implementation
+        handleTlIfMsg(tlMsg);
+    } else if (msg->arrivedOn("applLayer$i")) {
+        handleApplMsg(msg);
+    } else {
+        error("Unknown message arrived on %s", msg->getArrivalGate()->getName());
+    }
 }
 
 void TraCITrafficLightAbstractLogic::handleSelfMsg(cMessage *msg)
 {
-	if(msg == switchTimer) {
-		handlePossibleSwitch();
-	}
+    if(msg == switchTimer) {
+        handlePossibleSwitch();
+    }
 }

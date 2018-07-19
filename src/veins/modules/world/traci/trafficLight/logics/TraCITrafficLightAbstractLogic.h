@@ -36,18 +36,18 @@ using omnetpp::cSimpleModule;
  */
 class TraCITrafficLightAbstractLogic: public cSimpleModule {
 public:
-	TraCITrafficLightAbstractLogic();
-	virtual ~TraCITrafficLightAbstractLogic();
+    TraCITrafficLightAbstractLogic();
+    virtual ~TraCITrafficLightAbstractLogic();
 
 protected:
-	cMessage* switchTimer;
+    cMessage* switchTimer;
 
-	virtual void initialize();
-	virtual void handleMessage(cMessage *msg);
-	virtual void handleSelfMsg(cMessage *msg);
-	virtual void handleApplMsg(cMessage *msg) = 0;
-	virtual void handleTlIfMsg(TraCITrafficLightMessage *tlMsg) = 0;
-	virtual void handlePossibleSwitch() = 0;
+    virtual void initialize();
+    virtual void handleMessage(cMessage *msg);
+    virtual void handleSelfMsg(cMessage *msg);
+    virtual void handleApplMsg(cMessage *msg) = 0;
+    virtual void handleTlIfMsg(TraCITrafficLightMessage *tlMsg) = 0;
+    virtual void handlePossibleSwitch() = 0;
 };
 
 

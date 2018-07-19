@@ -46,22 +46,22 @@ const simsignalwrap_t ChannelAccess::mobilityStateChangedSignal = simsignalwrap_
 
 BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
 {
-	std::string cmName = nic->hasPar("connectionManagerName")
-						 ? nic->par("connectionManagerName").stringValue()
-						 : "";
-	if (cmName != ""){
-		cModule* ccModule = cSimulation::getActiveSimulation()->getModuleByPath(cmName.c_str());
+    std::string cmName = nic->hasPar("connectionManagerName")
+                         ? nic->par("connectionManagerName").stringValue()
+                         : "";
+    if (cmName != ""){
+        cModule* ccModule = cSimulation::getActiveSimulation()->getModuleByPath(cmName.c_str());
 
-		return dynamic_cast<BaseConnectionManager *>(ccModule);
-	}
-	else {
-		return FindModule<BaseConnectionManager *>::findGlobalModule();
-	}
+        return dynamic_cast<BaseConnectionManager *>(ccModule);
+    }
+    else {
+        return FindModule<BaseConnectionManager *>::findGlobalModule();
+    }
 }
 
 void ChannelAccess::initialize( int stage )
 {
-	BatteryAccess::initialize(stage);
+    BatteryAccess::initialize(stage);
 
     if( stage == 0 ){
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
@@ -87,10 +87,10 @@ void ChannelAccess::sendToChannel(cPacket *msg)
     if(useSendDirect){
         // use Andras stuff
         if( i != gateList.end() ){
-        	simtime_t delay = SIMTIME_ZERO;
+            simtime_t delay = SIMTIME_ZERO;
             for(; i != --gateList.end(); ++i){
-            	//calculate delay (Propagation) to this receiving nic
-            	delay = calculatePropagationDelay(i->first);
+                //calculate delay (Propagation) to this receiving nic
+                delay = calculatePropagationDelay(i->first);
 
                 int radioStart = i->second->getId();
                 int radioEnd = radioStart + i->second->size();
@@ -99,7 +99,7 @@ void ChannelAccess::sendToChannel(cPacket *msg)
                                delay, msg->getDuration(), i->second->getOwnerModule(), g);
             }
             //calculate delay (Propagation) to this receiving nic
-			delay = calculatePropagationDelay(i->first);
+            delay = calculatePropagationDelay(i->first);
 
             int radioStart = i->second->getId();
             int radioEnd = radioStart + i->second->size();
@@ -118,16 +118,16 @@ void ChannelAccess::sendToChannel(cPacket *msg)
         // use our stuff
         coreEV <<"sendToChannel: sending to gates\n";
         if( i != gateList.end() ){
-        	simtime_t delay = SIMTIME_ZERO;
+            simtime_t delay = SIMTIME_ZERO;
             for(; i != --gateList.end(); ++i){
-            	//calculate delay (Propagation) to this receiving nic
-				delay = calculatePropagationDelay(i->first);
+                //calculate delay (Propagation) to this receiving nic
+                delay = calculatePropagationDelay(i->first);
 
                 sendDelayed( static_cast<cPacket*>(msg->dup()),
                              delay, i->second );
             }
             //calculate delay (Propagation) to this receiving nic
-			delay = calculatePropagationDelay(i->first);
+            delay = calculatePropagationDelay(i->first);
 
             sendDelayed( msg, delay, i->second );
         }
@@ -139,27 +139,27 @@ void ChannelAccess::sendToChannel(cPacket *msg)
 }
 
 simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic) {
-	if(!usePropagationDelay)
-		return 0;
+    if(!usePropagationDelay)
+        return 0;
 
-	ChannelAccess *const senderModule   = this;
-	ChannelAccess *const receiverModule = nic->chAccess;
-	//const simtime_t_cref sStart         = simTime();
+    ChannelAccess *const senderModule   = this;
+    ChannelAccess *const receiverModule = nic->chAccess;
+    //const simtime_t_cref sStart         = simTime();
 
-	assert(senderModule); assert(receiverModule);
+    assert(senderModule); assert(receiverModule);
 
-	/** claim the Move pattern of the sender from the Signal */
-	Coord           sendersPos  = senderModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
-	Coord           receiverPos = receiverModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
+    /** claim the Move pattern of the sender from the Signal */
+    Coord           sendersPos  = senderModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
+    Coord           receiverPos = receiverModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
 
-	// this time-point is used to calculate the distance between sending and receiving host
-	return receiverPos.distance(sendersPos) / BaseWorldUtility::speedOfLight();
+    // this time-point is used to calculate the distance between sending and receiving host
+    return receiverPos.distance(sendersPos) / BaseWorldUtility::speedOfLight();
 }
 
 void ChannelAccess::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details)
 {
     if(signalID == mobilityStateChangedSignal) {
-    	ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
+        ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
         Coord                        pos      = mobility->getCurrentPosition();
 
         if(isRegistered) {

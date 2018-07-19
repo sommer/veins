@@ -164,8 +164,8 @@ protected:
                       const cMessage *m);
 
 // private:
-//   	void recordPacket(bool in, MsgType type, const cMessage *);
-//	void printPackets(std::map<MsgType,std::map<int,std::pair<char *,int>* > *> *use, bool in);
+//       void recordPacket(bool in, MsgType type, const cMessage *);
+//    void printPackets(std::map<MsgType,std::map<int,std::pair<char *,int>* > *> *use, bool in);
     /*@}*/
 };
 
