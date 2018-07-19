@@ -28,13 +28,12 @@
  * @author Christoph Sommer
  */
 namespace Veins {
-class AnnotationDummy : public cSimpleModule
-{
-    public:
-        ~AnnotationDummy();
+class AnnotationDummy : public cSimpleModule {
+public:
+    ~AnnotationDummy();
 
-    protected:
+protected:
 };
-}
+} // namespace Veins
 
 #endif

@@ -24,7 +24,6 @@
 
 #include "veins/base/connectionManager/NicEntry.h"
 
-
 namespace Veins {
 
 /**
@@ -35,17 +34,19 @@ namespace Veins {
  * @author Daniel Willkomm
  * @sa ConnectionManager, NicEntry
  */
-class NicEntryDirect: public NicEntry
-{
-  public:
+class NicEntryDirect : public NicEntry {
+public:
     /** @brief Constructor, initializes all members
      */
-    NicEntryDirect(bool debug) : NicEntry(debug) {};
+    NicEntryDirect(bool debug)
+        : NicEntry(debug){};
 
     /**
      * @brief Destructor -- needs to be there...
      */
-    virtual ~NicEntryDirect() {}
+    virtual ~NicEntryDirect()
+    {
+    }
 
     /** @brief Connect two nics
      *

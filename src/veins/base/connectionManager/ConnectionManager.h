@@ -16,10 +16,8 @@ namespace Veins {
  *
  * @ingroup connectionManager
  */
-class MIXIM_API ConnectionManager : public BaseConnectionManager
-{
+class MIXIM_API ConnectionManager : public BaseConnectionManager {
 protected:
-
     /**
      * @brief Calculate interference distance
      *

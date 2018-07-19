@@ -25,55 +25,69 @@
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-template<class V>
+template <class V>
 class Interpolated {
 protected:
-    typedef V                 value_type;
+    typedef V value_type;
     typedef const value_type& value_cref_type;
-    typedef value_type&       value_ref_type;
-    typedef value_type*       value_ptr_type;
+    typedef value_type& value_ref_type;
+    typedef value_type* value_ptr_type;
 
     /** @brief A value this class represents.*/
     value_type value;
+
 public:
     /** @brief Stores if the underlying value is interpolated or not.*/
     const bool isInterpolated;
 
 public:
-    Interpolated(value_cref_type v, bool isIntpl = true):
-        value(v), isInterpolated(isIntpl) {}
+    Interpolated(value_cref_type v, bool isIntpl = true)
+        : value(v)
+        , isInterpolated(isIntpl)
+    {
+    }
 
     /**
      * @brief Copy-constructor which assures that the internal storage is used correctly.
      */
-    Interpolated(const Interpolated<value_type>& o):
-        value(o.value), isInterpolated(o.isInterpolated) {}
+    Interpolated(const Interpolated<value_type>& o)
+        : value(o.value)
+        , isInterpolated(o.isInterpolated)
+    {
+    }
 
-    value_ref_type operator*() {
+    value_ref_type operator*()
+    {
         return value;
     }
 
-    value_ptr_type operator->() {
+    value_ptr_type operator->()
+    {
         return &value;
     }
 
     /**
      * @brief Two Interpolated<V> are compared equal if the value is the same as well as the "isInterpolated" flag.
      */
-    bool operator==(const Interpolated<value_type>& other) const {
+    bool operator==(const Interpolated<value_type>& other) const
+    {
         return value == other.value && isInterpolated == other.isInterpolated;
     }
 
     /**
      * @brief Two Interpolated<V> are compared non equal if the value differs or the "isInterpolated" flag.
      */
-    bool operator!=(const Interpolated<value_type>& other) const {
+    bool operator!=(const Interpolated<value_type>& other) const
+    {
         return value != other.value || isInterpolated != other.isInterpolated;
     }
 
 private:
-    Interpolated():
-        value(), isInterpolated(true) {}
+    Interpolated()
+        : value()
+        , isInterpolated(true)
+    {
+    }
 };
 
 /**
@@ -81,67 +95,81 @@ private:
  *
  * @ingroup mappingDetails
  */
-template<class Pair, class Key>
+template <class Pair, class Key>
 class PairLess {
 public:
-    bool operator()(const Pair& p, const Key& v) const {
+    bool operator()(const Pair& p, const Key& v) const
+    {
         return p.first < v;
     }
 
-    bool operator()(const Key& v, const Pair& p) const {
+    bool operator()(const Key& v, const Pair& p) const
+    {
         return v < p.first;
     }
 
-    bool operator()(const Pair& left, const Pair& right) const {
+    bool operator()(const Pair& left, const Pair& right) const
+    {
         return left.first < right.first;
     }
 };
 
-template<class _ContainerType>
+template <class _ContainerType>
 class InterpolatorBase {
 public:
-    typedef _ContainerType                        storage_type;
-    typedef storage_type                          container_type;
-    typedef typename storage_type::key_type       key_type;
-    typedef const key_type&                       key_cref_type;
-    typedef typename storage_type::mapped_type    mapped_type;
-    typedef const mapped_type&                    mapped_cref_type;
-    typedef typename storage_type::value_type     pair_type;
-    typedef typename storage_type::iterator       iterator;
+    typedef _ContainerType storage_type;
+    typedef storage_type container_type;
+    typedef typename storage_type::key_type key_type;
+    typedef const key_type& key_cref_type;
+    typedef typename storage_type::mapped_type mapped_type;
+    typedef const mapped_type& mapped_cref_type;
+    typedef typename storage_type::value_type pair_type;
+    typedef typename storage_type::iterator iterator;
     typedef typename storage_type::const_iterator const_iterator;
-    typedef PairLess<pair_type, key_type>         comparator_type;
-    typedef Interpolated<mapped_type>             interpolated;
+    typedef PairLess<pair_type, key_type> comparator_type;
+    typedef Interpolated<mapped_type> interpolated;
 
 public:
     /** @brief Comparator for STL functions. */
-    comparator_type    comp;
+    comparator_type comp;
 
 protected:
-    bool               continueOutOfRange;
-    interpolated       outOfRangeVal;
+    bool continueOutOfRange;
+    interpolated outOfRangeVal;
 
 public:
-    InterpolatorBase():
-        continueOutOfRange(true), outOfRangeVal(mapped_type()) {}
+    InterpolatorBase()
+        : continueOutOfRange(true)
+        , outOfRangeVal(mapped_type())
+    {
+    }
 
-    InterpolatorBase(mapped_cref_type oorv):
-        continueOutOfRange(false), outOfRangeVal(oorv) {}
+    InterpolatorBase(mapped_cref_type oorv)
+        : continueOutOfRange(false)
+        , outOfRangeVal(oorv)
+    {
+    }
 
-    virtual ~InterpolatorBase() {}
+    virtual ~InterpolatorBase()
+    {
+    }
 
     /** @{
      *  @brief Getter and Setter method for out of range value.
      */
-    void setOutOfRangeVal(mapped_cref_type oorv) {
+    void setOutOfRangeVal(mapped_cref_type oorv)
+    {
         continueOutOfRange = false;
-        outOfRangeVal      = interpolated(oorv);
+        outOfRangeVal = interpolated(oorv);
     }
-    mapped_cref_type getOutOfRangeVal(void) const {
+    mapped_cref_type getOutOfRangeVal(void) const
+    {
         return *(&outOfRangeVal);
     }
     /** @} */
 
-    bool continueAtOutOfRange(void) const {
+    bool continueAtOutOfRange(void) const
+    {
         return continueOutOfRange;
     }
 
@@ -156,11 +184,10 @@ public:
      * This state can be retrieved with the "isInterpolated"-Member of the returned
      * "interpolated".
      */
-    interpolated operator()(const const_iterator& first,
-                             const const_iterator& last,
-                             key_cref_type         pos) const {
+    interpolated operator()(const const_iterator& first, const const_iterator& last, key_cref_type pos) const
+    {
 
-        if(first == last) {
+        if (first == last) {
             return outOfRangeVal;
         }
 
@@ -170,7 +197,10 @@ public:
     }
 
     /** @brief Represents the interpolator a stepping function. */
-    virtual bool isStepping() const {return false;}
+    virtual bool isStepping() const
+    {
+        return false;
+    }
 
     /**
      * @brief Functor operator of this class which interpolates the value
@@ -188,18 +218,14 @@ public:
      *
      * @return The value of a element between first and last which is nearest to pos and the position is of the element is less or equal to pos.
      */
-    virtual
-    interpolated operator()(const const_iterator& first,
-                             const const_iterator& last,
-                             key_cref_type         pos,
-                             const_iterator        upperBound) const = 0;
+    virtual interpolated operator()(const const_iterator& first, const const_iterator& last, key_cref_type pos, const_iterator upperBound) const = 0;
 
 protected:
-    interpolated asInterpolated(mapped_cref_type rVal, bool bIsOutOfRange, bool bIsInterpolated = true) const {
-        if (!bIsOutOfRange)
-            return interpolated(rVal, bIsInterpolated);
+    interpolated asInterpolated(mapped_cref_type rVal, bool bIsOutOfRange, bool bIsInterpolated = true) const
+    {
+        if (!bIsOutOfRange) return interpolated(rVal, bIsInterpolated);
 
-        if(continueOutOfRange)
+        if (continueOutOfRange)
             return interpolated(rVal);
         else
             return outOfRangeVal;
@@ -216,32 +242,38 @@ protected:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-template<class _ContainerType>
+template <class _ContainerType>
 class NextSmaller : public InterpolatorBase<_ContainerType> {
 protected:
     typedef InterpolatorBase<_ContainerType> base_class_type;
 
 public:
-    typedef typename base_class_type::storage_type     storage_type;
-    typedef typename base_class_type::container_type   container_type;
-    typedef typename base_class_type::key_type         key_type;
-    typedef typename base_class_type::key_cref_type    key_cref_type;
-    typedef typename base_class_type::mapped_type      mapped_type;
+    typedef typename base_class_type::storage_type storage_type;
+    typedef typename base_class_type::container_type container_type;
+    typedef typename base_class_type::key_type key_type;
+    typedef typename base_class_type::key_cref_type key_cref_type;
+    typedef typename base_class_type::mapped_type mapped_type;
     typedef typename base_class_type::mapped_cref_type mapped_cref_type;
-    typedef typename base_class_type::pair_type        pair_type;
-    typedef typename base_class_type::iterator         iterator;
-    typedef typename base_class_type::const_iterator   const_iterator;
-    typedef typename base_class_type::comparator_type  comparator_type;
-    typedef typename base_class_type::interpolated     interpolated;
+    typedef typename base_class_type::pair_type pair_type;
+    typedef typename base_class_type::iterator iterator;
+    typedef typename base_class_type::const_iterator const_iterator;
+    typedef typename base_class_type::comparator_type comparator_type;
+    typedef typename base_class_type::interpolated interpolated;
 
 public:
-    NextSmaller():
-        base_class_type() {}
+    NextSmaller()
+        : base_class_type()
+    {
+    }
 
-    NextSmaller(mapped_cref_type oorv):
-        base_class_type(oorv) {}
+    NextSmaller(mapped_cref_type oorv)
+        : base_class_type(oorv)
+    {
+    }
 
-    virtual ~NextSmaller() {}
+    virtual ~NextSmaller()
+    {
+    }
 
     /**
      * @brief Functor operator of this class which interpolates the value
@@ -259,15 +291,12 @@ public:
      *
      * @return The value of a element between first and last which is nearest to pos and the position is of the element is less or equal to pos.
      */
-    virtual
-    interpolated operator()(const const_iterator& first,
-                             const const_iterator& last,
-                             key_cref_type         pos,
-                             const_iterator        upperBound) const {
-        if(first == last) {
+    virtual interpolated operator()(const const_iterator& first, const const_iterator& last, key_cref_type pos, const_iterator upperBound) const
+    {
+        if (first == last) {
             return base_class_type::outOfRangeVal;
         }
-        if(upperBound == first) {
+        if (upperBound == first) {
             return this->asInterpolated(upperBound->second, true);
         }
 
@@ -276,7 +305,10 @@ public:
     }
 
     /** @brief Represents the interpolator a stepping function. */
-    virtual bool isStepping() const {return true;}
+    virtual bool isStepping() const
+    {
+        return true;
+    }
 };
 
 /**
@@ -287,32 +319,38 @@ public:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-template<class _ContainerType>
+template <class _ContainerType>
 class Nearest : public InterpolatorBase<_ContainerType> {
 protected:
     typedef InterpolatorBase<_ContainerType> base_class_type;
 
 public:
-    typedef typename base_class_type::storage_type     storage_type;
-    typedef typename base_class_type::container_type   container_type;
-    typedef typename base_class_type::key_type         key_type;
-    typedef typename base_class_type::key_cref_type    key_cref_type;
-    typedef typename base_class_type::mapped_type      mapped_type;
+    typedef typename base_class_type::storage_type storage_type;
+    typedef typename base_class_type::container_type container_type;
+    typedef typename base_class_type::key_type key_type;
+    typedef typename base_class_type::key_cref_type key_cref_type;
+    typedef typename base_class_type::mapped_type mapped_type;
     typedef typename base_class_type::mapped_cref_type mapped_cref_type;
-    typedef typename base_class_type::pair_type        pair_type;
-    typedef typename base_class_type::iterator         iterator;
-    typedef typename base_class_type::const_iterator   const_iterator;
-    typedef typename base_class_type::comparator_type  comparator_type;
-    typedef typename base_class_type::interpolated     interpolated;
+    typedef typename base_class_type::pair_type pair_type;
+    typedef typename base_class_type::iterator iterator;
+    typedef typename base_class_type::const_iterator const_iterator;
+    typedef typename base_class_type::comparator_type comparator_type;
+    typedef typename base_class_type::interpolated interpolated;
 
 public:
-    Nearest():
-        base_class_type() {}
+    Nearest()
+        : base_class_type()
+    {
+    }
 
-    Nearest(mapped_cref_type oorv):
-        base_class_type(oorv) {}
+    Nearest(mapped_cref_type oorv)
+        : base_class_type(oorv)
+    {
+    }
 
-    virtual ~Nearest() {}
+    virtual ~Nearest()
+    {
+    }
 
     /**
      * @brief Functor operator of this class which interpolates the value
@@ -330,46 +368,45 @@ public:
      *
      * @return The value of a element between first and last which is nearest to pos.
      */
-    virtual
-    interpolated operator()(const const_iterator& first,
-                             const const_iterator& last,
-                             key_cref_type         pos,
-                             const_iterator        upperBound) const {
-        if(first == last) {
+    virtual interpolated operator()(const const_iterator& first, const const_iterator& last, key_cref_type pos, const_iterator upperBound) const
+    {
+        if (first == last) {
             return base_class_type::outOfRangeVal;
         }
-        if(upperBound == first){
+        if (upperBound == first) {
             return this->asInterpolated(upperBound->second, true);
         }
 
         const_iterator left = upperBound;
         --left;
 
-        if(left->first == pos)
-            return this->asInterpolated(left->second, false, false);
+        if (left->first == pos) return this->asInterpolated(left->second, false, false);
 
         const_iterator right = upperBound;
 
-        if(right == last) {
+        if (right == last) {
             return this->asInterpolated(left->second, true);
         }
 
-        return this->asInterpolated( ((pos - left->first < right->first - pos) ? left : right)->second, false);
+        return this->asInterpolated(((pos - left->first < right->first - pos) ? left : right)->second, false);
     }
 };
 
-template<class TFrom, class TTo>
-TTo cast_it(TFrom rValToCast) {
+template <class TFrom, class TTo>
+TTo cast_it(TFrom rValToCast)
+{
     return static_cast<TTo>(rValToCast);
 }
 
-template<class T>
-T cast_it(T rValToCast) {
+template <class T>
+T cast_it(T rValToCast)
+{
     return rValToCast;
 }
 
-template<class T>
-T cast_it(simtime_t rValToCast) {
+template <class T>
+T cast_it(simtime_t rValToCast)
+{
     return cast_it(SIMTIME_DBL(rValToCast));
 }
 
@@ -380,32 +417,38 @@ T cast_it(simtime_t rValToCast) {
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-template<class _ContainerType>
-class Linear : public InterpolatorBase<_ContainerType>  {
+template <class _ContainerType>
+class Linear : public InterpolatorBase<_ContainerType> {
 protected:
     typedef InterpolatorBase<_ContainerType> base_class_type;
 
 public:
-    typedef typename base_class_type::storage_type     storage_type;
-    typedef typename base_class_type::container_type   container_type;
-    typedef typename base_class_type::key_type         key_type;
-    typedef typename base_class_type::key_cref_type    key_cref_type;
-    typedef typename base_class_type::mapped_type      mapped_type;
+    typedef typename base_class_type::storage_type storage_type;
+    typedef typename base_class_type::container_type container_type;
+    typedef typename base_class_type::key_type key_type;
+    typedef typename base_class_type::key_cref_type key_cref_type;
+    typedef typename base_class_type::mapped_type mapped_type;
     typedef typename base_class_type::mapped_cref_type mapped_cref_type;
-    typedef typename base_class_type::pair_type        pair_type;
-    typedef typename base_class_type::iterator         iterator;
-    typedef typename base_class_type::const_iterator   const_iterator;
-    typedef typename base_class_type::comparator_type  comparator_type;
-    typedef typename base_class_type::interpolated     interpolated;
+    typedef typename base_class_type::pair_type pair_type;
+    typedef typename base_class_type::iterator iterator;
+    typedef typename base_class_type::const_iterator const_iterator;
+    typedef typename base_class_type::comparator_type comparator_type;
+    typedef typename base_class_type::interpolated interpolated;
 
 public:
-    Linear():
-        base_class_type() {}
+    Linear()
+        : base_class_type()
+    {
+    }
 
-    Linear(mapped_cref_type oorv):
-        base_class_type(oorv) {}
+    Linear(mapped_cref_type oorv)
+        : base_class_type(oorv)
+    {
+    }
 
-    virtual ~Linear() {}
+    virtual ~Linear()
+    {
+    }
 
     /**
      * @brief Functor operator of this class which linear interpolates the value
@@ -421,25 +464,21 @@ public:
      * This state can be retrieved with the "isInterpolated"-Member of the returned
      * "interpolated".
      */
-    virtual
-    interpolated operator()(const const_iterator& first,
-                            const const_iterator& last,
-                            key_cref_type         pos,
-                            const_iterator        upperBound) const {
-        if(first == last) {
+    virtual interpolated operator()(const const_iterator& first, const const_iterator& last, key_cref_type pos, const_iterator upperBound) const
+    {
+        if (first == last) {
             return base_class_type::outOfRangeVal;
         }
-        if(upperBound == first){
+        if (upperBound == first) {
             return this->asInterpolated(upperBound->second, true);
         }
 
         const_iterator right = upperBound;
         const_iterator left = --upperBound;
 
-        if(left->first == pos)
-            return this->asInterpolated(left->second, false, false);
+        if (left->first == pos) return this->asInterpolated(left->second, false, false);
 
-        if(right == last){
+        if (right == last) {
             return this->asInterpolated(left->second, true);
         }
 
@@ -450,29 +489,28 @@ protected:
     /**
      * @brief Calculates the linear interpolation factor used for the interpolation.
      */
-    static mapped_type linearInterpolationFactor(key_cref_type t, key_cref_type t0, key_cref_type t1){
-        assert( (t0 <= t && t <= t1) || (t0 >= t && t >= t1) );
+    static mapped_type linearInterpolationFactor(key_cref_type t, key_cref_type t0, key_cref_type t1)
+    {
+        assert((t0 <= t && t <= t1) || (t0 >= t && t >= t1));
         if (t0 == t1) {
             return 0;
         }
-        return cast_it<mapped_type>( (t - t0) / (t1 - t0) );
+        return cast_it<mapped_type>((t - t0) / (t1 - t0));
     }
 
-    static mapped_type linearInterpolation(key_cref_type   t,
-                                          key_cref_type    t0, key_cref_type    t1,
-                                          mapped_cref_type v0, mapped_cref_type v1) {
+    static mapped_type linearInterpolation(key_cref_type t, key_cref_type t0, key_cref_type t1, mapped_cref_type v0, mapped_cref_type v1)
+    {
         typedef std::numeric_limits<mapped_type> tnumlimits_for_v;
 
         if (tnumlimits_for_v::has_infinity) {
             // we have possible infinity values, so that we can do some checks
-            const mapped_type cInf     = tnumlimits_for_v::infinity();
-            const bool        bV0IsInf = (v0 == cInf) || (tnumlimits_for_v::is_signed ? (v0 == -cInf) : false);
+            const mapped_type cInf = tnumlimits_for_v::infinity();
+            const bool bV0IsInf = (v0 == cInf) || (tnumlimits_for_v::is_signed ? (v0 == -cInf) : false);
 
-            if ( bV0IsInf || (v1 == cInf) || (tnumlimits_for_v::is_signed ? (v1 == -cInf) : false) ) {
+            if (bV0IsInf || (v1 == cInf) || (tnumlimits_for_v::is_signed ? (v1 == -cInf) : false)) {
                 if (tnumlimits_for_v::is_signed && (v1 == -v0)) {
                     // v0 == +/-Inf and v1 == -/+Inf
-                    if (tnumlimits_for_v::has_quiet_NaN)
-                        return tnumlimits_for_v::quiet_NaN();
+                    if (tnumlimits_for_v::has_quiet_NaN) return tnumlimits_for_v::quiet_NaN();
                     // mhhh!? No quiet_NaN available, so we fall back to old
                     // handling :(
                 }
@@ -482,7 +520,7 @@ protected:
                 }
             }
         }
-        assert( (t0 <= t && t <= t1) || (t0 >= t && t >= t1) );
+        assert((t0 <= t && t <= t1) || (t0 >= t && t >= t1));
         if (t0 == t1) {
             assert(v0 == v1);
             return v0;
@@ -490,7 +528,7 @@ protected:
         const mapped_type mu = linearInterpolationFactor(t, t0, t1);
 
         return v0 * (static_cast<mapped_type>(1) - mu) + v1 * mu;
-        //return v0 + (((v1 - v0) * (t - t0)) / (t1 - t0));
+        // return v0 + (((v1 - v0) * (t - t0)) / (t1 - t0));
     }
 };
 
@@ -537,43 +575,51 @@ protected:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-template< typename _Interpolator, typename _IteratorType = typename _Interpolator::const_iterator >
+template <typename _Interpolator, typename _IteratorType = typename _Interpolator::const_iterator>
 class ConstInterpolateableIterator {
 public:
-    typedef _Interpolator                                interpolator_type;
-    typedef typename interpolator_type::container_type   container_type;
-    typedef typename interpolator_type::key_type         key_type;
-    typedef typename interpolator_type::key_cref_type    key_cref_type;
-    typedef typename interpolator_type::mapped_type      mapped_type;
+    typedef _Interpolator interpolator_type;
+    typedef typename interpolator_type::container_type container_type;
+    typedef typename interpolator_type::key_type key_type;
+    typedef typename interpolator_type::key_cref_type key_cref_type;
+    typedef typename interpolator_type::mapped_type mapped_type;
     typedef typename interpolator_type::mapped_cref_type mapped_cref_type;
-    typedef typename interpolator_type::pair_type        pair_type;
-    typedef typename interpolator_type::iterator         iterator;
-    typedef typename interpolator_type::const_iterator   const_iterator;
-    typedef typename interpolator_type::comparator_type  comparator_type;
+    typedef typename interpolator_type::pair_type pair_type;
+    typedef typename interpolator_type::iterator iterator;
+    typedef typename interpolator_type::const_iterator const_iterator;
+    typedef typename interpolator_type::comparator_type comparator_type;
 
-    typedef _IteratorType                                used_iterator;
+    typedef _IteratorType used_iterator;
     /** @brief typedef for the returned Interpolated value of this class.*/
-    //typedef Interpolated<V> interpolated;
-    typedef typename interpolator_type::interpolated     interpolated;
-protected:
-    used_iterator             first;
-    used_iterator             last;
-    used_iterator             right;
+    // typedef Interpolated<V> interpolated;
+    typedef typename interpolator_type::interpolated interpolated;
 
-    key_type                  position;
-    const interpolator_type&  interpolate;
+protected:
+    used_iterator first;
+    used_iterator last;
+    used_iterator right;
+
+    key_type position;
+    const interpolator_type& interpolate;
+
 public:
     /**
      * @brief Initializes the iterator with the passed Iterators
      * as boundaries.
      */
-    ConstInterpolateableIterator(const used_iterator& first, const used_iterator& last, const interpolator_type& intpl):
-        first(first), last(last), right(first), position(), interpolate(intpl) {
+    ConstInterpolateableIterator(const used_iterator& first, const used_iterator& last, const interpolator_type& intpl)
+        : first(first)
+        , last(last)
+        , right(first)
+        , position()
+        , interpolate(intpl)
+    {
 
         jumpToBegin();
     }
 
-    bool operator==(const ConstInterpolateableIterator& other) {
+    bool operator==(const ConstInterpolateableIterator& other)
+    {
         return position == other.position && right == other.right;
     }
 
@@ -581,12 +627,11 @@ public:
      * @brief Moves the iterator to the passed position. This position
      * can be any value of the Key-type.
      */
-    void jumpTo(key_cref_type pos) {
-        if(pos == position)
-            return;
+    void jumpTo(key_cref_type pos)
+    {
+        if (pos == position) return;
 
-        if(first != last)
-            right = std::upper_bound(first, last, pos, interpolate.comp);
+        if (first != last) right = std::upper_bound(first, last, pos, interpolate.comp);
 
         position = pos;
     }
@@ -594,12 +639,14 @@ public:
     /**
      * @brief Moves the iterator to the first element.
      */
-    void jumpToBegin() {
+    void jumpToBegin()
+    {
         right = first;
-        if(right != last) {
+        if (right != last) {
             position = right->first;
             ++right;
-        } else {
+        }
+        else {
             position = key_type();
         }
     }
@@ -612,12 +659,11 @@ public:
      * of the iterator. If this is the case this method will be faster than the
      * jumpTo-method.
      */
-    void iterateTo(key_cref_type pos) {
-        if(pos == position)
-            return;
+    void iterateTo(key_cref_type pos)
+    {
+        if (pos == position) return;
 
-        while(right != last && !(pos < right->first))
-            ++right;
+        while (right != last && !(pos < right->first)) ++right;
 
         position = pos;
     }
@@ -630,16 +676,19 @@ public:
      * If the current position is after the position of the last element of the data
      * structure this method will increase the current position with the ++ operator.
      */
-    void next() {
-        if(hasNext()) {
+    void next()
+    {
+        if (hasNext()) {
             position = right->first;
             ++right;
-        } else
+        }
+        else
             position += 1;
     }
 
-    key_type getNextPosition(){
-        if(hasNext())
+    key_type getNextPosition()
+    {
+        if (hasNext())
             return right->first;
         else
             return position + 1;
@@ -649,9 +698,9 @@ public:
      * @brief Returns true if the current position of the iterator is between the
      * position of the first and the last entry of the data structure.
      */
-    bool inRange() const{
-        if(first == last)
-            return false;
+    bool inRange() const
+    {
+        if (first == last) return false;
 
         const_iterator tail = last;
         return !(position < first->first) && !((--tail)->first < position);
@@ -662,7 +711,8 @@ public:
      * of an a valid entry of the data structure. This means if the current position
      * is smaller than position of the last entry.
      */
-    bool hasNext() const{
+    bool hasNext() const
+    {
         return right != last;
     }
 
@@ -672,14 +722,17 @@ public:
      *
      * See definition of Interpolated on details on the return type.
      */
-    interpolated getValue() const{
+    interpolated getValue() const
+    {
         return interpolate(first, last, position, right);
     }
 
-    interpolated getNextValue() const{
-        if(right == last) {
+    interpolated getNextValue() const
+    {
+        if (right == last) {
             return interpolate(first, last, position + 1, right);
-        } else {
+        }
+        else {
             const_iterator tmp = right;
             return interpolate(first, last, right->first, ++tmp);
         }
@@ -688,11 +741,13 @@ public:
     /**
      * @brief Returns the current position of the iterator.
      */
-    key_cref_type getPosition() const{
+    key_cref_type getPosition() const
+    {
         return position;
     }
 
-    const interpolator_type&  getInterpolator() const {
+    const interpolator_type& getInterpolator() const
+    {
         return interpolate;
     }
 };
@@ -713,48 +768,52 @@ public:
  * @author Karl Wessel
  * @ingroup mappingDetails
  */
-template< typename TInterpolator >
-class InterpolateableIterator : public ConstInterpolateableIterator<TInterpolator, typename TInterpolator::iterator>
-{
+template <typename TInterpolator>
+class InterpolateableIterator : public ConstInterpolateableIterator<TInterpolator, typename TInterpolator::iterator> {
 protected:
-    typedef ConstInterpolateableIterator<TInterpolator, typename TInterpolator::iterator>
-                                                                    base_class_type;
-    typedef typename base_class_type::container_type                container_type;
-    typedef typename container_type::const_iterator                 const_iterator;
-    typedef typename container_type::iterator                       iterator;
-    typedef typename base_class_type::interpolator_type             interpolator_type;
-    typedef typename base_class_type::key_type                      key_type;
-    typedef typename base_class_type::key_cref_type                 key_cref_type;
-    typedef typename base_class_type::mapped_type                   mapped_type;
-    typedef typename base_class_type::mapped_cref_type              mapped_cref_type;
-    typedef typename container_type::value_type                     pair_type;
-    typedef typename base_class_type::comparator_type               comparator_type;
+    typedef ConstInterpolateableIterator<TInterpolator, typename TInterpolator::iterator> base_class_type;
+    typedef typename base_class_type::container_type container_type;
+    typedef typename container_type::const_iterator const_iterator;
+    typedef typename container_type::iterator iterator;
+    typedef typename base_class_type::interpolator_type interpolator_type;
+    typedef typename base_class_type::key_type key_type;
+    typedef typename base_class_type::key_cref_type key_cref_type;
+    typedef typename base_class_type::mapped_type mapped_type;
+    typedef typename base_class_type::mapped_cref_type mapped_cref_type;
+    typedef typename container_type::value_type pair_type;
+    typedef typename base_class_type::comparator_type comparator_type;
 
     /** @brief typedef for the returned Interpolated value of this class.*/
-    //typedef Interpolated<V> interpolated;
-    typedef typename interpolator_type::interpolated                interpolated;
+    // typedef Interpolated<V> interpolated;
+    typedef typename interpolator_type::interpolated interpolated;
 
     container_type& cont;
 
 public:
-    InterpolateableIterator(container_type& cont, const interpolator_type& intpl):
-        base_class_type(cont.begin(), cont.end(), intpl), cont(cont) {}
+    InterpolateableIterator(container_type& cont, const interpolator_type& intpl)
+        : base_class_type(cont.begin(), cont.end(), intpl)
+        , cont(cont)
+    {
+    }
 
     /**
      * @brief: Changes (and adds if necessary) the value for the entry at the
      * current position of the iterator to the passed value
      */
-    void setValue(mapped_cref_type value) {
-        //container is empty or position is smaller first entry
-        if(this->right == this->first) {
-            //insert new entry before first entry and store new entry as new first
+    void setValue(mapped_cref_type value)
+    {
+        // container is empty or position is smaller first entry
+        if (this->right == this->first) {
+            // insert new entry before first entry and store new entry as new first
             this->first = cont.insert(this->first, std::make_pair(this->position, value));
-        } else {
+        }
+        else {
             iterator left = this->right;
             --left;
-            if(left->first == this->position) {
+            if (left->first == this->position) {
                 left->second = value;
-            } else {
+            }
+            else {
                 cont.insert(this->right, std::make_pair(this->position, value));
             }
         }
@@ -772,46 +831,52 @@ public:
  * @sa Mapping
  * @ingroup mappingDetails
  */
-template< class TInterpolator, class TContainer = typename TInterpolator::container_type >
+template <class TInterpolator, class TContainer = typename TInterpolator::container_type>
 class InterpolateableMap : public TContainer {
 public:
-    typedef TContainer                                              container_type;
-    typedef TInterpolator                                           interpolator_type;
-    typedef container_type                                          base_class_type;
-    typedef typename base_class_type::key_type                      key_type;
-    typedef const key_type&                                         key_cref_type;
-    typedef typename base_class_type::mapped_type                   mapped_type;
-    typedef typename base_class_type::value_type                    pair_type;
-    typedef const mapped_type&                                      mapped_cref_type;
+    typedef TContainer container_type;
+    typedef TInterpolator interpolator_type;
+    typedef container_type base_class_type;
+    typedef typename base_class_type::key_type key_type;
+    typedef const key_type& key_cref_type;
+    typedef typename base_class_type::mapped_type mapped_type;
+    typedef typename base_class_type::value_type pair_type;
+    typedef const mapped_type& mapped_cref_type;
 
     /** @brief typedef for the returned Interpolated value of this class.*/
-    //typedef Interpolated<V> interpolated;
-    typedef typename interpolator_type::interpolated                interpolated;
-    typedef typename base_class_type::const_iterator                const_iterator;
-    typedef typename base_class_type::iterator                      iterator;
+    // typedef Interpolated<V> interpolated;
+    typedef typename interpolator_type::interpolated interpolated;
+    typedef typename base_class_type::const_iterator const_iterator;
+    typedef typename base_class_type::iterator iterator;
 
-    typedef InterpolateableIterator<TInterpolator>                  iterator_intpl;
-    typedef ConstInterpolateableIterator<TInterpolator>             const_iterator_intpl;
+    typedef InterpolateableIterator<TInterpolator> iterator_intpl;
+    typedef ConstInterpolateableIterator<TInterpolator> const_iterator_intpl;
 
 protected:
-
     interpolator_type interpolate;
+
 public:
+    InterpolateableMap()
+    {
+    }
 
-    InterpolateableMap() {}
+    InterpolateableMap(mapped_cref_type oorv)
+        : interpolate(oorv)
+    {
+    }
 
-    InterpolateableMap(mapped_cref_type oorv):
-        interpolate(oorv) {}
-
-    void setOutOfRangeVal(mapped_cref_type oorv) {
+    void setOutOfRangeVal(mapped_cref_type oorv)
+    {
         interpolate.setOutOfRangeVal(oorv);
     }
 
-    interpolated getIntplValue(key_cref_type pos) const {
+    interpolated getIntplValue(key_cref_type pos) const
+    {
         return interpolate(this->begin(), this->end(), pos, this->upper_bound(pos));
     }
 
-    const_iterator_intpl findIntpl(key_cref_type pos) const{
+    const_iterator_intpl findIntpl(key_cref_type pos) const
+    {
         const_iterator_intpl it(this->begin(), this->end(), interpolate);
 
         it.jumpTo(pos);
@@ -819,13 +884,15 @@ public:
         return it;
     }
 
-    const_iterator_intpl beginIntpl() const{
+    const_iterator_intpl beginIntpl() const
+    {
         const_iterator_intpl it(this->begin(), this->end(), interpolate);
 
         return it;
     }
 
-    iterator_intpl findIntpl(key_cref_type pos)  __attribute__ ((noinline)) {
+    iterator_intpl findIntpl(key_cref_type pos) __attribute__((noinline))
+    {
         iterator_intpl it(*this, interpolate);
 
         it.jumpTo(pos);
@@ -833,7 +900,8 @@ public:
         return it;
     }
 
-    iterator_intpl beginIntpl() {
+    iterator_intpl beginIntpl()
+    {
         iterator_intpl it(*this, interpolate);
 
         return it;

@@ -10,27 +10,36 @@
 namespace Veins {
 
 class MIXIM_API PassedMessage : public cObject {
- public:
+public:
     enum gates_t {
         UPPER_DATA,
-    UPPER_CONTROL,
-    LOWER_DATA,
-    LOWER_CONTROL
+        UPPER_CONTROL,
+        LOWER_DATA,
+        LOWER_CONTROL
     };
 
     enum direction_t {
         INCOMING,
         OUTGOING
     };
-    
- public:
-    static const char *gateToString(gates_t g) {
-        const char *s;
-        switch(g) {
-        case UPPER_DATA: s = "UPPER_DATA"; break;
-        case UPPER_CONTROL: s = "UPPER_CONTROL"; break;
-        case LOWER_DATA: s = "LOWER_DATA"; break;
-        case LOWER_CONTROL: s = "LOWER_CONTROL"; break;
+
+public:
+    static const char* gateToString(gates_t g)
+    {
+        const char* s;
+        switch (g) {
+        case UPPER_DATA:
+            s = "UPPER_DATA";
+            break;
+        case UPPER_CONTROL:
+            s = "UPPER_CONTROL";
+            break;
+        case LOWER_DATA:
+            s = "LOWER_DATA";
+            break;
+        case LOWER_CONTROL:
+            s = "LOWER_CONTROL";
+            break;
         default:
             throw cRuntimeError("PassedMessage::gateToString: got invalid value");
             s = 0;
@@ -38,9 +47,9 @@ class MIXIM_API PassedMessage : public cObject {
         }
         return s;
     }
-    
- public:
-    // meta information 
+
+public:
+    // meta information
     int fromModule;
     gates_t gateType;
     direction_t direction;
@@ -53,4 +62,3 @@ class MIXIM_API PassedMessage : public cObject {
 } // namespace Veins
 
 #endif
-

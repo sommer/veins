@@ -19,7 +19,8 @@
 //
 
 #include <omnetpp.h>
-namespace omnetpp { }
+namespace omnetpp {
+}
 using namespace omnetpp;
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
@@ -31,7 +32,8 @@ using namespace omnetpp;
 
 using Veins::TraCILauncher;
 
-TraCILauncher::TraCILauncher(std::string commandLine) {
+TraCILauncher::TraCILauncher(std::string commandLine)
+{
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
@@ -47,11 +49,10 @@ TraCILauncher::TraCILauncher(std::string commandLine) {
         std::string msg = "undefined error";
 
         DWORD errorMessageID = ::GetLastError();
-        if(errorMessageID != 0) {
+        if (errorMessageID != 0) {
 
             LPSTR messageBuffer = nullptr;
-            size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+            size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &messageBuffer, 0, NULL);
 
             std::string message(messageBuffer, size);
             LocalFree(messageBuffer);
@@ -61,14 +62,15 @@ TraCILauncher::TraCILauncher(std::string commandLine) {
         msg = std::string() + "Error launching TraCI server (\"" + commandLine + "\"): " + msg + ". Make sure you have set $PATH correctly.";
 
         throw cRuntimeError(msg.c_str());
-    } else {
+    }
+    else {
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
     }
 
 #else
     pid = fork();
-    if(pid == 0) {
+    if (pid == 0) {
         signal(SIGINT, SIG_IGN);
         int r = system(commandLine.c_str());
         if (r == -1) {
@@ -82,8 +84,8 @@ TraCILauncher::TraCILauncher(std::string commandLine) {
 #endif
 }
 
-
-TraCILauncher::~TraCILauncher() {
+TraCILauncher::~TraCILauncher()
+{
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
 #else
     if (pid) {
@@ -92,5 +94,3 @@ TraCILauncher::~TraCILauncher() {
     }
 #endif
 }
-
-

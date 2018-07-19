@@ -16,8 +16,6 @@ namespace Veins {
 
 using Veins::AirFrame;
 
-
-
 /**
  * @brief A class to represent the result of a processed packet (that is not
  * noise) by the Decider.
@@ -30,29 +28,30 @@ using Veins::AirFrame;
  *
  * @ingroup decider
  */
-class MIXIM_API DeciderResult
-{
+class MIXIM_API DeciderResult {
 protected:
     /** Stores if the AirFrame for this result was received correct.*/
     bool isCorrect;
-public:
 
-    virtual ~DeciderResult() {}
+public:
+    virtual ~DeciderResult()
+    {
+    }
 
     /**
      * @brief Initializes the DeciderResult with the passed bool, or true
      * if omitted.
      */
-    DeciderResult(bool isCorrect = true):
-        isCorrect(isCorrect) {}
+    DeciderResult(bool isCorrect = true)
+        : isCorrect(isCorrect)
+    {
+    }
 
     /**
      * @brief A Function that returns a very basic result about the Signal.
      */
-     virtual bool isSignalCorrect() const;
-
+    virtual bool isSignalCorrect() const;
 };
-
 
 /**
  * @brief The basic Decider class
@@ -67,8 +66,7 @@ public:
  *
  * @ingroup decider
  */
-class MIXIM_API Decider
-{
+class MIXIM_API Decider {
 protected:
     /** @brief A pointer to the physical layer of this Decider. */
     DeciderToPhyInterface* phy;
@@ -80,13 +78,14 @@ protected:
     typedef DeciderToPhyInterface::AirFrameVector AirFrameVector;
 
 public:
-
     /**
      * @brief Initializes the Decider with a pointer to its PhyLayer
      */
     Decider(DeciderToPhyInterface* phy);
 
-    virtual ~Decider() {}
+    virtual ~Decider()
+    {
+    }
 
     /**
      * @brief This function processes a AirFrame given by the PhyLayer and
@@ -98,7 +97,9 @@ public:
      * @brief Method to be called by an OMNeT-module during its own finish(),
      * to enable a decider to do some things.
      */
-    virtual void finish() {}
+    virtual void finish()
+    {
+    }
 
     /**
      * @brief Called by phy layer to indicate that the channel this radio
@@ -110,7 +111,9 @@ public:
      *
      * @param newChannel The new channel the radio has changed to.
      */
-    virtual void channelChanged(int newChannel) {}
+    virtual void channelChanged(int newChannel)
+    {
+    }
 
     /**
      * @brief Notifies the decider that phy layer is starting a transmission.
@@ -121,8 +124,9 @@ public:
      * to this method, the decider can flag the ongoing frame as non received
      * because of the transmission.
      */
-    virtual void switchToTx() {}
-
+    virtual void switchToTx()
+    {
+    }
 };
 
 } // namespace Veins

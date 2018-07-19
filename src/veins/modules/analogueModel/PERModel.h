@@ -22,12 +22,16 @@ namespace Veins {
 class MIXIM_API PERModel : public AnalogueModel {
 protected:
     double packetErrorRate;
+
 public:
     /** @brief The PERModel constructor takes as argument the packet error rate to apply (must be between 0 and 1). */
-    PERModel(double per): packetErrorRate(per) { assert(per <= 1 && per >= 0);}
+    PERModel(double per)
+        : packetErrorRate(per)
+    {
+        assert(per <= 1 && per >= 0);
+    }
 
-    virtual void filterSignal(Signal *, const Coord&, const Coord&);
-
+    virtual void filterSignal(Signal*, const Coord&, const Coord&);
 };
 
 } // namespace Veins

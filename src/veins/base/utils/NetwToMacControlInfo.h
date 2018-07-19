@@ -41,36 +41,37 @@ namespace Veins {
  * @ingroup netwLayer
  * @author Daniel Willkomm
  **/
-class MIXIM_API NetwToMacControlInfo : public cObject
-{
-  protected:
+class MIXIM_API NetwToMacControlInfo : public cObject {
+protected:
     /** @brief MAC address of the sending or receiving node*/
     LAddress::L2Type nextHopMac;
 
-  public:
+public:
     /** @brief Default constructor*/
     NetwToMacControlInfo(const LAddress::L2Type& addr = LAddress::L2NULL())
-      : cObject()
-      , nextHopMac(addr)
-    {
-    };
+        : cObject()
+        , nextHopMac(addr){};
 
     /** @brief Destructor*/
-    virtual ~NetwToMacControlInfo() {};
+    virtual ~NetwToMacControlInfo(){};
 
     /** @brief Getter method */
-    virtual const LAddress::L2Type& getNextHopMac() const {
+    virtual const LAddress::L2Type& getNextHopMac() const
+    {
         return nextHopMac;
     };
-    virtual const LAddress::L2Type& getDest() const {
+    virtual const LAddress::L2Type& getDest() const
+    {
         return nextHopMac;
     };
 
     /** @brief Setter method */
-    virtual void setNextHopMac(const LAddress::L2Type& addr) {
+    virtual void setNextHopMac(const LAddress::L2Type& addr)
+    {
         nextHopMac = addr;
     };
-    virtual void setDest(const LAddress::L2Type& addr) {
+    virtual void setDest(const LAddress::L2Type& addr)
+    {
         nextHopMac = addr;
     };
 
@@ -87,7 +88,7 @@ class MIXIM_API NetwToMacControlInfo : public cObject
      * @param pMsg        The message where the "control info" shall be attached.
      * @param pDestAddr    The MAC address of the message receiver.
      */
-    static cObject *const setControlInfo(cMessage *const pMsg, const LAddress::L2Type& pDestAddr);
+    static cObject* const setControlInfo(cMessage* const pMsg, const LAddress::L2Type& pDestAddr);
     /**
      * @brief Extracts the MAC address from the "control info" structure (object).
      *
@@ -96,9 +97,8 @@ class MIXIM_API NetwToMacControlInfo : public cObject
      * @param pCtrlInfo    The "control info" structure (object) prev. set by NetwToMacControlInfo::setControlInfo().
      * @return The MAC address of message receiver.
      */
-    static const LAddress::L2Type& getDestFromControlInfo(const cObject *const pCtrlInfo);
+    static const LAddress::L2Type& getDestFromControlInfo(const cObject* const pCtrlInfo);
 };
-
 
 } // namespace Veins
 

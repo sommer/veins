@@ -30,41 +30,44 @@
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
-using Veins::TraCIMobility;
 using Veins::TraCICommandInterface;
+using Veins::TraCIMobility;
 
 /**
  * FIXME
  */
 namespace Veins {
 class TraCITestApp : public BaseApplLayer {
-    public:
-        int numInitStages() const { return std::max(BaseApplLayer::numInitStages(), 1); }
-        void initialize(int stage);
-        void finish();
+public:
+    int numInitStages() const
+    {
+        return std::max(BaseApplLayer::numInitStages(), 1);
+    }
+    void initialize(int stage);
+    void finish();
 
-    protected:
-        static const simsignalwrap_t mobilityStateChangedSignal;
+protected:
+    static const simsignalwrap_t mobilityStateChangedSignal;
 
-    protected:
-        // module parameters
-        bool debug;
-        int testNumber;
+protected:
+    // module parameters
+    bool debug;
+    int testNumber;
 
-        TraCIMobility* mobility;
-        TraCICommandInterface* traci;
-        TraCICommandInterface::Vehicle* traciVehicle;
-        std::set<std::string> visitedEdges; /**< set of edges this vehicle visited */
-        bool hasStopped; /**< true if at some point in time this vehicle travelled at negligible speed */
+    TraCIMobility* mobility;
+    TraCICommandInterface* traci;
+    TraCICommandInterface::Vehicle* traciVehicle;
+    std::set<std::string> visitedEdges; /**< set of edges this vehicle visited */
+    bool hasStopped; /**< true if at some point in time this vehicle travelled at negligible speed */
 
-    protected:
-        void handleSelfMsg(cMessage*);
-        void handleLowerMsg(cMessage*);
+protected:
+    void handleSelfMsg(cMessage*);
+    void handleLowerMsg(cMessage*);
 
-        void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details);
+    void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details);
 
-        void handlePositionUpdate();
+    void handlePositionUpdate();
 };
-}
+} // namespace Veins
 
 #endif

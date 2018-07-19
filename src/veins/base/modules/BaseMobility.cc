@@ -19,7 +19,6 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-
 #include "veins/base/modules/BaseMobility.h"
 
 #include <sstream>
@@ -41,79 +40,78 @@ Define_Module(Veins::BaseMobility);
 const simsignalwrap_t BaseMobility::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
 
 namespace {
-    bool isInBoundary(Coord c, Coord lowerBound, Coord upperBound) {
-        return  lowerBound.x <= c.x && c.x <= upperBound.x &&
-                lowerBound.y <= c.y && c.y <= upperBound.y &&
-                lowerBound.z <= c.z && c.z <= upperBound.z;
-    }
-
+bool isInBoundary(Coord c, Coord lowerBound, Coord upperBound)
+{
+    return lowerBound.x <= c.x && c.x <= upperBound.x && lowerBound.y <= c.y && c.y <= upperBound.y && lowerBound.z <= c.z && c.z <= upperBound.z;
 }
 
+} // namespace
 
-BaseMobility::BaseMobility():
-        BatteryAccess(),
-        move(),
-        playgroundScaleX(1),
-        playgroundScaleY(1),
-        origDisplayWidth(0),
-        origDisplayHeight(0),
-        origIconSize(0)
-{}
+BaseMobility::BaseMobility()
+    : BatteryAccess()
+    , move()
+    , playgroundScaleX(1)
+    , playgroundScaleY(1)
+    , origDisplayWidth(0)
+    , origDisplayHeight(0)
+    , origIconSize(0)
+{
+}
 
-BaseMobility::BaseMobility(unsigned stacksize):
-        BatteryAccess(stacksize),
-        move(),
-        playgroundScaleX(1),
-        playgroundScaleY(1),
-        origDisplayWidth(0),
-        origDisplayHeight(0),
-        origIconSize(0)
-{}
+BaseMobility::BaseMobility(unsigned stacksize)
+    : BatteryAccess(stacksize)
+    , move()
+    , playgroundScaleX(1)
+    , playgroundScaleY(1)
+    , origDisplayWidth(0)
+    , origDisplayHeight(0)
+    , origIconSize(0)
+{
+}
 
 void BaseMobility::initialize(int stage)
 {
     BaseModule::initialize(stage);
-    if (stage == 0){
+    if (stage == 0) {
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
         coreEV << "initializing BaseMobility stage " << stage << endl;
 
-        hasPar("scaleNodeByDepth") ? scaleNodeByDepth
-                = par("scaleNodeByDepth").boolValue()
-                : scaleNodeByDepth = true;
+        hasPar("scaleNodeByDepth") ? scaleNodeByDepth = par("scaleNodeByDepth").boolValue() : scaleNodeByDepth = true;
 
         // get utility pointers (world and host)
         world = FindModule<BaseWorldUtility*>::findGlobalModule();
-        if (world == NULL)
-            error("Could not find BaseWorldUtility module");
+        if (world == NULL) error("Could not find BaseWorldUtility module");
 
         coreEV << "initializing BaseUtility stage " << stage << endl; // for node position
 
         if (hasPar("updateInterval")) {
             updateInterval = par("updateInterval");
-        } else {
+        }
+        else {
             updateInterval = 0;
         }
 
         // initialize Move parameter
         bool use2D = world->use2D();
 
-        //initalize position with random values
+        // initalize position with random values
         Coord pos = world->getRandomPosition();
 
-        //read coordinates from parameters if available
+        // read coordinates from parameters if available
         double x = hasPar("x") ? par("x").doubleValue() : -1;
         double y = hasPar("y") ? par("y").doubleValue() : -1;
         double z = hasPar("z") ? par("z").doubleValue() : -1;
 
-        //set position with values from parameters if available
-        if(x > -1) pos.x = x;
-        if(y > -1) pos.y = y;
-        if(!use2D && z > -1) pos.z = z;
+        // set position with values from parameters if available
+        if (x > -1) pos.x = x;
+        if (y > -1) pos.y = y;
+        if (!use2D && z > -1) pos.z = z;
 
         if (!hasPar("xOrientation") || !hasPar("yOrientation")) {
             throw cRuntimeError("Orientation coordinates in x and y direction have to specified (necessary for antenna gain calculation)");
-        } else {
+        }
+        else {
             double zOrient = hasPar("zOrientation") ? par("zOrientation").doubleValue() : 0;
             Coord orient(par("xOrientation").doubleValue(), par("yOrientation").doubleValue(), zOrient);
             move.setOrientationByVector(orient);
@@ -123,7 +121,7 @@ void BaseMobility::initialize(int stage)
         move.setStart(pos);
         coreEV << "start pos: " << move.getStartPos().info() << endl;
 
-        //check whether position is within the playground
+        // check whether position is within the playground
         if (!isInBoundary(move.getStartPos(), Coord::ZERO, *world->getPgs())) {
             error("node position specified in omnetpp.ini exceeds playgroundsize");
         }
@@ -132,44 +130,39 @@ void BaseMobility::initialize(int stage)
         move.setSpeed(0);
         move.setDirectionByVector(Coord::ZERO);
     }
-    else if (stage == 1){
+    else if (stage == 1) {
         coreEV << "initializing BaseMobility stage " << stage << endl;
 
-        //get playground scaling
-        if (world->getParentModule() != NULL )
-        {
-            const cDisplayString& dispWorldOwner
-                    = world->getParentModule()->getDisplayString();
+        // get playground scaling
+        if (world->getParentModule() != NULL) {
+            const cDisplayString& dispWorldOwner = world->getParentModule()->getDisplayString();
 
-            if( dispWorldOwner.containsTag("bgb") )
-            {
+            if (dispWorldOwner.containsTag("bgb")) {
                 double origPGWidth = 0.0;
-                double origPGHeight= 0.0;
+                double origPGHeight = 0.0;
                 // normally this should be equal to playground size
-                std::istringstream(dispWorldOwner.getTagArg("bgb", 0))
-                        >> origPGWidth;
-                std::istringstream(dispWorldOwner.getTagArg("bgb", 1))
-                        >> origPGHeight;
+                std::istringstream(dispWorldOwner.getTagArg("bgb", 0)) >> origPGWidth;
+                std::istringstream(dispWorldOwner.getTagArg("bgb", 1)) >> origPGHeight;
 
-                //bgb of zero means size isn't set manually
-                if(origPGWidth > 0) {
+                // bgb of zero means size isn't set manually
+                if (origPGWidth > 0) {
                     playgroundScaleX = origPGWidth / playgroundSizeX();
                 }
-                if(origPGHeight > 0) {
+                if (origPGHeight > 0) {
                     playgroundScaleY = origPGHeight / playgroundSizeY();
                 }
             }
         }
 
-        //get original display of host
+        // get original display of host
         cDisplayString& disp = findHost()->getDisplayString();
 
-        //get host width and height
+        // get host width and height
         if (disp.containsTag("b")) {
             std::istringstream(disp.getTagArg("b", 0)) >> origDisplayWidth;
             std::istringstream(disp.getTagArg("b", 1)) >> origDisplayHeight;
         }
-        //get hosts icon size
+        // get hosts icon size
         if (disp.containsTag("i")) {
             // choose a appropriate icon size (only if a icon is specified)
             origIconSize = iconSizeTagToSize(disp.getTagArg("is", 0));
@@ -178,11 +171,10 @@ void BaseMobility::initialize(int stage)
         // print new host position on the screen and update bb info
         updatePosition();
 
-        if (move.getSpeed() > 0 && updateInterval > 0)
-        {
+        if (move.getSpeed() > 0 && updateInterval > 0) {
             coreEV << "Host is moving, speed=" << move.getSpeed() << " updateInterval=" << updateInterval << endl;
             moveMsg = new cMessage("move", MOVE_HOST);
-            //host moves the first time after some random delay to avoid synchronized movements
+            // host moves the first time after some random delay to avoid synchronized movements
             scheduleAt(simTime() + uniform(0, updateInterval), moveMsg);
         }
     }
@@ -190,15 +182,19 @@ void BaseMobility::initialize(int stage)
 
 int BaseMobility::iconSizeTagToSize(const char* tag)
 {
-    if(strcmp(tag, "vs") == 0) {
+    if (strcmp(tag, "vs") == 0) {
         return 16;
-    } else if(strcmp(tag, "s") == 0) {
+    }
+    else if (strcmp(tag, "s") == 0) {
         return 24;
-    } else if(strcmp(tag, "n") == 0 || strcmp(tag, "") == 0) {
+    }
+    else if (strcmp(tag, "n") == 0 || strcmp(tag, "") == 0) {
         return 40;
-    } else if(strcmp(tag, "l") == 0) {
+    }
+    else if (strcmp(tag, "l") == 0) {
         return 60;
-    } else if(strcmp(tag, "vl") == 0) {
+    }
+    else if (strcmp(tag, "vl") == 0) {
         return 100;
     }
 
@@ -207,57 +203,58 @@ int BaseMobility::iconSizeTagToSize(const char* tag)
 
 const char* BaseMobility::iconSizeToTag(double size)
 {
-    //returns the biggest icon smaller than the passed size (except sizes
-    //smaller than the smallest icon
-    if(size < 24) {
+    // returns the biggest icon smaller than the passed size (except sizes
+    // smaller than the smallest icon
+    if (size < 24) {
         return "vs";
-    } else if(size < 40) {
+    }
+    else if (size < 40) {
         return "s";
-    } else if(size < 60) {
+    }
+    else if (size < 60) {
         return "n";
-    } else if(size < 100) {
+    }
+    else if (size < 100) {
         return "l";
-    } else {
+    }
+    else {
         return "vl";
     }
 }
 
-void BaseMobility::handleMessage(cMessage * msg)
+void BaseMobility::handleMessage(cMessage* msg)
 {
-    if (!msg->isSelfMessage())
-        error("mobility modules can only receive self messages");
+    if (!msg->isSelfMessage()) error("mobility modules can only receive self messages");
 
-    if(msg->getKind() == MOVE_TO_BORDER){
+    if (msg->getKind() == MOVE_TO_BORDER) {
         handleBorderMsg(msg);
-    } else {
+    }
+    else {
         handleSelfMsg(msg);
     }
 }
 
-
-
-void BaseMobility::handleSelfMsg(cMessage * msg)
+void BaseMobility::handleSelfMsg(cMessage* msg)
 {
     makeMove();
     updatePosition();
 
-    if( !moveMsg->isScheduled() && move.getSpeed() > 0) {
+    if (!moveMsg->isScheduled() && move.getSpeed() > 0) {
         scheduleAt(simTime() + updateInterval, msg);
-    } else {
+    }
+    else {
         delete msg;
         moveMsg = NULL;
     }
 }
 
-
-
-void BaseMobility::handleBorderMsg(cMessage * msg)
+void BaseMobility::handleBorderMsg(cMessage* msg)
 {
     coreEV << "start MOVE_TO_BORDER:" << move.info() << endl;
 
     BorderMsg* bMsg = static_cast<BorderMsg*>(msg);
 
-    switch( bMsg->getPolicy() ){
+    switch (bMsg->getPolicy()) {
     case REFLECT:
         move.setStart(bMsg->getStartPos());
         move.setDirectionByVector(bMsg->getDirection());
@@ -290,26 +287,25 @@ void BaseMobility::handleBorderMsg(cMessage * msg)
     coreEV << "end MOVE_TO_BORDER:" << move.info() << endl;
 }
 
-
-
-void BaseMobility::updatePosition() {
+void BaseMobility::updatePosition()
+{
     EV << "updatePosition: " << move.info() << endl;
 
-    //publish the the new move
+    // publish the the new move
     emit(mobilityStateChangedSignal, this);
 
-    if(hasGUI())
-    {
+    if (hasGUI()) {
         std::ostringstream osDisplayTag;
 #ifdef __APPLE__
-        const int          iPrecis        = 0;
+        const int iPrecis = 0;
 #else
-        const int          iPrecis        = 5;
+        const int iPrecis = 5;
 #endif
-        cDisplayString&    disp           = findHost()->getDisplayString();
+        cDisplayString& disp = findHost()->getDisplayString();
 
         // setup output stream
-        osDisplayTag << std::fixed; osDisplayTag.precision(iPrecis);
+        osDisplayTag << std::fixed;
+        osDisplayTag.precision(iPrecis);
 
         if (playgroundScaleX != 1.0) {
             osDisplayTag << (move.getStartPos().x * playgroundScaleX);
@@ -317,54 +313,48 @@ void BaseMobility::updatePosition() {
         else {
             osDisplayTag << (move.getStartPos().x);
         }
-            disp.setTagArg("p", 0, osDisplayTag.str().data());
+        disp.setTagArg("p", 0, osDisplayTag.str().data());
 
-           osDisplayTag.str(""); // reset
+        osDisplayTag.str(""); // reset
         if (playgroundScaleY != 1.0) {
             osDisplayTag << (move.getStartPos().y * playgroundScaleY);
         }
         else {
             osDisplayTag << (move.getStartPos().y);
         }
-            disp.setTagArg("p", 1, osDisplayTag.str().data());
+        disp.setTagArg("p", 1, osDisplayTag.str().data());
 
-        if(!world->use2D() && scaleNodeByDepth)
-        {
+        if (!world->use2D() && scaleNodeByDepth) {
             const double minScale = 0.25;
             const double maxScale = 1.0;
 
-            //scale host dependent on their z coordinate to simulate a depth
-            //effect
-            //z-coordinate of zero maps to a scale of maxScale (very close)
-            //z-coordinate of playground size z maps to size of minScale (far away)
-            double depthScale = minScale
-                                + (maxScale - minScale)
-                                  * (1.0 - move.getStartPos().z
-                                           / playgroundSizeZ());
+            // scale host dependent on their z coordinate to simulate a depth
+            // effect
+            // z-coordinate of zero maps to a scale of maxScale (very close)
+            // z-coordinate of playground size z maps to size of minScale (far away)
+            double depthScale = minScale + (maxScale - minScale) * (1.0 - move.getStartPos().z / playgroundSizeZ());
 
             if (origDisplayWidth > 0.0 && origDisplayHeight > 0.0) {
-                    osDisplayTag.str(""); // reset
+                osDisplayTag.str(""); // reset
                 osDisplayTag << (origDisplayWidth * depthScale);
-                    disp.setTagArg("b", 0, osDisplayTag.str().data());
+                disp.setTagArg("b", 0, osDisplayTag.str().data());
 
-                    osDisplayTag.str(""); // reset
+                osDisplayTag.str(""); // reset
                 osDisplayTag << (origDisplayHeight * depthScale);
-                    disp.setTagArg("b", 1, osDisplayTag.str().data());
-                }
+                disp.setTagArg("b", 1, osDisplayTag.str().data());
+            }
 
             if (origIconSize > 0) {
                 // choose a appropriate icon size (only if a icon is specified)
-                disp.setTagArg("is", 0,
-                               iconSizeToTag(origIconSize * depthScale));
+                disp.setTagArg("is", 0, iconSizeToTag(origIconSize * depthScale));
             }
         }
     }
 }
 
-
 void BaseMobility::reflectCoordinate(BorderHandling border, Coord& c)
 {
-    switch( border ) {
+    switch (border) {
     case X_SMALLER:
         c.x = (-c.x);
         break;
@@ -393,15 +383,13 @@ void BaseMobility::reflectCoordinate(BorderHandling border, Coord& c)
     }
 }
 
-
-void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget,
-                                    Coord& targetPos, Coord& step,
-                                    double& angle) {
+void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget, Coord& targetPos, Coord& step, double& angle)
+{
 
     reflectCoordinate(wo, targetPos);
     reflectCoordinate(wo, stepTarget);
 
-    switch( wo ) {
+    switch (wo) {
     case X_SMALLER:
     case X_BIGGER:
         step.x = (-step.x);
@@ -427,11 +415,9 @@ void BaseMobility::reflectIfOutside(BorderHandling wo, Coord& stepTarget,
     }
 }
 
-
-
-void BaseMobility::wrapIfOutside(BorderHandling wo,
-                                 Coord& stepTarget, Coord& targetPos) {
-    switch( wo ) {
+void BaseMobility::wrapIfOutside(BorderHandling wo, Coord& stepTarget, Coord& targetPos)
+{
+    switch (wo) {
     case X_SMALLER:
     case X_BIGGER:
         targetPos.x = (FWMath::modulo(targetPos.x, playgroundSizeX()));
@@ -457,147 +443,107 @@ void BaseMobility::wrapIfOutside(BorderHandling wo,
     }
 }
 
-
-void BaseMobility::placeRandomlyIfOutside( Coord& targetPos )
+void BaseMobility::placeRandomlyIfOutside(Coord& targetPos)
 {
     targetPos = world->getRandomPosition();
 }
 
-
-
-BaseMobility::BorderHandling BaseMobility::checkIfOutside( Coord targetPos,
-                                                           Coord& borderStep )
+BaseMobility::BorderHandling BaseMobility::checkIfOutside(Coord targetPos, Coord& borderStep)
 {
     BorderHandling outside = NOWHERE;
 
     // Testing x-value
-    if (targetPos.x < 0){
+    if (targetPos.x < 0) {
         borderStep.x = (-move.getStartPos().x);
         outside = X_SMALLER;
     }
-    else if (targetPos.x >= playgroundSizeX()){
+    else if (targetPos.x >= playgroundSizeX()) {
         borderStep.x = (playgroundSizeX() - move.getStartPos().x);
         outside = X_BIGGER;
     }
 
     // Testing y-value
-    if (targetPos.y < 0){
+    if (targetPos.y < 0) {
         borderStep.y = (-move.getStartPos().y);
 
-        if( outside == NOWHERE
-            || fabs(borderStep.x/move.getDirection().x)
-               > fabs(borderStep.y/move.getDirection().y) )
-        {
+        if (outside == NOWHERE || fabs(borderStep.x / move.getDirection().x) > fabs(borderStep.y / move.getDirection().y)) {
             outside = Y_SMALLER;
         }
     }
-    else if (targetPos.y >= playgroundSizeY()){
+    else if (targetPos.y >= playgroundSizeY()) {
         borderStep.y = (playgroundSizeY() - move.getStartPos().y);
 
-        if( outside == NOWHERE
-            || fabs(borderStep.x/move.getDirection().x)
-               > fabs(borderStep.y/move.getDirection().y) )
-        {
+        if (outside == NOWHERE || fabs(borderStep.x / move.getDirection().x) > fabs(borderStep.y / move.getDirection().y)) {
             outside = Y_BIGGER;
         }
     }
 
     // Testing z-value
-    if (!world->use2D())
-    {
+    if (!world->use2D()) {
         // going to reach the lower z-border
-        if (targetPos.z < 0)
-        {
+        if (targetPos.z < 0) {
             borderStep.z = (-move.getStartPos().z);
 
             // no border reached so far
-            if( outside==NOWHERE )
-            {
+            if (outside == NOWHERE) {
                 outside = Z_SMALLER;
             }
             // an y-border is reached earliest so far, test whether z-border
             // is reached even earlier
-            else if( (outside == Y_SMALLER || outside == Y_BIGGER)
-                     && fabs(borderStep.y/move.getDirection().y)
-                        > fabs(borderStep.z/move.getDirection().z) )
-            {
+            else if ((outside == Y_SMALLER || outside == Y_BIGGER) && fabs(borderStep.y / move.getDirection().y) > fabs(borderStep.z / move.getDirection().z)) {
                 outside = Z_SMALLER;
             }
             // an x-border is reached earliest so far, test whether z-border
             // is reached even earlier
-            else if( (outside == X_SMALLER || outside == X_BIGGER)
-                     && fabs(borderStep.x/move.getDirection().x)
-                        > fabs(borderStep.z/move.getDirection().z) )
-            {
+            else if ((outside == X_SMALLER || outside == X_BIGGER) && fabs(borderStep.x / move.getDirection().x) > fabs(borderStep.z / move.getDirection().z)) {
                 outside = Z_SMALLER;
             }
-
         }
         // going to reach the upper z-border
-        else if (targetPos.z >= playgroundSizeZ())
-        {
+        else if (targetPos.z >= playgroundSizeZ()) {
             borderStep.z = (playgroundSizeZ() - move.getStartPos().z);
 
             // no border reached so far
-            if( outside==NOWHERE )
-            {
+            if (outside == NOWHERE) {
                 outside = Z_BIGGER;
             }
             // an y-border is reached earliest so far, test whether z-border
             // is reached even earlier
-            else if( (outside==Y_SMALLER || outside==Y_BIGGER)
-                     && fabs(borderStep.y/move.getDirection().y)
-                        > fabs(borderStep.z/move.getDirection().z) )
-            {
+            else if ((outside == Y_SMALLER || outside == Y_BIGGER) && fabs(borderStep.y / move.getDirection().y) > fabs(borderStep.z / move.getDirection().z)) {
                 outside = Z_BIGGER;
             }
             // an x-border is reached earliest so far, test whether z-border
             // is reached even earlier
-            else if( (outside==X_SMALLER || outside==X_BIGGER)
-                      && fabs(borderStep.x/move.getDirection().x)
-                         > fabs(borderStep.z/move.getDirection().z) )
-            {
+            else if ((outside == X_SMALLER || outside == X_BIGGER) && fabs(borderStep.x / move.getDirection().x) > fabs(borderStep.z / move.getDirection().z)) {
                 outside = Z_BIGGER;
             }
-
-
         }
     }
 
-    coreEV << "checkIfOutside, outside="<<outside<<" borderStep: " << borderStep.info() << endl;
+    coreEV << "checkIfOutside, outside=" << outside << " borderStep: " << borderStep.info() << endl;
 
     return outside;
 }
 
-
-
-void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
-                              Coord& borderStep, Coord& borderStart)
+void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& borderStep, Coord& borderStart)
 {
     double factor;
 
-    coreEV << "goToBorder: startPos: " << move.getStartPos().info()
-           << " borderStep: " << borderStep.info()
-           << " BorderPolicy: " << policy
-           << " BorderHandling: " << wo << endl;
+    coreEV << "goToBorder: startPos: " << move.getStartPos().info() << " borderStep: " << borderStep.info() << " BorderPolicy: " << policy << " BorderHandling: " << wo << endl;
 
-    switch( wo ) {
+    switch (wo) {
     case X_SMALLER:
         factor = borderStep.x / move.getDirection().x;
         borderStep.y = (factor * move.getDirection().y);
-        if (!world->use2D())
-        {
+        if (!world->use2D()) {
             borderStep.z = (factor * move.getDirection().z); // 3D case
         }
 
-        if( policy == WRAP )
-        {
+        if (policy == WRAP) {
             borderStart.x = (playgroundSizeX());
             borderStart.y = (move.getStartPos().y + borderStep.y);
-            if (!world->use2D())
-            {
-                borderStart.z = (move.getStartPos().z
-                                 + borderStep.z); // 3D case
+            if (!world->use2D()) {
+                borderStart.z = (move.getStartPos().z + borderStep.z); // 3D case
             }
         }
         break;
@@ -605,19 +551,15 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
     case X_BIGGER:
         factor = borderStep.x / move.getDirection().x;
         borderStep.y = (factor * move.getDirection().y);
-        if (!world->use2D())
-        {
+        if (!world->use2D()) {
             borderStep.z = (factor * move.getDirection().z); // 3D case
         }
 
-        if( policy == WRAP )
-        {
+        if (policy == WRAP) {
             borderStart.x = (0);
             borderStart.y = (move.getStartPos().y + borderStep.y);
-            if (!world->use2D())
-            {
-                borderStart.z = (move.getStartPos().z
-                                 + borderStep.z); // 3D case
+            if (!world->use2D()) {
+                borderStart.z = (move.getStartPos().z + borderStep.z); // 3D case
             }
         }
         break;
@@ -625,19 +567,15 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
     case Y_SMALLER:
         factor = borderStep.y / move.getDirection().y;
         borderStep.x = (factor * move.getDirection().x);
-        if (!world->use2D())
-        {
+        if (!world->use2D()) {
             borderStep.z = (factor * move.getDirection().z); // 3D case
         }
 
-        if( policy == WRAP )
-        {
+        if (policy == WRAP) {
             borderStart.y = (playgroundSizeY());
             borderStart.x = (move.getStartPos().x + borderStep.x);
-            if (!world->use2D())
-            {
-                borderStart.z = (move.getStartPos().z
-                                 + borderStep.z); // 3D case
+            if (!world->use2D()) {
+                borderStart.z = (move.getStartPos().z + borderStep.z); // 3D case
             }
         }
         break;
@@ -645,19 +583,15 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
     case Y_BIGGER:
         factor = borderStep.y / move.getDirection().y;
         borderStep.x = (factor * move.getDirection().x);
-        if (!world->use2D())
-        {
+        if (!world->use2D()) {
             borderStep.z = (factor * move.getDirection().z); // 3D case
         }
 
-        if( policy == WRAP )
-        {
+        if (policy == WRAP) {
             borderStart.y = (0);
             borderStart.x = (move.getStartPos().x + borderStep.x);
-            if (!world->use2D())
-            {
-                borderStart.z = (move.getStartPos().z
-                                 + borderStep.z); // 3D case
+            if (!world->use2D()) {
+                borderStart.z = (move.getStartPos().z + borderStep.z); // 3D case
             }
         }
         break;
@@ -667,8 +601,7 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
         borderStep.x = (factor * move.getDirection().x);
         borderStep.y = (factor * move.getDirection().y);
 
-        if( policy == WRAP )
-        {
+        if (policy == WRAP) {
             borderStart.z = (playgroundSizeZ());
             borderStart.x = (move.getStartPos().x + borderStep.x);
             borderStart.y = (move.getStartPos().y + borderStep.y);
@@ -680,8 +613,7 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
         borderStep.x = (factor * move.getDirection().x);
         borderStep.y = (factor * move.getDirection().y);
 
-        if( policy == WRAP )
-        {
+        if (policy == WRAP) {
             borderStart.z = (0);
             borderStart.x = (move.getStartPos().x + borderStep.x);
             borderStart.y = (move.getStartPos().y + borderStep.y);
@@ -694,17 +626,10 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo,
         break;
     }
 
-    coreEV << "goToBorder: startPos: " << move.getStartPos().info()
-           << " borderStep: " << borderStep.info()
-           << " borderStart: " << borderStart.info()
-           << " factor: " << factor << endl;
+    coreEV << "goToBorder: startPos: " << move.getStartPos().info() << " borderStep: " << borderStep.info() << " borderStart: " << borderStart.info() << " factor: " << factor << endl;
 }
 
-
-
-bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget,
-                                   Coord& targetPos, Coord& step,
-                                   double& angle)
+bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord& targetPos, Coord& step, double& angle)
 {
     // where did the host leave the playground?
     BorderHandling wo;
@@ -715,8 +640,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget,
     wo = checkIfOutside(stepTarget, borderStep);
 
     // just return if the next step is not outside the playground
-    if( wo == NOWHERE )
-    return false;
+    if (wo == NOWHERE) return false;
 
     coreEV << "handleIfOutside:stepTarget = " << stepTarget.info() << endl;
 
@@ -727,29 +651,24 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget,
     // time to reach the border
     simtime_t borderInterval;
 
-    coreEV << "old values: stepTarget: " << stepTarget.info()
-           << " step: " << step.info()
-           << " targetPos: " << targetPos.info()
-           << " angle: " << angle << endl;
+    coreEV << "old values: stepTarget: " << stepTarget.info() << " step: " << step.info() << " targetPos: " << targetPos.info() << " angle: " << angle << endl;
 
     // which border policy is to be followed
-    switch (policy){
+    switch (policy) {
     case REFLECT:
-        reflectIfOutside( wo, stepTarget, targetPos, step, angle );
+        reflectIfOutside(wo, stepTarget, targetPos, step, angle);
         break;
     case WRAP:
-        wrapIfOutside( wo, stepTarget, targetPos );
+        wrapIfOutside(wo, stepTarget, targetPos);
         break;
     case PLACERANDOMLY:
-        placeRandomlyIfOutside( targetPos );
+        placeRandomlyIfOutside(targetPos);
         break;
     case RAISEERROR:
         break;
     }
 
-    coreEV << "new values: stepTarget: " << stepTarget.info()
-           << " step: " << step.info()
-           << " angle: " << angle << endl;
+    coreEV << "new values: stepTarget: " << stepTarget.info() << " step: " << step.info() << " angle: " << angle << endl;
 
     // calculate the step to reach the border
     goToBorder(policy, wo, borderStep, borderStart);
@@ -759,11 +678,10 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget,
 
     // calculate new start position
     // NOTE: for WRAP this is done in goToBorder
-    switch( policy ){
-    case REFLECT:
-    {
+    switch (policy) {
+    case REFLECT: {
         borderStart = move.getStartPos() + borderStep;
-        double d = stepTarget.distance( borderStart );
+        double d = stepTarget.distance(borderStart);
         borderDirection = (stepTarget - borderStart) / d;
         break;
     }
@@ -781,12 +699,10 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget,
         break;
     }
 
-    coreEV << "border handled, borderStep: "<< borderStep.info()
-           << "borderStart: " << borderStart.info()
-           << " stepTarget " << stepTarget.info() << endl;
+    coreEV << "border handled, borderStep: " << borderStep.info() << "borderStart: " << borderStart.info() << " stepTarget " << stepTarget.info() << endl;
 
     // create a border self message and schedule it appropriately
-    BorderMsg *bMsg = new BorderMsg("borderMove", MOVE_TO_BORDER);
+    BorderMsg* bMsg = new BorderMsg("borderMove", MOVE_TO_BORDER);
     bMsg->setPolicy(policy);
     bMsg->setStartPos(borderStart);
     bMsg->setDirection(borderDirection);
@@ -795,4 +711,3 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget,
 
     return true;
 }
-

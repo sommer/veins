@@ -41,24 +41,27 @@ using Veins::AirFrame;
  *
  * @ingroup analogueModels
  */
-class TwoRayInterferenceModel: public AnalogueModel {
+class TwoRayInterferenceModel : public AnalogueModel {
 
-    public:
-        TwoRayInterferenceModel(double dielectricConstant, bool debug) :
-            epsilon_r(dielectricConstant),
-            debug(debug) {}
+public:
+    TwoRayInterferenceModel(double dielectricConstant, bool debug)
+        : epsilon_r(dielectricConstant)
+        , debug(debug)
+    {
+    }
 
-        virtual ~TwoRayInterferenceModel() {}
+    virtual ~TwoRayInterferenceModel()
+    {
+    }
 
-    virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos);
+    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos);
 
+protected:
+    /** @brief stores the dielectric constant used for calculation */
+    double epsilon_r;
 
-    protected:
-        /** @brief stores the dielectric constant used for calculation */
-        double epsilon_r;
-
-        /** @brief Whether debug messages should be displayed. */
-        bool debug;
+    /** @brief Whether debug messages should be displayed. */
+    bool debug;
 };
 
 } // namespace Veins

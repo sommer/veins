@@ -55,12 +55,13 @@ protected:
 public:
     Move()
         : startPos()
-        , lastPos(0.0,0.0,DBL_MAX)
+        , lastPos(0.0, 0.0, DBL_MAX)
         , startTime()
         , orientation()
         , direction()
         , speed(0.0)
-    {}
+    {
+    }
     Move(const Move& mSrc)
         : startPos(mSrc.startPos)
         , lastPos(mSrc.lastPos)
@@ -68,7 +69,8 @@ public:
         , orientation(mSrc.orientation)
         , direction(mSrc.direction)
         , speed(mSrc.speed)
-    {}
+    {
+    }
 
     /**
      * @brief Returns the current speed.
@@ -107,8 +109,8 @@ public:
      */
     void setStart(const Coord& startPos, simtime_t_cref startTime)
     {
-        this->lastPos   = startPos;
-        this->startPos  = startPos;
+        this->lastPos = startPos;
+        this->startPos = startPos;
         this->startTime = startTime;
     }
 
@@ -136,7 +138,8 @@ public:
      * initialized with a (user defined) value. If the host stops during simulation,
      * the last direction is stored in the orientation field.
      */
-    const Coord& getOrientation() const {
+    const Coord& getOrientation() const
+    {
         return orientation;
     }
 
@@ -144,7 +147,8 @@ public:
      * @brief Sets the orientation to the passed vector. At least one of the x or y
      * component has to be nonzero.
      */
-    void setOrientationByVector(const Coord& orientation) {
+    void setOrientationByVector(const Coord& orientation)
+    {
         assert(orientation.x != 0 || orientation.y != 0);
         this->orientation = orientation;
     }
@@ -155,8 +159,7 @@ public:
      */
     void setDirectionByVector(const Coord& direction)
     {
-        assert(    FWMath::close(direction.squareLength(), 1.0)
-                || FWMath::close(direction.squareLength(), 0.0));
+        assert(FWMath::close(direction.squareLength(), 1.0) || FWMath::close(direction.squareLength(), 0.0));
         this->direction = direction;
 
         // only if one of the x or y components is nonzero, also set orientation to
@@ -177,7 +180,7 @@ public:
     {
         direction = target - startPos;
 
-        assert( !FWMath::close(direction.length(), 0.0) );
+        assert(!FWMath::close(direction.length(), 0.0));
         direction /= direction.length();
 
         // only if one of the x or y components is nonzero, also set orientation to
@@ -200,31 +203,26 @@ public:
     virtual Coord getPositionAt(simtime_t_cref actualTime = simTime()) const
     {
         // if speed is very close to 0.0, the host is practically standing still
-        if ( FWMath::close(speed, 0.0) ) return startPos;
+        if (FWMath::close(speed, 0.0)) return startPos;
 
         // otherwise: actualPos = startPos + ( direction * v * t )
-        return startPos + ( direction * speed * SIMTIME_DBL(actualTime - startTime) );
+        return startPos + (direction * speed * SIMTIME_DBL(actualTime - startTime));
     }
     virtual const Coord& getCurrentPosition() const
     {
-        if (lastPos.z != DBL_MAX)
-            return lastPos;
+        if (lastPos.z != DBL_MAX) return lastPos;
         return startPos;
     }
 
 public:
-
     /**
      * @brief Returns information about the current state.
      */
-    std::string info() const {
+    std::string info() const
+    {
         std::ostringstream ost;
         ost << " HostMove "
-            << " startPos: " << startPos.info()
-            << " direction: " << direction.info()
-            << " orientation: " << orientation.info()
-            << " startTime: " << startTime
-            << " speed: " << speed;
+            << " startPos: " << startPos.info() << " direction: " << direction.info() << " orientation: " << orientation.info() << " startTime: " << startTime << " speed: " << speed;
         return ost.str();
     }
 };
@@ -232,4 +230,3 @@ public:
 } // namespace Veins
 
 #endif
-

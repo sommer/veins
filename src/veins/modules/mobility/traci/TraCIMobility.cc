@@ -33,7 +33,7 @@ Define_Module(Veins::TraCIMobility);
 const simsignalwrap_t TraCIMobility::parkingStateChangedSignal = simsignalwrap_t(TRACI_SIGNAL_PARKING_CHANGE_NAME);
 
 namespace {
-    const double MY_INFINITY = (std::numeric_limits<double>::has_infinity ? std::numeric_limits<double>::infinity() : std::numeric_limits<double>::max());
+const double MY_INFINITY = (std::numeric_limits<double>::has_infinity ? std::numeric_limits<double>::infinity() : std::numeric_limits<double>::max());
 }
 
 void TraCIMobility::Statistics::initialize()
@@ -48,7 +48,7 @@ void TraCIMobility::Statistics::initialize()
     totalCO2Emission = 0;
 }
 
-void TraCIMobility::Statistics::watch(cSimpleModule& )
+void TraCIMobility::Statistics::watch(cSimpleModule&)
 {
     WATCH(totalTime);
     WATCH(minSpeed);
@@ -70,8 +70,7 @@ void TraCIMobility::Statistics::recordScalars(cSimpleModule& module)
 
 void TraCIMobility::initialize(int stage)
 {
-    if (stage == 0)
-    {
+    if (stage == 0) {
         BaseMobility::initialize(stage);
 
         debug = par("debug");
@@ -115,15 +114,12 @@ void TraCIMobility::initialize(int stage)
             scheduleAt(simTime() + accidentStart, startAccidentMsg);
         }
     }
-    else if (stage == 1)
-    {
+    else if (stage == 1) {
         // don't call BaseMobility::initialize(stage) -- our parent will take care to call changePosition later
     }
-    else
-    {
+    else {
         BaseMobility::initialize(stage);
     }
-
 }
 
 void TraCIMobility::finish()
@@ -138,7 +134,7 @@ void TraCIMobility::finish()
     isPreInitialized = false;
 }
 
-void TraCIMobility::handleSelfMsg(cMessage *msg)
+void TraCIMobility::handleSelfMsg(cMessage* msg)
 {
     if (msg == startAccidentMsg) {
         getVehicleCommandInterface()->setSpeed(0);
@@ -216,10 +212,11 @@ void TraCIMobility::changePosition()
                 double co2emission = calculateCO2emission(speed, acceleration);
                 currentAccelerationVec.record(acceleration);
                 currentCO2EmissionVec.record(co2emission);
-                statistics.totalCO2Emission+=co2emission * updateInterval.dbl();
+                statistics.totalCO2Emission += co2emission * updateInterval.dbl();
             }
             last_speed = speed;
-        } else {
+        }
+        else {
             last_speed = -1;
             speed = -1;
         }
@@ -233,7 +230,8 @@ void TraCIMobility::changePosition()
     updatePosition();
 }
 
-void TraCIMobility::changeParkingState(bool newState) {
+void TraCIMobility::changeParkingState(bool newState)
+{
     Enter_Method_Silent();
     isParking = newState;
     emit(parkingStateChangedSignal, this);
@@ -252,10 +250,11 @@ void TraCIMobility::fixIfHostGetsOutside()
         error("Tried moving host to (%f, %f) which is outside the playground", pos.x, pos.y);
     }
 
-    handleIfOutside( RAISEERROR, pos, dummy, dummy, dum);
+    handleIfOutside(RAISEERROR, pos, dummy, dummy, dum);
 }
 
-double TraCIMobility::calculateCO2emission(double v, double a) const {
+double TraCIMobility::calculateCO2emission(double v, double a) const
+{
     // Calculate CO2 emission parameters according to:
     // Cappiello, A. and Chabini, I. and Nam, E.K. and Lue, A. and Abou Zeid, M., "A statistical model of vehicle emissions and fuel consumption," IEEE 5th International Conference on Intelligent Transportation Systems (IEEE ITSC), pp. 801-809, 2002
 
@@ -265,7 +264,7 @@ double TraCIMobility::calculateCO2emission(double v, double a) const {
     double M = 1325.0; // kg
 
     // power in W
-    double P_tract = A*v + B*v*v + C*v*v*v + M*a*v; // for sloped roads: +M*g*sin_theta*v
+    double P_tract = A * v + B * v * v + C * v * v * v + M * a * v; // for sloped roads: +M*g*sin_theta*v
 
     /*
     // "Category 7 vehicle" (e.g. a '92 Suzuki Swift)
@@ -284,16 +283,17 @@ double TraCIMobility::calculateCO2emission(double v, double a) const {
     double alpha1 = 0.973;
 
     if (P_tract <= 0) return alpha1;
-    return alpha + beta*v*3.6 + delta*v*v*v*(3.6*3.6*3.6) + zeta*a*v;
+    return alpha + beta * v * 3.6 + delta * v * v * v * (3.6 * 3.6 * 3.6) + zeta * a * v;
 }
 
-
-Coord TraCIMobility::calculateAntennaPosition(const Coord& vehiclePos) const {
+Coord TraCIMobility::calculateAntennaPosition(const Coord& vehiclePos) const
+{
     Coord corPos;
     if (antennaPositionOffset >= 0.001) {
-        //calculate antenna position of vehicle according to antenna offset
-        corPos = Coord(vehiclePos.x - antennaPositionOffset*cos(angle), vehiclePos.y + antennaPositionOffset*sin(angle), vehiclePos.z);
-    } else {
+        // calculate antenna position of vehicle according to antenna offset
+        corPos = Coord(vehiclePos.x - antennaPositionOffset * cos(angle), vehiclePos.y + antennaPositionOffset * sin(angle), vehiclePos.z);
+    }
+    else {
         corPos = Coord(vehiclePos.x, vehiclePos.y, vehiclePos.z);
     }
     return corPos;

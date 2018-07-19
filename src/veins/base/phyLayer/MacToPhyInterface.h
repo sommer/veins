@@ -7,7 +7,6 @@
 #include "veins/base/toolbox/Signal.h"
 #include "veins/base/phyLayer/PhyUtils.h"
 
-
 namespace Veins {
 
 /**
@@ -16,8 +15,7 @@ namespace Veins {
  * @ingroup macLayer
  * @ingroup phyLayer
  */
-class MIXIM_API MacToPhyInterface
-{
+class MIXIM_API MacToPhyInterface {
 public:
     /**
      * @brief Message kinds used by every phy layer.
@@ -47,8 +45,9 @@ public:
     };
 
 public:
-
-    virtual ~MacToPhyInterface() {}
+    virtual ~MacToPhyInterface()
+    {
+    }
     /**
      * @brief Returns the current state the radio is in. See RadioState
      * for possible values.

@@ -37,24 +37,22 @@ namespace Veins {
  *
  */
 class VeinsInetManager : public TraCIScenarioManagerLaunchd {
-    public:
+public:
+    virtual ~VeinsInetManager();
+    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals);
+    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals);
 
-        virtual ~VeinsInetManager();
-        virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals);
-        virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals);
-
-    protected:
-
+protected:
 };
 
-class VeinsInetManagerAccess
-{
-    public:
-        VeinsInetManager* get() {
-            return FindModule<VeinsInetManager*>::findGlobalModule();
-        };
+class VeinsInetManagerAccess {
+public:
+    VeinsInetManager* get()
+    {
+        return FindModule<VeinsInetManager*>::findGlobalModule();
+    };
 };
 
-}
+} // namespace Veins
 
 #endif // ifndef Veins_VeinsInetManager_h

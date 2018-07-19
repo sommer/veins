@@ -33,10 +33,10 @@ using namespace Veins;
 /**
  * Simple Nakagami-m fading (based on a constant factor across all time and frequencies).
  */
-void NakagamiFading::filterSignal(Signal *signal, const Coord& senderPos, const Coord& receiverPos) {
+void NakagamiFading::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
+{
 
     debugEV << "Add NakagamiFading ..." << endl;
-
 
     // get average TX power
     // FIXME: really use average power (instead of max)
@@ -56,16 +56,15 @@ void NakagamiFading::filterSignal(Signal *signal, const Coord& senderPos, const 
     }
 
     // calculate average RX power
-    double recvPower_mW = (RNGCONTEXT gamma_d(m, sendPower_mW/1000 / m)) * 1000.0;
+    double recvPower_mW = (RNGCONTEXT gamma_d(m, sendPower_mW / 1000 / m)) * 1000.0;
     if (recvPower_mW > sendPower_mW) {
         recvPower_mW = sendPower_mW;
     }
     debugEV << "RX power is " << FWMath::mW2dBm(recvPower_mW) << " dBm" << endl;
 
     // infer average attenuation
-    double factor = recvPower_mW/sendPower_mW;
+    double factor = recvPower_mW / sendPower_mW;
     debugEV << "factor is: " << factor << " (i.e. " << FWMath::mW2dBm(factor) << " dB)" << endl;
 
     signal->addUniformAttenuation(factor);
 }
-

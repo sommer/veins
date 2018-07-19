@@ -34,7 +34,8 @@ Define_Module(Veins::TraCITestApp);
 
 const simsignalwrap_t TraCITestApp::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
 
-void TraCITestApp::initialize(int stage) {
+void TraCITestApp::initialize(int stage)
+{
     BaseApplLayer::initialize(stage);
     if (stage == 0) {
         debug = par("debug");
@@ -51,23 +52,28 @@ void TraCITestApp::initialize(int stage) {
     }
 }
 
-void TraCITestApp::finish() {
+void TraCITestApp::finish()
+{
 }
 
-void TraCITestApp::handleSelfMsg(cMessage *msg) {
+void TraCITestApp::handleSelfMsg(cMessage* msg)
+{
 }
 
-void TraCITestApp::handleLowerMsg(cMessage* msg) {
+void TraCITestApp::handleLowerMsg(cMessage* msg)
+{
     delete msg;
 }
 
-void TraCITestApp::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details) {
+void TraCITestApp::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
+{
     if (signalID == mobilityStateChangedSignal) {
         handlePositionUpdate();
     }
 }
 
-void TraCITestApp::handlePositionUpdate() {
+void TraCITestApp::handlePositionUpdate()
+{
     const simtime_t t = simTime();
     const std::string roadId = mobility->getRoadId();
     visitedEdges.insert(roadId);
@@ -121,8 +127,8 @@ void TraCITestApp::handlePositionUpdate() {
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            assertClose("(getDistance, air)", 859., floor(traci->getDistance(Coord(25,7030), Coord(883,6980), false)));
-            assertClose("(getDistance, driving)", 847., floor(traci->getDistance(Coord(25,7030), Coord(883,6980), true)));
+            assertClose("(getDistance, air)", 859., floor(traci->getDistance(Coord(25, 7030), Coord(883, 6980), false)));
+            assertClose("(getDistance, driving)", 847., floor(traci->getDistance(Coord(25, 7030), Coord(883, 6980), true)));
         }
     }
 
@@ -160,7 +166,7 @@ void TraCITestApp::handlePositionUpdate() {
     if (testNumber == testCounter++) {
         if (t == 1) {
             std::list<std::string> polys = traci->getPolygonIds();
-            assertEqual("(getPolygonIds) number is 1", polys.size(), (size_t)1);
+            assertEqual("(getPolygonIds) number is 1", polys.size(), (size_t) 1);
             assertEqual("(getPolygonIds) id is correct", *polys.begin(), "poly0");
             std::string typeId = traci->polygon("poly0").getTypeId();
             assertEqual("(Polygon::getTypeId) typeId is correct", typeId, "type0");
@@ -196,7 +202,7 @@ void TraCITestApp::handlePositionUpdate() {
         }
         if (t == 31) {
             std::list<std::string> polys = traci->getPolygonIds();
-            assertEqual("(addPolygon, getPolygonIds) number is 2", polys.size(), (size_t)2);
+            assertEqual("(addPolygon, getPolygonIds) number is 2", polys.size(), (size_t) 2);
             assertTrue("(addPolygon, getPolygonIds) ids contain added", std::find(polys.begin(), polys.end(), std::string("testPoly")) != polys.end());
             std::string typeId = traci->polygon("testPoly").getTypeId();
             assertEqual("(Polygon::getTypeId) typeId is correct", typeId, "testType");
@@ -253,4 +259,3 @@ void TraCITestApp::handlePositionUpdate() {
         }
     }
 }
-

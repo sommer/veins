@@ -18,7 +18,7 @@ namespace Veins {
 
 class Decider;
 class BaseWorldUtility;
-//class omnetpp::cXMLElement;
+// class omnetpp::cXMLElement;
 
 class AirFrame;
 class ChannelAccess;
@@ -74,10 +74,9 @@ class Radio;
 
 typedef std::vector<AnalogueModel*> AnalogueModelList;
 
-class MIXIM_API BasePhyLayer: public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
+class MIXIM_API BasePhyLayer : public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
 
 protected:
-
     enum ProtocolIds {
         GENERIC = 0,
     };
@@ -91,7 +90,8 @@ protected:
      * at a time point t every AirFrame which ended at t has been removed and
      * every AirFrame started at t has been added to the channel.
      */
-    static short airFramePriority() {
+    static short airFramePriority()
+    {
         return 10;
     }
 
@@ -173,10 +173,7 @@ protected:
     BaseWorldUtility* world;
 
 public:
-
-
 private:
-
     /**
      * @brief Utility function. Reads the parameters of a XML element
      * and stores them in the passed ParameterMap reference.
@@ -202,7 +199,6 @@ private:
     void initializeAntenna(cXMLElement* xmlConfig);
 
 protected:
-
     /**
      * @brief Reads and returns the parameter with the passed name.
      *
@@ -212,7 +208,8 @@ protected:
      * @param parName         - the name of the ned-parameter
      * @param defaultValue     - the value to be returned if the parameter couldn't be found
      */
-    template<class T> T readPar(const char* parName, const T defaultValue);
+    template <class T>
+    T readPar(const char* parName, const T defaultValue);
 
     /**
      * @brief OMNeT++ initialization function.
@@ -296,7 +293,6 @@ protected:
      */
     virtual std::shared_ptr<Antenna> initializeSampledAntenna1D(ParameterMap& params);
 
-
     /**
      * @name Handle Messages
      **/
@@ -377,13 +373,13 @@ protected:
      * @brief This function encapsulates messages from the upper layer into an
      * AirFrame and sets all necessary attributes.
      */
-    virtual AirFrame *encapsMsg(cPacket *msg);
+    virtual AirFrame* encapsMsg(cPacket* msg);
 
     /**
      * @brief Filters the passed AirFrame's Signal by every registered AnalogueModel.
      * Moreover, the antenna gains are calculated and added to the signal.
      */
-    virtual void filterSignal(AirFrame *frame);
+    virtual void filterSignal(AirFrame* frame);
 
     /**
      * @brief Called the moment the simulated switching process of the Radio is finished.
@@ -399,7 +395,10 @@ protected:
      *
      * @return An integer representing the identifier of the used protocol.
      */
-    virtual int myProtocolId() { return protocolId; }
+    virtual int myProtocolId()
+    {
+        return protocolId;
+    }
 
     /**
      * @brief Returns true if the protocol with the passed identifier is
@@ -416,7 +415,10 @@ protected:
      * @return Returns true if the passed protocol id is supported by this phy-
      * layer.
      */
-    virtual bool isKnownProtocolId(int id) { return id == myProtocolId(); }
+    virtual bool isKnownProtocolId(int id)
+    {
+        return id == myProtocolId();
+    }
 
 public:
     BasePhyLayer();
@@ -553,7 +555,7 @@ public:
      * Implements the method from DeciderToPhyInterface, method-calls are forwarded
      * to OMNeT-method 'recordScalar'.
      */
-    void recordScalar(const char *name, double value, const char *unit=NULL);
+    void recordScalar(const char* name, double value, const char* unit = NULL);
 
     /*@}*/
 
@@ -570,7 +572,7 @@ public:
      * @param pMsg        The message where the "control info" shall be attached.
      * @param pSrcAddr    The MAC address of the message receiver.
      */
-     virtual cObject *const setUpControlInfo(cMessage *const pMsg, DeciderResult *const pDeciderResult);
+    virtual cObject* const setUpControlInfo(cMessage* const pMsg, DeciderResult* const pDeciderResult);
 };
 
 } // namespace Veins

@@ -36,35 +36,33 @@ namespace Veins {
 
 using Veins::AirFrame;
 
-enum ChangeType
-{
+enum ChangeType {
     SIGNAL_NONE = 0,
     SIGNAL_STARTS,
     SIGNAL_ENDS
 };
 
-struct SignalChange
-{
+struct SignalChange {
     Signal* signal;
     ChangeType type;
     simtime_t time;
 };
 
-class MathHelper
-{
-    public:
-        typedef std::list<AirFrame*> AirFrameVector;
+class MathHelper {
+public:
+    typedef std::list<AirFrame*> AirFrameVector;
 
-        static double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
+    static double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
 
-        static double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
-        static double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& airFrames, size_t freqIndex, AirFrame* exclude);
+    static double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
+    static double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& airFrames, size_t freqIndex, AirFrame* exclude);
 
-        static bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude = 0);
+    static bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude = 0);
 
-        static double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise);
-    private:
-        static inline void calculateChanges(simtime_t_cref s_start, simtime_t_cref s_end, const AirFrameVector& airFrames, std::vector<SignalChange>* changes, const AirFrame* exclude = 0);
+    static double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise);
+
+private:
+    static inline void calculateChanges(simtime_t_cref s_start, simtime_t_cref s_end, const AirFrameVector& airFrames, std::vector<SignalChange>* changes, const AirFrame* exclude = 0);
 };
 
 } // namespace Veins

@@ -34,32 +34,34 @@ using inet::Coord;
 
 Register_Class(VeinsInetMobility);
 
-
 //
 // Public, lifecycle
 //
 
-VeinsInetMobility::VeinsInetMobility() :
-    visualRepresentation(nullptr),
-    constraintAreaMin(Coord::ZERO),
-    constraintAreaMax(Coord::ZERO),
-    lastPosition(Coord::ZERO),
-    lastSpeed(Coord::ZERO),
-    lastOrientation(inet::EulerAngles::ZERO) {
+VeinsInetMobility::VeinsInetMobility()
+    : visualRepresentation(nullptr)
+    , constraintAreaMin(Coord::ZERO)
+    , constraintAreaMax(Coord::ZERO)
+    , lastPosition(Coord::ZERO)
+    , lastSpeed(Coord::ZERO)
+    , lastOrientation(inet::EulerAngles::ZERO)
+{
 }
 
 //
 // Public, called from manager
 //
 
-void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle) {
+void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle)
+{
     Enter_Method_Silent();
     lastPosition = position;
     lastSpeed = Coord(cos(angle), -sin(angle));
     lastOrientation.alpha = -angle;
 }
 
-void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle) {
+void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle)
+{
     Enter_Method_Silent();
     lastPosition = position;
     lastSpeed = Coord(cos(angle), -sin(angle));
@@ -68,35 +70,38 @@ void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string ro
     updateVisualRepresentation();
 }
 
-
 //
 // Public, implementing IMobility interface
 //
 
-double VeinsInetMobility::getMaxSpeed() const {
+double VeinsInetMobility::getMaxSpeed() const
+{
     return NaN;
 }
 
-Coord VeinsInetMobility::getCurrentPosition() {
+Coord VeinsInetMobility::getCurrentPosition()
+{
     return lastPosition;
 }
 
-Coord VeinsInetMobility::getCurrentSpeed() {
+Coord VeinsInetMobility::getCurrentSpeed()
+{
     return lastSpeed;
 }
 
-inet::EulerAngles VeinsInetMobility::getCurrentAngularPosition() {
+inet::EulerAngles VeinsInetMobility::getCurrentAngularPosition()
+{
     return lastOrientation;
 }
-
 
 //
 // Protected
 //
 
-void VeinsInetMobility::initialize(int stage) {
+void VeinsInetMobility::initialize(int stage)
+{
     cSimpleModule::initialize(stage);
-    //EV_TRACE << "initializing VeinsInetMobility stage " << stage << endl;
+    // EV_TRACE << "initializing VeinsInetMobility stage " << stage << endl;
     if (stage == inet::INITSTAGE_LOCAL) {
         constraintAreaMin.x = par("constraintAreaMinX");
         constraintAreaMin.y = par("constraintAreaMinY");
@@ -124,20 +129,22 @@ void VeinsInetMobility::initialize(int stage) {
     }
 }
 
-void VeinsInetMobility::handleMessage(cMessage *message) {
+void VeinsInetMobility::handleMessage(cMessage* message)
+{
     throw cRuntimeError("This module does not handle messages");
 }
 
-void VeinsInetMobility::updateVisualRepresentation() {
+void VeinsInetMobility::updateVisualRepresentation()
+{
     EV_DEBUG << "current position = " << lastPosition << endl;
     if (hasGUI() && visualRepresentation != nullptr) {
         inet::visualizer::MobilityCanvasVisualizer::setPosition(visualRepresentation, canvasProjection->computeCanvasPoint(getCurrentPosition()));
     }
 }
 
-void VeinsInetMobility::emitMobilityStateChangedSignal() {
+void VeinsInetMobility::emitMobilityStateChangedSignal()
+{
     emit(mobilityStateChangedSignal, this);
 }
 
-
-} // namespace veins
+} // namespace Veins

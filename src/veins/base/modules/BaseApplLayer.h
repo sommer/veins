@@ -19,7 +19,6 @@
  *              subclass to create your own application layer
  **************************************************************************/
 
-
 #ifndef BASE_APPL_LAYER_H
 #define BASE_APPL_LAYER_H
 
@@ -43,8 +42,7 @@ namespace Veins {
  *
  * @author Daniel Willkomm
  **/
-class MIXIM_API BaseApplLayer : public BaseLayer
-{
+class MIXIM_API BaseApplLayer : public BaseLayer {
 public:
     /** @brief The message kinds this layer uses.*/
     enum BaseApplMessageKinds {
@@ -58,6 +56,7 @@ public:
          * continue their own control kinds.*/
         LAST_BASE_APPL_CONTROL_KIND = 25500,
     };
+
 protected:
     /**
      * @brief Length of the ApplPkt header
@@ -65,11 +64,15 @@ protected:
     int headerLength;
 
 public:
-    //Module_Class_Members(BaseApplLayer, BaseLayer, 0);
-    BaseApplLayer() : BaseLayer()
-    {}
-    BaseApplLayer(unsigned stacksize) : BaseLayer(stacksize)
-    {}
+    // Module_Class_Members(BaseApplLayer, BaseLayer, 0);
+    BaseApplLayer()
+        : BaseLayer()
+    {
+    }
+    BaseApplLayer(unsigned stacksize)
+        : BaseLayer(stacksize)
+    {
+    }
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
@@ -92,7 +95,8 @@ protected:
      * Define this function if you want to process timer or other kinds
      * of self messages
      **/
-    virtual void handleSelfMsg(cMessage* msg) {
+    virtual void handleSelfMsg(cMessage* msg)
+    {
         EV << "BaseApplLayer: handleSelfMsg not redefined; delete msg\n";
         delete msg;
     };
@@ -106,7 +110,8 @@ protected:
      * The basic application layer just silently deletes all messages it
      * receives.
      **/
-    virtual void handleLowerMsg(cMessage* msg) {
+    virtual void handleLowerMsg(cMessage* msg)
+    {
         EV << "BaseApplLayer: handleLowerMsg not redefined; delete msg\n";
         delete msg;
     };
@@ -117,7 +122,8 @@ protected:
      * The basic application layer just silently deletes all messages it
      * receives.
      **/
-    virtual void handleLowerControl(cMessage* msg) {
+    virtual void handleLowerControl(cMessage* msg)
+    {
         EV << "BaseApplLayer: handleLowerControl not redefined; delete msg\n";
         delete msg;
     };
@@ -127,14 +133,16 @@ protected:
      * This function is pure virtual here, because there is no
      * reasonable guess what to do with it by default.
      */
-    virtual void handleUpperMsg(cMessage *msg) {
+    virtual void handleUpperMsg(cMessage* msg)
+    {
         assert(false);
         throw cRuntimeError("Application has no upper layers!");
         delete msg;
     }
 
     /** @brief Handle control messages from upper layer */
-    virtual void handleUpperControl(cMessage *msg) {
+    virtual void handleUpperControl(cMessage* msg)
+    {
         assert(false);
         throw cRuntimeError("Application has no upper layers!");
         delete msg;
@@ -143,17 +151,17 @@ protected:
     /*@}*/
 
     /** @brief Sends a message delayed to the lower layer*/
-    void sendDelayedDown(cMessage *, simtime_t_cref);
+    void sendDelayedDown(cMessage*, simtime_t_cref);
 
     /**
      * @brief Return my application layer address
      *
      * We use the node module index as application address
      **/
-    virtual const LAddress::L3Type myApplAddr() const {
-        return LAddress::L3Type( getParentModule()->getIndex() );
+    virtual const LAddress::L3Type myApplAddr() const
+    {
+        return LAddress::L3Type(getParentModule()->getIndex());
     };
-
 };
 
 } // namespace Veins

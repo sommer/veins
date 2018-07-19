@@ -28,38 +28,19 @@
  * as defined in Table 17-14 MIB attribute default values/ranges in the IEEE 802.11-2007 standard
  */
 const uint64_t NUM_BITRATES_80211P = 8;
-const uint64_t BITRATES_80211P[] = {
-    3000000,
-    4500000,
-    6000000,
-    9000000,
-    12000000,
-    18000000,
-    24000000,
-    27000000
-};
+const uint64_t BITRATES_80211P[] = {3000000, 4500000, 6000000, 9000000, 12000000, 18000000, 24000000, 27000000};
 
 /** @brief Number of Data Bits Per Symbol (N_NBPS) corresponding to bitrates in BITRATES_80211P
  *
  * as defined in Table 17-3 in the IEEE 802.11-2007 standard
  */
-const uint32_t N_DBPS_80211P[] = {
-    24,
-    36,
-    48,
-    72,
-    96,
-    144,
-    192,
-    216
-};
+const uint32_t N_DBPS_80211P[] = {24, 36, 48, 72, 96, 144, 192, 216};
 
 /** @brief Symbol interval
  *
  * as defined in Table 17-4 in the IEEE 802.11-2007 standard
  */
 const double T_SYM_80211P = 8e-6;
-
 
 /** @brief Length of PHY HEADER
  *
@@ -140,7 +121,6 @@ const SimTime SWITCHING_INTERVAL_11P = SimTime().setRaw(50000000000UL);
  */
 const SimTime GUARD_INTERVAL_11P = SimTime().setRaw(4000000000UL);
 
-
 /** @brief Channels as reserved by the FCC
  *
  */
@@ -157,7 +137,7 @@ enum ChannelNumber {
 }
 
 enum t_channel {
-    type_CCH=0,
+    type_CCH = 0,
     type_SCH,
 };
 

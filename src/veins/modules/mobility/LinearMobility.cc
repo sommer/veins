@@ -36,24 +36,22 @@ void LinearMobility::initialize(int stage)
 
     debugEV << "initializing LinearMobility stage " << stage << endl;
 
-    if (stage == 0){
+    if (stage == 0) {
         move.setSpeed(par("speed").doubleValue());
         acceleration = par("acceleration");
         angle = par("angle");
-        angle = fmod(angle,360);
+        angle = fmod(angle, 360);
     }
-    else if(stage == 1){
+    else if (stage == 1) {
         stepTarget = move.getStartPos();
     }
 }
-
 
 void LinearMobility::fixIfHostGetsOutside()
 {
     Coord dummy = Coord::ZERO;
     handleIfOutside(WRAP, stepTarget, dummy, dummy, angle);
 }
-
 
 /**
  * Move the host if the destination is not reached yet. Otherwise

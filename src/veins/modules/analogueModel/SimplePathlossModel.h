@@ -33,8 +33,7 @@ class SimplePathlossModel;
  *
  * @ingroup analogueModels
  */
-class MIXIM_API SimplePathlossModel : public AnalogueModel
-{
+class MIXIM_API SimplePathlossModel : public AnalogueModel {
 protected:
     /** @brief Path loss coefficient. **/
     double pathLossAlphaHalf;
@@ -67,22 +66,20 @@ public:
      *                          moving in
      * @param debug display debug messages?
      */
-    SimplePathlossModel(double alpha, double carrierFrequency,
-                    bool useTorus, const Coord& playgroundSize, bool debug):
-        pathLossAlphaHalf(alpha * 0.5),
-        carrierFrequency(carrierFrequency),
-        useTorus(useTorus),
-        playgroundSize(playgroundSize),
-        debug(debug)
+    SimplePathlossModel(double alpha, double carrierFrequency, bool useTorus, const Coord& playgroundSize, bool debug)
+        : pathLossAlphaHalf(alpha * 0.5)
+        , carrierFrequency(carrierFrequency)
+        , useTorus(useTorus)
+        , playgroundSize(playgroundSize)
+        , debug(debug)
     {
-
     }
 
     /**
      * @brief Filters a specified AirFrame's Signal by adding an attenuation
      * over time to the Signal.
      */
-    virtual void filterSignal(Signal *, const Coord&, const Coord&);
+    virtual void filterSignal(Signal*, const Coord&, const Coord&);
 
     /**
      * @brief Method to calculate the attenuation value for pathloss.

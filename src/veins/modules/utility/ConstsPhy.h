@@ -27,7 +27,7 @@
 
 /** @brief Modulation and coding scheme to be used for transmission */
 enum PHY_MCS {
-    //use the default MCS
+    // use the default MCS
     MCS_DEFAULT = -1,
     MCS_OFDM_BPSK_R_1_2,
     MCS_OFDM_BPSK_R_3_4,
@@ -47,10 +47,11 @@ enum Bandwidth {
 };
 
 /** @brief Given bandwidth and MCS returns datarate in bits per second */
-inline uint64_t getOfdmDatarate(enum PHY_MCS mcs, enum Bandwidth bw) {
-    //divide datarate by div, depending on bandwidth
+inline uint64_t getOfdmDatarate(enum PHY_MCS mcs, enum Bandwidth bw)
+{
+    // divide datarate by div, depending on bandwidth
     uint64_t div;
-    //datarate to be returned
+    // datarate to be returned
     uint64_t dr;
     switch (bw) {
     case BW_OFDM_5_MHZ:
@@ -97,7 +98,8 @@ inline uint64_t getOfdmDatarate(enum PHY_MCS mcs, enum Bandwidth bw) {
 }
 
 /** @brief returns the number of databits per ofdm symbol */
-inline uint32_t getNDBPS(enum PHY_MCS mcs) {
+inline uint32_t getNDBPS(enum PHY_MCS mcs)
+{
     uint32_t ndbps;
     switch (mcs) {
     case MCS_OFDM_BPSK_R_1_2:
@@ -132,7 +134,8 @@ inline uint32_t getNDBPS(enum PHY_MCS mcs) {
 }
 
 /** @brief returns the bandwidth in Hz */
-inline uint64_t getBandwidth(enum Bandwidth bw) {
+inline uint64_t getBandwidth(enum Bandwidth bw)
+{
     switch (bw) {
     case BW_OFDM_5_MHZ:
         return 5000000;
@@ -148,7 +151,8 @@ inline uint64_t getBandwidth(enum Bandwidth bw) {
 }
 
 /** @brief returns encoding given datarate */
-inline enum PHY_MCS getMCS(uint64_t datarate, enum Bandwidth bw) {
+inline enum PHY_MCS getMCS(uint64_t datarate, enum Bandwidth bw)
+{
     if (bw == BW_OFDM_10_MHZ) {
         if (datarate == 3000000) {
             return MCS_OFDM_BPSK_R_1_2;

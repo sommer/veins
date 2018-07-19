@@ -26,8 +26,8 @@ namespace Veins {
  */
 class Antenna {
 public:
-    Antenna() {};
-    virtual ~Antenna() {};
+    Antenna(){};
+    virtual ~Antenna(){};
 
     /**
      * Calculates the antenna gain of the represented antenna.
@@ -48,7 +48,10 @@ public:
      */
     virtual double getGain(Coord ownPos, Coord ownOrient, Coord otherPos);
 
-    virtual double getLastAngle(){return -1.0;};
+    virtual double getLastAngle()
+    {
+        return -1.0;
+    };
 };
 
 } // namespace Veins

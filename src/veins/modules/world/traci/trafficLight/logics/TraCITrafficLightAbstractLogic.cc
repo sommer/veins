@@ -23,10 +23,9 @@
 using Veins::TraCITrafficLightAbstractLogic;
 using namespace omnetpp;
 
-
-TraCITrafficLightAbstractLogic::TraCITrafficLightAbstractLogic():
-    cSimpleModule(),
-    switchTimer(nullptr)
+TraCITrafficLightAbstractLogic::TraCITrafficLightAbstractLogic()
+    : cSimpleModule()
+    , switchTimer(nullptr)
 {
 }
 
@@ -40,14 +39,15 @@ void TraCITrafficLightAbstractLogic::initialize()
     switchTimer = new cMessage("trySwitch");
 }
 
-void TraCITrafficLightAbstractLogic::handleMessage(cMessage *msg)
+void TraCITrafficLightAbstractLogic::handleMessage(cMessage* msg)
 {
-    if(msg->isSelfMessage()) {
+    if (msg->isSelfMessage()) {
         handleSelfMsg(msg);
-    } else if(msg->arrivedOn("interface$i")) {
+    }
+    else if (msg->arrivedOn("interface$i")) {
         TraCITrafficLightMessage* tlMsg = check_and_cast<TraCITrafficLightMessage*>(msg);
         // always check for changed switch time and (re-)schedule switch handler if so
-        if(tlMsg->getChangedAttribute() == TrafficLightAtrributeType::SWITCHTIME) {
+        if (tlMsg->getChangedAttribute() == TrafficLightAtrributeType::SWITCHTIME) {
             // schedule handler right before the switch
             cancelEvent(switchTimer);
             // make sure the message is not scheduled to the past
@@ -56,16 +56,18 @@ void TraCITrafficLightAbstractLogic::handleMessage(cMessage *msg)
         }
         // defer further handling to subclass implementation
         handleTlIfMsg(tlMsg);
-    } else if (msg->arrivedOn("applLayer$i")) {
+    }
+    else if (msg->arrivedOn("applLayer$i")) {
         handleApplMsg(msg);
-    } else {
+    }
+    else {
         error("Unknown message arrived on %s", msg->getArrivalGate()->getName());
     }
 }
 
-void TraCITrafficLightAbstractLogic::handleSelfMsg(cMessage *msg)
+void TraCITrafficLightAbstractLogic::handleSelfMsg(cMessage* msg)
 {
-    if(msg == switchTimer) {
+    if (msg == switchTimer) {
         handlePossibleSwitch();
     }
 }

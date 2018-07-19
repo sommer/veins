@@ -24,15 +24,17 @@ using namespace Veins;
 
 using Veins::Obstacle;
 
-Obstacle::Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter) :
-    visualRepresentation(0),
-    id(id),
-    type(type),
-    attenuationPerCut(attenuationPerCut),
-    attenuationPerMeter(attenuationPerMeter) {
+Obstacle::Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter)
+    : visualRepresentation(0)
+    , id(id)
+    , type(type)
+    , attenuationPerCut(attenuationPerCut)
+    , attenuationPerMeter(attenuationPerMeter)
+{
 }
 
-void Obstacle::setShape(Coords shape) {
+void Obstacle::setShape(Coords shape)
+{
     coords = shape;
     bboxP1 = Coord(1e7, 1e7);
     bboxP2 = Coord(-1e7, -1e7);
@@ -44,56 +46,61 @@ void Obstacle::setShape(Coords shape) {
     }
 }
 
-const Obstacle::Coords& Obstacle::getShape() const {
+const Obstacle::Coords& Obstacle::getShape() const
+{
     return coords;
 }
 
-const Coord Obstacle::getBboxP1() const {
+const Coord Obstacle::getBboxP1() const
+{
     return bboxP1;
 }
 
-const Coord Obstacle::getBboxP2() const {
+const Coord Obstacle::getBboxP2() const
+{
     return bboxP2;
 }
 
-
 namespace {
 
-    bool isPointInObstacle(Coord point, const Obstacle& o) {
-        bool isInside = false;
-        const Obstacle::Coords& shape = o.getShape();
-        Obstacle::Coords::const_iterator i = shape.begin();
-        Obstacle::Coords::const_iterator j = (shape.rbegin()+1).base();
-        for (; i != shape.end(); j = i++) {
-            bool inYRangeUp = (point.y >= i->y) && (point.y < j->y);
-            bool inYRangeDown = (point.y >= j->y) && (point.y < i->y);
-            bool inYRange = inYRangeUp || inYRangeDown;
-            if (!inYRange) continue;
-            bool intersects = point.x < (i->x + ((point.y - i->y) * (j->x - i->x) / (j->y - i->y)));
-            if (!intersects) continue;
-            isInside = !isInside;
-        }
-        return isInside;
+bool isPointInObstacle(Coord point, const Obstacle& o)
+{
+    bool isInside = false;
+    const Obstacle::Coords& shape = o.getShape();
+    Obstacle::Coords::const_iterator i = shape.begin();
+    Obstacle::Coords::const_iterator j = (shape.rbegin() + 1).base();
+    for (; i != shape.end(); j = i++) {
+        bool inYRangeUp = (point.y >= i->y) && (point.y < j->y);
+        bool inYRangeDown = (point.y >= j->y) && (point.y < i->y);
+        bool inYRange = inYRangeUp || inYRangeDown;
+        if (!inYRange) continue;
+        bool intersects = point.x < (i->x + ((point.y - i->y) * (j->x - i->x) / (j->y - i->y)));
+        if (!intersects) continue;
+        isInside = !isInside;
     }
-
-    double segmentsIntersectAt(Coord p1From, Coord p1To, Coord p2From, Coord p2To) {
-        Coord p1Vec = p1To - p1From;
-        Coord p2Vec = p2To - p2From;
-        Coord p1p2 = p1From - p2From;
-
-        double D = (p1Vec.x * p2Vec.y - p1Vec.y * p2Vec.x);
-
-        double p1Frac = (p2Vec.x * p1p2.y - p2Vec.y * p1p2.x) / D;
-        if (p1Frac < 0 || p1Frac > 1) return -1;
-
-        double p2Frac = (p1Vec.x * p1p2.y - p1Vec.y * p1p2.x) / D;
-        if (p2Frac < 0 || p2Frac > 1) return -1;
-
-        return p1Frac;
-    }
+    return isInside;
 }
 
-double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const {
+double segmentsIntersectAt(Coord p1From, Coord p1To, Coord p2From, Coord p2To)
+{
+    Coord p1Vec = p1To - p1From;
+    Coord p2Vec = p2To - p2From;
+    Coord p1p2 = p1From - p2From;
+
+    double D = (p1Vec.x * p2Vec.y - p1Vec.y * p2Vec.x);
+
+    double p1Frac = (p2Vec.x * p1p2.y - p2Vec.y * p1p2.x) / D;
+    if (p1Frac < 0 || p1Frac > 1) return -1;
+
+    double p2Frac = (p1Vec.x * p1p2.y - p1Vec.y * p1p2.x) / D;
+    if (p2Frac < 0 || p2Frac > 1) return -1;
+
+    return p1Frac;
+}
+} // namespace
+
+double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const
+{
 
     // if obstacles has neither borders nor matter: bail.
     if (getShape().size() < 2) return 1;
@@ -103,7 +110,7 @@ double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& recei
     bool doesIntersect = false;
     const Obstacle::Coords& shape = getShape();
     Obstacle::Coords::const_iterator i = shape.begin();
-    Obstacle::Coords::const_iterator j = (shape.rbegin()+1).base();
+    Obstacle::Coords::const_iterator j = (shape.rbegin() + 1).base();
     for (; i != shape.end(); j = i++) {
         Coord c1 = *i;
         Coord c2 = *j;
@@ -113,7 +120,6 @@ double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& recei
             doesIntersect = true;
             intersectAt.insert(i);
         }
-
     }
 
     // if beam interacts with neither borders nor matter: bail.
@@ -131,7 +137,7 @@ double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& recei
 
     // sum up distances in matter.
     double fractionInObstacle = 0;
-    for (std::multiset<double>::const_iterator i = intersectAt.begin(); i != intersectAt.end(); ) {
+    for (std::multiset<double>::const_iterator i = intersectAt.begin(); i != intersectAt.end();) {
         double p1 = *(i++);
         double p2 = *(i++);
         fractionInObstacle += (p2 - p1);
@@ -140,13 +146,15 @@ double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& recei
     // calculate attenuation
     double totalDistance = senderPos.distance(receiverPos);
     double attenuation = (attenuationPerCut * numCuts) + (attenuationPerMeter * fractionInObstacle * totalDistance);
-    return pow(10.0, -attenuation/10.0);
+    return pow(10.0, -attenuation / 10.0);
 }
 
-std::string Obstacle::getType() const {
+std::string Obstacle::getType() const
+{
     return type;
 }
 
-std::string Obstacle::getId() const {
+std::string Obstacle::getId() const
+{
     return id;
 }

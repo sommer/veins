@@ -20,10 +20,8 @@ namespace Veins {
  *
  * @ingroup analogueModels
  */
-class SimpleObstacleShadowing : public AnalogueModel
-{
+class SimpleObstacleShadowing : public AnalogueModel {
 protected:
-
     /** @brief reference to global ObstacleControl instance */
     ObstacleControl& obstacleControl;
 
@@ -59,7 +57,7 @@ public:
      * @brief Filters a specified Signal by adding an attenuation
      * over time to the Signal.
      */
-    virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos);
+    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos);
 };
 
 } // namespace Veins

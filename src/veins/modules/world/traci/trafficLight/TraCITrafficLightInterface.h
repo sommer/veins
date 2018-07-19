@@ -28,43 +28,46 @@
 
 namespace Veins {
 
-class TraCITrafficLightInterface: public cSimpleModule {
+class TraCITrafficLightInterface : public cSimpleModule {
 public:
-
     TraCITrafficLightInterface();
     virtual ~TraCITrafficLightInterface();
 
     /** Set parameters for connection to TraCI */
     virtual void preInitialize(const std::string& external_id, const Coord& position, const simtime_t& updateInterval);
 
-    virtual void setExternalId(const std::string& external_id) {
+    virtual void setExternalId(const std::string& external_id)
+    {
         this->external_id = external_id;
     }
-    virtual std::string getExternalId() const {
-        if (external_id == "")
-            throw cRuntimeError("TraCITrafficLightInterface::getExternalId called with no external_id set yet");
+    virtual std::string getExternalId() const
+    {
+        if (external_id == "") throw cRuntimeError("TraCITrafficLightInterface::getExternalId called with no external_id set yet");
         return external_id;
     }
-    virtual TraCIScenarioManager* getManager() const {
+    virtual TraCIScenarioManager* getManager() const
+    {
         if (!manager) {
             manager = TraCIScenarioManagerAccess().get();
         }
         return manager;
     }
-    virtual TraCICommandInterface* getCommandInterface() const {
+    virtual TraCICommandInterface* getCommandInterface() const
+    {
         if (!commandInterface) {
             commandInterface = getManager()->getCommandInterface();
         }
         return commandInterface;
     }
-    virtual TraCICommandInterface::Trafficlight* getTlCommandInterface() const {
+    virtual TraCICommandInterface::Trafficlight* getTlCommandInterface() const
+    {
         if (!tlCommandInterface) {
             tlCommandInterface = new TraCICommandInterface::Trafficlight(getCommandInterface(), external_id);
         }
         return tlCommandInterface;
     }
 
-    virtual std::list< std::list<TraCITrafficLightLink> > getControlledLinks();
+    virtual std::list<std::list<TraCITrafficLightLink>> getControlledLinks();
     virtual Coord getPosition() const;
     virtual TraCITrafficLightProgram::Logic getCurrentLogic() const;
     virtual std::string getCurrentLogicId() const;
@@ -76,12 +79,12 @@ public:
     virtual bool isInOnlineSignalState() const;
 
     virtual void setProgramDefinition(const TraCITrafficLightProgram& programDefinition);
-    virtual void setControlledLinks(const std::list< std::list<TraCITrafficLightLink> >& controlledLinks);
-    virtual void setCurrentLogicById(const std::string& logicId, bool setSumo=true);
-    virtual void setCurrentPhaseByNr(const unsigned int phaseNr, bool setSumo=true);
-    virtual void setCurrentState(const std::string& state, bool setSumo=true);
-    virtual void setNextSwitch(const simtime_t& newNextSwitch, bool setSumo=true);
-    virtual void setRemainingDuration(const simtime_t& timeTillSwitch, bool setSumo=true);
+    virtual void setControlledLinks(const std::list<std::list<TraCITrafficLightLink>>& controlledLinks);
+    virtual void setCurrentLogicById(const std::string& logicId, bool setSumo = true);
+    virtual void setCurrentPhaseByNr(const unsigned int phaseNr, bool setSumo = true);
+    virtual void setCurrentState(const std::string& state, bool setSumo = true);
+    virtual void setNextSwitch(const simtime_t& newNextSwitch, bool setSumo = true);
+    virtual void setRemainingDuration(const simtime_t& timeTillSwitch, bool setSumo = true);
 
 protected:
     virtual void initialize();
@@ -102,7 +105,7 @@ protected:
     Coord position; /**< position of the traffic light */
 
     TraCITrafficLightProgram programDefinition; /**< full definition of program (all logics) */
-    std::list< std::list<TraCITrafficLightLink> > controlledLinks; /**< controlledLinks[signal][link] */
+    std::list<std::list<TraCITrafficLightLink>> controlledLinks; /**< controlledLinks[signal][link] */
     // std::list< std::list<TraCITrafficLightLink> > controlledLanes; /**< controlledLanes[signal][link] */
     std::string currentLogicId; /**< id of the currently active logic */
     int currentPhaseNr; /**< current phase of the current program */
@@ -111,7 +114,7 @@ protected:
     bool inOnlineSignalState; /**< whether the TLS is currently set to a manual (i.e. online) phase state */
 };
 
-} // Namespace
+} // namespace Veins
 
 namespace Veins {
 class TraCITrafficLightInterfaceAccess {
@@ -123,5 +126,5 @@ public:
         return traci;
     };
 };
-} // Namespace
+} // namespace Veins
 #endif /* TRACITRAFFICLIGHTINTERFACE_H_ */

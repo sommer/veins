@@ -24,8 +24,7 @@ class ChannelAccess;
  * @author Christoph Sommer ("unregisterNic()"-method)
  * @sa ChannelAccess
  */
-class MIXIM_API BaseConnectionManager : public cSimpleModule
-{
+class MIXIM_API BaseConnectionManager : public cSimpleModule {
 private:
     /**
      * @brief Represents a position inside a grid.
@@ -34,8 +33,7 @@ private:
      * This class provides some converting functions from a Coord
      * to a GridCoord.
      */
-    class GridCoord
-    {
+    class GridCoord {
     public:
         /** @name Coordinates in the grid.*/
         /*@{*/
@@ -50,24 +48,31 @@ private:
          * Creates a 3-dimensional coord.
          */
         GridCoord()
-            :x(0), y(0), z(0) {};
+            : x(0)
+            , y(0)
+            , z(0){};
 
         /**
          * @brief Initialize a 2-dimensional GridCoord with x and y.
          */
         GridCoord(int x, int y)
-            :x(x), y(y), z(0) {};
+            : x(x)
+            , y(y)
+            , z(0){};
 
         /**
          * @brief Initialize a 3-dimensional GridCoord with x, y and z.
          */
         GridCoord(int x, int y, int z)
-            :x(x), y(y), z(z) {};
+            : x(x)
+            , y(y)
+            , z(z){};
 
         /**
          * @brief Simple copy-constructor.
          */
-        GridCoord(const GridCoord& o) {
+        GridCoord(const GridCoord& o)
+        {
             x = o.x;
             y = o.y;
             z = o.z;
@@ -78,27 +83,31 @@ private:
          * x,y and z-values by "gridCellWidth".
          * The dimension of the GridCoord depends on the Coord.
          */
-        GridCoord(const Coord& c, const Coord& gridCellSize = Coord(1.0,1.0,1.0)) {
+        GridCoord(const Coord& c, const Coord& gridCellSize = Coord(1.0, 1.0, 1.0))
+        {
             x = static_cast<int>(c.x / gridCellSize.x);
             y = static_cast<int>(c.y / gridCellSize.y);
             z = static_cast<int>(c.z / gridCellSize.z);
         }
 
         /** @brief Output string for this coordinate.*/
-        std::string info() const {
+        std::string info() const
+        {
             std::stringstream os;
             os << "(" << x << "," << y << "," << z << ")";
             return os.str();
         }
 
         /** @brief Comparison operator for coordinates.*/
-        friend bool operator==(const GridCoord& a, const GridCoord& b) {
+        friend bool operator==(const GridCoord& a, const GridCoord& b)
+        {
             return a.x == b.x && a.y == b.y && a.z == b.z;
         }
 
         /** @brief Comparison operator for coordinates.*/
-        friend bool operator!=(const GridCoord& a, const GridCoord& b) {
-            return !(a==b);
+        friend bool operator!=(const GridCoord& a, const GridCoord& b)
+        {
+            return !(a == b);
         }
     };
 
@@ -119,7 +128,6 @@ private:
         unsigned current;
 
     protected:
-
         /**
          * @brief Tries to insert a GridCoord at the specified position.
          *
@@ -128,12 +136,14 @@ private:
          * a new Position to insert end recursively call this Method again.
          * If the spot is empty the Coord is inserted.
          */
-        void insert(const GridCoord& c, unsigned pos) {
-            if(data[pos] == 0) {
+        void insert(const GridCoord& c, unsigned pos)
+        {
+            if (data[pos] == 0) {
                 data[pos] = new GridCoord(c);
                 size++;
-            } else {
-                if(*data[pos] != c) {
+            }
+            else {
+                if (*data[pos] != c) {
                     insert(c, (pos + 2) % maxSize);
                 }
             }
@@ -144,7 +154,9 @@ private:
          * @brief Initializes the set (hashtable) with the a specified size.
          */
         CoordSet(unsigned sz)
-            :maxSize(sz), size(0), current(0)
+            : maxSize(sz)
+            , size(0)
+            , current(0)
         {
             data.resize(maxSize);
         }
@@ -152,9 +164,10 @@ private:
         /**
          * @brief Delete every created GridCoord
          */
-        ~CoordSet() {
-            for(unsigned i = 0; i < maxSize; i++) {
-                if(data[i] != 0) {
+        ~CoordSet()
+        {
+            for (unsigned i = 0; i < maxSize; i++) {
+                if (data[i] != 0) {
                     delete data[i];
                 }
             }
@@ -165,7 +178,8 @@ private:
          * If a GridCoord with the same value already exists in the set
          * nothing happens.
          */
-        void add(const GridCoord& c) {
+        void add(const GridCoord& c)
+        {
             unsigned hash = (c.x * 10000 + c.y * 100 + c.z) % maxSize;
             insert(c, hash);
         }
@@ -174,9 +188,10 @@ private:
          * @brief Returns the next GridCoord in the set.
          * You can iterate through the set only one time with this function!
          */
-        GridCoord* next() {
-            for(;current < maxSize; current++) {
-                if(data[current] != 0) {
+        GridCoord* next()
+        {
+            for (; current < maxSize; current++) {
+                if (data[current] != 0) {
                     return data[current++];
                 }
             }
@@ -186,14 +201,20 @@ private:
         /**
          * @brief Returns the number of GridCoords currently saved in this set.
          */
-        unsigned getSize() { return size; }
+        unsigned getSize()
+        {
+            return size;
+        }
 
         /**
          * @brief Returns the maximum number of elements which can be stored inside
          * this set.
          * To prevent collisions the set should never be more than 75% filled.
          */
-        unsigned getmaxSize() { return maxSize; }
+        unsigned getmaxSize()
+        {
+            return maxSize;
+        }
     };
 
 protected:
@@ -261,9 +282,7 @@ private:
     /**
      * @brief Check connections of a nic in the grid
      */
-    void checkGrid(GridCoord& oldCell,
-                   GridCoord& newCell,
-                   int id);
+    void checkGrid(GridCoord& oldCell, GridCoord& newCell, int id);
 
     /**
      * @brief Calculates the corresponding cell of a coordinate.
@@ -287,8 +306,8 @@ private:
      * @brief Adds every direct Neighbor of a GridCoord to a union of coords.
      */
     void fillUnionWithNeighbors(CoordSet& gridUnion, GridCoord cell);
-protected:
 
+protected:
     /**
      * @brief Calculate interference distance
      *
@@ -341,11 +360,11 @@ protected:
     virtual bool isInRange(NicEntries::mapped_type pFromNic, NicEntries::mapped_type pToNic);
 
 public:
-
     virtual ~BaseConnectionManager();
 
     /** @brief Needs two initialization stages.*/
-    virtual int numInitStages() const {
+    virtual int numInitStages() const
+    {
         return 2;
     }
 
@@ -381,7 +400,7 @@ public:
     void updateNicPos(int nicID, const Coord* newPos);
 
     /** @brief Returns the ingates of all nics in range*/
-    const NicEntry::GateList& getGateList( int nicID) const;
+    const NicEntry::GateList& getGateList(int nicID) const;
 
     /** @brief Returns the ingate of the with id==targetID, or 0 if not in range*/
     const cGate* getOutGateTo(const NicEntry* nic, const NicEntry* targetNic) const;

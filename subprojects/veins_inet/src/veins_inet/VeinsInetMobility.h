@@ -36,48 +36,58 @@
 namespace Veins {
 
 class INET_API VeinsInetMobility : public cSimpleModule, public inet::IMobility {
-    public:
-        VeinsInetMobility();
+public:
+    VeinsInetMobility();
 
-    public:
-        virtual void preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle);
-        virtual void nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle);
+public:
+    virtual void preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle);
+    virtual void nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle);
 
-    public:
-        virtual double getMaxSpeed() const override;
+public:
+    virtual double getMaxSpeed() const override;
 
-        virtual inet::Coord getCurrentPosition() override;
-        virtual inet::Coord getCurrentSpeed() override;
-        virtual inet::EulerAngles getCurrentAngularPosition() override;
-        virtual inet::EulerAngles getCurrentAngularSpeed() override { return inet::EulerAngles::ZERO; }
+    virtual inet::Coord getCurrentPosition() override;
+    virtual inet::Coord getCurrentSpeed() override;
+    virtual inet::EulerAngles getCurrentAngularPosition() override;
+    virtual inet::EulerAngles getCurrentAngularSpeed() override
+    {
+        return inet::EulerAngles::ZERO;
+    }
 
-        virtual inet::Coord getConstraintAreaMax() const override { return constraintAreaMax; }
-        virtual inet::Coord getConstraintAreaMin() const override { return constraintAreaMin; }
+    virtual inet::Coord getConstraintAreaMax() const override
+    {
+        return constraintAreaMax;
+    }
+    virtual inet::Coord getConstraintAreaMin() const override
+    {
+        return constraintAreaMin;
+    }
 
-    protected:
-        cModule *visualRepresentation;
-        const inet::CanvasProjection *canvasProjection;
+protected:
+    cModule* visualRepresentation;
+    const inet::CanvasProjection* canvasProjection;
 
-        inet::Coord constraintAreaMin, constraintAreaMax;
+    inet::Coord constraintAreaMin, constraintAreaMax;
 
-        inet::Coord lastPosition;
-        inet::Coord lastSpeed;
-        inet::EulerAngles lastOrientation;
+    inet::Coord lastPosition;
+    inet::Coord lastSpeed;
+    inet::EulerAngles lastOrientation;
 
-    protected:
-        virtual int numInitStages() const override { return inet::NUM_INIT_STAGES; }
+protected:
+    virtual int numInitStages() const override
+    {
+        return inet::NUM_INIT_STAGES;
+    }
 
-        virtual void initialize(int stage) override;
+    virtual void initialize(int stage) override;
 
-        virtual void handleMessage(cMessage *msg) override;
+    virtual void handleMessage(cMessage* msg) override;
 
-        virtual void updateVisualRepresentation();
+    virtual void updateVisualRepresentation();
 
-        virtual void emitMobilityStateChangedSignal();
+    virtual void emitMobilityStateChangedSignal();
 };
 
 } // namespace Veins
 
 #endif // ifndef Veins_VeinsInetMobility_h
-
-

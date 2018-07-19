@@ -18,7 +18,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-
 #define WANT_WINSOCK2
 #include <platdep/sockets.h>
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
@@ -40,29 +39,33 @@
 
 #define MYDEBUG EV
 
-using Veins::TraCIScenarioManagerForker;
 using Veins::TraCILauncher;
+using Veins::TraCIScenarioManagerForker;
 
 Define_Module(Veins::TraCIScenarioManagerForker);
 
 namespace {
 
-    template<typename T> inline std::string replace(std::string haystack, std::string needle, T newValue) {
-        size_t i = haystack.find(needle, 0);
-        if (i == std::string::npos) return haystack;
-        std::ostringstream os;
-        os << newValue;
-        haystack.replace(i, needle.length(), os.str());
-        return haystack;
-    }
-
+template <typename T>
+inline std::string replace(std::string haystack, std::string needle, T newValue)
+{
+    size_t i = haystack.find(needle, 0);
+    if (i == std::string::npos) return haystack;
+    std::ostringstream os;
+    os << newValue;
+    haystack.replace(i, needle.length(), os.str());
+    return haystack;
 }
 
-TraCIScenarioManagerForker::TraCIScenarioManagerForker() {
+} // namespace
+
+TraCIScenarioManagerForker::TraCIScenarioManagerForker()
+{
     server = 0;
 }
 
-TraCIScenarioManagerForker::~TraCIScenarioManagerForker() {
+TraCIScenarioManagerForker::~TraCIScenarioManagerForker()
+{
     killServer();
 }
 
@@ -86,7 +89,8 @@ void TraCIScenarioManagerForker::finish()
     killServer();
 }
 
-void TraCIScenarioManagerForker::startServer() {
+void TraCIScenarioManagerForker::startServer()
+{
     // autoset port, if requested
     if (port == -1) {
         if (initsocketlibonce() != 0) throw cRuntimeError("Could not init socketlib");
@@ -97,18 +101,18 @@ void TraCIScenarioManagerForker::startServer() {
         }
 
         struct sockaddr_in serv_addr;
-        struct sockaddr* serv_addr_p = (struct sockaddr*)&serv_addr;
+        struct sockaddr* serv_addr_p = (struct sockaddr*) &serv_addr;
         memset(serv_addr_p, 0, sizeof(serv_addr));
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
         serv_addr.sin_port = 0;
 
-        if (::bind(sock, serv_addr_p, sizeof(serv_addr)) < 0){
+        if (::bind(sock, serv_addr_p, sizeof(serv_addr)) < 0) {
             throw cRuntimeError("Failed to bind socket: %s", strerror(errno));
         }
 
         socklen_t len = sizeof(serv_addr);
-        if (getsockname(sock, serv_addr_p, &len) < 0){
+        if (getsockname(sock, serv_addr_p, &len) < 0) {
             throw cRuntimeError("Failed to get hostname: %s", strerror(errno));
         }
 
@@ -131,7 +135,8 @@ void TraCIScenarioManagerForker::startServer() {
     server = new TraCILauncher(commandLine);
 }
 
-void TraCIScenarioManagerForker::killServer() {
+void TraCIScenarioManagerForker::killServer()
+{
     if (server) {
         delete server;
         server = 0;

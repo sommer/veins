@@ -27,12 +27,13 @@ using Veins::ObstacleControl;
 
 Define_Module(Veins::ObstacleControl);
 
-ObstacleControl::~ObstacleControl() {
-
+ObstacleControl::~ObstacleControl()
+{
 }
 
-void ObstacleControl::initialize(int stage) {
-    if (stage == 1)    {
+void ObstacleControl::initialize(int stage)
+{
+    if (stage == 1) {
         debug = par("debug");
 
         obstacles.clear();
@@ -47,7 +48,8 @@ void ObstacleControl::initialize(int stage) {
     }
 }
 
-void ObstacleControl::finish() {
+void ObstacleControl::finish()
+{
     for (Obstacles::iterator i = obstacles.begin(); i != obstacles.end(); ++i) {
         for (ObstacleGridRow::iterator j = i->begin(); j != i->end(); ++j) {
             while (j->begin() != j->end()) erase(*j->begin());
@@ -56,7 +58,8 @@ void ObstacleControl::finish() {
     obstacles.clear();
 }
 
-void ObstacleControl::handleMessage(cMessage *msg) {
+void ObstacleControl::handleMessage(cMessage* msg)
+{
     if (msg->isSelfMessage()) {
         handleSelfMsg(msg);
         return;
@@ -64,11 +67,13 @@ void ObstacleControl::handleMessage(cMessage *msg) {
     error("ObstacleControl doesn't handle messages from other modules");
 }
 
-void ObstacleControl::handleSelfMsg(cMessage *msg) {
+void ObstacleControl::handleSelfMsg(cMessage* msg)
+{
     error("ObstacleControl doesn't handle self-messages");
 }
 
-void ObstacleControl::addFromXml(cXMLElement* xml) {
+void ObstacleControl::addFromXml(cXMLElement* xml)
+{
     std::string rootTag = xml->getTagName();
     if (rootTag != "obstacles") {
         throw cRuntimeError("Obstacle definition root tag was \"%s\", but expected \"obstacles\"", rootTag.c_str());
@@ -94,7 +99,6 @@ void ObstacleControl::addFromXml(cXMLElement* xml) {
 
             perCut[id] = perCutPar;
             perMeter[id] = perMeterPar;
-
         }
         else if (tag == "poly") {
 
@@ -123,13 +127,11 @@ void ObstacleControl::addFromXml(cXMLElement* xml) {
         else {
             throw cRuntimeError("Found unknown tag in obstacle definition: \"%s\"", tag.c_str());
         }
-
-
     }
-
 }
 
-void ObstacleControl::addFromTypeAndShape(std::string id, std::string typeId, std::vector<Coord> shape) {
+void ObstacleControl::addFromTypeAndShape(std::string id, std::string typeId, std::vector<Coord> shape)
+{
     if (!isTypeSupported(typeId)) {
         throw cRuntimeError("Unsupported obstacle type: \"%s\"", typeId.c_str());
     }
@@ -138,7 +140,8 @@ void ObstacleControl::addFromTypeAndShape(std::string id, std::string typeId, st
     add(obs);
 }
 
-void ObstacleControl::add(Obstacle obstacle) {
+void ObstacleControl::add(Obstacle obstacle)
+{
     Obstacle* o = new Obstacle(obstacle);
 
     size_t fromRow = std::max(0, int(o->getBboxP1().x / GRIDCELL_SIZE));
@@ -147,8 +150,8 @@ void ObstacleControl::add(Obstacle obstacle) {
     size_t toCol = std::max(0, int(o->getBboxP2().y / GRIDCELL_SIZE));
     for (size_t row = fromRow; row <= toRow; ++row) {
         for (size_t col = fromCol; col <= toCol; ++col) {
-            if (obstacles.size() < col+1) obstacles.resize(col+1);
-            if (obstacles[col].size() < row+1) obstacles[col].resize(row+1);
+            if (obstacles.size() < col + 1) obstacles.resize(col + 1);
+            if (obstacles[col].size() < row + 1) obstacles[col].resize(row + 1);
             (obstacles[col])[row].push_back(o);
         }
     }
@@ -159,14 +162,16 @@ void ObstacleControl::add(Obstacle obstacle) {
     cacheEntries.clear();
 }
 
-void ObstacleControl::erase(const Obstacle* obstacle) {
+void ObstacleControl::erase(const Obstacle* obstacle)
+{
     for (Obstacles::iterator i = obstacles.begin(); i != obstacles.end(); ++i) {
         for (ObstacleGridRow::iterator j = i->begin(); j != i->end(); ++j) {
-            for (ObstacleGridCell::iterator k = j->begin(); k != j->end(); ) {
+            for (ObstacleGridCell::iterator k = j->begin(); k != j->end();) {
                 Obstacle* o = *k;
                 if (o == obstacle) {
                     k = j->erase(k);
-                } else {
+                }
+                else {
                     ++k;
                 }
             }
@@ -179,7 +184,8 @@ void ObstacleControl::erase(const Obstacle* obstacle) {
     cacheEntries.clear();
 }
 
-double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const {
+double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const
+{
     Enter_Method_Silent();
 
     if ((perCut.size() == 0) || (perMeter.size() == 0)) {
@@ -232,7 +238,6 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
 
                 // bail if attenuation is already extremely high
                 if (factor < 1e-30) break;
-
             }
         }
     }
@@ -244,23 +249,28 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
     return factor;
 }
 
-double ObstacleControl::getAttenuationPerCut(std::string type) {
-    if (perCut.find(type) != perCut.end()) return perCut[type];
+double ObstacleControl::getAttenuationPerCut(std::string type)
+{
+    if (perCut.find(type) != perCut.end())
+        return perCut[type];
     else {
         error("Obstacle type %s unknown", type.c_str());
         return -1;
     }
 }
 
-double ObstacleControl::getAttenuationPerMeter(std::string type) {
-    if (perMeter.find(type) != perMeter.end()) return perMeter[type];
+double ObstacleControl::getAttenuationPerMeter(std::string type)
+{
+    if (perMeter.find(type) != perMeter.end())
+        return perMeter[type];
     else {
         error("Obstacle type %s unknown", type.c_str());
         return -1;
     }
 }
 
-bool ObstacleControl::isTypeSupported(std::string type) {
-    //the type of obstacle is supported if there are attenuation values for borders and interior
+bool ObstacleControl::isTypeSupported(std::string type)
+{
+    // the type of obstacle is supported if there are attenuation values for borders and interior
     return (perCut.find(type) != perCut.end()) && (perMeter.find(type) != perMeter.end());
 }

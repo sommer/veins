@@ -48,7 +48,6 @@ namespace Veins {
 class MIXIM_API ChannelInfo {
 
 protected:
-
     /** @brief Type for a pair of an AirFrame and a simulation time.*/
     typedef std::pair<simtime_t, AirFrame*> AirFrameTimePair;
     /** @brief Type for a list of AirFrames and a simulation time.*/
@@ -57,7 +56,7 @@ protected:
      * The AirFrames are stored in a Matrix with start- and end time as
      * dimensions.
      */
-    typedef std::map<simtime_t, AirFrameTimeList > AirFrameMatrix;
+    typedef std::map<simtime_t, AirFrameTimeList> AirFrameMatrix;
 
     /**
      * @brief Iterator for every intersection of a specific interval in a
@@ -82,9 +81,8 @@ protected:
      *
      * In template form to work as const- and non-const iterator.
      */
-    template<class C, class ItMatrix, class ItList>
-    class BaseIntersectionIterator
-    {
+    template <class C, class ItMatrix, class ItList>
+    class BaseIntersectionIterator {
     public:
         /** @brief Pointer to the matrix holding the intervals.*/
         C* intervals;
@@ -105,22 +103,23 @@ protected:
         bool alreadyNext;
 
     public:
-
         /**
          * @brief Creates an iterator for the specified interval at the
          * specified AirFrameMatrix.
          */
-        BaseIntersectionIterator(C* airFrames, simtime_t_cref from, simtime_t_cref to) :
-            intervals(airFrames), from(from), to(to)
+        BaseIntersectionIterator(C* airFrames, simtime_t_cref from, simtime_t_cref to)
+            : intervals(airFrames)
+            , from(from)
+            , to(to)
         {
             // begin at the smallest end-time-entry fulfilling the intersection
             // condition 1
             endIt = intervals->lower_bound(from);
 
-            if(endIt != intervals->end()) {
+            if (endIt != intervals->end()) {
                 startIt = endIt->second.begin();
             }
-            //we are already pointing at the first unchecked interval
+            // we are already pointing at the first unchecked interval
             alreadyNext = true;
         }
 
@@ -130,39 +129,33 @@ protected:
          */
         AirFrame* next()
         {
-            if(endIt == intervals->end())
-                return 0;
+            if (endIt == intervals->end()) return 0;
 
             // "alreadyNext" indicates that some previous iterator function has
             // already increased the intern iterators to a yet unchecked values.
             // This happens after initialization of the iterator and when an
             // element is erased.
-            if(alreadyNext)
+            if (alreadyNext)
                 alreadyNext = false;
             else
                 startIt++;
 
-
-            while(endIt != intervals->end())
-            {
+            while (endIt != intervals->end()) {
                 // while there are entries left at the current end-time
-                while(startIt != endIt->second.end())
-                {
+                while (startIt != endIt->second.end()) {
                     // check if this entry fulfilles the intersection condition
                     // 2 (condition 1 is already fulfilled in the constructor by
                     // the start-value of the end-time-iterator)
-                    if(startIt->first <= to) {
+                    if (startIt->first <= to) {
                         return startIt->second;
                     }
                     startIt++;
                 }
 
                 endIt++;
-                if(endIt == intervals->end())
-                    return 0;
+                if (endIt == intervals->end()) return 0;
 
                 startIt = endIt->second.begin();
-
             }
 
             return 0;
@@ -170,36 +163,27 @@ protected:
     };
 
     /** @brief Type for a const-iterator over an AirFrame interval matrix.*/
-    typedef BaseIntersectionIterator
-                <const AirFrameMatrix,
-                 AirFrameMatrix::const_iterator,
-                 AirFrameTimeList::const_iterator> ConstIntersectionIterator;
+    typedef BaseIntersectionIterator<const AirFrameMatrix, AirFrameMatrix::const_iterator, AirFrameTimeList::const_iterator> ConstIntersectionIterator;
 
     /**
      * @brief Type for a iterator over an AirFrame interval matrix.
      *
      * Extends the const-version by an erase method.
      */
-    class IntersectionIterator:
-            public BaseIntersectionIterator<AirFrameMatrix,
-                                            AirFrameMatrix::iterator,
-                                            AirFrameTimeList::iterator>
-    {
+    class IntersectionIterator : public BaseIntersectionIterator<AirFrameMatrix, AirFrameMatrix::iterator, AirFrameTimeList::iterator> {
     private:
         /** @brief Type for shortcut to base class type.*/
-        typedef BaseIntersectionIterator<AirFrameMatrix,
-                                         AirFrameMatrix::iterator,
-                                         AirFrameTimeList::iterator> Base;
+        typedef BaseIntersectionIterator<AirFrameMatrix, AirFrameMatrix::iterator, AirFrameTimeList::iterator> Base;
+
     public:
         /**
          * @brief Creates an iterator for the specified interval at the
          * specified AirFrameMatrix.
          */
-        IntersectionIterator(AirFrameMatrix* airFrames,
-                             simtime_t_cref  from,
-                             simtime_t_cref  to) :
-            Base(airFrames, from, to)
-        {}
+        IntersectionIterator(AirFrameMatrix* airFrames, simtime_t_cref from, simtime_t_cref to)
+            : Base(airFrames, from, to)
+        {
+        }
 
         /**
          * @brief Erases the AirFrame the iterator currently points to from the
@@ -213,21 +197,21 @@ protected:
             assert(endIt != intervals->end());
             assert(startIt != endIt->second.end());
 
-            //erase AirFrame from list
+            // erase AirFrame from list
             startIt = endIt->second.erase(startIt);
 
-            //check if we've deleted the last entry in the list
-            if(startIt == endIt->second.end())
-            {
-                //check if we deleted the only entry in the list
-                if(endIt->second.empty()) {
-                    intervals->erase(endIt++); //delete list from map
-                } else {
+            // check if we've deleted the last entry in the list
+            if (startIt == endIt->second.end()) {
+                // check if we deleted the only entry in the list
+                if (endIt->second.empty()) {
+                    intervals->erase(endIt++); // delete list from map
+                }
+                else {
                     endIt++;
                 }
 
-                //increase to a valid value if we are not done
-                if(endIt != intervals->end()) {
+                // increase to a valid value if we are not done
+                if (endIt != intervals->end()) {
                     startIt = endIt->second.begin();
                 }
             }
@@ -279,7 +263,6 @@ protected:
      */
     void assertNoIntersections();
 
-
     /**
      * @brief Returns every AirFrame of an AirFrameMatrix which intersect with a
      * given interval.
@@ -287,16 +270,13 @@ protected:
      * The intersecting AirFrames are stored in the AirFrameVector reference
      * passed as parameter.
      */
-    void getIntersections( const AirFrameMatrix& airFrames,
-                           simtime_t_cref from, simtime_t_cref to,
-                           AirFrameVector& outVector) const;
+    void getIntersections(const AirFrameMatrix& airFrames, simtime_t_cref from, simtime_t_cref to, AirFrameVector& outVector) const;
 
     /**
      * @brief Returns true if there is at least one AirFrame in the passed
      * AirFrameMatrix which intersect with the given interval.
      */
-    bool isIntersecting( const AirFrameMatrix& airFrames,
-                         simtime_t_cref from, simtime_t_cref to) const;
+    bool isIntersecting(const AirFrameMatrix& airFrames, simtime_t_cref from, simtime_t_cref to) const;
 
     /**
      * @brief Moves a previously active AirFrame to the inactive AirFrames.
@@ -312,9 +292,7 @@ protected:
     /**
      * @brief Deletes an AirFrame from an AirFrameMatrix.
      */
-    void deleteAirFrame(AirFrameMatrix& airFrames,
-                         AirFrame* a,
-                         simtime_t_cref startTime, simtime_t_cref endTime);
+    void deleteAirFrame(AirFrameMatrix& airFrames, AirFrame* a, simtime_t_cref startTime, simtime_t_cref endTime);
 
     /**
      * @brief Returns the start time of the odlest AirFrame on the channel.
@@ -353,22 +331,25 @@ protected:
      *
      * @param startTime The start of the interval to check
      */
-    void checkAndCleanFrom(simtime_t_cref start) {
-        //nothing to do
-        if(inactiveAirFrames.empty())
-            return;
+    void checkAndCleanFrom(simtime_t_cref start)
+    {
+        // nothing to do
+        if (inactiveAirFrames.empty()) return;
 
-        //take last ended inactive airframe as end of interval
+        // take last ended inactive airframe as end of interval
         checkAndCleanInterval(start, inactiveAirFrames.rbegin()->first);
     }
 
 public:
-    ChannelInfo():
-        earliestInfoPoint(-1),
-        recordStartTime(-1)
-    {}
+    ChannelInfo()
+        : earliestInfoPoint(-1)
+        , recordStartTime(-1)
+    {
+    }
 
-    virtual ~ChannelInfo() {}
+    virtual ~ChannelInfo()
+    {
+    }
 
     /**
      * @brief Tells the ChannelInfo that an AirFrame has started.
@@ -430,10 +411,11 @@ public:
     void startRecording(simtime_t_cref start)
     {
         // clean up until old record start
-        if(recordStartTime > -1) {
+        if (recordStartTime > -1) {
             recordStartTime = start;
             checkAndCleanInterval(0, recordStartTime);
-        } else {
+        }
+        else {
             recordStartTime = start;
         }
     }
@@ -446,7 +428,7 @@ public:
      */
     void stopRecording()
     {
-        if(recordStartTime > -1) {
+        if (recordStartTime > -1) {
             simtime_t old = recordStartTime;
             recordStartTime = -1;
             checkAndCleanFrom(old);
@@ -466,9 +448,9 @@ public:
      * @brief Returns true if there are currently no active or inactive
      * AirFrames on the channel.
      */
-    bool isChannelEmpty() const {
-        assert(recordStartTime != -1
-               || activeAirFrames.empty() == airFrameStarts.empty());
+    bool isChannelEmpty() const
+    {
+        assert(recordStartTime != -1 || activeAirFrames.empty() == airFrameStarts.empty());
 
         return airFrameStarts.empty();
     }

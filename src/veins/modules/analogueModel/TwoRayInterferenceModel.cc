@@ -27,7 +27,8 @@ using Veins::AirFrame;
 
 #define debugEV EV << "PhyLayer(TwoRayInterferenceModel): "
 
-void TwoRayInterferenceModel::filterSignal(Signal *signal, const Coord& senderPos, const Coord& receiverPos) {
+void TwoRayInterferenceModel::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
+{
 
     const Coord senderPos2D(senderPos.x, senderPos.y);
     const Coord receiverPos2D(receiverPos.x, receiverPos.y);
@@ -40,22 +41,21 @@ void TwoRayInterferenceModel::filterSignal(Signal *signal, const Coord& senderPo
 
     debugEV << "(ht, hr) = (" << ht << ", " << hr << ")" << endl;
 
-    double d_dir = sqrt( pow (d,2) + pow((ht - hr),2) ); // direct distance
-    double d_ref = sqrt( pow (d,2) + pow((ht + hr),2) ); // distance via ground reflection
-    double sin_theta = (ht + hr)/d_ref;
-    double cos_theta = d/d_ref;
+    double d_dir = sqrt(pow(d, 2) + pow((ht - hr), 2)); // direct distance
+    double d_ref = sqrt(pow(d, 2) + pow((ht + hr), 2)); // distance via ground reflection
+    double sin_theta = (ht + hr) / d_ref;
+    double cos_theta = d / d_ref;
 
-    double gamma = (sin_theta - sqrt(epsilon_r - pow(cos_theta,2)))/
-        (sin_theta + sqrt(epsilon_r - pow(cos_theta,2)));
+    double gamma = (sin_theta - sqrt(epsilon_r - pow(cos_theta, 2))) / (sin_theta + sqrt(epsilon_r - pow(cos_theta, 2)));
 
-    for(uint16_t i=signal->getRelativeStart();i<signal->getRelativeEnd();i++) {
+    for (uint16_t i = signal->getRelativeStart(); i < signal->getRelativeEnd(); i++) {
         double freq = signal->getAbsoluteFreqAt(i);
         double lambda = BaseWorldUtility::speedOfLight() / freq;
-        double phi = ( 2*M_PI/lambda * (d_dir - d_ref) );
-        double att = pow(4 * M_PI * (d/lambda) * 1/(sqrt((pow((1 + gamma * cos(phi)),2) + pow(gamma,2) * pow(sin(phi),2)))), 2);
+        double phi = (2 * M_PI / lambda * (d_dir - d_ref));
+        double att = pow(4 * M_PI * (d / lambda) * 1 / (sqrt((pow((1 + gamma * cos(phi)), 2) + pow(gamma, 2) * pow(sin(phi), 2)))), 2);
 
-        debugEV << "Add attenuation for (freq, lambda, phi, gamma, att) = (" << freq << ", " << lambda << ", " << phi << ", " << gamma << ", " << (1/att) << ", " << FWMath::mW2dBm(att) << ")" << endl;
+        debugEV << "Add attenuation for (freq, lambda, phi, gamma, att) = (" << freq << ", " << lambda << ", " << phi << ", " << gamma << ", " << (1 / att) << ", " << FWMath::mW2dBm(att) << ")" << endl;
 
-        signal->addAttenuation(i, 1/att);
+        signal->addAttenuation(i, 1 / att);
     }
 }

@@ -24,7 +24,9 @@ using Veins::AirFrame;
 class MIXIM_API AnalogueModel {
 
 public:
-    virtual ~AnalogueModel() {}
+    virtual ~AnalogueModel()
+    {
+    }
 
     /**
      * @brief Has to be overriden by every implementation.
@@ -36,7 +38,7 @@ public:
      * @param sendersPos    The position of the frame sender.
      * @param receiverPos    The position of frame receiver.
      */
-    virtual void filterSignal(Signal *signal, const Coord& sendersPos, const Coord& receiverPos) = 0;
+    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos) = 0;
 };
 
 } // namespace Veins

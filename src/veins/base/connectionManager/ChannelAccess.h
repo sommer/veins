@@ -20,7 +20,6 @@
  *                from this class and use the sendToChannel() function!!
  **************************************************************************/
 
-
 #ifndef CHANNEL_ACCESS_H
 #define CHANNEL_ACCESS_H
 
@@ -34,12 +33,12 @@
 #include "veins/base/modules/BaseMobility.h"
 
 namespace Veins {
-typedef AccessModuleWrap<BaseMobility>                ChannelMobilityAccessType;
+typedef AccessModuleWrap<BaseMobility> ChannelMobilityAccessType;
 typedef ChannelMobilityAccessType::wrapType* ChannelMobilityPtrType;
 class NicEntry;
 class BaseConnectionManager;
 class BaseWorldUtility;
-}
+} // namespace Veins
 
 /**
  * @brief Basic class for all physical layers, please don't touch!!
@@ -57,8 +56,7 @@ class BaseWorldUtility;
  * @ingroup baseModules
  **/
 namespace Veins {
-class MIXIM_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType
-{
+class MIXIM_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType {
 protected:
     /** @brief A signal used to subscribe to mobility state changes. */
     const static simsignalwrap_t mobilityStateChangedSignal;
@@ -96,7 +94,7 @@ protected:
      * depending on which ConnectionManager module is used, the messages are
      * send via sendDirect() or to the respective gates.
      **/
-    void sendToChannel(cPacket *msg);
+    void sendToChannel(cPacket* msg);
 
 public:
     /**
@@ -122,14 +120,16 @@ public:
      * ChannelAccess is subscribed to position changes and informs the
      * ConnectionManager.
      */
-    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject* details);
+    virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details);
 
     /**
      * @brief Returns the host's mobility module.
      */
-    virtual ChannelMobilityPtrType getMobilityModule() { return ChannelMobilityAccessType::get(this); }
+    virtual ChannelMobilityPtrType getMobilityModule()
+    {
+        return ChannelMobilityAccessType::get(this);
+    }
 };
-}
+} // namespace Veins
 
 #endif
-

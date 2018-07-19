@@ -51,7 +51,7 @@ namespace Veins {
  * @see Antenna
  * @see BasePhyLayer
  */
-class SampledAntenna1D: public Antenna {
+class SampledAntenna1D : public Antenna {
 public:
     /**
      * @brief Constructor for the sampled antenna.

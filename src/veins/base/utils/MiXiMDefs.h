@@ -20,24 +20,25 @@
 
 #include <omnetpp.h>
 
-namespace omnetpp { }
+namespace omnetpp {
+}
 using namespace omnetpp;
 
 #include "veins/base/utils/miximkerneldefs.h"
 
 // Explicit check of OMNeT++ version
 #if OMNETPP_VERSION < 0x500
-#  error At least OMNeT++/OMNEST version 5.0.0 required
+#error At least OMNeT++/OMNEST version 5.0.0 required
 #endif
 
-#define RNGCONTEXT  (cSimulation::getActiveSimulation()->getContext())->
+#define RNGCONTEXT (cSimulation::getActiveSimulation()->getContext())->
 
 #if defined(MIXIM_EXPORT)
-#  define MIXIM_API OPP_DLLEXPORT
+#define MIXIM_API OPP_DLLEXPORT
 #elif defined(MIXIM_IMPORT)
-#  define MIXIM_API OPP_DLLIMPORT
+#define MIXIM_API OPP_DLLIMPORT
 #else
-#  define MIXIM_API
+#define MIXIM_API
 #endif
 
 /**
@@ -47,22 +48,26 @@ using namespace omnetpp;
 class MIXIM_API simsignalwrap_t {
 private:
     mutable volatile simsignal_t ssChangeSignal;
-    const char *const            sSignalName;
-    mutable const char *         sRunId;
+    const char* const sSignalName;
+    mutable const char* sRunId;
+
 public:
-    simsignalwrap_t(const char *const pSignalName)
-      : ssChangeSignal(SIMSIGNAL_NULL)
-      , sSignalName(pSignalName)
-      , sRunId(NULL)
-    {}
+    simsignalwrap_t(const char* const pSignalName)
+        : ssChangeSignal(SIMSIGNAL_NULL)
+        , sSignalName(pSignalName)
+        , sRunId(NULL)
+    {
+    }
     simsignalwrap_t(const simsignalwrap_t& pCpy)
-      : ssChangeSignal(pCpy.ssChangeSignal)
-      , sSignalName(pCpy.sSignalName)
-      , sRunId(pCpy.sRunId)
-    {}
+        : ssChangeSignal(pCpy.ssChangeSignal)
+        , sSignalName(pCpy.sSignalName)
+        , sRunId(pCpy.sRunId)
+    {
+    }
 
     /** Cast operator to simsignal_t, we initialize the signal here if it is empty ;). */
-    operator simsignal_t () const {
+    operator simsignal_t() const
+    {
         // if this signal was never used (or if this is a new run): register the signal
         if ((ssChangeSignal == SIMSIGNAL_NULL) || (getRunId() != sRunId)) {
             ASSERT(sSignalName);
@@ -72,17 +77,21 @@ public:
         }
         return ssChangeSignal;
     }
+
 protected:
-    const char* getRunId() const {
+    const char* getRunId() const
+    {
         return cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
     }
+
 private:
     // not allowed
     simsignalwrap_t()
-      : ssChangeSignal(SIMSIGNAL_NULL)
-      , sSignalName(NULL)
-      , sRunId(NULL)
-    {}
+        : ssChangeSignal(SIMSIGNAL_NULL)
+        , sSignalName(NULL)
+        , sRunId(NULL)
+    {
+    }
 };
 
 #endif

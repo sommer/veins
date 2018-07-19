@@ -48,13 +48,11 @@ public:
     void addLogic(const Logic& logic);
     TraCITrafficLightProgram::Logic getLogic(const std::string& lid) const;
     bool hasLogic(const std::string& lid) const;
-    
+
 private:
     std::string id;
     std::map<std::string, TraCITrafficLightProgram::Logic> logics;
-
 };
-
 
 struct TraCITrafficLightLink {
     std::string incoming;
@@ -62,5 +60,5 @@ struct TraCITrafficLightLink {
     std::string internal;
 };
 
-}
+} // namespace Veins
 #endif /* SRC_VEINS_MODULES_WORLD_TRACI_TRAFFICLIGHT_TRACITRAFFICLIGHTPROGRAM_H_ */

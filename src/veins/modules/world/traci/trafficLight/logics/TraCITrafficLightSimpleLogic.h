@@ -21,20 +21,19 @@
 #ifndef TRACITRAFFICLIGHTSIMPLELOGIC_H_
 #define TRACITRAFFICLIGHTSIMPLELOGIC_H_
 
-
 #include <veins/modules/world/traci/trafficLight/logics/TraCITrafficLightAbstractLogic.h>
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 
-
 namespace Veins {
-class TraCITrafficLightSimpleLogic: public TraCITrafficLightAbstractLogic {
+class TraCITrafficLightSimpleLogic : public TraCITrafficLightAbstractLogic {
 
 public:
     using signalScheme = std::string;
+
 protected:
-    virtual void handleApplMsg(cMessage *msg);
-    virtual void handleTlIfMsg(TraCITrafficLightMessage *tlMsg);
+    virtual void handleApplMsg(cMessage* msg);
+    virtual void handleTlIfMsg(TraCITrafficLightMessage* tlMsg);
     virtual void handlePossibleSwitch();
 };
 
@@ -48,6 +47,6 @@ public:
     };
 };
 
-} // namespace
+} // namespace Veins
 
 #endif /* TRACITRAFFICLIGHTSIMPLELOGIC_H_ */

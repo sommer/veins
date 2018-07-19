@@ -33,8 +33,8 @@ namespace Veins {
  */
 class Decider80211pToPhy80211pInterface {
 public:
-    virtual ~Decider80211pToPhy80211pInterface() {};
-    virtual int getRadioState()=0;
+    virtual ~Decider80211pToPhy80211pInterface(){};
+    virtual int getRadioState() = 0;
 };
 
 } // namespace Veins

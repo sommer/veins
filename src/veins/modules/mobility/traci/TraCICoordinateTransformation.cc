@@ -28,24 +28,22 @@ using TraCICoordList = TraCICoordinateTransformation::TraCICoordList;
 using Angle = TraCICoordinateTransformation::Angle;
 
 TraCICoordinateTransformation::TraCICoordinateTransformation(TraCICoord topleft, TraCICoord bottomright, float margin)
-    : dimensions( {bottomright.x - topleft.x, bottomright.y - topleft.y} )
+    : dimensions({bottomright.x - topleft.x, bottomright.y - topleft.y})
     , topleft(topleft)
     , bottomright(bottomright)
     , margin(margin)
-{}
+{
+}
 
 TraCICoord TraCICoordinateTransformation::omnet2traci(const OmnetCoord& coord) const
 {
-    return {
-        coord.x + topleft.x - margin,
-        dimensions.y - (coord.y - topleft.y) + margin
-    };
+    return {coord.x + topleft.x - margin, dimensions.y - (coord.y - topleft.y) + margin};
 }
 
 TraCICoordList TraCICoordinateTransformation::omnet2traci(const OmnetCoordList& coords) const
 {
     TraCICoordList result;
-    for(auto&& coord : coords) {
+    for (auto&& coord : coords) {
         result.push_back(omnet2traci(coord));
     }
     return result;
@@ -72,16 +70,13 @@ Angle TraCICoordinateTransformation::omnet2traciAngle(Angle angle) const
 
 OmnetCoord TraCICoordinateTransformation::traci2omnet(const TraCICoord& coord) const
 {
-    return {
-        coord.x - topleft.x + margin,
-        dimensions.y - (coord.y - topleft.y) + margin
-    };
+    return {coord.x - topleft.x + margin, dimensions.y - (coord.y - topleft.y) + margin};
 }
 
 OmnetCoordList TraCICoordinateTransformation::traci2omnet(const TraCICoordList& coords) const
 {
     OmnetCoordList result;
-    for(auto&& coord : coords) {
+    for (auto&& coord : coords) {
         result.push_back(traci2omnet(coord));
     }
     return result;

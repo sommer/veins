@@ -37,7 +37,6 @@ TraCIScenarioManagerLaunchd::~TraCIScenarioManagerLaunchd()
 {
 }
 
-
 void TraCIScenarioManagerLaunchd::initialize(int stage)
 {
     if (stage != 1) {
@@ -61,7 +60,8 @@ void TraCIScenarioManagerLaunchd::initialize(int stage)
             const char* seed_s = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNNUMBER);
             seed = atoi(seed_s);
         }
-        std::stringstream ss; ss << seed;
+        std::stringstream ss;
+        ss << seed;
         cXMLElement* seed_node = new cXMLElement("seed", __FILE__, launchConfig);
         seed_node->setAttribute("value", ss.str().c_str());
         launchConfig->appendChild(seed_node);
@@ -74,7 +74,8 @@ void TraCIScenarioManagerLaunchd::finish()
     TraCIScenarioManager::finish();
 }
 
-void TraCIScenarioManagerLaunchd::init_traci() {
+void TraCIScenarioManagerLaunchd::init_traci()
+{
     {
         std::pair<uint32_t, std::string> version = getCommandInterface()->getVersion();
         uint32_t apiVersion = version.first;
@@ -99,15 +100,18 @@ void TraCIScenarioManagerLaunchd::init_traci() {
     connection->sendMessage(makeTraCICommand(CMD_FILE_SEND, buf));
 
     TraCIBuffer obuf(connection->receiveMessage());
-    uint8_t cmdLength; obuf >> cmdLength;
-    uint8_t commandResp; obuf >> commandResp; if (commandResp != CMD_FILE_SEND) error("Expected response to command %d, but got one for command %d", CMD_FILE_SEND, commandResp);
-    uint8_t result; obuf >> result;
-    std::string description; obuf >> description;
+    uint8_t cmdLength;
+    obuf >> cmdLength;
+    uint8_t commandResp;
+    obuf >> commandResp;
+    if (commandResp != CMD_FILE_SEND) error("Expected response to command %d, but got one for command %d", CMD_FILE_SEND, commandResp);
+    uint8_t result;
+    obuf >> result;
+    std::string description;
+    obuf >> description;
     if (result != RTYPE_OK) {
         EV << "Warning: Received non-OK response from TraCI server to command " << CMD_FILE_SEND << ":" << description.c_str() << std::endl;
     }
 
     TraCIScenarioManager::init_traci();
 }
-
-

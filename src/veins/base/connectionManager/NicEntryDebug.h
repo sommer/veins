@@ -37,9 +37,8 @@ namespace Veins {
  * @author Daniel Willkomm
  * @sa ConnectionManager, NicEntry
  */
-class NicEntryDebug: public NicEntry
-{
-  protected:
+class NicEntryDebug : public NicEntry {
+protected:
     /** @brief Number of in gates allocated for the nic so far*/
     int inCnt;
 
@@ -55,14 +54,14 @@ class NicEntryDebug: public NicEntry
      */
     bool checkFreeGates;
 
-    typedef std::vector<cGate* > GateStack;
+    typedef std::vector<cGate*> GateStack;
     /** @brief In Gates that were once used but are not connected now */
     GateStack freeInGates;
 
     /** @brief Out Gates that were once used but are not connected now */
     GateStack freeOutGates;
 
-  protected:
+protected:
     /**
      * @brief Returns a free in gate of the nic
      *
@@ -103,21 +102,22 @@ class NicEntryDebug: public NicEntry
      */
     void collectFreeGates();
 
-  public:
+public:
     /**
      * @brief Constructor, initializes all members
      */
-    NicEntryDebug(bool debug) :
-        NicEntry(debug),
-        inCnt(0),
-        outCnt(0),
-        checkFreeGates(true)
-    {};
+    NicEntryDebug(bool debug)
+        : NicEntry(debug)
+        , inCnt(0)
+        , outCnt(0)
+        , checkFreeGates(true){};
 
     /**
      * @brief Removes all dynamically created out-/ingates.
      */
-    virtual ~NicEntryDebug() {}
+    virtual ~NicEntryDebug()
+    {
+    }
 
     /**
      * @brief Connect two nics

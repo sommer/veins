@@ -28,8 +28,8 @@ class MIXIM_API DrawAmount {
 public:
     /** @brief The type of the amount to draw.*/
     enum PowerType {
-        CURRENT,     /** @brief Current in mA over time. */
-        ENERGY         /** @brief Single fixed energy draw in mWs */
+        CURRENT, /** @brief Current in mA over time. */
+        ENERGY /** @brief Single fixed energy draw in mWs */
     };
 
 protected:
@@ -41,22 +41,36 @@ protected:
 
 public:
     /** @brief Initializes with passed type and value.*/
-    DrawAmount(int type = CURRENT, double value = 0):
-        type(type),
-        value(value)
-    {}
+    DrawAmount(int type = CURRENT, double value = 0)
+        : type(type)
+        , value(value)
+    {
+    }
     virtual ~DrawAmount()
-    {}
+    {
+    }
 
     /** @brief Returns the type of power drawn as PowerType. */
-    virtual int getType() const { return type; }
+    virtual int getType() const
+    {
+        return type;
+    }
     /** @brief Returns the actual amount of power drawn. */
-    virtual double getValue() const { return value; }
+    virtual double getValue() const
+    {
+        return value;
+    }
 
     /** @brief Sets the type of power drawn. */
-    virtual void setType(int t) { type = t; }
+    virtual void setType(int t)
+    {
+        type = t;
+    }
     /** @brief Sets the actual amount of power drawn. */
-    virtual void setValue(double v) { value = v; }
+    virtual void setValue(double v)
+    {
+        value = v;
+    }
 };
 
 /**
@@ -70,10 +84,14 @@ public:
  */
 class MIXIM_API BaseBattery : public BaseModule {
 public:
-    BaseBattery() : BaseModule()
-    {}
-    BaseBattery(unsigned stacksize) : BaseModule(stacksize)
-    {}
+    BaseBattery()
+        : BaseModule()
+    {
+    }
+    BaseBattery(unsigned stacksize)
+        : BaseModule(stacksize)
+    {
+    }
     /**
      * @brief Registers a power draining device with this battery.
      *
@@ -121,9 +139,6 @@ public:
     /*@}*/
 };
 
-
 } // namespace Veins
 
-
 #endif
-

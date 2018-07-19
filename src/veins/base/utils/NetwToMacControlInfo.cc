@@ -19,12 +19,11 @@
 
 using namespace Veins;
 
-typedef NetwToMacControlInfo  tNetwToMacControlInfoBase;
+typedef NetwToMacControlInfo tNetwToMacControlInfoBase;
 
-
-cObject *const NetwToMacControlInfo::setControlInfo(cMessage *const pMsg, const LAddress::L2Type& pDestAddr)
+cObject* const NetwToMacControlInfo::setControlInfo(cMessage* const pMsg, const LAddress::L2Type& pDestAddr)
 {
-    tNetwToMacControlInfoBase *const cCtrlInfo = new tNetwToMacControlInfoBase();
+    tNetwToMacControlInfoBase* const cCtrlInfo = new tNetwToMacControlInfoBase();
 
     cCtrlInfo->setDest(pDestAddr);
     pMsg->setControlInfo(cCtrlInfo);
@@ -32,9 +31,9 @@ cObject *const NetwToMacControlInfo::setControlInfo(cMessage *const pMsg, const 
     return cCtrlInfo;
 }
 
-const LAddress::L2Type& NetwToMacControlInfo::getDestFromControlInfo(const cObject *const pCtrlInfo)
+const LAddress::L2Type& NetwToMacControlInfo::getDestFromControlInfo(const cObject* const pCtrlInfo)
 {
-    const tNetwToMacControlInfoBase *const cCtrlInfo = dynamic_cast<const tNetwToMacControlInfoBase *>(pCtrlInfo);
+    const tNetwToMacControlInfoBase* const cCtrlInfo = dynamic_cast<const tNetwToMacControlInfoBase*>(pCtrlInfo);
 
     assert(cCtrlInfo);
     return cCtrlInfo->getDest();

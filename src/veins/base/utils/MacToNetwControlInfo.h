@@ -3,15 +3,15 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #ifndef MACTONETWCONTROLINFO_H_
 #define MACTONETWCONTROLINFO_H_
@@ -50,13 +50,16 @@ public:
     /**
      * @brief Initializes with the passed last hop address and bit error rate.
      */
-    MacToNetwControlInfo(const LAddress::L2Type& lastHop, double ber = 0, double rssi = 0):
-        bitErrorRate(ber),
-        lastHopMac(lastHop),
-        rssi(rssi)
-    {}
+    MacToNetwControlInfo(const LAddress::L2Type& lastHop, double ber = 0, double rssi = 0)
+        : bitErrorRate(ber)
+        , lastHopMac(lastHop)
+        , rssi(rssi)
+    {
+    }
 
-    virtual ~MacToNetwControlInfo() {}
+    virtual ~MacToNetwControlInfo()
+    {
+    }
 
     /**
      * @brief Returns the bit error rate for this packet.
@@ -71,14 +74,16 @@ public:
      *
      * @param ber The bit error rate
      */
-    virtual void setBitErrorRate(double ber) {
+    virtual void setBitErrorRate(double ber)
+    {
         bitErrorRate = ber;
     }
 
     /**
      * @brief Returns the MAC address of the packets last hop.
      */
-    const LAddress::L2Type& getLastHopMac() const {
+    const LAddress::L2Type& getLastHopMac() const
+    {
         return lastHopMac;
     }
 
@@ -87,7 +92,8 @@ public:
      *
      * @param lastHop The last hops MAC address
      */
-    virtual void setLastHopMac(const LAddress::L2Type& lastHop) {
+    virtual void setLastHopMac(const LAddress::L2Type& lastHop)
+    {
         lastHopMac = lastHop;
     }
 
@@ -96,7 +102,8 @@ public:
      *
      * @return The received signal strength
      */
-    virtual const double getRSSI() {
+    virtual const double getRSSI()
+    {
         return rssi;
     }
 
@@ -104,7 +111,8 @@ public:
      * @brief Sets the packets received signal strength.
      * @param _rssi The received signal strength
      */
-    void setRSSI(double _rssi) {
+    void setRSSI(double _rssi)
+    {
         rssi = _rssi;
     }
 
@@ -121,20 +129,22 @@ public:
      * @param pMsg        The message where the "control info" shall be attached.
      * @param pSrcAddr    The MAC address of the message sender.
      */
-    static cObject *const setControlInfo(cMessage *const pMsg, const LAddress::L2Type& pSrcAddr) {
-        MacToNetwControlInfo *const cCtrlInfo = new MacToNetwControlInfo(pSrcAddr);
+    static cObject* const setControlInfo(cMessage* const pMsg, const LAddress::L2Type& pSrcAddr)
+    {
+        MacToNetwControlInfo* const cCtrlInfo = new MacToNetwControlInfo(pSrcAddr);
         pMsg->setControlInfo(cCtrlInfo);
 
         return cCtrlInfo;
     }
-    static const LAddress::L2Type& getAddress(cMessage *const pMsg) {
+    static const LAddress::L2Type& getAddress(cMessage* const pMsg)
+    {
         return getAddressFromControlInfo(pMsg->getControlInfo());
     }
-    static const LAddress::L2Type& getAddressFromControlInfo(cObject *const pCtrlInfo) {
-        MacToNetwControlInfo *const cCtrlInfo = dynamic_cast<MacToNetwControlInfo *const>(pCtrlInfo);
+    static const LAddress::L2Type& getAddressFromControlInfo(cObject* const pCtrlInfo)
+    {
+        MacToNetwControlInfo* const cCtrlInfo = dynamic_cast<MacToNetwControlInfo* const>(pCtrlInfo);
 
-        if (cCtrlInfo)
-            return cCtrlInfo->getLastHopMac();
+        if (cCtrlInfo) return cCtrlInfo->getLastHopMac();
 
         return LAddress::L2NULL();
     }

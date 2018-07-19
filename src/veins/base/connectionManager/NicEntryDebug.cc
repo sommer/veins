@@ -33,27 +33,28 @@
 using std::endl;
 using namespace Veins;
 
-void NicEntryDebug::connectTo(NicEntry* other) {
-    nicEV<<"connecting nic #"<<nicId<< " and #"<<other->nicId<<endl;
+void NicEntryDebug::connectTo(NicEntry* other)
+{
+    nicEV << "connecting nic #" << nicId << " and #" << other->nicId << endl;
 
     NicEntryDebug* otherNic = (NicEntryDebug*) other;
 
-    cGate *localoutgate = requestOutGate();
+    cGate* localoutgate = requestOutGate();
     localoutgate->connectTo(otherNic->requestInGate());
     outConns[other] = localoutgate->getPathStartGate();
 }
 
-
-void NicEntryDebug::disconnectFrom(NicEntry* other) {
-    nicEV<<"disconnecting nic #"<<nicId<< " and #"<<other->nicId<<endl;
+void NicEntryDebug::disconnectFrom(NicEntry* other)
+{
+    nicEV << "disconnecting nic #" << nicId << " and #" << other->nicId << endl;
 
     NicEntryDebug* otherNic = (NicEntryDebug*) other;
 
-    //search the connection in the outConns list
+    // search the connection in the outConns list
     GateList::iterator p = outConns.find(other);
-    //no need to check whether entry is valid; is already check by ConnectionManager isConnected
-    //get the hostGate
-    //order is phyGate->nicGate->hostGate
+    // no need to check whether entry is valid; is already check by ConnectionManager isConnected
+    // get the hostGate
+    // order is phyGate->nicGate->hostGate
     cGate* hostGate = p->second->getNextGate()->getNextGate();
 
     // release local out gate
@@ -62,11 +63,11 @@ void NicEntryDebug::disconnectFrom(NicEntry* other) {
     // release remote in gate
     otherNic->freeInGates.push_back(hostGate->getNextGate());
 
-    //reset gates
-    //hostGate->getNextGate()->connectTo(0);
+    // reset gates
+    // hostGate->getNextGate()->connectTo(0);
     hostGate->disconnect();
 
-    //delete the connection
+    // delete the connection
     outConns.erase(p);
 }
 
@@ -75,16 +76,12 @@ int NicEntryDebug::collectGates(const char* pattern, GateStack& gates)
     cModule* host = nicPtr->getParentModule();
     int i = 1;
     char gateName[20];
-    //create the unique name for the gate (composed of the nic module id and a counter)
+    // create the unique name for the gate (composed of the nic module id and a counter)
     sprintf(gateName, pattern, nicId, i);
-    while(host->hasGate(gateName))
-    {
+    while (host->hasGate(gateName)) {
         cGate* hostGate = host->gate(gateName);
-        if(hostGate->isConnectedOutside()) {
-            throw cRuntimeError("Gate %s is still connected but not registered with this "
-                      "NicEntry. Either the last NicEntry for this NIC did not "
-                      "clean up correctly or another gate creation module is "
-                      "interfering with this one!", gateName);
+        if (hostGate->isConnectedOutside()) {
+            throw cRuntimeError("Gate %s is still connected but not registered with this NicEntry. Either the last NicEntry for this NIC did not clean up correctly or another gate creation module is interfering with this one!", gateName);
         }
         assert(hostGate->isConnectedInside());
         gates.push_back(hostGate);
@@ -98,12 +95,10 @@ int NicEntryDebug::collectGates(const char* pattern, GateStack& gates)
 
 void NicEntryDebug::collectFreeGates()
 {
-    if(!checkFreeGates)
-        return;
+    if (!checkFreeGates) return;
 
     inCnt = collectGates("in%d-%d", freeInGates);
     nicEV << "found " << inCnt << " already existing usable in-gates." << endl;
-
 
     outCnt = collectGates("out%d-%d", freeOutGates);
     nicEV << "found " << inCnt << " already existing usable out-gates." << endl;
@@ -111,23 +106,24 @@ void NicEntryDebug::collectFreeGates()
     checkFreeGates = false;
 }
 
-
-cGate* NicEntryDebug::requestInGate(void) {
+cGate* NicEntryDebug::requestInGate(void)
+{
     collectFreeGates();
 
     // gate of the host
-    cGate *hostGate;
+    cGate* hostGate;
 
     if (!freeInGates.empty()) {
         hostGate = freeInGates.back();
         freeInGates.pop_back();
-    } else {
+    }
+    else {
         char gateName[20];
 
         // we will have one more in gate
         ++inCnt;
 
-        //get a unique name for the gate (composed of the nic module id and a counter)
+        // get a unique name for the gate (composed of the nic module id and a counter)
         sprintf(gateName, "in%d-%d", nicId, inCnt);
 
         // create a new gate for the host module
@@ -135,7 +131,7 @@ cGate* NicEntryDebug::requestInGate(void) {
         hostGate = nicPtr->getParentModule()->gate(gateName);
 
         // gate of the nic
-        cGate *nicGate;
+        cGate* nicGate;
 
         // create a new gate for the nic module
         nicPtr->addGate(gateName, cGate::INPUT);
@@ -147,11 +143,10 @@ cGate* NicEntryDebug::requestInGate(void) {
         // pointer to the phy module
         ChannelAccess* phyModule;
         // gate of the phy module
-        cGate *phyGate;
+        cGate* phyGate;
 
         // to avoid unnecessary dynamic_casting we check for a "phy"-named submodule first
-        if ((phyModule = dynamic_cast<ChannelAccess *> (nicPtr->getSubmodule("phy"))) == NULL)
-            phyModule = FindModule<ChannelAccess*>::findSubModule(nicPtr);
+        if ((phyModule = dynamic_cast<ChannelAccess*>(nicPtr->getSubmodule("phy"))) == NULL) phyModule = FindModule<ChannelAccess*>::findSubModule(nicPtr);
         assert(phyModule != 0);
 
         // create a new gate for the phy module
@@ -166,22 +161,24 @@ cGate* NicEntryDebug::requestInGate(void) {
     return hostGate;
 }
 
-cGate* NicEntryDebug::requestOutGate(void) {
+cGate* NicEntryDebug::requestOutGate(void)
+{
     collectFreeGates();
 
     // gate of the host
-    cGate *hostGate;
+    cGate* hostGate;
 
     if (!freeOutGates.empty()) {
         hostGate = freeOutGates.back();
         freeOutGates.pop_back();
-    } else {
+    }
+    else {
         char gateName[20];
 
         // we will have one more out gate
         ++outCnt;
 
-        //get a unique name for the gate (composed of the nic module id and a counter)
+        // get a unique name for the gate (composed of the nic module id and a counter)
         sprintf(gateName, "out%d-%d", nicId, outCnt);
 
         // create a new gate for the host module
@@ -189,7 +186,7 @@ cGate* NicEntryDebug::requestOutGate(void) {
         hostGate = nicPtr->getParentModule()->gate(gateName);
 
         // gate of the nic
-        cGate *nicGate;
+        cGate* nicGate;
         // create a new gate for the nic module
         nicPtr->addGate(gateName, cGate::OUTPUT);
         nicGate = nicPtr->gate(gateName);
@@ -200,11 +197,10 @@ cGate* NicEntryDebug::requestOutGate(void) {
         // pointer to the phy module
         ChannelAccess* phyModule;
         // gate of the phy module
-        cGate *phyGate;
+        cGate* phyGate;
 
         // to avoid unnecessary dynamic_casting we check for a "phy"-named submodule first
-        if ((phyModule = dynamic_cast<ChannelAccess *> (nicPtr->getSubmodule("phy"))) == NULL)
-            phyModule = FindModule<ChannelAccess*>::findSubModule(nicPtr);
+        if ((phyModule = dynamic_cast<ChannelAccess*>(nicPtr->getSubmodule("phy"))) == NULL) phyModule = FindModule<ChannelAccess*>::findSubModule(nicPtr);
         assert(phyModule != 0);
 
         // create a new gate for the phy module

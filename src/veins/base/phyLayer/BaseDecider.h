@@ -34,7 +34,7 @@ using Veins::AirFrame;
  * @ingroup decider
  * @ingroup baseModules
  */
-class MIXIM_API BaseDecider: public Decider {
+class MIXIM_API BaseDecider : public Decider {
 public:
     /**
      * @brief The kinds of ControlMessages this Decider sends.
@@ -51,7 +51,6 @@ public:
     };
 
 protected:
-
     /** @brief The current state of processing for a signal*/
     enum SignalState {
         /** @brief Signal is received the first time. */
@@ -88,19 +87,20 @@ public:
      * Needs a pointer to its physical layer, the sensitivity, the index of the
      * host and the debug flag.
      */
-    BaseDecider(DeciderToPhyInterface* phy, double sensitivity,
-                int myIndex, bool debug):
-        Decider(phy),
-        sensitivity(sensitivity),
-        isChannelIdle(true),
-        myIndex(myIndex),
-        debug(debug)
+    BaseDecider(DeciderToPhyInterface* phy, double sensitivity, int myIndex, bool debug)
+        : Decider(phy)
+        , sensitivity(sensitivity)
+        , isChannelIdle(true)
+        , myIndex(myIndex)
+        , debug(debug)
     {
         currentSignal.first = 0;
         currentSignal.second = NEW;
     }
 
-    virtual ~BaseDecider() {}
+    virtual ~BaseDecider()
+    {
+    }
 
 public:
     /**
@@ -110,7 +110,6 @@ public:
      * again.
      */
     virtual simtime_t processSignal(AirFrame* frame);
-
 
 protected:
     /**
@@ -131,7 +130,8 @@ protected:
      *
      * Default implementation does not handle signal headers.
      */
-    virtual simtime_t processSignalHeader(AirFrame* frame) {
+    virtual simtime_t processSignalHeader(AirFrame* frame)
+    {
         throw cRuntimeError("BaseDecider does not handle Signal headers!");
         return notAgain;
     }
@@ -179,9 +179,7 @@ protected:
      * @param end The end of the interval to collect AirFrames from.
      * @param out The output vector in which to put the AirFrames.
      */
-    virtual void getChannelInfo(simtime_t_cref start, simtime_t_cref end,
-                                AirFrameVector& out);
-
+    virtual void getChannelInfo(simtime_t_cref start, simtime_t_cref end, AirFrameVector& out);
 };
 
 } // namespace Veins

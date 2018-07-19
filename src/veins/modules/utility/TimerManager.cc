@@ -26,145 +26,173 @@ using Veins::TimerMessage;
 using Veins::TimerSpecification;
 
 struct Veins::TimerMessage : public omnetpp::cMessage {
-  TimerMessage(const std::string &name) : omnetpp::cMessage(name.c_str()) {}
+    TimerMessage(const std::string& name)
+        : omnetpp::cMessage(name.c_str())
+    {
+    }
 };
 
 TimerSpecification::TimerSpecification(std::function<void()> callback)
-    : start_mode_(StartMode::immediate), end_mode_(EndMode::open), period_(-1), callback_(callback) {}
-
-TimerSpecification &TimerSpecification::interval(simtime_t interval) {
-  ASSERT(interval > 0);
-  period_ = interval;
-  return *this;
+    : start_mode_(StartMode::immediate)
+    , end_mode_(EndMode::open)
+    , period_(-1)
+    , callback_(callback)
+{
 }
 
-TimerSpecification &TimerSpecification::relativeStart(simtime_t start) {
-  start_mode_ = StartMode::relative;
-  start_ = start;
-  return *this;
+TimerSpecification& TimerSpecification::interval(simtime_t interval)
+{
+    ASSERT(interval > 0);
+    period_ = interval;
+    return *this;
 }
 
-TimerSpecification &TimerSpecification::absoluteStart(simtime_t start) {
-  start_mode_ = StartMode::absolute;
-  start_ = start;
-  return *this;
+TimerSpecification& TimerSpecification::relativeStart(simtime_t start)
+{
+    start_mode_ = StartMode::relative;
+    start_ = start;
+    return *this;
 }
 
-TimerSpecification &TimerSpecification::relativeEnd(simtime_t end) {
-  end_mode_ = EndMode::relative;
-  end_time_ = end;
-  return *this;
-}
-
-TimerSpecification &TimerSpecification::absoluteEnd(simtime_t end) {
-  end_mode_ = EndMode::absolute;
-  end_time_ = end;
-  return *this;
-}
-
-TimerSpecification &TimerSpecification::repititions(size_t n) {
-  end_mode_ = EndMode::repetition;
-  end_count_ = n;
-  return *this;
-}
-
-TimerSpecification &TimerSpecification::openEnd() {
-  end_mode_ = EndMode::open;
-  return *this;
-}
-
-TimerSpecification &TimerSpecification::oneshotIn(omnetpp::simtime_t in) {
-  return this->relativeStart(in).interval(1).repititions(1);
-}
-
-TimerSpecification &TimerSpecification::oneshotAt(omnetpp::simtime_t at) {
-  return this->absoluteStart(at).interval(1).repititions(1);
-}
-
-void TimerSpecification::finalize() {
-  switch (start_mode_) {
-  case StartMode::relative:
-    start_ += simTime();
+TimerSpecification& TimerSpecification::absoluteStart(simtime_t start)
+{
     start_mode_ = StartMode::absolute;
-    break;
-  case StartMode::absolute:
-    break;
-  case StartMode::immediate:
-    start_ = simTime() + period_;
-    break;
-  }
+    start_ = start;
+    return *this;
+}
 
-  switch (end_mode_) {
-  case EndMode::relative:
-    end_time_ += simTime();
+TimerSpecification& TimerSpecification::relativeEnd(simtime_t end)
+{
+    end_mode_ = EndMode::relative;
+    end_time_ = end;
+    return *this;
+}
+
+TimerSpecification& TimerSpecification::absoluteEnd(simtime_t end)
+{
     end_mode_ = EndMode::absolute;
-    break;
-  case EndMode::absolute:
-    break;
-  case EndMode::repetition:
-    end_time_ = start_ + ((end_count_ - 1) * period_);
-    end_mode_ = EndMode::absolute;
-  case EndMode::open:
-    break;
-  }
+    end_time_ = end;
+    return *this;
 }
 
-bool TimerSpecification::validOccurence(simtime_t time) const {
-  const bool afterStart = time >= start_;
-  const bool beforeEnd = time <= end_time_;
-  const bool atPeriod = omnetpp::fmod(time - start_, period_) == 0;
-  return afterStart && (beforeEnd || end_mode_ == EndMode::open) && atPeriod;
+TimerSpecification& TimerSpecification::repititions(size_t n)
+{
+    end_mode_ = EndMode::repetition;
+    end_count_ = n;
+    return *this;
 }
 
-TimerManager::TimerManager(omnetpp::cSimpleModule *parent) : parent_(parent) { ASSERT(parent_); }
-
-TimerManager::~TimerManager() {
-  for (const auto &timer : timers_) {
-    parent_->cancelAndDelete(timer.first);
-  }
+TimerSpecification& TimerSpecification::openEnd()
+{
+    end_mode_ = EndMode::open;
+    return *this;
 }
 
-bool TimerManager::handleMessage(omnetpp::cMessage *message) {
-  auto *timerMessage = dynamic_cast<TimerMessage *>(message);
-  if (!timerMessage) {
-    return false;
-  }
-  ASSERT(timerMessage->isSelfMessage());
-  std::string s = timerMessage->getName();
-
-  auto timer = timers_.find(timerMessage);
-  if (timer == timers_.end()) {
-    return false;
-  }
-  ASSERT(timer->second.valid() && timer->second.validOccurence(simTime()));
-
-  timer->second.callback_();
-
-  const auto next_event = simTime() + timer->second.period_;
-  if (timer->second.validOccurence(next_event)) {
-    parent_->scheduleAt(next_event, timer->first);
-  } else {
-    timers_.erase(timer);
-  }
-
-  return true;
+TimerSpecification& TimerSpecification::oneshotIn(omnetpp::simtime_t in)
+{
+    return this->relativeStart(in).interval(1).repititions(1);
 }
 
-TimerManager::TimerHandle TimerManager::create(TimerSpecification timerSpecification, const std::string name) {
-  ASSERT(timerSpecification.valid());
-  timerSpecification.finalize();
-
-  const auto ret = timers_.insert(std::make_pair(new TimerMessage(name), std::move(timerSpecification)));
-  ASSERT(ret.second);
-  parent_->scheduleAt(ret.first->second.start_, ret.first->first);
-
-  return ret.first->first;
+TimerSpecification& TimerSpecification::oneshotAt(omnetpp::simtime_t at)
+{
+    return this->absoluteStart(at).interval(1).repititions(1);
 }
 
-void TimerManager::cancel(TimerManager::TimerHandle handle) {
-  auto timer = timers_.find(handle);
-  if (timer != timers_.end()) {
-    parent_->cancelEvent(timer->first);
-    timers_.erase(timer);
-  }
+void TimerSpecification::finalize()
+{
+    switch (start_mode_) {
+    case StartMode::relative:
+        start_ += simTime();
+        start_mode_ = StartMode::absolute;
+        break;
+    case StartMode::absolute:
+        break;
+    case StartMode::immediate:
+        start_ = simTime() + period_;
+        break;
+    }
+
+    switch (end_mode_) {
+    case EndMode::relative:
+        end_time_ += simTime();
+        end_mode_ = EndMode::absolute;
+        break;
+    case EndMode::absolute:
+        break;
+    case EndMode::repetition:
+        end_time_ = start_ + ((end_count_ - 1) * period_);
+        end_mode_ = EndMode::absolute;
+    case EndMode::open:
+        break;
+    }
+}
+
+bool TimerSpecification::validOccurence(simtime_t time) const
+{
+    const bool afterStart = time >= start_;
+    const bool beforeEnd = time <= end_time_;
+    const bool atPeriod = omnetpp::fmod(time - start_, period_) == 0;
+    return afterStart && (beforeEnd || end_mode_ == EndMode::open) && atPeriod;
+}
+
+TimerManager::TimerManager(omnetpp::cSimpleModule* parent)
+    : parent_(parent)
+{
+    ASSERT(parent_);
+}
+
+TimerManager::~TimerManager()
+{
+    for (const auto& timer : timers_) {
+        parent_->cancelAndDelete(timer.first);
+    }
+}
+
+bool TimerManager::handleMessage(omnetpp::cMessage* message)
+{
+    auto* timerMessage = dynamic_cast<TimerMessage*>(message);
+    if (!timerMessage) {
+        return false;
+    }
+    ASSERT(timerMessage->isSelfMessage());
+    std::string s = timerMessage->getName();
+
+    auto timer = timers_.find(timerMessage);
+    if (timer == timers_.end()) {
+        return false;
+    }
+    ASSERT(timer->second.valid() && timer->second.validOccurence(simTime()));
+
+    timer->second.callback_();
+
+    const auto next_event = simTime() + timer->second.period_;
+    if (timer->second.validOccurence(next_event)) {
+        parent_->scheduleAt(next_event, timer->first);
+    }
+    else {
+        timers_.erase(timer);
+    }
+
+    return true;
+}
+
+TimerManager::TimerHandle TimerManager::create(TimerSpecification timerSpecification, const std::string name)
+{
+    ASSERT(timerSpecification.valid());
+    timerSpecification.finalize();
+
+    const auto ret = timers_.insert(std::make_pair(new TimerMessage(name), std::move(timerSpecification)));
+    ASSERT(ret.second);
+    parent_->scheduleAt(ret.first->second.start_, ret.first->first);
+
+    return ret.first->first;
+}
+
+void TimerManager::cancel(TimerManager::TimerHandle handle)
+{
+    auto timer = timers_.find(handle);
+    if (timer != timers_.end()) {
+        parent_->cancelEvent(timer->first);
+        timers_.erase(timer);
+    }
 }

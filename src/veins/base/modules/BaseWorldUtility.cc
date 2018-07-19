@@ -26,19 +26,20 @@ using namespace Veins;
 
 Define_Module(Veins::BaseWorldUtility);
 
+BaseWorldUtility::BaseWorldUtility()
+    : isInitialized(false)
+{
+}
 
-BaseWorldUtility::BaseWorldUtility():
-        isInitialized(false)
-{}
-
-void BaseWorldUtility::initialize(int stage) {
+void BaseWorldUtility::initialize(int stage)
+{
     if (stage == 0) {
         initializeIfNecessary();
     }
-    else if(stage == 1) {
-        //check if necessary modules are there
-        //Connection Manager
-        if(!FindModule<BaseConnectionManager*>::findGlobalModule()) {
+    else if (stage == 1) {
+        // check if necessary modules are there
+        // Connection Manager
+        if (!FindModule<BaseConnectionManager*>::findGlobalModule()) {
             throw cRuntimeError("Could not find a connection manager module in the network!");
         }
     }
@@ -46,25 +47,19 @@ void BaseWorldUtility::initialize(int stage) {
 
 void BaseWorldUtility::initializeIfNecessary()
 {
-    if(isInitialized)
-        return;
+    if (isInitialized) return;
 
-    use2DFlag      = par("use2D");
-    playgroundSize = Coord(par("playgroundSizeX").doubleValue(),
-                               par("playgroundSizeY").doubleValue(),
-                               use2DFlag ? 0. : par("playgroundSizeZ").doubleValue());
+    use2DFlag = par("use2D");
+    playgroundSize = Coord(par("playgroundSizeX").doubleValue(), par("playgroundSizeY").doubleValue(), use2DFlag ? 0. : par("playgroundSizeZ").doubleValue());
 
-    if(playgroundSize.x < 0) {
-        throw cRuntimeError("Playground size in X direction is invalid: "\
-                  "(%f). Should be greater than or equal to zero.", playgroundSize.x);
+    if (playgroundSize.x < 0) {
+        throw cRuntimeError("Playground size in X direction is invalid: (%f). Should be greater than or equal to zero.", playgroundSize.x);
     }
-    if(playgroundSize.y < 0) {
-        throw cRuntimeError("Playground size in Y direction is invalid: "\
-                  "(%f). Should be greater than or equal to zero.", playgroundSize.y);
+    if (playgroundSize.y < 0) {
+        throw cRuntimeError("Playground size in Y direction is invalid: (%f). Should be greater than or equal to zero.", playgroundSize.y);
     }
-    if(!use2DFlag && playgroundSize.z < 0) {
-        throw cRuntimeError("Playground size in Z direction is invalid: "\
-                  "(%f). Should be greater than or equal to zero.", playgroundSize.z);
+    if (!use2DFlag && playgroundSize.z < 0) {
+        throw cRuntimeError("Playground size in Z direction is invalid: (%f). Should be greater than or equal to zero.", playgroundSize.z);
     }
 
     useTorusFlag = par("useTorus");
@@ -78,8 +73,5 @@ Coord BaseWorldUtility::getRandomPosition()
 {
     initializeIfNecessary();
 
-        return Coord(uniform(0, playgroundSize.x),
-                     uniform(0, playgroundSize.y),
-                     use2DFlag ? 0. : uniform(0, playgroundSize.z));
+    return Coord(uniform(0, playgroundSize.x), uniform(0, playgroundSize.y), use2DFlag ? 0. : uniform(0, playgroundSize.z));
 }
-

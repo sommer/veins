@@ -13,7 +13,7 @@ namespace Veins {
  * @ingroup phyLayer
  * @ingroup macLayer
  */
-class MIXIM_API MacToPhyControlInfo: public cObject {
+class MIXIM_API MacToPhyControlInfo : public cObject {
 protected:
     /** @brief A pointer to the signal representing the transmission.*/
     Signal* signal;
@@ -26,15 +26,17 @@ public:
      * NOTE: Once a signal is passed to the MacToPhyControlInfo,
      *          MacToPhyControlInfo takes the ownership of the Signal.
      */
-    MacToPhyControlInfo(Signal* signal = NULL):
-        signal(signal) {}
+    MacToPhyControlInfo(Signal* signal = NULL)
+        : signal(signal)
+    {
+    }
 
     /**
      * @brief Delete the signal if it is still in our ownership.
      */
-    virtual ~MacToPhyControlInfo() {
-        if(signal)
-            delete signal;
+    virtual ~MacToPhyControlInfo()
+    {
+        if (signal) delete signal;
     }
 
     /**
@@ -43,9 +45,9 @@ public:
      * NOTE: Once a signal is passed to the MacToPhyControlInfo,
      *          MacToPhyControlInfo takes the ownership of the Signal.
      */
-    void setSignal(Signal* s) {
-        if(signal)
-            delete signal;
+    void setSignal(Signal* s)
+    {
+        if (signal) delete signal;
 
         signal = s;
     }
@@ -60,7 +62,8 @@ public:
      *          Signal when this Method is called so following
      *          calls of this method will return null!
      */
-    Signal* retrieveSignal() {
+    Signal* retrieveSignal()
+    {
         Signal* tmp = signal;
         signal = 0;
         return tmp;
@@ -79,8 +82,9 @@ public:
      * @param pMsg        The message where the "control info" shall be attached.
      * @param pSignal    The signal which should be send.
      */
-    static cObject *const setControlInfo(cMessage *const pMsg, Signal *const pSignal) {
-        MacToPhyControlInfo *const cCtrlInfo = new MacToPhyControlInfo(pSignal);
+    static cObject* const setControlInfo(cMessage* const pMsg, Signal* const pSignal)
+    {
+        MacToPhyControlInfo* const cCtrlInfo = new MacToPhyControlInfo(pSignal);
         pMsg->setControlInfo(cCtrlInfo);
 
         return cCtrlInfo;
@@ -88,17 +92,18 @@ public:
     /**
      * @brief extracts the signal from message "control info".
      */
-    static Signal *const getSignal(cMessage *const pMsg) {
+    static Signal* const getSignal(cMessage* const pMsg)
+    {
         return getSignalFromControlInfo(pMsg->getControlInfo());
     }
     /**
      * @brief extracts the signal from "control info".
      */
-    static Signal *const getSignalFromControlInfo(cObject *const pCtrlInfo) {
-        MacToPhyControlInfo *const cCtrlInfo = dynamic_cast<MacToPhyControlInfo *const>(pCtrlInfo);
+    static Signal* const getSignalFromControlInfo(cObject* const pCtrlInfo)
+    {
+        MacToPhyControlInfo* const cCtrlInfo = dynamic_cast<MacToPhyControlInfo* const>(pCtrlInfo);
 
-        if (cCtrlInfo)
-            return cCtrlInfo->retrieveSignal();
+        if (cCtrlInfo) return cCtrlInfo->retrieveSignal();
         return NULL;
     }
 };

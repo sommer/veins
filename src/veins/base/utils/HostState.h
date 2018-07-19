@@ -34,22 +34,20 @@ namespace Veins {
  *
  * @ingroup power
  */
-class MIXIM_API HostState : public cObject
-{
+class MIXIM_API HostState : public cObject {
 public:
     /**
      * @brief Possible host states.
      */
-    enum States
-        {
-          ACTIVE,    /** Host is active and fully working*/
-          FAILED,    /** Host is not active because of some failure
-                      * but might able to be restarted*/
-          BROKEN,    /** Host is not active because of some failure
-                      * and won't be able to be restarted */
-          SLEEP,    /** Host is not active (sleeping) */
-          OFF         /** Host is not active (shut down) */
-        };
+    enum States {
+        ACTIVE, /** Host is active and fully working*/
+        FAILED, /** Host is not active because of some failure
+                 * but might able to be restarted*/
+        BROKEN, /** Host is not active because of some failure
+                 * and won't be able to be restarted */
+        SLEEP, /** Host is not active (sleeping) */
+        OFF /** Host is not active (shut down) */
+    };
     // we could make a nice 'info' field here, to allow us to specify
     // the cause of failure (e.g. battery, stochastic hardware failure)
 
@@ -63,21 +61,29 @@ public:
     /**
      * @brief Constructor taking a state.
      */
-    HostState(States state = ACTIVE):
-        state(state)
-    {}
+    HostState(States state = ACTIVE)
+        : state(state)
+    {
+    }
 
     /** @brief Returns the host state */
-    States get() const { return state; }
+    States get() const
+    {
+        return state;
+    }
     /** @brief Sets the host state */
-    void set(States s) { state = s; }
+    void set(States s)
+    {
+        state = s;
+    }
 
     /**
      * @brief Returns information about the current state.
      */
-    std::string info() const {
+    std::string info() const
+    {
         std::ostringstream ost;
-        switch(state) {
+        switch (state) {
         case ACTIVE:
             ost << "ACTIVE";
             break;

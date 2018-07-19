@@ -44,8 +44,7 @@ class Signal;
  * @ingroup baseModules
  * @author Daniel Willkomm, Karl Wessel
  */
-class MIXIM_API BaseMacLayer : public BaseLayer
-{
+class MIXIM_API BaseMacLayer : public BaseLayer {
 public:
     /** @brief Message kinds used by this layer.*/
     enum BaseMacMessageKinds {
@@ -65,12 +64,11 @@ public:
     };
 
 protected:
-
     /** @brief Handler to the physical layer.*/
     MacToPhyInterface* phy;
 
     /** @brief Pointer to the arp module*/
-    //BaseArp* arp;
+    // BaseArp* arp;
 
     /**
      * @brief Length of the MacPkt header
@@ -100,17 +98,19 @@ protected:
     SpectrumPtr overallSpectrum;
 
 public:
-    //Module_Class_Members( BaseMacLayer, BaseLayer, 0 );
-    BaseMacLayer() 
-      : BaseLayer()
-      , phy(NULL)
-      , myMacAddr(LAddress::L2NULL())
-    {}
-    BaseMacLayer(unsigned stacksize) 
-      : BaseLayer(stacksize)
-      , phy(NULL)
-      , myMacAddr(LAddress::L2NULL())
-    {}
+    // Module_Class_Members( BaseMacLayer, BaseLayer, 0 );
+    BaseMacLayer()
+        : BaseLayer()
+        , phy(NULL)
+        , myMacAddr(LAddress::L2NULL())
+    {
+    }
+    BaseMacLayer(unsigned stacksize)
+        : BaseLayer(stacksize)
+        , phy(NULL)
+        , myMacAddr(LAddress::L2NULL())
+    {
+    }
 
     /** @brief Initialization of the module and some variables*/
     virtual void initialize(int);
@@ -118,10 +118,12 @@ public:
     /**
      * @brief Returns the MAC address of this MAC module.
      */
-    const LAddress::L2Type& getMACAddress() { return myMacAddr; }
+    const LAddress::L2Type& getMACAddress()
+    {
+        return myMacAddr;
+    }
 
 protected:
-
     /**
      * @brief Registers this bridge's NIC with INET's InterfaceTable.
      */
@@ -137,23 +139,24 @@ protected:
      *
      *  @sa encapsMsg, sendDown
      */
-    virtual void handleUpperMsg(cMessage *msg);
+    virtual void handleUpperMsg(cMessage* msg);
 
     /**
      * If message arrives from lower layer, check whether it is for
      * us. Send it up if yes.
      */
-    virtual void handleLowerMsg(cMessage *msg);
+    virtual void handleLowerMsg(cMessage* msg);
 
-    virtual void handleSelfMsg(cMessage* msg){
-    error("BaseMacLayer does not handle self messages");
+    virtual void handleSelfMsg(cMessage* msg)
+    {
+        error("BaseMacLayer does not handle self messages");
     };
     virtual void handleLowerControl(cMessage* msg);
 
-    virtual void handleUpperControl(cMessage* msg){
-    error("BaseMacLayer does not handle control messages from upper layers");
+    virtual void handleUpperControl(cMessage* msg)
+    {
+        error("BaseMacLayer does not handle control messages from upper layers");
     };
-
 
     /** @brief decapsulate the network message from the MacPkt */
     virtual cPacket* decapsMsg(MacPkt*);
@@ -184,7 +187,7 @@ protected:
      * @param pCtrlInfo    The "control info" structure (object) prev. set by NetwToMacControlInfo::setControlInfo().
      * @return The MAC address of message receiver.
      */
-    virtual const LAddress::L2Type& getUpperDestinationFromControlInfo(const cObject *const pCtrlInfo);
+    virtual const LAddress::L2Type& getUpperDestinationFromControlInfo(const cObject* const pCtrlInfo);
 
     /**
      * @brief Attaches a "control info" (MacToNetw) structure (object) to the message pMsg.
@@ -199,7 +202,7 @@ protected:
      * @param pMsg        The message where the "control info" shall be attached.
      * @param pSrcAddr    The MAC address of the message receiver.
      */
-    virtual cObject *const setUpControlInfo(cMessage *const pMsg, const LAddress::L2Type& pSrcAddr);
+    virtual cObject* const setUpControlInfo(cMessage* const pMsg, const LAddress::L2Type& pSrcAddr);
     /**
      * @brief Attaches a "control info" (MacToPhy) structure (object) to the message pMsg.
      *
@@ -213,7 +216,7 @@ protected:
      * @param pMsg        The message where the "control info" shall be attached.
      * @param pSignal    The signal which should be send.
      */
-    virtual cObject *const setDownControlInfo(cMessage *const pMsg, Signal *const pSignal);
+    virtual cObject* const setDownControlInfo(cMessage* const pMsg, Signal* const pSignal);
 };
 
 } // namespace Veins

@@ -31,8 +31,7 @@ namespace Veins {
  *
  * @ingroup baseModules
  */
-class MIXIM_API BaseWorldUtility : public cSimpleModule
-{
+class MIXIM_API BaseWorldUtility : public cSimpleModule {
 protected:
     /**
      * @brief Size of the area the nodes are in (in meters)
@@ -57,7 +56,8 @@ protected:
 
 public:
     /** @brief Speed of light in meters per second. */
-    static const double speedOfLight() {
+    static const double speedOfLight()
+    {
         return 299792458.0; ///< meters per second
     }
 
@@ -82,13 +82,15 @@ public:
      * Meaning the upper borders (at pg-size) as well as the lower
      * borders (at 0) are part of the playground.
      **/
-    const Coord* getPgs(){
+    const Coord* getPgs()
+    {
         initializeIfNecessary();
         return &playgroundSize;
     };
 
     /** @brief Returns true if our playground represents a torus (borders are connected)*/
-    bool useTorus(){
+    bool useTorus()
+    {
         initializeIfNecessary();
         return useTorusFlag;
     };
@@ -109,15 +111,15 @@ public:
         initializeIfNecessary();
 
         // if counter has done one complete cycle and will be set to a value it already had
-        if (airFrameId == -1){
+        if (airFrameId == -1) {
             // print a warning
             EV << "WARNING: AirFrameId-Counter has done one complete cycle."
-            << " AirFrameIds are repeating now and may not be unique anymore." << endl;
+               << " AirFrameIds are repeating now and may not be unique anymore." << endl;
         }
 
         return airFrameId++;
     }
- };
+};
 
 } // namespace Veins
 

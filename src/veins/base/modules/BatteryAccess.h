@@ -21,7 +21,7 @@
  * @author Karl Wessel
  */
 namespace Veins {
-class MIXIM_API BatteryAccess: public BaseModule {
+class MIXIM_API BatteryAccess : public BaseModule {
 protected:
     /** @brief Stores pointer to the battery module. */
     BaseBattery* battery;
@@ -65,6 +65,6 @@ public:
     BatteryAccess();
     BatteryAccess(unsigned stacksize);
 };
-}
+} // namespace Veins
 
 #endif /* BATTERYACCESS_H_ */

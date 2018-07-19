@@ -23,12 +23,11 @@ using Veins::AirFrame;
  * @ingroup phyLayer
  */
 namespace Veins {
-class MIXIM_API Radio
-{
+class MIXIM_API Radio {
 public:
     /**
-    * @brief The state of the radio of the nic.
-    */
+     * @brief The state of the radio of the nic.
+     */
     enum RadioState {
         /** @brief receiving state*/
         RX = 0,
@@ -52,7 +51,6 @@ public:
     };
 
 protected:
-
     /** @brief Output vector for radio states.*/
     cOutVector radioStates;
     /** @brief Output vector for radio channels.*/
@@ -62,7 +60,6 @@ protected:
     int state;
     /** @brief The state the radio is currently switching to.*/
     int nextState;
-
 
     /** @brief The number of radio states this Radio can be in.*/
     const int numRadioStates;
@@ -76,7 +73,6 @@ protected:
     int nbChannels;
 
 public:
-
     /**
      * @brief Creates a new instance of this class.
      *
@@ -87,14 +83,9 @@ public:
      * correct number of radio states. Sub classing Radios should also
      * define a factory method like this instead of an public constructor.
      */
-    static Radio* createNewRadio(bool recordStats = false,
-                                 int initialState = RX,
-                                 int currentChannel=0, int nbChannels=1)
+    static Radio* createNewRadio(bool recordStats = false, int initialState = RX, int currentChannel = 0, int nbChannels = 1)
     {
-        return new Radio(NUM_RADIO_STATES,
-                         recordStats,
-                         initialState,
-                         currentChannel, nbChannels);
+        return new Radio(NUM_RADIO_STATES, recordStats, initialState, currentChannel, nbChannels);
     }
 
     /**
@@ -123,11 +114,10 @@ public:
     /**
      * @brief Returns the state the Radio is currently in
      */
-    virtual int getCurrentState() const {
+    virtual int getCurrentState() const
+    {
         return state;
     }
-
-
 
     /**
      * @brief called by PhyLayer when duration-time for the
@@ -146,7 +136,8 @@ public:
      * @param newChannel The new channel to switch to, between 0 and
      *                      nbChannels-1
      */
-    void setCurrentChannel(int newChannel) {
+    void setCurrentChannel(int newChannel)
+    {
         assert(newChannel > -1);
         assert(newChannel < nbChannels);
         currentChannel = newChannel;
@@ -157,10 +148,10 @@ public:
      * @brief Returns the channel the radio is currently set to.
      * @return The current channel of the radio, between 0 and nbChannels-1.
      */
-    int getCurrentChannel() {
+    int getCurrentChannel()
+    {
         return currentChannel;
     }
-
 
 protected:
     /**
@@ -178,17 +169,9 @@ protected:
      * Therefore sub classing Radios which could be sub-classed further should
      * also do it this way.
      */
-    Radio(int numRadioStates,
-          bool recordStats,
-          int initialState = RX,
-          int currentChannel = 0, int nbChannels = 1);
+    Radio(int numRadioStates, bool recordStats, int initialState = RX, int currentChannel = 0, int nbChannels = 1);
 
 }; // end class Radio
-}
-
-
-
-
-
+} // namespace Veins
 
 #endif /*PHYUTILS_H_*/

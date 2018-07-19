@@ -26,15 +26,16 @@
 
 Define_Module(Veins::AnnotationManager);
 
+using Veins::AnnotationManager;
 using Veins::TraCIScenarioManager;
 using Veins::TraCIScenarioManagerAccess;
-using Veins::AnnotationManager;
 
 namespace {
-    const short EVT_SCHEDULED_ERASE = 3;
+const short EVT_SCHEDULED_ERASE = 3;
 }
 
-void AnnotationManager::initialize() {
+void AnnotationManager::initialize()
+{
     debug = par("debug");
 
     scheduledEraseEvts.clear();
@@ -50,11 +51,13 @@ void AnnotationManager::initialize() {
     addFromXml(annotationsXml);
 }
 
-void AnnotationManager::finish() {
+void AnnotationManager::finish()
+{
     hideAll();
 }
 
-AnnotationManager::~AnnotationManager() {
+AnnotationManager::~AnnotationManager()
+{
     while (scheduledEraseEvts.begin() != scheduledEraseEvts.end()) {
         cancelAndDelete(*scheduledEraseEvts.begin());
         scheduledEraseEvts.erase(scheduledEraseEvts.begin());
@@ -72,10 +75,10 @@ AnnotationManager::~AnnotationManager() {
         groups.erase(groups.begin());
     }
     groups.clear();
-
 }
 
-void AnnotationManager::handleMessage(cMessage *msg) {
+void AnnotationManager::handleMessage(cMessage* msg)
+{
     if (msg->isSelfMessage()) {
         handleSelfMsg(msg);
         return;
@@ -83,7 +86,8 @@ void AnnotationManager::handleMessage(cMessage *msg) {
     error("AnnotationManager doesn't handle messages from other modules");
 }
 
-void AnnotationManager::handleSelfMsg(cMessage *msg) {
+void AnnotationManager::handleSelfMsg(cMessage* msg)
+{
 
     if (msg->getKind() == EVT_SCHEDULED_ERASE) {
         Annotation* a = static_cast<Annotation*>(msg->getContextPointer());
@@ -99,11 +103,13 @@ void AnnotationManager::handleSelfMsg(cMessage *msg) {
     error("unknown self message type");
 }
 
-void AnnotationManager::handleParameterChange(const char *parname) {
+void AnnotationManager::handleParameterChange(const char* parname)
+{
     if (parname && (std::string(parname) == "draw")) {
         if (par("draw")) {
             showAll();
-        } else {
+        }
+        else {
             hideAll();
         }
     }
@@ -117,9 +123,10 @@ void AnnotationManager::handleParameterChange(const char *parname) {
  *   <poly color="#0F0" shape="16,64 8,77.8564 -8,77.8564 -16,64 -8,50.1436 8,50.1436" />
  * </annotations>
  */
-void AnnotationManager::addFromXml(cXMLElement* xml) {
+void AnnotationManager::addFromXml(cXMLElement* xml)
+{
     std::string rootTag = xml->getTagName();
-    ASSERT (rootTag == "annotations");
+    ASSERT(rootTag == "annotations");
 
     cXMLElementList list = xml->getChildren();
     for (cXMLElementList::const_iterator i = list.begin(); i != list.end(); ++i) {
@@ -178,17 +185,18 @@ void AnnotationManager::addFromXml(cXMLElement* xml) {
             error("while reading annotations xml: expected 'line' or 'poly', but got '%s'", tag.c_str());
         }
     }
-
 }
 
-AnnotationManager::Group* AnnotationManager::createGroup(std::string title) {
+AnnotationManager::Group* AnnotationManager::createGroup(std::string title)
+{
     Group* group = new Group(title);
     groups.push_back(group);
 
     return group;
 }
 
-AnnotationManager::Point* AnnotationManager::drawPoint(Coord p, std::string color, std::string text, Group* group) {
+AnnotationManager::Point* AnnotationManager::drawPoint(Coord p, std::string color, std::string text, Group* group)
+{
     Point* o = new Point(p, color, text);
     o->group = group;
 
@@ -199,7 +207,8 @@ AnnotationManager::Point* AnnotationManager::drawPoint(Coord p, std::string colo
     return o;
 }
 
-AnnotationManager::Line* AnnotationManager::drawLine(Coord p1, Coord p2, std::string color, Group* group) {
+AnnotationManager::Line* AnnotationManager::drawLine(Coord p1, Coord p2, std::string color, Group* group)
+{
     Line* l = new Line(p1, p2, color);
     l->group = group;
 
@@ -210,7 +219,8 @@ AnnotationManager::Line* AnnotationManager::drawLine(Coord p1, Coord p2, std::st
     return l;
 }
 
-AnnotationManager::Polygon* AnnotationManager::drawPolygon(std::list<Coord> coords, std::string color, Group* group) {
+AnnotationManager::Polygon* AnnotationManager::drawPolygon(std::list<Coord> coords, std::string color, Group* group)
+{
     Polygon* p = new Polygon(coords, color);
     p->group = group;
 
@@ -221,16 +231,28 @@ AnnotationManager::Polygon* AnnotationManager::drawPolygon(std::list<Coord> coor
     return p;
 }
 
-AnnotationManager::Polygon* AnnotationManager::drawPolygon(std::vector<Coord> coords, std::string color, Group* group) {
+AnnotationManager::Polygon* AnnotationManager::drawPolygon(std::vector<Coord> coords, std::string color, Group* group)
+{
     return drawPolygon(std::list<Coord>(coords.begin(), coords.end()), color, group);
 }
 
-void AnnotationManager::drawBubble(Coord p1, std::string text) {
+void AnnotationManager::drawBubble(Coord p1, std::string text)
+{
     std::string pxOld = getDisplayString().getTagArg("p", 0);
     std::string pyOld = getDisplayString().getTagArg("p", 1);
 
-    std::string px; { std::stringstream ss; ss << p1.x; px = ss.str(); }
-    std::string py; { std::stringstream ss; ss << p1.x; py = ss.str(); }
+    std::string px;
+    {
+        std::stringstream ss;
+        ss << p1.x;
+        px = ss.str();
+    }
+    std::string py;
+    {
+        std::stringstream ss;
+        ss << p1.x;
+        py = ss.str();
+    }
 
     getDisplayString().setTagArg("p", 0, px.c_str());
     getDisplayString().setTagArg("p", 1, py.c_str());
@@ -241,23 +263,27 @@ void AnnotationManager::drawBubble(Coord p1, std::string text) {
     getDisplayString().setTagArg("p", 1, pyOld.c_str());
 }
 
-void AnnotationManager::erase(const Annotation* annotation) {
+void AnnotationManager::erase(const Annotation* annotation)
+{
     hide(annotation);
     annotations.remove(const_cast<Annotation*>(annotation));
     delete annotation;
 }
 
-void AnnotationManager::eraseAll(Group* group) {
-    for (Annotations::iterator i = annotations.begin(); i != annotations.end(); ) {
+void AnnotationManager::eraseAll(Group* group)
+{
+    for (Annotations::iterator i = annotations.begin(); i != annotations.end();) {
         if ((!group) || ((*i)->group == group)) {
             erase(*i++);
-        } else {
+        }
+        else {
             i++;
         }
     }
 }
 
-void AnnotationManager::scheduleErase(simtime_t deltaT, Annotation* annotation) {
+void AnnotationManager::scheduleErase(simtime_t deltaT, Annotation* annotation)
+{
     Enter_Method_Silent();
 
     cMessage* evt = new cMessage("erase", EVT_SCHEDULED_ERASE);
@@ -266,10 +292,10 @@ void AnnotationManager::scheduleErase(simtime_t deltaT, Annotation* annotation) 
     scheduleAt(simTime() + deltaT, evt);
 
     scheduledEraseEvts.push_back(evt);
-
 }
 
-void AnnotationManager::show(const Annotation* annotation) {
+void AnnotationManager::show(const Annotation* annotation)
+{
     if (annotation->figure) return;
 
     if (const Point* o = dynamic_cast<const Point*>(annotation)) {
@@ -280,7 +306,8 @@ void AnnotationManager::show(const Annotation* annotation) {
 
         TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
         if (traci && traci->isConnected()) {
-            std::stringstream nameBuilder; nameBuilder << o->text << " " << getEnvir()->getUniqueNumber();
+            std::stringstream nameBuilder;
+            nameBuilder << o->text << " " << getEnvir()->getUniqueNumber();
             traci->getCommandInterface()->addPoi(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(o->color), 6, o->pos);
             annotation->traciPoiIds.push_back(nameBuilder.str());
         }
@@ -291,17 +318,18 @@ void AnnotationManager::show(const Annotation* annotation) {
             cLineFigure* figure = new cLineFigure();
             figure->setStart(cFigure::Point(l->p1.x, l->p1.y));
             figure->setEnd(cFigure::Point(l->p2.x, l->p2.y));
-            figure->setLineColor(
-                    cFigure::Color
-                    (l->color.c_str()));
+            figure->setLineColor(cFigure::Color(l->color.c_str()));
             annotation->figure = figure;
             annotationLayer->addFigure(annotation->figure);
         }
 
         TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
         if (traci && traci->isConnected()) {
-            std::list<Coord> coords; coords.push_back(l->p1); coords.push_back(l->p2);
-            std::stringstream nameBuilder; nameBuilder << "Annotation" << getEnvir()->getUniqueNumber();
+            std::list<Coord> coords;
+            coords.push_back(l->p1);
+            coords.push_back(l->p2);
+            std::stringstream nameBuilder;
+            nameBuilder << "Annotation" << getEnvir()->getUniqueNumber();
             traci->getCommandInterface()->addPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(l->color), false, 5, coords);
             annotation->traciLineIds.push_back(nameBuilder.str());
         }
@@ -317,9 +345,7 @@ void AnnotationManager::show(const Annotation* annotation) {
                 points.push_back(cFigure::Point(i->x, i->y));
             }
             figure->setPoints(points);
-            figure->setLineColor(
-                    cFigure::Color
-                    (p->color.c_str()));
+            figure->setLineColor(cFigure::Color(p->color.c_str()));
             figure->setFilled(false);
             annotation->figure = figure;
             annotationLayer->addFigure(annotation->figure);
@@ -327,18 +353,19 @@ void AnnotationManager::show(const Annotation* annotation) {
 
         TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
         if (traci && traci->isConnected()) {
-            std::stringstream nameBuilder; nameBuilder << "Annotation" << getEnvir()->getUniqueNumber();
+            std::stringstream nameBuilder;
+            nameBuilder << "Annotation" << getEnvir()->getUniqueNumber();
             traci->getCommandInterface()->addPolygon(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(p->color), false, 4, p->coords);
             annotation->traciPolygonsIds.push_back(nameBuilder.str());
         }
-
     }
     else {
         error("unknown Annotation type");
     }
 }
 
-void AnnotationManager::hide(const Annotation* annotation) {
+void AnnotationManager::hide(const Annotation* annotation)
+{
     if (annotation->figure) {
         delete annotationLayer->removeFigure(annotation->figure);
         annotation->figure = 0;
@@ -364,13 +391,15 @@ void AnnotationManager::hide(const Annotation* annotation) {
     }
 }
 
-void AnnotationManager::showAll(Group* group) {
+void AnnotationManager::showAll(Group* group)
+{
     for (Annotations::const_iterator i = annotations.begin(); i != annotations.end(); ++i) {
         if ((!group) || ((*i)->group == group)) show(*i);
     }
 }
 
-void AnnotationManager::hideAll(Group* group) {
+void AnnotationManager::hideAll(Group* group)
+{
     for (Annotations::const_iterator i = annotations.begin(); i != annotations.end(); ++i) {
         if ((!group) || ((*i)->group == group)) hide(*i);
     }
