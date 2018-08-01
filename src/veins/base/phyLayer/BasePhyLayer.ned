@@ -16,7 +16,7 @@ simple BasePhyLayer like IWirelessPhy
         bool useThermalNoise;            //should thermal noise be considered?
 
         
-        xml antenna = default(xml("<root><Antenna type=\"IsotropicAntenna\"></Antenna></root>"));
+        xml antenna = default(xml("<root><Antenna type=\"IsotropicAntenna\" id=\"default_isotropic\"></Antenna></root>"));
         
         
         xml analogueModels;             //Specification of the analogue models to use and their parameters
