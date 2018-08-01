@@ -1,0 +1,75 @@
+//
+// Copyright (C) 2006-2018 Christoph Sommer <sommer@ccs-labs.org>
+//
+// Documentation for these modules is at http://veins.car2x.org/
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+
+//
+// Veins Mobility module for the INET Framework
+// Based on inet::MovingMobilityBase of INET Framework v4.0.0
+//
+
+#ifndef Veins_VeinsInetMobility_h
+#define Veins_VeinsInetMobility_h
+
+namespace omnetpp {
+}
+using namespace omnetpp;
+
+#undef INET_IMPORT
+#include "inet/mobility/base/MobilityBase.h"
+
+namespace Veins {
+
+class INET_API VeinsInetMobility : public inet::MobilityBase {
+public:
+    VeinsInetMobility();
+
+    virtual ~VeinsInetMobility();
+
+    /** @brief called by class VeinsInetManager */
+    virtual void preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle);
+
+    virtual void initialize(int stage) override;
+
+    /** @brief called by class VeinsInetManager */
+    virtual void nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle);
+
+    virtual inet::Coord getCurrentPosition() override;
+    virtual inet::Coord getCurrentVelocity() override;
+    virtual inet::Coord getCurrentAcceleration() override;
+
+    virtual inet::EulerAngles getCurrentAngularPosition() override;
+    virtual inet::EulerAngles getCurrentAngularVelocity() override;
+    virtual inet::EulerAngles getCurrentAngularAcceleration() override;
+
+protected:
+    /** @brief The last velocity that was set by nextPosition(). */
+    inet::Coord lastVelocity;
+
+    /** @brief The last angular velocity that was set by nextPosition(). */
+    inet::EulerAngles lastAngularVelocity;
+
+protected:
+    virtual void setInitialPosition() override;
+
+    virtual void handleSelfMessage(cMessage* message) override;
+};
+
+} // namespace Veins
+
+#endif // ifndef Veins_VeinsInetMobility_h
