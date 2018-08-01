@@ -44,173 +44,185 @@ struct TimerMessage;
  */
 struct TimerSpecification {
 public:
-  /**
-   * Create a new TimerSpecification.
-   *
-   * The created timer is invalid, an interval is missing for it to be usable.
-   * By default, the timer starts running immediately and triggers first after the first time after the interval.
-   * After that, it will continue to run until the simulation ends, calling the callback after the interval has elapsed.
-   * In order to create a timer, this needs to be passed to TimerManager::create.
-   *
-   * @param callback The callback which is executed when the timer is triggered.
-   *
-   * @see TimerManager
-   */
-  TimerSpecification(std::function<void()> callback);
+    /**
+     * Create a new TimerSpecification.
+     *
+     * The created timer is invalid, an interval is missing for it to be usable.
+     * By default, the timer starts running immediately and triggers first after the first time after the interval.
+     * After that, it will continue to run until the simulation ends, calling the callback after the interval has elapsed.
+     * In order to create a timer, this needs to be passed to TimerManager::create.
+     *
+     * @param callback The callback which is executed when the timer is triggered.
+     *
+     * @see TimerManager
+     */
+    TimerSpecification(std::function<void()> callback);
 
-  /**
-   * Set the period between two timer occurences.
-   */
-  TimerSpecification &interval(omnetpp::simtime_t interval);
+    /**
+     * Set the period between two timer occurences.
+     */
+    TimerSpecification& interval(omnetpp::simtime_t interval);
 
-  /**
-   * Set the number of repetitions.
-   *
-   * @note You cannot use both this and setAbsoluteEnd or setRelativeEnd.
-   */
-  TimerSpecification &repititions(size_t n);
+    /**
+     * Set the number of repetitions.
+     *
+     * @note You cannot use both this and setAbsoluteEnd or setRelativeEnd.
+     */
+    TimerSpecification& repititions(size_t n);
 
-  /**
-   * Set the timer's start time.
-   *
-   * Any previously set start time will be overwritten.
-   *
-   * @param start The relative start time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer in one second.
-   *
-   * @note You cannot use this in conjunction with setRepition
-   */
-  TimerSpecification &relativeStart(omnetpp::simtime_t start);
+    /**
+     * Set the timer's start time.
+     *
+     * Any previously set start time will be overwritten.
+     *
+     * @param start The relative start time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer in one second.
+     *
+     * @note You cannot use this in conjunction with setRepition
+     */
+    TimerSpecification& relativeStart(omnetpp::simtime_t start);
 
-  /**
-   * Set the timer's start time.
-   *
-   * Any previously set start time will be overwritten.
-   *
-   * @param start The absolute start time. The first occurence will be exactly at this time. Passing a value earlier than the current simtime will result in an error.
-   *
-   * @note You cannot use this in conjunction with setRepition
-   */
-  TimerSpecification &absoluteStart(omnetpp::simtime_t start);
+    /**
+     * Set the timer's start time.
+     *
+     * Any previously set start time will be overwritten.
+     *
+     * @param start The absolute start time. The first occurence will be exactly at this time. Passing a value earlier than the current simtime will result in an error.
+     *
+     * @note You cannot use this in conjunction with setRepition
+     */
+    TimerSpecification& absoluteStart(omnetpp::simtime_t start);
 
-  /**
-   * Set the timer's end time.
-   *
-   * Any previously set end time will be overwritten.
-   *
-   * @param end The relative end time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer until one second has passed.
-   */
-  TimerSpecification &relativeEnd(omnetpp::simtime_t end);
+    /**
+     * Set the timer's end time.
+     *
+     * Any previously set end time will be overwritten.
+     *
+     * @param end The relative end time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer until one second has passed.
+     */
+    TimerSpecification& relativeEnd(omnetpp::simtime_t end);
 
-  /**
-   * Set the timer's end time.
-   *
-   * Any previously set end time will be overwritten.
-   *
-   * @param end The absolute end time. The latest possible occurence is at this time. Values before the current start time will prevent any executions.
-   */
-  TimerSpecification &absoluteEnd(omnetpp::simtime_t end);
+    /**
+     * Set the timer's end time.
+     *
+     * Any previously set end time will be overwritten.
+     *
+     * @param end The absolute end time. The latest possible occurence is at this time. Values before the current start time will prevent any executions.
+     */
+    TimerSpecification& absoluteEnd(omnetpp::simtime_t end);
 
-  /**
-   * Set the timer to be open ended.
-   *
-   * Any previously set end time will be overwritten.
-   */
-  TimerSpecification &openEnd();
+    /**
+     * Set the timer to be open ended.
+     *
+     * Any previously set end time will be overwritten.
+     */
+    TimerSpecification& openEnd();
 
-  /**
-   * Sets the timer to execute once in a given time.
-   *
-   * Any previously set start time, end time, and interval  will be overwritten.
-   */
-  TimerSpecification &oneshotIn(omnetpp::simtime_t in);
+    /**
+     * Sets the timer to execute once in a given time.
+     *
+     * Any previously set start time, end time, and interval  will be overwritten.
+     */
+    TimerSpecification& oneshotIn(omnetpp::simtime_t in);
 
-  /**
-   * Sets the timer to execute once at a given time.
-   *
-   * Any previously set start time, end time, and interval  will be overwritten.
-   */
-  TimerSpecification &oneshotAt(omnetpp::simtime_t at);
+    /**
+     * Sets the timer to execute once at a given time.
+     *
+     * Any previously set start time, end time, and interval  will be overwritten.
+     */
+    TimerSpecification& oneshotAt(omnetpp::simtime_t at);
 
 private:
-  friend TimerManager;
+    friend TimerManager;
 
-  enum class StartMode { relative, absolute, immediate };
-  enum class EndMode { relative, absolute, repetition, open };
+    enum class StartMode {
+        relative,
+        absolute,
+        immediate
+    };
+    enum class EndMode {
+        relative,
+        absolute,
+        repetition,
+        open
+    };
 
-  /**
-   * Finalizes this instance such that its values are independent of current simulation time.
-   *
-   * After calling this function, start_mode_ is guaranteed to be StartMode::absolute and end_mode_ to be EndMode::absolute or EndMode::open.
-   * Cannot be called on TimerSpecifications
-   */
-  void finalize();
+    /**
+     * Finalizes this instance such that its values are independent of current simulation time.
+     *
+     * After calling this function, start_mode_ is guaranteed to be StartMode::absolute and end_mode_ to be EndMode::absolute or EndMode::open.
+     * Cannot be called on TimerSpecifications
+     */
+    void finalize();
 
-  /**
-   * Checks validity of this specification, i.e., whether all necessary information is set.
-   */
-  bool valid() const { return period_ != -1; }
+    /**
+     * Checks validity of this specification, i.e., whether all necessary information is set.
+     */
+    bool valid() const
+    {
+        return period_ != -1;
+    }
 
-  /**
-   * Check that the given time is a valid occurence for this timer.
-   */
-  bool validOccurence(omnetpp::simtime_t time) const;
+    /**
+     * Check that the given time is a valid occurence for this timer.
+     */
+    bool validOccurence(omnetpp::simtime_t time) const;
 
-  StartMode start_mode_;           ///< Interpretation of start time._
-  omnetpp::simtime_t start_;       ///< Time of the Timer's first occurence. Interpretation depends on start_mode_.
-  EndMode end_mode_;               ///< Interpretation of end time._
-  unsigned end_count_;             ///< Number of repititions of the timer. Only valid when end_mode_ == repetition.
-  omnetpp::simtime_t end_time_;    ///< Last possible occurence of the timer. Only valid when end_mode_ != repetition.
-  omnetpp::simtime_t period_;      ///< Time between events.
-  std::function<void()> callback_; ///< The function to be called when the Timer is triggered.
+    StartMode start_mode_; ///< Interpretation of start time._
+    omnetpp::simtime_t start_; ///< Time of the Timer's first occurence. Interpretation depends on start_mode_.
+    EndMode end_mode_; ///< Interpretation of end time._
+    unsigned end_count_; ///< Number of repititions of the timer. Only valid when end_mode_ == repetition.
+    omnetpp::simtime_t end_time_; ///< Last possible occurence of the timer. Only valid when end_mode_ != repetition.
+    omnetpp::simtime_t period_; ///< Time between events.
+    std::function<void()> callback_; ///< The function to be called when the Timer is triggered.
 };
 
 class TimerManager {
 private:
 public:
-  using TimerHandle = TimerMessage *;
-  using TimerList = std::map<TimerHandle, const TimerSpecification>;
+    using TimerHandle = TimerMessage*;
+    using TimerList = std::map<TimerHandle, const TimerSpecification>;
 
-  TimerManager(omnetpp::cSimpleModule *parent);
+    TimerManager(omnetpp::cSimpleModule* parent);
 
-  /**
-   * Destroy this module.
-   *
-   * All associated events will be cancelled and the corresponding messages deleted.
-   */
-  ~TimerManager();
+    /**
+     * Destroy this module.
+     *
+     * All associated events will be cancelled and the corresponding messages deleted.
+     */
+    ~TimerManager();
 
-  /**
-   * Handle the given message and, if applicable, trigger the associated timer.
-   *
-   * @message The received message.
-   * @return true, if the message was meant for this TimerManager. In this case, the passed message might be invalidated.
-   */
-  bool handleMessage(omnetpp::cMessage *message);
+    /**
+     * Handle the given message and, if applicable, trigger the associated timer.
+     *
+     * @message The received message.
+     * @return true, if the message was meant for this TimerManager. In this case, the passed message might be invalidated.
+     */
+    bool handleMessage(omnetpp::cMessage* message);
 
-  /**
-   * Create a new timer.
-   *
-   * @param timerSpecification Parameters for the new timer
-   * @param name The timer's name
-   * @return A handle for the timer.
-   *
-   * @see cancel
-   * @see TimerSpecification
-   */
-  TimerHandle create(TimerSpecification timerSpecification, std::string name = "");
+    /**
+     * Create a new timer.
+     *
+     * @param timerSpecification Parameters for the new timer
+     * @param name The timer's name
+     * @return A handle for the timer.
+     *
+     * @see cancel
+     * @see TimerSpecification
+     */
+    TimerHandle create(TimerSpecification timerSpecification, std::string name = "");
 
-  /**
-   * Cancel a timer.
-   *
-   * Prevents any future executions of the given timer. Expired timers are silently ignored.
-   *
-   * @param timerHandle A handle which identifies the timer.
-   */
-  void cancel(TimerHandle handle);
+    /**
+     * Cancel a timer.
+     *
+     * Prevents any future executions of the given timer. Expired timers are silently ignored.
+     *
+     * @param timerHandle A handle which identifies the timer.
+     */
+    void cancel(TimerHandle handle);
 
 private:
-  TimerList timers_;                     ///< List of all active Timers.
-  omnetpp::cSimpleModule *const parent_; ///< A pointer to the module which owns this TimerManager.
+    TimerList timers_; ///< List of all active Timers.
+    omnetpp::cSimpleModule* const parent_; ///< A pointer to the module which owns this TimerManager.
 };
 
 } // namespace Veins

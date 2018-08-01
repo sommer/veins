@@ -24,16 +24,16 @@ import org.car2x.veins.base.modules.IBaseApplLayer;
 
 simple TraCITestApp like IBaseApplLayer
 {
-	parameters:
-		bool debug = default(false);  // output debugging information
-		int headerLength @unit("bit") = default (0bit);  // length of the application message header (in bits)
-		int testNumber;  // number of test to run (-1: no test)
+    parameters:
+        bool debug = default(false);  // output debugging information
+        int headerLength @unit("bit") = default (0bit);  // length of the application message header (in bits)
+        int testNumber;  // number of test to run (-1: no test)
 
-		@display("i=block/app2");
-		@class("Veins::TraCITestApp");
-	gates:
-		input lowerLayerIn; // from network layer
-		output lowerLayerOut; // to network layer
-		input lowerControlIn; // control from network layer
-		output lowerControlOut; // control to network layer
+        @display("i=block/app2");
+        @class("Veins::TraCITestApp");
+    gates:
+        input lowerLayerIn; // from network layer
+        output lowerLayerOut; // to network layer
+        input lowerControlIn; // control from network layer
+        output lowerControlOut; // control to network layer
 }

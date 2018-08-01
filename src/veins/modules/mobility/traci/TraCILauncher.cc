@@ -19,7 +19,8 @@
 //
 
 #include <omnetpp.h>
-namespace omnetpp { }
+namespace omnetpp {
+}
 using namespace omnetpp;
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
@@ -31,66 +32,65 @@ using namespace omnetpp;
 
 using Veins::TraCILauncher;
 
-TraCILauncher::TraCILauncher(std::string commandLine) {
+TraCILauncher::TraCILauncher(std::string commandLine)
+{
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
-	ZeroMemory(&si, sizeof(STARTUPINFO));
-	si.cb = sizeof(STARTUPINFOA);
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof(STARTUPINFO));
+    si.cb = sizeof(STARTUPINFOA);
 
-	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
+    ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
 
-	char cmdline[32768];
-	strncpy(cmdline, commandLine.c_str(), sizeof(cmdline));
-	bool bSuccess = CreateProcess(0, cmdline, 0, 0, 1, NORMAL_PRIORITY_CLASS | CREATE_NEW_CONSOLE, 0, 0, &si, &pi);
-	if (!bSuccess) {
-		std::string msg = "undefined error";
+    char cmdline[32768];
+    strncpy(cmdline, commandLine.c_str(), sizeof(cmdline));
+    bool bSuccess = CreateProcess(0, cmdline, 0, 0, 1, NORMAL_PRIORITY_CLASS | CREATE_NEW_CONSOLE, 0, 0, &si, &pi);
+    if (!bSuccess) {
+        std::string msg = "undefined error";
 
-		DWORD errorMessageID = ::GetLastError();
-		if(errorMessageID != 0) {
+        DWORD errorMessageID = ::GetLastError();
+        if (errorMessageID != 0) {
 
-			LPSTR messageBuffer = nullptr;
-			size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-					NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+            LPSTR messageBuffer = nullptr;
+            size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &messageBuffer, 0, NULL);
 
-			std::string message(messageBuffer, size);
-			LocalFree(messageBuffer);
-			msg = message;
-		}
+            std::string message(messageBuffer, size);
+            LocalFree(messageBuffer);
+            msg = message;
+        }
 
-		msg = std::string() + "Error launching TraCI server (\"" + commandLine + "\"): " + msg + ". Make sure you have set $PATH correctly.";
+        msg = std::string() + "Error launching TraCI server (\"" + commandLine + "\"): " + msg + ". Make sure you have set $PATH correctly.";
 
-		throw cRuntimeError(msg.c_str());
-	} else {
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
-	}
+        throw cRuntimeError(msg.c_str());
+    }
+    else {
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+    }
 
 #else
-	pid = fork();
-	if(pid == 0) {
-		signal(SIGINT, SIG_IGN);
-		int r = system(commandLine.c_str());
-		if (r == -1) {
-			throw cRuntimeError("Running \"%s\" failed during system()", commandLine.c_str());
-		}
-		if (WEXITSTATUS(r) != 0) {
-			throw cRuntimeError("Error launching TraCI server (\"%s\"): exited with code %d. Make sure you have set $PATH correctly.", commandLine.c_str(), WEXITSTATUS(r));
-		}
-		exit(1);
-	}
+    pid = fork();
+    if (pid == 0) {
+        signal(SIGINT, SIG_IGN);
+        int r = system(commandLine.c_str());
+        if (r == -1) {
+            throw cRuntimeError("Running \"%s\" failed during system()", commandLine.c_str());
+        }
+        if (WEXITSTATUS(r) != 0) {
+            throw cRuntimeError("Error launching TraCI server (\"%s\"): exited with code %d. Make sure you have set $PATH correctly.", commandLine.c_str(), WEXITSTATUS(r));
+        }
+        exit(1);
+    }
 #endif
 }
 
-
-TraCILauncher::~TraCILauncher() {
+TraCILauncher::~TraCILauncher()
+{
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
 #else
-	if (pid) {
-		// send SIGINT
-		kill(pid, 15);
-	}
+    if (pid) {
+        // send SIGINT
+        kill(pid, 15);
+    }
 #endif
 }
-
-

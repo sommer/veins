@@ -17,7 +17,6 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-
 #ifndef OBSTACLE_OBSTACLE_H
 #define OBSTACLE_OBSTACLE_H
 
@@ -30,32 +29,32 @@
  */
 namespace Veins {
 class Obstacle {
-	public:
-		typedef std::vector<Coord> Coords;
+public:
+    typedef std::vector<Coord> Coords;
 
-		Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter);
+    Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter);
 
-		void setShape(Coords shape);
-		const Coords& getShape() const;
-		const Coord getBboxP1() const;
-		const Coord getBboxP2() const;
+    void setShape(Coords shape);
+    const Coords& getShape() const;
+    const Coord getBboxP1() const;
+    const Coord getBboxP2() const;
 
-		std::string getType() const;
-		std::string getId() const;
+    std::string getType() const;
+    std::string getId() const;
 
-		double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const;
+    double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const;
 
-		AnnotationManager::Annotation* visualRepresentation;
+    AnnotationManager::Annotation* visualRepresentation;
 
-	protected:
-		std::string id;
-		std::string type;
-		double attenuationPerCut; /**< in dB. attenuation per exterior border of obstacle */
-		double attenuationPerMeter; /**< in dB / m. to account for attenuation caused by interior of obstacle */
-		Coords coords;
-		Coord bboxP1;
-		Coord bboxP2;
+protected:
+    std::string id;
+    std::string type;
+    double attenuationPerCut; /**< in dB. attenuation per exterior border of obstacle */
+    double attenuationPerMeter; /**< in dB / m. to account for attenuation caused by interior of obstacle */
+    Coords coords;
+    Coord bboxP1;
+    Coord bboxP2;
 };
-}
+} // namespace Veins
 
 #endif

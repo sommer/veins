@@ -9,8 +9,8 @@
 
 using namespace Veins;
 
-double Antenna::getGain(Coord ownPos, Coord ownOrient, Coord otherPos) {
+double Antenna::getGain(Coord ownPos, Coord ownOrient, Coord otherPos)
+{
     // as this base class represents an isotropic antenna, simply return 1.0
     return 1.0;
 }
-

@@ -29,6 +29,6 @@ class WaveShortMessage;
 class noncobject Coord;
 
 packet WaveServiceAdvertisment extends WaveShortMessage {
-	int targetChannel;
-	string serviceDescription;
+    int targetChannel;
+    string serviceDescription;
 }

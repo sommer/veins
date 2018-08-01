@@ -31,8 +31,7 @@ namespace Veins {
 /**
  * Helper class for converting SUMO coordinates to OMNeT++ Coordinates for a given network.
  */
-class TraCICoordinateTransformation
-{
+class TraCICoordinateTransformation {
 public:
     using OmnetCoord = Coord;
     using OmnetCoordList = std::list<OmnetCoord>;

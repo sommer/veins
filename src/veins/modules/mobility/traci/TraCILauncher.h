@@ -34,20 +34,17 @@
  *
  */
 namespace Veins {
-class TraCILauncher
-{
-	public:
-		TraCILauncher(std::string commandLine);
-		~TraCILauncher();
+class TraCILauncher {
+public:
+    TraCILauncher(std::string commandLine);
+    ~TraCILauncher();
 
-	protected:
-
+protected:
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
 #else
-		pid_t pid;
+    pid_t pid;
 #endif
-
 };
-}
+} // namespace Veins
 
 #endif

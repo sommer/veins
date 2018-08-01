@@ -30,24 +30,24 @@ class noncobject POA;
 //
 packet AirFrame
 {
-    Signal signal;		// Contains the physical data of this AirFrame
+    Signal signal;        // Contains the physical data of this AirFrame
         
-    POA poa;			// contains a POA object with the position, orientation and antenna (pointer)
-    						// of the sender
+    POA poa;            // contains a POA object with the position, orientation and antenna (pointer)
+                            // of the sender
     
-    simtime_t duration;	// time the AirFrames takes to be transmited (without propagation delay)
+    simtime_t duration;    // time the AirFrames takes to be transmited (without propagation delay)
 
-    int state = 1; 		// state of the AirFrames, used by the physical layer
-        					// as state machine for delay and transmission duration
-        					// simulation
+    int state = 1;         // state of the AirFrames, used by the physical layer
+                            // as state machine for delay and transmission duration
+                            // simulation
 
-    int type = 0;		// If type isn't null then this is a control-AirFrame
-        					// and type specifies the control type.
+    int type = 0;        // If type isn't null then this is a control-AirFrame
+                            // and type specifies the control type.
 
-    long id;			// Unique ID of the AirFrame used as identifier for
-							// related control-AirFrames
-							
-	int protocolId;		//the id of the phy protocol of this airframe
-	
-	int channel;    	//the channel of the radio used for this transmission
+    long id;            // Unique ID of the AirFrame used as identifier for
+                            // related control-AirFrames
+                            
+    int protocolId;        //the id of the phy protocol of this airframe
+    
+    int channel;        //the channel of the radio used for this transmission
 }

@@ -34,23 +34,22 @@ using omnetpp::cSimpleModule;
  * already provides multiplexing of different message types to message handlers and a
  * special handler to be executed right before the TraCI server performs a phase switch
  */
-class TraCITrafficLightAbstractLogic: public cSimpleModule {
+class TraCITrafficLightAbstractLogic : public cSimpleModule {
 public:
-	TraCITrafficLightAbstractLogic();
-	virtual ~TraCITrafficLightAbstractLogic();
+    TraCITrafficLightAbstractLogic();
+    virtual ~TraCITrafficLightAbstractLogic();
 
 protected:
-	cMessage* switchTimer;
+    cMessage* switchTimer;
 
-	virtual void initialize();
-	virtual void handleMessage(cMessage *msg);
-	virtual void handleSelfMsg(cMessage *msg);
-	virtual void handleApplMsg(cMessage *msg) = 0;
-	virtual void handleTlIfMsg(TraCITrafficLightMessage *tlMsg) = 0;
-	virtual void handlePossibleSwitch() = 0;
+    virtual void initialize();
+    virtual void handleMessage(cMessage* msg);
+    virtual void handleSelfMsg(cMessage* msg);
+    virtual void handleApplMsg(cMessage* msg) = 0;
+    virtual void handleTlIfMsg(TraCITrafficLightMessage* tlMsg) = 0;
+    virtual void handlePossibleSwitch() = 0;
 };
 
-
-} // namespace
+} // namespace Veins
 
 #endif /* TRACITRAFFICLIGHTABSTRACTLOGIC_H_ */

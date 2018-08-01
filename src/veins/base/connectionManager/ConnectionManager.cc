@@ -23,8 +23,8 @@ double ConnectionManager::calcInterfDist()
         double interfDistance = par("maxInterfDist").doubleValue();
         ccEV << "max interference distance:" << interfDistance << endl;
         return interfDistance;
-    } else {
+    }
+    else {
         throw cRuntimeError("ConnectionManager: No value for maximum interference distance (maxInterfDist) provided.");
     }
 }
-

@@ -24,15 +24,17 @@ using namespace Veins;
 
 Define_Module(Veins::TraCIDemoRSU11p);
 
-void TraCIDemoRSU11p::onWSA(WaveServiceAdvertisment* wsa) {
-    //if this RSU receives a WSA for service 42, it will tune to the chan
+void TraCIDemoRSU11p::onWSA(WaveServiceAdvertisment* wsa)
+{
+    // if this RSU receives a WSA for service 42, it will tune to the chan
     if (wsa->getPsid() == 42) {
         mac->changeServiceChannel(wsa->getTargetChannel());
     }
 }
 
-void TraCIDemoRSU11p::onWSM(WaveShortMessage* wsm) {
-    //this rsu repeats the received traffic update in 2 seconds plus some random delay
+void TraCIDemoRSU11p::onWSM(WaveShortMessage* wsm)
+{
+    // this rsu repeats the received traffic update in 2 seconds plus some random delay
     wsm->setSenderAddress(myId);
-    sendDelayedDown(wsm->dup(), 2 + uniform(0.01,0.2));
+    sendDelayedDown(wsm->dup(), 2 + uniform(0.01, 0.2));
 }

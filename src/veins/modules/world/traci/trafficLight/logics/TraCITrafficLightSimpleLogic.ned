@@ -23,10 +23,19 @@ package org.car2x.veins.modules.world.traci.trafficLight.logics;
 import org.car2x.veins.base.modules.ITrafficLightLogic;
 
 simple TraCITrafficLightSimpleLogic like ITrafficLightLogic {
+<<<<<<< HEAD
 	parameters:
 		@class(Veins::TraCITrafficLightSimpleLogic);
 		@display("i=block/classifier");
 	gates:
 		inout interface;
 		inout applLayer;
+=======
+    parameters:
+        @class(Veins::TraCITrafficLightSimpleLogic);
+        @display("i=block/classifier");
+    gates:
+        inout interface;
+        inout applLayer;
+>>>>>>> upstream/master
 }

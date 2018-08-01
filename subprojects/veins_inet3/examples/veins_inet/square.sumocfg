@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumo-gui.exeConfiguration.xsd">
+
+    <input>
+        <net-file value="square.net.xml"/>
+        <route-files value="square.rou.xml"/>
+        <additional-files value="square.poly.xml"/>
+    </input>
+
+    <time>
+        <step-length value="0.1"/>
+    </time>
+
+    <report>
+        <xml-validation value="never"/>
+        <xml-validation.net value="never"/>
+    </report>
+
+    <gui_only>
+        <start value="true"/>
+    </gui_only>
+
+</configuration>

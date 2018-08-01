@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<shapes>
+    <poly id="blocker" type="building" color="1.00,0.00,0.00" fill="1" layer="4" shape="10,10 90,10 90,90 10,90 10,10"/>
+</shapes>

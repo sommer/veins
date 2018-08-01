@@ -16,17 +16,15 @@ namespace Veins {
  *
  * @ingroup connectionManager
  */
-class MIXIM_API ConnectionManager : public BaseConnectionManager
-{
+class MIXIM_API ConnectionManager : public BaseConnectionManager {
 protected:
-
-	/**
-	 * @brief Calculate interference distance
-	 *
-	 * You may want to overwrite this function in order to do your own
-	 * interference calculation
-	 */
-	virtual double calcInterfDist();
+    /**
+     * @brief Calculate interference distance
+     *
+     * You may want to overwrite this function in order to do your own
+     * interference calculation
+     */
+    virtual double calcInterfDist();
 };
 
 } // namespace Veins

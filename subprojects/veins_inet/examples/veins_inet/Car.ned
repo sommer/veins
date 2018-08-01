@@ -21,16 +21,16 @@
 package org.car2x.veins.subprojects.veins_inet.example;
 
 import inet.networklayer.configurator.ipv4.HostAutoConfigurator;
-import inet.node.inet.WirelessHost;
+import inet.node.inet.AdhocHost;
 
 //
 // Wireless-enabled Host
 //
-module Car extends WirelessHost
+module Car extends AdhocHost
 {
     parameters:
         @display("i=device/cellphone");
-        networkLayer.configurator.networkConfiguratorModule = "";
+        ipv4.configurator.networkConfiguratorModule = "";
 
     submodules:
         ac_wlan: HostAutoConfigurator {

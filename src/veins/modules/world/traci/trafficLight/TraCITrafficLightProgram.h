@@ -27,40 +27,38 @@
 namespace Veins {
 class TraCITrafficLightProgram {
 public:
-	struct Phase {
-		int32_t duration;
-		int32_t minDuration;
-		int32_t maxDuration;
-		std::string state;
+    struct Phase {
+        int32_t duration;
+        int32_t minDuration;
+        int32_t maxDuration;
+        std::string state;
 
-		bool isGreenPhase() const;
-	};
-	struct Logic {
-		std::string id;
-		int32_t currentPhase;
-		std::vector<Phase> phases;
-		int32_t type; // currently unused, just 0
-		int32_t parameter; // currently unused, just 0
-	};
+        bool isGreenPhase() const;
+    };
+    struct Logic {
+        std::string id;
+        int32_t currentPhase;
+        std::vector<Phase> phases;
+        int32_t type; // currently unused, just 0
+        int32_t parameter; // currently unused, just 0
+    };
 
-	TraCITrafficLightProgram(std::string id = "");
+    TraCITrafficLightProgram(std::string id = "");
 
-	void addLogic(const Logic& logic);
-	TraCITrafficLightProgram::Logic getLogic(const std::string& lid) const;
-	bool hasLogic(const std::string& lid) const;
-	
+    void addLogic(const Logic& logic);
+    TraCITrafficLightProgram::Logic getLogic(const std::string& lid) const;
+    bool hasLogic(const std::string& lid) const;
+
 private:
-	std::string id;
-	std::map<std::string, TraCITrafficLightProgram::Logic> logics;
-
+    std::string id;
+    std::map<std::string, TraCITrafficLightProgram::Logic> logics;
 };
-
 
 struct TraCITrafficLightLink {
-	std::string incoming;
-	std::string outgoing;
-	std::string internal;
+    std::string incoming;
+    std::string outgoing;
+    std::string internal;
 };
 
-}
+} // namespace Veins
 #endif /* SRC_VEINS_MODULES_WORLD_TRACI_TRAFFICLIGHT_TRACITRAFFICLIGHTPROGRAM_H_ */
