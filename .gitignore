@@ -32,6 +32,20 @@ subprojects/veins_catch/src/Makefile
 subprojects/veins_catch/src/veins_catch
 subprojects/veins_catch/src/veins_catch_dbg
 
+subprojects/veins_inet3/src/Makefile
+subprojects/veins_inet3/src/*.so
+subprojects/veins_inet3/src/*.dll
+subprojects/veins_inet3/src/*.dylib
+subprojects/veins_inet3/src/**/*_m.h
+subprojects/veins_inet3/src/**/*_m.cc
+subprojects/veins_inet3/out
+subprojects/veins_inet3/run
+subprojects/veins_inet3/examples/**/results
+subprojects/veins_inet3/examples/**/.tkenvrc
+subprojects/veins_inet3/examples/**/.qtenvrc
+subprojects/veins_inet3/examples/**/.cmdenv-log
+subprojects/veins_inet3/examples/**/valgrind.out
+
 subprojects/veins_inet/src/Makefile
 subprojects/veins_inet/src/*.so
 subprojects/veins_inet/src/*.dll
