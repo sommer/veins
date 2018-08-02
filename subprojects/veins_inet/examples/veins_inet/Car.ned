@@ -33,8 +33,8 @@ module Car extends AdhocHost
         ipv4.configurator.networkConfiguratorModule = "";
 
     submodules:
-        ac_wlan: HostAutoConfigurator {
-            @display("p=171,335");
+        ifConfig: HostAutoConfigurator {
+            @display("p=125,320;is=s");
         }
 
 }
