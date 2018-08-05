@@ -32,7 +32,6 @@
 
 namespace Veins {
 
-using inet::Coord;
 using namespace inet::units::values;
 
 Register_Class(VeinsInetMobility);
@@ -48,6 +47,7 @@ VeinsInetMobility::~VeinsInetMobility()
 void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle)
 {
     Enter_Method_Silent();
+    this->external_id = external_id;
     lastPosition = position;
     lastVelocity = inet::Coord(cos(angle), -sin(angle)) * speed;
     lastOrientation.alpha = rad(-angle);
@@ -111,6 +111,30 @@ void VeinsInetMobility::setInitialPosition()
 
 void VeinsInetMobility::handleSelfMessage(cMessage* message)
 {
+}
+
+std::string VeinsInetMobility::getExternalId() const
+{
+    if (external_id == "") throw cRuntimeError("TraCIMobility::getExternalId called with no external_id set yet");
+    return external_id;
+}
+
+TraCIScenarioManager* VeinsInetMobility::getManager() const
+{
+    if (!manager) manager = TraCIScenarioManagerAccess().get();
+    return manager;
+}
+
+TraCICommandInterface* VeinsInetMobility::getCommandInterface() const
+{
+    if (!commandInterface) commandInterface = getManager()->getCommandInterface();
+    return commandInterface;
+}
+
+TraCICommandInterface::Vehicle* VeinsInetMobility::getVehicleCommandInterface() const
+{
+    if (!vehicleCommandInterface) vehicleCommandInterface = new TraCICommandInterface::Vehicle(getCommandInterface()->vehicle(getExternalId()));
+    return vehicleCommandInterface;
 }
 
 } // namespace Veins
