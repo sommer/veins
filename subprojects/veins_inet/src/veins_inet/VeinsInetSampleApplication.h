@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2006-2017 Christoph Sommer <sommer@ccs-labs.org>
+// Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -18,24 +18,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.subprojects.veins_inet.example;
+#ifndef __VEINSINET_SAMPLEAPPLICATION_H
+#define __VEINSINET_SAMPLEAPPLICATION_H
 
-import inet.networklayer.configurator.ipv4.HostAutoConfigurator;
-import inet.node.inet.AdhocHost;
+#include "VeinsInetApplicationBase.h"
 
-//
-// Wireless-enabled Host
-//
-module Car extends AdhocHost
-{
-    parameters:
-        @display("i=device/cellphone");
-        ipv4.configurator.networkConfiguratorModule = "";
+class VeinsInetSampleApplication : public Veins::VeinsInetApplicationBase {
+protected:
+    bool haveForwarded = false;
 
-    submodules:
-        ifConfig: HostAutoConfigurator {
-            @display("p=125,320;is=s");
-        }
+protected:
+    virtual bool startApplication() override;
+    virtual bool stopApplication() override;
+    virtual void processPacket(std::shared_ptr<inet::Packet> pk) override;
 
-}
+public:
+    VeinsInetSampleApplication();
+    ~VeinsInetSampleApplication();
+};
 
+#endif // ifndef __VEINSINET_SAMPLEAPPLICATION_H

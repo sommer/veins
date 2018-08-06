@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2006-2017 Christoph Sommer <sommer@ccs-labs.org>
+// Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -18,16 +18,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.subprojects.veins_inet.example;
+package org.car2x.veins.subprojects.veins_inet;
 
-import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
-import org.car2x.veins.subprojects.veins_inet.VeinsInetCar;
-import org.car2x.veins.subprojects.veins_inet.VeinsInetManager;
+import org.car2x.veins.subprojects.veins_inet.VeinsInetApplicationBase;
 
-network Scenario
+simple VeinsInetSampleApplication extends VeinsInetApplicationBase
 {
-    submodules:
-        radioMedium: Ieee80211ScalarRadioMedium;
-        manager: VeinsInetManager;
-        node[0]: VeinsInetCar;
+    parameters:
+        @class(VeinsInetSampleApplication);
+    gates:
 }

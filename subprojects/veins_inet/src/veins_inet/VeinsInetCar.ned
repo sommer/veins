@@ -18,16 +18,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.subprojects.veins_inet.example;
+package org.car2x.veins.subprojects.veins_inet;
 
-import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
-import org.car2x.veins.subprojects.veins_inet.VeinsInetCar;
-import org.car2x.veins.subprojects.veins_inet.VeinsInetManager;
+import inet.networklayer.configurator.ipv4.HostAutoConfigurator;
+import inet.node.inet.AdhocHost;
 
-network Scenario
+//
+// Wireless-enabled Host
+//
+module VeinsInetCar extends AdhocHost
 {
+    parameters:
+        @display("i=device/cellphone");
+        ipv4.configurator.networkConfiguratorModule = "";
+
     submodules:
-        radioMedium: Ieee80211ScalarRadioMedium;
-        manager: VeinsInetManager;
-        node[0]: VeinsInetCar;
+        ifConfig: HostAutoConfigurator {
+            @display("p=125,320;is=s");
+        }
+
 }
+
