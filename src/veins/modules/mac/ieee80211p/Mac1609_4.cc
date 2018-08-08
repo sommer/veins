@@ -36,7 +36,7 @@ using std::unique_ptr;
 #define OWNER owner->
 
 #define DBG_MAC EV
-//#define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
+// #define DBG_MAC std::cerr << "[" << simTime().raw() << "] " << myId << " "
 
 Define_Module(Veins::Mac1609_4);
 
@@ -616,8 +616,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
 
     long dest = macPkt->getDestAddr();
 
-    DBG_MAC << "Received frame name= " << macPkt->getName() << ", myState="
-            << " src=" << macPkt->getSrcAddr() << " dst=" << macPkt->getDestAddr() << " myAddr=" << myMacAddress << std::endl;
+    DBG_MAC << "Received frame name= " << macPkt->getName() << ", myState= src=" << macPkt->getSrcAddr() << " dst=" << macPkt->getDestAddr() << " myAddr=" << myMacAddress << std::endl;
 
     if (dest == myMacAddress) {
         if (auto* ack = dynamic_cast<Mac80211Ack*>(macPkt)) {

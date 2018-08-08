@@ -45,7 +45,7 @@
 #ifndef DBG
 #define DBG EV
 #endif
-//#define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
+// #define DBG std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
 
 using namespace Veins;
 

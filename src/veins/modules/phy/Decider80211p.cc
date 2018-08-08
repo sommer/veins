@@ -38,7 +38,7 @@
 #ifndef DBG_D11P
 #define DBG_D11P EV
 #endif
-//#define DBG_D11P std::cerr << "[" << simTime().raw() << "] " << myPath << ".Dec "
+// #define DBG_D11P std::cerr << "[" << simTime().raw() << "] " << myPath << ".Dec "
 
 using namespace Veins;
 

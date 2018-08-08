@@ -154,8 +154,8 @@ TraCIScenarioManager::TypeMapping TraCIScenarioManager::parseMappings(std::strin
 
         if (mapping.size() == 1) {
             // we are where there is no actual assignment
-            //"a": this is good
-            //"a b=c": this is not
+            // "a": this is good
+            // "a b=c": this is not
             if (typeMappings.size() != 1)
                 // stop simulation with an error
                 throw cRuntimeError("parameter \"%s\" includes multiple mappings, but \"%s\" is not mapped to any vehicle type", parameterName.c_str(), mapping[0].c_str());

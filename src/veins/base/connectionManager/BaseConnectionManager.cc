@@ -72,7 +72,7 @@ void BaseConnectionManager::initialize(int stage)
         maxInterferenceDistance = calcInterfDist();
         maxDistSquared = maxInterferenceDistance * maxInterferenceDistance;
 
-        //----initialize node grid-----
+        // ----initialize node grid-----
         // step 1 - calculate dimension of grid
         // one cell should have at least the size of maxInterferenceDistance
         // but also should divide the playground in equal parts
@@ -122,7 +122,7 @@ void BaseConnectionManager::initialize(int stage)
 
         // since the upper playground borders (at pg-size) are part of the
         // playground we have to assure that they are mapped to a valid
-        //(the last) grid cell we do this by increasing the find distance
+        // (the last) grid cell we do this by increasing the find distance
         // by a small value.
         // This also assures that findDistance is never zero.
         findDistance += Coord(EPSILON, EPSILON, EPSILON);

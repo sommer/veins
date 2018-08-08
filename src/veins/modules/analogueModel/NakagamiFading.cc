@@ -25,7 +25,7 @@
 #define M_FAR 0.75
 #define DIS_THRESHOLD 80
 
-//#define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(NakagamiFading): "
+// #define debugEV (ev.isDisabled()||!debug) ? ev : ev << "PhyLayer(NakagamiFading): "
 #define debugEV std::cerr << "PhyLayer(NakagamiFading): "
 
 using namespace Veins;

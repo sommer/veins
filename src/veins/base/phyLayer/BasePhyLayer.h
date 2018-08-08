@@ -431,7 +431,7 @@ public:
     /** @brief Only calls the deciders finish method.*/
     virtual void finish();
 
-    //---------MacToPhyInterface implementation-----------
+    // ---------MacToPhyInterface implementation-----------
     /**
      * @name MacToPhyInterface implementation
      * @brief These methods implement the MacToPhyInterface.
@@ -480,7 +480,7 @@ public:
 
     /*@}*/
 
-    //---------DeciderToPhyInterface implementation-----------
+    // ---------DeciderToPhyInterface implementation-----------
     /**
      * @name DeciderToPhyInterface implementation
      * @brief These methods implement the DeciderToPhyInterface.

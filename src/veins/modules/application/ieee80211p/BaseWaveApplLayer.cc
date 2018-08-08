@@ -20,7 +20,7 @@
 
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 
-//#define DBG_APP std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
+// #define DBG_APP std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
 
 #ifndef DBG_APP
 #define DBG_APP EV
@@ -102,8 +102,7 @@ void BaseWaveApplLayer::initialize(int stage)
 
             if (mac->isChannelSwitchingActive() == true) {
                 if (beaconInterval.raw() % (mac->getSwitchingInterval().raw() * 2)) {
-                    std::cerr << "The beacon interval (" << beaconInterval << ") is smaller than or not a multiple of  one synchronization interval (" << 2 * mac->getSwitchingInterval() << "). "
-                              << "This means that beacons are generated during SCH intervals" << std::endl;
+                    std::cerr << "The beacon interval (" << beaconInterval << ") is smaller than or not a multiple of  one synchronization interval (" << 2 * mac->getSwitchingInterval() << "). This means that beacons are generated during SCH intervals" << std::endl;
                 }
                 firstBeacon = computeAsynchronousSendingTime(beaconInterval, type_CCH);
             }

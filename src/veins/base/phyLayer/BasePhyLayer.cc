@@ -26,7 +26,7 @@ Define_Module(Veins::BasePhyLayer);
 
 Coord NoMobiltyPos = Coord::ZERO;
 
-//--Initialization----------------------------------
+// --Initialization----------------------------------
 
 BasePhyLayer::BasePhyLayer()
     : protocolId(GENERIC)
@@ -177,7 +177,7 @@ void BasePhyLayer::finish()
     decider->finish();
 }
 
-//-----Decider initialization----------------------
+// -----Decider initialization----------------------
 
 void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
 {
@@ -223,7 +223,7 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
     return 0;
 }
 
-//-----Antenna initialization----------------------
+// -----Antenna initialization----------------------
 
 void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig)
 {
@@ -322,7 +322,7 @@ std::shared_ptr<Antenna> BasePhyLayer::initializeSampledAntenna1D(ParameterMap& 
     return std::make_shared<SampledAntenna1D>(values, offsetType, offsetParams, rotationType, rotationParams, this->getRNG(0));
 }
 
-//-----AnalogueModels initialization----------------
+// -----AnalogueModels initialization----------------
 
 void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
 {
@@ -378,7 +378,7 @@ AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, Paramete
     return 0;
 }
 
-//--Message handling--------------------------------------
+// --Message handling--------------------------------------
 
 void BasePhyLayer::handleMessage(cMessage* msg)
 {
@@ -639,7 +639,7 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg)
     }
 }
 
-//--Send messages------------------------------
+// --Send messages------------------------------
 
 void BasePhyLayer::sendControlMessageUp(cMessage* msg)
 {
@@ -709,12 +709,12 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     for (AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++) (*it)->filterSignal(&frame->getSignal(), sendersPos, receiverPos);
 }
 
-//--Destruction--------------------------------
+// --Destruction--------------------------------
 
 BasePhyLayer::~BasePhyLayer()
 {
     // get AirFrames from ChannelInfo and delete
-    //(although ChannelInfo normally owns the AirFrames it
+    // (although ChannelInfo normally owns the AirFrames it
     // is not able to cancel and delete them itself
     AirFrameVector channel;
     channelInfo.getAirFrames(0, simTime(), channel);
@@ -760,7 +760,7 @@ BasePhyLayer::~BasePhyLayer()
     }
 }
 
-//--MacToPhyInterface implementation-----------------------
+// --MacToPhyInterface implementation-----------------------
 
 int BasePhyLayer::getRadioState()
 {
@@ -830,7 +830,7 @@ int BasePhyLayer::getNbRadioChannels()
     return par("nbRadioChannels");
 }
 
-//--DeciderToPhyInterface implementation------------
+// --DeciderToPhyInterface implementation------------
 
 void BasePhyLayer::getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out)
 {
@@ -873,8 +873,7 @@ void BasePhyLayer::cancelScheduledMessage(cMessage* msg)
         cancelEvent(msg);
     }
     else {
-        EV << "Warning: Decider wanted to cancel a scheduled message but message"
-           << " wasn't actually scheduled. Message is: " << msg << endl;
+        EV << "Warning: Decider wanted to cancel a scheduled message but message wasn't actually scheduled. Message is: " << msg << endl;
     }
 }
 

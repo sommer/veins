@@ -116,20 +116,6 @@ const cModule* const BaseModule::findHost(void) const
  * @return logging name of module id or NULL if not found
  * @sa logName
  */
-// std::string BaseModule::getLogName(int id)
-//{
-//    BaseModule *mod;
-//    std::string lname;
-//    mod = check_and_cast<BaseModule *>(simulation.getModule(id));
-//    if (mod->isSimple()) {
-//        lname = mod->logName();
-//    }
-//    else if(mod->getSubmodule("phy")) {
-//        lname = check_and_cast<BaseModule *>(mod->getSubmodule("phy"))->logName();
-//    }
-//    return lname;
-//};
-
 std::string BaseModule::logName(void) const
 {
     std::ostringstream ost;
