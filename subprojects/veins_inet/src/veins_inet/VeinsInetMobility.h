@@ -30,7 +30,6 @@ namespace omnetpp {
 }
 using namespace omnetpp;
 
-#undef INET_IMPORT
 #include "inet/mobility/base/MobilityBase.h"
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
@@ -38,7 +37,7 @@ using namespace omnetpp;
 
 namespace Veins {
 
-class INET_API VeinsInetMobility : public inet::MobilityBase {
+class VeinsInetMobility : public inet::MobilityBase {
 public:
     VeinsInetMobility();
 
