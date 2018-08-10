@@ -21,6 +21,8 @@
 #ifndef WORLD_TRACI_TRACILAUNCHER_H
 #define WORLD_TRACI_TRACILAUNCHER_H
 
+namespace Veins {
+
 /**
  * @brief
  * Launches a program (the TraCI server) when instantiated.
@@ -33,7 +35,6 @@
  * @see TraCIScenarioManager
  *
  */
-namespace Veins {
 class TraCILauncher {
 public:
     TraCILauncher(std::string commandLine);
@@ -45,6 +46,7 @@ protected:
     pid_t pid;
 #endif
 };
+
 } // namespace Veins
 
 #endif

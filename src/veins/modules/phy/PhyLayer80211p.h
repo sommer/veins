@@ -58,7 +58,7 @@ public:
     double getCCAThreshold();
     /**
      * @brief Enable notifications about PHY-RXSTART.indication in MAC
-     * @param val true if Mac needs to be notified about it
+     * @param enable true if Mac needs to be notified about it
      */
     void notifyMacAboutRxStart(bool enable);
     /**

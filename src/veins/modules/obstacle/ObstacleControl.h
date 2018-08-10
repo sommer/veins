@@ -27,6 +27,8 @@
 #include "veins/modules/obstacle/Obstacle.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
 
+namespace Veins {
+
 /**
  * ObstacleControl models obstacles that block radio transmissions.
  *
@@ -34,7 +36,6 @@
  * Transmissions that cross one of the polygon's lines will have
  * their receive power set to zero.
  */
-namespace Veins {
 class ObstacleControl : public cSimpleModule {
 public:
     ~ObstacleControl();
@@ -104,9 +105,7 @@ protected:
     std::map<std::string, double> perMeter;
     mutable CacheEntries cacheEntries;
 };
-} // namespace Veins
 
-namespace Veins {
 class ObstacleControlAccess {
 public:
     ObstacleControlAccess()
@@ -118,6 +117,7 @@ public:
         return dynamic_cast<ObstacleControl*>(getSimulation()->getModuleByPath("obstacles"));
     }
 };
+
 } // namespace Veins
 
 #endif

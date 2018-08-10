@@ -10,19 +10,16 @@
 
 using Veins::AirFrame;
 
+namespace Veins {
+
 /**
  * @brief The class that represents the Radio as a state machine.
  *
  * For this basic version we assume a minimal attenuation when the Radio is in
  * state RX, and a maximum attenuation otherwise.
  *
- * A state-machine-diagram for Radio and ChannelInfo showing
- * how they work together under control of BasePhyLayer as well as some documentation
- * is available in @ref phyLayer.
- *
  * @ingroup phyLayer
  */
-namespace Veins {
 class MIXIM_API Radio {
 public:
     /**
@@ -172,6 +169,7 @@ protected:
     Radio(int numRadioStates, bool recordStats, int initialState = RX, int currentChannel = 0, int nbChannels = 1);
 
 }; // end class Radio
+
 } // namespace Veins
 
 #endif /*PHYUTILS_H_*/

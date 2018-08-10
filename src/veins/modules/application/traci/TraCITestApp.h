@@ -33,10 +33,8 @@
 using Veins::TraCICommandInterface;
 using Veins::TraCIMobility;
 
-/**
- * FIXME
- */
 namespace Veins {
+
 class TraCITestApp : public BaseApplLayer {
 public:
     int numInitStages() const
@@ -68,6 +66,7 @@ protected:
 
     void handlePositionUpdate();
 };
+
 } // namespace Veins
 
 #endif

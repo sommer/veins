@@ -12,6 +12,8 @@
 #include "veins/base/modules/BaseModule.h"
 #include "veins/base/modules/BaseBattery.h"
 
+namespace Veins {
+
 /**
  * @brief Extends BaseModule by several methods which provide
  * access to the battery module.
@@ -20,7 +22,6 @@
  * @ingroup baseModules
  * @author Karl Wessel
  */
-namespace Veins {
 class MIXIM_API BatteryAccess : public BaseModule {
 protected:
     /** @brief Stores pointer to the battery module. */
@@ -65,6 +66,7 @@ public:
     BatteryAccess();
     BatteryAccess(unsigned stacksize);
 };
+
 } // namespace Veins
 
 #endif /* BATTERYACCESS_H_ */

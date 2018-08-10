@@ -26,6 +26,8 @@
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCILauncher.h"
 
+namespace Veins {
+
 /**
  * @brief
  *
@@ -41,7 +43,6 @@
  * @see TraCIScenarioManager
  *
  */
-namespace Veins {
 class TraCIScenarioManagerForker : public TraCIScenarioManager {
 public:
     TraCIScenarioManagerForker();
@@ -59,9 +60,7 @@ protected:
     virtual void startServer();
     virtual void killServer();
 };
-} // namespace Veins
 
-namespace Veins {
 class TraCIScenarioManagerForkerAccess {
 public:
     TraCIScenarioManagerForker* get()

@@ -26,10 +26,11 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/utils/Coord.h"
 
+namespace Veins {
+
 /**
  * manages annotations on the OMNeT++ canvas.
  */
-namespace Veins {
 class AnnotationManager : public cSimpleModule {
 public:
     class Group;
@@ -168,9 +169,7 @@ protected:
 
     cGroupFigure* annotationLayer;
 };
-} // namespace Veins
 
-namespace Veins {
 class AnnotationManagerAccess {
 public:
     AnnotationManager* getIfExists()
@@ -178,6 +177,7 @@ public:
         return FindModule<AnnotationManager*>::findGlobalModule();
     };
 };
+
 } // namespace Veins
 
 #endif

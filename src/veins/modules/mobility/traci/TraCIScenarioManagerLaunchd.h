@@ -25,6 +25,8 @@
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 
+namespace Veins {
+
 /**
  * @brief
  * Extends the TraCIScenarioManager for use with sumo-launchd.py and SUMO.
@@ -42,7 +44,6 @@
  * @see TraCIScenarioManager
  *
  */
-namespace Veins {
 class TraCIScenarioManagerLaunchd : public TraCIScenarioManager {
 public:
     virtual ~TraCIScenarioManagerLaunchd();
@@ -55,9 +56,7 @@ protected:
 
     virtual void init_traci();
 };
-} // namespace Veins
 
-namespace Veins {
 class TraCIScenarioManagerLaunchdAccess {
 public:
     TraCIScenarioManagerLaunchd* get()
@@ -65,6 +64,7 @@ public:
         return FindModule<TraCIScenarioManagerLaunchd*>::findGlobalModule();
     };
 };
+
 } // namespace Veins
 
 #endif

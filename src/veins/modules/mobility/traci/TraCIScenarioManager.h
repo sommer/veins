@@ -38,6 +38,10 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
 
+namespace Veins {
+
+class TraCICommandInterface;
+
 /**
  * @brief
  * Creates and moves nodes controlled by a TraCI server.
@@ -55,10 +59,6 @@
  * @see TraCIScenarioManagerLaunchd
  *
  */
-namespace Veins {
-
-class TraCICommandInterface;
-
 class TraCIScenarioManager : public cSimpleModule {
 public:
     enum VehicleSignal {
@@ -219,9 +219,7 @@ protected:
 private:
     const omnetpp::simsignal_t traciInitializedSignal;
 };
-} // namespace Veins
 
-namespace Veins {
 class TraCIScenarioManagerAccess {
 public:
     TraCIScenarioManager* get()
@@ -229,6 +227,7 @@ public:
         return FindModule<TraCIScenarioManager*>::findGlobalModule();
     };
 };
+
 } // namespace Veins
 
 #endif

@@ -568,9 +568,6 @@ public:
      * The "control info" object will be deleted when the message is deleted.
      * Only one "control info" structure can be attached (the second
      * setL3ToL2ControlInfo() call throws an error).
-     *
-     * @param pMsg        The message where the "control info" shall be attached.
-     * @param pSrcAddr    The MAC address of the message receiver.
      */
     virtual cObject* const setUpControlInfo(cMessage* const pMsg, DeciderResult* const pDeciderResult);
 };

@@ -30,7 +30,7 @@
  * for L2, and L3 addresses should be used for address definitions to simplify the
  * switching to other types.
  *
- * @ATTENTION Both types (LAddress::L2Type, LAddress::L3Type) will be used as keys in
+ * @attention Both types (LAddress::L2Type, LAddress::L3Type) will be used as keys in
  *            in STL containers.
  */
 class MIXIM_API LAddress {

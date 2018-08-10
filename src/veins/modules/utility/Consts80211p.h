@@ -124,7 +124,9 @@ const SimTime GUARD_INTERVAL_11P = SimTime().setRaw(4000000000UL);
 /** @brief Channels as reserved by the FCC
  *
  */
+namespace Veins {
 namespace Channels {
+
 enum ChannelNumber {
     CRIT_SOL = 172,
     SCH1 = 174,
@@ -134,7 +136,9 @@ enum ChannelNumber {
     SCH4 = 182,
     HPPS = 184
 };
-}
+
+} // namespace Channels
+} // namespace Veins
 
 enum t_channel {
     type_CCH = 0,

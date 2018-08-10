@@ -23,6 +23,8 @@
 
 #include "veins/base/utils/MiXiMDefs.h"
 
+namespace Veins {
+
 /**
  * @brief
  * Simple support module to take (a series of) screenshots of a simulation running in the TraCI server.
@@ -39,7 +41,6 @@
  * @see TraCIScenarioManager
  *
  */
-namespace Veins {
 class TraCIScreenRecorder : public cSimpleModule {
 public:
     virtual void initialize(int stage);
@@ -49,6 +50,7 @@ public:
 protected:
     cMessage* takeScreenshot;
 };
+
 } // namespace Veins
 
 #endif

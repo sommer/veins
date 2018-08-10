@@ -112,7 +112,6 @@ const cModule* const BaseModule::findHost(void) const
  * Only supports ids from simple module derived from the BaseModule
  * or the nic compound module id.
  *
- * @param id Id of the module for the desired logging name
  * @return logging name of module id or NULL if not found
  * @sa logName
  */

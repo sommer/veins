@@ -45,8 +45,8 @@ public:
      * The constructor needs some specific knowledge in order to create
      * its mapping properly:
      *
+     * @param obstacleControl the parent module
      * @param carrierFrequency the carrier frequency
-     * @param myMove a pointer to the hosts move pattern
      * @param useTorus information about the playground the host is moving in
      * @param playgroundSize information about the playground the host is moving in
      * @param debug display debug messages?

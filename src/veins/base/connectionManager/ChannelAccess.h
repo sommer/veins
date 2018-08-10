@@ -33,12 +33,12 @@
 #include "veins/base/modules/BaseMobility.h"
 
 namespace Veins {
+
 typedef AccessModuleWrap<BaseMobility> ChannelMobilityAccessType;
 typedef ChannelMobilityAccessType::wrapType* ChannelMobilityPtrType;
 class NicEntry;
 class BaseConnectionManager;
 class BaseWorldUtility;
-} // namespace Veins
 
 /**
  * @brief Basic class for all physical layers, please don't touch!!
@@ -55,7 +55,6 @@ class BaseWorldUtility;
  * @ingroup phyLayer
  * @ingroup baseModules
  **/
-namespace Veins {
 class MIXIM_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType {
 protected:
     /** @brief A signal used to subscribe to mobility state changes. */
@@ -130,6 +129,7 @@ public:
         return ChannelMobilityAccessType::get(this);
     }
 };
+
 } // namespace Veins
 
 #endif

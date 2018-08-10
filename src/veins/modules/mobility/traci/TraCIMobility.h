@@ -33,6 +33,8 @@
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
+namespace Veins {
+
 /**
  * @brief
  * Used in modules created by the TraCIScenarioManager.
@@ -49,7 +51,6 @@
  *
  * @ingroup mobility
  */
-namespace Veins {
 class TraCIMobility : public BaseMobility {
 public:
     class Statistics {
@@ -198,9 +199,7 @@ protected:
      */
     Coord calculateAntennaPosition(const Coord& vehiclePos) const;
 };
-} // namespace Veins
 
-namespace Veins {
 class TraCIMobilityAccess {
 public:
     TraCIMobility* get(cModule* host)
@@ -210,6 +209,7 @@ public:
         return traci;
     };
 };
+
 } // namespace Veins
 
 #endif

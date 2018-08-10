@@ -24,10 +24,11 @@
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
 
+namespace Veins {
+
 /**
  * stores information about an Obstacle for ObstacleControl
  */
-namespace Veins {
 class Obstacle {
 public:
     typedef std::vector<Coord> Coords;
@@ -55,6 +56,7 @@ protected:
     Coord bboxP1;
     Coord bboxP2;
 };
+
 } // namespace Veins
 
 #endif
