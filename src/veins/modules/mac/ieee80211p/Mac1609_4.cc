@@ -638,6 +638,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
     }
     else {
         DBG_MAC << "Packet not for me" << std::endl;
+        delete res;
     }
     delete macPkt;
 
