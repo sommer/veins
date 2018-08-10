@@ -69,6 +69,15 @@ void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string ro
     lastVelocity = inet::Coord(cos(angle), -sin(angle)) * speed;
     lastOrientation = inet::EulerAngles(rad(-angle), rad(0.0), rad(0.0));
 
+    // Update display string to show node is getting updates
+    auto hostMod = getParentModule();
+    if (std::string(hostMod->getDisplayString().getTagArg("veins", 0)) == ". ") {
+        hostMod->getDisplayString().setTagArg("veins", 0, " .");
+    }
+    else {
+        hostMod->getDisplayString().setTagArg("veins", 0, ". ");
+    }
+
     emitMobilityStateChangedSignal();
 }
 

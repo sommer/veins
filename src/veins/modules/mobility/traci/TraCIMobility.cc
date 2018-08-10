@@ -223,6 +223,15 @@ void TraCIMobility::changePosition()
     }
     this->lastUpdate = simTime();
 
+    // Update display string to show node is getting updates
+    auto hostMod = getParentModule();
+    if (std::string(hostMod->getDisplayString().getTagArg("veins", 0)) == ". ") {
+        hostMod->getDisplayString().setTagArg("veins", 0, " .");
+    }
+    else {
+        hostMod->getDisplayString().setTagArg("veins", 0, ". ");
+    }
+
     move.setStart(Coord(nextPos.x, nextPos.y, move.getCurrentPosition().z)); // keep z position
     move.setDirectionByVector(Coord(cos(angle), -sin(angle)));
     move.setSpeed(speed);
