@@ -170,6 +170,7 @@ bool TimerManager::handleMessage(omnetpp::cMessage* message)
         parent_->scheduleAt(next_event, timer->first);
     }
     else {
+        parent_->cancelAndDelete(timer->first);
         timers_.erase(timer);
     }
 
