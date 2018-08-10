@@ -42,6 +42,7 @@ VeinsInetMobility::VeinsInetMobility()
 
 VeinsInetMobility::~VeinsInetMobility()
 {
+    delete vehicleCommandInterface;
 }
 
 void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle)
