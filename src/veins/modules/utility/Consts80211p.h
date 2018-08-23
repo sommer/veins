@@ -121,12 +121,12 @@ const SimTime SWITCHING_INTERVAL_11P = SimTime().setRaw(50000000000UL);
  */
 const SimTime GUARD_INTERVAL_11P = SimTime().setRaw(4000000000UL);
 
-/** @brief Channels as reserved by the FCC
- *
- */
 namespace Veins {
 namespace Channels {
 
+/** @brief Channels as reserved by the FCC
+ *
+ */
 enum ChannelNumber {
     CRIT_SOL = 172,
     SCH1 = 174,

@@ -24,6 +24,8 @@
 
 #include "veins/base/utils/MiXiMDefs.h"
 
+namespace Veins {
+
 /** @brief Layer address handling helper function.
  *
  * This class helps to make the layer addressing more generic. The type definition
@@ -95,5 +97,7 @@ public:
         return pSrcAddr == L3BROADCAST();
     }
 };
+
+} // namespace Veins
 
 #endif

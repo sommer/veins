@@ -21,6 +21,8 @@
 #include "veins/modules/phy/NistErrorRate.h"
 #include <omnetpp.h>
 
+using Veins::NistErrorRate;
+
 NistErrorRate::NistErrorRate()
 {
 }

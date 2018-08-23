@@ -27,6 +27,8 @@
 #include <math.h>
 #include "veins/base/utils/MiXiMDefs.h"
 
+namespace Veins {
+
 /* Windows math.h doesn't define the the following variables: */
 #ifndef M_E
 #define M_E 2.7182818284590452354
@@ -193,5 +195,7 @@ public:
         return (10 * log10(mW));
     }
 };
+
+} // namespace Veins
 
 #endif

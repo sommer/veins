@@ -24,6 +24,8 @@
 #include <cmath>
 #include "veins/modules/utility/ConstsPhy.h"
 
+namespace Veins {
+
 /**
  * Model the error rate for different modulations and coding schemes.
  * Taken from the nist wifi model of ns-3
@@ -108,5 +110,7 @@ private:
      */
     static double getFec64QamBer(double snr, uint32_t nbits, uint32_t bValue);
 };
+
+} // namespace Veins
 
 #endif /* NIST_ERROR_RATE_H */

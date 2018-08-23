@@ -26,6 +26,8 @@ using namespace omnetpp;
 
 #include "veins/base/utils/miximkerneldefs.h"
 
+namespace Veins {
+
 // Explicit check of OMNeT++ version
 #if OMNETPP_VERSION < 0x500
 #error At least OMNeT++/OMNEST version 5.0.0 required
@@ -93,5 +95,7 @@ private:
     {
     }
 };
+
+} // namespace Veins
 
 #endif

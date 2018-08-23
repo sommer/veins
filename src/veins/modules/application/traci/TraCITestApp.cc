@@ -28,6 +28,7 @@
 using Veins::TraCIMobility;
 using Veins::TraCIMobilityAccess;
 
+using Veins::simsignalwrap_t;
 using Veins::TraCITestApp;
 
 Define_Module(Veins::TraCITestApp);
