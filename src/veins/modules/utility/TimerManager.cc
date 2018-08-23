@@ -193,7 +193,7 @@ void TimerManager::cancel(TimerManager::TimerHandle handle)
 {
     auto timer = timers_.find(handle);
     if (timer != timers_.end()) {
-        parent_->cancelEvent(timer->first);
+        parent_->cancelAndDelete(timer->first);
         timers_.erase(timer);
     }
 }
