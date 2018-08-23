@@ -55,8 +55,6 @@ void BaseWaveApplLayer::initialize(int stage)
         mac = FindModule<WaveAppToMac1609_4Interface*>::findSubModule(getParentModule());
         assert(mac);
 
-        myId = getParentModule()->getId();
-
         // read parameters
         headerLength = par("headerLength");
         sendBeacons = par("sendBeacons").boolValue();
@@ -87,6 +85,10 @@ void BaseWaveApplLayer::initialize(int stage)
         receivedWSMs = 0;
     }
     else if (stage == 1) {
+
+        // store MAC address for quick access
+        myId = mac->getMACAddress();
+
         // simulate asynchronous channel access
 
         if (dataOnSch == true && !mac->isChannelSwitchingActive()) {
@@ -156,7 +158,7 @@ simtime_t BaseWaveApplLayer::computeAsynchronousSendingTime(simtime_t interval, 
     return firstEvent;
 }
 
-void BaseWaveApplLayer::populateWSM(WaveShortMessage* wsm, int rcvId, int serial)
+void BaseWaveApplLayer::populateWSM(WaveShortMessage* wsm, LAddress::L2Type rcvId, int serial)
 {
 
     wsm->setWsmVersion(1);

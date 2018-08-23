@@ -18,7 +18,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+cplusplus {{
+#include "veins/base/utils/SimpleAddress.h"
+}}
+
 namespace Veins;
+
+class LAddress::L2Type extends void;
 
 packet WaveShortMessage {
     //Version of the Wave Short Message
@@ -40,8 +46,8 @@ packet WaveShortMessage {
     //Data of Wave Short Message
     string wsmData = "Some Data";
 
-    int senderAddress = 0;
-    int recipientAddress = -1;
+    LAddress::L2Type senderAddress = 0;
+    LAddress::L2Type recipientAddress = -1;
     int serial = 0;
     simtime_t timestamp = 0;
 }

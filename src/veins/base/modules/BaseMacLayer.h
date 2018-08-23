@@ -120,6 +120,7 @@ public:
      */
     const LAddress::L2Type& getMACAddress()
     {
+        ASSERT(myMacAddr != LAddress::L2NULL());
         return myMacAddr;
     }
 

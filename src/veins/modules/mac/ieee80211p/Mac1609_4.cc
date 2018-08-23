@@ -71,8 +71,6 @@ void Mac1609_4::initialize(int stage)
         waitUntilAckRXorTimeout = false;
         stopIgnoreChannelStateMsg = new cMessage("ChannelStateMsg");
 
-        // mac-adresses
-        myMacAddress = getParentModule()->getParentModule()->getIndex();
         myId = getParentModule()->getParentModule()->getFullPath();
         // create frequency mappings
         frequency.insert(std::pair<int, double>(Channels::CRIT_SOL, 5.86e9));
@@ -230,13 +228,13 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
 
         // send the packet
         Mac80211Pkt* mac = new Mac80211Pkt(pktToSend->getName(), pktToSend->getKind());
-        if (pktToSend->getRecipientAddress() != -1) {
+        if (pktToSend->getRecipientAddress() != LAddress::L2BROADCAST()) {
             mac->setDestAddr(pktToSend->getRecipientAddress());
         }
         else {
             mac->setDestAddr(LAddress::L2BROADCAST());
         }
-        mac->setSrcAddr(myMacAddress);
+        mac->setSrcAddr(myMacAddr);
         mac->encapsulate(pktToSend->dup());
 
         enum PHY_MCS mcs;
@@ -275,7 +273,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
             sendFrame(mac, RADIODELAY_11P, freq, datarate, txPower_mW);
 
             // schedule ack timeout for unicast packets
-            if (pktToSend->getRecipientAddress() != -1 && useAcks) {
+            if (pktToSend->getRecipientAddress() != LAddress::L2BROADCAST() && useAcks) {
                 waitUntilAckRXorTimeout = true;
                 // PHY-RXSTART.indication should be received within ackWaitTime
                 // sifs + slot + rx_delay: see 802.11-2012 9.3.2.8 (32us + 13us + 49us = 94us)
@@ -616,9 +614,9 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
 
     long dest = macPkt->getDestAddr();
 
-    DBG_MAC << "Received frame name= " << macPkt->getName() << ", myState= src=" << macPkt->getSrcAddr() << " dst=" << macPkt->getDestAddr() << " myAddr=" << myMacAddress << std::endl;
+    DBG_MAC << "Received frame name= " << macPkt->getName() << ", myState= src=" << macPkt->getSrcAddr() << " dst=" << macPkt->getDestAddr() << " myAddr=" << myMacAddr << std::endl;
 
-    if (dest == myMacAddress) {
+    if (dest == myMacAddr) {
         if (auto* ack = dynamic_cast<Mac80211Ack*>(macPkt)) {
             if (useAcks) {
                 handleAck(ack);
@@ -627,7 +625,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
         else {
             unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
             wsm->setControlInfo(new PhyToMacControlInfo(res));
-            handleUnicast(std::move(wsm));
+            handleUnicast(macPkt->getSrcAddr(), std::move(wsm));
         }
     }
     else if (dest == LAddress::L2BROADCAST()) {
@@ -861,7 +859,7 @@ void Mac1609_4::EDCA::backoff(t_access_category ac)
 
 void Mac1609_4::EDCA::postTransmit(t_access_category ac, WaveShortMessage* wsm, bool useAcks)
 {
-    bool holBlocking = (wsm->getRecipientAddress() != -1) && useAcks;
+    bool holBlocking = (wsm->getRecipientAddress() != LAddress::L2BROADCAST()) && useAcks;
     if (holBlocking) {
         // mac->waitUntilAckRXorTimeout = true; // set in handleselfmsg()
         // Head of line blocking, wait until ack timeout
@@ -1053,7 +1051,7 @@ simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) c
 }
 
 // Unicast
-void Mac1609_4::sendAck(int recpAddress, unsigned long wsmId)
+void Mac1609_4::sendAck(LAddress::L2Type recpAddress, unsigned long wsmId)
 {
     ASSERT(useAcks);
     // 802.11-2012 9.3.2.8
@@ -1064,7 +1062,7 @@ void Mac1609_4::sendAck(int recpAddress, unsigned long wsmId)
     // send the packet
     auto* mac = new Mac80211Ack("ACK");
     mac->setDestAddr(recpAddress);
-    mac->setSrcAddr(myMacAddress);
+    mac->setSrcAddr(myMacAddr);
     mac->setMessageId(wsmId);
     mac->setBitLength(ackLength);
 
@@ -1083,10 +1081,10 @@ void Mac1609_4::sendAck(int recpAddress, unsigned long wsmId)
     scheduleAt(simTime() + SIFS_11P, stopIgnoreChannelStateMsg);
 }
 
-void Mac1609_4::handleUnicast(unique_ptr<WaveShortMessage> wsm)
+void Mac1609_4::handleUnicast(LAddress::L2Type srcAddr, unique_ptr<WaveShortMessage> wsm)
 {
     if (useAcks) {
-        sendAck(wsm->getSenderAddress(), wsm->getTreeId());
+        sendAck(srcAddr, wsm->getTreeId());
     }
 
     if (handledUnicastToApp.find(wsm->getTreeId()) == handledUnicastToApp.end()) {

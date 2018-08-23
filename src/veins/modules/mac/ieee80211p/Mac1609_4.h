@@ -223,11 +223,17 @@ protected:
 
     simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_DEFAULT) const;
 
-    void sendAck(int recpAddress, unsigned long wsmId);
-    void handleUnicast(std::unique_ptr<WaveShortMessage> wsm);
+    void sendAck(LAddress::L2Type recpAddress, unsigned long wsmId);
+    void handleUnicast(LAddress::L2Type srcAddr, std::unique_ptr<WaveShortMessage> wsm);
     void handleAck(const Mac80211Ack* ack);
     void handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg);
     void handleRetransmit(t_access_category ac);
+
+    const LAddress::L2Type& getMACAddress()
+    {
+        ASSERT(myMacAddr != LAddress::L2NULL());
+        return BaseMacLayer::getMACAddress();
+    }
 
 protected:
     /** @brief Self message to indicate that the current channel shall be switched.*/
@@ -277,9 +283,6 @@ protected:
     long statsNumBackoff;
     long statsSlotsBackoff;
     simtime_t statsTotalBusyTime;
-
-    /** @brief This MAC layers MAC address.*/
-    int myMacAddress;
 
     /** @brief The power (in mW) to transmit with.*/
     double txPower;

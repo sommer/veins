@@ -78,7 +78,7 @@ protected:
     virtual void handleSelfMsg(cMessage* msg);
 
     /** @brief sets all the necessary fields in the WSM, BSM, or WSA. */
-    virtual void populateWSM(WaveShortMessage* wsm, int rcvId = -1, int serial = 0);
+    virtual void populateWSM(WaveShortMessage* wsm, LAddress::L2Type rcvId = LAddress::L2BROADCAST(), int serial = 0);
 
     /** @brief this function is called upon receiving a WaveShortMessage */
     virtual void onWSM(WaveShortMessage* wsm){};
@@ -167,7 +167,7 @@ protected:
     /* state of the vehicle */
     Coord curPosition;
     Coord curSpeed;
-    int myId;
+    LAddress::L2Type myId = 0;
     int mySCH;
 
     /* stats */

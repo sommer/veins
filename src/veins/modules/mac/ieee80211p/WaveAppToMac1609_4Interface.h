@@ -45,6 +45,11 @@ public:
     virtual void changeServiceChannel(int channelNumber) = 0;
 
     virtual ~WaveAppToMac1609_4Interface(){};
+
+    /**
+     * @brief Returns the MAC address of this MAC module.
+     */
+    virtual const LAddress::L2Type& getMACAddress() = 0;
 };
 
 } // namespace Veins
