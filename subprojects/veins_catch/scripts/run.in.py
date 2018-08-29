@@ -1,4 +1,7 @@
 #!/usr/bin/env python2
+
+# ^-- contents of out/config.py go here
+
 """
 Wrapper around veins_catch binary
 """
@@ -30,6 +33,8 @@ cmdline = prefix + [os.path.join('src', bin_run)] + bin_args
 
 if args.verbose:
     print "Running with command line arguments: %s" % ' '.join(['"%s"' % arg for arg in cmdline])
+
+os.environ["PATH"] += os.pathsep + os.pathsep.join(run_lib_paths)
 
 os.execvp('env', ['env'] + cmdline)
 
