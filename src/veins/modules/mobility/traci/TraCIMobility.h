@@ -32,6 +32,7 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
+#include "veins/modules/mobility/AbstractVehicleMobility.h"
 
 namespace Veins {
 
@@ -51,7 +52,7 @@ namespace Veins {
  *
  * @ingroup mobility
  */
-class TraCIMobility : public BaseMobility {
+class TraCIMobility : public BaseMobility, public AbstractVehicleMobility {
 public:
     class Statistics {
     public:
