@@ -39,6 +39,15 @@ public:
      * @param receiverPos    The position of frame receiver.
      */
     virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos) = 0;
+
+    /**
+     * If the model never increases the power level of any signal given to filterSignal, it returns true here.
+     * This allows optimized signal handling.
+     */
+    virtual bool neverIncreasesPower()
+    {
+        return false;
+    }
 };
 
 } // namespace Veins

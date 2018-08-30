@@ -79,7 +79,7 @@ public:
      * @brief Filters a specified AirFrame's Signal by adding an attenuation
      * over time to the Signal.
      */
-    virtual void filterSignal(Signal*, const Coord&, const Coord&);
+    virtual void filterSignal(Signal*, const Coord&, const Coord&) override;
 
     /**
      * @brief Method to calculate the attenuation value for pathloss.
@@ -88,6 +88,11 @@ public:
      * Mobility-frame work.
      */
     virtual double calcPathloss(const Coord& receiverPos, const Coord& sendersPos);
+
+    virtual bool neverIncreasesPower() override
+    {
+        return true;
+    }
 };
 
 } // namespace Veins

@@ -57,7 +57,13 @@ public:
      * @brief Filters a specified Signal by adding an attenuation
      * over time to the Signal.
      */
-    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos);
+    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos) override;
+
+    virtual bool neverIncreasesPower() override
+    {
+        return true;
+    }
+
 };
 
 } // namespace Veins

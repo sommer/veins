@@ -361,6 +361,9 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
 
         // attach the new AnalogueModel to the AnalogueModelList
         if (thresholdingFlag && std::string(thresholdingFlag) == "true") {
+            if (!newAnalogueModel->neverIncreasesPower()) {
+                throw cRuntimeError("Tried to instantiate analogue model \"%s\" with tresholding=true, but model does not support this.", name);
+            }
             analogueModelsThresholding.push_back(newAnalogueModel);
         }
         else {
