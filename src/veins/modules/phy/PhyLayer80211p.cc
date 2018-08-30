@@ -106,8 +106,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
     ParameterMap::iterator it;
 
     it = params.find("alpha1");
-    if (it != params.end()) // parameter alpha1 has been specified in config.xml
-    {
+    if (it != params.end()) { // parameter alpha1 has been specified in config.xml
         // set alpha1
         alpha1 = it->second.doubleValue();
         coreEV << "createPathLossModel(): alpha1 set from config.xml to " << alpha1 << endl;
@@ -128,8 +127,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
     }
 
     it = params.find("alpha2");
-    if (it != params.end()) // parameter alpha1 has been specified in config.xml
-    {
+    if (it != params.end()) { // parameter alpha1 has been specified in config.xml
         // set alpha2
         alpha2 = it->second.doubleValue();
         coreEV << "createPathLossModel(): alpha2 set from config.xml to " << alpha2 << endl;
@@ -141,8 +139,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
         }
     }
     it = params.find("breakpointDistance");
-    if (it != params.end()) // parameter alpha1 has been specified in config.xml
-    {
+    if (it != params.end()) { // parameter alpha1 has been specified in config.xml
         breakpointDistance = it->second.doubleValue();
         coreEV << "createPathLossModel(): breakpointDistance set from config.xml to " << alpha2 << endl;
         // check whether alpha is not smaller than specified in ConnectionManager
@@ -151,8 +148,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
     // get carrierFrequency from config
     it = params.find("carrierFrequency");
 
-    if (it != params.end()) // parameter carrierFrequency has been specified in config.xml
-    {
+    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
         // set carrierFrequency
         carrierFrequency = it->second.doubleValue();
         coreEV << "createPathLossModel(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
@@ -166,8 +162,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
     }
     else // carrierFrequency has not been specified in config.xml
     {
-        if (cc->hasPar("carrierFrequency")) // parameter carrierFrequency has been specified in ConnectionManager
-        {
+        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
             // set carrierFrequency according to ConnectionManager
             carrierFrequency = cc->par("carrierFrequency").doubleValue();
             coreEV << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
@@ -217,8 +212,7 @@ AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& param
     // get alpha-coefficient from config
     ParameterMap::iterator it = params.find("alpha");
 
-    if (it != params.end()) // parameter alpha has been specified in config.xml
-    {
+    if (it != params.end()) { // parameter alpha has been specified in config.xml
         // set alpha
         alpha = it->second.doubleValue();
         coreEV << "createPathLossModel(): alpha set from config.xml to " << alpha << endl;
@@ -232,8 +226,7 @@ AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& param
     }
     else // alpha has not been specified in config.xml
     {
-        if (cc->hasPar("alpha")) // parameter alpha has been specified in ConnectionManager
-        {
+        if (cc->hasPar("alpha")) { // parameter alpha has been specified in ConnectionManager
             // set alpha according to ConnectionManager
             alpha = cc->par("alpha").doubleValue();
             coreEV << "createPathLossModel(): alpha set from ConnectionManager to " << alpha << endl;
@@ -248,8 +241,7 @@ AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& param
     // get carrierFrequency from config
     it = params.find("carrierFrequency");
 
-    if (it != params.end()) // parameter carrierFrequency has been specified in config.xml
-    {
+    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
         // set carrierFrequency
         carrierFrequency = it->second.doubleValue();
         coreEV << "createPathLossModel(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
@@ -263,8 +255,7 @@ AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& param
     }
     else // carrierFrequency has not been specified in config.xml
     {
-        if (cc->hasPar("carrierFrequency")) // parameter carrierFrequency has been specified in ConnectionManager
-        {
+        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
             // set carrierFrequency according to ConnectionManager
             carrierFrequency = cc->par("carrierFrequency").doubleValue();
             coreEV << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
@@ -307,8 +298,7 @@ AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& p
     // get carrierFrequency from config
     it = params.find("carrierFrequency");
 
-    if (it != params.end()) // parameter carrierFrequency has been specified in config.xml
-    {
+    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
         // set carrierFrequency
         carrierFrequency = it->second.doubleValue();
         coreEV << "initializeSimpleObstacleShadowing(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
@@ -321,8 +311,7 @@ AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& p
     }
     else // carrierFrequency has not been specified in config.xml
     {
-        if (cc->hasPar("carrierFrequency")) // parameter carrierFrequency has been specified in ConnectionManager
-        {
+        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
             // set carrierFrequency according to ConnectionManager
             carrierFrequency = cc->par("carrierFrequency").doubleValue();
             coreEV << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;

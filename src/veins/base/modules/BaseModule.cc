@@ -118,8 +118,7 @@ const cModule* const BaseModule::findHost(void) const
 std::string BaseModule::logName(void) const
 {
     std::ostringstream ost;
-    if (hasPar("logName")) // let modules override
-    {
+    if (hasPar("logName")) { // let modules override
         ost << par("logName").stringValue();
     }
     else {

@@ -276,13 +276,13 @@ double TraCIMobility::calculateCO2emission(double v, double a) const
     double P_tract = A * v + B * v * v + C * v * v * v + M * a * v; // for sloped roads: +M*g*sin_theta*v
 
     /*
-    // "Category 7 vehicle" (e.g. a '92 Suzuki Swift)
-    double alpha = 1.01;
-    double beta = 0.0162;
-    double delta = 1.90e-06;
-    double zeta = 0.252;
-    double alpha1 = 0.985;
-    */
+       // "Category 7 vehicle" (e.g. a '92 Suzuki Swift)
+       double alpha = 1.01;
+       double beta = 0.0162;
+       double delta = 1.90e-06;
+       double zeta = 0.252;
+       double alpha1 = 0.985;
+     */
 
     // "Category 9 vehicle" (e.g. a '94 Dodge Spirit)
     double alpha = 1.11;
