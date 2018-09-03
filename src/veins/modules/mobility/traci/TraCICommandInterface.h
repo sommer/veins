@@ -49,6 +49,16 @@ public:
     std::pair<double, double> getLonLat(const Coord&);
 
     /**
+     * Convert Cartesian coordination to road map position
+     * @param coord Cartesian coordination
+     * @return a tuple of <RoadId, Pos, LaneId> where:
+     *     RoadId identifies a road segment (edge)
+     *     Pos describes the position of the node in longitudinal direction (ranging from 0 to the road's length)
+     *     LaneId identifies the driving lane on the edge.
+     */
+    std::tuple<std::string, double, uint8_t> getRoadMapPos(const Coord& coord);
+
+    /**
      * Get the distance between two arbitrary positions.
      *
      * @param position1 OMNeT coordinate of first position

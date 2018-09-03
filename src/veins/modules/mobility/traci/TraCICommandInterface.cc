@@ -757,6 +757,39 @@ std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord)
     return std::make_pair(convPosLon, convPosLat);
 }
 
+std::tuple<std::string, double, uint8_t> TraCICommandInterface::getRoadMapPos(const Coord& coord)
+{
+    TraCIBuffer request;
+    request << static_cast<uint8_t>(POSITION_CONVERSION) << std::string("sim0") << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(2) << connection.omnet2traci(coord) << static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(POSITION_ROADMAP);
+    TraCIBuffer response = connection.query(CMD_GET_SIM_VARIABLE, request);
+
+    uint8_t cmdLength;
+    response >> cmdLength;
+    if (cmdLength == 0) {
+        uint32_t cmdLengthX;
+        response >> cmdLengthX;
+    }
+    uint8_t responseId;
+    response >> responseId;
+    ASSERT(responseId == RESPONSE_GET_SIM_VARIABLE);
+    uint8_t variable;
+    response >> variable;
+    ASSERT(variable == POSITION_CONVERSION);
+    std::string id;
+    response >> id;
+    uint8_t convPosType;
+    response >> convPosType;
+    ASSERT(convPosType == POSITION_ROADMAP);
+    std::string convRoadId;
+    response >> convRoadId;
+    double convPos;
+    response >> convPos;
+    uint8_t convLaneId;
+    response >> convLaneId;
+
+    return std::make_tuple(convRoadId, convPos, convLaneId);
+}
+
 void TraCICommandInterface::GuiView::setScheme(std::string name)
 {
     TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_SCHEMA) << viewId << static_cast<uint8_t>(TYPE_STRING) << name);

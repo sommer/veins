@@ -110,6 +110,15 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
+            auto o = traci->getRoadMapPos(Coord(100, 100));
+            assertEqual("(TraCICommandInterface::getRoadMapPos)", "25", std::get<0>(o));
+            assertClose("(TraCICommandInterface::getRoadMapPos)", 75.0, std::get<1>(o));
+            assertEqual("(TraCICommandInterface::getRoadMapPos)", 0, std::get<2>(o));
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
             assertClose("(TraCICommandInterface::getDistance) air", 859., floor(traci->getDistance(Coord(25, 7030), Coord(883, 6980), false)));
             assertClose("(TraCICommandInterface::getDistance) driving", 847., floor(traci->getDistance(Coord(25, 7030), Coord(883, 6980), true)));
         }
