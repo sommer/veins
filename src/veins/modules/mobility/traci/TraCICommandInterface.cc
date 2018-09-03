@@ -700,6 +700,70 @@ std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord)
     return std::make_pair(convPosLon, convPosLat);
 }
 
+
+std::tuple<std::string, double,uint8_t> TraCICommandInterface::getRoadMapPos(const Coord& coord)
+{
+    TraCIBuffer request;
+    request << static_cast<uint8_t>(POSITION_CONVERSION) << std::string("sim0")
+            << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(2)
+            << connection.omnet2traci(coord)
+            << static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(POSITION_ROADMAP);
+
+    TraCIBuffer response = connection.query(CMD_GET_SIM_VARIABLE, request);
+
+    uint8_t cmdLength; response >> cmdLength;
+    if (cmdLength == 0) {
+        uint32_t cmdLengthX;
+        response >> cmdLengthX;
+    }
+    uint8_t responseId; response >> responseId;
+    ASSERT(responseId == RESPONSE_GET_SIM_VARIABLE);
+    uint8_t variable; response >> variable;
+    ASSERT(variable == POSITION_CONVERSION);
+    std::string id; response >> id;
+    uint8_t convPosType; response >> convPosType;
+    ASSERT(convPosType == POSITION_ROADMAP);
+    std::string convRoadId; response >> convRoadId;
+    double convPos; response >> convPos;
+    uint8_t convLaneId; response >> convLaneId;
+
+    return std::make_tuple(convRoadId, convPos,convLaneId);
+}
+
+int32_t TraCICommandInterface::getSumoCurrentTime()
+{
+    uint8_t commandId = CMD_GET_SIM_VARIABLE;
+    std::string objectId = "sim0";
+    uint8_t variableId = VAR_TIME_STEP;
+    uint8_t responseId = RESPONSE_GET_SIM_VARIABLE;
+    uint8_t resultTypeId = TYPE_INTEGER;
+    int32_t res;
+
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);
+
+    uint8_t cmdLength; buf >> cmdLength;
+    if (cmdLength == 0) {
+        uint32_t cmdLengthX;
+        buf >> cmdLengthX;
+    }
+    uint8_t commandId_r; buf >> commandId_r;
+    ASSERT(commandId_r == responseId);
+    uint8_t varId; buf >> varId;
+    ASSERT(varId == variableId);
+    std::string objectId_r; buf >> objectId_r;
+    ASSERT(objectId_r == objectId);
+    uint8_t resType_r; buf >> resType_r;
+    ASSERT(resType_r == resultTypeId);
+    buf >> res;
+
+    ASSERT(buf.eof());
+
+    return res;
+
+
+
+}
+
 void TraCICommandInterface::GuiView::setScheme(std::string name)
 {
     TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_SCHEMA) << viewId << static_cast<uint8_t>(TYPE_STRING) << name);
