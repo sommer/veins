@@ -552,10 +552,8 @@ void TraCIScenarioManager::handleSelfMsg(cMessage* msg)
 void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals)
 {
     // pre-initialize TraCIMobility
-    for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-        cModule* submod = *iter;
-        TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
-        if (!mm) continue;
+    auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
+    for (auto mm : mobilityModules) {
         mm->preInitialize(nodeId, position, road_id, speed, angle);
     }
 }
@@ -563,10 +561,8 @@ void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& 
 void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals)
 {
     // update position in TraCIMobility
-    for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-        cModule* submod = *iter;
-        TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
-        if (!mm) continue;
+    auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
+    for (auto mm : mobilityModules) {
         mm->nextPosition(p, edge, speed, angle, signals);
     }
 }
@@ -611,10 +607,8 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     hosts[nodeId] = mod;
 
     // post-initialize TraCIMobility
-    for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-        cModule* submod = *iter;
-        TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
-        if (!mm) continue;
+    auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
+    for (auto mm : mobilityModules) {
         mm->changePosition();
     }
 }
@@ -953,10 +947,8 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
                 buf >> idstring;
 
                 cModule* mod = getManagedModule(idstring);
-                for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-                    cModule* submod = *iter;
-                    TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
-                    if (!mm) continue;
+                auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
+                for (auto mm : mobilityModules) {
                     mm->changeParkingState(true);
                 }
             }
@@ -976,10 +968,8 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
                 buf >> idstring;
 
                 cModule* mod = getManagedModule(idstring);
-                for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-                    cModule* submod = *iter;
-                    TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
-                    if (!mm) continue;
+                auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
+                for (auto mm : mobilityModules) {
                     mm->changeParkingState(false);
                 }
             }
