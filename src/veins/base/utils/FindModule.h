@@ -105,6 +105,20 @@ public:
     }
 };
 
+/**
+ * @brief Return a vector containing pointers to all submodules of parentModule of type T
+ */
+template <class T>
+std::vector<T*> getSubmodulesOfType(cModule* parentModule)
+{
+    std::vector<T*> result;
+    for (cModule::SubmoduleIterator iter(parentModule); !iter.end(); iter++) {
+        auto mm = dynamic_cast<T*>(*iter);
+        if (mm != nullptr) result.push_back(mm);
+    }
+    return result;
+}
+
 } // namespace Veins
 
 #endif
