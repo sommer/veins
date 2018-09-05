@@ -2,6 +2,7 @@
 #define ASSERTS_H_
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <sstream>
 #include <stdlib.h>
@@ -17,6 +18,7 @@ extern bool displayPassed;
 template <class T, class T2>
 void fail(std::string msg, T expected, T2 actual)
 {
+    std::cout << std::setprecision(std::numeric_limits<long double>::digits10 + 1);
     std::cout << "FAILED: " << msg << ": value was '" << actual << "' instead of '" << expected << "'" << std::endl;
 }
 
