@@ -63,7 +63,6 @@ public:
     {
         return true;
     }
-
 };
 
 } // namespace Veins
