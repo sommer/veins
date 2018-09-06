@@ -56,7 +56,8 @@ public:
      *          Pos describes the position of the node in longitudinal direction (ranging from 0 to the road's length)
      *          LaneId identifies the driving lane on the edge.
      */
-    std::tuple<std::string, double,uint8_t> getRoadMapPos(const Coord& coord);
+    std::tuple<std::string, double, uint8_t> getRoadMapPos(const Coord& coord);
+
     /**
      * Get the current SUMO simulation time (in ms)
      */
