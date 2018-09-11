@@ -59,11 +59,6 @@ public:
     std::tuple<std::string, double, uint8_t> getRoadMapPos(const Coord& coord);
 
     /**
-     * Get the current SUMO simulation time (in ms)
-     */
-    int32_t getSumoCurrentTime();
-
-    /**
      * Get the distance between two arbitrary positions.
      *
      * @param position1 OMNeT coordinate of first position
