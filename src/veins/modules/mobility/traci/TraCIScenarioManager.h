@@ -37,6 +37,7 @@
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
+#include "veins/modules/mobility/traci/VehicleSignal.h"
 
 namespace Veins {
 
@@ -61,25 +62,6 @@ class TraCICommandInterface;
  */
 class TraCIScenarioManager : public cSimpleModule {
 public:
-    enum VehicleSignal {
-        VEH_SIGNAL_UNDEF = -1,
-        VEH_SIGNAL_NONE = 0,
-        VEH_SIGNAL_BLINKER_RIGHT = 1,
-        VEH_SIGNAL_BLINKER_LEFT = 2,
-        VEH_SIGNAL_BLINKER_EMERGENCY = 4,
-        VEH_SIGNAL_BRAKELIGHT = 8,
-        VEH_SIGNAL_FRONTLIGHT = 16,
-        VEH_SIGNAL_FOGLIGHT = 32,
-        VEH_SIGNAL_HIGHBEAM = 64,
-        VEH_SIGNAL_BACKDRIVE = 128,
-        VEH_SIGNAL_WIPER = 256,
-        VEH_SIGNAL_DOOR_OPEN_LEFT = 512,
-        VEH_SIGNAL_DOOR_OPEN_RIGHT = 1024,
-        VEH_SIGNAL_EMERGENCY_BLUE = 2048,
-        VEH_SIGNAL_EMERGENCY_RED = 4096,
-        VEH_SIGNAL_EMERGENCY_YELLOW = 8192
-    };
-
     static const std::string TRACI_INITIALIZED_SIGNAL_NAME;
 
     TraCIScenarioManager();
@@ -171,9 +153,9 @@ protected:
 
     virtual void init_traci();
 
-    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals);
-    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals);
-    void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, VehicleSignal signals = VehicleSignal::VEH_SIGNAL_UNDEF);
+    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignalSet signals);
+    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignalSet signals);
+    void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, VehicleSignalSet signals = {VehicleSignal::undefined});
     cModule* getManagedModule(std::string nodeId); /**< returns a pointer to the managed module named moduleName, or 0 if no module can be found */
     void deleteManagedModule(std::string nodeId);
 

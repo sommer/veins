@@ -552,7 +552,7 @@ void TraCIScenarioManager::handleSelfMsg(cMessage* msg)
     error("TraCIScenarioManager received unknown self-message");
 }
 
-void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals)
+void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignalSet signals)
 {
     // pre-initialize TraCIMobility
     auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
@@ -561,7 +561,7 @@ void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& 
     }
 }
 
-void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals)
+void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignalSet signals)
 {
     // update position in TraCIMobility
     auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
@@ -571,7 +571,7 @@ void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, co
 }
 
 // name: host;Car;i=vehicle.gif
-void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle, VehicleSignal signals)
+void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle, VehicleSignalSet signals)
 {
 
     if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
@@ -1160,14 +1160,14 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
         }
 
         if (mType != "0") {
-            addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle, VehicleSignal(signals));
+            addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle, VehicleSignalSet(signals));
             EV_DEBUG << "Added vehicle #" << objectId << endl;
         }
     }
     else {
         // module existed - update position
         EV_DEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << endl;
-        updateModulePosition(mod, p, edge, speed, angle, VehicleSignal(signals));
+        updateModulePosition(mod, p, edge, speed, angle, VehicleSignalSet(signals));
     }
 }
 
