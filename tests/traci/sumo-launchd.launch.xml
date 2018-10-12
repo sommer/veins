@@ -6,5 +6,6 @@
     <copy file="polys.poly.xml" />
     <copy file="tls.tls.xml" />
     <copy file="sumo.sumo.cfg" type="config" />
+    <seed value="0" />
 </launch>
 
