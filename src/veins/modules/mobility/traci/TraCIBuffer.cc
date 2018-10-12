@@ -106,6 +106,21 @@ TraCICoord TraCIBuffer::read()
     return p;
 }
 
+template <>
+void TraCIBuffer::write(simtime_t o)
+{
+    double d = o.dbl();
+    write<double>(d);
+}
+
+template <>
+simtime_t TraCIBuffer::read()
+{
+    double d = read<double>();
+    simtime_t o = d;
+    return o;
+}
+
 bool isBigEndian()
 {
     short a = 0x0102;

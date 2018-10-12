@@ -129,6 +129,10 @@ template <>
 std::string TraCIBuffer::read();
 template <>
 TraCICoord TraCIBuffer::read();
+template <>
+void TraCIBuffer::write(simtime_t o);
+template <>
+simtime_t TraCIBuffer::read();
 
 } // namespace Veins
 

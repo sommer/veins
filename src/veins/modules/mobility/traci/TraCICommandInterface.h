@@ -87,7 +87,7 @@ public:
         void setMaxSpeed(double speed);
         TraCIColor getColor();
         void setColor(const TraCIColor& color);
-        void slowDown(double speed, int time);
+        void slowDown(double speed, simtime_t time);
         void newRoute(std::string roadId);
         void setParking();
         std::string getRoadId();
@@ -96,8 +96,8 @@ public:
         double getLanePosition();
         std::list<std::string> getPlannedRoadIds();
         std::string getRouteId();
-        void changeRoute(std::string roadId, double travelTime);
-        void stopAt(std::string roadId, double pos, uint8_t laneid, double radius, double waittime);
+        void changeRoute(std::string roadId, simtime_t travelTime);
+        void stopAt(std::string roadId, double pos, uint8_t laneid, double radius, simtime_t waittime);
         int32_t getLaneIndex();
         std::string getTypeId();
         bool changeVehicleRoute(const std::list<std::string>& roads);
@@ -249,18 +249,18 @@ public:
         }
 
         std::string getCurrentState() const;
-        int32_t getDefaultCurrentPhaseDuration() const;
+        simtime_t getDefaultCurrentPhaseDuration() const;
         std::list<std::string> getControlledLanes() const;
         std::list<std::list<TraCITrafficLightLink>> getControlledLinks() const;
         int32_t getCurrentPhaseIndex() const;
         std::string getCurrentProgramID() const;
         TraCITrafficLightProgram getProgramDefinition() const;
-        int32_t getAssumedNextSwitchTime() const;
+        simtime_t getAssumedNextSwitchTime() const;
 
         void setProgram(std::string program); /**< set/switch to different program */
         void setPhaseIndex(int32_t index); /**< set/switch to different phase within the program  */
         void setState(std::string state);
-        void setPhaseDuration(int32_t duration); /**< set remaining duration of current phase in milliseconds */
+        void setPhaseDuration(simtime_t duration); /**< set remaining duration of current phase */
         void setProgramDefinition(TraCITrafficLightProgram::Logic program, int32_t programNr);
 
     protected:
@@ -409,6 +409,7 @@ private:
     std::string genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     Coord genericGetCoord(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     double genericGetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
+    simtime_t genericGetTime(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     int32_t genericGetInt(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     std::list<std::string> genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     std::list<Coord> genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);

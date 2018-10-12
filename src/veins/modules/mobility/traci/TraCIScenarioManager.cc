@@ -320,10 +320,10 @@ void TraCIScenarioManager::init_traci()
         uint32_t apiVersion = version.first;
         std::string serverVersion = version.second;
 
-        const std::vector<uint32_t> allowedVersions({10, 11, 13, 14, 15, 16, 17});
+        const std::vector<uint32_t> allowedVersions({18});
 
         if (std::find(allowedVersions.begin(), allowedVersions.end(), apiVersion) == allowedVersions.end()) {
-            error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using SUMO 0.30.0", serverVersion.c_str(), apiVersion);
+            error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using SUMO 1.0.0", serverVersion.c_str(), apiVersion);
         }
 
         EV_DEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
@@ -344,7 +344,10 @@ void TraCIScenarioManager::init_traci()
         buf >> simId;
         uint8_t typeId_resp;
         buf >> typeId_resp;
-        ASSERT(typeId_resp == TYPE_BOUNDINGBOX);
+        ASSERT(typeId_resp == TYPE_POLYGON);
+        uint8_t npoints;
+        buf >> npoints;
+        ASSERT(npoints == 2);
         double x1;
         buf >> x1;
         double y1;
@@ -366,13 +369,13 @@ void TraCIScenarioManager::init_traci()
 
     {
         // subscribe to list of departed and arrived vehicles, as well as simulation time
-        uint32_t beginTime = 0;
-        uint32_t endTime = 0x7FFFFFFF;
+        simtime_t beginTime = 0;
+        simtime_t endTime = SimTime::getMaxTime();
         std::string objectId = "";
         uint8_t variableNumber = 7;
         uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
         uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
-        uint8_t variable3 = VAR_TIME_STEP;
+        uint8_t variable3 = VAR_TIME;
         uint8_t variable4 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
         uint8_t variable5 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
         uint8_t variable6 = VAR_PARKING_STARTING_VEHICLES_IDS;
@@ -384,8 +387,8 @@ void TraCIScenarioManager::init_traci()
 
     {
         // subscribe to list of vehicle ids
-        uint32_t beginTime = 0;
-        uint32_t endTime = 0x7FFFFFFF;
+        simtime_t beginTime = 0;
+        simtime_t endTime = SimTime::getMaxTime();
         std::string objectId = "";
         uint8_t variableNumber = 1;
         uint8_t variable1 = ID_LIST;
@@ -661,7 +664,7 @@ void TraCIScenarioManager::executeOneTimestep()
 
     EV_DEBUG << "Triggering TraCI server simulation advance to t=" << simTime() << endl;
 
-    uint32_t targetTime = simTime().inUnit(SIMTIME_MS);
+    simtime_t targetTime = simTime();
 
     if (isConnected()) {
         insertVehicles();
@@ -727,8 +730,8 @@ void TraCIScenarioManager::insertVehicles()
 void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId)
 {
     // subscribe to some attributes of the vehicle
-    uint32_t beginTime = 0;
-    uint32_t endTime = 0x7FFFFFFF;
+    simtime_t beginTime = 0;
+    simtime_t endTime = SimTime::getMaxTime();
     std::string objectId = vehicleId;
     uint8_t variableNumber = 5;
     uint8_t variable1 = VAR_POSITION;
@@ -745,8 +748,8 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId)
 void TraCIScenarioManager::unsubscribeFromVehicleVariables(std::string vehicleId)
 {
     // subscribe to some attributes of the vehicle
-    uint32_t beginTime = 0;
-    uint32_t endTime = 0x7FFFFFFF;
+    simtime_t beginTime = 0;
+    simtime_t endTime = SimTime::getMaxTime();
     std::string objectId = vehicleId;
     uint8_t variableNumber = 0;
 
@@ -756,8 +759,8 @@ void TraCIScenarioManager::unsubscribeFromVehicleVariables(std::string vehicleId
 void TraCIScenarioManager::subscribeToTrafficLightVariables(std::string tlId)
 {
     // subscribe to some attributes of the traffic light system
-    uint32_t beginTime = 0;
-    uint32_t endTime = 0x7FFFFFFF;
+    simtime_t beginTime = 0;
+    simtime_t endTime = SimTime::getMaxTime();
     std::string objectId = tlId;
     uint8_t variableNumber = 4;
     uint8_t variable1 = TL_CURRENT_PHASE;
@@ -775,8 +778,8 @@ void TraCIScenarioManager::unsubscribeFromTrafficLightVariables(std::string tlId
     // unsubscribe from some attributes of the traffic light system
     // this method is mainly for completeness as traffic lights are not supposed to be removed at runtime
 
-    uint32_t beginTime = 0;
-    uint32_t endTime = 0x7FFFFFFF;
+    simtime_t beginTime = 0;
+    simtime_t endTime = SimTime::getMaxTime();
     std::string objectId = tlId;
     uint8_t variableNumber = 0;
 
@@ -880,7 +883,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
 
                 if (subscribedVehicles.find(idstring) != subscribedVehicles.end()) {
                     subscribedVehicles.erase(idstring);
-                    unsubscribeFromVehicleVariables(idstring);
+                    // no unsubscription via TraCI possible/necessary as of SUMO 1.0.0 (the vehicle has arrived)
                 }
 
                 // check if this object has been deleted already (e.g. because it was outside the ROI)
@@ -976,14 +979,14 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
             parkingVehicleCount -= count;
             drivingVehicleCount += count;
         }
-        else if (variable1_resp == VAR_TIME_STEP) {
+        else if (variable1_resp == VAR_TIME) {
             uint8_t varType;
             buf >> varType;
-            ASSERT(varType == TYPE_INTEGER);
-            uint32_t serverTimestep;
+            ASSERT(varType == TYPE_DOUBLE);
+            simtime_t serverTimestep;
             buf >> serverTimestep;
             EV_DEBUG << "TraCI reports current time step as " << serverTimestep << "ms." << endl;
-            uint32_t omnetTimestep = simTime().inUnit(SIMTIME_MS);
+            simtime_t omnetTimestep = simTime();
             ASSERT(omnetTimestep == serverTimestep);
         }
         else {
