@@ -618,9 +618,9 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
 
     if (dest == myMacAddr) {
         if (auto* ack = dynamic_cast<Mac80211Ack*>(macPkt)) {
-            if (useAcks) {
-                handleAck(ack);
-            }
+            ASSERT(useAcks);
+            handleAck(ack);
+            delete res;
         }
         else {
             unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
