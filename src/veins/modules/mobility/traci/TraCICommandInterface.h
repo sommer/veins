@@ -85,12 +85,12 @@ public:
         void setSpeedMode(int32_t bitset);
         void setSpeed(double speed);
         void setMaxSpeed(double speed);
+        TraCIColor getColor();
         void setColor(const TraCIColor& color);
         void slowDown(double speed, int time);
         void newRoute(std::string roadId);
         void setParking();
         std::string getRoadId();
-        std::string getCurrentRoadOnRoute();
         std::string getLaneId();
         double getMaxSpeed();
         double getLanePosition();
@@ -301,6 +301,7 @@ public:
     }
 
     // Poi methods
+    std::list<std::string> getPoiIds();
     void addPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, const Coord& pos);
     class Poi {
     public:
