@@ -304,10 +304,7 @@ void Mac1609_4::handleUpperControl(cMessage* msg)
 void Mac1609_4::handleUpperMsg(cMessage* msg)
 {
 
-    WaveShortMessage* thisMsg;
-    if ((thisMsg = dynamic_cast<WaveShortMessage*>(msg)) == NULL) {
-        error("WaveMac only accepts WaveShortMessages");
-    }
+    WaveShortMessage* thisMsg = check_and_cast<WaveShortMessage*>(msg);
 
     t_access_category ac = mapUserPriority(thisMsg->getUserPriority());
 
@@ -498,8 +495,7 @@ void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, double frequency,
     delay = std::max(delay, RADIODELAY_11P); // wait at least for the radio to switch
 
     attachSignal(frame, simTime() + delay, frequency, datarate, txPower_mW);
-    MacToPhyControlInfo* phyInfo = dynamic_cast<MacToPhyControlInfo*>(frame->getControlInfo());
-    ASSERT(phyInfo);
+    check_and_cast<MacToPhyControlInfo*>(frame->getControlInfo());
 
     lastMac.reset(frame->dup());
     sendDelayed(frame, delay, lowerLayerOut);
