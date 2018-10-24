@@ -2,4 +2,4 @@
 
 #include <omnetpp.h>
 
-#define VEINS_DEPRECATED _OPP_DEPRECATED
+#define VEINS_DEPRECATED _OPPDEPRECATED

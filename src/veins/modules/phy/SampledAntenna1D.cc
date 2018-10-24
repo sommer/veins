@@ -34,19 +34,19 @@ SampledAntenna1D::SampledAntenna1D(std::vector<double>& values, std::string offs
     // instantiate a random number generator for sample offsets if one is specified
     cRandom* offsetGen = 0;
     if (offsetType == "uniform") {
-        if (!FWMath::close(offsetParams[0], -offsetParams[1])) {
+        if (!math::almost_equal(offsetParams[0], -offsetParams[1])) {
             throw cRuntimeError("SampledAntenna1D::SampledAntenna1D(): The mean of the random distribution for the samples' offsets has to be 0.");
         }
         offsetGen = new cUniform(rng, offsetParams[0], offsetParams[1]);
     }
     else if (offsetType == "normal") {
-        if (!FWMath::close(offsetParams[0], 0)) {
+        if (!math::almost_equal<double>(offsetParams[0], 0)) {
             throw cRuntimeError("SampledAntenna1D::SampledAntenna1D(): The mean of the random distribution for the samples' offsets has to be 0.");
         }
         offsetGen = new cNormal(rng, offsetParams[0], offsetParams[1]);
     }
     else if (offsetType == "triang") {
-        if (!FWMath::close((offsetParams[0] + offsetParams[1] + offsetParams[2]) / 3, 0)) {
+        if (!math::almost_equal<double>((offsetParams[0] + offsetParams[1] + offsetParams[2]) / 3, 0)) {
             throw cRuntimeError("SampledAntenna1D::SampledAntenna1D(): The mean of the random distribution for the samples' offsets has to be 0.");
         }
         offsetGen = new cTriang(rng, offsetParams[0], offsetParams[1], offsetParams[2]);
