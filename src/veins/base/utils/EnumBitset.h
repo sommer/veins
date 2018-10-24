@@ -45,18 +45,18 @@ struct EnumTraits;
 template<typename T>
 class EnumBitset {
 private:
-    using enum_underlying_type = typename std::underlying_type<T>::type;
-    std::bitset<static_cast<enum_underlying_type>(EnumTraits<T>::max) + 1> bits;
+    using EnumUnderlyingType = typename std::underlying_type<T>::type;
+    std::bitset<static_cast<EnumUnderlyingType>(EnumTraits<T>::max) + 1> bits;
 
-    typename std::underlying_type<T>::type get_value(T v) const
+    EnumUnderlyingType get_value(T v) const
     {
-        return static_cast<typename std::underlying_type<T>::type>(v);
+        return static_cast<EnumUnderlyingType>(v);
     }
 
 public:
     EnumBitset()
         : bits() {}
-    EnumBitset(unsigned long long val)
+    explicit EnumBitset(EnumUnderlyingType val)
         : bits(val) {}
 
     bool operator==(const EnumBitset<T>& rhs) const
