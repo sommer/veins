@@ -62,4 +62,26 @@ SCENARIO("vehicle signal set produces correct integer bitfield", "[vehiclesignal
             REQUIRE(signals.to_ulong() == 0);
         }
     }
+    GIVEN("Two distinct VehicleSignals")
+    {
+        auto bit_a = VehicleSignal::blinker_left;
+        auto bit_b = VehicleSignal::blinker_right;
+
+        THEN("OR-ing sets containing only them gives a set with both signals set")
+        {
+            VehicleSignalSet set_a(bit_a);
+            VehicleSignalSet set_b(bit_b);
+            auto res = set_a | set_b;
+            REQUIRE(res.test(bit_a));
+            REQUIRE(res.test(bit_b));
+        }
+
+        // currently failing:
+        THEN("OR-ing the bits themselves gives a set with both signals set")
+        {
+            auto res = bit_a | bit_b;
+            REQUIRE(res.test(bit_a));
+            REQUIRE(res.test(bit_b));
+        }
+    }
 }

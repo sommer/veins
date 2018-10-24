@@ -56,6 +56,8 @@ private:
 public:
     EnumBitset()
         : bits() {}
+    EnumBitset(T val)
+        : bits() { set(val); }
     explicit EnumBitset(EnumUnderlyingType val)
         : bits(val) {}
 
