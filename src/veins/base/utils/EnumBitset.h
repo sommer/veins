@@ -81,7 +81,7 @@ public:
 
     EnumBitset& set(T pos, bool value = true)
     {
-        bits.set(get_value(pos));
+        bits.set(get_value(pos), value);
         return *this;
     }
 
