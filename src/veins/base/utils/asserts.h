@@ -7,6 +7,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <math.h>
+#include <limits>
 
 extern bool haltOnFails;
 extern bool displayPassed;

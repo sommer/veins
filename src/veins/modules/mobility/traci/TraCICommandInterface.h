@@ -102,6 +102,9 @@ public:
         std::string getTypeId();
         bool changeVehicleRoute(const std::list<std::string>& roads);
         double getLength();
+        double getWidth();
+        double getAccel();
+        double getDeccel();
 
         /**
          * Get the vehicle's CO2 emissions in mg during this time step.

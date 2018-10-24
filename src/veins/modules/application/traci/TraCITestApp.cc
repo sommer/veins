@@ -405,6 +405,9 @@ void TraCITestApp::handlePositionUpdate()
     if (testNumber == testCounter++) {
         if (t == 1) {
             assertClose("(TraCICommandInterface::Vehicle::getLength)", 2.5, traciVehicle->getLength());
+            assertClose("(TraCICommandInterface::Vehicle::getWidth)", 1.8, traciVehicle->getWidth());
+            assertClose("(TraCICommandInterface::Vehicle::getAccel)", 3.0, traciVehicle->getAccel());
+            assertClose("(TraCICommandInterface::Vehicle::getDeccel)", 9.81, traciVehicle->getDeccel());
         }
     }
 
