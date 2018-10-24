@@ -159,7 +159,7 @@ public:
      */
     void setDirectionByVector(const Coord& direction)
     {
-        assert(FWMath::close(direction.squareLength(), 1.0) || FWMath::close(direction.squareLength(), 0.0));
+        assert(math::almost_equal(direction.squareLength(), 1.0) || math::almost_equal(direction.squareLength(), 0.0));
         this->direction = direction;
 
         // only if one of the x or y components is nonzero, also set orientation to
@@ -180,7 +180,7 @@ public:
     {
         direction = target - startPos;
 
-        assert(!FWMath::close(direction.length(), 0.0));
+        assert(!math::almost_equal(direction.length(), 0.0));
         direction /= direction.length();
 
         // only if one of the x or y components is nonzero, also set orientation to
@@ -203,7 +203,7 @@ public:
     virtual Coord getPositionAt(simtime_t_cref actualTime = simTime()) const
     {
         // if speed is very close to 0.0, the host is practically standing still
-        if (FWMath::close(speed, 0.0)) return startPos;
+        if (math::almost_equal(speed, 0.0)) return startPos;
 
         // otherwise: actualPos = startPos + ( direction * v * t )
         return startPos + (direction * speed * SIMTIME_DBL(actualTime - startTime));

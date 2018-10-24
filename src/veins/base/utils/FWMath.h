@@ -24,7 +24,11 @@
 // Support functions for mathematical operations
 //
 
-#include <math.h>
+#include <cmath>
+#include <limits>
+#include <type_traits>
+
+#include "veins/base/utils/veins.h"
 #include "veins/base/utils/MiXiMDefs.h"
 
 namespace Veins {
@@ -88,6 +92,35 @@ namespace Veins {
 #define EPSILON 0.001
 #endif
 
+namespace math {
+
+/**
+ * Compare two floats for approximate equality
+ *
+ * Floating point numbers are prone to inequalities.
+ * Expressions that logically result in the same values therefore often are not exactly equal, because two representations of very similar values are computed.
+ * This function allows comparisons for such cases by allowing for a small error (epsilon), without considering numbers to be unequal.
+ *
+ * @param lhs First comparand
+ * @param rhs Second comparand
+ * @param ulp
+ *      How many ULP's (Units in the Last Place) we want to tolerate when comparing two numbers.
+ *      The larger the value, the more error we allow.
+ *      The maximum floating point error on most platforms is below 0.5 ULP.
+ *      A 0 value means that two numbers must be exactly the same to be considered equal.
+ * @return Indicator whether the lhs and rhs are virtually equal
+ */
+template <class T>
+typename std::enable_if<std::is_floating_point<T>::value, bool>::type
+almost_equal(T x, T y, int ulp = 1)
+{
+    const T epsilon = std::numeric_limits<T>::epsilon();
+    const T delta = std::abs(x - y);
+    return (delta <= epsilon * std::abs(x + y) * ulp) || (delta < std::numeric_limits<T>::min());
+}
+
+} // namespace math
+
 /**
  * @brief Support functions for mathematical operations.
  *
@@ -132,8 +165,11 @@ public:
      * Tests whether two doubles are close enough to be declared equal.
      * Returns true if parameters are at most epsilon apart, false
      * otherwise
+     *
+     * @deprecated
+     * @see Veins::math::almost_equal
      */
-    static bool close(double one, double two)
+    VEINS_DEPRECATED static bool close(double one, double two)
     {
         return fabs(one - two) < EPSILON;
     }
@@ -144,7 +180,16 @@ public:
      */
     static int stepfunction(double i)
     {
-        return (i > EPSILON) ? 1 : close(i, 0) ? 0 : -1;
+        if (math::almost_equal<double>(i, 0)) {
+            return 0;
+        }
+
+        if (std::signbit(i) == 1) {
+            return -1;
+        }
+        else {
+            return 1;
+        }
     };
 
     /**

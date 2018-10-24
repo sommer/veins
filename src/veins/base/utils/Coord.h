@@ -174,13 +174,14 @@ public:
     /**
      * @brief Tests whether two coordinate vectors are equal.
      *
-     * Because coordinates are of type double, this is done through the
-     * FWMath::close function.
+     * Because coordinates are floating point values, this is done using an epsilon comparison.
+     * @see math::almost_equal
+     *
      */
     friend bool operator==(const Coord& a, const Coord& b)
     {
         // FIXME: this implementation is not transitive
-        return FWMath::close(a.x, b.x) && FWMath::close(a.y, b.y) && FWMath::close(a.z, b.z);
+        return math::almost_equal(a.x, b.x) && math::almost_equal(a.y, b.y) && math::almost_equal(a.z, b.z);
     }
 
     /**

@@ -125,7 +125,8 @@ void BaseConnectionManager::initialize(int stage)
         // (the last) grid cell we do this by increasing the find distance
         // by a small value.
         // This also assures that findDistance is never zero.
-        findDistance += Coord(EPSILON, EPSILON, EPSILON);
+        const auto epsilon = 0.001;
+        findDistance += Coord(epsilon, epsilon, epsilon);
 
         // findDistance (equals cell size) has to be greater or equal
         // maxInt-distance
