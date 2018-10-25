@@ -62,26 +62,53 @@ SCENARIO("vehicle signal set produces correct integer bitfield", "[vehiclesignal
             REQUIRE(signals.to_ulong() == 0);
         }
     }
-    GIVEN("Two distinct VehicleSignals")
+}
+
+SCENARIO("vehicle signal sets conform to set logic", "[vehiclesignals]")
+{
+    GIVEN("Two distinct VehicleSignals and VehicleSignalSets made from them respectively")
     {
-        auto bit_a = VehicleSignal::blinker_left;
-        auto bit_b = VehicleSignal::blinker_right;
+        const auto bit_a = VehicleSignal::blinker_left;
+        const auto bit_b = VehicleSignal::blinker_right;
+        const VehicleSignalSet set_a(bit_a);
+        const VehicleSignalSet set_b(bit_b);
 
         THEN("OR-ing sets containing only them gives a set with both signals set")
         {
-            VehicleSignalSet set_a(bit_a);
-            VehicleSignalSet set_b(bit_b);
             auto res = set_a | set_b;
             REQUIRE(res.test(bit_a));
             REQUIRE(res.test(bit_b));
         }
 
-        // currently failing:
         THEN("OR-ing the bits themselves gives a set with both signals set")
         {
             auto res = bit_a | bit_b;
             REQUIRE(res.test(bit_a));
             REQUIRE(res.test(bit_b));
+        }
+
+        THEN("OR-ing one of the sets with the other bit gives a set with both signals set")
+        {
+            auto set_or_bit = set_a | bit_b;
+            REQUIRE(set_or_bit.test(bit_a));
+            REQUIRE(set_or_bit.test(bit_b));
+            auto bit_or_set = bit_a | set_b;
+            REQUIRE(bit_or_set.test(bit_a));
+            REQUIRE(bit_or_set.test(bit_b));
+        }
+
+        THEN("Creating a VehicleSignalSet using an initializer list contains the two signals")
+        {
+            auto list_initialized = VehicleSignalSet({bit_a, bit_b});
+            REQUIRE(list_initialized.test(bit_a));
+            REQUIRE(list_initialized.test(bit_b));
+        }
+
+        THEN("Two VehicleSignalSets created from the same signal(s) are equal")
+        {
+            auto second_set_a = VehicleSignalSet({bit_a});
+            REQUIRE(second_set_a == set_a);
+            REQUIRE(set_a == second_set_a);
         }
     }
 }

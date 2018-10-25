@@ -56,10 +56,20 @@ private:
 public:
     EnumBitset()
         : bits() {}
-    EnumBitset(T val)
-        : bits() { set(val); }
     explicit EnumBitset(EnumUnderlyingType val)
         : bits(val) {}
+    EnumBitset(T val)
+        : bits()
+    {
+        set(std::move(val));
+    }
+    EnumBitset(std::initializer_list<T> vals)
+        : bits()
+    {
+        for(auto val : vals) {
+            set(val);
+        }
+    }
 
     bool operator==(const EnumBitset<T>& rhs) const
     {
@@ -107,7 +117,20 @@ public:
     {
         return bits.to_ullong();
     }
+
+    friend EnumBitset<T> operator|(EnumBitset<T> lhs, EnumBitset<T> rhs)
+    {
+        EnumBitset<T> ret;
+        ret.bits = lhs.bits | rhs.bits;
+        return ret;
+    }
 };
+
+template <typename T>
+EnumBitset<T> operator|(T lhs, T rhs)
+{
+    return EnumBitset<T>(lhs) | EnumBitset<T>(rhs);
+}
 
 } // namespace Veins
 
