@@ -22,6 +22,7 @@
 #define CONSTANTS_802_11p
 
 #include <stdint.h>
+#include <omnetpp.h>
 
 /** @brief Bit rates for 802.11p
  *
