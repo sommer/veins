@@ -731,4 +731,7 @@
 // track vehicle
 #define VAR_TRACK_VEHICLE 0xa6
 
+// height (get: vehicle types)
+#define VAR_HEIGHT 0xbc
+
 #endif

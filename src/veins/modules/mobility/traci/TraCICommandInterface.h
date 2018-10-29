@@ -103,6 +103,7 @@ public:
         bool changeVehicleRoute(const std::list<std::string>& roads);
         double getLength();
         double getWidth();
+        double getHeight();
         double getAccel();
         double getDeccel();
 
