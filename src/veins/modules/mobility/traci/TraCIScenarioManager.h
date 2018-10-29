@@ -63,6 +63,8 @@ class TraCICommandInterface;
 class TraCIScenarioManager : public cSimpleModule {
 public:
     static const std::string TRACI_INITIALIZED_SIGNAL_NAME;
+    static const std::string TRACI_MODULE_ADDED_SIGNAL_NAME;
+    static const std::string TRACI_MODULE_REMOVED_SIGNAL_NAME;
 
     TraCIScenarioManager();
     ~TraCIScenarioManager();
@@ -200,6 +202,8 @@ protected:
 
 private:
     const omnetpp::simsignal_t traciInitializedSignal;
+    const omnetpp::simsignal_t traciModuleAddedSignal;
+    const omnetpp::simsignal_t traciModuleRemovedSignal;
 };
 
 class TraCIScenarioManagerAccess {

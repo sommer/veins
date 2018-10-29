@@ -40,6 +40,8 @@ using Veins::TraCITrafficLightInterface;
 Define_Module(Veins::TraCIScenarioManager);
 
 const std::string TraCIScenarioManager::TRACI_INITIALIZED_SIGNAL_NAME = "traciInitialized";
+const std::string TraCIScenarioManager::TRACI_MODULE_ADDED_SIGNAL_NAME = "traciModuleAdded";
+const std::string TraCIScenarioManager::TRACI_MODULE_REMOVED_SIGNAL_NAME = "traciModuleRemoved";
 
 TraCIScenarioManager::TraCIScenarioManager()
     : mobRng(0)
@@ -50,6 +52,8 @@ TraCIScenarioManager::TraCIScenarioManager()
     , world(0)
     , cc(0)
     , traciInitializedSignal(registerSignal(TRACI_INITIALIZED_SIGNAL_NAME.c_str()))
+    , traciModuleAddedSignal(registerSignal(TRACI_MODULE_ADDED_SIGNAL_NAME.c_str()))
+    , traciModuleRemovedSignal(registerSignal(TRACI_MODULE_REMOVED_SIGNAL_NAME.c_str()))
 {
 }
 
@@ -614,6 +618,8 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     for (auto mm : mobilityModules) {
         mm->changePosition();
     }
+
+    emit(traciModuleAddedSignal, mod);
 }
 
 cModule* TraCIScenarioManager::getManagedModule(std::string nodeId)
@@ -632,6 +638,8 @@ void TraCIScenarioManager::deleteManagedModule(std::string nodeId)
 {
     cModule* mod = getManagedModule(nodeId);
     if (!mod) error("no vehicle with Id \"%s\" found", nodeId.c_str());
+
+    emit(traciModuleRemovedSignal, mod);
 
     cModule* nic = mod->getSubmodule("nic");
     if (cc && nic) {

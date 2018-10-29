@@ -37,6 +37,8 @@ simple TraCIScenarioManager
     parameters:
         @display("i=block/network2");
         @signal[traciInitialized](type=bool);
+        @signal[traciModuleAdded](type=cModule);
+        @signal[traciModuleRemoved](type=cModule);
         @class(Veins::TraCIScenarioManager);
         bool debug = default(false);  // emit debug messages?
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)
