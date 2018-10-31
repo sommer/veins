@@ -268,9 +268,6 @@ protected:
     /** @brief pointer to last sent mac frame */
     std::unique_ptr<Mac80211Pkt> lastMac;
 
-    /** @brief Stores the frequencies in Hz that are associated to the channel numbers.*/
-    std::map<int, double> frequency;
-
     int headerLength;
 
     bool useSCH;

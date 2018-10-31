@@ -65,18 +65,9 @@ void Mac1609_4::initialize(int stage)
         stopIgnoreChannelStateMsg = new cMessage("ChannelStateMsg");
 
         myId = getParentModule()->getParentModule()->getFullPath();
-        // create frequency mappings
-        frequency.insert(std::pair<int, double>(Channels::CRIT_SOL, 5.86e9));
-        frequency.insert(std::pair<int, double>(Channels::SCH1, 5.87e9));
-        frequency.insert(std::pair<int, double>(Channels::SCH2, 5.88e9));
-        frequency.insert(std::pair<int, double>(Channels::CCH, 5.89e9));
-        frequency.insert(std::pair<int, double>(Channels::SCH3, 5.90e9));
-        frequency.insert(std::pair<int, double>(Channels::SCH4, 5.91e9));
-        frequency.insert(std::pair<int, double>(Channels::HPPS, 5.92e9));
-
-        // Initialize spectrum for signal representation here
+        // Create frequency mappings and initialize spectrum for signal representation
         Freqs freqs;
-        for (auto channel : frequency) {
+        for (auto& channel : IEEE80211ChannelFrequencies) {
             freqs.push_back(channel.second - 5e6);
             freqs.push_back(channel.second);
             freqs.push_back(channel.second + 5e6);
@@ -195,14 +186,14 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
             channelBusySelf(false);
             setActiveChannel(type_SCH);
             channelIdle(true);
-            phy11p->changeListeningFrequency(frequency[mySCH]);
+            phy11p->changeListeningFrequency(IEEE80211ChannelFrequencies.at(mySCH));
             break;
         case type_SCH:
             EV_TRACE << "SCH --> CCH" << std::endl;
             channelBusySelf(false);
             setActiveChannel(type_CCH);
             channelIdle(true);
-            phy11p->changeListeningFrequency(frequency[Channels::CCH]);
+            phy11p->changeListeningFrequency(IEEE80211ChannelFrequencies.at(Channels::CCH));
             break;
         }
         // schedule next channel switch in 50ms
@@ -260,7 +251,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
         if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
             if (useSCH) EV_TRACE << " Time in this slot left: " << timeLeftInSlot() << std::endl;
 
-            double freq = (activeChannel == type_CCH) ? frequency[Channels::CCH] : frequency[mySCH];
+            double freq = (activeChannel == type_CCH) ? IEEE80211ChannelFrequencies.at(Channels::CCH) : IEEE80211ChannelFrequencies.at(mySCH);
 
             EV_TRACE << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
             sendFrame(mac, RADIODELAY_11P, freq, datarate, txPower_mW);
@@ -503,7 +494,6 @@ void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, double frequency,
 
 void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW)
 {
-
     simtime_t duration = getFrameDuration(mac->getBitLength());
 
     Signal* s = createSignal(startTime, duration, txPower_mW, datarate, frequency);
@@ -573,7 +563,7 @@ void Mac1609_4::changeServiceChannel(int cN)
     if (activeChannel == type_SCH) {
         // change to new chan immediately if we are in a SCH slot,
         // otherwise it will switch to the new SCH upon next channel switch
-        phy11p->changeListeningFrequency(frequency[mySCH]);
+        phy11p->changeListeningFrequency(IEEE80211ChannelFrequencies.at(mySCH));
     }
 }
 
@@ -1067,8 +1057,8 @@ void Mac1609_4::sendAck(LAddress::L2Type recpAddress, unsigned long wsmId)
     EV_TRACE << "Ack sending duration will be " << sendingDuration << std::endl;
 
     // TODO: check ack procedure when channel switching is allowed
-    // double freq = (activeChannel == type_CCH) ? frequency[Channels::CCH] : frequency[mySCH];
-    double freq = frequency[Channels::CCH];
+    // double freq = (activeChannel == type_CCH) ? IEEE80211ChannelFrequencies.at(Channels::CCH) : IEEE80211ChannelFrequencies.at(mySCH);
+    double freq = IEEE80211ChannelFrequencies.at(Channels::CCH);
 
     EV_TRACE << "Sending an ack. Frequency " << freq << " at time : " << simTime() + SIFS_11P << std::endl;
     sendFrame(mac, SIFS_11P, freq, datarate, txPower);
