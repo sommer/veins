@@ -7,6 +7,7 @@
 
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/base/utils/Coord.h"
+#include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 
 namespace Veins {
@@ -46,7 +47,23 @@ public:
 
     // General methods that do not deal with a particular object in the simulation
     std::pair<uint32_t, std::string> getVersion();
+    void setApiVersion(uint32_t apiVersion);
     std::pair<double, double> getLonLat(const Coord&);
+
+    uint8_t getTimeType() const
+    {
+        return versionConfig.timeType;
+    }
+    uint8_t getNetBoundaryType() const
+    {
+        return versionConfig.netBoundaryType;
+    }
+    uint8_t getTimeStepCmd() const
+    {
+        return versionConfig.timeStepCmd;
+    }
+
+    std::pair<TraCICoord, TraCICoord> initNetworkBoundaries(int margin);
 
     /**
      * Convert Cartesian coordination to road map position
@@ -441,7 +458,16 @@ public:
     }
 
 private:
+    struct VersionConfig {
+        uint8_t timeType;
+        uint8_t netBoundaryType;
+        uint8_t timeStepCmd;
+        bool timeAsDouble;
+    };
+
     TraCIConnection& connection;
+    static const std::map<uint32_t, VersionConfig> versionConfigs;
+    VersionConfig versionConfig;
 
     std::string genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     Coord genericGetCoord(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);

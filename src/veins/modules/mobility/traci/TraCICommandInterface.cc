@@ -4,13 +4,19 @@
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
-#include "veins/modules/mobility/traci/TraCICoord.h"
 
 #ifdef _WIN32
 #define realpath(N, R) _fullpath((R), (N), _MAX_PATH)
 #endif /* _WIN32 */
 
 namespace Veins {
+
+const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
+    {18, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true}},
+    {17, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false}},
+    {16, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false}},
+    {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false}},
+};
 
 TraCICommandInterface::TraCICommandInterface(TraCIConnection& c)
     : connection(c)
@@ -39,6 +45,56 @@ std::pair<uint32_t, std::string> TraCICommandInterface::getVersion()
     ASSERT(buf.eof());
 
     return std::pair<uint32_t, std::string>(apiVersion, serverVersion);
+}
+
+void TraCICommandInterface::setApiVersion(uint32_t apiVersion)
+{
+    try {
+        versionConfig = versionConfigs.at(apiVersion);
+        TraCIBuffer::setTimeAsDouble(versionConfig.timeAsDouble);
+    }
+    catch (std::out_of_range const& exc) {
+        throw cRuntimeError(std::string("TraCI server reports unsupported TraCI API version: " + std::to_string(apiVersion) + ". We recommend using Sumo version 1.0.1 or 0.32.0").c_str());
+    }
+}
+
+std::pair<TraCICoord, TraCICoord> TraCICommandInterface::initNetworkBoundaries(int margin)
+{
+    // query road network boundaries
+    TraCIBuffer buf = connection.query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_NET_BOUNDING_BOX) << std::string("sim0"));
+    uint8_t cmdLength_resp;
+    buf >> cmdLength_resp;
+    uint8_t commandId_resp;
+    buf >> commandId_resp;
+    ASSERT(commandId_resp == RESPONSE_GET_SIM_VARIABLE);
+    uint8_t variableId_resp;
+    buf >> variableId_resp;
+    ASSERT(variableId_resp == VAR_NET_BOUNDING_BOX);
+    std::string simId;
+    buf >> simId;
+    uint8_t typeId_resp;
+    buf >> typeId_resp;
+    ASSERT(typeId_resp == getNetBoundaryType());
+    if (getNetBoundaryType() == TYPE_POLYGON) {
+        // Polygons can have an arbitrary number of tuples, so check that it is actually 2
+        uint8_t npoints;
+        buf >> npoints;
+        ASSERT(npoints == 2);
+    }
+    double x1;
+    buf >> x1;
+    double y1;
+    buf >> y1;
+    double x2;
+    buf >> x2;
+    double y2;
+    buf >> y2;
+    ASSERT(buf.eof());
+    EV_DEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
+    TraCICoord nb1(x1, y1);
+    TraCICoord nb2(x2, y2);
+    connection.setNetbounds(nb1, nb2, margin);
+    return {nb1, nb2};
 }
 
 void TraCICommandInterface::Vehicle::setSpeedMode(int32_t bitset)
@@ -122,7 +178,7 @@ void TraCICommandInterface::Vehicle::slowDown(double speed, simtime_t time)
     uint8_t variableType = TYPE_COMPOUND;
     int32_t count = 2;
     uint8_t speedType = TYPE_DOUBLE;
-    uint8_t durationType = TYPE_DOUBLE;
+    uint8_t durationType = traci->getTimeType();
     TraCIBuffer buf = connection->query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << speedType << speed << durationType << time);
     ASSERT(buf.eof());
 }
@@ -213,8 +269,8 @@ void TraCICommandInterface::Vehicle::changeRoute(std::string roadId, simtime_t t
         int32_t count = 2;
         uint8_t edgeIdT = TYPE_STRING;
         std::string edgeId = roadId;
-        uint8_t newTimeT = TYPE_DOUBLE;
-        simtime_t newTime = travelTime;
+        uint8_t newTimeT = TYPE_DOUBLE; // has always been seconds as double
+        double newTime = travelTime.dbl();
         TraCIBuffer buf = connection->query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << edgeIdT << edgeId << newTimeT << newTime);
         ASSERT(buf.eof());
     }
@@ -354,7 +410,7 @@ void TraCICommandInterface::Vehicle::stopAt(std::string roadId, double pos, uint
     double stopPos = pos;
     uint8_t stopLaneT = TYPE_BYTE;
     uint8_t stopLane = laneid;
-    uint8_t durationT = TYPE_DOUBLE;
+    uint8_t durationT = traci->getTimeType();
     simtime_t duration = waittime;
 
     TraCIBuffer buf = connection->query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << edgeIdT << edgeId << stopPosT << stopPos << stopLaneT << stopLane << durationT << duration);
@@ -490,9 +546,9 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
         int32_t nrOfPhases = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // number of phases in this program
         for (int32_t j = 0; j < nrOfPhases; ++j) {
             TraCITrafficLightProgram::Phase phase;
-            phase.duration = buf.readTypeChecked<simtime_t>(TYPE_DOUBLE); // default duration of phase
-            phase.minDuration = buf.readTypeChecked<simtime_t>(TYPE_DOUBLE); // minimum duration of phase
-            phase.maxDuration = buf.readTypeChecked<simtime_t>(TYPE_DOUBLE); // maximum duration of phase
+            phase.duration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // default duration of phase
+            phase.minDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // minimum duration of phase
+            phase.maxDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // maximum duration of phase
             phase.state = buf.readTypeChecked<std::string>(TYPE_STRING); // phase definition (like "[ryg]*")
             logic.phases.push_back(phase);
         }
@@ -514,7 +570,7 @@ void TraCICommandInterface::Trafficlight::setState(std::string state)
 
 void TraCICommandInterface::Trafficlight::setPhaseDuration(simtime_t duration)
 {
-    TraCIBuffer buf = connection->query(CMD_SET_TL_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(TL_PHASE_DURATION) << trafficLightId << static_cast<uint8_t>(TYPE_DOUBLE) << duration);
+    TraCIBuffer buf = connection->query(CMD_SET_TL_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(TL_PHASE_DURATION) << trafficLightId << static_cast<uint8_t>(traci->getTimeType()) << duration);
     ASSERT(buf.eof());
 }
 
@@ -538,11 +594,11 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
 
     for (uint32_t i = 0; i < logic.phases.size(); ++i) {
         TraCITrafficLightProgram::Phase& phase = logic.phases[i];
-        inbuf << static_cast<uint8_t>(TYPE_DOUBLE);
+        inbuf << static_cast<uint8_t>(traci->getTimeType());
         inbuf << phase.duration;
-        inbuf << static_cast<uint8_t>(TYPE_DOUBLE);
+        inbuf << static_cast<uint8_t>(traci->getTimeType());
         inbuf << phase.minDuration;
-        inbuf << static_cast<uint8_t>(TYPE_DOUBLE);
+        inbuf << static_cast<uint8_t>(traci->getTimeType());
         inbuf << phase.maxDuration;
         inbuf << static_cast<uint8_t>(TYPE_STRING);
         inbuf << phase.state;
@@ -951,7 +1007,7 @@ double TraCICommandInterface::genericGetDouble(uint8_t commandId, std::string ob
 
 simtime_t TraCICommandInterface::genericGetTime(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId)
 {
-    uint8_t resultTypeId = TYPE_DOUBLE;
+    uint8_t resultTypeId = getTimeType();
     simtime_t res;
 
     TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);

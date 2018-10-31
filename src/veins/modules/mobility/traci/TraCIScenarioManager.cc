@@ -319,55 +319,18 @@ void TraCIScenarioManager::initialize(int stage)
 
 void TraCIScenarioManager::init_traci()
 {
+    auto* commandInterface = getCommandInterface();
     {
-        std::pair<uint32_t, std::string> version = getCommandInterface()->getVersion();
-        uint32_t apiVersion = version.first;
-        std::string serverVersion = version.second;
-
-        const std::vector<uint32_t> allowedVersions({18});
-
-        if (std::find(allowedVersions.begin(), allowedVersions.end(), apiVersion) == allowedVersions.end()) {
-            error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using SUMO 1.0.0", serverVersion.c_str(), apiVersion);
-        }
-
-        EV_DEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
+        auto apiVersion = commandInterface->getVersion();
+        EV_DEBUG << "TraCI server \"" << apiVersion.second << "\" reports API version " << apiVersion.first << endl;
+        commandInterface->setApiVersion(apiVersion.first);
     }
 
     {
-        // query road network boundaries
-        TraCIBuffer buf = connection->query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_NET_BOUNDING_BOX) << std::string("sim0"));
-        uint8_t cmdLength_resp;
-        buf >> cmdLength_resp;
-        uint8_t commandId_resp;
-        buf >> commandId_resp;
-        ASSERT(commandId_resp == RESPONSE_GET_SIM_VARIABLE);
-        uint8_t variableId_resp;
-        buf >> variableId_resp;
-        ASSERT(variableId_resp == VAR_NET_BOUNDING_BOX);
-        std::string simId;
-        buf >> simId;
-        uint8_t typeId_resp;
-        buf >> typeId_resp;
-        ASSERT(typeId_resp == TYPE_POLYGON);
-        uint8_t npoints;
-        buf >> npoints;
-        ASSERT(npoints == 2);
-        double x1;
-        buf >> x1;
-        double y1;
-        buf >> y1;
-        double x2;
-        buf >> x2;
-        double y2;
-        buf >> y2;
-        ASSERT(buf.eof());
-
-        TraCICoord netbounds1 = TraCICoord(x1, y1);
-        TraCICoord netbounds2 = TraCICoord(x2, y2);
-        EV_DEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
-        connection->setNetbounds(netbounds1, netbounds2, par("margin"));
-        if (world && ((connection->traci2omnet(netbounds2).x > world->getPgs()->x) || (connection->traci2omnet(netbounds1).y > world->getPgs()->y))) {
-            EV_DEBUG << "WARNING: Playground size (" << world->getPgs()->x << ", " << world->getPgs()->y << ") might be too small for vehicle at network bounds (" << connection->traci2omnet(netbounds2).x << ", " << connection->traci2omnet(netbounds1).y << ")" << endl;
+        // query and set road network boundaries
+        auto networkBoundaries = commandInterface->initNetworkBoundaries(par("margin"));
+        if (world != nullptr && ((connection->traci2omnet(networkBoundaries.second).x > world->getPgs()->x) || (connection->traci2omnet(networkBoundaries.first).y > world->getPgs()->y))) {
+            EV_DEBUG << "WARNING: Playground size (" << world->getPgs()->x << ", " << world->getPgs()->y << ") might be too small for vehicle at network bounds (" << connection->traci2omnet(networkBoundaries.second).x << ", " << connection->traci2omnet(networkBoundaries.first).y << ")" << endl;
         }
     }
 
@@ -379,7 +342,7 @@ void TraCIScenarioManager::init_traci()
         uint8_t variableNumber = 7;
         uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
         uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
-        uint8_t variable3 = VAR_TIME;
+        uint8_t variable3 = commandInterface->getTimeStepCmd();
         uint8_t variable4 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
         uint8_t variable5 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
         uint8_t variable6 = VAR_PARKING_STARTING_VEHICLES_IDS;
@@ -410,7 +373,7 @@ void TraCIScenarioManager::init_traci()
         cModuleType* tlModuleType = cModuleType::get(trafficLightModuleType.c_str());
 
         // query traffic lights via TraCI
-        std::list<std::string> trafficLightIds = getCommandInterface()->getTrafficlightIds();
+        std::list<std::string> trafficLightIds = commandInterface->getTrafficlightIds();
         size_t nrOfTrafficLights = trafficLightIds.size();
         int cnt = 0;
         for (std::list<std::string>::iterator i = trafficLightIds.begin(); i != trafficLightIds.end(); ++i) {
@@ -419,7 +382,7 @@ void TraCIScenarioManager::init_traci()
                 continue; // filter only selected elements
             }
 
-            Coord position = getCommandInterface()->junction(tlId).getPosition();
+            Coord position = commandInterface->junction(tlId).getPosition();
 
             cModule* module = tlModuleType->create(trafficLightModuleName.c_str(), parentmod, nrOfTrafficLights, cnt);
             module->par("externalId") = tlId;
@@ -450,12 +413,12 @@ void TraCIScenarioManager::init_traci()
     if (obstacles) {
         {
             // get list of polygons
-            std::list<std::string> ids = getCommandInterface()->getPolygonIds();
+            std::list<std::string> ids = commandInterface->getPolygonIds();
             for (std::list<std::string>::iterator i = ids.begin(); i != ids.end(); ++i) {
                 std::string id = *i;
-                std::string typeId = getCommandInterface()->polygon(id).getTypeId();
+                std::string typeId = commandInterface->polygon(id).getTypeId();
                 if (!obstacles->isTypeSupported(typeId)) continue;
-                std::list<Coord> coords = getCommandInterface()->polygon(id).getShape();
+                std::list<Coord> coords = commandInterface->polygon(id).getShape();
                 std::vector<Coord> shape;
                 std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
                 obstacles->addFromTypeAndShape(id, typeId, shape);
@@ -987,10 +950,10 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
             parkingVehicleCount -= count;
             drivingVehicleCount += count;
         }
-        else if (variable1_resp == VAR_TIME) {
+        else if (variable1_resp == getCommandInterface()->getTimeStepCmd()) {
             uint8_t varType;
             buf >> varType;
-            ASSERT(varType == TYPE_DOUBLE);
+            ASSERT(varType == getCommandInterface()->getTimeType());
             simtime_t serverTimestep;
             buf >> serverTimestep;
             EV_DEBUG << "TraCI reports current time step as " << serverTimestep << "ms." << endl;
