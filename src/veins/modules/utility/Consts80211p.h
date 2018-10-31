@@ -125,6 +125,7 @@ const SimTime SWITCHING_INTERVAL_11P = SimTime().setRaw(50000000000UL);
 const SimTime GUARD_INTERVAL_11P = SimTime().setRaw(4000000000UL);
 
 namespace Veins {
+
 namespace Channels {
 
 /** @brief Channels as reserved by the FCC
@@ -141,6 +142,21 @@ enum ChannelNumber {
 };
 
 } // namespace Channels
+
+/**
+ * Maps channel identifier to the corresponding center frequency.
+ *
+ * @note Not all entries are defined.
+ */
+const std::map<int, double> IEEE80211ChannelFrequencies = {
+    {Channels::CRIT_SOL, 5.86e9},
+    {Channels::SCH1, 5.87e9},
+    {Channels::SCH2, 5.88e9},
+    {Channels::CCH, 5.89e9},
+    {Channels::SCH3, 5.90e9},
+    {Channels::SCH4, 5.91e9},
+    {Channels::HPPS, 5.92e9},
+};
 } // namespace Veins
 
 enum t_channel {
