@@ -12,6 +12,13 @@
 
 namespace Veins {
 
+const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
+    {18, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true}},
+    {17, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false}},
+    {16, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false}},
+    {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false}},
+};
+
 TraCICommandInterface::TraCICommandInterface(TraCIConnection& c)
     : connection(c)
 {
@@ -39,6 +46,17 @@ std::pair<uint32_t, std::string> TraCICommandInterface::getVersion()
     ASSERT(buf.eof());
 
     return std::pair<uint32_t, std::string>(apiVersion, serverVersion);
+}
+
+void TraCICommandInterface::setApiVersion(uint32_t apiVersion)
+{
+    try {
+        versionConfig = versionConfigs.at(apiVersion);
+        TraCIBuffer::setTimeAsDouble(versionConfig.timeAsDouble);
+    }
+    catch (std::out_of_range const& exc) {
+        throw cRuntimeError(std::string("TraCI server reports unsupported TraCI API version: " + std::to_string(apiVersion) + ". We recommend using Sumo version 1.0.1 or 0.32.0").c_str());
+    }
 }
 
 void TraCICommandInterface::Vehicle::setSpeedMode(int32_t bitset)
