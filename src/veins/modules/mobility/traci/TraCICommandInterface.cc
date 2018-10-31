@@ -178,7 +178,7 @@ void TraCICommandInterface::Vehicle::slowDown(double speed, simtime_t time)
     uint8_t variableType = TYPE_COMPOUND;
     int32_t count = 2;
     uint8_t speedType = TYPE_DOUBLE;
-    uint8_t durationType = TYPE_DOUBLE;
+    uint8_t durationType = traci->getTimeType();
     TraCIBuffer buf = connection->query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << speedType << speed << durationType << time);
     ASSERT(buf.eof());
 }
@@ -269,8 +269,8 @@ void TraCICommandInterface::Vehicle::changeRoute(std::string roadId, simtime_t t
         int32_t count = 2;
         uint8_t edgeIdT = TYPE_STRING;
         std::string edgeId = roadId;
-        uint8_t newTimeT = TYPE_DOUBLE;
-        simtime_t newTime = travelTime;
+        uint8_t newTimeT = TYPE_DOUBLE; // has always been seconds as double
+        double newTime = travelTime.dbl();
         TraCIBuffer buf = connection->query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << edgeIdT << edgeId << newTimeT << newTime);
         ASSERT(buf.eof());
     }
@@ -405,7 +405,7 @@ void TraCICommandInterface::Vehicle::stopAt(std::string roadId, double pos, uint
     double stopPos = pos;
     uint8_t stopLaneT = TYPE_BYTE;
     uint8_t stopLane = laneid;
-    uint8_t durationT = TYPE_DOUBLE;
+    uint8_t durationT = traci->getTimeType();
     simtime_t duration = waittime;
 
     TraCIBuffer buf = connection->query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << edgeIdT << edgeId << stopPosT << stopPos << stopLaneT << stopLane << durationT << duration);
@@ -541,9 +541,9 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
         int32_t nrOfPhases = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // number of phases in this program
         for (int32_t j = 0; j < nrOfPhases; ++j) {
             TraCITrafficLightProgram::Phase phase;
-            phase.duration = buf.readTypeChecked<simtime_t>(TYPE_DOUBLE); // default duration of phase
-            phase.minDuration = buf.readTypeChecked<simtime_t>(TYPE_DOUBLE); // minimum duration of phase
-            phase.maxDuration = buf.readTypeChecked<simtime_t>(TYPE_DOUBLE); // maximum duration of phase
+            phase.duration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // default duration of phase
+            phase.minDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // minimum duration of phase
+            phase.maxDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // maximum duration of phase
             phase.state = buf.readTypeChecked<std::string>(TYPE_STRING); // phase definition (like "[ryg]*")
             logic.phases.push_back(phase);
         }
@@ -565,7 +565,7 @@ void TraCICommandInterface::Trafficlight::setState(std::string state)
 
 void TraCICommandInterface::Trafficlight::setPhaseDuration(simtime_t duration)
 {
-    TraCIBuffer buf = connection->query(CMD_SET_TL_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(TL_PHASE_DURATION) << trafficLightId << static_cast<uint8_t>(TYPE_DOUBLE) << duration);
+    TraCIBuffer buf = connection->query(CMD_SET_TL_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(TL_PHASE_DURATION) << trafficLightId << static_cast<uint8_t>(traci->getTimeType()) << duration);
     ASSERT(buf.eof());
 }
 
@@ -589,11 +589,11 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
 
     for (uint32_t i = 0; i < logic.phases.size(); ++i) {
         TraCITrafficLightProgram::Phase& phase = logic.phases[i];
-        inbuf << static_cast<uint8_t>(TYPE_DOUBLE);
+        inbuf << static_cast<uint8_t>(traci->getTimeType());
         inbuf << phase.duration;
-        inbuf << static_cast<uint8_t>(TYPE_DOUBLE);
+        inbuf << static_cast<uint8_t>(traci->getTimeType());
         inbuf << phase.minDuration;
-        inbuf << static_cast<uint8_t>(TYPE_DOUBLE);
+        inbuf << static_cast<uint8_t>(traci->getTimeType());
         inbuf << phase.maxDuration;
         inbuf << static_cast<uint8_t>(TYPE_STRING);
         inbuf << phase.state;
@@ -959,7 +959,7 @@ double TraCICommandInterface::genericGetDouble(uint8_t commandId, std::string ob
 
 simtime_t TraCICommandInterface::genericGetTime(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId)
 {
-    uint8_t resultTypeId = TYPE_DOUBLE;
+    uint8_t resultTypeId = getTimeType();
     simtime_t res;
 
     TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);
