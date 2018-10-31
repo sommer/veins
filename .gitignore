@@ -17,6 +17,7 @@ tests/**/.tkenvrc
 tests/**/.qtenvrc
 tests/**/out.tmp
 tests/**/err.tmp
+tests/**/.cmdenv-log
 
 examples/**/results
 examples/**/.tkenvrc
