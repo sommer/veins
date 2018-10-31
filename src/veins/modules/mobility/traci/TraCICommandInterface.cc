@@ -4,7 +4,6 @@
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
-#include "veins/modules/mobility/traci/TraCICoord.h"
 
 #ifdef _WIN32
 #define realpath(N, R) _fullpath((R), (N), _MAX_PATH)
@@ -57,6 +56,45 @@ void TraCICommandInterface::setApiVersion(uint32_t apiVersion)
     catch (std::out_of_range const& exc) {
         throw cRuntimeError(std::string("TraCI server reports unsupported TraCI API version: " + std::to_string(apiVersion) + ". We recommend using Sumo version 1.0.1 or 0.32.0").c_str());
     }
+}
+
+std::pair<TraCICoord, TraCICoord> TraCICommandInterface::initNetworkBoundaries(int margin)
+{
+    // query road network boundaries
+    TraCIBuffer buf = connection.query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_NET_BOUNDING_BOX) << std::string("sim0"));
+    uint8_t cmdLength_resp;
+    buf >> cmdLength_resp;
+    uint8_t commandId_resp;
+    buf >> commandId_resp;
+    ASSERT(commandId_resp == RESPONSE_GET_SIM_VARIABLE);
+    uint8_t variableId_resp;
+    buf >> variableId_resp;
+    ASSERT(variableId_resp == VAR_NET_BOUNDING_BOX);
+    std::string simId;
+    buf >> simId;
+    uint8_t typeId_resp;
+    buf >> typeId_resp;
+    ASSERT(typeId_resp == getNetBoundaryType());
+    if (getNetBoundaryType() == TYPE_POLYGON) {
+        // Polygons can have an arbitrary number of tuples, so check that it is actually 2
+        uint8_t npoints;
+        buf >> npoints;
+        ASSERT(npoints == 2);
+    }
+    double x1;
+    buf >> x1;
+    double y1;
+    buf >> y1;
+    double x2;
+    buf >> x2;
+    double y2;
+    buf >> y2;
+    ASSERT(buf.eof());
+    EV_DEBUG << "TraCI reports network boundaries (" << x1 << ", " << y1 << ")-(" << x2 << ", " << y2 << ")" << endl;
+    TraCICoord nb1(x1, y1);
+    TraCICoord nb2(x2, y2);
+    connection.setNetbounds(nb1, nb2, margin);
+    return {nb1, nb2};
 }
 
 void TraCICommandInterface::Vehicle::setSpeedMode(int32_t bitset)

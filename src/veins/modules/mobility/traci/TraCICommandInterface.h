@@ -7,6 +7,7 @@
 
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/base/utils/Coord.h"
+#include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 
 namespace Veins {
@@ -52,6 +53,8 @@ public:
     uint8_t getTimeType() const { return versionConfig.timeType; }
     uint8_t getNetBoundaryType() const { return versionConfig.netBoundaryType; }
     uint8_t getTimeStepCmd() const { return versionConfig.timeStepCmd; }
+
+    std::pair<TraCICoord, TraCICoord> initNetworkBoundaries(int margin);
 
     /**
      * Get the distance between two arbitrary positions.
