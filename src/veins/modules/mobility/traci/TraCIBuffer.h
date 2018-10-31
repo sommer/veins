@@ -114,9 +114,12 @@ public:
     std::string str() const;
     std::string hexStr() const;
 
+    static void setTimeAsDouble(bool val) { timeAsDouble = val; }
+
 private:
     std::string buf;
     size_t buf_index;
+    static bool timeAsDouble;
 };
 
 template <>
