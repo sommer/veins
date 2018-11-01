@@ -1,7 +1,3 @@
-Veins 4.8:
-* Rework float comparison to work well for larger numbers (Add Veins::math::almost_equal, deprecate Veins::FWMath::close).
-
-
 Veins 2.1-bis:
 
 + Veins is now a fork of MiXiM (instead of a very long patch). 

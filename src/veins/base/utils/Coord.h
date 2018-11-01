@@ -175,7 +175,7 @@ public:
      * @brief Tests whether two coordinate vectors are equal.
      *
      * Because coordinates are floating point values, this is done using an epsilon comparison.
-	 * @see math::almost_equal
+     * @see math::almost_equal
      *
      */
     friend bool operator==(const Coord& a, const Coord& b)

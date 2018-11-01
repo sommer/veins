@@ -125,7 +125,8 @@ void BaseConnectionManager::initialize(int stage)
         // (the last) grid cell we do this by increasing the find distance
         // by a small value.
         // This also assures that findDistance is never zero.
-        findDistance += Coord(std::numeric_limits<double>::epsilon(), std::numeric_limits<double>::epsilon(), std::numeric_limits<double>::epsilon());
+        const auto epsilon = std::numeric_limits<double>::epsilon();
+        findDistance += Coord(epsilon, epsilon, epsilon);
 
         // findDistance (equals cell size) has to be greater or equal
         // maxInt-distance
