@@ -287,6 +287,29 @@ public:
         return Trafficlight(this, trafficLightId);
     }
 
+    // LaneAreaDetector methods
+    std::list<std::string> getLaneAreaDetectorIds();
+    class LaneAreaDetector {
+    public:
+        LaneAreaDetector(TraCICommandInterface* traci, std::string laneAreaDetectorId)
+            : traci(traci)
+            , laneAreaDetectorId(laneAreaDetectorId)
+        {
+            connection = &traci->connection;
+        }
+
+        int getLastStepVehicleNumber();
+
+    protected:
+        TraCICommandInterface* traci;
+        TraCIConnection* connection;
+        std::string laneAreaDetectorId;
+    };
+    LaneAreaDetector laneAreaDetector(std::string laneAreaDetectorId)
+    {
+        return LaneAreaDetector(this, laneAreaDetectorId);
+    }
+
     // Polygon methods
     std::list<std::string> getPolygonIds();
     void addPolygon(std::string polyId, std::string polyType, const TraCIColor& color, bool filled, int32_t layer, const std::list<Coord>& points);

@@ -716,6 +716,24 @@ void TraCITestApp::handlePositionUpdate()
     }
 
     //
+    // TraCICommandInterface::LaneAreaDetector
+    //
+    if (testNumber == testCounter++) {
+        if (t == 30) {
+            std::list<std::string> o = traci->getLaneAreaDetectorIds();
+            assertEqual("(TraCICommandInterface::getLaneAreaDetectorIds) number is correct", (size_t) 1, o.size());
+            assertEqual("(TraCICommandInterface::getLaneAreaDetectorIds) id is correct", "e2", *o.begin());
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 2) {
+            auto o = traci->laneAreaDetector("e2").getLastStepVehicleNumber();
+            assertEqual("(TraCICommandInterface::LaneAreaDetector::getLastStepVehicleNumber) number is correct", 1, o);
+        }
+    }
+
+    //
     // TraCICommandInterface::GuiView
     //
 
