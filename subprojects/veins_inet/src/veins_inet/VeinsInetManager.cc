@@ -26,28 +26,24 @@ using Veins::VeinsInetManager;
 
 Define_Module(Veins::VeinsInetManager);
 
-VeinsInetManager::~VeinsInetManager() {
+VeinsInetManager::~VeinsInetManager()
+{
 }
 
-void VeinsInetManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals) {
-	// pre-initialize VeinsInetMobility
-	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-		cModule* submod = SUBMODULE_ITERATOR_TO_MODULE(iter);
-		VeinsInetMobility* inetmm = dynamic_cast<VeinsInetMobility*>(submod);
-		if (!inetmm) return;
-		inetmm->preInitialize(nodeId, inet::Coord(position.x, position.y), road_id, speed, angle);
-	}
+void VeinsInetManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals)
+{
+    // pre-initialize VeinsInetMobility
+    auto mobilityModules = getSubmodulesOfType<VeinsInetMobility>(mod);
+    for (auto inetmm : mobilityModules) {
+        inetmm->preInitialize(nodeId, inet::Coord(position.x, position.y), road_id, speed, angle);
+    }
 }
 
-void VeinsInetManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals) {
-	// update position in VeinsInetMobility
-	for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-		cModule* submod = SUBMODULE_ITERATOR_TO_MODULE(iter);
-		VeinsInetMobility *inetmm = dynamic_cast<VeinsInetMobility*>(submod);
-		if (!inetmm) return;
-		inetmm->nextPosition(inet::Coord(p.x, p.y), edge, speed, angle);
-	}
+void VeinsInetManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals)
+{
+    // update position in VeinsInetMobility
+    auto mobilityModules = getSubmodulesOfType<VeinsInetMobility>(mod);
+    for (auto inetmm : mobilityModules) {
+        inetmm->nextPosition(inet::Coord(p.x, p.y), edge, speed, angle);
+    }
 }
-
-
-

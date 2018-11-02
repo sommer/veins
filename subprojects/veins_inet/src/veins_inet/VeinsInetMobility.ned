@@ -19,28 +19,19 @@
 //
 
 //
-// Veins Mobility module for the INET Framework (i.e., implementing inet::IMobility)
-// Based on inet::MobilityBase of INET Framework v3.4.0
+// Veins Mobility module for the INET Framework
+// Based on inet::MovingMobilityBase of INET Framework v4.0.0
 //
-
-import inet.mobility.contract.IMobility;
 
 package org.car2x.veins.subprojects.veins_inet;
 
-simple VeinsInetMobility like IMobility
+import inet.mobility.base.MobilityBase;
+
+simple VeinsInetMobility extends MobilityBase
 {
-	parameters:
-		@class(Veins::VeinsInetMobility);
-		@signal[mobilityStateChanged](type=Veins::VeinsInetMobility);
-		@display("i=block/cogwheel");
-
-		bool visualizeMobility = default(true);
-		string visualRepresentation = default("^");
-
-		double constraintAreaMinX @unit(m) = default(-1m/0); // min x position of the constraint area, unconstrained by default (negative infinity)
-		double constraintAreaMinY @unit(m) = default(-1m/0); // min y position of the constraint area, unconstrained by default (negative infinity)
-		double constraintAreaMinZ @unit(m) = default(-1m/0); // min z position of the constraint area, unconstrained by default (negative infinity)
-		double constraintAreaMaxX @unit(m) = default(1m/0); // max x position of the constraint area, unconstrained by default (positive infinity)
-		double constraintAreaMaxY @unit(m) = default(1m/0); // max y position of the constraint area, unconstrained by default (positive infinity)
-		double constraintAreaMaxZ @unit(m) = default(1m/0); // max z position of the constraint area, unconstrained by default (positive infinity)
+    parameters:
+        @class(Veins::VeinsInetMobility);
+        @display("i=block/cogwheel");
+        @signal[mobilityStateChanged](type=inet::MobilityBase);
+        bool initFromDisplayString = default(true); // do not change this to false
 }

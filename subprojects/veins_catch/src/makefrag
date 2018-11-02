@@ -1,0 +1,9 @@
+all: veins_catch
+
+veins_catch: $(O)/veins_catch$(D)
+	$(qecho) "Creating symlink: $@"
+	$(Q)$(LN) $(O)/veins_catch$(D) .
+
+$(O)/veins_catch$(D): $(OBJS) $(O)/$(TARGET)
+	$(qecho) "Creating binary: $@"
+	$(Q)$(CXX) -o $@ $(OBJS) $(LIBS) $(OMNETPP_LIBS) $(LDFLAGS) -L$(O)

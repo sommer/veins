@@ -20,68 +20,27 @@
 
 #include <omnetpp.h>
 
-namespace omnetpp { }
+namespace omnetpp {
+}
 using namespace omnetpp;
 
 #include "veins/base/utils/miximkerneldefs.h"
 
-// OMNeT 5 compatibility
-// Around OMNeT++ 5.0 beta 2, the "ev" and "simulation" macros were eliminated, and replaced
-// by the functions/methods getEnvir() and getSimulation(), the INET codebase updated.
-// The following lines let the code compile with earlier OMNeT++ versions as well.
-#ifdef ev
-inline cEnvir *getEnvir() {return cSimulation::getActiveEnvir();}
-inline cSimulation *getSimulation() {return cSimulation::getActiveSimulation();}
-inline bool hasGUI() {return cSimulation::getActiveEnvir()->isGUI();}
-#endif  //ev
+namespace Veins {
 
-// new OMNeT++ 5 logging macros
+// Explicit check of OMNeT++ version
 #if OMNETPP_VERSION < 0x500
-#  define EV_FATAL                 EV << "FATAL: "
-#  define EV_ERROR                 EV << "ERROR: "
-#  define EV_WARN                  EV << "WARN: "
-#  define EV_INFO                  EV
-#  define EV_DETAIL                EV << "DETAIL: "
-#  define EV_DEBUG                 EV << "DEBUG: "
-#  define EV_TRACE                 EV << "TRACE: "
-#  define EV_FATAL_C(category)     EV << "[" << category << "] FATAL: "
-#  define EV_ERROR_C(category)     EV << "[" << category << "] ERROR: "
-#  define EV_WARN_C(category)      EV << "[" << category << "] WARN: "
-#  define EV_INFO_C(category)      EV << "[" << category << "] "
-#  define EV_DETAIL_C(category)    EV << "[" << category << "] DETAIL: "
-#  define EV_DEBUG_C(category)     EV << "[" << category << "] DEBUG: "
-#  define EV_TRACE_C(category)     EV << "[" << category << "] TRACE: "
-#  define EV_STATICCONTEXT         /* Empty */
-#endif    // OMNETPP_VERSION < 0x500
-
-// Around OMNeT++ 5.0 beta 2, random variate generation functions like exponential() became
-// members of cComponent. By prefixing calls with the following macro you can make the code
-// compile with earlier OMNeT++ versions as well.
-#if OMNETPP_BUILDNUM >= 1002
-#define RNGCONTEXT  (cSimulation::getActiveSimulation()->getContext())->
-#else
-#define RNGCONTEXT
+#error At least OMNeT++/OMNEST version 5.0.0 required
 #endif
 
-// Around OMNeT++ 5.0 beta 3, MAXTIME was renamed to SIMTIME_MAX
-#if OMNETPP_BUILDNUM < 1005
-#define SIMTIME_MAX MAXTIME
-#endif
-
-// Around OMNeT++ 5, SubmoduleIterator changed from using () to * to get the module
-#if OMNETPP_VERSION < 0x500
-#define SUBMODULE_ITERATOR_TO_MODULE(x) x()
-#else
-#define SUBMODULE_ITERATOR_TO_MODULE(x) *x
-#endif
-
+#define RNGCONTEXT (cSimulation::getActiveSimulation()->getContext())->
 
 #if defined(MIXIM_EXPORT)
-#  define MIXIM_API OPP_DLLEXPORT
+#define MIXIM_API OPP_DLLEXPORT
 #elif defined(MIXIM_IMPORT)
-#  define MIXIM_API OPP_DLLIMPORT
+#define MIXIM_API OPP_DLLIMPORT
 #else
-#  define MIXIM_API
+#define MIXIM_API
 #endif
 
 /**
@@ -90,43 +49,53 @@ inline bool hasGUI() {return cSimulation::getActiveEnvir()->isGUI();}
  */
 class MIXIM_API simsignalwrap_t {
 private:
-	mutable volatile simsignal_t ssChangeSignal;
-	const char *const            sSignalName;
-	mutable const char *         sRunId;
-public:
-	simsignalwrap_t(const char *const pSignalName)
-	  : ssChangeSignal(SIMSIGNAL_NULL)
-	  , sSignalName(pSignalName)
-	  , sRunId(NULL)
-	{}
-	simsignalwrap_t(const simsignalwrap_t& pCpy)
-	  : ssChangeSignal(pCpy.ssChangeSignal)
-	  , sSignalName(pCpy.sSignalName)
-	  , sRunId(pCpy.sRunId)
-	{}
+    mutable volatile simsignal_t ssChangeSignal;
+    const char* const sSignalName;
+    mutable const char* sRunId;
 
-	/** Cast operator to simsignal_t, we initialize the signal here if it is empty ;). */
-	operator simsignal_t () const {
-		// if this signal was never used (or if this is a new run): register the signal
-		if ((ssChangeSignal == SIMSIGNAL_NULL) || (getRunId() != sRunId)) {
-			ASSERT(sSignalName);
-			sRunId = getRunId();
-			ssChangeSignal = cComponent::registerSignal(sSignalName);
-			// throw cRuntimeError("%d = cComponent::registerSignal(\"%s\")", ssChangeSignal, sSignalName);
-		}
-		return ssChangeSignal;
-	}
+public:
+    simsignalwrap_t(const char* const pSignalName)
+        : ssChangeSignal(SIMSIGNAL_NULL)
+        , sSignalName(pSignalName)
+        , sRunId(NULL)
+    {
+    }
+    simsignalwrap_t(const simsignalwrap_t& pCpy)
+        : ssChangeSignal(pCpy.ssChangeSignal)
+        , sSignalName(pCpy.sSignalName)
+        , sRunId(pCpy.sRunId)
+    {
+    }
+
+    /** Cast operator to simsignal_t, we initialize the signal here if it is empty ;). */
+    operator simsignal_t() const
+    {
+        // if this signal was never used (or if this is a new run): register the signal
+        if ((ssChangeSignal == SIMSIGNAL_NULL) || (getRunId() != sRunId)) {
+            ASSERT(sSignalName);
+            sRunId = getRunId();
+            ssChangeSignal = cComponent::registerSignal(sSignalName);
+            // throw cRuntimeError("%d = cComponent::registerSignal(\"%s\")", ssChangeSignal, sSignalName);
+        }
+        return ssChangeSignal;
+    }
+
 protected:
-	const char* getRunId() const {
-		return cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
-	}
+    const char* getRunId() const
+    {
+        return cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
+    }
+
 private:
-	// not allowed
-	simsignalwrap_t()
-	  : ssChangeSignal(SIMSIGNAL_NULL)
-	  , sSignalName(NULL)
-	  , sRunId(NULL)
-	{}
+    // not allowed
+    simsignalwrap_t()
+        : ssChangeSignal(SIMSIGNAL_NULL)
+        , sSignalName(NULL)
+        , sRunId(NULL)
+    {
+    }
 };
+
+} // namespace Veins
 
 #endif

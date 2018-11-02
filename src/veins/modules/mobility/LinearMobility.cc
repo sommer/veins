@@ -17,36 +17,41 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-#include "LinearMobility.h"
+#include "veins/modules/mobility/LinearMobility.h"
 
 #include <omnetpp.h>
 
-Define_Module(LinearMobility);
+#ifndef debugEV
+#define debugEV_clear EV
+#define debugEV EV << logName() << "::" << getClassName() << ": "
+#endif
+
+using namespace Veins;
+
+Define_Module(Veins::LinearMobility);
 
 void LinearMobility::initialize(int stage)
 {
-	BaseMobility::initialize(stage);
+    BaseMobility::initialize(stage);
 
-	debugEV << "initializing LinearMobility stage " << stage << endl;
+    debugEV << "initializing LinearMobility stage " << stage << endl;
 
-	if (stage == 0){
-		move.setSpeed(par("speed").doubleValue());
-		acceleration = par("acceleration");
-		angle = par("angle");
-		angle = fmod(angle,360);
-	}
-	else if(stage == 1){
-		stepTarget = move.getStartPos();
-	}
+    if (stage == 0) {
+        move.setSpeed(par("speed").doubleValue());
+        acceleration = par("acceleration");
+        angle = par("angle");
+        angle = fmod(angle, 360);
+    }
+    else if (stage == 1) {
+        stepTarget = move.getStartPos();
+    }
 }
-
 
 void LinearMobility::fixIfHostGetsOutside()
 {
-	Coord dummy = Coord::ZERO;
-	handleIfOutside(WRAP, stepTarget, dummy, dummy, angle);
+    Coord dummy = Coord::ZERO;
+    handleIfOutside(WRAP, stepTarget, dummy, dummy, angle);
 }
-
 
 /**
  * Move the host if the destination is not reached yet. Otherwise
@@ -54,19 +59,19 @@ void LinearMobility::fixIfHostGetsOutside()
  */
 void LinearMobility::makeMove()
 {
-	debugEV << "start makeMove " << move.info() << endl;
+    debugEV << "start makeMove " << move.info() << endl;
 
-	move.setStart(stepTarget, simTime());
+    move.setStart(stepTarget, simTime());
 
-	stepTarget.x = (move.getStartPos().x + move.getSpeed() * cos(M_PI * angle / 180) * SIMTIME_DBL(updateInterval));
-	stepTarget.y = (move.getStartPos().y + move.getSpeed() * sin(M_PI * angle / 180) * SIMTIME_DBL(updateInterval));
+    stepTarget.x = (move.getStartPos().x + move.getSpeed() * cos(M_PI * angle / 180) * SIMTIME_DBL(updateInterval));
+    stepTarget.y = (move.getStartPos().y + move.getSpeed() * sin(M_PI * angle / 180) * SIMTIME_DBL(updateInterval));
 
-	move.setDirectionByTarget(stepTarget);
+    move.setDirectionByTarget(stepTarget);
 
-	debugEV << "new stepTarget: " << stepTarget.info() << endl;
+    debugEV << "new stepTarget: " << stepTarget.info() << endl;
 
-	// accelerate
-	move.setSpeed(move.getSpeed() + acceleration * SIMTIME_DBL(updateInterval));
+    // accelerate
+    move.setSpeed(move.getSpeed() + acceleration * SIMTIME_DBL(updateInterval));
 
-	fixIfHostGetsOutside();
+    fixIfHostGetsOutside();
 }

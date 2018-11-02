@@ -18,28 +18,36 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-packet WaveShortMessage {
-	//Version of the Wave Short Message
-	int wsmVersion = 0;
-	//Determine which security mechanism was used
-	int securityType = 0;
-	//Channel Number on which this packet was sent
-	int channelNumber;
-	//Data rate with which this packet was sent
-	int dataRate = 1;
-	//User priority with which this packet was sent (note the AC mapping rules in Mac1609_4::mapUserPriority)
-	int userPriority = 7;
-	//Unique number to identify the service
-	int psid = 0;
-	//Provider Service Context
-	string psc = "Service with some Data";
-	//Length of Wave Short Message
-	int wsmLength;
-	//Data of Wave Short Message
-	string wsmData = "Some Data";
+cplusplus {{
+#include "veins/base/utils/SimpleAddress.h"
+}}
 
-	int senderAddress = 0;
-	int recipientAddress = -1;
-	int serial = 0;
-	simtime_t timestamp = 0;
+namespace Veins;
+
+class LAddress::L2Type extends void;
+
+packet WaveShortMessage {
+    //Version of the Wave Short Message
+    int wsmVersion = 0;
+    //Determine which security mechanism was used
+    int securityType = 0;
+    //Channel Number on which this packet was sent
+    int channelNumber;
+    //Data rate with which this packet was sent
+    int dataRate = 1;
+    //User priority with which this packet was sent (note the AC mapping rules in Mac1609_4::mapUserPriority)
+    int userPriority = 7;
+    //Unique number to identify the service
+    int psid = 0;
+    //Provider Service Context
+    string psc = "Service with some Data";
+    //Length of Wave Short Message
+    int wsmLength;
+    //Data of Wave Short Message
+    string wsmData = "Some Data";
+
+    LAddress::L2Type senderAddress = 0;
+    LAddress::L2Type recipientAddress = -1;
+    int serial = 0;
+    simtime_t timestamp = 0;
 }

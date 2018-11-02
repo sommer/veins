@@ -22,7 +22,7 @@ package org.car2x.veins.nodes;
 
 import org.car2x.veins.base.connectionManager.ConnectionManager;
 import org.car2x.veins.base.modules.BaseWorldUtility;
-import org.car2x.veins.modules.mobility.traci.TraCIScenarioManagerLaunchd;
+import org.car2x.veins.modules.mobility.traci.TraCIScenarioManager*;
 import org.car2x.veins.modules.obstacle.ObstacleControl;
 import org.car2x.veins.modules.world.annotations.AnnotationManager;
 
@@ -55,7 +55,7 @@ network Scenario
             parameters:
                 @display("p=512,128");
         }
-        
+
     connections allowunconnected:
 }
 

@@ -22,19 +22,20 @@
 
 #include "veins/base/utils/MiXiMDefs.h"
 
+namespace Veins {
+
 /**
  * AnnotationDummy is just a workaround to visualize annotations
  *
  * @author Christoph Sommer
  */
-namespace Veins {
-class AnnotationDummy : public cSimpleModule
-{
-	public:
-		~AnnotationDummy();
+class AnnotationDummy : public cSimpleModule {
+public:
+    ~AnnotationDummy();
 
-	protected:
+protected:
 };
-}
+
+} // namespace Veins
 
 #endif

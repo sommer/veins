@@ -1,6 +1,7 @@
 src/Makefile
 src/*.so
 src/*.dll
+src/*.dylib
 src/**/*_m.h
 src/**/*_m.cc
 
@@ -8,16 +9,16 @@ doc/doxy
 doc/neddoc
 
 /run
-/debug
-/memcheck
 
 /out
 
 tests/**/results
 tests/**/.tkenvrc
 tests/**/.qtenvrc
+tests/**/.cmdenv-log
 tests/**/out.tmp
 tests/**/err.tmp
+tests/traci/*.out.xml
 
 examples/**/results
 examples/**/.tkenvrc
@@ -25,15 +26,37 @@ examples/**/.qtenvrc
 examples/**/.cmdenv-log
 examples/**/valgrind.out
 
+subprojects/veins_catch/out
+subprojects/veins_catch/run
+subprojects/veins_catch/src/*.dll
+subprojects/veins_catch/src/*.dylib
+subprojects/veins_catch/src/*.so
+subprojects/veins_catch/src/Makefile
+subprojects/veins_catch/src/veins_catch
+subprojects/veins_catch/src/veins_catch_dbg
+
+subprojects/veins_inet3/src/Makefile
+subprojects/veins_inet3/src/*.so
+subprojects/veins_inet3/src/*.dll
+subprojects/veins_inet3/src/*.dylib
+subprojects/veins_inet3/src/**/*_m.h
+subprojects/veins_inet3/src/**/*_m.cc
+subprojects/veins_inet3/out
+subprojects/veins_inet3/run
+subprojects/veins_inet3/examples/**/results
+subprojects/veins_inet3/examples/**/.tkenvrc
+subprojects/veins_inet3/examples/**/.qtenvrc
+subprojects/veins_inet3/examples/**/.cmdenv-log
+subprojects/veins_inet3/examples/**/valgrind.out
+
 subprojects/veins_inet/src/Makefile
 subprojects/veins_inet/src/*.so
 subprojects/veins_inet/src/*.dll
+subprojects/veins_inet/src/*.dylib
 subprojects/veins_inet/src/**/*_m.h
 subprojects/veins_inet/src/**/*_m.cc
 subprojects/veins_inet/out
 subprojects/veins_inet/run
-subprojects/veins_inet/debug
-subprojects/veins_inet/memcheck
 subprojects/veins_inet/examples/**/results
 subprojects/veins_inet/examples/**/.tkenvrc
 subprojects/veins_inet/examples/**/.qtenvrc

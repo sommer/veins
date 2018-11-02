@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<routes>
+   <vType id="vtype0" accel="2.6" decel="4.5" sigma="0.5" length="2.5" minGap="2.5" maxSpeed="14" color="1,1,0"/>
+   <route id="route0" edges="A0toB0 B0toB1 B1toA1 A1toA0"/>
+   <flow id="flow0" type="vtype0" route="route0" begin="0" period="5" number="3"/>
+</routes>

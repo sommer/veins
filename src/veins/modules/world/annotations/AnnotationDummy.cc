@@ -21,9 +21,8 @@
 
 using Veins::AnnotationDummy;
 
-Define_Module(AnnotationDummy);
+Define_Module(Veins::AnnotationDummy);
 
-AnnotationDummy::~AnnotationDummy() {
+AnnotationDummy::~AnnotationDummy()
+{
 }
-
-

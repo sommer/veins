@@ -11,45 +11,49 @@
 
 using Veins::BatteryAccess;
 
-BatteryAccess::BatteryAccess():
-	BaseModule(),
-	battery(NULL)
-{}
-
-BatteryAccess::BatteryAccess(unsigned stacksize):
-	BaseModule(stacksize),
-	battery(NULL)
-{}
-
-void BatteryAccess::registerWithBattery(const std::string& name, int numAccounts) {
-	battery = FindModule<BaseBattery*>::findSubModule(findHost());
-
-	if(!battery) {
-		throw cRuntimeError("No battery module defined!");
-	} else {
-		deviceID = battery->registerDevice(name, numAccounts);
-	}
+BatteryAccess::BatteryAccess()
+    : BaseModule()
+    , battery(NULL)
+{
 }
 
-void BatteryAccess::draw(DrawAmount& amount, int account) {
-	if(!battery)
-		return;
-
-	battery->draw(deviceID, amount, account);
+BatteryAccess::BatteryAccess(unsigned stacksize)
+    : BaseModule(stacksize)
+    , battery(NULL)
+{
 }
 
-void BatteryAccess::drawCurrent(double amount, int account) {
-	if(!battery)
-		return;
+void BatteryAccess::registerWithBattery(const std::string& name, int numAccounts)
+{
+    battery = FindModule<BaseBattery*>::findSubModule(findHost());
 
-	DrawAmount val(DrawAmount::CURRENT, amount);
-	battery->draw(deviceID, val, account);
+    if (!battery) {
+        throw cRuntimeError("No battery module defined!");
+    }
+    else {
+        deviceID = battery->registerDevice(name, numAccounts);
+    }
 }
 
-void BatteryAccess::drawEnergy(double amount, int account) {
-	if(!battery)
-		return;
+void BatteryAccess::draw(DrawAmount& amount, int account)
+{
+    if (!battery) return;
 
-	DrawAmount val(DrawAmount::ENERGY, amount);
-	battery->draw(deviceID, val, account);
+    battery->draw(deviceID, amount, account);
+}
+
+void BatteryAccess::drawCurrent(double amount, int account)
+{
+    if (!battery) return;
+
+    DrawAmount val(DrawAmount::CURRENT, amount);
+    battery->draw(deviceID, val, account);
+}
+
+void BatteryAccess::drawEnergy(double amount, int account)
+{
+    if (!battery) return;
+
+    DrawAmount val(DrawAmount::ENERGY, amount);
+    battery->draw(deviceID, val, account);
 }

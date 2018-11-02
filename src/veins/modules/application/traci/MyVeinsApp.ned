@@ -26,6 +26,6 @@ import org.car2x.veins.modules.application.ieee80211p.BaseWaveApplLayer;
 //
 simple MyVeinsApp extends BaseWaveApplLayer
 {
-    @class(MyVeinsApp);
+    @class(Veins::MyVeinsApp);
     string appName = default("My first Veins App!");
 }

@@ -23,10 +23,12 @@ cplusplus {{
 #include "veins/modules/messages/WaveShortMessage_m.h"
 }}
 
+namespace Veins;
+
 class WaveShortMessage;
 class noncobject Coord;
 
 packet WaveServiceAdvertisment extends WaveShortMessage {
-	int targetChannel;
-	string serviceDescription;
+    int targetChannel;
+    string serviceDescription;
 }

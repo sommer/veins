@@ -24,13 +24,15 @@
 
 #include "veins/base/utils/MiXiMDefs.h"
 
+namespace Veins {
+
 /** @brief Layer address handling helper function.
  *
  * This class helps to make the layer addressing more generic. The type definition
  * for L2, and L3 addresses should be used for address definitions to simplify the
  * switching to other types.
  *
- * @ATTENTION Both types (LAddress::L2Type, LAddress::L3Type) will be used as keys in
+ * @attention Both types (LAddress::L2Type, LAddress::L3Type) will be used as keys in
  *            in STL containers.
  */
 class MIXIM_API LAddress {
@@ -49,25 +51,30 @@ public:
     typedef long L3Type;
 
     /** @brief Broadcast address for L2 addresses. */
-    static const L2Type& L2BROADCAST() {
+    static const L2Type& L2BROADCAST()
+    {
         static L2Type o(-1);
-	return o;
+        return o;
     }
     /** @brief NULL address for L2 addresses. */
-    static const L2Type& L2NULL() {
+    static const L2Type& L2NULL()
+    {
         static L2Type o(0);
-	return o;
+        return o;
     }
     /** @brief Broadcast address for L3 addresses. */
-    static const L3Type& L3BROADCAST() {
+    static const L3Type& L3BROADCAST()
+    {
         static L3Type o(-1);
-	return o;
+        return o;
     }
     /** @brief NULL address for L3 addresses. */
-    static const L3Type& L3NULL() {
+    static const L3Type& L3NULL()
+    {
         static L3Type o(0);
-	return o;
+        return o;
     }
+
 public:
     /**
      * @brief Test if a L2 address (pSrcAddr) is a broadcast address.
@@ -75,7 +82,8 @@ public:
      * @param  pSrcAddr The L2 address which should be tested.
      * @return True if pSrcAddr is a braodcast address.
      */
-    static inline bool isL2Broadcast(const L2Type& pSrcAddr) {
+    static inline bool isL2Broadcast(const L2Type& pSrcAddr)
+    {
         return pSrcAddr == L2BROADCAST();
     }
     /**
@@ -84,9 +92,12 @@ public:
      * @param  pSrcAddr The L3 address which should be tested.
      * @return True if pSrcAddr is a braodcast address.
      */
-    static inline bool isL3Broadcast(const L3Type& pSrcAddr) {
+    static inline bool isL3Broadcast(const L3Type& pSrcAddr)
+    {
         return pSrcAddr == L3BROADCAST();
     }
 };
+
+} // namespace Veins
 
 #endif

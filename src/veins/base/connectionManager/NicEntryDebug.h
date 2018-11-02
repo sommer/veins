@@ -27,6 +27,8 @@
 #include <map>
 #include <vector>
 
+namespace Veins {
+
 /**
  * @brief NicEntry is used by ConnectionManager to store the necessary
  * information for each nic
@@ -35,9 +37,8 @@
  * @author Daniel Willkomm
  * @sa ConnectionManager, NicEntry
  */
-class NicEntryDebug: public NicEntry
-{
-  protected:
+class NicEntryDebug : public NicEntry {
+protected:
     /** @brief Number of in gates allocated for the nic so far*/
     int inCnt;
 
@@ -53,27 +54,27 @@ class NicEntryDebug: public NicEntry
      */
     bool checkFreeGates;
 
-    typedef std::vector<cGate* > GateStack;
+    typedef std::vector<cGate*> GateStack;
     /** @brief In Gates that were once used but are not connected now */
     GateStack freeInGates;
 
     /** @brief Out Gates that were once used but are not connected now */
     GateStack freeOutGates;
 
-  protected:
+protected:
     /**
      * @brief Returns a free in gate of the nic
-	 *
-	 * This checks the list of free in gates, if one is available it is
-	 * returned. Otherwise, a new in gate is added to the nic.
-	 */
+     *
+     * This checks the list of free in gates, if one is available it is
+     * returned. Otherwise, a new in gate is added to the nic.
+     */
     cGate* requestInGate(void);
 
     /**
      * @brief Returns a free out gate of the nic
      *
-	 * returns a free out gate. If none is available it is created. See
-	 * NicEntry::requestInGate for a detailed description
+     * returns a free out gate. If none is available it is created. See
+     * NicEntry::requestInGate for a detailed description
      */
     cGate* requestOutGate(void);
 
@@ -101,21 +102,22 @@ class NicEntryDebug: public NicEntry
      */
     void collectFreeGates();
 
-  public:
+public:
     /**
      * @brief Constructor, initializes all members
      */
-    NicEntryDebug(bool debug) :
-    	NicEntry(debug),
-    	inCnt(0),
-    	outCnt(0),
-    	checkFreeGates(true)
-    {};
+    NicEntryDebug(bool debug)
+        : NicEntry(debug)
+        , inCnt(0)
+        , outCnt(0)
+        , checkFreeGates(true){};
 
     /**
      * @brief Removes all dynamically created out-/ingates.
      */
-    virtual ~NicEntryDebug() {}
+    virtual ~NicEntryDebug()
+    {
+    }
 
     /**
      * @brief Connect two nics
@@ -133,11 +135,13 @@ class NicEntryDebug: public NicEntry
     /**
      * @brief Disconnect two nics
      *
-	 * Release unidirectional connection with other nic
-	 *
-	 * @param other reference to remote nic (other NicEntry)
-	 **/
+     * Release unidirectional connection with other nic
+     *
+     * @param other reference to remote nic (other NicEntry)
+     **/
     virtual void disconnectFrom(NicEntry* other);
 };
+
+} // namespace Veins
 
 #endif

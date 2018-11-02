@@ -23,6 +23,8 @@
 
 #include "veins/base/phyLayer/MacToPhyInterface.h"
 
+namespace Veins {
+
 /**
  * @brief
  * Interface of PhyLayer80211p exposed to Mac1609_4.
@@ -33,16 +35,20 @@
  * @ingroup phyLayer
  */
 class Mac80211pToPhy11pInterface {
-	public:
-		enum BasePhyMessageKinds {
-			CHANNEL_IDLE,
-			CHANNEL_BUSY,
-		};
+public:
+    enum BasePhyMessageKinds {
+        CHANNEL_IDLE,
+        CHANNEL_BUSY,
+    };
 
-	public:
-		virtual void changeListeningFrequency(double freq) = 0;
-		virtual void setCCAThreshold(double ccaThreshold_dBm) = 0;
-		virtual ~Mac80211pToPhy11pInterface() {};
+public:
+    virtual void changeListeningFrequency(double freq) = 0;
+    virtual void setCCAThreshold(double ccaThreshold_dBm) = 0;
+    virtual void notifyMacAboutRxStart(bool enable) = 0;
+    virtual void requestChannelStatusIfIdle() = 0;
+    virtual ~Mac80211pToPhy11pInterface(){};
 };
+
+} // namespace Veins
 
 #endif /* MAC80211PTOPHY11PINTERFACE_H_ */

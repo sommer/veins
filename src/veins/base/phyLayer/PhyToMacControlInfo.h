@@ -6,6 +6,8 @@
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/Decider.h"
 
+namespace Veins {
+
 /**
  * @brief Controlinfo for packets which are send from Physical
  * layer to the MAC layer.
@@ -14,34 +16,37 @@
  * @ingroup phyLayer
  * @ingroup macLayer
  */
-class MIXIM_API PhyToMacControlInfo: public cObject {
+class MIXIM_API PhyToMacControlInfo : public cObject {
 protected:
-	/** The result of the decider evaluation.*/
-	DeciderResult * result;
+    /** The result of the decider evaluation.*/
+    DeciderResult* result;
 
 public:
-	/**
-	 * @brief Initializes the PhyToMacControlInfo with the passed DeciderResult.
-	 *
-	 * NOTE: PhyToMacControlInfo takes ownership of the passed DeciderResult!
-	 */
-	PhyToMacControlInfo(DeciderResult* result):
-		result(result) {}
+    /**
+     * @brief Initializes the PhyToMacControlInfo with the passed DeciderResult.
+     *
+     * NOTE: PhyToMacControlInfo takes ownership of the passed DeciderResult!
+     */
+    PhyToMacControlInfo(DeciderResult* result)
+        : result(result)
+    {
+    }
 
-	/**
-	 * @brief Clean up the DeciderResult.
-	 */
-	virtual ~PhyToMacControlInfo() {
-		if(result)
-			delete result;
-	}
+    /**
+     * @brief Clean up the DeciderResult.
+     */
+    virtual ~PhyToMacControlInfo()
+    {
+        if (result) delete result;
+    }
 
-	/**
-	 * @brief Returns the result of the evaluation of the Decider.
-	 */
-	DeciderResult* getDeciderResult() const {
-		return result;
-	}
+    /**
+     * @brief Returns the result of the evaluation of the Decider.
+     */
+    DeciderResult* getDeciderResult() const
+    {
+        return result;
+    }
 
     /**
      * @brief Attaches a "control info" structure (object) to the message pMsg.
@@ -53,31 +58,35 @@ public:
      * Only one "control info" structure can be attached (the second
      * setL3ToL2ControlInfo() call throws an error).
      *
-     * @param pMsg				The message where the "control info" shall be attached.
-     * @param pDeciderResult	The decider results.
+     * @param pMsg                The message where the "control info" shall be attached.
+     * @param pDeciderResult    The decider results.
      */
-    static cObject *const setControlInfo(cMessage *const pMsg, DeciderResult *const pDeciderResult) {
-    	PhyToMacControlInfo *const cCtrlInfo = new PhyToMacControlInfo(pDeciderResult);
-    	pMsg->setControlInfo(cCtrlInfo);
+    static cObject* const setControlInfo(cMessage* const pMsg, DeciderResult* const pDeciderResult)
+    {
+        PhyToMacControlInfo* const cCtrlInfo = new PhyToMacControlInfo(pDeciderResult);
+        pMsg->setControlInfo(cCtrlInfo);
 
-    	return cCtrlInfo;
+        return cCtrlInfo;
     }
     /**
      * @brief extracts the decider result from message "control info".
      */
-    static DeciderResult *const getDeciderResult(cMessage *const pMsg) {
-    	return getDeciderResultFromControlInfo(pMsg->getControlInfo());
+    static DeciderResult* const getDeciderResult(cMessage* const pMsg)
+    {
+        return getDeciderResultFromControlInfo(pMsg->getControlInfo());
     }
     /**
      * @brief extracts the decider result from message "control info".
      */
-    static DeciderResult *const getDeciderResultFromControlInfo(cObject *const pCtrlInfo) {
-    	PhyToMacControlInfo *const cCtrlInfo = dynamic_cast<PhyToMacControlInfo *const>(pCtrlInfo);
+    static DeciderResult* const getDeciderResultFromControlInfo(cObject* const pCtrlInfo)
+    {
+        PhyToMacControlInfo* const cCtrlInfo = dynamic_cast<PhyToMacControlInfo* const>(pCtrlInfo);
 
-    	if (cCtrlInfo)
-    		return cCtrlInfo->getDeciderResult();
-    	return NULL;
+        if (cCtrlInfo) return cCtrlInfo->getDeciderResult();
+        return NULL;
     }
 };
+
+} // namespace Veins
 
 #endif /*PHYTOMACCONTROLINFO_H_*/

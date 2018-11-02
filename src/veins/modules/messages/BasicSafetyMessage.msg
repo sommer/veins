@@ -23,10 +23,12 @@ cplusplus {{
 #include "veins/modules/messages/WaveShortMessage_m.h"
 }}
 
+namespace Veins;
+
 class WaveShortMessage;
 class noncobject Coord;
 
 packet BasicSafetyMessage extends WaveShortMessage {
-	Coord senderPos;
-	Coord senderSpeed;
+    Coord senderPos;
+    Coord senderSpeed;
 }

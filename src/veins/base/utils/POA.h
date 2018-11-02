@@ -12,6 +12,7 @@
 #include "veins/base/utils/Coord.h"
 #include <memory>
 
+namespace Veins {
 
 /**
  * @brief Container class used to attach data to Airframe s which are
@@ -41,10 +42,13 @@ public:
     std::shared_ptr<Antenna> antenna;
 
     POA(){};
-    POA(Coord pos, Coord orientation, std::shared_ptr<Antenna> antenna): pos(pos), orientation(orientation), antenna(antenna) {};
+    POA(Coord pos, Coord orientation, std::shared_ptr<Antenna> antenna)
+        : pos(pos)
+        , orientation(orientation)
+        , antenna(antenna){};
     virtual ~POA(){};
 };
 
-
+} // namespace Veins
 
 #endif /* POA_H_ */

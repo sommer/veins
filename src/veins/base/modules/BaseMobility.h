@@ -19,7 +19,6 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-
 #ifndef BASE_MOBILITY_H
 #define BASE_MOBILITY_H
 
@@ -28,6 +27,8 @@
 #include "veins/base/utils/Coord.h"
 #include "veins/base/utils/Move.h"
 #include "veins/base/modules/BaseWorldUtility.h"
+
+namespace Veins {
 
 using Veins::BatteryAccess;
 
@@ -60,9 +61,8 @@ using Veins::BatteryAccess;
  * @ingroup baseModules
  * @author Daniel Willkomm, Andras Varga
  */
-class MIXIM_API BaseMobility : public BatteryAccess
-{
-  public:
+class MIXIM_API BaseMobility : public BatteryAccess {
+public:
     /**
      * @brief Selects how a node should behave if it reaches the edge
      * of the playground.
@@ -70,10 +70,10 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * @sa handleIfOutside()
      */
     enum BorderPolicy {
-        REFLECT,       ///< reflect off the wall
-        WRAP,          ///< reappear at the opposite edge (torus)
+        REFLECT, ///< reflect off the wall
+        WRAP, ///< reappear at the opposite edge (torus)
         PLACERANDOMLY, ///< placed at a randomly chosen position on the playground
-        RAISEERROR     ///< stop the simulation with error
+        RAISEERROR ///< stop the simulation with error
     };
 
     /**
@@ -85,27 +85,26 @@ class MIXIM_API BaseMobility : public BatteryAccess
         MOVE_HOST = 21311,
         MOVE_TO_BORDER,
         /** Stores the id on which classes extending BaseMobility should
-		 * continue their own kinds.*/
-		LAST_BASE_MOBILITY_KIND,
+         * continue their own kinds.*/
+        LAST_BASE_MOBILITY_KIND,
     };
 
     /**
      * @brief Specifies which border actually has been reached
      */
     enum BorderHandling {
-    	NOWHERE,   ///< not outside the playground
+        NOWHERE, ///< not outside the playground
         X_SMALLER, ///< x smaller than 0
-		X_BIGGER,  ///< x bigger or equal than playground size
-		Y_SMALLER, ///< y smaller than 0
-		Y_BIGGER,  ///< y bigger or equal than playground size
-		Z_SMALLER, ///< z smaller than 0
-		Z_BIGGER   ///< z bigger or equal than playground size
+        X_BIGGER, ///< x bigger or equal than playground size
+        Y_SMALLER, ///< y smaller than 0
+        Y_BIGGER, ///< y bigger or equal than playground size
+        Z_SMALLER, ///< z smaller than 0
+        Z_BIGGER ///< z bigger or equal than playground size
     };
 
-  protected:
-
+protected:
     /** @brief Pointer to BaseWorldUtility -- these two must know each other */
-    BaseWorldUtility *world;
+    BaseWorldUtility* world;
 
     /** @brief Stores the current position and move pattern of the host*/
     Move move;
@@ -138,8 +137,8 @@ class MIXIM_API BaseMobility : public BatteryAccess
 
     /** @brief The original size of the icon of the node.*/
     double origIconSize;
-  public:
 
+public:
     BaseMobility();
     BaseMobility(unsigned stacksize);
 
@@ -148,7 +147,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * Dispatches border messages to handleBorderMsg() and all other
      * self-messages to handleSelfMsg()
      */
-    virtual void handleMessage(cMessage *msg);
+    virtual void handleMessage(cMessage* msg);
 
     /** @brief Initializes mobility model parameters.
      *
@@ -170,24 +169,29 @@ class MIXIM_API BaseMobility : public BatteryAccess
     virtual void finish(){};
 
     /** @brief Returns the current position at the current simulation time. */
-    virtual Coord getCurrentPosition(/*simtime_t_cref stWhen = simTime()*/) const {
-    	//return move.getPositionAt(stWhen);
-    	return move.getStartPos();
+    virtual Coord getCurrentPosition(/*simtime_t_cref stWhen = simTime()*/) const
+    {
+        // return move.getPositionAt(stWhen);
+        return move.getStartPos();
     }
 
-    virtual Coord getCurrentOrientation() const {
+    virtual Coord getCurrentOrientation() const
+    {
         return move.getOrientation();
     }
 
     /** @brief Returns the current speed at the current simulation time. */
-    virtual Coord getCurrentSpeed() const {
-    	return move.getDirection() * move.getSpeed();
+    virtual Coord getCurrentSpeed() const
+    {
+        return move.getDirection() * move.getSpeed();
     }
 
-    virtual Coord getCurrentDirection() const {
+    virtual Coord getCurrentDirection() const
+    {
         return move.getDirection();
     }
-  protected:
+
+protected:
     /**
      * @brief Maps the passed icon size tag (is) to an actual size in pixels.
      *
@@ -197,13 +201,13 @@ class MIXIM_API BaseMobility : public BatteryAccess
     virtual int iconSizeTagToSize(const char* tag);
 
     /**
-	 * @brief Maps the passed size in pixels to an appropriate icon size
-	 * tag (is).
-	 *
-	 * @param size - the icon size to get an appropriate tag for
-	 * @return an icon size tag
-	 */
-	virtual const char* iconSizeToTag(double size);
+     * @brief Maps the passed size in pixels to an appropriate icon size
+     * tag (is).
+     *
+     * @param size - the icon size to get an appropriate tag for
+     * @return an icon size tag
+     */
+    virtual const char* iconSizeToTag(double size);
 
     /** @brief Called upon arrival of a self messages
      *
@@ -214,7 +218,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * movement. Afterward updatePosition updates the position with the
      * display.
      */
-    virtual void handleSelfMsg( cMessage* );
+    virtual void handleSelfMsg(cMessage*);
 
     /** @brief Called upon arrival of a border messages
      *
@@ -225,7 +229,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * cases where the host moved in both (x and y) direction outside the
      * playground.
      */
-    virtual void handleBorderMsg( cMessage* );
+    virtual void handleBorderMsg(cMessage*);
 
     /**
      * @brief Moves the host
@@ -236,8 +240,9 @@ class MIXIM_API BaseMobility : public BatteryAccess
      *
      * You should call fixIfHostGetsOutside here for border handling
      */
-    virtual void makeMove(){
-    	error("BaseMobility does not move the host");
+    virtual void makeMove()
+    {
+        error("BaseMobility does not move the host");
     };
 
     /** @brief Update the position information for this node
@@ -252,16 +257,28 @@ class MIXIM_API BaseMobility : public BatteryAccess
     virtual void updatePosition();
 
     /** @brief Returns the width of the playground */
-    double playgroundSizeX() const  {return world->getPgs()->x;}
+    double playgroundSizeX() const
+    {
+        return world->getPgs()->x;
+    }
 
     /** @brief Returns the height of the playground */
-    double playgroundSizeY() const  {return world->getPgs()->y;}
+    double playgroundSizeY() const
+    {
+        return world->getPgs()->y;
+    }
 
     /** @brief Returns the height of the playground */
-    double playgroundSizeZ() const  {return world->getPgs()->z;}
+    double playgroundSizeZ() const
+    {
+        return world->getPgs()->z;
+    }
 
-	/** @brief Random position somewhere in the playground. DEPRECATED: Use BaseWorldUtility::getRandomPosition() instead */
-	Coord getRandomPosition() { return world->getRandomPosition();}
+    /** @brief Random position somewhere in the playground. DEPRECATED: Use BaseWorldUtility::getRandomPosition() instead */
+    Coord getRandomPosition()
+    {
+        return world->getRandomPosition();
+    }
 
     /**
      * @name Border handling
@@ -274,31 +291,31 @@ class MIXIM_API BaseMobility : public BatteryAccess
 
     /** @brief Main border handling function
      *
-	 * This function takes the BorderPolicy and all variables to be
-	 * modified in case a border is reached and invokes the appropriate
-	 * action. Pass dummy variables if you do not need them.
-	 *
-	 * The supported border policies are REFLECT, WRAP, PLACERANDOMLY, and
-	 * RAISEERROR.
-	 *
-	 * The policy and stepTarget are mandatory parameters to
-	 * pass. stepTarget is used to check whether the host actually moved
-	 * outside the playground.
-	 *
-	 * Additional parameters to pass (in case of non atomic movements) can
-	 * be targetPos (the target the host is moving to) and step (the size
-	 * of a step).
-	 *
-	 * Angle is the direction in which the host is moving.
-	 *
-	 * @param policy BorderPolicy to use
-	 * @param stepTarget target position of the next step of the host
-	 * @param targetPos target position of the host (for non atomic movement)
-	 * @param step step size of the host (for non atomic movement)
-	 * @param angle direction in which the host is moving
-	 *
-	 * @return true if host was outside, false otherwise.
-	 */
+     * This function takes the BorderPolicy and all variables to be
+     * modified in case a border is reached and invokes the appropriate
+     * action. Pass dummy variables if you do not need them.
+     *
+     * The supported border policies are REFLECT, WRAP, PLACERANDOMLY, and
+     * RAISEERROR.
+     *
+     * The policy and stepTarget are mandatory parameters to
+     * pass. stepTarget is used to check whether the host actually moved
+     * outside the playground.
+     *
+     * Additional parameters to pass (in case of non atomic movements) can
+     * be targetPos (the target the host is moving to) and step (the size
+     * of a step).
+     *
+     * Angle is the direction in which the host is moving.
+     *
+     * @param policy BorderPolicy to use
+     * @param stepTarget target position of the next step of the host
+     * @param targetPos target position of the host (for non atomic movement)
+     * @param step step size of the host (for non atomic movement)
+     * @param angle direction in which the host is moving
+     *
+     * @return true if host was outside, false otherwise.
+     */
     bool handleIfOutside(BorderPolicy, Coord&, Coord&, Coord&, double&);
 
     /**
@@ -313,8 +330,9 @@ class MIXIM_API BaseMobility : public BatteryAccess
      *
      * @sa HandleIfOutside
      */
-    virtual void fixIfHostGetsOutside(){
-    	error("fixIfHostGetsOutside has to be redefined by the user");
+    virtual void fixIfHostGetsOutside()
+    {
+        error("fixIfHostGetsOutside has to be redefined by the user");
     };
 
     /**
@@ -327,7 +345,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * Additionally the calculation of the step to reach the border is
      * started.
      */
-    BorderHandling checkIfOutside( Coord, Coord& );
+    BorderHandling checkIfOutside(Coord, Coord&);
 
     /** @brief calculate the step to reach the border
      *
@@ -335,7 +353,7 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * policy the new start position after reaching the border is
      * calculated.
      */
-    void goToBorder( BorderPolicy, BorderHandling, Coord&, Coord& );
+    void goToBorder(BorderPolicy, BorderHandling, Coord&, Coord&);
 
     /**
      * @brief helperfunction for reflectIfOutside() to reflect
@@ -389,11 +407,11 @@ class MIXIM_API BaseMobility : public BatteryAccess
      * You have to define a new target postion in fixIfHostGetsOutside to
      * keep the host moving.
      */
-    void placeRandomlyIfOutside( Coord& );
+    void placeRandomlyIfOutside(Coord&);
 
     /*@}*/
-
 };
 
-#endif
+} // namespace Veins
 
+#endif

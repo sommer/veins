@@ -33,7 +33,7 @@ import org.car2x.veins.base.modules.BaseMobility;
 simple LinearMobility extends BaseMobility
 {
     parameters:
-        @class(LinearMobility);
+        @class(Veins::LinearMobility);
         bool debug = default(false); // debug switch
         double speed @unit(mps); // speed of the host (in m/s)
         double angle @unit(deg); // angle of linear motion (degreees)

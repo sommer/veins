@@ -16,4 +16,3 @@
 #include "veins/base/utils/SimpleAddress.h"
 
 #include <cassert>
-

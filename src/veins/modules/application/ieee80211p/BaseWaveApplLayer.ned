@@ -34,6 +34,7 @@ import org.car2x.veins.base.modules.IBaseApplLayer;
 simple BaseWaveApplLayer like IBaseApplLayer
 {
     parameters:
+        @class(Veins::BaseWaveApplLayer);
         bool debug = default(false); //whether to print debug output
 
         int headerLength = default(88bit) @unit(bit); //header length of the application
@@ -52,8 +53,6 @@ simple BaseWaveApplLayer like IBaseApplLayer
         bool sendWSA = default(false);
         int wsaLengthBits = default(250bit) @unit(bit);
         double wsaInterval =  default(1s) @unit(s);
-
-        bool communicateWhileParked = default(false); //whether the car should communicate when it is parked in SUMO
 
     gates:
         input lowerLayerIn; // from mac layer

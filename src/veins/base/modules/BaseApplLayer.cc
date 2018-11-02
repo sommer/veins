@@ -19,9 +19,10 @@
  *              subclass to create your own application layer
  ***************************************************************************/
 
-
 #include "veins/base/modules/BaseApplLayer.h"
 #include "veins/base/utils/PassedMessage.h"
+
+using namespace Veins;
 
 /**
  * First we have to initialize the module from which we derived ours,
@@ -33,15 +34,16 @@
 void BaseApplLayer::initialize(int stage)
 {
     BaseLayer::initialize(stage);
-    if(stage==0){
-        headerLength= par("headerLength");
+    if (stage == 0) {
+        headerLength = par("headerLength");
     }
 }
 
 /**
  * Send message down to lower layer
  **/
-void BaseApplLayer::sendDelayedDown(cMessage *msg, simtime_t_cref delay) {
+void BaseApplLayer::sendDelayedDown(cMessage* msg, simtime_t_cref delay)
+{
     recordPacket(PassedMessage::OUTGOING, PassedMessage::LOWER_DATA, msg);
     sendDelayed(msg, delay, lowerLayerOut);
 }

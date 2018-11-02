@@ -7,9 +7,12 @@ Creates Makefile(s) for building Veins.
 import os
 import sys
 import subprocess
-from logging import warning, error
+from logging import info, warning, error
 from optparse import OptionParser
 
+
+if sys.version_info[0] == 3:
+    warning("Warning: running configure with python3 might result in subtle errors.")
 
 # Option handling
 parser = OptionParser()
@@ -43,4 +46,4 @@ f.close()
 
 subprocess.check_call(['env', 'opp_makemake'] + makemake_flags, cwd='src')
 
-print 'Configure done. You can now run "make".'
+info('Configure done. You can now run "make".')
