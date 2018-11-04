@@ -48,7 +48,7 @@ void TraCIDemo11p::onWSA(WaveServiceAdvertisment* wsa)
 
 void TraCIDemo11p::onWSM(WaveShortMessage* wsm)
 {
-    findHost()->getDisplayString().updateWith("r=16,green");
+    findHost()->getDisplayString().setTagArg("i", 1, "green");
 
     if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getWsmData(), 9999);
     if (!sentMessage) {
@@ -88,7 +88,7 @@ void TraCIDemo11p::handlePositionUpdate(cObject* obj)
     // stopped for for at least 10s?
     if (mobility->getSpeed() < 1) {
         if (simTime() - lastDroveAt >= 10 && sentMessage == false) {
-            findHost()->getDisplayString().updateWith("r=16,red");
+            findHost()->getDisplayString().setTagArg("i", 1, "red");
             sentMessage = true;
 
             WaveShortMessage* wsm = new WaveShortMessage();
