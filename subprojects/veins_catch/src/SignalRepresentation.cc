@@ -18,39 +18,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
 
-#include "../../../src/veins/base/toolbox/Spectrum.h"
-#include "../../../src/veins/base/toolbox/Signal.h"
-#include "../../../src/veins/base/toolbox/MathHelper.h"
-
+#include "veins/base/toolbox/Spectrum.h"
+#include "veins/base/toolbox/Signal.h"
+#include "veins/base/toolbox/MathHelper.h"
+#include "veins/base/messages/AirFrame_m.h"
+#include "testutils/Simulation.h"
 #include "DummyAnalogueModel.h"
 
-/*void deleteAirFrameVector(AirFrameVector& airFrames)
-{
-    uint16_t numFrames = airFrames.size();
-    std::cout << "Delete airFrames: " << numFrames << " frames deleted" << std::endl;
-    for(uint16_t i=0;i<numFrames;i++)
-    {
-        delete airFrames.front();
-        airFrames.pop_front();
-    }
-}*/
+using namespace Veins;
 
 SCENARIO("Spectrum", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A vector of frequencies (1,1,5,3,4,2,6,4)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(1);
-        freqs.push_back(5);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(2);
-        freqs.push_back(6);
-        freqs.push_back(4);
+        Freqs freqs = {1, 1, 5, 3, 4, 2, 6, 4};
 
         WHEN("the spectrum is constructed")
         {
@@ -92,7 +76,29 @@ SCENARIO("Spectrum", "[toolbox]")
                 SpectrumPtr spectrumClone = Spectrum::getInstance(freqs);
                 THEN("the singleton pattern just returns the same shared pointer")
                 {
-                    REQUIRE(spectrum==spectrumClone);
+                    REQUIRE(spectrum == spectrumClone);
+                }
+            }
+            WHEN("another spectrum is created with the frequencies in a different order")
+            {
+                auto reversedFrecs = freqs;
+                std::reverse(reversedFrecs.begin(), reversedFrecs.end());
+                SpectrumPtr spectrumClone = Spectrum::getInstance(reversedFrecs);
+                THEN("the singleton pattern just returns the same shared pointer")
+                {
+                    REQUIRE(freqs != reversedFrecs);
+                    REQUIRE(spectrum == spectrumClone);
+                }
+            }
+            WHEN("another spectrum is created with some frequencies duplicated")
+            {
+                auto freqsWithDuplicates = freqs;
+                freqsWithDuplicates.push_back(freqs.back());
+                freqsWithDuplicates.push_back(freqs.front());
+                SpectrumPtr spectrumClone = Spectrum::getInstance(freqsWithDuplicates);
+                THEN("the singleton pattern just returns the same shared pointer")
+                {
+                    REQUIRE(spectrum == spectrumClone);
                 }
             }
         }
@@ -101,15 +107,10 @@ SCENARIO("Spectrum", "[toolbox]")
 
 SCENARIO("Signal Constructors and Assignment", "[toolbox]")
 {
-    GIVEN("A spectrum with frequencies (1,2,3,4)")
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3,4, 5, 6)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -127,7 +128,7 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                 REQUIRE(signal1.getDataOffset() == 0);
                 REQUIRE(signal1.getCenterFrequencyIndex() == 0);
 
-                //Checked in timing as well
+                // Checked in timing as well
                 REQUIRE(signal1.hasTiming() == false);
                 REQUIRE(signal1.getSendingStart() == 0);
                 REQUIRE(signal1.getDuration() == 0);
@@ -150,7 +151,7 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                         REQUIRE(signal2.getDataOffset() == 0);
                         REQUIRE(signal2.getCenterFrequencyIndex() == 0);
 
-                        //Checked in timing as well
+                        // Checked in timing as well
                         REQUIRE(signal2.hasTiming() == false);
                         REQUIRE(signal2.getSendingStart() == 0);
                         REQUIRE(signal2.getDuration() == 0);
@@ -174,7 +175,7 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                         REQUIRE(signal2.getDataOffset() == 0);
                         REQUIRE(signal2.getCenterFrequencyIndex() == 0);
 
-                        //Checked in timing as well
+                        // Checked in timing as well
                         REQUIRE(signal2.hasTiming() == true);
                         REQUIRE(signal2.getSendingStart() == 10);
                         REQUIRE(signal2.getDuration() == 5);
@@ -190,7 +191,7 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                             {
                                 REQUIRE(signal2.getSpectrum() == signal3.getSpectrum());
 
-                                //Each signal has its own values
+                                // Each signal has its own values
                                 REQUIRE(signal2.getAbsoluteValues() != signal3.getAbsoluteValues());
                                 REQUIRE(signal2.getAbsoluteValues() != 0);
                                 REQUIRE(signal3.getAbsoluteValues() != 0);
@@ -202,7 +203,7 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getDataOffset() == signal3.getDataOffset());
                                 REQUIRE(signal2.getCenterFrequencyIndex() == signal3.getCenterFrequencyIndex());
 
-                                //Checked in timing as well
+                                // Checked in timing as well
                                 REQUIRE(signal2.hasTiming() == signal3.hasTiming());
                                 REQUIRE(signal2.getSendingStart() == signal3.getSendingStart());
                                 REQUIRE(signal2.getDuration() == signal3.getDuration());
@@ -219,7 +220,7 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                             {
                                 REQUIRE(signal2.getSpectrum() == signal3.getSpectrum());
 
-                                //Each signal has its own values
+                                // Each signal has its own values
                                 REQUIRE(signal2.getAbsoluteValues() != signal3.getAbsoluteValues());
                                 REQUIRE(signal2.getAbsoluteValues() != 0);
                                 REQUIRE(signal3.getAbsoluteValues() != 0);
@@ -231,7 +232,7 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getDataOffset() == signal3.getDataOffset());
                                 REQUIRE(signal2.getCenterFrequencyIndex() == signal3.getCenterFrequencyIndex());
 
-                                //Checked in timing as well
+                                // Checked in timing as well
                                 REQUIRE(signal2.hasTiming() == signal3.hasTiming());
                                 REQUIRE(signal2.getSendingStart() == signal3.getSendingStart());
                                 REQUIRE(signal2.getDuration() == signal3.getDuration());
@@ -250,15 +251,10 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
 
 SCENARIO("Signal Value Access", "[toolbox]")
 {
-    GIVEN("A spectrum with frequencies (1,2,3,4)")
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3,4,5,6)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -270,7 +266,7 @@ SCENARIO("Signal Value Access", "[toolbox]")
             signal[3] = 2;
             signal[4] = 1;
 
-            //Access via operators
+            // Access via operators
             THEN("relative interval is as expected")
             {
                 REQUIRE(signal.getNumAbsoluteValues() == 6);
@@ -279,7 +275,7 @@ SCENARIO("Signal Value Access", "[toolbox]")
                 REQUIRE(signal.getNumRelativeValues() == 4);
 
                 REQUIRE(signal.getRelativeStart() == 1);
-                REQUIRE(signal.getRelativeEnd() == 5);  //Note: This is not 4 as it should support iterations (what about <= in for-loop?)
+                REQUIRE(signal.getRelativeEnd() == 5); // Note: This is not 4 as it should support iterations (what about <= in for-loop?)
             }
             THEN("frequencies can be addressed by index")
             {
@@ -303,33 +299,59 @@ SCENARIO("Signal Value Access", "[toolbox]")
 
                 THEN("iterating over data interval returns correct values")
                 {
-                    for(uint16_t i=signal.getDataStart();i<signal.getDataEnd();i++)
-                        REQUIRE(signal[i] == 5-i);
+                    for (uint16_t i = signal.getDataStart(); i < signal.getDataEnd(); i++)
+                        REQUIRE(signal[i] == 5 - i);
                 }
             }
         }
     }
 }
 
+#ifndef NDEBUG
+SCENARIO("Invalid Signal Index Access", "[toolbox]")
+{
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3) and values for a signal with more frequencies (4,3,2,1)")
+    {
+        Freqs freqs = {1, 2, 3};
+        std::vector<double> values = {4, 3, 2, 1};
+        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Signal signal(spectrum);
+        WHEN("An invalid frequency index of the signal gets read")
+        {
+            THEN("An error should be raised (when in DEBUG mode)")
+            {
+                REQUIRE_THROWS(signal[3]);
+            }
+        }
+        WHEN("The 4th signal value gets written to the signal with 3 frequencies")
+        {
+            signal[0] = values[0];
+            signal[1] = values[1];
+            signal[2] = values[2];
+            THEN("An error should be raised (when in DEBUG mode)")
+            {
+                REQUIRE_THROWS(signal[3] = values[3]); // only throws when compiled in debug mode
+            }
+        }
+    }
+}
+#endif
+
 SCENARIO("Signal Timing", "[toolbox]")
 {
-    GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and a signal (0,4,3,2,1,0)")
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3,4) and a signal (4,3,2,1)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
         Signal signal(spectrum);
-        signal[1] = 4;
-        signal[2] = 3;
-        signal[3] = 2;
-        signal[4] = 1;
+        signal[0] = 4;
+        signal[1] = 3;
+        signal[2] = 2;
+        signal[3] = 1;
 
         WHEN("nothing done regarding timing")
         {
@@ -390,15 +412,10 @@ SCENARIO("Signal Timing", "[toolbox]")
 
 SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (0,1,2,3,0,0) and a constant 2")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -512,7 +529,7 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
                 REQUIRE(quotient2[0] == INFINITY);
                 REQUIRE(quotient2[1] == 2);
                 REQUIRE(quotient2[2] == 1);
-                REQUIRE(quotient2[3] == double(2.0d/3.0d));
+                REQUIRE(quotient2[3] == double(2.0 / 3.0));
                 REQUIRE(quotient2[4] == INFINITY);
                 REQUIRE(quotient2[5] == INFINITY);
             }
@@ -582,15 +599,10 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
 
 SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and two signals (0,1,2,0,0,0), (0,0,3,4,0,0)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -650,7 +662,7 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
                 REQUIRE(quotient.getRelativeStart() == 1);
                 REQUIRE(quotient.getRelativeEnd() == 4);
                 REQUIRE(quotient[1] == INFINITY);
-                REQUIRE(quotient[2] == double(2.0d/3.0d));
+                REQUIRE(quotient[2] == double(2.0 / 3.0));
                 REQUIRE(quotient[3] == 0);
             }
         }
@@ -659,15 +671,10 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
 
 SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (0,1,2,3,0,0) and a constant 2")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -751,15 +758,10 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
 
 SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and two signals (0,1,2,0,0,0), (0,0,3,4,0,0)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -823,7 +825,7 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
                 REQUIRE(quotient.getRelativeStart() == 1);
                 REQUIRE(quotient.getRelativeEnd() == 4);
                 REQUIRE(quotient[1] == INFINITY);
-                REQUIRE(quotient[2] == double(2.0d/3.0d));
+                REQUIRE(quotient[2] == double(2.0 / 3.0));
                 REQUIRE(quotient[3] == 0);
             }
         }
@@ -832,15 +834,10 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
 
 SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -911,15 +908,12 @@ SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
     }
 }
 
-SCENARIO("Signal Thresholding (greater)", "[toolbox]") //Not used in Veins, but supported
+SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but supported
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -989,411 +983,3 @@ SCENARIO("Signal Thresholding (greater)", "[toolbox]") //Not used in Veins, but 
         }
     }
 }
-
-/*SCENARIO("MathHelper Get Min at Frequency", "[toolbox]") //Not used in Veins, but supported
-{
-    GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0),(), another signal (),() and a list with two DummyAnalogueModels (0.1, 0.9)")
-    {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
-
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
-
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.5);
-
-        AnalogueModelList analogueModels;
-        analogueModels.push_back(&am1);
-        analogueModels.push_back(&am2);
-
-        Signal signal1(spectrum);
-        signal1[0] = 10;
-        signal1[1] = 20;
-        signal1[2] = 30;
-        signal1.setCenterFrequencyIndex(2);
-        signal1.setAnalogueModelList(&analogueModels);
-
-        Signal signal2 = signal1;
-
-        AirFrameVector airFrames;
-        AirFrame* frame1 = new AirFrame(signal1);
-        AirFrame* frame2 = new AirFrame(signal2);
-        airFrames.push_back(frame1);
-        airFrames.push_back(frame2);
-
-        WHEN("searched for global min over the whole time and signals perfectly overlap")
-        {
-            frame1->getSignal().setTiming(0, 10);
-            frame2->getSignal().setTiming(0, 10);
-            double min = MathHelper::getMinAtFreq(0, 10, airFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 2.0")
-            {
-                REQUIRE(frame1->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(frame2->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 2.0);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals only overlap for half of the time")
-        {
-            frame1->getSignal().setTiming(0, 10);
-            frame2->getSignal().setTiming(5, 10);
-            double min = MathHelper::getMinAtFreq(0, 15, airFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(frame1->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(frame2->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 1.0);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals do not overlap but are right behind each other")
-        {
-            frame1->getSignal().setTiming(0, 10);
-            frame2->getSignal().setTiming(10, 10);
-            double min = MathHelper::getMinAtFreq(0, 20, airFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(frame1->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(frame2->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 1.0);
-            }
-        }
-        deleteAirFrameVector(airFrames);
-    }
-}*/
-
-/*SCENARIO("MathHelper minimum Value at Frequency and Timestamp", "[toolbox]")
-{
-    GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0),(), another signal (),() and a list with two DummyAnalogueModels (0.1, 0.9)")
-    {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
-
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
-
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-
-        AnalogueModelList analogueModels;
-        analogueModels.push_back(&am1);
-        analogueModels.push_back(&am2);
-
-        Signal signal(spectrum);
-        signal[0] = 100;
-        signal[1] = 200;
-        signal[2] = 300;
-        signal.setDataStart(0);
-        signal.setDataEnd(2);
-        signal.setCenterFrequencyIndex(2);
-        signal.setAnalogueModelList(&analogueModels);
-        signal.setTiming(5, 10);
-
-        AirFrameVector airFrames;
-        AirFrame* signalFrame = new AirFrame(signal);
-        airFrames.push_back(signalFrame);
-
-        WHEN("check for already higher threshold at a time-stamp in the middle of the signal")
-        {
-            bool belowThreshold = MathHelper::smallerAtFreqIndex(10, 10, airFrames, 2, 500.0);
-            THEN("no AnalogueModel applied and true returned")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 0);
-                REQUIRE(belowThreshold == true);
-            }
-        }
-        WHEN("check for already higher threshold at a time-stamp at the start of the signal")
-        {
-            bool belowThreshold = MathHelper::smallerAtFreqIndex(5, 5, airFrames, 2, 500.0);
-            THEN("no AnalogueModel applied and true returned")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 0);
-                REQUIRE(belowThreshold == true);
-            }
-        }
-        WHEN("check for already higher threshold at a time-stamp at the end of the signal")
-        {
-            bool belowThreshold = MathHelper::smallerAtFreqIndex(15, 15, airFrames, 2, 500.0);
-            THEN("no AnalogueModel applied and true returned")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 0);
-                REQUIRE(belowThreshold == true);
-            }
-        }
-        WHEN("check for a too low threshold at a time-stamp at the end of the signal")
-        {
-            bool belowThreshold = MathHelper::smallerAtFreqIndex(10, 10, airFrames, 2, 1.0);
-            THEN("all AnalogueModels applied and false returned")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(belowThreshold == false);
-            }
-        }
-        WHEN("check for a too low threshold at a time-stamp at the end of the signal")
-        {
-            bool belowThreshold = MathHelper::smallerAtFreqIndex(5, 5, airFrames, 2, 1.0);
-            THEN("all AnalogueModels applied and false returned")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(belowThreshold == false);
-            }
-        }
-        WHEN("check for a too low threshold at a time-stamp at the end of the signal")
-        {
-            bool belowThreshold = MathHelper::smallerAtFreqIndex(15, 15, airFrames, 2, 1.0);
-            THEN("no AnalogueModel applied (as signal not within intervall) and true returned (as signal does not contribute to power)")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 0);
-                REQUIRE(belowThreshold == true);
-            }
-        }
-        deleteAirFrameVector(airFrames);
-    }
-}
-
-SCENARIO("MathHelper Get Min SINR Simple Test Cases", "[toolbox]")
-{
-    GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0),(), another signal (),() and a list with two DummyAnalogueModels (0.1, 0.9)")
-    {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
-
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
-
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-
-        AnalogueModelList analogueModels;
-        analogueModels.push_back(&am1);
-        analogueModels.push_back(&am2);
-
-        Signal signal(spectrum);
-        signal[0] = 100;
-        signal[1] = 200;
-        signal[2] = 300;
-        signal.setDataStart(0);
-        signal.setDataEnd(2);
-        signal.setCenterFrequencyIndex(2);
-        signal.setAnalogueModelList(&analogueModels);
-        signal.setTiming(5, 10);
-
-        Signal interferer = signal;
-
-        AirFrame* signalFrame = new AirFrame(signal);
-
-        AirFrameVector interfererFrames;
-        AirFrame* interfererFrame = new AirFrame(interferer);
-        interfererFrames.push_back(interfererFrame);
-
-        WHEN("searched for global min SINR over the whole time and signals perfectly overlap")
-        {
-            interfererFrame->getSignal().setTiming(5, 10);
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 2.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 0.5);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals only overlap for half of the time")
-        {
-            interfererFrame->getSignal().setTiming(0, 5);
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 1.0);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals do not overlap but are right behind each other")
-        {
-            interfererFrame->getSignal().setTiming(15, 5);
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 1.0);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals do not overlap but are right behind each other")
-        {
-            interfererFrame->getSignal().setTiming(7.5, 5);
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 0.5);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals do not overlap but are right behind each other")
-        {
-            interfererFrame->getSignal().setTiming(5, 5);
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 0.5);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals do not overlap but are right behind each other")
-        {
-            interfererFrame->getSignal().setTiming(10, 5);
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 0.5);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals do not overlap but are right behind each other")
-        {
-            interfererFrame->getSignal().setTiming(0, 7.5);
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 0.5);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals do not overlap but are right behind each other")
-        {
-            interfererFrame->getSignal().setTiming(12.5, 7.5);
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 0.5);
-            }
-        }
-        WHEN("searched for global min over the whole time and signals do not overlap but are right behind each other")
-        {
-            interfererFrame->getSignal().setTiming(0, 0);
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 1.0);
-            }
-        }
-        deleteAirFrameVector(interfererFrames);
-    }
-}
-
-SCENARIO("MathHelper Get Min SINR Complex Test Case", "[toolbox]")
-{
-    GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0),(), another signal (),() and a list with two DummyAnalogueModels (0.1, 0.9)")
-    {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
-
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
-
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-
-        AnalogueModelList analogueModels;
-        analogueModels.push_back(&am1);
-        analogueModels.push_back(&am2);
-
-        Signal signal(spectrum);
-        signal[0] = 100;
-        signal[1] = 200;
-        signal[2] = 300;
-        signal.setDataStart(0);
-        signal.setDataEnd(2);
-        signal.setCenterFrequencyIndex(2);
-        signal.setAnalogueModelList(&analogueModels);
-        signal.setTiming(5, 10);
-
-        Signal interferer1 = signal;
-        interferer1.setTiming(5, 10);
-
-        Signal interferer2 = signal;
-        interferer2.setTiming(0, 5);
-
-        Signal interferer3 = signal;
-        interferer3.setTiming(0, 7.5);
-
-        Signal interferer4 = signal;
-        interferer4.setTiming(5, 5);
-
-        Signal interferer5 = signal;
-        interferer5.setTiming(7.5, 5);
-
-        Signal interferer6 = signal;
-        interferer6.setTiming(10, 5);
-
-        Signal interferer7 = signal;
-        interferer7.setTiming(12.5, 7.5);
-
-        Signal interferer8 = signal;
-        interferer8.setTiming(15, 5);
-
-        AirFrame* signalFrame = new AirFrame(signal);
-
-        AirFrameVector interfererFrames;
-        AirFrame* interfererFrame1 = new AirFrame(interferer1);
-        AirFrame* interfererFrame2 = new AirFrame(interferer2);
-        AirFrame* interfererFrame3 = new AirFrame(interferer3);
-        AirFrame* interfererFrame4 = new AirFrame(interferer4);
-        AirFrame* interfererFrame5 = new AirFrame(interferer5);
-        AirFrame* interfererFrame6 = new AirFrame(interferer6);
-        AirFrame* interfererFrame7 = new AirFrame(interferer7);
-        AirFrame* interfererFrame8 = new AirFrame(interferer8);
-
-        interfererFrames.push_back(interfererFrame1);
-        interfererFrames.push_back(interfererFrame2);
-        interfererFrames.push_back(interfererFrame3);
-        interfererFrames.push_back(interfererFrame4);
-        interfererFrames.push_back(interfererFrame5);
-        interfererFrames.push_back(interfererFrame6);
-        interfererFrames.push_back(interfererFrame7);
-        interfererFrames.push_back(interfererFrame8);
-
-        WHEN("searched for global min SINR over the whole time and signals perfectly overlap")
-        {
-            double min = MathHelper::getMinSINR(5, 15, signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 2.0")
-            {
-                REQUIRE(signalFrame->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame1->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame2->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame3->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame4->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame5->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame6->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame7->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(interfererFrame8->getSignal().getNumAnalogueModelsApplied() == 2);
-                REQUIRE(min == 0.25);
-            }
-        }
-        deleteAirFrameVector(interfererFrames);
-    }
-}*/

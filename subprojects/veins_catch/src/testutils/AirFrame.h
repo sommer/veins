@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2018 Dominik S. Buse <buse@ccs-labs.org>
+// Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -17,28 +17,22 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-#ifndef DUMMYANALOGUEMODEL_H_
-#define DUMMYANALOGUEMODEL_H_
+#ifndef TESTUTILS_AIRFRAME_H
+#define TESTUTILS_AIRFRAME_H
 
-#include "veins/base/phyLayer/AnalogueModel.h"
+#include <omnetpp.h>
+#include "veins/base/messages/AirFrame_m.h"
 
-namespace Veins {
+Veins::AirFrame createAirframe(double centerFreq, double bandwidth, omnetpp::simtime_t start, omnetpp::simtime_t length, double power)
+{
+    Veins::Signal s(Veins::Spectrum::getInstance({centerFreq - 5e6, centerFreq, centerFreq + 5e6}), start, length);
+    s(centerFreq - 5e6) = power;
+    s(centerFreq) = power;
+    s(centerFreq + 5e6) = power;
 
-class DummyAnalogueModel : public AnalogueModel {
-protected:
-    const double factor;
+    Veins::AirFrame frame;
+    frame.setSignal(s);
+    return frame;
+}
 
-public:
-    DummyAnalogueModel(double factor)
-        : factor(factor)
-    {
-    }
-
-    void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos) override
-    {
-        signal->addUniformAttenuation(factor);
-    }
-};
-} // namespace Veins
-
-#endif /*DUMMYANALOGUEMODEL_H_*/
+#endif
