@@ -79,6 +79,28 @@ SCENARIO("Spectrum", "[toolbox]")
                     REQUIRE(spectrum == spectrumClone);
                 }
             }
+            WHEN("another spectrum is created with the frequencies in a different order")
+            {
+                auto reversedFrecs = freqs;
+                std::reverse(reversedFrecs.begin(), reversedFrecs.end());
+                SpectrumPtr spectrumClone = Spectrum::getInstance(reversedFrecs);
+                THEN("the singleton pattern just returns the same shared pointer")
+                {
+                    REQUIRE(freqs != reversedFrecs);
+                    REQUIRE(spectrum == spectrumClone);
+                }
+            }
+            WHEN("another spectrum is created with some frequencies duplicated")
+            {
+                auto freqsWithDuplicates = freqs;
+                freqsWithDuplicates.push_back(freqs.back());
+                freqsWithDuplicates.push_back(freqs.front());
+                SpectrumPtr spectrumClone = Spectrum::getInstance(freqsWithDuplicates);
+                THEN("the singleton pattern just returns the same shared pointer")
+                {
+                    REQUIRE(spectrum == spectrumClone);
+                }
+            }
         }
     }
 }
