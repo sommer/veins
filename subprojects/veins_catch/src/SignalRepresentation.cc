@@ -38,42 +38,42 @@ SCENARIO("Spectrum", "[toolbox]")
 
         WHEN("the spectrum is constructed")
         {
-            SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+            Spectrum spectrum(freqs);
 
             THEN("duplicates are removed and frequencies are sorted ascending")
             {
-                REQUIRE((*spectrum)[0] == 1);
-                REQUIRE((*spectrum)[1] == 2);
-                REQUIRE((*spectrum)[2] == 3);
-                REQUIRE((*spectrum)[3] == 4);
-                REQUIRE((*spectrum)[4] == 5);
-                REQUIRE((*spectrum)[5] == 6);
+                REQUIRE(spectrum[0] == 1);
+                REQUIRE(spectrum[1] == 2);
+                REQUIRE(spectrum[2] == 3);
+                REQUIRE(spectrum[3] == 4);
+                REQUIRE(spectrum[4] == 5);
+                REQUIRE(spectrum[5] == 6);
             }
             THEN("the number of frequencies is four")
             {
-                REQUIRE(spectrum->getNumFreqs() == 6);
+                REQUIRE(spectrum.getNumFreqs() == 6);
             }
             THEN("accessing via freqAt-method returns correct frequency")
             {
-                REQUIRE(spectrum->freqAt(0) == 1);
-                REQUIRE(spectrum->freqAt(1) == 2);
-                REQUIRE(spectrum->freqAt(2) == 3);
-                REQUIRE(spectrum->freqAt(3) == 4);
-                REQUIRE(spectrum->freqAt(4) == 5);
-                REQUIRE(spectrum->freqAt(5) == 6);
+                REQUIRE(spectrum.freqAt(0) == 1);
+                REQUIRE(spectrum.freqAt(1) == 2);
+                REQUIRE(spectrum.freqAt(2) == 3);
+                REQUIRE(spectrum.freqAt(3) == 4);
+                REQUIRE(spectrum.freqAt(4) == 5);
+                REQUIRE(spectrum.freqAt(5) == 6);
             }
             THEN("accessing by frequency returns correct index")
             {
-                REQUIRE(spectrum->indexOf(1) == 0);
-                REQUIRE(spectrum->indexOf(2) == 1);
-                REQUIRE(spectrum->indexOf(3) == 2);
-                REQUIRE(spectrum->indexOf(4) == 3);
-                REQUIRE(spectrum->indexOf(5) == 4);
-                REQUIRE(spectrum->indexOf(6) == 5);
+                REQUIRE(spectrum.indexOf(1) == 0);
+                REQUIRE(spectrum.indexOf(2) == 1);
+                REQUIRE(spectrum.indexOf(3) == 2);
+                REQUIRE(spectrum.indexOf(4) == 3);
+                REQUIRE(spectrum.indexOf(5) == 4);
+                REQUIRE(spectrum.indexOf(6) == 5);
             }
             WHEN("another spectrum is created")
             {
-                SpectrumPtr spectrumClone = Spectrum::getInstance(freqs);
+                Spectrum spectrumClone(freqs);
                 THEN("the singleton pattern just returns the same shared pointer")
                 {
                     REQUIRE(spectrum == spectrumClone);
@@ -83,7 +83,7 @@ SCENARIO("Spectrum", "[toolbox]")
             {
                 auto reversedFrecs = freqs;
                 std::reverse(reversedFrecs.begin(), reversedFrecs.end());
-                SpectrumPtr spectrumClone = Spectrum::getInstance(reversedFrecs);
+                Spectrum spectrumClone(reversedFrecs);
                 THEN("the singleton pattern just returns the same shared pointer")
                 {
                     REQUIRE(freqs != reversedFrecs);
@@ -95,7 +95,7 @@ SCENARIO("Spectrum", "[toolbox]")
                 auto freqsWithDuplicates = freqs;
                 freqsWithDuplicates.push_back(freqs.back());
                 freqsWithDuplicates.push_back(freqs.front());
-                SpectrumPtr spectrumClone = Spectrum::getInstance(freqsWithDuplicates);
+                Spectrum spectrumClone(freqsWithDuplicates);
                 THEN("the singleton pattern just returns the same shared pointer")
                 {
                     REQUIRE(spectrum == spectrumClone);
@@ -112,14 +112,14 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
     {
         Freqs freqs = {1, 2, 3, 4, 5, 6};
 
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
 
         WHEN("a signal is constructed without parameters")
         {
             Signal signal1;
             THEN("all values have their default values")
             {
-                REQUIRE(signal1.getSpectrum() == nullptr);
+                REQUIRE(signal1.getSpectrum() == Spectrum());
                 REQUIRE(signal1.getAbsoluteValues() == 0);
                 REQUIRE(signal1.getNumAbsoluteValues() == 0);
                 REQUIRE(signal1.getNumRelativeValues() == 0);
@@ -256,7 +256,7 @@ SCENARIO("Signal Value Access", "[toolbox]")
     {
         Freqs freqs = {1, 2, 3, 4, 5, 6};
 
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
 
         WHEN("a signal is constructed and values assigned to frequencies")
         {
@@ -315,7 +315,7 @@ SCENARIO("Invalid Signal Index Access", "[toolbox]")
     {
         Freqs freqs = {1, 2, 3};
         std::vector<double> values = {4, 3, 2, 1};
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
         Signal signal(spectrum);
         WHEN("An invalid frequency index of the signal gets read")
         {
@@ -345,7 +345,7 @@ SCENARIO("Signal Timing", "[toolbox]")
     {
         Freqs freqs = {1, 2, 3, 4};
 
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
 
         Signal signal(spectrum);
         signal[0] = 4;
@@ -417,7 +417,7 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
     {
         Freqs freqs = {1, 2, 3, 4, 5, 6};
 
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
 
         Signal signal(spectrum);
         signal[1] = 1;
@@ -604,7 +604,7 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
     {
         Freqs freqs = {1, 2, 3, 4, 5, 6};
 
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
 
         Signal signal1(spectrum);
         signal1[1] = 1;
@@ -676,7 +676,7 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
     {
         Freqs freqs = {1, 2, 3, 4, 5, 6};
 
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
 
         Signal signal(spectrum);
         signal[1] = 1;
@@ -763,7 +763,7 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
     {
         Freqs freqs = {1, 2, 3, 4, 5, 6};
 
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
 
         Signal signal1(spectrum);
         signal1[1] = 1;
@@ -839,7 +839,7 @@ SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
     {
         Freqs freqs = {1, 2, 3, 4, 5, 6};
 
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
 
         DummyAnalogueModel am1(0.1);
         DummyAnalogueModel am2(0.5);
@@ -915,7 +915,7 @@ SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but
     {
         Freqs freqs = {1, 2, 3, 4, 5, 6};
 
-        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Spectrum spectrum(freqs);
 
         DummyAnalogueModel am1(0.1);
         DummyAnalogueModel am2(0.5);

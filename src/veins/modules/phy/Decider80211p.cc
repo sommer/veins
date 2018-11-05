@@ -270,7 +270,7 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude)
     double minPower = phy->getThermalNoiseValue();
     bool isChannelIdle = minPower < ccaThreshold;
     if (airFrames.size() > 0) {
-        size_t usedFreqIndex = airFrames.front()->getSignal().getSpectrum()->indexOf(centerFrequency - 5e6);
+        size_t usedFreqIndex = airFrames.front()->getSignal().getSpectrum().indexOf(centerFrequency - 5e6);
         isChannelIdle = MathHelper::smallerAtFreqIndex(time, time, airFrames, usedFreqIndex, ccaThreshold - minPower, exclude);
     }
 

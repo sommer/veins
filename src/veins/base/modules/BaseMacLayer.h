@@ -95,7 +95,7 @@ protected:
     /**
      * The underlying spectrum (definition of interesting freqs) for all signals
      */
-    SpectrumPtr overallSpectrum;
+    Spectrum overallSpectrum;
 
 public:
     // Module_Class_Members( BaseMacLayer, BaseLayer, 0 );

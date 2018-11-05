@@ -42,7 +42,7 @@ double MathHelper::getGlobalMax(simtime_t start, simtime_t end, const AirFrameVe
     // Works fine so far, as there is at least one AirFrame
     if (changes.size() == 0) return 0;
 
-    SpectrumPtr spectrum = airFrames.front()->getSignal().getSpectrum();
+    Spectrum spectrum = airFrames.front()->getSignal().getSpectrum();
 
     Signal interference = Signal(spectrum);
 
@@ -88,7 +88,7 @@ double MathHelper::getGlobalMin(simtime_t start, simtime_t end, const AirFrameVe
     // Works fine so far, as there is at least one AirFrame
     if (changes.size() == 0) return 0;
 
-    SpectrumPtr spectrum = airFrames.front()->getSignal().getSpectrum();
+    Spectrum spectrum = airFrames.front()->getSignal().getSpectrum();
 
     Signal interference = Signal(spectrum);
 
@@ -238,7 +238,7 @@ double MathHelper::getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFr
     }
 
     Signal& signal = signalFrame->getSignal();
-    SpectrumPtr spectrum = signal.getSpectrum();
+    Spectrum spectrum = signal.getSpectrum();
 
     Signal interference_noise = Signal(spectrum);
     interference_noise = noise;
