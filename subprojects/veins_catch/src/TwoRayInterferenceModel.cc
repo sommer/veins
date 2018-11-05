@@ -2,42 +2,10 @@
 
 #include "veins/modules/analogueModel/TwoRayInterferenceModel.h"
 #include "veins/base/messages/AirFrame_m.h"
+#include "testutils/Simulation.h"
+#include "testutils/AirFrame.h"
 
 using namespace Veins;
-
-// Helper methods
-namespace {
-class DummySimulation {
-public:
-    DummySimulation(cNullEnvir* envir)
-        : simulation("DummySimulation", envir)
-    {
-        // envir is stored and deleted automatically by omnet++
-        cSimulation::setActiveSimulation(&simulation);
-        SimTime::setScaleExp(-9);
-    }
-    ~DummySimulation()
-    {
-        cSimulation::setActiveSimulation(nullptr);
-    }
-
-private:
-    cStaticFlag csf;
-    cSimulation simulation;
-}; // end DummySimulation
-
-AirFrame createAirframe(double centerFreq, double bandwidth, simtime_t start, simtime_t length, double power)
-{
-    Signal s(Spectrum::getInstance({centerFreq - 5e6, centerFreq, centerFreq + 5e6}), start, length);
-    s(centerFreq - 5e6) = power;
-    s(centerFreq) = power;
-    s(centerFreq + 5e6) = power;
-
-    AirFrame frame;
-    frame.setSignal(s);
-    return frame;
-}
-} // namespace
 
 SCENARIO("TwoRayInterferenceModel", "[analogueModel]")
 {
