@@ -29,6 +29,7 @@
 #include <memory>
 #include <fstream>
 #include <assert.h>
+#include <map>
 
 namespace Veins {
 
@@ -41,7 +42,17 @@ class Spectrum {
 public:
     static SpectrumPtr getInstance(Freqs freqs)
     {
-        static std::shared_ptr<Spectrum> instance(new Spectrum(freqs));
+        static std::map<Freqs, SpectrumPtr> spectrums;
+        // sort and deduplicate frequencies first
+        std::sort(freqs.begin(), freqs.end());
+        freqs.erase(std::unique(freqs.begin(), freqs.end()), freqs.end());
+
+        auto existing_instance = spectrums.find(freqs);
+        if (existing_instance != spectrums.end())
+            return existing_instance->second;
+
+        std::shared_ptr<Spectrum> instance(new Spectrum(freqs));
+        spectrums[freqs] = instance;
         return instance;
     }
     ~Spectrum();

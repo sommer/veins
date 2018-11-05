@@ -23,13 +23,9 @@
 using namespace Veins;
 
 Spectrum::Spectrum(Freqs freqs)
+    : frequencies(std::move(freqs))
 {
     // std::cout << "Spectrum constructed" << std::endl;
-
-    frequencies = freqs;
-
-    std::sort(frequencies.begin(), frequencies.end());
-    frequencies.erase(std::unique(frequencies.begin(), frequencies.end()), frequencies.end());
 }
 
 Spectrum::~Spectrum()
