@@ -25,7 +25,7 @@
 
 Veins::AirFrame createAirframe(double centerFreq, double bandwidth, omnetpp::simtime_t start, omnetpp::simtime_t length, double power)
 {
-    Veins::Signal s(Veins::Spectrum::getInstance({centerFreq - 5e6, centerFreq, centerFreq + 5e6}), start, length);
+    Veins::Signal s(Veins::Spectrum({centerFreq - 5e6, centerFreq, centerFreq + 5e6}), start, length);
     s(centerFreq - 5e6) = power;
     s(centerFreq) = power;
     s(centerFreq + 5e6) = power;

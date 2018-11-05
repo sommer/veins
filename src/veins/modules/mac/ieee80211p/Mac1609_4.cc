@@ -88,7 +88,7 @@ void Mac1609_4::initialize(int stage)
             freqs.push_back(channel.second);
             freqs.push_back(channel.second + 5e6);
         }
-        overallSpectrum = Spectrum::getInstance(freqs);
+        overallSpectrum = Spectrum(freqs);
 
         // create two edca systems
 
@@ -524,7 +524,7 @@ Signal* Mac1609_4::createSignal(simtime_t start, simtime_t length, double power,
 
     Signal* s = new Signal(overallSpectrum, start, length);
 
-    size_t freqIndex = s->getSpectrum()->indexOf(frequency);
+    size_t freqIndex = s->getSpectrum().indexOf(frequency);
 
     (*s)[freqIndex - 1] = power;
     (*s)[freqIndex] = power;

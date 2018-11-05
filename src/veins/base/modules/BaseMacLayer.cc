@@ -58,8 +58,6 @@ void BaseMacLayer::initialize(int stage)
             error("Could not find a PHY module.");
         }
 
-        overallSpectrum = nullptr;
-
         headerLength = par("headerLength");
         phyHeaderLength = phy->getPhyHeaderLength();
 

@@ -36,8 +36,8 @@ class Signal {
 public:
     Signal();
     Signal(const Signal& other);
-    Signal(SpectrumPtr spec);
-    Signal(SpectrumPtr spec, simtime_t start, simtime_t duration);
+    Signal(Spectrum spec);
+    Signal(Spectrum spec, simtime_t start, simtime_t duration);
     ~Signal();
 
     double& operator[](size_t index);
@@ -45,7 +45,7 @@ public:
     double& operator()(double freq);
     double operator()(double freq) const;
 
-    SpectrumPtr getSpectrum() const;
+    Spectrum getSpectrum() const;
 
     double getAbsoluteFreqAt(size_t freqIndex) const;
     double getRelativeFreqAt(size_t freqIndex) const;
@@ -208,7 +208,7 @@ public:
 private:
     void includeAbsoluteIndex(size_t freqIndex);
 
-    SpectrumPtr spectrum;
+    Spectrum spectrum;
 
     double* values;
 
