@@ -18,36 +18,80 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "veins/base/toolbox/MathHelper.h"
+#include "veins/base/toolbox/SignalUtils.h"
 
 #include "veins/base/messages/AirFrame_m.h"
 
-using namespace Veins;
-using Veins::AirFrame;
+namespace Veins {
+namespace SignalUtils {
 
 namespace {
+
+enum class ChangeType {
+    nothing = 0,
+    starting,
+    ending,
+};
+
+struct SignalChange {
+    Signal* signal;
+    ChangeType type;
+    simtime_t time;
+};
+
 bool compareByTime(const SignalChange& lhs, const SignalChange& rhs)
 {
     return (lhs.time < rhs.time);
 }
+
+std::vector<SignalChange> calculateChanges(simtime_t_cref start, simtime_t_cref end, const AirFrameVector& airFrames, const AirFrame* exclude = nullptr)
+{
+    std::vector<SignalChange> changes;
+    for (auto& airFrame : airFrames) {
+        if (airFrame == exclude) {
+            continue;
+        }
+
+        auto& signal = airFrame->getSignal();
+        // In case of looking at a time-stamp (start=end) also take starting signals into account
+        if (start == end && signal.getReceptionStart() == start) {
+            changes.push_back({&signal, ChangeType::starting, signal.getReceptionStart()});
+            continue;
+        }
+
+        // Already filter changes outside the region of interest
+        // End already outside region of interest (should be filtered out before)
+        // Signal has to start before(!) end and must not end before the start of the interval
+        if (signal.getReceptionStart() < end && signal.getReceptionEnd() > start) {
+            changes.push_back({&signal, ChangeType::starting, signal.getReceptionStart()});
+            // Already filter changes outside the region of interest
+            if (signal.getReceptionEnd() <= end) {
+                changes.push_back({&signal, ChangeType::ending, signal.getReceptionEnd()});
+            }
+        }
+    }
+
+    // Bring changes (signals start and end) into an order
+    std::sort(changes.begin(), changes.end(), compareByTime);
+    return changes;
+}
 } // namespace
 
-double MathHelper::getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFrames)
+double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFrames)
 {
-    if (airFrames.size() == 0) return 0;
+    if (airFrames.empty()) return 0;
 
-    std::vector<SignalChange> changes;
-    calculateChanges(start, end, airFrames, &changes);
+    auto changes = calculateChanges(start, end, airFrames);
 
     // Works fine so far, as there is at least one AirFrame
-    if (changes.size() == 0) return 0;
+    if (changes.empty()) return 0;
 
     SpectrumPtr spectrum = airFrames.front()->getSignal().getSpectrum();
 
     Signal interference = Signal(spectrum);
 
     // Calculate interference at beginning
-    std::vector<SignalChange>::iterator it = changes.begin();
+    auto it = changes.begin();
 
     while (it != changes.end()) {
         if (it->time > start) break;
@@ -62,10 +106,10 @@ double MathHelper::getGlobalMax(simtime_t start, simtime_t end, const AirFrameVe
 
     // Calculate all chunks
     while (it != changes.end()) {
-        if (it->type == SIGNAL_STARTS) {
+        if (it->type == ChangeType::starting) {
             interference += *(it->signal);
         }
-        else if (it->type == SIGNAL_ENDS) {
+        else if (it->type == ChangeType::ending) {
             interference -= *(it->signal);
         }
 
@@ -78,22 +122,21 @@ double MathHelper::getGlobalMax(simtime_t start, simtime_t end, const AirFrameVe
     return maximum;
 }
 
-double MathHelper::getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFrames)
+double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFrames)
 {
-    if (airFrames.size() == 0) return 0;
+    if (airFrames.empty()) return 0;
 
-    std::vector<SignalChange> changes;
-    calculateChanges(start, end, airFrames, &changes);
+    auto changes = calculateChanges(start, end, airFrames);
 
     // Works fine so far, as there is at least one AirFrame
-    if (changes.size() == 0) return 0;
+    if (changes.empty()) return 0;
 
     SpectrumPtr spectrum = airFrames.front()->getSignal().getSpectrum();
 
     Signal interference = Signal(spectrum);
 
     // Calculate interference at beginning
-    std::vector<SignalChange>::iterator it = changes.begin();
+    auto it = changes.begin();
 
     while (it != changes.end()) {
         if (it->time > start) break;
@@ -108,10 +151,10 @@ double MathHelper::getGlobalMin(simtime_t start, simtime_t end, const AirFrameVe
 
     // Calculate all chunks
     while (it != changes.end()) {
-        if (it->type == SIGNAL_STARTS) {
+        if (it->type == ChangeType::starting) {
             interference += *(it->signal);
         }
-        else if (it->type == SIGNAL_ENDS) {
+        else if (it->type == ChangeType::ending) {
             interference -= *(it->signal);
         }
 
@@ -124,21 +167,19 @@ double MathHelper::getGlobalMin(simtime_t start, simtime_t end, const AirFrameVe
     return minimum;
 }
 
-// TODO: Check influence of exclude -> suspicion that parameter has no influence, although it is not NULL
-double MathHelper::getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& airFrames, size_t freqIndex, AirFrame* exclude)
+double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& airFrames, size_t freqIndex, AirFrame* exclude)
 {
-    if (airFrames.size() == 0) return 0;
+    if (airFrames.empty()) return 0;
 
-    std::vector<SignalChange> changes;
-    calculateChanges(start, end, airFrames, &changes, exclude);
+    auto changes = calculateChanges(start, end, airFrames, exclude);
 
     // Works fine so far, as there is at least one AirFrame
-    if (changes.size() == 0) return 0;
+    if (changes.empty()) return 0;
 
     // Calculate interference at beginning
     double interference = 0;
 
-    std::vector<SignalChange>::iterator it = changes.begin();
+    auto it = changes.begin();
 
     while (it != changes.end()) {
         if (it->time > start) break;
@@ -153,10 +194,10 @@ double MathHelper::getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFr
 
     // Calculate all chunks
     while (it != changes.end()) {
-        if (it->type == SIGNAL_STARTS) {
+        if (it->type == ChangeType::starting) {
             interference += (*(it->signal))[freqIndex];
         }
-        else if (it->type == SIGNAL_ENDS) {
+        else if (it->type == ChangeType::ending) {
             interference -= (*(it->signal))[freqIndex];
         }
 
@@ -173,21 +214,20 @@ double MathHelper::getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFr
  * Then apply AMs one after the other
  * If value is already below threshold before all AMs are applied, abort and return true
  */
-bool MathHelper::smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exlude)
+bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude)
 {
     // Assume that threshold is >0 -> if there is no other AirFrame, this is 0 -> return true (0 < threshold)
-    if (airFrames.size() == 0) return true;
+    if (airFrames.empty()) return true;
 
-    std::vector<SignalChange> changes;
-    calculateChanges(start, end, airFrames, &changes);
+    auto changes = calculateChanges(start, end, airFrames, exclude);
 
     // Works fine so far, as there is at least one AirFrame
-    if (changes.size() == 0) return true;
+    if (changes.empty()) return true;
 
     // Assumption: There is no AM with an attenuation > 1
     uint16_t maxAnalogueModels = airFrames.front()->getSignal().getNumAnalogueModels();
     for (uint16_t i = 0; i <= maxAnalogueModels; i++) {
-        std::vector<SignalChange>::iterator it = changes.begin();
+        auto it = changes.begin();
 
         double channelLoad = 0;
 
@@ -203,10 +243,10 @@ bool MathHelper::smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVect
 
         // Calculate all chunks
         while (it != changes.end()) {
-            if (it->type == SIGNAL_STARTS) {
+            if (it->type == ChangeType::starting) {
                 channelLoad += (*(it->signal))[freqIndex];
             }
-            else if (it->type == SIGNAL_ENDS) {
+            else if (it->type == ChangeType::ending) {
                 channelLoad -= (*(it->signal))[freqIndex];
             }
 
@@ -229,12 +269,12 @@ bool MathHelper::smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVect
     return false;
 }
 
-double MathHelper::getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise)
+double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise)
 {
     // Make sure all filters are applied
     signalFrame->getSignal().applyAllAnalogueModels();
-    for (AirFrameVector::iterator it = interfererFrames.begin(); it != interfererFrames.end(); ++it) {
-        (*it)->getSignal().applyAllAnalogueModels();
+    for (auto& interfererFrame : interfererFrames) {
+        interfererFrame->getSignal().applyAllAnalogueModels();
     }
 
     Signal& signal = signalFrame->getSignal();
@@ -246,11 +286,10 @@ double MathHelper::getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFr
     Signal sinr = Signal(spectrum);
 
     // Method will "filter out" the signalFrame
-    std::vector<SignalChange> changes;
-    calculateChanges(start, end, interfererFrames, &changes, signalFrame);
+    auto changes = calculateChanges(start, end, interfererFrames, signalFrame);
 
     // Prepare I+N at the beginning
-    std::vector<SignalChange>::iterator changesIt = changes.begin();
+    auto changesIt = changes.begin();
     while (changesIt != changes.end()) {
         if (changesIt->time <= start) {
             interference_noise += *(changesIt->signal);
@@ -271,10 +310,10 @@ double MathHelper::getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFr
 
     // Calculate all chunks
     while (changesIt != changes.end()) {
-        if (changesIt->type == SIGNAL_STARTS) {
+        if (changesIt->type == ChangeType::starting) {
             interference_noise += *(changesIt->signal);
         }
-        else if (changesIt->type == SIGNAL_ENDS) {
+        else if (changesIt->type == ChangeType::ending) {
             interference_noise -= *(changesIt->signal);
         }
 
@@ -289,42 +328,5 @@ double MathHelper::getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFr
     return minSINR;
 }
 
-void MathHelper::calculateChanges(simtime_t_cref start, simtime_t_cref end, const AirFrameVector& airFrames, std::vector<SignalChange>* changes, const AirFrame* exclude)
-{
-    for (AirFrameVector::const_iterator it = airFrames.begin(); it != airFrames.end(); ++it) {
-        if ((*it) == exclude) {
-            continue;
-        }
-
-        SignalChange temp;
-        temp.signal = &((*it)->getSignal());
-
-        // In case of looking at a time-stamp (start=end) also take starting signals into account
-        if (start == end && temp.signal->getReceptionStart() == start) {
-            temp.type = SIGNAL_STARTS;
-            temp.time = temp.signal->getReceptionStart();
-            changes->push_back(temp);
-
-            continue;
-        }
-
-        // Already filter changes outside the region of interest
-        // End already outside region of interest (should be filtered out before)
-        // Signal has to start before(!) end and must not end before the start of the interval
-        if (temp.signal->getReceptionStart() < end && temp.signal->getReceptionEnd() > start) {
-            temp.type = SIGNAL_STARTS;
-            temp.time = temp.signal->getReceptionStart();
-            changes->push_back(temp);
-
-            // Already filter changes outside the region of interest
-            if (temp.signal->getReceptionEnd() <= end) {
-                temp.type = SIGNAL_ENDS;
-                temp.time = temp.signal->getReceptionEnd();
-                changes->push_back(temp);
-            }
-        }
-    }
-
-    // Bring changes (signals start and end) into an order
-    std::sort(changes->begin(), changes->end(), compareByTime);
-}
+} // namespace SignalUtils
+} // namespace Veins

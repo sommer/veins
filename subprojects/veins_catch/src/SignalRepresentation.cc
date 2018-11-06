@@ -20,14 +20,16 @@
 
 #include "catch/catch.hpp"
 
+#include "veins/base/phyLayer/DeciderToPhyInterface.h"
 #include "veins/base/toolbox/Spectrum.h"
 #include "veins/base/toolbox/Signal.h"
-#include "veins/base/toolbox/MathHelper.h"
+#include "veins/base/toolbox/SignalUtils.h"
 #include "veins/base/messages/AirFrame_m.h"
 #include "testutils/Simulation.h"
 #include "DummyAnalogueModel.h"
 
 using namespace Veins;
+using AirFrameVector = DeciderToPhyInterface::AirFrameVector;
 
 SCENARIO("Spectrum", "[toolbox]")
 {
@@ -979,6 +981,288 @@ SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but
                 REQUIRE(aboveThreshold == true);
                 REQUIRE(signal.getAtCenterFrequency() == 1.5);
                 REQUIRE(signal.getNumAnalogueModelsApplied() == 2);
+            }
+        }
+    }
+}
+
+SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
+{
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0),(), another signal (),() and a list with two DummyAnalogueModels (0.1, 0.9)")
+    {
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum spectrum(freqs);
+
+        DummyAnalogueModel am1(0.1);
+        DummyAnalogueModel am2(0.1);
+        AnalogueModelList analogueModels { &am1, &am2 };
+
+        Signal signal(spectrum);
+        signal[0] = 100;
+        signal[1] = 200;
+        signal[2] = 300;
+        signal.setDataStart(0);
+        signal.setDataEnd(2);
+        signal.setCenterFrequencyIndex(2);
+        signal.setAnalogueModelList(&analogueModels);
+        signal.setTiming(5, 10);
+
+        AirFrameVector airFrames;
+        AirFrame signalFrame;
+        signalFrame.setSignal(signal);
+        airFrames.push_back(&signalFrame);
+
+        WHEN("check for already higher threshold at a time-stamp in the middle of the signal")
+        {
+            bool belowThreshold = SignalUtils::smallerAtFreqIndex(10, 10, airFrames, 2, 500.0);
+            THEN("no AnalogueModel applied and true returned")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
+                REQUIRE(belowThreshold == true);
+            }
+        }
+        WHEN("check for already higher threshold at a time-stamp at the start of the signal")
+        {
+            bool belowThreshold = SignalUtils::smallerAtFreqIndex(5, 5, airFrames, 2, 500.0);
+            THEN("no AnalogueModel applied and true returned")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
+                REQUIRE(belowThreshold == true);
+            }
+        }
+        WHEN("check for already higher threshold at a time-stamp at the end of the signal")
+        {
+            bool belowThreshold = SignalUtils::smallerAtFreqIndex(15, 15, airFrames, 2, 500.0);
+            THEN("no AnalogueModel applied and true returned")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
+                REQUIRE(belowThreshold == true);
+            }
+        }
+        WHEN("check for a too low threshold at a time-stamp at the end of the signal")
+        {
+            bool belowThreshold = SignalUtils::smallerAtFreqIndex(10, 10, airFrames, 2, 1.0);
+            THEN("all AnalogueModels applied and false returned")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(belowThreshold == false);
+            }
+        }
+        WHEN("check for a too low threshold at a time-stamp at the end of the signal")
+        {
+            bool belowThreshold = SignalUtils::smallerAtFreqIndex(5, 5, airFrames, 2, 1.0);
+            THEN("all AnalogueModels applied and false returned")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(belowThreshold == false);
+            }
+        }
+        WHEN("check for a too low threshold at a time-stamp at the end of the signal")
+        {
+            bool belowThreshold = SignalUtils::smallerAtFreqIndex(15, 15, airFrames, 2, 1.0);
+            THEN("no AnalogueModel applied (as signal not within intervall) and true returned (as signal does not contribute to power)")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
+                REQUIRE(belowThreshold == true);
+            }
+        }
+    }
+}
+
+SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
+{
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0), another (interferer) signal, and a list with two DummyAnalogueModels (0.1, 0.1)")
+    {
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum spectrum(freqs);
+
+        DummyAnalogueModel am1(0.1);
+        DummyAnalogueModel am2(0.1);
+        AnalogueModelList analogueModels = { &am1, &am2 };
+
+        Signal signal(spectrum);
+        signal[0] = 100;
+        signal[1] = 200;
+        signal[2] = 300;
+        signal.setDataStart(0);
+        signal.setDataEnd(2);
+        signal.setCenterFrequencyIndex(2);
+        signal.setAnalogueModelList(&analogueModels);
+        signal.setTiming(5, 10);
+
+        AirFrameVector airFrames;
+        AirFrame signalFrame;
+        signalFrame.setSignal(signal);
+        airFrames.push_back(&signalFrame);
+
+        Signal interferer(signal);
+        AirFrameVector interfererFrames;
+        AirFrame interfererFrame;
+        interfererFrame.setSignal(interferer);
+        interfererFrames.push_back(&interfererFrame);
+
+        WHEN("searching for global min SINR over the whole time and signals perfectly overlap")
+        {
+            interfererFrame.getSignal().setTiming(5, 10);
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels applied and min is equal to 2.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(min == 0.5);
+            }
+        }
+        WHEN("searching for global min over the whole time and signals only overlap for half of the time")
+        {
+            interfererFrame.getSignal().setTiming(0, 5);
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels applied and min is equal to 1.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(min == 1.0);
+            }
+        }
+        WHEN("searching for global min over the whole time and signals do not overlap but are right behind each other")
+        {
+            interfererFrame.getSignal().setTiming(15, 5);
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels applied and min is equal to 1.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(min == 1.0);
+            }
+        }
+        WHEN("searching for global min over the whole time and signals do not overlap but are right behind each other")
+        {
+            interfererFrame.getSignal().setTiming(7.5, 5);
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels applied and min is equal to 1.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(min == 0.5);
+            }
+        }
+        WHEN("searching for global min over the whole time and signals do not overlap but are right behind each other")
+        {
+            interfererFrame.getSignal().setTiming(5, 5);
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels applied and min is equal to 1.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(min == 0.5);
+            }
+        }
+        WHEN("searching for global min over the whole time and signals do not overlap but are right behind each other")
+        {
+            interfererFrame.getSignal().setTiming(10, 5);
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels applied and min is equal to 1.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(min == 0.5);
+            }
+        }
+        WHEN("searching for global min over the whole time and signals do not overlap but are right behind each other")
+        {
+            interfererFrame.getSignal().setTiming(0, 7.5);
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels applied and min is equal to 1.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(min == 0.5);
+            }
+        }
+        WHEN("searching for global min over the whole time and signals do not overlap but are right behind each other")
+        {
+            interfererFrame.getSignal().setTiming(12.5, 7.5);
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels applied and min is equal to 1.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(min == 0.5);
+            }
+        }
+        WHEN("searching for global min over the whole time and signals do not overlap but are right behind each other")
+        {
+            interfererFrame.getSignal().setTiming(0, 0);
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels applied and min is equal to 1.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                REQUIRE(min == 1.0);
+            }
+        }
+    }
+}
+
+SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
+{
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0), eight other signals and a list with two DummyAnalogueModels (0.1, 0.1)")
+    {
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum spectrum(freqs);
+
+        DummyAnalogueModel am1(0.1);
+        DummyAnalogueModel am2(0.1);
+        AnalogueModelList analogueModels = { &am1, &am2 };
+
+        Signal signal(spectrum);
+        signal[0] = 100;
+        signal[1] = 200;
+        signal[2] = 300;
+        signal.setDataStart(0);
+        signal.setDataEnd(2);
+        signal.setCenterFrequencyIndex(2);
+        signal.setAnalogueModelList(&analogueModels);
+        signal.setTiming(5, 10);
+
+        AirFrameVector airFrames;
+        AirFrame signalFrame;
+        signalFrame.setSignal(signal);
+        airFrames.push_back(&signalFrame);
+
+        const std::vector< std::pair<double, double> > timings = {
+            {5, 10},
+            {0, 5},
+            {0, 7.5},
+            {5, 5},
+            {7.5, 5},
+            {10, 5},
+            {12.5, 7.5},
+            {15, 5},
+        };
+        std::vector< std::unique_ptr<AirFrame> > interfererFrameOwner; // for automatic deletion (RAII)
+        AirFrameVector interfererFrames;
+        for (auto& timing : timings) {
+            Signal interferer(signal);
+            interferer.setTiming(timing.first, timing.second);
+            interfererFrameOwner.emplace_back(new AirFrame());
+            AirFrame* interfererFrame = interfererFrameOwner.back().get();
+            interfererFrame->setSignal(interferer);
+            interfererFrames.push_back(interfererFrame);
+        }
+
+        WHEN("searching for global min SINR over the whole time and signals perfectly overlap")
+        {
+            double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
+            THEN("all AnalogueModels are applied and min is equal to 2.0")
+            {
+                REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
+                for (auto& interfererFrame : interfererFrames) {
+                    REQUIRE(interfererFrame->getSignal().getNumAnalogueModelsApplied() == 2);
+                }
+                REQUIRE(min == 0.25);
             }
         }
     }

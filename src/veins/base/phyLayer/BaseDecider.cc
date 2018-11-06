@@ -6,7 +6,6 @@
  */
 
 #include "veins/base/phyLayer/BaseDecider.h"
-#include "veins/base/toolbox/MathHelper.h"
 
 #include <cassert>
 
