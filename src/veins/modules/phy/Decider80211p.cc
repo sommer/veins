@@ -33,7 +33,7 @@
 #include "veins/modules/phy/NistErrorRate.h"
 #include "veins/modules/utility/ConstsPhy.h"
 
-#include "veins/base/toolbox/MathHelper.h"
+#include "veins/base/toolbox/SignalUtils.h"
 
 #ifndef DBG_D11P
 #define DBG_D11P EV
@@ -128,10 +128,10 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
     double noise = phy->getThermalNoiseValue();
 
     // Make sure to use the adjusted starting-point (which ignores the preamble)
-    double sinrMin = MathHelper::getMinSINR(start, end, frame, airFrames, noise);
+    double sinrMin = SignalUtils::getMinSINR(start, end, frame, airFrames, noise);
     double snrMin;
     if (collectCollisionStats) {
-        // snrMin = MathHelper::getMinSNR(start, end, frame, noise);
+        // snrMin = SignalUtils::getMinSNR(start, end, frame, noise);
         snrMin = s.getDataMin() / noise;
     }
     else {
@@ -271,7 +271,7 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude)
     bool isChannelIdle = minPower < ccaThreshold;
     if (airFrames.size() > 0) {
         size_t usedFreqIndex = airFrames.front()->getSignal().getSpectrum()->indexOf(centerFrequency - 5e6);
-        isChannelIdle = MathHelper::smallerAtFreqIndex(time, time, airFrames, usedFreqIndex, ccaThreshold - minPower, exclude);
+        isChannelIdle = SignalUtils::smallerAtFreqIndex(time, time, airFrames, usedFreqIndex, ccaThreshold - minPower, exclude);
     }
 
     return isChannelIdle;

@@ -28,43 +28,26 @@
 #include <iterator>
 
 #include "veins/base/utils/MiXiMDefs.h"
+#include "veins/base/phyLayer/DeciderToPhyInterface.h"
 #include "veins/base/phyLayer/Decider.h"
 
 #include "veins/base/toolbox/Signal.h"
 
 namespace Veins {
+namespace SignalUtils {
 
-using Veins::AirFrame;
+using AirFrameVector = DeciderToPhyInterface::AirFrameVector;
 
-enum ChangeType {
-    SIGNAL_NONE = 0,
-    SIGNAL_STARTS,
-    SIGNAL_ENDS
-};
+double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
 
-struct SignalChange {
-    Signal* signal;
-    ChangeType type;
-    simtime_t time;
-};
+double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
+double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& airFrames, size_t freqIndex, AirFrame* exclude);
 
-class MathHelper {
-public:
-    typedef std::list<AirFrame*> AirFrameVector;
+bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude = 0);
 
-    static double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
+double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise);
 
-    static double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
-    static double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& airFrames, size_t freqIndex, AirFrame* exclude);
-
-    static bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude = 0);
-
-    static double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise);
-
-private:
-    static inline void calculateChanges(simtime_t_cref s_start, simtime_t_cref s_end, const AirFrameVector& airFrames, std::vector<SignalChange>* changes, const AirFrame* exclude = 0);
-};
-
+} // namespace SignalUtils
 } // namespace Veins
 
 #endif /* MATHHELPER_H_ */
