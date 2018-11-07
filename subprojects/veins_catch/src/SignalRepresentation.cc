@@ -307,6 +307,35 @@ SCENARIO("Signal Value Access", "[toolbox]")
     }
 }
 
+SCENARIO("Invalid Signal Index Access", "[toolbox]")
+{
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3) and values for a signal with more frequencies (4,3,2,1)")
+    {
+        Freqs freqs = {1, 2, 3};
+        std::vector<double> values = {4, 3, 2, 1};
+        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Signal signal(spectrum);
+        WHEN("An invalid frequency index of the signal gets read")
+        {
+            THEN("An error should be raised (when in DEBUG mode)")
+            {
+                REQUIRE_THROWS(signal[3]);
+            }
+        }
+        WHEN("The 4th signal value gets written to the signal with 3 frequencies")
+        {
+            signal[0] = values[0];
+            signal[1] = values[1];
+            signal[2] = values[2];
+            THEN("An error should be raised (when in DEBUG mode)")
+            {
+                REQUIRE_THROWS(signal[3] = values[3]); // only throws when compiled in debug mode
+            }
+        }
+    }
+}
+
 SCENARIO("Signal Timing", "[toolbox]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
@@ -317,10 +346,10 @@ SCENARIO("Signal Timing", "[toolbox]")
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
         Signal signal(spectrum);
-        signal[1] = 4;
-        signal[2] = 3;
-        signal[3] = 2;
-        signal[4] = 1;
+        signal[0] = 4;
+        signal[1] = 3;
+        signal[2] = 2;
+        signal[3] = 1;
 
         WHEN("nothing done regarding timing")
         {

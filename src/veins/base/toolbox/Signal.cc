@@ -137,12 +137,14 @@ double& Signal::operator[](size_t index)
 #ifndef PREFER_VECTORIZATION
     includeAbsoluteIndex(index);
 #endif
+    ASSERT(index < numAbsoluteValues);
 
     return values[index];
 }
 
 const double& Signal::operator[](size_t index) const
 {
+    ASSERT(index < numAbsoluteValues);
     return values[index];
 }
 
@@ -150,6 +152,7 @@ double& Signal::operator()(double freq)
 {
     size_t index = spectrum->indexOf(freq);
 
+    ASSERT(index < numAbsoluteValues);
     includeAbsoluteIndex(index);
 
     return values[index];
@@ -964,7 +967,7 @@ void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
 {
     if (!pMsg) return;
 
-    assert(senderModuleID < 0);
+    ASSERT(senderModuleID < 0);
 
     senderModuleID = pMsg->getSenderModuleId();
     senderFromGateID = pMsg->getSenderGateId();
@@ -975,6 +978,7 @@ void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
 
 void Signal::addAttenuation(uint16_t freqIndex, double factor)
 {
+    ASSERT(freqIndex < numAbsoluteValues);
     values[freqIndex] *= factor;
 }
 
