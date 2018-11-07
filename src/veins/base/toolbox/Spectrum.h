@@ -35,7 +35,7 @@ namespace Veins {
 typedef std::vector<double> Freqs;
 
 class Spectrum;
-typedef std::shared_ptr<Spectrum> SpectrumPtr;
+typedef std::shared_ptr<const Spectrum> SpectrumPtr;
 
 class Spectrum {
 public:
