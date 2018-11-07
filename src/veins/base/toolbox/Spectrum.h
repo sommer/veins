@@ -44,7 +44,7 @@ public:
         static std::shared_ptr<Spectrum> instance(new Spectrum(freqs));
         return instance;
     }
-    ~Spectrum();
+    ~Spectrum() = default;
 
 private:
     Spectrum(Freqs freqs);

@@ -32,13 +32,6 @@ Spectrum::Spectrum(Freqs freqs)
     frequencies.erase(std::unique(frequencies.begin(), frequencies.end()), frequencies.end());
 }
 
-Spectrum::~Spectrum()
-{
-    // std::cout << "Spectrum destructed" << std::endl;
-
-    frequencies.clear();
-}
-
 const double& Spectrum::operator[](size_t index) const
 {
     return frequencies.at(index);
