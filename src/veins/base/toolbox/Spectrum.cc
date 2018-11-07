@@ -51,7 +51,7 @@ size_t Spectrum::indexOf(double freq) const
     // return std::distance(frequencies.begin(), std::find(frequencies.begin(), frequencies.end(), freq));
 }
 
-size_t Spectrum::indexNearLow(double freq)
+size_t Spectrum::indexNearLow(double freq) const
 {
     size_t index = 0;
     for (size_t i = 0; i < frequencies.size(); i++) {
@@ -60,7 +60,7 @@ size_t Spectrum::indexNearLow(double freq)
     return index;
 }
 
-size_t Spectrum::indexNearUp(double freq)
+size_t Spectrum::indexNearUp(double freq) const
 {
     size_t index = frequencies.size() - 1;
     for (size_t i = frequencies.size() - 1; i > 0; i--) {
@@ -79,14 +79,14 @@ size_t Spectrum::getNumFreqs() const
     return frequencies.size();
 }
 
-void Spectrum::print()
+void Spectrum::print() const
 {
     for (uint16_t i = 0; i < frequencies.size(); i++) {
         std::cout << frequencies[i] << std::endl;
     }
 }
 
-void Spectrum::toFile(std::string path)
+void Spectrum::toFile(std::string path) const
 {
     std::fstream file;
     file.open(path.c_str(), std::ios::out | std::ios::app);

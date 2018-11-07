@@ -57,16 +57,16 @@ public:
     size_t getNumFreqs() const;
 
     size_t indexOf(double freq) const;
-    size_t indexNearLow(double freq);
-    size_t indexNearUp(double freq);
+    size_t indexNearLow(double freq) const;
+    size_t indexNearUp(double freq) const;
 
     double freqAt(size_t freqIndex) const;
 
-    void print();
-    void toFile(std::string path);
+    void print() const;
+    void toFile(std::string path) const;
 
 private:
-    Freqs frequencies;
+    const Freqs frequencies;
 };
 
 } // namespace Veins
