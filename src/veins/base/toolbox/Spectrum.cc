@@ -46,9 +46,6 @@ size_t Spectrum::indexOf(double freq) const
     assert(found == true);
 
     return std::distance(frequencies.begin(), it);
-
-    // Linear search
-    // return std::distance(frequencies.begin(), std::find(frequencies.begin(), frequencies.end(), freq));
 }
 
 size_t Spectrum::indexNearLow(double freq) const
@@ -71,7 +68,7 @@ size_t Spectrum::indexNearUp(double freq) const
 
 double Spectrum::freqAt(size_t freqIndex) const
 {
-    return frequencies[freqIndex];
+    return frequencies.at(freqIndex);
 }
 
 size_t Spectrum::getNumFreqs() const
@@ -81,24 +78,20 @@ size_t Spectrum::getNumFreqs() const
 
 void Spectrum::print() const
 {
-    for (uint16_t i = 0; i < frequencies.size(); i++) {
-        std::cout << frequencies[i] << std::endl;
+    for(auto& frequency : frequencies) {
+        std::cout << frequency << std::endl;
     }
 }
 
 void Spectrum::toFile(std::string path) const
 {
-    std::fstream file;
-    file.open(path.c_str(), std::ios::out | std::ios::app);
-
+    std::fstream file(path.c_str(), std::ios::out | std::ios::app);
     if (!file.good()) return;
 
     file << "spectrum:";
-    for (Freqs::iterator it = frequencies.begin(); it != frequencies.end(); ++it) {
+    for (auto it = frequencies.begin(); it != frequencies.end(); ++it) {
         file << *it;
         if (it != frequencies.end() - 1) file << ",";
     }
     file << std::endl;
-
-    file.close();
 }
