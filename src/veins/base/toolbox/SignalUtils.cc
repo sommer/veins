@@ -39,8 +39,21 @@ struct SignalChange {
     simtime_t time;
 };
 
-bool compareByTime(const SignalChange& lhs, const SignalChange& rhs)
+bool sortInterferenceAllowTemporaryUnderestimate(const SignalChange& lhs, const SignalChange& rhs)
 {
+    if (lhs.time == rhs.time) {
+        // if two changes occur at the same time, process "interference ending" changes first
+        return (lhs.type > rhs.type);
+    }
+    return (lhs.time < rhs.time);
+}
+
+bool sortInterferenceAllowTemporaryOverestimate(const SignalChange& lhs, const SignalChange& rhs)
+{
+    if (lhs.time == rhs.time) {
+        // if two changes occur at the same time, process "interference starting" changes first
+        return (lhs.type < rhs.type);
+    }
     return (lhs.time < rhs.time);
 }
 
@@ -71,8 +84,6 @@ std::vector<SignalChange> calculateChanges(simtime_t_cref start, simtime_t_cref 
         }
     }
 
-    // Bring changes (signals start and end) into an order
-    std::sort(changes.begin(), changes.end(), compareByTime);
     return changes;
 }
 } // namespace
@@ -82,6 +93,7 @@ double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFra
     if (airFrames.empty()) return 0;
 
     auto changes = calculateChanges(start, end, airFrames);
+    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryUnderestimate);
 
     // Works fine so far, as there is at least one AirFrame
     if (changes.empty()) return 0;
@@ -127,6 +139,7 @@ double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFra
     if (airFrames.empty()) return 0;
 
     auto changes = calculateChanges(start, end, airFrames);
+    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryOverestimate);
 
     // Works fine so far, as there is at least one AirFrame
     if (changes.empty()) return 0;
@@ -172,6 +185,7 @@ double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& a
     if (airFrames.empty()) return 0;
 
     auto changes = calculateChanges(start, end, airFrames, exclude);
+    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryOverestimate);
 
     // Works fine so far, as there is at least one AirFrame
     if (changes.empty()) return 0;
@@ -220,6 +234,7 @@ bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrame
     if (airFrames.empty()) return true;
 
     auto changes = calculateChanges(start, end, airFrames, exclude);
+    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryOverestimate);
 
     // Works fine so far, as there is at least one AirFrame
     if (changes.empty()) return true;
@@ -287,6 +302,7 @@ double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFram
 
     // Method will "filter out" the signalFrame
     auto changes = calculateChanges(start, end, interfererFrames, signalFrame);
+    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryUnderestimate);
 
     // Prepare I+N at the beginning
     auto changesIt = changes.begin();
