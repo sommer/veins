@@ -18,39 +18,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
 
-#include "../../../src/veins/base/toolbox/Spectrum.h"
-#include "../../../src/veins/base/toolbox/Signal.h"
-#include "../../../src/veins/base/toolbox/MathHelper.h"
-
+#include "veins/base/toolbox/Spectrum.h"
+#include "veins/base/toolbox/Signal.h"
+#include "veins/base/toolbox/MathHelper.h"
+#include "veins/base/messages/AirFrame_m.h"
+#include "testutils/Simulation.h"
 #include "DummyAnalogueModel.h"
 
-/*void deleteAirFrameVector(AirFrameVector& airFrames)
-   {
-    uint16_t numFrames = airFrames.size();
-    std::cout << "Delete airFrames: " << numFrames << " frames deleted" << std::endl;
-    for(uint16_t i=0;i<numFrames;i++)
-    {
-        delete airFrames.front();
-        airFrames.pop_front();
-    }
-   }*/
+using namespace Veins;
 
 SCENARIO("Spectrum", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A vector of frequencies (1,1,5,3,4,2,6,4)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(1);
-        freqs.push_back(5);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(2);
-        freqs.push_back(6);
-        freqs.push_back(4);
+        Freqs freqs = {1, 1, 5, 3, 4, 2, 6, 4};
 
         WHEN("the spectrum is constructed")
         {
@@ -95,21 +79,38 @@ SCENARIO("Spectrum", "[toolbox]")
                     REQUIRE(spectrum == spectrumClone);
                 }
             }
+            WHEN("another spectrum is created with the frequencies in a different order")
+            {
+                auto reversedFrecs = freqs;
+                std::reverse(reversedFrecs.begin(), reversedFrecs.end());
+                SpectrumPtr spectrumClone = Spectrum::getInstance(reversedFrecs);
+                THEN("the singleton pattern just returns the same shared pointer")
+                {
+                    REQUIRE(freqs != reversedFrecs);
+                    REQUIRE(spectrum == spectrumClone);
+                }
+            }
+            WHEN("another spectrum is created with some frequencies duplicated")
+            {
+                auto freqsWithDuplicates = freqs;
+                freqsWithDuplicates.push_back(freqs.back());
+                freqsWithDuplicates.push_back(freqs.front());
+                SpectrumPtr spectrumClone = Spectrum::getInstance(freqsWithDuplicates);
+                THEN("the singleton pattern just returns the same shared pointer")
+                {
+                    REQUIRE(spectrum == spectrumClone);
+                }
+            }
         }
     }
 }
 
 SCENARIO("Signal Constructors and Assignment", "[toolbox]")
 {
-    GIVEN("A spectrum with frequencies (1,2,3,4)")
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3,4, 5, 6)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -250,15 +251,10 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
 
 SCENARIO("Signal Value Access", "[toolbox]")
 {
-    GIVEN("A spectrum with frequencies (1,2,3,4)")
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3,4,5,6)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -311,25 +307,51 @@ SCENARIO("Signal Value Access", "[toolbox]")
     }
 }
 
+#ifndef NDEBUG
+SCENARIO("Invalid Signal Index Access", "[toolbox]")
+{
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3) and values for a signal with more frequencies (4,3,2,1)")
+    {
+        Freqs freqs = {1, 2, 3};
+        std::vector<double> values = {4, 3, 2, 1};
+        SpectrumPtr spectrum = Spectrum::getInstance(freqs);
+        Signal signal(spectrum);
+        WHEN("An invalid frequency index of the signal gets read")
+        {
+            THEN("An error should be raised (when in DEBUG mode)")
+            {
+                REQUIRE_THROWS(signal[3]);
+            }
+        }
+        WHEN("The 4th signal value gets written to the signal with 3 frequencies")
+        {
+            signal[0] = values[0];
+            signal[1] = values[1];
+            signal[2] = values[2];
+            THEN("An error should be raised (when in DEBUG mode)")
+            {
+                REQUIRE_THROWS(signal[3] = values[3]); // only throws when compiled in debug mode
+            }
+        }
+    }
+}
+#endif
+
 SCENARIO("Signal Timing", "[toolbox]")
 {
-    GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and a signal (0,4,3,2,1,0)")
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("A spectrum with frequencies (1,2,3,4) and a signal (4,3,2,1)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
         Signal signal(spectrum);
-        signal[1] = 4;
-        signal[2] = 3;
-        signal[3] = 2;
-        signal[4] = 1;
+        signal[0] = 4;
+        signal[1] = 3;
+        signal[2] = 2;
+        signal[3] = 1;
 
         WHEN("nothing done regarding timing")
         {
@@ -390,15 +412,10 @@ SCENARIO("Signal Timing", "[toolbox]")
 
 SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (0,1,2,3,0,0) and a constant 2")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -512,7 +529,7 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
                 REQUIRE(quotient2[0] == INFINITY);
                 REQUIRE(quotient2[1] == 2);
                 REQUIRE(quotient2[2] == 1);
-                REQUIRE(quotient2[3] == double(2.0d / 3.0d));
+                REQUIRE(quotient2[3] == double(2.0 / 3.0));
                 REQUIRE(quotient2[4] == INFINITY);
                 REQUIRE(quotient2[5] == INFINITY);
             }
@@ -582,15 +599,10 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
 
 SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and two signals (0,1,2,0,0,0), (0,0,3,4,0,0)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -650,7 +662,7 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
                 REQUIRE(quotient.getRelativeStart() == 1);
                 REQUIRE(quotient.getRelativeEnd() == 4);
                 REQUIRE(quotient[1] == INFINITY);
-                REQUIRE(quotient[2] == double(2.0d / 3.0d));
+                REQUIRE(quotient[2] == double(2.0 / 3.0));
                 REQUIRE(quotient[3] == 0);
             }
         }
@@ -659,15 +671,10 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
 
 SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (0,1,2,3,0,0) and a constant 2")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -751,15 +758,10 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
 
 SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and two signals (0,1,2,0,0,0), (0,0,3,4,0,0)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -823,7 +825,7 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
                 REQUIRE(quotient.getRelativeStart() == 1);
                 REQUIRE(quotient.getRelativeEnd() == 4);
                 REQUIRE(quotient[1] == INFINITY);
-                REQUIRE(quotient[2] == double(2.0d / 3.0d));
+                REQUIRE(quotient[2] == double(2.0 / 3.0));
                 REQUIRE(quotient[3] == 0);
             }
         }
@@ -832,15 +834,10 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
 
 SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
-        freqs.push_back(5);
-        freqs.push_back(6);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 
@@ -913,13 +910,10 @@ SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
 
 SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but supported
 {
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs;
-        freqs.push_back(1);
-        freqs.push_back(2);
-        freqs.push_back(3);
-        freqs.push_back(4);
+        Freqs freqs = {1, 2, 3, 4, 5, 6};
 
         SpectrumPtr spectrum = Spectrum::getInstance(freqs);
 

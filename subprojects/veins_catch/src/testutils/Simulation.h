@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2018 Dominik S. Buse <buse@ccs-labs.org>
+// Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -17,28 +17,28 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-#ifndef DUMMYANALOGUEMODEL_H_
-#define DUMMYANALOGUEMODEL_H_
+#ifndef TESTUTILS_SIMULATION_H
+#define TESTUTILS_SIMULATION_H
 
-#include "veins/base/phyLayer/AnalogueModel.h"
+#include <omnetpp.h>
 
-namespace Veins {
-
-class DummyAnalogueModel : public AnalogueModel {
-protected:
-    const double factor;
-
+class DummySimulation {
 public:
-    DummyAnalogueModel(double factor)
-        : factor(factor)
+    DummySimulation(omnetpp::cNullEnvir* envir)
+        : simulation("DummySimulation", envir)
     {
+        // envir is stored and deleted automatically by omnet++
+        omnetpp::cSimulation::setActiveSimulation(&simulation);
+        omnetpp::SimTime::setScaleExp(-9);
+    }
+    ~DummySimulation()
+    {
+        omnetpp::cSimulation::setActiveSimulation(nullptr);
     }
 
-    void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos) override
-    {
-        signal->addUniformAttenuation(factor);
-    }
-};
-} // namespace Veins
+private:
+    omnetpp::cStaticFlag csf;
+    omnetpp::cSimulation simulation;
+}; // end DummySimulation
 
-#endif /*DUMMYANALOGUEMODEL_H_*/
+#endif
