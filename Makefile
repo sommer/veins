@@ -9,7 +9,12 @@ endif
 
 # default target
 all: src/Makefile $(ADDL_TARGETS)
+ifdef MODE
 	@cd src && $(MAKE)
+else
+	@cd src && $(MAKE) MODE=release
+	@cd src && $(MAKE) MODE=debug
+endif
 
 # command line scripts
 run: % : src/scripts/%.in.py out/config.py
@@ -34,13 +39,16 @@ makefiles:
 	@echo
 
 clean: src/Makefile
-	cd src && $(MAKE) clean
-	rm -f run
+ifdef MODE
+	@cd src && $(MAKE) clean
+else
+	@cd src && $(MAKE) MODE=release clean
+	@cd src && $(MAKE) MODE=debug clean
+endif
 
-cleanall: src/Makefile
-	cd src && $(MAKE) MODE=release clean
-	cd src && $(MAKE) MODE=debug clean
+cleanall: clean
 	rm -f src/Makefile
+	rm -f out/config.py
 	rm -f run
 
 src/Makefile:
