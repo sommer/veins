@@ -307,6 +307,7 @@ SCENARIO("Signal Value Access", "[toolbox]")
     }
 }
 
+#ifndef NDEBUG
 SCENARIO("Invalid Signal Index Access", "[toolbox]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
@@ -335,6 +336,7 @@ SCENARIO("Invalid Signal Index Access", "[toolbox]")
         }
     }
 }
+#endif
 
 SCENARIO("Signal Timing", "[toolbox]")
 {
