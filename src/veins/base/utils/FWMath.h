@@ -101,8 +101,8 @@ namespace math {
  * Expressions that logically result in the same values therefore often are not exactly equal, because two representations of very similar values are computed.
  * This function allows comparisons for such cases by allowing for a small error (epsilon), without considering numbers to be unequal.
  *
- * @param lhs First comparand
- * @param rhs Second comparand
+ * @param x First comparand
+ * @param y Second comparand
  * @param ulp
  *      How many ULP's (Units in the Last Place) we want to tolerate when comparing two numbers.
  *      The larger the value, the more error we allow.
