@@ -30,6 +30,7 @@
 #include "veins/modules/analogueModel/BreakpointPathlossModel.h"
 #include "veins/modules/analogueModel/PERModel.h"
 #include "veins/modules/analogueModel/SimpleObstacleShadowing.h"
+#include "veins/modules/analogueModel/VehicleObstacleShadowing.h"
 #include "veins/modules/analogueModel/TwoRayInterferenceModel.h"
 #include "veins/modules/analogueModel/NakagamiFading.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
@@ -50,6 +51,7 @@
 using namespace Veins;
 
 using Veins::ObstacleControlAccess;
+using Veins::VehicleObstacleControlAccess;
 
 Define_Module(Veins::PhyLayer80211p);
 
@@ -85,6 +87,9 @@ AnalogueModel* PhyLayer80211p::getAnalogueModelFromName(std::string name, Parame
     }
     else if (name == "SimpleObstacleShadowing") {
         return initializeSimpleObstacleShadowing(params);
+    }
+    else if (name == "VehicleObstacleShadowing") {
+        return initializeVehicleObstacleShadowing(params);
     }
     else if (name == "TwoRayInterferenceModel") {
         if (world->use2D()) error("The TwoRayInterferenceModel uses nodes' z-position as the antenna height over ground. Refusing to work in a 2D world");
@@ -326,6 +331,49 @@ AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& p
     ObstacleControl* obstacleControlP = ObstacleControlAccess().getIfExists();
     if (!obstacleControlP) throw cRuntimeError("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
     return new SimpleObstacleShadowing(*obstacleControlP, carrierFrequency, useTorus, playgroundSize, coreDebug);
+}
+
+AnalogueModel* PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& params)
+{
+
+    // init with default value
+    double carrierFrequency = 2.412e+9;
+    bool useTorus = world->useTorus();
+    const Coord& playgroundSize = *(world->getPgs());
+
+    ParameterMap::iterator it;
+
+    // get carrierFrequency from config
+    it = params.find("carrierFrequency");
+
+    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
+        // set carrierFrequency
+        carrierFrequency = it->second.doubleValue();
+        coreEV << "initializeSimpleObstacleShadowing(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
+
+        // check whether carrierFrequency is not smaller than specified in ConnectionManager
+        if (cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue()) {
+            // throw error
+            throw cRuntimeError("initializeSimpleObstacleShadowing(): carrierFrequency can't be smaller than specified in ConnectionManager. Please adjust your config.xml file accordingly");
+        }
+    }
+    else // carrierFrequency has not been specified in config.xml
+    {
+        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
+            // set carrierFrequency according to ConnectionManager
+            carrierFrequency = cc->par("carrierFrequency").doubleValue();
+            coreEV << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
+        }
+        else // carrierFrequency has not been specified in ConnectionManager
+        {
+            // keep carrierFrequency at default value
+            coreEV << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
+        }
+    }
+
+    VehicleObstacleControl* vehicleObstacleControlP = VehicleObstacleControlAccess().getIfExists();
+    if (!vehicleObstacleControlP) throw cRuntimeError("initializeVehicleObstacleShadowing(): cannot find VehicleObstacleControl module");
+    return new VehicleObstacleShadowing(*vehicleObstacleControlP, carrierFrequency, useTorus, playgroundSize, coreDebug);
 }
 
 Decider* PhyLayer80211p::initializeDecider80211p(ParameterMap& params)

@@ -25,6 +25,8 @@
 #include <iterator>
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
+#include "veins/base/connectionManager/ChannelAccess.h"
+#include "veins/modules/phy/PhyLayer80211p.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
@@ -308,6 +310,8 @@ void TraCIScenarioManager::initialize(int stage)
 
     cc = FindModule<BaseConnectionManager*>::findGlobalModule();
 
+    vehicleObstacleControl = FindModule<VehicleObstacleControl*>::findGlobalModule();
+
     ASSERT(firstStepAt > connectAt);
     connectAndStartTrigger = new cMessage("connect");
     scheduleAt(connectAt, connectAndStartTrigger);
@@ -576,10 +580,19 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     mod->callInitialize();
     hosts[nodeId] = mod;
 
+    // find sender position
+    ChannelAccess* ca = FindModule<PhyLayer80211p*>::findSubModule(mod);
+
     // post-initialize TraCIMobility
     auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
     for (auto mm : mobilityModules) {
         mm->changePosition();
+
+        if (vehicleObstacleControl) {
+            double offset = mm->getHostPositionOffset();
+            const VehicleObstacle* vo = vehicleObstacleControl->add(VehicleObstacle(ca, mm, length, offset, width, height));
+            vehicleObstacles[mm] = vo;
+        }
     }
 
     emit(traciModuleAddedSignal, mod);
@@ -607,6 +620,16 @@ void TraCIScenarioManager::deleteManagedModule(std::string nodeId)
     cModule* nic = mod->getSubmodule("nic");
     if (cc && nic) {
         cc->unregisterNic(nic);
+    }
+    if (vehicleObstacleControl) {
+        for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
+            cModule* submod = *iter;
+            TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
+            if (!mm) continue;
+            auto vo = vehicleObstacles.find(mm);
+            ASSERT(vo != vehicleObstacles.end());
+            vehicleObstacleControl->erase(vo->second);
+        }
     }
 
     hosts.erase(nodeId);

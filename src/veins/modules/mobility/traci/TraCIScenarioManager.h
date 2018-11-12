@@ -33,6 +33,7 @@
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/obstacle/ObstacleControl.h"
+#include "veins/modules/obstacle/VehicleObstacleControl.h"
 #include "veins/modules/mobility/traci/TraCIBuffer.h"
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/modules/mobility/traci/TraCIConnection.h"
@@ -150,6 +151,8 @@ protected:
 
     BaseWorldUtility* world;
     BaseConnectionManager* cc;
+    std::map<const TraCIMobility*, const VehicleObstacle*> vehicleObstacles;
+    VehicleObstacleControl* vehicleObstacleControl;
 
     void executeOneTimestep(); /**< read and execute all commands for the next timestep */
 
