@@ -74,7 +74,7 @@ void TraCIMobility::initialize(int stage)
         BaseMobility::initialize(stage);
 
         debug = par("debug");
-        antennaPositionOffset = par("antennaPositionOffset");
+        hostPositionOffset = par("hostPositionOffset");
         accidentCount = par("accidentCount");
 
         currentPosXVec.setName("posx");
@@ -89,7 +89,7 @@ void TraCIMobility::initialize(int stage)
         ASSERT(isPreInitialized);
         isPreInitialized = false;
 
-        Coord nextPos = calculateAntennaPosition(roadPosition);
+        Coord nextPos = calculateHostPosition(roadPosition);
         nextPos.z = move.getCurrentPosition().z;
 
         move.setStart(nextPos);
@@ -159,9 +159,9 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
     this->road_id = road_id;
     this->speed = speed;
     this->angle = angle;
-    this->antennaPositionOffset = par("antennaPositionOffset");
+    this->hostPositionOffset = par("hostPositionOffset");
 
-    Coord nextPos = calculateAntennaPosition(roadPosition);
+    Coord nextPos = calculateHostPosition(roadPosition);
     nextPos.z = move.getCurrentPosition().z;
 
     move.setStart(nextPos);
@@ -193,7 +193,7 @@ void TraCIMobility::changePosition()
     currentPosXVec.record(move.getStartPos().x);
     currentPosYVec.record(move.getStartPos().y);
 
-    Coord nextPos = calculateAntennaPosition(roadPosition);
+    Coord nextPos = calculateHostPosition(roadPosition);
     nextPos.z = move.getCurrentPosition().z;
 
     // keep statistics (relative to last step)
@@ -295,12 +295,12 @@ double TraCIMobility::calculateCO2emission(double v, double a) const
     return alpha + beta * v * 3.6 + delta * v * v * v * (3.6 * 3.6 * 3.6) + zeta * a * v;
 }
 
-Coord TraCIMobility::calculateAntennaPosition(const Coord& vehiclePos) const
+Coord TraCIMobility::calculateHostPosition(const Coord& vehiclePos) const
 {
     Coord corPos;
-    if (antennaPositionOffset >= 0.001) {
+    if (hostPositionOffset >= 0.001) {
         // calculate antenna position of vehicle according to antenna offset
-        corPos = Coord(vehiclePos.x - antennaPositionOffset * cos(angle), vehiclePos.y + antennaPositionOffset * sin(angle), vehiclePos.z);
+        corPos = Coord(vehiclePos.x - hostPositionOffset * cos(angle), vehiclePos.y + hostPositionOffset * sin(angle), vehiclePos.z);
     }
     else {
         corPos = Coord(vehiclePos.x, vehiclePos.y, vehiclePos.z);

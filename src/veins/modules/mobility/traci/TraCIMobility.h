@@ -99,9 +99,9 @@ public:
         if (external_id == "") throw cRuntimeError("TraCIMobility::getExternalId called with no external_id set yet");
         return external_id;
     }
-    virtual double getAntennaPositionOffset() const
+    virtual double getHostPositionOffset() const
     {
-        return antennaPositionOffset;
+        return hostPositionOffset;
     }
     virtual Coord getPositionAt(const simtime_t& t) const
     {
@@ -165,7 +165,7 @@ protected:
     bool isPreInitialized; /**< true if preInitialize() has been called immediately before initialize() */
 
     std::string external_id; /**< updated by setExternalId() */
-    double antennaPositionOffset; /**< front offset for the antenna on this car */
+    double hostPositionOffset; /**< front offset for the antenna on this car */
 
     simtime_t lastUpdate; /**< updated by nextPosition() */
     Coord roadPosition; /**< position of front bumper, updated by nextPosition() */
@@ -196,9 +196,9 @@ protected:
     double calculateCO2emission(double v, double a) const;
 
     /**
-     * Calculates where the antenna of this car is, given its front bumper position
+     * Calculates where the OMNeT++ module position of this car should be, given its front bumper position
      */
-    Coord calculateAntennaPosition(const Coord& vehiclePos) const;
+    Coord calculateHostPosition(const Coord& vehiclePos) const;
 };
 
 class TraCIMobilityAccess {
