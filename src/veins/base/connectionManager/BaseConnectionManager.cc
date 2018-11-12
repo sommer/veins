@@ -302,7 +302,7 @@ void BaseConnectionManager::updateNicConnections(NicEntries& nmap, BaseConnectio
     }
 }
 
-bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos)
+bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos, double yaw)
 {
     assert(nic != 0);
 
@@ -322,6 +322,7 @@ bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, c
     nicEntry->nicId = nicID;
     nicEntry->hostId = nic->getParentModule()->getId();
     nicEntry->pos = *nicPos;
+    nicEntry->yaw = yaw;
     nicEntry->chAccess = chAccess;
 
     // add to map
@@ -388,13 +389,14 @@ bool BaseConnectionManager::unregisterNic(cModule* nicModule)
     return true;
 }
 
-void BaseConnectionManager::updateNicPos(int nicID, const Coord* newPos)
+void BaseConnectionManager::updateNicPos(int nicID, const Coord* newPos, double yaw)
 {
     NicEntries::iterator ItNic = nics.find(nicID);
     if (ItNic == nics.end()) error("No nic with this ID (%d) is registered with this ConnectionManager.", nicID);
 
     Coord oldPos = ItNic->second->pos;
     ItNic->second->pos = *newPos;
+    ItNic->second->yaw = yaw;
 
     updateConnections(nicID, &oldPos, newPos);
 }

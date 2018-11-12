@@ -17,8 +17,10 @@ simple BasePhyLayer like IWirelessPhy
 
         
         xml antenna = default(xml("<root><Antenna type=\"IsotropicAntenna\" id=\"default_isotropic\"></Antenna></root>"));
-        
-        
+        double antennaOffsetX @unit("m") = default(0 m); // Offset of antenna position (x direction) with respect to what a BaseMobility module will tell us (inherited from IChannelAccess)
+        double antennaOffsetY @unit("m") = default(0 m); // Offset of antenna position (y direction) with respect to what a BaseMobility module will tell us (inherited from IChannelAccess)
+        double antennaOffsetZ @unit("m") = default(0 m); // Offset of antenna position (z direction) with respect to what a BaseMobility module will tell us (inherited from IChannelAccess)
+        double antennaOffsetYaw @unit("rad") = default(0 rad); // Offset of antenna orientation (yaw) with respect to what a BaseMobility module will tell us (inherited from IChannelAccess)
         xml analogueModels;             //Specification of the analogue models to use and their parameters
         xml decider;                    //Specification of the decider to use and its parameters
 

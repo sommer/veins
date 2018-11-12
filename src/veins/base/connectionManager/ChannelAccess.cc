@@ -63,6 +63,22 @@ void ChannelAccess::initialize(int stage)
     if (stage == 0) {
         hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
 
+        if (hasPar("antennaOffsetX")) {
+            antennaOffset.x = par("antennaOffsetX").doubleValue();
+        }
+
+        if (hasPar("antennaOffsetY")) {
+            antennaOffset.y = par("antennaOffsetY").doubleValue();
+        }
+
+        if (hasPar("antennaOffsetZ")) {
+            antennaOffset.z = par("antennaOffsetZ").doubleValue();
+        }
+
+        if (hasPar("antennaOffsetYaw")) {
+            antennaOffsetYaw = par("antennaOffsetYaw").doubleValue();
+        }
+
         findHost()->subscribe(mobilityStateChangedSignal, this);
 
         cModule* nic = getParentModule();
@@ -140,8 +156,8 @@ simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic)
     assert(receiverModule);
 
     /** claim the Move pattern of the sender from the Signal */
-    Coord sendersPos = senderModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
-    Coord receiverPos = receiverModule->getMobilityModule()->getCurrentPosition(/*sStart*/);
+    Coord sendersPos = senderModule->antennaPosition;
+    Coord receiverPos = receiverModule->antennaPosition;
 
     // this time-point is used to calculate the distance between sending and receiving host
     return receiverPos.distance(sendersPos) / BaseWorldUtility::speedOfLight();
@@ -151,15 +167,19 @@ void ChannelAccess::receiveSignal(cComponent* source, simsignal_t signalID, cObj
 {
     if (signalID == mobilityStateChangedSignal) {
         ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
-        Coord pos = mobility->getCurrentPosition();
+
+        auto av = mobility->getCurrentOrientation();
+        auto yaw = av.flippedY().toYaw();
+        antennaPosition = mobility->getCurrentPosition() + antennaOffset.rotatedYaw(-yaw);
+        antennaYaw = yaw + antennaOffsetYaw;
 
         if (isRegistered) {
-            cc->updateNicPos(getParentModule()->getId(), &pos);
+            cc->updateNicPos(getParentModule()->getId(), &antennaPosition, antennaYaw);
         }
         else {
             // register the nic with ConnectionManager
             // returns true, if sendDirect is used
-            useSendDirect = cc->registerNic(getParentModule(), this, &pos);
+            useSendDirect = cc->registerNic(getParentModule(), this, &antennaPosition, antennaYaw);
             isRegistered = true;
         }
     }

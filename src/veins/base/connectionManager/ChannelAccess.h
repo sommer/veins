@@ -78,6 +78,18 @@ protected:
     /** @brief Pointer to the World Utility, to obtain some global information*/
     BaseWorldUtility* world;
 
+    /** @brief Current antenna position */
+    Coord antennaPosition;
+
+    /** @brief Current atenna yaw angle */
+    double antennaYaw;
+
+    /** @brief Offset of antenna position (in m) with respect to what a BaseMobility module will tell us */
+    Coord antennaOffset = Coord(0, 0, 0);
+
+    /** @brief Offset of antenna orientation (yaw, in rad) with respect to what a BaseMobility module will tell us */
+    double antennaOffsetYaw = 0;
+
 protected:
     /**
      * @brief Calculates the propagation delay to the passed receiving nic.
@@ -127,6 +139,11 @@ public:
     virtual ChannelMobilityPtrType getMobilityModule()
     {
         return ChannelMobilityAccessType::get(this);
+    }
+
+    virtual Coord getAntennaPosition() const
+    {
+        return antennaPosition;
     }
 };
 

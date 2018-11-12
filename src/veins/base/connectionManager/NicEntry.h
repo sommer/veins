@@ -67,6 +67,9 @@ public:
     /** @brief Geographic location of the nic*/
     Coord pos;
 
+    /** @brief Yaw angle of the nic*/
+    double yaw;
+
     /** @brief Points to this nics ChannelAccess module */
     ChannelAccess* chAccess;
 

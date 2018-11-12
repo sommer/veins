@@ -542,10 +542,8 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     AirFrame* frame = encapsMsg(static_cast<cPacket*>(msg));
 
     // Prepare a POA object and attach it to the created Airframe
-    BaseMobility* sendersMobility = ChannelMobilityAccessType::get(this->getParentModule());
-    assert(sendersMobility);
-    Coord pos = sendersMobility->getCurrentPosition();
-    Coord orient = sendersMobility->getCurrentOrientation();
+    Coord pos = antennaPosition;
+    Coord orient = Coord::fromYaw(-antennaYaw);
     POA* poa = new POA(pos, orient, antenna);
     frame->setPoa(*poa);
     // the frame is now owner of the POA object
@@ -676,8 +674,8 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     // get own mobility module
     BaseMobility* ownMobility = ChannelMobilityAccessType::get(this->getParentModule());
     assert(ownMobility);
-    Coord ownPos = ownMobility->getCurrentPosition();
-    Coord ownOrient = ownMobility->getCurrentOrientation();
+    Coord ownPos = antennaPosition;
+    Coord ownOrient = Coord::fromYaw(-antennaYaw);
     // compute gains at sender and receiver antenna
     double ownGain = antenna->getGain(ownPos, ownOrient, senderPOA.pos);
     double otherGain = senderPOA.antenna->getGain(senderPOA.pos, senderPOA.orientation, ownPos);
@@ -694,15 +692,12 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     ChannelAccess* const senderModule = dynamic_cast<ChannelAccess* const>(frame->getSenderModule());
     ChannelAccess* const receiverModule = dynamic_cast<ChannelAccess* const>(frame->getArrivalModule());
 
-    assert(senderModule);
-    assert(receiverModule);
+    ASSERT(senderModule);
+    ASSERT(receiverModule);
+    ASSERT(receiverModule == this);
 
-    /** claim the Move pattern of the sender from the Signal */
-    ChannelMobilityPtrType sendersMobility = senderModule ? senderModule->getMobilityModule() : NULL;
-    ChannelMobilityPtrType receiverMobility = receiverModule ? receiverModule->getMobilityModule() : NULL;
-
-    const Coord sendersPos = sendersMobility ? sendersMobility->getCurrentPosition(/*sStart*/) : NoMobiltyPos;
-    const Coord receiverPos = receiverMobility ? receiverMobility->getCurrentPosition(/*sStart*/) : NoMobiltyPos;
+    const Coord sendersPos = senderModule ? senderModule->getAntennaPosition() : NoMobiltyPos;
+    const Coord receiverPos = receiverModule ? receiverModule->getAntennaPosition() : NoMobiltyPos;
 
     frame->getSignal().setSenderPos(sendersPos);
     frame->getSignal().setReceiverPos(receiverPos);
