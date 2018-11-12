@@ -538,7 +538,7 @@ void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, co
 }
 
 // name: host;Car;i=vehicle.gif
-void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle, VehicleSignalSet signals)
+void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle, VehicleSignalSet signals, double length, double height, double width)
 {
 
     if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
@@ -704,14 +704,17 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId)
     simtime_t beginTime = 0;
     simtime_t endTime = SimTime::getMaxTime();
     std::string objectId = vehicleId;
-    uint8_t variableNumber = 5;
+    uint8_t variableNumber = 8;
     uint8_t variable1 = VAR_POSITION;
     uint8_t variable2 = VAR_ROAD_ID;
     uint8_t variable3 = VAR_SPEED;
     uint8_t variable4 = VAR_ANGLE;
     uint8_t variable5 = VAR_SIGNALS;
+    uint8_t variable6 = VAR_LENGTH;
+    uint8_t variable7 = VAR_HEIGHT;
+    uint8_t variable8 = VAR_WIDTH;
 
-    TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5);
+    TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7 << variable8);
     processSubcriptionResult(buf);
     ASSERT(buf.eof());
 }
@@ -975,6 +978,9 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
     double speed;
     double angle_traci;
     int signals;
+    double length;
+    double height;
+    double width;
     int numRead = 0;
 
     uint8_t variableNumber_resp;
@@ -1062,6 +1068,27 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
             buf >> signals;
             numRead++;
         }
+        else if (variable1_resp == VAR_LENGTH) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_DOUBLE);
+            buf >> length;
+            numRead++;
+        }
+        else if (variable1_resp == VAR_HEIGHT) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_DOUBLE);
+            buf >> height;
+            numRead++;
+        }
+        else if (variable1_resp == VAR_WIDTH) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_DOUBLE);
+            buf >> width;
+            numRead++;
+        }
         else {
             error("Received unhandled vehicle subscription result");
         }
@@ -1071,7 +1098,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
     if (!isSubscribed) return;
 
     // make sure we got updates for all attributes
-    if (numRead != 5) return;
+    if (numRead != 8) return;
 
     Coord p = connection->traci2omnet(TraCICoord(px, py));
     if ((p.x < 0) || (p.y < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
@@ -1131,7 +1158,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
         }
 
         if (mType != "0") {
-            addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle, VehicleSignalSet(signals));
+            addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle, VehicleSignalSet(signals), length, height, width);
             EV_DEBUG << "Added vehicle #" << objectId << endl;
         }
     }
