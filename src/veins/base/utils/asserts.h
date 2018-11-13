@@ -51,7 +51,7 @@ void assertFalse(std::string msg, bool value);
 template <class T>
 void assertClose(std::string msg, T target, T actual)
 {
-    if (fabs(target - actual) > 0.0000001) {
+    if (std::abs(target - actual) > 0.0000001) {
         fail(msg, target, actual);
     }
     else {
