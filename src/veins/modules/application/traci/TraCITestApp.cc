@@ -396,7 +396,7 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            assertClose("(TraCICommandInterface::Vehicle::getLaneIndex)", 0, traciVehicle->getLaneIndex());
+            assertEqual("(TraCICommandInterface::Vehicle::getLaneIndex)", 0, traciVehicle->getLaneIndex());
         }
     }
 

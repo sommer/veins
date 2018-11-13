@@ -7,8 +7,9 @@
 #include <string>
 #include <sstream>
 #include <stdlib.h>
-#include <math.h>
+#include <cmath>
 #include <limits>
+#include <type_traits>
 
 extern bool haltOnFails;
 extern bool displayPassed;
@@ -51,7 +52,8 @@ void assertFalse(std::string msg, bool value);
 template <class T>
 void assertClose(std::string msg, T target, T actual)
 {
-    if (fabs(target - actual) > 0.0000001) {
+    static_assert(std::is_floating_point<T>::value, "assertClose should only be used with floating point values");
+    if (std::abs(target - actual) > 0.0000001) {
         fail(msg, target, actual);
     }
     else {
