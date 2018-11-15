@@ -44,6 +44,8 @@ Define_Module(Veins::TraCIScenarioManager);
 const std::string TraCIScenarioManager::TRACI_INITIALIZED_SIGNAL_NAME = "traciInitialized";
 const std::string TraCIScenarioManager::TRACI_MODULE_ADDED_SIGNAL_NAME = "traciModuleAdded";
 const std::string TraCIScenarioManager::TRACI_MODULE_REMOVED_SIGNAL_NAME = "traciModuleRemoved";
+const std::string TraCIScenarioManager::TRACI_TIMESTEP_BEGIN_SIGNAL_NAME = "traciTimestepBegin";
+const std::string TraCIScenarioManager::TRACI_TIMESTEP_END_SIGNAL_NAME = "traciTimestepEnd";
 
 TraCIScenarioManager::TraCIScenarioManager()
     : mobRng(0)
@@ -56,6 +58,8 @@ TraCIScenarioManager::TraCIScenarioManager()
     , traciInitializedSignal(registerSignal(TRACI_INITIALIZED_SIGNAL_NAME.c_str()))
     , traciModuleAddedSignal(registerSignal(TRACI_MODULE_ADDED_SIGNAL_NAME.c_str()))
     , traciModuleRemovedSignal(registerSignal(TRACI_MODULE_REMOVED_SIGNAL_NAME.c_str()))
+    , traciTimestepBeginSignal(registerSignal(TRACI_TIMESTEP_BEGIN_SIGNAL_NAME.c_str()))
+    , traciTimestepEndSignal(registerSignal(TRACI_TIMESTEP_END_SIGNAL_NAME.c_str()))
 {
 }
 
@@ -660,6 +664,8 @@ void TraCIScenarioManager::executeOneTimestep()
 
     simtime_t targetTime = simTime();
 
+    emit(traciTimestepBeginSignal, targetTime);
+
     if (isConnected()) {
         insertVehicles();
         TraCIBuffer buf = connection->query(CMD_SIMSTEP2, TraCIBuffer() << targetTime);
@@ -671,6 +677,8 @@ void TraCIScenarioManager::executeOneTimestep()
             processSubcriptionResult(buf);
         }
     }
+
+    emit(traciTimestepEndSignal, targetTime);
 
     if (!autoShutdownTriggered) scheduleAt(simTime() + updateInterval, executeOneTimestepTrigger);
 }

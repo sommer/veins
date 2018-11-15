@@ -39,6 +39,8 @@ simple TraCIScenarioManager
         @signal[traciInitialized](type=bool);
         @signal[traciModuleAdded](type=cModule);
         @signal[traciModuleRemoved](type=cModule);
+        @signal[traciTimestepBegin](type=simtime_t);
+        @signal[traciTimestepEnd](type=simtime_t);
         @class(Veins::TraCIScenarioManager);
         bool debug = default(false);  // emit debug messages?
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)

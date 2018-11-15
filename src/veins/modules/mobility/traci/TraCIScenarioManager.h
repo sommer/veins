@@ -66,6 +66,8 @@ public:
     static const std::string TRACI_INITIALIZED_SIGNAL_NAME;
     static const std::string TRACI_MODULE_ADDED_SIGNAL_NAME;
     static const std::string TRACI_MODULE_REMOVED_SIGNAL_NAME;
+    static const std::string TRACI_TIMESTEP_BEGIN_SIGNAL_NAME;
+    static const std::string TRACI_TIMESTEP_END_SIGNAL_NAME;
 
     TraCIScenarioManager();
     ~TraCIScenarioManager();
@@ -207,6 +209,8 @@ private:
     const omnetpp::simsignal_t traciInitializedSignal;
     const omnetpp::simsignal_t traciModuleAddedSignal;
     const omnetpp::simsignal_t traciModuleRemovedSignal;
+    const omnetpp::simsignal_t traciTimestepBeginSignal;
+    const omnetpp::simsignal_t traciTimestepEndSignal;
 };
 
 class TraCIScenarioManagerAccess {
