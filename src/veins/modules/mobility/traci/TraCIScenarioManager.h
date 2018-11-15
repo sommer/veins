@@ -118,16 +118,6 @@ protected:
     std::string trafficLightModuleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
     std::vector<std::string> trafficLightModuleIds; /**< list of traffic light module ids that is subscribed to (whitelist) */
 
-    uint32_t vehicleNameCounter;
-    std::vector<std::string> vehicleTypeIds;
-    std::map<int, std::queue<std::string>> vehicleInsertQueue;
-    std::set<std::string> queuedVehicles;
-    std::vector<std::string> routeIds;
-    int vehicleRngIndex;
-    int numVehicles;
-
-    cRNG* mobRng;
-
     bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
     double penetrationRate;
     std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
@@ -173,16 +163,6 @@ protected:
      * Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI
      */
     bool isInRegionOfInterest(const TraCICoord& position, std::string road_id, double speed, double angle);
-
-    /**
-     * adds a new vehicle to the queue which are tried to be inserted at the next SUMO time step;
-     */
-    void insertNewVehicle();
-
-    /**
-     * tries to add all vehicles in the vehicle queue to SUMO;
-     */
-    void insertVehicles();
 
     void subscribeToVehicleVariables(std::string vehicleId);
     void unsubscribeFromVehicleVariables(std::string vehicleId);
