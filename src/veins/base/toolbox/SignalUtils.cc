@@ -39,21 +39,10 @@ struct SignalChange {
     simtime_t time;
 };
 
-bool sortInterferenceAllowTemporaryUnderestimate(const SignalChange& lhs, const SignalChange& rhs)
+// If two changes have the same timestamp, they are handled at once within all signal utility functions
+// Therefore, the order of the changes in case of equal timestamps is irrelevant
+bool compareByTime(const SignalChange& lhs, const SignalChange& rhs)
 {
-    if (lhs.time == rhs.time) {
-        // if two changes occur at the same time, process "interference ending" changes first
-        return (lhs.type > rhs.type);
-    }
-    return (lhs.time < rhs.time);
-}
-
-bool sortInterferenceAllowTemporaryOverestimate(const SignalChange& lhs, const SignalChange& rhs)
-{
-    if (lhs.time == rhs.time) {
-        // if two changes occur at the same time, process "interference starting" changes first
-        return (lhs.type < rhs.type);
-    }
     return (lhs.time < rhs.time);
 }
 
@@ -93,7 +82,7 @@ double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFra
     if (airFrames.empty()) return 0;
 
     auto changes = calculateChanges(start, end, airFrames);
-    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryUnderestimate);
+    std::sort(changes.begin(), changes.end(), compareByTime);
 
     // Works fine so far, as there is at least one AirFrame
     if (changes.empty()) return 0;
@@ -125,9 +114,11 @@ double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFra
             interference -= *(it->signal);
         }
 
-        double tmpMax = interference.getRelativeMax();
-        if (tmpMax > maximum) maximum = tmpMax;
-
+        auto next = std::next(it);
+        if (next == changes.end() || it->time != next->time) {
+            double tmpMax = interference.getRelativeMax();
+            if (tmpMax > maximum) maximum = tmpMax;
+        }
         it++;
     }
 
@@ -139,7 +130,7 @@ double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFra
     if (airFrames.empty()) return 0;
 
     auto changes = calculateChanges(start, end, airFrames);
-    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryOverestimate);
+    std::sort(changes.begin(), changes.end(), compareByTime);
 
     // Works fine so far, as there is at least one AirFrame
     if (changes.empty()) return 0;
@@ -171,9 +162,11 @@ double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFra
             interference -= *(it->signal);
         }
 
-        double tmpMin = interference.getRelativeMin();
-        if (tmpMin < minimum) minimum = tmpMin;
-
+        auto next = std::next(it);
+        if (next == changes.end() || it->time != next->time) {
+            double tmpMin = interference.getRelativeMin();
+            if (tmpMin < minimum) minimum = tmpMin;
+        }
         it++;
     }
 
@@ -185,7 +178,7 @@ double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& a
     if (airFrames.empty()) return 0;
 
     auto changes = calculateChanges(start, end, airFrames, exclude);
-    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryOverestimate);
+    std::sort(changes.begin(), changes.end(), compareByTime);
 
     // Works fine so far, as there is at least one AirFrame
     if (changes.empty()) return 0;
@@ -215,8 +208,10 @@ double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& a
             interference -= (*(it->signal))[freqIndex];
         }
 
-        if (interference < minimum) minimum = interference;
-
+        auto next = std::next(it);
+        if (next == changes.end() || it->time != next->time) {
+            if (interference < minimum) minimum = interference;
+        }
         it++;
     }
 
@@ -234,7 +229,7 @@ bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrame
     if (airFrames.empty()) return true;
 
     auto changes = calculateChanges(start, end, airFrames, exclude);
-    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryOverestimate);
+    std::sort(changes.begin(), changes.end(), compareByTime);
 
     // Works fine so far, as there is at least one AirFrame
     if (changes.empty()) return true;
@@ -265,8 +260,10 @@ bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrame
                 channelLoad -= (*(it->signal))[freqIndex];
             }
 
-            if (channelLoad < minimum) minimum = channelLoad;
-
+            auto next = std::next(it);
+            if (next == changes.end() || it->time != next->time) {
+                if (channelLoad < minimum) minimum = channelLoad;
+            }
             it++;
         }
 
@@ -302,7 +299,7 @@ double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFram
 
     // Method will "filter out" the signalFrame
     auto changes = calculateChanges(start, end, interfererFrames, signalFrame);
-    std::sort(changes.begin(), changes.end(), sortInterferenceAllowTemporaryUnderestimate);
+    std::sort(changes.begin(), changes.end(), compareByTime);
 
     // Prepare I+N at the beginning
     auto changesIt = changes.begin();
@@ -326,6 +323,7 @@ double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFram
 
     // Calculate all chunks
     while (changesIt != changes.end()) {
+
         if (changesIt->type == ChangeType::starting) {
             interference_noise += *(changesIt->signal);
         }
@@ -333,11 +331,13 @@ double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFram
             interference_noise -= *(changesIt->signal);
         }
 
-        for (uint16_t i = signal.getDataStart(); i < signal.getDataEnd(); i++) {
-            double sinr = signal[i] / interference_noise[i];
-            if (sinr < minSINR) minSINR = sinr;
+        auto changesNext = std::next(changesIt);
+        if (changesNext == changes.end() || changesIt->time != changesNext->time) {
+            for (uint16_t i = signal.getDataStart(); i < signal.getDataEnd(); i++) {
+                double sinr = signal[i] / interference_noise[i];
+                if (sinr < minSINR) minSINR = sinr;
+            }
         }
-
         changesIt++;
     }
 
