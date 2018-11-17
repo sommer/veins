@@ -1,5 +1,4 @@
-#ifndef VEINS_MOBILITY_TRACI_TRACICONNECTION_H_
-#define VEINS_MOBILITY_TRACI_TRACICONNECTION_H_
+#pragma once
 
 #include <stdint.h>
 #include <memory>
@@ -71,5 +70,3 @@ private:
 std::string makeTraCICommand(uint8_t commandId, const TraCIBuffer& buf = TraCIBuffer());
 
 } // namespace Veins
-
-#endif /* VEINS_MOBILITY_TRACI_TRACICONNECTION_H_ */

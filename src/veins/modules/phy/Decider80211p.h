@@ -20,8 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef DECIDER80211p_H_
-#define DECIDER80211p_H_
+#pragma once
 
 #include "veins/base/phyLayer/BaseDecider.h"
 #include "veins/modules/utility/Consts80211p.h"
@@ -219,5 +218,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* DECIDER80211p_H_ */

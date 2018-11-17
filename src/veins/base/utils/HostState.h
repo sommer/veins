@@ -11,8 +11,7 @@
  *
  ***************************************************************************/
 
-#ifndef HOSTSTATE_H
-#define HOSTSTATE_H
+#pragma once
 
 #include <omnetpp.h>
 
@@ -108,5 +107,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

@@ -17,8 +17,7 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef MOVE_H
-#define MOVE_H
+#pragma once
 
 #include <string>
 #include <cassert>
@@ -228,5 +227,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

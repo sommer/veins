@@ -17,8 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-#ifndef TESTUTILS_AIRFRAME_H
-#define TESTUTILS_AIRFRAME_H
+#pragma once
 
 #include <omnetpp.h>
 #include "veins/base/messages/AirFrame_m.h"
@@ -34,5 +33,3 @@ Veins::AirFrame createAirframe(double centerFreq, double bandwidth, omnetpp::sim
     frame.setSignal(s);
     return frame;
 }
-
-#endif

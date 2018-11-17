@@ -24,8 +24,7 @@
 //   (at your option) any later version.
 //
 /****************************************************************************/
-#ifndef TRACICONSTANTS_H
-#define TRACICONSTANTS_H
+#pragma once
 
 // ****************************************
 // VERSION
@@ -733,5 +732,3 @@
 
 // height (get: vehicle types)
 #define VAR_HEIGHT 0xbc
-
-#endif

@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef TRACITRAFFICLIGHTABSTRACTLOGIC_H_
-#define TRACITRAFFICLIGHTABSTRACTLOGIC_H_
+#pragma once
 
 #include <omnetpp.h>
 #include "veins/modules/messages/TraCITrafficLightMessage_m.h"
@@ -51,5 +50,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif /* TRACITRAFFICLIGHTABSTRACTLOGIC_H_ */

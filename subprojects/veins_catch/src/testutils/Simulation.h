@@ -17,8 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-#ifndef TESTUTILS_SIMULATION_H
-#define TESTUTILS_SIMULATION_H
+#pragma once
 
 #include <omnetpp.h>
 
@@ -40,5 +39,3 @@ private:
     omnetpp::cStaticFlag csf;
     omnetpp::cSimulation simulation;
 }; // end DummySimulation
-
-#endif

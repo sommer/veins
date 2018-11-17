@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef VEINS_MOBILITY_TRACI_NETWORKBOUNDARY_H_
-#define VEINS_MOBILITY_TRACI_NETWORKBOUNDARY_H_
+#pragma once
 
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/base/utils/Coord.h"
@@ -54,5 +53,3 @@ private:
 }; // end class NetworkCoordinateTranslator
 
 } // end namespace Veins
-
-#endif

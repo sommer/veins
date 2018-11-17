@@ -1,5 +1,4 @@
-#ifndef PHYTOMACCONTROLINFO_H_
-#define PHYTOMACCONTROLINFO_H_
+#pragma once
 
 #include <omnetpp.h>
 
@@ -88,5 +87,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*PHYTOMACCONTROLINFO_H_*/

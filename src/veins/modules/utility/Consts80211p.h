@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef CONSTANTS_802_11p
-#define CONSTANTS_802_11p
+#pragma once
 
 #include <omnetpp.h>
 #include <stdint.h>
@@ -148,5 +147,3 @@ enum t_channel {
     type_CCH = 0,
     type_SCH,
 };
-
-#endif

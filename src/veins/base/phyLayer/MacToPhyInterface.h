@@ -1,5 +1,4 @@
-#ifndef MACTOPHYINTERFACE_H_
-#define MACTOPHYINTERFACE_H_
+#pragma once
 
 #include <omnetpp.h>
 
@@ -94,5 +93,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*MACTOPHYINTERFACE_H_*/

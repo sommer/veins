@@ -1,5 +1,4 @@
-#ifndef ANALOGUEMODEL_
-#define ANALOGUEMODEL_
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/utils/Coord.h"
@@ -51,5 +50,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*ANALOGUEMODEL_*/

@@ -5,8 +5,7 @@
  *      Author: Alexander Brummer
  */
 
-#ifndef POA_H_
-#define POA_H_
+#pragma once
 
 #include "veins/base/phyLayer/Antenna.h"
 #include "veins/base/utils/Coord.h"
@@ -50,5 +49,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* POA_H_ */

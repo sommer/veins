@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef CONSTANTS_PHY
-#define CONSTANTS_PHY
+#pragma once
 
 #include <omnetpp.h>
 #include <cmath>
@@ -234,5 +233,3 @@ inline enum PHY_MCS getMCS(uint64_t datarate, enum Bandwidth bw)
     ASSERT2(false, "Invalid datarate for required bandwidth");
     return MCS_DEFAULT;
 }
-
-#endif

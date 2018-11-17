@@ -15,8 +15,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef __MIXIM_MIXIMDEFS_H
-#define __MIXIM_MIXIMDEFS_H
+#pragma once
 
 #include <omnetpp.h>
 
@@ -97,5 +96,3 @@ private:
 };
 
 } // namespace Veins
-
-#endif

@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef VEINS_MOBILITY_TRACI_TRACIMOBILITY_H
-#define VEINS_MOBILITY_TRACI_TRACIMOBILITY_H
+#pragma once
 
 #define TRACI_SIGNAL_PARKING_CHANGE_NAME "parkingStateChanged"
 
@@ -212,5 +211,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

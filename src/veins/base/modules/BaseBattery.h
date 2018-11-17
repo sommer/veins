@@ -1,5 +1,4 @@
-#ifndef BASE_BATTERY_H
-#define BASE_BATTERY_H
+#pragma once
 
 #include <omnetpp.h>
 
@@ -140,5 +139,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

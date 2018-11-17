@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef PHYLAYER80211P_H_
-#define PHYLAYER80211P_H_
+#pragma once
 
 #include "veins/base/phyLayer/BasePhyLayer.h"
 #include "veins/modules/mac/ieee80211p/Mac80211pToPhy11pInterface.h"
@@ -168,5 +167,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif /* PHYLAYER80211P_H_ */

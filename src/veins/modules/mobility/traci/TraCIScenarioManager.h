@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef VEINS_WORLD_TRACI_TRACISCENARIOMANAGER_H
-#define VEINS_WORLD_TRACI_TRACISCENARIOMANAGER_H
+#pragma once
 
 #include <map>
 #include <memory>
@@ -195,5 +194,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

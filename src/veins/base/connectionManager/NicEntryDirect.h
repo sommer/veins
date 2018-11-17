@@ -19,8 +19,7 @@
  *              ConnectionManager module
  **************************************************************************/
 
-#ifndef NICENTRYDIRECT_H
-#define NICENTRYDIRECT_H
+#pragma once
 
 #include "veins/base/connectionManager/NicEntry.h"
 
@@ -70,5 +69,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef MATHHELPER_H_
-#define MATHHELPER_H_
+#pragma once
 
 #include <stdint.h>
 #include <iostream>
@@ -49,5 +48,3 @@ double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFram
 
 } // namespace SignalUtils
 } // namespace Veins
-
-#endif /* MATHHELPER_H_ */

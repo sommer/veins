@@ -19,8 +19,7 @@
  *              subclass to create your own application layer
  **************************************************************************/
 
-#ifndef BASE_APPL_LAYER_H
-#define BASE_APPL_LAYER_H
+#pragma once
 
 #include <assert.h>
 
@@ -165,5 +164,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

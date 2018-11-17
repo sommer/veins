@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef TraCIDemoRSU11p_H
-#define TraCIDemoRSU11p_H
+#pragma once
 
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 
@@ -35,5 +34,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

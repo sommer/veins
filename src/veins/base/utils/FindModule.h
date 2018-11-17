@@ -1,5 +1,4 @@
-#ifndef FIND_MODULE_H
-#define FIND_MODULE_H
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 
@@ -120,5 +119,3 @@ std::vector<T*> getSubmodulesOfType(cModule* parentModule)
 }
 
 } // namespace Veins
-
-#endif

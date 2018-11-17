@@ -13,8 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef MACTONETWCONTROLINFO_H_
-#define MACTONETWCONTROLINFO_H_
+#pragma once
 
 #include <omnetpp.h>
 
@@ -151,5 +150,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* MACTONETWCONTROLINFO_H_ */

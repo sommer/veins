@@ -16,8 +16,7 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef LINEAR_MOBILITY_H
-#define LINEAR_MOBILITY_H
+#pragma once
 
 #include "veins/base/modules/BaseMobility.h"
 
@@ -53,5 +52,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

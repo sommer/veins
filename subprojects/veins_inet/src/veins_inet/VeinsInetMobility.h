@@ -23,8 +23,7 @@
 // Based on inet::MovingMobilityBase of INET Framework v4.0.0
 //
 
-#ifndef Veins_VeinsInetMobility_h
-#define Veins_VeinsInetMobility_h
+#pragma once
 
 namespace omnetpp {
 }
@@ -96,5 +95,3 @@ public:
     };
 };
 } // namespace Veins
-
-#endif // ifndef Veins_VeinsInetMobility_h

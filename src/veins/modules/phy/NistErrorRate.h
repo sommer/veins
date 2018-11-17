@@ -17,8 +17,7 @@
  *
  * Author: Gary Pei <guangyu.pei@boeing.com>
  */
-#ifndef NIST_ERROR_RATE_H
-#define NIST_ERROR_RATE_H
+#pragma once
 
 #include <stdint.h>
 #include <cmath>
@@ -112,5 +111,3 @@ private:
 };
 
 } // namespace Veins
-
-#endif /* NIST_ERROR_RATE_H */

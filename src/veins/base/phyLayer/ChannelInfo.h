@@ -1,5 +1,4 @@
-#ifndef CHANNELINFO_H_
-#define CHANNELINFO_H_
+#pragma once
 
 #include <list>
 #include <omnetpp.h>
@@ -452,5 +451,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*CHANNELINFO_H_*/

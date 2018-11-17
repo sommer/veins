@@ -1,5 +1,4 @@
-#ifndef VEINS_MOBILITY_TRACI_TRACICOMMANDINTERFACE_H_
-#define VEINS_MOBILITY_TRACI_TRACICOMMANDINTERFACE_H_
+#pragma once
 
 #include <list>
 #include <string>
@@ -479,5 +478,3 @@ private:
 };
 
 } // namespace Veins
-
-#endif

@@ -19,8 +19,7 @@
  *              ConnectionManager module
  **************************************************************************/
 
-#ifndef NICENTRYDEBUG_H
-#define NICENTRYDEBUG_H
+#pragma once
 
 #include "veins/base/connectionManager/NicEntry.h"
 
@@ -143,5 +142,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

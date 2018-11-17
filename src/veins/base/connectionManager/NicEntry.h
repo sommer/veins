@@ -19,8 +19,7 @@
  *              ConnectionManager module
  **************************************************************************/
 
-#ifndef NICENTRY_H
-#define NICENTRY_H
+#pragma once
 
 #include <omnetpp.h>
 #include <map>
@@ -138,5 +137,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

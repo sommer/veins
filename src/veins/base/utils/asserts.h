@@ -1,5 +1,4 @@
-#ifndef ASSERTS_H_
-#define ASSERTS_H_
+#pragma once
 
 #include <iostream>
 #include <iomanip>
@@ -120,5 +119,3 @@ std::string toString(const T& v)
     o << v;
     return o.str();
 };
-
-#endif /*ASSERTS_H_*/

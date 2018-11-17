@@ -4,8 +4,7 @@
  *
  */
 
-#ifndef DECIDER_H_
-#define DECIDER_H_
+#pragma once
 
 #include <omnetpp.h>
 
@@ -130,5 +129,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*DECIDER_H_*/

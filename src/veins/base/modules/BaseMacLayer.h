@@ -18,8 +18,7 @@
  * description: basic MAC layer class
  *              subclass to create your own MAC layer
  **************************************************************************/
-#ifndef BASE_MAC_LAYER_H
-#define BASE_MAC_LAYER_H
+#pragma once
 
 #include <omnetpp.h>
 
@@ -221,5 +220,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

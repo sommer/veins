@@ -1,5 +1,4 @@
-#ifndef BREAKPOINTPATHLOSSMODEL_H_
-#define BREAKPOINTPATHLOSSMODEL_H_
+#pragma once
 
 #include <cstdlib>
 
@@ -88,5 +87,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*BREAKPOINTPATHLOSSMODEL_H_*/

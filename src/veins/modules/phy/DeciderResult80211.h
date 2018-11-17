@@ -7,8 +7,7 @@
  *  Modified by Michele Segata (segata@ccs-labs.org)
  */
 
-#ifndef DECIDERRESULT80211_H_
-#define DECIDERRESULT80211_H_
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/Decider.h"
@@ -91,5 +90,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* DECIDERRESULT80211_H_ */

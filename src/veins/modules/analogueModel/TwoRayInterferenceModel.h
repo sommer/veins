@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef ANALOGUEMODEL_TWORAYINTERFERENCEMODEL_H
-#define ANALOGUEMODEL_TWORAYINTERFERENCEMODEL_H
+#pragma once
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
@@ -65,5 +64,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif /* ANALOGUEMODEL_TWORAYINTERFERENCEMODEL_H */

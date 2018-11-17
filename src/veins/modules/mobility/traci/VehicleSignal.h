@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef VEINS_MOBILITY_TRACI_VEHICLESIGNAL_H_
-#define VEINS_MOBILITY_TRACI_VEHICLESIGNAL_H_
+#pragma once
 
 #include "veins/base/utils/EnumBitset.h"
 
@@ -51,5 +50,3 @@ struct EnumTraits<VehicleSignal> {
 using VehicleSignalSet = EnumBitset<VehicleSignal>;
 
 } // namespace Veins
-
-#endif /* VEINS_MOBILITY_TRACI_TRACIVEHICLESIGNAL_H_ */

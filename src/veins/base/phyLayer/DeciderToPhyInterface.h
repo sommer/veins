@@ -4,8 +4,7 @@
  *
  */
 
-#ifndef DECIDER_TO_PHY_INTERFACE_H_
-#define DECIDER_TO_PHY_INTERFACE_H_
+#pragma once
 
 #include <vector>
 #include <list>
@@ -131,5 +130,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*DECIDER_TO_PHY_INTERFACE_H_*/

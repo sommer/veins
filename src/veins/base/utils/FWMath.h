@@ -17,8 +17,7 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef FWMATH_H
-#define FWMATH_H
+#pragma once
 
 //
 // Support functions for mathematical operations
@@ -242,5 +241,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

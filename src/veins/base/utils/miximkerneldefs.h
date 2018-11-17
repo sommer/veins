@@ -15,8 +15,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef MIXIMKERNELDEFS_H_
-#define MIXIMKERNELDEFS_H_
+#pragma once
 
 #define MIXIM_VERSION 0x0202
 
@@ -28,5 +27,3 @@
 #define MIXIM_SIGNAL_MOBILITY_CHANGE_NAME "veinsmobilityStateChanged"
 #define MIXIM_SIGNAL_BATTERY_CHANGE_NAME "org.car2x.veins.modules.power.battery.batterystate"
 #define MIXIM_SIGNAL_MOBANMSG_NAME "org.car2x.veins.modules.utility.bbmobanmessage"
-
-#endif

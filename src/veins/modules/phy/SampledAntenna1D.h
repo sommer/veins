@@ -5,8 +5,7 @@
  *      Author: Alexander Brummer
  */
 
-#ifndef SRC_VEINS_MODULES_PHY_SAMPLEDANTENNA1D_H_
-#define SRC_VEINS_MODULES_PHY_SAMPLEDANTENNA1D_H_
+#pragma once
 
 #include "veins/base/phyLayer/Antenna.h"
 #include <vector>
@@ -102,5 +101,3 @@ private:
 };
 
 } // namespace Veins
-
-#endif /* SRC_VEINS_MODULES_PHY_SAMPLEDANTENNA1D_H_ */

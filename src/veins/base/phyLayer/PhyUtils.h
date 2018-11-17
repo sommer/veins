@@ -1,5 +1,4 @@
-#ifndef PHYUTILS_H_
-#define PHYUTILS_H_
+#pragma once
 
 #include <cassert>
 #include <list>
@@ -171,5 +170,3 @@ protected:
 }; // end class Radio
 
 } // namespace Veins
-
-#endif /*PHYUTILS_H_*/

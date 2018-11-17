@@ -5,8 +5,7 @@
  *      Author: Karl Wessel
  */
 
-#ifndef ADDRESSINGINTERFACE_H_
-#define ADDRESSINGINTERFACE_H_
+#pragma once
 
 #include <omnetpp.h>
 
@@ -42,5 +41,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* ADDRESSINGINTERFACE_H_ */

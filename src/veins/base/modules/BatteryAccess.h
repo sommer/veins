@@ -5,8 +5,7 @@
  *      Author: karl
  */
 
-#ifndef BATTERYACCESS_H_
-#define BATTERYACCESS_H_
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/modules/BaseModule.h"
@@ -68,5 +67,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* BATTERYACCESS_H_ */

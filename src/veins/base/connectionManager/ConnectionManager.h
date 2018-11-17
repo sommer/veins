@@ -1,5 +1,4 @@
-#ifndef CONNECTIONMANAGER_H_
-#define CONNECTIONMANAGER_H_
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
@@ -28,5 +27,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif /*CONNECTIONMANAGER_H_*/

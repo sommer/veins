@@ -17,8 +17,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-#ifndef WORLD_ANNOTATION_ANNOTATIONCONTROL_H
-#define WORLD_ANNOTATION_ANNOTATIONCONTROL_H
+#pragma once
 
 #include <list>
 
@@ -179,5 +178,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

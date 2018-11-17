@@ -1,5 +1,4 @@
-#ifndef PER_MODEL_H
-#define PER_MODEL_H
+#pragma once
 
 #include <cassert>
 
@@ -35,5 +34,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

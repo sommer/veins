@@ -18,8 +18,7 @@
  * description: - control info to pass next hop to the MAC layer
  **************************************************************************/
 
-#ifndef NETWTOMACCONTROLINFO_H
-#define NETWTOMACCONTROLINFO_H
+#pragma once
 
 #include <omnetpp.h>
 
@@ -101,5 +100,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

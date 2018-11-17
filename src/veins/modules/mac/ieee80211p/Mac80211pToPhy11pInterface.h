@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef MAC80211PTOPHY11PINTERFACE_H_
-#define MAC80211PTOPHY11PINTERFACE_H_
+#pragma once
 
 #include "veins/base/phyLayer/MacToPhyInterface.h"
 
@@ -50,5 +49,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* MAC80211PTOPHY11PINTERFACE_H_ */

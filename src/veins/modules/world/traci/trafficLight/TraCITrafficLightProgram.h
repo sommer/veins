@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef SRC_VEINS_MODULES_WORLD_TRACI_TRAFFICLIGHT_TRACITRAFFICLIGHTPROGRAM_H_
-#define SRC_VEINS_MODULES_WORLD_TRACI_TRAFFICLIGHT_TRACITRAFFICLIGHTPROGRAM_H_
+#pragma once
 
 #include <string>
 #include <vector>
@@ -66,4 +65,3 @@ struct TraCITrafficLightLink {
 };
 
 } // namespace Veins
-#endif /* SRC_VEINS_MODULES_WORLD_TRACI_TRAFFICLIGHT_TRACITRAFFICLIGHTPROGRAM_H_ */

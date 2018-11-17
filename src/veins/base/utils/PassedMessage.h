@@ -1,7 +1,6 @@
 /* -*- mode:c++ -*- */
 
-#ifndef PASSED_MESSAGE_H
-#define PASSED_MESSAGE_H
+#pragma once
 
 #include <omnetpp.h>
 
@@ -60,5 +59,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

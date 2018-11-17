@@ -19,8 +19,7 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef BASE_MOBILITY_H
-#define BASE_MOBILITY_H
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/modules/BatteryAccess.h"
@@ -413,5 +412,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

@@ -18,8 +18,7 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef BASE_MODULE_H
-#define BASE_MODULE_H
+#pragma once
 
 #include <sstream>
 #include <omnetpp.h>
@@ -167,5 +166,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

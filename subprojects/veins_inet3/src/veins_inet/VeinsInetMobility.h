@@ -23,8 +23,7 @@
 // Based on inet::MobilityBase of INET Framework v3.4.0
 //
 
-#ifndef Veins_VeinsInetMobility_h
-#define Veins_VeinsInetMobility_h
+#pragma once
 
 #undef INET_IMPORT
 #include "inet/common/ModuleAccess.h"
@@ -89,5 +88,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif // ifndef Veins_VeinsInetMobility_h

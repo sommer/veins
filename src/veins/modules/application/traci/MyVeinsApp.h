@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef __VEINS_MYVEINSAPP_H_
-#define __VEINS_MYVEINSAPP_H_
+#pragma once
 
 #include <omnetpp.h>
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
@@ -53,5 +52,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef PATHLOSSMODEL_H_
-#define PATHLOSSMODEL_H_
+#pragma once
 
 #include <cstdlib>
 
@@ -96,5 +95,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*PATHLOSSMODEL_H_*/

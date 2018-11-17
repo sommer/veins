@@ -20,8 +20,7 @@
  *                from this class and use the sendToChannel() function!!
  **************************************************************************/
 
-#ifndef CHANNEL_ACCESS_H
-#define CHANNEL_ACCESS_H
+#pragma once
 
 #include <omnetpp.h>
 #include <vector>
@@ -148,5 +147,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

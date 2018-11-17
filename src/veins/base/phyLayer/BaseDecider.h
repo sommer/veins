@@ -5,8 +5,7 @@
  *      Author: karl
  */
 
-#ifndef BASEDECIDER_H_
-#define BASEDECIDER_H_
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/Decider.h"
@@ -183,5 +182,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif /* BASEDECIDER_H_ */

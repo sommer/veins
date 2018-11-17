@@ -1,5 +1,4 @@
-#ifndef MACTOPHYCONTROLINFO_H_
-#define MACTOPHYCONTROLINFO_H_
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/toolbox/Signal.h"
@@ -109,5 +108,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*MACTOPHYCONTROLINFO_H_*/

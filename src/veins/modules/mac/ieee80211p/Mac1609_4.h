@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef ___MAC1609_4_H_
-#define ___MAC1609_4_H_
+#pragma once
 
 #include <assert.h>
 #include <omnetpp.h>
@@ -323,5 +322,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif /* ___MAC1609_4_H_*/

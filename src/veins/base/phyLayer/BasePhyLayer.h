@@ -1,5 +1,4 @@
-#ifndef BASEPHYLAYER_
-#define BASEPHYLAYER_
+#pragma once
 
 #include <map>
 #include <vector>
@@ -573,5 +572,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*BASEPHYLAYER_*/

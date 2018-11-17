@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef __VEINS_VEINSINETAPPLICATIONBASE_H
-#define __VEINS_VEINSINETAPPLICATIONBASE_H
+#pragma once
 
 #include <vector>
 
@@ -70,5 +69,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif // ifndef __VEINS_VEINSINETAPPLICATIONBASE_H

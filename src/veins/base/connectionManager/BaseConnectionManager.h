@@ -1,5 +1,4 @@
-#ifndef BASECONNECTIONMANAGER_H_
-#define BASECONNECTIONMANAGER_H_
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/connectionManager/NicEntry.h"
@@ -407,5 +406,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*BASECONNECTIONMANAGER_H_*/

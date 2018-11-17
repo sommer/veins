@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef __VEINSINET_SAMPLEAPPLICATION_H
-#define __VEINSINET_SAMPLEAPPLICATION_H
+#pragma once
 
 #include "VeinsInetApplicationBase.h"
 
@@ -36,5 +35,3 @@ public:
     VeinsInetSampleApplication();
     ~VeinsInetSampleApplication();
 };
-
-#endif // ifndef __VEINSINET_SAMPLEAPPLICATION_H

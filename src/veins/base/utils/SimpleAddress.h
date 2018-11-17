@@ -17,8 +17,7 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef SIMPLEADDRESS_H
-#define SIMPLEADDRESS_H
+#pragma once
 
 #include <omnetpp.h>
 
@@ -99,5 +98,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

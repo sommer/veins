@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef SPECTRUM_H_
-#define SPECTRUM_H_
+#pragma once
 
 #include <stdint.h>
 #include <iostream>
@@ -60,5 +59,3 @@ private:
 };
 
 } // namespace Veins
-
-#endif /* SPECTRUM_H_ */

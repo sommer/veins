@@ -17,8 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-#ifndef DUMMYANALOGUEMODEL_H_
-#define DUMMYANALOGUEMODEL_H_
+#pragma once
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 
@@ -40,5 +39,3 @@ public:
     }
 };
 } // namespace Veins
-
-#endif /*DUMMYANALOGUEMODEL_H_*/

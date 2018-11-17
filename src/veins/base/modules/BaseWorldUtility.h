@@ -18,8 +18,7 @@
  *              provides world-required values
  **************************************************************************/
 
-#ifndef BASE_WORLD_UTIL_H
-#define BASE_WORLD_UTIL_H
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/utils/Coord.h"
@@ -121,5 +120,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

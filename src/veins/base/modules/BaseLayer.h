@@ -19,8 +19,7 @@
  *              subclass to create your own layer
  **************************************************************************/
 
-#ifndef BASE_LAYER_H
-#define BASE_LAYER_H
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/modules/BatteryAccess.h"
@@ -167,5 +166,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

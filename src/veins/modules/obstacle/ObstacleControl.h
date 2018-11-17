@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef OBSTACLE_OBSTACLECONTROL_H
-#define OBSTACLE_OBSTACLECONTROL_H
+#pragma once
 
 #include <list>
 
@@ -120,5 +119,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

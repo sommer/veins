@@ -17,8 +17,7 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef _COORD_H
-#define _COORD_H
+#pragma once
 
 #include <omnetpp.h>
 #include "veins/base/utils/MiXiMDefs.h"
@@ -309,5 +308,3 @@ inline std::string Coord::info() const
 }
 
 } // namespace Veins
-
-#endif

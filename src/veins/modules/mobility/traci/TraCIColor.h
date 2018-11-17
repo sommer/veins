@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef WORLD_TRACI_TRACICOLORS_H
-#define WORLD_TRACI_TRACICOLORS_H
+#pragma once
 
 #include "veins/base/utils/MiXiMDefs.h"
 
@@ -41,5 +40,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

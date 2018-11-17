@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef VEINS_UTILS_ENUMBITSET_H_
-#define VEINS_UTILS_ENUMBITSET_H_
+#pragma once
 
 #include <bitset>
 #include <type_traits>
@@ -140,5 +139,3 @@ EnumBitset<T> operator|(T lhs, T rhs)
 }
 
 } // namespace Veins
-
-#endif
