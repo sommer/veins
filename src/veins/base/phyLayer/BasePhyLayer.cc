@@ -13,11 +13,6 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
-#ifndef coreEV
-#define coreEV_clear EV
-#define coreEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
 using namespace Veins;
 
 using Veins::AirFrame;
@@ -215,7 +210,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
         throw cRuntimeError("Could not find a decider with the name \"%s\".", name);
     }
 
-    coreEV << "Decider \"" << name << "\" loaded." << endl;
+    EV_TRACE << "Decider \"" << name << "\" loaded." << endl;
 }
 
 Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
@@ -264,7 +259,7 @@ void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig)
     }
 
     const char* id = antennaData->getAttribute("id");
-    coreEV << "Antenna \"" << name << "\" with ID \"" << id << "\" loaded." << endl;
+    EV_TRACE << "Antenna \"" << name << "\" with ID \"" << id << "\" loaded." << endl;
 }
 
 std::shared_ptr<Antenna> BasePhyLayer::getAntennaFromName(std::string name, ParameterMap& params)
@@ -370,7 +365,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
             analogueModels.push_back(newAnalogueModel);
         }
 
-        coreEV << "AnalogueModel \"" << name << "\" loaded." << endl;
+        EV_TRACE << "AnalogueModel \"" << name << "\" loaded." << endl;
 
     } // end iterator loop
 }
@@ -438,7 +433,7 @@ void BasePhyLayer::handleAirFrame(AirFrame* frame)
 
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame)
 {
-    coreEV << "Received new AirFrame " << frame << " from channel." << endl;
+    EV_TRACE << "Received new AirFrame " << frame << " from channel." << endl;
 
     channelInfo.addAirFrame(frame, simTime());
     assert(!channelInfo.isChannelEmpty());
@@ -498,14 +493,14 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame)
         throw cRuntimeError("Invalid next handle time returned by Decider. Expected a value between current simulation time (%.2f) and end of signal (%.2f) but got %.2f", SIMTIME_DBL(simTime()), SIMTIME_DBL(signalEndTime), SIMTIME_DBL(nextHandleTime));
     }
 
-    coreEV << "Handed AirFrame with ID " << frame->getId() << " to Decider. Next handling in " << nextHandleTime - simTime() << "s." << endl;
+    EV_TRACE << "Handed AirFrame with ID " << frame->getId() << " to Decider. Next handling in " << nextHandleTime - simTime() << "s." << endl;
 
     sendSelfMessage(frame, nextHandleTime);
 }
 
 void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame)
 {
-    coreEV << "End of Airframe with ID " << frame->getId() << "." << endl;
+    EV_TRACE << "End of Airframe with ID " << frame->getId() << "." << endl;
 
     simtime_t earliestInfoPoint = channelInfo.removeAirFrame(frame);
 
@@ -603,7 +598,7 @@ AirFrame* BasePhyLayer::encapsMsg(cPacket* macPkt)
 
     // --- from here on, the AirFrame is the owner of the MacPacket ---
     macPkt = 0;
-    coreEV << "AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
+    EV_TRACE << "AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
 
     return frame;
 }
@@ -680,8 +675,8 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     double ownGain = antenna->getGain(ownPos, ownOrient, senderPOA.pos);
     double otherGain = senderPOA.antenna->getGain(senderPOA.pos, senderPOA.orientation, ownPos);
 
-    coreEV << "Sender's antenna gain: " << otherGain << endl;
-    coreEV << "Own (receiver's) antenna gain: " << ownGain << endl;
+    EV_TRACE << "Sender's antenna gain: " << otherGain << endl;
+    EV_TRACE << "Own (receiver's) antenna gain: " << ownGain << endl;
 
     // add the resulting total gain to the attenuations list
     frame->getSignal().addUniformAttenuation(ownGain * otherGain);
@@ -815,7 +810,7 @@ void BasePhyLayer::setCurrentRadioChannel(int newRadioChannel)
 
     radio->setCurrentChannel(newRadioChannel);
     decider->channelChanged(newRadioChannel);
-    coreEV << "Switched radio to channel " << newRadioChannel << endl;
+    EV_TRACE << "Switched radio to channel " << newRadioChannel << endl;
 }
 
 int BasePhyLayer::getCurrentRadioChannel()
@@ -848,7 +843,7 @@ void BasePhyLayer::sendControlMsgToMac(cMessage* msg)
 void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult* result)
 {
 
-    coreEV << "Decapsulating MacPacket from Airframe with ID " << frame->getId() << " and sending it up to MAC." << endl;
+    EV_TRACE << "Decapsulating MacPacket from Airframe with ID " << frame->getId() << " and sending it up to MAC." << endl;
 
     cMessage* packet = frame->decapsulate();
 
@@ -871,7 +866,7 @@ void BasePhyLayer::cancelScheduledMessage(cMessage* msg)
         cancelEvent(msg);
     }
     else {
-        EV << "Warning: Decider wanted to cancel a scheduled message but message wasn't actually scheduled. Message is: " << msg << endl;
+        EV_WARN << "Warning: Decider wanted to cancel a scheduled message but message wasn't actually scheduled. Message is: " << msg << endl;
     }
 }
 

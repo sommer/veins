@@ -20,12 +20,6 @@
 
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 
-// #define DBG_APP std::cerr << "[" << simTime().raw() << "] " << getParentModule()->getFullPath() << " "
-
-#ifndef DBG_APP
-#define DBG_APP EV
-#endif
-
 using namespace Veins;
 
 const simsignalwrap_t BaseWaveApplLayer::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
@@ -93,7 +87,7 @@ void BaseWaveApplLayer::initialize(int stage)
 
         if (dataOnSch == true && !mac->isChannelSwitchingActive()) {
             dataOnSch = false;
-            std::cerr << "App wants to send data on SCH but MAC doesn't use any SCH. Sending all data on CCH" << std::endl;
+            EV_ERROR << "App wants to send data on SCH but MAC doesn't use any SCH. Sending all data on CCH" << std::endl;
         }
         simtime_t firstBeacon = simTime();
 
@@ -104,7 +98,7 @@ void BaseWaveApplLayer::initialize(int stage)
 
             if (mac->isChannelSwitchingActive() == true) {
                 if (beaconInterval.raw() % (mac->getSwitchingInterval().raw() * 2)) {
-                    std::cerr << "The beacon interval (" << beaconInterval << ") is smaller than or not a multiple of  one synchronization interval (" << 2 * mac->getSwitchingInterval() << "). This means that beacons are generated during SCH intervals" << std::endl;
+                    EV_ERROR << "The beacon interval (" << beaconInterval << ") is smaller than or not a multiple of  one synchronization interval (" << 2 * mac->getSwitchingInterval() << "). This means that beacons are generated during SCH intervals" << std::endl;
                 }
                 firstBeacon = computeAsynchronousSendingTime(beaconInterval, type_CCH);
             }
@@ -255,7 +249,7 @@ void BaseWaveApplLayer::handleSelfMsg(cMessage* msg)
         break;
     }
     default: {
-        if (msg) DBG_APP << "APP: Error: Got Self Message of unknown kind! Name: " << msg->getName() << endl;
+        if (msg) EV_WARN << "APP: Error: Got Self Message of unknown kind! Name: " << msg->getName() << endl;
         break;
     }
     }
@@ -316,15 +310,15 @@ void BaseWaveApplLayer::sendDelayedDown(cMessage* msg, simtime_t delay)
 void BaseWaveApplLayer::checkAndTrackPacket(cMessage* msg)
 {
     if (dynamic_cast<BasicSafetyMessage*>(msg)) {
-        DBG_APP << "sending down a BSM" << std::endl;
+        EV_TRACE << "sending down a BSM" << std::endl;
         generatedBSMs++;
     }
     else if (dynamic_cast<WaveServiceAdvertisment*>(msg)) {
-        DBG_APP << "sending down a WSA" << std::endl;
+        EV_TRACE << "sending down a WSA" << std::endl;
         generatedWSAs++;
     }
     else if (dynamic_cast<WaveShortMessage*>(msg)) {
-        DBG_APP << "sending down a wsm" << std::endl;
+        EV_TRACE << "sending down a wsm" << std::endl;
         generatedWSMs++;
     }
 }

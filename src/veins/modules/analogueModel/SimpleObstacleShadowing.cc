@@ -24,8 +24,6 @@ using namespace Veins;
 
 using Veins::AirFrame;
 
-#define debugEV EV << "PhyLayer(SimpleObstacleShadowing): "
-
 SimpleObstacleShadowing::SimpleObstacleShadowing(ObstacleControl& obstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize, bool debug)
     : obstacleControl(obstacleControl)
     , carrierFrequency(carrierFrequency)
@@ -41,7 +39,7 @@ void SimpleObstacleShadowing::filterSignal(Signal* signal, const Coord& sendersP
 
     double factor = obstacleControl.calculateAttenuation(sendersPos, receiverPos);
 
-    debugEV << "value is: " << factor << endl;
+    EV_TRACE << "value is: " << factor << endl;
 
     signal->addUniformAttenuation(factor);
 }

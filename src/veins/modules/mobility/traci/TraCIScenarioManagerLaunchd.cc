@@ -21,13 +21,12 @@
 #include "veins/modules/mobility/traci/TraCIScenarioManagerLaunchd.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
-#define CMD_FILE_SEND 0x75
 
 #include <sstream>
 #include <iostream>
 #include <fstream>
 
-#define MYDEBUG EV
+#define CMD_FILE_SEND 0x75
 
 using Veins::TraCIScenarioManagerLaunchd;
 
@@ -82,7 +81,7 @@ void TraCIScenarioManagerLaunchd::init_traci()
         std::string serverVersion = version.second;
 
         if (apiVersion == 1) {
-            MYDEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
+            EV_DEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
         }
         else {
             error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using the version of sumo-launchd that ships with Veins.", serverVersion.c_str(), apiVersion);

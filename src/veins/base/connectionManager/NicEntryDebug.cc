@@ -26,16 +26,12 @@
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/base/utils/FindModule.h"
 
-#ifndef nicEV
-#define nicEV EV_DEBUG << "NicEntry: "
-#endif
-
 using std::endl;
 using namespace Veins;
 
 void NicEntryDebug::connectTo(NicEntry* other)
 {
-    nicEV << "connecting nic #" << nicId << " and #" << other->nicId << endl;
+    EV_TRACE << "connecting nic #" << nicId << " and #" << other->nicId << endl;
 
     NicEntryDebug* otherNic = (NicEntryDebug*) other;
 
@@ -46,7 +42,7 @@ void NicEntryDebug::connectTo(NicEntry* other)
 
 void NicEntryDebug::disconnectFrom(NicEntry* other)
 {
-    nicEV << "disconnecting nic #" << nicId << " and #" << other->nicId << endl;
+    EV_TRACE << "disconnecting nic #" << nicId << " and #" << other->nicId << endl;
 
     NicEntryDebug* otherNic = (NicEntryDebug*) other;
 
@@ -98,10 +94,10 @@ void NicEntryDebug::collectFreeGates()
     if (!checkFreeGates) return;
 
     inCnt = collectGates("in%d-%d", freeInGates);
-    nicEV << "found " << inCnt << " already existing usable in-gates." << endl;
+    EV_TRACE << "found " << inCnt << " already existing usable in-gates." << endl;
 
     outCnt = collectGates("out%d-%d", freeOutGates);
-    nicEV << "found " << inCnt << " already existing usable out-gates." << endl;
+    EV_TRACE << "found " << inCnt << " already existing usable out-gates." << endl;
 
     checkFreeGates = false;
 }

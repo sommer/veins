@@ -35,11 +35,6 @@
 
 #include "veins/base/toolbox/SignalUtils.h"
 
-#ifndef DBG_D11P
-#define DBG_D11P EV
-#endif
-// #define DBG_D11P std::cerr << "[" << simTime().raw() << "] " << myPath << ".Dec "
-
 using namespace Veins;
 
 using Veins::AirFrame;
@@ -74,21 +69,21 @@ simtime_t Decider80211p::processNewSignal(AirFrame* msg)
         if (phy11p->getRadioState() == Radio::TX) {
             frame->setBitError(true);
             frame->setWasTransmitting(true);
-            DBG_D11P << "AirFrame: " << frame->getId() << " (" << recvPower << ") received, while already sending. Setting BitErrors to true" << std::endl;
+            EV_TRACE << "AirFrame: " << frame->getId() << " (" << recvPower << ") received, while already sending. Setting BitErrors to true" << std::endl;
         }
         else {
 
             if (!currentSignal.first) {
                 // NIC is not yet synced to any frame, so lock and try to decode this frame
                 currentSignal.first = frame;
-                DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << std::endl;
+                EV_TRACE << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << std::endl;
                 if (notifyRxStart) {
                     phy->sendControlMsgToMac(new cMessage("RxStartStatus", MacToPhyInterface::PHY_RX_START));
                 }
             }
             else {
                 // NIC is currently trying to decode another frame. this frame will be simply treated as interference
-                DBG_D11P << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Already synced to another AirFrame. Treating AirFrame as interference." << std::endl;
+                EV_TRACE << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Already synced to another AirFrame. Treating AirFrame as interference." << std::endl;
             }
 
             // channel turned busy
@@ -147,22 +142,22 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
     switch (packetOk(sinrMin, snrMin, frame->getBitLength(), payloadBitrate)) {
 
     case DECODED:
-        DBG_D11P << "Packet is fine! We can decode it" << std::endl;
+        EV_TRACE << "Packet is fine! We can decode it" << std::endl;
         result = new DeciderResult80211(true, payloadBitrate, sinrMin, recvPower_dBm, false);
         break;
 
     case NOT_DECODED:
         if (!collectCollisionStats) {
-            DBG_D11P << "Packet has bit Errors. Lost " << std::endl;
+            EV_TRACE << "Packet has bit Errors. Lost " << std::endl;
         }
         else {
-            DBG_D11P << "Packet has bit Errors due to low power. Lost " << std::endl;
+            EV_TRACE << "Packet has bit Errors due to low power. Lost " << std::endl;
         }
         result = new DeciderResult80211(false, payloadBitrate, sinrMin, recvPower_dBm, false);
         break;
 
     case COLLISION:
-        DBG_D11P << "Packet has bit Errors due to collision. Lost " << std::endl;
+        EV_TRACE << "Packet has bit Errors due to collision. Lost " << std::endl;
         collisions++;
         result = new DeciderResult80211(false, payloadBitrate, sinrMin, recvPower_dBm, true);
         break;
@@ -322,7 +317,7 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg)
     }
 
     if (result->isSignalCorrect()) {
-        DBG_D11P << "packet was received correctly, it is now handed to upper layer...\n";
+        EV_TRACE << "packet was received correctly, it is now handed to upper layer...\n";
         // go on with processing this AirFrame, send it to the Mac-Layer
         if (notifyRxStart) {
             phy->sendControlMsgToMac(new cMessage("RxStartStatus", MacToPhyInterface::PHY_RX_END_WITH_SUCCESS));
@@ -331,14 +326,14 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg)
     }
     else {
         if (frame->getUnderSensitivity()) {
-            DBG_D11P << "packet was not detected by the card. power was under sensitivity threshold\n";
+            EV_TRACE << "packet was not detected by the card. power was under sensitivity threshold\n";
         }
         else if (whileSending) {
-            DBG_D11P << "packet was received while sending, sending it as control message to upper layer\n";
+            EV_TRACE << "packet was received while sending, sending it as control message to upper layer\n";
             phy->sendControlMsgToMac(new cMessage("Error", RECWHILESEND));
         }
         else {
-            DBG_D11P << "packet was not received correctly, sending it as control message to upper layer\n";
+            EV_TRACE << "packet was not received correctly, sending it as control message to upper layer\n";
             if (notifyRxStart) {
                 phy->sendControlMsgToMac(new cMessage("RxStartStatus", MacToPhyInterface::PHY_RX_END_WITH_FAILURE));
             }
@@ -354,18 +349,18 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg)
     }
 
     if (phy11p->getRadioState() == Radio::TX) {
-        DBG_D11P << "I'm currently sending\n";
+        EV_TRACE << "I'm currently sending\n";
     }
     // check if channel is idle now
     // we declare channel busy if CCA tells us so, or if we are currently
     // decoding a frame
     else if (cca(simTime(), frame) == false || currentSignal.first != 0) {
-        DBG_D11P << "Channel not yet idle!\n";
+        EV_TRACE << "Channel not yet idle!\n";
     }
     else {
         // might have been idle before (when the packet rxpower was below sens)
         if (isChannelIdle != true) {
-            DBG_D11P << "Channel idle now!\n";
+            EV_TRACE << "Channel idle now!\n";
             setChannelIdleStatus(true);
         }
     }

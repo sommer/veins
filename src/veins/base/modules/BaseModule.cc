@@ -24,16 +24,6 @@
 
 #include "veins/base/utils/FindModule.h"
 
-#ifndef debugEV
-#define debugEV_clear EV
-#define debugEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
-#ifndef coreEV
-#define coreEV_clear EV
-#define coreEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
 using namespace Veins;
 
 // Could not initialize simsignal_t it here!? I got the POST_MODEL_CHANGE id!?

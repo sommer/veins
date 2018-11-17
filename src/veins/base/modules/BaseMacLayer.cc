@@ -34,11 +34,6 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/messages/MacPkt_m.h"
 
-#ifndef coreEV
-#define coreEV_clear EV
-#define coreEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
 using namespace Veins;
 
 Define_Module(Veins::BaseMacLayer);
@@ -99,7 +94,7 @@ cPacket* BaseMacLayer::decapsMsg(MacPkt* msg)
     setUpControlInfo(m, msg->getSrcAddr());
     // delete the macPkt
     delete msg;
-    coreEV << " message decapsulated " << endl;
+    EV_TRACE << " message decapsulated " << endl;
     return m;
 }
 
@@ -116,7 +111,7 @@ MacPkt* BaseMacLayer::encapsMsg(cPacket* netwPkt)
     // message by the network layer
     cObject* cInfo = netwPkt->removeControlInfo();
 
-    coreEV << "CInfo removed, mac addr=" << getUpperDestinationFromControlInfo(cInfo) << endl;
+    EV_TRACE << "CInfo removed, mac addr=" << getUpperDestinationFromControlInfo(cInfo) << endl;
     pkt->setDestAddr(getUpperDestinationFromControlInfo(cInfo));
 
     // delete the control info
@@ -127,7 +122,7 @@ MacPkt* BaseMacLayer::encapsMsg(cPacket* netwPkt)
 
     // encapsulate the network packet
     pkt->encapsulate(netwPkt);
-    coreEV << "pkt encapsulated\n";
+    EV_TRACE << "pkt encapsulated\n";
 
     return pkt;
 }
@@ -161,11 +156,11 @@ void BaseMacLayer::handleLowerMsg(cMessage* msg)
 
     // only foward to upper layer if message is for me or broadcast
     if ((dest == myMacAddr) || LAddress::isL2Broadcast(dest)) {
-        coreEV << "message with mac addr " << src << " for me (dest=" << dest << ") -> forward packet to upper layer\n";
+        EV_TRACE << "message with mac addr " << src << " for me (dest=" << dest << ") -> forward packet to upper layer\n";
         sendUp(decapsMsg(mac));
     }
     else {
-        coreEV << "message with mac addr " << src << " not for me (dest=" << dest << ") -> delete (my MAC=" << myMacAddr << ")\n";
+        EV_TRACE << "message with mac addr " << src << " not for me (dest=" << dest << ") -> delete (my MAC=" << myMacAddr << ")\n";
         delete mac;
     }
 }

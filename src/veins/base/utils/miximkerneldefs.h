@@ -17,8 +17,6 @@
 
 #pragma once
 
-#define MIXIM_VERSION 0x0202
-
 #define MIXIM_SIGNAL_PACKET_NAME "org.car2x.veins.modules.utility.packet"
 #define MIXIM_SIGNAL_UWBIRPACKET_NAME "org.car2x.veins.modules.utility.uwbirpacket"
 #define MIXIM_SIGNAL_DROPPEDPACKET_NAME "org.car2x.veins.modules.utility.droppedpacket"

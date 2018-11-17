@@ -33,11 +33,6 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
-#ifndef coreEV
-#define coreEV_clear EV
-#define coreEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
 using std::endl;
 using namespace Veins;
 
@@ -117,13 +112,13 @@ void ChannelAccess::sendToChannel(cPacket* msg)
             sendDirect(msg, delay, msg->getDuration(), i->second->getOwnerModule(), radioEnd);
         }
         else {
-            coreEV << "Nic is not connected to any gates!" << endl;
+            EV_WARN << "Nic is not connected to any gates!" << endl;
             delete msg;
         }
     }
     else {
         // use our stuff
-        coreEV << "sendToChannel: sending to gates\n";
+        EV_TRACE << "sendToChannel: sending to gates\n";
         if (i != gateList.end()) {
             simtime_t delay = SIMTIME_ZERO;
             for (; i != --gateList.end(); ++i) {
@@ -138,7 +133,7 @@ void ChannelAccess::sendToChannel(cPacket* msg)
             sendDelayed(msg, delay, i->second);
         }
         else {
-            coreEV << "Nic is not connected to any gates!" << endl;
+            EV_WARN << "Nic is not connected to any gates!" << endl;
             delete msg;
         }
     }

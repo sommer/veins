@@ -6,14 +6,12 @@ using namespace Veins;
 
 using Veins::AirFrame;
 
-#define splmEV EV << "PhyLayer(SimplePathlossModel): "
-
 void SimplePathlossModel::filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos)
 {
     /** Calculate the distance factor */
     double sqrDistance = useTorus ? receiverPos.sqrTorusDist(sendersPos, playgroundSize) : receiverPos.sqrdist(sendersPos);
 
-    splmEV << "sqrdistance is: " << sqrDistance << endl;
+    EV_TRACE << "sqrdistance is: " << sqrDistance << endl;
 
     if (sqrDistance <= 1.0) {
         // attenuation is negligible
@@ -22,11 +20,11 @@ void SimplePathlossModel::filterSignal(Signal* signal, const Coord& sendersPos, 
 
     // wavelength in meters
     double wavelength = (BaseWorldUtility::speedOfLight() / carrierFrequency);
-    splmEV << "wavelength is: " << wavelength << endl;
+    EV_TRACE << "wavelength is: " << wavelength << endl;
 
     // the part of the attenuation only depending on the distance
     double distFactor = pow(sqrDistance, -pathLossAlphaHalf) / (16.0 * M_PI * M_PI);
-    splmEV << "distance factor is: " << distFactor << endl;
+    EV_TRACE << "distance factor is: " << distFactor << endl;
 
     for (uint16_t i = signal->getRelativeStart(); i < signal->getRelativeEnd(); i++) {
         double wavelength = BaseWorldUtility::speedOfLight() / signal->getAbsoluteFreqAt(i);
@@ -52,19 +50,19 @@ double SimplePathlossModel::calcPathloss(const Coord& receiverPos, const Coord& 
         sqrdistance = receiverPos.sqrdist(sendersPos);
     }
 
-    splmEV << "sqrdistance is: " << sqrdistance << endl;
+    EV_TRACE << "sqrdistance is: " << sqrdistance << endl;
 
     double attenuation = 1.0;
     // wavelength in metres
     double wavelength = (BaseWorldUtility::speedOfLight() / carrierFrequency);
 
-    splmEV << "wavelength is: " << wavelength << endl;
+    EV_TRACE << "wavelength is: " << wavelength << endl;
 
     if (sqrdistance > 1.0) {
         attenuation = (wavelength * wavelength) / (16.0 * M_PI * M_PI) * (pow(sqrdistance, -1.0 * pathLossAlphaHalf));
     }
 
-    splmEV << "attenuation is: " << attenuation << endl;
+    EV_TRACE << "attenuation is: " << attenuation << endl;
 
     return attenuation;
 }

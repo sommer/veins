@@ -49,7 +49,7 @@ void TraCITestApp::initialize(int stage)
         visitedEdges.clear();
         hasStopped = false;
 
-        if (debug) std::cout << "TraCITestApp initialized with testNumber=" << testNumber << std::endl;
+        if (debug) EV_INFO << "TraCITestApp initialized with testNumber=" << testNumber << std::endl;
     }
 }
 
