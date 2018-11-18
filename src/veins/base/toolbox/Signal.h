@@ -123,8 +123,8 @@ public:
     double getDataMax() const;
     double getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const;
 
-    void print() const;
-    void printAbsolute() const;
+    void print(std::ostream& os) const;
+    void printAbsolute(std::ostream& os) const;
     void toFile(std::string path) const;
 
     Signal& operator=(const double value);

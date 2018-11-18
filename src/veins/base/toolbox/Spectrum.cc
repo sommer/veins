@@ -79,10 +79,10 @@ size_t Spectrum::getNumFreqs() const
     return frequencies.size();
 }
 
-void Spectrum::print() const
+void Spectrum::print(std::ostream& os) const
 {
     for (auto& frequency : frequencies) {
-        std::cout << frequency << std::endl;
+        os << frequency << std::endl;
     }
 }
 

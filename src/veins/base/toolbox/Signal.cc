@@ -502,25 +502,25 @@ double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
     return *(std::max_element(values + freqIndexLow, values + freqIndexHigh));
 }
 
-void Signal::print() const
+void Signal::print(std::ostream& os) const
 {
-    if (timingUsed) std::cout << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
+    if (timingUsed) os << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
 
     for (uint16_t i = getRelativeStart(); i < getRelativeEnd(); i++) {
-        std::cout << spectrum.freqAt(i) << ":\t " << values[i] << std::endl;
+        os << spectrum.freqAt(i) << ":\t " << values[i] << std::endl;
     }
 
-    std::cout << "-----------------------------------------------" << std::endl;
+    os << "-----------------------------------------------" << std::endl;
 }
 
-void Signal::printAbsolute() const
+void Signal::printAbsolute(std::ostream& os) const
 {
-    std::cout << "-----------------------------------------------" << std::endl;
+    os << "-----------------------------------------------" << std::endl;
 
-    if (timingUsed) std::cout << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
+    if (timingUsed) os << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
 
     for (uint16_t i = 0; i < numAbsoluteValues; i++) {
-        std::cout << spectrum.freqAt(i) << ":\t " << values[i] << std::endl;
+        os << spectrum.freqAt(i) << ":\t " << values[i] << std::endl;
     }
 }
 

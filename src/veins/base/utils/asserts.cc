@@ -5,13 +5,15 @@ bool displayPassed = true;
 
 void fail(std::string msg)
 {
-    std::cout << "FAILED: " << msg << std::endl;
+    EV_STATICCONTEXT
+    EV_ERROR_C("asserts") << "FAILED: " << msg << std::endl;
     if (haltOnFails) exit(1);
 }
 
 void pass(std::string msg, bool hidePassed)
 {
-    if (!hidePassed && displayPassed) std::cout << "Passed: " << msg << std::endl;
+    EV_STATICCONTEXT
+    if (!hidePassed && displayPassed) EV_INFO_C("asserts") << "Passed: " << msg << std::endl;
 }
 
 void assertTrue(std::string msg, bool value, bool hidePassed)

@@ -13,6 +13,7 @@ doc/neddoc
 /out
 
 tests/**/results
+tests/**/veins-runall-output
 tests/**/.tkenvrc
 tests/**/.qtenvrc
 tests/**/.cmdenv-log
