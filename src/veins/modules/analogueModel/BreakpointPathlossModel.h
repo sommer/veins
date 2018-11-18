@@ -42,9 +42,6 @@ protected:
     /** @brief The size of the playground.*/
     const Coord& playgroundSize;
 
-    /** @brief Whether debug messages should be displayed. */
-    bool debug;
-
     /** logs computed pathlosses. */
     cOutVector pathlosses;
 
@@ -53,7 +50,7 @@ public:
      * @brief Initializes the analogue model. playgroundSize
      * need to be valid as long as this instance exists.
      */
-    BreakpointPathlossModel(double L01, double L02, double alpha1, double alpha2, double breakpointDistance, double carrierFrequency, bool useTorus, const Coord& playgroundSize, bool debug)
+    BreakpointPathlossModel(double L01, double L02, double alpha1, double alpha2, double breakpointDistance, double carrierFrequency, bool useTorus, const Coord& playgroundSize)
         : PL01(L01)
         , PL02(L02)
         , alpha1(alpha1)
@@ -62,7 +59,6 @@ public:
         , carrierFrequency(carrierFrequency)
         , useTorus(useTorus)
         , playgroundSize(playgroundSize)
-        , debug(debug)
     {
         PL01_real = pow(10, PL01 / 10);
         PL02_real = pow(10, PL02 / 10);

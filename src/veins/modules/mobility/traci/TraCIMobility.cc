@@ -73,7 +73,6 @@ void TraCIMobility::initialize(int stage)
     if (stage == 0) {
         BaseMobility::initialize(stage);
 
-        debug = par("debug");
         hostPositionOffset = par("hostPositionOffset");
         accidentCount = par("accidentCount");
 
@@ -173,7 +172,7 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
 
 void TraCIMobility::nextPosition(const Coord& position, std::string road_id, double speed, double angle, VehicleSignalSet signals)
 {
-    if (debug) EV << "nextPosition " << position.x << " " << position.y << " " << road_id << " " << speed << " " << angle << std::endl;
+    EV_DEBUG << "nextPosition " << position.x << " " << position.y << " " << road_id << " " << speed << " " << angle << std::endl;
     isPreInitialized = false;
     this->roadPosition = position;
     this->road_id = road_id;

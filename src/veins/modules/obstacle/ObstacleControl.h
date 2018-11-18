@@ -95,7 +95,6 @@ protected:
     typedef std::vector<ObstacleGridRow> Obstacles;
     typedef std::map<CacheKey, double> CacheEntries;
 
-    bool debug; /**< whether to emit debug messages */
     cXMLElement* obstaclesXml; /**< obstacles to add at startup */
 
     Obstacles obstacles;

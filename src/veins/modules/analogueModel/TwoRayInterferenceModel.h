@@ -43,9 +43,8 @@ using Veins::AirFrame;
 class TwoRayInterferenceModel : public AnalogueModel {
 
 public:
-    TwoRayInterferenceModel(double dielectricConstant, bool debug)
+    TwoRayInterferenceModel(double dielectricConstant)
         : epsilon_r(dielectricConstant)
-        , debug(debug)
     {
     }
 
@@ -58,9 +57,6 @@ public:
 protected:
     /** @brief stores the dielectric constant used for calculation */
     double epsilon_r;
-
-    /** @brief Whether debug messages should be displayed. */
-    bool debug;
 };
 
 } // namespace Veins

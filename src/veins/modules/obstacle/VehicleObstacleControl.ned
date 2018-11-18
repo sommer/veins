@@ -27,7 +27,6 @@ simple VehicleObstacleControl
 {
     parameters:
         @class(Veins::VehicleObstacleControl);
-        bool debug = default(false);  // emit debug messages?
         @display("i=misc/town2");
         @labels(node);
 }

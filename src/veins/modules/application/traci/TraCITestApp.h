@@ -48,7 +48,6 @@ protected:
 
 protected:
     // module parameters
-    bool debug;
     int testNumber;
 
     TraCIMobility* mobility;

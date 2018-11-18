@@ -39,7 +39,6 @@ simple TraCIScreenRecorder
     parameters:
         @display("i=block/downarrow");
         @class(Veins::TraCIScreenRecorder);
-        bool debug = default(false);  // emit debug messages?
         string dirname = default("");  // directory name for screenshots (leave blank to use ${resultdir})
         string filenameTemplate = default("");  // file name for screenshots in printf syntax; the %f parameter is set to the current simulation time (leave blank to use screenshot-${runid}-@%08.2f.png)
         string viewName = default("View #0");  // which TraCI server view to choose

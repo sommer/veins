@@ -25,7 +25,6 @@ import org.car2x.veins.base.modules.IBaseApplLayer;
 simple TraCITestApp like IBaseApplLayer
 {
     parameters:
-        bool debug = default(false);  // output debugging information
         int headerLength @unit("bit") = default (0bit);  // length of the application message header (in bits)
         int testNumber;  // number of test to run (-1: no test)
 

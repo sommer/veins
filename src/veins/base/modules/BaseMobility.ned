@@ -11,7 +11,6 @@ simple BaseMobility like IMobility
     parameters:
         @class(Veins::BaseMobility);
         bool notAffectedByHostState = default(true);
-        bool coreDebug = default(false); // debug switch for the core framework
         double x; // x coordinate of the nodes' position (-1 = random)
         double y; // y coordinate of the nodes' position (-1 = random)
         double z; // z coordinate of the nodes' position (-1 = random)

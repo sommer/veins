@@ -22,12 +22,11 @@
 
 using namespace Veins;
 
-VehicleObstacleShadowing::VehicleObstacleShadowing(VehicleObstacleControl& vehicleObstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize, bool debug)
+VehicleObstacleShadowing::VehicleObstacleShadowing(VehicleObstacleControl& vehicleObstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize)
     : vehicleObstacleControl(vehicleObstacleControl)
     , carrierFrequency(carrierFrequency)
     , useTorus(useTorus)
     , playgroundSize(playgroundSize)
-    , debug(debug)
 {
     vehicleObstacleControl.setCarrierFrequency(carrierFrequency);
     if (useTorus) throw cRuntimeError("VehicleObstacleShadowing does not work on torus-shaped playgrounds");

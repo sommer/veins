@@ -46,9 +46,6 @@ protected:
     /** @brief The size of the playground.*/
     const Coord& playgroundSize;
 
-    /** @brief Whether debug messages should be displayed. */
-    bool debug;
-
 public:
     /**
      * @brief Initializes the analogue model. playgroundSize
@@ -63,14 +60,12 @@ public:
      * @param useTorus information about the playground the host is moving in
      * @param playgroundSize information about the playground the host is
      *                          moving in
-     * @param debug display debug messages?
      */
-    SimplePathlossModel(double alpha, double carrierFrequency, bool useTorus, const Coord& playgroundSize, bool debug)
+    SimplePathlossModel(double alpha, double carrierFrequency, bool useTorus, const Coord& playgroundSize)
         : pathLossAlphaHalf(alpha * 0.5)
         , carrierFrequency(carrierFrequency)
         , useTorus(useTorus)
         , playgroundSize(playgroundSize)
-        , debug(debug)
     {
     }
 

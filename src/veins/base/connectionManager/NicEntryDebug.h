@@ -105,8 +105,8 @@ public:
     /**
      * @brief Constructor, initializes all members
      */
-    NicEntryDebug(bool debug)
-        : NicEntry(debug)
+    NicEntryDebug()
+        : NicEntry()
         , inCnt(0)
         , outCnt(0)
         , checkFreeGates(true){};

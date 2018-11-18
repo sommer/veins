@@ -66,8 +66,6 @@ public:
     void setCarrierFrequency(const double frequency);
 
 protected:
-    bool debug; /**< whether to emit debug messages */
-
     AnnotationManager* annotations;
     double carrierFrequency;
 

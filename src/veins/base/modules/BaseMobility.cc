@@ -68,8 +68,6 @@ void BaseMobility::initialize(int stage)
 {
     BaseModule::initialize(stage);
     if (stage == 0) {
-        hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
-
         EV_TRACE << "initializing BaseMobility stage " << stage << endl;
 
         hasPar("scaleNodeByDepth") ? scaleNodeByDepth = par("scaleNodeByDepth").boolValue() : scaleNodeByDepth = true;
@@ -284,7 +282,7 @@ void BaseMobility::handleBorderMsg(cMessage* msg)
 
 void BaseMobility::updatePosition()
 {
-    EV << "updatePosition: " << move.info() << endl;
+    EV_DEBUG << "updatePosition: " << move.info() << endl;
 
     // publish the the new move
     emit(mobilityStateChangedSignal, this);

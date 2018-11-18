@@ -79,9 +79,6 @@ protected:
      **/
     LAddress::L2Type myMacAddr;
 
-    /** @brief debug this core module? */
-    bool coreDebug;
-
     /** @brief The length of the phy header (in bits).
      *
      * Since the MAC layer has to create the signal for

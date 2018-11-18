@@ -65,9 +65,6 @@ protected:
     /** @brief Pointer to the PropagationModel module*/
     BaseConnectionManager* cc;
 
-    /** @brief debug this core module? */
-    bool coreDebug;
-
     /** @brief Defines if the physical layer should simulate propagation delay.*/
     bool usePropagationDelay;
 

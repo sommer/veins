@@ -36,8 +36,6 @@ const short EVT_SCHEDULED_ERASE = 3;
 
 void AnnotationManager::initialize()
 {
-    debug = par("debug");
-
     scheduledEraseEvts.clear();
 
     annotations.clear();

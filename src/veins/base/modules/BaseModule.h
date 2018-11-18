@@ -62,9 +62,6 @@ namespace Veins {
  */
 class MIXIM_API BaseModule : public cSimpleModule, public cListener {
 protected:
-    /** @brief Debug switch for all other modules*/
-    bool debug;
-
     /** @brief Stores if this module is affected by changes in the
      * hosts state. If not explicitly set this module has to capture
      * changes in the host state.*/

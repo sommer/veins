@@ -39,8 +39,6 @@ VehicleObstacleControl::~VehicleObstacleControl() = default;
 void VehicleObstacleControl::initialize(int stage)
 {
     if (stage == 1) {
-        debug = par("debug");
-
         annotations = AnnotationManagerAccess().getIfExists();
         if (annotations) {
             vehicleAnnotationGroup = annotations->createGroup("vehicleObstacles");

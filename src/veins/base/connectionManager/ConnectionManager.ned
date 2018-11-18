@@ -36,8 +36,6 @@ simple ConnectionManager
 {
     parameters:
         @class(Veins::ConnectionManager);
-        // debug switch for core framework
-        bool coreDebug;
         // send directly to the node or create separate gates for every connection
         bool sendDirect;
         // maximum interference distance [m]

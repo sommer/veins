@@ -150,7 +150,6 @@ public:
     }
 
 protected:
-    bool debug; /**< whether to emit debug messages */
     int accidentCount; /**< number of accidents */
 
     cOutVector currentPosXVec; /**< vector plotting posx */

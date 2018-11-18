@@ -155,8 +155,8 @@ public:
      * @brief Initializes the Decider with a pointer to its PhyLayer and
      * specific values for threshold and sensitivity
      */
-    Decider80211p(DeciderToPhyInterface* phy, double sensitivity, double ccaThreshold, bool allowTxDuringRx, double centerFrequency, int myIndex = -1, bool collectCollisionStatistics = false, bool debug = false)
-        : BaseDecider(phy, sensitivity, myIndex, debug)
+    Decider80211p(DeciderToPhyInterface* phy, double sensitivity, double ccaThreshold, bool allowTxDuringRx, double centerFrequency, int myIndex = -1, bool collectCollisionStatistics = false)
+        : BaseDecider(phy, sensitivity, myIndex)
         , ccaThreshold(ccaThreshold)
         , allowTxDuringRx(allowTxDuringRx)
         , centerFrequency(centerFrequency)

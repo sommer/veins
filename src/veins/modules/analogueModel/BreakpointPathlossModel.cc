@@ -35,9 +35,7 @@ void BreakpointPathlossModel::filterSignal(Signal* signal, const Coord& sendersP
     attenuation = 1 / attenuation;
     EV_TRACE << "attenuation is: " << attenuation << endl;
 
-    if (debug) {
-        pathlosses.record(10 * log10(attenuation)); // in dB
-    }
+    pathlosses.record(10 * log10(attenuation)); // in dB
 
     signal->addUniformAttenuation(attenuation);
 }

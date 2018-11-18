@@ -6,7 +6,6 @@ simple BasePhyLayer like IWirelessPhy
 {
     parameters:
         @class(Veins::BasePhyLayer);
-        bool coreDebug   = default(false); //debug switch for core framework
         
         bool recordStats = default(false); //enable/disable tracking of statistics (eg. cOutvectors)
         int headerLength = default(0) @unit(bit); //defines the length of the phy header (/preamble)

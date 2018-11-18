@@ -39,7 +39,6 @@ void TraCITestApp::initialize(int stage)
 {
     BaseApplLayer::initialize(stage);
     if (stage == 0) {
-        debug = par("debug");
         testNumber = par("testNumber");
         mobility = TraCIMobilityAccess().get(getParentModule());
         traci = mobility->getCommandInterface();
@@ -49,7 +48,7 @@ void TraCITestApp::initialize(int stage)
         visitedEdges.clear();
         hasStopped = false;
 
-        if (debug) EV_INFO << "TraCITestApp initialized with testNumber=" << testNumber << std::endl;
+        EV_DEBUG << "TraCITestApp initialized with testNumber=" << testNumber << std::endl;
     }
 }
 

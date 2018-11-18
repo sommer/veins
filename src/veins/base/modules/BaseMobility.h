@@ -117,9 +117,6 @@ protected:
     /** @brief Self message to trigger movement */
     cMessage* moveMsg;
 
-    /** @brief debug this core module? */
-    bool coreDebug;
-
     /** @brief Enable depth dependent scaling of nodes when 3d and tkenv is
      * used. */
     bool scaleNodeByDepth;

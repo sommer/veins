@@ -43,10 +43,9 @@ namespace Veins {
 class NakagamiFading : public AnalogueModel {
 
 public:
-    NakagamiFading(bool constM, double m, bool debug)
+    NakagamiFading(bool constM, double m)
         : constM(constM)
         , m(m)
-        , debug(debug)
     {
     }
 
@@ -62,9 +61,6 @@ protected:
 
     /** @brief The value of the coefficient m */
     double m;
-
-    /** @brief Whether debug messages should be displayed. */
-    bool debug;
 };
 
 } // namespace Veins

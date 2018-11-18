@@ -56,8 +56,6 @@ void ChannelAccess::initialize(int stage)
     BatteryAccess::initialize(stage);
 
     if (stage == 0) {
-        hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
-
         if (hasPar("antennaOffsetX")) {
             antennaOffset.x = par("antennaOffsetX").doubleValue();
         }

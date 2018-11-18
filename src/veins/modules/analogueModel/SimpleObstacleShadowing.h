@@ -53,9 +53,6 @@ protected:
     /** @brief The size of the playground.*/
     const Coord& playgroundSize;
 
-    /** @brief Whether debug messages should be displayed. */
-    bool debug;
-
 public:
     /**
      * @brief Initializes the analogue model. myMove and playgroundSize
@@ -68,9 +65,8 @@ public:
      * @param carrierFrequency the carrier frequency
      * @param useTorus information about the playground the host is moving in
      * @param playgroundSize information about the playground the host is moving in
-     * @param debug display debug messages?
      */
-    SimpleObstacleShadowing(ObstacleControl& obstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize, bool debug);
+    SimpleObstacleShadowing(ObstacleControl& obstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize);
 
     /**
      * @brief Filters a specified Signal by adding an attenuation

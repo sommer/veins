@@ -43,9 +43,6 @@ simple Mac1609_4 extends BaseMacLayer
         // the service channel this maclayer listens on when started
         int serviceChannel = default(1);
 
-        // debug switch
-        bool debug = default(false);
-
         // length of MAC header, header is already added at 1609_4
         headerLength @unit(bit) = default(0 bit);
 

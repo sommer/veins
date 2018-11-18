@@ -173,7 +173,7 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
         throw cRuntimeError("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
     }
 
-    return new BreakpointPathlossModel(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, useTorus, playgroundSize, coreDebug);
+    return new BreakpointPathlossModel(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, useTorus, playgroundSize);
 }
 
 AnalogueModel* PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& params)
@@ -182,7 +182,7 @@ AnalogueModel* PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& p
 
     double dielectricConstant = params["DielectricConstant"].doubleValue();
 
-    return new TwoRayInterferenceModel(dielectricConstant, coreDebug);
+    return new TwoRayInterferenceModel(dielectricConstant);
 }
 
 AnalogueModel* PhyLayer80211p::initializeNakagamiFading(ParameterMap& params)
@@ -192,7 +192,7 @@ AnalogueModel* PhyLayer80211p::initializeNakagamiFading(ParameterMap& params)
     if (constM) {
         m = params["m"].doubleValue();
     }
-    return new NakagamiFading(constM, m, coreDebug);
+    return new NakagamiFading(constM, m);
 }
 
 AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& params)
@@ -262,7 +262,7 @@ AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& param
         }
     }
 
-    return new SimplePathlossModel(alpha, carrierFrequency, useTorus, playgroundSize, coreDebug);
+    return new SimplePathlossModel(alpha, carrierFrequency, useTorus, playgroundSize);
 }
 
 AnalogueModel* PhyLayer80211p::initializePERModel(ParameterMap& params)
@@ -320,7 +320,7 @@ AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& p
 
     ObstacleControl* obstacleControlP = ObstacleControlAccess().getIfExists();
     if (!obstacleControlP) throw cRuntimeError("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
-    return new SimpleObstacleShadowing(*obstacleControlP, carrierFrequency, useTorus, playgroundSize, coreDebug);
+    return new SimpleObstacleShadowing(*obstacleControlP, carrierFrequency, useTorus, playgroundSize);
 }
 
 AnalogueModel* PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& params)
@@ -363,13 +363,13 @@ AnalogueModel* PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& 
 
     VehicleObstacleControl* vehicleObstacleControlP = VehicleObstacleControlAccess().getIfExists();
     if (!vehicleObstacleControlP) throw cRuntimeError("initializeVehicleObstacleShadowing(): cannot find VehicleObstacleControl module");
-    return new VehicleObstacleShadowing(*vehicleObstacleControlP, carrierFrequency, useTorus, playgroundSize, coreDebug);
+    return new VehicleObstacleShadowing(*vehicleObstacleControlP, carrierFrequency, useTorus, playgroundSize);
 }
 
 Decider* PhyLayer80211p::initializeDecider80211p(ParameterMap& params)
 {
     double centerFreq = params["centerFrequency"];
-    Decider80211p* dec = new Decider80211p(this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics, coreDebug);
+    Decider80211p* dec = new Decider80211p(this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
     dec->setPath(getParentModule()->getFullPath());
     return dec;
 }

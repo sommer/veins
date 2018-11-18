@@ -17,7 +17,7 @@ SCENARIO("TwoRayInterferenceModel", "[analogueModel]")
 
         AirFrame frame = createAirframe(2.4e9, 10e6, 0, .001, 1);
         Signal& s = frame.getSignal();
-        TwoRayInterferenceModel tri(1.02, false);
+        TwoRayInterferenceModel tri(1.02);
 
         Coord senderPos(0, 0, 2);
 

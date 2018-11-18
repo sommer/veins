@@ -76,22 +76,17 @@ protected:
      * Host-index) */
     int myIndex;
 
-    /** @brief toggles display of debugging messages */
-    bool debug;
-
 public:
     /**
      * @brief Initializes the decider with the passed values.
      *
-     * Needs a pointer to its physical layer, the sensitivity, the index of the
-     * host and the debug flag.
+     * Needs a pointer to its physical layer, the sensitivity, and the index of the host.
      */
-    BaseDecider(DeciderToPhyInterface* phy, double sensitivity, int myIndex, bool debug)
+    BaseDecider(DeciderToPhyInterface* phy, double sensitivity, int myIndex)
         : Decider(phy)
         , sensitivity(sensitivity)
         , isChannelIdle(true)
         , myIndex(myIndex)
-        , debug(debug)
     {
         currentSignal.first = 0;
         currentSignal.second = NEW;

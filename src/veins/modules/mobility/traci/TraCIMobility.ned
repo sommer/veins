@@ -41,7 +41,6 @@ simple TraCIMobility extends BaseMobility
         @class(Veins::TraCIMobility);
         @signal[parkingStateChanged](type=Veins::TraCIMobility);
         @display("i=block/cogwheel");
-        bool debug = default(false);  // debug switch
         double hostPositionOffset @unit("m") = default(0.0m);  // shift OMNeT++ module this far from front of the car
         int accidentCount = default(0);  // number of accidents
         double accidentStart @unit("s") = default(uniform(30s,60s));  // time until first accident, relative to departure time

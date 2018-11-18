@@ -55,8 +55,6 @@ void BaseMacLayer::initialize(int stage)
 
         headerLength = par("headerLength");
         phyHeaderLength = phy->getPhyHeaderLength();
-
-        hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
     }
     if (myMacAddr == LAddress::L2NULL()) {
         // see if there is an addressing module available

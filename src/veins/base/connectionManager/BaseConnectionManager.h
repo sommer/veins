@@ -223,9 +223,6 @@ protected:
     /** @brief Map from nic-module ids to nic-module pointers.*/
     NicEntries nics;
 
-    /** @brief Set debugging for the basic module*/
-    bool coreDebug;
-
     /** @brief Does the ConnectionManager use sendDirect or not?*/
     bool sendDirect;
 

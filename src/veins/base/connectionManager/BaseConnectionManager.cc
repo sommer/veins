@@ -44,11 +44,6 @@ void BaseConnectionManager::initialize(int stage)
     // BaseModule::initialize(stage);
 
     if (stage == 0) {
-        if (hasPar("coreDebug"))
-            coreDebug = par("coreDebug").boolValue();
-        else
-            coreDebug = false;
-
         drawMIR = hasPar("drawMaxIntfDist") ? par("drawMaxIntfDist").boolValue() : false;
 
         EV_TRACE << "initializing BaseConnectionManager\n";
@@ -309,9 +304,9 @@ bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, c
     NicEntries::mapped_type nicEntry;
 
     if (sendDirect)
-        nicEntry = new NicEntryDirect(coreDebug);
+        nicEntry = new NicEntryDirect();
     else
-        nicEntry = new NicEntryDebug(coreDebug);
+        nicEntry = new NicEntryDebug();
 
     // fill nicEntry
     nicEntry->nicPtr = nic;

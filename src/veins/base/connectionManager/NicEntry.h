@@ -73,9 +73,6 @@ public:
     ChannelAccess* chAccess;
 
 protected:
-    /** @brief Debug output switch*/
-    bool coreDebug;
-
     /** @brief Outgoing connections of this nic
      *
      * This map stores all connection for this nic to other nics
@@ -89,13 +86,10 @@ public:
     /**
      * @brief Constructor, initializes all members
      */
-    NicEntry(bool debug)
+    NicEntry()
         : nicId(0)
         , nicPtr(0)
-        , hostId(0)
-    {
-        coreDebug = debug;
-    };
+        , hostId(0){};
 
     /**
      * @brief Destructor -- needs to be there...

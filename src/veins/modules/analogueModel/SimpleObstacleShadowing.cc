@@ -24,12 +24,11 @@ using namespace Veins;
 
 using Veins::AirFrame;
 
-SimpleObstacleShadowing::SimpleObstacleShadowing(ObstacleControl& obstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize, bool debug)
+SimpleObstacleShadowing::SimpleObstacleShadowing(ObstacleControl& obstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize)
     : obstacleControl(obstacleControl)
     , carrierFrequency(carrierFrequency)
     , useTorus(useTorus)
     , playgroundSize(playgroundSize)
-    , debug(debug)
 {
     if (useTorus) throw cRuntimeError("SimpleObstacleShadowing does not work on torus-shaped playgrounds");
 }

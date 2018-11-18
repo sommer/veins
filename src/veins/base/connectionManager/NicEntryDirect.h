@@ -37,8 +37,8 @@ class NicEntryDirect : public NicEntry {
 public:
     /** @brief Constructor, initializes all members
      */
-    NicEntryDirect(bool debug)
-        : NicEntry(debug){};
+    NicEntryDirect()
+        : NicEntry(){};
 
     /**
      * @brief Destructor -- needs to be there...
