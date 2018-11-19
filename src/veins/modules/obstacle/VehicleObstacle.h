@@ -24,15 +24,15 @@
 
 #include "veins/base/utils/Coord.h"
 
-/**
- * stores information about an Obstacle for ObstacleControl
- */
 namespace Veins {
 
 class ChannelAccess;
 
 class TraCIMobility;
 
+/**
+ * stores information about a VehicleObstacle for VehicleObstacleControl
+ */
 class VehicleObstacle {
 public:
     typedef std::vector<Coord> Coords;
