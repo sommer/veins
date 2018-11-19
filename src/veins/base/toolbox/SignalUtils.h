@@ -26,10 +26,10 @@
 #include <vector>
 #include <iterator>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
 #include "veins/base/phyLayer/Decider.h"
-
 #include "veins/base/toolbox/Signal.h"
 
 namespace Veins {

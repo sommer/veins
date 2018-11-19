@@ -2,7 +2,8 @@
 
 #include <cstdlib>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/AnalogueModel.h"
 
 using Veins::AirFrame;
@@ -15,7 +16,7 @@ namespace Veins {
  *
  * @ingroup analogueModels
  */
-class MIXIM_API BreakpointPathlossModel : public AnalogueModel {
+class VEINS_API BreakpointPathlossModel : public AnalogueModel {
 protected:
     //    /** @brief Model to use for distances below breakpoint distance */
     //    SimplePathlossModel closeRangeModel;

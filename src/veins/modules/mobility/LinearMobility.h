@@ -32,7 +32,7 @@ namespace Veins {
  * @ingroup mobility
  * @author Emin Ilker Cetinbas
  */
-class MIXIM_API LinearMobility : public BaseMobility {
+class VEINS_API LinearMobility : public BaseMobility {
 protected:
     double angle; ///< angle of linear motion
     double acceleration; ///< acceleration of linear motion

@@ -2,9 +2,9 @@
 
 #include <cassert>
 #include <list>
-#include <omnetpp.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/AnalogueModel.h"
 
 using Veins::AirFrame;
@@ -19,7 +19,7 @@ namespace Veins {
  *
  * @ingroup phyLayer
  */
-class MIXIM_API Radio {
+class VEINS_API Radio {
 public:
     /**
      * @brief The state of the radio of the nic.

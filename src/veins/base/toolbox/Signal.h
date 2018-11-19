@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include "veins/base/utils/Coord.h"
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
 
+#include "veins/base/utils/Coord.h"
 #include "veins/base/toolbox/Spectrum.h"
 
 namespace Veins {

@@ -20,7 +20,8 @@
 
 #pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
+
 #include "veins/modules/messages/TraCITrafficLightMessage_m.h"
 
 namespace Veins {

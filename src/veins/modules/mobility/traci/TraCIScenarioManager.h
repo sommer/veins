@@ -25,7 +25,7 @@
 #include <list>
 #include <queue>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 #include "veins/base/utils/Coord.h"
 #include "veins/base/modules/BaseWorldUtility.h"

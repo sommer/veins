@@ -20,9 +20,8 @@
  **************************************************************************/
 #pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
-#include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/utils/SimpleAddress.h"
 #include "veins/base/toolbox/Spectrum.h"
@@ -43,7 +42,7 @@ class Signal;
  * @ingroup baseModules
  * @author Daniel Willkomm, Karl Wessel
  */
-class MIXIM_API BaseMacLayer : public BaseLayer {
+class VEINS_API BaseMacLayer : public BaseLayer {
 public:
     /** @brief Message kinds used by this layer.*/
     enum BaseMacMessageKinds {

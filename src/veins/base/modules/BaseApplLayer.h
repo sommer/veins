@@ -23,7 +23,8 @@
 
 #include <assert.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/utils/SimpleAddress.h"
 
@@ -41,7 +42,7 @@ namespace Veins {
  *
  * @author Daniel Willkomm
  **/
-class MIXIM_API BaseApplLayer : public BaseLayer {
+class VEINS_API BaseApplLayer : public BaseLayer {
 public:
     /** @brief The message kinds this layer uses.*/
     enum BaseApplMessageKinds {

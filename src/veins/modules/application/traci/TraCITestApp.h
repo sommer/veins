@@ -23,7 +23,7 @@
 #include <set>
 #include <list>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 #include "veins/base/modules/BaseApplLayer.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"

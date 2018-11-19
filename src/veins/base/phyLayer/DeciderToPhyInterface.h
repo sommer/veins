@@ -8,9 +8,8 @@
 
 #include <vector>
 #include <list>
-#include <omnetpp.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
 
 namespace Veins {
 
@@ -36,7 +35,7 @@ class DeciderResult;
  *
  * @ingroup decider
  */
-class MIXIM_API DeciderToPhyInterface {
+class VEINS_API DeciderToPhyInterface {
 public:
     /**
      * @brief Type for container of AirFrames.

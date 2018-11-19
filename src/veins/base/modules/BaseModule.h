@@ -21,9 +21,9 @@
 #pragma once
 
 #include <sstream>
-#include <omnetpp.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/utils/HostState.h"
 
 namespace Veins {
@@ -60,7 +60,7 @@ namespace Veins {
  * @author Steffen Sroka
  * @author Andreas Koepke
  */
-class MIXIM_API BaseModule : public cSimpleModule, public cListener {
+class VEINS_API BaseModule : public cSimpleModule, public cListener {
 protected:
     /** @brief Stores if this module is affected by changes in the
      * hosts state. If not explicitly set this module has to capture

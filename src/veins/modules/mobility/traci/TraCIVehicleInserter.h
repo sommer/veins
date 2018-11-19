@@ -22,9 +22,7 @@
 
 #include <queue>
 
-#include <omnetpp.h>
-
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
 
 namespace Veins {
 

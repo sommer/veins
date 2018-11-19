@@ -10,7 +10,7 @@
 #include <limits>
 #include <type_traits>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 extern bool haltOnFails;
 extern bool displayPassed;

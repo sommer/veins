@@ -5,12 +5,12 @@
 #include <string>
 #include <memory>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
 #include "veins/base/phyLayer/MacToPhyInterface.h"
 #include "veins/base/phyLayer/Antenna.h"
-
 #include "veins/base/phyLayer/ChannelInfo.h"
 
 namespace Veins {
@@ -73,7 +73,7 @@ class Radio;
 
 typedef std::vector<AnalogueModel*> AnalogueModelList;
 
-class MIXIM_API BasePhyLayer : public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
+class VEINS_API BasePhyLayer : public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
 
 protected:
     enum ProtocolIds {

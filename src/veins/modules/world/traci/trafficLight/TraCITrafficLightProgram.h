@@ -24,7 +24,7 @@
 #include <vector>
 #include <map>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 using omnetpp::simtime_t;
 

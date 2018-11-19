@@ -2,7 +2,8 @@
 
 #include <cassert>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/AnalogueModel.h"
 
 using Veins::AirFrame;
@@ -18,7 +19,7 @@ namespace Veins {
  *
  * @author Jérôme Rousselot <jerome.rousselot@csem.ch>
  */
-class MIXIM_API PERModel : public AnalogueModel {
+class VEINS_API PERModel : public AnalogueModel {
 protected:
     double packetErrorRate;
 

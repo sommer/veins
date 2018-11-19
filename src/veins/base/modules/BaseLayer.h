@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/modules/BatteryAccess.h"
 #include "veins/base/utils/PassedMessage.h"
 
@@ -38,7 +39,7 @@ using Veins::BatteryAccess;
  * @ingroup baseModules
  * @author Andreas Koepke
  */
-class MIXIM_API BaseLayer : public BatteryAccess {
+class VEINS_API BaseLayer : public BatteryAccess {
 public:
     /** @brief SignalID for packets. */
     const static simsignalwrap_t catPacketSignal;

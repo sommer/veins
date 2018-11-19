@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include <omnetpp.h>
 #include <stdint.h>
-#include <omnetpp.h>
+
+#include "veins/veins.h"
 
 using omnetpp::SimTime;
 

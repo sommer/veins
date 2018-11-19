@@ -9,7 +9,8 @@
 
 #pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/Decider.h"
 
 namespace Veins {
@@ -21,7 +22,7 @@ namespace Veins {
  * @ingroup decider
  * @ingroup ieee80211
  */
-class MIXIM_API DeciderResult80211 : public DeciderResult {
+class VEINS_API DeciderResult80211 : public DeciderResult {
 protected:
     /** @brief Stores the bit-rate of the transmission of the packet */
     double bitrate;

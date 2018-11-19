@@ -17,36 +17,15 @@
 
 #pragma once
 
-#include <omnetpp.h>
-
-namespace omnetpp {
-}
-using namespace omnetpp;
-
-#include "veins/base/utils/miximkerneldefs.h"
+#include "veins/veins.h"
 
 namespace Veins {
-
-// Explicit check of OMNeT++ version
-#if OMNETPP_VERSION < 0x500
-#error At least OMNeT++/OMNEST version 5.0.0 required
-#endif
-
-#define RNGCONTEXT (cSimulation::getActiveSimulation()->getContext())->
-
-#if defined(MIXIM_EXPORT)
-#define MIXIM_API OPP_DLLEXPORT
-#elif defined(MIXIM_IMPORT)
-#define MIXIM_API OPP_DLLIMPORT
-#else
-#define MIXIM_API
-#endif
 
 /**
  * @brief Helper function to initialize signal change identifier on use and
  *        not on initializing static sections.
  */
-class MIXIM_API simsignalwrap_t {
+class VEINS_API simsignalwrap_t {
 private:
     mutable volatile simsignal_t ssChangeSignal;
     const char* const sSignalName;

@@ -20,7 +20,8 @@
 
 #pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/utils/Coord.h"
 
 namespace Veins {
@@ -30,7 +31,7 @@ namespace Veins {
  *
  * @ingroup baseModules
  */
-class MIXIM_API BaseWorldUtility : public cSimpleModule {
+class VEINS_API BaseWorldUtility : public cSimpleModule {
 protected:
     /**
      * @brief Size of the area the nodes are in (in meters)

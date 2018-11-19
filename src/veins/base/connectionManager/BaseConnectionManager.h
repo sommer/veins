@@ -1,6 +1,7 @@
 #pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/connectionManager/NicEntry.h"
 
 namespace Veins {
@@ -23,7 +24,7 @@ class ChannelAccess;
  * @author Christoph Sommer ("unregisterNic()"-method)
  * @sa ChannelAccess
  */
-class MIXIM_API BaseConnectionManager : public cSimpleModule {
+class VEINS_API BaseConnectionManager : public cSimpleModule {
 private:
     /**
      * @brief Represents a position inside a grid.

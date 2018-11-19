@@ -21,7 +21,8 @@
 
 #include <list>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
+
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/utils/Coord.h"
 

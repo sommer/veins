@@ -21,10 +21,10 @@
 
 #pragma once
 
-#include <omnetpp.h>
 #include <map>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/utils/Coord.h"
 
 namespace Veins {
@@ -40,7 +40,7 @@ using Veins::ChannelAccess;
  * @author Daniel Willkomm
  * @sa ConnectionManager
  */
-class MIXIM_API NicEntry : public cObject {
+class VEINS_API NicEntry : public cObject {
 protected:
     class NicEntryComparator {
     public:

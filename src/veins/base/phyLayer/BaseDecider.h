@@ -7,7 +7,8 @@
 
 #pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/Decider.h"
 
 namespace Veins {
@@ -33,7 +34,7 @@ using Veins::AirFrame;
  * @ingroup decider
  * @ingroup baseModules
  */
-class MIXIM_API BaseDecider : public Decider {
+class VEINS_API BaseDecider : public Decider {
 public:
     /**
      * @brief The kinds of ControlMessages this Decider sends.

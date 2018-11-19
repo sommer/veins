@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/modules/BatteryAccess.h"
 #include "veins/base/utils/Coord.h"
 #include "veins/base/utils/Move.h"
@@ -60,7 +61,7 @@ using Veins::BatteryAccess;
  * @ingroup baseModules
  * @author Daniel Willkomm, Andras Varga
  */
-class MIXIM_API BaseMobility : public BatteryAccess {
+class VEINS_API BaseMobility : public BatteryAccess {
 public:
     /**
      * @brief Selects how a node should behave if it reaches the edge

@@ -21,10 +21,12 @@
 #pragma once
 
 #include <assert.h>
-#include <omnetpp.h>
 #include <queue>
 #include <memory>
 #include <stdint.h>
+
+#include "veins/veins.h"
+
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/phyLayer/MacToPhyControlInfo.h"
 #include "veins/modules/phy/PhyLayer80211p.h"
@@ -36,7 +38,6 @@
 #include "veins/modules/messages/AckTimeOutMessage_m.h"
 #include "veins/modules/messages/Mac80211Ack_m.h"
 #include "veins/base/modules/BaseMacLayer.h"
-
 #include "veins/modules/utility/ConstsPhy.h"
 
 namespace Veins {

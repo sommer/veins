@@ -19,7 +19,7 @@
 
 #include "veins/modules/mobility/LinearMobility.h"
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 using namespace Veins;
 

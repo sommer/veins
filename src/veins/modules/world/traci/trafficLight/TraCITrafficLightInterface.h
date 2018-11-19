@@ -20,7 +20,8 @@
 
 #pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
+
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"

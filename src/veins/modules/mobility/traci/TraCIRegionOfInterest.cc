@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <sstream>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
 
 #include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 

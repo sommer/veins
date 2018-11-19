@@ -7,7 +7,8 @@
 
 #pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/modules/BaseModule.h"
 #include "veins/base/modules/BaseBattery.h"
 
@@ -21,7 +22,7 @@ namespace Veins {
  * @ingroup baseModules
  * @author Karl Wessel
  */
-class MIXIM_API BatteryAccess : public BaseModule {
+class VEINS_API BatteryAccess : public BaseModule {
 protected:
     /** @brief Stores pointer to the battery module. */
     BaseBattery* battery;

@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
 
 namespace Veins {
 

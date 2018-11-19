@@ -20,7 +20,8 @@
 
 #pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
+
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 
 using namespace omnetpp;

@@ -19,9 +19,7 @@
 
 #pragma once
 
-#include <omnetpp.h>
-
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
 
 namespace Veins {
 
@@ -34,7 +32,7 @@ namespace Veins {
  * @attention Both types (LAddress::L2Type, LAddress::L3Type) will be used as keys in
  *            in STL containers.
  */
-class MIXIM_API LAddress {
+class VEINS_API LAddress {
 public:
     /** @brief Type definition for a L2 (MAC) address.
      *

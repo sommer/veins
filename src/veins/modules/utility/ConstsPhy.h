@@ -20,9 +20,10 @@
 
 #pragma once
 
-#include <omnetpp.h>
 #include <cmath>
 #include <stdint.h>
+
+#include "veins/veins.h"
 
 /** @brief Modulation and coding scheme to be used for transmission */
 enum PHY_MCS {

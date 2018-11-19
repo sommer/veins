@@ -1,8 +1,7 @@
 #pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
-#include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/modules/BaseModule.h"
 #include "veins/base/utils/HostState.h"
 
@@ -23,7 +22,7 @@ namespace Veins {
  * @ingroup baseModules
  * @ingroup power
  */
-class MIXIM_API DrawAmount {
+class VEINS_API DrawAmount {
 public:
     /** @brief The type of the amount to draw.*/
     enum PowerType {
@@ -81,7 +80,7 @@ public:
  * @ingroup power
  * @see SimpleBattery
  */
-class MIXIM_API BaseBattery : public BaseModule {
+class VEINS_API BaseBattery : public BaseModule {
 public:
     BaseBattery()
         : BaseModule()

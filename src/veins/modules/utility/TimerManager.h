@@ -23,7 +23,7 @@
 #include <map>
 #include <string>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 namespace Veins {
 

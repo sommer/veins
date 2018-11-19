@@ -19,7 +19,8 @@
 //
 #pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
+
 #include "veins/base/messages/AirFrame_m.h"
 
 Veins::AirFrame createAirframe(double centerFreq, double bandwidth, omnetpp::simtime_t start, omnetpp::simtime_t length, double power)

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
-#include "veins/base/utils/Coord.h"
+#include "veins/veins.h"
 
+#include "veins/base/utils/Coord.h"
 #include "veins/base/toolbox/Signal.h"
 
 namespace Veins {
@@ -20,7 +20,7 @@ using Veins::AirFrame;
  *
  * @ingroup analogueModels
  */
-class MIXIM_API AnalogueModel {
+class VEINS_API AnalogueModel {
 
 public:
     virtual ~AnalogueModel()

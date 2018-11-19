@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include <omnetpp.h>
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/utils/FWMath.h"
 
 namespace Veins {
@@ -33,7 +33,7 @@ namespace Veins {
  * @ingroup utils
  * @author Christian Frank
  */
-class MIXIM_API Coord : public cObject {
+class VEINS_API Coord : public cObject {
 public:
     /** @brief Constant with all values set to 0. */
     static const Coord ZERO;

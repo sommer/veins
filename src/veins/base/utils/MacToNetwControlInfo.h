@@ -15,9 +15,8 @@
 
 #pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
-#include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/utils/SimpleAddress.h"
 
 namespace Veins {
@@ -34,7 +33,7 @@ namespace Veins {
  *
  * @author Karl Wessel
  */
-class MIXIM_API MacToNetwControlInfo : public cObject {
+class VEINS_API MacToNetwControlInfo : public cObject {
 protected:
     /** @brief The bit error rate for this packet.*/
     double bitErrorRate;

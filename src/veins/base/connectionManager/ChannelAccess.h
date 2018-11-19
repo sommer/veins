@@ -22,12 +22,11 @@
 
 #pragma once
 
-#include <omnetpp.h>
 #include <vector>
 
-#include "veins/base/utils/MiXiMDefs.h"
-#include "veins/base/modules/BatteryAccess.h"
+#include "veins/veins.h"
 
+#include "veins/base/modules/BatteryAccess.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/modules/BaseMobility.h"
 
@@ -54,7 +53,7 @@ class BaseWorldUtility;
  * @ingroup phyLayer
  * @ingroup baseModules
  **/
-class MIXIM_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType {
+class VEINS_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType {
 protected:
     /** @brief A signal used to subscribe to mobility state changes. */
     const static simsignalwrap_t mobilityStateChangedSignal;

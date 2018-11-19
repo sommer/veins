@@ -1,9 +1,9 @@
 #pragma once
 
 #include <list>
-#include <omnetpp.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/messages/AirFrame_m.h"
 
 using Veins::AirFrame;
@@ -39,7 +39,7 @@ namespace Veins {
  *
  * @ingroup phyLayer
  */
-class MIXIM_API ChannelInfo {
+class VEINS_API ChannelInfo {
 
 protected:
     /** @brief Type for a pair of an AirFrame and a simulation time.*/

@@ -19,7 +19,7 @@
 //
 #pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 class DummySimulation {
 public:

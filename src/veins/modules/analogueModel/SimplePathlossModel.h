@@ -2,7 +2,8 @@
 
 #include <cstdlib>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 
@@ -32,7 +33,7 @@ class SimplePathlossModel;
  *
  * @ingroup analogueModels
  */
-class MIXIM_API SimplePathlossModel : public AnalogueModel {
+class VEINS_API SimplePathlossModel : public AnalogueModel {
 protected:
     /** @brief Path loss coefficient. **/
     double pathLossAlphaHalf;

@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <string>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
 
 namespace Veins {
 

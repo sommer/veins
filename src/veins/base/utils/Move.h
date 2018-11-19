@@ -22,7 +22,7 @@
 #include <string>
 #include <cassert>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 #include "veins/base/utils/Coord.h"
 
@@ -36,7 +36,7 @@ namespace Veins {
  *
  * @author Andreas Koepke, Michael Swigulski
  **/
-class MIXIM_API Move : public cObject {
+class VEINS_API Move : public cObject {
 protected:
     /** @brief Start position of the host (in meters)**/
     Coord startPos;
