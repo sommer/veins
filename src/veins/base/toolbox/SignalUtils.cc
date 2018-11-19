@@ -225,6 +225,8 @@ double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& a
  */
 bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude)
 {
+    ASSERT(start == end);
+
     // Assume that threshold is >0 -> if there is no other AirFrame, this is 0 -> return true (0 < threshold)
     if (airFrames.empty()) return true;
 
@@ -283,6 +285,9 @@ bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrame
 
 double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise)
 {
+    ASSERT(start >= signalFrame->getSignal().getReceptionStart());
+    ASSERT(end <= signalFrame->getSignal().getReceptionEnd());
+
     // Make sure all filters are applied
     signalFrame->getSignal().applyAllAnalogueModels();
     for (auto& interfererFrame : interfererFrames) {

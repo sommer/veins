@@ -1267,3 +1267,128 @@ SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
         }
     }
 }
+
+SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/exclusive", "[toolbox]")
+{
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("Signals from 1-2 and 2-3 with power 10")
+    {
+        Freqs freqs = {1, 2, 3, 4, 5};
+        Spectrum spectrum(freqs);
+
+        DummyAnalogueModel am1(0.1);
+        DummyAnalogueModel am2(0.1);
+        AnalogueModelList analogueModels = {&am1, &am2};
+
+        Signal signal(spectrum);
+        signal[1] = 1000;
+        signal[2] = 1000; // after both analogue models, this should have dropped to 10
+        signal[3] = 1000;
+        signal.setDataStart(1);
+        signal.setDataEnd(3);
+        signal.setCenterFrequencyIndex(2);
+        signal.setAnalogueModelList(&analogueModels);
+
+        const std::vector<std::pair<double, double>> timings = {
+            {1, 1},
+            {2, 1},
+        };
+        std::vector<std::unique_ptr<AirFrame>> airFrameOwner; // for automatic deletion (RAII)
+        AirFrameVector airFrames;
+        for (auto& timing : timings) {
+            Signal s(signal);
+            s.setTiming(timing.first, timing.second);
+            airFrameOwner.emplace_back(new AirFrame());
+            AirFrame* airFrame = airFrameOwner.back().get();
+            airFrame->setSignal(s);
+            airFrames.push_back(airFrame);
+        }
+
+        const std::vector<std::tuple<double, double, bool>> checks = {
+            {0, 0, true},
+            {0.5, 0.5, true},
+            {1, 1, false},
+            {1.5, 1.5, false},
+            {2, 2, false},
+            {2.5, 2.5, false},
+            {3, 3, true},
+            {3.5, 3.5, true},
+        };
+        for (auto& check : checks) {
+            auto begin = std::get<0>(check);
+            auto end = std::get<1>(check);
+            bool res = std::get<2>(check);
+            double threshold = 5;
+
+            INFO("getting smallerAtFreqIndex(2) for " << begin << " to " << end << " and threshold " << threshold << " should return " << res);
+
+            bool belowThreshold = SignalUtils::smallerAtFreqIndex(begin, end, airFrames, 2, threshold);
+
+            REQUIRE(belowThreshold == res);
+        }
+    }
+}
+
+SCENARIO("SignalUtils::getMinSINR treats signal start/end as inclusive/exclusive", "[toolbox]")
+{
+    DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    GIVEN("Signals from 1-2 and 2-3 with power 10")
+    {
+        Freqs freqs = {1, 2, 3, 4, 5};
+        Spectrum spectrum(freqs);
+
+        DummyAnalogueModel am1(0.1);
+        DummyAnalogueModel am2(0.1);
+        AnalogueModelList analogueModels = {&am1, &am2};
+
+        Signal signal(spectrum);
+        signal[1] = 1000;
+        signal[2] = 1000; // after both analogue models, this should have dropped to 10
+        signal[3] = 1000;
+        signal.setDataStart(1);
+        signal.setDataEnd(3);
+        signal.setCenterFrequencyIndex(2);
+        signal.setAnalogueModelList(&analogueModels);
+
+        const std::vector<std::pair<double, double>> timings = {
+            {1, 1},
+            {2, 1},
+        };
+        std::vector<std::unique_ptr<AirFrame>> airFrameOwner; // for automatic deletion (RAII)
+        AirFrameVector airFrames;
+        for (auto& timing : timings) {
+            Signal s(signal);
+            s.setTiming(timing.first, timing.second);
+            airFrameOwner.emplace_back(new AirFrame());
+            AirFrame* airFrame = airFrameOwner.back().get();
+            airFrame->setSignal(s);
+            airFrames.push_back(airFrame);
+        }
+
+        AirFrame signalFrame;
+        signalFrame.setSignal(signal);
+        airFrames.push_back(&signalFrame);
+
+        const std::vector<std::tuple<double, double, double>> checks = {
+            {0, 0.5, INFINITY},
+            {0.5, 1.5, 1},
+            {1, 2, 1},
+            {1.5, 2.5, 1},
+            {2, 3, 1},
+            {2.5, 3.5, 1},
+            {3.5, 4.5, INFINITY},
+        };
+        for (auto& check : checks) {
+            auto begin = std::get<0>(check);
+            auto end = std::get<1>(check);
+            double res = std::get<2>(check);
+
+            INFO("getting getMinSINR for signal from " << begin << " to " << end << " should return " << res);
+
+            signalFrame.getSignal().setTiming(begin, end - begin);
+            double min = SignalUtils::getMinSINR(begin, end, &signalFrame, airFrames, 0);
+
+            REQUIRE(min == res);
+        }
+    }
+}
