@@ -739,35 +739,35 @@ void TraCITestApp::handlePositionUpdate()
     if (testNumber == testCounter++) {
         if (t == 1) {
             // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("0").setScheme("test");
+            // traci->guiView("View #0").setScheme("real world");
         }
     }
 
     if (testNumber == testCounter++) {
         if (t == 1) {
             // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("0").setZoom(100);
+            // traci->guiView("View #0").setZoom(200);
         }
     }
 
     if (testNumber == testCounter++) {
         if (t == 1) {
             // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("0").setBoundary(Coord(0, 0), Coord(10, 10));
+            // traci->guiView("View #0").setBoundary(Coord(0, 0), Coord(10, 10));
         }
     }
 
     if (testNumber == testCounter++) {
         if (t == 1) {
             // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("0").takeScreenshot("filename");
+            // traci->guiView("View #0").takeScreenshot();
         }
     }
 
     if (testNumber == testCounter++) {
         if (t == 1) {
             // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("0").trackVehicle("test");
+            // traci->guiView("View #0").trackVehicle("flow0.0");
         }
     }
 

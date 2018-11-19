@@ -12,10 +12,10 @@
 namespace Veins {
 
 const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
-    {18, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true}},
-    {17, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false}},
-    {16, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false}},
-    {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false}},
+    {18, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true, true}},
+    {17, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false}},
+    {16, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false}},
+    {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false}},
 };
 
 TraCICommandInterface::TraCICommandInterface(TraCIConnection& c)
@@ -873,11 +873,18 @@ void TraCICommandInterface::GuiView::setBoundary(Coord p1_, Coord p2_)
     TraCICoord p1 = connection->omnet2traci(p1_);
     TraCICoord p2 = connection->omnet2traci(p2_);
 
-    TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_BOUNDARY) << viewId << static_cast<uint8_t>(TYPE_BOUNDINGBOX) << p1.x << p1.y << p2.x << p2.y);
-    ASSERT(buf.eof());
+    if (traci->getNetBoundaryType() == TYPE_POLYGON) {
+        uint8_t count = 2;
+        TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_BOUNDARY) << viewId << static_cast<uint8_t>(TYPE_POLYGON) << count << p1.x << p1.y << p2.x << p2.y);
+        ASSERT(buf.eof());
+    }
+    else {
+        TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_BOUNDARY) << viewId << static_cast<uint8_t>(TYPE_BOUNDINGBOX) << p1.x << p1.y << p2.x << p2.y);
+        ASSERT(buf.eof());
+    }
 }
 
-void TraCICommandInterface::GuiView::takeScreenshot(std::string filename)
+void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_t width, int32_t height)
 {
     if (filename == "") {
         // get absolute path of results/ directory
@@ -895,8 +902,20 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename)
         filename = ss;
     }
 
-    TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << static_cast<uint8_t>(TYPE_STRING) << filename);
-    ASSERT(buf.eof());
+    if (traci->versionConfig.screenshotTakesCompound) {
+        uint8_t variableType = TYPE_COMPOUND;
+        int32_t count = 3;
+        uint8_t filenameType = TYPE_STRING;
+        uint8_t widthType = TYPE_INTEGER;
+        uint8_t heightType = TYPE_INTEGER;
+        TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << variableType << count << filenameType << filename << widthType << width << heightType << height);
+        ASSERT(buf.eof());
+    }
+    else {
+        uint8_t filenameType = TYPE_STRING;
+        TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << filenameType << filename);
+        ASSERT(buf.eof());
+    }
 }
 
 void TraCICommandInterface::GuiView::trackVehicle(std::string vehicleId)

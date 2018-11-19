@@ -439,7 +439,7 @@ public:
         void setScheme(std::string name);
         void setZoom(double zoom);
         void setBoundary(Coord p1, Coord p2);
-        void takeScreenshot(std::string filename = "");
+        void takeScreenshot(std::string filename = "", int32_t width = -1, int32_t height = -1);
 
         /**
          * Track the vehicle identified by vehicleId in the Sumo GUI.
@@ -462,6 +462,7 @@ private:
         uint8_t netBoundaryType;
         uint8_t timeStepCmd;
         bool timeAsDouble;
+        bool screenshotTakesCompound;
     };
 
     TraCIConnection& connection;
