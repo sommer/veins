@@ -25,13 +25,12 @@
 #include "veins/modules/application/traci/TraCITestApp.h"
 #include "veins/modules/mobility/traci/TraCIColor.h"
 
+using Veins::BaseMobility;
 using Veins::TraCIMobility;
 using Veins::TraCIMobilityAccess;
 using Veins::TraCITestApp;
 
 Define_Module(Veins::TraCITestApp);
-
-const simsignal_t TraCITestApp::mobilityStateChangedSignal = registerSignal("veinsmobilityStateChanged");
 
 void TraCITestApp::initialize(int stage)
 {
@@ -41,7 +40,7 @@ void TraCITestApp::initialize(int stage)
         mobility = TraCIMobilityAccess().get(getParentModule());
         traci = mobility->getCommandInterface();
         traciVehicle = mobility->getVehicleCommandInterface();
-        findHost()->subscribe(mobilityStateChangedSignal, this);
+        findHost()->subscribe(BaseMobility::mobilityStateChangedSignal, this);
 
         visitedEdges.clear();
         hasStopped = false;
@@ -65,7 +64,7 @@ void TraCITestApp::handleLowerMsg(cMessage* msg)
 
 void TraCITestApp::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
 {
-    if (signalID == mobilityStateChangedSignal) {
+    if (signalID == BaseMobility::mobilityStateChangedSignal) {
         handlePositionUpdate();
     }
 }

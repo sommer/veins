@@ -36,8 +36,6 @@
 using std::endl;
 using namespace Veins;
 
-const simsignal_t ChannelAccess::mobilityStateChangedSignal = registerSignal("veinsmobilityStateChanged");
-
 BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
 {
     std::string cmName = nic->hasPar("connectionManagerName") ? nic->par("connectionManagerName").stringValue() : "";
@@ -72,7 +70,7 @@ void ChannelAccess::initialize(int stage)
             antennaOffsetYaw = par("antennaOffsetYaw").doubleValue();
         }
 
-        findHost()->subscribe(mobilityStateChangedSignal, this);
+        findHost()->subscribe(BaseMobility::mobilityStateChangedSignal, this);
 
         cModule* nic = getParentModule();
         cc = getConnectionManager(nic);
@@ -158,7 +156,7 @@ simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic)
 
 void ChannelAccess::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
 {
-    if (signalID == mobilityStateChangedSignal) {
+    if (signalID == BaseMobility::mobilityStateChangedSignal) {
         ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
 
         auto av = mobility->getCurrentOrientation();

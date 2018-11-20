@@ -102,15 +102,15 @@ public:
         Z_BIGGER ///< z bigger or equal than playground size
     };
 
+    /** @brief Store the category of HostMove */
+    const static simsignal_t mobilityStateChangedSignal;
+
 protected:
     /** @brief Pointer to BaseWorldUtility -- these two must know each other */
     BaseWorldUtility* world;
 
     /** @brief Stores the current position and move pattern of the host*/
     Move move;
-
-    /** @brief Store the category of HostMove */
-    const static simsignal_t mobilityStateChangedSignal;
 
     /** @brief Time interval (in seconds) to update the hosts position*/
     simtime_t updateInterval;

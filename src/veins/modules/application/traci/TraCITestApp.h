@@ -44,9 +44,6 @@ public:
     void finish();
 
 protected:
-    static const simsignal_t mobilityStateChangedSignal;
-
-protected:
     // module parameters
     int testNumber;
 

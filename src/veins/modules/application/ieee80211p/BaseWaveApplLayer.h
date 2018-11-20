@@ -67,9 +67,6 @@ public:
     };
 
 protected:
-    static const simsignal_t mobilityStateChangedSignal;
-    static const simsignal_t parkingStateChangedSignal;
-
     /** @brief handle messages from below and calls the onWSM, onBSM, and onWSA functions accordingly */
     virtual void handleLowerMsg(cMessage* msg);
 
