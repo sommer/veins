@@ -22,9 +22,6 @@
 
 using namespace Veins;
 
-const simsignal_t BaseWaveApplLayer::mobilityStateChangedSignal = registerSignal("veinsmobilityStateChanged");
-const simsignal_t BaseWaveApplLayer::parkingStateChangedSignal = registerSignal(TRACI_SIGNAL_PARKING_CHANGE_NAME);
-
 void BaseWaveApplLayer::initialize(int stage)
 {
     BaseApplLayer::initialize(stage);
@@ -65,8 +62,8 @@ void BaseWaveApplLayer::initialize(int stage)
 
         isParked = false;
 
-        findHost()->subscribe(mobilityStateChangedSignal, this);
-        findHost()->subscribe(parkingStateChangedSignal, this);
+        findHost()->subscribe(BaseMobility::mobilityStateChangedSignal, this);
+        findHost()->subscribe(TraCIMobility::parkingStateChangedSignal, this);
 
         sendBeaconEvt = new cMessage("beacon evt", SEND_BEACON_EVT);
         sendWSAEvt = new cMessage("wsa evt", SEND_WSA_EVT);
@@ -189,10 +186,10 @@ void BaseWaveApplLayer::populateWSM(WaveShortMessage* wsm, LAddress::L2Type rcvI
 void BaseWaveApplLayer::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
 {
     Enter_Method_Silent();
-    if (signalID == mobilityStateChangedSignal) {
+    if (signalID == BaseMobility::mobilityStateChangedSignal) {
         handlePositionUpdate(obj);
     }
-    else if (signalID == parkingStateChangedSignal) {
+    else if (signalID == TraCIMobility::parkingStateChangedSignal) {
         handleParkingUpdate(obj);
     }
 }
@@ -271,7 +268,7 @@ BaseWaveApplLayer::~BaseWaveApplLayer()
 {
     cancelAndDelete(sendBeaconEvt);
     cancelAndDelete(sendWSAEvt);
-    findHost()->unsubscribe(mobilityStateChangedSignal, this);
+    findHost()->unsubscribe(BaseMobility::mobilityStateChangedSignal, this);
 }
 
 void BaseWaveApplLayer::startService(Channels::ChannelNumber channel, int serviceId, std::string serviceDescription)

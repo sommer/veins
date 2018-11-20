@@ -55,9 +55,6 @@ class BaseWorldUtility;
  **/
 class VEINS_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType {
 protected:
-    /** @brief A signal used to subscribe to mobility state changes. */
-    const static simsignal_t mobilityStateChangedSignal;
-
     /** @brief use sendDirect or not?*/
     bool useSendDirect;
 

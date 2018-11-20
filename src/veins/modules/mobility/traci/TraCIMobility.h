@@ -20,8 +20,6 @@
 
 #pragma once
 
-#define TRACI_SIGNAL_PARKING_CHANGE_NAME "parkingStateChanged"
-
 #include <string>
 #include <fstream>
 #include <list>
