@@ -36,7 +36,7 @@
 using std::endl;
 using namespace Veins;
 
-const simsignal_t ChannelAccess::mobilityStateChangedSignal = registerSignal(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
+const simsignal_t ChannelAccess::mobilityStateChangedSignal = registerSignal("veinsmobilityStateChanged");
 
 BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
 {
