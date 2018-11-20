@@ -33,9 +33,7 @@ Define_Module(Veins::TraCIVehicleInserter);
 using namespace Veins;
 
 TraCIVehicleInserter::TraCIVehicleInserter()
-    : traciModuleAddedSignal(registerSignal(TraCIScenarioManager::TRACI_MODULE_ADDED_SIGNAL_NAME.c_str()))
-    , traciTimestepBeginSignal(registerSignal(TraCIScenarioManager::TRACI_TIMESTEP_BEGIN_SIGNAL_NAME.c_str()))
-    , mobRng(0)
+    : mobRng(0)
 {
 }
 
@@ -59,8 +57,8 @@ void TraCIVehicleInserter::initialize(int stage)
     manager = TraCIScenarioManagerAccess().get();
 
     // signals
-    manager->subscribe(traciModuleAddedSignal, this);
-    manager->subscribe(traciTimestepBeginSignal, this);
+    manager->subscribe(TraCIScenarioManager::traciModuleAddedSignal, this);
+    manager->subscribe(TraCIScenarioManager::traciTimestepBeginSignal, this);
 
     // parameters
     vehicleRngIndex = par("vehicleRngIndex");
@@ -73,8 +71,8 @@ void TraCIVehicleInserter::initialize(int stage)
 
 void TraCIVehicleInserter::finish()
 {
-    unsubscribe(traciModuleAddedSignal, this);
-    unsubscribe(traciTimestepBeginSignal, this);
+    unsubscribe(TraCIScenarioManager::traciModuleAddedSignal, this);
+    unsubscribe(TraCIScenarioManager::traciTimestepBeginSignal, this);
 }
 
 void TraCIVehicleInserter::finish(cComponent* component, simsignal_t signalID)
@@ -88,7 +86,7 @@ void TraCIVehicleInserter::handleMessage(cMessage* msg)
 
 void TraCIVehicleInserter::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
 {
-    if (signalID == traciModuleAddedSignal) {
+    if (signalID == TraCIScenarioManager::traciModuleAddedSignal) {
         ASSERT(manager->isConnected());
         cModule* mod = check_and_cast<cModule*>(obj);
         auto* mob = FindModule<TraCIMobility*>::findSubModule(mod);
@@ -102,7 +100,7 @@ void TraCIVehicleInserter::receiveSignal(cComponent* source, simsignal_t signalI
 
 void TraCIVehicleInserter::receiveSignal(cComponent* source, simsignal_t signalID, const SimTime& t, cObject* details)
 {
-    if (signalID == traciTimestepBeginSignal) {
+    if (signalID == TraCIScenarioManager::traciTimestepBeginSignal) {
         ASSERT(manager->isConnected());
         if (simTime() > 1) {
             if (vehicleTypeIds.size() == 0) {

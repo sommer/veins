@@ -63,11 +63,11 @@ class TraCICommandInterface;
  */
 class TraCIScenarioManager : public cSimpleModule {
 public:
-    static const std::string TRACI_INITIALIZED_SIGNAL_NAME;
-    static const std::string TRACI_MODULE_ADDED_SIGNAL_NAME;
-    static const std::string TRACI_MODULE_REMOVED_SIGNAL_NAME;
-    static const std::string TRACI_TIMESTEP_BEGIN_SIGNAL_NAME;
-    static const std::string TRACI_TIMESTEP_END_SIGNAL_NAME;
+    static const simsignal_t traciInitializedSignal;
+    static const simsignal_t traciModuleAddedSignal;
+    static const simsignal_t traciModuleRemovedSignal;
+    static const simsignal_t traciTimestepBeginSignal;
+    static const simsignal_t traciTimestepEndSignal;
 
     TraCIScenarioManager();
     ~TraCIScenarioManager();
@@ -175,13 +175,6 @@ protected:
      * transforms a list of mappings of an omnetpp.ini parameter in a list
      */
     TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
-
-private:
-    const omnetpp::simsignal_t traciInitializedSignal;
-    const omnetpp::simsignal_t traciModuleAddedSignal;
-    const omnetpp::simsignal_t traciModuleRemovedSignal;
-    const omnetpp::simsignal_t traciTimestepBeginSignal;
-    const omnetpp::simsignal_t traciTimestepEndSignal;
 };
 
 class TraCIScenarioManagerAccess {
