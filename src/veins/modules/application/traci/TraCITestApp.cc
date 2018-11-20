@@ -27,13 +27,11 @@
 
 using Veins::TraCIMobility;
 using Veins::TraCIMobilityAccess;
-
-using Veins::simsignalwrap_t;
 using Veins::TraCITestApp;
 
 Define_Module(Veins::TraCITestApp);
 
-const simsignalwrap_t TraCITestApp::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
+const simsignal_t TraCITestApp::mobilityStateChangedSignal = registerSignal(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
 
 void TraCITestApp::initialize(int stage)
 {

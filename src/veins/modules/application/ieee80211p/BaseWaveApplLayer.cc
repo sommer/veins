@@ -22,8 +22,8 @@
 
 using namespace Veins;
 
-const simsignalwrap_t BaseWaveApplLayer::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
-const simsignalwrap_t BaseWaveApplLayer::parkingStateChangedSignal = simsignalwrap_t(TRACI_SIGNAL_PARKING_CHANGE_NAME);
+const simsignal_t BaseWaveApplLayer::mobilityStateChangedSignal = registerSignal(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
+const simsignal_t BaseWaveApplLayer::parkingStateChangedSignal = registerSignal(TRACI_SIGNAL_PARKING_CHANGE_NAME);
 
 void BaseWaveApplLayer::initialize(int stage)
 {

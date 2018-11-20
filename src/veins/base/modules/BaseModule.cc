@@ -27,7 +27,7 @@
 using namespace Veins;
 
 // Could not initialize simsignal_t it here!? I got the POST_MODEL_CHANGE id!?
-const simsignalwrap_t BaseModule::catHostStateSignal = simsignalwrap_t(MIXIM_SIGNAL_HOSTSTATE_NAME);
+const simsignal_t BaseModule::catHostStateSignal = registerSignal(MIXIM_SIGNAL_HOSTSTATE_NAME);
 
 BaseModule::BaseModule()
     : cSimpleModule()

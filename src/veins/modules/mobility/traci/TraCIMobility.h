@@ -179,7 +179,7 @@ protected:
     mutable TraCICommandInterface::Vehicle* vehicleCommandInterface;
     double last_speed;
 
-    const static simsignalwrap_t parkingStateChangedSignal;
+    const static simsignal_t parkingStateChangedSignal;
 
     bool isParking;
 

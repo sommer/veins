@@ -68,5 +68,3 @@ using namespace omnetpp;
  */
 namespace Veins {
 } // namespace Veins
-
-#include "veins/base/utils/simsignalwrap_t.h"

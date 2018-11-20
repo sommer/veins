@@ -68,7 +68,7 @@ protected:
     bool notAffectedByHostState;
 
     /** @brief Stores the category of the HostState*/
-    const static simsignalwrap_t catHostStateSignal;
+    const static simsignal_t catHostStateSignal;
 
 protected:
     /**
