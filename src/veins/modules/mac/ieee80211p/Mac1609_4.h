@@ -64,6 +64,11 @@ namespace Veins {
 class Mac1609_4 : public BaseMacLayer, public WaveAppToMac1609_4Interface {
 
 public:
+    // tell to anybody which is interested when the channel turns busy or idle
+    static const simsignal_t sigChannelBusy;
+    // tell to anybody which is interested when a collision occurred
+    static const simsignal_t sigCollision;
+
     // Access categories in increasing order of priority (see IEEE Std 802.11-2012, Table 9-1)
     enum t_access_category {
         AC_BK = 0,
@@ -315,11 +320,6 @@ protected:
     std::set<unsigned long> handledUnicastToApp;
 
     Mac80211pToPhy11pInterface* phy11p;
-
-    // tell to anybody which is interested when the channel turns busy or idle
-    simsignal_t sigChannelBusy;
-    // tell to anybody which is interested when a collision occurred
-    simsignal_t sigCollision;
 };
 
 } // namespace Veins

@@ -35,6 +35,9 @@ using std::unique_ptr;
 
 Define_Module(Veins::Mac1609_4);
 
+const simsignal_t Mac1609_4::sigChannelBusy = registerSignal("sigChannelBusy");
+const simsignal_t Mac1609_4::sigCollision = registerSignal("sigCollision");
+
 void Mac1609_4::initialize(int stage)
 {
     BaseMacLayer::initialize(stage);
@@ -45,9 +48,6 @@ void Mac1609_4::initialize(int stage)
 
         // this is required to circumvent double precision issues with constants from CONST80211p.h
         assert(simTime().getScaleExp() == -12);
-
-        sigChannelBusy = registerSignal("sigChannelBusy");
-        sigCollision = registerSignal("sigCollision");
 
         txPower = par("txPower").doubleValue();
         bitrate = par("bitrate");
