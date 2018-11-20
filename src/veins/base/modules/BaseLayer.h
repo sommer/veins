@@ -42,11 +42,11 @@ using Veins::BatteryAccess;
 class VEINS_API BaseLayer : public BatteryAccess {
 public:
     /** @brief SignalID for packets. */
-    const static simsignalwrap_t catPacketSignal;
+    const static simsignal_t catPacketSignal;
     /** @brief Signal for passed messages.*/
-    const static simsignalwrap_t catPassedMsgSignal;
+    const static simsignal_t catPassedMsgSignal;
     /** @brief Signal for dropped packets.*/
-    const static simsignalwrap_t catDroppedPacketSignal;
+    const static simsignal_t catDroppedPacketSignal;
 
 protected:
     /** @name gate ids*/

@@ -44,7 +44,7 @@ public:
     void finish();
 
 protected:
-    static const simsignalwrap_t mobilityStateChangedSignal;
+    static const simsignal_t mobilityStateChangedSignal;
 
 protected:
     // module parameters

@@ -29,9 +29,9 @@
 
 using namespace Veins;
 
-const simsignalwrap_t BaseLayer::catPassedMsgSignal = simsignalwrap_t(MIXIM_SIGNAL_PASSEDMSG_NAME);
-const simsignalwrap_t BaseLayer::catPacketSignal = simsignalwrap_t(MIXIM_SIGNAL_PACKET_NAME);
-const simsignalwrap_t BaseLayer::catDroppedPacketSignal = simsignalwrap_t(MIXIM_SIGNAL_DROPPEDPACKET_NAME);
+const simsignal_t BaseLayer::catPassedMsgSignal = registerSignal(MIXIM_SIGNAL_PASSEDMSG_NAME);
+const simsignal_t BaseLayer::catPacketSignal = registerSignal(MIXIM_SIGNAL_PACKET_NAME);
+const simsignal_t BaseLayer::catDroppedPacketSignal = registerSignal(MIXIM_SIGNAL_DROPPEDPACKET_NAME);
 
 /**
  * First we have to initialize the module from which we derived ours,

@@ -110,7 +110,7 @@ protected:
     Move move;
 
     /** @brief Store the category of HostMove */
-    const static simsignalwrap_t mobilityStateChangedSignal;
+    const static simsignal_t mobilityStateChangedSignal;
 
     /** @brief Time interval (in seconds) to update the hosts position*/
     simtime_t updateInterval;
