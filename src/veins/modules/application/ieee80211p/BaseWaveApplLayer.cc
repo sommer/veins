@@ -22,7 +22,7 @@
 
 using namespace Veins;
 
-const simsignal_t BaseWaveApplLayer::mobilityStateChangedSignal = registerSignal(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
+const simsignal_t BaseWaveApplLayer::mobilityStateChangedSignal = registerSignal("veinsmobilityStateChanged");
 const simsignal_t BaseWaveApplLayer::parkingStateChangedSignal = registerSignal(TRACI_SIGNAL_PARKING_CHANGE_NAME);
 
 void BaseWaveApplLayer::initialize(int stage)

@@ -32,7 +32,7 @@ using namespace Veins;
 
 Define_Module(Veins::BaseMobility);
 
-const simsignal_t BaseMobility::mobilityStateChangedSignal = registerSignal(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
+const simsignal_t BaseMobility::mobilityStateChangedSignal = registerSignal("veinsmobilityStateChanged");
 
 namespace {
 bool isInBoundary(Coord c, Coord lowerBound, Coord upperBound)

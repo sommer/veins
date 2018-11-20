@@ -50,16 +50,6 @@ using namespace omnetpp;
 // Macro for marking code as deprecated
 #define VEINS_DEPRECATED _OPPDEPRECATED
 
-// Macros for signal names
-#define MIXIM_SIGNAL_PACKET_NAME "org.car2x.veins.modules.utility.packet"
-#define MIXIM_SIGNAL_UWBIRPACKET_NAME "org.car2x.veins.modules.utility.uwbirpacket"
-#define MIXIM_SIGNAL_DROPPEDPACKET_NAME "org.car2x.veins.modules.utility.droppedpacket"
-#define MIXIM_SIGNAL_PASSEDMSG_NAME "org.car2x.veins.base.utils.passedmsg"
-#define MIXIM_SIGNAL_HOSTSTATE_NAME "org.car2x.veins.base.utils.hoststate"
-#define MIXIM_SIGNAL_MOBILITY_CHANGE_NAME "veinsmobilityStateChanged"
-#define MIXIM_SIGNAL_BATTERY_CHANGE_NAME "org.car2x.veins.modules.power.battery.batterystate"
-#define MIXIM_SIGNAL_MOBANMSG_NAME "org.car2x.veins.modules.utility.bbmobanmessage"
-
 // Convenience macros
 #define RNGCONTEXT (cSimulation::getActiveSimulation()->getContext())->
 
