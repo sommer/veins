@@ -67,6 +67,8 @@ public:
         void recordScalars(cSimpleModule& module);
     };
 
+    const static simsignal_t parkingStateChangedSignal;
+
     TraCIMobility()
         : BaseMobility()
         , isPreInitialized(false)
@@ -176,8 +178,6 @@ protected:
     mutable TraCICommandInterface* commandInterface;
     mutable TraCICommandInterface::Vehicle* vehicleCommandInterface;
     double last_speed;
-
-    const static simsignal_t parkingStateChangedSignal;
 
     bool isParking;
 

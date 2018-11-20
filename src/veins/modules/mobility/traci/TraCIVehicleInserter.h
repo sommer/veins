@@ -23,10 +23,9 @@
 #include <queue>
 
 #include "veins/veins.h"
+#include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 
 namespace Veins {
-
-class TraCIScenarioManager;
 
 /**
  * @brief
@@ -63,10 +62,6 @@ protected:
      * tries to add all vehicles in the vehicle queue to SUMO;
      */
     void insertVehicles();
-
-    // signals
-    const omnetpp::simsignal_t traciModuleAddedSignal;
-    const omnetpp::simsignal_t traciTimestepBeginSignal;
 
     // parameters
     int vehicleRngIndex;
