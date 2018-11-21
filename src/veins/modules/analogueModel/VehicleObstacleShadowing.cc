@@ -34,8 +34,20 @@ VehicleObstacleShadowing::VehicleObstacleShadowing(VehicleObstacleControl& vehic
 
 void VehicleObstacleShadowing::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
 {
+    auto potentialObstacles = vehicleObstacleControl.getPotentialObstacles(senderPos, receiverPos, *signal);
 
-    double factor = vehicleObstacleControl.calculateVehicleAttenuation(sendersPos, receiverPos, *signal);
+    if (potentialObstacles.size() < 1) return;
+
+    double senderHeight = senderPos.z;
+    double receiverHeight = receiverPos.z;
+    potentialObstacles.insert(potentialObstacles.begin(), std::make_pair(0, senderHeight));
+    potentialObstacles.emplace_back(senderPos.distance(receiverPos), receiverHeight);
+
+    double attenuationDB = VehicleObstacleControl::getVehicleAttenuationDZ(potentialObstacles, carrierFrequency);
+
+    EV << "t=" << simTime() << ": Attenuation by vehicles is " << attenuationDB << " dB" << std::endl;
+
+    auto factor = pow(10.0, -attenuationDB / 10.0);
 
     EV_TRACE << "value is: " << factor << endl;
 

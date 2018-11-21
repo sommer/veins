@@ -89,20 +89,7 @@ void VehicleObstacleControl::erase(const VehicleObstacle* obstacle)
     delete obstacle;
 }
 
-namespace {
-// Calculate impact of vehicles as obstacles according to:
-// M. Boban, T. T. V. Vinhoza, M. Ferreira, J. Barros, and O. K. Tonguz: 'Impact of Vehicles as Obstacles in Vehicular Ad Hoc Networks', IEEE JSAC, Vol. 29, No. 1, January 2011
-
-/**
- * compute attenuation due to (single) vehicle.
- * @param h1: height of sender
- * @param h2: height of receiver
- * @param h: height of obstacle
- * @param d: distance between sender and receiver
- * @param d1: distance between sender and obstacle
- * @param f: frequency of the transmission
- */
-double getVehicleAttenuationSingle(double h1, double h2, double h, double d, double d1, double f)
+double VehicleObstacleControl::getVehicleAttenuationSingle(double h1, double h2, double h, double d, double d1, double f)
 {
     double lambda = 0.3 / f;
     double d2 = d - d1;
@@ -116,12 +103,7 @@ double getVehicleAttenuationSingle(double h1, double h2, double h, double d, dou
     return 6.9 + 20 * log10(sqrt(pow((V0 - 0.1), 2) + 1) + V0 - 0.1);
 }
 
-/**
- * compute attenuation due to vehicles.
- * @param dz_vec: a vector of (distance, height) referring to potential obstacles along the line of sight, starting with the sender and ending with the receiver
- * @param f: the frequency of the transmission
- */
-double getVehicleAttenuationDZ(const std::vector<std::pair<double, double>>& dz_vec, double f)
+double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pair<double, double>>& dz_vec, double f)
 {
 
     // basic sanity check
@@ -266,9 +248,8 @@ double getVehicleAttenuationDZ(const std::vector<std::pair<double, double>>& dz_
 
     return attenuation_mo + attenuation_so + c;
 }
-} // namespace
 
-double VehicleObstacleControl::calculateVehicleAttenuation(const Coord& senderPos, const Coord& receiverPos, const Signal& s) const
+std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos, const Signal& s) const
 {
     Enter_Method_Silent();
 
@@ -356,16 +337,7 @@ double VehicleObstacleControl::calculateVehicleAttenuation(const Coord& senderPo
         }
     }
 
-    if (potentialObstacles.size() < 1) return 1;
-
-    potentialObstacles.insert(potentialObstacles.begin(), std::make_pair(0, senderHeight));
-    potentialObstacles.emplace_back(senderPos.distance(receiverPos), receiverHeight);
-
-    double attenuationDB = getVehicleAttenuationDZ(potentialObstacles, carrierFrequency);
-
-    EV << "t=" << simTime() << ": Attenuation by vehicles is " << attenuationDB << " dB" << std::endl;
-
-    return pow(10.0, -attenuationDB / 10.0);
+    return potentialObstacles;
 }
 
 void VehicleObstacleControl::drawVehicleObstacles(const simtime_t& t) const
