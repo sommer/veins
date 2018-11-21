@@ -30,7 +30,7 @@ using Veins::TraCIMobility;
 
 Define_Module(Veins::TraCIMobility);
 
-const simsignal_t TraCIMobility::parkingStateChangedSignal = registerSignal("parkingStateChanged");
+const simsignal_t TraCIMobility::parkingStateChangedSignal = registerSignal("org.car2x.veins.modules.mobility.parkingStateChanged");
 
 namespace {
 const double MY_INFINITY = (std::numeric_limits<double>::has_infinity ? std::numeric_limits<double>::infinity() : std::numeric_limits<double>::max());
