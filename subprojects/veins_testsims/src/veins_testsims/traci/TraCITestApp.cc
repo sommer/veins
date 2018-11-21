@@ -20,9 +20,9 @@
 
 #include <algorithm>
 
-#include "veins/base/utils/asserts.h"
+#include "veins_testsims/traci/TraCITestApp.h"
 
-#include "veins/modules/application/traci/TraCITestApp.h"
+#include "veins_testsims/utils/asserts.h"
 #include "veins/modules/mobility/traci/TraCIColor.h"
 
 using Veins::BaseMobility;

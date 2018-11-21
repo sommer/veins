@@ -1,4 +1,4 @@
-#include "veins/base/utils/asserts.h"
+#include "veins_testsims/utils/asserts.h"
 
 bool haltOnFails = false;
 bool displayPassed = true;

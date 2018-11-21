@@ -12,15 +12,6 @@ doc/neddoc
 
 /out
 
-tests/**/results
-tests/**/veins-runall-output
-tests/**/.tkenvrc
-tests/**/.qtenvrc
-tests/**/.cmdenv-log
-tests/**/out.tmp
-tests/**/err.tmp
-tests/traci/*.out.xml
-
 examples/**/results
 examples/**/.tkenvrc
 examples/**/.qtenvrc
@@ -63,3 +54,18 @@ subprojects/veins_inet/examples/**/.tkenvrc
 subprojects/veins_inet/examples/**/.qtenvrc
 subprojects/veins_inet/examples/**/.cmdenv-log
 subprojects/veins_inet/examples/**/valgrind.out
+
+subprojects/veins_testsims/src/Makefile
+subprojects/veins_testsims/src/*.so
+subprojects/veins_testsims/src/*.dll
+subprojects/veins_testsims/src/*.dylib
+subprojects/veins_testsims/src/**/*_m.h
+subprojects/veins_testsims/src/**/*_m.cc
+subprojects/veins_testsims/out
+subprojects/veins_testsims/run
+subprojects/veins_testsims/sim/**/results
+subprojects/veins_testsims/sim/**/veins-runall-output
+subprojects/veins_testsims/sim/**/.tkenvrc
+subprojects/veins_testsims/sim/**/.qtenvrc
+subprojects/veins_testsims/sim/**/.cmdenv-log
+subprojects/veins_testsims/sim/**/valgrind.out
