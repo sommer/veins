@@ -17,7 +17,7 @@ simple BaseMobility like IMobility
         double xOrientation = default(1);
         double yOrientation = default(0);
         double zOrientation = default(0);
-        @signal[veinsmobilityStateChanged](type="Veins::BaseMobility");
+        @signal[org.car2x.veins.base.modules.mobilityStateChanged](type="Veins::BaseMobility");
         @display("i=block/cogwheel");
 }
 

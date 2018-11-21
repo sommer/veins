@@ -46,7 +46,7 @@ simple Mac1609_4 extends BaseMacLayer
         // length of MAC header, header is already added at 1609_4
         headerLength @unit(bit) = default(0 bit);
 
-        // bit rate 
+        // bit rate
         int bitrate @unit(bps) = default(6 Mbps);
 
         // maximum artificial asynchronization between cars to avoid synchronization effects
@@ -67,8 +67,8 @@ simple Mac1609_4 extends BaseMacLayer
         double ackErrorRate = default(0.20);
 
         // signal informing interested application about channel busy state
-        @signal[sigChannelBusy](type=bool);
+        @signal[org.car2x.veins.modules.mac.sigChannelBusy](type=bool);
         // signal informing interested application about a collision
-        @signal[sigCollision](type=bool);
+        @signal[org.car2x.veins.modules.mac.sigCollision](type=bool);
 
 }
