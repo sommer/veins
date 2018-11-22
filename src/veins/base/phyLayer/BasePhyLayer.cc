@@ -275,43 +275,35 @@ std::shared_ptr<Antenna> BasePhyLayer::initializeSampledAntenna1D(ParameterMap& 
 {
     // get samples of the modeled antenna and put them in a vector
     ParameterMap::iterator it = params.find("samples");
-    std::vector<double> values;
-    if (it != params.end()) {
-        std::string buf;
-        std::stringstream samplesStream(it->second.stringValue());
-        while (samplesStream >> buf) {
-            values.push_back(stod(buf));
-        }
-    }
-    else {
+    if (it == params.end()) {
         throw cRuntimeError("BasePhyLayer::initializeSampledAntenna1D(): No samples specified for this antenna. \
                 Please adjust your xml file accordingly.");
     }
 
+    std::vector<double> values;
+    std::stringstream samplesStream(it->second.stringValue());
+    std::copy(std::istream_iterator<double>(samplesStream), std::istream_iterator<double>(), std::back_inserter(values));
+
     // get optional random offsets for the antenna's samples
-    it = params.find("random-offsets");
     std::string offsetType = "";
     std::vector<double> offsetParams;
+    it = params.find("random-offsets");
     if (it != params.end()) {
         std::string buf;
         std::stringstream offsetStream(it->second.stringValue());
         offsetStream >> offsetType;
-        while (offsetStream >> buf) {
-            offsetParams.push_back(stod(buf));
-        }
+        std::copy(std::istream_iterator<double>(offsetStream), std::istream_iterator<double>(), std::back_inserter(offsetParams));
     }
 
     // get optional random rotation of the whole pattern
-    it = params.find("random-rotation");
     std::string rotationType = "";
     std::vector<double> rotationParams;
+    it = params.find("random-rotation");
     if (it != params.end()) {
         std::string buf;
         std::stringstream rotationStream(it->second.stringValue());
         rotationStream >> rotationType;
-        while (rotationStream >> buf) {
-            rotationParams.push_back(stod(buf));
-        }
+        std::copy(std::istream_iterator<double>(rotationStream), std::istream_iterator<double>(), std::back_inserter(rotationParams));
     }
 
     return std::make_shared<SampledAntenna1D>(values, offsetType, offsetParams, rotationType, rotationParams, this->getRNG(0));
@@ -334,10 +326,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
 
     // iterate over all AnalogueModel-entries, get a new AnalogueModel instance and add
     // it to analogueModels
-    for (cXMLElementList::const_iterator it = analogueModelList.begin(); it != analogueModelList.end(); it++) {
-
-        cXMLElement* analogueModelData = *it;
-
+    for (auto&& analogueModelData : analogueModelList) {
         const char* name = analogueModelData->getAttribute("type");
         const char* thresholdingFlag = analogueModelData->getAttribute("thresholding");
 
@@ -350,7 +339,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
 
         AnalogueModel* newAnalogueModel = getAnalogueModelFromName(name, params);
 
-        if (newAnalogueModel == 0) {
+        if (!newAnalogueModel) {
             throw cRuntimeError("Could not find an analogue model with the name \"%s\".", name);
         }
 
@@ -366,14 +355,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
         }
 
         EV_TRACE << "AnalogueModel \"" << name << "\" loaded." << endl;
-
-    } // end iterator loop
-}
-
-AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params)
-{
-    // add default analogue models here
-    return 0;
+    }
 }
 
 // --Message handling--------------------------------------
@@ -520,14 +502,14 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     // check if Radio is in TX state
     if (radio->getCurrentState() != Radio::TX) {
         delete msg;
-        msg = 0;
+        msg = nullptr;
         throw cRuntimeError("Error: message for sending received, but radio not in state TX");
     }
 
     // check if not already sending
     if (txOverTimer->isScheduled()) {
         delete msg;
-        msg = 0;
+        msg = nullptr;
         throw cRuntimeError("Error: message for sending received, but radio already sending");
     }
 
@@ -668,7 +650,7 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     POA& senderPOA = frame->getPoa();
     // get own mobility module
     BaseMobility* ownMobility = ChannelMobilityAccessType::get(this->getParentModule());
-    assert(ownMobility);
+    ASSERT(ownMobility);
     Coord ownPos = antennaPosition;
     Coord ownOrient = antennaHeading.toCoord();
     // compute gains at sender and receiver antenna
@@ -684,8 +666,8 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     // go on with AnalogueModels
     if (analogueModels.empty() && analogueModelsThresholding.empty()) return;
 
-    ChannelAccess* const senderModule = dynamic_cast<ChannelAccess* const>(frame->getSenderModule());
-    ChannelAccess* const receiverModule = dynamic_cast<ChannelAccess* const>(frame->getArrivalModule());
+    auto senderModule = dynamic_cast<ChannelAccess* const>(frame->getSenderModule());
+    auto receiverModule = dynamic_cast<ChannelAccess* const>(frame->getArrivalModule());
 
     ASSERT(senderModule);
     ASSERT(receiverModule);
@@ -699,7 +681,9 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     frame->getSignal().setAnalogueModelList(&analogueModelsThresholding);
     // frame->getSignal().applyAllAnalogueModels();
 
-    for (AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++) (*it)->filterSignal(&frame->getSignal(), senderPos, receiverPos);
+    for (auto&& am : analogueModels) {
+        am->filterSignal(&(frame->getSignal()), senderPos, receiverPos);
+    }
 }
 
 // --Destruction--------------------------------
@@ -719,36 +703,33 @@ BasePhyLayer::~BasePhyLayer()
     // free timer messages
     if (txOverTimer) {
         cancelAndDelete(txOverTimer);
+        txOverTimer = nullptr;
     }
     if (radioSwitchingOverTimer) {
         cancelAndDelete(radioSwitchingOverTimer);
+        radioSwitchingOverTimer = nullptr;
     }
 
     // free Decider
-    if (decider != 0) {
+    if (decider) {
         delete decider;
     }
 
     // free AnalogueModels (RSAM cannot be part of the thresholding-list)
-    for (AnalogueModelList::iterator it = analogueModels.begin(); it != analogueModels.end(); it++) {
-
-        AnalogueModel* tmp = *it;
-
-        if (tmp != 0) {
-            delete tmp;
+    for (auto am : analogueModels) {
+        if (am) {
+            delete am;
         }
     }
 
-    for (AnalogueModelList::iterator it = analogueModelsThresholding.begin(); it != analogueModelsThresholding.end(); it++) {
-        AnalogueModel* tmp = *it;
-
-        if (tmp != 0) {
-            delete tmp;
+    for (auto am : analogueModelsThresholding) {
+        if (am) {
+            delete am;
         }
     }
 
     // free radio
-    if (radio != 0) {
+    if (radio) {
         delete radio;
     }
 }
