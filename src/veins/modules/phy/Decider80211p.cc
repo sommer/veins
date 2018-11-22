@@ -37,9 +37,6 @@
 
 using namespace Veins;
 
-using Veins::AirFrame;
-using Veins::Radio;
-
 simtime_t Decider80211p::processNewSignal(AirFrame* msg)
 {
 

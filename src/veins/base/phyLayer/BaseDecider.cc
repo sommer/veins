@@ -12,7 +12,6 @@
 #include "veins/base/messages/AirFrame_m.h"
 
 using namespace Veins;
-using Veins::AirFrame;
 
 simtime_t BaseDecider::processSignal(AirFrame* frame)
 {

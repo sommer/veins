@@ -15,8 +15,6 @@
 
 using namespace Veins;
 
-using Veins::AirFrame;
-
 Define_Module(Veins::BasePhyLayer);
 
 Coord NoMobiltyPos = Coord::ZERO;

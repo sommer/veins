@@ -30,8 +30,6 @@
 
 namespace Veins {
 
-using Veins::BatteryAccess;
-
 /**
  * @brief Base module for all mobility modules.
  *
@@ -163,7 +161,7 @@ public:
     void initialize(int) override;
 
     /** @brief Delete dynamically allocated objects*/
-    void finish() override{};
+    void finish() override {};
 
     /** @brief Returns the current position at the current simulation time. */
     virtual Coord getCurrentPosition(/*simtime_t_cref stWhen = simTime()*/) const
