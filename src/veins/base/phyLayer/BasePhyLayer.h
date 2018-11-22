@@ -71,8 +71,6 @@ class Radio;
  * @ingroup baseModules
  */
 
-typedef std::vector<AnalogueModel*> AnalogueModelList;
-
 class VEINS_API BasePhyLayer : public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
 
 protected:

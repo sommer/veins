@@ -24,12 +24,9 @@
 
 #include "veins/base/utils/Coord.h"
 #include "veins/base/toolbox/Spectrum.h"
+#include "veins/base/phyLayer/AnalogueModel.h"
 
 namespace Veins {
-
-// Forward declaration
-class AnalogueModel;
-typedef std::vector<AnalogueModel*> AnalogueModelList;
 
 class Signal {
 public:
