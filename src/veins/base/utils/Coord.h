@@ -105,6 +105,29 @@ public:
         return tmp;
     }
 
+    /**
+     * @brief Multiplies a coordinate vector by another coordinate vector;
+     * @return Scalar value
+     * in Algebra: referred to as "dot product" or "scalar product";
+     * Takes two equal-length sequences of numbers (usually coordinate vectors) and returns a single number.
+     * in Euclidean geometry: the dot product of the Cartesian coordinates of two vectors (i.e. inner product).
+     */
+    friend double operator*(const Coord& a, const Coord& b)
+    {
+        return (a.x * b.x + a.y * b.y);
+    }
+
+    /**
+     * @brief Returns the magnitude of the vector that would result from a regular 3D cross product
+     * of the input vectors; The values on the z-plane are assumed to be 0 (i.e. treating the 2D space as a plane in the 3D space).
+     * The 3D cross product will be perpendicular to that plane, and thus have 0 X & Y components
+     * (thus the scalar returned is the Z value of the 3D cross product vector).
+     */
+    double twoDimensionalCrossProduct(const Coord& a) const
+    {
+        return (x * a.y - y * a.x);
+    }
+
     /** @brief Divides a coordinate vector by a real number. */
     friend Coord operator/(const Coord& a, double f)
     {
