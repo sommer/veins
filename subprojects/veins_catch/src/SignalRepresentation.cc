@@ -1370,13 +1370,13 @@ SCENARIO("SignalUtils::getMinSINR treats signal start/end as inclusive/exclusive
         airFrames.push_back(&signalFrame);
 
         const std::vector<std::tuple<double, double, double>> checks = {
-            {0, 0.5, INFINITY},
-            {0.5, 1.5, 1},
-            {1, 2, 1},
-            {1.5, 2.5, 1},
-            {2, 3, 1},
-            {2.5, 3.5, 1},
-            {3.5, 4.5, INFINITY},
+            std::make_tuple(0, 0.5, INFINITY),
+            std::make_tuple(0.5, 1.5, 1),
+            std::make_tuple(1, 2, 1),
+            std::make_tuple(1.5, 2.5, 1),
+            std::make_tuple(2, 3, 1),
+            std::make_tuple(2.5, 3.5, 1),
+            std::make_tuple(3.5, 4.5, INFINITY),
         };
         for (auto& check : checks) {
             auto begin = std::get<0>(check);
