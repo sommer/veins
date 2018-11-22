@@ -49,10 +49,9 @@ public:
 
     double freqAt(size_t freqIndex) const;
 
-    void print(std::ostream& os) const;
-    void toFile(std::string path) const;
-
     friend bool operator==(const Spectrum& lhs, const Spectrum& rhs);
+
+    friend std::ostream& operator<<(std::ostream& os, const Spectrum& s);
 
 private:
     Freqs frequencies;

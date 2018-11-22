@@ -20,7 +20,9 @@
 
 #include "veins/base/toolbox/Spectrum.h"
 
-using namespace Veins;
+#include <sstream>
+
+namespace Veins {
 
 Freqs normalizeFrequencies(Freqs freqs)
 {
@@ -79,29 +81,23 @@ size_t Spectrum::getNumFreqs() const
     return frequencies.size();
 }
 
-void Spectrum::print(std::ostream& os) const
-{
-    for (auto& frequency : frequencies) {
-        os << frequency << std::endl;
-    }
-}
-
-void Spectrum::toFile(std::string path) const
-{
-    std::fstream file(path.c_str(), std::ios::out | std::ios::app);
-    if (!file.good()) return;
-
-    file << "spectrum:";
-    for (auto it = frequencies.begin(); it != frequencies.end(); ++it) {
-        file << *it;
-        if (it != frequencies.end() - 1) file << ",";
-    }
-    file << std::endl;
-}
-
-namespace Veins {
 bool operator==(const Spectrum& lhs, const Spectrum& rhs)
 {
     return lhs.frequencies == rhs.frequencies;
+}
+
+std::ostream& operator<<(std::ostream& os, const Spectrum& s)
+{
+    os << "Spectrum(";
+    std::ostringstream ss;
+    for (auto&& frequency : s.frequencies) {
+        if (ss.tellp() != 0) {
+            ss << ", ";
+        }
+        ss << frequency;
+    }
+    os << ss.str();
+    os << ")";
+    return os;
 }
 } // namespace Veins
