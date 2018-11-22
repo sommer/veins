@@ -82,7 +82,7 @@ public:
      * Functionality is similar to pathloss-calculation in BasicSnrEval from
      * Mobility-frame work.
      */
-    virtual double calcPathloss(const Coord& receiverPos, const Coord& sendersPos);
+    virtual double calcPathloss(const Coord& receiverPos, const Coord& senderPos);
 
     virtual bool neverIncreasesPower() override
     {

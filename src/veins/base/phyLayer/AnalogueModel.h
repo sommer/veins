@@ -34,10 +34,10 @@ public:
      * over time to the Signal.
      *
      * @param signal        The signal to filter.
-     * @param sendersPos    The position of the frame sender.
+     * @param senderPos    The position of the frame sender.
      * @param receiverPos    The position of frame receiver.
      */
-    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos) = 0;
+    virtual void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos) = 0;
 
     /**
      * If the model never increases the power level of any signal given to filterSignal, it returns true here.

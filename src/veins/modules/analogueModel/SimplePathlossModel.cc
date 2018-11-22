@@ -6,10 +6,10 @@ using namespace Veins;
 
 using Veins::AirFrame;
 
-void SimplePathlossModel::filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos)
+void SimplePathlossModel::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
 {
     /** Calculate the distance factor */
-    double sqrDistance = useTorus ? receiverPos.sqrTorusDist(sendersPos, playgroundSize) : receiverPos.sqrdist(sendersPos);
+    double sqrDistance = useTorus ? receiverPos.sqrTorusDist(senderPos, playgroundSize) : receiverPos.sqrdist(senderPos);
 
     EV_TRACE << "sqrdistance is: " << sqrDistance << endl;
 
@@ -34,7 +34,7 @@ void SimplePathlossModel::filterSignal(Signal* signal, const Coord& sendersPos, 
     }
 }
 
-double SimplePathlossModel::calcPathloss(const Coord& receiverPos, const Coord& sendersPos)
+double SimplePathlossModel::calcPathloss(const Coord& receiverPos, const Coord& senderPos)
 {
     /*
      * maybe we can reuse an already calculated value for the square-distance
@@ -44,10 +44,10 @@ double SimplePathlossModel::calcPathloss(const Coord& receiverPos, const Coord& 
     double sqrdistance = 0.0;
 
     if (useTorus) {
-        sqrdistance = receiverPos.sqrTorusDist(sendersPos, playgroundSize);
+        sqrdistance = receiverPos.sqrTorusDist(senderPos, playgroundSize);
     }
     else {
-        sqrdistance = receiverPos.sqrdist(sendersPos);
+        sqrdistance = receiverPos.sqrdist(senderPos);
     }
 
     EV_TRACE << "sqrdistance is: " << sqrdistance << endl;

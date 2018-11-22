@@ -691,15 +691,15 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     ASSERT(receiverModule);
     ASSERT(receiverModule == this);
 
-    const Coord sendersPos = senderModule ? senderModule->getAntennaPosition() : NoMobiltyPos;
+    const Coord senderPos = senderModule ? senderModule->getAntennaPosition() : NoMobiltyPos;
     const Coord receiverPos = receiverModule ? receiverModule->getAntennaPosition() : NoMobiltyPos;
 
-    frame->getSignal().setSenderPos(sendersPos);
+    frame->getSignal().setSenderPos(senderPos);
     frame->getSignal().setReceiverPos(receiverPos);
     frame->getSignal().setAnalogueModelList(&analogueModelsThresholding);
     // frame->getSignal().applyAllAnalogueModels();
 
-    for (AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++) (*it)->filterSignal(&frame->getSignal(), sendersPos, receiverPos);
+    for (AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++) (*it)->filterSignal(&frame->getSignal(), senderPos, receiverPos);
 }
 
 // --Destruction--------------------------------

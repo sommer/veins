@@ -33,7 +33,7 @@ public:
     {
     }
 
-    void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos) override
+    void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos) override
     {
         signal->addUniformAttenuation(factor);
     }

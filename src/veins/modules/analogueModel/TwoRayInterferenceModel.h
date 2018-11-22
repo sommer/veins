@@ -52,7 +52,7 @@ public:
     {
     }
 
-    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos);
+    virtual void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos);
 
 protected:
     /** @brief stores the dielectric constant used for calculation */

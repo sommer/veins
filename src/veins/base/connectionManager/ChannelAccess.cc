@@ -147,11 +147,11 @@ simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic)
     assert(receiverModule);
 
     /** claim the Move pattern of the sender from the Signal */
-    Coord sendersPos = senderModule->antennaPosition;
+    Coord senderPos = senderModule->antennaPosition;
     Coord receiverPos = receiverModule->antennaPosition;
 
     // this time-point is used to calculate the distance between sending and receiving host
-    return receiverPos.distance(sendersPos) / BaseWorldUtility::speedOfLight();
+    return receiverPos.distance(senderPos) / BaseWorldUtility::speedOfLight();
 }
 
 void ChannelAccess::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)

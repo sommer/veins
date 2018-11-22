@@ -5,11 +5,11 @@
 using namespace Veins;
 using Veins::AirFrame;
 
-void BreakpointPathlossModel::filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos)
+void BreakpointPathlossModel::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
 {
 
     /** Calculate the distance factor */
-    double distance = useTorus ? receiverPos.sqrTorusDist(sendersPos, playgroundSize) : receiverPos.sqrdist(sendersPos);
+    double distance = useTorus ? receiverPos.sqrTorusDist(senderPos, playgroundSize) : receiverPos.sqrdist(senderPos);
     distance = sqrt(distance);
     EV_TRACE << "distance is: " << distance << endl;
 

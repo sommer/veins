@@ -32,7 +32,7 @@ VehicleObstacleShadowing::VehicleObstacleShadowing(VehicleObstacleControl& vehic
     if (useTorus) throw cRuntimeError("VehicleObstacleShadowing does not work on torus-shaped playgrounds");
 }
 
-void VehicleObstacleShadowing::filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos)
+void VehicleObstacleShadowing::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
 {
 
     double factor = vehicleObstacleControl.calculateVehicleAttenuation(sendersPos, receiverPos, *signal);

@@ -33,10 +33,10 @@ SimpleObstacleShadowing::SimpleObstacleShadowing(ObstacleControl& obstacleContro
     if (useTorus) throw cRuntimeError("SimpleObstacleShadowing does not work on torus-shaped playgrounds");
 }
 
-void SimpleObstacleShadowing::filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos)
+void SimpleObstacleShadowing::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
 {
 
-    double factor = obstacleControl.calculateAttenuation(sendersPos, receiverPos);
+    double factor = obstacleControl.calculateAttenuation(senderPos, receiverPos);
 
     EV_TRACE << "value is: " << factor << endl;
 

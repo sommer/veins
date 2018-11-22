@@ -53,7 +53,7 @@ public:
     {
     }
 
-    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos);
+    virtual void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos);
 
 protected:
     /** @brief Whether to use a constant m or a m based on distance */

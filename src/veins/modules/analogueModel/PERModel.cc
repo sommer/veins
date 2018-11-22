@@ -5,7 +5,7 @@
 using namespace Veins;
 using Veins::AirFrame;
 
-void PERModel::filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos)
+void PERModel::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
 {
 
     double attenuationFactor = 1; // no attenuation
