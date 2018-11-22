@@ -161,6 +161,7 @@ protected:
 
     virtual void changeListeningFrequency(double freq);
 
+    virtual void handleMessage(cMessage* msg);
     virtual void handleSelfMessage(cMessage* msg);
     virtual int getRadioState();
     virtual simtime_t setRadioState(int rs);
