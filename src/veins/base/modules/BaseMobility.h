@@ -30,8 +30,6 @@
 
 namespace Veins {
 
-using Veins::BatteryAccess;
-
 /**
  * @brief Base module for all mobility modules.
  *

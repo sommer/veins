@@ -12,8 +12,6 @@
 
 namespace Veins {
 
-using Veins::AirFrame;
-
 /**
  * @brief A class to represent the result of a processed packet (that is not
  * noise) by the Decider.

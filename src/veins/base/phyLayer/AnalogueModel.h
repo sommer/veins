@@ -9,8 +9,6 @@ namespace Veins {
 
 class AirFrame;
 
-using Veins::AirFrame;
-
 /**
  * @brief Interface for the analogue models of the physical layer.
  *

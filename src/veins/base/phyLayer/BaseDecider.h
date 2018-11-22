@@ -13,8 +13,6 @@
 
 namespace Veins {
 
-using Veins::AirFrame;
-
 /**
  * @brief Provides some base functionality for most common deciders.
  *

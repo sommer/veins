@@ -31,7 +31,6 @@
 namespace Veins {
 
 class ChannelAccess;
-using Veins::ChannelAccess;
 
 /**
  * @brief NicEntry is used by ConnectionManager to store the necessary
