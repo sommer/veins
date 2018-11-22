@@ -252,7 +252,10 @@ protected:
      * This method has to be overridden if you want to be
      * able to load your own AnalogueModels.
      */
-    virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
+    virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params)
+    {
+        return nullptr;
+    }
 
     /**
      * @brief Creates and returns an instance of the Decider with the specified
