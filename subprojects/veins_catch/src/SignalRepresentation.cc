@@ -1305,14 +1305,14 @@ SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/e
         }
 
         const std::vector<std::tuple<double, double, bool>> checks = {
-            {0, 0, true},
-            {0.5, 0.5, true},
-            {1, 1, false},
-            {1.5, 1.5, false},
-            {2, 2, false},
-            {2.5, 2.5, false},
-            {3, 3, true},
-            {3.5, 3.5, true},
+            std::make_tuple(0, 0, true),
+            std::make_tuple(0.5, 0.5, true),
+            std::make_tuple(1, 1, false),
+            std::make_tuple(1.5, 1.5, false),
+            std::make_tuple(2, 2, false),
+            std::make_tuple(2.5, 2.5, false),
+            std::make_tuple(3, 3, true),
+            std::make_tuple(3.5, 3.5, true),
         };
         for (auto& check : checks) {
             auto begin = std::get<0>(check);
