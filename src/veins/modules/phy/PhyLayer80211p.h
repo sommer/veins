@@ -30,8 +30,6 @@
 
 namespace Veins {
 
-using Veins::AirFrame;
-
 /**
  * @brief
  * Adaptation of the PhyLayer class for 802.11p.
