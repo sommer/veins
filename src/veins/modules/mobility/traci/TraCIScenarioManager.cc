@@ -505,19 +505,19 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     mod->callInitialize();
     hosts[nodeId] = mod;
 
-    // find sender position
-    ChannelAccess* ca = FindModule<PhyLayer80211p*>::findSubModule(mod);
-
     // post-initialize TraCIMobility
     auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
     for (auto mm : mobilityModules) {
         mm->changePosition();
+    }
 
-        if (vehicleObstacleControl) {
-            double offset = mm->getHostPositionOffset();
-            const VehicleObstacle* vo = vehicleObstacleControl->add(VehicleObstacle(ca, mm, length, offset, width, height));
-            vehicleObstacles[mm] = vo;
-        }
+    if (vehicleObstacleControl) {
+        auto caModules = getSubmodulesOfType<ChannelAccess>(mod, true);
+        ASSERT(mobilityModules.size() == 1);
+        auto mm = mobilityModules[0];
+        double offset = mm->getHostPositionOffset();
+        const VehicleObstacle* vo = vehicleObstacleControl->add(VehicleObstacle(caModules, mm, length, offset, width, height));
+        vehicleObstacles[mm] = vo;
     }
 
     emit(traciModuleAddedSignal, mod);

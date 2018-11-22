@@ -37,8 +37,8 @@ class VehicleObstacle {
 public:
     typedef std::vector<Coord> Coords;
 
-    VehicleObstacle(ChannelAccess* channelAccess, TraCIMobility* traciMobility, double length, double hostPositionOffset, double width, double height)
-        : channelAccess(channelAccess)
+    VehicleObstacle(std::vector<ChannelAccess*> channelAccessModules, TraCIMobility* traciMobility, double length, double hostPositionOffset, double width, double height)
+        : channelAccessModules(channelAccessModules)
         , traciMobility(traciMobility)
         , length(length)
         , hostPositionOffset(hostPositionOffset)
@@ -47,9 +47,9 @@ public:
     {
     }
 
-    void setChannelAccess(ChannelAccess* channelAccess)
+    void setChannelAccess(std::vector<ChannelAccess*> channelAccessModules)
     {
-        this->channelAccess = channelAccess;
+        this->channelAccessModules = channelAccessModules;
     }
     void setTraCIMobility(TraCIMobility* traciMobility)
     {
@@ -72,9 +72,9 @@ public:
         this->height = d;
     }
 
-    const ChannelAccess* getChannelAccess() const
+    const std::vector<ChannelAccess*> getChannelAccessModules() const
     {
-        return channelAccess;
+        return channelAccessModules;
     }
     const TraCIMobility* getTraCIMobility() const
     {
@@ -105,7 +105,7 @@ public:
     double getIntersectionPoint(const Coord& senderPos, const Coord& receiverPos) const;
 
 protected:
-    ChannelAccess* channelAccess;
+    std::vector<ChannelAccess*> channelAccessModules;
     TraCIMobility* traciMobility;
     double length;
     double hostPositionOffset;

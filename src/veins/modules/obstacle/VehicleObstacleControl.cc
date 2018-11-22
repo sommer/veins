@@ -296,51 +296,62 @@ double VehicleObstacleControl::calculateVehicleAttenuation(const Coord& senderPo
     double y2 = std::max(senderPos.y, receiverPos.y);
 
     for (auto o : vehicleObstacles) {
-        auto* ca = o->getChannelAccess();
-        Coord p = ca->getAntennaPosition();
+        auto caModules = o->getChannelAccessModules();
         double l = o->getLength();
         double w = o->getWidth();
         double h = o->getHeight();
 
-        EV << "checking vehicle at " << p.info() << " with height: " << h << " width: " << w << " length: " << l << endl;
-        // shortcut if AABBs can't overlap
-        double lw = std::max(l, w);
-        if ((p.x + lw) < x1) continue;
-        if ((p.x - lw) > x2) continue;
-        if ((p.y + lw) < y1) continue;
-        if ((p.y - lw) > y2) continue;
+        auto hp = o->getTraCIMobility()->getCurrentPosition();
 
-        if (p == senderPos) {
-            // this is the sender: ignore
+        EV << "checking vehicle at " << hp.info() << " with height: " << h << " width: " << w << " length: " << l << endl;
+
+        // short-circuit if AABBs can't overlap
+        double lw = std::max(l, w);
+        if (((hp.x + lw) < x1) || ((hp.x - lw) > x2) || ((hp.y + lw) < y1) || ((hp.y - lw) > y2)) {
+            EV_TRACE << "bounding boxes don't overlap: ignore" << std::endl;
+            continue;
         }
-        else if (p == receiverPos) {
-            // this is the receiver: ignore
+
+        // check if this is either the sender or the receiver
+        bool ignoreMe = false;
+        for (auto ca : caModules) {
+            auto pos = ca->getAntennaPosition();
+            EV_TRACE << "...it has an antenna at " << pos << std::endl;
+            if (pos == senderPos) {
+                EV_TRACE << "...this is the sender: ignore" << std::endl;
+                ignoreMe = true;
+            }
+            if (pos == receiverPos) {
+                EV_TRACE << "...this is the receiver: ignore" << std::endl;
+                ignoreMe = true;
+            }
         }
-        else {
-            // this is a potential obstacle
-            double p1d = o->getIntersectionPoint(senderPos, receiverPos);
-            double maxd = senderPos.distance(receiverPos);
-            if (!std::isnan(p1d) && p1d > 0 && p1d < maxd) {
-                auto it = potentialObstacles.begin();
-                while (true) {
-                    if (it == potentialObstacles.end()) {
-                        potentialObstacles.emplace_back(p1d, h);
-                        break;
-                    }
-                    if (it->first == p1d) { // omit double entries
-                        EV << "two obstacles at same distance " << it->first << " == " << p1d << " height: " << it->second << " =? " << h << std::endl;
-                        break;
-                    }
-                    if (it->first > p1d) {
-                        potentialObstacles.insert(it, std::make_pair(p1d, h));
-                        break;
-                    }
-                    ++it;
+        if (ignoreMe) continue;
+
+        // this is a potential obstacle
+        double p1d = o->getIntersectionPoint(senderPos, receiverPos);
+        double maxd = senderPos.distance(receiverPos);
+        if (!std::isnan(p1d) && p1d > 0 && p1d < maxd) {
+            auto it = potentialObstacles.begin();
+            while (true) {
+                if (it == potentialObstacles.end()) {
+                    potentialObstacles.emplace_back(p1d, h);
+                    break;
                 }
-                EV << "\tgot obstacle in 2d-LOS at " << p.info() << ", " << p1d << " meters away from sender" << std::endl;
-                Coord hitPos = senderPos + (receiverPos - senderPos) / senderPos.distance(receiverPos) * p1d;
-                if (hasGUI() && annotations)
-                    annotations->drawLine(senderPos, hitPos, "red", vehicleAnnotationGroup);
+                if (it->first == p1d) { // omit double entries
+                    EV << "two obstacles at same distance " << it->first << " == " << p1d << " height: " << it->second << " =? " << h << std::endl;
+                    break;
+                }
+                if (it->first > p1d) {
+                    potentialObstacles.insert(it, std::make_pair(p1d, h));
+                    break;
+                }
+                ++it;
+            }
+            EV << "\tgot obstacle in 2d-LOS at " << hp.info() << ", " << p1d << " meters away from sender" << std::endl;
+            Coord hitPos = senderPos + (receiverPos - senderPos) / senderPos.distance(receiverPos) * p1d;
+            if (hasGUI() && annotations) {
+                annotations->drawLine(senderPos, hitPos, "red", vehicleAnnotationGroup);
             }
         }
     }
