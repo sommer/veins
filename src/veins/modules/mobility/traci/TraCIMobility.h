@@ -130,7 +130,7 @@ public:
      */
     virtual double getAngleRad() const
     {
-        if (angle == M_PI) throw cRuntimeError("TraCIMobility::getAngleRad called with no angle set yet");
+        if (angle == -1) throw cRuntimeError("TraCIMobility::getAngleRad called with no angle set yet");
         return angle;
     }
     virtual TraCIScenarioManager* getManager() const
