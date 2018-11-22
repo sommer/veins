@@ -3,11 +3,11 @@
 #include "veins/veins.h"
 
 #include "veins/base/utils/Coord.h"
-#include "veins/base/toolbox/Signal.h"
 
 namespace Veins {
 
 class AirFrame;
+class Signal;
 
 /**
  * @brief Interface for the analogue models of the physical layer.
@@ -46,5 +46,7 @@ public:
         return false;
     }
 };
+
+using AnalogueModelList = std::vector<AnalogueModel*>;
 
 } // namespace Veins
