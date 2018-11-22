@@ -502,28 +502,6 @@ double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
     return *(std::max_element(values + freqIndexLow, values + freqIndexHigh));
 }
 
-void Signal::print(std::ostream& os) const
-{
-    if (timingUsed) os << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
-
-    for (uint16_t i = getRelativeStart(); i < getRelativeEnd(); i++) {
-        os << spectrum.freqAt(i) << ":\t " << values[i] << std::endl;
-    }
-
-    os << "-----------------------------------------------" << std::endl;
-}
-
-void Signal::printAbsolute(std::ostream& os) const
-{
-    os << "-----------------------------------------------" << std::endl;
-
-    if (timingUsed) os << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
-
-    for (uint16_t i = 0; i < numAbsoluteValues; i++) {
-        os << spectrum.freqAt(i) << ":\t " << values[i] << std::endl;
-    }
-}
-
 Signal& Signal::operator=(const double value)
 {
     for (size_t i = 0; i < numAbsoluteValues; i++) {
@@ -887,24 +865,17 @@ Signal Signal::operator>>(uint16_t n)
     return temp >>= n;
 }
 
-void Signal::toFile(std::string path) const
+std::ostream& operator<<(std::ostream& os, const Signal& s)
 {
-    std::fstream file;
-    file.open(path.c_str(), std::ios::out | std::ios::app);
-
-    if (!file.good()) return;
-
-    file << "signal:" << getReceptionStart() << "," << duration << ":";
-
-    size_t last = getRelativeEnd();
-
-    for (size_t i = getRelativeStart(); i < last; i++) {
-        file << values[i];
-        if (i != last - 1) file << ",";
+    os << "Signal(";
+    if (s.timingUsed) {
+        os << "interval: (" << s.getReceptionStart() << ", " << s.getReceptionEnd() << "), ";
     }
-    file << std::endl;
-
-    file.close();
+    os << s.spectrum << ", ";
+    std::ostream_iterator<char> osi(os, ", ");
+    std::copy(s.values + s.getRelativeStart(), s.values + s.getRelativeEnd(), osi);
+    os << ")";
+    return os;
 }
 
 uint64_t Signal::getBitrate() const

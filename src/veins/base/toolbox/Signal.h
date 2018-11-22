@@ -120,10 +120,6 @@ public:
     double getDataMax() const;
     double getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const;
 
-    void print(std::ostream& os) const;
-    void printAbsolute(std::ostream& os) const;
-    void toFile(std::string path) const;
-
     Signal& operator=(const double value);
     Signal& operator=(const Signal& other);
 
@@ -160,6 +156,8 @@ public:
 
     Signal operator<<(uint16_t n);
     Signal operator>>(uint16_t n);
+
+    friend std::ostream& operator<<(std::ostream& os, const Signal& s);
 
     friend inline simtime_t calculateStart(const Signal& lhs, const Signal& rhs);
     friend inline simtime_t calculateDuration(const Signal& lhs, const Signal& rhs);
