@@ -32,7 +32,7 @@
 
 namespace Veins {
 
-typedef std::vector<double> Freqs;
+using Freqs = std::vector<double>;
 
 class Spectrum {
 public:
