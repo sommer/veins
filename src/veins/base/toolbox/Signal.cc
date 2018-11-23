@@ -555,20 +555,21 @@ Signal& Signal::operator+=(const Signal& other)
 {
     assert(this->getSpectrum() == other.getSpectrum());
 
+#ifndef PREFER_VECTORIZATION
     size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
     size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
+#else
+    size_t lowIndex = 0;
+    size_t highIndex = numAbsoluteValues;
+#endif
 
-    for (size_t i = lowIndex; i < highIndex; i++) {
-        (*this)[i] += other[i];
-    }
+    std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::plus<double>());
     return *this;
 }
 
 Signal& Signal::operator+=(const double value)
 {
-    for (size_t i = 0; i < numAbsoluteValues; i++) {
-        (*this)[i] += value;
-    }
+    std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other + value; });
     return *this;
 }
 
@@ -576,20 +577,21 @@ Signal& Signal::operator-=(const Signal& other)
 {
     assert(this->getSpectrum() == other.getSpectrum());
 
+#ifndef PREFER_VECTORIZATION
     size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
     size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
+#else
+    size_t lowIndex = 0;
+    size_t highIndex = numAbsoluteValues;
+#endif
 
-    for (size_t i = lowIndex; i < highIndex; i++) {
-        (*this)[i] -= other[i];
-    }
+    std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::minus<double>());
     return *this;
 }
 
 Signal& Signal::operator-=(const double value)
 {
-    for (size_t i = 0; i < numAbsoluteValues; i++) {
-        (*this)[i] -= value;
-    }
+    std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other - value; });
     return *this;
 }
 
@@ -597,20 +599,21 @@ Signal& Signal::operator*=(const Signal& other)
 {
     assert(this->getSpectrum() == other.getSpectrum());
 
+#ifndef PREFER_VECTORIZATION
     size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
     size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
+#else
+    size_t lowIndex = 0;
+    size_t highIndex = numAbsoluteValues;
+#endif
 
-    for (size_t i = lowIndex; i < highIndex; i++) {
-        (*this)[i] *= other[i];
-    }
+    std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::multiplies<double>());
     return *this;
 }
 
 Signal& Signal::operator*=(const double value)
 {
-    for (size_t i = 0; i < numAbsoluteValues; i++) {
-        (*this)[i] *= value;
-    }
+    std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other * value; });
     return *this;
 }
 
@@ -618,205 +621,106 @@ Signal& Signal::operator/=(const Signal& other)
 {
     assert(this->getSpectrum() == other.getSpectrum());
 
+#ifndef PREFER_VECTORIZATION
     size_t lowIndex = std::min(this->getRelativeStart(), other.getRelativeStart());
     size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
+#else
+    size_t lowIndex = 0;
+    size_t highIndex = numAbsoluteValues;
+#endif
 
-    for (size_t i = lowIndex; i < highIndex; i++) {
-        (*this)[i] /= other[i];
-    }
+    std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::divides<double>());
     return *this;
 }
 
 Signal& Signal::operator/=(const double value)
 {
-    for (size_t i = 0; i < numAbsoluteValues; i++) {
-        (*this)[i] /= value;
-    }
+    std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other / value; });
     return *this;
 }
 
 Signal operator+(const Signal& lhs, const Signal& rhs)
 {
-    assert(lhs.getSpectrum() == rhs.getSpectrum());
-
-    Signal temp(lhs.getSpectrum());
-
-#ifndef PREFER_VECTORIZATION
-    // Default version
-    size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
-    size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
-
-    for (size_t i = lowIndex; i < highIndex; i++) {
-        temp[i] = lhs[i] + rhs[i];
-    }
-#else
-    // Optimized for vectorizing
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs[i] + rhs[i];
-    }
-#endif
-
-    return temp;
+    Signal result(lhs);
+    result += rhs;
+    return result;
 }
 
 Signal operator+(const Signal& lhs, double rhs)
 {
-    Signal temp(lhs.getSpectrum());
-
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs[i] + rhs;
-    }
-
-    return temp;
+    Signal result(lhs);
+    result += rhs;
+    return result;
 }
 
 Signal operator+(double lhs, const Signal& rhs)
 {
-    Signal temp(rhs.getSpectrum());
-
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs + rhs[i];
-    }
-
-    return temp;
+    Signal result(rhs);
+    result += lhs;
+    return result;
 }
 
 Signal operator-(const Signal& lhs, const Signal& rhs)
 {
-    assert(lhs.getSpectrum() == rhs.getSpectrum());
-
-    Signal temp(lhs.getSpectrum());
-
-#ifndef PREFER_VECTORIZATION
-    // Default version
-    size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
-    size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
-
-    for (size_t i = lowIndex; i < highIndex; i++) {
-        temp[i] = lhs[i] - rhs[i];
-    }
-#else
-    // Optimized for vectorizing
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs[i] - rhs[i];
-    }
-#endif
-
-    return temp;
+    Signal result(lhs);
+    result -= rhs;
+    return result;
 }
 
 Signal operator-(const Signal& lhs, double rhs)
 {
-    Signal temp(lhs.getSpectrum());
-
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs[i] - rhs;
-    }
-
-    return temp;
+    Signal result(lhs);
+    result -= rhs;
+    return result;
 }
 
 Signal operator-(double lhs, const Signal& rhs)
 {
-    Signal temp(rhs.getSpectrum());
-
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs - rhs[i];
-    }
-
-    return temp;
+    Signal result(rhs);
+    result -= lhs;
+    return result;
 }
 
 Signal operator*(const Signal& lhs, const Signal& rhs)
 {
-    assert(lhs.getSpectrum() == rhs.getSpectrum());
-
-    Signal temp(lhs.getSpectrum());
-
-#ifndef PREFER_VECTORIZATION
-    // Default version
-    size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
-    size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
-
-    for (size_t i = lowIndex; i < highIndex; i++) {
-        temp[i] = lhs[i] * rhs[i];
-    }
-#else
-    // Optimized for vectorizing
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs[i] * rhs[i];
-    }
-#endif
-
-    return temp;
+    Signal result(lhs);
+    result *= rhs;
+    return result;
 }
 
 Signal operator*(const Signal& lhs, double rhs)
 {
-    Signal temp(lhs.getSpectrum());
-
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs[i] * rhs;
-    }
-
-    return temp;
+    Signal result(lhs);
+    result *= rhs;
+    return result;
 }
 
 Signal operator*(double lhs, const Signal& rhs)
 {
-    Signal temp(rhs.getSpectrum());
-
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs * rhs[i];
-    }
-
-    return temp;
+    Signal result(rhs);
+    result *= lhs;
+    return result;
 }
 
 Signal operator/(const Signal& lhs, const Signal& rhs)
 {
-    assert(lhs.getSpectrum() == rhs.getSpectrum());
-
-    Signal temp(lhs.getSpectrum());
-
-#ifndef PREFER_VECTORIZATION
-    // Default version
-    size_t lowIndex = std::min(lhs.getRelativeStart(), rhs.getRelativeStart());
-    size_t highIndex = std::max(lhs.getRelativeEnd(), rhs.getRelativeEnd());
-
-    for (size_t i = lowIndex; i < highIndex; i++) {
-        temp[i] = lhs[i] / rhs[i];
-    }
-#else
-    // Optimized for vectorizing
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs[i] / rhs[i];
-    }
-#endif
-
-    return temp;
+    Signal result(lhs);
+    result /= rhs;
+    return result;
 }
 
 Signal operator/(const Signal& lhs, double rhs)
 {
-    Signal temp(lhs.getSpectrum());
-
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs[i] / rhs;
-    }
-
-    return temp;
+    Signal result(lhs);
+    result /= rhs;
+    return result;
 }
 
 Signal operator/(double lhs, const Signal& rhs)
 {
-    Signal temp(rhs.getSpectrum());
-
-    for (size_t i = 0; i < temp.numAbsoluteValues; i++) {
-        temp[i] = lhs / rhs[i];
-    }
-
-    return temp;
+    Signal result(rhs);
+    result /= lhs;
+    return result;
 }
 
 std::ostream& operator<<(std::ostream& os, const Signal& s)
