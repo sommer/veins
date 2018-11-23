@@ -29,8 +29,6 @@
 
 using namespace Veins;
 
-using omnetpp::simTime;
-using omnetpp::simtime_t;
 using std::unique_ptr;
 
 Define_Module(Veins::Mac1609_4);
@@ -87,7 +85,7 @@ void Mac1609_4::initialize(int stage)
 
         // create two edca systems
 
-        myEDCA[type_CCH] = std::unique_ptr<EDCA>(new EDCA(this, type_CCH, par("queueSize")));
+        myEDCA[type_CCH] = make_unique<EDCA>(this, type_CCH, par("queueSize"));
         myEDCA[type_CCH]->myId = myId;
         myEDCA[type_CCH]->myId.append(" CCH");
         myEDCA[type_CCH]->createQueue(2, (((CWMIN_11P + 1) / 4) - 1), (((CWMIN_11P + 1) / 2) - 1), AC_VO);
@@ -95,7 +93,7 @@ void Mac1609_4::initialize(int stage)
         myEDCA[type_CCH]->createQueue(6, CWMIN_11P, CWMAX_11P, AC_BE);
         myEDCA[type_CCH]->createQueue(9, CWMIN_11P, CWMAX_11P, AC_BK);
 
-        myEDCA[type_SCH] = std::unique_ptr<EDCA>(new EDCA(this, type_SCH, par("queueSize")));
+        myEDCA[type_SCH] = make_unique<EDCA>(this, type_SCH, par("queueSize"));
         myEDCA[type_SCH]->myId = myId;
         myEDCA[type_SCH]->myId.append(" SCH");
         myEDCA[type_SCH]->createQueue(2, (((CWMIN_11P + 1) / 4) - 1), (((CWMIN_11P + 1) / 2) - 1), AC_VO);
