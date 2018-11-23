@@ -135,9 +135,6 @@ public:
     Signal& operator/=(const Signal& other);
     Signal& operator/=(const double value);
 
-    Signal& operator<<=(uint16_t n);
-    Signal& operator>>=(uint16_t n);
-
     friend Signal operator+(const Signal& lhs, const Signal& rhs);
     friend Signal operator+(const Signal& lhs, double rhs);
     friend Signal operator+(double lhs, const Signal& rhs);
@@ -153,9 +150,6 @@ public:
     friend Signal operator/(const Signal& lhs, const Signal& rhs);
     friend Signal operator/(const Signal& lhs, double rhs);
     friend Signal operator/(double lhs, const Signal& rhs);
-
-    Signal operator<<(uint16_t n);
-    Signal operator>>(uint16_t n);
 
     friend std::ostream& operator<<(std::ostream& os, const Signal& s);
 

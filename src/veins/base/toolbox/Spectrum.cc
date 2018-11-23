@@ -53,24 +53,6 @@ size_t Spectrum::indexOf(double freq) const
     return std::distance(frequencies.begin(), it);
 }
 
-size_t Spectrum::indexNearLow(double freq) const
-{
-    size_t index = 0;
-    for (size_t i = 0; i < frequencies.size(); i++) {
-        if (frequencies[i] < freq) index = i;
-    }
-    return index;
-}
-
-size_t Spectrum::indexNearUp(double freq) const
-{
-    size_t index = frequencies.size() - 1;
-    for (size_t i = frequencies.size() - 1; i > 0; i--) {
-        if (frequencies[i] > freq) index = i;
-    }
-    return index;
-}
-
 double Spectrum::freqAt(size_t freqIndex) const
 {
     return frequencies.at(freqIndex);
