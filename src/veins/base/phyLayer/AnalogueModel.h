@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "veins/veins.h"
 
 #include "veins/base/utils/Coord.h"
@@ -47,6 +50,6 @@ public:
     }
 };
 
-using AnalogueModelList = std::vector<AnalogueModel*>;
+using AnalogueModelList = std::vector<std::unique_ptr<AnalogueModel>>;
 
 } // namespace Veins

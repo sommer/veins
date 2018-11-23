@@ -15,6 +15,8 @@
 
 using namespace Veins;
 
+using std::unique_ptr;
+
 Define_Module(Veins::BasePhyLayer);
 
 Coord NoMobiltyPos = Coord::ZERO;
@@ -97,13 +99,13 @@ void BasePhyLayer::initialize(int stage)
     }
 }
 
-Radio* BasePhyLayer::initializeRadio()
+unique_ptr<Radio> BasePhyLayer::initializeRadio()
 {
     int initialRadioState = par("initialRadioState");
     int nbRadioChannels = readPar("nbRadioChannels", 1);
     int initialRadioChannel = readPar("initialRadioChannel", 0);
 
-    Radio* radio = Radio::createNewRadio(recordStats, initialRadioState, initialRadioChannel, nbRadioChannels);
+    auto radio = Radio::createNewRadio(recordStats, initialRadioState, initialRadioChannel, nbRadioChannels);
 
     //    - switch times to TX
     // if no RX to TX defined asume same time as sleep to TX
@@ -174,7 +176,6 @@ void BasePhyLayer::finish()
 
 void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
 {
-
     decider = nullptr;
 
     if (xmlConfig == nullptr) {
@@ -211,7 +212,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
     EV_TRACE << "Decider \"" << name << "\" loaded." << endl;
 }
 
-Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
+unique_ptr<Decider> BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
 {
     return nullptr;
 }
@@ -335,7 +336,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
         ParameterMap params;
         getParametersFromXML(analogueModelData, params);
 
-        AnalogueModel* newAnalogueModel = getAnalogueModelFromName(name, params);
+        auto newAnalogueModel = getAnalogueModelFromName(name, params);
 
         if (!newAnalogueModel) {
             throw cRuntimeError("Could not find an analogue model with the name \"%s\".", name);
@@ -346,10 +347,10 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
             if (!newAnalogueModel->neverIncreasesPower()) {
                 throw cRuntimeError("Tried to instantiate analogue model \"%s\" with tresholding=true, but model does not support this.", name);
             }
-            analogueModelsThresholding.push_back(newAnalogueModel);
+            analogueModelsThresholding.push_back(std::move(newAnalogueModel));
         }
         else {
-            analogueModels.push_back(newAnalogueModel);
+            analogueModels.push_back(std::move(newAnalogueModel));
         }
 
         EV_TRACE << "AnalogueModel \"" << name << "\" loaded." << endl;
@@ -706,29 +707,6 @@ BasePhyLayer::~BasePhyLayer()
     if (radioSwitchingOverTimer) {
         cancelAndDelete(radioSwitchingOverTimer);
         radioSwitchingOverTimer = nullptr;
-    }
-
-    // free Decider
-    if (decider) {
-        delete decider;
-    }
-
-    // free AnalogueModels (RSAM cannot be part of the thresholding-list)
-    for (auto am : analogueModels) {
-        if (am) {
-            delete am;
-        }
-    }
-
-    for (auto am : analogueModelsThresholding) {
-        if (am) {
-            delete am;
-        }
-    }
-
-    // free radio
-    if (radio) {
-        delete radio;
     }
 }
 
