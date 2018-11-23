@@ -30,9 +30,9 @@ namespace Veins {
 
 class Signal {
 public:
-    Signal();
+    Signal() = default;
     Signal(const Signal& other);
-    Signal(Spectrum spec);
+    explicit Signal(Spectrum spec);
     Signal(Spectrum spec, simtime_t start, simtime_t duration);
     ~Signal();
 
@@ -182,42 +182,42 @@ private:
 
     Spectrum spectrum;
 
-    double* values;
+    double* values = nullptr;
 
-    size_t numAbsoluteValues;
-    size_t numRelativeValues;
-    size_t numDataValues;
+    size_t numAbsoluteValues = 0;
+    size_t numRelativeValues = 0;
+    size_t numDataValues = 0;
 
-    size_t relativeOffset;
-    size_t dataOffset;
+    size_t relativeOffset = 0;
+    size_t dataOffset = 0;
 
-    size_t centerFrequencyIndex;
+    size_t centerFrequencyIndex = 0;
 
-    bool timingUsed;
+    bool timingUsed = false;
     /** @brief The start of the signal transmission at the sender module.*/
-    simtime_t sendingStart;
+    simtime_t sendingStart = 0;
     /** @brief The duration of the signal transmission.*/
-    simtime_t duration;
+    simtime_t duration = 0;
     /** @brief The propagation delay of the transmission. */
-    simtime_t propagationDelay;
+    simtime_t propagationDelay = 0;
 
-    AnalogueModelList* analogueModelList;
-    uint16_t numAnalogueModelsApplied;
-    Coord senderPos;
-    Coord receiverPos;
+    AnalogueModelList* analogueModelList = nullptr;
+    uint16_t numAnalogueModelsApplied = 0;
+    Coord senderPos = Coord(0, 0);
+    Coord receiverPos = Coord(0, 0);
 
     /** @brief Stores the function which describes the bitrate of the signal*/
-    uint64_t bitrate;
+    uint64_t bitrate = 0;
 
 protected:
     /** @brief Sender module id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
-    int senderModuleID;
+    int senderModuleID = -1;
     /** @brief Sender gate id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
-    int senderFromGateID;
+    int senderFromGateID = -1;
     /** @brief Receiver module id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
-    int receiverModuleID;
+    int receiverModuleID = -1;
     /** @brief Receiver gate id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
-    int receiverToGateID;
+    int receiverToGateID = -1;
 };
 
 Signal operator+(const Signal& lhs, const Signal& rhs);
