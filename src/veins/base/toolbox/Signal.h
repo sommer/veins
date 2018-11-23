@@ -135,22 +135,6 @@ public:
     Signal& operator/=(const Signal& other);
     Signal& operator/=(const double value);
 
-    friend Signal operator+(const Signal& lhs, const Signal& rhs);
-    friend Signal operator+(const Signal& lhs, double rhs);
-    friend Signal operator+(double lhs, const Signal& rhs);
-
-    friend Signal operator-(const Signal& lhs, const Signal& rhs);
-    friend Signal operator-(const Signal& lhs, double rhs);
-    friend Signal operator-(double lhs, const Signal& rhs);
-
-    friend Signal operator*(const Signal& lhs, const Signal& rhs);
-    friend Signal operator*(const Signal& lhs, double rhs);
-    friend Signal operator*(double lhs, const Signal& rhs);
-
-    friend Signal operator/(const Signal& lhs, const Signal& rhs);
-    friend Signal operator/(const Signal& lhs, double rhs);
-    friend Signal operator/(double lhs, const Signal& rhs);
-
     friend std::ostream& operator<<(std::ostream& os, const Signal& s);
 
     friend inline simtime_t calculateStart(const Signal& lhs, const Signal& rhs);
@@ -235,5 +219,21 @@ protected:
     /** @brief Receiver gate id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
     int receiverToGateID;
 };
+
+Signal operator+(const Signal& lhs, const Signal& rhs);
+Signal operator+(const Signal& lhs, double rhs);
+Signal operator+(double lhs, const Signal& rhs);
+
+Signal operator-(const Signal& lhs, const Signal& rhs);
+Signal operator-(const Signal& lhs, double rhs);
+Signal operator-(double lhs, const Signal& rhs);
+
+Signal operator*(const Signal& lhs, const Signal& rhs);
+Signal operator*(const Signal& lhs, double rhs);
+Signal operator*(double lhs, const Signal& rhs);
+
+Signal operator/(const Signal& lhs, const Signal& rhs);
+Signal operator/(const Signal& lhs, double rhs);
+Signal operator/(double lhs, const Signal& rhs);
 
 } // namespace Veins
