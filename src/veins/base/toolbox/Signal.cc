@@ -28,33 +28,9 @@
 
 namespace Veins {
 
-Signal::Signal()
-    : values(nullptr)
-    , numAbsoluteValues(0)
-    , numRelativeValues(0)
-    , numDataValues(0)
-    , relativeOffset(0)
-    , dataOffset(0)
-    , centerFrequencyIndex(0)
-    , timingUsed(false)
-    , sendingStart(0)
-    , duration(0)
-    , propagationDelay(0)
-    , analogueModelList(nullptr)
-    , numAnalogueModelsApplied(0)
-    , senderPos(0, 0)
-    , receiverPos(0, 0)
-    , bitrate(0)
-    , senderModuleID(-1)
-    , senderFromGateID(-1)
-    , receiverModuleID(-1)
-    , receiverToGateID(-1)
-{
-    //
-}
-
 Signal::Signal(const Signal& other)
     : spectrum(other.spectrum)
+    , values(new double[spectrum.getNumFreqs()]{0})
     , numAbsoluteValues(other.numAbsoluteValues)
     , numRelativeValues(other.numRelativeValues)
     , numDataValues(other.numDataValues)
@@ -75,58 +51,24 @@ Signal::Signal(const Signal& other)
     , receiverModuleID(other.receiverModuleID)
     , receiverToGateID(other.receiverToGateID)
 {
-    values = new double[spectrum.getNumFreqs()]{0};
     std::copy(other.getAbsoluteValues(), other.getAbsoluteValues() + numAbsoluteValues, values);
 }
 
 Signal::Signal(Spectrum spec)
     : spectrum(spec)
-    , numAbsoluteValues(spec.getNumFreqs())
-    , numRelativeValues(0)
-    , numDataValues(0)
-    , relativeOffset(0)
-    , dataOffset(0)
-    , centerFrequencyIndex(0)
-    , timingUsed(false)
-    , sendingStart(0)
-    , duration(0)
-    , propagationDelay(0)
-    , analogueModelList(nullptr)
-    , numAnalogueModelsApplied(0)
-    , senderPos(0, 0)
-    , receiverPos(0, 0)
-    , bitrate(0)
-    , senderModuleID(-1)
-    , senderFromGateID(-1)
-    , receiverModuleID(-1)
-    , receiverToGateID(-1)
+    , values(new double[spectrum.getNumFreqs() + 1]{0})
+    , numAbsoluteValues(spectrum.getNumFreqs())
 {
-    values = new double[numAbsoluteValues]{0};
 }
 
 Signal::Signal(Spectrum spec, simtime_t start, simtime_t dur)
     : spectrum(spec)
-    , numAbsoluteValues(spec.getNumFreqs())
-    , numRelativeValues(0)
-    , numDataValues(0)
-    , relativeOffset(0)
-    , dataOffset(0)
-    , centerFrequencyIndex(0)
+    , values(new double[spectrum.getNumFreqs() + 1]{0})
+    , numAbsoluteValues(spectrum.getNumFreqs())
     , timingUsed(true)
     , sendingStart(start)
     , duration(dur)
-    , propagationDelay(0)
-    , analogueModelList(nullptr)
-    , numAnalogueModelsApplied(0)
-    , senderPos(0, 0)
-    , receiverPos(0, 0)
-    , bitrate(0)
-    , senderModuleID(-1)
-    , senderFromGateID(-1)
-    , receiverModuleID(-1)
-    , receiverToGateID(-1)
 {
-    values = new double[numAbsoluteValues]{0};
 }
 
 Signal::~Signal()
