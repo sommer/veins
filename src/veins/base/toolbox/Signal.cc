@@ -25,31 +25,6 @@
 
 namespace Veins {
 
-Signal::Signal()
-    : values(0)
-    , numAbsoluteValues(0)
-    , numRelativeValues(0)
-    , numDataValues(0)
-    , relativeOffset(0)
-    , dataOffset(0)
-    , centerFrequencyIndex(0)
-    , timingUsed(false)
-    , sendingStart(0)
-    , duration(0)
-    , propagationDelay(0)
-    , analogueModelList(0)
-    , numAnalogueModelsApplied(0)
-    , senderPos(0, 0)
-    , receiverPos(0, 0)
-    , bitrate(0)
-    , senderModuleID(-1)
-    , senderFromGateID(-1)
-    , receiverModuleID(-1)
-    , receiverToGateID(-1)
-{
-    //
-}
-
 Signal::Signal(const Signal& other)
     : spectrum(other.spectrum)
     , numAbsoluteValues(other.numAbsoluteValues)
@@ -77,53 +52,18 @@ Signal::Signal(const Signal& other)
 }
 
 Signal::Signal(Spectrum spec)
-    : spectrum(spec)
-    , numAbsoluteValues(spec.getNumFreqs())
-    , numRelativeValues(0)
-    , numDataValues(0)
-    , relativeOffset(0)
-    , dataOffset(0)
-    , centerFrequencyIndex(0)
-    , timingUsed(false)
-    , sendingStart(0)
-    , duration(0)
-    , propagationDelay(0)
-    , analogueModelList(0)
-    , numAnalogueModelsApplied(0)
-    , senderPos(0, 0)
-    , receiverPos(0, 0)
-    , bitrate(0)
-    , senderModuleID(-1)
-    , senderFromGateID(-1)
-    , receiverModuleID(-1)
-    , receiverToGateID(-1)
+    : Signal(spec, 0, 0)
 {
-    values = new double[numAbsoluteValues]{0};
 }
 
 Signal::Signal(Spectrum spec, simtime_t start, simtime_t dur)
     : spectrum(spec)
     , numAbsoluteValues(spec.getNumFreqs())
-    , numRelativeValues(0)
-    , numDataValues(0)
-    , relativeOffset(0)
-    , dataOffset(0)
-    , centerFrequencyIndex(0)
     , timingUsed(true)
     , sendingStart(start)
     , duration(dur)
-    , propagationDelay(0)
-    , analogueModelList(0)
-    , numAnalogueModelsApplied(0)
-    , senderPos(0, 0)
-    , receiverPos(0, 0)
-    , bitrate(0)
-    , senderModuleID(-1)
-    , senderFromGateID(-1)
-    , receiverModuleID(-1)
-    , receiverToGateID(-1)
 {
-    values = new double[numAbsoluteValues]{0};
+    values = new double[numAbsoluteValues + 1]{0};
 }
 
 Signal::~Signal()
