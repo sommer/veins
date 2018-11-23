@@ -40,8 +40,7 @@
 
 using namespace Veins;
 
-using Veins::ObstacleControlAccess;
-using Veins::VehicleObstacleControlAccess;
+using std::unique_ptr;
 
 Define_Module(Veins::PhyLayer80211p);
 
@@ -63,7 +62,7 @@ void PhyLayer80211p::initialize(int stage)
     }
 }
 
-AnalogueModel* PhyLayer80211p::getAnalogueModelFromName(std::string name, ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::getAnalogueModelFromName(std::string name, ParameterMap& params)
 {
 
     if (name == "SimplePathlossModel") {
@@ -91,7 +90,7 @@ AnalogueModel* PhyLayer80211p::getAnalogueModelFromName(std::string name, Parame
     return BasePhyLayer::getAnalogueModelFromName(name, params);
 }
 
-AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& params)
 {
     double alpha1 = -1, alpha2 = -1, breakpointDistance = -1;
     double L01 = -1, L02 = -1;
@@ -173,29 +172,29 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
         throw cRuntimeError("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
     }
 
-    return new BreakpointPathlossModel(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<BreakpointPathlossModel>(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, useTorus, playgroundSize);
 }
 
-AnalogueModel* PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& params)
 {
     ASSERT(params.count("DielectricConstant") == 1);
 
     double dielectricConstant = params["DielectricConstant"].doubleValue();
 
-    return new TwoRayInterferenceModel(dielectricConstant);
+    return make_unique<TwoRayInterferenceModel>(dielectricConstant);
 }
 
-AnalogueModel* PhyLayer80211p::initializeNakagamiFading(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeNakagamiFading(ParameterMap& params)
 {
     bool constM = params["constM"].boolValue();
     double m = 0;
     if (constM) {
         m = params["m"].doubleValue();
     }
-    return new NakagamiFading(constM, m);
+    return make_unique<NakagamiFading>(constM, m);
 }
 
-AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& params)
 {
 
     // init with default value
@@ -262,16 +261,16 @@ AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& param
         }
     }
 
-    return new SimplePathlossModel(alpha, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<SimplePathlossModel>(alpha, carrierFrequency, useTorus, playgroundSize);
 }
 
-AnalogueModel* PhyLayer80211p::initializePERModel(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializePERModel(ParameterMap& params)
 {
     double per = params["packetErrorRate"].doubleValue();
-    return new PERModel(per);
+    return make_unique<PERModel>(per);
 }
 
-Decider* PhyLayer80211p::getDeciderFromName(std::string name, ParameterMap& params)
+unique_ptr<Decider> PhyLayer80211p::getDeciderFromName(std::string name, ParameterMap& params)
 {
     if (name == "Decider80211p") {
         protocolId = IEEE_80211;
@@ -280,7 +279,7 @@ Decider* PhyLayer80211p::getDeciderFromName(std::string name, ParameterMap& para
     return BasePhyLayer::getDeciderFromName(name, params);
 }
 
-AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& params)
 {
 
     // init with default value
@@ -320,10 +319,10 @@ AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& p
 
     ObstacleControl* obstacleControlP = ObstacleControlAccess().getIfExists();
     if (!obstacleControlP) throw cRuntimeError("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
-    return new SimpleObstacleShadowing(*obstacleControlP, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<SimpleObstacleShadowing>(*obstacleControlP, carrierFrequency, useTorus, playgroundSize);
 }
 
-AnalogueModel* PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& params)
 {
 
     // init with default value
@@ -363,20 +362,20 @@ AnalogueModel* PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& 
 
     VehicleObstacleControl* vehicleObstacleControlP = VehicleObstacleControlAccess().getIfExists();
     if (!vehicleObstacleControlP) throw cRuntimeError("initializeVehicleObstacleShadowing(): cannot find VehicleObstacleControl module");
-    return new VehicleObstacleShadowing(*vehicleObstacleControlP, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<VehicleObstacleShadowing>(*vehicleObstacleControlP, carrierFrequency, useTorus, playgroundSize);
 }
 
-Decider* PhyLayer80211p::initializeDecider80211p(ParameterMap& params)
+unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params)
 {
     double centerFreq = params["centerFrequency"];
-    Decider80211p* dec = new Decider80211p(this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
+    auto dec = make_unique<Decider80211p>(this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
     dec->setPath(getParentModule()->getFullPath());
-    return dec;
+    return unique_ptr<Decider>(std::move(dec));
 }
 
 void PhyLayer80211p::changeListeningFrequency(double freq)
 {
-    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider);
+    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
     assert(dec);
     dec->changeFrequency(freq);
 }
@@ -422,7 +421,7 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg)
         assert(msg == txOverTimer);
         sendControlMsgToMac(new cMessage("Transmission over", TX_OVER));
         // check if there is another packet on the chan, and change the chan-state to idle
-        Decider80211p* dec = dynamic_cast<Decider80211p*>(decider);
+        Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
         assert(dec);
         if (dec->cca(simTime(), nullptr)) {
             // chan is idle
@@ -512,7 +511,9 @@ simtime_t PhyLayer80211p::setRadioState(int rs)
 void PhyLayer80211p::setCCAThreshold(double ccaThreshold_dBm)
 {
     ccaThreshold = pow(10, ccaThreshold_dBm / 10);
-    ((Decider80211p*) decider)->setCCAThreshold(ccaThreshold_dBm);
+    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
+    assert(dec);
+    dec->setCCAThreshold(ccaThreshold_dBm);
 }
 double PhyLayer80211p::getCCAThreshold()
 {
@@ -521,13 +522,16 @@ double PhyLayer80211p::getCCAThreshold()
 
 void PhyLayer80211p::notifyMacAboutRxStart(bool enable)
 {
-    ((Decider80211p*) decider)->setNotifyRxStart(enable);
+    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
+    assert(dec);
+    dec->setNotifyRxStart(enable);
 }
 
 void PhyLayer80211p::requestChannelStatusIfIdle()
 {
     Enter_Method_Silent();
-    Decider80211p* dec = (Decider80211p*) decider;
+    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
+    assert(dec);
     if (dec->cca(simTime(), nullptr)) {
         // chan is idle
         EV_TRACE << "Request channel status: channel idle!\n";

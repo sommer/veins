@@ -85,56 +85,56 @@ protected:
      *
      * Is able to initialize the following AnalogueModels:
      */
-    AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params) override;
+    virtual std::unique_ptr<AnalogueModel> getAnalogueModelFromName(std::string name, ParameterMap& params) override;
 
     /**
      * @brief Creates and initializes a SimplePathlossModel with the
      * passed parameter values.
      */
-    AnalogueModel* initializeSimplePathlossModel(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeSimplePathlossModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes an AntennaModel with the
      * passed parameter values.
      */
-    AnalogueModel* initializeAntennaModel(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeAntennaModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a BreakpointPathlossModel with the
      * passed parameter values.
      */
-    virtual AnalogueModel* initializeBreakpointPathlossModel(ParameterMap& params);
+    virtual std::unique_ptr<AnalogueModel> initializeBreakpointPathlossModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a SimpleObstacleShadowing with the
      * passed parameter values.
      */
-    AnalogueModel* initializeSimpleObstacleShadowing(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeSimpleObstacleShadowing(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a VehicleObstacleShadowing with the
      * passed parameter values.
      */
-    AnalogueModel* initializeVehicleObstacleShadowing(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeVehicleObstacleShadowing(ParameterMap& params);
 
     /**
      * @brief Creates a simple Packet Error Rate model that attenuates a percentage
      * of the packets to zero, and does not attenuate the other packets.
      *
      */
-    virtual AnalogueModel* initializePERModel(ParameterMap& params);
+    virtual std::unique_ptr<AnalogueModel> initializePERModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a TwoRayInterferenceModel with the
      * passed parameter values.
      */
-    AnalogueModel* initializeTwoRayInterferenceModel(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeTwoRayInterferenceModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a NakagamiFading with the
      * passed parameter values.
      */
-    AnalogueModel* initializeNakagamiFading(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeNakagamiFading(ParameterMap& params);
 
     /**
      * @brief Creates and returns an instance of the Decider with the specified
@@ -144,12 +144,12 @@ protected:
      *
      * - Decider80211p
      */
-    Decider* getDeciderFromName(std::string name, ParameterMap& params) override;
+    virtual std::unique_ptr<Decider> getDeciderFromName(std::string name, ParameterMap& params) override;
 
     /**
      * @brief Initializes a new Decider80211 from the passed parameter map.
      */
-    virtual Decider* initializeDecider80211p(ParameterMap& params);
+    virtual std::unique_ptr<Decider> initializeDecider80211p(ParameterMap& params);
 
     /**
      * @brief This function encapsulates messages from the upper layer into an
