@@ -12,6 +12,7 @@
 #include "veins/base/phyLayer/MacToPhyInterface.h"
 #include "veins/base/phyLayer/Antenna.h"
 #include "veins/base/phyLayer/ChannelInfo.h"
+#include "veins/base/utils/util.h"
 
 namespace Veins {
 
@@ -108,7 +109,7 @@ protected:
     ChannelInfo channelInfo;
 
     /** @brief The state machine storing the current radio state (TX, RX, SLEEP).*/
-    Radio* radio;
+    std::unique_ptr<Radio> radio;
 
     /**
      * @brief Shared pointer to the Antenna used for this node. It needs to be a shared
@@ -119,7 +120,7 @@ protected:
     std::shared_ptr<Antenna> antenna;
 
     /** @brief Pointer to the decider module. */
-    Decider* decider;
+    std::unique_ptr<Decider> decider;
 
     /** @brief List of the analogue models to use.*/
     AnalogueModelList analogueModels;
@@ -235,7 +236,7 @@ protected:
      * Can be overridden by sub-classing phy layers to use their
      * own Radio implementations.
      */
-    virtual Radio* initializeRadio();
+    virtual std::unique_ptr<Radio> initializeRadio();
 
     /**
      * @brief Creates and returns an instance of the AnalogueModel with the
@@ -252,7 +253,7 @@ protected:
      * This method has to be overridden if you want to be
      * able to load your own AnalogueModels.
      */
-    virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params)
+    virtual std::unique_ptr<AnalogueModel> getAnalogueModelFromName(std::string name, ParameterMap& params)
     {
         return nullptr;
     }
@@ -272,7 +273,7 @@ protected:
      * This method has to be overridden if you want to be
      * able to load your own Decider.
      */
-    virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
+    virtual std::unique_ptr<Decider> getDeciderFromName(std::string name, ParameterMap& params);
 
     /**
      * @brief Creates and returns an instance of the Antenna with the specified name

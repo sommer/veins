@@ -11,7 +11,7 @@ using make_unique = std::make_unique;
  *
  * Until Veins builds on C++14 this provides equivalent functionality.
  */
-template<typename T, typename... Args>
+template <typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args)
 {
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));

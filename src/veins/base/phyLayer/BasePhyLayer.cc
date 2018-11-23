@@ -15,6 +15,7 @@
 
 using namespace Veins;
 
+using std::unique_ptr;
 using Veins::AirFrame;
 
 Define_Module(Veins::BasePhyLayer);
@@ -26,12 +27,12 @@ Coord NoMobiltyPos = Coord::ZERO;
 BasePhyLayer::BasePhyLayer()
     : protocolId(GENERIC)
     , thermalNoiseValue(0)
-    , radio(0)
-    , decider(0)
+    , radio(nullptr)
+    , decider(nullptr)
     , radioSwitchingOverTimer(0)
     , txOverTimer(0)
     , headerLength(-1)
-    , world(NULL)
+    , world(nullptr)
 {
 }
 
@@ -99,13 +100,13 @@ void BasePhyLayer::initialize(int stage)
     }
 }
 
-Radio* BasePhyLayer::initializeRadio()
+unique_ptr<Radio> BasePhyLayer::initializeRadio()
 {
     int initialRadioState = par("initialRadioState");
     int nbRadioChannels = readPar("nbRadioChannels", 1);
     int initialRadioChannel = readPar("initialRadioChannel", 0);
 
-    Radio* radio = Radio::createNewRadio(recordStats, initialRadioState, initialRadioChannel, nbRadioChannels);
+    auto radio = Radio::createNewRadio(recordStats, initialRadioState, initialRadioChannel, nbRadioChannels);
 
     //    - switch times to TX
     // if no RX to TX defined asume same time as sleep to TX
@@ -176,8 +177,7 @@ void BasePhyLayer::finish()
 
 void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
 {
-
-    decider = 0;
+    decider = nullptr;
 
     if (xmlConfig == 0) {
         throw cRuntimeError("No decider configuration file specified.");
@@ -206,16 +206,16 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
 
     decider = getDeciderFromName(name, params);
 
-    if (decider == 0) {
+    if (decider == nullptr) {
         throw cRuntimeError("Could not find a decider with the name \"%s\".", name);
     }
 
     EV_TRACE << "Decider \"" << name << "\" loaded." << endl;
 }
 
-Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
+unique_ptr<Decider> BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
 {
-    return 0;
+    return nullptr;
 }
 
 // -----Antenna initialization----------------------
@@ -337,7 +337,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
         ParameterMap params;
         getParametersFromXML(analogueModelData, params);
 
-        AnalogueModel* newAnalogueModel = getAnalogueModelFromName(name, params);
+        auto newAnalogueModel = getAnalogueModelFromName(name, params);
 
         if (!newAnalogueModel) {
             throw cRuntimeError("Could not find an analogue model with the name \"%s\".", name);
@@ -348,10 +348,10 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
             if (!newAnalogueModel->neverIncreasesPower()) {
                 throw cRuntimeError("Tried to instantiate analogue model \"%s\" with tresholding=true, but model does not support this.", name);
             }
-            analogueModelsThresholding.push_back(newAnalogueModel);
+            analogueModelsThresholding.push_back(std::move(newAnalogueModel));
         }
         else {
-            analogueModels.push_back(newAnalogueModel);
+            analogueModels.push_back(std::move(newAnalogueModel));
         }
 
         EV_TRACE << "AnalogueModel \"" << name << "\" loaded." << endl;
@@ -708,29 +708,6 @@ BasePhyLayer::~BasePhyLayer()
     if (radioSwitchingOverTimer) {
         cancelAndDelete(radioSwitchingOverTimer);
         radioSwitchingOverTimer = nullptr;
-    }
-
-    // free Decider
-    if (decider) {
-        delete decider;
-    }
-
-    // free AnalogueModels (RSAM cannot be part of the thresholding-list)
-    for (auto am : analogueModels) {
-        if (am) {
-            delete am;
-        }
-    }
-
-    for (auto am : analogueModelsThresholding) {
-        if (am) {
-            delete am;
-        }
-    }
-
-    // free radio
-    if (radio) {
-        delete radio;
     }
 }
 

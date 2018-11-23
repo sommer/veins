@@ -2,10 +2,12 @@
 
 #include <cassert>
 #include <list>
+#include <memory>
 
 #include "veins/veins.h"
 
 #include "veins/base/phyLayer/AnalogueModel.h"
+#include "veins/base/utils/util.h"
 
 using Veins::AirFrame;
 
@@ -79,9 +81,9 @@ public:
      * correct number of radio states. Sub classing Radios should also
      * define a factory method like this instead of an public constructor.
      */
-    static Radio* createNewRadio(bool recordStats = false, int initialState = RX, int currentChannel = 0, int nbChannels = 1)
+    static std::unique_ptr<Radio> createNewRadio(bool recordStats = false, int initialState = RX, int currentChannel = 0, int nbChannels = 1)
     {
-        return new Radio(NUM_RADIO_STATES, recordStats, initialState, currentChannel, nbChannels);
+        return std::unique_ptr<Radio>(new Radio(NUM_RADIO_STATES, recordStats, initialState, currentChannel, nbChannels));
     }
 
     /**
