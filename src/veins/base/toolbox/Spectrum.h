@@ -44,8 +44,6 @@ public:
     size_t getNumFreqs() const;
 
     size_t indexOf(double freq) const;
-    size_t indexNearLow(double freq) const;
-    size_t indexNearUp(double freq) const;
 
     double freqAt(size_t freqIndex) const;
 

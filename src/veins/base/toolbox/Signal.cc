@@ -635,40 +635,6 @@ Signal& Signal::operator/=(const double value)
     return *this;
 }
 
-Signal& Signal::operator<<=(uint16_t n)
-{
-    if (n > relativeOffset || n == 0) return *this;
-
-    size_t i = relativeOffset;
-    while (i < relativeOffset + numRelativeValues) {
-        values[i - n] = values[i];
-        values[i] = 0; // Fill with 0s
-        i++;
-    }
-
-    relativeOffset -= n;
-    dataOffset -= n;
-
-    return *this;
-}
-
-Signal& Signal::operator>>=(uint16_t n)
-{
-    if (n > numAbsoluteValues - (relativeOffset + numRelativeValues) || n == 0) return *this;
-
-    size_t i = relativeOffset + numRelativeValues;
-    while (i > 0) {
-        i--;
-        values[i + n] = values[i];
-        values[i] = 0; // Fill with 0s
-    }
-
-    relativeOffset += n;
-    dataOffset += n;
-
-    return *this;
-}
-
 Signal operator+(const Signal& lhs, const Signal& rhs)
 {
     assert(lhs.getSpectrum() == rhs.getSpectrum());
@@ -851,18 +817,6 @@ Signal operator/(double lhs, const Signal& rhs)
     }
 
     return temp;
-}
-
-Signal Signal::operator<<(uint16_t n)
-{
-    Signal temp = *(this);
-    return temp <<= n;
-}
-
-Signal Signal::operator>>(uint16_t n)
-{
-    Signal temp = *(this);
-    return temp >>= n;
 }
 
 std::ostream& operator<<(std::ostream& os, const Signal& s)
