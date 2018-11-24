@@ -22,7 +22,7 @@ extern bool displayPassed;
 template <class T, class T2>
 void fail(std::string msg, T expected, T2 actual)
 {
-    EV_STATICCONTEXT
+    EV_STATICCONTEXT;
     EV_ERROR_C("asserts") << std::setprecision(std::numeric_limits<long double>::digits10 + 1);
     EV_ERROR_C("asserts") << "FAILED: " << msg << ": value was '" << actual << "' instead of '" << expected << "'" << std::endl;
 }

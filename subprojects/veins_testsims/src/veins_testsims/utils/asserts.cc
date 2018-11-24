@@ -5,14 +5,14 @@ bool displayPassed = true;
 
 void fail(std::string msg)
 {
-    EV_STATICCONTEXT
+    EV_STATICCONTEXT;
     EV_ERROR_C("asserts") << "FAILED: " << msg << std::endl;
     if (haltOnFails) exit(1);
 }
 
 void pass(std::string msg, bool hidePassed)
 {
-    EV_STATICCONTEXT
+    EV_STATICCONTEXT;
     if (!hidePassed && displayPassed) EV_INFO_C("asserts") << "Passed: " << msg << std::endl;
 }
 
