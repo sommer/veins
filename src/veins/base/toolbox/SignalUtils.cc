@@ -22,6 +22,8 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
+#include <queue>
+
 namespace Veins {
 namespace SignalUtils {
 
@@ -75,6 +77,56 @@ std::vector<SignalChange> calculateChanges(simtime_t_cref start, simtime_t_cref 
 
     return changes;
 }
+
+template <typename T>
+struct greaterByReceptionEnd {
+    bool operator()(const T& lhs, const T& rhs) const
+    {
+        return lhs.getReceptionEnd() > rhs.getReceptionEnd();
+    };
+};
+
+Signal getMaxInterference(simtime_t start, simtime_t end, AirFrame* const referenceFrame, AirFrameVector& interfererFrames)
+{
+    Spectrum spectrum = referenceFrame->getSignal().getSpectrum();
+    Signal maxInterference(spectrum);
+    Signal currentInterference(spectrum);
+    std::priority_queue<Signal, std::vector<Signal>, greaterByReceptionEnd<Signal>> signalEndings;
+    simtime_t currentTime = 0;
+
+    for (auto& interfererFrame : interfererFrames) {
+        if (interfererFrame->getTreeId() == referenceFrame->getTreeId()) continue; // skip the signal we want to compare to
+        const Signal& signal = interfererFrame->getSignal();
+        if (signal.getReceptionEnd() <= start || signal.getReceptionStart() > end) continue; // skip signals outside our interval of interest
+        ASSERT(signal.getReceptionEnd() > start); // fail on signals ending before start of interval of interest (should be filtered out anyways)
+        ASSERT(signal.getReceptionStart() <= end); // fail on signal starting aftser the interval of interest
+        ASSERT(signal.getReceptionStart() >= currentTime); // assume frames are sorted by reception start time
+        ASSERT(signal.getSpectrum() == spectrum);
+        // fetch next signal and advance current time to its start
+        signalEndings.push(signal);
+        currentTime = signal.getReceptionStart();
+
+        // abort at end time
+        if (currentTime >= end) break;
+
+        // remove signals ending before the start of the current one
+        while (signalEndings.top().getReceptionEnd() <= currentTime) {
+            currentInterference -= signalEndings.top();
+            signalEndings.pop();
+        }
+
+        // add curent signal to current total interference
+        currentInterference += signal;
+
+        // update maximum observed interference
+        for (uint16_t spectrumIndex = signal.getDataStart(); spectrumIndex < signal.getDataEnd(); spectrumIndex++) {
+            maxInterference.at(spectrumIndex) = std::max(currentInterference.at(spectrumIndex), maxInterference.at(spectrumIndex));
+        }
+    }
+
+    return maxInterference;
+}
+
 } // namespace
 
 double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFrames)
@@ -297,56 +349,14 @@ double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFram
     Signal& signal = signalFrame->getSignal();
     Spectrum spectrum = signal.getSpectrum();
 
-    Signal interference_noise = Signal(spectrum);
-    interference_noise = noise;
+    Signal interference = getMaxInterference(start, end, signalFrame, interfererFrames);
+    Signal sinr = signal / (interference + noise);
 
-    Signal sinr = Signal(spectrum);
-
-    // Method will "filter out" the signalFrame
-    auto changes = calculateChanges(start, end, interfererFrames, signalFrame);
-    std::sort(changes.begin(), changes.end(), compareByTime);
-
-    // Prepare I+N at the beginning
-    auto changesIt = changes.begin();
-    while (changesIt != changes.end()) {
-        if (changesIt->time <= start) {
-            interference_noise += *(changesIt->signal);
-        }
-        else {
-            break;
-        }
-        changesIt++;
-    }
-
-    // Make sure to calculate SINR at the beginning
-    double minSINR = INFINITY;
-
+    double min_sinr = INFINITY;
     for (uint16_t i = signal.getDataStart(); i < signal.getDataEnd(); i++) {
-        double sinr = signal.at(i) / interference_noise.at(i);
-        if (sinr < minSINR) minSINR = sinr;
+        min_sinr = std::min(min_sinr, sinr.at(i));
     }
-
-    // Calculate all chunks
-    while (changesIt != changes.end()) {
-
-        if (changesIt->type == ChangeType::starting) {
-            interference_noise += *(changesIt->signal);
-        }
-        else if (changesIt->type == ChangeType::ending) {
-            interference_noise -= *(changesIt->signal);
-        }
-
-        auto changesNext = std::next(changesIt);
-        if (changesNext == changes.end() || changesIt->time != changesNext->time) {
-            for (uint16_t i = signal.getDataStart(); i < signal.getDataEnd(); i++) {
-                double sinr = signal.at(i) / interference_noise.at(i);
-                if (sinr < minSINR) minSINR = sinr;
-            }
-        }
-        changesIt++;
-    }
-
-    return minSINR;
+    return min_sinr;
 }
 
 } // namespace SignalUtils

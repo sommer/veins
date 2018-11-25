@@ -44,6 +44,14 @@ double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& a
 
 bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude = nullptr);
 
+/**
+ * @brief return the minimal Signal to (Interference + Noise) Ratio at any data channel of signalFrame's signal
+ *
+ * Important: The AirFrameVector interfererFrames is assumed to be sorted by signal reception start time!
+ *
+ * This function ensures that all analogue models attached to the signal of each interfererFrame and the signalFrame are applied.
+ * Only considers the given interval between [start, end) and assumes time-independent noise that is the same for all channels.
+ */
 double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise);
 
 } // namespace SignalUtils
