@@ -663,43 +663,39 @@ void BasePhyLayer::sendSelfMessage(cMessage* msg, simtime_t_cref time)
 
 void BasePhyLayer::filterSignal(AirFrame* frame)
 {
-    // determine antenna gains first
+    ASSERT(dynamic_cast<ChannelAccess* const>(frame->getArrivalModule()) == this);
+    ASSERT(dynamic_cast<ChannelAccess* const>(frame->getSenderModule()));
+    Signal& signal = frame->getSignal();
+
+    // Extract position and orientation of sender and receiver (this module) first
+    const Coord receiverPosition = antennaPosition;
+    const Coord receiverOrientation = Coord::fromYaw(-antennaYaw);
     // get POA from frame with the sender's position, orientation and antenna
     POA& senderPOA = frame->getPoa();
-    // get own mobility module
-    BaseMobility* ownMobility = ChannelMobilityAccessType::get(this->getParentModule());
-    assert(ownMobility);
-    Coord ownPos = antennaPosition;
-    Coord ownOrient = Coord::fromYaw(-antennaYaw);
-    // compute gains at sender and receiver antenna
-    double ownGain = antenna->getGain(ownPos, ownOrient, senderPOA.pos);
-    double otherGain = senderPOA.antenna->getGain(senderPOA.pos, senderPOA.orientation, ownPos);
+    const Coord senderPosition = senderPOA.pos;
+    const Coord senderOrientation = senderPOA.orientation;
 
-    EV_TRACE << "Sender's antenna gain: " << otherGain << endl;
-    EV_TRACE << "Own (receiver's) antenna gain: " << ownGain << endl;
+    // add position information to signal
+    signal.setSenderPos(senderPosition);
+    signal.setReceiverPos(receiverPosition);
+
+    // compute gains at sender and receiver antenna
+    double receiverGain = antenna->getGain(receiverPosition, receiverOrientation, senderPosition);
+    double senderGain = senderPOA.antenna->getGain(senderPosition, senderOrientation, receiverOrientation);
 
     // add the resulting total gain to the attenuations list
-    frame->getSignal().addUniformAttenuation(ownGain * otherGain);
+    EV_TRACE << "Sender's antenna gain: " << senderGain << endl;
+    EV_TRACE << "Own (receiver's) antenna gain: " << receiverGain << endl;
+    signal.addUniformAttenuation(receiverGain * senderGain);
 
     // go on with AnalogueModels
-    if (analogueModels.empty() && analogueModelsThresholding.empty()) return;
+    // attach analogue models suitable for thresholding to signal (for later evaluation)
+    signal.setAnalogueModelList(&analogueModelsThresholding);
 
-    ChannelAccess* const senderModule = dynamic_cast<ChannelAccess* const>(frame->getSenderModule());
-    ChannelAccess* const receiverModule = dynamic_cast<ChannelAccess* const>(frame->getArrivalModule());
-
-    ASSERT(senderModule);
-    ASSERT(receiverModule);
-    ASSERT(receiverModule == this);
-
-    const Coord senderPos = senderModule ? senderModule->getAntennaPosition() : NoMobiltyPos;
-    const Coord receiverPos = receiverModule ? receiverModule->getAntennaPosition() : NoMobiltyPos;
-
-    frame->getSignal().setSenderPos(senderPos);
-    frame->getSignal().setReceiverPos(receiverPos);
-    frame->getSignal().setAnalogueModelList(&analogueModelsThresholding);
-    // frame->getSignal().applyAllAnalogueModels();
-
-    for (AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++) (*it)->filterSignal(&frame->getSignal(), senderPos, receiverPos);
+    // apply all analouge models that are *not* suitable for thresholding now
+    for (auto& analogueModel : analogueModels) {
+        analogueModel->filterSignal(&signal, senderPosition, receiverPosition);
+    }
 }
 
 // --Destruction--------------------------------
