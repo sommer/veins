@@ -1233,10 +1233,10 @@ SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
         airFrames.push_back(&signalFrame);
 
         const std::vector<std::pair<double, double>> timings = {
-            {5, 10},
             {0, 5},
             {0, 7.5},
             {5, 5},
+            {5, 10},
             {7.5, 5},
             {10, 5},
             {12.5, 7.5},
