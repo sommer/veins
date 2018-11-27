@@ -30,6 +30,7 @@
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/VehicleSignal.h"
+#include "veins/base/utils/Heading.h"
 
 namespace Veins {
 
@@ -85,8 +86,8 @@ public:
     virtual void finish();
 
     virtual void handleSelfMsg(cMessage* msg);
-    virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1);
-    virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, VehicleSignalSet signals = {VehicleSignal::undefined});
+    virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan);
+    virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan, VehicleSignalSet signals = {VehicleSignal::undefined});
     virtual void changePosition();
     virtual void changeParkingState(bool);
     virtual void setExternalId(std::string external_id)
@@ -126,12 +127,12 @@ public:
         return signals;
     }
     /**
-     * returns angle in rads, 0 being east, with -M_PI <= angle < M_PI.
+     * returns heading.
      */
-    virtual double getAngleRad() const
+    virtual Heading getHeading() const
     {
-        if (angle == -1) throw cRuntimeError("TraCIMobility::getAngleRad called with no angle set yet");
-        return angle;
+        if (heading.isNan()) throw cRuntimeError("TraCIMobility::getHeading called with no heading set yet");
+        return heading;
     }
     virtual TraCIScenarioManager* getManager() const
     {
@@ -169,7 +170,7 @@ protected:
     Coord roadPosition; /**< position of front bumper, updated by nextPosition() */
     std::string road_id; /**< updated by nextPosition() */
     double speed; /**< updated by nextPosition() */
-    double angle; /**< updated by nextPosition() */
+    Heading heading; /**< updated by nextPosition() */
     VehicleSignalSet signals; /**<updated by nextPosition() */
 
     cMessage* startAccidentMsg;

@@ -29,6 +29,7 @@
 #include "veins/base/modules/BatteryAccess.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/modules/BaseMobility.h"
+#include "veins/base/utils/Heading.h"
 
 namespace Veins {
 
@@ -73,8 +74,8 @@ protected:
     /** @brief Current antenna position */
     Coord antennaPosition;
 
-    /** @brief Current atenna yaw angle */
-    double antennaYaw;
+    /** @brief Current antenna heading (angle) */
+    Heading antennaHeading;
 
     /** @brief Offset of antenna position (in m) with respect to what a BaseMobility module will tell us */
     Coord antennaOffset = Coord(0, 0, 0);

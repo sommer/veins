@@ -83,7 +83,7 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            assertEqual("(TraCIMobility::getAngleRad) returns 0 (east)", mobility->getAngleRad(), 0);
+            assertEqual("(TraCIMobility::getHeading) returns 0 (east)", mobility->getHeading().getRad(), 0);
         }
     }
 

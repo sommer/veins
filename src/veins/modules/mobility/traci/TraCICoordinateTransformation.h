@@ -22,6 +22,7 @@
 
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/base/utils/Coord.h"
+#include "veins/base/utils/Heading.h"
 
 #include <list>
 
@@ -35,16 +36,17 @@ public:
     using OmnetCoord = Coord;
     using OmnetCoordList = std::list<OmnetCoord>;
     using TraCICoordList = std::list<TraCICoord>;
-    using Angle = double;
+    using TraCIHeading = double;
+    using OmnetHeading = Heading;
 
     TraCICoordinateTransformation(TraCICoord topleft, TraCICoord bottomright, float margin);
     TraCICoord omnet2traci(const OmnetCoord& coord) const;
     TraCICoordList omnet2traci(const OmnetCoordList& coords) const;
-    Angle omnet2traciAngle(Angle angle) const; /**< TraCI's angle interpretation: 0 is north, 90 is east */
+    TraCIHeading omnet2traciHeading(OmnetHeading heading) const; /**< TraCI's heading interpretation: 0 is north, 90 is east */
 
     OmnetCoord traci2omnet(const TraCICoord& coord) const;
     OmnetCoordList traci2omnet(const TraCICoordList& coords) const;
-    Angle traci2omnetAngle(Angle angle) const; /**<  OMNeT++'s angle interpretation: 0 is east, pi/2 is north */
+    OmnetHeading traci2omnetHeading(TraCIHeading heading) const; /**<  OMNeT++'s heading interpretation: 0 is east, pi/2 is north */
 private:
     TraCICoord dimensions;
     TraCICoord topleft;

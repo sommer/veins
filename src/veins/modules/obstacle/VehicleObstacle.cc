@@ -71,7 +71,7 @@ VehicleObstacle::Coords VehicleObstacle::getShape() const
     double w = getWidth() / 2;
     const TraCIMobility* m = getTraCIMobility();
     Coord p = m->getCurrentPosition();
-    double a = m->getAngleRad();
+    double a = m->getHeading().getRad();
 
     Coords shape;
     shape.push_back(p + Coord(-(l - o), -w).rotatedYaw(-a));

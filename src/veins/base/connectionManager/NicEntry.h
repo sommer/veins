@@ -26,6 +26,7 @@
 #include "veins/veins.h"
 
 #include "veins/base/utils/Coord.h"
+#include "veins/base/utils/Heading.h"
 
 namespace Veins {
 
@@ -66,8 +67,8 @@ public:
     /** @brief Geographic location of the nic*/
     Coord pos;
 
-    /** @brief Yaw angle of the nic*/
-    double yaw;
+    /** @brief Heading (angle) of the nic*/
+    Heading heading;
 
     /** @brief Points to this nics ChannelAccess module */
     ChannelAccess* chAccess;

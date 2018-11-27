@@ -21,6 +21,10 @@
 
 #include "veins/veins.h"
 
+namespace Veins {
+class Coord;
+}
+
 #include "veins/base/utils/FWMath.h"
 
 namespace Veins {
@@ -283,30 +287,15 @@ public:
     }
 
     /**
-     * @brief Returns this coord when rotated around z axis (i.e., yaw)
+     * Returns this coord when rotated around z axis (i.e., yaw).
+     *
+     * Coord(0,1,0) rotated by -90 degrees is Coord(1,0,0)
+     *
      * @param rad: angle to rotate by (in rad)
      */
     Coord rotatedYaw(double rad) const
     {
         return Coord(x * cos(rad) - y * sin(rad), x * sin(rad) + y * cos(rad), z);
-    }
-
-    /**
-     * @brief Returns coord of a unit vector (optionally: of given length) when rotated along z axis (i.e., yaw)
-     * @param rad: angle to rotate by (in rad)
-     * @param length: length of vector (dimensionless)
-     */
-    static Coord fromYaw(double rad, double length = 1)
-    {
-        return Coord(cos(rad) * length, sin(rad) * length);
-    }
-
-    /**
-     * @brief Returns how far around z axis this coord is rotated (i.e., yaw)
-     */
-    double toYaw()
-    {
-        return atan2(y, x);
     }
 
     /**

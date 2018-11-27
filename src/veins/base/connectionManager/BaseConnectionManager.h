@@ -3,6 +3,7 @@
 #include "veins/veins.h"
 
 #include "veins/base/connectionManager/NicEntry.h"
+#include "veins/base/utils/Heading.h"
 
 namespace Veins {
 
@@ -377,7 +378,7 @@ public:
      * If you want to do your own stuff at the registration of a nic see
      * "registerNicExt()".
      */
-    bool registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos, double yaw);
+    bool registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos, Heading heading);
 
     /**
      * @brief Unregisters a NIC such that its connections aren't managed by the CM
@@ -394,7 +395,7 @@ public:
     bool unregisterNic(cModule* nic);
 
     /** @brief Updates the position information of a registered nic.*/
-    void updateNicPos(int nicID, const Coord* newPos, double yaw);
+    void updateNicPos(int nicID, const Coord* newPos, Heading heading);
 
     /** @brief Returns the ingates of all nics in range*/
     const NicEntry::GateList& getGateList(int nicID) const;

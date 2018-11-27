@@ -126,23 +126,23 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
     std::vector<size_t> mo; ///< indices of MOs (this includes the sender and receiver)
     mo.push_back(0);
     for (size_t i = 0;;) {
-        double max_angle = -std::numeric_limits<double>::infinity();
-        size_t max_angle_index;
+        double max_slope = -std::numeric_limits<double>::infinity();
+        size_t max_slope_index;
 
         for (size_t j = i + 1; j < dz_vec.size(); ++j) {
-            double angle = (dz_vec[j].second - dz_vec[i].second) / (dz_vec[j].first - dz_vec[i].first);
+            double slope = (dz_vec[j].second - dz_vec[i].second) / (dz_vec[j].first - dz_vec[i].first);
 
-            if (angle > max_angle) {
-                max_angle = angle;
-                max_angle_index = j;
+            if (slope > max_slope) {
+                max_slope = slope;
+                max_slope_index = j;
             }
         }
 
-        if (max_angle_index >= dz_vec.size() - 1) break;
+        if (max_slope_index >= dz_vec.size() - 1) break;
 
-        mo.push_back(max_angle_index);
+        mo.push_back(max_slope_index);
 
-        i = max_angle_index;
+        i = max_slope_index;
     }
     mo.push_back(dz_vec.size() - 1);
 

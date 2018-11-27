@@ -538,7 +538,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
 
     // Prepare a POA object and attach it to the created Airframe
     Coord pos = antennaPosition;
-    Coord orient = Coord::fromYaw(-antennaYaw);
+    Coord orient = antennaHeading.toCoord();
     POA* poa = new POA(pos, orient, antenna);
     frame->setPoa(*poa);
     // the frame is now owner of the POA object
@@ -670,7 +670,7 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     BaseMobility* ownMobility = ChannelMobilityAccessType::get(this->getParentModule());
     assert(ownMobility);
     Coord ownPos = antennaPosition;
-    Coord ownOrient = Coord::fromYaw(-antennaYaw);
+    Coord ownOrient = antennaHeading.toCoord();
     // compute gains at sender and receiver antenna
     double ownGain = antenna->getGain(ownPos, ownOrient, senderPOA.pos);
     double otherGain = senderPOA.antenna->getGain(senderPOA.pos, senderPOA.orientation, ownPos);

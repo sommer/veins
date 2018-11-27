@@ -159,18 +159,17 @@ void ChannelAccess::receiveSignal(cComponent* source, simsignal_t signalID, cObj
     if (signalID == BaseMobility::mobilityStateChangedSignal) {
         ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
 
-        auto av = mobility->getCurrentOrientation();
-        auto yaw = av.flippedY().toYaw();
-        antennaPosition = mobility->getCurrentPosition() + antennaOffset.rotatedYaw(-yaw);
-        antennaYaw = yaw + antennaOffsetYaw;
+        auto heading = Heading::fromCoord(mobility->getCurrentOrientation());
+        antennaPosition = mobility->getCurrentPosition() + antennaOffset.rotatedYaw(-heading.getRad());
+        antennaHeading = Heading(heading.getRad() + antennaOffsetYaw);
 
         if (isRegistered) {
-            cc->updateNicPos(getParentModule()->getId(), &antennaPosition, antennaYaw);
+            cc->updateNicPos(getParentModule()->getId(), &antennaPosition, antennaHeading);
         }
         else {
             // register the nic with ConnectionManager
             // returns true, if sendDirect is used
-            useSendDirect = cc->registerNic(getParentModule(), this, &antennaPosition, antennaYaw);
+            useSendDirect = cc->registerNic(getParentModule(), this, &antennaPosition, antennaHeading);
             isRegistered = true;
         }
     }

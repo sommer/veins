@@ -25,7 +25,8 @@ namespace Veins {
 using OmnetCoord = TraCICoordinateTransformation::OmnetCoord;
 using OmnetCoordList = TraCICoordinateTransformation::OmnetCoordList;
 using TraCICoordList = TraCICoordinateTransformation::TraCICoordList;
-using Angle = TraCICoordinateTransformation::Angle;
+using OmnetHeading = TraCICoordinateTransformation::OmnetHeading;
+using TraCIHeading = TraCICoordinateTransformation::TraCIHeading;
 
 TraCICoordinateTransformation::TraCICoordinateTransformation(TraCICoord topleft, TraCICoord bottomright, float margin)
     : dimensions({bottomright.x - topleft.x, bottomright.y - topleft.y})
@@ -49,10 +50,10 @@ TraCICoordList TraCICoordinateTransformation::omnet2traci(const OmnetCoordList& 
     return result;
 }
 
-Angle TraCICoordinateTransformation::omnet2traciAngle(Angle angle) const
+TraCIHeading TraCICoordinateTransformation::omnet2traciHeading(OmnetHeading o) const
 {
     // convert to degrees
-    angle = angle * 180 / M_PI;
+    auto angle = o.getRad() * 180 / M_PI;
 
     // rotate angle
     angle = 90 - angle;
@@ -82,10 +83,10 @@ OmnetCoordList TraCICoordinateTransformation::traci2omnet(const TraCICoordList& 
     return result;
 }
 
-Angle TraCICoordinateTransformation::traci2omnetAngle(Angle angle) const
+OmnetHeading TraCICoordinateTransformation::traci2omnetHeading(TraCIHeading o) const
 {
     // rotate angle
-    angle = 90 - angle;
+    auto angle = 90 - o;
 
     // convert to rad
     angle = angle * M_PI / 180.0;
@@ -98,7 +99,7 @@ Angle TraCICoordinateTransformation::traci2omnetAngle(Angle angle) const
         angle -= 2 * M_PI;
     }
 
-    return angle;
+    return OmnetHeading(angle);
 }
 
 } // end namespace Veins

@@ -30,20 +30,20 @@ VeinsInetManager::~VeinsInetManager()
 {
 }
 
-void VeinsInetManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignalSet signals)
+void VeinsInetManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals)
 {
     // pre-initialize VeinsInetMobility
     auto mobilityModules = getSubmodulesOfType<VeinsInetMobility>(mod);
     for (auto inetmm : mobilityModules) {
-        inetmm->preInitialize(nodeId, inet::Coord(position.x, position.y), road_id, speed, angle);
+        inetmm->preInitialize(nodeId, inet::Coord(position.x, position.y), road_id, speed, heading.getRad());
     }
 }
 
-void VeinsInetManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignalSet signals)
+void VeinsInetManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals)
 {
     // update position in VeinsInetMobility
     auto mobilityModules = getSubmodulesOfType<VeinsInetMobility>(mod);
     for (auto inetmm : mobilityModules) {
-        inetmm->nextPosition(inet::Coord(p.x, p.y), edge, speed, angle);
+        inetmm->nextPosition(inet::Coord(p.x, p.y), edge, speed, heading.getRad());
     }
 }

@@ -276,16 +276,16 @@ std::list<TraCICoord> TraCIConnection::omnet2traci(const std::list<Coord>& list)
     return coordinateTransformation->omnet2traci(list);
 }
 
-double TraCIConnection::traci2omnetAngle(double angle) const
+Heading TraCIConnection::traci2omnetHeading(double heading) const
 {
     ASSERT(coordinateTransformation.get());
-    return coordinateTransformation->traci2omnetAngle(angle);
+    return coordinateTransformation->traci2omnetHeading(heading);
 }
 
-double TraCIConnection::omnet2traciAngle(double angle) const
+double TraCIConnection::omnet2traciHeading(Heading heading) const
 {
     ASSERT(coordinateTransformation.get());
-    return coordinateTransformation->omnet2traciAngle(angle);
+    return coordinateTransformation->omnet2traciHeading(heading);
 }
 
 } // namespace Veins

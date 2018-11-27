@@ -451,26 +451,26 @@ void TraCIScenarioManager::handleSelfMsg(cMessage* msg)
     error("TraCIScenarioManager received unknown self-message");
 }
 
-void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignalSet signals)
+void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals)
 {
     // pre-initialize TraCIMobility
     auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
     for (auto mm : mobilityModules) {
-        mm->preInitialize(nodeId, position, road_id, speed, angle);
+        mm->preInitialize(nodeId, position, road_id, speed, heading);
     }
 }
 
-void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignalSet signals)
+void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals)
 {
     // update position in TraCIMobility
     auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
     for (auto mm : mobilityModules) {
-        mm->nextPosition(p, edge, speed, angle, signals);
+        mm->nextPosition(p, edge, speed, heading, signals);
     }
 }
 
 // name: host;Car;i=vehicle.gif
-void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double angle, VehicleSignalSet signals, double length, double height, double width)
+void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, Heading heading, VehicleSignalSet signals, double length, double height, double width)
 {
 
     if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
@@ -500,7 +500,7 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     mod->buildInside();
     mod->scheduleStart(simTime() + updateInterval);
 
-    preInitializeModule(mod, nodeId, position, road_id, speed, angle, signals);
+    preInitializeModule(mod, nodeId, position, road_id, speed, heading, signals);
 
     mod->callInitialize();
     hosts[nodeId] = mod;
@@ -992,7 +992,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
     Coord p = connection->traci2omnet(TraCICoord(px, py));
     if ((p.x < 0) || (p.y < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
 
-    double angle = connection->traci2omnetAngle(angle_traci);
+    Heading heading = connection->traci2omnetHeading(angle_traci);
 
     cModule* mod = getManagedModule(objectId);
 
@@ -1047,14 +1047,14 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
         }
 
         if (mType != "0") {
-            addModule(objectId, mType, mName, mDisplayString, p, edge, speed, angle, VehicleSignalSet(signals), length, height, width);
+            addModule(objectId, mType, mName, mDisplayString, p, edge, speed, heading, VehicleSignalSet(signals), length, height, width);
             EV_DEBUG << "Added vehicle #" << objectId << endl;
         }
     }
     else {
         // module existed - update position
         EV_DEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << endl;
-        updateModulePosition(mod, p, edge, speed, angle, VehicleSignalSet(signals));
+        updateModulePosition(mod, p, edge, speed, heading, VehicleSignalSet(signals));
     }
 }
 
