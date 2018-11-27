@@ -122,6 +122,7 @@ void TimerSpecification::finalize()
     case EndMode::repetition:
         end_time_ = start_ + ((end_count_ - 1) * period_);
         end_mode_ = EndMode::absolute;
+        break;
     case EndMode::open:
         break;
     }
