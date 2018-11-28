@@ -27,6 +27,7 @@ namespace Veins {
 
 Signal::Signal(const Signal& other)
     : spectrum(other.spectrum)
+    , values(new double[spectrum.getNumFreqs()]{0})
     , numAbsoluteValues(other.numAbsoluteValues)
     , numRelativeValues(other.numRelativeValues)
     , numDataValues(other.numDataValues)
@@ -47,23 +48,24 @@ Signal::Signal(const Signal& other)
     , receiverModuleID(other.receiverModuleID)
     , receiverToGateID(other.receiverToGateID)
 {
-    values = new double[spectrum.getNumFreqs()]{0};
     std::copy(other.getAbsoluteValues(), other.getAbsoluteValues() + numAbsoluteValues, values);
 }
 
 Signal::Signal(Spectrum spec)
-    : Signal(spec, 0, 0)
+    : spectrum(spec)
+    , values(new double[spectrum.getNumFreqs() + 1]{0})
+    , numAbsoluteValues(spectrum.getNumFreqs())
 {
 }
 
 Signal::Signal(Spectrum spec, simtime_t start, simtime_t dur)
     : spectrum(spec)
-    , numAbsoluteValues(spec.getNumFreqs())
+    , values(new double[spectrum.getNumFreqs() + 1]{0})
+    , numAbsoluteValues(spectrum.getNumFreqs())
     , timingUsed(true)
     , sendingStart(start)
     , duration(dur)
 {
-    values = new double[numAbsoluteValues + 1]{0};
 }
 
 Signal::~Signal()
