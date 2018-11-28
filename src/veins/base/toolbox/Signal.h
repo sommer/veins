@@ -193,7 +193,7 @@ private:
 
     size_t centerFrequencyIndex = 0;
 
-    bool timingUsed = 0;
+    bool timingUsed = false;
     /** @brief The start of the signal transmission at the sender module.*/
     simtime_t sendingStart = 0;
     /** @brief The duration of the signal transmission.*/
