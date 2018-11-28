@@ -595,6 +595,14 @@ void Mac1609_4::setCCAThreshold(double ccaThreshold_dBm)
     phy11p->setCCAThreshold(ccaThreshold_dBm);
 }
 
+void Mac1609_4::handleBroadcast(Mac80211Pkt* macPkt, DeciderResult80211* res)
+{
+    statsReceivedBroadcasts++;
+    unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
+    wsm->setControlInfo(new PhyToMacControlInfo(res));
+    sendUp(wsm.release());
+}
+
 void Mac1609_4::handleLowerMsg(cMessage* msg)
 {
     Mac80211Pkt* macPkt = check_and_cast<Mac80211Pkt*>(msg);
@@ -620,10 +628,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
         }
     }
     else if (dest == LAddress::L2BROADCAST()) {
-        statsReceivedBroadcasts++;
-        unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
-        wsm->setControlInfo(new PhyToMacControlInfo(res));
-        sendUp(wsm.release());
+        handleBroadcast(macPkt, res);
     }
     else {
         EV_TRACE << "Packet not for me" << std::endl;
