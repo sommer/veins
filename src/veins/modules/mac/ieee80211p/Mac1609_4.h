@@ -61,6 +61,8 @@ namespace Veins {
  * @see Decider80211p
  */
 
+class DeciderResult80211;
+
 class Mac1609_4 : public BaseMacLayer, public WaveAppToMac1609_4Interface {
 
 public:
@@ -203,6 +205,9 @@ protected:
 
     /** @brief Handle control messages from lower layer.*/
     virtual void handleLowerControl(cMessage* msg);
+
+    /** @brief Handle received broadcast */
+    virtual void handleBroadcast(Mac80211Pkt* macPkt, DeciderResult80211* res);
 
     /** @brief Set a state for the channel selecting operation.*/
     void setActiveChannel(t_channel state);
