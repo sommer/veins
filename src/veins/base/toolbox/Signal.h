@@ -34,7 +34,7 @@ public:
     Signal(const Signal& other);
     explicit Signal(Spectrum spec);
     Signal(Spectrum spec, simtime_t start, simtime_t duration);
-    ~Signal();
+    ~Signal() = default;
 
     double& operator[](size_t index);
     const double& operator[](size_t index) const;
@@ -57,9 +57,9 @@ public:
     void setDataEnd(size_t index);
     void setDataNumValues(size_t num);
 
-    double* getAbsoluteValues() const;
-    double* getRelativeValues() const;
-    double* getDataValues() const;
+    double* getAbsoluteValues();
+    double* getRelativeValues();
+    double* getDataValues();
 
     size_t getNumAbsoluteValues() const;
     size_t getNumRelativeValues() const;
@@ -182,9 +182,8 @@ private:
 
     Spectrum spectrum;
 
-    double* values = nullptr;
+    std::vector<double> values;
 
-    size_t numAbsoluteValues = 0;
     size_t numRelativeValues = 0;
     size_t numDataValues = 0;
 

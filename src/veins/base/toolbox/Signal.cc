@@ -27,8 +27,7 @@ namespace Veins {
 
 Signal::Signal(const Signal& other)
     : spectrum(other.spectrum)
-    , values(new double[spectrum.getNumFreqs()]{0})
-    , numAbsoluteValues(other.numAbsoluteValues)
+    , values(other.values)
     , numRelativeValues(other.numRelativeValues)
     , numDataValues(other.numDataValues)
     , relativeOffset(other.relativeOffset)
@@ -48,29 +47,21 @@ Signal::Signal(const Signal& other)
     , receiverModuleID(other.receiverModuleID)
     , receiverToGateID(other.receiverToGateID)
 {
-    std::copy(other.getAbsoluteValues(), other.getAbsoluteValues() + numAbsoluteValues, values);
 }
 
 Signal::Signal(Spectrum spec)
     : spectrum(spec)
-    , values(new double[spectrum.getNumFreqs() + 1]{0})
-    , numAbsoluteValues(spectrum.getNumFreqs())
+    , values(spectrum.getNumFreqs(), 0)
 {
 }
 
 Signal::Signal(Spectrum spec, simtime_t start, simtime_t dur)
     : spectrum(spec)
-    , values(new double[spectrum.getNumFreqs() + 1]{0})
-    , numAbsoluteValues(spectrum.getNumFreqs())
+    , values(spectrum.getNumFreqs(), 0)
     , timingUsed(true)
     , sendingStart(start)
     , duration(dur)
 {
-}
-
-Signal::~Signal()
-{
-    if (values) delete[] values;
 }
 
 double& Signal::operator[](size_t index)
@@ -78,32 +69,28 @@ double& Signal::operator[](size_t index)
 #ifndef PREFER_VECTORIZATION
     includeAbsoluteIndex(index);
 #endif
-    ASSERT(index < numAbsoluteValues);
-
-    return values[index];
+    return values.at(index);
 }
 
 const double& Signal::operator[](size_t index) const
 {
-    ASSERT(index < numAbsoluteValues);
-    return values[index];
+    return values.at(index);
 }
 
 double& Signal::operator()(double freq)
 {
     size_t index = spectrum.indexOf(freq);
 
-    ASSERT(index < numAbsoluteValues);
     includeAbsoluteIndex(index);
 
-    return values[index];
+    return values.at(index);
 }
 
 double Signal::operator()(double freq) const
 {
     size_t index = spectrum.indexOf(freq);
 
-    return values[index];
+    return values.at(index);
 }
 
 Spectrum Signal::getSpectrum() const
@@ -161,24 +148,24 @@ void Signal::setDataNumValues(size_t num)
     numDataValues = num;
 }
 
-double* Signal::getAbsoluteValues() const
+double* Signal::getAbsoluteValues()
 {
-    return values;
+    return values.data();
 }
 
-double* Signal::getRelativeValues() const
+double* Signal::getRelativeValues()
 {
-    return values + relativeOffset;
+    return values.data() + relativeOffset;
 }
 
-double* Signal::getDataValues() const
+double* Signal::getDataValues()
 {
-    return values + dataOffset;
+    return values.data() + dataOffset;
 }
 
 size_t Signal::getNumAbsoluteValues() const
 {
-    return numAbsoluteValues;
+    return values.size();
 }
 
 size_t Signal::getNumRelativeValues() const
@@ -426,7 +413,7 @@ double Signal::getDataMin() const
 
 double Signal::getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const
 {
-    return *(std::min_element(values + freqIndexLow, values + freqIndexHigh));
+    return *(std::min_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
 }
 
 double Signal::getRelativeMax() const
@@ -441,7 +428,7 @@ double Signal::getDataMax() const
 
 double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
 {
-    return *(std::max_element(values + freqIndexLow, values + freqIndexHigh));
+    return *(std::max_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
 }
 
 Signal& Signal::operator=(const double value)
@@ -467,15 +454,10 @@ Signal& Signal::operator=(const Signal& other)
 
     centerFrequencyIndex = other.getCenterFrequencyIndex();
 
-    numAbsoluteValues = other.getNumAbsoluteValues();
     numRelativeValues = other.getNumRelativeValues();
     numDataValues = other.getNumDataValues();
 
-    // TODO: Check if new spectrum has changed and new one is larger
-    if (values) delete[] values;
-    values = new double[spectrum.getNumFreqs()]{0};
-
-    std::copy(other.getAbsoluteValues(), other.getAbsoluteValues() + numAbsoluteValues, values);
+    values = other.values;
 
     analogueModelList = other.getAnalogueModelList();
     numAnalogueModelsApplied = other.getNumAnalogueModelsApplied();
@@ -501,10 +483,10 @@ Signal& Signal::operator+=(const Signal& other)
     size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
 #else
     size_t lowIndex = 0;
-    size_t highIndex = numAbsoluteValues;
+    size_t highIndex = values.size();
 #endif
 
-    std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::plus<double>());
+    std::transform(values.begin() + lowIndex, values.begin() + highIndex, other.values.begin() + lowIndex, values.begin() + lowIndex, std::plus<double>());
     relativeOffset = lowIndex;
     numRelativeValues = highIndex - lowIndex;
     return *this;
@@ -512,9 +494,9 @@ Signal& Signal::operator+=(const Signal& other)
 
 Signal& Signal::operator+=(const double value)
 {
-    std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other + value; });
+    std::transform(values.begin(), values.end(), values.begin(), [value](double other) { return other + value; });
     relativeOffset = 0;
-    numRelativeValues = numAbsoluteValues;
+    numRelativeValues = values.size();
     return *this;
 }
 
@@ -527,10 +509,10 @@ Signal& Signal::operator-=(const Signal& other)
     size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
 #else
     size_t lowIndex = 0;
-    size_t highIndex = numAbsoluteValues;
+    size_t highIndex = values.size();
 #endif
 
-    std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::minus<double>());
+    std::transform(values.begin() + lowIndex, values.begin() + highIndex, other.values.begin() + lowIndex, values.begin() + lowIndex, std::minus<double>());
     relativeOffset = lowIndex;
     numRelativeValues = highIndex - lowIndex;
     return *this;
@@ -538,9 +520,9 @@ Signal& Signal::operator-=(const Signal& other)
 
 Signal& Signal::operator-=(const double value)
 {
-    std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other - value; });
+    std::transform(values.begin(), values.end(), values.begin(), [value](double other) { return other - value; });
     relativeOffset = 0;
-    numRelativeValues = numAbsoluteValues;
+    numRelativeValues = values.size();
     return *this;
 }
 
@@ -553,10 +535,10 @@ Signal& Signal::operator*=(const Signal& other)
     size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
 #else
     size_t lowIndex = 0;
-    size_t highIndex = numAbsoluteValues;
+    size_t highIndex = values.size();
 #endif
 
-    std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::multiplies<double>());
+    std::transform(values.begin() + lowIndex, values.begin() + highIndex, other.values.begin() + lowIndex, values.begin() + lowIndex, std::multiplies<double>());
     relativeOffset = lowIndex;
     numRelativeValues = highIndex - lowIndex;
     return *this;
@@ -564,9 +546,9 @@ Signal& Signal::operator*=(const Signal& other)
 
 Signal& Signal::operator*=(const double value)
 {
-    std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other * value; });
+    std::transform(values.begin(), values.end(), values.begin(), [value](double other) { return other * value; });
     relativeOffset = 0;
-    numRelativeValues = numAbsoluteValues;
+    numRelativeValues = values.size();
     return *this;
 }
 
@@ -579,10 +561,10 @@ Signal& Signal::operator/=(const Signal& other)
     size_t highIndex = std::max(this->getRelativeEnd(), other.getRelativeEnd());
 #else
     size_t lowIndex = 0;
-    size_t highIndex = numAbsoluteValues;
+    size_t highIndex = values.size();
 #endif
 
-    std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::divides<double>());
+    std::transform(values.begin() + lowIndex, values.begin() + highIndex, other.values.begin() + lowIndex, values.begin() + lowIndex, std::divides<double>());
     relativeOffset = lowIndex;
     numRelativeValues = highIndex - lowIndex;
     return *this;
@@ -590,9 +572,9 @@ Signal& Signal::operator/=(const Signal& other)
 
 Signal& Signal::operator/=(const double value)
 {
-    std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other / value; });
+    std::transform(values.begin(), values.end(), values.begin(), [value](double other) { return other / value; });
     relativeOffset = 0;
-    numRelativeValues = numAbsoluteValues;
+    numRelativeValues = values.size();
     return *this;
 }
 
@@ -687,7 +669,7 @@ std::ostream& operator<<(std::ostream& os, const Signal& s)
     }
     os << s.spectrum << ", ";
     std::ostream_iterator<char> osi(os, ", ");
-    std::copy(s.values + s.getRelativeStart(), s.values + s.getRelativeEnd(), osi);
+    std::copy(s.values.begin() + s.getRelativeStart(), s.values.begin() + s.getRelativeEnd(), osi);
     os << ")";
     return os;
 }
@@ -762,7 +744,7 @@ void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
 
 void Signal::addAttenuation(uint16_t freqIndex, double factor)
 {
-    ASSERT(freqIndex < numAbsoluteValues);
+    ASSERT(freqIndex < values.size());
     values[freqIndex] *= factor;
 }
 
