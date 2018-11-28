@@ -25,6 +25,7 @@
 #include "veins/base/toolbox/Signal.h"
 #include "veins/base/toolbox/SignalUtils.h"
 #include "veins/base/messages/AirFrame_m.h"
+#include "veins/base/utils/util.h"
 #include "testutils/Simulation.h"
 #include "DummyAnalogueModel.h"
 
@@ -843,12 +844,9 @@ SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
 
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.5);
-
         AnalogueModelList analogueModels;
-        analogueModels.push_back(&am1);
-        analogueModels.push_back(&am2);
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
 
         Signal signal(spectrum);
         signal[0] = 10;
@@ -919,12 +917,9 @@ SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but
 
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.5);
-
         AnalogueModelList analogueModels;
-        analogueModels.push_back(&am1);
-        analogueModels.push_back(&am2);
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
 
         Signal signal(spectrum);
         signal[0] = 10;
@@ -994,9 +989,9 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         Freqs freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels{&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
         signal[0] = 100;
@@ -1078,9 +1073,9 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
         Freqs freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels = {&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
         signal[0] = 100;
@@ -1213,9 +1208,9 @@ SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
         Freqs freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels = {&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
         signal[0] = 100;
@@ -1276,9 +1271,9 @@ SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/e
         Freqs freqs = {1, 2, 3, 4, 5};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels = {&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
         signal[1] = 1000;
@@ -1337,9 +1332,9 @@ SCENARIO("SignalUtils::getMinSINR treats signal start/end as inclusive/exclusive
         Freqs freqs = {1, 2, 3, 4, 5};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels = {&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
 
         Signal signal(spectrum);
         signal[1] = 1000;
