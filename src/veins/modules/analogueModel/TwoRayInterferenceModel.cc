@@ -46,8 +46,8 @@ void TwoRayInterferenceModel::filterSignal(Signal* signal, const Coord& senderPo
 
     double gamma = (sin_theta - sqrt(epsilon_r - pow(cos_theta, 2))) / (sin_theta + sqrt(epsilon_r - pow(cos_theta, 2)));
 
-    for (uint16_t i = signal->getRelativeStart(); i < signal->getRelativeEnd(); i++) {
-        double freq = signal->getAbsoluteFreqAt(i);
+    for (uint16_t i = 0; i < signal->getNumValues(); i++) {
+        double freq = signal->getFreqAt(i);
         double lambda = BaseWorldUtility::speedOfLight() / freq;
         double phi = (2 * M_PI / lambda * (d_dir - d_ref));
         double att = pow(4 * M_PI * (d / lambda) * 1 / (sqrt((pow((1 + gamma * cos(phi)), 2) + pow(gamma, 2) * pow(sin(phi), 2)))), 2);

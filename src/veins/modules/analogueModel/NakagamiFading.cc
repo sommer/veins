@@ -37,7 +37,7 @@ void NakagamiFading::filterSignal(Signal* signal, const Coord& senderPos, const 
     // get average TX power
     // FIXME: really use average power (instead of max)
     EV_TRACE << "Finding max TX power ..." << endl;
-    double sendPower_mW = signal->getRelativeMax();
+    double sendPower_mW = signal->getMax();
     EV_TRACE << "TX power is " << FWMath::mW2dBm(sendPower_mW) << " dBm" << endl;
 
     // get m value

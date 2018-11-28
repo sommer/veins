@@ -103,7 +103,7 @@ double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFra
     }
 
     // Make sure to calculate at beginning
-    double maximum = interference.getRelativeMax();
+    double maximum = interference.getMax();
 
     // Calculate all chunks
     while (it != changes.end()) {
@@ -116,7 +116,7 @@ double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFra
 
         auto next = std::next(it);
         if (next == changes.end() || it->time != next->time) {
-            double tmpMax = interference.getRelativeMax();
+            double tmpMax = interference.getMax();
             if (tmpMax > maximum) maximum = tmpMax;
         }
         it++;
@@ -151,7 +151,7 @@ double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFra
     }
 
     // Make sure to calculate at beginning
-    double minimum = interference.getRelativeMin();
+    double minimum = interference.getDataMin();
 
     // Calculate all chunks
     while (it != changes.end()) {
@@ -164,7 +164,7 @@ double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFra
 
         auto next = std::next(it);
         if (next == changes.end() || it->time != next->time) {
-            double tmpMin = interference.getRelativeMin();
+            double tmpMin = interference.getDataMin();
             if (tmpMin < minimum) minimum = tmpMin;
         }
         it++;

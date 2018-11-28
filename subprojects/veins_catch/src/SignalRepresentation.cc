@@ -123,11 +123,9 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
             THEN("all values have their default values")
             {
                 REQUIRE(signal1.getSpectrum() == Spectrum());
-                REQUIRE(signal1.getAbsoluteValues() == 0);
-                REQUIRE(signal1.getNumAbsoluteValues() == 0);
-                REQUIRE(signal1.getNumRelativeValues() == 0);
+                REQUIRE(signal1.getValues() == 0);
+                REQUIRE(signal1.getNumValues() == 0);
                 REQUIRE(signal1.getNumDataValues() == 0);
-                REQUIRE(signal1.getRelativeOffset() == 0);
                 REQUIRE(signal1.getDataOffset() == 0);
                 REQUIRE(signal1.getCenterFrequencyIndex() == 0);
 
@@ -143,14 +141,12 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                 WHEN("another signal is created with spectrum as parameter")
                 {
                     Signal signal2(spectrum);
-                    THEN("all values have their default values and numAbsoluteValues and values match to spectrum")
+                    THEN("all values have their default values and numValues and values match to spectrum")
                     {
                         REQUIRE(signal2.getSpectrum() == spectrum);
-                        REQUIRE(signal2.getAbsoluteValues() != 0);
-                        REQUIRE(signal2.getNumAbsoluteValues() == 6);
-                        REQUIRE(signal2.getNumRelativeValues() == 0);
+                        REQUIRE(signal2.getValues() != 0);
+                        REQUIRE(signal2.getNumValues() == 6);
                         REQUIRE(signal2.getNumDataValues() == 0);
-                        REQUIRE(signal2.getRelativeOffset() == 0);
                         REQUIRE(signal2.getDataOffset() == 0);
                         REQUIRE(signal2.getCenterFrequencyIndex() == 0);
 
@@ -167,14 +163,12 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                 WHEN("another signal is created with spectrum and timing as parameters")
                 {
                     Signal signal2(spectrum, 10, 5);
-                    THEN("all values have their default values and numAbsoluteValues, values match to spectrum and timing is applied properly")
+                    THEN("all values have their default values and numValues, values match to spectrum and timing is applied properly")
                     {
                         REQUIRE(signal2.getSpectrum() == spectrum);
-                        REQUIRE(signal2.getAbsoluteValues() != 0);
-                        REQUIRE(signal2.getNumAbsoluteValues() == 6);
-                        REQUIRE(signal2.getNumRelativeValues() == 0);
+                        REQUIRE(signal2.getValues() != 0);
+                        REQUIRE(signal2.getNumValues() == 6);
                         REQUIRE(signal2.getNumDataValues() == 0);
-                        REQUIRE(signal2.getRelativeOffset() == 0);
                         REQUIRE(signal2.getDataOffset() == 0);
                         REQUIRE(signal2.getCenterFrequencyIndex() == 0);
 
@@ -195,14 +189,12 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getSpectrum() == signal3.getSpectrum());
 
                                 // Each signal has its own values
-                                REQUIRE(signal2.getAbsoluteValues() != signal3.getAbsoluteValues());
-                                REQUIRE(signal2.getAbsoluteValues() != 0);
-                                REQUIRE(signal3.getAbsoluteValues() != 0);
+                                REQUIRE(signal2.getValues() != signal3.getValues());
+                                REQUIRE(signal2.getValues() != 0);
+                                REQUIRE(signal3.getValues() != 0);
 
-                                REQUIRE(signal2.getNumAbsoluteValues() == signal3.getNumAbsoluteValues());
-                                REQUIRE(signal2.getNumRelativeValues() == signal3.getNumRelativeValues());
+                                REQUIRE(signal2.getNumValues() == signal3.getNumValues());
                                 REQUIRE(signal2.getNumDataValues() == signal3.getNumDataValues());
-                                REQUIRE(signal2.getRelativeOffset() == signal3.getRelativeOffset());
                                 REQUIRE(signal2.getDataOffset() == signal3.getDataOffset());
                                 REQUIRE(signal2.getCenterFrequencyIndex() == signal3.getCenterFrequencyIndex());
 
@@ -224,14 +216,12 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getSpectrum() == signal3.getSpectrum());
 
                                 // Each signal has its own values
-                                REQUIRE(signal2.getAbsoluteValues() != signal3.getAbsoluteValues());
-                                REQUIRE(signal2.getAbsoluteValues() != 0);
-                                REQUIRE(signal3.getAbsoluteValues() != 0);
+                                REQUIRE(signal2.getValues() != signal3.getValues());
+                                REQUIRE(signal2.getValues() != 0);
+                                REQUIRE(signal3.getValues() != 0);
 
-                                REQUIRE(signal2.getNumAbsoluteValues() == signal3.getNumAbsoluteValues());
-                                REQUIRE(signal2.getNumRelativeValues() == signal3.getNumRelativeValues());
+                                REQUIRE(signal2.getNumValues() == signal3.getNumValues());
                                 REQUIRE(signal2.getNumDataValues() == signal3.getNumDataValues());
-                                REQUIRE(signal2.getRelativeOffset() == signal3.getRelativeOffset());
                                 REQUIRE(signal2.getDataOffset() == signal3.getDataOffset());
                                 REQUIRE(signal2.getCenterFrequencyIndex() == signal3.getCenterFrequencyIndex());
 
@@ -270,16 +260,6 @@ SCENARIO("Signal Value Access", "[toolbox]")
             signal[4] = 1;
 
             // Access via operators
-            THEN("relative interval is as expected")
-            {
-                REQUIRE(signal.getNumAbsoluteValues() == 6);
-
-                REQUIRE(signal.getRelativeOffset() == 1);
-                REQUIRE(signal.getNumRelativeValues() == 4);
-
-                REQUIRE(signal.getRelativeStart() == 1);
-                REQUIRE(signal.getRelativeEnd() == 5); // Note: This is not 4 as it should support iterations (what about <= in for-loop?)
-            }
             THEN("frequencies can be addressed by index")
             {
                 REQUIRE(signal[1] == 4);
@@ -289,10 +269,10 @@ SCENARIO("Signal Value Access", "[toolbox]")
             }
             THEN("frequencies can be addressed by frequency")
             {
-                REQUIRE(signal(2) == 4);
-                REQUIRE(signal(3) == 3);
-                REQUIRE(signal(4) == 2);
-                REQUIRE(signal(5) == 1);
+                REQUIRE(signal.getAtFreq(2) == 4);
+                REQUIRE(signal.getAtFreq(3) == 3);
+                REQUIRE(signal.getAtFreq(4) == 2);
+                REQUIRE(signal.getAtFreq(5) == 1);
             }
 
             WHEN("data interval defined")
@@ -435,9 +415,6 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal sum2 = c + signal;
             THEN("result is (2,3,4,5,2,2)")
             {
-                REQUIRE(sum1.getNumRelativeValues() == 6);
-                REQUIRE(sum1.getRelativeStart() == 0);
-                REQUIRE(sum1.getRelativeEnd() == 6);
                 REQUIRE(sum1[0] == 2);
                 REQUIRE(sum1[1] == 3);
                 REQUIRE(sum1[2] == 4);
@@ -445,9 +422,6 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
                 REQUIRE(sum1[4] == 2);
                 REQUIRE(sum1[5] == 2);
 
-                REQUIRE(sum2.getNumRelativeValues() == 6);
-                REQUIRE(sum2.getRelativeStart() == 0);
-                REQUIRE(sum2.getRelativeEnd() == 6);
                 REQUIRE(sum2[0] == 2);
                 REQUIRE(sum2[1] == 3);
                 REQUIRE(sum2[2] == 4);
@@ -462,9 +436,6 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal difference2 = c - signal;
             THEN("result is (-2,-1,0,1,-2,-2) rsp. (2,1,0,-1,2,2)")
             {
-                REQUIRE(difference1.getNumRelativeValues() == 6);
-                REQUIRE(difference1.getRelativeStart() == 0);
-                REQUIRE(difference1.getRelativeEnd() == 6);
                 REQUIRE(difference1[0] == -2);
                 REQUIRE(difference1[1] == -1);
                 REQUIRE(difference1[2] == 0);
@@ -472,9 +443,6 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
                 REQUIRE(difference1[4] == -2);
                 REQUIRE(difference1[5] == -2);
 
-                REQUIRE(difference2.getNumRelativeValues() == 6);
-                REQUIRE(difference2.getRelativeStart() == 0);
-                REQUIRE(difference2.getRelativeEnd() == 6);
                 REQUIRE(difference2[0] == 2);
                 REQUIRE(difference2[1] == 1);
                 REQUIRE(difference2[2] == 0);
@@ -489,9 +457,6 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal product2 = c * signal;
             THEN("result is (0,2,4,6,0,0)")
             {
-                REQUIRE(product1.getNumRelativeValues() == 6);
-                REQUIRE(product1.getRelativeStart() == 0);
-                REQUIRE(product1.getRelativeEnd() == 6);
                 REQUIRE(product1[0] == 0);
                 REQUIRE(product1[1] == 2);
                 REQUIRE(product1[2] == 4);
@@ -499,9 +464,6 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
                 REQUIRE(product1[4] == 0);
                 REQUIRE(product1[5] == 0);
 
-                REQUIRE(product2.getNumRelativeValues() == 6);
-                REQUIRE(product2.getRelativeStart() == 0);
-                REQUIRE(product2.getRelativeEnd() == 6);
                 REQUIRE(product2[0] == 0);
                 REQUIRE(product2[1] == 2);
                 REQUIRE(product2[2] == 4);
@@ -516,9 +478,6 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal quotient2 = c / signal;
             THEN("result is (0,0.5,1,0.6..7,0,0) rsp. (inf,2,1,0.6..7,inf,inf)")
             {
-                REQUIRE(quotient1.getNumRelativeValues() == 6);
-                REQUIRE(quotient1.getRelativeStart() == 0);
-                REQUIRE(quotient1.getRelativeEnd() == 6);
                 REQUIRE(quotient1[0] == 0);
                 REQUIRE(quotient1[1] == 0.5);
                 REQUIRE(quotient1[2] == 1);
@@ -526,9 +485,6 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
                 REQUIRE(quotient1[4] == 0);
                 REQUIRE(quotient1[5] == 0);
 
-                REQUIRE(quotient2.getNumRelativeValues() == 6);
-                REQUIRE(quotient2.getRelativeStart() == 0);
-                REQUIRE(quotient2.getRelativeEnd() == 6);
                 REQUIRE(quotient2[0] == INFINITY);
                 REQUIRE(quotient2[1] == 2);
                 REQUIRE(quotient2[2] == 1);
@@ -562,9 +518,6 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal sum = signal1 + signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(sum.getNumRelativeValues() == 3);
-                REQUIRE(sum.getRelativeStart() == 1);
-                REQUIRE(sum.getRelativeEnd() == 4);
                 REQUIRE(sum[1] == 1);
                 REQUIRE(sum[2] == 5);
                 REQUIRE(sum[3] == 4);
@@ -575,9 +528,6 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal difference = signal2 - signal1;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(difference.getNumRelativeValues() == 3);
-                REQUIRE(difference.getRelativeStart() == 1);
-                REQUIRE(difference.getRelativeEnd() == 4);
                 REQUIRE(difference[1] == -1);
                 REQUIRE(difference[2] == 1);
                 REQUIRE(difference[3] == 4);
@@ -588,9 +538,6 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal product = signal1 * signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(product.getNumRelativeValues() == 3);
-                REQUIRE(product.getRelativeStart() == 1);
-                REQUIRE(product.getRelativeEnd() == 4);
                 REQUIRE(product[1] == 0);
                 REQUIRE(product[2] == 6);
                 REQUIRE(product[3] == 0);
@@ -601,9 +548,6 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal quotient = signal1 / signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(quotient.getNumRelativeValues() == 3);
-                REQUIRE(quotient.getRelativeStart() == 1);
-                REQUIRE(quotient.getRelativeEnd() == 4);
                 REQUIRE(quotient[1] == INFINITY);
                 REQUIRE(quotient[2] == double(2.0 / 3.0));
                 REQUIRE(quotient[3] == 0);
@@ -634,9 +578,6 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             sum += c;
             THEN("result is (2,3,4,5,2,2)")
             {
-                REQUIRE(sum.getNumRelativeValues() == 6);
-                REQUIRE(sum.getRelativeStart() == 0);
-                REQUIRE(sum.getRelativeEnd() == 6);
                 REQUIRE(sum[0] == 2);
                 REQUIRE(sum[1] == 3);
                 REQUIRE(sum[2] == 4);
@@ -651,9 +592,6 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             difference -= c;
             THEN("result is (-2,-1,0,1,-2,-2) rsp. (2,1,0,-1,2,2)")
             {
-                REQUIRE(difference.getNumRelativeValues() == 6);
-                REQUIRE(difference.getRelativeStart() == 0);
-                REQUIRE(difference.getRelativeEnd() == 6);
                 REQUIRE(difference[0] == -2);
                 REQUIRE(difference[1] == -1);
                 REQUIRE(difference[2] == 0);
@@ -668,9 +606,6 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             product *= c;
             THEN("result is (0,2,4,6,0,0)")
             {
-                REQUIRE(product.getNumRelativeValues() == 6);
-                REQUIRE(product.getRelativeStart() == 0);
-                REQUIRE(product.getRelativeEnd() == 6);
                 REQUIRE(product[0] == 0);
                 REQUIRE(product[1] == 2);
                 REQUIRE(product[2] == 4);
@@ -685,9 +620,6 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             quotient /= c;
             THEN("result is (0,0.5,1,0.6..7,0,0) rsp. (inf,2,1,0.6..7,inf,inf)")
             {
-                REQUIRE(quotient.getNumRelativeValues() == 6);
-                REQUIRE(quotient.getRelativeStart() == 0);
-                REQUIRE(quotient.getRelativeEnd() == 6);
                 REQUIRE(quotient[0] == 0);
                 REQUIRE(quotient[1] == 0.5);
                 REQUIRE(quotient[2] == 1);
@@ -722,9 +654,6 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             sum += signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(sum.getNumRelativeValues() == 3);
-                REQUIRE(sum.getRelativeStart() == 1);
-                REQUIRE(sum.getRelativeEnd() == 4);
                 REQUIRE(sum[1] == 1);
                 REQUIRE(sum[2] == 5);
                 REQUIRE(sum[3] == 4);
@@ -736,9 +665,6 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             difference -= signal1;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(difference.getNumRelativeValues() == 3);
-                REQUIRE(difference.getRelativeStart() == 1);
-                REQUIRE(difference.getRelativeEnd() == 4);
                 REQUIRE(difference[1] == -1);
                 REQUIRE(difference[2] == 1);
                 REQUIRE(difference[3] == 4);
@@ -750,9 +676,6 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             product *= signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(product.getNumRelativeValues() == 3);
-                REQUIRE(product.getRelativeStart() == 1);
-                REQUIRE(product.getRelativeEnd() == 4);
                 REQUIRE(product[1] == 0);
                 REQUIRE(product[2] == 6);
                 REQUIRE(product[3] == 0);
@@ -764,9 +687,6 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             quotient /= signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(quotient.getNumRelativeValues() == 3);
-                REQUIRE(quotient.getRelativeStart() == 1);
-                REQUIRE(quotient.getRelativeEnd() == 4);
                 REQUIRE(quotient[1] == INFINITY);
                 REQUIRE(quotient[2] == double(2.0 / 3.0));
                 REQUIRE(quotient[3] == 0);

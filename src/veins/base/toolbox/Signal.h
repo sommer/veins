@@ -43,38 +43,30 @@ public:
 
     Spectrum getSpectrum() const;
 
-    double getAbsoluteFreqAt(size_t freqIndex) const;
-    double getRelativeFreqAt(size_t freqIndex) const;
+    double getFreqAt(size_t freqIndex) const;
     double getDataFreqAt(size_t freqIndex) const;
 
-    size_t getRelativeStart() const;
     size_t getDataStart() const;
 
-    size_t getRelativeEnd() const;
     size_t getDataEnd() const;
 
     void setDataStart(size_t index);
     void setDataEnd(size_t index);
     void setDataNumValues(size_t num);
 
-    double* getAbsoluteValues();
-    double* getRelativeValues();
+    double* getValues();
     double* getDataValues();
 
-    size_t getNumAbsoluteValues() const;
-    size_t getNumRelativeValues() const;
+    size_t getNumValues() const;
     size_t getNumDataValues() const;
 
-    size_t getRelativeOffset() const;
     size_t getDataOffset() const;
 
-    void setAbsolute(size_t index, double value);
-    void setRelative(size_t index, double value);
+    void set(size_t index, double value);
     void setData(size_t index, double value);
     void setAtFreq(double freq, double value);
 
-    double getAbsolute(size_t index) const;
-    double getRelative(size_t index) const;
+    double get(size_t index) const;
     double getData(size_t index) const;
     double getAtFreq(double freq) const;
 
@@ -112,11 +104,10 @@ public:
 
     bool hasTiming() const;
 
-    double getRelativeMin() const;
     double getDataMin() const;
     double getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const;
 
-    double getRelativeMax() const;
+    double getMax() const;
     double getDataMax() const;
     double getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const;
 
@@ -178,16 +169,11 @@ public:
     void addUniformAttenuation(double factor);
 
 private:
-    void includeAbsoluteIndex(size_t freqIndex);
-
     Spectrum spectrum;
 
     std::vector<double> values;
 
-    size_t numRelativeValues = 0;
     size_t numDataValues = 0;
-
-    size_t relativeOffset = 0;
     size_t dataOffset = 0;
 
     size_t centerFrequencyIndex = 0;
