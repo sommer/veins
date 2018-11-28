@@ -277,7 +277,7 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg)
     // here the Signal is finally processed
     Signal& signal = frame->getSignal();
 
-    double recvPower_dBm = 10 * log10(signal.getRelativeMax());
+    double recvPower_dBm = 10 * log10(signal.getMax());
 
     bool whileSending = false;
 
