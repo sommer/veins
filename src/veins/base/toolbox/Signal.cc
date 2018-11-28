@@ -416,12 +416,12 @@ bool Signal::hasTiming() const
 
 double Signal::getRelativeMin() const
 {
-    return *(std::min_element(values + relativeOffset, values + relativeOffset + numRelativeValues));
+    return getMinInRange(relativeOffset, relativeOffset + numRelativeValues);
 }
 
 double Signal::getDataMin() const
 {
-    return *(std::min_element(values + dataOffset, values + dataOffset + numDataValues));
+    return getMinInRange(dataOffset, dataOffset + numDataValues);
 }
 
 double Signal::getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const
@@ -431,12 +431,12 @@ double Signal::getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const
 
 double Signal::getRelativeMax() const
 {
-    return *(std::max_element(values + relativeOffset, values + relativeOffset + numRelativeValues));
+    return getMaxInRange(relativeOffset, relativeOffset + numRelativeValues);
 }
 
 double Signal::getDataMax() const
 {
-    return *(std::max_element(values + dataOffset, values + dataOffset + numDataValues));
+    return getMaxInRange(dataOffset, dataOffset + numDataValues);
 }
 
 double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
@@ -446,9 +446,8 @@ double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
 
 Signal& Signal::operator=(const double value)
 {
-    for (size_t i = 0; i < numAbsoluteValues; i++) {
-        values[i] = value;
-    }
+    std::fill(values.begin(), values.end(), value);
+    numRelativeValues = values.size();
     return *this;
 }
 
@@ -676,9 +675,7 @@ Signal operator/(double lhs, const Signal& rhs)
 {
     // Create constant signal
     Signal sigLhs(rhs.getSpectrum());
-    for (size_t i = 0; i < sigLhs.getNumAbsoluteValues(); i++) {
-        sigLhs[i] = lhs;
-    }
+    sigLhs = lhs;
     return sigLhs / rhs;
 }
 
@@ -771,9 +768,7 @@ void Signal::addAttenuation(uint16_t freqIndex, double factor)
 
 void Signal::addUniformAttenuation(double factor)
 {
-    for (uint16_t i = relativeOffset; i < relativeOffset + numRelativeValues; i++) {
-        values[i] *= factor;
-    }
+    *this *= factor;
 }
 
 /***********************/
