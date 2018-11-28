@@ -506,12 +506,16 @@ Signal& Signal::operator+=(const Signal& other)
 #endif
 
     std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::plus<double>());
+    relativeOffset = lowIndex;
+    numRelativeValues = highIndex - lowIndex;
     return *this;
 }
 
 Signal& Signal::operator+=(const double value)
 {
     std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other + value; });
+    relativeOffset = 0;
+    numRelativeValues = numAbsoluteValues;
     return *this;
 }
 
@@ -528,12 +532,16 @@ Signal& Signal::operator-=(const Signal& other)
 #endif
 
     std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::minus<double>());
+    relativeOffset = lowIndex;
+    numRelativeValues = highIndex - lowIndex;
     return *this;
 }
 
 Signal& Signal::operator-=(const double value)
 {
     std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other - value; });
+    relativeOffset = 0;
+    numRelativeValues = numAbsoluteValues;
     return *this;
 }
 
@@ -550,12 +558,16 @@ Signal& Signal::operator*=(const Signal& other)
 #endif
 
     std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::multiplies<double>());
+    relativeOffset = lowIndex;
+    numRelativeValues = highIndex - lowIndex;
     return *this;
 }
 
 Signal& Signal::operator*=(const double value)
 {
     std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other * value; });
+    relativeOffset = 0;
+    numRelativeValues = numAbsoluteValues;
     return *this;
 }
 
@@ -572,12 +584,16 @@ Signal& Signal::operator/=(const Signal& other)
 #endif
 
     std::transform(values + lowIndex, values + highIndex, other.values + lowIndex, values + lowIndex, std::divides<double>());
+    relativeOffset = lowIndex;
+    numRelativeValues = highIndex - lowIndex;
     return *this;
 }
 
 Signal& Signal::operator/=(const double value)
 {
     std::transform(values, values + numAbsoluteValues, values, [value](double other) { return other / value; });
+    relativeOffset = 0;
+    numRelativeValues = numAbsoluteValues;
     return *this;
 }
 
@@ -618,9 +634,7 @@ Signal operator-(const Signal& lhs, double rhs)
 
 Signal operator-(double lhs, const Signal& rhs)
 {
-    Signal result(rhs);
-    result -= lhs;
-    return result;
+    return lhs + (-1 * rhs);
 }
 
 Signal operator*(const Signal& lhs, const Signal& rhs)
@@ -660,9 +674,12 @@ Signal operator/(const Signal& lhs, double rhs)
 
 Signal operator/(double lhs, const Signal& rhs)
 {
-    Signal result(rhs);
-    result /= lhs;
-    return result;
+    // Create constant signal
+    Signal sigLhs(rhs.getSpectrum());
+    for (size_t i = 0; i < sigLhs.getNumAbsoluteValues(); i++) {
+        sigLhs[i] = lhs;
+    }
+    return sigLhs / rhs;
 }
 
 std::ostream& operator<<(std::ostream& os, const Signal& s)
