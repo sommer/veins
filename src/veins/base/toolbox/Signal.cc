@@ -726,28 +726,28 @@ void Signal::includeAbsoluteIndex(size_t freqIndex)
 
 cModule* Signal::getReceptionModule() const
 {
-    return receiverModuleID < 0 ? NULL : getSimulation()->getModule(receiverModuleID);
+    return receiverModuleID < 0 ? nullptr : getSimulation()->getModule(receiverModuleID);
 }
 
 cGate* Signal::getReceptionGate() const
 {
-    if (receiverToGateID < 0) return NULL;
+    if (receiverToGateID < 0) return nullptr;
 
     cModule* const mod = getReceptionModule();
-    return !mod ? NULL : mod->gate(receiverToGateID);
+    return !mod ? nullptr : mod->gate(receiverToGateID);
 }
 
 cModule* Signal::getSendingModule() const
 {
-    return senderModuleID < 0 ? NULL : getSimulation()->getModule(senderModuleID);
+    return senderModuleID < 0 ? nullptr : getSimulation()->getModule(senderModuleID);
 }
 
 cGate* Signal::getSendingGate() const
 {
-    if (senderFromGateID < 0) return NULL;
+    if (senderFromGateID < 0) return nullptr;
 
     cModule* const mod = getSendingModule();
-    return !mod ? NULL : mod->gate(senderFromGateID);
+    return !mod ? nullptr : mod->gate(senderFromGateID);
 }
 
 void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
