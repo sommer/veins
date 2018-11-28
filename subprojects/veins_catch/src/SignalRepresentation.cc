@@ -537,66 +537,6 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
                 REQUIRE(quotient2[5] == INFINITY);
             }
         }
-        WHEN("signal1 is left shifted by 1")
-        {
-            Signal leftShift = signal << uint16_t(1);
-            THEN("result is (1,2,3,0,0,0)")
-            {
-                REQUIRE(leftShift.getRelativeStart() == 0);
-                REQUIRE(leftShift.getRelativeEnd() == 3);
-                REQUIRE(leftShift[0] == 1);
-                REQUIRE(leftShift[1] == 2);
-                REQUIRE(leftShift[2] == 3);
-                REQUIRE(leftShift[3] == 0);
-                REQUIRE(leftShift[4] == 0);
-                REQUIRE(leftShift[5] == 0);
-            }
-        }
-        WHEN("signal1 is left shifted by 2")
-        {
-            Signal leftShift = signal << uint16_t(2);
-            THEN("shifting is illegal, so original signal is returned (0,1,2,3,0,0)")
-            {
-                REQUIRE(leftShift.getRelativeStart() == 1);
-                REQUIRE(leftShift.getRelativeEnd() == 4);
-                REQUIRE(leftShift[0] == 0);
-                REQUIRE(leftShift[1] == 1);
-                REQUIRE(leftShift[2] == 2);
-                REQUIRE(leftShift[3] == 3);
-                REQUIRE(leftShift[4] == 0);
-                REQUIRE(leftShift[5] == 0);
-            }
-        }
-        WHEN("signal1 is right shifted by 2")
-        {
-            Signal rightShift = signal >> uint16_t(2);
-            THEN("result is (0,0,0,1,2,3)")
-            {
-                REQUIRE(rightShift.getRelativeStart() == 3);
-                REQUIRE(rightShift.getRelativeEnd() == 6);
-                REQUIRE(rightShift[0] == 0);
-                REQUIRE(rightShift[1] == 0);
-                REQUIRE(rightShift[2] == 0);
-                REQUIRE(rightShift[3] == 1);
-                REQUIRE(rightShift[4] == 2);
-                REQUIRE(rightShift[5] == 3);
-            }
-        }
-        WHEN("signal1 is right shifted by 3")
-        {
-            Signal rightShift = signal >> uint16_t(3);
-            THEN("shifting is illegal, so original signal is returned (0,1,2,3,0,0)")
-            {
-                REQUIRE(rightShift.getRelativeStart() == 1);
-                REQUIRE(rightShift.getRelativeEnd() == 4);
-                REQUIRE(rightShift[0] == 0);
-                REQUIRE(rightShift[1] == 1);
-                REQUIRE(rightShift[2] == 2);
-                REQUIRE(rightShift[3] == 3);
-                REQUIRE(rightShift[4] == 0);
-                REQUIRE(rightShift[5] == 0);
-            }
-        }
     }
 }
 
