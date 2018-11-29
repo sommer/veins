@@ -684,7 +684,7 @@ void TraCIScenarioManager::processTrafficLightSubscription(std::string objectId,
             break;
 
         case TL_NEXT_SWITCH:
-            tlIfModule->setNextSwitch(SimTime(buf.readTypeChecked<int32_t>(TYPE_INTEGER), SIMTIME_MS), false);
+            tlIfModule->setNextSwitch(buf.readTypeChecked<simtime_t>(getCommandInterface()->getTimeType()), false);
             break;
 
         case TL_RED_YELLOW_GREEN_STATE:

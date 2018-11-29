@@ -776,10 +776,10 @@ void TraCITestApp::handlePositionUpdate()
             traci->trafficlight("10").setPhaseDuration(999);
         }
         if (t == 15) { //Vehicle is supposed to wait in front of a red traffic light
-            assertClose("(Vehicle is supposed to wait in front of a red traffic light", mobility->getCurrentSpeed().x, 0.0);
+            assertTrue("(Vehicle is supposed to wait in front of a red traffic light", mobility->getCurrentSpeed().x < 0.1);
         }
         if (t == 25) {
-            assertNotEqual("(Vehicle is supposed to drive again (Traffic light turned green)", mobility->getCurrentSpeed().x, 0);
+            assertNotEqual("(Vehicle is supposed to drive again (Traffic light turned green)", 0, mobility->getCurrentSpeed().x);
         }
     }
 
