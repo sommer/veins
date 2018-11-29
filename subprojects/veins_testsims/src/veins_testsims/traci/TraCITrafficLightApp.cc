@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 David Eckhoff <david.eckhoff@fau.de>
+// Copyright (C) 2018 Tobias Hardes <hardes@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -18,26 +18,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "veins/modules/application/traci/TraCIDemoRSU11p.h"
+#include "veins_testsims/traci/TraCITrafficLightApp.h"
 
-#include "veins/modules/application/traci/TraCIDemo11pMessage_m.h"
+#include "veins/modules/messages/DemoSafetyMessage_m.h"
 
-using namespace Veins;
+using Veins::TraCITrafficLightApp;
 
-Define_Module(Veins::TraCIDemoRSU11p);
+Define_Module(TraCITrafficLightApp);
 
-void TraCIDemoRSU11p::onWSA(DemoServiceAdvertisment* wsa)
+void TraCITrafficLightApp::onBSM(DemoSafetyMessage* bsm)
 {
-    // if this RSU receives a WSA for service 42, it will tune to the chan
-    if (wsa->getPsid() == 42) {
-        mac->changeServiceChannel(wsa->getTargetChannel());
-    }
+    delete bsm;
 }
 
-void TraCIDemoRSU11p::onWSM(BaseFrame1609_4* frame)
+void TraCITrafficLightApp::handleLowerMsg(cMessage* msg)
 {
-    TraCIDemo11pMessage* wsm = check_and_cast<TraCIDemo11pMessage*>(frame);
+    delete msg;
+}
 
-    // this rsu repeats the received traffic update in 2 seconds plus some random delay
-    sendDelayedDown(wsm->dup(), 2 + uniform(0.01, 0.2));
+void TraCITrafficLightApp::handleMessage(cMessage* msg)
+{
+    delete msg;
 }

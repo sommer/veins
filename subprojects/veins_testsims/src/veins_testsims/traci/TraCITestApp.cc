@@ -24,6 +24,7 @@
 
 #include "veins_testsims/utils/asserts.h"
 #include "veins/modules/mobility/traci/TraCIColor.h"
+#include "veins_testsims/traci/TraCITrafficLightTestLogic.h"
 
 using Veins::BaseMobility;
 using Veins::TraCIMobility;
@@ -765,6 +766,26 @@ void TraCITestApp::handlePositionUpdate()
         if (t == 1) {
             // TODO: cannot be tested (no programmatic feedback)
             // traci->guiView("View #0").trackVehicle("flow0.0");
+        }
+    }
+
+    //
+    // Veins::TraCITrafficLightAbstractLogic (see org.car2x.veins.subprojects.veins_testsims.traci.TraCITrafficLightTestLogic class)
+    //
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            traci->trafficlight("10").setState("rrrrrrrrr");
+            traci->trafficlight("10").setPhaseDuration(999);
+            auto* logic = FindModule<TraCITrafficLightTestLogic*>::findSubModule(getSimulation()->getSystemModule());
+            ASSERT(logic);
+            logic->startChangingProgramAt(simTime() + 12);
+        }
+        if (t == 15) {
+            assertTrue("Vehicle is supposed to wait in front of a red traffic light", mobility->getCurrentSpeed().x < 0.1);
+        }
+        if (t == 25) {
+            assertTrue("Vehicle is supposed to drive again (Traffic light turned green)", mobility->getCurrentSpeed().x > 0.1);
         }
     }
 

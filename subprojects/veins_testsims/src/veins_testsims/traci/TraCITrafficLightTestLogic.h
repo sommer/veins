@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2015-2018 Dominik Buse <dbuse@mail.uni-paderborn.de>
+// Copyright (C) 2018 Tobias Hardes <hardes@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,29 +21,33 @@
 
 #pragma once
 
-#include "veins/veins.h"
-
-#include <veins/modules/world/traci/trafficLight/logics/TraCITrafficLightAbstractLogic.h>
+#include "veins/modules/world/traci/trafficLight/logics/TraCITrafficLightAbstractLogic.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 
 namespace Veins {
-class TraCITrafficLightSimpleLogic : public TraCITrafficLightAbstractLogic {
+class TraCITrafficLightTestLogic : public TraCITrafficLightAbstractLogic {
+private:
+    cMessage* changeProgramm;
+    unsigned int currentIndex = 0;
 
 public:
     using signalScheme = std::string;
+    virtual void startChangingProgramAt(simtime_t t);
 
 protected:
-    void handleApplMsg(cMessage* msg) override;
-    void handleTlIfMsg(TraCITrafficLightMessage* tlMsg) override;
-    void handlePossibleSwitch() override;
+    virtual void initialize();
+    virtual void handleMessage(cMessage* msg);
+    virtual void handleApplMsg(cMessage* msg);
+    virtual void handleTlIfMsg(TraCITrafficLightMessage* tlMsg);
+    virtual void handlePossibleSwitch();
 };
 
-class TraCITrafficLightSimpleLogicAccess {
+class TraCITrafficLightTestLogicAccess {
 public:
-    TraCITrafficLightSimpleLogic* get(cModule* host)
+    TraCITrafficLightTestLogic* get(cModule* host)
     {
-        TraCITrafficLightSimpleLogic* traci = FindModule<TraCITrafficLightSimpleLogic*>::findSubModule(host);
+        TraCITrafficLightTestLogic* traci = FindModule<TraCITrafficLightTestLogic*>::findSubModule(host);
         ASSERT(traci);
         return traci;
     };

@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 David Eckhoff <david.eckhoff@fau.de>
+// Copyright (C) 2015-2018 Dominik Buse <dbuse@mail.uni-paderborn.de>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -18,26 +18,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "veins/modules/application/traci/TraCIDemoRSU11p.h"
+package org.car2x.veins.subprojects.veins_testsims.traci;
 
-#include "veins/modules/application/traci/TraCIDemo11pMessage_m.h"
+import org.car2x.veins.base.modules.ITrafficLightLogic;
 
-using namespace Veins;
-
-Define_Module(Veins::TraCIDemoRSU11p);
-
-void TraCIDemoRSU11p::onWSA(DemoServiceAdvertisment* wsa)
+simple TraCITrafficLightTestLogic like ITrafficLightLogic 
 {
-    // if this RSU receives a WSA for service 42, it will tune to the chan
-    if (wsa->getPsid() == 42) {
-        mac->changeServiceChannel(wsa->getTargetChannel());
-    }
-}
-
-void TraCIDemoRSU11p::onWSM(BaseFrame1609_4* frame)
-{
-    TraCIDemo11pMessage* wsm = check_and_cast<TraCIDemo11pMessage*>(frame);
-
-    // this rsu repeats the received traffic update in 2 seconds plus some random delay
-    sendDelayedDown(wsm->dup(), 2 + uniform(0.01, 0.2));
+    parameters:
+        @class(Veins::TraCITrafficLightTestLogic);
+        @display("i=block/classifier");
+    gates:
+        inout interface;
+        inout applLayer;
 }

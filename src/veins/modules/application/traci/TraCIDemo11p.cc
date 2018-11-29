@@ -20,6 +20,8 @@
 
 #include "veins/modules/application/traci/TraCIDemo11p.h"
 
+#include "veins/modules/application/traci/TraCIDemo11pMessage_m.h"
+
 using namespace Veins;
 
 Define_Module(Veins::TraCIDemo11p);
@@ -46,8 +48,10 @@ void TraCIDemo11p::onWSA(DemoServiceAdvertisment* wsa)
     }
 }
 
-void TraCIDemo11p::onBSM(DemoSafetyMessage* wsm)
+void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
 {
+    TraCIDemo11pMessage* wsm = check_and_cast<TraCIDemo11pMessage*>(frame);
+
     findHost()->getDisplayString().setTagArg("i", 1, "green");
 
     if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getDemoData(), 9999);
@@ -62,7 +66,7 @@ void TraCIDemo11p::onBSM(DemoSafetyMessage* wsm)
 
 void TraCIDemo11p::handleSelfMsg(cMessage* msg)
 {
-    if (DemoSafetyMessage* wsm = dynamic_cast<DemoSafetyMessage*>(msg)) {
+    if (TraCIDemo11pMessage* wsm = dynamic_cast<TraCIDemo11pMessage*>(msg)) {
         // send this message on the service channel until the counter is 3 or higher.
         // this code only runs when channel switching is enabled
         sendDown(wsm->dup());
@@ -91,7 +95,7 @@ void TraCIDemo11p::handlePositionUpdate(cObject* obj)
             findHost()->getDisplayString().setTagArg("i", 1, "red");
             sentMessage = true;
 
-            DemoSafetyMessage* wsm = new DemoSafetyMessage();
+            TraCIDemo11pMessage* wsm = new TraCIDemo11pMessage();
             populateWSM(wsm);
             wsm->setDemoData(mobility->getRoadId().c_str());
 

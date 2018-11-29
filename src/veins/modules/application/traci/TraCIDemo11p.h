@@ -48,7 +48,7 @@ protected:
     int currentSubscribedServiceId;
 
 protected:
-    void onBSM(DemoSafetyMessage* wsm) override;
+    void onWSM(BaseFrame1609_4* wsm) override;
     void onWSA(DemoServiceAdvertisment* wsa) override;
 
     void handleSelfMsg(cMessage* msg) override;

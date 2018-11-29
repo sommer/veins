@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 David Eckhoff <david.eckhoff@fau.de>
+// Copyright (C) 2018 Tobias Hardes <hardes@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,17 +20,27 @@
 
 #pragma once
 
+#include "veins/veins.h"
+
 #include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
+#include "veins/modules/mobility/traci/TraCIMobility.h"
+#include "veins/modules/mobility/traci/TraCICommandInterface.h"
+
+using Veins::TraCICommandInterface;
+using Veins::TraCIMobility;
 
 namespace Veins {
 
-/**
- * Small RSU Demo using 11p
- */
-class TraCIDemoRSU11p : public DemoBaseApplLayer {
+class TraCITrafficLightApp : public DemoBaseApplLayer {
 protected:
-    void onWSM(BaseFrame1609_4* wsm) override;
-    void onWSA(DemoServiceAdvertisment* wsa) override;
+    /** @brief this function is called upon receiving a BasicSafetyMessage, also referred to as a beacon  */
+    virtual void onBSM(DemoSafetyMessage* bsm);
+
+    /** @brief handle messages from below and calls the onWSM, onBSM, and onWSA functions accordingly */
+    virtual void handleLowerMsg(cMessage* msg);
+
+    /** @brief Called every time a message arrives*/
+    virtual void handleMessage(cMessage* msg);
 };
 
 } // namespace Veins
