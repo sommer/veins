@@ -26,7 +26,7 @@ using namespace Veins;
 using Veins::Obstacle;
 
 Obstacle::Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter)
-    : visualRepresentation(0)
+    : visualRepresentation(nullptr)
     , id(id)
     , type(type)
     , attenuationPerCut(attenuationPerCut)

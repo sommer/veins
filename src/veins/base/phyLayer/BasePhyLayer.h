@@ -554,7 +554,7 @@ public:
      * Implements the method from DeciderToPhyInterface, method-calls are forwarded
      * to OMNeT-method 'recordScalar'.
      */
-    void recordScalar(const char* name, double value, const char* unit = NULL) override;
+    void recordScalar(const char* name, double value, const char* unit = nullptr) override;
 
     /*@}*/
 

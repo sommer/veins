@@ -96,13 +96,13 @@ public:
     // Module_Class_Members( BaseMacLayer, BaseLayer, 0 );
     BaseMacLayer()
         : BaseLayer()
-        , phy(NULL)
+        , phy(nullptr)
         , myMacAddr(LAddress::L2NULL())
     {
     }
     BaseMacLayer(unsigned stacksize)
         : BaseLayer(stacksize)
-        , phy(NULL)
+        , phy(nullptr)
         , myMacAddr(LAddress::L2NULL())
     {
     }

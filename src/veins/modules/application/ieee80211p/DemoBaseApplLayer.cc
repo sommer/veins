@@ -35,9 +35,9 @@ void DemoBaseApplLayer::initialize(int stage)
             traciVehicle = mobility->getVehicleCommandInterface();
         }
         else {
-            traci = NULL;
-            mobility = NULL;
-            traciVehicle = NULL;
+            traci = nullptr;
+            mobility = nullptr;
+            traciVehicle = nullptr;
         }
 
         annotations = AnnotationManagerAccess().getIfExists();

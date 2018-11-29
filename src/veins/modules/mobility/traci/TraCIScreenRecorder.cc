@@ -53,7 +53,7 @@ void TraCIScreenRecorder::handleMessage(cMessage* msg)
     // get absolute path of dirname (the TraCI server might be running in a different directory than OMNeT++)
     std::string dirname_abs;
     {
-        char* s = realpath(dirname, 0);
+        char* s = realpath(dirname, nullptr);
         if (!s) {
             perror("cannot open output directory");
             error("cannot open output directory '%s'", dirname);

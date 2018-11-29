@@ -81,7 +81,7 @@ public:
         PhyToMacControlInfo* const cCtrlInfo = dynamic_cast<PhyToMacControlInfo* const>(pCtrlInfo);
 
         if (cCtrlInfo) return cCtrlInfo->getDeciderResult();
-        return NULL;
+        return nullptr;
     }
 };
 

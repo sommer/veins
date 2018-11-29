@@ -158,7 +158,7 @@ public:
     void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details) override;
     virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj)
     {
-        receiveSignal(source, signalID, obj, 0);
+        receiveSignal(source, signalID, obj, nullptr);
     }
 };
 

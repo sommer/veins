@@ -24,7 +24,7 @@ public:
     /**
      * sends a single command via TraCI, expects no reply, returns true if successful
      */
-    TraCIBuffer queryOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg = 0);
+    TraCIBuffer queryOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg = nullptr);
 
     /**
      * sends a message via TraCI (after adding the header)

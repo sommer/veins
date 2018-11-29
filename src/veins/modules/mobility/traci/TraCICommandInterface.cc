@@ -889,7 +889,7 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
     if (filename == "") {
         // get absolute path of results/ directory
         const char* myResultsDir = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RESULTDIR);
-        char* s = realpath(myResultsDir, 0);
+        char* s = realpath(myResultsDir, nullptr);
         std::string absolutePath = s;
         free(s);
 

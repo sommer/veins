@@ -38,8 +38,8 @@ public:
     class Annotation {
     public:
         Annotation()
-            : group(0)
-            , figure(0)
+            : group(nullptr)
+            , figure(nullptr)
         {
         }
         virtual ~Annotation()
@@ -141,19 +141,19 @@ public:
 
     void addFromXml(cXMLElement* xml);
     Group* createGroup(std::string title = "untitled");
-    Point* drawPoint(Coord p, std::string color, std::string text, Group* group = 0);
-    Line* drawLine(Coord p1, Coord p2, std::string color, Group* group = 0);
-    Polygon* drawPolygon(std::list<Coord> coords, std::string color, Group* group = 0);
-    Polygon* drawPolygon(std::vector<Coord> coords, std::string color, Group* group = 0);
+    Point* drawPoint(Coord p, std::string color, std::string text, Group* group = nullptr);
+    Line* drawLine(Coord p1, Coord p2, std::string color, Group* group = nullptr);
+    Polygon* drawPolygon(std::list<Coord> coords, std::string color, Group* group = nullptr);
+    Polygon* drawPolygon(std::vector<Coord> coords, std::string color, Group* group = nullptr);
     void drawBubble(Coord p1, std::string text);
     void erase(const Annotation* annotation);
-    void eraseAll(Group* group = 0);
+    void eraseAll(Group* group = nullptr);
     void scheduleErase(simtime_t deltaT, Annotation* annotation);
 
     void show(const Annotation* annotation);
     void hide(const Annotation* annotation);
-    void showAll(Group* group = 0);
-    void hideAll(Group* group = 0);
+    void showAll(Group* group = nullptr);
+    void hideAll(Group* group = nullptr);
 
 protected:
     typedef std::list<Annotation*> Annotations;

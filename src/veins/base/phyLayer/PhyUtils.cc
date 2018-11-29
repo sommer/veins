@@ -50,7 +50,7 @@ Radio::~Radio()
     }
 
     delete[] swTimes;
-    swTimes = 0;
+    swTimes = nullptr;
 }
 
 simtime_t Radio::switchTo(int newState, simtime_t_cref now)

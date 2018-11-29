@@ -50,10 +50,10 @@ const simsignal_t TraCIScenarioManager::traciTimestepEndSignal = registerSignal(
 TraCIScenarioManager::TraCIScenarioManager()
     : connection(nullptr)
     , commandIfc(nullptr)
-    , connectAndStartTrigger(0)
-    , executeOneTimestepTrigger(0)
-    , world(0)
-    , cc(0)
+    , connectAndStartTrigger(nullptr)
+    , executeOneTimestepTrigger(nullptr)
+    , world(nullptr)
+    , cc(nullptr)
 {
 }
 
@@ -525,7 +525,7 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
 
 cModule* TraCIScenarioManager::getManagedModule(std::string nodeId)
 {
-    if (hosts.find(nodeId) == hosts.end()) return 0;
+    if (hosts.find(nodeId) == hosts.end()) return nullptr;
     return hosts[nodeId];
 }
 

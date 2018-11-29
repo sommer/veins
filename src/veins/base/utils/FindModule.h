@@ -52,11 +52,11 @@ public:
      */
     static cModule* const findHost(cModule* const m)
     {
-        cModule* parent = m != NULL ? m->getParentModule() : NULL;
+        cModule* parent = m != nullptr ? m->getParentModule() : nullptr;
         cModule* node = m;
 
         // all nodes should be a sub module of the simulation which has no parent module!!!
-        while (parent != NULL && parent->getParentModule() != NULL) {
+        while (parent != nullptr && parent->getParentModule() != nullptr) {
             node = parent;
             parent = node->getParentModule();
         }
@@ -65,11 +65,11 @@ public:
     // the constness version
     static const cModule* const findHost(const cModule* const m)
     {
-        const cModule* parent = m != NULL ? m->getParentModule() : NULL;
+        const cModule* parent = m != nullptr ? m->getParentModule() : nullptr;
         const cModule* node = m;
 
         // all nodes should be a sub module of the simulation which has no parent module!!!
-        while (parent != NULL && parent->getParentModule() != NULL) {
+        while (parent != nullptr && parent->getParentModule() != nullptr) {
             node = parent;
             parent = node->getParentModule();
         }
@@ -91,14 +91,14 @@ private:
 
 public:
     AccessModuleWrap()
-        : pModule(NULL)
+        : pModule(nullptr)
     {
     }
 
-    T* const get(cModule* const from = NULL)
+    T* const get(cModule* const from = nullptr)
     {
         if (!pModule) {
-            pModule = FindModule<T*>::findSubModule(FindModule<>::findHost(from != NULL ? from : getSimulation()->getContextModule()));
+            pModule = FindModule<T*>::findSubModule(FindModule<>::findHost(from != nullptr ? from : getSimulation()->getContextModule()));
         }
         return pModule;
     }

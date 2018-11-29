@@ -123,7 +123,7 @@ protected:
          */
         AirFrame* next()
         {
-            if (endIt == intervals->end()) return 0;
+            if (endIt == intervals->end()) return nullptr;
 
             // "alreadyNext" indicates that some previous iterator function has
             // already increased the intern iterators to a yet unchecked values.
@@ -147,12 +147,12 @@ protected:
                 }
 
                 endIt++;
-                if (endIt == intervals->end()) return 0;
+                if (endIt == intervals->end()) return nullptr;
 
                 startIt = endIt->second.begin();
             }
 
-            return 0;
+            return nullptr;
         }
     };
 

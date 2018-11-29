@@ -13,13 +13,13 @@ using Veins::BatteryAccess;
 
 BatteryAccess::BatteryAccess()
     : BaseModule()
-    , battery(NULL)
+    , battery(nullptr)
 {
 }
 
 BatteryAccess::BatteryAccess(unsigned stacksize)
     : BaseModule(stacksize)
-    , battery(NULL)
+    , battery(nullptr)
 {
 }
 

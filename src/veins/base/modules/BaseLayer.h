@@ -68,12 +68,12 @@ protected:
 public:
     BaseLayer()
         : BatteryAccess()
-        , passedMsg(NULL)
+        , passedMsg(nullptr)
     {
     }
     BaseLayer(unsigned stacksize)
         : BatteryAccess(stacksize)
-        , passedMsg(NULL)
+        , passedMsg(nullptr)
     {
     }
     ~BaseLayer() override;

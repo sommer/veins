@@ -73,9 +73,9 @@ public:
     TraCIMobility()
         : BaseMobility()
         , isPreInitialized(false)
-        , manager(0)
-        , commandInterface(0)
-        , vehicleCommandInterface(0)
+        , manager(nullptr)
+        , commandInterface(nullptr)
+        , vehicleCommandInterface(nullptr)
     {
     }
     ~TraCIMobility() override

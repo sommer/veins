@@ -26,7 +26,7 @@ public:
      * NOTE: Once a signal is passed to the MacToPhyControlInfo,
      *          MacToPhyControlInfo takes the ownership of the Signal.
      */
-    MacToPhyControlInfo(Signal* signal = NULL)
+    MacToPhyControlInfo(Signal* signal = nullptr)
         : signal(signal)
     {
     }
@@ -65,7 +65,7 @@ public:
     Signal* retrieveSignal()
     {
         Signal* tmp = signal;
-        signal = 0;
+        signal = nullptr;
         return tmp;
     }
 
@@ -104,7 +104,7 @@ public:
         MacToPhyControlInfo* const cCtrlInfo = dynamic_cast<MacToPhyControlInfo* const>(pCtrlInfo);
 
         if (cCtrlInfo) return cCtrlInfo->retrieveSignal();
-        return NULL;
+        return nullptr;
     }
 };
 
