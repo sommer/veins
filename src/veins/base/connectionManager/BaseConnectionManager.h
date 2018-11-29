@@ -246,11 +246,11 @@ protected:
     bool drawMIR;
 
     /** @brief Type for 1-dimensional array of NicEntries.*/
-    typedef std::vector<NicEntries> RowVector;
+    using RowVector = std::vector<NicEntries>;
     /** @brief Type for 2-dimensional array of NicEntries.*/
-    typedef std::vector<RowVector> NicMatrix;
+    using NicMatrix = std::vector<RowVector>;
     /** @brief Type for 3-dimensional array of NicEntries.*/
-    typedef std::vector<NicMatrix> NicCube;
+    using NicCube = std::vector<NicMatrix>;
 
     /**
      * @brief Register of all nics

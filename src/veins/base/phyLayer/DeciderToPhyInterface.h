@@ -42,7 +42,7 @@ public:
      *
      * Used as out-value in "getChannelInfo" method.
      */
-    typedef std::list<AirFrame*> AirFrameVector;
+    using AirFrameVector = std::list<AirFrame*>;
 
     virtual ~DeciderToPhyInterface()
     {

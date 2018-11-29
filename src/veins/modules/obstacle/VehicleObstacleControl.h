@@ -93,7 +93,7 @@ protected:
     AnnotationManager* annotations;
     double carrierFrequency;
 
-    typedef std::list<VehicleObstacle*> VehicleObstacles;
+    using VehicleObstacles = std::list<VehicleObstacle*>;
     VehicleObstacles vehicleObstacles;
     AnnotationManager::Group* vehicleAnnotationGroup;
     void drawVehicleObstacles(const simtime_t& t) const;

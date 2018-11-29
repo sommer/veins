@@ -33,8 +33,8 @@
 
 namespace Veins {
 
-typedef AccessModuleWrap<BaseMobility> ChannelMobilityAccessType;
-typedef ChannelMobilityAccessType::wrapType* ChannelMobilityPtrType;
+using ChannelMobilityAccessType = AccessModuleWrap<BaseMobility>;
+using ChannelMobilityPtrType = ChannelMobilityAccessType::wrapType*;
 class NicEntry;
 class BaseConnectionManager;
 class BaseWorldUtility;

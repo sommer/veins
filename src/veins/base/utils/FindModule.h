@@ -84,7 +84,7 @@ public:
 template <typename T = cModule>
 class AccessModuleWrap {
 public:
-    typedef T wrapType;
+    using wrapType = T;
 
 private:
     T* pModule;

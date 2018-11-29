@@ -53,7 +53,7 @@ protected:
      */
     bool checkFreeGates;
 
-    typedef std::vector<cGate*> GateStack;
+    using GateStack = std::vector<cGate*>;
     /** @brief In Gates that were once used but are not connected now */
     GateStack freeInGates;
 

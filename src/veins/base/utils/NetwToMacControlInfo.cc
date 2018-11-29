@@ -19,7 +19,7 @@
 
 using namespace Veins;
 
-typedef NetwToMacControlInfo tNetwToMacControlInfoBase;
+using tNetwToMacControlInfoBase = NetwToMacControlInfo;
 
 cObject* const NetwToMacControlInfo::setControlInfo(cMessage* const pMsg, const LAddress::L2Type& pDestAddr)
 {

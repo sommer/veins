@@ -39,13 +39,13 @@ public:
      * The type should support initialization with long/string values and casting to long/double.
      * The type should be also support the ==,<, and > operators.
      */
-    typedef long L2Type;
+    using L2Type = long;
     /** @brief Type definition for a L3 (Network) address.
      *
      * The type should support initialization with long values and casting to long/double.
      * The type should be also support the ==,<, and > operators.
      */
-    typedef long L3Type;
+    using L3Type = long;
 
     /** @brief Broadcast address for L2 addresses. */
     static const L2Type& L2BROADCAST()

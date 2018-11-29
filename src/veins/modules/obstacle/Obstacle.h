@@ -31,7 +31,7 @@ namespace Veins {
  */
 class Obstacle {
 public:
-    typedef std::vector<Coord> Coords;
+    using Coords = std::vector<Coord>;
 
     Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter);
 

@@ -91,9 +91,9 @@ protected:
         GRIDCELL_SIZE = 1024
     };
 
-    typedef std::list<Obstacle*> ObstacleGridCell;
-    typedef std::vector<ObstacleGridCell> ObstacleGridRow;
-    typedef std::vector<ObstacleGridRow> Obstacles;
+    using ObstacleGridCell = std::list<Obstacle*>;
+    using ObstacleGridRow = std::vector<ObstacleGridCell>;
+    using Obstacles = std::vector<ObstacleGridRow>;
     typedef std::map<CacheKey, double> CacheEntries;
 
     cXMLElement* obstaclesXml; /**< obstacles to add at startup */

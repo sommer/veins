@@ -156,8 +156,8 @@ public:
     void hideAll(Group* group = nullptr);
 
 protected:
-    typedef std::list<Annotation*> Annotations;
-    typedef std::list<Group*> Groups;
+    using Annotations = std::list<Annotation*>;
+    using Groups = std::list<Group*>;
 
     cXMLElement* annotationsXml; /**< annotations to add at startup */
 
