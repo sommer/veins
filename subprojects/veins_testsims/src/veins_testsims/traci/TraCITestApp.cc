@@ -767,6 +767,21 @@ void TraCITestApp::handlePositionUpdate()
             // traci->guiView("View #0").trackVehicle("flow0.0");
         }
     }
+    /**
+     * Traffic light
+     */
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            traci->trafficlight("10").setState("rrrrrrrrr");
+            traci->trafficlight("10").setPhaseDuration(999);
+        }
+        if (t == 15) { //Vehicle is supposed to wait in front of a red traffic light
+            assertClose("(Vehicle is supposed to wait in front of a red traffic light", mobility->getCurrentSpeed().x, 0.0);
+        }
+        if (t == 25) {
+            assertNotEqual("(Vehicle is supposed to drive again (Traffic light turned green)", mobility->getCurrentSpeed().x, 0);
+        }
+    }
 
     //
     // End
