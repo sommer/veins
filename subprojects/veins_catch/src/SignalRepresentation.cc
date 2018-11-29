@@ -962,7 +962,7 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
         {
             interfererFrame.getSignal().setTiming(5, 10);
             double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 2.0")
+            THEN("all AnalogueModels applied and min is equal to 0.5")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
                 REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -995,7 +995,7 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
         {
             interfererFrame.getSignal().setTiming(7.5, 5);
             double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
+            THEN("all AnalogueModels applied and min is equal to 0.5")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
                 REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -1006,7 +1006,7 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
         {
             interfererFrame.getSignal().setTiming(5, 5);
             double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
+            THEN("all AnalogueModels applied and min is equal to 0.5")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
                 REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -1017,7 +1017,7 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
         {
             interfererFrame.getSignal().setTiming(10, 5);
             double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
+            THEN("all AnalogueModels applied and min is equal to 0.5")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
                 REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -1028,7 +1028,7 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
         {
             interfererFrame.getSignal().setTiming(0, 7.5);
             double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
+            THEN("all AnalogueModels applied and min is equal to 0.5")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
                 REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -1039,7 +1039,7 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
         {
             interfererFrame.getSignal().setTiming(12.5, 7.5);
             double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels applied and min is equal to 1.0")
+            THEN("all AnalogueModels applied and min is equal to 0.5")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
                 REQUIRE(interfererFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -1111,7 +1111,7 @@ SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
         WHEN("searching for global min SINR over the whole time and signals perfectly overlap")
         {
             double min = SignalUtils::getMinSINR(5, 15, &signalFrame, interfererFrames, 1);
-            THEN("all AnalogueModels are applied and min is equal to 2.0")
+            THEN("all AnalogueModels are applied and min is equal to 0.25")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
                 for (auto& interfererFrame : interfererFrames) {
