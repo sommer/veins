@@ -26,7 +26,7 @@ Define_Module(Veins::MyVeinsApp);
 
 void MyVeinsApp::initialize(int stage)
 {
-    BaseWaveApplLayer::initialize(stage);
+    DemoBaseApplLayer::initialize(stage);
     if (stage == 0) {
         // Initializing members and pointers of your application goes here
         EV << "Initializing " << par("appName").stringValue() << std::endl;
@@ -38,23 +38,23 @@ void MyVeinsApp::initialize(int stage)
 
 void MyVeinsApp::finish()
 {
-    BaseWaveApplLayer::finish();
+    DemoBaseApplLayer::finish();
     // statistics recording goes here
 }
 
-void MyVeinsApp::onBSM(BasicSafetyMessage* bsm)
+void MyVeinsApp::onBSM(DemoSafetyMessage* bsm)
 {
     // Your application has received a beacon message from another car or RSU
     // code for handling the message goes here
 }
 
-void MyVeinsApp::onWSM(WaveShortMessage* wsm)
+void MyVeinsApp::onWSM(BaseFrame1609_4* wsm)
 {
     // Your application has received a data message from another car or RSU
     // code for handling the message goes here, see TraciDemo11p.cc for examples
 }
 
-void MyVeinsApp::onWSA(WaveServiceAdvertisment* wsa)
+void MyVeinsApp::onWSA(DemoServiceAdvertisment* wsa)
 {
     // Your application has received a service advertisement from another car or RSU
     // code for handling the message goes here, see TraciDemo11p.cc for examples
@@ -62,14 +62,14 @@ void MyVeinsApp::onWSA(WaveServiceAdvertisment* wsa)
 
 void MyVeinsApp::handleSelfMsg(cMessage* msg)
 {
-    BaseWaveApplLayer::handleSelfMsg(msg);
+    DemoBaseApplLayer::handleSelfMsg(msg);
     // this method is for self messages (mostly timers)
-    // it is important to call the BaseWaveApplLayer function for BSM and WSM transmission
+    // it is important to call the DemoBaseApplLayer function for BSM and WSM transmission
 }
 
 void MyVeinsApp::handlePositionUpdate(cObject* obj)
 {
-    BaseWaveApplLayer::handlePositionUpdate(obj);
+    DemoBaseApplLayer::handlePositionUpdate(obj);
     // the vehicle has moved. Code that reacts to new positions goes here.
     // member variables such as currentPosition and currentSpeed are updated in the parent class
 }

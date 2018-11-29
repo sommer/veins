@@ -30,11 +30,11 @@
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/phyLayer/MacToPhyControlInfo.h"
 #include "veins/modules/phy/PhyLayer80211p.h"
-#include "veins/modules/mac/ieee80211p/WaveAppToMac1609_4Interface.h"
+#include "veins/modules/mac/ieee80211p/DemoBaseApplLayerToMac1609_4Interface.h"
 #include "veins/modules/utility/Consts80211p.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/messages/Mac80211Pkt_m.h"
-#include "veins/modules/messages/WaveShortMessage_m.h"
+#include "veins/modules/messages/BaseFrame1609_4_m.h"
 #include "veins/modules/messages/AckTimeOutMessage_m.h"
 #include "veins/modules/messages/Mac80211Ack_m.h"
 #include "veins/base/modules/BaseMacLayer.h"
@@ -55,7 +55,7 @@ namespace Veins {
  *
  * @ingroup macLayer
  *
- * @see BaseWaveApplLayer
+ * @see DemoBaseApplLayer
  * @see Mac1609_4
  * @see PhyLayer80211p
  * @see Decider80211p
@@ -63,7 +63,7 @@ namespace Veins {
 
 class DeciderResult80211;
 
-class Mac1609_4 : public BaseMacLayer, public WaveAppToMac1609_4Interface {
+class Mac1609_4 : public BaseMacLayer, public DemoBaseApplLayerToMac1609_4Interface {
 
 public:
     // tell to anybody which is interested when the channel turns busy or idle
@@ -83,7 +83,7 @@ public:
     public:
         class EDCAQueue {
         public:
-            std::queue<WaveShortMessage*> queue;
+            std::queue<BaseFrame1609_4*> queue;
             int aifsn; // number of aifs slots for this queue
             int cwMin; // minimum contention window
             int cwMax; // maximum contention size
@@ -114,15 +114,15 @@ public:
             return "Mac1609_4::EDCA";
         }
         void createQueue(int aifsn, int cwMin, int cwMax, t_access_category);
-        int queuePacket(t_access_category AC, WaveShortMessage* cmsg);
+        int queuePacket(t_access_category AC, BaseFrame1609_4* cmsg);
         void backoff(t_access_category ac);
         simtime_t startContent(simtime_t idleSince, bool guardActive);
         void stopContent(bool allowBackoff, bool generateTxOp);
-        void postTransmit(t_access_category, WaveShortMessage* wsm, bool useAcks);
+        void postTransmit(t_access_category, BaseFrame1609_4* wsm, bool useAcks);
         void revokeTxOPs();
 
         /** @brief return the next packet to send, send all lower Queues into backoff */
-        WaveShortMessage* initiateTransmit(simtime_t idleSince);
+        BaseFrame1609_4* initiateTransmit(simtime_t idleSince);
 
     public:
         cSimpleModule* owner;
@@ -234,7 +234,7 @@ protected:
     simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_DEFAULT) const;
 
     void sendAck(LAddress::L2Type recpAddress, unsigned long wsmId);
-    void handleUnicast(LAddress::L2Type srcAddr, std::unique_ptr<WaveShortMessage> wsm);
+    void handleUnicast(LAddress::L2Type srcAddr, std::unique_ptr<BaseFrame1609_4> wsm);
     void handleAck(const Mac80211Ack* ack);
     void handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg);
     void handleRetransmit(t_access_category ac);
@@ -263,7 +263,7 @@ protected:
     t_access_category lastAC;
 
     /** @brief pointer to last sent packet */
-    WaveShortMessage* lastWSM;
+    BaseFrame1609_4* lastWSM;
 
     /** @brief pointer to last sent mac frame */
     std::unique_ptr<Mac80211Pkt> lastMac;

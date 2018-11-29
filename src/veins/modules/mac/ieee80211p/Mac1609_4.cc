@@ -213,7 +213,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
 
         // we actually came to the point where we can send a packet
         channelBusySelf(true);
-        WaveShortMessage* pktToSend = myEDCA[activeChannel]->initiateTransmit(lastIdle);
+        BaseFrame1609_4* pktToSend = myEDCA[activeChannel]->initiateTransmit(lastIdle);
         ASSERT(pktToSend);
 
         lastAC = mapUserPriority(pktToSend->getUserPriority());
@@ -299,7 +299,7 @@ void Mac1609_4::handleUpperControl(cMessage* msg)
 void Mac1609_4::handleUpperMsg(cMessage* msg)
 {
 
-    WaveShortMessage* thisMsg = check_and_cast<WaveShortMessage*>(msg);
+    BaseFrame1609_4* thisMsg = check_and_cast<BaseFrame1609_4*>(msg);
 
     t_access_category ac = mapUserPriority(thisMsg->getUserPriority());
 
@@ -598,7 +598,7 @@ void Mac1609_4::setCCAThreshold(double ccaThreshold_dBm)
 void Mac1609_4::handleBroadcast(Mac80211Pkt* macPkt, DeciderResult80211* res)
 {
     statsReceivedBroadcasts++;
-    unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
+    unique_ptr<BaseFrame1609_4> wsm(check_and_cast<BaseFrame1609_4*>(macPkt->decapsulate()));
     wsm->setControlInfo(new PhyToMacControlInfo(res));
     sendUp(wsm.release());
 }
@@ -622,7 +622,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
             delete res;
         }
         else {
-            unique_ptr<WaveShortMessage> wsm(check_and_cast<WaveShortMessage*>(macPkt->decapsulate()));
+            unique_ptr<BaseFrame1609_4> wsm(check_and_cast<BaseFrame1609_4*>(macPkt->decapsulate()));
             wsm->setControlInfo(new PhyToMacControlInfo(res));
             handleUnicast(macPkt->getSrcAddr(), std::move(wsm));
         }
@@ -645,7 +645,7 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
     }
 }
 
-int Mac1609_4::EDCA::queuePacket(t_access_category ac, WaveShortMessage* msg)
+int Mac1609_4::EDCA::queuePacket(t_access_category ac, BaseFrame1609_4* msg)
 {
 
     if (maxQueueSize && myQueues[ac].queue.size() >= maxQueueSize) {
@@ -694,11 +694,11 @@ Mac1609_4::t_access_category Mac1609_4::mapUserPriority(int prio)
     return AC_VO;
 }
 
-WaveShortMessage* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle)
+BaseFrame1609_4* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle)
 {
 
     // iterate through the queues to return the packet we want to send
-    WaveShortMessage* pktToSend = NULL;
+    BaseFrame1609_4* pktToSend = NULL;
 
     simtime_t idleTime = simTime() - lastIdle;
 
@@ -853,7 +853,7 @@ void Mac1609_4::EDCA::backoff(t_access_category ac)
     EV_TRACE << "Going into Backoff because channel was busy when new packet arrived from upperLayer" << std::endl;
 }
 
-void Mac1609_4::EDCA::postTransmit(t_access_category ac, WaveShortMessage* wsm, bool useAcks)
+void Mac1609_4::EDCA::postTransmit(t_access_category ac, BaseFrame1609_4* wsm, bool useAcks)
 {
     bool holBlocking = (wsm->getRecipientAddress() != LAddress::L2BROADCAST()) && useAcks;
     if (holBlocking) {
@@ -1077,7 +1077,7 @@ void Mac1609_4::sendAck(LAddress::L2Type recpAddress, unsigned long wsmId)
     scheduleAt(simTime() + SIFS_11P, stopIgnoreChannelStateMsg);
 }
 
-void Mac1609_4::handleUnicast(LAddress::L2Type srcAddr, unique_ptr<WaveShortMessage> wsm)
+void Mac1609_4::handleUnicast(LAddress::L2Type srcAddr, unique_ptr<BaseFrame1609_4> wsm)
 {
     if (useAcks) {
         sendAck(srcAddr, wsm->getTreeId());
@@ -1103,7 +1103,7 @@ void Mac1609_4::handleAck(const Mac80211Ack* ack)
         auto& accessCategory = p.first;
         auto& edcaQueue = p.second;
         if (edcaQueue.queue.size() > 0 && edcaQueue.waitForAck && (edcaQueue.waitOnUnicastID == ack->getMessageId())) {
-            WaveShortMessage* wsm = edcaQueue.queue.front();
+            BaseFrame1609_4* wsm = edcaQueue.queue.front();
             edcaQueue.queue.pop();
             delete wsm;
             myEDCA[chan]->myQueues[accessCategory].cwCur = myEDCA[chan]->myQueues[accessCategory].cwMin;
@@ -1155,7 +1155,7 @@ void Mac1609_4::handleRetransmit(t_access_category ac)
     if (myEDCA[type_CCH]->myQueues[ac].queue.size() == 0) {
         throw cRuntimeError("Trying retransmission on empty queue...");
     }
-    WaveShortMessage* appPkt = myEDCA[type_CCH]->myQueues[ac].queue.front();
+    BaseFrame1609_4* appPkt = myEDCA[type_CCH]->myQueues[ac].queue.front();
     bool contend = false;
     bool retriesExceeded = false;
     // page 879 of IEEE 802.11-2012

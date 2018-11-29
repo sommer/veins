@@ -21,13 +21,14 @@
 #pragma once
 
 #include <map>
+
 #include "veins/base/modules/BaseApplLayer.h"
 #include "veins/modules/utility/Consts80211p.h"
-#include "veins/modules/messages/WaveShortMessage_m.h"
-#include "veins/modules/messages/WaveServiceAdvertisement_m.h"
-#include "veins/modules/messages/BasicSafetyMessage_m.h"
+#include "veins/modules/messages/BaseFrame1609_4_m.h"
+#include "veins/modules/messages/DemoServiceAdvertisement_m.h"
+#include "veins/modules/messages/DemoSafetyMessage_m.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
-#include "veins/modules/mac/ieee80211p/WaveAppToMac1609_4Interface.h"
+#include "veins/modules/mac/ieee80211p/DemoBaseApplLayerToMac1609_4Interface.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
@@ -41,27 +42,27 @@ using Veins::TraCIMobilityAccess;
 
 /**
  * @brief
- * WAVE application layer base class.
+ * Demo application layer base class.
  *
  * @author David Eckhoff
  *
  * @ingroup applLayer
  *
- * @see BaseWaveApplLayer
+ * @see DemoBaseApplLayer
  * @see Mac1609_4
  * @see PhyLayer80211p
  * @see Decider80211p
  */
-class BaseWaveApplLayer : public BaseApplLayer {
+class DemoBaseApplLayer : public BaseApplLayer {
 
 public:
-    ~BaseWaveApplLayer();
+    ~DemoBaseApplLayer();
     virtual void initialize(int stage);
     virtual void finish();
 
     virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details);
 
-    enum WaveApplMessageKinds {
+    enum DemoApplMessageKinds {
         SEND_BEACON_EVT,
         SEND_WSA_EVT
     };
@@ -74,16 +75,16 @@ protected:
     virtual void handleSelfMsg(cMessage* msg);
 
     /** @brief sets all the necessary fields in the WSM, BSM, or WSA. */
-    virtual void populateWSM(WaveShortMessage* wsm, LAddress::L2Type rcvId = LAddress::L2BROADCAST(), int serial = 0);
+    virtual void populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId = LAddress::L2BROADCAST(), int serial = 0);
 
-    /** @brief this function is called upon receiving a WaveShortMessage */
-    virtual void onWSM(WaveShortMessage* wsm){};
+    /** @brief this function is called upon receiving a BaseFrame1609_4 */
+    virtual void onWSM(BaseFrame1609_4* wsm){};
 
-    /** @brief this function is called upon receiving a BasicSafetyMessage, also referred to as a beacon  */
-    virtual void onBSM(BasicSafetyMessage* bsm){};
+    /** @brief this function is called upon receiving a DemoSafetyMessage, also referred to as a beacon  */
+    virtual void onBSM(DemoSafetyMessage* bsm){};
 
-    /** @brief this function is called upon receiving a WaveServiceAdvertisement */
-    virtual void onWSA(WaveServiceAdvertisment* wsa){};
+    /** @brief this function is called upon receiving a DemoServiceAdvertisement */
+    virtual void onWSA(DemoServiceAdvertisment* wsa){};
 
     /** @brief this function is called every time the vehicle receives a position update signal */
     virtual void handlePositionUpdate(cObject* obj);
@@ -138,7 +139,7 @@ protected:
     TraCICommandInterface::Vehicle* traciVehicle;
 
     AnnotationManager* annotations;
-    WaveAppToMac1609_4Interface* mac;
+    DemoBaseApplLayerToMac1609_4Interface* mac;
 
     /* support for parking currently only works with TraCI */
     bool isParked;

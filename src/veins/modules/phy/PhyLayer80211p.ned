@@ -25,7 +25,7 @@ import org.car2x.veins.base.phyLayer.BasePhyLayer;
 //
 // Adaptation of the PhyLayer class for 802.11p.
 //
-// @see BaseWaveApplLayer
+// @see DemoBaseApplLayer
 // @see Nic80211p
 // @see Mac1609_4
 //

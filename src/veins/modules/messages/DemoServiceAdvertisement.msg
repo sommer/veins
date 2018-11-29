@@ -20,15 +20,15 @@
 
 cplusplus {{
 #include "veins/base/utils/Coord.h"
-#include "veins/modules/messages/WaveShortMessage_m.h"
+#include "veins/modules/messages/BaseFrame1609_4_m.h"
 }}
 
 namespace Veins;
 
-class WaveShortMessage;
+class BaseFrame1609_4;
 class noncobject Coord;
 
-packet WaveServiceAdvertisment extends WaveShortMessage {
+packet DemoServiceAdvertisment extends BaseFrame1609_4 {
     int targetChannel;
     string serviceDescription;
 }

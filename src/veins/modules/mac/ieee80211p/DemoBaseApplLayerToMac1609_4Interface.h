@@ -27,13 +27,13 @@ namespace Veins {
 
 /**
  * @brief
- * Interface between WaveApplication Layer and Mac1609_4
+ * Interface between DemoBaseApplLayer Layer and Mac1609_4
  *
  * @author David Eckhoff
  *
  * @ingroup macLayer
  */
-class WaveAppToMac1609_4Interface {
+class DemoBaseApplLayerToMac1609_4Interface {
 public:
     virtual bool isChannelSwitchingActive() = 0;
 
@@ -43,7 +43,7 @@ public:
 
     virtual void changeServiceChannel(int channelNumber) = 0;
 
-    virtual ~WaveAppToMac1609_4Interface(){};
+    virtual ~DemoBaseApplLayerToMac1609_4Interface(){};
 
     /**
      * @brief Returns the MAC address of this MAC module.

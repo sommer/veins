@@ -20,7 +20,7 @@
 
 namespace Veins;
 
-class BasicSafetyMessage;
+class DemoSafetyMessage;
 enum TrafficLightAtrributeType {
     NONE = 0;
     LOGICID = 1;

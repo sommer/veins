@@ -40,7 +40,7 @@ using Veins::AirFrame;
  *
  * @ingroup decider
  *
- * @see BaseWaveApplLayer
+ * @see DemoBaseApplLayer
  * @see Mac1609_4
  * @see PhyLayer80211p
  * @see Decider80211p

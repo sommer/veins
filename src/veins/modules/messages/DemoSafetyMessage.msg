@@ -20,15 +20,20 @@
 
 cplusplus {{
 #include "veins/base/utils/Coord.h"
-#include "veins/modules/messages/WaveShortMessage_m.h"
+#include "veins/modules/messages/BaseFrame1609_4_m.h"
+#include "veins/base/utils/SimpleAddress.h"
 }}
 
 namespace Veins;
 
-class WaveShortMessage;
+class BaseFrame1609_4;
 class noncobject Coord;
+class LAddress::L2Type extends void;
 
-packet BasicSafetyMessage extends WaveShortMessage {
+packet DemoSafetyMessage extends BaseFrame1609_4 {
     Coord senderPos;
     Coord senderSpeed;
+    string demoData;
+    LAddress::L2Type senderAddress = -1;
+    int serial = 0;
 }

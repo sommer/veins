@@ -18,11 +18,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
+#include <veins/modules/application/ieee80211p/DemoBaseApplLayer.h>
 
 using namespace Veins;
 
-void BaseWaveApplLayer::initialize(int stage)
+void DemoBaseApplLayer::initialize(int stage)
 {
     BaseApplLayer::initialize(stage);
 
@@ -43,7 +43,7 @@ void BaseWaveApplLayer::initialize(int stage)
         annotations = AnnotationManagerAccess().getIfExists();
         ASSERT(annotations);
 
-        mac = FindModule<WaveAppToMac1609_4Interface*>::findSubModule(getParentModule());
+        mac = FindModule<DemoBaseApplLayerToMac1609_4Interface*>::findSubModule(getParentModule());
         assert(mac);
 
         // read parameters
@@ -107,7 +107,7 @@ void BaseWaveApplLayer::initialize(int stage)
     }
 }
 
-simtime_t BaseWaveApplLayer::computeAsynchronousSendingTime(simtime_t interval, t_channel chan)
+simtime_t DemoBaseApplLayer::computeAsynchronousSendingTime(simtime_t interval, t_channel chan)
 {
 
     /*
@@ -149,17 +149,12 @@ simtime_t BaseWaveApplLayer::computeAsynchronousSendingTime(simtime_t interval, 
     return firstEvent;
 }
 
-void BaseWaveApplLayer::populateWSM(WaveShortMessage* wsm, LAddress::L2Type rcvId, int serial)
+void DemoBaseApplLayer::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId, int serial)
 {
-
-    wsm->setWsmVersion(1);
-    wsm->setTimestamp(simTime());
-    wsm->setSenderAddress(myId);
     wsm->setRecipientAddress(rcvId);
-    wsm->setSerial(serial);
     wsm->setBitLength(headerLength);
 
-    if (BasicSafetyMessage* bsm = dynamic_cast<BasicSafetyMessage*>(wsm)) {
+    if (DemoSafetyMessage* bsm = dynamic_cast<DemoSafetyMessage*>(wsm)) {
         bsm->setSenderPos(curPosition);
         bsm->setSenderSpeed(curSpeed);
         bsm->setPsid(-1);
@@ -167,7 +162,7 @@ void BaseWaveApplLayer::populateWSM(WaveShortMessage* wsm, LAddress::L2Type rcvI
         bsm->addBitLength(beaconLengthBits);
         wsm->setUserPriority(beaconUserPriority);
     }
-    else if (WaveServiceAdvertisment* wsa = dynamic_cast<WaveServiceAdvertisment*>(wsm)) {
+    else if (DemoServiceAdvertisment* wsa = dynamic_cast<DemoServiceAdvertisment*>(wsm)) {
         wsa->setChannelNumber(Channels::CCH);
         wsa->setTargetChannel(currentServiceChannel);
         wsa->setPsid(currentOfferedServiceId);
@@ -183,7 +178,7 @@ void BaseWaveApplLayer::populateWSM(WaveShortMessage* wsm, LAddress::L2Type rcvI
     }
 }
 
-void BaseWaveApplLayer::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
+void DemoBaseApplLayer::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
 {
     Enter_Method_Silent();
     if (signalID == BaseMobility::mobilityStateChangedSignal) {
@@ -194,29 +189,29 @@ void BaseWaveApplLayer::receiveSignal(cComponent* source, simsignal_t signalID, 
     }
 }
 
-void BaseWaveApplLayer::handlePositionUpdate(cObject* obj)
+void DemoBaseApplLayer::handlePositionUpdate(cObject* obj)
 {
     ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
     curPosition = mobility->getCurrentPosition();
     curSpeed = mobility->getCurrentSpeed();
 }
 
-void BaseWaveApplLayer::handleParkingUpdate(cObject* obj)
+void DemoBaseApplLayer::handleParkingUpdate(cObject* obj)
 {
     isParked = mobility->getParkingState();
 }
 
-void BaseWaveApplLayer::handleLowerMsg(cMessage* msg)
+void DemoBaseApplLayer::handleLowerMsg(cMessage* msg)
 {
 
-    WaveShortMessage* wsm = dynamic_cast<WaveShortMessage*>(msg);
+    BaseFrame1609_4* wsm = dynamic_cast<BaseFrame1609_4*>(msg);
     ASSERT(wsm);
 
-    if (BasicSafetyMessage* bsm = dynamic_cast<BasicSafetyMessage*>(wsm)) {
+    if (DemoSafetyMessage* bsm = dynamic_cast<DemoSafetyMessage*>(wsm)) {
         receivedBSMs++;
         onBSM(bsm);
     }
-    else if (WaveServiceAdvertisment* wsa = dynamic_cast<WaveServiceAdvertisment*>(wsm)) {
+    else if (DemoServiceAdvertisment* wsa = dynamic_cast<DemoServiceAdvertisment*>(wsm)) {
         receivedWSAs++;
         onWSA(wsa);
     }
@@ -228,18 +223,18 @@ void BaseWaveApplLayer::handleLowerMsg(cMessage* msg)
     delete (msg);
 }
 
-void BaseWaveApplLayer::handleSelfMsg(cMessage* msg)
+void DemoBaseApplLayer::handleSelfMsg(cMessage* msg)
 {
     switch (msg->getKind()) {
     case SEND_BEACON_EVT: {
-        BasicSafetyMessage* bsm = new BasicSafetyMessage();
+        DemoSafetyMessage* bsm = new DemoSafetyMessage();
         populateWSM(bsm);
         sendDown(bsm);
         scheduleAt(simTime() + beaconInterval, sendBeaconEvt);
         break;
     }
     case SEND_WSA_EVT: {
-        WaveServiceAdvertisment* wsa = new WaveServiceAdvertisment();
+        DemoServiceAdvertisment* wsa = new DemoServiceAdvertisment();
         populateWSM(wsa);
         sendDown(wsa);
         scheduleAt(simTime() + wsaInterval, sendWSAEvt);
@@ -252,7 +247,7 @@ void BaseWaveApplLayer::handleSelfMsg(cMessage* msg)
     }
 }
 
-void BaseWaveApplLayer::finish()
+void DemoBaseApplLayer::finish()
 {
     recordScalar("generatedWSMs", generatedWSMs);
     recordScalar("receivedWSMs", receivedWSMs);
@@ -264,14 +259,14 @@ void BaseWaveApplLayer::finish()
     recordScalar("receivedWSAs", receivedWSAs);
 }
 
-BaseWaveApplLayer::~BaseWaveApplLayer()
+DemoBaseApplLayer::~DemoBaseApplLayer()
 {
     cancelAndDelete(sendBeaconEvt);
     cancelAndDelete(sendWSAEvt);
     findHost()->unsubscribe(BaseMobility::mobilityStateChangedSignal, this);
 }
 
-void BaseWaveApplLayer::startService(Channels::ChannelNumber channel, int serviceId, std::string serviceDescription)
+void DemoBaseApplLayer::startService(Channels::ChannelNumber channel, int serviceId, std::string serviceDescription)
 {
     if (sendWSAEvt->isScheduled()) {
         error("Starting service although another service was already started");
@@ -286,35 +281,35 @@ void BaseWaveApplLayer::startService(Channels::ChannelNumber channel, int servic
     scheduleAt(wsaTime, sendWSAEvt);
 }
 
-void BaseWaveApplLayer::stopService()
+void DemoBaseApplLayer::stopService()
 {
     cancelEvent(sendWSAEvt);
     currentOfferedServiceId = -1;
 }
 
-void BaseWaveApplLayer::sendDown(cMessage* msg)
+void DemoBaseApplLayer::sendDown(cMessage* msg)
 {
     checkAndTrackPacket(msg);
     BaseApplLayer::sendDown(msg);
 }
 
-void BaseWaveApplLayer::sendDelayedDown(cMessage* msg, simtime_t delay)
+void DemoBaseApplLayer::sendDelayedDown(cMessage* msg, simtime_t delay)
 {
     checkAndTrackPacket(msg);
     BaseApplLayer::sendDelayedDown(msg, delay);
 }
 
-void BaseWaveApplLayer::checkAndTrackPacket(cMessage* msg)
+void DemoBaseApplLayer::checkAndTrackPacket(cMessage* msg)
 {
-    if (dynamic_cast<BasicSafetyMessage*>(msg)) {
+    if (dynamic_cast<DemoSafetyMessage*>(msg)) {
         EV_TRACE << "sending down a BSM" << std::endl;
         generatedBSMs++;
     }
-    else if (dynamic_cast<WaveServiceAdvertisment*>(msg)) {
+    else if (dynamic_cast<DemoServiceAdvertisment*>(msg)) {
         EV_TRACE << "sending down a WSA" << std::endl;
         generatedWSAs++;
     }
-    else if (dynamic_cast<WaveShortMessage*>(msg)) {
+    else if (dynamic_cast<BaseFrame1609_4*>(msg)) {
         EV_TRACE << "sending down a wsm" << std::endl;
         generatedWSMs++;
     }

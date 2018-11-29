@@ -20,17 +20,17 @@
 
 #pragma once
 
-#include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
+#include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
 
 namespace Veins {
 
 /**
  * Small RSU Demo using 11p
  */
-class TraCIDemoRSU11p : public BaseWaveApplLayer {
+class TraCIDemoRSU11p : public DemoBaseApplLayer {
 protected:
-    virtual void onWSM(WaveShortMessage* wsm);
-    virtual void onWSA(WaveServiceAdvertisment* wsa);
+    virtual void onBSM(DemoSafetyMessage* wsm);
+    virtual void onWSA(DemoServiceAdvertisment* wsa);
 };
 
 } // namespace Veins

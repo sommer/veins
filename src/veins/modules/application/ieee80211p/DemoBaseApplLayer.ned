@@ -22,19 +22,19 @@ package org.car2x.veins.modules.application.ieee80211p;
 import org.car2x.veins.base.modules.IBaseApplLayer;
 
 //
-// WAVE application layer base class.
+// Demo application layer base class.
 //
 // @author David Eckhoff
 //
-// @see BaseWaveApplLayer
+// @see DemoBaseApplLayer
 // @see Nic80211p
 // @see Mac1609_4
 // @see PhyLayer80211p
 //
-simple BaseWaveApplLayer like IBaseApplLayer
+simple DemoBaseApplLayer like IBaseApplLayer
 {
     parameters:
-        @class(Veins::BaseWaveApplLayer);
+        @class(Veins::DemoBaseApplLayer);
         int headerLength = default(88bit) @unit(bit); //header length of the application
 
         bool sendBeacons = default(true); //tell the applayer to periodically send beacons

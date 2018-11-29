@@ -26,7 +26,7 @@ Define_Module(Veins::TraCIDemo11p);
 
 void TraCIDemo11p::initialize(int stage)
 {
-    BaseWaveApplLayer::initialize(stage);
+    DemoBaseApplLayer::initialize(stage);
     if (stage == 0) {
         sentMessage = false;
         lastDroveAt = simTime();
@@ -34,7 +34,7 @@ void TraCIDemo11p::initialize(int stage)
     }
 }
 
-void TraCIDemo11p::onWSA(WaveServiceAdvertisment* wsa)
+void TraCIDemo11p::onWSA(DemoServiceAdvertisment* wsa)
 {
     if (currentSubscribedServiceId == -1) {
         mac->changeServiceChannel(wsa->getTargetChannel());
@@ -46,11 +46,11 @@ void TraCIDemo11p::onWSA(WaveServiceAdvertisment* wsa)
     }
 }
 
-void TraCIDemo11p::onWSM(WaveShortMessage* wsm)
+void TraCIDemo11p::onBSM(DemoSafetyMessage* wsm)
 {
     findHost()->getDisplayString().setTagArg("i", 1, "green");
 
-    if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getWsmData(), 9999);
+    if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getDemoData(), 9999);
     if (!sentMessage) {
         sentMessage = true;
         // repeat the received traffic update once in 2 seconds plus some random delay
@@ -62,7 +62,7 @@ void TraCIDemo11p::onWSM(WaveShortMessage* wsm)
 
 void TraCIDemo11p::handleSelfMsg(cMessage* msg)
 {
-    if (WaveShortMessage* wsm = dynamic_cast<WaveShortMessage*>(msg)) {
+    if (DemoSafetyMessage* wsm = dynamic_cast<DemoSafetyMessage*>(msg)) {
         // send this message on the service channel until the counter is 3 or higher.
         // this code only runs when channel switching is enabled
         sendDown(wsm->dup());
@@ -77,13 +77,13 @@ void TraCIDemo11p::handleSelfMsg(cMessage* msg)
         }
     }
     else {
-        BaseWaveApplLayer::handleSelfMsg(msg);
+        DemoBaseApplLayer::handleSelfMsg(msg);
     }
 }
 
 void TraCIDemo11p::handlePositionUpdate(cObject* obj)
 {
-    BaseWaveApplLayer::handlePositionUpdate(obj);
+    DemoBaseApplLayer::handlePositionUpdate(obj);
 
     // stopped for for at least 10s?
     if (mobility->getSpeed() < 1) {
@@ -91,9 +91,9 @@ void TraCIDemo11p::handlePositionUpdate(cObject* obj)
             findHost()->getDisplayString().setTagArg("i", 1, "red");
             sentMessage = true;
 
-            WaveShortMessage* wsm = new WaveShortMessage();
+            DemoSafetyMessage* wsm = new DemoSafetyMessage();
             populateWSM(wsm);
-            wsm->setWsmData(mobility->getRoadId().c_str());
+            wsm->setDemoData(mobility->getRoadId().c_str());
 
             // host is standing still due to crash
             if (dataOnSch) {
