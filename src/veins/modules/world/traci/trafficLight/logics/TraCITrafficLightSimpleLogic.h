@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "veins/veins.h"
+
 #include <veins/modules/world/traci/trafficLight/logics/TraCITrafficLightAbstractLogic.h>
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"

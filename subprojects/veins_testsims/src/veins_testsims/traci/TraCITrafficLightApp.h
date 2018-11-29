@@ -18,8 +18,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef TRACICAMRECEIVER_H_
-#define TRACICAMRECEIVER_H_
+#pragma once
+
+#include "veins/veins.h"
 
 #include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
@@ -42,6 +43,4 @@ class TraCITrafficLightApp : public DemoBaseApplLayer {
         virtual void handleMessage(cMessage* msg);
 };
 
-} // end namespace Veins
-
-#endif /* TRACICAMRECEIVER_H_ */
+} // namespace Veins
