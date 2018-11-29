@@ -40,16 +40,16 @@ namespace Veins {
 
 class MyVeinsApp : public DemoBaseApplLayer {
 public:
-    virtual void initialize(int stage);
-    virtual void finish();
+    void initialize(int stage) override;
+    void finish() override;
 
 protected:
-    virtual void onBSM(DemoSafetyMessage* bsm);
-    virtual void onWSM(BaseFrame1609_4* wsm);
-    virtual void onWSA(DemoServiceAdvertisment* wsa);
+    void onBSM(DemoSafetyMessage* bsm) override;
+    void onWSM(BaseFrame1609_4* wsm) override;
+    void onWSA(DemoServiceAdvertisment* wsa) override;
 
-    virtual void handleSelfMsg(cMessage* msg);
-    virtual void handlePositionUpdate(cObject* obj);
+    void handleSelfMsg(cMessage* msg) override;
+    void handlePositionUpdate(cObject* obj) override;
 };
 
 } // namespace Veins

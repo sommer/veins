@@ -70,7 +70,7 @@ public:
      * @brief Filters a specified AirFrame's Signal by adding an attenuation
      * over time to the Signal.
      */
-    virtual void filterSignal(Signal*, const Coord&, const Coord&);
+    void filterSignal(Signal*, const Coord&, const Coord&) override;
 
     virtual bool isActiveAtDestination()
     {

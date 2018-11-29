@@ -56,11 +56,11 @@ using Veins::TraCIMobilityAccess;
 class DemoBaseApplLayer : public BaseApplLayer {
 
 public:
-    ~DemoBaseApplLayer();
-    virtual void initialize(int stage);
-    virtual void finish();
+    ~DemoBaseApplLayer() override;
+    void initialize(int stage) override;
+    void finish() override;
 
-    virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details);
+    void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details) override;
 
     enum DemoApplMessageKinds {
         SEND_BEACON_EVT,
@@ -69,10 +69,10 @@ public:
 
 protected:
     /** @brief handle messages from below and calls the onWSM, onBSM, and onWSA functions accordingly */
-    virtual void handleLowerMsg(cMessage* msg);
+    void handleLowerMsg(cMessage* msg) override;
 
     /** @brief handle self messages */
-    virtual void handleSelfMsg(cMessage* msg);
+    void handleSelfMsg(cMessage* msg) override;
 
     /** @brief sets all the necessary fields in the WSM, BSM, or WSA. */
     virtual void populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId = LAddress::L2BROADCAST(), int serial = 0);

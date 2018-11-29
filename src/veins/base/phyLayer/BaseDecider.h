@@ -93,7 +93,7 @@ public:
         currentSignal.second = NEW;
     }
 
-    virtual ~BaseDecider()
+    ~BaseDecider() override
     {
     }
 
@@ -104,7 +104,7 @@ public:
      * Returns the time point when the decider wants to be given the AirFrame
      * again.
      */
-    virtual simtime_t processSignal(AirFrame* frame);
+    simtime_t processSignal(AirFrame* frame) override;
 
 protected:
     /**

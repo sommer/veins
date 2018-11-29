@@ -55,7 +55,7 @@ public:
     {
     }
 
-    virtual ~MacToNetwControlInfo()
+    ~MacToNetwControlInfo() override
     {
     }
 

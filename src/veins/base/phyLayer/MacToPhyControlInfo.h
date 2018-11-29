@@ -34,7 +34,7 @@ public:
     /**
      * @brief Delete the signal if it is still in our ownership.
      */
-    virtual ~MacToPhyControlInfo()
+    ~MacToPhyControlInfo() override
     {
         if (signal) delete signal;
     }

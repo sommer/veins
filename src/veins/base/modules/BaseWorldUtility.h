@@ -73,7 +73,7 @@ protected:
 public:
     BaseWorldUtility();
 
-    virtual void initialize(int stage);
+    void initialize(int stage) override;
 
     /**
      * @brief Returns the playgroundSize

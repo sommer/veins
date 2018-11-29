@@ -66,7 +66,7 @@ public:
             , text(text)
         {
         }
-        virtual ~Point()
+        ~Point() override
         {
         }
 
@@ -86,7 +86,7 @@ public:
             , color(color)
         {
         }
-        virtual ~Line()
+        ~Line() override
         {
         }
 
@@ -105,7 +105,7 @@ public:
             , color(color)
         {
         }
-        virtual ~Polygon()
+        ~Polygon() override
         {
         }
 
@@ -132,12 +132,12 @@ public:
         std::string title;
     };
 
-    ~AnnotationManager();
-    void initialize();
-    void finish();
-    void handleMessage(cMessage* msg);
+    ~AnnotationManager() override;
+    void initialize() override;
+    void finish() override;
+    void handleMessage(cMessage* msg) override;
     void handleSelfMsg(cMessage* msg);
-    void handleParameterChange(const char* parname);
+    void handleParameterChange(const char* parname) override;
 
     void addFromXml(cXMLElement* xml);
     Group* createGroup(std::string title = "untitled");

@@ -358,10 +358,10 @@ protected:
     virtual bool isInRange(NicEntries::mapped_type pFromNic, NicEntries::mapped_type pToNic);
 
 public:
-    virtual ~BaseConnectionManager();
+    ~BaseConnectionManager() override;
 
     /** @brief Needs two initialization stages.*/
-    virtual int numInitStages() const
+    int numInitStages() const override
     {
         return 2;
     }
@@ -370,7 +370,7 @@ public:
      * @brief Reads init parameters and calculates a maximal interference
      * distance
      **/
-    virtual void initialize(int stage);
+    void initialize(int stage) override;
 
     /**
      * @brief Registers a nic to have its connections managed by ConnectionManager.

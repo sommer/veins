@@ -24,7 +24,7 @@ protected:
      * You may want to overwrite this function in order to do your own
      * interference calculation
      */
-    virtual double calcInterfDist();
+    double calcInterfDist() override;
 };
 
 } // namespace Veins

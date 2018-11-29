@@ -39,14 +39,14 @@ namespace Veins {
  */
 class ObstacleControl : public cSimpleModule {
 public:
-    ~ObstacleControl();
-    void initialize(int stage);
-    int numInitStages() const
+    ~ObstacleControl() override;
+    void initialize(int stage) override;
+    int numInitStages() const override
     {
         return 2;
     }
-    void finish();
-    void handleMessage(cMessage* msg);
+    void finish() override;
+    void handleMessage(cMessage* msg) override;
     void handleSelfMsg(cMessage* msg);
 
     void addFromXml(cXMLElement* xml);

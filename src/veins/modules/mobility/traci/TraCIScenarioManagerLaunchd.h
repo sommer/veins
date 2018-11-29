@@ -45,15 +45,15 @@ namespace Veins {
  */
 class TraCIScenarioManagerLaunchd : public TraCIScenarioManager {
 public:
-    virtual ~TraCIScenarioManagerLaunchd();
-    virtual void initialize(int stage);
-    virtual void finish();
+    ~TraCIScenarioManagerLaunchd() override;
+    void initialize(int stage) override;
+    void finish() override;
 
 protected:
     cXMLElement* launchConfig; /**< launch configuration to send to sumo-launchd */
     int seed; /**< seed value to set in launch configuration, if missing (-1: current run number) */
 
-    virtual void init_traci();
+    void init_traci() override;
 };
 
 class TraCIScenarioManagerLaunchdAccess {

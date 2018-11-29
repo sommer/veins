@@ -95,7 +95,7 @@ public:
     /**
      * @brief Destructor -- needs to be there...
      */
-    virtual ~NicEntry()
+    ~NicEntry() override
     {
     }
 

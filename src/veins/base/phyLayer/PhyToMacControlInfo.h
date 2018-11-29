@@ -33,7 +33,7 @@ public:
     /**
      * @brief Clean up the DeciderResult.
      */
-    virtual ~PhyToMacControlInfo()
+    ~PhyToMacControlInfo() override
     {
         if (result) delete result;
     }

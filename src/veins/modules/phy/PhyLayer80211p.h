@@ -45,12 +45,12 @@ using Veins::AirFrame;
  */
 class PhyLayer80211p : public BasePhyLayer, public Mac80211pToPhy11pInterface, public Decider80211pToPhy80211pInterface {
 public:
-    void initialize(int stage);
+    void initialize(int stage) override;
     /**
      * @brief Set the carrier sense threshold
      * @param ccaThreshold_dBm the cca threshold in dBm
      */
-    void setCCAThreshold(double ccaThreshold_dBm);
+    void setCCAThreshold(double ccaThreshold_dBm) override;
     /**
      * @brief Return the cca threshold in dBm
      */
@@ -59,11 +59,11 @@ public:
      * @brief Enable notifications about PHY-RXSTART.indication in MAC
      * @param enable true if Mac needs to be notified about it
      */
-    void notifyMacAboutRxStart(bool enable);
+    void notifyMacAboutRxStart(bool enable) override;
     /**
      * @brief Explicit request to PHY for the channel status
      */
-    void requestChannelStatusIfIdle();
+    void requestChannelStatusIfIdle() override;
 
 protected:
     /** @brief CCA threshold. See Decider80211p for details */
@@ -87,7 +87,7 @@ protected:
      *
      * Is able to initialize the following AnalogueModels:
      */
-    virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
+    AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params) override;
 
     /**
      * @brief Creates and initializes a SimplePathlossModel with the
@@ -146,7 +146,7 @@ protected:
      *
      * - Decider80211p
      */
-    virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
+    Decider* getDeciderFromName(std::string name, ParameterMap& params) override;
 
     /**
      * @brief Initializes a new Decider80211 from the passed parameter map.
@@ -157,14 +157,14 @@ protected:
      * @brief This function encapsulates messages from the upper layer into an
      * AirFrame and sets all necessary attributes.
      */
-    virtual AirFrame* encapsMsg(cPacket* msg);
+    AirFrame* encapsMsg(cPacket* msg) override;
 
-    virtual void changeListeningFrequency(double freq);
+    void changeListeningFrequency(double freq) override;
 
-    virtual void handleMessage(cMessage* msg);
-    virtual void handleSelfMessage(cMessage* msg);
-    virtual int getRadioState();
-    virtual simtime_t setRadioState(int rs);
+    void handleMessage(cMessage* msg) override;
+    void handleSelfMessage(cMessage* msg) override;
+    int getRadioState() override;
+    simtime_t setRadioState(int rs) override;
 };
 
 } // namespace Veins
