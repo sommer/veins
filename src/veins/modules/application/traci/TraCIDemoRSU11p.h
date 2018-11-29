@@ -29,7 +29,7 @@ namespace Veins {
  */
 class TraCIDemoRSU11p : public DemoBaseApplLayer {
 protected:
-    virtual void onBSM(DemoSafetyMessage* wsm);
+    virtual void onWSM(BaseFrame1609_4* wsm);
     virtual void onWSA(DemoServiceAdvertisment* wsa);
 };
 

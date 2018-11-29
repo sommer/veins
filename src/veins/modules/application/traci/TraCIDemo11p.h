@@ -48,7 +48,7 @@ protected:
     int currentSubscribedServiceId;
 
 protected:
-    virtual void onBSM(DemoSafetyMessage* wsm);
+    virtual void onWSM(BaseFrame1609_4* wsm);
     virtual void onWSA(DemoServiceAdvertisment* wsa);
 
     virtual void handleSelfMsg(cMessage* msg);
