@@ -18,13 +18,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef WORLD_TRACI_TRACISCENARIOMANAGERFORKER_H
-#define WORLD_TRACI_TRACISCENARIOMANAGERFORKER_H
+#pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCILauncher.h"
+
+namespace Veins {
 
 /**
  * @brief
@@ -41,7 +42,6 @@
  * @see TraCIScenarioManager
  *
  */
-namespace Veins {
 class TraCIScenarioManagerForker : public TraCIScenarioManager {
 public:
     TraCIScenarioManagerForker();
@@ -59,9 +59,7 @@ protected:
     virtual void startServer();
     virtual void killServer();
 };
-} // namespace Veins
 
-namespace Veins {
 class TraCIScenarioManagerForkerAccess {
 public:
     TraCIScenarioManagerForker* get()
@@ -70,5 +68,3 @@ public:
     };
 };
 } // namespace Veins
-
-#endif

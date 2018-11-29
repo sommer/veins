@@ -1,9 +1,9 @@
-#ifndef PATHLOSSMODEL_H_
-#define PATHLOSSMODEL_H_
+#pragma once
 
 #include <cstdlib>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 
@@ -33,7 +33,7 @@ class SimplePathlossModel;
  *
  * @ingroup analogueModels
  */
-class MIXIM_API SimplePathlossModel : public AnalogueModel {
+class VEINS_API SimplePathlossModel : public AnalogueModel {
 protected:
     /** @brief Path loss coefficient. **/
     double pathLossAlphaHalf;
@@ -46,9 +46,6 @@ protected:
 
     /** @brief The size of the playground.*/
     const Coord& playgroundSize;
-
-    /** @brief Whether debug messages should be displayed. */
-    bool debug;
 
 public:
     /**
@@ -64,14 +61,12 @@ public:
      * @param useTorus information about the playground the host is moving in
      * @param playgroundSize information about the playground the host is
      *                          moving in
-     * @param debug display debug messages?
      */
-    SimplePathlossModel(double alpha, double carrierFrequency, bool useTorus, const Coord& playgroundSize, bool debug)
+    SimplePathlossModel(double alpha, double carrierFrequency, bool useTorus, const Coord& playgroundSize)
         : pathLossAlphaHalf(alpha * 0.5)
         , carrierFrequency(carrierFrequency)
         , useTorus(useTorus)
         , playgroundSize(playgroundSize)
-        , debug(debug)
     {
     }
 
@@ -79,7 +74,7 @@ public:
      * @brief Filters a specified AirFrame's Signal by adding an attenuation
      * over time to the Signal.
      */
-    virtual void filterSignal(Signal*, const Coord&, const Coord&);
+    virtual void filterSignal(Signal*, const Coord&, const Coord&) override;
 
     /**
      * @brief Method to calculate the attenuation value for pathloss.
@@ -87,9 +82,12 @@ public:
      * Functionality is similar to pathloss-calculation in BasicSnrEval from
      * Mobility-frame work.
      */
-    virtual double calcPathloss(const Coord& receiverPos, const Coord& sendersPos);
+    virtual double calcPathloss(const Coord& receiverPos, const Coord& senderPos);
+
+    virtual bool neverIncreasesPower() override
+    {
+        return true;
+    }
 };
 
 } // namespace Veins
-
-#endif /*PATHLOSSMODEL_H_*/

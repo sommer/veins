@@ -17,12 +17,13 @@
  *
  * Author: Gary Pei <guangyu.pei@boeing.com>
  */
-#ifndef NIST_ERROR_RATE_H
-#define NIST_ERROR_RATE_H
+#pragma once
 
 #include <stdint.h>
 #include <cmath>
 #include "veins/modules/utility/ConstsPhy.h"
+
+namespace Veins {
 
 /**
  * Model the error rate for different modulations and coding schemes.
@@ -109,4 +110,4 @@ private:
     static double getFec64QamBer(double snr, uint32_t nbits, uint32_t bValue);
 };
 
-#endif /* NIST_ERROR_RATE_H */
+} // namespace Veins

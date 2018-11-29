@@ -22,21 +22,17 @@
 
 using namespace Veins;
 
-Spectrum::Spectrum(Freqs freqs)
+Freqs normalizeFrequencies(Freqs freqs)
 {
-    // std::cout << "Spectrum constructed" << std::endl;
-
-    frequencies = freqs;
-
-    std::sort(frequencies.begin(), frequencies.end());
-    frequencies.erase(std::unique(frequencies.begin(), frequencies.end()), frequencies.end());
+    // sort and deduplicate frequencies first
+    std::sort(freqs.begin(), freqs.end());
+    freqs.erase(std::unique(freqs.begin(), freqs.end()), freqs.end());
+    return freqs;
 }
 
-Spectrum::~Spectrum()
+Spectrum::Spectrum(Freqs freqs)
+    : frequencies(normalizeFrequencies(freqs))
 {
-    // std::cout << "Spectrum destructed" << std::endl;
-
-    frequencies.clear();
 }
 
 const double& Spectrum::operator[](size_t index) const
@@ -53,12 +49,9 @@ size_t Spectrum::indexOf(double freq) const
     assert(found == true);
 
     return std::distance(frequencies.begin(), it);
-
-    // Linear search
-    // return std::distance(frequencies.begin(), std::find(frequencies.begin(), frequencies.end(), freq));
 }
 
-size_t Spectrum::indexNearLow(double freq)
+size_t Spectrum::indexNearLow(double freq) const
 {
     size_t index = 0;
     for (size_t i = 0; i < frequencies.size(); i++) {
@@ -67,7 +60,7 @@ size_t Spectrum::indexNearLow(double freq)
     return index;
 }
 
-size_t Spectrum::indexNearUp(double freq)
+size_t Spectrum::indexNearUp(double freq) const
 {
     size_t index = frequencies.size() - 1;
     for (size_t i = frequencies.size() - 1; i > 0; i--) {
@@ -78,7 +71,7 @@ size_t Spectrum::indexNearUp(double freq)
 
 double Spectrum::freqAt(size_t freqIndex) const
 {
-    return frequencies[freqIndex];
+    return frequencies.at(freqIndex);
 }
 
 size_t Spectrum::getNumFreqs() const
@@ -86,26 +79,29 @@ size_t Spectrum::getNumFreqs() const
     return frequencies.size();
 }
 
-void Spectrum::print()
+void Spectrum::print(std::ostream& os) const
 {
-    for (uint16_t i = 0; i < frequencies.size(); i++) {
-        std::cout << frequencies[i] << std::endl;
+    for (auto& frequency : frequencies) {
+        os << frequency << std::endl;
     }
 }
 
-void Spectrum::toFile(std::string path)
+void Spectrum::toFile(std::string path) const
 {
-    std::fstream file;
-    file.open(path.c_str(), std::ios::out | std::ios::app);
-
+    std::fstream file(path.c_str(), std::ios::out | std::ios::app);
     if (!file.good()) return;
 
     file << "spectrum:";
-    for (Freqs::iterator it = frequencies.begin(); it != frequencies.end(); ++it) {
+    for (auto it = frequencies.begin(); it != frequencies.end(); ++it) {
         file << *it;
         if (it != frequencies.end() - 1) file << ",";
     }
     file << std::endl;
-
-    file.close();
 }
+
+namespace Veins {
+bool operator==(const Spectrum& lhs, const Spectrum& rhs)
+{
+    return lhs.frequencies == rhs.frequencies;
+}
+} // namespace Veins

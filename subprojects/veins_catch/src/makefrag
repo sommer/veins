@@ -1,9 +1,13 @@
-all: veins_catch
+all: veins_catch$(D)
 
-veins_catch: $(O)/veins_catch$(D)
+veins_catch$(D): $(O)/veins_catch$(D)
 	$(qecho) "Creating symlink: $@"
 	$(Q)$(LN) $(O)/veins_catch$(D) .
 
 $(O)/veins_catch$(D): $(OBJS) $(O)/$(TARGET)
 	$(qecho) "Creating binary: $@"
 	$(Q)$(CXX) -o $@ $(OBJS) $(LIBS) $(OMNETPP_LIBS) $(LDFLAGS) -L$(O)
+
+cleanbin:
+	$(Q)-rm -f $(O)/veins_catch$(D)
+	$(Q)-rm -f veins_catch$(D)

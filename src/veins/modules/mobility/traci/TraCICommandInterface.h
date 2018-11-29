@@ -1,5 +1,4 @@
-#ifndef VEINS_MOBILITY_TRACI_TRACICOMMANDINTERFACE_H_
-#define VEINS_MOBILITY_TRACI_TRACICOMMANDINTERFACE_H_
+#pragma once
 
 #include <list>
 #include <string>
@@ -7,6 +6,7 @@
 
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/base/utils/Coord.h"
+#include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 
 namespace Veins {
@@ -46,7 +46,33 @@ public:
 
     // General methods that do not deal with a particular object in the simulation
     std::pair<uint32_t, std::string> getVersion();
+    void setApiVersion(uint32_t apiVersion);
     std::pair<double, double> getLonLat(const Coord&);
+
+    uint8_t getTimeType() const
+    {
+        return versionConfig.timeType;
+    }
+    uint8_t getNetBoundaryType() const
+    {
+        return versionConfig.netBoundaryType;
+    }
+    uint8_t getTimeStepCmd() const
+    {
+        return versionConfig.timeStepCmd;
+    }
+
+    std::pair<TraCICoord, TraCICoord> initNetworkBoundaries(int margin);
+
+    /**
+     * Convert Cartesian coordination to road map position
+     * @param coord Cartesian coordination
+     * @return a tuple of <RoadId, Pos, LaneId> where:
+     *     RoadId identifies a road segment (edge)
+     *     Pos describes the position of the node in longitudinal direction (ranging from 0 to the road's length)
+     *     LaneId identifies the driving lane on the edge.
+     */
+    std::tuple<std::string, double, uint8_t> getRoadMapPos(const Coord& coord);
 
     /**
      * Get the distance between two arbitrary positions.
@@ -85,23 +111,27 @@ public:
         void setSpeedMode(int32_t bitset);
         void setSpeed(double speed);
         void setMaxSpeed(double speed);
+        TraCIColor getColor();
         void setColor(const TraCIColor& color);
-        void slowDown(double speed, int time);
+        void slowDown(double speed, simtime_t time);
         void newRoute(std::string roadId);
         void setParking();
         std::string getRoadId();
-        std::string getCurrentRoadOnRoute();
         std::string getLaneId();
         double getMaxSpeed();
         double getLanePosition();
         std::list<std::string> getPlannedRoadIds();
         std::string getRouteId();
-        void changeRoute(std::string roadId, double travelTime);
-        void stopAt(std::string roadId, double pos, uint8_t laneid, double radius, double waittime);
+        void changeRoute(std::string roadId, simtime_t travelTime);
+        void stopAt(std::string roadId, double pos, uint8_t laneid, double radius, simtime_t waittime);
         int32_t getLaneIndex();
         std::string getTypeId();
         bool changeVehicleRoute(const std::list<std::string>& roads);
         double getLength();
+        double getWidth();
+        double getHeight();
+        double getAccel();
+        double getDeccel();
 
         /**
          * Get the vehicle's CO2 emissions in mg during this time step.
@@ -163,7 +193,7 @@ public:
          * Get the vehicle's waiting time in s.
          * The waiting time of a vehicle is defined as the time (in seconds) spent with a speed below 0.1m/s since the last time it was faster than 0.1m/s.
          * (basically, the waiting time of a vehicle is reset to 0 every time it moves).
-         * A vehicle that is stopping intentionally with a <stop> does not accumulate waiting time.
+         * A vehicle that is stopping intentionally with a "stop" command does not accumulate waiting time.
          *
          * @return the vehicle's waiting time
          */
@@ -249,18 +279,18 @@ public:
         }
 
         std::string getCurrentState() const;
-        int32_t getDefaultCurrentPhaseDuration() const;
+        simtime_t getDefaultCurrentPhaseDuration() const;
         std::list<std::string> getControlledLanes() const;
         std::list<std::list<TraCITrafficLightLink>> getControlledLinks() const;
         int32_t getCurrentPhaseIndex() const;
         std::string getCurrentProgramID() const;
         TraCITrafficLightProgram getProgramDefinition() const;
-        int32_t getAssumedNextSwitchTime() const;
+        simtime_t getAssumedNextSwitchTime() const;
 
         void setProgram(std::string program); /**< set/switch to different program */
         void setPhaseIndex(int32_t index); /**< set/switch to different phase within the program  */
         void setState(std::string state);
-        void setPhaseDuration(int32_t duration); /**< set remaining duration of current phase in milliseconds */
+        void setPhaseDuration(simtime_t duration); /**< set remaining duration of current phase */
         void setProgramDefinition(TraCITrafficLightProgram::Logic program, int32_t programNr);
 
     protected:
@@ -271,6 +301,29 @@ public:
     Trafficlight trafficlight(std::string trafficLightId)
     {
         return Trafficlight(this, trafficLightId);
+    }
+
+    // LaneAreaDetector methods
+    std::list<std::string> getLaneAreaDetectorIds();
+    class LaneAreaDetector {
+    public:
+        LaneAreaDetector(TraCICommandInterface* traci, std::string laneAreaDetectorId)
+            : traci(traci)
+            , laneAreaDetectorId(laneAreaDetectorId)
+        {
+            connection = &traci->connection;
+        }
+
+        int getLastStepVehicleNumber();
+
+    protected:
+        TraCICommandInterface* traci;
+        TraCIConnection* connection;
+        std::string laneAreaDetectorId;
+    };
+    LaneAreaDetector laneAreaDetector(std::string laneAreaDetectorId)
+    {
+        return LaneAreaDetector(this, laneAreaDetectorId);
     }
 
     // Polygon methods
@@ -301,6 +354,7 @@ public:
     }
 
     // Poi methods
+    std::list<std::string> getPoiIds();
     void addPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, const Coord& pos);
     class Poi {
     public:
@@ -385,7 +439,7 @@ public:
         void setScheme(std::string name);
         void setZoom(double zoom);
         void setBoundary(Coord p1, Coord p2);
-        void takeScreenshot(std::string filename = "");
+        void takeScreenshot(std::string filename = "", int32_t width = -1, int32_t height = -1);
 
         /**
          * Track the vehicle identified by vehicleId in the Sumo GUI.
@@ -403,16 +457,25 @@ public:
     }
 
 private:
+    struct VersionConfig {
+        uint8_t timeType;
+        uint8_t netBoundaryType;
+        uint8_t timeStepCmd;
+        bool timeAsDouble;
+        bool screenshotTakesCompound;
+    };
+
     TraCIConnection& connection;
+    static const std::map<uint32_t, VersionConfig> versionConfigs;
+    VersionConfig versionConfig;
 
     std::string genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     Coord genericGetCoord(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     double genericGetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
+    simtime_t genericGetTime(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     int32_t genericGetInt(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     std::list<std::string> genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
     std::list<Coord> genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
 };
 
 } // namespace Veins
-
-#endif

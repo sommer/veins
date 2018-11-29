@@ -18,10 +18,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef CONSTANTS_802_11p
-#define CONSTANTS_802_11p
+#pragma once
 
 #include <stdint.h>
+
+#include "veins/veins.h"
+
+using omnetpp::SimTime;
 
 /** @brief Bit rates for 802.11p
  *
@@ -121,10 +124,12 @@ const SimTime SWITCHING_INTERVAL_11P = SimTime().setRaw(50000000000UL);
  */
 const SimTime GUARD_INTERVAL_11P = SimTime().setRaw(4000000000UL);
 
+namespace Veins {
+namespace Channels {
+
 /** @brief Channels as reserved by the FCC
  *
  */
-namespace Channels {
 enum ChannelNumber {
     CRIT_SOL = 172,
     SCH1 = 174,
@@ -134,11 +139,11 @@ enum ChannelNumber {
     SCH4 = 182,
     HPPS = 184
 };
-}
+
+} // namespace Channels
+} // namespace Veins
 
 enum t_channel {
     type_CCH = 0,
     type_SCH,
 };
-
-#endif

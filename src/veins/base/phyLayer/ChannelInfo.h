@@ -1,10 +1,9 @@
-#ifndef CHANNELINFO_H_
-#define CHANNELINFO_H_
+#pragma once
 
 #include <list>
-#include <omnetpp.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/messages/AirFrame_m.h"
 
 using Veins::AirFrame;
@@ -38,14 +37,9 @@ namespace Veins {
  *          This also affects "getAirFrames" in the way that you may only ask for
  *          intervals which lie before the "current time" of ChannelInfo.
  *
- * A state-machine-diagram for Radio and ChannelInfo
- * showing how they work together under control of BasePhyLayer as well as some
- * documentation is available
- * in @ref phyLayer.
- *
  * @ingroup phyLayer
  */
-class MIXIM_API ChannelInfo {
+class VEINS_API ChannelInfo {
 
 protected:
     /** @brief Type for a pair of an AirFrame and a simulation time.*/
@@ -329,7 +323,7 @@ protected:
      * @brief Checks if any information up from the passed start time can be
      * discarded.
      *
-     * @param startTime The start of the interval to check
+     * @param start The start of the interval to check
      */
     void checkAndCleanFrom(simtime_t_cref start)
     {
@@ -457,5 +451,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*CHANNELINFO_H_*/

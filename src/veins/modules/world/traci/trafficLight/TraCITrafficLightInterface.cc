@@ -186,8 +186,8 @@ void TraCITrafficLightInterface::setNextSwitch(const simtime_t& newNextSwitch, b
             // maybe issue even an error if this occurs
             remainingDuration = 0;
         }
-        getTlCommandInterface()->setPhaseDuration(remainingDuration.inUnit(SIMTIME_MS));
-        simtime_t newValueInSumo = SimTime(tlCommandInterface->getAssumedNextSwitchTime(), SIMTIME_MS);
+        getTlCommandInterface()->setPhaseDuration(remainingDuration);
+        simtime_t newValueInSumo = tlCommandInterface->getAssumedNextSwitchTime();
         ASSERT(newValueInSumo == nextSwitch);
     }
     if (nextSwitchTime != nextSwitch) {
@@ -207,9 +207,9 @@ void TraCITrafficLightInterface::setRemainingDuration(const simtime_t& rawRemain
     simtime_t nextSwitchInVeins = sumoTimeNow + roundedRemainingDuration;
     if (setSumo) {
         // set value to sumo
-        getTlCommandInterface()->setPhaseDuration(roundedRemainingDuration.inUnit(SIMTIME_MS));
+        getTlCommandInterface()->setPhaseDuration(roundedRemainingDuration);
         // check that everything is consistent
-        simtime_t nextSwitchInSumo = SimTime(tlCommandInterface->getAssumedNextSwitchTime(), SIMTIME_MS);
+        simtime_t nextSwitchInSumo = tlCommandInterface->getAssumedNextSwitchTime();
         ASSERT(nextSwitchInSumo == nextSwitchInVeins);
     }
     if (nextSwitchTime != nextSwitchInVeins) {
@@ -226,7 +226,7 @@ void TraCITrafficLightInterface::initialize()
     setControlledLinks(getTlCommandInterface()->getControlledLinks());
     currentLogicId = getTlCommandInterface()->getCurrentProgramID();
     currentPhaseNr = getTlCommandInterface()->getCurrentPhaseIndex();
-    nextSwitchTime = SimTime(getTlCommandInterface()->getAssumedNextSwitchTime(), SIMTIME_MS);
+    nextSwitchTime = getTlCommandInterface()->getAssumedNextSwitchTime();
     currentSignalState = getTlCommandInterface()->getCurrentState();
 }
 

@@ -39,10 +39,9 @@ simple TraCIMobility extends BaseMobility
 {
     parameters:
         @class(Veins::TraCIMobility);
-        @signal[parkingStateChanged](type=Veins::TraCIMobility);
+        @signal[org.car2x.veins.modules.mobility.parkingStateChanged](type=Veins::TraCIMobility);
         @display("i=block/cogwheel");
-        bool debug = default(false);  // debug switch
-        double antennaPositionOffset @unit("m") = default(0.0m);  // position offset of the antenna of the front of the car
+        double hostPositionOffset @unit("m") = default(0.0m);  // shift OMNeT++ module this far from front of the car
         int accidentCount = default(0);  // number of accidents
         double accidentStart @unit("s") = default(uniform(30s,60s));  // time until first accident, relative to departure time
         volatile double accidentDuration @unit("s") = default(uniform(30s,60s));  // duration of accident

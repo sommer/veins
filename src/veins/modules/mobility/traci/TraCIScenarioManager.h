@@ -18,25 +18,31 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef VEINS_WORLD_TRACI_TRACISCENARIOMANAGER_H
-#define VEINS_WORLD_TRACI_TRACISCENARIOMANAGER_H
+#pragma once
 
 #include <map>
 #include <memory>
 #include <list>
 #include <queue>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 #include "veins/base/utils/Coord.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/obstacle/ObstacleControl.h"
+#include "veins/modules/obstacle/VehicleObstacleControl.h"
 #include "veins/modules/mobility/traci/TraCIBuffer.h"
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
+#include "veins/modules/mobility/traci/VehicleSignal.h"
+#include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
+
+namespace Veins {
+
+class TraCICommandInterface;
 
 /**
  * @brief
@@ -55,32 +61,13 @@
  * @see TraCIScenarioManagerLaunchd
  *
  */
-namespace Veins {
-
-class TraCICommandInterface;
-
 class TraCIScenarioManager : public cSimpleModule {
 public:
-    enum VehicleSignal {
-        VEH_SIGNAL_UNDEF = -1,
-        VEH_SIGNAL_NONE = 0,
-        VEH_SIGNAL_BLINKER_RIGHT = 1,
-        VEH_SIGNAL_BLINKER_LEFT = 2,
-        VEH_SIGNAL_BLINKER_EMERGENCY = 4,
-        VEH_SIGNAL_BRAKELIGHT = 8,
-        VEH_SIGNAL_FRONTLIGHT = 16,
-        VEH_SIGNAL_FOGLIGHT = 32,
-        VEH_SIGNAL_HIGHBEAM = 64,
-        VEH_SIGNAL_BACKDRIVE = 128,
-        VEH_SIGNAL_WIPER = 256,
-        VEH_SIGNAL_DOOR_OPEN_LEFT = 512,
-        VEH_SIGNAL_DOOR_OPEN_RIGHT = 1024,
-        VEH_SIGNAL_EMERGENCY_BLUE = 2048,
-        VEH_SIGNAL_EMERGENCY_RED = 4096,
-        VEH_SIGNAL_EMERGENCY_YELLOW = 8192
-    };
-
-    static const std::string TRACI_INITIALIZED_SIGNAL_NAME;
+    static const simsignal_t traciInitializedSignal;
+    static const simsignal_t traciModuleAddedSignal;
+    static const simsignal_t traciModuleRemovedSignal;
+    static const simsignal_t traciTimestepBeginSignal;
+    static const simsignal_t traciTimestepEndSignal;
 
     TraCIScenarioManager();
     ~TraCIScenarioManager();
@@ -114,7 +101,6 @@ public:
     }
 
 protected:
-    bool debug; /**< whether to emit debug messages */
     simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
     simtime_t firstStepAt; /**< when to start synchronizing with the TraCI server (-1: immediately after connecting) */
     simtime_t updateInterval; /**< time interval of hosts' position updates */
@@ -131,21 +117,9 @@ protected:
     std::string trafficLightModuleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
     std::vector<std::string> trafficLightModuleIds; /**< list of traffic light module ids that is subscribed to (whitelist) */
 
-    uint32_t vehicleNameCounter;
-    std::vector<std::string> vehicleTypeIds;
-    std::map<int, std::queue<std::string>> vehicleInsertQueue;
-    std::set<std::string> queuedVehicles;
-    std::vector<std::string> routeIds;
-    int vehicleRngIndex;
-    int numVehicles;
-
-    cRNG* mobRng;
-
     bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
     double penetrationRate;
-    std::list<std::string> roiRoads; /**< which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty */
-    std::list<std::pair<TraCICoord, TraCICoord>> roiRects; /**< which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty */
-
+    TraCIRegionOfInterest roi; /**< Can return whether a given position lies within the simulation's region of interest. Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI */
     double areaSum;
 
     AnnotationManager* annotations;
@@ -166,34 +140,20 @@ protected:
 
     BaseWorldUtility* world;
     BaseConnectionManager* cc;
+    std::map<const TraCIMobility*, const VehicleObstacle*> vehicleObstacles;
+    VehicleObstacleControl* vehicleObstacleControl;
 
     void executeOneTimestep(); /**< read and execute all commands for the next timestep */
 
     virtual void init_traci();
 
-    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals);
-    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals);
-    void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, double angle = -1, VehicleSignal signals = VehicleSignal::VEH_SIGNAL_UNDEF);
+    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals);
+    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals);
+    void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan, VehicleSignalSet signals = {VehicleSignal::undefined}, double length = 0, double height = 0, double width = 0);
     cModule* getManagedModule(std::string nodeId); /**< returns a pointer to the managed module named moduleName, or 0 if no module can be found */
     void deleteManagedModule(std::string nodeId);
 
     bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
-
-    /**
-     * returns whether a given position lies within the simulation's region of interest.
-     * Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI
-     */
-    bool isInRegionOfInterest(const TraCICoord& position, std::string road_id, double speed, double angle);
-
-    /**
-     * adds a new vehicle to the queue which are tried to be inserted at the next SUMO time step;
-     */
-    void insertNewVehicle();
-
-    /**
-     * tries to add all vehicles in the vehicle queue to SUMO;
-     */
-    void insertVehicles();
 
     void subscribeToVehicleVariables(std::string vehicleId);
     void unsubscribeFromVehicleVariables(std::string vehicleId);
@@ -215,13 +175,8 @@ protected:
      * transforms a list of mappings of an omnetpp.ini parameter in a list
      */
     TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
-
-private:
-    const omnetpp::simsignal_t traciInitializedSignal;
 };
-} // namespace Veins
 
-namespace Veins {
 class TraCIScenarioManagerAccess {
 public:
     TraCIScenarioManager* get()
@@ -229,6 +184,5 @@ public:
         return FindModule<TraCIScenarioManager*>::findGlobalModule();
     };
 };
-} // namespace Veins
 
-#endif
+} // namespace Veins

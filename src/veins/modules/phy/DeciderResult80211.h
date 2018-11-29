@@ -7,10 +7,10 @@
  *  Modified by Michele Segata (segata@ccs-labs.org)
  */
 
-#ifndef DECIDERRESULT80211_H_
-#define DECIDERRESULT80211_H_
+#pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/Decider.h"
 
 namespace Veins {
@@ -22,7 +22,7 @@ namespace Veins {
  * @ingroup decider
  * @ingroup ieee80211
  */
-class MIXIM_API DeciderResult80211 : public DeciderResult {
+class VEINS_API DeciderResult80211 : public DeciderResult {
 protected:
     /** @brief Stores the bit-rate of the transmission of the packet */
     double bitrate;
@@ -91,5 +91,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* DECIDERRESULT80211_H_ */

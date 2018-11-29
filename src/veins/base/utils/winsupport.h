@@ -5,8 +5,7 @@
  * @date 2007-08-14
  **/
 
-#ifndef __WINSUPPORT_H
-#define __WINSUPPORT_H
+#pragma once
 
 #ifdef _WIN32
 
@@ -19,5 +18,3 @@ typedef unsigned short uint16_t;
 typedef unsigned char uint8_t;
 
 #endif /* _WIN32 */
-
-#endif /* __WINSUPPORT_H */

@@ -28,7 +28,7 @@ import org.car2x.veins.base.modules.BaseMacLayer;
 // @author Christopher Saloman
 // @author David Eckhoff : rewrote complete model
 //
-// @see BaseWaveApplLayer
+// @see DemoBaseApplLayer
 // @see Nic80211p
 // @see PhyLayer80211p
 //
@@ -43,13 +43,10 @@ simple Mac1609_4 extends BaseMacLayer
         // the service channel this maclayer listens on when started
         int serviceChannel = default(1);
 
-        // debug switch
-        bool debug = default(false);
-
         // length of MAC header, header is already added at 1609_4
         headerLength @unit(bit) = default(0 bit);
 
-        // bit rate 
+        // bit rate
         int bitrate @unit(bps) = default(6 Mbps);
 
         // maximum artificial asynchronization between cars to avoid synchronization effects
@@ -70,8 +67,8 @@ simple Mac1609_4 extends BaseMacLayer
         double ackErrorRate = default(0.20);
 
         // signal informing interested application about channel busy state
-        @signal[sigChannelBusy](type=bool);
+        @signal[org.car2x.veins.modules.mac.sigChannelBusy](type=bool);
         // signal informing interested application about a collision
-        @signal[sigCollision](type=bool);
+        @signal[org.car2x.veins.modules.mac.sigCollision](type=bool);
 
 }

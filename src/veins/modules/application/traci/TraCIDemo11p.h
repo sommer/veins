@@ -18,10 +18,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef TraCIDemo11p_H
-#define TraCIDemo11p_H
+#pragma once
 
-#include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
+#include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
 
 namespace Veins {
 
@@ -31,15 +30,15 @@ namespace Veins {
  * it will send a message out to other cars containing the blocked road id.
  * Receiving cars will then trigger a reroute via TraCI.
  * When channel switching between SCH and CCH is enabled on the MAC, the message is
- * instead send out on a service channel following a WAVE Service Advertisement
+ * instead send out on a service channel following a Service Advertisement
  * on the CCH.
  *
  * @author Christoph Sommer : initial DemoApp
- * @author David Eckhoff : rewriting, moving functionality to BaseWaveApplLayer, adding WSA
+ * @author David Eckhoff : rewriting, moving functionality to DemoBaseApplLayer, adding WSA
  *
  */
 
-class TraCIDemo11p : public BaseWaveApplLayer {
+class TraCIDemo11p : public DemoBaseApplLayer {
 public:
     virtual void initialize(int stage);
 
@@ -49,13 +48,11 @@ protected:
     int currentSubscribedServiceId;
 
 protected:
-    virtual void onWSM(WaveShortMessage* wsm);
-    virtual void onWSA(WaveServiceAdvertisment* wsa);
+    virtual void onBSM(DemoSafetyMessage* wsm);
+    virtual void onWSA(DemoServiceAdvertisment* wsa);
 
     virtual void handleSelfMsg(cMessage* msg);
     virtual void handlePositionUpdate(cObject* obj);
 };
 
 } // namespace Veins
-
-#endif

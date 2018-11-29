@@ -18,12 +18,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef WORLD_TRACI_TRACISCENARIOMANAGERLAUNCHD_H
-#define WORLD_TRACI_TRACISCENARIOMANAGERLAUNCHD_H
+#pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
+
+namespace Veins {
 
 /**
  * @brief
@@ -42,7 +43,6 @@
  * @see TraCIScenarioManager
  *
  */
-namespace Veins {
 class TraCIScenarioManagerLaunchd : public TraCIScenarioManager {
 public:
     virtual ~TraCIScenarioManagerLaunchd();
@@ -55,9 +55,7 @@ protected:
 
     virtual void init_traci();
 };
-} // namespace Veins
 
-namespace Veins {
 class TraCIScenarioManagerLaunchdAccess {
 public:
     TraCIScenarioManagerLaunchd* get()
@@ -65,6 +63,5 @@ public:
         return FindModule<TraCIScenarioManagerLaunchd*>::findGlobalModule();
     };
 };
-} // namespace Veins
 
-#endif
+} // namespace Veins

@@ -17,11 +17,14 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef _COORD_H
-#define _COORD_H
+#pragma once
 
-#include <omnetpp.h>
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
+namespace Veins {
+class Coord;
+}
+
 #include "veins/base/utils/FWMath.h"
 
 namespace Veins {
@@ -34,7 +37,7 @@ namespace Veins {
  * @ingroup utils
  * @author Christian Frank
  */
-class MIXIM_API Coord : public cObject {
+class VEINS_API Coord : public cObject {
 public:
     /** @brief Constant with all values set to 0. */
     static const Coord ZERO;
@@ -106,6 +109,29 @@ public:
         return tmp;
     }
 
+    /**
+     * @brief Multiplies a coordinate vector by another coordinate vector;
+     * @return Scalar value
+     * in Algebra: referred to as "dot product" or "scalar product";
+     * Takes two equal-length sequences of numbers (usually coordinate vectors) and returns a single number.
+     * in Euclidean geometry: the dot product of the Cartesian coordinates of two vectors (i.e. inner product).
+     */
+    friend double operator*(const Coord& a, const Coord& b)
+    {
+        return (a.x * b.x + a.y * b.y);
+    }
+
+    /**
+     * @brief Returns the magnitude of the vector that would result from a regular 3D cross product
+     * of the input vectors; The values on the z-plane are assumed to be 0 (i.e. treating the 2D space as a plane in the 3D space).
+     * The 3D cross product will be perpendicular to that plane, and thus have 0 X & Y components
+     * (thus the scalar returned is the Z value of the 3D cross product vector).
+     */
+    double twoDimensionalCrossProduct(const Coord& a) const
+    {
+        return (x * a.y - y * a.x);
+    }
+
     /** @brief Divides a coordinate vector by a real number. */
     friend Coord operator/(const Coord& a, double f)
     {
@@ -174,13 +200,14 @@ public:
     /**
      * @brief Tests whether two coordinate vectors are equal.
      *
-     * Because coordinates are of type double, this is done through the
-     * FWMath::close function.
+     * Because coordinates are floating point values, this is done using an epsilon comparison.
+     * @see math::almost_equal
+     *
      */
     friend bool operator==(const Coord& a, const Coord& b)
     {
         // FIXME: this implementation is not transitive
-        return FWMath::close(a.x, b.x) && FWMath::close(a.y, b.y) && FWMath::close(a.z, b.z);
+        return math::almost_equal(a.x, b.x) && math::almost_equal(a.y, b.y) && math::almost_equal(a.z, b.z);
     }
 
     /**
@@ -258,6 +285,26 @@ public:
     {
         return Coord(this->x > a.x ? this->x : a.x, this->y > a.y ? this->y : a.y, this->z > a.z ? this->z : a.z);
     }
+
+    /**
+     * Returns this coord when rotated around z axis (i.e., yaw).
+     *
+     * Coord(0,1,0) rotated by -90 degrees is Coord(1,0,0)
+     *
+     * @param rad: angle to rotate by (in rad)
+     */
+    Coord rotatedYaw(double rad) const
+    {
+        return Coord(x * cos(rad) - y * sin(rad), x * sin(rad) + y * cos(rad), z);
+    }
+
+    /**
+     * @brief Returns this coord when after inverting y axis
+     */
+    Coord flippedY() const
+    {
+        return Coord(x, -y, z);
+    }
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Coord& coord)
@@ -273,5 +320,3 @@ inline std::string Coord::info() const
 }
 
 } // namespace Veins
-
-#endif

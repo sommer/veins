@@ -20,8 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef DECIDER80211p_H_
-#define DECIDER80211p_H_
+#pragma once
 
 #include "veins/base/phyLayer/BaseDecider.h"
 #include "veins/modules/utility/Consts80211p.h"
@@ -41,7 +40,7 @@ using Veins::AirFrame;
  *
  * @ingroup decider
  *
- * @see BaseWaveApplLayer
+ * @see DemoBaseApplLayer
  * @see Mac1609_4
  * @see PhyLayer80211p
  * @see Decider80211p
@@ -156,8 +155,8 @@ public:
      * @brief Initializes the Decider with a pointer to its PhyLayer and
      * specific values for threshold and sensitivity
      */
-    Decider80211p(DeciderToPhyInterface* phy, double sensitivity, double ccaThreshold, bool allowTxDuringRx, double centerFrequency, int myIndex = -1, bool collectCollisionStatistics = false, bool debug = false)
-        : BaseDecider(phy, sensitivity, myIndex, debug)
+    Decider80211p(DeciderToPhyInterface* phy, double sensitivity, double ccaThreshold, bool allowTxDuringRx, double centerFrequency, int myIndex = -1, bool collectCollisionStatistics = false)
+        : BaseDecider(phy, sensitivity, myIndex)
         , ccaThreshold(ccaThreshold)
         , allowTxDuringRx(allowTxDuringRx)
         , centerFrequency(centerFrequency)
@@ -219,5 +218,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* DECIDER80211p_H_ */

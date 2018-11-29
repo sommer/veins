@@ -122,6 +122,7 @@ void TimerSpecification::finalize()
     case EndMode::repetition:
         end_time_ = start_ + ((end_count_ - 1) * period_);
         end_mode_ = EndMode::absolute;
+        break;
     case EndMode::open:
         break;
     }
@@ -170,6 +171,7 @@ bool TimerManager::handleMessage(omnetpp::cMessage* message)
         parent_->scheduleAt(next_event, timer->first);
     }
     else {
+        parent_->cancelAndDelete(timer->first);
         timers_.erase(timer);
     }
 
@@ -192,7 +194,7 @@ void TimerManager::cancel(TimerManager::TimerHandle handle)
 {
     auto timer = timers_.find(handle);
     if (timer != timers_.end()) {
-        parent_->cancelEvent(timer->first);
+        parent_->cancelAndDelete(timer->first);
         timers_.erase(timer);
     }
 }

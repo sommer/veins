@@ -18,12 +18,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef SIGNAL_H_
-#define SIGNAL_H_
+#pragma once
+
+#include "veins/veins.h"
 
 #include "veins/base/utils/Coord.h"
-#include "veins/base/utils/MiXiMDefs.h"
-
 #include "veins/base/toolbox/Spectrum.h"
 
 namespace Veins {
@@ -36,8 +35,8 @@ class Signal {
 public:
     Signal();
     Signal(const Signal& other);
-    Signal(SpectrumPtr spec);
-    Signal(SpectrumPtr spec, simtime_t start, simtime_t duration);
+    Signal(Spectrum spec);
+    Signal(Spectrum spec, simtime_t start, simtime_t duration);
     ~Signal();
 
     double& operator[](size_t index);
@@ -45,7 +44,7 @@ public:
     double& operator()(double freq);
     double operator()(double freq) const;
 
-    SpectrumPtr getSpectrum() const;
+    Spectrum getSpectrum() const;
 
     double getAbsoluteFreqAt(size_t freqIndex) const;
     double getRelativeFreqAt(size_t freqIndex) const;
@@ -124,8 +123,8 @@ public:
     double getDataMax() const;
     double getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const;
 
-    void print() const;
-    void printAbsolute() const;
+    void print(std::ostream& os) const;
+    void printAbsolute(std::ostream& os) const;
     void toFile(std::string path) const;
 
     Signal& operator=(const double value);
@@ -208,7 +207,7 @@ public:
 private:
     void includeAbsoluteIndex(size_t freqIndex);
 
-    SpectrumPtr spectrum;
+    Spectrum spectrum;
 
     double* values;
 
@@ -249,5 +248,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif /* SIGNAL_H_ */

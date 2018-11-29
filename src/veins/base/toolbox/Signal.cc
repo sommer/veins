@@ -26,8 +26,7 @@
 namespace Veins {
 
 Signal::Signal()
-    : spectrum(0)
-    , values(0)
+    : values(0)
     , numAbsoluteValues(0)
     , numRelativeValues(0)
     , numDataValues(0)
@@ -73,13 +72,13 @@ Signal::Signal(const Signal& other)
     , receiverModuleID(other.receiverModuleID)
     , receiverToGateID(other.receiverToGateID)
 {
-    values = new double[spectrum->getNumFreqs()]{0};
+    values = new double[spectrum.getNumFreqs()]{0};
     std::copy(other.getAbsoluteValues(), other.getAbsoluteValues() + numAbsoluteValues, values);
 }
 
-Signal::Signal(SpectrumPtr spec)
+Signal::Signal(Spectrum spec)
     : spectrum(spec)
-    , numAbsoluteValues(spec->getNumFreqs())
+    , numAbsoluteValues(spec.getNumFreqs())
     , numRelativeValues(0)
     , numDataValues(0)
     , relativeOffset(0)
@@ -102,9 +101,9 @@ Signal::Signal(SpectrumPtr spec)
     values = new double[numAbsoluteValues]{0};
 }
 
-Signal::Signal(SpectrumPtr spec, simtime_t start, simtime_t dur)
+Signal::Signal(Spectrum spec, simtime_t start, simtime_t dur)
     : spectrum(spec)
-    , numAbsoluteValues(spec->getNumFreqs())
+    , numAbsoluteValues(spec.getNumFreqs())
     , numRelativeValues(0)
     , numDataValues(0)
     , relativeOffset(0)
@@ -137,19 +136,22 @@ double& Signal::operator[](size_t index)
 #ifndef PREFER_VECTORIZATION
     includeAbsoluteIndex(index);
 #endif
+    ASSERT(index < numAbsoluteValues);
 
     return values[index];
 }
 
 const double& Signal::operator[](size_t index) const
 {
+    ASSERT(index < numAbsoluteValues);
     return values[index];
 }
 
 double& Signal::operator()(double freq)
 {
-    size_t index = spectrum->indexOf(freq);
+    size_t index = spectrum.indexOf(freq);
 
+    ASSERT(index < numAbsoluteValues);
     includeAbsoluteIndex(index);
 
     return values[index];
@@ -157,29 +159,29 @@ double& Signal::operator()(double freq)
 
 double Signal::operator()(double freq) const
 {
-    size_t index = spectrum->indexOf(freq);
+    size_t index = spectrum.indexOf(freq);
 
     return values[index];
 }
 
-SpectrumPtr Signal::getSpectrum() const
+Spectrum Signal::getSpectrum() const
 {
     return spectrum;
 }
 
 double Signal::getAbsoluteFreqAt(size_t freqIndex) const
 {
-    return spectrum->freqAt(freqIndex);
+    return spectrum.freqAt(freqIndex);
 }
 
 double Signal::getRelativeFreqAt(size_t freqIndex) const
 {
-    return spectrum->freqAt(freqIndex + relativeOffset);
+    return spectrum.freqAt(freqIndex + relativeOffset);
 }
 
 double Signal::getDataFreqAt(size_t freqIndex) const
 {
-    return spectrum->freqAt(freqIndex + dataOffset);
+    return spectrum.freqAt(freqIndex + dataOffset);
 }
 
 size_t Signal::getRelativeStart() const
@@ -276,7 +278,7 @@ void Signal::setData(size_t index, double value)
 
 void Signal::setAtFreq(double freq, double value)
 {
-    size_t index = spectrum->indexOf(freq);
+    size_t index = spectrum.indexOf(freq);
 
     includeAbsoluteIndex(index);
 
@@ -300,7 +302,7 @@ double Signal::getData(size_t index) const
 
 double Signal::getAtFreq(double freq) const
 {
-    size_t index = spectrum->indexOf(freq);
+    size_t index = spectrum.indexOf(freq);
     return values[index];
 }
 
@@ -500,25 +502,25 @@ double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
     return *(std::max_element(values + freqIndexLow, values + freqIndexHigh));
 }
 
-void Signal::print() const
+void Signal::print(std::ostream& os) const
 {
-    if (timingUsed) std::cout << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
+    if (timingUsed) os << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
 
     for (uint16_t i = getRelativeStart(); i < getRelativeEnd(); i++) {
-        std::cout << spectrum->freqAt(i) << ":\t " << values[i] << std::endl;
+        os << spectrum.freqAt(i) << ":\t " << values[i] << std::endl;
     }
 
-    std::cout << "-----------------------------------------------" << std::endl;
+    os << "-----------------------------------------------" << std::endl;
 }
 
-void Signal::printAbsolute() const
+void Signal::printAbsolute(std::ostream& os) const
 {
-    std::cout << "-----------------------------------------------" << std::endl;
+    os << "-----------------------------------------------" << std::endl;
 
-    if (timingUsed) std::cout << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
+    if (timingUsed) os << "Range: " << getReceptionStart() << " - " << getReceptionEnd() << " (" << duration << ")" << std::endl;
 
     for (uint16_t i = 0; i < numAbsoluteValues; i++) {
-        std::cout << spectrum->freqAt(i) << ":\t " << values[i] << std::endl;
+        os << spectrum.freqAt(i) << ":\t " << values[i] << std::endl;
     }
 }
 
@@ -552,7 +554,7 @@ Signal& Signal::operator=(const Signal& other)
 
     // TODO: Check if new spectrum has changed and new one is larger
     if (values) delete[] values;
-    values = new double[spectrum->getNumFreqs()]{0};
+    values = new double[spectrum.getNumFreqs()]{0};
 
     std::copy(other.getAbsoluteValues(), other.getAbsoluteValues() + numAbsoluteValues, values);
 
@@ -964,7 +966,7 @@ void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
 {
     if (!pMsg) return;
 
-    assert(senderModuleID < 0);
+    ASSERT(senderModuleID < 0);
 
     senderModuleID = pMsg->getSenderModuleId();
     senderFromGateID = pMsg->getSenderGateId();
@@ -975,6 +977,7 @@ void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
 
 void Signal::addAttenuation(uint16_t freqIndex, double factor)
 {
+    ASSERT(freqIndex < numAbsoluteValues);
     values[freqIndex] *= factor;
 }
 

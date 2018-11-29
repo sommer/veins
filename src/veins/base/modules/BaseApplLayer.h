@@ -19,12 +19,12 @@
  *              subclass to create your own application layer
  **************************************************************************/
 
-#ifndef BASE_APPL_LAYER_H
-#define BASE_APPL_LAYER_H
+#pragma once
 
 #include <assert.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/utils/SimpleAddress.h"
 
@@ -42,7 +42,7 @@ namespace Veins {
  *
  * @author Daniel Willkomm
  **/
-class MIXIM_API BaseApplLayer : public BaseLayer {
+class VEINS_API BaseApplLayer : public BaseLayer {
 public:
     /** @brief The message kinds this layer uses.*/
     enum BaseApplMessageKinds {
@@ -165,5 +165,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

@@ -20,25 +20,24 @@
  *                from this class and use the sendToChannel() function!!
  **************************************************************************/
 
-#ifndef CHANNEL_ACCESS_H
-#define CHANNEL_ACCESS_H
+#pragma once
 
-#include <omnetpp.h>
 #include <vector>
 
-#include "veins/base/utils/MiXiMDefs.h"
-#include "veins/base/modules/BatteryAccess.h"
+#include "veins/veins.h"
 
+#include "veins/base/modules/BatteryAccess.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/modules/BaseMobility.h"
+#include "veins/base/utils/Heading.h"
 
 namespace Veins {
+
 typedef AccessModuleWrap<BaseMobility> ChannelMobilityAccessType;
 typedef ChannelMobilityAccessType::wrapType* ChannelMobilityPtrType;
 class NicEntry;
 class BaseConnectionManager;
 class BaseWorldUtility;
-} // namespace Veins
 
 /**
  * @brief Basic class for all physical layers, please don't touch!!
@@ -55,20 +54,13 @@ class BaseWorldUtility;
  * @ingroup phyLayer
  * @ingroup baseModules
  **/
-namespace Veins {
-class MIXIM_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType {
+class VEINS_API ChannelAccess : public BatteryAccess, protected ChannelMobilityAccessType {
 protected:
-    /** @brief A signal used to subscribe to mobility state changes. */
-    const static simsignalwrap_t mobilityStateChangedSignal;
-
     /** @brief use sendDirect or not?*/
     bool useSendDirect;
 
     /** @brief Pointer to the PropagationModel module*/
     BaseConnectionManager* cc;
-
-    /** @brief debug this core module? */
-    bool coreDebug;
 
     /** @brief Defines if the physical layer should simulate propagation delay.*/
     bool usePropagationDelay;
@@ -78,6 +70,18 @@ protected:
 
     /** @brief Pointer to the World Utility, to obtain some global information*/
     BaseWorldUtility* world;
+
+    /** @brief Current antenna position */
+    Coord antennaPosition;
+
+    /** @brief Current antenna heading (angle) */
+    Heading antennaHeading;
+
+    /** @brief Offset of antenna position (in m) with respect to what a BaseMobility module will tell us */
+    Coord antennaOffset = Coord(0, 0, 0);
+
+    /** @brief Offset of antenna orientation (yaw, in rad) with respect to what a BaseMobility module will tell us */
+    double antennaOffsetYaw = 0;
 
 protected:
     /**
@@ -129,7 +133,11 @@ public:
     {
         return ChannelMobilityAccessType::get(this);
     }
-};
-} // namespace Veins
 
-#endif
+    virtual Coord getAntennaPosition() const
+    {
+        return antennaPosition;
+    }
+};
+
+} // namespace Veins

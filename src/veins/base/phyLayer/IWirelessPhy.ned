@@ -1,7 +1,9 @@
 package org.car2x.veins.base.phyLayer;
+
+import org.car2x.veins.base.connectionManager.IChannelAccess;
  
 // Wireless physical layer module interface.
-moduleinterface IWirelessPhy
+moduleinterface IWirelessPhy extends IChannelAccess
 {
     parameters:
         bool recordStats; //enable/disable tracking of statistics (eg. cOutvectors)

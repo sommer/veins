@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef PHYLAYER80211P_H_
-#define PHYLAYER80211P_H_
+#pragma once
 
 #include "veins/base/phyLayer/BasePhyLayer.h"
 #include "veins/modules/mac/ieee80211p/Mac80211pToPhy11pInterface.h"
@@ -39,16 +38,12 @@ using Veins::AirFrame;
  *
  * @ingroup phyLayer
  *
- * @see BaseWaveApplLayer
+ * @see DemoBaseApplLayer
  * @see Mac1609_4
  * @see PhyLayer80211p
  * @see Decider80211p
  */
-class PhyLayer80211p : public BasePhyLayer,
-                       public Mac80211pToPhy11pInterface,
-                       public Decider80211pToPhy80211pInterface
-
-{
+class PhyLayer80211p : public BasePhyLayer, public Mac80211pToPhy11pInterface, public Decider80211pToPhy80211pInterface {
 public:
     void initialize(int stage);
     /**
@@ -62,7 +57,7 @@ public:
     double getCCAThreshold();
     /**
      * @brief Enable notifications about PHY-RXSTART.indication in MAC
-     * @param val true if Mac needs to be notified about it
+     * @param enable true if Mac needs to be notified about it
      */
     void notifyMacAboutRxStart(bool enable);
     /**
@@ -119,6 +114,12 @@ protected:
     AnalogueModel* initializeSimpleObstacleShadowing(ParameterMap& params);
 
     /**
+     * @brief Creates and initializes a VehicleObstacleShadowing with the
+     * passed parameter values.
+     */
+    AnalogueModel* initializeVehicleObstacleShadowing(ParameterMap& params);
+
+    /**
      * @brief Creates a simple Packet Error Rate model that attenuates a percentage
      * of the packets to zero, and does not attenuate the other packets.
      *
@@ -160,11 +161,10 @@ protected:
 
     virtual void changeListeningFrequency(double freq);
 
+    virtual void handleMessage(cMessage* msg);
     virtual void handleSelfMessage(cMessage* msg);
     virtual int getRadioState();
     virtual simtime_t setRadioState(int rs);
 };
 
 } // namespace Veins
-
-#endif /* PHYLAYER80211P_H_ */

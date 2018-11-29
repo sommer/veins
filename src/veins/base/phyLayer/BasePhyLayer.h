@@ -1,17 +1,16 @@
-#ifndef BASEPHYLAYER_
-#define BASEPHYLAYER_
+#pragma once
 
 #include <map>
 #include <vector>
 #include <string>
 #include <memory>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
 #include "veins/base/phyLayer/MacToPhyInterface.h"
 #include "veins/base/phyLayer/Antenna.h"
-
 #include "veins/base/phyLayer/ChannelInfo.h"
 
 namespace Veins {
@@ -74,7 +73,7 @@ class Radio;
 
 typedef std::vector<AnalogueModel*> AnalogueModelList;
 
-class MIXIM_API BasePhyLayer : public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
+class VEINS_API BasePhyLayer : public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
 
 protected:
     enum ProtocolIds {
@@ -431,7 +430,7 @@ public:
     /** @brief Only calls the deciders finish method.*/
     virtual void finish();
 
-    //---------MacToPhyInterface implementation-----------
+    // ---------MacToPhyInterface implementation-----------
     /**
      * @name MacToPhyInterface implementation
      * @brief These methods implement the MacToPhyInterface.
@@ -480,7 +479,7 @@ public:
 
     /*@}*/
 
-    //---------DeciderToPhyInterface implementation-----------
+    // ---------DeciderToPhyInterface implementation-----------
     /**
      * @name DeciderToPhyInterface implementation
      * @brief These methods implement the DeciderToPhyInterface.
@@ -568,13 +567,8 @@ public:
      * The "control info" object will be deleted when the message is deleted.
      * Only one "control info" structure can be attached (the second
      * setL3ToL2ControlInfo() call throws an error).
-     *
-     * @param pMsg        The message where the "control info" shall be attached.
-     * @param pSrcAddr    The MAC address of the message receiver.
      */
     virtual cObject* const setUpControlInfo(cMessage* const pMsg, DeciderResult* const pDeciderResult);
 };
 
 } // namespace Veins
-
-#endif /*BASEPHYLAYER_*/

@@ -1,0 +1,22 @@
+<tls>
+    <tlLogic id="10" type="static" programID="myProgramRed" offset="0">
+        <phase duration="999" state="GggGGgrrr"/>
+        <phase duration="1"   state="yyyyyyyyy"/>
+        <phase duration="1"   state="rrrrrrGGG"/>
+        <phase duration="1"   state="yyyyyyyyy"/>
+    </tlLogic>
+
+    <tlLogic id="10" type="static" programID="myProgramGreen" offset="0">
+        <phase duration="999" state="rrrrrrGGG"/>
+        <phase duration="1"   state="yyyyyyyyy"/>
+        <phase duration="1"   state="GggGGgrrr"/>
+        <phase duration="1"   state="yyyyyyyyy"/>
+    </tlLogic>
+
+    <tlLogic id="10" type="static" programID="myProgramGreenRed" offset="0">
+        <phase duration="999" state="rrrrrrGGG"/>
+        <phase duration="1"   state="yyyyyyyyy"/>
+        <phase duration="999" state="GggGGgrrr"/>
+        <phase duration="1"   state="yyyyyyyyy"/>
+    </tlLogic>
+</tls>

@@ -7,6 +7,8 @@
 
 namespace Veins {
 
+bool TraCIBuffer::timeAsDouble = true;
+
 TraCIBuffer::TraCIBuffer()
     : buf()
 {
@@ -104,6 +106,34 @@ TraCICoord TraCIBuffer::read()
     p.y = read<double>();
 
     return p;
+}
+
+template <>
+void TraCIBuffer::write(simtime_t o)
+{
+    if (timeAsDouble) {
+        double d = o.dbl();
+        write<double>(d);
+    }
+    else {
+        uint32_t i = o.inUnit(SIMTIME_MS);
+        write<uint32_t>(i);
+    }
+}
+
+template <>
+simtime_t TraCIBuffer::read()
+{
+    if (timeAsDouble) {
+        double d = read<double>();
+        simtime_t o = d;
+        return o;
+    }
+    else {
+        uint32_t i = read<uint32_t>();
+        simtime_t o = SimTime(i, SIMTIME_MS);
+        return o;
+    }
 }
 
 bool isBigEndian()

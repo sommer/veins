@@ -19,8 +19,7 @@
  *              ConnectionManager module
  **************************************************************************/
 
-#ifndef NICENTRYDEBUG_H
-#define NICENTRYDEBUG_H
+#pragma once
 
 #include "veins/base/connectionManager/NicEntry.h"
 
@@ -106,8 +105,8 @@ public:
     /**
      * @brief Constructor, initializes all members
      */
-    NicEntryDebug(bool debug)
-        : NicEntry(debug)
+    NicEntryDebug()
+        : NicEntry()
         , inCnt(0)
         , outCnt(0)
         , checkFreeGates(true){};
@@ -143,5 +142,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

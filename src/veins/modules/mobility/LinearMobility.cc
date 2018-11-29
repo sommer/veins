@@ -19,12 +19,7 @@
 
 #include "veins/modules/mobility/LinearMobility.h"
 
-#include <omnetpp.h>
-
-#ifndef debugEV
-#define debugEV_clear EV
-#define debugEV EV << logName() << "::" << getClassName() << ": "
-#endif
+#include "veins/veins.h"
 
 using namespace Veins;
 
@@ -34,7 +29,7 @@ void LinearMobility::initialize(int stage)
 {
     BaseMobility::initialize(stage);
 
-    debugEV << "initializing LinearMobility stage " << stage << endl;
+    EV_TRACE << "initializing LinearMobility stage " << stage << endl;
 
     if (stage == 0) {
         move.setSpeed(par("speed").doubleValue());
@@ -59,7 +54,7 @@ void LinearMobility::fixIfHostGetsOutside()
  */
 void LinearMobility::makeMove()
 {
-    debugEV << "start makeMove " << move.info() << endl;
+    EV_TRACE << "start makeMove " << move.info() << endl;
 
     move.setStart(stepTarget, simTime());
 
@@ -68,7 +63,7 @@ void LinearMobility::makeMove()
 
     move.setDirectionByTarget(stepTarget);
 
-    debugEV << "new stepTarget: " << stepTarget.info() << endl;
+    EV_TRACE << "new stepTarget: " << stepTarget.info() << endl;
 
     // accelerate
     move.setSpeed(move.getSpeed() + acceleration * SIMTIME_DBL(updateInterval));

@@ -19,10 +19,10 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef BASE_MOBILITY_H
-#define BASE_MOBILITY_H
+#pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/modules/BatteryAccess.h"
 #include "veins/base/utils/Coord.h"
 #include "veins/base/utils/Move.h"
@@ -61,7 +61,7 @@ using Veins::BatteryAccess;
  * @ingroup baseModules
  * @author Daniel Willkomm, Andras Varga
  */
-class MIXIM_API BaseMobility : public BatteryAccess {
+class VEINS_API BaseMobility : public BatteryAccess {
 public:
     /**
      * @brief Selects how a node should behave if it reaches the edge
@@ -102,6 +102,9 @@ public:
         Z_BIGGER ///< z bigger or equal than playground size
     };
 
+    /** @brief Store the category of HostMove */
+    const static simsignal_t mobilityStateChangedSignal;
+
 protected:
     /** @brief Pointer to BaseWorldUtility -- these two must know each other */
     BaseWorldUtility* world;
@@ -109,17 +112,11 @@ protected:
     /** @brief Stores the current position and move pattern of the host*/
     Move move;
 
-    /** @brief Store the category of HostMove */
-    const static simsignalwrap_t mobilityStateChangedSignal;
-
     /** @brief Time interval (in seconds) to update the hosts position*/
     simtime_t updateInterval;
 
     /** @brief Self message to trigger movement */
     cMessage* moveMsg;
-
-    /** @brief debug this core module? */
-    bool coreDebug;
 
     /** @brief Enable depth dependent scaling of nodes when 3d and tkenv is
      * used. */
@@ -413,5 +410,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

@@ -28,16 +28,11 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 
-#ifndef coreEV
-#define coreEV_clear EV
-#define coreEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
 using namespace Veins;
 
 Define_Module(Veins::BaseMobility);
 
-const simsignalwrap_t BaseMobility::mobilityStateChangedSignal = simsignalwrap_t(MIXIM_SIGNAL_MOBILITY_CHANGE_NAME);
+const simsignal_t BaseMobility::mobilityStateChangedSignal = registerSignal("org.car2x.veins.base.modules.mobilityStateChanged");
 
 namespace {
 bool isInBoundary(Coord c, Coord lowerBound, Coord upperBound)
@@ -73,9 +68,7 @@ void BaseMobility::initialize(int stage)
 {
     BaseModule::initialize(stage);
     if (stage == 0) {
-        hasPar("coreDebug") ? coreDebug = par("coreDebug").boolValue() : coreDebug = false;
-
-        coreEV << "initializing BaseMobility stage " << stage << endl;
+        EV_TRACE << "initializing BaseMobility stage " << stage << endl;
 
         hasPar("scaleNodeByDepth") ? scaleNodeByDepth = par("scaleNodeByDepth").boolValue() : scaleNodeByDepth = true;
 
@@ -83,7 +76,7 @@ void BaseMobility::initialize(int stage)
         world = FindModule<BaseWorldUtility*>::findGlobalModule();
         if (world == NULL) error("Could not find BaseWorldUtility module");
 
-        coreEV << "initializing BaseUtility stage " << stage << endl; // for node position
+        EV_TRACE << "initializing BaseUtility stage " << stage << endl; // for node position
 
         if (hasPar("updateInterval")) {
             updateInterval = par("updateInterval");
@@ -119,7 +112,7 @@ void BaseMobility::initialize(int stage)
 
         // set start-position and start-time (i.e. current simulation-time) of the Move
         move.setStart(pos);
-        coreEV << "start pos: " << move.getStartPos().info() << endl;
+        EV_TRACE << "start pos: " << move.getStartPos().info() << endl;
 
         // check whether position is within the playground
         if (!isInBoundary(move.getStartPos(), Coord::ZERO, *world->getPgs())) {
@@ -131,7 +124,7 @@ void BaseMobility::initialize(int stage)
         move.setDirectionByVector(Coord::ZERO);
     }
     else if (stage == 1) {
-        coreEV << "initializing BaseMobility stage " << stage << endl;
+        EV_TRACE << "initializing BaseMobility stage " << stage << endl;
 
         // get playground scaling
         if (world->getParentModule() != NULL) {
@@ -172,7 +165,7 @@ void BaseMobility::initialize(int stage)
         updatePosition();
 
         if (move.getSpeed() > 0 && updateInterval > 0) {
-            coreEV << "Host is moving, speed=" << move.getSpeed() << " updateInterval=" << updateInterval << endl;
+            EV_TRACE << "Host is moving, speed=" << move.getSpeed() << " updateInterval=" << updateInterval << endl;
             moveMsg = new cMessage("move", MOVE_HOST);
             // host moves the first time after some random delay to avoid synchronized movements
             scheduleAt(simTime() + uniform(0, updateInterval), moveMsg);
@@ -250,7 +243,7 @@ void BaseMobility::handleSelfMsg(cMessage* msg)
 
 void BaseMobility::handleBorderMsg(cMessage* msg)
 {
-    coreEV << "start MOVE_TO_BORDER:" << move.info() << endl;
+    EV_TRACE << "start MOVE_TO_BORDER:" << move.info() << endl;
 
     BorderMsg* bMsg = static_cast<BorderMsg*>(msg);
 
@@ -266,7 +259,7 @@ void BaseMobility::handleBorderMsg(cMessage* msg)
 
     case PLACERANDOMLY:
         move.setStart(bMsg->getStartPos());
-        coreEV << "new random position: " << move.getStartPos().info() << endl;
+        EV_TRACE << "new random position: " << move.getStartPos().info() << endl;
         break;
 
     case RAISEERROR:
@@ -284,12 +277,12 @@ void BaseMobility::handleBorderMsg(cMessage* msg)
 
     delete bMsg;
 
-    coreEV << "end MOVE_TO_BORDER:" << move.info() << endl;
+    EV_TRACE << "end MOVE_TO_BORDER:" << move.info() << endl;
 }
 
 void BaseMobility::updatePosition()
 {
-    EV << "updatePosition: " << move.info() << endl;
+    EV_DEBUG << "updatePosition: " << move.info() << endl;
 
     // publish the the new move
     emit(mobilityStateChangedSignal, this);
@@ -520,7 +513,7 @@ BaseMobility::BorderHandling BaseMobility::checkIfOutside(Coord targetPos, Coord
         }
     }
 
-    coreEV << "checkIfOutside, outside=" << outside << " borderStep: " << borderStep.info() << endl;
+    EV_TRACE << "checkIfOutside, outside=" << outside << " borderStep: " << borderStep.info() << endl;
 
     return outside;
 }
@@ -529,7 +522,7 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
 {
     double factor;
 
-    coreEV << "goToBorder: startPos: " << move.getStartPos().info() << " borderStep: " << borderStep.info() << " BorderPolicy: " << policy << " BorderHandling: " << wo << endl;
+    EV_TRACE << "goToBorder: startPos: " << move.getStartPos().info() << " borderStep: " << borderStep.info() << " BorderPolicy: " << policy << " BorderHandling: " << wo << endl;
 
     switch (wo) {
     case X_SMALLER:
@@ -626,7 +619,7 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
         break;
     }
 
-    coreEV << "goToBorder: startPos: " << move.getStartPos().info() << " borderStep: " << borderStep.info() << " borderStart: " << borderStart.info() << " factor: " << factor << endl;
+    EV_TRACE << "goToBorder: startPos: " << move.getStartPos().info() << " borderStep: " << borderStep.info() << " borderStart: " << borderStart.info() << " factor: " << factor << endl;
 }
 
 bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord& targetPos, Coord& step, double& angle)
@@ -642,7 +635,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
     // just return if the next step is not outside the playground
     if (wo == NOWHERE) return false;
 
-    coreEV << "handleIfOutside:stepTarget = " << stepTarget.info() << endl;
+    EV_TRACE << "handleIfOutside:stepTarget = " << stepTarget.info() << endl;
 
     // new start position after the host reaches the border
     Coord borderStart;
@@ -651,7 +644,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
     // time to reach the border
     simtime_t borderInterval;
 
-    coreEV << "old values: stepTarget: " << stepTarget.info() << " step: " << step.info() << " targetPos: " << targetPos.info() << " angle: " << angle << endl;
+    EV_TRACE << "old values: stepTarget: " << stepTarget.info() << " step: " << step.info() << " targetPos: " << targetPos.info() << " angle: " << angle << endl;
 
     // which border policy is to be followed
     switch (policy) {
@@ -668,7 +661,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
         break;
     }
 
-    coreEV << "new values: stepTarget: " << stepTarget.info() << " step: " << step.info() << " angle: " << angle << endl;
+    EV_TRACE << "new values: stepTarget: " << stepTarget.info() << " step: " << step.info() << " angle: " << angle << endl;
 
     // calculate the step to reach the border
     goToBorder(policy, wo, borderStep, borderStart);
@@ -699,7 +692,7 @@ bool BaseMobility::handleIfOutside(BorderPolicy policy, Coord& stepTarget, Coord
         break;
     }
 
-    coreEV << "border handled, borderStep: " << borderStep.info() << "borderStart: " << borderStart.info() << " stepTarget " << stepTarget.info() << endl;
+    EV_DEBUG << "border handled, borderStep: " << borderStep.info() << "borderStart: " << borderStart.info() << " stepTarget " << stepTarget.info() << endl;
 
     // create a border self message and schedule it appropriately
     BorderMsg* bMsg = new BorderMsg("borderMove", MOVE_TO_BORDER);

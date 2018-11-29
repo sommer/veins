@@ -25,6 +25,7 @@ import org.car2x.veins.base.modules.BaseWorldUtility;
 import org.car2x.veins.modules.mobility.traci.TraCIScenarioManager*;
 import org.car2x.veins.modules.obstacle.ObstacleControl;
 import org.car2x.veins.modules.world.annotations.AnnotationManager;
+import org.car2x.veins.nodes.Car;
 
 network Scenario
 {
@@ -54,6 +55,8 @@ network Scenario
         manager: TraCIScenarioManagerLaunchd {
             parameters:
                 @display("p=512,128");
+        }
+        node[0]: Car {
         }
 
     connections allowunconnected:

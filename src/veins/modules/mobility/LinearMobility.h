@@ -16,8 +16,7 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef LINEAR_MOBILITY_H
-#define LINEAR_MOBILITY_H
+#pragma once
 
 #include "veins/base/modules/BaseMobility.h"
 
@@ -33,7 +32,7 @@ namespace Veins {
  * @ingroup mobility
  * @author Emin Ilker Cetinbas
  */
-class MIXIM_API LinearMobility : public BaseMobility {
+class VEINS_API LinearMobility : public BaseMobility {
 protected:
     double angle; ///< angle of linear motion
     double acceleration; ///< acceleration of linear motion
@@ -53,5 +52,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

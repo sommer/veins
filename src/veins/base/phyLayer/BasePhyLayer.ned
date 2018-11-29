@@ -6,7 +6,6 @@ simple BasePhyLayer like IWirelessPhy
 {
     parameters:
         @class(Veins::BasePhyLayer);
-        bool coreDebug   = default(false); //debug switch for core framework
         
         bool recordStats = default(false); //enable/disable tracking of statistics (eg. cOutvectors)
         int headerLength = default(0) @unit(bit); //defines the length of the phy header (/preamble)
@@ -16,9 +15,11 @@ simple BasePhyLayer like IWirelessPhy
         bool useThermalNoise;            //should thermal noise be considered?
 
         
-        xml antenna = default(xml("<root><Antenna type=\"IsotropicAntenna\"></Antenna></root>"));
-        
-        
+        xml antenna = default(xml("<root><Antenna type=\"IsotropicAntenna\" id=\"default_isotropic\"></Antenna></root>"));
+        double antennaOffsetX @unit("m") = default(0 m); // Offset of antenna position (x direction) with respect to what a BaseMobility module will tell us (inherited from IChannelAccess)
+        double antennaOffsetY @unit("m") = default(0 m); // Offset of antenna position (y direction) with respect to what a BaseMobility module will tell us (inherited from IChannelAccess)
+        double antennaOffsetZ @unit("m") = default(0 m); // Offset of antenna position (z direction) with respect to what a BaseMobility module will tell us (inherited from IChannelAccess)
+        double antennaOffsetYaw @unit("rad") = default(0 rad); // Offset of antenna orientation (yaw) with respect to what a BaseMobility module will tell us (inherited from IChannelAccess)
         xml analogueModels;             //Specification of the analogue models to use and their parameters
         xml decider;                    //Specification of the decider to use and its parameters
 

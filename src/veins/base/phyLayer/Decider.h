@@ -4,12 +4,10 @@
  *
  */
 
-#ifndef DECIDER_H_
-#define DECIDER_H_
+#pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
-#include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
 
 namespace Veins {
@@ -28,7 +26,7 @@ using Veins::AirFrame;
  *
  * @ingroup decider
  */
-class MIXIM_API DeciderResult {
+class VEINS_API DeciderResult {
 protected:
     /** Stores if the AirFrame for this result was received correct.*/
     bool isCorrect;
@@ -66,7 +64,7 @@ public:
  *
  * @ingroup decider
  */
-class MIXIM_API Decider {
+class VEINS_API Decider {
 protected:
     /** @brief A pointer to the physical layer of this Decider. */
     DeciderToPhyInterface* phy;
@@ -130,5 +128,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*DECIDER_H_*/

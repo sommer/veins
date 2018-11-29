@@ -1,9 +1,7 @@
-#ifndef MACTOPHYINTERFACE_H_
-#define MACTOPHYINTERFACE_H_
+#pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
-#include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/toolbox/Signal.h"
 #include "veins/base/phyLayer/PhyUtils.h"
 
@@ -15,7 +13,7 @@ namespace Veins {
  * @ingroup macLayer
  * @ingroup phyLayer
  */
-class MIXIM_API MacToPhyInterface {
+class VEINS_API MacToPhyInterface {
 public:
     /**
      * @brief Message kinds used by every phy layer.
@@ -94,5 +92,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*MACTOPHYINTERFACE_H_*/

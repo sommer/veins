@@ -37,8 +37,6 @@
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCILauncher.h"
 
-#define MYDEBUG EV
-
 using Veins::TraCILauncher;
 using Veins::TraCIScenarioManagerForker;
 

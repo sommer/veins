@@ -1,8 +1,28 @@
 .PHONY: all makefiles clean cleanall doxy
 
+# if out/config.py exists, we can also create command line scripts for running simulations
+ADDL_TARGETS =
+ifeq ($(wildcard out/config.py),)
+else
+    ADDL_TARGETS += run
+endif
+
 # default target
-all: src/Makefile
+all: src/Makefile $(ADDL_TARGETS)
+ifdef MODE
 	@cd src && $(MAKE)
+else
+	@cd src && $(MAKE) MODE=release
+	@cd src && $(MAKE) MODE=debug
+endif
+
+# command line scripts
+run: % : scripts/%.in.py out/config.py
+	@echo "Creating script \"./$@\""
+	@head -n1 "$<" > "$@"
+	@cat out/config.py >> "$@"
+	@tail -n+2 "$<" >> "$@"
+	@chmod a+x "$@"
 
 # legacy
 makefiles:
@@ -19,18 +39,35 @@ makefiles:
 	@echo
 
 clean: src/Makefile
-	cd src && $(MAKE) clean
+ifdef MODE
+	@cd src && $(MAKE) clean
+	@cd src && $(MAKE) cleanbin
+else
+	@cd src && $(MAKE) MODE=release clean
+	@cd src && $(MAKE) MODE=release cleanbin
+	@cd src && $(MAKE) MODE=debug clean
+	@cd src && $(MAKE) MODE=debug cleanbin
+endif
 
-cleanall: src/Makefile
-	cd src && $(MAKE) MODE=release clean
-	cd src && $(MAKE) MODE=debug clean
+cleanall: clean
 	rm -f src/Makefile
+	rm -f out/config.py
+	rm -f run
 
 src/Makefile:
 	@echo
 	@echo '====================================================================='
 	@echo '$@ does not exist.'
 	@echo 'Please run "./configure" or use the OMNeT++ IDE to generate it.'
+	@echo '====================================================================='
+	@echo
+	@exit 1
+
+out/config.py:
+	@echo
+	@echo '====================================================================='
+	@echo '$@ does not exist.'
+	@echo 'Please run "./configure" to generate it.'
 	@echo '====================================================================='
 	@echo
 	@exit 1

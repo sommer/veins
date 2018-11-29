@@ -17,19 +17,20 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-#ifndef WORLD_ANNOTATION_ANNOTATIONCONTROL_H
-#define WORLD_ANNOTATION_ANNOTATIONCONTROL_H
+#pragma once
 
 #include <list>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
+
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/utils/Coord.h"
+
+namespace Veins {
 
 /**
  * manages annotations on the OMNeT++ canvas.
  */
-namespace Veins {
 class AnnotationManager : public cSimpleModule {
 public:
     class Group;
@@ -158,7 +159,6 @@ protected:
     typedef std::list<Annotation*> Annotations;
     typedef std::list<Group*> Groups;
 
-    bool debug; /**< whether to emit debug messages */
     cXMLElement* annotationsXml; /**< annotations to add at startup */
 
     std::list<cMessage*> scheduledEraseEvts;
@@ -168,9 +168,7 @@ protected:
 
     cGroupFigure* annotationLayer;
 };
-} // namespace Veins
 
-namespace Veins {
 class AnnotationManagerAccess {
 public:
     AnnotationManager* getIfExists()
@@ -178,6 +176,5 @@ public:
         return FindModule<AnnotationManager*>::findGlobalModule();
     };
 };
-} // namespace Veins
 
-#endif
+} // namespace Veins

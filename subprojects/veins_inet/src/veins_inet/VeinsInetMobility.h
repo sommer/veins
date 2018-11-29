@@ -23,19 +23,20 @@
 // Based on inet::MovingMobilityBase of INET Framework v4.0.0
 //
 
-#ifndef Veins_VeinsInetMobility_h
-#define Veins_VeinsInetMobility_h
+#pragma once
 
 namespace omnetpp {
 }
 using namespace omnetpp;
 
-#undef INET_IMPORT
 #include "inet/mobility/base/MobilityBase.h"
+
+#include "veins/modules/mobility/traci/TraCIScenarioManager.h"
+#include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
 namespace Veins {
 
-class INET_API VeinsInetMobility : public inet::MobilityBase {
+class VeinsInetMobility : public inet::MobilityBase {
 public:
     VeinsInetMobility();
 
@@ -57,12 +58,23 @@ public:
     virtual inet::EulerAngles getCurrentAngularVelocity() override;
     virtual inet::EulerAngles getCurrentAngularAcceleration() override;
 
+    virtual std::string getExternalId() const;
+    virtual TraCIScenarioManager* getManager() const;
+    virtual TraCICommandInterface* getCommandInterface() const;
+    virtual TraCICommandInterface::Vehicle* getVehicleCommandInterface() const;
+
 protected:
     /** @brief The last velocity that was set by nextPosition(). */
     inet::Coord lastVelocity;
 
     /** @brief The last angular velocity that was set by nextPosition(). */
     inet::EulerAngles lastAngularVelocity;
+
+    mutable TraCIScenarioManager* manager = nullptr; /**< cached value */
+    mutable TraCICommandInterface* commandInterface = nullptr; /**< cached value */
+    mutable TraCICommandInterface::Vehicle* vehicleCommandInterface = nullptr; /**< cached value */
+
+    std::string external_id; /**< identifier used by TraCI server to refer to this node */
 
 protected:
     virtual void setInitialPosition() override;
@@ -72,4 +84,14 @@ protected:
 
 } // namespace Veins
 
-#endif // ifndef Veins_VeinsInetMobility_h
+namespace Veins {
+class VeinsInetMobilityAccess {
+public:
+    VeinsInetMobility* get(cModule* host)
+    {
+        VeinsInetMobility* m = FindModule<VeinsInetMobility*>::findSubModule(host);
+        ASSERT(m);
+        return m;
+    };
+};
+} // namespace Veins

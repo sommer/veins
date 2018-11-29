@@ -1,8 +1,9 @@
-#ifndef BASECONNECTIONMANAGER_H_
-#define BASECONNECTIONMANAGER_H_
+#pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/connectionManager/NicEntry.h"
+#include "veins/base/utils/Heading.h"
 
 namespace Veins {
 
@@ -24,7 +25,7 @@ class ChannelAccess;
  * @author Christoph Sommer ("unregisterNic()"-method)
  * @sa ChannelAccess
  */
-class MIXIM_API BaseConnectionManager : public cSimpleModule {
+class VEINS_API BaseConnectionManager : public cSimpleModule {
 private:
     /**
      * @brief Represents a position inside a grid.
@@ -224,9 +225,6 @@ protected:
     /** @brief Map from nic-module ids to nic-module pointers.*/
     NicEntries nics;
 
-    /** @brief Set debugging for the basic module*/
-    bool coreDebug;
-
     /** @brief Does the ConnectionManager use sendDirect or not?*/
     bool sendDirect;
 
@@ -380,7 +378,7 @@ public:
      * If you want to do your own stuff at the registration of a nic see
      * "registerNicExt()".
      */
-    bool registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos);
+    bool registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos, Heading heading);
 
     /**
      * @brief Unregisters a NIC such that its connections aren't managed by the CM
@@ -397,7 +395,7 @@ public:
     bool unregisterNic(cModule* nic);
 
     /** @brief Updates the position information of a registered nic.*/
-    void updateNicPos(int nicID, const Coord* newPos);
+    void updateNicPos(int nicID, const Coord* newPos, Heading heading);
 
     /** @brief Returns the ingates of all nics in range*/
     const NicEntry::GateList& getGateList(int nicID) const;
@@ -407,5 +405,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*BASECONNECTIONMANAGER_H_*/

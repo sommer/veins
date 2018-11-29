@@ -6,13 +6,10 @@
  */
 
 #include "veins/base/phyLayer/BaseDecider.h"
-#include "veins/base/toolbox/MathHelper.h"
 
 #include <cassert>
 
 #include "veins/base/messages/AirFrame_m.h"
-
-#define deciderEV EV << "[Host " << myIndex << "] - PhyLayer(Decider): "
 
 using namespace Veins;
 using Veins::AirFrame;
@@ -21,7 +18,7 @@ simtime_t BaseDecider::processSignal(AirFrame* frame)
 {
 
     assert(frame);
-    deciderEV << "Processing AirFrame..." << endl;
+    EV_TRACE << "Processing AirFrame..." << endl;
 
     switch (getSignalState(frame)) {
     case NEW:
@@ -38,7 +35,7 @@ simtime_t BaseDecider::processSignal(AirFrame* frame)
 simtime_t BaseDecider::processNewSignal(AirFrame* frame)
 {
     if (currentSignal.first != 0) {
-        deciderEV << "Already receiving another AirFrame!" << endl;
+        EV_TRACE << "Already receiving another AirFrame!" << endl;
         return notAgain;
     }
 
@@ -48,13 +45,13 @@ simtime_t BaseDecider::processNewSignal(AirFrame* frame)
 
     // check whether signal is strong enough to receive
     if (recvPower < sensitivity) {
-        deciderEV << "Signal is to weak (" << recvPower << " < " << sensitivity << ") -> do not receive." << endl;
+        EV_TRACE << "Signal is too weak (" << recvPower << " < " << sensitivity << ") -> do not receive." << endl;
         // Signal too weak, we can't receive it, tell PhyLayer that we don't want it again
         return notAgain;
     }
 
     // Signal is strong enough, receive this Signal and schedule it
-    deciderEV << "Signal is strong enough (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << endl;
+    EV_TRACE << "Signal is strong enough (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << endl;
 
     currentSignal.first = frame;
     currentSignal.second = EXPECT_END;
@@ -67,7 +64,7 @@ simtime_t BaseDecider::processNewSignal(AirFrame* frame)
 
 simtime_t BaseDecider::processSignalEnd(AirFrame* frame)
 {
-    deciderEV << "packet was received correctly, it is now handed to upper layer...\n";
+    EV_INFO << "packet was received correctly, it is now handed to upper layer...\n";
     phy->sendUp(frame, new DeciderResult(true));
 
     // we have processed this AirFrame and we prepare to receive the next one

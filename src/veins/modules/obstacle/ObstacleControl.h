@@ -1,11 +1,12 @@
 //
-// ObstacleControl - models obstacles that block radio transmissions
-// Copyright (C) 2006 Christoph Sommer <christoph.sommer@informatik.uni-erlangen.de>
+// Copyright (C) 2006-2018 Christoph Sommer <sommer@ccs-labs.org>
 //
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
+// Documentation for these modules is at http://veins.car2x.org/
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,18 +15,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef OBSTACLE_OBSTACLECONTROL_H
-#define OBSTACLE_OBSTACLECONTROL_H
+#pragma once
 
 #include <list>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
+
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/obstacle/Obstacle.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
+
+namespace Veins {
 
 /**
  * ObstacleControl models obstacles that block radio transmissions.
@@ -34,7 +37,6 @@
  * Transmissions that cross one of the polygon's lines will have
  * their receive power set to zero.
  */
-namespace Veins {
 class ObstacleControl : public cSimpleModule {
 public:
     ~ObstacleControl();
@@ -94,7 +96,6 @@ protected:
     typedef std::vector<ObstacleGridRow> Obstacles;
     typedef std::map<CacheKey, double> CacheEntries;
 
-    bool debug; /**< whether to emit debug messages */
     cXMLElement* obstaclesXml; /**< obstacles to add at startup */
 
     Obstacles obstacles;
@@ -104,9 +105,7 @@ protected:
     std::map<std::string, double> perMeter;
     mutable CacheEntries cacheEntries;
 };
-} // namespace Veins
 
-namespace Veins {
 class ObstacleControlAccess {
 public:
     ObstacleControlAccess()
@@ -118,6 +117,5 @@ public:
         return dynamic_cast<ObstacleControl*>(getSimulation()->getModuleByPath("obstacles"));
     }
 };
-} // namespace Veins
 
-#endif
+} // namespace Veins

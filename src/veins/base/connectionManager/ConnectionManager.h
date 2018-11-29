@@ -1,7 +1,7 @@
-#ifndef CONNECTIONMANAGER_H_
-#define CONNECTIONMANAGER_H_
+#pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
 namespace Veins {
@@ -16,7 +16,7 @@ namespace Veins {
  *
  * @ingroup connectionManager
  */
-class MIXIM_API ConnectionManager : public BaseConnectionManager {
+class VEINS_API ConnectionManager : public BaseConnectionManager {
 protected:
     /**
      * @brief Calculate interference distance
@@ -28,5 +28,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif /*CONNECTIONMANAGER_H_*/

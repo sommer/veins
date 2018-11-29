@@ -1,7 +1,7 @@
-#ifndef MACTOPHYCONTROLINFO_H_
-#define MACTOPHYCONTROLINFO_H_
+#pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/toolbox/Signal.h"
 
 namespace Veins {
@@ -13,7 +13,7 @@ namespace Veins {
  * @ingroup phyLayer
  * @ingroup macLayer
  */
-class MIXIM_API MacToPhyControlInfo : public cObject {
+class VEINS_API MacToPhyControlInfo : public cObject {
 protected:
     /** @brief A pointer to the signal representing the transmission.*/
     Signal* signal;
@@ -109,5 +109,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*MACTOPHYCONTROLINFO_H_*/

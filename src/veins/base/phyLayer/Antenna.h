@@ -5,8 +5,7 @@
  *      Author: Alexander Brummer
  */
 
-#ifndef ANTENNA_H_
-#define ANTENNA_H_
+#pragma once
 
 #include "veins/base/utils/Coord.h"
 
@@ -55,5 +54,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* ANTENNA_H_ */

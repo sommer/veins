@@ -1,14 +1,15 @@
-#ifndef PHYUTILS_H_
-#define PHYUTILS_H_
+#pragma once
 
 #include <cassert>
 #include <list>
-#include <omnetpp.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/AnalogueModel.h"
 
 using Veins::AirFrame;
+
+namespace Veins {
 
 /**
  * @brief The class that represents the Radio as a state machine.
@@ -16,14 +17,9 @@ using Veins::AirFrame;
  * For this basic version we assume a minimal attenuation when the Radio is in
  * state RX, and a maximum attenuation otherwise.
  *
- * A state-machine-diagram for Radio and ChannelInfo showing
- * how they work together under control of BasePhyLayer as well as some documentation
- * is available in @ref phyLayer.
- *
  * @ingroup phyLayer
  */
-namespace Veins {
-class MIXIM_API Radio {
+class VEINS_API Radio {
 public:
     /**
      * @brief The state of the radio of the nic.
@@ -172,6 +168,5 @@ protected:
     Radio(int numRadioStates, bool recordStats, int initialState = RX, int currentChannel = 0, int nbChannels = 1);
 
 }; // end class Radio
-} // namespace Veins
 
-#endif /*PHYUTILS_H_*/
+} // namespace Veins

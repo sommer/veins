@@ -36,9 +36,12 @@ simple TraCIScenarioManager
 {
     parameters:
         @display("i=block/network2");
-        @signal[traciInitialized](type=bool);
+        @signal[org.car2x.veins.modules.mobility.traciInitialized](type=bool);
+        @signal[org.car2x.veins.modules.mobility.traciModuleAdded](type=cModule);
+        @signal[org.car2x.veins.modules.mobility.traciModuleRemoved](type=cModule);
+        @signal[org.car2x.veins.modules.mobility.traciTimestepBegin](type=simtime_t);
+        @signal[org.car2x.veins.modules.mobility.traciTimestepEnd](type=simtime_t);
         @class(Veins::TraCIScenarioManager);
-        bool debug = default(false);  // emit debug messages?
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)
         double firstStepAt @unit("s") = default(-1s);  // when to start synchronizing with the TraCI server (-1: immediately after connecting)
         double updateInterval @unit("s") = default(1s);  // time interval of hosts' position updates
@@ -68,8 +71,5 @@ simple TraCIScenarioManager
         string roiRoads = default("");  // which roads (e.g. "hwy1 hwy2") are considered to consitute the region of interest, if not empty
         string roiRects = default("");  // which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty. Note that these rectangles have to use TraCI (SUMO) coordinates and not OMNeT++. They can be easily read from sumo-gui.
         double penetrationRate = default(1); //the probability of a vehicle being equipped with Car2X technology
-        int numVehicles = default(0);
-        bool useRouteDistributions = default(false);
-        int vehicleRngIndex = default(0); // index of the RNG stream to be used, all random numbers concerning the managed vehicles
 }
 

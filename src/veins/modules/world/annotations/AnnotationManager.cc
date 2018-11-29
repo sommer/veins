@@ -36,8 +36,6 @@ const short EVT_SCHEDULED_ERASE = 3;
 
 void AnnotationManager::initialize()
 {
-    debug = par("debug");
-
     scheduledEraseEvts.clear();
 
     annotations.clear();
@@ -118,10 +116,12 @@ void AnnotationManager::handleParameterChange(const char* parname)
 /**
  * adds Annotations from an XML document; example below.
  *
+ * ```
  * <annotations>
  *   <line color="#F00" shape="16,0 8,13.8564" />
  *   <poly color="#0F0" shape="16,64 8,77.8564 -8,77.8564 -16,64 -8,50.1436 8,50.1436" />
  * </annotations>
+ * ```
  */
 void AnnotationManager::addFromXml(cXMLElement* xml)
 {

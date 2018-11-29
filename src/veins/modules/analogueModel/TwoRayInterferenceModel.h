@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef ANALOGUEMODEL_TWORAYINTERFERENCEMODEL_H
-#define ANALOGUEMODEL_TWORAYINTERFERENCEMODEL_H
+#pragma once
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
@@ -44,9 +43,8 @@ using Veins::AirFrame;
 class TwoRayInterferenceModel : public AnalogueModel {
 
 public:
-    TwoRayInterferenceModel(double dielectricConstant, bool debug)
+    TwoRayInterferenceModel(double dielectricConstant)
         : epsilon_r(dielectricConstant)
-        , debug(debug)
     {
     }
 
@@ -54,16 +52,11 @@ public:
     {
     }
 
-    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos);
+    virtual void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos);
 
 protected:
     /** @brief stores the dielectric constant used for calculation */
     double epsilon_r;
-
-    /** @brief Whether debug messages should be displayed. */
-    bool debug;
 };
 
 } // namespace Veins
-
-#endif /* ANALOGUEMODEL_TWORAYINTERFERENCEMODEL_H */

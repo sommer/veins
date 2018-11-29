@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef SPECTRUM_H_
-#define SPECTRUM_H_
+#pragma once
 
 #include <stdint.h>
 #include <iostream>
@@ -29,46 +28,34 @@
 #include <memory>
 #include <fstream>
 #include <assert.h>
+#include <map>
 
 namespace Veins {
 
 typedef std::vector<double> Freqs;
 
-class Spectrum;
-typedef std::shared_ptr<Spectrum> SpectrumPtr;
-
 class Spectrum {
 public:
-    static SpectrumPtr getInstance(Freqs freqs)
-    {
-        static std::shared_ptr<Spectrum> instance(new Spectrum(freqs));
-        return instance;
-    }
-    ~Spectrum();
-
-private:
+    Spectrum() = default;
     Spectrum(Freqs freqs);
-    Spectrum(Spectrum const&) = delete;
-    void operator=(Spectrum const&) = delete;
 
-public:
     const double& operator[](size_t index) const;
 
     size_t getNumFreqs() const;
 
     size_t indexOf(double freq) const;
-    size_t indexNearLow(double freq);
-    size_t indexNearUp(double freq);
+    size_t indexNearLow(double freq) const;
+    size_t indexNearUp(double freq) const;
 
     double freqAt(size_t freqIndex) const;
 
-    void print();
-    void toFile(std::string path);
+    void print(std::ostream& os) const;
+    void toFile(std::string path) const;
+
+    friend bool operator==(const Spectrum& lhs, const Spectrum& rhs);
 
 private:
     Freqs frequencies;
 };
 
 } // namespace Veins
-
-#endif /* SPECTRUM_H_ */

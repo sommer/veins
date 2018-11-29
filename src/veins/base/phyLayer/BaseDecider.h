@@ -5,10 +5,10 @@
  *      Author: karl
  */
 
-#ifndef BASEDECIDER_H_
-#define BASEDECIDER_H_
+#pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/phyLayer/Decider.h"
 
 namespace Veins {
@@ -34,7 +34,7 @@ using Veins::AirFrame;
  * @ingroup decider
  * @ingroup baseModules
  */
-class MIXIM_API BaseDecider : public Decider {
+class VEINS_API BaseDecider : public Decider {
 public:
     /**
      * @brief The kinds of ControlMessages this Decider sends.
@@ -77,22 +77,17 @@ protected:
      * Host-index) */
     int myIndex;
 
-    /** @brief toggles display of debugging messages */
-    bool debug;
-
 public:
     /**
      * @brief Initializes the decider with the passed values.
      *
-     * Needs a pointer to its physical layer, the sensitivity, the index of the
-     * host and the debug flag.
+     * Needs a pointer to its physical layer, the sensitivity, and the index of the host.
      */
-    BaseDecider(DeciderToPhyInterface* phy, double sensitivity, int myIndex, bool debug)
+    BaseDecider(DeciderToPhyInterface* phy, double sensitivity, int myIndex)
         : Decider(phy)
         , sensitivity(sensitivity)
         , isChannelIdle(true)
         , myIndex(myIndex)
-        , debug(debug)
     {
         currentSignal.first = 0;
         currentSignal.second = NEW;
@@ -183,5 +178,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif /* BASEDECIDER_H_ */

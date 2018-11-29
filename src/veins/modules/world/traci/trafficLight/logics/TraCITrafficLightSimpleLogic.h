@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef TRACITRAFFICLIGHTSIMPLELOGIC_H_
-#define TRACITRAFFICLIGHTSIMPLELOGIC_H_
+#pragma once
 
 #include <veins/modules/world/traci/trafficLight/logics/TraCITrafficLightAbstractLogic.h>
 #include "veins/base/utils/FindModule.h"
@@ -48,5 +47,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* TRACITRAFFICLIGHTSIMPLELOGIC_H_ */

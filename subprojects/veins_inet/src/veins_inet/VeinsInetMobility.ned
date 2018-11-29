@@ -32,5 +32,6 @@ simple VeinsInetMobility extends MobilityBase
     parameters:
         @class(Veins::VeinsInetMobility);
         @display("i=block/cogwheel");
+        @signal[mobilityStateChanged](type=inet::MobilityBase);
         bool initFromDisplayString = default(true); // do not change this to false
 }

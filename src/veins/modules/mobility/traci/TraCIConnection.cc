@@ -14,8 +14,6 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 
-#define MYDEBUG EV_DEBUG
-
 namespace Veins {
 
 struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
@@ -54,7 +52,7 @@ TraCIConnection::~TraCIConnection()
 
 TraCIConnection* TraCIConnection::connect(const char* host, int port)
 {
-    MYDEBUG << "TraCIScenarioManager connecting to TraCI server" << endl;
+    EV_INFO << "TraCIScenarioManager connecting to TraCI server" << endl;
 
     if (initsocketlibonce() != 0) throw cRuntimeError("Could not init socketlib");
 
@@ -180,7 +178,7 @@ std::string TraCIConnection::receiveMessage()
     uint32_t bufLength = msgLength - sizeof(msgLength);
     char buf[bufLength];
     {
-        MYDEBUG << "Reading TraCI message of " << bufLength << " bytes" << endl;
+        EV_TRACE << "Reading TraCI message of " << bufLength << " bytes" << endl;
         uint32_t bytesRead = 0;
         while (bytesRead < bufLength) {
             int receivedBytes = ::recv(socket(socketPtr), reinterpret_cast<char*>(&buf) + bytesRead, bufLength - bytesRead, 0);
@@ -223,7 +221,7 @@ void TraCIConnection::sendMessage(std::string buf)
     }
 
     {
-        MYDEBUG << "Writing TraCI message of " << buf.length() << " bytes" << endl;
+        EV_TRACE << "Writing TraCI message of " << buf.length() << " bytes" << endl;
         uint32_t bytesWritten = 0;
         while (bytesWritten < buf.length()) {
             ssize_t sentBytes = ::send(socket(socketPtr), buf.c_str() + bytesWritten, buf.length() - bytesWritten, 0);
@@ -278,16 +276,16 @@ std::list<TraCICoord> TraCIConnection::omnet2traci(const std::list<Coord>& list)
     return coordinateTransformation->omnet2traci(list);
 }
 
-double TraCIConnection::traci2omnetAngle(double angle) const
+Heading TraCIConnection::traci2omnetHeading(double heading) const
 {
     ASSERT(coordinateTransformation.get());
-    return coordinateTransformation->traci2omnetAngle(angle);
+    return coordinateTransformation->traci2omnetHeading(heading);
 }
 
-double TraCIConnection::omnet2traciAngle(double angle) const
+double TraCIConnection::omnet2traciHeading(Heading heading) const
 {
     ASSERT(coordinateTransformation.get());
-    return coordinateTransformation->omnet2traciAngle(angle);
+    return coordinateTransformation->omnet2traciHeading(heading);
 }
 
 } // namespace Veins

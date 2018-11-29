@@ -25,6 +25,7 @@ if args:
 
 # Start with default flags
 makemake_flags = ['--make-so', '-f', '--deep', '-I', '.', '-O', 'out']
+run_lib_paths = []
 
 
 # Add flags for Veins
@@ -41,11 +42,16 @@ if options.veins:
     veins_defs = []
 
     makemake_flags += veins_includes + veins_link + veins_defs
+    run_lib_paths = [os.path.relpath(os.path.join(options.veins, 'src'))] + run_lib_paths
 
 
 # Start creating files
 if not os.path.isdir('out'):
     os.mkdir('out')
+
+f = open(os.path.join('out', 'config.py'), 'w')
+f.write('run_lib_paths = %s\n' % repr(run_lib_paths))
+f.close()
 
 subprocess.check_call(['env', 'opp_makemake'] + makemake_flags, cwd='src')
 

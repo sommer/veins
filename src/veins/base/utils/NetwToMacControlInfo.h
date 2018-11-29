@@ -18,12 +18,10 @@
  * description: - control info to pass next hop to the MAC layer
  **************************************************************************/
 
-#ifndef NETWTOMACCONTROLINFO_H
-#define NETWTOMACCONTROLINFO_H
+#pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
-#include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/utils/SimpleAddress.h"
 
 namespace Veins {
@@ -41,7 +39,7 @@ namespace Veins {
  * @ingroup netwLayer
  * @author Daniel Willkomm
  **/
-class MIXIM_API NetwToMacControlInfo : public cObject {
+class VEINS_API NetwToMacControlInfo : public cObject {
 protected:
     /** @brief MAC address of the sending or receiving node*/
     LAddress::L2Type nextHopMac;
@@ -101,5 +99,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

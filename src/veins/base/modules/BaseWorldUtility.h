@@ -18,10 +18,10 @@
  *              provides world-required values
  **************************************************************************/
 
-#ifndef BASE_WORLD_UTIL_H
-#define BASE_WORLD_UTIL_H
+#pragma once
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/utils/Coord.h"
 
 namespace Veins {
@@ -31,7 +31,7 @@ namespace Veins {
  *
  * @ingroup baseModules
  */
-class MIXIM_API BaseWorldUtility : public cSimpleModule {
+class VEINS_API BaseWorldUtility : public cSimpleModule {
 protected:
     /**
      * @brief Size of the area the nodes are in (in meters)
@@ -113,8 +113,7 @@ public:
         // if counter has done one complete cycle and will be set to a value it already had
         if (airFrameId == -1) {
             // print a warning
-            EV << "WARNING: AirFrameId-Counter has done one complete cycle."
-               << " AirFrameIds are repeating now and may not be unique anymore." << endl;
+            EV << "WARNING: AirFrameId-Counter has done one complete cycle. AirFrameIds are repeating now and may not be unique anymore." << endl;
         }
 
         return airFrameId++;
@@ -122,5 +121,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

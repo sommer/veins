@@ -18,10 +18,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef TRACITRAFFICLIGHTINTERFACE_H_
-#define TRACITRAFFICLIGHTINTERFACE_H_
+#pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
+
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
@@ -127,4 +127,3 @@ public:
     };
 };
 } // namespace Veins
-#endif /* TRACITRAFFICLIGHTINTERFACE_H_ */

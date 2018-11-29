@@ -4,14 +4,12 @@
  *
  */
 
-#ifndef DECIDER_TO_PHY_INTERFACE_H_
-#define DECIDER_TO_PHY_INTERFACE_H_
+#pragma once
 
 #include <vector>
 #include <list>
-#include <omnetpp.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
 
 namespace Veins {
 
@@ -37,7 +35,7 @@ class DeciderResult;
  *
  * @ingroup decider
  */
-class MIXIM_API DeciderToPhyInterface {
+class VEINS_API DeciderToPhyInterface {
 public:
     /**
      * @brief Type for container of AirFrames.
@@ -131,5 +129,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /*DECIDER_TO_PHY_INTERFACE_H_*/

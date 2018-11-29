@@ -18,12 +18,10 @@
  * description: basic MAC layer class
  *              subclass to create your own MAC layer
  **************************************************************************/
-#ifndef BASE_MAC_LAYER_H
-#define BASE_MAC_LAYER_H
+#pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
-#include "veins/base/utils/MiXiMDefs.h"
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/utils/SimpleAddress.h"
 #include "veins/base/toolbox/Spectrum.h"
@@ -44,7 +42,7 @@ class Signal;
  * @ingroup baseModules
  * @author Daniel Willkomm, Karl Wessel
  */
-class MIXIM_API BaseMacLayer : public BaseLayer {
+class VEINS_API BaseMacLayer : public BaseLayer {
 public:
     /** @brief Message kinds used by this layer.*/
     enum BaseMacMessageKinds {
@@ -80,9 +78,6 @@ protected:
      **/
     LAddress::L2Type myMacAddr;
 
-    /** @brief debug this core module? */
-    bool coreDebug;
-
     /** @brief The length of the phy header (in bits).
      *
      * Since the MAC layer has to create the signal for
@@ -95,7 +90,7 @@ protected:
     /**
      * The underlying spectrum (definition of interesting freqs) for all signals
      */
-    SpectrumPtr overallSpectrum;
+    Spectrum overallSpectrum;
 
 public:
     // Module_Class_Members( BaseMacLayer, BaseLayer, 0 );
@@ -120,6 +115,7 @@ public:
      */
     const LAddress::L2Type& getMACAddress()
     {
+        ASSERT(myMacAddr != LAddress::L2NULL());
         return myMacAddr;
     }
 
@@ -220,5 +216,3 @@ protected:
 };
 
 } // namespace Veins
-
-#endif

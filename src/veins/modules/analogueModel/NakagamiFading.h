@@ -19,8 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef ANALOGUEMODEL_NAKAGAMIFADING_H
-#define ANALOGUEMODEL_NAKAGAMIFADING_H
+#pragma once
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
@@ -44,10 +43,9 @@ namespace Veins {
 class NakagamiFading : public AnalogueModel {
 
 public:
-    NakagamiFading(bool constM, double m, bool debug)
+    NakagamiFading(bool constM, double m)
         : constM(constM)
         , m(m)
-        , debug(debug)
     {
     }
 
@@ -55,7 +53,7 @@ public:
     {
     }
 
-    virtual void filterSignal(Signal* signal, const Coord& sendersPos, const Coord& receiverPos);
+    virtual void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos);
 
 protected:
     /** @brief Whether to use a constant m or a m based on distance */
@@ -63,11 +61,6 @@ protected:
 
     /** @brief The value of the coefficient m */
     double m;
-
-    /** @brief Whether debug messages should be displayed. */
-    bool debug;
 };
 
 } // namespace Veins
-
-#endif /* ANALOGUEMODEL_NAKAGAMIFADING_H */

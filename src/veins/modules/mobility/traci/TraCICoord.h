@@ -1,5 +1,4 @@
-#ifndef VEINS_MOBILITY_TRACI_TRACICOORD_H_
-#define VEINS_MOBILITY_TRACI_TRACICOORD_H_
+#pragma once
 
 namespace Veins {
 
@@ -22,5 +21,3 @@ struct TraCICoord {
 };
 
 } // namespace Veins
-
-#endif /* VEINS_MOBILITY_TRACI_TRACICOORD_H_ */

@@ -23,7 +23,7 @@
 #include <map>
 #include <string>
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 namespace Veins {
 
@@ -194,7 +194,7 @@ public:
     /**
      * Handle the given message and, if applicable, trigger the associated timer.
      *
-     * @message The received message.
+     * @param message The received message.
      * @return true, if the message was meant for this TimerManager. In this case, the passed message might be invalidated.
      */
     bool handleMessage(omnetpp::cMessage* message);
@@ -216,7 +216,7 @@ public:
      *
      * Prevents any future executions of the given timer. Expired timers are silently ignored.
      *
-     * @param timerHandle A handle which identifies the timer.
+     * @param handle A handle which identifies the timer.
      */
     void cancel(TimerHandle handle);
 

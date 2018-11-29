@@ -18,8 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef DECIDER80211PTOPHY80211PINTERFACE_H_
-#define DECIDER80211PTOPHY80211PINTERFACE_H_
+#pragma once
 
 namespace Veins {
 
@@ -38,5 +37,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif /* DECIDER80211PTOPHY80211PINTERFACE_H_ */

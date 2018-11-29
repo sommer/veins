@@ -18,19 +18,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef SRC_VEINS_MODULES_WORLD_TRACI_TRAFFICLIGHT_TRACITRAFFICLIGHTPROGRAM_H_
-#define SRC_VEINS_MODULES_WORLD_TRACI_TRAFFICLIGHT_TRACITRAFFICLIGHTPROGRAM_H_
+#pragma once
 
 #include <string>
 #include <vector>
 #include <map>
+
+#include "veins/veins.h"
+
+using omnetpp::simtime_t;
+
 namespace Veins {
 class TraCITrafficLightProgram {
 public:
     struct Phase {
-        int32_t duration;
-        int32_t minDuration;
-        int32_t maxDuration;
+        simtime_t duration;
+        simtime_t minDuration;
+        simtime_t maxDuration;
         std::string state;
 
         bool isGreenPhase() const;
@@ -61,4 +65,3 @@ struct TraCITrafficLightLink {
 };
 
 } // namespace Veins
-#endif /* SRC_VEINS_MODULES_WORLD_TRACI_TRAFFICLIGHT_TRACITRAFFICLIGHTPROGRAM_H_ */

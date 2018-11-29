@@ -24,20 +24,10 @@
 
 #include "veins/base/utils/FindModule.h"
 
-#ifndef debugEV
-#define debugEV_clear EV
-#define debugEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
-#ifndef coreEV
-#define coreEV_clear EV
-#define coreEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
 using namespace Veins;
 
 // Could not initialize simsignal_t it here!? I got the POST_MODEL_CHANGE id!?
-const simsignalwrap_t BaseModule::catHostStateSignal = simsignalwrap_t(MIXIM_SIGNAL_HOSTSTATE_NAME);
+const simsignal_t BaseModule::catHostStateSignal = registerSignal("org.car2x.veins.base.utils.hoststate");
 
 BaseModule::BaseModule()
     : cSimpleModule()
@@ -60,7 +50,6 @@ void BaseModule::initialize(int stage)
 {
     if (stage == 0) {
         notAffectedByHostState = hasPar("notAffectedByHostState") && par("notAffectedByHostState").boolValue();
-        hasPar("debug") ? debug = par("debug").boolValue() : debug = true;
         findHost()->subscribe(catHostStateSignal, this);
     }
 }
@@ -112,29 +101,13 @@ const cModule* const BaseModule::findHost(void) const
  * Only supports ids from simple module derived from the BaseModule
  * or the nic compound module id.
  *
- * @param id Id of the module for the desired logging name
  * @return logging name of module id or NULL if not found
  * @sa logName
  */
-// std::string BaseModule::getLogName(int id)
-//{
-//    BaseModule *mod;
-//    std::string lname;
-//    mod = check_and_cast<BaseModule *>(simulation.getModule(id));
-//    if (mod->isSimple()) {
-//        lname = mod->logName();
-//    }
-//    else if(mod->getSubmodule("phy")) {
-//        lname = check_and_cast<BaseModule *>(mod->getSubmodule("phy"))->logName();
-//    }
-//    return lname;
-//};
-
 std::string BaseModule::logName(void) const
 {
     std::ostringstream ost;
-    if (hasPar("logName")) // let modules override
-    {
+    if (hasPar("logName")) { // let modules override
         ost << par("logName").stringValue();
     }
     else {

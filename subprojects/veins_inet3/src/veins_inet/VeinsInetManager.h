@@ -18,10 +18,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef Veins_VeinsInetManager_h
-#define Veins_VeinsInetManager_h
+#pragma once
 
-#include <omnetpp.h>
+#include "veins/veins.h"
 
 #include "veins/modules/mobility/traci/TraCIScenarioManagerLaunchd.h"
 
@@ -39,8 +38,8 @@ namespace Veins {
 class VeinsInetManager : public TraCIScenarioManagerLaunchd {
 public:
     virtual ~VeinsInetManager();
-    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double angle, VehicleSignal signals);
-    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double angle, VehicleSignal signals);
+    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals) override;
+    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals) override;
 
 protected:
 };
@@ -54,5 +53,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif // ifndef Veins_VeinsInetManager_h

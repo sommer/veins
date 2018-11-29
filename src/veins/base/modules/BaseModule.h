@@ -18,13 +18,12 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#ifndef BASE_MODULE_H
-#define BASE_MODULE_H
+#pragma once
 
 #include <sstream>
-#include <omnetpp.h>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
+
 #include "veins/base/utils/HostState.h"
 
 namespace Veins {
@@ -61,18 +60,15 @@ namespace Veins {
  * @author Steffen Sroka
  * @author Andreas Koepke
  */
-class MIXIM_API BaseModule : public cSimpleModule, public cListener {
+class VEINS_API BaseModule : public cSimpleModule, public cListener {
 protected:
-    /** @brief Debug switch for all other modules*/
-    bool debug;
-
     /** @brief Stores if this module is affected by changes in the
      * hosts state. If not explicitly set this module has to capture
      * changes in the host state.*/
     bool notAffectedByHostState;
 
     /** @brief Stores the category of the HostState*/
-    const static simsignalwrap_t catHostStateSignal;
+    const static simsignal_t catHostStateSignal;
 
 protected:
     /**
@@ -167,5 +163,3 @@ public:
 };
 
 } // namespace Veins
-
-#endif

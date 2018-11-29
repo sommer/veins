@@ -1,5 +1,4 @@
-#ifndef VEINS_MOBILITY_TRACI_TRACICONNECTION_H_
-#define VEINS_MOBILITY_TRACI_TRACICONNECTION_H_
+#pragma once
 
 #include <stdint.h>
 #include <memory>
@@ -7,6 +6,7 @@
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/mobility/traci/TraCICoordinateTransformation.h"
 #include "veins/base/utils/Coord.h"
+#include "veins/base/utils/Heading.h"
 
 namespace Veins {
 
@@ -37,14 +37,14 @@ public:
     std::string receiveMessage();
 
     /**
-     * convert TraCI angle to OMNeT++ angle (in rad)
+     * convert TraCI heading to OMNeT++ heading (in rad)
      */
-    double traci2omnetAngle(double angle) const;
+    Heading traci2omnetHeading(double heading) const;
 
     /**
-     * convert OMNeT++ angle (in rad) to TraCI angle
+     * convert OMNeT++ heading (in rad) to TraCI heading
      */
-    double omnet2traciAngle(double angle) const;
+    double omnet2traciHeading(Heading heading) const;
 
     /**
      * convert TraCI coordinates to OMNeT++ coordinates
@@ -71,5 +71,3 @@ private:
 std::string makeTraCICommand(uint8_t commandId, const TraCIBuffer& buf = TraCIBuffer());
 
 } // namespace Veins
-
-#endif /* VEINS_MOBILITY_TRACI_TRACICONNECTION_H_ */

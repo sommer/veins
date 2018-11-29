@@ -2,6 +2,7 @@
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/mobility/traci/TraCICoordinateTransformation.h"
 
+using Veins::Heading;
 using Veins::TraCICoord;
 using Veins::TraCICoordinateTransformation;
 using OmnetCoord = TraCICoordinateTransformation::OmnetCoord;
@@ -29,8 +30,8 @@ SCENARIO("TraCICoordinateTransformation correctly translates for Erlangen bounda
     auto orig_traci = TraCICoord(646854.991, 5493242.54);
     OmnetCoordList orig_omnet_list = {orig_omnet};
     TraCICoordList orig_traci_list = {orig_traci};
-    double orig_traci_angle = -114.542;
-    double orig_omnet_angle = -2.71324;
+    double orig_traci_heading = -114.542;
+    Heading orig_omnet_heading = Heading(-2.71324);
 
     GIVEN("The boundaries from the Erlangen scenario")
     {
@@ -64,16 +65,16 @@ SCENARIO("TraCICoordinateTransformation correctly translates for Erlangen bounda
             REQUIRE(new_omnet.front().y == Approx(orig_omnet.y));
         }
 
-        // angles
-        THEN("omnet angles correctly translate to traci angles")
+        // headings
+        THEN("omnet headings correctly translate to traci headings")
         {
-            auto new_traci = nb.omnet2traciAngle(orig_omnet_angle);
-            REQUIRE(new_traci == Approx(orig_traci_angle));
+            auto new_traci = nb.omnet2traciHeading(orig_omnet_heading);
+            REQUIRE(new_traci == Approx(orig_traci_heading));
         }
-        THEN("traci angles correctly translate to omnet angles")
+        THEN("traci headings correctly translate to omnet headings")
         {
-            auto new_omnet = nb.traci2omnetAngle(orig_traci_angle);
-            REQUIRE(new_omnet == Approx(orig_omnet_angle));
+            auto new_omnet = nb.traci2omnetHeading(orig_traci_heading);
+            REQUIRE(new_omnet.getRad() == Approx(orig_omnet_heading.getRad()));
         }
     }
 }

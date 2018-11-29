@@ -13,11 +13,6 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
-#ifndef coreEV
-#define coreEV_clear EV
-#define coreEV EV << logName() << "::" << getClassName() << ": "
-#endif
-
 using namespace Veins;
 
 using Veins::AirFrame;
@@ -26,7 +21,7 @@ Define_Module(Veins::BasePhyLayer);
 
 Coord NoMobiltyPos = Coord::ZERO;
 
-//--Initialization----------------------------------
+// --Initialization----------------------------------
 
 BasePhyLayer::BasePhyLayer()
     : protocolId(GENERIC)
@@ -177,7 +172,7 @@ void BasePhyLayer::finish()
     decider->finish();
 }
 
-//-----Decider initialization----------------------
+// -----Decider initialization----------------------
 
 void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
 {
@@ -215,7 +210,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
         throw cRuntimeError("Could not find a decider with the name \"%s\".", name);
     }
 
-    coreEV << "Decider \"" << name << "\" loaded." << endl;
+    EV_TRACE << "Decider \"" << name << "\" loaded." << endl;
 }
 
 Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
@@ -223,7 +218,7 @@ Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params
     return 0;
 }
 
-//-----Antenna initialization----------------------
+// -----Antenna initialization----------------------
 
 void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig)
 {
@@ -264,7 +259,7 @@ void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig)
     }
 
     const char* id = antennaData->getAttribute("id");
-    coreEV << "Antenna \"" << name << "\" with ID \"" << id << "\" loaded." << endl;
+    EV_TRACE << "Antenna \"" << name << "\" with ID \"" << id << "\" loaded." << endl;
 }
 
 std::shared_ptr<Antenna> BasePhyLayer::getAntennaFromName(std::string name, ParameterMap& params)
@@ -322,7 +317,7 @@ std::shared_ptr<Antenna> BasePhyLayer::initializeSampledAntenna1D(ParameterMap& 
     return std::make_shared<SampledAntenna1D>(values, offsetType, offsetParams, rotationType, rotationParams, this->getRNG(0));
 }
 
-//-----AnalogueModels initialization----------------
+// -----AnalogueModels initialization----------------
 
 void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
 {
@@ -361,13 +356,16 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
 
         // attach the new AnalogueModel to the AnalogueModelList
         if (thresholdingFlag && std::string(thresholdingFlag) == "true") {
+            if (!newAnalogueModel->neverIncreasesPower()) {
+                throw cRuntimeError("Tried to instantiate analogue model \"%s\" with tresholding=true, but model does not support this.", name);
+            }
             analogueModelsThresholding.push_back(newAnalogueModel);
         }
         else {
             analogueModels.push_back(newAnalogueModel);
         }
 
-        coreEV << "AnalogueModel \"" << name << "\" loaded." << endl;
+        EV_TRACE << "AnalogueModel \"" << name << "\" loaded." << endl;
 
     } // end iterator loop
 }
@@ -378,7 +376,7 @@ AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, Paramete
     return 0;
 }
 
-//--Message handling--------------------------------------
+// --Message handling--------------------------------------
 
 void BasePhyLayer::handleMessage(cMessage* msg)
 {
@@ -435,7 +433,7 @@ void BasePhyLayer::handleAirFrame(AirFrame* frame)
 
 void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame)
 {
-    coreEV << "Received new AirFrame " << frame << " from channel." << endl;
+    EV_TRACE << "Received new AirFrame " << frame << " from channel." << endl;
 
     channelInfo.addAirFrame(frame, simTime());
     assert(!channelInfo.isChannelEmpty());
@@ -495,14 +493,14 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame)
         throw cRuntimeError("Invalid next handle time returned by Decider. Expected a value between current simulation time (%.2f) and end of signal (%.2f) but got %.2f", SIMTIME_DBL(simTime()), SIMTIME_DBL(signalEndTime), SIMTIME_DBL(nextHandleTime));
     }
 
-    coreEV << "Handed AirFrame with ID " << frame->getId() << " to Decider. Next handling in " << nextHandleTime - simTime() << "s." << endl;
+    EV_TRACE << "Handed AirFrame with ID " << frame->getId() << " to Decider. Next handling in " << nextHandleTime - simTime() << "s." << endl;
 
     sendSelfMessage(frame, nextHandleTime);
 }
 
 void BasePhyLayer::handleAirFrameEndReceive(AirFrame* frame)
 {
-    coreEV << "End of Airframe with ID " << frame->getId() << "." << endl;
+    EV_TRACE << "End of Airframe with ID " << frame->getId() << "." << endl;
 
     simtime_t earliestInfoPoint = channelInfo.removeAirFrame(frame);
 
@@ -539,10 +537,8 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     AirFrame* frame = encapsMsg(static_cast<cPacket*>(msg));
 
     // Prepare a POA object and attach it to the created Airframe
-    BaseMobility* sendersMobility = ChannelMobilityAccessType::get(this->getParentModule());
-    assert(sendersMobility);
-    Coord pos = sendersMobility->getCurrentPosition();
-    Coord orient = sendersMobility->getCurrentOrientation();
+    Coord pos = antennaPosition;
+    Coord orient = antennaHeading.toCoord();
     POA* poa = new POA(pos, orient, antenna);
     frame->setPoa(*poa);
     // the frame is now owner of the POA object
@@ -602,7 +598,7 @@ AirFrame* BasePhyLayer::encapsMsg(cPacket* macPkt)
 
     // --- from here on, the AirFrame is the owner of the MacPacket ---
     macPkt = 0;
-    coreEV << "AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
+    EV_TRACE << "AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
 
     return frame;
 }
@@ -639,7 +635,7 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg)
     }
 }
 
-//--Send messages------------------------------
+// --Send messages------------------------------
 
 void BasePhyLayer::sendControlMessageUp(cMessage* msg)
 {
@@ -673,14 +669,14 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     // get own mobility module
     BaseMobility* ownMobility = ChannelMobilityAccessType::get(this->getParentModule());
     assert(ownMobility);
-    Coord ownPos = ownMobility->getCurrentPosition();
-    Coord ownOrient = ownMobility->getCurrentOrientation();
+    Coord ownPos = antennaPosition;
+    Coord ownOrient = antennaHeading.toCoord();
     // compute gains at sender and receiver antenna
     double ownGain = antenna->getGain(ownPos, ownOrient, senderPOA.pos);
     double otherGain = senderPOA.antenna->getGain(senderPOA.pos, senderPOA.orientation, ownPos);
 
-    coreEV << "Sender's antenna gain: " << otherGain << endl;
-    coreEV << "Own (receiver's) antenna gain: " << ownGain << endl;
+    EV_TRACE << "Sender's antenna gain: " << otherGain << endl;
+    EV_TRACE << "Own (receiver's) antenna gain: " << ownGain << endl;
 
     // add the resulting total gain to the attenuations list
     frame->getSignal().addUniformAttenuation(ownGain * otherGain);
@@ -691,30 +687,27 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     ChannelAccess* const senderModule = dynamic_cast<ChannelAccess* const>(frame->getSenderModule());
     ChannelAccess* const receiverModule = dynamic_cast<ChannelAccess* const>(frame->getArrivalModule());
 
-    assert(senderModule);
-    assert(receiverModule);
+    ASSERT(senderModule);
+    ASSERT(receiverModule);
+    ASSERT(receiverModule == this);
 
-    /** claim the Move pattern of the sender from the Signal */
-    ChannelMobilityPtrType sendersMobility = senderModule ? senderModule->getMobilityModule() : NULL;
-    ChannelMobilityPtrType receiverMobility = receiverModule ? receiverModule->getMobilityModule() : NULL;
+    const Coord senderPos = senderModule ? senderModule->getAntennaPosition() : NoMobiltyPos;
+    const Coord receiverPos = receiverModule ? receiverModule->getAntennaPosition() : NoMobiltyPos;
 
-    const Coord sendersPos = sendersMobility ? sendersMobility->getCurrentPosition(/*sStart*/) : NoMobiltyPos;
-    const Coord receiverPos = receiverMobility ? receiverMobility->getCurrentPosition(/*sStart*/) : NoMobiltyPos;
-
-    frame->getSignal().setSenderPos(sendersPos);
+    frame->getSignal().setSenderPos(senderPos);
     frame->getSignal().setReceiverPos(receiverPos);
     frame->getSignal().setAnalogueModelList(&analogueModelsThresholding);
     // frame->getSignal().applyAllAnalogueModels();
 
-    for (AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++) (*it)->filterSignal(&frame->getSignal(), sendersPos, receiverPos);
+    for (AnalogueModelList::const_iterator it = analogueModels.begin(); it != analogueModels.end(); it++) (*it)->filterSignal(&frame->getSignal(), senderPos, receiverPos);
 }
 
-//--Destruction--------------------------------
+// --Destruction--------------------------------
 
 BasePhyLayer::~BasePhyLayer()
 {
     // get AirFrames from ChannelInfo and delete
-    //(although ChannelInfo normally owns the AirFrames it
+    // (although ChannelInfo normally owns the AirFrames it
     // is not able to cancel and delete them itself
     AirFrameVector channel;
     channelInfo.getAirFrames(0, simTime(), channel);
@@ -760,7 +753,7 @@ BasePhyLayer::~BasePhyLayer()
     }
 }
 
-//--MacToPhyInterface implementation-----------------------
+// --MacToPhyInterface implementation-----------------------
 
 int BasePhyLayer::getRadioState()
 {
@@ -817,7 +810,7 @@ void BasePhyLayer::setCurrentRadioChannel(int newRadioChannel)
 
     radio->setCurrentChannel(newRadioChannel);
     decider->channelChanged(newRadioChannel);
-    coreEV << "Switched radio to channel " << newRadioChannel << endl;
+    EV_TRACE << "Switched radio to channel " << newRadioChannel << endl;
 }
 
 int BasePhyLayer::getCurrentRadioChannel()
@@ -830,7 +823,7 @@ int BasePhyLayer::getNbRadioChannels()
     return par("nbRadioChannels");
 }
 
-//--DeciderToPhyInterface implementation------------
+// --DeciderToPhyInterface implementation------------
 
 void BasePhyLayer::getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out)
 {
@@ -850,7 +843,7 @@ void BasePhyLayer::sendControlMsgToMac(cMessage* msg)
 void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult* result)
 {
 
-    coreEV << "Decapsulating MacPacket from Airframe with ID " << frame->getId() << " and sending it up to MAC." << endl;
+    EV_TRACE << "Decapsulating MacPacket from Airframe with ID " << frame->getId() << " and sending it up to MAC." << endl;
 
     cMessage* packet = frame->decapsulate();
 
@@ -873,8 +866,7 @@ void BasePhyLayer::cancelScheduledMessage(cMessage* msg)
         cancelEvent(msg);
     }
     else {
-        EV << "Warning: Decider wanted to cancel a scheduled message but message"
-           << " wasn't actually scheduled. Message is: " << msg << endl;
+        EV_WARN << "Warning: Decider wanted to cancel a scheduled message but message wasn't actually scheduled. Message is: " << msg << endl;
     }
 }
 

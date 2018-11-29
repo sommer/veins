@@ -1,10 +1,9 @@
-#ifndef VEINS_MOBILITY_TRACI_TRACIBUFFER_H_
-#define VEINS_MOBILITY_TRACI_TRACIBUFFER_H_
+#pragma once
 
 #include <cstddef>
 #include <string>
 
-#include "veins/base/utils/MiXiMDefs.h"
+#include "veins/veins.h"
 
 namespace Veins {
 
@@ -114,9 +113,15 @@ public:
     std::string str() const;
     std::string hexStr() const;
 
+    static void setTimeAsDouble(bool val)
+    {
+        timeAsDouble = val;
+    }
+
 private:
     std::string buf;
     size_t buf_index;
+    static bool timeAsDouble;
 };
 
 template <>
@@ -129,7 +134,9 @@ template <>
 std::string TraCIBuffer::read();
 template <>
 TraCICoord TraCIBuffer::read();
+template <>
+void TraCIBuffer::write(simtime_t o);
+template <>
+simtime_t TraCIBuffer::read();
 
 } // namespace Veins
-
-#endif /* VEINS_MOBILITY_TRACI_TRACIBUFFER_H_ */
