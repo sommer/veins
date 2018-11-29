@@ -40,7 +40,7 @@ namespace Veins {
 
 class TraCIDemo11p : public DemoBaseApplLayer {
 public:
-    virtual void initialize(int stage);
+    void initialize(int stage) override;
 
 protected:
     simtime_t lastDroveAt;
@@ -48,11 +48,11 @@ protected:
     int currentSubscribedServiceId;
 
 protected:
-    virtual void onWSM(BaseFrame1609_4* wsm);
-    virtual void onWSA(DemoServiceAdvertisment* wsa);
+    void onWSM(BaseFrame1609_4* wsm) override;
+    void onWSA(DemoServiceAdvertisment* wsa) override;
 
-    virtual void handleSelfMsg(cMessage* msg);
-    virtual void handlePositionUpdate(cObject* obj);
+    void handleSelfMsg(cMessage* msg) override;
+    void handlePositionUpdate(cObject* obj) override;
 };
 
 } // namespace Veins

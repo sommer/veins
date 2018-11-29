@@ -48,11 +48,11 @@ public:
     {
     }
 
-    virtual ~TwoRayInterferenceModel()
+    ~TwoRayInterferenceModel() override
     {
     }
 
-    virtual void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos);
+    void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos) override;
 
 protected:
     /** @brief stores the dielectric constant used for calculation */

@@ -73,7 +73,7 @@ protected:
     const simtime_t notAgain;
 
     /** @brief Defines what an AirFrameVector shall be here */
-    typedef DeciderToPhyInterface::AirFrameVector AirFrameVector;
+    using AirFrameVector = DeciderToPhyInterface::AirFrameVector;
 
 public:
     /**

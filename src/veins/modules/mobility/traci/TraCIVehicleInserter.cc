@@ -33,7 +33,7 @@ Define_Module(Veins::TraCIVehicleInserter);
 using namespace Veins;
 
 TraCIVehicleInserter::TraCIVehicleInserter()
-    : mobRng(0)
+    : mobRng(nullptr)
 {
 }
 

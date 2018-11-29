@@ -89,13 +89,13 @@ public:
      */
     NicEntry()
         : nicId(0)
-        , nicPtr(0)
+        , nicPtr(nullptr)
         , hostId(0){};
 
     /**
      * @brief Destructor -- needs to be there...
      */
-    virtual ~NicEntry()
+    ~NicEntry() override
     {
     }
 

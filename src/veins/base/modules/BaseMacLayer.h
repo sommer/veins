@@ -96,19 +96,19 @@ public:
     // Module_Class_Members( BaseMacLayer, BaseLayer, 0 );
     BaseMacLayer()
         : BaseLayer()
-        , phy(NULL)
+        , phy(nullptr)
         , myMacAddr(LAddress::L2NULL())
     {
     }
     BaseMacLayer(unsigned stacksize)
         : BaseLayer(stacksize)
-        , phy(NULL)
+        , phy(nullptr)
         , myMacAddr(LAddress::L2NULL())
     {
     }
 
     /** @brief Initialization of the module and some variables*/
-    virtual void initialize(int);
+    void initialize(int) override;
 
     /**
      * @brief Returns the MAC address of this MAC module.
@@ -135,21 +135,21 @@ protected:
      *
      *  @sa encapsMsg, sendDown
      */
-    virtual void handleUpperMsg(cMessage* msg);
+    void handleUpperMsg(cMessage* msg) override;
 
     /**
      * If message arrives from lower layer, check whether it is for
      * us. Send it up if yes.
      */
-    virtual void handleLowerMsg(cMessage* msg);
+    void handleLowerMsg(cMessage* msg) override;
 
-    virtual void handleSelfMsg(cMessage* msg)
+    void handleSelfMsg(cMessage* msg) override
     {
         error("BaseMacLayer does not handle self messages");
     };
-    virtual void handleLowerControl(cMessage* msg);
+    void handleLowerControl(cMessage* msg) override;
 
-    virtual void handleUpperControl(cMessage* msg)
+    void handleUpperControl(cMessage* msg) override
     {
         error("BaseMacLayer does not handle control messages from upper layers");
     };

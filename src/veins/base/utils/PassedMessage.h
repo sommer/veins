@@ -39,7 +39,7 @@ public:
             break;
         default:
             throw cRuntimeError("PassedMessage::gateToString: got invalid value");
-            s = 0;
+            s = nullptr;
             break;
         }
         return s;

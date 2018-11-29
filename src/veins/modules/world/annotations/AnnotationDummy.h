@@ -30,7 +30,7 @@ namespace Veins {
  */
 class AnnotationDummy : public cSimpleModule {
 public:
-    ~AnnotationDummy();
+    ~AnnotationDummy() override;
 
 protected:
 };

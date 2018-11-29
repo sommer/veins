@@ -43,14 +43,14 @@ namespace Veins {
 class TraCIVehicleInserter : public cSimpleModule, public cListener {
 public:
     TraCIVehicleInserter();
-    ~TraCIVehicleInserter();
-    virtual int numInitStages() const override;
-    virtual void initialize(int stage) override;
-    virtual void finish() override;
-    virtual void finish(cComponent* component, simsignal_t signalID) override;
-    virtual void handleMessage(cMessage* msg) override;
-    virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details) override;
-    virtual void receiveSignal(cComponent* source, simsignal_t signalID, const SimTime& t, cObject* details) override;
+    ~TraCIVehicleInserter() override;
+    int numInitStages() const override;
+    void initialize(int stage) override;
+    void finish() override;
+    void finish(cComponent* component, simsignal_t signalID) override;
+    void handleMessage(cMessage* msg) override;
+    void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details) override;
+    void receiveSignal(cComponent* source, simsignal_t signalID, const SimTime& t, cObject* details) override;
 
 protected:
     /**

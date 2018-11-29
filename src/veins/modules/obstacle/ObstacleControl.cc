@@ -91,10 +91,10 @@ void ObstacleControl::addFromXml(cXMLElement* xml)
             std::string id = e->getAttribute("id");
             ASSERT(e->getAttribute("db-per-cut"));
             std::string perCutParS = e->getAttribute("db-per-cut");
-            double perCutPar = strtod(perCutParS.c_str(), 0);
+            double perCutPar = strtod(perCutParS.c_str(), nullptr);
             ASSERT(e->getAttribute("db-per-meter"));
             std::string perMeterParS = e->getAttribute("db-per-meter");
-            double perMeterPar = strtod(perMeterParS.c_str(), 0);
+            double perMeterPar = strtod(perMeterParS.c_str(), nullptr);
 
             perCut[id] = perCutPar;
             perMeter[id] = perMeterPar;

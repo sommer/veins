@@ -74,7 +74,7 @@ void BaseMobility::initialize(int stage)
 
         // get utility pointers (world and host)
         world = FindModule<BaseWorldUtility*>::findGlobalModule();
-        if (world == NULL) error("Could not find BaseWorldUtility module");
+        if (world == nullptr) error("Could not find BaseWorldUtility module");
 
         EV_TRACE << "initializing BaseUtility stage " << stage << endl; // for node position
 
@@ -127,7 +127,7 @@ void BaseMobility::initialize(int stage)
         EV_TRACE << "initializing BaseMobility stage " << stage << endl;
 
         // get playground scaling
-        if (world->getParentModule() != NULL) {
+        if (world->getParentModule() != nullptr) {
             const cDisplayString& dispWorldOwner = world->getParentModule()->getDisplayString();
 
             if (dispWorldOwner.containsTag("bgb")) {
@@ -237,7 +237,7 @@ void BaseMobility::handleSelfMsg(cMessage* msg)
     }
     else {
         delete msg;
-        moveMsg = NULL;
+        moveMsg = nullptr;
     }
 }
 

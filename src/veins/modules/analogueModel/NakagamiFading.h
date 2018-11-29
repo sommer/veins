@@ -49,11 +49,11 @@ public:
     {
     }
 
-    virtual ~NakagamiFading()
+    ~NakagamiFading() override
     {
     }
 
-    virtual void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos);
+    void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos) override;
 
 protected:
     /** @brief Whether to use a constant m or a m based on distance */

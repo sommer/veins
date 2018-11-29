@@ -134,7 +134,7 @@ protected:
      */
     virtual DeciderResult* checkIfSignalOk(AirFrame* frame);
 
-    virtual simtime_t processNewSignal(AirFrame* frame);
+    simtime_t processNewSignal(AirFrame* frame) override;
 
     /**
      * @brief Processes a received AirFrame.
@@ -145,7 +145,7 @@ protected:
      *
      * @return    usually return a value for: 'do not pass it again'
      */
-    virtual simtime_t processSignalEnd(AirFrame* frame);
+    simtime_t processSignalEnd(AirFrame* frame) override;
 
     /** @brief computes if packet is ok or has errors*/
     enum PACKET_OK_RESULT packetOk(double snirMin, double snrMin, int lengthMPDU, double bitrate);
@@ -176,8 +176,8 @@ public:
     }
 
     bool cca(simtime_t_cref, AirFrame*);
-    int getSignalState(AirFrame* frame);
-    virtual ~Decider80211p();
+    int getSignalState(AirFrame* frame) override;
+    ~Decider80211p() override;
 
     void changeFrequency(double freq);
 
@@ -191,14 +191,14 @@ public:
      */
     void setCCAThreshold(double ccaThreshold_dBm);
 
-    void setChannelIdleStatus(bool isIdle);
+    void setChannelIdleStatus(bool isIdle) override;
 
     /**
      * @brief invoke this method when the phy layer is also finalized,
      * so that statistics recorded by the decider can be written to
      * the output file
      */
-    virtual void finish();
+    void finish() override;
 
     /**
      * @brief Notifies the decider that phy layer is starting a transmission.
@@ -209,7 +209,7 @@ public:
      * to this method, the decider can flag the ongoing frame as non received
      * because of the transmission.
      */
-    virtual void switchToTx();
+    void switchToTx() override;
 
     /**
      * @brief notify PHY-RXSTART.indication

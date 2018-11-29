@@ -71,7 +71,7 @@ class Radio;
  * @ingroup baseModules
  */
 
-typedef std::vector<AnalogueModel*> AnalogueModelList;
+using AnalogueModelList = std::vector<AnalogueModel*>;
 
 class VEINS_API BasePhyLayer : public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
 
@@ -217,7 +217,7 @@ protected:
      * Read and parse xml file for decider and analogue models
      * configuration.
      */
-    virtual void initialize(int stage);
+    void initialize(int stage) override;
 
     /**
      * @brief OMNeT++ handle message function.
@@ -229,7 +229,7 @@ protected:
      * - ControllMesasges from MAC layer
      * - self messages like TX_OVER and RADIO_SWITCHED
      */
-    virtual void handleMessage(cMessage* msg);
+    void handleMessage(cMessage* msg) override;
 
     /**
      * @brief Initializes and returns the radio class to use.
@@ -425,10 +425,10 @@ public:
     /**
      * Free the pointer to the decider and the AnalogueModels and the Radio.
      */
-    virtual ~BasePhyLayer();
+    ~BasePhyLayer() override;
 
     /** @brief Only calls the deciders finish method.*/
-    virtual void finish();
+    void finish() override;
 
     // ---------MacToPhyInterface implementation-----------
     /**
@@ -444,7 +444,7 @@ public:
      *
      * This method is mainly used by the mac layer.
      */
-    virtual int getRadioState();
+    int getRadioState() override;
 
     /**
      * @brief Tells the BasePhyLayer to switch to the specified
@@ -456,7 +456,7 @@ public:
      * @return    -1: Error code if the Radio is currently switching
      *            else: switching time from the current RadioState to the new RadioState
      */
-    virtual simtime_t setRadioState(int rs);
+    simtime_t setRadioState(int rs) override;
 
     /**
      * @brief Returns the length of the phy header in bits.
@@ -466,16 +466,16 @@ public:
      * the packet and therefore needs the length of the
      * phy header.
      */
-    virtual int getPhyHeaderLength();
+    int getPhyHeaderLength() override;
 
     /** @brief Sets the channel currently used by the radio. */
-    virtual void setCurrentRadioChannel(int newRadioChannel);
+    void setCurrentRadioChannel(int newRadioChannel) override;
 
     /** @brief Returns the channel currently used by the radio. */
-    virtual int getCurrentRadioChannel();
+    int getCurrentRadioChannel() override;
 
     /** @brief Returns the number of channels available on this radio. */
-    virtual int getNbRadioChannels();
+    int getNbRadioChannels() override;
 
     /*@}*/
 
@@ -490,18 +490,18 @@ public:
      * @brief Fills the passed AirFrameVector with all AirFrames that intersect
      * with the time interval [from, to]
      */
-    virtual void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out);
+    void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out) override;
 
     /**
      * @brief Returns a constant which defines the thermal noise in
      * the passed time frame (in mW).
      */
-    virtual double getThermalNoiseValue();
+    double getThermalNoiseValue() override;
 
     /**
      * @brief Called by the Decider to send a control message to the MACLayer
      */
-    virtual void sendControlMsgToMac(cMessage* msg);
+    void sendControlMsgToMac(cMessage* msg) override;
 
     /**
      * @brief Called to send an AirFrame with DeciderResult to the MACLayer
@@ -511,12 +511,12 @@ public:
      * the corresponding DeciderResult up to MACLayer
      *
      */
-    virtual void sendUp(AirFrame* packet, DeciderResult* result);
+    void sendUp(AirFrame* packet, DeciderResult* result) override;
 
     /**
      * @brief Returns the current simulation time
      */
-    virtual simtime_t getSimTime();
+    simtime_t getSimTime() override;
 
     /**
      * @brief Tells the PhyLayer to cancel a scheduled message (AirFrame or
@@ -525,7 +525,7 @@ public:
      * Used by the Decider if it doesn't need to handle an AirFrame or
      * ControlMessage again anymore.
      */
-    virtual void cancelScheduledMessage(cMessage* msg);
+    void cancelScheduledMessage(cMessage* msg) override;
 
     /**
      * @brief Tells the PhyLayer to reschedule a message (AirFrame or
@@ -535,18 +535,18 @@ public:
      * earlier than it has returned to the PhyLayer the last time the Decider
      * handled that message.
      */
-    virtual void rescheduleMessage(cMessage* msg, simtime_t_cref t);
+    void rescheduleMessage(cMessage* msg, simtime_t_cref t) override;
 
     /**
      * @brief Does nothing. For an actual power supporting
      * phy see "PhyLayerBattery".
      */
-    virtual void drawCurrent(double amount, int activity);
+    void drawCurrent(double amount, int activity) override;
 
     /**
      * @brief Returns a pointer to the simulations world-utility-module.
      */
-    virtual BaseWorldUtility* getWorldUtility();
+    BaseWorldUtility* getWorldUtility() override;
 
     /**
      * @brief Records a double into the scalar result file.
@@ -554,7 +554,7 @@ public:
      * Implements the method from DeciderToPhyInterface, method-calls are forwarded
      * to OMNeT-method 'recordScalar'.
      */
-    void recordScalar(const char* name, double value, const char* unit = NULL);
+    void recordScalar(const char* name, double value, const char* unit = nullptr) override;
 
     /*@}*/
 

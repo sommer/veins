@@ -424,7 +424,7 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg)
         // check if there is another packet on the chan, and change the chan-state to idle
         Decider80211p* dec = dynamic_cast<Decider80211p*>(decider);
         assert(dec);
-        if (dec->cca(simTime(), NULL)) {
+        if (dec->cca(simTime(), nullptr)) {
             // chan is idle
             EV_TRACE << "Channel idle after transmit!\n";
             dec->setChannelIdleStatus(true);
@@ -484,16 +484,16 @@ AirFrame* PhyLayer80211p::encapsMsg(cPacket* macPkt)
 
     // pointer and Signal not needed anymore
     delete s;
-    s = 0;
+    s = nullptr;
 
     // delete the Control info
     delete ctrlInfo;
-    ctrlInfo = 0;
+    ctrlInfo = nullptr;
 
     frame->encapsulate(macPkt);
 
     // --- from here on, the AirFrame is the owner of the MacPacket ---
-    macPkt = 0;
+    macPkt = nullptr;
     EV_TRACE << "AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
 
     return frame;
@@ -528,7 +528,7 @@ void PhyLayer80211p::requestChannelStatusIfIdle()
 {
     Enter_Method_Silent();
     Decider80211p* dec = (Decider80211p*) decider;
-    if (dec->cca(simTime(), NULL)) {
+    if (dec->cca(simTime(), nullptr)) {
         // chan is idle
         EV_TRACE << "Request channel status: channel idle!\n";
         dec->setChannelIdleStatus(true);

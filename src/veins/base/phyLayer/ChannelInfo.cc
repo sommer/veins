@@ -138,7 +138,7 @@ void ChannelInfo::checkAndCleanInterval(simtime_t_cref startTime, simtime_t_cref
     IntersectionIterator inactiveIntersectIt(&inactiveAirFrames, startTime, endTime);
 
     AirFrame* inactiveIntersect = inactiveIntersectIt.next();
-    while (inactiveIntersect != 0) {
+    while (inactiveIntersect != nullptr) {
         simtime_t_cref currentStart = airFrameStarts[inactiveIntersect];
         simtime_t_cref currentEnd = currentStart + inactiveIntersect->getDuration();
 
@@ -148,7 +148,7 @@ void ChannelInfo::checkAndCleanInterval(simtime_t_cref startTime, simtime_t_cref
             airFrameStarts.erase(inactiveIntersect);
 
             delete inactiveIntersect;
-            inactiveIntersect = 0;
+            inactiveIntersect = nullptr;
         }
         inactiveIntersect = inactiveIntersectIt.next();
     }
@@ -173,7 +173,7 @@ void ChannelInfo::addToInactives(AirFrame* frame, simtime_t_cref startTime, simt
 bool ChannelInfo::isIntersecting(const AirFrameMatrix& airFrames, simtime_t_cref from, simtime_t_cref to) const
 {
     ConstIntersectionIterator it(&airFrames, from, to);
-    return (it.next() != 0);
+    return (it.next() != nullptr);
 }
 
 void ChannelInfo::getIntersections(const AirFrameMatrix& airFrames, simtime_t_cref from, simtime_t_cref to, AirFrameVector& outVector) const
@@ -181,7 +181,7 @@ void ChannelInfo::getIntersections(const AirFrameMatrix& airFrames, simtime_t_cr
     ConstIntersectionIterator it(&airFrames, from, to);
 
     AirFrame* intersect = it.next();
-    while (intersect != 0) {
+    while (intersect != nullptr) {
         outVector.push_back(intersect);
         intersect = it.next();
     }

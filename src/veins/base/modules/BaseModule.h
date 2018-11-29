@@ -97,12 +97,12 @@ protected:
     /** @brief Function to get the logging name of id*/
     // std::string getLogName(int);
 
-    virtual void finish()
+    void finish() override
     {
         cSimpleModule::finish();
     }
 
-    virtual void finish(cComponent* component, simsignal_t signalID)
+    void finish(cComponent* component, simsignal_t signalID) override
     {
         cListener::finish(component, signalID);
     }
@@ -112,7 +112,7 @@ public:
     BaseModule(unsigned stacksize);
 
     /** @brief Basic initialization for all modules */
-    virtual void initialize(int);
+    void initialize(int) override;
 
     /**
      * @brief Divide initialization into two stages
@@ -126,7 +126,7 @@ public:
      * assure that the other module had at least once the chance to initialize
      * itself in stage 0.
      */
-    virtual int numInitStages() const
+    int numInitStages() const override
     {
         return 2;
     }
@@ -155,10 +155,10 @@ public:
      * some debug notifications
      */
     using cListener::receiveSignal;
-    virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details);
+    void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details) override;
     virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj)
     {
-        receiveSignal(source, signalID, obj, 0);
+        receiveSignal(source, signalID, obj, nullptr);
     }
 };
 

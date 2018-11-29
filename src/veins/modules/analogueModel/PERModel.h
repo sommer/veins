@@ -31,7 +31,7 @@ public:
         assert(per <= 1 && per >= 0);
     }
 
-    virtual void filterSignal(Signal*, const Coord&, const Coord&);
+    void filterSignal(Signal*, const Coord&, const Coord&) override;
 };
 
 } // namespace Veins

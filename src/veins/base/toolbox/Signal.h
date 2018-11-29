@@ -29,7 +29,7 @@ namespace Veins {
 
 // Forward declaration
 class AnalogueModel;
-typedef std::vector<AnalogueModel*> AnalogueModelList;
+using AnalogueModelList = std::vector<AnalogueModel*>;
 
 class Signal {
 public:

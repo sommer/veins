@@ -68,25 +68,25 @@ protected:
 public:
     BaseLayer()
         : BatteryAccess()
-        , passedMsg(NULL)
+        , passedMsg(nullptr)
     {
     }
     BaseLayer(unsigned stacksize)
         : BatteryAccess(stacksize)
-        , passedMsg(NULL)
+        , passedMsg(nullptr)
     {
     }
-    virtual ~BaseLayer();
+    ~BaseLayer() override;
     // Module_Class_Members(BaseLayer, BaseModule, 0 );
 
     /** @brief Initialization of the module and some variables*/
-    virtual void initialize(int);
+    void initialize(int) override;
 
     /** @brief Called every time a message arrives*/
-    virtual void handleMessage(cMessage*);
+    void handleMessage(cMessage*) override;
 
     /** @brief Called when the simulation has finished.*/
-    virtual void finish();
+    void finish() override;
 
 protected:
     /**

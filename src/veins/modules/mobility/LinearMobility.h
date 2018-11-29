@@ -42,13 +42,13 @@ protected:
 
 public:
     /** @brief Initializes mobility model parameters.*/
-    virtual void initialize(int);
+    void initialize(int) override;
 
 protected:
     /** @brief Move the host*/
-    virtual void makeMove();
+    void makeMove() override;
 
-    virtual void fixIfHostGetsOutside();
+    void fixIfHostGetsOutside() override;
 };
 
 } // namespace Veins

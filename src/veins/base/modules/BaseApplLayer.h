@@ -75,7 +75,7 @@ public:
     }
 
     /** @brief Initialization of the module and some variables*/
-    virtual void initialize(int);
+    void initialize(int) override;
 
 protected:
     /**
@@ -95,7 +95,7 @@ protected:
      * Define this function if you want to process timer or other kinds
      * of self messages
      **/
-    virtual void handleSelfMsg(cMessage* msg)
+    void handleSelfMsg(cMessage* msg) override
     {
         EV << "BaseApplLayer: handleSelfMsg not redefined; delete msg\n";
         delete msg;
@@ -110,7 +110,7 @@ protected:
      * The basic application layer just silently deletes all messages it
      * receives.
      **/
-    virtual void handleLowerMsg(cMessage* msg)
+    void handleLowerMsg(cMessage* msg) override
     {
         EV << "BaseApplLayer: handleLowerMsg not redefined; delete msg\n";
         delete msg;
@@ -122,7 +122,7 @@ protected:
      * The basic application layer just silently deletes all messages it
      * receives.
      **/
-    virtual void handleLowerControl(cMessage* msg)
+    void handleLowerControl(cMessage* msg) override
     {
         EV << "BaseApplLayer: handleLowerControl not redefined; delete msg\n";
         delete msg;
@@ -133,7 +133,7 @@ protected:
      * This function is pure virtual here, because there is no
      * reasonable guess what to do with it by default.
      */
-    virtual void handleUpperMsg(cMessage* msg)
+    void handleUpperMsg(cMessage* msg) override
     {
         assert(false);
         throw cRuntimeError("Application has no upper layers!");
@@ -141,7 +141,7 @@ protected:
     }
 
     /** @brief Handle control messages from upper layer */
-    virtual void handleUpperControl(cMessage* msg)
+    void handleUpperControl(cMessage* msg) override
     {
         assert(false);
         throw cRuntimeError("Application has no upper layers!");

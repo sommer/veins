@@ -69,7 +69,7 @@ TraCIConnection* TraCIConnection::connect(const char* host, int port)
     }
     else {
         throw cRuntimeError("Invalid TraCI server address: %s", host);
-        return 0;
+        return nullptr;
     }
 
     sockaddr_in address;

@@ -42,14 +42,14 @@ namespace Veins {
  */
 class VehicleObstacleControl : public cSimpleModule {
 public:
-    ~VehicleObstacleControl();
-    void initialize(int stage);
-    int numInitStages() const
+    ~VehicleObstacleControl() override;
+    void initialize(int stage) override;
+    int numInitStages() const override
     {
         return 2;
     }
-    void finish();
-    void handleMessage(cMessage* msg);
+    void finish() override;
+    void handleMessage(cMessage* msg) override;
     void handleSelfMsg(cMessage* msg);
 
     const VehicleObstacle* add(VehicleObstacle obstacle);
@@ -93,7 +93,7 @@ protected:
     AnnotationManager* annotations;
     double carrierFrequency;
 
-    typedef std::list<VehicleObstacle*> VehicleObstacles;
+    using VehicleObstacles = std::list<VehicleObstacle*>;
     VehicleObstacles vehicleObstacles;
     AnnotationManager::Group* vehicleAnnotationGroup;
     void drawVehicleObstacles(const simtime_t& t) const;

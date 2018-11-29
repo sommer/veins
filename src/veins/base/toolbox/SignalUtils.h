@@ -42,7 +42,7 @@ double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFra
 double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
 double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& airFrames, size_t freqIndex, AirFrame* exclude);
 
-bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude = 0);
+bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude = nullptr);
 
 double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise);
 

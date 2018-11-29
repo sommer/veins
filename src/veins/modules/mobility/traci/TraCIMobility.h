@@ -73,19 +73,19 @@ public:
     TraCIMobility()
         : BaseMobility()
         , isPreInitialized(false)
-        , manager(0)
-        , commandInterface(0)
-        , vehicleCommandInterface(0)
+        , manager(nullptr)
+        , commandInterface(nullptr)
+        , vehicleCommandInterface(nullptr)
     {
     }
-    ~TraCIMobility()
+    ~TraCIMobility() override
     {
         delete vehicleCommandInterface;
     }
-    virtual void initialize(int);
-    virtual void finish();
+    void initialize(int) override;
+    void finish() override;
 
-    virtual void handleSelfMsg(cMessage* msg);
+    void handleSelfMsg(cMessage* msg) override;
     virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan);
     virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan, VehicleSignalSet signals = {VehicleSignal::undefined});
     virtual void changePosition();
@@ -182,7 +182,7 @@ protected:
 
     bool isParking;
 
-    virtual void fixIfHostGetsOutside(); /**< called after each read to check for (and handle) invalid positions */
+    void fixIfHostGetsOutside() override; /**< called after each read to check for (and handle) invalid positions */
 
     /**
      * Returns the amount of CO2 emissions in grams/second, calculated for an average Car

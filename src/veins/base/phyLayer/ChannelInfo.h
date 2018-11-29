@@ -45,7 +45,7 @@ protected:
     /** @brief Type for a pair of an AirFrame and a simulation time.*/
     typedef std::pair<simtime_t, AirFrame*> AirFrameTimePair;
     /** @brief Type for a list of AirFrames and a simulation time.*/
-    typedef std::list<AirFrameTimePair> AirFrameTimeList;
+    using AirFrameTimeList = std::list<AirFrameTimePair>;
     /**
      * The AirFrames are stored in a Matrix with start- and end time as
      * dimensions.
@@ -123,7 +123,7 @@ protected:
          */
         AirFrame* next()
         {
-            if (endIt == intervals->end()) return 0;
+            if (endIt == intervals->end()) return nullptr;
 
             // "alreadyNext" indicates that some previous iterator function has
             // already increased the intern iterators to a yet unchecked values.
@@ -147,12 +147,12 @@ protected:
                 }
 
                 endIt++;
-                if (endIt == intervals->end()) return 0;
+                if (endIt == intervals->end()) return nullptr;
 
                 startIt = endIt->second.begin();
             }
 
-            return 0;
+            return nullptr;
         }
     };
 
@@ -248,7 +248,7 @@ public:
      *
      * Used as out type for "getAirFrames" method.
      */
-    typedef std::list<AirFrame*> AirFrameVector;
+    using AirFrameVector = std::list<AirFrame*>;
 
 protected:
     /**

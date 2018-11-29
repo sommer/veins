@@ -39,14 +39,14 @@ namespace Veins {
  */
 class ObstacleControl : public cSimpleModule {
 public:
-    ~ObstacleControl();
-    void initialize(int stage);
-    int numInitStages() const
+    ~ObstacleControl() override;
+    void initialize(int stage) override;
+    int numInitStages() const override
     {
         return 2;
     }
-    void finish();
-    void handleMessage(cMessage* msg);
+    void finish() override;
+    void handleMessage(cMessage* msg) override;
     void handleSelfMsg(cMessage* msg);
 
     void addFromXml(cXMLElement* xml);
@@ -91,9 +91,9 @@ protected:
         GRIDCELL_SIZE = 1024
     };
 
-    typedef std::list<Obstacle*> ObstacleGridCell;
-    typedef std::vector<ObstacleGridCell> ObstacleGridRow;
-    typedef std::vector<ObstacleGridRow> Obstacles;
+    using ObstacleGridCell = std::list<Obstacle*>;
+    using ObstacleGridRow = std::vector<ObstacleGridCell>;
+    using Obstacles = std::vector<ObstacleGridRow>;
     typedef std::map<CacheKey, double> CacheEntries;
 
     cXMLElement* obstaclesXml; /**< obstacles to add at startup */

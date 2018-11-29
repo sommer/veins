@@ -139,7 +139,7 @@ private:
          */
         void insert(const GridCoord& c, unsigned pos)
         {
-            if (data[pos] == 0) {
+            if (data[pos] == nullptr) {
                 data[pos] = new GridCoord(c);
                 size++;
             }
@@ -168,7 +168,7 @@ private:
         ~CoordSet()
         {
             for (unsigned i = 0; i < maxSize; i++) {
-                if (data[i] != 0) {
+                if (data[i] != nullptr) {
                     delete data[i];
                 }
             }
@@ -192,11 +192,11 @@ private:
         GridCoord* next()
         {
             for (; current < maxSize; current++) {
-                if (data[current] != 0) {
+                if (data[current] != nullptr) {
                     return data[current++];
                 }
             }
-            return 0;
+            return nullptr;
         }
 
         /**
@@ -246,11 +246,11 @@ protected:
     bool drawMIR;
 
     /** @brief Type for 1-dimensional array of NicEntries.*/
-    typedef std::vector<NicEntries> RowVector;
+    using RowVector = std::vector<NicEntries>;
     /** @brief Type for 2-dimensional array of NicEntries.*/
-    typedef std::vector<RowVector> NicMatrix;
+    using NicMatrix = std::vector<RowVector>;
     /** @brief Type for 3-dimensional array of NicEntries.*/
-    typedef std::vector<NicMatrix> NicCube;
+    using NicCube = std::vector<NicMatrix>;
 
     /**
      * @brief Register of all nics
@@ -358,10 +358,10 @@ protected:
     virtual bool isInRange(NicEntries::mapped_type pFromNic, NicEntries::mapped_type pToNic);
 
 public:
-    virtual ~BaseConnectionManager();
+    ~BaseConnectionManager() override;
 
     /** @brief Needs two initialization stages.*/
-    virtual int numInitStages() const
+    int numInitStages() const override
     {
         return 2;
     }
@@ -370,7 +370,7 @@ public:
      * @brief Reads init parameters and calculates a maximal interference
      * distance
      **/
-    virtual void initialize(int stage);
+    void initialize(int stage) override;
 
     /**
      * @brief Registers a nic to have its connections managed by ConnectionManager.

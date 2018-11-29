@@ -45,9 +45,9 @@ namespace Veins {
 class TraCIScenarioManagerForker : public TraCIScenarioManager {
 public:
     TraCIScenarioManagerForker();
-    virtual ~TraCIScenarioManagerForker();
-    virtual void initialize(int stage);
-    virtual void finish();
+    ~TraCIScenarioManagerForker() override;
+    void initialize(int stage) override;
+    void finish() override;
 
 protected:
     std::string commandLine; /**< command line for running TraCI server (substituting $configFile, $seed, $port) */

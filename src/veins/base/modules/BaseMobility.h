@@ -144,7 +144,7 @@ public:
      * Dispatches border messages to handleBorderMsg() and all other
      * self-messages to handleSelfMsg()
      */
-    virtual void handleMessage(cMessage* msg);
+    void handleMessage(cMessage* msg) override;
 
     /** @brief Initializes mobility model parameters.
      *
@@ -160,10 +160,10 @@ public:
      * If the speed of the host is bigger than 0 a first MOVE_HOST self
      * message is scheduled in stage 1
      */
-    virtual void initialize(int);
+    void initialize(int) override;
 
     /** @brief Delete dynamically allocated objects*/
-    virtual void finish(){};
+    void finish() override{};
 
     /** @brief Returns the current position at the current simulation time. */
     virtual Coord getCurrentPosition(/*simtime_t_cref stWhen = simTime()*/) const

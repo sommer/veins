@@ -217,7 +217,7 @@ public:
     /**
      * @brief Returns information about the current state.
      */
-    std::string info() const
+    std::string info() const override
     {
         std::ostringstream ost;
         ost << " HostMove "

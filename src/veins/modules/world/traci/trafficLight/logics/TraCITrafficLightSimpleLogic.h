@@ -33,9 +33,9 @@ public:
     using signalScheme = std::string;
 
 protected:
-    virtual void handleApplMsg(cMessage* msg);
-    virtual void handleTlIfMsg(TraCITrafficLightMessage* tlMsg);
-    virtual void handlePossibleSwitch();
+    void handleApplMsg(cMessage* msg) override;
+    void handleTlIfMsg(TraCITrafficLightMessage* tlMsg) override;
+    void handlePossibleSwitch() override;
 };
 
 class TraCITrafficLightSimpleLogicAccess {

@@ -83,7 +83,7 @@ public:
     }
 
     /** @brief Returns a string with the value of the coordinate. */
-    std::string info() const;
+    std::string info() const override;
 
     /** @brief Adds two coordinate vectors. */
     friend Coord operator+(const Coord& a, const Coord& b)

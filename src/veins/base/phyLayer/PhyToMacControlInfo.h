@@ -33,7 +33,7 @@ public:
     /**
      * @brief Clean up the DeciderResult.
      */
-    virtual ~PhyToMacControlInfo()
+    ~PhyToMacControlInfo() override
     {
         if (result) delete result;
     }
@@ -81,7 +81,7 @@ public:
         PhyToMacControlInfo* const cCtrlInfo = dynamic_cast<PhyToMacControlInfo* const>(pCtrlInfo);
 
         if (cCtrlInfo) return cCtrlInfo->getDeciderResult();
-        return NULL;
+        return nullptr;
     }
 };
 

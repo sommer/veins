@@ -146,18 +146,18 @@ public:
         , nextMacEvent(nullptr)
     {
     }
-    ~Mac1609_4();
+    ~Mac1609_4() override;
 
     /**
      * @brief return true if alternate access is enabled
      */
-    bool isChannelSwitchingActive();
+    bool isChannelSwitchingActive() override;
 
-    simtime_t getSwitchingInterval();
+    simtime_t getSwitchingInterval() override;
 
-    bool isCurrentChannelCCH();
+    bool isCurrentChannelCCH() override;
 
-    void changeServiceChannel(int channelNumber);
+    void changeServiceChannel(int channelNumber) override;
 
     /**
      * @brief Change the default tx power the NIC card is using
@@ -186,25 +186,25 @@ protected:
 
 protected:
     /** @brief Initialization of the module and some variables.*/
-    virtual void initialize(int);
+    void initialize(int) override;
 
     /** @brief Delete all dynamically allocated objects of the module.*/
-    virtual void finish();
+    void finish() override;
 
     /** @brief Handle messages from lower layer.*/
-    virtual void handleLowerMsg(cMessage*);
+    void handleLowerMsg(cMessage*) override;
 
     /** @brief Handle messages from upper layer.*/
-    virtual void handleUpperMsg(cMessage*);
+    void handleUpperMsg(cMessage*) override;
 
     /** @brief Handle control messages from upper layer.*/
-    virtual void handleUpperControl(cMessage* msg);
+    void handleUpperControl(cMessage* msg) override;
 
     /** @brief Handle self messages such as timers.*/
-    virtual void handleSelfMsg(cMessage*);
+    void handleSelfMsg(cMessage*) override;
 
     /** @brief Handle control messages from lower layer.*/
-    virtual void handleLowerControl(cMessage* msg);
+    void handleLowerControl(cMessage* msg) override;
 
     /** @brief Handle received broadcast */
     virtual void handleBroadcast(Mac80211Pkt* macPkt, DeciderResult80211* res);
@@ -239,7 +239,7 @@ protected:
     void handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg);
     void handleRetransmit(t_access_category ac);
 
-    const LAddress::L2Type& getMACAddress()
+    const LAddress::L2Type& getMACAddress() override
     {
         ASSERT(myMacAddr != LAddress::L2NULL());
         return BaseMacLayer::getMACAddress();

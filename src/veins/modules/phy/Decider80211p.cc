@@ -55,7 +55,7 @@ simtime_t Decider80211p::processNewSignal(AirFrame* msg)
         // annotate the frame, so that we won't try decoding it at its end
         frame->setUnderSensitivity(true);
         // check channel busy status. a superposition of low power frames might turn channel status to busy
-        if (cca(simTime(), NULL) == false) {
+        if (cca(simTime(), nullptr) == false) {
             setChannelIdleStatus(false);
         }
         return signal.getReceptionEnd();
@@ -137,7 +137,7 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
 
     double payloadBitrate = s.getBitrate();
 
-    DeciderResult80211* result = 0;
+    DeciderResult80211* result = nullptr;
 
     switch (packetOk(sinrMin, snrMin, frame->getBitLength(), payloadBitrate)) {
 

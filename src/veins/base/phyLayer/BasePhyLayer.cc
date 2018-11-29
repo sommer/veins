@@ -26,12 +26,12 @@ Coord NoMobiltyPos = Coord::ZERO;
 BasePhyLayer::BasePhyLayer()
     : protocolId(GENERIC)
     , thermalNoiseValue(0)
-    , radio(0)
-    , decider(0)
-    , radioSwitchingOverTimer(0)
-    , txOverTimer(0)
+    , radio(nullptr)
+    , decider(nullptr)
+    , radioSwitchingOverTimer(nullptr)
+    , txOverTimer(nullptr)
     , headerLength(-1)
-    , world(NULL)
+    , world(nullptr)
 {
 }
 
@@ -82,7 +82,7 @@ void BasePhyLayer::initialize(int stage)
         radio = initializeRadio();
 
         world = FindModule<BaseWorldUtility*>::findGlobalModule();
-        if (world == NULL) {
+        if (world == nullptr) {
             throw cRuntimeError("Could not find BaseWorldUtility module");
         }
 
@@ -137,7 +137,7 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
         const char* name = (*it)->getAttribute("name");
         const char* type = (*it)->getAttribute("type");
         const char* value = (*it)->getAttribute("value");
-        if (name == 0 || type == 0 || value == 0) throw cRuntimeError("Invalid parameter, could not find name, type or value");
+        if (name == nullptr || type == nullptr || value == nullptr) throw cRuntimeError("Invalid parameter, could not find name, type or value");
 
         std::string sType = type; // needed for easier comparision
         std::string sValue = value; // needed for easier comparision
@@ -149,13 +149,13 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
             param.setBoolValue(sValue == "true" || sValue == "1");
         }
         else if (sType == "double") {
-            param.setDoubleValue(strtod(value, 0));
+            param.setDoubleValue(strtod(value, nullptr));
         }
         else if (sType == "string") {
             param.setStringValue(value);
         }
         else if (sType == "long") {
-            param.setLongValue(strtol(value, 0, 0));
+            param.setLongValue(strtol(value, nullptr, 0));
         }
         else {
             throw cRuntimeError("Unknown parameter type: '%s'", sType.c_str());
@@ -177,9 +177,9 @@ void BasePhyLayer::finish()
 void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
 {
 
-    decider = 0;
+    decider = nullptr;
 
-    if (xmlConfig == 0) {
+    if (xmlConfig == nullptr) {
         throw cRuntimeError("No decider configuration file specified.");
     }
 
@@ -197,7 +197,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
 
     const char* name = deciderData->getAttribute("type");
 
-    if (name == 0) {
+    if (name == nullptr) {
         throw cRuntimeError("Could not read type of decider from configuration file.");
     }
 
@@ -206,7 +206,7 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
 
     decider = getDeciderFromName(name, params);
 
-    if (decider == 0) {
+    if (decider == nullptr) {
         throw cRuntimeError("Could not find a decider with the name \"%s\".", name);
     }
 
@@ -215,16 +215,16 @@ void BasePhyLayer::initializeDecider(cXMLElement* xmlConfig)
 
 Decider* BasePhyLayer::getDeciderFromName(std::string name, ParameterMap& params)
 {
-    return 0;
+    return nullptr;
 }
 
 // -----Antenna initialization----------------------
 
 void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig)
 {
-    antenna = 0;
+    antenna = nullptr;
 
-    if (xmlConfig == 0) {
+    if (xmlConfig == nullptr) {
         throw cRuntimeError("No antenna configuration file specified.");
     }
 
@@ -245,7 +245,7 @@ void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig)
 
     const char* name = antennaData->getAttribute("type");
 
-    if (name == 0) {
+    if (name == nullptr) {
         throw cRuntimeError("Could not read type of antenna from configuration file.");
     }
 
@@ -254,7 +254,7 @@ void BasePhyLayer::initializeAntenna(cXMLElement* xmlConfig)
 
     antenna = getAntennaFromName(name, params);
 
-    if (antenna == 0) {
+    if (antenna == nullptr) {
         throw cRuntimeError("Could not find an antenna with the name \"%s\".", name);
     }
 
@@ -322,7 +322,7 @@ std::shared_ptr<Antenna> BasePhyLayer::initializeSampledAntenna1D(ParameterMap& 
 void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
 {
 
-    if (xmlConfig == 0) {
+    if (xmlConfig == nullptr) {
         throw cRuntimeError("No analogue models configuration file specified.");
     }
 
@@ -341,7 +341,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
         const char* name = analogueModelData->getAttribute("type");
         const char* thresholdingFlag = analogueModelData->getAttribute("thresholding");
 
-        if (name == 0) {
+        if (name == nullptr) {
             throw cRuntimeError("Could not read name of analogue model.");
         }
 
@@ -350,7 +350,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
 
         AnalogueModel* newAnalogueModel = getAnalogueModelFromName(name, params);
 
-        if (newAnalogueModel == 0) {
+        if (newAnalogueModel == nullptr) {
             throw cRuntimeError("Could not find an analogue model with the name \"%s\".", name);
         }
 
@@ -373,7 +373,7 @@ void BasePhyLayer::initializeAnalogueModels(cXMLElement* xmlConfig)
 AnalogueModel* BasePhyLayer::getAnalogueModelFromName(std::string name, ParameterMap& params)
 {
     // add default analogue models here
-    return 0;
+    return nullptr;
 }
 
 // --Message handling--------------------------------------
@@ -520,19 +520,19 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     // check if Radio is in TX state
     if (radio->getCurrentState() != Radio::TX) {
         delete msg;
-        msg = 0;
+        msg = nullptr;
         throw cRuntimeError("Error: message for sending received, but radio not in state TX");
     }
 
     // check if not already sending
     if (txOverTimer->isScheduled()) {
         delete msg;
-        msg = 0;
+        msg = nullptr;
         throw cRuntimeError("Error: message for sending received, but radio already sending");
     }
 
     // build the AirFrame to send
-    assert(dynamic_cast<cPacket*>(msg) != 0);
+    assert(dynamic_cast<cPacket*>(msg) != nullptr);
 
     AirFrame* frame = encapsMsg(static_cast<cPacket*>(msg));
 
@@ -543,7 +543,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     frame->setPoa(*poa);
     // the frame is now owner of the POA object
     delete poa;
-    poa = 0;
+    poa = nullptr;
 
     // make sure there is no self message of kind TX_OVER scheduled
     // and schedule the actual one
@@ -588,16 +588,16 @@ AirFrame* BasePhyLayer::encapsMsg(cPacket* macPkt)
 
     // pointer and Signal not needed anymore
     delete s;
-    s = 0;
+    s = nullptr;
 
     // delete the Control info
     delete ctrlInfo;
-    ctrlInfo = 0;
+    ctrlInfo = nullptr;
 
     frame->encapsulate(macPkt);
 
     // --- from here on, the AirFrame is the owner of the MacPacket ---
-    macPkt = 0;
+    macPkt = nullptr;
     EV_TRACE << "AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
 
     return frame;
@@ -725,7 +725,7 @@ BasePhyLayer::~BasePhyLayer()
     }
 
     // free Decider
-    if (decider != 0) {
+    if (decider != nullptr) {
         delete decider;
     }
 
@@ -734,7 +734,7 @@ BasePhyLayer::~BasePhyLayer()
 
         AnalogueModel* tmp = *it;
 
-        if (tmp != 0) {
+        if (tmp != nullptr) {
             delete tmp;
         }
     }
@@ -742,13 +742,13 @@ BasePhyLayer::~BasePhyLayer()
     for (AnalogueModelList::iterator it = analogueModelsThresholding.begin(); it != analogueModelsThresholding.end(); it++) {
         AnalogueModel* tmp = *it;
 
-        if (tmp != 0) {
+        if (tmp != nullptr) {
             delete tmp;
         }
     }
 
     // free radio
-    if (radio != 0) {
+    if (radio != nullptr) {
         delete radio;
     }
 }

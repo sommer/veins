@@ -50,7 +50,7 @@ void BaseConnectionManager::initialize(int stage)
 
         BaseWorldUtility* world = FindModule<BaseWorldUtility*>::findGlobalModule();
 
-        assert(world != 0);
+        assert(world != nullptr);
 
         playgroundSize = world->getPgs();
         useTorus = world->useTorus();
@@ -198,7 +198,7 @@ void BaseConnectionManager::checkGrid(BaseConnectionManager::GridCoord& oldCell,
     }
 
     GridCoord* c = gridUnion.next();
-    while (c != 0) {
+    while (c != nullptr) {
         EV_TRACE << "Update cons in [" << c->info() << "]" << endl;
         updateNicConnections(getCellEntries(*c), nic);
         c = gridUnion.next();
@@ -295,7 +295,7 @@ void BaseConnectionManager::updateNicConnections(NicEntries& nmap, BaseConnectio
 
 bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos, Heading heading)
 {
-    assert(nic != 0);
+    assert(nic != nullptr);
 
     int nicID = nic->getId();
     EV_TRACE << " registering nic #" << nicID << endl;
@@ -332,7 +332,7 @@ bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, c
 
 bool BaseConnectionManager::unregisterNic(cModule* nicModule)
 {
-    assert(nicModule != 0);
+    assert(nicModule != nullptr);
 
     // find nicEntry
     int nicID = nicModule->getId();
@@ -355,7 +355,7 @@ bool BaseConnectionManager::unregisterNic(cModule* nicModule)
 
     // disconnect from all NICs in these grid squares
     GridCoord* c = gridUnion.next();
-    while (c != 0) {
+    while (c != nullptr) {
         EV_TRACE << "Update cons in [" << c->info() << "]" << endl;
         NicEntries& nmap = getCellEntries(*c);
         for (NicEntries::iterator i = nmap.begin(); i != nmap.end(); ++i) {

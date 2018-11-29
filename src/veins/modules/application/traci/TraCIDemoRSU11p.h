@@ -29,8 +29,8 @@ namespace Veins {
  */
 class TraCIDemoRSU11p : public DemoBaseApplLayer {
 protected:
-    virtual void onWSM(BaseFrame1609_4* wsm);
-    virtual void onWSA(DemoServiceAdvertisment* wsa);
+    void onWSM(BaseFrame1609_4* wsm) override;
+    void onWSA(DemoServiceAdvertisment* wsa) override;
 };
 
 } // namespace Veins

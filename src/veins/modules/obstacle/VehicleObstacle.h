@@ -35,7 +35,7 @@ class TraCIMobility;
  */
 class VehicleObstacle {
 public:
-    typedef std::vector<Coord> Coords;
+    using Coords = std::vector<Coord>;
 
     VehicleObstacle(std::vector<ChannelAccess*> channelAccessModules, TraCIMobility* traciMobility, double length, double hostPositionOffset, double width, double height)
         : channelAccessModules(channelAccessModules)

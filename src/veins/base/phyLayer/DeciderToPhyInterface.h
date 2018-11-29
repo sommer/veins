@@ -42,7 +42,7 @@ public:
      *
      * Used as out-value in "getChannelInfo" method.
      */
-    typedef std::list<AirFrame*> AirFrameVector;
+    using AirFrameVector = std::list<AirFrame*>;
 
     virtual ~DeciderToPhyInterface()
     {
@@ -122,7 +122,7 @@ public:
      *
      * Records a double into the scalar result file.
      */
-    virtual void recordScalar(const char* name, double value, const char* unit = NULL) = 0;
+    virtual void recordScalar(const char* name, double value, const char* unit = nullptr) = 0;
 
     /** @brief Returns the channel currently used by the radio. */
     virtual int getCurrentRadioChannel() = 0;

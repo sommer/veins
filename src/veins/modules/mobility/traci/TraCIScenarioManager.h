@@ -70,14 +70,14 @@ public:
     static const simsignal_t traciTimestepEndSignal;
 
     TraCIScenarioManager();
-    ~TraCIScenarioManager();
-    virtual int numInitStages() const
+    ~TraCIScenarioManager() override;
+    int numInitStages() const override
     {
         return std::max(cSimpleModule::numInitStages(), 2);
     }
-    virtual void initialize(int stage);
-    virtual void finish();
-    virtual void handleMessage(cMessage* msg);
+    void initialize(int stage) override;
+    void finish() override;
+    void handleMessage(cMessage* msg) override;
     virtual void handleSelfMsg(cMessage* msg);
 
     bool isConnected() const

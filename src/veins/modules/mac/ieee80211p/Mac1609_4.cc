@@ -150,7 +150,7 @@ void Mac1609_4::initialize(int stage)
         }
         else {
             // no channel switching
-            nextChannelSwitch = 0;
+            nextChannelSwitch = nullptr;
             setActiveChannel(type_CCH);
         }
 
@@ -698,7 +698,7 @@ BaseFrame1609_4* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle)
 {
 
     // iterate through the queues to return the packet we want to send
-    BaseFrame1609_4* pktToSend = NULL;
+    BaseFrame1609_4* pktToSend = nullptr;
 
     simtime_t idleTime = simTime() - lastIdle;
 
@@ -715,7 +715,7 @@ BaseFrame1609_4* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle)
 
                 iter->second.txOP = false;
                 // this queue is ready to send
-                if (pktToSend == NULL) {
+                if (pktToSend == nullptr) {
                     pktToSend = iter->second.queue.front();
                 }
                 else {
@@ -730,7 +730,7 @@ BaseFrame1609_4* Mac1609_4::EDCA::initiateTransmit(simtime_t lastIdle)
         }
     }
 
-    if (pktToSend == NULL) {
+    if (pktToSend == nullptr) {
         throw cRuntimeError("No packet was ready");
     }
     return pktToSend;

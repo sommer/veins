@@ -33,8 +33,8 @@
 
 namespace Veins {
 
-typedef AccessModuleWrap<BaseMobility> ChannelMobilityAccessType;
-typedef ChannelMobilityAccessType::wrapType* ChannelMobilityPtrType;
+using ChannelMobilityAccessType = AccessModuleWrap<BaseMobility>;
+using ChannelMobilityPtrType = ChannelMobilityAccessType::wrapType*;
 class NicEntry;
 class BaseConnectionManager;
 class BaseWorldUtility;
@@ -116,7 +116,7 @@ public:
      * Upon initialization ChannelAccess registers the nic parent module
      * to have all its connections handeled by ConnectionManager
      **/
-    virtual void initialize(int stage);
+    void initialize(int stage) override;
 
     /**
      * @brief Called by the signalling mechanism to inform of changes.
@@ -124,7 +124,7 @@ public:
      * ChannelAccess is subscribed to position changes and informs the
      * ConnectionManager.
      */
-    virtual void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details);
+    void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details) override;
 
     /**
      * @brief Returns the host's mobility module.

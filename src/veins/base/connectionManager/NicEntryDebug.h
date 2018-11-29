@@ -53,7 +53,7 @@ protected:
      */
     bool checkFreeGates;
 
-    typedef std::vector<cGate*> GateStack;
+    using GateStack = std::vector<cGate*>;
     /** @brief In Gates that were once used but are not connected now */
     GateStack freeInGates;
 
@@ -114,7 +114,7 @@ public:
     /**
      * @brief Removes all dynamically created out-/ingates.
      */
-    virtual ~NicEntryDebug()
+    ~NicEntryDebug() override
     {
     }
 
@@ -129,7 +129,7 @@ public:
      * gate at this nic, connects the two and updates the freeInGate,
      * freeOutGate and outConns data sets.
      **/
-    virtual void connectTo(NicEntry* other);
+    void connectTo(NicEntry* other) override;
 
     /**
      * @brief Disconnect two nics
@@ -138,7 +138,7 @@ public:
      *
      * @param other reference to remote nic (other NicEntry)
      **/
-    virtual void disconnectFrom(NicEntry* other);
+    void disconnectFrom(NicEntry* other) override;
 };
 
 } // namespace Veins
