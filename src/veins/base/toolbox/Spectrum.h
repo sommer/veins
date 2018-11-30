@@ -32,12 +32,13 @@
 
 namespace Veins {
 
-using Freqs = std::vector<double>;
-
 class Spectrum {
 public:
+    using Frequency = double;
+    using Frequencies = std::vector<Frequency>;
+
     Spectrum() = default;
-    Spectrum(Freqs freqs);
+    Spectrum(Frequencies freqs);
 
     const double& operator[](size_t index) const;
 
@@ -52,7 +53,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Spectrum& s);
 
 private:
-    Freqs frequencies;
+    Frequencies frequencies;
 };
 
 } // namespace Veins
