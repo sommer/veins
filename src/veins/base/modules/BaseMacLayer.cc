@@ -216,5 +216,7 @@ cObject* const BaseMacLayer::setUpControlInfo(cMessage* const pMsg, const LAddre
  */
 cObject* const BaseMacLayer::setDownControlInfo(cMessage* const pMsg, Signal* const pSignal)
 {
-    return MacToPhyControlInfo::setControlInfo(pMsg, pSignal);
+    MacToPhyControlInfo* const cCtrlInfo = new MacToPhyControlInfo(pSignal);
+    pMsg->setControlInfo(cCtrlInfo);
+    return cCtrlInfo;
 }
