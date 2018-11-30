@@ -37,5 +37,5 @@ void BreakpointPathlossModel::filterSignal(Signal* signal, const Coord& senderPo
 
     pathlosses.record(10 * log10(attenuation)); // in dB
 
-    signal->addUniformAttenuation(attenuation);
+    *signal *= attenuation;
 }

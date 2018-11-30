@@ -40,5 +40,5 @@ void SimpleObstacleShadowing::filterSignal(Signal* signal, const Coord& senderPo
 
     EV_TRACE << "value is: " << factor << endl;
 
-    signal->addUniformAttenuation(factor);
+    *signal *= factor;
 }

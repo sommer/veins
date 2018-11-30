@@ -26,12 +26,12 @@ void SimplePathlossModel::filterSignal(Signal* signal, const Coord& senderPos, c
     double distFactor = pow(sqrDistance, -pathLossAlphaHalf) / (16.0 * M_PI * M_PI);
     EV_TRACE << "distance factor is: " << distFactor << endl;
 
+    Signal attenuation(signal->getSpectrum());
     for (uint16_t i = 0; i < signal->getNumValues(); i++) {
         double wavelength = BaseWorldUtility::speedOfLight() / signal->getFreqAt(i);
-        double attenuation = (wavelength * wavelength) * distFactor;
-
-        signal->addAttenuation(i, attenuation);
+        attenuation.at(i) = (wavelength * wavelength) * distFactor;
     }
+    *signal *= attenuation;
 }
 
 double SimplePathlossModel::calcPathloss(const Coord& receiverPos, const Coord& senderPos)
