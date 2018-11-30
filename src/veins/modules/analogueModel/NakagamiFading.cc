@@ -62,5 +62,5 @@ void NakagamiFading::filterSignal(Signal* signal, const Coord& senderPos, const 
     double factor = recvPower_mW / sendPower_mW;
     EV_TRACE << "factor is: " << factor << " (i.e. " << FWMath::mW2dBm(factor) << " dB)" << endl;
 
-    signal->addUniformAttenuation(factor);
+    *signal *= factor;
 }

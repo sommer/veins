@@ -23,8 +23,6 @@
 
 using namespace Veins;
 
-using Veins::AirFrame;
-
 void TwoRayInterferenceModel::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
 {
 
@@ -46,6 +44,7 @@ void TwoRayInterferenceModel::filterSignal(Signal* signal, const Coord& senderPo
 
     double gamma = (sin_theta - sqrt(epsilon_r - pow(cos_theta, 2))) / (sin_theta + sqrt(epsilon_r - pow(cos_theta, 2)));
 
+    Signal attenuation(signal->getSpectrum());
     for (uint16_t i = 0; i < signal->getNumValues(); i++) {
         double freq = signal->getFreqAt(i);
         double lambda = BaseWorldUtility::speedOfLight() / freq;
@@ -54,6 +53,7 @@ void TwoRayInterferenceModel::filterSignal(Signal* signal, const Coord& senderPo
 
         EV_TRACE << "Add attenuation for (freq, lambda, phi, gamma, att) = (" << freq << ", " << lambda << ", " << phi << ", " << gamma << ", " << (1 / att) << ", " << FWMath::mW2dBm(att) << ")" << endl;
 
-        signal->addAttenuation(i, 1 / att);
+        attenuation.at(i) = 1 / att;
     }
+    *signal *= attenuation;
 }

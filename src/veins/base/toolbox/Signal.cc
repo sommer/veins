@@ -602,17 +602,6 @@ void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
     receiverToGateID = pMsg->getArrivalGateId();
 }
 
-void Signal::addAttenuation(uint16_t freqIndex, double factor)
-{
-    ASSERT(freqIndex < values.size());
-    values[freqIndex] *= factor;
-}
-
-void Signal::addUniformAttenuation(double factor)
-{
-    *this *= factor;
-}
-
 /***********************/
 
 simtime_t calculateStart(const Signal& lhs, const Signal& rhs)

@@ -13,5 +13,5 @@ void PERModel::filterSignal(Signal* signal, const Coord& senderPos, const Coord&
         attenuationFactor = 0; // absorb all energy so that the receveir cannot receive anything
     }
 
-    signal->addUniformAttenuation(attenuationFactor);
+    *signal *= attenuationFactor;
 }

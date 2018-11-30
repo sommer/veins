@@ -160,9 +160,6 @@ public:
     /** @brief Saves the arrival sender module information form message. */
     void setReceptionSenderInfo(const cMessage* const pMsg);
 
-    void addAttenuation(uint16_t freqIndex, double factor);
-    void addUniformAttenuation(double factor);
-
 private:
     Spectrum spectrum;
 

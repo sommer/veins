@@ -660,7 +660,7 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     EV_TRACE << "Own (receiver's) antenna gain: " << ownGain << endl;
 
     // add the resulting total gain to the attenuations list
-    frame->getSignal().addUniformAttenuation(ownGain * otherGain);
+    frame->getSignal() *= ownGain * otherGain;
 
     // go on with AnalogueModels
     if (analogueModels.empty() && analogueModelsThresholding.empty()) return;
