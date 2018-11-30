@@ -46,8 +46,6 @@ public:
     double* getValues();
     size_t getNumValues() const;
     double getMax() const;
-    double getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const;
-    double getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const;
 
     double getData(size_t index) const;
     double getDataFreqAt(size_t freqIndex) const;
@@ -148,6 +146,9 @@ public:
     friend inline simtime_t calculateDuration(const Signal& lhs, const Signal& rhs);
 
 private:
+    double getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const;
+    double getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const;
+
     Spectrum spectrum;
 
     std::vector<double> values;
