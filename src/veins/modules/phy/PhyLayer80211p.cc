@@ -416,55 +416,12 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg)
         break;
     }
 }
-AirFrame* PhyLayer80211p::encapsMsg(cPacket* macPkt)
+
+unique_ptr<AirFrame> PhyLayer80211p::createAirFrame(cPacket* macPkt)
 {
-    // the cMessage passed must be a MacPacket... but no cast needed here
-    // MacPkt* pkt = static_cast<MacPkt*>(msg);
-
-    // ...and must always have a ControlInfo attached (contains Signal)
-    cObject* ctrlInfo = macPkt->removeControlInfo();
-    assert(ctrlInfo);
-
-    // create the new AirFrame
-    AirFrame* frame = new AirFrame11p(macPkt->getName(), AIR_FRAME);
-
-    // Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
-    // We are now the new owner of this instance.
-    Signal* s = MacToPhyControlInfo::getSignalFromControlInfo(ctrlInfo);
-    // make sure we really obtained a pointer to an instance
-    assert(s);
-
-    // set the members
-    assert(s->getDuration() > 0);
-    frame->setDuration(s->getDuration());
-    // copy the signal into the AirFrame
-    frame->setSignal(*s);
-    // set priority of AirFrames above the normal priority to ensure
-    // channel consistency (before any thing else happens at a time
-    // point t make sure that the channel has removed every AirFrame
-    // ended at t and added every AirFrame started at t)
-    frame->setSchedulingPriority(airFramePriority());
-    frame->setProtocolId(myProtocolId());
-    frame->setBitLength(headerLength);
-    frame->setId(world->getUniqueAirFrameId());
-    frame->setChannel(radio->getCurrentChannel());
-
-    // pointer and Signal not needed anymore
-    delete s;
-    s = nullptr;
-
-    // delete the Control info
-    delete ctrlInfo;
-    ctrlInfo = nullptr;
-
-    frame->encapsulate(macPkt);
-
-    // --- from here on, the AirFrame is the owner of the MacPacket ---
-    macPkt = nullptr;
-    EV_TRACE << "AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
-
-    return frame;
+    return make_unique<AirFrame11p>(macPkt->getName(), AIR_FRAME);
 }
+
 int PhyLayer80211p::getRadioState()
 {
     return BasePhyLayer::getRadioState();

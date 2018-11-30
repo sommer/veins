@@ -370,10 +370,16 @@ protected:
     /*@}*/
 
     /**
+     * @brief create a protocol-specific AirFrame
+     * Overload this to create specializations of AirFrame.
+     */
+    virtual std::unique_ptr<AirFrame> createAirFrame(cPacket* macPkt);
+
+    /**
      * @brief This function encapsulates messages from the upper layer into an
      * AirFrame and sets all necessary attributes.
      */
-    virtual AirFrame* encapsMsg(cPacket* msg);
+    virtual std::unique_ptr<AirFrame> encapsMsg(cPacket* msg);
 
     /**
      * @brief Filters the passed AirFrame's Signal by every registered AnalogueModel.
