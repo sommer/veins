@@ -152,10 +152,10 @@ protected:
     virtual std::unique_ptr<Decider> initializeDecider80211p(ParameterMap& params);
 
     /**
-     * @brief This function encapsulates messages from the upper layer into an
-     * AirFrame and sets all necessary attributes.
+     * Create a protocol-specific AirFrame
+     * Overloaded to create a specialize AirFrame11p.
      */
-    AirFrame* encapsMsg(cPacket* msg) override;
+    std::unique_ptr<AirFrame> createAirFrame(cPacket* macPkt) override;
 
     void changeListeningFrequency(double freq) override;
 

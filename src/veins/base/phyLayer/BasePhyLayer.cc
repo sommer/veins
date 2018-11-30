@@ -514,7 +514,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     // build the AirFrame to send
     assert(dynamic_cast<cPacket*>(msg) != nullptr);
 
-    AirFrame* frame = encapsMsg(static_cast<cPacket*>(msg));
+    unique_ptr<AirFrame> frame = encapsMsg(static_cast<cPacket*>(msg));
 
     // Prepare a POA object and attach it to the created Airframe
     Coord pos = antennaPosition;
@@ -530,10 +530,15 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     assert(!txOverTimer->isScheduled());
     sendSelfMessage(txOverTimer, simTime() + frame->getDuration());
 
-    sendMessageDown(frame);
+    sendMessageDown(frame.release());
 }
 
-AirFrame* BasePhyLayer::encapsMsg(cPacket* macPkt)
+unique_ptr<AirFrame> BasePhyLayer::createAirFrame(cPacket* macPkt)
+{
+    return make_unique<AirFrame>(macPkt->getName(), AIR_FRAME);
+}
+
+unique_ptr<AirFrame> BasePhyLayer::encapsMsg(cPacket* macPkt)
 {
     // the cMessage passed must be a MacPacket... but no cast needed here
     // MacPkt* pkt = static_cast<MacPkt*>(msg);
@@ -543,7 +548,7 @@ AirFrame* BasePhyLayer::encapsMsg(cPacket* macPkt)
     assert(ctrlInfo);
 
     // create the new AirFrame
-    AirFrame* frame = new AirFrame(macPkt->getName(), AIR_FRAME);
+    auto frame = createAirFrame(macPkt);
 
     // Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
     // We are now the new owner of this instance.
