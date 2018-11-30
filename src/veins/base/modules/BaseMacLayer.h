@@ -199,20 +199,6 @@ protected:
      * @param pSrcAddr    The MAC address of the message receiver.
      */
     virtual cObject* const setUpControlInfo(cMessage* const pMsg, const LAddress::L2Type& pSrcAddr);
-    /**
-     * @brief Attaches a "control info" (MacToPhy) structure (object) to the message pMsg.
-     *
-     * This is most useful when passing packets between protocol layers
-     * of a protocol stack, the control info will contain the signal.
-     *
-     * The "control info" object will be deleted when the message is deleted.
-     * Only one "control info" structure can be attached (the second
-     * setL3ToL2ControlInfo() call throws an error).
-     *
-     * @param pMsg        The message where the "control info" shall be attached.
-     * @param pSignal    The signal which should be send.
-     */
-    virtual cObject* const setDownControlInfo(cMessage* const pMsg, Signal* const pSignal);
 };
 
 } // namespace Veins

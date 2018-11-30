@@ -210,13 +210,3 @@ cObject* const BaseMacLayer::setUpControlInfo(cMessage* const pMsg, const LAddre
 {
     return MacToNetwControlInfo::setControlInfo(pMsg, pSrcAddr);
 }
-
-/**
- * Attaches a "control info" (MacToPhy) structure (object) to the message pMsg.
- */
-cObject* const BaseMacLayer::setDownControlInfo(cMessage* const pMsg, Signal* const pSignal)
-{
-    MacToPhyControlInfo* const cCtrlInfo = new MacToPhyControlInfo(pSignal);
-    pMsg->setControlInfo(cCtrlInfo);
-    return cCtrlInfo;
-}
