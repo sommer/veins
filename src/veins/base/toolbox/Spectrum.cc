@@ -24,7 +24,7 @@
 
 namespace Veins {
 
-Freqs normalizeFrequencies(Freqs freqs)
+Spectrum::Frequencies normalizeFrequencies(Spectrum::Frequencies freqs)
 {
     // sort and deduplicate frequencies first
     std::sort(freqs.begin(), freqs.end());
@@ -32,7 +32,7 @@ Freqs normalizeFrequencies(Freqs freqs)
     return freqs;
 }
 
-Spectrum::Spectrum(Freqs freqs)
+Spectrum::Spectrum(Spectrum::Frequencies freqs)
     : frequencies(normalizeFrequencies(freqs))
 {
 }

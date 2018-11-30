@@ -66,7 +66,7 @@ void Mac1609_4::initialize(int stage)
 
         myId = getParentModule()->getParentModule()->getFullPath();
         // Create frequency mappings and initialize spectrum for signal representation
-        Freqs freqs;
+        Spectrum::Frequencies freqs;
         for (auto& channel : IEEE80211ChannelFrequencies) {
             freqs.push_back(channel.second - 5e6);
             freqs.push_back(channel.second);

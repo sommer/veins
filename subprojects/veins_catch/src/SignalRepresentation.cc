@@ -36,7 +36,7 @@ SCENARIO("Spectrum", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A vector of frequencies (1,1,5,3,4,2,6,4)")
     {
-        Freqs freqs = {1, 1, 5, 3, 4, 2, 6, 4};
+        Spectrum::Frequencies freqs = {1, 1, 5, 3, 4, 2, 6, 4};
 
         WHEN("the spectrum is constructed")
         {
@@ -112,7 +112,7 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4, 5, 6)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
@@ -246,7 +246,7 @@ SCENARIO("Signal Value Access", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
@@ -295,7 +295,7 @@ SCENARIO("Invalid Signal Index Access", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3) and values for a signal with more frequencies (4,3,2,1)")
     {
-        Freqs freqs = {1, 2, 3};
+        Spectrum::Frequencies freqs = {1, 2, 3};
         std::vector<double> values = {4, 3, 2, 1};
         Spectrum spectrum(freqs);
         Signal signal(spectrum);
@@ -325,7 +325,7 @@ SCENARIO("Signal Timing", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4) and a signal (4,3,2,1)")
     {
-        Freqs freqs = {1, 2, 3, 4};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4};
 
         Spectrum spectrum(freqs);
 
@@ -382,7 +382,7 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (0,1,2,3,0,0) and a constant 2")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
@@ -485,7 +485,7 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and two signals (0,1,2,0,0,0), (0,0,3,4,0,0)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
@@ -545,7 +545,7 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (0,1,2,3,0,0) and a constant 2")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
@@ -620,7 +620,7 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and two signals (0,1,2,0,0,0), (0,0,3,4,0,0)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
@@ -684,7 +684,7 @@ SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
@@ -757,7 +757,7 @@ SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
@@ -830,7 +830,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0),(), another signal (),() and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
@@ -914,7 +914,7 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0), another (interferer) signal, and a list with two DummyAnalogueModels (0.1, 0.1)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
@@ -1049,7 +1049,7 @@ SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0), eight other signals and a list with two DummyAnalogueModels (0.1, 0.1)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
@@ -1112,7 +1112,7 @@ SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/e
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("Signals from 1-2 and 2-3 with power 10")
     {
-        Freqs freqs = {1, 2, 3, 4, 5};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
@@ -1173,7 +1173,7 @@ SCENARIO("SignalUtils::getMinSINR treats signal start/end as inclusive/exclusive
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("Signals from 1-2 and 2-3 with power 10")
     {
-        Freqs freqs = {1, 2, 3, 4, 5};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
