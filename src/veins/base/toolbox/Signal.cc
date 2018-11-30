@@ -302,18 +302,6 @@ bool Signal::hasTiming() const
     return timingUsed;
 }
 
-void Signal::setSendingStart(simtime_t start)
-{
-    sendingStart = start;
-    timingUsed = true;
-}
-
-void Signal::setDuration(simtime_t dur)
-{
-    duration = dur;
-    timingUsed = true;
-}
-
 void Signal::setPropagationDelay(simtime_t_cref delay)
 {
     propagationDelay = delay;
