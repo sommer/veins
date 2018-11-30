@@ -110,16 +110,6 @@ double Signal::getMax() const
     return getMaxInRange(0, values.size());
 }
 
-double Signal::getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const
-{
-    return *(std::min_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
-}
-
-double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
-{
-    return *(std::max_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
-}
-
 double Signal::getData(size_t index) const
 {
     return values[index + dataOffset];
@@ -613,6 +603,16 @@ simtime_t calculateDuration(const Signal& lhs, const Signal& rhs)
 {
     simtime_t temp = std::min(lhs.sendingStart + lhs.duration, rhs.sendingStart + rhs.duration) - std::max(lhs.sendingStart, rhs.sendingStart);
     return (temp > 0) ? temp : 0;
+}
+
+double Signal::getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const
+{
+    return *(std::min_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
+}
+
+double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
+{
+    return *(std::max_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
 }
 
 } // namespace Veins
