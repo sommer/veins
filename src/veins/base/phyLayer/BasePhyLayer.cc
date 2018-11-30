@@ -3,7 +3,6 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include "veins/base/phyLayer/MacToPhyControlInfo.h"
 #include "veins/base/phyLayer/PhyToMacControlInfo.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/utils/POA.h"
@@ -544,23 +543,13 @@ unique_ptr<AirFrame> BasePhyLayer::encapsMsg(cPacket* macPkt)
     // MacPkt* pkt = static_cast<MacPkt*>(msg);
 
     // ...and must always have a ControlInfo attached (contains Signal)
-    cObject* ctrlInfo = macPkt->removeControlInfo();
+    auto ctrlInfo = unique_ptr<cObject>(macPkt->removeControlInfo());
     assert(ctrlInfo);
 
     // create the new AirFrame
     auto frame = createAirFrame(macPkt);
 
-    // Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
-    // We are now the new owner of this instance.
-    Signal* s = MacToPhyControlInfo::getSignalFromControlInfo(ctrlInfo);
-    // make sure we really obtained a pointer to an instance
-    assert(s);
-
     // set the members
-    assert(s->getDuration() > 0);
-    frame->setDuration(s->getDuration());
-    // copy the signal into the AirFrame
-    frame->setSignal(*s);
     // set priority of AirFrames above the normal priority to ensure
     // channel consistency (before any thing else happens at a time
     // point t make sure that the channel has removed every AirFrame
@@ -571,15 +560,10 @@ unique_ptr<AirFrame> BasePhyLayer::encapsMsg(cPacket* macPkt)
     frame->setId(world->getUniqueAirFrameId());
     frame->setChannel(radio->getCurrentChannel());
 
-    // pointer and Signal not needed anymore
-    delete s;
-    s = nullptr;
-
-    // delete the Control info
-    delete ctrlInfo;
-    ctrlInfo = nullptr;
-
     frame->encapsulate(macPkt);
+
+    // attach the spectrum-dependent Signal to the airFrame
+    attachSignal(frame.get(), ctrlInfo.get());
 
     // --- from here on, the AirFrame is the owner of the MacPacket ---
     macPkt = nullptr;

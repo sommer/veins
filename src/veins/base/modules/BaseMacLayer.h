@@ -24,14 +24,12 @@
 
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/utils/SimpleAddress.h"
-#include "veins/base/toolbox/Spectrum.h"
 
 namespace Veins {
 
 class BaseConnectionManager;
 class MacPkt;
 class MacToPhyInterface;
-class Signal;
 
 /**
  * @brief A very simple MAC module template which provides de- and
@@ -77,20 +75,6 @@ protected:
      * @brief MAC address.
      **/
     LAddress::L2Type myMacAddr;
-
-    /** @brief The length of the phy header (in bits).
-     *
-     * Since the MAC layer has to create the signal for
-     * a transmission it has to know the total length of
-     * the packet and therefore needs the length of the
-     * phy header.
-     */
-    int phyHeaderLength;
-
-    /**
-     * The underlying spectrum (definition of interesting freqs) for all signals
-     */
-    Spectrum overallSpectrum;
 
 public:
     // Module_Class_Members( BaseMacLayer, BaseLayer, 0 );
@@ -159,15 +143,6 @@ protected:
 
     /** @brief Encapsulate the NetwPkt into an MacPkt */
     virtual MacPkt* encapsMsg(cPacket*);
-
-    /**
-     * @brief Creates a simple Signal defined over time with the
-     * passed parameters.
-     *
-     * Convenience method to be able to create the appropriate
-     * Signal for the MacToPhyControlInfo
-     */
-    virtual Signal* createSimpleSignal(simtime_t_cref start, simtime_t_cref length, double power, double bitrate);
 
     /**
      * @brief Returns a pointer to this MACs NICs ConnectionManager module.

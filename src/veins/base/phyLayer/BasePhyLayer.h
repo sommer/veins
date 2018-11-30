@@ -371,9 +371,18 @@ protected:
 
     /**
      * @brief create a protocol-specific AirFrame
-     * Overload this to create specializations of AirFrame.
+     * Override this to create specializations of AirFrame.
      */
     virtual std::unique_ptr<AirFrame> createAirFrame(cPacket* macPkt);
+
+    /**
+     * @brief callback to create the signal for the specific Protocol.
+     * Overrode this for each Protocol.
+     */
+    virtual void attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
+    {
+        throw cRuntimeError("Not implemented in the BasePhyLayer. Override in subclass.");
+    }
 
     /**
      * @brief This function encapsulates messages from the upper layer into an
@@ -425,6 +434,11 @@ protected:
     {
         return id == myProtocolId();
     }
+
+    /**
+     * The underlying spectrum (definition of interesting freqs) for all signals
+     */
+    Spectrum overallSpectrum;
 
 public:
     BasePhyLayer();

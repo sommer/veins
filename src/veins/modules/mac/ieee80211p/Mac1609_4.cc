@@ -48,9 +48,7 @@ void Mac1609_4::initialize(int stage)
         assert(simTime().getScaleExp() == -12);
 
         txPower = par("txPower").doubleValue();
-        bitrate = par("bitrate");
-        n_dbps = 0;
-        setParametersForBitrate(bitrate);
+        setParametersForBitrate(par("bitrate"));
 
         // unicast parameters
         dot11RTSThreshold = par("dot11RTSThreshold");
@@ -65,15 +63,6 @@ void Mac1609_4::initialize(int stage)
         stopIgnoreChannelStateMsg = new cMessage("ChannelStateMsg");
 
         myId = getParentModule()->getParentModule()->getFullPath();
-        // Create frequency mappings and initialize spectrum for signal representation
-        Spectrum::Frequencies freqs;
-        for (auto& channel : IEEE80211ChannelFrequencies) {
-            freqs.push_back(channel.second - 5e6);
-            freqs.push_back(channel.second);
-            freqs.push_back(channel.second + 5e6);
-        }
-        overallSpectrum = Spectrum(freqs);
-
         // create two edca systems
 
         myEDCA[type_CCH] = make_unique<EDCA>(this, type_CCH, par("queueSize"));
@@ -186,14 +175,14 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
             channelBusySelf(false);
             setActiveChannel(type_SCH);
             channelIdle(true);
-            phy11p->changeListeningFrequency(IEEE80211ChannelFrequencies.at(mySCH));
+            phy11p->changeListeningChannel(mySCH);
             break;
         case type_SCH:
             EV_TRACE << "SCH --> CCH" << std::endl;
             channelBusySelf(false);
             setActiveChannel(type_CCH);
             channelIdle(true);
-            phy11p->changeListeningFrequency(IEEE80211ChannelFrequencies.at(Channels::CCH));
+            phy11p->changeListeningChannel(Channels::CCH);
             break;
         }
         // schedule next channel switch in 50ms
@@ -221,19 +210,12 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
         mac->setSrcAddr(myMacAddr);
         mac->encapsulate(pktToSend->dup());
 
-        enum PHY_MCS mcs;
+        enum PHY_MCS usedMcs;
         double txPower_mW;
-        uint64_t datarate;
         PhyControlMessage* controlInfo = dynamic_cast<PhyControlMessage*>(pktToSend->getControlInfo());
         if (controlInfo) {
             // if MCS is not specified, just use the default one
-            mcs = (enum PHY_MCS) controlInfo->getMcs();
-            if (mcs != MCS_UNDEFINED) {
-                datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
-            }
-            else {
-                datarate = bitrate;
-            }
+            usedMcs = (enum PHY_MCS) controlInfo->getMcs() == MCS_UNDEFINED ? mcs : (enum PHY_MCS) controlInfo->getMcs();
             // apply the same principle to tx power
             txPower_mW = controlInfo->getTxPower_mW();
             if (txPower_mW < 0) {
@@ -241,12 +223,11 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
             }
         }
         else {
-            mcs = MCS_UNDEFINED;
+            usedMcs = mcs;
             txPower_mW = txPower;
-            datarate = bitrate;
         }
 
-        simtime_t sendingDuration = RADIODELAY_11P + getFrameDuration(mac->getBitLength(), mcs);
+        simtime_t sendingDuration = RADIODELAY_11P + phy11p->getFrameDuration(mac->getBitLength(), usedMcs);
         EV_TRACE << "Sending duration will be" << sendingDuration << std::endl;
         if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
             if (useSCH) EV_TRACE << " Time in this slot left: " << timeLeftInSlot() << std::endl;
@@ -255,7 +236,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
             double freq = IEEE80211ChannelFrequencies.at(channelNr);
 
             EV_TRACE << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
-            sendFrame(mac, RADIODELAY_11P, channelNr, datarate, txPower_mW);
+            sendFrame(mac, RADIODELAY_11P, channelNr, usedMcs, txPower_mW);
 
             // schedule ack timeout for unicast packets
             if (pktToSend->getRecipientAddress() != LAddress::L2BROADCAST() && useAcks) {
@@ -473,14 +454,14 @@ Mac1609_4::~Mac1609_4()
     }
 };
 
-void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, int channelNr, uint64_t datarate, double txPower_mW)
+void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, int channelNr, enum PHY_MCS mcs, double txPower_mW)
 {
     phy->setRadioState(Radio::TX); // give time for the radio to be in Tx state before transmitting
 
     delay = std::max(delay, RADIODELAY_11P); // wait at least for the radio to switch
 
-    attachSignal(frame, simTime() + delay, channelNr, datarate, txPower_mW);
-    check_and_cast<MacToPhyControlInfo*>(frame->getControlInfo());
+    attachControlInfo(frame, channelNr, mcs, txPower_mW);
+    check_and_cast<MacToPhyControlInfo11p*>(frame->getControlInfo());
 
     lastMac.reset(frame->dup());
     sendDelayed(frame, delay, lowerLayerOut);
@@ -493,26 +474,9 @@ void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, int channelNr, ui
     }
 }
 
-void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, int channelNr, uint64_t datarate, double txPower_mW)
+void Mac1609_4::attachControlInfo(Mac80211Pkt* mac, int channelNr, enum PHY_MCS mcs, double txPower_mW)
 {
-    double freq = IEEE80211ChannelFrequencies.at(channelNr);
-    simtime_t duration = getFrameDuration(mac->getBitLength());
-
-    Signal* s = new Signal(overallSpectrum, startTime, duration);
-    size_t freqIndex = s->getSpectrum().indexOf(freq);
-
-    s->at(freqIndex - 1) = txPower_mW;
-    s->at(freqIndex) = txPower_mW;
-    s->at(freqIndex + 1) = txPower_mW;
-
-    s->setBitrate(datarate);
-
-    s->setDataStart(freqIndex - 1);
-    s->setDataEnd(freqIndex + 1);
-
-    s->setCenterFrequencyIndex(freqIndex);
-    MacToPhyControlInfo* cinfo = new MacToPhyControlInfo(s);
-
+    auto cinfo = new MacToPhyControlInfo11p(channelNr, mcs, txPower_mW);
     mac->setControlInfo(cinfo);
 }
 
@@ -551,12 +515,12 @@ void Mac1609_4::changeServiceChannel(int cN)
         throw cRuntimeError("This Service Channel doesnt exit: %d", cN);
     }
 
-    mySCH = cN;
+    mySCH = static_cast<Channels::ChannelNumber>(cN);
 
     if (activeChannel == type_SCH) {
         // change to new chan immediately if we are in a SCH slot,
         // otherwise it will switch to the new SCH upon next channel switch
-        phy11p->changeListeningFrequency(IEEE80211ChannelFrequencies.at(mySCH));
+        phy11p->changeListeningChannel(mySCH);
     }
 }
 
@@ -567,8 +531,7 @@ void Mac1609_4::setTxPower(double txPower_mW)
 void Mac1609_4::setMCS(enum PHY_MCS mcs)
 {
     ASSERT2(mcs != MCS_UNDEFINED, "invalid MCS selected");
-    bitrate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
-    setParametersForBitrate(bitrate);
+    this->mcs = mcs;
 }
 
 void Mac1609_4::setCCAThreshold(double ccaThreshold_dBm)
@@ -988,13 +951,10 @@ void Mac1609_4::channelIdle(bool afterSwitch)
 
 void Mac1609_4::setParametersForBitrate(uint64_t bitrate)
 {
-    for (unsigned int i = 0; i < NUM_BITRATES_80211P; i++) {
-        if (bitrate == BITRATES_80211P[i]) {
-            n_dbps = N_DBPS_80211P[i];
-            return;
-        }
+    mcs = getMCS(bitrate, BW_OFDM_10_MHZ);
+    if (mcs == MCS_UNDEFINED) {
+        throw cRuntimeError("Chosen Bitrate is not valid for 802.11p: Valid rates are: 3Mbps, 4.5Mbps, 6Mbps, 9Mbps, 12Mbps, 18Mbps, 24Mbps and 27Mbps. Please adjust your omnetpp.ini file accordingly.");
     }
-    throw cRuntimeError("Chosen Bitrate is not valid for 802.11p: Valid rates are: 3Mbps, 4.5Mbps, 6Mbps, 9Mbps, 12Mbps, 18Mbps, 24Mbps and 27Mbps. Please adjust your omnetpp.ini file accordingly.");
 }
 
 bool Mac1609_4::isChannelSwitchingActive()
@@ -1010,21 +970,6 @@ simtime_t Mac1609_4::getSwitchingInterval()
 bool Mac1609_4::isCurrentChannelCCH()
 {
     return (activeChannel == type_CCH);
-}
-
-simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const
-{
-    simtime_t duration;
-    if (mcs == MCS_UNDEFINED) {
-        // calculate frame duration according to Equation (17-29) of the IEEE 802.11-2007 standard
-        duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil((16 + payloadLengthBits + 6) / (n_dbps));
-    }
-    else {
-        uint32_t ndbps = getNDBPS(mcs);
-        duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil((16 + payloadLengthBits + 6) / (ndbps));
-    }
-
-    return duration;
 }
 
 // Unicast
@@ -1043,10 +988,7 @@ void Mac1609_4::sendAck(LAddress::L2Type recpAddress, unsigned long wsmId)
     mac->setMessageId(wsmId);
     mac->setBitLength(ackLength);
 
-    enum PHY_MCS mcs = MCS_UNDEFINED;
-    uint64_t datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
-
-    simtime_t sendingDuration = RADIODELAY_11P + getFrameDuration(mac->getBitLength(), mcs);
+    simtime_t sendingDuration = RADIODELAY_11P + phy11p->getFrameDuration(mac->getBitLength(), mcs);
     EV_TRACE << "Ack sending duration will be " << sendingDuration << std::endl;
 
     // TODO: check ack procedure when channel switching is allowed
@@ -1054,7 +996,7 @@ void Mac1609_4::sendAck(LAddress::L2Type recpAddress, unsigned long wsmId)
     double freq = IEEE80211ChannelFrequencies.at(Channels::CCH);
 
     EV_TRACE << "Sending an ack. Frequency " << freq << " at time : " << simTime() + SIFS_11P << std::endl;
-    sendFrame(mac, SIFS_11P, Channels::CCH, datarate, txPower);
+    sendFrame(mac, SIFS_11P, Channels::CCH, mcs, txPower);
     scheduleAt(simTime() + SIFS_11P, stopIgnoreChannelStateMsg);
 }
 

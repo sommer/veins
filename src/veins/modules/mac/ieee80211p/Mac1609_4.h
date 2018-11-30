@@ -28,10 +28,10 @@
 #include "veins/veins.h"
 
 #include "veins/base/modules/BaseLayer.h"
-#include "veins/base/phyLayer/MacToPhyControlInfo.h"
 #include "veins/modules/phy/PhyLayer80211p.h"
 #include "veins/modules/mac/ieee80211p/DemoBaseApplLayerToMac1609_4Interface.h"
 #include "veins/modules/utility/Consts80211p.h"
+#include "veins/modules/utility/MacToPhyControlInfo11p.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/messages/Mac80211Pkt_m.h"
 #include "veins/modules/messages/BaseFrame1609_4_m.h"
@@ -212,14 +212,14 @@ protected:
     /** @brief Set a state for the channel selecting operation.*/
     void setActiveChannel(t_channel state);
 
-    void sendFrame(Mac80211Pkt* frame, omnetpp::simtime_t delay, int channelNr, uint64_t datarate, double txPower_mW);
+    void sendFrame(Mac80211Pkt* frame, omnetpp::simtime_t delay, int channelNr, enum PHY_MCS mcs, double txPower_mW);
 
     simtime_t timeLeftInSlot() const;
     simtime_t timeLeftTillGuardOver() const;
 
     bool guardActive() const;
 
-    void attachSignal(Mac80211Pkt* mac, simtime_t startTime, int channelNr, uint64_t datarate, double txPower_mW);
+    void attachControlInfo(Mac80211Pkt* mac, int channelNr, enum PHY_MCS mcs, double txPower_mW);
 
     /** @brief maps a application layer priority (up) to an EDCA access category. */
     t_access_category mapUserPriority(int prio);
@@ -229,8 +229,6 @@ protected:
     void channelIdle(bool afterSwitch = false);
 
     void setParametersForBitrate(uint64_t bitrate);
-
-    simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_UNDEFINED) const;
 
     void sendAck(LAddress::L2Type recpAddress, unsigned long wsmId);
     void handleUnicast(LAddress::L2Type srcAddr, std::unique_ptr<BaseFrame1609_4> wsm);
@@ -270,7 +268,7 @@ protected:
     int headerLength;
 
     bool useSCH;
-    int mySCH;
+    Channels::ChannelNumber mySCH;
 
     std::map<t_channel, std::unique_ptr<EDCA>> myEDCA;
 
@@ -293,11 +291,7 @@ protected:
     /** @brief The power (in mW) to transmit with.*/
     double txPower;
 
-    /** @brief the bit rate at which we transmit */
-    uint64_t bitrate;
-
-    /** @brief N_DBPS, derived from bitrate, for frame length calculation */
-    double n_dbps;
+    enum PHY_MCS mcs; ///< Modulation and coding scheme to use unless explicitly specified.
 
     /** @brief Id for debug messages */
     std::string myId;
