@@ -90,11 +90,6 @@ const double& Signal::atFrequency(double frequency) const
     return values.at(index);
 }
 
-double Signal::getFreqAt(size_t freqIndex) const
-{
-    return spectrum.freqAt(freqIndex);
-}
-
 double* Signal::getValues()
 {
     return values.data();
@@ -113,11 +108,6 @@ double Signal::getMax() const
 double Signal::getData(size_t index) const
 {
     return values[index + dataOffset];
-}
-
-double Signal::getDataFreqAt(size_t freqIndex) const
-{
-    return spectrum.freqAt(freqIndex + dataOffset);
 }
 
 size_t Signal::getDataStart() const
