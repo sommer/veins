@@ -129,9 +129,18 @@ public:
     /**
      * Get the power in milliwatt for the given data frequency index.
      *
-     * @param freq data index of the power level to return
+     * @param freq index of the power level to return
+     * @return a reference to the power level
      */
-    double getData(size_t index) const;
+    double& dataAt(size_t index);
+
+    /**
+     * Get the power in milliwatt for the given data frequency index.
+     *
+     * @param freq index of the power level to return
+     * @return a reference to the power level
+     */
+    const double& dataAt(size_t index) const;
 
     /**
      * Get the absolute frequency index of the first data frequency.
@@ -171,14 +180,6 @@ public:
      * Maximum power level in milliwatt in the data frequency range.
      */
     double getDataMax() const;
-
-    /**
-     * Set the power level of the given data frequnecy index.
-     *
-     * @param index data frequency index of the power level to set
-     * @param value value new power level in milliwatt
-     */
-    void setData(size_t index, double value);
 
     /**
      * Change the data frequency range's start.
