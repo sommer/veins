@@ -46,7 +46,7 @@ void TwoRayInterferenceModel::filterSignal(Signal* signal, const Coord& senderPo
 
     Signal attenuation(signal->getSpectrum());
     for (uint16_t i = 0; i < signal->getNumValues(); i++) {
-        double freq = signal->getFreqAt(i);
+        double freq = signal->getSpectrum().freqAt(i);
         double lambda = BaseWorldUtility::speedOfLight() / freq;
         double phi = (2 * M_PI / lambda * (d_dir - d_ref));
         double att = pow(4 * M_PI * (d / lambda) * 1 / (sqrt((pow((1 + gamma * cos(phi)), 2) + pow(gamma, 2) * pow(sin(phi), 2)))), 2);

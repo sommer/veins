@@ -42,13 +42,11 @@ public:
     const double& at(size_t index) const;
     double& atFrequency(double freq);
     const double& atFrequency(double freq) const;
-    double getFreqAt(size_t freqIndex) const;
     double* getValues();
     size_t getNumValues() const;
     double getMax() const;
 
     double getData(size_t index) const;
-    double getDataFreqAt(size_t freqIndex) const;
     size_t getDataStart() const;
     size_t getDataEnd() const;
     double* getDataValues();

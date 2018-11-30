@@ -28,7 +28,7 @@ void SimplePathlossModel::filterSignal(Signal* signal, const Coord& senderPos, c
 
     Signal attenuation(signal->getSpectrum());
     for (uint16_t i = 0; i < signal->getNumValues(); i++) {
-        double wavelength = BaseWorldUtility::speedOfLight() / signal->getFreqAt(i);
+        double wavelength = BaseWorldUtility::speedOfLight() / signal->getSpectrum().freqAt(i);
         attenuation.at(i) = (wavelength * wavelength) * distFactor;
     }
     *signal *= attenuation;
