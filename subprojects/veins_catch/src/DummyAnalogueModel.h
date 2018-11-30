@@ -35,7 +35,7 @@ public:
 
     void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos) override
     {
-        signal->addUniformAttenuation(factor);
+        *signal *= factor;
     }
 };
 } // namespace Veins

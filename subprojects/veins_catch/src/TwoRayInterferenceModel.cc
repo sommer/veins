@@ -28,7 +28,7 @@ SCENARIO("TwoRayInterferenceModel", "[analogueModel]")
             THEN("TwoRayInterferenceModel drops power from 1 to 959.5e-9")
             {
                 tri.filterSignal(&s, senderPos, receiverPos);
-                REQUIRE(s(2.4e9) == Approx(9.5587819943e-07).epsilon(1e-9));
+                REQUIRE(s.atFrequency(2.4e9) == Approx(9.5587819943e-07).epsilon(1e-9));
             }
         }
 
@@ -39,7 +39,7 @@ SCENARIO("TwoRayInterferenceModel", "[analogueModel]")
             THEN("TwoRayInterferenceModel drops power from 1 to 20.3e-9")
             {
                 tri.filterSignal(&s, senderPos, receiverPos);
-                REQUIRE(s(2.4e9) == Approx(2.0317806459e-08).epsilon(1e-9));
+                REQUIRE(s.atFrequency(2.4e9) == Approx(2.0317806459e-08).epsilon(1e-9));
             }
         }
     }

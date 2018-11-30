@@ -36,10 +36,10 @@ public:
     Signal(Spectrum spec, simtime_t start, simtime_t duration);
     ~Signal() = default;
 
-    double& operator[](size_t index);
-    const double& operator[](size_t index) const;
-    double& operator()(double freq);
-    double operator()(double freq) const;
+    double& at(size_t index);
+    const double& at(size_t index) const;
+    double& atFrequency(double freq);
+    const double& atFrequency(double freq) const;
 
     Spectrum getSpectrum() const;
 
@@ -62,13 +62,8 @@ public:
 
     size_t getDataOffset() const;
 
-    void set(size_t index, double value);
     void setData(size_t index, double value);
-    void setAtFreq(double freq, double value);
-
-    double get(size_t index) const;
     double getData(size_t index) const;
-    double getAtFreq(double freq) const;
 
     void setCenterFrequencyIndex(size_t index);
     size_t getCenterFrequencyIndex() const;
