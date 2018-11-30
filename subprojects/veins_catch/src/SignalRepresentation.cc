@@ -371,21 +371,6 @@ SCENARIO("Signal Timing", "[toolbox]")
                         REQUIRE(signal.getDuration() == 2);
                         REQUIRE(signal.getPropagationDelay() == 10);
                     }
-
-                    WHEN("start and duration is changed independently")
-                    {
-                        signal.setSendingStart(100);
-                        signal.setDuration(1);
-
-                        THEN("start is 110, duration 1, end 111 and propagation delay 10")
-                        {
-                            REQUIRE(signal.hasTiming() == true);
-                            REQUIRE(signal.getReceptionStart() == 110);
-                            REQUIRE(signal.getReceptionEnd() == 111);
-                            REQUIRE(signal.getDuration() == 1);
-                            REQUIRE(signal.getPropagationDelay() == 10);
-                        }
-                    }
                 }
             }
         }

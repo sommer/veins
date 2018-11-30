@@ -83,8 +83,6 @@ public:
     simtime_t_cref getDuration() const;
     simtime_t_cref getPropagationDelay() const;
     bool hasTiming() const;
-    void setSendingStart(simtime_t start);
-    void setDuration(simtime_t duration);
     void setPropagationDelay(simtime_t_cref delay);
     void setTiming(simtime_t start, simtime_t duration);
 
