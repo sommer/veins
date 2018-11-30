@@ -237,7 +237,7 @@ bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrame
     if (changes.empty()) return true;
 
     // Assumption: There is no AM with an attenuation > 1
-    uint16_t maxAnalogueModels = airFrames.front()->getSignal().getNumAnalogueModels();
+    uint16_t maxAnalogueModels = airFrames.front()->getSignal().getAnalogueModelList()->size();
     for (uint16_t i = 0; i <= maxAnalogueModels; i++) {
         auto it = changes.begin();
 

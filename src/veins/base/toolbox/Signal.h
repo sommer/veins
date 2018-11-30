@@ -67,7 +67,6 @@ public:
 
     uint16_t getNumAnalogueModelsApplied() const;
     AnalogueModelList* getAnalogueModelList() const;
-    size_t getNumAnalogueModels() const;
     void setAnalogueModelList(AnalogueModelList* list);
     void applyAnalogueModel(uint16_t index);
     void applyAllAnalogueModels();

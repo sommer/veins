@@ -217,11 +217,6 @@ uint16_t Signal::getNumAnalogueModelsApplied() const
     return numAnalogueModelsApplied;
 }
 
-size_t Signal::getNumAnalogueModels() const
-{
-    return analogueModelList->size();
-}
-
 AnalogueModelList* Signal::getAnalogueModelList() const
 {
     return analogueModelList;
