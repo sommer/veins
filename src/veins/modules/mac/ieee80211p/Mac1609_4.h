@@ -212,14 +212,14 @@ protected:
     /** @brief Set a state for the channel selecting operation.*/
     void setActiveChannel(t_channel state);
 
-    void sendFrame(Mac80211Pkt* frame, omnetpp::simtime_t delay, double frequency, uint64_t datarate, double txPower_mW);
+    void sendFrame(Mac80211Pkt* frame, omnetpp::simtime_t delay, int channelNr, uint64_t datarate, double txPower_mW);
 
     simtime_t timeLeftInSlot() const;
     simtime_t timeLeftTillGuardOver() const;
 
     bool guardActive() const;
 
-    void attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW);
+    void attachSignal(Mac80211Pkt* mac, simtime_t startTime, int channelNr, uint64_t datarate, double txPower_mW);
 
     /** @brief maps a application layer priority (up) to an EDCA access category. */
     t_access_category mapUserPriority(int prio);

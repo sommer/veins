@@ -251,10 +251,11 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
         if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
             if (useSCH) EV_TRACE << " Time in this slot left: " << timeLeftInSlot() << std::endl;
 
-            double freq = (activeChannel == type_CCH) ? IEEE80211ChannelFrequencies.at(Channels::CCH) : IEEE80211ChannelFrequencies.at(mySCH);
+            int channelNr = (activeChannel == type_CCH) ? Channels::CCH : mySCH;
+            double freq = IEEE80211ChannelFrequencies.at(channelNr);
 
             EV_TRACE << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
-            sendFrame(mac, RADIODELAY_11P, freq, datarate, txPower_mW);
+            sendFrame(mac, RADIODELAY_11P, channelNr, datarate, txPower_mW);
 
             // schedule ack timeout for unicast packets
             if (pktToSend->getRecipientAddress() != LAddress::L2BROADCAST() && useAcks) {
@@ -472,13 +473,13 @@ Mac1609_4::~Mac1609_4()
     }
 };
 
-void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, double frequency, uint64_t datarate, double txPower_mW)
+void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, int channelNr, uint64_t datarate, double txPower_mW)
 {
     phy->setRadioState(Radio::TX); // give time for the radio to be in Tx state before transmitting
 
     delay = std::max(delay, RADIODELAY_11P); // wait at least for the radio to switch
 
-    attachSignal(frame, simTime() + delay, frequency, datarate, txPower_mW);
+    attachSignal(frame, simTime() + delay, channelNr, datarate, txPower_mW);
     check_and_cast<MacToPhyControlInfo*>(frame->getControlInfo());
 
     lastMac.reset(frame->dup());
@@ -492,12 +493,13 @@ void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, double frequency,
     }
 }
 
-void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW)
+void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, int channelNr, uint64_t datarate, double txPower_mW)
 {
+    double freq = IEEE80211ChannelFrequencies.at(channelNr);
     simtime_t duration = getFrameDuration(mac->getBitLength());
 
     Signal* s = new Signal(overallSpectrum, startTime, duration);
-    size_t freqIndex = s->getSpectrum().indexOf(frequency);
+    size_t freqIndex = s->getSpectrum().indexOf(freq);
 
     s->at(freqIndex - 1) = txPower_mW;
     s->at(freqIndex) = txPower_mW;
@@ -1052,7 +1054,7 @@ void Mac1609_4::sendAck(LAddress::L2Type recpAddress, unsigned long wsmId)
     double freq = IEEE80211ChannelFrequencies.at(Channels::CCH);
 
     EV_TRACE << "Sending an ack. Frequency " << freq << " at time : " << simTime() + SIFS_11P << std::endl;
-    sendFrame(mac, SIFS_11P, freq, datarate, txPower);
+    sendFrame(mac, SIFS_11P, Channels::CCH, datarate, txPower);
     scheduleAt(simTime() + SIFS_11P, stopIgnoreChannelStateMsg);
 }
 
