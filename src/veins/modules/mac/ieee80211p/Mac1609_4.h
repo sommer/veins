@@ -220,7 +220,6 @@ protected:
     bool guardActive() const;
 
     void attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW);
-    Signal* createSignal(simtime_t start, simtime_t length, double power, uint64_t bitrate, double frequency);
 
     /** @brief maps a application layer priority (up) to an EDCA access category. */
     t_access_category mapUserPriority(int prio);

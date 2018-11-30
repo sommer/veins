@@ -496,31 +496,22 @@ void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequ
 {
     simtime_t duration = getFrameDuration(mac->getBitLength());
 
-    Signal* s = createSignal(startTime, duration, txPower_mW, datarate, frequency);
-    MacToPhyControlInfo* cinfo = new MacToPhyControlInfo(s);
-
-    mac->setControlInfo(cinfo);
-}
-
-Signal* Mac1609_4::createSignal(simtime_t start, simtime_t length, double power, uint64_t bitrate, double frequency)
-{
-
-    Signal* s = new Signal(overallSpectrum, start, length);
-
+    Signal* s = new Signal(overallSpectrum, startTime, duration);
     size_t freqIndex = s->getSpectrum().indexOf(frequency);
 
-    s->at(freqIndex - 1) = power;
-    s->at(freqIndex) = power;
-    s->at(freqIndex + 1) = power;
+    s->at(freqIndex - 1) = txPower_mW;
+    s->at(freqIndex) = txPower_mW;
+    s->at(freqIndex + 1) = txPower_mW;
 
-    s->setBitrate(bitrate);
+    s->setBitrate(datarate);
 
     s->setDataStart(freqIndex - 1);
     s->setDataEnd(freqIndex + 1);
 
     s->setCenterFrequencyIndex(freqIndex);
+    MacToPhyControlInfo* cinfo = new MacToPhyControlInfo(s);
 
-    return s;
+    mac->setControlInfo(cinfo);
 }
 
 /* checks if guard is active */
