@@ -21,6 +21,7 @@
 #pragma once
 
 #include "veins/base/phyLayer/BasePhyLayer.h"
+#include "veins/base/toolbox/Spectrum.h"
 #include "veins/modules/mac/ieee80211p/Mac80211pToPhy11pInterface.h"
 #include "veins/modules/phy/Decider80211p.h"
 #include "veins/modules/analogueModel/SimplePathlossModel.h"
@@ -157,7 +158,20 @@ protected:
      */
     std::unique_ptr<AirFrame> createAirFrame(cPacket* macPkt) override;
 
-    void changeListeningFrequency(double freq) override;
+    /**
+     * Attach a signal to the given AirFrame.
+     *
+     * The attached Signal corresponds to the IEEE 802.11p standard.
+     * Parameters for the signal are passed in the control info.
+     * The indicated power levels are set up on the specified center frequency, as well as the neighboring 5MHz.
+     *
+     * @note The control info must be of type MacToPhyControlInfo11p
+     */
+    void attachSignal(AirFrame* airFrame, cObject* ctrlInfo) override;
+
+    void changeListeningChannel(Channels::ChannelNumber channel) override;
+
+    virtual simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const override;
 
     void handleSelfMessage(cMessage* msg) override;
     int getRadioState() override;

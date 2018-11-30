@@ -36,7 +36,7 @@
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 #include "veins/modules/utility/Consts80211p.h"
 #include "veins/modules/messages/AirFrame11p_m.h"
-#include "veins/base/phyLayer/MacToPhyControlInfo.h"
+#include "veins/modules/utility/MacToPhyControlInfo11p.h"
 
 using namespace Veins;
 
@@ -52,6 +52,15 @@ void PhyLayer80211p::initialize(int stage)
         ccaThreshold = pow(10, par("ccaThreshold").doubleValue() / 10);
         allowTxDuringRx = par("allowTxDuringRx").boolValue();
         collectCollisionStatistics = par("collectCollisionStatistics").boolValue();
+
+        // Create frequency mappings and initialize spectrum for signal representation
+        Spectrum::Frequencies freqs;
+        for (auto& channel : IEEE80211ChannelFrequencies) {
+            freqs.push_back(channel.second - 5e6);
+            freqs.push_back(channel.second);
+            freqs.push_back(channel.second + 5e6);
+        }
+        overallSpectrum = Spectrum(freqs);
     }
     BasePhyLayer::initialize(stage);
     if (stage == 0) {
@@ -373,10 +382,12 @@ unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params
     return unique_ptr<Decider>(std::move(dec));
 }
 
-void PhyLayer80211p::changeListeningFrequency(double freq)
+void PhyLayer80211p::changeListeningChannel(Channels::ChannelNumber channel)
 {
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
     assert(dec);
+
+    double freq = IEEE80211ChannelFrequencies.at(channel);
     dec->changeFrequency(freq);
 }
 
@@ -422,6 +433,27 @@ unique_ptr<AirFrame> PhyLayer80211p::createAirFrame(cPacket* macPkt)
     return make_unique<AirFrame11p>(macPkt->getName(), AIR_FRAME);
 }
 
+void PhyLayer80211p::attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
+{
+    const auto ctrlInfo11p = check_and_cast<MacToPhyControlInfo11p*>(ctrlInfo);
+
+    // FIXME: confirm frame duration only determined by mac frame (omitting the AirFrame's header size)
+    const auto duration = getFrameDuration(airFrame->getEncapsulatedPacket()->getBitLength(), ctrlInfo11p->mcs);
+    assert(duration > 0);
+    Signal signal(overallSpectrum, simTime(), duration);
+    auto freqIndex = overallSpectrum.indexOf(IEEE80211ChannelFrequencies.at(ctrlInfo11p->channelNr));
+    signal.at(freqIndex - 1) = ctrlInfo11p->txPower_mW;
+    signal.at(freqIndex) = ctrlInfo11p->txPower_mW;
+    signal.at(freqIndex + 1) = ctrlInfo11p->txPower_mW;
+    signal.setBitrate(getOfdmDatarate(ctrlInfo11p->mcs, BW_OFDM_10_MHZ));
+    signal.setDataStart(freqIndex - 1);
+    signal.setDataEnd(freqIndex + 1);
+    signal.setCenterFrequencyIndex(freqIndex);
+    // copy the signal into the AirFrame
+    airFrame->setSignal(signal);
+    airFrame->setDuration(signal.getDuration());
+}
+
 int PhyLayer80211p::getRadioState()
 {
     return BasePhyLayer::getRadioState();
@@ -462,4 +494,13 @@ void PhyLayer80211p::requestChannelStatusIfIdle()
         EV_TRACE << "Request channel status: channel idle!\n";
         dec->setChannelIdleStatus(true);
     }
+}
+
+simtime_t PhyLayer80211p::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const
+{
+    Enter_Method_Silent();
+    ASSERT(mcs != MCS_UNDEFINED);
+    auto ndbps = getNDBPS(mcs);
+    // calculate frame duration according to Equation (17-29) of the IEEE 802.11-2007 standard
+    return PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil(static_cast<double>(16 + payloadLengthBits + 6) / (ndbps));
 }
