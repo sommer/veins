@@ -63,6 +63,11 @@ Signal::Signal(Spectrum spec, simtime_t start, simtime_t dur)
 {
 }
 
+Spectrum Signal::getSpectrum() const
+{
+    return spectrum;
+}
+
 double& Signal::at(size_t index)
 {
     return values.at(index);
@@ -85,14 +90,39 @@ const double& Signal::atFrequency(double frequency) const
     return values.at(index);
 }
 
-Spectrum Signal::getSpectrum() const
-{
-    return spectrum;
-}
-
 double Signal::getFreqAt(size_t freqIndex) const
 {
     return spectrum.freqAt(freqIndex);
+}
+
+double* Signal::getValues()
+{
+    return values.data();
+}
+
+size_t Signal::getNumValues() const
+{
+    return values.size();
+}
+
+double Signal::getMax() const
+{
+    return getMaxInRange(0, values.size());
+}
+
+double Signal::getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const
+{
+    return *(std::min_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
+}
+
+double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
+{
+    return *(std::max_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
+}
+
+double Signal::getData(size_t index) const
+{
+    return values[index + dataOffset];
 }
 
 double Signal::getDataFreqAt(size_t freqIndex) const
@@ -110,6 +140,36 @@ size_t Signal::getDataEnd() const
     return dataOffset + numDataValues;
 }
 
+double* Signal::getDataValues()
+{
+    return values.data() + dataOffset;
+}
+
+size_t Signal::getNumDataValues() const
+{
+    return numDataValues;
+}
+
+size_t Signal::getDataOffset() const
+{
+    return dataOffset;
+}
+
+double Signal::getDataMin() const
+{
+    return getMinInRange(dataOffset, dataOffset + numDataValues);
+}
+
+double Signal::getDataMax() const
+{
+    return getMaxInRange(dataOffset, dataOffset + numDataValues);
+}
+
+void Signal::setData(size_t index, double value)
+{
+    values[index + dataOffset] = value;
+}
+
 void Signal::setDataStart(size_t index)
 {
     dataOffset = index;
@@ -125,46 +185,6 @@ void Signal::setDataNumValues(size_t num)
     numDataValues = num;
 }
 
-double* Signal::getValues()
-{
-    return values.data();
-}
-
-double* Signal::getDataValues()
-{
-    return values.data() + dataOffset;
-}
-
-size_t Signal::getNumValues() const
-{
-    return values.size();
-}
-
-size_t Signal::getNumDataValues() const
-{
-    return numDataValues;
-}
-
-size_t Signal::getDataOffset() const
-{
-    return dataOffset;
-}
-
-void Signal::setData(size_t index, double value)
-{
-    values[index + dataOffset] = value;
-}
-
-double Signal::getData(size_t index) const
-{
-    return values[index + dataOffset];
-}
-
-void Signal::setCenterFrequencyIndex(size_t index)
-{
-    centerFrequencyIndex = index;
-}
-
 size_t Signal::getCenterFrequencyIndex() const
 {
     return centerFrequencyIndex;
@@ -173,6 +193,11 @@ size_t Signal::getCenterFrequencyIndex() const
 double Signal::getAtCenterFrequency() const
 {
     return values[centerFrequencyIndex];
+}
+
+void Signal::setCenterFrequencyIndex(size_t index)
+{
+    centerFrequencyIndex = index;
 }
 
 bool Signal::greaterAtCenterFrequency(double threshold)
@@ -212,6 +237,21 @@ uint16_t Signal::getNumAnalogueModelsApplied() const
     return numAnalogueModelsApplied;
 }
 
+size_t Signal::getNumAnalogueModels() const
+{
+    return analogueModelList->size();
+}
+
+AnalogueModelList* Signal::getAnalogueModelList() const
+{
+    return analogueModelList;
+}
+
+void Signal::setAnalogueModelList(AnalogueModelList* list)
+{
+    analogueModelList = list;
+}
+
 void Signal::applyAnalogueModel(uint16_t index)
 {
     uint16_t maxAnalogueModels = analogueModelList->size();
@@ -232,31 +272,6 @@ void Signal::applyAllAnalogueModels()
     }
 }
 
-void Signal::setAnalogueModelList(AnalogueModelList* list)
-{
-    analogueModelList = list;
-}
-
-void Signal::setSenderPos(Coord pos)
-{
-    senderPos = pos;
-}
-
-void Signal::setReceiverPos(Coord pos)
-{
-    receiverPos = pos;
-}
-
-AnalogueModelList* Signal::getAnalogueModelList() const
-{
-    return analogueModelList;
-}
-
-size_t Signal::getNumAnalogueModels() const
-{
-    return analogueModelList->size();
-}
-
 Coord Signal::getSenderPos() const
 {
     return senderPos;
@@ -267,28 +282,14 @@ Coord Signal::getReceiverPos() const
     return receiverPos;
 }
 
-void Signal::setSendingStart(simtime_t start)
+void Signal::setSenderPos(Coord pos)
 {
-    sendingStart = start;
-    timingUsed = true;
+    senderPos = pos;
 }
 
-void Signal::setDuration(simtime_t dur)
+void Signal::setReceiverPos(Coord pos)
 {
-    duration = dur;
-    timingUsed = true;
-}
-
-void Signal::setPropagationDelay(simtime_t_cref delay)
-{
-    propagationDelay = delay;
-}
-
-void Signal::setTiming(simtime_t start, simtime_t dur)
-{
-    sendingStart = start;
-    duration = dur;
-    timingUsed = true;
+    receiverPos = pos;
 }
 
 simtime_t_cref Signal::getSendingStart() const
@@ -326,29 +327,77 @@ bool Signal::hasTiming() const
     return timingUsed;
 }
 
-double Signal::getDataMin() const
+void Signal::setSendingStart(simtime_t start)
 {
-    return getMinInRange(dataOffset, dataOffset + numDataValues);
+    sendingStart = start;
+    timingUsed = true;
 }
 
-double Signal::getMinInRange(size_t freqIndexLow, size_t freqIndexHigh) const
+void Signal::setDuration(simtime_t dur)
 {
-    return *(std::min_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
+    duration = dur;
+    timingUsed = true;
 }
 
-double Signal::getMax() const
+void Signal::setPropagationDelay(simtime_t_cref delay)
 {
-    return getMaxInRange(0, values.size());
+    propagationDelay = delay;
 }
 
-double Signal::getDataMax() const
+void Signal::setTiming(simtime_t start, simtime_t dur)
 {
-    return getMaxInRange(dataOffset, dataOffset + numDataValues);
+    sendingStart = start;
+    duration = dur;
+    timingUsed = true;
 }
 
-double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
+uint64_t Signal::getBitrate() const
 {
-    return *(std::max_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
+    return bitrate;
+}
+
+void Signal::setBitrate(uint64_t rate)
+{
+    bitrate = rate;
+}
+
+cModule* Signal::getReceptionModule() const
+{
+    return receiverModuleID < 0 ? nullptr : getSimulation()->getModule(receiverModuleID);
+}
+
+cGate* Signal::getReceptionGate() const
+{
+    if (receiverToGateID < 0) return nullptr;
+
+    cModule* const mod = getReceptionModule();
+    return !mod ? nullptr : mod->gate(receiverToGateID);
+}
+
+cModule* Signal::getSendingModule() const
+{
+    return senderModuleID < 0 ? nullptr : getSimulation()->getModule(senderModuleID);
+}
+
+cGate* Signal::getSendingGate() const
+{
+    if (senderFromGateID < 0) return nullptr;
+
+    cModule* const mod = getSendingModule();
+    return !mod ? nullptr : mod->gate(senderFromGateID);
+}
+
+void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
+{
+    if (!pMsg) return;
+
+    ASSERT(senderModuleID < 0);
+
+    senderModuleID = pMsg->getSenderModuleId();
+    senderFromGateID = pMsg->getSenderGateId();
+
+    receiverModuleID = pMsg->getArrivalModuleId();
+    receiverToGateID = pMsg->getArrivalGateId();
 }
 
 Signal& Signal::operator=(const double value)
@@ -551,55 +600,6 @@ std::ostream& operator<<(std::ostream& os, const Signal& s)
     os << ss.str();
     os << ")";
     return os;
-}
-
-uint64_t Signal::getBitrate() const
-{
-    return bitrate;
-}
-
-void Signal::setBitrate(uint64_t rate)
-{
-    bitrate = rate;
-}
-
-cModule* Signal::getReceptionModule() const
-{
-    return receiverModuleID < 0 ? nullptr : getSimulation()->getModule(receiverModuleID);
-}
-
-cGate* Signal::getReceptionGate() const
-{
-    if (receiverToGateID < 0) return nullptr;
-
-    cModule* const mod = getReceptionModule();
-    return !mod ? nullptr : mod->gate(receiverToGateID);
-}
-
-cModule* Signal::getSendingModule() const
-{
-    return senderModuleID < 0 ? nullptr : getSimulation()->getModule(senderModuleID);
-}
-
-cGate* Signal::getSendingGate() const
-{
-    if (senderFromGateID < 0) return nullptr;
-
-    cModule* const mod = getSendingModule();
-    return !mod ? nullptr : mod->gate(senderFromGateID);
-}
-
-void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
-{
-    if (!pMsg) return;
-
-    ASSERT(senderModuleID < 0);
-
-    senderModuleID = pMsg->getSenderModuleId();
-    senderFromGateID = pMsg->getSenderGateId();
-
-    receiverModuleID = pMsg->getArrivalModuleId();
-    receiverToGateID = pMsg->getArrivalGateId();
 }
 
 /***********************/
