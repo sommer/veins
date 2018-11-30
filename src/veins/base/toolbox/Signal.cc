@@ -63,27 +63,25 @@ Signal::Signal(Spectrum spec, simtime_t start, simtime_t dur)
 {
 }
 
-double& Signal::operator[](size_t index)
+double& Signal::at(size_t index)
 {
     return values.at(index);
 }
 
-const double& Signal::operator[](size_t index) const
+const double& Signal::at(size_t index) const
 {
     return values.at(index);
 }
 
-double& Signal::operator()(double freq)
+double& Signal::atFrequency(double frequency)
 {
-    size_t index = spectrum.indexOf(freq);
-
+    size_t index = spectrum.indexOf(frequency);
     return values.at(index);
 }
 
-double Signal::operator()(double freq) const
+const double& Signal::atFrequency(double frequency) const
 {
-    size_t index = spectrum.indexOf(freq);
-
+    size_t index = spectrum.indexOf(frequency);
     return values.at(index);
 }
 
@@ -152,37 +150,14 @@ size_t Signal::getDataOffset() const
     return dataOffset;
 }
 
-void Signal::set(size_t index, double value)
-{
-    values[index] = value;
-}
-
 void Signal::setData(size_t index, double value)
 {
     values[index + dataOffset] = value;
 }
 
-void Signal::setAtFreq(double freq, double value)
-{
-    size_t index = spectrum.indexOf(freq);
-
-    values[index] = value;
-}
-
-double Signal::get(size_t index) const
-{
-    return values[index];
-}
-
 double Signal::getData(size_t index) const
 {
     return values[index + dataOffset];
-}
-
-double Signal::getAtFreq(double freq) const
-{
-    size_t index = spectrum.indexOf(freq);
-    return values[index];
 }
 
 void Signal::setCenterFrequencyIndex(size_t index)

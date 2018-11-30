@@ -519,9 +519,9 @@ Signal* Mac1609_4::createSignal(simtime_t start, simtime_t length, double power,
 
     size_t freqIndex = s->getSpectrum().indexOf(frequency);
 
-    (*s)[freqIndex - 1] = power;
-    (*s)[freqIndex] = power;
-    (*s)[freqIndex + 1] = power;
+    s->at(freqIndex - 1) = power;
+    s->at(freqIndex) = power;
+    s->at(freqIndex + 1) = power;
 
     s->setBitrate(bitrate);
 

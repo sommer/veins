@@ -253,25 +253,25 @@ SCENARIO("Signal Value Access", "[toolbox]")
         WHEN("a signal is constructed and values assigned to frequencies")
         {
             Signal signal(spectrum);
-            signal[1] = 4;
-            signal[2] = 3;
-            signal[3] = 2;
-            signal[4] = 1;
+            signal.at(1) = 4;
+            signal.at(2) = 3;
+            signal.at(3) = 2;
+            signal.at(4) = 1;
 
             // Access via operators
             THEN("frequencies can be addressed by index")
             {
-                REQUIRE(signal[1] == 4);
-                REQUIRE(signal[2] == 3);
-                REQUIRE(signal[3] == 2);
-                REQUIRE(signal[4] == 1);
+                REQUIRE(signal.at(1) == 4);
+                REQUIRE(signal.at(2) == 3);
+                REQUIRE(signal.at(3) == 2);
+                REQUIRE(signal.at(4) == 1);
             }
             THEN("frequencies can be addressed by frequency")
             {
-                REQUIRE(signal.getAtFreq(2) == 4);
-                REQUIRE(signal.getAtFreq(3) == 3);
-                REQUIRE(signal.getAtFreq(4) == 2);
-                REQUIRE(signal.getAtFreq(5) == 1);
+                REQUIRE(signal.atFrequency(2) == 4);
+                REQUIRE(signal.atFrequency(3) == 3);
+                REQUIRE(signal.atFrequency(4) == 2);
+                REQUIRE(signal.atFrequency(5) == 1);
             }
 
             WHEN("data interval defined")
@@ -282,7 +282,7 @@ SCENARIO("Signal Value Access", "[toolbox]")
                 THEN("iterating over data interval returns correct values")
                 {
                     for (uint16_t i = signal.getDataStart(); i < signal.getDataEnd(); i++)
-                        REQUIRE(signal[i] == 5 - i);
+                        REQUIRE(signal.at(i) == 5 - i);
                 }
             }
         }
@@ -303,17 +303,17 @@ SCENARIO("Invalid Signal Index Access", "[toolbox]")
         {
             THEN("An error should be raised (when in DEBUG mode)")
             {
-                REQUIRE_THROWS(signal[3]);
+                REQUIRE_THROWS(signal.at(3));
             }
         }
         WHEN("The 4th signal value gets written to the signal with 3 frequencies")
         {
-            signal[0] = values[0];
-            signal[1] = values[1];
-            signal[2] = values[2];
+            signal.at(0) = values.at(0);
+            signal.at(1) = values.at(1);
+            signal.at(2) = values.at(2);
             THEN("An error should be raised (when in DEBUG mode)")
             {
-                REQUIRE_THROWS(signal[3] = values[3]); // only throws when compiled in debug mode
+                REQUIRE_THROWS(signal.at(3) = values[3]); // only throws when compiled in debug mode
             }
         }
     }
@@ -330,10 +330,10 @@ SCENARIO("Signal Timing", "[toolbox]")
         Spectrum spectrum(freqs);
 
         Signal signal(spectrum);
-        signal[0] = 4;
-        signal[1] = 3;
-        signal[2] = 2;
-        signal[3] = 1;
+        signal.at(0) = 4;
+        signal.at(1) = 3;
+        signal.at(2) = 2;
+        signal.at(3) = 1;
 
         WHEN("nothing done regarding timing")
         {
@@ -402,9 +402,9 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
         Spectrum spectrum(freqs);
 
         Signal signal(spectrum);
-        signal[1] = 1;
-        signal[2] = 2;
-        signal[3] = 3;
+        signal.at(1) = 1;
+        signal.at(2) = 2;
+        signal.at(3) = 3;
 
         double c = 2;
 
@@ -414,19 +414,19 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal sum2 = c + signal;
             THEN("result is (2,3,4,5,2,2)")
             {
-                REQUIRE(sum1[0] == 2);
-                REQUIRE(sum1[1] == 3);
-                REQUIRE(sum1[2] == 4);
-                REQUIRE(sum1[3] == 5);
-                REQUIRE(sum1[4] == 2);
-                REQUIRE(sum1[5] == 2);
+                REQUIRE(sum1.at(0) == 2);
+                REQUIRE(sum1.at(1) == 3);
+                REQUIRE(sum1.at(2) == 4);
+                REQUIRE(sum1.at(3) == 5);
+                REQUIRE(sum1.at(4) == 2);
+                REQUIRE(sum1.at(5) == 2);
 
-                REQUIRE(sum2[0] == 2);
-                REQUIRE(sum2[1] == 3);
-                REQUIRE(sum2[2] == 4);
-                REQUIRE(sum2[3] == 5);
-                REQUIRE(sum2[4] == 2);
-                REQUIRE(sum2[5] == 2);
+                REQUIRE(sum2.at(0) == 2);
+                REQUIRE(sum2.at(1) == 3);
+                REQUIRE(sum2.at(2) == 4);
+                REQUIRE(sum2.at(3) == 5);
+                REQUIRE(sum2.at(4) == 2);
+                REQUIRE(sum2.at(5) == 2);
             }
         }
         WHEN("constant is substracted from signal")
@@ -435,19 +435,19 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal difference2 = c - signal;
             THEN("result is (-2,-1,0,1,-2,-2) rsp. (2,1,0,-1,2,2)")
             {
-                REQUIRE(difference1[0] == -2);
-                REQUIRE(difference1[1] == -1);
-                REQUIRE(difference1[2] == 0);
-                REQUIRE(difference1[3] == 1);
-                REQUIRE(difference1[4] == -2);
-                REQUIRE(difference1[5] == -2);
+                REQUIRE(difference1.at(0) == -2);
+                REQUIRE(difference1.at(1) == -1);
+                REQUIRE(difference1.at(2) == 0);
+                REQUIRE(difference1.at(3) == 1);
+                REQUIRE(difference1.at(4) == -2);
+                REQUIRE(difference1.at(5) == -2);
 
-                REQUIRE(difference2[0] == 2);
-                REQUIRE(difference2[1] == 1);
-                REQUIRE(difference2[2] == 0);
-                REQUIRE(difference2[3] == -1);
-                REQUIRE(difference2[4] == 2);
-                REQUIRE(difference2[5] == 2);
+                REQUIRE(difference2.at(0) == 2);
+                REQUIRE(difference2.at(1) == 1);
+                REQUIRE(difference2.at(2) == 0);
+                REQUIRE(difference2.at(3) == -1);
+                REQUIRE(difference2.at(4) == 2);
+                REQUIRE(difference2.at(5) == 2);
             }
         }
         WHEN("signal1 is multiplicated with constant or vice-versa")
@@ -456,19 +456,19 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal product2 = c * signal;
             THEN("result is (0,2,4,6,0,0)")
             {
-                REQUIRE(product1[0] == 0);
-                REQUIRE(product1[1] == 2);
-                REQUIRE(product1[2] == 4);
-                REQUIRE(product1[3] == 6);
-                REQUIRE(product1[4] == 0);
-                REQUIRE(product1[5] == 0);
+                REQUIRE(product1.at(0) == 0);
+                REQUIRE(product1.at(1) == 2);
+                REQUIRE(product1.at(2) == 4);
+                REQUIRE(product1.at(3) == 6);
+                REQUIRE(product1.at(4) == 0);
+                REQUIRE(product1.at(5) == 0);
 
-                REQUIRE(product2[0] == 0);
-                REQUIRE(product2[1] == 2);
-                REQUIRE(product2[2] == 4);
-                REQUIRE(product2[3] == 6);
-                REQUIRE(product2[4] == 0);
-                REQUIRE(product2[5] == 0);
+                REQUIRE(product2.at(0) == 0);
+                REQUIRE(product2.at(1) == 2);
+                REQUIRE(product2.at(2) == 4);
+                REQUIRE(product2.at(3) == 6);
+                REQUIRE(product2.at(4) == 0);
+                REQUIRE(product2.at(5) == 0);
             }
         }
         WHEN("signal1 is divided by constant or vice-versa")
@@ -477,19 +477,19 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal quotient2 = c / signal;
             THEN("result is (0,0.5,1,0.6..7,0,0) rsp. (inf,2,1,0.6..7,inf,inf)")
             {
-                REQUIRE(quotient1[0] == 0);
-                REQUIRE(quotient1[1] == 0.5);
-                REQUIRE(quotient1[2] == 1);
-                REQUIRE(quotient1[3] == 1.5);
-                REQUIRE(quotient1[4] == 0);
-                REQUIRE(quotient1[5] == 0);
+                REQUIRE(quotient1.at(0) == 0);
+                REQUIRE(quotient1.at(1) == 0.5);
+                REQUIRE(quotient1.at(2) == 1);
+                REQUIRE(quotient1.at(3) == 1.5);
+                REQUIRE(quotient1.at(4) == 0);
+                REQUIRE(quotient1.at(5) == 0);
 
-                REQUIRE(quotient2[0] == INFINITY);
-                REQUIRE(quotient2[1] == 2);
-                REQUIRE(quotient2[2] == 1);
-                REQUIRE(quotient2[3] == double(2.0 / 3.0));
-                REQUIRE(quotient2[4] == INFINITY);
-                REQUIRE(quotient2[5] == INFINITY);
+                REQUIRE(quotient2.at(0) == INFINITY);
+                REQUIRE(quotient2.at(1) == 2);
+                REQUIRE(quotient2.at(2) == 1);
+                REQUIRE(quotient2.at(3) == double(2.0 / 3.0));
+                REQUIRE(quotient2.at(4) == INFINITY);
+                REQUIRE(quotient2.at(5) == INFINITY);
             }
         }
     }
@@ -505,21 +505,21 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
         Spectrum spectrum(freqs);
 
         Signal signal1(spectrum);
-        signal1[1] = 1;
-        signal1[2] = 2;
+        signal1.at(1) = 1;
+        signal1.at(2) = 2;
 
         Signal signal2(spectrum);
-        signal2[2] = 3;
-        signal2[3] = 4;
+        signal2.at(2) = 3;
+        signal2.at(3) = 4;
 
         WHEN("both signals are summed up")
         {
             Signal sum = signal1 + signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(sum[1] == 1);
-                REQUIRE(sum[2] == 5);
-                REQUIRE(sum[3] == 4);
+                REQUIRE(sum.at(1) == 1);
+                REQUIRE(sum.at(2) == 5);
+                REQUIRE(sum.at(3) == 4);
             }
         }
         WHEN("signal1 is substracted from signal2")
@@ -527,9 +527,9 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal difference = signal2 - signal1;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(difference[1] == -1);
-                REQUIRE(difference[2] == 1);
-                REQUIRE(difference[3] == 4);
+                REQUIRE(difference.at(1) == -1);
+                REQUIRE(difference.at(2) == 1);
+                REQUIRE(difference.at(3) == 4);
             }
         }
         WHEN("signal1 is multiplicated with signal2")
@@ -537,9 +537,9 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal product = signal1 * signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(product[1] == 0);
-                REQUIRE(product[2] == 6);
-                REQUIRE(product[3] == 0);
+                REQUIRE(product.at(1) == 0);
+                REQUIRE(product.at(2) == 6);
+                REQUIRE(product.at(3) == 0);
             }
         }
         WHEN("signal1 is divided by signal2")
@@ -547,9 +547,9 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal quotient = signal1 / signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(quotient[1] == INFINITY);
-                REQUIRE(quotient[2] == double(2.0 / 3.0));
-                REQUIRE(quotient[3] == 0);
+                REQUIRE(quotient.at(1) == INFINITY);
+                REQUIRE(quotient.at(2) == double(2.0 / 3.0));
+                REQUIRE(quotient.at(3) == 0);
             }
         }
     }
@@ -565,9 +565,9 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
         Spectrum spectrum(freqs);
 
         Signal signal(spectrum);
-        signal[1] = 1;
-        signal[2] = 2;
-        signal[3] = 3;
+        signal.at(1) = 1;
+        signal.at(2) = 2;
+        signal.at(3) = 3;
 
         double c = 2;
 
@@ -577,12 +577,12 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             sum += c;
             THEN("result is (2,3,4,5,2,2)")
             {
-                REQUIRE(sum[0] == 2);
-                REQUIRE(sum[1] == 3);
-                REQUIRE(sum[2] == 4);
-                REQUIRE(sum[3] == 5);
-                REQUIRE(sum[4] == 2);
-                REQUIRE(sum[5] == 2);
+                REQUIRE(sum.at(0) == 2);
+                REQUIRE(sum.at(1) == 3);
+                REQUIRE(sum.at(2) == 4);
+                REQUIRE(sum.at(3) == 5);
+                REQUIRE(sum.at(4) == 2);
+                REQUIRE(sum.at(5) == 2);
             }
         }
         WHEN("constant is substracted from signal")
@@ -591,12 +591,12 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             difference -= c;
             THEN("result is (-2,-1,0,1,-2,-2) rsp. (2,1,0,-1,2,2)")
             {
-                REQUIRE(difference[0] == -2);
-                REQUIRE(difference[1] == -1);
-                REQUIRE(difference[2] == 0);
-                REQUIRE(difference[3] == 1);
-                REQUIRE(difference[4] == -2);
-                REQUIRE(difference[5] == -2);
+                REQUIRE(difference.at(0) == -2);
+                REQUIRE(difference.at(1) == -1);
+                REQUIRE(difference.at(2) == 0);
+                REQUIRE(difference.at(3) == 1);
+                REQUIRE(difference.at(4) == -2);
+                REQUIRE(difference.at(5) == -2);
             }
         }
         WHEN("signal1 is multiplicated with constant or vice-versa")
@@ -605,12 +605,12 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             product *= c;
             THEN("result is (0,2,4,6,0,0)")
             {
-                REQUIRE(product[0] == 0);
-                REQUIRE(product[1] == 2);
-                REQUIRE(product[2] == 4);
-                REQUIRE(product[3] == 6);
-                REQUIRE(product[4] == 0);
-                REQUIRE(product[5] == 0);
+                REQUIRE(product.at(0) == 0);
+                REQUIRE(product.at(1) == 2);
+                REQUIRE(product.at(2) == 4);
+                REQUIRE(product.at(3) == 6);
+                REQUIRE(product.at(4) == 0);
+                REQUIRE(product.at(5) == 0);
             }
         }
         WHEN("signal1 is divided by constant or vice-versa")
@@ -619,12 +619,12 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             quotient /= c;
             THEN("result is (0,0.5,1,0.6..7,0,0) rsp. (inf,2,1,0.6..7,inf,inf)")
             {
-                REQUIRE(quotient[0] == 0);
-                REQUIRE(quotient[1] == 0.5);
-                REQUIRE(quotient[2] == 1);
-                REQUIRE(quotient[3] == 1.5);
-                REQUIRE(quotient[4] == 0);
-                REQUIRE(quotient[5] == 0);
+                REQUIRE(quotient.at(0) == 0);
+                REQUIRE(quotient.at(1) == 0.5);
+                REQUIRE(quotient.at(2) == 1);
+                REQUIRE(quotient.at(3) == 1.5);
+                REQUIRE(quotient.at(4) == 0);
+                REQUIRE(quotient.at(5) == 0);
             }
         }
     }
@@ -640,12 +640,12 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
         Spectrum spectrum(freqs);
 
         Signal signal1(spectrum);
-        signal1[1] = 1;
-        signal1[2] = 2;
+        signal1.at(1) = 1;
+        signal1.at(2) = 2;
 
         Signal signal2(spectrum);
-        signal2[2] = 3;
-        signal2[3] = 4;
+        signal2.at(2) = 3;
+        signal2.at(3) = 4;
 
         WHEN("both signals are summed up")
         {
@@ -653,9 +653,9 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             sum += signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(sum[1] == 1);
-                REQUIRE(sum[2] == 5);
-                REQUIRE(sum[3] == 4);
+                REQUIRE(sum.at(1) == 1);
+                REQUIRE(sum.at(2) == 5);
+                REQUIRE(sum.at(3) == 4);
             }
         }
         WHEN("signal1 is substracted from signal2")
@@ -664,9 +664,9 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             difference -= signal1;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(difference[1] == -1);
-                REQUIRE(difference[2] == 1);
-                REQUIRE(difference[3] == 4);
+                REQUIRE(difference.at(1) == -1);
+                REQUIRE(difference.at(2) == 1);
+                REQUIRE(difference.at(3) == 4);
             }
         }
         WHEN("signal1 is multiplicated with signal2")
@@ -675,9 +675,9 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             product *= signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(product[1] == 0);
-                REQUIRE(product[2] == 6);
-                REQUIRE(product[3] == 0);
+                REQUIRE(product.at(1) == 0);
+                REQUIRE(product.at(2) == 6);
+                REQUIRE(product.at(3) == 0);
             }
         }
         WHEN("signal1 is divided by signal2")
@@ -686,9 +686,9 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             quotient /= signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(quotient[1] == INFINITY);
-                REQUIRE(quotient[2] == double(2.0 / 3.0));
-                REQUIRE(quotient[3] == 0);
+                REQUIRE(quotient.at(1) == INFINITY);
+                REQUIRE(quotient.at(2) == double(2.0 / 3.0));
+                REQUIRE(quotient.at(3) == 0);
             }
         }
     }
@@ -708,9 +708,9 @@ SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
         analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
 
         Signal signal(spectrum);
-        signal[0] = 10;
-        signal[1] = 20;
-        signal[2] = 30;
+        signal.at(0) = 10;
+        signal.at(1) = 20;
+        signal.at(2) = 30;
         signal.setCenterFrequencyIndex(2);
         signal.setAnalogueModelList(&analogueModels);
 
@@ -781,9 +781,9 @@ SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but
         analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
 
         Signal signal(spectrum);
-        signal[0] = 10;
-        signal[1] = 20;
-        signal[2] = 30;
+        signal.at(0) = 10;
+        signal.at(1) = 20;
+        signal.at(2) = 30;
         signal.setCenterFrequencyIndex(2);
         signal.setAnalogueModelList(&analogueModels);
 
@@ -853,9 +853,9 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
-        signal[0] = 100;
-        signal[1] = 200;
-        signal[2] = 300;
+        signal.at(0) = 100;
+        signal.at(1) = 200;
+        signal.at(2) = 300;
         signal.setDataStart(0);
         signal.setDataEnd(2);
         signal.setCenterFrequencyIndex(2);
@@ -937,9 +937,9 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
         analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
-        signal[0] = 100;
-        signal[1] = 200;
-        signal[2] = 300;
+        signal.at(0) = 100;
+        signal.at(1) = 200;
+        signal.at(2) = 300;
         signal.setDataStart(0);
         signal.setDataEnd(2);
         signal.setCenterFrequencyIndex(2);
@@ -1072,9 +1072,9 @@ SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
         analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
-        signal[0] = 100;
-        signal[1] = 200;
-        signal[2] = 300;
+        signal.at(0) = 100;
+        signal.at(1) = 200;
+        signal.at(2) = 300;
         signal.setDataStart(0);
         signal.setDataEnd(2);
         signal.setCenterFrequencyIndex(2);
@@ -1135,9 +1135,9 @@ SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/e
         analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
-        signal[1] = 1000;
-        signal[2] = 1000; // after both analogue models, this should have dropped to 10
-        signal[3] = 1000;
+        signal.at(1) = 1000;
+        signal.at(2) = 1000; // after both analogue models, this should have dropped to 10
+        signal.at(3) = 1000;
         signal.setDataStart(1);
         signal.setDataEnd(3);
         signal.setCenterFrequencyIndex(2);
@@ -1196,9 +1196,9 @@ SCENARIO("SignalUtils::getMinSINR treats signal start/end as inclusive/exclusive
         analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
 
         Signal signal(spectrum);
-        signal[1] = 1000;
-        signal[2] = 1000; // after both analogue models, this should have dropped to 10
-        signal[3] = 1000;
+        signal.at(1) = 1000;
+        signal.at(2) = 1000; // after both analogue models, this should have dropped to 10
+        signal.at(3) = 1000;
         signal.setDataStart(1);
         signal.setDataEnd(3);
         signal.setCenterFrequencyIndex(2);

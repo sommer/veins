@@ -182,7 +182,7 @@ Signal* BaseMacLayer::createSimpleSignal(simtime_t_cref start, simtime_t_cref le
     // create signal with start at current simtime and passed length
     Signal* s = new Signal(overallSpectrum, start, length);
 
-    (*s)[0] = power;
+    s->at(0) = power;
     s->setBitrate(bitrate);
 
     s->setCenterFrequencyIndex(0);

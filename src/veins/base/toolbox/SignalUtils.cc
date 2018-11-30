@@ -191,7 +191,7 @@ double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& a
     while (it != changes.end()) {
         if (it->time > start) break;
 
-        interference += (*(it->signal))[freqIndex];
+        interference += it->signal->at(freqIndex);
 
         it++;
     }
@@ -202,10 +202,10 @@ double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& a
     // Calculate all chunks
     while (it != changes.end()) {
         if (it->type == ChangeType::starting) {
-            interference += (*(it->signal))[freqIndex];
+            interference += it->signal->at(freqIndex);
         }
         else if (it->type == ChangeType::ending) {
-            interference -= (*(it->signal))[freqIndex];
+            interference -= it->signal->at(freqIndex);
         }
 
         auto next = std::next(it);
@@ -246,7 +246,7 @@ bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrame
         while (it != changes.end()) {
             if (it->time > start) break;
 
-            channelLoad += (*(it->signal))[freqIndex];
+            channelLoad += it->signal->at(freqIndex);
 
             it++;
         }
@@ -256,10 +256,10 @@ bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrame
         // Calculate all chunks
         while (it != changes.end()) {
             if (it->type == ChangeType::starting) {
-                channelLoad += (*(it->signal))[freqIndex];
+                channelLoad += it->signal->at(freqIndex);
             }
             else if (it->type == ChangeType::ending) {
-                channelLoad -= (*(it->signal))[freqIndex];
+                channelLoad -= it->signal->at(freqIndex);
             }
 
             auto next = std::next(it);
@@ -322,7 +322,7 @@ double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFram
     double minSINR = INFINITY;
 
     for (uint16_t i = signal.getDataStart(); i < signal.getDataEnd(); i++) {
-        double sinr = signal[i] / interference_noise[i];
+        double sinr = signal.at(i) / interference_noise.at(i);
         if (sinr < minSINR) minSINR = sinr;
     }
 
@@ -339,7 +339,7 @@ double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFram
         auto changesNext = std::next(changesIt);
         if (changesNext == changes.end() || changesIt->time != changesNext->time) {
             for (uint16_t i = signal.getDataStart(); i < signal.getDataEnd(); i++) {
-                double sinr = signal[i] / interference_noise[i];
+                double sinr = signal.at(i) / interference_noise.at(i);
                 if (sinr < minSINR) minSINR = sinr;
             }
         }
