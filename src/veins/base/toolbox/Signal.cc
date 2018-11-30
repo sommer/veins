@@ -105,9 +105,14 @@ double Signal::getMax() const
     return getMaxInRange(0, values.size());
 }
 
-double Signal::getData(size_t index) const
+double& Signal::dataAt(size_t index)
 {
-    return values[index + dataOffset];
+    return values.at(dataOffset + index);
+}
+
+const double& Signal::dataAt(size_t index) const
+{
+    return values.at(dataOffset + index);
 }
 
 size_t Signal::getDataStart() const
@@ -143,11 +148,6 @@ double Signal::getDataMin() const
 double Signal::getDataMax() const
 {
     return getMaxInRange(dataOffset, dataOffset + numDataValues);
-}
-
-void Signal::setData(size_t index, double value)
-{
-    values[index + dataOffset] = value;
 }
 
 void Signal::setDataStart(size_t index)
