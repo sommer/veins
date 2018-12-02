@@ -127,6 +127,15 @@ Signal getMaxInterference(simtime_t start, simtime_t end, AirFrame* const refere
     return maxInterference;
 }
 
+double powerLevelSumAtFrequencyIndex(const std::vector<Signal*>& signals, size_t freqIndex)
+{
+    double powerLevelSum = 0;
+    for (auto signalPtr : signals) {
+        powerLevelSum += signalPtr->at(freqIndex);
+    }
+    return powerLevelSum;
+}
+
 } // namespace
 
 double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFrames)
@@ -270,68 +279,44 @@ double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& a
     return minimum;
 }
 
-/*
- * Assume everything is at maximum value at the beginning (like no AMs applied)
- * Then apply AMs one after the other
- * If value is already below threshold before all AMs are applied, abort and return true
- */
-bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude)
+bool isChannelPowerBelowThreshold(simtime_t now, AirFrameVector& interfererFrames, size_t freqIndex, double threshold, AirFrame* exclude)
 {
-    ASSERT(start == end);
+    if (interfererFrames.empty()) {
+        // No interferers, so the channel interference is below any threshold
+        return true;
+    }
 
-    // Assume that threshold is >0 -> if there is no other AirFrame, this is 0 -> return true (0 < threshold)
-    if (airFrames.empty()) return true;
-
-    auto changes = calculateChanges(start, end, airFrames, exclude);
-    std::sort(changes.begin(), changes.end(), compareByTime);
-
-    // Works fine so far, as there is at least one AirFrame
-    if (changes.empty()) return true;
-
-    // Assumption: There is no AM with an attenuation > 1
-    uint16_t maxAnalogueModels = airFrames.front()->getSignal().getAnalogueModelList()->size();
-    for (uint16_t i = 0; i <= maxAnalogueModels; i++) {
-        auto it = changes.begin();
-
-        double channelLoad = 0;
-
-        while (it != changes.end()) {
-            if (it->time > start) break;
-
-            channelLoad += it->signal->at(freqIndex);
-
-            it++;
-        }
-
-        double minimum = channelLoad;
-
-        // Calculate all chunks
-        while (it != changes.end()) {
-            if (it->type == ChangeType::starting) {
-                channelLoad += it->signal->at(freqIndex);
-            }
-            else if (it->type == ChangeType::ending) {
-                channelLoad -= it->signal->at(freqIndex);
-            }
-
-            auto next = std::next(it);
-            if (next == changes.end() || it->time != next->time) {
-                if (channelLoad < minimum) minimum = channelLoad;
-            }
-            it++;
-        }
-
-        // Check if we are already below threshold with the current AMs
-        if (minimum < threshold) return true;
-
-        // Apply filters for next iteration here
-        if (i == maxAnalogueModels) break;
-
-        for (it = changes.begin(); it != changes.end(); ++it) {
-            it->signal->applyAnalogueModel(i);
+    // extract valid signals on the channel at the time of interest
+    // TODO: possibly move this filtering outside of this function
+    std::vector<Signal*> interferers;
+    for (auto& interfererFrame : interfererFrames) {
+        Signal* interferer = &interfererFrame->getSignal();
+        if (interferer->getReceptionStart() <= now && interferer->getReceptionEnd() > now && interfererFrame != exclude) {
+            interferers.push_back(interferer);
         }
     }
 
+    // check once before applying analogModels
+    if (powerLevelSumAtFrequencyIndex(interferers, freqIndex) < threshold) {
+        return true;
+    }
+
+    // start applying analogue models
+    auto analogueModelCount = interfererFrames.front()->getSignal().getAnalogueModelList()->size();
+    for (auto signalPtr : interferers) {
+        ASSERT(analogueModelCount == signalPtr->getAnalogueModelList()->size());
+    }
+    for (size_t analogueModelIndex = 0; analogueModelIndex < analogueModelCount; ++analogueModelIndex) {
+        for (auto signalPtr : interferers) {
+            signalPtr->applyAnalogueModel(analogueModelIndex);
+        }
+        if (powerLevelSumAtFrequencyIndex(interferers, freqIndex) < threshold) {
+            return true;
+        }
+    }
+
+    // After all attenuation is performed, there interference is still higher than the threshold
+    ASSERT(powerLevelSumAtFrequencyIndex(interferers, freqIndex) >= threshold);
     return false;
 }
 

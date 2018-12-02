@@ -263,7 +263,7 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude)
     bool isChannelIdle = minPower < ccaThreshold;
     if (airFrames.size() > 0) {
         size_t usedFreqIndex = airFrames.front()->getSignal().getSpectrum().indexOf(centerFrequency - 5e6);
-        isChannelIdle = SignalUtils::smallerAtFreqIndex(time, time, airFrames, usedFreqIndex, ccaThreshold - minPower, exclude);
+        isChannelIdle = SignalUtils::isChannelPowerBelowThreshold(time, airFrames, usedFreqIndex, ccaThreshold - minPower, exclude);
     }
 
     return isChannelIdle;

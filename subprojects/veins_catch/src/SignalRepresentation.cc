@@ -854,7 +854,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
 
         WHEN("check for already higher threshold at a time-stamp in the middle of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(10, 10, airFrames, 2, 500.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(10, airFrames, 2, 500.0);
             THEN("no AnalogueModel applied and true returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
@@ -863,7 +863,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for already higher threshold at a time-stamp at the start of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(5, 5, airFrames, 2, 500.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(5, airFrames, 2, 500.0);
             THEN("no AnalogueModel applied and true returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
@@ -872,7 +872,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for already higher threshold at a time-stamp at the end of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(15, 15, airFrames, 2, 500.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(15, airFrames, 2, 500.0);
             THEN("no AnalogueModel applied and true returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
@@ -881,7 +881,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for a too low threshold at a time-stamp at the end of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(10, 10, airFrames, 2, 1.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(10, airFrames, 2, 1.0);
             THEN("all AnalogueModels applied and false returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -890,7 +890,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for a too low threshold at a time-stamp at the end of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(5, 5, airFrames, 2, 1.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(5, airFrames, 2, 1.0);
             THEN("all AnalogueModels applied and false returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -899,7 +899,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for a too low threshold at a time-stamp at the end of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(15, 15, airFrames, 2, 1.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(15, airFrames, 2, 1.0);
             THEN("no AnalogueModel applied (as signal not within intervall) and true returned (as signal does not contribute to power)")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
@@ -1161,7 +1161,7 @@ SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/e
 
             INFO("getting smallerAtFreqIndex(2) for " << begin << " to " << end << " and threshold " << threshold << " should return " << res);
 
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(begin, end, airFrames, 2, threshold);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(begin, airFrames, 2, threshold);
 
             REQUIRE(belowThreshold == res);
         }
