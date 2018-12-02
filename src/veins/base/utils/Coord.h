@@ -305,6 +305,14 @@ public:
     {
         return Coord(x, -y, z);
     }
+
+    /**
+     * @brief Return a new coord with the z coordinate set to newZ
+     */
+    Coord atZ(double newZ) const
+    {
+        return Coord(x, y, newZ);
+    }
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Coord& coord)
