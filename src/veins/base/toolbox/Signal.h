@@ -405,46 +405,6 @@ public:
     ///@}
 
     /**
-     * @name Sender and receiver modules
-     */
-    ///@{
-    /**
-     * Return a pointer to the arrival module.
-     *
-     * Returns nullptr if the signal has not been sent/received yet, or if the module was deleted in the meantime.
-     */
-    cModule* getReceptionModule() const;
-
-    /**
-     * Return a pointer to the gate at which the signal arrived.
-     *
-     * Returns nullptr if the signal has not been sent/received yet, or if the module was deleted in the meantime.
-     */
-    cGate* getReceptionGate() const;
-
-    /**
-     * Return a pointer to the sender module.
-     *
-     * Returns nullptr if the signal has not been sent/received yet, or if the module was deleted in the meantime.
-     */
-    cModule* getSendingModule() const;
-
-    /**
-     * Return a pointer to the gate from which the signal sent.
-     *
-     * Returns nullptr if the signal has not been sent/received yet, or if the module was deleted in the meantime.
-     */
-    cGate* getSendingGate() const;
-
-    /**
-     * Saves the arrival sender module information from message.
-     *
-     * @param pMsg pointer to the message containing this signal's transmission information.
-     */
-    void setReceptionSenderInfo(const cMessage* const pMsg);
-    ///@}
-
-    /**
      * Assign a constant power level to all defined frequencies.
      *
      * @param value the power level in milliwatt
@@ -572,16 +532,6 @@ private:
 
     /** @brief Stores the function which describes the bitrate of the signal*/
     uint64_t bitrate = 0;
-
-protected:
-    /** @brief Sender module id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
-    int senderModuleID = -1;
-    /** @brief Sender gate id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
-    int senderFromGateID = -1;
-    /** @brief Receiver module id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
-    int receiverModuleID = -1;
-    /** @brief Receiver gate id, additional definition here because BasePhyLayer will do some selfMessages with AirFrame. */
-    int receiverToGateID = -1;
 };
 
 /**

@@ -426,7 +426,6 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame)
     }
     assert(frame->getSignal().getReceptionStart() == simTime());
 
-    frame->getSignal().setReceptionSenderInfo(frame);
     filterSignal(frame);
 
     if (decider && isKnownProtocolId(frame->getProtocolId())) {

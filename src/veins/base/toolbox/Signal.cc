@@ -41,10 +41,6 @@ Signal::Signal(const Signal& other)
     , senderPos(other.senderPos)
     , receiverPos(other.receiverPos)
     , bitrate(other.bitrate)
-    , senderModuleID(other.senderModuleID)
-    , senderFromGateID(other.senderFromGateID)
-    , receiverModuleID(other.receiverModuleID)
-    , receiverToGateID(other.receiverToGateID)
 {
 }
 
@@ -324,45 +320,6 @@ void Signal::setBitrate(uint64_t rate)
     bitrate = rate;
 }
 
-cModule* Signal::getReceptionModule() const
-{
-    return receiverModuleID < 0 ? nullptr : getSimulation()->getModule(receiverModuleID);
-}
-
-cGate* Signal::getReceptionGate() const
-{
-    if (receiverToGateID < 0) return nullptr;
-
-    cModule* const mod = getReceptionModule();
-    return !mod ? nullptr : mod->gate(receiverToGateID);
-}
-
-cModule* Signal::getSendingModule() const
-{
-    return senderModuleID < 0 ? nullptr : getSimulation()->getModule(senderModuleID);
-}
-
-cGate* Signal::getSendingGate() const
-{
-    if (senderFromGateID < 0) return nullptr;
-
-    cModule* const mod = getSendingModule();
-    return !mod ? nullptr : mod->gate(senderFromGateID);
-}
-
-void Signal::setReceptionSenderInfo(const cMessage* const pMsg)
-{
-    if (!pMsg) return;
-
-    ASSERT(senderModuleID < 0);
-
-    senderModuleID = pMsg->getSenderModuleId();
-    senderFromGateID = pMsg->getSenderGateId();
-
-    receiverModuleID = pMsg->getArrivalModuleId();
-    receiverToGateID = pMsg->getArrivalGateId();
-}
-
 Signal& Signal::operator=(const double value)
 {
     std::fill(values.begin(), values.end(), value);
@@ -372,11 +329,6 @@ Signal& Signal::operator=(const double value)
 Signal& Signal::operator=(const Signal& other)
 {
     if (this == &other) return *this;
-
-    senderModuleID = other.senderModuleID;
-    senderFromGateID = other.senderFromGateID;
-    receiverModuleID = other.receiverModuleID;
-    receiverToGateID = other.receiverToGateID;
 
     spectrum = other.getSpectrum();
 
