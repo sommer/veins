@@ -2,7 +2,6 @@
 
 #include "veins/veins.h"
 
-#include "veins/base/toolbox/Signal.h"
 #include "veins/base/phyLayer/PhyUtils.h"
 
 namespace Veins {

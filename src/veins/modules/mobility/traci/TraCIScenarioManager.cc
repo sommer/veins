@@ -26,7 +26,6 @@
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
-#include "veins/modules/phy/PhyLayer80211p.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"

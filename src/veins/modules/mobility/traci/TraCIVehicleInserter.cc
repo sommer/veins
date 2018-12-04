@@ -18,9 +18,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include <vector>
-
 #include "veins/modules/mobility/traci/TraCIVehicleInserter.h"
+
+#include <vector>
+#include <algorithm>
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"

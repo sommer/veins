@@ -20,19 +20,20 @@
 
 #pragma once
 
+#include <cstdlib>
+
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/modules/obstacle/ObstacleControl.h"
 #include "veins/base/utils/Move.h"
-#include "veins/base/toolbox/Signal.h"
 #include "veins/base/messages/AirFrame_m.h"
 
 using Veins::AirFrame;
 using Veins::ObstacleControl;
 
-#include <cstdlib>
-
 namespace Veins {
+
+class Signal;
 
 /**
  * @brief Basic implementation of a SimpleObstacleShadowing
