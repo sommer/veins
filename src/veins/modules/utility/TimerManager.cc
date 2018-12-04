@@ -75,11 +75,16 @@ TimerSpecification& TimerSpecification::absoluteEnd(simtime_t end)
     return *this;
 }
 
-TimerSpecification& TimerSpecification::repititions(size_t n)
+TimerSpecification& TimerSpecification::repetitions(size_t n)
 {
     end_mode_ = EndMode::repetition;
     end_count_ = n;
     return *this;
+}
+
+TimerSpecification& TimerSpecification::repititions(size_t n)
+{
+    return this->repetitions(n);
 }
 
 TimerSpecification& TimerSpecification::openEnd()

@@ -66,7 +66,16 @@ public:
     /**
      * Set the number of repetitions.
      *
-     * @note You cannot use both this and setAbsoluteEnd or setRelativeEnd.
+     * @note You cannot use both this and absoluteEnd or relativeEnd.
+     */
+    TimerSpecification& repetitions(size_t n);
+
+    /**
+     * Set the number of repetitions.
+     *
+     * @note You cannot use both this and absoluteEnd or relativeEnd.
+     * @see repetitions
+     * @deprecated
      */
     TimerSpecification& repititions(size_t n);
 
@@ -77,7 +86,7 @@ public:
      *
      * @param start The relative start time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer in one second.
      *
-     * @note You cannot use this in conjunction with setRepition
+     * @note You cannot use this in conjunction with repetition()
      */
     TimerSpecification& relativeStart(omnetpp::simtime_t start);
 
@@ -88,7 +97,7 @@ public:
      *
      * @param start The absolute start time. The first occurence will be exactly at this time. Passing a value earlier than the current simtime will result in an error.
      *
-     * @note You cannot use this in conjunction with setRepition
+     * @note You cannot use this in conjunction with repetition()
      */
     TimerSpecification& absoluteStart(omnetpp::simtime_t start);
 
@@ -118,14 +127,14 @@ public:
     TimerSpecification& openEnd();
 
     /**
-     * Sets the timer to execute once in a given time.
+     * Set the timer to execute once in a given time.
      *
      * Any previously set start time, end time, and interval  will be overwritten.
      */
     TimerSpecification& oneshotIn(omnetpp::simtime_t in);
 
     /**
-     * Sets the timer to execute once at a given time.
+     * Set the timer to execute once at a given time.
      *
      * Any previously set start time, end time, and interval  will be overwritten.
      */
@@ -170,7 +179,7 @@ private:
     StartMode start_mode_; ///< Interpretation of start time._
     omnetpp::simtime_t start_; ///< Time of the Timer's first occurence. Interpretation depends on start_mode_.
     EndMode end_mode_; ///< Interpretation of end time._
-    unsigned end_count_; ///< Number of repititions of the timer. Only valid when end_mode_ == repetition.
+    unsigned end_count_; ///< Number of repetitions of the timer. Only valid when end_mode_ == repetition.
     omnetpp::simtime_t end_time_; ///< Last possible occurence of the timer. Only valid when end_mode_ != repetition.
     omnetpp::simtime_t period_; ///< Time between events.
     std::function<void()> callback_; ///< The function to be called when the Timer is triggered.
