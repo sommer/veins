@@ -29,9 +29,10 @@
 #include "veins/modules/world/annotations/AnnotationManager.h"
 #include "veins/base/utils/Move.h"
 #include "veins/modules/obstacle/VehicleObstacle.h"
-#include "veins/base/toolbox/Signal.h"
 
 namespace Veins {
+
+class Signal;
 
 /**
  * VehicleObstacleControl models moving obstacles that block radio transmissions.

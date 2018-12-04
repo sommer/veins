@@ -28,6 +28,7 @@
 #include "veins/modules/obstacle/VehicleObstacleControl.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
+#include "veins/base/toolbox/Signal.h"
 
 using Veins::VehicleObstacle;
 using Veins::VehicleObstacleControl;
