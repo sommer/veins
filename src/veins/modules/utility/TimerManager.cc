@@ -75,7 +75,7 @@ TimerSpecification& TimerSpecification::absoluteEnd(simtime_t end)
     return *this;
 }
 
-TimerSpecification& TimerSpecification::repititions(size_t n)
+TimerSpecification& TimerSpecification::repetitions(size_t n)
 {
     end_mode_ = EndMode::repetition;
     end_count_ = n;
@@ -90,12 +90,12 @@ TimerSpecification& TimerSpecification::openEnd()
 
 TimerSpecification& TimerSpecification::oneshotIn(omnetpp::simtime_t in)
 {
-    return this->relativeStart(in).interval(1).repititions(1);
+    return this->relativeStart(in).interval(1).repetitions(1);
 }
 
 TimerSpecification& TimerSpecification::oneshotAt(omnetpp::simtime_t at)
 {
-    return this->absoluteStart(at).interval(1).repititions(1);
+    return this->absoluteStart(at).interval(1).repetitions(1);
 }
 
 void TimerSpecification::finalize()
