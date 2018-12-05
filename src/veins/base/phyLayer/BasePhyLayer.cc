@@ -722,13 +722,6 @@ simtime_t BasePhyLayer::setRadioState(int rs)
     return switchTime;
 }
 
-int BasePhyLayer::getPhyHeaderLength()
-{
-    Enter_Method_Silent();
-    if (headerLength < 0) return par("headerLength");
-    return headerLength;
-}
-
 void BasePhyLayer::setCurrentRadioChannel(int newRadioChannel)
 {
     if (txOverTimer && txOverTimer->isScheduled()) {
@@ -776,36 +769,9 @@ void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult* result)
 
     assert(packet);
 
-    setUpControlInfo(packet, result);
+    PhyToMacControlInfo::setControlInfo(packet, result);
 
     sendMacPktUp(packet);
-}
-
-simtime_t BasePhyLayer::getSimTime()
-{
-
-    return simTime();
-}
-
-void BasePhyLayer::cancelScheduledMessage(cMessage* msg)
-{
-    if (msg->isScheduled()) {
-        cancelEvent(msg);
-    }
-    else {
-        EV_WARN << "Warning: Decider wanted to cancel a scheduled message but message wasn't actually scheduled. Message is: " << msg << endl;
-    }
-}
-
-void BasePhyLayer::rescheduleMessage(cMessage* msg, simtime_t_cref t)
-{
-    cancelScheduledMessage(msg);
-    scheduleAt(t, msg);
-}
-
-void BasePhyLayer::drawCurrent(double amount, int activity)
-{
-    BatteryAccess::drawCurrent(amount, activity);
 }
 
 BaseWorldUtility* BasePhyLayer::getWorldUtility()
@@ -816,9 +782,4 @@ BaseWorldUtility* BasePhyLayer::getWorldUtility()
 void BasePhyLayer::recordScalar(const char* name, double value, const char* unit)
 {
     ChannelAccess::recordScalar(name, value, unit);
-}
-
-cObject* const BasePhyLayer::setUpControlInfo(cMessage* const pMsg, DeciderResult* const pDeciderResult)
-{
-    return PhyToMacControlInfo::setControlInfo(pMsg, pDeciderResult);
 }
