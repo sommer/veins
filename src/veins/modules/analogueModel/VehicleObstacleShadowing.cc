@@ -22,13 +22,11 @@
 
 using namespace Veins;
 
-VehicleObstacleShadowing::VehicleObstacleShadowing(VehicleObstacleControl& vehicleObstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize)
+VehicleObstacleShadowing::VehicleObstacleShadowing(VehicleObstacleControl& vehicleObstacleControl, bool useTorus, const Coord& playgroundSize)
     : vehicleObstacleControl(vehicleObstacleControl)
-    , carrierFrequency(carrierFrequency)
     , useTorus(useTorus)
     , playgroundSize(playgroundSize)
 {
-    vehicleObstacleControl.setCarrierFrequency(carrierFrequency);
     if (useTorus) throw cRuntimeError("VehicleObstacleShadowing does not work on torus-shaped playgrounds");
 }
 
@@ -46,7 +44,7 @@ void VehicleObstacleShadowing::filterSignal(Signal* signal, const AntennaPositio
     potentialObstacles.insert(potentialObstacles.begin(), std::make_pair(0, senderHeight));
     potentialObstacles.emplace_back(senderPos.distance(receiverPos), receiverHeight);
 
-    double attenuationDB = VehicleObstacleControl::getVehicleAttenuationDZ(potentialObstacles, carrierFrequency);
+    double attenuationDB = VehicleObstacleControl::getVehicleAttenuationDZ(potentialObstacles, signal->getSpectrum()[signal->getCenterFrequencyIndex()]);
 
     EV << "t=" << simTime() << ": Attenuation by vehicles is " << attenuationDB << " dB" << std::endl;
 

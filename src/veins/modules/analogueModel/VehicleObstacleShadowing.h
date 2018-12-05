@@ -44,9 +44,6 @@ protected:
     /** @brief reference to global VehicleObstacleControl instance */
     VehicleObstacleControl& vehicleObstacleControl;
 
-    /** @brief carrier frequency needed for calculation */
-    double carrierFrequency;
-
     /** @brief Information needed about the playground */
     const bool useTorus;
 
@@ -62,11 +59,10 @@ public:
      * its mapping properly:
      *
      * @param vehicleObstacleControl reference to global VehicleObstacleControl module
-     * @param carrierFrequency the carrier frequency
      * @param useTorus information about the playground the host is moving in
      * @param playgroundSize information about the playground the host is moving in
      */
-    VehicleObstacleShadowing(VehicleObstacleControl& vehicleObstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize);
+    VehicleObstacleShadowing(VehicleObstacleControl& vehicleObstacleControl, bool useTorus, const Coord& playgroundSize);
 
     /**
      * @brief Filters a specified Signal by adding an attenuation

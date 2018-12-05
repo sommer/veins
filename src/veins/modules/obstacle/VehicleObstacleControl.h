@@ -63,11 +63,6 @@ public:
     std::vector<std::pair<double, double>> getPotentialObstacles(const AntennaPosition& senderPos, const AntennaPosition& receiverPos, const Signal& s) const;
 
     /**
-     * Set carrier frequency
-     */
-    void setCarrierFrequency(const double frequency);
-
-    /**
      * compute attenuation due to (single) vehicle.
      * Calculate impact of vehicles as obstacles according to:
      * M. Boban, T. T. V. Vinhoza, M. Ferreira, J. Barros, and O. K. Tonguz: 'Impact of Vehicles as Obstacles in Vehicular Ad Hoc Networks', IEEE JSAC, Vol. 29, No. 1, January 2011
@@ -93,7 +88,6 @@ public:
 
 protected:
     AnnotationManager* annotations;
-    double carrierFrequency;
 
     using VehicleObstacles = std::list<VehicleObstacle*>;
     VehicleObstacles vehicleObstacles;

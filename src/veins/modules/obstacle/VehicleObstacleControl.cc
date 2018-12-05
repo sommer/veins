@@ -348,8 +348,3 @@ void VehicleObstacleControl::drawVehicleObstacles(const simtime_t& t) const
         annotations->drawPolygon(o->getShape(t), "black", vehicleAnnotationGroup);
     }
 }
-
-void VehicleObstacleControl::setCarrierFrequency(const double cf)
-{
-    carrierFrequency = cf;
-}

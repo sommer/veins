@@ -45,9 +45,6 @@ protected:
     /** @brief reference to global ObstacleControl instance */
     ObstacleControl& obstacleControl;
 
-    /** @brief carrier frequency needed for calculation */
-    double carrierFrequency;
-
     /** @brief Information needed about the playground */
     const bool useTorus;
 
@@ -63,11 +60,10 @@ public:
      * its mapping properly:
      *
      * @param obstacleControl the parent module
-     * @param carrierFrequency the carrier frequency
      * @param useTorus information about the playground the host is moving in
      * @param playgroundSize information about the playground the host is moving in
      */
-    SimpleObstacleShadowing(ObstacleControl& obstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize);
+    SimpleObstacleShadowing(ObstacleControl& obstacleControl, bool useTorus, const Coord& playgroundSize);
 
     /**
      * @brief Filters a specified Signal by adding an attenuation

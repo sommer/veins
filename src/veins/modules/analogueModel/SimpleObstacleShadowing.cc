@@ -24,9 +24,8 @@ using namespace Veins;
 
 using Veins::AirFrame;
 
-SimpleObstacleShadowing::SimpleObstacleShadowing(ObstacleControl& obstacleControl, double carrierFrequency, bool useTorus, const Coord& playgroundSize)
+SimpleObstacleShadowing::SimpleObstacleShadowing(ObstacleControl& obstacleControl, bool useTorus, const Coord& playgroundSize)
     : obstacleControl(obstacleControl)
-    , carrierFrequency(carrierFrequency)
     , useTorus(useTorus)
     , playgroundSize(playgroundSize)
 {

@@ -3,7 +3,6 @@
     <AnalogueModels>
         <AnalogueModel type="SimplePathlossModel">
             <parameter name="alpha" type="double" value="2.0"/>
-            <parameter name="carrierFrequency" type="double" value="5.890e+9"/>
         </AnalogueModel>
     </AnalogueModels>
     <Decider type="Decider80211p">

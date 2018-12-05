@@ -96,7 +96,6 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeBreakpointPathlossModel(Para
 {
     double alpha1 = -1, alpha2 = -1, breakpointDistance = -1;
     double L01 = -1, L02 = -1;
-    double carrierFrequency = 5.890e+9;
     bool useTorus = world->useTorus();
     const Coord& playgroundSize = *(world->getPgs());
     ParameterMap::iterator it;
@@ -141,40 +140,11 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeBreakpointPathlossModel(Para
         // check whether alpha is not smaller than specified in ConnectionManager
     }
 
-    // get carrierFrequency from config
-    it = params.find("carrierFrequency");
-
-    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
-        // set carrierFrequency
-        carrierFrequency = it->second.doubleValue();
-        EV_TRACE << "createPathLossModel(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
-
-        // check whether carrierFrequency is not smaller than specified in ConnectionManager
-        if (cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue()) {
-            // throw error
-            throw cRuntimeError("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
-                   ConnectionManager. Please adjust your config.xml file accordingly");
-        }
-    }
-    else // carrierFrequency has not been specified in config.xml
-    {
-        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
-            // set carrierFrequency according to ConnectionManager
-            carrierFrequency = cc->par("carrierFrequency").doubleValue();
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
-        }
-        else // carrierFrequency has not been specified in ConnectionManager
-        {
-            // keep carrierFrequency at default value
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
-        }
-    }
-
     if (alpha1 == -1 || alpha2 == -1 || breakpointDistance == -1 || L01 == -1 || L02 == -1) {
         throw cRuntimeError("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
     }
 
-    return make_unique<BreakpointPathlossModel>(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<BreakpointPathlossModel>(L01, L02, alpha1, alpha2, breakpointDistance, useTorus, playgroundSize);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& params)
@@ -201,7 +171,6 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimplePathlossModel(Paramete
 
     // init with default value
     double alpha = 2.0;
-    double carrierFrequency = 5.890e+9;
     bool useTorus = world->useTorus();
     const Coord& playgroundSize = *(world->getPgs());
 
@@ -234,36 +203,7 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimplePathlossModel(Paramete
         }
     }
 
-    // get carrierFrequency from config
-    it = params.find("carrierFrequency");
-
-    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
-        // set carrierFrequency
-        carrierFrequency = it->second.doubleValue();
-        EV_TRACE << "createPathLossModel(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
-
-        // check whether carrierFrequency is not smaller than specified in ConnectionManager
-        if (cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue()) {
-            // throw error
-            throw cRuntimeError("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
-                   ConnectionManager. Please adjust your config.xml file accordingly");
-        }
-    }
-    else // carrierFrequency has not been specified in config.xml
-    {
-        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
-            // set carrierFrequency according to ConnectionManager
-            carrierFrequency = cc->par("carrierFrequency").doubleValue();
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
-        }
-        else // carrierFrequency has not been specified in ConnectionManager
-        {
-            // keep carrierFrequency at default value
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
-        }
-    }
-
-    return make_unique<SimplePathlossModel>(alpha, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<SimplePathlossModel>(alpha, useTorus, playgroundSize);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializePERModel(ParameterMap& params)
@@ -285,86 +225,28 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimpleObstacleShadowing(Para
 {
 
     // init with default value
-    double carrierFrequency = 5.890e+9;
     bool useTorus = world->useTorus();
     const Coord& playgroundSize = *(world->getPgs());
 
     ParameterMap::iterator it;
 
-    // get carrierFrequency from config
-    it = params.find("carrierFrequency");
-
-    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
-        // set carrierFrequency
-        carrierFrequency = it->second.doubleValue();
-        EV_TRACE << "initializeSimpleObstacleShadowing(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
-
-        // check whether carrierFrequency is not smaller than specified in ConnectionManager
-        if (cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue()) {
-            // throw error
-            throw cRuntimeError("initializeSimpleObstacleShadowing(): carrierFrequency can't be smaller than specified in ConnectionManager. Please adjust your config.xml file accordingly");
-        }
-    }
-    else // carrierFrequency has not been specified in config.xml
-    {
-        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
-            // set carrierFrequency according to ConnectionManager
-            carrierFrequency = cc->par("carrierFrequency").doubleValue();
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
-        }
-        else // carrierFrequency has not been specified in ConnectionManager
-        {
-            // keep carrierFrequency at default value
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
-        }
-    }
-
     ObstacleControl* obstacleControlP = ObstacleControlAccess().getIfExists();
     if (!obstacleControlP) throw cRuntimeError("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
-    return make_unique<SimpleObstacleShadowing>(*obstacleControlP, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<SimpleObstacleShadowing>(*obstacleControlP, useTorus, playgroundSize);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& params)
 {
 
     // init with default value
-    double carrierFrequency = 2.412e+9;
     bool useTorus = world->useTorus();
     const Coord& playgroundSize = *(world->getPgs());
 
     ParameterMap::iterator it;
 
-    // get carrierFrequency from config
-    it = params.find("carrierFrequency");
-
-    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
-        // set carrierFrequency
-        carrierFrequency = it->second.doubleValue();
-        EV_TRACE << "initializeSimpleObstacleShadowing(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
-
-        // check whether carrierFrequency is not smaller than specified in ConnectionManager
-        if (cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue()) {
-            // throw error
-            throw cRuntimeError("initializeSimpleObstacleShadowing(): carrierFrequency can't be smaller than specified in ConnectionManager. Please adjust your config.xml file accordingly");
-        }
-    }
-    else // carrierFrequency has not been specified in config.xml
-    {
-        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
-            // set carrierFrequency according to ConnectionManager
-            carrierFrequency = cc->par("carrierFrequency").doubleValue();
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
-        }
-        else // carrierFrequency has not been specified in ConnectionManager
-        {
-            // keep carrierFrequency at default value
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
-        }
-    }
-
     VehicleObstacleControl* vehicleObstacleControlP = VehicleObstacleControlAccess().getIfExists();
     if (!vehicleObstacleControlP) throw cRuntimeError("initializeVehicleObstacleShadowing(): cannot find VehicleObstacleControl module");
-    return make_unique<VehicleObstacleShadowing>(*vehicleObstacleControlP, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<VehicleObstacleShadowing>(*vehicleObstacleControlP, useTorus, playgroundSize);
 }
 
 unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params)
