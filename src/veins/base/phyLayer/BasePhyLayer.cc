@@ -836,9 +836,6 @@ void BasePhyLayer::recordScalar(const char* name, double value, const char* unit
     ChannelAccess::recordScalar(name, value, unit);
 }
 
-/**
- * Attaches a "control info" (PhyToMac) structure (object) to the message pMsg.
- */
 cObject* const BasePhyLayer::setUpControlInfo(cMessage* const pMsg, DeciderResult* const pDeciderResult)
 {
     return PhyToMacControlInfo::setControlInfo(pMsg, pDeciderResult);
