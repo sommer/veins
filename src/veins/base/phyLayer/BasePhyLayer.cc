@@ -22,18 +22,6 @@ Coord NoMobiltyPos = Coord::ZERO;
 
 // --Initialization----------------------------------
 
-BasePhyLayer::BasePhyLayer()
-    : protocolId(GENERIC)
-    , thermalNoiseValue(0)
-    , radio(nullptr)
-    , decider(nullptr)
-    , radioSwitchingOverTimer(nullptr)
-    , txOverTimer(nullptr)
-    , headerLength(-1)
-    , world(nullptr)
-{
-}
-
 template <class T>
 T BasePhyLayer::readPar(const char* parName, const T defaultValue)
 {

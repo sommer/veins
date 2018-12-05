@@ -88,8 +88,8 @@ protected:
         return 10;
     }
 
-    int protocolId; ///< The ID of the protocol this phy can transceive.
-    double thermalNoiseValue; ///< Defines the strength of the thermal noise.
+    int protocolId = GENERIC; ///< The ID of the protocol this phy can transceive.
+    double thermalNoiseValue = 0; ///< Defines the strength of the thermal noise.
     double sensitivity; ///< The sensitivity describes the minimum strength a signal must have to be received.
     bool recordStats; ///< Stores if tracking of statistics (esp. cOutvectors) is enabled.
     ChannelInfo channelInfo; ///< Channel info keeps track of received AirFrames and provides information about currently active AirFrames at the channel.
@@ -122,11 +122,11 @@ protected:
     int upperControlOut; ///< The id of the out-control gate to the Mac layer.
     int upperControlIn; ///< The id of the in-control gate from the Mac layer.
 
-    cMessage* radioSwitchingOverTimer; ///< Self message scheduled to the point in time when the switching process of the radio is over.
-    cMessage* txOverTimer; ///< Self message scheduled to the point in time when the transmission of an AirFrame is over.
+    cMessage* radioSwitchingOverTimer = nullptr; ///< Self message scheduled to the point in time when the switching process of the radio is over.
+    cMessage* txOverTimer = nullptr; ///< Self message scheduled to the point in time when the transmission of an AirFrame is over.
 
-    int headerLength; ///< Stores the length of the phy header in bits.
-    BaseWorldUtility* world; ///< Pointer to the World Utility, to obtain some global information
+    int headerLength = -1; ///< Stores the length of the phy header in bits.
+    BaseWorldUtility* world = nullptr; ///< Pointer to the World Utility, to obtain some global information
 
 private:
     /**
@@ -360,7 +360,6 @@ protected:
     Spectrum overallSpectrum;
 
 public:
-    BasePhyLayer();
     ~BasePhyLayer() override;
 
     /** Call the deciders finish method. */
