@@ -74,11 +74,25 @@ class Radio;
 class VEINS_API BasePhyLayer : public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
 
 protected:
+    /**
+     * @brief Used at initialisation to pass the parameters
+     * to the AnalogueModel and Decider
+     */
+    using ParameterMap = std::map<std::string, cMsgPar>;
+
+    /** @brief The states of the receiving process for AirFrames.*/
+    enum AirFrameStates {
+        /** @brief Start of actual receiving process of the AirFrame. */
+        START_RECEIVE = 1,
+        /** @brief AirFrame is being received. */
+        RECEIVING,
+        /** @brief Receiving process over */
+        END_RECEIVE
+    };
+
     enum ProtocolIds {
         GENERIC = 0,
     };
-
-    int protocolId;
 
     /** @brief Defines the scheduling priority of AirFrames.
      *
@@ -91,6 +105,8 @@ protected:
     {
         return 10;
     }
+
+    int protocolId;
 
     /** @brief Defines the strength of the thermal noise.*/
     double thermalNoiseValue;
@@ -126,12 +142,6 @@ protected:
     /** @brief List of the analogue models to use for thresholding mechanism.*/
     AnalogueModelList analogueModelsThresholding;
 
-    /**
-     * @brief Used at initialisation to pass the parameters
-     * to the AnalogueModel and Decider
-     */
-    typedef std::map<std::string, cMsgPar> ParameterMap;
-
     /** @brief The id of the in-data gate from the Mac layer */
     int upperLayerIn;
     /** @brief The id of the out-data gate to the Mac layer */
@@ -153,23 +163,12 @@ protected:
      */
     cMessage* txOverTimer;
 
-    /** @brief The states of the receiving process for AirFrames.*/
-    enum AirFrameStates {
-        /** @brief Start of actual receiving process of the AirFrame. */
-        START_RECEIVE = 1,
-        /** @brief AirFrame is being received. */
-        RECEIVING,
-        /** @brief Receiving process over */
-        END_RECEIVE
-    };
-
     /** @brief Stores the length of the phy header in bits. */
     int headerLength;
 
     /** @brief Pointer to the World Utility, to obtain some global information*/
     BaseWorldUtility* world;
 
-public:
 private:
     /**
      * @brief Utility function. Reads the parameters of a XML element
