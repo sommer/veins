@@ -388,13 +388,6 @@ public:
      */
     simtime_t setRadioState(int rs) override;
 
-    /**
-     * Return the length of the phy header in bits.
-     *
-     * Since the MAC layer has to create the signal for a transmission it has to know the total length of the packet and therefore needs the length of the phy header.
-     */
-    int getPhyHeaderLength() override;
-
     /** Set the channel currently used by the radio. */
     void setCurrentRadioChannel(int newRadioChannel) override;
 
@@ -436,28 +429,6 @@ public:
     void sendUp(AirFrame* packet, DeciderResult* result) override;
 
     /**
-     * Return the current simulation time.
-     */
-    simtime_t getSimTime() override;
-
-    /**
-     * Cancel a scheduled message (AirFrame or ControlMessage).
-     *
-     * If the message is not scheduled, a warning is generated.
-     */
-    void cancelScheduledMessage(cMessage* msg) override;
-
-    /**
-     * Reschedule a message (AirFrame or ControlMessage).
-     */
-    void rescheduleMessage(cMessage* msg, simtime_t_cref t) override;
-
-    /**
-     * Empy implementation.
-     */
-    void drawCurrent(double amount, int activity) override;
-
-    /**
      * Return a pointer to the simulations world-utility-module.
      */
     BaseWorldUtility* getWorldUtility() override;
@@ -472,13 +443,6 @@ public:
     void recordScalar(const char* name, double value, const char* unit = nullptr) override;
 
     /*@}*/
-
-    /**
-     * Attach a "control info" (PhyToMac) structure (object) to the message pMsg.
-     *
-     * This is most useful when passing packets between protocol layers of a protocol stack, the control info will contain the decider result.
-     */
-    virtual cObject* const setUpControlInfo(cMessage* const pMsg, DeciderResult* const pDeciderResult);
 };
 
 } // namespace Veins

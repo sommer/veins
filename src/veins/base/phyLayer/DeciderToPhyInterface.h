@@ -76,39 +76,6 @@ public:
     virtual void sendUp(AirFrame* packet, DeciderResult* result) = 0;
 
     /**
-     * @brief Returns the current simulation time
-     *
-     */
-    virtual simtime_t getSimTime() = 0;
-
-    /**
-     * @brief Tells the PhyLayer to cancel a scheduled message (AirFrame or
-     * ControlMessage).
-     *
-     * Used by the Decider if it doesn't need to handle an AirFrame or
-     * ControlMessage again anymore.
-     */
-    virtual void cancelScheduledMessage(cMessage* msg) = 0;
-
-    /**
-     * @brief Tells the PhyLayer to reschedule a message (AirFrame or
-     * ControlMessage).
-     *
-     * Used by the Decider if it has to handle an AirFrame or an control message
-     * earlier than it has returned to the PhyLayer the last time the Decider
-     * handled that message.
-     */
-    virtual void rescheduleMessage(cMessage* msg, simtime_t_cref t) = 0;
-
-    /**
-     * @brief Enables the Decider to draw Power from the
-     * phy layers power accounts.
-     *
-     * Does nothing if no Battery module in simulation is present.
-     */
-    virtual void drawCurrent(double amount, int activity) = 0;
-
-    /**
      * @brief Returns a pointer to the simulations world-utility-module.
      */
     virtual BaseWorldUtility* getWorldUtility() = 0;
