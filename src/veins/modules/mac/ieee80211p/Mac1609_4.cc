@@ -228,7 +228,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
         if (controlInfo) {
             // if MCS is not specified, just use the default one
             mcs = (enum PHY_MCS) controlInfo->getMcs();
-            if (mcs != MCS_DEFAULT) {
+            if (mcs != MCS_UNDEFINED) {
                 datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
             }
             else {
@@ -241,7 +241,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
             }
         }
         else {
-            mcs = MCS_DEFAULT;
+            mcs = MCS_UNDEFINED;
             txPower_mW = txPower;
             datarate = bitrate;
         }
@@ -566,7 +566,7 @@ void Mac1609_4::setTxPower(double txPower_mW)
 }
 void Mac1609_4::setMCS(enum PHY_MCS mcs)
 {
-    ASSERT2(mcs != MCS_DEFAULT, "invalid MCS selected");
+    ASSERT2(mcs != MCS_UNDEFINED, "invalid MCS selected");
     bitrate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
     setParametersForBitrate(bitrate);
 }
@@ -1015,7 +1015,7 @@ bool Mac1609_4::isCurrentChannelCCH()
 simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const
 {
     simtime_t duration;
-    if (mcs == MCS_DEFAULT) {
+    if (mcs == MCS_UNDEFINED) {
         // calculate frame duration according to Equation (17-29) of the IEEE 802.11-2007 standard
         duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil((16 + payloadLengthBits + 6) / (n_dbps));
     }
@@ -1043,7 +1043,7 @@ void Mac1609_4::sendAck(LAddress::L2Type recpAddress, unsigned long wsmId)
     mac->setMessageId(wsmId);
     mac->setBitLength(ackLength);
 
-    enum PHY_MCS mcs = MCS_DEFAULT;
+    enum PHY_MCS mcs = MCS_UNDEFINED;
     uint64_t datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
 
     simtime_t sendingDuration = RADIODELAY_11P + getFrameDuration(mac->getBitLength(), mcs);

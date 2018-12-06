@@ -230,7 +230,7 @@ protected:
 
     void setParametersForBitrate(uint64_t bitrate);
 
-    simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_DEFAULT) const;
+    simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs = MCS_UNDEFINED) const;
 
     void sendAck(LAddress::L2Type recpAddress, unsigned long wsmId);
     void handleUnicast(LAddress::L2Type srcAddr, std::unique_ptr<BaseFrame1609_4> wsm);
