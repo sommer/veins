@@ -28,7 +28,7 @@
 /** @brief Modulation and coding scheme to be used for transmission */
 enum PHY_MCS {
     // use the default MCS
-    MCS_DEFAULT = -1,
+    MCS_UNDEFINED = -1,
     MCS_OFDM_BPSK_R_1_2,
     MCS_OFDM_BPSK_R_3_4,
     MCS_OFDM_QPSK_R_1_2,
@@ -232,5 +232,5 @@ inline enum PHY_MCS getMCS(uint64_t datarate, enum Bandwidth bw)
         }
     }
     ASSERT2(false, "Invalid datarate for required bandwidth");
-    return MCS_DEFAULT;
+    return MCS_UNDEFINED;
 }
