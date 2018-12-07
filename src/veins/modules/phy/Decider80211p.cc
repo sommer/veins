@@ -176,17 +176,17 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double sinrMin, dou
     double packetOkSnr;
 
     // compute success rate depending on mcs and bw
-    packetOkSinr = NistErrorRate::getChunkSuccessRate(bitrate, BW_OFDM_10_MHZ, sinrMin, lengthMPDU);
+    packetOkSinr = NistErrorRate::getChunkSuccessRate(bitrate, BANDWIDTH_11P, sinrMin, lengthMPDU);
 
     // check if header is broken
-    double headerNoError = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BW_OFDM_10_MHZ, sinrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
+    double headerNoError = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BANDWIDTH_11P, sinrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
 
     double headerNoErrorSnr;
     // compute PER also for SNR only
     if (collectCollisionStats) {
 
-        packetOkSnr = NistErrorRate::getChunkSuccessRate(bitrate, BW_OFDM_10_MHZ, snrMin, lengthMPDU);
-        headerNoErrorSnr = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BW_OFDM_10_MHZ, snrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
+        packetOkSnr = NistErrorRate::getChunkSuccessRate(bitrate, BANDWIDTH_11P, snrMin, lengthMPDU);
+        headerNoErrorSnr = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BANDWIDTH_11P, snrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
 
         // the probability of correct reception without considering the interference
         // MUST be greater or equal than when consider it
