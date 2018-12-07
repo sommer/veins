@@ -74,7 +74,7 @@ public:
      * @brief Filters a specified AirFrame's Signal by adding an attenuation
      * over time to the Signal.
      */
-    void filterSignal(Signal*, const Coord&, const Coord&) override;
+    void filterSignal(Signal*, const AntennaPosition&, const AntennaPosition&) override;
 
     /**
      * @brief Method to calculate the attenuation value for pathloss.

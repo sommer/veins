@@ -32,9 +32,12 @@ VehicleObstacleShadowing::VehicleObstacleShadowing(VehicleObstacleControl& vehic
     if (useTorus) throw cRuntimeError("VehicleObstacleShadowing does not work on torus-shaped playgrounds");
 }
 
-void VehicleObstacleShadowing::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
+void VehicleObstacleShadowing::filterSignal(Signal* signal, const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_)
 {
-    auto potentialObstacles = vehicleObstacleControl.getPotentialObstacles(senderPos, receiverPos, *signal);
+    auto senderPos = senderPos_.getPositionAt();
+    auto receiverPos = receiverPos_.getPositionAt();
+
+    auto potentialObstacles = vehicleObstacleControl.getPotentialObstacles(senderPos_, receiverPos_, *signal);
 
     if (potentialObstacles.size() < 1) return;
 

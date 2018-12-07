@@ -242,22 +242,22 @@ void Signal::applyAllAnalogueModels()
     }
 }
 
-Coord Signal::getSenderPos() const
+AntennaPosition Signal::getSenderPos() const
 {
     return senderPos;
 }
 
-Coord Signal::getReceiverPos() const
+AntennaPosition Signal::getReceiverPos() const
 {
     return receiverPos;
 }
 
-void Signal::setSenderPos(Coord pos)
+void Signal::setSenderPos(AntennaPosition pos)
 {
     senderPos = pos;
 }
 
-void Signal::setReceiverPos(Coord pos)
+void Signal::setReceiverPos(AntennaPosition pos)
 {
     receiverPos = pos;
 }

@@ -503,7 +503,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     unique_ptr<AirFrame> frame = encapsMsg(static_cast<cPacket*>(msg));
 
     // Prepare a POA object and attach it to the created Airframe
-    Coord pos = antennaPosition;
+    AntennaPosition pos = antennaPosition;
     Coord orient = antennaHeading.toCoord();
     POA* poa = new POA(pos, orient, antenna);
     frame->setPoa(*poa);
@@ -623,11 +623,11 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     Signal& signal = frame->getSignal();
 
     // Extract position and orientation of sender and receiver (this module) first
-    const Coord receiverPosition = antennaPosition;
+    const AntennaPosition receiverPosition = antennaPosition;
     const Coord receiverOrientation = antennaHeading.toCoord();
     // get POA from frame with the sender's position, orientation and antenna
     POA& senderPOA = frame->getPoa();
-    const Coord senderPosition = senderPOA.pos;
+    const AntennaPosition senderPosition = senderPOA.pos;
     const Coord senderOrientation = senderPOA.orientation;
 
     // add position information to signal
@@ -635,8 +635,8 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     signal.setReceiverPos(receiverPosition);
 
     // compute gains at sender and receiver antenna
-    double receiverGain = antenna->getGain(receiverPosition, receiverOrientation, senderPosition);
-    double senderGain = senderPOA.antenna->getGain(senderPosition, senderOrientation, receiverPosition);
+    double receiverGain = antenna->getGain(receiverPosition.getPositionAt(), receiverOrientation, senderPosition.getPositionAt());
+    double senderGain = senderPOA.antenna->getGain(senderPosition.getPositionAt(), senderOrientation, receiverPosition.getPositionAt());
 
     // add the resulting total gain to the attenuations list
     EV_TRACE << "Sender's antenna gain: " << senderGain << endl;

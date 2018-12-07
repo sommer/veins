@@ -64,13 +64,13 @@ double segmentsIntersectAt(Coord p1From, Coord p1To, Coord p2From, Coord p2To)
 
 } // namespace
 
-VehicleObstacle::Coords VehicleObstacle::getShape() const
+VehicleObstacle::Coords VehicleObstacle::getShape(simtime_t t) const
 {
     double l = getLength();
     double o = getHostPositionOffset(); // this is the shift we have to undo in order to (given the OMNeT++ host position) get the car's front bumper position
     double w = getWidth() / 2;
     const TraCIMobility* m = getTraCIMobility();
-    Coord p = m->getCurrentPosition();
+    Coord p = m->getPositionAt(t);
     double a = m->getHeading().getRad();
 
     Coords shape;
@@ -82,11 +82,34 @@ VehicleObstacle::Coords VehicleObstacle::getShape() const
     return shape;
 }
 
-double VehicleObstacle::getIntersectionPoint(const Coord& senderPos, const Coord& receiverPos) const
+bool VehicleObstacle::maybeInBounds(double x1, double y1, double x2, double y2, simtime_t t) const
+{
+    double l = getLength();
+    double o = getHostPositionOffset(); // this is the shift we have to undo in order to (given the OMNeT++ host position) get the car's front bumper position
+    double w = getWidth() / 2;
+    const TraCIMobility* m = getTraCIMobility();
+    Coord p = m->getPositionAt(t);
+
+    double lw = std::max(l, w);
+
+    double xx1 = p.x - std::abs(o) - lw;
+    double xx2 = p.x + std::abs(o) + lw;
+    double yy1 = p.y - std::abs(o) - lw;
+    double yy2 = p.y + std::abs(o) + lw;
+
+    if (xx2 < x1) return false;
+    if (xx1 > x2) return false;
+    if (yy2 < y1) return false;
+    if (yy1 > y2) return false;
+
+    return true;
+}
+
+double VehicleObstacle::getIntersectionPoint(const Coord& senderPos, const Coord& receiverPos, simtime_t t) const
 {
     const double not_a_number = std::numeric_limits<double>::quiet_NaN();
 
-    VehicleObstacle::Coords shape = getShape();
+    VehicleObstacle::Coords shape = getShape(t);
 
     // shortcut if sender is inside
     bool senderInside = isPointInObstacle(senderPos, shape);

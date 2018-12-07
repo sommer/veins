@@ -26,8 +26,11 @@ using namespace Veins;
 /**
  * Simple Nakagami-m fading (based on a constant factor across all time and frequencies).
  */
-void NakagamiFading::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
+void NakagamiFading::filterSignal(Signal* signal, const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_)
 {
+    auto senderPos = senderPos_.getPositionAt();
+    auto receiverPos = receiverPos_.getPositionAt();
+
     const double M_CLOSE = 1.5;
     const double M_FAR = 0.75;
     const double DIS_THRESHOLD = 80;

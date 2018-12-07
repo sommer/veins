@@ -22,6 +22,7 @@
 
 #include "veins/veins.h"
 
+#include "veins/base/utils/AntennaPosition.h"
 #include "veins/base/utils/Coord.h"
 #include "veins/base/toolbox/Spectrum.h"
 #include "veins/base/phyLayer/AnalogueModel.h"
@@ -292,26 +293,26 @@ public:
     /**
      * Get this signal's sender postition.
      */
-    Coord getSenderPos() const;
+    AntennaPosition getSenderPos() const;
 
     /**
      * Get this signal's receiver postition.
      */
-    Coord getReceiverPos() const;
+    AntennaPosition getReceiverPos() const;
 
     /**
      * Set this signal's sender postition.
      *
      * @param pos the new sender position
      */
-    void setSenderPos(Coord pos);
+    void setSenderPos(AntennaPosition pos);
 
     /**
      * Set this signal's receiver postition.
      *
      * @param pos the new receiver position
      */
-    void setReceiverPos(Coord pos);
+    void setReceiverPos(AntennaPosition pos);
     ///@}
 
     /**
@@ -510,8 +511,8 @@ private:
     AnalogueModelList* analogueModelList = nullptr;
     uint16_t numAnalogueModelsApplied = 0;
 
-    Coord senderPos = Coord(0, 0);
-    Coord receiverPos = Coord(0, 0);
+    AntennaPosition senderPos;
+    AntennaPosition receiverPos;
 };
 
 /**

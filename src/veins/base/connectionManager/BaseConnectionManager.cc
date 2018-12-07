@@ -140,10 +140,10 @@ BaseConnectionManager::GridCoord BaseConnectionManager::getCellForCoordinate(con
     return GridCoord(c, findDistance);
 }
 
-void BaseConnectionManager::updateConnections(int nicID, const Coord* oldPos, const Coord* newPos)
+void BaseConnectionManager::updateConnections(int nicID, Coord oldPos, Coord newPos)
 {
-    GridCoord oldCell = getCellForCoordinate(*oldPos);
-    GridCoord newCell = getCellForCoordinate(*newPos);
+    GridCoord oldCell = getCellForCoordinate(oldPos);
+    GridCoord newCell = getCellForCoordinate(newPos);
 
     checkGrid(oldCell, newCell, nicID);
 }
@@ -293,7 +293,7 @@ void BaseConnectionManager::updateNicConnections(NicEntries& nmap, BaseConnectio
     }
 }
 
-bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos, Heading heading)
+bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, Coord nicPos, Heading heading)
 {
     assert(nic != nullptr);
 
@@ -312,7 +312,7 @@ bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, c
     nicEntry->nicPtr = nic;
     nicEntry->nicId = nicID;
     nicEntry->hostId = nic->getParentModule()->getId();
-    nicEntry->pos = *nicPos;
+    nicEntry->pos = nicPos;
     nicEntry->heading = heading;
     nicEntry->chAccess = chAccess;
 
@@ -380,16 +380,16 @@ bool BaseConnectionManager::unregisterNic(cModule* nicModule)
     return true;
 }
 
-void BaseConnectionManager::updateNicPos(int nicID, const Coord* newPos, Heading heading)
+void BaseConnectionManager::updateNicPos(int nicID, Coord newPos, Heading heading)
 {
     NicEntries::iterator ItNic = nics.find(nicID);
     if (ItNic == nics.end()) error("No nic with this ID (%d) is registered with this ConnectionManager.", nicID);
 
     Coord oldPos = ItNic->second->pos;
-    ItNic->second->pos = *newPos;
+    ItNic->second->pos = newPos;
     ItNic->second->heading = heading;
 
-    updateConnections(nicID, &oldPos, newPos);
+    updateConnections(nicID, oldPos, newPos);
 }
 
 const NicEntry::GateList& BaseConnectionManager::getGateList(int nicID) const

@@ -250,9 +250,12 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
     return attenuation_mo + attenuation_so + c;
 }
 
-std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos, const Signal& s) const
+std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObstacles(const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_, const Signal& s) const
 {
     Enter_Method_Silent();
+
+    auto senderPos = senderPos_.getPositionAt();
+    auto receiverPos = receiverPos_.getPositionAt();
 
     double senderHeight = senderPos.z;
     double receiverHeight = receiverPos.z;
@@ -283,13 +286,11 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
         double w = o->getWidth();
         double h = o->getHeight();
 
-        auto hp = o->getTraCIMobility()->getCurrentPosition();
+        auto hp_approx = o->getTraCIMobility()->getPositionAt(simTime());
 
-        EV << "checking vehicle at " << hp.info() << " with height: " << h << " width: " << w << " length: " << l << endl;
+        EV << "checking vehicle in proximity of " << hp_approx.info() << " with height: " << h << " width: " << w << " length: " << l << endl;
 
-        // short-circuit if AABBs can't overlap
-        double lw = std::max(l, w);
-        if (((hp.x + lw) < x1) || ((hp.x - lw) > x2) || ((hp.y + lw) < y1) || ((hp.y - lw) > y2)) {
+        if (!o->maybeInBounds(x1, y1, x2, y2, sStart)) {
             EV_TRACE << "bounding boxes don't overlap: ignore" << std::endl;
             continue;
         }
@@ -298,12 +299,12 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
         bool ignoreMe = false;
         for (auto ca : caModules) {
             auto pos = ca->getAntennaPosition();
-            EV_TRACE << "...it has an antenna at " << pos << std::endl;
-            if (pos == senderPos) {
+            EV_TRACE << "...it has an antenna at " << pos.getPositionAt() << std::endl;
+            if (pos.isSameAntenna(senderPos_)) {
                 EV_TRACE << "...this is the sender: ignore" << std::endl;
                 ignoreMe = true;
             }
-            if (pos == receiverPos) {
+            if (pos.isSameAntenna(receiverPos_)) {
                 EV_TRACE << "...this is the receiver: ignore" << std::endl;
                 ignoreMe = true;
             }
@@ -311,7 +312,7 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
         if (ignoreMe) continue;
 
         // this is a potential obstacle
-        double p1d = o->getIntersectionPoint(senderPos, receiverPos);
+        double p1d = o->getIntersectionPoint(senderPos, receiverPos, sStart);
         double maxd = senderPos.distance(receiverPos);
         if (!std::isnan(p1d) && p1d > 0 && p1d < maxd) {
             auto it = potentialObstacles.begin();
@@ -330,7 +331,7 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
                 }
                 ++it;
             }
-            EV << "\tgot obstacle in 2d-LOS at " << hp.info() << ", " << p1d << " meters away from sender" << std::endl;
+            EV << "\tgot obstacle in 2d-LOS, " << p1d << " meters away from sender" << std::endl;
             Coord hitPos = senderPos + (receiverPos - senderPos) / senderPos.distance(receiverPos) * p1d;
             if (hasGUI() && annotations) {
                 annotations->drawLine(senderPos, hitPos, "red", vehicleAnnotationGroup);
@@ -344,7 +345,7 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
 void VehicleObstacleControl::drawVehicleObstacles(const simtime_t& t) const
 {
     for (auto o : vehicleObstacles) {
-        annotations->drawPolygon(o->getShape(), "black", vehicleAnnotationGroup);
+        annotations->drawPolygon(o->getShape(t), "black", vehicleAnnotationGroup);
     }
 }
 

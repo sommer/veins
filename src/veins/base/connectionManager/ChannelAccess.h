@@ -26,6 +26,7 @@
 
 #include "veins/veins.h"
 
+#include "veins/base/utils/AntennaPosition.h"
 #include "veins/base/modules/BatteryAccess.h"
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/modules/BaseMobility.h"
@@ -72,7 +73,7 @@ protected:
     BaseWorldUtility* world;
 
     /** @brief Current antenna position */
-    Coord antennaPosition;
+    AntennaPosition antennaPosition;
 
     /** @brief Current antenna heading (angle) */
     Heading antennaHeading;
@@ -134,7 +135,7 @@ public:
         return ChannelMobilityAccessType::get(this);
     }
 
-    virtual Coord getAntennaPosition() const
+    virtual AntennaPosition getAntennaPosition() const
     {
         return antennaPosition;
     }

@@ -192,7 +192,7 @@ void DemoBaseApplLayer::receiveSignal(cComponent* source, simsignal_t signalID, 
 void DemoBaseApplLayer::handlePositionUpdate(cObject* obj)
 {
     ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
-    curPosition = mobility->getCurrentPosition();
+    curPosition = mobility->getPositionAt(simTime());
     curSpeed = mobility->getCurrentSpeed();
 }
 

@@ -24,6 +24,7 @@
 
 #include "veins/veins.h"
 
+#include "veins/base/utils/AntennaPosition.h"
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/obstacle/Obstacle.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
@@ -59,7 +60,7 @@ public:
     /**
      * get distance and height of potential obstacles
      */
-    std::vector<std::pair<double, double>> getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos, const Signal& s) const;
+    std::vector<std::pair<double, double>> getPotentialObstacles(const AntennaPosition& senderPos, const AntennaPosition& receiverPos, const Signal& s) const;
 
     /**
      * Set carrier frequency

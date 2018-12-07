@@ -163,11 +163,10 @@ public:
     /** @brief Delete dynamically allocated objects*/
     void finish() override {};
 
-    /** @brief Returns the current position at the current simulation time. */
-    virtual Coord getCurrentPosition(/*simtime_t_cref stWhen = simTime()*/) const
+    /** @brief Returns the current position at the given simulation time. */
+    virtual Coord getPositionAt(simtime_t_cref stWhen) const
     {
-        // return move.getPositionAt(stWhen);
-        return move.getStartPos();
+        return move.getPositionAt(stWhen);
     }
 
     virtual Coord getCurrentOrientation() const

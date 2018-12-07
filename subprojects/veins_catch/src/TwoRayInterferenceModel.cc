@@ -18,12 +18,13 @@ SCENARIO("TwoRayInterferenceModel", "[analogueModel]")
         AirFrame frame = createAirframe(2.4e9, 10e6, 0, .001, 1);
         Signal& s = frame.getSignal();
         TwoRayInterferenceModel tri(1.02);
+        int dummyId = -1;
 
-        Coord senderPos(0, 0, 2);
+        AntennaPosition senderPos(dummyId, Coord(0, 0, 2), Coord(0, 0, 0), simTime());
 
         WHEN("the receiver is at (10,0)")
         {
-            Coord receiverPos(10, 0, 2);
+            AntennaPosition receiverPos(dummyId, Coord(10, 0, 2), Coord(0, 0, 0), simTime());
 
             THEN("TwoRayInterferenceModel drops power from 1 to 959.5e-9")
             {
@@ -34,7 +35,7 @@ SCENARIO("TwoRayInterferenceModel", "[analogueModel]")
 
         WHEN("the receiver is at (100,0)")
         {
-            Coord receiverPos(100, 0, 2);
+            AntennaPosition receiverPos(dummyId, Coord(100, 0, 2), Coord(0, 0, 0), simTime());
 
             THEN("TwoRayInterferenceModel drops power from 1 to 20.3e-9")
             {

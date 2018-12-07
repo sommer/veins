@@ -73,7 +73,7 @@ public:
      * @brief Filters a specified Signal by adding an attenuation
      * over time to the Signal.
      */
-    void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos) override;
+    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override;
 
     bool neverIncreasesPower() override
     {
