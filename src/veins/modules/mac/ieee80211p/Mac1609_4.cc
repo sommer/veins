@@ -951,7 +951,7 @@ void Mac1609_4::channelIdle(bool afterSwitch)
 
 void Mac1609_4::setParametersForBitrate(uint64_t bitrate)
 {
-    mcs = getMCS(bitrate, BW_OFDM_10_MHZ);
+    mcs = getMCS(bitrate, BANDWIDTH_11P);
     if (mcs == MCS_UNDEFINED) {
         throw cRuntimeError("Chosen Bitrate is not valid for 802.11p: Valid rates are: 3Mbps, 4.5Mbps, 6Mbps, 9Mbps, 12Mbps, 18Mbps, 24Mbps and 27Mbps. Please adjust your omnetpp.ini file accordingly.");
     }

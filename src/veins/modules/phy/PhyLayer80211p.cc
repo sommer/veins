@@ -477,7 +477,7 @@ void PhyLayer80211p::attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
     signal.at(freqIndex - 1) = ctrlInfo11p->txPower_mW;
     signal.at(freqIndex) = ctrlInfo11p->txPower_mW;
     signal.at(freqIndex + 1) = ctrlInfo11p->txPower_mW;
-    signal.setBitrate(getOfdmDatarate(ctrlInfo11p->mcs, BW_OFDM_10_MHZ));
+    signal.setBitrate(getOfdmDatarate(ctrlInfo11p->mcs, BANDWIDTH_11P));
     signal.setDataStart(freqIndex - 1);
     signal.setDataEnd(freqIndex + 1);
     signal.setCenterFrequencyIndex(freqIndex);

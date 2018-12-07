@@ -24,6 +24,8 @@
 
 #include "veins/veins.h"
 
+#include "veins/modules/utility/ConstsPhy.h"
+
 using omnetpp::SimTime;
 
 /** @brief Bit rates for 802.11p
@@ -123,6 +125,8 @@ const SimTime SWITCHING_INTERVAL_11P = SimTime().setRaw(50000000000UL);
  * It is the sum of SyncTolerance and MaxChSwitchTime as defined in 6.2.5 in the IEEE 1609.4-2010 Standard
  */
 const SimTime GUARD_INTERVAL_11P = SimTime().setRaw(4000000000UL);
+
+const enum Bandwidth BANDWIDTH_11P = BW_OFDM_10_MHZ;
 
 namespace Veins {
 
