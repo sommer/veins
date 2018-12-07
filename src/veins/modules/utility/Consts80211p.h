@@ -126,44 +126,40 @@ const SimTime SWITCHING_INTERVAL_11P = SimTime().setRaw(50000000000UL);
  */
 const SimTime GUARD_INTERVAL_11P = SimTime().setRaw(4000000000UL);
 
-const enum Bandwidth BANDWIDTH_11P = BW_OFDM_10_MHZ;
+const enum Bandwidth BANDWIDTH_11P = Bandwidth::ofdm_10_mhz;
 
 namespace Veins {
-
-namespace Channels {
 
 /** @brief Channels as reserved by the FCC
  *
  */
-enum ChannelNumber {
-    CRIT_SOL = 172,
-    SCH1 = 174,
-    SCH2 = 176,
-    CCH = 178,
-    SCH3 = 180,
-    SCH4 = 182,
-    HPPS = 184
+enum class Channel {
+    crit_sol = 172,
+    sch1 = 174,
+    sch2 = 176,
+    cch = 178,
+    sch3 = 180,
+    sch4 = 182,
+    hpps = 184
 };
-
-} // namespace Channels
 
 /**
  * Maps channel identifier to the corresponding center frequency.
  *
  * @note Not all entries are defined.
  */
-const std::map<int, double> IEEE80211ChannelFrequencies = {
-    {Channels::CRIT_SOL, 5.86e9},
-    {Channels::SCH1, 5.87e9},
-    {Channels::SCH2, 5.88e9},
-    {Channels::CCH, 5.89e9},
-    {Channels::SCH3, 5.90e9},
-    {Channels::SCH4, 5.91e9},
-    {Channels::HPPS, 5.92e9},
+const std::map<Channel, double> IEEE80211ChannelFrequencies = {
+    {Channel::crit_sol, 5.86e9},
+    {Channel::sch1, 5.87e9},
+    {Channel::sch2, 5.88e9},
+    {Channel::cch, 5.89e9},
+    {Channel::sch3, 5.90e9},
+    {Channel::sch4, 5.91e9},
+    {Channel::hpps, 5.92e9},
+};
+
+enum class ChannelType {
+    control = 0,
+    service,
 };
 } // namespace Veins
-
-enum t_channel {
-    type_CCH = 0,
-    type_SCH,
-};

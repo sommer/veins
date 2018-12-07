@@ -375,7 +375,7 @@ unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params
     return unique_ptr<Decider>(std::move(dec));
 }
 
-void PhyLayer80211p::changeListeningChannel(Channels::ChannelNumber channel)
+void PhyLayer80211p::changeListeningChannel(Channel channel)
 {
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
     assert(dec);
@@ -475,7 +475,7 @@ void PhyLayer80211p::attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
     // copy the signal into the AirFrame
     airFrame->setSignal(signal);
     airFrame->setDuration(signal.getDuration());
-    airFrame->setMcs(ctrlInfo11p->mcs);
+    airFrame->setMcs(static_cast<int>(ctrlInfo11p->mcs));
 }
 
 int PhyLayer80211p::getRadioState()
@@ -520,10 +520,10 @@ void PhyLayer80211p::requestChannelStatusIfIdle()
     }
 }
 
-simtime_t PhyLayer80211p::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const
+simtime_t PhyLayer80211p::getFrameDuration(int payloadLengthBits, MCS mcs) const
 {
     Enter_Method_Silent();
-    ASSERT(mcs != MCS_UNDEFINED);
+    ASSERT(mcs != MCS::undefined);
     auto ndbps = getNDBPS(mcs);
     // calculate frame duration according to Equation (17-29) of the IEEE 802.11-2007 standard
     return PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil(static_cast<double>(16 + payloadLengthBits + 6) / (ndbps));

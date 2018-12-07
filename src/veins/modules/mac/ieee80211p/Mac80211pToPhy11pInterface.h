@@ -44,11 +44,11 @@ public:
 
     virtual ~Mac80211pToPhy11pInterface() = default;
 
-    virtual void changeListeningChannel(Channels::ChannelNumber channel) = 0;
+    virtual void changeListeningChannel(Channel channel) = 0;
     virtual void setCCAThreshold(double ccaThreshold_dBm) = 0;
     virtual void notifyMacAboutRxStart(bool enable) = 0;
     virtual void requestChannelStatusIfIdle() = 0;
-    virtual simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const = 0;
+    virtual simtime_t getFrameDuration(int payloadLengthBits, MCS mcs) const = 0;
 };
 
 } // namespace Veins

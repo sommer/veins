@@ -133,7 +133,7 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
         snrMin = 1e200;
     }
 
-    double payloadBitrate = getOfdmDatarate(static_cast<PHY_MCS>(frame11p->getMcs()), BANDWIDTH_11P);
+    double payloadBitrate = getOfdmDatarate(static_cast<MCS>(frame11p->getMcs()), BANDWIDTH_11P);
 
     DeciderResult80211* result = nullptr;
 

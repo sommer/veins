@@ -97,7 +97,7 @@ void DemoBaseApplLayer::initialize(int stage)
                 if (beaconInterval.raw() % (mac->getSwitchingInterval().raw() * 2)) {
                     EV_ERROR << "The beacon interval (" << beaconInterval << ") is smaller than or not a multiple of  one synchronization interval (" << 2 * mac->getSwitchingInterval() << "). This means that beacons are generated during SCH intervals" << std::endl;
                 }
-                firstBeacon = computeAsynchronousSendingTime(beaconInterval, type_CCH);
+                firstBeacon = computeAsynchronousSendingTime(beaconInterval, ChannelType::control);
             }
 
             if (sendBeacons) {
@@ -107,7 +107,7 @@ void DemoBaseApplLayer::initialize(int stage)
     }
 }
 
-simtime_t DemoBaseApplLayer::computeAsynchronousSendingTime(simtime_t interval, t_channel chan)
+simtime_t DemoBaseApplLayer::computeAsynchronousSendingTime(simtime_t interval, ChannelType chan)
 {
 
     /*
@@ -139,11 +139,11 @@ simtime_t DemoBaseApplLayer::computeAsynchronousSendingTime(simtime_t interval, 
 
     if (firstEvent.raw() % (2 * switchingInterval.raw()) > switchingInterval.raw()) {
         // firstEvent is within a sch interval
-        if (chan == type_CCH) firstEvent -= switchingInterval;
+        if (chan == ChannelType::control) firstEvent -= switchingInterval;
     }
     else {
         // firstEvent is within a cch interval, so adjust for SCH messages
-        if (chan == type_SCH) firstEvent += switchingInterval;
+        if (chan == ChannelType::service) firstEvent += switchingInterval;
     }
 
     return firstEvent;
@@ -158,21 +158,21 @@ void DemoBaseApplLayer::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId
         bsm->setSenderPos(curPosition);
         bsm->setSenderSpeed(curSpeed);
         bsm->setPsid(-1);
-        bsm->setChannelNumber(Channels::CCH);
+        bsm->setChannelNumber(static_cast<int>(Channel::cch));
         bsm->addBitLength(beaconLengthBits);
         wsm->setUserPriority(beaconUserPriority);
     }
     else if (DemoServiceAdvertisment* wsa = dynamic_cast<DemoServiceAdvertisment*>(wsm)) {
-        wsa->setChannelNumber(Channels::CCH);
-        wsa->setTargetChannel(currentServiceChannel);
+        wsa->setChannelNumber(static_cast<int>(Channel::cch));
+        wsa->setTargetChannel(static_cast<int>(currentServiceChannel));
         wsa->setPsid(currentOfferedServiceId);
         wsa->setServiceDescription(currentServiceDescription.c_str());
     }
     else {
         if (dataOnSch)
-            wsm->setChannelNumber(Channels::SCH1); // will be rewritten at Mac1609_4 to actual Service Channel. This is just so no controlInfo is needed
+            wsm->setChannelNumber(static_cast<int>(Channel::sch1)); // will be rewritten at Mac1609_4 to actual Service Channel. This is just so no controlInfo is needed
         else
-            wsm->setChannelNumber(Channels::CCH);
+            wsm->setChannelNumber(static_cast<int>(Channel::cch));
         wsm->addBitLength(dataLengthBits);
         wsm->setUserPriority(dataUserPriority);
     }
@@ -266,7 +266,7 @@ DemoBaseApplLayer::~DemoBaseApplLayer()
     findHost()->unsubscribe(BaseMobility::mobilityStateChangedSignal, this);
 }
 
-void DemoBaseApplLayer::startService(Channels::ChannelNumber channel, int serviceId, std::string serviceDescription)
+void DemoBaseApplLayer::startService(Channel channel, int serviceId, std::string serviceDescription)
 {
     if (sendWSAEvt->isScheduled()) {
         error("Starting service although another service was already started");
@@ -277,7 +277,7 @@ void DemoBaseApplLayer::startService(Channels::ChannelNumber channel, int servic
     currentServiceChannel = channel;
     currentServiceDescription = serviceDescription;
 
-    simtime_t wsaTime = computeAsynchronousSendingTime(wsaInterval, type_CCH);
+    simtime_t wsaTime = computeAsynchronousSendingTime(wsaInterval, ChannelType::control);
     scheduleAt(wsaTime, sendWSAEvt);
 }
 

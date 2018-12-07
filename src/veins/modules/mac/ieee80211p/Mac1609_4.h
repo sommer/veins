@@ -103,7 +103,7 @@ public:
             ~EDCAQueue();
         };
 
-        EDCA(cSimpleModule* owner, t_channel channelType, int maxQueueLength = 0);
+        EDCA(cSimpleModule* owner, ChannelType channelType, int maxQueueLength = 0);
         ~EDCA();
         const cObject* getThisPtr() const
         {
@@ -129,7 +129,7 @@ public:
         std::map<t_access_category, EDCAQueue> myQueues;
         uint32_t maxQueueSize;
         simtime_t lastStart; // when we started the last contention;
-        t_channel channelType;
+        ChannelType channelType;
 
         /** @brief Stats */
         long statsNumInternalContention;
@@ -157,7 +157,7 @@ public:
 
     bool isCurrentChannelCCH() override;
 
-    void changeServiceChannel(int channelNumber) override;
+    void changeServiceChannel(Channel channelNumber) override;
 
     /**
      * @brief Change the default tx power the NIC card is using
@@ -172,7 +172,7 @@ public:
      * @param mcs the default modulation and coding scheme
      * to use
      */
-    void setMCS(enum PHY_MCS mcs);
+    void setMCS(MCS mcs);
 
     /**
      * @brief Change the phy layer carrier sense threshold.
@@ -210,16 +210,16 @@ protected:
     virtual void handleBroadcast(Mac80211Pkt* macPkt, DeciderResult80211* res);
 
     /** @brief Set a state for the channel selecting operation.*/
-    void setActiveChannel(t_channel state);
+    void setActiveChannel(ChannelType state);
 
-    void sendFrame(Mac80211Pkt* frame, omnetpp::simtime_t delay, int channelNr, enum PHY_MCS mcs, double txPower_mW);
+    void sendFrame(Mac80211Pkt* frame, omnetpp::simtime_t delay, Channel channelNr, MCS mcs, double txPower_mW);
 
     simtime_t timeLeftInSlot() const;
     simtime_t timeLeftTillGuardOver() const;
 
     bool guardActive() const;
 
-    void attachControlInfo(Mac80211Pkt* mac, int channelNr, enum PHY_MCS mcs, double txPower_mW);
+    void attachControlInfo(Mac80211Pkt* mac, Channel channelNr, MCS mcs, double txPower_mW);
 
     /** @brief maps a application layer priority (up) to an EDCA access category. */
     t_access_category mapUserPriority(int prio);
@@ -254,7 +254,7 @@ protected:
     simtime_t lastBusy;
 
     /** @brief Current state of the channel selecting operation.*/
-    t_channel activeChannel;
+    ChannelType activeChannel;
 
     /** @brief access category of last sent packet */
     t_access_category lastAC;
@@ -268,9 +268,9 @@ protected:
     int headerLength;
 
     bool useSCH;
-    Channels::ChannelNumber mySCH;
+    Channel mySCH;
 
-    std::map<t_channel, std::unique_ptr<EDCA>> myEDCA;
+    std::map<ChannelType, std::unique_ptr<EDCA>> myEDCA;
 
     bool idleChannel;
 
@@ -291,7 +291,7 @@ protected:
     /** @brief The power (in mW) to transmit with.*/
     double txPower;
 
-    enum PHY_MCS mcs; ///< Modulation and coding scheme to use unless explicitly specified.
+    MCS mcs; ///< Modulation and coding scheme to use unless explicitly specified.
 
     /** @brief Id for debug messages */
     std::string myId;
