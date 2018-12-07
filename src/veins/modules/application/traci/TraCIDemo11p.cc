@@ -39,11 +39,11 @@ void TraCIDemo11p::initialize(int stage)
 void TraCIDemo11p::onWSA(DemoServiceAdvertisment* wsa)
 {
     if (currentSubscribedServiceId == -1) {
-        mac->changeServiceChannel(wsa->getTargetChannel());
+        mac->changeServiceChannel(static_cast<Channel>(wsa->getTargetChannel()));
         currentSubscribedServiceId = wsa->getPsid();
         if (currentOfferedServiceId != wsa->getPsid()) {
             stopService();
-            startService((Channels::ChannelNumber) wsa->getTargetChannel(), wsa->getPsid(), "Mirrored Traffic Service");
+            startService(static_cast<Channel>(wsa->getTargetChannel()), wsa->getPsid(), "Mirrored Traffic Service");
         }
     }
 }
@@ -101,9 +101,9 @@ void TraCIDemo11p::handlePositionUpdate(cObject* obj)
 
             // host is standing still due to crash
             if (dataOnSch) {
-                startService(Channels::SCH2, 42, "Traffic Information Service");
+                startService(Channel::sch2, 42, "Traffic Information Service");
                 // started service and server advertising, schedule message to self to send later
-                scheduleAt(computeAsynchronousSendingTime(1, type_SCH), wsm);
+                scheduleAt(computeAsynchronousSendingTime(1, ChannelType::service), wsm);
             }
             else {
                 // send right away on CCH, because channel switching is disabled

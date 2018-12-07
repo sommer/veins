@@ -122,32 +122,32 @@ double NistErrorRate::getChunkSuccessRate(unsigned int datarate, enum Bandwidth 
 {
 
     // get mcs from datarate and bw
-    enum PHY_MCS mcs = getMCS(datarate, bw);
+    MCS mcs = getMCS(datarate, bw);
 
     // compute success rate depending on mcs
     switch (mcs) {
-    case MCS_OFDM_BPSK_R_1_2:
+    case MCS::ofdm_bpsk_r_1_2:
         return getFecBpskBer(snr_mW, nbits, 1);
         break;
-    case MCS_OFDM_BPSK_R_3_4:
+    case MCS::ofdm_bpsk_r_3_4:
         return getFecBpskBer(snr_mW, nbits, 3);
         break;
-    case MCS_OFDM_QPSK_R_1_2:
+    case MCS::ofdm_qpsk_r_1_2:
         return getFecQpskBer(snr_mW, nbits, 1);
         break;
-    case MCS_OFDM_QPSK_R_3_4:
+    case MCS::ofdm_qpsk_r_3_4:
         return getFecQpskBer(snr_mW, nbits, 3);
         break;
-    case MCS_OFDM_QAM16_R_1_2:
+    case MCS::ofdm_qam16_r_1_2:
         return getFec16QamBer(snr_mW, nbits, 1);
         break;
-    case MCS_OFDM_QAM16_R_3_4:
+    case MCS::ofdm_qam16_r_3_4:
         return getFec16QamBer(snr_mW, nbits, 3);
         break;
-    case MCS_OFDM_QAM64_R_2_3:
+    case MCS::ofdm_qam64_r_2_3:
         return getFec64QamBer(snr_mW, nbits, 2);
         break;
-    case MCS_OFDM_QAM64_R_3_4:
+    case MCS::ofdm_qam64_r_3_4:
         return getFec64QamBer(snr_mW, nbits, 3);
         break;
     default:

@@ -169,9 +169,9 @@ protected:
      */
     void attachSignal(AirFrame* airFrame, cObject* ctrlInfo) override;
 
-    void changeListeningChannel(Channels::ChannelNumber channel) override;
+    void changeListeningChannel(Channel channel) override;
 
-    virtual simtime_t getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const override;
+    virtual simtime_t getFrameDuration(int payloadLengthBits, MCS mcs) const override;
 
     void handleSelfMessage(cMessage* msg) override;
     int getRadioState() override;
