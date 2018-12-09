@@ -104,6 +104,7 @@ int Decider80211p::getSignalState(AirFrame* frame)
 
 DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
 {
+    auto frame11p = check_and_cast<AirFrame11p*>(frame);
 
     Signal& s = frame->getSignal();
     simtime_t start = s.getReceptionStart();
@@ -132,7 +133,7 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
         snrMin = 1e200;
     }
 
-    double payloadBitrate = s.getBitrate();
+    double payloadBitrate = getOfdmDatarate(static_cast<PHY_MCS>(frame11p->getMcs()), BANDWIDTH_11P);
 
     DeciderResult80211* result = nullptr;
 

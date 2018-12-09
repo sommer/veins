@@ -40,7 +40,6 @@ Signal::Signal(const Signal& other)
     , numAnalogueModelsApplied(other.numAnalogueModelsApplied)
     , senderPos(other.senderPos)
     , receiverPos(other.receiverPos)
-    , bitrate(other.bitrate)
 {
 }
 
@@ -310,16 +309,6 @@ void Signal::setTiming(simtime_t start, simtime_t dur)
     timingUsed = true;
 }
 
-uint64_t Signal::getBitrate() const
-{
-    return bitrate;
-}
-
-void Signal::setBitrate(uint64_t rate)
-{
-    bitrate = rate;
-}
-
 Signal& Signal::operator=(const double value)
 {
     std::fill(values.begin(), values.end(), value);
@@ -349,8 +338,6 @@ Signal& Signal::operator=(const Signal& other)
     sendingStart = other.getSendingStart();
     duration = other.getDuration();
     propagationDelay = other.getPropagationDelay();
-
-    bitrate = other.getBitrate();
 
     return *this;
 }

@@ -135,7 +135,6 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                 REQUIRE(signal1.getPropagationDelay() == 0);
 
                 REQUIRE(signal1.getNumAnalogueModelsApplied() == 0);
-                REQUIRE(signal1.getBitrate() == 0);
 
                 WHEN("another signal is created with spectrum as parameter")
                 {
@@ -156,7 +155,6 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                         REQUIRE(signal2.getPropagationDelay() == 0);
 
                         REQUIRE(signal2.getNumAnalogueModelsApplied() == 0);
-                        REQUIRE(signal2.getBitrate() == 0);
                     }
                 }
                 WHEN("another signal is created with spectrum and timing as parameters")
@@ -178,7 +176,6 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                         REQUIRE(signal2.getPropagationDelay() == 0);
 
                         REQUIRE(signal2.getNumAnalogueModelsApplied() == 0);
-                        REQUIRE(signal2.getBitrate() == 0);
 
                         WHEN("another signal is created by using the copy constructor with the previous signal")
                         {
@@ -204,7 +201,6 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getPropagationDelay() == signal3.getPropagationDelay());
 
                                 REQUIRE(signal2.getNumAnalogueModelsApplied() == signal3.getNumAnalogueModelsApplied());
-                                REQUIRE(signal2.getBitrate() == signal3.getBitrate());
                             }
                         }
                         WHEN("another signal is created by using the assignment operator with the previous signal")
@@ -231,7 +227,6 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getPropagationDelay() == signal3.getPropagationDelay());
 
                                 REQUIRE(signal2.getNumAnalogueModelsApplied() == signal3.getNumAnalogueModelsApplied());
-                                REQUIRE(signal2.getBitrate() == signal3.getBitrate());
                             }
                         }
                     }
