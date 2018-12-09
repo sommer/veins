@@ -34,7 +34,6 @@ simple PhyLayer80211p extends BasePhyLayer
     parameters:
         @class(Veins::PhyLayer80211p);
         antennaOffsetZ = default(1.895 m);
-        headerLength @unit(bit)  = default(46 bit); //defines the length of the phy header (SIGNAL without PREAMBLE)
         //defines the CCA threshold
         double ccaThreshold @unit(dBm) = default(-65 dBm);
         //enables/disables collection of statistics about collision. notice that

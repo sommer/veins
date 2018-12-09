@@ -44,7 +44,6 @@ using std::unique_ptr;
 
 Define_Module(Veins::PhyLayer80211p);
 
-/** This is needed to circumvent a bug in MiXiM that allows different header length interpretations for receiving and sending airframes*/
 void PhyLayer80211p::initialize(int stage)
 {
     if (stage == 0) {
@@ -63,12 +62,6 @@ void PhyLayer80211p::initialize(int stage)
         overallSpectrum = Spectrum(freqs);
     }
     BasePhyLayer::initialize(stage);
-    if (stage == 0) {
-        int headerLength = par("headerLength");
-        if (headerLength != PHY_HDR_TOTAL_LENGTH) {
-            throw cRuntimeError("The header length of the 802.11p standard is 46bit, please change your omnetpp.ini accordingly by either setting it to 46bit or removing the entry");
-        }
-    }
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::getAnalogueModelFromName(std::string name, ParameterMap& params)
@@ -437,7 +430,6 @@ void PhyLayer80211p::attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
 {
     const auto ctrlInfo11p = check_and_cast<MacToPhyControlInfo11p*>(ctrlInfo);
 
-    // FIXME: confirm frame duration only determined by mac frame (omitting the AirFrame's header size)
     const auto duration = getFrameDuration(airFrame->getEncapsulatedPacket()->getBitLength(), ctrlInfo11p->mcs);
     assert(duration > 0);
     Signal signal(overallSpectrum, simTime(), duration);

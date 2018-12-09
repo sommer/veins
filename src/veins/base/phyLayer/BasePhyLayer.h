@@ -125,7 +125,6 @@ protected:
     cMessage* radioSwitchingOverTimer = nullptr; ///< Self message scheduled to the point in time when the switching process of the radio is over.
     cMessage* txOverTimer = nullptr; ///< Self message scheduled to the point in time when the transmission of an AirFrame is over.
 
-    int headerLength = -1; ///< Stores the length of the phy header in bits.
     BaseWorldUtility* world = nullptr; ///< Pointer to the World Utility, to obtain some global information
 
 private:
