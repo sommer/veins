@@ -388,23 +388,6 @@ public:
     ///@}
 
     /**
-     * @name Bitrate
-     */
-    ///@{
-    /**
-     * Get the bitrate in bit/s.
-     */
-    uint64_t getBitrate() const;
-
-    /**
-     * Set the bitrate.
-     *
-     * @param rate the new bitrate in bit/s
-     */
-    void setBitrate(uint64_t rate);
-    ///@}
-
-    /**
      * Assign a constant power level to all defined frequencies.
      *
      * @param value the power level in milliwatt
@@ -529,9 +512,6 @@ private:
 
     Coord senderPos = Coord(0, 0);
     Coord receiverPos = Coord(0, 0);
-
-    /** @brief Stores the function which describes the bitrate of the signal*/
-    uint64_t bitrate = 0;
 };
 
 /**

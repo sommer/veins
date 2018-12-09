@@ -469,13 +469,13 @@ void PhyLayer80211p::attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
     signal.at(freqIndex - 1) = ctrlInfo11p->txPower_mW;
     signal.at(freqIndex) = ctrlInfo11p->txPower_mW;
     signal.at(freqIndex + 1) = ctrlInfo11p->txPower_mW;
-    signal.setBitrate(getOfdmDatarate(ctrlInfo11p->mcs, BANDWIDTH_11P));
     signal.setDataStart(freqIndex - 1);
     signal.setDataEnd(freqIndex + 1);
     signal.setCenterFrequencyIndex(freqIndex);
     // copy the signal into the AirFrame
     airFrame->setSignal(signal);
     airFrame->setDuration(signal.getDuration());
+    airFrame->setMcs(ctrlInfo11p->mcs);
 }
 
 int PhyLayer80211p::getRadioState()
