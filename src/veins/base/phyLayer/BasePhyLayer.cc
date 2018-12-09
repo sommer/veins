@@ -60,7 +60,6 @@ void BasePhyLayer::initialize(int stage)
         else {
             thermalNoiseValue = 0;
         }
-        headerLength = par("headerLength");
         sensitivity = par("sensitivity").doubleValue();
         sensitivity = FWMath::dBm2mW(sensitivity);
 
@@ -544,7 +543,6 @@ unique_ptr<AirFrame> BasePhyLayer::encapsMsg(cPacket* macPkt)
     // ended at t and added every AirFrame started at t)
     frame->setSchedulingPriority(airFramePriority());
     frame->setProtocolId(myProtocolId());
-    frame->setBitLength(headerLength);
     frame->setId(world->getUniqueAirFrameId());
     frame->setChannel(radio->getCurrentChannel());
 

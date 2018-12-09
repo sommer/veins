@@ -1,14 +1,13 @@
 package org.car2x.veins.base.phyLayer;
 
 import org.car2x.veins.base.connectionManager.IChannelAccess;
- 
+
 // Wireless physical layer module interface.
 moduleinterface IWirelessPhy extends IChannelAccess
 {
     parameters:
         bool recordStats; //enable/disable tracking of statistics (eg. cOutvectors)
-        int headerLength @unit(bit); //defines the length of the phy header (/preamble)
-        
+
         bool usePropagationDelay;        //Should transmission delay be simulated?
         double thermalNoise @unit(dBm);    //the strength of the thermal noise [dBm]
         bool useThermalNoise;            //should thermal noise be considered?
@@ -28,8 +27,8 @@ moduleinterface IWirelessPhy extends IChannelAccess
         double timeSleepToRX @unit(s); // Elapsed time to switch from sleep to receive state
         double timeSleepToTX @unit(s); // Elapsed time to switch from sleep to send state
 
-        int initialRadioState;   // State the radio is initially in (0=RX, 1=TX, 2=Sleep) 
-        
+        int initialRadioState;   // State the radio is initially in (0=RX, 1=TX, 2=Sleep)
+
         double radioMinAtt; //radios gain factor (attenuation) while receiving
         double radioMaxAtt; //radios gain factor (attenuation) while not receiving
 
@@ -40,7 +39,7 @@ moduleinterface IWirelessPhy extends IChannelAccess
         input upperLayerIn;     // from the MAC layer
         output upperLayerOut;     // to the MAC layer
 
-        input upperControlIn;     // control from the MAC layer        
+        input upperControlIn;     // control from the MAC layer
         output upperControlOut;     // control to the MAC layer
 
         input radioIn; // for sendDirect from other physical layers
