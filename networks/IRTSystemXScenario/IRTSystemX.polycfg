@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/polyconvertConfiguration.xsd">
+
+    <input>
+        <net-file value="/home/joseph/Projects/ConfidenceRange/Programs/osm2sumo/IRTSystemX/IRTSystemX.net.xml"/>
+        <osm-files value="IRTSystemX_bbox.osm.xml"/>
+        <osm.keep-full-type value="false"/>
+        <type-file value="/home/joseph/Projects/ConfidenceRange/Programs/osm2sumo/typemap/Polyconvert.typ.xml"/>
+    </input>
+
+    <output>
+        <output-file value="/home/joseph/Projects/ConfidenceRange/Programs/osm2sumo/IRTSystemX/IRTSystemX.poly.xml"/>
+    </output>
+
+</configuration>

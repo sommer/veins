@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <!--debug config-->
+    <copy file="IRTSystemX.net.xml"/>
+    <copy file="IRTSystemX.0.rou.xml"/>
+    <copy file="IRTSystemX.1.rou.xml"/>
+    <copy file="IRTSystemX.poly.xml"/>
+    <copy file="gui-settings.cfg.xml"/>
+    <copy file="type.add.xml"/>
+    <copy file="IRTSystemX.sumo.cfg" type="config"/>
+</launch>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <type-files value="/home/joseph/Projects/ConfidenceRange/Programs/osm2sumo/typemap/Netconvert.typ.xml"/>
+        <osm-files value="IRTSystemX_bbox.osm.xml"/>
+    </input>
+
+    <output>
+        <output-file value="/home/joseph/Projects/ConfidenceRange/Programs/osm2sumo/IRTSystemX/IRTSystemX.net.xml"/>
+    </output>
+
+    <ramp_guessing>
+        <ramps.guess value="true"/>
+    </ramp_guessing>
+
+</configuration>

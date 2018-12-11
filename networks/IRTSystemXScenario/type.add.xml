@@ -1,0 +1,5 @@
+<routes>
+    <vTypeDistribution id="private">
+        <vType vClass="passenger" id="passenger1"  color=".8,.2,.2" accel="2.6" decel="4.5" emergencyDecel="4.5" sigma="0.5" length="5.0" minGap="2.5" maxSpeed="50" probability=".40" speedDev="0.1" guiShape="passenger/sedan"/>
+ 	</vTypeDistribution>
+</routes>
