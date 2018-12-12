@@ -126,7 +126,7 @@ const SimTime SWITCHING_INTERVAL_11P = SimTime().setRaw(50000000000UL);
  */
 const SimTime GUARD_INTERVAL_11P = SimTime().setRaw(4000000000UL);
 
-const enum Bandwidth BANDWIDTH_11P = Bandwidth::ofdm_10_mhz;
+const Bandwidth BANDWIDTH_11P = Bandwidth::ofdm_10_mhz;
 
 namespace Veins {
 
