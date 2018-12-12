@@ -380,16 +380,16 @@ void BasePhyLayer::handleAirFrame(AirFrame* frame)
     // TODO: ask jerome to set air frame priority in his UWBIRPhy
     // assert(frame->getSchedulingPriority() == airFramePriority());
 
-    switch (frame->getState()) {
-    case START_RECEIVE:
+    switch (static_cast<AirFrameState>(frame->getState())) {
+    case AirFrameState::start_receive:
         handleAirFrameStartReceive(frame);
         break;
 
-    case RECEIVING: {
+    case AirFrameState::receiving: {
         handleAirFrameReceiving(frame);
         break;
     }
-    case END_RECEIVE:
+    case AirFrameState::end_receive:
         handleAirFrameEndReceive(frame);
         break;
 
@@ -415,7 +415,7 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame)
     filterSignal(frame);
 
     if (decider && isKnownProtocolId(frame->getProtocolId())) {
-        frame->setState(RECEIVING);
+        frame->setState(static_cast<int>(AirFrameState::receiving));
 
         // pass the AirFrame the first time to the Decider
         handleAirFrameReceiving(frame);
@@ -426,7 +426,7 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame)
         Signal& signal = frame->getSignal();
 
         simtime_t signalEndTime = signal.getReceptionStart() + frame->getDuration();
-        frame->setState(END_RECEIVE);
+        frame->setState(static_cast<int>(AirFrameState::end_receive));
 
         sendSelfMessage(frame, signalEndTime);
     }
@@ -443,7 +443,7 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame)
 
     // check if this is the end of the receiving process
     if (simTime() >= signalEndTime) {
-        frame->setState(END_RECEIVE);
+        frame->setState(static_cast<int>(AirFrameState::end_receive));
         handleAirFrameEndReceive(frame);
         return;
     }
@@ -451,7 +451,7 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame)
     // smaller zero means don't give it to me again
     if (nextHandleTime < 0) {
         nextHandleTime = signalEndTime;
-        frame->setState(END_RECEIVE);
+        frame->setState(static_cast<int>(AirFrameState::end_receive));
 
         // invalid point in time
     }

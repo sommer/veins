@@ -27,21 +27,21 @@ class Radio;
  * The BasePhyLayer represents the physical layer of a nic.
  *
  * The BasePhyLayer is directly connected to the mac layer via OMNeT channels and is able to send messages to other physical layers through sub-classing from ChannelAcces.
- * In order to implement a phy layer, subclass the BasePhyLayer and override these methods:
+ * In order to implement a physical layer, subclass the BasePhyLayer and override these methods:
  *  - initializeRadio
  *  - getAnalogueModelFromName
  *  - getDeciderFromName
  *  - createAirFrame
  *  - attachSignal
  *
- * The BasePhyLayer encapsulates three sub modules.
- * The AnalogueModels, which are responsible for simulating the attenuation of received signals and the Decider which provides the main functionality of the physical layer like signal classification (noise or not noise) and demodulation (calculating transmission errors).
+ * The BasePhyLayer encapsulates three sub modules:
+ * The AnalogueModels, which are responsible for simulating the attenuation of received signals, and the Decider, which provides the main functionality of the physical layer like signal classification (noise or not noise) and demodulation (calculating transmission errors).
  * Furthermore, the Antenna used for gain calculation is managed by the BasePhyLayer.
  *
  * The BasePhyLayer itself is responsible for the OMNeT depended parts of the physical layer which are the following:
  *
  * Module initialization:
- * - read ned-parameters and initialize module, Decider, AnalogueModels and Antenna.
+ * - read ned-parameters and initialize module, Decider, AnalogueModels and Antenna
  *
  * Message handling:
  * - receive messages from mac layer and hand them to the Decider or directly send them to the channel
@@ -69,26 +69,27 @@ protected:
     using ParameterMap = std::map<std::string, cMsgPar>; ///< Used at initialisation to pass the parameters to the AnalogueModel and Decider.
 
     /** The states of the receiving process for AirFrames.*/
-    enum AirFrameStates {
-        START_RECEIVE = 1, ///< Start of actual receiving process of the AirFrame.
-        RECEIVING, ///< AirFrame is being received.
-        END_RECEIVE ///< Receiving process over.
+    enum class AirFrameState {
+        start_receive = 1, ///< Start of actual receiving process of the AirFrame.
+        receiving, ///< AirFrame is being received.
+        end_receive ///< Receiving process over.
     };
 
     enum ProtocolIds {
-        GENERIC = 0,
+        PROTOCOL_ID_GENERIC = 0,
     };
 
     /** @brief Defines the scheduling priority of AirFrames.
      *
-     * AirFrames use a slightly higher priority than normal to ensure channel consistency. This means that before anything else happens at a time point t every AirFrame which ended at t has been removed and every AirFrame started at t has been added to the channel.
+     * AirFrames use a slightly higher priority than normal to ensure channel consistency.
+     * This means that before anything else happens at a time point t every AirFrame which ended at t has been removed and every AirFrame started at t has been added to the channel.
      */
     static short airFramePriority()
     {
         return 10;
     }
 
-    int protocolId = GENERIC; ///< The ID of the protocol this phy can transceive.
+    int protocolId = PROTOCOL_ID_GENERIC; ///< The ID of the protocol this phy can transceive.
     double thermalNoiseValue = 0; ///< Defines the strength of the thermal noise.
     double sensitivity; ///< The sensitivity describes the minimum strength a signal must have to be received.
     bool recordStats; ///< Stores if tracking of statistics (esp. cOutvectors) is enabled.
@@ -96,7 +97,7 @@ protected:
     std::unique_ptr<Radio> radio; ///< The state machine storing the current radio state (TX, RX, SLEEP).
 
     /**
-     * @brief Shared pointer to the Antenna used for this node.
+     * Shared pointer to the Antenna used for this node.
      *
      * Using a shared pointer ensures proper handling of a signal is possible, even after the sender has been destroyed.
      */
@@ -220,7 +221,6 @@ protected:
     /**
      * Handle messages received from the channel.
      *
-     * @see handleAirFrameFirstReceive
      * @see handleAirFrameStartReceive
      * @see handleAirFrameReceiving
      * @see handleAirFrameEndReceive
@@ -243,22 +243,17 @@ protected:
     virtual void handleSelfMessage(cMessage* msg);
 
     /**
-     * Handle incoming AirFrames with the state FIRST_RECEIVE.
-     */
-    void handleAirFrameFirstReceive(AirFrame* msg);
-
-    /**
-     * Handle incoming AirFrames with the state START_RECEIVE.
+     * Handle incoming AirFrames with the state AirFrameState::start_receive.
      */
     virtual void handleAirFrameStartReceive(AirFrame* msg);
 
     /**
-     * Handle incoming AirFrames with the state RECEIVING.
+     * Handle incoming AirFrames with the state AirFrameState::receiving.
      */
     virtual void handleAirFrameReceiving(AirFrame* msg);
 
     /**
-     * Handle incoming AirFrames with the state END_RECEIVE.
+     * Handle incoming AirFrames with the state AirFrameState::end_receive.
      */
     virtual void handleAirFrameEndReceive(AirFrame* msg);
 
