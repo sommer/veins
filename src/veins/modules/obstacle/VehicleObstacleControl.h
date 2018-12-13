@@ -72,9 +72,9 @@ public:
      * @param h: height of obstacle
      * @param d: distance between sender and receiver
      * @param d1: distance between sender and obstacle
-     * @param f: frequency of the transmission
+     * @param attenuationPrototype: a prototype Signal for constructing a Signal containing the attenuation factors for each frequency
      */
-    static double getVehicleAttenuationSingle(double h1, double h2, double h, double d, double d1, double f);
+    static Signal getVehicleAttenuationSingle(double h1, double h2, double h, double d, double d1, Signal attenuationPrototype);
 
     /**
      * compute attenuation due to vehicles.
@@ -82,9 +82,9 @@ public:
      * M. Boban, T. T. V. Vinhoza, M. Ferreira, J. Barros, and O. K. Tonguz: 'Impact of Vehicles as Obstacles in Vehicular Ad Hoc Networks', IEEE JSAC, Vol. 29, No. 1, January 2011
      *
      * @param dz_vec: a vector of (distance, height) referring to potential obstacles along the line of sight, starting with the sender and ending with the receiver
-     * @param f: the frequency of the transmission
+     * @param attenuationPrototype: a prototype Signal for constructing a Signal containing the attenuation factors for each frequency
      */
-    static double getVehicleAttenuationDZ(const std::vector<std::pair<double, double>>& dz_vec, double f);
+    static Signal getVehicleAttenuationDZ(const std::vector<std::pair<double, double>>& dz_vec, Signal attenuationPrototype);
 
 protected:
     AnnotationManager* annotations;

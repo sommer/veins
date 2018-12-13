@@ -30,6 +30,7 @@
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/base/toolbox/Signal.h"
 
+using Veins::Signal;
 using Veins::VehicleObstacle;
 using Veins::VehicleObstacleControl;
 
@@ -90,21 +91,31 @@ void VehicleObstacleControl::erase(const VehicleObstacle* obstacle)
     delete obstacle;
 }
 
-double VehicleObstacleControl::getVehicleAttenuationSingle(double h1, double h2, double h, double d, double d1, double f)
+Signal VehicleObstacleControl::getVehicleAttenuationSingle(double h1, double h2, double h, double d, double d1, Signal attenuationPrototype)
 {
-    double lambda = 0.3 / f;
-    double d2 = d - d1;
-    double y = (h2 - h1) / d * d1 + h1;
-    double H = h - y;
-    double r1 = sqrt(lambda * d1 * d2 / d);
-    double V0 = sqrt(2) * H / r1;
+    Signal attenuation = Signal(attenuationPrototype.getSpectrum());
 
-    if (V0 <= -0.7) return 0;
+    for (uint16_t i = 0; i < attenuation.getNumValues(); i++) {
+        double freq = attenuation.getSpectrum().freqAt(i);
+        double lambda = BaseWorldUtility::speedOfLight() / freq;
+        double d2 = d - d1;
+        double y = (h2 - h1) / d * d1 + h1;
+        double H = h - y;
+        double r1 = sqrt(lambda * d1 * d2 / d);
+        double V0 = sqrt(2) * H / r1;
 
-    return 6.9 + 20 * log10(sqrt(pow((V0 - 0.1), 2) + 1) + V0 - 0.1);
+        if (V0 <= -0.7) {
+            attenuation.at(i) = 0;
+        }
+        else {
+            attenuation.at(i) = 6.9 + 20 * log10(sqrt(pow((V0 - 0.1), 2) + 1) + V0 - 0.1);
+        }
+    }
+
+    return attenuation;
 }
 
-double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pair<double, double>>& dz_vec, double f)
+Signal VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pair<double, double>>& dz_vec, Signal attenuationPrototype)
 {
 
     // basic sanity check
@@ -148,7 +159,7 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
     mo.push_back(dz_vec.size() - 1);
 
     // calculate attenuation due to MOs
-    double attenuation_mo = 0;
+    Signal attenuation_mo(attenuationPrototype.getSpectrum());
     for (size_t mm = 0; mm < mo.size() - 2; ++mm) {
         size_t tx = mo[mm];
         size_t ob = mo[mm + 1];
@@ -160,13 +171,13 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
         double d1 = dz_vec[ob].first - dz_vec[tx].first;
         double h = dz_vec[ob].second;
 
-        double ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, f);
+        Signal ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, attenuationPrototype);
 
         attenuation_mo += ad_mo;
     }
 
     // calculate attenuation due to "small obstacles" (i.e. the ones in-between MOs)
-    double attenuation_so = 0;
+    Signal attenuation_so(attenuationPrototype.getSpectrum());
     for (size_t i = 0; i < mo.size() - 1; ++i) {
         size_t delta = mo[i + 1] - mo[i];
 
@@ -185,7 +196,7 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
             double d1 = dz_vec[ob].first - dz_vec[tx].first;
             double h = dz_vec[ob].second;
 
-            double ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, f);
+            Signal ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, attenuationPrototype);
             attenuation_so += ad_mo;
         }
         else {
@@ -217,7 +228,7 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
             double d1 = dz_vec[ob].first - dz_vec[tx].first;
             double h = dz_vec[ob].second;
 
-            double ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, f);
+            Signal ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, attenuationPrototype);
             attenuation_so += ad_mo;
         }
     }

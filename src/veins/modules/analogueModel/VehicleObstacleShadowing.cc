@@ -44,13 +44,15 @@ void VehicleObstacleShadowing::filterSignal(Signal* signal, const AntennaPositio
     potentialObstacles.insert(potentialObstacles.begin(), std::make_pair(0, senderHeight));
     potentialObstacles.emplace_back(senderPos.distance(receiverPos), receiverHeight);
 
-    double attenuationDB = VehicleObstacleControl::getVehicleAttenuationDZ(potentialObstacles, signal->getSpectrum()[signal->getCenterFrequencyIndex()]);
+    auto attenuationDB = VehicleObstacleControl::getVehicleAttenuationDZ(potentialObstacles, Signal(signal->getSpectrum()));
 
-    EV << "t=" << simTime() << ": Attenuation by vehicles is " << attenuationDB << " dB" << std::endl;
+    EV_TRACE << "t=" << simTime() << ": Attenuation by vehicles is " << attenuationDB << std::endl;
 
-    auto factor = pow(10.0, -attenuationDB / 10.0);
+    // convert from "dB loss" to a multiplicative factor
+    Signal attenuation(attenuationDB.getSpectrum());
+    for (uint16_t i = 0; i < attenuation.getNumValues(); i++) {
+        attenuation.at(i) = pow(10.0, -attenuationDB.at(i) / 10.0);
+    }
 
-    EV_TRACE << "value is: " << factor << endl;
-
-    *signal *= factor;
+    *signal *= attenuation;
 }
