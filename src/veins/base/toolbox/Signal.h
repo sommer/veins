@@ -70,7 +70,7 @@ public:
     /**
      * Get the power in milliwatt for the given frequency index.
      *
-     * @param freq index of the power level to return
+     * @param index index of the power level to return
      * @return a reference to the power level
      */
     double& at(size_t index);
@@ -78,7 +78,7 @@ public:
     /**
      * Get the power in milliwatt for the given frequency index.
      *
-     * @param freq index of the power level to return
+     * @param index index of the power level to return
      * @return a reference to the power level
      */
     const double& at(size_t index) const;
@@ -129,7 +129,7 @@ public:
     /**
      * Get the power in milliwatt for the given data frequency index.
      *
-     * @param freq index of the power level to return
+     * @param index index of the power level to return
      * @return a reference to the power level
      */
     double& dataAt(size_t index);
@@ -137,7 +137,7 @@ public:
     /**
      * Get the power in milliwatt for the given data frequency index.
      *
-     * @param freq index of the power level to return
+     * @param index index of the power level to return
      * @return a reference to the power level
      */
     const double& dataAt(size_t index) const;
@@ -202,7 +202,7 @@ public:
      *
      * This implicitly changes the data frequncey range's end.
      *
-     * @param index new data frequency range's length
+     * @param num new data frequency range's length
      */
     void setDataNumValues(size_t num);
     ///@}
