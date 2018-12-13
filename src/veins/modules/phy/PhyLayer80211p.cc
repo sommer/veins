@@ -381,38 +381,6 @@ void PhyLayer80211p::changeListeningFrequency(double freq)
     dec->changeFrequency(freq);
 }
 
-void PhyLayer80211p::handleMessage(cMessage* msg)
-{
-    // self messages
-    if (msg->isSelfMessage()) {
-        handleSelfMessage(msg);
-
-        // MacPkts <- MacToPhyControlInfo
-    }
-    else if (msg->getArrivalGateId() == upperLayerIn) {
-        BasePhyLayer::handleUpperMessage(msg);
-
-        // controlmessages
-    }
-    else if (msg->getArrivalGateId() == upperControlIn) {
-        BasePhyLayer::handleUpperControlMessage(msg);
-
-        // AirFrames
-    }
-    else if (msg->getKind() == AIR_FRAME) {
-        if (dynamic_cast<AirFrame11p*>(msg) == nullptr) {
-            EV_TRACE << "non-AirFrame11p received. Will be discarded!" << std::endl;
-            delete msg;
-            return;
-        }
-        BasePhyLayer::handleAirFrame(static_cast<AirFrame*>(msg));
-    }
-    else {
-        EV << "Unknown message received." << endl;
-        delete msg;
-    }
-}
-
 void PhyLayer80211p::handleSelfMessage(cMessage* msg)
 {
 

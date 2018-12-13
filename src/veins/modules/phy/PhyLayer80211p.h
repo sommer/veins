@@ -161,7 +161,6 @@ protected:
 
     void changeListeningFrequency(double freq) override;
 
-    void handleMessage(cMessage* msg) override;
     void handleSelfMessage(cMessage* msg) override;
     int getRadioState() override;
     simtime_t setRadioState(int rs) override;
