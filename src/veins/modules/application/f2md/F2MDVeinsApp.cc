@@ -13,12 +13,12 @@
 
 Define_Module(JosephVeinsApp);
 //Simulation Parameters
-#define serialNumber "IRT-DEMO"
+#define serialNumber "IRT-Data"
 #define savePath "../../../../mdmSave/"
 
-#define randomConf false
-#define confPos 3.0
-#define confSpd 0.5
+#define randomConf true
+#define confPos 5.0
+#define confSpd 1.0
 #define confHea 0
 
 #define SAVE_PERIOD 1 //60 seconds
@@ -44,7 +44,7 @@ static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::ConstPos,
         attackTypes::DoSDisruptiveSybil, attackTypes::DataReplaySybil, };
 
 #define LOCAL_ATTACKER_PROB 0.1
-#define LOCAL_ATTACK_TYPE attackTypes::DoSDisruptiveSybil
+#define LOCAL_ATTACK_TYPE attackTypes::DataReplaySybil
 //ConstPos, ConstPosOffset, RandomPos, RandomPosOffset,
 //ConstSpeed, ConstSpeedOffset, RandomSpeed, RandomSpeedOffset,
 //EventualStop, Disruptive, DataReplay, StaleMessages,
@@ -78,13 +78,13 @@ static bool writeSelfMsg = false;
 //writeBsms
 static bool writeBsmsV1 = false;
 static bool writeBsmsV2 = false;
-static bool writeListBsmsV1 = false;
-static bool writeListBsmsV2 = false;
+static bool writeListBsmsV1 = true;
+static bool writeListBsmsV2 = true;
 //writeReport
 static bool writeReportsV1 = false;
 static bool writeReportsV2 = false;
-static bool writeListReportsV1 = false;
-static bool writeListReportsV2 = false;
+static bool writeListReportsV1 = true;
+static bool writeListReportsV2 = true;
 
 static bool sendReportsV1 = false;
 static bool sendReportsV2 = false;
@@ -340,7 +340,6 @@ mbTypes::Mbs JosephVeinsApp::induceMisbehavior(double localAttacker,
 }
 
 void JosephVeinsApp::onBSM(BasicSafetyMessage* bsm) {
-
     unsigned long senderPseudonym = bsm->getSenderPseudonym();
 
     if (EnableV1) {

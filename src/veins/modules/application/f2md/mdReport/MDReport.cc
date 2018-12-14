@@ -156,7 +156,7 @@ bool MDReport::writeStrToFile(const std::string strFileCnst,
     int gentime = generationTime;
     int gentime0000 = (generationTime - gentime) * 10000;
 
-    std::string dirnameStr = strFileCnst + serial + "/MDReports_" + curDate;
+    std::string dirnameStr = strFileCnst + serial + "/MDReports_"+version+"_"+ curDate;
     const char* dirnameConst = dirnameStr.c_str();
 
     struct stat info;
@@ -167,7 +167,7 @@ bool MDReport::writeStrToFile(const std::string strFileCnst,
         mkdir(dirnameConst, 0777);
     }
 
-    std::string strFile = strFileCnst + serial + "/MDReports_" + curDate
+    std::string strFile = strFileCnst + serial + "/MDReports_"+version+"_"+ curDate
             + "/MDReport_" + version + "_" + std::to_string(gentime) + "-"
             + std::to_string(gentime0000) + "_" + std::to_string(senderPseudonym) + "_"
             + std::to_string(reportedPseudo) + ".rep";
@@ -199,7 +199,7 @@ bool MDReport::writeStrToFile(const std::string strFileCnst,
 bool MDReport::writeStrToFileList(const std::string strFileCnst,
         const std::string serial, const std::string version,
         const std::string outStr,const std::string curDate) {
-    std::string dirnameStr = strFileCnst + serial + "/MDReportsList_" + curDate;
+    std::string dirnameStr = strFileCnst + serial + "/MDReportsList_"+version+"_"+ curDate;
     const char* dirnameConst = dirnameStr.c_str();
 
     struct stat info;
@@ -210,7 +210,7 @@ bool MDReport::writeStrToFileList(const std::string strFileCnst,
         mkdir(dirnameConst, 0777);
     }
 
-    std::string strFile = strFileCnst + serial + "/MDReportsList_" + curDate
+    std::string strFile = strFileCnst + serial + "/MDReportsList_"+version+"_"+ curDate
             + "/MDReport_" + version + "_" + std::to_string(senderPseudonym) + ".lrep";
 
 

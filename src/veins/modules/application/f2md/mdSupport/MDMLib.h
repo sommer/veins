@@ -60,6 +60,8 @@ public:
     double EllipseEllipseIntersectionFactor(Coord pos1, Coord posConf1, Coord pos2, Coord posConf2, double heading1,
             double heading2, Coord size1, Coord size2);
 
+    double SafeAcos (double x);
+
 };
 
 #endif

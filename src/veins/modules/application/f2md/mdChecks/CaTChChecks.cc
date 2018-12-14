@@ -182,8 +182,14 @@ double CaTChChecks::IntersectionCheck(Coord * nodePosition1,
 
     intFactor2 = intFactor2 *  ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
     intFactor2 = 1 - intFactor2;
+
+
     if(intFactor2>1){
         intFactor2 = 1;
+    }
+
+    if(intFactor2<0){
+        intFactor2 = 0;
     }
 
     return intFactor2;

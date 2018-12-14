@@ -94,14 +94,14 @@ double MDMLib::calculateCircleSegment(double radius, double intDistance) {
     }
 
     if (radius > intDistance) {
-        area = radius * radius * acos((radius - intDistance) / radius)
+        area = radius * radius * SafeAcos((radius - intDistance) / radius)
                 - (radius - intDistance)
                         * sqrt(
                                 2 * radius * intDistance
                                         - intDistance * intDistance);
     } else {
         double intDistanceTemp = 2 * radius - intDistance;
-        area = radius * radius * acos((radius - intDistanceTemp) / radius)
+        area = radius * radius * SafeAcos((radius - intDistanceTemp) / radius)
                 - (radius - intDistanceTemp)
                         * sqrt(
                                 2 * radius * intDistanceTemp
@@ -140,14 +140,21 @@ double MDMLib::calculateCircleCircleIntersection(double r0, double r1,
 
 // Circles partially overlap
     else {
-        double phi = (acos((rr0 + (d * d) - rr1) / (2 * r0 * d))) * 2;
-        double theta = (acos((rr1 + (d * d) - rr0) / (2 * r1 * d))) * 2;
+        double phi = (SafeAcos((rr0 + (d * d) - rr1) / (2 * r0 * d))) * 2;
+        double theta = (SafeAcos((rr1 + (d * d) - rr0) / (2 * r1 * d))) * 2;
         double area1 = 0.5 * theta * rr1 - 0.5 * rr1 * sin(theta);
         double area2 = 0.5 * phi * rr0 - 0.5 * rr0 * sin(phi);
 
 // Return area of intersection
         return area1 + area2;
     }
+}
+double MDMLib::SafeAcos(double x) {
+    if (x < -1.0)
+        x = -1.0;
+    else if (x > 1.0)
+        x = 1.0;
+    return acos(x);
 }
 
 double MDMLib::CircleCircleFactor(double d, double r1, double r2,
@@ -195,9 +202,7 @@ double MDMLib::CircleCircleFactor(double d, double r1, double r2,
     } else {
         double area1 = calculateCircleCircleIntersection(r1, range / 2, d1);
         double area2 = calculateCircleCircleIntersection(r2, range / 2, d2);
-
         double factor = (area1 + area2) / (PI * r1 * r1 + PI * r2 * r2);
-
         return factor;
     }
 }
@@ -580,7 +585,7 @@ double MDMLib::importanceFactor(double r1, double r2, double d) {
     factor1 = (factor1) / ((e1 - s1) / (2 * r1));
     factor2 = (factor2) / ((e2 - s2) / (2 * r2));
 
-    return  (2 * (factor1 * factor2) / (factor1 + factor2) )/d;
+    return (2 * (factor1 * factor2) / (factor1 + factor2)) / d;
 }
 
 double MDMLib::CircleIntersectionFactor(double conf1, double conf2, double d,
@@ -697,6 +702,10 @@ double MDMLib::EllipseEllipseIntersectionFactor(Coord pos1, Coord posConf1,
     } else {
         factor = factor2;
     }
+
+//    if (factor > 1) {
+//        factor = 1;
+//    }
 
 //    double maxFactor = 1
 //            - (((size1.x / 2) * (size1.y / 2) * PI)

@@ -217,7 +217,7 @@ bool BsmPrintable::writeStrToFile(const std::string strFileCnst,
         mkdir(upperDirNameConst, 0777);
     }
 
-    std::string dirnameStr = strFileCnst + serial + "/MDBsms_" + curDate;
+    std::string dirnameStr = strFileCnst + serial + "/MDBsms_"+version+"_"+ curDate;
     const char* dirnameConst = dirnameStr.c_str();
 
     struct stat info2;
@@ -228,7 +228,7 @@ bool BsmPrintable::writeStrToFile(const std::string strFileCnst,
         mkdir(dirnameConst, 0777);
     }
 
-    std::string strFile = strFileCnst + serial + "/MDBsms_" + curDate
+    std::string strFile = strFileCnst + serial + "/MDBsms_"+version+"_"+ curDate
             + "/MDBsm_" + version + "_" + std::to_string(gentime) + "-"
             + std::to_string(gentime0000) + "_" + std::to_string(receiverPseudo)
             + "_" + std::to_string(bsm.getSenderPseudonym()) + ".bsm";
@@ -269,7 +269,7 @@ bool BsmPrintable::writeStrToFileList(const std::string strFileCnst,
         mkdir(upperDirNameConst, 0777);
     }
 
-    std::string dirnameStr = strFileCnst + serial + "/MDBsmsList_" + curDate;
+    std::string dirnameStr = strFileCnst + serial + "/MDBsmsList_"+version+"_"+ curDate;
     const char* dirnameConst = dirnameStr.c_str();
 
     struct stat info2;
@@ -280,7 +280,7 @@ bool BsmPrintable::writeStrToFileList(const std::string strFileCnst,
         mkdir(dirnameConst, 0777);
     }
 
-    std::string strFile = strFileCnst + serial + "/MDBsmsList_" + curDate
+    std::string strFile = strFileCnst + serial + "/MDBsmsList_"+version+"_"+ curDate
             + "/MDBsm_" + version + "_" + std::to_string(receiverPseudo)
             + ".lbsm";
 
