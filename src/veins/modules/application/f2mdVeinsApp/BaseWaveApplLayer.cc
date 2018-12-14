@@ -115,7 +115,7 @@ void BaseWaveApplLayer::initialize(int stage) {
                                     << std::endl;
                 }
                 firstBeacon = computeAsynchronousSendingTime(beaconInterval,
-                        type_CCH);
+                        ChannelType::control);
             }
 
             if (sendBeacons) {
@@ -126,7 +126,7 @@ void BaseWaveApplLayer::initialize(int stage) {
 }
 
 simtime_t BaseWaveApplLayer::computeAsynchronousSendingTime(simtime_t interval,
-        t_channel chan) {
+        ChannelType chan) {
 
     /*
      * avoid that periodic messages for one channel type are scheduled in the other channel interval
@@ -161,11 +161,11 @@ simtime_t BaseWaveApplLayer::computeAsynchronousSendingTime(simtime_t interval,
     if (firstEvent.raw() % (2 * switchingInterval.raw())
             > switchingInterval.raw()) {
         // firstEvent is within a sch interval
-        if (chan == type_CCH)
+        if (chan == ChannelType::control)
             firstEvent -= switchingInterval;
     } else {
         // firstEvent is within a cch interval, so adjust for SCH messages
-        if (chan == type_SCH)
+        if (chan == ChannelType::service)
             firstEvent += switchingInterval;
     }
 
@@ -210,10 +210,6 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
 
         bsm->setSenderWidth(myWidth);
         bsm->setSenderLength(myLength);
-
-        bsm->setPsid(-1);
-        bsm->setChannelNumber(Channels::CCH);
-        bsm->addBitLength(beaconLengthBits);
 
         addMyBsm(*bsm);
         // Genuine
@@ -263,20 +259,20 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
             }
         }
         bsm->setPsid(-1);
-        bsm->setChannelNumber(Channels::CCH);
+        bsm->setChannelNumber(static_cast<int>(Channel::cch));
         bsm->addBitLength(beaconLengthBits);
         wsm->setUserPriority(beaconUserPriority);
     } else if (DemoServiceAdvertisment* wsa =
             dynamic_cast<DemoServiceAdvertisment*>(wsm)) {
-        wsa->setChannelNumber(Channels::CCH);
-        wsa->setTargetChannel(currentServiceChannel);
+        wsa->setChannelNumber(static_cast<int>(Channel::cch));
+        wsa->setTargetChannel(static_cast<int>(currentServiceChannel));
         wsa->setPsid(currentOfferedServiceId);
         wsa->setServiceDescription(currentServiceDescription.c_str());
     } else {
         if (dataOnSch)
-            wsm->setChannelNumber(Channels::SCH1); // will be rewritten at Mac1609_4 to actual Service Channel. This is just so no controlInfo is needed
-        else
-            wsm->setChannelNumber(Channels::CCH);
+            wsm->setChannelNumber(static_cast<int>(Channel::sch1)); // will be rewritten at Mac1609_4 to actual Service Channel. This is just so no controlInfo is needed
+          else
+              wsm->setChannelNumber(static_cast<int>(Channel::cch));
         wsm->addBitLength(dataLengthBits);
         wsm->setUserPriority(dataUserPriority);
     }
@@ -294,8 +290,7 @@ void BaseWaveApplLayer::receiveSignal(cComponent* source, simsignal_t signalID,
 }
 
 void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
-    ChannelMobilityPtrType const mobility = check_and_cast<
-            ChannelMobilityPtrType>(obj);
+    ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
 
     RelativeOffset relativeOffset = RelativeOffset(&curPositionConfidence,
             &curSpeedConfidence, &curHeadingConfidence, &deltaRPosition,
@@ -304,7 +299,7 @@ void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
 //    GaussianRandom relativeOffset = GaussianRandom(&curPositionConfidence,
 //            &curSpeedConfidence, &curHeadingConfidence);
 
-    curPosition = relativeOffset.OffsetPosition(mobility->getCurrentPosition());
+    curPosition = relativeOffset.OffsetPosition(mobility->getPositionAt(simTime()));
     curSpeed = relativeOffset.OffsetSpeed(mobility->getCurrentSpeed());
     curHeading = relativeOffset.OffsetHeading(mobility->getCurrentDirection());
 }
@@ -375,8 +370,8 @@ BaseWaveApplLayer::~BaseWaveApplLayer() {
     findHost()->unsubscribe(BaseMobility::mobilityStateChangedSignal, this);
 }
 
-void BaseWaveApplLayer::startService(Channels::ChannelNumber channel,
-        int serviceId, std::string serviceDescription) {
+void BaseWaveApplLayer::startService(Channel channel, int serviceId, std::string serviceDescription)
+{
     if (sendWSAEvt->isScheduled()) {
         error("Starting service although another service was already started");
     }
@@ -386,7 +381,7 @@ void BaseWaveApplLayer::startService(Channels::ChannelNumber channel,
     currentServiceChannel = channel;
     currentServiceDescription = serviceDescription;
 
-    simtime_t wsaTime = computeAsynchronousSendingTime(wsaInterval, type_CCH);
+    simtime_t wsaTime = computeAsynchronousSendingTime(wsaInterval, ChannelType::control);
     scheduleAt(wsaTime, sendWSAEvt);
 }
 

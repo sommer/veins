@@ -502,6 +502,7 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
             RangePlausibilityCheck(&myPosition, &myPositionConfidence,
                     &senderPos, &senderPosConfidence));
 
+
     bsmCheck.setSpeedPlausibility(
             SpeedPlausibilityCheck(
                     mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
@@ -537,20 +538,6 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
                         mdmLib.calculateDeltaTime(bsm,
                                 senderNode->getLatestBSMAddr())));
 
-        bsmCheck.setPositionSpeedConsistancy(
-                PositionSpeedConsistancyCheck(&senderPos, &senderPosConfidence,
-                        &senderNode->getLatestBSMAddr()->getSenderPos(),
-                        &senderNode->getLatestBSMAddr()->getSenderPosConfidence(),
-                        mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
-                        mdmLib.calculateSpeedPtr(
-                                &bsm->getSenderSpeedConfidence()),
-                        mdmLib.calculateSpeedPtr(
-                                &senderNode->getLatestBSMAddr()->getSenderSpeed()),
-                        mdmLib.calculateSpeedPtr(
-                                &senderNode->getLatestBSMAddr()->getSenderSpeedConfidence()),
-                        mdmLib.calculateDeltaTime(bsm,
-                                senderNode->getLatestBSMAddr())));
-
         bsmCheck.setBeaconFrequency(
                 BeaconFrequencyCheck(bsm->getArrivalTime().dbl(),
                         senderNode->getLatestBSMAddr()->getArrivalTime().dbl()));
@@ -566,6 +553,21 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
                         mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
                         mdmLib.calculateSpeedPtr(
                                 &bsm->getSenderSpeedConfidence())));
+
+        bsmCheck.setPositionSpeedConsistancy(
+                PositionSpeedConsistancyCheck(&senderPos, &senderPosConfidence,
+                        &senderNode->getLatestBSMAddr()->getSenderPos(),
+                        &senderNode->getLatestBSMAddr()->getSenderPosConfidence(),
+                        mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
+                        mdmLib.calculateSpeedPtr(
+                                &bsm->getSenderSpeedConfidence()),
+                        mdmLib.calculateSpeedPtr(
+                                &senderNode->getLatestBSMAddr()->getSenderSpeed()),
+                        mdmLib.calculateSpeedPtr(
+                                &senderNode->getLatestBSMAddr()->getSenderSpeedConfidence()),
+                        mdmLib.calculateDeltaTime(bsm,
+                                senderNode->getLatestBSMAddr())));
+
 
     } else {
         bsmCheck.setSuddenAppearence(

@@ -123,7 +123,7 @@ void JosephVeinsApp::initialize(int stage) {
         myPcType = PC_TYPE;
         pseudoNum = 0;
 
-        pcPolicy = PCPolicy(mobility->getCurrentPosition());
+        pcPolicy = PCPolicy(mobility->getPositionAt(simTime()));
 
         pcPolicy.setMbType(myMdType);
         pcPolicy.setMdAuthority(&mdStats);
