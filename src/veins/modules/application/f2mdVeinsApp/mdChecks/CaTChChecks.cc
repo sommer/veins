@@ -166,8 +166,11 @@ double CaTChChecks::IntersectionCheck(Coord * nodePosition1,
 
 //    double distance = mdmLib.calculateDistancePtr(nodePosition1, nodePosition2);
 //    double intFactor = mdmLib.CircleIntersectionFactor(
-//            nodePositionConfidence1.x, nodePositionConfidence2.x, distance,
+//            nodePositionConfidence1->x, nodePositionConfidence2->x, distance,
 //            MIN_INT_DIST);
+//
+//    intFactor = intFactor *  ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
+//
 //    intFactor = 1 - intFactor;
 //    return intFactor;
 
@@ -178,8 +181,12 @@ double CaTChChecks::IntersectionCheck(Coord * nodePosition1,
             *nodeSize2);
 
     intFactor2 = intFactor2 *  ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
+    intFactor2 = 1 - intFactor2;
+    if(intFactor2>1){
+        intFactor2 = 1;
+    }
 
-    return (1 - intFactor2);
+    return intFactor2;
 
 }
 

@@ -22,7 +22,7 @@
 //Detection Parameters
 #define MAX_CONFIDENCE_RANGE 10 //3
 #define MAX_PLAUSIBLE_RANGE 417 // 415
-#define MIN_INT_DIST 0.9 // 3.292091
+#define MIN_INT_DIST 1.8 // 3.292091
 
 #define MAX_TIME_DELTA 1.1
 #define MAX_DELTA_INTER 1.0 //1.001

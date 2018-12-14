@@ -33,7 +33,13 @@ void MDAttack::init(attackTypes::Attacks myAttackType) {
     ConstSpeedOffsetX = genLib.RandomDouble(RandomSpeedOffsetX/5, RandomSpeedOffsetX);
     ConstSpeedOffsetY = genLib.RandomDouble(RandomSpeedOffsetY/5, RandomSpeedOffsetY);
 
-    if (myAttackType == attackTypes::Sybil) {
+    if (myAttackType == attackTypes::GridSybil) {
+        for (int var = 0; var < SybilVehNumber; ++var) {
+            SybilPseudonyms[var] = pcPolicy->getNextPseudonym();
+        }
+    }
+
+    if (myAttackType == attackTypes::DataReplaySybil) {
         for (int var = 0; var < SybilVehNumber; ++var) {
             SybilPseudonyms[var] = pcPolicy->getNextPseudonym();
         }
@@ -325,11 +331,10 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
 
     case attackTypes::DataReplay: {
         if (detectedNodes->getNodesNum() > 0) {
-            attackBsm = nextAttackBsm;
-            attackBsm.setSenderPseudonym(*myPseudonym);
-            nextAttackBsm = *detectedNodes->getNextAttackedBsm(*curPosition,
+            attackBsm = *detectedNodes->getNextAttackedBsm(*curPosition,
                     nextAttackBsm.getSenderPseudonym(),
                     nextAttackBsm.getArrivalTime().dbl());
+            attackBsm.setSenderPseudonym(*myPseudonym);
             targetNode = nextAttackBsm.getSenderPseudonym();
         }
     }
@@ -406,7 +411,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
     }
         break;
 
-    case attackTypes::Sybil: {
+    case attackTypes::GridSybil: {
 
         if (!DoSInitiated) {
             beaconInterval->setRaw(
@@ -512,7 +517,70 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
     }
         break;
 
+    case attackTypes::DoSRandomSybil: {
+        if (!DoSInitiated) {
+            beaconInterval->setRaw(beaconInterval->raw() / DosMultipleFreq);
+            DoSInitiated = true;
+        }
+        attackBsm = myBsm[0];
+
+        attackBsm.setSenderPseudonym(pcPolicy->getNextPseudonym());
+
+        double x = genLib.RandomDouble(0, RandomPosX);
+        double y = genLib.RandomDouble(0, RandomPosY);
+
+        double sx = genLib.RandomDouble(0, RandomSpeedX);
+        double sy = genLib.RandomDouble(0, RandomSpeedY);
+
+        double hx = genLib.RandomDouble(-1, 1);
+        double hy = genLib.RandomDouble(-1, 1);
+
+        attackBsm.setSenderPos(Coord(x, y, (*curPosition).z));
+        attackBsm.setSenderPosConfidence(*curPositionConfidence);
+
+        attackBsm.setSenderSpeed(Coord(sx, sy, (*curSpeed).z));
+        attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
+
+        attackBsm.setSenderHeading(Coord(hx, hy, (*curHeading).z));
+        attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
+
+        attackBsm.setSenderWidth(*myWidth);
+        attackBsm.setSenderLength(*myLength);
     }
+        break;
+
+    case attackTypes::DoSDisruptiveSybil: {
+        if (!DoSInitiated) {
+            beaconInterval->setRaw(beaconInterval->raw() / DosMultipleFreq);
+            DoSInitiated = true;
+        }
+
+        if (detectedNodes->getNodesNum() > 0) {
+            attackBsm = nextAttackBsm;
+            attackBsm.setSenderPseudonym(pcPolicy->getNextPseudonym());
+            nextAttackBsm = *detectedNodes->getRandomBSM();
+            targetNode = nextAttackBsm.getSenderPseudonym();
+        }
+    }
+        break;
+
+    case attackTypes::DataReplaySybil: {
+        if (detectedNodes->getNodesNum() > 0) {
+            attackBsm = *detectedNodes->getNextAttackedBsm(*curPosition,
+                    nextAttackBsm.getSenderPseudonym(),
+                    nextAttackBsm.getArrivalTime().dbl());
+            if(targetNode != nextAttackBsm.getSenderPseudonym()){
+                 SybilPseudonyms[0] = pcPolicy->getNextPseudonym();
+                 targetNode = nextAttackBsm.getSenderPseudonym();
+             }
+            attackBsm.setSenderPseudonym(SybilPseudonyms[0]);
+        }
+    }
+        break;
+
+
+    }
+
 
     return attackBsm;
 }

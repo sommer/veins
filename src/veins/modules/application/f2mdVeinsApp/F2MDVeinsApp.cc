@@ -40,15 +40,17 @@ static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::ConstPos,
         attackTypes::ConstSpeedOffset, attackTypes::RandomSpeed,
         attackTypes::RandomSpeedOffset, attackTypes::EventualStop,
         attackTypes::Disruptive, attackTypes::DataReplay,
-        attackTypes::StaleMessages, attackTypes::Sybil, attackTypes::DoS,
-        attackTypes::DoSRandom, attackTypes::DoSDisruptive };
+        attackTypes::StaleMessages, attackTypes::DoS, attackTypes::DoSRandom,
+        attackTypes::DoSDisruptive, attackTypes::GridSybil, attackTypes::DoSRandomSybil,
+        attackTypes::DoSDisruptiveSybil, attackTypes::DataReplaySybil, };
 
 #define LOCAL_ATTACKER_PROB 0.1
-#define LOCAL_ATTACK_TYPE attackTypes::RandomPos
-// 1 ConstPos, 2 ConstPosOffset, 3 RandomPos, 4 RandomPosOffset,
-// 5 ConstSpeed, 6 ConstSpeedOffset, 7 RandomSpeed, 8 RandomSpeedOffset,
-// 9 EventualStop, 10 Disruptive, 11 DataReplay, 12 StaleMessages,
-// 13 DoS, 14 DoSRandom, 15 DoSDisruptive, 16 Sybil
+#define LOCAL_ATTACK_TYPE attackTypes::DoSDisruptiveSybil
+//ConstPos, ConstPosOffset, RandomPos, RandomPosOffset,
+//ConstSpeed, ConstSpeedOffset, RandomSpeed, RandomSpeedOffset,
+//EventualStop, Disruptive, DataReplay, StaleMessages,
+//DoS, DoSRandom, DoSDisruptive,
+//GridSybil, DataReplaySybil, DoSRandomSybil, DoSDisruptiveSybil,
 
 #define GLOBAL_ATTACKER_PROB 0.0
 #define GLOBAL_ATTACK_TYPE attackTypes::MAStress
@@ -108,9 +110,9 @@ void JosephVeinsApp::initialize(int stage) {
         EV << "Initializing " << par("appName").stringValue() << std::endl;
         setMDApp(appTypeV1, appTypeV2);
 
-        MAX_PLAUSIBLE_ACCEL = traciVehicle->getAccel()+0.01;
-        MAX_PLAUSIBLE_DECEL = traciVehicle->getDeccel()+0.01;
-        MAX_PLAUSIBLE_SPEED = traciVehicle->getMaxSpeed()+0.01;
+        MAX_PLAUSIBLE_ACCEL = traciVehicle->getAccel() + 0.01;
+        MAX_PLAUSIBLE_DECEL = traciVehicle->getDeccel() + 0.01;
+        MAX_PLAUSIBLE_SPEED = traciVehicle->getMaxSpeed() + 0.01;
 
         myWidth = traciVehicle->getWidth();
         myLength = traciVehicle->getLength();
@@ -251,7 +253,6 @@ void JosephVeinsApp::initialize(int stage) {
             setDate = true;
         }
 
-
     }
 }
 
@@ -339,7 +340,6 @@ mbTypes::Mbs JosephVeinsApp::induceMisbehavior(double localAttacker,
     }
 }
 
-
 void JosephVeinsApp::onBSM(BasicSafetyMessage* bsm) {
 
     unsigned long senderPseudonym = bsm->getSenderPseudonym();
@@ -376,12 +376,9 @@ void JosephVeinsApp::onBSM(BasicSafetyMessage* bsm) {
         //detectedNodes.put(senderPseudonym, existingNode, existingMDM);
     }
 
-
-
     if (EnablePC) {
         pcPolicy.checkPseudonymChange(myPcType);
     }
-
 
 //Your application has received a beacon message from another car or RSU
 //code for handling the message goes here
@@ -438,21 +435,26 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
         switch (checksVersionV1) {
 
         case mdChecksVersionTypes::LegacyChecks: {
-            LegacyChecks mdm(myPseudonym, curPosition, curSpeed,
-                     curHeading,Coord(myWidth, myLength), Coord(MAX_PLAUSIBLE_SPEED,MAX_PLAUSIBLE_ACCEL,MAX_PLAUSIBLE_DECEL), &linkControl);
+            LegacyChecks mdm(myPseudonym, curPosition, curSpeed, curHeading,
+                    Coord(myWidth, myLength),
+                    Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
+                            MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV1 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;
         case mdChecksVersionTypes::CatchChecks: {
             CaTChChecks mdm(myPseudonym, curPosition, curPositionConfidence,
-                    curHeading, curHeadingConfidence, Coord(myWidth, myLength), Coord(MAX_PLAUSIBLE_SPEED,MAX_PLAUSIBLE_ACCEL,MAX_PLAUSIBLE_DECEL),
-                    &linkControl);
+                    curHeading, curHeadingConfidence, Coord(myWidth, myLength),
+                    Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
+                            MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV1 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;
         default: {
-            LegacyChecks mdm(myPseudonym, curPosition, curSpeed,
-                     curHeading,Coord(myWidth, myLength), Coord(MAX_PLAUSIBLE_SPEED,MAX_PLAUSIBLE_ACCEL,MAX_PLAUSIBLE_DECEL), &linkControl);
+            LegacyChecks mdm(myPseudonym, curPosition, curSpeed, curHeading,
+                    Coord(myWidth, myLength),
+                    Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
+                            MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV1 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;
@@ -567,21 +569,26 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
 
         switch (checksVersionV2) {
         case mdChecksVersionTypes::LegacyChecks: {
-            LegacyChecks mdm(myPseudonym, curPosition, curSpeed,
-                     curHeading,Coord(myWidth, myLength), Coord(MAX_PLAUSIBLE_SPEED,MAX_PLAUSIBLE_ACCEL,MAX_PLAUSIBLE_DECEL), &linkControl);
+            LegacyChecks mdm(myPseudonym, curPosition, curSpeed, curHeading,
+                    Coord(myWidth, myLength),
+                    Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
+                            MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV2 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;
         case mdChecksVersionTypes::CatchChecks: {
             CaTChChecks mdm(myPseudonym, curPosition, curPositionConfidence,
-                    curHeading, curHeadingConfidence, Coord(myWidth, myLength), Coord(MAX_PLAUSIBLE_SPEED,MAX_PLAUSIBLE_ACCEL,MAX_PLAUSIBLE_DECEL),
-                    &linkControl);
+                    curHeading, curHeadingConfidence, Coord(myWidth, myLength),
+                    Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
+                            MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV2 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;
         default: {
-            LegacyChecks mdm(myPseudonym, curPosition, curSpeed,
-                     curHeading,Coord(myWidth, myLength), Coord(MAX_PLAUSIBLE_SPEED,MAX_PLAUSIBLE_ACCEL,MAX_PLAUSIBLE_DECEL), &linkControl);
+            LegacyChecks mdm(myPseudonym, curPosition, curSpeed, curHeading,
+                    Coord(myWidth, myLength),
+                    Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
+                            MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV2 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;

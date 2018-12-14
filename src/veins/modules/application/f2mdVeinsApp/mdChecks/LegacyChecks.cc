@@ -181,7 +181,7 @@ double LegacyChecks::IntersectionCheck(Coord nodePosition1, Coord nodeSize1,
 //    }
 
     if (inter > 0.25) {
-        return 0; //inter
+        return 0; //inter+1.0
     } else {
         return 1;
     }

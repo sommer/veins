@@ -22,7 +22,6 @@ double MDMLib::calculateSpeedPtr(Coord * Speed) {
     return sqrt(pow(Speed->x, 2.0) + pow(Speed->y, 2.0) + pow(Speed->z, 2.0));
 }
 
-
 double MDMLib::calculateHeadingAnglePtr(Coord * heading) {
     double x2 = 1;
     double y2 = 0;
@@ -39,17 +38,16 @@ double MDMLib::calculateHeadingAnglePtr(Coord * heading) {
     return angle;
 }
 
-double MDMLib::calculateDistance(Coord  pos1, Coord  pos2) {
+double MDMLib::calculateDistance(Coord pos1, Coord pos2) {
     return sqrt(pow(pos1.x - pos2.x, 2.0) + pow(pos1.y - pos2.y, 2.0));
     //   + pow(pos1.z - pos2.z, 2.0));
 }
 
-double MDMLib::calculateSpeed(Coord  Speed) {
+double MDMLib::calculateSpeed(Coord Speed) {
     return sqrt(pow(Speed.x, 2.0) + pow(Speed.y, 2.0) + pow(Speed.z, 2.0));
 }
 
-
-double MDMLib::calculateHeadingAngle(Coord  heading) {
+double MDMLib::calculateHeadingAngle(Coord heading) {
     double x2 = 1;
     double y2 = 0;
 
@@ -65,7 +63,6 @@ double MDMLib::calculateHeadingAngle(Coord  heading) {
 
     return angle;
 }
-
 
 double MDMLib::calculateDeltaTime(BasicSafetyMessage * bsm1,
         BasicSafetyMessage * bsm2) {
@@ -264,7 +261,6 @@ double MDMLib::SegmentSegmentFactor(double d, double r1, double r2,
         }
     }
 
-
     double factor = (overlap1 + overlap2) / (2 * r1 + 2 * r2);
     return factor;
 }
@@ -367,7 +363,7 @@ double MDMLib::CircleSegmentFactor(double d, double r1, double r2,
 double MDMLib::OneSidedCircleSegmentFactor(double d, double r1, double r2,
         double range) {
 
-    if(d<0){
+    if (d < 0) {
         return 1;
     }
 
@@ -514,8 +510,8 @@ double MDMLib::boundedGaussianSum(double x1, double x2, double sig) {
     return gaussianSum(x2, sig) - gaussianSum(x1, sig);
 }
 
+double MDMLib::importanceFactor(double r1, double r2, double d) {
 
-double MDMLib::importanceFactor(double r1, double r2, double d){
     double s1 = 0;
     double e1 = 0;
     double s2 = 0;
@@ -580,10 +576,11 @@ double MDMLib::importanceFactor(double r1, double r2, double d){
     } else {
         factor2 = boundedGaussianSum(s2, e2, sig2);
     }
+
     factor1 = (factor1) / ((e1 - s1) / (2 * r1));
     factor2 = (factor2) / ((e2 - s2) / (2 * r2));
 
-    return 2*(factor1* factor2)/(factor1 + factor2);
+    return  (2 * (factor1 * factor2) / (factor1 + factor2) )/d;
 }
 
 double MDMLib::CircleIntersectionFactor(double conf1, double conf2, double d,
@@ -622,10 +619,7 @@ double MDMLib::CircleIntersectionFactor(double conf1, double conf2, double d,
     double maxFactor = 1
             - ((interDistance * interDistance * PI) / (r1 * r1 * PI));
 
-
     double factor = areaFactor * impFactor;
-
-
 
     if (factor > maxFactor) {
         factor = 1;
@@ -655,11 +649,10 @@ double MDMLib::EllipseEllipseIntersectionFactor(Coord pos1, Coord posConf1,
     double dx2 = size2.x + posConf2.x * 2;
     double dy2 = size2.y + posConf2.x * 2;
 
-    double scale = 0.01;
-    heading1 = (int)(heading1 / scale) * scale;
-    heading2 = (int)(heading1 / scale) * scale;
+    heading1 = (int) (heading1 / 0.01) * 0.01;
+    heading2 = (int) (heading2 / 0.01) * 0.01;
 
-    double intArea = eil.EllipseIntArea(pos1.x, pos1.y, dx1, dy1,heading2 ,
+    double intArea = eil.EllipseIntArea(pos1.x, pos1.y, dx1, dy1, heading2,
             pos2.x, pos2.y, dx2, dy2, heading2);
 
     double areaFactor = intArea
@@ -670,43 +663,38 @@ double MDMLib::EllipseEllipseIntersectionFactor(Coord pos1, Coord posConf1,
     double centersAngle = calculateHeadingAngle(
             Coord(pos2.x - pos1.x, pos2.y - pos1.y));
 
-    double c1 = centersAngle * PI/ 180;
+    double c1 = centersAngle * PI / 180;
     double h1 = heading1 * PI / 180;
     double h2 = heading2 * PI / 180;
 
     double diffAngle1 = atan2(sin(h1 - c1), cos(h1 - c1));
     double diffAngle2 = atan2(sin(h2 - c1), cos(h2 - c1));
 
-    if(diffAngle1>PI/2){
+    if (diffAngle1 > PI / 2) {
         diffAngle1 = diffAngle1 - PI;
     }
-    if(diffAngle1<-PI/2){
+    if (diffAngle1 < -PI / 2) {
         diffAngle1 = diffAngle1 + PI;
     }
-    if(diffAngle2>PI/2){
+    if (diffAngle2 > PI / 2) {
         diffAngle2 = diffAngle2 - PI;
     }
-    if(diffAngle2<-PI/2){
+    if (diffAngle2 < -PI / 2) {
         diffAngle2 = diffAngle2 + PI;
     }
-    double impR1 = (dx1/2) * sin(diffAngle1) + (dy1/2) * cos(diffAngle1);
-    double impR2 = (dx2/2) * sin(diffAngle2) + (dy2/2) * cos(diffAngle2);
+
+    double impR1 = (dx1 / 2) * sin(diffAngle1) + (dy1 / 2) * cos(diffAngle1);
+    double impR2 = (dx2 / 2) * sin(diffAngle2) + (dy2 / 2) * cos(diffAngle2);
 
     double impFactor = importanceFactor(impR1, impR2, distance);
 
-//    if(impFactor <=0){
-//        impFactor = 1;
-//    }
-
-    //impFactor = 1;
-
-    double factor1 =  impFactor * areaFactor;
-    double factor2 =  areaFactor;
+    double factor1 = impFactor * areaFactor;
+    double factor2 = areaFactor;
 
     double factor = 1;
-    if(factor1>factor2){
+    if (factor1 > factor2) {
         factor = factor1;
-    }else{
+    } else {
         factor = factor2;
     }
 
@@ -719,7 +707,4 @@ double MDMLib::EllipseEllipseIntersectionFactor(Coord pos1, Coord posConf1,
 //    }
     return factor;
 }
-
-
-
 
