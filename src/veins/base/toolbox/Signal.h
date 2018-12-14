@@ -71,7 +71,7 @@ public:
     /**
      * Get the power in milliwatt for the given frequency index.
      *
-     * @param index index of the power level to return
+     * @param index of the power level to return
      * @return a reference to the power level
      */
     double& at(size_t index);
@@ -79,7 +79,7 @@ public:
     /**
      * Get the power in milliwatt for the given frequency index.
      *
-     * @param index index of the power level to return
+     * @param index of the power level to return
      * @return a reference to the power level
      */
     const double& at(size_t index) const;
@@ -130,7 +130,7 @@ public:
     /**
      * Get the power in milliwatt for the given data frequency index.
      *
-     * @param index index of the power level to return
+     * @param index of the power level to return
      * @return a reference to the power level
      */
     double& dataAt(size_t index);
@@ -138,7 +138,7 @@ public:
     /**
      * Get the power in milliwatt for the given data frequency index.
      *
-     * @param index index of the power level to return
+     * @param index of the power level to return
      * @return a reference to the power level
      */
     const double& dataAt(size_t index) const;
