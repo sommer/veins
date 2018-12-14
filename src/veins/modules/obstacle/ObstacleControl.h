@@ -100,7 +100,7 @@ protected:
     cXMLElement* obstaclesXml; /**< obstacles to add at startup */
 
     Obstacles obstacles;
-    std::vector< std::unique_ptr<Obstacle> > obstacleOwner;
+    std::vector<std::unique_ptr<Obstacle>> obstacleOwner;
     AnnotationManager* annotations;
     AnnotationManager::Group* annotationGroup;
     std::map<std::string, double> perCut;
