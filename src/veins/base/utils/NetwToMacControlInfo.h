@@ -51,7 +51,7 @@ public:
         , nextHopMac(addr){};
 
     /** @brief Destructor*/
-    ~NetwToMacControlInfo() override{};
+    ~NetwToMacControlInfo() override {};
 
     /** @brief Getter method */
     virtual const LAddress::L2Type& getNextHopMac() const

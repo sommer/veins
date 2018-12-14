@@ -26,8 +26,11 @@ using namespace Veins;
 /**
  * Simple Nakagami-m fading (based on a constant factor across all time and frequencies).
  */
-void NakagamiFading::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
+void NakagamiFading::filterSignal(Signal* signal, const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_)
 {
+    auto senderPos = senderPos_.getPositionAt();
+    auto receiverPos = receiverPos_.getPositionAt();
+
     const double M_CLOSE = 1.5;
     const double M_FAR = 0.75;
     const double DIS_THRESHOLD = 80;
@@ -37,7 +40,7 @@ void NakagamiFading::filterSignal(Signal* signal, const Coord& senderPos, const 
     // get average TX power
     // FIXME: really use average power (instead of max)
     EV_TRACE << "Finding max TX power ..." << endl;
-    double sendPower_mW = signal->getRelativeMax();
+    double sendPower_mW = signal->getMax();
     EV_TRACE << "TX power is " << FWMath::mW2dBm(sendPower_mW) << " dBm" << endl;
 
     // get m value
@@ -62,5 +65,5 @@ void NakagamiFading::filterSignal(Signal* signal, const Coord& senderPos, const 
     double factor = recvPower_mW / sendPower_mW;
     EV_TRACE << "factor is: " << factor << " (i.e. " << FWMath::mW2dBm(factor) << " dB)" << endl;
 
-    signal->addUniformAttenuation(factor);
+    *signal *= factor;
 }

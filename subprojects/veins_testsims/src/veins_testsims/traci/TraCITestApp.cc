@@ -88,6 +88,12 @@ void TraCITestApp::handlePositionUpdate()
         }
     }
 
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            assertClose("TraCIMobility::getHostSpeed magnitude is same as TraCIMobility::getSpeed", mobility->getHostSpeed().length(), mobility->getSpeed());
+        }
+    }
+
     //
     // TraCICommandInterface
     //
@@ -782,10 +788,10 @@ void TraCITestApp::handlePositionUpdate()
             logic->startChangingProgramAt(simTime() + 12);
         }
         if (t == 15) {
-            assertTrue("Vehicle is supposed to wait in front of a red traffic light", mobility->getCurrentSpeed().x < 0.1);
+            assertTrue("Vehicle is supposed to wait in front of a red traffic light", mobility->getSpeed() < 0.1);
         }
         if (t == 25) {
-            assertTrue("Vehicle is supposed to drive again (Traffic light turned green)", mobility->getCurrentSpeed().x > 0.1);
+            assertTrue("Vehicle is supposed to drive again (Traffic light turned green)", mobility->getSpeed() > 0.1);
         }
     }
 

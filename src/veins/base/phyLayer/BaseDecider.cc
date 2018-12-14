@@ -12,7 +12,6 @@
 #include "veins/base/messages/AirFrame_m.h"
 
 using namespace Veins;
-using Veins::AirFrame;
 
 simtime_t BaseDecider::processSignal(AirFrame* frame)
 {
@@ -41,7 +40,7 @@ simtime_t BaseDecider::processNewSignal(AirFrame* frame)
 
     // get the receiving power of the Signal at start-time
     Signal& signal = frame->getSignal();
-    double recvPower = signal.getRelativeMax();
+    double recvPower = signal.getMax();
 
     // check whether signal is strong enough to receive
     if (recvPower < sensitivity) {

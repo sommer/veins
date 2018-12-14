@@ -30,7 +30,7 @@ void TraCIDemoRSU11p::onWSA(DemoServiceAdvertisment* wsa)
 {
     // if this RSU receives a WSA for service 42, it will tune to the chan
     if (wsa->getPsid() == 42) {
-        mac->changeServiceChannel(wsa->getTargetChannel());
+        mac->changeServiceChannel(static_cast<Channel>(wsa->getTargetChannel()));
     }
 }
 

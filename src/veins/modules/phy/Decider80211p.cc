@@ -37,9 +37,6 @@
 
 using namespace Veins;
 
-using Veins::AirFrame;
-using Veins::Radio;
-
 simtime_t Decider80211p::processNewSignal(AirFrame* msg)
 {
 
@@ -107,6 +104,7 @@ int Decider80211p::getSignalState(AirFrame* frame)
 
 DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
 {
+    auto frame11p = check_and_cast<AirFrame11p*>(frame);
 
     Signal& s = frame->getSignal();
     simtime_t start = s.getReceptionStart();
@@ -135,7 +133,7 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
         snrMin = 1e200;
     }
 
-    double payloadBitrate = s.getBitrate();
+    double payloadBitrate = getOfdmDatarate(static_cast<MCS>(frame11p->getMcs()), BANDWIDTH_11P);
 
     DeciderResult80211* result = nullptr;
 
@@ -179,17 +177,17 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double sinrMin, dou
     double packetOkSnr;
 
     // compute success rate depending on mcs and bw
-    packetOkSinr = NistErrorRate::getChunkSuccessRate(bitrate, BW_OFDM_10_MHZ, sinrMin, lengthMPDU);
+    packetOkSinr = NistErrorRate::getChunkSuccessRate(bitrate, BANDWIDTH_11P, sinrMin, lengthMPDU);
 
     // check if header is broken
-    double headerNoError = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BW_OFDM_10_MHZ, sinrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
+    double headerNoError = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BANDWIDTH_11P, sinrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
 
     double headerNoErrorSnr;
     // compute PER also for SNR only
     if (collectCollisionStats) {
 
-        packetOkSnr = NistErrorRate::getChunkSuccessRate(bitrate, BW_OFDM_10_MHZ, snrMin, lengthMPDU);
-        headerNoErrorSnr = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BW_OFDM_10_MHZ, snrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
+        packetOkSnr = NistErrorRate::getChunkSuccessRate(bitrate, BANDWIDTH_11P, snrMin, lengthMPDU);
+        headerNoErrorSnr = NistErrorRate::getChunkSuccessRate(PHY_HDR_BITRATE, BANDWIDTH_11P, snrMin, PHY_HDR_PLCPSIGNAL_LENGTH);
 
         // the probability of correct reception without considering the interference
         // MUST be greater or equal than when consider it
@@ -266,7 +264,7 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude)
     bool isChannelIdle = minPower < ccaThreshold;
     if (airFrames.size() > 0) {
         size_t usedFreqIndex = airFrames.front()->getSignal().getSpectrum().indexOf(centerFrequency - 5e6);
-        isChannelIdle = SignalUtils::smallerAtFreqIndex(time, time, airFrames, usedFreqIndex, ccaThreshold - minPower, exclude);
+        isChannelIdle = SignalUtils::isChannelPowerBelowThreshold(time, airFrames, usedFreqIndex, ccaThreshold - minPower, exclude);
     }
 
     return isChannelIdle;
@@ -280,7 +278,7 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg)
     // here the Signal is finally processed
     Signal& signal = frame->getSignal();
 
-    double recvPower_dBm = 10 * log10(signal.getRelativeMax());
+    double recvPower_dBm = 10 * log10(signal.getMax());
 
     bool whileSending = false;
 

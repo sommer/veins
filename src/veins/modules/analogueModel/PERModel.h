@@ -31,7 +31,7 @@ public:
         assert(per <= 1 && per >= 0);
     }
 
-    void filterSignal(Signal*, const Coord&, const Coord&) override;
+    void filterSignal(Signal*, const AntennaPosition&, const AntennaPosition&) override;
 };
 
 } // namespace Veins

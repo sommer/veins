@@ -41,7 +41,7 @@ public:
 
     virtual bool isCurrentChannelCCH() = 0;
 
-    virtual void changeServiceChannel(int channelNumber) = 0;
+    virtual void changeServiceChannel(Channel channelNumber) = 0;
 
     virtual ~DemoBaseApplLayerToMac1609_4Interface(){};
 

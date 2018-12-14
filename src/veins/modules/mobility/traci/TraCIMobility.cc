@@ -74,6 +74,7 @@ void TraCIMobility::initialize(int stage)
         BaseMobility::initialize(stage);
 
         hostPositionOffset = par("hostPositionOffset");
+        setHostSpeed = par("setHostSpeed");
         accidentCount = par("accidentCount");
 
         currentPosXVec.setName("posx");
@@ -89,11 +90,13 @@ void TraCIMobility::initialize(int stage)
         isPreInitialized = false;
 
         Coord nextPos = calculateHostPosition(roadPosition);
-        nextPos.z = move.getCurrentPosition().z;
+        nextPos.z = move.getStartPosition().z;
 
         move.setStart(nextPos);
         move.setDirectionByVector(heading.toCoord());
-        move.setSpeed(speed);
+        if (this->setHostSpeed) {
+            move.setSpeed(speed);
+        }
 
         WATCH(road_id);
         WATCH(speed);
@@ -159,13 +162,16 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
     this->speed = speed;
     this->heading = heading;
     this->hostPositionOffset = par("hostPositionOffset");
+    this->setHostSpeed = par("setHostSpeed");
 
     Coord nextPos = calculateHostPosition(roadPosition);
-    nextPos.z = move.getCurrentPosition().z;
+    nextPos.z = move.getStartPosition().z;
 
     move.setStart(nextPos);
     move.setDirectionByVector(heading.toCoord());
-    move.setSpeed(speed);
+    if (this->setHostSpeed) {
+        move.setSpeed(speed);
+    }
 
     isPreInitialized = true;
 }
@@ -193,7 +199,7 @@ void TraCIMobility::changePosition()
     currentPosYVec.record(move.getStartPos().y);
 
     Coord nextPos = calculateHostPosition(roadPosition);
-    nextPos.z = move.getCurrentPosition().z;
+    nextPos.z = move.getStartPosition().z;
 
     // keep statistics (relative to last step)
     if (statistics.startTime != simTime()) {
@@ -231,9 +237,11 @@ void TraCIMobility::changePosition()
         hostMod->getDisplayString().setTagArg("veins", 0, ". ");
     }
 
-    move.setStart(Coord(nextPos.x, nextPos.y, move.getCurrentPosition().z)); // keep z position
+    move.setStart(Coord(nextPos.x, nextPos.y, move.getStartPosition().z)); // keep z position
     move.setDirectionByVector(heading.toCoord());
-    move.setSpeed(speed);
+    if (this->setHostSpeed) {
+        move.setSpeed(speed);
+    }
     fixIfHostGetsOutside();
     updatePosition();
 }

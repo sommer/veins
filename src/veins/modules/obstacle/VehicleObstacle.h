@@ -97,12 +97,14 @@ public:
         return height;
     }
 
-    Coords getShape() const;
+    Coords getShape(simtime_t t) const;
+
+    bool maybeInBounds(double x1, double y1, double x2, double y2, simtime_t t) const;
 
     /**
      * return closest point (in meters) along (senderPos--receiverPos) where this obstacle overlaps, or NAN if it doesn't
      */
-    double getIntersectionPoint(const Coord& senderPos, const Coord& receiverPos) const;
+    double getIntersectionPoint(const Coord& senderPos, const Coord& receiverPos, simtime_t t) const;
 
 protected:
     std::vector<ChannelAccess*> channelAccessModules;

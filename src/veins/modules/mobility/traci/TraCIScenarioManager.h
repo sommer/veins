@@ -139,7 +139,6 @@ protected:
     cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
 
     BaseWorldUtility* world;
-    BaseConnectionManager* cc;
     std::map<const TraCIMobility*, const VehicleObstacle*> vehicleObstacles;
     VehicleObstacleControl* vehicleObstacleControl;
 

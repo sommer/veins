@@ -42,8 +42,30 @@ double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFra
 double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
 double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& airFrames, size_t freqIndex, AirFrame* exclude);
 
-bool smallerAtFreqIndex(simtime_t start, simtime_t end, AirFrameVector& airFrames, size_t freqIndex, double threshold, AirFrame* exclude = nullptr);
+/**
+ * @brief check if the summed power of interfererFrames's signals at freqIndex is below a given threshold.
+ *
+ * Only considers the signals active at time now and ignores the AirFrame given as exclude.
+ *
+ * This function will apply analogue models attached to the interfererFrames's signals.
+ * It will skip applying analogue models once it is clear that the interferer signals are below threshold.
+ * This is known as "thresholding" or some sort of short-circuit evaluation.
+ *
+ * TODO: apply analogue models one by one instead of group-wise.
+ *   Currently assumes that all signals have the same analogue model (classes) attached to them.
+ *   Each model is applied for all signals before the next check for the threshold is performed.
+ *   This can be optimized to minimize the number of analog models needed to be applied.
+ */
+bool isChannelPowerBelowThreshold(simtime_t now, AirFrameVector& interfererFrames, size_t freqIndex, double threshold, AirFrame* exclude = nullptr);
 
+/**
+ * @brief return the minimal Signal to (Interference + Noise) Ratio at any data channel of signalFrame's signal
+ *
+ * Important: The AirFrameVector interfererFrames is assumed to be sorted by signal reception start time!
+ *
+ * This function ensures that all analogue models attached to the signal of each interfererFrame and the signalFrame are applied.
+ * Only considers the given interval between [start, end) and assumes time-independent noise that is the same for all channels.
+ */
 double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise);
 
 } // namespace SignalUtils

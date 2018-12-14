@@ -26,7 +26,6 @@
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
-#include "veins/modules/phy/PhyLayer80211p.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
@@ -53,7 +52,6 @@ TraCIScenarioManager::TraCIScenarioManager()
     , connectAndStartTrigger(nullptr)
     , executeOneTimestepTrigger(nullptr)
     , world(nullptr)
-    , cc(nullptr)
 {
 }
 
@@ -263,8 +261,6 @@ void TraCIScenarioManager::initialize(int stage)
     autoShutdownTriggered = false;
 
     world = FindModule<BaseWorldUtility*>::findGlobalModule();
-
-    cc = FindModule<BaseConnectionManager*>::findGlobalModule();
 
     vehicleObstacleControl = FindModule<VehicleObstacleControl*>::findGlobalModule();
 
@@ -542,9 +538,11 @@ void TraCIScenarioManager::deleteManagedModule(std::string nodeId)
 
     emit(traciModuleRemovedSignal, mod);
 
-    cModule* nic = mod->getSubmodule("nic");
-    if (cc && nic) {
-        cc->unregisterNic(nic);
+    auto cas = getSubmodulesOfType<ChannelAccess>(mod, true);
+    for (auto ca : cas) {
+        cModule* nic = ca->getParentModule();
+        auto connectionManager = ChannelAccess::getConnectionManager(nic);
+        connectionManager->unregisterNic(nic);
     }
     if (vehicleObstacleControl) {
         for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {

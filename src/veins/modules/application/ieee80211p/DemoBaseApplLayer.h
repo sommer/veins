@@ -98,7 +98,7 @@ protected:
      *  @param serviceId a service ID to be used with the service
      *  @param serviceDescription a literal description of the service
      */
-    virtual void startService(Channels::ChannelNumber channel, int serviceId, std::string serviceDescription);
+    virtual void startService(Channel channel, int serviceId, std::string serviceDescription);
 
     /** @brief stopping the service and advertising for it */
     virtual void stopService();
@@ -108,7 +108,7 @@ protected:
      * @param interval the interval length of the periodic message
      * @param chantype the type of channel, either type_CCH or type_SCH
      */
-    virtual simtime_t computeAsynchronousSendingTime(simtime_t interval, t_channel chantype);
+    virtual simtime_t computeAsynchronousSendingTime(simtime_t interval, ChannelType chantype);
 
     /**
      * @brief overloaded for error handling and stats recording purposes
@@ -158,7 +158,7 @@ protected:
     /* WSA settings */
     int currentOfferedServiceId;
     std::string currentServiceDescription;
-    Channels::ChannelNumber currentServiceChannel;
+    Channel currentServiceChannel;
     simtime_t wsaInterval;
 
     /* state of the vehicle */

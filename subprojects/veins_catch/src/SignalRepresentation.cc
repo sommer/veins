@@ -36,7 +36,7 @@ SCENARIO("Spectrum", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A vector of frequencies (1,1,5,3,4,2,6,4)")
     {
-        Freqs freqs = {1, 1, 5, 3, 4, 2, 6, 4};
+        Spectrum::Frequencies freqs = {1, 1, 5, 3, 4, 2, 6, 4};
 
         WHEN("the spectrum is constructed")
         {
@@ -112,7 +112,7 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4, 5, 6)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
@@ -122,11 +122,9 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
             THEN("all values have their default values")
             {
                 REQUIRE(signal1.getSpectrum() == Spectrum());
-                REQUIRE(signal1.getAbsoluteValues() == 0);
-                REQUIRE(signal1.getNumAbsoluteValues() == 0);
-                REQUIRE(signal1.getNumRelativeValues() == 0);
+                REQUIRE(signal1.getValues() == 0);
+                REQUIRE(signal1.getNumValues() == 0);
                 REQUIRE(signal1.getNumDataValues() == 0);
-                REQUIRE(signal1.getRelativeOffset() == 0);
                 REQUIRE(signal1.getDataOffset() == 0);
                 REQUIRE(signal1.getCenterFrequencyIndex() == 0);
 
@@ -137,19 +135,16 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                 REQUIRE(signal1.getPropagationDelay() == 0);
 
                 REQUIRE(signal1.getNumAnalogueModelsApplied() == 0);
-                REQUIRE(signal1.getBitrate() == 0);
 
                 WHEN("another signal is created with spectrum as parameter")
                 {
                     Signal signal2(spectrum);
-                    THEN("all values have their default values and numAbsoluteValues and values match to spectrum")
+                    THEN("all values have their default values and numValues and values match to spectrum")
                     {
                         REQUIRE(signal2.getSpectrum() == spectrum);
-                        REQUIRE(signal2.getAbsoluteValues() != 0);
-                        REQUIRE(signal2.getNumAbsoluteValues() == 6);
-                        REQUIRE(signal2.getNumRelativeValues() == 0);
+                        REQUIRE(signal2.getValues() != 0);
+                        REQUIRE(signal2.getNumValues() == 6);
                         REQUIRE(signal2.getNumDataValues() == 0);
-                        REQUIRE(signal2.getRelativeOffset() == 0);
                         REQUIRE(signal2.getDataOffset() == 0);
                         REQUIRE(signal2.getCenterFrequencyIndex() == 0);
 
@@ -160,20 +155,17 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                         REQUIRE(signal2.getPropagationDelay() == 0);
 
                         REQUIRE(signal2.getNumAnalogueModelsApplied() == 0);
-                        REQUIRE(signal2.getBitrate() == 0);
                     }
                 }
                 WHEN("another signal is created with spectrum and timing as parameters")
                 {
                     Signal signal2(spectrum, 10, 5);
-                    THEN("all values have their default values and numAbsoluteValues, values match to spectrum and timing is applied properly")
+                    THEN("all values have their default values and numValues, values match to spectrum and timing is applied properly")
                     {
                         REQUIRE(signal2.getSpectrum() == spectrum);
-                        REQUIRE(signal2.getAbsoluteValues() != 0);
-                        REQUIRE(signal2.getNumAbsoluteValues() == 6);
-                        REQUIRE(signal2.getNumRelativeValues() == 0);
+                        REQUIRE(signal2.getValues() != 0);
+                        REQUIRE(signal2.getNumValues() == 6);
                         REQUIRE(signal2.getNumDataValues() == 0);
-                        REQUIRE(signal2.getRelativeOffset() == 0);
                         REQUIRE(signal2.getDataOffset() == 0);
                         REQUIRE(signal2.getCenterFrequencyIndex() == 0);
 
@@ -184,7 +176,6 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                         REQUIRE(signal2.getPropagationDelay() == 0);
 
                         REQUIRE(signal2.getNumAnalogueModelsApplied() == 0);
-                        REQUIRE(signal2.getBitrate() == 0);
 
                         WHEN("another signal is created by using the copy constructor with the previous signal")
                         {
@@ -194,14 +185,12 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getSpectrum() == signal3.getSpectrum());
 
                                 // Each signal has its own values
-                                REQUIRE(signal2.getAbsoluteValues() != signal3.getAbsoluteValues());
-                                REQUIRE(signal2.getAbsoluteValues() != 0);
-                                REQUIRE(signal3.getAbsoluteValues() != 0);
+                                REQUIRE(signal2.getValues() != signal3.getValues());
+                                REQUIRE(signal2.getValues() != 0);
+                                REQUIRE(signal3.getValues() != 0);
 
-                                REQUIRE(signal2.getNumAbsoluteValues() == signal3.getNumAbsoluteValues());
-                                REQUIRE(signal2.getNumRelativeValues() == signal3.getNumRelativeValues());
+                                REQUIRE(signal2.getNumValues() == signal3.getNumValues());
                                 REQUIRE(signal2.getNumDataValues() == signal3.getNumDataValues());
-                                REQUIRE(signal2.getRelativeOffset() == signal3.getRelativeOffset());
                                 REQUIRE(signal2.getDataOffset() == signal3.getDataOffset());
                                 REQUIRE(signal2.getCenterFrequencyIndex() == signal3.getCenterFrequencyIndex());
 
@@ -212,7 +201,6 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getPropagationDelay() == signal3.getPropagationDelay());
 
                                 REQUIRE(signal2.getNumAnalogueModelsApplied() == signal3.getNumAnalogueModelsApplied());
-                                REQUIRE(signal2.getBitrate() == signal3.getBitrate());
                             }
                         }
                         WHEN("another signal is created by using the assignment operator with the previous signal")
@@ -223,14 +211,12 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getSpectrum() == signal3.getSpectrum());
 
                                 // Each signal has its own values
-                                REQUIRE(signal2.getAbsoluteValues() != signal3.getAbsoluteValues());
-                                REQUIRE(signal2.getAbsoluteValues() != 0);
-                                REQUIRE(signal3.getAbsoluteValues() != 0);
+                                REQUIRE(signal2.getValues() != signal3.getValues());
+                                REQUIRE(signal2.getValues() != 0);
+                                REQUIRE(signal3.getValues() != 0);
 
-                                REQUIRE(signal2.getNumAbsoluteValues() == signal3.getNumAbsoluteValues());
-                                REQUIRE(signal2.getNumRelativeValues() == signal3.getNumRelativeValues());
+                                REQUIRE(signal2.getNumValues() == signal3.getNumValues());
                                 REQUIRE(signal2.getNumDataValues() == signal3.getNumDataValues());
-                                REQUIRE(signal2.getRelativeOffset() == signal3.getRelativeOffset());
                                 REQUIRE(signal2.getDataOffset() == signal3.getDataOffset());
                                 REQUIRE(signal2.getCenterFrequencyIndex() == signal3.getCenterFrequencyIndex());
 
@@ -241,7 +227,6 @@ SCENARIO("Signal Constructors and Assignment", "[toolbox]")
                                 REQUIRE(signal2.getPropagationDelay() == signal3.getPropagationDelay());
 
                                 REQUIRE(signal2.getNumAnalogueModelsApplied() == signal3.getNumAnalogueModelsApplied());
-                                REQUIRE(signal2.getBitrate() == signal3.getBitrate());
                             }
                         }
                     }
@@ -256,42 +241,32 @@ SCENARIO("Signal Value Access", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
         WHEN("a signal is constructed and values assigned to frequencies")
         {
             Signal signal(spectrum);
-            signal[1] = 4;
-            signal[2] = 3;
-            signal[3] = 2;
-            signal[4] = 1;
+            signal.at(1) = 4;
+            signal.at(2) = 3;
+            signal.at(3) = 2;
+            signal.at(4) = 1;
 
             // Access via operators
-            THEN("relative interval is as expected")
-            {
-                REQUIRE(signal.getNumAbsoluteValues() == 6);
-
-                REQUIRE(signal.getRelativeOffset() == 1);
-                REQUIRE(signal.getNumRelativeValues() == 4);
-
-                REQUIRE(signal.getRelativeStart() == 1);
-                REQUIRE(signal.getRelativeEnd() == 5); // Note: This is not 4 as it should support iterations (what about <= in for-loop?)
-            }
             THEN("frequencies can be addressed by index")
             {
-                REQUIRE(signal[1] == 4);
-                REQUIRE(signal[2] == 3);
-                REQUIRE(signal[3] == 2);
-                REQUIRE(signal[4] == 1);
+                REQUIRE(signal.at(1) == 4);
+                REQUIRE(signal.at(2) == 3);
+                REQUIRE(signal.at(3) == 2);
+                REQUIRE(signal.at(4) == 1);
             }
             THEN("frequencies can be addressed by frequency")
             {
-                REQUIRE(signal(2) == 4);
-                REQUIRE(signal(3) == 3);
-                REQUIRE(signal(4) == 2);
-                REQUIRE(signal(5) == 1);
+                REQUIRE(signal.atFrequency(2) == 4);
+                REQUIRE(signal.atFrequency(3) == 3);
+                REQUIRE(signal.atFrequency(4) == 2);
+                REQUIRE(signal.atFrequency(5) == 1);
             }
 
             WHEN("data interval defined")
@@ -302,7 +277,7 @@ SCENARIO("Signal Value Access", "[toolbox]")
                 THEN("iterating over data interval returns correct values")
                 {
                     for (uint16_t i = signal.getDataStart(); i < signal.getDataEnd(); i++)
-                        REQUIRE(signal[i] == 5 - i);
+                        REQUIRE(signal.at(i) == 5 - i);
                 }
             }
         }
@@ -315,7 +290,7 @@ SCENARIO("Invalid Signal Index Access", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3) and values for a signal with more frequencies (4,3,2,1)")
     {
-        Freqs freqs = {1, 2, 3};
+        Spectrum::Frequencies freqs = {1, 2, 3};
         std::vector<double> values = {4, 3, 2, 1};
         Spectrum spectrum(freqs);
         Signal signal(spectrum);
@@ -323,17 +298,17 @@ SCENARIO("Invalid Signal Index Access", "[toolbox]")
         {
             THEN("An error should be raised (when in DEBUG mode)")
             {
-                REQUIRE_THROWS(signal[3]);
+                REQUIRE_THROWS(signal.at(3));
             }
         }
         WHEN("The 4th signal value gets written to the signal with 3 frequencies")
         {
-            signal[0] = values[0];
-            signal[1] = values[1];
-            signal[2] = values[2];
+            signal.at(0) = values.at(0);
+            signal.at(1) = values.at(1);
+            signal.at(2) = values.at(2);
             THEN("An error should be raised (when in DEBUG mode)")
             {
-                REQUIRE_THROWS(signal[3] = values[3]); // only throws when compiled in debug mode
+                REQUIRE_THROWS(signal.at(3) = values[3]); // only throws when compiled in debug mode
             }
         }
     }
@@ -345,15 +320,15 @@ SCENARIO("Signal Timing", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4) and a signal (4,3,2,1)")
     {
-        Freqs freqs = {1, 2, 3, 4};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4};
 
         Spectrum spectrum(freqs);
 
         Signal signal(spectrum);
-        signal[0] = 4;
-        signal[1] = 3;
-        signal[2] = 2;
-        signal[3] = 1;
+        signal.at(0) = 4;
+        signal.at(1) = 3;
+        signal.at(2) = 2;
+        signal.at(3) = 1;
 
         WHEN("nothing done regarding timing")
         {
@@ -391,21 +366,6 @@ SCENARIO("Signal Timing", "[toolbox]")
                         REQUIRE(signal.getDuration() == 2);
                         REQUIRE(signal.getPropagationDelay() == 10);
                     }
-
-                    WHEN("start and duration is changed independently")
-                    {
-                        signal.setSendingStart(100);
-                        signal.setDuration(1);
-
-                        THEN("start is 110, duration 1, end 111 and propagation delay 10")
-                        {
-                            REQUIRE(signal.hasTiming() == true);
-                            REQUIRE(signal.getReceptionStart() == 110);
-                            REQUIRE(signal.getReceptionEnd() == 111);
-                            REQUIRE(signal.getDuration() == 1);
-                            REQUIRE(signal.getPropagationDelay() == 10);
-                        }
-                    }
                 }
             }
         }
@@ -417,14 +377,14 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (0,1,2,3,0,0) and a constant 2")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
         Signal signal(spectrum);
-        signal[1] = 1;
-        signal[2] = 2;
-        signal[3] = 3;
+        signal.at(1) = 1;
+        signal.at(2) = 2;
+        signal.at(3) = 3;
 
         double c = 2;
 
@@ -434,25 +394,19 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal sum2 = c + signal;
             THEN("result is (2,3,4,5,2,2)")
             {
-                REQUIRE(sum1.getNumRelativeValues() == 6);
-                REQUIRE(sum1.getRelativeStart() == 0);
-                REQUIRE(sum1.getRelativeEnd() == 6);
-                REQUIRE(sum1[0] == 2);
-                REQUIRE(sum1[1] == 3);
-                REQUIRE(sum1[2] == 4);
-                REQUIRE(sum1[3] == 5);
-                REQUIRE(sum1[4] == 2);
-                REQUIRE(sum1[5] == 2);
+                REQUIRE(sum1.at(0) == 2);
+                REQUIRE(sum1.at(1) == 3);
+                REQUIRE(sum1.at(2) == 4);
+                REQUIRE(sum1.at(3) == 5);
+                REQUIRE(sum1.at(4) == 2);
+                REQUIRE(sum1.at(5) == 2);
 
-                REQUIRE(sum2.getNumRelativeValues() == 6);
-                REQUIRE(sum2.getRelativeStart() == 0);
-                REQUIRE(sum2.getRelativeEnd() == 6);
-                REQUIRE(sum2[0] == 2);
-                REQUIRE(sum2[1] == 3);
-                REQUIRE(sum2[2] == 4);
-                REQUIRE(sum2[3] == 5);
-                REQUIRE(sum2[4] == 2);
-                REQUIRE(sum2[5] == 2);
+                REQUIRE(sum2.at(0) == 2);
+                REQUIRE(sum2.at(1) == 3);
+                REQUIRE(sum2.at(2) == 4);
+                REQUIRE(sum2.at(3) == 5);
+                REQUIRE(sum2.at(4) == 2);
+                REQUIRE(sum2.at(5) == 2);
             }
         }
         WHEN("constant is substracted from signal")
@@ -461,25 +415,19 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal difference2 = c - signal;
             THEN("result is (-2,-1,0,1,-2,-2) rsp. (2,1,0,-1,2,2)")
             {
-                REQUIRE(difference1.getNumRelativeValues() == 6);
-                REQUIRE(difference1.getRelativeStart() == 0);
-                REQUIRE(difference1.getRelativeEnd() == 6);
-                REQUIRE(difference1[0] == -2);
-                REQUIRE(difference1[1] == -1);
-                REQUIRE(difference1[2] == 0);
-                REQUIRE(difference1[3] == 1);
-                REQUIRE(difference1[4] == -2);
-                REQUIRE(difference1[5] == -2);
+                REQUIRE(difference1.at(0) == -2);
+                REQUIRE(difference1.at(1) == -1);
+                REQUIRE(difference1.at(2) == 0);
+                REQUIRE(difference1.at(3) == 1);
+                REQUIRE(difference1.at(4) == -2);
+                REQUIRE(difference1.at(5) == -2);
 
-                REQUIRE(difference2.getNumRelativeValues() == 6);
-                REQUIRE(difference2.getRelativeStart() == 0);
-                REQUIRE(difference2.getRelativeEnd() == 6);
-                REQUIRE(difference2[0] == 2);
-                REQUIRE(difference2[1] == 1);
-                REQUIRE(difference2[2] == 0);
-                REQUIRE(difference2[3] == -1);
-                REQUIRE(difference2[4] == 2);
-                REQUIRE(difference2[5] == 2);
+                REQUIRE(difference2.at(0) == 2);
+                REQUIRE(difference2.at(1) == 1);
+                REQUIRE(difference2.at(2) == 0);
+                REQUIRE(difference2.at(3) == -1);
+                REQUIRE(difference2.at(4) == 2);
+                REQUIRE(difference2.at(5) == 2);
             }
         }
         WHEN("signal1 is multiplicated with constant or vice-versa")
@@ -488,25 +436,19 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal product2 = c * signal;
             THEN("result is (0,2,4,6,0,0)")
             {
-                REQUIRE(product1.getNumRelativeValues() == 6);
-                REQUIRE(product1.getRelativeStart() == 0);
-                REQUIRE(product1.getRelativeEnd() == 6);
-                REQUIRE(product1[0] == 0);
-                REQUIRE(product1[1] == 2);
-                REQUIRE(product1[2] == 4);
-                REQUIRE(product1[3] == 6);
-                REQUIRE(product1[4] == 0);
-                REQUIRE(product1[5] == 0);
+                REQUIRE(product1.at(0) == 0);
+                REQUIRE(product1.at(1) == 2);
+                REQUIRE(product1.at(2) == 4);
+                REQUIRE(product1.at(3) == 6);
+                REQUIRE(product1.at(4) == 0);
+                REQUIRE(product1.at(5) == 0);
 
-                REQUIRE(product2.getNumRelativeValues() == 6);
-                REQUIRE(product2.getRelativeStart() == 0);
-                REQUIRE(product2.getRelativeEnd() == 6);
-                REQUIRE(product2[0] == 0);
-                REQUIRE(product2[1] == 2);
-                REQUIRE(product2[2] == 4);
-                REQUIRE(product2[3] == 6);
-                REQUIRE(product2[4] == 0);
-                REQUIRE(product2[5] == 0);
+                REQUIRE(product2.at(0) == 0);
+                REQUIRE(product2.at(1) == 2);
+                REQUIRE(product2.at(2) == 4);
+                REQUIRE(product2.at(3) == 6);
+                REQUIRE(product2.at(4) == 0);
+                REQUIRE(product2.at(5) == 0);
             }
         }
         WHEN("signal1 is divided by constant or vice-versa")
@@ -515,85 +457,19 @@ SCENARIO("Signal Arithmetic Operators (Signal and Constant)", "[toolbox]")
             Signal quotient2 = c / signal;
             THEN("result is (0,0.5,1,0.6..7,0,0) rsp. (inf,2,1,0.6..7,inf,inf)")
             {
-                REQUIRE(quotient1.getNumRelativeValues() == 6);
-                REQUIRE(quotient1.getRelativeStart() == 0);
-                REQUIRE(quotient1.getRelativeEnd() == 6);
-                REQUIRE(quotient1[0] == 0);
-                REQUIRE(quotient1[1] == 0.5);
-                REQUIRE(quotient1[2] == 1);
-                REQUIRE(quotient1[3] == 1.5);
-                REQUIRE(quotient1[4] == 0);
-                REQUIRE(quotient1[5] == 0);
+                REQUIRE(quotient1.at(0) == 0);
+                REQUIRE(quotient1.at(1) == 0.5);
+                REQUIRE(quotient1.at(2) == 1);
+                REQUIRE(quotient1.at(3) == 1.5);
+                REQUIRE(quotient1.at(4) == 0);
+                REQUIRE(quotient1.at(5) == 0);
 
-                REQUIRE(quotient2.getNumRelativeValues() == 6);
-                REQUIRE(quotient2.getRelativeStart() == 0);
-                REQUIRE(quotient2.getRelativeEnd() == 6);
-                REQUIRE(quotient2[0] == INFINITY);
-                REQUIRE(quotient2[1] == 2);
-                REQUIRE(quotient2[2] == 1);
-                REQUIRE(quotient2[3] == double(2.0 / 3.0));
-                REQUIRE(quotient2[4] == INFINITY);
-                REQUIRE(quotient2[5] == INFINITY);
-            }
-        }
-        WHEN("signal1 is left shifted by 1")
-        {
-            Signal leftShift = signal << uint16_t(1);
-            THEN("result is (1,2,3,0,0,0)")
-            {
-                REQUIRE(leftShift.getRelativeStart() == 0);
-                REQUIRE(leftShift.getRelativeEnd() == 3);
-                REQUIRE(leftShift[0] == 1);
-                REQUIRE(leftShift[1] == 2);
-                REQUIRE(leftShift[2] == 3);
-                REQUIRE(leftShift[3] == 0);
-                REQUIRE(leftShift[4] == 0);
-                REQUIRE(leftShift[5] == 0);
-            }
-        }
-        WHEN("signal1 is left shifted by 2")
-        {
-            Signal leftShift = signal << uint16_t(2);
-            THEN("shifting is illegal, so original signal is returned (0,1,2,3,0,0)")
-            {
-                REQUIRE(leftShift.getRelativeStart() == 1);
-                REQUIRE(leftShift.getRelativeEnd() == 4);
-                REQUIRE(leftShift[0] == 0);
-                REQUIRE(leftShift[1] == 1);
-                REQUIRE(leftShift[2] == 2);
-                REQUIRE(leftShift[3] == 3);
-                REQUIRE(leftShift[4] == 0);
-                REQUIRE(leftShift[5] == 0);
-            }
-        }
-        WHEN("signal1 is right shifted by 2")
-        {
-            Signal rightShift = signal >> uint16_t(2);
-            THEN("result is (0,0,0,1,2,3)")
-            {
-                REQUIRE(rightShift.getRelativeStart() == 3);
-                REQUIRE(rightShift.getRelativeEnd() == 6);
-                REQUIRE(rightShift[0] == 0);
-                REQUIRE(rightShift[1] == 0);
-                REQUIRE(rightShift[2] == 0);
-                REQUIRE(rightShift[3] == 1);
-                REQUIRE(rightShift[4] == 2);
-                REQUIRE(rightShift[5] == 3);
-            }
-        }
-        WHEN("signal1 is right shifted by 3")
-        {
-            Signal rightShift = signal >> uint16_t(3);
-            THEN("shifting is illegal, so original signal is returned (0,1,2,3,0,0)")
-            {
-                REQUIRE(rightShift.getRelativeStart() == 1);
-                REQUIRE(rightShift.getRelativeEnd() == 4);
-                REQUIRE(rightShift[0] == 0);
-                REQUIRE(rightShift[1] == 1);
-                REQUIRE(rightShift[2] == 2);
-                REQUIRE(rightShift[3] == 3);
-                REQUIRE(rightShift[4] == 0);
-                REQUIRE(rightShift[5] == 0);
+                REQUIRE(quotient2.at(0) == INFINITY);
+                REQUIRE(quotient2.at(1) == 2);
+                REQUIRE(quotient2.at(2) == 1);
+                REQUIRE(quotient2.at(3) == double(2.0 / 3.0));
+                REQUIRE(quotient2.at(4) == INFINITY);
+                REQUIRE(quotient2.at(5) == INFINITY);
             }
         }
     }
@@ -604,29 +480,26 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and two signals (0,1,2,0,0,0), (0,0,3,4,0,0)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
         Signal signal1(spectrum);
-        signal1[1] = 1;
-        signal1[2] = 2;
+        signal1.at(1) = 1;
+        signal1.at(2) = 2;
 
         Signal signal2(spectrum);
-        signal2[2] = 3;
-        signal2[3] = 4;
+        signal2.at(2) = 3;
+        signal2.at(3) = 4;
 
         WHEN("both signals are summed up")
         {
             Signal sum = signal1 + signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(sum.getNumRelativeValues() == 3);
-                REQUIRE(sum.getRelativeStart() == 1);
-                REQUIRE(sum.getRelativeEnd() == 4);
-                REQUIRE(sum[1] == 1);
-                REQUIRE(sum[2] == 5);
-                REQUIRE(sum[3] == 4);
+                REQUIRE(sum.at(1) == 1);
+                REQUIRE(sum.at(2) == 5);
+                REQUIRE(sum.at(3) == 4);
             }
         }
         WHEN("signal1 is substracted from signal2")
@@ -634,12 +507,9 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal difference = signal2 - signal1;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(difference.getNumRelativeValues() == 3);
-                REQUIRE(difference.getRelativeStart() == 1);
-                REQUIRE(difference.getRelativeEnd() == 4);
-                REQUIRE(difference[1] == -1);
-                REQUIRE(difference[2] == 1);
-                REQUIRE(difference[3] == 4);
+                REQUIRE(difference.at(1) == -1);
+                REQUIRE(difference.at(2) == 1);
+                REQUIRE(difference.at(3) == 4);
             }
         }
         WHEN("signal1 is multiplicated with signal2")
@@ -647,12 +517,9 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal product = signal1 * signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(product.getNumRelativeValues() == 3);
-                REQUIRE(product.getRelativeStart() == 1);
-                REQUIRE(product.getRelativeEnd() == 4);
-                REQUIRE(product[1] == 0);
-                REQUIRE(product[2] == 6);
-                REQUIRE(product[3] == 0);
+                REQUIRE(product.at(1) == 0);
+                REQUIRE(product.at(2) == 6);
+                REQUIRE(product.at(3) == 0);
             }
         }
         WHEN("signal1 is divided by signal2")
@@ -660,12 +527,9 @@ SCENARIO("Signal Arithmetic Operators (Two Signals)", "[toolbox]")
             Signal quotient = signal1 / signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(quotient.getNumRelativeValues() == 3);
-                REQUIRE(quotient.getRelativeStart() == 1);
-                REQUIRE(quotient.getRelativeEnd() == 4);
-                REQUIRE(quotient[1] == INFINITY);
-                REQUIRE(quotient[2] == double(2.0 / 3.0));
-                REQUIRE(quotient[3] == 0);
+                REQUIRE(quotient.at(1) == INFINITY);
+                REQUIRE(quotient.at(2) == double(2.0 / 3.0));
+                REQUIRE(quotient.at(3) == 0);
             }
         }
     }
@@ -676,14 +540,14 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (0,1,2,3,0,0) and a constant 2")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
         Signal signal(spectrum);
-        signal[1] = 1;
-        signal[2] = 2;
-        signal[3] = 3;
+        signal.at(1) = 1;
+        signal.at(2) = 2;
+        signal.at(3) = 3;
 
         double c = 2;
 
@@ -693,15 +557,12 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             sum += c;
             THEN("result is (2,3,4,5,2,2)")
             {
-                REQUIRE(sum.getNumRelativeValues() == 6);
-                REQUIRE(sum.getRelativeStart() == 0);
-                REQUIRE(sum.getRelativeEnd() == 6);
-                REQUIRE(sum[0] == 2);
-                REQUIRE(sum[1] == 3);
-                REQUIRE(sum[2] == 4);
-                REQUIRE(sum[3] == 5);
-                REQUIRE(sum[4] == 2);
-                REQUIRE(sum[5] == 2);
+                REQUIRE(sum.at(0) == 2);
+                REQUIRE(sum.at(1) == 3);
+                REQUIRE(sum.at(2) == 4);
+                REQUIRE(sum.at(3) == 5);
+                REQUIRE(sum.at(4) == 2);
+                REQUIRE(sum.at(5) == 2);
             }
         }
         WHEN("constant is substracted from signal")
@@ -710,15 +571,12 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             difference -= c;
             THEN("result is (-2,-1,0,1,-2,-2) rsp. (2,1,0,-1,2,2)")
             {
-                REQUIRE(difference.getNumRelativeValues() == 6);
-                REQUIRE(difference.getRelativeStart() == 0);
-                REQUIRE(difference.getRelativeEnd() == 6);
-                REQUIRE(difference[0] == -2);
-                REQUIRE(difference[1] == -1);
-                REQUIRE(difference[2] == 0);
-                REQUIRE(difference[3] == 1);
-                REQUIRE(difference[4] == -2);
-                REQUIRE(difference[5] == -2);
+                REQUIRE(difference.at(0) == -2);
+                REQUIRE(difference.at(1) == -1);
+                REQUIRE(difference.at(2) == 0);
+                REQUIRE(difference.at(3) == 1);
+                REQUIRE(difference.at(4) == -2);
+                REQUIRE(difference.at(5) == -2);
             }
         }
         WHEN("signal1 is multiplicated with constant or vice-versa")
@@ -727,15 +585,12 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             product *= c;
             THEN("result is (0,2,4,6,0,0)")
             {
-                REQUIRE(product.getNumRelativeValues() == 6);
-                REQUIRE(product.getRelativeStart() == 0);
-                REQUIRE(product.getRelativeEnd() == 6);
-                REQUIRE(product[0] == 0);
-                REQUIRE(product[1] == 2);
-                REQUIRE(product[2] == 4);
-                REQUIRE(product[3] == 6);
-                REQUIRE(product[4] == 0);
-                REQUIRE(product[5] == 0);
+                REQUIRE(product.at(0) == 0);
+                REQUIRE(product.at(1) == 2);
+                REQUIRE(product.at(2) == 4);
+                REQUIRE(product.at(3) == 6);
+                REQUIRE(product.at(4) == 0);
+                REQUIRE(product.at(5) == 0);
             }
         }
         WHEN("signal1 is divided by constant or vice-versa")
@@ -744,15 +599,12 @@ SCENARIO("Signal Compound Assignment Operators (Signal and Constant)", "[toolbox
             quotient /= c;
             THEN("result is (0,0.5,1,0.6..7,0,0) rsp. (inf,2,1,0.6..7,inf,inf)")
             {
-                REQUIRE(quotient.getNumRelativeValues() == 6);
-                REQUIRE(quotient.getRelativeStart() == 0);
-                REQUIRE(quotient.getRelativeEnd() == 6);
-                REQUIRE(quotient[0] == 0);
-                REQUIRE(quotient[1] == 0.5);
-                REQUIRE(quotient[2] == 1);
-                REQUIRE(quotient[3] == 1.5);
-                REQUIRE(quotient[4] == 0);
-                REQUIRE(quotient[5] == 0);
+                REQUIRE(quotient.at(0) == 0);
+                REQUIRE(quotient.at(1) == 0.5);
+                REQUIRE(quotient.at(2) == 1);
+                REQUIRE(quotient.at(3) == 1.5);
+                REQUIRE(quotient.at(4) == 0);
+                REQUIRE(quotient.at(5) == 0);
             }
         }
     }
@@ -763,17 +615,17 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and two signals (0,1,2,0,0,0), (0,0,3,4,0,0)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
         Signal signal1(spectrum);
-        signal1[1] = 1;
-        signal1[2] = 2;
+        signal1.at(1) = 1;
+        signal1.at(2) = 2;
 
         Signal signal2(spectrum);
-        signal2[2] = 3;
-        signal2[3] = 4;
+        signal2.at(2) = 3;
+        signal2.at(3) = 4;
 
         WHEN("both signals are summed up")
         {
@@ -781,12 +633,9 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             sum += signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(sum.getNumRelativeValues() == 3);
-                REQUIRE(sum.getRelativeStart() == 1);
-                REQUIRE(sum.getRelativeEnd() == 4);
-                REQUIRE(sum[1] == 1);
-                REQUIRE(sum[2] == 5);
-                REQUIRE(sum[3] == 4);
+                REQUIRE(sum.at(1) == 1);
+                REQUIRE(sum.at(2) == 5);
+                REQUIRE(sum.at(3) == 4);
             }
         }
         WHEN("signal1 is substracted from signal2")
@@ -795,12 +644,9 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             difference -= signal1;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(difference.getNumRelativeValues() == 3);
-                REQUIRE(difference.getRelativeStart() == 1);
-                REQUIRE(difference.getRelativeEnd() == 4);
-                REQUIRE(difference[1] == -1);
-                REQUIRE(difference[2] == 1);
-                REQUIRE(difference[3] == 4);
+                REQUIRE(difference.at(1) == -1);
+                REQUIRE(difference.at(2) == 1);
+                REQUIRE(difference.at(3) == 4);
             }
         }
         WHEN("signal1 is multiplicated with signal2")
@@ -809,12 +655,9 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             product *= signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(product.getNumRelativeValues() == 3);
-                REQUIRE(product.getRelativeStart() == 1);
-                REQUIRE(product.getRelativeEnd() == 4);
-                REQUIRE(product[1] == 0);
-                REQUIRE(product[2] == 6);
-                REQUIRE(product[3] == 0);
+                REQUIRE(product.at(1) == 0);
+                REQUIRE(product.at(2) == 6);
+                REQUIRE(product.at(3) == 0);
             }
         }
         WHEN("signal1 is divided by signal2")
@@ -823,12 +666,9 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
             quotient /= signal2;
             THEN("result is (0,1,5,4,0,0)")
             {
-                REQUIRE(quotient.getNumRelativeValues() == 3);
-                REQUIRE(quotient.getRelativeStart() == 1);
-                REQUIRE(quotient.getRelativeEnd() == 4);
-                REQUIRE(quotient[1] == INFINITY);
-                REQUIRE(quotient[2] == double(2.0 / 3.0));
-                REQUIRE(quotient[3] == 0);
+                REQUIRE(quotient.at(1) == INFINITY);
+                REQUIRE(quotient.at(2) == double(2.0 / 3.0));
+                REQUIRE(quotient.at(3) == 0);
             }
         }
     }
@@ -839,21 +679,18 @@ SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.5);
-
         AnalogueModelList analogueModels;
-        analogueModels.push_back(&am1);
-        analogueModels.push_back(&am2);
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
 
         Signal signal(spectrum);
-        signal[0] = 10;
-        signal[1] = 20;
-        signal[2] = 30;
+        signal.at(0) = 10;
+        signal.at(1) = 20;
+        signal.at(2) = 30;
         signal.setCenterFrequencyIndex(2);
         signal.setAnalogueModelList(&analogueModels);
 
@@ -915,21 +752,18 @@ SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
 
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.5);
-
         AnalogueModelList analogueModels;
-        analogueModels.push_back(&am1);
-        analogueModels.push_back(&am2);
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
 
         Signal signal(spectrum);
-        signal[0] = 10;
-        signal[1] = 20;
-        signal[2] = 30;
+        signal.at(0) = 10;
+        signal.at(1) = 20;
+        signal.at(2) = 30;
         signal.setCenterFrequencyIndex(2);
         signal.setAnalogueModelList(&analogueModels);
 
@@ -991,17 +825,17 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0),(), another signal (),() and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels{&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
-        signal[0] = 100;
-        signal[1] = 200;
-        signal[2] = 300;
+        signal.at(0) = 100;
+        signal.at(1) = 200;
+        signal.at(2) = 300;
         signal.setDataStart(0);
         signal.setDataEnd(2);
         signal.setCenterFrequencyIndex(2);
@@ -1015,7 +849,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
 
         WHEN("check for already higher threshold at a time-stamp in the middle of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(10, 10, airFrames, 2, 500.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(10, airFrames, 2, 500.0);
             THEN("no AnalogueModel applied and true returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
@@ -1024,7 +858,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for already higher threshold at a time-stamp at the start of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(5, 5, airFrames, 2, 500.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(5, airFrames, 2, 500.0);
             THEN("no AnalogueModel applied and true returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
@@ -1033,7 +867,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for already higher threshold at a time-stamp at the end of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(15, 15, airFrames, 2, 500.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(15, airFrames, 2, 500.0);
             THEN("no AnalogueModel applied and true returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
@@ -1042,7 +876,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for a too low threshold at a time-stamp at the end of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(10, 10, airFrames, 2, 1.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(10, airFrames, 2, 1.0);
             THEN("all AnalogueModels applied and false returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -1051,7 +885,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for a too low threshold at a time-stamp at the end of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(5, 5, airFrames, 2, 1.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(5, airFrames, 2, 1.0);
             THEN("all AnalogueModels applied and false returned")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 2);
@@ -1060,7 +894,7 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
         }
         WHEN("check for a too low threshold at a time-stamp at the end of the signal")
         {
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(15, 15, airFrames, 2, 1.0);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(15, airFrames, 2, 1.0);
             THEN("no AnalogueModel applied (as signal not within intervall) and true returned (as signal does not contribute to power)")
             {
                 REQUIRE(signalFrame.getSignal().getNumAnalogueModelsApplied() == 0);
@@ -1075,17 +909,17 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0), another (interferer) signal, and a list with two DummyAnalogueModels (0.1, 0.1)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels = {&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
-        signal[0] = 100;
-        signal[1] = 200;
-        signal[2] = 300;
+        signal.at(0) = 100;
+        signal.at(1) = 200;
+        signal.at(2) = 300;
         signal.setDataStart(0);
         signal.setDataEnd(2);
         signal.setCenterFrequencyIndex(2);
@@ -1210,17 +1044,17 @@ SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0), eight other signals and a list with two DummyAnalogueModels (0.1, 0.1)")
     {
-        Freqs freqs = {1, 2, 3, 4, 5, 6};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels = {&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
-        signal[0] = 100;
-        signal[1] = 200;
-        signal[2] = 300;
+        signal.at(0) = 100;
+        signal.at(1) = 200;
+        signal.at(2) = 300;
         signal.setDataStart(0);
         signal.setDataEnd(2);
         signal.setCenterFrequencyIndex(2);
@@ -1233,10 +1067,10 @@ SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
         airFrames.push_back(&signalFrame);
 
         const std::vector<std::pair<double, double>> timings = {
-            {5, 10},
             {0, 5},
             {0, 7.5},
             {5, 5},
+            {5, 10},
             {7.5, 5},
             {10, 5},
             {12.5, 7.5},
@@ -1273,17 +1107,17 @@ SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/e
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("Signals from 1-2 and 2-3 with power 10")
     {
-        Freqs freqs = {1, 2, 3, 4, 5};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels = {&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
 
         Signal signal(spectrum);
-        signal[1] = 1000;
-        signal[2] = 1000; // after both analogue models, this should have dropped to 10
-        signal[3] = 1000;
+        signal.at(1) = 1000;
+        signal.at(2) = 1000; // after both analogue models, this should have dropped to 10
+        signal.at(3) = 1000;
         signal.setDataStart(1);
         signal.setDataEnd(3);
         signal.setCenterFrequencyIndex(2);
@@ -1322,7 +1156,7 @@ SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/e
 
             INFO("getting smallerAtFreqIndex(2) for " << begin << " to " << end << " and threshold " << threshold << " should return " << res);
 
-            bool belowThreshold = SignalUtils::smallerAtFreqIndex(begin, end, airFrames, 2, threshold);
+            bool belowThreshold = SignalUtils::isChannelPowerBelowThreshold(begin, airFrames, 2, threshold);
 
             REQUIRE(belowThreshold == res);
         }
@@ -1334,17 +1168,17 @@ SCENARIO("SignalUtils::getMinSINR treats signal start/end as inclusive/exclusive
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
     GIVEN("Signals from 1-2 and 2-3 with power 10")
     {
-        Freqs freqs = {1, 2, 3, 4, 5};
+        Spectrum::Frequencies freqs = {1, 2, 3, 4, 5};
         Spectrum spectrum(freqs);
 
-        DummyAnalogueModel am1(0.1);
-        DummyAnalogueModel am2(0.1);
-        AnalogueModelList analogueModels = {&am1, &am2};
+        AnalogueModelList analogueModels;
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
 
         Signal signal(spectrum);
-        signal[1] = 1000;
-        signal[2] = 1000; // after both analogue models, this should have dropped to 10
-        signal[3] = 1000;
+        signal.at(1) = 1000;
+        signal.at(2) = 1000; // after both analogue models, this should have dropped to 10
+        signal.at(3) = 1000;
         signal.setDataStart(1);
         signal.setDataEnd(3);
         signal.setCenterFrequencyIndex(2);

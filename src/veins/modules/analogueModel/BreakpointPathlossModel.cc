@@ -5,8 +5,10 @@
 using namespace Veins;
 using Veins::AirFrame;
 
-void BreakpointPathlossModel::filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos)
+void BreakpointPathlossModel::filterSignal(Signal* signal, const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_)
 {
+    auto senderPos = senderPos_.getPositionAt();
+    auto receiverPos = receiverPos_.getPositionAt();
 
     /** Calculate the distance factor */
     double distance = useTorus ? receiverPos.sqrTorusDist(senderPos, playgroundSize) : receiverPos.sqrdist(senderPos);
@@ -37,5 +39,5 @@ void BreakpointPathlossModel::filterSignal(Signal* signal, const Coord& senderPo
 
     pathlosses.record(10 * log10(attenuation)); // in dB
 
-    signal->addUniformAttenuation(attenuation);
+    *signal *= attenuation;
 }

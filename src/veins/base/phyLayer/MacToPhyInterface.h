@@ -2,7 +2,6 @@
 
 #include "veins/veins.h"
 
-#include "veins/base/toolbox/Signal.h"
 #include "veins/base/phyLayer/PhyUtils.h"
 
 namespace Veins {
@@ -70,16 +69,6 @@ public:
      * not be switched (propably because it is already switching.
      */
     virtual simtime_t setRadioState(int rs) = 0;
-
-    /**
-     * @brief Returns the length of the phy header in bits.
-     *
-     * Since the MAC layer has to create the signal for
-     * a transmission it has to know the total length of
-     * the packet and therefore needs the length of the
-     * phy header.
-     */
-    virtual int getPhyHeaderLength() = 0;
 
     /** @brief Sets the channel currently used by the radio. */
     virtual void setCurrentRadioChannel(int newRadioChannel) = 0;

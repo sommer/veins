@@ -2,6 +2,7 @@
 
 #include "veins/veins.h"
 
+#include "veins/base/utils/AntennaPosition.h"
 #include "veins/base/connectionManager/NicEntry.h"
 #include "veins/base/utils/Heading.h"
 
@@ -344,7 +345,8 @@ protected:
      * @param oldPos the old position of the nic
      * @param newPos the new position of the nic
      */
-    virtual void updateConnections(int nicID, const Coord* oldPos, const Coord* newPos);
+    virtual void updateConnections(int nicID, Coord oldPos, Coord newPos);
+
     /**
      * @brief Check if the two nic's are in range.
      *
@@ -378,7 +380,7 @@ public:
      * If you want to do your own stuff at the registration of a nic see
      * "registerNicExt()".
      */
-    bool registerNic(cModule* nic, ChannelAccess* chAccess, const Coord* nicPos, Heading heading);
+    bool registerNic(cModule* nic, ChannelAccess* chAccess, Coord nicPos, Heading heading);
 
     /**
      * @brief Unregisters a NIC such that its connections aren't managed by the CM
@@ -395,7 +397,7 @@ public:
     bool unregisterNic(cModule* nic);
 
     /** @brief Updates the position information of a registered nic.*/
-    void updateNicPos(int nicID, const Coord* newPos, Heading heading);
+    void updateNicPos(int nicID, Coord newPos, Heading heading);
 
     /** @brief Returns the ingates of all nics in range*/
     const NicEntry::GateList& getGateList(int nicID) const;

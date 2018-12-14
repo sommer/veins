@@ -32,30 +32,28 @@
 
 namespace Veins {
 
-using Freqs = std::vector<double>;
-
 class Spectrum {
 public:
+    using Frequency = double;
+    using Frequencies = std::vector<Frequency>;
+
     Spectrum() = default;
-    Spectrum(Freqs freqs);
+    Spectrum(Frequencies freqs);
 
     const double& operator[](size_t index) const;
 
     size_t getNumFreqs() const;
 
     size_t indexOf(double freq) const;
-    size_t indexNearLow(double freq) const;
-    size_t indexNearUp(double freq) const;
 
     double freqAt(size_t freqIndex) const;
 
-    void print(std::ostream& os) const;
-    void toFile(std::string path) const;
-
     friend bool operator==(const Spectrum& lhs, const Spectrum& rhs);
 
+    friend std::ostream& operator<<(std::ostream& os, const Spectrum& s);
+
 private:
-    Freqs frequencies;
+    Frequencies frequencies;
 };
 
 } // namespace Veins

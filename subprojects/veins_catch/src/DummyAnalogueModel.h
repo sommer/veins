@@ -33,9 +33,9 @@ public:
     {
     }
 
-    void filterSignal(Signal* signal, const Coord& senderPos, const Coord& receiverPos) override
+    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override
     {
-        signal->addUniformAttenuation(factor);
+        *signal *= factor;
     }
 };
 } // namespace Veins

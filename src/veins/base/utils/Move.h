@@ -207,7 +207,7 @@ public:
         // otherwise: actualPos = startPos + ( direction * v * t )
         return startPos + (direction * speed * SIMTIME_DBL(actualTime - startTime));
     }
-    virtual const Coord& getCurrentPosition() const
+    virtual const Coord& getStartPosition() const
     {
         if (lastPos.z != DBL_MAX) return lastPos;
         return startPos;

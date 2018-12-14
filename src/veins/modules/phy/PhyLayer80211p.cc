@@ -36,16 +36,14 @@
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 #include "veins/modules/utility/Consts80211p.h"
 #include "veins/modules/messages/AirFrame11p_m.h"
-#include "veins/base/phyLayer/MacToPhyControlInfo.h"
+#include "veins/modules/utility/MacToPhyControlInfo11p.h"
 
 using namespace Veins;
 
-using Veins::ObstacleControlAccess;
-using Veins::VehicleObstacleControlAccess;
+using std::unique_ptr;
 
 Define_Module(Veins::PhyLayer80211p);
 
-/** This is needed to circumvent a bug in MiXiM that allows different header length interpretations for receiving and sending airframes*/
 void PhyLayer80211p::initialize(int stage)
 {
     if (stage == 0) {
@@ -53,17 +51,20 @@ void PhyLayer80211p::initialize(int stage)
         ccaThreshold = pow(10, par("ccaThreshold").doubleValue() / 10);
         allowTxDuringRx = par("allowTxDuringRx").boolValue();
         collectCollisionStatistics = par("collectCollisionStatistics").boolValue();
+
+        // Create frequency mappings and initialize spectrum for signal representation
+        Spectrum::Frequencies freqs;
+        for (auto& channel : IEEE80211ChannelFrequencies) {
+            freqs.push_back(channel.second - 5e6);
+            freqs.push_back(channel.second);
+            freqs.push_back(channel.second + 5e6);
+        }
+        overallSpectrum = Spectrum(freqs);
     }
     BasePhyLayer::initialize(stage);
-    if (stage == 0) {
-        int headerLength = par("headerLength");
-        if (headerLength != PHY_HDR_TOTAL_LENGTH) {
-            throw cRuntimeError("The header length of the 802.11p standard is 46bit, please change your omnetpp.ini accordingly by either setting it to 46bit or removing the entry");
-        }
-    }
 }
 
-AnalogueModel* PhyLayer80211p::getAnalogueModelFromName(std::string name, ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::getAnalogueModelFromName(std::string name, ParameterMap& params)
 {
 
     if (name == "SimplePathlossModel") {
@@ -91,11 +92,10 @@ AnalogueModel* PhyLayer80211p::getAnalogueModelFromName(std::string name, Parame
     return BasePhyLayer::getAnalogueModelFromName(name, params);
 }
 
-AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& params)
 {
     double alpha1 = -1, alpha2 = -1, breakpointDistance = -1;
     double L01 = -1, L02 = -1;
-    double carrierFrequency = 5.890e+9;
     bool useTorus = world->useTorus();
     const Coord& playgroundSize = *(world->getPgs());
     ParameterMap::iterator it;
@@ -140,67 +140,37 @@ AnalogueModel* PhyLayer80211p::initializeBreakpointPathlossModel(ParameterMap& p
         // check whether alpha is not smaller than specified in ConnectionManager
     }
 
-    // get carrierFrequency from config
-    it = params.find("carrierFrequency");
-
-    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
-        // set carrierFrequency
-        carrierFrequency = it->second.doubleValue();
-        EV_TRACE << "createPathLossModel(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
-
-        // check whether carrierFrequency is not smaller than specified in ConnectionManager
-        if (cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue()) {
-            // throw error
-            throw cRuntimeError("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
-                   ConnectionManager. Please adjust your config.xml file accordingly");
-        }
-    }
-    else // carrierFrequency has not been specified in config.xml
-    {
-        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
-            // set carrierFrequency according to ConnectionManager
-            carrierFrequency = cc->par("carrierFrequency").doubleValue();
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
-        }
-        else // carrierFrequency has not been specified in ConnectionManager
-        {
-            // keep carrierFrequency at default value
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
-        }
-    }
-
     if (alpha1 == -1 || alpha2 == -1 || breakpointDistance == -1 || L01 == -1 || L02 == -1) {
         throw cRuntimeError("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
     }
 
-    return new BreakpointPathlossModel(L01, L02, alpha1, alpha2, breakpointDistance, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<BreakpointPathlossModel>(L01, L02, alpha1, alpha2, breakpointDistance, useTorus, playgroundSize);
 }
 
-AnalogueModel* PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& params)
 {
     ASSERT(params.count("DielectricConstant") == 1);
 
     double dielectricConstant = params["DielectricConstant"].doubleValue();
 
-    return new TwoRayInterferenceModel(dielectricConstant);
+    return make_unique<TwoRayInterferenceModel>(dielectricConstant);
 }
 
-AnalogueModel* PhyLayer80211p::initializeNakagamiFading(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeNakagamiFading(ParameterMap& params)
 {
     bool constM = params["constM"].boolValue();
     double m = 0;
     if (constM) {
         m = params["m"].doubleValue();
     }
-    return new NakagamiFading(constM, m);
+    return make_unique<NakagamiFading>(constM, m);
 }
 
-AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& params)
 {
 
     // init with default value
     double alpha = 2.0;
-    double carrierFrequency = 5.890e+9;
     bool useTorus = world->useTorus();
     const Coord& playgroundSize = *(world->getPgs());
 
@@ -233,45 +203,16 @@ AnalogueModel* PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& param
         }
     }
 
-    // get carrierFrequency from config
-    it = params.find("carrierFrequency");
-
-    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
-        // set carrierFrequency
-        carrierFrequency = it->second.doubleValue();
-        EV_TRACE << "createPathLossModel(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
-
-        // check whether carrierFrequency is not smaller than specified in ConnectionManager
-        if (cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue()) {
-            // throw error
-            throw cRuntimeError("TestPhyLayer::createPathLossModel(): carrierFrequency can't be smaller than specified in \
-                   ConnectionManager. Please adjust your config.xml file accordingly");
-        }
-    }
-    else // carrierFrequency has not been specified in config.xml
-    {
-        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
-            // set carrierFrequency according to ConnectionManager
-            carrierFrequency = cc->par("carrierFrequency").doubleValue();
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
-        }
-        else // carrierFrequency has not been specified in ConnectionManager
-        {
-            // keep carrierFrequency at default value
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
-        }
-    }
-
-    return new SimplePathlossModel(alpha, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<SimplePathlossModel>(alpha, useTorus, playgroundSize);
 }
 
-AnalogueModel* PhyLayer80211p::initializePERModel(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializePERModel(ParameterMap& params)
 {
     double per = params["packetErrorRate"].doubleValue();
-    return new PERModel(per);
+    return make_unique<PERModel>(per);
 }
 
-Decider* PhyLayer80211p::getDeciderFromName(std::string name, ParameterMap& params)
+unique_ptr<Decider> PhyLayer80211p::getDeciderFromName(std::string name, ParameterMap& params)
 {
     if (name == "Decider80211p") {
         protocolId = IEEE_80211;
@@ -280,137 +221,49 @@ Decider* PhyLayer80211p::getDeciderFromName(std::string name, ParameterMap& para
     return BasePhyLayer::getDeciderFromName(name, params);
 }
 
-AnalogueModel* PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimpleObstacleShadowing(ParameterMap& params)
 {
 
     // init with default value
-    double carrierFrequency = 5.890e+9;
     bool useTorus = world->useTorus();
     const Coord& playgroundSize = *(world->getPgs());
 
     ParameterMap::iterator it;
-
-    // get carrierFrequency from config
-    it = params.find("carrierFrequency");
-
-    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
-        // set carrierFrequency
-        carrierFrequency = it->second.doubleValue();
-        EV_TRACE << "initializeSimpleObstacleShadowing(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
-
-        // check whether carrierFrequency is not smaller than specified in ConnectionManager
-        if (cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue()) {
-            // throw error
-            throw cRuntimeError("initializeSimpleObstacleShadowing(): carrierFrequency can't be smaller than specified in ConnectionManager. Please adjust your config.xml file accordingly");
-        }
-    }
-    else // carrierFrequency has not been specified in config.xml
-    {
-        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
-            // set carrierFrequency according to ConnectionManager
-            carrierFrequency = cc->par("carrierFrequency").doubleValue();
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
-        }
-        else // carrierFrequency has not been specified in ConnectionManager
-        {
-            // keep carrierFrequency at default value
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
-        }
-    }
 
     ObstacleControl* obstacleControlP = ObstacleControlAccess().getIfExists();
     if (!obstacleControlP) throw cRuntimeError("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
-    return new SimpleObstacleShadowing(*obstacleControlP, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<SimpleObstacleShadowing>(*obstacleControlP, useTorus, playgroundSize);
 }
 
-AnalogueModel* PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& params)
+unique_ptr<AnalogueModel> PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& params)
 {
 
     // init with default value
-    double carrierFrequency = 2.412e+9;
     bool useTorus = world->useTorus();
     const Coord& playgroundSize = *(world->getPgs());
 
     ParameterMap::iterator it;
 
-    // get carrierFrequency from config
-    it = params.find("carrierFrequency");
-
-    if (it != params.end()) { // parameter carrierFrequency has been specified in config.xml
-        // set carrierFrequency
-        carrierFrequency = it->second.doubleValue();
-        EV_TRACE << "initializeSimpleObstacleShadowing(): carrierFrequency set from config.xml to " << carrierFrequency << endl;
-
-        // check whether carrierFrequency is not smaller than specified in ConnectionManager
-        if (cc->hasPar("carrierFrequency") && carrierFrequency < cc->par("carrierFrequency").doubleValue()) {
-            // throw error
-            throw cRuntimeError("initializeSimpleObstacleShadowing(): carrierFrequency can't be smaller than specified in ConnectionManager. Please adjust your config.xml file accordingly");
-        }
-    }
-    else // carrierFrequency has not been specified in config.xml
-    {
-        if (cc->hasPar("carrierFrequency")) { // parameter carrierFrequency has been specified in ConnectionManager
-            // set carrierFrequency according to ConnectionManager
-            carrierFrequency = cc->par("carrierFrequency").doubleValue();
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from ConnectionManager to " << carrierFrequency << endl;
-        }
-        else // carrierFrequency has not been specified in ConnectionManager
-        {
-            // keep carrierFrequency at default value
-            EV_TRACE << "createPathLossModel(): carrierFrequency set from default value to " << carrierFrequency << endl;
-        }
-    }
-
     VehicleObstacleControl* vehicleObstacleControlP = VehicleObstacleControlAccess().getIfExists();
     if (!vehicleObstacleControlP) throw cRuntimeError("initializeVehicleObstacleShadowing(): cannot find VehicleObstacleControl module");
-    return new VehicleObstacleShadowing(*vehicleObstacleControlP, carrierFrequency, useTorus, playgroundSize);
+    return make_unique<VehicleObstacleShadowing>(*vehicleObstacleControlP, useTorus, playgroundSize);
 }
 
-Decider* PhyLayer80211p::initializeDecider80211p(ParameterMap& params)
+unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params)
 {
     double centerFreq = params["centerFrequency"];
-    Decider80211p* dec = new Decider80211p(this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
+    auto dec = make_unique<Decider80211p>(this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
     dec->setPath(getParentModule()->getFullPath());
-    return dec;
+    return unique_ptr<Decider>(std::move(dec));
 }
 
-void PhyLayer80211p::changeListeningFrequency(double freq)
+void PhyLayer80211p::changeListeningChannel(Channel channel)
 {
-    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider);
+    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
     assert(dec);
+
+    double freq = IEEE80211ChannelFrequencies.at(channel);
     dec->changeFrequency(freq);
-}
-
-void PhyLayer80211p::handleMessage(cMessage* msg)
-{
-    // self messages
-    if (msg->isSelfMessage()) {
-        handleSelfMessage(msg);
-
-        // MacPkts <- MacToPhyControlInfo
-    }
-    else if (msg->getArrivalGateId() == upperLayerIn) {
-        BasePhyLayer::handleUpperMessage(msg);
-
-        // controlmessages
-    }
-    else if (msg->getArrivalGateId() == upperControlIn) {
-        BasePhyLayer::handleUpperControlMessage(msg);
-
-        // AirFrames
-    }
-    else if (msg->getKind() == AIR_FRAME) {
-        if (dynamic_cast<AirFrame11p*>(msg) == nullptr) {
-            EV_TRACE << "non-AirFrame11p received. Will be discarded!" << std::endl;
-            delete msg;
-            return;
-        }
-        BasePhyLayer::handleAirFrame(static_cast<AirFrame*>(msg));
-    }
-    else {
-        EV << "Unknown message received." << endl;
-        delete msg;
-    }
 }
 
 void PhyLayer80211p::handleSelfMessage(cMessage* msg)
@@ -422,7 +275,7 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg)
         assert(msg == txOverTimer);
         sendControlMsgToMac(new cMessage("Transmission over", TX_OVER));
         // check if there is another packet on the chan, and change the chan-state to idle
-        Decider80211p* dec = dynamic_cast<Decider80211p*>(decider);
+        Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
         assert(dec);
         if (dec->cca(simTime(), nullptr)) {
             // chan is idle
@@ -449,55 +302,32 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg)
         break;
     }
 }
-AirFrame* PhyLayer80211p::encapsMsg(cPacket* macPkt)
+
+unique_ptr<AirFrame> PhyLayer80211p::createAirFrame(cPacket* macPkt)
 {
-    // the cMessage passed must be a MacPacket... but no cast needed here
-    // MacPkt* pkt = static_cast<MacPkt*>(msg);
-
-    // ...and must always have a ControlInfo attached (contains Signal)
-    cObject* ctrlInfo = macPkt->removeControlInfo();
-    assert(ctrlInfo);
-
-    // create the new AirFrame
-    AirFrame* frame = new AirFrame11p(macPkt->getName(), AIR_FRAME);
-
-    // Retrieve the pointer to the Signal-instance from the ControlInfo-instance.
-    // We are now the new owner of this instance.
-    Signal* s = MacToPhyControlInfo::getSignalFromControlInfo(ctrlInfo);
-    // make sure we really obtained a pointer to an instance
-    assert(s);
-
-    // set the members
-    assert(s->getDuration() > 0);
-    frame->setDuration(s->getDuration());
-    // copy the signal into the AirFrame
-    frame->setSignal(*s);
-    // set priority of AirFrames above the normal priority to ensure
-    // channel consistency (before any thing else happens at a time
-    // point t make sure that the channel has removed every AirFrame
-    // ended at t and added every AirFrame started at t)
-    frame->setSchedulingPriority(airFramePriority());
-    frame->setProtocolId(myProtocolId());
-    frame->setBitLength(headerLength);
-    frame->setId(world->getUniqueAirFrameId());
-    frame->setChannel(radio->getCurrentChannel());
-
-    // pointer and Signal not needed anymore
-    delete s;
-    s = nullptr;
-
-    // delete the Control info
-    delete ctrlInfo;
-    ctrlInfo = nullptr;
-
-    frame->encapsulate(macPkt);
-
-    // --- from here on, the AirFrame is the owner of the MacPacket ---
-    macPkt = nullptr;
-    EV_TRACE << "AirFrame encapsulated, length: " << frame->getBitLength() << "\n";
-
-    return frame;
+    return make_unique<AirFrame11p>(macPkt->getName(), AIR_FRAME);
 }
+
+void PhyLayer80211p::attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
+{
+    const auto ctrlInfo11p = check_and_cast<MacToPhyControlInfo11p*>(ctrlInfo);
+
+    const auto duration = getFrameDuration(airFrame->getEncapsulatedPacket()->getBitLength(), ctrlInfo11p->mcs);
+    assert(duration > 0);
+    Signal signal(overallSpectrum, simTime(), duration);
+    auto freqIndex = overallSpectrum.indexOf(IEEE80211ChannelFrequencies.at(ctrlInfo11p->channelNr));
+    signal.at(freqIndex - 1) = ctrlInfo11p->txPower_mW;
+    signal.at(freqIndex) = ctrlInfo11p->txPower_mW;
+    signal.at(freqIndex + 1) = ctrlInfo11p->txPower_mW;
+    signal.setDataStart(freqIndex - 1);
+    signal.setDataEnd(freqIndex + 1);
+    signal.setCenterFrequencyIndex(freqIndex);
+    // copy the signal into the AirFrame
+    airFrame->setSignal(signal);
+    airFrame->setDuration(signal.getDuration());
+    airFrame->setMcs(static_cast<int>(ctrlInfo11p->mcs));
+}
+
 int PhyLayer80211p::getRadioState()
 {
     return BasePhyLayer::getRadioState();
@@ -512,7 +342,9 @@ simtime_t PhyLayer80211p::setRadioState(int rs)
 void PhyLayer80211p::setCCAThreshold(double ccaThreshold_dBm)
 {
     ccaThreshold = pow(10, ccaThreshold_dBm / 10);
-    ((Decider80211p*) decider)->setCCAThreshold(ccaThreshold_dBm);
+    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
+    assert(dec);
+    dec->setCCAThreshold(ccaThreshold_dBm);
 }
 double PhyLayer80211p::getCCAThreshold()
 {
@@ -521,16 +353,28 @@ double PhyLayer80211p::getCCAThreshold()
 
 void PhyLayer80211p::notifyMacAboutRxStart(bool enable)
 {
-    ((Decider80211p*) decider)->setNotifyRxStart(enable);
+    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
+    assert(dec);
+    dec->setNotifyRxStart(enable);
 }
 
 void PhyLayer80211p::requestChannelStatusIfIdle()
 {
     Enter_Method_Silent();
-    Decider80211p* dec = (Decider80211p*) decider;
+    Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
+    assert(dec);
     if (dec->cca(simTime(), nullptr)) {
         // chan is idle
         EV_TRACE << "Request channel status: channel idle!\n";
         dec->setChannelIdleStatus(true);
     }
+}
+
+simtime_t PhyLayer80211p::getFrameDuration(int payloadLengthBits, MCS mcs) const
+{
+    Enter_Method_Silent();
+    ASSERT(mcs != MCS::undefined);
+    auto ndbps = getNDBPS(mcs);
+    // calculate frame duration according to Equation (17-29) of the IEEE 802.11-2007 standard
+    return PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil(static_cast<double>(16 + payloadLengthBits + 6) / (ndbps));
 }

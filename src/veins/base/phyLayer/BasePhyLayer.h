@@ -24,39 +24,31 @@ class ChannelAccess;
 class Radio;
 
 /**
- * @brief The BasePhyLayer represents the physical layer of a nic.
+ * The BasePhyLayer represents the physical layer of a nic.
  *
- * The BasePhyLayer is directly connected to the mac layer via
- * OMNeT channels and is able to send messages to other physical
- * layers through sub-classing from ChannelAcces.
+ * The BasePhyLayer is directly connected to the mac layer via OMNeT channels and is able to send messages to other physical layers through sub-classing from ChannelAcces.
+ * In order to implement a physical layer, subclass the BasePhyLayer and override these methods:
+ *  - initializeRadio
+ *  - getAnalogueModelFromName
+ *  - getDeciderFromName
+ *  - createAirFrame
+ *  - attachSignal
  *
- * The BasePhyLayer encapsulates three sub modules.
- * The AnalogueModels, which are responsible for simulating
- * the attenuation of received signals and the Decider which
- * provides the main functionality of the physical layer like
- * signal classification (noise or not noise) and demodulation
- * (calculating transmission errors). Furthermore, the Antenna
- * used for gain calculation is managed by the BasePhyLayer.
+ * The BasePhyLayer encapsulates three sub modules:
+ * The AnalogueModels, which are responsible for simulating the attenuation of received signals, and the Decider, which provides the main functionality of the physical layer like signal classification (noise or not noise) and demodulation (calculating transmission errors).
+ * Furthermore, the Antenna used for gain calculation is managed by the BasePhyLayer.
  *
- * The BasePhyLayer itself is responsible for the OMNeT
- * depended parts of the physical layer which are the following:
+ * The BasePhyLayer itself is responsible for the OMNeT depended parts of the physical layer which are the following:
  *
  * Module initialization:
- * - read ned-parameters and initialize module, Decider,
- * AnalogueModels and Antenna.
+ * - read ned-parameters and initialize module, Decider, AnalogueModels and Antenna
  *
  * Message handling:
- * - receive messages from mac layer and hand them to the Decider
- *   or directly send them to the channel
- * - receive AirFrames from the channel, hand them to the
- *   AnalogueModels for filtering, simulate delay and transmission
- *   duration, hand it to the Decider for evaluation and send
- *   received packets to the mac layer
- * - keep track of currently active AirFrames on the channel
- *   (see ChannelInfo)
+ * - receive messages from mac layer and hand them to the Decider or directly send them to the channel
+ * - receive AirFrames from the channel, hand them to the AnalogueModels for filtering, simulate delay and transmission duration, hand it to the Decider for evaluation and send received packets to the mac layer
+ * - keep track of currently active AirFrames on the channel (see ChannelInfo)
  *
- * The actual evaluation of incoming signals is done by the
- * Decider.
+ * The actual evaluation of incoming signals is done by the Decider.
  *
  * base class ChannelAccess:
  * - provides access to the channel via the ConnectionManager
@@ -71,224 +63,154 @@ class Radio;
  * @ingroup baseModules
  */
 
-using AnalogueModelList = std::vector<AnalogueModel*>;
-
 class VEINS_API BasePhyLayer : public ChannelAccess, public DeciderToPhyInterface, public MacToPhyInterface {
 
 protected:
-    enum ProtocolIds {
-        GENERIC = 0,
+    using ParameterMap = std::map<std::string, cMsgPar>; ///< Used at initialisation to pass the parameters to the AnalogueModel and Decider.
+
+    /** The states of the receiving process for AirFrames.*/
+    enum class AirFrameState {
+        start_receive = 1, ///< Start of actual receiving process of the AirFrame.
+        receiving, ///< AirFrame is being received.
+        end_receive ///< Receiving process over.
     };
 
-    int protocolId;
+    enum ProtocolIds {
+        PROTOCOL_ID_GENERIC = 0,
+    };
 
     /** @brief Defines the scheduling priority of AirFrames.
      *
-     * AirFrames use a slightly higher priority than normal to ensure
-     * channel consistency. This means that before anything else happens
-     * at a time point t every AirFrame which ended at t has been removed and
-     * every AirFrame started at t has been added to the channel.
+     * AirFrames use a slightly higher priority than normal to ensure channel consistency.
+     * This means that before anything else happens at a time point t every AirFrame which ended at t has been removed and every AirFrame started at t has been added to the channel.
      */
     static short airFramePriority()
     {
         return 10;
     }
 
-    /** @brief Defines the strength of the thermal noise.*/
-    double thermalNoiseValue;
-
-    /** @brief The sensitivity describes the minimum strength a signal must have to be received.*/
-    double sensitivity;
-
-    /** @brief Stores if tracking of statistics (esp. cOutvectors) is enabled.*/
-    bool recordStats;
+    int protocolId = PROTOCOL_ID_GENERIC; ///< The ID of the protocol this phy can transceive.
+    double thermalNoiseValue = 0; ///< Defines the strength of the thermal noise.
+    double sensitivity; ///< The sensitivity describes the minimum strength a signal must have to be received.
+    bool recordStats; ///< Stores if tracking of statistics (esp. cOutvectors) is enabled.
+    ChannelInfo channelInfo; ///< Channel info keeps track of received AirFrames and provides information about currently active AirFrames at the channel.
+    std::unique_ptr<Radio> radio; ///< The state machine storing the current radio state (TX, RX, SLEEP).
 
     /**
-     * @brief Channel info keeps track of received AirFrames and provides information about
-     * currently active AirFrames at the channel.
-     */
-    ChannelInfo channelInfo;
-
-    /** @brief The state machine storing the current radio state (TX, RX, SLEEP).*/
-    Radio* radio;
-
-    /**
-     * @brief Shared pointer to the Antenna used for this node. It needs to be a shared
-     * pointer as a possible receiver could still need the antenna for gain calculation
-     * even if this node has already disappeared. The antenna will be deleted when nothing
-     * is pointing to it any more.
+     * Shared pointer to the Antenna used for this node.
+     *
+     * Using a shared pointer ensures proper handling of a signal is possible, even after the sender has been destroyed.
      */
     std::shared_ptr<Antenna> antenna;
 
-    /** @brief Pointer to the decider module. */
-    Decider* decider;
+    std::unique_ptr<Decider> decider; ///< Pointer to the decider module.
 
-    /** @brief List of the analogue models to use.*/
+    /**
+     * The analogue models to use which might attenuate or amplify a signal.
+     */
     AnalogueModelList analogueModels;
-    /** @brief List of the analogue models to use for thresholding mechanism.*/
+
+    /**
+     * The analogue models to use which will only attenuate a signal.
+     *
+     * These models are not applied immediately, but only attached to the signal.
+     * This enables lazy application of the models.
+     */
     AnalogueModelList analogueModelsThresholding;
 
-    /**
-     * @brief Used at initialisation to pass the parameters
-     * to the AnalogueModel and Decider
-     */
-    typedef std::map<std::string, cMsgPar> ParameterMap;
+    int upperLayerIn; ///< The id of the in-data gate from the Mac layer.
+    int upperLayerOut; ///< The id of the out-data gate to the Mac layer.
+    int upperControlOut; ///< The id of the out-control gate to the Mac layer.
+    int upperControlIn; ///< The id of the in-control gate from the Mac layer.
 
-    /** @brief The id of the in-data gate from the Mac layer */
-    int upperLayerIn;
-    /** @brief The id of the out-data gate to the Mac layer */
-    int upperLayerOut;
-    /** @brief The id of the out-control gate to the Mac layer */
-    int upperControlOut;
-    /** @brief The id of the in-control gate from the Mac layer */
-    int upperControlIn;
+    cMessage* radioSwitchingOverTimer = nullptr; ///< Self message scheduled to the point in time when the switching process of the radio is over.
+    cMessage* txOverTimer = nullptr; ///< Self message scheduled to the point in time when the transmission of an AirFrame is over.
 
-    /**
-     * @brief Self message scheduled to the point in time when the
-     * switching process of the radio is over.
-     */
-    cMessage* radioSwitchingOverTimer;
+    BaseWorldUtility* world = nullptr; ///< Pointer to the World Utility, to obtain some global information
 
-    /**
-     * @brief Self message scheduled to the point in time when the
-     * transmission of an AirFrame is over.
-     */
-    cMessage* txOverTimer;
-
-    /** @brief The states of the receiving process for AirFrames.*/
-    enum AirFrameStates {
-        /** @brief Start of actual receiving process of the AirFrame. */
-        START_RECEIVE = 1,
-        /** @brief AirFrame is being received. */
-        RECEIVING,
-        /** @brief Receiving process over */
-        END_RECEIVE
-    };
-
-    /** @brief Stores the length of the phy header in bits. */
-    int headerLength;
-
-    /** @brief Pointer to the World Utility, to obtain some global information*/
-    BaseWorldUtility* world;
-
-public:
 private:
     /**
-     * @brief Utility function. Reads the parameters of a XML element
-     * and stores them in the passed ParameterMap reference.
+     * Read the parameters of a XML element and stores them in the passed ParameterMap reference.
      */
     void getParametersFromXML(cXMLElement* xmlData, ParameterMap& outputMap);
 
     /**
-     * @brief Initializes the AnalogueModels with the data from the
-     * passed XML-config data.
+     * Initialize the AnalogueModels with the data from the passed XML-config data.
      */
     void initializeAnalogueModels(cXMLElement* xmlConfig);
 
     /**
-     * @brief Initializes the Decider with the data from the
-     * passed XML-config data.
+     * Initialize the Decider with the data from the passed XML-config data.
      */
     void initializeDecider(cXMLElement* xmlConfig);
 
     /**
-     * @brief Initializes the Antenna with the data from the
-     * passed XML-config data.
+     * Initialize the Antenna with the data from the passed XML-config data.
      */
     void initializeAntenna(cXMLElement* xmlConfig);
 
 protected:
     /**
-     * @brief Reads and returns the parameter with the passed name.
+     * Read and return the parameter with the passed name.
      *
-     * If the parameter couldn't be found the value of defaultValue
-     * is returned.
+     * If the parameter couldn't be found the value of defaultValue is returned.
      *
-     * @param parName         - the name of the ned-parameter
-     * @param defaultValue     - the value to be returned if the parameter couldn't be found
+     * @param parName The name of the ned-parameter
+     * @param defaultValue The value to be returned if the parameter couldn't be found
      */
     template <class T>
     T readPar(const char* parName, const T defaultValue);
 
     /**
-     * @brief OMNeT++ initialization function.
-     *
-     * Read simple parameters.
-     * Read and parse xml file for decider and analogue models
-     * configuration.
+     * Initialize members and associated objects according to parameterization.
      */
     void initialize(int stage) override;
 
     /**
-     * @brief OMNeT++ handle message function.
+     * Process received messages and pass to specific handlers.
      *
-     * Classify and forward message to subroutines.
-     * - AirFrames from channel
-     * - self scheduled AirFrames
-     * - MacPackets from MAC layer
-     * - ControllMesasges from MAC layer
-     * - self messages like TX_OVER and RADIO_SWITCHED
+     * @see handleSelfMessage
+     * @see handleUpperMessage
+     * @see handleUpperControlMessage
+     * @see handleAirFrame
      */
     void handleMessage(cMessage* msg) override;
 
     /**
-     * @brief Initializes and returns the radio class to use.
-     *
-     * Can be overridden by sub-classing phy layers to use their
-     * own Radio implementations.
+     * Create and return the radio class to use.
      */
-    virtual Radio* initializeRadio();
+    virtual std::unique_ptr<Radio> initializeRadio();
 
     /**
-     * @brief Creates and returns an instance of the AnalogueModel with the
+     * Create and return an instance of the AnalogueModel with the
      * specified name.
      *
-     * The returned AnalogueModel has to be
-     * generated with the "new" command. The BasePhyLayer
-     * keeps the ownership of the returned AnalogueModel.
-     *
-     * This method is used by the BasePhyLayer during
-     * initialisation to load the AnalogueModels which
-     * has been specified in the ned file.
-     *
-     * This method has to be overridden if you want to be
-     * able to load your own AnalogueModels.
+     * This method is used by the BasePhyLayer during initialisation to load the AnalogueModels which has been specified in the NED file.
      */
-    virtual AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params);
+    virtual std::unique_ptr<AnalogueModel> getAnalogueModelFromName(std::string name, ParameterMap& params)
+    {
+        return nullptr;
+    }
 
     /**
-     * @brief Creates and returns an instance of the Decider with the specified
-     * name.
+     * Create and return an instance of the Decider with the specified name.
      *
-     * The returned Decider has to be generated with
-     * the "new" command. The BasePhyLayer keeps the ownership
-     * of the returned Decider.
-     *
-     * This method is used by the BasePhyLayer during
-     * initialisation to load the Decider which has been
-     * specified in the ned file.
-     *
-     * This method has to be overridden if you want to be
-     * able to load your own Decider.
+     * This method is used by the BasePhyLayer during initialisation to load the Decider which has been specified in the ned file.
      */
-    virtual Decider* getDeciderFromName(std::string name, ParameterMap& params);
+    virtual std::unique_ptr<Decider> getDeciderFromName(std::string name, ParameterMap& params);
 
     /**
-     * @brief Creates and returns an instance of the Antenna with the specified name
-     * as a shared pointer.
+     * Create and return an instance of the Antenna with the specified name as a shared pointer.
      *
-     * This method is called during initialization to load the Antenna specified. If no
-     * special antenna has been specified, an object of the base Antenna class is
-     * instantiated, representing an isotropic antenna.
+     * This method is called during initialization to load the Antenna specified.
+     * If no special antenna has been specified, an object of the base Antenna class is instantiated, representing an isotropic antenna.
      */
     virtual std::shared_ptr<Antenna> getAntennaFromName(std::string name, ParameterMap& params);
 
     /**
-     * @brief Creates and returns an instance of the SampledAntenna1D class as a
-     * shared pointer.
+     * Creates and returns an instance of the SampledAntenna1D class as a shared pointer.
      *
-     * The given parameters (i.e. samples and optional randomness parameters) are
-     * evaluated and given to the antenna's constructor.
+     * The given parameters (i.e. samples and optional randomness parameters) are evaluated and passed to the antenna's constructor.
      */
     virtual std::shared_ptr<Antenna> initializeSampledAntenna1D(ParameterMap& params);
 
@@ -297,45 +219,41 @@ protected:
      **/
     /*@{ */
     /**
-     * @brief Handles messages received from the channel (probably AirFrames).
+     * Handle messages received from the channel.
+     *
+     * @see handleAirFrameStartReceive
+     * @see handleAirFrameReceiving
+     * @see handleAirFrameEndReceive
      */
     virtual void handleAirFrame(AirFrame* frame);
 
     /**
-     * @brief Handles messages received from the upper layer through the
-     * data gate. Also, attaches a POA object to the created Airframe containing
-     * information needed by the receiver for antenna gain calculation.
+     * Handle messages received from the upper layer and start transmitting them.
      */
     virtual void handleUpperMessage(cMessage* msg);
 
     /**
-     * @brief Handles messages received from the upper layer through the
-     * control gate.
+     * Handle messages received from the upper layer through the control gate.
      */
     virtual void handleUpperControlMessage(cMessage* msg);
 
     /**
-     * @brief Handles self scheduled messages.
+     * Handle self scheduled messages.
      */
     virtual void handleSelfMessage(cMessage* msg);
 
     /**
-     * @brief Handles incoming AirFrames with the state FIRST_RECEIVE.
-     */
-    void handleAirFrameFirstReceive(AirFrame* msg);
-
-    /**
-     * @brief Handles incoming AirFrames with the state START_RECEIVE.
+     * Handle incoming AirFrames with the state AirFrameState::start_receive.
      */
     virtual void handleAirFrameStartReceive(AirFrame* msg);
 
     /**
-     * @brief Handles incoming AirFrames with the state RECEIVING.
+     * Handle incoming AirFrames with the state AirFrameState::receiving.
      */
     virtual void handleAirFrameReceiving(AirFrame* msg);
 
     /**
-     * @brief Handles incoming AirFrames with the state END_RECEIVE.
+     * Handle incoming AirFrames with the state AirFrameState::end_receive.
      */
     virtual void handleAirFrameEndReceive(AirFrame* msg);
 
@@ -347,50 +265,67 @@ protected:
     /*@{ */
 
     /**
-     * @brief Sends the passed control message to the upper layer.
+     * Send the passed control message to the upper layer.
      */
     void sendControlMessageUp(cMessage* msg);
 
     /**
-     * @brief Sends the passed MacPkt to the upper layer.
+     * Send the passed MacPkt to the upper layer.
      */
     void sendMacPktUp(cMessage* pkt);
 
     /**
-     * @brief Sends the passed AirFrame to the channel
+     * Send the passed AirFrame to the channel
      */
     void sendMessageDown(AirFrame* pkt);
 
     /**
-     * @brief Schedule self message to passed point in time.
+     * Schedule self message to passed point in time.
      */
     void sendSelfMessage(cMessage* msg, simtime_t_cref time);
 
     /*@}*/
 
     /**
-     * @brief This function encapsulates messages from the upper layer into an
-     * AirFrame and sets all necessary attributes.
+     * Create a protocol-specific AirFrame
      */
-    virtual AirFrame* encapsMsg(cPacket* msg);
+    virtual std::unique_ptr<AirFrame> createAirFrame(cPacket* macPkt);
 
     /**
-     * @brief Filters the passed AirFrame's Signal by every registered AnalogueModel.
+     * Create a signal corresponding to the received control information.
+     */
+    virtual void attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
+    {
+        throw cRuntimeError("Not implemented in the BasePhyLayer. Override in subclass.");
+    }
+
+    /**
+     * Encapsulate messages from the upper layer into an AirFrame and set all necessary attributes.
+     */
+    virtual std::unique_ptr<AirFrame> encapsMsg(cPacket* msg);
+
+    /**
+     * Filter the passed AirFrame's Signal by every registered AnalogueModel.
+     *
      * Moreover, the antenna gains are calculated and added to the signal.
+     * @note Only models from analogueModels are applied. Those referenced in analogueModelsThresholding are passed to the Signal to enable more efficient handling.
+     *
+     * @see analogueModels
+     * @see analogueModelsThresholding
      */
     virtual void filterSignal(AirFrame* frame);
 
     /**
-     * @brief Called the moment the simulated switching process of the Radio is finished.
+     * Called when the switching process of the Radio is finished.
      *
-     * The Radio is set the new RadioState and the MAC Layer is sent
-     * a confirmation message.
+     * The default implementation sends a confirmation message to the mac layer.
+     *
+     * @see MacToPhyInterface::RADIO_SWITCHING_OVER
      */
     virtual void finishRadioSwitching();
 
     /**
-     * @brief Returns the identifier of the protocol this phy uses to send
-     * messages.
+     * Return the identifier of the protocol this phy uses to send messages.
      *
      * @return An integer representing the identifier of the used protocol.
      */
@@ -400,18 +335,12 @@ protected:
     }
 
     /**
-     * @brief Returns true if the protocol with the passed identifier is
-     * decodeable by the decider.
+     * Return whether the protocol with the passed identifier is decodeable by the decider.
      *
-     * If the protocol with the passed id is not understood by this phy layers
-     * decider the according AirFrame is not passed to the it but only is added
-     * to channel info to be available as interference to the decider.
-     *
-     * Default implementation checks only if the passed id is the same as the
-     * one returned by "myProtocolId()".
+     * Default implementation checks only if the passed id is the same as the one returned by "myProtocolId()".
      *
      * @param id The identifier of the protocol of an AirFrame.
-     * @return Returns true if the passed protocol id is supported by this phy-
+     * @return true if the passed protocol id is supported by this phy.
      * layer.
      */
     virtual bool isKnownProtocolId(int id)
@@ -419,15 +348,15 @@ protected:
         return id == myProtocolId();
     }
 
-public:
-    BasePhyLayer();
-
     /**
-     * Free the pointer to the decider and the AnalogueModels and the Radio.
+     * The underlying spectrum (definition of interesting freqs) for all signals
      */
+    Spectrum overallSpectrum;
+
+public:
     ~BasePhyLayer() override;
 
-    /** @brief Only calls the deciders finish method.*/
+    /** Call the deciders finish method. */
     void finish() override;
 
     // ---------MacToPhyInterface implementation-----------
@@ -438,43 +367,28 @@ public:
     /*@{ */
 
     /**
-     * @brief Returns the current state the radio is in.
+     * Return the current state the radio is in.
      *
-     * See RadioState for possible values.
-     *
-     * This method is mainly used by the mac layer.
+     * @see RadioState for possible values.
      */
     int getRadioState() override;
 
     /**
-     * @brief Tells the BasePhyLayer to switch to the specified
-     * radio state.
+     * Tell the BasePhyLayer to switch to the specified radio state.
      *
-     * The switching process can take some time depending on the
-     * specified switching times in the ned file.
+     * The switching process can take some time depending on the specified switching times in the ned file.
      *
-     * @return    -1: Error code if the Radio is currently switching
-     *            else: switching time from the current RadioState to the new RadioState
+     * @return Switching time from the current RadioState to the new RadioState or -1 if a state change is already in progress.
      */
     simtime_t setRadioState(int rs) override;
 
-    /**
-     * @brief Returns the length of the phy header in bits.
-     *
-     * Since the MAC layer has to create the signal for
-     * a transmission it has to know the total length of
-     * the packet and therefore needs the length of the
-     * phy header.
-     */
-    int getPhyHeaderLength() override;
-
-    /** @brief Sets the channel currently used by the radio. */
+    /** Set the channel currently used by the radio. */
     void setCurrentRadioChannel(int newRadioChannel) override;
 
-    /** @brief Returns the channel currently used by the radio. */
+    /** Return the channel currently used by the radio. */
     int getCurrentRadioChannel() override;
 
-    /** @brief Returns the number of channels available on this radio. */
+    /** Return the number of channels available on this radio. */
     int getNbRadioChannels() override;
 
     /*@}*/
@@ -487,88 +401,42 @@ public:
     /*@{ */
 
     /**
-     * @brief Fills the passed AirFrameVector with all AirFrames that intersect
-     * with the time interval [from, to]
+     * Fill the given AirFrameVector with all AirFrames that intersect with the given time interval.
      */
     void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out) override;
 
     /**
-     * @brief Returns a constant which defines the thermal noise in
-     * the passed time frame (in mW).
+     * Return thermal noise power level (in mW).
      */
     double getThermalNoiseValue() override;
 
     /**
-     * @brief Called by the Decider to send a control message to the MACLayer
+     * Send the given message to via the control gate to the mac.
+     *
+     * @see upperControlOut
      */
     void sendControlMsgToMac(cMessage* msg) override;
 
     /**
-     * @brief Called to send an AirFrame with DeciderResult to the MACLayer
-     *
-     * When a packet is completely received and not noise, the Decider
-     * call this function to send the packet together with
-     * the corresponding DeciderResult up to MACLayer
-     *
+     * Pass the given packet along with the result up to the mac.
      */
     void sendUp(AirFrame* packet, DeciderResult* result) override;
 
     /**
-     * @brief Returns the current simulation time
-     */
-    simtime_t getSimTime() override;
-
-    /**
-     * @brief Tells the PhyLayer to cancel a scheduled message (AirFrame or
-     * ControlMessage).
-     *
-     * Used by the Decider if it doesn't need to handle an AirFrame or
-     * ControlMessage again anymore.
-     */
-    void cancelScheduledMessage(cMessage* msg) override;
-
-    /**
-     * @brief Tells the PhyLayer to reschedule a message (AirFrame or
-     * ControlMessage).
-     *
-     * Used by the Decider if it has to handle an AirFrame or an control message
-     * earlier than it has returned to the PhyLayer the last time the Decider
-     * handled that message.
-     */
-    void rescheduleMessage(cMessage* msg, simtime_t_cref t) override;
-
-    /**
-     * @brief Does nothing. For an actual power supporting
-     * phy see "PhyLayerBattery".
-     */
-    void drawCurrent(double amount, int activity) override;
-
-    /**
-     * @brief Returns a pointer to the simulations world-utility-module.
+     * Return a pointer to the simulations world-utility-module.
      */
     BaseWorldUtility* getWorldUtility() override;
 
     /**
-     * @brief Records a double into the scalar result file.
+     * Record a double into the scalar result file.
      *
-     * Implements the method from DeciderToPhyInterface, method-calls are forwarded
-     * to OMNeT-method 'recordScalar'.
+     * Implements the method from DeciderToPhyInterface, method-calls are forwarded to OMNeT-method 'recordScalar'.
+     *
+     * @see cComponent::recordScalar
      */
     void recordScalar(const char* name, double value, const char* unit = nullptr) override;
 
     /*@}*/
-
-    /**
-     * @brief Attaches a "control info" (PhyToMac) structure (object) to the message pMsg.
-     *
-     * This is most useful when passing packets between protocol layers
-     * of a protocol stack, the control info will contain the decider result.
-     *
-     * The "control info" object will be deleted when the message is deleted.
-     * Only one "control info" structure can be attached (the second
-     * setL3ToL2ControlInfo() call throws an error).
-     */
-    virtual cObject* const setUpControlInfo(cMessage* const pMsg, DeciderResult* const pDeciderResult);
 };
 
 } // namespace Veins

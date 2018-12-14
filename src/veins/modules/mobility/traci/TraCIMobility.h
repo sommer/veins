@@ -103,10 +103,6 @@ public:
     {
         return hostPositionOffset;
     }
-    virtual Coord getPositionAt(const simtime_t& t) const
-    {
-        return move.getPositionAt(t);
-    }
     virtual bool getParkingState() const
     {
         return isParking;
@@ -150,6 +146,14 @@ public:
         return vehicleCommandInterface;
     }
 
+    /**
+     * Returns the speed of the host (likely 0 if setHostSpeed==false)
+     */
+    Coord getHostSpeed() const
+    {
+        return BaseMobility::getCurrentSpeed();
+    }
+
 protected:
     int accidentCount; /**< number of accidents */
 
@@ -165,6 +169,7 @@ protected:
 
     std::string external_id; /**< updated by setExternalId() */
     double hostPositionOffset; /**< front offset for the antenna on this car */
+    bool setHostSpeed; /**< whether to update the speed of the host (along with its position)  */
 
     simtime_t lastUpdate; /**< updated by nextPosition() */
     Coord roadPosition; /**< position of front bumper, updated by nextPosition() */
@@ -196,6 +201,14 @@ protected:
      * Calculates where the OMNeT++ module position of this car should be, given its front bumper position
      */
     Coord calculateHostPosition(const Coord& vehiclePos) const;
+
+    /**
+     * Calling this method on pointers of type TraCIMobility is deprecated in favor of calling either getHostSpeed or getSpeed.
+     */
+    Coord getCurrentSpeed() const override
+    {
+        return BaseMobility::getCurrentSpeed();
+    }
 };
 
 class TraCIMobilityAccess {

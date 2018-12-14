@@ -28,7 +28,9 @@
 #include "veins/modules/obstacle/VehicleObstacleControl.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
+#include "veins/base/toolbox/Signal.h"
 
+using Veins::Signal;
 using Veins::VehicleObstacle;
 using Veins::VehicleObstacleControl;
 
@@ -89,21 +91,31 @@ void VehicleObstacleControl::erase(const VehicleObstacle* obstacle)
     delete obstacle;
 }
 
-double VehicleObstacleControl::getVehicleAttenuationSingle(double h1, double h2, double h, double d, double d1, double f)
+Signal VehicleObstacleControl::getVehicleAttenuationSingle(double h1, double h2, double h, double d, double d1, Signal attenuationPrototype)
 {
-    double lambda = 0.3 / f;
-    double d2 = d - d1;
-    double y = (h2 - h1) / d * d1 + h1;
-    double H = h - y;
-    double r1 = sqrt(lambda * d1 * d2 / d);
-    double V0 = sqrt(2) * H / r1;
+    Signal attenuation = Signal(attenuationPrototype.getSpectrum());
 
-    if (V0 <= -0.7) return 0;
+    for (uint16_t i = 0; i < attenuation.getNumValues(); i++) {
+        double freq = attenuation.getSpectrum().freqAt(i);
+        double lambda = BaseWorldUtility::speedOfLight() / freq;
+        double d2 = d - d1;
+        double y = (h2 - h1) / d * d1 + h1;
+        double H = h - y;
+        double r1 = sqrt(lambda * d1 * d2 / d);
+        double V0 = sqrt(2) * H / r1;
 
-    return 6.9 + 20 * log10(sqrt(pow((V0 - 0.1), 2) + 1) + V0 - 0.1);
+        if (V0 <= -0.7) {
+            attenuation.at(i) = 0;
+        }
+        else {
+            attenuation.at(i) = 6.9 + 20 * log10(sqrt(pow((V0 - 0.1), 2) + 1) + V0 - 0.1);
+        }
+    }
+
+    return attenuation;
 }
 
-double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pair<double, double>>& dz_vec, double f)
+Signal VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pair<double, double>>& dz_vec, Signal attenuationPrototype)
 {
 
     // basic sanity check
@@ -147,7 +159,7 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
     mo.push_back(dz_vec.size() - 1);
 
     // calculate attenuation due to MOs
-    double attenuation_mo = 0;
+    Signal attenuation_mo(attenuationPrototype.getSpectrum());
     for (size_t mm = 0; mm < mo.size() - 2; ++mm) {
         size_t tx = mo[mm];
         size_t ob = mo[mm + 1];
@@ -159,13 +171,13 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
         double d1 = dz_vec[ob].first - dz_vec[tx].first;
         double h = dz_vec[ob].second;
 
-        double ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, f);
+        Signal ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, attenuationPrototype);
 
         attenuation_mo += ad_mo;
     }
 
     // calculate attenuation due to "small obstacles" (i.e. the ones in-between MOs)
-    double attenuation_so = 0;
+    Signal attenuation_so(attenuationPrototype.getSpectrum());
     for (size_t i = 0; i < mo.size() - 1; ++i) {
         size_t delta = mo[i + 1] - mo[i];
 
@@ -184,7 +196,7 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
             double d1 = dz_vec[ob].first - dz_vec[tx].first;
             double h = dz_vec[ob].second;
 
-            double ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, f);
+            Signal ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, attenuationPrototype);
             attenuation_so += ad_mo;
         }
         else {
@@ -216,7 +228,7 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
             double d1 = dz_vec[ob].first - dz_vec[tx].first;
             double h = dz_vec[ob].second;
 
-            double ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, f);
+            Signal ad_mo = getVehicleAttenuationSingle(h1, h2, h, d, d1, attenuationPrototype);
             attenuation_so += ad_mo;
         }
     }
@@ -249,9 +261,12 @@ double VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
     return attenuation_mo + attenuation_so + c;
 }
 
-std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos, const Signal& s) const
+std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObstacles(const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_, const Signal& s) const
 {
     Enter_Method_Silent();
+
+    auto senderPos = senderPos_.getPositionAt();
+    auto receiverPos = receiverPos_.getPositionAt();
 
     double senderHeight = senderPos.z;
     double receiverHeight = receiverPos.z;
@@ -282,13 +297,11 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
         double w = o->getWidth();
         double h = o->getHeight();
 
-        auto hp = o->getTraCIMobility()->getCurrentPosition();
+        auto hp_approx = o->getTraCIMobility()->getPositionAt(simTime());
 
-        EV << "checking vehicle at " << hp.info() << " with height: " << h << " width: " << w << " length: " << l << endl;
+        EV << "checking vehicle in proximity of " << hp_approx.info() << " with height: " << h << " width: " << w << " length: " << l << endl;
 
-        // short-circuit if AABBs can't overlap
-        double lw = std::max(l, w);
-        if (((hp.x + lw) < x1) || ((hp.x - lw) > x2) || ((hp.y + lw) < y1) || ((hp.y - lw) > y2)) {
+        if (!o->maybeInBounds(x1, y1, x2, y2, sStart)) {
             EV_TRACE << "bounding boxes don't overlap: ignore" << std::endl;
             continue;
         }
@@ -297,12 +310,12 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
         bool ignoreMe = false;
         for (auto ca : caModules) {
             auto pos = ca->getAntennaPosition();
-            EV_TRACE << "...it has an antenna at " << pos << std::endl;
-            if (pos == senderPos) {
+            EV_TRACE << "...it has an antenna at " << pos.getPositionAt() << std::endl;
+            if (pos.isSameAntenna(senderPos_)) {
                 EV_TRACE << "...this is the sender: ignore" << std::endl;
                 ignoreMe = true;
             }
-            if (pos == receiverPos) {
+            if (pos.isSameAntenna(receiverPos_)) {
                 EV_TRACE << "...this is the receiver: ignore" << std::endl;
                 ignoreMe = true;
             }
@@ -310,7 +323,7 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
         if (ignoreMe) continue;
 
         // this is a potential obstacle
-        double p1d = o->getIntersectionPoint(senderPos, receiverPos);
+        double p1d = o->getIntersectionPoint(senderPos, receiverPos, sStart);
         double maxd = senderPos.distance(receiverPos);
         if (!std::isnan(p1d) && p1d > 0 && p1d < maxd) {
             auto it = potentialObstacles.begin();
@@ -329,7 +342,7 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
                 }
                 ++it;
             }
-            EV << "\tgot obstacle in 2d-LOS at " << hp.info() << ", " << p1d << " meters away from sender" << std::endl;
+            EV << "\tgot obstacle in 2d-LOS, " << p1d << " meters away from sender" << std::endl;
             Coord hitPos = senderPos + (receiverPos - senderPos) / senderPos.distance(receiverPos) * p1d;
             if (hasGUI() && annotations) {
                 annotations->drawLine(senderPos, hitPos, "red", vehicleAnnotationGroup);
@@ -343,11 +356,6 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
 void VehicleObstacleControl::drawVehicleObstacles(const simtime_t& t) const
 {
     for (auto o : vehicleObstacles) {
-        annotations->drawPolygon(o->getShape(), "black", vehicleAnnotationGroup);
+        annotations->drawPolygon(o->getShape(t), "black", vehicleAnnotationGroup);
     }
-}
-
-void VehicleObstacleControl::setCarrierFrequency(const double cf)
-{
-    carrierFrequency = cf;
 }

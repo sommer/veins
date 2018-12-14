@@ -29,8 +29,6 @@
 
 using namespace Veins;
 
-using omnetpp::simTime;
-using omnetpp::simtime_t;
 using std::unique_ptr;
 
 Define_Module(Veins::Mac1609_4);
@@ -50,9 +48,7 @@ void Mac1609_4::initialize(int stage)
         assert(simTime().getScaleExp() == -12);
 
         txPower = par("txPower").doubleValue();
-        bitrate = par("bitrate");
-        n_dbps = 0;
-        setParametersForBitrate(bitrate);
+        setParametersForBitrate(par("bitrate"));
 
         // unicast parameters
         dot11RTSThreshold = par("dot11RTSThreshold");
@@ -67,41 +63,23 @@ void Mac1609_4::initialize(int stage)
         stopIgnoreChannelStateMsg = new cMessage("ChannelStateMsg");
 
         myId = getParentModule()->getParentModule()->getFullPath();
-        // create frequency mappings
-        frequency.insert(std::pair<int, double>(Channels::CRIT_SOL, 5.86e9));
-        frequency.insert(std::pair<int, double>(Channels::SCH1, 5.87e9));
-        frequency.insert(std::pair<int, double>(Channels::SCH2, 5.88e9));
-        frequency.insert(std::pair<int, double>(Channels::CCH, 5.89e9));
-        frequency.insert(std::pair<int, double>(Channels::SCH3, 5.90e9));
-        frequency.insert(std::pair<int, double>(Channels::SCH4, 5.91e9));
-        frequency.insert(std::pair<int, double>(Channels::HPPS, 5.92e9));
-
-        // Initialize spectrum for signal representation here
-        Freqs freqs;
-        for (auto channel : frequency) {
-            freqs.push_back(channel.second - 5e6);
-            freqs.push_back(channel.second);
-            freqs.push_back(channel.second + 5e6);
-        }
-        overallSpectrum = Spectrum(freqs);
-
         // create two edca systems
 
-        myEDCA[type_CCH] = std::unique_ptr<EDCA>(new EDCA(this, type_CCH, par("queueSize")));
-        myEDCA[type_CCH]->myId = myId;
-        myEDCA[type_CCH]->myId.append(" CCH");
-        myEDCA[type_CCH]->createQueue(2, (((CWMIN_11P + 1) / 4) - 1), (((CWMIN_11P + 1) / 2) - 1), AC_VO);
-        myEDCA[type_CCH]->createQueue(3, (((CWMIN_11P + 1) / 2) - 1), CWMIN_11P, AC_VI);
-        myEDCA[type_CCH]->createQueue(6, CWMIN_11P, CWMAX_11P, AC_BE);
-        myEDCA[type_CCH]->createQueue(9, CWMIN_11P, CWMAX_11P, AC_BK);
+        myEDCA[ChannelType::control] = make_unique<EDCA>(this, ChannelType::control, par("queueSize"));
+        myEDCA[ChannelType::control]->myId = myId;
+        myEDCA[ChannelType::control]->myId.append(" CCH");
+        myEDCA[ChannelType::control]->createQueue(2, (((CWMIN_11P + 1) / 4) - 1), (((CWMIN_11P + 1) / 2) - 1), AC_VO);
+        myEDCA[ChannelType::control]->createQueue(3, (((CWMIN_11P + 1) / 2) - 1), CWMIN_11P, AC_VI);
+        myEDCA[ChannelType::control]->createQueue(6, CWMIN_11P, CWMAX_11P, AC_BE);
+        myEDCA[ChannelType::control]->createQueue(9, CWMIN_11P, CWMAX_11P, AC_BK);
 
-        myEDCA[type_SCH] = std::unique_ptr<EDCA>(new EDCA(this, type_SCH, par("queueSize")));
-        myEDCA[type_SCH]->myId = myId;
-        myEDCA[type_SCH]->myId.append(" SCH");
-        myEDCA[type_SCH]->createQueue(2, (((CWMIN_11P + 1) / 4) - 1), (((CWMIN_11P + 1) / 2) - 1), AC_VO);
-        myEDCA[type_SCH]->createQueue(3, (((CWMIN_11P + 1) / 2) - 1), CWMIN_11P, AC_VI);
-        myEDCA[type_SCH]->createQueue(6, CWMIN_11P, CWMAX_11P, AC_BE);
-        myEDCA[type_SCH]->createQueue(9, CWMIN_11P, CWMAX_11P, AC_BK);
+        myEDCA[ChannelType::service] = make_unique<EDCA>(this, ChannelType::service, par("queueSize"));
+        myEDCA[ChannelType::service]->myId = myId;
+        myEDCA[ChannelType::service]->myId.append(" SCH");
+        myEDCA[ChannelType::service]->createQueue(2, (((CWMIN_11P + 1) / 4) - 1), (((CWMIN_11P + 1) / 2) - 1), AC_VO);
+        myEDCA[ChannelType::service]->createQueue(3, (((CWMIN_11P + 1) / 2) - 1), CWMIN_11P, AC_VI);
+        myEDCA[ChannelType::service]->createQueue(6, CWMIN_11P, CWMAX_11P, AC_BE);
+        myEDCA[ChannelType::service]->createQueue(9, CWMIN_11P, CWMAX_11P, AC_BK);
 
         useSCH = par("useServiceChannel").boolValue();
         if (useSCH) {
@@ -110,16 +88,16 @@ void Mac1609_4::initialize(int stage)
             int serviceChannel = par("serviceChannel");
             switch (serviceChannel) {
             case 1:
-                mySCH = Channels::SCH1;
+                mySCH = Channel::sch1;
                 break;
             case 2:
-                mySCH = Channels::SCH2;
+                mySCH = Channel::sch2;
                 break;
             case 3:
-                mySCH = Channels::SCH3;
+                mySCH = Channel::sch3;
                 break;
             case 4:
-                mySCH = Channels::SCH4;
+                mySCH = Channel::sch4;
                 break;
             default:
                 throw cRuntimeError("Service Channel must be between 1 and 4");
@@ -136,10 +114,10 @@ void Mac1609_4::initialize(int stage)
             uint64_t switchingTime = SWITCHING_INTERVAL_11P.raw();
             double timeToNextSwitch = (double) (switchingTime - (currenTime % switchingTime)) / simTime().getScale();
             if ((currenTime / switchingTime) % 2 == 0) {
-                setActiveChannel(type_CCH);
+                setActiveChannel(ChannelType::control);
             }
             else {
-                setActiveChannel(type_SCH);
+                setActiveChannel(ChannelType::service);
             }
 
             // channel switching active
@@ -151,7 +129,7 @@ void Mac1609_4::initialize(int stage)
         else {
             // no channel switching
             nextChannelSwitch = nullptr;
-            setActiveChannel(type_CCH);
+            setActiveChannel(ChannelType::control);
         }
 
         // stats
@@ -192,19 +170,19 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
         scheduleAt(simTime() + SWITCHING_INTERVAL_11P, nextChannelSwitch);
 
         switch (activeChannel) {
-        case type_CCH:
+        case ChannelType::control:
             EV_TRACE << "CCH --> SCH" << std::endl;
             channelBusySelf(false);
-            setActiveChannel(type_SCH);
+            setActiveChannel(ChannelType::service);
             channelIdle(true);
-            phy11p->changeListeningFrequency(frequency[mySCH]);
+            phy11p->changeListeningChannel(mySCH);
             break;
-        case type_SCH:
+        case ChannelType::service:
             EV_TRACE << "SCH --> CCH" << std::endl;
             channelBusySelf(false);
-            setActiveChannel(type_CCH);
+            setActiveChannel(ChannelType::control);
             channelIdle(true);
-            phy11p->changeListeningFrequency(frequency[Channels::CCH]);
+            phy11p->changeListeningChannel(Channel::cch);
             break;
         }
         // schedule next channel switch in 50ms
@@ -232,18 +210,14 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
         mac->setSrcAddr(myMacAddr);
         mac->encapsulate(pktToSend->dup());
 
-        enum PHY_MCS mcs;
+        MCS usedMcs = mcs;
         double txPower_mW;
-        uint64_t datarate;
         PhyControlMessage* controlInfo = dynamic_cast<PhyControlMessage*>(pktToSend->getControlInfo());
         if (controlInfo) {
             // if MCS is not specified, just use the default one
-            mcs = (enum PHY_MCS) controlInfo->getMcs();
-            if (mcs != MCS_DEFAULT) {
-                datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
-            }
-            else {
-                datarate = bitrate;
+            MCS explicitMcs = static_cast<MCS>(controlInfo->getMcs());
+            if (explicitMcs != MCS::undefined) {
+                usedMcs = explicitMcs;
             }
             // apply the same principle to tx power
             txPower_mW = controlInfo->getTxPower_mW();
@@ -252,20 +226,19 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
             }
         }
         else {
-            mcs = MCS_DEFAULT;
             txPower_mW = txPower;
-            datarate = bitrate;
         }
 
-        simtime_t sendingDuration = RADIODELAY_11P + getFrameDuration(mac->getBitLength(), mcs);
+        simtime_t sendingDuration = RADIODELAY_11P + phy11p->getFrameDuration(mac->getBitLength(), usedMcs);
         EV_TRACE << "Sending duration will be" << sendingDuration << std::endl;
         if ((!useSCH) || (timeLeftInSlot() > sendingDuration)) {
             if (useSCH) EV_TRACE << " Time in this slot left: " << timeLeftInSlot() << std::endl;
 
-            double freq = (activeChannel == type_CCH) ? frequency[Channels::CCH] : frequency[mySCH];
+            Channel channelNr = (activeChannel == ChannelType::control) ? Channel::cch : mySCH;
+            double freq = IEEE80211ChannelFrequencies.at(channelNr);
 
             EV_TRACE << "Sending a Packet. Frequency " << freq << " Priority" << lastAC << std::endl;
-            sendFrame(mac, RADIODELAY_11P, freq, datarate, txPower_mW);
+            sendFrame(mac, RADIODELAY_11P, channelNr, usedMcs, txPower_mW);
 
             // schedule ack timeout for unicast packets
             if (pktToSend->getRecipientAddress() != LAddress::L2BROADCAST() && useAcks) {
@@ -305,15 +278,15 @@ void Mac1609_4::handleUpperMsg(cMessage* msg)
 
     EV_TRACE << "Received a message from upper layer for channel " << thisMsg->getChannelNumber() << " Access Category (Priority):  " << ac << std::endl;
 
-    t_channel chan;
+    ChannelType chan;
 
-    if (thisMsg->getChannelNumber() == Channels::CCH) {
-        chan = type_CCH;
+    if (static_cast<Channel>(thisMsg->getChannelNumber()) == Channel::cch) {
+        chan = ChannelType::control;
     }
     else {
         ASSERT(useSCH);
-        thisMsg->setChannelNumber(mySCH);
-        chan = type_SCH;
+        thisMsg->setChannelNumber(static_cast<int>(mySCH));
+        chan = ChannelType::service;
     }
 
     int num = myEDCA[chan]->queuePacket(ac, thisMsg);
@@ -325,7 +298,7 @@ void Mac1609_4::handleUpperMsg(cMessage* msg)
     }
 
     // if this packet is not at the front of a new queue we dont have to reevaluate times
-    EV_TRACE << "sorted packet into queue of EDCA " << chan << " this packet is now at position: " << num << std::endl;
+    EV_TRACE << "sorted packet into queue of EDCA " << static_cast<int>(chan) << " this packet is now at position: " << num << std::endl;
 
     if (chan == activeChannel) {
         EV_TRACE << "this packet is for the currently active channel" << std::endl;
@@ -436,10 +409,10 @@ void Mac1609_4::handleLowerControl(cMessage* msg)
     delete msg;
 }
 
-void Mac1609_4::setActiveChannel(t_channel state)
+void Mac1609_4::setActiveChannel(ChannelType state)
 {
     activeChannel = state;
-    assert(state == type_CCH || (useSCH && state == type_SCH));
+    assert(state == ChannelType::control || (useSCH && state == ChannelType::service));
 }
 
 void Mac1609_4::finish()
@@ -483,14 +456,14 @@ Mac1609_4::~Mac1609_4()
     }
 };
 
-void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, double frequency, uint64_t datarate, double txPower_mW)
+void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, Channel channelNr, MCS mcs, double txPower_mW)
 {
     phy->setRadioState(Radio::TX); // give time for the radio to be in Tx state before transmitting
 
     delay = std::max(delay, RADIODELAY_11P); // wait at least for the radio to switch
 
-    attachSignal(frame, simTime() + delay, frequency, datarate, txPower_mW);
-    check_and_cast<MacToPhyControlInfo*>(frame->getControlInfo());
+    attachControlInfo(frame, channelNr, mcs, txPower_mW);
+    check_and_cast<MacToPhyControlInfo11p*>(frame->getControlInfo());
 
     lastMac.reset(frame->dup());
     sendDelayed(frame, delay, lowerLayerOut);
@@ -503,36 +476,10 @@ void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, double frequency,
     }
 }
 
-void Mac1609_4::attachSignal(Mac80211Pkt* mac, simtime_t startTime, double frequency, uint64_t datarate, double txPower_mW)
+void Mac1609_4::attachControlInfo(Mac80211Pkt* mac, Channel channelNr, MCS mcs, double txPower_mW)
 {
-
-    simtime_t duration = getFrameDuration(mac->getBitLength());
-
-    Signal* s = createSignal(startTime, duration, txPower_mW, datarate, frequency);
-    MacToPhyControlInfo* cinfo = new MacToPhyControlInfo(s);
-
+    auto cinfo = new MacToPhyControlInfo11p(channelNr, mcs, txPower_mW);
     mac->setControlInfo(cinfo);
-}
-
-Signal* Mac1609_4::createSignal(simtime_t start, simtime_t length, double power, uint64_t bitrate, double frequency)
-{
-
-    Signal* s = new Signal(overallSpectrum, start, length);
-
-    size_t freqIndex = s->getSpectrum().indexOf(frequency);
-
-    (*s)[freqIndex - 1] = power;
-    (*s)[freqIndex] = power;
-    (*s)[freqIndex + 1] = power;
-
-    s->setBitrate(bitrate);
-
-    s->setDataStart(freqIndex - 1);
-    s->setDataEnd(freqIndex + 1);
-
-    s->setCenterFrequencyIndex(freqIndex);
-
-    return s;
 }
 
 /* checks if guard is active */
@@ -563,19 +510,18 @@ simtime_t Mac1609_4::timeLeftInSlot() const
 }
 
 /* Will change the Service Channel on which the mac layer is listening and sending */
-void Mac1609_4::changeServiceChannel(int cN)
+void Mac1609_4::changeServiceChannel(Channel cN)
 {
     ASSERT(useSCH);
-    if (cN != Channels::SCH1 && cN != Channels::SCH2 && cN != Channels::SCH3 && cN != Channels::SCH4) {
+    mySCH = static_cast<Channel>(cN);
+    if (mySCH != Channel::sch1 && mySCH != Channel::sch2 && mySCH != Channel::sch3 && mySCH != Channel::sch4) {
         throw cRuntimeError("This Service Channel doesnt exit: %d", cN);
     }
 
-    mySCH = cN;
-
-    if (activeChannel == type_SCH) {
+    if (activeChannel == ChannelType::service) {
         // change to new chan immediately if we are in a SCH slot,
         // otherwise it will switch to the new SCH upon next channel switch
-        phy11p->changeListeningFrequency(frequency[mySCH]);
+        phy11p->changeListeningChannel(mySCH);
     }
 }
 
@@ -583,11 +529,10 @@ void Mac1609_4::setTxPower(double txPower_mW)
 {
     txPower = txPower_mW;
 }
-void Mac1609_4::setMCS(enum PHY_MCS mcs)
+void Mac1609_4::setMCS(MCS mcs)
 {
-    ASSERT2(mcs != MCS_DEFAULT, "invalid MCS selected");
-    bitrate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
-    setParametersForBitrate(bitrate);
+    ASSERT2(mcs != MCS::undefined, "invalid MCS selected");
+    this->mcs = mcs;
 }
 
 void Mac1609_4::setCCAThreshold(double ccaThreshold_dBm)
@@ -876,7 +821,7 @@ void Mac1609_4::EDCA::postTransmit(t_access_category ac, BaseFrame1609_4* wsm, b
     }
 }
 
-Mac1609_4::EDCA::EDCA(cSimpleModule* owner, t_channel channelType, int maxQueueLength)
+Mac1609_4::EDCA::EDCA(cSimpleModule* owner, ChannelType channelType, int maxQueueLength)
     : owner(owner)
     , maxQueueSize(maxQueueLength)
     , channelType(channelType)
@@ -1007,13 +952,10 @@ void Mac1609_4::channelIdle(bool afterSwitch)
 
 void Mac1609_4::setParametersForBitrate(uint64_t bitrate)
 {
-    for (unsigned int i = 0; i < NUM_BITRATES_80211P; i++) {
-        if (bitrate == BITRATES_80211P[i]) {
-            n_dbps = N_DBPS_80211P[i];
-            return;
-        }
+    mcs = getMCS(bitrate, BANDWIDTH_11P);
+    if (mcs == MCS::undefined) {
+        throw cRuntimeError("Chosen Bitrate is not valid for 802.11p: Valid rates are: 3Mbps, 4.5Mbps, 6Mbps, 9Mbps, 12Mbps, 18Mbps, 24Mbps and 27Mbps. Please adjust your omnetpp.ini file accordingly.");
     }
-    throw cRuntimeError("Chosen Bitrate is not valid for 802.11p: Valid rates are: 3Mbps, 4.5Mbps, 6Mbps, 9Mbps, 12Mbps, 18Mbps, 24Mbps and 27Mbps. Please adjust your omnetpp.ini file accordingly.");
 }
 
 bool Mac1609_4::isChannelSwitchingActive()
@@ -1028,22 +970,7 @@ simtime_t Mac1609_4::getSwitchingInterval()
 
 bool Mac1609_4::isCurrentChannelCCH()
 {
-    return (activeChannel == type_CCH);
-}
-
-simtime_t Mac1609_4::getFrameDuration(int payloadLengthBits, enum PHY_MCS mcs) const
-{
-    simtime_t duration;
-    if (mcs == MCS_DEFAULT) {
-        // calculate frame duration according to Equation (17-29) of the IEEE 802.11-2007 standard
-        duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil((16 + payloadLengthBits + 6) / (n_dbps));
-    }
-    else {
-        uint32_t ndbps = getNDBPS(mcs);
-        duration = PHY_HDR_PREAMBLE_DURATION + PHY_HDR_PLCPSIGNAL_DURATION + T_SYM_80211P * ceil((16 + payloadLengthBits + 6) / (ndbps));
-    }
-
-    return duration;
+    return (activeChannel == ChannelType::control);
 }
 
 // Unicast
@@ -1062,18 +989,15 @@ void Mac1609_4::sendAck(LAddress::L2Type recpAddress, unsigned long wsmId)
     mac->setMessageId(wsmId);
     mac->setBitLength(ackLength);
 
-    enum PHY_MCS mcs = MCS_DEFAULT;
-    uint64_t datarate = getOfdmDatarate(mcs, BW_OFDM_10_MHZ);
-
-    simtime_t sendingDuration = RADIODELAY_11P + getFrameDuration(mac->getBitLength(), mcs);
+    simtime_t sendingDuration = RADIODELAY_11P + phy11p->getFrameDuration(mac->getBitLength(), mcs);
     EV_TRACE << "Ack sending duration will be " << sendingDuration << std::endl;
 
     // TODO: check ack procedure when channel switching is allowed
-    // double freq = (activeChannel == type_CCH) ? frequency[Channels::CCH] : frequency[mySCH];
-    double freq = frequency[Channels::CCH];
+    // double freq = (activeChannel == ChannelType::control) ? IEEE80211ChannelFrequencies.at(Channel::cch) : IEEE80211ChannelFrequencies.at(mySCH);
+    double freq = IEEE80211ChannelFrequencies.at(Channel::cch);
 
     EV_TRACE << "Sending an ack. Frequency " << freq << " at time : " << simTime() + SIFS_11P << std::endl;
-    sendFrame(mac, SIFS_11P, freq, datarate, txPower);
+    sendFrame(mac, SIFS_11P, Channel::cch, mcs, txPower);
     scheduleAt(simTime() + SIFS_11P, stopIgnoreChannelStateMsg);
 }
 
@@ -1097,7 +1021,7 @@ void Mac1609_4::handleAck(const Mac80211Ack* ack)
     phy11p->notifyMacAboutRxStart(false);
     rxStartIndication = false;
 
-    t_channel chan = type_CCH;
+    ChannelType chan = ChannelType::control;
     bool queueUnblocked = false;
     for (auto&& p : myEDCA[chan]->myQueues) {
         auto& accessCategory = p.first;
@@ -1148,20 +1072,20 @@ void Mac1609_4::handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg)
 void Mac1609_4::handleRetransmit(t_access_category ac)
 {
     // cancel the acktime out
-    if (myEDCA[type_CCH]->myQueues[ac].ackTimeOut->isScheduled()) {
+    if (myEDCA[ChannelType::control]->myQueues[ac].ackTimeOut->isScheduled()) {
         // This case is possible if we received PHY_RX_END_WITH_SUCCESS or FAILURE even before ack timeout
-        cancelEvent(myEDCA[type_CCH]->myQueues[ac].ackTimeOut);
+        cancelEvent(myEDCA[ChannelType::control]->myQueues[ac].ackTimeOut);
     }
-    if (myEDCA[type_CCH]->myQueues[ac].queue.size() == 0) {
+    if (myEDCA[ChannelType::control]->myQueues[ac].queue.size() == 0) {
         throw cRuntimeError("Trying retransmission on empty queue...");
     }
-    BaseFrame1609_4* appPkt = myEDCA[type_CCH]->myQueues[ac].queue.front();
+    BaseFrame1609_4* appPkt = myEDCA[ChannelType::control]->myQueues[ac].queue.front();
     bool contend = false;
     bool retriesExceeded = false;
     // page 879 of IEEE 802.11-2012
     if (appPkt->getBitLength() <= dot11RTSThreshold) {
-        myEDCA[type_CCH]->myQueues[ac].ssrc++;
-        if (myEDCA[type_CCH]->myQueues[ac].ssrc <= dot11ShortRetryLimit) {
+        myEDCA[ChannelType::control]->myQueues[ac].ssrc++;
+        if (myEDCA[ChannelType::control]->myQueues[ac].ssrc <= dot11ShortRetryLimit) {
             retriesExceeded = false;
         }
         else {
@@ -1169,8 +1093,8 @@ void Mac1609_4::handleRetransmit(t_access_category ac)
         }
     }
     else {
-        myEDCA[type_CCH]->myQueues[ac].slrc++;
-        if (myEDCA[type_CCH]->myQueues[ac].slrc <= dot11LongRetryLimit) {
+        myEDCA[ChannelType::control]->myQueues[ac].slrc++;
+        if (myEDCA[ChannelType::control]->myQueues[ac].slrc <= dot11LongRetryLimit) {
             retriesExceeded = false;
         }
         else {
@@ -1179,32 +1103,32 @@ void Mac1609_4::handleRetransmit(t_access_category ac)
     }
     if (!retriesExceeded) {
         // try again!
-        myEDCA[type_CCH]->myQueues[ac].cwCur = std::min(myEDCA[type_CCH]->myQueues[ac].cwMax, (myEDCA[type_CCH]->myQueues[ac].cwCur * 2) + 1);
-        myEDCA[type_CCH]->backoff(ac);
+        myEDCA[ChannelType::control]->myQueues[ac].cwCur = std::min(myEDCA[ChannelType::control]->myQueues[ac].cwMax, (myEDCA[ChannelType::control]->myQueues[ac].cwCur * 2) + 1);
+        myEDCA[ChannelType::control]->backoff(ac);
         contend = true;
         // no need to reset wait on id here as we are still retransmitting same packet
-        myEDCA[type_CCH]->myQueues[ac].waitForAck = false;
+        myEDCA[ChannelType::control]->myQueues[ac].waitForAck = false;
     }
     else {
         // enough tries!
-        myEDCA[type_CCH]->myQueues[ac].queue.pop();
-        if (myEDCA[type_CCH]->myQueues[ac].queue.size() > 0) {
+        myEDCA[ChannelType::control]->myQueues[ac].queue.pop();
+        if (myEDCA[ChannelType::control]->myQueues[ac].queue.size() > 0) {
             // start contention only if there are more packets in the queue
             contend = true;
         }
         delete appPkt;
-        myEDCA[type_CCH]->myQueues[ac].cwCur = myEDCA[type_CCH]->myQueues[ac].cwMin;
-        myEDCA[type_CCH]->backoff(ac);
-        myEDCA[type_CCH]->myQueues[ac].waitForAck = false;
-        myEDCA[type_CCH]->myQueues[ac].waitOnUnicastID = -1;
-        myEDCA[type_CCH]->myQueues[ac].ssrc = 0;
-        myEDCA[type_CCH]->myQueues[ac].slrc = 0;
+        myEDCA[ChannelType::control]->myQueues[ac].cwCur = myEDCA[ChannelType::control]->myQueues[ac].cwMin;
+        myEDCA[ChannelType::control]->backoff(ac);
+        myEDCA[ChannelType::control]->myQueues[ac].waitForAck = false;
+        myEDCA[ChannelType::control]->myQueues[ac].waitOnUnicastID = -1;
+        myEDCA[ChannelType::control]->myQueues[ac].ssrc = 0;
+        myEDCA[ChannelType::control]->myQueues[ac].slrc = 0;
     }
     waitUntilAckRXorTimeout = false;
     if (contend && idleChannel && !ignoreChannelState) {
         // reevaluate times -- if channel is not idle, then contention would start automatically
         cancelEvent(nextMacEvent);
-        simtime_t nextEvent = myEDCA[type_CCH]->startContent(lastIdle, guardActive());
+        simtime_t nextEvent = myEDCA[ChannelType::control]->startContent(lastIdle, guardActive());
         scheduleAt(nextEvent, nextMacEvent);
     }
 }

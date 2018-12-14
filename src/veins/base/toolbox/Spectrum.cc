@@ -20,9 +20,11 @@
 
 #include "veins/base/toolbox/Spectrum.h"
 
-using namespace Veins;
+#include <sstream>
 
-Freqs normalizeFrequencies(Freqs freqs)
+namespace Veins {
+
+Spectrum::Frequencies normalizeFrequencies(Spectrum::Frequencies freqs)
 {
     // sort and deduplicate frequencies first
     std::sort(freqs.begin(), freqs.end());
@@ -30,7 +32,7 @@ Freqs normalizeFrequencies(Freqs freqs)
     return freqs;
 }
 
-Spectrum::Spectrum(Freqs freqs)
+Spectrum::Spectrum(Spectrum::Frequencies freqs)
     : frequencies(normalizeFrequencies(freqs))
 {
 }
@@ -51,24 +53,6 @@ size_t Spectrum::indexOf(double freq) const
     return std::distance(frequencies.begin(), it);
 }
 
-size_t Spectrum::indexNearLow(double freq) const
-{
-    size_t index = 0;
-    for (size_t i = 0; i < frequencies.size(); i++) {
-        if (frequencies[i] < freq) index = i;
-    }
-    return index;
-}
-
-size_t Spectrum::indexNearUp(double freq) const
-{
-    size_t index = frequencies.size() - 1;
-    for (size_t i = frequencies.size() - 1; i > 0; i--) {
-        if (frequencies[i] > freq) index = i;
-    }
-    return index;
-}
-
 double Spectrum::freqAt(size_t freqIndex) const
 {
     return frequencies.at(freqIndex);
@@ -79,29 +63,23 @@ size_t Spectrum::getNumFreqs() const
     return frequencies.size();
 }
 
-void Spectrum::print(std::ostream& os) const
-{
-    for (auto& frequency : frequencies) {
-        os << frequency << std::endl;
-    }
-}
-
-void Spectrum::toFile(std::string path) const
-{
-    std::fstream file(path.c_str(), std::ios::out | std::ios::app);
-    if (!file.good()) return;
-
-    file << "spectrum:";
-    for (auto it = frequencies.begin(); it != frequencies.end(); ++it) {
-        file << *it;
-        if (it != frequencies.end() - 1) file << ",";
-    }
-    file << std::endl;
-}
-
-namespace Veins {
 bool operator==(const Spectrum& lhs, const Spectrum& rhs)
 {
     return lhs.frequencies == rhs.frequencies;
+}
+
+std::ostream& operator<<(std::ostream& os, const Spectrum& s)
+{
+    os << "Spectrum(";
+    std::ostringstream ss;
+    for (auto&& frequency : s.frequencies) {
+        if (ss.tellp() != 0) {
+            ss << ", ";
+        }
+        ss << frequency;
+    }
+    os << ss.str();
+    os << ")";
+    return os;
 }
 } // namespace Veins

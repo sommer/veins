@@ -21,6 +21,7 @@
 #pragma once
 
 #include "veins/base/phyLayer/BasePhyLayer.h"
+#include "veins/base/toolbox/Spectrum.h"
 #include "veins/modules/mac/ieee80211p/Mac80211pToPhy11pInterface.h"
 #include "veins/modules/phy/Decider80211p.h"
 #include "veins/modules/analogueModel/SimplePathlossModel.h"
@@ -29,8 +30,6 @@
 #include "veins/base/utils/Move.h"
 
 namespace Veins {
-
-using Veins::AirFrame;
 
 /**
  * @brief
@@ -87,56 +86,56 @@ protected:
      *
      * Is able to initialize the following AnalogueModels:
      */
-    AnalogueModel* getAnalogueModelFromName(std::string name, ParameterMap& params) override;
+    virtual std::unique_ptr<AnalogueModel> getAnalogueModelFromName(std::string name, ParameterMap& params) override;
 
     /**
      * @brief Creates and initializes a SimplePathlossModel with the
      * passed parameter values.
      */
-    AnalogueModel* initializeSimplePathlossModel(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeSimplePathlossModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes an AntennaModel with the
      * passed parameter values.
      */
-    AnalogueModel* initializeAntennaModel(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeAntennaModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a BreakpointPathlossModel with the
      * passed parameter values.
      */
-    virtual AnalogueModel* initializeBreakpointPathlossModel(ParameterMap& params);
+    virtual std::unique_ptr<AnalogueModel> initializeBreakpointPathlossModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a SimpleObstacleShadowing with the
      * passed parameter values.
      */
-    AnalogueModel* initializeSimpleObstacleShadowing(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeSimpleObstacleShadowing(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a VehicleObstacleShadowing with the
      * passed parameter values.
      */
-    AnalogueModel* initializeVehicleObstacleShadowing(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeVehicleObstacleShadowing(ParameterMap& params);
 
     /**
      * @brief Creates a simple Packet Error Rate model that attenuates a percentage
      * of the packets to zero, and does not attenuate the other packets.
      *
      */
-    virtual AnalogueModel* initializePERModel(ParameterMap& params);
+    virtual std::unique_ptr<AnalogueModel> initializePERModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a TwoRayInterferenceModel with the
      * passed parameter values.
      */
-    AnalogueModel* initializeTwoRayInterferenceModel(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeTwoRayInterferenceModel(ParameterMap& params);
 
     /**
      * @brief Creates and initializes a NakagamiFading with the
      * passed parameter values.
      */
-    AnalogueModel* initializeNakagamiFading(ParameterMap& params);
+    std::unique_ptr<AnalogueModel> initializeNakagamiFading(ParameterMap& params);
 
     /**
      * @brief Creates and returns an instance of the Decider with the specified
@@ -146,22 +145,34 @@ protected:
      *
      * - Decider80211p
      */
-    Decider* getDeciderFromName(std::string name, ParameterMap& params) override;
+    virtual std::unique_ptr<Decider> getDeciderFromName(std::string name, ParameterMap& params) override;
 
     /**
      * @brief Initializes a new Decider80211 from the passed parameter map.
      */
-    virtual Decider* initializeDecider80211p(ParameterMap& params);
+    virtual std::unique_ptr<Decider> initializeDecider80211p(ParameterMap& params);
 
     /**
-     * @brief This function encapsulates messages from the upper layer into an
-     * AirFrame and sets all necessary attributes.
+     * Create a protocol-specific AirFrame
+     * Overloaded to create a specialize AirFrame11p.
      */
-    AirFrame* encapsMsg(cPacket* msg) override;
+    std::unique_ptr<AirFrame> createAirFrame(cPacket* macPkt) override;
 
-    void changeListeningFrequency(double freq) override;
+    /**
+     * Attach a signal to the given AirFrame.
+     *
+     * The attached Signal corresponds to the IEEE 802.11p standard.
+     * Parameters for the signal are passed in the control info.
+     * The indicated power levels are set up on the specified center frequency, as well as the neighboring 5MHz.
+     *
+     * @note The control info must be of type MacToPhyControlInfo11p
+     */
+    void attachSignal(AirFrame* airFrame, cObject* ctrlInfo) override;
 
-    void handleMessage(cMessage* msg) override;
+    void changeListeningChannel(Channel channel) override;
+
+    virtual simtime_t getFrameDuration(int payloadLengthBits, MCS mcs) const override;
+
     void handleSelfMessage(cMessage* msg) override;
     int getRadioState() override;
     simtime_t setRadioState(int rs) override;
