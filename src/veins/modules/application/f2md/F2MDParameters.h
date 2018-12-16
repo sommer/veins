@@ -42,7 +42,7 @@
 //Storage Parameters
 #define MAX_BSM_LENGTH 20
 #define MAX_MDM_LENGTH 20
-#define MAX_NODES_LENGTH 100
+#define MAX_NODES_LENGTH 200
 #define MAX_TARGET_LENGTH 1000
 #define MAX_TARGET_TIME 2
 #define MAX_ACCUSED_LENGTH 1000

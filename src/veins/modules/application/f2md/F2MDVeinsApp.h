@@ -23,10 +23,6 @@ using namespace Veins;
 
 #include <veins/modules/application/f2md/mdMessages/BasicSafetyMessage_m.h>
 
-#include "veins/modules/obstacle/ObstacleControl.h"
-#include "veins/modules/obstacle/Obstacle.h"
-#include "veins/modules/mobility/traci/TraCIColor.h"
-
 #include <veins/modules/application/f2md/mdSupport/GeneralLib.h>
 #include <veins/modules/application/f2md/mdStats/MDStatistics.h>
 

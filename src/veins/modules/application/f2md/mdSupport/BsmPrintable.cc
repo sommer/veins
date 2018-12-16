@@ -305,6 +305,5 @@ bool BsmPrintable::writeStrToFileList(const std::string strFileCnst,
         }
     }
 
-
     return true;
 }

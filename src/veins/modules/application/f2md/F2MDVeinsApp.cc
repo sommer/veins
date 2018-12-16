@@ -13,7 +13,7 @@
 
 Define_Module(JosephVeinsApp);
 //Simulation Parameters
-#define serialNumber "IRT-Data"
+#define serialNumber "IRT-DEMO"
 #define savePath "../../../../mdmSave/"
 
 #define randomConf true
@@ -78,13 +78,13 @@ static bool writeSelfMsg = false;
 //writeBsms
 static bool writeBsmsV1 = false;
 static bool writeBsmsV2 = false;
-static bool writeListBsmsV1 = true;
-static bool writeListBsmsV2 = true;
+static bool writeListBsmsV1 = false;
+static bool writeListBsmsV2 = false;
 //writeReport
 static bool writeReportsV1 = false;
 static bool writeReportsV2 = false;
-static bool writeListReportsV1 = true;
-static bool writeListReportsV2 = true;
+static bool writeListReportsV1 = false;
+static bool writeListReportsV2 = false;
 
 static bool sendReportsV1 = false;
 static bool sendReportsV2 = false;
@@ -154,14 +154,12 @@ void JosephVeinsApp::initialize(int stage) {
 
         switch (myMdType) {
         case mbTypes::Genuine: {
-            TraCIColor color = TraCIColor(0, 255, 0, 0);
-            traciVehicle->setColor(color);
+            traciVehicle->setColor(TraCIColor(0, 255, 0, 255));
             myAttackType = attackTypes::Genuine;
         }
             break;
         case mbTypes::GlobalAttacker: {
-            TraCIColor color = TraCIColor(0, 255, 0, 0);
-            traciVehicle->setColor(color);
+            traciVehicle->setColor(TraCIColor(0, 255, 0, 255));
             myAttackType = GLOBAL_ATTACK_TYPE;
 
             mdGlobalAttack = MDGlobalAttack();
@@ -229,14 +227,12 @@ void JosephVeinsApp::initialize(int stage) {
             mdAttack.init(myAttackType);
 
             //attack-------------------------------
+            traciVehicle->setColor(TraCIColor(255, 0, 0, 255));
 
-            TraCIColor color = TraCIColor(255, 0, 0, 0);
-            traciVehicle->setColor(color);
         }
         break;
         default:
-        TraCIColor color = TraCIColor(0, 0, 0, 0);
-        traciVehicle->setColor(color);
+        traciVehicle->setColor(TraCIColor(0, 0, 0, 0));
         break;
     }
 
@@ -391,24 +387,19 @@ void JosephVeinsApp::treatAttackFlags() {
         }
 
         if (isAccusedNode(myPseudonym)) {
-            TraCIColor color = TraCIColor(0, 0, 0, 0);
-            traciVehicle->setColor(color);
+            traciVehicle->setColor(TraCIColor(0, 0, 0, 255));
         } else {
-            TraCIColor color = TraCIColor(255, 0, 0, 0);
-            traciVehicle->setColor(color);
+            traciVehicle->setColor(TraCIColor(255, 0, 0, 255));
         }
 
     } else {
         if (isTargetNode(myPseudonym)) {
-            TraCIColor color = TraCIColor(255, 255, 0, 0);
-            traciVehicle->setColor(color);
+            traciVehicle->setColor(TraCIColor(255, 255, 0, 255));
         } else {
-            TraCIColor color = TraCIColor(0, 255, 0, 0);
-            traciVehicle->setColor(color);
+            traciVehicle->setColor(TraCIColor(0, 255, 0, 255));
         }
         if (isAccusedNode(myPseudonym)) {
-            TraCIColor color = TraCIColor(0, 0, 255, 0);
-            traciVehicle->setColor(color);
+            traciVehicle->setColor(TraCIColor(0, 0, 255, 255));
         }
     }
 
@@ -726,9 +717,11 @@ void JosephVeinsApp::writeReport(MDReport reportBase, std::string version,
         break;
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
-        evr.addEvidence(myBsm[0], bsmCheck, *bsm, detectedNodes);
-        evr.writeStrToFile(savePath, serialNumber, version,
-                evr.getReportPrintableJson(), curDate);
+        if(myBsmNum >0){
+            evr.addEvidence(myBsm[0], bsmCheck, *bsm, detectedNodes);
+            evr.writeStrToFile(savePath, serialNumber, version,
+                    evr.getReportPrintableJson(), curDate);
+        }
     }
         break;
     default:
@@ -757,9 +750,11 @@ void JosephVeinsApp::writeListReport(MDReport reportBase, std::string version,
         break;
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
-        evr.addEvidence(myBsm[0], bsmCheck, *bsm, detectedNodes);
-        evr.writeStrToFileList(savePath, serialNumber, version,
-                evr.getReportPrintableJson(), curDate);
+        if(myBsmNum >0){
+            evr.addEvidence(myBsm[0], bsmCheck, *bsm, detectedNodes);
+            evr.writeStrToFileList(savePath, serialNumber, version,
+                    evr.getReportPrintableJson(), curDate);
+        }
     }
         break;
     default:
@@ -789,8 +784,10 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         break;
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
-        evr.addEvidence(myBsm[0], bsmCheck, *bsm, detectedNodes);
-        reportStr = evr.getReportPrintableJson();
+        if(myBsmNum >0){
+            evr.addEvidence(myBsm[0], bsmCheck, *bsm, detectedNodes);
+            reportStr = evr.getReportPrintableJson();
+        }
     }
         break;
     default:
