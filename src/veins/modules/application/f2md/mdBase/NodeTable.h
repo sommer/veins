@@ -45,7 +45,7 @@ public:
     double getDeltaTime(unsigned long nodePseudo1, unsigned long nodePseudo2);
 
     BasicSafetyMessage* getRandomBSM();
-    BasicSafetyMessage* getNextAttackedBsm(Coord myPosition, int bsmNode, double bsmTime);
+    BasicSafetyMessage* getNextAttackedBsm(Coord myPosition, unsigned long bsmNode, double bsmTime);
 };
 
 #endif

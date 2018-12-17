@@ -119,7 +119,7 @@ BasicSafetyMessage* NodeTable::getRandomBSM() {
     return nodeHistoryList[randNode].getBSMAddr(randBSM);
 }
 
-BasicSafetyMessage* NodeTable::getNextAttackedBsm(Coord myPosition, int bsmNode, double bsmTime) {
+BasicSafetyMessage* NodeTable::getNextAttackedBsm(Coord myPosition, unsigned long bsmNode, double bsmTime) {
     if(bsmNode==0 || (simTime().dbl() - bsmTime) > 1.1){
         double minDistance = 10000000;
         int index = -1;

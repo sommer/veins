@@ -38,7 +38,7 @@ private:
 public:
     EvidenceReport(MDReport baseReport);
     void addEvidence(BasicSafetyMessage myBsm, BsmCheck reportedCheck, BasicSafetyMessage receivedBsm,
-            NodeTable detectedNodes);
+            NodeTable * detectedNodes);
     std::string getReportXml();
     std::string getReportPrintableJson();
 };

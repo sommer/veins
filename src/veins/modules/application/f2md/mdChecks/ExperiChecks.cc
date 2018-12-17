@@ -210,32 +210,28 @@ InterTest ExperiChecks::MultipleIntersectionCheck(NodeTable * detectedNodes,
 
     NodeHistory * varNode;
 
-    std::map<std::string, unsigned long> resultPseudo;
-    std::map<std::string, double> resultCheck;
     double INTScore = 0;
-    int INTNum = 0;
+    InterTest intertTest = InterTest();
 
     INTScore = IntersectionCheck(myPosition, myPositionConfidence, senderPos,
-            senderPosConfidence, myHeading, senderHeading, mySize, senderSize);
+            senderPosConfidence, myHeading, senderHeading, mySize,
+            senderSize);
     if (INTScore < 1) {
-        resultPseudo["INTId_0"] = myPseudonym;
-        resultCheck["INTCheck_0"] = INTScore;
-        INTNum++;
+        intertTest.addInterValue(myPseudonym, INTScore);
     }
-
-    char num_string[32];
-    char INTId_string[64] = "INTId_";
-    char INTCheck_string[64] = "INTCheck_";
 
     for (int var = 0; var < detectedNodes->getNodesNum(); ++var) {
         if (detectedNodes->getNodePseudo(var) != senderPseudonym) {
             varNode = detectedNodes->getNodeHistoryAddr(
                     detectedNodes->getNodePseudo(var));
 
-            if (mdmLib.calculateDeltaTime(varNode->getLatestBSMAddr(),
-                    bsm) < MAX_DELTA_INTER) {
+            double deltaTime = mdmLib.calculateDeltaTime(
+                    varNode->getLatestBSMAddr(), bsm);
 
-                Coord varSize = Coord(varNode->getLatestBSMAddr()->getSenderWidth(),
+            if (deltaTime < MAX_DELTA_INTER) {
+
+                Coord varSize = Coord(
+                        varNode->getLatestBSMAddr()->getSenderWidth(),
                         varNode->getLatestBSMAddr()->getSenderLength());
 
                 INTScore = IntersectionCheck(
@@ -245,34 +241,10 @@ InterTest ExperiChecks::MultipleIntersectionCheck(NodeTable * detectedNodes,
                         varNode->getLatestBSMAddr()->getSenderHeading(),
                         senderHeading, varSize, senderSize);
                 if (INTScore < 1) {
-                    sprintf(num_string, "%d", INTNum);
-                    strcat(INTId_string, num_string);
-                    strcat(INTCheck_string, num_string);
-                    resultPseudo[INTId_string] = detectedNodes->getNodePseudo(var);
-                    resultCheck[INTCheck_string] = INTScore;
-
-                    strncpy(INTId_string, "INTId_", sizeof(INTId_string));
-                    strncpy(INTCheck_string, "INTCheck_",
-                            sizeof(INTCheck_string));
-
-                    INTNum++;
+                    intertTest.addInterValue(detectedNodes->getNodePseudo(var),INTScore);
                 }
             }
         }
-    }
-
-    InterTest intertTest = InterTest(INTNum);
-
-    for (int var = 0; var < INTNum; ++var) {
-        sprintf(num_string, "%d", var);
-        strcat(INTId_string, num_string);
-        strcat(INTCheck_string, num_string);
-
-        intertTest.addInterValue(resultPseudo.find(INTId_string)->second,
-                resultCheck.find(INTCheck_string)->second);
-
-        strncpy(INTId_string, "INTId_", sizeof(INTId_string));
-        strncpy(INTCheck_string, "INTCheck_", sizeof(INTCheck_string));
     }
 
     return intertTest;

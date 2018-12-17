@@ -207,20 +207,14 @@ InterTest CaTChChecks::MultipleIntersectionCheck(NodeTable * detectedNodes,
 
     NodeHistory * varNode;
 
-    const int maxInterNum = 100;
-    unsigned long resultPseudo[maxInterNum];
-    double resultCheck[maxInterNum];
-
     double INTScore = 0;
-    int INTNum = 0;
+    InterTest intertTest = InterTest();
 
     INTScore = IntersectionCheck(&myPosition, &myPositionConfidence, &senderPos,
             &senderPosConfidence, &myHeading, &senderHeading, &mySize,
             &senderSize, 0.11);
     if (INTScore < 1) {
-        resultPseudo[INTNum] = myPseudonym;
-        resultCheck[INTNum] = INTScore;
-        INTNum++;
+        intertTest.addInterValue(myPseudonym, INTScore);
     }
 
     for (int var = 0; var < detectedNodes->getNodesNum(); ++var) {
@@ -244,22 +238,12 @@ InterTest CaTChChecks::MultipleIntersectionCheck(NodeTable * detectedNodes,
                         &varNode->getLatestBSMAddr()->getSenderHeading(),
                         &senderHeading, &varSize, &senderSize, deltaTime);
                 if (INTScore < 1) {
-
-                    resultPseudo[INTNum] = detectedNodes->getNodePseudo(var);
-                    resultCheck[INTNum] = INTScore;
-
-                    INTNum++;
+                    intertTest.addInterValue(detectedNodes->getNodePseudo(var),INTScore);
                 }
             }
         }
     }
 
-    InterTest intertTest = InterTest(INTNum);
-
-    for (int var = 0; var < INTNum; ++var) {
-        intertTest.addInterValue(resultPseudo[var], resultCheck[var]);
-
-    }
     return intertTest;
 }
 
@@ -508,7 +492,6 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
             RangePlausibilityCheck(&myPosition, &myPositionConfidence,
                     &senderPos, &senderPosConfidence));
 
-
     bsmCheck.setSpeedPlausibility(
             SpeedPlausibilityCheck(
                     mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
@@ -581,7 +564,9 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
                         &myPosition, &myPositionConfidence));
     }
 
-    //PrintBsmCheck(senderPseudonym, bsmCheck);
+//    if(bsm->getSenderMbType() == 1){
+//        PrintBsmCheck(senderPseudonym, bsmCheck);
+//    }
 
     return bsmCheck;
 }

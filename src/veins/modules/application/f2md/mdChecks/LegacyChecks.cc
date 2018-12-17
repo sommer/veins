@@ -147,7 +147,8 @@ double LegacyChecks::IntersectionCheck(Coord nodePosition1, Coord nodeSize1,
     //double distance = mdmLib.calculateDistancePtr(nodePosition1, nodePosition2);
 
     double inter = mdmLib.RectRectFactor(nodePosition1, nodePosition2, heading1,
-            heading2, nodeSize1, nodeSize2);
+            heading2, Coord(0.8*nodeSize1.x,0.8*nodeSize1.y), Coord(0.8*nodeSize2.x,0.8*nodeSize2.y));
+
     inter = inter * ((MAX_DELTA_INTER-deltaTime)/MAX_DELTA_INTER);
 
 //    if (inter > 0.5){
@@ -196,22 +197,16 @@ InterTest LegacyChecks::MultipleIntersectionCheck(NodeTable * detectedNodes,
 
     NodeHistory *varNode;
 
-    const  int maxInterNum = 100;
-     unsigned long resultPseudo[maxInterNum];
-     double resultCheck[maxInterNum];
-
-    int INTNum = 0;
-    double INTScore = 1;
+    double INTScore = 0;
+    InterTest intertTest = InterTest();
 
     INTScore = IntersectionCheck(myPosition, mySize, myHeading, bsm->getSenderPos(),
             Coord(bsm->getSenderWidth(), bsm->getSenderLength()),
             bsm->getSenderHeading(),0.11);
 
 
-    if (INTScore < 1 && INTNum<maxInterNum) {
-        resultPseudo[INTNum] = myPseudonym;
-        resultCheck[INTNum] = INTScore;
-        INTNum++;
+    if (INTScore < 1) {
+        intertTest.addInterValue(myPseudonym, INTScore);
     }
 
     for (int var = 0; var < detectedNodes->getNodesNum(); ++var) {
@@ -228,19 +223,11 @@ InterTest LegacyChecks::MultipleIntersectionCheck(NodeTable * detectedNodes,
                         Coord(bsm->getSenderWidth(), bsm->getSenderLength()),
                         bsm->getSenderHeading(), deltaTime);
 
-                if (INTScore < 1 && INTNum<maxInterNum) {
-                    resultPseudo[INTNum] = detectedNodes->getNodePseudo(var);
-                    resultCheck[INTNum] = INTScore;
-                    INTNum++;
+                if (INTScore < 1) {
+                    intertTest.addInterValue(myPseudonym, INTScore);
                 }
             }
         }
-    }
-
-    InterTest intertTest = InterTest(INTNum);
-
-    for (int var = 0; var < INTNum; ++var) {
-        intertTest.addInterValue(resultPseudo[var], resultCheck[var]);
     }
 
     return intertTest;

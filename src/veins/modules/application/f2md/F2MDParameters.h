@@ -47,6 +47,7 @@
 #define MAX_TARGET_TIME 2
 #define MAX_ACCUSED_LENGTH 1000
 #define MAX_ACCUSED_TIME 2
+#define MAX_INTER_NUM 10
 //Storage Parameters
 
 //Attacks Parameters

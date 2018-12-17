@@ -718,7 +718,7 @@ void JosephVeinsApp::writeReport(MDReport reportBase, std::string version,
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
         if(myBsmNum >0){
-            evr.addEvidence(myBsm[0], bsmCheck, *bsm, detectedNodes);
+            evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             evr.writeStrToFile(savePath, serialNumber, version,
                     evr.getReportPrintableJson(), curDate);
         }
@@ -751,7 +751,7 @@ void JosephVeinsApp::writeListReport(MDReport reportBase, std::string version,
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
         if(myBsmNum >0){
-            evr.addEvidence(myBsm[0], bsmCheck, *bsm, detectedNodes);
+            evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             evr.writeStrToFileList(savePath, serialNumber, version,
                     evr.getReportPrintableJson(), curDate);
         }
@@ -785,7 +785,7 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
         if(myBsmNum >0){
-            evr.addEvidence(myBsm[0], bsmCheck, *bsm, detectedNodes);
+            evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             reportStr = evr.getReportPrintableJson();
         }
     }
