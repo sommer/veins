@@ -1,4 +1,4 @@
-#include "catch/catch.hpp"
+#include "catch2/catch.hpp"
 
 #include "veins/modules/analogueModel/TwoRayInterferenceModel.h"
 #include "veins/base/messages/AirFrame_m.h"

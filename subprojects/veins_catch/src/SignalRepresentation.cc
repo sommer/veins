@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "catch/catch.hpp"
+#include "catch2/catch.hpp"
 
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
 #include "veins/base/toolbox/Spectrum.h"
