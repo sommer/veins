@@ -1,4 +1,4 @@
-#include "catch/catch.hpp"
+#include "catch2/catch.hpp"
 
 #include "veins/modules/phy/SampledAntenna1D.h"
 #include "testutils/Simulation.h"
