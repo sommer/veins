@@ -43,8 +43,9 @@ using Veins::AirFrame;
 class TwoRayInterferenceModel : public AnalogueModel {
 
 public:
-    TwoRayInterferenceModel(double dielectricConstant)
-        : epsilon_r(dielectricConstant)
+    TwoRayInterferenceModel(cComponent* owner, double dielectricConstant)
+        : AnalogueModel(owner)
+        , epsilon_r(dielectricConstant)
     {
     }
 

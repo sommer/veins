@@ -304,9 +304,9 @@ bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, C
     NicEntries::mapped_type nicEntry;
 
     if (sendDirect)
-        nicEntry = new NicEntryDirect();
+        nicEntry = new NicEntryDirect(this);
     else
-        nicEntry = new NicEntryDebug();
+        nicEntry = new NicEntryDebug(this);
 
     // fill nicEntry
     nicEntry->nicPtr = nic;

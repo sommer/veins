@@ -435,8 +435,8 @@ void TraCIScenarioManager::handleMessage(cMessage* msg)
 void TraCIScenarioManager::handleSelfMsg(cMessage* msg)
 {
     if (msg == connectAndStartTrigger) {
-        connection.reset(TraCIConnection::connect(host.c_str(), port));
-        commandIfc.reset(new TraCICommandInterface(*connection));
+        connection.reset(TraCIConnection::connect(this, host.c_str(), port));
+        commandIfc.reset(new TraCICommandInterface(this, *connection));
         init_traci();
         return;
     }

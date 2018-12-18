@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2018 Dominik S. Buse <buse@ccs-labs.org>
+// Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -19,24 +19,22 @@
 //
 #pragma once
 
-#include "veins/base/phyLayer/AnalogueModel.h"
+#include <string>
+
+#include "veins/veins.h"
 
 namespace Veins {
 
-class DummyAnalogueModel : public AnalogueModel {
-protected:
-    const double factor;
-
+/**
+ * Helper class for logging from classes not derived from cComponent
+ */
+class HasLogProxy {
 public:
-    DummyAnalogueModel(cComponent* owner, double factor)
-        : AnalogueModel(owner)
-        , factor(factor)
-    {
-    }
+    HasLogProxy(cComponent* owner);
+    const cComponent* getThisPtr() const;
 
-    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override
-    {
-        *signal *= factor;
-    }
+protected:
+    cComponent* owner;
 };
+
 } // namespace Veins

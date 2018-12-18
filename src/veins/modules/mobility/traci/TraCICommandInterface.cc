@@ -18,8 +18,9 @@ const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInter
     {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false}},
 };
 
-TraCICommandInterface::TraCICommandInterface(TraCIConnection& c)
-    : connection(c)
+TraCICommandInterface::TraCICommandInterface(cComponent* owner, TraCIConnection& c)
+    : HasLogProxy(owner)
+    , connection(c)
 {
 }
 

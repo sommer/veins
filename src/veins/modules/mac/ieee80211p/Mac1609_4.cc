@@ -822,7 +822,8 @@ void Mac1609_4::EDCA::postTransmit(t_access_category ac, BaseFrame1609_4* wsm, b
 }
 
 Mac1609_4::EDCA::EDCA(cSimpleModule* owner, ChannelType channelType, int maxQueueLength)
-    : owner(owner)
+    : HasLogProxy(owner)
+    , owner(owner)
     , maxQueueSize(maxQueueLength)
     , channelType(channelType)
     , statsNumInternalContention(0)

@@ -27,6 +27,7 @@
 
 #include "veins/base/utils/Coord.h"
 #include "veins/base/utils/Heading.h"
+#include "veins/modules/utility/HasLogProxy.h"
 
 namespace Veins {
 
@@ -40,7 +41,7 @@ class ChannelAccess;
  * @author Daniel Willkomm
  * @sa ConnectionManager
  */
-class VEINS_API NicEntry : public cObject {
+class VEINS_API NicEntry : public HasLogProxy {
 protected:
     class NicEntryComparator {
     public:
@@ -86,15 +87,16 @@ public:
     /**
      * @brief Constructor, initializes all members
      */
-    NicEntry()
-        : nicId(0)
+    NicEntry(cComponent* owner)
+        : HasLogProxy(owner)
+        , nicId(0)
         , nicPtr(nullptr)
         , hostId(0){};
 
     /**
      * @brief Destructor -- needs to be there...
      */
-    ~NicEntry() override
+    virtual ~NicEntry()
     {
     }
 

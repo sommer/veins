@@ -7,12 +7,13 @@
 #include "veins/modules/mobility/traci/TraCICoordinateTransformation.h"
 #include "veins/base/utils/Coord.h"
 #include "veins/base/utils/Heading.h"
+#include "veins/modules/utility/HasLogProxy.h"
 
 namespace Veins {
 
-class TraCIConnection {
+class TraCIConnection : public HasLogProxy {
 public:
-    static TraCIConnection* connect(const char* host, int port);
+    static TraCIConnection* connect(cComponent* owner, const char* host, int port);
     void setNetbounds(TraCICoord netbounds1, TraCICoord netbounds2, int margin);
     ~TraCIConnection();
 
@@ -59,7 +60,7 @@ public:
     std::list<TraCICoord> omnet2traci(const std::list<Coord>&) const;
 
 private:
-    TraCIConnection(void*);
+    TraCIConnection(cComponent* owner, void* ptr);
 
     void* socketPtr;
     std::unique_ptr<TraCICoordinateTransformation> coordinateTransformation;

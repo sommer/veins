@@ -4,6 +4,7 @@
 #include "veins/base/toolbox/Spectrum.h"
 #include "veins/base/toolbox/Signal.h"
 #include "testutils/Simulation.h"
+#include "testutils/Component.h"
 
 using namespace Veins;
 
@@ -21,10 +22,11 @@ AntennaPosition createDummyAntennaPosition(Coord c)
 SCENARIO("SimplePathlossModel with alpha = 2", "[analogueModel]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr));
+    DummyComponent dc(&ds);
     double centerFreq = 5.9e9;
     std::vector<double> freqs = {centerFreq - 5e6, centerFreq, centerFreq + 5e6};
     Spectrum spec(freqs);
-    SimplePathlossModel spm(2.0, false, {0, 0, 0});
+    SimplePathlossModel spm(&dc, 2.0, false, {0, 0, 0});
 
     GIVEN("A signal sent from (0, 0) with powerlevel 1")
     {
@@ -76,10 +78,11 @@ SCENARIO("SimplePathlossModel with alpha = 2", "[analogueModel]")
 SCENARIO("SimplePathlossModel with alpha = 2.2", "[analogueModel]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr));
+    DummyComponent dc(&ds);
     double centerFreq = 5.9e9;
     std::vector<double> freqs = {centerFreq - 5e6, centerFreq, centerFreq + 5e6};
     Spectrum spec(freqs);
-    SimplePathlossModel spm(2.2, false, {0, 0, 0});
+    SimplePathlossModel spm(&dc, 2.2, false, {0, 0, 0});
 
     GIVEN("A signal sent from (0, 0) with powerlevel 1")
     {

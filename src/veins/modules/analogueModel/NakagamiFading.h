@@ -43,8 +43,9 @@ namespace Veins {
 class NakagamiFading : public AnalogueModel {
 
 public:
-    NakagamiFading(bool constM, double m)
-        : constM(constM)
+    NakagamiFading(cComponent* owner, bool constM, double m)
+        : AnalogueModel(owner)
+        , constM(constM)
         , m(m)
     {
     }

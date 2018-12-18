@@ -48,8 +48,9 @@ public:
      * @brief Initializes the analogue model. playgroundSize
      * need to be valid as long as this instance exists.
      */
-    BreakpointPathlossModel(double L01, double L02, double alpha1, double alpha2, double breakpointDistance, bool useTorus, const Coord& playgroundSize)
-        : PL01(L01)
+    BreakpointPathlossModel(cComponent* owner, double L01, double L02, double alpha1, double alpha2, double breakpointDistance, bool useTorus, const Coord& playgroundSize)
+        : AnalogueModel(owner)
+        , PL01(L01)
         , PL02(L02)
         , alpha1(alpha1)
         , alpha2(alpha2)

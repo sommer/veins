@@ -39,6 +39,7 @@
 #include "veins/modules/messages/Mac80211Ack_m.h"
 #include "veins/base/modules/BaseMacLayer.h"
 #include "veins/modules/utility/ConstsPhy.h"
+#include "veins/modules/utility/HasLogProxy.h"
 
 namespace Veins {
 
@@ -79,7 +80,7 @@ public:
         AC_VO = 3
     };
 
-    class EDCA {
+    class EDCA : HasLogProxy {
     public:
         class EDCAQueue {
         public:
@@ -105,14 +106,7 @@ public:
 
         EDCA(cSimpleModule* owner, ChannelType channelType, int maxQueueLength = 0);
         ~EDCA();
-        const cObject* getThisPtr() const
-        {
-            return nullptr;
-        }
-        const char* getClassName() const
-        {
-            return "Mac1609_4::EDCA";
-        }
+
         void createQueue(int aifsn, int cwMin, int cwMax, t_access_category);
         int queuePacket(t_access_category AC, BaseFrame1609_4* cmsg);
         void backoff(t_access_category ac);

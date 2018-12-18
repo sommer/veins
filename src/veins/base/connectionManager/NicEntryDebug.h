@@ -105,8 +105,8 @@ public:
     /**
      * @brief Constructor, initializes all members
      */
-    NicEntryDebug()
-        : NicEntry()
+    NicEntryDebug(cComponent* owner)
+        : NicEntry(owner)
         , inCnt(0)
         , outCnt(0)
         , checkFreeGates(true){};

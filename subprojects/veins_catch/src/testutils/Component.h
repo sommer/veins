@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2018 Dominik S. Buse <buse@ccs-labs.org>
+// Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -19,24 +19,47 @@
 //
 #pragma once
 
-#include "veins/base/phyLayer/AnalogueModel.h"
+#include "veins/veins.h"
 
-namespace Veins {
+#include "testutils/Simulation.h"
 
-class DummyAnalogueModel : public AnalogueModel {
-protected:
-    const double factor;
-
+class DummyComponent : public cComponent {
 public:
-    DummyAnalogueModel(cComponent* owner, double factor)
-        : AnalogueModel(owner)
-        , factor(factor)
+    DummyComponent(DummySimulation* ds)
     {
     }
 
-    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override
+    void callRefreshDisplay() override
     {
-        *signal *= factor;
     }
-};
-} // namespace Veins
+
+    cProperties* getProperties() const override
+    {
+        return nullptr;
+    }
+
+    ComponentKind getComponentKind() const override
+    {
+        return KIND_OTHER;
+    }
+
+    cModule* getParentModule() const override
+    {
+        return nullptr;
+    }
+
+    void callInitialize() override
+    {
+    }
+
+    bool callInitialize(int stage) override
+    {
+        return true;
+    }
+
+    void callFinish() override
+    {
+    }
+
+private:
+}; // end DummyComponent

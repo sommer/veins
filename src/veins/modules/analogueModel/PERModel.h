@@ -25,8 +25,9 @@ protected:
 
 public:
     /** @brief The PERModel constructor takes as argument the packet error rate to apply (must be between 0 and 1). */
-    PERModel(double per)
-        : packetErrorRate(per)
+    PERModel(cComponent* owner, double per)
+        : AnalogueModel(owner)
+        , packetErrorRate(per)
     {
         assert(per <= 1 && per >= 0);
     }

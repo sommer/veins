@@ -7,6 +7,7 @@
 
 #include "veins/base/utils/AntennaPosition.h"
 #include "veins/base/utils/Coord.h"
+#include "veins/modules/utility/HasLogProxy.h"
 
 namespace Veins {
 
@@ -22,9 +23,14 @@ class Signal;
  *
  * @ingroup analogueModels
  */
-class VEINS_API AnalogueModel {
+class VEINS_API AnalogueModel : public HasLogProxy {
 
 public:
+    AnalogueModel(cComponent* owner)
+        : HasLogProxy(owner)
+    {
+    }
+
     virtual ~AnalogueModel()
     {
     }

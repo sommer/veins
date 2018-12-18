@@ -22,8 +22,9 @@
 
 using namespace Veins;
 
-VehicleObstacleShadowing::VehicleObstacleShadowing(VehicleObstacleControl& vehicleObstacleControl, bool useTorus, const Coord& playgroundSize)
-    : vehicleObstacleControl(vehicleObstacleControl)
+VehicleObstacleShadowing::VehicleObstacleShadowing(cComponent* owner, VehicleObstacleControl& vehicleObstacleControl, bool useTorus, const Coord& playgroundSize)
+    : AnalogueModel(owner)
+    , vehicleObstacleControl(vehicleObstacleControl)
     , useTorus(useTorus)
     , playgroundSize(playgroundSize)
 {

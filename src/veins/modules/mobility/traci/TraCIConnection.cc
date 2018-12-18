@@ -36,8 +36,9 @@ SOCKET socket(void* ptr)
     return *static_cast<SOCKET*>(ptr);
 }
 
-TraCIConnection::TraCIConnection(void* ptr)
-    : socketPtr(ptr)
+TraCIConnection::TraCIConnection(cComponent* owner, void* ptr)
+    : HasLogProxy(owner)
+    , socketPtr(ptr)
 {
     ASSERT(socketPtr);
 }
@@ -50,8 +51,9 @@ TraCIConnection::~TraCIConnection()
     }
 }
 
-TraCIConnection* TraCIConnection::connect(const char* host, int port)
+TraCIConnection* TraCIConnection::connect(cComponent* owner, const char* host, int port)
 {
+    EV_STATICCONTEXT;
     EV_INFO << "TraCIScenarioManager connecting to TraCI server" << endl;
 
     if (initsocketlibonce() != 0) throw cRuntimeError("Could not init socketlib");
@@ -108,7 +110,7 @@ TraCIConnection* TraCIConnection::connect(const char* host, int port)
         ::setsockopt(*socketPtr, IPPROTO_TCP, TCP_NODELAY, (const char*) &x, sizeof(x));
     }
 
-    return new TraCIConnection(socketPtr);
+    return new TraCIConnection(owner, socketPtr);
 }
 
 TraCIBuffer TraCIConnection::query(uint8_t commandId, const TraCIBuffer& buf)

@@ -59,11 +59,12 @@ public:
      * The constructor needs some specific knowledge in order to create
      * its mapping properly:
      *
+     * @param owner pointer to the cComponent that owns this AnalogueModel
      * @param obstacleControl the parent module
      * @param useTorus information about the playground the host is moving in
      * @param playgroundSize information about the playground the host is moving in
      */
-    SimpleObstacleShadowing(ObstacleControl& obstacleControl, bool useTorus, const Coord& playgroundSize);
+    SimpleObstacleShadowing(cComponent* owner, ObstacleControl& obstacleControl, bool useTorus, const Coord& playgroundSize);
 
     /**
      * @brief Filters a specified Signal by adding an attenuation

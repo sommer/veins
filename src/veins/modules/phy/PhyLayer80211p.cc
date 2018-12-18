@@ -144,7 +144,7 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeBreakpointPathlossModel(Para
         throw cRuntimeError("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
     }
 
-    return make_unique<BreakpointPathlossModel>(L01, L02, alpha1, alpha2, breakpointDistance, useTorus, playgroundSize);
+    return make_unique<BreakpointPathlossModel>(this, L01, L02, alpha1, alpha2, breakpointDistance, useTorus, playgroundSize);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& params)
@@ -153,7 +153,7 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeTwoRayInterferenceModel(Para
 
     double dielectricConstant = params["DielectricConstant"].doubleValue();
 
-    return make_unique<TwoRayInterferenceModel>(dielectricConstant);
+    return make_unique<TwoRayInterferenceModel>(this, dielectricConstant);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeNakagamiFading(ParameterMap& params)
@@ -163,7 +163,7 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeNakagamiFading(ParameterMap&
     if (constM) {
         m = params["m"].doubleValue();
     }
-    return make_unique<NakagamiFading>(constM, m);
+    return make_unique<NakagamiFading>(this, constM, m);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& params)
@@ -203,13 +203,13 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimplePathlossModel(Paramete
         }
     }
 
-    return make_unique<SimplePathlossModel>(alpha, useTorus, playgroundSize);
+    return make_unique<SimplePathlossModel>(this, alpha, useTorus, playgroundSize);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializePERModel(ParameterMap& params)
 {
     double per = params["packetErrorRate"].doubleValue();
-    return make_unique<PERModel>(per);
+    return make_unique<PERModel>(this, per);
 }
 
 unique_ptr<Decider> PhyLayer80211p::getDeciderFromName(std::string name, ParameterMap& params)
@@ -232,7 +232,7 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimpleObstacleShadowing(Para
 
     ObstacleControl* obstacleControlP = ObstacleControlAccess().getIfExists();
     if (!obstacleControlP) throw cRuntimeError("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
-    return make_unique<SimpleObstacleShadowing>(*obstacleControlP, useTorus, playgroundSize);
+    return make_unique<SimpleObstacleShadowing>(this, *obstacleControlP, useTorus, playgroundSize);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& params)
@@ -246,13 +246,13 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeVehicleObstacleShadowing(Par
 
     VehicleObstacleControl* vehicleObstacleControlP = VehicleObstacleControlAccess().getIfExists();
     if (!vehicleObstacleControlP) throw cRuntimeError("initializeVehicleObstacleShadowing(): cannot find VehicleObstacleControl module");
-    return make_unique<VehicleObstacleShadowing>(*vehicleObstacleControlP, useTorus, playgroundSize);
+    return make_unique<VehicleObstacleShadowing>(this, *vehicleObstacleControlP, useTorus, playgroundSize);
 }
 
 unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params)
 {
     double centerFreq = params["centerFrequency"];
-    auto dec = make_unique<Decider80211p>(this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
+    auto dec = make_unique<Decider80211p>(this, this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
     dec->setPath(getParentModule()->getFullPath());
     return unique_ptr<Decider>(std::move(dec));
 }

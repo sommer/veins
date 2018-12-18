@@ -81,8 +81,8 @@ public:
      *
      * Needs a pointer to its physical layer, the sensitivity, and the index of the host.
      */
-    BaseDecider(DeciderToPhyInterface* phy, double sensitivity, int myIndex)
-        : Decider(phy)
+    BaseDecider(cComponent* owner, DeciderToPhyInterface* phy, double sensitivity, int myIndex)
+        : Decider(owner, phy)
         , sensitivity(sensitivity)
         , isChannelIdle(true)
         , myIndex(myIndex)
