@@ -57,45 +57,22 @@ public:
     bool isTypeSupported(std::string type);
     double getAttenuationPerCut(std::string type);
     double getAttenuationPerMeter(std::string type);
+    bool isAnyObstacleDefined();
 
     /**
      * calculate additional attenuation by obstacles, return signal strength
      */
-    double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const;
+    double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos, const Obstacle& o) const;
+    std::set<Obstacle const*> getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos) const;
 
 protected:
-    struct CacheKey {
-        const Coord senderPos;
-        const Coord receiverPos;
-
-        CacheKey(const Coord& senderPos, const Coord& receiverPos)
-            : senderPos(senderPos)
-            , receiverPos(receiverPos)
-        {
-        }
-
-        bool operator<(const CacheKey& o) const
-        {
-            if (senderPos.x < o.senderPos.x) return true;
-            if (senderPos.x > o.senderPos.x) return false;
-            if (senderPos.y < o.senderPos.y) return true;
-            if (senderPos.y > o.senderPos.y) return false;
-            if (receiverPos.x < o.receiverPos.x) return true;
-            if (receiverPos.x > o.receiverPos.x) return false;
-            if (receiverPos.y < o.receiverPos.y) return true;
-            if (receiverPos.y > o.receiverPos.y) return false;
-            return false;
-        }
-    };
-
     enum {
-        GRIDCELL_SIZE = 1024
+        GRIDCELL_SIZE = 1024,
     };
 
     using ObstacleGridCell = std::list<Obstacle*>;
     using ObstacleGridRow = std::vector<ObstacleGridCell>;
     using Obstacles = std::vector<ObstacleGridRow>;
-    typedef std::map<CacheKey, double> CacheEntries;
 
     cXMLElement* obstaclesXml; /**< obstacles to add at startup */
 
@@ -105,7 +82,6 @@ protected:
     AnnotationManager::Group* annotationGroup;
     std::map<std::string, double> perCut;
     std::map<std::string, double> perMeter;
-    mutable CacheEntries cacheEntries;
 };
 
 class ObstacleControlAccess {

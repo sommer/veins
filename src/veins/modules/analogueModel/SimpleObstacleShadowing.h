@@ -42,6 +42,24 @@ class Signal;
  */
 class SimpleObstacleShadowing : public AnalogueModel {
 protected:
+    struct CacheKey {
+        const Coord senderPos;
+        const Coord receiverPos;
+
+        bool operator<(const CacheKey& o) const
+        {
+            if (senderPos.x < o.senderPos.x) return true;
+            if (senderPos.x > o.senderPos.x) return false;
+            if (senderPos.y < o.senderPos.y) return true;
+            if (senderPos.y > o.senderPos.y) return false;
+            if (receiverPos.x < o.receiverPos.x) return true;
+            if (receiverPos.x > o.receiverPos.x) return false;
+            if (receiverPos.y < o.receiverPos.y) return true;
+            if (receiverPos.y > o.receiverPos.y) return false;
+            return false;
+        }
+    };
+
     /** @brief reference to global ObstacleControl instance */
     ObstacleControl& obstacleControl;
 
@@ -50,6 +68,10 @@ protected:
 
     /** @brief The size of the playground.*/
     const Coord& playgroundSize;
+
+    using CacheEntries = std::map<CacheKey, double>;
+    mutable CacheEntries cacheEntries;
+    AnnotationManager* annotations;
 
 public:
     /**

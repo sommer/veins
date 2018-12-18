@@ -24,6 +24,7 @@
 
 #include "veins/modules/obstacle/ObstacleControl.h"
 
+using Veins::Obstacle;
 using Veins::ObstacleControl;
 
 Define_Module(Veins::ObstacleControl);
@@ -36,7 +37,6 @@ void ObstacleControl::initialize(int stage)
 {
     if (stage == 1) {
         obstacles.clear();
-        cacheEntries.clear();
 
         annotations = AnnotationManagerAccess().getIfExists();
         if (annotations) annotationGroup = annotations->createGroup("obstacles");
@@ -154,8 +154,6 @@ void ObstacleControl::add(Obstacle obstacle)
 
     // visualize using AnnotationManager
     if (annotations) o->visualRepresentation = annotations->drawPolygon(o->getShape(), "red", annotationGroup);
-
-    cacheEntries.clear();
 }
 
 void ObstacleControl::erase(const Obstacle* obstacle)
@@ -182,25 +180,11 @@ void ObstacleControl::erase(const Obstacle* obstacle)
             break;
         }
     }
-
-    cacheEntries.clear();
 }
 
-double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const
+std::set<Obstacle const*> ObstacleControl::getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos) const
 {
     Enter_Method_Silent();
-
-    if ((perCut.size() == 0) || (perMeter.size() == 0)) {
-        throw cRuntimeError("Unable to use SimpleObstacleShadowing: No obstacle types have been configured");
-    }
-    if (obstacles.size() == 0) {
-        throw cRuntimeError("Unable to use SimpleObstacleShadowing: No obstacles have been added");
-    }
-
-    // return cached result, if available
-    CacheKey cacheKey(senderPos, receiverPos);
-    CacheEntries::const_iterator cacheEntryIter = cacheEntries.find(cacheKey);
-    if (cacheEntryIter != cacheEntries.end()) return cacheEntryIter->second;
 
     // calculate bounding box of transmission
     Coord bboxP1 = Coord(std::min(senderPos.x, receiverPos.x), std::min(senderPos.y, receiverPos.y));
@@ -211,8 +195,7 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
     size_t fromCol = std::max(0, int(bboxP1.y / GRIDCELL_SIZE));
     size_t toCol = std::max(0, int(bboxP2.y / GRIDCELL_SIZE));
 
-    std::set<Obstacle*> processedObstacles;
-    double factor = 1;
+    std::set<Obstacle const*> processedObstacles;
     for (size_t col = fromCol; col <= toCol; ++col) {
         if (col >= obstacles.size()) break;
         for (size_t row = fromRow; row <= toRow; ++row) {
@@ -224,31 +207,27 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
 
                 if (processedObstacles.find(o) != processedObstacles.end()) continue;
                 processedObstacles.insert(o);
-
-                // bail if bounding boxes cannot overlap
-                if (o->getBboxP2().x < bboxP1.x) continue;
-                if (o->getBboxP1().x > bboxP2.x) continue;
-                if (o->getBboxP2().y < bboxP1.y) continue;
-                if (o->getBboxP1().y > bboxP2.y) continue;
-
-                double factorOld = factor;
-
-                factor *= o->calculateAttenuation(senderPos, receiverPos);
-
-                // draw a "hit!" bubble
-                if (annotations && (factor != factorOld)) annotations->drawBubble(o->getBboxP1(), "hit");
-
-                // bail if attenuation is already extremely high
-                if (factor < 1e-30) break;
             }
         }
     }
 
-    // cache result
-    if (cacheEntries.size() >= 1000) cacheEntries.clear();
-    cacheEntries[cacheKey] = factor;
+    return processedObstacles;
+}
 
-    return factor;
+double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos, const Obstacle& o) const
+{
+    Enter_Method_Silent();
+
+    Coord bboxP1 = Coord(std::min(senderPos.x, receiverPos.x), std::min(senderPos.y, receiverPos.y));
+    Coord bboxP2 = Coord(std::max(senderPos.x, receiverPos.x), std::max(senderPos.y, receiverPos.y));
+
+    // bail if bounding boxes cannot overlap
+    if (o.getBboxP2().x < bboxP1.x) return 1;
+    if (o.getBboxP1().x > bboxP2.x) return 1;
+    if (o.getBboxP2().y < bboxP1.y) return 1;
+    if (o.getBboxP1().y > bboxP2.y) return 1;
+
+    return o.calculateAttenuation(senderPos, receiverPos);
 }
 
 double ObstacleControl::getAttenuationPerCut(std::string type)
@@ -275,4 +254,15 @@ bool ObstacleControl::isTypeSupported(std::string type)
 {
     // the type of obstacle is supported if there are attenuation values for borders and interior
     return (perCut.find(type) != perCut.end()) && (perMeter.find(type) != perMeter.end());
+}
+
+bool ObstacleControl::isAnyObstacleDefined()
+{
+    if ((perCut.size() == 0) || (perMeter.size() == 0)) {
+        return false;
+    }
+    if (obstacles.size() == 0) {
+        return false;
+    }
+    return true;
 }

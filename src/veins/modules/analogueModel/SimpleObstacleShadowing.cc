@@ -31,6 +31,7 @@ SimpleObstacleShadowing::SimpleObstacleShadowing(cComponent* owner, ObstacleCont
     , playgroundSize(playgroundSize)
 {
     if (useTorus) throw cRuntimeError("SimpleObstacleShadowing does not work on torus-shaped playgrounds");
+    annotations = AnnotationManagerAccess().getIfExists();
 }
 
 void SimpleObstacleShadowing::filterSignal(Signal* signal)
@@ -38,7 +39,40 @@ void SimpleObstacleShadowing::filterSignal(Signal* signal)
     auto senderPos = signal->getSenderPoa().pos.getPositionAt();
     auto receiverPos = signal->getReceiverPoa().pos.getPositionAt();
 
-    double factor = obstacleControl.calculateAttenuation(senderPos, receiverPos);
+    // sanity checks for obstacle definitions
+    if (!obstacleControl.isAnyObstacleDefined()) {
+        throw cRuntimeError("Unable to use SimpleObstacleShadowing: No obstacle types have been configured, or no obstacles have been added");
+    }
+
+    double factor = 1;
+    const double EXTREME_ATTENUATION = 1e-30;
+
+    // return cached result, if available
+    CacheKey cacheKey{senderPos, receiverPos};
+    CacheEntries::const_iterator cacheEntryIter = cacheEntries.find(cacheKey);
+    if (cacheEntryIter != cacheEntries.end()) {
+        factor = cacheEntryIter->second;
+    }
+    else {
+        // calculate attenuation for given obstacles
+        std::set<Obstacle const*> potentialObstacles = obstacleControl.getPotentialObstacles(senderPos, receiverPos);
+        for (auto o : potentialObstacles) {
+
+            double factorOld = factor;
+
+            factor = obstacleControl.calculateAttenuation(senderPos, receiverPos, *o);
+
+            // draw a "hit!" bubble
+            if (annotations && (factor != factorOld)) annotations->drawBubble(o->getBboxP1(), "hit");
+
+            // bail if attenuation is already extremely high
+            if (factor < EXTREME_ATTENUATION) break;
+        }
+    }
+
+    // cache result
+    if (cacheEntries.size() >= 1000) cacheEntries.clear();
+    cacheEntries[cacheKey] = factor;
 
     EV_TRACE << "value is: " << factor << endl;
 
