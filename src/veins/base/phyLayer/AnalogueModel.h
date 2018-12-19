@@ -42,8 +42,6 @@ public:
      * over time to the Signal.
      *
      * @param signal        The signal to filter.
-     * @param senderPos    The position of the frame sender.
-     * @param receiverPos    The position of frame receiver.
      */
     virtual void filterSignal(Signal* signal) = 0;
 
