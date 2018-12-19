@@ -25,8 +25,8 @@ using namespace Veins;
 
 void TwoRayInterferenceModel::filterSignal(Signal* signal)
 {
-    auto senderPos = signal->getSenderPos().getPositionAt();
-    auto receiverPos = signal->getReceiverPos().getPositionAt();
+    auto senderPos = signal->getSenderPoa().pos.getPositionAt();
+    auto receiverPos = signal->getReceiverPoa().pos.getPositionAt();
 
     const Coord senderPos2D(senderPos.x, senderPos.y);
     const Coord receiverPos2D(receiverPos.x, receiverPos.y);

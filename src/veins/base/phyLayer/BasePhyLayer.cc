@@ -631,8 +631,8 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     const Coord senderOrientation = senderPOA.orientation;
 
     // add position information to signal
-    signal.setSenderPos(senderPosition);
-    signal.setReceiverPos(receiverPosition);
+    signal.setSenderPoa(senderPOA);
+    signal.setReceiverPoa({receiverPosition, receiverOrientation, antenna});
 
     // compute gains at sender and receiver antenna
     double receiverGain = antenna->getGain(receiverPosition.getPositionAt(), receiverOrientation, senderPosition.getPositionAt());

@@ -33,10 +33,10 @@ VehicleObstacleShadowing::VehicleObstacleShadowing(cComponent* owner, VehicleObs
 
 void VehicleObstacleShadowing::filterSignal(Signal* signal)
 {
-    auto senderPos = signal->getSenderPos().getPositionAt();
-    auto receiverPos = signal->getReceiverPos().getPositionAt();
+    auto senderPos = signal->getSenderPoa().pos.getPositionAt();
+    auto receiverPos = signal->getReceiverPoa().pos.getPositionAt();
 
-    auto potentialObstacles = vehicleObstacleControl.getPotentialObstacles(signal->getSenderPos(), signal->getReceiverPos(), *signal);
+    auto potentialObstacles = vehicleObstacleControl.getPotentialObstacles(signal->getSenderPoa().pos, signal->getReceiverPoa().pos, *signal);
 
     if (potentialObstacles.size() < 1) return;
 

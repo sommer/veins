@@ -28,8 +28,8 @@ using namespace Veins;
  */
 void NakagamiFading::filterSignal(Signal* signal)
 {
-    auto senderPos = signal->getSenderPos().getPositionAt();
-    auto receiverPos = signal->getReceiverPos().getPositionAt();
+    auto senderPos = signal->getSenderPoa().pos.getPositionAt();
+    auto receiverPos = signal->getReceiverPoa().pos.getPositionAt();
 
     const double M_CLOSE = 1.5;
     const double M_FAR = 0.75;
