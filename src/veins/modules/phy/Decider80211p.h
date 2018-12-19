@@ -167,7 +167,7 @@ public:
         , notifyRxStart(false)
     {
         phy11p = dynamic_cast<Decider80211pToPhy80211pInterface*>(phy);
-        assert(phy11p);
+        ASSERT(phy11p);
     }
 
     void setPath(std::string myPath)

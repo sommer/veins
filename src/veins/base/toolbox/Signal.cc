@@ -344,8 +344,8 @@ Signal& Signal::operator=(const Signal& other)
 
 Signal& Signal::operator+=(const Signal& other)
 {
-    assert(this->getSpectrum() == other.getSpectrum());
-    assert(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
+    ASSERT(this->getSpectrum() == other.getSpectrum());
+    ASSERT(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
 
     std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), std::plus<double>());
     return *this;
@@ -359,8 +359,8 @@ Signal& Signal::operator+=(const double value)
 
 Signal& Signal::operator-=(const Signal& other)
 {
-    assert(this->getSpectrum() == other.getSpectrum());
-    assert(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
+    ASSERT(this->getSpectrum() == other.getSpectrum());
+    ASSERT(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
 
     std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), std::minus<double>());
     return *this;
@@ -374,8 +374,8 @@ Signal& Signal::operator-=(const double value)
 
 Signal& Signal::operator*=(const Signal& other)
 {
-    assert(this->getSpectrum() == other.getSpectrum());
-    assert(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
+    ASSERT(this->getSpectrum() == other.getSpectrum());
+    ASSERT(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
 
     std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), std::multiplies<double>());
     return *this;
@@ -389,8 +389,8 @@ Signal& Signal::operator*=(const double value)
 
 Signal& Signal::operator/=(const Signal& other)
 {
-    assert(this->getSpectrum() == other.getSpectrum());
-    assert(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
+    ASSERT(this->getSpectrum() == other.getSpectrum());
+    ASSERT(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
 
     std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), std::divides<double>());
     return *this;

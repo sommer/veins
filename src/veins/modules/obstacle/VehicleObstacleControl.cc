@@ -119,11 +119,11 @@ Signal VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
 {
 
     // basic sanity check
-    assert(dz_vec.size() >= 2);
+    ASSERT(dz_vec.size() >= 2);
 
     // make sure the list of x coordinates is sorted
     for (size_t i = 0; i < dz_vec.size() - 1; i++) {
-        assert(dz_vec[i].first < dz_vec[i + 1].first);
+        ASSERT(dz_vec[i].first < dz_vec[i + 1].first);
     }
 
     // find "major obstacles" (MOs) between sender and receiver via rope-stretching algorithm

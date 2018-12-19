@@ -29,6 +29,8 @@
 #include <fstream>
 #include <map>
 
+#include "veins/veins.h"
+
 namespace Veins {
 
 class Spectrum {

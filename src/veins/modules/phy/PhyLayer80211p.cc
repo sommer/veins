@@ -260,7 +260,7 @@ unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params
 void PhyLayer80211p::changeListeningChannel(Channel channel)
 {
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-    assert(dec);
+    ASSERT(dec);
 
     double freq = IEEE80211ChannelFrequencies.at(channel);
     dec->changeFrequency(freq);
@@ -272,11 +272,11 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg)
     switch (msg->getKind()) {
     // transmission overBasePhyLayer::
     case TX_OVER: {
-        assert(msg == txOverTimer);
+        ASSERT(msg == txOverTimer);
         sendControlMsgToMac(new cMessage("Transmission over", TX_OVER));
         // check if there is another packet on the chan, and change the chan-state to idle
         Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-        assert(dec);
+        ASSERT(dec);
         if (dec->cca(simTime(), nullptr)) {
             // chan is idle
             EV_TRACE << "Channel idle after transmit!\n";
@@ -289,7 +289,7 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg)
     }
     // radio switch over
     case RADIO_SWITCHING_OVER:
-        assert(msg == radioSwitchingOverTimer);
+        ASSERT(msg == radioSwitchingOverTimer);
         BasePhyLayer::finishRadioSwitching();
         break;
 
@@ -313,7 +313,7 @@ void PhyLayer80211p::attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
     const auto ctrlInfo11p = check_and_cast<MacToPhyControlInfo11p*>(ctrlInfo);
 
     const auto duration = getFrameDuration(airFrame->getEncapsulatedPacket()->getBitLength(), ctrlInfo11p->mcs);
-    assert(duration > 0);
+    ASSERT(duration > 0);
     Signal signal(overallSpectrum, simTime(), duration);
     auto freqIndex = overallSpectrum.indexOf(IEEE80211ChannelFrequencies.at(ctrlInfo11p->channelNr));
     signal.at(freqIndex - 1) = ctrlInfo11p->txPower_mW;
@@ -343,7 +343,7 @@ void PhyLayer80211p::setCCAThreshold(double ccaThreshold_dBm)
 {
     ccaThreshold = pow(10, ccaThreshold_dBm / 10);
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-    assert(dec);
+    ASSERT(dec);
     dec->setCCAThreshold(ccaThreshold_dBm);
 }
 double PhyLayer80211p::getCCAThreshold()
@@ -354,7 +354,7 @@ double PhyLayer80211p::getCCAThreshold()
 void PhyLayer80211p::notifyMacAboutRxStart(bool enable)
 {
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-    assert(dec);
+    ASSERT(dec);
     dec->setNotifyRxStart(enable);
 }
 
@@ -362,7 +362,7 @@ void PhyLayer80211p::requestChannelStatusIfIdle()
 {
     Enter_Method_Silent();
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-    assert(dec);
+    ASSERT(dec);
     if (dec->cca(simTime(), nullptr)) {
         // chan is idle
         EV_TRACE << "Request channel status: channel idle!\n";

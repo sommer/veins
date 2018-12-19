@@ -44,7 +44,7 @@ void DemoBaseApplLayer::initialize(int stage)
         ASSERT(annotations);
 
         mac = FindModule<DemoBaseApplLayerToMac1609_4Interface*>::findSubModule(getParentModule());
-        assert(mac);
+        ASSERT(mac);
 
         // read parameters
         headerLength = par("headerLength");

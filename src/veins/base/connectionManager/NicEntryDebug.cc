@@ -21,8 +21,6 @@
 
 #include "veins/base/connectionManager/NicEntryDebug.h"
 
-#include <cassert>
-
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/base/utils/FindModule.h"
 
@@ -79,7 +77,7 @@ int NicEntryDebug::collectGates(const char* pattern, GateStack& gates)
         if (hostGate->isConnectedOutside()) {
             throw cRuntimeError("Gate %s is still connected but not registered with this NicEntry. Either the last NicEntry for this NIC did not clean up correctly or another gate creation module is interfering with this one!", gateName);
         }
-        assert(hostGate->isConnectedInside());
+        ASSERT(hostGate->isConnectedInside());
         gates.push_back(hostGate);
 
         ++i;
@@ -143,7 +141,7 @@ cGate* NicEntryDebug::requestInGate(void)
 
         // to avoid unnecessary dynamic_casting we check for a "phy"-named submodule first
         if ((phyModule = dynamic_cast<ChannelAccess*>(nicPtr->getSubmodule("phy"))) == nullptr) phyModule = FindModule<ChannelAccess*>::findSubModule(nicPtr);
-        assert(phyModule != nullptr);
+        ASSERT(phyModule != nullptr);
 
         // create a new gate for the phy module
         phyModule->addGate(gateName, cGate::INPUT);
@@ -197,7 +195,7 @@ cGate* NicEntryDebug::requestOutGate(void)
 
         // to avoid unnecessary dynamic_casting we check for a "phy"-named submodule first
         if ((phyModule = dynamic_cast<ChannelAccess*>(nicPtr->getSubmodule("phy"))) == nullptr) phyModule = FindModule<ChannelAccess*>::findSubModule(nicPtr);
-        assert(phyModule != nullptr);
+        ASSERT(phyModule != nullptr);
 
         // create a new gate for the phy module
         phyModule->addGate(gateName, cGate::OUTPUT);

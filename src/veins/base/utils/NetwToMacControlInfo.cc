@@ -14,7 +14,6 @@
  *              in the top level directory
  ***************************************************************************/
 
-#include <cassert>
 #include "veins/base/utils/NetwToMacControlInfo.h"
 
 using namespace Veins;
@@ -35,6 +34,6 @@ const LAddress::L2Type& NetwToMacControlInfo::getDestFromControlInfo(const cObje
 {
     const tNetwToMacControlInfoBase* const cCtrlInfo = dynamic_cast<const tNetwToMacControlInfoBase*>(pCtrlInfo);
 
-    assert(cCtrlInfo);
+    ASSERT(cCtrlInfo);
     return cCtrlInfo->getDest();
 }

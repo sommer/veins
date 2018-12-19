@@ -14,5 +14,3 @@
  *              in the top level directory
  ***************************************************************************/
 #include "veins/base/utils/SimpleAddress.h"
-
-#include <cassert>

@@ -6,9 +6,6 @@
  */
 
 #include "veins/base/phyLayer/BaseDecider.h"
-
-#include <cassert>
-
 #include "veins/base/messages/AirFrame_m.h"
 
 using namespace Veins;
@@ -16,7 +13,7 @@ using namespace Veins;
 simtime_t BaseDecider::processSignal(AirFrame* frame)
 {
 
-    assert(frame);
+    ASSERT(frame);
     EV_TRACE << "Processing AirFrame..." << endl;
 
     switch (getSignalState(frame)) {

@@ -42,10 +42,10 @@ void Mac1609_4::initialize(int stage)
     if (stage == 0) {
 
         phy11p = FindModule<Mac80211pToPhy11pInterface*>::findSubModule(getParentModule());
-        assert(phy11p);
+        ASSERT(phy11p);
 
         // this is required to circumvent double precision issues with constants from CONST80211p.h
-        assert(simTime().getScaleExp() == -12);
+        ASSERT(simTime().getScaleExp() == -12);
 
         txPower = par("txPower").doubleValue();
         setParametersForBitrate(par("bitrate"));
@@ -266,7 +266,7 @@ void Mac1609_4::handleSelfMsg(cMessage* msg)
 
 void Mac1609_4::handleUpperControl(cMessage* msg)
 {
-    assert(false);
+    ASSERT(false);
 }
 
 void Mac1609_4::handleUpperMsg(cMessage* msg)
@@ -399,7 +399,7 @@ void Mac1609_4::handleLowerControl(cMessage* msg)
     }
     else {
         EV_WARN << "Invalid control message type (type=NOTHING) : name=" << msg->getName() << " modulesrc=" << msg->getSenderModule()->getFullPath() << "." << std::endl;
-        assert(false);
+        ASSERT(false);
     }
 
     if (msg->getKind() == Decider80211p::COLLISION) {
@@ -412,7 +412,7 @@ void Mac1609_4::handleLowerControl(cMessage* msg)
 void Mac1609_4::setActiveChannel(ChannelType state)
 {
     activeChannel = state;
-    assert(state == ChannelType::control || (useSCH && state == ChannelType::service));
+    ASSERT(state == ChannelType::control || (useSCH && state == ChannelType::service));
 }
 
 void Mac1609_4::finish()

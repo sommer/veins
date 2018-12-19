@@ -1,7 +1,5 @@
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
-#include <cassert>
-
 #include "veins/base/connectionManager/NicEntryDebug.h"
 #include "veins/base/connectionManager/NicEntryDirect.h"
 #include "veins/base/modules/BaseWorldUtility.h"
@@ -24,7 +22,7 @@ static double dist(double coord1, double coord2, double size)
         // NOTE: event if size is zero
         return 0;
     else {
-        assert(size != 0);
+        ASSERT(size != 0);
         double dist = FWMath::modulo(difference, size);
         return std::min(dist, size - dist);
     }
@@ -50,7 +48,7 @@ void BaseConnectionManager::initialize(int stage)
 
         BaseWorldUtility* world = FindModule<BaseWorldUtility*>::findGlobalModule();
 
-        assert(world != nullptr);
+        ASSERT(world != nullptr);
 
         playgroundSize = world->getPgs();
         useTorus = world->useTorus();
@@ -121,14 +119,14 @@ void BaseConnectionManager::initialize(int stage)
 
         // findDistance (equals cell size) has to be greater or equal
         // maxInt-distance
-        assert(findDistance.x >= maxInterferenceDistance);
-        assert(findDistance.y >= maxInterferenceDistance);
-        assert(findDistance.z >= maxInterferenceDistance);
+        ASSERT(findDistance.x >= maxInterferenceDistance);
+        ASSERT(findDistance.y >= maxInterferenceDistance);
+        ASSERT(findDistance.z >= maxInterferenceDistance);
 
         // playGroundSize has to be part of the playGround
-        assert(GridCoord(*playgroundSize, findDistance).x == gridDim.x - 1);
-        assert(GridCoord(*playgroundSize, findDistance).y == gridDim.y - 1);
-        assert(GridCoord(*playgroundSize, findDistance).z == gridDim.z - 1);
+        ASSERT(GridCoord(*playgroundSize, findDistance).x == gridDim.x - 1);
+        ASSERT(GridCoord(*playgroundSize, findDistance).y == gridDim.y - 1);
+        ASSERT(GridCoord(*playgroundSize, findDistance).z == gridDim.z - 1);
         EV_TRACE << "findDistance is " << findDistance.info() << endl;
     }
     else if (stage == 1) {
@@ -295,7 +293,7 @@ void BaseConnectionManager::updateNicConnections(NicEntries& nmap, BaseConnectio
 
 bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, Coord nicPos, Heading heading)
 {
-    assert(nic != nullptr);
+    ASSERT(nic != nullptr);
 
     int nicID = nic->getId();
     EV_TRACE << " registering nic #" << nicID << endl;
@@ -332,7 +330,7 @@ bool BaseConnectionManager::registerNic(cModule* nic, ChannelAccess* chAccess, C
 
 bool BaseConnectionManager::unregisterNic(cModule* nicModule)
 {
-    assert(nicModule != nullptr);
+    ASSERT(nicModule != nullptr);
 
     // find nicEntry
     int nicID = nicModule->getId();
@@ -340,7 +338,7 @@ bool BaseConnectionManager::unregisterNic(cModule* nicModule)
 
     // we assume that the module was previously registered with this CM
     // TODO: maybe change this to an omnet-error instead of an assertion
-    assert(nics.find(nicID) != nics.end());
+    ASSERT(nics.find(nicID) != nics.end());
     NicEntries::mapped_type nicEntry = nics[nicID];
 
     // get all affected grid squares

@@ -106,7 +106,7 @@ double SampledAntenna1D::getGain(Coord ownPos, Coord ownOrient, Coord otherPos)
     double offset = (angle - (baseElement * distance)) / distance;
 
     // make sure to not address an element out of antennaGains (baseElement == lastElement implies that offset is zero)
-    assert((baseElement < antennaGains.size()) && (baseElement != antennaGains.size() - 1 || offset == 0));
+    ASSERT((baseElement < antennaGains.size()) && (baseElement != antennaGains.size() - 1 || offset == 0));
 
     double gainValue = antennaGains[baseElement];
     if (offset > 0) {

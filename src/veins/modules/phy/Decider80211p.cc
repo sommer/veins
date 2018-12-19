@@ -191,8 +191,8 @@ enum Decider80211p::PACKET_OK_RESULT Decider80211p::packetOk(double sinrMin, dou
 
         // the probability of correct reception without considering the interference
         // MUST be greater or equal than when consider it
-        assert(packetOkSnr >= packetOkSinr);
-        assert(headerNoErrorSnr >= headerNoError);
+        ASSERT(packetOkSnr >= packetOkSinr);
+        ASSERT(headerNoErrorSnr >= headerNoError);
     }
 
     // probability of no bit error in the PLCP header
@@ -401,7 +401,7 @@ void Decider80211p::switchToTx()
         if (allowTxDuringRx) {
             // if the above layer decides to transmit anyhow, we need to abort reception
             AirFrame11p* currentFrame = dynamic_cast<AirFrame11p*>(currentSignal.first);
-            assert(currentFrame);
+            ASSERT(currentFrame);
             // flag the frame as "while transmitting"
             currentFrame->setWasTransmitting(true);
             currentFrame->setBitError(true);

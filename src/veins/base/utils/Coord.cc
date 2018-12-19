@@ -37,7 +37,7 @@ static double dist(double coord1, double coord2, double size)
         // NOTE: event if size is zero
         return 0;
     else {
-        assert(size != 0);
+        ASSERT(size != 0);
         double dist = FWMath::modulo(difference, size);
         return std::min(dist, size - dist);
     }

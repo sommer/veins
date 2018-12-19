@@ -27,8 +27,6 @@
 
 #include "veins/base/connectionManager/ChannelAccess.h"
 
-#include <cassert>
-
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/connectionManager/BaseConnectionManager.h"
@@ -143,8 +141,8 @@ simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic)
     ChannelAccess* const receiverModule = nic->chAccess;
     // const simtime_t_cref sStart         = simTime();
 
-    assert(senderModule);
-    assert(receiverModule);
+    ASSERT(senderModule);
+    ASSERT(receiverModule);
 
     /** claim the Move pattern of the sender from the Signal */
     Coord senderPos = senderModule->antennaPosition.getPositionAt();

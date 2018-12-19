@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cassert>
-
 #include "veins/veins.h"
 
 #include "veins/base/phyLayer/AnalogueModel.h"
@@ -29,7 +27,7 @@ public:
         : AnalogueModel(owner)
         , packetErrorRate(per)
     {
-        assert(per <= 1 && per >= 0);
+        ASSERT(per <= 1 && per >= 0);
     }
 
     void filterSignal(Signal*, const AntennaPosition&, const AntennaPosition&) override;
