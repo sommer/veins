@@ -27,7 +27,6 @@
 #include <iterator>
 #include <memory>
 #include <fstream>
-#include <assert.h>
 #include <map>
 
 namespace Veins {

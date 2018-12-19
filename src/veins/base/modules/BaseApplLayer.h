@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <assert.h>
-
 #include "veins/veins.h"
 
 #include "veins/base/modules/BaseLayer.h"

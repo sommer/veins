@@ -1,7 +1,6 @@
 #include "veins/base/phyLayer/ChannelInfo.h"
 
 #include <iostream>
-#include <assert.h>
 
 using namespace Veins;
 

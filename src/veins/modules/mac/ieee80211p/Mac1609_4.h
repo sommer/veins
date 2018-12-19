@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include <assert.h>
 #include <queue>
 #include <memory>
 #include <stdint.h>
