@@ -45,37 +45,37 @@ most important being:
   http://www.sics.se/nets/software
   (c) Swedish Institute of Computer Science (SICS)
   written by Laura Marie Feeney (lmfeeney@sics.se)
-  
+
 - CSMA module (since MiXiM v1.2)
   (c) by Jerome Rousselot (jerome.rousselot@csem.ch)
-  
+
 - IEEE 802.15.4 and IEEE 802.15.4A modules (since MiXiM v1.2)
   (c) by Jerome Rousselot (jerome.rousselot@csem.ch)
- 
+
 - B-MAC layer (since MiXiM v2.1)
   http://linux3.dti.supsi.ch/~afoerste/downloads.html
   (c) by Anna Foerster (anna.foerster@ieee.org)
-  
+
 - L-MAC layer (since MiXiM v2.1)
   http://linux3.dti.supsi.ch/~afoerste/downloads.html
   (c) by Anna Foerster (anna.foerster@ieee.org)
   and ported to MiXiM by Theodoros Kapourniotis (kapourniotis@gmail.com)
-  
+
 - MoBAN - Mobility Model for Body Area Networks (since MiXiM v2.1)
   http://www.es.ele.tue.nl/nes/content/models.php
   (c) by Majid Nabi (m.nabi@tue.nl)
-  
+
 - Flooding network layer (since MiXiM v2.1)
   (c) by Daniel Willkomm (willkomm@tkn.tu-berlin.de)
   and ported to MiXiM by Theodoros Kapourniotis (kapourniotis@gmail.com)
-  
+
 - WiseRoute network layer (since MiXiM v2.1)
   (c) by Damien Piguet, Jerome Rousselot (jerome.rousselot@csem.ch)
   and ported to MiXiM by Theodoros Kapourniotis (kapourniotis@gmail.com)
-   
+
 - ProbabilityBroadcast network layer modules (since MiXiM v2.1)
   (c) by Jerome Rousselot (jerome.rousselot@csem.ch)
-  
+
 - Analogue Models: BreakpointPathlossModel and PERModel (since MiXiM v2.1)
   (c) by Jerome Rousselot (jerome.rousselot@csem.ch)
 
@@ -149,12 +149,12 @@ Contributors
 ============
 There have been many contributors adding code, bug reports and bug-fixes to 
 MiXiM. Specifically we would like to mention:
-- Laura Marie Feeney     
-- Anna Foerster           
-- Theodoros Kapourniotis 
+- Laura Marie Feeney
+- Anna Foerster
+- Theodoros Kapourniotis
 - Michael Lindig
-- Majid Nabi             
-- Jerome Rousselot       
+- Majid Nabi
+- Jerome Rousselot
 
 
 Installation
