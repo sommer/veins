@@ -30,7 +30,7 @@ public:
         ASSERT(per <= 1 && per >= 0);
     }
 
-    void filterSignal(Signal*, const AntennaPosition&, const AntennaPosition&) override;
+    void filterSignal(Signal*) override;
 };
 
 } // namespace Veins

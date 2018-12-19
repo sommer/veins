@@ -54,7 +54,7 @@ public:
     {
     }
 
-    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override;
+    void filterSignal(Signal* signal) override;
 
 protected:
     /** @brief Whether to use a constant m or a m based on distance */

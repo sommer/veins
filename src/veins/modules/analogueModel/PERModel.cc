@@ -5,10 +5,10 @@
 using namespace Veins;
 using Veins::AirFrame;
 
-void PERModel::filterSignal(Signal* signal, const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_)
+void PERModel::filterSignal(Signal* signal)
 {
-    auto senderPos = senderPos_.getPositionAt();
-    auto receiverPos = receiverPos_.getPositionAt();
+    auto senderPos = signal->getSenderPos().getPositionAt();
+    auto receiverPos = signal->getReceiverPos().getPositionAt();
 
     double attenuationFactor = 1; // no attenuation
     if (packetErrorRate > 0 && RNGCONTEXT uniform(0, 1) < packetErrorRate) {

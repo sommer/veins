@@ -67,7 +67,7 @@ public:
      * @brief Filters a specified AirFrame's Signal by adding an attenuation
      * over time to the Signal.
      */
-    void filterSignal(Signal*, const AntennaPosition&, const AntennaPosition&) override;
+    void filterSignal(Signal*) override;
 
     virtual bool isActiveAtDestination()
     {

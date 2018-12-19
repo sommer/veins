@@ -45,7 +45,7 @@ public:
      * @param senderPos    The position of the frame sender.
      * @param receiverPos    The position of frame receiver.
      */
-    virtual void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) = 0;
+    virtual void filterSignal(Signal* signal) = 0;
 
     /**
      * If the model never increases the power level of any signal given to filterSignal, it returns true here.
