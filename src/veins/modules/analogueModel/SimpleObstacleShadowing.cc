@@ -33,10 +33,10 @@ SimpleObstacleShadowing::SimpleObstacleShadowing(cComponent* owner, ObstacleCont
     if (useTorus) throw cRuntimeError("SimpleObstacleShadowing does not work on torus-shaped playgrounds");
 }
 
-void SimpleObstacleShadowing::filterSignal(Signal* signal, const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_)
+void SimpleObstacleShadowing::filterSignal(Signal* signal)
 {
-    auto senderPos = senderPos_.getPositionAt();
-    auto receiverPos = receiverPos_.getPositionAt();
+    auto senderPos = signal->getSenderPos().getPositionAt();
+    auto receiverPos = signal->getReceiverPos().getPositionAt();
 
     double factor = obstacleControl.calculateAttenuation(senderPos, receiverPos);
 

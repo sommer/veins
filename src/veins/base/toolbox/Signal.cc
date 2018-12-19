@@ -183,7 +183,7 @@ bool Signal::greaterAtCenterFrequency(double threshold)
 
     while (numAnalogueModelsApplied < maxAnalogueModels) {
         // Apply filter here
-        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
+        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this);
         numAnalogueModelsApplied++;
 
         if (values[centerFrequencyIndex] < threshold) return false;
@@ -199,7 +199,7 @@ bool Signal::smallerAtCenterFrequency(double threshold)
 
     while (numAnalogueModelsApplied < maxAnalogueModels) {
         // Apply filter here
-        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
+        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this);
         numAnalogueModelsApplied++;
 
         if (values[centerFrequencyIndex] < threshold) return true;
@@ -228,7 +228,7 @@ void Signal::applyAnalogueModel(uint16_t index)
 
     if (index >= maxAnalogueModels || index < numAnalogueModelsApplied) return;
 
-    (*analogueModelList)[index]->filterSignal(this, senderPos, receiverPos);
+    (*analogueModelList)[index]->filterSignal(this);
     numAnalogueModelsApplied++;
 }
 
@@ -236,7 +236,7 @@ void Signal::applyAllAnalogueModels()
 {
     uint16_t maxAnalogueModels = analogueModelList->size();
     while (numAnalogueModelsApplied < maxAnalogueModels) {
-        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
+        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this);
 
         numAnalogueModelsApplied++;
     }

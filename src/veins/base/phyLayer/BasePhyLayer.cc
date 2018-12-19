@@ -649,7 +649,7 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
 
     // apply all analouge models that are *not* suitable for thresholding now
     for (auto& analogueModel : analogueModels) {
-        analogueModel->filterSignal(&signal, senderPosition, receiverPosition);
+        analogueModel->filterSignal(&signal);
     }
 }
 

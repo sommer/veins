@@ -6,10 +6,10 @@ using namespace Veins;
 
 using Veins::AirFrame;
 
-void SimplePathlossModel::filterSignal(Signal* signal, const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_)
+void SimplePathlossModel::filterSignal(Signal* signal)
 {
-    auto senderPos = senderPos_.getPositionAt();
-    auto receiverPos = receiverPos_.getPositionAt();
+    auto senderPos = signal->getSenderPos().getPositionAt();
+    auto receiverPos = signal->getReceiverPos().getPositionAt();
 
     /** Calculate the distance factor */
     double sqrDistance = useTorus ? receiverPos.sqrTorusDist(senderPos, playgroundSize) : receiverPos.sqrdist(senderPos);

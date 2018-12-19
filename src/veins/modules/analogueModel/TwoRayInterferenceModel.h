@@ -53,7 +53,7 @@ public:
     {
     }
 
-    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override;
+    void filterSignal(Signal* signal) override;
 
 protected:
     /** @brief stores the dielectric constant used for calculation */
