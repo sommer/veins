@@ -7,8 +7,8 @@ using Veins::AirFrame;
 
 void PERModel::filterSignal(Signal* signal)
 {
-    auto senderPos = signal->getSenderPos().getPositionAt();
-    auto receiverPos = signal->getReceiverPos().getPositionAt();
+    auto senderPos = signal->getSenderPoa().pos.getPositionAt();
+    auto receiverPos = signal->getReceiverPoa().pos.getPositionAt();
 
     double attenuationFactor = 1; // no attenuation
     if (packetErrorRate > 0 && RNGCONTEXT uniform(0, 1) < packetErrorRate) {

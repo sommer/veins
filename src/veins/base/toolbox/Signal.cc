@@ -38,8 +38,8 @@ Signal::Signal(const Signal& other)
     , propagationDelay(other.propagationDelay)
     , analogueModelList(other.analogueModelList)
     , numAnalogueModelsApplied(other.numAnalogueModelsApplied)
-    , senderPos(other.senderPos)
-    , receiverPos(other.receiverPos)
+    , senderPoa(other.senderPoa)
+    , receiverPoa(other.receiverPoa)
 {
 }
 
@@ -242,24 +242,24 @@ void Signal::applyAllAnalogueModels()
     }
 }
 
-AntennaPosition Signal::getSenderPos() const
+POA Signal::getSenderPoa() const
 {
-    return senderPos;
+    return senderPoa;
 }
 
-AntennaPosition Signal::getReceiverPos() const
+POA Signal::getReceiverPoa() const
 {
-    return receiverPos;
+    return receiverPoa;
 }
 
-void Signal::setSenderPos(AntennaPosition pos)
+void Signal::setSenderPoa(const POA& poa)
 {
-    senderPos = pos;
+    senderPoa = poa;
 }
 
-void Signal::setReceiverPos(AntennaPosition pos)
+void Signal::setReceiverPoa(const POA& poa)
 {
-    receiverPos = pos;
+    receiverPoa = poa;
 }
 
 simtime_t_cref Signal::getSendingStart() const
@@ -331,8 +331,8 @@ Signal& Signal::operator=(const Signal& other)
 
     analogueModelList = other.getAnalogueModelList();
     numAnalogueModelsApplied = other.getNumAnalogueModelsApplied();
-    senderPos = other.getSenderPos();
-    receiverPos = other.getReceiverPos();
+    senderPoa = other.getSenderPoa();
+    receiverPoa = other.getReceiverPoa();
 
     timingUsed = other.hasTiming();
     sendingStart = other.getSendingStart();

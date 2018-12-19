@@ -7,8 +7,8 @@ using Veins::AirFrame;
 
 void BreakpointPathlossModel::filterSignal(Signal* signal)
 {
-    auto senderPos = signal->getSenderPos().getPositionAt();
-    auto receiverPos = signal->getReceiverPos().getPositionAt();
+    auto senderPos = signal->getSenderPoa().pos.getPositionAt();
+    auto receiverPos = signal->getReceiverPoa().pos.getPositionAt();
 
     /** Calculate the distance factor */
     double distance = useTorus ? receiverPos.sqrTorusDist(senderPos, playgroundSize) : receiverPos.sqrdist(senderPos);

@@ -35,8 +35,8 @@ SimpleObstacleShadowing::SimpleObstacleShadowing(cComponent* owner, ObstacleCont
 
 void SimpleObstacleShadowing::filterSignal(Signal* signal)
 {
-    auto senderPos = signal->getSenderPos().getPositionAt();
-    auto receiverPos = signal->getReceiverPos().getPositionAt();
+    auto senderPos = signal->getSenderPoa().pos.getPositionAt();
+    auto receiverPos = signal->getReceiverPoa().pos.getPositionAt();
 
     double factor = obstacleControl.calculateAttenuation(senderPos, receiverPos);
 
