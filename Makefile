@@ -74,5 +74,5 @@ doxy:
 	doxygen doxy.cfg
 
 doxyshow: doxy
-	xdg-open doc/doxy/index.html
+	xdg-open doc/doxy/html/index.html
 
