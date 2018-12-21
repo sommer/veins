@@ -63,7 +63,7 @@ public:
      * calculate additional attenuation by obstacles, return signal strength
      */
     double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos, const Obstacle& o) const;
-    std::set<Obstacle const*> getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos) const;
+    std::vector<Obstacle const*> getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos) const;
 
 protected:
     enum {

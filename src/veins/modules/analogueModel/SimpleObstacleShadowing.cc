@@ -55,7 +55,7 @@ void SimpleObstacleShadowing::filterSignal(Signal* signal)
     }
     else {
         // calculate attenuation for given obstacles
-        std::set<Obstacle const*> potentialObstacles = obstacleControl.getPotentialObstacles(senderPos, receiverPos);
+        std::vector<Obstacle const*> potentialObstacles = obstacleControl.getPotentialObstacles(senderPos, receiverPos);
         for (auto o : potentialObstacles) {
 
             double factorOld = factor;

@@ -21,6 +21,7 @@
 #include <sstream>
 #include <map>
 #include <set>
+#include <algorithm>
 
 #include "veins/modules/obstacle/ObstacleControl.h"
 
@@ -182,7 +183,7 @@ void ObstacleControl::erase(const Obstacle* obstacle)
     }
 }
 
-std::set<Obstacle const*> ObstacleControl::getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos) const
+std::vector<Obstacle const*> ObstacleControl::getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos) const
 {
     Enter_Method_Silent();
 
@@ -195,7 +196,7 @@ std::set<Obstacle const*> ObstacleControl::getPotentialObstacles(const Coord& se
     size_t fromCol = std::max(0, int(bboxP1.y / GRIDCELL_SIZE));
     size_t toCol = std::max(0, int(bboxP2.y / GRIDCELL_SIZE));
 
-    std::set<Obstacle const*> processedObstacles;
+    std::vector<Obstacle const*> processedObstacles;
     for (size_t col = fromCol; col <= toCol; ++col) {
         if (col >= obstacles.size()) break;
         for (size_t row = fromRow; row <= toRow; ++row) {
@@ -205,8 +206,8 @@ std::set<Obstacle const*> ObstacleControl::getPotentialObstacles(const Coord& se
 
                 Obstacle* o = *k;
 
-                if (processedObstacles.find(o) != processedObstacles.end()) continue;
-                processedObstacles.insert(o);
+                if (std::find(processedObstacles.begin(), processedObstacles.end(), o) != processedObstacles.end()) continue;
+                processedObstacles.push_back(o);
             }
         }
     }
