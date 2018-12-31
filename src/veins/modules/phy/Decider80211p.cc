@@ -47,10 +47,10 @@ simtime_t Decider80211p::processNewSignal(AirFrame* msg)
 
     signalStates[frame] = EXPECT_END;
 
-    if (signal.smallerAtCenterFrequency(sensitivity)) {
+    if (signal.smallerAtCenterFrequency(minPowerLevel)) {
 
         // annotate the frame, so that we won't try decoding it at its end
-        frame->setUnderSensitivity(true);
+        frame->setUnderMinPowerLevel(true);
         // check channel busy status. a superposition of low power frames might turn channel status to busy
         if (cca(simTime(), nullptr) == false) {
             setChannelIdleStatus(false);
@@ -73,14 +73,14 @@ simtime_t Decider80211p::processNewSignal(AirFrame* msg)
             if (!currentSignal.first) {
                 // NIC is not yet synced to any frame, so lock and try to decode this frame
                 currentSignal.first = frame;
-                EV_TRACE << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Trying to receive AirFrame." << std::endl;
+                EV_TRACE << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << minPowerLevel << ") -> Trying to receive AirFrame." << std::endl;
                 if (notifyRxStart) {
                     phy->sendControlMsgToMac(new cMessage("RxStartStatus", MacToPhyInterface::PHY_RX_START));
                 }
             }
             else {
                 // NIC is currently trying to decode another frame. this frame will be simply treated as interference
-                EV_TRACE << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << sensitivity << ") -> Already synced to another AirFrame. Treating AirFrame as interference." << std::endl;
+                EV_TRACE << "AirFrame: " << frame->getId() << " with (" << recvPower << " > " << minPowerLevel << ") -> Already synced to another AirFrame. Treating AirFrame as interference." << std::endl;
             }
 
             // channel turned busy
@@ -118,7 +118,7 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
     AirFrameVector airFrames;
     getChannelInfo(start, end, airFrames);
 
-    double noise = phy->getThermalNoiseValue();
+    double noise = phy->getNoiseFloorValue();
 
     // Make sure to use the adjusted starting-point (which ignores the preamble)
     double sinrMin = SignalUtils::getMinSINR(start, end, frame, airFrames, noise);
@@ -260,7 +260,7 @@ bool Decider80211p::cca(simtime_t_cref time, AirFrame* exclude)
 
     // In the reference implementation only centerFrequenvy - 5e6 (half bandwidth) is checked!
     // Although this is wrong, the same is done here to reproduce original results
-    double minPower = phy->getThermalNoiseValue();
+    double minPower = phy->getNoiseFloorValue();
     bool isChannelIdle = minPower < ccaThreshold;
     if (airFrames.size() > 0) {
         size_t usedFreqIndex = airFrames.front()->getSignal().getSpectrum().indexOf(centerFrequency - 5e6);
@@ -287,7 +287,7 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg)
 
     DeciderResult* result;
 
-    if (frame->getUnderSensitivity()) {
+    if (frame->getUnderMinPowerLevel()) {
         // this frame was not even detected by the radio card
         result = new DeciderResult80211(false, 0, 0, recvPower_dBm);
     }
@@ -323,8 +323,8 @@ simtime_t Decider80211p::processSignalEnd(AirFrame* msg)
         phy->sendUp(frame, result);
     }
     else {
-        if (frame->getUnderSensitivity()) {
-            EV_TRACE << "packet was not detected by the card. power was under sensitivity threshold\n";
+        if (frame->getUnderMinPowerLevel()) {
+            EV_TRACE << "packet was not detected by the card. power was under minPowerLevel threshold\n";
         }
         else if (whileSending) {
             EV_TRACE << "packet was received while sending, sending it as control message to upper layer\n";

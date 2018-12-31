@@ -54,14 +54,14 @@ void BasePhyLayer::initialize(int stage)
         upperControlOut = findGate("upperControlOut");
         upperControlIn = findGate("upperControlIn");
 
-        if (par("useThermalNoise").boolValue()) {
-            thermalNoiseValue = FWMath::dBm2mW(par("thermalNoise").doubleValue());
+        if (par("useNoiseFloor").boolValue()) {
+            noiseFloorValue = FWMath::dBm2mW(par("noiseFloor").doubleValue());
         }
         else {
-            thermalNoiseValue = 0;
+            noiseFloorValue = 0;
         }
-        sensitivity = par("sensitivity").doubleValue();
-        sensitivity = FWMath::dBm2mW(sensitivity);
+        minPowerLevel = par("minPowerLevel").doubleValue();
+        minPowerLevel = FWMath::dBm2mW(minPowerLevel);
 
         recordStats = par("recordStats").boolValue();
 
@@ -72,8 +72,8 @@ void BasePhyLayer::initialize(int stage)
             throw cRuntimeError("Could not find BaseWorldUtility module");
         }
 
-        if (cc->hasPar("sat") && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
-            throw cRuntimeError("Sensitivity can't be smaller than the signal attenuation threshold (sat) in ConnectionManager. Please adjust your omnetpp.ini file accordingly.");
+        if (cc->hasPar("sat") && (minPowerLevel - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
+            throw cRuntimeError("minPowerLevel can't be smaller than the signal attenuation threshold (sat) in ConnectionManager. Please adjust your omnetpp.ini file accordingly.");
         }
 
         initializeAnalogueModels(par("analogueModels").xmlValue());
@@ -748,9 +748,9 @@ void BasePhyLayer::getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFra
     channelInfo.getAirFrames(from, to, out);
 }
 
-double BasePhyLayer::getThermalNoiseValue()
+double BasePhyLayer::getNoiseFloorValue()
 {
-    return thermalNoiseValue;
+    return noiseFloorValue;
 }
 
 void BasePhyLayer::sendControlMsgToMac(cMessage* msg)

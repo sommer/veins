@@ -153,10 +153,10 @@ protected:
 public:
     /**
      * @brief Initializes the Decider with a pointer to its PhyLayer and
-     * specific values for threshold and sensitivity
+     * specific values for threshold and minPowerLevel
      */
-    Decider80211p(cComponent* owner, DeciderToPhyInterface* phy, double sensitivity, double ccaThreshold, bool allowTxDuringRx, double centerFrequency, int myIndex = -1, bool collectCollisionStatistics = false)
-        : BaseDecider(owner, phy, sensitivity, myIndex)
+    Decider80211p(cComponent* owner, DeciderToPhyInterface* phy, double minPowerLevel, double ccaThreshold, bool allowTxDuringRx, double centerFrequency, int myIndex = -1, bool collectCollisionStatistics = false)
+        : BaseDecider(owner, phy, minPowerLevel, myIndex)
         , ccaThreshold(ccaThreshold)
         , allowTxDuringRx(allowTxDuringRx)
         , centerFrequency(centerFrequency)

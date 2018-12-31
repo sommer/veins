@@ -59,8 +59,8 @@ protected:
         EXPECT_END,
     };
 
-    /** @brief sensitivity value for receiving an AirFrame */
-    double sensitivity;
+    /** @brief minPowerLevel value for receiving an AirFrame */
+    double minPowerLevel;
 
     /** @brief Pair of a AirFrame and the state it is in. */
     typedef std::pair<AirFrame*, int> ReceivedSignal;
@@ -79,11 +79,11 @@ public:
     /**
      * @brief Initializes the decider with the passed values.
      *
-     * Needs a pointer to its physical layer, the sensitivity, and the index of the host.
+     * Needs a pointer to its physical layer, the minPowerLevel, and the index of the host.
      */
-    BaseDecider(cComponent* owner, DeciderToPhyInterface* phy, double sensitivity, int myIndex)
+    BaseDecider(cComponent* owner, DeciderToPhyInterface* phy, double minPowerLevel, int myIndex)
         : Decider(owner, phy)
-        , sensitivity(sensitivity)
+        , minPowerLevel(minPowerLevel)
         , isChannelIdle(true)
         , myIndex(myIndex)
     {
@@ -110,7 +110,7 @@ protected:
      * handle the signal again.
      *
      * Default implementation checks if the signals receiving power
-     * is above the sensitivity of the radio and we are not already trying
+     * is above the minPowerLevel of the radio and we are not already trying
      * to receive another AirFrame. If thats the case it waits for the end
      * of the signal.
      */

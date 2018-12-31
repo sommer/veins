@@ -23,9 +23,9 @@ namespace Veins;
 class AirFrame;
 
 //
-// Extension of base AirFrame message to have the underSensitivity field
+// Extension of base AirFrame message to have the underMinPowerLevel field
 //
 message AirFrame11p extends AirFrame {
-    bool underSensitivity = false;
+    bool underMinPowerLevel = false;
     bool wasTransmitting = false;
 }

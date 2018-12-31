@@ -90,8 +90,8 @@ protected:
     }
 
     int protocolId = PROTOCOL_ID_GENERIC; ///< The ID of the protocol this phy can transceive.
-    double thermalNoiseValue = 0; ///< Defines the strength of the thermal noise.
-    double sensitivity; ///< The sensitivity describes the minimum strength a signal must have to be received.
+    double noiseFloorValue = 0; ///< Catch-all for all factors negatively impacting SINR (e.g., thermal noise, noise figure, ...)
+    double minPowerLevel; ///< The minimum receive power needed to even attempt decoding a frame.
     bool recordStats; ///< Stores if tracking of statistics (esp. cOutvectors) is enabled.
     ChannelInfo channelInfo; ///< Channel info keeps track of received AirFrames and provides information about currently active AirFrames at the channel.
     std::unique_ptr<Radio> radio; ///< The state machine storing the current radio state (TX, RX, SLEEP).
@@ -406,9 +406,9 @@ public:
     void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out) override;
 
     /**
-     * Return thermal noise power level (in mW).
+     * Return noise floor level (in mW).
      */
-    double getThermalNoiseValue() override;
+    double getNoiseFloorValue() override;
 
     /**
      * Send the given message to via the control gate to the mac.
