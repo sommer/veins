@@ -1,3 +1,9 @@
 #!/bin/bash
 
-git describe --tags --exact-match &> /dev/null && git describe --tags --exact-match | sed -n '/^veins-\(.*\)*$/!{q100}' && git describe --tags --exact-match | sed 's/^veins-\(.*\)*$/\1/' || git rev-parse --short HEAD
+TAG=$(git describe --tags --exact-match 2> /dev/null)
+if [[ ($? -eq 0) && ($TAG =~ ^veins-) ]]; then
+    echo $TAG | sed -n 's/^veins-\(.*\)$/\1/p'
+
+else
+    git rev-parse --short HEAD
+fi
