@@ -23,6 +23,7 @@ using namespace Veins;
 
 const Coord Coord::ZERO = Coord(0.0, 0.0, 0.0);
 
+namespace {
 /**
  * On a torus the end and the begin of the axes are connected so you
  * get a circle. On a circle the distance between two points can't be greater
@@ -42,6 +43,7 @@ static double dist(double coord1, double coord2, double size)
         return std::min(dist, size - dist);
     }
 }
+} // namespace
 
 double Coord::sqrTorusDist(const Coord& b, const Coord& size) const
 {

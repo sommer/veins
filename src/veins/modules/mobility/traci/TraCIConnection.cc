@@ -14,6 +14,8 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 
+using namespace Veins::TraCIConstants;
+
 namespace Veins {
 
 struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {

@@ -26,7 +26,17 @@
 #include <iostream>
 #include <fstream>
 
-#define CMD_FILE_SEND 0x75
+namespace Veins {
+
+namespace TraCIConstants {
+
+const uint8_t CMD_FILE_SEND = 0x75;
+
+} // namespace TraCIConstants
+
+} // namespace Veins
+
+using namespace Veins::TraCIConstants;
 
 using Veins::TraCIScenarioManagerLaunchd;
 

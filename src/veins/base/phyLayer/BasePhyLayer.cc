@@ -18,8 +18,6 @@ using std::unique_ptr;
 
 Define_Module(Veins::BasePhyLayer);
 
-Coord NoMobiltyPos = Coord::ZERO;
-
 // --Initialization----------------------------------
 
 template <class T>

@@ -32,6 +32,8 @@
 #include "veins/modules/obstacle/ObstacleControl.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 
+using namespace Veins::TraCIConstants;
+
 using Veins::AnnotationManagerAccess;
 using Veins::TraCIBuffer;
 using Veins::TraCICoord;
@@ -63,6 +65,8 @@ TraCIScenarioManager::~TraCIScenarioManager()
     cancelAndDelete(connectAndStartTrigger);
     cancelAndDelete(executeOneTimestepTrigger);
 }
+
+namespace {
 
 std::vector<std::string> getMapping(std::string el)
 {
@@ -109,6 +113,8 @@ std::vector<std::string> getMapping(std::string el)
     }
     return mapping;
 }
+
+} // namespace
 
 TraCIScenarioManager::TypeMapping TraCIScenarioManager::parseMappings(std::string parameter, std::string parameterName, bool allowEmpty)
 {
