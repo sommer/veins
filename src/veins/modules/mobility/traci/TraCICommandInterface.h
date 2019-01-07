@@ -62,6 +62,10 @@ public:
     {
         return versionConfig.timeStepCmd;
     }
+    bool getHasNewTrafficLightProgramDef() const
+    {
+        return versionConfig.newTrafficLightProgramDef;
+    }
 
     std::pair<TraCICoord, TraCICoord> initNetworkBoundaries(int margin);
 
@@ -464,6 +468,7 @@ private:
         uint8_t timeStepCmd;
         bool timeAsDouble;
         bool screenshotTakesCompound;
+        bool newTrafficLightProgramDef;
     };
 
     TraCIConnection& connection;

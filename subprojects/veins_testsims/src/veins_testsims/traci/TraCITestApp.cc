@@ -113,9 +113,9 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            auto o = traci->getRoadMapPos(Coord(100, 100));
+            auto o = traci->getRoadMapPos(Coord(75, 76.65));
             assertEqual("(TraCICommandInterface::getRoadMapPos)", "25", std::get<0>(o));
-            assertClose("(TraCICommandInterface::getRoadMapPos)", 75.0, std::get<1>(o));
+            assertClose("(TraCICommandInterface::getRoadMapPos)", 50.0, std::get<1>(o));
             assertEqual("(TraCICommandInterface::getRoadMapPos)", 0, std::get<2>(o));
         }
     }

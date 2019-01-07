@@ -14,10 +14,11 @@ using namespace Veins::TraCIConstants;
 namespace Veins {
 
 const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
-    {18, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true, true}},
-    {17, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false}},
-    {16, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false}},
-    {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false}},
+    {19, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true, true, true}},
+    {18, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true, true, false}},
+    {17, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
+    {16, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
+    {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
 };
 
 TraCICommandInterface::TraCICommandInterface(cComponent* owner, TraCIConnection& c)
@@ -507,55 +508,120 @@ std::string TraCICommandInterface::Trafficlight::getCurrentProgramID() const
 TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefinition() const
 {
     uint8_t resultTypeId = TYPE_COMPOUND;
-    uint8_t commandId = CMD_GET_TL_VARIABLE;
-    uint8_t variableId = TL_COMPLETE_DEFINITION_RYG;
-    std::string objectId = trafficLightId;
-    uint8_t responseId = RESPONSE_GET_TL_VARIABLE;
-
-    TraCIBuffer buf = connection->query(commandId, TraCIBuffer() << variableId << objectId);
-
-    // generic header
-    uint8_t cmdLength;
-    buf >> cmdLength;
-    if (cmdLength == 0) {
-        uint32_t cmdLengthX;
-        buf >> cmdLengthX;
-    }
-    uint8_t commandId_r;
-    buf >> commandId_r;
-    ASSERT(commandId_r == responseId);
-    uint8_t varId;
-    buf >> varId;
-    ASSERT(varId == variableId);
-    std::string objectId_r;
-    buf >> objectId_r;
-    ASSERT(objectId_r == objectId);
-    uint8_t resType_r;
-    buf >> resType_r;
-    ASSERT(resType_r == resultTypeId);
-
-    int32_t compoundSize;
-    buf >> compoundSize; // nr of fields in the compound
-    int32_t nrOfLogics = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // nr of logics in the compound
-
     TraCITrafficLightProgram program(trafficLightId);
-    for (int32_t i = 0; i < nrOfLogics; ++i) {
-        TraCITrafficLightProgram::Logic logic;
-        logic.id = buf.readTypeChecked<std::string>(TYPE_STRING); // program ID
-        logic.type = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // (sub)type - currently just a 0
-        logic.parameter = buf.readTypeChecked<int32_t>(TYPE_COMPOUND); // (sub)parameter - currently just a 0
-        logic.currentPhase = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // phase index
 
-        int32_t nrOfPhases = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // number of phases in this program
-        for (int32_t j = 0; j < nrOfPhases; ++j) {
-            TraCITrafficLightProgram::Phase phase;
-            phase.duration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // default duration of phase
-            phase.minDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // minimum duration of phase
-            phase.maxDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // maximum duration of phase
-            phase.state = buf.readTypeChecked<std::string>(TYPE_STRING); // phase definition (like "[ryg]*")
-            logic.phases.push_back(phase);
+    if (!traci->getHasNewTrafficLightProgramDef()) {
+        uint8_t commandId = CMD_GET_TL_VARIABLE;
+        uint8_t variableId = TL_COMPLETE_DEFINITION_RYG;
+        std::string objectId = trafficLightId;
+        uint8_t responseId = RESPONSE_GET_TL_VARIABLE;
+
+        TraCIBuffer buf = connection->query(commandId, TraCIBuffer() << variableId << objectId);
+
+        // generic header
+        uint8_t cmdLength;
+        buf >> cmdLength;
+        if (cmdLength == 0) {
+            uint32_t cmdLengthX;
+            buf >> cmdLengthX;
         }
-        program.addLogic(logic);
+        uint8_t commandId_r;
+        buf >> commandId_r;
+        ASSERT(commandId_r == responseId);
+        uint8_t varId;
+        buf >> varId;
+        ASSERT(varId == variableId);
+        std::string objectId_r;
+        buf >> objectId_r;
+        ASSERT(objectId_r == objectId);
+        uint8_t resType_r;
+        buf >> resType_r;
+        ASSERT(resType_r == resultTypeId);
+
+        int32_t compoundSize;
+        buf >> compoundSize; // nr of fields in the compound
+        int32_t nrOfLogics = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // nr of logics in the compound
+
+        for (int32_t i = 0; i < nrOfLogics; ++i) {
+            TraCITrafficLightProgram::Logic logic;
+            logic.id = buf.readTypeChecked<std::string>(TYPE_STRING); // program ID
+            logic.type = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // (sub)type - currently just a 0
+            logic.parameter = buf.readTypeChecked<int32_t>(TYPE_COMPOUND); // (sub)parameter - currently just a 0
+            logic.currentPhase = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // phase index
+
+            int32_t nrOfPhases = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // number of phases in this program
+            for (int32_t j = 0; j < nrOfPhases; ++j) {
+                TraCITrafficLightProgram::Phase phase;
+                phase.duration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // default duration of phase
+                phase.minDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // minimum duration of phase
+                phase.maxDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // maximum duration of phase
+                phase.state = buf.readTypeChecked<std::string>(TYPE_STRING); // phase definition (like "[ryg]*")
+                logic.phases.push_back(phase);
+            }
+            program.addLogic(logic);
+        }
+    }
+    else {
+        uint8_t commandId = CMD_GET_TL_VARIABLE;
+        uint8_t variableId = TL_COMPLETE_DEFINITION_RYG;
+        std::string objectId = trafficLightId;
+        uint8_t responseId = RESPONSE_GET_TL_VARIABLE;
+
+        TraCIBuffer buf = connection->query(commandId, TraCIBuffer() << variableId << objectId);
+
+        // generic header
+        uint8_t cmdLength;
+        buf >> cmdLength;
+        if (cmdLength == 0) {
+            uint32_t cmdLengthX;
+            buf >> cmdLengthX;
+        }
+        uint8_t commandId_r;
+        buf >> commandId_r;
+        ASSERT(commandId_r == responseId);
+        uint8_t varId;
+        buf >> varId;
+        ASSERT(varId == variableId);
+        std::string objectId_r;
+        buf >> objectId_r;
+        ASSERT(objectId_r == objectId);
+
+        int32_t nrOfLogics = buf.readTypeChecked<int32_t>(TYPE_COMPOUND); // nr of logics in the compound
+        for (int32_t i = 0; i < nrOfLogics; ++i) {
+            int32_t nrOfComps = buf.readTypeChecked<int32_t>(TYPE_COMPOUND);
+            ASSERT(nrOfComps == 5);
+
+            TraCITrafficLightProgram::Logic logic;
+            logic.id = buf.readTypeChecked<std::string>(TYPE_STRING); // program ID
+            logic.type = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // (sub)type - currently just a 0
+            logic.currentPhase = buf.readTypeChecked<int32_t>(TYPE_INTEGER); // phase index
+
+            int32_t nrOfPhases = buf.readTypeChecked<int32_t>(TYPE_COMPOUND); // number of phases in this program
+            for (int32_t j = 0; j < nrOfPhases; ++j) {
+                TraCITrafficLightProgram::Phase phase;
+                int32_t nrOfComps = buf.readTypeChecked<int32_t>(TYPE_COMPOUND);
+                ASSERT(nrOfComps == 5);
+                phase.duration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // default duration of phase
+                phase.state = buf.readTypeChecked<std::string>(TYPE_STRING); // phase definition (like "[ryg]*")
+                phase.minDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // minimum duration of phase
+                phase.maxDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // maximum duration of phase
+                phase.next = buf.readTypeChecked<int32_t>(TYPE_INTEGER);
+                logic.phases.push_back(phase);
+            }
+
+            int32_t nrOfSubpars = buf.readTypeChecked<int32_t>(TYPE_COMPOUND); // nr of subparameters
+            for (int32_t j = 0; j < nrOfSubpars; ++j) {
+                uint8_t stringListType;
+                buf >> stringListType;
+                ASSERT(stringListType == static_cast<uint8_t>(TYPE_STRINGLIST));
+                std::string s1;
+                buf >> s1; // discard
+                std::string s2;
+                buf >> s2; // discard
+            }
+
+            program.addLogic(logic);
+        }
     }
     return program;
 }
@@ -579,33 +645,71 @@ void TraCICommandInterface::Trafficlight::setPhaseDuration(simtime_t duration)
 
 void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLightProgram::Logic logic, int32_t logicNr)
 {
-    TraCIBuffer inbuf;
-    inbuf << static_cast<uint8_t>(TL_COMPLETE_PROGRAM_RYG);
-    inbuf << trafficLightId;
-    inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
-    inbuf << logicNr;
-    inbuf << static_cast<uint8_t>(TYPE_STRING);
-    inbuf << logic.id;
-    inbuf << static_cast<uint8_t>(TYPE_INTEGER); // (sub)type - currently unused
-    inbuf << logic.type;
-    inbuf << static_cast<uint8_t>(TYPE_COMPOUND); // (sub)parameter - currently unused
-    inbuf << logic.parameter;
-    inbuf << static_cast<uint8_t>(TYPE_INTEGER);
-    inbuf << logic.currentPhase;
-    inbuf << static_cast<uint8_t>(TYPE_INTEGER);
-    inbuf << static_cast<int32_t>(logic.phases.size());
 
-    for (uint32_t i = 0; i < logic.phases.size(); ++i) {
-        TraCITrafficLightProgram::Phase& phase = logic.phases[i];
-        inbuf << static_cast<uint8_t>(traci->getTimeType());
-        inbuf << phase.duration;
-        inbuf << static_cast<uint8_t>(traci->getTimeType());
-        inbuf << phase.minDuration;
-        inbuf << static_cast<uint8_t>(traci->getTimeType());
-        inbuf << phase.maxDuration;
+    TraCIBuffer inbuf;
+    if (!traci->getHasNewTrafficLightProgramDef()) {
+        inbuf << static_cast<uint8_t>(TL_COMPLETE_PROGRAM_RYG);
+        inbuf << trafficLightId;
+        inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
+        inbuf << logicNr;
         inbuf << static_cast<uint8_t>(TYPE_STRING);
-        inbuf << phase.state;
+        inbuf << logic.id;
+        inbuf << static_cast<uint8_t>(TYPE_INTEGER); // (sub)type - currently unused
+        inbuf << logic.type;
+        inbuf << static_cast<uint8_t>(TYPE_COMPOUND); // (sub)parameter - currently unused
+        inbuf << logic.parameter;
+        inbuf << static_cast<uint8_t>(TYPE_INTEGER);
+        inbuf << logic.currentPhase;
+        inbuf << static_cast<uint8_t>(TYPE_INTEGER);
+        inbuf << static_cast<int32_t>(logic.phases.size());
+
+        for (uint32_t i = 0; i < logic.phases.size(); ++i) {
+            TraCITrafficLightProgram::Phase& phase = logic.phases[i];
+            inbuf << static_cast<uint8_t>(traci->getTimeType());
+            inbuf << phase.duration;
+            inbuf << static_cast<uint8_t>(traci->getTimeType());
+            inbuf << phase.minDuration;
+            inbuf << static_cast<uint8_t>(traci->getTimeType());
+            inbuf << phase.maxDuration;
+            inbuf << static_cast<uint8_t>(TYPE_STRING);
+            inbuf << phase.state;
+        }
     }
+    else {
+        inbuf << static_cast<uint8_t>(TL_COMPLETE_PROGRAM_RYG);
+        inbuf << trafficLightId;
+        inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
+        inbuf << 5;
+        inbuf << static_cast<uint8_t>(TYPE_STRING);
+        inbuf << logic.id;
+        inbuf << static_cast<uint8_t>(TYPE_INTEGER); // (sub)type - currently unused
+        inbuf << logic.type;
+        inbuf << static_cast<uint8_t>(TYPE_INTEGER);
+        inbuf << logic.currentPhase;
+
+        inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
+        inbuf << static_cast<int32_t>(logic.phases.size());
+        for (uint32_t i = 0; i < logic.phases.size(); ++i) {
+            TraCITrafficLightProgram::Phase& phase = logic.phases[i];
+            inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
+            inbuf << int32_t(5);
+            inbuf << static_cast<uint8_t>(traci->getTimeType());
+            inbuf << phase.duration;
+            inbuf << static_cast<uint8_t>(TYPE_STRING);
+            inbuf << phase.state;
+            inbuf << static_cast<uint8_t>(traci->getTimeType());
+            inbuf << phase.minDuration;
+            inbuf << static_cast<uint8_t>(traci->getTimeType());
+            inbuf << phase.maxDuration;
+            inbuf << static_cast<uint8_t>(TYPE_INTEGER);
+            inbuf << phase.next;
+        }
+
+        // no subparameters
+        inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
+        inbuf << int32_t(0);
+    }
+
     TraCIBuffer obuf = connection->query(CMD_SET_TL_VARIABLE, inbuf);
     ASSERT(obuf.eof());
 }

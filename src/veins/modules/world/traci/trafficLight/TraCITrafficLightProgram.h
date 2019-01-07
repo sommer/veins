@@ -33,9 +33,10 @@ class TraCITrafficLightProgram {
 public:
     struct Phase {
         simtime_t duration;
+        std::string state;
         simtime_t minDuration;
         simtime_t maxDuration;
-        std::string state;
+        int32_t next;
 
         bool isGreenPhase() const;
     };
