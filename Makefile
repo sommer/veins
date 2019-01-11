@@ -1,4 +1,4 @@
-.PHONY: all makefiles clean cleanall doxy
+.PHONY: all makefiles clean cleanall doxy formatting formatting-strict
 
 # if out/config.py exists, we can also create command line scripts for running simulations
 ADDL_TARGETS =
@@ -76,3 +76,10 @@ doxy:
 doxyshow: doxy
 	xdg-open doc/doxy/index.html
 
+formatting:
+	./format-code.sh src
+	./format-code.sh subprojects
+
+formatting-strict:
+	./format-code.sh --strict src
+	./format-code.sh --strict subprojects
