@@ -1,4 +1,4 @@
-.PHONY: all makefiles clean cleanall doxy
+.PHONY: all makefiles clean cleanall doxy formatting clang-format uncrustify
 
 # if out/config.py exists, we can also create command line scripts for running simulations
 ADDL_TARGETS =
