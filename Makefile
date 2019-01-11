@@ -76,3 +76,10 @@ doxy:
 doxyshow: doxy
 	xdg-open doc/doxy/index.html
 
+formatting: uncrustify
+
+clang-format:
+	find . -name "*.cc" -o -name "*.h" | xargs clang-format -style=file -i
+
+uncrustify: clang-format
+	find . -name "*.cc" -o -name "*.h" | xargs uncrustify --replace --no-backup -c .uncrustify.cfg
