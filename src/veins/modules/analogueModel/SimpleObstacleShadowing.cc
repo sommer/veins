@@ -32,6 +32,15 @@ SimpleObstacleShadowing::SimpleObstacleShadowing(cComponent* owner, ObstacleCont
 {
     if (useTorus) throw cRuntimeError("SimpleObstacleShadowing does not work on torus-shaped playgrounds");
     annotations = AnnotationManagerAccess().getIfExists();
+
+    // subscribe this Analogue Model to the signal emitted by the Obstacle Control
+    getSimulation()->getSystemModule()->subscribe(ObstacleControl::clearAnalogueModuleCacheSignal, this);
+}
+
+SimpleObstacleShadowing::~SimpleObstacleShadowing()
+{
+    // unsubscribe this Analogue Model from the signal emitted by the Obstacle Control
+    getSimulation()->getSystemModule()->unsubscribe(ObstacleControl::clearAnalogueModuleCacheSignal, this);
 }
 
 void SimpleObstacleShadowing::filterSignal(Signal* signal)
@@ -77,4 +86,9 @@ void SimpleObstacleShadowing::filterSignal(Signal* signal)
     EV_TRACE << "value is: " << factor << endl;
 
     *signal *= factor;
+}
+
+void SimpleObstacleShadowing::receiveSignal(cComponent* source, simsignal_t signalID, bool b, cObject* details)
+{
+    if (signalID == ObstacleControl::clearAnalogueModuleCacheSignal) cacheEntries.clear();
 }

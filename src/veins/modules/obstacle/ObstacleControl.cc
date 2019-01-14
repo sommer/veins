@@ -30,6 +30,8 @@ using Veins::ObstacleControl;
 
 Define_Module(Veins::ObstacleControl);
 
+const simsignal_t ObstacleControl::clearAnalogueModuleCacheSignal = registerSignal("org.car2x.veins.modules.obstacle.clearAnalogueModuleCache");
+
 ObstacleControl::~ObstacleControl()
 {
 }
@@ -155,6 +157,9 @@ void ObstacleControl::add(Obstacle obstacle)
 
     // visualize using AnnotationManager
     if (annotations) o->visualRepresentation = annotations->drawPolygon(o->getShape(), "red", annotationGroup);
+
+    // invalidate cache when obstacle is deleted at runtime
+    emit(clearAnalogueModuleCacheSignal, true);
 }
 
 void ObstacleControl::erase(const Obstacle* obstacle)
@@ -181,6 +186,9 @@ void ObstacleControl::erase(const Obstacle* obstacle)
             break;
         }
     }
+
+    // invalidate cache when obstacle is deleted at runtime
+    emit(clearAnalogueModuleCacheSignal, true);
 }
 
 std::vector<Obstacle const*> ObstacleControl::getPotentialObstacles(const Coord& senderPos, const Coord& receiverPos) const

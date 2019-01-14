@@ -40,6 +40,8 @@ namespace Veins {
  */
 class ObstacleControl : public cSimpleModule {
 public:
+    static const simsignal_t clearAnalogueModuleCacheSignal;
+
     ~ObstacleControl() override;
     void initialize(int stage) override;
     int numInitStages() const override
@@ -67,7 +69,7 @@ public:
 
 protected:
     enum {
-        GRIDCELL_SIZE = 1024,
+        GRIDCELL_SIZE = 1024
     };
 
     using ObstacleGridCell = std::list<Obstacle*>;

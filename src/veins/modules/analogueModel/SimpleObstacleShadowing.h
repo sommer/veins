@@ -40,7 +40,7 @@ class Signal;
  *
  * @ingroup analogueModels
  */
-class SimpleObstacleShadowing : public AnalogueModel {
+class SimpleObstacleShadowing : public AnalogueModel, public cListener {
 protected:
     struct CacheKey {
         const Coord senderPos;
@@ -87,6 +87,7 @@ public:
      * @param playgroundSize information about the playground the host is moving in
      */
     SimpleObstacleShadowing(cComponent* owner, ObstacleControl& obstacleControl, bool useTorus, const Coord& playgroundSize);
+    ~SimpleObstacleShadowing();
 
     /**
      * @brief Filters a specified Signal by adding an attenuation
@@ -98,6 +99,8 @@ public:
     {
         return true;
     }
+
+    void receiveSignal(cComponent* source, simsignal_t signalID, bool b, cObject* details) override;
 };
 
 } // namespace Veins

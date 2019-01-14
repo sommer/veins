@@ -27,8 +27,9 @@ simple ObstacleControl
 {
     parameters:
         @class(Veins::ObstacleControl);
-        xml obstacles = default(xml("<obstacles/>")); // list of obstacle types and obstacles to load
         @display("i=misc/town");
         @labels(node);
+        @signal[org.car2x.veins.modules.obstacle.clearAnalogueModuleCache](type=bool);
+        xml obstacles = default(xml("<obstacles/>")); // list of obstacle types and obstacles to load
 }
 
