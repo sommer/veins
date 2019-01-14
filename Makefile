@@ -1,4 +1,4 @@
-.PHONY: all makefiles clean cleanall doxy formatting clang-format uncrustify
+.PHONY: all makefiles clean cleanall doxy formatting
 
 # if out/config.py exists, we can also create command line scripts for running simulations
 ADDL_TARGETS =
@@ -76,10 +76,6 @@ doxy:
 doxyshow: doxy
 	xdg-open doc/doxy/index.html
 
-formatting: clang-format uncrustify
-
-clang-format:
-	find . -name "*.cc" -o -name "*.h" | xargs clang-format -style=file -i
-
-uncrustify:
-	find . -name "*.cc" -o -name "*.h" | xargs uncrustify --replace --no-backup -c .uncrustify.cfg
+formatting:
+	./format-code.sh src
+	./format-code.sh subprojects
