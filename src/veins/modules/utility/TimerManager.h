@@ -75,9 +75,9 @@ public:
      *
      * Any previously set start time will be overwritten.
      *
-     * @param start The relative start time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer in one second.
+     * @param start The relative start time. It is relative to the current simtime, i.e., passing simtime_t(1, SIMTIME_S) will execute the timer in one second.
      *
-     * @note You cannot use this in conjunction with repetition()
+     * @note You cannot use this in conjunction with repetition().
      */
     TimerSpecification& relativeStart(omnetpp::simtime_t start);
 
@@ -88,7 +88,7 @@ public:
      *
      * @param start The absolute start time. The first occurence will be exactly at this time. Passing a value earlier than the current simtime will result in an error.
      *
-     * @note You cannot use this in conjunction with repetition()
+     * @note You cannot use this in conjunction with repetition().
      */
     TimerSpecification& absoluteStart(omnetpp::simtime_t start);
 
@@ -97,7 +97,7 @@ public:
      *
      * Any previously set end time will be overwritten.
      *
-     * @param end The relative end time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer until one second has passed.
+     * @param end The relative end time. It is relative to the current simtime, i.e., passing simtime_t(1, SIMTIME_S) will execute the timer until one second has passed.
      */
     TimerSpecification& relativeEnd(omnetpp::simtime_t end);
 
@@ -120,14 +120,14 @@ public:
     /**
      * Set the timer to execute once in a given time.
      *
-     * Any previously set start time, end time, and interval  will be overwritten.
+     * Any previously set start time, end time, and interval will be overwritten.
      */
     TimerSpecification& oneshotIn(omnetpp::simtime_t in);
 
     /**
      * Set the timer to execute once at a given time.
      *
-     * Any previously set start time, end time, and interval  will be overwritten.
+     * Any previously set start time, end time, and interval will be overwritten.
      */
     TimerSpecification& oneshotAt(omnetpp::simtime_t at);
 
@@ -150,7 +150,7 @@ private:
      * Finalizes this instance such that its values are independent of current simulation time.
      *
      * After calling this function, start_mode_ is guaranteed to be StartMode::absolute and end_mode_ to be EndMode::absolute or EndMode::open.
-     * Cannot be called on TimerSpecifications
+     * This cannot be called on TimerSpecifications.
      */
     void finalize();
 
