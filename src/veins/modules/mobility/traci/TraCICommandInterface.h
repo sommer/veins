@@ -431,6 +431,7 @@ public:
     std::list<std::string> getVehicleTypeIds();
 
     // GuiView methods
+    std::list<std::string> getGuiViewIds();
     class GuiView {
     public:
         GuiView(TraCICommandInterface* traci, std::string viewId)

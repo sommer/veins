@@ -963,6 +963,11 @@ std::tuple<std::string, double, uint8_t> TraCICommandInterface::getRoadMapPos(co
     return std::make_tuple(convRoadId, convPos, convLaneId);
 }
 
+std::list<std::string> TraCICommandInterface::getGuiViewIds()
+{
+    return genericGetStringList(CMD_GET_GUI_VARIABLE, "", ID_LIST, RESPONSE_GET_GUI_VARIABLE);
+}
+
 void TraCICommandInterface::GuiView::setScheme(std::string name)
 {
     TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_SCHEMA) << viewId << static_cast<uint8_t>(TYPE_STRING) << name);

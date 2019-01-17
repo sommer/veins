@@ -742,6 +742,15 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
+            // TODO: cannot be tested (might not be running gui)
+            // std::list<std::string> o = traci->getGuiViewIds();
+            // assertEqual("(TraCICommandInterface::getGuiViewIds) number is correct", (size_t) 1, o.size());
+            // assertEqual("(TraCICommandInterface::getGuiViewIds) id is correct", "View #0", *o.begin());
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
             // TODO: cannot be tested (no programmatic feedback)
             // traci->guiView("View #0").setScheme("real world");
         }
