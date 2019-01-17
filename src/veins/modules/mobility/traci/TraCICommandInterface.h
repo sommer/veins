@@ -443,7 +443,9 @@ public:
             connection = &traci->connection;
         }
 
+        std::string getScheme();
         void setScheme(std::string name);
+        double getZoom();
         void setZoom(double zoom);
         void setBoundary(Coord p1, Coord p2);
         void takeScreenshot(std::string filename = "", int32_t width = -1, int32_t height = -1);

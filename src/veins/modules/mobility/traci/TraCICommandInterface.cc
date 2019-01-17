@@ -978,6 +978,15 @@ std::list<std::string> TraCICommandInterface::getGuiViewIds()
     return genericGetStringList(CMD_GET_GUI_VARIABLE, "", ID_LIST, RESPONSE_GET_GUI_VARIABLE);
 }
 
+std::string TraCICommandInterface::GuiView::getScheme()
+{
+    if (traci->ignoreGuiCommands) {
+        EV_DEBUG << "Ignoring TraCI GUI command (as instructed by ignoreGuiCommands)" << std::endl;
+        return std::string();
+    }
+    return traci->genericGetString(CMD_GET_GUI_VARIABLE, viewId, VAR_VIEW_SCHEMA, RESPONSE_GET_GUI_VARIABLE);
+}
+
 void TraCICommandInterface::GuiView::setScheme(std::string name)
 {
     if (traci->ignoreGuiCommands) {
@@ -988,6 +997,14 @@ void TraCICommandInterface::GuiView::setScheme(std::string name)
     ASSERT(buf.eof());
 }
 
+double TraCICommandInterface::GuiView::getZoom()
+{
+    if (traci->ignoreGuiCommands) {
+        EV_DEBUG << "Ignoring TraCI GUI command (as instructed by ignoreGuiCommands)" << std::endl;
+        return 0;
+    }
+    return traci->genericGetDouble(CMD_GET_GUI_VARIABLE, viewId, VAR_VIEW_ZOOM, RESPONSE_GET_GUI_VARIABLE);
+}
 void TraCICommandInterface::GuiView::setZoom(double zoom)
 {
     if (traci->ignoreGuiCommands) {

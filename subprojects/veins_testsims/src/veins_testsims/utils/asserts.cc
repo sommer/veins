@@ -16,6 +16,12 @@ void pass(std::string msg, bool hidePassed)
     if (!hidePassed && displayPassed) EV_INFO_C("asserts") << "Passed: " << msg << std::endl;
 }
 
+void skip(std::string msg)
+{
+    EV_STATICCONTEXT;
+    EV_INFO_C("asserts") << "Skipped: " << msg << std::endl;
+}
+
 void assertTrue(std::string msg, bool value, bool hidePassed)
 {
     if (!value) {
