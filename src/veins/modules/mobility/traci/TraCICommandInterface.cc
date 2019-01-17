@@ -21,10 +21,16 @@ const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInter
     {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
 };
 
-TraCICommandInterface::TraCICommandInterface(cComponent* owner, TraCIConnection& c)
+TraCICommandInterface::TraCICommandInterface(cComponent* owner, TraCIConnection& c, bool ignoreGuiCommands)
     : HasLogProxy(owner)
     , connection(c)
+    , ignoreGuiCommands(ignoreGuiCommands)
 {
+}
+
+bool TraCICommandInterface::isIgnoringGuiCommands()
+{
+    return ignoreGuiCommands;
 }
 
 std::pair<uint32_t, std::string> TraCICommandInterface::getVersion()
@@ -965,23 +971,39 @@ std::tuple<std::string, double, uint8_t> TraCICommandInterface::getRoadMapPos(co
 
 std::list<std::string> TraCICommandInterface::getGuiViewIds()
 {
+    if (ignoreGuiCommands) {
+        EV_DEBUG << "Ignoring TraCI GUI command (as instructed by ignoreGuiCommands)" << std::endl;
+        return std::list<std::string>();
+    }
     return genericGetStringList(CMD_GET_GUI_VARIABLE, "", ID_LIST, RESPONSE_GET_GUI_VARIABLE);
 }
 
 void TraCICommandInterface::GuiView::setScheme(std::string name)
 {
+    if (traci->ignoreGuiCommands) {
+        EV_DEBUG << "Ignoring TraCI GUI command (as instructed by ignoreGuiCommands)" << std::endl;
+        return;
+    }
     TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_SCHEMA) << viewId << static_cast<uint8_t>(TYPE_STRING) << name);
     ASSERT(buf.eof());
 }
 
 void TraCICommandInterface::GuiView::setZoom(double zoom)
 {
+    if (traci->ignoreGuiCommands) {
+        EV_DEBUG << "Ignoring TraCI GUI command (as instructed by ignoreGuiCommands)" << std::endl;
+        return;
+    }
     TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_VIEW_ZOOM) << viewId << static_cast<uint8_t>(TYPE_DOUBLE) << zoom);
     ASSERT(buf.eof());
 }
 
 void TraCICommandInterface::GuiView::setBoundary(Coord p1_, Coord p2_)
 {
+    if (traci->ignoreGuiCommands) {
+        EV_DEBUG << "Ignoring TraCI GUI command (as instructed by ignoreGuiCommands)" << std::endl;
+        return;
+    }
     TraCICoord p1 = connection->omnet2traci(p1_);
     TraCICoord p2 = connection->omnet2traci(p2_);
 
@@ -998,6 +1020,10 @@ void TraCICommandInterface::GuiView::setBoundary(Coord p1_, Coord p2_)
 
 void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_t width, int32_t height)
 {
+    if (traci->ignoreGuiCommands) {
+        EV_DEBUG << "Ignoring TraCI GUI command (as instructed by ignoreGuiCommands)" << std::endl;
+        return;
+    }
     if (filename == "") {
         // get absolute path of results/ directory
         const char* myResultsDir = cSimulation::getActiveSimulation()->getEnvir()->getConfigEx()->getVariable(CFGVAR_RESULTDIR);
@@ -1032,6 +1058,10 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
 
 void TraCICommandInterface::GuiView::trackVehicle(std::string vehicleId)
 {
+    if (traci->ignoreGuiCommands) {
+        EV_DEBUG << "Ignoring TraCI GUI command (as instructed by ignoreGuiCommands)" << std::endl;
+        return;
+    }
     TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_TRACK_VEHICLE) << viewId << static_cast<uint8_t>(TYPE_STRING) << vehicleId);
     ASSERT(buf.eof());
 }

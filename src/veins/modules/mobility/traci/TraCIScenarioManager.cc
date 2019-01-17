@@ -246,6 +246,7 @@ void TraCIScenarioManager::initialize(int stage)
     if (firstStepAt == -1) firstStepAt = connectAt + updateInterval;
     parseModuleTypes();
     penetrationRate = par("penetrationRate").doubleValue();
+    ignoreGuiCommands = par("ignoreGuiCommands");
     host = par("host").stdstringValue();
     port = par("port");
     autoShutdown = par("autoShutdown");
@@ -442,7 +443,7 @@ void TraCIScenarioManager::handleSelfMsg(cMessage* msg)
 {
     if (msg == connectAndStartTrigger) {
         connection.reset(TraCIConnection::connect(this, host.c_str(), port));
-        commandIfc.reset(new TraCICommandInterface(this, *connection));
+        commandIfc.reset(new TraCICommandInterface(this, *connection, ignoreGuiCommands));
         init_traci();
         return;
     }

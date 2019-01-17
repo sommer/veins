@@ -15,7 +15,8 @@ namespace Veins {
 
 class TraCICommandInterface : public HasLogProxy {
 public:
-    TraCICommandInterface(cComponent* owner, TraCIConnection& c);
+    TraCICommandInterface(cComponent* owner, TraCIConnection& c, bool ignoreGuiCommands);
+    bool isIgnoringGuiCommands();
 
     enum DepartTime {
         DEPART_TIME_TRIGGERED = -1,
@@ -432,10 +433,11 @@ public:
 
     // GuiView methods
     std::list<std::string> getGuiViewIds();
-    class GuiView {
+    class GuiView : public HasLogProxy {
     public:
         GuiView(TraCICommandInterface* traci, std::string viewId)
-            : traci(traci)
+            : HasLogProxy(traci->owner)
+            , traci(traci)
             , viewId(viewId)
         {
             connection = &traci->connection;
@@ -472,6 +474,7 @@ private:
     };
 
     TraCIConnection& connection;
+    bool ignoreGuiCommands;
     static const std::map<uint32_t, VersionConfig> versionConfigs;
     VersionConfig versionConfig;
 
