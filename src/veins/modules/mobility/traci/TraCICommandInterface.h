@@ -7,12 +7,11 @@
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/mobility/traci/TraCICoord.h"
+#include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
 namespace Veins {
-
-class TraCIConnection;
 
 class TraCICommandInterface : public HasLogProxy {
 public:
@@ -475,13 +474,13 @@ private:
     static const std::map<uint32_t, VersionConfig> versionConfigs;
     VersionConfig versionConfig;
 
-    std::string genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
-    Coord genericGetCoord(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
-    double genericGetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
-    simtime_t genericGetTime(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
-    int32_t genericGetInt(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
-    std::list<std::string> genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
-    std::list<Coord> genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId);
+    std::string genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result = nullptr);
+    Coord genericGetCoord(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result = nullptr);
+    double genericGetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result = nullptr);
+    simtime_t genericGetTime(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result = nullptr);
+    int32_t genericGetInt(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result = nullptr);
+    std::list<std::string> genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result = nullptr);
+    std::list<Coord> genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result = nullptr);
 };
 
 } // namespace Veins

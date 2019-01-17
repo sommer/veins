@@ -29,10 +29,10 @@ TraCICommandInterface::TraCICommandInterface(cComponent* owner, TraCIConnection&
 
 std::pair<uint32_t, std::string> TraCICommandInterface::getVersion()
 {
-    bool success = false;
-    TraCIBuffer buf = connection.queryOptional(CMD_GETVERSION, TraCIBuffer(), success);
+    TraCIConnection::Result result;
+    TraCIBuffer buf = connection.query(CMD_GETVERSION, TraCIBuffer(), &result);
 
-    if (!success) {
+    if (!result.success) {
         ASSERT(buf.eof());
         return std::pair<uint32_t, std::string>(0, "(unknown)");
     }
@@ -869,16 +869,16 @@ Coord TraCICommandInterface::Junction::getPosition()
 
 bool TraCICommandInterface::addVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st, double emitPosition, double emitSpeed, int8_t emitLane)
 {
-    bool success = false;
+    TraCIConnection::Result result;
 
     uint8_t variableId = ADD;
     uint8_t variableType = TYPE_COMPOUND;
     int32_t count = 6;
     int32_t emitTime = (emitTime_st < 0) ? round(emitTime_st.dbl()) : (floor(emitTime_st.dbl() * 1000));
-    TraCIBuffer buf = connection.queryOptional(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << vehicleId << variableType << count << (uint8_t) TYPE_STRING << vehicleTypeId << (uint8_t) TYPE_STRING << routeId << (uint8_t) TYPE_INTEGER << emitTime << (uint8_t) TYPE_DOUBLE << emitPosition << (uint8_t) TYPE_DOUBLE << emitSpeed << (uint8_t) TYPE_BYTE << emitLane, success);
+    TraCIBuffer buf = connection.query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << vehicleId << variableType << count << (uint8_t) TYPE_STRING << vehicleTypeId << (uint8_t) TYPE_STRING << routeId << (uint8_t) TYPE_INTEGER << emitTime << (uint8_t) TYPE_DOUBLE << emitPosition << (uint8_t) TYPE_DOUBLE << emitSpeed << (uint8_t) TYPE_BYTE << emitLane, &result);
     ASSERT(buf.eof());
 
-    return success;
+    return result.success;
 }
 
 bool TraCICommandInterface::Vehicle::changeVehicleRoute(const std::list<std::string>& edges)
@@ -1031,12 +1031,16 @@ void TraCICommandInterface::GuiView::trackVehicle(std::string vehicleId)
     ASSERT(buf.eof());
 }
 
-std::string TraCICommandInterface::genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId)
+std::string TraCICommandInterface::genericGetString(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result)
 {
     uint8_t resultTypeId = TYPE_STRING;
     std::string res;
 
-    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId, result);
+
+    if ((result != nullptr) && (!result->success)) {
+        return res;
+    }
 
     uint8_t cmdLength;
     buf >> cmdLength;
@@ -1063,14 +1067,18 @@ std::string TraCICommandInterface::genericGetString(uint8_t commandId, std::stri
     return res;
 }
 
-Coord TraCICommandInterface::genericGetCoord(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId)
+Coord TraCICommandInterface::genericGetCoord(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result)
 {
 
     uint8_t resultTypeId = POSITION_2D;
     double x;
     double y;
 
-    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId, result);
+
+    if ((result != nullptr) && (!result->success)) {
+        return Coord();
+    }
 
     uint8_t cmdLength;
     buf >> cmdLength;
@@ -1098,13 +1106,17 @@ Coord TraCICommandInterface::genericGetCoord(uint8_t commandId, std::string obje
     return connection.traci2omnet(TraCICoord(x, y));
 }
 
-double TraCICommandInterface::genericGetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId)
+double TraCICommandInterface::genericGetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result)
 {
 
     uint8_t resultTypeId = TYPE_DOUBLE;
     double res;
 
-    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId, result);
+
+    if ((result != nullptr) && (!result->success)) {
+        return 0;
+    }
 
     uint8_t cmdLength;
     buf >> cmdLength;
@@ -1131,12 +1143,16 @@ double TraCICommandInterface::genericGetDouble(uint8_t commandId, std::string ob
     return res;
 }
 
-simtime_t TraCICommandInterface::genericGetTime(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId)
+simtime_t TraCICommandInterface::genericGetTime(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result)
 {
     uint8_t resultTypeId = getTimeType();
     simtime_t res;
 
-    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId, result);
+
+    if ((result != nullptr) && (!result->success)) {
+        return res;
+    }
 
     uint8_t cmdLength;
     buf >> cmdLength;
@@ -1163,13 +1179,17 @@ simtime_t TraCICommandInterface::genericGetTime(uint8_t commandId, std::string o
     return res;
 }
 
-int32_t TraCICommandInterface::genericGetInt(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId)
+int32_t TraCICommandInterface::genericGetInt(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result)
 {
 
     uint8_t resultTypeId = TYPE_INTEGER;
     int32_t res;
 
-    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId, result);
+
+    if ((result != nullptr) && (!result->success)) {
+        return 0;
+    }
 
     uint8_t cmdLength;
     buf >> cmdLength;
@@ -1196,13 +1216,17 @@ int32_t TraCICommandInterface::genericGetInt(uint8_t commandId, std::string obje
     return res;
 }
 
-std::list<std::string> TraCICommandInterface::genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId)
+std::list<std::string> TraCICommandInterface::genericGetStringList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result)
 {
 
     uint8_t resultTypeId = TYPE_STRINGLIST;
     std::list<std::string> res;
 
-    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId, result);
+
+    if ((result != nullptr) && (!result->success)) {
+        return res;
+    }
 
     uint8_t cmdLength;
     buf >> cmdLength;
@@ -1235,13 +1259,17 @@ std::list<std::string> TraCICommandInterface::genericGetStringList(uint8_t comma
     return res;
 }
 
-std::list<Coord> TraCICommandInterface::genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId)
+std::list<Coord> TraCICommandInterface::genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result)
 {
 
     uint8_t resultTypeId = TYPE_POLYGON;
     std::list<Coord> res;
 
-    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId);
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId, result);
+
+    if ((result != nullptr) && (!result->success)) {
+        return res;
+    }
 
     uint8_t cmdLength;
     buf >> cmdLength;

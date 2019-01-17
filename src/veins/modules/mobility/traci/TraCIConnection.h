@@ -14,19 +14,27 @@ namespace Veins {
 
 class TraCIConnection : public HasLogProxy {
 public:
+    class Result {
+    public:
+        Result();
+        Result(bool success, bool not_impl, std::string message);
+
+        bool success;
+        bool not_impl;
+        std::string message;
+    };
+
     static TraCIConnection* connect(cComponent* owner, const char* host, int port);
     void setNetbounds(TraCICoord netbounds1, TraCICoord netbounds2, int margin);
     ~TraCIConnection();
 
     /**
-     * sends a single command via TraCI, checks status response, returns additional responses
+     * sends a single command via TraCI, checks status response, returns additional responses.
+     * @param commandId: command to send
+     * @param buf: additional parameters to send
+     * @param result: where to store return value (if set to nullptr, any return value other than RTYPE_OK will trigger an exception).
      */
-    TraCIBuffer query(uint8_t commandId, const TraCIBuffer& buf = TraCIBuffer());
-
-    /**
-     * sends a single command via TraCI, expects no reply, returns true if successful
-     */
-    TraCIBuffer queryOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg = nullptr);
+    TraCIBuffer query(uint8_t commandId, const TraCIBuffer& buf = TraCIBuffer(), Result* result = nullptr);
 
     /**
      * sends a message via TraCI (after adding the header)
