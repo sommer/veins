@@ -27,6 +27,13 @@
 
 namespace Veins {
 
+/**
+ * A class for managing and timers.
+ *
+ * In order to schedule a timer, you need to create a TimerSpecification object using the corresponding methods.
+ * After configuration, use the create function from the TimerManager to actually schedule the configured timer.
+ * In the module where the timer is scheduled, handle the timer events by passing the received messages to the handleMessage method of the TimerManager.
+ */
 class TimerManager;
 
 /**
