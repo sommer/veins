@@ -166,13 +166,15 @@ bool TimerManager::handleMessage(omnetpp::cMessage* message)
 
     timer->second.callback_();
 
-    const auto next_event = simTime() + timer->second.period_;
-    if (timer->second.validOccurence(next_event)) {
-        parent_->scheduleAt(next_event, timer->first);
-    }
-    else {
-        parent_->cancelAndDelete(timer->first);
-        timers_.erase(timer);
+    if (timers_.find(timerMessage) != timers_.end()) { // confirm that the timer has not been cancelled during the callback
+        const auto next_event = simTime() + timer->second.period_;
+        if (timer->second.validOccurence(next_event)) {
+            parent_->scheduleAt(next_event, timer->first);
+        }
+        else {
+            parent_->cancelAndDelete(timer->first);
+            timers_.erase(timer);
+        }
     }
 
     return true;
