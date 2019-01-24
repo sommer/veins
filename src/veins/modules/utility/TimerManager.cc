@@ -19,6 +19,8 @@
 //
 #include "veins/modules/utility/TimerManager.h"
 
+#include <algorithm>
+
 using omnetpp::simTime;
 using omnetpp::simtime_t;
 using Veins::TimerManager;
@@ -189,12 +191,13 @@ TimerManager::TimerHandle TimerManager::create(TimerSpecification timerSpecifica
     ASSERT(ret.second);
     parent_->scheduleAt(ret.first->second.start_, ret.first->first);
 
-    return ret.first->first;
+    return ret.first->first->getId();
 }
 
 void TimerManager::cancel(TimerManager::TimerHandle handle)
 {
-    auto timer = timers_.find(handle);
+    const auto entryMatchesHandle = [handle](const std::pair<TimerMessage*, TimerSpecification>& entry) { return entry.first->getId() == handle; };
+    auto timer = std::find_if(timers_.begin(), timers_.end(), entryMatchesHandle);
     if (timer != timers_.end()) {
         parent_->cancelAndDelete(timer->first);
         timers_.erase(timer);
