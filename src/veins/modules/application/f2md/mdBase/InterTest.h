@@ -14,19 +14,18 @@
 
 #include <omnetpp.h>
 #include <veins/modules/application/f2md/BaseWaveApplLayer.h>
+#include <veins/modules/application/f2md/F2MDParameters.h>
 
 using namespace omnetpp;
 
 class InterTest {
     private:
         int interNum;
-        int currentNum;
-        unsigned long* interPseudonym;
-        double* interValue;
+        unsigned long interPseudonym [MAX_INTER_NUM];
+        double interValue[MAX_INTER_NUM];
 
     public:
         InterTest();
-        InterTest(int interNum);
         int getInterNum();
         void addInterValue(unsigned long pseudo, double value);
         unsigned long getInterId(int index);
