@@ -113,9 +113,9 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            auto o = traci->getRoadMapPos(Coord(100, 100));
+            auto o = traci->getRoadMapPos(Coord(75, 76.65));
             assertEqual("(TraCICommandInterface::getRoadMapPos)", "25", std::get<0>(o));
-            assertClose("(TraCICommandInterface::getRoadMapPos)", 75.0, std::get<1>(o));
+            assertClose("(TraCICommandInterface::getRoadMapPos)", 50.0, std::get<1>(o));
             assertEqual("(TraCICommandInterface::getRoadMapPos)", 0, std::get<2>(o));
         }
     }
@@ -742,36 +742,108 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("View #0").setScheme("real world");
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::getGuiViewIds) skipped");
+            }
+            else {
+                std::list<std::string> o = traci->getGuiViewIds();
+                assertEqual("(TraCICommandInterface::getGuiViewIds) number is correct", (size_t) 1, o.size());
+                assertEqual("(TraCICommandInterface::getGuiViewIds) id is correct", "View #0", *o.begin());
+            }
         }
     }
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("View #0").setZoom(200);
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::GuiView::setScheme) skipped");
+            }
+            else {
+                auto o = traci->guiView("View #0").getScheme();
+                assertNotEqual("(TraCICommandInterface::setScheme) scheme is not real world", "real world", o);
+            }
+        }
+        if (t == 2) {
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::GuiView::setScheme) skipped");
+            }
+            else {
+                traci->guiView("View #0").setScheme("real world");
+            }
+        }
+        if (t == 3) {
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::GuiView::setScheme) skipped");
+            }
+            else {
+                auto o = traci->guiView("View #0").getScheme();
+                assertEqual("(TraCICommandInterface::setScheme) scheme is real world", "real world", o);
+            }
         }
     }
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("View #0").setBoundary(Coord(0, 0), Coord(10, 10));
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::GuiView::setZoom) skipped");
+            }
+            else {
+                auto o = traci->guiView("View #0").getZoom();
+                assertNotEqual("(TraCICommandInterface::setZoom) zoom is not 200", 200, o);
+            }
+        }
+        if (t == 2) {
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::GuiView::setZoom) skipped");
+            }
+            else {
+                traci->guiView("View #0").setZoom(200);
+            }
+        }
+        if (t == 3) {
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::GuiView::setZoom) skipped");
+            }
+            else {
+                auto o = traci->guiView("View #0").getZoom();
+                assertEqual("(TraCICommandInterface::setZoom) zoom is 200", 200, o);
+            }
         }
     }
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("View #0").takeScreenshot();
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::GuiView::setBoundary) skipped");
+            }
+            else {
+                skip("(TraCICommandInterface::GuiView::setBoundary) skipped (no programmatic feedback available)");
+                // traci->guiView("View #0").setBoundary(Coord(10, 10), Coord(20, 20));
+            }
         }
     }
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            // TODO: cannot be tested (no programmatic feedback)
-            // traci->guiView("View #0").trackVehicle("flow0.0");
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::GuiView::takeScreenshot) skipped");
+            }
+            else {
+                skip("(TraCICommandInterface::GuiView::takeScreenshot) skipped (no programmatic feedback available)");
+                // traci->guiView("View #0").takeScreenshot();
+            }
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            if (traci->isIgnoringGuiCommands()) {
+                skip("(TraCICommandInterface::GuiView::trackVehicle) skipped");
+            }
+            else {
+                skip("(TraCICommandInterface::GuiView::trackVehicle) skipped (no programmatic feedback available)");
+                // traci->guiView("View #0").trackVehicle("flow0.0");
+            }
         }
     }
 

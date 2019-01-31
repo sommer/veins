@@ -188,8 +188,8 @@ protected:
          */
         void eraseAirFrame()
         {
-            assert(endIt != intervals->end());
-            assert(startIt != endIt->second.end());
+            ASSERT(endIt != intervals->end());
+            ASSERT(startIt != endIt->second.end());
 
             // erase AirFrame from list
             startIt = endIt->second.erase(startIt);
@@ -383,7 +383,7 @@ public:
      */
     simtime_t getEarliestInfoPoint()
     {
-        assert(!isChannelEmpty() || earliestInfoPoint == -1);
+        ASSERT(!isChannelEmpty() || earliestInfoPoint == -1);
 
         return earliestInfoPoint;
     }
@@ -444,7 +444,7 @@ public:
      */
     bool isChannelEmpty() const
     {
-        assert(recordStartTime != -1 || activeAirFrames.empty() == airFrameStarts.empty());
+        ASSERT(recordStartTime != -1 || activeAirFrames.empty() == airFrameStarts.empty());
 
         return airFrameStarts.empty();
     }

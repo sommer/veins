@@ -37,8 +37,8 @@ class NicEntryDirect : public NicEntry {
 public:
     /** @brief Constructor, initializes all members
      */
-    NicEntryDirect()
-        : NicEntry(){};
+    NicEntryDirect(cComponent* owner)
+        : NicEntry(owner){};
 
     /**
      * @brief Destructor -- needs to be there...

@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include <veins/modules/application/ieee80211p/DemoBaseApplLayer.h>
+#include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
 
 using namespace Veins;
 
@@ -44,7 +44,7 @@ void DemoBaseApplLayer::initialize(int stage)
         ASSERT(annotations);
 
         mac = FindModule<DemoBaseApplLayerToMac1609_4Interface*>::findSubModule(getParentModule());
-        assert(mac);
+        ASSERT(mac);
 
         // read parameters
         headerLength = par("headerLength");

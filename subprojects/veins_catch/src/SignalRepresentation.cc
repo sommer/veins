@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "catch/catch.hpp"
+#include "catch2/catch.hpp"
 
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
 #include "veins/base/toolbox/Spectrum.h"
@@ -26,6 +26,7 @@
 #include "veins/base/toolbox/SignalUtils.h"
 #include "veins/base/messages/AirFrame_m.h"
 #include "testutils/Simulation.h"
+#include "testutils/Component.h"
 #include "DummyAnalogueModel.h"
 
 using namespace Veins;
@@ -677,6 +678,7 @@ SCENARIO("Signal Compound Assignment Operators (Two Signals)", "[toolbox]")
 SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    DummyComponent dc(&ds);
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
         Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
@@ -684,8 +686,8 @@ SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.5));
 
         Signal signal(spectrum);
         signal.at(0) = 10;
@@ -750,6 +752,7 @@ SCENARIO("Signal Thresholding (smaller)", "[toolbox]")
 SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but supported
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    DummyComponent dc(&ds);
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0) and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
         Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
@@ -757,8 +760,8 @@ SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.5));
 
         Signal signal(spectrum);
         signal.at(0) = 10;
@@ -823,14 +826,15 @@ SCENARIO("Signal Thresholding (greater)", "[toolbox]") // Not used in Veins, but
 SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    DummyComponent dc(&ds);
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0),(), another signal (),() and a list with two DummyAnalogueModels (0.1, 0.9)")
     {
         Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
 
         Signal signal(spectrum);
         signal.at(0) = 100;
@@ -907,14 +911,15 @@ SCENARIO("SignalUtils minimum Value at Frequency and Timestamp", "[toolbox]")
 SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    DummyComponent dc(&ds);
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0), another (interferer) signal, and a list with two DummyAnalogueModels (0.1, 0.1)")
     {
         Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
 
         Signal signal(spectrum);
         signal.at(0) = 100;
@@ -1042,14 +1047,15 @@ SCENARIO("SignalUtils Get Min SINR Simple Test Cases", "[toolbox]")
 SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    DummyComponent dc(&ds);
     GIVEN("A spectrum with frequencies (1,2,3,4,5,6), a signal (10,20,30,0,0,0), eight other signals and a list with two DummyAnalogueModels (0.1, 0.1)")
     {
         Spectrum::Frequencies freqs = {1, 2, 3, 4, 5, 6};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
 
         Signal signal(spectrum);
         signal.at(0) = 100;
@@ -1105,14 +1111,15 @@ SCENARIO("SignalUtils Get Min SINR Complex Test Case", "[toolbox]")
 SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/exclusive", "[toolbox]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    DummyComponent dc(&ds);
     GIVEN("Signals from 1-2 and 2-3 with power 10")
     {
         Spectrum::Frequencies freqs = {1, 2, 3, 4, 5};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
 
         Signal signal(spectrum);
         signal.at(1) = 1000;
@@ -1166,14 +1173,15 @@ SCENARIO("SignalUtils::smallerAtFreqIndex treats signal start/end as inclusive/e
 SCENARIO("SignalUtils::getMinSINR treats signal start/end as inclusive/exclusive", "[toolbox]")
 {
     DummySimulation ds(new cNullEnvir(0, nullptr, nullptr)); // necessary so simtime_t works
+    DummyComponent dc(&ds);
     GIVEN("Signals from 1-2 and 2-3 with power 10")
     {
         Spectrum::Frequencies freqs = {1, 2, 3, 4, 5};
         Spectrum spectrum(freqs);
 
         AnalogueModelList analogueModels;
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.1));
-        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(0.5));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.1));
+        analogueModels.emplace_back(make_unique<DummyAnalogueModel>(&dc, 0.5));
 
         Signal signal(spectrum);
         signal.at(1) = 1000;

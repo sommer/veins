@@ -46,14 +46,16 @@ public:
      * The constructor needs some specific knowledge in order to create
      * its mapping properly:
      *
+     * @param owner pointer to the cComponent that owns this AnalogueModel
      * @param alpha the coefficient alpha (specified e.g. in config.xml and
      *                 passed in constructor call)
      * @param useTorus information about the playground the host is moving in
      * @param playgroundSize information about the playground the host is
      *                          moving in
      */
-    SimplePathlossModel(double alpha, bool useTorus, const Coord& playgroundSize)
-        : pathLossAlphaHalf(alpha * 0.5)
+    SimplePathlossModel(cComponent* owner, double alpha, bool useTorus, const Coord& playgroundSize)
+        : AnalogueModel(owner)
+        , pathLossAlphaHalf(alpha * 0.5)
         , useTorus(useTorus)
         , playgroundSize(playgroundSize)
     {
@@ -63,7 +65,7 @@ public:
      * @brief Filters a specified AirFrame's Signal by adding an attenuation
      * over time to the Signal.
      */
-    void filterSignal(Signal*, const AntennaPosition&, const AntennaPosition&) override;
+    void filterSignal(Signal*) override;
 
     bool neverIncreasesPower() override
     {

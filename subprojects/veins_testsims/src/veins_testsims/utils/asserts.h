@@ -20,11 +20,11 @@ extern bool displayPassed;
  * expected value and the passed actual value.
  */
 template <class T, class T2>
-void fail(std::string msg, T expected, T2 actual)
+void fail(std::string msg, T expected, T2 actual, bool inverseLogic = false)
 {
     EV_STATICCONTEXT;
     EV_ERROR_C("asserts") << std::setprecision(std::numeric_limits<long double>::digits10 + 1);
-    EV_ERROR_C("asserts") << "FAILED: " << msg << ": value was '" << actual << "' instead of '" << expected << "'" << std::endl;
+    EV_ERROR_C("asserts") << "FAILED: " << msg << ": value was '" << actual << "' instead of" << (inverseLogic ? " not" : "") << " '" << expected << "'" << std::endl;
 }
 
 /**
@@ -36,6 +36,11 @@ void fail(std::string msg);
  * Prints a pass message with the passed text.
  */
 void pass(std::string msg, bool hidePassed = false);
+
+/**
+ * Prints a skip message with the passed text.
+ */
+void skip(std::string msg);
 
 /**
  * Asserts that the passed boolean value is true.
@@ -104,7 +109,7 @@ void assertNotEqual(std::string msg, T target, T2 actual)
         pass(msg);
     }
     else {
-        fail(msg, target, actual);
+        fail(msg, target, actual, true);
     }
 }
 

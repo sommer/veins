@@ -21,6 +21,7 @@
 #pragma once
 
 #include <list>
+#include <memory>
 
 #include "veins/veins.h"
 
@@ -99,6 +100,7 @@ protected:
     cXMLElement* obstaclesXml; /**< obstacles to add at startup */
 
     Obstacles obstacles;
+    std::vector<std::unique_ptr<Obstacle>> obstacleOwner;
     AnnotationManager* annotations;
     AnnotationManager::Group* annotationGroup;
     std::map<std::string, double> perCut;

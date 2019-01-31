@@ -23,10 +23,10 @@
 
 using namespace Veins;
 
-void TwoRayInterferenceModel::filterSignal(Signal* signal, const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_)
+void TwoRayInterferenceModel::filterSignal(Signal* signal)
 {
-    auto senderPos = senderPos_.getPositionAt();
-    auto receiverPos = receiverPos_.getPositionAt();
+    auto senderPos = signal->getSenderPoa().pos.getPositionAt();
+    auto receiverPos = signal->getReceiverPoa().pos.getPositionAt();
 
     const Coord senderPos2D(senderPos.x, senderPos.y);
     const Coord receiverPos2D(receiverPos.x, receiverPos.y);

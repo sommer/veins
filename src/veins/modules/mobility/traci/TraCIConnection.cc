@@ -14,6 +14,8 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 
+using namespace Veins::TraCIConstants;
+
 namespace Veins {
 
 struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
@@ -36,8 +38,23 @@ SOCKET socket(void* ptr)
     return *static_cast<SOCKET*>(ptr);
 }
 
-TraCIConnection::TraCIConnection(void* ptr)
-    : socketPtr(ptr)
+TraCIConnection::Result::Result()
+    : success(false)
+    , not_impl(false)
+    , message()
+{
+}
+
+TraCIConnection::Result::Result(bool success, bool not_impl, std::string message)
+    : success(success)
+    , not_impl(false)
+    , message(message)
+{
+}
+
+TraCIConnection::TraCIConnection(cComponent* owner, void* ptr)
+    : HasLogProxy(owner)
+    , socketPtr(ptr)
 {
     ASSERT(socketPtr);
 }
@@ -50,8 +67,9 @@ TraCIConnection::~TraCIConnection()
     }
 }
 
-TraCIConnection* TraCIConnection::connect(const char* host, int port)
+TraCIConnection* TraCIConnection::connect(cComponent* owner, const char* host, int port)
 {
+    EV_STATICCONTEXT;
     EV_INFO << "TraCIScenarioManager connecting to TraCI server" << endl;
 
     if (initsocketlibonce() != 0) throw cRuntimeError("Could not init socketlib");
@@ -108,10 +126,10 @@ TraCIConnection* TraCIConnection::connect(const char* host, int port)
         ::setsockopt(*socketPtr, IPPROTO_TCP, TCP_NODELAY, (const char*) &x, sizeof(x));
     }
 
-    return new TraCIConnection(socketPtr);
+    return new TraCIConnection(owner, socketPtr);
 }
 
-TraCIBuffer TraCIConnection::query(uint8_t commandId, const TraCIBuffer& buf)
+TraCIBuffer TraCIConnection::query(uint8_t commandId, const TraCIBuffer& buf, Result* result)
 {
     sendMessage(makeTraCICommand(commandId, buf));
 
@@ -121,32 +139,19 @@ TraCIBuffer TraCIConnection::query(uint8_t commandId, const TraCIBuffer& buf)
     uint8_t commandResp;
     obuf >> commandResp;
     ASSERT(commandResp == commandId);
-    uint8_t result;
-    obuf >> result;
+    uint8_t resultCode;
+    obuf >> resultCode;
     std::string description;
     obuf >> description;
-    if (result == RTYPE_NOTIMPLEMENTED) throw cRuntimeError("TraCI server reported command 0x%2x not implemented (\"%s\"). Might need newer version.", commandId, description.c_str());
-    if (result == RTYPE_ERR) throw cRuntimeError("TraCI server reported error executing command 0x%2x (\"%s\").", commandId, description.c_str());
-    ASSERT(result == RTYPE_OK);
-    return obuf;
-}
-
-TraCIBuffer TraCIConnection::queryOptional(uint8_t commandId, const TraCIBuffer& buf, bool& success, std::string* errorMsg)
-{
-    sendMessage(makeTraCICommand(commandId, buf));
-
-    TraCIBuffer obuf(receiveMessage());
-    uint8_t cmdLength;
-    obuf >> cmdLength;
-    uint8_t commandResp;
-    obuf >> commandResp;
-    ASSERT(commandResp == commandId);
-    uint8_t result;
-    obuf >> result;
-    std::string description;
-    obuf >> description;
-    success = (result == RTYPE_OK);
-    if (errorMsg) *errorMsg = description;
+    if (result != nullptr) {
+        result->success = (resultCode == RTYPE_OK);
+        result->not_impl = (resultCode == RTYPE_NOTIMPLEMENTED);
+        result->message = description;
+    }
+    else {
+        if (resultCode == RTYPE_NOTIMPLEMENTED) throw cRuntimeError("TraCI server reported command 0x%2x not implemented (\"%s\"). Might need newer version.", commandId, description.c_str());
+        if (resultCode != RTYPE_OK) throw cRuntimeError("TraCI server reported status %d executing command 0x%2x (\"%s\").", (int) resultCode, commandId, description.c_str());
+    }
     return obuf;
 }
 

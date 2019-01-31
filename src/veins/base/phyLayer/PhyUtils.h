@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <list>
 #include <memory>
 
@@ -135,8 +134,8 @@ public:
      */
     void setCurrentChannel(int newChannel)
     {
-        assert(newChannel > -1);
-        assert(newChannel < nbChannels);
+        ASSERT(newChannel > -1);
+        ASSERT(newChannel < nbChannels);
         currentChannel = newChannel;
         radioChannels.record(currentChannel);
     }

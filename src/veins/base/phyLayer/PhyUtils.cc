@@ -14,9 +14,9 @@ Radio::Radio(int numRadioStates, bool recordStats, int initialState, int current
     , currentChannel(currentChannel)
     , nbChannels(nbChannels)
 {
-    assert(nbChannels > 0);
-    assert(currentChannel > -1);
-    assert(currentChannel < nbChannels);
+    ASSERT(nbChannels > 0);
+    ASSERT(currentChannel > -1);
+    ASSERT(currentChannel < nbChannels);
 
     radioStates.setName("RadioState");
     radioStates.setEnabled(recordStats);
@@ -56,10 +56,10 @@ Radio::~Radio()
 simtime_t Radio::switchTo(int newState, simtime_t_cref now)
 {
     // state to switch to must be in a valid range, i.e. 0 <= newState < numRadioStates
-    assert(0 <= newState && newState < numRadioStates);
+    ASSERT(0 <= newState && newState < numRadioStates);
 
     // state to switch to must not be SWITCHING
-    assert(newState != SWITCHING);
+    ASSERT(newState != SWITCHING);
 
     // return error value if newState is the same as the current state
     // if (newState == state) return -1;
@@ -82,12 +82,12 @@ simtime_t Radio::switchTo(int newState, simtime_t_cref now)
 void Radio::setSwitchTime(int from, int to, simtime_t_cref time)
 {
     // assert parameters are in valid range
-    assert(time >= 0.0);
-    assert(0 <= from && from < numRadioStates);
-    assert(0 <= to && to < numRadioStates);
+    ASSERT(time >= 0.0);
+    ASSERT(0 <= from && from < numRadioStates);
+    ASSERT(0 <= to && to < numRadioStates);
 
     // it shall not be possible to set times to/from SWITCHING
-    assert(from != SWITCHING && to != SWITCHING);
+    ASSERT(from != SWITCHING && to != SWITCHING);
 
     swTimes[from][to] = time;
     return;
@@ -96,7 +96,7 @@ void Radio::setSwitchTime(int from, int to, simtime_t_cref time)
 void Radio::endSwitch(simtime_t_cref now)
 {
     // make sure we are currently switching
-    assert(state == SWITCHING);
+    ASSERT(state == SWITCHING);
 
     // set the current state finally to the next state
     state = nextState;

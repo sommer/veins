@@ -7,8 +7,9 @@ bool DeciderResult::isSignalCorrect() const
     return isCorrect;
 }
 
-Decider::Decider(DeciderToPhyInterface* phy)
-    : phy(phy)
+Decider::Decider(cComponent* owner, DeciderToPhyInterface* phy)
+    : HasLogProxy(owner)
+    , phy(phy)
     , notAgain(-1)
 {
 }

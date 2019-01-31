@@ -25,8 +25,6 @@
 
 #include "veins/base/modules/BaseLayer.h"
 
-#include <assert.h>
-
 using namespace Veins;
 
 const simsignal_t BaseLayer::catPassedMsgSignal = registerSignal("org.car2x.veins.base.utils.passedmsg");
