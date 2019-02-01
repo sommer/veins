@@ -40,7 +40,7 @@ class Signal;
  *
  * @ingroup analogueModels
  */
-class SimpleObstacleShadowing : public AnalogueModel {
+class VEINS_API SimpleObstacleShadowing : public AnalogueModel {
 protected:
     /** @brief reference to global ObstacleControl instance */
     ObstacleControl& obstacleControl;

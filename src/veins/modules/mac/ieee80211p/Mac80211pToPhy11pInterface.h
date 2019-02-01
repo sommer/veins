@@ -35,7 +35,7 @@ namespace Veins {
  *
  * @ingroup phyLayer
  */
-class Mac80211pToPhy11pInterface {
+class VEINS_API Mac80211pToPhy11pInterface {
 public:
     enum BasePhyMessageKinds {
         CHANNEL_IDLE,

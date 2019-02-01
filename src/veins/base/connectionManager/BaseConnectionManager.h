@@ -35,7 +35,7 @@ private:
      * This class provides some converting functions from a Coord
      * to a GridCoord.
      */
-    class GridCoord {
+    class VEINS_API GridCoord {
     public:
         /** @name Coordinates in the grid.*/
         /*@{*/
@@ -118,7 +118,7 @@ private:
      *
      * It is a workaround because c++ doesn't come with an hash set.
      */
-    class CoordSet {
+    class VEINS_API CoordSet {
     protected:
         /** @brief Holds the hash table.*/
         std::vector<GridCoord*> data;

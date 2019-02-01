@@ -29,7 +29,7 @@ namespace Veins {
 /**
  * stores information about an Obstacle for ObstacleControl
  */
-class Obstacle {
+class VEINS_API Obstacle {
 public:
     using Coords = std::vector<Coord>;
 

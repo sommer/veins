@@ -40,7 +40,7 @@ namespace Veins {
  *
  * @ingroup analogueModels
  */
-class NakagamiFading : public AnalogueModel {
+class VEINS_API NakagamiFading : public AnalogueModel {
 
 public:
     NakagamiFading(cComponent* owner, bool constM, double m)

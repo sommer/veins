@@ -38,7 +38,7 @@ namespace Veins {
  * Transmissions that cross one of the polygon's lines will have
  * their receive power set to zero.
  */
-class ObstacleControl : public cSimpleModule {
+class VEINS_API ObstacleControl : public cSimpleModule {
 public:
     ~ObstacleControl() override;
     void initialize(int stage) override;
@@ -108,7 +108,7 @@ protected:
     mutable CacheEntries cacheEntries;
 };
 
-class ObstacleControlAccess {
+class VEINS_API ObstacleControlAccess {
 public:
     ObstacleControlAccess()
     {

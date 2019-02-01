@@ -22,7 +22,7 @@ namespace Veins {
  *
  * @author Alexander Brummer
  */
-class POA {
+class VEINS_API POA {
 public:
     /**
      * Stores the sender's position.

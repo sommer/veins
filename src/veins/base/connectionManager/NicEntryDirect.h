@@ -33,7 +33,7 @@ namespace Veins {
  * @author Daniel Willkomm
  * @sa ConnectionManager, NicEntry
  */
-class NicEntryDirect : public NicEntry {
+class VEINS_API NicEntryDirect : public NicEntry {
 public:
     /** @brief Constructor, initializes all members
      */

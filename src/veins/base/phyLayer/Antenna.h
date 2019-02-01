@@ -23,7 +23,7 @@ namespace Veins {
  *
  * @author Alexander Brummer
  */
-class Antenna {
+class VEINS_API Antenna {
 public:
     Antenna(){};
     virtual ~Antenna(){};

@@ -12,9 +12,9 @@
 
 namespace Veins {
 
-class TraCIConnection : public HasLogProxy {
+class VEINS_API TraCIConnection : public HasLogProxy {
 public:
-    class Result {
+    class VEINS_API Result {
     public:
         Result();
         Result(bool success, bool not_impl, std::string message);

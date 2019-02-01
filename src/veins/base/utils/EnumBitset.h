@@ -23,6 +23,8 @@
 #include <bitset>
 #include <type_traits>
 
+#include "veins/veins.h"
+
 namespace Veins {
 
 /*
@@ -32,7 +34,7 @@ namespace Veins {
  * underlying type for a EnumBitset.
  */
 template <typename T>
-struct EnumTraits;
+struct VEINS_API EnumTraits;
 
 /*
  * Bitset template for scoped (class) enums.
@@ -42,7 +44,7 @@ struct EnumTraits;
  * Allows implementation of typesafe sets.
  */
 template <typename T>
-class EnumBitset {
+class VEINS_API EnumBitset {
 private:
     using EnumUnderlyingType = typename std::underlying_type<T>::type;
     std::bitset<static_cast<EnumUnderlyingType>(EnumTraits<T>::max) + 1> bits;

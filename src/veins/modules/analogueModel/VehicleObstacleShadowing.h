@@ -39,7 +39,7 @@ namespace Veins {
  *
  * @ingroup analogueModels
  */
-class VehicleObstacleShadowing : public AnalogueModel {
+class VEINS_API VehicleObstacleShadowing : public AnalogueModel {
 protected:
     /** @brief reference to global VehicleObstacleControl instance */
     VehicleObstacleControl& vehicleObstacleControl;

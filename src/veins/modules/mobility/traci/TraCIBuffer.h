@@ -14,7 +14,7 @@ bool isBigEndian();
 /**
  * Byte-buffer that stores values in TraCI byte-order
  */
-class TraCIBuffer {
+class VEINS_API TraCIBuffer {
 public:
     TraCIBuffer();
     TraCIBuffer(std::string buf);

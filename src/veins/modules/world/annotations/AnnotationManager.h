@@ -31,11 +31,11 @@ namespace Veins {
 /**
  * manages annotations on the OMNeT++ canvas.
  */
-class AnnotationManager : public cSimpleModule {
+class VEINS_API AnnotationManager : public cSimpleModule {
 public:
-    class Group;
+    class VEINS_API Group;
 
-    class Annotation {
+    class VEINS_API Annotation {
     public:
         Annotation()
             : group(nullptr)
@@ -58,7 +58,7 @@ public:
         mutable std::list<std::string> traciPolygonsIds;
     };
 
-    class Point : public Annotation {
+    class VEINS_API Point : public Annotation {
     public:
         Point(Coord pos, std::string color, std::string text)
             : pos(pos)
@@ -78,7 +78,7 @@ public:
         std::string text;
     };
 
-    class Line : public Annotation {
+    class VEINS_API Line : public Annotation {
     public:
         Line(Coord p1, Coord p2, std::string color)
             : p1(p1)
@@ -98,7 +98,7 @@ public:
         std::string color;
     };
 
-    class Polygon : public Annotation {
+    class VEINS_API Polygon : public Annotation {
     public:
         Polygon(std::list<Coord> coords, std::string color)
             : coords(coords)
@@ -116,7 +116,7 @@ public:
         std::string color;
     };
 
-    class Group {
+    class VEINS_API Group {
     public:
         Group(std::string title)
             : title(title)
@@ -169,7 +169,7 @@ protected:
     cGroupFigure* annotationLayer;
 };
 
-class AnnotationManagerAccess {
+class VEINS_API AnnotationManagerAccess {
 public:
     AnnotationManager* getIfExists()
     {

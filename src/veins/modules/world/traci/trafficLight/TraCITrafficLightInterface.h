@@ -28,7 +28,7 @@
 
 namespace Veins {
 
-class TraCITrafficLightInterface : public cSimpleModule {
+class VEINS_API TraCITrafficLightInterface : public cSimpleModule {
 public:
     TraCITrafficLightInterface();
     ~TraCITrafficLightInterface() override;
@@ -117,7 +117,7 @@ protected:
 } // namespace Veins
 
 namespace Veins {
-class TraCITrafficLightInterfaceAccess {
+class VEINS_API TraCITrafficLightInterfaceAccess {
 public:
     TraCITrafficLightInterface* get(cModule* host)
     {

@@ -43,7 +43,7 @@ class ChannelAccess;
  */
 class VEINS_API NicEntry : public HasLogProxy {
 protected:
-    class NicEntryComparator {
+    class VEINS_API NicEntryComparator {
     public:
         bool operator()(const NicEntry* nic1, const NicEntry* nic2) const
         {

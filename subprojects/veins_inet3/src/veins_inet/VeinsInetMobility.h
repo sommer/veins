@@ -32,9 +32,11 @@
 #include "inet/common/geometry/common/CanvasProjection.h"
 #include "inet/mobility/contract/IMobility.h"
 
+#include "veins_inet/veins_inet.h"
+
 namespace Veins {
 
-class INET_API VeinsInetMobility : public cSimpleModule, public inet::IMobility {
+class VEINS_INET_API VeinsInetMobility : public cSimpleModule, public inet::IMobility {
 public:
     VeinsInetMobility();
 

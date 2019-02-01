@@ -42,7 +42,7 @@ struct TimerMessage;
  *
  * This includes timing information as well as its callback.
  */
-struct TimerSpecification {
+struct VEINS_API TimerSpecification {
 public:
     /**
      * Create a new TimerSpecification.
@@ -176,7 +176,7 @@ private:
     std::function<void()> callback_; ///< The function to be called when the Timer is triggered.
 };
 
-class TimerManager {
+class VEINS_API TimerManager {
 private:
 public:
     using TimerHandle = long;

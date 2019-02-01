@@ -22,6 +22,8 @@
 
 #include <vector>
 
+#include "veins_inet/veins_inet.h"
+
 #include "inet/common/INETDefs.h"
 
 #include "inet/applications/base/ApplicationBase.h"
@@ -31,7 +33,7 @@
 
 namespace Veins {
 
-class VeinsInetApplicationBase : public inet::ApplicationBase, public inet::UdpSocket::ICallback {
+class VEINS_INET_API VeinsInetApplicationBase : public inet::ApplicationBase, public inet::UdpSocket::ICallback {
 protected:
     Veins::VeinsInetMobility* mobility;
     Veins::TraCICommandInterface* traci;

@@ -31,12 +31,14 @@ using namespace omnetpp;
 
 #include "inet/mobility/base/MobilityBase.h"
 
+#include "veins_inet/veins_inet.h"
+
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
 namespace Veins {
 
-class VeinsInetMobility : public inet::MobilityBase {
+class VEINS_INET_API VeinsInetMobility : public inet::MobilityBase {
 public:
     VeinsInetMobility();
 
@@ -85,7 +87,7 @@ protected:
 } // namespace Veins
 
 namespace Veins {
-class VeinsInetMobilityAccess {
+class VEINS_INET_API VeinsInetMobilityAccess {
 public:
     VeinsInetMobility* get(cModule* host)
     {
