@@ -119,6 +119,7 @@ protected:
 
     bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
     double penetrationRate;
+    bool ignoreGuiCommands; /**< whether to ignore all TraCI commands that only make sense when the server has a graphical user interface */
     TraCIRegionOfInterest roi; /**< Can return whether a given position lies within the simulation's region of interest. Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI */
     double areaSum;
 

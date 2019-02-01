@@ -17,13 +17,13 @@
  * part of:     framework implementation developed by tkn
  **************************************************************************/
 
-#include <assert.h>
 #include "veins/base/utils/Coord.h"
 
 using namespace Veins;
 
 const Coord Coord::ZERO = Coord(0.0, 0.0, 0.0);
 
+namespace {
 /**
  * On a torus the end and the begin of the axes are connected so you
  * get a circle. On a circle the distance between two points can't be greater
@@ -38,11 +38,12 @@ static double dist(double coord1, double coord2, double size)
         // NOTE: event if size is zero
         return 0;
     else {
-        assert(size != 0);
+        ASSERT(size != 0);
         double dist = FWMath::modulo(difference, size);
         return std::min(dist, size - dist);
     }
 }
+} // namespace
 
 double Coord::sqrTorusDist(const Coord& b, const Coord& size) const
 {

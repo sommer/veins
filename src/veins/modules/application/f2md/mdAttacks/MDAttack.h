@@ -45,7 +45,7 @@ protected:
 
     PCPolicy* pcPolicy;
 
-    BasicSafetyMessage nextAttackBsm = BasicSafetyMessage();
+    BasicSafetyMessage saveAttackBsm = BasicSafetyMessage();
 
     BasicSafetyMessage StopBsm;
     bool StopInitiated;

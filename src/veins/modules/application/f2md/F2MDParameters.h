@@ -21,14 +21,16 @@
 
 //Detection Parameters
 #define MAX_CONFIDENCE_RANGE 10 //3
-#define MAX_PLAUSIBLE_RANGE 417 // 415
-#define MIN_INT_DIST 1.8 // 3.292091
+#define MAX_PLAUSIBLE_RANGE 420 // 417
 
 #define MAX_TIME_DELTA 1.1
 #define MAX_DELTA_INTER 1.0 //1.001
 #define MAX_SA_RANGE 210 // 420/2
 
-#define MAX_MGT_RNG 3 // 3
+#define MIN_MAX_SPEED 40 // 40
+#define MIN_MAX_ACCEL 3 // 3
+#define MIN_MAX_DECEL 4.5 // 4.5
+#define MAX_MGT_RNG 4 // 3
 #define MAX_BEACON_FREQUENCY 0.99 //0.99998
 #define MAX_DISTANCE_FROM_ROUTE 2 //4.5
 #define MAX_NON_ROUTE_SPEED -1 //3

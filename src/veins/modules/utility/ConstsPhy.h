@@ -25,6 +25,8 @@
 
 #include "veins/veins.h"
 
+namespace Veins {
+
 /** @brief Modulation and coding scheme to be used for transmission */
 enum class MCS {
     // use the default MCS
@@ -236,3 +238,5 @@ inline MCS getMCS(uint64_t datarate, Bandwidth bw)
     ASSERT2(false, "Invalid datarate for required bandwidth");
     return MCS::undefined;
 }
+
+} // namespace Veins

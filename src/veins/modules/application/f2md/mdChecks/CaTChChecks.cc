@@ -37,6 +37,8 @@ CaTChChecks::CaTChChecks(unsigned long myPseudonym, Coord myPosition,
     this->LinkC = LinkC;
 }
 
+
+
 double CaTChChecks::RangePlausibilityCheck(Coord * receiverPosition,
         Coord * receiverPositionConfidence, Coord * senderPosition,
         Coord * senderPositionConfidence) {
@@ -62,6 +64,7 @@ double CaTChChecks::PositionConsistancyCheck(Coord * curPosition,
     return factor;
 }
 
+
 double CaTChChecks::SpeedConsistancyCheck(double curSpeed,
         double curSpeedConfidence, double oldspeed, double oldSpeedConfidence,
         double time) {
@@ -84,6 +87,7 @@ double CaTChChecks::SpeedConsistancyCheck(double curSpeed,
     }
     return factor;
 }
+
 
 double CaTChChecks::SpeedPlausibilityCheck(double speed,
         double speedConfidence) {
@@ -122,7 +126,7 @@ double CaTChChecks::PositionSpeedConsistancyCheck(Coord * curPosition,
 
         double minfactor = mdmLib.OneSidedCircleSegmentFactor(
                 theoreticalSpeed - minspeed, curR, oldR,
-                MAX_PLAUSIBLE_ACCEL * time);
+                (MAX_PLAUSIBLE_ACCEL  + MAX_MGT_RNG)* time);
 
         double factor = 1;
 
@@ -153,6 +157,8 @@ double CaTChChecks::PositionSpeedConsistancyCheck(Coord * curPosition,
                     << " theoreticalSpeed:" << theoreticalSpeed << '\n';
             std::cout << " curSpeed:" << curSpeed << '\n';
             std::cout << " oldspeed:" << oldspeed << '\n';
+            //exit(0);
+
         }
 
         return factor;
@@ -184,8 +190,7 @@ double CaTChChecks::IntersectionCheck(Coord * nodePosition1,
             mdmLib.calculateHeadingAnglePtr(nodeHeading2), *nodeSize1,
             *nodeSize2);
 
-    intFactor2 = intFactor2 * ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
-    intFactor2 = 1 - intFactor2;
+    intFactor2 = 1.01 - intFactor2 * ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
 
     if (intFactor2 > 1) {
         intFactor2 = 1;
@@ -567,7 +572,7 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
     }
 
 //    if(bsm->getSenderMbType() == 1){
-    PrintBsmCheck(senderPseudonym, bsmCheck);
+//    PrintBsmCheck(senderPseudonym, bsmCheck);
 //    }
 
     return bsmCheck;

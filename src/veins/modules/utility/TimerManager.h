@@ -179,8 +179,8 @@ private:
 class TimerManager {
 private:
 public:
-    using TimerHandle = TimerMessage*;
-    using TimerList = std::map<TimerHandle, const TimerSpecification>;
+    using TimerHandle = long;
+    using TimerList = std::map<TimerMessage*, const TimerSpecification>;
 
     TimerManager(omnetpp::cSimpleModule* parent);
 

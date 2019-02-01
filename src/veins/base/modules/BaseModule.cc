@@ -20,8 +20,6 @@
 
 #include "veins/base/modules/BaseModule.h"
 
-#include <cassert>
-
 #include "veins/base/utils/FindModule.h"
 
 using namespace Veins;

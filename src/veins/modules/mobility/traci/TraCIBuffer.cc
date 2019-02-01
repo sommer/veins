@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <sstream>
 
+using namespace Veins::TraCIConstants;
+
 namespace Veins {
 
 bool TraCIBuffer::timeAsDouble = true;

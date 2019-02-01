@@ -55,10 +55,10 @@ public:
     virtual void getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFrameVector& out) = 0;
 
     /**
-     * @brief Returns a constant which defines the thermal noise in
+     * @brief Returns a constant which defines the noise floor in
      * the passed time frame (in mW).
      */
-    virtual double getThermalNoiseValue() = 0;
+    virtual double getNoiseFloorValue() = 0;
 
     /**
      * @brief Called by the Decider to send a control message to the MACLayer

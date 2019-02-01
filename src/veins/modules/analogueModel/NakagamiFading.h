@@ -43,8 +43,9 @@ namespace Veins {
 class NakagamiFading : public AnalogueModel {
 
 public:
-    NakagamiFading(bool constM, double m)
-        : constM(constM)
+    NakagamiFading(cComponent* owner, bool constM, double m)
+        : AnalogueModel(owner)
+        , constM(constM)
         , m(m)
     {
     }
@@ -53,7 +54,7 @@ public:
     {
     }
 
-    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override;
+    void filterSignal(Signal* signal) override;
 
 protected:
     /** @brief Whether to use a constant m or a m based on distance */

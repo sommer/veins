@@ -13,7 +13,7 @@
 
 Define_Module(JosephVeinsApp);
 //Simulation Parameters
-#define serialNumber "IRT-DEMO"
+#define serialNumber "LUSTMINI-DATA-1.0"
 #define savePath "../../../../mdmSave/"
 
 #define randomConf true
@@ -22,7 +22,7 @@ Define_Module(JosephVeinsApp);
 #define confHea 0
 
 #define SAVE_PERIOD 1 //60 seconds
-#define PRINT_PERIOD 60 //60 seconds
+#define PRINT_PERIOD 1000 //60 seconds
 
 #define START_SAVE 0 //60 seconds
 #define START_ATTACK 10 //60 seconds
@@ -32,29 +32,39 @@ Define_Module(JosephVeinsApp);
 static bool MixLocalAttacks = true;
 static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
-#define LOCAL_ATTACKER_PROB 0.1
-#define LOCAL_ATTACK_TYPE attackTypes::DoSDisruptiveSybil
+#define LOCAL_ATTACKER_PROB 0.05
 
-static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::GridSybil,
-        attackTypes::ConstPos, attackTypes::RandomPos,
-        attackTypes::StaleMessages, attackTypes::DoSRandomSybil,
-        attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
-        attackTypes::DoSDisruptiveSybil, attackTypes::RandomPosOffset,
-        attackTypes::RandomSpeed, attackTypes::DataReplaySybil,
-        attackTypes::ConstSpeedOffset, attackTypes::RandomSpeedOffset,
-        attackTypes::EventualStop, attackTypes::Disruptive,
-        attackTypes::DataReplay, };
+#define LOCAL_ATTACK_TYPE attackTypes::ConstPosOffset
 
-//static attackTypes::Attacks MixLocalAttacksList[] =
-//        { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
-//                attackTypes::RandomPos, attackTypes::StaleMessages,
-//                attackTypes::DoSRandomSybil, attackTypes::ConstPosOffset,
-//                attackTypes::DoSDisruptive, attackTypes::ConstSpeed,
-//                attackTypes::RandomSpeed , attackTypes::RandomPosOffset,
-//                attackTypes::DoSDisruptiveSybil , attackTypes::DataReplaySybil,
-//                attackTypes::ConstSpeedOffset, attackTypes::RandomSpeedOffset,
-//                attackTypes::EventualStop, attackTypes::Disruptive,
-//                attackTypes::DataReplay, attackTypes::DoSRandom };
+//static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::GridSybil,
+//        attackTypes::ConstPos,
+//        attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
+//        attackTypes::RandomPosOffset,
+//        attackTypes::DataReplaySybil, attackTypes::ConstSpeedOffset,
+//        attackTypes::RandomSpeedOffset,
+//        attackTypes::EventualStop, attackTypes::Disruptive, };
+
+//static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::GridSybil,
+//        attackTypes::ConstPos,
+//        attackTypes::StaleMessages,
+//        attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
+//        attackTypes::RandomPosOffset,
+//        attackTypes::DataReplaySybil, attackTypes::ConstSpeedOffset,
+//        attackTypes::RandomSpeedOffset,
+//        attackTypes::EventualStop, attackTypes::Disruptive,
+//        attackTypes::DataReplay, };
+
+
+static attackTypes::Attacks MixLocalAttacksList[] =
+        { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
+                attackTypes::RandomPos, attackTypes::StaleMessages,
+                attackTypes::DoSRandomSybil, attackTypes::ConstPosOffset,
+                attackTypes::DoSDisruptive, attackTypes::ConstSpeed,
+                attackTypes::RandomSpeed , attackTypes::RandomPosOffset,
+                attackTypes::DoSDisruptiveSybil , attackTypes::DataReplaySybil,
+                attackTypes::ConstSpeedOffset, attackTypes::RandomSpeedOffset,
+                attackTypes::EventualStop, attackTypes::Disruptive,
+                attackTypes::DataReplay, attackTypes::DoSRandom };
 
 //static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::ConstPos,
 //        attackTypes::ConstPosOffset, attackTypes::RandomPos,
@@ -100,13 +110,13 @@ static bool writeSelfMsg = false;
 //writeBsms
 static bool writeBsmsV1 = false;
 static bool writeBsmsV2 = false;
-static bool writeListBsmsV1 = false;
-static bool writeListBsmsV2 = false;
+static bool writeListBsmsV1 = true;
+static bool writeListBsmsV2 = true;
 //writeReport
 static bool writeReportsV1 = false;
 static bool writeReportsV2 = false;
-static bool writeListReportsV1 = false;
-static bool writeListReportsV2 = false;
+static bool writeListReportsV1 = true;
+static bool writeListReportsV2 = true;
 
 static bool sendReportsV1 = false;
 static bool sendReportsV2 = false;
@@ -134,6 +144,15 @@ void JosephVeinsApp::initialize(int stage) {
         MAX_PLAUSIBLE_ACCEL = traciVehicle->getAccel() + 0.01;
         MAX_PLAUSIBLE_DECEL = traciVehicle->getDeccel() + 0.01;
         MAX_PLAUSIBLE_SPEED = traciVehicle->getMaxSpeed() + 0.01;
+        if(MAX_PLAUSIBLE_ACCEL< MIN_MAX_ACCEL){
+            MAX_PLAUSIBLE_ACCEL = MIN_MAX_ACCEL;
+        }
+        if(MAX_PLAUSIBLE_DECEL< MIN_MAX_DECEL){
+            MAX_PLAUSIBLE_DECEL = MIN_MAX_DECEL;
+        }
+        if(MAX_PLAUSIBLE_SPEED< MIN_MAX_SPEED){
+            MAX_PLAUSIBLE_SPEED = MIN_MAX_SPEED;
+        }
 
         myWidth = traciVehicle->getWidth();
         myLength = traciVehicle->getLength();
@@ -216,7 +235,6 @@ void JosephVeinsApp::initialize(int stage) {
                         LastLocalAttackIndex = 0;
                     }
                 }
-
                 myAttackType = MixLocalAttacksList[localAttackIndex];
             } else {
                 myAttackType = LOCAL_ATTACK_TYPE;
@@ -807,7 +825,8 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         break;
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
-        if (myBsmNum > 0) {
+
+        if(myBsmNum >0){
             evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             reportStr = evr.getReportPrintableJson();
         } else {

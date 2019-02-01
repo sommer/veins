@@ -144,7 +144,7 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeBreakpointPathlossModel(Para
         throw cRuntimeError("Undefined parameters for breakpointPathlossModel. Please check your configuration.");
     }
 
-    return make_unique<BreakpointPathlossModel>(L01, L02, alpha1, alpha2, breakpointDistance, useTorus, playgroundSize);
+    return make_unique<BreakpointPathlossModel>(this, L01, L02, alpha1, alpha2, breakpointDistance, useTorus, playgroundSize);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeTwoRayInterferenceModel(ParameterMap& params)
@@ -153,7 +153,7 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeTwoRayInterferenceModel(Para
 
     double dielectricConstant = params["DielectricConstant"].doubleValue();
 
-    return make_unique<TwoRayInterferenceModel>(dielectricConstant);
+    return make_unique<TwoRayInterferenceModel>(this, dielectricConstant);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeNakagamiFading(ParameterMap& params)
@@ -163,7 +163,7 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeNakagamiFading(ParameterMap&
     if (constM) {
         m = params["m"].doubleValue();
     }
-    return make_unique<NakagamiFading>(constM, m);
+    return make_unique<NakagamiFading>(this, constM, m);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimplePathlossModel(ParameterMap& params)
@@ -203,13 +203,13 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimplePathlossModel(Paramete
         }
     }
 
-    return make_unique<SimplePathlossModel>(alpha, useTorus, playgroundSize);
+    return make_unique<SimplePathlossModel>(this, alpha, useTorus, playgroundSize);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializePERModel(ParameterMap& params)
 {
     double per = params["packetErrorRate"].doubleValue();
-    return make_unique<PERModel>(per);
+    return make_unique<PERModel>(this, per);
 }
 
 unique_ptr<Decider> PhyLayer80211p::getDeciderFromName(std::string name, ParameterMap& params)
@@ -232,7 +232,7 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeSimpleObstacleShadowing(Para
 
     ObstacleControl* obstacleControlP = ObstacleControlAccess().getIfExists();
     if (!obstacleControlP) throw cRuntimeError("initializeSimpleObstacleShadowing(): cannot find ObstacleControl module");
-    return make_unique<SimpleObstacleShadowing>(*obstacleControlP, useTorus, playgroundSize);
+    return make_unique<SimpleObstacleShadowing>(this, *obstacleControlP, useTorus, playgroundSize);
 }
 
 unique_ptr<AnalogueModel> PhyLayer80211p::initializeVehicleObstacleShadowing(ParameterMap& params)
@@ -246,13 +246,13 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeVehicleObstacleShadowing(Par
 
     VehicleObstacleControl* vehicleObstacleControlP = VehicleObstacleControlAccess().getIfExists();
     if (!vehicleObstacleControlP) throw cRuntimeError("initializeVehicleObstacleShadowing(): cannot find VehicleObstacleControl module");
-    return make_unique<VehicleObstacleShadowing>(*vehicleObstacleControlP, useTorus, playgroundSize);
+    return make_unique<VehicleObstacleShadowing>(this, *vehicleObstacleControlP, useTorus, playgroundSize);
 }
 
 unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params)
 {
     double centerFreq = params["centerFrequency"];
-    auto dec = make_unique<Decider80211p>(this, sensitivity, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
+    auto dec = make_unique<Decider80211p>(this, this, minPowerLevel, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
     dec->setPath(getParentModule()->getFullPath());
     return unique_ptr<Decider>(std::move(dec));
 }
@@ -260,7 +260,7 @@ unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params
 void PhyLayer80211p::changeListeningChannel(Channel channel)
 {
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-    assert(dec);
+    ASSERT(dec);
 
     double freq = IEEE80211ChannelFrequencies.at(channel);
     dec->changeFrequency(freq);
@@ -272,11 +272,11 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg)
     switch (msg->getKind()) {
     // transmission overBasePhyLayer::
     case TX_OVER: {
-        assert(msg == txOverTimer);
+        ASSERT(msg == txOverTimer);
         sendControlMsgToMac(new cMessage("Transmission over", TX_OVER));
         // check if there is another packet on the chan, and change the chan-state to idle
         Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-        assert(dec);
+        ASSERT(dec);
         if (dec->cca(simTime(), nullptr)) {
             // chan is idle
             EV_TRACE << "Channel idle after transmit!\n";
@@ -289,7 +289,7 @@ void PhyLayer80211p::handleSelfMessage(cMessage* msg)
     }
     // radio switch over
     case RADIO_SWITCHING_OVER:
-        assert(msg == radioSwitchingOverTimer);
+        ASSERT(msg == radioSwitchingOverTimer);
         BasePhyLayer::finishRadioSwitching();
         break;
 
@@ -313,7 +313,7 @@ void PhyLayer80211p::attachSignal(AirFrame* airFrame, cObject* ctrlInfo)
     const auto ctrlInfo11p = check_and_cast<MacToPhyControlInfo11p*>(ctrlInfo);
 
     const auto duration = getFrameDuration(airFrame->getEncapsulatedPacket()->getBitLength(), ctrlInfo11p->mcs);
-    assert(duration > 0);
+    ASSERT(duration > 0);
     Signal signal(overallSpectrum, simTime(), duration);
     auto freqIndex = overallSpectrum.indexOf(IEEE80211ChannelFrequencies.at(ctrlInfo11p->channelNr));
     signal.at(freqIndex - 1) = ctrlInfo11p->txPower_mW;
@@ -343,7 +343,7 @@ void PhyLayer80211p::setCCAThreshold(double ccaThreshold_dBm)
 {
     ccaThreshold = pow(10, ccaThreshold_dBm / 10);
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-    assert(dec);
+    ASSERT(dec);
     dec->setCCAThreshold(ccaThreshold_dBm);
 }
 double PhyLayer80211p::getCCAThreshold()
@@ -354,7 +354,7 @@ double PhyLayer80211p::getCCAThreshold()
 void PhyLayer80211p::notifyMacAboutRxStart(bool enable)
 {
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-    assert(dec);
+    ASSERT(dec);
     dec->setNotifyRxStart(enable);
 }
 
@@ -362,7 +362,7 @@ void PhyLayer80211p::requestChannelStatusIfIdle()
 {
     Enter_Method_Silent();
     Decider80211p* dec = dynamic_cast<Decider80211p*>(decider.get());
-    assert(dec);
+    ASSERT(dec);
     if (dec->cca(simTime(), nullptr)) {
         // chan is idle
         EV_TRACE << "Request channel status: channel idle!\n";

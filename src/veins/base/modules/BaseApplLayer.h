@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <assert.h>
-
 #include "veins/veins.h"
 
 #include "veins/base/modules/BaseLayer.h"
@@ -135,7 +133,7 @@ protected:
      */
     void handleUpperMsg(cMessage* msg) override
     {
-        assert(false);
+        ASSERT(false);
         throw cRuntimeError("Application has no upper layers!");
         delete msg;
     }
@@ -143,7 +141,7 @@ protected:
     /** @brief Handle control messages from upper layer */
     void handleUpperControl(cMessage* msg) override
     {
-        assert(false);
+        ASSERT(false);
         throw cRuntimeError("Application has no upper layers!");
         delete msg;
     }

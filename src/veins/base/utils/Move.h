@@ -20,7 +20,6 @@
 #pragma once
 
 #include <string>
-#include <cassert>
 
 #include "veins/veins.h"
 
@@ -148,7 +147,7 @@ public:
      */
     void setOrientationByVector(const Coord& orientation)
     {
-        assert(orientation.x != 0 || orientation.y != 0);
+        ASSERT(orientation.x != 0 || orientation.y != 0);
         this->orientation = orientation;
     }
 
@@ -158,7 +157,7 @@ public:
      */
     void setDirectionByVector(const Coord& direction)
     {
-        assert(math::almost_equal(direction.squareLength(), 1.0) || math::almost_equal(direction.squareLength(), 0.0));
+        ASSERT(math::almost_equal(direction.squareLength(), 1.0) || math::almost_equal(direction.squareLength(), 0.0));
         this->direction = direction;
 
         // only if one of the x or y components is nonzero, also set orientation to
@@ -179,7 +178,7 @@ public:
     {
         direction = target - startPos;
 
-        assert(!math::almost_equal(direction.length(), 0.0));
+        ASSERT(!math::almost_equal(direction.length(), 0.0));
         direction /= direction.length();
 
         // only if one of the x or y components is nonzero, also set orientation to

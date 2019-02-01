@@ -61,8 +61,7 @@ double LegacyChecks::PositionConsistancyCheck(Coord * curPosition,
         return 0; //distance
     }
 }
-double S_MaxAccel = 0;
-double S_MaxDecel = 0;
+
 double LegacyChecks::SpeedConsistancyCheck(double curSpeed, double oldspeed,
         double time) {
 
@@ -73,25 +72,13 @@ double LegacyChecks::SpeedConsistancyCheck(double curSpeed, double oldspeed,
 //        attFact = time;
 //    }
 
-//    std::cout<<"S_MaxAccel:"<<S_MaxAccel<<"\n";
-//    std::cout<<"S_MaxDecel:"<<S_MaxDecel<<"\n";
     if (speedDelta > 0) {
-
-        if (speedDelta > S_MaxAccel * time) {
-            S_MaxAccel = speedDelta / time;
-        }
-
         if (speedDelta < MAX_PLAUSIBLE_ACCEL * time) {
             return 1;
         } else {
             return 0; //distance
         }
     } else {
-
-        if (fabs(speedDelta) > S_MaxDecel * time) {
-            S_MaxDecel = fabs(speedDelta) / time;
-        }
-
         if (fabs(speedDelta) < MAX_PLAUSIBLE_DECEL * time) {
             return 1;
         } else {
@@ -116,7 +103,7 @@ double LegacyChecks::PositionSpeedConsistancyCheck(Coord *curPosition,
         if (deltaMax > (MAX_PLAUSIBLE_DECEL + MAX_MGT_RNG) * time) {
             return 0; // deltaMax - MIN_PSS
         } else {
-            if (deltaMin > MAX_PLAUSIBLE_ACCEL * time) {
+            if (deltaMin > (MAX_PLAUSIBLE_ACCEL + MAX_MGT_RNG) * time) {
                 return 0; // deltaMin - MAX_PSS
             } else {
                 return 1;
@@ -128,6 +115,7 @@ double LegacyChecks::PositionSpeedConsistancyCheck(Coord *curPosition,
 }
 
 double LegacyChecks::SpeedPlausibilityCheck(double speed) {
+
 
     if (fabs(speed) < MAX_PLAUSIBLE_SPEED) {
         return 1;
@@ -146,12 +134,13 @@ double LegacyChecks::IntersectionCheck(Coord nodePosition1, Coord nodeSize1,
     //double distance = mdmLib.calculateDistancePtr(nodePosition1, nodePosition2);
 
     double inter = mdmLib.RectRectFactor(nodePosition1, nodePosition2, heading1,
-            heading2, Coord(0.8 * nodeSize1.x, 0.8 * nodeSize1.y),
-            Coord(0.8 * nodeSize2.x, 0.8 * nodeSize2.y));
+            heading2, Coord( nodeSize1.x, nodeSize1.y),
+            Coord( nodeSize2.x, nodeSize2.y));
 
     inter = inter * ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
 
 //    if (inter > 0.5){
+//
 //        std::cout<<"nodePosition1:"<<nodePosition1<<"\n";
 //        std::cout<<"nodePosition2:"<<nodePosition2<<"\n";
 //
@@ -178,10 +167,16 @@ double LegacyChecks::IntersectionCheck(Coord nodePosition1, Coord nodeSize1,
 //                heading1, heading2 , nodeSize1, nodeSize2);
 //        intFactor2 = intFactor2 *  ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
 //        std::cout<<"intFactor2:"<<intFactor2<<"\n";
+////
+////        if (intFactor2 > 0.5) {
+////            return 0; //inter+1.0
+////        } else {
+////            return 1;
+////        }
 //        exit(0);
 //    }
 
-    if (inter > 0.25) {
+    if (inter > 0.5) {
         return 0; //inter+1.0
     } else {
         return 1;
@@ -368,7 +363,7 @@ BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
                 SuddenAppearenceCheck(&senderPos, &myPosition));
     }
 
-    //PrintBsmCheck(senderPseudonym, bsmCheck);
+ //   PrintBsmCheck(senderPseudonym, bsmCheck);
 
     return bsmCheck;
 }

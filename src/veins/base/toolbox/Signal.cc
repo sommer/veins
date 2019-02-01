@@ -38,8 +38,8 @@ Signal::Signal(const Signal& other)
     , propagationDelay(other.propagationDelay)
     , analogueModelList(other.analogueModelList)
     , numAnalogueModelsApplied(other.numAnalogueModelsApplied)
-    , senderPos(other.senderPos)
-    , receiverPos(other.receiverPos)
+    , senderPoa(other.senderPoa)
+    , receiverPoa(other.receiverPoa)
 {
 }
 
@@ -183,7 +183,7 @@ bool Signal::greaterAtCenterFrequency(double threshold)
 
     while (numAnalogueModelsApplied < maxAnalogueModels) {
         // Apply filter here
-        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
+        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this);
         numAnalogueModelsApplied++;
 
         if (values[centerFrequencyIndex] < threshold) return false;
@@ -199,7 +199,7 @@ bool Signal::smallerAtCenterFrequency(double threshold)
 
     while (numAnalogueModelsApplied < maxAnalogueModels) {
         // Apply filter here
-        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
+        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this);
         numAnalogueModelsApplied++;
 
         if (values[centerFrequencyIndex] < threshold) return true;
@@ -228,7 +228,7 @@ void Signal::applyAnalogueModel(uint16_t index)
 
     if (index >= maxAnalogueModels || index < numAnalogueModelsApplied) return;
 
-    (*analogueModelList)[index]->filterSignal(this, senderPos, receiverPos);
+    (*analogueModelList)[index]->filterSignal(this);
     numAnalogueModelsApplied++;
 }
 
@@ -236,30 +236,30 @@ void Signal::applyAllAnalogueModels()
 {
     uint16_t maxAnalogueModels = analogueModelList->size();
     while (numAnalogueModelsApplied < maxAnalogueModels) {
-        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this, senderPos, receiverPos);
+        (*analogueModelList)[numAnalogueModelsApplied]->filterSignal(this);
 
         numAnalogueModelsApplied++;
     }
 }
 
-AntennaPosition Signal::getSenderPos() const
+POA Signal::getSenderPoa() const
 {
-    return senderPos;
+    return senderPoa;
 }
 
-AntennaPosition Signal::getReceiverPos() const
+POA Signal::getReceiverPoa() const
 {
-    return receiverPos;
+    return receiverPoa;
 }
 
-void Signal::setSenderPos(AntennaPosition pos)
+void Signal::setSenderPoa(const POA& poa)
 {
-    senderPos = pos;
+    senderPoa = poa;
 }
 
-void Signal::setReceiverPos(AntennaPosition pos)
+void Signal::setReceiverPoa(const POA& poa)
 {
-    receiverPos = pos;
+    receiverPoa = poa;
 }
 
 simtime_t_cref Signal::getSendingStart() const
@@ -331,8 +331,8 @@ Signal& Signal::operator=(const Signal& other)
 
     analogueModelList = other.getAnalogueModelList();
     numAnalogueModelsApplied = other.getNumAnalogueModelsApplied();
-    senderPos = other.getSenderPos();
-    receiverPos = other.getReceiverPos();
+    senderPoa = other.getSenderPoa();
+    receiverPoa = other.getReceiverPoa();
 
     timingUsed = other.hasTiming();
     sendingStart = other.getSendingStart();
@@ -344,8 +344,8 @@ Signal& Signal::operator=(const Signal& other)
 
 Signal& Signal::operator+=(const Signal& other)
 {
-    assert(this->getSpectrum() == other.getSpectrum());
-    assert(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
+    ASSERT(this->getSpectrum() == other.getSpectrum());
+    ASSERT(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
 
     std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), std::plus<double>());
     return *this;
@@ -359,8 +359,8 @@ Signal& Signal::operator+=(const double value)
 
 Signal& Signal::operator-=(const Signal& other)
 {
-    assert(this->getSpectrum() == other.getSpectrum());
-    assert(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
+    ASSERT(this->getSpectrum() == other.getSpectrum());
+    ASSERT(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
 
     std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), std::minus<double>());
     return *this;
@@ -374,8 +374,8 @@ Signal& Signal::operator-=(const double value)
 
 Signal& Signal::operator*=(const Signal& other)
 {
-    assert(this->getSpectrum() == other.getSpectrum());
-    assert(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
+    ASSERT(this->getSpectrum() == other.getSpectrum());
+    ASSERT(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
 
     std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), std::multiplies<double>());
     return *this;
@@ -389,8 +389,8 @@ Signal& Signal::operator*=(const double value)
 
 Signal& Signal::operator/=(const Signal& other)
 {
-    assert(this->getSpectrum() == other.getSpectrum());
-    assert(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
+    ASSERT(this->getSpectrum() == other.getSpectrum());
+    ASSERT(!(this->timingUsed && other.timingUsed) || (this->sendingStart == other.sendingStart && this->duration == other.duration));
 
     std::transform(values.begin(), values.end(), other.values.begin(), values.begin(), std::divides<double>());
     return *this;

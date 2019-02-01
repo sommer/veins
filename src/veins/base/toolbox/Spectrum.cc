@@ -48,7 +48,7 @@ size_t Spectrum::indexOf(double freq) const
     auto it = std::lower_bound(frequencies.begin(), frequencies.end(), freq);
     bool found = it != frequencies.end() && (*it) == freq;
 
-    assert(found == true);
+    ASSERT(found == true);
 
     return std::distance(frequencies.begin(), it);
 }

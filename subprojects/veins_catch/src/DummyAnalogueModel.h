@@ -28,12 +28,13 @@ protected:
     const double factor;
 
 public:
-    DummyAnalogueModel(double factor)
-        : factor(factor)
+    DummyAnalogueModel(cComponent* owner, double factor)
+        : AnalogueModel(owner)
+        , factor(factor)
     {
     }
 
-    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override
+    void filterSignal(Signal* signal) override
     {
         *signal *= factor;
     }

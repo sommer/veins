@@ -21,7 +21,6 @@
 
 #include "veins/base/modules/BaseMacLayer.h"
 
-#include <cassert>
 #include <sstream>
 
 #include "veins/base/phyLayer/MacToPhyInterface.h"
@@ -131,7 +130,7 @@ MacPkt* BaseMacLayer::encapsMsg(cPacket* netwPkt)
  **/
 void BaseMacLayer::handleUpperMsg(cMessage* mac)
 {
-    assert(dynamic_cast<cPacket*>(mac));
+    ASSERT(dynamic_cast<cPacket*>(mac));
     sendDown(encapsMsg(static_cast<cPacket*>(mac)));
 }
 

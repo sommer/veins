@@ -58,17 +58,18 @@ public:
      * The constructor needs some specific knowledge in order to create
      * its mapping properly:
      *
+     * @param owner pointer to the cComponent that owns this AnalogueModel
      * @param vehicleObstacleControl reference to global VehicleObstacleControl module
      * @param useTorus information about the playground the host is moving in
      * @param playgroundSize information about the playground the host is moving in
      */
-    VehicleObstacleShadowing(VehicleObstacleControl& vehicleObstacleControl, bool useTorus, const Coord& playgroundSize);
+    VehicleObstacleShadowing(cComponent* owner, VehicleObstacleControl& vehicleObstacleControl, bool useTorus, const Coord& playgroundSize);
 
     /**
      * @brief Filters a specified Signal by adding an attenuation
      * over time to the Signal.
      */
-    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override;
+    void filterSignal(Signal* signal) override;
 
     bool neverIncreasesPower() override
     {

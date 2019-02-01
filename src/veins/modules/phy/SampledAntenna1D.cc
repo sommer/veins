@@ -19,8 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include <assert.h>
-
 #include "veins/modules/phy/SampledAntenna1D.h"
 #include "veins/base/utils/FWMath.h"
 
@@ -108,7 +106,7 @@ double SampledAntenna1D::getGain(Coord ownPos, Coord ownOrient, Coord otherPos)
     double offset = (angle - (baseElement * distance)) / distance;
 
     // make sure to not address an element out of antennaGains (baseElement == lastElement implies that offset is zero)
-    assert((baseElement < antennaGains.size()) && (baseElement != antennaGains.size() - 1 || offset == 0));
+    ASSERT((baseElement < antennaGains.size()) && (baseElement != antennaGains.size() - 1 || offset == 0));
 
     double gainValue = antennaGains[baseElement];
     if (offset > 0) {

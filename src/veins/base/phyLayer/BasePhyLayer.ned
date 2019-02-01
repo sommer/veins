@@ -10,8 +10,8 @@ simple BasePhyLayer like IWirelessPhy
         bool recordStats = default(false); //enable/disable tracking of statistics (eg. cOutvectors)
 
         bool usePropagationDelay;        //Should transmission delay be simulated?
-        double thermalNoise @unit(dBm);    //the strength of the thermal noise [dBm]
-        bool useThermalNoise;            //should thermal noise be considered?
+        double noiseFloor @unit(dBm); // catch-all for all factors negatively impacting SINR (e.g., thermal noise, noise figure, ...)
+        bool useNoiseFloor; // should a noise floor be considered when calculating SINR?
 
 
         xml antenna = default(xml("<root><Antenna type=\"IsotropicAntenna\" id=\"default_isotropic\"></Antenna></root>"));
@@ -22,7 +22,7 @@ simple BasePhyLayer like IWirelessPhy
         xml analogueModels;             //Specification of the analogue models to use and their parameters
         xml decider;                    //Specification of the decider to use and its parameters
 
-        double sensitivity @unit(dBm);    //The sensitivity of the physical layer [dBm]
+        double minPowerLevel @unit(dBm); // The minimum receive power needed to even attempt decoding a frame
 
         //# switch times [s]:
         double timeRXToTX       = default(0) @unit(s); // Elapsed time to switch from receive to send state

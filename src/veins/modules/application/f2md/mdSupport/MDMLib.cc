@@ -640,7 +640,7 @@ double MDMLib::RectRectFactor(Coord c1, Coord c2, double heading1,
     double intArea = rit.RectIntArea(c1.x, c1.y, size1.x, size1.y, heading1,
             c2.x, c2.y, size2.x, size2.y, heading2);
 
-    return intArea / (size2.x * size2.y);
+    return intArea / (size2.x * size2.y + size1.x * size1.y - intArea);
 }
 
 double MDMLib::EllipseEllipseIntersectionFactor(Coord pos1, Coord posConf1,
@@ -697,7 +697,7 @@ double MDMLib::EllipseEllipseIntersectionFactor(Coord pos1, Coord posConf1,
     double factor2 = areaFactor;
 
     double factor = 1;
-    if (factor1 > factor2) {
+    if (factor1 < factor2) {
         factor = factor1;
     } else {
         factor = factor2;

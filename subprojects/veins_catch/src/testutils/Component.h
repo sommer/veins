@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2015-2018 Dominik Buse <dbuse@mail.uni-paderborn.de>
+// Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -17,24 +17,49 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+#pragma once
 
-#include "veins/modules/world/traci/trafficLight/logics/TraCITrafficLightSimpleLogic.h"
+#include "veins/veins.h"
 
-using Veins::TraCITrafficLightSimpleLogic;
+#include "testutils/Simulation.h"
 
-Define_Module(Veins::TraCITrafficLightSimpleLogic);
+class DummyComponent : public cComponent {
+public:
+    DummyComponent(DummySimulation* ds)
+    {
+    }
 
-void TraCITrafficLightSimpleLogic::handleApplMsg(cMessage* msg)
-{
-    delete msg; // just drop it
-}
+    void callRefreshDisplay() override
+    {
+    }
 
-void TraCITrafficLightSimpleLogic::handleTlIfMsg(TraCITrafficLightMessage* tlMsg)
-{
-    delete tlMsg; // just drop it
-}
+    cProperties* getProperties() const override
+    {
+        return nullptr;
+    }
 
-void TraCITrafficLightSimpleLogic::handlePossibleSwitch()
-{
-    // do nothing - just let it happen
-}
+    ComponentKind getComponentKind() const override
+    {
+        return KIND_OTHER;
+    }
+
+    cModule* getParentModule() const override
+    {
+        return nullptr;
+    }
+
+    void callInitialize() override
+    {
+    }
+
+    bool callInitialize(int stage) override
+    {
+        return true;
+    }
+
+    void callFinish() override
+    {
+    }
+
+private:
+}; // end DummyComponent

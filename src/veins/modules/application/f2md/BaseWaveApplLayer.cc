@@ -271,8 +271,8 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
     } else {
         if (dataOnSch)
             wsm->setChannelNumber(static_cast<int>(Channel::sch1)); // will be rewritten at Mac1609_4 to actual Service Channel. This is just so no controlInfo is needed
-          else
-              wsm->setChannelNumber(static_cast<int>(Channel::cch));
+        else
+            wsm->setChannelNumber(static_cast<int>(Channel::cch));
         wsm->addBitLength(dataLengthBits);
         wsm->setUserPriority(dataUserPriority);
     }
@@ -290,7 +290,8 @@ void BaseWaveApplLayer::receiveSignal(cComponent* source, simsignal_t signalID,
 }
 
 void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
-    ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
+    ChannelMobilityPtrType const mobility = check_and_cast<
+            ChannelMobilityPtrType>(obj);
 
     RelativeOffset relativeOffset = RelativeOffset(&curPositionConfidence,
             &curSpeedConfidence, &curHeadingConfidence, &deltaRPosition,
@@ -299,8 +300,13 @@ void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
 //    GaussianRandom relativeOffset = GaussianRandom(&curPositionConfidence,
 //            &curSpeedConfidence, &curHeadingConfidence);
 
-    curPosition = relativeOffset.OffsetPosition(mobility->getPositionAt(simTime()));
-    curSpeed = relativeOffset.OffsetSpeed(mobility->getCurrentSpeed());
+    Coord speedlocal = Coord(
+            this->mobility->getSpeed() * mobility->getCurrentDirection().x,
+            this->mobility->getSpeed() * mobility->getCurrentDirection().y);
+
+    curPosition = relativeOffset.OffsetPosition(
+            mobility->getPositionAt(simTime()));
+    curSpeed = relativeOffset.OffsetSpeed(speedlocal);
     curHeading = relativeOffset.OffsetHeading(mobility->getCurrentDirection());
 }
 
@@ -370,8 +376,8 @@ BaseWaveApplLayer::~BaseWaveApplLayer() {
     findHost()->unsubscribe(BaseMobility::mobilityStateChangedSignal, this);
 }
 
-void BaseWaveApplLayer::startService(Channel channel, int serviceId, std::string serviceDescription)
-{
+void BaseWaveApplLayer::startService(Channel channel, int serviceId,
+        std::string serviceDescription) {
     if (sendWSAEvt->isScheduled()) {
         error("Starting service although another service was already started");
     }
@@ -381,7 +387,8 @@ void BaseWaveApplLayer::startService(Channel channel, int serviceId, std::string
     currentServiceChannel = channel;
     currentServiceDescription = serviceDescription;
 
-    simtime_t wsaTime = computeAsynchronousSendingTime(wsaInterval, ChannelType::control);
+    simtime_t wsaTime = computeAsynchronousSendingTime(wsaInterval,
+            ChannelType::control);
     scheduleAt(wsaTime, sendWSAEvt);
 }
 

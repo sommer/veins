@@ -22,20 +22,21 @@
 
 using namespace Veins;
 
-VehicleObstacleShadowing::VehicleObstacleShadowing(VehicleObstacleControl& vehicleObstacleControl, bool useTorus, const Coord& playgroundSize)
-    : vehicleObstacleControl(vehicleObstacleControl)
+VehicleObstacleShadowing::VehicleObstacleShadowing(cComponent* owner, VehicleObstacleControl& vehicleObstacleControl, bool useTorus, const Coord& playgroundSize)
+    : AnalogueModel(owner)
+    , vehicleObstacleControl(vehicleObstacleControl)
     , useTorus(useTorus)
     , playgroundSize(playgroundSize)
 {
     if (useTorus) throw cRuntimeError("VehicleObstacleShadowing does not work on torus-shaped playgrounds");
 }
 
-void VehicleObstacleShadowing::filterSignal(Signal* signal, const AntennaPosition& senderPos_, const AntennaPosition& receiverPos_)
+void VehicleObstacleShadowing::filterSignal(Signal* signal)
 {
-    auto senderPos = senderPos_.getPositionAt();
-    auto receiverPos = receiverPos_.getPositionAt();
+    auto senderPos = signal->getSenderPoa().pos.getPositionAt();
+    auto receiverPos = signal->getReceiverPoa().pos.getPositionAt();
 
-    auto potentialObstacles = vehicleObstacleControl.getPotentialObstacles(senderPos_, receiverPos_, *signal);
+    auto potentialObstacles = vehicleObstacleControl.getPotentialObstacles(signal->getSenderPoa().pos, signal->getReceiverPoa().pos, *signal);
 
     if (potentialObstacles.size() < 1) return;
 

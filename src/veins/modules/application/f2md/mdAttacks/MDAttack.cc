@@ -325,10 +325,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
 
     case attackTypes::Disruptive: {
         if (detectedNodes->getNodesNum() > 0) {
-            attackBsm = nextAttackBsm;
+            attackBsm = *detectedNodes->getRandomBSM();
+            targetNode = attackBsm.getSenderPseudonym();
             attackBsm.setSenderPseudonym(*myPseudonym);
-            nextAttackBsm = *detectedNodes->getRandomBSM();
-            targetNode = nextAttackBsm.getSenderPseudonym();
         }
     }
         break;
@@ -336,10 +335,11 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
     case attackTypes::DataReplay: {
         if (detectedNodes->getNodesNum() > 0) {
             attackBsm = *detectedNodes->getNextAttackedBsm(*curPosition,
-                    nextAttackBsm.getSenderPseudonym(),
-                    nextAttackBsm.getArrivalTime().dbl());
+                    saveAttackBsm.getSenderPseudonym(),
+                    saveAttackBsm.getArrivalTime().dbl());
+            saveAttackBsm = attackBsm;
+            targetNode = attackBsm.getSenderPseudonym();
             attackBsm.setSenderPseudonym(*myPseudonym);
-            targetNode = nextAttackBsm.getSenderPseudonym();
         }
     }
         break;
@@ -407,10 +407,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
         }
 
         if (detectedNodes->getNodesNum() > 0) {
-            attackBsm = nextAttackBsm;
+            attackBsm = *detectedNodes->getRandomBSM();
+            targetNode = attackBsm.getSenderPseudonym();
             attackBsm.setSenderPseudonym(*myPseudonym);
-            nextAttackBsm = *detectedNodes->getRandomBSM();
-            targetNode = nextAttackBsm.getSenderPseudonym();
         }
     }
         break;
@@ -435,11 +434,11 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
 
         if (!SelfSybil) {
             if (detectedNodes->getNodesNum() > 0) {
-                attackBsm = nextAttackBsm;
-                nextAttackBsm = *detectedNodes->getNextAttackedBsm(*curPosition,
-                        nextAttackBsm.getSenderPseudonym(),
-                        nextAttackBsm.getArrivalTime().dbl());
-                targetNode = nextAttackBsm.getSenderPseudonym();
+                attackBsm = *detectedNodes->getNextAttackedBsm(*curPosition,
+                        saveAttackBsm.getSenderPseudonym(),
+                        saveAttackBsm.getArrivalTime().dbl());
+                saveAttackBsm = attackBsm;
+                targetNode = attackBsm.getSenderPseudonym();
 
                 double sybDistXrand = genLib.RandomDouble(-0.5, 0.5);
                 double sybDistYrand = genLib.RandomDouble(-0.5, 0.5);
@@ -571,10 +570,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
         }
 
         if (detectedNodes->getNodesNum() > 0) {
-            attackBsm = nextAttackBsm;
             attackBsm.setSenderPseudonym(pcPolicy->getNextPseudonym());
-            nextAttackBsm = *detectedNodes->getRandomBSM();
-            targetNode = nextAttackBsm.getSenderPseudonym();
+            targetNode = attackBsm.getSenderPseudonym();
+            attackBsm = *detectedNodes->getRandomBSM();
         }
     }
         break;

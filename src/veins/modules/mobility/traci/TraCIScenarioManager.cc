@@ -32,6 +32,8 @@
 #include "veins/modules/obstacle/ObstacleControl.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 
+using namespace Veins::TraCIConstants;
+
 using Veins::AnnotationManagerAccess;
 using Veins::TraCIBuffer;
 using Veins::TraCICoord;
@@ -63,6 +65,8 @@ TraCIScenarioManager::~TraCIScenarioManager()
     cancelAndDelete(connectAndStartTrigger);
     cancelAndDelete(executeOneTimestepTrigger);
 }
+
+namespace {
 
 std::vector<std::string> getMapping(std::string el)
 {
@@ -109,6 +113,8 @@ std::vector<std::string> getMapping(std::string el)
     }
     return mapping;
 }
+
+} // namespace
 
 TraCIScenarioManager::TypeMapping TraCIScenarioManager::parseMappings(std::string parameter, std::string parameterName, bool allowEmpty)
 {
@@ -240,6 +246,7 @@ void TraCIScenarioManager::initialize(int stage)
     if (firstStepAt == -1) firstStepAt = connectAt + updateInterval;
     parseModuleTypes();
     penetrationRate = par("penetrationRate").doubleValue();
+    ignoreGuiCommands = par("ignoreGuiCommands");
     host = par("host").stdstringValue();
     port = par("port");
     autoShutdown = par("autoShutdown");
@@ -435,8 +442,8 @@ void TraCIScenarioManager::handleMessage(cMessage* msg)
 void TraCIScenarioManager::handleSelfMsg(cMessage* msg)
 {
     if (msg == connectAndStartTrigger) {
-        connection.reset(TraCIConnection::connect(host.c_str(), port));
-        commandIfc.reset(new TraCICommandInterface(*connection));
+        connection.reset(TraCIConnection::connect(this, host.c_str(), port));
+        commandIfc.reset(new TraCICommandInterface(this, *connection, ignoreGuiCommands));
         init_traci();
         return;
     }

@@ -43,8 +43,9 @@ using Veins::AirFrame;
 class TwoRayInterferenceModel : public AnalogueModel {
 
 public:
-    TwoRayInterferenceModel(double dielectricConstant)
-        : epsilon_r(dielectricConstant)
+    TwoRayInterferenceModel(cComponent* owner, double dielectricConstant)
+        : AnalogueModel(owner)
+        , epsilon_r(dielectricConstant)
     {
     }
 
@@ -52,7 +53,7 @@ public:
     {
     }
 
-    void filterSignal(Signal* signal, const AntennaPosition& senderPos, const AntennaPosition& receiverPos) override;
+    void filterSignal(Signal* signal) override;
 
 protected:
     /** @brief stores the dielectric constant used for calculation */

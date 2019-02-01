@@ -18,8 +18,6 @@ using std::unique_ptr;
 
 Define_Module(Veins::BasePhyLayer);
 
-Coord NoMobiltyPos = Coord::ZERO;
-
 // --Initialization----------------------------------
 
 template <class T>
@@ -54,14 +52,14 @@ void BasePhyLayer::initialize(int stage)
         upperControlOut = findGate("upperControlOut");
         upperControlIn = findGate("upperControlIn");
 
-        if (par("useThermalNoise").boolValue()) {
-            thermalNoiseValue = FWMath::dBm2mW(par("thermalNoise").doubleValue());
+        if (par("useNoiseFloor").boolValue()) {
+            noiseFloorValue = FWMath::dBm2mW(par("noiseFloor").doubleValue());
         }
         else {
-            thermalNoiseValue = 0;
+            noiseFloorValue = 0;
         }
-        sensitivity = par("sensitivity").doubleValue();
-        sensitivity = FWMath::dBm2mW(sensitivity);
+        minPowerLevel = par("minPowerLevel").doubleValue();
+        minPowerLevel = FWMath::dBm2mW(minPowerLevel);
 
         recordStats = par("recordStats").boolValue();
 
@@ -72,8 +70,8 @@ void BasePhyLayer::initialize(int stage)
             throw cRuntimeError("Could not find BaseWorldUtility module");
         }
 
-        if (cc->hasPar("sat") && (sensitivity - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
-            throw cRuntimeError("Sensitivity can't be smaller than the signal attenuation threshold (sat) in ConnectionManager. Please adjust your omnetpp.ini file accordingly.");
+        if (cc->hasPar("sat") && (minPowerLevel - FWMath::dBm2mW(cc->par("sat").doubleValue())) < -0.000001) {
+            throw cRuntimeError("minPowerLevel can't be smaller than the signal attenuation threshold (sat) in ConnectionManager. Please adjust your omnetpp.ini file accordingly.");
         }
 
         initializeAnalogueModels(par("analogueModels").xmlValue());
@@ -378,7 +376,7 @@ void BasePhyLayer::handleMessage(cMessage* msg)
 void BasePhyLayer::handleAirFrame(AirFrame* frame)
 {
     // TODO: ask jerome to set air frame priority in his UWBIRPhy
-    // assert(frame->getSchedulingPriority() == airFramePriority());
+    // ASSERT(frame->getSchedulingPriority() == airFramePriority());
 
     switch (static_cast<AirFrameState>(frame->getState())) {
     case AirFrameState::start_receive:
@@ -403,14 +401,14 @@ void BasePhyLayer::handleAirFrameStartReceive(AirFrame* frame)
     EV_TRACE << "Received new AirFrame " << frame << " from channel." << endl;
 
     channelInfo.addAirFrame(frame, simTime());
-    assert(!channelInfo.isChannelEmpty());
+    ASSERT(!channelInfo.isChannelEmpty());
 
     if (usePropagationDelay) {
         Signal& s = frame->getSignal();
         simtime_t delay = simTime() - s.getSendingStart();
         s.setPropagationDelay(delay);
     }
-    assert(frame->getSignal().getReceptionStart() == simTime());
+    ASSERT(frame->getSignal().getReceptionStart() == simTime());
 
     filterSignal(frame);
 
@@ -438,7 +436,7 @@ void BasePhyLayer::handleAirFrameReceiving(AirFrame* frame)
     Signal& signal = frame->getSignal();
     simtime_t nextHandleTime = decider->processSignal(frame);
 
-    assert(signal.getDuration() == frame->getDuration());
+    ASSERT(signal.getDuration() == frame->getDuration());
     simtime_t signalEndTime = signal.getReceptionStart() + frame->getDuration();
 
     // check if this is the end of the receiving process
@@ -498,7 +496,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     }
 
     // build the AirFrame to send
-    assert(dynamic_cast<cPacket*>(msg) != nullptr);
+    ASSERT(dynamic_cast<cPacket*>(msg) != nullptr);
 
     unique_ptr<AirFrame> frame = encapsMsg(static_cast<cPacket*>(msg));
 
@@ -513,7 +511,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
 
     // make sure there is no self message of kind TX_OVER scheduled
     // and schedule the actual one
-    assert(!txOverTimer->isScheduled());
+    ASSERT(!txOverTimer->isScheduled());
     sendSelfMessage(txOverTimer, simTime() + frame->getDuration());
 
     sendMessageDown(frame.release());
@@ -531,7 +529,7 @@ unique_ptr<AirFrame> BasePhyLayer::encapsMsg(cPacket* macPkt)
 
     // ...and must always have a ControlInfo attached (contains Signal)
     auto ctrlInfo = unique_ptr<cObject>(macPkt->removeControlInfo());
-    assert(ctrlInfo);
+    ASSERT(ctrlInfo);
 
     // create the new AirFrame
     auto frame = createAirFrame(macPkt);
@@ -570,13 +568,13 @@ void BasePhyLayer::handleSelfMessage(cMessage* msg)
     switch (msg->getKind()) {
     // transmission over
     case TX_OVER:
-        assert(msg == txOverTimer);
+        ASSERT(msg == txOverTimer);
         sendControlMsgToMac(new cMessage("Transmission over", TX_OVER));
         break;
 
     // radio switch over
     case RADIO_SWITCHING_OVER:
-        assert(msg == radioSwitchingOverTimer);
+        ASSERT(msg == radioSwitchingOverTimer);
         finishRadioSwitching();
         break;
 
@@ -631,8 +629,8 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
     const Coord senderOrientation = senderPOA.orientation;
 
     // add position information to signal
-    signal.setSenderPos(senderPosition);
-    signal.setReceiverPos(receiverPosition);
+    signal.setSenderPoa(senderPOA);
+    signal.setReceiverPoa({receiverPosition, receiverOrientation, antenna});
 
     // compute gains at sender and receiver antenna
     double receiverGain = antenna->getGain(receiverPosition.getPositionAt(), receiverOrientation, senderPosition.getPositionAt());
@@ -649,7 +647,7 @@ void BasePhyLayer::filterSignal(AirFrame* frame)
 
     // apply all analouge models that are *not* suitable for thresholding now
     for (auto& analogueModel : analogueModels) {
-        analogueModel->filterSignal(&signal, senderPosition, receiverPosition);
+        analogueModel->filterSignal(&signal);
     }
 }
 
@@ -683,7 +681,7 @@ BasePhyLayer::~BasePhyLayer()
 int BasePhyLayer::getRadioState()
 {
     Enter_Method_Silent();
-    assert(radio);
+    ASSERT(radio);
     return radio->getCurrentState();
 }
 
@@ -696,7 +694,7 @@ void BasePhyLayer::finishRadioSwitching()
 simtime_t BasePhyLayer::setRadioState(int rs)
 {
     Enter_Method_Silent();
-    assert(radio);
+    ASSERT(radio);
 
     if (txOverTimer && txOverTimer->isScheduled()) {
         EV_WARN << "Switched radio while sending an AirFrame. The effects this would have on the transmission are not simulated by the BasePhyLayer!";
@@ -748,9 +746,9 @@ void BasePhyLayer::getChannelInfo(simtime_t_cref from, simtime_t_cref to, AirFra
     channelInfo.getAirFrames(from, to, out);
 }
 
-double BasePhyLayer::getThermalNoiseValue()
+double BasePhyLayer::getNoiseFloorValue()
 {
-    return thermalNoiseValue;
+    return noiseFloorValue;
 }
 
 void BasePhyLayer::sendControlMsgToMac(cMessage* msg)
@@ -765,7 +763,7 @@ void BasePhyLayer::sendUp(AirFrame* frame, DeciderResult* result)
 
     cMessage* packet = frame->decapsulate();
 
-    assert(packet);
+    ASSERT(packet);
 
     PhyToMacControlInfo::setControlInfo(packet, result);
 

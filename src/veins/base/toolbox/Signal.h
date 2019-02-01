@@ -22,7 +22,7 @@
 
 #include "veins/veins.h"
 
-#include "veins/base/utils/AntennaPosition.h"
+#include "veins/base/utils/POA.h"
 #include "veins/base/utils/Coord.h"
 #include "veins/base/toolbox/Spectrum.h"
 #include "veins/base/phyLayer/AnalogueModel.h"
@@ -287,32 +287,32 @@ public:
     ///@}
 
     /**
-     * @name Sender and receiver positions
+     * @name Sender and receiver POAs
      */
     ///@{
     /**
-     * Get this signal's sender postition.
+     * Get this signal's sender POA.
      */
-    AntennaPosition getSenderPos() const;
+    POA getSenderPoa() const;
 
     /**
-     * Get this signal's receiver postition.
+     * Get this signal's receiver POA.
      */
-    AntennaPosition getReceiverPos() const;
+    POA getReceiverPoa() const;
 
     /**
-     * Set this signal's sender postition.
+     * Set this signal's sender POA.
      *
-     * @param pos the new sender position
+     * @param poa the new sender POA
      */
-    void setSenderPos(AntennaPosition pos);
+    void setSenderPoa(const POA& poa);
 
     /**
-     * Set this signal's receiver postition.
+     * Set this signal's receiver POA.
      *
-     * @param pos the new receiver position
+     * @param poa the new receiver POA
      */
-    void setReceiverPos(AntennaPosition pos);
+    void setReceiverPoa(const POA& poa);
     ///@}
 
     /**
@@ -511,8 +511,8 @@ private:
     AnalogueModelList* analogueModelList = nullptr;
     uint16_t numAnalogueModelsApplied = 0;
 
-    AntennaPosition senderPos;
-    AntennaPosition receiverPos;
+    POA senderPoa;
+    POA receiverPoa;
 };
 
 /**

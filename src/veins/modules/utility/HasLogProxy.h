@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2015-2018 Dominik Buse <dbuse@mail.uni-paderborn.de>
+// Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -17,24 +17,24 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+#pragma once
 
-#include "veins/modules/world/traci/trafficLight/logics/TraCITrafficLightSimpleLogic.h"
+#include <string>
 
-using Veins::TraCITrafficLightSimpleLogic;
+#include "veins/veins.h"
 
-Define_Module(Veins::TraCITrafficLightSimpleLogic);
+namespace Veins {
 
-void TraCITrafficLightSimpleLogic::handleApplMsg(cMessage* msg)
-{
-    delete msg; // just drop it
-}
+/**
+ * Helper class for logging from classes not derived from cComponent
+ */
+class HasLogProxy {
+public:
+    HasLogProxy(cComponent* owner);
+    const cComponent* getThisPtr() const;
 
-void TraCITrafficLightSimpleLogic::handleTlIfMsg(TraCITrafficLightMessage* tlMsg)
-{
-    delete tlMsg; // just drop it
-}
+protected:
+    cComponent* owner;
+};
 
-void TraCITrafficLightSimpleLogic::handlePossibleSwitch()
-{
-    // do nothing - just let it happen
-}
+} // namespace Veins
