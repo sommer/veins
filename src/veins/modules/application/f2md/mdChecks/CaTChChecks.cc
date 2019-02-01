@@ -144,6 +144,10 @@ double CaTChChecks::PositionSpeedConsistancyCheck(Coord * curPosition,
 
         if (factor < 0) {
             std::cout << "=======================================" << '\n';
+
+            std::cout << " MAX_PLAUSIBLE_DECEL:" << MAX_PLAUSIBLE_DECEL
+                    << " MAX_PLAUSIBLE_ACCEL:" << MAX_PLAUSIBLE_ACCEL << '\n';
+
             std::cout << " time:" << time << " distance:" << distance << '\n';
             std::cout << " maxspeed:" << maxspeed << " minspeed:" << minspeed
                     << " theoreticalSpeed:" << theoreticalSpeed << '\n';
@@ -180,15 +184,14 @@ double CaTChChecks::IntersectionCheck(Coord * nodePosition1,
             mdmLib.calculateHeadingAnglePtr(nodeHeading2), *nodeSize1,
             *nodeSize2);
 
-    intFactor2 = intFactor2 *  ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
+    intFactor2 = intFactor2 * ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
     intFactor2 = 1 - intFactor2;
 
-
-    if(intFactor2>1){
+    if (intFactor2 > 1) {
         intFactor2 = 1;
     }
 
-    if(intFactor2<0){
+    if (intFactor2 < 0) {
         intFactor2 = 0;
     }
 
@@ -238,7 +241,8 @@ InterTest CaTChChecks::MultipleIntersectionCheck(NodeTable * detectedNodes,
                         &varNode->getLatestBSMAddr()->getSenderHeading(),
                         &senderHeading, &varSize, &senderSize, deltaTime);
                 if (INTScore < 1) {
-                    intertTest.addInterValue(detectedNodes->getNodePseudo(var),INTScore);
+                    intertTest.addInterValue(detectedNodes->getNodePseudo(var),
+                            INTScore);
                 }
             }
         }
@@ -506,7 +510,6 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
                     mdmLib.calculateSpeedPtr(
                             &bsm->getSenderSpeedConfidence())));
 
-
     if (detectedNodes->getNodeHistoryAddr(senderPseudonym)->getBSMNum() > 0) {
         bsmCheck.setPositionConsistancy(
                 PositionConsistancyCheck(&senderPos, &senderPosConfidence,
@@ -557,7 +560,6 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
                         mdmLib.calculateDeltaTime(bsm,
                                 senderNode->getLatestBSMAddr())));
 
-
     } else {
         bsmCheck.setSuddenAppearence(
                 SuddenAppearenceCheck(&senderPos, &senderPosConfidence,
@@ -565,7 +567,7 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
     }
 
 //    if(bsm->getSenderMbType() == 1){
-//        PrintBsmCheck(senderPseudonym, bsmCheck);
+    PrintBsmCheck(senderPseudonym, bsmCheck);
 //    }
 
     return bsmCheck;

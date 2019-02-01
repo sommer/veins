@@ -24,8 +24,9 @@ using namespace boost;
 
 #define AUG_FACTOR 20
 
-ExperiChecks::ExperiChecks(unsigned long myPseudonym, Coord myPosition, Coord myPositionConfidence,
-        Coord myHeading, Coord myHeadingConfidence, Coord mySize, Coord myLimits) {
+ExperiChecks::ExperiChecks(unsigned long myPseudonym, Coord myPosition,
+        Coord myPositionConfidence, Coord myHeading, Coord myHeadingConfidence,
+        Coord mySize, Coord myLimits) {
     this->myPseudonym = myPseudonym;
     this->myPosition = myPosition;
     this->myPositionConfidence = myPositionConfidence;
@@ -48,8 +49,11 @@ double ExperiChecks::RangePlausibilityCheck(Coord receiverPosition,
     double factor = mdmLib.CircleCircleFactor(distance, senderR, receiverR,
     MAX_PLAUSIBLE_RANGE);
 
-    if(factor<=0){
-        factor = -AUG_FACTOR * (2*mdmLib.gaussianSum(distance-senderR-receiverR,2*MAX_PLAUSIBLE_RANGE/3)-1);
+    if (factor <= 0) {
+        factor = -AUG_FACTOR
+                * (2
+                        * mdmLib.gaussianSum(distance - senderR - receiverR,
+                                2 * MAX_PLAUSIBLE_RANGE / 3) - 1);
     }
 
     return factor;
@@ -65,8 +69,11 @@ double ExperiChecks::PositionConsistancyCheck(Coord curPosition,
     double factor = mdmLib.CircleCircleFactor(distance, curR, oldR,
             MAX_PLAUSIBLE_SPEED * time);
 
-    if(factor<=0){
-        factor = -AUG_FACTOR * (2*mdmLib.gaussianSum(distance-curR-oldR,2*(MAX_PLAUSIBLE_SPEED * time)/3)-1);
+    if (factor <= 0) {
+        factor = -AUG_FACTOR
+                * (2
+                        * mdmLib.gaussianSum(distance - curR - oldR,
+                                2 * (MAX_PLAUSIBLE_SPEED * time) / 3) - 1);
     }
 
     return factor;
@@ -77,28 +84,40 @@ double ExperiChecks::SpeedConsistancyCheck(double curSpeed,
         double time) {
     double speedDelta = curSpeed - oldspeed;
 
-    double attFact = mdmLib.gaussianSum(1, 1/3);
-    if(time>=1){
+    double attFact = mdmLib.gaussianSum(1, 1 / 3);
+    if (time >= 1) {
         attFact = time;
     }
 
     double factor = 1;
     if (speedDelta > 0) {
         factor = mdmLib.SegmentSegmentFactor(speedDelta, curSpeedConfidence,
-                oldSpeedConfidence,
-                MAX_PLAUSIBLE_ACCEL * attFact);
+                oldSpeedConfidence, MAX_PLAUSIBLE_ACCEL * attFact);
 
-        if(factor<=0){
-            factor = -AUG_FACTOR * (2*mdmLib.gaussianSum(speedDelta-curSpeedConfidence-oldSpeedConfidence,2*(MAX_PLAUSIBLE_ACCEL * attFact)/3)-1);
+        if (factor <= 0) {
+            factor =
+                    -AUG_FACTOR
+                            * (2
+                                    * mdmLib.gaussianSum(
+                                            speedDelta - curSpeedConfidence
+                                                    - oldSpeedConfidence,
+                                            2 * (MAX_PLAUSIBLE_ACCEL * attFact)
+                                                    / 3) - 1);
         }
 
     } else {
         factor = mdmLib.SegmentSegmentFactor(speedDelta, curSpeedConfidence,
-                oldSpeedConfidence,
-                MAX_PLAUSIBLE_DECEL * attFact);
+                oldSpeedConfidence, MAX_PLAUSIBLE_DECEL * attFact);
 
-        if(factor<=0){
-            factor = -AUG_FACTOR * (2*mdmLib.gaussianSum(speedDelta-curSpeedConfidence-oldSpeedConfidence,2*(MAX_PLAUSIBLE_DECEL * attFact)/3)-1);
+        if (factor <= 0) {
+            factor =
+                    -AUG_FACTOR
+                            * (2
+                                    * mdmLib.gaussianSum(
+                                            speedDelta - curSpeedConfidence
+                                                    - oldSpeedConfidence,
+                                            2 * (MAX_PLAUSIBLE_DECEL * attFact)
+                                                    / 3) - 1);
         }
     }
 
@@ -109,9 +128,14 @@ double ExperiChecks::SpeedPlausibilityCheck(double speed,
         double speedConfidence) {
     if ((fabs(speed) + fabs(speedConfidence) / 2) < MAX_PLAUSIBLE_SPEED) {
         return 1;
-    } else if ((fabs(speed) - fabs(speedConfidence) / 2) > MAX_PLAUSIBLE_SPEED) {
+    } else if ((fabs(speed) - fabs(speedConfidence) / 2)
+            > MAX_PLAUSIBLE_SPEED) {
 
-          double  factor = -AUG_FACTOR * (2*mdmLib.gaussianSum((fabs(speed) - fabs(speedConfidence) / 2),2*(MAX_PLAUSIBLE_SPEED)/3)-1);
+        double factor = -AUG_FACTOR
+                * (2
+                        * mdmLib.gaussianSum(
+                                (fabs(speed) - fabs(speedConfidence) / 2),
+                                2 * (MAX_PLAUSIBLE_SPEED) / 3) - 1);
 
         return factor;
     } else {
@@ -140,17 +164,30 @@ double ExperiChecks::PositionSpeedConsistancyCheck(Coord curPosition,
         double oldR = oldPositionConfidence.x / time + oldSpeedConfidence;
 
         double maxfactor = mdmLib.OneSidedCircleSegmentFactor(
-                maxspeed - theoreticalSpeed, curR, oldR, (MAX_PLAUSIBLE_DECEL+MAX_MGT_RNG)*time);
+                maxspeed - theoreticalSpeed, curR, oldR,
+                (MAX_PLAUSIBLE_DECEL + MAX_MGT_RNG) * time);
 
-        if(maxfactor<=0){
-            maxfactor = -AUG_FACTOR * (2*mdmLib.gaussianSum((maxspeed - theoreticalSpeed - curR - oldR),2*((MAX_PLAUSIBLE_DECEL+MAX_MGT_RNG)*time)/3)-1);
+        if (maxfactor <= 0) {
+            maxfactor = -AUG_FACTOR
+                    * (2
+                            * mdmLib.gaussianSum(
+                                    (maxspeed - theoreticalSpeed - curR - oldR),
+                                    2
+                                            * ((MAX_PLAUSIBLE_DECEL
+                                                    + MAX_MGT_RNG) * time) / 3)
+                            - 1);
         }
 
         double minfactor = mdmLib.OneSidedCircleSegmentFactor(
-                theoreticalSpeed - minspeed, curR, oldR,  MAX_PLAUSIBLE_ACCEL*time);
+                theoreticalSpeed - minspeed, curR, oldR,
+                MAX_PLAUSIBLE_ACCEL * time);
 
-        if(minfactor<=0){
-            minfactor = -AUG_FACTOR * (2*mdmLib.gaussianSum((theoreticalSpeed - minspeed - curR - oldR),2*(MAX_PLAUSIBLE_ACCEL*time)/3)-1);
+        if (minfactor <= 0) {
+            minfactor = -AUG_FACTOR
+                    * (2
+                            * mdmLib.gaussianSum(
+                                    (theoreticalSpeed - minspeed - curR - oldR),
+                                    2 * (MAX_PLAUSIBLE_ACCEL * time) / 3) - 1);
         }
 
         double factor = 1;
@@ -214,8 +251,7 @@ InterTest ExperiChecks::MultipleIntersectionCheck(NodeTable * detectedNodes,
     InterTest intertTest = InterTest();
 
     INTScore = IntersectionCheck(myPosition, myPositionConfidence, senderPos,
-            senderPosConfidence, myHeading, senderHeading, mySize,
-            senderSize);
+            senderPosConfidence, myHeading, senderHeading, mySize, senderSize);
     if (INTScore < 1) {
         intertTest.addInterValue(myPseudonym, INTScore);
     }
@@ -241,7 +277,8 @@ InterTest ExperiChecks::MultipleIntersectionCheck(NodeTable * detectedNodes,
                         varNode->getLatestBSMAddr()->getSenderHeading(),
                         senderHeading, varSize, senderSize);
                 if (INTScore < 1) {
-                    intertTest.addInterValue(detectedNodes->getNodePseudo(var),INTScore);
+                    intertTest.addInterValue(detectedNodes->getNodePseudo(var),
+                            INTScore);
                 }
             }
         }
@@ -260,8 +297,7 @@ double ExperiChecks::SuddenAppearenceCheck(Coord receiverPosition,
 
     double factor = 0;
     if (r1 <= 0) {
-        if (distance
-                < (MAX_SA_RANGE + receiverPositionConfidence.x)) {
+        if (distance < (MAX_SA_RANGE + receiverPositionConfidence.x)) {
             factor = 0;
         } else {
             factor = 1;
@@ -390,12 +426,18 @@ double ExperiChecks::PositionHeadingConsistancyCheck(Coord curHeading,
         double factor = (curFactorLow + oldFactorLow + curFactorHigh
                 + oldFactorHigh) / 4;
 
-        if(factor<=0){
-            double factorL = -AUG_FACTOR * (2*mdmLib.gaussianSum(angleLow,2*(MAX_HEADING_CHANGE)/3)-1);
-            double factorH = -AUG_FACTOR * (2*mdmLib.gaussianSum(angleHigh,2*(MAX_HEADING_CHANGE)/3)-1);
-            if(factorH>factorL){
+        if (factor <= 0) {
+            double factorL = -AUG_FACTOR
+                    * (2
+                            * mdmLib.gaussianSum(angleLow,
+                                    2 * (MAX_HEADING_CHANGE) / 3) - 1);
+            double factorH = -AUG_FACTOR
+                    * (2
+                            * mdmLib.gaussianSum(angleHigh,
+                                    2 * (MAX_HEADING_CHANGE) / 3) - 1);
+            if (factorH > factorL) {
                 factor = factorH;
-            }else{
+            } else {
                 factor = factorL;
             }
         }
@@ -438,7 +480,8 @@ double ExperiChecks::PositionHeadingConsistancyCheck(Coord curHeading,
     }
 }
 
-BsmCheck ExperiChecks::CheckBSM(BasicSafetyMessage * bsm, NodeTable * detectedNodes) {
+BsmCheck ExperiChecks::CheckBSM(BasicSafetyMessage * bsm,
+        NodeTable * detectedNodes) {
 
     BsmCheck bsmCheck = BsmCheck();
 
@@ -446,7 +489,8 @@ BsmCheck ExperiChecks::CheckBSM(BasicSafetyMessage * bsm, NodeTable * detectedNo
     Coord senderPos = bsm->getSenderPos();
     Coord senderPosConfidence = bsm->getSenderPosConfidence();
 
-    NodeHistory * senderNode = detectedNodes->getNodeHistoryAddr(senderPseudonym);
+    NodeHistory * senderNode = detectedNodes->getNodeHistoryAddr(
+            senderPseudonym);
 
     bsmCheck.setRangePlausibility(
             RangePlausibilityCheck(myPosition, myPositionConfidence, senderPos,
@@ -501,7 +545,8 @@ BsmCheck ExperiChecks::CheckBSM(BasicSafetyMessage * bsm, NodeTable * detectedNo
                         mdmLib.calculateDeltaTime(bsm,
                                 senderNode->getLatestBSMAddr()),
                         mdmLib.calculateSpeed(bsm->getSenderSpeed()),
-                        mdmLib.calculateSpeed(bsm->getSenderSpeedConfidence())));
+                        mdmLib.calculateSpeed(
+                                bsm->getSenderSpeedConfidence())));
 
     } else {
         bsmCheck.setSuddenAppearence(
@@ -521,51 +566,52 @@ BsmCheck ExperiChecks::CheckBSM(BasicSafetyMessage * bsm, NodeTable * detectedNo
     return bsmCheck;
 }
 
-void ExperiChecks::PrintBsmCheck(unsigned long senderPseudonym, BsmCheck bsmCheck) {
+void ExperiChecks::PrintBsmCheck(unsigned long senderPseudonym,
+        BsmCheck bsmCheck) {
 
     if (bsmCheck.getRangePlausibility() < 0.5) {
         std::cout << "^^^^^^^^^^^V2 " << "ART FAILED => "
-                << bsmCheck.getRangePlausibility() << " A:" << myPseudonym << " B:"
-                << senderPseudonym << '\n';
+                << bsmCheck.getRangePlausibility() << " A:" << myPseudonym
+                << " B:" << senderPseudonym << '\n';
     }
     if (bsmCheck.getPositionConsistancy() < 0.5) {
         std::cout << "^^^^^^^^^^^V2 " << "MGTD FAILED => "
-                << bsmCheck.getPositionConsistancy() << " A:" << myPseudonym << " B:"
-                << senderPseudonym << '\n';
+                << bsmCheck.getPositionConsistancy() << " A:" << myPseudonym
+                << " B:" << senderPseudonym << '\n';
     }
     if (bsmCheck.getSpeedConsistancy() < 0.5) {
         std::cout << "^^^^^^^^^^^V2 " << "MGTS FAILED => "
-                << bsmCheck.getSpeedConsistancy() << " A:" << myPseudonym << " B:"
-                << senderPseudonym << '\n';
+                << bsmCheck.getSpeedConsistancy() << " A:" << myPseudonym
+                << " B:" << senderPseudonym << '\n';
     }
 
     if (bsmCheck.getPositionSpeedConsistancy() < 0.5) {
         std::cout << "^^^^^^^^^^^V2 " << "MGTSV FAILED => "
-                << bsmCheck.getPositionSpeedConsistancy() << " A:" << myPseudonym
-                << " B:" << senderPseudonym << '\n';
+                << bsmCheck.getPositionSpeedConsistancy() << " A:"
+                << myPseudonym << " B:" << senderPseudonym << '\n';
     }
 
     if (bsmCheck.getSpeedPlausibility() < 0.5) {
         std::cout << "^^^^^^^^^^^V2 " << "MAXS FAILED => "
-                << bsmCheck.getSpeedPlausibility() << " A:" << myPseudonym << " B:"
-                << senderPseudonym << '\n';
+                << bsmCheck.getSpeedPlausibility() << " A:" << myPseudonym
+                << " B:" << senderPseudonym << '\n';
     }
     if (bsmCheck.getPositionPlausibility() < 0.5) {
         std::cout << "^^^^^^^^^^^V2 " << "MAP FAILED => "
-                << bsmCheck.getPositionPlausibility() << " A:" << myPseudonym << " B:"
-                << senderPseudonym << '\n';
+                << bsmCheck.getPositionPlausibility() << " A:" << myPseudonym
+                << " B:" << senderPseudonym << '\n';
     }
 
     if (bsmCheck.getSuddenAppearence() < 0.5) {
         std::cout << "^^^^^^^^^^^V2 " << "SAW FAILED => "
-                << bsmCheck.getSuddenAppearence() << " A:" << myPseudonym << " B:"
-                << senderPseudonym << '\n';
+                << bsmCheck.getSuddenAppearence() << " A:" << myPseudonym
+                << " B:" << senderPseudonym << '\n';
     }
 
     if (bsmCheck.getPositionHeadingConsistancy() < 0.5) {
         std::cout << "^^^^^^^^^^^V2 " << "PHC FAILED => "
-                << bsmCheck.getPositionHeadingConsistancy() << " A:" << myPseudonym
-                << " B:" << senderPseudonym << '\n';
+                << bsmCheck.getPositionHeadingConsistancy() << " A:"
+                << myPseudonym << " B:" << senderPseudonym << '\n';
     }
 
     InterTest inter = bsmCheck.getIntersection();
@@ -573,10 +619,10 @@ void ExperiChecks::PrintBsmCheck(unsigned long senderPseudonym, BsmCheck bsmChec
         if (inter.getInterValue(var) < 0.5) {
             std::cout << "^^^^^^^^^^^V2 " << "INT FAILED => "
                     << inter.getInterValue(var) << " A:" << myPseudonym << " B:"
-                    << senderPseudonym << " C:" << inter.getInterId(var) << '\n';
+                    << senderPseudonym << " C:" << inter.getInterId(var)
+                    << '\n';
         }
     }
 
 }
-
 

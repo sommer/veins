@@ -32,19 +32,41 @@ Define_Module(JosephVeinsApp);
 static bool MixLocalAttacks = true;
 static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
-
-static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::ConstPos,
-        attackTypes::ConstPosOffset, attackTypes::RandomPos,
-        attackTypes::RandomPosOffset, attackTypes::ConstSpeed,
-        attackTypes::ConstSpeedOffset, attackTypes::RandomSpeed,
-        attackTypes::RandomSpeedOffset, attackTypes::EventualStop,
-        attackTypes::Disruptive, attackTypes::DataReplay,
-        attackTypes::StaleMessages, attackTypes::DoS, attackTypes::DoSRandom,
-        attackTypes::DoSDisruptive, attackTypes::GridSybil, attackTypes::DoSRandomSybil,
-        attackTypes::DoSDisruptiveSybil, attackTypes::DataReplaySybil, };
-
 #define LOCAL_ATTACKER_PROB 0.1
-#define LOCAL_ATTACK_TYPE attackTypes::DataReplaySybil
+#define LOCAL_ATTACK_TYPE attackTypes::DoSDisruptiveSybil
+
+static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::GridSybil,
+        attackTypes::ConstPos, attackTypes::RandomPos,
+        attackTypes::StaleMessages, attackTypes::DoSRandomSybil,
+        attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
+        attackTypes::DoSDisruptiveSybil, attackTypes::RandomPosOffset,
+        attackTypes::RandomSpeed, attackTypes::DataReplaySybil,
+        attackTypes::ConstSpeedOffset, attackTypes::RandomSpeedOffset,
+        attackTypes::EventualStop, attackTypes::Disruptive,
+        attackTypes::DataReplay, };
+
+//static attackTypes::Attacks MixLocalAttacksList[] =
+//        { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
+//                attackTypes::RandomPos, attackTypes::StaleMessages,
+//                attackTypes::DoSRandomSybil, attackTypes::ConstPosOffset,
+//                attackTypes::DoSDisruptive, attackTypes::ConstSpeed,
+//                attackTypes::RandomSpeed , attackTypes::RandomPosOffset,
+//                attackTypes::DoSDisruptiveSybil , attackTypes::DataReplaySybil,
+//                attackTypes::ConstSpeedOffset, attackTypes::RandomSpeedOffset,
+//                attackTypes::EventualStop, attackTypes::Disruptive,
+//                attackTypes::DataReplay, attackTypes::DoSRandom };
+
+//static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::ConstPos,
+//        attackTypes::ConstPosOffset, attackTypes::RandomPos,
+//        attackTypes::RandomPosOffset, attackTypes::ConstSpeed,
+//        attackTypes::ConstSpeedOffset, attackTypes::RandomSpeed,
+//        attackTypes::RandomSpeedOffset, attackTypes::EventualStop,
+//        attackTypes::Disruptive, attackTypes::DataReplay,
+//        attackTypes::StaleMessages, attackTypes::DoS, attackTypes::DoSRandom,
+//        attackTypes::DoSDisruptive, attackTypes::GridSybil,
+//        attackTypes::DoSRandomSybil, attackTypes::DoSDisruptiveSybil,
+//        attackTypes::DataReplaySybil, };
+
 //ConstPos, ConstPosOffset, RandomPos, RandomPosOffset,
 //ConstSpeed, ConstSpeedOffset, RandomSpeed, RandomSpeedOffset,
 //EventualStop, Disruptive, DataReplay, StaleMessages,
@@ -126,7 +148,6 @@ void JosephVeinsApp::initialize(int stage) {
 
         pcPolicy.setMbType(myMdType);
         pcPolicy.setMdAuthority(&mdStats);
-
         pcPolicy.setCurPosition(&curPosition);
         pcPolicy.setMyId(&myId);
         pcPolicy.setMyPseudonym(&myPseudonym);
@@ -416,7 +437,9 @@ void JosephVeinsApp::treatAttackFlags() {
 
 void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
         int version) {
+
     unsigned long senderPseudo = bsm->getSenderPseudonym();
+    bsm->getArrivalTime();
 
     switch (version) {
     case 1: {
@@ -717,7 +740,7 @@ void JosephVeinsApp::writeReport(MDReport reportBase, std::string version,
         break;
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
-        if(myBsmNum >0){
+        if (myBsmNum > 0) {
             evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             evr.writeStrToFile(savePath, serialNumber, version,
                     evr.getReportPrintableJson(), curDate);
@@ -750,7 +773,7 @@ void JosephVeinsApp::writeListReport(MDReport reportBase, std::string version,
         break;
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
-        if(myBsmNum >0){
+        if (myBsmNum > 0) {
             evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             evr.writeStrToFileList(savePath, serialNumber, version,
                     evr.getReportPrintableJson(), curDate);
@@ -784,15 +807,23 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         break;
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
-        if(myBsmNum >0){
+        if (myBsmNum > 0) {
             evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             reportStr = evr.getReportPrintableJson();
+        } else {
+//            OneMessageReport omr = OneMessageReport(reportBase);
+//            omr.setReportedBsm(*bsm);
+//            omr.setReportedCheck(bsmCheck);
+//            reportStr = omr.getReportPrintableJson();
         }
     }
         break;
     default:
+        reportStr = "ERROR myReportType";
         break;
     }
+
+    //std::cout<<reportStr<<"\n";
 
     if (!version.compare("V1")) {
         HTTPRequest httpr = HTTPRequest(maPortV1, "localhost");

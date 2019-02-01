@@ -1,13 +1,13 @@
 /*******************************************************************************
-* @author  Joseph Kamel 
-* @email   josephekamel@gmail.com
-* @date    28/11/2018
-* @version 2.0
-*
-* SCA (Secure Cooperative Autonomous systems)
-* Copyright (c) 2013, 2018 Institut de Recherche Technologique SystemX
-* All rights reserved.
-*******************************************************************************/
+ * @author  Joseph Kamel 
+ * @email   josephekamel@gmail.com
+ * @date    28/11/2018
+ * @version 2.0
+ *
+ * SCA (Secure Cooperative Autonomous systems)
+ * Copyright (c) 2013, 2018 Institut de Recherche Technologique SystemX
+ * All rights reserved.
+ *******************************************************************************/
 
 #ifndef __VEINS_MDModule_H_
 #define __VEINS_MDModule_H_
@@ -23,7 +23,6 @@
 #include "veins/modules/obstacle/ObstacleControl.h"
 #include "veins/modules/obstacle/Obstacle.h"
 #include "../BaseWaveApplLayer.h"
-
 
 using namespace Veins;
 using namespace omnetpp;
@@ -49,27 +48,28 @@ private:
     double RangePlausibilityCheck(Coord*, Coord*);
     double PositionConsistancyCheck(Coord*, Coord*, double);
     double SpeedConsistancyCheck(double, double, double);
-    double PositionSpeedConsistancyCheck(Coord*,
-            Coord *, double , double , double );
+    double PositionSpeedConsistancyCheck(Coord*, Coord *, double, double,
+            double);
     double SpeedPlausibilityCheck(double);
-    double IntersectionCheck(Coord nodePosition1, Coord nodeSize1,
-            Coord head1, Coord nodePosition2, Coord nodeSize2,
-            Coord head2, double deltaTime);
+    double IntersectionCheck(Coord nodePosition1, Coord nodeSize1, Coord head1,
+            Coord nodePosition2, Coord nodeSize2, Coord head2,
+            double deltaTime);
     double SuddenAppearenceCheck(Coord*, Coord*);
     double BeaconFrequencyCheck(double, double);
     double PositionPlausibilityCheck(Coord*, double);
     double PositionHeadingConsistancyCheck(Coord* curHeading,
-            Coord *curPosition, Coord *oldPosition, double deltaTime, double curSpeed);
+            Coord *curPosition, Coord *oldPosition, double deltaTime,
+            double curSpeed);
 
     InterTest MultipleIntersectionCheck(NodeTable * detectedNodes,
             BasicSafetyMessage * bsm);
 
-    void PrintBsmCheck(unsigned long senderPseudonym,
-            BsmCheck bsmCheck);
+    void PrintBsmCheck(unsigned long senderPseudonym, BsmCheck bsmCheck);
 
 public:
 
-    LegacyChecks(unsigned long myPseudonym, Coord myPosition, Coord mySpeed, Coord myHeading,Coord mySize, Coord myLimits,  LinkControl* LinkC);
+    LegacyChecks(unsigned long myPseudonym, Coord myPosition, Coord mySpeed,
+            Coord myHeading, Coord mySize, Coord myLimits, LinkControl* LinkC);
     BsmCheck CheckBSM(BasicSafetyMessage * bsm, NodeTable * detectedNodes);
 
 };

@@ -63,7 +63,7 @@
 #define StaleMessages_Buffer 5 //less than 10
 #define DosMultipleFreq 4 // times faster
 #define SybilVehNumber 5 // max 10
-#define SelfSybil false // max 10
+#define SelfSybil true // default true
 #define SybilDistanceX 5 // meters
 #define SybilDistanceY 2 // meters
 #define MAX_SYBIL_NUM 10

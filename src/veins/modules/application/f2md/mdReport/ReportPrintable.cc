@@ -248,14 +248,15 @@ std::string ReportPrintable::getCheckJson(BsmCheck Check){
 
 
 std::string ReportPrintable::getBsmJson(BasicSafetyMessage bsm){
+
     std::string tempStr = "";
     JsonWriter jw;
     jw.openJsonElement("Bsm",true);
 
-    tempStr = jw.getSimpleTag("pseudonym", std::to_string(bsm.getSenderPseudonym()),true);
+    tempStr = jw.getSimpleTag("Pseudonym", std::to_string(bsm.getSenderPseudonym()),true);
     jw.addTagToElement("Bsm", tempStr);
 
-    tempStr = jw.getSimpleTag("ts", bsm.getArrivalTime().str(),true);
+    tempStr = jw.getSimpleTag("ArrivalTime", bsm.getArrivalTime().str(),true);
     jw.addTagToElement("Bsm", tempStr);
 
     jw.openJsonElementList("GpsCoord");

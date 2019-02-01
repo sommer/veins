@@ -29,8 +29,6 @@
 #include "veins/modules/obstacle/Obstacle.h"
 #include "../BaseWaveApplLayer.h"
 
-
-
 using namespace Veins;
 using namespace omnetpp;
 
@@ -61,10 +59,11 @@ private:
             Coord * curPositionConfidence, Coord * oldPosition,
             Coord * oldPositionConfidence, double time);
     double SpeedConsistancyCheck(double, double, double, double, double);
-    double IntersectionCheck(Coord *  nodePosition1,
-            Coord *  nodePositionConfidence1, Coord *  nodePosition2,
-            Coord*  nodePositionConfidence2, Coord * nodeHeading1, Coord * nodeHeading2,
-            Coord*  nodeSize1, Coord * nodeSize2, double deltaTime);
+    double IntersectionCheck(Coord * nodePosition1,
+            Coord * nodePositionConfidence1, Coord * nodePosition2,
+            Coord* nodePositionConfidence2, Coord * nodeHeading1,
+            Coord * nodeHeading2, Coord* nodeSize1, Coord * nodeSize2,
+            double deltaTime);
     InterTest MultipleIntersectionCheck(NodeTable * detectedNodes,
             BasicSafetyMessage * bsm);
 
@@ -77,18 +76,21 @@ private:
     double PositionHeadingConsistancyCheck(Coord * curHeading,
             Coord * curHeadingConfidence, Coord * oldPosition,
             Coord * oldPositionConfidence, Coord * curPositionConfidence,
-            Coord * curPosition, double deltaTime, double curSpeed, double curSpeedConfidence);
+            Coord * curPosition, double deltaTime, double curSpeed,
+            double curSpeedConfidence);
 
     double BeaconFrequencyCheck(double, double);
     double SuddenAppearenceCheck(Coord*, Coord*, Coord*, Coord*);
 
     void PrintBsmCheck(unsigned long senderPseudonym, BsmCheck bsmCheck);
 
-
     void resetAll();
 
 public:
-    CaTChChecks(unsigned long myPseudonym, Coord myPosition, Coord myPositionConfidence, Coord myHeading, Coord myHeadingConfidence, Coord mySize,Coord myLimits, LinkControl* LinkC);
+    CaTChChecks(unsigned long myPseudonym, Coord myPosition,
+            Coord myPositionConfidence, Coord myHeading,
+            Coord myHeadingConfidence, Coord mySize, Coord myLimits,
+            LinkControl* LinkC);
     BsmCheck CheckBSM(BasicSafetyMessage * bsm, NodeTable * detectedNodes);
 
 };

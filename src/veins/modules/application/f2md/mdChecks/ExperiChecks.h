@@ -1,6 +1,6 @@
 /*******************************************************************************
  * @author  Joseph Kamel 
-* @email   josephekamel@gmail.com
+ * @email   josephekamel@gmail.com
  * @date    28/11/2018
  * @version 2.0
  *
@@ -24,7 +24,6 @@
 #include <veins/modules/application/f2md/mdStats/MDStatistics.h>
 #include "../mdBase/InterTest.h"
 #include "../mdSupport/MDMLib.h"
-
 
 using namespace Veins;
 using namespace omnetpp;
@@ -54,10 +53,10 @@ private:
             Coord curPositionConfidence, Coord oldPosition,
             Coord oldPositionConfidence, double time);
     double SpeedConsistancyCheck(double, double, double, double, double);
-    double IntersectionCheck(Coord nodePosition1,
-            Coord nodePositionConfidence1, Coord nodePosition2,
-            Coord nodePositionConfidence2, Coord nodeHeading1, Coord nodeHeading2,
-            Coord nodeSize1, Coord nodeSize2);
+    double IntersectionCheck(Coord nodePosition1, Coord nodePositionConfidence1,
+            Coord nodePosition2, Coord nodePositionConfidence2,
+            Coord nodeHeading1, Coord nodeHeading2, Coord nodeSize1,
+            Coord nodeSize2);
     InterTest MultipleIntersectionCheck(NodeTable * detectedNodes,
             BasicSafetyMessage * bsm);
 
@@ -67,22 +66,23 @@ private:
             double curSpeedConfidence, double oldspeed,
             double oldSpeedConfidence, double time);
 
-
     double PositionHeadingConsistancyCheck(Coord curHeading,
             Coord curHeadingConfidence, Coord oldPosition,
             Coord oldPositionConfidence, Coord curPositionConfidence,
-            Coord curPosition, double deltaTime, double curSpeed, double curSpeedConfidence);
+            Coord curPosition, double deltaTime, double curSpeed,
+            double curSpeedConfidence);
 
     double BeaconFrequencyCheck(double, double);
     double SuddenAppearenceCheck(Coord, Coord, Coord, Coord);
 
     void PrintBsmCheck(unsigned long myPseudonym, BsmCheck bsmCheck);
 
-
     void resetAll();
 
 public:
-    ExperiChecks(unsigned long myPseudonym, Coord myPosition, Coord myPositionConfidence, Coord myHeading, Coord myHeadingConfidence, Coord mySize, Coord myLimits);
+    ExperiChecks(unsigned long myPseudonym, Coord myPosition,
+            Coord myPositionConfidence, Coord myHeading,
+            Coord myHeadingConfidence, Coord mySize, Coord myLimits);
     BsmCheck CheckBSM(BasicSafetyMessage * bsm, NodeTable * detectedNodes);
 
 };

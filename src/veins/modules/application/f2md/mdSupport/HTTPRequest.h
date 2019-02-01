@@ -22,6 +22,7 @@
 #include <sys/socket.h> /* socket, connect */
 #include <netinet/in.h> /* struct sockaddr_in, struct sockaddr */
 #include <netdb.h> /* struct hostent, gethostbyname */
+#include <boost/algorithm/string.hpp>
 
 class HTTPRequest {
 private:

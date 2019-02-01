@@ -12,6 +12,7 @@
 #include <veins/modules/application/f2md/mdSupport/HTTPRequest.h>
 
 using namespace std;
+using namespace boost;
 HTTPRequest::HTTPRequest(int portno, std::string host){
     this->portInt = portno;
     this->hostStr = host;
@@ -75,10 +76,14 @@ std::string HTTPRequest::Request(std::string requestArg) {
 
     response[0] = '0';
 
-    std::string arg = formaliseString(requestArg);
+    //std::string arg = formaliseString(requestArg);
+
+    requestArg.erase(std::remove(requestArg.begin(), requestArg.end(), '\t'), requestArg.end());
+    requestArg.erase(std::remove(requestArg.begin(), requestArg.end(), '\n'), requestArg.end());
+    requestArg.erase(std::remove(requestArg.begin(), requestArg.end(), ' '), requestArg.end());
 
     /* fill in the parameters */
-    sprintf(message, message_fmt, arg.c_str());
+    sprintf(message, message_fmt, requestArg.c_str());
     //printf("Request:\n%s\n", message);
 
     /* create the socket */

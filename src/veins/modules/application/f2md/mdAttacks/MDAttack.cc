@@ -436,7 +436,6 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
         if (!SelfSybil) {
             if (detectedNodes->getNodesNum() > 0) {
                 attackBsm = nextAttackBsm;
-                attackBsm.setSenderPseudonym(*myPseudonym);
                 nextAttackBsm = *detectedNodes->getNextAttackedBsm(*curPosition,
                         nextAttackBsm.getSenderPseudonym(),
                         nextAttackBsm.getArrivalTime().dbl());
@@ -517,10 +516,12 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
             attackBsm.setSenderLength(*myLength);
         }
 
-        if (SybilVehSeq > 0) {
-            attackBsm.setSenderPseudonym(SybilPseudonyms[SybilVehSeq - 1]);
-        } else {
-            attackBsm.setSenderPseudonym(*myPseudonym);
+        if(attackBsm.getSenderPseudonym()!=0){
+            if (SybilVehSeq > 0) {
+                attackBsm.setSenderPseudonym(SybilPseudonyms[SybilVehSeq - 1]);
+            } else {
+                attackBsm.setSenderPseudonym(*myPseudonym);
+            }
         }
 
         if (SybilVehSeq < SybilVehNumber) {
