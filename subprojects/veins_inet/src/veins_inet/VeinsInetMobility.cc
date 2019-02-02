@@ -23,9 +23,9 @@
 // Based on inet::MovingMobilityBase of INET Framework v4.0.0
 //
 
-#include "inet/common/INETMath.h"
 #include "veins_inet/VeinsInetMobility.h"
-#include "inet/visualizer/mobility/MobilityCanvasVisualizer.h"
+
+#include "inet/common/INETMath.h"
 #include "inet/common/Units.h"
 #include "inet/common/geometry/common/GeographicCoordinateSystem.h"
 
@@ -50,7 +50,7 @@ void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord
     this->external_id = external_id;
     lastPosition = position;
     lastVelocity = inet::Coord(cos(angle), -sin(angle)) * speed;
-    lastOrientation.alpha = rad(-angle);
+    lastOrientation = inet::Quaternion(inet::EulerAngles(rad(-angle), rad(0.0), rad(0.0)));
 }
 
 void VeinsInetMobility::initialize(int stage)
@@ -67,7 +67,7 @@ void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string ro
 
     lastPosition = position;
     lastVelocity = inet::Coord(cos(angle), -sin(angle)) * speed;
-    lastOrientation = inet::EulerAngles(rad(-angle), rad(0.0), rad(0.0));
+    lastOrientation = inet::Quaternion(inet::EulerAngles(rad(-angle), rad(0.0), rad(0.0)));
 
     // Update display string to show node is getting updates
     auto hostMod = getParentModule();
@@ -96,17 +96,17 @@ inet::Coord VeinsInetMobility::getCurrentAcceleration()
     throw cRuntimeError("Invalid operation");
 }
 
-inet::EulerAngles VeinsInetMobility::getCurrentAngularPosition()
+inet::Quaternion VeinsInetMobility::getCurrentAngularPosition()
 {
     return lastOrientation;
 }
 
-inet::EulerAngles VeinsInetMobility::getCurrentAngularVelocity()
+inet::Quaternion VeinsInetMobility::getCurrentAngularVelocity()
 {
     return lastAngularVelocity;
 }
 
-inet::EulerAngles VeinsInetMobility::getCurrentAngularAcceleration()
+inet::Quaternion VeinsInetMobility::getCurrentAngularAcceleration()
 {
     throw cRuntimeError("Invalid operation");
 }

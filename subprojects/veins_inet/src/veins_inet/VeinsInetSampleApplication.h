@@ -22,7 +22,7 @@
 
 #include "veins_inet/veins_inet.h"
 
-#include "VeinsInetApplicationBase.h"
+#include "veins_inet/VeinsInetApplicationBase.h"
 
 class VEINS_INET_API VeinsInetSampleApplication : public Veins::VeinsInetApplicationBase {
 protected:

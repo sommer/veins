@@ -19,6 +19,7 @@
 //
 
 #include "veins_inet/VeinsInetManager.h"
+
 #include "veins/base/utils/Coord.h"
 #include "veins_inet/VeinsInetMobility.h"
 

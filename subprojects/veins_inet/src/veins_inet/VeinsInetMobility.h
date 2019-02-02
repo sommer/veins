@@ -56,9 +56,9 @@ public:
     virtual inet::Coord getCurrentVelocity() override;
     virtual inet::Coord getCurrentAcceleration() override;
 
-    virtual inet::EulerAngles getCurrentAngularPosition() override;
-    virtual inet::EulerAngles getCurrentAngularVelocity() override;
-    virtual inet::EulerAngles getCurrentAngularAcceleration() override;
+    virtual inet::Quaternion getCurrentAngularPosition() override;
+    virtual inet::Quaternion getCurrentAngularVelocity() override;
+    virtual inet::Quaternion getCurrentAngularAcceleration() override;
 
     virtual std::string getExternalId() const;
     virtual TraCIScenarioManager* getManager() const;
@@ -70,7 +70,7 @@ protected:
     inet::Coord lastVelocity;
 
     /** @brief The last angular velocity that was set by nextPosition(). */
-    inet::EulerAngles lastAngularVelocity;
+    inet::Quaternion lastAngularVelocity;
 
     mutable TraCIScenarioManager* manager = nullptr; /**< cached value */
     mutable TraCICommandInterface* commandInterface = nullptr; /**< cached value */

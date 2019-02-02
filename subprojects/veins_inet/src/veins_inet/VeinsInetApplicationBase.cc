@@ -18,9 +18,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "VeinsInetApplicationBase.h"
+//
+// Veins "application layer" module for the INET Framework
+// Based on inet::UdpBasicApp of INET Framework v4.0.0
+//
 
-#include "inet/common/lifecycle/NodeOperations.h"
+#include "veins_inet/VeinsInetApplicationBase.h"
+
+#include "inet/common/lifecycle/ModuleOperations.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/packet/Packet.h"
 #include "inet/common/TagBase_m.h"
@@ -52,7 +57,7 @@ void VeinsInetApplicationBase::initialize(int stage)
     }
 }
 
-bool VeinsInetApplicationBase::handleNodeStart(IDoneCallback* doneCallback)
+void VeinsInetApplicationBase::handleStartOperation(LifecycleOperation* operation)
 {
     mobility = Veins::VeinsInetMobilityAccess().get(getParentModule());
     traci = mobility->getCommandInterface();
@@ -76,7 +81,8 @@ bool VeinsInetApplicationBase::handleNodeStart(IDoneCallback* doneCallback)
 
     socket.setCallback(this);
 
-    return startApplication();
+    bool ok = startApplication();
+    ASSERT(ok);
 }
 
 bool VeinsInetApplicationBase::startApplication()
@@ -89,19 +95,17 @@ bool VeinsInetApplicationBase::stopApplication()
     return true;
 }
 
-bool VeinsInetApplicationBase::handleNodeShutdown(IDoneCallback* doneCallback)
+void VeinsInetApplicationBase::handleStopOperation(LifecycleOperation* operation)
 {
-    if (!stopApplication()) {
-        return false;
-    }
+    bool ok = stopApplication();
+    ASSERT(ok);
 
     socket.close();
-
-    return true;
 }
 
-void VeinsInetApplicationBase::handleNodeCrash()
+void VeinsInetApplicationBase::handleCrashOperation(LifecycleOperation* operation)
 {
+    socket.destroy();
 }
 
 void VeinsInetApplicationBase::finish()
@@ -115,6 +119,8 @@ VeinsInetApplicationBase::~VeinsInetApplicationBase()
 
 void VeinsInetApplicationBase::refreshDisplay() const
 {
+    ApplicationBase::refreshDisplay();
+
     char buf[100];
     sprintf(buf, "okay");
     getDisplayString().setTagArg("t", 0, buf);
@@ -154,6 +160,13 @@ void VeinsInetApplicationBase::socketErrorArrived(UdpSocket* socket, Indication*
 {
     EV_WARN << "Ignoring UDP error report " << indication->getName() << endl;
     delete indication;
+}
+
+void VeinsInetApplicationBase::socketClosed(UdpSocket* socket)
+{
+    if (operationalState == State::STOPPING_OPERATION) {
+        startActiveOperationExtraTimeOrFinish(-1);
+    }
 }
 
 void VeinsInetApplicationBase::timestampPayload(inet::Ptr<inet::Chunk> payload)
