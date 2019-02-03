@@ -27,7 +27,7 @@
 #include "veins/base/messages/AirFrame_m.h"
 #include "testutils/Simulation.h"
 #include "testutils/Component.h"
-#include "DummyAnalogueModel.h"
+#include "testutils/DummyAnalogueModel.h"
 
 using namespace Veins;
 using AirFrameVector = DeciderToPhyInterface::AirFrameVector;
