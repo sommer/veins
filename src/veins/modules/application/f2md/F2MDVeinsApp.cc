@@ -13,7 +13,7 @@
 
 Define_Module(JosephVeinsApp);
 //Simulation Parameters
-#define serialNumber "LUSTMINI-DATA-1.0"
+#define serialNumber "IRT-DEMO"
 #define savePath "../../../../mdmSave/"
 
 #define randomConf true
@@ -29,12 +29,12 @@ Define_Module(JosephVeinsApp);
 
 #define REPORT_VERSION reportTypes::EvidenceReport
 
-static bool MixLocalAttacks = true;
+static bool MixLocalAttacks = false;
 static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
 
-#define LOCAL_ATTACK_TYPE attackTypes::ConstPosOffset
+#define LOCAL_ATTACK_TYPE attackTypes::GridSybil
 
 //static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::GridSybil,
 //        attackTypes::ConstPos,
@@ -110,15 +110,15 @@ static bool writeSelfMsg = false;
 //writeBsms
 static bool writeBsmsV1 = false;
 static bool writeBsmsV2 = false;
-static bool writeListBsmsV1 = true;
-static bool writeListBsmsV2 = true;
+static bool writeListBsmsV1 = false;
+static bool writeListBsmsV2 = false;
 //writeReport
 static bool writeReportsV1 = false;
 static bool writeReportsV2 = false;
-static bool writeListReportsV1 = true;
-static bool writeListReportsV2 = true;
+static bool writeListReportsV1 = false;
+static bool writeListReportsV2 = false;
 
-static bool sendReportsV1 = false;
+static bool sendReportsV1 = true;
 static bool sendReportsV2 = false;
 static int maPortV1 = 9980;
 static int maPortV2 = 9981;
@@ -842,7 +842,8 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         break;
     }
 
-    //std::cout<<reportStr<<"\n";
+    std::cout<<reportStr<<"\n";
+    exit(0);
 
     if (!version.compare("V1")) {
         HTTPRequest httpr = HTTPRequest(maPortV1, "localhost");
