@@ -28,7 +28,7 @@
 namespace Veins {
 
 /**
- * A class for managing and timers.
+ * Abstraction for (recurring) Timers for cObject to get rid of self-mesages.
  *
  * In order to schedule a timer, you need to create a TimerSpecification object using the corresponding methods.
  * After configuration, use the create function from the TimerManager to actually schedule the configured timer.
