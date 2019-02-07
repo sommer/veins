@@ -104,7 +104,7 @@ public:
      *
      * Any previously set end time will be overwritten.
      *
-     * @param end The relative end time. It is relative to the current simtime, i.e., passing simtime_t(1, SIMTIME_S) will execute the timer until one second has passed.
+     * @param end Time after which this timer will no longer be executed, relative to the current simulation time. E.g., passing simtime_t(1, SIMTIME_S) will stop the execution of the time after one second has passed.
      */
     TimerSpecification& relativeEnd(omnetpp::simtime_t end);
 
