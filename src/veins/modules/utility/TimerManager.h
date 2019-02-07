@@ -82,7 +82,7 @@ public:
      *
      * Any previously set start time will be overwritten.
      *
-     * @param start The relative start time. It is relative to the current simtime, i.e., passing simtime_t(1, SIMTIME_S) will execute the timer in one second.
+     * @param start Time of first execution relative to the current simulation time. E.g., passing simtime_t(1, SIMTIME_S) will execute the timer in one second.
      *
      * @note You cannot use this in conjunction with repetition().
      */
