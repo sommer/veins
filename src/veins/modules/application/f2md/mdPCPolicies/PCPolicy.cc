@@ -12,19 +12,19 @@
 #include <veins/modules/application/f2md/mdPCPolicies/PCPolicy.h>
 
 PCPolicy::PCPolicy() {
+    realPseudoNum = 0;
     messageToleranceBuffer = 0;
     lastChangeTime = simTime().dbl();
     cumulativeDistance = 0;
-    lastPos = Coord(0,0,0);
+    lastPos = Coord(0, 0, 0);
 }
 
-
 PCPolicy::PCPolicy(Coord curPos) {
+    realPseudoNum = 0;
     messageToleranceBuffer = 0;
     lastChangeTime = simTime().dbl();
     cumulativeDistance = 0;
     lastPos = curPos;
-
 }
 
 void PCPolicy::setMbType(mbTypes::Mbs mbType) {
@@ -52,20 +52,27 @@ void PCPolicy::setPseudoNum(int* pseudoNum) {
 }
 
 unsigned long PCPolicy::getNextPseudonym() {
-    (*pseudoNum)++;
-    double simTimeDbl = simTime().dbl();
-    while (simTimeDbl > 9) {
-        simTimeDbl = simTimeDbl / 10;
+    if (realPseudoNum < MAX_PSEUDO_LIST) {
+        (*pseudoNum)++;
+        double simTimeDbl = simTime().dbl();
+        while (simTimeDbl > 9) {
+            simTimeDbl = simTimeDbl / 10;
+        }
+        simTimeDbl = (int) simTimeDbl;
+        unsigned long pseudo = (*myId) * 10 + simTimeDbl;
+        unsigned long digitNumber = (unsigned long) (log10(pseudo) + 1);
+        unsigned long pseudoNumAdd = (*pseudoNum) * pow(10, digitNumber + 1);
+        pseudo = pseudo + pseudoNumAdd;
+
+        mdAuthority->addNewNode(pseudo, mbType, simTime().dbl());
+
+        myPseudonymList[realPseudoNum] = pseudo;
+        realPseudoNum++;
+        return pseudo;
+    } else {
+        realPseudoNum++;
+        return myPseudonymList[(realPseudoNum - 1) % MAX_PSEUDO_LIST];
     }
-    simTimeDbl = (int) simTimeDbl;
-    unsigned long pseudo = (*myId) * 10 + simTimeDbl;
-    unsigned long digitNumber = (unsigned long) (log10(pseudo) + 1);
-    unsigned long pseudoNumAdd = (*pseudoNum) * pow(10, digitNumber + 1);
-    pseudo = pseudo + pseudoNumAdd;
-
-    mdAuthority->addNewNode(pseudo, mbType, simTime().dbl());
-
-    return pseudo;
 }
 
 void PCPolicy::checkPseudonymChange(pseudoChangeTypes::PseudoChange myPcType) {
@@ -121,22 +128,22 @@ void PCPolicy::car2carPCP() {
     double stepDistance = mdmLib.calculateDistance(lastPos, (*curPosition));
     lastPos = (*curPosition);
     cumulativeDistance = cumulativeDistance + stepDistance;
-    if(firstChange){
-        if(!randDistanceSet){
-           randDistance = genLib.RandomDouble(800, 1500);
-           randDistanceSet = true;
+    if (firstChange) {
+        if (!randDistanceSet) {
+            randDistance = genLib.RandomDouble(800, 1500);
+            randDistanceSet = true;
         }
         if (cumulativeDistance > randDistance) {
             (*myPseudonym) = getNextPseudonym();
             cumulativeDistance = 0;
             firstChange = false;
         }
-    }else{
+    } else {
         if (cumulativeDistance > 800) {
-            if(!randTimeSet){
-               randTime = genLib.RandomDouble(120, 360);
-               changeTimerStart = simTime().dbl();
-               randTimeSet = true;
+            if (!randTimeSet) {
+                randTime = genLib.RandomDouble(120, 360);
+                changeTimerStart = simTime().dbl();
+                randTimeSet = true;
             }
             if ((simTime().dbl() - changeTimerStart) > randTime) {
                 (*myPseudonym) = getNextPseudonym();

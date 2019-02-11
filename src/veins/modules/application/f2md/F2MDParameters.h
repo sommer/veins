@@ -76,8 +76,7 @@
 #define Tolerance_Buffer 10 // nbr of messages
 #define Period_Change_Distance 80 //meters
 #define Random_Change_Chance 0.1 // 0.01 over 1 = 1% chance
+#define MAX_PSEUDO_LIST 100
 //pseudonym Parameters
-
-
 
 #endif

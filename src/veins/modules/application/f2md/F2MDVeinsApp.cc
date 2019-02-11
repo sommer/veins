@@ -16,7 +16,7 @@ Define_Module(JosephVeinsApp);
 #define serialNumber "IRT-DEMO"
 #define savePath "../../../../mdmSave/"
 
-#define randomConf true
+#define randomConf false
 #define confPos 5.0
 #define confSpd 1.0
 #define confHea 0
@@ -29,20 +29,20 @@ Define_Module(JosephVeinsApp);
 
 #define REPORT_VERSION reportTypes::EvidenceReport
 
-static bool MixLocalAttacks = false;
+static bool MixLocalAttacks = true;
 static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
 
-#define LOCAL_ATTACK_TYPE attackTypes::GridSybil
+#define LOCAL_ATTACK_TYPE attackTypes::DoSRandomSybil
 
 //static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::GridSybil,
-//        attackTypes::ConstPos,
-//        attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
-//        attackTypes::RandomPosOffset,
-//        attackTypes::DataReplaySybil, attackTypes::ConstSpeedOffset,
-//        attackTypes::RandomSpeedOffset,
-//        attackTypes::EventualStop, attackTypes::Disruptive, };
+//    attackTypes::ConstPos,
+//    attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
+//    attackTypes::RandomPosOffset,
+//    attackTypes::DataReplaySybil, attackTypes::ConstSpeedOffset,
+//    attackTypes::RandomSpeedOffset,
+//    attackTypes::EventualStop, attackTypes::Disruptive, };
 
 //static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::GridSybil,
 //        attackTypes::ConstPos,
@@ -53,7 +53,6 @@ static int LastLocalAttackIndex = -1;
 //        attackTypes::RandomSpeedOffset,
 //        attackTypes::EventualStop, attackTypes::Disruptive,
 //        attackTypes::DataReplay, };
-
 
 static attackTypes::Attacks MixLocalAttacksList[] =
         { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
@@ -118,7 +117,7 @@ static bool writeReportsV2 = false;
 static bool writeListReportsV1 = false;
 static bool writeListReportsV2 = false;
 
-static bool sendReportsV1 = true;
+static bool sendReportsV1 = false;
 static bool sendReportsV2 = false;
 static int maPortV1 = 9980;
 static int maPortV2 = 9981;
@@ -144,13 +143,13 @@ void JosephVeinsApp::initialize(int stage) {
         MAX_PLAUSIBLE_ACCEL = traciVehicle->getAccel() + 0.01;
         MAX_PLAUSIBLE_DECEL = traciVehicle->getDeccel() + 0.01;
         MAX_PLAUSIBLE_SPEED = traciVehicle->getMaxSpeed() + 0.01;
-        if(MAX_PLAUSIBLE_ACCEL< MIN_MAX_ACCEL){
+        if (MAX_PLAUSIBLE_ACCEL < MIN_MAX_ACCEL) {
             MAX_PLAUSIBLE_ACCEL = MIN_MAX_ACCEL;
         }
-        if(MAX_PLAUSIBLE_DECEL< MIN_MAX_DECEL){
+        if (MAX_PLAUSIBLE_DECEL < MIN_MAX_DECEL) {
             MAX_PLAUSIBLE_DECEL = MIN_MAX_DECEL;
         }
-        if(MAX_PLAUSIBLE_SPEED< MIN_MAX_SPEED){
+        if (MAX_PLAUSIBLE_SPEED < MIN_MAX_SPEED) {
             MAX_PLAUSIBLE_SPEED = MIN_MAX_SPEED;
         }
 
@@ -826,7 +825,7 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
 
-        if(myBsmNum >0){
+        if (myBsmNum > 0) {
             evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             reportStr = evr.getReportPrintableJson();
         } else {
@@ -842,8 +841,8 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         break;
     }
 
-    std::cout<<reportStr<<"\n";
-    exit(0);
+    //std::cout<<reportStr<<"\n";
+    //exit(0);
 
     if (!version.compare("V1")) {
         HTTPRequest httpr = HTTPRequest(maPortV1, "localhost");

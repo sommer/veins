@@ -38,6 +38,8 @@ protected:
     int* pseudoNum;
     unsigned long* myPseudonym;
 
+    long realPseudoNum;
+    unsigned long myPseudonymList[MAX_PSEUDO_LIST];
 
     mbTypes::Mbs mbType;
     MDStatistics* mdAuthority;
