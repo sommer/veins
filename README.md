@@ -22,3 +22,5 @@ If you use Veins or one of its component models, we would appreciate a citation 
   doi = {10.1109/TMC.2010.133}
 }
 ```
+
+Further publications for included models and components can be found on the project's website.
