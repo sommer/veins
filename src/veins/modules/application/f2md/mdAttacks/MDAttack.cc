@@ -533,7 +533,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
 
     case attackTypes::DoSRandomSybil: {
         if (!DoSInitiated) {
-            beaconInterval->setRaw(beaconInterval->raw() / DosMultipleFreq);
+            beaconInterval->setRaw(beaconInterval->raw() / DosMultipleFreqSybil);
             DoSInitiated = true;
         }
         attackBsm = myBsm[0];
@@ -565,7 +565,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
 
     case attackTypes::DoSDisruptiveSybil: {
         if (!DoSInitiated) {
-            beaconInterval->setRaw(beaconInterval->raw() / DosMultipleFreq);
+            beaconInterval->setRaw(beaconInterval->raw() / DosMultipleFreqSybil);
             DoSInitiated = true;
         }
 

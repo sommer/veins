@@ -34,25 +34,7 @@ static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
 
-#define LOCAL_ATTACK_TYPE attackTypes::DoSRandomSybil
-
-//static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::GridSybil,
-//    attackTypes::ConstPos,
-//    attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
-//    attackTypes::RandomPosOffset,
-//    attackTypes::DataReplaySybil, attackTypes::ConstSpeedOffset,
-//    attackTypes::RandomSpeedOffset,
-//    attackTypes::EventualStop, attackTypes::Disruptive, };
-
-//static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::GridSybil,
-//        attackTypes::ConstPos,
-//        attackTypes::StaleMessages,
-//        attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
-//        attackTypes::RandomPosOffset,
-//        attackTypes::DataReplaySybil, attackTypes::ConstSpeedOffset,
-//        attackTypes::RandomSpeedOffset,
-//        attackTypes::EventualStop, attackTypes::Disruptive,
-//        attackTypes::DataReplay, };
+#define LOCAL_ATTACK_TYPE attackTypes::GridSybil
 
 static attackTypes::Attacks MixLocalAttacksList[] =
         { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
@@ -64,17 +46,6 @@ static attackTypes::Attacks MixLocalAttacksList[] =
                 attackTypes::ConstSpeedOffset, attackTypes::RandomSpeedOffset,
                 attackTypes::EventualStop, attackTypes::Disruptive,
                 attackTypes::DataReplay, attackTypes::DoSRandom };
-
-//static attackTypes::Attacks MixLocalAttacksList[] = { attackTypes::ConstPos,
-//        attackTypes::ConstPosOffset, attackTypes::RandomPos,
-//        attackTypes::RandomPosOffset, attackTypes::ConstSpeed,
-//        attackTypes::ConstSpeedOffset, attackTypes::RandomSpeed,
-//        attackTypes::RandomSpeedOffset, attackTypes::EventualStop,
-//        attackTypes::Disruptive, attackTypes::DataReplay,
-//        attackTypes::StaleMessages, attackTypes::DoS, attackTypes::DoSRandom,
-//        attackTypes::DoSDisruptive, attackTypes::GridSybil,
-//        attackTypes::DoSRandomSybil, attackTypes::DoSDisruptiveSybil,
-//        attackTypes::DataReplaySybil, };
 
 //ConstPos, ConstPosOffset, RandomPos, RandomPosOffset,
 //ConstSpeed, ConstSpeedOffset, RandomSpeed, RandomSpeedOffset,
@@ -102,7 +73,7 @@ static mdChecksVersionTypes::ChecksVersion checksVersionV2 =
         mdChecksVersionTypes::CatchChecks;
 
 static mdAppTypes::App appTypeV1 = mdAppTypes::ThresholdApp;
-static mdAppTypes::App appTypeV2 = mdAppTypes::ThresholdApp;
+static mdAppTypes::App appTypeV2 = mdAppTypes::BehavioralApp;
 
 static bool writeSelfMsg = false;
 

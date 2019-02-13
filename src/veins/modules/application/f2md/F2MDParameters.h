@@ -64,6 +64,7 @@
 #define StopProb 0.01
 #define StaleMessages_Buffer 5 //less than 10
 #define DosMultipleFreq 4 // times faster
+#define DosMultipleFreqSybil 1 // times faster
 #define SybilVehNumber 5 // max 10
 #define SelfSybil true // default true
 #define SybilDistanceX 5 // meters
@@ -76,7 +77,7 @@
 #define Tolerance_Buffer 10 // nbr of messages
 #define Period_Change_Distance 80 //meters
 #define Random_Change_Chance 0.1 // 0.01 over 1 = 1% chance
-#define MAX_PSEUDO_LIST 100
+#define MAX_PSEUDO_LIST 200
 //pseudonym Parameters
 
 #endif
