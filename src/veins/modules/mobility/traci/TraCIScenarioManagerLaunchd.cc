@@ -98,12 +98,7 @@ void TraCIScenarioManagerLaunchd::init_traci()
         }
     }
 
-#if OMNETPP_VERSION <= 0x500
-    std::string contents = launchConfig->tostr(0);
-#else
     std::string contents = launchConfig->getXML();
-#endif
-
     TraCIBuffer buf;
     buf << std::string("sumo-launchd.launch.xml") << contents;
     connection->sendMessage(makeTraCICommand(CMD_FILE_SEND, buf));
