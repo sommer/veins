@@ -33,7 +33,7 @@ run_neds = [os.path.join('src', 'veins_inet')]
 # Add flags for Veins
 if options.veins:
     check_fname = os.path.join(options.veins, 'src/veins/package.ned')
-    expect_version = '4'
+    expect_version = '5'
     if not os.path.isfile(check_fname):
         error('Could not find Veins (by looking for %s). Check the path to Veins (--with-veins=... option) and the Veins version (should be version %s)' % (check_fname, expect_version))
         sys.exit(1)
@@ -51,7 +51,7 @@ if options.veins:
 # Add flags for INET
 if options.inet:
     fname = os.path.join(options.inet, '_scripts/get_version')
-    expect_version = ['4.0.0']
+    expect_version = ['4.1.0']
     try:
         print 'Running "%s" to determine INET version.' % fname
         version = subprocess.check_output(['env', fname]).strip()

@@ -27,6 +27,15 @@
 
 namespace Veins {
 
+/**
+ * Abstraction for (recurring) Timers for cSimpleModule.
+ *
+ * This abstraction takes care of managing the required self-messages to (repeatedly) execute a piece of code after a certain time.
+ * To use, instantiate one TimerManager per cSimpleModule, then call its handleMessage method from that of the cSimpleModule.
+ *
+ * In order to schedule a timer, create a TimerSpecification object using the corresponding methods.
+ * After configuration, use the create function from the TimerManager to actually schedule the configured timer.
+ */
 class TimerManager;
 
 /**
@@ -42,7 +51,7 @@ struct TimerMessage;
  *
  * This includes timing information as well as its callback.
  */
-struct TimerSpecification {
+struct VEINS_API TimerSpecification {
 public:
     /**
      * Create a new TimerSpecification.
@@ -75,9 +84,9 @@ public:
      *
      * Any previously set start time will be overwritten.
      *
-     * @param start The relative start time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer in one second.
+     * @param start Time of first execution relative to the current simulation time. E.g., passing simtime_t(1, SIMTIME_S) will execute the timer in one second.
      *
-     * @note You cannot use this in conjunction with repetition()
+     * @note You cannot use this in conjunction with repetition().
      */
     TimerSpecification& relativeStart(omnetpp::simtime_t start);
 
@@ -88,7 +97,7 @@ public:
      *
      * @param start The absolute start time. The first occurence will be exactly at this time. Passing a value earlier than the current simtime will result in an error.
      *
-     * @note You cannot use this in conjunction with repetition()
+     * @note You cannot use this in conjunction with repetition().
      */
     TimerSpecification& absoluteStart(omnetpp::simtime_t start);
 
@@ -97,7 +106,7 @@ public:
      *
      * Any previously set end time will be overwritten.
      *
-     * @param end The relative end time. It is relative to the current simtime, i.e. passing simtime_t(1, SIMTIME_S) will execute the timer until one second has passed.
+     * @param end Time after which this timer will no longer be executed, relative to the current simulation time. E.g., passing simtime_t(1, SIMTIME_S) will stop the execution of the time after one second has passed.
      */
     TimerSpecification& relativeEnd(omnetpp::simtime_t end);
 
@@ -120,14 +129,14 @@ public:
     /**
      * Set the timer to execute once in a given time.
      *
-     * Any previously set start time, end time, and interval  will be overwritten.
+     * Any previously set start time, end time, and interval will be overwritten.
      */
     TimerSpecification& oneshotIn(omnetpp::simtime_t in);
 
     /**
      * Set the timer to execute once at a given time.
      *
-     * Any previously set start time, end time, and interval  will be overwritten.
+     * Any previously set start time, end time, and interval will be overwritten.
      */
     TimerSpecification& oneshotAt(omnetpp::simtime_t at);
 
@@ -150,7 +159,6 @@ private:
      * Finalizes this instance such that its values are independent of current simulation time.
      *
      * After calling this function, start_mode_ is guaranteed to be StartMode::absolute and end_mode_ to be EndMode::absolute or EndMode::open.
-     * Cannot be called on TimerSpecifications
      */
     void finalize();
 
@@ -176,7 +184,7 @@ private:
     std::function<void()> callback_; ///< The function to be called when the Timer is triggered.
 };
 
-class TimerManager {
+class VEINS_API TimerManager {
 private:
 public:
     using TimerHandle = long;

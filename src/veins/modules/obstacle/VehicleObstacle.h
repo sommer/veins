@@ -33,7 +33,7 @@ class TraCIMobility;
 /**
  * stores information about a VehicleObstacle for VehicleObstacleControl
  */
-class VehicleObstacle {
+class VEINS_API VehicleObstacle {
 public:
     using Coords = std::vector<Coord>;
 

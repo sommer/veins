@@ -42,7 +42,7 @@ class Signal;
  * Transmissions that cross one of the polygon's lines will have
  * their receive power set to zero.
  */
-class VehicleObstacleControl : public cSimpleModule {
+class VEINS_API VehicleObstacleControl : public cSimpleModule {
 public:
     ~VehicleObstacleControl() override;
     void initialize(int stage) override;
@@ -95,7 +95,7 @@ protected:
     void drawVehicleObstacles(const simtime_t& t) const;
 };
 
-class VehicleObstacleControlAccess {
+class VEINS_API VehicleObstacleControlAccess {
 public:
     VehicleObstacleControlAccess()
     {

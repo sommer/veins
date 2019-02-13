@@ -34,7 +34,7 @@ namespace Veins {
  * @see TraCIScenarioManager
  *
  */
-class TraCILauncher {
+class VEINS_API TraCILauncher {
 public:
     TraCILauncher(std::string commandLine);
     ~TraCILauncher();

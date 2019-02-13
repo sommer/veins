@@ -33,7 +33,7 @@ namespace Veins {
 /**
  * Stores a Heading in rad, with 0 degrees being east and 90 degrees being north.
  */
-class Heading {
+class VEINS_API Heading {
 public:
     static const Heading nan;
 

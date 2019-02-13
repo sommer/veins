@@ -1,11 +1,13 @@
 #pragma once
 
+#include "veins/veins.h"
+
 namespace Veins {
 
 /**
  * Coord equivalent for storing TraCI coordinates
  */
-struct TraCICoord {
+struct VEINS_API TraCICoord {
     TraCICoord()
         : x(0.0)
         , y(0.0)

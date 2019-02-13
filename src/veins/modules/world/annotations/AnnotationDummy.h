@@ -28,7 +28,7 @@ namespace Veins {
  *
  * @author Christoph Sommer
  */
-class AnnotationDummy : public cSimpleModule {
+class VEINS_API AnnotationDummy : public cSimpleModule {
 public:
     ~AnnotationDummy() override;
 

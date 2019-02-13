@@ -39,7 +39,7 @@ namespace Veins {
  * @see SignalUtils
  * @see Spectrum
  */
-class Signal {
+class VEINS_API Signal {
 public:
     Signal() = default;
 

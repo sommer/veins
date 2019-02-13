@@ -9,7 +9,7 @@ namespace Veins {
 /**
  * Stores the position of the host's antenna along with its speed, so that it can be linearly extrapolated.
  */
-class AntennaPosition {
+class VEINS_API AntennaPosition {
 
 public:
     AntennaPosition()

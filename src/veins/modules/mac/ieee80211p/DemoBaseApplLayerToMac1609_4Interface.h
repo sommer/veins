@@ -33,7 +33,7 @@ namespace Veins {
  *
  * @ingroup macLayer
  */
-class DemoBaseApplLayerToMac1609_4Interface {
+class VEINS_API DemoBaseApplLayerToMac1609_4Interface {
 public:
     virtual bool isChannelSwitchingActive() = 0;
 

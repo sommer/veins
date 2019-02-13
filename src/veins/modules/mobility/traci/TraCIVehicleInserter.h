@@ -40,7 +40,7 @@ namespace Veins {
  * @see TraCIScenarioManager
  *
  */
-class TraCIVehicleInserter : public cSimpleModule, public cListener {
+class VEINS_API TraCIVehicleInserter : public cSimpleModule, public cListener {
 public:
     TraCIVehicleInserter();
     ~TraCIVehicleInserter() override;

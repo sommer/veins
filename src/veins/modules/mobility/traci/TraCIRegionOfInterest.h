@@ -33,7 +33,7 @@ namespace Veins {
  * Can return whether a given position lies within the simulation's region of interest.
  * Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI
  */
-class TraCIRegionOfInterest {
+class VEINS_API TraCIRegionOfInterest {
 public:
     enum ConstraintResult {
         NONE, // when no constraints exist

@@ -42,7 +42,7 @@ namespace Veins {
  * @see TraCIScenarioManager
  *
  */
-class TraCIScenarioManagerForker : public TraCIScenarioManager {
+class VEINS_API TraCIScenarioManagerForker : public TraCIScenarioManager {
 public:
     TraCIScenarioManagerForker();
     ~TraCIScenarioManagerForker() override;
@@ -60,7 +60,7 @@ protected:
     virtual void killServer();
 };
 
-class TraCIScenarioManagerForkerAccess {
+class VEINS_API TraCIScenarioManagerForkerAccess {
 public:
     TraCIScenarioManagerForker* get()
     {

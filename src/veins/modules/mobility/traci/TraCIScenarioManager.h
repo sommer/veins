@@ -61,7 +61,7 @@ class TraCICommandInterface;
  * @see TraCIScenarioManagerLaunchd
  *
  */
-class TraCIScenarioManager : public cSimpleModule {
+class VEINS_API TraCIScenarioManager : public cSimpleModule {
 public:
     static const simsignal_t traciInitializedSignal;
     static const simsignal_t traciModuleAddedSignal;
@@ -177,7 +177,7 @@ protected:
     TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
 };
 
-class TraCIScenarioManagerAccess {
+class VEINS_API TraCIScenarioManagerAccess {
 public:
     TraCIScenarioManager* get()
     {

@@ -18,9 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "VeinsInetSampleApplication.h"
+#include "veins_inet/VeinsInetSampleApplication.h"
 
-#include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/packet/Packet.h"
 #include "inet/common/TagBase_m.h"
@@ -29,7 +28,7 @@
 #include "inet/networklayer/common/L3AddressTag_m.h"
 #include "inet/transportlayer/contract/udp/UdpControlInfo_m.h"
 
-#include "VeinsInetSampleMessage_m.h"
+#include "veins_inet/VeinsInetSampleMessage_m.h"
 
 using namespace inet;
 

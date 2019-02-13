@@ -27,7 +27,7 @@ namespace Veins {
 /**
  * Small RSU Demo using 11p
  */
-class TraCIDemoRSU11p : public DemoBaseApplLayer {
+class VEINS_API TraCIDemoRSU11p : public DemoBaseApplLayer {
 protected:
     void onWSM(BaseFrame1609_4* wsm) override;
     void onWSA(DemoServiceAdvertisment* wsa) override;

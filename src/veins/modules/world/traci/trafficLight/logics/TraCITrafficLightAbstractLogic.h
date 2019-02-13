@@ -34,7 +34,7 @@ using omnetpp::cSimpleModule;
  * already provides multiplexing of different message types to message handlers and a
  * special handler to be executed right before the TraCI server performs a phase switch
  */
-class TraCITrafficLightAbstractLogic : public cSimpleModule {
+class VEINS_API TraCITrafficLightAbstractLogic : public cSimpleModule {
 public:
     TraCITrafficLightAbstractLogic();
     ~TraCITrafficLightAbstractLogic() override;

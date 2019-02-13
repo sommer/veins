@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2018 Fabian Bronner <fabian.bronner@ccs-labs.org>
+// Copyright (C) 2019 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,41 +20,13 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <iterator>
-#include <memory>
-#include <fstream>
-#include <map>
-
 #include "veins/veins.h"
 
-namespace Veins {
-
-class VEINS_API Spectrum {
-public:
-    using Frequency = double;
-    using Frequencies = std::vector<Frequency>;
-
-    Spectrum() = default;
-    Spectrum(Frequencies freqs);
-
-    const double& operator[](size_t index) const;
-
-    size_t getNumFreqs() const;
-
-    size_t indexOf(double freq) const;
-
-    double freqAt(size_t freqIndex) const;
-
-    friend bool operator==(const Spectrum& lhs, const Spectrum& rhs);
-
-    friend std::ostream& operator<<(std::ostream& os, const Spectrum& s);
-
-private:
-    Frequencies frequencies;
-};
-
-} // namespace Veins
+// VEINS_INET_API macro. Allows us to use the same .h files for both building a .dll and linking against it
+#if defined(VEINS_INET_EXPORT)
+#define VEINS_INET_API OPP_DLLEXPORT
+#elif defined(VEINS_INET_IMPORT)
+#define VEINS_INET_API OPP_DLLIMPORT
+#else
+#define VEINS_INET_API
+#endif

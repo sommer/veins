@@ -29,7 +29,7 @@ namespace Veins {
  * Model the error rate for different modulations and coding schemes.
  * Taken from the nist wifi model of ns-3
  */
-class NistErrorRate {
+class VEINS_API NistErrorRate {
 public:
     NistErrorRate();
 

@@ -40,7 +40,7 @@ using Veins::AirFrame;
  *
  * @ingroup analogueModels
  */
-class TwoRayInterferenceModel : public AnalogueModel {
+class VEINS_API TwoRayInterferenceModel : public AnalogueModel {
 
 public:
     TwoRayInterferenceModel(cComponent* owner, double dielectricConstant)
