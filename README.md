@@ -8,6 +8,9 @@ See the Veins <a href="http://veins.car2x.org/">website</a> for a tutorial docum
 
 If you use Veins or one of its component models, we would appreciate a citation of our work:
 
+Sommer, Christoph and German, Reinhard and Dressler, Falko, "Bidirectionally Coupled Network and Road Traffic Simulation for Improved IVC Analysis,"
+IEEE Transactions on Mobile Computing, vol. 10 (1), pp. 3-15, January 2011
+
 ```
 @article{sommer2011bidirectionally,
   author = {Sommer, Christoph and German, Reinhard and Dressler, Falko},
