@@ -62,4 +62,4 @@ else
 fi
 
 # actually format the code
-find "$@" \( -name "*.cc" -or -name "*.h" \) -exec uncrustify -q --replace --no-backup -c $(dirname $0)/.uncrustify.cfg "{}" \;
+find "$@" \( -name "*.cc" -or -name "*.h" \) -exec uncrustify -q --replace --no-backup -c "$(dirname "$0")"/.uncrustify.cfg "{}" \;
