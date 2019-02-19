@@ -19,6 +19,7 @@
 //
 #pragma once
 
+#include <functional>
 #include <tuple>
 #include <type_traits>
 
@@ -41,10 +42,17 @@ struct trait {
     };
 };
 
+// crutch to break up recursive relation that makes doxygen throw errors.
+template <class Lambda>
+struct lambda_type;
+
 // convenience call for lambdas
 template <class Lambda>
-struct type
-    : type<decltype(&Lambda::operator())> {
+struct type : lambda_type<Lambda> {
+};
+
+template <class Lambda>
+struct lambda_type : type<decltype(&Lambda::operator())> {
 };
 
 // for normal functions / function pointer
