@@ -1417,4 +1417,9 @@ std::list<Coord> TraCICommandInterface::genericGetCoordList(uint8_t commandId, s
     return res;
 }
 
+std::string TraCICommandInterface::Vehicle::getVType()
+{
+    return traci->genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_TYPE, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
 } // namespace Veins

@@ -146,6 +146,11 @@ public:
         void getParameter(const std::string& parameter, std::string& value);
 
         /**
+         * Returns the vehicle type of a vehicle
+         */
+        std::string getVType();
+
+        /**
          * Get the vehicle's CO2 emissions in mg during this time step.
          *
          * @return the vehicle's CO2 emissions, -1001 in case of error
