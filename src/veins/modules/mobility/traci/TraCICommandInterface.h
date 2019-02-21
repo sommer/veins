@@ -235,6 +235,7 @@ public:
     }
 
     // Road methods
+    std::list<std::string> getRoadIds();
     class VEINS_API Road {
     public:
         Road(TraCICommandInterface* traci, std::string roadId)
