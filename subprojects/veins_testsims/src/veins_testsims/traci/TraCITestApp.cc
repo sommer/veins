@@ -486,6 +486,26 @@ void TraCITestApp::handlePositionUpdate()
         }
     }
 
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            int x = 0;
+            double y = 0;
+            std::string z = "";
+
+            traciVehicle->setParameter("int", 23);
+            traciVehicle->setParameter("double", 42.0);
+            traciVehicle->setParameter("string", "foo");
+
+            traciVehicle->getParameter("int", x);
+            traciVehicle->getParameter("double", y);
+            traciVehicle->getParameter("string", z);
+
+            assertEqual("(TraCICommandInterface::Vehicle::getParameter)", 23, x);
+            assertClose("(TraCICommandInterface::Vehicle::getParameter)", 42.0, y);
+            assertEqual("(TraCICommandInterface::Vehicle::getParameter)", "foo", z);
+        }
+    }
+
     //
     // TraCICommandInterface::Junction
     //

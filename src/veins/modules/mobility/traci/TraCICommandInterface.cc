@@ -4,6 +4,7 @@
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
+#include "veins/modules/mobility/traci/ParBuffer.h"
 
 #ifdef _WIN32
 #define realpath(N, R) _fullpath((R), (N), _MAX_PATH)
@@ -919,6 +920,62 @@ bool TraCICommandInterface::Vehicle::changeVehicleRoute(const std::list<std::str
     TraCIBuffer obuf = connection->query(CMD_SET_VEHICLE_VARIABLE, buf);
     ASSERT(obuf.eof());
     return true;
+}
+
+void TraCICommandInterface::Vehicle::setParameter(const std::string& parameter, int value)
+{
+    std::stringstream strValue;
+    strValue << value;
+    setParameter(parameter, strValue.str());
+}
+
+void TraCICommandInterface::Vehicle::setParameter(const std::string& parameter, double value)
+{
+    std::stringstream strValue;
+    strValue << value;
+    setParameter(parameter, strValue.str());
+}
+
+void TraCICommandInterface::Vehicle::setParameter(const std::string& parameter, const std::string& value)
+{
+    static int32_t nParameters = 2;
+    TraCIBuffer buf = traci->connection.query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_PARAMETER) << nodeId << static_cast<uint8_t>(TYPE_COMPOUND) << nParameters << static_cast<uint8_t>(TYPE_STRING) << parameter << static_cast<uint8_t>(TYPE_STRING) << value);
+    ASSERT(buf.eof());
+}
+
+void TraCICommandInterface::Vehicle::getParameter(const std::string& parameter, int& value)
+{
+    std::string v;
+    getParameter(parameter, v);
+    ParBuffer buf(v);
+    buf >> value;
+}
+void TraCICommandInterface::Vehicle::getParameter(const std::string& parameter, double& value)
+{
+    std::string v;
+    getParameter(parameter, v);
+    ParBuffer buf(v);
+    buf >> value;
+}
+
+void TraCICommandInterface::Vehicle::getParameter(const std::string& parameter, std::string& value)
+{
+    TraCIBuffer response = traci->connection.query(CMD_GET_VEHICLE_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_PARAMETER) << nodeId << static_cast<uint8_t>(TYPE_STRING) << parameter);
+    uint8_t cmdLength;
+    response >> cmdLength;
+    uint8_t responseId;
+    response >> responseId;
+    ASSERT(responseId == RESPONSE_GET_VEHICLE_VARIABLE);
+    uint8_t variable;
+    response >> variable;
+    ASSERT(variable == VAR_PARAMETER);
+    std::string id;
+    response >> id;
+    ASSERT(id == nodeId);
+    uint8_t type;
+    response >> type;
+    ASSERT(type == TYPE_STRING);
+    response >> value;
 }
 
 std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord)
