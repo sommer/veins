@@ -218,6 +218,11 @@ std::list<std::string> TraCICommandInterface::getRouteIds()
     return genericGetStringList(CMD_GET_ROUTE_VARIABLE, "", ID_LIST, RESPONSE_GET_ROUTE_VARIABLE);
 }
 
+std::list<std::string> TraCICommandInterface::getRoadIds()
+{
+    return genericGetStringList(CMD_GET_EDGE_VARIABLE, "", ID_LIST, RESPONSE_GET_EDGE_VARIABLE);
+}
+
 double TraCICommandInterface::Road::getCurrentTravelTime()
 {
     return traci->genericGetDouble(CMD_GET_EDGE_VARIABLE, roadId, VAR_CURRENT_TRAVELTIME, RESPONSE_GET_EDGE_VARIABLE);
