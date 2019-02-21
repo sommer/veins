@@ -50,6 +50,10 @@ public:
     void setApiVersion(uint32_t apiVersion);
     std::pair<double, double> getLonLat(const Coord&);
 
+    unsigned getApiVersion() const
+    {
+        return versionConfig.version;
+    }
     uint8_t getTimeType() const
     {
         return versionConfig.timeType;
@@ -61,10 +65,6 @@ public:
     uint8_t getTimeStepCmd() const
     {
         return versionConfig.timeStepCmd;
-    }
-    bool getHasNewTrafficLightProgramDef() const
-    {
-        return versionConfig.newTrafficLightProgramDef;
     }
 
     std::pair<TraCICoord, TraCICoord> initNetworkBoundaries(int margin);
@@ -467,12 +467,10 @@ public:
 
 private:
     struct VersionConfig {
+        unsigned version;
         uint8_t timeType;
         uint8_t netBoundaryType;
         uint8_t timeStepCmd;
-        bool timeAsDouble;
-        bool screenshotTakesCompound;
-        bool newTrafficLightProgramDef;
     };
 
     TraCIConnection& connection;

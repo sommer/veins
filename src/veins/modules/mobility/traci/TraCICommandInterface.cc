@@ -14,11 +14,11 @@ using namespace Veins::TraCIConstants;
 namespace Veins {
 
 const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
-    {19, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true, true, true}},
-    {18, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true, true, false}},
-    {17, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
-    {16, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
-    {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
+    {19, {19, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
+    {18, {18, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
+    {17, {17, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
+    {16, {16, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
+    {15, {15, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
 };
 
 TraCICommandInterface::TraCICommandInterface(cComponent* owner, TraCIConnection& c, bool ignoreGuiCommands)
@@ -61,7 +61,7 @@ void TraCICommandInterface::setApiVersion(uint32_t apiVersion)
 {
     try {
         versionConfig = versionConfigs.at(apiVersion);
-        TraCIBuffer::setTimeAsDouble(versionConfig.timeAsDouble);
+        TraCIBuffer::setTimeType(versionConfig.timeType);
     }
     catch (std::out_of_range const& exc) {
         throw cRuntimeError(std::string("TraCI server reports unsupported TraCI API version: " + std::to_string(apiVersion) + ". We recommend using Sumo version 1.0.1 or 0.32.0").c_str());
@@ -516,7 +516,8 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
     uint8_t resultTypeId = TYPE_COMPOUND;
     TraCITrafficLightProgram program(trafficLightId);
 
-    if (!traci->getHasNewTrafficLightProgramDef()) {
+    const auto apiVersion = traci->versionConfig.version;
+    if (apiVersion == 15 || apiVersion == 16 || apiVersion == 17 || apiVersion == 18) {
         uint8_t commandId = CMD_GET_TL_VARIABLE;
         uint8_t variableId = TL_COMPLETE_DEFINITION_RYG;
         std::string objectId = trafficLightId;
@@ -567,7 +568,7 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
             program.addLogic(logic);
         }
     }
-    else {
+    else if (apiVersion == 19) {
         uint8_t commandId = CMD_GET_TL_VARIABLE;
         uint8_t variableId = TL_COMPLETE_DEFINITION_RYG;
         std::string objectId = trafficLightId;
@@ -629,6 +630,9 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
             program.addLogic(logic);
         }
     }
+    else {
+        throw cRuntimeError("Invalid API version used, check your code.");
+    }
     return program;
 }
 
@@ -653,7 +657,8 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
 {
 
     TraCIBuffer inbuf;
-    if (!traci->getHasNewTrafficLightProgramDef()) {
+    const auto apiVersion = traci->versionConfig.version;
+    if (apiVersion == 15 || apiVersion == 16 || apiVersion == 17 || apiVersion == 18) {
         inbuf << static_cast<uint8_t>(TL_COMPLETE_PROGRAM_RYG);
         inbuf << trafficLightId;
         inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
@@ -681,7 +686,7 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
             inbuf << phase.state;
         }
     }
-    else {
+    else if (apiVersion == 19) {
         inbuf << static_cast<uint8_t>(TL_COMPLETE_PROGRAM_RYG);
         inbuf << trafficLightId;
         inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
@@ -714,6 +719,9 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
         // no subparameters
         inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
         inbuf << int32_t(0);
+    }
+    else {
+        throw cRuntimeError("Invalid API version used, check your code.");
     }
 
     TraCIBuffer obuf = connection->query(CMD_SET_TL_VARIABLE, inbuf);
@@ -1057,7 +1065,8 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
         filename = ss;
     }
 
-    if (traci->versionConfig.screenshotTakesCompound) {
+    const auto apiVersion = traci->versionConfig.version;
+    if (apiVersion == 15 || apiVersion == 16 || apiVersion == 17) {
         uint8_t variableType = TYPE_COMPOUND;
         int32_t count = 3;
         uint8_t filenameType = TYPE_STRING;
@@ -1066,10 +1075,13 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
         TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << variableType << count << filenameType << filename << widthType << width << heightType << height);
         ASSERT(buf.eof());
     }
-    else {
+    else if (apiVersion == 18 || apiVersion == 19) {
         uint8_t filenameType = TYPE_STRING;
         TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << filenameType << filename);
         ASSERT(buf.eof());
+    }
+    else {
+        throw cRuntimeError("Invalid API version used, check your code.");
     }
 }
 
