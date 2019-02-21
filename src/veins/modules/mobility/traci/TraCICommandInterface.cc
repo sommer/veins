@@ -14,6 +14,7 @@ using namespace Veins::TraCIConstants;
 namespace Veins {
 
 const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
+    {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
     {19, {19, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
     {18, {18, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
     {17, {17, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
@@ -568,7 +569,7 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
             program.addLogic(logic);
         }
     }
-    else if (apiVersion == 19) {
+    else if (apiVersion == 19 || apiVersion == 20) {
         uint8_t commandId = CMD_GET_TL_VARIABLE;
         uint8_t variableId = TL_COMPLETE_DEFINITION_RYG;
         std::string objectId = trafficLightId;
@@ -607,12 +608,15 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
             for (int32_t j = 0; j < nrOfPhases; ++j) {
                 TraCITrafficLightProgram::Phase phase;
                 int32_t nrOfComps = buf.readTypeChecked<int32_t>(TYPE_COMPOUND);
-                ASSERT(nrOfComps == 5);
+                ASSERT((apiVersion == 19 && nrOfComps == 5) || (apiVersion == 20 && nrOfComps == 6));
                 phase.duration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // default duration of phase
                 phase.state = buf.readTypeChecked<std::string>(TYPE_STRING); // phase definition (like "[ryg]*")
                 phase.minDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // minimum duration of phase
                 phase.maxDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // maximum duration of phase
                 phase.next = buf.readTypeChecked<int32_t>(TYPE_INTEGER);
+                if (apiVersion == 20) {
+                    phase.name = buf.readTypeChecked<std::string>(TYPE_STRING);
+                }
                 logic.phases.push_back(phase);
             }
 
@@ -686,7 +690,7 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
             inbuf << phase.state;
         }
     }
-    else if (apiVersion == 19) {
+    else if (apiVersion == 19 || apiVersion == 20) {
         inbuf << static_cast<uint8_t>(TL_COMPLETE_PROGRAM_RYG);
         inbuf << trafficLightId;
         inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
@@ -703,7 +707,7 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
         for (uint32_t i = 0; i < logic.phases.size(); ++i) {
             TraCITrafficLightProgram::Phase& phase = logic.phases[i];
             inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
-            inbuf << int32_t(5);
+            inbuf << int32_t((apiVersion == 19) ? 5 : 6);
             inbuf << static_cast<uint8_t>(traci->getTimeType());
             inbuf << phase.duration;
             inbuf << static_cast<uint8_t>(TYPE_STRING);
@@ -714,6 +718,10 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
             inbuf << phase.maxDuration;
             inbuf << static_cast<uint8_t>(TYPE_INTEGER);
             inbuf << phase.next;
+            if (apiVersion == 20) {
+                inbuf << static_cast<uint8_t>(TYPE_STRING);
+                inbuf << phase.name;
+            }
         }
 
         // no subparameters
@@ -1075,7 +1083,7 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
         TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << variableType << count << filenameType << filename << widthType << width << heightType << height);
         ASSERT(buf.eof());
     }
-    else if (apiVersion == 18 || apiVersion == 19) {
+    else if (apiVersion == 18 || apiVersion == 19 || apiVersion == 20) {
         uint8_t filenameType = TYPE_STRING;
         TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << filenameType << filename);
         ASSERT(buf.eof());

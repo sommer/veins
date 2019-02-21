@@ -122,8 +122,10 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            assertClose("(TraCICommandInterface::getDistance) air", 859., floor(traci->getDistance(Coord(25, 7030), Coord(883, 6980), false)));
-            assertClose("(TraCICommandInterface::getDistance) driving", 847., floor(traci->getDistance(Coord(25, 7030), Coord(883, 6980), true)));
+            const Coord pointA(27.6, 76.65);
+            const Coord pointB(631.41, 26.65);
+            assertClose("(TraCICommandInterface::getDistance) air", 605., floor(traci->getDistance(pointA, pointB, false)));
+            assertClose("(TraCICommandInterface::getDistance) driving", 650., floor(traci->getDistance(pointA, pointB, true)));
         }
     }
 
@@ -304,7 +306,7 @@ void TraCITestApp::handlePositionUpdate()
             traciVehicle->setMaxSpeed(1 / 3.6);
         }
         if (t == 30) {
-            assertClose("(TraCICommandInterface::Vehicle::setMaxSpeed)", 0.2280344208055693489, mobility->getSpeed());
+            assertTrue("(TraCICommandInterface::Vehicle::setMaxSpeed)", mobility->getSpeed() <= 1 / 3.6);
         }
     }
 
