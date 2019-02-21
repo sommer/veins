@@ -90,6 +90,11 @@ public:
         return commandIfc.get();
     }
 
+    TraCIConnection* getConnection() const
+    {
+        return connection.get();
+    }
+
     bool getAutoShutdownTriggered()
     {
         return autoShutdownTriggered;
