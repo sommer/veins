@@ -138,6 +138,13 @@ public:
         double getAccel();
         double getDeccel();
 
+        void setParameter(const std::string& parameter, int value);
+        void setParameter(const std::string& parameter, double value);
+        void setParameter(const std::string& parameter, const std::string& value);
+        void getParameter(const std::string& parameter, int& value);
+        void getParameter(const std::string& parameter, double& value);
+        void getParameter(const std::string& parameter, std::string& value);
+
         /**
          * Get the vehicle's CO2 emissions in mg during this time step.
          *

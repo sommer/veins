@@ -8,6 +8,7 @@
 /// @author  Tino Morenz
 /// @author  Michael Behrisch
 /// @author  Christoph Sommer
+/// @author  Michele Segata
 /// @date    2007/10/24
 /// @version $Id$
 ///
@@ -675,6 +676,9 @@ const uint8_t VAR_STOP_ENDING_VEHICLES_IDS = 0x6b;
 
 // clears the simulation of all not inserted vehicles (set: simulation)
 const uint8_t CMD_CLEAR_PENDING_VEHICLES = 0x94;
+
+// sets/retrieves abstract parameter
+const uint8_t VAR_PARAMETER 0x7e;
 
 // add an instance (poi, polygon, vehicle, route)
 const uint8_t ADD = 0x80;
