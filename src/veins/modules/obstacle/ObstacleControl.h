@@ -59,7 +59,12 @@ public:
     double getAttenuationPerMeter(std::string type);
 
     /**
-     * calculate additional attenuation by obstacles, return signal strength
+     * get hit obstacles (along with a list of points (in [0, 1]) along the line between sender and receiver where the beam intersects with the respective obstacle)
+     */
+    std::map<Obstacle*, std::multiset<double>> getIntersections(const Coord& senderPos, const Coord& receiverPos) const;
+
+    /**
+     * calculate additional attenuation by obstacles, return multiplicative factor
      */
     double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const;
 
