@@ -39,11 +39,17 @@ public:
     const Coords& getShape() const;
     const Coord getBboxP1() const;
     const Coord getBboxP2() const;
+    bool containsPoint(Coord Point) const;
 
     std::string getType() const;
     std::string getId() const;
+    double getAttenuationPerCut() const;
+    double getAttenuationPerMeter() const;
 
-    double calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const;
+    /**
+     * get a list of points (in [0, 1]) along the line between sender and receiver where the beam intersects with this obstacle
+     */
+    std::multiset<double> getIntersections(const Coord& senderPos, const Coord& receiverPos) const;
 
     AnnotationManager::Annotation* visualRepresentation;
 
