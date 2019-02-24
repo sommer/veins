@@ -25,7 +25,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /** @brief Modulation and coding scheme to be used for transmission */
 enum class MCS {
@@ -239,4 +239,4 @@ inline MCS getMCS(uint64_t datarate, Bandwidth bw)
     return MCS::undefined;
 }
 
-} // namespace Veins
+} // namespace veins

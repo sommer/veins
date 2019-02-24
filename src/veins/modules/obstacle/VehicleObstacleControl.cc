@@ -30,11 +30,11 @@
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/base/toolbox/Signal.h"
 
-using Veins::Signal;
-using Veins::VehicleObstacle;
-using Veins::VehicleObstacleControl;
+using veins::Signal;
+using veins::VehicleObstacle;
+using veins::VehicleObstacleControl;
 
-Define_Module(Veins::VehicleObstacleControl);
+Define_Module(veins::VehicleObstacleControl);
 
 VehicleObstacleControl::~VehicleObstacleControl() = default;
 

@@ -24,9 +24,9 @@
 
 #include "veins/modules/obstacle/ObstacleControl.h"
 
-using Veins::ObstacleControl;
+using veins::ObstacleControl;
 
-Define_Module(Veins::ObstacleControl);
+Define_Module(veins::ObstacleControl);
 
 ObstacleControl::~ObstacleControl()
 {
@@ -186,9 +186,9 @@ void ObstacleControl::erase(const Obstacle* obstacle)
     cacheEntries.clear();
 }
 
-std::map<Veins::Obstacle*, std::multiset<double>> ObstacleControl::getIntersections(const Coord& senderPos, const Coord& receiverPos) const
+std::map<veins::Obstacle*, std::multiset<double>> ObstacleControl::getIntersections(const Coord& senderPos, const Coord& receiverPos) const
 {
-    std::map<Veins::Obstacle*, std::multiset<double>> allIntersections;
+    std::map<veins::Obstacle*, std::multiset<double>> allIntersections;
 
     // calculate bounding box of transmission
     Coord bboxP1 = Coord(std::min(senderPos.x, receiverPos.x), std::min(senderPos.y, receiverPos.y));
@@ -247,7 +247,7 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
     if (cacheEntryIter != cacheEntries.end()) return cacheEntryIter->second;
 
     // get intersections
-    std::map<Veins::Obstacle*, std::multiset<double>> intersections = getIntersections(senderPos, receiverPos);
+    std::map<veins::Obstacle*, std::multiset<double>> intersections = getIntersections(senderPos, receiverPos);
 
     double factor = 1;
     for (auto i = intersections.begin(); i != intersections.end(); ++i) {

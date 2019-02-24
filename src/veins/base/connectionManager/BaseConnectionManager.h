@@ -6,7 +6,7 @@
 #include "veins/base/connectionManager/NicEntry.h"
 #include "veins/base/utils/Heading.h"
 
-namespace Veins {
+namespace veins {
 
 class ChannelAccess;
 
@@ -406,4 +406,4 @@ public:
     const cGate* getOutGateTo(const NicEntry* nic, const NicEntry* targetNic) const;
 };
 
-} // namespace Veins
+} // namespace veins

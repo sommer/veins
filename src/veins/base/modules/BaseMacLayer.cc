@@ -31,9 +31,9 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/messages/MacPkt_m.h"
 
-using namespace Veins;
+using namespace veins;
 
-Define_Module(Veins::BaseMacLayer);
+Define_Module(veins::BaseMacLayer);
 
 /**
  * First we have to initialize the module from which we derived ours,

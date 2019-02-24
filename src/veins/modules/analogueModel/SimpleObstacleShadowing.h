@@ -28,10 +28,10 @@
 #include "veins/base/utils/Move.h"
 #include "veins/base/messages/AirFrame_m.h"
 
-using Veins::AirFrame;
-using Veins::ObstacleControl;
+using veins::AirFrame;
+using veins::ObstacleControl;
 
-namespace Veins {
+namespace veins {
 
 class Signal;
 
@@ -78,4 +78,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

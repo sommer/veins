@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-using namespace Veins;
+using namespace veins;
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
 void ChannelInfo::addAirFrame(AirFrame* frame, simtime_t_cref startTime)
 {

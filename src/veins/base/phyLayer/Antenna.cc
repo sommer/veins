@@ -7,7 +7,7 @@
 
 #include "veins/base/phyLayer/Antenna.h"
 
-using namespace Veins;
+using namespace veins;
 
 double Antenna::getGain(Coord ownPos, Coord ownOrient, Coord otherPos)
 {

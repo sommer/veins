@@ -21,13 +21,13 @@
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 #include "veins/modules/messages/TraCITrafficLightMessage_m.h"
 
-using namespace Veins;
+using namespace veins;
 
-using Veins::TraCITrafficLightInterface;
-using Veins::TraCITrafficLightLink;
-using Veins::TraCITrafficLightProgram;
+using veins::TraCITrafficLightInterface;
+using veins::TraCITrafficLightLink;
+using veins::TraCITrafficLightProgram;
 
-Define_Module(Veins::TraCITrafficLightInterface);
+Define_Module(veins::TraCITrafficLightInterface);
 
 TraCITrafficLightInterface::TraCITrafficLightInterface()
     : cSimpleModule()

@@ -2,9 +2,9 @@
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/mobility/traci/TraCICoordinateTransformation.h"
 
-using Veins::Heading;
-using Veins::TraCICoord;
-using Veins::TraCICoordinateTransformation;
+using veins::Heading;
+using veins::TraCICoord;
+using veins::TraCICoordinateTransformation;
 using OmnetCoord = TraCICoordinateTransformation::OmnetCoord;
 using TraCICoordList = TraCICoordinateTransformation::TraCICoordList;
 using OmnetCoordList = TraCICoordinateTransformation::OmnetCoordList;
@@ -13,8 +13,8 @@ SCENARIO("TraCICoordinateTransformation gets built with network boundaries", "[n
 {
     GIVEN("A network size from (5, 10) to (105, 210) with margin 10")
     {
-        Veins::TraCICoord topleft(5, 10);
-        Veins::TraCICoord bottomright(105, 210);
+        veins::TraCICoord topleft(5, 10);
+        veins::TraCICoord bottomright(105, 210);
         float margin = 10;
         THEN("A NetworkCoordinateTranslator can be built from it")
         {

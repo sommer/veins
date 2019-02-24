@@ -23,7 +23,7 @@
 #include "veins/base/utils/NetwToMacControlInfo.h"
 #include "veins/modules/utility/Consts80211p.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -51,4 +51,4 @@ public:
     virtual const LAddress::L2Type& getMACAddress() = 0;
 };
 
-} // namespace Veins
+} // namespace veins

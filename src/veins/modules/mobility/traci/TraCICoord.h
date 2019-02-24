@@ -2,7 +2,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * Coord equivalent for storing TraCI coordinates
@@ -22,4 +22,4 @@ struct VEINS_API TraCICoord {
     double y;
 };
 
-} // namespace Veins
+} // namespace veins

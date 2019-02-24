@@ -40,7 +40,7 @@
 #include "veins/modules/utility/ConstsPhy.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -310,4 +310,4 @@ protected:
     Mac80211pToPhy11pInterface* phy11p;
 };
 
-} // namespace Veins
+} // namespace veins

@@ -20,7 +20,7 @@
 
 #include "veins/modules/utility/HasLogProxy.h"
 
-namespace Veins {
+namespace veins {
 
 HasLogProxy::HasLogProxy(cComponent* owner)
     : owner(owner)
@@ -32,4 +32,4 @@ const cComponent* HasLogProxy::getThisPtr() const
     return owner;
 }
 
-} // namespace Veins
+} // namespace veins

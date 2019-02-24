@@ -11,7 +11,7 @@
 
 #include "veins/base/utils/SimpleAddress.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Interface for modules which assign L2 and L3 addresses for modules.
@@ -39,4 +39,4 @@ public:
     virtual LAddress::L3Type myNetwAddr(const cModule* netw) const = 0;
 };
 
-} // namespace Veins
+} // namespace veins

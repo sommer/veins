@@ -35,7 +35,7 @@ import org.car2x.veins.base.modules.BaseMacLayer;
 simple Mac1609_4 extends BaseMacLayer
 {
     parameters:
-        @class(Veins::Mac1609_4);
+        @class(veins::Mac1609_4);
 
         // cycle between an SCH and the CCH (or stay on CCH all the time)
         bool useServiceChannel = default(true);

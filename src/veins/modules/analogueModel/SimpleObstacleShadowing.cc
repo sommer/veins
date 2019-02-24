@@ -20,9 +20,9 @@
 
 #include "veins/modules/analogueModel/SimpleObstacleShadowing.h"
 
-using namespace Veins;
+using namespace veins;
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
 SimpleObstacleShadowing::SimpleObstacleShadowing(cComponent* owner, ObstacleControl& obstacleControl, bool useTorus, const Coord& playgroundSize)
     : AnalogueModel(owner)

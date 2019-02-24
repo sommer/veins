@@ -21,7 +21,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * AnnotationDummy is just a workaround to visualize annotations
@@ -35,4 +35,4 @@ public:
 protected:
 };
 
-} // namespace Veins
+} // namespace veins

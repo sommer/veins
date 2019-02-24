@@ -20,7 +20,7 @@
 
 #include "veins/modules/mobility/traci/TraCICoordinateTransformation.h"
 
-namespace Veins {
+namespace veins {
 
 using OmnetCoord = TraCICoordinateTransformation::OmnetCoord;
 using OmnetCoordList = TraCICoordinateTransformation::OmnetCoordList;
@@ -102,4 +102,4 @@ OmnetHeading TraCICoordinateTransformation::traci2omnetHeading(TraCIHeading o) c
     return OmnetHeading(angle);
 }
 
-} // end namespace Veins
+} // end namespace veins

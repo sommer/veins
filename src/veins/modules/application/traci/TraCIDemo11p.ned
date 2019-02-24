@@ -23,6 +23,6 @@ import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
 
 simple TraCIDemo11p extends DemoBaseApplLayer
 {
-    @class(Veins::TraCIDemo11p);
+    @class(veins::TraCIDemo11p);
     @display("i=block/app2");
 }

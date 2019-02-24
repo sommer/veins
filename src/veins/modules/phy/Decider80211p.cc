@@ -35,7 +35,7 @@
 
 #include "veins/base/toolbox/SignalUtils.h"
 
-using namespace Veins;
+using namespace veins;
 
 simtime_t Decider80211p::processNewSignal(AirFrame* msg)
 {

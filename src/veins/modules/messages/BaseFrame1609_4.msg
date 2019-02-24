@@ -22,7 +22,7 @@ cplusplus {{
 #include "veins/base/utils/SimpleAddress.h"
 }}
 
-namespace Veins;
+namespace veins;
 
 class LAddress::L2Type extends void;
 

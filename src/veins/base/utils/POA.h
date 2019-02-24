@@ -13,7 +13,7 @@
 #include "veins/base/utils/AntennaPosition.h"
 #include "veins/base/utils/Coord.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Container class used to attach data to Airframe s which are
@@ -50,4 +50,4 @@ public:
     virtual ~POA(){};
 };
 
-} // namespace Veins
+} // namespace veins

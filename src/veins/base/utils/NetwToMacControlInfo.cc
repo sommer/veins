@@ -16,7 +16,7 @@
 
 #include "veins/base/utils/NetwToMacControlInfo.h"
 
-using namespace Veins;
+using namespace veins;
 
 namespace {
 

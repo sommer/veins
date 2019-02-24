@@ -4,7 +4,7 @@
 
 #include "veins/base/utils/Coord.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * Stores the position of the host's antenna along with its speed, so that it can be linearly extrapolated.
@@ -59,4 +59,4 @@ protected:
     bool undef; /**< true if created using default constructor */
 };
 
-} // namespace Veins
+} // namespace veins

@@ -26,7 +26,7 @@
 
 #include "veins/base/utils/HostState.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Base class for all simple modules of a host.
@@ -162,4 +162,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

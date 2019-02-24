@@ -2,10 +2,10 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
 using namespace std;
-using Veins::Radio;
+using veins::Radio;
 
 Radio::Radio(int numRadioStates, bool recordStats, int initialState, int currentChannel, int nbChannels)
     : state(initialState)

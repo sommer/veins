@@ -30,7 +30,7 @@ import inet.mobility.base.MobilityBase;
 simple VeinsInetMobility extends MobilityBase
 {
     parameters:
-        @class(Veins::VeinsInetMobility);
+        @class(veins::VeinsInetMobility);
         @display("i=block/cogwheel");
         @signal[mobilityStateChanged](type=inet::MobilityBase);
         bool initFromDisplayString = default(true); // do not change this to false

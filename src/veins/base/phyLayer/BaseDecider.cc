@@ -8,7 +8,7 @@
 #include "veins/base/phyLayer/BaseDecider.h"
 #include "veins/base/messages/AirFrame_m.h"
 
-using namespace Veins;
+using namespace veins;
 
 simtime_t BaseDecider::processSignal(AirFrame* frame)
 {

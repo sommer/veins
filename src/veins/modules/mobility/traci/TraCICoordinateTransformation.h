@@ -26,7 +26,7 @@
 
 #include <list>
 
-namespace Veins {
+namespace veins {
 
 /**
  * Helper class for converting SUMO coordinates to OMNeT++ Coordinates for a given network.
@@ -54,4 +54,4 @@ private:
     float margin;
 }; // end class NetworkCoordinateTranslator
 
-} // end namespace Veins
+} // end namespace veins

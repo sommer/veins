@@ -29,7 +29,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /* Windows math.h doesn't define the the following variables: */
 #ifndef M_E
@@ -165,7 +165,7 @@ public:
      * otherwise
      *
      * @deprecated
-     * @see Veins::math::almost_equal
+     * @see veins::math::almost_equal
      */
     VEINS_DEPRECATED static bool close(double one, double two)
     {
@@ -239,4 +239,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

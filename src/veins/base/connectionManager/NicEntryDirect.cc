@@ -23,7 +23,7 @@
 #include "veins/base/connectionManager/ChannelAccess.h"
 
 using std::endl;
-using namespace Veins;
+using namespace veins;
 
 void NicEntryDirect::connectTo(NicEntry* other)
 {

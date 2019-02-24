@@ -24,7 +24,7 @@
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * stores information about an Obstacle for ObstacleControl
@@ -63,4 +63,4 @@ protected:
     Coord bboxP2;
 };
 
-} // namespace Veins
+} // namespace veins

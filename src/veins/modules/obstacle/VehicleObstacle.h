@@ -24,7 +24,7 @@
 
 #include "veins/base/utils/Coord.h"
 
-namespace Veins {
+namespace veins {
 
 class ChannelAccess;
 
@@ -114,4 +114,4 @@ protected:
     double width;
     double height;
 };
-} // namespace Veins
+} // namespace veins

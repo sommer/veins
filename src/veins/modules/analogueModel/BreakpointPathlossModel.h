@@ -6,9 +6,9 @@
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Basic implementation of a BreakpointPathlossModel.
@@ -80,4 +80,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

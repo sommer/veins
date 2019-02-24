@@ -30,8 +30,8 @@ package org.car2x.veins.subprojects.veins_inet;
 simple VeinsInetMobility like IMobility
 {
     parameters:
-        @class(Veins::VeinsInetMobility);
-        @signal[mobilityStateChanged](type=Veins::VeinsInetMobility);
+        @class(veins::VeinsInetMobility);
+        @signal[mobilityStateChanged](type=veins::VeinsInetMobility);
         @display("i=block/cogwheel");
 
         bool visualizeMobility = default(true);

@@ -20,9 +20,9 @@
 
 #include "veins/modules/world/traci/trafficLight/logics/TraCITrafficLightSimpleLogic.h"
 
-using Veins::TraCITrafficLightSimpleLogic;
+using veins::TraCITrafficLightSimpleLogic;
 
-Define_Module(Veins::TraCITrafficLightSimpleLogic);
+Define_Module(veins::TraCITrafficLightSimpleLogic);
 
 void TraCITrafficLightSimpleLogic::handleApplMsg(cMessage* msg)
 {

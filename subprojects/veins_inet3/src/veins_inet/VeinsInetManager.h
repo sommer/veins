@@ -24,7 +24,7 @@
 
 #include "veins/modules/mobility/traci/TraCIScenarioManagerLaunchd.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -52,4 +52,4 @@ public:
     };
 };
 
-} // namespace Veins
+} // namespace veins

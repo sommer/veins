@@ -25,7 +25,7 @@
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCILauncher.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -67,4 +67,4 @@ public:
         return FindModule<TraCIScenarioManagerForker*>::findGlobalModule();
     };
 };
-} // namespace Veins
+} // namespace veins

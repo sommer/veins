@@ -23,9 +23,9 @@
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 
-namespace Veins {
+namespace veins {
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
 /**
  * @brief
@@ -60,4 +60,4 @@ protected:
     double epsilon_r;
 };
 
-} // namespace Veins
+} // namespace veins

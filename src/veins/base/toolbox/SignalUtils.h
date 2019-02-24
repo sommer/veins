@@ -32,7 +32,7 @@
 #include "veins/base/phyLayer/Decider.h"
 #include "veins/base/toolbox/Signal.h"
 
-namespace Veins {
+namespace veins {
 namespace SignalUtils {
 
 using AirFrameVector = DeciderToPhyInterface::AirFrameVector;
@@ -69,4 +69,4 @@ bool isChannelPowerBelowThreshold(simtime_t now, AirFrameVector& interfererFrame
 double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFrameVector& interfererFrames, double noise);
 
 } // namespace SignalUtils
-} // namespace Veins
+} // namespace veins

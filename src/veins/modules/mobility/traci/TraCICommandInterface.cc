@@ -10,9 +10,9 @@
 #define realpath(N, R) _fullpath((R), (N), _MAX_PATH)
 #endif /* _WIN32 */
 
-using namespace Veins::TraCIConstants;
+using namespace veins::TraCIConstants;
 
-namespace Veins {
+namespace veins {
 
 const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
     {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
@@ -1447,4 +1447,4 @@ std::string TraCICommandInterface::Vehicle::getVType()
     return traci->genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_TYPE, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
-} // namespace Veins
+} // namespace veins

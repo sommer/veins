@@ -35,7 +35,7 @@ package org.car2x.veins.base.connectionManager;
 simple ConnectionManager
 {
     parameters:
-        @class(Veins::ConnectionManager);
+        @class(veins::ConnectionManager);
         // send directly to the node or create separate gates for every connection
         bool sendDirect;
         // maximum interference distance [m]

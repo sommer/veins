@@ -20,7 +20,7 @@
 
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 
-using Veins::TraCITrafficLightProgram;
+using veins::TraCITrafficLightProgram;
 
 bool TraCITrafficLightProgram::Phase::isGreenPhase() const
 {

@@ -28,7 +28,7 @@
 
 using omnetpp::SimTime;
 
-namespace Veins {
+namespace veins {
 
 /** @brief Bit rates for 802.11p
  *
@@ -162,4 +162,4 @@ enum class ChannelType {
     control = 0,
     service,
 };
-} // namespace Veins
+} // namespace veins

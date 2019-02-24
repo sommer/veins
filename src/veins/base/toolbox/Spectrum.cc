@@ -22,7 +22,7 @@
 
 #include <sstream>
 
-namespace Veins {
+namespace veins {
 
 Spectrum::Frequencies normalizeFrequencies(Spectrum::Frequencies freqs)
 {
@@ -82,4 +82,4 @@ std::ostream& operator<<(std::ostream& os, const Spectrum& s)
     os << ")";
     return os;
 }
-} // namespace Veins
+} // namespace veins

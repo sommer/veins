@@ -27,7 +27,7 @@
 
 #include "veins/modules/mobility/traci/TraCILauncher.h"
 
-using Veins::TraCILauncher;
+using veins::TraCILauncher;
 
 TraCILauncher::TraCILauncher(std::string commandLine)
 {

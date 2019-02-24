@@ -15,10 +15,10 @@
 
 cplusplus {{
 #include "veins/base/messages/AirFrame_m.h"
-using Veins::AirFrame;
+using veins::AirFrame;
 }}
 
-namespace Veins;
+namespace veins;
 
 class AirFrame;
 

@@ -26,7 +26,7 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/utils/Coord.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * manages annotations on the OMNeT++ canvas.
@@ -177,4 +177,4 @@ public:
     };
 };
 
-} // namespace Veins
+} // namespace veins

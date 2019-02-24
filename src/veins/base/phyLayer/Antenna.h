@@ -9,7 +9,7 @@
 
 #include "veins/base/utils/Coord.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief The Antenna class is the base class of all antenna models.
@@ -53,4 +53,4 @@ public:
     };
 };
 
-} // namespace Veins
+} // namespace veins

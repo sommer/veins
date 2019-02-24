@@ -2,8 +2,8 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
-using namespace Veins;
-using Veins::AirFrame;
+using namespace veins;
+using veins::AirFrame;
 
 void PERModel::filterSignal(Signal* signal)
 {

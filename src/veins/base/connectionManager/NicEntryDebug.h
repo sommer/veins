@@ -26,7 +26,7 @@
 #include <map>
 #include <vector>
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief NicEntry is used by ConnectionManager to store the necessary
@@ -141,4 +141,4 @@ public:
     void disconnectFrom(NicEntry* other) override;
 };
 
-} // namespace Veins
+} // namespace veins

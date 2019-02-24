@@ -24,7 +24,7 @@
 
 #include "veins/base/utils/EnumBitset.h"
 
-namespace Veins {
+namespace veins {
 
 enum class VehicleSignal : uint32_t {
     blinker_right,
@@ -51,4 +51,4 @@ struct VEINS_API EnumTraits<VehicleSignal> {
 
 using VehicleSignalSet = EnumBitset<VehicleSignal>;
 
-} // namespace Veins
+} // namespace veins

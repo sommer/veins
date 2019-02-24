@@ -24,11 +24,11 @@
 
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 
-using namespace Veins;
+using namespace veins;
 
-using Veins::TraCIMobility;
+using veins::TraCIMobility;
 
-Define_Module(Veins::TraCIMobility);
+Define_Module(veins::TraCIMobility);
 
 const simsignal_t TraCIMobility::parkingStateChangedSignal = registerSignal("org.car2x.veins.modules.mobility.parkingStateChanged");
 

@@ -20,7 +20,7 @@
 
 #pragma once
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -36,4 +36,4 @@ public:
     virtual int getRadioState() = 0;
 };
 
-} // namespace Veins
+} // namespace veins

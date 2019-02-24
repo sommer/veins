@@ -24,7 +24,7 @@
 
 #include "veins/modules/messages/TraCITrafficLightMessage_m.h"
 
-namespace Veins {
+namespace veins {
 using omnetpp::cMessage;
 using omnetpp::cSimpleModule;
 
@@ -50,4 +50,4 @@ protected:
     virtual void handlePossibleSwitch() = 0;
 };
 
-} // namespace Veins
+} // namespace veins

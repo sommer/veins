@@ -22,7 +22,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * TraCI compatible color container
@@ -39,4 +39,4 @@ public:
     uint8_t alpha;
 };
 
-} // namespace Veins
+} // namespace veins

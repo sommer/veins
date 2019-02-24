@@ -24,7 +24,7 @@
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 
-namespace Veins {
+namespace veins {
 
 Signal::Signal(const Signal& other)
     : spectrum(other.spectrum)
@@ -527,4 +527,4 @@ double Signal::getMaxInRange(size_t freqIndexLow, size_t freqIndexHigh) const
     return *(std::max_element(values.begin() + freqIndexLow, values.begin() + freqIndexHigh));
 }
 
-} // namespace Veins
+} // namespace veins

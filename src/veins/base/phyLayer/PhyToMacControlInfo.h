@@ -4,7 +4,7 @@
 
 #include "veins/base/phyLayer/Decider.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Controlinfo for packets which are send from Physical
@@ -85,4 +85,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins
