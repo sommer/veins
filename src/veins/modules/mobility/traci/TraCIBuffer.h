@@ -5,6 +5,8 @@
 
 #include "veins/veins.h"
 
+#include "veins/modules/mobility/traci/TraCIConstants.h"
+
 namespace Veins {
 
 struct TraCICoord;
@@ -113,9 +115,12 @@ public:
     std::string str() const;
     std::string hexStr() const;
 
-    static void setTimeAsDouble(bool val)
+    static void setTimeType(uint8_t val)
     {
-        timeAsDouble = val;
+        if (val != TraCIConstants::TYPE_INTEGER && val != TraCIConstants::TYPE_DOUBLE) {
+            throw cRuntimeError("Invalid time data type");
+        }
+        timeAsDouble = val == TraCIConstants::TYPE_DOUBLE;
     }
 
 private:

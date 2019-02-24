@@ -1,0 +1,84 @@
+%description
+Ensure CallbackListeners are called.
+
+%file: test.ned
+
+simple Module {
+    @signal[mySignal](type=simtime_t);
+}
+
+network Test
+{
+    submodules:
+        node: Module;
+}
+
+
+%file: test.cc
+#include "veins/veins.h"
+#include "veins/modules/utility/SignalManager.h"
+
+namespace @TESTNAME@ {
+
+using payloadType = const SimTime&;
+
+void staticEmptyCallback()
+{
+    EV << "Static callback with empty arguments\n";
+}
+
+void staticPayloadOnlyCallback(payloadType p)
+{
+    EV << "Static payload-only callback\n";
+}
+
+void staticFullCallback(cComponent* source, simsignal_t signal, payloadType p, cObject* details)
+{
+    EV << "Static callback with full arguments\n";
+}
+
+struct functorCallback {
+    void operator()(cComponent* source, simsignal_t signal, payloadType p, cObject* details)
+    {
+        EV << "Functor callback with full arguments\n";
+    }
+};
+
+class Module : public cSimpleModule {
+public:
+    static const simsignal_t mySignal;
+    Module()
+        : cSimpleModule() {};
+    void initialize(int stage) override;
+protected:
+    Veins::SignalManager signalManager;
+};
+
+const simsignal_t Module::mySignal = registerSignal("mySignal");
+
+Define_Module(Module);
+
+void Module::initialize(int stage)
+{
+    auto lambdaCallback = [this](cComponent* source, simsignal_t signal, payloadType p, cObject* details) {
+        EV << "Lambda callback with full arguments\n";
+    };
+    // setup all callbacks
+    signalManager.subscribeCallback<payloadType>(getSystemModule(), Module::mySignal, lambdaCallback);
+    signalManager.subscribeCallback<payloadType>(getSystemModule(), Module::mySignal, staticEmptyCallback);
+    signalManager.subscribeCallback<payloadType>(getSystemModule(), Module::mySignal, staticPayloadOnlyCallback);
+    signalManager.subscribeCallback<payloadType>(getSystemModule(), Module::mySignal, staticFullCallback);
+    signalManager.subscribeCallback<payloadType>(getSystemModule(), Module::mySignal, functorCallback());
+
+    // emit message to all callbacks
+    emit(Module::mySignal, SimTime(3));
+}
+
+} // namespace @TESTNAME@
+
+%contains: stdout
+Lambda callback with full arguments
+Static callback with empty arguments
+Static payload-only callback
+Static callback with full arguments
+Functor callback with full arguments

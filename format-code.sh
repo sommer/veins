@@ -33,17 +33,18 @@ if [ "$STRICT" != "0" ] ;then
         VERSION_CF=$(echo $CF | sed -n 's/clang-format version \([0-9\.]\+\).*$/\1/p')
         printf "%s\n%s" "$MINIMUM_VERSION_CF" "$VERSION_CF" | sort -C -V
         if [[ $? -eq 1 ]]; then
-            exit "Your version of clang-format is too old!"
+            >&2 echo "Your version of clang-format is too old!"
+            exit 1
         fi
     else
-        exit "Cannot find clang-format or version check does not work!"
+        >&2 echo "Cannot find clang-format or version check does not work!"
+        exit 1
     fi
 
     # actually format the code
     find "$@" \( -name "*.cc" -or -name "*.h" \) -exec clang-format -style=file -i "{}" \;
 
 fi
-
 
 # check (minimum) version of uncrustify
 MINIMUM_VERSION_UF="0.68"
@@ -52,11 +53,13 @@ if [[ ($? -eq 0) && ($UF =~ ^Uncrustify-) ]]; then
     VERSION_UF=$(echo $UF | sed -n 's/Uncrustify-\([0-9\.]\+\).*$/\1/p')
     printf "%s\n%s" "$MINIMUM_VERSION_UF" "$VERSION_UF" | sort -C -V
     if [[ $? -eq 1 ]]; then
-        exit "Your version of uncrustify is too old!"
+        >&2 echo "Your version of uncrustify is too old!"
+        exit 1
     fi
 else
-    exit "Cannot find clang-format or version check does not work!"
+    >&2 echo "Cannot find clang-format or version check does not work!"
+    exit 1
 fi
 
 # actually format the code
-find "$@" \( -name "*.cc" -or -name "*.h" \) -exec uncrustify -q --replace --no-backup -c .uncrustify.cfg "{}" \;
+find "$@" \( -name "*.cc" -or -name "*.h" \) -exec uncrustify -q --replace --no-backup -c "$(dirname "$0")"/.uncrustify.cfg "{}" \;

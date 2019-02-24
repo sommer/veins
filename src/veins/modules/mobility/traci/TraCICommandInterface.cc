@@ -4,6 +4,7 @@
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
+#include "veins/modules/mobility/traci/ParBuffer.h"
 
 #ifdef _WIN32
 #define realpath(N, R) _fullpath((R), (N), _MAX_PATH)
@@ -14,11 +15,12 @@ using namespace Veins::TraCIConstants;
 namespace Veins {
 
 const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
-    {19, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true, true, true}},
-    {18, {TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME, true, true, false}},
-    {17, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
-    {16, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
-    {15, {TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP, false, false, false}},
+    {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
+    {19, {19, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
+    {18, {18, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
+    {17, {17, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
+    {16, {16, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
+    {15, {15, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
 };
 
 TraCICommandInterface::TraCICommandInterface(cComponent* owner, TraCIConnection& c, bool ignoreGuiCommands)
@@ -61,7 +63,7 @@ void TraCICommandInterface::setApiVersion(uint32_t apiVersion)
 {
     try {
         versionConfig = versionConfigs.at(apiVersion);
-        TraCIBuffer::setTimeAsDouble(versionConfig.timeAsDouble);
+        TraCIBuffer::setTimeType(versionConfig.timeType);
     }
     catch (std::out_of_range const& exc) {
         throw cRuntimeError(std::string("TraCI server reports unsupported TraCI API version: " + std::to_string(apiVersion) + ". We recommend using Sumo version 1.0.1 or 0.32.0").c_str());
@@ -214,6 +216,11 @@ std::list<std::string> TraCICommandInterface::getVehicleTypeIds()
 std::list<std::string> TraCICommandInterface::getRouteIds()
 {
     return genericGetStringList(CMD_GET_ROUTE_VARIABLE, "", ID_LIST, RESPONSE_GET_ROUTE_VARIABLE);
+}
+
+std::list<std::string> TraCICommandInterface::getRoadIds()
+{
+    return genericGetStringList(CMD_GET_EDGE_VARIABLE, "", ID_LIST, RESPONSE_GET_EDGE_VARIABLE);
 }
 
 double TraCICommandInterface::Road::getCurrentTravelTime()
@@ -516,7 +523,8 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
     uint8_t resultTypeId = TYPE_COMPOUND;
     TraCITrafficLightProgram program(trafficLightId);
 
-    if (!traci->getHasNewTrafficLightProgramDef()) {
+    const auto apiVersion = traci->versionConfig.version;
+    if (apiVersion == 15 || apiVersion == 16 || apiVersion == 17 || apiVersion == 18) {
         uint8_t commandId = CMD_GET_TL_VARIABLE;
         uint8_t variableId = TL_COMPLETE_DEFINITION_RYG;
         std::string objectId = trafficLightId;
@@ -567,7 +575,7 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
             program.addLogic(logic);
         }
     }
-    else {
+    else if (apiVersion == 19 || apiVersion == 20) {
         uint8_t commandId = CMD_GET_TL_VARIABLE;
         uint8_t variableId = TL_COMPLETE_DEFINITION_RYG;
         std::string objectId = trafficLightId;
@@ -606,12 +614,15 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
             for (int32_t j = 0; j < nrOfPhases; ++j) {
                 TraCITrafficLightProgram::Phase phase;
                 int32_t nrOfComps = buf.readTypeChecked<int32_t>(TYPE_COMPOUND);
-                ASSERT(nrOfComps == 5);
+                ASSERT((apiVersion == 19 && nrOfComps == 5) || (apiVersion == 20 && nrOfComps == 6));
                 phase.duration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // default duration of phase
                 phase.state = buf.readTypeChecked<std::string>(TYPE_STRING); // phase definition (like "[ryg]*")
                 phase.minDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // minimum duration of phase
                 phase.maxDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // maximum duration of phase
                 phase.next = buf.readTypeChecked<int32_t>(TYPE_INTEGER);
+                if (apiVersion == 20) {
+                    phase.name = buf.readTypeChecked<std::string>(TYPE_STRING);
+                }
                 logic.phases.push_back(phase);
             }
 
@@ -628,6 +639,9 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
 
             program.addLogic(logic);
         }
+    }
+    else {
+        throw cRuntimeError("Invalid API version used, check your code.");
     }
     return program;
 }
@@ -653,7 +667,8 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
 {
 
     TraCIBuffer inbuf;
-    if (!traci->getHasNewTrafficLightProgramDef()) {
+    const auto apiVersion = traci->versionConfig.version;
+    if (apiVersion == 15 || apiVersion == 16 || apiVersion == 17 || apiVersion == 18) {
         inbuf << static_cast<uint8_t>(TL_COMPLETE_PROGRAM_RYG);
         inbuf << trafficLightId;
         inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
@@ -681,7 +696,7 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
             inbuf << phase.state;
         }
     }
-    else {
+    else if (apiVersion == 19 || apiVersion == 20) {
         inbuf << static_cast<uint8_t>(TL_COMPLETE_PROGRAM_RYG);
         inbuf << trafficLightId;
         inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
@@ -698,7 +713,7 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
         for (uint32_t i = 0; i < logic.phases.size(); ++i) {
             TraCITrafficLightProgram::Phase& phase = logic.phases[i];
             inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
-            inbuf << int32_t(5);
+            inbuf << int32_t((apiVersion == 19) ? 5 : 6);
             inbuf << static_cast<uint8_t>(traci->getTimeType());
             inbuf << phase.duration;
             inbuf << static_cast<uint8_t>(TYPE_STRING);
@@ -709,11 +724,18 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
             inbuf << phase.maxDuration;
             inbuf << static_cast<uint8_t>(TYPE_INTEGER);
             inbuf << phase.next;
+            if (apiVersion == 20) {
+                inbuf << static_cast<uint8_t>(TYPE_STRING);
+                inbuf << phase.name;
+            }
         }
 
         // no subparameters
         inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
         inbuf << int32_t(0);
+    }
+    else {
+        throw cRuntimeError("Invalid API version used, check your code.");
     }
 
     TraCIBuffer obuf = connection->query(CMD_SET_TL_VARIABLE, inbuf);
@@ -905,6 +927,66 @@ bool TraCICommandInterface::Vehicle::changeVehicleRoute(const std::list<std::str
     return true;
 }
 
+void TraCICommandInterface::Vehicle::setParameter(const std::string& parameter, int value)
+{
+    std::stringstream strValue;
+    strValue << value;
+    setParameter(parameter, strValue.str());
+}
+
+void TraCICommandInterface::Vehicle::setParameter(const std::string& parameter, double value)
+{
+    std::stringstream strValue;
+    strValue << value;
+    setParameter(parameter, strValue.str());
+}
+
+void TraCICommandInterface::Vehicle::setParameter(const std::string& parameter, const std::string& value)
+{
+    static int32_t nParameters = 2;
+    std::stringstream par;
+    par << "carFollowModel." << parameter;
+    TraCIBuffer buf = traci->connection.query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_PARAMETER) << nodeId << static_cast<uint8_t>(TYPE_COMPOUND) << nParameters << static_cast<uint8_t>(TYPE_STRING) << par.str() << static_cast<uint8_t>(TYPE_STRING) << value);
+    ASSERT(buf.eof());
+}
+
+void TraCICommandInterface::Vehicle::getParameter(const std::string& parameter, int& value)
+{
+    std::string v;
+    getParameter(parameter, v);
+    ParBuffer buf(v);
+    buf >> value;
+}
+void TraCICommandInterface::Vehicle::getParameter(const std::string& parameter, double& value)
+{
+    std::string v;
+    getParameter(parameter, v);
+    ParBuffer buf(v);
+    buf >> value;
+}
+
+void TraCICommandInterface::Vehicle::getParameter(const std::string& parameter, std::string& value)
+{
+    std::stringstream par;
+    par << "carFollowModel." << parameter;
+    TraCIBuffer response = traci->connection.query(CMD_GET_VEHICLE_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_PARAMETER) << nodeId << static_cast<uint8_t>(TYPE_STRING) << par.str());
+    uint8_t cmdLength;
+    response >> cmdLength;
+    uint8_t responseId;
+    response >> responseId;
+    ASSERT(responseId == RESPONSE_GET_VEHICLE_VARIABLE);
+    uint8_t variable;
+    response >> variable;
+    ASSERT(variable == VAR_PARAMETER);
+    std::string id;
+    response >> id;
+    ASSERT(id == nodeId);
+    uint8_t type;
+    response >> type;
+    ASSERT(type == TYPE_STRING);
+    response >> value;
+}
+
 std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord)
 {
     TraCIBuffer request;
@@ -1057,7 +1139,8 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
         filename = ss;
     }
 
-    if (traci->versionConfig.screenshotTakesCompound) {
+    const auto apiVersion = traci->versionConfig.version;
+    if (apiVersion == 15 || apiVersion == 16 || apiVersion == 17) {
         uint8_t variableType = TYPE_COMPOUND;
         int32_t count = 3;
         uint8_t filenameType = TYPE_STRING;
@@ -1066,10 +1149,13 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
         TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << variableType << count << filenameType << filename << widthType << width << heightType << height);
         ASSERT(buf.eof());
     }
-    else {
+    else if (apiVersion == 18 || apiVersion == 19 || apiVersion == 20) {
         uint8_t filenameType = TYPE_STRING;
         TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << filenameType << filename);
         ASSERT(buf.eof());
+    }
+    else {
+        throw cRuntimeError("Invalid API version used, check your code.");
     }
 }
 
@@ -1354,6 +1440,11 @@ std::list<Coord> TraCICommandInterface::genericGetCoordList(uint8_t commandId, s
     ASSERT(buf.eof());
 
     return res;
+}
+
+std::string TraCICommandInterface::Vehicle::getVType()
+{
+    return traci->genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_TYPE, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
 } // namespace Veins

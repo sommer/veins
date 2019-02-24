@@ -389,6 +389,7 @@ void TraCIScenarioManager::init_traci()
         }
     }
 
+    traciInitialized = true;
     emit(traciInitializedSignal, true);
 
     // draw and calculate area of rois
