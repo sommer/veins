@@ -42,5 +42,7 @@ packet BasicSafetyMessage extends BaseFrame1609_4 {
     int senderMbType;
     int senderAttackType;
     Coord senderGpsCoordinates;
+    LAddress::L2Type senderRealId;
     unsigned long senderPseudonym;
+
 }

@@ -258,6 +258,7 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
                 bsm->setSenderAttackType(attackTypes::Genuine);
             }
         }
+        bsm->setSenderRealId(myId);
         bsm->setPsid(-1);
         bsm->setChannelNumber(static_cast<int>(Channel::cch));
         bsm->addBitLength(beaconLengthBits);

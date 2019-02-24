@@ -40,11 +40,11 @@ static attackTypes::Attacks MixLocalAttacksList[] =
         { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
                 attackTypes::RandomPos, attackTypes::StaleMessages,
                 attackTypes::DoSRandomSybil, attackTypes::ConstPosOffset,
-                attackTypes::DoSDisruptive, attackTypes::ConstSpeed,
-                attackTypes::RandomSpeed , attackTypes::RandomPosOffset,
-                attackTypes::DoSDisruptiveSybil , attackTypes::DataReplaySybil,
-                attackTypes::ConstSpeedOffset, attackTypes::RandomSpeedOffset,
-                attackTypes::EventualStop, attackTypes::Disruptive,
+                attackTypes::ConstSpeed, attackTypes::RandomSpeed ,
+                attackTypes::RandomPosOffset, attackTypes::DataReplaySybil,
+                attackTypes::DoSDisruptive, attackTypes::ConstSpeedOffset,
+                attackTypes::RandomSpeedOffset,attackTypes::EventualStop,
+                attackTypes::DoSDisruptiveSybil,attackTypes::Disruptive,
                 attackTypes::DataReplay, attackTypes::DoSRandom };
 
 //ConstPos, ConstPosOffset, RandomPos, RandomPosOffset,
@@ -73,7 +73,7 @@ static mdChecksVersionTypes::ChecksVersion checksVersionV2 =
         mdChecksVersionTypes::CatchChecks;
 
 static mdAppTypes::App appTypeV1 = mdAppTypes::ThresholdApp;
-static mdAppTypes::App appTypeV2 = mdAppTypes::BehavioralApp;
+static mdAppTypes::App appTypeV2 = mdAppTypes::ThresholdApp;
 
 static bool writeSelfMsg = false;
 
@@ -89,7 +89,7 @@ static bool writeListReportsV1 = false;
 static bool writeListReportsV2 = false;
 
 static bool sendReportsV1 = false;
-static bool sendReportsV2 = false;
+static bool sendReportsV2 = true;
 static int maPortV1 = 9980;
 static int maPortV2 = 9981;
 

@@ -53,14 +53,14 @@
 //Storage Parameters
 
 //Attacks Parameters
-#define RandomPosX 3900
-#define RandomPosY 1700
-#define RandomPosOffsetX 70
-#define RandomPosOffsetY 70
-#define RandomSpeedX 40
-#define RandomSpeedY 40
-#define RandomSpeedOffsetX 7
-#define RandomSpeedOffsetY 7
+#define RandomPosX 3900.0
+#define RandomPosY 1700.0
+#define RandomPosOffsetX 70.0
+#define RandomPosOffsetY 70.0
+#define RandomSpeedX 40.0
+#define RandomSpeedY 40.0
+#define RandomSpeedOffsetX 7.0
+#define RandomSpeedOffsetY 7.0
 #define StopProb 0.01
 #define StaleMessages_Buffer 5 //less than 10
 #define DosMultipleFreq 4 // times faster

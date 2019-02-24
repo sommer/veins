@@ -256,6 +256,9 @@ std::string ReportPrintable::getBsmJson(BasicSafetyMessage bsm){
     tempStr = jw.getSimpleTag("Pseudonym", std::to_string(bsm.getSenderPseudonym()),true);
     jw.addTagToElement("Bsm", tempStr);
 
+    tempStr = jw.getSimpleTag("RealId", std::to_string(bsm.getSenderRealId()) ,true);
+    jw.addTagToElement("Bsm", tempStr);
+
     tempStr = jw.getSimpleTag("ArrivalTime", bsm.getArrivalTime().str(),true);
     jw.addTagToElement("Bsm", tempStr);
 
