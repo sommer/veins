@@ -36,6 +36,12 @@ static int LastLocalAttackIndex = -1;
 
 #define LOCAL_ATTACK_TYPE attackTypes::GridSybil
 
+//static attackTypes::Attacks MixLocalAttacksList[] =
+//        { attackTypes::DoS, attackTypes::ConstPos,
+//                attackTypes::RandomPos, attackTypes::StaleMessages
+//               , attackTypes::ConstPosOffset,
+//                 };
+
 static attackTypes::Attacks MixLocalAttacksList[] =
         { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
                 attackTypes::RandomPos, attackTypes::StaleMessages,
@@ -479,6 +485,10 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
             reportBase.setGenerationTime(simTime().dbl());
             reportBase.setSenderPseudo(myPseudonym);
             reportBase.setReportedPseudo(senderPseudo);
+
+            reportBase.setSenderRealId(myId);
+            reportBase.setReportedRealId(bsm->getSenderRealId());
+
             reportBase.setMbType(mbTypes::mbNames[bsm->getSenderMbType()]);
             reportBase.setAttackType(
                     attackTypes::AttackNames[bsm->getSenderAttackType()]);
@@ -613,6 +623,9 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
             reportBase.setGenerationTime(simTime().dbl());
             reportBase.setSenderPseudo(myPseudonym);
             reportBase.setReportedPseudo(senderPseudo);
+
+            reportBase.setSenderRealId(myId);
+            reportBase.setReportedRealId(bsm->getSenderRealId());
 
             reportBase.setMbType(mbTypes::mbNames[bsm->getSenderMbType()]);
             reportBase.setAttackType(

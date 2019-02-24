@@ -22,6 +22,10 @@ void MDReport::setBaseReport(MDReport baseReport) {
     generationTime = baseReport.getGenerationTime();
     senderPseudonym = baseReport.getSenderPseudo();
     reportedPseudo = baseReport.getReportedPseudo();
+
+    senderRealId = baseReport.getSenderRealId();
+    reportedRealId = baseReport.getReportedRealId();
+
     mbType = baseReport.getMbType();
     attackType = baseReport.getAttackType();
     senderGps = baseReport.getSenderGps();
@@ -81,6 +85,21 @@ void MDReport::setAttackType(std::string type) {
     attackType = type;
 }
 
+void MDReport::setSenderRealId(LAddress::L2Type RealId) {
+    senderRealId = RealId;
+}
+void MDReport::setReportedRealId(LAddress::L2Type RealId) {
+    reportedRealId = RealId;
+}
+
+LAddress::L2Type MDReport::getSenderRealId() {
+    return senderRealId ;
+}
+LAddress::L2Type MDReport::getReportedRealId() {
+    return reportedRealId ;
+}
+
+
 std::string MDReport::getBaseReportXml() {
     std::string tempStr = "";
 
@@ -125,6 +144,12 @@ std::string MDReport::getBaseReportJson(std::string reportTypeStr) {
     jw.addTagToElement("Metadata", tempStr);
     tempStr = jw.getSimpleTag("reportedId",std::to_string(reportedPseudo),true);
     jw.addTagToElement("Metadata", tempStr);
+
+    tempStr = jw.getSimpleTag("senderRealId",std::to_string(senderRealId),true);
+    jw.addTagToElement("Metadata", tempStr);
+    tempStr = jw.getSimpleTag("reportedRealId",std::to_string(reportedRealId),true);
+    jw.addTagToElement("Metadata", tempStr);
+
     tempStr = jw.getSimpleTag("generationTime",std::to_string(generationTime),true);
     jw.addTagToElement("Metadata", tempStr);
 

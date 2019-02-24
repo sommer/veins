@@ -30,6 +30,10 @@ protected:
     double generationTime;
     unsigned long senderPseudonym;
     unsigned long reportedPseudo;
+
+    LAddress::L2Type senderRealId;
+    LAddress::L2Type reportedRealId;
+
     std::string mbType;
     std::string attackType;
 
@@ -51,6 +55,9 @@ public:
     void setSenderGps(Coord senderGps);
     void setReportedGps(Coord reportedGps);
 
+    void setSenderRealId(LAddress::L2Type senderRealId);
+    void setReportedRealId(LAddress::L2Type reportedRealId);
+
     double getGenerationTime();
     unsigned long getSenderPseudo();
     unsigned long getReportedPseudo();
@@ -59,6 +66,9 @@ public:
 
     Coord getSenderGps();
     Coord getReportedGps();
+
+    LAddress::L2Type getSenderRealId();
+    LAddress::L2Type getReportedRealId();
 
     std::string getBaseReportXml();
     std::string getBaseReportJson(std::string reportType);
