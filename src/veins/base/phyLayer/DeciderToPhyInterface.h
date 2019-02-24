@@ -11,7 +11,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 class AirFrame;
 
@@ -95,4 +95,4 @@ public:
     virtual int getCurrentRadioChannel() = 0;
 };
 
-} // namespace Veins
+} // namespace veins

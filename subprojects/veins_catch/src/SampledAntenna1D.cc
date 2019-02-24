@@ -4,9 +4,9 @@
 #include "testutils/Simulation.h"
 #include "veins/base/utils/FWMath.h"
 
-using Veins::Coord;
-using Veins::FWMath;
-using Veins::SampledAntenna1D;
+using veins::Coord;
+using veins::FWMath;
+using veins::SampledAntenna1D;
 
 SCENARIO("Using SampledAntenna1D", "[toolbox]")
 {

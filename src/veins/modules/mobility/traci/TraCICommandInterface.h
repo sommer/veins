@@ -11,7 +11,7 @@
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
-namespace Veins {
+namespace veins {
 
 class VEINS_API TraCICommandInterface : public HasLogProxy {
 public:
@@ -500,4 +500,4 @@ private:
     std::list<Coord> genericGetCoordList(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result = nullptr);
 };
 
-} // namespace Veins
+} // namespace veins

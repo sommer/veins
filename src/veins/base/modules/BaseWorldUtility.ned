@@ -7,7 +7,7 @@ package org.car2x.veins.base.modules;
 simple BaseWorldUtility
 {
     parameters:
-        @class(Veins::BaseWorldUtility);
+        @class(veins::BaseWorldUtility);
         double playgroundSizeX @unit(m);    // x size of the area the nodes are in (in meters)
         double playgroundSizeY @unit(m);    // y size of the area the nodes are in (in meters)
         double playgroundSizeZ @unit(m);    // z size of the area the nodes are in (in meters)

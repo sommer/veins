@@ -14,9 +14,9 @@
 #include "veins/modules/mobility/traci/TraCIConnection.h"
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 
-using namespace Veins::TraCIConstants;
+using namespace veins::TraCIConstants;
 
-namespace Veins {
+namespace veins {
 
 struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
     traci2omnet_functor(const TraCIConnection& owner)
@@ -293,4 +293,4 @@ double TraCIConnection::omnet2traciHeading(Heading heading) const
     return coordinateTransformation->omnet2traciHeading(heading);
 }
 
-} // namespace Veins
+} // namespace veins

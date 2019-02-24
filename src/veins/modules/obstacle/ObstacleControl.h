@@ -29,7 +29,7 @@
 #include "veins/modules/obstacle/Obstacle.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * ObstacleControl models obstacles that block radio transmissions.
@@ -125,4 +125,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

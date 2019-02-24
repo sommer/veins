@@ -11,7 +11,7 @@
 #include "veins/base/phyLayer/DeciderToPhyInterface.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief A class to represent the result of a processed packet (that is not
@@ -126,4 +126,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

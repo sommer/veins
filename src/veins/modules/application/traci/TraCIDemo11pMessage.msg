@@ -24,7 +24,7 @@ cplusplus {{
 #include "veins/base/utils/SimpleAddress.h"
 }}
 
-namespace Veins;
+namespace veins;
 
 class BaseFrame1609_4;
 class noncobject Coord;

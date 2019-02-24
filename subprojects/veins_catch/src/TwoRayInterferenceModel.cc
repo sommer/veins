@@ -6,7 +6,7 @@
 #include "testutils/AirFrame.h"
 #include "testutils/Component.h"
 
-using namespace Veins;
+using namespace veins;
 
 SCENARIO("TwoRayInterferenceModel", "[analogueModel]")
 {

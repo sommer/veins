@@ -20,8 +20,8 @@
 
 #include "veins/base/utils/Heading.h"
 
-namespace Veins {
+namespace veins {
 
 const Heading Heading::nan = Heading(std::numeric_limits<double>::quiet_NaN());
 
-} // namespace Veins
+} // namespace veins

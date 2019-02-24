@@ -25,7 +25,7 @@
 
 #include "veins/base/modules/BaseLayer.h"
 
-using namespace Veins;
+using namespace veins;
 
 const simsignal_t BaseLayer::catPassedMsgSignal = registerSignal("org.car2x.veins.base.utils.passedmsg");
 const simsignal_t BaseLayer::catPacketSignal = registerSignal("org.car2x.veins.modules.utility.packet");

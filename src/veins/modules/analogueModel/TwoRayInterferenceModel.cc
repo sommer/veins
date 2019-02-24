@@ -21,7 +21,7 @@
 #include "veins/modules/analogueModel/TwoRayInterferenceModel.h"
 #include "veins/base/messages/AirFrame_m.h"
 
-using namespace Veins;
+using namespace veins;
 
 void TwoRayInterferenceModel::filterSignal(Signal* signal)
 {

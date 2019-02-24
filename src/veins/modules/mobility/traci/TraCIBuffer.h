@@ -7,7 +7,7 @@
 
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 
-namespace Veins {
+namespace veins {
 
 struct TraCICoord;
 
@@ -144,4 +144,4 @@ void TraCIBuffer::write(simtime_t o);
 template <>
 simtime_t TraCIBuffer::read();
 
-} // namespace Veins
+} // namespace veins

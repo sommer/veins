@@ -23,14 +23,14 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
-Veins::AirFrame createAirframe(double centerFreq, double bandwidth, omnetpp::simtime_t start, omnetpp::simtime_t length, double power)
+veins::AirFrame createAirframe(double centerFreq, double bandwidth, omnetpp::simtime_t start, omnetpp::simtime_t length, double power)
 {
-    Veins::Signal s(Veins::Spectrum({centerFreq - 5e6, centerFreq, centerFreq + 5e6}), start, length);
+    veins::Signal s(veins::Spectrum({centerFreq - 5e6, centerFreq, centerFreq + 5e6}), start, length);
     s.atFrequency(centerFreq - 5e6) = power;
     s.atFrequency(centerFreq) = power;
     s.atFrequency(centerFreq + 5e6) = power;
 
-    Veins::AirFrame frame;
+    veins::AirFrame frame;
     frame.setSignal(s);
     return frame;
 }

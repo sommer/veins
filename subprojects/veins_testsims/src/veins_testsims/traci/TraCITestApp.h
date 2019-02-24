@@ -29,10 +29,10 @@
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
-using Veins::TraCICommandInterface;
-using Veins::TraCIMobility;
+using veins::TraCICommandInterface;
+using veins::TraCIMobility;
 
-namespace Veins {
+namespace veins {
 
 class TraCITestApp : public BaseApplLayer {
 public:
@@ -62,4 +62,4 @@ protected:
     void handlePositionUpdate();
 };
 
-} // namespace Veins
+} // namespace veins

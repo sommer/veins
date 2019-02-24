@@ -9,7 +9,7 @@
 
 #include "veins/base/utils/FindModule.h"
 
-using Veins::BatteryAccess;
+using veins::BatteryAccess;
 
 BatteryAccess::BatteryAccess()
     : BaseModule()

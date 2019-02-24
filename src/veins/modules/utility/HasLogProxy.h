@@ -23,7 +23,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * Helper class for logging from classes not derived from cComponent
@@ -37,4 +37,4 @@ protected:
     cComponent* owner;
 };
 
-} // namespace Veins
+} // namespace veins

@@ -36,7 +36,7 @@ simple TraCIVehicleInserter
 {
     parameters:
         @display("i=block/source");
-        @class(Veins::TraCIVehicleInserter);
+        @class(veins::TraCIVehicleInserter);
 
         int numVehicles = default(0);
         bool useRouteDistributions = default(false);

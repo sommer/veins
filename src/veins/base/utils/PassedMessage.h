@@ -4,7 +4,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 class VEINS_API PassedMessage : public cObject {
 public:
@@ -56,4 +56,4 @@ public:
     const char* name;
 };
 
-} // namespace Veins
+} // namespace veins

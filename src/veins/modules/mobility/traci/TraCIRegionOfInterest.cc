@@ -25,7 +25,7 @@
 
 #include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 
-namespace Veins {
+namespace veins {
 
 TraCIRegionOfInterest::TraCIRegionOfInterest()
 {
@@ -108,4 +108,4 @@ const std::list<std::pair<TraCICoord, TraCICoord>>& TraCIRegionOfInterest::getRe
     return roiRects;
 }
 
-} // namespace Veins
+} // namespace veins

@@ -9,7 +9,7 @@ package org.car2x.veins.base.modules;
 simple BaseMobility like IMobility
 {
     parameters:
-        @class(Veins::BaseMobility);
+        @class(veins::BaseMobility);
         bool notAffectedByHostState = default(true);
         double x; // x coordinate of the nodes' position (-1 = random)
         double y; // y coordinate of the nodes' position (-1 = random)
@@ -17,7 +17,7 @@ simple BaseMobility like IMobility
         double xOrientation = default(1);
         double yOrientation = default(0);
         double zOrientation = default(0);
-        @signal[org.car2x.veins.base.modules.mobilityStateChanged](type="Veins::BaseMobility");
+        @signal[org.car2x.veins.base.modules.mobilityStateChanged](type="veins::BaseMobility");
         @display("i=block/cogwheel");
 }
 

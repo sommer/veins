@@ -23,7 +23,7 @@
 #include <string>
 #include <sstream>
 
-namespace Veins {
+namespace veins {
 
 class ParBuffer {
 public:
@@ -105,4 +105,4 @@ private:
     std::string inBuffer;
 };
 
-} // namespace Veins
+} // namespace veins

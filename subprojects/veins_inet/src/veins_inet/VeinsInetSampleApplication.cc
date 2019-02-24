@@ -56,7 +56,7 @@ bool VeinsInetSampleApplication::startApplication()
             packet->insertAtBack(payload);
             sendPacket(std::move(packet));
         };
-        timerManager.create(Veins::TimerSpecification(callback).oneshotAt(SimTime(20, SIMTIME_S)));
+        timerManager.create(veins::TimerSpecification(callback).oneshotAt(SimTime(20, SIMTIME_S)));
     }
 
     return true;

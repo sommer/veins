@@ -2,9 +2,9 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
-using namespace Veins;
+using namespace veins;
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
 void SimplePathlossModel::filterSignal(Signal* signal)
 {

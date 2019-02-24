@@ -23,9 +23,9 @@
 #include "veins/base/utils/Heading.h"
 #include "veins_inet/VeinsInetMobility.h"
 
-using Veins::VeinsInetManager;
+using veins::VeinsInetManager;
 
-Define_Module(Veins::VeinsInetManager);
+Define_Module(veins::VeinsInetManager);
 
 VeinsInetManager::~VeinsInetManager()
 {

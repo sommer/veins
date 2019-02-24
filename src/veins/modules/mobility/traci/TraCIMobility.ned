@@ -38,8 +38,8 @@ import org.car2x.veins.base.modules.BaseMobility;
 simple TraCIMobility extends BaseMobility
 {
     parameters:
-        @class(Veins::TraCIMobility);
-        @signal[org.car2x.veins.modules.mobility.parkingStateChanged](type=Veins::TraCIMobility);
+        @class(veins::TraCIMobility);
+        @signal[org.car2x.veins.modules.mobility.parkingStateChanged](type=veins::TraCIMobility);
         @display("i=block/cogwheel");
         double hostPositionOffset @unit("m") = default(0.0m);  // shift OMNeT++ module this far from front of the car
         bool setHostSpeed = default(false);  // whether to update the speed of the host (along with its position)

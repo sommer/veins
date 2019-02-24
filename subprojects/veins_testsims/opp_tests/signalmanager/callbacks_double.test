@@ -51,7 +51,7 @@ public:
         : cSimpleModule() {};
     void initialize(int stage) override;
 protected:
-    Veins::SignalManager signalManager;
+    veins::SignalManager signalManager;
 };
 
 const simsignal_t Module::mySignal = registerSignal("mySignal");

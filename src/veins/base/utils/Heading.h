@@ -22,13 +22,13 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 class Heading;
-} // namespace Veins
+} // namespace veins
 
 #include "veins/base/utils/Coord.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * Stores a Heading in rad, with 0 degrees being east and 90 degrees being north.
@@ -95,4 +95,4 @@ inline std::ostream& operator<<(std::ostream& os, const Heading& o)
     return os << "(" << o.getRad() << " rad)";
 }
 
-} // namespace Veins
+} // namespace veins

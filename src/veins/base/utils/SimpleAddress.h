@@ -21,7 +21,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /** @brief Layer address handling helper function.
  *
@@ -95,4 +95,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

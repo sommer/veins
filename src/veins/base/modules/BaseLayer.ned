@@ -21,7 +21,7 @@ package org.car2x.veins.base.modules;
 simple BaseLayer
 {
     parameters:
-        @class(Veins::BaseLayer);
+        @class(veins::BaseLayer);
         bool notAffectedByHostState = default(false);
         
     gates:

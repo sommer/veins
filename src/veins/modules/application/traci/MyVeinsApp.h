@@ -26,7 +26,7 @@
 
 using namespace omnetpp;
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -52,4 +52,4 @@ protected:
     void handlePositionUpdate(cObject* obj) override;
 };
 
-} // namespace Veins
+} // namespace veins

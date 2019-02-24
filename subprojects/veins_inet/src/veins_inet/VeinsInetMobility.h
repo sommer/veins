@@ -36,7 +36,7 @@ using namespace omnetpp;
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
-namespace Veins {
+namespace veins {
 
 class VEINS_INET_API VeinsInetMobility : public inet::MobilityBase {
 public:
@@ -84,9 +84,9 @@ protected:
     virtual void handleSelfMessage(cMessage* message) override;
 };
 
-} // namespace Veins
+} // namespace veins
 
-namespace Veins {
+namespace veins {
 class VEINS_INET_API VeinsInetMobilityAccess {
 public:
     VeinsInetMobility* get(cModule* host)
@@ -96,4 +96,4 @@ public:
         return m;
     };
 };
-} // namespace Veins
+} // namespace veins

@@ -32,15 +32,15 @@
 #include "veins/modules/obstacle/ObstacleControl.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 
-using namespace Veins::TraCIConstants;
+using namespace veins::TraCIConstants;
 
-using Veins::AnnotationManagerAccess;
-using Veins::TraCIBuffer;
-using Veins::TraCICoord;
-using Veins::TraCIScenarioManager;
-using Veins::TraCITrafficLightInterface;
+using veins::AnnotationManagerAccess;
+using veins::TraCIBuffer;
+using veins::TraCICoord;
+using veins::TraCIScenarioManager;
+using veins::TraCITrafficLightInterface;
 
-Define_Module(Veins::TraCIScenarioManager);
+Define_Module(veins::TraCIScenarioManager);
 
 const simsignal_t TraCIScenarioManager::traciInitializedSignal = registerSignal("org.car2x.veins.modules.mobility.traciInitialized");
 const simsignal_t TraCIScenarioManager::traciModuleAddedSignal = registerSignal("org.car2x.veins.modules.mobility.traciModuleAdded");

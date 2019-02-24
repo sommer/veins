@@ -13,7 +13,7 @@
 #include "veins/base/phyLayer/Antenna.h"
 #include "veins/base/phyLayer/ChannelInfo.h"
 
-namespace Veins {
+namespace veins {
 
 class Decider;
 class BaseWorldUtility;
@@ -439,4 +439,4 @@ public:
     /*@}*/
 };
 
-} // namespace Veins
+} // namespace veins

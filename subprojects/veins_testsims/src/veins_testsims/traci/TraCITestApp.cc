@@ -26,12 +26,12 @@
 #include "veins/modules/mobility/traci/TraCIColor.h"
 #include "veins_testsims/traci/TraCITrafficLightTestLogic.h"
 
-using Veins::BaseMobility;
-using Veins::TraCIMobility;
-using Veins::TraCIMobilityAccess;
-using Veins::TraCITestApp;
+using veins::BaseMobility;
+using veins::TraCIMobility;
+using veins::TraCIMobilityAccess;
+using veins::TraCITestApp;
 
-Define_Module(Veins::TraCITestApp);
+Define_Module(veins::TraCITestApp);
 
 void TraCITestApp::initialize(int stage)
 {
@@ -870,7 +870,7 @@ void TraCITestApp::handlePositionUpdate()
     }
 
     //
-    // Veins::TraCITrafficLightAbstractLogic (see org.car2x.veins.subprojects.veins_testsims.traci.TraCITrafficLightTestLogic class)
+    // veins::TraCITrafficLightAbstractLogic (see org.car2x.veins.subprojects.veins_testsims.traci.TraCITrafficLightTestLogic class)
     //
 
     if (testNumber == testCounter++) {

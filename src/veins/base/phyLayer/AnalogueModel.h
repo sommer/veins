@@ -9,7 +9,7 @@
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
-namespace Veins {
+namespace veins {
 
 class AirFrame;
 class Signal;
@@ -57,4 +57,4 @@ public:
 
 using AnalogueModelList = std::vector<std::unique_ptr<AnalogueModel>>;
 
-} // namespace Veins
+} // namespace veins

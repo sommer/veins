@@ -22,7 +22,7 @@
 
 #include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * Small RSU Demo using 11p
@@ -33,4 +33,4 @@ protected:
     void onWSA(DemoServiceAdvertisment* wsa) override;
 };
 
-} // namespace Veins
+} // namespace veins

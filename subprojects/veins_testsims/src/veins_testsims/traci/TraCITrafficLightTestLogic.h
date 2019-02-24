@@ -25,7 +25,7 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 
-namespace Veins {
+namespace veins {
 class TraCITrafficLightTestLogic : public TraCITrafficLightAbstractLogic {
 private:
     cMessage* changeProgramm;
@@ -53,4 +53,4 @@ public:
     };
 };
 
-} // namespace Veins
+} // namespace veins

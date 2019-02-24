@@ -24,7 +24,7 @@
 
 #include "veins/base/utils/SimpleAddress.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Control info to pass next hop L2 addr from netw to MAC layer
@@ -98,4 +98,4 @@ public:
     static const LAddress::L2Type& getDestFromControlInfo(const cObject* const pCtrlInfo);
 };
 
-} // namespace Veins
+} // namespace veins

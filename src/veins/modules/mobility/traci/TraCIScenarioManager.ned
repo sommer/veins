@@ -41,7 +41,7 @@ simple TraCIScenarioManager
         @signal[org.car2x.veins.modules.mobility.traciModuleRemoved](type=cModule);
         @signal[org.car2x.veins.modules.mobility.traciTimestepBegin](type=simtime_t);
         @signal[org.car2x.veins.modules.mobility.traciTimestepEnd](type=simtime_t);
-        @class(Veins::TraCIScenarioManager);
+        @class(veins::TraCIScenarioManager);
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)
         double firstStepAt @unit("s") = default(-1s);  // when to start synchronizing with the TraCI server (-1: immediately after connecting)
         double updateInterval @unit("s") = default(1s);  // time interval of hosts' position updates

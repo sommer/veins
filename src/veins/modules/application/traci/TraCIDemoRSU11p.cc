@@ -22,9 +22,9 @@
 
 #include "veins/modules/application/traci/TraCIDemo11pMessage_m.h"
 
-using namespace Veins;
+using namespace veins;
 
-Define_Module(Veins::TraCIDemoRSU11p);
+Define_Module(veins::TraCIDemoRSU11p);
 
 void TraCIDemoRSU11p::onWSA(DemoServiceAdvertisment* wsa)
 {

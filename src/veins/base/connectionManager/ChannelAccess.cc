@@ -32,7 +32,7 @@
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
 using std::endl;
-using namespace Veins;
+using namespace veins;
 
 BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
 {

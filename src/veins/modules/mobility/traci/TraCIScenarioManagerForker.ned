@@ -35,7 +35,7 @@ package org.car2x.veins.modules.mobility.traci;
 simple TraCIScenarioManagerForker extends TraCIScenarioManager
 {
     parameters:
-        @class(Veins::TraCIScenarioManagerForker);
+        @class(veins::TraCIScenarioManagerForker);
         string commandLine = default("sumo --remote-port $port --seed $seed --configuration-file $configFile"); // command line for running TraCI server (substituting $configFile, $seed, $port)
         string configFile = default("my.sumo.cfg"); // substitution for $configFile parameter
         port = default(-1);  // substitution for $port parameter (-1: autodetect)

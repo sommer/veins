@@ -20,7 +20,7 @@
 
 #include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
 
-using namespace Veins;
+using namespace veins;
 
 void DemoBaseApplLayer::initialize(int stage)
 {

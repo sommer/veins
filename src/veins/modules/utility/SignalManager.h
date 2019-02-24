@@ -27,7 +27,7 @@
 
 #include "veins/modules/utility/CallableInfo.h"
 
-namespace Veins {
+namespace veins {
 
 namespace SignalCallbackManagement {
 
@@ -184,4 +184,4 @@ private:
     std::vector<SignalCallback> storedCallbacks;
 };
 
-} // namespace Veins
+} // namespace veins

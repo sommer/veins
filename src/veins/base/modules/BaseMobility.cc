@@ -28,9 +28,9 @@
 #include "veins/base/utils/FindModule.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 
-using namespace Veins;
+using namespace veins;
 
-Define_Module(Veins::BaseMobility);
+Define_Module(veins::BaseMobility);
 
 const simsignal_t BaseMobility::mobilityStateChangedSignal = registerSignal("org.car2x.veins.base.modules.mobilityStateChanged");
 

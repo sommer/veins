@@ -23,11 +23,11 @@
 
 using omnetpp::simTime;
 using omnetpp::simtime_t;
-using Veins::TimerManager;
-using Veins::TimerMessage;
-using Veins::TimerSpecification;
+using veins::TimerManager;
+using veins::TimerMessage;
+using veins::TimerSpecification;
 
-struct Veins::TimerMessage : public omnetpp::cMessage {
+struct veins::TimerMessage : public omnetpp::cMessage {
     TimerMessage(const std::string& name)
         : omnetpp::cMessage(name.c_str())
     {

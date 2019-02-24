@@ -23,8 +23,8 @@
 #include "veins/modules/obstacle/VehicleObstacle.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 
-using Veins::Coord;
-using Veins::VehicleObstacle;
+using veins::Coord;
+using veins::VehicleObstacle;
 
 namespace {
 

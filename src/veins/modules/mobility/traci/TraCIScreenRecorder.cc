@@ -26,9 +26,9 @@
 #define realpath(N, R) _fullpath((R), (N), _MAX_PATH)
 #endif /* _WIN32 */
 
-using Veins::TraCIScreenRecorder;
+using veins::TraCIScreenRecorder;
 
-Define_Module(Veins::TraCIScreenRecorder);
+Define_Module(veins::TraCIScreenRecorder);
 
 void TraCIScreenRecorder::initialize(int stage)
 {

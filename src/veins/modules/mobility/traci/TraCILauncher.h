@@ -20,7 +20,7 @@
 
 #pragma once
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -46,4 +46,4 @@ protected:
 #endif
 };
 
-} // namespace Veins
+} // namespace veins

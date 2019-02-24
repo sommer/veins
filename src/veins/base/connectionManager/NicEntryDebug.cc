@@ -25,7 +25,7 @@
 #include "veins/base/utils/FindModule.h"
 
 using std::endl;
-using namespace Veins;
+using namespace veins;
 
 void NicEntryDebug::connectTo(NicEntry* other)
 {

@@ -21,7 +21,7 @@
 
 #include "veins/modules/analogueModel/NakagamiFading.h"
 
-using namespace Veins;
+using namespace veins;
 
 /**
  * Simple Nakagami-m fading (based on a constant factor across all time and frequencies).

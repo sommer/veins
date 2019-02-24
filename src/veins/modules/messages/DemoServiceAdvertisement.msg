@@ -23,7 +23,7 @@ cplusplus {{
 #include "veins/modules/messages/BaseFrame1609_4_m.h"
 }}
 
-namespace Veins;
+namespace veins;
 
 class BaseFrame1609_4;
 class noncobject Coord;

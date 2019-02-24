@@ -29,9 +29,9 @@
 
 #include "veins/base/utils/FindModule.h"
 
-Define_Module(Veins::TraCIVehicleInserter);
+Define_Module(veins::TraCIVehicleInserter);
 
-using namespace Veins;
+using namespace veins;
 
 TraCIVehicleInserter::TraCIVehicleInserter()
     : mobRng(nullptr)

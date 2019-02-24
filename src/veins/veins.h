@@ -59,7 +59,7 @@ using namespace omnetpp;
 /**
  * %Veins - The open source vehicular network simulation framework.
  */
-namespace Veins {
+namespace veins {
 #ifdef __cpp_lib_make_unique
 using make_unique = std::make_unique;
 #else
@@ -74,4 +74,4 @@ std::unique_ptr<T> make_unique(Args&& ... args)
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 #endif
-} // namespace Veins
+} // namespace veins

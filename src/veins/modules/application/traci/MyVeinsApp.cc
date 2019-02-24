@@ -20,9 +20,9 @@
 
 #include "veins/modules/application/traci/MyVeinsApp.h"
 
-using namespace Veins;
+using namespace veins;
 
-Define_Module(Veins::MyVeinsApp);
+Define_Module(veins::MyVeinsApp);
 
 void MyVeinsApp::initialize(int stage)
 {

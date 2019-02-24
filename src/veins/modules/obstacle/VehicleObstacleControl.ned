@@ -26,7 +26,7 @@ package org.car2x.veins.modules.obstacle;
 simple VehicleObstacleControl
 {
     parameters:
-        @class(Veins::VehicleObstacleControl);
+        @class(veins::VehicleObstacleControl);
         @display("i=misc/town2");
         @labels(node);
 }

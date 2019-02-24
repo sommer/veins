@@ -21,9 +21,9 @@
 #include <set>
 #include "veins/modules/obstacle/Obstacle.h"
 
-using namespace Veins;
+using namespace veins;
 
-using Veins::Obstacle;
+using veins::Obstacle;
 
 Obstacle::Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter)
     : visualRepresentation(nullptr)

@@ -15,7 +15,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief HostState is published by the battery to announce host failure
@@ -104,4 +104,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

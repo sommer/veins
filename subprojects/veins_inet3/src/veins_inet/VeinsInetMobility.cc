@@ -28,7 +28,7 @@
 #include "veins_inet/VeinsInetMobility.h"
 #include "inet/visualizer/mobility/MobilityCanvasVisualizer.h"
 
-namespace Veins {
+namespace veins {
 
 using inet::Coord;
 
@@ -157,4 +157,4 @@ void VeinsInetMobility::emitMobilityStateChangedSignal()
     emit(mobilityStateChangedSignal, this);
 }
 
-} // namespace Veins
+} // namespace veins

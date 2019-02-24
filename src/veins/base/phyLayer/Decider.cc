@@ -1,6 +1,6 @@
 #include "veins/base/phyLayer/Decider.h"
 
-using namespace Veins;
+using namespace veins;
 
 bool DeciderResult::isSignalCorrect() const
 {

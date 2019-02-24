@@ -19,7 +19,7 @@
 
 #include "veins/base/utils/Coord.h"
 
-using namespace Veins;
+using namespace veins;
 
 const Coord Coord::ZERO = Coord(0.0, 0.0, 0.0);
 

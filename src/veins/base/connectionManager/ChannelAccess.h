@@ -32,7 +32,7 @@
 #include "veins/base/modules/BaseMobility.h"
 #include "veins/base/utils/Heading.h"
 
-namespace Veins {
+namespace veins {
 
 using ChannelMobilityAccessType = AccessModuleWrap<BaseMobility>;
 using ChannelMobilityPtrType = ChannelMobilityAccessType::wrapType*;
@@ -141,4 +141,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

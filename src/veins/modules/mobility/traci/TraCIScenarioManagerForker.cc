@@ -37,10 +37,10 @@
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins/modules/mobility/traci/TraCILauncher.h"
 
-using Veins::TraCILauncher;
-using Veins::TraCIScenarioManagerForker;
+using veins::TraCILauncher;
+using veins::TraCIScenarioManagerForker;
 
-Define_Module(Veins::TraCIScenarioManagerForker);
+Define_Module(veins::TraCIScenarioManagerForker);
 
 namespace {
 

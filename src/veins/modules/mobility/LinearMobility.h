@@ -20,7 +20,7 @@
 
 #include "veins/base/modules/BaseMobility.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Linear movement model. See NED file for more info.
@@ -51,4 +51,4 @@ protected:
     void fixIfHostGetsOutside() override;
 };
 
-} // namespace Veins
+} // namespace veins

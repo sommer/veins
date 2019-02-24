@@ -24,7 +24,7 @@
 
 #include "veins/base/utils/Coord.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Provides information and utility methods for the whole simulation.
@@ -120,4 +120,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

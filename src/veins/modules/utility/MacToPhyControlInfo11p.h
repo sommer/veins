@@ -5,7 +5,7 @@
 #include "veins/modules/utility/ConstsPhy.h"
 #include "veins/modules/utility/Consts80211p.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * Stores information which is needed by the physical layer
@@ -27,4 +27,4 @@ struct VEINS_API MacToPhyControlInfo11p : public cObject {
     }
 };
 
-} // namespace Veins
+} // namespace veins

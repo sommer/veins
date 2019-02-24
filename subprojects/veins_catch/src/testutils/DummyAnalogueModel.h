@@ -21,7 +21,7 @@
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 
-namespace Veins {
+namespace veins {
 
 class DummyAnalogueModel : public AnalogueModel {
 protected:
@@ -39,4 +39,4 @@ public:
         *signal *= factor;
     }
 };
-} // namespace Veins
+} // namespace veins
