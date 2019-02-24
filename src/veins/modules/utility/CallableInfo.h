@@ -29,6 +29,7 @@
  * With this helper, one can identify the return type and individual arguments of any callable.
  * This allows to convert them info regular std::function types, even in the presence of templated arguments.
  */
+namespace veins {
 namespace CallableInfo {
 template <class Ret, class Cls, class ... Args>
 struct trait {
@@ -70,3 +71,4 @@ template <class Ret, class Cls, class ... Args>
 struct type<Ret (Cls::*)(Args...)> : trait<Ret, Cls, Args...> {
 };
 }; // namespace CallableInfo
+}; // namespace veins
