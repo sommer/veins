@@ -254,8 +254,6 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
         auto o = i->first;
         auto intersectAt = i->second;
 
-        double factorOld = factor;
-
         // if beam interacts with neither borders nor matter: bail.
         bool senderInside = o->containsPoint(senderPos);
         bool receiverInside = o->containsPoint(receiverPos);
@@ -281,9 +279,6 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
         double totalDistance = senderPos.distance(receiverPos);
         double attenuation = (o->getAttenuationPerCut() * numCuts) + (o->getAttenuationPerMeter() * fractionInObstacle * totalDistance);
         factor *= pow(10.0, -attenuation / 10.0);
-
-        // draw a "hit!" bubble
-        if (annotations && (factor != factorOld)) annotations->drawBubble(o->getBboxP1(), "hit");
 
         // bail if attenuation is already extremely high
         if (factor < 1e-30) break;
