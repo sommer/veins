@@ -21,9 +21,9 @@
 
 #include "veins/veins.h"
 
-using namespace Veins;
+using namespace veins;
 
-Define_Module(Veins::LinearMobility);
+Define_Module(veins::LinearMobility);
 
 void LinearMobility::initialize(int stage)
 {

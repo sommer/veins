@@ -27,9 +27,9 @@
 #include "veins/modules/mac/ieee80211p/Mac80211pToPhy11pInterface.h"
 #include "veins/modules/phy/Decider80211pToPhy80211pInterface.h"
 
-namespace Veins {
+namespace veins {
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
 /**
  * @brief
@@ -217,4 +217,4 @@ public:
     void setNotifyRxStart(bool enable);
 };
 
-} // namespace Veins
+} // namespace veins

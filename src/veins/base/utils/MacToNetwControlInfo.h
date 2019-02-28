@@ -19,7 +19,7 @@
 
 #include "veins/base/utils/SimpleAddress.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Stores control information from mac to upper layer.
@@ -148,4 +148,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

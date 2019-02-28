@@ -6,7 +6,7 @@
 #include "testutils/Simulation.h"
 #include "testutils/Component.h"
 
-using namespace Veins;
+using namespace veins;
 
 namespace {
 

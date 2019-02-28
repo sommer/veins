@@ -22,7 +22,7 @@
 
 #include "veins/modules/phy/NistErrorRate.h"
 
-using Veins::NistErrorRate;
+using veins::NistErrorRate;
 
 NistErrorRate::NistErrorRate()
 {

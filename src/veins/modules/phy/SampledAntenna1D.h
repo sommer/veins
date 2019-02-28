@@ -10,7 +10,7 @@
 #include "veins/base/phyLayer/Antenna.h"
 #include <vector>
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -100,4 +100,4 @@ private:
     double lastAngle;
 };
 
-} // namespace Veins
+} // namespace veins

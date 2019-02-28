@@ -8,3 +8,4 @@ This page is the starting point for additional documentation of the Veins projec
 # Topics
 
 * @subpage timer_manager
+* @subpage simsignal_management

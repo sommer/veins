@@ -29,7 +29,7 @@
 #include "inet/common/Units.h"
 #include "inet/common/geometry/common/GeographicCoordinateSystem.h"
 
-namespace Veins {
+namespace veins {
 
 using namespace inet::units::values;
 
@@ -146,4 +146,4 @@ TraCICommandInterface::Vehicle* VeinsInetMobility::getVehicleCommandInterface() 
     return vehicleCommandInterface;
 }
 
-} // namespace Veins
+} // namespace veins

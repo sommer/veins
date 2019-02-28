@@ -22,7 +22,7 @@ cplusplus {{
     #include "veins/modules/messages/Mac80211Pkt_m.h"
 }}
 
-namespace Veins;
+namespace veins;
 
 class Mac80211Pkt;
 

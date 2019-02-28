@@ -32,7 +32,7 @@
 #include "veins/modules/mobility/traci/VehicleSignal.h"
 #include "veins/base/utils/Heading.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -221,4 +221,4 @@ public:
     };
 };
 
-} // namespace Veins
+} // namespace veins

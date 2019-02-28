@@ -26,7 +26,7 @@
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/utils/SimpleAddress.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Base class for the application layer
@@ -162,4 +162,4 @@ protected:
     };
 };
 
-} // namespace Veins
+} // namespace veins

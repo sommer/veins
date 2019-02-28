@@ -38,11 +38,11 @@
 #include "veins/modules/messages/AirFrame11p_m.h"
 #include "veins/modules/utility/MacToPhyControlInfo11p.h"
 
-using namespace Veins;
+using namespace veins;
 
 using std::unique_ptr;
 
-Define_Module(Veins::PhyLayer80211p);
+Define_Module(veins::PhyLayer80211p);
 
 void PhyLayer80211p::initialize(int stage)
 {

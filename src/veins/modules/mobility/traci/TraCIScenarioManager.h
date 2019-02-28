@@ -40,7 +40,7 @@
 #include "veins/modules/mobility/traci/VehicleSignal.h"
 #include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 
-namespace Veins {
+namespace veins {
 
 class TraCICommandInterface;
 
@@ -201,4 +201,4 @@ public:
     };
 };
 
-} // namespace Veins
+} // namespace veins

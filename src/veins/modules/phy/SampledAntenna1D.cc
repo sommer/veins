@@ -22,7 +22,7 @@
 #include "veins/modules/phy/SampledAntenna1D.h"
 #include "veins/base/utils/FWMath.h"
 
-using namespace Veins;
+using namespace veins;
 
 SampledAntenna1D::SampledAntenna1D(std::vector<double>& values, std::string offsetType, std::vector<double>& offsetParams, std::string rotationType, std::vector<double>& rotationParams, cRNG* rng)
     : antennaGains(values.size() + 1)

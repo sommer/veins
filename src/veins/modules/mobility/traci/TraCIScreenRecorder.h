@@ -22,7 +22,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -50,4 +50,4 @@ protected:
     cMessage* takeScreenshot;
 };
 
-} // namespace Veins
+} // namespace veins

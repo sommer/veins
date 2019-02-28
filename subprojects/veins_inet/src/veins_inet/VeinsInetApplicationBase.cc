@@ -34,7 +34,7 @@
 #include "inet/networklayer/common/L3AddressTag_m.h"
 #include "inet/transportlayer/contract/udp/UdpControlInfo_m.h"
 
-namespace Veins {
+namespace veins {
 
 using namespace inet;
 
@@ -59,7 +59,7 @@ void VeinsInetApplicationBase::initialize(int stage)
 
 void VeinsInetApplicationBase::handleStartOperation(LifecycleOperation* operation)
 {
-    mobility = Veins::VeinsInetMobilityAccess().get(getParentModule());
+    mobility = veins::VeinsInetMobilityAccess().get(getParentModule());
     traci = mobility->getCommandInterface();
     traciVehicle = mobility->getVehicleCommandInterface();
 
@@ -191,4 +191,4 @@ void VeinsInetApplicationBase::processPacket(std::shared_ptr<inet::Packet> pk)
 {
 }
 
-} // namespace Veins
+} // namespace veins

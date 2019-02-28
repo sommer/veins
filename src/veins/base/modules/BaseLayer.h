@@ -26,9 +26,9 @@
 #include "veins/base/modules/BatteryAccess.h"
 #include "veins/base/utils/PassedMessage.h"
 
-namespace Veins {
+namespace veins {
 
-using Veins::BatteryAccess;
+using veins::BatteryAccess;
 
 /**
  * @brief A very simple layer template
@@ -166,4 +166,4 @@ protected:
     /*@}*/
 };
 
-} // namespace Veins
+} // namespace veins

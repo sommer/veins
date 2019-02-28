@@ -20,7 +20,7 @@
 
 #include "veins/modules/world/traci/trafficLight/logics/TraCITrafficLightAbstractLogic.h"
 
-using Veins::TraCITrafficLightAbstractLogic;
+using veins::TraCITrafficLightAbstractLogic;
 using namespace omnetpp;
 
 TraCITrafficLightAbstractLogic::TraCITrafficLightAbstractLogic()

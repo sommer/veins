@@ -34,7 +34,7 @@
 
 #include "veins_inet/veins_inet.h"
 
-namespace Veins {
+namespace veins {
 
 class VEINS_INET_API VeinsInetMobility : public cSimpleModule, public inet::IMobility {
 public:
@@ -89,4 +89,4 @@ protected:
     virtual void emitMobilityStateChangedSignal();
 };
 
-} // namespace Veins
+} // namespace veins

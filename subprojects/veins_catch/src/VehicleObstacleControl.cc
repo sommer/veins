@@ -5,10 +5,10 @@
 #include "veins/base/toolbox/Signal.h"
 #include "testutils/Simulation.h"
 
-using Veins::Coord;
-using Veins::Signal;
-using Veins::Spectrum;
-using Veins::VehicleObstacleControl;
+using veins::Coord;
+using veins::Signal;
+using veins::Spectrum;
+using veins::VehicleObstacleControl;
 
 SCENARIO("Using VehicleObstacleControl", "[vehicleObstacles]")
 {

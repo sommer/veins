@@ -20,7 +20,7 @@
 
 #include "veins/modules/analogueModel/VehicleObstacleShadowing.h"
 
-using namespace Veins;
+using namespace veins;
 
 VehicleObstacleShadowing::VehicleObstacleShadowing(cComponent* owner, VehicleObstacleControl& vehicleObstacleControl, bool useTorus, const Coord& playgroundSize)
     : AnalogueModel(owner)

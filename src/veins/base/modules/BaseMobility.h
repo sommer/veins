@@ -28,7 +28,7 @@
 #include "veins/base/utils/Move.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Base module for all mobility modules.
@@ -406,4 +406,4 @@ protected:
     /*@}*/
 };
 
-} // namespace Veins
+} // namespace veins

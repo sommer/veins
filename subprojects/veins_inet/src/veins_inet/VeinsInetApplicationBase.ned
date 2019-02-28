@@ -29,7 +29,7 @@ simple VeinsInetApplicationBase like IApp
         string interface = default("wlan0");  // The interface name of where to send packets (via multicast)
 
         @display("i=block/app");
-        @class(Veins::VeinsInetApplicationBase);
+        @class(veins::VeinsInetApplicationBase);
         @signal[packetSent](type=inet::Packet);
         @signal[packetReceived](type=inet::Packet);
         @statistic[packetReceived](title="packets received"; source=packetReceived; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);

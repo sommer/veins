@@ -23,7 +23,7 @@
 #include <cmath>
 #include "veins/modules/utility/ConstsPhy.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * Model the error rate for different modulations and coding schemes.
@@ -110,4 +110,4 @@ private:
     static double getFec64QamBer(double snr, uint32_t nbits, uint32_t bValue);
 };
 
-} // namespace Veins
+} // namespace veins

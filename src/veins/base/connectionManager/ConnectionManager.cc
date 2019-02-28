@@ -4,9 +4,9 @@
 
 #include "veins/base/modules/BaseWorldUtility.h"
 
-using namespace Veins;
+using namespace veins;
 
-Define_Module(Veins::ConnectionManager);
+Define_Module(veins::ConnectionManager);
 
 double ConnectionManager::calcInterfDist()
 {

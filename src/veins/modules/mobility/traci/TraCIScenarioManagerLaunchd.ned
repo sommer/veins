@@ -39,7 +39,7 @@ package org.car2x.veins.modules.mobility.traci;
 simple TraCIScenarioManagerLaunchd extends TraCIScenarioManager
 {
     parameters:
-        @class(Veins::TraCIScenarioManagerLaunchd);
+        @class(veins::TraCIScenarioManagerLaunchd);
         xml launchConfig; // launch configuration to send to sumo-launchd.py
 }
 

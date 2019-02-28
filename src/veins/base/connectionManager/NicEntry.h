@@ -29,7 +29,7 @@
 #include "veins/base/utils/Heading.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
-namespace Veins {
+namespace veins {
 
 class ChannelAccess;
 
@@ -132,4 +132,4 @@ public:
     };
 };
 
-} // namespace Veins
+} // namespace veins

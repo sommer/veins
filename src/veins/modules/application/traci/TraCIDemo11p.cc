@@ -22,9 +22,9 @@
 
 #include "veins/modules/application/traci/TraCIDemo11pMessage_m.h"
 
-using namespace Veins;
+using namespace veins;
 
-Define_Module(Veins::TraCIDemo11p);
+Define_Module(veins::TraCIDemo11p);
 
 void TraCIDemo11p::initialize(int stage)
 {

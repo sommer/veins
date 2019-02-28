@@ -28,7 +28,7 @@
 
 using omnetpp::simtime_t;
 
-namespace Veins {
+namespace veins {
 class VEINS_API TraCITrafficLightProgram {
 public:
     struct Phase {
@@ -66,4 +66,4 @@ struct VEINS_API TraCITrafficLightLink {
     std::string internal;
 };
 
-} // namespace Veins
+} // namespace veins

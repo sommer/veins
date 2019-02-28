@@ -22,7 +22,7 @@
 
 #include "veins/modules/messages/DemoSafetyMessage_m.h"
 
-using Veins::TraCITrafficLightApp;
+using veins::TraCITrafficLightApp;
 
 Define_Module(TraCITrafficLightApp);
 

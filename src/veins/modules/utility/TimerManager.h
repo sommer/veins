@@ -25,7 +25,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * Abstraction for (recurring) Timers for cSimpleModule.
@@ -233,4 +233,4 @@ private:
     omnetpp::cSimpleModule* const parent_; ///< A pointer to the module which owns this TimerManager.
 };
 
-} // namespace Veins
+} // namespace veins

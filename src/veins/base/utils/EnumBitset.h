@@ -25,7 +25,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /*
  * Helper struct to define the maximum element of a given Enum.
@@ -140,4 +140,4 @@ EnumBitset<T> operator|(T lhs, T rhs)
     return EnumBitset<T>(lhs) | EnumBitset<T>(rhs);
 }
 
-} // namespace Veins
+} // namespace veins

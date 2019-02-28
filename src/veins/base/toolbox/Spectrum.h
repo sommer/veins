@@ -31,7 +31,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 class VEINS_API Spectrum {
 public:
@@ -57,4 +57,4 @@ private:
     Frequencies frequencies;
 };
 
-} // namespace Veins
+} // namespace veins

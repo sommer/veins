@@ -6,9 +6,9 @@
 
 #include "veins/base/messages/AirFrame_m.h"
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief This class is used by the BasePhyLayer to keep track of the AirFrames
@@ -450,4 +450,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

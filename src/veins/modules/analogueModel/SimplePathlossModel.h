@@ -7,9 +7,9 @@
 #include "veins/base/phyLayer/AnalogueModel.h"
 #include "veins/base/modules/BaseWorldUtility.h"
 
-namespace Veins {
+namespace veins {
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
 class SimplePathlossModel;
 
@@ -73,4 +73,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

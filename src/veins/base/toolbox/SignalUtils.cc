@@ -24,7 +24,7 @@
 
 #include <queue>
 
-namespace Veins {
+namespace veins {
 namespace SignalUtils {
 
 namespace {
@@ -155,4 +155,4 @@ double getMinSINR(simtime_t start, simtime_t end, AirFrame* signalFrame, AirFram
 }
 
 } // namespace SignalUtils
-} // namespace Veins
+} // namespace veins

@@ -4,7 +4,7 @@
 
 #include "veins/base/phyLayer/PhyUtils.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Defines the methods provided by the phy to the mac layer.
@@ -80,4 +80,4 @@ public:
     virtual int getNbRadioChannels() = 0;
 };
 
-} // namespace Veins
+} // namespace veins

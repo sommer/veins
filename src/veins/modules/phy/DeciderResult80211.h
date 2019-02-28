@@ -13,7 +13,7 @@
 
 #include "veins/base/phyLayer/Decider.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Defines an extended DeciderResult for the 80211 protocol
@@ -90,4 +90,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

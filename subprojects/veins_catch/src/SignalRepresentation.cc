@@ -29,7 +29,7 @@
 #include "testutils/Component.h"
 #include "testutils/DummyAnalogueModel.h"
 
-using namespace Veins;
+using namespace veins;
 using AirFrameVector = DeciderToPhyInterface::AirFrameVector;
 
 SCENARIO("Spectrum", "[toolbox]")

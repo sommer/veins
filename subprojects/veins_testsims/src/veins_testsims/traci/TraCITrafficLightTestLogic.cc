@@ -21,9 +21,9 @@
 
 #include "veins_testsims/traci/TraCITrafficLightTestLogic.h"
 
-using Veins::TraCITrafficLightTestLogic;
+using veins::TraCITrafficLightTestLogic;
 
-Define_Module(Veins::TraCITrafficLightTestLogic);
+Define_Module(veins::TraCITrafficLightTestLogic);
 
 void TraCITrafficLightTestLogic::initialize()
 {

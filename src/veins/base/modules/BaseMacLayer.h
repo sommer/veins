@@ -25,7 +25,7 @@
 #include "veins/base/modules/BaseLayer.h"
 #include "veins/base/utils/SimpleAddress.h"
 
-namespace Veins {
+namespace veins {
 
 class BaseConnectionManager;
 class MacPkt;
@@ -176,4 +176,4 @@ protected:
     virtual cObject* const setUpControlInfo(cMessage* const pMsg, const LAddress::L2Type& pSrcAddr);
 };
 
-} // namespace Veins
+} // namespace veins

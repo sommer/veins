@@ -26,6 +26,6 @@ simple AnnotationDummy
 {
     parameters:
         @display("b=70,30,oval,red,black,4");
-        @class(Veins::AnnotationDummy);
+        @class(veins::AnnotationDummy);
 }
 

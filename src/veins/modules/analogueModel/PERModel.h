@@ -4,9 +4,9 @@
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief This class applies a parameterized packet error rate
@@ -33,4 +33,4 @@ public:
     void filterSignal(Signal*) override;
 };
 
-} // namespace Veins
+} // namespace veins

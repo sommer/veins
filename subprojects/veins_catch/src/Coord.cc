@@ -2,7 +2,7 @@
 
 #include "veins/base/utils/Coord.h"
 
-using Veins::Coord;
+using veins::Coord;
 
 SCENARIO("Coord", "[coord]")
 {

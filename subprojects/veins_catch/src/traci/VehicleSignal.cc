@@ -1,8 +1,8 @@
 #include "catch2/catch.hpp"
 #include "veins/modules/mobility/traci/VehicleSignal.h"
 
-using Veins::VehicleSignal;
-using Veins::VehicleSignalSet;
+using veins::VehicleSignal;
+using veins::VehicleSignalSet;
 
 SCENARIO("vehicle signal set gets correctly build correctly from integer bitfield", "[vehiclesignals]")
 {

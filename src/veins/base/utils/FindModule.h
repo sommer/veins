@@ -2,7 +2,7 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Provides method templates to find omnet modules.
@@ -123,4 +123,4 @@ std::vector<T*> getSubmodulesOfType(cModule* parentModule, bool recurse = false)
     return result;
 }
 
-} // namespace Veins
+} // namespace veins

@@ -27,7 +27,7 @@
 /****************************************************************************/
 #pragma once
 
-namespace Veins {
+namespace veins {
 namespace TraCIConstants {
 
 // ****************************************
@@ -729,4 +729,4 @@ const uint8_t VAR_TRACK_VEHICLE = 0xa6;
 const uint8_t VAR_HEIGHT = 0xbc;
 
 } // namespace TraCIConstants
-} // namespace Veins
+} // namespace veins

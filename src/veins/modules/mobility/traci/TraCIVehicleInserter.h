@@ -25,7 +25,7 @@
 #include "veins/veins.h"
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -77,4 +77,4 @@ protected:
     std::vector<std::string> vehicleTypeIds;
 };
 
-} // namespace Veins
+} // namespace veins

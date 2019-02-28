@@ -7,9 +7,9 @@
 
 #include "veins/base/phyLayer/AnalogueModel.h"
 
-using Veins::AirFrame;
+using veins::AirFrame;
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief The class that represents the Radio as a state machine.
@@ -169,4 +169,4 @@ protected:
 
 }; // end class Radio
 
-} // namespace Veins
+} // namespace veins

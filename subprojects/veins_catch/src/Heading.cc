@@ -3,8 +3,8 @@
 #include "veins/base/utils/Coord.h"
 #include "veins/base/utils/Heading.h"
 
-using Veins::Coord;
-using Veins::Heading;
+using veins::Coord;
+using veins::Heading;
 
 SCENARIO("Heading", "[heading]")
 {

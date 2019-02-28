@@ -5,7 +5,7 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/utils/FindModule.h"
 
-using namespace Veins;
+using namespace veins;
 
 namespace {
 /**

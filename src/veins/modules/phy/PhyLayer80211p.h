@@ -29,7 +29,7 @@
 #include "veins/modules/phy/Decider80211pToPhy80211pInterface.h"
 #include "veins/base/utils/Move.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -178,4 +178,4 @@ protected:
     simtime_t setRadioState(int rs) override;
 };
 
-} // namespace Veins
+} // namespace veins

@@ -65,7 +65,7 @@ This is highly repetitive and scatters code all over the class, which is bad.
 Furthermore, it has to be repeated for every single timer.
 
 With the [TimerManager] suite, most of the boilerplate is abstracted away.
-The [TimerManager](@ref Veins::TimerManager) contains all of it and provides an interface with clear semantics.
+The [TimerManager](@ref veins::TimerManager) contains all of it and provides an interface with clear semantics.
 Now the only steps left are:
 
 - per-module setup of the [TimerManager] instance (only necessary once per module):
@@ -80,7 +80,7 @@ Now the only steps left are:
 // Example module with same functionalty as above
 class WithTimers: public cSimpleModule {
 protected:
-    Veins::TimerManager timerManager(this);  // define and instantiate the TimerManager
+    veins::TimerManager timerManager(this);  // define and instantiate the TimerManager
     void handleMessage(cMessage* msg) override {
         if (msg->isSelfMessage()) {
             timerManager.handleMessage(msg);  // forward all self-messages to the TimerManager instance
@@ -96,8 +96,8 @@ protected:
             std::cerr << "one-shot timer fired from " << this->getFullPath() << " at " << simTime() << std::endl;
         };
         // specify when and how ofthen a timer shall fire
-        auto recurringTimerSpec = Veins::TimerSpecification(recurringCallback).interval(1);
-        auto oneshotTimerSpec = Veins::TimerSpecification(oneshotCallback).oneshotin(2.5);
+        auto recurringTimerSpec = veins::TimerSpecification(recurringCallback).interval(1);
+        auto oneshotTimerSpec = veins::TimerSpecification(oneshotCallback).oneshotin(2.5);
         // register the timer with the TimerManager instance
         timerManager.create(recurringTimerSpec, "recurring timer");
         timerManager.create(oneshotTimerSpec, "one-shot timer");
@@ -121,6 +121,6 @@ As the [TimerManager] instance can be value member (and not a pointer to a heap-
 When using inheritance trees, the [TimerManager] can easily used by different levels (as long as it is a protected or public member or accessible otherwise).
 Even multiple instances coule be used, as long as message delegation is correctly implemented.
 
-[TimerManager]: @ref Veins::TimerManager "TimerManager"
-[TimerSpecification]: @ref Veins::TimerSpecification "TimerSpecification"
-[TimerManager::handleMessage]: @ref Veins::TimerManager::handleMessage "TimerManager::handleMessage()"
+[TimerManager]: @ref veins::TimerManager "TimerManager"
+[TimerSpecification]: @ref veins::TimerSpecification "TimerSpecification"
+[TimerManager::handleMessage]: @ref veins::TimerManager::handleMessage "TimerManager::handleMessage()"

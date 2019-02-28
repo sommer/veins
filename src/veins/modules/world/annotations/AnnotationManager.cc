@@ -24,11 +24,11 @@
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
-Define_Module(Veins::AnnotationManager);
+Define_Module(veins::AnnotationManager);
 
-using Veins::AnnotationManager;
-using Veins::TraCIScenarioManager;
-using Veins::TraCIScenarioManagerAccess;
+using veins::AnnotationManager;
+using veins::TraCIScenarioManager;
+using veins::TraCIScenarioManagerAccess;
 
 namespace {
 const short EVT_SCHEDULED_ERASE = 3;

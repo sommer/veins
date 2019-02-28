@@ -19,9 +19,9 @@
 
 #include "veins/modules/world/annotations/AnnotationDummy.h"
 
-using Veins::AnnotationDummy;
+using veins::AnnotationDummy;
 
-Define_Module(Veins::AnnotationDummy);
+Define_Module(veins::AnnotationDummy);
 
 AnnotationDummy::~AnnotationDummy()
 {

@@ -24,9 +24,9 @@
 
 #include "veins/modules/obstacle/ObstacleControl.h"
 
-using Veins::ObstacleControl;
+using veins::ObstacleControl;
 
-Define_Module(Veins::ObstacleControl);
+Define_Module(veins::ObstacleControl);
 
 ObstacleControl::~ObstacleControl()
 {
@@ -186,6 +186,50 @@ void ObstacleControl::erase(const Obstacle* obstacle)
     cacheEntries.clear();
 }
 
+std::map<veins::Obstacle*, std::multiset<double>> ObstacleControl::getIntersections(const Coord& senderPos, const Coord& receiverPos) const
+{
+    std::map<veins::Obstacle*, std::multiset<double>> allIntersections;
+
+    // calculate bounding box of transmission
+    Coord bboxP1 = Coord(std::min(senderPos.x, receiverPos.x), std::min(senderPos.y, receiverPos.y));
+    Coord bboxP2 = Coord(std::max(senderPos.x, receiverPos.x), std::max(senderPos.y, receiverPos.y));
+
+    size_t fromRow = std::max(0, int(bboxP1.x / GRIDCELL_SIZE));
+    size_t toRow = std::max(0, int(bboxP2.x / GRIDCELL_SIZE));
+    size_t fromCol = std::max(0, int(bboxP1.y / GRIDCELL_SIZE));
+    size_t toCol = std::max(0, int(bboxP2.y / GRIDCELL_SIZE));
+
+    std::set<Obstacle*> processedObstacles;
+    for (size_t col = fromCol; col <= toCol; ++col) {
+        if (col >= obstacles.size()) break;
+        for (size_t row = fromRow; row <= toRow; ++row) {
+            if (row >= obstacles[col].size()) break;
+            const ObstacleGridCell& cell = (obstacles[col])[row];
+            for (ObstacleGridCell::const_iterator k = cell.begin(); k != cell.end(); ++k) {
+                Obstacle* o = *k;
+
+                // bail if already checked
+                if (processedObstacles.find(o) != processedObstacles.end()) continue;
+                processedObstacles.insert(o);
+
+                // bail if bounding boxes cannot overlap
+                if (o->getBboxP2().x < bboxP1.x) continue;
+                if (o->getBboxP1().x > bboxP2.x) continue;
+                if (o->getBboxP2().y < bboxP1.y) continue;
+                if (o->getBboxP1().y > bboxP2.y) continue;
+
+                // if obstacles has neither borders nor matter: bail.
+                if (o->getShape().size() < 2) continue;
+
+                // add intersections
+                allIntersections[o] = o->getIntersections(senderPos, receiverPos);
+            }
+        }
+    }
+
+    return allIntersections;
+}
+
 double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const
 {
     Enter_Method_Silent();
@@ -202,46 +246,42 @@ double ObstacleControl::calculateAttenuation(const Coord& senderPos, const Coord
     CacheEntries::const_iterator cacheEntryIter = cacheEntries.find(cacheKey);
     if (cacheEntryIter != cacheEntries.end()) return cacheEntryIter->second;
 
-    // calculate bounding box of transmission
-    Coord bboxP1 = Coord(std::min(senderPos.x, receiverPos.x), std::min(senderPos.y, receiverPos.y));
-    Coord bboxP2 = Coord(std::max(senderPos.x, receiverPos.x), std::max(senderPos.y, receiverPos.y));
+    // get intersections
+    std::map<veins::Obstacle*, std::multiset<double>> intersections = getIntersections(senderPos, receiverPos);
 
-    size_t fromRow = std::max(0, int(bboxP1.x / GRIDCELL_SIZE));
-    size_t toRow = std::max(0, int(bboxP2.x / GRIDCELL_SIZE));
-    size_t fromCol = std::max(0, int(bboxP1.y / GRIDCELL_SIZE));
-    size_t toCol = std::max(0, int(bboxP2.y / GRIDCELL_SIZE));
-
-    std::set<Obstacle*> processedObstacles;
     double factor = 1;
-    for (size_t col = fromCol; col <= toCol; ++col) {
-        if (col >= obstacles.size()) break;
-        for (size_t row = fromRow; row <= toRow; ++row) {
-            if (row >= obstacles[col].size()) break;
-            const ObstacleGridCell& cell = (obstacles[col])[row];
-            for (ObstacleGridCell::const_iterator k = cell.begin(); k != cell.end(); ++k) {
+    for (auto i = intersections.begin(); i != intersections.end(); ++i) {
+        auto o = i->first;
+        auto intersectAt = i->second;
 
-                Obstacle* o = *k;
+        // if beam interacts with neither borders nor matter: bail.
+        bool senderInside = o->containsPoint(senderPos);
+        bool receiverInside = o->containsPoint(receiverPos);
+        if ((intersectAt.size() == 0) && !senderInside && !receiverInside) continue;
 
-                if (processedObstacles.find(o) != processedObstacles.end()) continue;
-                processedObstacles.insert(o);
+        // remember number of cuts before messing with intersection points
+        double numCuts = intersectAt.size();
 
-                // bail if bounding boxes cannot overlap
-                if (o->getBboxP2().x < bboxP1.x) continue;
-                if (o->getBboxP1().x > bboxP2.x) continue;
-                if (o->getBboxP2().y < bboxP1.y) continue;
-                if (o->getBboxP1().y > bboxP2.y) continue;
+        // for distance calculation, make sure every other pair of points marks transition through matter and void, respectively.
+        if (senderInside) intersectAt.insert(0);
+        if (receiverInside) intersectAt.insert(1);
+        ASSERT((intersectAt.size() % 2) == 0);
 
-                double factorOld = factor;
-
-                factor *= o->calculateAttenuation(senderPos, receiverPos);
-
-                // draw a "hit!" bubble
-                if (annotations && (factor != factorOld)) annotations->drawBubble(o->getBboxP1(), "hit");
-
-                // bail if attenuation is already extremely high
-                if (factor < 1e-30) break;
-            }
+        // sum up distances in matter.
+        double fractionInObstacle = 0;
+        for (std::multiset<double>::const_iterator i = intersectAt.begin(); i != intersectAt.end();) {
+            double p1 = *(i++);
+            double p2 = *(i++);
+            fractionInObstacle += (p2 - p1);
         }
+
+        // calculate attenuation
+        double totalDistance = senderPos.distance(receiverPos);
+        double attenuation = (o->getAttenuationPerCut() * numCuts) + (o->getAttenuationPerMeter() * fractionInObstacle * totalDistance);
+        factor *= pow(10.0, -attenuation / 10.0);
+
+        // bail if attenuation is already extremely high
+        if (factor < 1e-30) break;
     }
 
     // cache result

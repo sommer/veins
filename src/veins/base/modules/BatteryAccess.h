@@ -12,7 +12,7 @@
 #include "veins/base/modules/BaseModule.h"
 #include "veins/base/modules/BaseBattery.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Extends BaseModule by several methods which provide
@@ -67,4 +67,4 @@ public:
     BatteryAccess(unsigned stacksize);
 };
 
-} // namespace Veins
+} // namespace veins

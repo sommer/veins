@@ -63,7 +63,7 @@ With the [SignalManager], all signal handling can be encapsulated and configurat
 // module reacting to signals using the SignalManager
 class WithSignalManager: public cModule {
 protected:
-    Veins::SignalManager signalManager(this);
+    veins::SignalManager signalManager(this);
     void initialize() override {
         // reaction to the signal (note how unused parameters are omitted from the lambda function signature).
         auto nameSignalCallback = [this](cComponent *source, const char* c) {
@@ -85,8 +85,8 @@ Alternatively, we could omit the manager part and make create individual [Signal
 // module reacting to signals using the SignalCallback instances
 class WithSignalCallbacks: public cModule {
 protected:
-    Veins::SignalCallback counterCallback;
-    Veins::SignalCallback nameCallback;
+    veins::SignalCallback counterCallback;
+    veins::SignalCallback nameCallback;
     void initialize() override {
         // reaction to the signal (note how unused parameters are omitted from the lambda function signature).
         auto nameSignalCallback = [this](cComponent *source, const char* c) {
@@ -96,8 +96,8 @@ protected:
             std::cerr << "Module " << source->getFullName() << " received message nr " << l << " via signal " << signalID << std::endl;
         };
         // register callback objects, which takes care to perform the actual subscription
-        counterCallback = Veins::SignalCallback::make(getSystemModule(), SignalEmitter::counterSignal, counterSignalCallback);
-        nameCallback = Veins::SignalCallback::make(getSystemModule(), SignalEmitter::nameSignal, nameCallback);
+        counterCallback = veins::SignalCallback::make(getSystemModule(), SignalEmitter::counterSignal, counterSignalCallback);
+        nameCallback = veins::SignalCallback::make(getSystemModule(), SignalEmitter::nameSignal, nameCallback);
     }
 };
 ```
@@ -111,7 +111,7 @@ The lifetime is managed automatically and the Code is more self-explanatory and 
 In addtion to Lambdas, other forms of callbacks can be used, too, such as free functions and functors.
 
 As shown in the examples, the callbacks can also implement just a subset of the cIListener::receiveSignal signature.
-Valid subsets can be seen by checking the implemented overloads of the @ref Veins::SignalCallbackManagement::invokeCallback template.
+Valid subsets can be seen by checking the implemented overloads of the @ref veins::SignalCallbackManagement::invokeCallback template.
 
-[SignalManager]: @ref Veins::SignalManager
-[SignalCallback]: @ref Veins::SignalCallback
+[SignalManager]: @ref veins::SignalManager
+[SignalCallback]: @ref veins::SignalCallback

@@ -3,8 +3,8 @@
 #include "veins/base/utils/AntennaPosition.h"
 #include "testutils/Simulation.h"
 
-using Veins::AntennaPosition;
-using Veins::Coord;
+using veins::AntennaPosition;
+using veins::Coord;
 
 #ifndef NDEBUG
 SCENARIO("Using non-initialized AntennaPosition", "[toolbox]")

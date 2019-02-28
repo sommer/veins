@@ -11,7 +11,7 @@
 
 #include "veins/base/phyLayer/Decider.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Provides some base functionality for most common deciders.
@@ -175,4 +175,4 @@ protected:
     virtual void getChannelInfo(simtime_t_cref start, simtime_t_cref end, AirFrameVector& out);
 };
 
-} // namespace Veins
+} // namespace veins

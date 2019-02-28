@@ -4,7 +4,7 @@
 
 #include "veins/base/connectionManager/BaseConnectionManager.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief BaseConnectionManager implementation which only defines a
@@ -27,4 +27,4 @@ protected:
     double calcInterfDist() override;
 };
 
-} // namespace Veins
+} // namespace veins

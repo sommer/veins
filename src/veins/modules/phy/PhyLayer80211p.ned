@@ -32,7 +32,7 @@ import org.car2x.veins.base.phyLayer.BasePhyLayer;
 simple PhyLayer80211p extends BasePhyLayer
 {
     parameters:
-        @class(Veins::PhyLayer80211p);
+        @class(veins::PhyLayer80211p);
         antennaOffsetZ = default(1.895 m);
         //defines the CCA threshold
         double ccaThreshold @unit(dBm) = default(-65 dBm);

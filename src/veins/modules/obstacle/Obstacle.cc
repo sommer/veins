@@ -21,9 +21,9 @@
 #include <set>
 #include "veins/modules/obstacle/Obstacle.h"
 
-using namespace Veins;
+using namespace veins;
 
-using Veins::Obstacle;
+using veins::Obstacle;
 
 Obstacle::Obstacle(std::string id, std::string type, double attenuationPerCut, double attenuationPerMeter)
     : visualRepresentation(nullptr)
@@ -62,12 +62,10 @@ const Coord Obstacle::getBboxP2() const
     return bboxP2;
 }
 
-namespace {
-
-bool isPointInObstacle(Coord point, const Obstacle& o)
+bool Obstacle::containsPoint(Coord point) const
 {
     bool isInside = false;
-    const Obstacle::Coords& shape = o.getShape();
+    const Obstacle::Coords& shape = getShape();
     Obstacle::Coords::const_iterator i = shape.begin();
     Obstacle::Coords::const_iterator j = (shape.rbegin() + 1).base();
     for (; i != shape.end(); j = i++) {
@@ -81,6 +79,8 @@ bool isPointInObstacle(Coord point, const Obstacle& o)
     }
     return isInside;
 }
+
+namespace {
 
 double segmentsIntersectAt(Coord p1From, Coord p1To, Coord p2From, Coord p2To)
 {
@@ -100,13 +100,8 @@ double segmentsIntersectAt(Coord p1From, Coord p1To, Coord p2From, Coord p2To)
 }
 } // namespace
 
-double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& receiverPos) const
+std::multiset<double> Obstacle::getIntersections(const Coord& senderPos, const Coord& receiverPos) const
 {
-
-    // if obstacles has neither borders nor matter: bail.
-    if (getShape().size() < 2) return 1;
-
-    // get a list of points (in [0, 1]) along the line between sender and receiver where the beam intersects with this obstacle
     std::multiset<double> intersectAt;
     bool doesIntersect = false;
     const Obstacle::Coords& shape = getShape();
@@ -122,32 +117,7 @@ double Obstacle::calculateAttenuation(const Coord& senderPos, const Coord& recei
             intersectAt.insert(i);
         }
     }
-
-    // if beam interacts with neither borders nor matter: bail.
-    bool senderInside = isPointInObstacle(senderPos, *this);
-    bool receiverInside = isPointInObstacle(receiverPos, *this);
-    if (!doesIntersect && !senderInside && !receiverInside) return 1;
-
-    // remember number of cuts before messing with intersection points
-    double numCuts = intersectAt.size();
-
-    // for distance calculation, make sure every other pair of points marks transition through matter and void, respectively.
-    if (senderInside) intersectAt.insert(0);
-    if (receiverInside) intersectAt.insert(1);
-    ASSERT((intersectAt.size() % 2) == 0);
-
-    // sum up distances in matter.
-    double fractionInObstacle = 0;
-    for (std::multiset<double>::const_iterator i = intersectAt.begin(); i != intersectAt.end();) {
-        double p1 = *(i++);
-        double p2 = *(i++);
-        fractionInObstacle += (p2 - p1);
-    }
-
-    // calculate attenuation
-    double totalDistance = senderPos.distance(receiverPos);
-    double attenuation = (attenuationPerCut * numCuts) + (attenuationPerMeter * fractionInObstacle * totalDistance);
-    return pow(10.0, -attenuation / 10.0);
+    return intersectAt;
 }
 
 std::string Obstacle::getType() const
@@ -158,4 +128,14 @@ std::string Obstacle::getType() const
 std::string Obstacle::getId() const
 {
     return id;
+}
+
+double Obstacle::getAttenuationPerCut() const
+{
+    return attenuationPerCut;
+}
+
+double Obstacle::getAttenuationPerMeter() const
+{
+    return attenuationPerMeter;
 }

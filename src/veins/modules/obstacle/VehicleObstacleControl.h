@@ -31,7 +31,7 @@
 #include "veins/base/utils/Move.h"
 #include "veins/modules/obstacle/VehicleObstacle.h"
 
-namespace Veins {
+namespace veins {
 
 class Signal;
 
@@ -107,4 +107,4 @@ public:
     }
 };
 
-} // namespace Veins
+} // namespace veins

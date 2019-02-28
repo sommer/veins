@@ -26,7 +26,7 @@
 #include "veins/modules/world/traci/trafficLight/logics/TraCITrafficLightAbstractLogic.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
 
-namespace Veins {
+namespace veins {
 class VEINS_API TraCITrafficLightSimpleLogic : public TraCITrafficLightAbstractLogic {
 
 public:
@@ -48,4 +48,4 @@ public:
     };
 };
 
-} // namespace Veins
+} // namespace veins

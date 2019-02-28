@@ -3,7 +3,7 @@ cplusplus {{
 #include "veins/base/utils/POA.h"
 }}
 
-namespace Veins;
+namespace veins;
 
 class noncobject Signal;
 class noncobject POA;

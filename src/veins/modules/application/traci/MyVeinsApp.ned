@@ -26,6 +26,6 @@ import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
 //
 simple MyVeinsApp extends DemoBaseApplLayer
 {
-    @class(Veins::MyVeinsApp);
+    @class(veins::MyVeinsApp);
     string appName = default("My first Veins App!");
 }

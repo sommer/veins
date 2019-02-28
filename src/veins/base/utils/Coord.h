@@ -21,13 +21,13 @@
 
 #include "veins/veins.h"
 
-namespace Veins {
+namespace veins {
 class Coord;
 }
 
 #include "veins/base/utils/FWMath.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief Class for storing 3D coordinates.
@@ -327,4 +327,4 @@ inline std::string Coord::info() const
     return os.str();
 }
 
-} // namespace Veins
+} // namespace veins

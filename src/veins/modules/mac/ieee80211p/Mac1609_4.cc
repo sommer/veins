@@ -27,11 +27,11 @@
 #include "veins/modules/messages/PhyControlMessage_m.h"
 #include "veins/modules/messages/AckTimeOutMessage_m.h"
 
-using namespace Veins;
+using namespace veins;
 
 using std::unique_ptr;
 
-Define_Module(Veins::Mac1609_4);
+Define_Module(veins::Mac1609_4);
 
 const simsignal_t Mac1609_4::sigChannelBusy = registerSignal("org.car2x.veins.modules.mac.sigChannelBusy");
 const simsignal_t Mac1609_4::sigCollision = registerSignal("org.car2x.veins.modules.mac.sigCollision");

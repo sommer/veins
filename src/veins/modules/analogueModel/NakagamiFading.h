@@ -25,7 +25,7 @@
 #include "veins/base/modules/BaseWorldUtility.h"
 #include "veins/base/messages/AirFrame_m.h"
 
-namespace Veins {
+namespace veins {
 
 /**
  * @brief
@@ -64,4 +64,4 @@ protected:
     double m;
 };
 
-} // namespace Veins
+} // namespace veins

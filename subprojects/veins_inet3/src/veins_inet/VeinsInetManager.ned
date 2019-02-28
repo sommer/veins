@@ -33,6 +33,6 @@ import org.car2x.veins.modules.mobility.traci.TraCIScenarioManagerLaunchd;
 simple VeinsInetManager extends TraCIScenarioManagerLaunchd
 {
     parameters:
-        @class(Veins::VeinsInetManager);
+        @class(veins::VeinsInetManager);
 }
 
