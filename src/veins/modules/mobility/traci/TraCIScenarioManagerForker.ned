@@ -36,7 +36,8 @@ simple TraCIScenarioManagerForker extends TraCIScenarioManager
 {
     parameters:
         @class(veins::TraCIScenarioManagerForker);
-        string commandLine = default("sumo --remote-port $port --seed $seed --configuration-file $configFile"); // command line for running TraCI server (substituting $configFile, $seed, $port)
+        string commandLine = default("$command --remote-port $port --seed $seed --configuration-file $configFile"); // command line for running TraCI server (substituting $command, $configFile, $seed, $port)
+        string command = default("sumo"); // substitution for $command parameter
         string configFile = default("my.sumo.cfg"); // substitution for $configFile parameter
         port = default(-1);  // substitution for $port parameter (-1: autodetect)
 }

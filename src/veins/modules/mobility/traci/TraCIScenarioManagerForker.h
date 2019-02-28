@@ -51,6 +51,7 @@ public:
 
 protected:
     std::string commandLine; /**< command line for running TraCI server (substituting $configFile, $seed, $port) */
+    std::string command; /**< substitution for $command parameter */
     std::string configFile; /**< substitution for $configFile parameter */
     int seed; /**< substitution for $seed parameter (-1: current run number) */
 
