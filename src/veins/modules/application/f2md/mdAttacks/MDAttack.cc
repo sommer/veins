@@ -570,9 +570,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
         }
 
         if (detectedNodes->getNodesNum() > 0) {
-            attackBsm.setSenderPseudonym(pcPolicy->getNextPseudonym());
             targetNode = attackBsm.getSenderPseudonym();
             attackBsm = *detectedNodes->getRandomBSM();
+            attackBsm.setSenderPseudonym(pcPolicy->getNextPseudonym());
         }
     }
         break;

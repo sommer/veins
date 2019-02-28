@@ -36,12 +36,6 @@ static int LastLocalAttackIndex = -1;
 
 #define LOCAL_ATTACK_TYPE attackTypes::GridSybil
 
-//static attackTypes::Attacks MixLocalAttacksList[] =
-//        { attackTypes::DoS, attackTypes::ConstPos,
-//                attackTypes::RandomPos, attackTypes::StaleMessages
-//               , attackTypes::ConstPosOffset,
-//                 };
-
 static attackTypes::Attacks MixLocalAttacksList[] =
         { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
                 attackTypes::RandomPos, attackTypes::StaleMessages,
@@ -95,7 +89,7 @@ static bool writeListReportsV1 = false;
 static bool writeListReportsV2 = false;
 
 static bool sendReportsV1 = false;
-static bool sendReportsV2 = true;
+static bool sendReportsV2 = false;
 static int maPortV1 = 9980;
 static int maPortV2 = 9981;
 
