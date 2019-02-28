@@ -71,6 +71,7 @@ void TraCIScenarioManagerForker::initialize(int stage)
 {
     if (stage == 1) {
         commandLine = par("commandLine").stringValue();
+        command = par("command").stringValue();
         configFile = par("configFile").stringValue();
         seed = par("seed");
         killServer();
@@ -126,6 +127,7 @@ void TraCIScenarioManagerForker::startServer()
     }
 
     // assemble commandLine
+    commandLine = replace(commandLine, "$command", command);
     commandLine = replace(commandLine, "$configFile", configFile);
     commandLine = replace(commandLine, "$seed", seed);
     commandLine = replace(commandLine, "$port", port);
