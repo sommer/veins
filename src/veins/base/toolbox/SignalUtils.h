@@ -37,11 +37,6 @@ namespace SignalUtils {
 
 using AirFrameVector = DeciderToPhyInterface::AirFrameVector;
 
-double getGlobalMax(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
-
-double getGlobalMin(simtime_t start, simtime_t end, const AirFrameVector& airFrames);
-double getMinAtFreqIndex(simtime_t start, simtime_t end, const AirFrameVector& airFrames, size_t freqIndex, AirFrame* exclude);
-
 /**
  * @brief check if the summed power of interfererFrames's signals at freqIndex is below a given threshold.
  *
