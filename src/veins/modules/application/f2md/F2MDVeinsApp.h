@@ -19,7 +19,7 @@
 #include <veins/modules/application/f2md/mdChecks/LegacyChecks.h>
 
 using namespace omnetpp;
-using namespace Veins;
+using namespace veins;
 
 #include <veins/modules/application/f2md/mdMessages/BasicSafetyMessage_m.h>
 

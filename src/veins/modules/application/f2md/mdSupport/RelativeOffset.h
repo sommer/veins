@@ -30,7 +30,7 @@ using namespace std;
 using namespace boost;
 
 using namespace omnetpp;
-using namespace Veins;
+using namespace veins;
 
 class RelativeOffset {
 private:

@@ -29,7 +29,7 @@
 #include "veins/modules/obstacle/Obstacle.h"
 #include "../BaseWaveApplLayer.h"
 
-using namespace Veins;
+using namespace veins;
 using namespace omnetpp;
 
 class CaTChChecks {

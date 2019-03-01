@@ -23,7 +23,7 @@
 #include "../mdEnumTypes/MbTypes.h"
 
 using namespace omnetpp;
-using namespace Veins;
+using namespace veins;
 
 class BsmPrintable {
 

@@ -18,7 +18,7 @@
 #include <veins/modules/application/f2md/mdSupport/rectIntLib/RectIntLib.h>
 #include "../BaseWaveApplLayer.h"
 
-using namespace Veins;
+using namespace veins;
 
 class MDMLib {
 

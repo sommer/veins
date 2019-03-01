@@ -27,7 +27,7 @@
 #include <vector>
 
 
-using namespace Veins;
+using namespace veins;
 using namespace omnetpp;
 
 class PyBridgeApp: public MDApplication {

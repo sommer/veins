@@ -24,7 +24,7 @@
 
 #include "../mdEnumTypes/MbTypes.h"
 
-using namespace Veins;
+using namespace veins;
 using namespace omnetpp;
 
 

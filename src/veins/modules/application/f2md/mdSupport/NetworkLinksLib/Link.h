@@ -23,7 +23,7 @@
 
 #include <vector>
 #include "veins/base/utils/Coord.h"
-using namespace Veins;
+using namespace veins;
 
 class Link {
 	public:

@@ -26,13 +26,11 @@
 #include "veins/modules/utility/Consts80211p.h"
 #include "veins/modules/messages/BaseFrame1609_4_m.h"
 #include "veins/modules/messages/DemoServiceAdvertisement_m.h"
+#include "veins/modules/messages/DemoSafetyMessage_m.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/modules/mac/ieee80211p/DemoBaseApplLayerToMac1609_4Interface.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
-
-
-
 
 #include <math.h>
 #include <veins/modules/application/f2md/mdEnumTypes/AttackTypes.h>
@@ -44,13 +42,13 @@
 #include <veins/modules/application/f2md/mdSupport/RelativeOffset.h>
 #define MYBSM_SIZE 10
 
-namespace Veins {
+namespace veins {
 
-using Veins::AnnotationManager;
-using Veins::AnnotationManagerAccess;
-using Veins::TraCICommandInterface;
-using Veins::TraCIMobility;
-using Veins::TraCIMobilityAccess;
+using veins::AnnotationManager;
+using veins::AnnotationManagerAccess;
+using veins::TraCICommandInterface;
+using veins::TraCIMobility;
+using veins::TraCIMobilityAccess;
 
 /**
  * @brief

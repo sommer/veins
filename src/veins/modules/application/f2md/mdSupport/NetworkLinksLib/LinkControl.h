@@ -47,7 +47,7 @@
  * their receive power set to zero.
  */
 
-using namespace Veins;
+using namespace veins;
 using namespace omnetpp;
 
 class LinkControl {

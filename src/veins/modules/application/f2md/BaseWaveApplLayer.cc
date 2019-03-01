@@ -20,7 +20,7 @@
 
 #include <veins/modules/application/f2md/BaseWaveApplLayer.h>
 
-using namespace Veins;
+using namespace veins;
 
 void BaseWaveApplLayer::initialize(int stage) {
     BaseApplLayer::initialize(stage);
@@ -309,6 +309,7 @@ void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
             mobility->getPositionAt(simTime()));
     curSpeed = relativeOffset.OffsetSpeed(speedlocal);
     curHeading = relativeOffset.OffsetHeading(mobility->getCurrentDirection());
+
 }
 
 void BaseWaveApplLayer::handleParkingUpdate(cObject* obj) {

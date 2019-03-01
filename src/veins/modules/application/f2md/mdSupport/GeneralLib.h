@@ -22,7 +22,7 @@
 #include <boost/random/variate_generator.hpp>
 using namespace std;
 using namespace boost;
-using namespace Veins;
+using namespace veins;
 class GeneralLib {
 public:
     GeneralLib();

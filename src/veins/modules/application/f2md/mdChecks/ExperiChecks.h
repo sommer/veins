@@ -25,7 +25,7 @@
 #include "../mdBase/InterTest.h"
 #include "../mdSupport/MDMLib.h"
 
-using namespace Veins;
+using namespace veins;
 using namespace omnetpp;
 
 class ExperiChecks {

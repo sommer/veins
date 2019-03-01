@@ -19,7 +19,7 @@ Define_Module(JosephVeinsApp);
 #define randomConf false
 #define confPos 5.0
 #define confSpd 1.0
-#define confHea 0
+#define confHea 0.0
 
 #define SAVE_PERIOD 1 //60 seconds
 #define PRINT_PERIOD 1000 //60 seconds
@@ -34,7 +34,7 @@ static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
 
-#define LOCAL_ATTACK_TYPE attackTypes::GridSybil
+#define LOCAL_ATTACK_TYPE attackTypes::Disruptive
 
 static attackTypes::Attacks MixLocalAttacksList[] =
         { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
@@ -73,7 +73,7 @@ static mdChecksVersionTypes::ChecksVersion checksVersionV2 =
         mdChecksVersionTypes::CatchChecks;
 
 static mdAppTypes::App appTypeV1 = mdAppTypes::ThresholdApp;
-static mdAppTypes::App appTypeV2 = mdAppTypes::ThresholdApp;
+static mdAppTypes::App appTypeV2 = mdAppTypes::BehavioralApp;
 
 static bool writeSelfMsg = false;
 

@@ -17,7 +17,7 @@
 #include <veins/modules/application/f2md/mdApplications/MDApplication.h>
 #include "../mdEnumTypes/MdChecksTypes.h"
 #include "../mdEnumTypes/MbTypes.h"
-using namespace Veins;
+using namespace veins;
 using namespace omnetpp;
 
 class ExperiApp: public MDApplication {
