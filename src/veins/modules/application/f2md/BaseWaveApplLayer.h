@@ -40,7 +40,7 @@
 #include <veins/modules/application/f2md/mdSupport/GaussianRandom.h>
 #include <veins/modules/application/f2md/mdSupport/MDMLib.h>
 #include <veins/modules/application/f2md/mdSupport/RelativeOffset.h>
-#define MYBSM_SIZE 10
+#define MYBSM_SIZE 20
 
 namespace veins {
 

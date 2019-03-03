@@ -20,22 +20,12 @@ using namespace omnetpp;
 
 class BsmCheck {
 
-//    double RangePlausibilityCheck(Coord, Coord);
-//    double PositionPlausibilityCheck(Coord);
-//    double PositionConsistancyCheck(Coord, Coord, double);
-//    double SpeedConsistancyCheck(double, double, double);
-//    double PositionSpeedConsistancyCheck(Coord, Coord, double, double, double);
-//    double SpeedPlausibilityCheck(double);
-//    double IntersectionCheck(Coord, Coord);
-//    double SuddenAppearenceCheck(Coord, Coord);
-//    double BeaconFrequencyCheck(double, double);
-
-
     private:
         double rangePlausibility;
         double speedConsistancy;
         double positionConsistancy;
         double positionSpeedConsistancy;
+        double positionSpeedMaxConsistancy;
         double speedPlausibility;
         InterTest intersection;
         double suddenAppearence;
@@ -54,6 +44,7 @@ class BsmCheck {
         double getPositionConsistancy();
         double getSpeedConsistancy();
         double getPositionSpeedConsistancy();
+        double getPositionSpeedMaxConsistancy();
         InterTest getIntersection();
         double getSuddenAppearence();
         double getBeaconFrequency();
@@ -67,6 +58,7 @@ class BsmCheck {
         void setSpeedConsistancy(double);
         void setPositionConsistancy(double);
         void setPositionSpeedConsistancy(double);
+        void setPositionSpeedMaxConsistancy(double);
         void setIntersection(InterTest);
         void setSuddenAppearence(double);
         void setBeaconFrequency(double);

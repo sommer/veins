@@ -17,6 +17,7 @@ BsmCheck::BsmCheck() {
      positionConsistancy = 1;
      speedPlausibility = 1;
      positionSpeedConsistancy = 1;
+     positionSpeedMaxConsistancy = 1;
      intersection = InterTest();
      suddenAppearence = 1;
      beaconFrequency = 1;
@@ -32,6 +33,10 @@ double BsmCheck::getRangePlausibility() {
 
 double BsmCheck::getPositionSpeedConsistancy() {
     return positionSpeedConsistancy;
+}
+
+double BsmCheck::getPositionSpeedMaxConsistancy() {
+    return positionSpeedMaxConsistancy;
 }
 
 double BsmCheck::getPositionConsistancy() {
@@ -104,6 +109,10 @@ void BsmCheck::setPositionPlausibility(double positionPlausibility) {
 
 void BsmCheck::setPositionSpeedConsistancy(double positionSpeedConsistancy) {
     this->positionSpeedConsistancy = positionSpeedConsistancy;
+}
+
+void BsmCheck::setPositionSpeedMaxConsistancy(double positionSpeedMaxConsistancy) {
+    this->positionSpeedMaxConsistancy = positionSpeedMaxConsistancy;
 }
 
 void BsmCheck::setPositionHeadingConsistancy(double positionHeadingConsistancy) {

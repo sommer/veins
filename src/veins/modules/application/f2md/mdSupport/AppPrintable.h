@@ -37,6 +37,7 @@ private:
     double flagsSpeedPlausibility_1 = 0;
     double flagsPositionConsistancy_1 = 0;
     double flagsPositionSpeedConsistancy_1 = 0;
+    double flagsPositionSpeedMaxConsistancy_1 = 0;
     double flagsSpeedConsistancy_1 = 0;
     double flagsBeaconFrequency_1 = 0;
     double flagsIntersection_1 = 0;
@@ -48,6 +49,7 @@ private:
     double flagsSpeedPlausibility_2 = 0;
     double flagsPositionConsistancy_2 = 0;
     double flagsPositionSpeedConsistancy_2 = 0;
+    double flagsPositionSpeedMaxConsistancy_2 = 0;
     double flagsSpeedConsistancy_2 = 0;
     double flagsBeaconFrequency_2 = 0;
     double flagsIntersection_2 = 0;

@@ -239,7 +239,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
         attackBsm.setSenderPosConfidence(*curPositionConfidence);
 
         attackBsm.setSenderSpeed(
-                Coord((*curSpeed).x + ConstSpeedX, (*curSpeed).y + ConstSpeedY,
+                Coord((*curSpeed).x + ConstSpeedOffsetX, (*curSpeed).y + ConstSpeedOffsetY,
                         (*curSpeed).z));
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
 
@@ -277,10 +277,14 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
         attackBsm = myBsm[0];
         attackBsm.setSenderPseudonym(*myPseudonym);
 
-        double sx = genLib.RandomDouble(0, RandomSpeedOffsetX)
-                - ((double) RandomSpeedOffsetX) / 2;
-        double sy = genLib.RandomDouble(0, RandomSpeedOffsetY)
-                - ((double) RandomSpeedOffsetY) / 2;
+        double signX = genLib.RandomInt(0, 1);
+        double signY = genLib.RandomInt(0, 1);
+
+        double sx = genLib.RandomDouble(RandomSpeedOffsetX/5, RandomSpeedOffsetX);
+        double sy = genLib.RandomDouble(RandomSpeedOffsetX/5, RandomSpeedOffsetX);
+
+        sx = sx - 2 * signX * sx;
+        sy = sy - 2 * signY * sy;
 
         attackBsm.setSenderPos(*curPosition);
         attackBsm.setSenderPosConfidence(*curPositionConfidence);

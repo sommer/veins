@@ -19,6 +19,7 @@ AppPrintable::AppPrintable(const char* name) {
     flagsSpeedPlausibility_1 = 0;
     flagsPositionConsistancy_1 = 0;
     flagsPositionSpeedConsistancy_1 = 0;
+    flagsPositionSpeedMaxConsistancy_1 = 0;
     flagsSpeedConsistancy_1 = 0;
     flagsBeaconFrequency_1 = 0;
     flagsIntersection_1 = 0;
@@ -31,6 +32,7 @@ AppPrintable::AppPrintable(const char* name) {
     flagsSpeedPlausibility_2 = 0;
     flagsPositionConsistancy_2 = 0;
     flagsPositionSpeedConsistancy_2 = 0;
+    flagsPositionSpeedMaxConsistancy_2 = 0;
     flagsSpeedConsistancy_2 = 0;
     flagsBeaconFrequency_2 = 0;
     flagsIntersection_2 = 0;
@@ -50,6 +52,7 @@ AppPrintable::AppPrintable() {
     flagsSpeedPlausibility_1 = 0;
     flagsPositionConsistancy_1 = 0;
     flagsPositionSpeedConsistancy_1 = 0;
+    flagsPositionSpeedMaxConsistancy_1 = 0;
     flagsSpeedConsistancy_1 = 0;
     flagsBeaconFrequency_1 = 0;
     flagsIntersection_1 = 0;
@@ -62,6 +65,7 @@ AppPrintable::AppPrintable() {
     flagsSpeedPlausibility_2 = 0;
     flagsPositionConsistancy_2 = 0;
     flagsPositionSpeedConsistancy_2 = 0;
+    flagsPositionSpeedMaxConsistancy_2 = 0;
     flagsSpeedConsistancy_2 = 0;
     flagsBeaconFrequency_2 = 0;
     flagsIntersection_2 = 0;
@@ -121,6 +125,7 @@ void AppPrintable::printOutDebug() {
     std::cout<<"flagsSpeedPlausibility_1 "<< flagsSpeedPlausibility_1 << "\n";
     std::cout<<"flagsPositionConsistancy_1 "<<flagsPositionConsistancy_1 << "\n";
     std::cout<<"flagsPositionSpeedConsistancy_1 "<< flagsPositionSpeedConsistancy_1 << "\n";
+    std::cout<<"flagsPositionSpeedMaxConsistancy_1 "<< flagsPositionSpeedMaxConsistancy_1 << "\n";
     std::cout<<"flagsSpeedConsistancy_1 "<<flagsSpeedConsistancy_1 << "\n";
     std::cout<<"flagsBeaconFrequency_1 "<< flagsBeaconFrequency_1 << "\n";
     std::cout<<"flagsIntersection_1 "<<flagsIntersection_1 << "\n";
@@ -153,6 +158,9 @@ void AppPrintable::incFlags(mdChecksTypes::Checks check, mbTypes::Mbs mbType) {
             break;
         case mdChecksTypes::PositionSpeedConsistancy:
             flagsPositionSpeedConsistancy_1++;
+            break;
+        case mdChecksTypes::PositionSpeedMaxConsistancy:
+            flagsPositionSpeedMaxConsistancy_1++;
             break;
         case mdChecksTypes::SpeedConsistancy:
             flagsSpeedConsistancy_1++;
@@ -189,6 +197,9 @@ void AppPrintable::incFlags(mdChecksTypes::Checks check, mbTypes::Mbs mbType) {
         case mdChecksTypes::PositionSpeedConsistancy:
             flagsPositionSpeedConsistancy_1++;
             break;
+        case mdChecksTypes::PositionSpeedMaxConsistancy:
+            flagsPositionSpeedMaxConsistancy_1++;
+            break;
         case mdChecksTypes::SpeedConsistancy:
             flagsSpeedConsistancy_1++;
             break;
@@ -224,6 +235,9 @@ void AppPrintable::incFlags(mdChecksTypes::Checks check, mbTypes::Mbs mbType) {
         case mdChecksTypes::PositionSpeedConsistancy:
             flagsPositionSpeedConsistancy_2++;
             break;
+        case mdChecksTypes::PositionSpeedMaxConsistancy:
+            flagsPositionSpeedMaxConsistancy_2++;
+            break;
         case mdChecksTypes::SpeedConsistancy:
             flagsSpeedConsistancy_2++;
             break;
@@ -251,6 +265,7 @@ void AppPrintable::resetAll() {
     flagsSpeedPlausibility_1 = 0;
     flagsPositionConsistancy_1 = 0;
     flagsPositionSpeedConsistancy_1 = 0;
+    flagsPositionSpeedMaxConsistancy_1 = 0;
     flagsSpeedConsistancy_1 = 0;
     flagsBeaconFrequency_1 = 0;
     flagsIntersection_1 = 0;
@@ -262,6 +277,7 @@ void AppPrintable::resetAll() {
     flagsSpeedPlausibility_2 = 0;
     flagsPositionConsistancy_2 = 0;
     flagsPositionSpeedConsistancy_2 = 0;
+    flagsPositionSpeedMaxConsistancy_2 = 0;
     flagsSpeedConsistancy_2 = 0;
     flagsBeaconFrequency_2 = 0;
     flagsIntersection_2 = 0;
@@ -317,61 +333,67 @@ void AppPrintable::getPrintable(char* outStr, double density, double deltaT, boo
     sprintf(data, "%f", flagsPositionSpeedConsistancy_1); //8
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsSpeedConsistancy_1); //9
+    sprintf(data, "%f", flagsPositionSpeedMaxConsistancy_1); //9
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsBeaconFrequency_1); //10
+    sprintf(data, "%f", flagsSpeedConsistancy_1); //10
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsIntersection_1); //11
+    sprintf(data, "%f", flagsBeaconFrequency_1); //11
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsSuddenAppearence_1); //12
+    sprintf(data, "%f", flagsIntersection_1); //12
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsPositionHeadingConsistancy_1); //13
+    sprintf(data, "%f", flagsSuddenAppearence_1); //13
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", cumulFlags_1); //14
+    sprintf(data, "%f", flagsPositionHeadingConsistancy_1); //14
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", allTests_1); //15
+    sprintf(data, "%f", cumulFlags_1); //15
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsRangePlausibility_2); //16
+    sprintf(data, "%f", allTests_1); //16
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsPositionPlausibility_2); //17
+    sprintf(data, "%f", flagsRangePlausibility_2); //17
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsSpeedPlausibility_2); //18
+    sprintf(data, "%f", flagsPositionPlausibility_2); //18
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsPositionConsistancy_2); //19
+    sprintf(data, "%f", flagsSpeedPlausibility_2); //19
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsPositionSpeedConsistancy_2); //20
+    sprintf(data, "%f", flagsPositionConsistancy_2); //20
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsSpeedConsistancy_2); //21
+    sprintf(data, "%f", flagsPositionSpeedConsistancy_2); //21
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsBeaconFrequency_2); //22
+    sprintf(data, "%f", flagsPositionSpeedMaxConsistancy_2); //22
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsIntersection_2); //23
+    sprintf(data, "%f", flagsSpeedConsistancy_2); //23
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsSuddenAppearence_2); //24
+    sprintf(data, "%f", flagsBeaconFrequency_2); //24
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", flagsPositionHeadingConsistancy_2); //25
+    sprintf(data, "%f", flagsIntersection_2); //25
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", cumulFlags_2); //26
+    sprintf(data, "%f", flagsSuddenAppearence_2); //26
     strcat(line, data);
     strcat(line, " ");
-    sprintf(data, "%f", allTests_2); //27
+    sprintf(data, "%f", flagsPositionHeadingConsistancy_2); //27
+    strcat(line, data);
+    strcat(line, " ");
+    sprintf(data, "%f", cumulFlags_2); //28
+    strcat(line, data);
+    strcat(line, " ");
+    sprintf(data, "%f", allTests_2); //29
     strcat(line, data);
     for (int i = 0; i < 1024; ++i) {
         outStr[i] = line[i];

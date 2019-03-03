@@ -22,6 +22,7 @@ enum Checks {
     SpeedPlausibility,
     PositionConsistancy,
     PositionSpeedConsistancy,
+    PositionSpeedMaxConsistancy,
     SpeedConsistancy,
     BeaconFrequency,
     Intersection,
@@ -32,7 +33,7 @@ enum Checks {
 
 static const char* ChecksNames[] = { "RangePlausibility",
         "PositionPlausibility", "SpeedPlausibility", "PositionConsistancy",
-        "PositionSpeedConsistancy", "SpeedConsistancy", "BeaconFrequency",
+        "PositionSpeedConsistancy","PositionSpeedMaxConsistancy", "SpeedConsistancy", "BeaconFrequency",
         "Intersection", "SuddenAppearence", "PositionHeadingConsistancy" };
 
 static_assert(sizeof(mdChecksTypes::ChecksNames)/sizeof(char*) == mdChecksTypes::SIZE_OF_ENUM

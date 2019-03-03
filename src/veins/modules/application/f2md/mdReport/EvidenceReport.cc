@@ -70,6 +70,12 @@ void EvidenceReport::addEvidence(BasicSafetyMessage myBsm,
         }
     }
 
+    if (reportedCheck.getPositionSpeedMaxConsistancy() < 1) {
+        if (eviNum < 2) {
+            eviNum = 2;
+        }
+    }
+
     if (reportedCheck.getPositionHeadingConsistancy() < 1) {
         if (eviNum < 2) {
             eviNum = 2;

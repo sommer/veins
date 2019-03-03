@@ -50,6 +50,8 @@ private:
     double SpeedConsistancyCheck(double, double, double);
     double PositionSpeedConsistancyCheck(Coord*, Coord *, double, double,
             double);
+    double PositionSpeedMaxConsistancyCheck(Coord*, Coord *, double, double,
+            double);
     double SpeedPlausibilityCheck(double);
     double IntersectionCheck(Coord nodePosition1, Coord nodeSize1, Coord head1,
             Coord nodePosition2, Coord nodeSize2, Coord head2,

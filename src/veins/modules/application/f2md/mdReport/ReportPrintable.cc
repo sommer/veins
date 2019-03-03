@@ -43,6 +43,10 @@ std::string ReportPrintable::getCheckXml(BsmCheck Check){
      xml.writeString(std::to_string(Check.getPositionSpeedConsistancy()));
      xml.writeEndElementTag();
 
+     xml.writeStartElementTag("psmC");
+     xml.writeString(std::to_string(Check.getPositionSpeedMaxConsistancy()));
+     xml.writeEndElementTag();
+
      xml.writeStartElementTag("phC");
      xml.writeString(std::to_string(Check.getPositionHeadingConsistancy()));
      xml.writeEndElementTag();
@@ -200,6 +204,9 @@ std::string ReportPrintable::getCheckJson(BsmCheck Check){
     jw.addTagToElement("BsmCheck", tempStr);
 
     tempStr = jw.getSimpleTag("psC", std::to_string(Check.getPositionSpeedConsistancy()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("psmC", std::to_string(Check.getPositionSpeedMaxConsistancy()),true);
     jw.addTagToElement("BsmCheck", tempStr);
 
     tempStr = jw.getSimpleTag("phC", std::to_string(Check.getPositionHeadingConsistancy()),true);

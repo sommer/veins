@@ -67,6 +67,12 @@ private:
     InterTest MultipleIntersectionCheck(NodeTable * detectedNodes,
             BasicSafetyMessage * bsm);
 
+    double PositionSpeedMaxConsistancyCheck(Coord * curPosition,
+            Coord * curPositionConfidence, Coord * oldPosition,
+            Coord * oldPositionConfidence, double curSpeed,
+            double curSpeedConfidence, double oldspeed,
+            double oldSpeedConfidence, double time);
+
     double PositionSpeedConsistancyCheck(Coord * curPosition,
             Coord * curPositionConfidence, Coord * oldPosition,
             Coord * oldPositionConfidence, double curSpeed,

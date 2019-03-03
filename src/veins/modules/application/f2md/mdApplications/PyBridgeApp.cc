@@ -59,6 +59,14 @@ bool PyBridgeApp::CheckNodeForReport(unsigned long myPseudonym,
         prntAppInst->incFlags(mdChecksTypes::PositionSpeedConsistancy, mbTypes::intMbs[bsm->getSenderMbType()]);
     }
 
+    if(bsmCheck->getPositionSpeedMaxConsistancy()<minFactor){
+        minFactor = bsmCheck->getPositionSpeedMaxConsistancy();
+    }
+    if (bsmCheck->getPositionSpeedMaxConsistancy() <= Threshold) {
+        prntApp->incFlags(mdChecksTypes::PositionSpeedMaxConsistancy, mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::PositionSpeedMaxConsistancy, mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
     if(bsmCheck->getSpeedConsistancy()<minFactor){
         minFactor = bsmCheck->getSpeedConsistancy();
     }

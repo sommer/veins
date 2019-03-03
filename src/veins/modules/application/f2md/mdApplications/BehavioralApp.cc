@@ -80,6 +80,19 @@ bool BehavioralApp::CheckNodeForReport(unsigned long myPseudonym,
                 mbTypes::intMbs[bsm->getSenderMbType()]);
     }
 
+    //std::cout<< "PositionSpeedMaxConsistancy" << '\n';
+
+    tempFactor = bsmCheck->getPositionSpeedMaxConsistancy();
+    if (tempFactor < minFactor) {
+        minFactor = tempFactor;
+    }
+    if (tempFactor < Threshold) {
+        prntApp->incFlags(mdChecksTypes::PositionSpeedMaxConsistancy,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::PositionSpeedMaxConsistancy,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
     //std::cout<< "SpeedConsistancy" << '\n';
 
     tempFactor = bsmCheck->getSpeedConsistancy();

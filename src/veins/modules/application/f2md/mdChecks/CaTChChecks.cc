@@ -37,8 +37,6 @@ CaTChChecks::CaTChChecks(unsigned long myPseudonym, Coord myPosition,
     this->LinkC = LinkC;
 }
 
-
-
 double CaTChChecks::RangePlausibilityCheck(Coord * receiverPosition,
         Coord * receiverPositionConfidence, Coord * senderPosition,
         Coord * senderPositionConfidence) {
@@ -64,7 +62,6 @@ double CaTChChecks::PositionConsistancyCheck(Coord * curPosition,
     return factor;
 }
 
-
 double CaTChChecks::SpeedConsistancyCheck(double curSpeed,
         double curSpeedConfidence, double oldspeed, double oldSpeedConfidence,
         double time) {
@@ -88,7 +85,6 @@ double CaTChChecks::SpeedConsistancyCheck(double curSpeed,
     return factor;
 }
 
-
 double CaTChChecks::SpeedPlausibilityCheck(double speed,
         double speedConfidence) {
     if ((fabs(speed) + fabs(speedConfidence) / 2) < MAX_PLAUSIBLE_SPEED) {
@@ -104,7 +100,7 @@ double CaTChChecks::SpeedPlausibilityCheck(double speed,
     }
 }
 
-double CaTChChecks::PositionSpeedConsistancyCheck(Coord * curPosition,
+double CaTChChecks::PositionSpeedMaxConsistancyCheck(Coord * curPosition,
         Coord * curPositionConfidence, Coord * oldPosition,
         Coord * oldPositionConfidence, double curSpeed,
         double curSpeedConfidence, double oldspeed, double oldSpeedConfidence,
@@ -126,7 +122,7 @@ double CaTChChecks::PositionSpeedConsistancyCheck(Coord * curPosition,
 
         double minfactor = mdmLib.OneSidedCircleSegmentFactor(
                 theoreticalSpeed - minspeed, curR, oldR,
-                (MAX_PLAUSIBLE_ACCEL  + MAX_MGT_RNG)* time);
+                (MAX_PLAUSIBLE_ACCEL + MAX_MGT_RNG) * time);
 
         double factor = 1;
 
@@ -168,6 +164,81 @@ double CaTChChecks::PositionSpeedConsistancyCheck(Coord * curPosition,
     }
 }
 
+double CaTChChecks::PositionSpeedConsistancyCheck(Coord * curPosition,
+        Coord * curPositionConfidence, Coord * oldPosition,
+        Coord * oldPositionConfidence, double curSpeed,
+        double curSpeedConfidence, double oldspeed, double oldSpeedConfidence,
+        double time) {
+
+    if (time < MAX_TIME_DELTA) {
+        double distance = mdmLib.calculateDistancePtr(curPosition, oldPosition);
+        double curminspeed = std::min(curSpeed, oldspeed);
+        double addon_mgt_range = MAX_MGT_RNG_DOWN + 0.3571 * curminspeed
+                - 0.01694 * curminspeed;
+        if (addon_mgt_range < 0) {
+            addon_mgt_range = 0;
+        }
+
+        double retDistance_1[2];
+        mdmLib.calculateMaxMinDist(curSpeed - curSpeedConfidence,
+                oldspeed + oldSpeedConfidence, time, MAX_PLAUSIBLE_ACCEL,
+                MAX_PLAUSIBLE_DECEL, MAX_PLAUSIBLE_SPEED, retDistance_1);
+        double factorMin_1 = 1
+                - mdmLib.CircleCircleFactor(distance, curPositionConfidence->x,
+                        oldPositionConfidence->x,
+                        retDistance_1[0] );
+        double factorMax_1 = mdmLib.OneSidedCircleSegmentFactor(distance,
+                curPositionConfidence->x, oldPositionConfidence->x,
+                retDistance_1[1] );
+
+        double retDistance_2[2];
+        mdmLib.calculateMaxMinDist(curSpeed + curSpeedConfidence,
+                oldspeed - oldSpeedConfidence, time, MAX_PLAUSIBLE_ACCEL,
+                MAX_PLAUSIBLE_DECEL, MAX_PLAUSIBLE_SPEED, retDistance_2);
+        double factorMin_2 = 1
+                - mdmLib.CircleCircleFactor(distance, curPositionConfidence->x,
+                        oldPositionConfidence->x,
+                        retDistance_2[0] - addon_mgt_range);
+        double factorMax_2 = mdmLib.OneSidedCircleSegmentFactor(distance,
+                curPositionConfidence->x, oldPositionConfidence->x,
+                retDistance_2[1] + MAX_MGT_RNG_UP);
+
+        double retDistance_3[2];
+        mdmLib.calculateMaxMinDist(curSpeed + curSpeedConfidence,
+                oldspeed + oldSpeedConfidence, time, MAX_PLAUSIBLE_ACCEL,
+                MAX_PLAUSIBLE_DECEL, MAX_PLAUSIBLE_SPEED, retDistance_3);
+        double factorMin_3 = 1
+                - mdmLib.CircleCircleFactor(distance, curPositionConfidence->x,
+                        oldPositionConfidence->x,
+                        retDistance_3[0] - addon_mgt_range);
+        double factorMax_3 = mdmLib.OneSidedCircleSegmentFactor(distance,
+                curPositionConfidence->x, oldPositionConfidence->x,
+                retDistance_3[1] + MAX_MGT_RNG_UP);
+
+        double retDistance_4[2];
+        mdmLib.calculateMaxMinDist(curSpeed - curSpeedConfidence,
+                oldspeed - oldSpeedConfidence, time, MAX_PLAUSIBLE_ACCEL,
+                MAX_PLAUSIBLE_DECEL, MAX_PLAUSIBLE_SPEED, retDistance_4);
+        double factorMin_4 = 1
+                - mdmLib.CircleCircleFactor(distance, curPositionConfidence->x,
+                        oldPositionConfidence->x,
+                        retDistance_4[0] - addon_mgt_range);
+        double factorMax_4 = mdmLib.OneSidedCircleSegmentFactor(distance,
+                curPositionConfidence->x, oldPositionConfidence->x,
+                retDistance_4[1] + MAX_MGT_RNG_UP);
+
+        double factor_1 = std::min(factorMin_1, factorMax_1);
+        double factor_2 = std::min(factorMin_2, factorMax_2);
+        double factor_3 = std::min(factorMin_3, factorMax_3);
+        double factor_4 = std::min(factorMin_4, factorMax_4);
+
+        return (factor_1 + factor_2+factor_3 +factor_4)/4;
+
+    } else {
+        return 1;
+    }
+}
+
 double CaTChChecks::IntersectionCheck(Coord * nodePosition1,
         Coord * nodePositionConfidence1, Coord * nodePosition2,
         Coord * nodePositionConfidence2, Coord * nodeHeading1,
@@ -190,7 +261,8 @@ double CaTChChecks::IntersectionCheck(Coord * nodePosition1,
             mdmLib.calculateHeadingAnglePtr(nodeHeading2), *nodeSize1,
             *nodeSize2);
 
-    intFactor2 = 1.01 - intFactor2 * ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
+    intFactor2 = 1.01
+            - intFactor2 * ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
 
     if (intFactor2 > 1) {
         intFactor2 = 1;
@@ -553,6 +625,19 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
 
         bsmCheck.setPositionSpeedConsistancy(
                 PositionSpeedConsistancyCheck(&senderPos, &senderPosConfidence,
+                        &senderNode->getLatestBSMAddr()->getSenderPos(),
+                        &senderNode->getLatestBSMAddr()->getSenderPosConfidence(),
+                        mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
+                        mdmLib.calculateSpeedPtr(
+                                &bsm->getSenderSpeedConfidence()),
+                        mdmLib.calculateSpeedPtr(
+                                &senderNode->getLatestBSMAddr()->getSenderSpeed()),
+                        mdmLib.calculateSpeedPtr(
+                                &senderNode->getLatestBSMAddr()->getSenderSpeedConfidence()),
+                        mdmLib.calculateDeltaTime(bsm,
+                                senderNode->getLatestBSMAddr())));
+        bsmCheck.setPositionSpeedMaxConsistancy(
+                PositionSpeedMaxConsistancyCheck(&senderPos, &senderPosConfidence,
                         &senderNode->getLatestBSMAddr()->getSenderPos(),
                         &senderNode->getLatestBSMAddr()->getSenderPosConfidence(),
                         mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),

@@ -119,6 +119,24 @@ bool AggrigationApp::CheckNodeForReport(unsigned long myPseudonym,
                 mbTypes::intMbs[bsm->getSenderMbType()]);
     }
 
+    //std::cout<< "PositionSpeedMaxConsistancy" << '\n';
+    for (int var = 0; var < bsmCheckListSize; ++var) {
+        factorList[var] = bsmCheckList[var].getPositionSpeedMaxConsistancy();
+    }
+    tempFactor = AggregateFactorsListDouble(
+            bsmCheck->getPositionSpeedMaxConsistancy(), factorList,
+            bsmCheckListSize);
+    if (tempFactor < minFactor) {
+        minFactor = tempFactor;
+    }
+    if (tempFactor < Threshold) {
+        checkFailed = true;
+        prntApp->incFlags(mdChecksTypes::PositionSpeedMaxConsistancy,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::PositionSpeedMaxConsistancy,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
     //std::cout<< "SpeedConsistancy" << '\n';
     for (int var = 0; var < bsmCheckListSize; ++var) {
         factorList[var] = bsmCheckList[var].getSpeedConsistancy();

@@ -16,36 +16,37 @@ Define_Module(JosephVeinsApp);
 #define serialNumber "IRT-DEMO"
 #define savePath "../../../../mdmSave/"
 
-#define randomConf false
+#define randomConf true
 #define confPos 5.0
 #define confSpd 1.0
 #define confHea 0.0
 
 #define SAVE_PERIOD 1 //60 seconds
-#define PRINT_PERIOD 1000 //60 seconds
+#define PRINT_PERIOD 60 //60 seconds
 
 #define START_SAVE 0 //60 seconds
 #define START_ATTACK 10 //60 seconds
 
 #define REPORT_VERSION reportTypes::EvidenceReport
 
-static bool MixLocalAttacks = true;
+static bool MixLocalAttacks = false;
 static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
 
-#define LOCAL_ATTACK_TYPE attackTypes::Disruptive
+#define LOCAL_ATTACK_TYPE attackTypes::GridSybil
 
 static attackTypes::Attacks MixLocalAttacksList[] =
-        { attackTypes::GridSybil, attackTypes::DoS, attackTypes::ConstPos,
-                attackTypes::RandomPos, attackTypes::StaleMessages,
-                attackTypes::DoSRandomSybil, attackTypes::ConstPosOffset,
-                attackTypes::ConstSpeed, attackTypes::RandomSpeed ,
-                attackTypes::RandomPosOffset, attackTypes::DataReplaySybil,
-                attackTypes::DoSDisruptive, attackTypes::ConstSpeedOffset,
-                attackTypes::RandomSpeedOffset,attackTypes::EventualStop,
-                attackTypes::DoSDisruptiveSybil,attackTypes::Disruptive,
-                attackTypes::DataReplay, attackTypes::DoSRandom };
+        { attackTypes::ConstPos, attackTypes::RandomPos,
+                attackTypes::StaleMessages, attackTypes::DoSRandomSybil,
+                attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
+                attackTypes::DoS, attackTypes::RandomPosOffset,
+                attackTypes::DataReplaySybil, attackTypes::DoSDisruptive,
+                attackTypes::ConstSpeedOffset, attackTypes::RandomSpeedOffset,
+                attackTypes::EventualStop, attackTypes::DoSDisruptiveSybil,
+                attackTypes::Disruptive, attackTypes::DataReplay,
+                attackTypes::DoSRandom, attackTypes::GridSybil,
+                attackTypes::RandomSpeed };
 
 //ConstPos, ConstPosOffset, RandomPos, RandomPosOffset,
 //ConstSpeed, ConstSpeedOffset, RandomSpeed, RandomSpeedOffset,
@@ -73,7 +74,7 @@ static mdChecksVersionTypes::ChecksVersion checksVersionV2 =
         mdChecksVersionTypes::CatchChecks;
 
 static mdAppTypes::App appTypeV1 = mdAppTypes::ThresholdApp;
-static mdAppTypes::App appTypeV2 = mdAppTypes::BehavioralApp;
+static mdAppTypes::App appTypeV2 = mdAppTypes::ThresholdApp;
 
 static bool writeSelfMsg = false;
 
@@ -114,15 +115,18 @@ void JosephVeinsApp::initialize(int stage) {
         MAX_PLAUSIBLE_ACCEL = traciVehicle->getAccel() + 0.01;
         MAX_PLAUSIBLE_DECEL = traciVehicle->getDeccel() + 0.01;
         MAX_PLAUSIBLE_SPEED = traciVehicle->getMaxSpeed() + 0.01;
-        if (MAX_PLAUSIBLE_ACCEL < MIN_MAX_ACCEL) {
-            MAX_PLAUSIBLE_ACCEL = MIN_MAX_ACCEL;
-        }
-        if (MAX_PLAUSIBLE_DECEL < MIN_MAX_DECEL) {
-            MAX_PLAUSIBLE_DECEL = MIN_MAX_DECEL;
-        }
-        if (MAX_PLAUSIBLE_SPEED < MIN_MAX_SPEED) {
-            MAX_PLAUSIBLE_SPEED = MIN_MAX_SPEED;
-        }
+
+        /*
+         if (MAX_PLAUSIBLE_ACCEL < MIN_MAX_ACCEL) {
+         MAX_PLAUSIBLE_ACCEL = MIN_MAX_ACCEL;
+         }
+         if (MAX_PLAUSIBLE_DECEL < MIN_MAX_DECEL) {
+         MAX_PLAUSIBLE_DECEL = MIN_MAX_DECEL;
+         }
+         if (MAX_PLAUSIBLE_SPEED < MIN_MAX_SPEED) {
+         MAX_PLAUSIBLE_SPEED = MIN_MAX_SPEED;
+         }
+         */
 
         myWidth = traciVehicle->getWidth();
         myLength = traciVehicle->getLength();
@@ -148,7 +152,7 @@ void JosephVeinsApp::initialize(int stage) {
 
         if (randomConf) {
             double randConfPos = genLib.RandomDouble(0, confPos);
-            double randConfSpeed = genLib.RandomDouble(0, randConfSpeed);
+            double randConfSpeed = genLib.RandomDouble(0, confSpd);
             double randConfHeading = genLib.RandomDouble(0, confHea);
 
             curPositionConfidence = Coord(randConfPos, randConfPos, 0);
@@ -345,6 +349,7 @@ mbTypes::Mbs JosephVeinsApp::induceMisbehavior(double localAttacker,
 }
 
 void JosephVeinsApp::onBSM(BasicSafetyMessage* bsm) {
+
     unsigned long senderPseudonym = bsm->getSenderPseudonym();
 
     if (EnableV1) {

@@ -31,6 +31,8 @@
 #define MIN_MAX_ACCEL 3 // 3
 #define MIN_MAX_DECEL 4.5 // 4.5
 #define MAX_MGT_RNG 4 // 3
+#define MAX_MGT_RNG_DOWN 5.5 // 5.36874
+#define MAX_MGT_RNG_UP 2.15// 0.129
 #define MAX_BEACON_FREQUENCY 0.99 //0.99998
 #define MAX_DISTANCE_FROM_ROUTE 2 //4.5
 #define MAX_NON_ROUTE_SPEED -1 //3
@@ -62,13 +64,13 @@
 #define RandomSpeedOffsetX 7.0
 #define RandomSpeedOffsetY 7.0
 #define StopProb 0.01
-#define StaleMessages_Buffer 5 //less than 10
+#define StaleMessages_Buffer 9 //less than 20
 #define DosMultipleFreq 4 // times faster
 #define DosMultipleFreqSybil 1 // times faster
-#define SybilVehNumber 5 // max 10
+#define SybilVehNumber 9 // max 10
 #define SelfSybil true // default true
-#define SybilDistanceX 5 // meters
-#define SybilDistanceY 2 // meters
+#define SybilDistanceX 5 // 5 meters
+#define SybilDistanceY 2 // 2 meters
 #define MAX_SYBIL_NUM 10
 //Attacks Parameters
 

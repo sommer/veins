@@ -68,6 +68,16 @@ bool ThresholdApp::CheckNodeForReport(unsigned long myPseudonym, BasicSafetyMess
         prntAppInst->incFlags(mdChecksTypes::PositionSpeedConsistancy, mbTypes::intMbs[bsm->getSenderMbType()]);
     }
 
+    if(bsmCheck->getPositionSpeedMaxConsistancy()<minFactor){
+        minFactor = bsmCheck->getPositionSpeedMaxConsistancy();
+    }
+    if (bsmCheck->getPositionSpeedMaxConsistancy() <= Threshold) {
+        checkFailed = true;
+        prntApp->incFlags(mdChecksTypes::PositionSpeedMaxConsistancy, mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::PositionSpeedMaxConsistancy, mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+
     if(bsmCheck->getSpeedConsistancy()<minFactor){
         minFactor = bsmCheck->getSpeedConsistancy();
     }

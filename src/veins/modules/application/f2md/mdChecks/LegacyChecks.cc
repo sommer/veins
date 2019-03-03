@@ -24,6 +24,8 @@
 using namespace std;
 using namespace boost;
 
+static double print_count = 0;
+
 LegacyChecks::LegacyChecks(unsigned long myPseudonym, Coord myPosition,
         Coord mySpeed, Coord myHeading, Coord mySize, Coord myLimits,
         LinkControl* LinkC) {
@@ -55,6 +57,7 @@ double LegacyChecks::RangePlausibilityCheck(Coord *senderPosition,
 double LegacyChecks::PositionConsistancyCheck(Coord * curPosition,
         Coord * oldPosition, double time) {
     double distance = mdmLib.calculateDistancePtr(curPosition, oldPosition);
+
     if (distance < MAX_PLAUSIBLE_SPEED * time) {
         return 1;
     } else {
@@ -73,12 +76,14 @@ double LegacyChecks::SpeedConsistancyCheck(double curSpeed, double oldspeed,
 //    }
 
     if (speedDelta > 0) {
+
         if (speedDelta < MAX_PLAUSIBLE_ACCEL * time) {
             return 1;
         } else {
             return 0; //distance
         }
     } else {
+
         if (fabs(speedDelta) < MAX_PLAUSIBLE_DECEL * time) {
             return 1;
         } else {
@@ -88,7 +93,7 @@ double LegacyChecks::SpeedConsistancyCheck(double curSpeed, double oldspeed,
 
 }
 
-double LegacyChecks::PositionSpeedConsistancyCheck(Coord *curPosition,
+double LegacyChecks::PositionSpeedMaxConsistancyCheck(Coord *curPosition,
         Coord * oldPosition, double curSpeed, double oldspeed, double time) {
     if (time < MAX_TIME_DELTA) {
         double distance = mdmLib.calculateDistancePtr(curPosition, oldPosition);
@@ -114,8 +119,38 @@ double LegacyChecks::PositionSpeedConsistancyCheck(Coord *curPosition,
     }
 }
 
-double LegacyChecks::SpeedPlausibilityCheck(double speed) {
+double LegacyChecks::PositionSpeedConsistancyCheck(Coord *curPosition,
+        Coord * oldPosition, double curSpeed, double oldspeed, double time) {
+    if (time < MAX_TIME_DELTA) {
+        double distance = mdmLib.calculateDistancePtr(curPosition, oldPosition);
+        double curminspeed = std::min(curSpeed, oldspeed);
+        //double theoreticalSpeed = distance / time;
+        double retDistance [2];
+        mdmLib.calculateMaxMinDist(curSpeed, oldspeed, time,
+                MAX_PLAUSIBLE_ACCEL, MAX_PLAUSIBLE_DECEL,
+                MAX_PLAUSIBLE_SPEED, retDistance);
 
+
+        double addon_mgt_range = MAX_MGT_RNG_DOWN + 0.3571 * curminspeed
+                - 0.01694 * curminspeed;
+        if (addon_mgt_range < 0) {
+            addon_mgt_range = 0;
+        }
+
+        double deltaMin = distance - retDistance[0] + addon_mgt_range;
+        double deltaMax = retDistance[1] - distance + MAX_MGT_RNG_UP;
+
+        if (deltaMin < 0 || deltaMax < 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    } else {
+        return 1;
+    }
+}
+
+double LegacyChecks::SpeedPlausibilityCheck(double speed) {
 
     if (fabs(speed) < MAX_PLAUSIBLE_SPEED) {
         return 1;
@@ -134,8 +169,8 @@ double LegacyChecks::IntersectionCheck(Coord nodePosition1, Coord nodeSize1,
     //double distance = mdmLib.calculateDistancePtr(nodePosition1, nodePosition2);
 
     double inter = mdmLib.RectRectFactor(nodePosition1, nodePosition2, heading1,
-            heading2, Coord( nodeSize1.x, nodeSize1.y),
-            Coord( nodeSize2.x, nodeSize2.y));
+            heading2, Coord(nodeSize1.x, nodeSize1.y),
+            Coord(nodeSize2.x, nodeSize2.y));
 
     inter = inter * ((MAX_DELTA_INTER - deltaTime) / MAX_DELTA_INTER);
 
@@ -345,6 +380,14 @@ BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
                                 &senderNode->getLatestBSMAddr()->getSenderSpeed()),
                         mdmLib.calculateDeltaTime(bsm,
                                 senderNode->getLatestBSMAddr())));
+        bsmCheck.setPositionSpeedMaxConsistancy(
+                PositionSpeedMaxConsistancyCheck(&senderPos,
+                        &senderNode->getLatestBSMAddr()->getSenderPos(),
+                        mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
+                        mdmLib.calculateSpeedPtr(
+                                &senderNode->getLatestBSMAddr()->getSenderSpeed()),
+                        mdmLib.calculateDeltaTime(bsm,
+                                senderNode->getLatestBSMAddr())));
 
         bsmCheck.setBeaconFrequency(
                 BeaconFrequencyCheck(bsm->getArrivalTime().dbl(),
@@ -363,7 +406,7 @@ BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
                 SuddenAppearenceCheck(&senderPos, &myPosition));
     }
 
- //   PrintBsmCheck(senderPseudonym, bsmCheck);
+    //PrintBsmCheck(senderPseudonym, bsmCheck);
 
     return bsmCheck;
 }

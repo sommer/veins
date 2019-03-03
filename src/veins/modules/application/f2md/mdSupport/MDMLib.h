@@ -1,13 +1,13 @@
 /*******************************************************************************
-* @author  Joseph Kamel 
-* @email   josephekamel@gmail.com
-* @date    28/11/2018
-* @version 2.0
-*
-* SCA (Secure Cooperative Autonomous systems)
-* Copyright (c) 2013, 2018 Institut de Recherche Technologique SystemX
-* All rights reserved.
-*******************************************************************************/
+ * @author  Joseph Kamel
+ * @email   josephekamel@gmail.com
+ * @date    28/11/2018
+ * @version 2.0
+ *
+ * SCA (Secure Cooperative Autonomous systems)
+ * Copyright (c) 2013, 2018 Institut de Recherche Technologique SystemX
+ * All rights reserved.
+ *******************************************************************************/
 
 #ifndef __VEINS_MDMLib_H_
 #define __VEINS_MDMLib_H_
@@ -32,17 +32,22 @@ public:
     double gaussianSum(double x, double sig);
     double boundedGaussianSum(double x1, double x2, double sig);
 
-    double calculateDistancePtr(Coord * , Coord * );
+    double calculateDistancePtr(Coord *, Coord *);
     double calculateSpeedPtr(Coord * Speed);
     double calculateHeadingAnglePtr(Coord * heading);
 
-    double calculateDistance(Coord  , Coord );
-    double calculateSpeed(Coord  Speed);
+    double calculateDistance(Coord, Coord);
+    double calculateSpeed(Coord Speed);
     double calculateHeadingAngle(Coord heading);
 
-    double calculatePolynom(long double coof[],const int coofNum, double x);
+    double calculatePolynom(long double coof[], const int coofNum, double x);
 
-    double calculateDeltaTime(BasicSafetyMessage * bsm1, BasicSafetyMessage * bsm2);
+    void calculateMaxMinDist(double curSpeed, double oldspeed, double time,
+            double MAX_PLAUSIBLE_ACCEL, double MAX_PLAUSIBLE_DECEL,
+            double MAX_PLAUSIBLE_SPEED, double * returnDistance);
+
+    double calculateDeltaTime(BasicSafetyMessage * bsm1,
+            BasicSafetyMessage * bsm2);
     double calculateCircleSegment(double radius, double intDistance);
     double calculateCircleCircleIntersection(double r1, double r2, double d);
     double SegmentSegmentFactor(double d, double r1, double r2, double range);
@@ -57,10 +62,11 @@ public:
     double RectRectFactor(Coord c1, Coord c2, double heading1, double heading2,
             Coord size1, Coord size2);
 
-    double EllipseEllipseIntersectionFactor(Coord pos1, Coord posConf1, Coord pos2, Coord posConf2, double heading1,
-            double heading2, Coord size1, Coord size2);
+    double EllipseEllipseIntersectionFactor(Coord pos1, Coord posConf1,
+            Coord pos2, Coord posConf2, double heading1, double heading2,
+            Coord size1, Coord size2);
 
-    double SafeAcos (double x);
+    double SafeAcos(double x);
 
 };
 
