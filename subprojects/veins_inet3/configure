@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 """
-Creates Makefile(s) for building Veins_INET.
+Creates Makefile(s) for building this project.
 """
 
 import os
@@ -16,8 +16,8 @@ if sys.version_info[0] == 3:
 
 # Option handling
 parser = OptionParser()
-parser.add_option("--with-veins", dest="veins", help="link Veins_INET with a version of Veins installed in PATH [default: do not link with Veins]", metavar="PATH", default="../..")
-parser.add_option("--with-inet", dest="inet", help="link Veins_INET with a version of the INET Framework installed in PATH [default: do not link with INET]", metavar="PATH", default="../../../inet")
+parser.add_option("--with-veins", dest="veins", help="link with a version of Veins installed in PATH [default: ../..]", metavar="PATH", default="../..")
+parser.add_option("--with-inet", dest="inet", help="link with a version of the INET Framework installed in PATH [default: ../../../inet]", metavar="PATH", default="../../../inet")
 (options, args) = parser.parse_args()
 
 if args:
@@ -25,15 +25,16 @@ if args:
 
 
 # Start with default flags
-makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-o', 'veins_inet', '-O', 'out']
+makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-o', 'veins_inet', '-O', 'out', '-p', 'VEINS_INET']
 run_libs = [os.path.join('src', 'veins_inet')]
 run_neds = [os.path.join('src', 'veins_inet')]
+run_imgs = [os.path.join('images')]
 
 
 # Add flags for Veins
 if options.veins:
     check_fname = os.path.join(options.veins, 'src/veins/package.ned')
-    expect_version = '4'
+    expect_version = '5'
     if not os.path.isfile(check_fname):
         error('Could not find Veins (by looking for %s). Check the path to Veins (--with-veins=... option) and the Veins version (should be version %s)' % (check_fname, expect_version))
         sys.exit(1)
@@ -46,6 +47,7 @@ if options.veins:
     makemake_flags += veins_includes + veins_link + veins_defs
     run_libs = [os.path.relpath(os.path.join(options.veins, 'src', 'veins'))] + run_libs
     run_neds = [os.path.relpath(os.path.join(options.veins, 'src', 'veins'))] + run_neds
+    run_imgs = [os.path.relpath(os.path.join(options.veins, 'images'))] + run_imgs
 
 
 # Add flags for INET
@@ -75,6 +77,7 @@ if options.inet:
     makemake_flags += inet_includes + inet_link + inet_defs
     run_libs = [os.path.relpath(os.path.join(options.inet, 'src', 'INET'))] + run_libs
     run_neds = [os.path.relpath(os.path.join(options.inet, 'src'))] + run_neds
+    run_imgs = [os.path.relpath(os.path.join(options.inet, 'images'))] + run_imgs
 
 
 # Start creating files
@@ -84,6 +87,7 @@ if not os.path.isdir('out'):
 f = open(os.path.join('out', 'config.py'), 'w')
 f.write('run_libs = %s\n' % repr(run_libs))
 f.write('run_neds = %s\n' % repr(run_neds))
+f.write('run_imgs = %s\n' % repr(run_imgs))
 f.close()
 
 subprocess.check_call(['env', 'opp_makemake'] + makemake_flags, cwd='src')

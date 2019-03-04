@@ -77,7 +77,7 @@ void invokeCallback(std::function<void(cComponent*, simsignal_t, Payload p, cObj
 }
 
 template <typename Payload, typename Callback>
-class CallbackListener : public cListener {
+class VEINS_API CallbackListener : public cListener {
 public:
     CallbackListener(Callback callback, cModule* receptor, simsignal_t signal)
         : callback(callback)
@@ -140,7 +140,7 @@ class SignalManager;
 /*
  * Handle for a callback subscribed to a signal.
  */
-class SignalCallback {
+class VEINS_API SignalCallback {
 protected:
     friend class SignalManager;
     template <typename Payload, typename Func>

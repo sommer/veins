@@ -11,7 +11,7 @@ namespace veins {
 
 struct TraCICoord;
 
-bool isBigEndian();
+bool VEINS_API isBigEndian();
 
 /**
  * Byte-buffer that stores values in TraCI byte-order
@@ -132,11 +132,11 @@ private:
 template <>
 std::vector<std::string> TraCIBuffer::readTypeChecked(int expectedTraCIType);
 template <>
-void TraCIBuffer::write(std::string inv);
+void VEINS_API TraCIBuffer::write(std::string inv);
 template <>
 void TraCIBuffer::write(TraCICoord inv);
 template <>
-std::string TraCIBuffer::read();
+std::string VEINS_API TraCIBuffer::read();
 template <>
 TraCICoord TraCIBuffer::read();
 template <>

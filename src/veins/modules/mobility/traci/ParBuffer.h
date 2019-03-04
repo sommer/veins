@@ -25,7 +25,7 @@
 
 namespace veins {
 
-class ParBuffer {
+class VEINS_API ParBuffer {
 public:
     ParBuffer()
         : SEP(':')

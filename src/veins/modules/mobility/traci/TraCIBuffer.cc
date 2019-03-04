@@ -138,7 +138,7 @@ simtime_t TraCIBuffer::read()
     }
 }
 
-bool isBigEndian()
+bool VEINS_API isBigEndian()
 {
     short a = 0x0102;
     unsigned char* p_a = reinterpret_cast<unsigned char*>(&a);
