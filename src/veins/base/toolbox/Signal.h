@@ -527,7 +527,7 @@ private:
  * @param lhs the first signal
  * @param rhs the second signal
  */
-Signal operator+(const Signal& lhs, const Signal& rhs);
+Signal VEINS_API operator+(const Signal& lhs, const Signal& rhs);
 
 /**
  * Increment a signal's power levels by a constant.
@@ -535,7 +535,7 @@ Signal operator+(const Signal& lhs, const Signal& rhs);
  * @param lhs the signal to add
  * @param rhs power level to add in milliwatt
  */
-Signal operator+(const Signal& lhs, double rhs);
+Signal VEINS_API operator+(const Signal& lhs, double rhs);
 
 /**
  * Increment a signal's power levels by a constant.
@@ -543,7 +543,7 @@ Signal operator+(const Signal& lhs, double rhs);
  * @param lhs power level to add in milliwatt
  * @param rhs the signal to add
  */
-Signal operator+(double lhs, const Signal& rhs);
+Signal VEINS_API operator+(double lhs, const Signal& rhs);
 
 /**
  * Substract two signals from each other.
@@ -553,7 +553,7 @@ Signal operator+(double lhs, const Signal& rhs);
  * @param lhs the first signal
  * @param rhs the second signal
  */
-Signal operator-(const Signal& lhs, const Signal& rhs);
+Signal VEINS_API operator-(const Signal& lhs, const Signal& rhs);
 
 /**
  * Decrement a signal's power levels by a constant.
@@ -561,7 +561,7 @@ Signal operator-(const Signal& lhs, const Signal& rhs);
  * @param lhs the signal to substract from
  * @param rhs power level to substract in milliwatt
  */
-Signal operator-(const Signal& lhs, double rhs);
+Signal VEINS_API operator-(const Signal& lhs, double rhs);
 
 /**
  * Decrement a constant power level by a signal's power levels.
@@ -569,7 +569,7 @@ Signal operator-(const Signal& lhs, double rhs);
  * @param lhs power level to substract from in milliwatt
  * @param rhs the signal to substract
  */
-Signal operator-(double lhs, const Signal& rhs);
+Signal VEINS_API operator-(double lhs, const Signal& rhs);
 
 /**
  * Multiply two signals by each other.
@@ -579,7 +579,7 @@ Signal operator-(double lhs, const Signal& rhs);
  * @param lhs the first signal
  * @param rhs the second signal
  */
-Signal operator*(const Signal& lhs, const Signal& rhs);
+Signal VEINS_API operator*(const Signal& lhs, const Signal& rhs);
 
 /**
  * Multiply a signal's power levels by a constant.
@@ -587,7 +587,7 @@ Signal operator*(const Signal& lhs, const Signal& rhs);
  * @param lhs the signal to multiply with
  * @param rhs power level to multiply by in milliwatt
  */
-Signal operator*(const Signal& lhs, double rhs);
+Signal VEINS_API operator*(const Signal& lhs, double rhs);
 
 /**
  * Multiply a signal's power levels by a constant.
@@ -595,7 +595,7 @@ Signal operator*(const Signal& lhs, double rhs);
  * @param lhs power level to multiply by in milliwatt
  * @param rhs the signal to multiply with
  */
-Signal operator*(double lhs, const Signal& rhs);
+Signal VEINS_API operator*(double lhs, const Signal& rhs);
 
 /**
  * Divide two signals by each other.
@@ -605,7 +605,7 @@ Signal operator*(double lhs, const Signal& rhs);
  * @param lhs the first signal (dividend)
  * @param rhs the second signal (divisor)
  */
-Signal operator/(const Signal& lhs, const Signal& rhs);
+Signal VEINS_API operator/(const Signal& lhs, const Signal& rhs);
 
 /**
  * Divide a signal's power levels by a constant.
@@ -613,7 +613,7 @@ Signal operator/(const Signal& lhs, const Signal& rhs);
  * @param lhs the dividend
  * @param rhs the constnat divisor in milliwatt
  */
-Signal operator/(const Signal& lhs, double rhs);
+Signal VEINS_API operator/(const Signal& lhs, double rhs);
 
 /**
  * Divide a a constant by a signal's power levels.
@@ -621,7 +621,7 @@ Signal operator/(const Signal& lhs, double rhs);
  * @param rhs the constant dividend in milliwatt
  * @param lhs the divisor
  */
-Signal operator/(double lhs, const Signal& rhs);
+Signal VEINS_API operator/(double lhs, const Signal& rhs);
 ///@}
 
 } // namespace veins
