@@ -81,7 +81,7 @@ std::string BsmPrintable::getSelfBsmPrintableJson() {
     JsonWriter jw;
     jw.writeHeader();
     jw.openJsonElement("BsmPrint", false);
-    jw.addTagToElement("BsmPrint", getBsmPrintHead());
+    jw.addTagToElement("BsmPrint", getSelfBsmPrintHead());
     jw.openJsonElementList("BSMs");
     jw.addFinalTagToElement("BSMs",rp.getBsmJson(bsm));
     jw.addFinalTagToElement("BsmPrint",jw.getJsonElementList("BSMs"));
@@ -98,11 +98,15 @@ std::string BsmPrintable::getSelfBsmPrintHead() {
 
     jw.openJsonElement("Metadata", false);
 
-    tempStr = jw.getSimpleTag("receiverId", std::to_string(receiverId),
+    tempStr = jw.getSimpleTag("myId", std::to_string(receiverId),
             true);
     jw.addTagToElement("Metadata", tempStr);
 
-    tempStr = jw.getSimpleTag("receiverPseudo", std::to_string(receiverPseudo),
+    tempStr = jw.getSimpleTag("myPseudo", std::to_string(receiverPseudo),
+            true);
+    jw.addTagToElement("Metadata", tempStr);
+
+    tempStr = jw.getSimpleTag("generationTime", std::to_string(simTime().dbl()),
             true);
     jw.addTagToElement("Metadata", tempStr);
 
@@ -142,15 +146,14 @@ std::string BsmPrintable::getBsmPrintHead() {
     jw.addFinalTagToElement("Metadata", tempStr);
 
     return jw.getJsonElement("Metadata");
-
 }
 
 bool BsmPrintable::writeSelfStrToFile(const std::string strFileCnst,
         const std::string serial,
         const std::string outStr, const std::string curDate) {
 
-    int gentime = bsm.getArrivalTime().dbl();
-    int gentime0000 = (bsm.getArrivalTime().dbl() - gentime) * 10000;
+    int gentime = simTime().dbl();
+    int gentime0000 = (simTime().dbl() - gentime) * 10000;
 
     std::string upperDirName = strFileCnst + serial;
     const char* upperDirNameConst = upperDirName.c_str();
@@ -180,7 +183,6 @@ bool BsmPrintable::writeSelfStrToFile(const std::string strFileCnst,
     std::fstream checkFile(strFile);
 
     if (checkFile.is_open()) {
-
         std::cout << strFile << "\n";
         std::cout << "Error: File alread exists.\n";
         exit(0);
@@ -199,6 +201,60 @@ bool BsmPrintable::writeSelfStrToFile(const std::string strFileCnst,
 
     return true;
 }
+
+bool BsmPrintable::writeSelfStrToFileList(const std::string strFileCnst,
+        const std::string serial,
+        const std::string outStr, const std::string curDate) {
+
+    std::string upperDirName = strFileCnst + serial;
+    const char* upperDirNameConst = upperDirName.c_str();
+    struct stat info;
+    if (stat(upperDirNameConst, &info) != 0) {
+        mkdir(upperDirNameConst, 0777);
+    } else if (info.st_mode & S_IFDIR) {
+    } else {
+        mkdir(upperDirNameConst, 0777);
+    }
+
+    std::string dirnameStr = strFileCnst + serial + "/SelfBsmsList_" + curDate;
+    const char* dirnameConst = dirnameStr.c_str();
+
+    struct stat info2;
+    if (stat(dirnameConst, &info2) != 0) {
+        mkdir(dirnameConst, 0777);
+    } else if (info2.st_mode & S_IFDIR) {
+    } else {
+        mkdir(dirnameConst, 0777);
+    }
+
+    std::string strFile = strFileCnst + serial + "/SelfBsmsList_" + curDate
+            + "/MDBsm_" + std::to_string(receiverPseudo)+ ".lbsm";
+
+    std::fstream checkFile(strFile);
+    if (checkFile.is_open()) {
+        checkFile.seekp(0,ios::end);
+        long pos = checkFile.tellp();
+        checkFile.seekp (pos-1);
+        checkFile << ",";
+        checkFile << outStr << "\n";
+        checkFile << "\n";
+        checkFile << "]";
+
+    }else{
+        std::ofstream outFile;
+        outFile.open(strFile);
+        if (outFile.is_open()) {
+            outFile << "[";
+            outFile << outStr;
+            outFile << "\n";
+            outFile << "]";
+            outFile.close();
+        }
+    }
+
+    return true;
+}
+
 
 bool BsmPrintable::writeStrToFile(const std::string strFileCnst,
         const std::string serial, const std::string version,
@@ -236,7 +292,6 @@ bool BsmPrintable::writeStrToFile(const std::string strFileCnst,
     std::fstream checkFile(strFile);
 
     if (checkFile.is_open()) {
-
         std::cout << strFile << "\n";
         std::cout << "Error: File alread exists.\n";
         exit(0);
@@ -269,7 +324,7 @@ bool BsmPrintable::writeStrToFileList(const std::string strFileCnst,
         mkdir(upperDirNameConst, 0777);
     }
 
-    std::string dirnameStr = strFileCnst + serial + "/MDBsmsList_"+version+"_"+ curDate;
+    std::string dirnameStr = strFileCnst + serial + "/MDBsms_"+version+"_"+ curDate;
     const char* dirnameConst = dirnameStr.c_str();
 
     struct stat info2;

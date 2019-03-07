@@ -19,6 +19,10 @@
 #include "../mdPCPolicies/PCPolicy.h"
 
 #include "../F2MDParameters.h"
+#include <veins/modules/application/f2md/mdSupport/NetworkLinksLib/LinkControl.h>
+
+using namespace veins;
+using namespace omnetpp;
 
 class MDAttack {
 protected:
@@ -56,6 +60,10 @@ protected:
     unsigned long SybilPseudonyms[MAX_SYBIL_NUM];
     int SybilVehSeq = 0;
 
+    double saveHeading = 0;
+
+
+
     unsigned long targetNode = 0;
 
     double ConstPosX;
@@ -76,7 +84,7 @@ public:
 
     void init(attackTypes::Attacks myAttackType);
 
-    BasicSafetyMessage launchAttack(attackTypes::Attacks myAttackType);
+    BasicSafetyMessage launchAttack(attackTypes::Attacks myAttackType, LinkControl* LinkC);
 
     void setBeaconInterval(simtime_t* beaconInterval);
     void setCurHeading(Coord* curHeading);

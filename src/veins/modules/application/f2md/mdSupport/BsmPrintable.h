@@ -60,6 +60,10 @@ public:
             const std::string serial, const std::string outStr,
             const std::string curDate);
 
+    bool writeSelfStrToFileList(const std::string strFileCnst,
+            const std::string serial, const std::string outStr,
+            const std::string curDate);
+
     bool writeStrToFileList(const std::string strFileCnst,
             const std::string serial, const std::string version,
             const std::string outStr, const std::string curDate);

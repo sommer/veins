@@ -29,7 +29,7 @@ Define_Module(JosephVeinsApp);
 
 #define REPORT_VERSION reportTypes::EvidenceReport
 
-static bool MixLocalAttacks = false;
+static bool MixLocalAttacks = true;
 static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
@@ -74,9 +74,10 @@ static mdChecksVersionTypes::ChecksVersion checksVersionV2 =
         mdChecksVersionTypes::CatchChecks;
 
 static mdAppTypes::App appTypeV1 = mdAppTypes::ThresholdApp;
-static mdAppTypes::App appTypeV2 = mdAppTypes::ThresholdApp;
+static mdAppTypes::App appTypeV2 = mdAppTypes::BehavioralApp;
 
 static bool writeSelfMsg = false;
+static bool writeListSelfMsg = false;
 
 //writeBsms
 static bool writeBsmsV1 = false;
@@ -91,6 +92,8 @@ static bool writeListReportsV2 = false;
 
 static bool sendReportsV1 = false;
 static bool sendReportsV2 = false;
+static std::string maHostV1 = "localhost";
+static std::string maHostV2 = "localhost";
 static int maPortV1 = 9980;
 static int maPortV2 = 9981;
 
@@ -151,9 +154,9 @@ void JosephVeinsApp::initialize(int stage) {
         //pseudonym-------------------------------
 
         if (randomConf) {
-            double randConfPos = genLib.RandomDouble(0, confPos);
-            double randConfSpeed = genLib.RandomDouble(0, confSpd);
-            double randConfHeading = genLib.RandomDouble(0, confHea);
+            double randConfPos = genLib.RandomDouble(confPos/5, confPos);
+            double randConfSpeed = genLib.RandomDouble(confSpd/5, confSpd);
+            double randConfHeading = genLib.RandomDouble(confHea/5, confHea);
 
             curPositionConfidence = Coord(randConfPos, randConfPos, 0);
             curSpeedConfidence = Coord(randConfSpeed, randConfSpeed, 0);
@@ -350,6 +353,7 @@ mbTypes::Mbs JosephVeinsApp::induceMisbehavior(double localAttacker,
 
 void JosephVeinsApp::onBSM(BasicSafetyMessage* bsm) {
 
+
     unsigned long senderPseudonym = bsm->getSenderPseudonym();
 
     if (EnableV1) {
@@ -394,7 +398,7 @@ void JosephVeinsApp::onBSM(BasicSafetyMessage* bsm) {
 void JosephVeinsApp::treatAttackFlags() {
 
     if (myMdType == mbTypes::LocalAttacker) {
-        attackBsm = mdAttack.launchAttack(myAttackType);
+        attackBsm = mdAttack.launchAttack(myAttackType, &linkControl);
 
         if (mdAttack.getTargetNode() >= 0) {
             addTargetNode(mdAttack.getTargetNode());
@@ -828,12 +832,12 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
     //exit(0);
 
     if (!version.compare("V1")) {
-        HTTPRequest httpr = HTTPRequest(maPortV1, "localhost");
+        HTTPRequest httpr = HTTPRequest(maPortV1, maHostV1);
         std::string response = httpr.Request(reportStr);
     }
 
     if (!version.compare("V2")) {
-        HTTPRequest httpr = HTTPRequest(maPortV2, "localhost");
+        HTTPRequest httpr = HTTPRequest(maPortV2, maHostV2);
         std::string response = httpr.Request(reportStr);
     }
 
@@ -870,6 +874,15 @@ void JosephVeinsApp::writeSelfBsm(BasicSafetyMessage bsm) {
             bsmPrint.getSelfBsmPrintableJson(), curDate);
 }
 
+void JosephVeinsApp::writeSelfListBsm(BasicSafetyMessage bsm) {
+    BsmPrintable bsmPrint = BsmPrintable();
+    bsmPrint.setReceiverId(myId);
+    bsmPrint.setReceiverPseudo(myPseudonym);
+    bsmPrint.setBsm(bsm);
+    bsmPrint.writeSelfStrToFileList(savePath, serialNumber,
+            bsmPrint.getSelfBsmPrintableJson(), curDate);
+}
+
 void JosephVeinsApp::onWSM(BaseFrame1609_4* wsm) {
 //Your application has received a data message from another car or RSU
 //code for handling the message goes here, see TraciDemo11p.cc for examples
@@ -890,6 +903,9 @@ void JosephVeinsApp::handleSelfMsg(cMessage* msg) {
 
     if (writeSelfMsg) {
         writeSelfBsm(myBsm[0]);
+    }
+    if (writeListSelfMsg) {
+        writeSelfListBsm(myBsm[0]);
     }
 
 //this method is for self messages (mostly timers)

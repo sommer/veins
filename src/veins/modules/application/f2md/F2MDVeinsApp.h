@@ -54,6 +54,9 @@ using namespace veins;
 
 #include <veins/modules/application/f2md/mdSupport/HTTPRequest.h>
 
+
+#define mlHostV1 "localhost"
+#define mlHostV2 "localhost"
 #define mlPortV1 9997
 #define mlPortV2 9998
 
@@ -123,6 +126,7 @@ protected:
             BasicSafetyMessage *bsm);
 
     void writeSelfBsm(BasicSafetyMessage bsm);
+    void writeSelfListBsm(BasicSafetyMessage bsm);
 
     void treatAttackFlags();
     MDAttack mdAttack;
@@ -147,8 +151,8 @@ protected:
     ExperiApp ExperV1 = ExperiApp(1, 10.0, 10, 3);
     ExperiApp ExperV2 = ExperiApp(2, 10.0, 10, 3);
 
-    PyBridgeApp PybgV1 = PyBridgeApp(1, mlPortV1, "localhost");
-    PyBridgeApp PybgV2 = PyBridgeApp(2, mlPortV2, "localhost");
+    PyBridgeApp PybgV1 = PyBridgeApp(1, mlPortV1, mlHostV1);
+    PyBridgeApp PybgV2 = PyBridgeApp(2, mlPortV2, mlHostV2);
 
     double MAX_PLAUSIBLE_ACCEL = 0;
     double MAX_PLAUSIBLE_DECEL = 0;

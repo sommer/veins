@@ -24,8 +24,9 @@
 #define MAX_PLAUSIBLE_RANGE 420 // 417
 
 #define MAX_TIME_DELTA 1.1
-#define MAX_DELTA_INTER 1.0 //1.001
+#define MAX_DELTA_INTER 2.0 //1.001
 #define MAX_SA_RANGE 210 // 420/2
+#define MAX_SA_TIME 2.1 // 2.1
 
 #define MIN_MAX_SPEED 40 // 40
 #define MIN_MAX_ACCEL 3 // 3
@@ -67,11 +68,11 @@
 #define StaleMessages_Buffer 9 //less than 20
 #define DosMultipleFreq 4 // times faster
 #define DosMultipleFreqSybil 1 // times faster
-#define SybilVehNumber 9 // max 10
+#define SybilVehNumber 19 // max 10
 #define SelfSybil true // default true
-#define SybilDistanceX 5 // 5 meters
-#define SybilDistanceY 2 // 2 meters
-#define MAX_SYBIL_NUM 10
+#define SybilDistanceX 3 // 5 meters
+#define SybilDistanceY 1 // 2 meters
+#define MAX_SYBIL_NUM 20
 //Attacks Parameters
 
 //pseudonym Parameters

@@ -19,7 +19,7 @@ PyBridgeApp::PyBridgeApp(int version,int port, std::string host):
                 MDApplication(version)  {
     this->port = port;
     this->host = host;
-    httpr = HTTPRequest(port, "localhost");
+    httpr = HTTPRequest(port, host);
     bsmPrint = BsmPrintable();
 }
 

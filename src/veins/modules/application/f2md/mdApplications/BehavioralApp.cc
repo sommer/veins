@@ -207,8 +207,11 @@ bool BehavioralApp::CheckNodeForReport(unsigned long myPseudonym,
         augFactor = 1;
         double expAdd = 10 * (1 - minFactor);
         double expV = expAdd / 1.1 - 6;
-        TMOadd = (exp(expV) + 0.5) * augFactor;
-
+        if(minFactor<=0){
+            TMOadd = (exp(expV) + 0.5)* augFactor;
+        }else{
+            TMOadd = (exp(expV) + 0.5);
+        }
 
 //        for (double var = 1; var >= 0; var = var - 0.1) {
 //            double expAdd = 10 * (1 - var);
@@ -233,7 +236,6 @@ bool BehavioralApp::CheckNodeForReport(unsigned long myPseudonym,
 
         TimeOut[indexTMO] = TimeOut[indexTMO] + TMOadd;
         UpdatedTMO[TimeOutNum] = simTime().dbl();
-        //std::cout<<version<<"=>"<<10*(Threshold - minFactor)<<":"<< TimeOut[indexTMO]<<"\n";
     }
 
     if (indexTMO >= 0) {

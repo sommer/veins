@@ -211,6 +211,7 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
         bsm->setSenderWidth(myWidth);
         bsm->setSenderLength(myLength);
 
+        bsm->setSenderRealId(myId);
         addMyBsm(*bsm);
         // Genuine
 
@@ -258,10 +259,11 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
                 bsm->setSenderAttackType(attackTypes::Genuine);
             }
         }
-        bsm->setSenderRealId(myId);
+
         bsm->setPsid(-1);
         bsm->setChannelNumber(static_cast<int>(Channel::cch));
         bsm->addBitLength(beaconLengthBits);
+
         wsm->setUserPriority(beaconUserPriority);
     } else if (DemoServiceAdvertisment* wsa =
             dynamic_cast<DemoServiceAdvertisment*>(wsm)) {
@@ -341,7 +343,9 @@ void BaseWaveApplLayer::handleSelfMsg(cMessage* msg) {
     case SEND_BEACON_EVT: {
         BasicSafetyMessage* bsm = new BasicSafetyMessage();
         populateWSM(bsm);
-        sendDown(bsm);
+        if(bsm->getSenderPseudonym()!= 1){
+            sendDown(bsm);
+        }
         scheduleAt(simTime() + beaconInterval, sendBeaconEvt);
         break;
     }

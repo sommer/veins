@@ -106,7 +106,7 @@ void MDAttack::setPcPolicy(PCPolicy* pcPolicy) {
     this->pcPolicy = pcPolicy;
 }
 
-BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
+BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, LinkControl* LinkC) {
 
     targetNode = 0;
     BasicSafetyMessage attackBsm = BasicSafetyMessage();
@@ -118,7 +118,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
             attackBsm.setSenderPseudonym(*myPseudonym);
         } else {
             if (*myBsmNum > 0) {
-                attackBsm = myBsm[0];
+                attackBsm = myBsm[*myBsmNum-1];
                 attackBsm.setSenderPseudonym(*myPseudonym);
             } else {
                 attackBsm.setSenderPseudonym(0);
@@ -444,8 +444,11 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
                 saveAttackBsm = attackBsm;
                 targetNode = attackBsm.getSenderPseudonym();
 
-                double sybDistXrand = genLib.RandomDouble(-0.5, 0.5);
-                double sybDistYrand = genLib.RandomDouble(-0.5, 0.5);
+                SquareX = (SybilVehSeq+1) / 2;
+                SquareY = (SybilVehSeq+1) % 2;
+
+                double sybDistXrand = genLib.RandomDouble(-(SybilDistanceX/10.0), (SybilDistanceX/10.0));
+                double sybDistYrand = genLib.RandomDouble(-(SybilDistanceY/10.0), (SybilDistanceY/10.0));
 
                 double XOffset = -SquareX
                         * (attackBsm.getSenderLength() + SybilDistanceX)
@@ -471,15 +474,31 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
                 double relativeX = DOffset * cos(newAngle * PI / 180);
                 double relativeY = DOffset * sin(newAngle * PI / 180);
 
-                attackBsm.setSenderPos(
-                        Coord(attackBsm.getSenderPos().x + relativeX,
-                                attackBsm.getSenderPos().y + relativeY,
-                                attackBsm.getSenderPos().z));
+                double stearingAngle = std::fmod((saveHeading - curHeadingAngle), 360);
+                if (stearingAngle > 180){
+                    stearingAngle = 360 - stearingAngle;
+                }
+                if(stearingAngle> 5){
+                    attackBsm.setSenderPseudonym(1);
+                }
+
+                saveHeading = curHeadingAngle;
+
+                Coord newSenderPos = Coord(attackBsm.getSenderPos().x + relativeX,
+                        attackBsm.getSenderPos().y + relativeY,
+                        attackBsm.getSenderPos().z);
+
+                double mapdistance = LinkC->calculateDistance(newSenderPos, 50, 50);
+                if(mapdistance>MAX_DISTANCE_FROM_ROUTE){
+                    attackBsm.setSenderPseudonym(1);
+                }
+
+                attackBsm.setSenderPos(newSenderPos);
             }
         } else {
 
-            double sybDistXrand = genLib.RandomDouble(-0.5, +0.5);
-            double sybDistYrand = genLib.RandomDouble(-0.5, +0.5);
+            double sybDistXrand = genLib.RandomDouble(-(SybilDistanceX/10.0), (SybilDistanceX/10.0));
+            double sybDistYrand = genLib.RandomDouble(-(SybilDistanceY/10.0), (SybilDistanceY/10.0));
 
             double XOffset = -SquareX * (*myLength + SybilDistanceX)
                     + sybDistXrand;
@@ -504,9 +523,10 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
 
             attackBsm = myBsm[0];
 
-            attackBsm.setSenderPos(
-                    Coord((*curPosition).x + relativeX,
-                            (*curPosition).y + relativeY, (*curPosition).z));
+            Coord newSenderPos = Coord((*curPosition).x + relativeX,
+                    (*curPosition).y + relativeY, (*curPosition).z);
+
+            attackBsm.setSenderPos(newSenderPos);
             attackBsm.setSenderPosConfidence(*curPositionConfidence);
 
             attackBsm.setSenderSpeed(*curSpeed);
@@ -517,9 +537,29 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType) {
 
             attackBsm.setSenderWidth(*myWidth);
             attackBsm.setSenderLength(*myLength);
+
+            double stearingAngle = std::fmod((saveHeading - curHeadingAngle), 360);
+            if (stearingAngle > 180){
+                stearingAngle = 360 - stearingAngle;
+            }
+            if(stearingAngle> 5 && SybilVehSeq>0){
+                attackBsm.setSenderPseudonym(1);
+            }
+            saveHeading = curHeadingAngle;
+
+             double mapdistance = LinkC->calculateDistance(newSenderPos, 50, 50);
+             if(mapdistance>MAX_DISTANCE_FROM_ROUTE){
+                 attackBsm.setSenderPseudonym(1);
+             }
+//             std::cout<<"SybilVehSeq:"<<SybilVehSeq<<"\n";
+//             std::cout<<"SquareX:"<<SquareX<<"\n";
+//             std::cout<<"SquareY:"<<SquareY<<"\n";
+//             std::cout<<"XOffset:"<<XOffset<<"\n";
+//             std::cout<<"YOffset:"<<YOffset<<"\n";
+
         }
 
-        if(attackBsm.getSenderPseudonym()!=0){
+        if(attackBsm.getSenderPseudonym()>1){
             if (SybilVehSeq > 0) {
                 attackBsm.setSenderPseudonym(SybilPseudonyms[SybilVehSeq - 1]);
             } else {

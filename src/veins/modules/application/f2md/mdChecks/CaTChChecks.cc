@@ -650,6 +650,12 @@ BsmCheck CaTChChecks::CheckBSM(BasicSafetyMessage * bsm,
                         mdmLib.calculateDeltaTime(bsm,
                                 senderNode->getLatestBSMAddr())));
 
+    if(mdmLib.calculateDeltaTime(bsm,senderNode->getLatestBSMAddr())> MAX_SA_TIME){
+        bsmCheck.setSuddenAppearence(
+                SuddenAppearenceCheck(&senderPos, &senderPosConfidence,
+                        &myPosition, &myPositionConfidence));
+    }
+
     } else {
         bsmCheck.setSuddenAppearence(
                 SuddenAppearenceCheck(&senderPos, &senderPosConfidence,
@@ -685,6 +691,12 @@ void CaTChChecks::PrintBsmCheck(unsigned long senderPseudonym,
     if (bsmCheck.getPositionSpeedConsistancy() < 0.5) {
         std::cout << "^^^^^^^^^^^V2 " << "MGTSV FAILED => "
                 << bsmCheck.getPositionSpeedConsistancy() << " A:"
+                << myPseudonym << " B:" << senderPseudonym << '\n';
+    }
+
+    if (bsmCheck.getPositionSpeedMaxConsistancy() < 0.5) {
+        std::cout << "^^^^^^^^^^^V2 " << "MGTSVM FAILED => "
+                << bsmCheck.getPositionSpeedMaxConsistancy() << " A:"
                 << myPseudonym << " B:" << senderPseudonym << '\n';
     }
 

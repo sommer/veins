@@ -401,6 +401,11 @@ BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
                                 senderNode->getLatestBSMAddr()),
                         mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed())));
 
+        if(mdmLib.calculateDeltaTime(bsm,senderNode->getLatestBSMAddr()) > MAX_SA_TIME){
+            bsmCheck.setSuddenAppearence(
+                    SuddenAppearenceCheck(&senderPos, &myPosition));
+        }
+
     } else {
         bsmCheck.setSuddenAppearence(
                 SuddenAppearenceCheck(&senderPos, &myPosition));
@@ -437,7 +442,12 @@ void LegacyChecks::PrintBsmCheck(unsigned long senderPseudonym,
         std::cout << "^^^^^^^^^^^V1 " << "MGTSV FAILED => "
                 << bsmCheck.getPositionSpeedConsistancy() << " A:"
                 << myPseudonym << " B:" << senderPseudonym << '\n';
+    }
 
+    if (bsmCheck.getPositionSpeedMaxConsistancy() < 0.5) {
+        std::cout << "^^^^^^^^^^^V1 " << "MGTSVM FAILED => "
+                << bsmCheck.getPositionSpeedMaxConsistancy() << " A:"
+                << myPseudonym << " B:" << senderPseudonym << '\n';
     }
 
     if (bsmCheck.getSpeedPlausibility() < 0.5) {
