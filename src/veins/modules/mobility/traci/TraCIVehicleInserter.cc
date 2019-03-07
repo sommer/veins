@@ -107,7 +107,7 @@ void TraCIVehicleInserter::receiveSignal(cComponent* source, simsignal_t signalI
             if (vehicleTypeIds.size() == 0) {
                 std::list<std::string> vehTypes = manager->getCommandInterface()->getVehicleTypeIds();
                 for (std::list<std::string>::const_iterator i = vehTypes.begin(); i != vehTypes.end(); ++i) {
-                    if (i->compare("DEFAULT_VEHTYPE") != 0 && i->compare("DEFAULT_PEDTYPE") != 0) {
+                    if (i->substr(0, 8).compare("DEFAULT_") != 0) {
                         EV_DEBUG << *i << std::endl;
                         vehicleTypeIds.push_back(*i);
                     }
