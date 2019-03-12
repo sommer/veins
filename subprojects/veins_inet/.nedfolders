@@ -1,2 +1,3 @@
-src/veins_inet
 examples/veins_inet
+examples/veins_inet_pedestrians
+src/veins_inet
