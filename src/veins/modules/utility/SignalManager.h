@@ -23,63 +23,22 @@
 
 #include <functional>
 #include <memory>
-#include <typeinfo>
-
-#include "veins/modules/utility/CallableInfo.h"
 
 namespace veins {
 
-namespace SignalCallbackManagement {
-
-// Generic case: error
-template <typename Payload, typename Callback>
-void invokeCallback(Callback callback, cComponent* source, simsignal_t signalID, Payload p, cObject* details)
-{
-    std::string msg = std::string("Invalid signal subscription for callback with payload type: ") + typeid(Payload).name();
-    throw cRuntimeError(msg.c_str());
-}
-
-// Specific cases (payload matches callback) -> actually invoke callback
-
-// No arguments at all
 template <typename Payload>
-void invokeCallback(std::function<void(void)> callback, cComponent* source, simsignal_t signalID, Payload p, cObject* details)
-{
-    callback();
-}
+struct VEINS_API SignalPayload {
+    cComponent* source;
+    simsignal_t signalID;
+    Payload p;
+    cObject* details;
+};
 
-// Only payload
 template <typename Payload>
-void invokeCallback(std::function<void(Payload p)> callback, cComponent* source, simsignal_t signalID, Payload p, cObject* details)
-{
-    callback(p);
-}
-
-// source and payload
-template <typename Payload>
-void invokeCallback(std::function<void(cComponent*, Payload p)> callback, cComponent* source, simsignal_t signalID, Payload p, cObject* details)
-{
-    callback(source, p);
-}
-
-// source, signalID and payload
-template <typename Payload>
-void invokeCallback(std::function<void(cComponent*, simsignal_t, Payload p)> callback, cComponent* source, simsignal_t signalID, Payload p, cObject* details)
-{
-    callback(source, signalID, p);
-}
-
-// full information (source, signalId, payload and details)
-template <typename Payload>
-void invokeCallback(std::function<void(cComponent*, simsignal_t, Payload p, cObject*)> callback, cComponent* source, simsignal_t signalID, Payload p, cObject* details)
-{
-    callback(source, signalID, p, details);
-}
-
-template <typename Payload, typename Callback>
-class VEINS_API CallbackListener : public cListener {
+class VEINS_API SignalCallbackListener: public cListener {
 public:
-    CallbackListener(Callback callback, cModule* receptor, simsignal_t signal)
+    using Callback = std::function<void(SignalPayload<Payload>)>;
+    SignalCallbackListener(Callback callback, cModule* receptor, simsignal_t signal)
         : callback(callback)
         , receptor(receptor)
         , signal(signal)
@@ -87,101 +46,61 @@ public:
         receptor->subscribe(signal, this);
     }
 
-    ~CallbackListener()
+    ~SignalCallbackListener()
     {
         receptor->unsubscribe(signal, this);
     }
 
-    void receiveSignal(cComponent* source, simsignal_t signalID, bool b, cObject* details) override
+    void receiveSignal(cComponent* source, simsignal_t signalID, Payload p, cObject* details) override
     {
-        invokeCallback<bool>(callback, source, signalID, b, details);
+        ASSERT(signalID == signal);
+        callback({source, signalID, p, details});
     }
-
-    void receiveSignal(cComponent* source, simsignal_t signalID, long l, cObject* details) override
-    {
-        invokeCallback<long>(callback, source, signalID, l, details);
-    }
-
-    void receiveSignal(cComponent* source, simsignal_t signalID, unsigned long l, cObject* details) override
-    {
-        invokeCallback<unsigned long>(callback, source, signalID, l, details);
-    }
-
-    void receiveSignal(cComponent* source, simsignal_t signalID, double d, cObject* details) override
-    {
-        invokeCallback<double>(callback, source, signalID, d, details);
-    }
-
-    void receiveSignal(cComponent* source, simsignal_t signalID, const SimTime& t, cObject* details) override
-    {
-        invokeCallback<const SimTime&>(callback, source, signalID, t, details);
-    }
-
-    void receiveSignal(cComponent* source, simsignal_t signalID, const char* c, cObject* details) override
-    {
-        invokeCallback<const char*>(callback, source, signalID, c, details);
-    }
-
-    void receiveSignal(cComponent* source, simsignal_t signalID, cObject* c, cObject* details) override
-    {
-        invokeCallback<cObject*>(callback, source, signalID, c, details);
-    }
-
 private:
     const Callback callback;
     cModule* const receptor;
     const simsignal_t signal;
 };
 
-} // namespace SignalCallbackManagement
-
-class SignalManager;
-
-/*
- * Handle for a callback subscribed to a signal.
- */
-class VEINS_API SignalCallback {
-protected:
-    friend class SignalManager;
-    template <typename Payload, typename Func>
-    static SignalCallback make(cModule* receptor, simsignal_t signal, const Func callback)
-    {
-        // Note: we have to covert to the target function layout here to allow passing lambdas as callback
-        // (lambdas can only be *converted* to functions, but template deduction needs exactly matching types).
-        using CallbackType = typename CallableInfo::type<Func>::function_equivalent;
-        using CallbackListener = SignalCallbackManagement::CallbackListener<Payload, CallbackType>;
-
-        const CallbackType converted = callback;
-        return SignalCallback(make_unique<CallbackListener>(converted, receptor, signal));
-    }
-
-private:
-    SignalCallback(std::unique_ptr<cIListener> listener)
-        : listener(std::move(listener))
-    {
-    }
-    std::unique_ptr<cIListener> listener;
-};
-
-/*
- * Semantic encapsulation for OMNeT++ simulation signals usinng callbacks.
- *
- * TODO: Extend documentation.
- */
 class VEINS_API SignalManager {
 public:
-    /*
-     * Create a subscription to signal that triggers callback.
-     */
-    template <typename Payload, typename Func>
-    void subscribeCallback(cModule* receptor, omnetpp::simsignal_t signal, const Func callback)
+    void subscribeCallback(cModule* receptor, simsignal_t signal, const std::function<void(SignalPayload<bool>)> callback)
     {
-        auto signalCallback = SignalCallback::make<Payload, Func>(receptor, signal, callback);
-        storedCallbacks.push_back(std::move(signalCallback));
+        auto callbackListener = make_unique<SignalCallbackListener<bool>>(callback, receptor, signal);
+        callbacks.emplace_back(std::move(callbackListener));
     }
-
+    void subscribeCallback(cModule* receptor, simsignal_t signal, const std::function<void(SignalPayload<long>)> callback)
+    {
+        auto callbackListener = make_unique<SignalCallbackListener<long>>(callback, receptor, signal);
+        callbacks.emplace_back(std::move(callbackListener));
+    }
+    void subscribeCallback(cModule* receptor, simsignal_t signal, const std::function<void(SignalPayload<unsigned long>)> callback)
+    {
+        auto callbackListener = make_unique<SignalCallbackListener<unsigned long>>(callback, receptor, signal);
+        callbacks.emplace_back(std::move(callbackListener));
+    }
+    void subscribeCallback(cModule* receptor, simsignal_t signal, const std::function<void(SignalPayload<double>)> callback)
+    {
+        auto callbackListener = make_unique<SignalCallbackListener<double>>(callback, receptor, signal);
+        callbacks.emplace_back(std::move(callbackListener));
+    }
+    void subscribeCallback(cModule* receptor, simsignal_t signal, const std::function<void(SignalPayload<const SimTime&>)> callback)
+    {
+        auto callbackListener = make_unique<SignalCallbackListener<const SimTime&>>(callback, receptor, signal);
+        callbacks.emplace_back(std::move(callbackListener));
+    }
+    void subscribeCallback(cModule* receptor, simsignal_t signal, const std::function<void(SignalPayload<const char*>)> callback)
+    {
+        auto callbackListener = make_unique<SignalCallbackListener<const char*>>(callback, receptor, signal);
+        callbacks.emplace_back(std::move(callbackListener));
+    }
+    void subscribeCallback(cModule* receptor, simsignal_t signal, const std::function<void(SignalPayload<cObject*>)> callback)
+    {
+        auto callbackListener = make_unique<SignalCallbackListener<cObject*>>(callback, receptor, signal);
+        callbacks.emplace_back(std::move(callbackListener));
+    }
 private:
-    std::vector<SignalCallback> storedCallbacks;
+    std::vector<std::unique_ptr<cListener>> callbacks;
 };
 
 } // namespace veins
