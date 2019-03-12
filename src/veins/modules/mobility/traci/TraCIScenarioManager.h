@@ -39,6 +39,10 @@
 #include "veins/modules/mobility/traci/TraCICoord.h"
 #include "veins/modules/mobility/traci/VehicleSignal.h"
 #include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
+#include "veins/modules/mobility/traci/subscriptionManagement/TraCIPerson.h"
+#include "veins/modules/mobility/traci/subscriptionManagement/TraCISubscriptionManager.h"
+#include "veins/modules/mobility/traci/subscriptionManagement/TraCITrafficLight.h"
+#include "veins/modules/mobility/traci/subscriptionManagement/TraCIVehicle.h"
 
 namespace veins {
 
@@ -90,11 +94,6 @@ public:
         return commandIfc.get();
     }
 
-    TraCIConnection* getConnection() const
-    {
-        return connection.get();
-    }
-
     bool getAutoShutdownTriggered()
     {
         return autoShutdownTriggered;
@@ -105,18 +104,7 @@ public:
         return hosts;
     }
 
-    /**
-     * Predicate indicating a successful connection to the TraCI server.
-     *
-     * @note Once the connection has been established, this will return true even when the connection has been torn down again.
-     */
-    bool isUsable() const
-    {
-        return traciInitialized;
-    }
-
 protected:
-    bool traciInitialized = false; /**< Flag indicating whether the init_traci routine has been run. Note that it will change to false again once set, even during shutdown. */
     simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
     simtime_t firstStepAt; /**< when to start synchronizing with the TraCI server (-1: immediately after connecting) */
     simtime_t updateInterval; /**< time interval of hosts' position updates */
@@ -140,17 +128,13 @@ protected:
     double areaSum;
 
     AnnotationManager* annotations;
-    std::unique_ptr<TraCIConnection> connection;
-    std::unique_ptr<TraCICommandInterface> commandIfc;
+    std::shared_ptr<TraCIConnection> connection;
+    std::shared_ptr<TraCICommandInterface> commandIfc;
 
     size_t nextNodeVectorIndex; /**< next OMNeT++ module vector index to use */
     std::map<std::string, cModule*> hosts; /**< vector of all hosts managed by us */
     std::set<std::string> unEquippedHosts;
-    std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
     std::map<std::string, cModule*> trafficLights; /**< vector of all traffic lights managed by us */
-    uint32_t activeVehicleCount; /**< number of vehicles, be it parking or driving **/
-    uint32_t parkingVehicleCount; /**< number of parking vehicles, derived from parking start/end events */
-    uint32_t drivingVehicleCount; /**< number of driving, as reported by sumo */
     bool autoShutdownTriggered;
     cMessage* connectAndStartTrigger; /**< self-message scheduled for when to connect to TraCI server and start running */
     cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
@@ -158,6 +142,11 @@ protected:
     BaseWorldUtility* world;
     std::map<const TraCIMobility*, const VehicleObstacle*> vehicleObstacles;
     VehicleObstacleControl* vehicleObstacleControl;
+
+    /**
+     * Stores the subscription manager handling everything related to subscriptions.
+     */
+    TraCISubscriptionManagement::TraCISubscriptionManager subscriptionManager;
 
     void executeOneTimestep(); /**< read and execute all commands for the next timestep */
 
@@ -171,15 +160,6 @@ protected:
 
     bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
 
-    void subscribeToVehicleVariables(std::string vehicleId);
-    void unsubscribeFromVehicleVariables(std::string vehicleId);
-    void processSimSubscription(std::string objectId, TraCIBuffer& buf);
-    void processVehicleSubscription(std::string objectId, TraCIBuffer& buf);
-    void processSubcriptionResult(TraCIBuffer& buf);
-
-    void subscribeToTrafficLightVariables(std::string tlId);
-    void unsubscribeFromTrafficLightVariables(std::string tlId);
-    void processTrafficLightSubscription(std::string objectId, TraCIBuffer& buf);
     /**
      * parses the vector of module types in ini file
      *
@@ -191,6 +171,35 @@ protected:
      * transforms a list of mappings of an omnetpp.ini parameter in a list
      */
     TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
+
+    /**
+     * Helper method that takes a list of updated vehicles and updates/adds
+     * modules according to the vehicle data.
+     *
+     * @param updatedVehicles the list of vehicles.
+     */
+    void processUpdatedVehicles(std::list<TraCISubscriptionManagement::TraCIVehicle>& updatedVehicles);
+
+    /**
+     * Helper method that takes a list of updated person and updates/adds
+     * modules according to the person data.
+     *
+     * @param updatedPersons the list of persons.
+     */
+    void processUpdatedPersons(std::list<TraCISubscriptionManagement::TraCIPerson>& updatedPersons);
+
+    /**
+     * Helper method that takes a list of updated traffic lights and updates
+     * the state of the traffic light modules.
+     */
+    void processUpdatedTrafficLights(std::list<TraCISubscriptionManagement::TraCITrafficLight>& updatedTrafficLights);
+
+    /**
+     * Helper method that takes the response buffer of a simstep command and
+     * calls the subscription manager and updates modules according to results.
+     */
+    void processSubscriptions(TraCIBuffer& buffer);
+
 };
 
 class VEINS_API TraCIScenarioManagerAccess {
@@ -201,4 +210,4 @@ public:
     };
 };
 
-} // namespace veins
+} // namespace Veins
