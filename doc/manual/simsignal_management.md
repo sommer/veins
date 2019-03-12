@@ -63,14 +63,14 @@ With the [SignalManager], all signal handling can be encapsulated and configurat
 // module reacting to signals using the SignalManager
 class WithSignalManager: public cModule {
 protected:
-    veins::SignalManager signalManager(this);
+    veins::SignalManager signalManager;
     void initialize() override {
-        // reaction to the signal (note how unused parameters are omitted from the lambda function signature).
-        auto nameSignalCallback = [this](cComponent *source, const char* c) {
-            std::cerr << "Module " << source->getFullName() << " received message with content " << c << std::endl;
+        // reaction to the signal
+        auto nameSignalCallback = [this](veins::SignalPayload<const char*> payload) {
+            std::cerr << "Module " << payload.source->getFullName() << " received message with content " << payload.p << std::endl;
         };
-        auto counterSignalCallback = [this](cComponent* source, simsignal_t signalID, long l) {
-            std::cerr << "Module " << source->getFullName() << " received message nr " << l << " via signal " << signalID << std::endl;
+        auto counterSignalCallback = [this](veins::SignalPayload<long> payload) {
+            std::cerr << "Module " << payload.source->getFullName() << " received message nr " << payload.p << " via signal " << payload.signalID << std::endl;
         };
         // register callbacks with the signal manager, which takes care to perform the actual subscription
         signalManager.subscribeCallback(getSystemModule(), SignalEmitter::nameSignal, nameSignalCallback);
@@ -79,39 +79,36 @@ protected:
 };
 ```
 
-## SignalCallback
-Alternatively, we could omit the manager part and make create individual [SignalCallback] objects for each registered callback:
+## SignalCallbackListener
+Alternatively, we could omit the manager part and make create individual [SignalCallbackListener] objects for each registered callback:
 ```{.cpp}
 // module reacting to signals using the SignalCallback instances
 class WithSignalCallbacks: public cModule {
 protected:
-    veins::SignalCallback counterCallback;
-    veins::SignalCallback nameCallback;
+    veins::SignalCallbackListener counterCallback;
+    veins::SignalCallbackListener nameCallback;
     void initialize() override {
-        // reaction to the signal (note how unused parameters are omitted from the lambda function signature).
-        auto nameSignalCallback = [this](cComponent *source, const char* c) {
-            std::cerr << "Module " << source->getFullName() << " received message with content " << c << std::endl;
+        // reaction to the signal
+        auto nameSignalCallback = [this](veins::SignalPayload<const char*> payload) {
+            std::cerr << "Module " << payload.source->getFullName() << " received message with content " << payload.p << std::endl;
         };
-        auto counterSignalCallback = [this](cComponent* source, simsignal_t signalID, long l) {
-            std::cerr << "Module " << source->getFullName() << " received message nr " << l << " via signal " << signalID << std::endl;
+        auto counterSignalCallback = [this](veins::SignalPayload<long> payload) {
+            std::cerr << "Module " << payload.source->getFullName() << " received message nr " << payload.p << " via signal " << payload.signalID << std::endl;
         };
         // register callback objects, which takes care to perform the actual subscription
-        counterCallback = veins::SignalCallback::make(getSystemModule(), SignalEmitter::counterSignal, counterSignalCallback);
-        nameCallback = veins::SignalCallback::make(getSystemModule(), SignalEmitter::nameSignal, nameCallback);
+        counterCallback = veins::SignalCallbackListener(getSystemModule(), SignalEmitter::counterSignal, counterSignalCallback);
+        nameCallback = veins::SignalCallbackListener(getSystemModule(), SignalEmitter::nameSignal, nameCallback);
     }
 };
 ```
 
-This allows a closer control over the lifetime of each individual [SignalCallback] instance.
+This allows a closer control over the lifetime of each individual [SignalCallbackListener] instance.
 
 ## Common Features
 
-With both [SignalManager] and [SignalCallback], there is no need to implement the cIListener yourself.
+With both [SignalManager] and [SignalCallbackListener], there is no need to implement the cIListener yourself.
 The lifetime is managed automatically and the Code is more self-explanatory and kept in one place.
 In addtion to Lambdas, other forms of callbacks can be used, too, such as free functions and functors.
 
-As shown in the examples, the callbacks can also implement just a subset of the cIListener::receiveSignal signature.
-Valid subsets can be seen by checking the implemented overloads of the @ref veins::SignalCallbackManagement::invokeCallback template.
-
 [SignalManager]: @ref veins::SignalManager
-[SignalCallback]: @ref veins::SignalCallback
+[SignalCallbackListener]: @ref veins::SignalCallbackListener
