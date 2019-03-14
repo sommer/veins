@@ -24,18 +24,18 @@ void MDAttack::init(attackTypes::Attacks myAttackType) {
     ConstPosX = genLib.RandomDouble(0, RandomPosX);
     ConstPosY = genLib.RandomDouble(0, RandomPosY);
 
-    ConstPosOffsetX = genLib.RandomDouble(RandomPosOffsetX / 5,
-            RandomPosOffsetX);
-    ConstPosOffsetY = genLib.RandomDouble(RandomPosOffsetY / 5,
-            RandomPosOffsetY);
+    ConstPosOffsetX = genLib.RandomDouble(0.8*RandomPosOffsetX,
+            1.2*RandomPosOffsetX);
+    ConstPosOffsetY = genLib.RandomDouble(0.8*RandomPosOffsetY,
+            1.2*RandomPosOffsetY);
 
     ConstSpeedX = genLib.RandomDouble(0, RandomSpeedX);
     ConstSpeedY = genLib.RandomDouble(0, RandomSpeedY);
 
-    ConstSpeedOffsetX = genLib.RandomDouble(RandomSpeedOffsetX / 5,
-            RandomSpeedOffsetX);
-    ConstSpeedOffsetY = genLib.RandomDouble(RandomSpeedOffsetY / 5,
-            RandomSpeedOffsetY);
+    ConstSpeedOffsetX = genLib.RandomDouble(0.8*RandomSpeedOffsetX,
+           1.2* RandomSpeedOffsetX);
+    ConstSpeedOffsetY = genLib.RandomDouble(0.8*RandomSpeedOffsetY,
+            1.2* RandomSpeedOffsetY);
 
     if (myAttackType == attackTypes::GridSybil) {
         for (int var = 0; var < SybilVehNumber; ++var) {
@@ -280,8 +280,8 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
         double signX = genLib.RandomInt(0, 1);
         double signY = genLib.RandomInt(0, 1);
 
-        double sx = genLib.RandomDouble(RandomSpeedOffsetX/5, RandomSpeedOffsetX);
-        double sy = genLib.RandomDouble(RandomSpeedOffsetX/5, RandomSpeedOffsetX);
+        double sx = genLib.RandomDouble(0.8*RandomSpeedOffsetX, 1.2*RandomSpeedOffsetX);
+        double sy = genLib.RandomDouble(0.8*RandomSpeedOffsetX, 1.2*RandomSpeedOffsetX);
 
         sx = sx - 2 * signX * sx;
         sy = sy - 2 * signY * sy;

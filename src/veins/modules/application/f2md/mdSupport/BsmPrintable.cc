@@ -239,7 +239,6 @@ bool BsmPrintable::writeSelfStrToFileList(const std::string strFileCnst,
         checkFile << outStr << "\n";
         checkFile << "\n";
         checkFile << "]";
-
     }else{
         std::ofstream outFile;
         outFile.open(strFile);
@@ -324,7 +323,7 @@ bool BsmPrintable::writeStrToFileList(const std::string strFileCnst,
         mkdir(upperDirNameConst, 0777);
     }
 
-    std::string dirnameStr = strFileCnst + serial + "/MDBsms_"+version+"_"+ curDate;
+    std::string dirnameStr = strFileCnst + serial + "/MDBsmsList_"+version+"_"+ curDate;
     const char* dirnameConst = dirnameStr.c_str();
 
     struct stat info2;

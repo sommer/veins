@@ -51,7 +51,6 @@ public:
     double calculateCircleSegment(double radius, double intDistance);
     double calculateCircleCircleIntersection(double r1, double r2, double d);
     double SegmentSegmentFactor(double d, double r1, double r2, double range);
-
     double CircleSegmentFactor(double d, double r1, double r2, double range);
     double CircleCircleFactor(double d, double r1, double r2, double range);
     double OneSidedCircleSegmentFactor(double d, double r1, double r2,

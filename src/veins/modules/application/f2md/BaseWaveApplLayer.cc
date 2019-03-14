@@ -184,6 +184,7 @@ void BaseWaveApplLayer::addMyBsm(BasicSafetyMessage bsm) {
     myBsm[0] = bsm;
 }
 
+
 void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
         LAddress::L2Type rcvId, int serial) {
     wsm->setRecipientAddress(rcvId);
@@ -308,7 +309,7 @@ void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
             this->mobility->getSpeed() * mobility->getCurrentDirection().y);
 
     curPosition = relativeOffset.OffsetPosition(
-            mobility->getPositionAt(simTime()));
+            this->mobility->getPositionAt(simTime()));
     curSpeed = relativeOffset.OffsetSpeed(speedlocal);
     curHeading = relativeOffset.OffsetHeading(mobility->getCurrentDirection());
 

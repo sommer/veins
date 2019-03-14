@@ -119,6 +119,7 @@ double LegacyChecks::PositionSpeedMaxConsistancyCheck(Coord *curPosition,
     }
 }
 
+
 double LegacyChecks::PositionSpeedConsistancyCheck(Coord *curPosition,
         Coord * oldPosition, double curSpeed, double oldspeed, double time) {
     if (time < MAX_TIME_DELTA) {
@@ -132,7 +133,7 @@ double LegacyChecks::PositionSpeedConsistancyCheck(Coord *curPosition,
 
 
         double addon_mgt_range = MAX_MGT_RNG_DOWN + 0.3571 * curminspeed
-                - 0.01694 * curminspeed;
+                - 0.01694 * curminspeed*curminspeed;
         if (addon_mgt_range < 0) {
             addon_mgt_range = 0;
         }
@@ -371,24 +372,6 @@ BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
                                 senderNode->getLatestBSMAddr()->getSenderSpeed()),
                         mdmLib.calculateDeltaTime(bsm,
                                 senderNode->getLatestBSMAddr())));
-
-        bsmCheck.setPositionSpeedConsistancy(
-                PositionSpeedConsistancyCheck(&senderPos,
-                        &senderNode->getLatestBSMAddr()->getSenderPos(),
-                        mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
-                        mdmLib.calculateSpeedPtr(
-                                &senderNode->getLatestBSMAddr()->getSenderSpeed()),
-                        mdmLib.calculateDeltaTime(bsm,
-                                senderNode->getLatestBSMAddr())));
-        bsmCheck.setPositionSpeedMaxConsistancy(
-                PositionSpeedMaxConsistancyCheck(&senderPos,
-                        &senderNode->getLatestBSMAddr()->getSenderPos(),
-                        mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
-                        mdmLib.calculateSpeedPtr(
-                                &senderNode->getLatestBSMAddr()->getSenderSpeed()),
-                        mdmLib.calculateDeltaTime(bsm,
-                                senderNode->getLatestBSMAddr())));
-
         bsmCheck.setBeaconFrequency(
                 BeaconFrequencyCheck(bsm->getArrivalTime().dbl(),
                         senderNode->getLatestBSMAddr()->getArrivalTime().dbl()));
@@ -400,6 +383,25 @@ BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
                         mdmLib.calculateDeltaTime(bsm,
                                 senderNode->getLatestBSMAddr()),
                         mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed())));
+
+        bsmCheck.setPositionSpeedConsistancy(
+                PositionSpeedConsistancyCheck(&senderPos,
+                        &senderNode->getLatestBSMAddr()->getSenderPos(),
+                        mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
+                        mdmLib.calculateSpeedPtr(
+                                &senderNode->getLatestBSMAddr()->getSenderSpeed()),
+                        mdmLib.calculateDeltaTime(bsm,
+                                senderNode->getLatestBSMAddr())));
+
+        bsmCheck.setPositionSpeedMaxConsistancy(
+                PositionSpeedMaxConsistancyCheck(&senderPos,
+                        &senderNode->getLatestBSMAddr()->getSenderPos(),
+                        mdmLib.calculateSpeedPtr(&bsm->getSenderSpeed()),
+                        mdmLib.calculateSpeedPtr(
+                                &senderNode->getLatestBSMAddr()->getSenderSpeed()),
+                        mdmLib.calculateDeltaTime(bsm,
+                                senderNode->getLatestBSMAddr())));
+
 
         if(mdmLib.calculateDeltaTime(bsm,senderNode->getLatestBSMAddr()) > MAX_SA_TIME){
             bsmCheck.setSuddenAppearence(

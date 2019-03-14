@@ -235,11 +235,11 @@ double MDMLib::SegmentSegmentFactor(double d, double r1, double r2,
     if ((d1 - range / 2) < r1) {
         if ((d1 - range / 2) > -r1) {
             addon = -(d1 - r1);
-            if (addon < range / 2) {
+      //      if (addon < range / 2) {
                 overlap1 = range / 2 + addon;
-            } else {
-                overlap1 = range;
-            }
+      //      } else {
+      //          overlap1 = range;
+     //       }
         } else {
             overlap1 = 2 * r1;
         }
@@ -248,15 +248,16 @@ double MDMLib::SegmentSegmentFactor(double d, double r1, double r2,
     if ((d2 - range / 2) < r2) {
         if ((d2 - range / 2) > -r2) {
             addon = -(d2 - r2);
-            if (addon < range / 2) {
+          //  if (addon < range / 2) {
                 overlap2 = range / 2 + addon;
-            } else {
-                overlap2 = range;
-            }
+         //   } else {
+          //      overlap2 = range;
+         //   }
         } else {
             overlap2 = 2 * r2;
         }
     }
+
 
     if (r1 == 0 && r1 == 0) {
         if (d > range) {
@@ -266,9 +267,11 @@ double MDMLib::SegmentSegmentFactor(double d, double r1, double r2,
         }
     }
 
-    double factor = (overlap1 + overlap2) / (2 * r1 + 2 * r2);
+    double factor = (overlap1 + overlap2 ) / (2 * r1 + 2 * r2);
+
     return factor;
 }
+
 
 double MDMLib::CircleSegmentFactor(double d, double r1, double r2,
         double range) {

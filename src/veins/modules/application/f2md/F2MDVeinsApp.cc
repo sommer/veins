@@ -34,7 +34,7 @@ static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
 
-#define LOCAL_ATTACK_TYPE attackTypes::GridSybil
+#define LOCAL_ATTACK_TYPE attackTypes::ConstSpeedOffset
 
 static attackTypes::Attacks MixLocalAttacksList[] =
         { attackTypes::ConstPos, attackTypes::RandomPos,
@@ -94,8 +94,12 @@ static bool sendReportsV1 = false;
 static bool sendReportsV2 = false;
 static std::string maHostV1 = "localhost";
 static std::string maHostV2 = "localhost";
+//static std::string maHostV2 = "10.3.218.34";
+//static std::string maHostV2 = "192.168.249.3";
+
 static int maPortV1 = 9980;
 static int maPortV2 = 9981;
+//static int maPortV2 = 32790;
 
 static bool enableVarThreV1 = false;
 static bool enableVarThreV2 = false;
@@ -781,6 +785,12 @@ void JosephVeinsApp::writeListReport(MDReport reportBase, std::string version,
             evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             evr.writeStrToFileList(savePath, serialNumber, version,
                     evr.getReportPrintableJson(), curDate);
+        } else {
+            OneMessageReport omr = OneMessageReport(reportBase);
+            omr.setReportedBsm(*bsm);
+            omr.setReportedCheck(bsmCheck);
+            omr.writeStrToFileList(savePath, serialNumber, version,
+                    omr.getReportPrintableJson(), curDate);
         }
     }
         break;
@@ -811,15 +821,14 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         break;
     case reportTypes::EvidenceReport: {
         EvidenceReport evr = EvidenceReport(reportBase);
-
         if (myBsmNum > 0) {
             evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
             reportStr = evr.getReportPrintableJson();
         } else {
-//            OneMessageReport omr = OneMessageReport(reportBase);
-//            omr.setReportedBsm(*bsm);
-//            omr.setReportedCheck(bsmCheck);
-//            reportStr = omr.getReportPrintableJson();
+            OneMessageReport omr = OneMessageReport(reportBase);
+            omr.setReportedBsm(*bsm);
+            omr.setReportedCheck(bsmCheck);
+            reportStr = omr.getReportPrintableJson();
         }
     }
         break;
@@ -827,9 +836,6 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         reportStr = "ERROR myReportType";
         break;
     }
-
-    //std::cout<<reportStr<<"\n";
-    //exit(0);
 
     if (!version.compare("V1")) {
         HTTPRequest httpr = HTTPRequest(maPortV1, maHostV1);
@@ -840,6 +846,9 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         HTTPRequest httpr = HTTPRequest(maPortV2, maHostV2);
         std::string response = httpr.Request(reportStr);
     }
+
+    //std::cout<<reportStr<<"\n";
+    //exit(0);
 
 }
 

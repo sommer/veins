@@ -17,5 +17,5 @@ run-max-playback-speed=100
 run-min-animation-speed=nan
 run-min-fps=2
 run-min-playback-speed=0.01
-run-playback-speed=1
+run-playback-speed=3.890451449942806
 run-target-cpu-usage=0.8
