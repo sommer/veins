@@ -205,9 +205,7 @@ std::map<veins::Obstacle*, std::multiset<double>> ObstacleControl::getIntersecti
         for (size_t row = fromRow; row <= toRow; ++row) {
             if (row >= obstacles[col].size()) break;
             const ObstacleGridCell& cell = (obstacles[col])[row];
-            for (ObstacleGridCell::const_iterator k = cell.begin(); k != cell.end(); ++k) {
-                Obstacle* o = *k;
-
+            for (const auto& o: cell) {
                 // bail if already checked
                 if (processedObstacles.find(o) != processedObstacles.end()) continue;
                 processedObstacles.insert(o);

@@ -97,7 +97,7 @@ protected:
         GRIDCELL_SIZE = 1024
     };
 
-    using ObstacleGridCell = std::list<Obstacle*>;
+    using ObstacleGridCell = std::vector<Obstacle*>;
     using ObstacleGridRow = std::vector<ObstacleGridCell>;
     using Obstacles = std::vector<ObstacleGridRow>;
     typedef std::map<CacheKey, double> CacheEntries;
