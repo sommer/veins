@@ -52,12 +52,12 @@ const Obstacle::Coords& Obstacle::getShape() const
     return coords;
 }
 
-const Coord Obstacle::getBboxP1() const
+const Coord& Obstacle::getBboxP1() const
 {
     return bboxP1;
 }
 
-const Coord Obstacle::getBboxP2() const
+const Coord& Obstacle::getBboxP2() const
 {
     return bboxP2;
 }
@@ -82,7 +82,7 @@ bool Obstacle::containsPoint(Coord point) const
 
 namespace {
 
-double segmentsIntersectAt(Coord p1From, Coord p1To, Coord p2From, Coord p2To)
+double segmentsIntersectAt(const Coord& p1From, const Coord& p1To, const Coord& p2From, const Coord& p2To)
 {
     Coord p1Vec = p1To - p1From;
     Coord p2Vec = p2To - p2From;
@@ -108,8 +108,8 @@ std::multiset<double> Obstacle::getIntersections(const Coord& senderPos, const C
     Obstacle::Coords::const_iterator i = shape.begin();
     Obstacle::Coords::const_iterator j = (shape.rbegin() + 1).base();
     for (; i != shape.end(); j = i++) {
-        Coord c1 = *i;
-        Coord c2 = *j;
+        const Coord& c1 = *i;
+        const Coord& c2 = *j;
 
         double i = segmentsIntersectAt(senderPos, receiverPos, c1, c2);
         if (i != -1) {

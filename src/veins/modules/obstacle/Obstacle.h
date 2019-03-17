@@ -37,8 +37,8 @@ public:
 
     void setShape(Coords shape);
     const Coords& getShape() const;
-    const Coord getBboxP1() const;
-    const Coord getBboxP2() const;
+    const Coord& getBboxP1() const;
+    const Coord& getBboxP2() const;
     bool containsPoint(Coord Point) const;
 
     std::string getType() const;
