@@ -84,16 +84,19 @@ namespace {
 
 double segmentsIntersectAt(const Coord& p1From, const Coord& p1To, const Coord& p2From, const Coord& p2To)
 {
-    Coord p1Vec = p1To - p1From;
-    Coord p2Vec = p2To - p2From;
-    Coord p1p2 = p1From - p2From;
+    const double p1_x = p1To.x - p1From.x;
+    const double p1_y = p1To.y - p1From.y;
+    const double p2_x = p2To.x - p2From.x;
+    const double p2_y = p2To.y - p2From.y;
+    const double p1p2_x = p1From.x - p2From.x;
+    const double p1p2_y = p1From.y - p2From.y;
 
-    double D = (p1Vec.x * p2Vec.y - p1Vec.y * p2Vec.x);
+    double D = (p1_x * p2_y - p1_y * p2_x);
 
-    double p1Frac = (p2Vec.x * p1p2.y - p2Vec.y * p1p2.x) / D;
+    double p1Frac = (p2_x * p1p2_y - p2_y * p1p2_x) / D;
     if (p1Frac < 0 || p1Frac > 1) return -1;
 
-    double p2Frac = (p1Vec.x * p1p2.y - p1Vec.y * p1p2.x) / D;
+    double p2Frac = (p1_x * p1p2_y - p1_y * p1p2_x) / D;
     if (p2Frac < 0 || p2Frac > 1) return -1;
 
     return p1Frac;
