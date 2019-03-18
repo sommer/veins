@@ -42,6 +42,7 @@ void ObstacleControl::initialize(int stage)
         if (annotations) annotationGroup = annotations->createGroup("obstacles");
 
         obstaclesXml = par("obstacles");
+        gridCellSize = par("gridCellSize");
 
         addFromXml(obstaclesXml);
     }
@@ -140,10 +141,10 @@ void ObstacleControl::add(Obstacle obstacle)
     Obstacle* o = new Obstacle(obstacle);
     obstacleOwner.emplace_back(o);
 
-    size_t fromRow = std::max(0, int(o->getBboxP1().x / GRIDCELL_SIZE));
-    size_t toRow = std::max(0, int(o->getBboxP2().x / GRIDCELL_SIZE));
-    size_t fromCol = std::max(0, int(o->getBboxP1().y / GRIDCELL_SIZE));
-    size_t toCol = std::max(0, int(o->getBboxP2().y / GRIDCELL_SIZE));
+    size_t fromRow = std::max(0, int(o->getBboxP1().x / gridCellSize));
+    size_t toRow = std::max(0, int(o->getBboxP2().x / gridCellSize));
+    size_t fromCol = std::max(0, int(o->getBboxP1().y / gridCellSize));
+    size_t toCol = std::max(0, int(o->getBboxP2().y / gridCellSize));
     for (size_t row = fromRow; row <= toRow; ++row) {
         for (size_t col = fromCol; col <= toCol; ++col) {
             if (obstacles.size() < col + 1) obstacles.resize(col + 1);
@@ -194,10 +195,10 @@ std::map<veins::Obstacle*, std::multiset<double>> ObstacleControl::getIntersecti
     Coord bboxP1 = Coord(std::min(senderPos.x, receiverPos.x), std::min(senderPos.y, receiverPos.y));
     Coord bboxP2 = Coord(std::max(senderPos.x, receiverPos.x), std::max(senderPos.y, receiverPos.y));
 
-    size_t fromRow = std::max(0, int(bboxP1.x / GRIDCELL_SIZE));
-    size_t toRow = std::max(0, int(bboxP2.x / GRIDCELL_SIZE));
-    size_t fromCol = std::max(0, int(bboxP1.y / GRIDCELL_SIZE));
-    size_t toCol = std::max(0, int(bboxP2.y / GRIDCELL_SIZE));
+    size_t fromRow = std::max(0, int(bboxP1.x / gridCellSize));
+    size_t toRow = std::max(0, int(bboxP2.x / gridCellSize));
+    size_t fromCol = std::max(0, int(bboxP1.y / gridCellSize));
+    size_t toCol = std::max(0, int(bboxP2.y / gridCellSize));
 
     std::set<Obstacle*> processedObstacles;
     for (size_t col = fromCol; col <= toCol; ++col) {

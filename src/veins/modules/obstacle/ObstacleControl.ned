@@ -28,6 +28,7 @@ simple ObstacleControl
     parameters:
         @class(veins::ObstacleControl);
         xml obstacles = default(xml("<obstacles/>")); // list of obstacle types and obstacles to load
+        int gridCellSize = default(1024); // size of square grid tiles for obstacle store
         @display("i=misc/town");
         @labels(node);
 }
