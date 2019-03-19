@@ -99,7 +99,7 @@ protected:
     typedef std::map<CacheKey, double> CacheEntries;
 
     cXMLElement* obstaclesXml; /**< obstacles to add at startup */
-    unsigned int gridCellSize = 1024; /// size of square grid tiles for obstacle store
+    int gridCellSize = 1024; /// size of square grid tiles for obstacle store
 
     Obstacles obstacles;
     std::vector<std::unique_ptr<Obstacle>> obstacleOwner;

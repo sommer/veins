@@ -43,6 +43,9 @@ void ObstacleControl::initialize(int stage)
 
         obstaclesXml = par("obstacles");
         gridCellSize = par("gridCellSize");
+        if (gridCellSize < 1) {
+            throw cRuntimeError("gridCellSize was %d, but must be a positive integer number", gridCellSize);
+        }
 
         addFromXml(obstaclesXml);
     }
