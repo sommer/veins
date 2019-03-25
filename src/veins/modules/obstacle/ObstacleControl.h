@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include <list>
 #include <memory>
 
 #include "veins/veins.h"
@@ -28,6 +27,7 @@
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/obstacle/Obstacle.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
+#include "veins/modules/utility/BBoxLookup.h"
 
 namespace veins {
 
@@ -59,9 +59,9 @@ public:
     double getAttenuationPerMeter(std::string type);
 
     /**
-     * get hit obstacles (along with a list of points (in [0, 1]) along the line between sender and receiver where the beam intersects with the respective obstacle)
+     * get hit obstacles (along with a list of points (in [0, 1]) along the line between sender and receiver where the beam intersects with the respective obstacle) as well as any obstacle that contains the sender or receiver (with a list of potentially 0 points)
      */
-    std::map<Obstacle*, std::multiset<double>> getIntersections(const Coord& senderPos, const Coord& receiverPos) const;
+    std::vector<std::pair<Obstacle*, std::vector<double>>> getIntersections(const Coord& senderPos, const Coord& receiverPos) const;
 
     /**
      * calculate additional attenuation by obstacles, return multiplicative factor
@@ -93,24 +93,19 @@ protected:
         }
     };
 
-    enum {
-        GRIDCELL_SIZE = 1024
-    };
-
-    using ObstacleGridCell = std::list<Obstacle*>;
-    using ObstacleGridRow = std::vector<ObstacleGridCell>;
-    using Obstacles = std::vector<ObstacleGridRow>;
     typedef std::map<CacheKey, double> CacheEntries;
 
     cXMLElement* obstaclesXml; /**< obstacles to add at startup */
+    int gridCellSize = 250; /**< size of square grid tiles for obstacle store */
 
-    Obstacles obstacles;
     std::vector<std::unique_ptr<Obstacle>> obstacleOwner;
     AnnotationManager* annotations;
     AnnotationManager::Group* annotationGroup;
     std::map<std::string, double> perCut;
     std::map<std::string, double> perMeter;
     mutable CacheEntries cacheEntries;
+    mutable BBoxLookup bboxLookup;
+    mutable bool isBboxLookupDirty = true;
 };
 
 class VEINS_API ObstacleControlAccess {
