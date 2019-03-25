@@ -49,7 +49,7 @@ public:
     /**
      * get a list of points (in [0, 1]) along the line between sender and receiver where the beam intersects with this obstacle
      */
-    std::multiset<double> getIntersections(const Coord& senderPos, const Coord& receiverPos) const;
+    std::vector<double> getIntersections(const Coord& senderPos, const Coord& receiverPos) const;
 
     AnnotationManager::Annotation* visualRepresentation;
 

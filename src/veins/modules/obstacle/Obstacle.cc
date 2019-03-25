@@ -18,8 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include <set>
 #include "veins/modules/obstacle/Obstacle.h"
+#include <algorithm>
 
 using namespace veins;
 
@@ -100,10 +100,9 @@ double segmentsIntersectAt(Coord p1From, Coord p1To, Coord p2From, Coord p2To)
 }
 } // namespace
 
-std::multiset<double> Obstacle::getIntersections(const Coord& senderPos, const Coord& receiverPos) const
+std::vector<double> Obstacle::getIntersections(const Coord& senderPos, const Coord& receiverPos) const
 {
-    std::multiset<double> intersectAt;
-    bool doesIntersect = false;
+    std::vector<double> intersectAt;
     const Obstacle::Coords& shape = getShape();
     Obstacle::Coords::const_iterator i = shape.begin();
     Obstacle::Coords::const_iterator j = (shape.rbegin() + 1).base();
@@ -113,10 +112,10 @@ std::multiset<double> Obstacle::getIntersections(const Coord& senderPos, const C
 
         double i = segmentsIntersectAt(senderPos, receiverPos, c1, c2);
         if (i != -1) {
-            doesIntersect = true;
-            intersectAt.insert(i);
+            intersectAt.push_back(i);
         }
     }
+    std::sort(intersectAt.begin(), intersectAt.end());
     return intersectAt;
 }
 
