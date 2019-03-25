@@ -18,8 +18,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "veins/modules/obstacle/Obstacle.h"
 #include <algorithm>
+
+#include "veins/modules/obstacle/Obstacle.h"
 
 using namespace veins;
 
@@ -82,18 +83,20 @@ bool Obstacle::containsPoint(Coord point) const
 
 namespace {
 
-double segmentsIntersectAt(Coord p1From, Coord p1To, Coord p2From, Coord p2To)
+double segmentsIntersectAt(const Coord& p1From, const Coord& p1To, const Coord& p2From, const Coord& p2To)
 {
-    Coord p1Vec = p1To - p1From;
-    Coord p2Vec = p2To - p2From;
-    Coord p1p2 = p1From - p2From;
+    double p1x = p1To.x - p1From.x;
+    double p1y = p1To.y - p1From.y;
+    double p2x = p2To.x - p2From.x;
+    double p2y = p2To.y - p2From.y;
+    double p1p2x = p1From.x - p2From.x;
+    double p1p2y = p1From.y - p2From.y;
+    double D = (p1x * p2y - p1y * p2x);
 
-    double D = (p1Vec.x * p2Vec.y - p1Vec.y * p2Vec.x);
-
-    double p1Frac = (p2Vec.x * p1p2.y - p2Vec.y * p1p2.x) / D;
+    double p1Frac = (p2x * p1p2y - p2y * p1p2x) / D;
     if (p1Frac < 0 || p1Frac > 1) return -1;
 
-    double p2Frac = (p1Vec.x * p1p2.y - p1Vec.y * p1p2.x) / D;
+    double p2Frac = (p1x * p1p2y - p1y * p1p2x) / D;
     if (p2Frac < 0 || p2Frac > 1) return -1;
 
     return p1Frac;
@@ -107,8 +110,8 @@ std::vector<double> Obstacle::getIntersections(const Coord& senderPos, const Coo
     Obstacle::Coords::const_iterator i = shape.begin();
     Obstacle::Coords::const_iterator j = (shape.rbegin() + 1).base();
     for (; i != shape.end(); j = i++) {
-        Coord c1 = *i;
-        Coord c2 = *j;
+        const Coord& c1 = *i;
+        const Coord& c2 = *j;
 
         double i = segmentsIntersectAt(senderPos, receiverPos, c1, c2);
         if (i != -1) {

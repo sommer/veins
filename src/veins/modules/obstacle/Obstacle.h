@@ -21,6 +21,9 @@
 #pragma once
 
 #include <vector>
+
+#include "veins/veins.h"
+
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
 
