@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <copy file="hochschule_muenchen.net.xml" />
+    <copy file="hochschule_muenchen.pedestrians.rou.xml" />
+    <copy file="hochschule_muenchen.poly.xml" />
+    <copy file="hochschule_muenchen.sumocfg" type="config" />
+</launch>
+
