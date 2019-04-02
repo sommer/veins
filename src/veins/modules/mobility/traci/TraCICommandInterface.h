@@ -146,6 +146,14 @@ public:
         void getParameter(const std::string& parameter, std::string& value);
 
         /**
+         * Get id list of active vehicles.
+         *
+         * @return std::list<std::string>: Returns a list of ids of all vehicles
+         * currently running within the scenario (the given vehicle ID is ignored).
+         */
+        std::list<std::string> getIdList();
+
+        /**
          * Returns the vehicle type of a vehicle
          */
         std::string getVType();
@@ -232,6 +240,68 @@ public:
     Vehicle vehicle(std::string nodeId)
     {
         return Vehicle(this, nodeId);
+    }
+
+    /**
+     * @class Person
+     *
+     * Class that serves as local representation of a TraCI person this
+     * features all requests of values of a person that are specifically
+     * directed to a certain person. The person is given by the node id.
+     *
+     * Documentation of available TraCI commands:
+     *  - https://sumo.dlr.de/wiki/TraCI/Person_Value_Retrieval
+     *  - https://sumo.dlr.de/wiki/TraCI/Change_Person_State
+     *
+     * Note: This does not include all values given in the lists above.
+     */
+    class VEINS_API Person {
+    public:
+        /**
+         * Default constructor for the person.
+         *
+         * @traci the interface that is used to access TraCI.
+         * @nodeId The id of the person that is being represented.
+         */
+        Person(TraCICommandInterface* traci, std::string nodeId)
+            : traci(traci)
+            , nodeId(nodeId)
+        {
+            connection = &traci->connection;
+        }
+
+        /**
+         * Get the type id of the person.
+         *
+         * @return string: Returns the id of the type of the named person.
+         */
+        std::string getTypeId();
+
+        /**
+         * Get count of persons.
+         *
+         * @return int: Returns the number of persons currently running
+         * within the scenario (the given person ID is ignored)
+         */
+        int getCount();
+
+        /**
+         * Get id list of active persons.
+         *
+         * @return std::list<std::string>: Returns a list of ids of all persons
+         * currently running within the scenario (the given person ID is ignored).
+         */
+        std::list<std::string> getIdList();
+
+    protected:
+        TraCICommandInterface* traci;
+        TraCIConnection* connection;
+        std::string nodeId;
+    };
+
+    Person person(std::string nodeId)
+    {
+        return Person(this, nodeId);
     }
 
     // Road methods
