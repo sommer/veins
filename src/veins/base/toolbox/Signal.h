@@ -62,7 +62,7 @@ public:
     /**
      * Get the Spectrum this Signal is defined on.
      */
-    Spectrum getSpectrum() const;
+    const Spectrum& getSpectrum() const;
 
     /**
      * @name Element access

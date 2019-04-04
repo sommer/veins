@@ -58,7 +58,7 @@ Signal::Signal(Spectrum spec, simtime_t start, simtime_t dur)
 {
 }
 
-Spectrum Signal::getSpectrum() const
+const Spectrum& Signal::getSpectrum() const
 {
     return spectrum;
 }
