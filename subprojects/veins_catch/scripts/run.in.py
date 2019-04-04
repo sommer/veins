@@ -8,6 +8,7 @@ Wrapper around veins_catch binary
 
 import os
 import argparse
+import subprocess
 
 parser = argparse.ArgumentParser('Run a Veins simulation')
 parser.add_argument('-d', '--debug', action='store_true', help='Run using opp_run_dbg (instead of opp_run)')
@@ -36,5 +37,8 @@ if args.verbose:
 
 os.environ["PATH"] += os.pathsep + os.pathsep.join(run_lib_paths)
 
-os.execvp('env', ['env'] + cmdline)
+if os.name == 'nt':
+    subprocess.call(['env'] + cmdline)
+else:
+    os.execvp('env', ['env'] + cmdline)
 

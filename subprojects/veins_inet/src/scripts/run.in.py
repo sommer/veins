@@ -8,6 +8,7 @@ Runs Veins simulation in current directory
 
 import os
 import argparse
+import subprocess
 
 def relpath(s):
     veins_root = os.path.dirname(os.path.realpath(__file__))
@@ -47,5 +48,8 @@ cmdline = prefix + [opp_run] + lib_flags + ned_flags + img_flags + omnet_args
 if args.verbose:
     print "Running with command line arguments: %s" % ' '.join(['"%s"' % arg for arg in cmdline])
 
-os.execvp('env', ['env'] + cmdline)
+if os.name == 'nt':
+    subprocess.call(['env'] + cmdline)
+else:
+    os.execvp('env', ['env'] + cmdline)
 
